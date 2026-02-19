@@ -1,0 +1,12 @@
+[submodule "autobyteus-web"]
+	path = autobyteus-web
+	url = git@github.com:AutoByteus/autobyteus-web.git
+[submodule "autobyteus-server-ts"]
+	path = autobyteus-server-ts
+	url = git@github.com:AutoByteus/autobyteus-server-ts.git
+[submodule "autobyteus-ts"]
+	path = autobyteus-ts
+	url = git@github.com:AutoByteus/autobyteus-ts.git
+[submodule "autobyteus-message-gateway"]
+	path = autobyteus-message-gateway
+	url = git@github.com:AutoByteus/autobyteus-message-gateway.git

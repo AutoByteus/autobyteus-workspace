@@ -1,0 +1,5 @@
+packages:
+  - "autobyteus-web"
+  - "autobyteus-server-ts"
+  - "autobyteus-ts"
+  - "autobyteus-message-gateway"
