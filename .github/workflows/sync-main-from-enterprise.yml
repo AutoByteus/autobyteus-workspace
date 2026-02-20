@@ -34,7 +34,7 @@ jobs:
             });
 
             if (compare.data.ahead_by === 0) {
-              core.info(`No commits to sync:  has no commits ahead of .`);
+              core.info(`No commits to sync: ${head} has no commits ahead of ${base}.`);
               core.setOutput("pull_request_number", "");
               return;
             }
