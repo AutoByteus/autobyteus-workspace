@@ -1,0 +1,100 @@
+name: Sync Submodule Profiles
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Branch profile to sync
+        required: true
+        default: all
+        type: choice
+        options:
+          - all
+          - personal
+          - enterprise
+  schedule:
+    - cron: "17 3 * * *"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: sync-submodules
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: Sync ${{ matrix.target_branch }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target_branch:
+          - personal
+          - enterprise
+    if: |
+      github.event_name != 'workflow_dispatch' ||
+      github.event.inputs.target == 'all' ||
+      github.event.inputs.target == matrix.target_branch
+
+    steps:
+      - name: Checkout target branch + submodules
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ matrix.target_branch }}
+          fetch-depth: 0
+          submodules: recursive
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Sync submodules to configured branch tips
+        run: |
+          git submodule sync --recursive
+          git submodule update --init --remote --recursive
+
+      - name: Detect submodule pointer changes
+        id: detect
+        run: |
+          if [[ -n "$(git status --porcelain -- .gitmodules autobyteus-message-gateway autobyteus-server-ts autobyteus-ts autobyteus-web)" ]]; then
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create PR with submodule updates
+        if: steps.detect.outputs.has_changes == 'true'
+        id: cpr
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: ${{ matrix.target_branch }}
+          branch: automation/sync-submodules-${{ matrix.target_branch }}
+          delete-branch: true
+          commit-message: "chore(submodules): sync ${{ matrix.target_branch }} profile"
+          title: "chore(submodules): sync ${{ matrix.target_branch }} profile"
+          body: |
+            Automated submodule sync for `${{ matrix.target_branch }}`.
+
+            - Runs `git submodule update --remote --recursive`
+            - Uses `.gitmodules` branch policy for each submodule
+            - Updates workspace submodule pointers deterministically
+          add-paths: |
+            .gitmodules
+            autobyteus-message-gateway
+            autobyteus-server-ts
+            autobyteus-ts
+            autobyteus-web
+
+      - name: Enable auto-merge for sync PR
+        if: steps.cpr.outputs.pull-request-number != ''
+        continue-on-error: true
+        uses: peter-evans/enable-pull-request-automerge@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
+          merge-method: squash
