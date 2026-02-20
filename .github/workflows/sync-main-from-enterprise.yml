@@ -33,8 +33,8 @@ jobs:
               basehead: `${base}...${head}`,
             });
 
-            if (compare.data.status !== "ahead" || compare.data.ahead_by === 0) {
-              core.info(`No commits to sync: ${head} is not ahead of ${base}.`);
+            if (compare.data.ahead_by === 0) {
+              core.info(`No commits to sync: ${head} has no commits ahead of ${base}.`);
               core.setOutput("pull_request_number", "");
               return;
             }
