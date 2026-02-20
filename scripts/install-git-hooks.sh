@@ -12,11 +12,16 @@ if [[ ! -f "${repo_root}/.githooks/post-checkout" ]]; then
   exit 1
 fi
 
-chmod +x "${repo_root}/.githooks/post-checkout"
+git_dir="$(git -C "${repo_root}" rev-parse --git-dir)"
+hook_dir="${git_dir}/hooks"
+mkdir -p "${hook_dir}"
 
-# Store hook path per worktree so each worktree remains independent.
+# Install committed hooks into this worktree-local hooks directory.
+install -m 0755 "${repo_root}/.githooks/post-checkout" "${hook_dir}/post-checkout"
+
+# Keep hooks path per worktree so each worktree remains independent.
 git -C "${repo_root}" config extensions.worktreeConfig true
-git -C "${repo_root}" config --worktree core.hooksPath "${repo_root}/.githooks"
+git -C "${repo_root}" config --worktree core.hooksPath "${hook_dir}"
 
 echo "Installed shared hooks for this worktree."
 echo "core.hooksPath=$(git -C "${repo_root}" config --show-origin --get core.hooksPath)"
