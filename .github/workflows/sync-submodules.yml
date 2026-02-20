@@ -68,6 +68,7 @@ jobs:
 
       - name: Create PR with submodule updates
         if: steps.detect.outputs.has_changes == 'true'
+        id: cpr
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -88,3 +89,12 @@ jobs:
             autobyteus-server-ts
             autobyteus-ts
             autobyteus-web
+
+      - name: Enable auto-merge for sync PR
+        if: steps.cpr.outputs.pull-request-number != ''
+        continue-on-error: true
+        uses: peter-evans/enable-pull-request-automerge@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
+          merge-method: squash
