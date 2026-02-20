@@ -71,7 +71,7 @@ jobs:
         id: cpr
         uses: peter-evans/create-pull-request@v6
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.AUTOMATION_GH_TOKEN || secrets.GITHUB_TOKEN }}
           base: ${{ matrix.target_branch }}
           branch: automation/sync-submodules-${{ matrix.target_branch }}
           delete-branch: true
@@ -95,6 +95,6 @@ jobs:
         continue-on-error: true
         uses: peter-evans/enable-pull-request-automerge@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.AUTOMATION_GH_TOKEN || secrets.GITHUB_TOKEN }}
           pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
           merge-method: squash

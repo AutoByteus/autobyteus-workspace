@@ -21,6 +21,7 @@ jobs:
         id: pr
         uses: actions/github-script@v7
         with:
+          github-token: ${{ secrets.AUTOMATION_GH_TOKEN || secrets.GITHUB_TOKEN }}
           script: |
             const owner = context.repo.owner;
             const repo = context.repo.repo;
@@ -71,6 +72,6 @@ jobs:
         continue-on-error: true
         uses: peter-evans/enable-pull-request-automerge@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.AUTOMATION_GH_TOKEN || secrets.GITHUB_TOKEN }}
           pull-request-number: ${{ steps.pr.outputs.pull_request_number }}
           merge-method: merge
