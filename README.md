@@ -37,6 +37,7 @@ Behavior after install:
 
 - On branch switch to `personal` or `enterprise`, submodules are auto-aligned to the same profile branch when possible.
 - Dirty submodules are skipped for safety.
+- Hooks are installed into the current worktree-local `.git/.../hooks`, so behavior survives branch switches even if `.githooks/` is missing on another branch.
 
 Note: Hook configuration is local to your machine/worktree and is not automatically enabled by clone.
 
