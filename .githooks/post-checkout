@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Args: <old-ref> <new-ref> <is-branch-checkout>
+if [[ "${3:-0}" != "1" ]]; then
+  exit 0
+fi
+
+branch="$(git symbolic-ref --quiet --short HEAD 2>/dev/null || true)"
+case "$branch" in
+  personal|enterprise)
+    ;;
+  *)
+    exit 0
+    ;;
+esac
+
+if [[ "${AUTO_PROFILE_SUBMODULE_SYNC_RUNNING:-}" == "1" ]]; then
+  exit 0
+fi
+export AUTO_PROFILE_SUBMODULE_SYNC_RUNNING=1
+
+echo "[post-checkout] Aligning submodules for profile branch '$branch'..."
+
+git submodule sync --recursive >/dev/null
+git submodule update --init --recursive >/dev/null
+
+git submodule foreach --recursive '
+  target_branch=$(git config -f "$toplevel/.gitmodules" "submodule.$name.branch" || true)
+  if [[ -z "$target_branch" ]]; then
+    target_branch="'"$branch"'"
+  fi
+
+  if [[ "$target_branch" != "'"$branch"'" ]]; then
+    exit 0
+  fi
+
+  if [[ -n "$(git status --porcelain)" ]]; then
+    echo "[post-checkout] $name: dirty working tree; skipping branch switch."
+    exit 0
+  fi
+
+  if ! git ls-remote --exit-code --heads origin "$target_branch" >/dev/null 2>&1; then
+    echo "[post-checkout] $name: origin/$target_branch not found; skipping."
+    exit 0
+  fi
+
+  git fetch --quiet origin "$target_branch" || {
+    echo "[post-checkout] $name: fetch failed for origin/$target_branch; skipping."
+    exit 0
+  }
+
+  current_branch=$(git symbolic-ref --quiet --short HEAD 2>/dev/null || true)
+  if [[ "$current_branch" != "$target_branch" ]]; then
+    if git show-ref --verify --quiet "refs/heads/$target_branch"; then
+      git checkout --quiet "$target_branch" || {
+        echo "[post-checkout] $name: checkout $target_branch failed; skipping."
+        exit 0
+      }
+    else
+      git checkout --quiet -b "$target_branch" --track "origin/$target_branch" || {
+        echo "[post-checkout] $name: create tracking branch $target_branch failed; skipping."
+        exit 0
+      }
+    fi
+  fi
+
+  if ! git merge --ff-only --quiet "origin/$target_branch"; then
+    echo "[post-checkout] $name: cannot fast-forward $target_branch; leaving current commit unchanged."
+  fi
+'
+
+echo "[post-checkout] Submodule branch alignment complete."

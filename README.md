@@ -23,6 +23,23 @@ If cloned without `--recurse-submodules`:
 git submodule update --init --recursive
 ```
 
+## Shared Git Hooks (optional)
+
+This repo includes committed hooks in `.githooks/`.
+
+To enable hooks for the current worktree:
+
+```bash
+pnpm hooks:install
+```
+
+Behavior after install:
+
+- On branch switch to `personal` or `enterprise`, submodules are auto-aligned to the same profile branch when possible.
+- Dirty submodules are skipped for safety.
+
+Note: Hook configuration is local to your machine/worktree and is not automatically enabled by clone.
+
 ## Build examples
 
 ```bash
