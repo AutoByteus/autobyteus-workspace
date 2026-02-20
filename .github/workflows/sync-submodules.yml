@@ -30,13 +30,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target_branch:
-          - personal
-          - enterprise
-    if: |
-      github.event_name != 'workflow_dispatch' ||
-      github.event.inputs.target == 'all' ||
-      github.event.inputs.target == matrix.target_branch
+        target_branch: ${{ fromJson(github.event_name == 'workflow_dispatch' && github.event.inputs.target != 'all' && format('["{0}"]', github.event.inputs.target) || '["personal","enterprise"]') }}
 
     steps:
       - name: Checkout target branch + submodules
