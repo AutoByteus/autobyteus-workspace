@@ -1,6 +1,9 @@
 {
   "name": "autobyteus-workspace",
   "private": true,
+  "scripts": {
+    "hooks:install": "bash scripts/install-git-hooks.sh"
+  },
   "packageManager": "pnpm@10.28.2",
   "pnpm": {
     "onlyBuiltDependencies": [
