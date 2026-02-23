@@ -1,0 +1,64 @@
+# Implementation Progress
+
+## 2026-02-22
+- [x] Investigation updated with branch timeline and drift confirmation.
+- [x] Requirements expanded to documentation-grade local/distributed/nested memory layouts.
+- [x] Requirements refined with finalized design decisions.
+- [x] Proposed design reviewed and updated to `v2`.
+- [x] Future-state runtime call stack updated to `v2`.
+- [x] Review loop completed with `Go Confirmed` (Round 1 No-Go -> Round 2 Candidate Go -> Round 3 Go Confirmed).
+- [x] Additional deep-review loop completed with `Go Confirmed` (Round 4 No-Go -> Round 5 Candidate Go -> Round 6 Go Confirmed).
+- [x] Proposed design updated to `v3` with deeper use-case coverage and file-boundary corrections.
+- [x] Additional deep-review loop completed with `Go Confirmed` (Round 7 No-Go -> Round 8 Candidate Go -> Round 9 Go Confirmed).
+- [x] Proposed design updated to `v4` with explicit mixed-placement coverage and core-stack feasibility constraints.
+- [x] Additional deep-review loop completed with `Go Confirmed` (Round 10 No-Go -> Round 11 Candidate Go -> Round 12 Go Confirmed).
+- [x] Proposed design updated to `v5` with host-manifest-only and nested route-key placement edge-case coverage.
+- [x] Implementation plan synchronized with latest deep-review-approved design.
+- [x] Investigation updated with delete/remove-path implementation evidence (local-only delete, no remote cleanup command, lifecycle gap).
+- [x] Requirements refined with explicit delete matrix (D0-D4), partial-failure retry semantics, and lifecycle finalization rules.
+- [x] Proposed design updated to `v6` with distributed delete coordinator + remote cleanup command architecture.
+- [x] Future-state runtime call stack updated to `v6` with UC-017..UC-020 delete/remove flows.
+- [x] Additional deep-review loop completed with `Go Confirmed` (Round 13 No-Go -> Round 14 Candidate Go -> Round 15 Go Confirmed).
+- [x] Additional deep-review loop completed with `Go Confirmed` (Round 16 No-Go -> Round 17 Candidate Go -> Round 18 Go Confirmed).
+- [x] Requirements refined with distributed inactive-precondition + transport-decoupling constraints (D5).
+- [x] Proposed design updated to `v7` with dedicated `teamId`-scoped cleanup transport and inactive-preflight architecture.
+- [x] Future-state runtime call stack updated to `v7` with UC-001, UC-010, and UC-021 coverage.
+- [x] Additional deep-review loop completed with `Go Confirmed` (Round 19 No-Go -> Round 20 Candidate Go -> Round 21 Go Confirmed).
+- [x] Requirements refined with distributed teamId propagation/disambiguation constraints (D6).
+- [x] Proposed design updated to `v8` with worker binding `teamId` propagation and runtime wiring requirements.
+- [x] Future-state runtime call stack updated to `v8` with UC-022 teamId propagation flow.
+- [x] Additional deep-review revalidation completed (Round 22), `Go Confirmed` retained with no new blockers.
+- [x] Implement WS-1 manifest store boundary cleanup.
+- [x] Implement WS-2 team-member layout store.
+- [x] Implement WS-4A manifest binding completeness (`hostNodeId` + canonical `memoryDir` on create paths).
+- [x] Implement WS-3 team-member projection reader integration (manifest-authoritative remote routing).
+- [x] Implement WS-4 continuation restore alignment (canonical `memoryDir` + workspace consistency).
+- [x] Implement WS-5 history/activity policy enforcement (canonical append path guarantees).
+- [x] Implement WS-5A distributed delete transport + worker cleanup route.
+- [x] Implement WS-5B distributed inactive preflight + drift guard.
+- [x] Implement WS-5C distributed bootstrap/run-binding teamId propagation + route wiring.
+- [x] Implement WS-6 test updates.
+- [x] Implement WS-7 docs sync.
+- [x] Post-completion WS-6 gap audit performed against delete/use-case matrix.
+- [x] Added distributed delete integration coverage for:
+  - host-manifest-only cleanup across multiple workers,
+  - nested duplicate-leaf route cleanup ownership by member binding identity,
+  - partial-failure `CLEANUP_PENDING` lifecycle and retry convergence,
+  - teamId disambiguation guard (active runtime from other team does not block target delete).
+- [x] Verification: `pnpm test tests/integration/distributed tests/integration/run-history tests/e2e/run-history --reporter=dot` (23 files / 33 tests passed).
+- [x] Verification: `pnpm test tests/unit/run-history tests/unit/distributed tests/unit/api/graphql/types/agent-team-instance-resolver.test.ts tests/unit/agent-memory-view/store/memory-file-store.test.ts --reporter=dot` (52 files / 187 tests passed).
+- [x] Verification note: `pnpm typecheck` still fails on existing repo-level TS6059 (`tests/**` included while `rootDir` is `src`), unchanged by this ticket.
+- [x] Verification (expanded sweep after gap-closure): `pnpm test tests/integration/distributed tests/integration/run-history tests/e2e/run-history tests/unit/run-history tests/unit/distributed --reporter=dot` (74 files / 220 tests passed).
+- [x] Added run-history create-layout integration coverage:
+  - local nested route keys persist as flattened member directories under `agent_teams/<teamId>/<memberAgentId>`,
+  - distributed mixed placement creates only host-local member subtrees on host,
+  - host-manifest-only create keeps host directory manifest-only (all members remote).
+- [x] Added run-history projection integration legacy-cutoff coverage:
+  - local missing canonical subtree rejects projection even if legacy `memory/agents/<memberAgentId>` traces exist.
+- [x] Added continuation integration coverage:
+  - restore preserves per-member `hostNodeId` (including remote bindings) in runtime member configs,
+  - workspace-binding mismatch during restore fails fast with explicit mismatch error.
+- [x] Strengthened team projection E2E contract coverage:
+  - create-time runtime member configs assert canonical per-member `memoryDir` under `agent_teams/<teamId>/<memberAgentId>`.
+- [x] Verification (targeted new suites): `pnpm test tests/integration/run-history/team-run-history-layout-create.integration.test.ts tests/integration/run-history/team-member-remote-projection-fallback.integration.test.ts tests/integration/run-history/team-run-continuation-lifecycle.integration.test.ts tests/unit/run-history/team-run-continuation-service.test.ts --reporter=dot` (4 files / 13 tests passed).
+- [x] Verification (latest expanded sweep): `pnpm test tests/integration/distributed tests/integration/run-history tests/e2e/run-history tests/unit/run-history tests/unit/distributed tests/unit/api/graphql/types/agent-team-instance-resolver.test.ts tests/unit/agent-memory-view/store/memory-file-store.test.ts --reporter=dot` (77 files / 231 tests passed).
