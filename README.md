@@ -31,6 +31,24 @@ pnpm --filter autobyteus-server-ts build
 pnpm --filter autobyteus-message-gateway build
 ```
 
+## Android (Termux) Quick Start
+
+Run inside Termux:
+
+```bash
+pnpm android:bootstrap
+pnpm android:server:start
+```
+
+Useful commands:
+
+```bash
+pnpm android:bootstrap:check
+pnpm android:server:start:bg
+pnpm android:server:status
+pnpm android:server:stop
+```
+
 ## Release workflow
 
 - Workflow file: `.github/workflows/release-desktop.yml`
