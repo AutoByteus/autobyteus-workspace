@@ -82,6 +82,20 @@ Manifest member binding must include:
 4. `hostNodeId` (for distributed runs)
 5. workspace binding metadata (`workspaceRootPath` and/or node-scoped workspace binding fields)
 
+### 3A) Team Member Run Manifest Rule
+Path:
+- `memory/agent_teams/<teamId>/<memberAgentId>/run_manifest.json`
+
+Rules:
+1. A member `run_manifest.json` must exist for every member hosted on the current node.
+2. A node must not write `run_manifest.json` for members owned by other nodes (`hostNodeId` mismatch).
+3. Member run manifest must include runtime snapshot fields:
+   - identity (`teamId`, `memberRouteKey`, `memberAgentId`, `hostNodeId`),
+   - model/runtime config (`agentDefinitionId`, `llmModelIdentifier`, `llmConfig`, `autoExecuteTools`),
+   - workspace snapshot (`workspaceRootPath`),
+   - lifecycle snapshot (`runVersion`, `lastKnownStatus`, timestamps).
+4. `team_run_manifest.json` remains the team routing/composition source of truth; per-member `run_manifest.json` is member runtime snapshot.
+
 ## Detailed Case Specifications
 
 ## Case 0: Single-Agent Local Run

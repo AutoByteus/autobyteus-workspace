@@ -1,7 +1,7 @@
 # Future-State Runtime Call Stack
 
 ## Version
-- Current Version: `v13`
+- Current Version: `v14`
 
 ## UC-001: Single-Agent Persistence Remains Global-Agent Scoped
 Coverage: primary=Yes, fallback=N/A, error=Yes
@@ -27,7 +27,8 @@ Coverage: primary=Yes, fallback=N/A, error=Yes
 8. `src/run-history/store/team-run-manifest-store.ts:writeManifest(teamId, manifest)`
 9. `src/run-history/store/team-member-memory-layout-store.ts:ensureLocalMemberSubtrees(teamId, bindings)`
 10. Ensure `memory/agent_teams/<teamId>/<memberAgentId>/` exists for node-local members.
-11. Runtime dispatch starts with per-member canonical `memoryDir`.
+11. `src/run-history/store/team-member-run-manifest-store.ts:writeManifest(...)` persists per-member `run_manifest.json` for local bindings.
+12. Runtime dispatch starts with per-member canonical `memoryDir`.
 
 Error path:
 - Invalid binding (empty route key/member ID) throws before runtime dispatch.
@@ -54,6 +55,8 @@ Coverage: primary=Yes, fallback=Yes, error=Yes
 4. Host persists manifest with explicit `hostNodeId` for all members.
 5. Host sends remote bootstrap command with `teamId`, team-definition snapshot, binding snapshot (including `hostNodeId`, `memberAgentId`, `memoryDir`), run version.
 6. Worker creates only its local member subtrees under `memory/agent_teams/<teamId>/<memberAgentId>/`.
+7. Worker bootstrap writes local member `run_manifest.json` only for bindings whose `hostNodeId` is local.
+8. Worker bootstrap skips coordinator initialization if coordinator binding is non-local to worker node.
 
 Fallback path:
 - Worker unreachable returns explicit distributed create failure.
@@ -424,3 +427,27 @@ Coverage: primary=Yes, fallback=N/A, error=Yes
 
 Error path:
 - Explicit `memoryDir` pointing to invalid/unwritable path fails at runtime store initialization.
+
+## UC-028: Worker Bootstrap Skips Non-Local Coordinator Initialization
+Coverage: primary=Yes, fallback=N/A, error=Yes
+
+1. `src/agent-team-execution/services/agent-team-instance-manager.ts:buildAgentConfigFromDefinition(...)`
+2. Server stamps `initialCustomData.teamMemberPlacement.isLocalToCurrentNode` for each member config.
+3. `autobyteus-ts/src/agent-team/bootstrap-steps/coordinator-initialization-step.ts:execute(context)`
+4. Coordinator step reads coordinator placement metadata.
+5. If coordinator is non-local, step returns success without calling `teamManager.ensureCoordinatorIsReady(...)`.
+
+Error path:
+- Missing placement metadata falls back to default behavior (attempt coordinator init).
+
+## UC-029: Per-Member Run Manifest Persistence Is Node-Local
+Coverage: primary=Yes, fallback=N/A, error=Yes
+
+1. Host create/lazy-create path calls `team-run-history-service:upsertTeamRunHistoryRow(...)`.
+2. Service persists `team_run_manifest.json` and local member subtrees.
+3. Service writes local member `run_manifest.json` via `team-member-run-manifest-store`.
+4. Worker remote bootstrap handler writes member `run_manifest.json` only for local bindings.
+5. No node writes member `run_manifest.json` for bindings owned by another node.
+
+Error path:
+- Invalid or missing binding identity fields abort per-member run-manifest write for that binding.

@@ -200,3 +200,27 @@
   - `pnpm -C autobyteus-ts exec vitest tests/unit/agent/factory/agent-factory.test.ts tests/integration/agent/working-context-snapshot-restore-flow.test.ts tests/unit/memory/file-store.test.ts tests/unit/memory/working-context-snapshot-store.test.ts --reporter=dot` (4 files / 21 tests passed),
   - `pnpm -C autobyteus-server-ts test tests/integration/agent-team-execution/agent-team-instance-manager.integration.test.ts tests/unit/run-history/team-member-memory-projection-reader.test.ts tests/unit/run-history/team-member-run-projection-service.test.ts tests/e2e/run-history/team-run-restore-distributed-process-graphql.e2e.test.ts --reporter=dot` (4 files / 24 tests passed),
   - `pnpm -C autobyteus-server-ts test tests/integration/agent-execution/agent-instance-manager.integration.test.ts --reporter=dot` (1 file / 6 tests passed).
+
+## 2026-02-24 (Worker Locality + Member Run Manifest Iteration)
+- [x] Investigated and confirmed worker-side foreign-member materialization root cause:
+  - non-local coordinator initialization executed during worker bootstrap.
+- [x] Implemented worker-bootstrap locality guard:
+  - `autobyteus-server-ts/src/agent-team-execution/services/agent-team-instance-manager.ts` now stamps member placement metadata (`teamMemberPlacement`).
+  - `autobyteus-ts/src/agent-team/bootstrap-steps/coordinator-initialization-step.ts` skips coordinator init when `isLocalToCurrentNode=false`.
+- [x] Added per-member run-manifest persistence contract:
+  - new `autobyteus-server-ts/src/run-history/store/team-member-run-manifest-store.ts`,
+  - `autobyteus-server-ts/src/run-history/services/team-run-history-service.ts` writes local member `run_manifest.json` on upsert,
+  - `autobyteus-server-ts/src/distributed/bootstrap/remote-envelope-bootstrap-handler.ts` writes local member `run_manifest.json` on worker bootstrap and excludes non-local bindings.
+- [x] Added/updated tests:
+  - `autobyteus-ts/tests/unit/agent-team/bootstrap-steps/coordinator-initialization-step.test.ts`,
+  - `autobyteus-server-ts/tests/unit/distributed/remote-envelope-bootstrap-handler.test.ts`,
+  - `autobyteus-server-ts/tests/unit/run-history/team-member-run-manifest-store.test.ts`,
+  - `autobyteus-server-ts/tests/integration/run-history/team-run-history-layout-create.integration.test.ts`,
+  - `autobyteus-server-ts/tests/e2e/run-history/team-run-restore-distributed-process-graphql.e2e.test.ts`.
+- [x] Verification:
+  - `pnpm -C autobyteus-ts exec vitest tests/unit/agent-team/bootstrap-steps/coordinator-initialization-step.test.ts --reporter=dot` (1 file / 4 tests passed),
+  - `pnpm -C autobyteus-server-ts test tests/unit/distributed/remote-envelope-bootstrap-handler.test.ts tests/unit/run-history/team-member-run-manifest-store.test.ts tests/integration/run-history/team-run-history-layout-create.integration.test.ts --reporter=dot` (3 files / 8 tests passed),
+  - `pnpm -C autobyteus-server-ts test tests/e2e/run-history/team-run-restore-distributed-process-graphql.e2e.test.ts --reporter=dot` (1 file / 1 test passed),
+  - `pnpm -C autobyteus-server-ts test --reporter=dot` (306 files: 303 passed, 3 skipped; 1198 tests: 1191 passed, 7 skipped).
+- [x] Additional core-suite check:
+  - `pnpm -C autobyteus-ts exec vitest tests/integration/agent tests/integration/agent-team --reporter=dot` shows existing external/live integration instability and auth-dependent failures unrelated to this ticket (for example missing `approved-tool-invocation-event-handler` import in runtime integration test and live-provider auth failures in Claude/Gemini tests).

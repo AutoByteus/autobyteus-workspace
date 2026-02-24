@@ -528,3 +528,60 @@ Status: `Go Confirmed`
 
 ### Verdict
 - `Go Confirmed` (deep review, explicit-memory contract cleanup cycle)
+
+## Deep Review Round 38 (Blocking Re-Entry)
+Status: `No-Go`
+
+### Findings
+1. Blocking: worker bootstrap can initialize a non-local coordinator, which can materialize host-owned member folders on worker node memory.
+2. Blocking: per-member `run_manifest.json` contract is required in requirements but was not consistently persisted for team-member local bindings.
+
+### Required Write-Backs
+1. Add worker-bootstrap locality guard so coordinator initialization is skipped when coordinator binding is non-local on worker.
+2. Add per-member run-manifest persistence for local bindings on both host create/upsert and worker bootstrap paths.
+3. Add regression tests for:
+   - worker local-only member manifest materialization,
+   - host-manifest-only distributed behavior,
+   - per-member run-manifest persistence contract.
+
+### Write-Backs Applied
+- Updated `/Users/normy/autobyteus_org/autobyteus-workspace/tickets/in-progress/team-memory-layout-member-folders/requirements.md` with explicit team-member run-manifest rule.
+- Updated `/Users/normy/autobyteus_org/autobyteus-workspace/tickets/in-progress/team-memory-layout-member-folders/proposed-design.md` to `v15` (`UC-028`, `UC-029`, `D-034`, `D-035`).
+- Updated `/Users/normy/autobyteus_org/autobyteus-workspace/tickets/in-progress/team-memory-layout-member-folders/future-state-runtime-call-stack.md` to `v14`.
+- Implemented locality guard + member manifest persistence in:
+  - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/agent-team-execution/services/agent-team-instance-manager.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-ts/src/agent-team/bootstrap-steps/coordinator-initialization-step.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/run-history/store/team-member-run-manifest-store.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/run-history/services/team-run-history-service.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/bootstrap/remote-envelope-bootstrap-handler.ts`
+- Added/updated regression coverage in:
+  - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-ts/tests/unit/agent-team/bootstrap-steps/coordinator-initialization-step.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/unit/distributed/remote-envelope-bootstrap-handler.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/unit/run-history/team-member-run-manifest-store.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/integration/run-history/team-run-history-layout-create.integration.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/e2e/run-history/team-run-restore-distributed-process-graphql.e2e.test.ts`
+
+## Deep Review Round 39 (Clean Round 1)
+Status: `Candidate Go`
+
+### Criteria Check
+1. Worker no longer initializes non-local coordinator during bootstrap: Pass
+2. Worker avoids foreign-member run-manifest materialization: Pass
+3. Host create/upsert persists per-member `run_manifest.json` for local bindings: Pass
+4. Distributed host-manifest-only behavior remains valid in E2E coverage: Pass
+5. Separation-of-concerns boundaries preserved (bootstrap locality in runtime bootstrap step, run-manifest persistence in run-history stores/services): Pass
+
+### Notes
+- No blocking findings.
+- No required write-backs.
+
+## Deep Review Round 40 (Clean Round 2)
+Status: `Go Confirmed`
+
+### Re-Check
+1. Round 38 blockers remain resolved in code and tests: Pass
+2. Two consecutive clean rounds achieved after write-backs: Pass
+3. UC-028 and UC-029 align requirements/design/call-stack with implementation evidence: Pass
+
+### Verdict
+- `Go Confirmed` (deep review, worker-locality + member-manifest contract cycle)

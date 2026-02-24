@@ -387,3 +387,41 @@ The core runtime contract for explicit `memoryDir` was never formalized; team-sp
 3. Outcome:
    - explicit `memoryDir` path contract is now consistent across single-agent and team-member restore/create flows,
    - no team-domain branching remains in core memory layout selection.
+
+## Re-Investigation Checkpoint (2026-02-24) - Worker Foreign-Member Materialization + Missing Member Run Manifest
+
+### Problem Confirmation
+1. Distributed mixed placement repro (`professor` on host, `student` on worker) still produced foreign-member artifacts on worker memory.
+2. Requirements mandate per-member `run_manifest.json`, but implementation only guaranteed team member directories.
+
+### Root Cause A (Worker Foreign-Member Artifacts)
+1. Worker bootstrap hydrates full team definition and runs coordinator initialization.
+2. Coordinator bootstrap step initialized coordinator even when that coordinator was non-local to worker.
+3. Result: worker could instantiate host-owned coordinator/member and write foreign-member memory.
+
+### Root Cause B (Per-Member Run Manifest Gap)
+1. Host run-history upsert wrote only team manifest + local member directories.
+2. Worker bootstrap path created runtime bindings but did not persist local per-member `run_manifest.json`.
+3. Result: member folder contract was incomplete across host/worker.
+
+### Resolution
+1. Added member placement metadata at config hydration:
+   - `initialCustomData.teamMemberPlacement.{homeNodeId,isLocalToCurrentNode}`.
+2. Made coordinator bootstrap locality-aware:
+   - skip `ensureCoordinatorIsReady` when coordinator is non-local to current node.
+3. Added new store:
+   - `src/run-history/store/team-member-run-manifest-store.ts`.
+4. Host path:
+   - `team-run-history-service.ts` now writes per-member `run_manifest.json` for local bindings during upsert.
+5. Worker path:
+   - `remote-envelope-bootstrap-handler.ts` now writes per-member `run_manifest.json` only for worker-local bindings (`hostNodeId` matches local node).
+
+### Validation Evidence
+1. Targeted TS unit:
+   - `pnpm -C autobyteus-ts exec vitest tests/unit/agent-team/bootstrap-steps/coordinator-initialization-step.test.ts --reporter=dot` -> passed.
+2. Targeted server unit/integration:
+   - `pnpm -C autobyteus-server-ts test tests/unit/distributed/remote-envelope-bootstrap-handler.test.ts tests/unit/run-history/team-member-run-manifest-store.test.ts tests/integration/run-history/team-run-history-layout-create.integration.test.ts --reporter=dot` -> passed.
+3. Distributed process E2E:
+   - `pnpm -C autobyteus-server-ts test tests/e2e/run-history/team-run-restore-distributed-process-graphql.e2e.test.ts --reporter=dot` -> passed (host manifest-only + worker local member manifest assertion).
+4. Full backend regression:
+   - `pnpm -C autobyteus-server-ts test --reporter=dot` -> passed (`303` files passed, `3` skipped; `1191` tests passed, `7` skipped).
