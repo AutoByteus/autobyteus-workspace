@@ -291,3 +291,189 @@ Status: `Go Confirmed`
 - No blocking findings.
 - No required write-backs.
 - Go status remains confirmed.
+
+## Deep Review Round 23 (Blocking Re-Entry)
+Status: `No-Go`
+
+### Findings
+1. Blocking: runtime create path still required host-local parity for remote member `referenceId`, causing mixed-node lazy-create failure (`AgentDefinition with ID 24 not found`).
+2. Blocking: runtime call stack did not include explicit cross-node definition-identity resolution behavior for remote members.
+3. Blocking: implementation/test mapping lacked a regression case for host-missing/worker-present remote definition IDs.
+
+### Required Write-Backs
+1. Refine requirements with explicit distributed definition-identity contract (remote proxy-safe, local strict).
+2. Update proposed design with node-aware member hydration responsibilities and concrete file changes.
+3. Update call stack with dedicated use case for cross-node definition-ID mismatch handling.
+4. Implement manager hydration fix and add regression tests.
+
+### Write-Backs Applied
+- Updated `/Users/normy/autobyteus_org/autobyteus-workspace/tickets/in-progress/team-memory-layout-member-folders/requirements.md` (Case E).
+- Updated `/Users/normy/autobyteus_org/autobyteus-workspace/tickets/in-progress/team-memory-layout-member-folders/proposed-design.md` to `v9`.
+- Updated `/Users/normy/autobyteus_org/autobyteus-workspace/tickets/in-progress/team-memory-layout-member-folders/future-state-runtime-call-stack.md` to `v9` with UC-023.
+- Implemented node-aware definition hydration in `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/agent-team-execution/services/agent-team-instance-manager.ts`.
+- Added regression coverage in `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-instance-manager.integration.test.ts`.
+
+## Deep Review Round 24 (Clean Round 1)
+Status: `Candidate Go`
+
+### Criteria Check
+1. UC-023 coverage in requirements/design/call-stack: Pass
+2. Local-member strict behavior preserved: Pass
+3. Remote-member proxy-safe hydration for host-missing IDs: Pass
+4. Separation-of-concerns boundary (instance manager only; no storage-layer leakage): Pass
+5. Regression tests for mixed-node and local-missing cases: Pass
+
+### Notes
+- No blocking findings.
+- No required write-backs.
+
+## Deep Review Round 25 (Clean Round 2)
+Status: `Go Confirmed`
+
+### Re-Check
+1. Round 23 blocker remains resolved in code and tests: Pass
+2. Two consecutive clean rounds achieved after write-backs: Pass
+3. Current design baseline remains implementation-ready and verified for UC-001..UC-023: Pass
+
+### Verdict
+- `Go Confirmed` (deep review, cross-node definition-identity correction cycle)
+
+## Deep Review Round 26 (Blocking Re-Entry)
+Status: `No-Go`
+
+### Findings
+1. Blocking: distributed workspace contract was underspecified; remote members could be configured with `workspaceId` only, which is not node-portable.
+2. Blocking: home-node hydration path could skip `workspaceRootPath` fallback when `workspaceId` is stale, causing silent workspace unbound execution.
+3. Blocking: call stack/design did not include explicit remote path-authoritative workspace rule.
+
+### Required Write-Backs
+1. Refine requirements with explicit distributed workspace portability rules.
+2. Update design + call stack with dedicated use case for remote workspace path authority and fallback behavior.
+3. Implement strict remote `workspaceRootPath` validation and stale-`workspaceId` fallback.
+4. Add regression tests for both error and fallback paths.
+
+### Write-Backs Applied
+- Updated `/Users/normy/autobyteus_org/autobyteus-workspace/tickets/in-progress/team-memory-layout-member-folders/requirements.md` (Case F + acceptance/constraint/risk updates).
+- Updated `/Users/normy/autobyteus_org/autobyteus-workspace/tickets/in-progress/team-memory-layout-member-folders/proposed-design.md` to `v10` with UC-024, D-029, D-030.
+- Updated `/Users/normy/autobyteus_org/autobyteus-workspace/tickets/in-progress/team-memory-layout-member-folders/future-state-runtime-call-stack.md` to `v10` with UC-024.
+- Implemented workspace portability enforcement/fallback in `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/agent-team-execution/services/agent-team-instance-manager.ts`.
+- Added regression coverage in `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-instance-manager.integration.test.ts`.
+
+## Deep Review Round 27 (Clean Round 1)
+Status: `Candidate Go`
+
+### Criteria Check
+1. Remote `workspaceRootPath` contract clarity in requirements/design/call-stack: Pass
+2. Node-portability correctness (`workspaceId` treated as local hint): Pass
+3. Home-node stale-`workspaceId` fallback behavior covered: Pass
+4. Separation-of-concerns boundaries unchanged and clean: Pass
+5. Regression coverage for failure+fallback paths: Pass
+
+### Notes
+- No blocking findings.
+- No required write-backs.
+
+## Deep Review Round 28 (Clean Round 2)
+Status: `Go Confirmed`
+
+### Re-Check
+1. Round 26 blockers remain resolved in code/tests/docs: Pass
+2. Two consecutive clean rounds achieved after write-backs: Pass
+3. Design baseline remains `Go Confirmed` for UC-001..UC-024: Pass
+
+### Verdict
+- `Go Confirmed` (deep review, distributed workspace portability correction cycle)
+
+## Deep Review Round 29 (Blocking Re-Entry)
+Status: `No-Go`
+
+### Findings
+1. Blocking: generated team-member IDs were still opaque (`member_<hash>`), reducing operator readability inside `memory/agent_teams/<teamId>/`.
+2. Blocking: requirements/design/call-stack did not yet define a readability contract aligned with actual implementation.
+3. Blocking: no explicit test assertion existed for readable deterministic ID format.
+
+### Required Write-Backs
+1. Refine requirements with deterministic readable naming contract for generated `memberAgentId`.
+2. Update proposed design and call stack with explicit naming use case and change inventory.
+3. Implement deterministic readable ID format in generator.
+4. Add/update tests for format and determinism.
+
+### Write-Backs Applied
+- Updated `/Users/normy/autobyteus_org/autobyteus-workspace/tickets/in-progress/team-memory-layout-member-folders/requirements.md`.
+- Updated `/Users/normy/autobyteus_org/autobyteus-workspace/tickets/in-progress/team-memory-layout-member-folders/proposed-design.md` to `v11`.
+- Updated `/Users/normy/autobyteus_org/autobyteus-workspace/tickets/in-progress/team-memory-layout-member-folders/future-state-runtime-call-stack.md` to `v11` with UC-025.
+- Implemented generator update in `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/run-history/utils/team-member-agent-id.ts`.
+- Updated tests in `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/unit/run-history/team-member-agent-id.test.ts`.
+
+## Deep Review Round 30 (Clean Round 1)
+Status: `Candidate Go`
+
+### Criteria Check
+1. Determinism preserved from `teamId + normalized memberRouteKey`: Pass
+2. Readability improved with slug + hash format (`<route_slug>_<hash16>`): Pass
+3. Path safety preserved (`a-z0-9_`, bounded slug length): Pass
+4. Separation of concerns preserved (only ID utility + tests touched for generator logic): Pass
+5. Targeted unit + distributed E2E verification for manifest/layout/restore paths: Pass
+
+### Notes
+- No blocking findings.
+- No required write-backs.
+
+## Deep Review Round 31 (Clean Round 2)
+Status: `Go Confirmed`
+
+### Re-Check
+1. Round 29 naming blockers remain resolved in code and ticket artifacts: Pass
+2. Two consecutive clean rounds achieved after naming write-backs: Pass
+3. Existing distributed restore/delete contracts remain unaffected by naming change: Pass
+
+### Verdict
+- `Go Confirmed` (deep review, readable deterministic member ID cycle)
+
+## Deep Review Round 32 (Blocking Re-Entry)
+Status: `No-Go`
+
+### Findings
+1. Blocking: team folder IDs still used opaque/random-first `team_<id8>` style and did not encode team name, reducing operator readability in `memory/agent_teams/`.
+2. Blocking: requirements/design/call-stack did not yet define a team-folder naming contract aligned with readability goals.
+3. Blocking: unit resolver expectation still encoded old `team_` pattern.
+
+### Required Write-Backs
+1. Define generated team ID contract as `<team_name_slug>_<id8>` with immutability semantics.
+2. Update design + call stack with explicit use case and change inventory.
+3. Implement generator update in resolver/factory paths.
+4. Update unit expectations and run targeted distributed lifecycle verification.
+
+### Write-Backs Applied
+- Updated `/Users/normy/autobyteus_org/autobyteus-workspace/tickets/in-progress/team-memory-layout-member-folders/requirements.md`.
+- Updated `/Users/normy/autobyteus_org/autobyteus-workspace/tickets/in-progress/team-memory-layout-member-folders/proposed-design.md` to `v12`.
+- Updated `/Users/normy/autobyteus_org/autobyteus-workspace/tickets/in-progress/team-memory-layout-member-folders/future-state-runtime-call-stack.md` to `v12` with UC-026.
+- Implemented team ID generation update in:
+  - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/api/graphql/types/agent-team-instance.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-ts/src/agent-team/factory/agent-team-factory.ts`
+- Updated `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/unit/api/graphql/types/agent-team-instance-resolver.test.ts`.
+
+## Deep Review Round 33 (Clean Round 1)
+Status: `Candidate Go`
+
+### Criteria Check
+1. Team folder readability objective achieved (`<team_name_slug>_<id8>`): Pass
+2. Identity safety preserved (teamId immutable after creation): Pass
+3. Distributed continuity unaffected (create/restore/delete/projection still keyed by persisted `teamId`): Pass
+4. SoC boundaries preserved (ID generation only in resolver/factory entry points): Pass
+5. Targeted unit + E2E distributed verification passed: Pass
+
+### Notes
+- No blocking findings.
+- No required write-backs.
+
+## Deep Review Round 34 (Clean Round 2)
+Status: `Go Confirmed`
+
+### Re-Check
+1. Round 32 blockers remain resolved in code and artifacts: Pass
+2. Two consecutive clean rounds achieved after teamId naming write-backs: Pass
+3. UC-001..UC-026 baseline remains coherent and implementable: Pass
+
+### Verdict
+- `Go Confirmed` (deep review, readable immutable teamId cycle)

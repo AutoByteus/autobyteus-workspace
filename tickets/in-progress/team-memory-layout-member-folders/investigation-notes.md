@@ -121,3 +121,149 @@ Gap between intended and actual:
 - `teamId` for team runs,
 - `memberAgentId` for team members,
 - `memberRouteKey` for nested routing identity.
+
+## Re-Investigation Checkpoint (2026-02-23) - Runtime Failure `AgentDefinition with ID 24 not found`
+
+### Additional Sources Consulted
+- Host DB: `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/db/production.db`
+- Docker worker DB snapshot: `/tmp/autobyteus-docker-8001.db` (copied from container `/home/autobyteus/data/db/production.db`)
+- Host runtime log: `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/logs/host-8000.log`
+- Worker runtime log: `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/docker/logs/docker-8001.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/agent-team-execution/services/agent-team-instance-manager.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/api/graphql/types/agent-team-instance.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-web/stores/agentTeamRunStore.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-web/stores/federatedCatalogStore.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/api/graphql/types/federated-catalog.ts`
+
+### DB Evidence (Host `8000`)
+Observed host definitions:
+- `agent_definitions`: `1=SuperAgent`, `2=Professor`, `4=Student`.
+- `agent_team_definitions` for `Class Room Simulation` (`id=3`) contains:
+  - `professor -> reference_id=2, home_node_id=embedded-local`
+  - `student -> reference_id=24, home_node_id=node-docker-8001`
+
+Validation query result:
+- `student` row resolves as `MISSING_LOCAL_DEFINITION` on host (`reference_id=24` not present in host `agent_definitions`).
+
+### DB Evidence (Worker `8001`)
+Worker `agent_definitions` contains:
+- `23=Professor`, `24=Student` (plus other rows).
+Worker team definition for `Class Room Simulation` uses `student.reference_id=24`.
+
+### Runtime Log Correlation
+Host log (`host-8000.log`) shows:
+1. lazy team creation starts (`sendMessageToTeam: teamId not provided`),
+2. `create agent team instance from definition ID: 3`,
+3. hard failure:
+   - `Failed to create agent team from definition ID '3': Error: AgentDefinition with ID 24 not found.`
+   - `AgentTeamCreationError: Failed to create agent team: Error: AgentDefinition with ID 24 not found.`
+
+No compensating worker-side error appears, because failure happens on host during config hydration before remote bootstrap can complete.
+
+### Code-Path Root Cause
+1. Team creation path:
+   - `api/graphql/types/agent-team-instance.ts` -> `createTeamInstanceWithId(...)`
+2. Host instance manager resolves member definitions via persisted team definition nodes:
+   - `agent-team-instance-manager.ts:buildTeamConfigFromDefinition(...)`
+   - AGENT branch calls `buildAgentConfigFromDefinition(..., member.referenceId, ...)`
+3. `buildAgentConfigFromDefinition(...)` does local lookup only:
+   - `agentDefinitionService.getAgentDefinitionById(agentDefinitionId)`
+   - throws when not found (`AgentDefinition with ID 24 not found.`)
+
+Critical mismatch:
+- for remote members, `member.referenceId` can be a remote-node local ID (e.g., `24` on worker),
+- but host build path still requires that ID to exist in host-local `agent_definitions`.
+
+### Why This Is Still Possible After Memory Layout Work
+The current ticket/design concentrated on team memory layout and distributed cleanup contracts.
+This runtime failure occurs earlier, at distributed member-definition identity resolution, before team run/memory behavior can proceed.
+
+### Additional Contract Gap Confirmed
+1. Frontend currently persists node-local federated `definitionId` as `referenceId` for remote members.
+2. Federated catalog contract exposes `definitionId` only; no stable cross-node definition identity is surfaced.
+3. Existing `sync_id` columns are not populated for the relevant definitions in this environment, so no fallback mapping exists.
+
+### Root Cause Statement
+Distributed team definitions mix node-local agent definition IDs across nodes (`reference_id=24` from worker persisted on host), while host runtime team creation assumes every `referenceId` is resolvable in host-local `agent_definitions`.
+
+### Implication For Ticket Status
+Ticket is not complete. A blocking requirement/design gap remains:
+- distributed team member definition identity resolution must be explicit and node-aware (or globally stable), so host create path does not require remote member `referenceId` to exist locally.
+
+## Resolution Checkpoint (2026-02-23) - Cross-Node Definition-ID Gap Fixed
+
+### Additional Sources Consulted
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/agent-team-execution/services/agent-team-instance-manager.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-instance-manager.integration.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/tickets/in-progress/team-memory-layout-member-folders/future-state-runtime-call-stack.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/tickets/in-progress/team-memory-layout-member-folders/future-state-runtime-call-stack-review.md`
+
+### Implemented Correction
+1. Added node-aware definition hydration in `AgentTeamInstanceManager`:
+- local members remain strict: missing definition ID still fails immediately,
+- remote members are proxy-safe: if host-local lookup misses, host can synthesize remote proxy metadata and continue distributed bootstrap.
+2. Preserved no-legacy policy:
+- no compatibility wrapper or dual-path data persistence was introduced,
+- only the runtime hydration decision gate was corrected for remote-member placement.
+
+### Verification Evidence
+1. Integration regression test added for mixed local+remote team where remote `referenceId` is absent on host and present on worker-equivalent context.
+2. Guard test added to prove local-member missing definition still fails.
+3. Executed:
+- `pnpm test tests/integration/agent-team-execution/agent-team-instance-manager.integration.test.ts --reporter=dot` -> passed,
+- `pnpm test tests/unit/api/graphql/types/agent-team-instance-resolver.test.ts --reporter=dot` -> passed.
+
+### Root-Cause Confidence
+High:
+- failure reproduced from runtime logs and DB state,
+- failing frame was deterministic in `buildAgentConfigFromDefinition`,
+- regression tests now explicitly lock expected behavior for both remote and local member cases.
+
+## Additional Investigation Checkpoint (2026-02-23) - Distributed Workspace Portability Gap
+
+### Finding
+1. Distributed members could still be configured with host-side `workspaceId` only.
+2. `workspaceId` is node-local and can be stale/unknown on the member's home node.
+3. Existing hydration path attempted `workspaceId` lookup first and could skip `workspaceRootPath` fallback when `workspaceId` was present but unresolved.
+
+### Implication
+Remote members could run without intended workspace binding unless `workspaceRootPath` was both provided and selected by fallback logic. This is unreliable for cross-node execution.
+
+### Resolution
+1. Enforced remote-member `workspaceRootPath` requirement at team-config hydration gate.
+2. Added home-node fallback: when `workspaceId` lookup misses and `workspaceRootPath` is present, resolve workspace by root path.
+3. Added integration regression tests for:
+   - remote `workspaceId`-only hard failure,
+   - stale `workspaceId` to `workspaceRootPath` fallback success.
+
+## Additional Investigation Checkpoint (2026-02-23) - Member Folder Naming Clarity Gap
+
+### Finding
+1. Team-member folder naming is currently deterministic but opaque (`member_<hash>`), which is hard to inspect manually in `memory/agent_teams/<teamId>/`.
+2. Runtime and persistence contracts only require uniqueness + stability; they do not require opaque-only IDs.
+3. We can preserve deterministic identity and improve operator readability simultaneously.
+
+### Decision
+1. Keep deterministic identity source unchanged: `teamId + normalized memberRouteKey`.
+2. Change generated `memberAgentId` format to readable deterministic form:
+   - `<route_slug>_<hash16>`
+3. `route_slug` is normalized from `memberRouteKey` and path-safe (`a-z0-9_`, slash folded to `_`), with bounded length.
+4. Hash suffix remains mandatory to guarantee uniqueness and stability across nested-route collisions.
+
+### Risk Assessment
+1. New runs: safe and clearer folder names.
+2. Existing runs: safe because persisted manifests carry concrete `memberAgentId`; restore/projection/delete path reads manifest IDs.
+3. No compatibility wrapper required under no-legacy policy for newly generated IDs.
+
+## Additional Investigation Checkpoint (2026-02-23) - Team Folder Naming Clarity Gap
+
+### Finding
+1. Team folder names were generated as `team_<id8>` regardless of team definition name.
+2. This made memory inspection less intuitive than single-agent style IDs that include readable name context.
+3. Team identity safety does not require opaque prefix naming; it requires immutability after creation.
+
+### Decision
+1. Generate team IDs as `<team_name_slug>_<id8>`.
+2. Use resolved team definition name (fallback to `teamDefinitionId`) as slug source.
+3. Keep `teamId` immutable once created; restore/projection/delete/distributed routing continue to use persisted `teamId`.
+4. Apply same naming update to both server resolver entry-point generation and core team factory generation to avoid drift between call paths.

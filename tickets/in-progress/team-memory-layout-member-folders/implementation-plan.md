@@ -94,6 +94,19 @@ Canonical contract: team-member persistence under `memory/agent_teams/<teamId>/<
 ### WS-7: Docs Sync
 1. Update docs memory-layout sections to match requirements and verified behavior.
 
+### WS-8: Readable Team-Member ID Naming
+1. Update `src/run-history/utils/team-member-agent-id.ts` to generate readable deterministic IDs using `<route_slug>_<hash16>`.
+2. Keep deterministic uniqueness source unchanged (`teamId + normalized memberRouteKey` hash suffix).
+3. Update unit tests and targeted E2E assertions that derive expected IDs via `buildTeamMemberAgentId`.
+4. Sync ticket requirements/design/review artifacts to the finalized naming contract.
+
+### WS-9: Readable Team ID Naming
+1. Update team ID generation in resolver/factory entry points to `<team_name_slug>_<id8>`.
+2. Source slug from resolved team definition name (fallback: teamDefinitionId), with path-safe normalization + length cap.
+3. Keep teamId immutable after creation; do not recompute from later metadata changes.
+4. Update unit expectations and distributed E2E verification for lazy-create + restore lifecycle.
+5. Sync ticket requirements/design/review artifacts to the finalized teamId naming contract.
+
 ## Verification Checklist
 1. Unit tests for layout store path helpers/safety checks.
 2. Unit tests for projection reader local + error branches.
@@ -106,6 +119,8 @@ Canonical contract: team-member persistence under `memory/agent_teams/<teamId>/<
 9. Targeted integration tests for delete preflight drift case (D5).
 10. Targeted integration tests for teamId propagation/disambiguation (D6).
 11. Manual spot-check of generated memory trees for Case A, Case B, Case B2, Case B3, Case C and delete outcomes.
+12. Verify generated member folders are human-readable in team directories while retaining deterministic restore compatibility.
+13. Verify generated team folders are human-readable while preserving distributed identity continuity.
 
 ## Sequence
 1. WS-1
@@ -119,3 +134,5 @@ Canonical contract: team-member persistence under `memory/agent_teams/<teamId>/<
 9. WS-5C
 10. WS-6
 11. WS-7
+12. WS-8
+13. WS-9

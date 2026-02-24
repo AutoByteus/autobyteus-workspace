@@ -62,3 +62,77 @@
   - create-time runtime member configs assert canonical per-member `memoryDir` under `agent_teams/<teamId>/<memberAgentId>`.
 - [x] Verification (targeted new suites): `pnpm test tests/integration/run-history/team-run-history-layout-create.integration.test.ts tests/integration/run-history/team-member-remote-projection-fallback.integration.test.ts tests/integration/run-history/team-run-continuation-lifecycle.integration.test.ts tests/unit/run-history/team-run-continuation-service.test.ts --reporter=dot` (4 files / 13 tests passed).
 - [x] Verification (latest expanded sweep): `pnpm test tests/integration/distributed tests/integration/run-history tests/e2e/run-history tests/unit/run-history tests/unit/distributed tests/unit/api/graphql/types/agent-team-instance-resolver.test.ts tests/unit/agent-memory-view/store/memory-file-store.test.ts --reporter=dot` (77 files / 231 tests passed).
+
+## 2026-02-23 (Re-Investigation)
+- [x] Reproduced runtime failure from UI scenario: distributed team (`professor` local, `student` on docker `8001`) fails at lazy create with `AgentDefinition with ID 24 not found`.
+- [x] Verified host DB (`autobyteus-server-ts/db/production.db`) vs worker DB (`/tmp/autobyteus-docker-8001.db`) mismatch:
+  - host team definition references `student.reference_id=24`,
+  - host local `agent_definitions` has no `id=24`,
+  - worker local `agent_definitions` has `id=24`.
+- [x] Correlated host runtime logs to failure line and create path (`createTeamInstanceWithId -> buildTeamConfigFromDefinition -> buildAgentConfigFromDefinition -> getAgentDefinitionById`).
+- [x] Confirmed blocker classification: distributed member-definition identity resolution gap (independent of team memory folder layout).
+- [x] Requirements/design/call stack write-back completed for cross-node definition identity (`Case E`, design `v9`, call stack `v9`, review rounds 23-25).
+- [x] Implemented node-aware member definition hydration in `src/agent-team-execution/services/agent-team-instance-manager.ts`:
+  - local member missing definition remains hard-fail,
+  - remote member missing host-local definition uses remote-proxy-safe synthetic hydration.
+- [x] Added integration regression tests in `tests/integration/agent-team-execution/agent-team-instance-manager.integration.test.ts`:
+  - mixed local+remote team succeeds when remote `referenceId` is absent locally,
+  - local member missing definition still fails.
+- [x] Verification:
+  - `pnpm test tests/integration/agent-team-execution/agent-team-instance-manager.integration.test.ts --reporter=dot` (14/14 passed),
+  - `pnpm test tests/unit/api/graphql/types/agent-team-instance-resolver.test.ts --reporter=dot` (4/4 passed).
+- [x] Post-implementation docs sync:
+  - updated `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/docs/design/agent_team_communication_local_and_distributed.md`
+    with distributed member-definition identity resolution contract (remote proxy-safe, local strict).
+- [x] Re-opened design-impact iteration for distributed workspace portability:
+  - remote member `workspaceRootPath` is now required (fail-fast even if `workspaceId` is present),
+  - home-node hydration now falls back to `workspaceRootPath` when `workspaceId` is stale.
+- [x] Added integration regression tests:
+  - remote member with `workspaceId`-only config fails with explicit workspace-path error,
+  - stale `workspaceId` resolves via `workspaceRootPath` fallback on home node.
+- [x] Verification:
+  - `pnpm test tests/integration/agent-team-execution/agent-team-instance-manager.integration.test.ts --reporter=dot` (16/16 passed),
+  - `pnpm test tests/unit/api/graphql/types/agent-team-instance-resolver.test.ts --reporter=dot` (4/4 passed).
+- [x] Multi-node verification sweep:
+  - `pnpm test tests/integration/distributed tests/integration/run-history tests/e2e/run-history --reporter=dot` (25 files / 44 tests passed).
+- [x] Coverage audit note:
+  - distributed transport/routing, cross-node messaging, distributed history delete, and team-memory layout paths are covered by real integration tests;
+  - run-history GraphQL E2E currently validates single-node lifecycle and schema-level behavior, but not a single process-level two-node end-to-end lifecycle (create + communication + continuation) in one unified test.
+- [x] Added unified distributed run-history lifecycle integration coverage in
+  - `tests/integration/run-history/distributed-team-memory-lifecycle.integration.test.ts`:
+    - host+worker lifecycle (layout -> continue -> terminate -> continue -> delete),
+    - host-manifest-only + two-worker + nested-route lifecycle with restore-after-terminate and cross-node cleanup.
+- [x] Verification:
+  - `pnpm test tests/integration/run-history/distributed-team-memory-lifecycle.integration.test.ts --reporter=dot` (1 file / 2 tests passed),
+  - `pnpm test tests/integration/run-history --reporter=dot` (5 files / 17 tests passed),
+  - `pnpm test tests/integration/distributed tests/integration/run-history tests/e2e/run-history --reporter=dot` (26 files / 46 tests passed).
+
+## 2026-02-23 (Naming Iteration - Readable Team Member IDs)
+- [x] Re-investigated naming contract against single-agent runtime naming:
+  - single-agent runtime IDs are generated in `autobyteus-ts` as `<agentName>_<role>_<random4>`,
+  - team-member IDs should remain deterministic for restore/replay, so random suffix strategy is not suitable for teams.
+- [x] Updated generated team-member ID format from opaque hash-only to readable deterministic:
+  - old: `member_<hash16>`
+  - new: `<route_slug>_<hash16>`
+- [x] Implemented in `src/run-history/utils/team-member-agent-id.ts` with path-safe route slug normalization and deterministic hash suffix preservation.
+- [x] Updated unit contract tests in `tests/unit/run-history/team-member-agent-id.test.ts`.
+- [x] Verified targeted suites:
+  - `pnpm test tests/unit/run-history/team-member-agent-id.test.ts tests/e2e/run-history/team-member-projection-contract.e2e.test.ts tests/e2e/run-history/team-run-restore-distributed-process-graphql.e2e.test.ts --reporter=dot` (3 files / 7 tests passed).
+- [x] Synchronized ticket artifacts (`investigation-notes.md`, `requirements.md`, `proposed-design.md`, `implementation-plan.md`) to the finalized naming contract.
+
+## 2026-02-23 (Naming Iteration - Readable Team IDs)
+- [x] Re-investigated team ID generation path:
+  - server resolver generated `team_<id8>` regardless of team name,
+  - core team factory also generated `team_<id8>`.
+- [x] Implemented readable team ID generation contract:
+  - new format: `<team_name_slug>_<id8>`,
+  - slug source: resolved team definition name (fallback `teamDefinitionId`),
+  - immutable after creation.
+- [x] Updated implementation:
+  - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/api/graphql/types/agent-team-instance.ts`,
+  - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-ts/src/agent-team/factory/agent-team-factory.ts`.
+- [x] Updated unit expectation:
+  - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/unit/api/graphql/types/agent-team-instance-resolver.test.ts`.
+- [x] Verification:
+  - `pnpm test tests/unit/api/graphql/types/agent-team-instance-resolver.test.ts tests/unit/run-history/team-member-agent-id.test.ts tests/e2e/run-history/team-member-projection-contract.e2e.test.ts tests/e2e/run-history/team-run-restore-distributed-process-graphql.e2e.test.ts --reporter=dot` (4 files / 11 tests passed).
+- [x] Synchronized ticket artifacts (`investigation-notes.md`, `requirements.md`, `proposed-design.md`, `future-state-runtime-call-stack.md`, `future-state-runtime-call-stack-review.md`, `implementation-plan.md`) for team ID naming contract.

@@ -1,7 +1,7 @@
 # Future-State Runtime Call Stack
 
 ## Version
-- Current Version: `v8`
+- Current Version: `v12`
 
 ## UC-001: Single-Agent Persistence Remains Global-Agent Scoped
 Coverage: primary=Yes, fallback=N/A, error=Yes
@@ -192,7 +192,7 @@ Example topology:
 
 Flow:
 1. Host persists manifest with `professor.hostNodeId=node_a`, `scribe.hostNodeId=node_b`.
-2. Host creates only local subtree (`member_professor`) under `memory/agent_teams/<teamId>/`.
+2. Host creates only local subtree (`professor_<hash16>`) under `memory/agent_teams/<teamId>/`.
 3. Worker creates remote subtree (`member_scribe`) under same `teamId` on `node_b`.
 4. Projection for `scribe` on host resolves remote via manifest `hostNodeId=node_b` and fetches worker projection.
 5. Restore/delete paths follow the same manifest ownership split.
@@ -236,7 +236,7 @@ Error path:
 Coverage: primary=Yes, fallback=Yes, error=Yes
 
 Example topology:
-1. Host `node_a` owns `member_professor`.
+1. Host `node_a` owns `professor_<hash16>`.
 2. Worker `node_b` owns `member_scribe`, `member_analyst`.
 
 Flow:
@@ -328,3 +328,85 @@ Fallback path:
 
 Error path:
 - Missing/invalid `teamId` in bootstrap payload fails bind and prevents distributed run activation.
+
+## UC-023: Distributed Member Definition Identity Resolution (Cross-Node IDs)
+Coverage: primary=Yes, fallback=Yes, error=Yes
+
+Example topology:
+1. Host node A has local member `professor` (`referenceId=2`).
+2. Remote worker node B has member `student` (`referenceId=24`), and host node A does not have `agent_definitions.id=24`.
+
+Flow:
+1. `src/api/graphql/types/agent-team-instance.ts:sendMessageToTeam(input)` resolves runtime member configs and calls team lazy-create.
+2. `src/agent-team-execution/services/agent-team-instance-manager.ts:buildTeamConfigFromDefinition(...)` iterates members and passes `member.homeNodeId`.
+3. `resolveAgentDefinitionForMember(...)` performs strict local lookup for `member.referenceId`.
+4. If lookup misses and member is local to current node, throw hard error (`AgentDefinition with ID <id> not found`).
+5. If lookup misses and member is remote, allow remote-proxy-safe hydration:
+6. Try optional runtime `memberConfig.agentDefinitionId` lookup.
+7. If still unresolved locally, synthesize remote proxy definition metadata and continue hydration.
+8. Build `AgentConfig` with `initialCustomData.agent_definition_id` set to resolved/synthetic ID and continue distributed run bootstrap.
+9. Host proceeds to bootstrap remote worker; worker executes remote member with its own local definition.
+
+Fallback path:
+- If host has a mirrored row for remote definition ID, resolve normally and avoid synthetic metadata.
+
+Error path:
+- Local-member missing definition remains a hard failure and aborts team creation.
+
+## UC-024: Distributed Workspace Binding Portability (Remote Path Authority)
+Coverage: primary=Yes, fallback=Yes, error=Yes
+
+Example topology:
+1. Host node A creates team with member `student` assigned to node B.
+2. `workspaceId` from host may be stale/unknown on node B.
+3. `workspaceRootPath` is provided as node-portable contract.
+
+Flow:
+1. `src/api/graphql/types/agent-team-instance.ts:sendMessageToTeam(input)` enters lazy-create path.
+2. `src/agent-team-execution/services/agent-team-instance-manager.ts:buildTeamConfigFromDefinition(...)` validates member placement.
+3. For remote member (`homeNodeId` non-local), enforce `workspaceRootPath` presence before config hydration.
+4. During home-node hydration (`buildAgentConfigFromDefinition(...)`), attempt `workspaceId` lookup first.
+5. If `workspaceId` lookup misses and `workspaceRootPath` exists, call `workspaceManager.ensureWorkspaceByRootPath(...)`.
+6. Bind resolved workspace and continue runtime bootstrap.
+
+Fallback path:
+- If `workspaceId` is stale on home node, `workspaceRootPath` fallback restores workspace binding without silent degradation.
+
+Error path:
+- Remote member missing `workspaceRootPath` fails fast with `AgentTeamCreationError` before distributed bootstrap.
+
+## UC-025: Readable Deterministic Team-Member ID Generation
+Coverage: primary=Yes, fallback=N/A, error=Yes
+
+1. `src/api/graphql/types/agent-team-instance.ts:resolveRuntimeMemberConfigs(...)` requests generated ID via `buildTeamMemberAgentId(teamId, memberRouteKey)`.
+2. `src/run-history/utils/team-member-agent-id.ts:normalizeMemberRouteKey(memberRouteKey)` canonicalizes route separators/whitespace.
+3. Build path-safe readable slug from normalized route key:
+   - lowercase,
+   - `/` -> `_`,
+   - non `[a-z0-9_]` collapsed to `_`,
+   - bounded slug length.
+4. Compute deterministic hash suffix from `teamId + normalizedRouteKey` and append as `<slug>_<hash16>`.
+5. Manifest persists this generated `memberAgentId`; canonical member folder path becomes `memory/agent_teams/<teamId>/<memberAgentId>/...`.
+
+Error path:
+- Empty/invalid `teamId` or `memberRouteKey` throws validation error before manifest/runtime creation.
+
+## UC-026: Readable Immutable Team ID Generation
+Coverage: primary=Yes, fallback=N/A, error=Yes
+
+1. Team create/lazy-create resolves team metadata (`teamDefinitionName` fallback to `teamDefinitionId`).
+2. `src/api/graphql/types/agent-team-instance.ts:generateTeamId(teamDefinitionName)` derives `team_name_slug`:
+   - lowercase,
+   - path-safe normalization,
+   - bounded slug length.
+3. Team ID is created as `<team_name_slug>_<id8>`.
+4. That `teamId` is used consistently for:
+   - runtime team instance creation,
+   - manifest path (`agent_teams/<teamId>/team_run_manifest.json`),
+   - member folder root (`agent_teams/<teamId>/<memberAgentId>`),
+   - distributed bootstrap/run bindings,
+   - continuation/delete/projection routing.
+5. Once created, `teamId` is never recomputed from mutable team name fields.
+
+Error path:
+- Empty/invalid team-name slug input falls back to `team` base slug; creation still yields valid `teamId`.

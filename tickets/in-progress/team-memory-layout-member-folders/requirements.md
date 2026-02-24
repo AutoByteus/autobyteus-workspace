@@ -26,6 +26,15 @@ This requirements file is intended to become source material for docs and implem
 2. Team run identity: `teamId`
 3. Team member persistence/runtime identity: `memberAgentId`
 4. Nested routing identity: `memberRouteKey`
+5. Team member folder naming contract for generated IDs:
+   - `memberAgentId = <route_slug>_<hash16>`
+   - `route_slug` derives from normalized `memberRouteKey` with path-safe normalization (`a-z0-9_`, `/` folded to `_`).
+   - `hash16` is deterministic from `teamId + normalized memberRouteKey`.
+6. Team folder naming contract for generated IDs:
+   - `teamId = <team_name_slug>_<id8>`
+   - `team_name_slug` derives from resolved team definition name (fallback: `teamDefinitionId`) with path-safe normalization.
+   - `id8` is a random hex suffix generated once at creation for collision resistance.
+   - `teamId` is immutable after creation and remains the canonical cross-node/runtime/history identity.
 
 ## Normative Memory Contract
 
@@ -91,8 +100,8 @@ Example node: `node_local`
 Example team id: `team_cls_a12f9031`
 
 Members:
-1. `professor` -> `member_aa01`
-2. `student` -> `member_bb02`
+1. `professor` -> `professor_aa01`
+2. `student` -> `student_bb02`
 
 ### Case A Directory Tree (Same Node)
 ```text
@@ -100,11 +109,11 @@ memory/
   agent_teams/
     team_cls_a12f9031/
       team_run_manifest.json
-      member_aa01/
+      professor_aa01/
         run_manifest.json
         working_context_snapshot.json
         raw_traces.jsonl
-      member_bb02/
+      student_bb02/
         run_manifest.json
         working_context_snapshot.json
         raw_traces.jsonl
@@ -113,7 +122,7 @@ memory/
 ### Case A Rules
 1. Both members are persisted under the same team folder.
 2. `team_run_manifest.json` must bind both route keys to their member IDs.
-3. `memory/agents/member_aa01` and `memory/agents/member_bb02` are not canonical targets for team-member persistence.
+3. `memory/agents/professor_aa01` and `memory/agents/student_bb02` are not canonical targets for team-member persistence.
 
 ## Case A2: Team Local-Only With Nested Sub-Team
 Example team id: `team_research_55d11be0`
@@ -125,10 +134,10 @@ Canonical route keys:
 4. `writer`
 
 Resolved member IDs:
-1. `member_c001`
-2. `member_a002`
-3. `member_r003`
-4. `member_w004`
+1. `coordinator_c001`
+2. `analysis_subteam_analyst_a002`
+3. `analysis_subteam_reviewer_r003`
+4. `writer_w004`
 
 ### Case A2 Directory Tree (Nested Routes, Flat Member Folders)
 ```text
@@ -136,19 +145,19 @@ memory/
   agent_teams/
     team_research_55d11be0/
       team_run_manifest.json
-      member_c001/
+      coordinator_c001/
         run_manifest.json
         working_context_snapshot.json
         raw_traces.jsonl
-      member_a002/
+      analysis_subteam_analyst_a002/
         run_manifest.json
         working_context_snapshot.json
         raw_traces.jsonl
-      member_r003/
+      analysis_subteam_reviewer_r003/
         run_manifest.json
         working_context_snapshot.json
         raw_traces.jsonl
-      member_w004/
+      writer_w004/
         run_manifest.json
         working_context_snapshot.json
         raw_traces.jsonl
@@ -163,10 +172,10 @@ memory/
 Example team id: `team_dist_2ef75d44`
 
 Member placement:
-1. `professor` (`member_p111`) on `node_a`
-2. `scribe` (`member_s222`) on `node_a`
-3. `lab_subteam/analyst` (`member_l333`) on `node_b`
-4. `lab_subteam/reviewer` (`member_l444`) on `node_b`
+1. `professor` (`professor_p111`) on `node_a`
+2. `scribe` (`scribe_s222`) on `node_a`
+3. `lab_subteam/analyst` (`lab_subteam_analyst_l333`) on `node_b`
+4. `lab_subteam/reviewer` (`lab_subteam_reviewer_l444`) on `node_b`
 
 ### Case B Host Node A Layout
 ```text
@@ -174,11 +183,11 @@ memory/
   agent_teams/
     team_dist_2ef75d44/
       team_run_manifest.json
-      member_p111/
+      professor_p111/
         run_manifest.json
         working_context_snapshot.json
         raw_traces.jsonl
-      member_s222/
+      scribe_s222/
         run_manifest.json
         working_context_snapshot.json
         raw_traces.jsonl
@@ -189,11 +198,11 @@ memory/
 memory/
   agent_teams/
     team_dist_2ef75d44/
-      member_l333/
+      lab_subteam_analyst_l333/
         run_manifest.json
         working_context_snapshot.json
         raw_traces.jsonl
-      member_l444/
+      lab_subteam_reviewer_l444/
         run_manifest.json
         working_context_snapshot.json
         raw_traces.jsonl
@@ -210,10 +219,10 @@ memory/
 Example team id: `team_dist_mixed_7ac93b01`
 
 Member placement:
-1. `professor` (`member_p901`) on `node_a`
-2. `scribe` (`member_s902`) on `node_b`
-3. `lab_subteam/analyst` (`member_l903`) on `node_b`
-4. `lab_subteam/reviewer` (`member_l904`) on `node_b`
+1. `professor` (`professor_p901`) on `node_a`
+2. `scribe` (`scribe_s902`) on `node_b`
+3. `lab_subteam/analyst` (`lab_subteam_analyst_l903`) on `node_b`
+4. `lab_subteam/reviewer` (`lab_subteam_reviewer_l904`) on `node_b`
 
 ### Case B2 Host Node A Layout
 ```text
@@ -221,7 +230,7 @@ memory/
   agent_teams/
     team_dist_mixed_7ac93b01/
       team_run_manifest.json
-      member_p901/
+      professor_p901/
         run_manifest.json
         working_context_snapshot.json
         raw_traces.jsonl
@@ -232,15 +241,15 @@ memory/
 memory/
   agent_teams/
     team_dist_mixed_7ac93b01/
-      member_s902/
+      scribe_s902/
         run_manifest.json
         working_context_snapshot.json
         raw_traces.jsonl
-      member_l903/
+      lab_subteam_analyst_l903/
         run_manifest.json
         working_context_snapshot.json
         raw_traces.jsonl
-      member_l904/
+      lab_subteam_reviewer_l904/
         run_manifest.json
         working_context_snapshot.json
         raw_traces.jsonl
@@ -255,9 +264,9 @@ memory/
 Example team id: `team_dist_manifest_only_31c4fd99`
 
 Member placement:
-1. `coordinator` (`member_c111`) on `node_b`
-2. `scribe` (`member_s112`) on `node_b`
-3. `reviewer` (`member_r113`) on `node_c`
+1. `coordinator` (`coordinator_c111`) on `node_b`
+2. `scribe` (`scribe_s112`) on `node_b`
+3. `reviewer` (`reviewer_r113`) on `node_c`
 
 ### Case B3 Host Node A Layout
 ```text
@@ -272,11 +281,11 @@ memory/
 memory/
   agent_teams/
     team_dist_manifest_only_31c4fd99/
-      member_c111/
+      coordinator_c111/
         run_manifest.json
         working_context_snapshot.json
         raw_traces.jsonl
-      member_s112/
+      scribe_s112/
         run_manifest.json
         working_context_snapshot.json
         raw_traces.jsonl
@@ -287,7 +296,7 @@ memory/
 memory/
   agent_teams/
     team_dist_manifest_only_31c4fd99/
-      member_r113/
+      reviewer_r113/
         run_manifest.json
         working_context_snapshot.json
         raw_traces.jsonl
@@ -302,10 +311,10 @@ memory/
 Example team id: `team_dist_nested_9e0436d2`
 
 Placement:
-1. `coordinator` (`member_c901`) on `node_a`
-2. `planner_subteam/planner` (`member_p902`) on `node_b`
-3. `planner_subteam/executor` (`member_e903`) on `node_c`
-4. `reporter` (`member_r904`) on `node_a`
+1. `coordinator` (`coordinator_c901`) on `node_a`
+2. `planner_subteam/planner` (`planner_subteam_planner_p902`) on `node_b`
+3. `planner_subteam/executor` (`planner_subteam_executor_e903`) on `node_c`
+4. `reporter` (`reporter_r904`) on `node_a`
 
 ### Case C Node A
 ```text
@@ -313,11 +322,11 @@ memory/
   agent_teams/
     team_dist_nested_9e0436d2/
       team_run_manifest.json
-      member_c901/
+      coordinator_c901/
         run_manifest.json
         working_context_snapshot.json
         raw_traces.jsonl
-      member_r904/
+      reporter_r904/
         run_manifest.json
         working_context_snapshot.json
         raw_traces.jsonl
@@ -328,7 +337,7 @@ memory/
 memory/
   agent_teams/
     team_dist_nested_9e0436d2/
-      member_p902/
+      planner_subteam_planner_p902/
         run_manifest.json
         working_context_snapshot.json
         raw_traces.jsonl
@@ -339,7 +348,7 @@ memory/
 memory/
   agent_teams/
     team_dist_nested_9e0436d2/
-      member_e903/
+      planner_subteam_executor_e903/
         run_manifest.json
         working_context_snapshot.json
         raw_traces.jsonl
@@ -351,13 +360,50 @@ memory/
 3. Worker nodes persist only node-local member subtrees.
 4. Cross-node consistency is enforced by shared `teamId`, deterministic `memberAgentId`, and manifest bindings.
 
+## Case E: Distributed Member Definition Identity Resolution (Cross-Node IDs)
+Example mixed placement:
+1. Host node A team definition references:
+   - `professor.reference_id=2` (`homeNodeId=embedded-local`)
+   - `student.reference_id=24` (`homeNodeId=node_b`)
+2. Node A local `agent_definitions` does not contain id `24`.
+3. Node B local `agent_definitions` contains id `24`.
+
+### Case E Rules
+1. Team creation on host must not fail solely because a remote member `referenceId` is not present in host-local `agent_definitions`.
+2. For members whose `homeNodeId` is non-local, host runtime must support proxy-safe member config hydration without requiring host-local definition row parity by numeric ID.
+3. Local members still require strict host-local definition resolution.
+4. Identity/routing for runtime, restore, projection, and delete remains driven by manifest binding (`memberRouteKey`, `memberAgentId`, `hostNodeId`) rather than host-local definition ID parity.
+5. Missing local definition for a local member remains a hard failure.
+
+## Case F: Distributed Workspace Binding Portability (Cross-Node)
+Example mixed placement:
+1. Host node A runs team coordinator and submits team create/lazy-create.
+2. Member `student` is hosted on node B (`homeNodeId=node_b`).
+3. Host-side `workspaceId` may be unknown/invalid on node B.
+
+### Case F Rules
+1. For any remote member (`homeNodeId` is non-local to current node), `workspaceRootPath` is mandatory.
+2. `workspaceId` is node-local metadata only; it is not a cross-node identity contract.
+3. Team creation must fail fast when a remote member omits `workspaceRootPath`, even if `workspaceId` is provided.
+4. On a member's home node, if `workspaceId` lookup fails and `workspaceRootPath` is present, runtime must fall back to `workspaceRootPath` resolution.
+5. Restore/replay consistency remains anchored on manifest workspace-root metadata, not cross-node `workspaceId` parity.
+
 ## Runtime Operation Rules (Read/Write)
 
 ### Create Team Run
-1. Allocate `teamId`.
-2. Resolve deterministic `memberAgentId` for each `memberRouteKey`.
-3. Persist `team_run_manifest.json` under `agent_teams/<teamId>`.
-4. Persist each local member under `agent_teams/<teamId>/<memberAgentId>` on its host node.
+1. Allocate `teamId` using readable generated naming:
+   - `<team_name_slug>_<id8>`, immutable after creation.
+2. Resolve deterministic readable `memberAgentId` for each `memberRouteKey`:
+   - `<route_slug>_<hash16>`.
+3. Resolve distributed ownership (`hostNodeId`) per leaf member route.
+4. Resolve member runtime definition contract:
+   - local members require host-local definition lookup success,
+   - remote members allow proxy-safe hydration when host-local definition row is absent.
+5. Resolve distributed workspace contract:
+   - remote members require explicit `workspaceRootPath`,
+   - `workspaceId` is treated as node-local hint only.
+6. Persist `team_run_manifest.json` under `agent_teams/<teamId>`.
+7. Persist each local member under `agent_teams/<teamId>/<memberAgentId>` on its host node.
 
 ### Append Team Member Memory
 1. Writes for a member append into that member's team subtree on its host node.
@@ -443,6 +489,12 @@ memory/
 12. Final delete success removes manifest/index only after all node partitions report complete cleanup.
 13. Runtime-state drift case (Case D5) blocks delete when any node still reports active runtime for the same `teamId`.
 14. TeamId disambiguation case (Case D6) ensures runtime probe/cleanup guards do not cross-match unrelated teams from the same definition lineage.
+15. Distributed identity mismatch case (Case E) succeeds for remote members even when host-local `agent_definitions` does not contain remote node-local `referenceId`.
+16. Distributed identity mismatch case still fails for local members when host-local definition is missing.
+17. Distributed create fails fast when a remote member provides `workspaceId` without `workspaceRootPath` (Case F).
+18. Home-node runtime falls back to `workspaceRootPath` when `workspaceId` is stale/missing on that node (Case F).
+19. Generated team-member folder names remain human-readable while preserving deterministic uniqueness (`<route_slug>_<hash16>`).
+20. Generated team folder names remain human-readable (`<team_name_slug>_<id8>`) while preserving immutability and cross-node identity consistency.
 
 ## Acceptance Criteria
 1. Requirements explicitly document single-agent memory layout.
@@ -467,6 +519,11 @@ memory/
 20. Requirements define distributed-authoritative inactive precondition before delete finalization.
 21. Requirements define cleanup transport semantics that are `teamId`-scoped and independent of active run envelope identifiers.
 22. Requirements define explicit `teamId` propagation in distributed runtime binding/probe contracts.
+23. Requirements define distributed member-definition resolution behavior for cross-node local-ID mismatch (remote proxy-safe, local strict).
+24. Requirements define distributed workspace portability contract: remote members must provide `workspaceRootPath`; `workspaceId` is node-local hint only.
+25. Requirements define home-node fallback behavior from stale `workspaceId` to `workspaceRootPath`.
+26. Requirements define deterministic readable member-folder naming for operator inspection without weakening identity stability.
+27. Requirements define readable generated team-folder naming with immutable identity semantics.
 
 ## Constraints / Dependencies
 1. Keep identity model stable (`agentId`, `teamId`, `memberAgentId`, `memberRouteKey`).
@@ -476,6 +533,10 @@ memory/
 5. Team history index lifecycle state must be persisted durably across process restarts.
 6. Delete transport contract must remain decoupled from active-run routing abstractions.
 7. Distributed bootstrap/binding schema must carry host `teamId` as first-class field.
+8. Generated `memberAgentId` must stay path-safe and deterministic across nodes.
+9. Generated `teamId` must stay path-safe, collision-resistant, and immutable after creation.
+8. Team creation/hydration path must distinguish local-vs-remote definition resolution requirements by member ownership (`homeNodeId` / placement).
+9. Distributed member workspace contract must remain path-authoritative (`workspaceRootPath`) across nodes.
 
 ## Assumptions
 1. `memberAgentId` generation remains deterministic from `teamId + memberRouteKey`.
@@ -490,6 +551,8 @@ memory/
 5. Crash between node cleanup and host finalization can strand teams in `CLEANUP_PENDING` without retry policy.
 6. If delete flow relies on runtime-envelope identifiers (`teamRunId`/`runVersion`), cleanup may fail for inactive runs lacking active bindings.
 7. If worker runtime binding lacks explicit host `teamId`, inactive-preflight can misclassify active state under same definition lineage.
+8. If host create path requires host-local parity for remote node-local definition IDs, mixed-node teams fail before distributed bootstrap.
+9. If remote-member `workspaceRootPath` is not enforced, distributed runs can silently lose workspace binding on worker nodes due to stale/non-portable `workspaceId`.
 
 ## Decisions Finalized In Design Review
 1. Legacy history policy: explicit legacy cutoff. Pre-canonical team-member data under global `memory/agents/<memberAgentId>` is not part of target support.

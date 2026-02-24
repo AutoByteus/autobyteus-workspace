@@ -1,7 +1,7 @@
 # Proposed Design
 
 ## Design Version
-- Current Version: `v8`
+- Current Version: `v13`
 
 ## Revision History
 | Version | Summary |
@@ -14,6 +14,11 @@
 | v6 | Deep-review update: expanded delete/remove architecture with distributed cleanup matrix coverage (mixed placement, host-manifest-only, nested multi-node), retry/idempotency lifecycle rules, and explicit remote cleanup command path design. |
 | v7 | Deep-review update: corrected delete transport architecture to `teamId`-scoped cleanup RPC (decoupled from runtime team envelopes), added distributed inactive-precondition guard, and closed missing use-case traceability gaps. |
 | v8 | Deep-review update: added explicit host `teamId` propagation and worker run-binding identity requirements so distributed inactive-preflight/cleanup guards remain precise across reruns and shared-definition lineages. |
+| v9 | Re-investigation update: added distributed member-definition identity resolution policy for cross-node local-ID mismatch (`referenceId` present on worker but missing on host), with remote-proxy-safe host hydration requirements and test coverage mapping. |
+| v10 | Workspace portability update: enforce remote-member `workspaceRootPath` requirement and home-node fallback from stale `workspaceId` to `workspaceRootPath` for distributed reliability. |
+| v11 | Naming clarity update: switch generated team-member IDs from opaque `member_<hash>` to readable deterministic `<route_slug>_<hash16>` and validate with unit + E2E coverage. |
+| v12 | Team-folder readability update: generate `teamId` as `<team_name_slug>_<id8>` (immutable after creation), aligned with operator-visible memory layout and distributed identity safety. |
+| v13 | Added explicit role semantics (`registry` vs `host` vs `member home node`) and runtime data-flow diagrams for mixed distributed create, workspace binding, continuation/restore, and nested route flattening. |
 
 ## Summary
 Align runtime persistence with canonical team-scoped memory layout:
@@ -26,6 +31,79 @@ Identity contract remains unchanged:
 - `teamId` for team runs,
 - `memberAgentId` for team members,
 - `memberRouteKey` for nested routing.
+
+## Role Semantics
+1. `registry node`: discovery-directory role only; not automatically runtime host.
+2. `host node`: node that owns active team runtime orchestration for a given `teamId`.
+3. `member home node`: owner/executor node for one member route; persisted as `memberBindings[].hostNodeId`.
+4. `local node`: current backend process (`AUTOBYTEUS_NODE_ID`) evaluating runtime decisions.
+
+## Runtime Data-Flow Diagrams
+
+### Team create (mixed local + remote members)
+
+```mermaid
+flowchart LR
+  UI["UI create/send request"] --> RES["Resolver builds member configs"]
+  RES --> PLACE["Resolve hostNodeId by flattened memberRouteKey"]
+  PLACE --> CFG["Set memberAgentId + memoryDir + workspaceRootPath"]
+  CFG --> HOST["Host createTeamInstanceWithId(teamId, defId, configs)"]
+  HOST --> MANI["Write manifest bindings under agent_teams/teamId"]
+  HOST --> BOOT["Bootstrap worker-owned members"]
+  BOOT --> WORK["Worker createTeamInstanceWithId(teamId, defId, bindings)"]
+```
+
+### Workspace binding behavior
+
+```mermaid
+flowchart TD
+  IN["member config"] --> Q{"member home node is local?"}
+  Q -->|Yes| L["Resolve workspaceId or fallback ensureWorkspaceByRootPath(workspaceRootPath)"]
+  Q -->|No| R["Do not bind local Workspace object on this node"]
+  L --> B["Bind Workspace object for local runtime member"]
+  R --> P["Pass workspaceRootPath for member home-node hydration"]
+```
+
+### Continuation/restore behavior
+
+```mermaid
+flowchart LR
+  H["Load resume manifest"] --> MB["Iterate memberBindings"]
+  MB --> LOC{"hostNodeId local?"}
+  LOC -->|Yes| E["Ensure workspace by workspaceRootPath; set workspaceId"]
+  LOC -->|No| N["workspaceId stays null on this node; keep workspaceRootPath"]
+  E --> C["createTeamInstanceWithId(...)"]
+  N --> C
+  C --> D["Dispatch via local route or distributed envelope by binding owner"]
+```
+
+### Nested distributed ownership
+
+```mermaid
+flowchart LR
+  TREE["Nested team definition"] --> LEAF["Flatten leaf memberRouteKey map"]
+  LEAF --> OWN["Resolve hostNodeId per leaf route"]
+  OWN --> M["Persist route-level manifest bindings"]
+  M --> USE["Create/restore/projection/delete all read same binding map"]
+```
+
+### Delete/cleanup across nodes
+
+```mermaid
+flowchart LR
+  DEL["Delete request: teamId"] --> PRE["Distributed inactive preflight by teamId"]
+  PRE --> ACTIVE{"Any node reports team active?"}
+  ACTIVE -->|Yes| BLOCK["Block delete; return active-runtime conflict"]
+  ACTIVE -->|No| PLAN["Build cleanup plan grouped by hostNodeId from manifest bindings"]
+  PLAN --> HOSTLOCAL["Host deletes host-owned member subtrees"]
+  PLAN --> REMOTE["Host dispatches teamId-scoped cleanup RPCs to worker groups"]
+  REMOTE --> WORKDEL["Worker deletes only local-owned member subtrees (idempotent)"]
+  HOSTLOCAL --> MERGE["Merge node cleanup outcomes"]
+  WORKDEL --> MERGE
+  MERGE --> COMPLETE{"All ownership groups complete?"}
+  COMPLETE -->|Yes| FINAL["Finalize: remove manifest/index and prune team directory"]
+  COMPLETE -->|No| PEND["Persist CLEANUP_PENDING; retry pending node groups"]
+```
 
 ## Current State (As-Is)
 1. `TeamRunManifestStore` persists only `team_run_manifest.json` under team folder in base implementation.
@@ -42,6 +120,7 @@ Identity contract remains unchanged:
 12. `deleteLifecycle` is persisted in index schema but current flow does not transition through durable `CLEANUP_PENDING` retry semantics.
 13. Existing distributed command transport schema is run-envelope based (`teamRunId`, `runVersion`), while history deletion API is keyed by `teamId`; coupling these paths creates identifier/ownership ambiguity for inactive runs.
 14. Worker run-scoped bindings currently do not carry explicit host `teamId`; inactive-preflight keyed by `teamId` cannot be robustly implemented from existing worker binding identity set alone.
+15. Distributed team definition rows can contain remote node-local `referenceId` values (for example worker `24`) that do not exist in host-local `agent_definitions`, but host create path still requires local lookup for every member.
 
 ## Target State (To-Be)
 1. Team member durable artifacts are physically stored under `memory/agent_teams/<teamId>/<memberAgentId>`.
@@ -76,6 +155,10 @@ Identity contract remains unchanged:
 13. Delete transport policy: distributed history cleanup must use dedicated `teamId`-scoped cleanup RPC, not runtime team envelope dispatch.
 14. Inactive precondition policy: delete requires distributed-authoritative inactive verification before cleanup execution.
 15. Runtime-binding identity policy: distributed bootstrap/run-scoped binding contracts must persist host `teamId` as first-class identity on worker nodes.
+16. Distributed definition identity policy: host create/hydration must treat remote-member definition lookup as node-aware and must not hard-fail on host-local absence of remote node-local `referenceId`.
+17. Distributed workspace portability policy: remote members require explicit `workspaceRootPath`; `workspaceId` is node-local hint and may fall back to `workspaceRootPath` on home-node resolution miss.
+18. Member-folder readability policy: generated `memberAgentId` must be deterministic and human-readable (`<route_slug>_<hash16>`), not opaque hash-only.
+19. Team-folder readability policy: generated `teamId` must be human-readable (`<team_name_slug>_<id8>`) and immutable once created.
 
 ## Use Case Set (Design Scope)
 
@@ -103,6 +186,10 @@ Identity contract remains unchanged:
 | UC-020 | Partial-failure delete enters durable retryable lifecycle and supports idempotent replay until completion. |
 | UC-021 | Delete preflight enforces distributed-authoritative inactive verification and blocks cleanup on runtime-state drift. |
 | UC-022 | Distributed runtime bindings preserve host `teamId` identity so preflight and cleanup guards do not cross-match unrelated runs/definitions. |
+| UC-023 | Distributed mixed-node create succeeds when remote member `referenceId` is absent in host-local `agent_definitions` but present on remote node; host uses remote-proxy-safe hydration for remote members while keeping local-member strictness. |
+| UC-024 | Distributed workspace binding is path-authoritative: remote members must provide `workspaceRootPath`, and home-node execution falls back to `workspaceRootPath` when `workspaceId` is stale. |
+| UC-025 | Generated team-member IDs keep deterministic uniqueness while improving operator readability (`<route_slug>_<hash16>`). |
+| UC-026 | Generated team IDs keep operator readability (`<team_name_slug>_<id8>`) while preserving immutable distributed/run-history identity. |
 
 ## Use-Case Coverage Matrix
 
@@ -130,6 +217,10 @@ Identity contract remains unchanged:
 | UC-020 | Yes | Yes | Yes | Repeated delete retries are idempotent and converge to final cleanup completion. |
 | UC-021 | Yes | Yes | Yes | Any active-runtime signal on any node blocks delete until stop/reconciliation completes. |
 | UC-022 | Yes | Yes | Yes | Worker runtime-state probe and cleanup guards resolve by explicit host `teamId` identity. |
+| UC-023 | Yes | Yes | Yes | Host does not require local definition row parity for remote members; local members still fail if host-local definition is missing. |
+| UC-024 | Yes | Yes | Yes | Remote member missing `workspaceRootPath` fails fast; stale `workspaceId` on home node falls back to `workspaceRootPath`. |
+| UC-025 | Yes | N/A | Yes | Route slug normalization keeps IDs path-safe/readable; hash suffix preserves uniqueness and determinism. |
+| UC-026 | Yes | N/A | Yes | Team-name slug normalization keeps IDs path-safe/readable; random suffix provides collision resistance while teamId stays immutable after creation. |
 
 ## Change Inventory
 
@@ -161,6 +252,12 @@ Identity contract remains unchanged:
 | D-024 | Add | `src/run-history/services/team-history-runtime-state-probe-service.ts` | Distributed-authoritative inactive preflight for delete to detect runtime-state drift before cleanup execution. |
 | D-025 | Modify | distributed bootstrap + runtime binding contracts (`bootstrap-payload-normalization.ts`, `remote-envelope-bootstrap-handler.ts`, `run-scoped-team-binding-registry.ts`) | Propagate and persist host `teamId` in worker run bindings for `teamId`-authoritative preflight/cleanup guards. |
 | D-026 | Modify | distributed runtime wiring (`src/app.ts`, distributed runtime composition, node directory URL helpers as needed) | Register/wire dedicated cleanup + runtime-probe routes and host dispatcher endpoints under transport/auth policy. |
+| D-027 | Modify | `src/agent-team-execution/services/agent-team-instance-manager.ts` | Make agent-config hydration node-aware: keep local-member strict definition lookup; allow remote-member proxy-safe hydration when host-local definition row is absent for remote `referenceId`. |
+| D-028 | Modify | `tests/integration/agent-team-execution/agent-team-instance-manager.integration.test.ts` and distributed integration tests | Add explicit regression coverage for mixed-node create with host-missing/worker-present remote definition IDs. |
+| D-029 | Modify | `src/agent-team-execution/services/agent-team-instance-manager.ts` | Enforce remote-member `workspaceRootPath` requirement during distributed create and add home-node fallback from stale `workspaceId` to `workspaceRootPath`. |
+| D-030 | Modify | `tests/integration/agent-team-execution/agent-team-instance-manager.integration.test.ts` | Add regression coverage for remote `workspaceRootPath` required validation and stale `workspaceId` fallback behavior. |
+| D-031 | Modify | `src/run-history/utils/team-member-agent-id.ts`, `tests/unit/run-history/team-member-agent-id.test.ts` | Generate readable deterministic team-member IDs (`<route_slug>_<hash16>`) and lock normalization/format behavior in unit tests. |
+| D-032 | Modify | `src/api/graphql/types/agent-team-instance.ts`, `autobyteus-ts/src/agent-team/factory/agent-team-factory.ts`, `tests/unit/api/graphql/types/agent-team-instance-resolver.test.ts` | Generate readable team IDs as `<team_name_slug>_<id8>` and keep teamId immutable across create/restore/distributed paths. |
 
 ## File/Module Responsibilities (Target)
 
@@ -195,6 +292,13 @@ Identity contract remains unchanged:
 2. Persist `hostNodeId` into team manifest member bindings.
 3. Set canonical per-member `memoryDir` at create/lazy-create time.
 4. Use flattened leaf placement map keyed by canonical `memberRouteKey`.
+
+### `src/agent-team-execution/services/agent-team-instance-manager.ts`
+1. Hydrate local members with strict host-local definition lookup.
+2. For remote members, permit proxy-safe hydration when host-local definition row for remote node-local `referenceId` is missing.
+3. Preserve runtime identity metadata (`memberRouteKey`, `memberAgentId`, `memoryDir`) across strict and proxy hydration paths.
+4. Enforce distributed workspace portability (`workspaceRootPath` required for remote members).
+5. On home-node workspace resolution miss by `workspaceId`, fall back to `workspaceRootPath` when provided.
 
 ### `src/run-history/services/team-run-history-service.ts`
 1. Keep index and manifest lifecycle responsibilities.
@@ -256,6 +360,7 @@ Identity contract remains unchanged:
 9. Distributed inactive-precondition probe must pass before cleanup starts.
 10. Distributed delete retries are idempotent and may re-run safely against already-removed subtrees.
 11. Worker run-scoped binding records must retain host `teamId` identity for preflight and cleanup guard disambiguation.
+12. For distributed members, workspace binding is path-authoritative and must not depend on cross-node `workspaceId` parity.
 
 ## Migration / Cutover Policy
 1. New runs: canonical team-member subtree only.
@@ -282,6 +387,8 @@ Identity contract remains unchanged:
 16. Integration distributed inactive-precondition drift: delete blocked when any node reports active runtime for same `teamId`.
 17. Integration transport contract check: history cleanup RPC works without requiring `teamRunId`/`runVersion`.
 18. Integration identity disambiguation: worker preflight/cleanup guard uses explicit host `teamId` and does not cross-match unrelated team history under same definition lineage.
+19. Integration distributed workspace portability: remote member with missing `workspaceRootPath` fails fast.
+20. Integration workspace fallback: home-node member with stale `workspaceId` and valid `workspaceRootPath` resolves workspace via path.
 
 ## Requirement Traceability
 
@@ -299,6 +406,9 @@ Identity contract remains unchanged:
 | Distributed inactive delete precondition | UC-021, D-024 |
 | Delete transport decoupling from runtime envelopes | UC-017..UC-021, D-020..D-022 |
 | Distributed teamId identity propagation in runtime bindings | UC-022, D-025 |
+| Distributed workspace portability and fallback reliability | UC-024, D-029, D-030 |
+| Readable deterministic member-folder naming | UC-025, D-031 |
+| Readable immutable team-folder naming | UC-026, D-032 |
 | Restore/read/write/delete operation rules | UC-005..UC-008, UC-011, UC-017..UC-022, D-004..D-007, D-018..D-026 |
 | Workspace-binding metadata integrity | UC-013, D-005 |
 | Docs-quality detail for promotion | UC-010, D-012 |
