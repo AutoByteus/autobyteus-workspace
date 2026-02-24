@@ -114,6 +114,32 @@ Canonical contract: team-member persistence under `memory/agent_teams/<teamId>/<
 4. Update/extend `autobyteus-ts` unit/integration tests to lock the explicit-memory contract.
 5. Sync ticket requirements/design/call-stack/review/progress artifacts after verification.
 
+### WS-11: Resolver/Application Orchestration Split
+1. Add `src/agent-team-execution/services/team-runtime-bootstrap-application-service.ts`.
+2. Move team create/lazy-create preparation from resolver into service:
+- teamId generation,
+- placement-aware member-config shaping (`hostNodeId`, `memberAgentId`, `memoryDir`),
+- manifest-input assembly.
+3. Keep resolver as GraphQL boundary only (input conversion, service delegation, response mapping).
+4. Preserve GraphQL API shape and error semantics.
+
+### WS-12: Team Manager Hydration Split
+1. Add `src/agent-team-execution/services/team-member-config-hydration-service.ts`.
+2. Move member-definition + processor/tool/skill/workspace hydration logic from `agent-team-instance-manager.ts`.
+3. Keep `agent-team-instance-manager.ts` focused on runtime lifecycle registry and team start/stop/list orchestration.
+4. Preserve local-strict/remote-proxy resolution policy and workspace portability rules.
+
+### WS-13: Distributed Runtime Composition Modularization
+1. Add `src/distributed/bootstrap/distributed-runtime-composition-factory.ts` with explicit dependency assembly responsibility.
+2. Move bootstrap/definition-reconciliation/routing-binding helper logic from `default-distributed-runtime-composition.ts` into focused helper modules.
+3. Keep exported composition API stable (`getDefaultDistributedRuntimeComposition`, ingress/event getter helpers).
+
+### WS-14: Run-History Command/Query Split
+1. Add `src/run-history/services/team-run-history-query-service.ts` and `src/run-history/services/team-run-history-command-service.ts`.
+2. Move read/list logic into query service and mutation/delete/lifecycle logic into command service.
+3. Keep `team-run-history-service.ts` as stable facade delegating to command/query services.
+4. Preserve delete preflight/coordinator behavior and lifecycle semantics.
+
 ## Verification Checklist
 1. Unit tests for layout store path helpers/safety checks.
 2. Unit tests for projection reader local + error branches.
@@ -129,6 +155,9 @@ Canonical contract: team-member persistence under `memory/agent_teams/<teamId>/<
 12. Verify generated member folders are human-readable in team directories while retaining deterministic restore compatibility.
 13. Verify generated team folders are human-readable while preserving distributed identity continuity.
 14. Verify explicit runtime `memoryDir` always writes directly to leaf directory without extra `agents/<agentId>` nesting.
+15. Verify GraphQL create/lazy-create/terminate/send responses are unchanged after resolver orchestration split.
+16. Verify distributed bootstrap/routing behavior is unchanged after runtime-composition modularization.
+17. Verify run-history list/resume/delete behaviors are unchanged after command/query split.
 
 ## Sequence
 1. WS-1
@@ -145,3 +174,7 @@ Canonical contract: team-member persistence under `memory/agent_teams/<teamId>/<
 12. WS-8
 13. WS-9
 14. WS-10
+15. WS-11
+16. WS-12
+17. WS-13
+18. WS-14

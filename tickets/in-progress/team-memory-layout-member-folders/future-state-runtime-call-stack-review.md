@@ -585,3 +585,52 @@ Status: `Go Confirmed`
 
 ### Verdict
 - `Go Confirmed` (deep review, worker-locality + member-manifest contract cycle)
+
+## Deep Review Round 41 (Blocking Re-Entry)
+Status: `No-Go`
+
+### Findings
+1. Blocking: `agent-team-instance.ts` still mixes GraphQL boundary concerns with placement planning, manifest assembly, workspace-root derivation, and team create orchestration.
+2. Blocking: `agent-team-instance-manager.ts` still mixes runtime lifecycle registry concerns with member-definition/workspace/processor hydration policy.
+3. Blocking: `default-distributed-runtime-composition.ts` still concentrates dependency assembly and bootstrap/reconciliation/routing helper policy in one file, reducing compositional clarity.
+4. Blocking: `team-run-history-service.ts` still combines query/list concerns with command/delete/lifecycle mutation concerns.
+5. Blocking: requirements/design/call-stack did not yet capture this refactor boundary contract as an explicit use case and change inventory scope.
+
+### Required Write-Backs
+1. Update requirements with explicit SoC refactor boundary rules and acceptance criteria (no behavior drift).
+2. Update proposed design with refactor-focused decisions, use case coverage (`UC-030`), and change inventory for module splits.
+3. Update future-state call stack with refactor boundary contract and new UC for parity-gated concern separation.
+4. Update implementation plan with dedicated refactor workstreams and parity verification gates.
+5. Update investigation notes with hotspot evidence and decomposition direction.
+
+### Write-Backs Applied
+- Updated `/Users/normy/autobyteus_org/autobyteus-workspace/tickets/in-progress/team-memory-layout-member-folders/requirements.md`.
+- Updated `/Users/normy/autobyteus_org/autobyteus-workspace/tickets/in-progress/team-memory-layout-member-folders/proposed-design.md` to `v16`.
+- Updated `/Users/normy/autobyteus_org/autobyteus-workspace/tickets/in-progress/team-memory-layout-member-folders/future-state-runtime-call-stack.md` to `v15`.
+- Updated `/Users/normy/autobyteus_org/autobyteus-workspace/tickets/in-progress/team-memory-layout-member-folders/implementation-plan.md`.
+- Updated `/Users/normy/autobyteus_org/autobyteus-workspace/tickets/in-progress/team-memory-layout-member-folders/investigation-notes.md`.
+
+## Deep Review Round 42 (Clean Round 1)
+Status: `Candidate Go`
+
+### Criteria Check
+1. Use-case coverage now explicitly includes SoC parity gate (`UC-030`): Pass
+2. Requirements now include boundary-specific acceptance criteria for resolver, runtime composition, and run-history split: Pass
+3. Design now maps concrete file/module refactor slices (`D-036..D-040`) with ownership clarity: Pass
+4. Future-state call stack now records boundary refactor contract without changing UC-001..UC-029 behavior: Pass
+5. Implementation plan now contains executable refactor workstreams + parity checks: Pass
+
+### Notes
+- No blocking findings.
+- No required write-backs.
+
+## Deep Review Round 43 (Clean Round 2)
+Status: `Go Confirmed`
+
+### Re-Check
+1. Round 41 blockers remain resolved in artifacts: Pass
+2. Two consecutive clean rounds achieved after write-backs: Pass
+3. Refactor scope is now implementation-ready with explicit no-behavior-drift guardrails: Pass
+
+### Verdict
+- `Go Confirmed` (deep review, separation-of-concerns refactor-planning cycle)

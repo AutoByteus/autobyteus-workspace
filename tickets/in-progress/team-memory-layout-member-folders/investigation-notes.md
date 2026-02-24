@@ -425,3 +425,55 @@ The core runtime contract for explicit `memoryDir` was never formalized; team-sp
    - `pnpm -C autobyteus-server-ts test tests/e2e/run-history/team-run-restore-distributed-process-graphql.e2e.test.ts --reporter=dot` -> passed (host manifest-only + worker local member manifest assertion).
 4. Full backend regression:
    - `pnpm -C autobyteus-server-ts test --reporter=dot` -> passed (`303` files passed, `3` skipped; `1191` tests passed, `7` skipped).
+
+## Re-Investigation Checkpoint (2026-02-24) - Separation-Of-Concerns Hotspot Audit
+
+### Sources Consulted
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/api/graphql/types/agent-team-instance.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/agent-team-execution/services/agent-team-instance-manager.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/bootstrap/default-distributed-runtime-composition.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/run-history/services/team-run-history-service.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/tickets/in-progress/team-memory-layout-member-folders/requirements.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/tickets/in-progress/team-memory-layout-member-folders/proposed-design.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/tickets/in-progress/team-memory-layout-member-folders/future-state-runtime-call-stack.md`
+
+### Evidence
+1. Hotspot file sizes are still high and cross-cutting:
+   - `agent-team-instance.ts` (`693` lines),
+   - `agent-team-instance-manager.ts` (`732` lines),
+   - `default-distributed-runtime-composition.ts` (`643` lines),
+   - `team-run-history-service.ts` (`406` lines).
+2. `agent-team-instance.ts` mixes GraphQL boundary concerns with:
+   - nested team-definition traversal,
+   - distributed placement planning,
+   - workspace-root derivation,
+   - team manifest assembly,
+   - runtime member config shaping.
+3. `agent-team-instance-manager.ts` mixes:
+   - runtime lifecycle registry/cache ownership,
+   - member definition resolution policy,
+   - processor/tool/skill hydration,
+   - workspace fallback policy,
+   - recursive team-definition hydration.
+4. `default-distributed-runtime-composition.ts` mixes:
+   - dependency/container wiring,
+   - bootstrap payload resolution,
+   - worker definition reconciliation,
+   - remote bootstrap dispatch policy,
+   - host runtime routing-port binding.
+5. `team-run-history-service.ts` mixes:
+   - list/read query responsibilities,
+   - upsert + member run-manifest materialization,
+   - distributed delete preflight + lifecycle transitions + finalization.
+
+### Implication
+Functional coverage is strong, but these mixed-concern hotspots raise change risk for future distributed/team-memory iterations. Small behavior changes can still require edits across oversized files with too many reasons to change.
+
+### Design Direction
+1. Keep behavior contracts from UC-001..UC-029 unchanged.
+2. Add a refactor-only architecture slice that isolates application orchestration from boundary/adaptor files.
+3. Split hotspot responsibilities into focused modules:
+   - resolver orchestration extraction,
+   - manager hydration extraction,
+   - runtime composition assembly extraction,
+   - run-history command/query split.

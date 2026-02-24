@@ -224,3 +224,22 @@
   - `pnpm -C autobyteus-server-ts test --reporter=dot` (306 files: 303 passed, 3 skipped; 1198 tests: 1191 passed, 7 skipped).
 - [x] Additional core-suite check:
   - `pnpm -C autobyteus-ts exec vitest tests/integration/agent tests/integration/agent-team --reporter=dot` shows existing external/live integration instability and auth-dependent failures unrelated to this ticket (for example missing `approved-tool-invocation-event-handler` import in runtime integration test and live-provider auth failures in Claude/Gemini tests).
+
+## 2026-02-24 (Separation-Of-Concerns Refactor Planning Re-Entry)
+- [x] Re-investigated architecture hotspots for concern mixing:
+  - resolver orchestration concentration in `agent-team-instance.ts`,
+  - hydration policy concentration in `agent-team-instance-manager.ts`,
+  - assembly+policy concentration in `default-distributed-runtime-composition.ts`,
+  - query+command concentration in `team-run-history-service.ts`.
+- [x] Updated requirements with explicit SoC boundary rules and acceptance criteria (`no behavior drift` guardrail).
+- [x] Updated proposed design to `v16` with:
+  - `UC-030` refactor parity use case,
+  - `D-036..D-040` change inventory for module decomposition,
+  - expanded target module responsibilities for resolver/application, manager/hydration, composition factory, and run-history command/query split.
+- [x] Updated future-state runtime call stack to `v15` with refactor-boundary contract and UC-030.
+- [x] Updated implementation plan with WS-11..WS-14 refactor workstreams and parity verification checkpoints.
+- [x] Completed deep review re-entry loop with stable gate:
+  - Round 41 `No-Go` (blocking SoC findings),
+  - Round 42 `Candidate Go`,
+  - Round 43 `Go Confirmed`.
+- [ ] Implementation of WS-11..WS-14 not started yet (planning gate completed; execution pending).

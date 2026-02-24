@@ -1,7 +1,7 @@
 # Proposed Design
 
 ## Design Version
-- Current Version: `v15`
+- Current Version: `v16`
 
 ## Revision History
 | Version | Summary |
@@ -21,6 +21,7 @@
 | v13 | Added explicit role semantics (`registry` vs `host` vs `member home node`) and runtime data-flow diagrams for mixed distributed create, workspace binding, continuation/restore, and nested route flattening. |
 | v14 | Core-memory contract cleanup: explicit `memoryDir` is authoritative leaf memory path; removed team-identity-driven layout branching from runtime factory design. |
 | v15 | Worker bootstrap correctness update: skip non-local coordinator initialization to prevent foreign-member materialization on worker nodes; add per-member `run_manifest.json` persistence for node-local bindings on host and worker paths. |
+| v16 | Separation-of-concerns refactor planning update: split resolver orchestration, manager hydration, distributed runtime composition assembly, and team-run-history command/query responsibilities without changing behavior contracts. |
 
 ## Summary
 Align runtime persistence with canonical team-scoped memory layout:
@@ -164,6 +165,10 @@ flowchart LR
 20. Runtime memory contract policy: when explicit `memoryDir` is supplied to runtime agent creation/restore, it is treated as final leaf directory; no additional `agents/<agentId>` suffixing is permitted.
 21. Worker bootstrap locality policy: worker runtime must not initialize coordinator/member agents that are non-local to that worker node.
 22. Member run-manifest policy: each node persists `run_manifest.json` only for member bindings local to that node.
+23. Resolver boundary policy: GraphQL resolver files keep transport/schema concerns and delegate create/manifest/placement orchestration to dedicated application services.
+24. Team-manager boundary policy: member-config hydration and definition/workspace resolution policies are extracted from runtime lifecycle registry concerns.
+25. Distributed composition boundary policy: dependency assembly is isolated from bootstrap/definition-reconciliation/routing-bind policy helpers.
+26. Run-history boundary policy: query/list APIs are separable from command paths (`upsert`, `delete`, lifecycle transitions).
 
 ## Use Case Set (Design Scope)
 
@@ -198,6 +203,7 @@ flowchart LR
 | UC-027 | Runtime explicit-memory contract is uniform: explicit `memoryDir` always maps to leaf memory files without team-identity-specific branching in core factory logic. |
 | UC-028 | Worker bootstrap must skip non-local coordinator initialization so worker nodes never materialize host-owned members. |
 | UC-029 | Team-member `run_manifest.json` is persisted per local member binding (host and worker) and never for foreign-node members. |
+| UC-030 | Refactor keeps runtime behavior stable while separating resolver/application, manager/hydration, runtime-composition assembly, and run-history command/query concerns. |
 
 ## Use-Case Coverage Matrix
 
@@ -232,6 +238,7 @@ flowchart LR
 | UC-027 | Yes | N/A | Yes | Explicit `memoryDir` path contract is enforced for create/restore and validated by runtime/store tests. |
 | UC-028 | Yes | N/A | Yes | Worker coordinator bootstrap is locality-aware and skips non-local coordinator members to prevent foreign-member memory writes. |
 | UC-029 | Yes | N/A | Yes | Member `run_manifest.json` is persisted only for local bindings and excluded for remote bindings on each node. |
+| UC-030 | Yes | N/A | Yes | Refactor preserves existing GraphQL/runtime behavior while reducing reasons-to-change per module and improving dependency direction clarity. |
 
 ## Change Inventory
 
@@ -272,6 +279,11 @@ flowchart LR
 | D-033 | Modify | `autobyteus-ts/src/agent/factory/agent-factory.ts`, `autobyteus-server-ts/src/agent-execution/services/agent-instance-manager.ts`, `autobyteus-ts/tests/unit/agent/factory/agent-factory.test.ts`, `autobyteus-ts/tests/integration/agent/working-context-snapshot-restore-flow.test.ts` | Enforce explicit-`memoryDir`-is-leaf contract and remove team-identity-based layout switching from core runtime factory. |
 | D-034 | Modify | `autobyteus-server-ts/src/agent-team-execution/services/agent-team-instance-manager.ts`, `autobyteus-ts/src/agent-team/bootstrap-steps/coordinator-initialization-step.ts`, `autobyteus-ts/tests/unit/agent-team/bootstrap-steps/coordinator-initialization-step.test.ts` | Add member placement metadata and make coordinator bootstrap locality-aware so non-local coordinators are skipped on worker nodes. |
 | D-035 | Add/Modify | `autobyteus-server-ts/src/run-history/store/team-member-run-manifest-store.ts`, `autobyteus-server-ts/src/run-history/services/team-run-history-service.ts`, `autobyteus-server-ts/src/distributed/bootstrap/remote-envelope-bootstrap-handler.ts`, run-history/distributed tests | Persist per-member `run_manifest.json` for local bindings on host and worker, and enforce no foreign-node member manifest materialization. |
+| D-036 | Add | `src/agent-team-execution/services/team-runtime-bootstrap-application-service.ts` | Own team create/lazy-create preparation pipeline (teamId generation, placement-aware member config shaping, manifest assembly input) and remove this orchestration from GraphQL resolver files. |
+| D-037 | Add | `src/agent-team-execution/services/team-member-config-hydration-service.ts` | Own member definition resolution, processor/tool/skill/workspace hydration, and `AgentConfig` construction policy currently mixed inside `agent-team-instance-manager.ts`. |
+| D-038 | Add | `src/distributed/bootstrap/distributed-runtime-composition-factory.ts` + helper modules | Split dependency/container assembly from bootstrap/definition-reconciliation/routing-binding policy helpers currently concentrated in `default-distributed-runtime-composition.ts`. |
+| D-039 | Add | `src/run-history/services/team-run-history-command-service.ts` and `src/run-history/services/team-run-history-query-service.ts` | Separate command mutations (`upsert`, `delete`, lifecycle transitions) from query/read concerns (`list`, `resume-config`) to reduce mixed responsibilities in `team-run-history-service.ts`. |
+| D-040 | Modify | affected unit/integration/e2e suites for resolver, distributed bootstrap, and run-history flows | Lock behavior parity for UC-001..UC-029 while applying structural SoC refactor; verify no GraphQL contract or memory-layout regression. |
 
 ## File/Module Responsibilities (Target)
 
@@ -302,12 +314,22 @@ flowchart LR
 5. Set per-member canonical `memoryDir` for runtime restore configs.
 
 ### `src/api/graphql/types/agent-team-instance.ts`
-1. Resolve effective per-member placement (`hostNodeId`) for local and nested members.
-2. Persist `hostNodeId` into team manifest member bindings.
-3. Set canonical per-member `memoryDir` at create/lazy-create time.
-4. Use flattened leaf placement map keyed by canonical `memberRouteKey`.
+1. Keep GraphQL transport/schema boundary for query/mutation inputs/outputs.
+2. Delegate team create/lazy-create preparation to `team-runtime-bootstrap-application-service`.
+3. Delegate continuation/history updates to run-history/continuation services without embedding placement/manifest construction logic.
+
+### `src/agent-team-execution/services/team-runtime-bootstrap-application-service.ts` (new)
+1. Generate immutable readable `teamId`.
+2. Resolve flattened route-key placement and per-member runtime config (`hostNodeId`, `memberAgentId`, `memoryDir`).
+3. Build `TeamRunManifest` input and return creation payload to resolver/manager.
+4. Keep create/lazy-create orchestration in one application service.
 
 ### `src/agent-team-execution/services/agent-team-instance-manager.ts`
+1. Own runtime lifecycle registry/cache and team instance start/stop/list APIs.
+2. Delegate member hydration policy to `team-member-config-hydration-service`.
+3. Keep recursive team-config composition orchestration with minimal policy logic in-manager.
+
+### `src/agent-team-execution/services/team-member-config-hydration-service.ts` (new)
 1. Hydrate local members with strict host-local definition lookup.
 2. For remote members, permit proxy-safe hydration when host-local definition row for remote node-local `referenceId` is missing.
 3. Preserve runtime identity metadata (`memberRouteKey`, `memberAgentId`, `memoryDir`) across strict and proxy hydration paths.
@@ -321,11 +343,18 @@ flowchart LR
 2. Must not inspect team-specific custom-data fields to decide storage shape.
 
 ### `src/run-history/services/team-run-history-service.ts`
-1. Keep index and manifest lifecycle responsibilities.
-2. Enforce canonical path policy for team-member history flows.
+1. Keep backward-compatible facade for existing callers during refactor cutover.
+2. Delegate query/read operations to `team-run-history-query-service`.
+3. Delegate command/mutation operations to `team-run-history-command-service`.
+
+### `src/run-history/services/team-run-history-query-service.ts` (new)
+1. Own `listTeamRunHistory` and resume-config read paths.
+2. Compose manifest/index/runtime-state read models without mutation side effects.
+
+### `src/run-history/services/team-run-history-command-service.ts` (new)
+1. Own `upsertTeamRunHistoryRow`, `onTeamEvent`, `onTeamTerminated`, and `deleteTeamRunHistory`.
+2. Keep lifecycle mutation policy (`READY`/`CLEANUP_PENDING`) and delete preflight/coordinator orchestration.
 3. Surface explicit errors for legacy non-canonical team-member data.
-4. Delegate distributed delete execution to delete coordinator and persist lifecycle transitions.
-5. Block delete when distributed inactive-precondition probe reports active runtime drift.
 
 ### `src/run-history/services/team-run-history-delete-coordinator-service.ts` (new)
 1. Input: team manifest + local node identity + delete request context.
@@ -368,6 +397,11 @@ flowchart LR
 2. Wire host-side dispatcher/probe clients through shared auth + node directory policy.
 3. Keep history cleanup transport separate from runtime command envelope route.
 
+### `src/distributed/bootstrap/distributed-runtime-composition-factory.ts` (new)
+1. Own runtime dependency assembly and returned composition object.
+2. Delegate bootstrap payload/definition reconciliation policy to focused helper modules.
+3. Delegate routing-port binding helpers to focused host-runtime adapter module.
+
 ## Distributed Design Rules
 1. Shared `teamId` across participating nodes.
 2. Host node stores manifest and host-local member subtrees.
@@ -409,6 +443,9 @@ flowchart LR
 18. Integration identity disambiguation: worker preflight/cleanup guard uses explicit host `teamId` and does not cross-match unrelated team history under same definition lineage.
 19. Integration distributed workspace portability: remote member with missing `workspaceRootPath` fails fast.
 20. Integration workspace fallback: home-node member with stale `workspaceId` and valid `workspaceRootPath` resolves workspace via path.
+21. Unit/integration parity: refactor extracts services/modules without changing GraphQL responses for create/lazy-create/terminate/send.
+22. Integration parity: distributed bootstrap/remote routing behavior remains unchanged after composition-module split.
+23. Integration parity: run-history list/resume/delete behavior is unchanged after command/query split.
 
 ## Requirement Traceability
 
@@ -431,6 +468,7 @@ flowchart LR
 | Readable immutable team-folder naming | UC-026, D-032 |
 | Worker bootstrap locality safety for distributed members | UC-028, D-034 |
 | Per-member run manifest persistence by node ownership | UC-029, D-035 |
+| Separation-of-concerns hardening without behavior drift | UC-030, D-036..D-040 |
 | Restore/read/write/delete operation rules | UC-005..UC-008, UC-011, UC-017..UC-022, D-004..D-007, D-018..D-026 |
 | Workspace-binding metadata integrity | UC-013, D-005 |
 | Docs-quality detail for promotion | UC-010, D-012 |

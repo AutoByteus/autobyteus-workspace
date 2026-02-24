@@ -517,6 +517,7 @@ Example mixed placement:
 18. Home-node runtime falls back to `workspaceRootPath` when `workspaceId` is stale/missing on that node (Case F).
 19. Generated team-member folder names remain human-readable while preserving deterministic uniqueness (`<route_slug>_<hash16>`).
 20. Generated team folder names remain human-readable (`<team_name_slug>_<id8>`) while preserving immutability and cross-node identity consistency.
+21. Refactor keeps UC-001..UC-020 runtime behavior unchanged while separating resolver/application/runtime-wiring/history concerns into dedicated modules.
 
 ## Acceptance Criteria
 1. Requirements explicitly document single-agent memory layout.
@@ -546,6 +547,10 @@ Example mixed placement:
 25. Requirements define home-node fallback behavior from stale `workspaceId` to `workspaceRootPath`.
 26. Requirements define deterministic readable member-folder naming for operator inspection without weakening identity stability.
 27. Requirements define readable generated team-folder naming with immutable identity semantics.
+28. Requirements define GraphQL resolver boundary rule: resolver must delegate team create/manifest preparation to application services and avoid direct placement/manifest assembly logic.
+29. Requirements define distributed runtime wiring boundary rule: dependency composition must be separated from bootstrap/definition-reconciliation/routing-binding policies.
+30. Requirements define run-history boundary rule: query/list responsibilities must be separable from delete orchestration and upsert/materialization command paths.
+31. Requirements define refactor safety rule: public GraphQL contracts and canonical memory-layout behavior remain unchanged after concern separation.
 
 ## Constraints / Dependencies
 1. Keep identity model stable (`agentId`, `teamId`, `memberAgentId`, `memberRouteKey`).
@@ -557,8 +562,10 @@ Example mixed placement:
 7. Distributed bootstrap/binding schema must carry host `teamId` as first-class field.
 8. Generated `memberAgentId` must stay path-safe and deterministic across nodes.
 9. Generated `teamId` must stay path-safe, collision-resistant, and immutable after creation.
-8. Team creation/hydration path must distinguish local-vs-remote definition resolution requirements by member ownership (`homeNodeId` / placement).
-9. Distributed member workspace contract must remain path-authoritative (`workspaceRootPath`) across nodes.
+10. Team creation/hydration path must distinguish local-vs-remote definition resolution requirements by member ownership (`homeNodeId` / placement).
+11. Distributed member workspace contract must remain path-authoritative (`workspaceRootPath`) across nodes.
+12. Refactor round must preserve existing GraphQL schema fields and operation names.
+13. Refactor round must preserve distributed transport/auth contracts already used by worker and host processes.
 
 ## Assumptions
 1. `memberAgentId` generation remains deterministic from `teamId + memberRouteKey`.
@@ -575,6 +582,7 @@ Example mixed placement:
 7. If worker runtime binding lacks explicit host `teamId`, inactive-preflight can misclassify active state under same definition lineage.
 8. If host create path requires host-local parity for remote node-local definition IDs, mixed-node teams fail before distributed bootstrap.
 9. If remote-member `workspaceRootPath` is not enforced, distributed runs can silently lose workspace binding on worker nodes due to stale/non-portable `workspaceId`.
+10. If concern separation is partial (half-split files), dependency direction can become less clear and increase regression risk despite passing tests.
 
 ## Decisions Finalized In Design Review
 1. Legacy history policy: explicit legacy cutoff. Pre-canonical team-member data under global `memory/agents/<memberAgentId>` is not part of target support.

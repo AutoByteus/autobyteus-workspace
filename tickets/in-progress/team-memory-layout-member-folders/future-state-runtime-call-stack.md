@@ -1,7 +1,13 @@
 # Future-State Runtime Call Stack
 
 ## Version
-- Current Version: `v14`
+- Current Version: `v15`
+
+## Refactor Boundary Contract (v15)
+1. Runtime behavior for UC-001..UC-029 is unchanged.
+2. Application orchestration frames move out of GraphQL resolver files into dedicated application services.
+3. Distributed runtime composition frames are split into composition assembly and bootstrap/routing policy helper modules.
+4. Run-history mutation and query frames are split into command/query services behind a stable facade.
 
 ## UC-001: Single-Agent Persistence Remains Global-Agent Scoped
 Coverage: primary=Yes, fallback=N/A, error=Yes
@@ -19,16 +25,15 @@ Coverage: primary=Yes, fallback=N/A, error=Yes
 
 1. `src/api/graphql/types/agent-team-instance.ts:sendMessageToTeam(input)`
 2. Branch: lazy-create path (`!teamId` with team definition payload).
-3. `resolveRuntimeMemberConfigs(teamId, memberConfigs)` builds deterministic `memberAgentId` values.
-4. Resolve effective per-member `hostNodeId` placement map at flattened leaf route-key level.
-5. Resolve canonical per-member `memoryDir` under `memory/agent_teams/<teamId>/<memberAgentId>/`.
-6. Persist manifest with populated `memberBindings[].hostNodeId` values.
-7. `src/run-history/services/team-run-history-service.ts:upsertTeamRunHistoryRow(...)`
-8. `src/run-history/store/team-run-manifest-store.ts:writeManifest(teamId, manifest)`
-9. `src/run-history/store/team-member-memory-layout-store.ts:ensureLocalMemberSubtrees(teamId, bindings)`
-10. Ensure `memory/agent_teams/<teamId>/<memberAgentId>/` exists for node-local members.
-11. `src/run-history/store/team-member-run-manifest-store.ts:writeManifest(...)` persists per-member `run_manifest.json` for local bindings.
-12. Runtime dispatch starts with per-member canonical `memoryDir`.
+3. `src/agent-team-execution/services/team-runtime-bootstrap-application-service.ts:prepareLazyCreate(...)`
+4. Prepare deterministic `memberAgentId`, flattened route-key placement, `hostNodeId`, and canonical per-member `memoryDir`.
+5. Build team manifest payload with populated `memberBindings[].hostNodeId` values.
+6. `src/run-history/services/team-run-history-command-service.ts:upsertTeamRunHistoryRow(...)`
+7. `src/run-history/store/team-run-manifest-store.ts:writeManifest(teamId, manifest)`
+8. `src/run-history/store/team-member-memory-layout-store.ts:ensureLocalMemberSubtrees(teamId, bindings)`
+9. Ensure `memory/agent_teams/<teamId>/<memberAgentId>/` exists for node-local members.
+10. `src/run-history/store/team-member-run-manifest-store.ts:writeManifest(...)` persists per-member `run_manifest.json` for local bindings.
+11. Runtime dispatch starts with per-member canonical `memoryDir`.
 
 Error path:
 - Invalid binding (empty route key/member ID) throws before runtime dispatch.
@@ -50,13 +55,14 @@ Error path:
 Coverage: primary=Yes, fallback=Yes, error=Yes
 
 1. Host receives team create/send request.
-2. Host persists `team_run_manifest.json` at `memory/agent_teams/<teamId>/team_run_manifest.json`.
-3. Host creates local member subtrees for bindings where `hostNodeId == host`.
-4. Host persists manifest with explicit `hostNodeId` for all members.
-5. Host sends remote bootstrap command with `teamId`, team-definition snapshot, binding snapshot (including `hostNodeId`, `memberAgentId`, `memoryDir`), run version.
-6. Worker creates only its local member subtrees under `memory/agent_teams/<teamId>/<memberAgentId>/`.
-7. Worker bootstrap writes local member `run_manifest.json` only for bindings whose `hostNodeId` is local.
-8. Worker bootstrap skips coordinator initialization if coordinator binding is non-local to worker node.
+2. `team-runtime-bootstrap-application-service.ts` prepares placement-aware member configs + manifest input.
+3. Host persists `team_run_manifest.json` at `memory/agent_teams/<teamId>/team_run_manifest.json`.
+4. Host creates local member subtrees for bindings where `hostNodeId == host`.
+5. Host persists manifest with explicit `hostNodeId` for all members.
+6. Host sends remote bootstrap command with `teamId`, team-definition snapshot, binding snapshot (including `hostNodeId`, `memberAgentId`, `memoryDir`), run version.
+7. Worker creates only its local member subtrees under `memory/agent_teams/<teamId>/<memberAgentId>/`.
+8. Worker bootstrap writes local member `run_manifest.json` only for bindings whose `hostNodeId` is local.
+9. Worker bootstrap skips coordinator initialization if coordinator binding is non-local to worker node.
 
 Fallback path:
 - Worker unreachable returns explicit distributed create failure.
@@ -115,7 +121,7 @@ Error path:
 ## UC-008: Team Delete Distributed Cleanup
 Coverage: primary=Yes, fallback=Yes, error=Yes
 
-1. `src/run-history/services/team-run-history-service.ts:deleteTeamRunHistory(teamId)`
+1. `src/run-history/services/team-run-history-command-service.ts:deleteTeamRunHistory(teamId)`
 2. Verify team not active.
 3. Load manifest + index row and set lifecycle to `CLEANUP_PENDING`.
 4. `src/run-history/services/team-run-history-delete-coordinator-service.ts:executeDeletePlan(teamId, manifest)`
@@ -443,7 +449,7 @@ Error path:
 ## UC-029: Per-Member Run Manifest Persistence Is Node-Local
 Coverage: primary=Yes, fallback=N/A, error=Yes
 
-1. Host create/lazy-create path calls `team-run-history-service:upsertTeamRunHistoryRow(...)`.
+1. Host create/lazy-create path calls `team-run-history-command-service:upsertTeamRunHistoryRow(...)`.
 2. Service persists `team_run_manifest.json` and local member subtrees.
 3. Service writes local member `run_manifest.json` via `team-member-run-manifest-store`.
 4. Worker remote bootstrap handler writes member `run_manifest.json` only for local bindings.
@@ -451,3 +457,15 @@ Coverage: primary=Yes, fallback=N/A, error=Yes
 
 Error path:
 - Invalid or missing binding identity fields abort per-member run-manifest write for that binding.
+
+## UC-030: Refactor Separation-Of-Concerns Parity Gate
+Coverage: primary=Yes, fallback=N/A, error=Yes
+
+1. GraphQL entrypoints call `team-runtime-bootstrap-application-service` for create/lazy-create preparation.
+2. `agent-team-instance-manager` delegates member hydration policy to `team-member-config-hydration-service`.
+3. Distributed runtime composition is assembled by `distributed-runtime-composition-factory` while bootstrap/routing helpers remain in focused modules.
+4. Run-history facade delegates read flows to `team-run-history-query-service` and mutation flows to `team-run-history-command-service`.
+5. UC-001..UC-029 functional outputs (memory layout, restore/projection/delete semantics, GraphQL API behavior) remain unchanged.
+
+Error path:
+- Any parity mismatch in create/send/terminate/continue/projection/delete flows blocks refactor promotion.
