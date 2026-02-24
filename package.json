@@ -1,6 +1,15 @@
 {
   "name": "autobyteus-workspace",
   "private": true,
+  "scripts": {
+    "verify:android-profile": "bash scripts/verify-android-profile.sh",
+    "android:bootstrap": "bash scripts/android-bootstrap-termux.sh",
+    "android:bootstrap:check": "bash scripts/android-bootstrap-termux.sh --check-only",
+    "android:server:start": "bash scripts/android-run-server-termux.sh",
+    "android:server:start:bg": "bash scripts/android-run-server-termux.sh --background",
+    "android:server:stop": "bash scripts/android-run-server-termux.sh --stop",
+    "android:server:status": "bash scripts/android-run-server-termux.sh --status"
+  },
   "packageManager": "pnpm@10.28.2",
   "pnpm": {
     "onlyBuiltDependencies": [
