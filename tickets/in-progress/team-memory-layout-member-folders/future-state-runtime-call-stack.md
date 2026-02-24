@@ -1,7 +1,7 @@
 # Future-State Runtime Call Stack
 
 ## Version
-- Current Version: `v12`
+- Current Version: `v13`
 
 ## UC-001: Single-Agent Persistence Remains Global-Agent Scoped
 Coverage: primary=Yes, fallback=N/A, error=Yes
@@ -153,8 +153,9 @@ Coverage: primary=Yes, fallback=N/A, error=Yes
 
 1. Team member processes new turn/tool events.
 2. `src/run-history/services/team-run-activity-sink-service.ts` handles activity updates.
-3. Underlying memory append path writes raw traces/snapshots for member into `memory/agent_teams/<teamId>/<memberAgentId>/...`.
-4. No writes to `memory/agents/<memberAgentId>` for team-member flows.
+3. Runtime agent factory receives explicit per-member `memoryDir` as leaf path (`memory/agent_teams/<teamId>/<memberAgentId>`).
+4. Underlying memory append path writes raw traces/snapshots directly into that leaf directory.
+5. No writes to `memory/agents/<memberAgentId>` for team-member flows.
 
 Error path:
 - Missing canonical member subtree yields append failure and explicit warning/error telemetry.
@@ -410,3 +411,16 @@ Coverage: primary=Yes, fallback=N/A, error=Yes
 
 Error path:
 - Empty/invalid team-name slug input falls back to `team` base slug; creation still yields valid `teamId`.
+
+## UC-027: Runtime Explicit-Memory Contract Is Uniform
+Coverage: primary=Yes, fallback=N/A, error=Yes
+
+1. `autobyteus-ts/src/agent/factory/agent-factory.ts:createRuntimeWithId(...)` resolves effective memory path.
+2. Decision gate:
+   - explicit `memoryDir` provided (config or restore override) -> treat as final leaf directory,
+   - no explicit `memoryDir` -> resolve default memory root and use `agents/<agentId>` layout.
+3. Runtime memory stores initialize with no team-identity lookup or team-specific branch.
+4. Team create/restore call paths supply explicit per-member leaf directories; single-agent paths keep default layout unless explicit leaf directory is supplied.
+
+Error path:
+- Explicit `memoryDir` pointing to invalid/unwritable path fails at runtime store initialization.

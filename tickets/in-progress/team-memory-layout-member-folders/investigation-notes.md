@@ -267,3 +267,123 @@ Remote members could run without intended workspace binding unless `workspaceRoo
 2. Use resolved team definition name (fallback to `teamDefinitionId`) as slug source.
 3. Keep `teamId` immutable once created; restore/projection/delete/distributed routing continue to use persisted `teamId`.
 4. Apply same naming update to both server resolver entry-point generation and core team factory generation to avoid drift between call paths.
+
+## Re-Investigation Checkpoint (2026-02-24) - Terminate/Reopen Team Member History Not Loading
+
+### Additional Sources Consulted
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/run-history/services/team-member-memory-projection-reader.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/run-history/services/team-member-run-projection-service.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/api/graphql/types/team-run-history.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/agent-memory-view/store/memory-file-store.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/unit/run-history/team-member-memory-projection-reader.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/unit/run-history/team-member-run-projection-service.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/e2e/run-history/team-member-projection-contract.e2e.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/e2e/run-history/team-run-restore-distributed-process-graphql.e2e.test.ts`
+- Host runtime log: `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/logs/host-8000.log`
+- Worker runtime log: `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/docker/logs/docker-8001.log`
+
+### Root Cause (Local Member)
+1. Runtime writes team-member traces under:
+   - `memory/agent_teams/<teamId>/<memberAgentId>/agents/<memberAgentId>/raw_traces*.jsonl`
+2. Projection reader incorrectly read from:
+   - `memory/agent_teams/<teamId>/<memberAgentId>/raw_traces*.jsonl`
+3. Result: terminate/reopen showed empty conversation for local members despite existing traces.
+
+### Root Cause (Remote Member)
+1. Host remote fallback queried worker `getRunProjection(agentId)` or route-key-only projection path.
+2. Worker history layout is team-scoped member subtree (not global `memory/agents/<agentId>`).
+3. After terminate, worker may not retain host-manifest mirror; route-key resolution can fail with:
+   - `Team run manifest not found for '<teamId>'`
+4. Result: host projection fallback returned empty conversation for remote members.
+
+### Resolution
+1. Local projection reader now uses member directory as memory store root:
+   - reads from canonical runtime path `.../<memberAgentId>/agents/<memberAgentId>/...`.
+2. Remote fallback projection now includes `memberAgentId` and supports manifest-missing fallback:
+   - query `getTeamMemberRunProjection(teamId, memberRouteKey, memberAgentId?)`,
+   - when manifest lookup fails on worker, service reads directly via (`teamId`, `memberAgentId`).
+
+### Validation Evidence
+1. `pnpm test tests/unit/run-history/team-member-memory-projection-reader.test.ts tests/unit/run-history/team-member-run-projection-service.test.ts --reporter=dot` -> passed.
+2. `pnpm test tests/e2e/run-history/team-member-projection-contract.e2e.test.ts --reporter=dot` -> passed.
+3. `pnpm test tests/e2e/run-history/team-run-restore-distributed-process-graphql.e2e.test.ts --reporter=dot` -> passed.
+4. Added distributed E2E assertion for terminate/reopen projection read:
+   - validate `getTeamMemberRunProjection` returns non-empty conversation for remote member before continue rerun.
+
+## Re-Investigation Checkpoint (2026-02-24) - Flat Team-Member Layout Enforcement
+
+### Problem Confirmation
+1. Requirement contract is flat under member subtree:
+   - `memory/agent_teams/<teamId>/<memberAgentId>/{raw_traces,working_context_snapshot,...}`
+2. Runtime still produced nested subtree:
+   - `memory/agent_teams/<teamId>/<memberAgentId>/agents/<memberAgentId>/...`
+3. This contradicted the ticket requirements and made folder inspection confusing.
+
+### Root Cause
+1. `autobyteus-ts` memory stores had a hard-coded `agents` root segment.
+2. Team members already use member-specific `memoryDir`, so hard-coded segment caused an extra nesting level.
+
+### Resolution
+1. Added configurable memory root subdir in runtime stores:
+   - `src/memory/store/file-store.ts`,
+   - `src/memory/store/working-context-snapshot-store.ts`.
+2. `AgentFactory` now enables flat mode for team members (detected via `initialCustomData.teamMemberIdentity`) and keeps default single-agent behavior unchanged.
+3. Projection path handling aligned with flat contract while preserving remote manifest-missing fallback behavior.
+
+### Validation Evidence
+1. `autobyteus-ts` targeted tests:
+   - `pnpm exec vitest tests/unit/memory/file-store.test.ts tests/unit/memory/working-context-snapshot-store.test.ts` -> passed.
+2. `autobyteus-server-ts` targeted tests:
+   - `pnpm test tests/unit/run-history/team-member-memory-projection-reader.test.ts tests/unit/run-history/team-member-run-projection-service.test.ts tests/integration/run-history/team-member-remote-projection-fallback.integration.test.ts tests/e2e/run-history/team-run-restore-distributed-process-graphql.e2e.test.ts` -> passed.
+3. `autobyteus-server-ts` full suite:
+   - `pnpm test` -> passed (`302` files passed, `3` skipped; `1188` tests passed, `7` skipped).
+
+### Note On Prior 2026-02-24 Entry
+The earlier terminate/reopen note that documented nested member paths under `agents/<memberAgentId>` is superseded by this flat-layout enforcement checkpoint.
+
+## Re-Investigation Checkpoint (2026-02-24) - Core `memoryDir` Contract / SoC Drift
+
+### Additional Sources Consulted
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-ts/src/agent/factory/agent-factory.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-ts/src/memory/store/file-store.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-ts/src/memory/store/working-context-snapshot-store.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-ts/src/agent-team/context/team-manager.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/agent-execution/services/agent-instance-manager.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/agent-team-execution/services/agent-team-instance-manager.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-ts/tests/integration/agent/working-context-snapshot-restore-flow.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-ts/tests/unit/agent/factory/agent-factory.test.ts`
+
+### Findings
+1. Runtime layout choice is currently inferred from `initialCustomData.teamMemberIdentity` in `AgentFactory`.
+2. This leaks team-domain knowledge into core memory wiring and violates the intended separation of concerns.
+3. `restoreAgent(..., memoryDir)` is currently used with two meanings:
+   - single-agent restore: base memory root,
+   - team-member restore: already-resolved leaf member directory.
+4. This ambiguity increases regression risk and makes contract reasoning harder across create/restore paths.
+
+### Root Cause
+The core runtime contract for explicit `memoryDir` was never formalized; team-specific heuristics were added to compensate for inconsistent call-site semantics.
+
+### Design Direction
+1. Formalize one runtime contract:
+   - if explicit `memoryDir` is supplied, it is the final leaf directory for memory files,
+   - if not supplied, runtime uses default single-agent layout (`memory/agents/<agentId>`).
+2. Remove team-identity-based memory-layout branching from `AgentFactory`.
+3. Update single-agent restore call sites/tests to pass explicit single-agent leaf directory when they provide `memoryDir`.
+
+### Expected Impact
+1. Cleaner core library boundary: memory path contract is transport-agnostic and team-agnostic.
+2. Better reliability for team/local/distributed consistency because layout is controlled by explicit path input, not inferred metadata.
+
+### Implementation + Validation Outcome
+1. Implemented in:
+   - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-ts/src/agent/factory/agent-factory.ts`
+   - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/agent-execution/services/agent-instance-manager.ts`
+   - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/agent-team-execution/services/agent-team-instance-manager.ts`
+2. Regression tests:
+   - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-ts/tests/unit/agent/factory/agent-factory.test.ts`
+   - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-ts/tests/integration/agent/working-context-snapshot-restore-flow.test.ts`
+   - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/integration/agent-execution/agent-instance-manager.integration.test.ts`
+3. Outcome:
+   - explicit `memoryDir` path contract is now consistent across single-agent and team-member restore/create flows,
+   - no team-domain branching remains in core memory layout selection.

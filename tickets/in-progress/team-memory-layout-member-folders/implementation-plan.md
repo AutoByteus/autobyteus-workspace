@@ -107,6 +107,13 @@ Canonical contract: team-member persistence under `memory/agent_teams/<teamId>/<
 4. Update unit expectations and distributed E2E verification for lazy-create + restore lifecycle.
 5. Sync ticket requirements/design/review artifacts to the finalized teamId naming contract.
 
+### WS-10: Runtime `memoryDir` Contract Cleanup
+1. Update `autobyteus-ts` `AgentFactory` so explicit `memoryDir` (config or restore override) is treated as the final leaf memory directory.
+2. Remove team-identity-driven layout branching from runtime memory wiring.
+3. Update single-agent restore path in `autobyteus-server-ts` to pass explicit single-agent leaf directory when using restore override.
+4. Update/extend `autobyteus-ts` unit/integration tests to lock the explicit-memory contract.
+5. Sync ticket requirements/design/call-stack/review/progress artifacts after verification.
+
 ## Verification Checklist
 1. Unit tests for layout store path helpers/safety checks.
 2. Unit tests for projection reader local + error branches.
@@ -121,6 +128,7 @@ Canonical contract: team-member persistence under `memory/agent_teams/<teamId>/<
 11. Manual spot-check of generated memory trees for Case A, Case B, Case B2, Case B3, Case C and delete outcomes.
 12. Verify generated member folders are human-readable in team directories while retaining deterministic restore compatibility.
 13. Verify generated team folders are human-readable while preserving distributed identity continuity.
+14. Verify explicit runtime `memoryDir` always writes directly to leaf directory without extra `agents/<agentId>` nesting.
 
 ## Sequence
 1. WS-1
@@ -136,3 +144,4 @@ Canonical contract: team-member persistence under `memory/agent_teams/<teamId>/<
 11. WS-7
 12. WS-8
 13. WS-9
+14. WS-10

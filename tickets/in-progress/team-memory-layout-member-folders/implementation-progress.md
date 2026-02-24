@@ -136,3 +136,67 @@
 - [x] Verification:
   - `pnpm test tests/unit/api/graphql/types/agent-team-instance-resolver.test.ts tests/unit/run-history/team-member-agent-id.test.ts tests/e2e/run-history/team-member-projection-contract.e2e.test.ts tests/e2e/run-history/team-run-restore-distributed-process-graphql.e2e.test.ts --reporter=dot` (4 files / 11 tests passed).
 - [x] Synchronized ticket artifacts (`investigation-notes.md`, `requirements.md`, `proposed-design.md`, `future-state-runtime-call-stack.md`, `future-state-runtime-call-stack-review.md`, `implementation-plan.md`) for team ID naming contract.
+
+## 2026-02-24 (Terminate/Reopen Projection Regression)
+- [x] Reproduced user-reported bug: after terminate + reopen, team member history panel loaded empty conversation for both local and remote members.
+- [x] Root-cause A fixed (local path mismatch):
+  - `TeamMemberMemoryProjectionReader` now reads from runtime canonical path
+    `memory/agent_teams/<teamId>/<memberAgentId>/agents/<memberAgentId>/raw_traces*.jsonl`.
+- [x] Root-cause B fixed (remote manifest-missing fallback):
+  - remote projection query now passes `memberAgentId`,
+  - `getTeamMemberRunProjection` resolver/service supports optional `memberAgentId` fallback when worker manifest is absent after terminate.
+- [x] Test hardening:
+  - updated `tests/unit/run-history/team-member-memory-projection-reader.test.ts` to runtime-realistic `agents/<memberId>/raw_traces` fixture layout,
+  - updated `tests/e2e/run-history/team-member-projection-contract.e2e.test.ts` to runtime-realistic member subtree layout,
+  - extended `tests/e2e/run-history/team-run-restore-distributed-process-graphql.e2e.test.ts` with explicit terminate/reopen projection assertion for remote member history.
+- [x] Verification:
+  - `pnpm test tests/unit/run-history/team-member-memory-projection-reader.test.ts tests/unit/run-history/team-member-run-projection-service.test.ts --reporter=dot` (2 files / 7 tests passed),
+  - `pnpm test tests/e2e/run-history/team-member-projection-contract.e2e.test.ts --reporter=dot` (1 file / 1 test passed),
+  - `pnpm test tests/e2e/run-history/team-run-restore-distributed-process-graphql.e2e.test.ts --reporter=dot` (1 file / 1 test passed).
+
+## 2026-02-24 (Flat Layout Contract Alignment + Stability Verification)
+- [x] Re-validated requirement contract mismatch from runtime screenshot:
+  - requirement expects flat team-member subtree
+    `memory/agent_teams/<teamId>/<memberAgentId>/{raw_traces,working_context_snapshot,...}`,
+  - runtime still emitted nested `agents/<memberAgentId>` under team member dir.
+- [x] Implemented flat-layout support in `autobyteus-ts` runtime memory stores:
+  - `src/memory/store/file-store.ts` added `agentRootSubdir` option,
+  - `src/memory/store/working-context-snapshot-store.ts` added `agentRootSubdir` option,
+  - `src/agent/factory/agent-factory.ts` routes team members to flat mode via `teamMemberIdentity`.
+- [x] Confirmed projection/restore contract after flattening:
+  - `TeamMemberMemoryProjectionReader` reads from team-root + flat member path contract,
+  - distributed projection query keeps `memberAgentId` fallback for manifest-missing worker states.
+- [x] Added/updated regression coverage for flat layout:
+  - `autobyteus-ts/tests/unit/memory/file-store.test.ts`,
+  - `autobyteus-ts/tests/unit/memory/working-context-snapshot-store.test.ts`,
+  - `autobyteus-server-ts/tests/e2e/run-history/team-run-restore-distributed-process-graphql.e2e.test.ts` (assert no nested `agents/<memberId>` path).
+- [x] Updated remote projection fallback integration to new GraphQL contract:
+  - `tests/integration/run-history/team-member-remote-projection-fallback.integration.test.ts` now validates `getTeamMemberRunProjection(teamId, memberRouteKey, memberAgentId)`.
+- [x] Stabilized full backend suite against watcher timing flakes encountered during full-run load:
+  - `tests/integration/file-explorer/file-name-indexer.integration.test.ts` increased polling timeout + explicit per-test timeout,
+  - `tests/integration/file-explorer/file-system-watcher.integration.test.ts` increased event wait windows and made folder add/delete assertions predicate-based.
+- [x] Verification:
+  - `autobyteus-ts`: `pnpm exec vitest tests/unit/memory/file-store.test.ts tests/unit/memory/working-context-snapshot-store.test.ts` (2 files / 9 tests passed),
+  - `autobyteus-server-ts`: targeted run-history suites (unit + integration + distributed e2e) all passed,
+  - `autobyteus-server-ts`: full suite passed (`302 passed, 3 skipped` test files; `1188 passed, 7 skipped` tests).
+
+## 2026-02-24 (Runtime `memoryDir` Contract Cleanup)
+- [x] Re-investigated SoC drift:
+  - core runtime layout selection depended on `teamMemberIdentity` metadata,
+  - explicit `memoryDir` semantics were ambiguous between single-agent and team-member restore paths.
+- [x] Updated runtime memory contract implementation:
+  - `autobyteus-ts/src/agent/factory/agent-factory.ts` now treats explicit `memoryDir` (config or restore override) as leaf directory and no longer infers layout from team identity metadata.
+  - supersedes the temporary `teamMemberIdentity`-driven flat-layout toggle introduced in the earlier 2026-02-24 checkpoint.
+- [x] Updated restore call-path alignment:
+  - `autobyteus-server-ts/src/agent-execution/services/agent-instance-manager.ts` now passes explicit single-agent leaf directory (`<memoryDir>/agents/<agentId>`) during restore.
+  - `autobyteus-server-ts/src/agent-team-execution/services/agent-team-instance-manager.ts` now sets `AgentConfig.memoryDir` from member config for explicit runtime path propagation consistency.
+- [x] Added/updated regression tests:
+  - `autobyteus-ts/tests/unit/agent/factory/agent-factory.test.ts`:
+    - updated restore override expectation to leaf path,
+    - added explicit-memoryDir leaf-contract test (no team metadata branching).
+  - `autobyteus-ts/tests/integration/agent/working-context-snapshot-restore-flow.test.ts`:
+    - updated restore override input to explicit single-agent leaf directory.
+- [x] Verification:
+  - `pnpm -C autobyteus-ts exec vitest tests/unit/agent/factory/agent-factory.test.ts tests/integration/agent/working-context-snapshot-restore-flow.test.ts tests/unit/memory/file-store.test.ts tests/unit/memory/working-context-snapshot-store.test.ts --reporter=dot` (4 files / 21 tests passed),
+  - `pnpm -C autobyteus-server-ts test tests/integration/agent-team-execution/agent-team-instance-manager.integration.test.ts tests/unit/run-history/team-member-memory-projection-reader.test.ts tests/unit/run-history/team-member-run-projection-service.test.ts tests/e2e/run-history/team-run-restore-distributed-process-graphql.e2e.test.ts --reporter=dot` (4 files / 24 tests passed),
+  - `pnpm -C autobyteus-server-ts test tests/integration/agent-execution/agent-instance-manager.integration.test.ts --reporter=dot` (1 file / 6 tests passed).

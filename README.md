@@ -37,19 +37,22 @@ Data-dir policy:
 pnpm -C autobyteus-server-ts build
 ```
 
-2. Start frontend (Terminal A):
+2. Start frontend (Terminal A) with log capture:
 
 ```bash
-pnpm -C autobyteus-web dev
+mkdir -p autobyteus-web/logs
+pnpm -C autobyteus-web dev 2>&1 | tee autobyteus-web/logs/frontend-3000.log
 ```
 
 If backend is not on `8000` (for example `8002`), run:
 
 ```bash
-BACKEND_PROXY_URL=http://localhost:8002 pnpm -C autobyteus-web dev
+mkdir -p autobyteus-web/logs
+BACKEND_PROXY_URL=http://localhost:8002 pnpm -C autobyteus-web dev \
+  2>&1 | tee autobyteus-web/logs/frontend-3000.log
 ```
 
-3. Start host backend registry on `8000` with log capture (Terminal B):
+3. Start host backend registry on `8000` with standard log policy (Terminal B):
 
 ```bash
 mkdir -p autobyteus-server-ts/logs
@@ -65,12 +68,36 @@ node autobyteus-server-ts/dist/app.js --host 0.0.0.0 --port 8000 \
   2>&1 | tee autobyteus-server-ts/logs/host-8000.log
 ```
 
+If you need full transport debugging (including noisy routes), use:
+
+```bash
+mkdir -p autobyteus-server-ts/logs
+AUTOBYTEUS_SERVER_HOST=http://localhost:8000 \
+AUTOBYTEUS_NODE_DISCOVERY_ENABLED=true \
+AUTOBYTEUS_NODE_DISCOVERY_ROLE=registry \
+PERSISTENCE_PROVIDER=sqlite \
+DB_TYPE=sqlite \
+LOG_LEVEL=DEBUG \
+AUTOBYTEUS_HTTP_ACCESS_LOG_MODE=all \
+AUTOBYTEUS_HTTP_ACCESS_LOG_INCLUDE_NOISY=true \
+node autobyteus-server-ts/dist/app.js --host 0.0.0.0 --port 8000 \
+  2>&1 | tee autobyteus-server-ts/logs/host-8000-debug.log
+```
+
 4. Rebuild and start Docker backend node on `8001` (Terminal C):
 
 ```bash
 cd autobyteus-server-ts/docker
 ./build.sh
 ./start.sh
+```
+
+Follow Docker logs into a file (optional, recommended during debugging):
+
+```bash
+cd autobyteus-server-ts/docker
+mkdir -p ../logs
+docker compose logs -f autobyteus-server 2>&1 | tee ../logs/docker-8001.log
 ```
 
 For full Docker options and enterprise profile details, read:

@@ -63,6 +63,14 @@ memory/
 2. Team-member artifacts must live under `memory/agent_teams/<teamId>/<memberAgentId>/...`.
 3. Team folder must be inspectable as a complete team-memory view for members hosted on that node.
 
+### 2A) Runtime `memoryDir` Contract
+1. If runtime `memoryDir` is explicitly provided for an agent member, it is the final leaf directory that stores memory files (`raw_traces.jsonl`, `working_context_snapshot.json`, etc.).
+2. Runtime must not append additional path segments (for example `agents/<agentId>`) when explicit `memoryDir` is already provided.
+3. If runtime `memoryDir` is not provided, default single-agent behavior remains:
+   - resolve base memory root,
+   - write to `memory/agents/<agentId>/...`.
+4. Team-member create/restore paths must always provide explicit per-member `memoryDir` under `memory/agent_teams/<teamId>/<memberAgentId>`.
+
 ### 3) Team Manifest Rule
 Path:
 - `memory/agent_teams/<teamId>/team_run_manifest.json`

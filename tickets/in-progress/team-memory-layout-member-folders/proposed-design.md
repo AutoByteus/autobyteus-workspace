@@ -1,7 +1,7 @@
 # Proposed Design
 
 ## Design Version
-- Current Version: `v13`
+- Current Version: `v14`
 
 ## Revision History
 | Version | Summary |
@@ -19,6 +19,7 @@
 | v11 | Naming clarity update: switch generated team-member IDs from opaque `member_<hash>` to readable deterministic `<route_slug>_<hash16>` and validate with unit + E2E coverage. |
 | v12 | Team-folder readability update: generate `teamId` as `<team_name_slug>_<id8>` (immutable after creation), aligned with operator-visible memory layout and distributed identity safety. |
 | v13 | Added explicit role semantics (`registry` vs `host` vs `member home node`) and runtime data-flow diagrams for mixed distributed create, workspace binding, continuation/restore, and nested route flattening. |
+| v14 | Core-memory contract cleanup: explicit `memoryDir` is authoritative leaf memory path; removed team-identity-driven layout branching from runtime factory design. |
 
 ## Summary
 Align runtime persistence with canonical team-scoped memory layout:
@@ -159,6 +160,7 @@ flowchart LR
 17. Distributed workspace portability policy: remote members require explicit `workspaceRootPath`; `workspaceId` is node-local hint and may fall back to `workspaceRootPath` on home-node resolution miss.
 18. Member-folder readability policy: generated `memberAgentId` must be deterministic and human-readable (`<route_slug>_<hash16>`), not opaque hash-only.
 19. Team-folder readability policy: generated `teamId` must be human-readable (`<team_name_slug>_<id8>`) and immutable once created.
+20. Runtime memory contract policy: when explicit `memoryDir` is supplied to runtime agent creation/restore, it is treated as final leaf directory; no additional `agents/<agentId>` suffixing is permitted.
 
 ## Use Case Set (Design Scope)
 
@@ -190,6 +192,7 @@ flowchart LR
 | UC-024 | Distributed workspace binding is path-authoritative: remote members must provide `workspaceRootPath`, and home-node execution falls back to `workspaceRootPath` when `workspaceId` is stale. |
 | UC-025 | Generated team-member IDs keep deterministic uniqueness while improving operator readability (`<route_slug>_<hash16>`). |
 | UC-026 | Generated team IDs keep operator readability (`<team_name_slug>_<id8>`) while preserving immutable distributed/run-history identity. |
+| UC-027 | Runtime explicit-memory contract is uniform: explicit `memoryDir` always maps to leaf memory files without team-identity-specific branching in core factory logic. |
 
 ## Use-Case Coverage Matrix
 
@@ -221,6 +224,7 @@ flowchart LR
 | UC-024 | Yes | Yes | Yes | Remote member missing `workspaceRootPath` fails fast; stale `workspaceId` on home node falls back to `workspaceRootPath`. |
 | UC-025 | Yes | N/A | Yes | Route slug normalization keeps IDs path-safe/readable; hash suffix preserves uniqueness and determinism. |
 | UC-026 | Yes | N/A | Yes | Team-name slug normalization keeps IDs path-safe/readable; random suffix provides collision resistance while teamId stays immutable after creation. |
+| UC-027 | Yes | N/A | Yes | Explicit `memoryDir` path contract is enforced for create/restore and validated by runtime/store tests. |
 
 ## Change Inventory
 
@@ -258,6 +262,7 @@ flowchart LR
 | D-030 | Modify | `tests/integration/agent-team-execution/agent-team-instance-manager.integration.test.ts` | Add regression coverage for remote `workspaceRootPath` required validation and stale `workspaceId` fallback behavior. |
 | D-031 | Modify | `src/run-history/utils/team-member-agent-id.ts`, `tests/unit/run-history/team-member-agent-id.test.ts` | Generate readable deterministic team-member IDs (`<route_slug>_<hash16>`) and lock normalization/format behavior in unit tests. |
 | D-032 | Modify | `src/api/graphql/types/agent-team-instance.ts`, `autobyteus-ts/src/agent-team/factory/agent-team-factory.ts`, `tests/unit/api/graphql/types/agent-team-instance-resolver.test.ts` | Generate readable team IDs as `<team_name_slug>_<id8>` and keep teamId immutable across create/restore/distributed paths. |
+| D-033 | Modify | `autobyteus-ts/src/agent/factory/agent-factory.ts`, `autobyteus-server-ts/src/agent-execution/services/agent-instance-manager.ts`, `autobyteus-ts/tests/unit/agent/factory/agent-factory.test.ts`, `autobyteus-ts/tests/integration/agent/working-context-snapshot-restore-flow.test.ts` | Enforce explicit-`memoryDir`-is-leaf contract and remove team-identity-based layout switching from core runtime factory. |
 
 ## File/Module Responsibilities (Target)
 
@@ -299,6 +304,12 @@ flowchart LR
 3. Preserve runtime identity metadata (`memberRouteKey`, `memberAgentId`, `memoryDir`) across strict and proxy hydration paths.
 4. Enforce distributed workspace portability (`workspaceRootPath` required for remote members).
 5. On home-node workspace resolution miss by `workspaceId`, fall back to `workspaceRootPath` when provided.
+
+### `autobyteus-ts/src/agent/factory/agent-factory.ts`
+1. Resolve memory layout purely from explicit runtime memory path contract:
+   - explicit `memoryDir` (config or restore override) => leaf directory mode,
+   - no explicit `memoryDir` => default single-agent `memory/agents/<agentId>` mode.
+2. Must not inspect team-specific custom-data fields to decide storage shape.
 
 ### `src/run-history/services/team-run-history-service.ts`
 1. Keep index and manifest lifecycle responsibilities.

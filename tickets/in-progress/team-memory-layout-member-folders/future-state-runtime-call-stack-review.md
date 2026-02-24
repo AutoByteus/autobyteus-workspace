@@ -477,3 +477,54 @@ Status: `Go Confirmed`
 
 ### Verdict
 - `Go Confirmed` (deep review, readable immutable teamId cycle)
+
+## Deep Review Round 35 (Blocking Re-Entry)
+Status: `No-Go`
+
+### Findings
+1. Blocking: runtime memory-layout selection still depends on `teamMemberIdentity` inspection in core `AgentFactory`, which is a team-domain concern.
+2. Blocking: explicit `memoryDir` semantics are ambiguous between single-agent restore (base-root usage) and team-member restore (leaf-dir usage).
+3. Blocking: this ambiguity can reintroduce path drift (`.../agents/<agentId>`) if call-site assumptions diverge.
+
+### Required Write-Backs
+1. Refine requirements/design/call-stack with explicit `memoryDir` leaf contract.
+2. Update runtime factory to choose layout from explicit `memoryDir` contract, not team identity metadata.
+3. Update single-agent restore call sites/tests to pass explicit leaf directory when providing override.
+4. Run targeted unit/integration regressions for memory store/factory and run-history projection/restore paths.
+
+### Write-Backs Applied
+- Updated `/Users/normy/autobyteus_org/autobyteus-workspace/tickets/in-progress/team-memory-layout-member-folders/requirements.md` with explicit runtime `memoryDir` contract section.
+- Updated `/Users/normy/autobyteus_org/autobyteus-workspace/tickets/in-progress/team-memory-layout-member-folders/proposed-design.md` to `v14` (`UC-027`, `D-033`, runtime factory responsibility).
+- Updated `/Users/normy/autobyteus_org/autobyteus-workspace/tickets/in-progress/team-memory-layout-member-folders/future-state-runtime-call-stack.md` to `v13` (`UC-027` and explicit-memory flow in append path).
+- Implemented runtime contract cleanup in:
+  - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-ts/src/agent/factory/agent-factory.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/agent-execution/services/agent-instance-manager.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/agent-team-execution/services/agent-team-instance-manager.ts`
+- Updated regression tests in:
+  - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-ts/tests/unit/agent/factory/agent-factory.test.ts`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-ts/tests/integration/agent/working-context-snapshot-restore-flow.test.ts`
+
+## Deep Review Round 36 (Clean Round 1)
+Status: `Candidate Go`
+
+### Criteria Check
+1. Runtime layout decision no longer depends on `teamMemberIdentity`: Pass
+2. Explicit `memoryDir` semantics are uniform and leaf-authoritative: Pass
+3. Single-agent restore override call path updated to explicit leaf path: Pass
+4. SoC boundaries improved (team metadata removed from core memory layout decision): Pass
+5. Targeted TS + server regression suites are green: Pass
+
+### Notes
+- No blocking findings.
+- No required write-backs.
+
+## Deep Review Round 37 (Clean Round 2)
+Status: `Go Confirmed`
+
+### Re-Check
+1. Round 35 blockers remain resolved in code and artifacts: Pass
+2. Two consecutive clean rounds achieved after write-backs: Pass
+3. Canonical team/local/distributed memory-layout behavior remains coherent with updated runtime contract: Pass
+
+### Verdict
+- `Go Confirmed` (deep review, explicit-memory contract cleanup cycle)
