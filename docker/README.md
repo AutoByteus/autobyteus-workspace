@@ -139,6 +139,30 @@ Tail only remote servers:
 ./scripts/enterprise-docker.sh logs remote-server
 ```
 
+## Persistent log files
+
+Server process logs are now written by backend runtime logging (not shell `tee`) to files and also streamed to `docker logs`.
+
+Main all-in-one container (persisted in `main-allinone-data` volume):
+
+- `/home/autobyteus/data/logs/server.log`
+- `/home/autobyteus/data/logs/web.log`
+- `/home/autobyteus/data/logs/gateway.log`
+
+Remote server containers (persisted in `remote-server-logs` volume):
+
+- `/home/autobyteus/logs/server.log`
+
+Quick checks:
+
+```bash
+docker exec <main-container> ls -l /home/autobyteus/data/logs
+docker exec <main-container> tail -n 200 /home/autobyteus/data/logs/server.log
+
+docker exec <remote-container> ls -l /home/autobyteus/logs
+docker exec <remote-container> tail -n 200 /home/autobyteus/logs/server.log
+```
+
 Reset volumes:
 
 ```bash

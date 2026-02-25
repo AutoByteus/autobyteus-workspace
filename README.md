@@ -62,6 +62,7 @@ Optional: after startup, run automatic full sync from embedded node to discovere
 
 Full guide:
 - [`docker/README.md`](docker/README.md)
+  - includes persistent in-container log file paths for server/web/gateway and remote nodes
 
 ## Enterprise local startup (canonical)
 

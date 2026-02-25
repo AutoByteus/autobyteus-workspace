@@ -14,6 +14,7 @@ services:
       AUTOBYTEUS_BIND_HOST: 0.0.0.0
       AUTOBYTEUS_SERVER_PORT: 8000
       AUTOBYTEUS_DATA_DIR: /home/autobyteus/data
+      AUTOBYTEUS_LOG_DIR: /home/autobyteus/data/logs
       AUTOBYTEUS_SERVER_HOST: ${AUTOBYTEUS_SERVER_HOST}
       AUTOBYTEUS_VNC_SERVER_HOSTS: ${AUTOBYTEUS_VNC_SERVER_HOSTS}
       AUTOBYTEUS_NODE_DISCOVERY_ENABLED: "true"
@@ -93,6 +94,7 @@ services:
       AUTOBYTEUS_BIND_HOST: 0.0.0.0
       AUTOBYTEUS_SERVER_PORT: 8000
       AUTOBYTEUS_DATA_DIR: /home/autobyteus/data
+      AUTOBYTEUS_LOG_DIR: /home/autobyteus/logs
       AUTOBYTEUS_SERVER_HOST: http://127.0.0.1:8000
       AUTOBYTEUS_NODE_DISCOVERY_ENABLED: "true"
       AUTOBYTEUS_NODE_DISCOVERY_ROLE: client
@@ -108,6 +110,8 @@ services:
       LMSTUDIO_HOSTS: http://host.docker.internal:1234
     tmpfs:
       - /home/autobyteus/data
+    volumes:
+      - remote-server-logs:/home/autobyteus/logs
     extra_hosts:
       - "host.docker.internal:host-gateway"
     restart: unless-stopped
@@ -115,3 +119,4 @@ services:
 volumes:
   main-allinone-data:
   gateway-memory:
+  remote-server-logs:

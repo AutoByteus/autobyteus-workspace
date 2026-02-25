@@ -6,6 +6,7 @@ SERVER_PORT="${AUTOBYTEUS_SERVER_PORT:-8000}"
 BIND_HOST="${AUTOBYTEUS_BIND_HOST:-0.0.0.0}"
 
 mkdir -p "${DATA_DIR}"
+export AUTOBYTEUS_LOG_DIR="${AUTOBYTEUS_LOG_DIR:-${DATA_DIR}/logs}"
 
 ENV_FILE="${DATA_DIR}/.env"
 if [[ ! -f "${ENV_FILE}" ]]; then
@@ -47,6 +48,7 @@ upsert_env_var() {
 upsert_env_var "AUTOBYTEUS_LLM_SERVER_HOSTS" "${AUTOBYTEUS_LLM_SERVER_HOSTS:-}"
 upsert_env_var "OLLAMA_HOSTS" "${OLLAMA_HOSTS:-http://host.docker.internal:11434}"
 upsert_env_var "LMSTUDIO_HOSTS" "${LMSTUDIO_HOSTS:-http://host.docker.internal:1234}"
+upsert_env_var "AUTOBYTEUS_LOG_DIR" "${AUTOBYTEUS_LOG_DIR}"
 
 exec node /app/autobyteus-server-ts/dist/app.js \
   --host "${BIND_HOST}" \
