@@ -1,7 +1,7 @@
 # Investigation Notes
 
 ## Status
-- Completed for this iteration (re-open if live validation reveals new payload variants)
+- Re-opened (current iteration in progress)
 
 ## Date
 - 2026-02-25
@@ -11,6 +11,7 @@
 - Target behavior: Codex tool lifecycle should map to canonical platform events and render in existing frontend Activity/segment UI without runtime-specific UI logic.
 - Re-opened symptom (current iteration): Activity shows `edit_file` with `arguments.path=""` and `arguments.patch=""` even when file was actually created/edited.
 - Re-opened symptom (latest iteration): Activity shows `run_bash` with `arguments.command=""` even when command executed and output was returned.
+- Re-opened symptom (this iteration): Codex web-search usage is not represented as a canonical tool call in Activity/segments, while UI shows noisy runtime mirror events.
 
 ## Sources Consulted
 - Backend adapter and runtime bridge:
@@ -72,6 +73,23 @@
 - Adapter previously did not always include normalized `metadata.command` for segment start/end in this path.
 - Result: `run_bash` tool card rendered with parsed status but empty `command`.
 
+### 8. Codex web search events are emitted as `webSearch` items + mirror runtime events, but not normalized to canonical tool lifecycle
+- Live server logs show Codex emits:
+  - `item/started` and `item/completed` with `item.type = "webSearch"` and stable `item.id` (`ws_*`),
+  - mirror events `codex/event/web_search_begin` and `codex/event/web_search_end`.
+- Current adapter behavior:
+  - `item.type = webSearch` falls through `asSegmentType(...)` to `text`, producing generic text segment start/end.
+  - mirror `codex/event/web_search_*` events become generic `SEGMENT_CONTENT` fallback messages (`segmentType: null`), adding stream noise.
+- Result:
+  - No canonical `search_web` tool call representation in Activity/tool segments.
+  - User cannot clearly see search as a tool lifecycle step, and the stream contains noisy mirror events.
+
+### 9. Frontend tool-call argument projection does not hydrate generic metadata arguments on segment bootstrap/finalize
+- `tool_call` segment creation currently initializes `arguments: {}` even when backend metadata carries argument fields.
+- `segmentHandler` activity bootstrap also initializes `tool_call` args as empty by default.
+- Result:
+  - Even if backend maps web search as `tool_call`, query details can be missing unless explicitly projected.
+
 ## Constraints
 - Keep strict separation of concerns:
   - backend adapter normalizes runtime-specific event shapes into canonical protocol;
@@ -84,6 +102,7 @@
 - Contributing cause: item-type alias gaps can classify tool-like Codex items as `text`, preventing Activity bootstrap.
 - Additional confirmed cause (current iteration): argument resolver trusted placeholder-empty explicit arguments and skipped `item.changes[]` fallback extraction.
 - Additional confirmed cause (latest iteration): command extraction existed in payload but was not consistently surfaced as canonical segment metadata/args for the `run_bash` Activity bootstrap path.
+- Additional confirmed cause (this iteration): web-search item type was not translated into canonical tool-call semantics (`tool_name=search_web`), and mirror `codex/event/web_search_*` events were not suppressed from UI-facing stream mapping.
 
 ## Unknowns
 - Exact Codex payload variants for all tool item types in the wild (depends on app-server version).
@@ -99,3 +118,5 @@
 - Tests must include both normal path and no-segment-start path.
 - Adapter design must treat empty-string arguments as non-authoritative and derive `edit_file.path/patch` from richer runtime structures (`change`, `file_change`, `changes[]`) before emitting canonical tool payloads.
 - Adapter design must treat `run_bash.command` as canonical metadata and derive from `payload.command`, `item.command`, and command action variants so segment start/end both have non-empty command whenever present in runtime payload.
+- Adapter design must treat Codex `webSearch` as canonical tool call (`search_web`) with stable invocation id and projected arguments (query/queries), while suppressing mirror `codex/event/web_search_*` payloads from UI stream noise.
+- Frontend generic tool-call projection must hydrate arguments from canonical metadata (start + end) without runtime-specific branching.

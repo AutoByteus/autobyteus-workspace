@@ -17,6 +17,9 @@
 | T-007 | Add mapper regression tests for `item.changes[]` fallback and empty-placeholder argument handling | `autobyteus-server-ts/tests/unit/services/agent-streaming/runtime-event-message-mapper.test.ts` | C-005 | backend unit tests |
 | T-008 | Hydrate `run_bash.command` from canonical metadata across segment start/end and activity argument projection | `autobyteus-server-ts/src/services/agent-streaming/codex-runtime-event-adapter.ts`, `autobyteus-web/services/agentStreaming/handlers/segmentHandler.ts`, `autobyteus-web/services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts` | C-006 | backend + frontend unit tests |
 | T-009 | Add/execute live codex websocket E2E for non-empty `run_bash` command metadata | `autobyteus-server-ts/tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts` | C-007 | live Codex E2E |
+| T-010 | Map Codex `webSearch` lifecycle to canonical `tool_call` (`search_web`) and suppress mirror `codex/event/web_search_*` noise | `autobyteus-server-ts/src/services/agent-streaming/codex-runtime-event-adapter.ts` | C-008 | backend unit tests + live log validation |
+| T-011 | Hydrate generic `tool_call` arguments from canonical metadata arguments/query fields at segment start/end | `autobyteus-web/services/agentStreaming/protocol/segmentTypes.ts`, `autobyteus-web/services/agentStreaming/handlers/segmentHandler.ts` | C-009 | frontend unit tests |
+| T-012 | Add regression tests for web-search canonical lifecycle + mirror suppression + tool_call argument hydration | `autobyteus-server-ts/tests/unit/services/agent-streaming/runtime-event-message-mapper.test.ts`, `autobyteus-web/services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts` | C-010 | backend + frontend unit tests |
 
 ## Execution Order
 1. T-001
@@ -28,12 +31,15 @@
 7. T-007
 8. T-008
 9. T-009
+10. T-010
+11. T-011
+12. T-012
 
 ## Risks / Mitigations
 - Risk: duplicate activity entries on late SEGMENT_START.
 - Mitigation: keep activity add idempotent by invocation id and avoid duplicate synthetic insertion.
 
 ## Done Criteria
-- All acceptance criteria AC-001..AC-007 satisfied.
+- All acceptance criteria AC-001..AC-009 satisfied.
 - New tests pass.
 - No regression in existing targeted streaming tests.

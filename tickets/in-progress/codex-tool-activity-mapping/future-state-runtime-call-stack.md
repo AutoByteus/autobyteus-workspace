@@ -124,3 +124,38 @@
 ### Error Path
 1. Runtime payload does not contain command text in any inspected location.
 2. Adapter emits minimal sanitized payload without fabricated command.
+
+## UC-008 Web-Search Canonical Tool-Call Lifecycle
+- use_case_id: `UC-008`
+- requirement_ids: `R-008`, `R-005`
+
+### Primary Path
+1. Codex emits `item/started` with `item.type="webSearch"` and `item.id="ws_*"`.
+2. `RuntimeEventMessageMapper.map()` routes event to `CodexRuntimeEventAdapter.map()`.
+3. Adapter detects `webSearch` item type and emits canonical:
+   - `ServerMessage(type=SEGMENT_START, payload={id=<ws_*>, segment_type="tool_call", metadata.tool_name="search_web", metadata.arguments={query,queries}})`.
+4. Frontend `handleSegmentStart()` creates `tool_call` segment + Activity entry with tool name and arguments.
+5. Codex emits `item/completed` with final query/action details.
+6. Adapter emits canonical `SEGMENT_END` for same invocation id with final metadata arguments.
+7. Frontend finalizes segment/activity (`parsed`) and preserves query arguments for UI display.
+
+### Fallback Path
+1. Start payload has empty query, completion payload has query.
+2. End metadata fills missing `tool_call.arguments.query` and Activity arguments.
+
+### Error Path
+1. Payload indicates `webSearch` but carries no usable query fields.
+2. Adapter still emits canonical tool-call lifecycle with stable id and tool name; arguments remain minimal (non-fabricated).
+
+## UC-009 Mirror Web-Search Event Noise Suppression
+- use_case_id: `UC-009`
+- requirement_ids: `R-009`, `R-005`
+
+### Primary Path
+1. Codex emits mirror runtime notifications `codex/event/web_search_begin` and `codex/event/web_search_end`.
+2. Adapter recognizes these as mirror-only telemetry and maps them to no-op segment content (`delta=""`).
+3. Frontend `handleSegmentContent()` drops empty deltas, so no additional visible segment blocks are rendered.
+
+### Error Path
+1. Unknown `codex/event/*` method (non-web-search) is received.
+2. Existing fallback behavior remains unchanged for non-targeted methods.

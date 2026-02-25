@@ -1,7 +1,7 @@
 # Proposed Design Document
 
 ## Design Version
-- Current Version: `v3`
+- Current Version: `v4`
 
 ## Revision History
 | Version | Trigger | Summary Of Changes | Related Review Round |
@@ -9,6 +9,7 @@
 | v1 | Initial draft | Define canonical tool lifecycle anchor strategy across backend adapter + frontend generic fallback | 1 |
 | v2 | Re-opened bug: empty `edit_file` arguments | Add file-change argument normalization rules (`change`/`file_change`/`changes[]`) and empty-string sanitization in backend adapter | 3 |
 | v3 | Re-opened bug: empty `run_bash.command` arguments | Add canonical command extraction/hydration across adapter metadata + frontend segment/activity argument updates and live E2E guard | 6 |
+| v4 | Re-opened gap: web-search not visible as canonical tool | Normalize `webSearch` to canonical `search_web` tool-call lifecycle, suppress mirror `web_search_*` noise, and hydrate tool-call args generically in frontend | 8 |
 
 ## Artifact Basis
 - Investigation Notes: `tickets/in-progress/codex-tool-activity-mapping/investigation-notes.md`
@@ -18,10 +19,12 @@
 ## Summary
 - Backend Codex adapter remains runtime-specific translation boundary and becomes more resilient in classifying tool-like item types.
 - Frontend remains runtime-agnostic: tool lifecycle handler adds a generic "ensure lifecycle anchor" fallback when TOOL_* arrives before SEGMENT_START.
+- Backend maps Codex `webSearch` items to canonical tool-call semantics (`search_web`) and suppresses mirror `codex/event/web_search_*` noise.
+- Frontend tool-call argument projection remains generic by hydrating canonical metadata arguments, without runtime-specific branches.
 - This preserves separation of concerns while closing ordering/shape gaps.
 
 ## Goals
-- Satisfy `R-001..R-007` with minimal surface-area changes.
+- Satisfy `R-001..R-009` with minimal surface-area changes.
 - Keep UI components unchanged; only stream-handler layer logic changes.
 - Add regression tests for both normal and missing-segment-start paths.
 
@@ -39,6 +42,8 @@
 | R-005 | Regression test coverage | AC-005 | UC-001..UC-005 |
 | R-006 | File-change argument normalization for `edit_file` | AC-006 | UC-006 |
 | R-007 | Command argument normalization for `run_bash` | AC-007 | UC-007 |
+| R-008 | Web-search canonical tool-call mapping | AC-008 | UC-008 |
+| R-009 | Mirror web-search noise suppression | AC-009 | UC-009 |
 
 ## Codebase Understanding Snapshot (Pre-Design Mandatory)
 | Area | Findings | Evidence (files/functions) | Open Unknowns |
@@ -78,6 +83,9 @@
 | C-005 | Modify | `autobyteus-server-ts/src/services/agent-streaming/codex-runtime-event-adapter.ts` | same | Normalize `edit_file` arguments by sanitizing empty placeholders and extracting from nested file-change payloads | Backend adapter | Runtime-specific concern only |
 | C-006 | Modify | `autobyteus-web/services/agentStreaming/handlers/segmentHandler.ts` | same | Hydrate `run_bash` command from canonical metadata on segment start/end and activity arg updates | Frontend stream handler | Runtime-agnostic use of canonical payload |
 | C-007 | Modify | `autobyteus-server-ts/tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts` | same | Add live websocket regression guard for non-empty `run_bash` command metadata | Backend e2e tests | Real transport validation |
+| C-008 | Modify | `autobyteus-server-ts/src/services/agent-streaming/codex-runtime-event-adapter.ts` | same | Map `webSearch` item lifecycle to canonical `tool_call` (`search_web`) and suppress mirror `codex/event/web_search_*` to no-op | Backend adapter | Runtime-specific concern only |
+| C-009 | Modify | `autobyteus-web/services/agentStreaming/protocol/segmentTypes.ts`, `autobyteus-web/services/agentStreaming/handlers/segmentHandler.ts` | same | Hydrate generic `tool_call.arguments` from canonical metadata arguments/query fields | Frontend stream handler | Runtime-agnostic projection only |
+| C-010 | Modify | `autobyteus-server-ts/tests/unit/services/agent-streaming/runtime-event-message-mapper.test.ts`, `autobyteus-web/services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts` | same | Add regression tests for web-search canonical mapping + tool-call argument hydration | Backend/frontend tests | Regression coverage |
 
 ## Target Architecture Shape And Boundaries (Mandatory)
 | Layer/Boundary | Purpose | Owns | Must Not Own | Notes |
@@ -95,6 +103,7 @@
 | `autobyteus-web/services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts` | Modify | Tests | Lifecycle fallback validation | test cases | TOOL_* without prior segment -> created anchor + activity | handler/store mocks |
 | `autobyteus-web/services/agentStreaming/handlers/segmentHandler.ts` | Modify | Frontend handler | SEGMENT_* projection to canonical segment+activity fields | `handleSegmentStart/Content/End` | input: segment payload + metadata, output: segment/activity mutations | context + activity store |
 | `autobyteus-server-ts/tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts` | Modify | Tests | Live codex runtime websocket contract validation | live e2e cases | input: real codex runtime run, output: protocol assertions | runtime stack + ws |
+| `autobyteus-web/services/agentStreaming/protocol/segmentTypes.ts` | Modify | Frontend protocol mapping | Segment object creation from canonical metadata | `createSegmentFromPayload` | input: segment payload + metadata, output: typed segment state | segment type contracts |
 
 ## Layer-Appropriate Separation Of Concerns Check
 - UI/frontend scope: no component-level runtime branching introduced.
@@ -143,6 +152,7 @@
 - Unknown item type still falls back to `text` when no tool signal is present.
 - File-change payloads with `arguments.path=""`/`arguments.patch=""` are treated as incomplete and backfilled from `change`/`file_change`/`changes[]` when available.
 - Command-execution payloads with missing direct `payload.command` are backfilled from `item.command` and command-action variants before canonical `run_bash` metadata emission.
+- Web-search payloads are canonicalized as `tool_call` with `tool_name=search_web`; mirror `codex/event/web_search_begin/end` are mapped to no-op content to avoid UI noise.
 
 ## Use-Case Coverage Matrix (Design Gate)
 | use_case_id | Requirement | Use Case | Primary Path Covered | Fallback Path Covered | Error Path Covered | Runtime Call Stack Section |
@@ -154,6 +164,8 @@
 | UC-005 | R-004 | Non-tool unaffected | Yes | N/A | N/A | UC-005 |
 | UC-006 | R-006 | File-change placeholder argument recovery | Yes | Yes | Yes | UC-006 |
 | UC-007 | R-007 | Run-bash command argument recovery | Yes | Yes | Yes | UC-007 |
+| UC-008 | R-008 | Web-search canonical tool-call lifecycle | Yes | Yes | Yes | UC-008 |
+| UC-009 | R-009 | Mirror web-search event noise suppression | Yes | N/A | N/A | UC-009 |
 
 ## Change Traceability To Implementation Plan
 | Change ID | Implementation Plan Task(s) | Verification | Status |
@@ -165,6 +177,9 @@
 | C-005 | T-006, T-007 | Backend unit tests | Planned |
 | C-006 | T-008 | Frontend unit tests | Planned |
 | C-007 | T-009 | Live E2E test | Planned |
+| C-008 | T-010, T-012 | Backend unit tests | Planned |
+| C-009 | T-011, T-012 | Frontend unit tests | Planned |
+| C-010 | T-012 | Backend + frontend unit tests | Planned |
 
 ## Open Questions
 - Need real-capture validation for codex payload variants that include approval-id decorated invocation ids.

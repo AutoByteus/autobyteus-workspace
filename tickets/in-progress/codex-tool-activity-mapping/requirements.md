@@ -25,6 +25,8 @@
 - UC-005: Non-tool events (text/reasoning/user message) remain unchanged and do not create false Activity items.
 - UC-006: Codex file-change lifecycle payloads with placeholder-empty explicit args still surface non-empty canonical `edit_file` arguments (`path`, `patch`) by deriving from runtime `changes` data.
 - UC-007: Codex command-execution lifecycle payloads surface non-empty canonical `run_bash` `command` arguments/metadata so Activity and segment details are never blank when runtime provided command text.
+- UC-008: Codex web-search item lifecycle is represented as canonical `search_web` tool-call segment/activity with query arguments (instead of generic text/noise).
+- UC-009: Codex web-search mirror runtime events do not produce UI-facing noisy segment content.
 
 ## Out Of Scope
 - Changing Codex App Server protocol itself.
@@ -42,6 +44,8 @@
 | R-005 | Regression safety must be enforced with automated tests covering normal and missing-segment-start paths. | Added/updated backend+frontend tests fail before fix and pass after fix. |
 | R-006 | Backend adapter must normalize file-change arguments when explicit args are empty placeholders and recover `path`/`patch` from `change`/`file_change`/`changes[]`. | Canonical `TOOL_APPROVAL_REQUESTED`/tool lifecycle payloads for `edit_file` include non-empty path/patch whenever runtime payload carries those values in nested file-change fields. |
 | R-007 | Backend adapter must normalize command-execution payloads so canonical `run_bash` metadata/arguments include non-empty `command` when runtime payload includes command text (`payload.command`, `item.command`, or command action variants). | `SEGMENT_START`/`SEGMENT_END` and tool-argument projections for `run_bash` include non-empty `command`, and frontend Activity `run_bash.arguments.command` is populated. |
+| R-008 | Backend adapter must normalize Codex `webSearch` items into canonical `tool_call` with `tool_name=search_web` and projected query arguments. | `SEGMENT_START`/`SEGMENT_END` for web-search use stable invocation id (`ws_*`), `segment_type=tool_call`, and metadata arguments (`query`, `queries`) for frontend rendering. |
+| R-009 | Backend adapter must suppress Codex mirror web-search runtime events from UI-facing stream payloads. | `codex/event/web_search_begin` and `codex/event/web_search_end` do not generate visible segment-content artifacts in frontend conversation/activity. |
 
 ## Acceptance Criteria
 - AC-001 (`R-001`): Given Codex `item/added` with command/file/tool-like item type variants, mapper emits `SEGMENT_START` with canonical tool segment type and non-empty id.
@@ -51,6 +55,8 @@
 - AC-005 (`R-005`): Test suites include new assertions for missing-segment-start recovery and tool-type classification variants.
 - AC-006 (`R-006`): Given `item/file_change/request_approval` with `arguments: { path: "", patch: "" }` and `item.changes[0]` containing `path` and `diff`, mapper emits canonical payload with `arguments.path=<path>` and `arguments.patch=<diff>`.
 - AC-007 (`R-007`): Given `item/added`/`item/completed` command-execution payloads with `item.command=<command>`, mapper emits canonical `run_bash` metadata/arguments with that command and frontend Activity displays non-empty `command`.
+- AC-008 (`R-008`): Given Codex `item/started`/`item/completed` with `item.type=webSearch`, mapper emits canonical `SEGMENT_START`/`SEGMENT_END` as `tool_call` with metadata `tool_name=search_web`, stable id from `item.id`, and non-empty query arguments when runtime payload provides them.
+- AC-009 (`R-009`): Given Codex `codex/event/web_search_begin` and `codex/event/web_search_end`, mapper emits no-op stream content (empty delta), so frontend does not render additional visible segments for these mirror events.
 
 ## Constraints / Dependencies
 - Existing WebSocket protocol message types remain authoritative.
@@ -77,3 +83,5 @@
 | R-005 | UC-001, UC-002, UC-003, UC-004, UC-005 |
 | R-006 | UC-006 |
 | R-007 | UC-007 |
+| R-008 | UC-008 |
+| R-009 | UC-009 |
