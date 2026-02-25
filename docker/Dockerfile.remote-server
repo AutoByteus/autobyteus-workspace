@@ -1,0 +1,47 @@
+# syntax=docker/dockerfile:1
+
+FROM node:20-bookworm AS builder
+WORKDIR /app
+
+RUN corepack enable
+
+COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+COPY autobyteus-ts/package.json autobyteus-ts/tsconfig.build.json autobyteus-ts/tsconfig.json ./autobyteus-ts/
+COPY autobyteus-server-ts/package.json autobyteus-server-ts/tsconfig.json ./autobyteus-server-ts/
+
+COPY autobyteus-ts ./autobyteus-ts
+COPY autobyteus-server-ts ./autobyteus-server-ts
+
+RUN pnpm install --no-frozen-lockfile
+RUN pnpm -C autobyteus-server-ts exec prisma generate --schema prisma/schema.prisma
+RUN pnpm -C autobyteus-server-ts build
+
+FROM node:20-bookworm-slim AS runtime
+WORKDIR /app
+
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends openssl \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN corepack enable && corepack prepare pnpm@10.30.2 --activate
+
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/autobyteus-ts ./autobyteus-ts
+COPY --from=builder /app/autobyteus-server-ts ./autobyteus-server-ts
+
+COPY docker/remote-server-entrypoint.sh /usr/local/bin/remote-server-entrypoint.sh
+RUN chmod +x /usr/local/bin/remote-server-entrypoint.sh
+
+ENV NODE_ENV=production \
+    AUTOBYTEUS_BIND_HOST=0.0.0.0 \
+    AUTOBYTEUS_SERVER_PORT=8000 \
+    AUTOBYTEUS_DATA_DIR=/home/autobyteus/data \
+    AUTOBYTEUS_NODE_DISCOVERY_ENABLED=true \
+    AUTOBYTEUS_NODE_DISCOVERY_ROLE=client \
+    AUTOBYTEUS_NODE_DISCOVERY_REGISTRY_URL=http://main-allinone:8000 \
+    LOG_LEVEL=INFO \
+    AUTOBYTEUS_HTTP_ACCESS_LOG_MODE=errors \
+    AUTOBYTEUS_HTTP_ACCESS_LOG_INCLUDE_NOISY=false
+
+EXPOSE 8000
+ENTRYPOINT ["/usr/local/bin/remote-server-entrypoint.sh"]

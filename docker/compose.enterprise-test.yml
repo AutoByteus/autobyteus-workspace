@@ -1,0 +1,117 @@
+services:
+  main-allinone:
+    image: autobyteus-enterprise-allinone:${AUTOBYTEUS_ALLINONE_IMAGE_TAG:-local}
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.allinone
+      args:
+        CHROME_VNC_TAG: ${AUTOBYTEUS_CHROME_VNC_TAG:-zh}
+    cap_add:
+      - SYS_ADMIN
+    security_opt:
+      - seccomp=unconfined
+    environment:
+      AUTOBYTEUS_BIND_HOST: 0.0.0.0
+      AUTOBYTEUS_SERVER_PORT: 8000
+      AUTOBYTEUS_DATA_DIR: /home/autobyteus/data
+      AUTOBYTEUS_SERVER_HOST: ${AUTOBYTEUS_SERVER_HOST}
+      AUTOBYTEUS_VNC_SERVER_HOSTS: ${AUTOBYTEUS_VNC_SERVER_HOSTS}
+      AUTOBYTEUS_NODE_DISCOVERY_ENABLED: "true"
+      AUTOBYTEUS_NODE_DISCOVERY_ROLE: ${AUTOBYTEUS_HOME_DISCOVERY_ROLE:-registry}
+      AUTOBYTEUS_NODE_DISCOVERY_REGISTRY_URL: ${AUTOBYTEUS_HOME_DISCOVERY_REGISTRY_URL:-http://main-allinone:8000}
+      APP_ENV: ${APP_ENV:-production}
+      PERSISTENCE_PROVIDER: ${PERSISTENCE_PROVIDER:-sqlite}
+      DB_TYPE: ${DB_TYPE:-sqlite}
+      AUTOBYTEUS_LOG_LEVEL: ${AUTOBYTEUS_LOG_LEVEL:-INFO}
+      AUTOBYTEUS_HTTP_ACCESS_LOG_MODE: ${AUTOBYTEUS_HTTP_ACCESS_LOG_MODE:-errors}
+      AUTOBYTEUS_HTTP_ACCESS_LOG_INCLUDE_NOISY: ${AUTOBYTEUS_HTTP_ACCESS_LOG_INCLUDE_NOISY:-false}
+      AUTOBYTEUS_LLM_SERVER_HOSTS: ""
+      OLLAMA_HOSTS: http://host.docker.internal:11434
+      LMSTUDIO_HOSTS: http://host.docker.internal:1234
+
+      GATEWAY_HOST: 0.0.0.0
+      GATEWAY_PORT: 8010
+      GATEWAY_SERVER_BASE_URL: http://main-allinone:8000
+      GATEWAY_SERVER_SHARED_SECRET: ${GATEWAY_SERVER_SHARED_SECRET}
+      GATEWAY_ADMIN_TOKEN: ${GATEWAY_ADMIN_TOKEN}
+      GATEWAY_WHATSAPP_PERSONAL_ENABLED: ${GATEWAY_WHATSAPP_PERSONAL_ENABLED:-false}
+      GATEWAY_WHATSAPP_PERSONAL_AUTH_ROOT: /app/autobyteus-message-gateway/memory/whatsapp-personal
+      GATEWAY_WECHAT_PERSONAL_ENABLED: ${GATEWAY_WECHAT_PERSONAL_ENABLED:-false}
+      GATEWAY_WECHAT_PERSONAL_SIDECAR_SHARED_SECRET: ${GATEWAY_WECHAT_PERSONAL_SIDECAR_SHARED_SECRET:-}
+      GATEWAY_WECHAT_PERSONAL_STATE_ROOT: /app/autobyteus-message-gateway/memory/wechat-personal
+      GATEWAY_DISCORD_ENABLED: ${GATEWAY_DISCORD_ENABLED:-false}
+      GATEWAY_DISCORD_BOT_TOKEN: ${GATEWAY_DISCORD_BOT_TOKEN:-}
+      GATEWAY_DISCORD_ACCOUNT_ID: ${GATEWAY_DISCORD_ACCOUNT_ID:-}
+      GATEWAY_TELEGRAM_ENABLED: ${GATEWAY_TELEGRAM_ENABLED:-false}
+      GATEWAY_TELEGRAM_BOT_TOKEN: ${GATEWAY_TELEGRAM_BOT_TOKEN:-}
+      GATEWAY_TELEGRAM_ACCOUNT_ID: ${GATEWAY_TELEGRAM_ACCOUNT_ID:-}
+      GATEWAY_TELEGRAM_POLLING_ENABLED: ${GATEWAY_TELEGRAM_POLLING_ENABLED:-true}
+      GATEWAY_TELEGRAM_WEBHOOK_ENABLED: ${GATEWAY_TELEGRAM_WEBHOOK_ENABLED:-false}
+      GATEWAY_TELEGRAM_WEBHOOK_SECRET_TOKEN: ${GATEWAY_TELEGRAM_WEBHOOK_SECRET_TOKEN:-}
+
+      NODE_ENV: development
+      CI: "true"
+      WEB_PORT: 3000
+      BACKEND_PROXY_URL: http://127.0.0.1:8000
+      # Browser-side node binding must target the host-mapped backend port.
+      BACKEND_NODE_BASE_URL: http://127.0.0.1:${AUTOBYTEUS_HOST_BACKEND_PORT}
+      BACKEND_GRAPHQL_BASE_URL: http://127.0.0.1:${AUTOBYTEUS_HOST_BACKEND_PORT}/graphql
+      BACKEND_REST_BASE_URL: http://127.0.0.1:${AUTOBYTEUS_HOST_BACKEND_PORT}/rest
+      BACKEND_PROXY_WS_URL: ws://127.0.0.1:${AUTOBYTEUS_HOST_BACKEND_PORT}
+      BACKEND_AGENT_WS_ENDPOINT: ws://127.0.0.1:${AUTOBYTEUS_HOST_BACKEND_PORT}/ws/agent
+      BACKEND_TEAM_WS_ENDPOINT: ws://127.0.0.1:${AUTOBYTEUS_HOST_BACKEND_PORT}/ws/agent-team
+      BACKEND_GRAPHQL_WS_ENDPOINT: ws://127.0.0.1:${AUTOBYTEUS_HOST_BACKEND_PORT}/graphql
+      BACKEND_TRANSCRIPTION_WS_ENDPOINT: ws://127.0.0.1:${AUTOBYTEUS_HOST_BACKEND_PORT}/ws/transcribe
+      BACKEND_TERMINAL_WS_ENDPOINT: ws://127.0.0.1:${AUTOBYTEUS_HOST_BACKEND_PORT}/ws/terminal
+      BACKEND_FILE_EXPLORER_WS_ENDPOINT: ws://127.0.0.1:${AUTOBYTEUS_HOST_BACKEND_PORT}/ws/file-explorer
+      MESSAGE_GATEWAY_BASE_URL: http://127.0.0.1:${AUTOBYTEUS_HOST_GATEWAY_PORT}
+      MESSAGE_GATEWAY_ADMIN_TOKEN: ${GATEWAY_ADMIN_TOKEN}
+    ports:
+      - "127.0.0.1:${AUTOBYTEUS_HOST_BACKEND_PORT}:8000"
+      - "127.0.0.1:${AUTOBYTEUS_HOST_WEB_PORT}:3000"
+      - "127.0.0.1:${AUTOBYTEUS_HOST_GATEWAY_PORT}:8010"
+      - "127.0.0.1:${AUTOBYTEUS_HOST_VNC_PORT}:5900"
+      - "127.0.0.1:${AUTOBYTEUS_HOST_NOVNC_PORT}:6080"
+      - "127.0.0.1:${AUTOBYTEUS_HOST_CHROME_DEBUG_PORT}:9223"
+    volumes:
+      - main-allinone-data:/home/autobyteus/data
+      - gateway-memory:/app/autobyteus-message-gateway/memory
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+
+  remote-server:
+    image: autobyteus-enterprise-remote-server:${AUTOBYTEUS_REMOTE_IMAGE_TAG:-local}
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.remote-server
+    profiles:
+      - remote
+    depends_on:
+      - main-allinone
+    environment:
+      AUTOBYTEUS_BIND_HOST: 0.0.0.0
+      AUTOBYTEUS_SERVER_PORT: 8000
+      AUTOBYTEUS_DATA_DIR: /home/autobyteus/data
+      AUTOBYTEUS_SERVER_HOST: http://127.0.0.1:8000
+      AUTOBYTEUS_NODE_DISCOVERY_ENABLED: "true"
+      AUTOBYTEUS_NODE_DISCOVERY_ROLE: client
+      AUTOBYTEUS_NODE_DISCOVERY_REGISTRY_URL: http://main-allinone:8000
+      APP_ENV: ${APP_ENV:-production}
+      PERSISTENCE_PROVIDER: ${PERSISTENCE_PROVIDER:-sqlite}
+      DB_TYPE: ${DB_TYPE:-sqlite}
+      AUTOBYTEUS_LOG_LEVEL: ${AUTOBYTEUS_LOG_LEVEL:-INFO}
+      AUTOBYTEUS_HTTP_ACCESS_LOG_MODE: ${AUTOBYTEUS_HTTP_ACCESS_LOG_MODE:-errors}
+      AUTOBYTEUS_HTTP_ACCESS_LOG_INCLUDE_NOISY: ${AUTOBYTEUS_HTTP_ACCESS_LOG_INCLUDE_NOISY:-false}
+      AUTOBYTEUS_LLM_SERVER_HOSTS: ""
+      OLLAMA_HOSTS: http://host.docker.internal:11434
+      LMSTUDIO_HOSTS: http://host.docker.internal:1234
+    tmpfs:
+      - /home/autobyteus/data
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+
+volumes:
+  main-allinone-data:
+  gateway-memory:

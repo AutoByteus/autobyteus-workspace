@@ -23,6 +23,46 @@ If cloned without `--recurse-submodules`:
 git submodule update --init --recursive
 ```
 
+## All-in-one Docker startup
+
+For ticket testing with isolated, collision-safe ports (single main all-in-one container + optional remote server-only containers):
+
+```bash
+./scripts/enterprise-docker.sh up
+./scripts/enterprise-docker.sh ports
+```
+
+Default `up` behavior includes:
+
+- one remote server node (`--remote-nodes 1`)
+- fixture seeding (`--seed-test-fixtures`)
+- post-start remote full sync (`--sync-remotes`)
+
+If you want only main container startup:
+
+```bash
+./scripts/enterprise-docker.sh up -r 0 --no-seed-test-fixtures --no-sync-remotes
+```
+
+Optional: seed ready-to-test Professor/Student fixtures:
+
+```bash
+./scripts/enterprise-docker.sh seed
+# or during startup:
+./scripts/enterprise-docker.sh up --seed-test-fixtures
+```
+
+Optional: after startup, run automatic full sync from embedded node to discovered remotes:
+
+```bash
+./scripts/enterprise-docker.sh up --remote-nodes 1 --seed-test-fixtures --sync-remotes
+# or run on existing stack:
+./scripts/enterprise-docker.sh sync-remotes -r 1
+```
+
+Full guide:
+- [`docker/README.md`](docker/README.md)
+
 ## Enterprise local startup (canonical)
 
 Use these commands from the monorepo root to avoid accidental writes to `~/.autobyteus/server-data`.
