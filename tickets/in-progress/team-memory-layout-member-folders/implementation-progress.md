@@ -201,6 +201,36 @@
   - `pnpm -C autobyteus-server-ts test tests/integration/agent-team-execution/agent-team-instance-manager.integration.test.ts tests/unit/run-history/team-member-memory-projection-reader.test.ts tests/unit/run-history/team-member-run-projection-service.test.ts tests/e2e/run-history/team-run-restore-distributed-process-graphql.e2e.test.ts --reporter=dot` (4 files / 24 tests passed),
   - `pnpm -C autobyteus-server-ts test tests/integration/agent-execution/agent-instance-manager.integration.test.ts --reporter=dot` (1 file / 6 tests passed).
 
+## 2026-02-24 (Post UC-034 Architecture Re-Validation + Artifact Sync)
+- [x] Completed general architecture deep-review sweep for communication lifecycle (`start`, `terminate`, `continue`, cross-node reply).
+- [x] Confirmed no blocker-level separation-of-concerns regressions after worker rerun-liveness fix.
+- [x] Synchronized ticket review artifact with two-round stability proof:
+  - `future-state-runtime-call-stack-review.md` Round 69 (`Candidate Go`) and Round 70 (`Go Confirmed`).
+- [x] Recorded non-blocking refactor opportunities for future follow-up (bootstrap orchestration decomposition + explicit runtime-health contract).
+
+## 2026-02-24 (WS-19: Worker Bootstrap SoC Decomposition)
+- [x] Added `src/distributed/bootstrap/worker-bootstrap-member-artifact-service.ts`:
+  - owns worker-local member-binding memoryDir shaping and local member `run_manifest.json` persistence.
+- [x] Added `src/distributed/bootstrap/worker-bootstrap-runtime-reconciler.ts`:
+  - owns stale-binding teardown, stopped-runtime rebuild, and run-binding reconciliation.
+- [x] Refactored `src/distributed/bootstrap/remote-envelope-bootstrap-handler.ts`:
+  - reduced handler to orchestration flow,
+  - preserved host-definition binding identity and worker-definition runtime creation identity contracts.
+- [x] Added unit coverage for extracted collaborators:
+  - `tests/unit/distributed/worker-bootstrap-member-artifact-service.test.ts`,
+  - `tests/unit/distributed/worker-bootstrap-runtime-reconciler.test.ts`.
+- [x] Verification:
+  - `pnpm -C autobyteus-server-ts test tests/unit/distributed/worker-bootstrap-member-artifact-service.test.ts tests/unit/distributed/worker-bootstrap-runtime-reconciler.test.ts tests/unit/distributed/remote-envelope-bootstrap-handler.test.ts --reporter=dot` (`3 files / 9 tests passed`),
+  - `pnpm -C autobyteus-server-ts test tests/integration/distributed/team-rerun-rebootstrap.integration.test.ts tests/integration/run-history/distributed-team-memory-lifecycle.integration.test.ts --reporter=dot` (`2 files / 3 tests passed`),
+  - `pnpm -C autobyteus-server-ts test tests/unit/distributed --reporter=dot` (`39 files / 136 tests passed`).
+- [x] Full-suite feedback + local fix:
+  - full backend run initially exposed one fixture drift in `tests/integration/distributed/bootstrap-rebind-cleanup-order.integration.test.ts` (stub still used `createTeamInstanceWithId`),
+  - updated fixture to use `createWorkerProjectionTeamInstanceWithId` (no design impact; local test-adapter fix).
+- [x] Full backend verification:
+  - `pnpm -C autobyteus-server-ts test --reporter=dot` (`310 passed, 3 skipped` test files; `1206 passed, 7 skipped` tests).
+- [x] Deep-review stability gate for this iteration:
+  - `future-state-runtime-call-stack-review.md` Round 71 (`Candidate Go`) and Round 72 (`Go Confirmed`).
+
 ## 2026-02-24 (Worker Locality + Member Run Manifest Iteration)
 - [x] Investigated and confirmed worker-side foreign-member materialization root cause:
   - non-local coordinator initialization executed during worker bootstrap.
@@ -242,4 +272,342 @@
   - Round 41 `No-Go` (blocking SoC findings),
   - Round 42 `Candidate Go`,
   - Round 43 `Go Confirmed`.
-- [ ] Implementation of WS-11..WS-14 not started yet (planning gate completed; execution pending).
+- [x] Implementation kickoff completed for WS-11..WS-14 (execution started after planning gate).
+
+## 2026-02-24 (Deep Review Re-Run: Future-State Call-Stack SoC Alignment)
+- [x] Ran another deep review explicitly against future-state call-stack SoC consistency.
+- [x] Found and fixed call-stack drift against `proposed-design.md v16`:
+  - nested create flow still referenced resolver-internal orchestration,
+  - delete/preflight flows did not show facade -> command-service delegation,
+  - identity/workspace/naming flows did not consistently show application-service + hydration-service boundaries.
+- [x] Updated `/Users/normy/autobyteus_org/autobyteus-workspace/tickets/in-progress/team-memory-layout-member-folders/future-state-runtime-call-stack.md` to `v16`.
+- [x] Recorded review loop:
+  - Round 44 `No-Go` (drift blockers),
+  - Round 45 `Candidate Go`,
+  - Round 46 `Go Confirmed`.
+
+## 2026-02-24 (Deep Review Re-Run: Proposed-Design + Plan Ownership Alignment)
+- [x] Ran one more deep review focused on strict SoC ownership mapping across design + implementation plan.
+
+## 2026-02-24 (Architecture Hardening: Worker Projection Validation Ownership)
+- [x] Re-investigated latest distributed send failure from runtime logs:
+  - host log and worker log confirmed worker bootstrap throw:
+    `AgentTeamCreationError: Remote member 'professor' requires workspaceRootPath for home node 'node-disabled'`.
+- [x] Implemented behavior fix first:
+  - worker bootstrap path now allows non-local projection members without requiring host-only workspace-root validation.
+- [x] Performed explicit SoC cleanup (no flag-hack boundary):
+  - removed low-level skip-flag usage from distributed bootstrap call sites,
+  - added explicit manager-owned projection API:
+    `createWorkerProjectionTeamInstanceWithId(...)`,
+  - retained strict validation defaults for generic create APIs.
+- [x] Updated tests to lock architecture contract:
+  - `tests/unit/distributed/remote-envelope-bootstrap-handler.test.ts`,
+  - `tests/integration/agent-team-execution/agent-team-instance-manager.integration.test.ts`.
+- [x] Verification:
+  - `pnpm -C /Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts test tests/integration/agent-team-execution/agent-team-instance-manager.integration.test.ts tests/unit/distributed/remote-envelope-bootstrap-handler.test.ts` (`20/20` passed),
+  - `pnpm -C /Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts test tests/integration/distributed/team-rerun-rebootstrap.integration.test.ts tests/integration/run-history/distributed-team-memory-lifecycle.integration.test.ts` (`3/3` passed).
+- [x] Found residual ownership drift:
+  - design runtime-flow diagram still implied resolver-owned orchestration,
+  - change-inventory rows still assigned policy-heavy work to resolver/facade modules,
+  - implementation plan still had non-strict resolver/facade phrasing in a few workstreams.
+- [x] Updated `proposed-design.md` to `v17`:
+  - diagram ownership aligned to application-service orchestration,
+  - change inventory rows remapped to strict module owners.
+- [x] Updated `implementation-plan.md`:
+  - resolver/facade layers marked delegation-only,
+  - command/query and application/hydration ownership criteria tightened.
+- [x] Recorded deep-review loop:
+  - Round 47 `No-Go` (design/plan ownership blockers),
+  - Round 48 `Candidate Go`,
+  - Round 49 `Go Confirmed`.
+
+## 2026-02-24 (Implementation Execution: WS-11 Resolver/Application Split)
+- [x] Implemented `team-runtime-bootstrap-application-service`:
+  - new file `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/agent-team-execution/services/team-runtime-bootstrap-application-service.ts`
+  - owns team create/lazy-create preparation (`teamId`, placement-aware member configs, manifest input).
+- [x] Refactored resolver to delegation-only for team bootstrap preparation:
+  - updated `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/api/graphql/types/agent-team-instance.ts`
+  - removed resolver-internal placement/manifest assembly helpers and now delegates to application service.
+- [x] Added unit coverage for new service:
+  - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/unit/agent-team-execution/team-runtime-bootstrap-application-service.test.ts`
+- [x] Regression verification:
+  - `pnpm -C /Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts test tests/unit/agent-team-execution/team-runtime-bootstrap-application-service.test.ts tests/unit/api/graphql/types/agent-team-instance-resolver.test.ts --reporter=dot` (2 files / 6 tests passed).
+- [x] WS-12 implemented; WS-13/WS-14 moved to active execution.
+
+## 2026-02-24 (Implementation Execution: WS-12 Team Manager Hydration Split)
+- [x] Implemented `team-member-config-hydration-service`:
+  - new file `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/agent-team-execution/services/team-member-config-hydration-service.ts`
+  - owns member definition resolution + processor/tool/skill/workspace hydration policy.
+- [x] Refactored manager orchestration to delegate hydration:
+  - updated `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/agent-team-execution/services/agent-team-instance-manager.ts`
+  - removed in-manager hydration/policy methods and replaced with delegation to hydration service.
+- [x] Regression verification:
+  - `pnpm -C /Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts test tests/integration/agent-team-execution/agent-team-instance-manager.integration.test.ts tests/unit/agent-team-execution/team-runtime-bootstrap-application-service.test.ts tests/unit/api/graphql/types/agent-team-instance-resolver.test.ts --reporter=dot` (3 files / 22 tests passed).
+- [x] WS-13/WS-14 implemented and verified (see next section).
+
+## 2026-02-24 (Implementation Execution: WS-13 Distributed Composition Split + WS-14 Run-History Command/Query Split)
+- [x] Implemented WS-13 distributed runtime composition modularization:
+  - added `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/bootstrap/distributed-runtime-composition-factory.ts` as dependency-assembly boundary,
+  - added `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/bootstrap/runtime-team-resolution.ts` for bound-runtime resolution helpers,
+  - added `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/bootstrap/worker-team-definition-reconciler.ts` for worker definition reconciliation,
+  - added `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/bootstrap/host-bootstrap-snapshot-resolver.ts` for host bootstrap snapshot/team lookup helpers,
+  - reduced `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/bootstrap/default-distributed-runtime-composition.ts` to cache + stable API re-exports + delegation.
+- [x] Implemented WS-14 run-history command/query split:
+  - added `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/run-history/services/team-run-history-command-service.ts` for mutation/lifecycle/delete policy,
+  - added `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/run-history/services/team-run-history-query-service.ts` for read/list/resume/rebuild,
+  - refactored `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/run-history/services/team-run-history-service.ts` into thin compatibility facade delegating to command/query services.
+- [x] Verification (targeted SoC regression suites):
+  - `pnpm -C /Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts test tests/unit/distributed/default-distributed-runtime-composition.test.ts tests/unit/run-history/team-run-history-service.test.ts tests/unit/api/graphql/types/team-run-history-resolver.test.ts tests/unit/api/graphql/types/agent-team-instance-resolver.test.ts --reporter=dot` (4 files / 27 tests passed).
+- [x] Verification (distributed + run-history integration/E2E parity):
+  - `pnpm -C /Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts test tests/integration/distributed tests/integration/run-history tests/e2e/run-history --reporter=dot` (27 files / 47 tests passed).
+- [x] Verification (full backend):
+  - parallel default run (`pnpm test --reporter=dot`) showed non-deterministic timing flakes in existing unrelated suites (`file-name-indexer.integration` timeout on one run, `prompt-service.integration` timeout on another run),
+  - isolated reruns for each failing suite passed,
+  - serialized full run passed: `pnpm -C /Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts test --reporter=dot --maxWorkers=1` (307 files: 304 passed, 3 skipped; 1200 tests: 1193 passed, 7 skipped).
+- [x] Post-implementation docs sync decision:
+  - No external docs behavior change required in `autobyteus-server-ts/docs` for WS-13/WS-14 (refactor-only boundary split; runtime contracts unchanged). Ticket artifacts already capture architectural boundary updates.
+
+## 2026-02-24 (Deep Review Re-Run After WS-11..WS-14)
+- [x] Ran another deep architecture review over implemented core stacks for `UC-001..UC-030` with strict SoC criteria.
+- [x] Review outcome:
+  - Round 50 `Candidate Go` (no blockers),
+  - Round 51 `Go Confirmed` (second consecutive clean round).
+- [x] Artifact update:
+  - `/Users/normy/autobyteus_org/autobyteus-workspace/tickets/in-progress/team-memory-layout-member-folders/future-state-runtime-call-stack-review.md` updated with rounds 50-51.
+- [x] Optional (non-blocking) follow-up improvements recorded:
+  - further decomposition of `distributed-runtime-composition-factory.ts`,
+  - move run-history dependency wiring from facade constructor into dedicated service factory.
+
+## 2026-02-24 (Deep Review Re-Run: Additional SoC Architecture Pass)
+- [x] Performed one more deep architecture review pass over implemented boundaries and future-state core-stack mappings.
+- [x] Re-validated core boundary ownership in current implementation:
+  - GraphQL resolver remains delegation-only,
+  - application-service and hydration-service boundaries remain explicit,
+  - run-history facade remains command/query delegator,
+  - distributed runtime default entry remains cache/wrapper around factory composition.
+- [x] Review outcome:
+  - Round 52 `Candidate Go` (no blockers),
+  - Round 53 `Go Confirmed` (second consecutive clean round).
+- [x] Artifact update:
+  - `/Users/normy/autobyteus_org/autobyteus-workspace/tickets/in-progress/team-memory-layout-member-folders/future-state-runtime-call-stack-review.md` updated with rounds 52-53.
+- [x] Optional (non-blocking) improvement candidates kept in backlog:
+  - further decomposition of `distributed-runtime-composition-factory.ts`,
+  - further decomposition of `team-runtime-bootstrap-application-service.ts` into placement + manifest collaborator services.
+
+## 2026-02-24 (Implementation Execution: WS-15 + WS-16 Intra-Service Collaborator Decomposition)
+- [x] Completed workflow re-entry artifacts before implementation:
+  - updated `requirements.md` for continuation collaborator-split criteria,
+  - updated `proposed-design.md` to `v18` with `UC-031`, `UC-032`, `D-041..D-044`,
+  - updated `future-state-runtime-call-stack.md` to `v17`,
+  - deep review rounds recorded as `Round 54 Candidate Go` and `Round 55 Go Confirmed`.
+- [x] Implemented WS-15 distributed composition decomposition:
+  - added `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/bootstrap/distributed-runtime-core-dependencies.ts`,
+  - added `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/bootstrap/host-runtime-routing-dispatcher.ts`,
+  - refactored `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/bootstrap/distributed-runtime-composition-factory.ts` to delegate internal dependency and local-routing callback assembly while keeping composition API stable.
+- [x] Implemented WS-16 runtime bootstrap decomposition:
+  - added `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/agent-team-execution/services/team-member-placement-planning-service.ts`,
+  - added `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/agent-team-execution/services/team-run-manifest-assembly-service.ts`,
+  - refactored `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/agent-team-execution/services/team-runtime-bootstrap-application-service.ts` to orchestration-only with collaborator delegation.
+- [x] Added focused regression coverage for new modules:
+  - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/unit/agent-team-execution/team-member-placement-planning-service.test.ts`,
+  - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/unit/agent-team-execution/team-run-manifest-assembly-service.test.ts`,
+  - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/unit/distributed/host-runtime-routing-dispatcher.test.ts`,
+  - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/unit/distributed/distributed-runtime-core-dependencies.test.ts`.
+- [x] Verification:
+  - targeted suite:
+    - `pnpm -C autobyteus-server-ts test tests/unit/agent-team-execution/team-runtime-bootstrap-application-service.test.ts tests/unit/agent-team-execution/team-member-placement-planning-service.test.ts tests/unit/agent-team-execution/team-run-manifest-assembly-service.test.ts tests/unit/distributed/default-distributed-runtime-composition.test.ts tests/unit/distributed/host-runtime-routing-dispatcher.test.ts tests/unit/distributed/distributed-runtime-core-dependencies.test.ts --reporter=dot`
+    - result: `6` files passed, `23` tests passed.
+  - full backend serialized suite:
+    - `pnpm -C autobyteus-server-ts test --reporter=dot --maxWorkers=1`
+    - result: `308` files passed, `3` skipped; `1199` tests passed, `7` skipped.
+- [x] Post-implementation docs sync decision:
+  - no external docs behavior update required in `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/docs` for WS-15/WS-16,
+  - this iteration is internal architecture decomposition only; runtime contracts and memory-layout docs remain unchanged.
+
+## 2026-02-24 (Implementation Execution: WS-17 Worker Locality Ownership Correction)
+- [x] Re-investigated worker artifact leak after fresh runtime reproduction:
+  - worker memory contained non-local coordinator subtree under `memory/agent_teams/<teamId>/professor_*`,
+  - root cause isolated to locality classification drift (`embedded-local` from definition snapshot interpreted as worker-local) and unconditional worker `memoryDir` assignment.
+- [x] Implemented binding-first locality resolution in manager hydration path:
+  - updated `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/agent-team-execution/services/agent-team-instance-manager.ts` to derive effective home node by precedence:
+    - `memberConfig.hostNodeId` first,
+    - definition `homeNodeId` fallback.
+  - workspace/locality policy and hydration placement metadata now use effective home-node identity.
+- [x] Implemented worker bootstrap `memoryDir` ownership guard:
+  - updated `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/bootstrap/remote-envelope-bootstrap-handler.ts`,
+  - worker assigns `memoryDir` only for worker-local bindings and forces non-local bindings to `memoryDir=null`.
+- [x] Added/updated regression tests:
+  - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/unit/distributed/remote-envelope-bootstrap-handler.test.ts`
+    - asserts non-local binding (`professor`) has `memoryDir=null`,
+    - asserts local binding (`student`) keeps canonical team-member path.
+  - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-instance-manager.integration.test.ts`
+    - asserts coordinator placement metadata uses binding `hostNodeId` when definition `homeNodeId` is `embedded-local`.
+- [x] Verification:
+  - targeted:
+    - `pnpm test tests/unit/distributed/remote-envelope-bootstrap-handler.test.ts tests/integration/agent-team-execution/agent-team-instance-manager.integration.test.ts --reporter=dot` (2 files / 20 tests passed),
+  - distributed/run-history:
+    - `pnpm test tests/integration/distributed tests/integration/run-history tests/e2e/run-history --reporter=dot` (27 files / 47 tests passed),
+  - full backend serialized:
+    - `pnpm test --reporter=dot --maxWorkers=1` (311 files: 308 passed, 3 skipped; 1207 tests: 1200 passed, 7 skipped).
+- [x] Ticket artifact sync for this iteration:
+  - updated `investigation-notes.md`, `requirements.md`, `proposed-design.md`, `future-state-runtime-call-stack.md`, `future-state-runtime-call-stack-review.md`, `implementation-plan.md`.
+
+## 2026-02-24 (Deep Review Re-Run: Full Use-Case Core-Stack + Artifact Drift Correction)
+- [x] Ran another deep review pass across all modeled use cases with strict SoC criteria:
+  - resolver/application delegation boundaries,
+  - manager/hydration policy boundaries,
+  - distributed composition collaborator boundaries,
+  - run-history command/query boundaries,
+  - worker-locality ownership contract.
+- [x] Found documentation drift blockers (Round 63 `No-Go`):
+  - `proposed-design.md` version metadata lagged behind v19 delta content,
+  - `UC-033` missing in design scope/coverage/traceability tables,
+  - worker flow diagram still referenced generic create API,
+  - call-stack examples still had stale `member_*` naming examples.
+- [x] Applied write-backs:
+  - updated `proposed-design.md` to `v19`,
+  - updated `future-state-runtime-call-stack.md` to `v18`,
+  - added `UC-033` and `D-045` coverage/traceability in design,
+  - aligned worker diagram to `createWorkerProjectionTeamInstanceWithId(...)`,
+  - aligned distributed naming examples to `<route_slug>_<hash16>`.
+- [x] Re-ran review stability gate:
+  - Round 64 `Candidate Go`,
+  - Round 65 `Go Confirmed`.
+
+## 2026-02-24 (Implementation Execution: WS-18 Worker Rerun Bootstrap Liveness Recovery)
+- [x] Re-investigated terminate->rerun worker reply failure from docker runtime logs:
+  - observed host->worker dispatch success with worker-member `send_message_to` failure:
+    `Agent team worker for '<teamId>' is not active.`
+  - confirmed split path: worker local ingress can start nodes on-demand even when team runtime worker is stopped.
+- [x] Implemented bootstrap liveness recovery in:
+  - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/bootstrap/remote-envelope-bootstrap-handler.ts`
+    - stopped cached runtime-team is now treated as stale and rebuilt before `bindRun`,
+    - stale bound-run pointing to stopped runtime now runs teardown/unbind/finalize before rebuild,
+    - fast path remains only for bound-and-running runtime.
+- [x] Added regression coverage:
+  - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/unit/distributed/remote-envelope-bootstrap-handler.test.ts`
+    - `recreates stopped runtime team on rerun bootstrap before binding run`,
+    - `rebuilds stale bound run when bound runtime team exists but is stopped`.
+- [x] Verification:
+  - `pnpm -C /Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts test tests/unit/distributed/remote-envelope-bootstrap-handler.test.ts --reporter=dot` (`5/5` passed),
+  - `pnpm -C /Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts test tests/integration/distributed/team-rerun-rebootstrap.integration.test.ts tests/integration/run-history/distributed-team-memory-lifecycle.integration.test.ts --reporter=dot` (`3/3` passed).
+- [x] Workflow artifact sync for this iteration:
+  - updated `investigation-notes.md`, `requirements.md`, `proposed-design.md`, `future-state-runtime-call-stack.md`, `future-state-runtime-call-stack-review.md`, `implementation-plan.md`.
+- [x] Review gate result:
+  - Round 66 `No-Go` (stopped-runtime reuse blocker),
+  - Round 67 `Candidate Go`,
+  - Round 68 `Go Confirmed`.
+
+## 2026-02-24 (Implementation Execution: WS-20 Worker Dispatch Policy Centralization)
+- [x] Re-investigated worker dispatch-layer concern mixing:
+  - message/control handlers duplicated ownership predicates + worker-managed-run local-dispatch gates,
+  - worker command-layer identity naming was ambiguous (`localNodeId`) for current-process ownership checks.
+- [x] Implemented centralized worker dispatch orchestrator:
+  - added `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/routing/worker-owned-member-dispatch-orchestrator.ts`.
+- [x] Refactored locality resolver contract:
+  - updated `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/routing/worker-member-locality-resolver.ts` with explicit ownership outcomes and `selfNodeId` naming.
+- [x] Removed duplicated local-dispatch policy logic from worker handlers:
+  - updated `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/bootstrap/remote-envelope-message-command-handlers.ts`,
+  - updated `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/bootstrap/remote-envelope-control-command-handlers.ts`,
+  - updated `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/bootstrap/remote-envelope-command-handlers.ts`.
+- [x] Added/updated tests:
+  - added `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/unit/distributed/worker-owned-member-dispatch-orchestrator.test.ts`,
+  - updated `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/unit/distributed/worker-member-locality-resolver.test.ts`,
+  - updated `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/unit/distributed/remote-envelope-message-command-handlers.test.ts`,
+  - updated `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/unit/distributed/remote-envelope-control-command-handlers.test.ts`.
+- [x] Verification:
+  - `pnpm -C /Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts test tests/unit/distributed/worker-member-locality-resolver.test.ts tests/unit/distributed/worker-owned-member-dispatch-orchestrator.test.ts tests/unit/distributed/remote-envelope-message-command-handlers.test.ts tests/unit/distributed/remote-envelope-control-command-handlers.test.ts tests/unit/distributed/remote-envelope-command-handlers.test.ts --reporter=dot` (`5 files / 16 tests passed`),
+  - `pnpm -C /Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts build` (passed).
+- [x] Workflow artifact sync:
+  - updated `investigation-notes.md`, `requirements.md`, `proposed-design.md`, `future-state-runtime-call-stack.md`, `future-state-runtime-call-stack-review.md`, `implementation-plan.md`.
+
+## 2026-02-24 (Deep Review Re-Run: Layering Boundary Sweep)
+- [x] Performed another architecture/layering deep review focusing on:
+  - distributed runtime-binding type ownership boundaries,
+  - placement planning dependency injection boundaries,
+  - worker command composition identity naming boundaries.
+- [x] Found blocker-level layering drift (Round 78 `No-Go`):
+  - distributed runtime-binding/routing modules still imported `TeamMemberConfigInput`,
+  - placement planning still read snapshots through default distributed runtime singleton,
+  - worker command composition still aliased `hostNodeId` into `selfNodeId`.
+- [x] Applied workflow write-backs:
+  - updated `requirements.md` with Case K + new acceptance/constraint/risk rules,
+  - updated `proposed-design.md` to `v23` with `UC-036` and `D-049..D-051`,
+  - updated `future-state-runtime-call-stack.md` to `v21` with `UC-036`,
+  - updated `future-state-runtime-call-stack-review.md` with rounds 78-80.
+- [x] Review-gate stability outcome:
+  - Round 79 `Candidate Go`,
+  - Round 80 `Go Confirmed`.
+- [x] WS-21 implemented:
+  - added distributed-layer binding contract:
+    - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/runtime-binding/run-scoped-member-binding.ts`,
+    - runtime-binding registry + locality resolver now depend on distributed contract types only (no `agent-team-instance-manager` DTO import).
+  - injected node-snapshot provider boundary for placement planning:
+    - added `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/node-directory/placement-candidate-snapshot-provider.ts`,
+    - updated `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/agent-team-execution/services/team-member-placement-planning-service.ts` to consume injected provider and remove direct runtime-composition singleton access,
+    - threaded provider option through `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/agent-team-execution/services/team-runtime-bootstrap-application-service.ts`.
+  - removed command-handler boundary aliasing (`hostNodeId -> selfNodeId`):
+    - updated `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/bootstrap/remote-envelope-command-handlers.ts`,
+    - updated composition wiring in `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/bootstrap/distributed-runtime-composition-factory.ts`.
+  - updated tests:
+    - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/unit/distributed/run-scoped-team-binding-registry.test.ts`,
+    - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/unit/distributed/remote-envelope-command-handlers.test.ts`,
+    - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/unit/agent-team-execution/team-member-placement-planning-service.test.ts`,
+    - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/unit/agent-team-execution/team-runtime-bootstrap-application-service.test.ts`,
+    - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/integration/distributed/bootstrap-rebind-cleanup-order.integration.test.ts`.
+  - verification:
+    - targeted WS-21 suite:
+      - `pnpm -C /Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts test tests/unit/distributed/run-scoped-team-binding-registry.test.ts tests/unit/distributed/worker-member-locality-resolver.test.ts tests/unit/distributed/remote-envelope-message-command-handlers.test.ts tests/unit/distributed/remote-envelope-control-command-handlers.test.ts tests/unit/distributed/remote-envelope-command-handlers.test.ts tests/unit/agent-team-execution/team-member-placement-planning-service.test.ts tests/unit/agent-team-execution/team-runtime-bootstrap-application-service.test.ts tests/integration/distributed/bootstrap-rebind-cleanup-order.integration.test.ts --reporter=dot` (8 files / 21 tests passed),
+    - build:
+      - `pnpm -C /Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts build` (passed),
+    - full backend:
+      - `pnpm -C /Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts test --reporter=dot` (`312` files passed, `3` skipped; `1213` tests passed, `7` skipped).
+
+## 2026-02-24 (Post-Refactor Architecture Re-Assessment + Validation)
+- [x] Re-ran architecture deep review after latest WS-22 boundary updates:
+  - review rounds updated to `Round 81 Candidate Go` and `Round 82 Go Confirmed`.
+  - no blocker-level SoC/layering regressions found in resolver, distributed bootstrap, worker dispatch-policy, or run-history command/query boundaries.
+- [x] Backend build verification:
+  - `pnpm -C /Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts build` (passed).
+- [x] Backend targeted regression sweep (latest refactor touchpoints):
+  - `pnpm -C /Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts test tests/unit/distributed/team-command-ingress-service.test.ts tests/unit/api/graphql/types/agent-team-instance-resolver.test.ts tests/unit/distributed/remote-envelope-bootstrap-handler.test.ts tests/unit/distributed/worker-bootstrap-member-artifact-service.test.ts tests/unit/distributed/worker-bootstrap-runtime-reconciler.test.ts tests/unit/distributed/remote-envelope-command-handlers.test.ts tests/unit/distributed/remote-envelope-message-command-handlers.test.ts tests/unit/distributed/remote-envelope-control-command-handlers.test.ts tests/integration/distributed/bootstrap-rebind-cleanup-order.integration.test.ts --reporter=dot` (`9` files / `30` tests passed).
+- [x] Backend full-suite verification:
+  - parallel run: `pnpm -C /Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts test --reporter=dot` produced `2` timing-flake failures in file-explorer integration tests under heavy load:
+    - `tests/integration/file-explorer/file-name-indexer.integration.test.ts`,
+    - `tests/integration/file-explorer/file-system-watcher.integration.test.ts`.
+  - serial rerun of failing suites passed:
+    - `pnpm -C /Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts test tests/integration/file-explorer/file-name-indexer.integration.test.ts tests/integration/file-explorer/file-system-watcher.integration.test.ts --maxWorkers=1` (`2` files / `12` tests passed).
+- [x] Core library scoped verification requested by user:
+  - `npx vitest run tests/integration/agent/agent-single-flow.test.ts tests/integration/agent-team/agent-team-single-flow.test.ts`
+  - both tests failed in this environment because expected output files were not created by the tool-call runtime path; this is runtime/environment dependent and not a compile-time regression in this refactor set.
+
+## 2026-02-25 (Implementation Execution: WS-22 Run-History DI Tightening + Parallel Flake Stabilization)
+- [x] Re-entered workflow pipeline for remaining non-blocking improvements identified in Round 82:
+  - remove residual run-history service fallback dependency on default distributed runtime singleton,
+  - stabilize file-explorer integration timing under parallel full-suite load.
+- [x] Implemented composition-root runtime dependency registry for run-history:
+  - added `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/run-history/services/team-run-history-runtime-dependencies.ts`,
+  - updated `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/run-history/services/team-run-history-service.ts` to use injected runtime dependencies,
+  - updated `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/run-history/services/team-member-run-projection-service.ts` to consume runtime dependency registry,
+  - updated `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/app.ts` to configure/reset run-history runtime dependencies at composition root.
+- [x] Implemented file-explorer parallel-run stability hardening:
+  - updated `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/integration/file-explorer/file-name-indexer.integration.test.ts` (higher bounded timeout + richer timeout diagnostics),
+  - updated `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/integration/file-explorer/file-system-watcher.integration.test.ts` (increased bounded waits for event/no-event assertions and test-level timeout budgets).
+- [x] Verification:
+  - full backend parallel run:
+    - `cd /Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts && npx vitest run --reporter=dot`
+    - result: `312` files passed, `3` skipped; `1215` tests passed, `7` skipped.
+  - core library scoped integration run:
+    - `cd /Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-ts && npx vitest run tests/integration/agent/agent-single-flow.test.ts tests/integration/agent-team/agent-team-single-flow.test.ts`
+    - result: `2` files passed; `2` tests passed.
+- [x] Workflow artifact sync for this iteration:
+  - updated `implementation-plan.md`, `implementation-progress.md`, `future-state-runtime-call-stack-review.md`.
+
+## 2026-02-25 (Post-Verification Ticket Doc Sync: WS-22)
+- [x] Updated ticket artifacts to reflect implemented WS-22 boundaries and test evidence:
+  - `requirements.md` (Case L + acceptance/constraints/risks addenda),
+  - `proposed-design.md` (Design Delta v24, `D-052..D-057`),
+  - `future-state-runtime-call-stack.md` (`UC-037`, `UC-038`),
+  - `investigation-notes.md` (WS-22 investigation checkpoint).
+- [x] Deep-review doc-alignment gate passed:
+  - `future-state-runtime-call-stack-review.md` Round 85 `Candidate Go`, Round 86 `Go Confirmed`.

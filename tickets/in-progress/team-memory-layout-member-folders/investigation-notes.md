@@ -477,3 +477,332 @@ Functional coverage is strong, but these mixed-concern hotspots raise change ris
    - manager hydration extraction,
    - runtime composition assembly extraction,
    - run-history command/query split.
+
+## Re-Investigation Checkpoint (2026-02-24) - Future-State Call-Stack Drift Audit
+
+### Finding
+1. After refactor-planning updates (`v16` design), the call-stack artifact still contained several pre-refactor frames:
+   - resolver-internal nested-create orchestration,
+   - unsplit run-history delete/preflight mutation path,
+   - missing application-service/hydration-service boundaries in identity/workspace/naming use cases.
+
+### Implication
+Even with good design modules, an inconsistent call-stack artifact can mislead implementation mapping and hide concern mixing during execution planning.
+
+### Resolution
+1. Updated `future-state-runtime-call-stack.md` to `v16`.
+2. Corrected affected use cases (`UC-003`, `UC-017`, `UC-021`, `UC-023`, `UC-024`, `UC-025`, `UC-026`) to match planned SoC boundaries.
+3. Re-ran deep-review rounds to reconfirm stability (`Round 44 -> Round 46`).
+
+## Re-Investigation Checkpoint (2026-02-24) - Proposed-Design Ownership Drift Audit
+
+### Finding
+1. Despite call-stack alignment (`v16`), `proposed-design.md` still had residual ownership drift:
+   - runtime data-flow diagram implied resolver-owned config/placement orchestration,
+   - change-inventory rows still mapped policy-heavy work to resolver/facade modules.
+2. `implementation-plan.md` retained a few workstream lines that still framed resolver/facade layers as direct policy owners.
+
+### Implication
+Implementation could drift back into mixed concerns even with a clean call stack, because design/plan ownership mapping was still partially ambiguous.
+
+### Resolution
+1. Updated `proposed-design.md` to `v17`:
+   - diagram ownership aligned to application-service orchestration,
+   - change inventory re-mapped to strict owners (`team-runtime-bootstrap-application-service`, `team-member-config-hydration-service`, `team-run-history-command/query-service`).
+2. Updated `implementation-plan.md`:
+   - resolver/facade layers explicitly delegation-only,
+   - command/query ownership and verification checks tightened.
+3. Re-ran deep-review rounds (`Round 47 -> Round 49`) and re-established `Go Confirmed`.
+
+## Re-Investigation Checkpoint (2026-02-24) - Post-Refactor Decomposition Opportunity Audit
+
+### Sources Consulted
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/bootstrap/distributed-runtime-composition-factory.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/agent-team-execution/services/team-runtime-bootstrap-application-service.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/tickets/in-progress/team-memory-layout-member-folders/proposed-design.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/tickets/in-progress/team-memory-layout-member-folders/future-state-runtime-call-stack.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/tickets/in-progress/team-memory-layout-member-folders/future-state-runtime-call-stack-review.md`
+
+### Findings
+1. Core behavior is stable and covered, but two files remain oversized after WS-11..WS-14:
+   - `distributed-runtime-composition-factory.ts` (`399` lines),
+   - `team-runtime-bootstrap-application-service.ts` (`390` lines).
+2. `distributed-runtime-composition-factory.ts` still bundles multiple concern clusters:
+   - transport/auth/dependency creation,
+   - bootstrap dispatch closure wiring,
+   - worker event uplink wiring,
+   - host-local routing adapter callback wiring.
+3. `team-runtime-bootstrap-application-service.ts` still bundles multiple concern clusters:
+   - team identity generation + metadata fetch,
+   - placement graph traversal + host-node resolution,
+   - runtime member config shaping,
+   - manifest assembly + workspace-root normalization.
+4. Existing boundary rules are not violated, but these files still have multiple internal reasons-to-change, which weakens future iteration speed and review clarity.
+
+### Root Cause
+1. WS-11..WS-14 extracted top-level cross-file ownership boundaries first.
+2. A second-stage decomposition pass for intra-service collaborator boundaries was intentionally deferred.
+
+### Design Direction (No Behavior Drift)
+1. Split distributed factory internals into collaborator modules:
+   - core transport/auth dependency builder,
+   - host routing-dispatch callback builder.
+2. Split runtime bootstrap application internals into collaborator modules:
+   - placement planning service (`memberRouteKey -> hostNodeId`),
+   - manifest assembly service (workspace snapshot + binding materialization).
+3. Keep public APIs and runtime contracts unchanged:
+   - no GraphQL schema changes,
+   - no memory-layout/path contract changes,
+   - no distributed transport contract changes.
+
+### Implementation Implication
+1. This is a refactor-only continuation scope and should be treated as `Medium` with full workflow gating (requirements -> design -> call stack -> deep review -> implementation -> full tests).
+
+## Re-Investigation Checkpoint (2026-02-24) - Worker Non-Local Member Artifact Leak
+
+### Additional Sources Consulted
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/bootstrap/remote-envelope-bootstrap-handler.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/agent-team-execution/services/agent-team-instance-manager.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/agent-team-execution/services/team-member-config-hydration-service.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-ts/src/agent-team/bootstrap-steps/coordinator-initialization-step.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/unit/distributed/remote-envelope-bootstrap-handler.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-instance-manager.integration.test.ts`
+- Runtime evidence:
+  - docker worker memory tree under `/home/autobyteus/data/memory/agent_teams/<teamId>/`,
+  - worker log stream showing unexpected coordinator initialization.
+
+### Findings
+1. Worker memory contained non-local coordinator artifacts (`professor_*`) even though worker ownership should be `student_*` only.
+2. Worker bootstrap wrote `memoryDir` for all bindings, not just worker-local bindings.
+3. Locality classification inside manager/hydration path was based on definition `homeNodeId`.
+4. With distributed snapshots, host-local members may still carry `homeNodeId=embedded-local`; on worker this was incorrectly interpreted as local.
+5. `autobyteus-ts` coordinator bootstrap step already supports skipping non-local coordinators, but it depends on correct `teamMemberPlacement.isLocalToCurrentNode` metadata.
+
+### Root Cause
+Effective ownership on worker used the wrong source (`definition.homeNodeId`) instead of distributed binding ownership (`memberConfig.hostNodeId`) when present.
+
+### Resolution Direction
+1. Define effective locality precedence:
+   - first `memberConfig.hostNodeId`,
+   - fallback `definition.homeNodeId`.
+2. Derive hydration placement metadata from effective locality input.
+3. Assign worker `memoryDir` only for local bindings and force non-local `memoryDir=null`.
+4. Lock behavior with targeted unit + integration regression tests.
+
+## Re-Investigation Checkpoint (2026-02-24) - Worker Bootstrap Validation Policy Leakage
+
+### Additional Sources Consulted
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/agent-team-execution/services/agent-team-instance-manager.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/bootstrap/remote-envelope-bootstrap-handler.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/integration/agent-team-execution/agent-team-instance-manager.integration.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/unit/distributed/remote-envelope-bootstrap-handler.test.ts`
+- Runtime logs:
+  - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/logs/host-8000-debug.log`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/logs/docker-8001.log`
+
+### Findings
+1. Distributed routing failure was caused by worker bootstrap re-validating non-local member `workspaceRootPath` under strict host rules.
+2. Initial hotfix introduced a low-level skip flag (`skipRemoteWorkspaceRootPathValidation`) into generic `createTeamInstance*` API calls.
+3. That flag solved behavior but leaked distributed-bootstrap policy into a generic team-instance API surface, which is a separation-of-concerns smell.
+
+### Root Cause
+Worker projection creation and host strict creation have different validation policies, but were both funneled through one generic creation entrypoint without explicit creation-mode semantics.
+
+### Resolution Direction
+1. Keep strict default semantics in generic `createTeamInstance*` APIs.
+2. Add explicit manager-owned worker projection entrypoint:
+   - `createWorkerProjectionTeamInstanceWithId(...)`
+3. Move policy ownership into manager internals (`creationMode`), and make distributed bootstrap call the explicit projection API only.
+4. Keep behavior coverage with targeted regression tests and distributed lifecycle integration tests.
+
+## Re-Investigation Checkpoint (2026-02-24) - Artifact Drift After Locality Fix
+
+### Additional Sources Consulted
+- `/Users/normy/autobyteus_org/autobyteus-workspace/tickets/in-progress/team-memory-layout-member-folders/proposed-design.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/tickets/in-progress/team-memory-layout-member-folders/future-state-runtime-call-stack.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/tickets/in-progress/team-memory-layout-member-folders/future-state-runtime-call-stack-review.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/bootstrap/remote-envelope-bootstrap-handler.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/agent-team-execution/services/agent-team-instance-manager.ts`
+
+### Findings
+1. Ticket artifacts drifted from latest implementation after worker-locality changes:
+   - design version still declared `v18` despite v19 delta content,
+   - design scope/coverage did not include `UC-033`,
+   - diagram still referenced generic worker create API,
+   - call-stack examples still used stale `member_*` naming examples.
+2. Runtime code already reflected projection-specific worker creation API and binding-first locality ownership.
+
+### Implication
+If left unresolved, deep-review artifacts would under-specify latest behavior and weaken traceability between implementation and workflow docs.
+
+### Resolution Direction
+1. Promote design metadata to `v19` and add `UC-033` design coverage.
+2. Correct worker flow diagram API name to projection-specific manager entrypoint.
+3. Refresh call-stack artifact version and naming examples to match readable deterministic member ID contract.
+
+## Re-Investigation Checkpoint (2026-02-24) - Worker Rerun Bootstrap Stopped-Runtime Reuse
+
+### Additional Sources Consulted
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/logs/docker-8001.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/bootstrap/remote-envelope-bootstrap-handler.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/bootstrap/remote-envelope-control-command-handlers.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-ts/src/agent-team/runtime/agent-team-runtime.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-ts/src/agent-team/context/team-manager.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-ts/src/agent/message/send-message-to.ts`
+
+### Findings
+1. Repro confirmed on rerun after terminate:
+   - host->worker message delivery still succeeded,
+   - worker member `send_message_to` failed with `Agent team worker ... is not active`.
+2. Worker `CONTROL_STOP` stops team runtime and unbinds run, but cached team instance can remain.
+3. Worker rerun bootstrap reused cached stopped team instance when bindings matched.
+4. Worker local ingress can still start target member nodes on-demand, masking team-runtime inactivity.
+5. Member-originated `send_message_to` routes through `teamManager.dispatchInterAgentMessageRequest -> runtime.submitEvent`, which requires active team runtime worker and therefore fails.
+
+### Root Cause
+Bootstrap reuse policy considered existence + binding match, but not runtime liveness, for cached worker team instances and stale bound-run recovery.
+
+### Resolution Direction
+1. Add runtime-liveness check in worker bootstrap reuse policy.
+2. If cached runtime team exists but is stopped, terminate/recreate projection runtime before binding rerun.
+3. If bound run exists but points to stopped runtime, treat as stale: teardown/unbind/finalize then rebuild.
+4. Add explicit regression tests for both stale-runtime paths.
+
+## Re-Investigation Checkpoint (2026-02-24) - Worker Bootstrap Handler Concern Concentration
+
+### Additional Sources Consulted
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/bootstrap/remote-envelope-bootstrap-handler.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/bootstrap/bootstrap-payload-normalization.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/unit/distributed/remote-envelope-bootstrap-handler.test.ts`
+
+### Findings
+1. `remote-envelope-bootstrap-handler.ts` still mixed multiple concerns:
+   - member binding canonicalization and local `memoryDir` shaping,
+   - member run-manifest persistence,
+   - stale binding/runtime liveness reconciliation and rebinding,
+   - envelope-level orchestration and routing-port installation.
+2. Behavior contracts were stable, but ownership concentration made future regression risk higher during bootstrap fixes.
+
+### Resolution Direction
+1. Extract member-artifact logic into dedicated collaborator (`worker-bootstrap-member-artifact-service.ts`).
+2. Extract runtime-liveness + stale-binding reconciliation into dedicated collaborator (`worker-bootstrap-runtime-reconciler.ts`).
+3. Keep `remote-envelope-bootstrap-handler.ts` orchestration-only and preserve all external contracts.
+4. Add dedicated unit tests for each collaborator plus existing bootstrap/integration regressions.
+
+## Additional Investigation Checkpoint (2026-02-24) - Worker Local Dispatch Ownership Drift
+
+### Additional Sources Consulted
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/bootstrap/remote-envelope-message-command-handlers.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/bootstrap/remote-envelope-control-command-handlers.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/routing/worker-local-dispatch.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/runtime-binding/run-scoped-team-binding-registry.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-ts/src/agent-team/context/team-manager.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-ts/src/agent-team/routing/local-team-routing-port-adapter.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/logs/docker-8001.log`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/memory`
+- `docker exec autobyteus-server find /home/autobyteus/data/memory ...`
+
+### Runtime Evidence
+1. Clean-start reproduction still generated worker-side foreign member path:
+- `/home/autobyteus/data/memory/agents/professor_461c3411edd11e68/...`
+2. Worker log explicitly showed lazy local creation of host-owned member:
+- `Lazily creating agent node 'professor' with deterministic memberAgentId='professor_461c3411edd11e68'`.
+
+### Root Cause
+1. Worker envelope handlers attempted worker-local routing for worker-managed runs without first validating target-member ownership against run binding `hostNodeId`.
+2. Local routing adapter delegates to `TeamManager.ensureNodeIsReady(...)`; without an ownership gate this can lazily create non-local members.
+3. This bypassed the intended distributed routing ownership model and leaked host-owned member persistence into worker node memory.
+
+### Design Conclusion
+1. Correct ownership decision belongs at distributed routing orchestration boundary (worker envelope command handlers), not as an error-driven fallback hack.
+2. Worker dispatch must pre-check target-member ownership from run-scoped bindings (`memberRouteKey/memberName -> hostNodeId`) before attempting local routing.
+3. TeamManager should keep a runtime invariant guard and reject non-local member startup when placement metadata marks member non-local.
+4. Local routing adapter should surface a stable rejection code for non-local target attempts (`TARGET_NODE_NOT_LOCAL`) for observability and guard-rail consistency.
+
+### Resolution Summary
+1. Added binding-aware worker locality resolver and gated worker-local dispatch on target ownership.
+2. Added TeamManager non-local startup guard via placement metadata.
+3. Added tests covering:
+- binding-aware local/remote ownership resolution,
+- non-local routing surfacing `TARGET_NODE_NOT_LOCAL`,
+- worker inter-agent path forwarding to team-manager/uplink when recipient is non-local.
+
+## Additional Investigation Checkpoint (2026-02-24) - Worker Dispatch-Policy Concern Mixing
+
+### Additional Sources Consulted
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/bootstrap/remote-envelope-message-command-handlers.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/bootstrap/remote-envelope-control-command-handlers.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/routing/worker-member-locality-resolver.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/routing/worker-local-dispatch.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/runtime-binding/run-scoped-team-binding-registry.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/unit/distributed/remote-envelope-message-command-handlers.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/unit/distributed/remote-envelope-control-command-handlers.test.ts`
+
+### Findings
+1. Ownership-first dispatch logic was duplicated across worker message and control handlers:
+   - per-handler ownership predicate,
+   - per-handler worker-managed-run local-dispatch gate,
+   - per-handler local-routing-port dispatch wrapper.
+2. This duplication created architecture drift risk: behavior could diverge between `USER_MESSAGE`, `INTER_AGENT_MESSAGE_REQUEST`, and `TOOL_APPROVAL` paths.
+3. Worker command-layer identity naming used `localNodeId`, which can be confused with host/member role concepts; `selfNodeId` is semantically clearer for current-process ownership checks.
+
+### Root Cause
+Layer boundary was partially corrected (ownership-first routing existed), but policy was not centralized. The same ownership decision logic lived in multiple handlers instead of one routing-orchestrator boundary.
+
+### Resolution Direction
+1. Introduce a dedicated worker dispatch orchestrator that owns:
+   - binding ownership classification,
+   - worker-managed-run eligibility gating,
+   - conditional local-routing-port dispatch.
+2. Keep message/control handlers orchestration-only (payload normalization + fallback chain).
+3. Update locality resolver to expose explicit ownership outcomes and align command-layer dependency naming to `selfNodeId`.
+
+## Additional Investigation Checkpoint (2026-02-24) - Layering Boundary Drift After Refactor
+
+### Additional Sources Consulted
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/runtime-binding/run-scoped-team-binding-registry.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/routing/worker-member-locality-resolver.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/agent-team-execution/services/team-member-placement-planning-service.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/bootstrap/remote-envelope-command-handlers.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/distributed/bootstrap/distributed-runtime-composition-factory.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/tickets/in-progress/team-memory-layout-member-folders/requirements.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/tickets/in-progress/team-memory-layout-member-folders/proposed-design.md`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/tickets/in-progress/team-memory-layout-member-folders/future-state-runtime-call-stack.md`
+
+### Findings
+1. Distributed runtime-binding registry still imports `TeamMemberConfigInput` from application service (`agent-team-instance-manager`), creating reverse layering dependency from distributed runtime back into application layer.
+2. Worker locality resolver consumes the same application DTO type through run-binding contract, extending cross-layer coupling into routing policy boundary.
+3. Placement planning service reads node snapshots from global default distributed runtime singleton, coupling planning logic to runtime bootstrap initialization state.
+4. Worker command composition still aliases `hostNodeId` into `selfNodeId` at command-handler boundary, which keeps naming drift and boundary ambiguity.
+
+### Root Cause
+The earlier SoC refactor split responsibilities by file size/logic clusters, but did not fully enforce layer-owned contracts for types and dependency injection. Some boundary contracts still leak across layers via shared DTO imports and singleton reads.
+
+### Resolution Direction
+1. Introduce distributed-layer binding contract type (`RunScopedMemberBinding`) and make runtime-binding/routing modules depend on that contract only.
+2. Add injected node-snapshot provider boundary for placement planning and remove direct default-composition singleton access from planning service.
+3. Keep worker command composition naming aligned to `selfNodeId` end-to-end so worker-local policy contracts are explicit and role-neutral.
+
+## Additional Investigation Checkpoint (2026-02-25) - WS-22 Doc/Code Alignment (Run-History DI + Parallel Flake Stability)
+
+### Additional Sources Consulted
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/run-history/services/team-run-history-runtime-dependencies.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/run-history/services/team-run-history-service.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/run-history/services/team-member-run-projection-service.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/src/app.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/integration/file-explorer/file-name-indexer.integration.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts/tests/integration/file-explorer/file-system-watcher.integration.test.ts`
+- Verification runs:
+  - `cd /Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-server-ts && npx vitest run --reporter=dot`
+  - `cd /Users/normy/autobyteus_org/autobyteus-workspace/autobyteus-ts && npx vitest run tests/integration/agent/agent-single-flow.test.ts tests/integration/agent-team/agent-team-single-flow.test.ts`
+
+### Findings
+1. Residual run-history runtime-default coupling to distributed runtime singleton was a layering-quality gap (non-blocking previously, now addressed in WS-22).
+2. App composition root now owns run-history runtime dependency registration lifecycle.
+3. File-explorer parallel-timing flake behavior was attributable to too-tight bounded waits under heavy suite load, not behavior contract regressions.
+4. Increased bounded windows + richer diagnostics keep tests deterministic without introducing unbounded sleep logic.
+
+### Resolution Direction Confirmed
+1. Keep run-history dependency ownership strictly composition-root wired via dedicated registry API.
+2. Keep file-explorer integration assertions behavior-driven with bounded waits sized for parallel execution.
+3. Synchronize ticket requirements/design/call-stack artifacts to WS-22 implementation state and verification evidence.

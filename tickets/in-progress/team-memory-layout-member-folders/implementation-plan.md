@@ -33,21 +33,23 @@ Canonical contract: team-member persistence under `memory/agent_teams/<teamId>/<
 - rollback behavior preserved on partial failure.
 
 ### WS-4A: Manifest Binding Completeness
-1. Update `src/api/graphql/types/agent-team-instance.ts`:
+1. Update `src/agent-team-execution/services/team-runtime-bootstrap-application-service.ts`:
 - persist effective per-member `hostNodeId` into manifest for create/lazy-create paths,
 - set canonical per-member `memoryDir` in runtime member configs for create path,
 - resolve placement by canonical `memberRouteKey` (flattened leaf route map) for nested distributed cases.
+2. Keep `src/api/graphql/types/agent-team-instance.ts` as delegation-only boundary (no placement/manifest assembly logic).
 
 ### WS-5: History And Activity Services
-1. Update `src/run-history/services/team-run-history-service.ts`:
+1. Update `src/run-history/services/team-run-history-command-service.ts` and `src/run-history/services/team-run-history-query-service.ts`:
 - enforce canonical path policy,
 - explicit legacy-cutoff handling,
-- replace host-local-only delete with lifecycle-driven distributed coordinator flow.
-2. Add `src/run-history/services/team-run-history-delete-coordinator-service.ts`:
+- keep delete lifecycle/coordinator logic in command service.
+2. Keep `src/run-history/services/team-run-history-service.ts` as thin compatibility facade with delegation only.
+3. Add `src/run-history/services/team-run-history-delete-coordinator-service.ts`:
 - group delete bindings by `hostNodeId`,
 - execute local subtree deletion,
 - dispatch remote cleanup and return `COMPLETE`/`PENDING_RETRY`.
-3. Update `src/run-history/services/team-run-activity-sink-service.ts` if required:
+4. Update `src/run-history/services/team-run-activity-sink-service.ts` if required:
 - ensure append path targets canonical team-member subtree.
 
 ### WS-5A: Distributed Delete Transport + Worker Cleanup
@@ -101,11 +103,12 @@ Canonical contract: team-member persistence under `memory/agent_teams/<teamId>/<
 4. Sync ticket requirements/design/review artifacts to the finalized naming contract.
 
 ### WS-9: Readable Team ID Naming
-1. Update team ID generation in resolver/factory entry points to `<team_name_slug>_<id8>`.
+1. Update team ID generation in application/factory entry points to `<team_name_slug>_<id8>`.
 2. Source slug from resolved team definition name (fallback: teamDefinitionId), with path-safe normalization + length cap.
 3. Keep teamId immutable after creation; do not recompute from later metadata changes.
-4. Update unit expectations and distributed E2E verification for lazy-create + restore lifecycle.
-5. Sync ticket requirements/design/review artifacts to the finalized teamId naming contract.
+4. Keep resolver as delegation-only caller for team ID generation logic.
+5. Update unit expectations and distributed E2E verification for lazy-create + restore lifecycle.
+6. Sync ticket requirements/design/review artifacts to the finalized teamId naming contract.
 
 ### WS-10: Runtime `memoryDir` Contract Cleanup
 1. Update `autobyteus-ts` `AgentFactory` so explicit `memoryDir` (config or restore override) is treated as the final leaf memory directory.
@@ -128,6 +131,7 @@ Canonical contract: team-member persistence under `memory/agent_teams/<teamId>/<
 2. Move member-definition + processor/tool/skill/workspace hydration logic from `agent-team-instance-manager.ts`.
 3. Keep `agent-team-instance-manager.ts` focused on runtime lifecycle registry and team start/stop/list orchestration.
 4. Preserve local-strict/remote-proxy resolution policy and workspace portability rules.
+5. Ensure manager no longer owns direct policy condition branches beyond orchestration-level validation.
 
 ### WS-13: Distributed Runtime Composition Modularization
 1. Add `src/distributed/bootstrap/distributed-runtime-composition-factory.ts` with explicit dependency assembly responsibility.
@@ -139,6 +143,101 @@ Canonical contract: team-member persistence under `memory/agent_teams/<teamId>/<
 2. Move read/list logic into query service and mutation/delete/lifecycle logic into command service.
 3. Keep `team-run-history-service.ts` as stable facade delegating to command/query services.
 4. Preserve delete preflight/coordinator behavior and lifecycle semantics.
+5. Ensure facade contains no direct mutation/query policy logic after split.
+
+### WS-15: Distributed Composition Intra-Service Decomposition
+1. Add `src/distributed/bootstrap/distributed-runtime-core-dependencies.ts`:
+- isolate node-directory/auth/client/bridge dependency initialization.
+2. Add `src/distributed/bootstrap/host-runtime-routing-dispatcher.ts`:
+- isolate host local-routing callback assembly used by `TeamRoutingPortAdapter`.
+3. Refactor `src/distributed/bootstrap/distributed-runtime-composition-factory.ts`:
+- keep stable output API,
+- delegate internals to WS-15 collaborators,
+- preserve bootstrap/uplink/routing behavior.
+
+### WS-16: Team Runtime Bootstrap Intra-Service Decomposition
+1. Add `src/agent-team-execution/services/team-member-placement-planning-service.ts`:
+- isolate flattened route-key placement planning.
+2. Add `src/agent-team-execution/services/team-run-manifest-assembly-service.ts`:
+- isolate manifest binding/workspace-root assembly.
+3. Refactor `src/agent-team-execution/services/team-runtime-bootstrap-application-service.ts`:
+- keep stable `prepareTeamRuntimeBootstrap` contract,
+- delegate policy internals to WS-16 collaborators,
+- preserve outputs for create/lazy-create flows.
+
+### WS-17: Worker Locality Ownership Correction (`embedded-local` Drift Guard)
+1. Update `agent-team-instance-manager` locality resolution to prefer binding `hostNodeId` over definition `homeNodeId` when both exist.
+2. Ensure hydration metadata (`teamMemberPlacement`) is derived from effective ownership identity so coordinator bootstrap skips non-local members on worker.
+3. Update worker remote bootstrap handler to assign `memoryDir` only for worker-local bindings (`hostNodeId` matches worker node), set non-local to `null`.
+4. Add regression tests:
+- unit: worker bootstrap bound payload contains `memoryDir=null` for non-local bindings,
+- integration: coordinator placement metadata reflects binding ownership when definition node is `embedded-local`.
+
+### WS-18: Worker Rerun Bootstrap Liveness Recovery
+1. Update `src/distributed/bootstrap/remote-envelope-bootstrap-handler.ts` bootstrap reuse policy:
+- if cached runtime team exists but `isRunning=false`, terminate/recreate projection runtime before `bindRun`.
+2. Update stale bound-run handling:
+- if binding exists but bound runtime team is stopped, teardown/unbind/finalize stale run before rebuild.
+3. Preserve normal fast-path behavior:
+- keep existing fast return only when bound runtime exists and is running.
+4. Add regression tests in `tests/unit/distributed/remote-envelope-bootstrap-handler.test.ts`:
+- stopped cached runtime-team on rerun bootstrap is recreated,
+- stale bound-run + stopped runtime is torn down then rebuilt.
+
+### WS-19: Worker Bootstrap SoC Decomposition
+1. Add `src/distributed/bootstrap/worker-bootstrap-member-artifact-service.ts`:
+- isolate worker bootstrap member-binding normalization, canonical `memoryDir` shaping, and local `run_manifest.json` persistence.
+2. Add `src/distributed/bootstrap/worker-bootstrap-runtime-reconciler.ts`:
+- isolate stale-binding teardown + runtime-team liveness reconciliation + run binding/marking.
+3. Refactor `src/distributed/bootstrap/remote-envelope-bootstrap-handler.ts`:
+- keep external behavior contract unchanged,
+- delegate artifact preparation and runtime reconciliation to WS-19 collaborators.
+4. Add unit coverage for new collaborators and keep existing bootstrap handler regressions green.
+
+### WS-20: Worker Command Dispatch Policy Centralization
+1. Add `src/distributed/routing/worker-owned-member-dispatch-orchestrator.ts`:
+- centralize worker-owned-member locality classification + worker-managed-run local-dispatch gating.
+2. Update `src/distributed/routing/worker-member-locality-resolver.ts`:
+- expose explicit ownership outcomes,
+- keep compatibility helper for boolean call-sites where needed.
+3. Refactor `src/distributed/bootstrap/remote-envelope-message-command-handlers.ts` and `src/distributed/bootstrap/remote-envelope-control-command-handlers.ts`:
+- remove duplicated locality predicates and delegate to WS-20 orchestrator.
+4. Align worker command-handler dependency naming to `selfNodeId` and keep fallback chain behavior unchanged.
+5. Add unit coverage:
+- `tests/unit/distributed/worker-owned-member-dispatch-orchestrator.test.ts`,
+- update message/control/locality resolver tests to lock parity.
+
+### WS-21: Layering Boundary Hardening (Binding Contracts + Placement Snapshot Injection)
+1. Add `src/distributed/runtime-binding/run-scoped-member-binding.ts`:
+- define distributed-layer `RunScopedMemberBinding` contract independent from application-service DTOs.
+2. Refactor `src/distributed/runtime-binding/run-scoped-team-binding-registry.ts` and `src/distributed/routing/worker-member-locality-resolver.ts`:
+- replace `TeamMemberConfigInput` imports with `RunScopedMemberBinding`.
+3. Refactor `src/agent-team-execution/services/team-member-placement-planning-service.ts`:
+- remove direct `getDefaultDistributedRuntimeComposition()` access,
+- consume injected node-snapshot provider dependency.
+4. Refactor worker command composition boundary:
+- update `src/distributed/bootstrap/remote-envelope-command-handlers.ts` and composition wiring to pass `selfNodeId` without `hostNodeId` aliasing in worker policy paths.
+5. Add/adjust unit coverage for:
+- runtime-binding contract decoupling,
+- placement planning with injected snapshot provider stubs,
+- worker command handler dependency wiring naming parity.
+
+### WS-22: Run-History Composition-Root Wiring + File-Explorer Flake Hardening
+1. Add `src/run-history/services/team-run-history-runtime-dependencies.ts`:
+- define explicit run-history runtime dependency contract and composition-root registration API.
+2. Refactor run-history query/projection services:
+- remove direct `getDefaultDistributedRuntimeComposition()` fallback reads from `team-run-history-service` and `team-member-run-projection-service`,
+- consume runtime dependencies via WS-22 registry + env fallback only.
+3. Wire run-history dependencies in app composition root:
+- update `src/app.ts` to configure/reset run-history runtime dependencies alongside distributed runtime lifecycle.
+4. Harden file-explorer integration timing under parallel load:
+- increase bounded wait windows + diagnostics in:
+  - `tests/integration/file-explorer/file-name-indexer.integration.test.ts`,
+  - `tests/integration/file-explorer/file-system-watcher.integration.test.ts`.
+5. Preserve behavior contracts:
+- no GraphQL API changes,
+- no memory-layout contract changes,
+- maintain existing run-history restore/list/delete semantics.
 
 ## Verification Checklist
 1. Unit tests for layout store path helpers/safety checks.
@@ -158,6 +257,20 @@ Canonical contract: team-member persistence under `memory/agent_teams/<teamId>/<
 15. Verify GraphQL create/lazy-create/terminate/send responses are unchanged after resolver orchestration split.
 16. Verify distributed bootstrap/routing behavior is unchanged after runtime-composition modularization.
 17. Verify run-history list/resume/delete behaviors are unchanged after command/query split.
+18. Verify resolver and run-history facade layers contain delegation-only logic (no placement/hydration/delete policy branches).
+19. Verify distributed composition behavior parity after WS-15 collaborator extraction (bootstrap, uplink, host local-routing dispatch).
+20. Verify runtime bootstrap output parity after WS-16 collaborator extraction (`teamId`, member configs, manifest bindings).
+21. Verify worker node does not create non-local coordinator/member memory artifacts when binding ownership is remote.
+22. Verify locality fallback path remains valid when binding `hostNodeId` is absent.
+23. Verify rerun bootstrap after terminate does not reuse stopped cached worker team runtime and worker-originated `send_message_to` remains functional.
+24. Verify WS-19 collaborator extraction keeps host-definition binding identity unchanged while worker runtime creation still uses worker-local definition identity.
+25. Verify WS-20 centralization keeps worker handler fallback behavior unchanged while eliminating duplicated ownership predicates.
+26. Verify WS-21 runtime-binding modules compile without importing `agent-team-instance-manager` DTO types.
+27. Verify WS-21 placement planning behavior remains output-stable with injected node-snapshot provider stubs.
+28. Verify WS-21 worker command composition passes `selfNodeId` end-to-end with no `hostNodeId` aliasing at worker dispatch-policy boundary.
+29. Verify run-history services no longer read distributed runtime singleton directly in runtime-default path.
+30. Verify parallel full backend test run no longer flakes in file-explorer integration suites.
+31. Verify autobyteus-ts scoped integration flows (`agent-single-flow`, `agent-team-single-flow`) remain green after WS-22.
 
 ## Sequence
 1. WS-1
@@ -178,3 +291,11 @@ Canonical contract: team-member persistence under `memory/agent_teams/<teamId>/<
 16. WS-12
 17. WS-13
 18. WS-14
+19. WS-15
+20. WS-16
+21. WS-17
+22. WS-18
+23. WS-19
+24. WS-20
+25. WS-21
+26. WS-22

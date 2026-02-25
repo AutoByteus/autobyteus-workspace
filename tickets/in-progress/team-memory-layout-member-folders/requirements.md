@@ -410,6 +410,72 @@ Example mixed placement:
 4. On a member's home node, if `workspaceId` lookup fails and `workspaceRootPath` is present, runtime must fall back to `workspaceRootPath` resolution.
 5. Restore/replay consistency remains anchored on manifest workspace-root metadata, not cross-node `workspaceId` parity.
 
+## Case G: Worker Locality Classification Must Use Binding Ownership
+Example mixed placement on worker node `node_b`:
+1. Team definition snapshot contains `professor.homeNodeId=embedded-local` (source host-local semantic).
+2. Bootstrap member binding carries `professor.hostNodeId=node_a`.
+3. Worker node id is `node_b`.
+
+### Case G Rules
+1. On distributed worker bootstrap/re-hydration, member locality classification must prefer binding ownership (`hostNodeId`) when present.
+2. `embedded-local` in team-definition snapshot must not be interpreted as local-to-worker when binding `hostNodeId` is a different node.
+3. Coordinator bootstrap on worker must be skipped when effective ownership is non-local.
+4. Worker must not assign team-member `memoryDir` for non-local bindings.
+5. Worker must persist member files only for bindings where `hostNodeId` matches current worker node.
+
+## Case H: Worker Rerun Bootstrap Must Not Reuse Stopped Team Runtime
+Example rerun sequence on worker node `node_b`:
+1. Run 1 is active and worker team runtime exists for `teamId`.
+2. Host sends distributed `CONTROL_STOP`; worker stops team runtime and removes run binding.
+3. Run 2 starts for same `teamId`; worker receives `RUN_BOOTSTRAP`.
+
+### Case H Rules
+1. If worker has cached team instance for `teamId` but runtime is stopped, rerun bootstrap must not reuse it as-is.
+2. Worker rerun bootstrap must recreate (or equivalently restart with full routing rewire) the worker projection team runtime before binding the new run.
+3. Worker local dispatch must not bypass team-runtime liveness for member-originated `send_message_to` flows.
+4. If a stale run binding exists but points to stopped runtime, bootstrap must treat it as stale: teardown/unbind/finalize old binding and rebuild.
+5. Post-rerun, both host->worker delivery and worker->host reply dispatch must succeed.
+
+## Case I: Worker Dispatch Must Use Binding Ownership Before Local Routing
+Example team on worker node `node_b`:
+1. `student` binding: `hostNodeId=node_b` (local).
+2. `professor` binding: `hostNodeId=node_a` (remote).
+3. Worker receives `INTER_AGENT_MESSAGE_REQUEST` with `recipientName=professor`.
+
+### Case I Rules
+1. Worker command handlers must resolve target-member ownership from run-scoped binding map before attempting local routing.
+2. Worker local dispatch is allowed only when target binding `hostNodeId` equals worker `localNodeId`.
+3. If target binding is non-local, worker must skip local adapter dispatch and forward via team-manager distributed routing (uplink to host).
+4. Worker must not rely on local adapter rejection as primary control flow for ownership routing.
+5. Runtime invariant remains: non-local member startup must be rejected if attempted locally.
+
+## Case J: Worker Command Dispatch Policy Must Be Centralized
+Scope:
+1. `USER_MESSAGE`, `INTER_AGENT_MESSAGE_REQUEST`, and `TOOL_APPROVAL` command handlers on worker path.
+2. Shared ownership source: run-scoped binding `memberRouteKey/memberName -> hostNodeId`.
+
+### Case J Rules
+1. Ownership resolution and worker-local dispatch eligibility must be centralized in one routing orchestration boundary, not duplicated per handler.
+2. Handler files must keep command-payload normalization and fallback decisions only; they must not reimplement binding-ownership predicates.
+3. Node identity naming in worker dispatch policy must use `selfNodeId` semantics (current process identity), not overloaded role names.
+4. Local adapter dispatch must execute only after centralized policy confirms both:
+   - target binding is worker-owned,
+   - run is worker-managed.
+5. Centralized dispatch policy must return explicit ownership outcome classes for observability (`owned`, `not bound`, `owned by other node`, etc.), not boolean-only decisions.
+
+## Case K: Layer Contracts Must Not Cross Application/Distributed Boundaries
+Scope:
+1. Run-scoped runtime binding contracts in distributed runtime modules.
+2. Placement planning service boundary between application service and distributed node-directory/runtime infrastructure.
+3. Worker command composition boundary naming.
+
+### Case K Rules
+1. Distributed run-binding modules must own their own member-binding contract type and must not import `TeamMemberConfigInput` from `agent-team-instance-manager`.
+2. Worker locality resolver/orchestrator must depend on distributed run-binding contract types only.
+3. Placement planning must consume node snapshots through an injected provider boundary; it must not pull global runtime state through `getDefaultDistributedRuntimeComposition()` directly.
+4. Worker command-handler composition boundary must use `selfNodeId` semantics end-to-end (dependency names and adapter handoff), with no `hostNodeId` aliasing inside worker-local policy paths.
+5. Mapping between application team-member config shape and distributed run-binding shape must be explicit at composition/orchestration boundary.
+
 ## Runtime Operation Rules (Read/Write)
 
 ### Create Team Run
@@ -518,6 +584,13 @@ Example mixed placement:
 19. Generated team-member folder names remain human-readable while preserving deterministic uniqueness (`<route_slug>_<hash16>`).
 20. Generated team folder names remain human-readable (`<team_name_slug>_<id8>`) while preserving immutability and cross-node identity consistency.
 21. Refactor keeps UC-001..UC-020 runtime behavior unchanged while separating resolver/application/runtime-wiring/history concerns into dedicated modules.
+22. Refactor continuation keeps UC-001..UC-021 behavior unchanged while further decomposing large orchestration modules into collaborator services with single-purpose responsibilities.
+23. Worker distributed bootstrap treats binding `hostNodeId` as authoritative locality source when definition `homeNodeId` is `embedded-local`.
+24. Worker distributed bootstrap writes `memoryDir` only for worker-local bindings and never for non-local member bindings.
+25. Distributed rerun after terminate must recreate/recover stopped worker team runtime before binding new run so worker-originated `send_message_to` succeeds (Case H).
+26. Worker envelope dispatch routes by binding ownership first, so non-local recipients are forwarded to host and never materialized locally on worker (Case I).
+27. Worker command handlers share one centralized ownership-first dispatch policy so local-dispatch eligibility semantics remain uniform across message/inter-agent/tool-approval flows (Case J).
+28. Layering contract case (Case K): distributed runtime binding types and placement/node-snapshot inputs are decoupled from application-service DTOs and global singleton composition access.
 
 ## Acceptance Criteria
 1. Requirements explicitly document single-agent memory layout.
@@ -551,6 +624,18 @@ Example mixed placement:
 29. Requirements define distributed runtime wiring boundary rule: dependency composition must be separated from bootstrap/definition-reconciliation/routing-binding policies.
 30. Requirements define run-history boundary rule: query/list responsibilities must be separable from delete orchestration and upsert/materialization command paths.
 31. Requirements define refactor safety rule: public GraphQL contracts and canonical memory-layout behavior remain unchanged after concern separation.
+32. Requirements define distributed composition continuation rule: composition factory internals are split into dependency-builder and routing-dispatch collaborators without changing external composition API.
+33. Requirements define runtime bootstrap continuation rule: placement-planning and manifest-assembly responsibilities are split from bootstrap application service without changing create/lazy-create outputs.
+34. Requirements define distributed worker-locality precedence rule: effective locality is derived from binding `hostNodeId` first, then definition `homeNodeId` only as fallback.
+35. Requirements define worker bootstrap memory-dir guard: non-local bindings must carry `memoryDir=null` and must not produce non-local member subtree artifacts.
+36. Requirements define worker rerun-bootstrap stale-runtime rule: stopped cached worker team instances cannot be reused without reactivation/rebuild before run binding.
+37. Requirements define worker dispatch ownership-first rule: command handlers must use run-scoped member binding ownership before any worker-local adapter dispatch.
+38. Requirements define runtime invariant rule: non-local member startup attempts are rejected by team runtime manager guard.
+39. Requirements define centralized worker dispatch-policy rule: ownership classification and local-dispatch gating are implemented in one reusable orchestration module with explicit ownership outcomes.
+40. Requirements define distributed run-binding contract ownership rule: distributed runtime modules own a dedicated member-binding type and do not import `TeamMemberConfigInput`.
+41. Requirements define worker-locality resolver dependency rule: locality resolver/orchestrator depends only on distributed run-binding contract interfaces.
+42. Requirements define placement snapshot dependency rule: placement-planning service gets node snapshots via injected provider boundary, not direct default-composition singleton access.
+43. Requirements define worker command identity naming rule: worker command composition surfaces `selfNodeId` at boundary contracts without `hostNodeId` aliasing in worker policy paths.
 
 ## Constraints / Dependencies
 1. Keep identity model stable (`agentId`, `teamId`, `memberAgentId`, `memberRouteKey`).
@@ -566,6 +651,11 @@ Example mixed placement:
 11. Distributed member workspace contract must remain path-authoritative (`workspaceRootPath`) across nodes.
 12. Refactor round must preserve existing GraphQL schema fields and operation names.
 13. Refactor round must preserve distributed transport/auth contracts already used by worker and host processes.
+14. Refactor continuation round must preserve team runtime bootstrap and distributed composition entrypoint APIs for existing callers/tests.
+15. Rerun bootstrap logic must preserve run-binding lifecycle invariants (`bindRun`, `unbindRun`, stale-run teardown) while guaranteeing active team-runtime worker for worker-originated routing flows.
+16. Worker command handlers must preserve existing fallback behavior (`teamManager`/`team.postMessage`/`team.postToolExecutionApproval`) while removing duplicated locality policy logic.
+17. Distributed runtime binding modules must stay independent from application-service layer types (`agent-team-instance-manager` DTOs).
+18. Placement planning service must remain composition-agnostic and receive node snapshots through injected abstraction.
 
 ## Assumptions
 1. `memberAgentId` generation remains deterministic from `teamId + memberRouteKey`.
@@ -583,7 +673,48 @@ Example mixed placement:
 8. If host create path requires host-local parity for remote node-local definition IDs, mixed-node teams fail before distributed bootstrap.
 9. If remote-member `workspaceRootPath` is not enforced, distributed runs can silently lose workspace binding on worker nodes due to stale/non-portable `workspaceId`.
 10. If concern separation is partial (half-split files), dependency direction can become less clear and increase regression risk despite passing tests.
+11. If collaborator extraction changes bootstrap ordering implicitly, distributed runtime initialization regressions can appear without explicit contract changes.
+12. If worker locality still trusts snapshot `embedded-local` over binding ownership, non-local coordinators can bootstrap on worker and pollute worker memory layout.
+13. If rerun bootstrap reuses stopped worker team instances, host->worker messages may still appear to work while worker-originated `send_message_to` fails with inactive team-worker errors.
+14. If worker ownership policy remains duplicated across handlers, future changes can reintroduce inconsistent local-dispatch behavior and foreign-member materialization regressions.
+15. If distributed run-binding modules depend on application-service DTOs, runtime-layer evolution can silently break dispatch/routing behavior through cross-layer type drift.
+16. If placement planning depends on global default composition singleton, tests/runtime startup order can leak into planning outcomes and reduce deterministic layering boundaries.
 
 ## Decisions Finalized In Design Review
 1. Legacy history policy: explicit legacy cutoff. Pre-canonical team-member data under global `memory/agents/<memberAgentId>` is not part of target support.
 2. Worker-node diagnostic policy: no worker-side manifest shard. Worker persists only node-local member subtrees under shared `teamId`.
+
+## Requirements Delta v24 (2026-02-25) - WS-22 Runtime DI Tightening + Parallel Stability
+
+### Case L: Run-History Runtime Dependency Wiring And Parallel File-Explorer Stability
+Scope:
+1. Run-history runtime dependency ownership boundary.
+2. App composition-root dependency registration lifecycle.
+3. Parallel full-suite stability for file-explorer integration timing.
+
+### Case L Rules
+1. Run-history services must not read distributed runtime context via `getDefaultDistributedRuntimeComposition()` in service-default path.
+2. Run-history runtime defaults must resolve from a dedicated runtime-dependency registry configured at app composition root.
+3. App bootstrap must configure run-history runtime dependencies after distributed runtime composition is created and reset them on app shutdown.
+4. File-explorer integration tests must use bounded waits resilient to parallel suite load while preserving deterministic assertions.
+5. WS-22 changes must not alter GraphQL contracts, team memory-layout contracts, or team-history read/delete semantics.
+
+### In-Scope Use Case Addendum
+29. Run-history runtime defaults remain composition-root injected and file-explorer integration tests remain stable in parallel full-suite execution (Case L / UC-037).
+
+### Acceptance Criteria Addendum
+44. Requirements define run-history dependency ownership rule: service defaults consume explicit runtime-dependency registry, not distributed-runtime singleton lookup.
+45. Requirements define app lifecycle wiring rule: configure run-history runtime dependencies during startup and reset on shutdown.
+46. Requirements define file-explorer parallel-stability rule with bounded timing windows and deterministic assertions.
+47. Requirements define regression-safety rule: WS-22 does not change public API/memory-layout behavior.
+
+### Constraints / Dependencies Addendum
+19. Run-history dependency registry API must remain internal service-layer boundary and be configured by app composition root.
+20. Parallel stability tuning must avoid introducing unbounded waits or brittle sleep-based assertions.
+
+### Risks Addendum
+17. If runtime dependency registration/reset drifts from app lifecycle, run-history defaults may use stale node identity/base URL after restart/rebind.
+18. If file-explorer timing budgets are too low under parallel load, full-suite reliability regresses despite feature correctness.
+
+### Decision Addendum
+3. WS-22 is in-scope and treated as architecture-quality completion criteria (not optional backlog) for this ticket closure.

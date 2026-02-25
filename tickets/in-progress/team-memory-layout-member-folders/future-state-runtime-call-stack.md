@@ -1,13 +1,16 @@
 # Future-State Runtime Call Stack
 
 ## Version
-- Current Version: `v15`
+- Current Version: `v21`
 
-## Refactor Boundary Contract (v15)
-1. Runtime behavior for UC-001..UC-029 is unchanged.
+## Refactor Boundary Contract (v20)
+1. Runtime behavior for UC-001..UC-030 is unchanged.
 2. Application orchestration frames move out of GraphQL resolver files into dedicated application services.
 3. Distributed runtime composition frames are split into composition assembly and bootstrap/routing policy helper modules.
 4. Run-history mutation and query frames are split into command/query services behind a stable facade.
+5. Intra-service decomposition is allowed only through collaborator extraction that preserves existing entrypoint outputs.
+6. Worker command handlers share one ownership-first dispatch orchestrator for local-dispatch eligibility and worker-managed-run gating.
+7. Distributed runtime-binding contracts are owned by distributed-layer modules, and placement planning receives node snapshots through injected provider boundaries.
 
 ## UC-001: Single-Agent Persistence Remains Global-Agent Scoped
 Coverage: primary=Yes, fallback=N/A, error=Yes
@@ -41,12 +44,13 @@ Error path:
 ## UC-003: Local Nested Team Create Persists Flat Member Folders + Route-Key Mapping
 Coverage: primary=Yes, fallback=N/A, error=Yes
 
-1. `src/api/graphql/types/agent-team-instance.ts:resolveRuntimeMemberConfigs(...)`
-2. `src/run-history/utils/team-member-agent-id.ts:buildTeamMemberAgentId(teamId, memberRouteKey)`
-3. `buildTeamRunManifest(...)` persists `memberRouteKey` and `memberAgentId`.
-4. Persist nested member `hostNodeId` and canonical `memoryDir` per binding.
-5. `team-member-memory-layout-store.ts:ensureLocalMemberSubtrees(...)` creates flat member folders.
-6. Nested route keys remain in manifest; filesystem remains flat by `memberAgentId`.
+1. `src/api/graphql/types/agent-team-instance.ts:sendMessageToTeam(input)` enters lazy-create.
+2. `src/agent-team-execution/services/team-runtime-bootstrap-application-service.ts:prepareLazyCreate(...)` resolves flattened nested route keys.
+3. `src/run-history/utils/team-member-agent-id.ts:buildTeamMemberAgentId(teamId, memberRouteKey)` derives deterministic member IDs.
+4. Application service builds manifest payload with route-key bindings and canonical per-member `memoryDir`.
+5. `src/run-history/services/team-run-history-command-service.ts:upsertTeamRunHistoryRow(...)` persists manifest and local member layout.
+6. `team-member-memory-layout-store.ts:ensureLocalMemberSubtrees(...)` creates flat member folders.
+7. Nested route keys remain in manifest; filesystem remains flat by `memberAgentId`.
 
 Error path:
 - Duplicate canonical route key collision fails validation and aborts create.
@@ -203,7 +207,7 @@ Example topology:
 Flow:
 1. Host persists manifest with `professor.hostNodeId=node_a`, `scribe.hostNodeId=node_b`.
 2. Host creates only local subtree (`professor_<hash16>`) under `memory/agent_teams/<teamId>/`.
-3. Worker creates remote subtree (`member_scribe`) under same `teamId` on `node_b`.
+3. Worker creates remote subtree (`scribe_<hash16>`) under same `teamId` on `node_b`.
 4. Projection for `scribe` on host resolves remote via manifest `hostNodeId=node_b` and fetches worker projection.
 5. Restore/delete paths follow the same manifest ownership split.
 
@@ -247,16 +251,17 @@ Coverage: primary=Yes, fallback=Yes, error=Yes
 
 Example topology:
 1. Host `node_a` owns `professor_<hash16>`.
-2. Worker `node_b` owns `member_scribe`, `member_analyst`.
+2. Worker `node_b` owns `scribe_<hash16>`, `analyst_<hash16>`.
 
 Flow:
-1. `team-run-history-service.ts:deleteTeamRunHistory(teamId)` loads manifest and groups bindings by `hostNodeId`.
-2. Host marks index row `CLEANUP_PENDING`.
-3. Host deletes local subtree set for `node_a`.
-4. Host dispatches cleanup RPC to `node_b` with remote binding subset (`teamId`-scoped payload).
-5. Worker cleanup route validates payload and forwards to `team-history-worker-cleanup-handler`.
-6. Worker deletes only `node_b`-owned member subtrees and returns ack.
-7. Host finalizes by deleting manifest + index row after all acks.
+1. `team-run-history-service.ts:deleteTeamRunHistory(teamId)` facade delegates to `team-run-history-command-service.ts:deleteTeamRunHistory(teamId)`.
+2. Command service loads manifest and groups bindings by `hostNodeId`.
+3. Host marks index row `CLEANUP_PENDING`.
+4. Host deletes local subtree set for `node_a`.
+5. Host dispatches cleanup RPC to `node_b` with remote binding subset (`teamId`-scoped payload).
+6. Worker cleanup route validates payload and forwards to `team-history-worker-cleanup-handler`.
+7. Worker deletes only `node_b`-owned member subtrees and returns ack.
+8. Host finalizes by deleting manifest + index row after all acks.
 
 Fallback path:
 - Worker ack timeout keeps lifecycle pending; host returns retryable partial delete response.
@@ -313,11 +318,12 @@ Error path:
 ## UC-021: Distributed-Authoritative Inactive Preflight For Delete
 Coverage: primary=Yes, fallback=Yes, error=Yes
 
-1. `team-run-history-service.ts:deleteTeamRunHistory(teamId)` starts preflight.
-2. `team-history-runtime-state-probe-service.ts:probe(teamId)` checks host/worker runtime state for active run drift.
-3. Probe resolves worker active state by explicit host `teamId` field stored in worker run-scoped bindings.
-4. If any node reports active runtime for `teamId`, delete returns precondition failure and does not perform filesystem cleanup.
-5. If probe confirms inactive state, coordinator proceeds with UC-008/UC-017..UC-020 flow.
+1. `team-run-history-service.ts:deleteTeamRunHistory(teamId)` facade delegates to command service.
+2. `team-run-history-command-service.ts:deleteTeamRunHistory(teamId)` starts preflight.
+3. `team-history-runtime-state-probe-service.ts:probe(teamId)` checks host/worker runtime state for active run drift.
+4. Probe resolves worker active state by explicit host `teamId` field stored in worker run-scoped bindings.
+5. If any node reports active runtime for `teamId`, delete returns precondition failure and does not perform filesystem cleanup.
+6. If probe confirms inactive state, coordinator proceeds with UC-008/UC-017..UC-020 flow.
 
 Fallback path:
 - Probe timeout returns conservative retryable preflight result (no destructive cleanup started).
@@ -347,14 +353,14 @@ Example topology:
 2. Remote worker node B has member `student` (`referenceId=24`), and host node A does not have `agent_definitions.id=24`.
 
 Flow:
-1. `src/api/graphql/types/agent-team-instance.ts:sendMessageToTeam(input)` resolves runtime member configs and calls team lazy-create.
-2. `src/agent-team-execution/services/agent-team-instance-manager.ts:buildTeamConfigFromDefinition(...)` iterates members and passes `member.homeNodeId`.
-3. `resolveAgentDefinitionForMember(...)` performs strict local lookup for `member.referenceId`.
+1. `src/api/graphql/types/agent-team-instance.ts:sendMessageToTeam(input)` delegates lazy-create prep to application service.
+2. `src/agent-team-execution/services/agent-team-instance-manager.ts:buildTeamConfigFromDefinition(...)` iterates members and delegates member hydration policy.
+3. `src/agent-team-execution/services/team-member-config-hydration-service.ts:resolveAgentDefinitionForMember(...)` performs strict local lookup for `member.referenceId`.
 4. If lookup misses and member is local to current node, throw hard error (`AgentDefinition with ID <id> not found`).
 5. If lookup misses and member is remote, allow remote-proxy-safe hydration:
 6. Try optional runtime `memberConfig.agentDefinitionId` lookup.
 7. If still unresolved locally, synthesize remote proxy definition metadata and continue hydration.
-8. Build `AgentConfig` with `initialCustomData.agent_definition_id` set to resolved/synthetic ID and continue distributed run bootstrap.
+8. `team-member-config-hydration-service.ts:buildAgentConfigFromDefinition(...)` sets `initialCustomData.agent_definition_id` and returns hydrated `AgentConfig`.
 9. Host proceeds to bootstrap remote worker; worker executes remote member with its own local definition.
 
 Fallback path:
@@ -373,11 +379,12 @@ Example topology:
 
 Flow:
 1. `src/api/graphql/types/agent-team-instance.ts:sendMessageToTeam(input)` enters lazy-create path.
-2. `src/agent-team-execution/services/agent-team-instance-manager.ts:buildTeamConfigFromDefinition(...)` validates member placement.
-3. For remote member (`homeNodeId` non-local), enforce `workspaceRootPath` presence before config hydration.
-4. During home-node hydration (`buildAgentConfigFromDefinition(...)`), attempt `workspaceId` lookup first.
-5. If `workspaceId` lookup misses and `workspaceRootPath` exists, call `workspaceManager.ensureWorkspaceByRootPath(...)`.
-6. Bind resolved workspace and continue runtime bootstrap.
+2. `team-runtime-bootstrap-application-service.ts` prepares member configs with placement metadata.
+3. `src/agent-team-execution/services/agent-team-instance-manager.ts:buildTeamConfigFromDefinition(...)` delegates hydration.
+4. `team-member-config-hydration-service.ts` enforces `workspaceRootPath` for remote members (`homeNodeId` non-local).
+5. During home-node hydration, attempt `workspaceId` lookup first.
+6. If `workspaceId` lookup misses and `workspaceRootPath` exists, call `workspaceManager.ensureWorkspaceByRootPath(...)`.
+7. Bind resolved workspace and continue runtime bootstrap.
 
 Fallback path:
 - If `workspaceId` is stale on home node, `workspaceRootPath` fallback restores workspace binding without silent degradation.
@@ -388,7 +395,7 @@ Error path:
 ## UC-025: Readable Deterministic Team-Member ID Generation
 Coverage: primary=Yes, fallback=N/A, error=Yes
 
-1. `src/api/graphql/types/agent-team-instance.ts:resolveRuntimeMemberConfigs(...)` requests generated ID via `buildTeamMemberAgentId(teamId, memberRouteKey)`.
+1. `team-runtime-bootstrap-application-service.ts` requests generated ID via `buildTeamMemberAgentId(teamId, memberRouteKey)`.
 2. `src/run-history/utils/team-member-agent-id.ts:normalizeMemberRouteKey(memberRouteKey)` canonicalizes route separators/whitespace.
 3. Build path-safe readable slug from normalized route key:
    - lowercase,
@@ -405,7 +412,7 @@ Error path:
 Coverage: primary=Yes, fallback=N/A, error=Yes
 
 1. Team create/lazy-create resolves team metadata (`teamDefinitionName` fallback to `teamDefinitionId`).
-2. `src/api/graphql/types/agent-team-instance.ts:generateTeamId(teamDefinitionName)` derives `team_name_slug`:
+2. `team-runtime-bootstrap-application-service.ts:generateTeamId(teamDefinitionName)` derives `team_name_slug`:
    - lowercase,
    - path-safe normalization,
    - bounded slug length.
@@ -469,3 +476,148 @@ Coverage: primary=Yes, fallback=N/A, error=Yes
 
 Error path:
 - Any parity mismatch in create/send/terminate/continue/projection/delete flows blocks refactor promotion.
+
+## UC-031: Distributed Composition Internal Collaborator Extraction Parity
+Coverage: primary=Yes, fallback=N/A, error=Yes
+
+1. `src/distributed/bootstrap/default-distributed-runtime-composition.ts:getDefaultDistributedRuntimeComposition()` keeps stable external composition API.
+2. `src/distributed/bootstrap/distributed-runtime-composition-factory.ts:createDistributedRuntimeComposition()` orchestrates assembly by delegating:
+   - core dependency creation to `distributed-runtime-core-dependencies.ts`,
+   - host local-routing callback assembly to `host-runtime-routing-dispatcher.ts`.
+3. Factory wires collaborators into `TeamRunOrchestrator`, `TeamRunLocator`, ingress, and bridge services without changing call contracts.
+4. Existing bootstrap/uplink/routing behavior remains equivalent for local and distributed flows.
+
+Error path:
+- Any behavior drift in uplink/bootstrap/local routing callbacks fails parity checks and blocks promotion.
+
+## UC-032: Team Runtime Bootstrap Collaborator Extraction Parity
+Coverage: primary=Yes, fallback=N/A, error=Yes
+
+1. `src/agent-team-execution/services/team-runtime-bootstrap-application-service.ts:prepareTeamRuntimeBootstrap(...)` keeps stable return shape (`teamId`, `resolvedMemberConfigs`, `manifest`).
+2. Service delegates route-key placement planning to `team-member-placement-planning-service.ts`.
+3. Service delegates manifest binding assembly to `team-run-manifest-assembly-service.ts`.
+4. Service retains orchestration-only responsibilities (ID selection + collaborator coordination) and preserves output semantics.
+
+Error path:
+- Any output mismatch in member config/manifest shaping (for same inputs) fails parity checks and blocks promotion.
+
+## UC-033: Worker Bootstrap Locality Uses Binding Ownership (embedded-local Safe)
+Coverage: primary=Yes, fallback=Yes, error=Yes
+
+1. Worker ingress receives `RUN_BOOTSTRAP` with:
+   - `memberBindings[*].hostNodeId`,
+   - optional team definition snapshot nodes containing `homeNodeId`.
+2. `src/distributed/bootstrap/remote-envelope-bootstrap-handler.ts:createDispatchRunBootstrapHandler(...)`
+3. For each binding:
+   - compute local-ownership via `isBindingLocalToNode(binding.hostNodeId, workerNodeId)`,
+   - set `memoryDir` only when local,
+   - force `memoryDir=null` for non-local bindings.
+4. `src/agent-team-execution/services/agent-team-instance-manager.ts:buildTeamConfigFromDefinition(...)`
+5. Resolve effective home-node identity with precedence:
+   - `memberConfig.hostNodeId` first,
+   - definition `member.homeNodeId` fallback.
+6. Hydration path stamps `teamMemberPlacement` from effective home-node identity.
+7. `autobyteus-ts` coordinator initialization step reads placement metadata and skips coordinator boot when non-local.
+8. Worker runtime persists files only for local bindings; non-local coordinator/member subtree is not created on worker.
+
+Fallback path:
+- If binding `hostNodeId` is absent (legacy/invalid payload), worker falls back to definition `homeNodeId` for locality classification.
+
+Error path:
+- If fallback classification still marks non-local member as local due invalid metadata, bootstrap may start wrong member and tests must fail the parity gate.
+
+## UC-034: Worker Rerun Bootstrap Rebuilds Stopped Runtime Team Before Binding
+Coverage: primary=Yes, fallback=Yes, error=Yes
+
+1. Worker receives rerun `RUN_BOOTSTRAP` for existing `teamId` after prior `CONTROL_STOP`.
+2. `src/distributed/bootstrap/remote-envelope-bootstrap-handler.ts:createDispatchRunBootstrapHandler(...)`
+3. Existing-binding gate:
+   - if binding exists and bound team runtime is running => keep binding and return fast path,
+   - if binding exists but bound runtime is stopped => terminate stale runtime instance, teardown run lifecycle, unbind/finalize stale run.
+4. Runtime-team gate:
+   - if cached runtime team is missing => create projection runtime,
+   - if cached runtime team exists but `isRunning=false` => terminate stale instance and recreate projection runtime,
+   - if cached runtime team is running with mismatched bindings => recreate projection runtime.
+5. After runtime liveness is guaranteed, bind rerun (`bindRun`), mark worker-managed run, set worker uplink routing port, replace event forwarder.
+6. Worker local message handling and worker-originated `send_message_to` both execute against active team runtime worker.
+
+Fallback path:
+- If stale binding cleanup partially fails, bootstrap returns failure and does not publish new run binding.
+
+Error path:
+- If runtime recreation fails, rerun bootstrap fails hard and no worker-managed run is marked.
+
+## UC-035: Worker Command Handlers Use One Ownership-First Dispatch Orchestrator
+Coverage: primary=Yes, fallback=Yes, error=Yes
+
+1. Worker command ingress receives one of:
+   - `USER_MESSAGE`,
+   - `INTER_AGENT_MESSAGE_REQUEST`,
+   - `TOOL_APPROVAL`.
+2. `src/distributed/bootstrap/remote-envelope-message-command-handlers.ts` or `src/distributed/bootstrap/remote-envelope-control-command-handlers.ts` parses command payload.
+3. Handler delegates local-dispatch decision to:
+   - `src/distributed/routing/worker-owned-member-dispatch-orchestrator.ts:dispatchToWorkerOwnedMemberIfEligible(...)`.
+4. Orchestrator resolves ownership with:
+   - `src/distributed/routing/worker-member-locality-resolver.ts:resolveWorkerMemberDispatchOwnership(...)`
+   using run-scoped binding map + `selfNodeId`.
+5. If ownership is local and run is worker-managed:
+   - orchestrator executes local routing-port dispatch once,
+   - returns `handled=true`.
+6. If not handled locally:
+   - message path continues to existing fallback chain (`teamManager.dispatchInterAgentMessage` then `team.postMessage`),
+   - tool-approval path continues to existing fallback (`team.postToolExecutionApproval`).
+
+Fallback path:
+- Ownership result is `RUN_BINDING_NOT_FOUND` or `TARGET_MEMBER_NOT_BOUND`; local dispatch is skipped and existing fallback chain remains authoritative.
+
+Error path:
+- Local-dispatch attempt for owned member is rejected by routing adapter/runtime guard; orchestrator surfaces explicit dispatch rejection and handler returns controlled dispatch error.
+
+## UC-036: Layering Boundaries Stay Explicit Across Runtime Binding, Placement Planning, and Worker Command Composition
+Coverage: primary=Yes, fallback=N/A, error=Yes
+
+1. Team bootstrap/create path produces application-layer member configs (`TeamMemberConfigInput`) for runtime creation concerns only.
+2. Distributed composition maps member bindings into distributed-layer contract:
+   - `src/distributed/runtime-binding/run-scoped-member-binding.ts` (new).
+3. `src/distributed/runtime-binding/run-scoped-team-binding-registry.ts` stores `RunScopedMemberBinding[]` without importing application-service DTO types.
+4. `src/distributed/routing/worker-member-locality-resolver.ts` resolves ownership from distributed-layer binding contract only.
+5. `src/agent-team-execution/services/team-member-placement-planning-service.ts` resolves placement using injected node-snapshot provider input, not `getDefaultDistributedRuntimeComposition()` singleton reads.
+6. `src/distributed/bootstrap/remote-envelope-command-handlers.ts` passes `selfNodeId` naming through worker command-handler dependency boundaries without `hostNodeId` aliasing.
+
+Error path:
+- Any cross-layer type import from distributed runtime-binding/routing modules to application-service DTO files or singleton-based placement snapshot lookup fails layering gate and blocks promotion.
+
+## UC-037: Run-History Runtime Defaults Are Composition-Root Injected (WS-22)
+Coverage: primary=Yes, fallback=Yes, error=Yes
+Source Type: Design-Risk
+
+1. `src/app.ts:buildApp()` creates distributed runtime composition.
+2. `src/app.ts` configures run-history runtime dependency registry:
+   - `configureTeamRunHistoryRuntimeDependencies(distributedRuntime)`.
+3. GraphQL/team-history read path invokes:
+   - `src/run-history/services/team-run-history-service.ts` (facade),
+   - `src/run-history/services/team-run-history-query-service.ts` and/or
+   - `src/run-history/services/team-member-run-projection-service.ts`.
+4. Service-default runtime identity/base URL reads resolve via:
+   - `src/run-history/services/team-run-history-runtime-dependencies.ts:getTeamRunHistoryRuntimeDependencies()`.
+5. If registry-provided values exist, services use them as runtime defaults.
+6. On application shutdown, `src/app.ts` resets registry via:
+   - `configureTeamRunHistoryRuntimeDependencies(null)`.
+
+Fallback path:
+- If runtime dependency registry is unset, services fall back to environment-derived defaults (`AUTOBYTEUS_SERVER_HOST`, node identity fallback).
+
+Error path:
+- If runtime defaults are unavailable and required node identity cannot be resolved for distributed projection fallback, service returns explicit resolution failure.
+
+## UC-038: File-Explorer Integration Timing Remains Deterministic Under Parallel Load
+Coverage: primary=Yes, fallback=N/A, error=Yes
+Source Type: Design-Risk
+
+1. Parallel backend suite executes file-explorer integration scenarios.
+2. `tests/integration/file-explorer/file-name-indexer.integration.test.ts` waits for index conditions with bounded polling + enriched timeout diagnostics.
+3. `tests/integration/file-explorer/file-system-watcher.integration.test.ts` validates event/no-event behavior with bounded wait windows sized for parallel load.
+4. Assertions remain behavior-based (no unbounded sleeps), preserving deterministic outcomes.
+
+Error path:
+- If event/index conditions are not reached within bounded windows, tests fail with actionable diagnostics (current index/events context).
