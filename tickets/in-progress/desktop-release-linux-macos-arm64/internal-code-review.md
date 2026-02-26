@@ -2,9 +2,10 @@
 
 - gate-result: Pass
 - stage: 5.5
+- rerun-context: Post-Stage-6 local-fix re-entry
 
-## Reviewed Source Files
-- `autobyteus-web/build/scripts/build.ts`
+## Reviewed Changed Files In Re-entry
+- `.github/workflows/release-desktop.yml`
 
 ## Checks
 - separation-of-concerns and responsibility boundaries: Pass
@@ -13,15 +14,11 @@
 - duplication/patch-on-patch complexity smell: Pass
 
 ## Source File Size Policy
-- `autobyteus-web/build/scripts/build.ts`: 359 lines (>300)
-- explicit SoC split assessment: completed
-  - assessment result: keep as single file for now
-  - rationale: this ticket adds narrow CLI parsing + target-resolution helper only; no new cross-domain responsibility added.
-  - follow-up note: if further platform logic expands materially, split target-resolution utilities into a dedicated module.
-- >400 line expansion rule: Not triggered (file remains <= 400 lines).
+- No source-code file changed in this re-entry cycle (workflow-only fix).
+- >300 / >400 source-file policy: Not applicable for this re-entry cycle.
 
 ## Findings
 - No blocking findings.
 
 ## Re-entry Declaration
-- Not required (gate result `Pass`).
+- completed path: Stage 5 local fix -> Stage 5.5 Pass -> proceed to Stage 6 rerun.

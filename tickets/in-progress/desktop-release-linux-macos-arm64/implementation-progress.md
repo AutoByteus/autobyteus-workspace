@@ -38,3 +38,21 @@
 - result: Updated
 - updated file: `autobyteus-web/docs/github-actions-tag-build.md`
 - rationale: workflow path/trigger/targets/publish behavior and personal flavor enforcement were stale and are now aligned with implemented behavior.
+
+## Stage 6 Re-entry Declaration (Post-Validation Failure)
+- trigger stage: 6 (aggregated validation)
+- failing scenario: `SCN-REL-005` (live tag release run)
+- classification: Local Fix
+- root cause confidence: high
+- reason: macOS build environment missing Python `distutils` for node-gyp/electron-rebuild (`ModuleNotFoundError: No module named 'distutils'`).
+- required return path: Stage 5 (implementation local fix) -> Stage 5.5 (internal code review) -> Stage 6 rerun.
+- no-direct-patch rule: satisfied (artifact update recorded before code edit).
+
+## Re-entry Stage 5 Execution (Local Fix)
+- updated file: `.github/workflows/release-desktop.yml`
+- change: add `Install Python setuptools for node-gyp` step in macOS build job.
+- verification: workflow YAML parse passed.
+
+## Re-entry Stage 5.5 Result
+- internal code review gate: Pass
+- artifact: `internal-code-review.md` updated for re-entry cycle.
