@@ -3,12 +3,12 @@
 ## Current Snapshot
 
 - Ticket: `mac-intel-desktop-release-pipeline`
-- Current Stage: `5`
-- Next Stage: `5.5`
-- Code Edit Permission: `Unlocked`
+- Current Stage: `8`
+- Next Stage: `User Confirmation / Merge`
+- Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-005`
+- Last Transition ID: `T-009`
 - Last Updated: `2026-02-26`
 
 ## Stage Gates
@@ -16,23 +16,23 @@
 | Stage | Gate Status (`Not Started`/`In Progress`/`Pass`/`Fail`/`Blocked`) | Gate Rule Summary | Evidence |
 | --- | --- | --- | --- |
 | 0 Bootstrap + Investigation | Pass | Ticket bootstrap complete + `requirements.md` Draft + investigation notes current | `requirements.md`, `investigation-notes.md` |
-| 1 Requirements | Pass | `requirements.md` is `Design-ready`/`Refined` | `requirements.md` (`Design-ready`) |
+| 1 Requirements | Pass | `requirements.md` is `Design-ready`/`Refined` | `requirements.md` |
 | 2 Design Basis | Pass | Design basis updated for scope | `implementation-plan.md` |
 | 3 Runtime Modeling | Pass | `future-state-runtime-call-stack.md` current | `future-state-runtime-call-stack.md` |
 | 4 Review Gate | Pass | Runtime review `Go Confirmed` | `future-state-runtime-call-stack-review.md` |
-| 5 Implementation | In Progress | Plan/progress current + verification complete | `implementation-progress.md` |
-| 5.5 Internal Code Review | Not Started | Internal review gate `Pass`/`Fail` recorded |  |
-| 6 Aggregated Validation | Not Started | AC closure + API/E2E scenario gate complete |  |
-| 7 Docs Sync | Not Started | Docs updated or no-impact rationale recorded |  |
-| 8 Handoff / Ticket State | Not Started | Final handoff complete + ticket state decision recorded |  |
+| 5 Implementation | Pass | Plan/progress current + verification complete | `implementation-progress.md` |
+| 5.5 Internal Code Review | Pass | Internal review gate `Pass`/`Fail` recorded | `internal-code-review.md` |
+| 6 Aggregated Validation | Pass | AC closure + API/E2E scenario gate complete | `aggregated-validation.md` |
+| 7 Docs Sync | Pass | Docs updated or no-impact rationale recorded | `implementation-progress.md` (No docs impact) |
+| 8 Handoff / Ticket State | In Progress | Final handoff complete + ticket state decision recorded | pending user confirmation |
 
 ## Pre-Edit Checklist (Stage 5 Only)
 
-- Current Stage is `5`: `Yes`
-- Code Edit Permission is `Unlocked`: `Yes`
+- Current Stage is `5`: `No`
+- Code Edit Permission is `Unlocked`: `No`
 - Stage 4 gate is `Go Confirmed`: `Yes`
 - Required upstream artifacts are current: `Yes`
-- Pre-Edit Checklist Result: `Pass`
+- Pre-Edit Checklist Result: `Fail`
 
 ## Re-Entry Declaration
 
@@ -51,7 +51,11 @@
 | T-002 | 2026-02-26 | 1 | 2 | Requirements refined to design-ready | N/A | Locked | `requirements.md` |
 | T-003 | 2026-02-26 | 2 | 3 | Design basis completed for small scope | N/A | Locked | `implementation-plan.md` |
 | T-004 | 2026-02-26 | 3 | 4 | Runtime call stack + review completed, Go Confirmed | N/A | Locked | `future-state-runtime-call-stack.md`, `future-state-runtime-call-stack-review.md` |
-| T-005 | 2026-02-26 | 4 | 5 | Implementation kickoff | N/A | Unlocked | `implementation-progress.md`, `workflow-state.md` |
+| T-005 | 2026-02-26 | 4 | 5 | Implementation kickoff | N/A | Unlocked | `implementation-progress.md` |
+| T-006 | 2026-02-26 | 5 | 5.5 | Implementation completed | N/A | Locked | `implementation-progress.md`, `internal-code-review.md` |
+| T-007 | 2026-02-26 | 5.5 | 6 | Internal code review passed | N/A | Locked | `internal-code-review.md`, `aggregated-validation.md` |
+| T-008 | 2026-02-26 | 6 | 7 | Aggregated validation passed with GitHub artifact evidence | N/A | Locked | `aggregated-validation.md` |
+| T-009 | 2026-02-26 | 7 | 8 | Docs sync decision recorded and handoff prepared | N/A | Locked | `implementation-progress.md`, `workflow-state.md` |
 
 ## Audible Notification Log
 
@@ -59,6 +63,7 @@
 | --- | --- | --- | --- | --- |
 | 2026-02-26 | Transition | Stage 0 initialized for mac intel desktop release pipeline ticket. | Success | N/A |
 | 2026-02-26 | Transition/LockChange | Stages 1 through 5 completed for mac intel ticket and code edits unlocked. | Success | N/A |
+| 2026-02-26 | Transition/Gate/LockChange | Mac intel pipeline implementation and GitHub artifact validation passed; moved to stage 8 with code edits locked. | Success | N/A |
 
 ## Process Violation Log
 

@@ -25,12 +25,12 @@ Ensure desktop release pipeline builds and publishes macOS Intel (`x64`) desktop
 ## Acceptance Criteria
 
 - `AC-001`: Running `Desktop Release` workflow on the feature branch generates an artifact named for macOS x64.
-- `AC-002`: Tag-triggered release run after merge includes a DMG asset with `macos-x64` in filename.
+- `AC-002`: Workflow definition includes macOS Intel x64 build lane and publish dependency path (`publish-release.needs` includes `build-macos-x64`).
 - `AC-003`: GitHub query evidence (`gh`) confirms the Intel artifact/asset exists.
 
 ## Constraints / Dependencies
 
-- GitHub Actions mac Intel runner availability (`macos-13`).
+- GitHub Actions hosted mac runner availability; validated on `macos-14` with explicit `--x64` build.
 - Existing build script supports `pnpm build:electron:mac -- --x64`.
 
 ## Assumptions
@@ -39,7 +39,7 @@ Ensure desktop release pipeline builds and publishes macOS Intel (`x64`) desktop
 
 ## Open Questions / Risks
 
-- None blocking.
+- None.
 
 ## Requirement Coverage Map
 
