@@ -9,6 +9,7 @@ This file tracks high-level parity goals between `autobyteus-server` (Python) an
 - Preserve domain layering and service boundaries.
 - Prefer explicit singleton accessors over eager module-level singleton exports.
 - Keep startup ordering deterministic (`data-dir` -> config init -> migrations -> transports).
+- Keep Prisma migration startup resilient in packaged read-only runtimes by resolving explicit engine paths (bundled preferred, local Prisma cache fallback).
 - Maintain GraphQL/REST/WebSocket API parity where practical.
 
 ## Documentation Migration
