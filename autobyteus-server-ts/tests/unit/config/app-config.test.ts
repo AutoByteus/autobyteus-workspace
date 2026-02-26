@@ -11,6 +11,7 @@ const ENV_KEYS = [
   "DB_TYPE",
   "DATABASE_URL",
   "AUTOBYTEUS_SKILLS_PATHS",
+  "AUTOBYTEUS_LOG_DIR",
   "LOG_LEVEL",
 ];
 
@@ -64,6 +65,20 @@ describe("AppConfig", () => {
     expect(config.get("DATABASE_URL")).toBe(`file:${expectedDbPath}`);
     expect(process.env.DATABASE_URL).toBe(`file:${expectedDbPath}`);
     expect(fs.existsSync(path.join(configDir, "logs"))).toBe(true);
+
+    await fsPromises.rm(configDir, { recursive: true, force: true });
+  });
+
+  it("resolves AUTOBYTEUS_LOG_DIR relative to app data dir", async () => {
+    const configDir = await createTempConfigDir(
+      "AUTOBYTEUS_SERVER_HOST=http://localhost:8000/\nAUTOBYTEUS_LOG_DIR=custom-logs\n",
+    );
+    const config = new AppConfig();
+    config.setCustomAppDataDir(configDir);
+
+    config.initialize();
+
+    expect(config.getLogsDir()).toBe(path.resolve(configDir, "custom-logs"));
 
     await fsPromises.rm(configDir, { recursive: true, force: true });
   });

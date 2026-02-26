@@ -6,6 +6,12 @@ import websocket from "@fastify/websocket";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { ensureServerHostEnvVar } from "./utils/env-utils.js";
 import { appConfigProvider } from "./config/app-config-provider.js";
+import { getLoggingConfigFromEnv, type LoggingConfig } from "./config/logging-config.js";
+import { registerHttpAccessLogPolicy } from "./logging/http-access-log-policy.js";
+import {
+  getFastifyLoggerOptions,
+  initializeRuntimeLoggerBootstrap,
+} from "./logging/runtime-logger-bootstrap.js";
 import { runMigrations } from "./startup/migrations.js";
 import { scheduleBackgroundTasks } from "./startup/background-runner.js";
 import { registerRestRoutes } from "./api/rest/index.js";
@@ -73,17 +79,22 @@ function initializeConfig(options: ServerOptions) {
   return config;
 }
 
-export async function buildApp(): Promise<FastifyInstance> {
-  const disableHttpRequestLogging = process.env.DISABLE_HTTP_REQUEST_LOGS !== "false";
+type BuildAppOptions = {
+  loggingConfig?: LoggingConfig;
+};
+
+export async function buildApp(options?: BuildAppOptions): Promise<FastifyInstance> {
+  const loggingConfig = options?.loggingConfig ?? getLoggingConfigFromEnv(process.env);
   const app = fastify({
-    logger: true,
-    disableRequestLogging: disableHttpRequestLogging,
+    logger: getFastifyLoggerOptions(loggingConfig),
+    // Access logging is handled by registerHttpAccessLogPolicy.
+    disableRequestLogging: true,
+  });
+  registerHttpAccessLogPolicy(app, {
+    mode: loggingConfig.httpAccessLogMode,
+    includeNoisyRoutes: loggingConfig.includeNoisyHttpAccessRoutes,
   });
   const maxUploadFileSizeBytes = 25 * 1024 * 1024; // 25MB
-
-  logger.info(
-    `Fastify HTTP request logging is ${disableHttpRequestLogging ? "disabled" : "enabled"}.`,
-  );
 
   await app.register(cors, {
     origin: true,
@@ -130,9 +141,14 @@ export async function startServer(): Promise<void> {
   const options = parseArgs(process.argv);
 
   ensureServerHostEnvVar(options.host, options.port);
+  let loggingConfig: LoggingConfig = getLoggingConfigFromEnv(process.env);
 
   try {
     initializeConfig(options);
+    loggingConfig = getLoggingConfigFromEnv(process.env);
+    initializeRuntimeLoggerBootstrap({
+      logsDir: appConfigProvider.config.getLogsDir(),
+    });
   } catch (error) {
     logger.error(`Failed to initialize AppConfig: ${String(error)}`);
     process.exit(1);
@@ -145,7 +161,7 @@ export async function startServer(): Promise<void> {
     process.exit(1);
   }
 
-  const app = await buildApp();
+  const app = await buildApp({ loggingConfig });
   registerShutdownHandlers(app);
   await app.listen({ host: options.host, port: options.port });
   logger.info(`Server listening on ${options.host}:${options.port}`);

@@ -267,7 +267,13 @@ export class AppConfig {
   }
 
   getLogsDir(): string {
-    const logsDir = path.join(this.dataDir, "logs");
+    const configuredPath = this.get("AUTOBYTEUS_LOG_DIR");
+    const logsDir =
+      typeof configuredPath === "string" && configuredPath.trim().length > 0
+        ? path.isAbsolute(configuredPath.trim())
+          ? path.resolve(configuredPath.trim())
+          : path.resolve(this.dataDir, configuredPath.trim())
+        : path.join(this.dataDir, "logs");
     fs.mkdirSync(logsDir, { recursive: true });
     return logsDir;
   }

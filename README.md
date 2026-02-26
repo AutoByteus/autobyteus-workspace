@@ -23,6 +23,31 @@ If cloned without `--recurse-submodules`:
 git submodule update --init --recursive
 ```
 
+## All-in-one Docker startup (personal branch)
+
+Use these commands from the repo root:
+
+```bash
+./scripts/personal-docker.sh up
+./scripts/personal-docker.sh ports
+```
+
+Default `up` behavior includes one remote node, fixture seeding, and post-start sync.
+If you only want the main all-in-one container:
+
+```bash
+./scripts/personal-docker.sh up -r 0 --no-seed-test-fixtures --no-sync-remotes
+```
+
+Stop stack:
+
+```bash
+./scripts/personal-docker.sh down
+```
+
+Full guide:
+- [`docker/README.md`](docker/README.md)
+
 ## Build examples
 
 ```bash

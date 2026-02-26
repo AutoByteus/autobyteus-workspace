@@ -1,0 +1,73 @@
+# syntax=docker/dockerfile:1
+
+ARG CHROME_VNC_TAG=zh
+
+FROM node:20-bookworm AS builder
+WORKDIR /app
+
+RUN corepack enable
+ENV ELECTRON_SKIP_BINARY_DOWNLOAD=1 \
+    PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 \
+    PUPPETEER_SKIP_DOWNLOAD=1
+
+COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+COPY autobyteus-ts/package.json autobyteus-ts/tsconfig.build.json autobyteus-ts/tsconfig.json ./autobyteus-ts/
+COPY autobyteus-server-ts/package.json autobyteus-server-ts/tsconfig.json ./autobyteus-server-ts/
+COPY autobyteus-message-gateway/package.json autobyteus-message-gateway/tsconfig.json autobyteus-message-gateway/tsconfig.build.json ./autobyteus-message-gateway/
+COPY autobyteus-web/package.json ./autobyteus-web/
+
+COPY autobyteus-ts ./autobyteus-ts
+COPY autobyteus-server-ts ./autobyteus-server-ts
+COPY autobyteus-message-gateway ./autobyteus-message-gateway
+COPY autobyteus-web ./autobyteus-web
+
+RUN pnpm install --no-frozen-lockfile \
+  --filter autobyteus-ts... \
+  --filter autobyteus-server-ts... \
+  --filter autobyteus-message-gateway... \
+  --filter autobyteus...
+RUN pnpm -C autobyteus-server-ts exec prisma generate --schema prisma/schema.prisma
+RUN pnpm -C autobyteus-server-ts build
+RUN pnpm -C autobyteus-message-gateway build
+
+FROM autobyteus/chrome-vnc:${CHROME_VNC_TAG} AS runtime
+WORKDIR /app
+
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends curl git ripgrep \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN corepack enable && corepack prepare pnpm@10.30.2 --activate
+
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/pnpm-workspace.yaml ./pnpm-workspace.yaml
+COPY --from=builder /app/package.json ./package.json
+
+COPY --from=builder /app/autobyteus-ts ./autobyteus-ts
+COPY --from=builder /app/autobyteus-server-ts ./autobyteus-server-ts
+COPY --from=builder /app/autobyteus-message-gateway ./autobyteus-message-gateway
+COPY --from=builder /app/autobyteus-web ./autobyteus-web
+
+RUN mkdir -p /home/autobyteus/data /app/memory
+
+COPY docker/allinone-start-server.sh /usr/local/bin/allinone-start-server.sh
+COPY docker/allinone-start-gateway.sh /usr/local/bin/allinone-start-gateway.sh
+COPY docker/allinone-start-web.sh /usr/local/bin/allinone-start-web.sh
+COPY docker/supervisor-allinone.conf /etc/supervisor/conf.d/supervisor-allinone.conf
+
+RUN chmod +x /usr/local/bin/allinone-start-server.sh \
+  /usr/local/bin/allinone-start-gateway.sh \
+  /usr/local/bin/allinone-start-web.sh
+
+ENV NODE_ENV=production \
+    AUTOBYTEUS_BIND_HOST=0.0.0.0 \
+    AUTOBYTEUS_SERVER_PORT=8000 \
+    AUTOBYTEUS_DATA_DIR=/home/autobyteus/data \
+    GATEWAY_HOST=0.0.0.0 \
+    GATEWAY_PORT=8010 \
+    WEB_PORT=3000 \
+    LOG_LEVEL=INFO \
+    AUTOBYTEUS_HTTP_ACCESS_LOG_MODE=errors \
+    AUTOBYTEUS_HTTP_ACCESS_LOG_INCLUDE_NOISY=false
+
+EXPOSE 8000 3000 8010 5900 6080 9223
