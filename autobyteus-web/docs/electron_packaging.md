@@ -287,7 +287,10 @@ npx ts-node build/scripts/build.ts
 
 `scripts/prepare-server.sh` now builds the Node server, deploys it into `resources/server`, and rebuilds native modules (e.g., `node-pty`) for the Electron runtime.
 
-On Linux packaging, the script also forces Prisma engine bundling for both OpenSSL targets (`debian-openssl-1.1.x` and `debian-openssl-3.0.x`) and fails the build if either target is missing from the packaged `@prisma/engines` directory.
+On Linux packaging, the script also forces Prisma engine bundling for both OpenSSL targets (`debian-openssl-1.1.x` and `debian-openssl-3.0.x`) and fails the build if either target is missing from:
+
+- packaged CLI engines directory (`@prisma/engines`)
+- packaged Prisma Client runtime directory (`.prisma/client`)
 
 ---
 
