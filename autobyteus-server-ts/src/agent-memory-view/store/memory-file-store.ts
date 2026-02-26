@@ -12,17 +12,26 @@ export type FileInfo = {
 
 export class MemoryFileStore {
   private baseDir: string;
+  private readonly runRootSubdir: string;
 
-  constructor(baseDir: string) {
+  constructor(baseDir: string, options: { runRootSubdir?: string } = {}) {
     this.baseDir = baseDir;
+    this.runRootSubdir = options.runRootSubdir ?? "agents";
+  }
+
+  private getRunRootDir(): string {
+    if (!this.runRootSubdir) {
+      return this.baseDir;
+    }
+    return path.join(this.baseDir, this.runRootSubdir);
   }
 
   getRunDir(runId: string): string {
-    return path.join(this.baseDir, "agents", runId);
+    return path.join(this.getRunRootDir(), runId);
   }
 
   listRunDirs(): string[] {
-    const agentsDir = path.join(this.baseDir, "agents");
+    const agentsDir = this.getRunRootDir();
     if (!fs.existsSync(agentsDir)) {
       return [];
     }

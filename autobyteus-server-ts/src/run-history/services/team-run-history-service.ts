@@ -3,11 +3,14 @@ import path from "node:path";
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import {
+  TeamMemberRunManifest,
   TeamRunHistoryItem,
   TeamRunIndexRow,
   TeamRunKnownStatus,
   TeamRunManifest,
 } from "../domain/team-models.js";
+import { TeamMemberMemoryLayoutStore } from "../store/team-member-memory-layout-store.js";
+import { TeamMemberRunManifestStore } from "../store/team-member-run-manifest-store.js";
 import { TeamRunIndexStore } from "../store/team-run-index-store.js";
 import { TeamRunManifestStore } from "../store/team-run-manifest-store.js";
 
@@ -42,6 +45,8 @@ export interface TeamRunResumeConfig {
 export class TeamRunHistoryService {
   private readonly manifestStore: TeamRunManifestStore;
   private readonly indexStore: TeamRunIndexStore;
+  private readonly memberLayoutStore: TeamMemberMemoryLayoutStore;
+  private readonly memberRunManifestStore: TeamMemberRunManifestStore;
   private readonly teamRunManager: AgentTeamRunManager;
 
   constructor(
@@ -52,6 +57,8 @@ export class TeamRunHistoryService {
   ) {
     this.manifestStore = new TeamRunManifestStore(memoryDir);
     this.indexStore = new TeamRunIndexStore(memoryDir);
+    this.memberLayoutStore = new TeamMemberMemoryLayoutStore(memoryDir);
+    this.memberRunManifestStore = new TeamMemberRunManifestStore(memoryDir);
     this.teamRunManager = options.teamRunManager ?? AgentTeamRunManager.getInstance();
   }
 
@@ -112,6 +119,16 @@ export class TeamRunHistoryService {
       lastKnownStatus: options.lastKnownStatus ?? "ACTIVE",
       deleteLifecycle: "READY",
     };
+    await this.memberLayoutStore.ensureLocalMemberSubtrees(
+      options.teamRunId,
+      options.manifest.memberBindings.map((binding) => binding.memberRunId),
+    );
+    await this.writeMemberRunManifests(
+      options.teamRunId,
+      options.manifest,
+      row.lastKnownStatus,
+      row.lastActivityAt,
+    );
     await this.manifestStore.writeManifest(options.teamRunId, options.manifest);
     await this.indexStore.upsertRow(row);
   }
@@ -136,20 +153,42 @@ export class TeamRunHistoryService {
         lastKnownStatus: options.status ?? "ACTIVE",
         deleteLifecycle: "READY",
       });
+      await this.writeMemberRunManifests(
+        teamRunId,
+        manifest,
+        options.status ?? "ACTIVE",
+        nowIso(),
+      );
       return;
     }
+    const nextStatus = options.status ?? existing.lastKnownStatus;
+    const nextLastActivityAt = nowIso();
     await this.indexStore.updateRow(teamRunId, {
-      lastActivityAt: nowIso(),
+      lastActivityAt: nextLastActivityAt,
       summary: options.summary !== undefined ? compactSummary(options.summary) : existing.summary,
-      lastKnownStatus: options.status ?? existing.lastKnownStatus,
+      lastKnownStatus: nextStatus,
     });
+    const manifest = await this.manifestStore.readManifest(teamRunId);
+    if (manifest) {
+      await this.writeMemberRunManifests(
+        teamRunId,
+        manifest,
+        nextStatus,
+        nextLastActivityAt,
+      );
+    }
   }
 
   async onTeamTerminated(teamRunId: string): Promise<void> {
+    const terminatedAt = nowIso();
     await this.indexStore.updateRow(teamRunId, {
       lastKnownStatus: "IDLE",
-      lastActivityAt: nowIso(),
+      lastActivityAt: terminatedAt,
     });
+    const manifest = await this.manifestStore.readManifest(teamRunId);
+    if (manifest) {
+      await this.writeMemberRunManifests(teamRunId, manifest, "IDLE", terminatedAt);
+    }
   }
 
   async getTeamRunResumeConfig(teamRunId: string): Promise<TeamRunResumeConfig> {
@@ -240,6 +279,33 @@ export class TeamRunHistoryService {
       return null;
     }
     return targetPath;
+  }
+
+  private async writeMemberRunManifests(
+    teamRunId: string,
+    manifest: TeamRunManifest,
+    lastKnownStatus: TeamRunKnownStatus,
+    timestamp: string,
+  ): Promise<void> {
+    for (const binding of manifest.memberBindings) {
+      const memberManifest: TeamMemberRunManifest = {
+        version: 1,
+        teamRunId,
+        runVersion: manifest.runVersion,
+        memberRouteKey: binding.memberRouteKey,
+        memberName: binding.memberName,
+        memberRunId: binding.memberRunId,
+        agentDefinitionId: binding.agentDefinitionId,
+        llmModelIdentifier: binding.llmModelIdentifier,
+        autoExecuteTools: binding.autoExecuteTools,
+        llmConfig: binding.llmConfig ?? null,
+        workspaceRootPath: binding.workspaceRootPath ?? manifest.workspaceRootPath ?? null,
+        lastKnownStatus,
+        createdAt: manifest.createdAt,
+        updatedAt: timestamp,
+      };
+      await this.memberRunManifestStore.writeManifest(teamRunId, memberManifest);
+    }
   }
 }
 

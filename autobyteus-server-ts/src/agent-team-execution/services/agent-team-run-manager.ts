@@ -73,6 +73,7 @@ export type TeamMemberConfigInput = {
   llmModelIdentifier: string;
   autoExecuteTools: boolean;
   workspaceId?: string | null;
+  memoryDir?: string | null;
   llmConfig?: Record<string, unknown> | null;
   memberRouteKey?: string | null;
   memberRunId?: string | null;
@@ -381,6 +382,11 @@ export class AgentTeamRunManager {
       is_first_user_turn: true,
     };
 
+    const memoryDir =
+      typeof memberConfig.memoryDir === "string" && memberConfig.memoryDir.trim().length > 0
+        ? memberConfig.memoryDir.trim()
+        : null;
+
     return new AgentConfig(
       memberName,
       agentDef.role,
@@ -398,6 +404,7 @@ export class AgentTeamRunManager {
       lifecycleProcessors,
       initialCustomData,
       skillPaths,
+      memoryDir,
     );
   }
 

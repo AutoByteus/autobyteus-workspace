@@ -159,4 +159,27 @@ describe('FileMemoryStore', () => {
     const archiveContent = fs.readFileSync(archivePath, 'utf-8');
     expect(archiveContent).toContain('"turn_id":"turn_0002"');
   });
+
+  it('supports flat team-member layout when agentRootSubdir is empty', () => {
+    const teamMemberDir = path.join(tempDir, 'agent_teams', 'team_123', 'member_professor_abc');
+    fs.mkdirSync(teamMemberDir, { recursive: true });
+
+    const store = new FileMemoryStore(teamMemberDir, 'member_professor_abc', {
+      agentRootSubdir: ''
+    });
+    const trace = new RawTraceItem({
+      id: 'rt-flat-1',
+      ts: Date.now() / 1000,
+      turnId: 'turn_flat_0001',
+      seq: 1,
+      traceType: 'user',
+      content: 'flat layout',
+      sourceEvent: 'test'
+    });
+
+    store.add([trace]);
+
+    expect(fs.existsSync(path.join(teamMemberDir, 'raw_traces.jsonl'))).toBe(true);
+    expect(fs.existsSync(path.join(teamMemberDir, 'agents', 'member_professor_abc'))).toBe(false);
+  });
 });

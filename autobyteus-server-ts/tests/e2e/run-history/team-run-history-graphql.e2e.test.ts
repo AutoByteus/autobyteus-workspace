@@ -576,13 +576,10 @@ describe("Team run history GraphQL e2e", () => {
     const memberRunId = binding?.memberRunId as string;
 
     const memoryDir = appConfigProvider.config.getMemoryDir();
-    const rawTraceFile = path.join(memoryDir, "agents", memberRunId, "raw_traces.jsonl");
-    const snapshotFile = path.join(
-      memoryDir,
-      "agents",
-      memberRunId,
-      "working_context_snapshot.json",
-    );
+    const memberDir = path.join(memoryDir, "agent_teams", teamRunId, memberRunId);
+    const rawTraceFile = path.join(memberDir, "raw_traces.jsonl");
+    const snapshotFile = path.join(memberDir, "working_context_snapshot.json");
+    const memberManifestFile = path.join(memberDir, "run_manifest.json");
 
     await waitFor(async () => {
       try {
@@ -597,6 +594,16 @@ describe("Team run history GraphQL e2e", () => {
       try {
         await fs.access(snapshotFile);
         return true;
+      } catch {
+        return false;
+      }
+    });
+
+    await waitFor(async () => {
+      try {
+        const raw = await fs.readFile(memberManifestFile, "utf-8");
+        const parsed = JSON.parse(raw) as { memberRunId?: string; teamRunId?: string };
+        return parsed.memberRunId === memberRunId && parsed.teamRunId === teamRunId;
       } catch {
         return false;
       }
@@ -974,13 +981,10 @@ describe("Team run history GraphQL e2e", () => {
       const memberRunId = binding?.memberRunId as string;
 
       const memoryDir = appConfigProvider.config.getMemoryDir();
-      const rawTraceFile = path.join(memoryDir, "agents", memberRunId, "raw_traces.jsonl");
-      const snapshotFile = path.join(
-        memoryDir,
-        "agents",
-        memberRunId,
-        "working_context_snapshot.json",
-      );
+      const memberDir = path.join(memoryDir, "agent_teams", teamRunId, memberRunId);
+      const rawTraceFile = path.join(memberDir, "raw_traces.jsonl");
+      const snapshotFile = path.join(memberDir, "working_context_snapshot.json");
+      const memberManifestFile = path.join(memberDir, "run_manifest.json");
 
       await waitFor(async () => {
         try {
@@ -995,6 +999,16 @@ describe("Team run history GraphQL e2e", () => {
         try {
           await fs.access(snapshotFile);
           return true;
+        } catch {
+          return false;
+        }
+      }, 60000);
+
+      await waitFor(async () => {
+        try {
+          const raw = await fs.readFile(memberManifestFile, "utf-8");
+          const parsed = JSON.parse(raw) as { memberRunId?: string; teamRunId?: string };
+          return parsed.memberRunId === memberRunId && parsed.teamRunId === teamRunId;
         } catch {
           return false;
         }

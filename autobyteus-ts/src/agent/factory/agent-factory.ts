@@ -48,6 +48,14 @@ import { AgentRuntime } from '../runtime/agent-runtime.js';
 import { registerTools } from '../../tools/register-tools.js';
 import { initializeLogging } from '../../utils/logger.js';
 
+const normalizeExplicitMemoryDir = (value: string | null | undefined): string | null => {
+  if (typeof value !== 'string') {
+    return null;
+  }
+  const normalized = value.trim();
+  return normalized.length > 0 ? normalized : null;
+};
+
 export class AgentFactory extends Singleton {
   protected static instance?: AgentFactory;
 
@@ -154,11 +162,15 @@ export class AgentFactory extends Singleton {
       config.initialCustomData ?? null
     );
 
-    const memoryDir = resolveMemoryBaseDir({
-      overrideDir: memoryDirOverride ?? config.memoryDir ?? null
-    });
-    const memoryStore = new FileMemoryStore(memoryDir, agentId);
-    const snapshotStore = new WorkingContextSnapshotStore(memoryDir, agentId);
+    const explicitMemoryDir =
+      normalizeExplicitMemoryDir(memoryDirOverride) ??
+      normalizeExplicitMemoryDir(config.memoryDir ?? null);
+    const memoryDir = explicitMemoryDir ?? resolveMemoryBaseDir();
+    const memoryLayoutOptions = explicitMemoryDir
+      ? { agentRootSubdir: '' }
+      : { agentRootSubdir: 'agents' };
+    const memoryStore = new FileMemoryStore(memoryDir, agentId, memoryLayoutOptions);
+    const snapshotStore = new WorkingContextSnapshotStore(memoryDir, agentId, memoryLayoutOptions);
     runtimeState.memoryManager = new MemoryManager({ store: memoryStore, workingContextSnapshotStore: snapshotStore });
     runtimeState.restoreOptions = restoreOptions;
 

@@ -7,13 +7,13 @@ describe("AutobyteusRuntimeAdapter", () => {
     const stop = vi.fn().mockResolvedValue(undefined);
     const adapter = new AutobyteusRuntimeAdapter(
       {
-        getAgentInstance: vi.fn().mockReturnValue({
+        getAgentRun: vi.fn().mockReturnValue({
           postUserMessage: vi.fn(),
           postToolExecutionApproval: vi.fn(),
           stop,
         }),
       } as any,
-      { getTeamInstance: vi.fn().mockReturnValue(null) } as any,
+      { getTeamRun: vi.fn().mockReturnValue(null) } as any,
     );
 
     const result = await adapter.interruptRun({ runId: "agent-1", mode: "agent" });
@@ -24,9 +24,9 @@ describe("AutobyteusRuntimeAdapter", () => {
   it("interrupts an active team run via stop()", async () => {
     const stop = vi.fn().mockResolvedValue(undefined);
     const adapter = new AutobyteusRuntimeAdapter(
-      { getAgentInstance: vi.fn().mockReturnValue(null) } as any,
+      { getAgentRun: vi.fn().mockReturnValue(null) } as any,
       {
-        getTeamInstance: vi.fn().mockReturnValue({
+        getTeamRun: vi.fn().mockReturnValue({
           postMessage: vi.fn(),
           postToolExecutionApproval: vi.fn(),
           stop,
@@ -42,12 +42,12 @@ describe("AutobyteusRuntimeAdapter", () => {
   it("returns interrupt unsupported when run exists without stop()", async () => {
     const adapter = new AutobyteusRuntimeAdapter(
       {
-        getAgentInstance: vi.fn().mockReturnValue({
+        getAgentRun: vi.fn().mockReturnValue({
           postUserMessage: vi.fn(),
           postToolExecutionApproval: vi.fn(),
         }),
       } as any,
-      { getTeamInstance: vi.fn().mockReturnValue(null) } as any,
+      { getTeamRun: vi.fn().mockReturnValue(null) } as any,
     );
 
     const result = await adapter.interruptRun({ runId: "agent-1", mode: "agent" });
@@ -57,8 +57,8 @@ describe("AutobyteusRuntimeAdapter", () => {
 
   it("returns run-not-found when run is inactive", async () => {
     const adapter = new AutobyteusRuntimeAdapter(
-      { getAgentInstance: vi.fn().mockReturnValue(null) } as any,
-      { getTeamInstance: vi.fn().mockReturnValue(null) } as any,
+      { getAgentRun: vi.fn().mockReturnValue(null) } as any,
+      { getTeamRun: vi.fn().mockReturnValue(null) } as any,
     );
 
     const result = await adapter.sendTurn({
