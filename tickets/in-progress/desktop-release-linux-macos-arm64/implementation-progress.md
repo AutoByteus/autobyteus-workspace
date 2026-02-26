@@ -1,0 +1,40 @@
+# Implementation Progress
+
+- status: Implementation Complete
+- ticket: desktop-release-linux-macos-arm64
+
+## Task Status
+- `TASK-REL-001` (`Modify`) `.github/workflows/release-desktop.yml`: Completed
+- `TASK-REL-002` (`Modify`) `autobyteus-web/build/scripts/build.ts`: Completed
+- `TASK-REL-003` (`Modify`) `autobyteus-web/docs/github-actions-tag-build.md`: Completed
+
+## File Build/Test State
+- `.github/workflows/release-desktop.yml`: Completed
+- `autobyteus-web/build/scripts/build.ts`: Completed
+- `autobyteus-web/docs/github-actions-tag-build.md`: Completed
+
+## Verification Status
+- `VER-REL-001` transpile-build: Passed
+  - command: `pnpm --dir autobyteus-web transpile-build`
+- `VER-REL-002` workflow lint: Blocked (actionlint unavailable via `npx` in this environment)
+  - attempted command: `npx --yes actionlint`
+  - compensating check: YAML parse passed
+  - command: `ruby -e "require 'yaml'; YAML.load_file('.github/workflows/release-desktop.yml')"`
+- `VER-REL-003` target resolution smoke check: Passed (code path + workflow command alignment)
+  - evidence: workflow invokes `pnpm build:electron:mac -- --arm64`
+  - evidence: `build.ts` parses `--arm64` and maps mac target to `Arch.arm64`
+
+## Notes
+- Full release-asset visibility still requires running GitHub Actions on an actual version tag.
+
+## Stage 6 Aggregated Validation Summary
+- `SCN-REL-001`: Passed
+- `SCN-REL-002`: Passed
+- `SCN-REL-003`: Passed
+- `SCN-REL-004`: Passed
+- `SCN-REL-005`: Blocked (CI-only, infeasible locally) with compensating evidence and residual risk recorded in `aggregated-validation.md`.
+
+## Stage 7 Docs Synchronization
+- result: Updated
+- updated file: `autobyteus-web/docs/github-actions-tag-build.md`
+- rationale: workflow path/trigger/targets/publish behavior and personal flavor enforcement were stale and are now aligned with implemented behavior.

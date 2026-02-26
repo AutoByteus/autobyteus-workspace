@@ -15,6 +15,7 @@ if (process.env.NO_TIMESTAMP) {
 
 type PlatformType = 'LINUX' | 'WINDOWS' | 'MAC' | 'ALL'
 type BuildFlavor = 'personal' | 'enterprise'
+type RequestedArch = 'AUTO' | 'ARM64' | 'X64'
 
 interface BuildConfig {
   config: Configuration,
@@ -22,14 +23,16 @@ interface BuildConfig {
   publish?: 'always' | 'never' | 'onTag' | 'onTagOrDraft'
 }
 
-function getPlatform(): PlatformType {
-  const args: string[] = process.argv.slice(2)
+const cliArgs: string[] = process.argv.slice(2)
 
-  if (args.includes('--linux')) return 'LINUX'
-  if (args.includes('--windows')) return 'WINDOWS'
-  if (args.includes('--mac')) return 'MAC'
+function getPlatform(args: string[] = cliArgs): PlatformType {
+  const normalizedArgs = args.map((arg) => arg.toLowerCase())
 
-  const directPlatform = args[0]?.toUpperCase() as PlatformType
+  if (normalizedArgs.includes('--linux')) return 'LINUX'
+  if (normalizedArgs.includes('--windows')) return 'WINDOWS'
+  if (normalizedArgs.includes('--mac')) return 'MAC'
+
+  const directPlatform = normalizedArgs[0]?.toUpperCase() as PlatformType
   if (['LINUX', 'WINDOWS', 'MAC'].includes(directPlatform)) {
     return directPlatform
   }
@@ -37,7 +40,17 @@ function getPlatform(): PlatformType {
   return 'ALL'
 }
 
+function getRequestedArch(args: string[] = cliArgs): RequestedArch {
+  const normalizedArgs = args.map((arg) => arg.toLowerCase())
+
+  if (normalizedArgs.includes('--arm64')) return 'ARM64'
+  if (normalizedArgs.includes('--x64')) return 'X64'
+
+  return 'AUTO'
+}
+
 const platform: PlatformType = getPlatform()
+const requestedArch: RequestedArch = getRequestedArch()
 
 function normalizeBuildFlavor(value?: string): BuildFlavor | null {
   if (!value) return null
@@ -121,6 +134,7 @@ console.log('Building with environment:', process.env.NODE_ENV)
 console.log('Using environment file:', process.env.NODE_ENV === 'production' ? '.env.production' : '.env')
 console.log('Resolved build flavor:', buildFlavor)
 console.log('Artifact base name:', artifactBaseName)
+console.log('Requested architecture:', requestedArch)
 
 const options: Configuration = {
   appId: 'com.autobyteus.app',
@@ -221,16 +235,37 @@ const buildConfig: BuildConfig = {
   publish: 'never'
 }
 
-if (platform !== 'ALL') {
-  buildConfig.targets = Platform[platform].createTarget()
-} else {
-  // When building for all platforms, create a combined target map
-  buildConfig.targets = new Map([
-    [Platform.LINUX, new Map([[Arch.x64, ['AppImage']]])],
-    [Platform.WINDOWS, new Map([[Arch.x64, ['nsis']]])],
-    [Platform.MAC, new Map([[Arch.x64, ['dmg']], [Arch.arm64, ['dmg']]])]
-  ])
+function resolvePlatformTargets(
+  buildPlatform: PlatformType,
+  archPreference: RequestedArch
+): Map<Platform, Map<Arch, string[]>> {
+  if (buildPlatform === 'ALL') {
+    return new Map([
+      [Platform.LINUX, new Map([[Arch.x64, ['AppImage']]])],
+      [Platform.WINDOWS, new Map([[Arch.x64, ['nsis']]])],
+      [Platform.MAC, new Map([[Arch.x64, ['dmg']], [Arch.arm64, ['dmg']]])]
+    ])
+  }
+
+  if (buildPlatform === 'LINUX') {
+    return new Map([[Platform.LINUX, new Map([[Arch.x64, ['AppImage']]])]])
+  }
+
+  if (buildPlatform === 'WINDOWS') {
+    return new Map([[Platform.WINDOWS, new Map([[Arch.x64, ['nsis']]])]])
+  }
+
+  if (buildPlatform === 'MAC') {
+    let macArch: Arch = process.arch === 'x64' ? Arch.x64 : Arch.arm64
+    if (archPreference === 'ARM64') macArch = Arch.arm64
+    if (archPreference === 'X64') macArch = Arch.x64
+    return new Map([[Platform.MAC, new Map([[macArch, ['dmg']]])]])
+  }
+
+  throw new Error(`Unsupported build platform: ${buildPlatform}`)
 }
+
+buildConfig.targets = resolvePlatformTargets(platform, requestedArch)
 
 // Function to convert electron-builder arch to our naming convention
 function getArchName(arch: Arch): string {
