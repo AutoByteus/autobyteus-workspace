@@ -8,7 +8,6 @@ import {
   Resolver,
   registerEnumType,
 } from "type-graphql";
-import { randomUUID } from "node:crypto";
 import { GraphQLJSON } from "graphql-scalars";
 import { TaskNotificationMode } from "autobyteus-ts/agent-team/task-notification/task-notification-mode.js";
 import { AgentTeamRunManager } from "../../../agent-team-execution/services/agent-team-run-manager.js";
@@ -21,6 +20,7 @@ import {
   buildTeamMemberRunId,
   normalizeMemberRouteKey,
 } from "../../../run-history/utils/team-member-run-id.js";
+import { generateTeamRunId } from "../../../run-history/utils/team-run-id.js";
 import { getWorkspaceManager } from "../../../workspaces/workspace-manager.js";
 import { appConfigProvider } from "../../../config/app-config-provider.js";
 import { UserInputConverter } from "../converters/user-input-converter.js";
@@ -184,8 +184,8 @@ export class AgentTeamRunResolver {
     return AgentTeamRunManager.getInstance();
   }
 
-  private generateTeamId(): string {
-    return `team_${randomUUID().replace(/-/g, "").slice(0, 8)}`;
+  private generateTeamId(teamLabel: string | null | undefined): string {
+    return generateTeamRunId(teamLabel);
   }
 
   private async resolveWorkspaceId(config: TeamMemberConfigInput): Promise<string | null> {
@@ -416,7 +416,8 @@ export class AgentTeamRunResolver {
     input: CreateAgentTeamRunInput,
   ): Promise<CreateAgentTeamRunResult> {
     try {
-      const teamRunId = this.generateTeamId();
+      const metadata = await this.resolveTeamDefinitionMetadata(input.teamDefinitionId);
+      const teamRunId = this.generateTeamId(metadata.teamDefinitionName || input.teamDefinitionId);
       const memberConfigs = await Promise.all(
         input.memberConfigs.map(async (config) => ({
           ...config,
@@ -433,7 +434,6 @@ export class AgentTeamRunResolver {
       );
 
       try {
-        const metadata = await this.resolveTeamDefinitionMetadata(input.teamDefinitionId);
         const manifest = this.buildTeamRunManifest({
           teamRunId,
           teamDefinitionId: input.teamDefinitionId,
@@ -517,7 +517,8 @@ export class AgentTeamRunResolver {
           throw new Error("teamDefinitionId and memberConfigs are required for lazy team creation.");
         }
 
-        teamRunId = this.generateTeamId();
+        const metadata = await this.resolveTeamDefinitionMetadata(input.teamDefinitionId);
+        teamRunId = this.generateTeamId(metadata.teamDefinitionName || input.teamDefinitionId);
         const memberConfigs = await Promise.all(
           input.memberConfigs.map(async (config) => ({
             ...config,
@@ -533,7 +534,6 @@ export class AgentTeamRunResolver {
         );
 
         try {
-          const metadata = await this.resolveTeamDefinitionMetadata(input.teamDefinitionId);
           const manifest = this.buildTeamRunManifest({
             teamRunId,
             teamDefinitionId: input.teamDefinitionId,

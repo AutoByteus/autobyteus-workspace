@@ -28,3 +28,17 @@
 ## Implications For Design/Implementation
 - Porting strategy is validated: replay source team-memory commits as patch sets into physical super-repo directories.
 - Next step is targeted execution checks and final scope guard review before committing.
+
+## Incremental Refinement (`2026-02-26`) - Team Folder Name Readability
+
+### Additional Sources Consulted
+- `autobyteus-server-ts/src/api/graphql/types/agent-team-run.ts`
+- runtime memory path inspection inside `autobyteus-workspace-superrepo-main-allinone-1` container
+
+### Additional Findings
+- Team run IDs were generated as `team_<8-char-random>`, so top-level team folders under `memory/agent_teams/` were not human-distinguishable by team name.
+- Team definition metadata (`teamDefinitionName`) is already resolved in create/lazy-create flows and can be reused to build readable team-run IDs without changing folder hierarchy contracts.
+
+### Additional Implications
+- Introduce a dedicated utility for team-run ID normalization/generation to keep resolver logic simple and testable.
+- Keep existing prefix and suffix stability (`team_..._<8hex>`) while inserting readable team slug for operator usability.

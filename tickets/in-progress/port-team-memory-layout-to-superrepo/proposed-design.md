@@ -24,6 +24,7 @@ Replay the validated team-memory commits from source repos into the super repo's
 1. `autobyteus-ts` uses explicit leaf `memoryDir` semantics for team-member runtime paths.
 2. `autobyteus-server-ts` persists/reads canonical team-member memory + run manifests.
 3. Team-member run folder IDs use readable slug + stable hash format.
+4. Team-run folder IDs include readable team-name slug + short random suffix.
 
 ## Change Inventory
 | Change ID | Type | Target Path Prefix | Source Commit | Description |
@@ -31,6 +32,7 @@ Replay the validated team-memory commits from source repos into the super repo's
 | C-001 | Modify | `autobyteus-ts/src` + tests | `8b7470a` | Explicit leaf `memoryDir` behavior in runtime stores and factory.
 | C-002 | Modify/Add | `autobyteus-server-ts/src/run-history` + tests | `60a113d` | Canonical team-member layout stores/readers, continuation + projection alignment, member manifest persistence.
 | C-003 | Modify/Add | `autobyteus-server-ts/src/run-history/utils` + tests/docs | `02317b8` | Readable team-member run folder IDs and contract coverage.
+| C-004 | Modify/Add | `autobyteus-server-ts/src/api/graphql/types` + `src/run-history/utils` + tests | local refinement (`2026-02-26`) | Generate `teamRunId` as `team_<team-name-slug>_<id>` for readable team folder naming.
 
 ## Naming Decisions
 | Item | Decision | Rationale |
@@ -38,6 +40,7 @@ Replay the validated team-memory commits from source repos into the super repo's
 | `team-member-memory-layout-store` | Keep | Clear ownership of canonical member path generation.
 | `team-member-run-manifest-store` | Keep | Matches persisted contract responsibility.
 | team-member folder id format | Use readable slug + stable hash | Improves inspectability while preserving uniqueness.
+| team-run folder id format | Use readable team-name slug + short random suffix | Makes top-level `agent_teams` folders human-identifiable while retaining uniqueness.
 
 ## Naming Drift Check
 | Item | Name Match | Action |
@@ -57,7 +60,7 @@ Replay the validated team-memory commits from source repos into the super repo's
 ## Use-Case Coverage Matrix
 | use_case_id | requirement_ids | primary | fallback | error | runtime call stack section |
 | --- | --- | --- | --- | --- | --- |
-| UC-001 | REQ-001,REQ-002,REQ-005,REQ-006,REQ-008 | Yes | N/A | Yes | UC-001 |
-| UC-002 | REQ-002,REQ-004,REQ-006,REQ-008 | Yes | N/A | Yes | UC-002 |
-| UC-003 | REQ-003,REQ-006,REQ-008 | Yes | N/A | Yes | UC-003 |
+| UC-001 | REQ-001,REQ-002,REQ-005,REQ-006,REQ-008,REQ-009 | Yes | N/A | Yes | UC-001 |
+| UC-002 | REQ-002,REQ-004,REQ-006,REQ-008,REQ-009 | Yes | N/A | Yes | UC-002 |
+| UC-003 | REQ-003,REQ-006,REQ-008,REQ-009 | Yes | N/A | Yes | UC-003 |
 | UC-004 | REQ-007,REQ-008 | Yes | N/A | Yes | UC-004 |

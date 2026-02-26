@@ -9,21 +9,23 @@
 ## Use-Case Coverage
 | use_case_id | source_type | requirement_ids | primary | fallback | error |
 | --- | --- | --- | --- | --- | --- |
-| UC-001 | Requirement | REQ-001,REQ-002,REQ-005,REQ-006 | Yes | N/A | Yes |
-| UC-002 | Requirement | REQ-002,REQ-004,REQ-006 | Yes | N/A | Yes |
-| UC-003 | Requirement | REQ-003,REQ-006 | Yes | N/A | Yes |
+| UC-001 | Requirement | REQ-001,REQ-002,REQ-005,REQ-006,REQ-009 | Yes | N/A | Yes |
+| UC-002 | Requirement | REQ-002,REQ-004,REQ-006,REQ-009 | Yes | N/A | Yes |
+| UC-003 | Requirement | REQ-003,REQ-006,REQ-009 | Yes | N/A | Yes |
 | UC-004 | Requirement | REQ-007 | Yes | N/A | Yes |
 
 ## UC-001 Team Create/Send Persists Canonical Team-Member Layout
 1. `autobyteus-server-ts/src/api/graphql/types/agent-team-run.ts:createAgentTeamRun(...)`
-2. `.../agent-team-run.ts:resolveRuntimeMemberConfigs(...)`
+2. `.../agent-team-run.ts:generateTeamId(...)` -> `run-history/utils/team-run-id.ts:generateTeamRunId(...)`
+   - creates `teamRunId = team_<team-name-slug>_<short-random-id>`
+3. `.../agent-team-run.ts:resolveRuntimeMemberConfigs(...)`
    - computes canonical `memoryDir = memory/agent_teams/<teamRunId>/<memberRunId>`
-3. `autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts:createTeamRunWithId(...)`
-4. `autobyteus-ts/src/agent/factory/agent-factory.ts:createRuntimeWithId(...)`
+4. `autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts:createTeamRunWithId(...)`
+5. `autobyteus-ts/src/agent/factory/agent-factory.ts:createRuntimeWithId(...)`
    - explicit `memoryDir` detected and leaf layout options set
-5. `autobyteus-ts/src/memory/store/file-store.ts` and `working-context-snapshot-store.ts`
+6. `autobyteus-ts/src/memory/store/file-store.ts` and `working-context-snapshot-store.ts`
    - writes under canonical member leaf path
-6. `autobyteus-server-ts/src/run-history/services/team-run-history-service.ts`
+7. `autobyteus-server-ts/src/run-history/services/team-run-history-service.ts`
    - persists team manifest and per-member `run_manifest.json`
 
 ### Error branch

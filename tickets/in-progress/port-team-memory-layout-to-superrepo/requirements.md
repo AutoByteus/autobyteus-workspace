@@ -42,6 +42,8 @@ Port the previously implemented personal-branch team-memory layout refactor into
   - Expected outcome: team delete removes `memory/agent_teams/<teamRunId>` without stale member artifacts.
 - `REQ-008` Scope Guard
   - Expected outcome: only team-memory-layout-related files are changed.
+- `REQ-009` Team Run Folder Name Readability
+  - Expected outcome: generated `teamRunId` used as team folder name includes a readable team-name slug (`team_<team-name-slug>_<id>`) instead of hash-only suffix.
 
 ## Acceptance Criteria
 1. `AC-001`: Branch `codex/port-team-memory-layout-to-superrepo` exists and is used for all port changes.
@@ -50,6 +52,7 @@ Port the previously implemented personal-branch team-memory layout refactor into
 4. `AC-004`: File parity check for touched files reports no mismatches against source commit versions.
 5. `AC-005`: Targeted run-history/memory test suites in super repo execute successfully or record explicit blockers.
 6. `AC-006`: No unrelated files outside team-memory scope are included.
+7. `AC-007`: New team runs generate team folder names with team-name slug prefix in runtime memory layout.
 
 ## Constraints / Dependencies
 - Source refs:
@@ -75,6 +78,7 @@ Port the previously implemented personal-branch team-memory layout refactor into
 - `REQ-006` -> `UC-001`, `UC-002`, `UC-003`
 - `REQ-007` -> `UC-004`
 - `REQ-008` -> `UC-001`, `UC-002`, `UC-003`, `UC-004`
+- `REQ-009` -> `UC-001`, `UC-002`, `UC-003`
 
 ## Acceptance Criteria Coverage Map (Stage 6 Scenario Mapping)
 - `AC-001` -> `SCN-001` branch/workflow setup validation
@@ -83,3 +87,4 @@ Port the previously implemented personal-branch team-memory layout refactor into
 - `AC-004` -> `SCN-004` file-level parity command validation
 - `AC-005` -> `SCN-005` targeted verification suites
 - `AC-006` -> `SCN-006` scope guard status/diff review
+- `AC-007` -> `SCN-007` team run ID naming contract validation
