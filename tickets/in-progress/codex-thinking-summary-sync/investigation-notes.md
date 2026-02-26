@@ -23,6 +23,21 @@
 - For assistant text, deltas arrive via `item/agentMessage/delta`.
 - Current adapter maps reasoning `item/started` to `SEGMENT_START` and reasoning `item/completed` to `SEGMENT_END`, even when reasoning has no content.
 
+## Follow-up Findings (Web Search vs Thinking, 2026-02-25)
+- Codex web search is represented by dedicated web-search events, not reasoning events:
+  - `item/started` with `item.type = "webSearch"`
+  - `item/completed` with `item.type = "webSearch"` and query/action payload
+  - mirror runtime events: `codex/event/web_search_begin` and `codex/event/web_search_end`
+- Thinking blocks are sourced from reasoning events in the same turn, primarily:
+  - `item/reasoning/summaryTextDelta`
+  - `item/reasoning/summaryPartAdded`
+  - reasoning snapshots on `item/completed` where `item.type = "reasoning"`
+- Evidence source:
+  - `autobyteus-server-ts/logs/manual-server-20260225-201321.log`
+- Validation lock added:
+  - `autobyteus-server-ts/tests/unit/services/agent-streaming/runtime-event-message-mapper.test.ts`
+  - New tests cover web-search lifecycle mapping and explicit preservation of `codex/event/web_search_begin` / `codex/event/web_search_end`.
+
 ## Root Cause
 1. Backend forwards reasoning start/end events even when reasoning payload is empty.
 2. Frontend creates a `think` segment at `SEGMENT_START`, receives no content, then keeps an empty segment after `SEGMENT_END`.
