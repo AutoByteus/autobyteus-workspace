@@ -1,0 +1,13 @@
+export enum LLMProvider {
+    OPENAI = "OPENAI",
+    ANTHROPIC = "ANTHROPIC",
+    MISTRAL = "MISTRAL",
+    GROQ = "GROQ",
+    GEMINI = "GEMINI",
+    NVIDIA = "NVIDIA",
+    PERPLEXITY = "PERPLEXITY",
+    OLLAMA = "OLLAMA",
+    DEEPSEEK = "DEEPSEEK",
+    GROK = "GROK",
+    AUTOBYTEUS = "AUTOBYTEUS",
+}

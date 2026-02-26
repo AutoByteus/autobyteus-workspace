@@ -1,0 +1,259 @@
+import { describe, expect, it, vi } from "vitest";
+import { defaultRuntimeConfig } from "../../../src/config/runtime-config.js";
+import { createGatewayApp } from "../../../src/bootstrap/create-gateway-app.js";
+import { DiscordBusinessAdapter } from "../../../src/infrastructure/adapters/discord-business/discord-business-adapter.js";
+import { TelegramBusinessAdapter } from "../../../src/infrastructure/adapters/telegram-business/telegram-business-adapter.js";
+import { FileQueueOwnerLock } from "../../../src/infrastructure/queue/file-queue-owner-lock.js";
+import { WechatPersonalAdapter } from "../../../src/infrastructure/adapters/wechat-personal/wechat-personal-adapter.js";
+import { createWechatSidecarSignature } from "../../../src/infrastructure/adapters/wechat-personal/wechat-sidecar-signature.js";
+
+describe("create-gateway-app integration", () => {
+  it("wires Discord capability payload and lifecycle hooks when enabled", async () => {
+    const startSpy = vi
+      .spyOn(DiscordBusinessAdapter.prototype, "start")
+      .mockResolvedValue(undefined);
+    const stopSpy = vi
+      .spyOn(DiscordBusinessAdapter.prototype, "stop")
+      .mockResolvedValue(undefined);
+
+    const config = defaultRuntimeConfig();
+    config.discordEnabled = true;
+    config.discordBotToken = "discord-bot-token";
+    config.discordAccountId = "discord-acct-1";
+
+    const app = createGatewayApp(config);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    const capabilityResponse = await app.inject({
+      method: "GET",
+      url: "/api/channel-admin/v1/capabilities",
+    });
+    expect(capabilityResponse.statusCode).toBe(200);
+    expect(capabilityResponse.json()).toMatchObject({
+      discordEnabled: true,
+      discordAccountId: "discord-acct-1",
+    });
+    expect(startSpy).toHaveBeenCalledOnce();
+
+    await app.close();
+    expect(stopSpy).toHaveBeenCalledOnce();
+
+    startSpy.mockRestore();
+    stopSpy.mockRestore();
+  });
+
+  it("does not start Discord adapter when discord mode is disabled", async () => {
+    const startSpy = vi
+      .spyOn(DiscordBusinessAdapter.prototype, "start")
+      .mockResolvedValue(undefined);
+    const stopSpy = vi
+      .spyOn(DiscordBusinessAdapter.prototype, "stop")
+      .mockResolvedValue(undefined);
+
+    const app = createGatewayApp(defaultRuntimeConfig());
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    const capabilityResponse = await app.inject({
+      method: "GET",
+      url: "/api/channel-admin/v1/capabilities",
+    });
+    expect(capabilityResponse.statusCode).toBe(200);
+    expect(capabilityResponse.json()).toMatchObject({
+      discordEnabled: false,
+      discordAccountId: null,
+    });
+    expect(startSpy).not.toHaveBeenCalled();
+
+    await app.close();
+    expect(stopSpy).not.toHaveBeenCalled();
+
+    startSpy.mockRestore();
+    stopSpy.mockRestore();
+  });
+
+  it("wires Telegram capability payload and polling lifecycle hooks when enabled", async () => {
+    const startSpy = vi
+      .spyOn(TelegramBusinessAdapter.prototype, "start")
+      .mockResolvedValue(undefined);
+    const stopSpy = vi
+      .spyOn(TelegramBusinessAdapter.prototype, "stop")
+      .mockResolvedValue(undefined);
+
+    const config = defaultRuntimeConfig();
+    config.telegramEnabled = true;
+    config.telegramBotToken = "telegram-bot-token";
+    config.telegramAccountId = "telegram-acct-1";
+    config.telegramPollingEnabled = true;
+    config.telegramWebhookEnabled = false;
+
+    const app = createGatewayApp(config);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    const capabilityResponse = await app.inject({
+      method: "GET",
+      url: "/api/channel-admin/v1/capabilities",
+    });
+    expect(capabilityResponse.statusCode).toBe(200);
+    expect(capabilityResponse.json()).toMatchObject({
+      telegramEnabled: true,
+      telegramAccountId: "telegram-acct-1",
+    });
+    expect(startSpy).toHaveBeenCalledOnce();
+
+    await app.close();
+    expect(stopSpy).toHaveBeenCalledOnce();
+
+    startSpy.mockRestore();
+    stopSpy.mockRestore();
+  });
+
+  it("releases first lock when second lock acquire fails during startup", async () => {
+    const acquireSpy = vi.spyOn(FileQueueOwnerLock.prototype, "acquire");
+    const releaseSpy = vi
+      .spyOn(FileQueueOwnerLock.prototype, "release")
+      .mockResolvedValue(undefined);
+
+    acquireSpy.mockImplementationOnce(async () => undefined).mockImplementationOnce(async () => {
+      throw new Error("outbox lock acquire failed");
+    });
+
+    const app = createGatewayApp(defaultRuntimeConfig());
+    await expect(app.ready()).rejects.toThrow("outbox lock acquire failed");
+    expect(releaseSpy).toHaveBeenCalled();
+
+    await app.close().catch(() => undefined);
+    acquireSpy.mockRestore();
+    releaseSpy.mockRestore();
+  });
+
+  it("runs wechat restore only after queue lock acquisition during onReady", async () => {
+    const restoreOrder: string[] = [];
+    let acquireCallCount = 0;
+    const acquireSpy = vi
+      .spyOn(FileQueueOwnerLock.prototype, "acquire")
+      .mockImplementation(async () => {
+        acquireCallCount += 1;
+        restoreOrder.push(`acquire-${acquireCallCount}`);
+      });
+    const releaseSpy = vi
+      .spyOn(FileQueueOwnerLock.prototype, "release")
+      .mockResolvedValue(undefined);
+    const restoreSpy = vi
+      .spyOn(WechatPersonalAdapter.prototype, "restorePersistedSessions")
+      .mockImplementation(async () => {
+        restoreOrder.push("wechat-restore");
+      });
+
+    const config = defaultRuntimeConfig();
+    config.wechatPersonalEnabled = true;
+    config.wechatPersonalSidecarSharedSecret = "wechat-sidecar-secret";
+
+    const app = createGatewayApp(config);
+    expect(restoreSpy).not.toHaveBeenCalled();
+
+    await app.ready();
+    expect(restoreOrder.slice(0, 3)).toEqual([
+      "acquire-1",
+      "acquire-2",
+      "wechat-restore",
+    ]);
+
+    await app.close();
+    acquireSpy.mockRestore();
+    releaseSpy.mockRestore();
+    restoreSpy.mockRestore();
+  });
+
+  it("registers signed wechat sidecar ingress route when wechat personal is enabled", async () => {
+    const restoreSpy = vi
+      .spyOn(WechatPersonalAdapter.prototype, "restorePersistedSessions")
+      .mockResolvedValue(undefined);
+    const config = defaultRuntimeConfig();
+    config.wechatPersonalEnabled = true;
+    config.wechatPersonalSidecarSharedSecret = "wechat-sidecar-secret";
+
+    const app = createGatewayApp(config);
+    const response = await app.inject({
+      method: "POST",
+      url: "/api/wechat-sidecar/v1/events",
+      payload: {
+        sessionId: "session-1",
+        accountLabel: "home-wechat",
+        peerId: "peer-1",
+        peerType: "USER",
+        threadId: null,
+        content: "hello",
+        receivedAt: "2026-02-13T00:00:00.000Z",
+      },
+    });
+
+    expect(response.statusCode).toBe(401);
+    expect(response.json()).toMatchObject({
+      code: "MISSING_SIGNATURE",
+    });
+
+    await app.close();
+    restoreSpy.mockRestore();
+  });
+
+  it("accepts valid signed wechat sidecar ingress when wechat personal is enabled", async () => {
+    const restoreSpy = vi
+      .spyOn(WechatPersonalAdapter.prototype, "restorePersistedSessions")
+      .mockResolvedValue(undefined);
+    const config = defaultRuntimeConfig();
+    config.wechatPersonalEnabled = true;
+    config.wechatPersonalSidecarSharedSecret = "wechat-sidecar-secret";
+
+    const app = createGatewayApp(config);
+    const payload = {
+      sessionId: "session-1",
+      accountLabel: "home-wechat",
+      peerId: "peer-1",
+      peerType: "USER",
+      threadId: null,
+      messageId: "msg-1",
+      content: "hello",
+      receivedAt: "2026-02-13T00:00:00.000Z",
+      metadata: {},
+    };
+    const rawBody = JSON.stringify(payload);
+    const timestamp = Math.floor(Date.now() / 1000).toString();
+    const signature = createWechatSidecarSignature(
+      rawBody,
+      timestamp,
+      "wechat-sidecar-secret",
+    );
+
+    const response = await app.inject({
+      method: "POST",
+      url: "/api/wechat-sidecar/v1/events",
+      payload,
+      headers: {
+        "x-autobyteus-sidecar-signature": signature,
+        "x-autobyteus-sidecar-timestamp": timestamp,
+      },
+    });
+
+    expect(response.statusCode).toBe(202);
+    expect(response.json()).toEqual({
+      accepted: true,
+    });
+
+    await app.close();
+    restoreSpy.mockRestore();
+  });
+
+  it("does not register wechat sidecar ingress route when wechat personal is disabled", async () => {
+    const app = createGatewayApp(defaultRuntimeConfig());
+    const response = await app.inject({
+      method: "POST",
+      url: "/api/wechat-sidecar/v1/events",
+      payload: {
+        sessionId: "session-1",
+      },
+    });
+
+    expect(response.statusCode).toBe(404);
+    await app.close();
+  });
+});

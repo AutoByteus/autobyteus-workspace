@@ -1,0 +1,24 @@
+{
+  "mcpServers": {
+    "codex-cli": {
+      "transport_type": "stdio",
+      "enabled": true,
+      "tool_name_prefix": "codex",
+      "command": "npx",
+      "args": [
+        "-y",
+        "codex@latest",
+        "mcp-server",
+        "--model",
+        "codex-mini-latest",
+        "--approval-mode",
+        "full-auto",
+        "--sandbox",
+        "workspace-write"
+      ],
+      "env": {
+        "OPENAI_API_KEY": "REPLACE_WITH_OPENAI_API_KEY"
+      }
+    }
+  }
+}

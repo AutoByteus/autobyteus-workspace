@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.build.json",
+  "compilerOptions": {
+    "outDir": "dist-file"
+  },
+  "include": ["src"],
+  "exclude": [
+    "tests",
+    "dist",
+    "dist-file",
+    "node_modules",
+    "src/**/repositories/sql/**",
+    "src/**/providers/sql-*.ts",
+    "src/**/providers/sql-provider.ts",
+    "src/**/converters/prisma-converter.ts"
+  ]
+}

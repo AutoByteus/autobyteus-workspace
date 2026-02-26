@@ -1,0 +1,450 @@
+name: Desktop Release Publish (macOS arm64 + Linux x64)
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+      - "*.*.*"
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: "Release tag to publish to AutoByteus/autobyteus-desktop-releases (example: v1.2.0)"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+env:
+  TARGET_RELEASE_REPO: AutoByteus/autobyteus-desktop-releases
+
+concurrency:
+  group: desktop-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build-macos-arm64:
+    name: build-and-publish-macos-arm64
+    runs-on: macos-15
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Validate required secrets
+        env:
+          CI_REPO_READ_TOKEN: ${{ secrets.CI_REPO_READ_TOKEN }}
+          DESKTOP_RELEASES_TOKEN: ${{ secrets.DESKTOP_RELEASES_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${CI_REPO_READ_TOKEN}" ]]; then
+            echo "::error::Missing CI_REPO_READ_TOKEN secret. It must have read access to AutoByteus/autobyteus-server-ts."
+            exit 1
+          fi
+          if [[ -z "${DESKTOP_RELEASES_TOKEN}" ]]; then
+            echo "::error::Missing DESKTOP_RELEASES_TOKEN secret. It must have write access to ${TARGET_RELEASE_REPO}."
+            exit 1
+          fi
+
+      - name: Ensure target release repository is initialized
+        env:
+          GH_TOKEN: ${{ secrets.DESKTOP_RELEASES_TOKEN }}
+        run: |
+          set -euo pipefail
+          DEFAULT_BRANCH="$(gh api "repos/${TARGET_RELEASE_REPO}" --jq '.default_branch')"
+          if [[ -z "${DEFAULT_BRANCH}" || "${DEFAULT_BRANCH}" == "null" ]]; then
+            echo "::error::${TARGET_RELEASE_REPO} has no default branch. Initialize that repo with at least one commit before publishing releases."
+            exit 1
+          fi
+
+      - name: Checkout autobyteus-web
+        uses: actions/checkout@v4
+        with:
+          path: autobyteus-web
+          fetch-depth: 1
+
+      - name: Checkout autobyteus-server-ts (private)
+        uses: actions/checkout@v4
+        with:
+          repository: AutoByteus/autobyteus-server-ts
+          path: autobyteus-server-ts
+          token: ${{ secrets.CI_REPO_READ_TOKEN }}
+          fetch-depth: 1
+
+      - name: Checkout autobyteus-ts
+        uses: actions/checkout@v4
+        with:
+          repository: AutoByteus/autobyteus-ts
+          path: autobyteus-ts
+          fetch-depth: 1
+
+      - name: Checkout repository_prisma
+        uses: actions/checkout@v4
+        with:
+          repository: ryan-zheng-teki/repository_prisma
+          path: repository_prisma
+          fetch-depth: 1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Enable pnpm via Corepack
+        run: |
+          set -euo pipefail
+          corepack enable
+          corepack prepare pnpm@10.28.1 --activate
+          pnpm --version
+
+      - name: Create temporary workspace manifest
+        run: |
+          cat > "${GITHUB_WORKSPACE}/pnpm-workspace.yaml" <<'WORKSPACE'
+          packages:
+            - "autobyteus-web"
+            - "autobyteus-server-ts"
+            - "autobyteus-ts"
+            - "repository_prisma"
+          WORKSPACE
+
+      - name: Install dependencies required by build chain
+        run: |
+          set -euo pipefail
+          pnpm -C "${GITHUB_WORKSPACE}/autobyteus-web" install --no-frozen-lockfile
+          pnpm -C "${GITHUB_WORKSPACE}/autobyteus-ts" install --no-frozen-lockfile
+          pnpm -C "${GITHUB_WORKSPACE}/repository_prisma" install --no-frozen-lockfile
+
+      - name: Generate Prisma client for autobyteus-server-ts schema
+        working-directory: autobyteus-server-ts
+        env:
+          DATABASE_URL: file:./dev.db
+        run: pnpm exec prisma generate --schema prisma/schema.prisma
+
+      - name: Resolve release tag
+        id: release
+        env:
+          INPUT_RELEASE_TAG: ${{ github.event.inputs.release_tag || '' }}
+        run: |
+          set -euo pipefail
+          RELEASE_TAG="${GITHUB_REF_NAME}"
+          if [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]]; then
+            RELEASE_TAG="${INPUT_RELEASE_TAG}"
+          fi
+          if [[ -z "${RELEASE_TAG}" ]]; then
+            echo "::error::Release tag cannot be empty."
+            exit 1
+          fi
+          echo "tag=${RELEASE_TAG}" >> "${GITHUB_OUTPUT}"
+
+      - name: Configure Python for node-gyp
+        run: |
+          set -euo pipefail
+
+          candidates=()
+          if [[ -x /usr/bin/python3 ]]; then
+            candidates+=(/usr/bin/python3)
+          fi
+          if command -v python3.11 >/dev/null 2>&1; then
+            candidates+=("$(command -v python3.11)")
+          fi
+          if command -v python3 >/dev/null 2>&1; then
+            candidates+=("$(command -v python3)")
+          fi
+
+          selected=""
+          for py in "${candidates[@]}"; do
+            if [[ -n "${py}" ]] && "${py}" -c "import distutils" >/dev/null 2>&1; then
+              selected="${py}"
+              break
+            fi
+          done
+
+          if [[ -z "${selected}" ]]; then
+            echo "::error::No python interpreter with distutils found for node-gyp."
+            exit 1
+          fi
+
+          echo "PYTHON=${selected}" >> "${GITHUB_ENV}"
+          echo "npm_config_python=${selected}" >> "${GITHUB_ENV}"
+          echo "Using python for node-gyp: ${selected}"
+
+      - name: Build desktop artifact (macOS arm64)
+        working-directory: autobyteus-web
+        env:
+          NO_TIMESTAMP: "1"
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ""
+        run: pnpm build:electron:mac
+
+      - name: List build output files
+        run: ls -la "${GITHUB_WORKSPACE}/autobyteus-web/electron-dist"
+
+      - name: Upload workflow artifact copy
+        uses: actions/upload-artifact@v4
+        with:
+          name: autobyteus-desktop-macos-arm64-${{ steps.release.outputs.tag }}
+          path: |
+            autobyteus-web/electron-dist/*.dmg
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Publish files to GitHub release repository
+        env:
+          GH_TOKEN: ${{ secrets.DESKTOP_RELEASES_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          RELEASE_TAG="${{ steps.release.outputs.tag }}"
+          RELEASE_TITLE="AutoByteus Desktop ${RELEASE_TAG}"
+          RELEASE_NOTES="Automated desktop build from AutoByteus/autobyteus-web tag ${RELEASE_TAG}."
+
+          if gh release view "${RELEASE_TAG}" -R "${TARGET_RELEASE_REPO}" >/dev/null 2>&1; then
+            echo "Release ${RELEASE_TAG} already exists in ${TARGET_RELEASE_REPO}; uploading artifacts with --clobber."
+          else
+            gh release create "${RELEASE_TAG}" \
+              -R "${TARGET_RELEASE_REPO}" \
+              --title "${RELEASE_TITLE}" \
+              --notes "${RELEASE_NOTES}" || \
+              echo "Release ${RELEASE_TAG} was likely created by another parallel job; continuing."
+          fi
+
+          shopt -s nullglob
+          files=(
+            autobyteus-web/electron-dist/*.dmg
+          )
+
+          if (( ${#files[@]} == 0 )); then
+            echo "::error::No desktop release files found in autobyteus-web/electron-dist."
+            exit 1
+          fi
+
+          gh release upload "${RELEASE_TAG}" "${files[@]}" -R "${TARGET_RELEASE_REPO}" --clobber
+
+      - name: Publish summary
+        run: |
+          {
+            echo "### Desktop Release Published"
+            echo ""
+            echo "- Source repo: \`AutoByteus/autobyteus-web\`"
+            echo "- Release tag: \`${{ steps.release.outputs.tag }}\`"
+            echo "- Target release repo: \`${TARGET_RELEASE_REPO}\`"
+            echo "- Target platform: \`macOS arm64\`"
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+  build-linux-x64:
+    name: build-and-publish-linux-x64
+    runs-on: ubuntu-24.04
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Validate required secrets
+        env:
+          CI_REPO_READ_TOKEN: ${{ secrets.CI_REPO_READ_TOKEN }}
+          DESKTOP_RELEASES_TOKEN: ${{ secrets.DESKTOP_RELEASES_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${CI_REPO_READ_TOKEN}" ]]; then
+            echo "::error::Missing CI_REPO_READ_TOKEN secret. It must have read access to AutoByteus/autobyteus-server-ts."
+            exit 1
+          fi
+          if [[ -z "${DESKTOP_RELEASES_TOKEN}" ]]; then
+            echo "::error::Missing DESKTOP_RELEASES_TOKEN secret. It must have write access to ${TARGET_RELEASE_REPO}."
+            exit 1
+          fi
+
+      - name: Ensure target release repository is initialized
+        env:
+          GH_TOKEN: ${{ secrets.DESKTOP_RELEASES_TOKEN }}
+        run: |
+          set -euo pipefail
+          DEFAULT_BRANCH="$(gh api "repos/${TARGET_RELEASE_REPO}" --jq '.default_branch')"
+          if [[ -z "${DEFAULT_BRANCH}" || "${DEFAULT_BRANCH}" == "null" ]]; then
+            echo "::error::${TARGET_RELEASE_REPO} has no default branch. Initialize that repo with at least one commit before publishing releases."
+            exit 1
+          fi
+
+      - name: Checkout autobyteus-web
+        uses: actions/checkout@v4
+        with:
+          path: autobyteus-web
+          fetch-depth: 1
+
+      - name: Checkout autobyteus-server-ts (private)
+        uses: actions/checkout@v4
+        with:
+          repository: AutoByteus/autobyteus-server-ts
+          path: autobyteus-server-ts
+          token: ${{ secrets.CI_REPO_READ_TOKEN }}
+          fetch-depth: 1
+
+      - name: Checkout autobyteus-ts
+        uses: actions/checkout@v4
+        with:
+          repository: AutoByteus/autobyteus-ts
+          path: autobyteus-ts
+          fetch-depth: 1
+
+      - name: Checkout repository_prisma
+        uses: actions/checkout@v4
+        with:
+          repository: ryan-zheng-teki/repository_prisma
+          path: repository_prisma
+          fetch-depth: 1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Enable pnpm via Corepack
+        run: |
+          set -euo pipefail
+          corepack enable
+          corepack prepare pnpm@10.28.1 --activate
+          pnpm --version
+
+      - name: Install Linux Python compatibility for node-gyp
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y python3-setuptools
+
+      - name: Create temporary workspace manifest
+        run: |
+          cat > "${GITHUB_WORKSPACE}/pnpm-workspace.yaml" <<'WORKSPACE'
+          packages:
+            - "autobyteus-web"
+            - "autobyteus-server-ts"
+            - "autobyteus-ts"
+            - "repository_prisma"
+          WORKSPACE
+
+      - name: Install dependencies required by build chain
+        run: |
+          set -euo pipefail
+          pnpm -C "${GITHUB_WORKSPACE}/autobyteus-web" install --no-frozen-lockfile
+          pnpm -C "${GITHUB_WORKSPACE}/autobyteus-ts" install --no-frozen-lockfile
+          pnpm -C "${GITHUB_WORKSPACE}/repository_prisma" install --no-frozen-lockfile
+
+      - name: Generate Prisma client for autobyteus-server-ts schema
+        working-directory: autobyteus-server-ts
+        env:
+          DATABASE_URL: file:./dev.db
+        run: pnpm exec prisma generate --schema prisma/schema.prisma
+
+      - name: Resolve release tag
+        id: release
+        env:
+          INPUT_RELEASE_TAG: ${{ github.event.inputs.release_tag || '' }}
+        run: |
+          set -euo pipefail
+          RELEASE_TAG="${GITHUB_REF_NAME}"
+          if [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" ]]; then
+            RELEASE_TAG="${INPUT_RELEASE_TAG}"
+          fi
+          if [[ -z "${RELEASE_TAG}" ]]; then
+            echo "::error::Release tag cannot be empty."
+            exit 1
+          fi
+          echo "tag=${RELEASE_TAG}" >> "${GITHUB_OUTPUT}"
+
+      - name: Configure Python for node-gyp
+        run: |
+          set -euo pipefail
+
+          candidates=()
+          if [[ -x /usr/bin/python3 ]]; then
+            candidates+=(/usr/bin/python3)
+          fi
+          if command -v python3.11 >/dev/null 2>&1; then
+            candidates+=("$(command -v python3.11)")
+          fi
+          if command -v python3 >/dev/null 2>&1; then
+            candidates+=("$(command -v python3)")
+          fi
+
+          selected=""
+          for py in "${candidates[@]}"; do
+            if [[ -n "${py}" ]] && "${py}" -c "import distutils" >/dev/null 2>&1; then
+              selected="${py}"
+              break
+            fi
+          done
+
+          if [[ -z "${selected}" ]]; then
+            echo "::error::No python interpreter with distutils found for node-gyp."
+            exit 1
+          fi
+
+          echo "PYTHON=${selected}" >> "${GITHUB_ENV}"
+          echo "npm_config_python=${selected}" >> "${GITHUB_ENV}"
+          echo "Using python for node-gyp: ${selected}"
+
+      - name: Build desktop artifact (Linux x64)
+        working-directory: autobyteus-web
+        env:
+          NO_TIMESTAMP: "1"
+        run: pnpm build:electron:linux
+
+      - name: List build output files
+        run: ls -la "${GITHUB_WORKSPACE}/autobyteus-web/electron-dist"
+
+      - name: Upload workflow artifact copy
+        uses: actions/upload-artifact@v4
+        with:
+          name: autobyteus-desktop-linux-x64-${{ steps.release.outputs.tag }}
+          path: |
+            autobyteus-web/electron-dist/*.AppImage
+            autobyteus-web/electron-dist/*.appimage
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Publish files to GitHub release repository
+        env:
+          GH_TOKEN: ${{ secrets.DESKTOP_RELEASES_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          RELEASE_TAG="${{ steps.release.outputs.tag }}"
+          RELEASE_TITLE="AutoByteus Desktop ${RELEASE_TAG}"
+          RELEASE_NOTES="Automated desktop build from AutoByteus/autobyteus-web tag ${RELEASE_TAG}."
+
+          if gh release view "${RELEASE_TAG}" -R "${TARGET_RELEASE_REPO}" >/dev/null 2>&1; then
+            echo "Release ${RELEASE_TAG} already exists in ${TARGET_RELEASE_REPO}; uploading artifacts with --clobber."
+          else
+            gh release create "${RELEASE_TAG}" \
+              -R "${TARGET_RELEASE_REPO}" \
+              --title "${RELEASE_TITLE}" \
+              --notes "${RELEASE_NOTES}" || \
+              echo "Release ${RELEASE_TAG} was likely created by another parallel job; continuing."
+          fi
+
+          shopt -s nullglob
+          files=(
+            autobyteus-web/electron-dist/*.AppImage
+            autobyteus-web/electron-dist/*.appimage
+          )
+
+          if (( ${#files[@]} == 0 )); then
+            echo "::error::No desktop release files found in autobyteus-web/electron-dist."
+            exit 1
+          fi
+
+          gh release upload "${RELEASE_TAG}" "${files[@]}" -R "${TARGET_RELEASE_REPO}" --clobber
+
+      - name: Publish summary
+        run: |
+          {
+            echo "### Desktop Release Published"
+            echo ""
+            echo "- Source repo: \`AutoByteus/autobyteus-web\`"
+            echo "- Release tag: \`${{ steps.release.outputs.tag }}\`"
+            echo "- Target release repo: \`${TARGET_RELEASE_REPO}\`"
+            echo "- Target platform: \`Linux x64\`"
+          } >> "${GITHUB_STEP_SUMMARY}"

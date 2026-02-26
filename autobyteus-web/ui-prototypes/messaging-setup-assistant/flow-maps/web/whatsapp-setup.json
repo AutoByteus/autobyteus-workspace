@@ -1,0 +1,99 @@
+{
+  "flow_name": "whatsapp-setup",
+  "platform": "web",
+  "start_screen": "whatsapp-setup-gateway-default",
+  "screens": [
+    { "id": "whatsapp-setup-gateway-default", "image": "../../images/web/whatsapp-setup/whatsapp-setup-gateway-default.png" },
+    { "id": "whatsapp-setup-gateway-loading", "image": "../../images/web/whatsapp-setup/whatsapp-setup-gateway-loading.png" },
+    { "id": "whatsapp-setup-gateway-ready", "image": "../../images/web/whatsapp-setup/whatsapp-setup-gateway-ready.png" },
+    { "id": "whatsapp-setup-session-pending-qr", "image": "../../images/web/whatsapp-setup/whatsapp-setup-session-pending-qr.png" },
+    { "id": "whatsapp-setup-session-qr-visible", "image": "../../images/web/whatsapp-setup/whatsapp-setup-session-qr-visible.png" },
+    { "id": "whatsapp-setup-session-active", "image": "../../images/web/whatsapp-setup/whatsapp-setup-session-active.png" },
+    { "id": "whatsapp-setup-binding-empty", "image": "../../images/web/whatsapp-setup/whatsapp-setup-binding-empty.png" },
+    { "id": "whatsapp-setup-binding-saved", "image": "../../images/web/whatsapp-setup/whatsapp-setup-binding-saved.png" },
+    { "id": "whatsapp-setup-verification-loading", "image": "../../images/web/whatsapp-setup/whatsapp-setup-verification-loading.png" },
+    { "id": "whatsapp-setup-verification-error", "image": "../../images/web/whatsapp-setup/whatsapp-setup-verification-error.png" },
+    { "id": "whatsapp-setup-ready", "image": "../../images/web/whatsapp-setup/whatsapp-setup-ready.png" }
+  ],
+  "transitions": [
+    {
+      "from_screen": "whatsapp-setup-gateway-default",
+      "trigger": "click:validate-connection",
+      "hotspot": { "x": 360, "y": 625, "width": 180, "height": 48 },
+      "to_screen": "whatsapp-setup-gateway-loading",
+      "transition": "instant"
+    },
+    {
+      "from_screen": "whatsapp-setup-gateway-loading",
+      "trigger": "system:gateway-health-ready",
+      "to_screen": "whatsapp-setup-gateway-ready",
+      "transition": "fade"
+    },
+    {
+      "from_screen": "whatsapp-setup-gateway-ready",
+      "trigger": "click:start-session",
+      "hotspot": { "x": 355, "y": 684, "width": 180, "height": 46 },
+      "to_screen": "whatsapp-setup-session-pending-qr",
+      "transition": "instant"
+    },
+    {
+      "from_screen": "whatsapp-setup-session-pending-qr",
+      "trigger": "click:refresh-qr",
+      "hotspot": { "x": 848, "y": 572, "width": 125, "height": 42 },
+      "to_screen": "whatsapp-setup-session-qr-visible",
+      "transition": "instant"
+    },
+    {
+      "from_screen": "whatsapp-setup-session-qr-visible",
+      "trigger": "system:session-active",
+      "to_screen": "whatsapp-setup-session-active",
+      "transition": "fade"
+    },
+    {
+      "from_screen": "whatsapp-setup-session-active",
+      "trigger": "system:binding-step-open",
+      "to_screen": "whatsapp-setup-binding-empty",
+      "transition": "instant"
+    },
+    {
+      "from_screen": "whatsapp-setup-binding-empty",
+      "trigger": "click:save-binding",
+      "hotspot": { "x": 360, "y": 718, "width": 190, "height": 44 },
+      "to_screen": "whatsapp-setup-binding-saved",
+      "transition": "instant"
+    },
+    {
+      "from_screen": "whatsapp-setup-binding-saved",
+      "trigger": "click:run-verification",
+      "hotspot": { "x": 360, "y": 748, "width": 205, "height": 42 },
+      "to_screen": "whatsapp-setup-verification-loading",
+      "transition": "instant"
+    },
+    {
+      "from_screen": "whatsapp-setup-verification-loading",
+      "trigger": "system:verification-blocked",
+      "to_screen": "whatsapp-setup-verification-error",
+      "transition": "fade"
+    },
+    {
+      "from_screen": "whatsapp-setup-verification-loading",
+      "trigger": "system:verification-ready",
+      "to_screen": "whatsapp-setup-ready",
+      "transition": "fade"
+    },
+    {
+      "from_screen": "whatsapp-setup-verification-error",
+      "trigger": "click:rerun-verification",
+      "hotspot": { "x": 690, "y": 660, "width": 260, "height": 52 },
+      "to_screen": "whatsapp-setup-verification-loading",
+      "transition": "instant"
+    },
+    {
+      "from_screen": "whatsapp-setup-ready",
+      "trigger": "click:add-another-binding",
+      "hotspot": { "x": 560, "y": 688, "width": 260, "height": 48 },
+      "to_screen": "whatsapp-setup-binding-empty",
+      "transition": "instant"
+    }
+  ]
+}

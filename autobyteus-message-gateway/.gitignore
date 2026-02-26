@@ -1,0 +1,9 @@
+node_modules
+dist
+.env
+.env.*
+!docker/.env.docker.example
+!docker/.env.docker.wechat-personal.example
+coverage
+
+memory/

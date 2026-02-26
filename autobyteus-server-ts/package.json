@@ -1,0 +1,47 @@
+{
+  "name": "autobyteus-server-ts",
+  "version": "0.1.1",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "prebuild": "pnpm -C .. -r --filter autobyteus-ts build && pnpm exec prisma generate --schema ./prisma/schema.prisma",
+    "build": "pnpm run build:full",
+    "build:full": "tsc -p tsconfig.build.json",
+    "build:file": "tsc -p tsconfig.build.file.json",
+    "package:file": "node ./scripts/build-file-package.mjs",
+    "build:file:package": "pnpm run build:file && pnpm run package:file",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "autobyteus-ts": "workspace:*",
+    "repository_prisma": "^1.0.6",
+    "@prisma/client": "^5.22.0",
+    "dotenv": "^17.2.3",
+    "fastify": "^4.29.1",
+    "@fastify/cors": "^9.0.1",
+    "@fastify/multipart": "^8.3.1",
+    "@fastify/websocket": "^10.0.1",
+    "chokidar": "^4.0.3",
+    "fuzzysort": "^2.0.4",
+    "graphql": "^16.12.0",
+    "graphql-scalars": "^1.25.0",
+    "ignore": "^7.0.5",
+    "mime-types": "^3.0.2",
+    "mercurius": "^13.1.0",
+    "reflect-metadata": "^0.2.2",
+    "type-graphql": "^2.0.0-rc.2",
+    "uuid": "^13.0.0"
+  },
+  "devDependencies": {
+    "@types/mime-types": "^3.0.1",
+    "@types/node": "^25.0.10",
+    "prisma": "^5.22.0",
+    "typescript": "^5.9.3",
+    "vite-tsconfig-paths": "^4.3.2",
+    "vitest": "^4.0.18",
+    "ws": "^8.18.1"
+  }
+}

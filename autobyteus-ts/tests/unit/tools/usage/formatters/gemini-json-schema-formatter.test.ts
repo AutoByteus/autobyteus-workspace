@@ -1,0 +1,60 @@
+import { describe, it, expect } from 'vitest';
+import { GeminiJsonSchemaFormatter } from '../../../../../src/tools/usage/formatters/gemini-json-schema-formatter.js';
+import { ToolDefinition } from '../../../../../src/tools/registry/tool-definition.js';
+import { ParameterSchema, ParameterDefinition, ParameterType } from '../../../../../src/utils/parameter-schema.js';
+import { ToolOrigin } from '../../../../../src/tools/tool-origin.js';
+import { ToolCategory } from '../../../../../src/tools/tool-category.js';
+import { BaseTool } from '../../../../../src/tools/base-tool.js';
+
+class DummyComplexTool extends BaseTool {
+  protected _execute(): Promise<any> {
+    return Promise.resolve();
+  }
+  static getDescription() {
+    return 'Processes a file with advanced options.';
+  }
+  static getArgumentSchema() {
+    return null;
+  }
+}
+
+describe('GeminiJsonSchemaFormatter', () => {
+  it('provides Gemini JSON format for complex tool', () => {
+    const formatter = new GeminiJsonSchemaFormatter();
+
+    const schema = new ParameterSchema();
+    schema.addParameter(new ParameterDefinition({
+      name: 'input_path',
+      type: ParameterType.STRING,
+      description: 'The path to the input file.',
+      required: true
+    }));
+    schema.addParameter(new ParameterDefinition({
+      name: 'overwrite',
+      type: ParameterType.BOOLEAN,
+      description: 'Overwrite existing file.',
+      required: false,
+      defaultValue: false
+    }));
+
+    const toolDef = new ToolDefinition(
+      'AdvancedFileProcessor',
+      'Processes a file with advanced options.',
+      ToolOrigin.LOCAL,
+      ToolCategory.GENERAL,
+      () => schema,
+      () => null,
+      { toolClass: DummyComplexTool }
+    );
+
+    const jsonOutput = formatter.provide(toolDef);
+
+    expect(jsonOutput.name).toBe('AdvancedFileProcessor');
+    expect(jsonOutput.description).toBe('Processes a file with advanced options.');
+
+    const parameters = jsonOutput.parameters;
+    expect(parameters.properties.input_path).toBeDefined();
+    expect(parameters.properties.overwrite).toBeDefined();
+    expect(parameters.required).toContain('input_path');
+  });
+});

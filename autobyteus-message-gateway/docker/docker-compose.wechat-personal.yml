@@ -1,0 +1,62 @@
+name: autobyteus-message-gateway-wechat-personal
+
+services:
+  message-gateway:
+    container_name: autobyteus-message-gateway
+    build:
+      context: ../..
+      dockerfile: autobyteus-message-gateway/docker/Dockerfile
+    env_file:
+      - .env.docker.wechat-personal
+    environment:
+      GATEWAY_WECHAT_PERSONAL_ENABLED: "true"
+      GATEWAY_WECHAT_PERSONAL_SIDECAR_BASE_URL: "http://wechaty-sidecar:8788"
+      GATEWAY_WECHAT_PERSONAL_SIDECAR_SHARED_SECRET: "${SIDECAR_SHARED_SECRET}"
+      GATEWAY_WECHAT_PERSONAL_STATE_ROOT: "/app/autobyteus-message-gateway/memory/wechat-personal"
+    ports:
+      - "${GATEWAY_PORT:-8010}:${GATEWAY_PORT:-8010}"
+    volumes:
+      - ../memory:/app/autobyteus-message-gateway/memory
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      wechaty-sidecar:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - const p=process.env.GATEWAY_PORT||"8010";fetch("http://127.0.0.1:"+p+"/health").then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1));
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  wechaty-sidecar:
+    container_name: autobyteus-wechaty-sidecar
+    build:
+      context: ../..
+      dockerfile: autobyteus-message-gateway/docker/Dockerfile.wechaty-sidecar
+    env_file:
+      - .env.docker.wechat-personal
+    environment:
+      SIDECAR_HOST: "0.0.0.0"
+      SIDECAR_PORT: "8788"
+      GATEWAY_BASE_URL: "http://message-gateway:${GATEWAY_PORT:-8010}"
+    ports:
+      - "${SIDECAR_PORT:-8788}:8788"
+    volumes:
+      - ../memory/wechaty-sidecar:/app/wechaty-sidecar/memory
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - fetch("http://127.0.0.1:8788/health").then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1));
+      interval: 20s
+      timeout: 5s
+      retries: 4
+      start_period: 15s

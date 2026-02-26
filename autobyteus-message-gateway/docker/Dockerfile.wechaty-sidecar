@@ -1,0 +1,21 @@
+FROM node:20-bookworm-slim
+
+WORKDIR /app/wechaty-sidecar
+
+RUN corepack enable
+
+# Copy dependency manifests first for better layer caching.
+COPY autobyteus-message-gateway/tools/wechaty-sidecar/package.json ./package.json
+COPY autobyteus-message-gateway/tools/wechaty-sidecar/pnpm-lock.yaml ./pnpm-lock.yaml
+
+RUN pnpm install --frozen-lockfile --ignore-workspace --dir /app/wechaty-sidecar
+
+COPY autobyteus-message-gateway/tools/wechaty-sidecar ./
+
+ENV NODE_ENV=production
+ENV SIDECAR_HOST=0.0.0.0
+ENV SIDECAR_PORT=8788
+
+EXPOSE 8788
+
+CMD ["node", "src/server.mjs"]

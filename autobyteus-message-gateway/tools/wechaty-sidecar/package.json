@@ -1,0 +1,19 @@
+{
+  "name": "autobyteus-wechaty-sidecar",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.mjs",
+    "dev": "node src/server.mjs",
+    "setup": "bash scripts/setup.sh",
+    "preflight": "bash scripts/preflight.sh",
+    "probe:gateway": "node scripts/probe-gateway-callback.mjs"
+  },
+  "dependencies": {
+    "dotenv": "^16.6.1",
+    "fastify": "^4.29.1",
+    "wechaty": "^1.20.2",
+    "wechaty-puppet-service": "^1.18.2"
+  }
+}
