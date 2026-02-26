@@ -1,0 +1,29 @@
+{
+  "mcpServers": {
+    "alexa-home": {
+      "transport_type": "stdio",
+      "enabled": true,
+      "tool_name_prefix": "alexa",
+      "command": "uv",
+      "args": [
+        "--directory",
+        "<PATH_TO_AUTOBYTEUS_MCPS>/alexa-mcp",
+        "run",
+        "python",
+        "-m",
+        "alexa_mcp.server"
+      ],
+      "env": {
+        "ALEXA_COMMAND": "<PATH_TO_AUTOBYTEUS_MCPS>/alexa-mcp/scripts/alexa_adapter.sh",
+        "ALEXA_COMMAND_BASE_ARGS": "",
+        "ALEXA_REMOTE_CONTROL_SCRIPT": "<PATH_TO_AUTOBYTEUS_MCPS>/alexa-mcp/scripts/vendor/alexa-remote-control/alexa_remote_control.sh",
+        "ALEXA_REFRESH_TOKEN_FILE": "<PATH_TO_AUTOBYTEUS_MCPS>/alexa-mcp/.secrets/refresh_token",
+        "AMAZON": "amazon.de",
+        "ALEXA": "alexa.amazon.de",
+        "ALEXA_ALLOWED_ROUTINES": "plug_on,plug_off,play_focus_music,stop_music",
+        "ALEXA_ALLOWED_MUSIC_ACTIONS": "play,stop",
+        "ALEXA_DEFAULT_DEVICE": "<YOUR_ECHO_DEVICE_NAME>"
+      }
+    }
+  }
+}

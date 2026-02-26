@@ -1,0 +1,7 @@
+# Progress
+
+## Progress Log
+- 2026-02-05: Created ticket, strategy doc, runtime simulation, and implementation plan. Tests not run.
+- 2026-02-05: Renamed Active Transcript to Working Context Snapshot across source, tests, and docs. Added working context snapshot serializer, store, bootstrapper, restore bootstrap step, and persistence wiring in `MemoryManager`. Added restore support in `AgentFactory` and runtime state restore options. Updated bootstrapper to include restore step, added new unit/integration tests, and updated integration test list. Exported `resolveMemoryBaseDir` in `src/memory/index.js`.
+- 2026-02-05: Ran `pnpm exec vitest --run tests/unit/memory/working-context-snapshot-serializer.test.ts`, `pnpm exec vitest --run tests/unit/memory/working-context-snapshot-store.test.ts`, `pnpm exec vitest --run tests/unit/memory/working-context-snapshot-bootstrapper.test.ts`, `pnpm exec vitest --run tests/unit/memory/memory-manager-working-context-snapshot-persistence.test.ts`, and `pnpm exec vitest --run tests/unit/agent/bootstrap-steps/working-context-snapshot-restore-step.test.ts` (all passed).
+- 2026-02-05: Ran `pnpm exec vitest --run tests/integration/memory/working-context-snapshot-restore.test.ts`, `pnpm exec vitest --run tests/integration/agent/working-context-snapshot-restore-flow.test.ts`, `pnpm exec vitest --run tests/integration/agent/agent-single-flow.test.ts`, and `pnpm exec vitest --run tests/integration/agent/agent-dual-flow.test.ts` (all passed; warnings about missing local model servers and disabled SSL verification).

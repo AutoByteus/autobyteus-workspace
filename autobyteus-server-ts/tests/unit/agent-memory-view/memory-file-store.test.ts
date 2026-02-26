@@ -1,0 +1,79 @@
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
+import { afterEach, describe, expect, it } from "vitest";
+import { MemoryFileStore } from "../../../src/agent-memory-view/store/memory-file-store.js";
+
+const writeJson = (filePath: string, payload: unknown) => {
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
+  fs.writeFileSync(filePath, JSON.stringify(payload), "utf-8");
+};
+
+const writeJsonl = (filePath: string, lines: string[]) => {
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
+  fs.writeFileSync(filePath, lines.join("\n"), "utf-8");
+};
+
+describe("MemoryFileStore", () => {
+  let tempDir: string | null = null;
+
+  afterEach(() => {
+    if (tempDir) {
+      fs.rmSync(tempDir, { recursive: true, force: true });
+      tempDir = null;
+    }
+  });
+
+  it("lists agent directories sorted", () => {
+    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "memory-store-"));
+    const baseDir = tempDir;
+    fs.mkdirSync(path.join(baseDir, "agents", "b-agent"), { recursive: true });
+    fs.mkdirSync(path.join(baseDir, "agents", "a-agent"), { recursive: true });
+
+    const store = new MemoryFileStore(baseDir);
+    expect(store.listRunDirs()).toEqual(["a-agent", "b-agent"]);
+  });
+
+  it("reads JSON objects and returns null for arrays", () => {
+    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "memory-store-"));
+    const filePath = path.join(tempDir, "agents", "agent", "working_context_snapshot.json");
+    writeJson(filePath, { ok: true });
+
+    const store = new MemoryFileStore(tempDir);
+    expect(store.readJson(filePath)).toEqual({ ok: true });
+
+    writeJson(filePath, ["array"]);
+    expect(store.readJson(filePath)).toBeNull();
+  });
+
+  it("returns null for missing or invalid JSON", () => {
+    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "memory-store-"));
+    const store = new MemoryFileStore(tempDir);
+
+    expect(store.readJson(path.join(tempDir, "missing.json"))).toBeNull();
+
+    const filePath = path.join(tempDir, "bad.json");
+    fs.writeFileSync(filePath, "{", "utf-8");
+    expect(store.readJson(filePath)).toBeNull();
+  });
+
+  it("reads JSONL and skips malformed lines", () => {
+    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "memory-store-"));
+    const filePath = path.join(tempDir, "agents", "agent", "raw_traces.jsonl");
+    writeJsonl(filePath, [
+      JSON.stringify({ a: 1 }),
+      "{",
+      JSON.stringify({ b: 2 }),
+      "",
+    ]);
+
+    const store = new MemoryFileStore(tempDir);
+    expect(store.readJsonl(filePath)).toEqual([{ a: 1 }, { b: 2 }]);
+  });
+
+  it("returns empty array for missing JSONL", () => {
+    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "memory-store-"));
+    const store = new MemoryFileStore(tempDir);
+    expect(store.readJsonl(path.join(tempDir, "missing.jsonl"))).toEqual([]);
+  });
+});

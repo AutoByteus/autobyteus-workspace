@@ -1,0 +1,8 @@
+{
+  "id": "socratic_math_teacher",
+  "name": "Socratic Math Teacher",
+  "description": "Solves math problems and generates animated explanations using an expert agent team.",
+  "icon": "academic-cap",
+  "type": "AGENT_TEAM",
+  "teamDefinitionName": "Socratic Math Team"
+}

@@ -1,0 +1,51 @@
+# syntax=docker/dockerfile:1
+
+ARG CHROME_VNC_TAG=zh
+
+FROM node:20-bookworm AS builder
+WORKDIR /app
+
+RUN corepack enable
+
+COPY pnpm-workspace.yaml pnpm-lock.yaml ./
+COPY autobyteus-ts/package.json autobyteus-ts/tsconfig.build.json autobyteus-ts/tsconfig.json ./autobyteus-ts/
+COPY autobyteus-server-ts/package.json autobyteus-server-ts/tsconfig.json ./autobyteus-server-ts/
+
+COPY autobyteus-ts ./autobyteus-ts
+COPY autobyteus-server-ts ./autobyteus-server-ts
+
+RUN pnpm install --no-frozen-lockfile
+RUN pnpm -C autobyteus-server-ts exec prisma generate --schema prisma/schema.prisma
+RUN pnpm -C autobyteus-server-ts build
+
+FROM autobyteus/chrome-vnc:${CHROME_VNC_TAG} AS runtime
+WORKDIR /app
+
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends git ripgrep \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /home/autobyteus/workspace /home/autobyteus/data
+
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/autobyteus-ts/node_modules ./autobyteus-ts/node_modules
+COPY --from=builder /app/autobyteus-ts/dist ./autobyteus-ts/dist
+COPY --from=builder /app/autobyteus-ts/package.json ./autobyteus-ts/package.json
+COPY --from=builder /app/autobyteus-server-ts/node_modules ./autobyteus-server-ts/node_modules
+COPY --from=builder /app/autobyteus-server-ts/dist ./autobyteus-server-ts/dist
+COPY --from=builder /app/autobyteus-server-ts/prisma ./autobyteus-server-ts/prisma
+COPY --from=builder /app/autobyteus-server-ts/package.json ./autobyteus-server-ts/package.json
+COPY autobyteus-server-ts/docker/supervisor-autobyteus-server.conf /etc/supervisor/conf.d/supervisor-autobyteus-server.conf
+
+ENV NODE_ENV=production \
+    AUTOBYTEUS_BIND_HOST=0.0.0.0 \
+    AUTOBYTEUS_SERVER_PORT=8000 \
+    AUTOBYTEUS_DATA_DIR=/home/autobyteus/data \
+    AUTOBYTEUS_NODE_DISCOVERY_ENABLED=true \
+    AUTOBYTEUS_NODE_DISCOVERY_ROLE=client \
+    AUTOBYTEUS_NODE_DISCOVERY_REGISTRY_URL=http://registry-node:8000 \
+    LOG_LEVEL=INFO \
+    AUTOBYTEUS_HTTP_ACCESS_LOG_MODE=errors \
+    AUTOBYTEUS_HTTP_ACCESS_LOG_INCLUDE_NOISY=false
+
+EXPOSE 8000 5900 6080 9223

@@ -1,0 +1,18 @@
+node_modules
+*.log
+.nuxt
+nuxt.d.ts
+.output
+dist
+electron-dist
+resources
+.DS_Store
+android
+build/icons
+.nuxtrc
+.env
+.env.*
+.env.local
+
+# Runtime logs directory
+/logs/

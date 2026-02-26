@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+dist-examples/
+
+# Logs and runtime outputs
+logs/
+*.log
+memory/
+poem_writer_output/
+poems/
+
+# Local env files
+.env
+.env.*
+
+# Temporary tool artifacts
+tmp-*/
+mcp-config-*/
+
+# Misc
+.vite/
+
+# Build artifacts accidentally emitted into src/
+src/**/*.js
+src/**/*.js.map
+src/**/*.d.ts
+src/**/*.d.ts.map

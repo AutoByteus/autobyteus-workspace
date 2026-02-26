@@ -1,0 +1,36 @@
+name: Trigger autobyteus-server-ts Docker rebuild
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      autobyteus_ts_ref:
+        description: "autobyteus-ts ref to build against (default: main)"
+        required: false
+        type: string
+      release_tag:
+        description: "Optional Docker release tag override"
+        required: false
+        type: string
+      image_name:
+        description: "Optional Docker image name override"
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch rebuild event to autobyteus-server-ts
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.AUTOBYTEUS_SERVER_TS_WORKFLOW_TOKEN }}
+          repository: AutoByteus/autobyteus-server-ts
+          event-type: autobyteus-ts-main-updated
+          client-payload: >-
+            {"autobyteus_ts_ref":"${{ github.event.inputs.autobyteus_ts_ref || github.ref_name }}","autobyteus_ts_sha":"${{ github.sha }}","source_repo":"${{ github.repository }}","source_ref":"${{ github.ref_name }}","source_run_id":"${{ github.run_id }}","release_tag":"${{ github.event.inputs.release_tag || '' }}","image_name":"${{ github.event.inputs.image_name || '' }}"}

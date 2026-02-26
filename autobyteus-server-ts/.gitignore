@@ -1,0 +1,43 @@
+# Node
+node_modules/
+.pnpm-debug.log*
+.npm-debug.log*
+.yarn-debug.log*
+.yarn-error.log*
+.pnp.*
+
+# Build outputs
+/dist/
+/coverage/
+.vite/
+
+# Environment files
+.env
+.env.*
+
+# Runtime data
+/db/
+/logs/
+/media/
+/download/
+/temp_workspace/
+/tmp-migrate-*/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Misc
+*.tsbuildinfo
+
+# Test artifacts
+/tests/.tmp/
+
+# Local MCP configs
+/docs/examples/alexa_mcp_import.local.json
+/memory/
+
+# Docker runtime logs
+/docker/logs/

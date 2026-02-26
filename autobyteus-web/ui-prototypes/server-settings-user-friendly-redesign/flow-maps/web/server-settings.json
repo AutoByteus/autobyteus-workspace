@@ -1,0 +1,155 @@
+{
+  "flow_name": "server-settings",
+  "platform": "web",
+  "start_screen": "server-settings-quick-default",
+  "screens": [
+    {
+      "id": "server-settings-quick-default",
+      "image": "../../images/web/server-settings/server-settings-quick-default.png"
+    },
+    {
+      "id": "server-settings-quick-add-endpoint-focus",
+      "image": "../../images/web/server-settings/server-settings-quick-add-endpoint-focus.png"
+    },
+    {
+      "id": "server-settings-quick-validation-error",
+      "image": "../../images/web/server-settings/server-settings-quick-validation-error.png"
+    },
+    {
+      "id": "server-settings-quick-saving",
+      "image": "../../images/web/server-settings/server-settings-quick-saving.png"
+    },
+    {
+      "id": "server-settings-quick-save-success",
+      "image": "../../images/web/server-settings/server-settings-quick-save-success.png"
+    },
+    {
+      "id": "server-settings-advanced-developer-default",
+      "image": "../../images/web/server-settings/server-settings-advanced-developer-default.png"
+    },
+    {
+      "id": "server-settings-quick-provider-cards-simplified-v2",
+      "image": "../../images/web/server-settings/server-settings-quick-provider-cards-simplified-v2.png"
+    },
+    {
+      "id": "server-settings-quick-no-endpoints-header-v3",
+      "image": "../../images/web/server-settings/server-settings-quick-no-endpoints-header-v3.png"
+    },
+    {
+      "id": "server-settings-quick-compact-topbar-v4",
+      "image": "../../images/web/server-settings/server-settings-quick-compact-topbar-v4.png"
+    },
+    {
+      "id": "server-settings-advanced-raw-settings-v2-fresh",
+      "image": "../../images/web/server-settings/server-settings-advanced-raw-settings-v2-fresh.png"
+    },
+    {
+      "id": "server-settings-advanced-server-status-logs-v1",
+      "image": "../../images/web/server-settings/server-settings-advanced-server-status-logs-v1.png"
+    }
+  ],
+  "transitions": [
+    {
+      "from_screen": "server-settings-quick-default",
+      "trigger": "click:add-endpoint-auto-llm",
+      "hotspot": {
+        "x": 322,
+        "y": 930,
+        "width": 220,
+        "height": 40
+      },
+      "to_screen": "server-settings-quick-add-endpoint-focus",
+      "transition": "instant"
+    },
+    {
+      "from_screen": "server-settings-quick-default",
+      "trigger": "click:advanced-developer-tab",
+      "hotspot": {
+        "x": 466,
+        "y": 206,
+        "width": 277,
+        "height": 56
+      },
+      "to_screen": "server-settings-advanced-developer-default",
+      "transition": "instant"
+    },
+    {
+      "from_screen": "server-settings-quick-add-endpoint-focus",
+      "trigger": "blur:empty-host-or-invalid-port",
+      "hotspot": {
+        "x": 560,
+        "y": 835,
+        "width": 245,
+        "height": 52
+      },
+      "to_screen": "server-settings-quick-validation-error",
+      "transition": "instant"
+    },
+    {
+      "from_screen": "server-settings-quick-validation-error",
+      "trigger": "click:save-all-changes",
+      "hotspot": {
+        "x": 832,
+        "y": 62,
+        "width": 178,
+        "height": 64
+      },
+      "to_screen": "server-settings-quick-saving",
+      "transition": "instant"
+    },
+    {
+      "from_screen": "server-settings-quick-saving",
+      "trigger": "system:save-complete",
+      "to_screen": "server-settings-quick-save-success",
+      "transition": "fade"
+    },
+    {
+      "from_screen": "server-settings-advanced-developer-default",
+      "trigger": "click:quick-setup-tab",
+      "hotspot": {
+        "x": 238,
+        "y": 206,
+        "width": 220,
+        "height": 56
+      },
+      "to_screen": "server-settings-quick-default",
+      "transition": "instant"
+    },
+    {
+      "from_screen": "server-settings-quick-default",
+      "trigger": "system:apply-user-feedback-simplify",
+      "to_screen": "server-settings-quick-provider-cards-simplified-v2",
+      "transition": "fade"
+    },
+    {
+      "from_screen": "server-settings-quick-provider-cards-simplified-v2",
+      "trigger": "system:remove-extra-header",
+      "to_screen": "server-settings-quick-no-endpoints-header-v3",
+      "transition": "fade"
+    },
+    {
+      "from_screen": "server-settings-quick-no-endpoints-header-v3",
+      "trigger": "system:redesign-top-tile-simpler",
+      "to_screen": "server-settings-quick-compact-topbar-v4",
+      "transition": "fade"
+    },
+    {
+      "from_screen": "server-settings-quick-fresh-generated-v9-title-locked",
+      "trigger": "click:advanced-developer-tab",
+      "to_screen": "server-settings-advanced-raw-settings-v2-fresh",
+      "transition": "instant"
+    },
+    {
+      "from_screen": "server-settings-advanced-raw-settings-v2-fresh",
+      "trigger": "click:server-status-and-logs",
+      "to_screen": "server-settings-advanced-server-status-logs-v1",
+      "transition": "instant"
+    },
+    {
+      "from_screen": "server-settings-advanced-server-status-logs-v1",
+      "trigger": "click:all-settings",
+      "to_screen": "server-settings-advanced-raw-settings-v2-fresh",
+      "transition": "instant"
+    }
+  ]
+}

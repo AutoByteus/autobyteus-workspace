@@ -1,0 +1,9 @@
+{
+  "css.customData": [".vscode/tailwindcss.json"],
+  "vitest.enable": true,
+  "vitest.commandLine": "yarn test",
+  "editor.quickSuggestions": {
+    "strings": true
+  },
+  "liveServer.settings.port": 5501,
+}

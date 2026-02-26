@@ -1,0 +1,115 @@
+name: Sync Enterprise To Main
+
+on:
+  push:
+    branches:
+      - enterprise
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-enterprise-to-main
+  cancel-in-progress: true
+
+env:
+  DEFAULT_AUTOBYTEUS_TS_REF: main
+  DEFAULT_REPOSITORY_PRISMA_REF: main
+  NODE_VERSION: "20"
+
+jobs:
+  test:
+    name: Test Enterprise
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout autobyteus-server-ts
+        uses: actions/checkout@v4
+        with:
+          path: autobyteus-server-ts
+          fetch-depth: 1
+
+      - name: Checkout autobyteus-ts
+        uses: actions/checkout@v4
+        with:
+          repository: AutoByteus/autobyteus-ts
+          ref: ${{ env.DEFAULT_AUTOBYTEUS_TS_REF }}
+          path: autobyteus-ts
+          fetch-depth: 1
+          token: ${{ secrets.AUTOBYTEUS_CI_PAT || github.token }}
+
+      - name: Checkout repository_prisma
+        uses: actions/checkout@v4
+        with:
+          repository: ryan-zheng-teki/repository_prisma
+          ref: ${{ env.DEFAULT_REPOSITORY_PRISMA_REF }}
+          path: repository_prisma
+          fetch-depth: 1
+          token: ${{ secrets.AUTOBYTEUS_CI_PAT || github.token }}
+
+      - name: Prepare monorepo workspace
+        run: |
+          set -euo pipefail
+
+          cp autobyteus-server-ts/pnpm-lock.yaml ./pnpm-lock.yaml
+          cat > ./pnpm-workspace.yaml <<'WORKSPACE'
+          packages:
+            - "autobyteus-server-ts"
+            - "autobyteus-ts"
+            - "repository_prisma"
+          WORKSPACE
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Install dependencies
+        run: |
+          set -euo pipefail
+          pnpm install --no-frozen-lockfile
+
+      - name: Run test suite
+        run: |
+          set -euo pipefail
+          pnpm -C autobyteus-server-ts exec vitest run --no-watch
+
+  sync-main:
+    name: Fast-Forward Main
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/enterprise'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure git user
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Fast-forward main from enterprise
+        run: |
+          set -euo pipefail
+
+          git fetch origin main enterprise
+
+          if ! git merge-base --is-ancestor origin/main origin/enterprise; then
+            echo "main is not an ancestor of enterprise. Manual merge required."
+            exit 1
+          fi
+
+          git checkout main
+          git merge --ff-only origin/enterprise
+          git push origin main
