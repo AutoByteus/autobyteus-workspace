@@ -22,4 +22,25 @@ describe('WorkingContextSnapshotStore', () => {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }
   });
+
+  it('supports flat team-member snapshot layout when agentRootSubdir is empty', () => {
+    const tempDir = makeTempDir();
+    try {
+      const memberDir = path.join(tempDir, 'agent_teams', 'team_123', 'member_student_abc');
+      fs.mkdirSync(memberDir, { recursive: true });
+      const store = new WorkingContextSnapshotStore(memberDir, 'member_student_abc', {
+        agentRootSubdir: ''
+      });
+
+      const payload = { schema_version: 1, agent_id: 'member_student_abc', messages: [] };
+      store.write('member_student_abc', payload);
+
+      expect(store.exists('member_student_abc')).toBe(true);
+      expect(store.read('member_student_abc')).toEqual(payload);
+      expect(fs.existsSync(path.join(memberDir, 'working_context_snapshot.json'))).toBe(true);
+      expect(fs.existsSync(path.join(memberDir, 'agents', 'member_student_abc'))).toBe(false);
+    } finally {
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
 });

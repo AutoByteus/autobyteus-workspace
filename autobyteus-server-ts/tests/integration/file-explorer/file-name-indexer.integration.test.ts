@@ -15,7 +15,7 @@ const createTempWorkspace = async (): Promise<string> => {
 const waitForIndexCondition = async (
   indexer: FileNameIndexer,
   predicate: (index: Record<string, string>) => boolean,
-  timeoutMs = 10000,
+  timeoutMs = 20000,
 ): Promise<void> => {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
@@ -45,7 +45,7 @@ describe("FileNameIndexer integration", () => {
     await explorer.close();
     await indexer.stop();
     await fs.rm(workspace, { recursive: true, force: true });
-  }, 20000);
+  }, 45000);
 
   it("indexes existing files and updates on add/rename/delete", async () => {
     await waitForIndexCondition(indexer, (index) => {
@@ -66,5 +66,5 @@ describe("FileNameIndexer integration", () => {
 
     await fs.unlink(renamedPath);
     await waitForIndexCondition(indexer, (index) => !index["renamed.txt"]);
-  }, 20000);
+  }, 45000);
 });

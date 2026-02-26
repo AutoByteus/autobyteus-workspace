@@ -16,11 +16,13 @@ import { AgentTeamDefinitionService } from "../../../agent-team-definition/servi
 import { TeamRunManifest } from "../../../run-history/domain/team-models.js";
 import { getTeamRunContinuationService } from "../../../run-history/services/team-run-continuation-service.js";
 import { getTeamRunHistoryService } from "../../../run-history/services/team-run-history-service.js";
+import { TeamMemberMemoryLayoutStore } from "../../../run-history/store/team-member-memory-layout-store.js";
 import {
   buildTeamMemberRunId,
   normalizeMemberRouteKey,
 } from "../../../run-history/utils/team-member-run-id.js";
 import { getWorkspaceManager } from "../../../workspaces/workspace-manager.js";
+import { appConfigProvider } from "../../../config/app-config-provider.js";
 import { UserInputConverter } from "../converters/user-input-converter.js";
 import { AgentTeamRunConverter } from "../converters/agent-team-run-converter.js";
 import { AgentUserInput } from "./agent-user-input.js";
@@ -161,6 +163,7 @@ type TeamRuntimeMemberConfig = {
   llmModelIdentifier: string;
   autoExecuteTools: boolean;
   workspaceId?: string | null;
+  memoryDir?: string | null;
   workspaceRootPath?: string | null;
   llmConfig?: Record<string, unknown> | null;
   memberRouteKey?: string | null;
@@ -173,6 +176,9 @@ export class AgentTeamRunResolver {
   private readonly teamRunContinuationService = getTeamRunContinuationService();
   private readonly teamDefinitionService = AgentTeamDefinitionService.getInstance();
   private readonly workspaceManager = getWorkspaceManager();
+  private readonly teamMemberMemoryLayoutStore = new TeamMemberMemoryLayoutStore(
+    appConfigProvider.config.getMemoryDir(),
+  );
 
   private get agentTeamRunManager(): AgentTeamRunManager {
     return AgentTeamRunManager.getInstance();
@@ -267,6 +273,7 @@ export class AgentTeamRunResolver {
         llmModelIdentifier: config.llmModelIdentifier.trim(),
         autoExecuteTools: Boolean(config.autoExecuteTools),
         workspaceId: config.workspaceId ?? null,
+        memoryDir: this.teamMemberMemoryLayoutStore.getMemberDirPath(teamRunId, memberRunId),
         workspaceRootPath:
           typeof config.workspaceRootPath === "string" && config.workspaceRootPath.trim().length > 0
             ? config.workspaceRootPath.trim()

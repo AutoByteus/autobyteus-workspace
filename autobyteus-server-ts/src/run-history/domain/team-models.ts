@@ -66,3 +66,20 @@ export interface TeamRunHistoryItem {
   isActive: boolean;
   members: TeamRunMemberHistoryItem[];
 }
+
+export interface TeamMemberRunManifest {
+  version: number;
+  teamRunId: string;
+  runVersion: number;
+  memberRouteKey: string;
+  memberName: string;
+  memberRunId: string;
+  agentDefinitionId: string;
+  llmModelIdentifier: string;
+  autoExecuteTools: boolean;
+  llmConfig: Record<string, unknown> | null;
+  workspaceRootPath: string | null;
+  lastKnownStatus: TeamRunKnownStatus;
+  createdAt: string;
+  updatedAt: string;
+}

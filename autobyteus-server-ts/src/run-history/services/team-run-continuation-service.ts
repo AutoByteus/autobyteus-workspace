@@ -3,11 +3,13 @@ import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-t
 import { UserInputConverter } from "../../api/graphql/converters/user-input-converter.js";
 import type { AgentUserInput } from "../../api/graphql/types/agent-user-input.js";
 import { getWorkspaceManager, type WorkspaceManager } from "../../workspaces/workspace-manager.js";
+import { TeamMemberMemoryLayoutStore } from "../store/team-member-memory-layout-store.js";
 import { normalizeMemberRouteKey } from "../utils/team-member-run-id.js";
 import {
   TeamRunHistoryService,
   getTeamRunHistoryService,
 } from "./team-run-history-service.js";
+import { appConfigProvider } from "../../config/app-config-provider.js";
 
 type TeamLike = {
   teamRunId: string;
@@ -58,15 +60,20 @@ export class TeamRunContinuationService {
   private readonly teamRunManager: TeamRunManagerLike;
   private readonly teamRunHistoryService: TeamRunHistoryService;
   private readonly workspaceManager: WorkspaceManager;
+  private readonly memberLayoutStore: TeamMemberMemoryLayoutStore;
 
   constructor(options: {
     teamRunManager?: TeamRunManagerLike;
     teamRunHistoryService?: TeamRunHistoryService;
     workspaceManager?: WorkspaceManager;
+    memoryDir?: string;
   } = {}) {
     this.teamRunManager = options.teamRunManager ?? AgentTeamRunManager.getInstance();
     this.teamRunHistoryService = options.teamRunHistoryService ?? getTeamRunHistoryService();
     this.workspaceManager = options.workspaceManager ?? getWorkspaceManager();
+    this.memberLayoutStore = new TeamMemberMemoryLayoutStore(
+      options.memoryDir ?? appConfigProvider.config.getMemoryDir(),
+    );
   }
 
   async continueTeamRun(input: ContinueTeamRunInput): Promise<ContinueTeamRunResult> {
@@ -126,6 +133,7 @@ export class TeamRunContinuationService {
           llmModelIdentifier: binding.llmModelIdentifier,
           autoExecuteTools: binding.autoExecuteTools,
           workspaceId,
+          memoryDir: this.memberLayoutStore.getMemberDirPath(teamRunId, binding.memberRunId),
           llmConfig: binding.llmConfig ?? null,
           memberRouteKey: binding.memberRouteKey,
           memberRunId: binding.memberRunId,

@@ -33,6 +33,9 @@ Team history GraphQL operations:
 - Agent manifests: `memory/agents/<runId>/run_manifest.json`
 - Team history index: `memory/team_run_history_index.json`
 - Team manifests: `memory/agent_teams/<teamId>/team_run_manifest.json`
+- Team member memory artifacts: `memory/agent_teams/<teamId>/<memberRunId>/{raw_traces.jsonl,working_context_snapshot.json,...}`
+  - Generated `memberRunId` defaults to a readable route slug plus stable hash: `<route_slug>_<16-hex>`.
+- Team member manifests: `memory/agent_teams/<teamId>/<memberRunId>/run_manifest.json`
 
 ## Personal-Branch Team Continuation
 

@@ -4,10 +4,16 @@ import path from 'node:path';
 export class WorkingContextSnapshotStore {
   baseDir: string;
   agentId: string;
+  private readonly agentRootSubdir: string;
 
-  constructor(baseDir: string, agentId: string) {
+  constructor(
+    baseDir: string,
+    agentId: string,
+    options: { agentRootSubdir?: string } = {}
+  ) {
     this.baseDir = baseDir;
     this.agentId = agentId;
+    this.agentRootSubdir = options.agentRootSubdir ?? 'agents';
   }
 
   exists(agentId: string): boolean {
@@ -30,6 +36,9 @@ export class WorkingContextSnapshotStore {
   }
 
   private getPath(agentId: string): string {
-    return path.join(this.baseDir, 'agents', agentId, 'working_context_snapshot.json');
+    if (!this.agentRootSubdir) {
+      return path.join(this.baseDir, 'working_context_snapshot.json');
+    }
+    return path.join(this.baseDir, this.agentRootSubdir, agentId, 'working_context_snapshot.json');
   }
 }

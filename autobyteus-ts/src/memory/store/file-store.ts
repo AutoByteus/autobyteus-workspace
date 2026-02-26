@@ -12,11 +12,18 @@ export class FileMemoryStore extends MemoryStore {
   agentId: string;
   agentDir: string;
 
-  constructor(baseDir: string, agentId: string) {
+  constructor(
+    baseDir: string,
+    agentId: string,
+    options: { agentRootSubdir?: string } = {}
+  ) {
     super();
     this.baseDir = baseDir;
     this.agentId = agentId;
-    this.agentDir = path.join(this.baseDir, 'agents', agentId);
+    const agentRootSubdir = options.agentRootSubdir ?? 'agents';
+    this.agentDir = agentRootSubdir
+      ? path.join(this.baseDir, agentRootSubdir, agentId)
+      : this.baseDir;
     fs.mkdirSync(this.agentDir, { recursive: true });
   }
 

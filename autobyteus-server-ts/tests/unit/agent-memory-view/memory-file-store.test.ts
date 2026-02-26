@@ -76,4 +76,15 @@ describe("MemoryFileStore", () => {
     const store = new MemoryFileStore(tempDir);
     expect(store.readJsonl(path.join(tempDir, "missing.jsonl"))).toEqual([]);
   });
+
+  it("supports explicit leaf run root for team-member directories", () => {
+    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "memory-store-"));
+    const memberDir = path.join(tempDir, "member-run-a");
+    fs.mkdirSync(memberDir, { recursive: true });
+    writeJsonl(path.join(memberDir, "raw_traces.jsonl"), [JSON.stringify({ trace_type: "user" })]);
+
+    const store = new MemoryFileStore(tempDir, { runRootSubdir: "" });
+    expect(store.listRunDirs()).toEqual(["member-run-a"]);
+    expect(store.readRawTracesActive("member-run-a")).toEqual([{ trace_type: "user" }]);
+  });
 });

@@ -1,11 +1,14 @@
 import type { RunProjection } from "./run-projection-service.js";
-import { getRunProjectionService, RunProjectionService } from "./run-projection-service.js";
 import {
   getTeamRunHistoryService,
   TeamRunHistoryService,
 } from "./team-run-history-service.js";
 import type { TeamRunMemberBinding } from "../domain/team-models.js";
 import { normalizeMemberRouteKey } from "../utils/team-member-run-id.js";
+import {
+  TeamMemberMemoryProjectionReader,
+  getTeamMemberMemoryProjectionReader,
+} from "./team-member-memory-projection-reader.js";
 
 const normalizeRequiredString = (value: string, fieldName: string): string => {
   const normalized = value.trim();
@@ -52,14 +55,14 @@ export interface TeamMemberRunProjection {
 
 export class TeamMemberRunProjectionService {
   private readonly teamRunHistoryService: TeamRunHistoryService;
-  private readonly runProjectionService: RunProjectionService;
+  private readonly projectionReader: TeamMemberMemoryProjectionReader;
 
   constructor(options: {
     teamRunHistoryService?: TeamRunHistoryService;
-    runProjectionService?: RunProjectionService;
+    projectionReader?: TeamMemberMemoryProjectionReader;
   } = {}) {
     this.teamRunHistoryService = options.teamRunHistoryService ?? getTeamRunHistoryService();
-    this.runProjectionService = options.runProjectionService ?? getRunProjectionService();
+    this.projectionReader = options.projectionReader ?? getTeamMemberMemoryProjectionReader();
   }
 
   async getProjection(teamRunId: string, memberRouteKey: string): Promise<TeamMemberRunProjection> {
@@ -77,9 +80,12 @@ export class TeamMemberRunProjectionService {
       );
     }
 
-    const projection = await this.runProjectionService.getProjection(binding.memberRunId);
+    const projection = await this.projectionReader.getProjection(
+      normalizedTeamRunId,
+      binding.memberRunId,
+    );
     return {
-      agentRunId: binding.memberRunId,
+      agentRunId: projection.runId,
       conversation: projection.conversation,
       summary: projection.summary,
       lastActivityAt: projection.lastActivityAt,

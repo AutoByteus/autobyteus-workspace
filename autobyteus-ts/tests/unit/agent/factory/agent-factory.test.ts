@@ -1,4 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import { AgentFactory } from '../../../../src/agent/factory/agent-factory.js';
 import { AgentConfig } from '../../../../src/agent/context/agent-config.js';
 import { AgentRuntime } from '../../../../src/agent/runtime/agent-runtime.js';
@@ -166,12 +169,28 @@ describe('AgentFactory', () => {
         return runtimeStub;
       });
 
-    const agent = factory.restoreAgent('restored-agent', config, '/tmp/memory');
+    const agent = factory.restoreAgent('restored-agent', config, '/tmp/memory/agents/restored-agent');
     expect(agent.agentId).toBe('restored-agent');
     const callArgs = createRuntimeSpy.mock.calls[0] ?? [];
     expect(callArgs[0]).toBe('restored-agent');
     expect(callArgs[1]).toBe(config);
-    expect(callArgs[2]).toBe('/tmp/memory');
+    expect(callArgs[2]).toBe('/tmp/memory/agents/restored-agent');
     expect(callArgs[3]).not.toBeNull();
+  });
+
+  it('treats explicit config memoryDir as a leaf directory without team metadata branching', () => {
+    const factory = new AgentFactory();
+    const config = makeConfig();
+    const explicitMemoryDir = fs.mkdtempSync(path.join(os.tmpdir(), 'agent-factory-explicit-memory-'));
+    config.memoryDir = explicitMemoryDir;
+
+    try {
+      const runtime = (factory as any).createRuntimeWithId('explicit-memory-agent', config) as AgentRuntime;
+      const memoryStore = runtime.context.state.memoryManager?.store as any;
+      expect(memoryStore.agentDir).toBe(explicitMemoryDir);
+      expect(memoryStore.agentDir).not.toContain(path.join('agents', 'explicit-memory-agent'));
+    } finally {
+      fs.rmSync(explicitMemoryDir, { recursive: true, force: true });
+    }
   });
 });

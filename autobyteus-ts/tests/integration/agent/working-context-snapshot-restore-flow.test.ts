@@ -98,7 +98,7 @@ describe('Working context snapshot restore flow (agent)', () => {
     const config = new AgentConfig('RestoreAgent', 'tester', 'restore flow', llm);
 
     const factory = new AgentFactory();
-    const agent = factory.restoreAgent(agentId, config, tempDir);
+    const agent = factory.restoreAgent(agentId, config, path.join(tempDir, 'agents', agentId));
     agent.start();
 
     const ready = await waitForStatus(agent.agentId, () => agent.context.currentStatus);

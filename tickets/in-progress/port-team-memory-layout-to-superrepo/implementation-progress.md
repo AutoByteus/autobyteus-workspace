@@ -1,0 +1,30 @@
+# Implementation Progress
+
+## Status
+- Completed (implementation + targeted verification)
+
+## Change Tracker
+| change_id | type | scope | build_state | unit_state | integration_state | notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| P-001 | Modify | `autobyteus-ts` commit replay (`8b7470a`) | Completed | Passed | Passed | Patch applied cleanly and runtime memory suites passed. |
+| P-002 | Modify/Add | `autobyteus-server-ts` commit replay (`60a113d`) | Completed | Passed | Passed | One hunk manually resolved to source parity; run-history unit/e2e passed. |
+| P-003 | Modify/Add | `autobyteus-server-ts` commit replay (`02317b8`) | Completed | Passed | Passed | Readable member-run-id updates and related tests passed. |
+| P-004 | Add | ticket artifacts | Completed | N/A | N/A | Required workflow artifacts captured in ticket folder. |
+
+## Verification Log
+- Source parity command status: `Passed` (`ALL_MATCH` across touched files from three source commits).
+- `pnpm -C autobyteus-ts exec vitest --run tests/unit/memory tests/unit/agent/factory/agent-factory.test.ts tests/integration/agent/working-context-snapshot-restore-flow.test.ts tests/integration/memory/working-context-snapshot-restore.test.ts` -> `Passed` (20 files, 57 tests).
+- `pnpm -C autobyteus-server-ts exec vitest --run tests/unit/run-history tests/unit/agent-memory-view/memory-file-store.test.ts tests/unit/runtime-execution/adapters/autobyteus-runtime-adapter.test.ts tests/integration/file-explorer/file-name-indexer.integration.test.ts` -> `Passed` (16 files, 44 tests).
+- `pnpm -C autobyteus-server-ts exec vitest --run tests/e2e/run-history/team-run-history-graphql.e2e.test.ts tests/e2e/run-history/team-member-projection-contract.e2e.test.ts` -> `Passed` (2 files, 6 passed / 1 skipped).
+- `LMSTUDIO_HOSTS=http://127.0.0.1:1234 pnpm -C autobyteus-server-ts exec vitest --run tests/e2e/run-history/team-run-history-graphql.e2e.test.ts` -> `Failed` (real no-mock LM Studio scenario executed and failed wait condition at `team-run-history-graphql.e2e.test.ts:1058`, timeout 90000ms).
+- `LMSTUDIO_HOSTS=http://127.0.0.1:1234 LMSTUDIO_MODEL_ID='qwen/qwen3.5-35b-a3b' pnpm -C autobyteus-server-ts exec vitest --run tests/e2e/run-history/team-run-history-graphql.e2e.test.ts -t 'real LM Studio provider'` -> `Failed` (model identifier not resolved by runtime discovery path in test environment).
+- `pnpm -C autobyteus-server-ts exec vitest --run tests/e2e/run-history/team-run-history-graphql.e2e.test.ts -t 'real LM Studio provider'` with `autobyteus-server-ts/.env.test` (`LMSTUDIO_HOSTS=http://127.0.0.1:1234`) -> `Passed` (real no-mock LM Studio scenario executed and passed).
+
+## Scope Guard
+- Current status: `Passed`.
+- Rule: only team-memory-layout files plus ticket artifacts are allowed.
+
+## Docs Sync
+- Result: `Updated`
+- Updated docs:
+  - `autobyteus-server-ts/docs/modules/run_history.md`
