@@ -59,3 +59,13 @@
   - scope remains workflow-environment-specific and bounded
   - no requirement/design change needed
   - proceed with local fix in workflow, then rerun Stage 5.5 and Stage 6
+
+## Scenario Results (Run 2: tag `v2026.02.26-personal-desktop-e2e.2`)
+- run: `https://github.com/AutoByteus/autobyteus-workspace-superrepo/actions/runs/22432163196`
+- `SCN-REL-005` result: Failed
+- failure classification: Local Fix
+- failure evidence:
+  - failing step: `Install Python setuptools for node-gyp`
+  - root error: `error: externally-managed-environment` (PEP 668)
+- escalation decision:
+  - workflow command adjustment only (`pip --user --break-system-packages`) and rerun Stage 6.

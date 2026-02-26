@@ -56,3 +56,21 @@
 ## Re-entry Stage 5.5 Result
 - internal code review gate: Pass
 - artifact: `internal-code-review.md` updated for re-entry cycle.
+
+## Stage 6 Re-entry Declaration (Run 2)
+- trigger stage: 6 (aggregated validation rerun)
+- failing scenario: `SCN-REL-005`
+- classification: Local Fix
+- root cause confidence: high
+- reason: mac prep step failed due PEP 668 externally-managed Python environment.
+- required return path: Stage 5 (implementation local fix) -> Stage 5.5 -> Stage 6 rerun.
+- no-direct-patch rule: satisfied (artifact update recorded before code edit).
+
+## Re-entry Stage 5 Execution (Run 2 Local Fix)
+- updated file: `.github/workflows/release-desktop.yml`
+- change: switch setuptools install command to `python3 -m pip install --user --break-system-packages --upgrade setuptools`.
+- verification: workflow YAML parse (pending in next command block).
+
+## Re-entry Stage 5.5 Result (Run 2)
+- internal code review gate: Pass
+- artifact: `internal-code-review.md` updated.

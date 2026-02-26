@@ -39,7 +39,7 @@ jobs:
         run: pnpm install --no-frozen-lockfile
 
       - name: Install Python setuptools for node-gyp
-        run: python3 -m pip install --upgrade setuptools
+        run: python3 -m pip install --user --break-system-packages --upgrade setuptools
 
       - name: Build Electron macOS ARM64
         working-directory: autobyteus-web

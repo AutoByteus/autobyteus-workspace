@@ -2,7 +2,7 @@
 
 - gate-result: Pass
 - stage: 5.5
-- rerun-context: Post-Stage-6 local-fix re-entry
+- rerun-context: Post-Stage-6 local-fix re-entry (Run 2)
 
 ## Reviewed Changed Files In Re-entry
 - `.github/workflows/release-desktop.yml`
