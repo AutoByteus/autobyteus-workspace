@@ -4,46 +4,46 @@
 
 - Ticket: `electron-auto-update`
 - Current Stage: `8`
-- Next Stage: `User Confirmation` (ticket remains in `tickets/in-progress` until explicit completion confirmation)
+- Next Stage: `User Confirmation` (ticket remains in `tickets/in-progress` until explicit done confirmation)
 - Code Edit Permission: `Unlocked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A (Closed)`
-- Last Transition ID: `T-020`
-- Last Updated: `2026-02-26`
+- Last Transition ID: `T-031`
+- Last Updated: `2026-02-27`
 
 ## Stage Gates
 
 | Stage | Gate Status (`Not Started`/`In Progress`/`Pass`/`Fail`/`Blocked`) | Gate Rule Summary | Evidence |
 | --- | --- | --- | --- |
-| 0 Bootstrap + Investigation | Pass | Ticket bootstrap complete + `requirements.md` Draft + investigation notes current | `tickets/in-progress/electron-auto-update/requirements.md`, `tickets/in-progress/electron-auto-update/investigation-notes.md` |
-| 1 Requirements | Pass | `requirements.md` is `Design-ready`/`Refined` | `tickets/in-progress/electron-auto-update/requirements.md` |
-| 2 Design Basis | Pass | Design basis updated for scope (`implementation-plan.md` sketch or `proposed-design.md`) | `tickets/in-progress/electron-auto-update/proposed-design.md` |
-| 3 Runtime Modeling | Pass | `future-state-runtime-call-stack.md` current | `tickets/in-progress/electron-auto-update/future-state-runtime-call-stack.md` |
-| 4 Review Gate | Pass | Runtime review `Go Confirmed` (two clean rounds) | `tickets/in-progress/electron-auto-update/future-state-runtime-call-stack-review.md` |
-| 5 Implementation | Pass | Plan/progress current + unit/integration verification complete | `tickets/in-progress/electron-auto-update/implementation-plan.md`, `tickets/in-progress/electron-auto-update/implementation-progress.md` |
-| 5.5 Internal Code Review | Pass | Internal review gate `Pass`/`Fail` recorded | `tickets/in-progress/electron-auto-update/internal-code-review.md` |
-| 6 Aggregated Validation | Pass | AC closure + API/E2E scenario gate complete | `tickets/in-progress/electron-auto-update/aggregated-validation.md` |
-| 7 Docs Sync | Pass | Docs updated or no-impact rationale recorded | `autobyteus-web/docs/electron_packaging.md` |
-| 8 Handoff / Ticket State | Pass | Final handoff complete + ticket state decision recorded | `tickets/in-progress/electron-auto-update/workflow-state.md`, handoff response |
+| 0 Bootstrap + Investigation | Pass | Ticket reopened and investigation addendum completed for About/manual-check requirement | `tickets/in-progress/electron-auto-update/investigation-notes.md`, `tickets/in-progress/electron-auto-update/workflow-state.md` |
+| 1 Requirements | Pass | Requirements refined for `Settings > About` and manual check-for-updates scope | `tickets/in-progress/electron-auto-update/requirements.md` |
+| 2 Design Basis | Pass | Proposed design updated with `Settings > About` canonical UX plan | `tickets/in-progress/electron-auto-update/proposed-design.md` |
+| 3 Runtime Modeling | Pass | Runtime call stack updated for About/manual-check flows (`UC-007`, `UC-008`) | `tickets/in-progress/electron-auto-update/future-state-runtime-call-stack.md` |
+| 4 Review Gate | Pass | Runtime review re-confirmed `Go Confirmed` for reopened About/manual-check scope | `tickets/in-progress/electron-auto-update/future-state-runtime-call-stack-review.md` |
+| 5 Implementation | Pass | Reopened About/manual-check implementation completed with verification evidence | `tickets/in-progress/electron-auto-update/implementation-progress.md` |
+| 5.5 Internal Code Review | Pass | Internal review passed for reopened About/manual-check scope | `tickets/in-progress/electron-auto-update/internal-code-review.md` |
+| 6 Aggregated Validation | Pass | AC closure completed for reopened About/manual-check scope | `tickets/in-progress/electron-auto-update/aggregated-validation.md` |
+| 7 Docs Sync | Pass | Docs synchronized for `Settings > About` manual-check flow | `autobyteus-web/docs/settings.md`, `autobyteus-web/docs/electron_packaging.md` |
+| 8 Handoff / Ticket State | Pass | Reopened scope handoff complete; awaiting explicit user completion confirmation for archival | `tickets/in-progress/electron-auto-update/workflow-state.md`, handoff response |
 
 ## Pre-Edit Checklist (Stage 5 Only)
 
-- Current Stage is `5`: `No` (historical checkpoint already completed)
+- Current Stage is `5`: `No` (historical checkpoint completed for reopened cycle)
 - Code Edit Permission is `Unlocked`: `Yes`
 - Stage 4 gate is `Go Confirmed`: `Yes`
 - Required upstream artifacts are current: `Yes`
-- Pre-Edit Checklist Result: `Historical Pass`
-- Current applicability: `N/A` (implementation stage closed)
+- Pre-Edit Checklist Result: `Pass`
+- Current applicability: `Historical Pass`
 
 ## Re-Entry Declaration
 
-- Trigger Stage (`5.5`/`6`): `6`
+- Trigger Stage (`8`/`5.5`/`6`): `8`
 - Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `Requirement Gap`
-- Required Return Path: `1 -> 2 -> 3 -> 4 -> 5 -> 5.5 -> 6 -> 7 -> 8`
-- Required Upstream Artifacts To Update Before Code Edits: `requirements.md`, `proposed-design.md`, `future-state-runtime-call-stack.md`, `future-state-runtime-call-stack-review.md`, `implementation-plan.md`, `implementation-progress.md`
-- Resume Condition: `User constraint (GitHub-only provider) reflected in artifacts and stage gates re-passed`
+- Required Return Path: `0 -> 1 -> 2 -> 3 -> 4 -> 5 -> 5.5 -> 6 -> 7 -> 8`
+- Required Upstream Artifacts To Update Before Code Edits: `investigation-notes.md`, `requirements.md`, `proposed-design.md`, `future-state-runtime-call-stack.md`, `future-state-runtime-call-stack-review.md`, `implementation-plan.md`, `implementation-progress.md`
+- Resume Condition: `Manual check-for-updates + version visibility requirement is reflected in artifacts and stage gates are re-passed`
 - Re-Entry Closure Status: `Closed`
-- Closure Evidence: `implementation-progress.md`, `internal-code-review.md`, `aggregated-validation.md`
+- Closure Evidence: `implementation-progress.md`, `internal-code-review.md`, `aggregated-validation.md`, `autobyteus-web/docs/settings.md`
 
 ## Transition Log (Append-Only)
 
@@ -70,6 +70,17 @@
 | T-018 | 2026-02-26 | 5.5 | 6 | Re-entry internal code review passed with no blockers | Requirement Gap | Unlocked | `internal-code-review.md`, `workflow-state.md` |
 | T-019 | 2026-02-26 | 6 | 7 | Re-entry aggregated validation passed; GitHub-only metadata confirmed in packaged output | Requirement Gap | Unlocked | `aggregated-validation.md`, `workflow-state.md` |
 | T-020 | 2026-02-26 | 7 | 8 | Docs synchronized and handoff finalized for GitHub-only updater scope | Requirement Gap | Unlocked | `autobyteus-web/docs/electron_packaging.md`, `workflow-state.md` |
+| T-021 | 2026-02-27 | 8 | 0 | User reopened ticket to add `Settings > About` manual update check and version visibility | Requirement Gap | Locked | `workflow-state.md` |
+| T-022 | 2026-02-27 | 0 | 1 | Reopen investigation addendum completed; entering requirements refinement | Requirement Gap | Locked | `investigation-notes.md`, `workflow-state.md` |
+| T-023 | 2026-02-27 | 1 | 2 | Reopened requirements refined and accepted as design input | Requirement Gap | Locked | `requirements.md`, `workflow-state.md` |
+| T-024 | 2026-02-27 | 2 | 3 | Reopened design basis updated for About/manual-check UX scope | Requirement Gap | Locked | `proposed-design.md`, `workflow-state.md` |
+| T-025 | 2026-02-27 | 3 | 4 | Reopened runtime call stack updated for About/manual-check UX scope | Requirement Gap | Locked | `future-state-runtime-call-stack.md`, `workflow-state.md` |
+| T-026 | 2026-02-27 | 4 | 5 | Reopened review gate achieved Go Confirmed for About/manual-check scope | Requirement Gap | Locked | `future-state-runtime-call-stack-review.md`, `workflow-state.md` |
+| T-027 | 2026-02-27 | 5 | 5 | Reopened implementation plan/progress initialized; pre-edit checklist passed | Requirement Gap | Unlocked | `implementation-plan.md`, `implementation-progress.md`, `workflow-state.md` |
+| T-028 | 2026-02-27 | 5 | 5.5 | Reopened implementation completed with verification evidence; entering internal review | Requirement Gap | Unlocked | `implementation-progress.md`, `workflow-state.md` |
+| T-029 | 2026-02-27 | 5.5 | 6 | Reopened internal code review passed | Requirement Gap | Unlocked | `internal-code-review.md`, `workflow-state.md` |
+| T-030 | 2026-02-27 | 6 | 7 | Reopened aggregated validation passed; entering docs synchronization | Requirement Gap | Unlocked | `aggregated-validation.md`, `workflow-state.md` |
+| T-031 | 2026-02-27 | 7 | 8 | Reopened docs sync completed and handoff prepared for Settings About/manual-check scope | Requirement Gap | Unlocked | `autobyteus-web/docs/settings.md`, `workflow-state.md` |
 
 ## Audible Notification Log (Optional Tracking)
 
@@ -88,6 +99,17 @@
 | 2026-02-26 | Transition | Stage three runtime model updated for GitHub-only constraint; moving to review gate with code edits locked. | Success | N/A |
 | 2026-02-26 | Transition | Stage four review gate re-passed for GitHub-only scope; moving to implementation with code edits still locked. | Success | N/A |
 | 2026-02-26 | LockChange | Code edit permission unlocked for GitHub-only simplification re-entry implementation. | Success | N/A |
+| 2026-02-27 | Re-entry | Ticket reopened from stage 8 to stage 0 for About page + manual check-for-updates UX; code edits locked pending stage gates. | Success | N/A |
+| 2026-02-27 | Transition | Reopen investigation completed; moving to requirements refinement with code edits locked. | Success | N/A |
+| 2026-02-27 | Transition | Reopen requirements refined; moving to design basis with code edits locked. | Success | N/A |
+| 2026-02-27 | Transition | Reopen design basis completed; moving to runtime modeling with code edits locked. | Success | N/A |
+| 2026-02-27 | Transition | Reopen runtime modeling completed; moving to review gate with code edits locked. | Success | N/A |
+| 2026-02-27 | Transition | Reopen review gate passed with Go Confirmed; moving to implementation stage with code edits locked pending checklist. | Success | N/A |
+| 2026-02-27 | LockChange | Code edit permission unlocked for reopened About/manual-check implementation. | Success | N/A |
+| 2026-02-27 | Transition | Reopened implementation completed; moving to internal code review with code edits still unlocked. | Success | N/A |
+| 2026-02-27 | Transition | Reopened internal code review passed; moving to aggregated validation. | Success | N/A |
+| 2026-02-27 | Transition | Reopened aggregated validation passed; moving to docs sync. | Success | N/A |
+| 2026-02-27 | Transition | Reopened docs sync completed; moving to handoff stage while ticket remains in-progress pending explicit confirmation. | Success | N/A |
 
 ## Process Violation Log
 

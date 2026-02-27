@@ -67,3 +67,19 @@ Validate that requirements/design/call-stack are implementation-safe and complet
 - Findings:
   - No blockers.
   - Second consecutive clean round achieved for re-entry scope.
+
+## Re-Entry Round 6 (Settings About Scope)
+
+- Date: `2026-02-27`
+- Result: `Pass` (`Candidate Go`)
+- Findings:
+  - No blockers.
+  - `UC-007` and `UC-008` are modeled with single-source updater store ownership and no new IPC surface.
+
+## Re-Entry Round 7 (Settings About Scope)
+
+- Date: `2026-02-27`
+- Result: `Pass` (`Go Confirmed`)
+- Findings:
+  - No blockers.
+  - Second consecutive clean round achieved for reopened About/manual-check scope.

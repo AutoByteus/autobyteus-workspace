@@ -36,3 +36,17 @@
 - Decision:
   - GitHub-only provider simplification is correct and consistent with updater/runtime assumptions.
   - Stage 5.5 Internal Code Review (Re-entry): `Pass`
+
+## Re-Entry Addendum (Settings About Scope)
+
+- Re-reviewed files:
+  - `autobyteus-web/components/settings/AboutSettingsManager.vue`
+  - `autobyteus-web/pages/settings.vue`
+  - `autobyteus-web/pages/__tests__/settings.spec.ts`
+  - `autobyteus-web/components/settings/__tests__/AboutSettingsManager.spec.ts`
+- Result:
+  - Blocking findings: `None`
+  - Non-blocking findings: `None`
+- Decision:
+  - About section integration keeps update control logic single-sourced via `useAppUpdateStore`.
+  - Stage 5.5 Internal Code Review (Reopened Settings Scope): `Pass`

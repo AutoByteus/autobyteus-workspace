@@ -77,6 +77,28 @@
 4. release workflow uploads metadata + binary + blockmap artifacts (including mac zip family)
 5. installed app updater resolves GitHub Releases feed + downloads referenced artifacts
 
+## UC-007 Settings About Version Visibility
+
+1. `[ENTRY]` user opens `/settings` and selects `About`
+2. `pages/settings.vue` sets `activeSection = 'about'`
+3. `AboutSettingsManager.vue` mounts
+4. component reads `useAppUpdateStore` reactive state
+5. version label resolves from `appUpdateStore.currentVersion`
+6. status text resolves from current updater state/message
+7. UI renders one canonical about card with version + update status
+
+## UC-008 Settings About Manual Check
+
+1. `[ENTRY]` user clicks `Check for Updates` in `AboutSettingsManager`
+2. component calls `appUpdateStore.checkForUpdates()`
+3. store invokes `window.electronAPI.checkForAppUpdates()`
+4. main updater handler updates state (`checking` -> `available|no-update|error`)
+5. store receives updated state via direct invoke response and broadcast event
+6. About panel status/message refreshes in place
+7. if status is `available` or `downloaded`, About panel exposes contextual next CTA:
+  - `Download Update` for `available`
+  - `Install & Restart` for `downloaded`
+
 ## Data/Contract Summary
 
 - Main -> Renderer event:

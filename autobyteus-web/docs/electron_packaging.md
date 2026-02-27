@@ -309,6 +309,7 @@ Auto-updates are powered by `electron-updater` in the main process via `electron
 
 - Startup auto-check runs only for packaged apps (dev/unpackaged mode is skipped).
 - Renderer windows receive normalized updater state via IPC channel `app-update-state`.
+- Manual check entrypoint is exposed in `Settings > About` (canonical UI location).
 - User actions from UI trigger IPC handlers:
   - `app-update:check`
   - `app-update:download`
