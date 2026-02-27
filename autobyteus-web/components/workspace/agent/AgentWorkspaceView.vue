@@ -24,9 +24,13 @@
           v-if="selectedAgent" 
           :text-to-copy="conversationText" 
           label="Copy full conversation"
+          class="h-10 w-10 inline-flex items-center justify-center rounded-full p-0 text-gray-500 hover:bg-gray-100"
         />
         <!-- Separator removed -->
-        <WorkspaceHeaderActions @new-agent="createNewAgent" />
+        <WorkspaceHeaderActions
+          @new-agent="createNewAgent"
+          @edit-config="openSelectedRunConfig"
+        />
       </div>
     </div>
     
@@ -58,12 +62,14 @@ import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
+import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore';
 
 const agentContextsStore = useAgentContextsStore();
 const agentDefinitionStore = useAgentDefinitionStore();
 const runConfigStore = useAgentRunConfigStore();
 const teamRunConfigStore = useTeamRunConfigStore();
 const selectionStore = useAgentSelectionStore();
+const workspaceCenterViewStore = useWorkspaceCenterViewStore();
 
 const selectedAgent = computed(() => agentContextsStore.activeRun);
 const headerAvatarLoadError = ref(false);
@@ -137,6 +143,13 @@ const createNewAgent = () => {
   runConfigStore.setAgentConfig(template);
   teamRunConfigStore.clearConfig();
   selectionStore.clearSelection();
+};
+
+const openSelectedRunConfig = () => {
+  if (!selectedAgent.value) {
+    return;
+  }
+  workspaceCenterViewStore.showConfig();
 };
 
 onMounted(async () => {

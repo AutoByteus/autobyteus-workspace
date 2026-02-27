@@ -11,6 +11,7 @@ const {
   teamRunConfigStoreMock,
   agentRunConfigStoreMock,
   selectionStoreMock,
+  workspaceCenterViewStoreMock,
 } = vi.hoisted(() => {
   const localState = {
     activeTeamContext: null as any,
@@ -52,6 +53,9 @@ const {
     selectionStoreMock: {
       clearSelection: vi.fn(),
     },
+    workspaceCenterViewStoreMock: {
+      showConfig: vi.fn(),
+    },
   };
 });
 
@@ -73,6 +77,10 @@ vi.mock('~/stores/agentRunConfigStore', () => ({
 
 vi.mock('~/stores/agentSelectionStore', () => ({
   useAgentSelectionStore: () => selectionStoreMock,
+}));
+
+vi.mock('~/stores/workspaceCenterViewStore', () => ({
+  useWorkspaceCenterViewStore: () => workspaceCenterViewStoreMock,
 }));
 
 const buildTeamContext = (overrides: Record<string, any> = {}) => ({
@@ -112,7 +120,14 @@ describe('TeamWorkspaceView', () => {
     global: {
       stubs: {
         AgentTeamEventMonitor: { template: '<div data-test="team-event-monitor" />' },
-        WorkspaceHeaderActions: { template: '<button type="button" data-test="new-agent" @click="$emit(\'new-agent\')" />' },
+        WorkspaceHeaderActions: {
+          template: `
+            <div>
+              <button type="button" data-test="new-agent" @click="$emit('new-agent')" />
+              <button type="button" data-test="edit-config" @click="$emit('edit-config')" />
+            </div>
+          `,
+        },
         AgentStatusDisplay: {
           props: ['status'],
           template: '<div data-test="header-status">{{ status }}</div>',
@@ -145,5 +160,11 @@ describe('TeamWorkspaceView', () => {
     });
     const wrapper = mountComponent();
     expect(wrapper.find('h4').text()).toBe('missing-member');
+  });
+
+  it('opens selected team config from header action', async () => {
+    const wrapper = mountComponent();
+    await wrapper.get('[data-test="edit-config"]').trigger('click');
+    expect(workspaceCenterViewStoreMock.showConfig).toHaveBeenCalledTimes(1);
   });
 });

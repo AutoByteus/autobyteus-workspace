@@ -1,6 +1,21 @@
 <template>
   <div class="flex flex-col h-full bg-white">
-    <!-- Header Removed -->
+    <div
+      v-if="isSelectionMode"
+      class="flex items-center justify-between border-b border-gray-200 px-4 py-2"
+    >
+      <h3 class="truncate text-sm font-semibold text-gray-800">{{ configTitle }}</h3>
+      <button
+        type="button"
+        data-test="run-config-back-to-events"
+        class="inline-flex h-8 w-8 items-center justify-center rounded-md text-indigo-600 transition-colors hover:bg-indigo-50"
+        title="Return to event view"
+        aria-label="Back to event view"
+        @click="showConversationView"
+      >
+        <Icon icon="heroicons:arrow-long-left-20-solid" aria-hidden="true" class="h-4 w-5" />
+      </button>
+    </div>
 
     <div class="flex-1 overflow-y-auto px-4 py-4">
         <!-- Placeholder if nothing selected -->
@@ -53,6 +68,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import { Icon } from '@iconify/vue';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
@@ -62,6 +78,7 @@ import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
 import { useWorkspaceStore } from '~/stores/workspace';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
+import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore';
 import { useRightSideTabs } from '~/composables/useRightSideTabs';
 import AgentRunConfigForm from './AgentRunConfigForm.vue';
 import TeamRunConfigForm from './TeamRunConfigForm.vue';
@@ -77,6 +94,7 @@ const definitionStore = useAgentDefinitionStore();
 const teamDefinitionStore = useAgentTeamDefinitionStore();
 const workspaceStore = useWorkspaceStore();
 const runHistoryStore = useRunHistoryStore();
+const workspaceCenterViewStore = useWorkspaceCenterViewStore();
 const { setActiveTab } = useRightSideTabs();
 
 // Mode Detection
@@ -293,5 +311,9 @@ const handleRun = () => {
             runConfigStore.clearConfig();
         }
     }
+};
+
+const showConversationView = () => {
+  workspaceCenterViewStore.showChat();
 };
 </script>

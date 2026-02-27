@@ -242,26 +242,28 @@
                     <span class="ml-1 text-xs text-gray-400">({{ team.members.length }})</span>
                   </button>
 
-                  <button
-                    v-if="canTerminateTeam(team.currentStatus)"
-                    type="button"
-                    class="ml-2 inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
-                    title="Terminate team"
-                    :disabled="Boolean(terminatingTeamIds[team.teamRunId])"
-                    @click.stop="onTerminateTeam(team.teamRunId)"
-                  >
-                    <Icon icon="heroicons:stop-20-solid" class="h-3.5 w-3.5" />
-                  </button>
-                  <button
-                    v-else-if="team.deleteLifecycle === 'READY'"
-                    type="button"
-                    class="ml-2 inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
-                    title="Delete team history permanently"
-                    :disabled="Boolean(deletingTeamIds[team.teamRunId])"
-                    @click.stop="onDeleteTeam(team)"
-                  >
-                    <Icon icon="heroicons:trash-20-solid" class="h-3.5 w-3.5" />
-                  </button>
+                  <div class="ml-2 flex items-center gap-1">
+                    <button
+                      v-if="canTerminateTeam(team.currentStatus)"
+                      type="button"
+                      class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
+                      title="Terminate team"
+                      :disabled="Boolean(terminatingTeamIds[team.teamRunId])"
+                      @click.stop="onTerminateTeam(team.teamRunId)"
+                    >
+                      <Icon icon="heroicons:stop-20-solid" class="h-3.5 w-3.5" />
+                    </button>
+                    <button
+                      v-else-if="team.deleteLifecycle === 'READY'"
+                      type="button"
+                      class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
+                      title="Delete team history permanently"
+                      :disabled="Boolean(deletingTeamIds[team.teamRunId])"
+                      @click.stop="onDeleteTeam(team)"
+                    >
+                      <Icon icon="heroicons:trash-20-solid" class="h-3.5 w-3.5" />
+                    </button>
+                  </div>
                 </div>
 
                 <div v-if="isTeamExpanded(team.teamRunId)" class="ml-3 space-y-0.5">
@@ -327,6 +329,7 @@ import { useAgentRunStore } from '~/stores/agentRunStore';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
+import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { useToasts } from '~/composables/useToasts';
 import { pickFolderPath } from '~/composables/useNativeFolderDialog';
@@ -347,6 +350,7 @@ const agentRunStore = useAgentRunStore();
 const teamRunStore = useAgentTeamRunStore();
 const agentDefinitionStore = useAgentDefinitionStore();
 const agentTeamDefinitionStore = useAgentTeamDefinitionStore();
+const workspaceCenterViewStore = useWorkspaceCenterViewStore();
 const windowNodeContextStore = useWindowNodeContextStore();
 const { isEmbeddedWindow } = storeToRefs(windowNodeContextStore);
 const { addToast } = useToasts();
@@ -625,6 +629,7 @@ const toggleAgent = (workspaceRootPath: string, agentDefinitionId: string): void
 const onSelectRun = async (run: RunTreeRow): Promise<void> => {
   try {
     await runHistoryStore.selectTreeRun(run);
+    workspaceCenterViewStore.showChat();
     emit('run-selected', { type: 'agent', runId: run.runId });
   } catch (error) {
     console.error('Failed to open run:', error);
@@ -634,6 +639,7 @@ const onSelectRun = async (run: RunTreeRow): Promise<void> => {
 const onSelectTeam = (teamRunId: string): void => {
   toggleTeam(teamRunId);
   selectionStore.selectRun(teamRunId, 'team');
+  workspaceCenterViewStore.showChat();
   emit('run-selected', { type: 'team', runId: teamRunId });
 };
 
@@ -654,6 +660,7 @@ const toTeamMemberDisplayName = (member: TeamMemberTreeRow): string => {
 const onSelectTeamMember = async (member: TeamMemberTreeRow): Promise<void> => {
   try {
     await runHistoryStore.selectTreeRun(member);
+    workspaceCenterViewStore.showChat();
     emit('run-selected', { type: 'team', runId: member.teamRunId });
   } catch (error) {
     console.error('Failed to open team member run:', error);

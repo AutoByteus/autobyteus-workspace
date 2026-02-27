@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore';
 
 export type SelectionType = 'agent' | 'team';
 
@@ -36,6 +37,7 @@ export const useAgentSelectionStore = defineStore('agentSelection', {
     selectRun(runId: string, type: SelectionType = 'agent') {
       this.selectedRunId = runId;
       this.selectedType = type;
+      useWorkspaceCenterViewStore().showChat();
     },
 
     /**
@@ -44,6 +46,7 @@ export const useAgentSelectionStore = defineStore('agentSelection', {
     clearSelection() {
       this.selectedRunId = null;
       this.selectedType = null;
+      useWorkspaceCenterViewStore().showChat();
     },
   },
 });

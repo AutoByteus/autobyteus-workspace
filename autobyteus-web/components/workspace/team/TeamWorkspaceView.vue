@@ -20,7 +20,10 @@
         </h4>
         <AgentStatusDisplay v-if="activeTeamContext" :status="headerStatus" />
       </div>
-      <WorkspaceHeaderActions @new-agent="createNewTeamRun" />
+      <WorkspaceHeaderActions
+        @new-agent="createNewTeamRun"
+        @edit-config="openSelectedTeamConfig"
+      />
     </div>
 
     <!-- Main Content Area -->
@@ -49,6 +52,7 @@ import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
+import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import AgentStatusDisplay from '~/components/workspace/agent/AgentStatusDisplay.vue';
 import AgentTeamEventMonitor from '~/components/workspace/team/AgentTeamEventMonitor.vue';
@@ -59,6 +63,7 @@ const agentDefinitionStore = useAgentDefinitionStore();
 const teamRunConfigStore = useTeamRunConfigStore();
 const agentRunConfigStore = useAgentRunConfigStore();
 const selectionStore = useAgentSelectionStore();
+const workspaceCenterViewStore = useWorkspaceCenterViewStore();
 const headerAvatarLoadError = ref(false);
 
 const activeTeamContext = computed(() => teamContextsStore.activeTeamContext);
@@ -163,6 +168,13 @@ const createNewTeamRun = () => {
   teamRunConfigStore.setConfig(template);
   agentRunConfigStore.clearConfig();
   selectionStore.clearSelection();
+};
+
+const openSelectedTeamConfig = () => {
+  if (!activeTeamContext.value) {
+    return;
+  }
+  workspaceCenterViewStore.showConfig();
 };
 
 onMounted(async () => {
