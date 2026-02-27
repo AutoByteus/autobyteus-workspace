@@ -3,26 +3,11 @@ import path from 'node:path';
 import { parseArgs } from 'node:util';
 import { AgentConfig } from '../src/agent/context/agent-config.js';
 import { AgentFactory } from '../src/agent/factory/agent-factory.js';
-import { BaseAgentWorkspace } from '../src/agent/workspace/base-workspace.js';
-import { WorkspaceConfig } from '../src/agent/workspace/workspace-config.js';
 import { runAgentCli } from '../src/cli/index.js';
 import { registerWriteFileTool } from '../src/tools/file/write-file.js';
 import { loadEnv } from './shared/example-paths.js';
 import { createLlmOrThrow, printAvailableModels } from './shared/llm-helpers.js';
 import { setConsoleLogLevel } from './shared/logging.js';
-
-class SimpleWorkspace extends BaseAgentWorkspace {
-  private rootPath: string;
-
-  constructor(rootPath: string) {
-    super(new WorkspaceConfig({ root_path: rootPath }));
-    this.rootPath = rootPath;
-  }
-
-  getBasePath(): string {
-    return this.rootPath;
-  }
-}
 
 async function main(): Promise<void> {
   const { values } = parseArgs({
@@ -54,7 +39,7 @@ async function main(): Promise<void> {
 
   const llm = await createLlmOrThrow(values['llm-model']);
   const tool = registerWriteFileTool();
-  const workspace = new SimpleWorkspace(outputDir);
+  const workspaceRootPath = outputDir;
 
   const poemFilename = values['poem-filename'];
   const systemPrompt =
@@ -77,7 +62,7 @@ async function main(): Promise<void> {
     null,
     null,
     null,
-    workspace
+    workspaceRootPath
   );
 
   const agent = new AgentFactory().createAgent(agentConfig);

@@ -3,8 +3,6 @@ import path from 'node:path';
 import { parseArgs } from 'node:util';
 import { AgentConfig } from '../src/agent/context/agent-config.js';
 import { AgentFactory } from '../src/agent/factory/agent-factory.js';
-import { BaseAgentWorkspace } from '../src/agent/workspace/base-workspace.js';
-import { WorkspaceConfig } from '../src/agent/workspace/workspace-config.js';
 import { runAgentCli } from '../src/cli/index.js';
 import { ToolOrigin } from '../src/tools/tool-origin.js';
 import { defaultToolRegistry } from '../src/tools/registry/tool-registry.js';
@@ -12,19 +10,6 @@ import { registerTools } from '../src/tools/register-tools.js';
 import { loadEnv, resolveExamplePath } from './shared/example-paths.js';
 import { createLlmOrThrow, printAvailableModels } from './shared/llm-helpers.js';
 import { setConsoleLogLevel } from './shared/logging.js';
-
-class LocalWorkspace extends BaseAgentWorkspace {
-  private rootPath: string;
-
-  constructor(rootPath: string) {
-    super(new WorkspaceConfig({ root_path: rootPath }));
-    this.rootPath = rootPath;
-  }
-
-  getBasePath(): string {
-    return this.rootPath;
-  }
-}
 
 async function main(): Promise<void> {
   const { values } = parseArgs({
@@ -52,7 +37,7 @@ async function main(): Promise<void> {
 
   const workspacePath = path.resolve(values['workspace-path']);
   await fs.mkdir(workspacePath, { recursive: true });
-  const workspace = new LocalWorkspace(workspacePath);
+  const workspaceRootPath = workspacePath;
 
   const localToolDefs = defaultToolRegistry.listTools().filter((def) => def.origin === ToolOrigin.LOCAL);
   if (!localToolDefs.length) {
@@ -81,7 +66,7 @@ async function main(): Promise<void> {
     null,
     null,
     null,
-    workspace
+    workspaceRootPath
   );
 
   const agent = new AgentFactory().createAgent(agentConfig);

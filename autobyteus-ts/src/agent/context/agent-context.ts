@@ -6,7 +6,6 @@ import { ToolInvocation } from '../tool-invocation.js';
 import type { BaseLLM } from '../../llm/base.js';
 import type { BaseTool } from '../../tools/base-tool.js';
 import type { AgentEventStore } from '../events/event-store.js';
-import type { BaseAgentWorkspace } from '../workspace/base-workspace.js';
 
 import type { AgentStatusDeriver } from '../status/status-deriver.js';
 import type { AgentStatusManager } from '../status/manager.js';
@@ -100,8 +99,8 @@ export class AgentContext {
     return this.state.customData;
   }
 
-  get workspace(): BaseAgentWorkspace | null {
-    return this.state.workspace;
+  get workspaceRootPath(): string | null {
+    return this.state.workspaceRootPath;
   }
 
   get processedSystemPrompt(): string | null {

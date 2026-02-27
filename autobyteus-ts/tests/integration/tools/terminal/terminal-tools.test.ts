@@ -17,24 +17,12 @@ const startBackgroundProcessTool = registerStartBackgroundProcessTool();
 const getProcessOutputTool = registerGetProcessOutputTool();
 const stopBackgroundProcessTool = registerStopBackgroundProcessTool();
 
-class MockWorkspace {
-  private basePath: string;
-
-  constructor(basePath: string) {
-    this.basePath = basePath;
-  }
-
-  getBasePath(): string {
-    return this.basePath;
-  }
-}
-
 class MockContext {
-  workspace: MockWorkspace;
+  workspaceRootPath: string;
   agentId: string;
 
   constructor(basePath: string) {
-    this.workspace = new MockWorkspace(basePath);
+    this.workspaceRootPath = basePath;
     this.agentId = 'test-agent-001';
   }
 }

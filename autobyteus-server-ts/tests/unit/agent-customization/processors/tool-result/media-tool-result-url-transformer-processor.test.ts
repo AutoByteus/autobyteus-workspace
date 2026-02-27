@@ -87,15 +87,13 @@ describe("MediaToolResultUrlTransformerProcessor", () => {
     expect(result.original_output).toBe("Image created successfully");
   });
 
-  it("resolves relative paths using workspace", async () => {
+  it("resolves relative paths using workspaceRootPath", async () => {
     mockMediaStorageService.storeMediaAndGetUrl.mockResolvedValue("http://localhost/img.png");
 
     const processor = new MediaToolResultUrlTransformerProcessor();
     const context = {
       agentId: "agent-1",
-      workspace: {
-        getBasePath: () => "/workspace/root",
-      },
+      workspaceRootPath: "/workspace/root",
     } as AgentContext;
 
     const existsSpy = vi.spyOn(fs, "existsSync").mockReturnValue(true);

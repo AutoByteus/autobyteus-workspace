@@ -3,13 +3,11 @@ import { WorkspacePathSanitizationProcessor } from "../../../../../src/agent-cus
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { UserMessageReceivedEvent } from "autobyteus-ts/agent/events/agent-events.js";
 import type { AgentContext } from "autobyteus-ts";
-import { FileSystemWorkspace } from "../../../../../src/workspaces/filesystem-workspace.js";
-import { WorkspaceConfig } from "autobyteus-ts/agent/workspace/workspace-config.js";
 
 const normalizeSpaces = (value: string): string => value.split(/\s+/).filter(Boolean).join(" ");
 
-const buildContext = (workspace: unknown): AgentContext =>
-  ({ agentId: "test_agent", workspace } as AgentContext);
+const buildContext = (workspaceRootPath: unknown): AgentContext =>
+  ({ agentId: "test_agent", workspaceRootPath } as AgentContext);
 
 describe("WorkspacePathSanitizationProcessor", () => {
   it.each([
@@ -22,8 +20,7 @@ describe("WorkspacePathSanitizationProcessor", () => {
     ["/var/log", "Line 1: /var/log/app.log\nLine 2: /var/log", "Line 1: app.log\nLine 2:"],
     ["C:\\Users\\Test\\Project", "File at C:\\Users\\Test\\Project\\src\\main.c", "File at src\\main.c"],
   ])("sanitizes workspace paths for %s", async (rootPath, originalContent, expectedContent) => {
-    const workspace = new FileSystemWorkspace(new WorkspaceConfig({ rootPath: rootPath }));
-    const context = buildContext(workspace);
+    const context = buildContext(rootPath);
     const message = new AgentInputUserMessage(originalContent);
     const processor = new WorkspacePathSanitizationProcessor();
 
@@ -38,8 +35,7 @@ describe("WorkspacePathSanitizationProcessor", () => {
     ["/var/autobyteus/ws-1", "This is a simple message with no paths."],
     ["/home/user/project", "Do not touch /home/user/project_old/file.py"],
   ])("does not sanitize unrelated paths for %s", async (rootPath, originalContent) => {
-    const workspace = new FileSystemWorkspace(new WorkspaceConfig({ rootPath: rootPath }));
-    const context = buildContext(workspace);
+    const context = buildContext(rootPath);
     const message = new AgentInputUserMessage(originalContent);
     const processor = new WorkspacePathSanitizationProcessor();
 
@@ -52,20 +48,13 @@ describe("WorkspacePathSanitizationProcessor", () => {
     const processor = new WorkspacePathSanitizationProcessor();
     const originalContent = "Some content with /some/path";
 
-    const invalidWorkspaces: unknown[] = [null, {}, new (class {})()];
-    for (const workspace of invalidWorkspaces) {
-      const context = buildContext(workspace);
+    const invalidWorkspaceRootPaths: unknown[] = [null, "", undefined];
+    for (const workspaceRootPath of invalidWorkspaceRootPaths) {
+      const context = buildContext(workspaceRootPath);
       const message = new AgentInputUserMessage(originalContent);
       const result = await processor.process(message, context, new UserMessageReceivedEvent(message));
       expect(result.content).toBe(originalContent);
     }
-
-    const workspace = new FileSystemWorkspace(new WorkspaceConfig({ rootPath: "/tmp" }));
-    (workspace as { rootPath: string }).rootPath = "";
-    const context = buildContext(workspace);
-    const message = new AgentInputUserMessage(originalContent);
-    const result = await processor.process(message, context, new UserMessageReceivedEvent(message));
-    expect(result.content).toBe(originalContent);
   });
 
   it("returns the expected processor name", () => {

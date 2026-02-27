@@ -2,8 +2,6 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { parseArgs } from 'node:util';
 import { AgentConfig } from '../../../src/agent/context/agent-config.js';
-import { BaseAgentWorkspace } from '../../../src/agent/workspace/base-workspace.js';
-import { WorkspaceConfig } from '../../../src/agent/workspace/workspace-config.js';
 import { AgentTeamBuilder } from '../../../src/agent-team/agent-team-builder.js';
 import { runAgentTeamCli } from '../../../src/cli/index.js';
 import { SendMessageTo } from '../../../src/agent/message/send-message-to.js';
@@ -16,19 +14,6 @@ import { registerRunBashTool } from '../../../src/tools/terminal/tools/run-bash.
 import { loadEnv, resolveExamplePath } from '../../shared/example-paths.js';
 import { createLlmOrThrow, printAvailableModels } from '../../shared/llm-helpers.js';
 import { setConsoleLogLevel } from '../../shared/logging.js';
-
-class SimpleWorkspace extends BaseAgentWorkspace {
-  private rootPath: string;
-
-  constructor(rootPath: string) {
-    super(new WorkspaceConfig({ root_path: rootPath }));
-    this.rootPath = rootPath;
-  }
-
-  getBasePath(): string {
-    return this.rootPath;
-  }
-}
 
 async function loadPrompt(filename: string): Promise<string> {
   const promptPath = resolveExamplePath(
@@ -73,7 +58,7 @@ async function main(): Promise<void> {
 
   const outputDir = path.resolve(values['output-dir']);
   await fs.mkdir(outputDir, { recursive: true });
-  const workspace = new SimpleWorkspace(outputDir);
+  const workspaceRootPath = outputDir;
 
   const coordinatorLlm = await createLlmOrThrow(coordinatorModel);
   const engineerLlm = await createLlmOrThrow(engineerModel);
@@ -102,7 +87,7 @@ async function main(): Promise<void> {
     null,
     null,
     null,
-    workspace
+    workspaceRootPath
   );
 
   const reviewerConfig = new AgentConfig(
@@ -124,7 +109,7 @@ async function main(): Promise<void> {
     null,
     null,
     null,
-    workspace
+    workspaceRootPath
   );
 
   const testerConfig = new AgentConfig(
@@ -140,7 +125,7 @@ async function main(): Promise<void> {
     null,
     null,
     null,
-    workspace
+    workspaceRootPath
   );
 
   const team = new AgentTeamBuilder('SoftwareDevTeam', 'A team for writing, reviewing, and testing code.')

@@ -26,6 +26,7 @@ import { AgentDefinitionService } from "../../agent-definition/services/agent-de
 import { mergeMandatoryAndOptional } from "../../agent-definition/utils/processor-defaults.js";
 import { PromptLoader, getPromptLoader } from "../../prompt-engineering/utils/prompt-loader.js";
 import { SkillService } from "../../skills/services/skill-service.js";
+import { TempWorkspace } from "../../workspaces/temp-workspace.js";
 import { WorkspaceManager, getWorkspaceManager } from "../../workspaces/workspace-manager.js";
 import { AgentCreationError, AgentTerminationError } from "../errors.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
@@ -343,10 +344,16 @@ export class AgentRunManager {
       workspaceInstance = await this.workspaceManager.getOrCreateTempWorkspace();
       logger.info(`Using temp workspace (ID: ${workspaceInstance.workspaceId}) for agent.`);
     }
+    const workspaceRootPath = workspaceInstance?.getBasePath?.() ?? null;
 
     const initialCustomData = {
       agent_definition_id: agentDefinitionId,
       is_first_user_turn: true,
+      workspace_id: workspaceInstance?.workspaceId ?? null,
+      workspace_root_path: workspaceRootPath,
+      workspace_name: workspaceInstance?.getName?.() ?? workspaceInstance?.workspaceId ?? null,
+      workspace_is_temp:
+        workspaceInstance?.workspaceId === TempWorkspace.TEMP_WORKSPACE_ID,
     };
 
     return {
@@ -364,7 +371,7 @@ export class AgentRunManager {
         systemPromptProcessors,
         toolExecutionResultProcessors,
         toolInvocationPreprocessors,
-        workspaceInstance ?? null,
+        workspaceRootPath,
         lifecycleProcessors,
         initialCustomData,
         skillPaths,
