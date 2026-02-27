@@ -1,0 +1,52 @@
+# Implementation Progress
+
+## Status
+
+- Overall Status: `Completed`
+- Current Stage: `8` (implementation + downstream gates complete; awaiting user confirmation)
+- Code Edit Permission: `Unlocked`
+- Re-Entry Status: `Closed` (`Requirement Gap` resolved: GitHub Releases only)
+
+## Change Tracking
+
+| Change ID | Files | Status | Verification | Notes |
+| --- | --- | --- | --- | --- |
+| C-001 | `autobyteus-web/electron/updater/appUpdater.ts` | Completed | `test:electron` | Added updater state machine, event mapping, IPC handlers, startup auto-check guard |
+| C-002 | `autobyteus-web/electron/main.ts` | Completed | `transpile-electron`, `test:electron` | Wired updater initialization and startup check into bootstrap |
+| C-003 | `autobyteus-web/electron/preload.ts`, `autobyteus-web/electron/types.d.ts`, `autobyteus-web/types/electron.d.ts` | Completed | `transpile-electron`, targeted Nuxt tests | Added typed renderer bridge for updater state/actions |
+| C-004 | `autobyteus-web/stores/appUpdateStore.ts` | Completed | `stores/__tests__/appUpdateStore.spec.ts` | Added renderer update state/actions + visibility handling |
+| C-005 | `autobyteus-web/components/app/AppUpdateNotice.vue` | Completed | `components/app/__tests__/AppUpdateNotice.spec.ts` | Added persistent bottom-right update notification card |
+| C-006 | `autobyteus-web/plugins/15.appUpdater.client.ts`, `autobyteus-web/app.vue`, `autobyteus-web/__tests__/app.spec.ts` | Completed | `__tests__/app.spec.ts` | Integrated updater initialization and app-shell rendering |
+| C-007 | `autobyteus-web/build/scripts/build.ts` | Completed | `build:electron:linux`, `build:electron:mac -- --arm64` | Added GitHub-only publish metadata resolution + mac zip target |
+| C-008 | `.github/workflows/release-desktop.yml` | Completed | file inspection + build outputs | Added mac zip/zip.blockmap upload patterns |
+| C-009 | updater tests | Completed | test runs below | Added new Electron/Nuxt tests for updater manager/store/component |
+| C-010 | `autobyteus-web/build/scripts/build.ts`, `autobyteus-web/docs/electron_packaging.md` | Completed | `transpile-electron`, `test:electron --run`, `build:electron:linux` | Removed generic/custom provider branching and documented GitHub-only updater path |
+
+## Verification Log
+
+| Date | Command | Result | Notes |
+| --- | --- | --- | --- |
+| 2026-02-26 | `pnpm -C autobyteus-web transpile-electron` | Passed | Electron TS compile pass |
+| 2026-02-26 | `pnpm -C autobyteus-web test:electron --run` | Passed | Includes new `electron/updater/__tests__/appUpdater.spec.ts` |
+| 2026-02-26 | `pnpm -C autobyteus-web test:nuxt --run stores/__tests__/appUpdateStore.spec.ts components/app/__tests__/AppUpdateNotice.spec.ts __tests__/app.spec.ts` | Passed | New renderer/store/app-shell coverage pass |
+| 2026-02-26 | `pnpm -C autobyteus-web build:electron:linux` | Passed | Generated AppImage + `latest-linux.yml`; packaged app `app-update.yml` contains `owner/repo` |
+| 2026-02-26 | `pnpm -C autobyteus-web build:electron:mac -- --arm64` | Passed | Generated `dmg`, `zip`, blockmaps, and `latest-mac.yml` with zip primary path |
+| 2026-02-26 | `pnpm -C autobyteus-web transpile-electron` | Passed | Re-entry validation after GitHub-only simplification |
+| 2026-02-26 | `pnpm -C autobyteus-web test:electron --run` | Passed | Re-entry regression check for main updater contracts |
+| 2026-02-26 | `pnpm -C autobyteus-web test:nuxt --run stores/__tests__/appUpdateStore.spec.ts components/app/__tests__/AppUpdateNotice.spec.ts __tests__/app.spec.ts` | Passed | Re-entry regression check for renderer UX/store |
+| 2026-02-26 | `pnpm -C autobyteus-web build:electron:linux` | Passed | Re-entry packaging validation; log shows `provider: github` metadata |
+
+## Artifact Validation Notes
+
+- Linux packaged updater config (`electron-dist/linux-unpacked/resources/app-update.yml`):
+  - `provider: github`
+  - `owner: AutoByteus`
+  - `repo: autobyteus-workspace-superrepo`
+- macOS packaged updater config (`electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app-update.yml`) matches the same repository metadata.
+- mac release outputs now include both `*.dmg` and `*.zip` families required for updater compatibility.
+
+## Issues / Re-Entry
+
+- Re-entry completed and closed:
+  - Trigger: User constrained provider strategy to GitHub Releases only.
+  - Resolution: Removed generic/custom provider branching from build metadata generation and revalidated compile/tests/package output.

@@ -36,6 +36,14 @@ contextBridge.exposeInMainWorld('electronAPI', {
     return registerIpcListener('node-registry-updated', callback)
   },
 
+  getAppUpdateState: () => ipcRenderer.invoke('app-update:get-state'),
+  checkForAppUpdates: () => ipcRenderer.invoke('app-update:check'),
+  downloadAppUpdate: () => ipcRenderer.invoke('app-update:download'),
+  installAppUpdateAndRestart: () => ipcRenderer.invoke('app-update:install'),
+  onAppUpdateState: (callback: (updateState: any) => void) => {
+    return registerIpcListener('app-update-state', callback)
+  },
+
   // Method for directly checking server health
   checkServerHealth: () => ipcRenderer.invoke('check-server-health'),
 

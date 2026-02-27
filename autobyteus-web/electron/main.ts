@@ -14,8 +14,10 @@ import { EMBEDDED_NODE_ID } from './nodeRegistryTypes';
 import { logger } from './logger';
 import { serverManager } from './server/serverManagerFactory';
 import { ServerStatusManager } from './server/serverStatusManager';
+import { AppUpdater } from './updater/appUpdater';
 
 const serverStatusManager = new ServerStatusManager(serverManager);
+const appUpdater = new AppUpdater();
 
 const NODE_REGISTRY_FILE_NAME = 'node-registry.v1.json';
 const INTERNAL_SERVER_PORT = 29695;
@@ -668,6 +670,7 @@ async function bootstrap(): Promise<void> {
   nodeRegistrySnapshot = loadNodeRegistrySnapshot();
   saveNodeRegistrySnapshot(nodeRegistrySnapshot);
 
+  appUpdater.initialize();
   installIpcHandlers();
   installServerStatusFanout();
   installAppLifecycleHandlers();
@@ -676,6 +679,7 @@ async function bootstrap(): Promise<void> {
   installProtocols();
 
   openNodeWindow(EMBEDDED_NODE_ID);
+  appUpdater.startAutoCheck();
   serverStatusManager.initializeServer().catch((error) => {
     logger.error('Server initialization failed in background:', error);
   });
