@@ -171,15 +171,6 @@
                   </div>
                   <div class="ml-2 flex flex-shrink-0 items-center gap-1">
                     <button
-                      type="button"
-                      class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-indigo-50 hover:text-indigo-600 md:opacity-0 md:group-hover/run-row:opacity-100 md:group-focus-within/run-row:opacity-100"
-                      title="View run configuration"
-                      :data-test="`workspace-run-config-${run.runId}`"
-                      @click.stop="onOpenRunConfig(run)"
-                    >
-                      <Icon icon="heroicons:cog-6-tooth-20-solid" class="h-3.5 w-3.5" />
-                    </button>
-                    <button
                       v-if="run.isActive"
                       type="button"
                       class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
@@ -252,15 +243,6 @@
                   </button>
 
                   <div class="ml-2 flex items-center gap-1">
-                    <button
-                      type="button"
-                      class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-indigo-50 hover:text-indigo-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100"
-                      title="View team configuration"
-                      :data-test="`workspace-team-config-${team.teamRunId}`"
-                      @click.stop="onOpenTeamConfig(team)"
-                    >
-                      <Icon icon="heroicons:cog-6-tooth-20-solid" class="h-3.5 w-3.5" />
-                    </button>
                     <button
                       v-if="canTerminateTeam(team.currentStatus)"
                       type="button"
@@ -654,39 +636,11 @@ const onSelectRun = async (run: RunTreeRow): Promise<void> => {
   }
 };
 
-const onOpenRunConfig = async (run: RunTreeRow): Promise<void> => {
-  try {
-    await runHistoryStore.selectTreeRun(run);
-    workspaceCenterViewStore.showConfig();
-    emit('run-selected', { type: 'agent', runId: run.runId });
-  } catch (error) {
-    console.error('Failed to open run configuration:', error);
-  }
-};
-
 const onSelectTeam = (teamRunId: string): void => {
   toggleTeam(teamRunId);
   selectionStore.selectRun(teamRunId, 'team');
   workspaceCenterViewStore.showChat();
   emit('run-selected', { type: 'team', runId: teamRunId });
-};
-
-const onOpenTeamConfig = async (team: TeamTreeNode): Promise<void> => {
-  try {
-    const focusedMember = team.members.find((member) => member.memberRouteKey === team.focusedMemberName);
-    const memberToOpen = focusedMember || team.members[0];
-
-    if (memberToOpen) {
-      await runHistoryStore.selectTreeRun(memberToOpen);
-    } else {
-      selectionStore.selectRun(team.teamRunId, 'team');
-    }
-
-    workspaceCenterViewStore.showConfig();
-    emit('run-selected', { type: 'team', runId: team.teamRunId });
-  } catch (error) {
-    console.error('Failed to open team configuration:', error);
-  }
 };
 
 const toTeamMemberDisplayName = (member: TeamMemberTreeRow): string => {

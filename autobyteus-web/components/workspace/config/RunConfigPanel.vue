@@ -7,11 +7,13 @@
       <h3 class="truncate text-sm font-semibold text-gray-800">{{ configTitle }}</h3>
       <button
         type="button"
-        class="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-indigo-600 transition-colors hover:bg-indigo-50"
-        title="Return to chat view"
+        data-test="run-config-back-to-events"
+        class="inline-flex h-8 w-8 items-center justify-center rounded-md text-indigo-600 transition-colors hover:bg-indigo-50"
+        title="Return to event view"
+        aria-label="Back to event view"
         @click="showConversationView"
       >
-        Back to chat
+        <Icon icon="heroicons:arrow-long-left-20-solid" aria-hidden="true" class="h-4 w-5" />
       </button>
     </div>
 
@@ -66,6 +68,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import { Icon } from '@iconify/vue';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';

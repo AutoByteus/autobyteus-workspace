@@ -36,6 +36,11 @@ const { agentRunState, teamRunState, agentContextState, teamContextState } = vi.
         createRunFromTemplate: vi.fn()
     }
 }));
+const { workspaceCenterViewStoreMock } = vi.hoisted(() => ({
+    workspaceCenterViewStoreMock: {
+        showChat: vi.fn(),
+    },
+}));
 
 // Mocks
 vi.mock('~/stores/agentRunConfigStore', async () => {
@@ -81,9 +86,14 @@ vi.mock('~/stores/agentTeamDefinitionStore', () => ({
   })
 }));
 
+vi.mock('~/stores/workspaceCenterViewStore', () => ({
+    useWorkspaceCenterViewStore: () => workspaceCenterViewStoreMock,
+}));
+
 describe('RunConfigPanel', () => {
     beforeEach(() => {
         setActivePinia(createPinia());
+        workspaceCenterViewStoreMock.showChat.mockReset();
         // Reset manual states
         agentRunState.config = null;
         teamRunState.config = null;
@@ -194,5 +204,35 @@ describe('RunConfigPanel', () => {
         const contextStore = useAgentContextsStore();
         expect(contextStore.createRunFromTemplate).not.toHaveBeenCalled();
         expect(agentStore.setWorkspaceError).toHaveBeenCalledWith('Workspace is required to run an agent.');
+    });
+
+    it('returns to event view from selection-mode config header action', async () => {
+        const selectionStore = useAgentSelectionStore();
+        selectionStore.selectRun('run-1', 'agent');
+
+        const { useAgentContextsStore } = await import('~/stores/agentContextsStore');
+        const contextStore = useAgentContextsStore();
+        contextStore.activeRun = {
+          config: {
+            agentDefinitionId: 'def-1',
+            agentDefinitionName: 'Agent def-1',
+            workspaceId: 'ws-1',
+            isLocked: false,
+          },
+        } as any;
+
+        const wrapper = mount(RunConfigPanel, {
+            global: {
+                stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true }
+            }
+        });
+
+        const backButton = wrapper.find('[data-test="run-config-back-to-events"]');
+        expect(backButton.exists()).toBe(true);
+        expect(backButton.attributes('aria-label')).toBe('Back to event view');
+
+        const beforeClickCalls = workspaceCenterViewStoreMock.showChat.mock.calls.length;
+        await backButton.trigger('click');
+        expect(workspaceCenterViewStoreMock.showChat).toHaveBeenCalledTimes(beforeClickCalls + 1);
     });
 });

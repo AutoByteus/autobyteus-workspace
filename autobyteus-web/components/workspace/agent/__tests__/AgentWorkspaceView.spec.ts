@@ -10,6 +10,7 @@ const {
   runConfigStoreMock,
   teamRunConfigStoreMock,
   selectionStoreMock,
+  workspaceCenterViewStoreMock,
 } = vi.hoisted(() => {
   const localState = {
     activeRun: null as any,
@@ -53,6 +54,9 @@ const {
     selectionStoreMock: {
       clearSelection: vi.fn(),
     },
+    workspaceCenterViewStoreMock: {
+      showConfig: vi.fn(),
+    },
   };
 });
 
@@ -74,6 +78,10 @@ vi.mock('~/stores/teamRunConfigStore', () => ({
 
 vi.mock('~/stores/agentSelectionStore', () => ({
   useAgentSelectionStore: () => selectionStoreMock,
+}));
+
+vi.mock('~/stores/workspaceCenterViewStore', () => ({
+  useWorkspaceCenterViewStore: () => workspaceCenterViewStoreMock,
 }));
 
 const buildAgentContext = (overrides: Record<string, unknown> = {}) => ({
@@ -106,9 +114,16 @@ describe('AgentWorkspaceView', () => {
     global: {
       stubs: {
         AgentEventMonitor: { template: '<div data-test="agent-event-monitor" />' },
-        WorkspaceHeaderActions: { template: '<button type="button" data-test="new-agent" @click="$emit(\'new-agent\')" />' },
         AgentStatusDisplay: { template: '<div data-test="header-status" />' },
         CopyButton: { template: '<button type="button" data-test="copy-button" />' },
+        WorkspaceHeaderActions: {
+          template: `
+            <div>
+              <button type="button" data-test="new-agent" @click="$emit('new-agent')" />
+              <button type="button" data-test="edit-config" @click="$emit('edit-config')" />
+            </div>
+          `,
+        },
       },
     },
   });
@@ -134,5 +149,11 @@ describe('AgentWorkspaceView', () => {
     const avatar = wrapper.find('img[alt="Story Agent avatar"]');
     expect(avatar.exists()).toBe(true);
     expect(avatar.attributes('src')).toBe('https://example.com/from-definition.png');
+  });
+
+  it('opens selected run config from header action', async () => {
+    const wrapper = mountComponent();
+    await wrapper.get('[data-test="edit-config"]').trigger('click');
+    expect(workspaceCenterViewStoreMock.showConfig).toHaveBeenCalledTimes(1);
   });
 });

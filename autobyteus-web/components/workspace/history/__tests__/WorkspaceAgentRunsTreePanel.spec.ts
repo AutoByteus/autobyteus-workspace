@@ -323,20 +323,12 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     ]);
   });
 
-  it('opens run configuration from row settings button', async () => {
+  it('does not render run-row configuration button', async () => {
     const wrapper = mountComponent();
     await flushPromises();
 
     const configButton = wrapper.find('[data-test="workspace-run-config-run-1"]');
-    expect(configButton.exists()).toBe(true);
-
-    await configButton.trigger('click');
-    await flushPromises();
-
-    expect(runHistoryStoreMock.selectTreeRun).toHaveBeenCalledWith(
-      expect.objectContaining({ runId: 'run-1', source: 'history' }),
-    );
-    expect(workspaceCenterViewStoreMock.showConfig).toHaveBeenCalledTimes(1);
+    expect(configButton.exists()).toBe(false);
   });
 
   it('renders team rows under workspace and selects the team when clicked', async () => {
@@ -536,7 +528,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     expect(deleteButtons).toHaveLength(1);
   });
 
-  it('opens team configuration from team row settings button', async () => {
+  it('does not render team-row configuration button', async () => {
     runHistoryState.teamNodesByWorkspace['/ws/a'] = [
       {
         teamRunId: 'team-1',
@@ -571,18 +563,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     await flushPromises();
 
     const configButton = wrapper.find('[data-test="workspace-team-config-team-1"]');
-    expect(configButton.exists()).toBe(true);
-
-    await configButton.trigger('click');
-    await flushPromises();
-
-    expect(runHistoryStoreMock.selectTreeRun).toHaveBeenCalledWith(
-      expect.objectContaining({
-        teamRunId: 'team-1',
-        memberRouteKey: 'super_agent',
-      }),
-    );
-    expect(workspaceCenterViewStoreMock.showConfig).toHaveBeenCalledTimes(1);
+    expect(configButton.exists()).toBe(false);
   });
 
   it('deletes inactive team history from team row action without selecting the row', async () => {
