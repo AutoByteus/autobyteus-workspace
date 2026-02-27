@@ -8,7 +8,7 @@ import { registerEditFileTool } from '../../../../src/tools/file/edit-file.js';
 
 const TOOL_NAME_EDIT_FILE = 'edit_file';
 
-type MockContext = { agentId: string; workspace: null };
+type MockContext = { agentId: string; workspaceRootPath: string | null };
 
 describe('edit_file tool (integration)', () => {
   beforeEach(() => {
@@ -31,7 +31,7 @@ describe('edit_file tool (integration)', () => {
 `;
 
     const tool = getPatchTool();
-    const context: MockContext = { agentId: 'agent', workspace: null };
+    const context: MockContext = { agentId: 'agent', workspaceRootPath: null };
     const result = await tool.execute(context, { path: filePath, patch });
 
     expect(result).toBe(`File edited successfully at ${filePath}`);

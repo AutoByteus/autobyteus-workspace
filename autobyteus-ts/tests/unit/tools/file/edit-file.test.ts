@@ -10,8 +10,7 @@ import path from 'path';
 
 const TOOL_NAME_EDIT_FILE = 'edit_file';
 
-type MockWorkspace = { getBasePath: () => string };
-type MockContext = { agentId: string; workspace: MockWorkspace | null };
+type MockContext = { agentId: string; workspaceRootPath: string | null };
 
 describe('edit_file tool', () => {
   beforeEach(() => {
@@ -57,7 +56,7 @@ describe('edit_file tool', () => {
 `;
 
     const tool = getPatchTool();
-    const context: MockContext = { agentId: 'agent', workspace: null };
+    const context: MockContext = { agentId: 'agent', workspaceRootPath: null };
     const result = await tool.execute(context, { path: filePath, patch });
 
     expect(result).toBe(`File edited successfully at ${filePath}`);
@@ -78,7 +77,7 @@ describe('edit_file tool', () => {
 `;
 
     const tool = getPatchTool();
-    const context: MockContext = { agentId: 'agent', workspace: null };
+    const context: MockContext = { agentId: 'agent', workspaceRootPath: null };
 
     await expect(tool.execute(context, { path: filePath, patch })).rejects.toThrow(PatchApplicationError);
   });
@@ -96,7 +95,7 @@ describe('edit_file tool', () => {
 `;
 
     const tool = getPatchTool();
-    const context: MockContext = { agentId: 'agent', workspace: null };
+    const context: MockContext = { agentId: 'agent', workspaceRootPath: null };
     const result = await tool.execute(context, { path: filePath, patch });
 
     expect(result).toBe(`File edited successfully at ${filePath}`);
@@ -113,7 +112,7 @@ describe('edit_file tool', () => {
 `;
 
     const tool = getPatchTool();
-    const context: MockContext = { agentId: 'agent', workspace: null };
+    const context: MockContext = { agentId: 'agent', workspaceRootPath: null };
     await expect(tool.execute(context, { path: filePath, patch })).rejects.toThrow('does not exist');
   });
 
@@ -131,7 +130,7 @@ describe('edit_file tool', () => {
     const tool = getPatchTool();
     const context: MockContext = {
       agentId: 'agent',
-      workspace: { getBasePath: () => tmpDir }
+      workspaceRootPath: tmpDir 
     };
 
     const result = await tool.execute(context, { path: 'rel_patch.txt', patch });
@@ -147,7 +146,7 @@ describe('edit_file tool', () => {
 
     const patchTool = getPatchTool();
     const readTool = getReadTool();
-    const context: MockContext = { agentId: 'agent', workspace: null };
+    const context: MockContext = { agentId: 'agent', workspaceRootPath: null };
 
     const content = await readTool.execute(context, { path: filePath });
     expect(content).toBe('1: line1\n2: line2\n');

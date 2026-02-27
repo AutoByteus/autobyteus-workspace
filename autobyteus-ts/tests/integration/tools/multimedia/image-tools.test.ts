@@ -13,9 +13,7 @@ const originalEnv = { ...process.env };
 
 const makeContext = (basePath: string) => ({
   agentId: 'test-agent',
-  workspace: {
-    getBasePath: () => basePath
-  }
+  workspaceRootPath: basePath
 });
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));

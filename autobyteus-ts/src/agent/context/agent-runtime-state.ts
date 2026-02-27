@@ -1,7 +1,6 @@
 import { AgentInputEventQueueManager } from '../events/agent-input-event-queue-manager.js';
 import { AgentEventStore } from '../events/event-store.js';
 import { AgentStatus } from '../status/status-enum.js';
-import { BaseAgentWorkspace } from '../workspace/base-workspace.js';
 import { ToolInvocation } from '../tool-invocation.js';
 import { ToolInvocationTurn } from '../tool-invocation-turn.js';
 import { RecentSettledInvocationCache } from './recent-settled-invocation-cache.js';
@@ -24,7 +23,7 @@ export class AgentRuntimeState {
   inputEventQueues: AgentInputEventQueueManager | null = null;
   eventStore: AgentEventStore | null = null;
   statusDeriver: AgentStatusDeriver | null = null;
-  workspace: BaseAgentWorkspace | null;
+  workspaceRootPath: string | null;
   pendingToolApprovals: Record<string, ToolInvocation>;
   customData: Record<string, any>;
   activeToolInvocationTurn: ToolInvocationTurn | null = null;
@@ -39,21 +38,24 @@ export class AgentRuntimeState {
 
   constructor(
     agentId: string,
-    workspace: BaseAgentWorkspace | null = null,
+    workspaceRootPath: string | null = null,
     customData: Record<string, any> | null = null
   ) {
     if (!agentId || typeof agentId !== 'string') {
       throw new Error("AgentRuntimeState requires a non-empty string 'agentId'.");
     }
-    if (workspace !== null && !(workspace instanceof BaseAgentWorkspace)) {
+    if (
+      workspaceRootPath !== null &&
+      (typeof workspaceRootPath !== 'string' || workspaceRootPath.trim().length === 0)
+    ) {
       throw new TypeError(
-        `AgentRuntimeState 'workspace' must be a BaseAgentWorkspace or null. Got ${typeof workspace}`
+        `AgentRuntimeState 'workspaceRootPath' must be a non-empty string or null. Got ${typeof workspaceRootPath}`
       );
     }
 
     this.agentId = agentId;
     this.currentStatus = AgentStatus.UNINITIALIZED;
-    this.workspace = workspace;
+    this.workspaceRootPath = workspaceRootPath;
     this.pendingToolApprovals = {};
     this.customData = customData ?? {};
     this.recentSettledInvocationIds = new RecentSettledInvocationCache();

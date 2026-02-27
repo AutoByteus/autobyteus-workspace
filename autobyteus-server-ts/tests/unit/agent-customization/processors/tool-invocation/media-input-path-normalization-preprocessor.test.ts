@@ -5,8 +5,6 @@ import { ToolInvocation } from "autobyteus-ts/agent/tool-invocation.js";
 import type { AgentContext } from "autobyteus-ts";
 import { LLMFactory } from "autobyteus-ts/llm/llm-factory.js";
 import { LLMProvider } from "autobyteus-ts/llm/providers.js";
-import { FileSystemWorkspace } from "../../../../../src/workspaces/filesystem-workspace.js";
-import { WorkspaceConfig } from "autobyteus-ts/agent/workspace/workspace-config.js";
 
 const mockMediaStorage = vi.hoisted(() => ({
   ingestLocalFileForContext: vi.fn(),
@@ -90,10 +88,9 @@ describe("MediaInputPathNormalizationPreprocessor", () => {
       "3",
     );
 
-    const workspace = new FileSystemWorkspace(new WorkspaceConfig({ rootPath: "/tmp" }));
     const context = {
       agentId: "agent-1",
-      workspace,
+      workspaceRootPath: "/tmp",
       llmInstance: { model: { provider: LLMProvider.AUTOBYTEUS } },
     } as AgentContext;
 
@@ -137,10 +134,9 @@ describe("MediaInputPathNormalizationPreprocessor", () => {
       "5",
     );
 
-    const workspace = new FileSystemWorkspace(new WorkspaceConfig({ rootPath: "/tmp" }));
     const context = {
       agentId: "agent-1",
-      workspace,
+      workspaceRootPath: "/tmp",
       llmInstance: { model: { provider: LLMProvider.AUTOBYTEUS } },
     } as AgentContext;
 
@@ -170,10 +166,9 @@ describe("MediaInputPathNormalizationPreprocessor", () => {
       "6",
     );
 
-    const workspace = new FileSystemWorkspace(new WorkspaceConfig({ rootPath: "/tmp" }));
     const context = {
       agentId: "agent-1",
-      workspace,
+      workspaceRootPath: "/tmp",
       llmInstance: {
         model: {
           provider: LLMProvider.OPENAI,

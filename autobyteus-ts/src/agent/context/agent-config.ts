@@ -3,7 +3,6 @@ import { resolveToolCallFormat } from '../../utils/tool-call-format.js';
 import { BaseLLM } from '../../llm/base.js';
 import { SkillAccessMode, resolveSkillAccessMode } from './skill-access-mode.js';
 import type { BaseTool } from '../../tools/base-tool.js';
-import type { BaseAgentWorkspace } from '../workspace/base-workspace.js';
 import type { BaseAgentUserInputMessageProcessor } from '../input-processor/base-user-input-processor.js';
 import type { BaseToolInvocationPreprocessor } from '../tool-invocation-preprocessor/base-preprocessor.js';
 import type { BaseToolExecutionResultProcessor } from '../tool-execution-result-processor/base-processor.js';
@@ -33,7 +32,7 @@ export class AgentConfig {
   llmInstance: BaseLLM;
   systemPrompt?: string | null;
   tools: BaseTool[];
-  workspace: BaseAgentWorkspace | null;
+  workspaceRootPath: string | null;
   autoExecuteTools: boolean;
   inputProcessors: BaseAgentUserInputMessageProcessor[];
   llmResponseProcessors: BaseLLMResponseProcessor[];
@@ -59,7 +58,7 @@ export class AgentConfig {
     systemPromptProcessors: BaseSystemPromptProcessor[] | null = null,
     toolExecutionResultProcessors: BaseToolExecutionResultProcessor[] | null = null,
     toolInvocationPreprocessors: BaseToolInvocationPreprocessor[] | null = null,
-    workspace: BaseAgentWorkspace | null = null,
+    workspaceRootPath: string | null = null,
     lifecycleProcessors: BaseLifecycleEventProcessor[] | null = null,
     initialCustomData: Record<string, any> | null = null,
     skills: string[] | null = null,
@@ -72,7 +71,7 @@ export class AgentConfig {
     this.llmInstance = llmInstance;
     this.systemPrompt = systemPrompt;
     this.tools = tools ?? [];
-    this.workspace = workspace;
+    this.workspaceRootPath = workspaceRootPath;
     this.autoExecuteTools = autoExecuteTools;
     this.inputProcessors = inputProcessors ?? [];
     this.llmResponseProcessors =
@@ -122,7 +121,7 @@ export class AgentConfig {
       this.systemPromptProcessors.slice(),
       this.toolExecutionResultProcessors.slice(),
       this.toolInvocationPreprocessors.slice(),
-      this.workspace,
+      this.workspaceRootPath,
       this.lifecycleProcessors.slice(),
       deepClone(this.initialCustomData ?? null),
       this.skills.slice(),
@@ -135,7 +134,7 @@ export class AgentConfig {
     return (
       `AgentConfig(name='${this.name}', role='${this.role}', ` +
       `llmInstance='${this.llmInstance.constructor.name}', ` +
-      `workspace_configured=${this.workspace !== null}, skills=${JSON.stringify(this.skills)}, ` +
+      `workspace_configured=${this.workspaceRootPath !== null}, skills=${JSON.stringify(this.skills)}, ` +
       `skillAccessMode='${this.skillAccessMode}')`
     );
   }

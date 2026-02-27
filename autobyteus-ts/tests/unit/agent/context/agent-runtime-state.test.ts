@@ -1,14 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { AgentRuntimeState } from '../../../../src/agent/context/agent-runtime-state.js';
 import { AgentStatus } from '../../../../src/agent/status/status-enum.js';
-import { BaseAgentWorkspace } from '../../../../src/agent/workspace/base-workspace.js';
 import { ToolInvocation } from '../../../../src/agent/tool-invocation.js';
-
-class TestWorkspace extends BaseAgentWorkspace {
-  getBasePath(): string {
-    return '/tmp';
-  }
-}
 
 describe('AgentRuntimeState', () => {
   beforeEach(() => {
@@ -34,22 +27,23 @@ describe('AgentRuntimeState', () => {
     expect(state.currentStatus).toBe(AgentStatus.UNINITIALIZED);
     expect(state.pendingToolApprovals).toEqual({});
     expect(state.customData).toEqual({});
-    expect(state.workspace).toBeNull();
-    expect(state.activeToolInvocationBatch).toBeNull();
+    expect(state.workspaceRootPath).toBeNull();
+    expect(state.activeToolInvocationTurn).toBeNull();
     expect(state.todoList).toBeNull();
     expect(state.memoryManager).toBeNull();
     expect(state.activeTurnId).toBeNull();
   });
 
-  it('accepts a workspace instance', () => {
-    const workspace = new TestWorkspace();
-    const state = new AgentRuntimeState('agent-2', workspace);
+  it('accepts a workspace root path string', () => {
+    const workspaceRootPath = '/tmp/workspace';
+    const state = new AgentRuntimeState('agent-2', workspaceRootPath);
 
-    expect(state.workspace).toBe(workspace);
+    expect(state.workspaceRootPath).toBe(workspaceRootPath);
   });
 
-  it('rejects invalid workspace types', () => {
-    expect(() => new AgentRuntimeState('agent-3', {} as BaseAgentWorkspace)).toThrow(/workspace/);
+  it('rejects invalid workspace root path types', () => {
+    expect(() => new AgentRuntimeState('agent-3', {} as unknown as string)).toThrow(/workspaceRootPath/);
+    expect(() => new AgentRuntimeState('agent-3', '   ')).toThrow(/workspaceRootPath/);
   });
 
   it('stores and retrieves pending tool invocations', () => {

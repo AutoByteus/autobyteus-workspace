@@ -18,25 +18,11 @@ import {
 } from '../../../src/agent/events/agent-events.js';
 import { AgentInputUserMessage } from '../../../src/agent/message/agent-input-user-message.js';
 import { buildLLMUserMessage } from '../../../src/agent/message/multimodal-message-builder.js';
-import { BaseAgentWorkspace } from '../../../src/agent/workspace/base-workspace.js';
 import { MemoryManager } from '../../../src/memory/memory-manager.js';
 import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
 import { MemoryType } from '../../../src/memory/models/memory-types.js';
 import { registerWriteFileTool } from '../../../src/tools/file/write-file.js';
 import { createLmstudioLLM, hasLmstudioConfig } from '../helpers/lmstudio-llm-helper.js';
-
-class DummyWorkspace extends BaseAgentWorkspace {
-  private basePath: string;
-
-  constructor(basePath: string) {
-    super();
-    this.basePath = basePath;
-  }
-
-  getBasePath(): string {
-    return this.basePath;
-  }
-}
 
 class DummyQueues {
   internalEvents: any[] = [];
@@ -77,7 +63,7 @@ runIntegration('Full tool roundtrip flow (LM Studio)', () => {
       const memoryManager = new MemoryManager({
         store: new FileMemoryStore(tempDir, 'agent_full_tool')
       });
-      const workspace = new DummyWorkspace(tempDir);
+      const workspace = tempDir;
       const runtimeState = new AgentRuntimeState('agent_full_tool', workspace);
       runtimeState.memoryManager = memoryManager;
       runtimeState.inputEventQueues = new DummyQueues() as any;

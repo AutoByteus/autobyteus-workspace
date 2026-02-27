@@ -8,8 +8,7 @@ import { TerminalResult } from '../types.js';
 import { TerminalSessionManager } from '../terminal-session-manager.js';
 import { BackgroundProcessManager } from '../background-process-manager.js';
 
-type WorkspaceLike = { getBasePath: () => string };
-export type AgentContextLike = { workspace?: WorkspaceLike | null; agentId?: string };
+export type AgentContextLike = { workspaceRootPath?: string | null; agentId?: string };
 export type RunBashBackgroundResult = {
   mode: 'background';
   processId: string;
@@ -46,15 +45,9 @@ function getTerminalManager(context: AgentContextLike | null | undefined): Termi
 }
 
 function getCwd(context: AgentContextLike | null | undefined): string {
-  if (context?.workspace) {
-    try {
-      const basePath = context.workspace.getBasePath();
-      if (basePath && typeof basePath === 'string') {
-        return basePath;
-      }
-    } catch {
-      // ignore workspace errors
-    }
+  const workspaceRootPath = context?.workspaceRootPath;
+  if (workspaceRootPath && typeof workspaceRootPath === 'string') {
+    return workspaceRootPath;
   }
 
   return os.tmpdir();

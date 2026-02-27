@@ -7,8 +7,6 @@ import { AgentConfig } from '../../../src/agent/context/agent-config.js';
 import { PendingToolInvocationEvent, ToolResultEvent } from '../../../src/agent/events/agent-events.js';
 import { ToolInvocation } from '../../../src/agent/tool-invocation.js';
 import { waitForAgentToBeIdle } from '../../../src/agent/utils/wait-for-idle.js';
-import { BaseAgentWorkspace } from '../../../src/agent/workspace/base-workspace.js';
-import { WorkspaceConfig } from '../../../src/agent/workspace/workspace-config.js';
 import { BaseLLM } from '../../../src/llm/base.js';
 import { LLMModel } from '../../../src/llm/models.js';
 import { LLMProvider } from '../../../src/llm/providers.js';
@@ -34,19 +32,6 @@ class DummyLLM extends BaseLLM {
     _messages: Message[]
   ): AsyncGenerator<ChunkResponse, void, unknown> {
     yield new ChunkResponse({ content: 'ok', is_complete: true });
-  }
-}
-
-class TestWorkspace extends BaseAgentWorkspace {
-  private rootPath: string;
-
-  constructor(rootPath: string) {
-    super(new WorkspaceConfig({ root_path: rootPath }));
-    this.rootPath = rootPath;
-  }
-
-  getBasePath(): string {
-    return this.rootPath;
   }
 }
 
@@ -91,7 +76,7 @@ const createAgentFixture = async (tools: any[]): Promise<AgentFixture> => {
   const workspaceDir = await fs.mkdtemp(path.join(os.tmpdir(), 'tool-approval-'));
   const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), 'autobyteus-memory-'));
   process.env.AUTOBYTEUS_MEMORY_DIR = memoryDir;
-  const workspace = new TestWorkspace(workspaceDir);
+  const workspace = workspaceDir;
   const model = new LLMModel({
     name: 'dummy',
     value: 'dummy',

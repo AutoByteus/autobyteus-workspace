@@ -37,9 +37,7 @@ describe('DownloadMediaTool', () => {
 
     const context = {
       agentId: 'agent-1',
-      workspace: {
-        getBasePath: () => workspaceRoot
-      }
+      workspaceRootPath: workspaceRoot
     };
 
     mockAxiosStream('audio/wav');
@@ -64,7 +62,7 @@ describe('DownloadMediaTool', () => {
 
     const context = {
       agentId: 'agent-2',
-      workspace: null
+      workspaceRootPath: null
     };
 
     mockAxiosStream('application/pdf');

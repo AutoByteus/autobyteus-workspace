@@ -8,8 +8,7 @@ import { registerWriteFileTool } from '../../../../src/tools/file/write-file.js'
 
 const TOOL_NAME_WRITE_FILE = 'write_file';
 
-type MockWorkspace = { getBasePath: () => string };
-type MockContext = { agentId: string; workspace: MockWorkspace | null };
+type MockContext = { agentId: string; workspaceRootPath: string | null };
 
 describe('write_file tool (integration)', () => {
   beforeEach(() => {
@@ -29,7 +28,7 @@ describe('write_file tool (integration)', () => {
     const expectedMessage = `File created/updated at ${filePath}`;
 
     const tool = getToolInstance();
-    const context: MockContext = { agentId: 'agent', workspace: null };
+    const context: MockContext = { agentId: 'agent', workspaceRootPath: null };
     const result = await tool.execute(context, { path: filePath, content });
 
     expect(result).toBe(expectedMessage);
@@ -44,7 +43,7 @@ describe('write_file tool (integration)', () => {
     const expectedMessage = `File created/updated at ${filePath}`;
 
     const tool = getToolInstance();
-    const context: MockContext = { agentId: 'agent', workspace: null };
+    const context: MockContext = { agentId: 'agent', workspaceRootPath: null };
     const result = await tool.execute(context, { path: filePath, content });
 
     expect(result).toBe(expectedMessage);
@@ -54,7 +53,7 @@ describe('write_file tool (integration)', () => {
 
   it('requires path and content arguments', async () => {
     const tool = getToolInstance();
-    const context: MockContext = { agentId: 'agent', workspace: null };
+    const context: MockContext = { agentId: 'agent', workspaceRootPath: null };
     await expect(tool.execute(context, { content: 'Test Content' })).rejects.toThrow(
       `Invalid arguments for tool '${TOOL_NAME_WRITE_FILE}'`
     );
@@ -70,7 +69,7 @@ describe('write_file tool (integration)', () => {
     const expectedMessage = `File created/updated at ${filePath}`;
 
     const tool = getToolInstance();
-    const context: MockContext = { agentId: 'agent', workspace: null };
+    const context: MockContext = { agentId: 'agent', workspaceRootPath: null };
     const result = await tool.execute(context, { path: filePath, content });
 
     expect(result).toBe(expectedMessage);
@@ -84,7 +83,7 @@ describe('write_file tool (integration)', () => {
     await fs.writeFile(filePath, 'Initial', 'utf-8');
 
     const tool = getToolInstance();
-    const context: MockContext = { agentId: 'agent', workspace: null };
+    const context: MockContext = { agentId: 'agent', workspaceRootPath: null };
     const result = await tool.execute(context, { path: filePath, content: 'Overwritten Functional Content' });
 
     expect(result).toBe(`File created/updated at ${filePath}`);
@@ -101,7 +100,7 @@ describe('write_file tool (integration)', () => {
     const tool = getToolInstance();
     const context: MockContext = {
       agentId: 'agent',
-      workspace: { getBasePath: () => tmpDir }
+      workspaceRootPath: tmpDir 
     };
 
     const result = await tool.execute(context, { path: relPath, content });
@@ -117,7 +116,7 @@ describe('write_file tool (integration)', () => {
     const spy = vi.spyOn(fs, 'writeFile').mockRejectedValue(new Error('Simulated write permission denied'));
 
     const tool = getToolInstance();
-    const context: MockContext = { agentId: 'agent', workspace: null };
+    const context: MockContext = { agentId: 'agent', workspaceRootPath: null };
 
     await expect(
       tool.execute(context, { path: filePath, content: 'test' })

@@ -28,6 +28,7 @@ import { AgentTeamDefinitionService } from "../../agent-team-definition/services
 import { PromptLoader, getPromptLoader } from "../../prompt-engineering/utils/prompt-loader.js";
 import { normalizeMemberRouteKey } from "../../run-history/utils/team-member-run-id.js";
 import { SkillService } from "../../skills/services/skill-service.js";
+import { TempWorkspace } from "../../workspaces/temp-workspace.js";
 import { WorkspaceManager, getWorkspaceManager } from "../../workspaces/workspace-manager.js";
 import { AgentTeamCreationError, AgentTeamTerminationError } from "../errors.js";
 
@@ -343,6 +344,7 @@ export class AgentTeamRunManager {
     let workspaceInstance = memberConfig.workspaceId
       ? this.workspaceManager.getWorkspaceById(memberConfig.workspaceId)
       : undefined;
+    const workspaceRootPath = workspaceInstance?.getBasePath?.() ?? null;
 
     const skillPaths: string[] = [];
     if (agentDef.skillNames?.length) {
@@ -380,6 +382,11 @@ export class AgentTeamRunManager {
           ? memberConfig.memberRunId.trim()
           : null,
       is_first_user_turn: true,
+      workspace_id: workspaceInstance?.workspaceId ?? null,
+      workspace_root_path: workspaceRootPath,
+      workspace_name: workspaceInstance?.getName?.() ?? workspaceInstance?.workspaceId ?? null,
+      workspace_is_temp:
+        workspaceInstance?.workspaceId === TempWorkspace.TEMP_WORKSPACE_ID,
     };
 
     const memoryDir =
@@ -400,7 +407,7 @@ export class AgentTeamRunManager {
       systemPromptProcessors,
       toolExecutionResultProcessors,
       toolInvocationPreprocessors,
-      workspaceInstance ?? null,
+      workspaceRootPath,
       lifecycleProcessors,
       initialCustomData,
       skillPaths,
