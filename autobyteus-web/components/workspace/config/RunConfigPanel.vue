@@ -1,6 +1,19 @@
 <template>
   <div class="flex flex-col h-full bg-white">
-    <!-- Header Removed -->
+    <div
+      v-if="isSelectionMode"
+      class="flex items-center justify-between border-b border-gray-200 px-4 py-2"
+    >
+      <h3 class="truncate text-sm font-semibold text-gray-800">{{ configTitle }}</h3>
+      <button
+        type="button"
+        class="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-indigo-600 transition-colors hover:bg-indigo-50"
+        title="Return to chat view"
+        @click="showConversationView"
+      >
+        Back to chat
+      </button>
+    </div>
 
     <div class="flex-1 overflow-y-auto px-4 py-4">
         <!-- Placeholder if nothing selected -->
@@ -62,6 +75,7 @@ import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
 import { useWorkspaceStore } from '~/stores/workspace';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
+import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore';
 import { useRightSideTabs } from '~/composables/useRightSideTabs';
 import AgentRunConfigForm from './AgentRunConfigForm.vue';
 import TeamRunConfigForm from './TeamRunConfigForm.vue';
@@ -77,6 +91,7 @@ const definitionStore = useAgentDefinitionStore();
 const teamDefinitionStore = useAgentTeamDefinitionStore();
 const workspaceStore = useWorkspaceStore();
 const runHistoryStore = useRunHistoryStore();
+const workspaceCenterViewStore = useWorkspaceCenterViewStore();
 const { setActiveTab } = useRightSideTabs();
 
 // Mode Detection
@@ -293,5 +308,9 @@ const handleRun = () => {
             runConfigStore.clearConfig();
         }
     }
+};
+
+const showConversationView = () => {
+  workspaceCenterViewStore.showChat();
 };
 </script>

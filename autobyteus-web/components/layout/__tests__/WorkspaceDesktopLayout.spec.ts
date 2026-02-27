@@ -46,6 +46,7 @@ describe('WorkspaceDesktopLayout', () => {
   it('renders AgentWorkspaceView when agent is selected', () => {
     const wrapper = mountComponent({
       agentSelection: { selectedType: 'agent', selectedRunId: '123' },
+      workspaceCenterView: { mode: 'chat' },
     });
 
     expect(wrapper.find('.agent-view').exists()).toBe(true);
@@ -56,6 +57,7 @@ describe('WorkspaceDesktopLayout', () => {
   it('renders TeamWorkspaceView when team is selected', () => {
     const wrapper = mountComponent({
       agentSelection: { selectedType: 'team', selectedRunId: '456' },
+      workspaceCenterView: { mode: 'chat' },
     });
 
     expect(wrapper.find('.team-view').exists()).toBe(true);
@@ -66,6 +68,7 @@ describe('WorkspaceDesktopLayout', () => {
   it('renders RunConfigPanel when no selection and pending agent config exists', () => {
     const wrapper = mountComponent({
       agentSelection: { selectedType: null, selectedRunId: null },
+      workspaceCenterView: { mode: 'chat' },
       agentRunConfig: {
         config: {
           agentDefinitionId: 'agent-def-1',
@@ -85,10 +88,22 @@ describe('WorkspaceDesktopLayout', () => {
   it('renders placeholder when nothing is selected and no pending config exists', () => {
     const wrapper = mountComponent({
       agentSelection: { selectedType: null, selectedRunId: null },
+      workspaceCenterView: { mode: 'chat' },
       agentRunConfig: { config: null },
       teamRunConfig: { config: null },
     });
 
     expect(wrapper.text()).toContain('Select or run an agent/team to begin');
+  });
+
+  it('renders RunConfigPanel for selected run when config view mode is active', () => {
+    const wrapper = mountComponent({
+      agentSelection: { selectedType: 'agent', selectedRunId: '123' },
+      workspaceCenterView: { mode: 'config' },
+    });
+
+    expect(wrapper.find('.run-config-view').exists()).toBe(true);
+    expect(wrapper.find('.agent-view').exists()).toBe(false);
+    expect(wrapper.find('.team-view').exists()).toBe(false);
   });
 });
