@@ -36,6 +36,8 @@ export const ListTeamRunHistory = gql`
         memberRouteKey
         memberName
         memberRunId
+        runtimeKind
+        runtimeReference
         workspaceRootPath
       }
     }

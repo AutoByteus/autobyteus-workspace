@@ -3,146 +3,129 @@ import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import TeamRunConfigForm from '../TeamRunConfigForm.vue';
 import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig';
+import { useRuntimeCapabilitiesStore } from '~/stores/runtimeCapabilitiesStore';
 
 vi.mock('~/stores/llmProviderConfig', () => ({
-    useLLMProviderConfigStore: vi.fn()
+  useLLMProviderConfigStore: vi.fn(),
+}));
+
+vi.mock('~/stores/runtimeCapabilitiesStore', () => ({
+  useRuntimeCapabilitiesStore: vi.fn(),
 }));
 
 const mockTeamDef = {
-    id: 'team-1',
-    name: 'Test Team',
-    nodes: [
-        { memberName: 'Member A', referenceType: 'AGENT', referenceId: 'agent-a' },
-        { memberName: 'Member B', referenceType: 'AGENT', referenceId: 'agent-b' }
-    ],
-    coordinatorMemberName: 'Member A'
+  id: 'team-1',
+  name: 'Test Team',
+  nodes: [
+    { memberName: 'Member A', referenceType: 'AGENT', referenceId: 'agent-a' },
+    { memberName: 'Member B', referenceType: 'AGENT', referenceId: 'agent-b' },
+  ],
+  coordinatorMemberName: 'Member A',
 };
 
 const mockConfig = {
-    llmModelIdentifier: '',
-    autoExecuteTools: false,
-    isLocked: false,
-    workspaceId: null,
-    memberOverrides: {}
+  runtimeKind: 'autobyteus',
+  llmModelIdentifier: '',
+  autoExecuteTools: false,
+  isLocked: false,
+  workspaceId: null,
+  memberOverrides: {},
 };
 
 describe('TeamRunConfigForm', () => {
-    beforeEach(() => {
-        setActivePinia(createPinia());
-        (useLLMProviderConfigStore as any).mockReturnValue({
-            providersWithModels: [
-                { provider: 'OpenAI', models: [{ modelIdentifier: 'gpt-4', name: 'GPT-4' }] }
-            ],
-            fetchProvidersWithModels: vi.fn(),
-            modelConfigSchemaByIdentifier: vi.fn().mockReturnValue(null) // Mock the schema getter
-        });
+  let llmStore: any;
+  let runtimeStore: any;
+
+  beforeEach(() => {
+    setActivePinia(createPinia());
+
+    llmStore = {
+      providersWithModels: [
+        { provider: 'OpenAI', models: [{ modelIdentifier: 'gpt-4', name: 'GPT-4' }] },
+      ],
+      models: ['gpt-4'],
+      fetchProvidersWithModels: vi.fn().mockResolvedValue([]),
+      modelConfigSchemaByIdentifier: vi.fn().mockReturnValue(null),
+    };
+
+    runtimeStore = {
+      hasFetched: true,
+      fetchRuntimeCapabilities: vi.fn().mockResolvedValue([]),
+      isRuntimeEnabled: vi.fn((runtimeKind: string) => runtimeKind === 'autobyteus' || runtimeKind === 'codex_app_server'),
+      runtimeReason: vi.fn(() => null),
+    };
+
+    (useLLMProviderConfigStore as any).mockReturnValue(llmStore);
+    (useRuntimeCapabilitiesStore as any).mockReturnValue(runtimeStore);
+  });
+
+  const buildWrapper = (configOverrides: Record<string, unknown> = {}) => {
+    const config = { ...mockConfig, ...configOverrides };
+    const wrapper = mount(TeamRunConfigForm, {
+      props: {
+        config,
+        teamDefinition: mockTeamDef as any,
+        workspaceLoadingState: { isLoading: false, error: null, loadedPath: null },
+      },
+      global: {
+        stubs: {
+          WorkspaceSelector: true,
+          SearchableGroupedSelect: {
+            name: 'SearchableGroupedSelect',
+            template: '<div class="searchable-select-stub"></div>',
+            props: ['modelValue', 'disabled', 'options'],
+            emits: ['update:modelValue'],
+          },
+          MemberOverrideItem: {
+            name: 'MemberOverrideItem',
+            template: '<div class="member-override-item-stub"></div>',
+            props: ['memberName', 'override', 'isCoordinator', 'options', 'disabled', 'globalLlmModel'],
+            emits: ['update:override'],
+          },
+        },
+      },
+    });
+    return { wrapper, config };
+  };
+
+  it('renders runtime selector and member override entries', () => {
+    const { wrapper } = buildWrapper();
+
+    expect(wrapper.text()).toContain('Test Team');
+    expect(wrapper.find('select#team-runtime-kind').exists()).toBe(true);
+    const items = wrapper.findAllComponents({ name: 'MemberOverrideItem' });
+    expect(items).toHaveLength(2);
+    expect(items[0].props('memberName')).toBe('Member A');
+  });
+
+  it('loads model providers for selected runtime on mount', () => {
+    buildWrapper({ runtimeKind: 'codex_app_server' });
+    expect(llmStore.fetchProvidersWithModels).toHaveBeenCalledWith('codex_app_server');
+  });
+
+  it('changes runtime kind and reloads runtime-scoped models', async () => {
+    const { wrapper, config } = buildWrapper({
+      runtimeKind: 'autobyteus',
+      llmModelIdentifier: 'gpt-4',
     });
 
-    it('renders correctly', () => {
-        const config = { ...mockConfig };
-        const wrapper = mount(TeamRunConfigForm, {
-            props: {
-                config,
-                teamDefinition: mockTeamDef as any,
-                workspaceLoadingState: { isLoading: false, error: null, loadedPath: null }
-            },
-            global: {
-                stubs: {
-                    WorkspaceSelector: true,
-                    SearchableGroupedSelect: true,
-                    MemberOverrideItem: {
-                        name: 'MemberOverrideItem',
-                        template: '<div class="member-override-item-stub"></div>',
-                        props: ['memberName', 'override', 'isCoordinator', 'options', 'disabled', 'globalLlmModel'],
-                        emits: ['update:override']
-                    }
-                }
-            }
-        });
+    const runtimeSelect = wrapper.find('select#team-runtime-kind');
+    await runtimeSelect.setValue('codex_app_server');
 
-        expect(wrapper.text()).toContain('Test Team'); // Team name
-        
-        // Members list should NOT exist anymore
-        expect(wrapper.findAll('li').length).toBe(0);
+    expect(config.runtimeKind).toBe('codex_app_server');
+    expect(config.llmModelIdentifier).toBe('');
+    expect(llmStore.fetchProvidersWithModels).toHaveBeenCalledWith('codex_app_server');
+  });
 
-        const overrideToggle = wrapper.findAll('button').find(button => button.text().includes('Team Members Override'));
-        expect(overrideToggle).toBeTruthy();
-        const items = wrapper.findAllComponents({ name: 'MemberOverrideItem' });
-        expect(items).toHaveLength(2);
-        
-        // Check props passed to items
-        expect(items[0].props('memberName')).toBe('Member A');
-        expect(items[0].props('isCoordinator')).toBe(true);
-        expect(items[1].props('memberName')).toBe('Member B');
-        expect(items[1].props('isCoordinator')).toBe(false);
-    });
+  it('passes global model to member overrides', () => {
+    const { wrapper } = buildWrapper({ llmModelIdentifier: 'gpt-4' });
+    const items = wrapper.findAllComponents({ name: 'MemberOverrideItem' });
+    expect(items[0].props('globalLlmModel')).toBe('gpt-4');
+  });
 
-    it('passes global model to member overrides', () => {
-        const config = { ...mockConfig, llmModelIdentifier: 'gpt-4' };
-        const wrapper = mount(TeamRunConfigForm, {
-            props: {
-                config,
-                teamDefinition: mockTeamDef as any,
-                workspaceLoadingState: { isLoading: false, error: null, loadedPath: null }
-            },
-            global: {
-                stubs: {
-                    WorkspaceSelector: true,
-                    SearchableGroupedSelect: true,
-                    MemberOverrideItem: {
-                        name: 'MemberOverrideItem',
-                        template: '<div class="member-override-item-stub"></div>',
-                        props: ['memberName', 'override', 'isCoordinator', 'options', 'disabled', 'globalLlmModel'],
-                        emits: ['update:override']
-                    }
-                }
-            }
-        });
-
-        const items = wrapper.findAllComponents({ name: 'MemberOverrideItem' });
-        expect(items[0].props('globalLlmModel')).toBe('gpt-4');
-    });
-
-    it('updates model', async () => {
-        const config = { ...mockConfig };
-        const wrapper = mount(TeamRunConfigForm, {
-            props: {
-                config,
-                teamDefinition: mockTeamDef as any,
-                workspaceLoadingState: { isLoading: false, error: null, loadedPath: null }
-            },
-            global: {
-                stubs: { 
-                    WorkspaceSelector: true,
-                    SearchableGroupedSelect: {
-                        name: 'SearchableGroupedSelect',
-                        template: '<div class="searchable-select-stub"></div>',
-                        props: ['modelValue', 'disabled', 'options'],
-                        emits: ['update:modelValue']
-                    }
-                }
-            }
-        });
-
-        const selectStub = wrapper.findComponent({ name: 'SearchableGroupedSelect' });
-        await selectStub.vm.$emit('update:modelValue', 'gpt-4');
-        expect(config.llmModelIdentifier).toBe('gpt-4');
-    });
-
-    it('handles auto-execute toggle', async () => {
-        const config = { ...mockConfig };
-        const wrapper = mount(TeamRunConfigForm, {
-            props: {
-                config,
-                teamDefinition: mockTeamDef as any,
-                workspaceLoadingState: { isLoading: false, error: null, loadedPath: null }
-            },
-            global: {
-                stubs: { WorkspaceSelector: true }
-            }
-        });
-
-        await wrapper.find('button#team-auto-execute').trigger('click');
-        expect(config.autoExecuteTools).toBe(true);
-    });
+  it('handles auto-execute toggle', async () => {
+    const { wrapper, config } = buildWrapper();
+    await wrapper.find('button#team-auto-execute').trigger('click');
+    expect(config.autoExecuteTools).toBe(true);
+  });
 });

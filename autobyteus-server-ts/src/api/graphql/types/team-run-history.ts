@@ -14,6 +14,12 @@ class TeamRunMemberHistoryObject {
   @Field(() => String)
   memberRunId!: string;
 
+  @Field(() => String)
+  runtimeKind!: string;
+
+  @Field(() => GraphQLJSON, { nullable: true })
+  runtimeReference?: Record<string, unknown> | null;
+
   @Field(() => String, { nullable: true })
   workspaceRootPath?: string | null;
 }
@@ -105,7 +111,11 @@ export class TeamRunHistoryResolver {
       lastKnownStatus: row.lastKnownStatus,
       deleteLifecycle: row.deleteLifecycle,
       isActive: row.isActive,
-      members: row.members,
+      members: row.members.map((member) => ({
+        ...member,
+        runtimeReference:
+          (member.runtimeReference as unknown as Record<string, unknown> | null | undefined) ?? null,
+      })),
     }));
   }
 

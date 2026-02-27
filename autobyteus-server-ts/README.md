@@ -194,6 +194,14 @@ pnpm -C autobyteus-server-ts exec vitest
 Notes:
 - Tests use `.env.test` and a temporary SQLite DB at `tests/.tmp/`.
 - Some integration tests are env-gated (e.g., `AUTOBYTEUS_DOWNLOAD_TEST_URL`).
+- Codex live-runtime E2E tests are env-gated by `RUN_CODEX_E2E`.
+  - Use `RUN_CODEX_E2E=1` for Codex tickets, otherwise Codex live E2E suites are skipped.
+
+Run full backend suite with Codex live transport enabled:
+
+```bash
+RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts test -- --run
+```
 
 Run a single test file:
 

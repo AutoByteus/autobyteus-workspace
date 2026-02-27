@@ -9,6 +9,10 @@ import {
   TeamMemberMemoryProjectionReader,
   getTeamMemberMemoryProjectionReader,
 } from "./team-member-memory-projection-reader.js";
+import type { RunProjectionProvider } from "../projection/run-projection-provider-port.js";
+import {
+  getCodexThreadRunProjectionProvider,
+} from "../projection/providers/codex-thread-run-projection-provider.js";
 
 const normalizeRequiredString = (value: string, fieldName: string): string => {
   const normalized = value.trim();
@@ -56,13 +60,17 @@ export interface TeamMemberRunProjection {
 export class TeamMemberRunProjectionService {
   private readonly teamRunHistoryService: TeamRunHistoryService;
   private readonly projectionReader: TeamMemberMemoryProjectionReader;
+  private readonly codexProjectionProvider: RunProjectionProvider;
 
   constructor(options: {
     teamRunHistoryService?: TeamRunHistoryService;
     projectionReader?: TeamMemberMemoryProjectionReader;
+    codexProjectionProvider?: RunProjectionProvider;
   } = {}) {
     this.teamRunHistoryService = options.teamRunHistoryService ?? getTeamRunHistoryService();
     this.projectionReader = options.projectionReader ?? getTeamMemberMemoryProjectionReader();
+    this.codexProjectionProvider =
+      options.codexProjectionProvider ?? getCodexThreadRunProjectionProvider();
   }
 
   async getProjection(teamRunId: string, memberRouteKey: string): Promise<TeamMemberRunProjection> {
@@ -80,10 +88,47 @@ export class TeamMemberRunProjectionService {
       );
     }
 
-    const projection = await this.projectionReader.getProjection(
-      normalizedTeamRunId,
-      binding.memberRunId,
-    );
+    let projection: RunProjection | null = null;
+    let projectionReadError: unknown = null;
+    try {
+      projection = await this.projectionReader.getProjection(
+        normalizedTeamRunId,
+        binding.memberRunId,
+      );
+    } catch (error) {
+      projectionReadError = error;
+    }
+
+    const shouldTryCodexFallback =
+      binding.runtimeKind === "codex_app_server" &&
+      (projectionReadError !== null ||
+        !projection ||
+        projection.conversation.length === 0);
+
+    if (shouldTryCodexFallback) {
+      const codexProjection = await this.codexProjectionProvider.buildProjection({
+        runId: binding.memberRunId,
+        runtimeKind: "codex_app_server",
+        manifest: {
+          workspaceRootPath:
+            binding.workspaceRootPath ?? resumeConfig.manifest.workspaceRootPath ?? "",
+        } as any,
+        runtimeReference: binding.runtimeReference as any,
+      });
+      if (codexProjection && codexProjection.conversation.length > 0) {
+        projection = codexProjection;
+        projectionReadError = null;
+      }
+    }
+
+    if (!projection) {
+      throw projectionReadError ?? new Error("Team member projection is unavailable.");
+    }
+
+    if (projection.conversation.length === 0 && projectionReadError) {
+      throw projectionReadError;
+    }
+
     return {
       agentRunId: projection.runId,
       conversation: projection.conversation,

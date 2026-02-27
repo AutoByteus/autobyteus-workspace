@@ -126,6 +126,85 @@ describe("RuntimeCommandIngressService", () => {
     });
   });
 
+  it("routes inter-agent relay when runtime adapter supports it", async () => {
+    const relayInterAgentMessage = vi.fn().mockResolvedValue({ accepted: true });
+    const adapter: RuntimeAdapter = {
+      runtimeKind: "codex_app_server",
+      sendTurn: vi.fn(),
+      approveTool: vi.fn(),
+      relayInterAgentMessage,
+      interruptRun: vi.fn(),
+    };
+    const sessionStore = new RuntimeSessionStore();
+    sessionStore.upsertSession({
+      runId: "run-relay",
+      runtimeKind: "codex_app_server",
+      mode: "agent",
+      runtimeReference: {
+        runtimeKind: "codex_app_server",
+        sessionId: "run-relay",
+        threadId: null,
+        metadata: null,
+      },
+    });
+
+    const service = new RuntimeCommandIngressService(
+      sessionStore,
+      new RuntimeAdapterRegistry([adapter]),
+      { getAgentRun: vi.fn().mockReturnValue(null) } as any,
+      { getTeamRun: vi.fn().mockReturnValue(null) } as any,
+      { hasRunSession: vi.fn().mockReturnValue(true) } as any,
+    );
+
+    const result = await service.relayInterAgentMessage({
+      runId: "run-relay",
+      envelope: {
+        senderAgentId: "member-a",
+        recipientName: "member-b",
+        messageType: "agent_message",
+        content: "hello",
+      },
+    });
+
+    expect(result.accepted).toBe(true);
+    expect(relayInterAgentMessage).toHaveBeenCalledTimes(1);
+  });
+
+  it("returns deterministic unsupported code when relay is unavailable on adapter", async () => {
+    const adapter: RuntimeAdapter = {
+      runtimeKind: "autobyteus",
+      sendTurn: vi.fn(),
+      approveTool: vi.fn(),
+      interruptRun: vi.fn(),
+    };
+    const sessionStore = new RuntimeSessionStore();
+    sessionStore.upsertSession({
+      runId: "run-relay-unsupported",
+      runtimeKind: "autobyteus",
+      mode: "agent",
+      runtimeReference: {
+        runtimeKind: "autobyteus",
+        sessionId: "run-relay-unsupported",
+        threadId: null,
+        metadata: null,
+      },
+    });
+
+    const service = new RuntimeCommandIngressService(sessionStore, new RuntimeAdapterRegistry([adapter]));
+    const result = await service.relayInterAgentMessage({
+      runId: "run-relay-unsupported",
+      envelope: {
+        senderAgentId: "member-a",
+        recipientName: "member-b",
+        messageType: "agent_message",
+        content: "hello",
+      },
+    });
+
+    expect(result.accepted).toBe(false);
+    expect(result.code).toBe("INTER_AGENT_RELAY_UNSUPPORTED");
+  });
+
   it("fails fast for send operations when runtime capability is unavailable", async () => {
     const codexSend = vi.fn().mockResolvedValue({ accepted: true });
     const codexAdapter: RuntimeAdapter = {

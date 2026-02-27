@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import type {
   RuntimeAdapter,
   RuntimeApproveToolInput,
@@ -5,6 +6,7 @@ import type {
   RuntimeCreateAgentRunInput,
   RuntimeCreateResult,
   RuntimeInterruptRunInput,
+  RuntimeRelayInterAgentMessageInput,
   RuntimeTerminateRunInput,
   RuntimeRestoreAgentRunInput,
   RuntimeSendTurnInput,
@@ -94,6 +96,17 @@ export class CodexAppServerRuntimeAdapter implements RuntimeAdapter {
     }
   }
 
+  async relayInterAgentMessage(
+    input: RuntimeRelayInterAgentMessageInput,
+  ): Promise<RuntimeCommandResult> {
+    try {
+      await this.runtimeService.injectInterAgentEnvelope(input.runId, input.envelope);
+      return { accepted: true };
+    } catch (error) {
+      return buildCommandFailure(error);
+    }
+  }
+
   async interruptRun(input: RuntimeInterruptRunInput): Promise<RuntimeCommandResult> {
     try {
       await this.runtimeService.interruptRun(input.runId, input.turnId ?? null);
@@ -112,4 +125,3 @@ export class CodexAppServerRuntimeAdapter implements RuntimeAdapter {
     }
   }
 }
-import { randomUUID } from "node:crypto";

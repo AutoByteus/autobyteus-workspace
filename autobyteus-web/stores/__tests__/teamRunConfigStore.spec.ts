@@ -24,6 +24,7 @@ describe('teamRunConfigStore', () => {
 
       expect(store.config?.teamDefinitionId).toBe('team-def-1');
       expect(store.config?.teamDefinitionName).toBe('Research Team');
+      expect(store.config?.runtimeKind).toBe('autobyteus');
       expect(store.config?.llmModelIdentifier).toBe('');
       expect(store.config?.workspaceId).toBeNull();
       expect(store.config?.autoExecuteTools).toBe(false);

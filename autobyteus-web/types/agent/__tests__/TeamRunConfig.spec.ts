@@ -16,6 +16,7 @@ describe('TeamRunConfig', () => {
 
         expect(config.teamDefinitionId).toBe('team-def-1');
         expect(config.teamDefinitionName).toBe('Research Team');
+        expect(config.runtimeKind).toBe('autobyteus');
         expect(config.workspaceId).toBeNull();
         expect(config.llmModelIdentifier).toBe('');
         expect(config.autoExecuteTools).toBe(false);

@@ -70,6 +70,7 @@ describe('agentTeamContextsStore', () => {
              const agent1 = team?.members.get('agent-1');
              expect(agent1?.config.agentDefinitionId).toBe('def-1');
              expect(agent1?.config.llmModelIdentifier).toBe('gpt-4'); // Inherited
+             expect(agent1?.config.runtimeKind).toBe('autobyteus');
              
              const agent2 = team?.members.get('agent-2');
              expect(agent2?.config.llmModelIdentifier).toBe('claude-3'); // Override

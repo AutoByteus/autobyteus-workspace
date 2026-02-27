@@ -225,6 +225,306 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
     expect(terminateResult.terminateAgentRun.success).toBe(true);
   });
 
+  it("restores a terminated codex run in the same workspace after continueRun", async () => {
+    const modelIdentifier = await fetchPreferredCodexToolModelIdentifier();
+    const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "codex-continue-workspace-e2e-"));
+    let runId: string | null = null;
+
+    const continueMutation = `
+      mutation ContinueRun($input: ContinueRunInput!) {
+        continueRun(input: $input) {
+          success
+          message
+          runId
+        }
+      }
+    `;
+    const terminateMutation = `
+      mutation Terminate($id: String!) {
+        terminateAgentRun(id: $id) {
+          success
+          message
+        }
+      }
+    `;
+    const resumeQuery = `
+      query Resume($runId: String!) {
+        getRunResumeConfig(runId: $runId) {
+          runId
+          isActive
+          manifestConfig {
+            runtimeKind
+            workspaceRootPath
+          }
+        }
+      }
+    `;
+
+    try {
+      const createResult = await execGraphql<{
+        continueRun: {
+          success: boolean;
+          message: string;
+          runId: string | null;
+        };
+      }>(continueMutation, {
+        input: {
+          runtimeKind: "codex_app_server",
+          agentDefinitionId: "codex-e2e-agent-def",
+          workspaceRootPath,
+          llmModelIdentifier: modelIdentifier,
+          userInput: {
+            content: "Reply with READY.",
+          },
+        },
+      });
+      expect(createResult.continueRun.success).toBe(true);
+      expect(createResult.continueRun.runId).toBeTruthy();
+      runId = createResult.continueRun.runId;
+
+      const beforeTerminate = await execGraphql<{
+        getRunResumeConfig: {
+          runId: string;
+          isActive: boolean;
+          manifestConfig: {
+            runtimeKind: string;
+            workspaceRootPath: string;
+          };
+        };
+      }>(resumeQuery, { runId });
+      expect(beforeTerminate.getRunResumeConfig.runId).toBe(runId);
+      expect(beforeTerminate.getRunResumeConfig.manifestConfig.runtimeKind).toBe("codex_app_server");
+      expect(beforeTerminate.getRunResumeConfig.manifestConfig.workspaceRootPath).toBe(workspaceRootPath);
+
+      const terminateResult = await execGraphql<{
+        terminateAgentRun: { success: boolean; message: string };
+      }>(terminateMutation, { id: runId });
+      expect(terminateResult.terminateAgentRun.success).toBe(true);
+
+      const continueResult = await execGraphql<{
+        continueRun: {
+          success: boolean;
+          message: string;
+          runId: string | null;
+        };
+      }>(continueMutation, {
+        input: {
+          runId,
+          userInput: {
+            content: "Reply with READY again.",
+          },
+        },
+      });
+      expect(continueResult.continueRun.success).toBe(true);
+      expect(continueResult.continueRun.runId).toBe(runId);
+
+      const afterContinue = await execGraphql<{
+        getRunResumeConfig: {
+          runId: string;
+          isActive: boolean;
+          manifestConfig: {
+            runtimeKind: string;
+            workspaceRootPath: string;
+          };
+        };
+      }>(resumeQuery, { runId });
+      expect(afterContinue.getRunResumeConfig.runId).toBe(runId);
+      expect(afterContinue.getRunResumeConfig.manifestConfig.runtimeKind).toBe("codex_app_server");
+      expect(afterContinue.getRunResumeConfig.manifestConfig.workspaceRootPath).toBe(workspaceRootPath);
+    } finally {
+      if (runId) {
+        try {
+          await execGraphql<{
+            terminateAgentRun: { success: boolean };
+          }>(terminateMutation, { id: runId });
+        } catch {
+          // best-effort cleanup
+        }
+      }
+      await rm(workspaceRootPath, { recursive: true, force: true });
+    }
+  });
+
+  it(
+    "preserves workspace mapping for codex runs created with workspaceId across send->terminate->continue",
+    async () => {
+      const modelIdentifier = await fetchPreferredCodexToolModelIdentifier();
+      const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "codex-workspaceid-continue-e2e-"));
+      let runId: string | null = null;
+
+      const createWorkspaceMutation = `
+        mutation CreateWorkspace($input: CreateWorkspaceInput!) {
+          createWorkspace(input: $input) {
+            workspaceId
+          }
+        }
+      `;
+      const continueMutation = `
+        mutation ContinueRun($input: ContinueRunInput!) {
+          continueRun(input: $input) {
+            success
+            message
+            runId
+          }
+        }
+      `;
+      const terminateMutation = `
+        mutation Terminate($id: String!) {
+          terminateAgentRun(id: $id) {
+            success
+            message
+          }
+        }
+      `;
+      const resumeQuery = `
+        query Resume($runId: String!) {
+          getRunResumeConfig(runId: $runId) {
+            runId
+            isActive
+            manifestConfig {
+              runtimeKind
+              workspaceRootPath
+            }
+          }
+        }
+      `;
+      const listRunHistoryQuery = `
+        query ListRunHistory {
+          listRunHistory(limitPerAgent: 200) {
+            workspaceRootPath
+            agents {
+              runs {
+                runId
+              }
+            }
+          }
+        }
+      `;
+
+      try {
+        const createWorkspaceResult = await execGraphql<{
+          createWorkspace: { workspaceId: string };
+        }>(createWorkspaceMutation, {
+          input: {
+            rootPath: workspaceRootPath,
+          },
+        });
+        const workspaceId = createWorkspaceResult.createWorkspace.workspaceId;
+        expect(workspaceId).toBeTruthy();
+
+        const createResult = await execGraphql<{
+          continueRun: {
+            success: boolean;
+            message: string;
+            runId: string | null;
+          };
+        }>(continueMutation, {
+          input: {
+            runtimeKind: "codex_app_server",
+            agentDefinitionId: "codex-e2e-agent-def",
+            workspaceId,
+            llmModelIdentifier: modelIdentifier,
+            userInput: {
+              content: "Reply with READY.",
+            },
+          },
+        });
+        expect(createResult.continueRun.success).toBe(true);
+        expect(createResult.continueRun.runId).toBeTruthy();
+        runId = createResult.continueRun.runId;
+
+        const beforeTerminateResume = await execGraphql<{
+          getRunResumeConfig: {
+            runId: string;
+            isActive: boolean;
+            manifestConfig: {
+              runtimeKind: string;
+              workspaceRootPath: string;
+            };
+          };
+        }>(resumeQuery, { runId });
+        expect(beforeTerminateResume.getRunResumeConfig.runId).toBe(runId);
+        expect(beforeTerminateResume.getRunResumeConfig.manifestConfig.runtimeKind).toBe(
+          "codex_app_server",
+        );
+        expect(beforeTerminateResume.getRunResumeConfig.manifestConfig.workspaceRootPath).toBe(
+          workspaceRootPath,
+        );
+
+        const terminateResult = await execGraphql<{
+          terminateAgentRun: { success: boolean; message: string };
+        }>(terminateMutation, { id: runId });
+        expect(terminateResult.terminateAgentRun.success).toBe(true);
+
+        const historyDeadline = Date.now() + 120_000;
+        let groupedInSelectedWorkspace = false;
+        while (Date.now() < historyDeadline) {
+          const historyResult = await execGraphql<{
+            listRunHistory: Array<{
+              workspaceRootPath: string;
+              agents: Array<{ runs: Array<{ runId: string }> }>;
+            }>;
+          }>(listRunHistoryQuery);
+          groupedInSelectedWorkspace = historyResult.listRunHistory.some(
+            (workspaceGroup) =>
+              workspaceGroup.workspaceRootPath === workspaceRootPath &&
+              workspaceGroup.agents.some((agentGroup) =>
+                agentGroup.runs.some((run) => run.runId === runId),
+              ),
+          );
+          if (groupedInSelectedWorkspace) {
+            break;
+          }
+          await new Promise((resolve) => setTimeout(resolve, 2_000));
+        }
+        expect(groupedInSelectedWorkspace).toBe(true);
+
+        const continueResult = await execGraphql<{
+          continueRun: {
+            success: boolean;
+            message: string;
+            runId: string | null;
+          };
+        }>(continueMutation, {
+          input: {
+            runId,
+            userInput: {
+              content: "Reply with READY again.",
+            },
+          },
+        });
+        expect(continueResult.continueRun.success).toBe(true);
+        expect(continueResult.continueRun.runId).toBe(runId);
+
+        const resumeResult = await execGraphql<{
+          getRunResumeConfig: {
+            runId: string;
+            isActive: boolean;
+            manifestConfig: {
+              runtimeKind: string;
+              workspaceRootPath: string;
+            };
+          };
+        }>(resumeQuery, { runId });
+        expect(resumeResult.getRunResumeConfig.runId).toBe(runId);
+        expect(resumeResult.getRunResumeConfig.manifestConfig.runtimeKind).toBe("codex_app_server");
+        expect(resumeResult.getRunResumeConfig.manifestConfig.workspaceRootPath).toBe(workspaceRootPath);
+      } finally {
+        if (runId) {
+          try {
+            await execGraphql<{
+              terminateAgentRun: { success: boolean };
+            }>(terminateMutation, { id: runId });
+          } catch {
+            // best-effort cleanup
+          }
+        }
+        await rm(workspaceRootPath, { recursive: true, force: true });
+      }
+    },
+    180_000,
+  );
+
   it(
     "returns non-empty run projection conversation for completed codex runs",
     async () => {

@@ -1,0 +1,684 @@
+import "reflect-metadata";
+import { createRequire } from "node:module";
+import path from "node:path";
+import os from "node:os";
+import { spawnSync } from "node:child_process";
+import { randomUUID } from "node:crypto";
+import { mkdtemp, rm } from "node:fs/promises";
+import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
+import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
+import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
+
+const codexBinaryReady = spawnSync("codex", ["--version"], {
+  stdio: "ignore",
+}).status === 0;
+const liveCodexTestsEnabled = process.env.RUN_CODEX_E2E === "1";
+const describeCodexRuntime = codexBinaryReady && liveCodexTestsEnabled ? describe : describe.skip;
+const originalCodexApprovalPolicy = process.env.CODEX_APP_SERVER_APPROVAL_POLICY;
+
+const wait = (ms: number): Promise<void> =>
+  new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+
+describeCodexRuntime("Codex team inter-agent roundtrip e2e (live transport)", () => {
+  let schema: GraphQLSchema;
+  let graphql: typeof graphqlFn;
+  const createdPromptIds = new Set<string>();
+  const createdAgentDefinitionIds = new Set<string>();
+  const createdTeamDefinitionIds = new Set<string>();
+  const createdTeamRunIds = new Set<string>();
+  const createdWorkspaceRoots = new Set<string>();
+
+  beforeAll(async () => {
+    // Force command approvals so send_message_to is intercepted by the codex inter-agent relay handler.
+    process.env.CODEX_APP_SERVER_APPROVAL_POLICY = "untrusted";
+    schema = await buildGraphqlSchema();
+    const require = createRequire(import.meta.url);
+    const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
+    const graphqlPath = require.resolve("graphql", { paths: [typeGraphqlRoot] });
+    const graphqlModule = await import(graphqlPath);
+    graphql = graphqlModule.graphql as typeof graphqlFn;
+  });
+
+  afterAll(() => {
+    if (typeof originalCodexApprovalPolicy === "string") {
+      process.env.CODEX_APP_SERVER_APPROVAL_POLICY = originalCodexApprovalPolicy;
+      return;
+    }
+    delete process.env.CODEX_APP_SERVER_APPROVAL_POLICY;
+  });
+
+  afterEach(async () => {
+    const exec = async <T>(query: string, variables?: Record<string, unknown>): Promise<T | null> => {
+      const result = await graphql({
+        schema,
+        source: query,
+        variableValues: variables,
+      });
+      return result.errors?.length ? null : (result.data as T);
+    };
+
+    const terminateTeamRunMutation = `
+      mutation TerminateAgentTeamRun($id: String!) {
+        terminateAgentTeamRun(id: $id) {
+          success
+        }
+      }
+    `;
+    for (const teamRunId of createdTeamRunIds) {
+      await exec(terminateTeamRunMutation, { id: teamRunId });
+    }
+    createdTeamRunIds.clear();
+
+    const deleteTeamDefinitionMutation = `
+      mutation DeleteAgentTeamDefinition($id: String!) {
+        deleteAgentTeamDefinition(id: $id) {
+          success
+        }
+      }
+    `;
+    for (const id of createdTeamDefinitionIds) {
+      await exec(deleteTeamDefinitionMutation, { id });
+    }
+    createdTeamDefinitionIds.clear();
+
+    const deleteAgentDefinitionMutation = `
+      mutation DeleteAgentDefinition($id: String!) {
+        deleteAgentDefinition(id: $id) {
+          success
+        }
+      }
+    `;
+    for (const id of createdAgentDefinitionIds) {
+      await exec(deleteAgentDefinitionMutation, { id });
+    }
+    createdAgentDefinitionIds.clear();
+
+    const deletePromptMutation = `
+      mutation DeletePrompt($id: String!) {
+        deletePrompt(id: $id) {
+          id
+        }
+      }
+    `;
+    for (const id of createdPromptIds) {
+      await exec(deletePromptMutation, { id });
+    }
+    createdPromptIds.clear();
+
+    for (const root of createdWorkspaceRoots) {
+      await rm(root, { recursive: true, force: true });
+    }
+    createdWorkspaceRoots.clear();
+  });
+
+  const execGraphql = async <T>(query: string, variables?: Record<string, unknown>): Promise<T> => {
+    const result = await graphql({
+      schema,
+      source: query,
+      variableValues: variables,
+    });
+    if (result.errors?.length) {
+      throw result.errors[0];
+    }
+    return result.data as T;
+  };
+
+  const fetchPreferredCodexToolModelIdentifier = async (): Promise<string> => {
+    const query = `
+      query Models($runtimeKind: String) {
+        availableLlmProvidersWithModels(runtimeKind: $runtimeKind) {
+          provider
+          models {
+            modelIdentifier
+          }
+        }
+      }
+    `;
+
+    const result = await execGraphql<{
+      availableLlmProvidersWithModels: Array<{
+        provider: string;
+        models: Array<{ modelIdentifier: string }>;
+      }>;
+    }>(query, {
+      runtimeKind: "codex_app_server",
+    });
+
+    const allModelIdentifiers = result.availableLlmProvidersWithModels.flatMap((provider) =>
+      provider.models
+        .map((model) => model.modelIdentifier)
+        .filter((modelIdentifier): modelIdentifier is string => modelIdentifier.length > 0),
+    );
+    if (allModelIdentifiers.length === 0) {
+      throw new Error("No Codex runtime model was returned by availableLlmProvidersWithModels.");
+    }
+
+    const override = process.env.CODEX_E2E_TOOL_MODEL?.trim();
+    if (override && allModelIdentifiers.includes(override)) {
+      return override;
+    }
+
+    const preferredOrder = [
+      "gpt-5.3-codex",
+      "gpt-5.3-codex-spark",
+      "gpt-5.2-codex",
+      "gpt-5.1-codex-max",
+      "gpt-5.1-codex-mini",
+    ];
+    for (const preferred of preferredOrder) {
+      if (allModelIdentifiers.includes(preferred)) {
+        return preferred;
+      }
+    }
+
+    const codexModel = allModelIdentifiers.find((modelIdentifier) =>
+      modelIdentifier.toLowerCase().includes("codex"),
+    );
+    return codexModel ?? allModelIdentifiers[0];
+  };
+
+  it(
+    "routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime",
+    async () => {
+      const unique = randomUUID();
+      const modelIdentifier = await fetchPreferredCodexToolModelIdentifier();
+      const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "codex-team-roundtrip-e2e-"));
+      createdWorkspaceRoots.add(workspaceRootPath);
+
+      const createPromptMutation = `
+        mutation CreatePrompt($input: CreatePromptInput!) {
+          createPrompt(input: $input) {
+            id
+          }
+        }
+      `;
+      const promptName = `codex_team_roundtrip_prompt_${unique}`;
+      const promptCategory = `codex_team_roundtrip_category_${unique}`;
+      const promptContent = `
+You are participating in a two-agent team roundtrip validation in a team with members "ping" and "pong".
+
+Rules:
+1. Follow direct user instructions exactly.
+2. You must not explore the environment or run diagnostics.
+3. The only tool you may execute is send_message_to.
+4. If the user asks you to call send_message_to with explicit arguments, call send_message_to exactly once with those exact arguments and do not call any other tool.
+5. Keep assistant text responses very short.
+`;
+
+      const promptResult = await execGraphql<{ createPrompt: { id: string } }>(createPromptMutation, {
+        input: {
+          name: promptName,
+          category: promptCategory,
+          promptContent,
+        },
+      });
+      createdPromptIds.add(promptResult.createPrompt.id);
+
+      const createAgentDefinitionMutation = `
+        mutation CreateAgentDefinition($input: CreateAgentDefinitionInput!) {
+          createAgentDefinition(input: $input) {
+            id
+          }
+        }
+      `;
+      const pingAgentDefResult = await execGraphql<{ createAgentDefinition: { id: string } }>(
+        createAgentDefinitionMutation,
+        {
+          input: {
+            name: `codex-ping-${unique}`,
+            role: "assistant",
+            description: "Codex ping agent for live inter-agent roundtrip validation.",
+            systemPromptCategory: promptCategory,
+            systemPromptName: promptName,
+          },
+        },
+      );
+      const pongAgentDefResult = await execGraphql<{ createAgentDefinition: { id: string } }>(
+        createAgentDefinitionMutation,
+        {
+          input: {
+            name: `codex-pong-${unique}`,
+            role: "assistant",
+            description: "Codex pong agent for live inter-agent roundtrip validation.",
+            systemPromptCategory: promptCategory,
+            systemPromptName: promptName,
+          },
+        },
+      );
+      const pingAgentDefinitionId = pingAgentDefResult.createAgentDefinition.id;
+      const pongAgentDefinitionId = pongAgentDefResult.createAgentDefinition.id;
+      createdAgentDefinitionIds.add(pingAgentDefinitionId);
+      createdAgentDefinitionIds.add(pongAgentDefinitionId);
+
+      const createTeamDefinitionMutation = `
+        mutation CreateAgentTeamDefinition($input: CreateAgentTeamDefinitionInput!) {
+          createAgentTeamDefinition(input: $input) {
+            id
+          }
+        }
+      `;
+      const teamDefinitionResult = await execGraphql<{ createAgentTeamDefinition: { id: string } }>(
+        createTeamDefinitionMutation,
+        {
+          input: {
+            name: `codex-roundtrip-team-${unique}`,
+            description: "Live codex inter-agent roundtrip validation team.",
+            coordinatorMemberName: "ping",
+            nodes: [
+              {
+                memberName: "ping",
+                referenceId: pingAgentDefinitionId,
+                referenceType: "AGENT",
+              },
+              {
+                memberName: "pong",
+                referenceId: pongAgentDefinitionId,
+                referenceType: "AGENT",
+              },
+            ],
+          },
+        },
+      );
+      const teamDefinitionId = teamDefinitionResult.createAgentTeamDefinition.id;
+      createdTeamDefinitionIds.add(teamDefinitionId);
+
+      const createTeamRunMutation = `
+        mutation CreateAgentTeamRun($input: CreateAgentTeamRunInput!) {
+          createAgentTeamRun(input: $input) {
+            success
+            message
+            teamRunId
+          }
+        }
+      `;
+      const createTeamRunResult = await execGraphql<{
+        createAgentTeamRun: { success: boolean; message: string; teamRunId: string | null };
+      }>(createTeamRunMutation, {
+        input: {
+          teamDefinitionId,
+          memberConfigs: [
+            {
+              memberName: "ping",
+              agentDefinitionId: pingAgentDefinitionId,
+              llmModelIdentifier: modelIdentifier,
+              autoExecuteTools: true,
+              runtimeKind: "codex_app_server",
+              workspaceRootPath,
+            },
+            {
+              memberName: "pong",
+              agentDefinitionId: pongAgentDefinitionId,
+              llmModelIdentifier: modelIdentifier,
+              autoExecuteTools: true,
+              runtimeKind: "codex_app_server",
+              workspaceRootPath,
+            },
+          ],
+        },
+      });
+
+      expect(createTeamRunResult.createAgentTeamRun.success).toBe(true);
+      expect(createTeamRunResult.createAgentTeamRun.teamRunId).toBeTruthy();
+      const teamRunId = createTeamRunResult.createAgentTeamRun.teamRunId as string;
+      createdTeamRunIds.add(teamRunId);
+
+      const pingToken = `ROUNDTRIP_PING:${unique}`;
+      const pongToken = `ROUNDTRIP_PONG:${unique}`;
+      const sendMessageToTeamMutation = `
+        mutation SendMessageToTeam($input: SendMessageToTeamInput!) {
+          sendMessageToTeam(input: $input) {
+            success
+            message
+            teamRunId
+          }
+        }
+      `;
+      const sendRelayInstruction = async (input: {
+        targetMemberName: "ping" | "pong";
+        recipientName: "ping" | "pong";
+        messageType: string;
+        content: string;
+      }): Promise<void> => {
+        const argsJson = JSON.stringify({
+          recipient_name: input.recipientName,
+          content: input.content,
+          message_type: input.messageType,
+        });
+        const result = await execGraphql<{
+          sendMessageToTeam: { success: boolean; message: string; teamRunId: string | null };
+        }>(sendMessageToTeamMutation, {
+          input: {
+            teamRunId,
+            targetMemberName: input.targetMemberName,
+            userInput: {
+              content:
+                "Call send_message_to exactly once now with these exact JSON arguments: " +
+                `${argsJson}. Do not call any other tool.`,
+              contextFiles: [],
+            },
+          },
+        });
+        expect(result.sendMessageToTeam.success).toBe(true);
+      };
+
+      const memberProjectionQuery = `
+        query TeamMemberProjection($teamRunId: String!, $memberRouteKey: String!) {
+          getTeamMemberRunProjection(teamRunId: $teamRunId, memberRouteKey: $memberRouteKey) {
+            conversation
+            summary
+          }
+        }
+      `;
+
+      const waitForProjectionText = async (memberRouteKey: string, expectedText: string): Promise<void> => {
+        const deadline = Date.now() + 120_000;
+        let lastConversation: Array<{ content?: string | null }> = [];
+        let lastSummary = "";
+        while (Date.now() < deadline) {
+          const projectionResult = await execGraphql<{
+            getTeamMemberRunProjection: {
+              conversation: Array<{ content?: string | null }>;
+              summary?: string | null;
+            };
+          }>(memberProjectionQuery, {
+            teamRunId,
+            memberRouteKey,
+          });
+
+          const conversation = projectionResult.getTeamMemberRunProjection?.conversation ?? [];
+          lastConversation = conversation;
+          lastSummary = String(projectionResult.getTeamMemberRunProjection?.summary ?? "");
+          const hasExpectedContent = conversation.some((entry) =>
+            String(entry?.content ?? "").includes(expectedText),
+          );
+          const hasExpectedSummary = lastSummary.includes(expectedText);
+
+          if (hasExpectedContent || hasExpectedSummary) {
+            return;
+          }
+          await wait(2_000);
+        }
+        const conversationPreview = lastConversation
+          .slice(-6)
+          .map((entry) => String(entry?.content ?? ""))
+          .join(" | ");
+        throw new Error(
+          `Timed out waiting for member '${memberRouteKey}' projection to contain '${expectedText}'. ` +
+            `summary='${lastSummary}' preview='${conversationPreview}'`,
+        );
+      };
+
+      await sendRelayInstruction({
+        targetMemberName: "ping",
+        recipientName: "pong",
+        content: `PING-TO-PONG ${pingToken}`,
+        messageType: "roundtrip_ping",
+      });
+      await waitForProjectionText("pong", `PING-TO-PONG ${pingToken}`);
+
+      await sendRelayInstruction({
+        targetMemberName: "pong",
+        recipientName: "ping",
+        content: `PONG-TO-PING ${pongToken}`,
+        messageType: "roundtrip_pong",
+      });
+      await waitForProjectionText("ping", `PONG-TO-PING ${pongToken}`);
+    },
+    180_000,
+  );
+
+  it(
+    "preserves workspace mapping across create->send->terminate->continue for codex team runs created with workspaceId",
+    async () => {
+      const unique = randomUUID();
+      const modelIdentifier = await fetchPreferredCodexToolModelIdentifier();
+      const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "codex-team-workspaceid-e2e-"));
+      createdWorkspaceRoots.add(workspaceRootPath);
+
+      const createWorkspaceMutation = `
+        mutation CreateWorkspace($input: CreateWorkspaceInput!) {
+          createWorkspace(input: $input) {
+            workspaceId
+          }
+        }
+      `;
+      const createWorkspaceResult = await execGraphql<{
+        createWorkspace: { workspaceId: string };
+      }>(createWorkspaceMutation, {
+        input: {
+          rootPath: workspaceRootPath,
+        },
+      });
+      const workspaceId = createWorkspaceResult.createWorkspace.workspaceId;
+      expect(workspaceId).toBeTruthy();
+
+      const createPromptMutation = `
+        mutation CreatePrompt($input: CreatePromptInput!) {
+          createPrompt(input: $input) {
+            id
+          }
+        }
+      `;
+      const promptName = `codex_team_workspace_prompt_${unique}`;
+      const promptCategory = `codex_team_workspace_category_${unique}`;
+      const promptResult = await execGraphql<{ createPrompt: { id: string } }>(createPromptMutation, {
+        input: {
+          name: promptName,
+          category: promptCategory,
+          promptContent: "Reply concisely in one sentence.",
+        },
+      });
+      createdPromptIds.add(promptResult.createPrompt.id);
+
+      const createAgentDefinitionMutation = `
+        mutation CreateAgentDefinition($input: CreateAgentDefinitionInput!) {
+          createAgentDefinition(input: $input) {
+            id
+          }
+        }
+      `;
+      const professorAgentDefResult = await execGraphql<{ createAgentDefinition: { id: string } }>(
+        createAgentDefinitionMutation,
+        {
+          input: {
+            name: `codex-professor-${unique}`,
+            role: "assistant",
+            description: "Codex team workspace lifecycle professor agent.",
+            systemPromptCategory: promptCategory,
+            systemPromptName: promptName,
+          },
+        },
+      );
+      const professorAgentDefinitionId = professorAgentDefResult.createAgentDefinition.id;
+      createdAgentDefinitionIds.add(professorAgentDefinitionId);
+
+      const createTeamDefinitionMutation = `
+        mutation CreateAgentTeamDefinition($input: CreateAgentTeamDefinitionInput!) {
+          createAgentTeamDefinition(input: $input) {
+            id
+          }
+        }
+      `;
+      const teamDefinitionResult = await execGraphql<{ createAgentTeamDefinition: { id: string } }>(
+        createTeamDefinitionMutation,
+        {
+          input: {
+            name: `codex-workspace-team-${unique}`,
+            description: "Codex workspace lifecycle validation team.",
+            coordinatorMemberName: "professor",
+            nodes: [
+              {
+                memberName: "professor",
+                referenceId: professorAgentDefinitionId,
+                referenceType: "AGENT",
+              },
+            ],
+          },
+        },
+      );
+      const teamDefinitionId = teamDefinitionResult.createAgentTeamDefinition.id;
+      createdTeamDefinitionIds.add(teamDefinitionId);
+
+      const createTeamRunMutation = `
+        mutation CreateAgentTeamRun($input: CreateAgentTeamRunInput!) {
+          createAgentTeamRun(input: $input) {
+            success
+            message
+            teamRunId
+          }
+        }
+      `;
+      const createTeamRunResult = await execGraphql<{
+        createAgentTeamRun: { success: boolean; message: string; teamRunId: string | null };
+      }>(createTeamRunMutation, {
+        input: {
+          teamDefinitionId,
+          memberConfigs: [
+            {
+              memberName: "professor",
+              agentDefinitionId: professorAgentDefinitionId,
+              llmModelIdentifier: modelIdentifier,
+              autoExecuteTools: true,
+              runtimeKind: "codex_app_server",
+              workspaceId,
+            },
+          ],
+        },
+      });
+
+      expect(createTeamRunResult.createAgentTeamRun.success).toBe(true);
+      expect(createTeamRunResult.createAgentTeamRun.teamRunId).toBeTruthy();
+      const teamRunId = createTeamRunResult.createAgentTeamRun.teamRunId as string;
+      createdTeamRunIds.add(teamRunId);
+
+      const sendMessageToTeamMutation = `
+        mutation SendMessageToTeam($input: SendMessageToTeamInput!) {
+          sendMessageToTeam(input: $input) {
+            success
+            message
+            teamRunId
+          }
+        }
+      `;
+      const terminateTeamRunMutation = `
+        mutation TerminateAgentTeamRun($id: String!) {
+          terminateAgentTeamRun(id: $id) {
+            success
+            message
+          }
+        }
+      `;
+      const listTeamRunHistoryQuery = `
+        query ListTeamRunHistory {
+          listTeamRunHistory {
+            teamRunId
+            workspaceRootPath
+            members {
+              memberName
+              workspaceRootPath
+            }
+          }
+        }
+      `;
+      const teamResumeQuery = `
+        query TeamResume($teamRunId: String!) {
+          getTeamRunResumeConfig(teamRunId: $teamRunId) {
+            teamRunId
+            isActive
+            manifest
+          }
+        }
+      `;
+
+      const firstSendResult = await execGraphql<{
+        sendMessageToTeam: { success: boolean; message: string; teamRunId: string | null };
+      }>(sendMessageToTeamMutation, {
+        input: {
+          teamRunId,
+          targetMemberName: "professor",
+          userInput: {
+            content: "Reply with READY.",
+            contextFiles: [],
+          },
+        },
+      });
+      expect(firstSendResult.sendMessageToTeam.success).toBe(true);
+      expect(firstSendResult.sendMessageToTeam.teamRunId).toBe(teamRunId);
+
+      const deadline = Date.now() + 120_000;
+      let matchedRow:
+        | {
+            teamRunId: string;
+            workspaceRootPath: string | null;
+            members: Array<{ memberName: string; workspaceRootPath: string | null }>;
+          }
+        | null = null;
+      while (Date.now() < deadline) {
+        const listResult = await execGraphql<{
+          listTeamRunHistory: Array<{
+            teamRunId: string;
+            workspaceRootPath: string | null;
+            members: Array<{ memberName: string; workspaceRootPath: string | null }>;
+          }>;
+        }>(listTeamRunHistoryQuery);
+        matchedRow = listResult.listTeamRunHistory.find((row) => row.teamRunId === teamRunId) ?? null;
+        if (
+          matchedRow &&
+          matchedRow.workspaceRootPath === workspaceRootPath &&
+          matchedRow.members.every((member) => member.workspaceRootPath === workspaceRootPath)
+        ) {
+          break;
+        }
+        await wait(2_000);
+      }
+
+      expect(matchedRow).toBeTruthy();
+      expect(matchedRow?.workspaceRootPath).toBe(workspaceRootPath);
+      expect(matchedRow?.members.every((member) => member.workspaceRootPath === workspaceRootPath)).toBe(
+        true,
+      );
+
+      const terminateResult = await execGraphql<{
+        terminateAgentTeamRun: { success: boolean; message: string };
+      }>(terminateTeamRunMutation, { id: teamRunId });
+      expect(terminateResult.terminateAgentTeamRun.success).toBe(true);
+
+      const continueResult = await execGraphql<{
+        sendMessageToTeam: { success: boolean; message: string; teamRunId: string | null };
+      }>(sendMessageToTeamMutation, {
+        input: {
+          teamRunId,
+          targetMemberName: "professor",
+          userInput: {
+            content: "Reply with READY again.",
+            contextFiles: [],
+          },
+        },
+      });
+      expect(continueResult.sendMessageToTeam.success).toBe(true);
+      expect(continueResult.sendMessageToTeam.teamRunId).toBe(teamRunId);
+
+      const resumeResult = await execGraphql<{
+        getTeamRunResumeConfig: {
+          teamRunId: string;
+          isActive: boolean;
+          manifest: {
+            workspaceRootPath: string | null;
+            memberBindings: Array<{ memberName: string; workspaceRootPath: string | null }>;
+          };
+        };
+      }>(teamResumeQuery, { teamRunId });
+
+      expect(resumeResult.getTeamRunResumeConfig.teamRunId).toBe(teamRunId);
+      expect(resumeResult.getTeamRunResumeConfig.manifest.workspaceRootPath).toBe(workspaceRootPath);
+      expect(
+        resumeResult.getTeamRunResumeConfig.manifest.memberBindings.every(
+          (binding) => binding.workspaceRootPath === workspaceRootPath,
+        ),
+      ).toBe(true);
+    },
+    180_000,
+  );
+});
