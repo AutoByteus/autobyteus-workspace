@@ -5,17 +5,15 @@ import { ToolCategory } from '../tool-category.js';
 import { ParameterSchema, ParameterDefinition, ParameterType } from '../../utils/parameter-schema.js';
 import { ContextFile } from '../../agent/message/context-file.js';
 
-type WorkspaceLike = { getBasePath?: () => string };
-type AgentContextLike = { agentId?: string; workspace?: WorkspaceLike | null };
+type AgentContextLike = { agentId?: string; workspaceRootPath?: string | null };
 
 type ReadMediaArgs = {
   file_path: string;
 };
 
-function resolveWorkspaceRoot(workspace: WorkspaceLike | null | undefined): string | null {
-  if (!workspace) return null;
-  if (typeof workspace.getBasePath === 'function') {
-    return path.resolve(workspace.getBasePath());
+function resolveWorkspaceRoot(workspaceRootPath?: string | null): string | null {
+  if (typeof workspaceRootPath === 'string' && workspaceRootPath.trim().length > 0) {
+    return path.resolve(workspaceRootPath);
   }
   return null;
 }
@@ -57,7 +55,7 @@ export class ReadMediaFile extends BaseTool {
       throw new Error("'file_path' is required and must be a string.");
     }
 
-    const workspaceRoot = resolveWorkspaceRoot(context?.workspace ?? null);
+    const workspaceRoot = resolveWorkspaceRoot(context?.workspaceRootPath);
     let absolutePath: string;
 
     if (path.isAbsolute(filePath)) {

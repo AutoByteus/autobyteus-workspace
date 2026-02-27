@@ -26,9 +26,7 @@ describe('ReadMediaFile tool (integration)', () => {
     const tool = new ReadMediaFile();
     const context = {
       agentId: 'test-agent-123',
-      workspace: {
-        getBasePath: () => tempDir
-      }
+      workspaceRootPath: tempDir
     };
 
     const result = await tool.execute(context, { file_path: 'test_image.png' });
@@ -46,9 +44,7 @@ describe('ReadMediaFile tool (integration)', () => {
     const tool = new ReadMediaFile();
     const context = {
       agentId: 'test-agent-123',
-      workspace: {
-        getBasePath: () => tempDir
-      }
+      workspaceRootPath: tempDir
     };
 
     const result = await tool.execute(context, { file_path: imagePath });
@@ -63,9 +59,7 @@ describe('ReadMediaFile tool (integration)', () => {
     const tool = new ReadMediaFile();
     const context = {
       agentId: 'test-agent-123',
-      workspace: {
-        getBasePath: () => tempDir
-      }
+      workspaceRootPath: tempDir
     };
 
     await expect(tool.execute(context, { file_path: 'non_existent_file.jpg' }))
@@ -77,9 +71,7 @@ describe('ReadMediaFile tool (integration)', () => {
     const tool = new ReadMediaFile();
     const context = {
       agentId: 'test-agent-123',
-      workspace: {
-        getBasePath: () => tempDir
-      }
+      workspaceRootPath: tempDir
     };
 
     await expect(tool.execute(context, { file_path: '../some_other_file.txt' }))

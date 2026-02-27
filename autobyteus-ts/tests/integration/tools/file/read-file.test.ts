@@ -8,8 +8,7 @@ import { registerReadFileTool } from '../../../../src/tools/file/read-file.js';
 
 const TOOL_NAME_READ_FILE = 'read_file';
 
-type MockWorkspace = { getBasePath: () => string };
-type MockContext = { agentId: string; workspace: MockWorkspace | null };
+type MockContext = { agentId: string; workspaceRootPath: string | null };
 
 describe('read_file tool (integration)', () => {
   beforeEach(() => {
@@ -28,7 +27,7 @@ describe('read_file tool (integration)', () => {
     await fs.writeFile(filePath, 'Test Content with Ümlauts for read_file', 'utf-8');
 
     const tool = getToolInstance();
-    const context: MockContext = { agentId: 'agent', workspace: null };
+    const context: MockContext = { agentId: 'agent', workspaceRootPath: null };
     const content = await tool.execute(context, { path: filePath });
 
     expect(content).toBe('1: Test Content with Ümlauts for read_file');
@@ -40,7 +39,7 @@ describe('read_file tool (integration)', () => {
     await fs.writeFile(filePath, 'Test Content with Ümlauts for read_file', 'utf-8');
 
     const tool = getToolInstance();
-    const context: MockContext = { agentId: 'agent', workspace: null };
+    const context: MockContext = { agentId: 'agent', workspaceRootPath: null };
     const content = await tool.execute(context, { path: filePath, include_line_numbers: false });
 
     expect(content).toBe('Test Content with Ümlauts for read_file');
@@ -52,7 +51,7 @@ describe('read_file tool (integration)', () => {
     await fs.writeFile(filePath, 'line1\nline2\nline3\n', 'utf-8');
 
     const tool = getToolInstance();
-    const context: MockContext = { agentId: 'agent', workspace: null };
+    const context: MockContext = { agentId: 'agent', workspaceRootPath: null };
 
     const content = await tool.execute(context, { path: filePath, start_line: 2, end_line: 3 });
     expect(content).toBe('2: line2\n3: line3\n');
@@ -67,7 +66,7 @@ describe('read_file tool (integration)', () => {
     await fs.writeFile(filePath, 'line1\nline2\n', 'utf-8');
 
     const tool = getToolInstance();
-    const context: MockContext = { agentId: 'agent', workspace: null };
+    const context: MockContext = { agentId: 'agent', workspaceRootPath: null };
 
     await expect(
       tool.execute(context, { path: filePath, start_line: 3, end_line: 2 })
@@ -76,7 +75,7 @@ describe('read_file tool (integration)', () => {
 
   it('rejects missing path argument', async () => {
     const tool = getToolInstance();
-    const context: MockContext = { agentId: 'agent', workspace: null };
+    const context: MockContext = { agentId: 'agent', workspaceRootPath: null };
     await expect(tool.execute(context, {})).rejects.toThrow(`Invalid arguments for tool '${TOOL_NAME_READ_FILE}'`);
   });
 
@@ -88,7 +87,7 @@ describe('read_file tool (integration)', () => {
     const tool = getToolInstance();
     const context: MockContext = {
       agentId: 'agent',
-      workspace: { getBasePath: () => tmpDir }
+      workspaceRootPath: tmpDir 
     };
 
     const content = await tool.execute(context, { path: 'relative_reader_test.txt' });
@@ -101,7 +100,7 @@ describe('read_file tool (integration)', () => {
     await fs.writeFile(filePath, '', 'utf-8');
 
     const tool = getToolInstance();
-    const context: MockContext = { agentId: 'agent', workspace: null };
+    const context: MockContext = { agentId: 'agent', workspaceRootPath: null };
     const content = await tool.execute(context, { path: filePath });
     expect(content).toBe('');
   });
@@ -111,7 +110,7 @@ describe('read_file tool (integration)', () => {
     const tool = getToolInstance();
     const context: MockContext = {
       agentId: 'agent',
-      workspace: { getBasePath: () => tmpDir }
+      workspaceRootPath: tmpDir 
     };
 
     await expect(
@@ -127,7 +126,7 @@ describe('read_file tool (integration)', () => {
     const spy = vi.spyOn(fs, 'readFile').mockRejectedValue(new Error('Simulated open error for read_file'));
 
     const tool = getToolInstance();
-    const context: MockContext = { agentId: 'agent', workspace: null };
+    const context: MockContext = { agentId: 'agent', workspaceRootPath: null };
 
     await expect(
       tool.execute(context, { path: filePath })

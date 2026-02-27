@@ -33,7 +33,7 @@ describe('Image tools', () => {
     } as any);
 
     const tool = new GenerateImageTool();
-    const context = { agentId: 'agent-1', workspace: { getBasePath: () => tempDir } };
+    const context = { agentId: 'agent-1', workspaceRootPath: tempDir  };
 
     const result = await tool.execute(context, {
       prompt: 'draw a cat',
@@ -54,7 +54,7 @@ describe('Image tools', () => {
     } as any);
 
     const tool = new EditImageTool();
-    const context = { agentId: 'agent-2', workspace: { getBasePath: () => tempDir } };
+    const context = { agentId: 'agent-2', workspaceRootPath: tempDir  };
 
     const result = await tool.execute(context, {
       prompt: 'edit',

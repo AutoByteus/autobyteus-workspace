@@ -44,7 +44,7 @@ export class AgentArtifactPersistenceProcessor extends BaseToolExecutionResultPr
 
   async process(event: ToolResultEvent, context: AgentContext): Promise<ToolResultEvent> {
     const runId = context.agentId;
-    const workspaceRoot = context.workspace?.getBasePath?.() ?? null;
+    const workspaceRoot = context.workspaceRootPath ?? null;
     logger.debug(
       `AgentArtifactPersistenceProcessor: Processing tool '${event.toolName}' for run '${runId}'`,
     );

@@ -9,8 +9,7 @@ import { ToolCategory } from '../tool-category.js';
 import { ParameterSchema, ParameterDefinition, ParameterType } from '../../utils/parameter-schema.js';
 import { getDefaultDownloadFolder } from '../../utils/file-utils.js';
 
-type WorkspaceLike = { getBasePath?: () => string };
-type AgentContextLike = { agentId?: string; workspace?: WorkspaceLike | null };
+type AgentContextLike = { agentId?: string; workspaceRootPath?: string | null };
 
 type DownloadMediaArgs = {
   url: string;
@@ -18,10 +17,9 @@ type DownloadMediaArgs = {
   folder?: string;
 };
 
-function resolveWorkspaceBasePath(workspace: WorkspaceLike | null | undefined): string | null {
-  if (!workspace) return null;
-  if (typeof workspace.getBasePath === 'function') {
-    return path.resolve(workspace.getBasePath());
+function resolveWorkspaceBasePath(workspaceRootPath?: string | null): string | null {
+  if (typeof workspaceRootPath === 'string' && workspaceRootPath.trim().length > 0) {
+    return path.resolve(workspaceRootPath);
   }
   return null;
 }
@@ -81,7 +79,7 @@ export class DownloadMediaTool extends BaseTool {
           throw new Error("Security error: 'folder' path cannot contain '..'.");
         }
         if (!path.isAbsolute(folder)) {
-          const workspaceRoot = resolveWorkspaceBasePath(context?.workspace ?? null);
+          const workspaceRoot = resolveWorkspaceBasePath(context?.workspaceRootPath);
           if (workspaceRoot) {
             const resolved = path.resolve(workspaceRoot, folder);
             if (!isWithinRoot(workspaceRoot, resolved)) {

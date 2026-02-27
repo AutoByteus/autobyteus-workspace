@@ -2,8 +2,6 @@ import fs from "node:fs";
 import path from "node:path";
 import { ContextFileType } from "autobyteus-ts/agent/message/context-file-type.js";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
-import type { BaseAgentWorkspace } from "autobyteus-ts/agent/workspace/base-workspace.js";
-import { FileSystemWorkspace } from "../../../workspaces/filesystem-workspace.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
@@ -12,13 +10,17 @@ const logger = {
 
 export class PromptContextBuilder {
   private userRequirementInput: AgentInputUserMessage;
-  private workspace: BaseAgentWorkspace | null;
+  private workspaceRootPath: string | null;
   private agentId: string;
 
-  constructor(userRequirementInput: AgentInputUserMessage, workspace: BaseAgentWorkspace | null) {
+  constructor(
+    userRequirementInput: AgentInputUserMessage,
+    workspaceRootPath: string | null,
+    agentId: string
+  ) {
     this.userRequirementInput = userRequirementInput;
-    this.workspace = workspace;
-    this.agentId = workspace?.agentId ?? "unknown_agent";
+    this.workspaceRootPath = workspaceRootPath;
+    this.agentId = agentId;
   }
 
   private isUrl(value: string): boolean {
@@ -56,9 +58,9 @@ export class PromptContextBuilder {
           const content = fs.readFileSync(absolutePath, "utf-8");
           let displayPath = absolutePath;
 
-          if (this.workspace instanceof FileSystemWorkspace) {
+          if (this.workspaceRootPath) {
             try {
-              displayPath = path.relative(this.workspace.rootPath, absolutePath);
+              displayPath = path.relative(this.workspaceRootPath, absolutePath);
             } catch {
               displayPath = absolutePath;
             }

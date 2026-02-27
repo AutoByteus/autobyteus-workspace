@@ -1,5 +1,6 @@
 import path from 'node:path';
-import { BaseAgentWorkspace, WorkspaceConfig } from 'autobyteus-ts';
+import { randomUUID } from 'node:crypto';
+import { WorkspaceConfig } from 'autobyteus-ts';
 import type { BaseFileExplorer } from '../file-explorer/base-file-explorer.js';
 import { FileNameIndexer } from '../file-explorer/file-name-indexer.js';
 import { LocalFileExplorer } from '../file-explorer/local-file-explorer.js';
@@ -16,7 +17,9 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
-export class FileSystemWorkspace extends BaseAgentWorkspace {
+export class FileSystemWorkspace {
+  readonly workspaceId: string;
+  readonly config: WorkspaceConfig;
   readonly rootPath: string;
   private fileExplorer: BaseFileExplorer;
   private searchStrategy: BaseFileSearchStrategy | null = null;
@@ -24,7 +27,14 @@ export class FileSystemWorkspace extends BaseAgentWorkspace {
   private backgroundInitTask: Promise<void> | null = null;
 
   constructor(config: WorkspaceConfig) {
-    super(config);
+    this.config = config;
+    const configuredId = this.config.get('workspaceId');
+    if (typeof configuredId === 'string' && configuredId.trim()) {
+      this.workspaceId = configuredId.trim();
+    } else {
+      this.workspaceId = randomUUID();
+    }
+
     const rootPathValue = config.get('rootPath');
     const legacyRootPathValue = typeof rootPathValue === 'string' ? rootPathValue : config.get('root_path');
     if (typeof legacyRootPathValue !== 'string' || !legacyRootPathValue.trim()) {

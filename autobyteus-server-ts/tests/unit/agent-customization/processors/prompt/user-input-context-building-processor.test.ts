@@ -9,8 +9,6 @@ import { SenderType } from "autobyteus-ts/agent/sender-type.js";
 import { UserMessageReceivedEvent } from "autobyteus-ts/agent/events/agent-events.js";
 import type { AgentContext } from "autobyteus-ts";
 import { LLMProvider } from "autobyteus-ts/llm/providers.js";
-import { FileSystemWorkspace } from "../../../../../src/workspaces/filesystem-workspace.js";
-import { WorkspaceConfig } from "autobyteus-ts/agent/workspace/workspace-config.js";
 
 type MockLlm = {
   model: { name: string; provider?: unknown; modelIdentifier?: string };
@@ -18,7 +16,7 @@ type MockLlm = {
 };
 
 const buildContext = (options: {
-  workspace?: FileSystemWorkspace | null;
+  workspaceRootPath?: string | null;
   modelName?: string;
   provider?: unknown;
   systemMessage?: string;
@@ -34,7 +32,7 @@ const buildContext = (options: {
 
   return {
     agentId: "test_agent",
-    workspace: options.workspace ?? null,
+    workspaceRootPath: options.workspaceRootPath ?? null,
     llmInstance,
     config: { systemPrompt: options.systemMessage ?? null },
     customData: options.customData ?? {},
@@ -56,8 +54,7 @@ describe("UserInputContextBuildingProcessor", () => {
     const filePath = path.join(tempDir, "test.txt");
     fs.writeFileSync(filePath, "relative content");
 
-    const workspace = new FileSystemWorkspace(new WorkspaceConfig({ rootPath: tempDir }));
-    const context = buildContext({ workspace });
+    const context = buildContext({ workspaceRootPath: tempDir });
     const message = new AgentInputUserMessage(
       "req",
       SenderType.USER,
@@ -77,8 +74,7 @@ describe("UserInputContextBuildingProcessor", () => {
     const absFilePath = path.join(absDir, "abs_test.txt");
     fs.writeFileSync(absFilePath, "absolute content");
 
-    const workspace = new FileSystemWorkspace(new WorkspaceConfig({ rootPath: tempDir }));
-    const context = buildContext({ workspace });
+    const context = buildContext({ workspaceRootPath: tempDir });
     const message = new AgentInputUserMessage(
       "req",
       SenderType.USER,
@@ -96,9 +92,8 @@ describe("UserInputContextBuildingProcessor", () => {
     const imagePath = path.join(tempDir, "image.png");
     fs.writeFileSync(imagePath, "fake image data");
 
-    const workspace = new FileSystemWorkspace(new WorkspaceConfig({ rootPath: tempDir }));
     const context = buildContext({
-      workspace,
+      workspaceRootPath: tempDir,
       modelName: "claude-opus",
       provider: LLMProvider.AUTOBYTEUS,
     });
@@ -119,9 +114,8 @@ describe("UserInputContextBuildingProcessor", () => {
     const imagePath = path.join(tempDir, "image.png");
     fs.writeFileSync(imagePath, "fake image data");
 
-    const workspace = new FileSystemWorkspace(new WorkspaceConfig({ rootPath: tempDir }));
     const context = buildContext({
-      workspace,
+      workspaceRootPath: tempDir,
       modelName: "claude-opus",
       provider: LLMProvider.OPENAI,
     });
@@ -138,9 +132,8 @@ describe("UserInputContextBuildingProcessor", () => {
   });
 
   it("prepends system prompt for first-turn AUTOBYTEUS models", async () => {
-    const workspace = new FileSystemWorkspace(new WorkspaceConfig({ rootPath: tempDir }));
     const context = buildContext({
-      workspace,
+      workspaceRootPath: tempDir,
       modelName: "test-model",
       provider: LLMProvider.AUTOBYTEUS,
       systemMessage: "AUTOBYTEUS System Message.",
@@ -157,9 +150,8 @@ describe("UserInputContextBuildingProcessor", () => {
   });
 
   it("does not prepend system prompt after first turn", async () => {
-    const workspace = new FileSystemWorkspace(new WorkspaceConfig({ rootPath: tempDir }));
     const context = buildContext({
-      workspace,
+      workspaceRootPath: tempDir,
       modelName: "test-model",
       provider: LLMProvider.AUTOBYTEUS,
       systemMessage: "AUTOBYTEUS System Message.",
@@ -175,9 +167,8 @@ describe("UserInputContextBuildingProcessor", () => {
   });
 
   it("does not prepend system prompt for non-AUTOBYTEUS model on first turn", async () => {
-    const workspace = new FileSystemWorkspace(new WorkspaceConfig({ rootPath: tempDir }));
     const context = buildContext({
-      workspace,
+      workspaceRootPath: tempDir,
       modelName: "test-model",
       provider: LLMProvider.OPENAI,
       systemMessage: "AUTOBYTEUS System Message.",
@@ -196,8 +187,7 @@ describe("UserInputContextBuildingProcessor", () => {
   it("skips missing files gracefully", async () => {
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
-    const workspace = new FileSystemWorkspace(new WorkspaceConfig({ rootPath: tempDir }));
-    const context = buildContext({ workspace });
+    const context = buildContext({ workspaceRootPath: tempDir });
     const message = new AgentInputUserMessage(
       "req",
       SenderType.USER,
@@ -209,7 +199,7 @@ describe("UserInputContextBuildingProcessor", () => {
 
     expect(result.contextFiles?.length ?? 0).toBe(0);
     const warnText = warnSpy.mock.calls.map((call) => call.join(" ")).join(" ");
-    expect(warnText).toContain("Relative path 'nonexistent.txt' not found in workspace");
+    expect(warnText).toContain("Relative path 'nonexistent.txt' not found in workspace root");
     expect(result.content).not.toContain("File: nonexistent.txt");
 
     warnSpy.mockRestore();

@@ -7,8 +7,6 @@ import { AgentTeamBuilder } from '../../../../src/agent-team/agent-team-builder.
 import { AgentConfig } from '../../../../src/agent/context/agent-config.js';
 import { AgentInputUserMessage } from '../../../../src/agent/message/agent-input-user-message.js';
 import { registerWriteFileTool } from '../../../../src/tools/file/write-file.js';
-import { BaseAgentWorkspace } from '../../../../src/agent/workspace/base-workspace.js';
-import { WorkspaceConfig } from '../../../../src/agent/workspace/workspace-config.js';
 import { SkillRegistry } from '../../../../src/skills/registry.js';
 import { waitForTeamToBeIdle } from '../../../../src/agent-team/utils/wait-for-idle.js';
 import { AgentFactory } from '../../../../src/agent/factory/agent-factory.js';
@@ -18,19 +16,6 @@ import { AgentTeamStreamEvent } from '../../../../src/agent-team/streaming/agent
 import { AgentTeamStatus } from '../../../../src/agent-team/status/agent-team-status.js';
 import type { AgentTeam } from '../../../../src/agent-team/agent-team.js';
 import { createLmstudioLLM, hasLmstudioConfig } from '../../helpers/lmstudio-llm-helper.js';
-
-class SimpleWorkspace extends BaseAgentWorkspace {
-  private rootPath: string;
-
-  constructor(rootPath: string) {
-    super(new WorkspaceConfig({ root_path: rootPath }));
-    this.rootPath = rootPath;
-  }
-
-  getBasePath(): string {
-    return this.rootPath;
-  }
-}
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -140,7 +125,7 @@ runIntegration('Agent team streaming integration (LM Studio, api_tool_call)', ()
       null,
       null,
       null,
-      new SimpleWorkspace(tempDirCoordinator)
+      tempDirCoordinator
     );
 
     const workerConfig = new AgentConfig(
@@ -156,7 +141,7 @@ runIntegration('Agent team streaming integration (LM Studio, api_tool_call)', ()
       null,
       null,
       null,
-      new SimpleWorkspace(tempDirWorker)
+      tempDirWorker
     );
 
     const builder = new AgentTeamBuilder('StreamingTeam', 'Agent team streaming integration test');

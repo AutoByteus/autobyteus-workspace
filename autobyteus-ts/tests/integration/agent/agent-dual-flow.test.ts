@@ -8,23 +8,8 @@ import { AgentConfig } from '../../../src/agent/context/agent-config.js';
 import { AgentStatus } from '../../../src/agent/status/status-enum.js';
 import { AgentInputUserMessage } from '../../../src/agent/message/agent-input-user-message.js';
 import { registerWriteFileTool } from '../../../src/tools/file/write-file.js';
-import { BaseAgentWorkspace } from '../../../src/agent/workspace/base-workspace.js';
-import { WorkspaceConfig } from '../../../src/agent/workspace/workspace-config.js';
 import { SkillRegistry } from '../../../src/skills/registry.js';
 import { createLmstudioLLM, hasLmstudioConfig } from '../helpers/lmstudio-llm-helper.js';
-
-class SimpleWorkspace extends BaseAgentWorkspace {
-  private rootPath: string;
-
-  constructor(rootPath: string) {
-    super(new WorkspaceConfig({ root_path: rootPath }));
-    this.rootPath = rootPath;
-  }
-
-  getBasePath(): string {
-    return this.rootPath;
-  }
-}
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -115,7 +100,7 @@ runIntegration('Agent dual-flow integration (LM Studio, api_tool_call)', () => {
       null,
       null,
       null,
-      new SimpleWorkspace(tempDirA)
+      tempDirA
     );
 
     const configB = new AgentConfig(
@@ -131,7 +116,7 @@ runIntegration('Agent dual-flow integration (LM Studio, api_tool_call)', () => {
       null,
       null,
       null,
-      new SimpleWorkspace(tempDirB)
+      tempDirB
     );
 
     const factory = new AgentFactory();

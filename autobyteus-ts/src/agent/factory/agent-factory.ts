@@ -158,7 +158,7 @@ export class AgentFactory extends Singleton {
 
     const runtimeState = new AgentRuntimeState(
       agentId,
-      config.workspace ?? null,
+      config.workspaceRootPath ?? null,
       config.initialCustomData ?? null
     );
 
