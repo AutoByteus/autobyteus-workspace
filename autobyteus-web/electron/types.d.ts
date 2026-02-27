@@ -6,6 +6,28 @@ import type {
 
 type Cleanup = () => void;
 
+type AppUpdateStatus =
+  | 'idle'
+  | 'checking'
+  | 'available'
+  | 'downloading'
+  | 'downloaded'
+  | 'no-update'
+  | 'error';
+
+type AppUpdateState = {
+  status: AppUpdateStatus;
+  currentVersion: string;
+  availableVersion: string | null;
+  downloadPercent: number | null;
+  downloadTransferredBytes: number | null;
+  downloadTotalBytes: number | null;
+  releaseNotes: string | null;
+  message: string;
+  error: string | null;
+  checkedAt: string | null;
+};
+
 interface Window {
   electronAPI?: {
     sendPing: (message: string) => void;
@@ -23,6 +45,11 @@ interface Window {
     upsertNodeRegistry: (change: NodeRegistryChange) => Promise<NodeRegistrySnapshot>;
     getNodeRegistrySnapshot: () => Promise<NodeRegistrySnapshot>;
     onNodeRegistryUpdated: (callback: (snapshot: NodeRegistrySnapshot) => void) => Cleanup;
+    getAppUpdateState: () => Promise<AppUpdateState>;
+    checkForAppUpdates: () => Promise<AppUpdateState>;
+    downloadAppUpdate: () => Promise<AppUpdateState>;
+    installAppUpdateAndRestart: () => Promise<{ accepted: boolean }>;
+    onAppUpdateState: (callback: (updateState: AppUpdateState) => void) => Cleanup;
 
     getLogFilePath: () => Promise<string>;
     openLogFile: (filePath: string) => Promise<{ success: boolean; error?: string }>;

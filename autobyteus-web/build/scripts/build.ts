@@ -52,6 +52,75 @@ function getRequestedArch(args: string[] = cliArgs): RequestedArch {
 const platform: PlatformType = getPlatform()
 const requestedArch: RequestedArch = getRequestedArch()
 
+function parseGitHubRepo(rawValue: string): { owner: string, repo: string } | null {
+  const normalized = rawValue.trim().replace(/\.git$/, '')
+  if (!normalized) return null
+
+  if (normalized.includes('@') && normalized.includes(':')) {
+    const scpPath = normalized.slice(normalized.lastIndexOf(':') + 1)
+    const scpMatch = scpPath.match(/^([^/]+)\/([^/]+)$/)
+    if (scpMatch) {
+      const owner = scpMatch[1]?.trim()
+      const repo = scpMatch[2]?.trim()
+      if (owner && repo) {
+        return { owner, repo }
+      }
+    }
+  }
+
+  const simpleMatch = normalized.match(/^([^/]+)\/([^/]+)$/)
+  if (simpleMatch) {
+    const owner = simpleMatch[1]?.trim()
+    const repo = simpleMatch[2]?.trim()
+    if (owner && repo) {
+      return { owner, repo }
+    }
+  }
+
+  const match = normalized.match(/github\.com[/:]([^/]+)\/([^/]+)$/i)
+  if (!match) return null
+
+  const owner = match[1]?.trim()
+  const repo = match[2]?.trim()
+  if (!owner || !repo) return null
+
+  return { owner, repo }
+}
+
+function resolveRepositoryFromGitRemote(): string | null {
+  try {
+    const remoteUrl = execSync('git config --get remote.origin.url', {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore']
+    }).trim()
+    return remoteUrl || null
+  } catch {
+    return null
+  }
+}
+
+function resolveUpdaterPublishConfig(): Configuration['publish'] {
+  const repositoryHint =
+    process.env.AUTOBYTEUS_UPDATER_REPOSITORY?.trim()
+    || process.env.GITHUB_REPOSITORY?.trim()
+    || resolveRepositoryFromGitRemote()
+
+  const resolvedRepo = repositoryHint ? parseGitHubRepo(repositoryHint) : null
+  if (!resolvedRepo) {
+    throw new Error(
+      'Unable to resolve GitHub updater repository. Set AUTOBYTEUS_UPDATER_REPOSITORY=owner/repo.'
+    )
+  }
+
+  return [
+    {
+      provider: 'github',
+      owner: resolvedRepo.owner,
+      repo: resolvedRepo.repo,
+    },
+  ]
+}
+
 function normalizeBuildFlavor(value?: string): BuildFlavor | null {
   if (!value) return null
 
@@ -128,6 +197,7 @@ function resolveArtifactBaseName(flavor: BuildFlavor): string {
 
 const buildFlavor: BuildFlavor = resolveBuildFlavor()
 const artifactBaseName = resolveArtifactBaseName(buildFlavor)
+const updaterPublishConfig = resolveUpdaterPublishConfig()
 
 // Log environment information
 console.log('Building with environment:', process.env.NODE_ENV)
@@ -135,6 +205,7 @@ console.log('Using environment file:', process.env.NODE_ENV === 'production' ? '
 console.log('Resolved build flavor:', buildFlavor)
 console.log('Artifact base name:', artifactBaseName)
 console.log('Requested architecture:', requestedArch)
+console.log('Updater publish config:', JSON.stringify(updaterPublishConfig))
 
 const options: Configuration = {
   appId: 'com.autobyteus.app',
@@ -169,6 +240,7 @@ const options: Configuration = {
       to: "icons"
     }
   ],
+  publish: updaterPublishConfig,
   // Default artifact name pattern
   artifactName: `${artifactBaseName}_\${platform}-\${version}.\${ext}`,
   win: {
@@ -189,7 +261,7 @@ const options: Configuration = {
     differentialPackage: false         // Disable differential updates
   },
   mac: {
-    target: ['dmg'],
+    target: ['dmg', 'zip'],
     icon: 'build/icons/icon.icns',
     // Custom naming for macOS builds based on architecture
     artifactName: `${artifactBaseName}_macos-\${arch}-\${version}.\${ext}`,
@@ -243,7 +315,7 @@ function resolvePlatformTargets(
     return new Map([
       [Platform.LINUX, new Map([[Arch.x64, ['AppImage']]])],
       [Platform.WINDOWS, new Map([[Arch.x64, ['nsis']]])],
-      [Platform.MAC, new Map([[Arch.x64, ['dmg']], [Arch.arm64, ['dmg']]])]
+      [Platform.MAC, new Map([[Arch.x64, ['dmg', 'zip']], [Arch.arm64, ['dmg', 'zip']]])]
     ])
   }
 
@@ -259,7 +331,7 @@ function resolvePlatformTargets(
     let macArch: Arch = process.arch === 'x64' ? Arch.x64 : Arch.arm64
     if (archPreference === 'ARM64') macArch = Arch.arm64
     if (archPreference === 'X64') macArch = Arch.x64
-    return new Map([[Platform.MAC, new Map([[macArch, ['dmg']]])]])
+    return new Map([[Platform.MAC, new Map([[macArch, ['dmg', 'zip']]])]])
   }
 
   throw new Error(`Unsupported build platform: ${buildPlatform}`)
@@ -339,7 +411,7 @@ async function main(): Promise<void> {
         await build({
           config: macConfig,
           publish: 'never',
-          targets: new Map([[Platform.MAC, new Map([[arch, ['dmg']]])]])
+          targets: new Map([[Platform.MAC, new Map([[arch, ['dmg', 'zip']]])]])
         });
       }
 

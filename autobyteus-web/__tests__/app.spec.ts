@@ -40,6 +40,10 @@ vi.mock('~/components/server/ServerShutdown.vue', () => ({
   default: { template: '<div data-testid="server-shutdown" />' },
 }));
 
+vi.mock('~/components/app/AppUpdateNotice.vue', () => ({
+  default: { template: '<div data-testid="app-update-notice" />' },
+}));
+
 vi.mock('~/components/ui/UiErrorPanel.vue', () => ({
   default: { template: '<div data-testid="error-panel" />' },
 }));
@@ -60,6 +64,7 @@ describe('app.vue', () => {
 
     expect(wrapper.find('[data-testid="server-loading"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="server-shutdown"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="app-update-notice"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="nuxt-layout"]').exists()).toBe(false);
     expect(wrapper.find('[data-testid="toast-container"]').exists()).toBe(true);
   });

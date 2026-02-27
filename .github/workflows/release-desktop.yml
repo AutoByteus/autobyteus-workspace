@@ -71,6 +71,8 @@ jobs:
           path: |
             autobyteus-web/electron-dist/*.dmg
             autobyteus-web/electron-dist/*.dmg.blockmap
+            autobyteus-web/electron-dist/*.zip
+            autobyteus-web/electron-dist/*.zip.blockmap
             autobyteus-web/electron-dist/latest-mac.yml
           if-no-files-found: error
 
@@ -207,6 +209,8 @@ jobs:
           files: |
             release-artifacts/**/*.dmg
             release-artifacts/**/*.dmg.blockmap
+            release-artifacts/**/*.zip
+            release-artifacts/**/*.zip.blockmap
             release-artifacts/**/*.AppImage
             release-artifacts/**/*.AppImage.blockmap
             release-artifacts/**/latest-*.yml
