@@ -45,6 +45,7 @@ const mountSettings = () =>
         ConversationHistoryManager: { template: '<div data-testid="section-conversation-logs" />' },
         NodeManager: { template: '<div data-testid="section-nodes" />' },
         MessagingSetupManager: { template: '<div data-testid="section-messaging" />' },
+        AboutSettingsManager: { template: '<div data-testid="section-about" />' },
         ToolsManagementWorkspace: { template: '<div data-testid="section-tools-management" />' },
         ServerSettingsManager: { props: ['sectionMode'], template: '<div data-testid="section-server-settings">mode={{ sectionMode }}</div>' },
       },
@@ -66,6 +67,7 @@ describe('settings page', () => {
     expect(wrapper.text()).toContain('API Keys');
     expect(wrapper.text()).toContain('Nodes');
     expect(wrapper.text()).toContain('Messaging');
+    expect(wrapper.text()).toContain('About');
     expect(wrapper.text()).toContain('Local Tools');
     expect(wrapper.text()).toContain('MCP Servers');
     expect(wrapper.text()).toContain('Server Settings');
@@ -109,6 +111,15 @@ describe('settings page', () => {
     const setupState = (wrapper.vm as any).$?.setupState;
 
     expect(setupState.activeSection).toBe('messaging');
+  });
+
+  it('supports about section query and activates about section', async () => {
+    routeMock.query = { section: 'about' };
+    const wrapper = mountSettings();
+    await nextTick();
+    const setupState = (wrapper.vm as any).$?.setupState;
+
+    expect(setupState.activeSection).toBe('about');
   });
 
   it('supports mcp-servers section query and activates mcp-servers section', async () => {

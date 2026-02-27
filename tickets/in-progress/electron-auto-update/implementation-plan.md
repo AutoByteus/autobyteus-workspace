@@ -54,3 +54,30 @@ Implement Electron auto-updates with persistent renderer UX and release artifact
   - Mitigation: include zip + zip.blockmap upload patterns.
 - Risk: accidental updater activity during dev.
   - Mitigation: packaged-only auto-check guard.
+
+## Reopen Scope (2026-02-27)
+
+Implement a canonical `Settings > About` section that shows app version and allows manual update checks using existing updater store/actions.
+
+## Reopen Execution Order
+
+1. Add About settings component with version/status/actions from `appUpdateStore`.
+2. Add `about` section into settings sidebar + content router in `pages/settings.vue`.
+3. Extend settings page tests for About section navigation/query behavior.
+4. Add About component tests for manual check action and CTA rendering.
+5. Run targeted Nuxt/Electron verification and record evidence.
+
+## Reopen Change List
+
+| Change ID | Type | Files | Depends On | Expected Outcome |
+| --- | --- | --- | --- | --- |
+| C-011 | Add | `autobyteus-web/components/settings/AboutSettingsManager.vue` | C-004 | Canonical About panel for version + manual update controls |
+| C-012 | Modify | `autobyteus-web/pages/settings.vue` | C-011 | Single settings entrypoint for About section |
+| C-013 | Modify | `autobyteus-web/pages/__tests__/settings.spec.ts` | C-012 | Coverage for About section selection/query |
+| C-014 | Add | `autobyteus-web/components/settings/__tests__/AboutSettingsManager.spec.ts` | C-011 | Coverage for About panel updater interactions |
+
+## Reopen Verification Plan
+
+- `pnpm -C autobyteus-web test:nuxt --run pages/__tests__/settings.spec.ts components/settings/__tests__/AboutSettingsManager.spec.ts`
+- `pnpm -C autobyteus-web test:nuxt --run stores/__tests__/appUpdateStore.spec.ts components/app/__tests__/AppUpdateNotice.spec.ts`
+- `pnpm -C autobyteus-web transpile-electron`

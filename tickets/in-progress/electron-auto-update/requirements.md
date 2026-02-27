@@ -8,6 +8,7 @@
 ## Goal / Problem Statement
 
 Users should receive desktop app updates inside the Electron app without manually visiting a website and reinstalling. The app must detect newer releases, clearly inform the user in-app, and let the user download and install updates with a low-friction, trustworthy UX.
+Users should also have one canonical, non-duplicated place to view app version and manually trigger update checks when startup auto-check is missed or uncertain.
 
 ## Scope Classification
 
@@ -24,6 +25,8 @@ Users should receive desktop app updates inside the Electron app without manuall
 - `UC-004`: After download, user clicks `Install & Restart` and updater triggers app replacement flow.
 - `UC-005`: Errors and no-update states are clearly communicated without app crash or dead-end.
 - `UC-006`: Release pipeline artifacts are compatible with updater feed metadata for supported platforms.
+- `UC-007`: User opens `Settings > About` and sees current app version + update state.
+- `UC-008`: User manually clicks `Check for Updates` from `Settings > About`.
 
 ## Out Of Scope / Non-Goals
 
@@ -50,6 +53,7 @@ Users should receive desktop app updates inside the Electron app without manuall
 1. Windows updater behavior is implemented but CI currently builds/publishes macOS + Linux only.
 2. macOS updater compatibility depends on shipping zip artifacts and corresponding metadata.
 3. Local dev runtime (`electron .`) cannot prove real update install path; packaged build validation is required.
+4. Settings navigation should stay clean; update controls must remain single-sourced to avoid duplicate UX entrypoints.
 
 ## Requirements (Verifiable)
 
@@ -80,6 +84,15 @@ Users should receive desktop app updates inside the Electron app without manuall
 - `R-009` (Provider Simplicity):
   - Expected outcome: Build/runtime updater configuration supports GitHub Releases only and removes generic provider branching.
 
+- `R-010` (Canonical About Surface):
+  - Expected outcome: Settings contains one `About` section that is the canonical location for app version and manual update check.
+
+- `R-011` (Version Visibility):
+  - Expected outcome: `Settings > About` displays current app version sourced from updater/app runtime state.
+
+- `R-012` (Manual Check Action):
+  - Expected outcome: `Settings > About` provides a `Check for Updates` action that calls existing updater control surface and reflects resulting status.
+
 ## Acceptance Criteria
 
 - `AC-001` Startup check:
@@ -106,6 +119,12 @@ Users should receive desktop app updates inside the Electron app without manuall
 - `AC-008` Tests:
   - Electron + Nuxt targeted tests for updater contracts and renderer state handling pass.
 
+- `AC-009` About section:
+  - Settings navigation includes an `About` section and renders About panel content without duplicating updater logic.
+
+- `AC-010` Manual check UX:
+  - Clicking `Check for Updates` in About triggers updater check and surfaces status feedback (`checking`, `no-update`, `available`, or `error`).
+
 ## Requirement Coverage Map
 
 - `R-001` -> `UC-001`, `UC-003`, `UC-004`, `UC-005`
@@ -117,6 +136,9 @@ Users should receive desktop app updates inside the Electron app without manuall
 - `R-007` -> `UC-006`
 - `R-008` -> `UC-002`, `UC-003`, `UC-004`, `UC-005`
 - `R-009` -> `UC-006`
+- `R-010` -> `UC-007`, `UC-008`
+- `R-011` -> `UC-007`
+- `R-012` -> `UC-008`
 
 ## Acceptance Criteria Coverage Map (Stage 6)
 
@@ -128,3 +150,5 @@ Users should receive desktop app updates inside the Electron app without manuall
 - `AC-006` -> `S6-006` packaged build output includes updater metadata config
 - `AC-007` -> `S6-007` release workflow uploads updater-required assets (mac zip + yml + blockmap, linux appimage + yml + blockmap)
 - `AC-008` -> `S6-008` targeted tests pass for preload/main/store/component flows
+- `AC-009` -> `S6-009` settings About section renders and is selectable
+- `AC-010` -> `S6-010` About manual check invokes updater action and reflects state
