@@ -26,6 +26,16 @@ type AppUpdateStatePayload = {
 };
 
 let updateStateCleanup: Cleanup | null = null;
+let noUpdateHideTimer: ReturnType<typeof setTimeout> | null = null;
+const NO_UPDATE_HIDE_DELAY_MS = 3000;
+
+function clearNoUpdateHideTimer(): void {
+  if (!noUpdateHideTimer) {
+    return;
+  }
+  clearTimeout(noUpdateHideTimer);
+  noUpdateHideTimer = null;
+}
 
 interface AppUpdateStoreState extends AppUpdateStatePayload {
   initialized: boolean;
@@ -149,6 +159,7 @@ export const useAppUpdateStore = defineStore('appUpdate', {
     },
 
     dismissNotice(): void {
+      clearNoUpdateHideTimer();
       this.visible = false;
       if (this.status === 'available' && this.availableVersion) {
         this.dismissedVersion = this.availableVersion;
@@ -170,6 +181,7 @@ export const useAppUpdateStore = defineStore('appUpdate', {
       this.message = payload.message ?? '';
       this.error = payload.error !== undefined ? payload.error : this.error;
       this.checkedAt = payload.checkedAt ?? this.checkedAt;
+      clearNoUpdateHideTimer();
 
       if (this.status === 'available') {
         if (!this.availableVersion || this.availableVersion !== this.dismissedVersion) {
@@ -178,7 +190,13 @@ export const useAppUpdateStore = defineStore('appUpdate', {
       } else if (this.status === 'downloading' || this.status === 'downloaded' || this.status === 'checking' || this.status === 'error') {
         this.visible = true;
       } else if (this.status === 'no-update') {
-        this.visible = false;
+        this.visible = true;
+        noUpdateHideTimer = setTimeout(() => {
+          if (this.status === 'no-update') {
+            this.visible = false;
+          }
+          noUpdateHideTimer = null;
+        }, NO_UPDATE_HIDE_DELAY_MS);
       }
 
       if (this.status === 'downloaded') {

@@ -82,3 +82,64 @@
 
 1. Should UI expose a manual “Check for updates” action in addition to startup auto-check? (Implementation will include this, low risk.)
 2. Should download start immediately on update available or only after explicit user click? (Implementation will use explicit user click for clear consent/control.)
+
+## Reopen Investigation Addendum (2026-02-27)
+
+### Additional Sources Consulted
+
+- `autobyteus-web/pages/settings.vue`
+- `autobyteus-web/pages/__tests__/settings.spec.ts`
+- `autobyteus-web/stores/appUpdateStore.ts`
+- `autobyteus-web/plugins/15.appUpdater.client.ts`
+
+### Findings
+
+1. Settings page already uses a single-section navigation model (`activeSection`) with one canonical render area.
+   - This supports adding one `about` section without duplicating update controls elsewhere.
+
+2. App update state and actions are already centralized in `useAppUpdateStore`.
+   - Manual trigger already exists (`checkForUpdates`).
+   - Current app version is already stored (`currentVersion`).
+   - This avoids creating new updater APIs.
+
+3. No existing About section is present.
+   - Users currently cannot discover app version or manually check for updates from a stable settings location.
+
+4. Startup plugin (`15.appUpdater.client.ts`) already initializes updater store once on client.
+   - Settings/About can consume existing state directly with no extra initialization path.
+
+### Implications For Reopened Scope
+
+- Reopened scope remains `Medium` because it touches settings navigation, a new settings component, tests, and workflow docs, while reusing existing updater runtime contracts.
+- Best UX path is one canonical `Settings > About` destination with:
+  - current version display,
+  - manual `Check for Updates`,
+  - existing updater status/actions surfaced in-place.
+
+## Reopen Investigation Addendum (2026-02-27, Updates UX Polish)
+
+### Additional Sources Consulted
+
+- `autobyteus-web/pages/settings.vue`
+- `autobyteus-web/components/settings/AboutSettingsManager.vue`
+- `autobyteus-web/stores/appUpdateStore.ts`
+- `autobyteus-web/components/app/AppUpdateNotice.vue`
+
+### Findings
+
+1. The settings navigation currently places `About` before `Server Settings`.
+   - User requirement is to keep update controls discoverable but cleaner by placing the update entry last.
+
+2. Naming `About` is semantically broad; this screen's actual purpose is update/version management.
+   - Renaming to `Updates` better aligns user intent with destination.
+
+3. `no-update` state currently sets `visible = false` immediately in `appUpdateStore`.
+   - This causes the global update notice to disappear too quickly after manual checks.
+
+4. Existing architecture can satisfy this without new IPC/electron changes.
+   - Required changes are renderer-only: settings navigation/panel labeling plus a small store timing adjustment.
+
+### Triage
+
+- Scope classification remains `Medium` for ticket continuity.
+- Change-risk is localized to settings UI + updater store state timing + tests.

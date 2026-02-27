@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import { useAppUpdateStore } from '../appUpdateStore';
 
@@ -27,6 +27,10 @@ describe('appUpdateStore', () => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
     setElectronApiMock(null);
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   it('initializes safely when Electron bridge is unavailable', async () => {
@@ -172,5 +176,94 @@ describe('appUpdateStore', () => {
     expect(store.shouldShow).toBe(true);
     store.dismissNotice();
     expect(store.shouldShow).toBe(false);
+  });
+
+  it('keeps no-update notice visible for at least three seconds', async () => {
+    vi.useFakeTimers();
+    let listener: ((payload: any) => void) | null = null;
+
+    setElectronApiMock({
+      getAppUpdateState: vi.fn().mockResolvedValue({
+        status: 'idle',
+        currentVersion: '1.1.12',
+        availableVersion: null,
+        downloadPercent: null,
+        downloadTransferredBytes: null,
+        downloadTotalBytes: null,
+        releaseNotes: null,
+        message: '',
+        error: null,
+        checkedAt: null,
+      }),
+      onAppUpdateState: vi.fn().mockImplementation((callback: (payload: any) => void) => {
+        listener = callback;
+        return vi.fn();
+      }),
+    });
+
+    const store = useAppUpdateStore();
+    await store.initialize();
+
+    listener?.({
+      status: 'no-update',
+      message: 'You already have the latest version.',
+      currentVersion: '1.1.12',
+      availableVersion: null,
+      checkedAt: '2026-02-27T00:00:00.000Z',
+    });
+
+    expect(store.shouldShow).toBe(true);
+    vi.advanceTimersByTime(2999);
+    expect(store.shouldShow).toBe(true);
+    vi.advanceTimersByTime(1);
+    expect(store.shouldShow).toBe(false);
+  });
+
+  it('cancels pending no-update auto-hide when a new state arrives', async () => {
+    vi.useFakeTimers();
+    let listener: ((payload: any) => void) | null = null;
+
+    setElectronApiMock({
+      getAppUpdateState: vi.fn().mockResolvedValue({
+        status: 'idle',
+        currentVersion: '1.1.12',
+        availableVersion: null,
+        downloadPercent: null,
+        downloadTransferredBytes: null,
+        downloadTotalBytes: null,
+        releaseNotes: null,
+        message: '',
+        error: null,
+        checkedAt: null,
+      }),
+      onAppUpdateState: vi.fn().mockImplementation((callback: (payload: any) => void) => {
+        listener = callback;
+        return vi.fn();
+      }),
+    });
+
+    const store = useAppUpdateStore();
+    await store.initialize();
+
+    listener?.({
+      status: 'no-update',
+      message: 'You already have the latest version.',
+      currentVersion: '1.1.12',
+      availableVersion: null,
+      checkedAt: '2026-02-27T00:00:00.000Z',
+    });
+    expect(store.shouldShow).toBe(true);
+
+    listener?.({
+      status: 'available',
+      message: 'Version 1.1.13 is available.',
+      currentVersion: '1.1.12',
+      availableVersion: '1.1.13',
+      checkedAt: '2026-02-27T00:00:05.000Z',
+    });
+    vi.advanceTimersByTime(3000);
+
+    expect(store.status).toBe('available');
+    expect(store.shouldShow).toBe(true);
   });
 });

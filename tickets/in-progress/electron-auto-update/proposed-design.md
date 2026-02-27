@@ -151,3 +151,80 @@ Main events:
 
 3. Auto-download immediately when update is available.
 - Rejected for this requirement: user explicitly asked for click-driven update action.
+
+## Reopen Design Addendum (Settings About UX)
+
+### Design Objective
+
+Add one canonical `Settings > About` surface for version visibility and manual update checks, without duplicating updater logic or adding secondary update entrypoints.
+
+### Architecture Direction (Reopen Scope)
+
+Decision: **Reuse existing updater store and add a dedicated settings-level About panel**.
+
+Rationale:
+- Keeps update control logic single-sourced in `useAppUpdateStore`.
+- Adds discoverable manual-check UX in one stable location.
+- Avoids duplicate control surfaces across multiple settings sections.
+
+### Target Changes
+
+- Add new settings component:
+  - `components/settings/AboutSettingsManager.vue`
+  - Responsibilities:
+    - Display app version (`currentVersion` fallback when unavailable).
+    - Display updater state message.
+    - Provide `Check for Updates` action using `appUpdateStore.checkForUpdates()`.
+    - Show contextual secondary actions (`Download`, `Install & Restart`) when relevant.
+
+- Update settings page navigation:
+  - `pages/settings.vue`
+  - Add `about` to `SettingsSection` union and valid section map.
+  - Add one sidebar nav item (`About`) and content render branch for About panel.
+  - Keep this as the only settings entrypoint for manual checks/version visibility.
+
+- Update tests:
+  - `pages/__tests__/settings.spec.ts` for new section query/navigation.
+  - New component test for About panel behavior and action wiring.
+
+### Naming Decisions
+
+- `AboutSettingsManager.vue` chosen to match existing settings component naming style (`*Manager.vue`) and avoid naming drift.
+
+### Reopen Change Inventory
+
+- Add: `autobyteus-web/components/settings/AboutSettingsManager.vue`
+- Add: `autobyteus-web/components/settings/__tests__/AboutSettingsManager.spec.ts`
+- Modify: `autobyteus-web/pages/settings.vue`
+- Modify: `autobyteus-web/pages/__tests__/settings.spec.ts`
+- Modify: `tickets/in-progress/electron-auto-update/*` workflow artifacts for reopened scope
+
+## Reopen Design Addendum (2026-02-27, Updates UX Polish)
+
+### Objective
+
+Refine settings discoverability and message readability by renaming `About` to `Updates`, moving it to the final sidebar slot, and keeping the `no-update` notice visible for at least 3 seconds.
+
+### Design Decisions
+
+1. Settings section key transitions from `about` to `updates`.
+   - Keep query backward compatibility by mapping `about -> updates` in section normalization.
+
+2. Sidebar ordering change:
+   - Place `Updates` nav item after `Server Settings` so it is the final entry.
+
+3. Component-level text updates:
+   - Update panel heading/subcopy to `Updates` language while preserving existing action set (`Check for Updates`, `Download Update`, `Install & Restart`).
+
+4. Store-level timing policy:
+   - Add a no-update auto-dismiss timer in `appUpdateStore`.
+   - Rule: set `visible = true` on `no-update`, schedule hide after 3000ms, clear prior timer on new state transitions.
+
+### Reopen Change Inventory (Addendum)
+
+- Modify: `autobyteus-web/pages/settings.vue`
+- Modify: `autobyteus-web/components/settings/AboutSettingsManager.vue`
+- Modify: `autobyteus-web/stores/appUpdateStore.ts`
+- Modify: `autobyteus-web/pages/__tests__/settings.spec.ts`
+- Modify: `autobyteus-web/components/settings/__tests__/AboutSettingsManager.spec.ts`
+- Modify: `autobyteus-web/stores/__tests__/appUpdateStore.spec.ts`

@@ -77,6 +77,28 @@
 4. release workflow uploads metadata + binary + blockmap artifacts (including mac zip family)
 5. installed app updater resolves GitHub Releases feed + downloads referenced artifacts
 
+## UC-007 Settings About Version Visibility
+
+1. `[ENTRY]` user opens `/settings` and selects `About`
+2. `pages/settings.vue` sets `activeSection = 'about'`
+3. `AboutSettingsManager.vue` mounts
+4. component reads `useAppUpdateStore` reactive state
+5. version label resolves from `appUpdateStore.currentVersion`
+6. status text resolves from current updater state/message
+7. UI renders one canonical about card with version + update status
+
+## UC-008 Settings About Manual Check
+
+1. `[ENTRY]` user clicks `Check for Updates` in `AboutSettingsManager`
+2. component calls `appUpdateStore.checkForUpdates()`
+3. store invokes `window.electronAPI.checkForAppUpdates()`
+4. main updater handler updates state (`checking` -> `available|no-update|error`)
+5. store receives updated state via direct invoke response and broadcast event
+6. About panel status/message refreshes in place
+7. if status is `available` or `downloaded`, About panel exposes contextual next CTA:
+  - `Download Update` for `available`
+  - `Install & Restart` for `downloaded`
+
 ## Data/Contract Summary
 
 - Main -> Renderer event:
@@ -93,3 +115,22 @@
 - Provider misconfiguration -> main `error` state (no crash)
 - Missing release artifacts -> download/install failure surfaced in UI
 - Repeated CTA clicks during active operation -> guarded/no-op state response
+
+## UC-009 Settings Updates Placement + Naming
+
+1. `[ENTRY]` user opens `/settings`.
+2. `pages/settings.vue` renders sidebar entries with `Server Settings` followed by `Updates` as the last item.
+3. user clicks `Updates`.
+4. section resolver maps active key `updates` and mounts updates panel component.
+5. if route query uses legacy `about`, normalizer remaps to `updates` before section activation.
+
+## UC-010 No-Update Visibility Timing
+
+1. `[ENTRY]` user triggers `Check for Updates` from updates panel or notice card.
+2. `appUpdateStore.checkForUpdates()` invokes electron API.
+3. main process returns `status = no-update` with latest-version message.
+4. store applies payload and sets `visible = true`.
+5. store schedules a 3000ms dismissal timer for `no-update` status.
+6. notice remains visible/readable during timer window.
+7. timer expires and store sets `visible = false` unless a newer state superseded it.
+8. if status changes before timer expiry (`available`, `error`, etc.), prior timer is cleared to avoid stale hide actions.
