@@ -42,10 +42,10 @@ describe('AboutSettingsManager', () => {
   it('renders version and default status details', () => {
     const wrapper = mount(AboutSettingsManager);
 
-    expect(wrapper.find('[data-testid="settings-about-panel"]').exists()).toBe(true);
-    expect(wrapper.get('[data-testid="settings-about-version"]').text()).toContain('1.1.11');
-    expect(wrapper.get('[data-testid="settings-about-status"]').text()).toContain('Idle');
-    expect(wrapper.get('[data-testid="settings-about-last-checked"]').text()).toContain('Never');
+    expect(wrapper.find('[data-testid="settings-updates-panel"]').exists()).toBe(true);
+    expect(wrapper.get('[data-testid="settings-updates-version"]').text()).toContain('1.1.11');
+    expect(wrapper.get('[data-testid="settings-updates-status"]').text()).toContain('Idle');
+    expect(wrapper.get('[data-testid="settings-updates-last-checked"]').text()).toContain('Never');
   });
 
   it('calls initialize on mount when store is not initialized', () => {
@@ -53,22 +53,22 @@ describe('AboutSettingsManager', () => {
     expect(appUpdateStoreMock.initialize).toHaveBeenCalledTimes(1);
   });
 
-  it('triggers manual update check from About action', async () => {
+  it('triggers manual update check from Updates action', async () => {
     const wrapper = mount(AboutSettingsManager);
 
-    await wrapper.get('[data-testid="settings-about-check-updates"]').trigger('click');
+    await wrapper.get('[data-testid="settings-updates-check-updates"]').trigger('click');
     expect(appUpdateStoreMock.checkForUpdates).toHaveBeenCalledTimes(1);
   });
 
   it('renders contextual download and install actions by status', async () => {
     appUpdateStoreMock.status = 'available';
     let wrapper = mount(AboutSettingsManager);
-    await wrapper.get('[data-testid="settings-about-download-update"]').trigger('click');
+    await wrapper.get('[data-testid="settings-updates-download-update"]').trigger('click');
     expect(appUpdateStoreMock.downloadUpdate).toHaveBeenCalledTimes(1);
 
     appUpdateStoreMock.status = 'downloaded';
     wrapper = mount(AboutSettingsManager);
-    await wrapper.get('[data-testid="settings-about-install-update"]').trigger('click');
+    await wrapper.get('[data-testid="settings-updates-install-update"]').trigger('click');
     expect(appUpdateStoreMock.installUpdateAndRestart).toHaveBeenCalledTimes(1);
   });
 });

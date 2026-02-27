@@ -3,31 +3,31 @@
     <div class="mx-auto w-full max-w-3xl space-y-4">
       <section
         class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm"
-        data-testid="settings-about-panel"
+        data-testid="settings-updates-panel"
       >
         <header class="mb-4">
-          <h2 class="text-lg font-semibold text-gray-900">About AutoByteus</h2>
+          <h2 class="text-lg font-semibold text-gray-900">AutoByteus Updates</h2>
           <p class="mt-1 text-sm text-gray-600">
-            Version information and desktop app update controls.
+            Version details and desktop app update controls.
           </p>
         </header>
 
         <dl class="grid gap-3 text-sm sm:grid-cols-3">
           <div>
             <dt class="text-gray-500">Current Version</dt>
-            <dd class="font-medium text-gray-900" data-testid="settings-about-version">{{ currentVersionLabel }}</dd>
+            <dd class="font-medium text-gray-900" data-testid="settings-updates-version">{{ currentVersionLabel }}</dd>
           </div>
           <div>
             <dt class="text-gray-500">Update Status</dt>
-            <dd class="font-medium text-gray-900" data-testid="settings-about-status">{{ statusLabel }}</dd>
+            <dd class="font-medium text-gray-900" data-testid="settings-updates-status">{{ statusLabel }}</dd>
           </div>
           <div>
             <dt class="text-gray-500">Last Checked</dt>
-            <dd class="font-medium text-gray-900" data-testid="settings-about-last-checked">{{ lastCheckedLabel }}</dd>
+            <dd class="font-medium text-gray-900" data-testid="settings-updates-last-checked">{{ lastCheckedLabel }}</dd>
           </div>
         </dl>
 
-        <p class="mt-4 rounded-md bg-gray-50 px-3 py-2 text-sm text-gray-700" data-testid="settings-about-message">
+        <p class="mt-4 rounded-md bg-gray-50 px-3 py-2 text-sm text-gray-700" data-testid="settings-updates-message">
           {{ statusMessage }}
         </p>
 
@@ -35,7 +35,7 @@
           <button
             type="button"
             class="rounded-md bg-sky-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-sky-700 disabled:cursor-not-allowed disabled:opacity-60"
-            data-testid="settings-about-check-updates"
+            data-testid="settings-updates-check-updates"
             :disabled="!appUpdateStore.isElectron || isCheckDisabled"
             @click="checkForUpdates"
           >
@@ -46,7 +46,7 @@
             v-if="appUpdateStore.status === 'available'"
             type="button"
             class="rounded-md bg-emerald-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-emerald-700"
-            data-testid="settings-about-download-update"
+            data-testid="settings-updates-download-update"
             @click="downloadUpdate"
           >
             Download Update
@@ -56,7 +56,7 @@
             v-if="appUpdateStore.status === 'downloaded'"
             type="button"
             class="rounded-md bg-emerald-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-emerald-700"
-            data-testid="settings-about-install-update"
+            data-testid="settings-updates-install-update"
             @click="installUpdateAndRestart"
           >
             Install &amp; Restart

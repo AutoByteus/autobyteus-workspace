@@ -49,3 +49,25 @@
 ## Residual Risks
 
 - Production auto-update success still depends on publishing release assets to the configured GitHub repository and code-signing/notarization in CI credentials.
+
+## Re-Entry Validation Addendum (Updates UX Polish Scope)
+
+### Additional Acceptance Criteria Closure
+
+| Acceptance Criteria | Scenario | Evidence | Result |
+| --- | --- | --- | --- |
+| AC-011 Updates nav placement/label | `S6-011` final settings entry and label rename | `pages/settings.vue`, `pages/__tests__/settings.spec.ts` | Passed |
+| AC-012 No-update feedback timing | `S6-012` notice visible >= 3 seconds before auto-hide | `stores/appUpdateStore.ts`, `stores/__tests__/appUpdateStore.spec.ts` | Passed |
+| AC-013 Legacy query compatibility | `S6-013` `about` query maps to `updates` section | `pages/settings.vue`, `pages/__tests__/settings.spec.ts` | Passed |
+
+### Command Evidence (Addendum)
+
+- `pnpm -C autobyteus-web test:nuxt --run pages/__tests__/settings.spec.ts components/settings/__tests__/AboutSettingsManager.spec.ts stores/__tests__/appUpdateStore.spec.ts` -> pass
+- `pnpm -C autobyteus-web test:nuxt --run components/app/__tests__/AppUpdateNotice.spec.ts` -> pass
+- `pnpm -C autobyteus-web transpile-electron` -> pass
+
+### Behavior Confirmation (Addendum)
+
+- Settings sidebar order now ends with `Server Settings` then `Updates`.
+- Updates panel remains canonical for app version visibility and manual update actions.
+- No-update notice remains visible for at least 3 seconds before auto-dismiss.

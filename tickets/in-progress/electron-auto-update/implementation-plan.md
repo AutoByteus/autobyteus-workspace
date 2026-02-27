@@ -81,3 +81,25 @@ Implement a canonical `Settings > About` section that shows app version and allo
 - `pnpm -C autobyteus-web test:nuxt --run pages/__tests__/settings.spec.ts components/settings/__tests__/AboutSettingsManager.spec.ts`
 - `pnpm -C autobyteus-web test:nuxt --run stores/__tests__/appUpdateStore.spec.ts components/app/__tests__/AppUpdateNotice.spec.ts`
 - `pnpm -C autobyteus-web transpile-electron`
+
+## Reopen Scope 2 (2026-02-27, Updates UX Polish)
+
+Implement settings UX polish requested after release validation: rename `About` to `Updates`, place it after `Server Settings`, and keep no-update banner visible for 3 seconds.
+
+### Reopen Scope 2 Execution Order
+
+1. Update settings section key/label/order in `pages/settings.vue` with legacy `about` query fallback.
+2. Update updates panel text/test IDs to `updates` semantics.
+3. Add no-update visibility timer policy in `appUpdateStore.ts`.
+4. Adjust settings/component/store tests to cover new behavior.
+5. Run targeted Nuxt tests and electron transpile validation.
+
+### Reopen Scope 2 Change List
+
+| Change ID | Type | Files | Depends On | Expected Outcome |
+| --- | --- | --- | --- | --- |
+| C-015 | Modify | `autobyteus-web/pages/settings.vue` | C-011,C-012 | `Updates` nav label/ordering, legacy `about` query alias support |
+| C-016 | Modify | `autobyteus-web/components/settings/AboutSettingsManager.vue` | C-011 | Panel copy and test IDs align with `Updates` naming |
+| C-017 | Modify | `autobyteus-web/stores/appUpdateStore.ts` | C-004 | `no-update` state remains visible >= 3 seconds before auto-hide |
+| C-018 | Modify | `autobyteus-web/pages/__tests__/settings.spec.ts`, `autobyteus-web/components/settings/__tests__/AboutSettingsManager.spec.ts` | C-015,C-016 | Regression coverage for new naming/order and section activation |
+| C-019 | Modify | `autobyteus-web/stores/__tests__/appUpdateStore.spec.ts` | C-017 | Timer-driven no-update visibility behavior covered with fake timers |

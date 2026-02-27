@@ -115,3 +115,31 @@
   - current version display,
   - manual `Check for Updates`,
   - existing updater status/actions surfaced in-place.
+
+## Reopen Investigation Addendum (2026-02-27, Updates UX Polish)
+
+### Additional Sources Consulted
+
+- `autobyteus-web/pages/settings.vue`
+- `autobyteus-web/components/settings/AboutSettingsManager.vue`
+- `autobyteus-web/stores/appUpdateStore.ts`
+- `autobyteus-web/components/app/AppUpdateNotice.vue`
+
+### Findings
+
+1. The settings navigation currently places `About` before `Server Settings`.
+   - User requirement is to keep update controls discoverable but cleaner by placing the update entry last.
+
+2. Naming `About` is semantically broad; this screen's actual purpose is update/version management.
+   - Renaming to `Updates` better aligns user intent with destination.
+
+3. `no-update` state currently sets `visible = false` immediately in `appUpdateStore`.
+   - This causes the global update notice to disappear too quickly after manual checks.
+
+4. Existing architecture can satisfy this without new IPC/electron changes.
+   - Required changes are renderer-only: settings navigation/panel labeling plus a small store timing adjustment.
+
+### Triage
+
+- Scope classification remains `Medium` for ticket continuity.
+- Change-risk is localized to settings UI + updater store state timing + tests.

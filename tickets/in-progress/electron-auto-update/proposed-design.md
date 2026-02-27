@@ -198,3 +198,33 @@ Rationale:
 - Modify: `autobyteus-web/pages/settings.vue`
 - Modify: `autobyteus-web/pages/__tests__/settings.spec.ts`
 - Modify: `tickets/in-progress/electron-auto-update/*` workflow artifacts for reopened scope
+
+## Reopen Design Addendum (2026-02-27, Updates UX Polish)
+
+### Objective
+
+Refine settings discoverability and message readability by renaming `About` to `Updates`, moving it to the final sidebar slot, and keeping the `no-update` notice visible for at least 3 seconds.
+
+### Design Decisions
+
+1. Settings section key transitions from `about` to `updates`.
+   - Keep query backward compatibility by mapping `about -> updates` in section normalization.
+
+2. Sidebar ordering change:
+   - Place `Updates` nav item after `Server Settings` so it is the final entry.
+
+3. Component-level text updates:
+   - Update panel heading/subcopy to `Updates` language while preserving existing action set (`Check for Updates`, `Download Update`, `Install & Restart`).
+
+4. Store-level timing policy:
+   - Add a no-update auto-dismiss timer in `appUpdateStore`.
+   - Rule: set `visible = true` on `no-update`, schedule hide after 3000ms, clear prior timer on new state transitions.
+
+### Reopen Change Inventory (Addendum)
+
+- Modify: `autobyteus-web/pages/settings.vue`
+- Modify: `autobyteus-web/components/settings/AboutSettingsManager.vue`
+- Modify: `autobyteus-web/stores/appUpdateStore.ts`
+- Modify: `autobyteus-web/pages/__tests__/settings.spec.ts`
+- Modify: `autobyteus-web/components/settings/__tests__/AboutSettingsManager.spec.ts`
+- Modify: `autobyteus-web/stores/__tests__/appUpdateStore.spec.ts`

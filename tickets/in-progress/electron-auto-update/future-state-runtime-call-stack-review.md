@@ -83,3 +83,19 @@ Validate that requirements/design/call-stack are implementation-safe and complet
 - Findings:
   - No blockers.
   - Second consecutive clean round achieved for reopened About/manual-check scope.
+
+## Re-Entry Round 8 (Updates UX Polish)
+
+- Date: `2026-02-27`
+- Result: `Pass` (`Candidate Go`)
+- Findings:
+  - No blockers.
+  - Updated requirements/design/runtime modeling align with localized renderer/store changes.
+
+## Re-Entry Round 9 (Updates UX Polish)
+
+- Date: `2026-02-27`
+- Result: `Pass` (`Go Confirmed`)
+- Findings:
+  - No blockers.
+  - Second consecutive clean round achieved for updates-label/order and no-update timing scope.

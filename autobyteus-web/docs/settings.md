@@ -10,8 +10,8 @@ The Settings page is implemented in \`pages/settings.vue\` and serves as a conta
 2.  **Token Usage Statistics**
 3.  **Nodes**
 4.  **Messaging**
-5.  **About**
-6.  **Server Settings**
+5.  **Server Settings**
+6.  **Updates**
 
 ## Sections Detail
 
@@ -59,7 +59,17 @@ Guided setup flows for messaging channels and provider bindings.
 - Step-based setup/checklist progression.
 - Verification and channel binding workflows.
 
-### 5. About
+### 5. Server Settings
+
+**Component:** \`components/settings/ServerSettingsManager.vue\`
+
+A flexible key-value store for backend configurations.
+
+- **View & Edit:** precise control over server-side flags and parameters.
+- **Custom Settings:** Users can add new custom key-value pairs to configure plugins or experimental features.
+- **Custom Setting Cleanup:** Advanced table rows for custom keys include a remove action to delete obsolete entries.
+
+### 6. Updates
 
 **Component:** `components/settings/AboutSettingsManager.vue`
 
@@ -69,16 +79,7 @@ Canonical app metadata and manual update controls.
 - Shows updater status and last-checked timestamp.
 - Provides one manual **Check for Updates** action.
 - Shows contextual actions (`Download Update`, `Install & Restart`) when update state requires it.
-
-### 6. Server Settings
-
-**Component:** \`components/settings/ServerSettingsManager.vue\`
-
-A flexible key-value store for backend configurations.
-
-- **View & Edit:** precise control over server-side flags and parameters.
-- **Custom Settings:** Users can add new custom key-value pairs to configure plugins or experimental features.
-- **Custom Setting Cleanup:** Advanced table rows for custom keys include a remove action to delete obsolete entries.
+- When result is already-latest (`no-update`), the update notice remains visible for at least 3 seconds before auto-dismiss.
 
 ## Related Documentation
 

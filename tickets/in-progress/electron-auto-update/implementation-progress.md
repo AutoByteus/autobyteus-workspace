@@ -57,3 +57,28 @@
 - Active reopen re-entry:
   - Trigger: User requested clean canonical manual-check UX (`Settings > About`) after merge/release.
   - Resolution status: Implemented (`C-011`..`C-014`) and reopened scope verification commands passed.
+
+## Reopen Scope 2 Progress Addendum (2026-02-27, Updates UX Polish)
+
+### Status
+
+- Reopen Scope 2 Status: `Completed`
+- Stage Context: `5 -> 5.5` complete, ready for review and aggregated validation gates.
+
+### Change Tracking (Addendum)
+
+| Change ID | Files | Status | Verification | Notes |
+| --- | --- | --- | --- | --- |
+| C-015 | `autobyteus-web/pages/settings.vue` | Completed | `test:nuxt --run pages/__tests__/settings.spec.ts` | Renamed section key/label to `updates`, moved nav item after `Server Settings`, preserved `about` query alias |
+| C-016 | `autobyteus-web/components/settings/AboutSettingsManager.vue` | Completed | `test:nuxt --run components/settings/__tests__/AboutSettingsManager.spec.ts` | Updated panel copy and selectors to Updates naming |
+| C-017 | `autobyteus-web/stores/appUpdateStore.ts` | Completed | `test:nuxt --run stores/__tests__/appUpdateStore.spec.ts` | Added 3-second no-update visibility timer with cancellation on state change |
+| C-018 | `autobyteus-web/pages/__tests__/settings.spec.ts`, `autobyteus-web/components/settings/__tests__/AboutSettingsManager.spec.ts` | Completed | test run below | Updated coverage for updates label/order and legacy about query mapping |
+| C-019 | `autobyteus-web/stores/__tests__/appUpdateStore.spec.ts` | Completed | test run below | Added fake-timer coverage for no-update dwell + cancellation behavior |
+
+### Verification Log (Addendum)
+
+| Date | Command | Result | Notes |
+| --- | --- | --- | --- |
+| 2026-02-27 | `pnpm -C autobyteus-web test:nuxt --run pages/__tests__/settings.spec.ts components/settings/__tests__/AboutSettingsManager.spec.ts stores/__tests__/appUpdateStore.spec.ts` | Passed | Includes new update-label/order/timing coverage |
+| 2026-02-27 | `pnpm -C autobyteus-web test:nuxt --run components/app/__tests__/AppUpdateNotice.spec.ts` | Passed | Regression check for global notice component |
+| 2026-02-27 | `pnpm -C autobyteus-web transpile-electron` | Passed | Electron TS compile regression after renderer/store updates |

@@ -152,3 +152,41 @@ Users should also have one canonical, non-duplicated place to view app version a
 - `AC-008` -> `S6-008` targeted tests pass for preload/main/store/component flows
 - `AC-009` -> `S6-009` settings About section renders and is selectable
 - `AC-010` -> `S6-010` About manual check invokes updater action and reflects state
+
+## Reopen Requirement Addendum (2026-02-27, Updates UX Polish)
+
+### Additional In-Scope Use Cases
+
+- `UC-009`: User opens `Settings > Updates` (renamed from About) and finds the update/version panel as the final settings entry after `Server Settings`.
+- `UC-010`: After manual update check returns `no-update`, user can read the confirmation notice for at least 3 seconds before it auto-hides.
+
+### Additional Requirements (Verifiable)
+
+- `R-013` (Updates Naming and Placement):
+  - Expected outcome: Settings navigation label is `Updates` and appears as the last entry after `Server Settings`.
+
+- `R-014` (No-Update Visibility Timing):
+  - Expected outcome: `no-update` notification remains visible for at least 3 seconds before auto-dismiss.
+
+- `R-015` (Backward Compatibility for Existing Deep Links):
+  - Expected outcome: legacy section query `about` still resolves to the new `updates` section.
+
+### Additional Acceptance Criteria
+
+- `AC-011` Updates nav placement/label:
+  - Settings sidebar shows `Updates` as the final entry after `Server Settings`.
+
+- `AC-012` No-update feedback timing:
+  - After manual check returns latest-version result, update notice persists for >=3 seconds before dismissal.
+
+- `AC-013` Legacy query compatibility:
+  - Route query `?section=about` still activates the `Updates` panel.
+
+### Addendum Coverage Map
+
+- `R-013` -> `UC-009`
+- `R-014` -> `UC-010`
+- `R-015` -> `UC-009`
+- `AC-011` -> `S6-011`
+- `AC-012` -> `S6-012`
+- `AC-013` -> `S6-013`

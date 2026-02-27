@@ -50,3 +50,20 @@
 - Decision:
   - About section integration keeps update control logic single-sourced via `useAppUpdateStore`.
   - Stage 5.5 Internal Code Review (Reopened Settings Scope): `Pass`
+
+## Re-Entry Addendum (Updates UX Polish Scope)
+
+- Re-reviewed files:
+  - `autobyteus-web/pages/settings.vue`
+  - `autobyteus-web/components/settings/AboutSettingsManager.vue`
+  - `autobyteus-web/stores/appUpdateStore.ts`
+  - `autobyteus-web/pages/__tests__/settings.spec.ts`
+  - `autobyteus-web/components/settings/__tests__/AboutSettingsManager.spec.ts`
+  - `autobyteus-web/stores/__tests__/appUpdateStore.spec.ts`
+- Result:
+  - Blocking findings: `None`
+  - Non-blocking findings: `None`
+- Decision:
+  - Updates navigation placement and naming are coherent with clean settings IA.
+  - No-update timer logic is guarded against stale timeout side effects.
+  - Stage 5.5 Internal Code Review (Reopen Scope 2): `Pass`
