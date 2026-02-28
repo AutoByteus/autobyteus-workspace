@@ -85,6 +85,10 @@ jobs:
           test -n "$ENGINES_DIR"
           echo "Prisma engines dir: $ENGINES_DIR"
           test -f "$ENGINES_DIR/schema-engine-darwin-arm64"
+          CLIENT_DIR="$(find autobyteus-web/resources/server/node_modules -maxdepth 10 -type d -path '*/node_modules/.prisma/client' | head -n1)"
+          test -n "$CLIENT_DIR"
+          echo "Prisma client dir: $CLIENT_DIR"
+          test -f "$CLIENT_DIR/libquery_engine-darwin-arm64.dylib.node"
 
       - name: Upload macOS artifacts
         uses: actions/upload-artifact@v4
@@ -154,6 +158,10 @@ jobs:
           test -n "$ENGINES_DIR"
           echo "Prisma engines dir: $ENGINES_DIR"
           test -f "$ENGINES_DIR/schema-engine-darwin"
+          CLIENT_DIR="$(find autobyteus-web/resources/server/node_modules -maxdepth 10 -type d -path '*/node_modules/.prisma/client' | head -n1)"
+          test -n "$CLIENT_DIR"
+          echo "Prisma client dir: $CLIENT_DIR"
+          test -f "$CLIENT_DIR/libquery_engine-darwin.dylib.node"
 
       - name: Upload macOS Intel artifacts
         uses: actions/upload-artifact@v4
