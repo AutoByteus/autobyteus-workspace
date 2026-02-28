@@ -71,12 +71,24 @@ jobs:
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           AUTOBYTEUS_BUILD_FLAVOR: "personal"
+          PRISMA_CLI_BINARY_TARGETS: "darwin-arm64,debian-openssl-1.1.x,debian-openssl-3.0.x"
         run: |
           sudo launchctl limit maxfiles 65536 200000 || true
           ulimit -n 65536 || ulimit -n 10240 || true
           ulimit -Sn
           ulimit -Hn
           pnpm build:electron:mac -- --arm64
+
+      - name: Verify bundled Prisma ARM64 engine target
+        run: |
+          ENGINES_DIR="$(find autobyteus-web/resources/server/node_modules -maxdepth 6 -type d -path '*/@prisma/engines' | head -n1)"
+          test -n "$ENGINES_DIR"
+          echo "Prisma engines dir: $ENGINES_DIR"
+          test -f "$ENGINES_DIR/schema-engine-darwin-arm64"
+          CLIENT_DIR="$(find autobyteus-web/resources/server/node_modules -maxdepth 10 -type d -path '*/node_modules/.prisma/client' | head -n1)"
+          test -n "$CLIENT_DIR"
+          echo "Prisma client dir: $CLIENT_DIR"
+          test -f "$CLIENT_DIR/libquery_engine-darwin-arm64.dylib.node"
 
       - name: Upload macOS artifacts
         uses: actions/upload-artifact@v4
@@ -132,12 +144,24 @@ jobs:
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           AUTOBYTEUS_BUILD_FLAVOR: "personal"
+          PRISMA_CLI_BINARY_TARGETS: "darwin,debian-openssl-1.1.x,debian-openssl-3.0.x"
         run: |
           sudo launchctl limit maxfiles 65536 200000 || true
           ulimit -n 65536 || ulimit -n 10240 || true
           ulimit -Sn
           ulimit -Hn
           pnpm build:electron:mac -- --x64
+
+      - name: Verify bundled Prisma x64 engine target
+        run: |
+          ENGINES_DIR="$(find autobyteus-web/resources/server/node_modules -maxdepth 6 -type d -path '*/@prisma/engines' | head -n1)"
+          test -n "$ENGINES_DIR"
+          echo "Prisma engines dir: $ENGINES_DIR"
+          test -f "$ENGINES_DIR/schema-engine-darwin"
+          CLIENT_DIR="$(find autobyteus-web/resources/server/node_modules -maxdepth 10 -type d -path '*/node_modules/.prisma/client' | head -n1)"
+          test -n "$CLIENT_DIR"
+          echo "Prisma client dir: $CLIENT_DIR"
+          test -f "$CLIENT_DIR/libquery_engine-darwin.dylib.node"
 
       - name: Upload macOS Intel artifacts
         uses: actions/upload-artifact@v4
