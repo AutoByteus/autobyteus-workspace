@@ -72,7 +72,10 @@ jobs:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           AUTOBYTEUS_BUILD_FLAVOR: "personal"
         run: |
+          sudo launchctl limit maxfiles 65536 200000 || true
           ulimit -n 65536 || ulimit -n 10240 || true
+          ulimit -Sn
+          ulimit -Hn
           pnpm build:electron:mac -- --arm64
 
       - name: Upload macOS artifacts
@@ -130,7 +133,10 @@ jobs:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           AUTOBYTEUS_BUILD_FLAVOR: "personal"
         run: |
+          sudo launchctl limit maxfiles 65536 200000 || true
           ulimit -n 65536 || ulimit -n 10240 || true
+          ulimit -Sn
+          ulimit -Hn
           pnpm build:electron:mac -- --x64
 
       - name: Upload macOS Intel artifacts
