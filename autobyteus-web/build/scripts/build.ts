@@ -272,7 +272,11 @@ const options: Configuration = {
     entitlements: 'build/entitlements.mac.plist',
     entitlementsInherit: 'build/entitlements.mac.plist',
     signIgnore: [
-      'node-pty/prebuilds/win32-.*'
+      'node-pty/prebuilds/win32-.*',
+      // Skip deep traversal of bundled server JS deps to avoid EMFILE in CI.
+      // Native Mach-O binaries in this tree are still signed explicitly in afterPack.
+      'Contents/Resources/server/node_modules/.*',
+      'server/node_modules/.*'
     ],
     // Notarize only when full Apple credentials are present.
     notarize: !!(
