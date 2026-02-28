@@ -23,5 +23,6 @@
     "@whiskeysockets/baileys": "6.7.21",
     "autobyteus-ts": "workspace:*",
     "fastify": "^4.29.1"
-  }
+  },
+  "license": "Apache-2.0"
 }
