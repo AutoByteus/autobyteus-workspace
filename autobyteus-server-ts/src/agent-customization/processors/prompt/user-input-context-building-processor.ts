@@ -11,7 +11,6 @@ import type { ContextFile } from "autobyteus-ts/agent/message/context-file.js";
 import { SenderType } from "autobyteus-ts/agent/sender-type.js";
 import { LLMFactory } from "autobyteus-ts/llm/llm-factory.js";
 import { LLMProvider } from "autobyteus-ts/llm/providers.js";
-import { FileSystemWorkspace } from "../../../workspaces/filesystem-workspace.js";
 import { PromptContextBuilder } from "./prompt-context-builder.js";
 
 const logger = {
@@ -116,18 +115,29 @@ export class UserInputContextBuildingProcessor extends BaseAgentUserInputMessage
               `Agent '${agentId}': Absolute file path '${contextFile.uri}' does not exist or is not a file. Skipping.`,
             );
           }
-        } else if (context.workspace instanceof FileSystemWorkspace) {
-          const resolvedPath = context.workspace.getAbsolutePath(contextFile.uri);
+        } else if (context.workspaceRootPath) {
+          const resolvedPath = path.resolve(context.workspaceRootPath, contextFile.uri);
+          const relativePath = path.relative(context.workspaceRootPath, resolvedPath);
+          if (
+            relativePath.startsWith("..") ||
+            path.isAbsolute(relativePath)
+          ) {
+            logger.warn(
+              `Agent '${agentId}': Security error resolving path '${contextFile.uri}' outside workspace root. Skipping.`,
+            );
+            continue;
+          }
+
           if (fs.existsSync(resolvedPath) && fs.statSync(resolvedPath).isFile()) {
             absolutePath = resolvedPath;
           } else {
             logger.warn(
-              `Agent '${agentId}': Relative path '${contextFile.uri}' not found in workspace. Skipping.`,
+              `Agent '${agentId}': Relative path '${contextFile.uri}' not found in workspace root '${context.workspaceRootPath}'. Skipping.`,
             );
           }
         } else {
           logger.warn(
-            `Agent '${agentId}': Cannot resolve relative path '${contextFile.uri}' without a FileSystemWorkspace. Skipping.`,
+            `Agent '${agentId}': Cannot resolve relative path '${contextFile.uri}' without workspaceRootPath. Skipping.`,
           );
         }
       } catch (error) {
@@ -193,7 +203,11 @@ export class UserInputContextBuildingProcessor extends BaseAgentUserInputMessage
       readableTypes.includes(cf.fileType),
     );
     if (hasReadableContext) {
-      const builder = new PromptContextBuilder(message, context.workspace ?? null);
+      const builder = new PromptContextBuilder(
+        message,
+        context.workspaceRootPath ?? null,
+        agentId,
+      );
       contextString = builder.buildContextString();
     }
 

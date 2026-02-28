@@ -38,7 +38,7 @@ describe('GenerateSpeechTool', () => {
     } as any);
 
     const tool = new GenerateSpeechTool();
-    const context = { agentId: 'agent-1', workspace: { getBasePath: () => tempDir } };
+    const context = { agentId: 'agent-1', workspaceRootPath: tempDir  };
 
     const result = await tool.execute(context, {
       prompt: 'hello',

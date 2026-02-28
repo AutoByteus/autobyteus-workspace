@@ -1,6 +1,6 @@
 # Settings Page Documentation
 
-The Settings page provides a centralized interface for managing application configurations, monitoring system status, and viewing usage statistics. It is accessible via the sidebar navigation and is divided into several key sections.
+The Settings page provides a centralized interface for managing application configurations, app metadata, and usage statistics. It is accessible via the sidebar navigation and is divided into several key sections.
 
 ## Overview
 
@@ -8,8 +8,10 @@ The Settings page is implemented in \`pages/settings.vue\` and serves as a conta
 
 1.  **API Keys**
 2.  **Token Usage Statistics**
-3.  **Server Settings**
-4.  **Server Status**
+3.  **Nodes**
+4.  **Messaging**
+5.  **Server Settings**
+6.  **Updates**
 
 ## Sections Detail
 
@@ -37,7 +39,27 @@ Provides insights into the application's token consumption and associated costs.
   - Estimated Costs (based on model pricing)
 - **Visualization:** A bar chart visualizes the total cost per model.
 
-### 3. Server Settings
+### 3. Nodes
+
+**Component:** `components/settings/NodeManager.vue`
+
+Manage local/remote node registrations and synchronization operations.
+
+- Register and rename remote nodes.
+- Validate connectivity/capabilities.
+- Trigger focused or full sync operations between nodes.
+
+### 4. Messaging
+
+**Component:** `components/settings/MessagingSetupManager.vue`
+
+Guided setup flows for messaging channels and provider bindings.
+
+- Provider setup scope selection.
+- Step-based setup/checklist progression.
+- Verification and channel binding workflows.
+
+### 5. Server Settings
 
 **Component:** \`components/settings/ServerSettingsManager.vue\`
 
@@ -47,15 +69,17 @@ A flexible key-value store for backend configurations.
 - **Custom Settings:** Users can add new custom key-value pairs to configure plugins or experimental features.
 - **Custom Setting Cleanup:** Advanced table rows for custom keys include a remove action to delete obsolete entries.
 
-### 4. Server Status
+### 6. Updates
 
-**Component:** \`components/server/ServerMonitor.vue\`
+**Component:** `components/settings/AboutSettingsManager.vue`
 
-Displays the real-time health and connection status of the backend server.
+Canonical app metadata and manual update controls.
 
-- **Status Indicators:** Visual feedback on whether the server is `Running`, `Starting`, or in an `Error` state.
-- **Technical Details:** Displays the Server URL and, if running in Electron mode, the path to the local log file.
-- **Controls:** Options to "Refresh Status" or "Restart Server".
+- Shows current desktop app version.
+- Shows updater status and last-checked timestamp.
+- Provides one manual **Check for Updates** action.
+- Shows contextual actions (`Download Update`, `Install & Restart`) when update state requires it.
+- When result is already-latest (`no-update`), the update notice remains visible for at least 3 seconds before auto-dismiss.
 
 ## Related Documentation
 

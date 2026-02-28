@@ -10,9 +10,7 @@ describe('runBash', () => {
       executeCommand: vi.fn(async () => new TerminalResult('ok', '', 0, false))
     };
     const context: any = {
-      workspace: {
-        getBasePath: () => '/tmp/workspace'
-      },
+      workspaceRootPath: '/tmp/workspace',
       _terminalSessionManager: terminalManager
     };
 
@@ -33,9 +31,7 @@ describe('runBash', () => {
       startProcess: vi.fn(async () => 'bg_123')
     };
     const context: any = {
-      workspace: {
-        getBasePath: () => '/tmp/workspace'
-      },
+      workspaceRootPath: '/tmp/workspace',
       _terminalSessionManager: terminalManager,
       _backgroundProcessManager: backgroundManager
     };
@@ -58,11 +54,7 @@ describe('runBash', () => {
       startProcess: vi.fn(async () => 'bg_999')
     };
     const context: any = {
-      workspace: {
-        getBasePath: () => {
-          throw new Error('workspace unavailable');
-        }
-      },
+      workspaceRootPath: null,
       _backgroundProcessManager: backgroundManager
     };
 

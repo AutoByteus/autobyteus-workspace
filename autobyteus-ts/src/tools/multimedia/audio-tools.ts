@@ -5,8 +5,7 @@ import { AudioClientFactory } from '../../multimedia/audio/audio-client-factory.
 import { downloadFileFromUrl } from '../../utils/download-utils.js';
 import { resolveSafePath } from '../../utils/file-utils.js';
 
-type WorkspaceLike = { getBasePath?: () => string };
-type AgentContextLike = { agentId?: string; workspace?: WorkspaceLike | null };
+type AgentContextLike = { agentId?: string; workspaceRootPath?: string | null };
 
 type GenerateSpeechArgs = {
   prompt: string;
@@ -15,26 +14,14 @@ type GenerateSpeechArgs = {
 };
 
 function getWorkspaceRoot(context: AgentContextLike): string {
-  const workspace = context.workspace;
-  if (!workspace) {
+  const workspaceRootPath = context.workspaceRootPath;
+  if (!workspaceRootPath) {
     throw new Error(
       `Relative path provided, but no workspace is configured for agent '${context.agentId}'. ` +
         'A workspace is required to resolve relative paths.'
     );
   }
-
-  const basePath = typeof workspace.getBasePath === 'function'
-    ? workspace.getBasePath()
-    : null;
-
-  if (!basePath || typeof basePath !== 'string') {
-    throw new Error(
-      `Agent '${context.agentId}' has a configured workspace, but it provided an invalid base path ` +
-        `('${basePath}'). Cannot resolve relative paths.`
-    );
-  }
-
-  return basePath;
+  return workspaceRootPath;
 }
 
 function getConfiguredModelIdentifier(envVar: string, defaultModel?: string): string {

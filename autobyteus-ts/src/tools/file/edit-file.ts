@@ -24,8 +24,7 @@ argumentSchema.addParameter(new ParameterDefinition({
   required: true
 }));
 
-type WorkspaceLike = { getBasePath: () => string };
-type AgentContextLike = { agentId: string; workspace?: WorkspaceLike | null };
+type AgentContextLike = { agentId: string; workspaceRootPath?: string | null };
 
 function splitLinesKeepEnds(text: string): string[] {
   const matches = text.match(/.*(?:\n|$)/g) ?? [];
@@ -40,21 +39,13 @@ function resolveFilePath(context: AgentContextLike, path: string): string {
     return pathModule.normalize(path);
   }
 
-  const workspace = context.workspace ?? null;
-  if (!workspace) {
+  const workspaceRootPath = context.workspaceRootPath ?? null;
+  if (!workspaceRootPath) {
     throw new Error(
       `Relative path '${path}' provided, but no workspace is configured for agent '${context.agentId}'. A workspace is required to resolve relative paths.`
     );
   }
-
-  const basePath = workspace.getBasePath();
-  if (!basePath || typeof basePath !== 'string') {
-    throw new Error(
-      `Agent '${context.agentId}' has a configured workspace, but it provided an invalid base path ('${basePath}'). Cannot resolve relative path '${path}'.`
-    );
-  }
-
-  return pathModule.normalize(pathModule.join(basePath, path));
+  return pathModule.normalize(pathModule.join(workspaceRootPath, path));
 }
 
 export async function editFile(

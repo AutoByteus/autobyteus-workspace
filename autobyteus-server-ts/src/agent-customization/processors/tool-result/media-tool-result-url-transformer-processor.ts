@@ -53,17 +53,10 @@ export class MediaToolResultUrlTransformerProcessor extends BaseToolExecutionRes
       }
 
       let filePath = candidatePath;
-      if (!path.isAbsolute(filePath) && context.workspace) {
-        try {
-          const basePath = context.workspace.getBasePath();
-          if (basePath) {
-            const possiblePath = path.join(basePath, filePath);
-            if (fs.existsSync(possiblePath)) {
-              filePath = possiblePath;
-            }
-          }
-        } catch (error) {
-          logger.warn(`Failed to resolve relative path against workspace: ${String(error)}`);
+      if (!path.isAbsolute(filePath) && context.workspaceRootPath) {
+        const possiblePath = path.join(context.workspaceRootPath, filePath);
+        if (fs.existsSync(possiblePath)) {
+          filePath = possiblePath;
         }
       }
 

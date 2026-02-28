@@ -9,6 +9,8 @@ This file tracks high-level parity goals between `autobyteus-server` (Python) an
 - Preserve domain layering and service boundaries.
 - Prefer explicit singleton accessors over eager module-level singleton exports.
 - Keep startup ordering deterministic (`data-dir` -> config init -> migrations -> transports).
+- Keep Prisma migration startup resilient in packaged read-only runtimes by resolving explicit engine paths (bundled preferred, local Prisma cache fallback).
+- Keep Prisma client generation explicit for Linux runtime targets (`debian-openssl-1.1.x` and `debian-openssl-3.0.x`) to avoid CI/runtime OpenSSL target drift.
 - Maintain GraphQL/REST/WebSocket API parity where practical.
 
 ## Documentation Migration

@@ -5,13 +5,17 @@ import type { AgentContext } from "autobyteus-ts";
 import type { ToolInvocation } from "autobyteus-ts/agent/tool-invocation.js";
 import { LLMFactory } from "autobyteus-ts/llm/llm-factory.js";
 import { LLMProvider } from "autobyteus-ts/llm/providers.js";
-import { FileSystemWorkspace } from "../../../workspaces/filesystem-workspace.js";
 
 const logger = {
   debug: (...args: unknown[]) => console.debug(...args),
   warn: (...args: unknown[]) => console.warn(...args),
   error: (...args: unknown[]) => console.error(...args),
 };
+
+function isWithinRoot(root: string, target: string): boolean {
+  const relative = path.relative(root, target);
+  return relative === "" || (!relative.startsWith("..") && !path.isAbsolute(relative));
+}
 
 export class MediaInputPathNormalizationPreprocessor extends BaseToolInvocationPreprocessor {
   static TARGET_TOOLS = new Set(["generate_image", "edit_image"]);
@@ -84,7 +88,7 @@ export class MediaInputPathNormalizationPreprocessor extends BaseToolInvocationP
 
   private async normalizeList(
     items: string[],
-    workspace: AgentContext["workspace"],
+    workspaceRootPath: string | null,
     agentId: string,
   ): Promise<string[]> {
     const normalized: string[] = [];
@@ -101,19 +105,19 @@ export class MediaInputPathNormalizationPreprocessor extends BaseToolInvocationP
 
       let resolvedPath: string | null = null;
       if (path.isAbsolute(entry)) {
-        resolvedPath = entry;
-      } else if (workspace instanceof FileSystemWorkspace) {
-        try {
-          resolvedPath = workspace.getAbsolutePath(entry);
-        } catch (error) {
+        resolvedPath = path.resolve(entry);
+      } else if (workspaceRootPath) {
+        const candidatePath = path.resolve(workspaceRootPath, entry);
+        if (!isWithinRoot(workspaceRootPath, candidatePath)) {
           logger.warn(
-            `Agent '${agentId}': unable to resolve relative path '${entry}': ${String(error)}`,
+            `Agent '${agentId}': relative path '${entry}' resolves outside workspace root '${workspaceRootPath}'. Skipping.`,
           );
           continue;
         }
+        resolvedPath = candidatePath;
       } else {
         logger.warn(
-          `Agent '${agentId}': no workspace to resolve relative path '${entry}'. Skipping.`,
+          `Agent '${agentId}': no workspaceRootPath to resolve relative path '${entry}'. Skipping.`,
         );
         continue;
       }
@@ -143,7 +147,7 @@ export class MediaInputPathNormalizationPreprocessor extends BaseToolInvocationP
 
     const args = (invocation.arguments ?? {}) as Record<string, unknown>;
     const agentId = context.agentId;
-    const workspace = context.workspace;
+    const workspaceRootPath = context.workspaceRootPath ?? null;
 
     const imagesVal = args["input_images"];
     if (imagesVal) {
@@ -158,7 +162,7 @@ export class MediaInputPathNormalizationPreprocessor extends BaseToolInvocationP
         );
       }
 
-      const normalized = await this.normalizeList(items, workspace, agentId);
+      const normalized = await this.normalizeList(items, workspaceRootPath, agentId);
       if (normalized.length) {
         args["input_images"] = normalized.join(",");
       }
@@ -166,7 +170,7 @@ export class MediaInputPathNormalizationPreprocessor extends BaseToolInvocationP
 
     const maskVal = args["mask_image"];
     if (maskVal && typeof maskVal === "string" && !this.isUrl(maskVal)) {
-      const maskList = await this.normalizeList([maskVal], workspace, agentId);
+      const maskList = await this.normalizeList([maskVal], workspaceRootPath, agentId);
       if (maskList.length) {
         args["mask_image"] = maskList[0];
       }

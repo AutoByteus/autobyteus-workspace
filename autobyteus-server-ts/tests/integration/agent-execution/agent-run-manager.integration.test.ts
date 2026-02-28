@@ -136,7 +136,8 @@ const createManager = (overrides: Partial<ConstructorParameters<typeof AgentRunM
     getWorkspaceById: vi.fn().mockReturnValue(null),
     getOrCreateTempWorkspace: vi.fn().mockResolvedValue({
       workspaceId: "temp_ws",
-      name: "Temp Workspace",
+      getName: () => "Temp Workspace",
+      getBasePath: () => "/tmp/temp-workspace",
     }),
   };
 
@@ -382,8 +383,13 @@ describe("AgentRunManager integration", () => {
 
     expect(createdId).toBe("agent_123");
     expect(workspaceManager.getOrCreateTempWorkspace).toHaveBeenCalledTimes(1);
-    const config = agentFactory.createAgent.mock.calls[0][0] as { workspace: unknown };
-    expect(config.workspace).toEqual({ workspaceId: "temp_ws", name: "Temp Workspace" });
+    const config = agentFactory.createAgent.mock.calls[0][0] as {
+      workspaceRootPath: string | null;
+      initialCustomData?: Record<string, unknown>;
+    };
+    expect(config.workspaceRootPath).toBe("/tmp/temp-workspace");
+    expect(config.initialCustomData?.workspace_id).toBe("temp_ws");
+    expect(config.initialCustomData?.workspace_name).toBe("Temp Workspace");
   });
 
   it("passes llmConfig into createLLM when provided", async () => {

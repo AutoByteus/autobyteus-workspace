@@ -11,6 +11,7 @@ WORKSPACE_ROOT="$(cd "${WEB_ROOT}/.." && pwd)"
 SERVER_REPO_DIR="${WORKSPACE_ROOT}/autobyteus-server-ts"
 TARGET_DIR="${WEB_ROOT}/resources/server"
 export TMPDIR="${TMPDIR:-/tmp}"
+LINUX_PRISMA_BINARY_TARGETS="debian-openssl-1.1.x,debian-openssl-3.0.x"
 
 # Colors for output
 GREEN='\033[0;32m'
@@ -96,9 +97,61 @@ if [ ! -x "$PRISMA_BIN" ] && [ -f "${PRISMA_BIN}.cmd" ]; then
   PRISMA_BIN="${PRISMA_BIN}.cmd"
 fi
 if [ -x "$PRISMA_BIN" ]; then
-  "$PRISMA_BIN" generate --schema "${TARGET_DIR}/prisma/schema.prisma"
+  if [ "$(uname -s)" = "Linux" ]; then
+    PRISMA_CLI_BINARY_TARGETS="${PRISMA_CLI_BINARY_TARGETS:-$LINUX_PRISMA_BINARY_TARGETS}" \
+      "$PRISMA_BIN" generate --schema "${TARGET_DIR}/prisma/schema.prisma"
+  else
+    "$PRISMA_BIN" generate --schema "${TARGET_DIR}/prisma/schema.prisma"
+  fi
 else
   echo -e "${YELLOW}Warning: Prisma CLI not found at ${PRISMA_BIN}; skipping generate.${NC}"
+fi
+
+if [ "$(uname -s)" = "Linux" ]; then
+  echo -e "\n${YELLOW}Validating bundled Prisma Linux engine targets...${NC}"
+  ENGINES_DIR=""
+  if [ -d "${TARGET_DIR}/node_modules/@prisma/engines" ]; then
+    ENGINES_DIR="${TARGET_DIR}/node_modules/@prisma/engines"
+  else
+    ENGINES_DIR="$(find "${TARGET_DIR}/node_modules/.pnpm" -maxdepth 4 -type d -path "*/@prisma/engines" | head -n1 || true)"
+  fi
+
+  if [ -z "${ENGINES_DIR}" ] || [ ! -d "${ENGINES_DIR}" ]; then
+    echo -e "${RED}Error: Prisma engines directory not found in packaged server bundle.${NC}"
+    exit 1
+  fi
+
+  REQUIRED_ENGINES=(
+    "libquery_engine-debian-openssl-1.1.x.so.node"
+    "libquery_engine-debian-openssl-3.0.x.so.node"
+    "schema-engine-debian-openssl-1.1.x"
+    "schema-engine-debian-openssl-3.0.x"
+  )
+  for engine in "${REQUIRED_ENGINES[@]}"; do
+    if [ ! -f "${ENGINES_DIR}/${engine}" ]; then
+      echo -e "${RED}Error: Missing required Prisma engine in bundle: ${engine}${NC}"
+      exit 1
+    fi
+  done
+  echo -e "${GREEN}✓${NC} Prisma Linux engine targets verified in ${ENGINES_DIR}"
+
+  CLIENT_DIR="$(find "${TARGET_DIR}/node_modules/.pnpm" -maxdepth 6 -type d -path "*/@prisma+client@*/node_modules/.prisma/client" | head -n1 || true)"
+  if [ -z "${CLIENT_DIR}" ] || [ ! -d "${CLIENT_DIR}" ]; then
+    echo -e "${RED}Error: Prisma client runtime directory not found in packaged server bundle.${NC}"
+    exit 1
+  fi
+
+  REQUIRED_CLIENT_ENGINES=(
+    "libquery_engine-debian-openssl-1.1.x.so.node"
+    "libquery_engine-debian-openssl-3.0.x.so.node"
+  )
+  for engine in "${REQUIRED_CLIENT_ENGINES[@]}"; do
+    if [ ! -f "${CLIENT_DIR}/${engine}" ]; then
+      echo -e "${RED}Error: Missing required Prisma client engine in bundle: ${engine}${NC}"
+      exit 1
+    fi
+  done
+  echo -e "${GREEN}✓${NC} Prisma client Linux runtime engines verified in ${CLIENT_DIR}"
 fi
 
 echo -e "\n${YELLOW}Pruning native prebuilds for host platform...${NC}"

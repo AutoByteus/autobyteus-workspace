@@ -10,17 +10,10 @@ import { MemoryIngestInputProcessor } from '../../../src/agent/input-processor/m
 import { LLMUserMessageReadyEvent } from '../../../src/agent/events/agent-events.js';
 import { AgentInputUserMessage } from '../../../src/agent/message/agent-input-user-message.js';
 import { buildLLMUserMessage } from '../../../src/agent/message/multimodal-message-builder.js';
-import { BaseAgentWorkspace } from '../../../src/agent/workspace/base-workspace.js';
 import { MemoryManager } from '../../../src/memory/memory-manager.js';
 import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
 import { MemoryType } from '../../../src/memory/models/memory-types.js';
 import { createLmstudioLLM, hasLmstudioConfig } from '../helpers/lmstudio-llm-helper.js';
-
-class DummyWorkspace extends BaseAgentWorkspace {
-  getBasePath(): string {
-    return '.';
-  }
-}
 
 class DummyQueues {
   internalEvents: any[] = [];
@@ -53,7 +46,7 @@ runIntegration('Handler memory flow (LM Studio)', () => {
       const memoryManager = new MemoryManager({
         store: new FileMemoryStore(tempDir, 'agent_handler_flow')
       });
-      const runtimeState = new AgentRuntimeState('agent_handler_flow', new DummyWorkspace());
+      const runtimeState = new AgentRuntimeState('agent_handler_flow', ".");
       runtimeState.memoryManager = memoryManager;
       runtimeState.inputEventQueues = new DummyQueues() as any;
       runtimeState.llmInstance = llm;

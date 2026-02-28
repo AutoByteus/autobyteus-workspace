@@ -3,7 +3,8 @@
     <!-- Content Area -->
     <div class="bg-white p-0 flex flex-col min-h-0 flex-1 min-w-[200px]">
       <div class="flex-1 overflow-auto">
-        <AgentWorkspaceView v-if="isAgentSelected" />
+        <RunConfigPanel v-if="showSelectedRunConfig" />
+        <AgentWorkspaceView v-else-if="isAgentSelected" />
         <TeamWorkspaceView v-else-if="isTeamSelected" />
         <RunConfigPanel v-else-if="hasPendingRunConfig" />
         <div v-else class="flex items-center justify-center h-full text-gray-500">
@@ -38,15 +39,20 @@ import RightSidebarStrip from './RightSidebarStrip.vue';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
+import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore';
 
 const selectionStore = useAgentSelectionStore();
 const runConfigStore = useAgentRunConfigStore();
 const teamRunConfigStore = useTeamRunConfigStore();
+const workspaceCenterViewStore = useWorkspaceCenterViewStore();
 
 const { isRightPanelVisible, rightPanelWidth, initDragRightPanel } = useRightPanel();
 
 const isAgentSelected = computed(() => selectionStore.selectedType === 'agent');
 const isTeamSelected = computed(() => selectionStore.selectedType === 'team');
+const showSelectedRunConfig = computed(() =>
+  Boolean(selectionStore.selectedRunId) && workspaceCenterViewStore.isConfigMode,
+);
 
 const hasPendingRunConfig = computed(() => {
   if (isAgentSelected.value || isTeamSelected.value) {

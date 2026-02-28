@@ -5,7 +5,6 @@ import {
   type AgentInputUserMessage,
 } from "autobyteus-ts";
 import type { UserMessageReceivedEvent } from "autobyteus-ts/agent/events/agent-events.js";
-import { FileSystemWorkspace } from "../../../workspaces/filesystem-workspace.js";
 
 const logger = {
   debug: (...args: unknown[]) => console.debug(...args),
@@ -35,18 +34,18 @@ export class WorkspacePathSanitizationProcessor extends BaseAgentUserInputMessag
     context: AgentContext,
     _triggeringEvent: UserMessageReceivedEvent,
   ): Promise<AgentInputUserMessage> {
-    const workspace = context.workspace;
+    const workspaceRootPath = context.workspaceRootPath;
     const agentRunId = context.agentId;
 
-    if (!(workspace instanceof FileSystemWorkspace) || !workspace.rootPath) {
+    if (!workspaceRootPath) {
       logger.debug(
-        `Agent run '${agentRunId}': Workspace is not a FileSystemWorkspace or has no rootPath. Skipping path sanitization.`,
+        `Agent run '${agentRunId}': No workspaceRootPath configured. Skipping path sanitization.`,
       );
       return message;
     }
 
     const originalContent = message.content;
-    const rootPath = path.normalize(workspace.rootPath);
+    const rootPath = path.normalize(workspaceRootPath);
 
     const escapedRoot = escapeRegExp(rootPath);
     const prefixPattern = new RegExp(`${escapedRoot}[\\\\/]`, "g");

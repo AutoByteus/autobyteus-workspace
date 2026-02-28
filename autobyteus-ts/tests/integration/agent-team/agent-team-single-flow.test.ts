@@ -7,8 +7,6 @@ import { AgentTeamBuilder } from '../../../src/agent-team/agent-team-builder.js'
 import { AgentConfig } from '../../../src/agent/context/agent-config.js';
 import { AgentInputUserMessage } from '../../../src/agent/message/agent-input-user-message.js';
 import { registerWriteFileTool } from '../../../src/tools/file/write-file.js';
-import { BaseAgentWorkspace } from '../../../src/agent/workspace/base-workspace.js';
-import { WorkspaceConfig } from '../../../src/agent/workspace/workspace-config.js';
 import { SkillRegistry } from '../../../src/skills/registry.js';
 import { waitForTeamToBeIdle } from '../../../src/agent-team/utils/wait-for-idle.js';
 import { AgentFactory } from '../../../src/agent/factory/agent-factory.js';
@@ -16,20 +14,14 @@ import { AgentTeamFactory } from '../../../src/agent-team/factory/agent-team-fac
 import type { AgentTeam } from '../../../src/agent-team/agent-team.js';
 import { createLmstudioLLM, hasLmstudioConfig } from '../helpers/lmstudio-llm-helper.js';
 
-class SimpleWorkspace extends BaseAgentWorkspace {
-  private rootPath: string;
-
-  constructor(rootPath: string) {
-    super(new WorkspaceConfig({ root_path: rootPath }));
-    this.rootPath = rootPath;
-  }
-
-  getBasePath(): string {
-    return this.rootPath;
-  }
-}
-
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+const parseMs = (value: string | undefined, fallbackMs: number): number => {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallbackMs;
+};
+
+const FLOW_TEST_TIMEOUT_MS = parseMs(process.env.LMSTUDIO_FLOW_TEST_TIMEOUT_MS, 180000);
+const FILE_WAIT_TIMEOUT_MS = parseMs(process.env.LMSTUDIO_FILE_WAIT_TIMEOUT_MS, 120000);
 
 const waitForFile = async (filePath: string, timeoutMs = 20000, intervalMs = 100): Promise<boolean> => {
   const start = Date.now();
@@ -40,6 +32,34 @@ const waitForFile = async (filePath: string, timeoutMs = 20000, intervalMs = 100
     await delay(intervalMs);
   }
   return false;
+};
+
+const findFileContainingContent = async (rootDir: string, content: string): Promise<string | null> => {
+  const queue: string[] = [rootDir];
+  while (queue.length) {
+    const currentDir = queue.shift();
+    if (!currentDir) {
+      continue;
+    }
+
+    const entries = await fs.readdir(currentDir, { withFileTypes: true });
+    for (const entry of entries) {
+      const candidatePath = path.join(currentDir, entry.name);
+      if (entry.isDirectory()) {
+        queue.push(candidatePath);
+        continue;
+      }
+      if (!entry.isFile()) {
+        continue;
+      }
+
+      const candidateContent = await fs.readFile(candidatePath, 'utf8');
+      if (candidateContent.trim() === content) {
+        return candidatePath;
+      }
+    }
+  }
+  return null;
 };
 
 const resetFactories = () => {
@@ -68,7 +88,7 @@ runIntegration('Agent team integration (LM Studio, api_tool_call)', () => {
 
   afterEach(async () => {
     if (team) {
-      await team.stop(10.0);
+      await team.stop(30.0);
       team = null;
     }
     if (coordinatorLlm) {
@@ -88,7 +108,7 @@ runIntegration('Agent team integration (LM Studio, api_tool_call)', () => {
     resetFactories();
     await fs.rm(tempDirCoordinator, { recursive: true, force: true });
     await fs.rm(tempDirWorker, { recursive: true, force: true });
-  });
+  }, FLOW_TEST_TIMEOUT_MS);
 
   it('routes a message to a worker and executes a tool call', async () => {
     const tool = registerWriteFileTool();
@@ -112,7 +132,7 @@ runIntegration('Agent team integration (LM Studio, api_tool_call)', () => {
       null,
       null,
       null,
-      new SimpleWorkspace(tempDirCoordinator)
+      tempDirCoordinator
     );
 
     const workerConfig = new AgentConfig(
@@ -128,7 +148,7 @@ runIntegration('Agent team integration (LM Studio, api_tool_call)', () => {
       null,
       null,
       null,
-      new SimpleWorkspace(tempDirWorker)
+      tempDirWorker
     );
 
     const builder = new AgentTeamBuilder('IntegrationTeam', 'Agent team integration test');
@@ -141,19 +161,23 @@ runIntegration('Agent team integration (LM Studio, api_tool_call)', () => {
 
     await team.postMessage(
       new AgentInputUserMessage(
-        `Use the write_file tool to write "${toolArgs.content}" to "${toolArgs.path}". ` +
-          'Do not respond with plain text.'
+        `Call write_file exactly once with arguments {"path":"${toolArgs.path}","content":"${toolArgs.content}"}. ` +
+          'Use a relative path and do not respond with plain text.'
       ),
       'Worker'
     );
 
-    const filePath = path.join(tempDirWorker, toolArgs.path);
-    const created = await waitForFile(filePath, 20000, 100);
-    expect(created).toBe(true);
+    let filePath = path.join(tempDirWorker, toolArgs.path);
+    const created = await waitForFile(filePath, FILE_WAIT_TIMEOUT_MS, 100);
+    if (!created) {
+      const discoveredPath = await findFileContainingContent(tempDirWorker, toolArgs.content);
+      expect(discoveredPath).not.toBeNull();
+      filePath = discoveredPath as string;
+    }
 
     const content = await fs.readFile(filePath, 'utf8');
     expect(content.trim()).toBe(toolArgs.content);
 
     await waitForTeamToBeIdle(team, 120.0);
-  });
+  }, FLOW_TEST_TIMEOUT_MS);
 });

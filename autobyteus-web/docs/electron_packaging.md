@@ -208,6 +208,13 @@ window.electronAPI = {
   checkServerHealth: () => Promise<HealthStatus>,
   onServerStatus: (callback) => () => void,
 
+  // App updates
+  getAppUpdateState: () => Promise<AppUpdateState>,
+  checkForAppUpdates: () => Promise<AppUpdateState>,
+  downloadAppUpdate: () => Promise<AppUpdateState>,
+  installAppUpdateAndRestart: () => Promise<{ accepted: boolean }>,
+  onAppUpdateState: (callback) => () => void,
+
   // File operations
   getLogFilePath: () => Promise<string>,
   openLogFile: (path) => Promise<Result>,
@@ -259,7 +266,7 @@ const options: Configuration = {
 | -------- | -------------- | --------------------------------------- |
 | Linux    | AppImage       | `AutoByteus_<flavor>_linux-{version}.AppImage`   |
 | Windows  | NSIS installer | `AutoByteus_<flavor>_windows-{version}.exe`      |
-| macOS    | DMG archive    | `AutoByteus_<flavor>_macos-{arch}-{version}.dmg` |
+| macOS    | DMG + ZIP      | `AutoByteus_<flavor>_macos-{arch}-{version}.dmg/.zip` |
 
 Flavor resolution:
 
@@ -286,6 +293,48 @@ npx ts-node build/scripts/build.ts
 ```
 
 `scripts/prepare-server.sh` now builds the Node server, deploys it into `resources/server`, and rebuilds native modules (e.g., `node-pty`) for the Electron runtime.
+
+On Linux packaging, the script also forces Prisma engine bundling for both OpenSSL targets (`debian-openssl-1.1.x` and `debian-openssl-3.0.x`) and fails the build if either target is missing from:
+
+- packaged CLI engines directory (`@prisma/engines`)
+- packaged Prisma Client runtime directory (`.prisma/client`)
+
+---
+
+## Auto-Update Delivery
+
+Auto-updates are powered by `electron-updater` in the main process via `electron/updater/appUpdater.ts`.
+
+### Runtime Behavior
+
+- Startup auto-check runs only for packaged apps (dev/unpackaged mode is skipped).
+- Renderer windows receive normalized updater state via IPC channel `app-update-state`.
+- Manual check entrypoint is exposed in `Settings > Updates` (canonical UI location).
+- User actions from UI trigger IPC handlers:
+  - `app-update:check`
+  - `app-update:download`
+  - `app-update:install`
+
+### Provider Configuration
+
+- Build-time publish metadata is generated in `build/scripts/build.ts`.
+- Provider is GitHub Releases only.
+- Optional override:
+  - `AUTOBYTEUS_UPDATER_REPOSITORY` (`owner/repo`) when repository auto-detection is not available.
+
+### Release Asset Requirements
+
+For updater compatibility, published release assets must include:
+
+- Linux:
+  - `*.AppImage`
+  - `latest-linux.yml`
+- macOS:
+  - `*.dmg`, `*.dmg.blockmap`
+  - `*.zip`, `*.zip.blockmap`
+  - `latest-mac.yml`
+
+The desktop release workflow (`.github/workflows/release-desktop.yml`) is aligned to upload these files.
 
 ---
 

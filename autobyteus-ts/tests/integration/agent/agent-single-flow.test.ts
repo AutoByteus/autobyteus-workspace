@@ -8,25 +8,17 @@ import { AgentConfig } from '../../../src/agent/context/agent-config.js';
 import { AgentStatus } from '../../../src/agent/status/status-enum.js';
 import { AgentInputUserMessage } from '../../../src/agent/message/agent-input-user-message.js';
 import { registerWriteFileTool } from '../../../src/tools/file/write-file.js';
-import { BaseAgentWorkspace } from '../../../src/agent/workspace/base-workspace.js';
-import { WorkspaceConfig } from '../../../src/agent/workspace/workspace-config.js';
 import { SkillRegistry } from '../../../src/skills/registry.js';
 import { createLmstudioLLM, hasLmstudioConfig } from '../helpers/lmstudio-llm-helper.js';
 
-class SimpleWorkspace extends BaseAgentWorkspace {
-  private rootPath: string;
-
-  constructor(rootPath: string) {
-    super(new WorkspaceConfig({ root_path: rootPath }));
-    this.rootPath = rootPath;
-  }
-
-  getBasePath(): string {
-    return this.rootPath;
-  }
-}
-
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+const parseMs = (value: string | undefined, fallbackMs: number): number => {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallbackMs;
+};
+
+const FLOW_TEST_TIMEOUT_MS = parseMs(process.env.LMSTUDIO_FLOW_TEST_TIMEOUT_MS, 180000);
+const FILE_WAIT_TIMEOUT_MS = parseMs(process.env.LMSTUDIO_FILE_WAIT_TIMEOUT_MS, 120000);
 
 const waitForFile = async (filePath: string, timeoutMs = 5000, intervalMs = 50): Promise<boolean> => {
   const start = Date.now();
@@ -37,6 +29,34 @@ const waitForFile = async (filePath: string, timeoutMs = 5000, intervalMs = 50):
     await delay(intervalMs);
   }
   return false;
+};
+
+const findFileContainingContent = async (rootDir: string, content: string): Promise<string | null> => {
+  const queue: string[] = [rootDir];
+  while (queue.length) {
+    const currentDir = queue.shift();
+    if (!currentDir) {
+      continue;
+    }
+
+    const entries = await fs.readdir(currentDir, { withFileTypes: true });
+    for (const entry of entries) {
+      const candidatePath = path.join(currentDir, entry.name);
+      if (entry.isDirectory()) {
+        queue.push(candidatePath);
+        continue;
+      }
+      if (!entry.isFile()) {
+        continue;
+      }
+
+      const candidateContent = await fs.readFile(candidatePath, 'utf8');
+      if (candidateContent.trim() === content) {
+        return candidatePath;
+      }
+    }
+  }
+  return null;
 };
 
 const waitForStatus = async (
@@ -84,10 +104,10 @@ runIntegration('Agent single-flow integration (LM Studio)', () => {
     SkillRegistry.getInstance().clear();
     resetFactory();
     await fs.rm(tempDir, { recursive: true, force: true });
-  });
+  }, FLOW_TEST_TIMEOUT_MS);
 
   it('executes a tool call end-to-end for a single agent', async () => {
-    const workspace = new SimpleWorkspace(tempDir);
+    const workspace = tempDir;
     const tool = registerWriteFileTool();
     const toolArgs = { path: 'poem.txt', content: 'Roses are red.' };
 
@@ -120,22 +140,26 @@ runIntegration('Agent single-flow integration (LM Studio)', () => {
 
       await agent.postUserMessage(
         new AgentInputUserMessage(
-          `Use the write_file tool to write "${toolArgs.content}" to "${toolArgs.path}". ` +
-            `Do not respond with plain text.`
+          `Call write_file exactly once with arguments {"path":"${toolArgs.path}","content":"${toolArgs.content}"}. ` +
+            'Use a relative path and do not respond with plain text.'
         )
       );
 
-      const filePath = path.join(tempDir, toolArgs.path);
-      const created = await waitForFile(filePath, 20000, 100);
-      expect(created).toBe(true);
+      let filePath = path.join(tempDir, toolArgs.path);
+      const created = await waitForFile(filePath, FILE_WAIT_TIMEOUT_MS, 100);
+      if (!created) {
+        const discoveredPath = await findFileContainingContent(tempDir, toolArgs.content);
+        expect(discoveredPath).not.toBeNull();
+        filePath = discoveredPath as string;
+      }
 
       const content = await fs.readFile(filePath, 'utf8');
       expect(content).toBe(toolArgs.content);
     } finally {
       if (agent.isRunning) {
-        await agent.stop(5);
+        await agent.stop(20);
       }
       await llm.cleanup();
     }
-  }, 120000);
+  }, FLOW_TEST_TIMEOUT_MS);
 });

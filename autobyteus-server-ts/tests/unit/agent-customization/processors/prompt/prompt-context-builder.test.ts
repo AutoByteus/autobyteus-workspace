@@ -3,19 +3,15 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { PromptContextBuilder } from "../../../../../src/agent-customization/processors/prompt/prompt-context-builder.js";
-import { FileSystemWorkspace } from "../../../../../src/workspaces/filesystem-workspace.js";
-import { WorkspaceConfig } from "autobyteus-ts/agent/workspace/workspace-config.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { ContextFile } from "autobyteus-ts/agent/message/context-file.js";
 import { ContextFileType } from "autobyteus-ts/agent/message/context-file-type.js";
 
 describe("PromptContextBuilder", () => {
   let tempDir: string;
-  let workspace: FileSystemWorkspace;
 
   beforeEach(() => {
     tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "autobyteus-prompt-context-"));
-    workspace = new FileSystemWorkspace(new WorkspaceConfig({ rootPath: tempDir }));
   });
 
   afterEach(() => {
@@ -24,7 +20,7 @@ describe("PromptContextBuilder", () => {
 
   it("returns a message when no context files are provided", () => {
     const userInput = new AgentInputUserMessage("test", undefined, []);
-    const builder = new PromptContextBuilder(userInput, workspace);
+    const builder = new PromptContextBuilder(userInput, tempDir, "test_agent");
 
     const contextString = builder.buildContextString();
 
@@ -37,7 +33,7 @@ describe("PromptContextBuilder", () => {
 
     const contextFile = new ContextFile(filePath, ContextFileType.TEXT);
     const userInput = new AgentInputUserMessage("test", undefined, [contextFile]);
-    const builder = new PromptContextBuilder(userInput, workspace);
+    const builder = new PromptContextBuilder(userInput, tempDir, "test_agent");
 
     const contextString = builder.buildContextString();
 
@@ -47,7 +43,7 @@ describe("PromptContextBuilder", () => {
   it("skips non-readable file types", () => {
     const contextFile = new ContextFile("/fake/path/image.png", ContextFileType.IMAGE);
     const userInput = new AgentInputUserMessage("test", undefined, [contextFile]);
-    const builder = new PromptContextBuilder(userInput, workspace);
+    const builder = new PromptContextBuilder(userInput, tempDir, "test_agent");
 
     const contextString = builder.buildContextString();
 
@@ -62,7 +58,7 @@ describe("PromptContextBuilder", () => {
     const missingPath = path.join(tempDir, "nonexistent.txt");
     const contextFile = new ContextFile(missingPath, ContextFileType.TEXT);
     const userInput = new AgentInputUserMessage("test", undefined, [contextFile]);
-    const builder = new PromptContextBuilder(userInput, workspace);
+    const builder = new PromptContextBuilder(userInput, tempDir, "test_agent");
 
     const contextString = builder.buildContextString();
 
@@ -80,7 +76,7 @@ describe("PromptContextBuilder", () => {
 
     const contextFile = new ContextFile(filePath, ContextFileType.TEXT);
     const userInput = new AgentInputUserMessage("test", undefined, [contextFile]);
-    const builder = new PromptContextBuilder(userInput, workspace);
+    const builder = new PromptContextBuilder(userInput, tempDir, "test_agent");
 
     const contextString = builder.buildContextString();
 

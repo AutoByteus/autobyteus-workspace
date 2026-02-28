@@ -26,9 +26,7 @@ describe('ReadMediaFile tool (unit)', () => {
     const tool = new ReadMediaFile();
     const context = {
       agentId: 'agent-1',
-      workspace: {
-        getBasePath: () => tempDir
-      }
+      workspaceRootPath: tempDir
     };
 
     const result = await tool.execute(context, { file_path: 'test_image.png' });
@@ -41,7 +39,7 @@ describe('ReadMediaFile tool (unit)', () => {
 
   it('requires workspace for relative paths', async () => {
     const tool = new ReadMediaFile();
-    const context = { agentId: 'agent-2', workspace: null };
+    const context = { agentId: 'agent-2', workspaceRootPath: null };
 
     await expect(tool.execute(context, { file_path: 'missing.png' }))
       .rejects

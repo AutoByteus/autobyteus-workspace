@@ -1,6 +1,6 @@
 {
   "name": "autobyteus",
-  "version": "1.1.8",
+  "version": "1.1.13",
   "packageManager": "pnpm@10.28.1",
   "description": "AutoByteus Desktop Application",
   "license": "MIT",
@@ -52,6 +52,7 @@
     "diff-match-patch": "^1.0.5",
     "dompurify": "^3.2.2",
     "electron-is-dev": "^2.0.0",
+    "electron-updater": "^6.8.3",
     "html2canvas": "^1.4.1",
     "jsonrepair": "^3.12.0",
     "katex": "^0.16.25",

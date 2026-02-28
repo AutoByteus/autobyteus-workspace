@@ -17,6 +17,7 @@ const {
   teamRunStoreMock,
   agentDefinitionStoreMock,
   agentTeamDefinitionStoreMock,
+  workspaceCenterViewStoreMock,
   windowNodeContextStoreMock,
   pickFolderPathMock,
   addToastMock,
@@ -132,6 +133,10 @@ const {
       ],
       fetchAllAgentTeamDefinitions: vi.fn().mockResolvedValue(undefined),
     },
+    workspaceCenterViewStoreMock: {
+      showChat: vi.fn(),
+      showConfig: vi.fn(),
+    },
     windowNodeContextStoreMock: {
       isEmbeddedWindow: { __v_isRef: true, value: false },
     },
@@ -166,6 +171,10 @@ vi.mock('~/stores/agentDefinitionStore', () => ({
 
 vi.mock('~/stores/agentTeamDefinitionStore', () => ({
   useAgentTeamDefinitionStore: () => agentTeamDefinitionStoreMock,
+}));
+
+vi.mock('~/stores/workspaceCenterViewStore', () => ({
+  useWorkspaceCenterViewStore: () => workspaceCenterViewStoreMock,
 }));
 
 vi.mock('~/stores/windowNodeContextStore', () => ({
@@ -207,6 +216,8 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     ];
     windowNodeContextStoreMock.isEmbeddedWindow.value = false;
     pickFolderPathMock.mockResolvedValue(null);
+    workspaceCenterViewStoreMock.showChat.mockReset();
+    workspaceCenterViewStoreMock.showConfig.mockReset();
     delete (window as any).electronAPI;
   });
 
@@ -310,6 +321,14 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     expect(wrapper.emitted('run-created')).toEqual([
       [{ type: 'agent', definitionId: 'agent-def-1' }],
     ]);
+  });
+
+  it('does not render run-row configuration button', async () => {
+    const wrapper = mountComponent();
+    await flushPromises();
+
+    const configButton = wrapper.find('[data-test="workspace-run-config-run-1"]');
+    expect(configButton.exists()).toBe(false);
   });
 
   it('renders team rows under workspace and selects the team when clicked', async () => {
@@ -507,6 +526,44 @@ describe('WorkspaceAgentRunsTreePanel', () => {
 
     const deleteButtons = wrapper.findAll('button[title="Delete team history permanently"]');
     expect(deleteButtons).toHaveLength(1);
+  });
+
+  it('does not render team-row configuration button', async () => {
+    runHistoryState.teamNodesByWorkspace['/ws/a'] = [
+      {
+        teamRunId: 'team-1',
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Team Alpha',
+        workspaceRootPath: '/ws/a',
+        summary: 'Team summary',
+        lastActivityAt: '2026-01-01T02:00:00.000Z',
+        lastKnownStatus: 'IDLE',
+        isActive: false,
+        currentStatus: 'shutdown_complete',
+        deleteLifecycle: 'READY',
+        focusedMemberName: 'super_agent',
+        members: [
+          {
+            teamRunId: 'team-1',
+            memberRouteKey: 'super_agent',
+            memberName: 'Super Agent',
+            memberRunId: 'member-run-1',
+            workspaceRootPath: '/ws/a',
+            summary: 'Team summary',
+            lastActivityAt: '2026-01-01T02:00:00.000Z',
+            lastKnownStatus: 'IDLE',
+            isActive: false,
+            deleteLifecycle: 'READY',
+          },
+        ],
+      },
+    ];
+
+    const wrapper = mountComponent();
+    await flushPromises();
+
+    const configButton = wrapper.find('[data-test="workspace-team-config-team-1"]');
+    expect(configButton.exists()).toBe(false);
   });
 
   it('deletes inactive team history from team row action without selecting the row', async () => {

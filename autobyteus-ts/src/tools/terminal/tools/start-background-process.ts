@@ -34,15 +34,9 @@ function getBackgroundManager(context: AgentContextLike | null | undefined): Bac
 }
 
 function getCwd(context: AgentContextLike | null | undefined): string {
-  if (context?.workspace) {
-    try {
-      const basePath = context.workspace.getBasePath();
-      if (basePath && typeof basePath === 'string') {
-        return basePath;
-      }
-    } catch {
-      // ignore workspace errors
-    }
+  const workspaceRootPath = context?.workspaceRootPath;
+  if (workspaceRootPath && typeof workspaceRootPath === 'string') {
+    return workspaceRootPath;
   }
 
   return os.tmpdir();
