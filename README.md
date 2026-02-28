@@ -1,8 +1,8 @@
 # autobyteus-workspace
 
-Git super-repo for the AutobByteus TypeScript platform workspace.
+Monorepo workspace for the AutoByteus TypeScript platform.
 
-## Included submodules
+## Workspace projects
 
 - `autobyteus-web`
 - `autobyteus-server-ts`
@@ -12,15 +12,9 @@ Git super-repo for the AutobByteus TypeScript platform workspace.
 ## Setup
 
 ```bash
-git clone --recurse-submodules https://github.com/AutoByteus/autobyteus-workspace.git
+git clone https://github.com/AutoByteus/autobyteus-workspace.git
 cd autobyteus-workspace
 pnpm install
-```
-
-If cloned without `--recurse-submodules`:
-
-```bash
-git submodule update --init --recursive
 ```
 
 ## All-in-one Docker startup (personal branch)
@@ -93,4 +87,4 @@ pnpm android:server:stop
 - Artifacts:
   - macOS ARM64 DMG + blockmap
   - Linux x64 AppImage + blockmap
-- For private submodules, set repository secret `SUBMODULES_TOKEN` with read access to submodule repos.
+- No git submodules are required in this workspace.
