@@ -16,6 +16,7 @@ type RuntimeLoggerBootstrapState = {
   logFilePath: string | null;
   fileDescriptor: number | null;
   stdoutFanoutStream: FanoutWritable | null;
+  stderrFanoutStream: FanoutWritable | null;
 };
 
 class FanoutWritable extends Writable {
@@ -50,6 +51,7 @@ let runtimeState: RuntimeLoggerBootstrapState = {
   logFilePath: null,
   fileDescriptor: null,
   stdoutFanoutStream: null,
+  stderrFanoutStream: null,
 };
 
 const resetRuntimeState = (): void => {
@@ -66,6 +68,7 @@ const resetRuntimeState = (): void => {
     logFilePath: null,
     fileDescriptor: null,
     stdoutFanoutStream: null,
+    stderrFanoutStream: null,
   };
 };
 
@@ -79,6 +82,7 @@ export const initializeRuntimeLoggerBootstrap = (
   fs.mkdirSync(input.logsDir, { recursive: true });
   const logFilePath = path.resolve(input.logsDir, SERVER_LOG_FILE_NAME);
   const fileDescriptor = fs.openSync(logFilePath, "a");
+
   const stdoutFanoutStream = new FanoutWritable(process.stdout, fileDescriptor);
   const stderrFanoutStream = new FanoutWritable(process.stderr, fileDescriptor);
 
@@ -93,6 +97,7 @@ export const initializeRuntimeLoggerBootstrap = (
     logFilePath,
     fileDescriptor,
     stdoutFanoutStream,
+    stderrFanoutStream,
   };
   return { logFilePath };
 };
