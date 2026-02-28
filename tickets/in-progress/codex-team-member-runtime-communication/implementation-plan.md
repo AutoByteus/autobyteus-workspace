@@ -15,12 +15,12 @@
   - Current Status: `Refined`
 - Runtime call stacks: `tickets/in-progress/codex-team-member-runtime-communication/future-state-runtime-call-stack.md`
 - Runtime review: `tickets/in-progress/codex-team-member-runtime-communication/future-state-runtime-call-stack-review.md`
-- Proposed design: `tickets/in-progress/codex-team-member-runtime-communication/proposed-design.md` (`v9`)
+- Proposed design: `tickets/in-progress/codex-team-member-runtime-communication/proposed-design.md` (`v16`)
 
 ## Plan Maturity
 
-- Current Status: `Executed (Round-10 requirement-gap cycle)`
-- Notes: Stage 4 `Go Confirmed` was executed through Stage 8 handoff for `C-027` with `AV-019` validation closure.
+- Current Status: `Completed (Round-20 closure cycle)`
+- Notes: Stage 4 `Go Confirmed` rerun is reconfirmed through rounds 36/37 on design `v16`, and downstream Stage 5/5.5/6/7 gates were completed with strict live `R-023` sender/recipient parity evidence.
 
 ## Preconditions (Must Be True Before Finalizing This Plan)
 
@@ -33,7 +33,7 @@
 
 ## Solution Sketch (Optional For `Medium`)
 
-- Use Cases In Scope: `UC-001` through `UC-012`, `UC-015`
+- Use Cases In Scope: `UC-001` through `UC-012`, `UC-015`, `UC-016`, `UC-017`, `UC-018`, `UC-019`
 - Requirement Coverage Guarantee (all requirements mapped to at least one use case): `Confirmed in requirements + call-stack artifacts`
 - Design-Risk Use Cases: `UC-013`, `UC-014`
 - Target Architecture Shape:
@@ -44,7 +44,7 @@
   - `team-member-runtime-orchestrator.ts`
   - `team-runtime-binding-registry.ts`
   - `team-codex-runtime-event-bridge.ts`
-- Touched Files/Modules: `C-001` through `C-017`, `C-021`, decoupling set `C-022..C-025`, shared-process topology `C-026`, and team runtime selector flow `C-027` (see traceability tables below)
+- Touched Files/Modules: `C-001` through `C-017`, `C-021`, decoupling set `C-022..C-025`, shared-process topology `C-026`, team runtime selector flow `C-027`, workspace-root persistence `C-028`, runtime-event adapter split `C-029`, codex team-manifest injection `C-030`, and Codex sender/recipient stream parity deltas `C-031`/`C-032` (see traceability tables below)
 - API/Behavior Delta: member-level `runtimeKind` for team members; deterministic member-session routing/restore; explicit deterministic errors; preserved non-codex flow.
 - Key Assumptions:
   - First delivery remains all-members-uniform runtime mode in one team run.
@@ -76,12 +76,28 @@
 | 17 | Pass | No | N/A | Go Confirmed | 2 |
 | 18 | Pass | No | Yes (round-10 requirement-gap write-backs for team runtime selector requirement `R-019`) | Candidate Go | 1 |
 | 19 | Pass | No | N/A | Go Confirmed | 2 |
+| 20 | Pass | No | Yes (round-11 write-backs for workspace-root persistence requirement `R-020`) | Candidate Go | 1 |
+| 21 | Pass | No | N/A | Go Confirmed | 2 |
+| 22 | Pass | No | Yes (round-12 write-backs for adapter split + MCP tool-name mapping requirement `R-021`) | Candidate Go | 1 |
+| 23 | Pass | No | N/A | Go Confirmed | 2 |
+| 24 | Pass | No | Yes (round-13 write-backs for MCP argument projection parity under `R-021`) | Candidate Go | 1 |
+| 25 | Pass | No | N/A | Go Confirmed | 2 |
+| 26 | Pass | No | Yes (round-14 write-backs for team+capability dynamic tool exposure semantics under `R-017`) | Candidate Go | 1 |
+| 27 | Pass | No | N/A | Go Confirmed | 2 |
+| 28 | Pass | No | N/A | Candidate Go | 1 |
+| 29 | Pass | No | N/A | Go Confirmed | 2 |
+| 30 | Pass | No | N/A | Candidate Go | 1 |
+| 31 | Pass | No | N/A | Go Confirmed | 2 |
+| 32 | Pass | No | Yes (round-17 write-backs for codex team-manifest requirement `R-022`) | Candidate Go | 1 |
+| 33 | Pass | No | N/A | Go Confirmed | 2 |
+| 36 | Pass | No | Yes (round-18 write-backs for Codex sender/recipient stream parity requirement `R-023`) | Candidate Go | 1 |
+| 37 | Pass | No | N/A | Go Confirmed | 2 |
 
 ## Go / No-Go Decision
 
 - Decision: `Go`
 - Evidence:
-  - Final review round: `15`
+- Final review round: `33`
   - Clean streak at final round: `2`
   - Final review gate line (`Implementation can start`): `Yes`
 
@@ -130,9 +146,13 @@
 | R-014 | AC-014 | `C-014`,`C-015` | UC-009 | T-010 | Integration + E2E | AV-014 |
 | R-015 | AC-015 | `C-013`,`C-014`,`C-015` | UC-010 | T-010 | Unit + integration | AV-015 |
 | R-016 | AC-016 | `C-013`,`C-014`,`C-015` | UC-008, UC-009, UC-010 | T-010 | Integration + E2E | AV-016 |
-| R-017 | AC-017 | `C-021` | UC-011 | T-016 | Unit + E2E | AV-017 |
+| R-017 | AC-017 | `C-021` | UC-011 | T-016, T-025 | Unit + E2E | AV-017 |
 | R-018 | AC-018 | `C-026` | UC-012 | T-021 | Integration + E2E | AV-018 |
 | R-019 | AC-019 | `C-027` | UC-015 | T-022 | Component + E2E | AV-019 |
+| R-020 | AC-020 | `C-028` | UC-016 | T-023 | API + E2E | AV-020 |
+| R-021 | AC-021 | `C-029` | UC-017 | T-024 | Unit + API/E2E | AV-021 |
+| R-022 | AC-022 | `C-030` | UC-018 | T-026 | Unit + API/E2E | AV-022 |
+| R-023 | AC-023 | `C-031`,`C-032` | UC-019 | T-027 | Unit + API/E2E | AV-023 |
 
 ## Acceptance Criteria To Stage 6 Mapping (Mandatory)
 
@@ -154,9 +174,13 @@
 | AC-014 | R-014 | Recipient runtime normalizes inter-agent envelope through standard reasoning/input pipeline. | AV-014 | E2E | Planned |
 | AC-015 | R-015 | Sender receives deterministic tool-visible failures for recipient unavailable/start/session errors. | AV-015 | API | Planned |
 | AC-016 | R-016 | Inter-agent tool path remains decoupled from frontend GraphQL user-ingress path. | AV-016 | Integration/E2E | Planned |
-| AC-017 | R-017 | `send_message_to` is exposed only for team-bound Codex sessions. | AV-017 | E2E | Planned |
+| AC-017 | R-017 | `send_message_to` is exposed only for team-bound Codex sessions where the member tool configuration includes `send_message_to`; otherwise it is hidden. | AV-017 | E2E | Planned |
 | AC-018 | R-018 | Concurrent codex runs share one app-server process while retaining distinct run/thread identities. | AV-018 | Integration/E2E | Planned |
 | AC-019 | R-019 | Team runtime selector drives runtime-scoped model/config options and launch payload uses uniform selected runtime for all members. | AV-019 | E2E | Planned |
+| AC-020 | R-020 | Codex team workspace-root persistence remains non-null for workspaceId-based team runs across create/send/terminate/continue flows and history grouping. | AV-020 | API/E2E | Planned |
+| AC-021 | R-021 | MCP tool-call events map concrete tool names from supported payload shapes, avoid `MISSING_TOOL_NAME`, and project provided tool-call arguments into activity metadata. | AV-021 | API/E2E | Planned |
+| AC-022 | R-022 | Codex team member startup/resume requests include teammate-manifest `developerInstructions` and `send_message_to` recipient hints when capability is enabled. | AV-022 | API/E2E | Planned |
+| AC-023 | R-023 | Codex team relay flow emits sender-visible `send_message_to` tool lifecycle and recipient-visible structured `INTER_AGENT_MESSAGE` payload for `From <sender>` UI parity. | AV-023 | API/E2E | Planned |
 
 ## Design Delta Traceability (Required For `Medium/Large`)
 
@@ -186,6 +210,11 @@
 | C-025 | Add/Modify | T-020 | Yes | Relay wiring lifecycle unit/integration tests + orchestrator construction ownership checks |
 | C-026 | Add/Modify | T-021 | Yes | Shared-process manager unit/integration coverage + concurrent run process-count assertion |
 | C-027 | Add/Modify | T-022 | Yes | Team runtime selector component/store tests + launch payload runtime-kind assertions |
+| C-028 | Modify | T-023 | Yes | Workspace-root persistence unit/API/live E2E lifecycle coverage |
+| C-029 | Add/Modify | T-024 | Yes | Runtime-event mapper unit coverage + full backend/frontend regression suites |
+| C-030 | Add/Modify | T-026 | Yes | Codex runtime startup payload unit coverage + orchestrator manifest metadata unit coverage + full backend/frontend regression suites |
+| C-031 | Add/Modify | T-027 | Yes | Sender-side synthetic `send_message_to` lifecycle event emission unit + strict live E2E parity coverage |
+| C-032 | Add/Modify | T-027 | Yes | Recipient-side structured inter-agent event emission/mapping unit + strict live E2E parity coverage |
 
 ## Decommission / Rename Execution Tasks
 
@@ -218,6 +247,23 @@
 20. T-020: Move relay handler ownership into explicit wiring lifecycle and remove constructor side-effect registration (`C-025`).
 21. T-021: Implement shared Codex app-server process manager and refactor session/history-reader paths to reuse shared process transport (`C-026`).
 22. T-022: Add team runtime selector + runtime-scoped model/config loading in team config flow and enforce uniform runtime-kind payload emission for team members (`C-027`).
+23. T-023: Harden codex workspace-root persistence for workspaceId-only team runs and extend strict live lifecycle coverage (`C-028`).
+24. T-024: Split codex runtime event adapter into helper modules and fix MCP tool-name mapping plus tool-call argument projection (`metadata.arguments`) for supported payload shapes (`C-029`).
+25. T-025: Enforce team+capability gate for Codex dynamic `send_message_to` exposure (member `toolNames` includes `send_message_to`), propagate capability metadata into runtime session startup, and add runtime unauthorized-relay guard with targeted tests.
+26. T-026: Inject per-member teammate manifest context into Codex `developerInstructions` at `thread/start` + `thread/resume`, propagate recipient hints into dynamic `send_message_to`, and persist orchestrator-provided `teamMemberManifest` metadata for create/restore flows (`C-030`).
+27. T-027: Emit sender-side synthetic `send_message_to` tool lifecycle and recipient-side structured `inter_agent_message` events in Codex runtime + adapter/frontend mapping path, and close strict parity validation for `AC-023` (`C-031`,`C-032`).
+
+## Stage 5 Re-Entry Notes (Round 17)
+
+1. Round-17 re-entry executed `C-030` to close `R-022/AC-022`: orchestrator now emits teammate manifest metadata and codex runtime injects deterministic teammate context via `developerInstructions`.
+2. Task inventory is extended to `T-026`; previous tasks (`T-001..T-025`) remain complete.
+3. Stage 5 gate execution for round 17 is satisfied by targeted backend unit suites plus full backend/frontend validation reruns.
+
+## Stage 5 Re-Entry Notes (Round 18)
+
+1. Round-18 re-entry executed `C-031`/`C-032` to close `R-023/AC-023`: sender now surfaces `send_message_to` tool-call lifecycle and recipient now emits structured `INTER_AGENT_MESSAGE` payload for `From <sender>` parity.
+2. Task inventory is extended to `T-027`; previous tasks (`T-001..T-026`) remain complete.
+3. Stage 5 gate execution for round 18 is satisfied by strict live Codex team roundtrip E2E plus targeted backend/frontend parser/mapper suites.
 
 ## Per-File Definition Of Done
 
@@ -231,6 +277,8 @@
 | `autobyteus-web/stores/agentTeamRunStore.ts` | Member runtime kind included in create payload path. | Store spec passes. | GraphQL contract scenario passes in Stage 6. | Covers R-001. |
 | `autobyteus-web/stores/runHistoryStore.ts` | Team reopen parses runtime metadata without hardcoded defaults. | Store spec passes. | Resume API scenario passes in Stage 6. | Covers R-002/R-007/R-010. |
 | `autobyteus-server-ts/src/runtime-execution/codex-app-server/codex-app-server-process-manager.ts` + `codex-app-server-runtime-service.ts` + `codex-thread-history-reader.ts` | Shared-process manager owns codex app-server lifecycle; sessions/history-reader reuse shared transport with no per-run/per-read subprocess spawn. | Process-manager and runtime session unit tests pass. | Concurrent-run integration/E2E process-count assertion passes with distinct thread identities. | Covers R-018. |
+| `autobyteus-server-ts/src/services/agent-streaming/codex-runtime-event-adapter.ts` + helper modules (`codex-runtime-event-segment-helper.ts`, `codex-runtime-event-tool-helper.ts`, `codex-runtime-event-debug.ts`) | Adapter remains orchestration shell while helper modules own segment parsing, tool-name extraction, tool-call argument projection, and debug metadata boundaries. | Runtime event mapper unit tests pass for `toolName`, `tool_name`, `tool`, and `tool.name` payload forms plus `payload.arguments`/`payload.item.arguments` projection. | Full backend/frontend suite reruns confirm no tool activity regression. | Covers R-021. |
+| `autobyteus-server-ts/src/agent-team-execution/services/team-member-runtime-orchestrator.ts` + `runtime-execution/codex-app-server/{codex-app-server-runtime-service.ts,codex-send-message-tooling.ts}` | Team create/restore emits `teamMemberManifest` metadata, and codex thread start/resume injects teammate-aware developer instructions + recipient hints without changing non-team flows. | Orchestrator/runtime-service/send-message-tooling unit suites pass for metadata parsing, developer-instruction rendering, and dynamic-tool recipient enum projection. | Full backend/frontend suites pass with strict live codex transport enabled. | Covers R-022. |
 
 ## Internal Code Review Gate Plan (Stage 5.5)
 
@@ -265,9 +313,9 @@
   - predicted design-impact hotspots: resolver/orchestrator/stream-handler boundary seams.
   - files likely to exceed size/SoC thresholds: `agent-team-run.ts`, `agent-team-stream-handler.ts`, `runHistoryStore.ts`.
 - Stage 6 handoff notes for aggregated validation:
-  - expected acceptance criteria count: `18`
-  - critical flows to validate (API/E2E): create, targeted send, approval routing, websocket identity, continuation restore, non-codex regression, deterministic routing errors, and inter-agent relay semantics.
-  - expected scenario count: `18`
+- expected acceptance criteria count: `22`
+  - critical flows to validate (API/E2E): create, targeted send, approval routing, websocket identity, continuation restore, non-codex regression, deterministic routing errors, inter-agent relay semantics, workspace-root persistence parity, and MCP tool-name mapping correctness.
+- expected scenario count: `22`
   - known environment constraints: codex runtime event scenarios require runtime service availability and websocket harness.
 
 ## Aggregated API/E2E Validation Scenario Catalog (Stage 6 Input)
@@ -290,9 +338,13 @@
 | AV-014 | Requirement | AC-014 | R-014 | UC-009 | E2E | Recipient runtime normalizes envelope into standard reasoning/input pipeline and continues reasoning flow. |
 | AV-015 | Requirement | AC-015 | R-015 | UC-010 | API | Sender receives deterministic tool-visible failures for recipient unavailable/start/session errors. |
 | AV-016 | Requirement | AC-016 | R-016 | UC-008, UC-009, UC-010 | Integration/E2E | Inter-agent tool routing executes without dependency on frontend GraphQL user-message ingress path. |
-| AV-017 | Requirement | AC-017 | R-017 | UC-011 | E2E | Team-bound Codex sessions expose `send_message_to`; standalone Codex sessions do not. |
+| AV-017 | Requirement | AC-017 | R-017 | UC-011 | E2E | Team-bound capability-authorized Codex sessions expose `send_message_to`; standalone sessions and non-authorized members do not. |
 | AV-018 | Requirement | AC-018 | R-018 | UC-012 | Integration/E2E | Concurrent codex runs share one app-server process while preserving run/thread identity isolation. |
 | AV-019 | Requirement | AC-019 | R-019 | UC-015 | E2E | Team runtime selection switches provider catalogs/schemas and team launch payload emits uniform selected runtime kind across members. |
+| AV-020 | Requirement | AC-020 | R-020 | UC-016 | API/E2E | Codex workspace-root persistence remains stable for workspaceId-based team runs and history grouping after create/send/terminate/continue lifecycle. |
+| AV-021 | Requirement | AC-021 | R-021 | UC-017 | API/E2E | Codex MCP tool-call events map concrete tool names from supported payload shapes, avoid `MISSING_TOOL_NAME`, and project provided arguments into canonical activity metadata. |
+| AV-022 | Requirement | AC-022 | R-022 | UC-018 | API/E2E | Codex team member startup/resume injects teammate-manifest developer instructions (self excluded) and `send_message_to` recipient hints from the same manifest when capability is enabled. |
+| AV-023 | Requirement | AC-023 | R-023 | UC-019 | API/E2E | Codex team relay flow surfaces sender-side `send_message_to` tool-call lifecycle and recipient-side structured `INTER_AGENT_MESSAGE` payload parity for `From <sender>` rendering. |
 
 ## Aggregated Validation Escalation Policy (Stage 6 Guardrail)
 
@@ -320,3 +372,13 @@
 | Smell/Issue | Evidence (Files/Call Stack) | Design Section To Update | Action | Status |
 | --- | --- | --- | --- | --- |
 | None at plan baseline | N/A | N/A | Track during implementation and update if drift appears. | Pending |
+
+## Stage 5 Re-Entry Notes (Round 18)
+
+1. Added implementation scope for `R-023` stream parity:
+   - `C-031`: synthesize sender-side `send_message_to` tool-call events in Codex runtime router path.
+   - `C-032`: synthesize recipient-side structured `inter_agent_message` event and adapter mapping to `INTER_AGENT_MESSAGE`.
+2. Execution task for this round:
+   - `T-027`: implement `C-031` + `C-032`, add/extend unit tests, and rerun strict live Codex team roundtrip E2E with websocket event assertions.
+3. Validation mapping extension:
+   - `AV-023` closes `AC-023` via strict live Codex team websocket assertions for sender tool-call visibility and recipient inter-agent payload parity.

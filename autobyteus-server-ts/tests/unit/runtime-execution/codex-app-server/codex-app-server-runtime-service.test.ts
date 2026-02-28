@@ -81,6 +81,7 @@ describe("CodexAppServerRuntimeService.sendTurn", () => {
       approvalRecords: new Map(),
       listeners: new Set(),
       unbindHandlers: [],
+      sendMessageToEnabled: true,
     });
 
     await service.sendTurn("run-1", {
@@ -94,6 +95,263 @@ describe("CodexAppServerRuntimeService.sendTurn", () => {
         threadId: "thread-1",
         model: "gpt-5.3-codex",
         effort: "high",
+      }),
+    );
+  });
+
+  it("rejects send_message_to tool relay when capability is disabled for the session", () => {
+    const service = new CodexAppServerRuntimeService();
+    const respondSuccess = vi.fn();
+    const respondError = vi.fn();
+    const state = {
+      runId: "run-1",
+      client: {
+        respondSuccess,
+        respondError,
+      },
+      teamRunId: "team-1",
+      memberName: "Professor",
+      sendMessageToEnabled: false,
+    } as any;
+
+    const handled = (service as any).tryHandleInterAgentRelayRequest(
+      state,
+      "request-1",
+      "item/tool/call",
+      {
+        tool: "send_message_to",
+        arguments: {
+          recipient_name: "Student",
+          content: "hello",
+        },
+      },
+    );
+
+    expect(handled).toBe(true);
+    expect(respondError).not.toHaveBeenCalled();
+    expect(respondSuccess).toHaveBeenCalledWith(
+      "request-1",
+      expect.objectContaining({
+        success: false,
+      }),
+    );
+  });
+
+  it("emits synthetic sender tool-call events for intercepted send_message_to item/tool/call", async () => {
+    const service = new CodexAppServerRuntimeService();
+    service.setInterAgentRelayHandler(async () => ({
+      accepted: true,
+      message: "relayed",
+    }));
+    const respondSuccess = vi.fn();
+    const events: Array<{ method: string; params: Record<string, unknown> }> = [];
+    const state = {
+      runId: "run-professor",
+      teamRunId: "team-1",
+      memberName: "Professor",
+      sendMessageToEnabled: true,
+      client: {
+        respondSuccess,
+        respondError: vi.fn(),
+      },
+      listeners: new Set([
+        (event: { method: string; params: Record<string, unknown> }) => {
+          events.push(event);
+        },
+      ]),
+      approvalRecords: new Map(),
+      unbindHandlers: [],
+    } as any;
+
+    (service as any).handleServerRequest(
+      state,
+      "request-1",
+      "item/tool/call",
+      {
+        id: "call-send-1",
+        tool: "send_message_to",
+        arguments: {
+          recipient_name: "Student",
+          content: "hello",
+          message_type: "agent_message",
+        },
+      },
+    );
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(respondSuccess).toHaveBeenCalledWith(
+      "request-1",
+      expect.objectContaining({
+        success: true,
+      }),
+    );
+    expect(events.map((event) => event.method)).toEqual([
+      "item/added",
+      "item/commandExecution/started",
+      "item/commandExecution/completed",
+      "item/completed",
+    ]);
+    expect(events[0]?.params?.tool).toBe("send_message_to");
+    expect((events[0]?.params?.arguments as Record<string, unknown>)?.recipient_name).toBe(
+      "Student",
+    );
+  });
+
+  it("intercepts send_message_to when server-request method uses item.toolCall alias", async () => {
+    const service = new CodexAppServerRuntimeService();
+    service.setInterAgentRelayHandler(async () => ({
+      accepted: true,
+      message: "relayed",
+    }));
+    const respondSuccess = vi.fn();
+    const events: Array<{ method: string; params: Record<string, unknown> }> = [];
+    const state = {
+      runId: "run-professor",
+      teamRunId: "team-1",
+      memberName: "Professor",
+      sendMessageToEnabled: true,
+      client: {
+        respondSuccess,
+        respondError: vi.fn(),
+      },
+      listeners: new Set([
+        (event: { method: string; params: Record<string, unknown> }) => {
+          events.push(event);
+        },
+      ]),
+      approvalRecords: new Map(),
+      unbindHandlers: [],
+    } as any;
+
+    (service as any).handleServerRequest(
+      state,
+      "request-1",
+      "item.toolCall",
+      {
+        item: {
+          id: "call-send-2",
+          name: "send_message_to",
+          arguments: {
+            recipient_name: "Student",
+            content: "hello",
+          },
+        },
+      },
+    );
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(respondSuccess).toHaveBeenCalledWith(
+      "request-1",
+      expect.objectContaining({
+        success: true,
+      }),
+    );
+    expect(events.map((event) => event.method)).toEqual([
+      "item/added",
+      "item/commandExecution/started",
+      "item/commandExecution/completed",
+      "item/completed",
+    ]);
+    expect((events[0]?.params?.arguments as Record<string, unknown>)?.content).toBe("hello");
+  });
+
+  it("emits structured inter_agent_message event before recipient envelope turn dispatch", async () => {
+    const service = new CodexAppServerRuntimeService();
+    const request = vi.fn().mockResolvedValue({ turn: { id: "turn-1" } });
+    const events: Array<{ method: string; params: Record<string, unknown> }> = [];
+
+    (service as unknown as { sessions: Map<string, unknown> }).sessions.set("run-student", {
+      runId: "run-student",
+      client: {
+        request,
+        close: vi.fn().mockResolvedValue(undefined),
+      },
+      threadId: "thread-student",
+      model: "gpt-5.3-codex",
+      workingDirectory: "/tmp",
+      reasoningEffort: "medium",
+      activeTurnId: null,
+      approvalRecords: new Map(),
+      listeners: new Set([
+        (event: { method: string; params: Record<string, unknown> }) => {
+          events.push(event);
+        },
+      ]),
+      unbindHandlers: [],
+      sendMessageToEnabled: true,
+      teamRunId: "team-1",
+      memberName: "Student",
+    });
+
+    await service.injectInterAgentEnvelope("run-student", {
+      senderAgentId: "run-professor",
+      senderAgentName: "Professor",
+      recipientName: "Student",
+      messageType: "agent_message",
+      content: "hello student",
+      teamRunId: "team-1",
+    });
+
+    expect(events[0]?.method).toBe("inter_agent_message");
+    expect(events[0]?.params?.sender_agent_id).toBe("run-professor");
+    expect(events[0]?.params?.recipient_role_name).toBe("Student");
+    expect(events[0]?.params?.content).toBe("hello student");
+    expect(events[0]?.params?.message_type).toBe("agent_message");
+    expect(request).toHaveBeenCalledWith(
+      "turn/start",
+      expect.objectContaining({
+        threadId: "thread-student",
+      }),
+    );
+  });
+});
+
+describe("CodexAppServerRuntimeService team-manifest instructions", () => {
+  it("injects developer instructions and recipient hints at thread/start for codex team member sessions", async () => {
+    const request = vi.fn().mockResolvedValue({ thread: { id: "thread-1" } });
+    const processManager = {
+      getClient: vi.fn().mockResolvedValue({
+        request,
+        onNotification: vi.fn().mockReturnValue(() => {}),
+        onServerRequest: vi.fn().mockReturnValue(() => {}),
+        onClose: vi.fn().mockReturnValue(() => {}),
+      }),
+    } as any;
+    const service = new CodexAppServerRuntimeService(processManager);
+    service.setInterAgentRelayHandler(async () => ({ accepted: true }));
+
+    await service.createRunSession("run-1", {
+      modelIdentifier: "gpt-5-codex",
+      workingDirectory: "/tmp/workspace",
+      runtimeMetadata: {
+        teamRunId: "team-1",
+        memberName: "Professor",
+        sendMessageToEnabled: true,
+        teamMemberManifest: [
+          { memberName: "Professor", role: "coordinator", description: "Leads delegation" },
+          { memberName: "Student", role: "implementer", description: "Executes tasks" },
+        ],
+      },
+    });
+
+    expect(request).toHaveBeenCalledWith(
+      "thread/start",
+      expect.objectContaining({
+        developerInstructions: expect.stringContaining("Student"),
+        dynamicTools: [
+          expect.objectContaining({
+            name: "send_message_to",
+            inputSchema: expect.objectContaining({
+              properties: expect.objectContaining({
+                recipient_name: expect.objectContaining({
+                  enum: ["Student"],
+                }),
+              }),
+            }),
+          }),
+        ],
       }),
     );
   });

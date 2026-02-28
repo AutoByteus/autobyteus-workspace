@@ -1311,6 +1311,213 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
   );
 
   it(
+    "streams codex generate_image tool_call metadata with non-empty arguments over websocket",
+    async () => {
+      const previousApprovalPolicy = process.env.CODEX_APP_SERVER_APPROVAL_POLICY;
+      const previousSandbox = process.env.CODEX_APP_SERVER_SANDBOX;
+      process.env.CODEX_APP_SERVER_APPROVAL_POLICY = "never";
+      process.env.CODEX_APP_SERVER_SANDBOX = "workspace-write";
+
+      const modelIdentifier = await fetchPreferredCodexToolModelIdentifier();
+      const imageToken = `generate_image_meta_${randomUUID().replace(/-/g, "_")}`;
+      const outputFilePath = `/tmp/${imageToken}.png`;
+
+      const sendMutation = `
+        mutation SendAgentUserInput($input: SendAgentUserInputInput!) {
+          sendAgentUserInput(input: $input) {
+            success
+            message
+            agentRunId
+          }
+        }
+      `;
+
+      const warmupResult = await execGraphql<{
+        sendAgentUserInput: {
+          success: boolean;
+          message: string;
+          agentRunId: string | null;
+        };
+      }>(sendMutation, {
+        input: {
+          runtimeKind: "codex_app_server",
+          agentDefinitionId: "codex-e2e-agent-def",
+          llmModelIdentifier: modelIdentifier,
+          autoExecuteTools: true,
+          userInput: {
+            content: "Reply with READY.",
+          },
+        },
+      });
+
+      expect(warmupResult.sendAgentUserInput.success).toBe(true);
+      expect(warmupResult.sendAgentUserInput.agentRunId).toBeTruthy();
+      const runId = warmupResult.sendAgentUserInput.agentRunId as string;
+
+      const app = fastify();
+      await app.register(websocket);
+      const dummyTeamHandler = {
+        connect: async () => null,
+        handleMessage: async () => {},
+        disconnect: async () => {},
+      } as unknown as Parameters<typeof registerAgentWebsocket>[2];
+      await registerAgentWebsocket(app, undefined, dummyTeamHandler);
+      const address = await app.listen({ port: 0, host: "127.0.0.1" });
+      const url = new URL(address);
+      const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent/${runId}`);
+
+      const seenEventTypes = new Set<string>();
+      const seenSegmentSnapshots: Array<Record<string, unknown>> = [];
+      let sentPrompt = false;
+      let sawGenerateImageArguments = false;
+      let promptAttemptCount = 0;
+      const maxPromptAttempts = 3;
+
+      await waitForSocketOpen(socket);
+
+      const finished = new Promise<void>((resolve, reject) => {
+        const buildPrompt = (attempt: number): string => {
+          if (attempt === 1) {
+            return `Call the generate_image tool exactly once using these exact JSON arguments: {"prompt":"cute sea animal ${imageToken}","output_file_path":"${outputFilePath}"}. Do not call run_bash or edit_file. Do not simulate tool output.`;
+          }
+          return `Retry attempt ${attempt}: you must call generate_image now with exact JSON arguments {"prompt":"cute sea animal ${imageToken}","output_file_path":"${outputFilePath}"} and nothing else.`;
+        };
+
+        const sendPrompt = () => {
+          if (promptAttemptCount >= maxPromptAttempts) {
+            return;
+          }
+          promptAttemptCount += 1;
+          sentPrompt = true;
+          socket.send(
+            JSON.stringify({
+              type: "SEND_MESSAGE",
+              payload: { content: buildPrompt(promptAttemptCount) },
+            }),
+          );
+        };
+
+        const fallbackSendTimer = setTimeout(() => {
+          if (!sentPrompt) {
+            sendPrompt();
+          }
+        }, 5000);
+        const timeout = setTimeout(() => {
+          reject(
+            new Error(
+              `Timed out waiting for generate_image metadata arguments. promptSent=${String(sentPrompt)} promptAttempts=${String(promptAttemptCount)} argumentsSeen=${String(sawGenerateImageArguments)} seenTypes=${Array.from(seenEventTypes).join(", ")} segmentSnapshots=${JSON.stringify(seenSegmentSnapshots)}`,
+            ),
+          );
+        }, 70000);
+
+        socket.on("message", (raw) => {
+          const message = JSON.parse(raw.toString()) as {
+            type: string;
+            payload?: Record<string, unknown>;
+          };
+          seenEventTypes.add(message.type);
+
+          if (message.type === "AGENT_STATUS") {
+            const status = message.payload?.new_status;
+            if (status === "IDLE" && !sentPrompt) {
+              sendPrompt();
+              return;
+            }
+            if (status === "IDLE" && sentPrompt && sawGenerateImageArguments) {
+              clearTimeout(fallbackSendTimer);
+              clearTimeout(timeout);
+              resolve();
+              return;
+            }
+            if (status === "IDLE" && sentPrompt && !sawGenerateImageArguments && promptAttemptCount < maxPromptAttempts) {
+              sendPrompt();
+            }
+            return;
+          }
+
+          if (message.type !== "SEGMENT_START" && message.type !== "SEGMENT_END") {
+            return;
+          }
+
+          const segmentType =
+            typeof message.payload?.segment_type === "string" ? message.payload.segment_type : null;
+          const metadata =
+            message.payload?.metadata && typeof message.payload.metadata === "object"
+              ? (message.payload.metadata as Record<string, unknown>)
+              : null;
+          const metadataToolName =
+            typeof metadata?.tool_name === "string" ? String(metadata.tool_name) : "";
+          const metadataArguments =
+            metadata?.arguments && typeof metadata.arguments === "object"
+              ? (metadata.arguments as Record<string, unknown>)
+              : null;
+          const promptArg =
+            metadataArguments && typeof metadataArguments.prompt === "string"
+              ? String(metadataArguments.prompt)
+              : null;
+          const outputPathArg =
+            metadataArguments && typeof metadataArguments.output_file_path === "string"
+              ? String(metadataArguments.output_file_path)
+              : null;
+
+          seenSegmentSnapshots.push({
+            messageType: message.type,
+            segmentType,
+            metadataToolName: metadataToolName || null,
+            hasMetadataArguments: Boolean(metadataArguments),
+            promptArgPreview: promptArg?.slice(0, 64) ?? null,
+            outputPathArg: outputPathArg ?? null,
+          });
+
+          const isToolCallSegment = segmentType === "tool_call";
+          const isGenerateImageTool =
+            metadataToolName === "generate_image" || metadataToolName.endsWith(".generate_image");
+          if (!isToolCallSegment || !isGenerateImageTool) {
+            return;
+          }
+
+          if (
+            promptArg &&
+            promptArg.includes(imageToken) &&
+            outputPathArg &&
+            outputPathArg.length > 0
+          ) {
+            sawGenerateImageArguments = true;
+          }
+        });
+
+        socket.once("error", (error) => {
+          clearTimeout(fallbackSendTimer);
+          clearTimeout(timeout);
+          reject(error);
+        });
+      });
+
+      try {
+        await finished;
+        expect(sawGenerateImageArguments).toBe(true);
+      } finally {
+        process.env.CODEX_APP_SERVER_APPROVAL_POLICY = previousApprovalPolicy;
+        process.env.CODEX_APP_SERVER_SANDBOX = previousSandbox;
+        socket.close();
+        await app.close();
+        const terminateMutation = `
+          mutation Terminate($id: String!) {
+            terminateAgentRun(id: $id) {
+              success
+              message
+            }
+          }
+        `;
+        await execGraphql<{
+          terminateAgentRun: { success: boolean; message: string };
+        }>(terminateMutation, { id: runId });
+      }
+    },
+    90000,
+  );
+
+  it(
     "streams codex tool approval requested and approved lifecycle over websocket",
     async () => {
       const previousApprovalPolicy = process.env.CODEX_APP_SERVER_APPROVAL_POLICY;

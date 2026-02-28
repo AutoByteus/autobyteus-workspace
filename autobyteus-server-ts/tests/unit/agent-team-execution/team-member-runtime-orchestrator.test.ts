@@ -37,6 +37,11 @@ const createSubject = () => {
     getOrCreateWorkspace: vi.fn(),
     getOrCreateTempWorkspace: vi.fn(),
   } as any;
+  const agentDefinitionService = {
+    getAgentDefinitionById: vi.fn().mockResolvedValue({
+      toolNames: ["send_message_to"],
+    }),
+  } as any;
 
   const orchestrator = new TeamMemberRuntimeOrchestrator({
     runtimeCompositionService,
@@ -44,6 +49,7 @@ const createSubject = () => {
     teamRuntimeBindingRegistry,
     teamCodexInterAgentMessageRelay,
     workspaceManager,
+    agentDefinitionService,
   });
 
   const codexRuntimeService = {
@@ -63,6 +69,7 @@ const createSubject = () => {
       teamRuntimeBindingRegistry,
       teamCodexInterAgentMessageRelay,
       workspaceManager,
+      agentDefinitionService,
       codexRuntimeService,
     },
     unbindRelayHandler,
@@ -110,6 +117,18 @@ describe("TeamMemberRuntimeOrchestrator", () => {
       expect.objectContaining({
         runId: "member-run-1",
         workspaceId: "workspace-1",
+        runtimeReference: expect.objectContaining({
+          metadata: expect.objectContaining({
+            sendMessageToEnabled: true,
+            teamMemberManifest: [
+              {
+                memberName: "Professor",
+                role: null,
+                description: null,
+              },
+            ],
+          }),
+        }),
       }),
     );
     expect(bindings).toHaveLength(1);
@@ -125,6 +144,57 @@ describe("TeamMemberRuntimeOrchestrator", () => {
       ]),
     );
     expect(mocks.workspaceManager.getOrCreateWorkspace).not.toHaveBeenCalled();
+  });
+
+  it("marks send_message_to capability as disabled when agent definition does not configure the tool", async () => {
+    const { orchestrator, mocks } = createSubject();
+    mocks.agentDefinitionService.getAgentDefinitionById.mockResolvedValue({
+      toolNames: ["run_bash"],
+    });
+    mocks.workspaceManager.getWorkspaceById.mockReturnValue({
+      getBasePath: () => "/tmp/team-workspace",
+    });
+    mocks.runtimeCompositionService.restoreAgentRun.mockResolvedValue({
+      runtimeReference: {
+        runtimeKind: "codex_app_server",
+        sessionId: "member-run-1",
+        threadId: "thread-1",
+        metadata: null,
+      },
+    });
+
+    await orchestrator.createCodexMemberSessions("team-1", [
+      {
+        memberName: "Professor",
+        memberRouteKey: "professor",
+        memberRunId: "member-run-1",
+        runtimeKind: "codex_app_server",
+        runtimeReference: null,
+        agentDefinitionId: "agent-professor",
+        llmModelIdentifier: "gpt-5",
+        autoExecuteTools: true,
+        workspaceId: "workspace-1",
+        workspaceRootPath: null,
+        llmConfig: null,
+      },
+    ]);
+
+    expect(mocks.runtimeCompositionService.restoreAgentRun).toHaveBeenCalledWith(
+      expect.objectContaining({
+        runtimeReference: expect.objectContaining({
+          metadata: expect.objectContaining({
+            sendMessageToEnabled: false,
+            teamMemberManifest: [
+              {
+                memberName: "Professor",
+                role: null,
+                description: null,
+              },
+            ],
+          }),
+        }),
+      }),
+    );
   });
 
   it("returns deterministic error when sender member is not bound", async () => {

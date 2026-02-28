@@ -13,6 +13,9 @@ const CODEX_METHOD_ALIAS_MAP: Record<string, string> = {
   "item.updated": "item/delta",
   "item/updated": "item/delta",
   "item/started": "item/added",
+  "item/tool_call": "item/tool/call",
+  "item/toolcall": "item/tool/call",
+  "item.toolCall": "item/tool/call",
   "item/completed": "item/completed",
   "item/agentMessage/delta": "item/outputText/delta",
   "item/output_text/delta": "item/outputText/delta",
@@ -46,4 +49,3 @@ export const normalizeCodexRuntimeMethod = (method: string): string => {
   const pathNormalized = normalized.replace(/\./g, "/").replace(/\/+/g, "/");
   return CODEX_METHOD_ALIAS_MAP[pathNormalized] ?? CODEX_METHOD_ALIAS_MAP[normalized] ?? pathNormalized;
 };
-

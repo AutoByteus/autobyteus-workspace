@@ -3,10 +3,10 @@
 ## Design Basis
 
 - Scope Classification: `Medium`
-- Call Stack Version: `v10`
+- Call Stack Version: `v15`
 - Requirements: `tickets/in-progress/codex-team-member-runtime-communication/requirements.md` (status `Refined`)
 - Source Artifact: `tickets/in-progress/codex-team-member-runtime-communication/proposed-design.md`
-- Source Design Version: `v10`
+- Source Design Version: `v15`
 - Referenced Sections:
   - `Change Inventory`
   - `Target Architecture Shape And Boundaries`
@@ -31,9 +31,12 @@
 | UC-008 | Requirement | R-011,R-012,R-016 | N/A | Agent-to-agent `send_message_to` dispatch and recipient resolution | Yes/N/A/Yes |
 | UC-009 | Requirement | R-013,R-014 | N/A | Recipient envelope handling and normalization into standard reasoning pipeline | Yes/N/A/Yes |
 | UC-010 | Requirement | R-012,R-015,R-016 | N/A | Deterministic sender-visible failures for inter-agent delivery | Yes/N/A/Yes |
-| UC-011 | Requirement | R-017 | N/A | Team-scoped `send_message_to` tool exposure for Codex sessions | Yes/N/A/Yes |
+| UC-011 | Requirement | R-017 | N/A | Team+capability-gated `send_message_to` tool exposure for Codex sessions | Yes/N/A/Yes |
 | UC-012 | Requirement | R-018 | N/A | Shared-process Codex topology with per-agent/member thread isolation | Yes/N/A/Yes |
 | UC-016 | Requirement | R-020 | N/A | Codex team workspace-root persistence for workspace-grouped history parity | Yes/N/A/Yes |
+| UC-017 | Requirement | R-021 | N/A | Codex MCP tool-call mapping resolves deterministic tool names and arguments for activity stream | Yes/N/A/Yes |
+| UC-018 | Requirement | R-022 | N/A | Codex team-manifest instruction injection for teammate-aware member reasoning | Yes/N/A/Yes |
+| UC-019 | Design-Risk | N/A | Codex app-server runtime service must be decomposed into focused session, request-routing/relay, and model-catalog modules to satisfy hard file-size/SoC policy without behavior drift. | Codex runtime-service decomposition boundary | Yes/N/A/Yes |
 | UC-013 | Design-Risk | N/A | Frontend history panel/store decoupling so rendering, action workflows, and avatar fallbacks do not share one container boundary. | History panel/container decomposition | Yes/N/A/Yes |
 | UC-014 | Design-Risk | N/A | Runtime relay ownership lifecycle must be explicit (bind/unbind) and not constructor-global side effects. | Relay ownership lifecycle wiring | Yes/N/A/Yes |
 | UC-015 | Requirement | R-019 | N/A | Team runtime selector with runtime-scoped model/config loading and uniform runtime launch payload | Yes/N/A/Yes |
@@ -50,6 +53,10 @@
 - Shared process-manager ownership is modeled for both runtime sessions and thread-history reads so diagnostic/history paths do not spawn ephemeral codex subprocesses.
 - Team config runtime kind is modeled as first-class state (`TeamRunConfig.runtimeKind`) and controls runtime-scoped model catalog/schema loading for global/member selectors.
 - Codex team member binding creation is modeled to resolve/persist `workspaceRootPath` from `workspaceId` when explicit root path is absent.
+- Codex runtime event adaptation is modeled with helper boundaries so tool-name normalization and tool-call argument projection are isolated from segment parsing/orchestration concerns.
+- Codex dynamic `send_message_to` exposure is modeled as team-context + member-capability gated (`toolNames` contains `send_message_to`) with runtime-side unauthorized relay rejection guardrails.
+- Codex team member startup is modeled to inject teammate-manifest guidance through `developerInstructions`, with manifest data sourced from orchestrator metadata and excluding the current member from recipient hints.
+- Codex app-server runtime orchestration is modeled as a thin facade with extracted modules for session bootstrap/lifecycle, server-request routing + relay interception, and model-catalog mapping to maintain hard SoC/file-size constraints.
 
 ## Stage 3 Revalidation Notes (After Stage 0 Re-Entry)
 
@@ -105,6 +112,48 @@
 2. `UC-001` and `UC-005` retain existing semantics; `UC-016` captures the new persistence parity invariant needed for workspace-grouped history visibility.
 3. Call-stack version bumped to `v10` to align with proposed design `v10`.
 
+## Stage 3 Re-Entry Notes (After Stage 0 Re-Entry Round 12)
+
+1. Added requirement use case `UC-017` for deterministic MCP tool-name extraction in codex runtime event mapping.
+2. Runtime model now isolates tool-name extraction and segment parsing under dedicated helper boundaries while keeping adapter orchestration stable.
+3. Call-stack version bumped to `v11` to align with proposed design `v11`.
+
+## Stage 3 Re-Entry Notes (After Stage 0 Re-Entry Round 13)
+
+1. `UC-017` is refined to include deterministic MCP/generic tool-call argument projection into `metadata.arguments`, not only tool-name normalization.
+2. Runtime model keeps helper-boundary split and extends tool-helper responsibilities to merge/project `payload.arguments` and `payload.item.arguments`.
+3. Call-stack version bumped to `v12` to align with proposed design `v12`.
+
+## Stage 3 Re-Entry Notes (After Stage 0 Re-Entry Round 14)
+
+1. `UC-011` is refined from team-only gating to team+capability gating using member agent tool configuration semantics.
+2. Runtime model now includes explicit metadata propagation (`send_message_to_enabled`) from team member orchestration into Codex session initialization and runtime guardrails for unauthorized relay attempts.
+3. Call-stack version bumped to `v13` to align with proposed design `v13`.
+
+## Stage 3 Re-Entry Notes (After Stage 0 Re-Entry Round 15)
+
+1. Round-15 process reset introduced no runtime-model contract change; `UC-011` team+capability gating remains current.
+2. `v13` call stack remains valid and aligned with round-15 requirement/design confirmations.
+3. Stage 4 review rerun should verify stability only (no expected write-backs).
+
+## Stage 3 Re-Entry Notes (After Stage 0 Re-Entry Round 16)
+
+1. Round-16 investigation/requirements/design revalidation introduced no new use cases or call-stack deltas.
+2. `v13` remains the active call-stack version for Stage 4 rerun.
+3. Review focus remains stability confirmation only (no expected write-backs).
+
+## Stage 3 Re-Entry Notes (After Stage 0 Re-Entry Round 17)
+
+1. Added requirement use case `UC-018` for Codex team-manifest instruction injection and teammate-aware recipient guidance.
+2. Runtime model now includes orchestrator metadata assembly + codex runtime developer-instruction injection at `thread/start`/`thread/resume`.
+3. Call-stack version bumped to `v14` to align with proposed design `v14`.
+
+## Stage 3 Re-Entry Notes (After Stage 8 Code-Review Hard-Limit Reopen)
+
+1. Added design-risk use case `UC-019` to model mandatory decomposition of `codex-app-server-runtime-service.ts` after hard-limit review failure.
+2. Runtime model now treats runtime-service as orchestration facade only; request routing/relay and model mapping are explicit extracted boundaries.
+3. Call-stack version bumped to `v15` to align with proposed design `v15`.
+
 ## Use Case: UC-001 Team Create With Member Runtime Binding Initialization
 
 ### Goal
@@ -151,6 +200,105 @@ team-member-runtime-orchestrator.ts:createTeamRunWithId(...)
 [ERROR] invalid runtime kind or mixed-runtime request
 team-member-runtime-orchestrator.ts:validateRuntimeUniformity(...)
 └── agent-team-run.ts:createAgentTeamRun(...) -> deterministic error result
+```
+
+### Coverage Status
+
+- Primary Path: `Covered`
+- Fallback Path: `Covered`
+- Error Path: `Covered`
+
+## Use Case: UC-019 Codex Runtime-Service Decomposition Boundary (Design-Risk)
+
+### Goal
+
+Reduce `codex-app-server-runtime-service.ts` below the hard review threshold by enforcing façade-only orchestration and extracted module ownership for request routing/relay and model mapping.
+
+### Preconditions
+
+- Codex runtime integration remains behavior-compatible with existing adapter/service contract.
+- Session state type and event wiring contracts are preserved.
+
+### Expected Outcome
+
+- Runtime service delegates request-routing + relay interception to extracted router module.
+- Model list mapping delegates to extracted model-catalog mapper module.
+- Runtime service file no longer mixes façade orchestration with parsing/router internals.
+
+### Primary Runtime Call Stack
+
+```text
+[ENTRY] CodexAppServerRuntimeService:createRunSession/restoreRunSession(...)
+├── codex-runtime-session-service.ts:startSession(...) [ASYNC]
+│   ├── codex-runtime-session-service.ts:startThread/resumeThread(...)
+│   └── CodexAppServerClient:onNotification/onServerRequest bindings
+├── codex-runtime-request-router.ts:handleNotificationForSession(...) [STATE]
+├── codex-runtime-request-router.ts:handleServerRequestForSession(...) [ASYNC]
+│   └── codex-runtime-request-router.ts:tryHandleInterAgentRelayRequest(...) [ASYNC]
+└── codex-model-catalog.ts:mapCodexModelListRowToModelInfo(...) (for listModels path)
+```
+
+### Branching / Fallback Paths
+
+```text
+[FALLBACK] request is not inter-agent relay tool call
+codex-runtime-request-router.ts:handleServerRequestForSession(...)
+└── approval request path remains unchanged and deterministic
+```
+
+```text
+[ERROR] inter-agent relay handler missing or capability disabled
+codex-runtime-request-router.ts:tryHandleInterAgentRelayRequest(...)
+└── deterministic codex response error/success payload mirrors existing contract
+```
+
+### Coverage Status
+
+- Primary Path: `Covered`
+- Fallback Path: `Covered`
+- Error Path: `Covered`
+
+## Use Case: UC-018 Codex Team-Manifest Instruction Injection
+
+### Goal
+
+Ensure each Codex team member run receives teammate-manifest context (excluding self) so `send_message_to` recipient awareness is deterministic at session bootstrap/resume.
+
+### Preconditions
+
+- Team run uses runtime kind `codex_app_server`.
+- Member binding + runtime metadata are available from orchestrator.
+
+### Expected Outcome
+
+- `thread/start` and `thread/resume` include non-null `developerInstructions` containing teammate names/roles and `send_message_to` recipient guidance.
+- Dynamic tool schema may include recipient hints derived from the same teammate manifest.
+
+### Primary Runtime Call Stack
+
+```text
+[ENTRY] team-member-runtime-orchestrator.ts:createCodexMemberSessions(...)
+├── build member teammate manifest metadata (exclude current member) [STATE]
+├── runtime-composition-service.ts:restoreAgentRun(...runtimeReference.metadata...) [ASYNC]
+└── codex-app-server-runtime-service.ts:startSession(...)
+    ├── resolveTeamManifestContextFromMetadata(...)
+    ├── renderCodexTeamManifestDeveloperInstructions(...)
+    ├── resolveDynamicTools(...allowedRecipientNames...) [optional hints]
+    └── client.request("thread/start" | "thread/resume", { developerInstructions, dynamicTools, ... })
+```
+
+### Branching / Fallback Paths
+
+```text
+[FALLBACK] non-team codex session or manifest metadata absent
+codex-app-server-runtime-service.ts:startSession(...)
+└── developerInstructions remains null; no team-manifest guidance injected
+```
+
+```text
+[ERROR] manifest metadata malformed
+codex manifest parser
+└── deterministic null-instruction fallback; runtime-side recipient validation remains authoritative
 ```
 
 ### Coverage Status
@@ -577,11 +725,11 @@ team-codex-inter-agent-message-relay.ts:deliverInterAgentMessage(...)
 - Fallback Path: `N/A`
 - Error Path: `Covered`
 
-## Use Case: UC-011 Team-Scoped `send_message_to` Tool Exposure For Codex Sessions
+## Use Case: UC-011 Team+Capability-Gated `send_message_to` Tool Exposure For Codex Sessions
 
 ### Goal
 
-Expose `send_message_to` only for team-bound Codex member sessions.
+Expose `send_message_to` only for team-bound Codex member sessions that are capability-authorized by member agent tool configuration.
 
 ### Preconditions
 
@@ -589,17 +737,18 @@ Expose `send_message_to` only for team-bound Codex member sessions.
 
 ### Expected Outcome
 
-- Team-bound member session (`teamRunId` present) registers `send_message_to` dynamic tool.
-- Standalone/non-team session (`teamRunId` absent) registers no inter-agent dynamic tool.
+- Team-bound capability-authorized member session (`teamRunId` present and `send_message_to_enabled=true`) registers `send_message_to` dynamic tool.
+- Standalone/non-team sessions or team members without capability authorization register no inter-agent dynamic tool.
 
 ### Primary Runtime Call Stack
 
 ```text
 [ENTRY] codex-app-server-runtime-service.ts:startSession(runId, options)
 ├── resolveTeamRunIdFromMetadata(options.runtimeMetadata)
-├── resolveDynamicTools({ teamRunId, interAgentRelayEnabled })
-│   ├── if teamRunId present: include send_message_to tool spec
-│   └── if teamRunId missing: return null (no inter-agent tool exposure)
+├── resolveSendMessageToEnabledFromMetadata(options.runtimeMetadata)
+├── resolveDynamicTools({ teamRunId, interAgentRelayEnabled, sendMessageToEnabled })
+│   ├── if teamRunId present AND sendMessageToEnabled=true: include send_message_to tool spec
+│   └── otherwise: return null (no inter-agent tool exposure)
 └── thread/start|thread/resume(dynamicTools=resolvedValue)
 ```
 
@@ -612,14 +761,16 @@ resolveDynamicTools({ interAgentRelayEnabled=false, ... })
 ```
 
 ```text
-[ERROR] N/A (policy gate behavior, deterministic null exposure)
+[ERROR] unauthorized relay request for send_message_to (manual/injected call path)
+codex-app-server-runtime-service.ts:tryHandleInterAgentRelayRequest(...)
+└── rejects with deterministic "send_message_to is not enabled for this run session."
 ```
 
 ### Coverage Status
 
 - Primary Path: `Covered`
 - Fallback Path: `Covered`
-- Error Path: `N/A`
+- Error Path: `Covered`
 
 ## Use Case: UC-012 Shared-Process Codex Topology With Per-Agent/Member Thread Isolation
 
@@ -780,6 +931,66 @@ resolveMemberWorkspaceRootPath(...)
 - Fallback Path: `Covered`
 - Error Path: `Covered`
 
+## Use Case: UC-017 Codex MCP Tool Mapping With Deterministic Activity Labels And Arguments
+
+### Goal
+
+Ensure Codex MCP/generic tool-call events always emit deterministic tool name and argument payload in activity mapping when supported payload fields are present.
+
+### Preconditions
+
+- Runtime event payload type is `mcpToolCall`.
+- Payload contains tool identity in `toolName`, `tool_name`, `tool`, or nested `tool.name`.
+- Payload may contain arguments in `payload.arguments` and/or `payload.item.arguments`.
+
+### Expected Outcome
+
+- Mapper emits concrete tool name and avoids `MISSING_TOOL_NAME` fallback for supported payload shapes.
+- Mapper projects tool-call arguments into canonical `metadata.arguments` for activity-card rendering.
+- Adapter boundaries keep tool-name/argument extraction isolated from segment orchestration and debug metadata concerns.
+
+### Primary Runtime Call Stack
+
+```text
+[ENTRY] codex-runtime-event-adapter.ts:mapEventToMessages(eventEnvelope)
+├── codex-runtime-event-segment-helper.ts:normalizeSegments(payload)
+├── codex-runtime-event-tool-helper.ts:extractToolName(payload/toolCall/item)
+│   ├── check toolName/tool_name
+│   ├── check payload.tool (string)
+│   └── check payload.tool.name (object)
+├── codex-runtime-event-tool-helper.ts:extractToolCallArguments(payload/toolCall/item)
+│   ├── merge payload.arguments + payload.item.arguments
+│   └── sanitize into metadata.arguments
+├── runtime-event-message-mapper.ts:mapToolCall(name, status, metadata)
+└── emit ActivityMessage(toolName=<resolved>, arguments=<projected>)
+```
+
+### Branching / Fallback Paths
+
+```text
+[FALLBACK] legacy payload field present
+extractToolName(...) + extractToolCallArguments(...)
+└── use first non-empty canonical fields and continue
+```
+
+```text
+[ERROR] no supported tool-name field present
+extractToolName(...)
+└── deterministic fallback to MISSING_TOOL_NAME + debug metadata for diagnosis
+```
+
+```text
+[ERROR] arguments missing from payload
+extractToolCallArguments(...)
+└── emit empty metadata.arguments object with deterministic shape (no parser crash)
+```
+
+### Coverage Status
+
+- Primary Path: `Covered`
+- Fallback Path: `Covered`
+- Error Path: `Covered`
+
 ## Use Case: UC-013 History Panel/Store Decoupling (Design-Risk)
 
 ### Goal
@@ -869,6 +1080,75 @@ team-codex-relay-wiring.ts:bindRelay(...)
 [ERROR] bind fails due runtime unavailable
 team-codex-relay-wiring.ts:bindRelay(...)
 └── deterministic startup failure and no partial ownership mutation retained
+```
+
+### Coverage Status
+
+- Primary Path: `Covered`
+- Fallback Path: `Covered`
+- Error Path: `Covered`
+
+## Use Case: UC-019 Codex Team Message Stream Parity (`send_message_to` tool visibility + recipient `From` segment)
+
+### Goal
+
+Ensure Codex team runtime emits the same user-visible stream contracts as AutoByteus runtime for inter-agent messaging:
+
+- sender sees `send_message_to` tool call in conversation/activity stream;
+- recipient sees structured inter-agent message segment (`From <sender> ...`) rather than plain-text-only injection.
+
+### Preconditions
+
+- Team member session runtime kind is `codex_app_server`.
+- Dynamic `send_message_to` is enabled for sender member capability.
+- Sender invokes `send_message_to(recipient_name, content, message_type?)`.
+
+### Expected Outcome
+
+- Intercepted sender tool request emits canonical tool-call stream events (segment + lifecycle) with deterministic arguments.
+- Relay delivery to recipient emits structured inter-agent event payload with sender identity and envelope semantics.
+- Existing frontend handlers consume events with no runtime-specific UI hack branch.
+
+### Primary Runtime Call Stack
+
+```text
+[ENTRY] codex-runtime-event-router.ts:tryHandleInterAgentRelayRequest(item/tool/call)
+├── resolveDynamicToolNameFromParams() == send_message_to
+├── relayHandler(...) [ASYNC]
+├── emit synthetic sender events
+│   ├── method=item/added (tool_call send_message_to + arguments)
+│   ├── method=item/commandExecution/started
+│   ├── method=item/commandExecution/completed
+│   └── method=item/completed
+├── codex-runtime-event-adapter.ts:map(...)
+│   ├── SEGMENT_START/SEGMENT_END(tool_call)
+│   └── TOOL_EXECUTION_STARTED/SUCCEEDED
+└── TeamCodexRuntimeEventBridge -> TeamStreamingService -> frontend activity/conversation
+```
+
+```text
+[ENTRY] codex-app-server-runtime-service.ts:injectInterAgentEnvelope(recipientRunId,envelope)
+├── emit synthetic recipient event method=inter_agent_message
+│   └── payload: sender_agent_id, recipient_role_name, content, message_type
+├── sendTurn(...) with codex text input envelope (existing behavior retained)
+└── codex-runtime-event-adapter.ts maps inter_agent_message -> INTER_AGENT_MESSAGE
+   └── TeamStreamingService -> handleInterAgentMessage() -> InterAgentMessageSegment ("From ...")
+```
+
+### Branching / Fallback Paths
+
+```text
+[ERROR] sender tool capability disabled / relay unavailable / recipient invalid
+tryHandleInterAgentRelayRequest(...)
+├── emit sender tool-call segment/lifecycle with failure result payload
+└── respondSuccess/error with deterministic failure message
+```
+
+```text
+[FALLBACK] recipient structured event emit fails
+injectInterAgentEnvelope(...)
+├── continue envelope text injection + sendTurn path
+└── emit error event for diagnostics (no crash)
 ```
 
 ### Coverage Status

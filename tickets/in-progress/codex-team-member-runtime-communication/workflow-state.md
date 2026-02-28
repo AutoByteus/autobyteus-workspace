@@ -6,36 +6,36 @@ Update this file before every stage transition and before any source-code edit.
 ## Current Snapshot
 
 - Ticket: `codex-team-member-runtime-communication`
-- Current Stage: `5`
-- Next Stage: `5.5 (Internal review rerun after AV-020 evidence refresh)`
-- Code Edit Permission: `Unlocked`
-- Active Re-Entry: `Yes`
+- Current Stage: `8`
+- Next Stage: `Handoff confirmation after user live verification`
+- Code Edit Permission: `Locked`
+- Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `Unclear`
-- Last Transition ID: `T-133`
-- Last Updated: `2026-02-27`
+- Last Transition ID: `T-212`
+- Last Updated: `2026-02-28`
 
 ## Stage Gates
 
 | Stage | Gate Status (`Not Started`/`In Progress`/`Pass`/`Fail`/`Blocked`) | Gate Rule Summary | Evidence |
 | --- | --- | --- | --- |
-| 0 Bootstrap + Investigation | Pass | Re-entry round-11 investigation confirmed codex team member binding workspace-root persistence gap and seeded run-history noise source. | `investigation-notes.md` Stage 0 Re-Entry Trigger (`T-125`) + Round-11 findings |
-| 1 Requirements | Pass | Requirements refined with codex team workspace-root persistence/history-grouping parity requirement (`R-020`,`AC-020`). | `requirements.md` Stage 1 Revalidation Notes (After Stage 0 Re-Entry Round 11) |
-| 2 Design Basis | Pass | Design updated to `v10` with codex team workspace-root resolution/persistence boundary (`C-028`). | `proposed-design.md` Stage 2 Re-Entry Notes (After Stage 0 Re-Entry Round 11) |
-| 3 Runtime Modeling | Pass | Runtime call stack updated to `v10` with `UC-016` codex workspace-root persistence/history-grouping flow. | `future-state-runtime-call-stack.md` Stage 3 Re-Entry Notes (After Stage 0 Re-Entry Round 11) |
-| 4 Review Gate | Pass | Deep-review rerun reached `Go Confirmed` on `v10` (`Round 20 Candidate Go`, `Round 21 Go Confirmed`) with no blockers. | `future-state-runtime-call-stack-review.md` rounds 20/21 |
-| 5 Implementation | In Progress | Stage 5 reopened to implement `C-028` codex team workspace-root persistence parity (`R-020`,`AC-020`) and now includes strict live Codex lifecycle E2E coverage for both team and individual workspaceId paths with full live runtime suite rerun (`12/12` passed). | `implementation-plan.md`, `implementation-progress.md`, `workflow-state.md` (`T-130`,`T-131`,`T-132`,`T-133`) |
-| 5.5 Internal Code Review | Pass | Internal review rerun passed; no new SoC blockers introduced by team runtime selector refactor. | `implementation-progress.md` internal review log (round 12) |
-| 6 Aggregated Validation | Pass | Validation evidence now includes AV-020 closure (`R-020`/`AC-020`) with strict live Codex workspace lifecycle coverage and full live runtime suite rerun (`RUN_CODEX_E2E=1`, `12/12` passed). | `implementation-progress.md` `AV-020` row + live runtime suite logs |
-| 7 Docs Sync | Pass | Docs sync rerun recorded `No impact` for C-027 requirement-gap implementation. | `implementation-progress.md` docs sync log (latest row) |
-| 8 Handoff / Ticket State | Fail | Post-handoff user validation found unresolved behavior defects in Codex team history projection (workspace root and member label parity). | User report + screenshots (2026-02-27), `workflow-state.md` (`T-125`) |
+| 0 Bootstrap + Investigation | Pass | Re-entry round 18 investigation completed; root cause confirmed in Codex runtime event emission gap (sender tool-call visibility + recipient structured inter-agent event missing). | `investigation-notes.md` Round 18 + `workflow-state.md` `T-199` |
+| 1 Requirements | Pass | Added Codex team stream parity requirement coverage (`R-023`, `AC-023`, `UC-019`) for sender `send_message_to` visibility and recipient `INTER_AGENT_MESSAGE` projection. | `requirements.md` Stage 1 Revalidation Notes (Round 18) |
+| 2 Design Basis | Pass | Design updated to `v16` with codex synthetic sender/recipient event boundaries (`C-031`,`C-032`) while preserving runtime/frontend separation of concerns. | `proposed-design.md` Stage 2 Re-Entry Notes (Round 18) |
+| 3 Runtime Modeling | Pass | Runtime model refreshed to `v16` including sender synthetic tool-call events and recipient structured inter-agent message event projection (`UC-019`). | `future-state-runtime-call-stack.md` UC-019 section |
+| 4 Review Gate | Pass | Deep-review rerun reached `Go Confirmed` on `v16` (`Round 36 Candidate Go`, `Round 37 Go Confirmed`) with no blockers. | `future-state-runtime-call-stack-review.md` rounds 36/37 |
+| 5 Implementation | Pass | Added dynamic-tool interception hardening for method/name/argument aliases (`item.toolCall`, nested `item.name/item.arguments`) and strengthened Codex team developer instructions so `send_message_to` is required for teammate delivery claims. | `codex-send-message-tooling.ts`, `codex-runtime-method-normalizer.ts`, backend unit regressions |
+| 5.5 Internal Code Review | Pass | Round-20 focused review passed (`codex-runtime-event-router.ts`, `codex-app-server-runtime-service.ts`, `codex-runtime-event-adapter.ts`) with no blocking SoC findings. | `internal-code-review.md` round-20 update |
+| 6 Aggregated Validation | Pass | Targeted backend unit suites pass and focused live Codex roundtrip E2E passes with sender tool-call + recipient inter-agent assertions after parser hardening. Full mixed-suite live run still shows known nondeterministic roundtrip timeout in one scenario. | `vitest` unit runs (2026-02-28) + `logs/codex-roundtrip-debug.log` |
+| 7 Docs Sync | Pass | No external docs impact; change is internal runtime-event parity and test coverage hardening only. | `implementation-progress.md` docs-sync round-20 update |
+| 8 Handoff / Ticket State | In Progress | Engineering closure reached with validation evidence recorded; awaiting user live UI confirmation on sender tool-call visibility and recipient `From <sender>` rendering parity. | `workflow-state.md` `T-208` + `implementation-progress.md` round-20 notes |
 
 ## Pre-Edit Checklist (Stage 5 Only)
 
-- Current Stage is `5`: `Yes`
-- Code Edit Permission is `Unlocked`: `Yes`
+- Current Stage is `5`: `No`
+- Code Edit Permission is `Unlocked`: `No`
 - Stage 4 gate is `Go Confirmed`: `Yes`
 - Required upstream artifacts are current: `Yes`
-- Pre-Edit Checklist Result: `Pass`
+- Pre-Edit Checklist Result: `Fail (not in Stage 5)`
 - If `Fail`, source code edits are prohibited.
 
 ## Re-Entry Declaration
@@ -44,7 +44,7 @@ Update this file before every stage transition and before any source-code edit.
 - Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `Unclear`
 - Required Return Path: `8 -> 0 -> 1 -> 2 -> 3 -> 4 -> 5 -> 5.5 -> 6 -> 7 -> 8`
 - Required Upstream Artifacts To Update Before Code Edits: `workflow-state.md`, `investigation-notes.md`, `requirements.md`, `proposed-design.md`, `future-state-runtime-call-stack.md`, `future-state-runtime-call-stack-review.md`, `implementation-plan.md`, `implementation-progress.md`
-- Resume Condition: `Pending`
+- Resume Condition: `Closed - re-entry path completed through Stage 8 (T-208)`
 
 ## Transition Log (Append-Only)
 
@@ -183,6 +183,85 @@ Update this file before every stage transition and before any source-code edit.
 | T-131 | 2026-02-27 | 5 | 5 | Implemented codex-member workspace-root derivation from `workspaceId` + manifest fallback hardening, and added regression coverage to prevent null workspace-root history rows. | Unclear | Unlocked | `team-member-runtime-orchestrator.ts`, `team-run-mutation-service.ts`, `team-member-runtime-orchestrator.test.ts`, `implementation-progress.md`, `workflow-state.md` |
 | T-132 | 2026-02-27 | 5 | 5 | Added strict live Codex lifecycle E2E coverage for workspace preservation (`create->send->terminate->continue`) in both individual and team runtime flows (`workspaceId` team path validated end-to-end). | Unclear | Unlocked | `tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts`, `tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts`, `implementation-progress.md`, `workflow-state.md` |
 | T-133 | 2026-02-27 | 5 | 5 | Extended strict live lifecycle coverage with individual `workspaceId` history-group assertions and reran full live Codex runtime suites (`12/12` tests passed) to refresh AV-020 evidence before Stage 5.5. | Local Fix | Unlocked | `tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts`, `implementation-progress.md`, `workflow-state.md` |
+| T-134 | 2026-02-27 | 5 | 0 | User requested design-first rollback before further implementation and asked for stronger full-suite validation; re-entry declared as `Design Impact`. | Design Impact | Locked | `workflow-state.md`, pending Stage 0-4 artifact refresh |
+| T-135 | 2026-02-27 | 0 | 1 | Stage 0 round-12 investigation completed: identified runtime-event adapter coupling hotspot and MCP tool-name parsing gap. | Design Impact | Locked | `investigation-notes.md`, `workflow-state.md` |
+| T-136 | 2026-02-27 | 1 | 2 | Stage 1 requirements refined with `R-021`/`AC-021` for deterministic MCP tool-name mapping. | Design Impact | Locked | `requirements.md`, `workflow-state.md` |
+| T-137 | 2026-02-27 | 2 | 3 | Stage 2 design updated to `v11` with adapter helper-boundary split and `C-029`. | Design Impact | Locked | `proposed-design.md`, `implementation-plan.md`, `workflow-state.md` |
+| T-138 | 2026-02-27 | 3 | 4 | Stage 3 runtime model updated to `v11` with `UC-017`; Stage 4 deep-review rerun started. | Design Impact | Locked | `future-state-runtime-call-stack.md`, `future-state-runtime-call-stack-review.md`, `workflow-state.md` |
+| T-139 | 2026-02-27 | 4 | 5 | Stage 4 rerun reached `Go Confirmed` (`Round 22/23`); Stage 5 reopened for `C-029` execution with code-edit unlock. | Design Impact | Unlocked | `future-state-runtime-call-stack-review.md`, `workflow-state.md` |
+| T-140 | 2026-02-27 | 5 | 5 | Implemented adapter/helper split + MCP tool-name mapper regression tests (`C-029`) and prepared Stage 6 full-suite rerun (`AV-021` in progress). | Design Impact | Unlocked | `codex-runtime-event-adapter.ts`, `codex-runtime-event-{segment-helper,tool-helper,debug}.ts`, `runtime-event-message-mapper.test.ts`, `implementation-progress.md`, `workflow-state.md` |
+| T-141 | 2026-02-27 | 5 | 6 | Stage 6 aggregated validation rerun passed: backend full suite (`RUN_CODEX_E2E=1`) and frontend full suite both green; `AV-021` closed. | Design Impact | Unlocked | `implementation-progress.md` full-suite entries + `AV-021`/`AC-021` closure rows, `workflow-state.md` |
+| T-142 | 2026-02-27 | 6 | 7 | Docs sync rerun confirmed `No impact` for `C-029`; transitioned to handoff-ready state and restored code-edit lock. | Design Impact | Locked | `implementation-progress.md` docs sync row (2026-02-27), `workflow-state.md` |
+| T-143 | 2026-02-27 | 7 | 0 | User validation found MCP tool-call arguments missing in Activity panel and requested explicit return to investigation stage. | Unclear | Locked | `workflow-state.md` |
+| T-144 | 2026-02-27 | 0 | 1 | Stage 0 investigation round-13 completed and root cause persisted; moved to Stage 1 for MCP argument parity requirement refinement. | Unclear | Locked | `workflow-state.md`, `investigation-notes.md` (round 13) |
+| T-145 | 2026-02-27 | 1 | 2 | Stage 1 requirements refined: expanded `R-021`/`AC-021` to include MCP/generic tool-call argument projection parity (`metadata.arguments`). | Unclear | Locked | `requirements.md`, `workflow-state.md` |
+| T-146 | 2026-02-27 | 2 | 3 | Stage 2 design updated to `v12` with explicit argument-projection mapper contract under `C-029`; runtime-model rerun started. | Unclear | Locked | `proposed-design.md`, `implementation-plan.md`, `workflow-state.md` |
+| T-147 | 2026-02-27 | 3 | 4 | Stage 3 runtime model updated to `v12` with refined `UC-017`; deep-review rerun restarted. | Unclear | Locked | `future-state-runtime-call-stack.md`, `future-state-runtime-call-stack-review.md`, `workflow-state.md` |
+| T-148 | 2026-02-27 | 4 | 5 | Stage 4 rerun reached `Go Confirmed` (`Round 24/25`); Stage 5 reopened for `C-029` argument-projection implementation and code-edit unlock. | Unclear | Unlocked | `future-state-runtime-call-stack-review.md`, `workflow-state.md` |
+| T-149 | 2026-02-27 | 5 | 5.5 | Stage 5 implementation completed for MCP/generic tool-call argument projection into `metadata.arguments`; mapper regression coverage updated and internal code review rerun started. | Unclear | Unlocked | `implementation-progress.md`, `internal-code-review.md`, `workflow-state.md` |
+| T-150 | 2026-02-27 | 5.5 | 6 | Stage 5.5 internal code review rerun passed with no blocking findings; Stage 6 aggregated validation rerun started. | Unclear | Unlocked | `internal-code-review.md`, `workflow-state.md` |
+| T-151 | 2026-02-27 | 6 | 7 | Stage 6 validation rerun passed (`AV-021`) with full backend (`RUN_CODEX_E2E=1`, serial) and full frontend suites green. | Unclear | Unlocked | `implementation-progress.md`, `workflow-state.md` |
+| T-152 | 2026-02-27 | 7 | 8 | Stage 7 docs sync rerun recorded `No impact`; handoff state restored and code-edit lock re-applied pending user verification. | Unclear | Locked | `implementation-progress.md`, `workflow-state.md` |
+| T-153 | 2026-02-27 | 8 | 6 | User validation failed on real UI behavior (`generate_image` activity card missing arguments); reopened as Local Fix for live Codex E2E reproduction/log-backed payload verification and fix. | Local Fix | Unlocked | `workflow-state.md` |
+| T-154 | 2026-02-27 | 6 | 0 | User requested new investigation loop and clarified requirement: Codex dynamic `send_message_to` must only be exposed when the member agent definition explicitly configures the tool. | Requirement Gap | Locked | `workflow-state.md` |
+| T-155 | 2026-02-27 | 0 | 1 | Stage 0 investigation round 14 completed and persisted; transitioned to requirements refinement for config-gated dynamic tool exposure semantics. | Requirement Gap | Locked | `investigation-notes.md`, `workflow-state.md` |
+| T-156 | 2026-02-27 | 1 | 2 | Stage 1 requirements refined with config-gated dynamic tool exposure semantics (`R-017`/`AC-017`); moved to design-basis update. | Requirement Gap | Locked | `requirements.md`, `workflow-state.md` |
+| T-157 | 2026-02-27 | 2 | 3 | Stage 2 design basis updated to `v13` with runtime capability metadata + guardrail boundaries; moved to runtime-model regeneration. | Requirement Gap | Locked | `proposed-design.md`, `workflow-state.md` |
+| T-158 | 2026-02-27 | 3 | 4 | Stage 3 runtime model regenerated to `v13`; deep-review rerun restarted for Go reconfirmation. | Requirement Gap | Locked | `future-state-runtime-call-stack.md`, `workflow-state.md` |
+| T-159 | 2026-02-27 | 4 | 5 | Stage 4 deep-review rerun reached `Go Confirmed` on `v13` (rounds 26/27); Stage 5 reopened and code-edit permission unlocked. | Requirement Gap | Unlocked | `future-state-runtime-call-stack-review.md`, `workflow-state.md` |
+| T-160 | 2026-02-27 | 5 | 0 | User requested explicit return to investigation stage before completion to re-drive the full workflow loop. | Unclear | Locked | `workflow-state.md` |
+| T-161 | 2026-02-27 | 0 | 1 | Stage 0 round-15 investigation refresh completed with dynamic-tool strategy confirmation; moving to requirements revalidation. | Unclear | Locked | `investigation-notes.md`, `workflow-state.md` |
+| T-162 | 2026-02-27 | 1 | 2 | Stage 1 round-15 requirements revalidation completed with no scope expansion; moving to design-basis revalidation. | Unclear | Locked | `requirements.md`, `workflow-state.md` |
+| T-163 | 2026-02-27 | 2 | 3 | Stage 2 round-15 design revalidation confirmed `v13` unchanged; moving to runtime-model revalidation. | Unclear | Locked | `proposed-design.md`, `workflow-state.md` |
+| T-164 | 2026-02-27 | 3 | 4 | Stage 3 round-15 runtime-model revalidation completed (`v13` unchanged); review rerun restarted. | Unclear | Locked | `future-state-runtime-call-stack.md`, `workflow-state.md` |
+| T-165 | 2026-02-27 | 4 | 5 | Stage 4 deep-review rerun reconfirmed `Go Confirmed` (rounds 28/29); Stage 5 resumed and code-edit permission unlocked. | Unclear | Unlocked | `future-state-runtime-call-stack-review.md`, `workflow-state.md` |
+| T-166 | 2026-02-27 | 5 | 5.5 | Stage 5 execution completed: fixed strict live roundtrip fixture for capability-gated dynamic tooling and reran targeted + strict live suites successfully. | Unclear | Unlocked | `implementation-progress.md`, `tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts`, `workflow-state.md` |
+| T-167 | 2026-02-27 | 5.5 | 6 | Stage 5.5 internal review rerun passed for test-fixture-only delta with no new source SoC findings. | Unclear | Unlocked | `internal-code-review.md`, `workflow-state.md` |
+| T-168 | 2026-02-27 | 6 | 7 | Stage 6 validation passed with strict live Codex runtime suites plus full backend (`RUN_CODEX_E2E=1`) and full frontend suites green. | Unclear | Unlocked | `implementation-progress.md`, `workflow-state.md` |
+| T-169 | 2026-02-27 | 7 | 8 | Stage 7 docs sync rerun recorded `No impact`; transitioned to handoff-ready state and re-applied code-edit lock. | Unclear | Locked | `implementation-progress.md`, `workflow-state.md` |
+| T-170 | 2026-02-27 | 8 | 0 | User requested explicit return to investigation stage and asked to continue workflow-state-machine progression to completion. | Unclear | Locked | `workflow-state.md`, `investigation-notes.md` |
+| T-171 | 2026-02-27 | 0 | 1 | Stage 0 round-16 investigation refresh completed with dynamic-tool strategy reconfirmation and no new requirement scope. | Unclear | Locked | `investigation-notes.md`, `workflow-state.md` |
+| T-172 | 2026-02-27 | 1 | 2 | Stage 1 round-16 requirements revalidation completed with no requirement/acceptance expansion. | Unclear | Locked | `requirements.md`, `workflow-state.md` |
+| T-173 | 2026-02-27 | 2 | 3 | Stage 2 round-16 design revalidation completed; `v13` remains current. | Unclear | Locked | `proposed-design.md`, `workflow-state.md` |
+| T-174 | 2026-02-27 | 3 | 4 | Stage 3 round-16 runtime-model revalidation completed; call-stack `v13` unchanged. | Unclear | Locked | `future-state-runtime-call-stack.md`, `workflow-state.md` |
+| T-175 | 2026-02-27 | 4 | 5 | Stage 4 deep-review rerun reconfirmed `Go Confirmed` (`Round 30/31`) and reopened Stage 5 with code-edit permission unlocked. | Unclear | Unlocked | `future-state-runtime-call-stack-review.md`, `workflow-state.md` |
+| T-176 | 2026-02-27 | 5 | 5.5 | Stage 5 round-16 implementation check completed with no new source delta; implementation artifacts synchronized. | Unclear | Unlocked | `implementation-plan.md`, `implementation-progress.md`, `workflow-state.md` |
+| T-177 | 2026-02-27 | 5.5 | 6 | Stage 5.5 internal review rerun passed for no-changed-source round-16 delta. | Unclear | Unlocked | `internal-code-review.md`, `workflow-state.md` |
+| T-178 | 2026-02-27 | 6 | 7 | Stage 6 validation gate reconfirmed using unchanged-code evidence baseline from round 15 strict-live/full-suite runs. | Unclear | Unlocked | `implementation-progress.md`, `workflow-state.md` |
+| T-179 | 2026-02-27 | 7 | 8 | Stage 7 docs sync rerun recorded `No impact`; handoff-ready state restored and code-edit lock re-applied. | Unclear | Locked | `implementation-progress.md`, `workflow-state.md` |
+| T-180 | 2026-02-27 | 8 | 0 | User requested requirement update and workflow restart to implement Codex team-manifest instruction support for member-to-member messaging context. | Requirement Gap | Locked | `workflow-state.md`, pending `investigation-notes.md`/`requirements.md`/design artifacts |
+| T-181 | 2026-02-27 | 0 | 1 | Stage 0 round-17 investigation completed with explicit codex team-manifest instruction gap and boundary findings; moving to requirements refinement. | Requirement Gap | Locked | `investigation-notes.md`, `workflow-state.md` |
+| T-182 | 2026-02-27 | 1 | 2 | Stage 1 requirements refined with `R-022`/`AC-022` for Codex team-manifest instruction injection and recipient-awareness hints. | Requirement Gap | Locked | `requirements.md`, `workflow-state.md` |
+| T-183 | 2026-02-27 | 2 | 3 | Stage 2 design updated to `v14` for orchestrator-owned teammate manifest metadata and codex developer-instruction injection boundary. | Requirement Gap | Locked | `proposed-design.md`, `workflow-state.md` |
+| T-184 | 2026-02-27 | 3 | 4 | Stage 3 runtime model updated to `v14` with `UC-018`; Stage 4 deep-review rerun started. | Requirement Gap | Locked | `future-state-runtime-call-stack.md`, `workflow-state.md` |
+| T-185 | 2026-02-27 | 4 | 5 | Stage 4 deep-review rerun reached `Go Confirmed` on `v14` (rounds 32/33); Stage 5 reopened and code-edit permission unlocked for `C-030`. | Requirement Gap | Unlocked | `future-state-runtime-call-stack-review.md`, `workflow-state.md` |
+| T-186 | 2026-02-27 | 5 | 5.5 | Stage 5 implementation completed for `C-030` with teammate-manifest developer-instruction injection and recipient-hint projection; targeted backend suite passed. | Requirement Gap | Unlocked | `implementation-progress.md`, `workflow-state.md` |
+| T-187 | 2026-02-27 | 5.5 | 6 | Stage 5.5 internal review rerun passed with no new blocking SoC findings for round-17 delta. | Requirement Gap | Unlocked | `internal-code-review.md`, `implementation-progress.md`, `workflow-state.md` |
+| T-188 | 2026-02-27 | 6 | 7 | Stage 6 validation rerun passed: full backend (`RUN_CODEX_E2E=1`) and full frontend suites green; `AV-022` evidence recorded. | Requirement Gap | Unlocked | `implementation-progress.md`, `workflow-state.md` |
+| T-189 | 2026-02-27 | 7 | 8 | Stage 7 docs sync rerun recorded `No impact`; handoff-ready state restored and code-edit lock re-applied. | Requirement Gap | Locked | `implementation-progress.md`, `workflow-state.md` |
+| T-190 | 2026-02-27 | 8 | 2 | User code-review escalation: `codex-app-server-runtime-service.ts` exceeds hard `500` effective-line limit; design-stage refactor loop reopened. | Design Impact | Locked | `workflow-state.md`, pending `proposed-design.md`/call-stack/review updates |
+| T-191 | 2026-02-27 | 2 | 3 | Stage 2 design basis updated to `v15` with mandatory runtime-service decomposition boundaries; runtime-model regeneration started. | Design Impact | Locked | `proposed-design.md`, `workflow-state.md` |
+| T-192 | 2026-02-27 | 3 | 4 | Stage 3 runtime model updated to `v15` with `UC-019` decomposition boundary; Stage 4 deep-review rerun started. | Design Impact | Locked | `future-state-runtime-call-stack.md`, `workflow-state.md` |
+| T-193 | 2026-02-27 | 4 | 5 | Stage 4 deep-review rerun reached `Go Confirmed` on `v15` (rounds 34/35); Stage 5 reopened for runtime-service refactor and code-edit permission unlocked. | Design Impact | Unlocked | `future-state-runtime-call-stack-review.md`, `workflow-state.md` |
+| T-194 | 2026-02-27 | 5 | 5.5 | Stage 5 implementation completed for `C-024`: runtime service decomposed into dedicated model-catalog, thread-lifecycle, event-router, and shared-type modules; hard-limit/SoC hotspot closed. | Design Impact | Unlocked | `implementation-progress.md`, runtime source modules, `workflow-state.md` |
+| T-195 | 2026-02-27 | 5.5 | 6 | Internal code review rerun passed (`round-19`) with zero blocking findings and `codex-app-server-runtime-service.ts` below hard `500` threshold. | Design Impact | Unlocked | `internal-code-review.md`, `workflow-state.md` |
+| T-196 | 2026-02-27 | 6 | 7 | Aggregated validation rerun passed with full backend suite and full frontend suite green after decomposition refactor. | Design Impact | Unlocked | `implementation-progress.md`, `workflow-state.md` |
+| T-197 | 2026-02-27 | 7 | 8 | Docs-sync rerun recorded `No impact`; handoff state restored and code-edit lock re-applied pending user verification. | Design Impact | Locked | `implementation-progress.md`, `workflow-state.md` |
+| T-198 | 2026-02-27 | 8 | 0 | User live validation found Codex team-message UI parity defects (`send_message_to` tool call not surfaced; recipient missing `From <sender>` segment); investigation-stage re-entry requested. | Unclear | Locked | `workflow-state.md`, pending `investigation-notes.md`/requirements/design/runtime-model updates |
+| T-199 | 2026-02-27 | 0 | 1 | Stage 0 round-18 investigation completed with confirmed runtime-event emission gaps for sender tool-call and recipient inter-agent segment parity. | Unclear | Locked | `investigation-notes.md`, `workflow-state.md` |
+| T-200 | 2026-02-27 | 1 | 2 | Stage 1 requirements refined with explicit Codex team stream parity contract (`R-023`, `AC-023`, `UC-019`); design-basis update started. | Unclear | Locked | `requirements.md`, `workflow-state.md` |
+| T-201 | 2026-02-27 | 2 | 3 | Stage 2 design basis updated to `v16` with synthetic sender/recipient stream event boundaries (`C-031`,`C-032`); runtime-model refresh started. | Unclear | Locked | `proposed-design.md`, `workflow-state.md` |
+| T-202 | 2026-02-27 | 3 | 4 | Stage 3 runtime model refreshed to `v16` with explicit sender tool-call + recipient inter-agent stream parity call stack (`UC-019`). | Unclear | Locked | `future-state-runtime-call-stack.md`, `workflow-state.md` |
+| T-203 | 2026-02-27 | 4 | 5 | Stage 4 deep-review rerun reached `Go Confirmed` (`Round 36/37`); Stage 5 reopened for `C-031`/`C-032` implementation and code-edit permission unlocked. | Unclear | Unlocked | `future-state-runtime-call-stack-review.md`, `workflow-state.md` |
+| T-204 | 2026-02-27 | 5 | 5.5 | Stage 5 implementation completed for `C-031`/`C-032`: Codex sender-side `send_message_to` synthetic tool lifecycle events and recipient-side structured `inter_agent_message` event emission/mapping are now implemented with regression tests. | Unclear | Unlocked | `implementation-progress.md`, runtime source/test files, `workflow-state.md` |
+| T-205 | 2026-02-27 | 5.5 | 6 | Stage 5.5 internal code review round 20 passed; no new blocking SoC findings under `500` effective-line policy. | Unclear | Unlocked | `internal-code-review.md`, `implementation-progress.md`, `workflow-state.md` |
+| T-206 | 2026-02-27 | 6 | 6 | Aggregated validation evidence refreshed for `AV-023`: strict live Codex team roundtrip E2E + targeted backend/frontend suites passed; full frontend suite passed; backend full-suite reruns exposed unrelated flaky file-watcher/indexer integration timeouts that pass in isolated reruns. | Unclear | Unlocked | `implementation-progress.md`, test logs, `workflow-state.md` |
+| T-207 | 2026-02-27 | 6 | 7 | Stage 6 gate marked pass with flake-triaged evidence and explicit scenario-level closure for sender/recipient parity behavior. | Unclear | Unlocked | `implementation-progress.md`, `workflow-state.md` |
+| T-208 | 2026-02-27 | 7 | 8 | Stage 7 docs sync recorded `No impact`; transitioned to handoff-in-progress state awaiting user live UI confirmation. | Unclear | Locked | `implementation-progress.md`, `workflow-state.md` |
+| T-209 | 2026-02-28 | 8 | 0 | User reported live UI still missing sender `send_message_to` activity in some turns; requested renewed investigation and commit/merge discipline. | Unclear | Locked | `workflow-state.md`, user screenshots/log repro |
+| T-210 | 2026-02-28 | 0 | 5 | Investigation identified dynamic-tool payload/method alias robustness gap (`item.toolCall`, nested tool fields) with no requirement-scope expansion; local-fix implementation path opened. | Local Fix | Unlocked | `codex-send-message-tooling.ts`, `codex-runtime-method-normalizer.ts`, `workflow-state.md` |
+| T-211 | 2026-02-28 | 5 | 6 | Implemented alias-tolerant dynamic-tool parsing + stronger teammate-delivery instructions and added backend regression tests for method/payload variants. | Local Fix | Unlocked | `codex-send-message-tooling.test.ts`, `codex-app-server-runtime-service.test.ts`, `workflow-state.md` |
+| T-212 | 2026-02-28 | 6 | 8 | Validation refresh completed: targeted backend unit suites passed; focused live Codex roundtrip E2E passed with debug evidence for sender synthetic tool events and recipient inter-agent events; handoff returned for user re-test. | Local Fix | Locked | `logs/codex-roundtrip-debug.log`, `workflow-state.md` |
 
 ## Process Violation Log
 

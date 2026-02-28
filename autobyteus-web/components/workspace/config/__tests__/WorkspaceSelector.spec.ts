@@ -71,6 +71,50 @@ describe('WorkspaceSelector', () => {
     expect(wrapper.find('input[placeholder="/absolute/path/to/workspace"]').exists()).toBe(true);
   });
 
+  it('auto-selects temp workspace on mount when no workspace is selected', async () => {
+    workspaceStoreMock.tempWorkspaceId = 'temp-ws';
+    workspaceStoreMock.tempWorkspace = { workspaceId: 'temp-ws' };
+    workspaceStoreMock.workspaces = {
+      'temp-ws': { workspaceId: 'temp-ws', name: 'Temp Workspace' },
+    };
+
+    const wrapper = mount(WorkspaceSelector, {
+      props: defaultProps,
+    });
+
+    await flushPromises();
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.emitted('select-existing')).toBeTruthy();
+    expect(wrapper.emitted('select-existing')?.[0]).toEqual(['temp-ws']);
+  });
+
+  it('auto-selects temp workspace again when workspace selection resets to empty', async () => {
+    workspaceStoreMock.tempWorkspaceId = 'temp-ws';
+    workspaceStoreMock.tempWorkspace = { workspaceId: 'temp-ws' };
+    workspaceStoreMock.workspaces = {
+      'temp-ws': { workspaceId: 'temp-ws', name: 'Temp Workspace' },
+      'ws-1': { workspaceId: 'ws-1', name: 'Workspace 1' },
+    };
+
+    const wrapper = mount(WorkspaceSelector, {
+      props: {
+        ...defaultProps,
+        workspaceId: 'ws-1',
+      },
+    });
+
+    await flushPromises();
+    await wrapper.vm.$nextTick();
+
+    await wrapper.setProps({ workspaceId: null });
+    await flushPromises();
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.emitted('select-existing')).toBeTruthy();
+    expect(wrapper.emitted('select-existing')?.[0]).toEqual(['temp-ws']);
+  });
+
   it('hides Browse button when not in Electron environment', async () => {
     windowNodeContextStoreMock.isEmbeddedWindow.value = false;
 

@@ -6,8 +6,64 @@
 
 ## Investigation Status
 
-- Stage: `Re-investigation In Progress (Stage 0 Re-entry, Round 11)`
+- Stage: `Re-investigation Completed (Stage 0 Re-entry, Round 17)`
 - Last Updated: `2026-02-27`
+
+## Stage 0 Re-Entry Trigger (T-180)
+
+- Trigger: user requested requirement update and workflow restart with explicit goal that Codex runtime members must receive team-manifest context per member run.
+- Classification: `Requirement Gap`.
+- Immediate action: keep code edit lock, define requirement/design for runtime metadata + developer instruction injection path before resuming implementation.
+
+## Round 17 Investigation Findings (Codex Team Manifest Context)
+
+1. AutoByteus core already injects team manifest into system prompt via `TeamManifestInjectorProcessor`, but Codex runtime path does not inject equivalent team-member context.
+2. Codex runtime session startup currently sends `developerInstructions: null` for both `thread/start` and `thread/resume`, so Codex members do not get deterministic teammate manifest context at bootstrap.
+3. Existing metadata propagation path (`teamRunId`, `memberName`, `sendMessageToEnabled`) can be extended to include a normalized team-member manifest payload without crossing API/frontend boundaries.
+4. Best-fit boundary is:
+   - build per-member manifest context in `TeamMemberRuntimeOrchestrator` from team definition/member configs,
+   - persist into runtime metadata,
+   - render Codex-facing instruction text in codex runtime service and pass through `developerInstructions`,
+   - keep relay-side recipient validation as source of truth.
+5. Dynamic tool contract should remain runtime-provided (`send_message_to`) and can be strengthened with allowed-recipient enum hints derived from the same manifest payload.
+
+## Stage 0 Re-Entry Trigger (T-170)
+
+- Trigger: user requested another explicit return to Stage 0 and asked to continue workflow-state-machine execution until completion.
+- Classification: `Unclear` (process reset request without new defect evidence).
+- Immediate action: keep code edit lock, reconfirm dynamic-tool architecture decisions, and rerun Stage 1-4 gates before reopening implementation checkpoints.
+
+## Round 16 Investigation Findings (Workflow Re-Entry Reconfirmation)
+
+1. User reconfirmed the desired direction: continue with `send_message_to` as a Codex runtime-provided dynamic tool rather than converting it to an MCP-defined tool in this ticket.
+2. No new runtime contract, API, or UI requirements were introduced in this reset request; requirement surface remains `R-001..R-021`.
+3. Existing team+capability gating semantics for dynamic tool exposure remain valid (`R-017`/`AC-017`).
+4. This round is a process-control re-entry only; proceed with Stage 1-4 revalidation and downstream closure without new source changes.
+
+## Stage 0 Re-Entry Trigger (T-160)
+
+- Trigger: user requested explicit return to Stage 0 and asked to continue workflow-state-machine progression to completion.
+- Classification: `Unclear` (process reset request while implementation was active).
+- Immediate action: keep code edit lock, reconfirm dynamic-tool strategy decisions, then re-run Stage 1-4 gates before resuming implementation/review/validation.
+
+## Round 15 Investigation Findings (Dynamic Tool Strategy Confirmation)
+
+1. User confirmed that keeping `send_message_to` as a Codex runtime-provided dynamic tool is the preferred architecture in this ticket scope.
+2. No new requirement was introduced to convert `send_message_to` into an MCP-defined tool; runtime-provided dynamic tool approach remains in scope.
+3. Existing round-14 requirement refinement remains valid: dynamic tool exposure must stay team-context-gated and member-capability-gated.
+4. This round introduces no new runtime/event-schema unknowns; proceed to Stage 1 revalidation and complete downstream gates.
+
+## Stage 0 Re-Entry Trigger (T-154)
+
+- Trigger: user requested another investigation-first loop and clarified requirement that Codex dynamic `send_message_to` must only be exposed when that member agent definition explicitly configures the tool.
+- Classification: `Requirement Gap`.
+- Immediate action: keep code edit lock, refine requirement/design/runtime-model artifacts for capability-gated dynamic tool exposure before implementation resumes.
+
+## Stage 0 Re-Entry Trigger (T-134)
+
+- Trigger: user requested explicit return to design-first workflow before more implementation updates and asked for stronger full-suite validation depth.
+- Classification: `Design Impact`.
+- Immediate action: keep code edit lock, refresh Stage 0-4 artifacts for codex runtime event-adapter SoC split and MCP tool-name parsing coverage before progressing.
 
 ## Stage 0 Re-Entry Trigger (T-125)
 
@@ -253,6 +309,23 @@
 
 ## Re-Investigation Findings: Round 10 Team Runtime Selector Gap
 
+## Re-Investigation Findings: Round 14 Dynamic Tool Capability Gating
+
+1. Current Codex dynamic-tool exposure gate is only `teamRunId` + relay-handler availability; it does not check member agent tool configuration.
+   - Evidence:
+     - `autobyteus-server-ts/src/runtime-execution/codex-app-server/codex-send-message-tooling.ts` (`resolveDynamicTools`)
+     - `autobyteus-server-ts/src/runtime-execution/codex-app-server/codex-app-server-runtime-service.ts` (`startSession`)
+2. Team-member context (`teamRunId`, `memberName`) is already propagated via runtime metadata during member session create/restore, so capability metadata can be propagated through the same channel.
+   - Evidence:
+     - `autobyteus-server-ts/src/agent-team-execution/services/team-member-runtime-orchestrator.ts` (`createCodexMemberSessions`, `restoreCodexTeamRunSessions`)
+3. Runtime already intercepts `item/tool/call` and `item/commandExecution/requestApproval` for `send_message_to`; adding a runtime-side capability guard is feasible as defense in depth.
+   - Evidence:
+     - `autobyteus-server-ts/src/runtime-execution/codex-app-server/codex-app-server-runtime-service.ts` (`tryHandleInterAgentRelayRequest`)
+4. Agent tool configuration source of truth remains agent definition `toolNames` from core tool registry surfaces, so capability resolution should derive from configured tool names and not team-membership alone.
+   - Evidence:
+     - `autobyteus-server-ts/src/api/graphql/types/agent-customization-options.ts` (`availableToolNames`)
+     - `autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts` (`toolNames` hydration)
+
 1. `TeamRunConfigForm.vue` currently loads providers through `llmStore.fetchProvidersWithModels()` with no runtime parameter, so it defaults to `autobyteus` and never loads Codex model catalogs for team configuration.
 2. Team run config type (`TeamRunConfig`) has no global `runtimeKind`, which prevents runtime-capability-aware model loading and creates ambiguity in launch payload construction.
 3. `MemberOverrideItem.vue` still exposes a per-member runtime dropdown while backend team mutation service rejects mixed-runtime team requests (`[MIXED_TEAM_RUNTIME_UNSUPPORTED]`), creating a UX/path mismatch.
@@ -391,3 +464,92 @@
    - history panel container contract simplification (prop fanout reduction),
    - run history store further decomposition (read/write/orchestration boundaries).
 3. Stage 3/4 should be rerun after those design deltas so implementation resumes with stable architecture targets instead of incremental patching.
+
+## Re-Investigation Findings: Round 12 Event-Adapter Coupling + MCP Tool Name Parsing
+
+1. `autobyteus-server-ts/src/services/agent-streaming/codex-runtime-event-adapter.ts` exceeded the updated changed-file hard threshold (`>500` effective lines), indicating over-coupling between orchestration, tool-name parsing, segment normalization, and debug helpers.
+2. Runtime event payloads for MCP tool calls can provide tool identity under `payload.tool` (string) or nested object shape (`payload.tool.name`), but prior extraction favored only `toolName`/`tool_name`; this produces frontend `MISSING_TOOL_NAME` for valid MCP calls.
+3. Safe design boundary for this round: keep adapter as orchestration shell and split focused helpers for segment parsing, tool-call field extraction, and debug metadata.
+4. Requirement behavior scope remains unchanged (`R-001..R-020`); this round is classified as `Design Impact` with correctness closure under existing runtime-event behavior.
+5. Validation depth requirement: rerun full backend and full frontend suites after refactor, with backend executed using live Codex mode (`RUN_CODEX_E2E=1`) to preserve strict ticket criteria.
+
+## Re-Investigation Findings: Round 13 MCP Tool Arguments Missing In Activity Panel
+
+### Sources Consulted (Round 13)
+
+1. Local runtime probe against live backend websocket stream (`/ws/agent/:runId`) with real MCP `generate_image` call, confirming `payload.item.arguments` presence.
+2. Frontend parser path:
+   - `autobyteus-web/services/agentStreaming/handlers/segmentHandler.ts`
+3. Backend adapter metadata projection path:
+   - `autobyteus-server-ts/src/services/agent-streaming/codex-runtime-event-segment-helper.ts`
+4. Official Codex references (for app-server/MCP lifecycle scope, not repository metadata contract):
+   - [App Server for Agentic Coding in the Codex CLI](https://openai.com/index/app-server/)
+   - [MCP in the OpenAI API](https://platform.openai.com/docs/guides/tools-remote-mcp)
+
+1. Live runtime evidence confirms Codex App Server provides MCP arguments on `item.arguments` for `mcpToolCall` items:
+   - Observed `SEGMENT_START/SEGMENT_END` payloads for `generate_image` with `item.arguments = { prompt, output_file_path }`.
+   - In the same payloads, `metadata` only contained `tool_name` and did not include `arguments`.
+2. Frontend activity rendering for generic `tool_call` segments only reads arguments from `payload.metadata.arguments` (`segmentHandler.ts`, `extractToolCallArgumentsFromMetadata(...)`), so valid `item.arguments` are currently ignored.
+3. Backend adapter normalization path (`codex-runtime-event-segment-helper.ts`, `resolveSegmentMetadata(...)`) copies tool/path/patch/command, but does not project `item.arguments`/`payload.arguments` into `metadata.arguments` for `tool_call` segments.
+4. Root-cause classification for this symptom is therefore adapter-metadata normalization gap, not missing runtime payload from Codex App Server.
+5. Official Codex App Server docs/blog describe item lifecycle and MCP support at API level, but do not prescribe the downstream UI metadata projection contract (`metadata.arguments`) used by this repository; repository-side mapping remains responsible for this parity.
+
+### Round 13 Implications
+
+1. This is a local behavior fix candidate with narrow scope:
+   - backend: include normalized arguments in `metadata.arguments` for MCP/generic `tool_call` segments;
+   - frontend: optional defensive fallback to `payload.item.arguments` for robustness.
+2. Requirement/design artifacts should record explicit acceptance coverage:
+   - MCP `tool_call` cards in Activity show arguments when runtime emits them.
+3. Code edits remain locked until Stage 2/3 classification artifacts are refreshed per workflow-state re-entry path.
+
+## Re-Investigation Findings: Round 18 Codex Team Message UI Parity Defect (`send_message_to` visibility + `From` segment)
+
+### Sources Consulted (Round 18)
+
+1. `autobyteus-server-ts/src/runtime-execution/codex-app-server/codex-runtime-event-router.ts`
+2. `autobyteus-server-ts/src/runtime-execution/codex-app-server/codex-app-server-runtime-service.ts`
+3. `autobyteus-server-ts/src/runtime-execution/codex-app-server/codex-user-input-mapper.ts`
+4. `autobyteus-server-ts/src/services/agent-streaming/codex-runtime-event-adapter.ts`
+5. `autobyteus-server-ts/src/services/agent-streaming/team-codex-runtime-event-bridge.ts`
+6. `autobyteus-web/services/agentStreaming/handlers/teamHandler.ts`
+
+### Findings
+
+1. `send_message_to` tool requests in Codex runtime are intercepted in `tryHandleInterAgentRelayRequest(...)` and answered directly, but no runtime event is emitted for those intercepted calls. Result: no `SEGMENT_START/END` and no tool lifecycle messages for this tool in frontend activity/conversation.
+2. Recipient delivery currently uses envelope-to-text injection (`toCodexUserInput(...)` prepends `[InterAgentMessage ...] from ...`), but no structured `INTER_AGENT_MESSAGE` websocket event is published in Codex team mode. Result: frontend cannot render the dedicated `InterAgentMessageSegment` (`From <sender> ...`) parity card.
+3. Team Codex frontend path is event-driven (`TeamCodexRuntimeEventBridge -> RuntimeEventMessageMapper -> TeamStreamingService`), so parity requires explicit structured runtime events for both:
+   - sender-side tool-call visibility for intercepted `send_message_to`;
+   - recipient-side inter-agent message event payload.
+
+### Implications
+
+1. Local fix should stay inside Codex runtime adapter/event boundaries (no UI business hack):
+   - synthesize runtime events for intercepted `send_message_to` in router/runtime-service path;
+   - publish structured `inter_agent_message` runtime event when recipient envelope is injected.
+2. `CodexRuntimeEventAdapter` needs explicit mapping for new synthetic event method (`inter_agent_message`) to `ServerMessageType.INTER_AGENT_MESSAGE`.
+3. Validation must include strict live Codex E2E assertions proving:
+   - `send_message_to` appears as tool-call activity in team stream;
+   - recipient stream receives `INTER_AGENT_MESSAGE` payload with sender identity.
+
+## Re-Investigation Findings: Round 19 Sender Activity Missing In Some Live Turns
+
+### Sources Consulted (Round 19)
+
+1. `autobyteus-server-ts/src/runtime-execution/codex-app-server/codex-runtime-method-normalizer.ts`
+2. `autobyteus-server-ts/src/runtime-execution/codex-app-server/codex-send-message-tooling.ts`
+3. `autobyteus-server-ts/src/runtime-execution/codex-app-server/codex-runtime-event-router.ts`
+4. Live debug trace: `logs/codex-roundtrip-debug.log` (`RUN_CODEX_E2E=1`, `CODEX_RUNTIME_RAW_EVENT_DEBUG=1`)
+
+### Findings
+
+1. Sender-side activity is only emitted when runtime interception recognizes the incoming dynamic tool request as `send_message_to`; the previous parser accepted a narrow subset of method/name/arg shapes.
+2. Method alias normalization did not explicitly cover `item.toolCall` / `item/tool_call` variants, which can bypass interception when app-server payload versions differ.
+3. Dynamic tool-name extraction previously relied on top-level `params.tool`/`params.name`, but some payloads may place identity under `item.name`/`item.tool_name` (or object-shaped tool fields).
+4. Live debug evidence confirms the parity path works when interception triggers: synthetic sender events (`item/added`, `item/commandExecution/started`) and recipient `inter_agent_message` are present.
+5. A separate behavioral factor remains: when the model does not actually call `send_message_to` (only states it sent), no sender activity card can appear; stronger developer instructions reduce this false-claim risk.
+
+### Implications
+
+1. Local-fix scope is parser/normalizer hardening plus instruction guardrails; no API/schema change is required.
+2. Requirements stay within existing `R-023`/`AC-023` scope; no new requirement IDs needed.

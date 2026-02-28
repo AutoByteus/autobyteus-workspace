@@ -84,6 +84,54 @@ with deterministic routing, persisted member-runtime bindings, continuation safe
 2. Added explicit persistence+projection parity requirement for Codex team workspace-root continuity (`R-020`, `AC-020`), including member-binding and team-manifest history visibility outcomes.
 3. Scope remains `Medium`; this closes a behavior gap within existing Codex team runtime history flow.
 
+## Stage 1 Revalidation Notes (After Stage 0 Re-Entry Round 12)
+
+1. New finding is design-impact plus correctness hardening for runtime event mapping: MCP tool-call events must resolve tool names from all supported payload fields to avoid `MISSING_TOOL_NAME` activity rows.
+2. Added explicit requirement/acceptance coverage for deterministic MCP tool-name mapping in codex runtime event adapter (`R-021`, `AC-021`).
+3. Scope remains `Medium`; no product-surface expansion beyond existing Codex activity/event streaming behavior.
+
+## Stage 1 Revalidation Notes (After Stage 0 Re-Entry Round 13)
+
+1. User validation confirmed a remaining correctness gap: MCP tool-call argument payloads are present in Codex runtime events but are not projected into activity-card arguments.
+2. `R-021`/`AC-021` are refined to require both deterministic tool-name mapping and deterministic argument projection (`metadata.arguments`) for MCP/generic `tool_call` activity parity.
+3. Scope remains `Medium`; this is a mapper-contract refinement inside existing Codex activity/event streaming behavior.
+
+## Stage 1 Revalidation Notes (After Stage 0 Re-Entry Round 14)
+
+1. Requirement gap confirmed: current Codex team dynamic tool exposure is team-context-gated but not agent-tool-config-gated.
+2. `R-017`/`AC-017` are refined to require both conditions for dynamic tool exposure: (a) team-bound session context and (b) member agent definition explicitly contains `send_message_to` in `toolNames`.
+3. Scope remains `Medium`; no new product-surface expansion is introduced.
+
+## Stage 1 Revalidation Notes (After Stage 0 Re-Entry Round 15)
+
+1. User confirmed the preferred strategy is to keep `send_message_to` as Codex runtime-provided dynamic tooling, not an MCP-defined replacement for this ticket scope.
+2. Existing `R-017`/`AC-017` semantics remain valid with no additional requirement IDs required.
+3. Scope remains `Medium`; this round is a process-reset confirmation with no behavior-surface expansion.
+
+## Stage 1 Revalidation Notes (After Stage 0 Re-Entry Round 16)
+
+1. Round-16 investigation reconfirmed round-15 decisions and introduced no new requirement-level deltas.
+2. Requirement and acceptance coverage remains unchanged (`R-001..R-021`, `AC-001..AC-021`).
+3. Scope remains `Medium`; proceed with unchanged design/runtime-model basis.
+
+## Stage 1 Revalidation Notes (After Stage 0 Re-Entry Round 17)
+
+1. Requirement gap confirmed: Codex team members currently do not receive explicit team-manifest instruction context at thread bootstrap/resume, reducing deterministic recipient awareness for `send_message_to`.
+2. Added requirement/acceptance coverage for Codex team-manifest instruction injection and recipient-hint projection (`R-022`, `AC-022`).
+3. Scope remains `Medium`; no product-surface expansion beyond existing Codex team runtime flow.
+
+## Stage 1 Revalidation Notes (After Stage 0 Re-Entry Round 18)
+
+1. Live UI validation confirmed remaining parity gap for Codex team messaging: sender-side `send_message_to` tool invocation is not surfaced as activity/tool-call segment, and recipient-side structured `From <sender>` inter-agent segment is not emitted.
+2. Added explicit parity requirement/acceptance coverage for Codex team stream event contracts (`R-023`, `AC-023`) so sender tool-call visibility and recipient inter-agent segment rendering are testable.
+3. Scope remains `Medium`; this is a stream/event-contract refinement within existing Codex team runtime boundaries.
+
+## Stage 1 Revalidation Notes (After Stage 0 Re-Entry Round 19)
+
+1. Round-19 investigation confirmed a payload-shape/method-alias robustness gap in dynamic `send_message_to` interception, not a new behavior-scope requirement.
+2. Existing `R-023`/`AC-023` already cover required sender visibility and recipient structured inter-agent projection; no additional requirement IDs were introduced.
+3. Scope remains `Medium`; this cycle is a local-fix hardening pass.
+
 ## In-Scope Use Cases
 
 - `UC-001` Create a team run with explicit member runtime kinds and deterministic member runtime bindings.
@@ -96,10 +144,13 @@ with deterministic routing, persisted member-runtime bindings, continuation safe
 - `UC-008` Agent A invokes `send_message_to` and runtime resolves Agent B in the same team run.
 - `UC-009` Recipient member runtime receives inter-agent envelope (`sender`, `message_type`, `content`) and resumes normal reasoning/input pipeline.
 - `UC-010` Sender agent receives deterministic tool-visible failure for unknown recipient / recipient-start failure / unavailable recipient session.
-- `UC-011` Codex runtime exposes `send_message_to` tool only for team-bound member sessions and never for standalone agent sessions.
+- `UC-011` Codex runtime exposes `send_message_to` tool only for team-bound member sessions where that member agent definition explicitly configures `send_message_to`; standalone sessions or non-configured members must not expose it.
 - `UC-012` Codex-backed agent runs in one server node share a single long-lived app-server process while preserving one-thread-per-agent-run semantics.
 - `UC-015` Team run config allows selecting runtime kind, then loads runtime-specific model catalogs/config schemas so member overrides can select models/thinking config under that runtime.
 - `UC-016` Codex team runs created with `workspaceId` persist deterministic workspace-root paths in team/member history manifests so workspace tree grouping remains aligned with selected workspace.
+- `UC-017` Codex runtime event mapper resolves MCP tool names and argument payload projection from supported call payload shapes so activity stream shows deterministic tool labels and arguments.
+- `UC-018` Codex team member sessions receive deterministic team-manifest instruction context (teammate names/roles and `send_message_to` usage guidance) at thread start/resume.
+- `UC-019` Codex team messaging emits deterministic sender-side `send_message_to` tool-call events and recipient-side structured `INTER_AGENT_MESSAGE` events so frontend conversation/activity parity matches AutoByteus runtime.
 
 ## Out Of Scope (This Ticket)
 
@@ -127,10 +178,13 @@ with deterministic routing, persisted member-runtime bindings, continuation safe
 | R-014 | Recipient member runtime must normalize inter-agent envelope into normal reasoning/input pipeline while preserving sender metadata. | Recipient continues reasoning and tool use from standard pipeline, with sender context preserved. | UC-009 |
 | R-015 | Inter-agent delivery failure states (unknown recipient, recipient start failure, unavailable session) must return deterministic tool-visible failure messages to sender agent. | Sender agent gets actionable deterministic failure semantics from `send_message_to`. | UC-010 |
 | R-016 | Agent-to-agent tool routing must remain decoupled from frontend GraphQL user-ingress message handling boundaries. | Tool path can evolve independently without coupling to user message API flows. | UC-008, UC-009, UC-010 |
-| R-017 | Codex runtime must register/expose `send_message_to` only when the run session is bound to a team member context (`teamRunId` present). | Standalone/non-team Codex runs do not expose inter-agent messaging tools and cannot attempt undefined team-target sends. | UC-011 |
+| R-017 | Codex runtime must register/expose `send_message_to` only when the run session is both team-bound (`teamRunId` present) and capability-authorized (`send_message_to` exists in that member agent definition `toolNames`). | Standalone/non-team Codex runs and team members without configured `send_message_to` do not expose inter-agent messaging tools and cannot invoke undefined team-target sends. | UC-011 |
 | R-018 | Codex runtime in this server process must use one shared long-lived app-server process and manage one thread per agent run/member run via that shared process. | Team/agent runs do not spawn one app-server subprocess per run; per-run isolation is provided by thread identity and runtime routing, not per-run process creation. | UC-012 |
 | R-019 | Team run configuration must expose a single team runtime kind (`autobyteus` or `codex_app_server`) and load model catalogs/config schemas from that selected runtime for global model + member overrides. | When team runtime is Codex, users can select Codex models and per-member thinking config; launch payload uses the selected team runtime kind for every member. | UC-015 |
 | R-020 | Codex team run creation/resume paths must persist non-null workspace-root paths for team manifest and member bindings when workspace selection is provided via `workspaceId` (without requiring explicit `workspaceRootPath` input). | Team history grouping for Codex runs appears under the selected workspace (for example `Temp Workspace`) and member rows remain discoverable under the same workspace bucket. | UC-016 |
+| R-021 | Codex runtime event mapping must resolve MCP tool names from canonical payload fields (`toolName`, `tool_name`, `tool`, nested `tool.name`) and project tool-call arguments into `metadata.arguments` when runtime payload provides them. | Frontend activity for valid MCP tool calls never falls back to `MISSING_TOOL_NAME` when tool identity is present, and MCP/generic `tool_call` cards show provided arguments deterministically. | UC-017 |
+| R-022 | Codex team member session startup/resume must inject per-member team-manifest instructions (excluding self) via runtime-supported developer-instruction channel, including teammate names and `send_message_to` recipient guidance; dynamic tool hints may include allowed-recipient names derived from the same manifest. | Each Codex team member receives deterministic teammate awareness context at bootstrap/resume, improving recipient targeting reliability while preserving runtime-side validation as source of truth. | UC-018 |
+| R-023 | Codex team inter-agent relay flow must emit deterministic stream-visible events for both sides: sender-side `send_message_to` tool-call lifecycle (`tool_call` segment/activity) and recipient-side structured `INTER_AGENT_MESSAGE` payload (`sender_agent_id`, `recipient_role_name`, `content`, `message_type`). | Frontend parity is preserved: sender sees actual `send_message_to` tool call in conversation/activity and recipient sees `From <sender>` inter-agent segment instead of opaque plain text-only injection. | UC-019 |
 
 ## Acceptance Criteria
 
@@ -152,10 +206,13 @@ with deterministic routing, persisted member-runtime bindings, continuation safe
 | AC-014 | R-014 | Recipient runtime converts inter-agent envelope into normal reasoning/input pipeline and can continue tool reasoning. |
 | AC-015 | R-015 | Sender receives deterministic tool-visible failure for recipient missing/start failure/session unavailable cases. |
 | AC-016 | R-016 | Agent-to-agent tool routing path executes without depending on frontend-originated GraphQL user-message code path. |
-| AC-017 | R-017 | Codex standalone run sessions do not advertise `send_message_to`; team-bound member sessions do advertise it. |
+| AC-017 | R-017 | Codex standalone run sessions do not advertise `send_message_to`; team-bound member sessions advertise it only when the member agent definition includes `send_message_to`; otherwise it remains hidden. |
 | AC-018 | R-018 | When multiple codex agent runs are active concurrently (including team members), runtime diagnostics/process inspection confirms one shared Codex app-server process is used while each run keeps a distinct thread identity. |
 | AC-019 | R-019 | Team config runtime selector controls runtime-specific model lists/config schemas; selecting Codex enables Codex model + member thinking-config selection and team launch sends uniform `runtimeKind=codex_app_server` member configs. |
 | AC-020 | R-020 | Creating a Codex team run with only `workspaceId` in member config persists non-null `workspaceRootPath` in `listTeamRunHistory` team row + member rows, and frontend workspace history shows the team under the selected workspace instead of unassigned/missing grouping. |
+| AC-021 | R-021 | For Codex `mcpToolCall` runtime events containing tool identity in `payload.tool` (string) or `payload.tool.name` (object) and arguments in `payload.arguments`/`payload.item.arguments`, activity mapping emits the concrete tool name (not `MISSING_TOOL_NAME`) and includes those arguments in activity-card payload. |
+| AC-022 | R-022 | For Codex team member session create/restore, runtime startup payload (`thread/start` and `thread/resume`) includes non-null `developerInstructions` with teammate manifest context (teammate names present; self name excluded), and `send_message_to` dynamic tool metadata exposes deterministic recipient hints derived from teammate names when capability is enabled. |
+| AC-023 | R-023 | In live Codex team runtime E2E (`RUN_CODEX_E2E=1`), when member A calls `send_message_to` targeting member B, team websocket stream includes (a) sender member `SEGMENT_START/SEGMENT_END` `tool_call` for `send_message_to` with arguments, and (b) recipient member `INTER_AGENT_MESSAGE` payload carrying sender id/name, recipient role, message type, and content for `From <sender>` rendering. |
 
 ## Constraints / Dependencies
 
@@ -214,6 +271,9 @@ with deterministic routing, persisted member-runtime bindings, continuation safe
 | R-018 | UC-012 |
 | R-019 | UC-015 |
 | R-020 | UC-016 |
+| R-021 | UC-017 |
+| R-022 | UC-018 |
+| R-023 | UC-019 |
 
 ## Acceptance-Criteria Coverage Map To Stage 6 Scenarios
 
@@ -239,3 +299,6 @@ with deterministic routing, persisted member-runtime bindings, continuation safe
 | AC-018 | R-018 | AV-018 | Integration/E2E |
 | AC-019 | R-019 | AV-019 | E2E |
 | AC-020 | R-020 | AV-020 | API/E2E |
+| AC-021 | R-021 | AV-021 | API/E2E |
+| AC-022 | R-022 | AV-022 | API/E2E |
+| AC-023 | R-023 | AV-023 | E2E |

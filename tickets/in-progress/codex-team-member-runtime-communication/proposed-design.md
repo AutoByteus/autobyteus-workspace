@@ -2,12 +2,17 @@
 
 ## Design Version
 
-- Current Version: `v10`
+- Current Version: `v15`
 
 ## Revision History
 
 | Version | Trigger | Summary Of Changes | Related Review Round |
 | --- | --- | --- | --- |
+| v15 | Stage 8 code-review reopen (`Design Impact`) | Reopened runtime-service structural refactor as blocking scope: codex app-server runtime service must be decomposed to satisfy hard `500` effective-line policy with explicit module boundaries for session bootstrap, request routing/relay handling, and model mapping. | Pending next review cycle |
+| v14 | Stage 0 re-entry round 17 (`Requirement Gap`) | Added Codex team-manifest instruction propagation design: orchestrator-built teammate manifest metadata, codex runtime developer-instruction rendering/injection, and recipient-hint projection in dynamic tool schema. | Pending next review cycle |
+| v13 | Stage 0 re-entry round 14 (`Requirement Gap`) | Refined Codex dynamic `send_message_to` exposure contract to require both team context and member agent tool configuration; added runtime capability metadata/guardrail design updates. | Pending next review cycle |
+| v12 | Stage 0 re-entry round 13 (`Unclear`) | Refined codex runtime-event adapter mapping contract to include MCP/generic `tool_call` argument projection into `metadata.arguments` while preserving helper-boundary separation. | Pending next review cycle |
+| v11 | Stage 0 re-entry round 12 (`Design Impact`) | Added codex runtime-event adapter boundary split and explicit MCP tool-name extraction hardening so activity mapping never emits `MISSING_TOOL_NAME` for supported payload shapes. | Pending next review cycle |
 | v10 | Stage 0 re-entry round 11 (`Unclear`) | Added Codex team workspace-root persistence design boundary so member bindings and team manifest retain workspace-root paths when input only provides `workspaceId`. | Pending next review cycle |
 | v9 | Stage 0 re-entry round 10 (`Requirement Gap`) | Added team runtime-kind selector architecture for team config so runtime-specific model catalogs/config schemas load deterministically and launch payload uses uniform team runtime kind. | Pending next review cycle |
 | v8 | Stage 0 re-entry round 8 (`Design Impact`) | Refined decoupling design for remaining hotspots: explicit shared-process manager delivery criteria, history panel prop-contract simplification, and final run-history store boundary split aligned to updated `<=500 effective-line` review threshold. | Pending next review cycle |
@@ -74,6 +79,48 @@
 2. Design now requires deterministic workspace-root resolution at codex member binding creation time (resolve from workspace manager by `workspaceId` when explicit root path is absent), and propagation into team manifest write path.
 3. Design version bumped to `v10`; behavior scope expansion is limited to workspace grouping parity for existing team history UX.
 
+## Stage 2 Re-Entry Notes (After Stage 0 Re-Entry Round 12)
+
+1. Investigation confirmed a reopened SoC hotspot in `codex-runtime-event-adapter.ts` (`>500` effective lines) and a correctness gap in MCP tool-name extraction paths.
+2. Design now requires helper extraction for event-segment parsing, tool-name normalization, and debug metadata so adapter remains orchestration-only and passes hard review thresholds.
+3. Design version bumped to `v11`; this round also formalizes supported MCP tool-name payload shapes (`toolName`, `tool_name`, `tool`, `tool.name`) to prevent `MISSING_TOOL_NAME` regressions.
+
+## Stage 2 Re-Entry Notes (After Stage 0 Re-Entry Round 13)
+
+1. Investigation confirmed remaining behavior gap is argument projection, not payload absence: MCP arguments exist in runtime events but are dropped before frontend activity parsing.
+2. Design now requires codex segment metadata mapping to project tool-call arguments (`payload.arguments` and `payload.item.arguments`) into canonical `metadata.arguments` for generic `tool_call` segments.
+3. Design version bumped to `v12`; helper-boundary split from `v11` remains intact and this round only extends mapper contract coverage under `C-029`.
+
+## Stage 2 Re-Entry Notes (After Stage 0 Re-Entry Round 14)
+
+1. Requirement refinement clarified that Codex team-scoped dynamic `send_message_to` exposure must also be member-capability-gated by agent definition `toolNames`.
+2. Design now requires propagating `send_message_to_enabled` runtime metadata during member session create/restore and enforcing runtime-side guardrails on intercepted tool relay requests.
+3. Design version bumped to `v13`; this is a contract-hardening refinement with no new product-surface expansion.
+
+## Stage 2 Re-Entry Notes (After Stage 0 Re-Entry Round 15)
+
+1. Dynamic-tool strategy was reconfirmed with the user: `send_message_to` remains runtime-provided dynamic tooling in Codex runtime flow for this ticket.
+2. No architecture-direction change is required after round 15; `v13` remains the active design version.
+3. Proceed to runtime-model/review reruns with unchanged `C-021` boundaries and requirement traceability.
+
+## Stage 2 Re-Entry Notes (After Stage 0 Re-Entry Round 16)
+
+1. Round-16 investigation did not introduce new architecture or boundary concerns.
+2. Design version remains `v13` with unchanged change inventory and SoC boundaries.
+3. Stage 3 runtime-model revalidation should remain a stability confirmation only.
+
+## Stage 2 Re-Entry Notes (After Stage 0 Re-Entry Round 17)
+
+1. New requirement `R-022` adds deterministic team-manifest instruction context for each Codex team member session at thread bootstrap/resume.
+2. Design now requires explicit metadata ownership in orchestrator (build per-member teammate manifest) and runtime ownership in codex service (render/inject `developerInstructions`), preserving separation from GraphQL/frontend ingress.
+3. Design version bumped to `v14`; dynamic tool response path remains unchanged except optional recipient-hint projection aligned with the same manifest source.
+
+## Stage 2 Re-Entry Notes (After Stage 8 Code-Review Hard-Limit Reopen)
+
+1. User review escalated `codex-app-server-runtime-service.ts` as a blocking architecture issue: current file size (`905` lines) breaches the hard `500` effective-line limit and mixes multiple responsibilities.
+2. Design now requires a mandatory runtime-service decomposition pass before additional feature work: split session bootstrap/state orchestration, server-request routing + inter-agent relay handling, and model-list mapping helpers into dedicated modules with a thin facade.
+3. Design version bumped to `v15`; behavior requirements remain unchanged (`R-001..R-022`) but separation-of-concern boundaries are strengthened and now blocking for Stage 4 gate.
+
 ## Artifact Basis
 
 - Investigation Notes: `tickets/in-progress/codex-team-member-runtime-communication/investigation-notes.md`
@@ -87,6 +134,10 @@ Current team execution paths are autobyteus-team-native and team-run-ID scoped, 
 - agent-originated inter-agent `send_message_to` tool delivery ingress.
 In v9, team config runtime kind is elevated to first-class UI/store state so runtime-specific model catalogs/config schemas are loaded deterministically for team/global/member model configuration.
 In v10, codex team member bindings must carry resolved workspace-root paths so workspace history grouping stays aligned with selected workspace.
+In v11, codex runtime-event mapping must normalize MCP tool names from supported payload shapes through extracted helper boundaries.
+In v12, codex runtime-event mapping must also project MCP/generic tool-call arguments into `metadata.arguments` so activity arguments are visible end-to-end.
+In v14, codex team member sessions must receive teammate manifest instructions through `developerInstructions` so `send_message_to` recipient awareness is deterministic per member run.
+In v15, codex runtime app-server service must be reduced below the hard review threshold by moving routing/relay/model-mapping internals into focused modules while preserving external behavior.
 
 ## Goals
 
@@ -98,6 +149,10 @@ In v10, codex team member bindings must carry resolved workspace-root paths so w
 - Ensure Codex `send_message_to` tool is exposed only for team-bound member sessions.
 - Enforce shared-process Codex app-server lifecycle with multi-thread run/member routing (no per-run subprocess in target state).
 - Expose one team runtime selector in team config and load runtime-scoped model/config options from that selection.
+- Ensure codex runtime event mapping resolves MCP tool names deterministically across supported payload shapes.
+- Ensure codex runtime event mapping projects MCP/generic tool-call arguments into canonical metadata for activity-card parity.
+- Ensure codex team member sessions receive teammate manifest instructions (excluding self) at thread start/resume, sourced from orchestrator metadata and injected via codex runtime developer-instruction channel.
+- Ensure `codex-app-server-runtime-service.ts` is reduced below hard review threshold and no longer mixes session bootstrap, request routing/relay interception, and model-mapping concerns in one file.
 - Preserve non-Codex team behavior.
 - Keep agent-to-agent tool path decoupled from frontend GraphQL user-message ingress.
 
@@ -126,10 +181,12 @@ In v10, codex team member bindings must carry resolved workspace-root paths so w
 | R-014 | Recipient runtime normalization into standard reasoning/input pipeline. | AC-014 | UC-009 |
 | R-015 | Deterministic sender-visible failure outcomes for inter-agent delivery failures. | AC-015 | UC-010 |
 | R-016 | Strict decoupling of inter-agent tool path from frontend user-ingress path. | AC-016 | UC-008, UC-009, UC-010 |
-| R-017 | Team-scoped dynamic tool availability for `send_message_to` only when team metadata exists. | AC-017 | UC-011 |
+| R-017 | Team-scoped dynamic tool availability for `send_message_to` only when both team metadata exists and member capability is configured (`toolNames` contains `send_message_to`). | AC-017 | UC-011 |
 | R-018 | Shared-process runtime topology for Codex app-server with one thread per agent/member run. | AC-018 | UC-012 |
 | R-019 | Team runtime selector drives runtime-specific model catalogs/config schemas and uniform runtime launch payload. | AC-019 | UC-015 |
 | R-020 | Codex team workspace-root persistence parity when team launch uses `workspaceId` only. | AC-020 | UC-016 |
+| R-021 | Deterministic MCP tool-name extraction and MCP/generic tool-call argument projection for codex runtime event mapping across supported payload shapes. | AC-021 | UC-017 |
+| R-022 | Codex team-manifest instruction propagation for member teammate awareness and `send_message_to` recipient guidance via developer-instruction injection. | AC-022 | UC-018 |
 
 ## Codebase Understanding Snapshot (Pre-Design Mandatory)
 
@@ -198,14 +255,16 @@ In v10, codex team member bindings must carry resolved workspace-root paths so w
 | C-015 | Modify | `src/agent-team-execution/services/team-member-runtime-orchestrator.ts` | same | Add `relayInterAgentMessage(...)` path with recipient resolution + error classification and keep it isolated from user-ingress GraphQL path. | Team runtime orchestration | Enforces SoC for tool path. |
 | C-016 | Add/Modify | `src/api/graphql/types/agent-team-run.ts` | `src/api/graphql/services/team-run-mutation-service.ts` + resolver slimming | Extract team mutation runtime orchestration from resolver into dedicated service to keep resolver at API-boundary concern only. | Backend API boundary | Reduces resolver from ~726 lines to ~212 lines. |
 | C-017 | Add/Modify | `autobyteus-web/stores/runHistoryStore.ts` | `autobyteus-web/stores/runHistory{Types,Manifest,TeamHelpers}.ts` + trimmed store | Extract run-history manifest parsing, team-node projection, and team-open reconstruction helpers from store orchestration shell. | Frontend state boundary | Reduces run-history store from ~1464 lines to ~988 lines. |
-| C-021 | Add/Modify | `src/runtime-execution/codex-app-server/codex-app-server-runtime-service.ts` | same + extracted codex helper modules | Reduce codex runtime hotspot complexity by extracting inter-agent relay tool parsing/response helpers and team-scoped dynamic-tool registration helpers into dedicated modules while preserving behavior. | Runtime integration boundary | Keeps team-only tool exposure rule explicit and testable. |
+| C-021 | Add/Modify | `src/runtime-execution/codex-app-server/codex-app-server-runtime-service.ts` | same + extracted codex helper modules | Reduce codex runtime hotspot complexity by extracting inter-agent relay tool parsing/response helpers and team-scoped dynamic-tool registration helpers into dedicated modules while preserving behavior; enforce team+capability gating for `send_message_to` dynamic exposure. | Runtime integration boundary | Keeps tool exposure rules explicit and testable. |
 | C-022 | Add/Modify | `autobyteus-web/stores/runHistoryStore.ts` | split into `runHistoryReadModelStore.ts` + `runHistoryActions.ts` + slim orchestration store | Separate read-model/projection concerns from mutation/open/delete/select workflows and workspace side effects. | Frontend state boundary | Target: store shell `<=500` effective lines with one orchestration concern; read-model/action logic extracted to dedicated modules. |
 | C-023 | Add/Modify | `autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue` | split into container + `WorkspaceTreeSection.vue` + `TeamTreeSection.vue` + action composables + typed section action adapter | Separate rendering tree hierarchy from action handlers (terminate/delete/create workspace), avatar cache logic, and bootstrap load lifecycle while shrinking prop fanout. | Frontend UI boundary | Target: panel shell `<=400` lines and section API reduced to focused typed contracts instead of callback fanout. |
-| C-024 | Add/Modify | `src/runtime-execution/codex-app-server/codex-app-server-runtime-service.ts` | split into `codex-runtime-session-service.ts` + `codex-runtime-approval-relay.ts` + `codex-model-catalog.ts` | Separate session lifecycle from approval/tool relay path and model catalog mapping to reduce cross-surface churn. | Runtime integration boundary | Preserve existing external service contract while moving responsibilities into focused modules. |
+| C-024 | Add/Modify | `src/runtime-execution/codex-app-server/codex-app-server-runtime-service.ts` | split into `codex-runtime-session-service.ts` + `codex-runtime-request-router.ts` + `codex-model-catalog.ts` | Separate session lifecycle from server-request/relay routing and model catalog mapping to resolve blocking hard-limit breach and reduce cross-surface churn. | Runtime integration boundary | Mandatory in `v15`: runtime-service facade must drop below hard threshold while preserving external service contract. |
 | C-025 | Add/Modify | `src/agent-team-execution/services/team-member-runtime-orchestrator.ts` + runtime composition bootstrap | explicit relay-handler registration lifecycle module (`team-codex-relay-wiring.ts`) | Remove constructor side-effect ownership and make relay-handler bind/unbind explicit at composition boundary. | Runtime ownership boundary | Prevent hidden global handler overwrite and support deterministic teardown in tests/runtime restart paths. |
 | C-026 | Add/Modify | `src/runtime-execution/codex-app-server/{codex-app-server-client.ts,codex-app-server-runtime-service.ts,codex-thread-history-reader.ts}` | add `codex-app-server-process-manager.ts` and refactor services to shared transport/client lifecycle | Replace per-run subprocess spawning with one shared app-server process and per-thread session routing. | Runtime process topology | Must preserve deterministic error/recovery semantics for active runs after process failure/restart and remove ad-hoc per-read ephemeral process spawn. |
 | C-027 | Add/Modify | `autobyteus-web/types/agent/TeamRunConfig.ts`, `autobyteus-web/components/workspace/config/{TeamRunConfigForm.vue,MemberOverrideItem.vue}`, `autobyteus-web/stores/{agentTeamRunStore.ts,agentTeamContextsStore.ts}` | promote runtime kind to team-level config and runtime-capability-aware model loading | Align team UI/runtime payload with backend single-runtime rule while enabling Codex model + per-member thinking-config selection when Codex runtime is selected. | Frontend team config boundary | Remove member runtime selector from team override path and keep overrides scoped to model/config/auto-execute. |
 | C-028 | Modify | `src/agent-team-execution/services/team-member-runtime-orchestrator.ts`, `src/api/graphql/services/team-run-mutation-service.ts` | ensure codex member bindings always persist resolved workspace root path (explicit path or resolved from workspaceId) before team manifest/history write | Prevent team-history workspace grouping drift (`workspaceRootPath=null`) for Codex team runs launched with `workspaceId` only. | Backend team runtime persistence boundary | Must preserve existing explicit `workspaceRootPath` precedence and non-codex behavior. |
+| C-029 | Add/Modify | `src/services/agent-streaming/codex-runtime-event-adapter.ts` | split into `codex-runtime-event-segment-helper.ts` + `codex-runtime-event-tool-helper.ts` + `codex-runtime-event-debug.ts` with adapter shell orchestration only | Eliminate over-coupled event-adapter hotspot and fix MCP tool-name extraction plus tool-call argument projection (`metadata.arguments`) for supported payload shapes. | Backend runtime event mapping boundary | Target changed files under `<=500` effective lines each with dedicated mapper regression coverage. |
+| C-030 | Add/Modify | `src/agent-team-execution/services/team-member-runtime-orchestrator.ts`, `src/runtime-execution/codex-app-server/{codex-send-message-tooling.ts,codex-app-server-runtime-service.ts}` | add orchestrator-owned teammate-manifest metadata and codex-runtime-owned developer-instruction injection + recipient-hint projection | Ensure each Codex team member session receives deterministic teammate awareness context at bootstrap/resume without coupling to API/frontend paths. | Team runtime + codex runtime boundary | Preserve runtime-side recipient validation as source of truth; instruction hints are advisory. |
 
 ## v9 Refactor To-Do Breakdown (Implementation-Ready Boundaries)
 
@@ -373,6 +432,7 @@ In v10, codex team member bindings must carry resolved workspace-root paths so w
 | UC-012 | R-018 | Shared-process topology with per-agent/member thread routing | Yes | N/A | Yes | UC-012 |
 | UC-015 | R-019 | Team runtime selector with runtime-scoped model/config loading and uniform member runtime payload | Yes | N/A | Yes | UC-015 |
 | UC-016 | R-020 | Codex team history grouping preserves selected workspace when launch payload provides `workspaceId` only | Yes | N/A | Yes | UC-016 |
+| UC-017 | R-021 | Codex MCP/generic tool-call event mapping resolves tool names from all supported payload shapes and projects arguments into canonical metadata | Yes | N/A | Yes | UC-017 |
 
 ## Performance / Security Considerations
 
@@ -415,3 +475,23 @@ In v10, codex team member bindings must carry resolved workspace-root paths so w
 - Is deterministic member `runId` creation best expressed via new `createAgentRunWithId` runtime-composition API, or by dedicated team-member runtime creation path in runtime service?
 - Should Stage 1 inter-agent delivery enforce recipient auto-start (core parity) or fail-fast when recipient session is unavailable?
 - Should `message_type` remain open string in Stage 1 or be constrained enum in runtime contract?
+
+## Stage 2 Re-Entry Notes (After Stage 1 Round 18)
+
+### Design Delta (`v16`) For `R-023` / `UC-019`
+
+1. Sender-side parity boundary:
+   - Extend Codex runtime intercepted `send_message_to` handling to emit synthetic runtime events (start/end + lifecycle) so existing codex event adapter/stream mapper produces canonical frontend tool-call/activity messages without frontend-specific hacks.
+2. Recipient-side parity boundary:
+   - Emit a synthetic structured codex runtime event (`inter_agent_message`) at recipient envelope injection time.
+   - Map this method in `CodexRuntimeEventAdapter` to `ServerMessageType.INTER_AGENT_MESSAGE` payload contract expected by team streaming frontend (`sender_agent_id`, `recipient_role_name`, `content`, `message_type`).
+3. Separation-of-concerns guardrail:
+   - Keep all parity logic in runtime integration + event mapping layers:
+     - `runtime-execution/codex-app-server/*`
+     - `services/agent-streaming/codex-runtime-event-adapter.ts`
+   - Do not introduce frontend runtime-specific branching for this fix.
+
+### New/Refined Change IDs
+
+- `C-031` Sender `send_message_to` synthetic event emission in codex runtime router/service for tool-call visibility parity.
+- `C-032` Recipient `inter_agent_message` synthetic event emission + adapter mapping to canonical `INTER_AGENT_MESSAGE`.

@@ -5,9 +5,13 @@ import os from "node:os";
 import { spawnSync } from "node:child_process";
 import { randomUUID } from "node:crypto";
 import { mkdtemp, rm } from "node:fs/promises";
+import fastify from "fastify";
+import websocket from "@fastify/websocket";
+import WebSocket from "ws";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
+import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
 
 const codexBinaryReady = spawnSync("codex", ["--version"], {
   stdio: "ignore",
@@ -19,6 +23,22 @@ const originalCodexApprovalPolicy = process.env.CODEX_APP_SERVER_APPROVAL_POLICY
 const wait = (ms: number): Promise<void> =>
   new Promise((resolve) => {
     setTimeout(resolve, ms);
+  });
+
+const waitForSocketOpen = (socket: WebSocket, timeoutMs = 10_000): Promise<void> =>
+  new Promise((resolve, reject) => {
+    const timer = setTimeout(
+      () => reject(new Error("Timed out waiting for websocket open")),
+      timeoutMs,
+    );
+    socket.once("open", () => {
+      clearTimeout(timer);
+      resolve();
+    });
+    socket.once("error", (error) => {
+      clearTimeout(timer);
+      reject(error);
+    });
   });
 
 describeCodexRuntime("Codex team inter-agent roundtrip e2e (live transport)", () => {
@@ -230,6 +250,7 @@ Rules:
             name: `codex-ping-${unique}`,
             role: "assistant",
             description: "Codex ping agent for live inter-agent roundtrip validation.",
+            toolNames: ["send_message_to"],
             systemPromptCategory: promptCategory,
             systemPromptName: promptName,
           },
@@ -242,6 +263,7 @@ Rules:
             name: `codex-pong-${unique}`,
             role: "assistant",
             description: "Codex pong agent for live inter-agent roundtrip validation.",
+            toolNames: ["send_message_to"],
             systemPromptCategory: promptCategory,
             systemPromptName: promptName,
           },
@@ -326,6 +348,38 @@ Rules:
 
       const pingToken = `ROUNDTRIP_PING:${unique}`;
       const pongToken = `ROUNDTRIP_PONG:${unique}`;
+      const streamApp = fastify();
+      await streamApp.register(websocket);
+      await registerAgentWebsocket(streamApp);
+      const streamAddress = await streamApp.listen({ port: 0, host: "127.0.0.1" });
+      const streamUrl = new URL(streamAddress);
+      const teamSocket = new WebSocket(
+        `ws://${streamUrl.hostname}:${streamUrl.port}/ws/agent-team/${teamRunId}`,
+      );
+      await waitForSocketOpen(teamSocket);
+      const streamMessages: Array<{ type: string; payload: Record<string, unknown> }> = [];
+      teamSocket.on("message", (raw) => {
+        try {
+          const parsed = JSON.parse(String(raw)) as {
+            type?: unknown;
+            payload?: unknown;
+          };
+          if (typeof parsed.type !== "string") {
+            return;
+          }
+          const payload =
+            parsed.payload && typeof parsed.payload === "object" && !Array.isArray(parsed.payload)
+              ? (parsed.payload as Record<string, unknown>)
+              : {};
+          streamMessages.push({
+            type: parsed.type,
+            payload,
+          });
+        } catch {
+          // ignore malformed rows in test stream capture
+        }
+      });
+
       const sendMessageToTeamMutation = `
         mutation SendMessageToTeam($input: SendMessageToTeamInput!) {
           sendMessageToTeam(input: $input) {
@@ -410,21 +464,66 @@ Rules:
         );
       };
 
-      await sendRelayInstruction({
-        targetMemberName: "ping",
-        recipientName: "pong",
-        content: `PING-TO-PONG ${pingToken}`,
-        messageType: "roundtrip_ping",
-      });
-      await waitForProjectionText("pong", `PING-TO-PONG ${pingToken}`);
+      const waitForTeamStreamEvent = async (
+        predicate: (message: { type: string; payload: Record<string, unknown> }) => boolean,
+        label: string,
+      ): Promise<void> => {
+        const deadline = Date.now() + 120_000;
+        while (Date.now() < deadline) {
+          if (streamMessages.some(predicate)) {
+            return;
+          }
+          await wait(500);
+        }
+        const preview = streamMessages
+          .slice(-20)
+          .map((entry) => `${entry.type}:${JSON.stringify(entry.payload).slice(0, 200)}`)
+          .join(" | ");
+        throw new Error(`Timed out waiting for team websocket event '${label}'. preview='${preview}'`);
+      };
 
-      await sendRelayInstruction({
-        targetMemberName: "pong",
-        recipientName: "ping",
-        content: `PONG-TO-PING ${pongToken}`,
-        messageType: "roundtrip_pong",
-      });
-      await waitForProjectionText("ping", `PONG-TO-PING ${pongToken}`);
+      try {
+        await sendRelayInstruction({
+          targetMemberName: "ping",
+          recipientName: "pong",
+          content: `PING-TO-PONG ${pingToken}`,
+          messageType: "roundtrip_ping",
+        });
+        await waitForProjectionText("pong", `PING-TO-PONG ${pingToken}`);
+
+        await waitForTeamStreamEvent(
+          (message) =>
+            message.type === "SEGMENT_START" &&
+            message.payload.agent_name === "ping" &&
+            message.payload.segment_type === "tool_call" &&
+            (message.payload.metadata as Record<string, unknown> | undefined)?.tool_name ===
+              "send_message_to" &&
+            ((message.payload.metadata as Record<string, unknown> | undefined)?.arguments as Record<string, unknown> | undefined)?.content ===
+              `PING-TO-PONG ${pingToken}`,
+          "sender send_message_to SEGMENT_START",
+        );
+
+        await waitForTeamStreamEvent(
+          (message) =>
+            message.type === "INTER_AGENT_MESSAGE" &&
+            message.payload.agent_name === "pong" &&
+            typeof message.payload.sender_agent_id === "string" &&
+            message.payload.recipient_role_name === "pong" &&
+            message.payload.content === `PING-TO-PONG ${pingToken}`,
+          "recipient INTER_AGENT_MESSAGE",
+        );
+
+        await sendRelayInstruction({
+          targetMemberName: "pong",
+          recipientName: "ping",
+          content: `PONG-TO-PING ${pongToken}`,
+          messageType: "roundtrip_pong",
+        });
+        await waitForProjectionText("ping", `PONG-TO-PING ${pongToken}`);
+      } finally {
+        teamSocket.close();
+        await streamApp.close();
+      }
     },
     180_000,
   );

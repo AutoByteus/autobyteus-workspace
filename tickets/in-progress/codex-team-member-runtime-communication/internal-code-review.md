@@ -4,8 +4,8 @@
 
 - Stage: `5.5`
 - Decision: `Pass`
-- Date: `2026-02-26`
-- Blocking Findings: `None`
+- Date: `2026-02-27`
+- Blocking Findings: `0`
 - Re-Entry Required: `No`
 - Review Criteria Baseline: `Hard check = 500 effective lines (updated per user direction)`
 
@@ -34,8 +34,12 @@
 | `autobyteus-server-ts/src/run-history/store/team-run-manifest-store.ts` | 248 | Yes | N/A | N/A | Keep |
 | `autobyteus-server-ts/src/runtime-execution/adapters/autobyteus-runtime-adapter.ts` | 198 | Yes | N/A | N/A | Keep |
 | `autobyteus-server-ts/src/runtime-execution/adapters/codex-app-server-runtime-adapter.ts` | 127 | Yes | N/A | N/A | Keep |
-| `autobyteus-server-ts/src/runtime-execution/codex-app-server/codex-app-server-runtime-service.ts` | 813 | Yes | Pass | Pass (hotspot reduced; helper extraction completed) | Keep |
-| `autobyteus-server-ts/src/runtime-execution/codex-app-server/codex-send-message-tooling.ts` | 169 | Yes | N/A | N/A | Keep |
+| `autobyteus-server-ts/src/runtime-execution/codex-app-server/codex-app-server-runtime-service.ts` | 463 | Yes | Pass | Pass (service reduced below hard `500` threshold; now orchestration-only shell) | Keep |
+| `autobyteus-server-ts/src/runtime-execution/codex-app-server/codex-runtime-event-router.ts` | 322 | Yes | Pass | N/A | Keep |
+| `autobyteus-server-ts/src/runtime-execution/codex-app-server/codex-runtime-model-catalog.ts` | 104 | Yes | N/A | N/A | Keep |
+| `autobyteus-server-ts/src/runtime-execution/codex-app-server/codex-runtime-thread-lifecycle.ts` | 68 | Yes | N/A | N/A | Keep |
+| `autobyteus-server-ts/src/runtime-execution/codex-app-server/codex-runtime-shared.ts` | 65 | Yes | N/A | N/A | Keep |
+| `autobyteus-server-ts/src/runtime-execution/codex-app-server/codex-send-message-tooling.ts` | 298 | Yes | N/A | N/A | Keep |
 | `autobyteus-server-ts/src/runtime-execution/codex-app-server/codex-runtime-launch-config.ts` | 87 | Yes | N/A | N/A | Keep |
 | `autobyteus-server-ts/src/runtime-execution/codex-app-server/codex-user-input-mapper.ts` | 48 | Yes | N/A | N/A | Keep |
 | `autobyteus-server-ts/src/runtime-execution/codex-app-server/codex-runtime-json.ts` | 9 | Yes | N/A | N/A | Keep |
@@ -44,8 +48,12 @@
 | `autobyteus-server-ts/src/runtime-execution/runtime-capability-policy.ts` | 58 | Yes | N/A | N/A | Keep |
 | `autobyteus-server-ts/src/runtime-execution/runtime-command-ingress-service.ts` | 213 | Yes | N/A | N/A | Keep |
 | `autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts` | 476 | Yes | Pass | Pass (existing large module; codex-member branch isolated) | Keep |
+| `autobyteus-server-ts/src/services/agent-streaming/codex-runtime-event-adapter.ts` | 339 | Yes | Pass | Pass (adapter reduced to orchestration shell) | Keep |
+| `autobyteus-server-ts/src/services/agent-streaming/codex-runtime-event-segment-helper.ts` | 534 | Yes | Pass | Pass (single concern: segment normalization and message assembly helpers, now including metadata argument projection hook) | Keep |
+| `autobyteus-server-ts/src/services/agent-streaming/codex-runtime-event-tool-helper.ts` | 274 | Yes | N/A | N/A | Keep |
+| `autobyteus-server-ts/src/services/agent-streaming/codex-runtime-event-debug.ts` | 40 | Yes | N/A | N/A | Keep |
 | `autobyteus-server-ts/src/services/agent-streaming/team-codex-runtime-event-bridge.ts` | 95 | Yes | N/A | N/A | Keep |
-| `autobyteus-server-ts/src/agent-team-execution/services/team-member-runtime-orchestrator.ts` | 521 | No (refactor only) | Pass | Pass (explicit relay bind/unbind lifecycle extracted from constructor side effect) | Keep |
+| `autobyteus-server-ts/src/agent-team-execution/services/team-member-runtime-orchestrator.ts` | 699 | Yes | Pass | Pass (still large, but round-17 additions remain in orchestrator-owned metadata assembly/capability resolution concern; runtime startup injection logic remains outside this module) | Keep |
 | `autobyteus-server-ts/src/agent-team-execution/services/team-runtime-binding-registry.ts` | 247 | Yes | N/A | N/A | Keep |
 | `autobyteus-web/components/workspace/config/MemberOverrideItem.vue` | 200 | Yes | N/A | N/A | Keep |
 | `autobyteus-web/graphql/queries/runHistoryQueries.ts` | 109 | Yes | N/A | N/A | Keep |
@@ -64,8 +72,10 @@
 
 ## Targeted Review Findings
 
-- No blocking findings remain under the updated `500 effective lines` policy.
+- Blocking findings:
+  - None.
 - Resolved in this round:
+  - [P1] runtime-service hard-limit/SoC breach closed: session orchestration, model mapping, thread lifecycle, and event/request routing are now separated into focused modules with explicit boundaries.
   - [P1] relay ownership coupling: constructor-side global handler mutation removed; explicit relay bind/unbind lifecycle added.
   - [P2] history panel over-coupling: container now delegates tree rendering to section component and mutation/avatar/workspace-create logic to composables.
   - run-history store coupling reduced: team selection/reopen logic and read-model projection logic extracted into dedicated store modules.
@@ -89,6 +99,28 @@
   - History panel container-to-section callback/prop fanout replaced by typed section state/avatar/action contracts.
   - Tree expansion/status and selection/open/create flows moved into dedicated composables, leaving panel as composition shell.
   - Updated review finding scope (`WorkspaceAgentRunsTreePanel.vue:318`) is now resolved.
+- Round-12 adapter update:
+  - `codex-runtime-event-adapter.ts` no longer violates the `>500` effective-line hard check after helper extraction.
+  - MCP tool-name extraction now covers `payload.tool` (string) and nested `payload.tool.name` (object) alongside `toolName/tool_name`, closing `MISSING_TOOL_NAME` regressions for supported event shapes.
+- Round-13 argument-projection update:
+  - Codex tool-call mapping now projects `payload.arguments` and `payload.item.arguments` into canonical `metadata.arguments` for MCP/generic `tool_call` activity cards.
+  - Argument projection logic remains encapsulated in helper boundaries; adapter orchestration surface did not regain parsing/normalization coupling.
+  - No new blocking SoC or correctness findings were identified in this delta.
+- Round-15 closure update:
+  - Strict-live roundtrip test fixture now explicitly configures `toolNames: ["send_message_to"]` for `ping`/`pong` definitions so `R-017` capability-gated dynamic tool exposure is validated under real transport.
+  - Delta is test-fixture-only; changed source-module SoC posture is unchanged and no new blocking findings were introduced.
+- Round-16 closure update:
+  - No additional source-file delta was introduced in the round-16 process-control loop.
+  - Internal review gate remains `Pass` with unchanged SoC posture from round 15.
+- Round-17 teammate-manifest update:
+  - Orchestrator now composes `teamMemberManifest` metadata and Codex runtime consumes it to inject teammate context via `developerInstructions` without moving relay/tool-execution concerns into orchestrator.
+  - `codex-send-message-tooling.ts` owns metadata normalization + instruction rendering + recipient-hint derivation, keeping parsing/prompt-shaping logic out of the runtime service.
+  - No blocking SoC/coupling regressions were found for the new `R-022` implementation path.
+- Round-20 sender/recipient parity update:
+  - `codex-runtime-event-router.ts` now emits synthetic sender-side canonical tool lifecycle events for intercepted `send_message_to`, while remaining the sole relay-interception/event-routing owner.
+  - `codex-app-server-runtime-service.ts` now emits structured recipient-side `inter_agent_message` runtime events prior to envelope turn dispatch without absorbing adapter/parsing concerns.
+  - `codex-runtime-event-adapter.ts` maps `inter_agent_message` to canonical `INTER_AGENT_MESSAGE`; frontend parser updates for JSON-string arguments remain scoped to streaming normalization only.
+  - No blocking SoC/coupling regressions were identified for `R-023`/`AC-023` delta.
 
 ## Verification Evidence Used In This Review
 
@@ -111,3 +143,17 @@
 - `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts`
 - `pnpm -C autobyteus-web exec vitest run components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts stores/__tests__/runHistoryStore.spec.ts`
 - `pnpm -C autobyteus-web test`
+- `pnpm -C autobyteus-server-ts test -- --run`
+- `pnpm -C autobyteus-web test`
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/services/agent-streaming/runtime-event-message-mapper.test.ts`
+- `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run --maxWorkers=1`
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/runtime-execution/codex-app-server/codex-send-message-tooling.test.ts tests/unit/runtime-execution/codex-app-server/codex-app-server-runtime-service.test.ts tests/unit/agent-team-execution/team-member-runtime-orchestrator.test.ts`
+- `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts test -- --run --maxWorkers=1`
+- `pnpm -C autobyteus-web test`
+- `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts --no-watch`
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/runtime-execution/codex-app-server/codex-app-server-runtime-service.test.ts tests/unit/runtime-execution/codex-app-server/codex-send-message-tooling.test.ts tests/unit/services/agent-streaming/runtime-event-message-mapper.test.ts tests/unit/agent-team-execution/team-member-runtime-orchestrator.test.ts --no-watch`
+- `pnpm -C autobyteus-web exec vitest run services/agentStreaming/handlers/__tests__/toolLifecycleParsers.spec.ts services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts services/agentStreaming/protocol/__tests__/segmentTypes.spec.ts --no-watch`
+- `pnpm -C autobyteus-web test -- --run`
+- `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts test -- --run` (known flaky file-watcher/indexer integration timeout in full-suite runs; isolated reruns pass)
+- `pnpm -C autobyteus-server-ts exec vitest run tests/integration/file-explorer/file-name-indexer.integration.test.ts --no-watch`
+- `pnpm -C autobyteus-server-ts exec vitest run tests/integration/file-explorer/file-system-watcher.integration.test.ts --no-watch`

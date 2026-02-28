@@ -83,4 +83,21 @@ describe('toolLifecycleParsers', () => {
     expect(parseToolExecutionFailedPayload({ invocation_id: 'inv', tool_name: 'x', error: '' } as any)).toBeNull();
     expect(parseToolLogPayload({ tool_invocation_id: 'inv', tool_name: 'x', log_entry: '' } as any)).toBeNull();
   });
+
+  it('parses lifecycle arguments when payload.arguments is serialized JSON', () => {
+    expect(
+      parseToolExecutionStartedPayload({
+        invocation_id: 'inv-json-1',
+        tool_name: 'generate_image',
+        arguments: '{"prompt":"cute fox","output_file_path":"/tmp/cute-fox.png"}',
+      } as any),
+    )?.toMatchObject({
+      invocationId: 'inv-json-1',
+      toolName: 'generate_image',
+      arguments: {
+        prompt: 'cute fox',
+        output_file_path: '/tmp/cute-fox.png',
+      },
+    });
+  });
 });

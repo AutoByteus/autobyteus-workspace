@@ -205,6 +205,19 @@ const selectedWorkspace = computed(() => {
   return workspaceStore.workspaces[props.workspaceId] || null;
 });
 
+const maybeAutoSelectDefaultWorkspace = (): boolean => {
+  if (props.workspaceId || isInteractionDisabled.value) {
+    return false;
+  }
+  const tempWorkspaceId = workspaceStore.tempWorkspaceId;
+  if (!tempWorkspaceId) {
+    return false;
+  }
+  emit('select-existing', tempWorkspaceId);
+  mode.value = 'existing';
+  return true;
+};
+
 // Initialize mode based on available workspaces
 onMounted(async () => {
   // Fetch all workspaces and ensure temp workspace is available
@@ -215,9 +228,8 @@ onMounted(async () => {
   }
   
   // Auto-select temp workspace if no workspace currently selected
-  if (!props.workspaceId && workspaceStore.tempWorkspaceId) {
-    emit('select-existing', workspaceStore.tempWorkspaceId);
-    mode.value = 'existing';
+  const autoSelected = maybeAutoSelectDefaultWorkspace();
+  if (autoSelected) {
     return; // Skip further mode logic, we've auto-selected
   }
   
@@ -240,8 +252,17 @@ watch(() => props.workspaceId, (newId) => {
   if (newId && workspaceStore.workspaces[newId]) {
     const ws = workspaceStore.workspaces[newId];
     successMessage.value = `Workspace: ${ws.name}`;
+    return;
   }
+  maybeAutoSelectDefaultWorkspace();
 });
+
+watch(
+  () => workspaceStore.tempWorkspaceId,
+  () => {
+    maybeAutoSelectDefaultWorkspace();
+  },
+);
 
 // Watch for workspace options changes - update mode if workspaces become available
 watch(workspaceOptions, (newOptions) => {

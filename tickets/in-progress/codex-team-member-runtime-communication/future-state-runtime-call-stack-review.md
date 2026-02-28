@@ -6,7 +6,7 @@ This review validates alignment with target (`to-be`) design behavior, not parit
 ## Review Meta
 
 - Scope Classification: `Medium`
-- Current Round: `21`
+- Current Round: `37`
 - Current Review Type: `Deep Review`
 - Clean-Review Streak Before This Round: `1`
 - Clean-Review Streak After This Round: `2`
@@ -19,9 +19,9 @@ This review validates alignment with target (`to-be`) design behavior, not parit
 - Source Design Basis: `tickets/in-progress/codex-team-member-runtime-communication/proposed-design.md`
 - Artifact Versions In This Round:
   - Requirements Status: `Refined`
-  - Design Version: `v10`
-  - Call Stack Version: `v10`
-- Required Write-Backs Completed For This Round: `N/A`
+  - Design Version: `v16`
+  - Call Stack Version: `v16`
+- Required Write-Backs Completed For This Round: `Yes`
 
 ## Review Intent (Mandatory)
 
@@ -56,6 +56,22 @@ This review validates alignment with target (`to-be`) design behavior, not parit
 | 19 | Refined | v9 | v9 | No | N/A | 2 | Go Confirmed | Go |
 | 20 | Refined | v10 | v10 | No | `Yes` (round-11 investigation/requirements/design/call-stack write-backs applied before round close) | 1 | Candidate Go | No-Go |
 | 21 | Refined | v10 | v10 | No | N/A | 2 | Go Confirmed | Go |
+| 22 | Refined | v11 | v11 | No | `Yes` (round-12 write-backs for adapter SoC split + MCP tool-name mapping coverage) | 1 | Candidate Go | No-Go |
+| 23 | Refined | v11 | v11 | No | N/A | 2 | Go Confirmed | Go |
+| 24 | Refined | v12 | v12 | No | `Yes` (round-13 write-backs for MCP tool-call argument projection parity under `R-021`) | 1 | Candidate Go | No-Go |
+| 25 | Refined | v12 | v12 | No | N/A | 2 | Go Confirmed | Go |
+| 26 | Refined | v13 | v13 | No | `Yes` (round-14 write-backs for team+capability-gated dynamic tool exposure semantics under `R-017`) | 1 | Candidate Go | No-Go |
+| 27 | Refined | v13 | v13 | No | N/A | 2 | Go Confirmed | Go |
+| 28 | Refined | v13 | v13 | No | N/A | 1 | Candidate Go | No-Go |
+| 29 | Refined | v13 | v13 | No | N/A | 2 | Go Confirmed | Go |
+| 30 | Refined | v13 | v13 | No | N/A | 1 | Candidate Go | No-Go |
+| 31 | Refined | v13 | v13 | No | N/A | 2 | Go Confirmed | Go |
+| 32 | Refined | v14 | v14 | No | `Yes` (round-17 requirement-gap write-backs applied before round close) | 1 | Candidate Go | No-Go |
+| 33 | Refined | v14 | v14 | No | N/A | 2 | Go Confirmed | Go |
+| 34 | Refined | v15 | v15 | No | `Yes` (stage-8 design-impact write-backs applied for runtime-service hard-limit decomposition path) | 1 | Candidate Go | No-Go |
+| 35 | Refined | v15 | v15 | No | N/A | 2 | Go Confirmed | Go |
+| 36 | Refined | v16 | v16 | No | `Yes` (round-18 write-backs for Codex team stream parity contract under `R-023` / `UC-019`) | 1 | Candidate Go | No-Go |
+| 37 | Refined | v16 | v16 | No | N/A | 2 | Go Confirmed | Go |
 
 ## Round Write-Back Log (Mandatory)
 
@@ -82,6 +98,22 @@ This review validates alignment with target (`to-be`) design behavior, not parit
 | 19 | No | None | N/A | N/A | N/A |
 | 20 | Yes | `workflow-state.md`, `investigation-notes.md`, `requirements.md`, `proposed-design.md`, `future-state-runtime-call-stack.md` | design `v9 -> v10`, call stack `v9 -> v10` | Added codex workspace-root persistence requirement/use-case coverage (`R-020`,`UC-016`) and persistence-path call stack updates (`C-028`) | `F-049` |
 | 21 | No | None | N/A | N/A | N/A |
+| 22 | Yes | `workflow-state.md`, `investigation-notes.md`, `requirements.md`, `proposed-design.md`, `future-state-runtime-call-stack.md`, `implementation-plan.md` | design `v10 -> v11`, call stack `v10 -> v11` | Added MCP tool-name mapping requirement/use-case coverage (`R-021`,`UC-017`) and adapter helper-boundary split plan (`C-029`) | `F-050` |
+| 23 | No | None | N/A | N/A | N/A |
+| 24 | Yes | `workflow-state.md`, `investigation-notes.md`, `requirements.md`, `proposed-design.md`, `future-state-runtime-call-stack.md`, `implementation-plan.md` | design `v11 -> v12`, call stack `v11 -> v12` | Refined `UC-017` mapper contract to require deterministic tool-call argument projection (`metadata.arguments`) in addition to tool-name extraction | `F-051` |
+| 25 | No | None | N/A | N/A | N/A |
+| 26 | Yes | `workflow-state.md`, `investigation-notes.md`, `requirements.md`, `proposed-design.md`, `future-state-runtime-call-stack.md`, `implementation-plan.md` | design `v12 -> v13`, call stack `v12 -> v13` | Refined `UC-011` contract from team-only gating to team+capability gating (`toolNames` includes `send_message_to`) plus runtime unauthorized-relay guardrail modeling | `F-052` |
+| 27 | No | None | N/A | N/A | N/A |
+| 28 | No | None | N/A | N/A | N/A |
+| 29 | No | None | N/A | N/A | N/A |
+| 30 | No | None | N/A | N/A | N/A |
+| 31 | No | None | N/A | N/A | N/A |
+| 32 | Yes | `workflow-state.md`, `investigation-notes.md`, `requirements.md`, `proposed-design.md`, `future-state-runtime-call-stack.md` | design `v13 -> v14`, call stack `v13 -> v14` | Added Codex team-manifest developer-instruction requirement and runtime-model coverage (`R-022`,`AC-022`,`UC-018`,`C-030`) | `F-053` |
+| 33 | No | None | N/A | N/A | N/A |
+| 34 | Yes | `workflow-state.md`, `internal-code-review.md`, `proposed-design.md`, `future-state-runtime-call-stack.md` | design `v14 -> v15`, call stack `v14 -> v15` | Added blocking hard-limit decomposition path for `codex-app-server-runtime-service.ts` and modeled extracted runtime-service boundaries (`UC-019`, `C-024` refinement). | `F-054` |
+| 35 | No | None | N/A | N/A | N/A |
+| 36 | Yes | `workflow-state.md`, `investigation-notes.md`, `requirements.md`, `proposed-design.md`, `future-state-runtime-call-stack.md` | design `v15 -> v16`, call stack `v15 -> v16` | Added Codex team stream parity contract for sender `send_message_to` visibility + recipient `INTER_AGENT_MESSAGE` projection (`R-023`,`AC-023`,`UC-019`,`C-031`,`C-032`). | `F-055` |
+| 37 | No | None | N/A | N/A | N/A |
 
 ## Per-Use-Case Review
 
@@ -103,6 +135,9 @@ This review validates alignment with target (`to-be`) design behavior, not parit
 | UC-014 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | None | Pass | Pass | Pass | Pass | Pass |
 | UC-015 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | Pass | Pass | Pass |
 | UC-016 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | Pass | Pass | Pass |
+| UC-017 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | Pass | Pass | Pass |
+| UC-018 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | Pass | Pass | Pass |
+| UC-019 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | None | Pass | Pass | Pass | Pass | Pass |
 
 ## Findings
 

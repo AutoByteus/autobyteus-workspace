@@ -1,4 +1,5 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import { getWorkspaceManager, type WorkspaceManager } from "../../workspaces/workspace-manager.js";
 import { TempWorkspace } from "../../workspaces/temp-workspace.js";
 import {
@@ -26,6 +27,7 @@ import {
   type CodexInterAgentRelayRequest,
   type CodexInterAgentRelayResult,
 } from "../../runtime-execution/codex-app-server/codex-app-server-runtime-service.js";
+import { isSendMessageToToolName } from "../../runtime-execution/codex-app-server/codex-send-message-tooling.js";
 import {
   getTeamRuntimeBindingRegistry,
   type TeamRuntimeBindingRegistry,
@@ -45,6 +47,12 @@ export interface TeamRuntimeMemberConfig {
   workspaceRootPath?: string | null;
   llmConfig?: Record<string, unknown> | null;
 }
+
+type TeamManifestMetadataMember = {
+  memberName: string;
+  role: string | null;
+  description: string | null;
+};
 
 export interface RelayInterAgentMessageInput {
   teamRunId: string;
@@ -138,6 +146,7 @@ export class TeamMemberRuntimeOrchestrator {
   private readonly teamRuntimeBindingRegistry: TeamRuntimeBindingRegistry;
   private readonly teamCodexInterAgentMessageRelay: TeamCodexInterAgentMessageRelay;
   private readonly workspaceManager: WorkspaceManager;
+  private readonly agentDefinitionService: AgentDefinitionService;
 
   constructor(options: {
     runtimeCompositionService?: RuntimeCompositionService;
@@ -145,6 +154,7 @@ export class TeamMemberRuntimeOrchestrator {
     teamRuntimeBindingRegistry?: TeamRuntimeBindingRegistry;
     teamCodexInterAgentMessageRelay?: TeamCodexInterAgentMessageRelay;
     workspaceManager?: WorkspaceManager;
+    agentDefinitionService?: AgentDefinitionService;
   } = {}) {
     this.runtimeCompositionService =
       options.runtimeCompositionService ?? getRuntimeCompositionService();
@@ -155,6 +165,7 @@ export class TeamMemberRuntimeOrchestrator {
     this.teamCodexInterAgentMessageRelay =
       options.teamCodexInterAgentMessageRelay ?? getTeamCodexInterAgentMessageRelay();
     this.workspaceManager = options.workspaceManager ?? getWorkspaceManager();
+    this.agentDefinitionService = options.agentDefinitionService ?? AgentDefinitionService.getInstance();
   }
 
   getTeamRuntimeMode(teamRunId: string): TeamRuntimeMode | null {
@@ -238,11 +249,96 @@ export class TeamMemberRuntimeOrchestrator {
     }
   }
 
+  private async resolveSendMessageToCapability(options: {
+    agentDefinitionId: string;
+    runtimeReference?: TeamMemberRuntimeReference | null;
+  }): Promise<boolean> {
+    const metadata = options.runtimeReference?.metadata;
+    const metadataFlag =
+      metadata?.sendMessageToEnabled ?? metadata?.send_message_to_enabled;
+    if (typeof metadataFlag === "boolean") {
+      return metadataFlag;
+    }
+    if (typeof metadataFlag === "string") {
+      const normalized = metadataFlag.trim().toLowerCase();
+      if (normalized === "true" || normalized === "1") {
+        return true;
+      }
+      if (normalized === "false" || normalized === "0") {
+        return false;
+      }
+    }
+
+    try {
+      const definition = await this.agentDefinitionService.getAgentDefinitionById(
+        options.agentDefinitionId,
+      );
+      const toolNames = definition?.toolNames ?? [];
+      return toolNames.some((toolName) =>
+        isSendMessageToToolName(typeof toolName === "string" ? toolName : null),
+      );
+    } catch (error) {
+      logger.warn(
+        `Failed resolving send_message_to capability for agent definition '${options.agentDefinitionId}': ${String(error)}`,
+      );
+      return false;
+    }
+  }
+
+  private async buildTeamManifestMetadata(
+    members: Array<{
+      memberName: string;
+      agentDefinitionId: string;
+    }>,
+  ): Promise<TeamManifestMetadataMember[]> {
+    const manifest: TeamManifestMetadataMember[] = [];
+    for (const member of members) {
+      const memberName = normalizeRequiredString(member.memberName, "memberName");
+      const agentDefinitionId = normalizeRequiredString(
+        member.agentDefinitionId,
+        "agentDefinitionId",
+      );
+      try {
+        const definition = await this.agentDefinitionService.getAgentDefinitionById(
+          agentDefinitionId,
+        );
+        manifest.push({
+          memberName,
+          role:
+            typeof definition?.role === "string" && definition.role.trim().length > 0
+              ? definition.role.trim()
+              : null,
+          description:
+            typeof definition?.description === "string" &&
+            definition.description.trim().length > 0
+              ? definition.description.trim()
+              : null,
+        });
+      } catch (error) {
+        logger.warn(
+          `Failed resolving team-manifest metadata for member '${memberName}' (agentDefinitionId='${agentDefinitionId}'): ${String(error)}`,
+        );
+        manifest.push({
+          memberName,
+          role: null,
+          description: null,
+        });
+      }
+    }
+    return manifest;
+  }
+
   async createCodexMemberSessions(
     teamRunId: string,
     memberConfigs: TeamRuntimeMemberConfig[],
   ): Promise<TeamRunMemberBinding[]> {
     const normalizedTeamRunId = normalizeRequiredString(teamRunId, "teamRunId");
+    const teamMemberManifest = await this.buildTeamManifestMetadata(
+      memberConfigs.map((member) => ({
+        memberName: member.memberName,
+        agentDefinitionId: member.agentDefinitionId,
+      })),
+    );
     const bindings: TeamRunMemberBinding[] = [];
 
     for (const config of memberConfigs) {
@@ -251,6 +347,10 @@ export class TeamMemberRuntimeOrchestrator {
       const memberRouteKey = normalizeMemberRouteKey(config.memberRouteKey);
       const memberRunId = normalizeRequiredString(config.memberRunId, "memberRunId");
       const workspaceRootPath = await this.resolveWorkspaceRootPath(config);
+      const sendMessageToEnabled = await this.resolveSendMessageToCapability({
+        agentDefinitionId: config.agentDefinitionId,
+        runtimeReference: config.runtimeReference ?? null,
+      });
 
       const session = await this.runtimeCompositionService.restoreAgentRun({
         runId: memberRunId,
@@ -259,6 +359,8 @@ export class TeamMemberRuntimeOrchestrator {
           teamRunId: normalizedTeamRunId,
           memberRouteKey,
           memberName: config.memberName,
+          sendMessageToEnabled,
+          teamMemberManifest,
         }),
         agentDefinitionId: normalizeRequiredString(config.agentDefinitionId, "agentDefinitionId"),
         llmModelIdentifier: normalizeRequiredString(
@@ -283,6 +385,8 @@ export class TeamMemberRuntimeOrchestrator {
             teamRunId: normalizedTeamRunId,
             memberRouteKey,
             memberName: config.memberName,
+            sendMessageToEnabled,
+            teamMemberManifest,
           },
         ),
         agentDefinitionId: normalizeRequiredString(config.agentDefinitionId, "agentDefinitionId"),
@@ -302,11 +406,21 @@ export class TeamMemberRuntimeOrchestrator {
 
   async restoreCodexTeamRunSessions(manifest: TeamRunManifest): Promise<TeamRunMemberBinding[]> {
     const normalizedTeamRunId = normalizeRequiredString(manifest.teamRunId, "teamRunId");
+    const teamMemberManifest = await this.buildTeamManifestMetadata(
+      manifest.memberBindings.map((member) => ({
+        memberName: member.memberName,
+        agentDefinitionId: member.agentDefinitionId,
+      })),
+    );
     const bindings: TeamRunMemberBinding[] = [];
 
     for (const binding of manifest.memberBindings) {
       const runtimeKind = normalizeRuntimeKind(binding.runtimeKind);
       ensureCodexRuntime(runtimeKind);
+      const sendMessageToEnabled = await this.resolveSendMessageToCapability({
+        agentDefinitionId: binding.agentDefinitionId,
+        runtimeReference: binding.runtimeReference ?? null,
+      });
 
       let workspaceId: string | null = null;
       if (binding.workspaceRootPath) {
@@ -333,6 +447,8 @@ export class TeamMemberRuntimeOrchestrator {
             teamRunId: normalizedTeamRunId,
             memberRouteKey: binding.memberRouteKey,
             memberName: binding.memberName,
+            sendMessageToEnabled,
+            teamMemberManifest,
           },
         ),
         agentDefinitionId: binding.agentDefinitionId,
@@ -353,6 +469,8 @@ export class TeamMemberRuntimeOrchestrator {
             teamRunId: normalizedTeamRunId,
             memberRouteKey: binding.memberRouteKey,
             memberName: binding.memberName,
+            sendMessageToEnabled,
+            teamMemberManifest,
           },
         ),
       });

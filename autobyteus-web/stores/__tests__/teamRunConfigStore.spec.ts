@@ -69,6 +69,27 @@ describe('teamRunConfigStore', () => {
     });
   });
 
+  describe('isConfigured getter', () => {
+    it('returns false when workspace is missing', () => {
+      const store = useTeamRunConfigStore();
+      store.setTemplate(mockTeamDef);
+      store.updateConfig({ llmModelIdentifier: 'gpt-4.1' });
+
+      expect(store.isConfigured).toBe(false);
+    });
+
+    it('returns true when model and workspace are both present', () => {
+      const store = useTeamRunConfigStore();
+      store.setTemplate(mockTeamDef);
+      store.updateConfig({
+        llmModelIdentifier: 'gpt-4.1',
+        workspaceId: 'ws-1',
+      } as any);
+
+      expect(store.isConfigured).toBe(true);
+    });
+  });
+
   describe('clearConfig', () => {
     it('should reset all state', () => {
       const store = useTeamRunConfigStore();

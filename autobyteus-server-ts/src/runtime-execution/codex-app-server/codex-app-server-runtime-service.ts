@@ -1,6 +1,5 @@
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { SenderType } from "autobyteus-ts/agent/sender-type.js";
-import { LLMProvider } from "autobyteus-ts/llm/providers.js";
 import type { ModelInfo } from "autobyteus-ts/llm/models.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { getWorkspaceManager } from "../../workspaces/workspace-manager.js";
@@ -8,226 +7,45 @@ import {
   getCodexAppServerProcessManager,
   type CodexAppServerProcessManager,
 } from "./codex-app-server-process-manager.js";
-import { normalizeCodexRuntimeMethod } from "./codex-runtime-method-normalizer.js";
-import { CodexAppServerClient } from "./codex-app-server-client.js";
 import { toCodexUserInput } from "./codex-user-input-mapper.js";
-import { asObject, asString, type JsonObject } from "./codex-runtime-json.js";
+import { asString, type JsonObject } from "./codex-runtime-json.js";
+import { resolveDefaultModel, resolveTurnId } from "./codex-runtime-launch-config.js";
 import {
-  normalizeApprovalPolicy,
-  normalizeSandboxMode,
-  resolveDefaultModel,
-  resolveThreadId,
-  resolveThreadIdFromNotification,
-  resolveTurnId,
-} from "./codex-runtime-launch-config.js";
-import {
-  isSendMessageToToolName,
-  resolveApprovalInvocationCandidates,
-  resolveCommandArgsFromApprovalParams,
-  resolveCommandNameFromApprovalParams,
-  resolveDynamicToolArgsFromParams,
-  resolveDynamicToolNameFromParams,
+  renderTeamManifestDeveloperInstructions,
+  resolveAllowedRecipientNamesFromManifest,
   resolveDynamicTools,
   resolveMemberNameFromMetadata,
+  resolveSendMessageToEnabledFromMetadata,
+  resolveTeamManifestMembersFromMetadata,
   resolveTeamRunIdFromMetadata,
-  toDynamicToolResponse,
 } from "./codex-send-message-tooling.js";
-
-export type CodexRuntimeEvent = {
-  method: string;
-  params: JsonObject;
-  request_id?: string | number;
-};
-
-type CodexApprovalRecord = {
-  requestId: string | number;
-  method: string;
-  invocationId: string;
-  itemId: string;
-  approvalId: string | null;
-};
-
-type CodexRunSessionState = {
-  runId: string;
-  client: CodexAppServerClient;
-  threadId: string;
-  model: string | null;
-  workingDirectory: string;
-  reasoningEffort: string | null;
-  activeTurnId: string | null;
-  approvalRecords: Map<string, CodexApprovalRecord>;
-  listeners: Set<(event: CodexRuntimeEvent) => void>;
-  unbindHandlers: Array<() => void>;
-  teamRunId: string | null;
-  memberName: string | null;
-};
-
-export interface CodexInterAgentEnvelope {
-  senderAgentId: string;
-  senderAgentName?: string | null;
-  recipientName: string;
-  messageType: string;
-  content: string;
-  teamRunId?: string | null;
-  metadata?: Record<string, unknown> | null;
-}
-
-export interface CodexInterAgentRelayRequest {
-  senderRunId: string;
-  senderTeamRunId: string | null;
-  senderMemberName: string | null;
-  toolArguments: Record<string, unknown>;
-}
-
-export interface CodexInterAgentRelayResult {
-  accepted: boolean;
-  code?: string;
-  message?: string;
-}
-
-type CodexInterAgentRelayHandler = (
-  request: CodexInterAgentRelayRequest,
-) => Promise<CodexInterAgentRelayResult>;
-
-type SessionRuntimeOptions = {
-  modelIdentifier: string | null;
-  workingDirectory: string;
-  llmConfig?: Record<string, unknown> | null;
-  runtimeMetadata?: Record<string, unknown> | null;
-};
-const VALID_REASONING_EFFORTS = new Set(["none", "low", "medium", "high", "xhigh"]);
+import {
+  deleteApprovalRecord,
+  findApprovalRecord,
+  handleRuntimeNotification,
+  handleRuntimeServerRequest,
+  isRuntimeMessageForSession,
+  tryHandleInterAgentRelayRequest,
+} from "./codex-runtime-event-router.js";
+import {
+  mapCodexModelListRowToModelInfo,
+  normalizeCodexReasoningEffort,
+  resolveCodexSessionReasoningEffort,
+} from "./codex-runtime-model-catalog.js";
+import {
+  resumeCodexThread,
+  startCodexThread,
+} from "./codex-runtime-thread-lifecycle.js";
+import type {
+  CodexInterAgentEnvelope,
+  CodexInterAgentRelayHandler,
+  CodexRunSessionState,
+  CodexRuntimeEvent,
+  SessionRuntimeOptions,
+} from "./codex-runtime-shared.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
-};
-
-const resolveThreadIdFromRuntimeMessage = (params: JsonObject): string | null => {
-  const thread = asObject(params.thread);
-  const turn = asObject(params.turn);
-  const turnThread = asObject(turn?.thread);
-  const item = asObject(params.item);
-  const itemThread = asObject(item?.thread);
-  const command = asObject(params.command);
-  const commandExecution = asObject(params.commandExecution);
-  const payloadCommand = asObject(item?.command);
-
-  return (
-    asString(params.threadId) ??
-    asString(thread?.id) ??
-    asString(turn?.threadId) ??
-    asString(turnThread?.id) ??
-    asString(item?.threadId) ??
-    asString(itemThread?.id) ??
-    asString(command?.threadId) ??
-    asString(commandExecution?.threadId) ??
-    asString(payloadCommand?.threadId) ??
-    resolveThreadIdFromNotification(params)
-  );
-};
-
-const resolveTurnIdFromRuntimeMessage = (params: JsonObject): string | null => {
-  const turn = asObject(params.turn);
-  const item = asObject(params.item);
-  return asString(params.turnId) ?? asString(turn?.id) ?? asString(item?.turnId);
-};
-
-export const normalizeCodexReasoningEffort = (value: unknown): string | null => {
-  const normalized = asString(value)?.toLowerCase() ?? null;
-  if (!normalized || !VALID_REASONING_EFFORTS.has(normalized)) {
-    return null;
-  }
-  return normalized;
-};
-
-const resolveEffortFromConfig = (
-  llmConfig: Record<string, unknown> | null | undefined,
-): string | null => normalizeCodexReasoningEffort(llmConfig?.reasoning_effort);
-
-const resolveEffortFromRuntimeMetadata = (
-  runtimeMetadata: Record<string, unknown> | null | undefined,
-): string | null =>
-  normalizeCodexReasoningEffort(
-    runtimeMetadata?.reasoning_effort ?? runtimeMetadata?.reasoningEffort,
-  );
-
-export const resolveCodexSessionReasoningEffort = (
-  llmConfig: Record<string, unknown> | null | undefined,
-  runtimeMetadata: Record<string, unknown> | null | undefined,
-): string | null => resolveEffortFromConfig(llmConfig) ?? resolveEffortFromRuntimeMetadata(runtimeMetadata);
-
-const toReasoningEffortConfigSchema = (
-  supportedEfforts: string[],
-  defaultReasoningEffort: string | null,
-): Record<string, unknown> | undefined => {
-  if (supportedEfforts.length === 0) {
-    return undefined;
-  }
-
-  const enumValues = supportedEfforts.slice();
-  if (defaultReasoningEffort && !enumValues.includes(defaultReasoningEffort)) {
-    enumValues.push(defaultReasoningEffort);
-  }
-
-  return {
-    parameters: [
-      {
-        name: "reasoning_effort",
-        type: "enum",
-        description:
-          "Controls reasoning depth for Codex turn/start. Higher effort may improve quality but increase latency.",
-        required: false,
-        default_value: defaultReasoningEffort ?? enumValues[0] ?? null,
-        enum_values: enumValues,
-      },
-    ],
-  };
-};
-
-const toReasoningDisplayLabel = (displayName: string, defaultReasoningEffort: string | null): string =>
-  defaultReasoningEffort ? `${displayName} (default reasoning: ${defaultReasoningEffort})` : displayName;
-
-const toSupportedReasoningEfforts = (row: JsonObject): string[] => {
-  const source = row.supportedReasoningEfforts ?? row.supported_reasoning_efforts;
-  if (!Array.isArray(source)) {
-    return [];
-  }
-
-  const efforts: string[] = [];
-  for (const entry of source) {
-    const objectEntry = asObject(entry);
-    const value = normalizeCodexReasoningEffort(
-      objectEntry?.reasoningEffort ?? objectEntry?.reasoning_effort ?? objectEntry?.effort ?? entry,
-    );
-    if (value && !efforts.includes(value)) {
-      efforts.push(value);
-    }
-  }
-  return efforts;
-};
-
-export const mapCodexModelListRowToModelInfo = (row: unknown): ModelInfo | null => {
-  const model = asObject(row);
-  const modelName = asString(model?.model) ?? asString(model?.id);
-  if (!model || !modelName) {
-    return null;
-  }
-
-  const defaultReasoningEffort = normalizeCodexReasoningEffort(
-    model.defaultReasoningEffort ?? model.default_reasoning_effort,
-  );
-  const supportedReasoningEfforts = toSupportedReasoningEfforts(model);
-  const configSchema = toReasoningEffortConfigSchema(supportedReasoningEfforts, defaultReasoningEffort);
-  const displayName = asString(model.displayName) ?? modelName;
-
-  return {
-    model_identifier: modelName,
-    display_name: toReasoningDisplayLabel(displayName, defaultReasoningEffort),
-    value: modelName,
-    canonical_name: modelName,
-    provider: LLMProvider.OPENAI,
-    runtime: "api",
-    config_schema: configSchema,
-  };
 };
 
 export class CodexAppServerRuntimeService {
@@ -333,10 +151,24 @@ export class CodexAppServerRuntimeService {
     runId: string,
     envelope: CodexInterAgentEnvelope,
   ): Promise<{ turnId: string | null }> {
+    const state = this.requireSession(runId);
     const content = asString(envelope.content) ?? "";
     if (!content) {
       throw new Error("Inter-agent envelope content is required.");
     }
+
+    this.emitEvent(state, {
+      method: "inter_agent_message",
+      params: {
+        sender_agent_id: asString(envelope.senderAgentId) ?? "unknown_sender",
+        sender_agent_name: asString(envelope.senderAgentName) ?? null,
+        recipient_role_name: asString(envelope.recipientName) ?? "unknown_recipient",
+        content,
+        message_type: asString(envelope.messageType) ?? "agent_message",
+        team_run_id: asString(envelope.teamRunId) ?? null,
+      },
+    });
+
     const message = new AgentInputUserMessage(
       content,
       SenderType.AGENT,
@@ -418,7 +250,9 @@ export class CodexAppServerRuntimeService {
         cursor,
         includeHidden: false,
       });
-      const data = asObject(response);
+      const data = (response && typeof response === "object" ? response : null) as
+        | Record<string, unknown>
+        | null;
       const rows = Array.isArray(data?.data) ? data.data : [];
       for (const row of rows) {
         const mapped = mapCodexModelListRowToModelInfo(row);
@@ -444,15 +278,41 @@ export class CodexAppServerRuntimeService {
     );
     const teamRunId = resolveTeamRunIdFromMetadata(options.runtimeMetadata);
     const memberName = resolveMemberNameFromMetadata(options.runtimeMetadata);
+    const sendMessageToEnabled = resolveSendMessageToEnabledFromMetadata(options.runtimeMetadata);
+    const teamManifestMembers = resolveTeamManifestMembersFromMetadata(options.runtimeMetadata);
+    const allowedRecipientNames = resolveAllowedRecipientNamesFromManifest({
+      currentMemberName: memberName,
+      members: teamManifestMembers,
+    });
+    const developerInstructions = renderTeamManifestDeveloperInstructions({
+      currentMemberName: memberName,
+      members: teamManifestMembers,
+      sendMessageToEnabled,
+    });
     const dynamicTools = resolveDynamicTools({
       teamRunId,
       interAgentRelayEnabled: Boolean(this.interAgentRelayHandler),
+      sendMessageToEnabled,
+      allowedRecipientNames,
     });
     const client = await this.processManager.getClient(workingDirectory);
 
     const threadId = resumeThreadId
-      ? await this.resumeThread(client, resumeThreadId, workingDirectory, model, dynamicTools)
-      : await this.startThread(client, workingDirectory, model, dynamicTools);
+      ? await resumeCodexThread(
+          client,
+          resumeThreadId,
+          workingDirectory,
+          model,
+          dynamicTools,
+          developerInstructions,
+        )
+      : await startCodexThread(
+          client,
+          workingDirectory,
+          model,
+          dynamicTools,
+          developerInstructions,
+        );
     if (!threadId) {
       throw new Error("Codex thread id was not returned by app server.");
     }
@@ -470,19 +330,20 @@ export class CodexAppServerRuntimeService {
       unbindHandlers: [],
       teamRunId,
       memberName,
+      sendMessageToEnabled,
     };
 
     state.unbindHandlers.push(
       client.onNotification((message) => {
-        if (!this.isNotificationForSession(state, message.params)) {
+        if (!isRuntimeMessageForSession(state, message.params, this.sessions.size)) {
           return;
         }
-        this.handleNotification(state, message.method, message.params);
+        handleRuntimeNotification(state, message.method, message.params, this.emitEvent.bind(this));
       }),
     );
     state.unbindHandlers.push(
       client.onServerRequest((message) => {
-        if (!this.isServerRequestForSession(state, message.params)) {
+        if (!isRuntimeMessageForSession(state, message.params, this.sessions.size)) {
           return;
         }
         this.handleServerRequest(state, message.id, message.method, message.params);
@@ -505,163 +366,19 @@ export class CodexAppServerRuntimeService {
     return state;
   }
 
-  private async startThread(
-    client: CodexAppServerClient,
-    cwd: string,
-    model: string | null,
-    dynamicTools: JsonObject[] | null,
-  ): Promise<string | null> {
-    const response = await client.request<unknown>("thread/start", {
-      model,
-      modelProvider: null,
-      cwd,
-      approvalPolicy: normalizeApprovalPolicy(),
-      sandbox: normalizeSandboxMode(),
-      config: null,
-      baseInstructions: null,
-      developerInstructions: null,
-      personality: null,
-      ephemeral: false,
-      dynamicTools,
-      experimentalRawEvents: false,
-      persistExtendedHistory: false,
-    });
-    return resolveThreadId(response);
-  }
-
-  private async resumeThread(
-    client: CodexAppServerClient,
-    threadId: string,
-    cwd: string,
-    model: string | null,
-    dynamicTools: JsonObject[] | null,
-  ): Promise<string | null> {
-    try {
-      const response = await client.request<unknown>("thread/resume", {
-        threadId,
-        history: null,
-        path: null,
-        model,
-        modelProvider: null,
-        cwd,
-        approvalPolicy: normalizeApprovalPolicy(),
-        sandbox: normalizeSandboxMode(),
-        config: null,
-        baseInstructions: null,
-        developerInstructions: null,
-        personality: null,
-        dynamicTools,
-        persistExtendedHistory: false,
-      });
-      return resolveThreadId(response);
-    } catch (error) {
-      logger.warn(`Failed to resume Codex thread '${threadId}', starting a new thread: ${String(error)}`);
-      return this.startThread(client, cwd, model, dynamicTools);
-    }
-  }
-
-  private isNotificationForSession(
-    state: CodexRunSessionState,
-    params: JsonObject,
-  ): boolean {
-    const threadId = resolveThreadIdFromRuntimeMessage(params);
-    if (threadId) {
-      return threadId === state.threadId;
-    }
-    const turnId = resolveTurnIdFromRuntimeMessage(params);
-    if (turnId && state.activeTurnId) {
-      return turnId === state.activeTurnId;
-    }
-    return this.sessions.size === 1;
-  }
-
-  private isServerRequestForSession(
-    state: CodexRunSessionState,
-    params: JsonObject,
-  ): boolean {
-    const threadId = resolveThreadIdFromRuntimeMessage(params);
-    if (threadId) {
-      return threadId === state.threadId;
-    }
-    const turnId = resolveTurnIdFromRuntimeMessage(params);
-    if (turnId && state.activeTurnId) {
-      return turnId === state.activeTurnId;
-    }
-    return this.sessions.size === 1;
-  }
-
-  private handleNotification(
-    state: CodexRunSessionState,
-    method: string,
-    params: JsonObject,
-  ): void {
-    const normalizedMethod = normalizeCodexRuntimeMethod(method);
-    if (normalizedMethod === "turn/started") {
-      const turn = asObject(params.turn);
-      state.activeTurnId = asString(turn?.id);
-    } else if (normalizedMethod === "turn/completed") {
-      state.activeTurnId = null;
-    } else if (normalizedMethod === "thread/started") {
-      const thread = asObject(params.thread);
-      const nextThreadId = asString(thread?.id);
-      if (nextThreadId) {
-        state.threadId = nextThreadId;
-      }
-    } else if (normalizedMethod === "thread/tokenUsage/updated") {
-      const nextThreadId = resolveThreadIdFromRuntimeMessage(params);
-      if (nextThreadId) {
-        state.threadId = nextThreadId;
-      }
-    }
-
-    this.emitEvent(state, { method: normalizedMethod, params });
-  }
-
   private handleServerRequest(
     state: CodexRunSessionState,
     requestId: string | number,
     method: string,
     params: JsonObject,
   ): void {
-    const normalizedMethod = normalizeCodexRuntimeMethod(method);
-    if (this.tryHandleInterAgentRelayRequest(state, requestId, normalizedMethod, params)) {
-      return;
-    }
-
-    if (
-      normalizedMethod !== "item/commandExecution/requestApproval" &&
-      normalizedMethod !== "item/fileChange/requestApproval"
-    ) {
-      state.client.respondError(
-        requestId,
-        -32601,
-        `Unsupported server request method '${normalizedMethod}'.`,
-      );
-      return;
-    }
-
-    const invocation = resolveApprovalInvocationCandidates(params);
-    if (!invocation.primary || !invocation.itemId) {
-      state.client.respondError(requestId, -32602, "Approval request missing itemId.");
-      return;
-    }
-
-    const record: CodexApprovalRecord = {
+    handleRuntimeServerRequest({
+      state,
       requestId,
-      method: normalizedMethod,
-      invocationId: invocation.primary,
-      itemId: invocation.itemId,
-      approvalId: invocation.approvalId,
-    };
-    state.approvalRecords.set(invocation.primary, record);
-    for (const alias of invocation.aliases) {
-      state.approvalRecords.set(alias, record);
-    }
-
-    this.emitEvent(state, {
-      method: normalizedMethod,
+      method,
       params,
-      request_id: requestId,
+      relayHandler: this.interAgentRelayHandler,
+      emitEvent: this.emitEvent.bind(this),
     });
   }
 
@@ -671,107 +388,13 @@ export class CodexAppServerRuntimeService {
     method: string,
     params: JsonObject,
   ): boolean {
-    if (method === "item/commandExecution/requestApproval") {
-      const commandName = resolveCommandNameFromApprovalParams(params)?.toLowerCase() ?? null;
-      if (!isSendMessageToToolName(commandName)) {
-        return false;
-      }
-
-      if (!this.interAgentRelayHandler) {
-        state.client.respondError(
-          requestId,
-          -32001,
-          "send_message_to relay handler is not configured.",
-        );
-        return true;
-      }
-
-      const toolArguments = resolveCommandArgsFromApprovalParams(params);
-      void this.interAgentRelayHandler({
-        senderRunId: state.runId,
-        senderTeamRunId: state.teamRunId,
-        senderMemberName: state.memberName,
-        toolArguments,
-      })
-        .then((result) => {
-          if (!result.accepted) {
-            state.client.respondError(
-              requestId,
-              -32001,
-              result.message ?? "Inter-agent relay rejected.",
-            );
-            return;
-          }
-          state.client.respondSuccess(requestId, { decision: "accept" });
-        })
-        .catch((error) => {
-          state.client.respondError(
-            requestId,
-            -32001,
-            `Inter-agent relay failed: ${String(error)}`,
-          );
-        });
-
-      return true;
-    }
-
-    if (method !== "item/tool/call") {
-      return false;
-    }
-
-    const toolName = resolveDynamicToolNameFromParams(params);
-    if (!isSendMessageToToolName(toolName)) {
-      return false;
-    }
-
-    if (!this.interAgentRelayHandler) {
-      state.client.respondSuccess(
-        requestId,
-        toDynamicToolResponse({
-          success: false,
-          message: "send_message_to relay handler is not configured.",
-        }),
-      );
-      return true;
-    }
-
-    const toolArguments = resolveDynamicToolArgsFromParams(params);
-    void this.interAgentRelayHandler({
-      senderRunId: state.runId,
-      senderTeamRunId: state.teamRunId,
-      senderMemberName: state.memberName,
-      toolArguments,
-    })
-      .then((result) => {
-        if (!result.accepted) {
-          state.client.respondSuccess(
-            requestId,
-            toDynamicToolResponse({
-              success: false,
-              message: result.message ?? "Inter-agent relay rejected.",
-            }),
-          );
-          return;
-        }
-        state.client.respondSuccess(
-          requestId,
-          toDynamicToolResponse({
-            success: true,
-            message: result.message ?? "Message relayed.",
-          }),
-        );
-      })
-      .catch((error) => {
-        state.client.respondSuccess(
-          requestId,
-          toDynamicToolResponse({
-            success: false,
-            message: `Inter-agent relay failed: ${String(error)}`,
-          }),
-        );
-      });
-
-    return true;
+    return tryHandleInterAgentRelayRequest({
+      state,
+      requestId,
+      method,
+      params,
+      relayHandler: this.interAgentRelayHandler,
+    });
   }
 
   private emitEvent(state: CodexRunSessionState, event: CodexRuntimeEvent): void {
@@ -787,25 +410,12 @@ export class CodexAppServerRuntimeService {
   private findApprovalRecord(
     state: CodexRunSessionState,
     invocationId: string,
-  ): CodexApprovalRecord | null {
-    const direct = state.approvalRecords.get(invocationId);
-    if (direct) {
-      return direct;
-    }
-    const trimmed = invocationId.trim();
-    if (!trimmed) {
-      return null;
-    }
-    const baseId = trimmed.includes(":") ? trimmed.split(":")[0] ?? null : null;
-    if (baseId) {
-      return state.approvalRecords.get(baseId) ?? null;
-    }
-    return null;
+  ) {
+    return findApprovalRecord(state, invocationId);
   }
 
-  private deleteApprovalRecord(state: CodexRunSessionState, record: CodexApprovalRecord): void {
-    state.approvalRecords.delete(record.invocationId);
-    state.approvalRecords.delete(record.itemId);
+  private deleteApprovalRecord(state: CodexRunSessionState, record: Parameters<typeof deleteApprovalRecord>[1]): void {
+    deleteApprovalRecord(state, record);
   }
 
   private requireSession(runId: string): CodexRunSessionState {
@@ -851,3 +461,17 @@ export const getCodexAppServerRuntimeService = (): CodexAppServerRuntimeService 
   }
   return cachedCodexAppServerRuntimeService;
 };
+
+export {
+  mapCodexModelListRowToModelInfo,
+  normalizeCodexReasoningEffort,
+  resolveCodexSessionReasoningEffort,
+};
+
+export type {
+  CodexInterAgentEnvelope,
+  CodexInterAgentRelayRequest,
+  CodexInterAgentRelayResult,
+  CodexRuntimeEvent,
+  SessionRuntimeOptions,
+} from "./codex-runtime-shared.js";
