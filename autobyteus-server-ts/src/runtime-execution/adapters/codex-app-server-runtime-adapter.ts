@@ -36,6 +36,7 @@ export class CodexAppServerRuntimeAdapter implements RuntimeAdapter {
     const session = await this.runtimeService.createRunSession(runId, {
       modelIdentifier: input.llmModelIdentifier,
       workingDirectory,
+      autoExecuteTools: input.autoExecuteTools,
       llmConfig: input.llmConfig ?? null,
     });
     return {
@@ -56,6 +57,7 @@ export class CodexAppServerRuntimeAdapter implements RuntimeAdapter {
       {
         modelIdentifier: input.llmModelIdentifier,
         workingDirectory,
+        autoExecuteTools: input.autoExecuteTools,
         llmConfig: input.llmConfig ?? null,
       },
       {

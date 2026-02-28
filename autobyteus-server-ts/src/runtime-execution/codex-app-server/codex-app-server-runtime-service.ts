@@ -9,7 +9,11 @@ import {
 } from "./codex-app-server-process-manager.js";
 import { toCodexUserInput } from "./codex-user-input-mapper.js";
 import { asString, type JsonObject } from "./codex-runtime-json.js";
-import { resolveDefaultModel, resolveTurnId } from "./codex-runtime-launch-config.js";
+import {
+  resolveApprovalPolicyForAutoExecuteTools,
+  resolveDefaultModel,
+  resolveTurnId,
+} from "./codex-runtime-launch-config.js";
 import {
   renderTeamManifestDeveloperInstructions,
   resolveAllowedRecipientNamesFromManifest,
@@ -295,6 +299,7 @@ export class CodexAppServerRuntimeService {
       sendMessageToEnabled,
       allowedRecipientNames,
     });
+    const approvalPolicy = resolveApprovalPolicyForAutoExecuteTools(options.autoExecuteTools);
     const client = await this.processManager.getClient(workingDirectory);
 
     const threadId = resumeThreadId
@@ -303,6 +308,7 @@ export class CodexAppServerRuntimeService {
           resumeThreadId,
           workingDirectory,
           model,
+          approvalPolicy,
           dynamicTools,
           developerInstructions,
         )
@@ -310,6 +316,7 @@ export class CodexAppServerRuntimeService {
           client,
           workingDirectory,
           model,
+          approvalPolicy,
           dynamicTools,
           developerInstructions,
         );

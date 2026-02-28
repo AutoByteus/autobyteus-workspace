@@ -17,6 +17,35 @@ import type {
   CodexRuntimeEvent,
 } from "./codex-runtime-shared.js";
 
+const isSendMessageRelayDebugEnabled = process.env.CODEX_SEND_MESSAGE_RELAY_DEBUG !== "0";
+
+const resolveRecipientFromToolArguments = (toolArguments: Record<string, unknown>): string | null =>
+  asString(toolArguments.recipient_name) ??
+  asString(toolArguments.recipientName) ??
+  asString(toolArguments.recipient);
+
+const resolveMessageTypeFromToolArguments = (
+  toolArguments: Record<string, unknown>,
+): string | null => asString(toolArguments.message_type) ?? asString(toolArguments.messageType);
+
+const resolveContentLengthFromToolArguments = (toolArguments: Record<string, unknown>): number | null => {
+  const content = asString(toolArguments.content);
+  return content ? content.length : null;
+};
+
+const logSendMessageRelayDebug = (
+  event: string,
+  details: Record<string, unknown>,
+): void => {
+  if (!isSendMessageRelayDebugEnabled) {
+    return;
+  }
+  console.log("[CodexSendMessageRelay]", {
+    event,
+    ...details,
+  });
+};
+
 const resolveThreadIdFromRuntimeMessage = (params: JsonObject): string | null => {
   const thread = asObject(params.thread);
   const turn = asObject(params.turn);
@@ -105,11 +134,35 @@ const resolveSendMessageInvocationId = (
   params: JsonObject,
 ): string => {
   const item = asObject(params.item) ?? {};
+  const command = asObject(params.command) ?? {};
+  const commandExecution = asObject(params.commandExecution) ?? {};
+  const itemCommand = asObject(item.command) ?? {};
   const candidate =
+    asString(params.invocation_id) ??
+    asString(params.invocationId) ??
+    asString(params.tool_invocation_id) ??
+    asString(params.toolInvocationId) ??
     asString(params.id) ??
     asString(params.itemId) ??
     asString(params.item_id) ??
-    asString(item.id);
+    asString(params.call_id) ??
+    asString(params.callId) ??
+    asString(item.id) ??
+    asString(command.id) ??
+    asString(command.call_id) ??
+    asString(command.callId) ??
+    asString(command.invocation_id) ??
+    asString(command.invocationId) ??
+    asString(commandExecution.id) ??
+    asString(commandExecution.call_id) ??
+    asString(commandExecution.callId) ??
+    asString(commandExecution.invocation_id) ??
+    asString(commandExecution.invocationId) ??
+    asString(itemCommand.id) ??
+    asString(itemCommand.call_id) ??
+    asString(itemCommand.callId) ??
+    asString(itemCommand.invocation_id) ??
+    asString(itemCommand.invocationId);
   if (candidate) {
     return candidate;
   }
@@ -146,27 +199,19 @@ const emitSendMessageToToolLifecycle = (input: {
   if (!input.emitEvent) {
     return;
   }
+  logSendMessageRelayDebug("synthetic_lifecycle_emitted", {
+    runId: input.state.runId,
+    teamRunId: input.state.teamRunId,
+    memberName: input.state.memberName,
+    invocationId: input.invocationId,
+    recipient: resolveRecipientFromToolArguments(input.toolArguments),
+    messageType: resolveMessageTypeFromToolArguments(input.toolArguments),
+    contentLength: resolveContentLengthFromToolArguments(input.toolArguments),
+    success: input.success,
+    message: input.message,
+  });
 
   const basePayload = createSendMessageToolPayload(input.invocationId, input.toolArguments);
-  const commandExecutionPayload: JsonObject = {
-    ...basePayload,
-    status: input.success ? "completed" : "failed",
-    success: input.success,
-    ...(input.success ? { result: { success: true, message: input.message } } : {}),
-    ...(!input.success ? { error: input.message, message: input.message } : {}),
-    item: {
-      id: input.invocationId,
-      type: "command_execution_call",
-      command: "send_message_to",
-      tool: "send_message_to",
-      tool_name: "send_message_to",
-      arguments: input.toolArguments,
-      status: input.success ? "completed" : "failed",
-      success: input.success,
-      ...(input.success ? { result: { success: true, message: input.message } } : {}),
-      ...(!input.success ? { error: input.message, message: input.message } : {}),
-    },
-  };
   const completedPayload: JsonObject = {
     ...basePayload,
     status: input.success ? "completed" : "failed",
@@ -186,18 +231,6 @@ const emitSendMessageToToolLifecycle = (input: {
     },
   };
 
-  input.emitEvent(input.state, {
-    method: "item/added",
-    params: basePayload,
-  });
-  input.emitEvent(input.state, {
-    method: "item/commandExecution/started",
-    params: commandExecutionPayload,
-  });
-  input.emitEvent(input.state, {
-    method: "item/commandExecution/completed",
-    params: commandExecutionPayload,
-  });
   input.emitEvent(input.state, {
     method: "item/completed",
     params: completedPayload,
@@ -219,6 +252,16 @@ export const tryHandleInterAgentRelayRequest = ({
     }
     const toolArguments = resolveCommandArgsFromApprovalParams(params);
     const invocationId = resolveSendMessageInvocationId(requestId, params);
+    logSendMessageRelayDebug("approval_intercepted", {
+      runId: state.runId,
+      teamRunId: state.teamRunId,
+      memberName: state.memberName,
+      requestId: String(requestId),
+      invocationId,
+      recipient: resolveRecipientFromToolArguments(toolArguments),
+      messageType: resolveMessageTypeFromToolArguments(toolArguments),
+      contentLength: resolveContentLengthFromToolArguments(toolArguments),
+    });
     const emitLifecycle = (success: boolean, message: string): void => {
       emitSendMessageToToolLifecycle({
         state,
@@ -230,6 +273,12 @@ export const tryHandleInterAgentRelayRequest = ({
       });
     };
     if (!state.sendMessageToEnabled) {
+      logSendMessageRelayDebug("approval_rejected", {
+        reason: "send_message_to_disabled",
+        runId: state.runId,
+        requestId: String(requestId),
+        invocationId,
+      });
       emitLifecycle(false, "send_message_to is not enabled for this run session.");
       state.client.respondError(
         requestId,
@@ -240,6 +289,12 @@ export const tryHandleInterAgentRelayRequest = ({
     }
 
     if (!relayHandler) {
+      logSendMessageRelayDebug("approval_rejected", {
+        reason: "relay_handler_not_configured",
+        runId: state.runId,
+        requestId: String(requestId),
+        invocationId,
+      });
       emitLifecycle(false, "send_message_to relay handler is not configured.");
       state.client.respondError(
         requestId,
@@ -257,6 +312,14 @@ export const tryHandleInterAgentRelayRequest = ({
     })
       .then((result) => {
         if (!result.accepted) {
+          logSendMessageRelayDebug("approval_relay_result", {
+            runId: state.runId,
+            requestId: String(requestId),
+            invocationId,
+            accepted: false,
+            code: result.code ?? null,
+            message: result.message ?? null,
+          });
           emitLifecycle(false, result.message ?? "Inter-agent relay rejected.");
           state.client.respondError(
             requestId,
@@ -265,11 +328,25 @@ export const tryHandleInterAgentRelayRequest = ({
           );
           return;
         }
+        logSendMessageRelayDebug("approval_relay_result", {
+          runId: state.runId,
+          requestId: String(requestId),
+          invocationId,
+          accepted: true,
+          code: null,
+          message: result.message ?? "Message relayed.",
+        });
         emitLifecycle(true, result.message ?? "Message relayed.");
         state.client.respondSuccess(requestId, { decision: "accept" });
       })
       .catch((error) => {
         const message = `Inter-agent relay failed: ${String(error)}`;
+        logSendMessageRelayDebug("approval_relay_error", {
+          runId: state.runId,
+          requestId: String(requestId),
+          invocationId,
+          error: message,
+        });
         emitLifecycle(false, message);
         state.client.respondError(
           requestId,
@@ -289,9 +366,26 @@ export const tryHandleInterAgentRelayRequest = ({
   if (!isSendMessageToToolName(toolName)) {
     return false;
   }
+  const toolArguments = resolveDynamicToolArgsFromParams(params);
+  const invocationId = resolveSendMessageInvocationId(requestId, params);
+  logSendMessageRelayDebug("tool_call_intercepted", {
+    runId: state.runId,
+    teamRunId: state.teamRunId,
+    memberName: state.memberName,
+    requestId: String(requestId),
+    invocationId,
+    recipient: resolveRecipientFromToolArguments(toolArguments),
+    messageType: resolveMessageTypeFromToolArguments(toolArguments),
+    contentLength: resolveContentLengthFromToolArguments(toolArguments),
+  });
+
   if (!state.sendMessageToEnabled) {
-    const toolArguments = resolveDynamicToolArgsFromParams(params);
-    const invocationId = resolveSendMessageInvocationId(requestId, params);
+    logSendMessageRelayDebug("tool_call_rejected", {
+      reason: "send_message_to_disabled",
+      runId: state.runId,
+      requestId: String(requestId),
+      invocationId,
+    });
     emitSendMessageToToolLifecycle({
       state,
       emitEvent,
@@ -311,8 +405,12 @@ export const tryHandleInterAgentRelayRequest = ({
   }
 
   if (!relayHandler) {
-    const toolArguments = resolveDynamicToolArgsFromParams(params);
-    const invocationId = resolveSendMessageInvocationId(requestId, params);
+    logSendMessageRelayDebug("tool_call_rejected", {
+      reason: "relay_handler_not_configured",
+      runId: state.runId,
+      requestId: String(requestId),
+      invocationId,
+    });
     emitSendMessageToToolLifecycle({
       state,
       emitEvent,
@@ -331,8 +429,6 @@ export const tryHandleInterAgentRelayRequest = ({
     return true;
   }
 
-  const toolArguments = resolveDynamicToolArgsFromParams(params);
-  const invocationId = resolveSendMessageInvocationId(requestId, params);
   void relayHandler({
     senderRunId: state.runId,
     senderTeamRunId: state.teamRunId,
@@ -341,6 +437,14 @@ export const tryHandleInterAgentRelayRequest = ({
   })
     .then((result) => {
       if (!result.accepted) {
+        logSendMessageRelayDebug("tool_call_relay_result", {
+          runId: state.runId,
+          requestId: String(requestId),
+          invocationId,
+          accepted: false,
+          code: result.code ?? null,
+          message: result.message ?? null,
+        });
         emitSendMessageToToolLifecycle({
           state,
           emitEvent,
@@ -358,6 +462,14 @@ export const tryHandleInterAgentRelayRequest = ({
         );
         return;
       }
+      logSendMessageRelayDebug("tool_call_relay_result", {
+        runId: state.runId,
+        requestId: String(requestId),
+        invocationId,
+        accepted: true,
+        code: null,
+        message: result.message ?? "Message relayed.",
+      });
       emitSendMessageToToolLifecycle({
         state,
         emitEvent,
@@ -375,19 +487,26 @@ export const tryHandleInterAgentRelayRequest = ({
       );
     })
     .catch((error) => {
+      const message = `Inter-agent relay failed: ${String(error)}`;
+      logSendMessageRelayDebug("tool_call_relay_error", {
+        runId: state.runId,
+        requestId: String(requestId),
+        invocationId,
+        error: message,
+      });
       emitSendMessageToToolLifecycle({
         state,
         emitEvent,
         invocationId,
         toolArguments,
         success: false,
-        message: `Inter-agent relay failed: ${String(error)}`,
+        message,
       });
       state.client.respondSuccess(
         requestId,
         toDynamicToolResponse({
           success: false,
-          message: `Inter-agent relay failed: ${String(error)}`,
+          message,
         }),
       );
     });

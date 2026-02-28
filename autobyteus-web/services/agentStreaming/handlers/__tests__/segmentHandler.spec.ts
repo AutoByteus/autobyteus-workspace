@@ -218,6 +218,65 @@ describe('segmentHandler', () => {
         })
       );
     });
+
+    it('deduplicates repeated SEGMENT_START with same id', () => {
+      const payload: SegmentStartPayload = {
+        id: 'dup-send-message',
+        segment_type: 'tool_call',
+        metadata: {
+          tool_name: 'send_message_to',
+          arguments: {
+            recipient_name: 'Student',
+            content: 'hello',
+          },
+        },
+      };
+
+      handleSegmentStart(payload, mockContext);
+      handleSegmentStart(payload, mockContext);
+
+      const aiMessage = mockContext.conversation.messages[0] as any;
+      expect(aiMessage.segments).toHaveLength(1);
+      expect(aiMessage.segments[0].type).toBe('tool_call');
+      expect(aiMessage.segments[0].toolName).toBe('send_message_to');
+      expect(aiMessage.segments[0].arguments).toEqual({
+        recipient_name: 'Student',
+        content: 'hello',
+      });
+      expect(mockActivityStore.addActivity).toHaveBeenCalledTimes(1);
+    });
+
+    it('deduplicates cross-type start collisions and keeps a single segment', () => {
+      handleSegmentStart(
+        {
+          id: 'dup-cross-type',
+          segment_type: 'tool_call',
+          metadata: {
+            tool_name: 'send_message_to',
+            arguments: { recipient_name: 'Student', content: 'hello' },
+          },
+        },
+        mockContext,
+      );
+
+      handleSegmentStart(
+        {
+          id: 'dup-cross-type',
+          segment_type: 'run_bash',
+          metadata: {
+            tool_name: 'send_message_to',
+            command: 'send_message_to',
+          },
+        },
+        mockContext,
+      );
+
+      const aiMessage = mockContext.conversation.messages[0] as any;
+      expect(aiMessage.segments).toHaveLength(1);
+      expect(aiMessage.segments[0].type).toBe('tool_call');
+      expect(aiMessage.segments[0].toolName).toBe('send_message_to');
+      expect(mockActivityStore.addActivity).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('handleSegmentContent', () => {

@@ -1,7 +1,6 @@
 import type { CodexAppServerClient } from "./codex-app-server-client.js";
 import type { JsonObject } from "./codex-runtime-json.js";
 import {
-  normalizeApprovalPolicy,
   normalizeSandboxMode,
   resolveThreadId,
 } from "./codex-runtime-launch-config.js";
@@ -14,6 +13,7 @@ export const startCodexThread = async (
   client: CodexAppServerClient,
   cwd: string,
   model: string | null,
+  approvalPolicy: string,
   dynamicTools: JsonObject[] | null,
   developerInstructions: string | null,
 ): Promise<string | null> => {
@@ -21,7 +21,7 @@ export const startCodexThread = async (
     model,
     modelProvider: null,
     cwd,
-    approvalPolicy: normalizeApprovalPolicy(),
+    approvalPolicy,
     sandbox: normalizeSandboxMode(),
     config: null,
     baseInstructions: null,
@@ -40,6 +40,7 @@ export const resumeCodexThread = async (
   threadId: string,
   cwd: string,
   model: string | null,
+  approvalPolicy: string,
   dynamicTools: JsonObject[] | null,
   developerInstructions: string | null,
 ): Promise<string | null> => {
@@ -51,7 +52,7 @@ export const resumeCodexThread = async (
       model,
       modelProvider: null,
       cwd,
-      approvalPolicy: normalizeApprovalPolicy(),
+      approvalPolicy,
       sandbox: normalizeSandboxMode(),
       config: null,
       baseInstructions: null,
@@ -63,6 +64,6 @@ export const resumeCodexThread = async (
     return resolveThreadId(response);
   } catch (error) {
     logger.warn(`Failed to resume Codex thread '${threadId}', starting a new thread: ${String(error)}`);
-    return startCodexThread(client, cwd, model, dynamicTools, developerInstructions);
+    return startCodexThread(client, cwd, model, approvalPolicy, dynamicTools, developerInstructions);
   }
 };

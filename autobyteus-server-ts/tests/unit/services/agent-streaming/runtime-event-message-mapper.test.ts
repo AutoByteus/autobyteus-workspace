@@ -606,6 +606,44 @@ describe("RuntimeEventMessageMapper", () => {
     expect(completedFailure.payload.error).toBe("Tool execution failed.");
   });
 
+  it("ignores send_message_to command-execution lifecycle methods to prevent duplicate UI rows", () => {
+    const started = mapper.map({
+      method: "item/command_execution/started",
+      params: {
+        invocation_id: "call-send-1",
+        tool_name: "send_message_to",
+        command: "send_message_to",
+      },
+    });
+    expect(started.type).toBe(ServerMessageType.SEGMENT_CONTENT);
+    expect(started.payload.delta).toBe("");
+    expect(started.payload.runtime_event_method).toBe("item/commandExecution/started");
+
+    const delta = mapper.map({
+      method: "item.commandExecution.outputDelta",
+      params: {
+        invocation_id: "call-send-1",
+        tool_name: "send_message_to",
+        chunk: "ignored",
+      },
+    });
+    expect(delta.type).toBe(ServerMessageType.SEGMENT_CONTENT);
+    expect(delta.payload.delta).toBe("");
+    expect(delta.payload.runtime_event_method).toBe("item/commandExecution/delta");
+
+    const completed = mapper.map({
+      method: "item/command_execution/completed",
+      params: {
+        invocation_id: "call-send-1",
+        tool_name: "send_message_to",
+        success: true,
+      },
+    });
+    expect(completed.type).toBe(ServerMessageType.SEGMENT_CONTENT);
+    expect(completed.payload.delta).toBe("");
+    expect(completed.payload.runtime_event_method).toBe("item/commandExecution/completed");
+  });
+
   it("maps codex approval request methods", () => {
     const message = mapper.map({
       method: "item/command_execution/request_approval",

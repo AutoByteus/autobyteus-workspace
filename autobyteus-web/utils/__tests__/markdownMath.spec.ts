@@ -38,6 +38,25 @@ describe('normalizeMath', () => {
     const out = normalizeMath(input);
     expect(out).toBe(input);
   });
+
+  it('wraps inline math equation embedded in prose', () => {
+    const input = 'Therefore I_n=1/(2n)+O(1/n^2), and';
+    const out = normalizeMath(input);
+    expect(out).toContain('Therefore $I_n=1/(2n)+O(1/n^2)$, and');
+  });
+
+  it('wraps mixed inline exponent equation without forcing full-line display math', () => {
+    const input = 'Set x=e^{-t/n} and continue.';
+    const out = normalizeMath(input);
+    expect(out).toContain('Set $x=e^{-t/n}$ and continue.');
+    expect(out).not.toContain('$$Set');
+  });
+
+  it('does not convert plain config-like assignment text without math markers', () => {
+    const input = 'config file_name=report_v1';
+    const out = normalizeMath(input);
+    expect(out).toBe(input);
+  });
 });
 
 describe('helper detection', () => {

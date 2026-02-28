@@ -79,6 +79,11 @@ export function handleSegmentStart(
     console.warn('[SegmentHandler] Dropping SEGMENT_START with invalid id', payload);
     return;
   }
+  const existingSegment = findSegmentById(context, payload.id);
+  if (existingSegment) {
+    mergeSegmentStartMetadata(existingSegment, payload);
+    return;
+  }
   const aiMessage = findOrCreateAIMessage(context);
   const segment = createSegmentFromPayload(payload);
 
@@ -154,6 +159,94 @@ export function handleSegmentStart(
       error: null,
       timestamp: new Date(),
     });
+  }
+}
+
+function mergeSegmentStartMetadata(
+  segment: AIResponseSegment,
+  payload: SegmentStartPayload,
+): void {
+  const metadata = payload.metadata;
+  if (!metadata) {
+    return;
+  }
+
+  if (
+    (segment.type === 'tool_call' ||
+      segment.type === 'write_file' ||
+      segment.type === 'terminal_command' ||
+      segment.type === 'edit_file') &&
+    metadata.tool_name &&
+    (!segment.toolName ||
+      segment.toolName === 'MISSING_TOOL_NAME' ||
+      segment.toolName === 'tool_call')
+  ) {
+    segment.toolName = String(metadata.tool_name);
+  }
+
+  if (segment.type === 'terminal_command') {
+    const terminalSegment = segment as TerminalCommandSegment;
+    if (!terminalSegment.command && typeof metadata.command === 'string' && metadata.command.trim().length > 0) {
+      terminalSegment.command = metadata.command;
+    }
+    if (typeof metadata.command === 'string' && metadata.command.trim().length > 0) {
+      terminalSegment.arguments = {
+        ...terminalSegment.arguments,
+        command: metadata.command,
+      };
+    }
+    return;
+  }
+
+  if (segment.type === 'write_file') {
+    const writeSegment = segment as WriteFileSegment;
+    if (!writeSegment.path && typeof metadata.path === 'string') {
+      writeSegment.path = metadata.path;
+    }
+    if (typeof metadata.path === 'string' && metadata.path.length > 0) {
+      writeSegment.arguments = {
+        ...writeSegment.arguments,
+        path: metadata.path,
+      };
+    }
+    return;
+  }
+
+  if (segment.type === 'edit_file') {
+    const editSegment = segment as EditFileSegment;
+    if (!editSegment.path && typeof metadata.path === 'string') {
+      editSegment.path = metadata.path;
+    }
+    if (
+      !editSegment.originalContent &&
+      (typeof metadata.patch === 'string' || typeof metadata.diff === 'string')
+    ) {
+      editSegment.originalContent =
+        typeof metadata.patch === 'string' ? metadata.patch : String(metadata.diff ?? '');
+    }
+    const patchValue =
+      typeof metadata.patch === 'string'
+        ? metadata.patch
+        : typeof metadata.diff === 'string'
+          ? metadata.diff
+          : null;
+    editSegment.arguments = {
+      ...editSegment.arguments,
+      ...(typeof metadata.path === 'string' ? { path: metadata.path } : {}),
+      ...(patchValue ? { patch: patchValue } : {}),
+    };
+    return;
+  }
+
+  if (segment.type === 'tool_call') {
+    const toolSegment = segment as ToolCallSegment;
+    const metadataArgs = extractToolCallArgumentsFromMetadata(metadata);
+    if (Object.keys(metadataArgs).length > 0) {
+      toolSegment.arguments = {
+        ...toolSegment.arguments,
+        ...metadataArgs,
+      };
+    }
   }
 }
 

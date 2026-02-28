@@ -61,6 +61,7 @@ export type CodexInterAgentRelayHandler = (
 export type SessionRuntimeOptions = {
   modelIdentifier: string | null;
   workingDirectory: string;
+  autoExecuteTools: boolean;
   llmConfig?: Record<string, unknown> | null;
   runtimeMetadata?: Record<string, unknown> | null;
 };

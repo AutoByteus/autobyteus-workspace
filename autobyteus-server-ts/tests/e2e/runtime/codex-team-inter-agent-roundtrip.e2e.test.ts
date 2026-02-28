@@ -453,19 +453,39 @@ Rules:
         recipientMemberName: "ping" | "pong";
         content: string;
       }): Promise<void> => {
+        const isMatchingSendMessageSegmentStart = (message: {
+          type: string;
+          payload: Record<string, unknown>;
+        }): boolean => {
+          if (message.type !== "SEGMENT_START") {
+            return false;
+          }
+          if (message.payload.agent_name !== input.senderMemberName) {
+            return false;
+          }
+          if (message.payload.segment_type !== "tool_call") {
+            return false;
+          }
+          const metadata =
+            message.payload.metadata &&
+            typeof message.payload.metadata === "object" &&
+            !Array.isArray(message.payload.metadata)
+              ? (message.payload.metadata as Record<string, unknown>)
+              : {};
+          if (metadata.tool_name !== "send_message_to") {
+            return false;
+          }
+          const args =
+            metadata.arguments &&
+            typeof metadata.arguments === "object" &&
+            !Array.isArray(metadata.arguments)
+              ? (metadata.arguments as Record<string, unknown>)
+              : {};
+          return args.recipient_name === input.recipientMemberName && args.content === input.content;
+        };
+
         await waitForTeamStreamEvent(
-          (message) =>
-            message.type === "SEGMENT_START" &&
-            message.payload.agent_name === input.senderMemberName &&
-            message.payload.segment_type === "tool_call" &&
-            (message.payload.metadata as Record<string, unknown> | undefined)?.tool_name ===
-              "send_message_to" &&
-            ((message.payload.metadata as Record<string, unknown> | undefined)?.arguments as
-              | Record<string, unknown>
-              | undefined)?.recipient_name === input.recipientMemberName &&
-            ((message.payload.metadata as Record<string, unknown> | undefined)?.arguments as
-              | Record<string, unknown>
-              | undefined)?.content === input.content,
+          (message) => isMatchingSendMessageSegmentStart(message),
           `${input.senderMemberName} send_message_to SEGMENT_START`,
         );
 
@@ -480,6 +500,33 @@ Rules:
             message.payload.content === input.content,
           `${input.recipientMemberName} INTER_AGENT_MESSAGE`,
         );
+
+        const matchingSegmentStarts = streamMessages.filter((message) =>
+          isMatchingSendMessageSegmentStart(message),
+        );
+        expect(matchingSegmentStarts).toHaveLength(1);
+
+        const sendMessageLifecycleNoise = streamMessages.filter((message) => {
+          if (
+            ![
+              "TOOL_APPROVAL_REQUESTED",
+              "TOOL_APPROVED",
+              "TOOL_DENIED",
+              "TOOL_EXECUTION_STARTED",
+              "TOOL_EXECUTION_SUCCEEDED",
+              "TOOL_EXECUTION_FAILED",
+            ].includes(message.type)
+          ) {
+            return false;
+          }
+          if (message.payload.agent_name !== input.senderMemberName) {
+            return false;
+          }
+          const toolName =
+            typeof message.payload.tool_name === "string" ? message.payload.tool_name.toLowerCase() : "";
+          return toolName === "send_message_to";
+        });
+        expect(sendMessageLifecycleNoise).toHaveLength(0);
       };
 
       try {
