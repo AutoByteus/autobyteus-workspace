@@ -76,4 +76,19 @@ describe('InterAgentMessageSegment', () => {
     expect(toggle.attributes('aria-expanded')).toBe('false');
     expect(wrapper.find('[data-testid="inter-agent-details"]').exists()).toBe(false);
   });
+
+  it('renders inline and block math with markdown renderer', () => {
+    const wrapper = mount(InterAgentMessageSegment, {
+      props: {
+        segment: {
+          ...baseSegment,
+          content:
+            'Solve this:\n\nLet \\(a,b,c\\) be positive.\n\n\\[\n\\frac{1}{a} + \\frac{1}{b}\\ge 2\n\\]',
+        },
+      },
+    });
+
+    expect(wrapper.find('.katex').exists()).toBe(true);
+    expect(wrapper.find('.katex-display').exists()).toBe(true);
+  });
 });

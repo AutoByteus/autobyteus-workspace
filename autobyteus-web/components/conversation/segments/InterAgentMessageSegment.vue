@@ -24,16 +24,18 @@
           />
         </svg>
       </div>
-      <p
+      <div
         data-testid="inter-agent-inline"
-        class="min-w-0 flex-1 whitespace-pre-wrap break-words text-[15px] leading-7 text-slate-800 dark:text-slate-100"
+        class="min-w-0 flex-1 break-words text-[15px] leading-7 text-slate-800 dark:text-slate-100"
         :title="metadataTitle"
       >
-        <span class="font-medium text-slate-600 dark:text-slate-300">From {{ displaySender }}:</span>
-        <span class="ml-1">
-          {{ segment.content }}
-        </span>
-      </p>
+        <p class="whitespace-pre-wrap break-words">
+          <span class="font-medium text-slate-600 dark:text-slate-300">From {{ displaySender }}:</span>
+        </p>
+        <div class="inter-agent-content min-w-0">
+          <MarkdownRenderer :content="segment.content" />
+        </div>
+      </div>
       <button
         type="button"
         data-testid="inter-agent-toggle"
@@ -70,6 +72,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import type { InterAgentMessageSegment } from '~/types/segments';
+import MarkdownRenderer from '~/components/conversation/segments/renderer/MarkdownRenderer.vue';
 
 const props = defineProps<{
   segment: InterAgentMessageSegment;
@@ -133,3 +136,13 @@ const toggleDetails = (): void => {
   showDetails.value = !showDetails.value;
 };
 </script>
+
+<style scoped>
+.inter-agent-content :deep(.markdown-renderer-segments .markdown-body > :first-child) {
+  margin-top: 0.1rem;
+}
+
+.inter-agent-content :deep(.markdown-renderer-segments .markdown-body > :last-child) {
+  margin-bottom: 0;
+}
+</style>
