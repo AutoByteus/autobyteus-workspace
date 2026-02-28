@@ -553,3 +553,26 @@
 
 1. Local-fix scope is parser/normalizer hardening plus instruction guardrails; no API/schema change is required.
 2. Requirements stay within existing `R-023`/`AC-023` scope; no new requirement IDs needed.
+
+## Re-Investigation Findings: Round 20 Sender Activity Missing On Approval-Path Interception
+
+### Sources Consulted (Round 20)
+
+1. `autobyteus-server-ts/src/runtime-execution/codex-app-server/codex-runtime-event-router.ts`
+2. `autobyteus-server-ts/src/services/agent-streaming/codex-runtime-event-adapter.ts`
+3. `autobyteus-server-ts/tests/unit/runtime-execution/codex-app-server/codex-app-server-runtime-service.test.ts`
+4. Live debug output from focused `RUN_CODEX_E2E=1` roundtrip run
+
+### Findings
+
+1. `send_message_to` has two interception forms in practice:
+   - dynamic tool call (`item/tool/call`), and
+   - command-approval request (`item/commandExecution/requestApproval`).
+2. Before this fix, only the dynamic-tool form emitted synthetic sender tool lifecycle events. The approval form relayed the message but returned decision without emitting lifecycle events.
+3. That gap explains live cases where teammate delivery works but sender Activity panel has no `send_message_to` entry.
+4. No requirement-scope expansion is needed; this is implementation parity under existing `R-023`/`AC-023`.
+
+### Implications
+
+1. Local fix must emit the same synthetic lifecycle event set for approval-path interception.
+2. Validation should assert stream-level sender tool-call + recipient inter-agent parity on both legs, not rely on projection text heuristics.

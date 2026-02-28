@@ -11,7 +11,7 @@ Update this file before every stage transition and before any source-code edit.
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `Unclear`
-- Last Transition ID: `T-212`
+- Last Transition ID: `T-216`
 - Last Updated: `2026-02-28`
 
 ## Stage Gates
@@ -23,9 +23,9 @@ Update this file before every stage transition and before any source-code edit.
 | 2 Design Basis | Pass | Design updated to `v16` with codex synthetic sender/recipient event boundaries (`C-031`,`C-032`) while preserving runtime/frontend separation of concerns. | `proposed-design.md` Stage 2 Re-Entry Notes (Round 18) |
 | 3 Runtime Modeling | Pass | Runtime model refreshed to `v16` including sender synthetic tool-call events and recipient structured inter-agent message event projection (`UC-019`). | `future-state-runtime-call-stack.md` UC-019 section |
 | 4 Review Gate | Pass | Deep-review rerun reached `Go Confirmed` on `v16` (`Round 36 Candidate Go`, `Round 37 Go Confirmed`) with no blockers. | `future-state-runtime-call-stack-review.md` rounds 36/37 |
-| 5 Implementation | Pass | Added dynamic-tool interception hardening for method/name/argument aliases (`item.toolCall`, nested `item.name/item.arguments`) and strengthened Codex team developer instructions so `send_message_to` is required for teammate delivery claims. | `codex-send-message-tooling.ts`, `codex-runtime-method-normalizer.ts`, backend unit regressions |
+| 5 Implementation | Pass | Added request-approval interception parity: `item/commandExecution/requestApproval` `send_message_to` path now emits synthetic sender tool lifecycle events just like dynamic-tool calls, preventing “delivered but no activity” gaps; retained alias-hardening/instruction guardrails. | `codex-runtime-event-router.ts`, `codex-send-message-tooling.ts`, backend unit regressions |
 | 5.5 Internal Code Review | Pass | Round-20 focused review passed (`codex-runtime-event-router.ts`, `codex-app-server-runtime-service.ts`, `codex-runtime-event-adapter.ts`) with no blocking SoC findings. | `internal-code-review.md` round-20 update |
-| 6 Aggregated Validation | Pass | Targeted backend unit suites pass and focused live Codex roundtrip E2E passes with sender tool-call + recipient inter-agent assertions after parser hardening. Full mixed-suite live run still shows known nondeterministic roundtrip timeout in one scenario. | `vitest` unit runs (2026-02-28) + `logs/codex-roundtrip-debug.log` |
+| 6 Aggregated Validation | Pass | Targeted backend unit suites pass and focused live Codex roundtrip E2E passes with explicit sender tool-call + recipient inter-agent assertions on both ping->pong and pong->ping legs after approval-path lifecycle fix. | `vitest` unit runs + `RUN_CODEX_E2E=1` focused roundtrip run (2026-02-28) |
 | 7 Docs Sync | Pass | No external docs impact; change is internal runtime-event parity and test coverage hardening only. | `implementation-progress.md` docs-sync round-20 update |
 | 8 Handoff / Ticket State | In Progress | Engineering closure reached with validation evidence recorded; awaiting user live UI confirmation on sender tool-call visibility and recipient `From <sender>` rendering parity. | `workflow-state.md` `T-208` + `implementation-progress.md` round-20 notes |
 
@@ -262,6 +262,10 @@ Update this file before every stage transition and before any source-code edit.
 | T-210 | 2026-02-28 | 0 | 5 | Investigation identified dynamic-tool payload/method alias robustness gap (`item.toolCall`, nested tool fields) with no requirement-scope expansion; local-fix implementation path opened. | Local Fix | Unlocked | `codex-send-message-tooling.ts`, `codex-runtime-method-normalizer.ts`, `workflow-state.md` |
 | T-211 | 2026-02-28 | 5 | 6 | Implemented alias-tolerant dynamic-tool parsing + stronger teammate-delivery instructions and added backend regression tests for method/payload variants. | Local Fix | Unlocked | `codex-send-message-tooling.test.ts`, `codex-app-server-runtime-service.test.ts`, `workflow-state.md` |
 | T-212 | 2026-02-28 | 6 | 8 | Validation refresh completed: targeted backend unit suites passed; focused live Codex roundtrip E2E passed with debug evidence for sender synthetic tool events and recipient inter-agent events; handoff returned for user re-test. | Local Fix | Locked | `logs/codex-roundtrip-debug.log`, `workflow-state.md` |
+| T-213 | 2026-02-28 | 8 | 0 | User requested stricter real-test evidence because sender `send_message_to` activity remained missing in live UI scenarios. | Unclear | Locked | `workflow-state.md`, user live repro context |
+| T-214 | 2026-02-28 | 0 | 5 | Investigation found request-approval interception gap: `item/commandExecution/requestApproval` relayed `send_message_to` but did not emit sender tool lifecycle events. | Local Fix | Unlocked | `investigation-notes.md`, `workflow-state.md` |
+| T-215 | 2026-02-28 | 5 | 6 | Implemented approval-path synthetic lifecycle emission and added backend regression coverage for approval-form `send_message_to` interception. | Local Fix | Unlocked | `codex-runtime-event-router.ts`, `codex-app-server-runtime-service.test.ts`, `workflow-state.md` |
+| T-216 | 2026-02-28 | 6 | 8 | Validation rerun passed: targeted unit suites green and focused live Codex roundtrip E2E green with explicit sender tool-call + recipient inter-agent assertions on both relay legs. | Local Fix | Locked | `codex-team-inter-agent-roundtrip.e2e.test.ts`, `vitest` run logs, `workflow-state.md` |
 
 ## Process Violation Log
 

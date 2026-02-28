@@ -217,7 +217,20 @@ export const tryHandleInterAgentRelayRequest = ({
     if (!isSendMessageToToolName(commandName)) {
       return false;
     }
+    const toolArguments = resolveCommandArgsFromApprovalParams(params);
+    const invocationId = resolveSendMessageInvocationId(requestId, params);
+    const emitLifecycle = (success: boolean, message: string): void => {
+      emitSendMessageToToolLifecycle({
+        state,
+        emitEvent,
+        invocationId,
+        toolArguments,
+        success,
+        message,
+      });
+    };
     if (!state.sendMessageToEnabled) {
+      emitLifecycle(false, "send_message_to is not enabled for this run session.");
       state.client.respondError(
         requestId,
         -32001,
@@ -227,6 +240,7 @@ export const tryHandleInterAgentRelayRequest = ({
     }
 
     if (!relayHandler) {
+      emitLifecycle(false, "send_message_to relay handler is not configured.");
       state.client.respondError(
         requestId,
         -32001,
@@ -235,7 +249,6 @@ export const tryHandleInterAgentRelayRequest = ({
       return true;
     }
 
-    const toolArguments = resolveCommandArgsFromApprovalParams(params);
     void relayHandler({
       senderRunId: state.runId,
       senderTeamRunId: state.teamRunId,
@@ -244,6 +257,7 @@ export const tryHandleInterAgentRelayRequest = ({
     })
       .then((result) => {
         if (!result.accepted) {
+          emitLifecycle(false, result.message ?? "Inter-agent relay rejected.");
           state.client.respondError(
             requestId,
             -32001,
@@ -251,13 +265,16 @@ export const tryHandleInterAgentRelayRequest = ({
           );
           return;
         }
+        emitLifecycle(true, result.message ?? "Message relayed.");
         state.client.respondSuccess(requestId, { decision: "accept" });
       })
       .catch((error) => {
+        const message = `Inter-agent relay failed: ${String(error)}`;
+        emitLifecycle(false, message);
         state.client.respondError(
           requestId,
           -32001,
-          `Inter-agent relay failed: ${String(error)}`,
+          message,
         );
       });
 

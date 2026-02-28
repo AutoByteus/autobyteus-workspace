@@ -334,6 +334,24 @@ This document tracks implementation and validation progress in real time, includ
     `RUN_CODEX_E2E=1 CODEX_RUNTIME_RAW_EVENT_DEBUG=1 CODEX_RUNTIME_ADAPTER_DEBUG=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts -t "routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime" --maxWorkers=1`
   - Debug evidence persisted at `logs/codex-roundtrip-debug.log` confirms sender synthetic `send_message_to` lifecycle events and recipient `inter_agent_message` projection in a passing live run.
 
+## Round 20 Local-Fix Execution (2026-02-28)
+
+- Root-cause fix: `item/commandExecution/requestApproval` interception path for `send_message_to` now emits synthetic sender tool lifecycle events (`item/added`, `item/commandExecution/started`, `item/commandExecution/completed`, `item/completed`) before returning approval decision.
+- Implementation file:
+  - `autobyteus-server-ts/src/runtime-execution/codex-app-server/codex-runtime-event-router.ts`
+- Regression coverage added:
+  - `autobyteus-server-ts/tests/unit/runtime-execution/codex-app-server/codex-app-server-runtime-service.test.ts`
+    - new case: intercepted `item/commandExecution/requestApproval` for `send_message_to` must emit sender lifecycle events and return `{ decision: "accept" }`.
+- Live E2E hardening:
+  - `autobyteus-server-ts/tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts`
+    - removed projection-text dependency for the roundtrip gate;
+    - added explicit assertions for both ping->pong and pong->ping legs:
+      - sender `SEGMENT_START` with `tool_name=send_message_to` and exact args,
+      - recipient `INTER_AGENT_MESSAGE` with sender/recipient/content parity.
+- Validation evidence:
+  - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/runtime-execution/codex-app-server/codex-app-server-runtime-service.test.ts tests/unit/runtime-execution/codex-app-server/codex-send-message-tooling.test.ts --maxWorkers=1` (pass)
+  - `RUN_CODEX_E2E=1 CODEX_RUNTIME_RAW_EVENT_DEBUG=1 CODEX_RUNTIME_ADAPTER_DEBUG=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts -t "routes live inter-agent send_message_to ping->pong->ping roundtrip in codex team runtime" --maxWorkers=1` (pass)
+
 ## Completion Gate
 
 - Mark `File Status = Completed` only when implementation is done and required tests are passing or explicitly `N/A`.

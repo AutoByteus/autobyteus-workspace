@@ -417,53 +417,6 @@ Rules:
         expect(result.sendMessageToTeam.success).toBe(true);
       };
 
-      const memberProjectionQuery = `
-        query TeamMemberProjection($teamRunId: String!, $memberRouteKey: String!) {
-          getTeamMemberRunProjection(teamRunId: $teamRunId, memberRouteKey: $memberRouteKey) {
-            conversation
-            summary
-          }
-        }
-      `;
-
-      const waitForProjectionText = async (memberRouteKey: string, expectedText: string): Promise<void> => {
-        const deadline = Date.now() + 120_000;
-        let lastConversation: Array<{ content?: string | null }> = [];
-        let lastSummary = "";
-        while (Date.now() < deadline) {
-          const projectionResult = await execGraphql<{
-            getTeamMemberRunProjection: {
-              conversation: Array<{ content?: string | null }>;
-              summary?: string | null;
-            };
-          }>(memberProjectionQuery, {
-            teamRunId,
-            memberRouteKey,
-          });
-
-          const conversation = projectionResult.getTeamMemberRunProjection?.conversation ?? [];
-          lastConversation = conversation;
-          lastSummary = String(projectionResult.getTeamMemberRunProjection?.summary ?? "");
-          const hasExpectedContent = conversation.some((entry) =>
-            String(entry?.content ?? "").includes(expectedText),
-          );
-          const hasExpectedSummary = lastSummary.includes(expectedText);
-
-          if (hasExpectedContent || hasExpectedSummary) {
-            return;
-          }
-          await wait(2_000);
-        }
-        const conversationPreview = lastConversation
-          .slice(-6)
-          .map((entry) => String(entry?.content ?? ""))
-          .join(" | ");
-        throw new Error(
-          `Timed out waiting for member '${memberRouteKey}' projection to contain '${expectedText}'. ` +
-            `summary='${lastSummary}' preview='${conversationPreview}'`,
-        );
-      };
-
       const waitForTeamStreamEvent = async (
         predicate: (message: { type: string; payload: Record<string, unknown> }) => boolean,
         label: string,
@@ -482,6 +435,40 @@ Rules:
         throw new Error(`Timed out waiting for team websocket event '${label}'. preview='${preview}'`);
       };
 
+      const waitForSendMessageLifecycleAndReceipt = async (input: {
+        senderMemberName: "ping" | "pong";
+        recipientMemberName: "ping" | "pong";
+        content: string;
+      }): Promise<void> => {
+        await waitForTeamStreamEvent(
+          (message) =>
+            message.type === "SEGMENT_START" &&
+            message.payload.agent_name === input.senderMemberName &&
+            message.payload.segment_type === "tool_call" &&
+            (message.payload.metadata as Record<string, unknown> | undefined)?.tool_name ===
+              "send_message_to" &&
+            ((message.payload.metadata as Record<string, unknown> | undefined)?.arguments as
+              | Record<string, unknown>
+              | undefined)?.recipient_name === input.recipientMemberName &&
+            ((message.payload.metadata as Record<string, unknown> | undefined)?.arguments as
+              | Record<string, unknown>
+              | undefined)?.content === input.content,
+          `${input.senderMemberName} send_message_to SEGMENT_START`,
+        );
+
+        await waitForTeamStreamEvent(
+          (message) =>
+            message.type === "INTER_AGENT_MESSAGE" &&
+            message.payload.agent_name === input.recipientMemberName &&
+            typeof message.payload.sender_agent_id === "string" &&
+            (message.payload.sender_agent_id as string).trim().length > 0 &&
+            message.payload.sender_agent_name === input.senderMemberName &&
+            message.payload.recipient_role_name === input.recipientMemberName &&
+            message.payload.content === input.content,
+          `${input.recipientMemberName} INTER_AGENT_MESSAGE`,
+        );
+      };
+
       try {
         await sendRelayInstruction({
           targetMemberName: "ping",
@@ -489,29 +476,11 @@ Rules:
           content: `PING-TO-PONG ${pingToken}`,
           messageType: "roundtrip_ping",
         });
-        await waitForProjectionText("pong", `PING-TO-PONG ${pingToken}`);
-
-        await waitForTeamStreamEvent(
-          (message) =>
-            message.type === "SEGMENT_START" &&
-            message.payload.agent_name === "ping" &&
-            message.payload.segment_type === "tool_call" &&
-            (message.payload.metadata as Record<string, unknown> | undefined)?.tool_name ===
-              "send_message_to" &&
-            ((message.payload.metadata as Record<string, unknown> | undefined)?.arguments as Record<string, unknown> | undefined)?.content ===
-              `PING-TO-PONG ${pingToken}`,
-          "sender send_message_to SEGMENT_START",
-        );
-
-        await waitForTeamStreamEvent(
-          (message) =>
-            message.type === "INTER_AGENT_MESSAGE" &&
-            message.payload.agent_name === "pong" &&
-            typeof message.payload.sender_agent_id === "string" &&
-            message.payload.recipient_role_name === "pong" &&
-            message.payload.content === `PING-TO-PONG ${pingToken}`,
-          "recipient INTER_AGENT_MESSAGE",
-        );
+        await waitForSendMessageLifecycleAndReceipt({
+          senderMemberName: "ping",
+          recipientMemberName: "pong",
+          content: `PING-TO-PONG ${pingToken}`,
+        });
 
         await sendRelayInstruction({
           targetMemberName: "pong",
@@ -519,7 +488,11 @@ Rules:
           content: `PONG-TO-PING ${pongToken}`,
           messageType: "roundtrip_pong",
         });
-        await waitForProjectionText("ping", `PONG-TO-PING ${pongToken}`);
+        await waitForSendMessageLifecycleAndReceipt({
+          senderMemberName: "pong",
+          recipientMemberName: "ping",
+          content: `PONG-TO-PING ${pongToken}`,
+        });
       } finally {
         teamSocket.close();
         await streamApp.close();

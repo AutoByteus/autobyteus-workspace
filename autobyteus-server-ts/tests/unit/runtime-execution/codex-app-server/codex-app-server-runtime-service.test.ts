@@ -257,6 +257,68 @@ describe("CodexAppServerRuntimeService.sendTurn", () => {
     expect((events[0]?.params?.arguments as Record<string, unknown>)?.content).toBe("hello");
   });
 
+  it("emits synthetic sender tool-call events for intercepted send_message_to approval requests", async () => {
+    const service = new CodexAppServerRuntimeService();
+    service.setInterAgentRelayHandler(async () => ({
+      accepted: true,
+      message: "relayed-from-approval",
+    }));
+    const respondSuccess = vi.fn();
+    const respondError = vi.fn();
+    const events: Array<{ method: string; params: Record<string, unknown> }> = [];
+    const state = {
+      runId: "run-professor",
+      teamRunId: "team-1",
+      memberName: "Professor",
+      sendMessageToEnabled: true,
+      client: {
+        respondSuccess,
+        respondError,
+      },
+      listeners: new Set([
+        (event: { method: string; params: Record<string, unknown> }) => {
+          events.push(event);
+        },
+      ]),
+      approvalRecords: new Map(),
+      unbindHandlers: [],
+    } as any;
+
+    (service as any).handleServerRequest(
+      state,
+      "request-approval-1",
+      "item/commandExecution/requestApproval",
+      {
+        item: {
+          id: "approval-call-1",
+        },
+        command_name: "send_message_to",
+        arguments: {
+          recipient_name: "Student",
+          content: "hello via approval path",
+          message_type: "agent_message",
+        },
+      },
+    );
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(respondError).not.toHaveBeenCalled();
+    expect(respondSuccess).toHaveBeenCalledWith("request-approval-1", { decision: "accept" });
+    expect(events.map((event) => event.method)).toEqual([
+      "item/added",
+      "item/commandExecution/started",
+      "item/commandExecution/completed",
+      "item/completed",
+    ]);
+    expect((events[0]?.params?.arguments as Record<string, unknown>)?.recipient_name).toBe(
+      "Student",
+    );
+    expect((events[0]?.params?.arguments as Record<string, unknown>)?.content).toBe(
+      "hello via approval path",
+    );
+  });
+
   it("emits structured inter_agent_message event before recipient envelope turn dispatch", async () => {
     const service = new CodexAppServerRuntimeService();
     const request = vi.fn().mockResolvedValue({ turn: { id: "turn-1" } });
