@@ -170,3 +170,10 @@ pnpm --filter autobyteus-message-gateway build
   - macOS ARM64 DMG + blockmap
   - Linux x64 AppImage + blockmap
 - No git submodules are required in this workspace.
+
+## License
+
+This repository is licensed under [Apache License 2.0](./LICENSE).
+
+Commercial use and modification are allowed. If you redistribute this software
+or derivatives, keep the license and attribution notices (see [`NOTICE`](./NOTICE)).
