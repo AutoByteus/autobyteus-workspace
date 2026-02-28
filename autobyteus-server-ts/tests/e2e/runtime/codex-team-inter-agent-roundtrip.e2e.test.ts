@@ -4,7 +4,7 @@ import path from "node:path";
 import os from "node:os";
 import { spawnSync } from "node:child_process";
 import { randomUUID } from "node:crypto";
-import { mkdtemp, rm } from "node:fs/promises";
+import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import fastify from "fastify";
 import websocket from "@fastify/websocket";
 import WebSocket from "ws";
@@ -12,6 +12,7 @@ import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
+import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 
 const codexBinaryReady = spawnSync("codex", ["--version"], {
   stdio: "ignore",
@@ -44,6 +45,7 @@ const waitForSocketOpen = (socket: WebSocket, timeoutMs = 10_000): Promise<void>
 describeCodexRuntime("Codex team inter-agent roundtrip e2e (live transport)", () => {
   let schema: GraphQLSchema;
   let graphql: typeof graphqlFn;
+  let testDataDir: string | null = null;
   const createdPromptIds = new Set<string>();
   const createdAgentDefinitionIds = new Set<string>();
   const createdTeamDefinitionIds = new Set<string>();
@@ -53,6 +55,13 @@ describeCodexRuntime("Codex team inter-agent roundtrip e2e (live transport)", ()
   beforeAll(async () => {
     // Force command approvals so send_message_to is intercepted by the codex inter-agent relay handler.
     process.env.CODEX_APP_SERVER_APPROVAL_POLICY = "untrusted";
+    testDataDir = await mkdtemp(path.join(os.tmpdir(), "codex-team-runtime-e2e-appdata-"));
+    await writeFile(
+      path.join(testDataDir, ".env"),
+      "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n",
+      "utf-8",
+    );
+    appConfigProvider.config.setCustomAppDataDir(testDataDir);
     schema = await buildGraphqlSchema();
     const require = createRequire(import.meta.url);
     const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
@@ -61,12 +70,16 @@ describeCodexRuntime("Codex team inter-agent roundtrip e2e (live transport)", ()
     graphql = graphqlModule.graphql as typeof graphqlFn;
   });
 
-  afterAll(() => {
+  afterAll(async () => {
     if (typeof originalCodexApprovalPolicy === "string") {
       process.env.CODEX_APP_SERVER_APPROVAL_POLICY = originalCodexApprovalPolicy;
-      return;
+    } else {
+      delete process.env.CODEX_APP_SERVER_APPROVAL_POLICY;
     }
-    delete process.env.CODEX_APP_SERVER_APPROVAL_POLICY;
+    if (testDataDir) {
+      await rm(testDataDir, { recursive: true, force: true });
+      testDataDir = null;
+    }
   });
 
   afterEach(async () => {

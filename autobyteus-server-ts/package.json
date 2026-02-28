@@ -13,7 +13,8 @@
     "package:file": "node ./scripts/build-file-package.mjs",
     "build:file:package": "pnpm run build:file && pnpm run package:file",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "vitest"
+    "test": "vitest",
+    "cleanup:codex-e2e-history": "node ./scripts/cleanup-codex-e2e-run-history.mjs"
   },
   "dependencies": {
     "autobyteus-ts": "workspace:*",

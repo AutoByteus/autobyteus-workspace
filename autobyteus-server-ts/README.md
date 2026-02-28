@@ -196,6 +196,19 @@ Notes:
 - Some integration tests are env-gated (e.g., `AUTOBYTEUS_DOWNLOAD_TEST_URL`).
 - Codex live-runtime E2E tests are env-gated by `RUN_CODEX_E2E`.
   - Use `RUN_CODEX_E2E=1` for Codex tickets, otherwise Codex live E2E suites are skipped.
+  - Codex runtime E2E suites now isolate app data to temporary per-suite directories to avoid polluting default local run history.
+
+Clean existing local Codex E2E run-history artifacts (safe prefix-targeted cleanup):
+
+```bash
+pnpm -C autobyteus-server-ts run cleanup:codex-e2e-history --memory-dir ./memory
+```
+
+Dry-run preview:
+
+```bash
+pnpm -C autobyteus-server-ts run cleanup:codex-e2e-history --memory-dir ./memory --dry-run
+```
 
 Run full backend suite with Codex live transport enabled:
 
