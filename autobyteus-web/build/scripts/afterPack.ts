@@ -20,6 +20,10 @@ function isMachOBinary(filePath: string): boolean {
 }
 
 function isCandidateBinary(filePath: string): boolean {
+  // node-pty prebuilt spawn-helper can be shipped without executable bit set.
+  // We still need to codesign it for notarization.
+  if (path.basename(filePath) === 'spawn-helper') return true
+
   const ext = path.extname(filePath).toLowerCase()
   if (ext === '.node' || ext === '.dylib' || ext === '.so') return true
   if (!ext) {
