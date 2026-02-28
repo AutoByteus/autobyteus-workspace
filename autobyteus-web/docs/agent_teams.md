@@ -221,9 +221,9 @@ Manages **running team runs**:
 | Action                           | Description                               |
 | -------------------------------- | ----------------------------------------- |
 | `createRunFromTemplate()`        | Create run context from `teamRunConfigStore` |
-| `removeTeamContext(teamId)`      | Remove team run                           |
-| `lockConfig(teamId)`             | Lock config after first message           |
-| `promoteTemporaryId(temp, perm)` | Replace temp ID with server ID            |
+| `removeTeamContext(teamRunId)`   | Remove team run                           |
+| `lockConfig(teamRunId)`          | Lock config after first message           |
+| `promoteTemporaryTeamRunId(temp, perm)` | Replace temp team run ID with server team run ID |
 
 Note: While a team is still local-only (ID starts with `temp-`), the UI labels it as **"New - {TeamName}"** instead of showing the raw temp ID.
 
@@ -234,8 +234,8 @@ Handles team execution and real-time communication:
 | Action                            | Description                         |
 | --------------------------------- | ----------------------------------- |
 | `sendMessageToTeam(...)`          | Send user input to team coordinator |
-| `connectToTeamStream(teamId)`     | Connect to team WebSocket events    |
-| `terminateTeamRun(teamId)`   | Stop running team run               |
+| `connectToTeamStream(teamRunId)`  | Connect to team WebSocket events    |
+| `terminateTeamRun(teamRunId)`     | Stop running team run               |
 | `sendMessageToFocusedMember(...)` | Send message to specific member     |
 
 ## User Flows
@@ -300,9 +300,9 @@ sequenceDiagram
     User->>ChatInput: Type message, press Send
     ChatInput->>RunStore: sendMessageToTeam(config, input)
     RunStore->>Backend: SendMessageToTeam mutation
-    Backend-->>RunStore: teamId
-    RunStore->>ContextsStore: promoteTemporaryId(temp, teamId)
-    RunStore->>ContextsStore: lockConfig(teamId)
+    Backend-->>RunStore: teamRunId
+    RunStore->>ContextsStore: promoteTemporaryTeamRunId(temp, teamRunId)
+    RunStore->>ContextsStore: lockConfig(teamRunId)
     RunStore->>Backend: Connect to team WebSocket stream
 
     loop Real-time Events

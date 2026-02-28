@@ -36,7 +36,10 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
-type AgentContextLike = { agentId?: string };
+type AgentContextLike = {
+  // Core boundary from autobyteus-ts runtime; normalize immediately to `agentRunId` in local code.
+  agentId?: string;
+};
 
 const LINE_NUMBER_PATTERN = /^([ +\-])\s*\d+:\s?(.*)$/;
 
@@ -74,8 +77,8 @@ export async function patchPrompt(
   prompt_id: string,
   patch: string,
 ): Promise<string> {
-  const agentId = context?.agentId ?? "unknown";
-  logger.info(`patch_prompt tool invoked by agent ${agentId} for prompt ID '${prompt_id}'.`);
+  const agentRunId = context?.agentId ?? "unknown";
+  logger.info(`patch_prompt tool invoked by agent run ${agentRunId} for prompt ID '${prompt_id}'.`);
 
   try {
     const promptService = new PromptService();

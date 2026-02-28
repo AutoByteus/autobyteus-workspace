@@ -7,7 +7,7 @@ import type { RuntimeCommandResult } from "../runtime-adapter-port.js";
 export interface TeamCodexInterAgentRelayInput {
   teamRunId: string;
   recipientMemberRunId: string;
-  senderAgentId: string;
+  senderAgentRunId: string;
   senderAgentName?: string | null;
   recipientName: string;
   messageType?: string | null;
@@ -30,7 +30,7 @@ export class TeamCodexInterAgentMessageRelay {
     const result = await this.runtimeCommandIngressService.relayInterAgentMessage({
       runId: input.recipientMemberRunId,
       envelope: {
-        senderAgentId: input.senderAgentId,
+        senderAgentRunId: input.senderAgentRunId,
         senderAgentName: input.senderAgentName ?? null,
         recipientName: input.recipientName,
         messageType: (input.messageType ?? "agent_message").trim() || "agent_message",

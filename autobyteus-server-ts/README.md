@@ -240,7 +240,7 @@ Recommended starting points:
 - REST: `/rest/*`
 - GraphQL: `/graphql` (subscriptions enabled)
 - WebSocket:
-  - `/ws/agent/:agentId`
-  - `/ws/agent-team/:teamId`
+  - `/ws/agent/:runId`
+  - `/ws/agent-team/:teamRunId`
   - `/ws/terminal/:workspaceId/:sessionId`
   - `/ws/file-explorer/:workspaceId`

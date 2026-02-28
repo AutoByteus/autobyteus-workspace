@@ -106,7 +106,7 @@ export class TeamRunMutationService {
     return AgentTeamRunManager.getInstance();
   }
 
-  private generateTeamId(teamLabel: string | null | undefined): string {
+  private generateTeamRunId(teamLabel: string | null | undefined): string {
     return generateTeamRunId(teamLabel);
   }
 
@@ -392,7 +392,9 @@ export class TeamRunMutationService {
     memberConfigs: TeamMemberConfigPayload[];
   }): Promise<{ teamRunId: string; runtimeMode: "autobyteus_team" | "codex_members" }> {
     const metadata = await this.resolveTeamDefinitionMetadata(options.teamDefinitionId);
-    const teamRunId = this.generateTeamId(metadata.teamDefinitionName || options.teamDefinitionId);
+    const teamRunId = this.generateTeamRunId(
+      metadata.teamDefinitionName || options.teamDefinitionId,
+    );
     const memberConfigs = await Promise.all(
       options.memberConfigs.map(async (config) => ({
         ...config,

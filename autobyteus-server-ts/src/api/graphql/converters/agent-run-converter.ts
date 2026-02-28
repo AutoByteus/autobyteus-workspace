@@ -63,7 +63,7 @@ const toWorkspaceInfo = (domainAgent: AgentLike): WorkspaceInfo | null => {
 
 export class AgentRunConverter {
   static async toGraphql(domainAgent: AgentLike): Promise<AgentRun> {
-    // autobyteus-ts runtime exposes the run identifier as `agentId`.
+    // Core boundary: autobyteus-ts runtime still exposes run identity as `agentId`.
     const agentRunId = domainAgent.agentId;
     try {
       const workspaceInfo: WorkspaceInfo | null = toWorkspaceInfo(domainAgent);

@@ -23,7 +23,10 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
-type AgentContextLike = { agentId?: string };
+type AgentContextLike = {
+  // Core boundary from autobyteus-ts runtime; normalize immediately to `agentRunId` in local code.
+  agentId?: string;
+};
 
 type ApplyResult = {
   summary: { total_processed: number; successful: number; failed: number };
@@ -34,8 +37,8 @@ export async function applyMcpServerConfigurations(
   context: AgentContextLike,
   configurations_json: string,
 ): Promise<string> {
-  const agentId = context?.agentId ?? "unknown";
-  logger.info(`apply_mcp_server_configurations tool invoked by agent ${agentId}.`);
+  const agentRunId = context?.agentId ?? "unknown";
+  logger.info(`apply_mcp_server_configurations tool invoked by agent run ${agentRunId}.`);
 
   if (!configurations_json) {
     throw new Error("configurations_json is a required argument.");

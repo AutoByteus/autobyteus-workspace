@@ -276,7 +276,7 @@ describe("TeamMemberRuntimeOrchestrator", () => {
     expect(mocks.teamCodexInterAgentMessageRelay.deliverInterAgentMessage).toHaveBeenCalledWith({
       teamRunId: "team-1",
       recipientMemberRunId: "recipient-run-1",
-      senderAgentId: "sender-run-1",
+      senderAgentRunId: "sender-run-1",
       senderAgentName: "Sender Agent",
       recipientName: "Recipient Agent",
       messageType: "agent_message",

@@ -16,7 +16,10 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
-type AgentContextLike = { agentId?: string };
+type AgentContextLike = {
+  // Core boundary from autobyteus-ts runtime; normalize immediately to `agentRunId` in local code.
+  agentId?: string;
+};
 
 const serializeProcessorSummary = (
   definition: LifecycleEventProcessorDefinition,
@@ -43,8 +46,8 @@ const serializeProcessorSummary = (
 };
 
 export async function listLifecycleProcessors(context: AgentContextLike): Promise<string> {
-  const agentId = context?.agentId ?? "N/A";
-  logger.info(`list_lifecycle_processors tool invoked by agent ${agentId}.`);
+  const agentRunId = context?.agentId ?? "N/A";
+  logger.info(`list_lifecycle_processors tool invoked by agent run ${agentRunId}.`);
 
   try {
     const definitions = Object.values(defaultLifecycleEventProcessorRegistry.getAllDefinitions());

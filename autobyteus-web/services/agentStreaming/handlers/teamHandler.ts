@@ -31,7 +31,7 @@ export function handleInterAgentMessage(
   
   const segment: InterAgentMessageSegment = {
     type: 'inter_agent_message',
-    senderAgentId: payload.sender_agent_id,
+    senderAgentRunId: payload.sender_agent_id,
     recipientRoleName: payload.recipient_role_name,
     content: payload.content,
     messageType: payload.message_type,

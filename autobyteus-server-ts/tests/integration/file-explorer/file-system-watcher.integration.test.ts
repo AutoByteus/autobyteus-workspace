@@ -130,18 +130,18 @@ describe("FileSystemWatcher integration", () => {
       }
 
       const filePath = path.join(workspace, "watch.txt");
-      await fs.writeFile(filePath, "hello", { encoding: "utf-8" });
+      const addEvent = await expectEventAfterAction(stream, () =>
+        fs.writeFile(filePath, "hello", { encoding: "utf-8" }),
+      );
+      expect(addEvent.changes.some((change) => change.type === ChangeType.ADD)).toBe(true);
 
-      const addEvent = await nextEvent(stream);
-      expect(addEvent.changes[0]?.type).toBe(ChangeType.ADD);
+      const modifyEvent = await expectEventAfterAction(stream, () =>
+        fs.writeFile(filePath, "update", { encoding: "utf-8" }),
+      );
+      expect(modifyEvent.changes.some((change) => change.type === ChangeType.MODIFY)).toBe(true);
 
-      await fs.writeFile(filePath, "update", { encoding: "utf-8" });
-      const modifyEvent = await nextEvent(stream);
-      expect(modifyEvent.changes[0]?.type).toBe(ChangeType.MODIFY);
-
-      await fs.unlink(filePath);
-      const deleteEvent = await nextEvent(stream);
-      expect(deleteEvent.changes[0]?.type).toBe(ChangeType.DELETE);
+      const deleteEvent = await expectEventAfterAction(stream, () => fs.unlink(filePath));
+      expect(deleteEvent.changes.some((change) => change.type === ChangeType.DELETE)).toBe(true);
 
       await stream.return?.();
     },

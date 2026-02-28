@@ -25,7 +25,7 @@ const {
     focusedMemberContext: null as any,
     getTeamContextById: vi.fn(),
     removeTeamContext: vi.fn(),
-    promoteTemporaryTeamId: vi.fn(),
+    promoteTemporaryTeamRunId: vi.fn(),
     lockConfig: vi.fn(),
   },
   runHistoryStoreMock: {

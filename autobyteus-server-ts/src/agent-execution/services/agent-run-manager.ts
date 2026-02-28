@@ -62,7 +62,7 @@ type ProcessorRegistries = {
 };
 
 type AgentLike = {
-  // autobyteus-ts runtime names agent run ID as `agentId`.
+  // Core boundary: autobyteus-ts runtime still exposes run identity as `agentId`.
   agentId: string;
   context?: {
     statusManager?: {

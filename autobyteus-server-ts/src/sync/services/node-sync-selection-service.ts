@@ -98,13 +98,13 @@ export class NodeSyncSelectionService {
       return null;
     }
 
-    const requestedAgentIds = normalizeIds(selection.agentDefinitionIds);
-    const requestedTeamIds = normalizeIds(selection.agentTeamDefinitionIds);
+    const requestedAgentDefinitionIds = normalizeIds(selection.agentDefinitionIds);
+    const requestedAgentTeamDefinitionIds = normalizeIds(selection.agentTeamDefinitionIds);
 
-    if (requestedAgentIds.length === 0 && requestedTeamIds.length === 0) {
+    if (requestedAgentDefinitionIds.length === 0 && requestedAgentTeamDefinitionIds.length === 0) {
       throw new NodeSyncSelectionValidationError(
         'selection-empty',
-        'Selective sync requires at least one agent or team id.',
+        'Selective sync requires at least one agent definition ID or team definition ID.',
       );
     }
 
@@ -127,60 +127,65 @@ export class NodeSyncSelectionService {
         .map((team) => [team.id as string, team]),
     );
 
-    for (const agentId of requestedAgentIds) {
-      if (!agentsById.has(agentId)) {
+    for (const agentDefinitionId of requestedAgentDefinitionIds) {
+      if (!agentsById.has(agentDefinitionId)) {
         throw new NodeSyncSelectionValidationError(
           'invalid-selection-agent-id',
-          `Selected agent id was not found on source node: ${agentId}`,
+          `Selected agent definition ID was not found on source node: ${agentDefinitionId}`,
         );
       }
     }
 
-    for (const teamId of requestedTeamIds) {
-      if (!teamsById.has(teamId)) {
+    for (const teamDefinitionId of requestedAgentTeamDefinitionIds) {
+      if (!teamsById.has(teamDefinitionId)) {
         throw new NodeSyncSelectionValidationError(
           'invalid-selection-team-id',
-          `Selected team id was not found on source node: ${teamId}`,
+          `Selected team definition ID was not found on source node: ${teamDefinitionId}`,
         );
       }
     }
 
-    const resolvedAgentIds = new Set(requestedAgentIds);
-    const resolvedTeamIds = new Set(requestedTeamIds);
+    const resolvedAgentDefinitionIds = new Set(requestedAgentDefinitionIds);
+    const resolvedAgentTeamDefinitionIds = new Set(requestedAgentTeamDefinitionIds);
 
     if (includeDependencies) {
-      this.expandTeamDependencies(resolvedTeamIds, resolvedAgentIds, teamsById, agentsById);
+      this.expandTeamDependencies(
+        resolvedAgentTeamDefinitionIds,
+        resolvedAgentDefinitionIds,
+        teamsById,
+        agentsById,
+      );
     }
 
     const promptFamilies = includeDependencies
-      ? this.resolvePromptFamilies(resolvedAgentIds, agentsById)
+      ? this.resolvePromptFamilies(resolvedAgentDefinitionIds, agentsById)
       : new Set<string>();
 
     return {
-      agentDefinitionIds: resolvedAgentIds,
-      agentTeamDefinitionIds: resolvedTeamIds,
+      agentDefinitionIds: resolvedAgentDefinitionIds,
+      agentTeamDefinitionIds: resolvedAgentTeamDefinitionIds,
       promptFamilies,
       includeDeletes,
     };
   }
 
   private expandTeamDependencies(
-    resolvedTeamIds: Set<string>,
-    resolvedAgentIds: Set<string>,
+    resolvedAgentTeamDefinitionIds: Set<string>,
+    resolvedAgentDefinitionIds: Set<string>,
     teamsById: Map<string, AgentTeamDefinitionSnapshot>,
     agentsById: Map<string, AgentDefinitionSnapshot>,
   ): void {
-    const queue = Array.from(resolvedTeamIds);
+    const queue = Array.from(resolvedAgentTeamDefinitionIds);
     while (queue.length > 0) {
-      const teamId = queue.shift();
-      if (!teamId) {
+      const teamDefinitionId = queue.shift();
+      if (!teamDefinitionId) {
         continue;
       }
-      const team = teamsById.get(teamId);
+      const team = teamsById.get(teamDefinitionId);
       if (!team) {
         throw new NodeSyncSelectionValidationError(
           'invalid-selection-team-id',
-          `Selected team id was not found on source node: ${teamId}`,
+          `Selected team definition ID was not found on source node: ${teamDefinitionId}`,
         );
       }
 
@@ -192,7 +197,7 @@ export class NodeSyncSelectionService {
               `Team '${team.name}' references missing agent '${member.referenceId}'.`,
             );
           }
-          resolvedAgentIds.add(member.referenceId);
+          resolvedAgentDefinitionIds.add(member.referenceId);
           continue;
         }
 
@@ -203,8 +208,8 @@ export class NodeSyncSelectionService {
               `Team '${team.name}' references missing team '${member.referenceId}'.`,
             );
           }
-          if (!resolvedTeamIds.has(member.referenceId)) {
-            resolvedTeamIds.add(member.referenceId);
+          if (!resolvedAgentTeamDefinitionIds.has(member.referenceId)) {
+            resolvedAgentTeamDefinitionIds.add(member.referenceId);
             queue.push(member.referenceId);
           }
         }
@@ -213,16 +218,16 @@ export class NodeSyncSelectionService {
   }
 
   private resolvePromptFamilies(
-    resolvedAgentIds: Set<string>,
+    resolvedAgentDefinitionIds: Set<string>,
     agentsById: Map<string, AgentDefinitionSnapshot>,
   ): Set<string> {
     const families = new Set<string>();
-    for (const agentId of resolvedAgentIds) {
-      const agent = agentsById.get(agentId);
+    for (const agentDefinitionId of resolvedAgentDefinitionIds) {
+      const agent = agentsById.get(agentDefinitionId);
       if (!agent) {
         throw new NodeSyncSelectionValidationError(
           'team-member-missing',
-          `Resolved dependency agent '${agentId}' is missing on source node.`,
+          `Resolved dependency agent definition '${agentDefinitionId}' is missing on source node.`,
         );
       }
       const category = normalizeNonEmptyString(agent.systemPromptCategory);

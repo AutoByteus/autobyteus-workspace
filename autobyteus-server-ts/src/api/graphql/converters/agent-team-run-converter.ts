@@ -11,7 +11,7 @@ type TeamLike = AgentTeam & {
 
 export class AgentTeamRunConverter {
   static toGraphql(domainTeam: TeamLike): AgentTeamRun {
-    // autobyteus-ts runtime exposes the run identifier as `teamId`.
+    // Core boundary: autobyteus-ts runtime still exposes team run identity as `teamId`.
     const teamRunId = domainTeam.teamId;
     try {
       const status = domainTeam.currentStatus;

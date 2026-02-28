@@ -44,7 +44,10 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
-type AgentContextLike = { agentId?: string };
+type AgentContextLike = {
+  // Core boundary from autobyteus-ts runtime; normalize immediately to `agentRunId` in local code.
+  agentId?: string;
+};
 
 export async function createSkillVersion(
   context: AgentContextLike,
@@ -52,9 +55,9 @@ export async function createSkillVersion(
   version_tag: string,
   message: string,
 ): Promise<string> {
-  const agentId = context?.agentId ?? "unknown";
+  const agentRunId = context?.agentId ?? "unknown";
   logger.info(
-    `create_skill_version tool invoked by agent ${agentId} for skill '${skill_name}'.`,
+    `create_skill_version tool invoked by agent run ${agentRunId} for skill '${skill_name}'.`,
   );
 
   const skillService = SkillService.getInstance();

@@ -119,11 +119,11 @@ const displaySender = computed(() => {
   if (explicitName) {
     return toReadableSenderName(explicitName);
   }
-  return toReadableSenderName(props.segment.senderAgentId || '');
+  return toReadableSenderName(props.segment.senderAgentRunId || '');
 });
 
 const metadataTitle = computed(() => {
-  const sender = props.segment.senderAgentId || 'unknown';
+  const sender = props.segment.senderAgentRunId || 'unknown';
   const messageType = props.segment.messageType || 'unknown';
   const recipient = props.segment.recipientRoleName || 'unknown';
   if (displaySender.value && displaySender.value !== sender) {

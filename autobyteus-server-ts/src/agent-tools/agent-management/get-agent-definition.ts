@@ -20,7 +20,10 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
-type AgentContextLike = { agentId?: string };
+type AgentContextLike = {
+  // Core boundary from autobyteus-ts runtime; normalize immediately to `agentRunId` in local code.
+  agentId?: string;
+};
 
 const serializeDefinition = (definition: AgentDefinition): Record<string, unknown> => ({
   id: definition.id ?? null,
@@ -44,8 +47,8 @@ export async function getAgentDefinition(
   context: AgentContextLike,
   definition_id: string,
 ): Promise<string> {
-  const agentId = context?.agentId ?? "unknown";
-  logger.info(`get_agent_definition tool invoked by agent ${agentId} for ID '${definition_id}'.`);
+  const agentRunId = context?.agentId ?? "unknown";
+  logger.info(`get_agent_definition tool invoked by agent run ${agentRunId} for ID '${definition_id}'.`);
 
   if (!definition_id) {
     throw new Error("definition_id is a required argument.");

@@ -159,7 +159,7 @@ describe("RuntimeCommandIngressService", () => {
     const result = await service.relayInterAgentMessage({
       runId: "run-relay",
       envelope: {
-        senderAgentId: "member-a",
+        senderAgentRunId: "member-a",
         recipientName: "member-b",
         messageType: "agent_message",
         content: "hello",
@@ -194,7 +194,7 @@ describe("RuntimeCommandIngressService", () => {
     const result = await service.relayInterAgentMessage({
       runId: "run-relay-unsupported",
       envelope: {
-        senderAgentId: "member-a",
+        senderAgentRunId: "member-a",
         recipientName: "member-b",
         messageType: "agent_message",
         content: "hello",

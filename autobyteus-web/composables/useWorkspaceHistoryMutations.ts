@@ -17,7 +17,7 @@ export const useWorkspaceHistoryMutations = (params: {
   const deletingTeamIds = ref<Record<string, boolean>>({});
   const showDeleteConfirmation = ref(false);
   const pendingDeleteRunId = ref<string | null>(null);
-  const pendingDeleteTeamId = ref<string | null>(null);
+  const pendingDeleteTeamRunId = ref<string | null>(null);
 
   const onTerminateTeam = async (teamRunId: string): Promise<void> => {
     const terminateErrorMessage = 'Failed to terminate team. Please try again.';
@@ -80,7 +80,7 @@ export const useWorkspaceHistoryMutations = (params: {
     }
 
     pendingDeleteRunId.value = runId;
-    pendingDeleteTeamId.value = null;
+    pendingDeleteTeamRunId.value = null;
     showDeleteConfirmation.value = true;
   };
 
@@ -95,21 +95,21 @@ export const useWorkspaceHistoryMutations = (params: {
     }
 
     pendingDeleteRunId.value = null;
-    pendingDeleteTeamId.value = teamRunId;
+    pendingDeleteTeamRunId.value = teamRunId;
     showDeleteConfirmation.value = true;
   };
 
   const closeDeleteConfirmation = (): void => {
     showDeleteConfirmation.value = false;
     pendingDeleteRunId.value = null;
-    pendingDeleteTeamId.value = null;
+    pendingDeleteTeamRunId.value = null;
   };
 
   const confirmDeleteRun = async (): Promise<void> => {
     const deleteErrorMessage = 'Failed to delete run. Please try again.';
     const deleteTeamErrorMessage = 'Failed to delete team history. Please try again.';
     const runId = pendingDeleteRunId.value;
-    const teamRunId = pendingDeleteTeamId.value;
+    const teamRunId = pendingDeleteTeamRunId.value;
     closeDeleteConfirmation();
 
     if (runId) {

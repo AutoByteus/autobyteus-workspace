@@ -6,6 +6,7 @@ import {
 import type { UserMessageReceivedEvent } from "autobyteus-ts/agent/events/agent-events.js";
 import { getProviderProxySet } from "../../../external-channel/providers/provider-proxy-set.js";
 import { ChannelMessageReceiptService } from "../../../external-channel/services/channel-message-receipt-service.js";
+import { resolveAgentRunIdFromRuntimeContext } from "../../utils/core-boundary-id-normalizer.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
@@ -40,7 +41,7 @@ export class ExternalChannelTurnReceiptBindingProcessor extends BaseAgentUserInp
     context: AgentContext,
     _triggeringEvent: UserMessageReceivedEvent,
   ): Promise<AgentInputUserMessage> {
-    const agentRunId = context.agentId;
+    const agentRunId = resolveAgentRunIdFromRuntimeContext(context);
     const externalSource = message.getExternalSourceMetadata();
     if (!externalSource) {
       return message;

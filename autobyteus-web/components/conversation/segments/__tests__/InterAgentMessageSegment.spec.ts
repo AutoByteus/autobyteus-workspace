@@ -5,7 +5,7 @@ import InterAgentMessageSegment from '../InterAgentMessageSegment.vue';
 describe('InterAgentMessageSegment', () => {
   const baseSegment = {
     type: 'inter_agent_message' as const,
-    senderAgentId: 'professor_Professor_6151',
+    senderAgentRunId: 'professor_Professor_6151',
     recipientRoleName: 'Student',
     messageType: 'task_assignment',
     content: 'hello',
@@ -29,7 +29,7 @@ describe('InterAgentMessageSegment', () => {
       props: {
         segment: {
           ...baseSegment,
-          senderAgentId: 'member_6c6718851d8069a3',
+          senderAgentRunId: 'member_6c6718851d8069a3',
         },
         senderDisplayName: 'professor',
       },
@@ -44,7 +44,7 @@ describe('InterAgentMessageSegment', () => {
       props: {
         segment: {
           ...baseSegment,
-          senderAgentId: 'member_6c6718851d8069a3',
+          senderAgentRunId: 'member_6c6718851d8069a3',
         },
       },
     });

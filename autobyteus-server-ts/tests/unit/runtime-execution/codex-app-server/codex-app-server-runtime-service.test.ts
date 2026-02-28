@@ -348,7 +348,7 @@ describe("CodexAppServerRuntimeService.sendTurn", () => {
     });
 
     await service.injectInterAgentEnvelope("run-student", {
-      senderAgentId: "run-professor",
+      senderAgentRunId: "run-professor",
       senderAgentName: "Professor",
       recipientName: "Student",
       messageType: "agent_message",

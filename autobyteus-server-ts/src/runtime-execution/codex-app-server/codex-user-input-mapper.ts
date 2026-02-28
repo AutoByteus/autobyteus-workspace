@@ -12,7 +12,7 @@ export const toCodexUserInput = (message: AgentInputUserMessage): Array<JsonObje
   if (interAgentEnvelope) {
     const sender =
       asString(interAgentEnvelope.senderAgentName) ??
-      asString(interAgentEnvelope.senderAgentId) ??
+      asString(interAgentEnvelope.senderAgentRunId) ??
       "agent";
     const recipient = asString(interAgentEnvelope.recipientName) ?? "recipient";
     const messageType = asString(interAgentEnvelope.messageType) ?? "agent_message";

@@ -51,7 +51,10 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
-type AgentContextLike = { agentId?: string };
+type AgentContextLike = {
+  // Core boundary from autobyteus-ts runtime; normalize immediately to `agentRunId` in local code.
+  agentId?: string;
+};
 
 export async function updatePromptMetadata(
   context: AgentContextLike,
@@ -60,9 +63,9 @@ export async function updatePromptMetadata(
   suitable_for_models?: string | null,
   is_active?: boolean | null,
 ): Promise<string> {
-  const agentId = context?.agentId ?? "unknown";
+  const agentRunId = context?.agentId ?? "unknown";
   logger.info(
-    `update_prompt_metadata tool invoked by agent ${agentId} for prompt ID '${prompt_id}'.`,
+    `update_prompt_metadata tool invoked by agent run ${agentRunId} for prompt ID '${prompt_id}'.`,
   );
 
   if (description === undefined && suitable_for_models === undefined && is_active === undefined) {

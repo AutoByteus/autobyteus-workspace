@@ -108,7 +108,10 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
-type AgentContextLike = { agentId?: string };
+type AgentContextLike = {
+  // Core boundary from autobyteus-ts runtime; normalize immediately to `agentRunId` in local code.
+  agentId?: string;
+};
 
 const parseCsvList = (value?: string | null): string[] =>
   value
@@ -133,8 +136,8 @@ export async function createAgentDefinition(
   tool_execution_result_processor_names?: string | null,
   lifecycle_processor_names?: string | null,
 ): Promise<string> {
-  const agentId = context?.agentId ?? "unknown";
-  logger.info(`create_agent_definition tool invoked by agent ${agentId} for agent name '${name}'.`);
+  const agentRunId = context?.agentId ?? "unknown";
+  logger.info(`create_agent_definition tool invoked by agent run ${agentRunId} for agent name '${name}'.`);
 
   try {
     const service = AgentDefinitionService.getInstance();

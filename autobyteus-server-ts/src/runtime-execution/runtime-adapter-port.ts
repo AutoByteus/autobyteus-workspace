@@ -47,7 +47,7 @@ export interface RuntimeSendTurnInput {
 }
 
 export interface RuntimeInterAgentEnvelope {
-  senderAgentId: string;
+  senderAgentRunId: string;
   senderAgentName?: string | null;
   recipientName: string;
   messageType: string;

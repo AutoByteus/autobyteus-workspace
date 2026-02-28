@@ -5,6 +5,7 @@ import {
 import type { ToolResultEvent } from "autobyteus-ts/agent/events/agent-events.js";
 import { ArtifactService } from "../../../agent-artifacts/services/artifact-service.js";
 import { extractCandidateOutputPath, inferArtifactType } from "../../../utils/artifact-utils.js";
+import { resolveAgentRunIdFromRuntimeContext } from "../../utils/core-boundary-id-normalizer.js";
 
 const logger = {
   debug: (...args: unknown[]) => console.debug(...args),
@@ -43,7 +44,7 @@ export class AgentArtifactPersistenceProcessor extends BaseToolExecutionResultPr
   }
 
   async process(event: ToolResultEvent, context: AgentContext): Promise<ToolResultEvent> {
-    const runId = context.agentId;
+    const runId = resolveAgentRunIdFromRuntimeContext(context);
     const workspaceRoot = context.workspaceRootPath ?? null;
     logger.debug(
       `AgentArtifactPersistenceProcessor: Processing tool '${event.toolName}' for run '${runId}'`,

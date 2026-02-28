@@ -32,16 +32,16 @@ Team history GraphQL operations:
 - Agent history index: `memory/run_history_index.json`
 - Agent manifests: `memory/agents/<runId>/run_manifest.json`
 - Team history index: `memory/team_run_history_index.json`
-- Team manifests: `memory/agent_teams/<teamId>/team_run_manifest.json`
-- Team member memory artifacts: `memory/agent_teams/<teamId>/<memberRunId>/{raw_traces.jsonl,working_context_snapshot.json,...}`
+- Team manifests: `memory/agent_teams/<teamRunId>/team_run_manifest.json`
+- Team member memory artifacts: `memory/agent_teams/<teamRunId>/<memberRunId>/{raw_traces.jsonl,working_context_snapshot.json,...}`
   - Generated `memberRunId` defaults to a readable route slug plus stable hash: `<route_slug>_<16-hex>`.
-- Team member manifests: `memory/agent_teams/<teamId>/<memberRunId>/run_manifest.json`
+- Team member manifests: `memory/agent_teams/<teamRunId>/<memberRunId>/run_manifest.json`
 
 ## Personal-Branch Team Continuation
 
-For personal mode, `sendMessageToTeam` supports offline continuation for existing `teamId`.
+For personal mode, `sendMessageToTeam` supports offline continuation for existing `teamRunId`.
 
-1. Resolver routes to `TeamRunContinuationService` when `teamId` is provided without create payload.
-2. If runtime is offline, service restores the team with the same `teamId`.
-3. Member config carries persisted route key/agent ID, and message dispatch resumes through the focused member.
+1. Resolver routes to `TeamRunContinuationService` when `teamRunId` is provided without create payload.
+2. If runtime is offline, service restores the team with the same `teamRunId`.
+3. Member config carries persisted route key/member run ID, and message dispatch resumes through the focused member.
 4. Team run history index is updated to `ACTIVE` with the latest summary.

@@ -32,7 +32,7 @@ export type CodexRunSessionState = {
 };
 
 export interface CodexInterAgentEnvelope {
-  senderAgentId: string;
+  senderAgentRunId: string;
   senderAgentName?: string | null;
   recipientName: string;
   messageType: string;

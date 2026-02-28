@@ -5,6 +5,7 @@ import type { AgentContext } from "autobyteus-ts";
 import type { ToolInvocation } from "autobyteus-ts/agent/tool-invocation.js";
 import { LLMFactory } from "autobyteus-ts/llm/llm-factory.js";
 import { LLMProvider } from "autobyteus-ts/llm/providers.js";
+import { resolveAgentRunIdFromRuntimeContext } from "../../utils/core-boundary-id-normalizer.js";
 
 const logger = {
   debug: (...args: unknown[]) => console.debug(...args),
@@ -89,7 +90,7 @@ export class MediaInputPathNormalizationPreprocessor extends BaseToolInvocationP
   private async normalizeList(
     items: string[],
     workspaceRootPath: string | null,
-    agentId: string,
+    agentRunId: string,
   ): Promise<string[]> {
     const normalized: string[] = [];
 
@@ -110,21 +111,21 @@ export class MediaInputPathNormalizationPreprocessor extends BaseToolInvocationP
         const candidatePath = path.resolve(workspaceRootPath, entry);
         if (!isWithinRoot(workspaceRootPath, candidatePath)) {
           logger.warn(
-            `Agent '${agentId}': relative path '${entry}' resolves outside workspace root '${workspaceRootPath}'. Skipping.`,
+            `Agent run '${agentRunId}': relative path '${entry}' resolves outside workspace root '${workspaceRootPath}'. Skipping.`,
           );
           continue;
         }
         resolvedPath = candidatePath;
       } else {
         logger.warn(
-          `Agent '${agentId}': no workspaceRootPath to resolve relative path '${entry}'. Skipping.`,
+          `Agent run '${agentRunId}': no workspaceRootPath to resolve relative path '${entry}'. Skipping.`,
         );
         continue;
       }
 
       if (!resolvedPath || !fs.existsSync(resolvedPath) || !fs.statSync(resolvedPath).isFile()) {
         logger.warn(
-          `Agent '${agentId}': path '${resolvedPath ?? entry}' is not a file. Skipping.`,
+          `Agent run '${agentRunId}': path '${resolvedPath ?? entry}' is not a file. Skipping.`,
         );
         continue;
       }
@@ -146,7 +147,7 @@ export class MediaInputPathNormalizationPreprocessor extends BaseToolInvocationP
     }
 
     const args = (invocation.arguments ?? {}) as Record<string, unknown>;
-    const agentId = context.agentId;
+    const agentRunId = resolveAgentRunIdFromRuntimeContext(context);
     const workspaceRootPath = context.workspaceRootPath ?? null;
 
     const imagesVal = args["input_images"];
@@ -158,11 +159,11 @@ export class MediaInputPathNormalizationPreprocessor extends BaseToolInvocationP
         items = imagesVal.filter((entry) => typeof entry === "string") as string[];
       } else {
         logger.warn(
-          `Agent '${agentId}': input_images has unsupported type ${typeof imagesVal}; skipping normalization.`,
+          `Agent run '${agentRunId}': input_images has unsupported type ${typeof imagesVal}; skipping normalization.`,
         );
       }
 
-      const normalized = await this.normalizeList(items, workspaceRootPath, agentId);
+      const normalized = await this.normalizeList(items, workspaceRootPath, agentRunId);
       if (normalized.length) {
         args["input_images"] = normalized.join(",");
       }
@@ -170,7 +171,7 @@ export class MediaInputPathNormalizationPreprocessor extends BaseToolInvocationP
 
     const maskVal = args["mask_image"];
     if (maskVal && typeof maskVal === "string" && !this.isUrl(maskVal)) {
-      const maskList = await this.normalizeList([maskVal], workspaceRootPath, agentId);
+      const maskList = await this.normalizeList([maskVal], workspaceRootPath, agentRunId);
       if (maskList.length) {
         args["mask_image"] = maskList[0];
       }

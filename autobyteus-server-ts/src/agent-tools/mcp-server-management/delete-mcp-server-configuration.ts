@@ -20,15 +20,18 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
-type AgentContextLike = { agentId?: string };
+type AgentContextLike = {
+  // Core boundary from autobyteus-ts runtime; normalize immediately to `agentRunId` in local code.
+  agentId?: string;
+};
 
 export async function deleteMcpServerConfiguration(
   context: AgentContextLike,
   server_id: string,
 ): Promise<string> {
-  const agentId = context?.agentId ?? "unknown";
+  const agentRunId = context?.agentId ?? "unknown";
   logger.info(
-    `delete_mcp_server_configuration tool invoked by agent ${agentId} for server_id '${server_id}'.`,
+    `delete_mcp_server_configuration tool invoked by agent run ${agentRunId} for server_id '${server_id}'.`,
   );
 
   if (!server_id) {

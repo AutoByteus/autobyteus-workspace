@@ -65,7 +65,7 @@ export class PromptLoader {
     const agentDef =
       await this.agentDefinitionService.getAgentDefinitionById(agentDefinitionId);
     if (!agentDef || !agentDef.systemPromptName || !agentDef.systemPromptCategory) {
-      logger.warn(`No prompt mapping found for agent_id='${agentDefinitionId}'`);
+      logger.warn(`No prompt mapping found for agent_definition_id='${agentDefinitionId}'`);
       this.cache.set(cacheKey, null);
       return null;
     }
@@ -77,7 +77,7 @@ export class PromptLoader {
 
     if (!activePrompts.length) {
       logger.warn(
-        `No active prompts found for agent_id='${agentDefinitionId}' in context (name=${agentDef.systemPromptName}, category=${agentDef.systemPromptCategory})`,
+        `No active prompts found for agent_definition_id='${agentDefinitionId}' in context (name=${agentDef.systemPromptName}, category=${agentDef.systemPromptCategory})`,
       );
       this.cache.set(cacheKey, null);
       return null;

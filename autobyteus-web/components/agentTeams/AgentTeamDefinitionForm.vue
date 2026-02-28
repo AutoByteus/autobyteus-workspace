@@ -398,7 +398,7 @@ const avatarInitials = computed(() => {
   return parts.map((part) => part[0]?.toUpperCase() ?? '').join('') || 'AT';
 });
 
-const currentTeamId = computed(() => initialData.value?.id ?? null);
+const currentTeamDefinitionId = computed(() => initialData.value?.id ?? null);
 
 const agentLibraryItems = computed<LibraryItem[]>(() =>
   (agentDefStore.agentDefinitions || []).map((agent) => ({
@@ -410,7 +410,7 @@ const agentLibraryItems = computed<LibraryItem[]>(() =>
 
 const teamLibraryItems = computed<LibraryItem[]>(() =>
   (agentTeamDefStore.agentTeamDefinitions || [])
-    .filter((team) => team.id !== currentTeamId.value)
+    .filter((team) => team.id !== currentTeamDefinitionId.value)
     .map((team) => ({
       id: team.id,
       name: team.name,
@@ -613,7 +613,11 @@ const validateForm = () => {
     }
     memberNames.add(node.memberName);
 
-    if (currentTeamId.value && node.referenceType === 'AGENT_TEAM' && node.referenceId === currentTeamId.value) {
+    if (
+      currentTeamDefinitionId.value &&
+      node.referenceType === 'AGENT_TEAM' &&
+      node.referenceId === currentTeamDefinitionId.value
+    ) {
       formErrors.nodes = 'A team cannot include itself as a nested team member.';
       valid = false;
       break;

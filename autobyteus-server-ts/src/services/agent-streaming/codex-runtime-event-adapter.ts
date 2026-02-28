@@ -286,7 +286,7 @@ export class CodexRuntimeEventAdapter extends CodexRuntimeEventSegmentHelper {
       return new ServerMessage(ServerMessageType.INTER_AGENT_MESSAGE, {
         sender_agent_id:
           (typeof payload.sender_agent_id === "string" && payload.sender_agent_id) ||
-          (typeof payload.senderAgentId === "string" && payload.senderAgentId) ||
+          (typeof payload.senderAgentRunId === "string" && payload.senderAgentRunId) ||
           "unknown_sender",
         recipient_role_name:
           (typeof payload.recipient_role_name === "string" && payload.recipient_role_name) ||

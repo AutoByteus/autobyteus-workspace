@@ -26,7 +26,10 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
-type AgentContextLike = { agentId?: string };
+type AgentContextLike = {
+  // Core boundary from autobyteus-ts runtime; normalize immediately to `agentRunId` in local code.
+  agentId?: string;
+};
 
 const serializeToolSummary = (definition: ToolDefinition): Record<string, unknown> => {
   const argSchema = definition.argumentSchema?.toJsonSchemaDict() ?? {};
@@ -42,9 +45,9 @@ export async function listAvailableTools(
   context: AgentContextLike,
   category?: string | null,
 ): Promise<string> {
-  const agentId = context?.agentId ?? "unknown";
+  const agentRunId = context?.agentId ?? "unknown";
   logger.info(
-    `list_available_tools tool invoked by agent ${agentId} with category filter: '${category}'.`,
+    `list_available_tools tool invoked by agent run ${agentRunId} with category filter: '${category}'.`,
   );
 
   try {

@@ -59,7 +59,10 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
-type AgentContextLike = { agentId?: string };
+type AgentContextLike = {
+  // Core boundary from autobyteus-ts runtime; normalize immediately to `agentRunId` in local code.
+  agentId?: string;
+};
 
 export async function createPrompt(
   context: AgentContextLike,
@@ -69,8 +72,8 @@ export async function createPrompt(
   description?: string | null,
   suitable_for_models?: string | null,
 ): Promise<string> {
-  const agentId = context?.agentId ?? "unknown";
-  logger.info(`create_prompt tool invoked by agent ${agentId} for prompt name '${name}'.`);
+  const agentRunId = context?.agentId ?? "unknown";
+  logger.info(`create_prompt tool invoked by agent run ${agentRunId} for prompt name '${name}'.`);
 
   try {
     const promptService = new PromptService();

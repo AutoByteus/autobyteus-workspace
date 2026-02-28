@@ -2,6 +2,7 @@ import { BaseLLMResponseProcessor, type AgentContext } from "autobyteus-ts";
 import type { LLMCompleteResponseReceivedEvent } from "autobyteus-ts/agent/events/agent-events.js";
 import type { CompleteResponse } from "autobyteus-ts/llm/utils/response-types.js";
 import { PersistenceProxy as TokenUsagePersistenceProxy } from "../../../token-usage/providers/persistence-proxy.js";
+import { resolveAgentRunIdFromRuntimeContext } from "../../utils/core-boundary-id-normalizer.js";
 
 const logger = {
   debug: (...args: unknown[]) => console.debug(...args),
@@ -36,7 +37,7 @@ export class TokenUsagePersistenceProcessor extends BaseLLMResponseProcessor {
     context: AgentContext,
     _triggeringEvent: LLMCompleteResponseReceivedEvent,
   ): Promise<boolean> {
-    const runId = context.agentId;
+    const runId = resolveAgentRunIdFromRuntimeContext(context);
 
     if (!response.usage) {
       logger.warn(
