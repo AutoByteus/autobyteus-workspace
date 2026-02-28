@@ -136,6 +136,7 @@ import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig';
 import { useRuntimeCapabilitiesStore } from '~/stores/runtimeCapabilitiesStore';
 import {
   DEFAULT_AGENT_RUNTIME_KIND,
+  isAgentRuntimeKind,
   type AgentRunConfig,
   type AgentRuntimeKind,
   type SkillAccessMode,
@@ -176,7 +177,7 @@ void runtimeCapabilitiesStore.fetchRuntimeCapabilities().catch((error) => {
 });
 
 const normalizeRuntimeKind = (runtimeKind: unknown): AgentRuntimeKind =>
-  runtimeKind === 'codex_app_server' ? 'codex_app_server' : DEFAULT_AGENT_RUNTIME_KIND;
+  isAgentRuntimeKind(runtimeKind) ? runtimeKind : DEFAULT_AGENT_RUNTIME_KIND;
 
 const ensureModelsForRuntime = async (runtimeKind: AgentRuntimeKind, validateSelectedModel = false) => {
   await llmStore.fetchProvidersWithModels(runtimeKind);
@@ -197,6 +198,7 @@ const runtimeOptions = computed<Array<{
 }>>(() => {
   const autobyteusEnabled = runtimeCapabilitiesStore.isRuntimeEnabled('autobyteus');
   const codexEnabled = runtimeCapabilitiesStore.isRuntimeEnabled('codex_app_server');
+  const claudeEnabled = runtimeCapabilitiesStore.isRuntimeEnabled('claude_agent_sdk');
 
   return [
     {
@@ -208,6 +210,11 @@ const runtimeOptions = computed<Array<{
       value: 'codex_app_server',
       label: 'Codex App Server',
       enabled: codexEnabled,
+    },
+    {
+      value: 'claude_agent_sdk',
+      label: 'Claude Agent SDK',
+      enabled: claudeEnabled,
     },
   ].filter((option) => option.enabled || props.config.runtimeKind === option.value);
 });

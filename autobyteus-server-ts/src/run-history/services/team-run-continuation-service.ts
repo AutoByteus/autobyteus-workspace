@@ -97,8 +97,8 @@ export class TeamRunContinuationService {
       content,
     });
 
-    if (this.isCodexMemberManifest(manifest)) {
-      return this.continueCodexTeamRun({
+    if (this.isExternalMemberRuntimeManifest(manifest)) {
+      return this.continueExternalTeamRun({
         teamRunId,
         userMessage,
         targetMemberRouteKey: input.targetMemberRouteKey ?? null,
@@ -137,7 +137,7 @@ export class TeamRunContinuationService {
     }
   }
 
-  private async continueCodexTeamRun(input: {
+  private async continueExternalTeamRun(input: {
     teamRunId: string;
     userMessage: AgentInputUserMessage;
     targetMemberRouteKey: string | null;
@@ -147,7 +147,7 @@ export class TeamRunContinuationService {
     let restored = false;
     try {
       if (!this.teamMemberRuntimeOrchestrator.hasActiveMemberBinding(input.teamRunId)) {
-        await this.teamMemberRuntimeOrchestrator.restoreCodexTeamRunSessions(input.manifest);
+        await this.teamMemberRuntimeOrchestrator.restoreExternalTeamRunSessions(input.manifest);
         restored = true;
       }
 
@@ -236,11 +236,11 @@ export class TeamRunContinuationService {
     return coordinator?.memberName ?? null;
   }
 
-  private isCodexMemberManifest(manifest: TeamRunManifest): boolean {
+  private isExternalMemberRuntimeManifest(manifest: TeamRunManifest): boolean {
     if (manifest.memberBindings.length === 0) {
       return false;
     }
-    return manifest.memberBindings.every((binding) => binding.runtimeKind === "codex_app_server");
+    return manifest.memberBindings.every((binding) => binding.runtimeKind !== "autobyteus");
   }
 
   private async safeRecordActivity(teamRunId: string, summary: string): Promise<void> {

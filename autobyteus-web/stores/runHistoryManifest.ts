@@ -1,4 +1,8 @@
-import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig';
+import {
+  DEFAULT_AGENT_RUNTIME_KIND,
+  isAgentRuntimeKind,
+  type AgentRuntimeKind,
+} from '~/types/agent/AgentRunConfig';
 import type { TeamRunManifestPayload } from '~/stores/runHistoryTypes';
 
 const asRecord = (value: unknown): Record<string, unknown> => {
@@ -7,6 +11,9 @@ const asRecord = (value: unknown): Record<string, unknown> => {
   }
   return value as Record<string, unknown>;
 };
+
+const normalizeRuntimeKind = (value: unknown): AgentRuntimeKind =>
+  isAgentRuntimeKind(value) ? value : DEFAULT_AGENT_RUNTIME_KIND;
 
 export const parseTeamRunManifest = (value: unknown): TeamRunManifestPayload => {
   const payload = asRecord(value);
@@ -17,20 +24,15 @@ export const parseTeamRunManifest = (value: unknown): TeamRunManifestPayload => 
           memberRouteKey: String(binding.memberRouteKey || ''),
           memberName: String(binding.memberName || ''),
           memberRunId: String(binding.memberRunId ?? ''),
-          runtimeKind:
-            binding.runtimeKind === 'codex_app_server'
-              ? 'codex_app_server'
-              : DEFAULT_AGENT_RUNTIME_KIND,
+          runtimeKind: normalizeRuntimeKind(binding.runtimeKind),
           runtimeReference:
             binding.runtimeReference &&
             typeof binding.runtimeReference === 'object' &&
             !Array.isArray(binding.runtimeReference)
               ? {
-                  runtimeKind:
-                    (binding.runtimeReference as Record<string, unknown>).runtimeKind ===
-                    'codex_app_server'
-                      ? 'codex_app_server'
-                      : DEFAULT_AGENT_RUNTIME_KIND,
+                  runtimeKind: normalizeRuntimeKind(
+                    (binding.runtimeReference as Record<string, unknown>).runtimeKind,
+                  ),
                   sessionId:
                     typeof (binding.runtimeReference as Record<string, unknown>).sessionId ===
                     'string'
@@ -79,4 +81,3 @@ export const parseTeamRunManifest = (value: unknown): TeamRunManifestPayload => 
 
 export const toTeamMemberKey = (member: { memberRouteKey: string; memberName: string }): string =>
   member.memberRouteKey || member.memberName;
-

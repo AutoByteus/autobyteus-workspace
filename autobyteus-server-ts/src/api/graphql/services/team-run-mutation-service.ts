@@ -195,7 +195,7 @@ export class TeamRunMutationService {
 
   private resolveTeamRuntimeMode(
     memberConfigs: TeamRuntimeMemberConfig[],
-  ): "autobyteus_team" | "codex_members" {
+  ): "autobyteus_team" | "external_member_runtime" {
     const runtimeKinds = new Set<RuntimeKind>(memberConfigs.map((config) => config.runtimeKind));
     if (runtimeKinds.size === 0) {
       return "autobyteus_team";
@@ -206,7 +206,7 @@ export class TeamRunMutationService {
       );
     }
     const runtimeKind = Array.from(runtimeKinds)[0] ?? DEFAULT_RUNTIME_KIND;
-    return runtimeKind === "codex_app_server" ? "codex_members" : "autobyteus_team";
+    return runtimeKind === "autobyteus" ? "autobyteus_team" : "external_member_runtime";
   }
 
   private resolveRuntimeMemberConfigs(
@@ -390,7 +390,7 @@ export class TeamRunMutationService {
   private async ensureTeamCreated(options: {
     teamDefinitionId: string;
     memberConfigs: TeamMemberConfigPayload[];
-  }): Promise<{ teamRunId: string; runtimeMode: "autobyteus_team" | "codex_members" }> {
+  }): Promise<{ teamRunId: string; runtimeMode: "autobyteus_team" | "external_member_runtime" }> {
     const metadata = await this.resolveTeamDefinitionMetadata(options.teamDefinitionId);
     const teamRunId = this.generateTeamId(metadata.teamDefinitionName || options.teamDefinitionId);
     const memberConfigs = await Promise.all(
@@ -404,8 +404,8 @@ export class TeamRunMutationService {
     const runtimeMode = this.resolveTeamRuntimeMode(resolvedMemberConfigs);
     let memberBindingsOverride: TeamRunMemberBinding[] | null = null;
 
-    if (runtimeMode === "codex_members") {
-      memberBindingsOverride = await this.teamMemberRuntimeOrchestrator.createCodexMemberSessions(
+    if (runtimeMode === "external_member_runtime") {
+      memberBindingsOverride = await this.teamMemberRuntimeOrchestrator.createExternalMemberSessions(
         teamRunId,
         resolvedMemberConfigs,
       );
@@ -465,8 +465,8 @@ export class TeamRunMutationService {
     try {
       const runtimeMode = this.teamMemberRuntimeOrchestrator.getTeamRuntimeMode(id);
       let success = false;
-      if (runtimeMode === "codex_members") {
-        success = await this.teamMemberRuntimeOrchestrator.terminateCodexTeamRunSessions(id);
+      if (runtimeMode === "external_member_runtime") {
+        success = await this.teamMemberRuntimeOrchestrator.terminateExternalTeamRunSessions(id);
       } else {
         success = await this.agentTeamRunManager.terminateTeamRun(id);
       }
@@ -493,7 +493,7 @@ export class TeamRunMutationService {
   async sendMessageToTeam(input: SendMessageToTeamPayload): Promise<SendMessageToTeamResultPayload> {
     try {
       let teamRunId = input.teamRunId ?? null;
-      let runtimeMode: "autobyteus_team" | "codex_members" | null = null;
+      let runtimeMode: "autobyteus_team" | "external_member_runtime" | null = null;
 
       if (teamRunId && !input.teamDefinitionId && !input.memberConfigs) {
         await this.teamRunContinuationService.continueTeamRun({
@@ -532,7 +532,7 @@ export class TeamRunMutationService {
       if (!runtimeMode) {
         runtimeMode = this.teamMemberRuntimeOrchestrator.getTeamRuntimeMode(teamRunId);
       }
-      if (runtimeMode === "codex_members") {
+      if (runtimeMode === "external_member_runtime") {
         await this.teamMemberRuntimeOrchestrator.sendToMember(
           teamRunId,
           targetMemberName,

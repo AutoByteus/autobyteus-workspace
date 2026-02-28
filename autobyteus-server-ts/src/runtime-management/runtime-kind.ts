@@ -1,4 +1,8 @@
-export const RUNTIME_KIND_VALUES = ["autobyteus", "codex_app_server"] as const;
+export const RUNTIME_KIND_VALUES = [
+  "autobyteus",
+  "codex_app_server",
+  "claude_agent_sdk",
+] as const;
 
 export type RuntimeKind = (typeof RUNTIME_KIND_VALUES)[number];
 

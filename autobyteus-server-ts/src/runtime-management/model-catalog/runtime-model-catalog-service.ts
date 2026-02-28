@@ -8,6 +8,7 @@ import {
   type RuntimeKind,
 } from "../runtime-kind.js";
 import { AutobyteusRuntimeModelProvider } from "./providers/autobyteus-runtime-model-provider.js";
+import { ClaudeRuntimeModelProvider } from "./providers/claude-runtime-model-provider.js";
 import { CodexRuntimeModelProvider } from "./providers/codex-runtime-model-provider.js";
 import type { RuntimeModelProvider } from "./runtime-model-provider.js";
 
@@ -18,7 +19,11 @@ export class RuntimeModelCatalogService {
     const defaults =
       providers && providers.length > 0
         ? providers
-        : [new AutobyteusRuntimeModelProvider(), new CodexRuntimeModelProvider()];
+        : [
+            new AutobyteusRuntimeModelProvider(),
+            new CodexRuntimeModelProvider(),
+            new ClaudeRuntimeModelProvider(),
+          ];
 
     for (const provider of defaults) {
       this.providers.set(provider.runtimeKind, provider);

@@ -1,7 +1,7 @@
 import { normalizeMemberRouteKey } from "../../run-history/utils/team-member-run-id.js";
 import type { TeamRunMemberBinding } from "../../run-history/domain/team-models.js";
 
-export type TeamRuntimeMode = "autobyteus_team" | "codex_members";
+export type TeamRuntimeMode = "autobyteus_team" | "external_member_runtime";
 
 export interface TeamRuntimeBindingState {
   teamRunId: string;

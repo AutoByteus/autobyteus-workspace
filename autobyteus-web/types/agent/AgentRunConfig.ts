@@ -1,7 +1,10 @@
 export type SkillAccessMode = 'PRELOADED_ONLY' | 'GLOBAL_DISCOVERY' | 'NONE';
-export const AGENT_RUNTIME_KINDS = ['autobyteus', 'codex_app_server'] as const;
+export const AGENT_RUNTIME_KINDS = ['autobyteus', 'codex_app_server', 'claude_agent_sdk'] as const;
 export type AgentRuntimeKind = (typeof AGENT_RUNTIME_KINDS)[number];
 export const DEFAULT_AGENT_RUNTIME_KIND: AgentRuntimeKind = 'autobyteus';
+
+export const isAgentRuntimeKind = (value: unknown): value is AgentRuntimeKind =>
+  typeof value === 'string' && (AGENT_RUNTIME_KINDS as readonly string[]).includes(value);
 
 /**
  * Configuration for a running agent run.

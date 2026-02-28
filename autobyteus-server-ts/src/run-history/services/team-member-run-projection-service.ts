@@ -9,10 +9,10 @@ import {
   TeamMemberMemoryProjectionReader,
   getTeamMemberMemoryProjectionReader,
 } from "./team-member-memory-projection-reader.js";
-import type { RunProjectionProvider } from "../projection/run-projection-provider-port.js";
 import {
-  getCodexThreadRunProjectionProvider,
-} from "../projection/providers/codex-thread-run-projection-provider.js";
+  getRunProjectionProviderRegistry,
+  type RunProjectionProviderRegistry,
+} from "../projection/run-projection-provider-registry.js";
 
 const normalizeRequiredString = (value: string, fieldName: string): string => {
   const normalized = value.trim();
@@ -60,17 +60,17 @@ export interface TeamMemberRunProjection {
 export class TeamMemberRunProjectionService {
   private readonly teamRunHistoryService: TeamRunHistoryService;
   private readonly projectionReader: TeamMemberMemoryProjectionReader;
-  private readonly codexProjectionProvider: RunProjectionProvider;
+  private readonly projectionProviderRegistry: RunProjectionProviderRegistry;
 
   constructor(options: {
     teamRunHistoryService?: TeamRunHistoryService;
     projectionReader?: TeamMemberMemoryProjectionReader;
-    codexProjectionProvider?: RunProjectionProvider;
+    projectionProviderRegistry?: RunProjectionProviderRegistry;
   } = {}) {
     this.teamRunHistoryService = options.teamRunHistoryService ?? getTeamRunHistoryService();
     this.projectionReader = options.projectionReader ?? getTeamMemberMemoryProjectionReader();
-    this.codexProjectionProvider =
-      options.codexProjectionProvider ?? getCodexThreadRunProjectionProvider();
+    this.projectionProviderRegistry =
+      options.projectionProviderRegistry ?? getRunProjectionProviderRegistry();
   }
 
   async getProjection(teamRunId: string, memberRouteKey: string): Promise<TeamMemberRunProjection> {
@@ -99,24 +99,25 @@ export class TeamMemberRunProjectionService {
       projectionReadError = error;
     }
 
-    const shouldTryCodexFallback =
-      binding.runtimeKind === "codex_app_server" &&
-      (projectionReadError !== null ||
-        !projection ||
-        projection.conversation.length === 0);
+    const shouldTryRuntimeProjectionFallback =
+      binding.runtimeKind !== "autobyteus" &&
+      (projectionReadError !== null || !projection || projection.conversation.length === 0);
 
-    if (shouldTryCodexFallback) {
-      const codexProjection = await this.codexProjectionProvider.buildProjection({
+    if (shouldTryRuntimeProjectionFallback) {
+      const runtimeProjectionProvider = this.projectionProviderRegistry.resolveProvider(
+        binding.runtimeKind,
+      );
+      const runtimeProjection = await runtimeProjectionProvider.buildProjection({
         runId: binding.memberRunId,
-        runtimeKind: "codex_app_server",
+        runtimeKind: binding.runtimeKind,
         manifest: {
           workspaceRootPath:
             binding.workspaceRootPath ?? resumeConfig.manifest.workspaceRootPath ?? "",
         } as any,
         runtimeReference: binding.runtimeReference as any,
       });
-      if (codexProjection && codexProjection.conversation.length > 0) {
-        projection = codexProjection;
+      if (runtimeProjection && runtimeProjection.conversation.length > 0) {
+        projection = runtimeProjection;
         projectionReadError = null;
       }
     }

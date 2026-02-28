@@ -6,8 +6,8 @@ import { AgentDefinitionService } from "../../agent-definition/services/agent-de
 import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import { MemoryFileStore } from "../../agent-memory-view/store/memory-file-store.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
-import { getCodexAppServerRuntimeService } from "../../runtime-execution/codex-app-server/codex-app-server-runtime-service.js";
 import { normalizeCodexRuntimeMethod } from "../../runtime-execution/codex-app-server/codex-runtime-method-normalizer.js";
+import { getExternalRuntimeEventSourceRegistry } from "../../runtime-execution/external-runtime-event-source-registry.js";
 import { getRuntimeSessionStore, type RuntimeSessionStore } from "../../runtime-execution/runtime-session-store.js";
 import {
   RunEditableFieldFlags,
@@ -106,7 +106,7 @@ export class RunHistoryService {
   private definitionService: AgentDefinitionService;
   private definitionNameCache = new Map<string, string>();
   private runtimeSessionStore: RuntimeSessionStore;
-  private codexRuntimeService = getCodexAppServerRuntimeService();
+  private externalRuntimeEventSourceRegistry = getExternalRuntimeEventSourceRegistry();
 
   constructor(memoryDir: string) {
     this.indexStore = new RunHistoryIndexStore(memoryDir);
@@ -127,11 +127,7 @@ export class RunHistoryService {
     const activeRuntimeIds = new Set(
       this.runtimeSessionStore
         .listSessions()
-        .filter((session) =>
-          session.runtimeKind === "codex_app_server"
-            ? this.codexRuntimeService.hasRunSession(session.runId)
-            : true,
-        )
+        .filter((session) => this.isRuntimeSessionActive(session.runId))
         .map((session) => session.runId),
     );
     const normalizedRows = rows.map((row) => ({
@@ -289,14 +285,11 @@ export class RunHistoryService {
     }
 
     const status = this.deriveStatusFromRuntimeMethod(method);
-    const threadId = this.deriveThreadIdFromRuntimePayload(payload);
     await this.indexStore.updateRow(runId, {
       lastActivityAt: nowIso(),
       lastKnownStatus: status ?? existing.lastKnownStatus,
     });
-    if (threadId) {
-      await this.updateManifestThreadId(runId, threadId);
-    }
+    await this.updateManifestRuntimeReferenceFromRuntimePayload(runId, payload);
   }
 
   async onAgentEvent(runId: string, event: StreamEvent): Promise<void> {
@@ -442,21 +435,54 @@ export class RunHistoryService {
     );
   }
 
-  private async updateManifestThreadId(runId: string, threadId: string): Promise<void> {
+  private deriveSessionIdFromRuntimePayload(payload: Record<string, unknown>): string | null {
+    const params = asObject(payload.params);
+    return (
+      asNonEmptyString(params?.sessionId) ??
+      asNonEmptyString(params?.session_id) ??
+      asNonEmptyString(params?.threadId) ??
+      asNonEmptyString(params?.thread_id)
+    );
+  }
+
+  private async updateManifestRuntimeReferenceFromRuntimePayload(
+    runId: string,
+    payload: Record<string, unknown>,
+  ): Promise<void> {
     const manifest = await this.manifestStore.readManifest(runId);
-    if (!manifest || manifest.runtimeKind !== "codex_app_server") {
+    if (!manifest || manifest.runtimeKind === "autobyteus") {
       return;
     }
-    if (manifest.runtimeReference.threadId === threadId) {
+
+    if (manifest.runtimeKind === "codex_app_server") {
+      const threadId = this.deriveThreadIdFromRuntimePayload(payload);
+      if (!threadId || manifest.runtimeReference.threadId === threadId) {
+        return;
+      }
+      await this.manifestStore.writeManifest(runId, {
+        ...manifest,
+        runtimeReference: {
+          ...manifest.runtimeReference,
+          threadId,
+        },
+      });
       return;
     }
-    await this.manifestStore.writeManifest(runId, {
-      ...manifest,
-      runtimeReference: {
-        ...manifest.runtimeReference,
-        threadId,
-      },
-    });
+
+    if (manifest.runtimeKind === "claude_agent_sdk") {
+      const sessionId = this.deriveSessionIdFromRuntimePayload(payload);
+      if (!sessionId || manifest.runtimeReference.sessionId === sessionId) {
+        return;
+      }
+      await this.manifestStore.writeManifest(runId, {
+        ...manifest,
+        runtimeReference: {
+          ...manifest.runtimeReference,
+          sessionId,
+          threadId: sessionId,
+        },
+      });
+    }
   }
 
   private isRuntimeSessionActive(runId: string): boolean {
@@ -464,10 +490,13 @@ export class RunHistoryService {
     if (!session) {
       return false;
     }
-    if (session.runtimeKind === "codex_app_server") {
-      return this.codexRuntimeService.hasRunSession(runId);
+    if (session.runtimeKind === "autobyteus") {
+      return true;
     }
-    return true;
+    return this.externalRuntimeEventSourceRegistry.hasActiveRunSession(
+      session.runtimeKind,
+      runId,
+    );
   }
 
   private resolveSafeRunDirectory(runId: string): string | null {

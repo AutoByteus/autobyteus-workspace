@@ -131,11 +131,11 @@ const toRuntimeReference = (
   },
 });
 
-const ensureCodexRuntime = (runtimeKind: RuntimeKind): void => {
-  if (runtimeKind !== "codex_app_server") {
+const ensureExternalMemberRuntime = (runtimeKind: RuntimeKind): void => {
+  if (runtimeKind === "autobyteus") {
     throw new TeamRuntimeRoutingError({
       code: "TEAM_RUNTIME_MODE_UNSUPPORTED",
-      message: `Runtime '${runtimeKind}' is not supported by codex member orchestrator.`,
+      message: `Runtime '${runtimeKind}' is not supported by external member runtime orchestrator.`,
     });
   }
 };
@@ -176,7 +176,7 @@ export class TeamMemberRuntimeOrchestrator {
     this.teamRuntimeBindingRegistry.removeTeam(teamRunId);
   }
 
-  async terminateCodexTeamRunSessions(teamRunId: string): Promise<boolean> {
+  async terminateExternalTeamRunSessions(teamRunId: string): Promise<boolean> {
     const bindings = this.teamRuntimeBindingRegistry.getTeamBindings(teamRunId);
     if (bindings.length === 0) {
       return false;
@@ -196,6 +196,10 @@ export class TeamMemberRuntimeOrchestrator {
 
     this.teamRuntimeBindingRegistry.removeTeam(teamRunId);
     return true;
+  }
+
+  async terminateCodexTeamRunSessions(teamRunId: string): Promise<boolean> {
+    return this.terminateExternalTeamRunSessions(teamRunId);
   }
 
   hasActiveMemberBinding(teamRunId: string): boolean {
@@ -328,7 +332,7 @@ export class TeamMemberRuntimeOrchestrator {
     return manifest;
   }
 
-  async createCodexMemberSessions(
+  async createExternalMemberSessions(
     teamRunId: string,
     memberConfigs: TeamRuntimeMemberConfig[],
   ): Promise<TeamRunMemberBinding[]> {
@@ -343,7 +347,7 @@ export class TeamMemberRuntimeOrchestrator {
 
     for (const config of memberConfigs) {
       const runtimeKind = normalizeRuntimeKind(config.runtimeKind);
-      ensureCodexRuntime(runtimeKind);
+      ensureExternalMemberRuntime(runtimeKind);
       const memberRouteKey = normalizeMemberRouteKey(config.memberRouteKey);
       const memberRunId = normalizeRequiredString(config.memberRunId, "memberRunId");
       const workspaceRootPath = await this.resolveWorkspaceRootPath(config);
@@ -400,11 +404,15 @@ export class TeamMemberRuntimeOrchestrator {
       });
     }
 
-    this.teamRuntimeBindingRegistry.upsertTeamBindings(normalizedTeamRunId, "codex_members", bindings);
+    this.teamRuntimeBindingRegistry.upsertTeamBindings(
+      normalizedTeamRunId,
+      "external_member_runtime",
+      bindings,
+    );
     return bindings;
   }
 
-  async restoreCodexTeamRunSessions(manifest: TeamRunManifest): Promise<TeamRunMemberBinding[]> {
+  async restoreExternalTeamRunSessions(manifest: TeamRunManifest): Promise<TeamRunMemberBinding[]> {
     const normalizedTeamRunId = normalizeRequiredString(manifest.teamRunId, "teamRunId");
     const teamMemberManifest = await this.buildTeamManifestMetadata(
       manifest.memberBindings.map((member) => ({
@@ -416,7 +424,7 @@ export class TeamMemberRuntimeOrchestrator {
 
     for (const binding of manifest.memberBindings) {
       const runtimeKind = normalizeRuntimeKind(binding.runtimeKind);
-      ensureCodexRuntime(runtimeKind);
+      ensureExternalMemberRuntime(runtimeKind);
       const sendMessageToEnabled = await this.resolveSendMessageToCapability({
         agentDefinitionId: binding.agentDefinitionId,
         runtimeReference: binding.runtimeReference ?? null,
@@ -476,8 +484,23 @@ export class TeamMemberRuntimeOrchestrator {
       });
     }
 
-    this.teamRuntimeBindingRegistry.upsertTeamBindings(normalizedTeamRunId, "codex_members", bindings);
+    this.teamRuntimeBindingRegistry.upsertTeamBindings(
+      normalizedTeamRunId,
+      "external_member_runtime",
+      bindings,
+    );
     return bindings;
+  }
+
+  async createCodexMemberSessions(
+    teamRunId: string,
+    memberConfigs: TeamRuntimeMemberConfig[],
+  ): Promise<TeamRunMemberBinding[]> {
+    return this.createExternalMemberSessions(teamRunId, memberConfigs);
+  }
+
+  async restoreCodexTeamRunSessions(manifest: TeamRunManifest): Promise<TeamRunMemberBinding[]> {
+    return this.restoreExternalTeamRunSessions(manifest);
   }
 
   async sendToMember(
@@ -499,9 +522,10 @@ export class TeamMemberRuntimeOrchestrator {
         message: resolveResult.message,
       });
     }
+    const targetBinding = resolveResult.binding;
 
     const commandResult = await this.runtimeCommandIngressService.sendTurn({
-      runId: resolveResult.binding.memberRunId,
+      runId: targetBinding.memberRunId,
       mode: "agent",
       message,
     });
@@ -509,9 +533,41 @@ export class TeamMemberRuntimeOrchestrator {
       throw new TeamRuntimeRoutingError({
         code: commandResult.code ?? "TEAM_MEMBER_RUNTIME_SEND_FAILED",
         message:
-          commandResult.message ??
-          `Failed routing message to member '${resolveResult.binding.memberName}'.`,
+          commandResult.message ?? `Failed routing message to member '${targetBinding.memberName}'.`,
       });
+    }
+
+    const refreshedRuntimeReference = commandResult.runtimeReference
+      ? {
+          runtimeKind: targetBinding.runtimeKind,
+          sessionId:
+            commandResult.runtimeReference.sessionId ??
+            commandResult.runtimeReference.threadId ??
+            targetBinding.memberRunId,
+          threadId:
+            commandResult.runtimeReference.threadId ??
+            commandResult.runtimeReference.sessionId ??
+            null,
+          metadata: {
+            ...(targetBinding.runtimeReference?.metadata ?? {}),
+            ...(commandResult.runtimeReference.metadata ?? {}),
+          },
+        }
+      : null;
+
+    if (refreshedRuntimeReference) {
+      const state = this.teamRuntimeBindingRegistry.getTeamBindingState(teamRunId);
+      if (state) {
+        const updatedBindings = state.memberBindings.map((binding) =>
+          binding.memberRunId === targetBinding.memberRunId
+            ? {
+                ...binding,
+                runtimeReference: refreshedRuntimeReference,
+              }
+            : binding,
+        );
+        this.teamRuntimeBindingRegistry.upsertTeamBindings(teamRunId, state.mode, updatedBindings);
+      }
     }
   }
 
@@ -573,6 +629,18 @@ export class TeamMemberRuntimeOrchestrator {
         accepted: false,
         code: resolveResult.code,
         message: resolveResult.message,
+      };
+    }
+
+    if (
+      sender.binding.runtimeKind !== "codex_app_server" ||
+      resolveResult.binding.runtimeKind !== "codex_app_server"
+    ) {
+      return {
+        accepted: false,
+        code: "INTER_AGENT_RELAY_UNSUPPORTED",
+        message:
+          "Inter-agent relay is currently supported only for codex_app_server external members.",
       };
     }
 

@@ -4,7 +4,6 @@ import { AgentRunManager } from "../../agent-execution/services/agent-run-manage
 import { UserInputConverter } from "../../api/graphql/converters/user-input-converter.js";
 import { AgentUserInput } from "../../api/graphql/types/agent-user-input.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
-import { getCodexAppServerRuntimeService } from "../../runtime-execution/codex-app-server/codex-app-server-runtime-service.js";
 import {
   getRuntimeCommandIngressService,
   RuntimeCommandIngressService,
@@ -13,6 +12,7 @@ import {
   getRuntimeCompositionService,
   RuntimeCompositionService,
 } from "../../runtime-execution/runtime-composition-service.js";
+import { getExternalRuntimeEventSourceRegistry } from "../../runtime-execution/external-runtime-event-source-registry.js";
 import {
   normalizeRuntimeKind,
   type RuntimeKind,
@@ -102,7 +102,7 @@ export class RunContinuationService {
   private manifestStore: RunManifestStore;
   private indexStore: RunHistoryIndexStore;
   private runHistoryService = getRunHistoryService();
-  private codexRuntimeService = getCodexAppServerRuntimeService();
+  private externalRuntimeEventSourceRegistry = getExternalRuntimeEventSourceRegistry();
 
   constructor(memoryDir: string) {
     this.runtimeCompositionService = getRuntimeCompositionService();
@@ -132,8 +132,9 @@ export class RunContinuationService {
     const ignoredConfigFields: string[] = [];
     const activeSession = this.runtimeCompositionService.getRunSession(runId);
     const normalizedSession =
-      activeSession?.runtimeKind === "codex_app_server" &&
-      !this.codexRuntimeService.hasRunSession(runId)
+      activeSession &&
+      activeSession.runtimeKind !== "autobyteus" &&
+      !this.externalRuntimeEventSourceRegistry.hasActiveRunSession(activeSession.runtimeKind, runId)
         ? null
         : activeSession;
     if (!normalizedSession && activeSession) {
@@ -151,6 +152,17 @@ export class RunContinuationService {
       if (!sendResult.accepted) {
         throw buildCommandFailureError(sendResult.code, sendResult.message);
       }
+      if (normalizedSession && sendResult.runtimeReference) {
+        this.runtimeCommandIngressService.bindRunSession({
+          ...normalizedSession,
+          runtimeReference: sendResult.runtimeReference,
+        });
+      }
+      await this.persistRuntimeReferenceForRun(
+        runId,
+        normalizedSession?.runtimeKind,
+        sendResult.runtimeReference,
+      );
       await this.indexStore.updateRow(runId, {
         lastKnownStatus: "ACTIVE",
         lastActivityAt: new Date().toISOString(),
@@ -181,7 +193,7 @@ export class RunContinuationService {
     });
     this.runtimeCommandIngressService.bindRunSession(restoredSession);
 
-    const persistedManifest: RunManifest = {
+    let persistedManifest: RunManifest = {
       ...effectiveConfig,
       runtimeKind: restoredSession.runtimeKind,
       runtimeReference: toRunRuntimeReference(
@@ -200,6 +212,21 @@ export class RunContinuationService {
     });
     if (!sendResult.accepted) {
       throw buildCommandFailureError(sendResult.code, sendResult.message);
+    }
+    if (sendResult.runtimeReference) {
+      persistedManifest = {
+        ...persistedManifest,
+        runtimeReference: toRunRuntimeReference(
+          runId,
+          restoredSession.runtimeKind,
+          sendResult.runtimeReference,
+        ),
+      };
+      await this.manifestStore.writeManifest(runId, persistedManifest);
+      this.runtimeCommandIngressService.bindRunSession({
+        ...restoredSession,
+        runtimeReference: sendResult.runtimeReference,
+      });
     }
 
     await this.runHistoryService.upsertRunHistoryRow({
@@ -246,7 +273,7 @@ export class RunContinuationService {
     });
 
     const runId = createdSession.runId;
-    const manifest: RunManifest = {
+    let manifest: RunManifest = {
       agentDefinitionId: input.agentDefinitionId.trim(),
       workspaceRootPath: resolvedWorkspaceRootPath,
       llmModelIdentifier: input.llmModelIdentifier.trim(),
@@ -277,6 +304,21 @@ export class RunContinuationService {
     });
     if (!sendResult.accepted) {
       throw buildCommandFailureError(sendResult.code, sendResult.message);
+    }
+    if (sendResult.runtimeReference) {
+      manifest = {
+        ...manifest,
+        runtimeReference: toRunRuntimeReference(
+          runId,
+          createdSession.runtimeKind,
+          sendResult.runtimeReference,
+        ),
+      };
+      await this.manifestStore.writeManifest(runId, manifest);
+      this.runtimeCommandIngressService.bindRunSession({
+        ...createdSession,
+        runtimeReference: sendResult.runtimeReference,
+      });
     }
 
     return { runId, ignoredConfigFields: [] };
@@ -346,6 +388,46 @@ export class RunContinuationService {
       }
     }
     return canonicalizeWorkspaceRootPath(appConfigProvider.config.getTempWorkspaceDir());
+  }
+
+  private async persistRuntimeReferenceForRun(
+    runId: string,
+    runtimeKind: RuntimeKind | undefined,
+    runtimeReference:
+      | RunRuntimeReference
+      | {
+          runtimeKind: RuntimeKind;
+          sessionId?: string | null;
+          threadId?: string | null;
+          metadata?: Record<string, unknown> | null;
+        }
+      | null
+      | undefined,
+  ): Promise<void> {
+    if (!runtimeReference) {
+      return;
+    }
+    const manifest = await this.manifestStore.readManifest(runId);
+    if (!manifest) {
+      return;
+    }
+    const effectiveRuntimeKind = runtimeKind ?? manifest.runtimeKind;
+    if (effectiveRuntimeKind !== manifest.runtimeKind) {
+      return;
+    }
+    const nextReference = toRunRuntimeReference(runId, effectiveRuntimeKind, runtimeReference);
+    const unchanged =
+      manifest.runtimeReference.sessionId === nextReference.sessionId &&
+      manifest.runtimeReference.threadId === nextReference.threadId &&
+      JSON.stringify(manifest.runtimeReference.metadata ?? null) ===
+        JSON.stringify(nextReference.metadata ?? null);
+    if (unchanged) {
+      return;
+    }
+    await this.manifestStore.writeManifest(runId, {
+      ...manifest,
+      runtimeReference: nextReference,
+    });
   }
 }
 

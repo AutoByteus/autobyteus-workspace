@@ -51,7 +51,12 @@ describe('TeamRunConfigForm', () => {
     runtimeStore = {
       hasFetched: true,
       fetchRuntimeCapabilities: vi.fn().mockResolvedValue([]),
-      isRuntimeEnabled: vi.fn((runtimeKind: string) => runtimeKind === 'autobyteus' || runtimeKind === 'codex_app_server'),
+      isRuntimeEnabled: vi.fn(
+        (runtimeKind: string) =>
+          runtimeKind === 'autobyteus' ||
+          runtimeKind === 'codex_app_server' ||
+          runtimeKind === 'claude_agent_sdk',
+      ),
       runtimeReason: vi.fn(() => null),
     };
 

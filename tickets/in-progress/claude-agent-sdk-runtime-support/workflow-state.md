@@ -1,0 +1,159 @@
+# Workflow State
+
+Use this file as the mandatory stage-control artifact for the ticket.
+Update this file before every stage transition and before any source-code edit.
+Stage movement is controlled by this file's Stage Transition Contract + Transition Matrix.
+
+## Current Snapshot
+
+- Ticket: `claude-agent-sdk-runtime-support`
+- Current Stage: `10`
+- Next Stage: `Await user verification / merge decision`
+- Code Edit Permission: `Locked`
+- Active Re-Entry: `No`
+- Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
+- Last Transition ID: `T-031`
+- Last Updated: `2026-02-28`
+
+## Stage Gates
+
+| Stage | Gate Status (`Not Started`/`In Progress`/`Pass`/`Fail`/`Blocked`) | Gate Rule Summary | Evidence |
+| --- | --- | --- | --- |
+| 0 Bootstrap + Draft Requirement | Pass | Ticket bootstrap complete + `requirements.md` Draft captured | `tickets/in-progress/claude-agent-sdk-runtime-support/requirements.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| 1 Investigation + Triage | Pass | `investigation-notes.md` current + scope triage recorded | `tickets/in-progress/claude-agent-sdk-runtime-support/investigation-notes.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| 2 Requirements | Pass | `requirements.md` is `Design-ready`/`Refined` | `tickets/in-progress/claude-agent-sdk-runtime-support/requirements.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| 3 Design Basis | Pass | Design basis updated for scope (`implementation-plan.md` sketch or `proposed-design.md`) | `tickets/in-progress/claude-agent-sdk-runtime-support/implementation-plan.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| 4 Runtime Modeling | Pass | `future-state-runtime-call-stack.md` current | `tickets/in-progress/claude-agent-sdk-runtime-support/future-state-runtime-call-stack.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| 5 Review Gate | Pass | Runtime review `Go Confirmed` (two clean rounds, no blockers/persisted updates/new use cases) | `tickets/in-progress/claude-agent-sdk-runtime-support/future-state-runtime-call-stack-review.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| 6 Implementation | Pass | Plan/progress current + source + unit/integration verification complete + no backward-compat/legacy retention + decoupling preserved | `tickets/in-progress/claude-agent-sdk-runtime-support/implementation-plan.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/implementation-progress.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| 7 API/E2E Testing | Pass | API/E2E test implementation complete + AC scenario gate complete | `tickets/in-progress/claude-agent-sdk-runtime-support/api-e2e-testing.md` |
+| 8 Code Review | Pass | Code review gate `Pass`/`Fail` recorded + decoupling/no-backward-compat/no-legacy checks satisfied for `Pass` | `tickets/in-progress/claude-agent-sdk-runtime-support/code-review.md` |
+| 9 Docs Sync | Pass | Docs updated or no-impact rationale recorded | `tickets/in-progress/claude-agent-sdk-runtime-support/docs-sync.md` |
+| 10 Handoff / Ticket State | Pass | Final handoff complete + ticket state decision recorded | `tickets/in-progress/claude-agent-sdk-runtime-support/handoff-summary.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+
+## Stage Transition Contract (Quick Reference)
+
+| Stage | Exit Condition | On Fail/Blocked |
+| --- | --- | --- |
+| 0 | Bootstrap complete + `requirements.md` is `Draft` | stay in `0` |
+| 1 | `investigation-notes.md` current + scope triage recorded | stay in `1` |
+| 2 | `requirements.md` is `Design-ready`/`Refined` | stay in `2` |
+| 3 | Design basis current for scope | stay in `3` |
+| 4 | Runtime call stack current | stay in `4` |
+| 5 | Runtime review `Go Confirmed` (two clean rounds with no blockers/no required persisted artifact updates/no newly discovered use cases) | classified re-entry then rerun (`Design Impact`: `3 -> 4 -> 5`, `Requirement Gap`: `2 -> 3 -> 4 -> 5`, `Unclear`: `1 -> 2 -> 3 -> 4 -> 5`) |
+| 6 | Source + required unit/integration verification complete, no backward-compatibility/legacy-retention paths remain in scope, and decoupling boundaries remain valid (no new unjustified cycles/tight coupling) | local issues: stay in `6`; otherwise classified re-entry (`Design Impact`: `1 -> 3 -> 4 -> 5 -> 6`, `Requirement Gap`: `2 -> 3 -> 4 -> 5 -> 6`, `Unclear`: `0 -> 1 -> 2 -> 3 -> 4 -> 5 -> 6`) |
+| 7 | API/E2E gate closes all executable mapped acceptance criteria (`Passed` or explicit user `Waived`) | `Blocked` on infeasible/no waiver; otherwise classified re-entry |
+| 8 | Code review gate decision is `Pass` with decoupling/no-backward-compat/no-legacy checks satisfied | classified re-entry then rerun |
+| 9 | Docs updated or no-impact rationale recorded | stay in `9` |
+| 10 | Final handoff complete; ticket move requires explicit user confirmation | stay in `10`/`in-progress` |
+
+## Transition Matrix (Reference)
+
+| Trigger | Required Transition Path | Gate Result |
+| --- | --- | --- |
+| Normal forward progression | `0 -> 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10` | Pass |
+| Stage 5 blocker (`Design Impact`) | `3 -> 4 -> 5` | Fail |
+| Stage 5 blocker (`Requirement Gap`) | `2 -> 3 -> 4 -> 5` | Fail |
+| Stage 5 blocker (`Unclear`) | `1 -> 2 -> 3 -> 4 -> 5` | Fail |
+| Stage 6 failure (`Local Fix`) | stay in `6` | Fail |
+| Stage 6 failure (`Design Impact`) | `1 -> 3 -> 4 -> 5 -> 6` | Fail |
+| Stage 6 failure (`Requirement Gap`) | `2 -> 3 -> 4 -> 5 -> 6` | Fail |
+| Stage 6 failure (`Unclear`/cross-cutting root cause) | `0 -> 1 -> 2 -> 3 -> 4 -> 5 -> 6` | Fail |
+| Stage 7 failure (`Local Fix`) | `6 -> 7` | Fail |
+| Stage 7 failure (`Design Impact`) | `1 -> 3 -> 4 -> 5 -> 6 -> 7` | Fail |
+| Stage 7 failure (`Requirement Gap`) | `2 -> 3 -> 4 -> 5 -> 6 -> 7` | Fail |
+| Stage 7 failure (`Unclear`/cross-cutting root cause) | `0 -> 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7` | Fail |
+| Stage 7 infeasible criteria without explicit user waiver | stay in `7` | Blocked |
+| Stage 8 failure (`Local Fix`) | `6 -> 7 -> 8` | Fail |
+| Stage 8 failure (`Design Impact`) | `1 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8` | Fail |
+| Stage 8 failure (`Requirement Gap`) | `2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8` | Fail |
+| Stage 8 failure (`Unclear`/cross-cutting root cause) | `0 -> 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8` | Fail |
+
+Note:
+- In re-entry paths, Stage 0 means re-open bootstrap controls in the same ticket/worktree (`workflow-state.md`, lock state, artifact baselines); do not create a new ticket folder.
+- For Stage 5 failures, record classified re-entry first; then persist artifact updates in the returned upstream stage before running the next Stage 5 round.
+
+## Pre-Edit Checklist (Stage 6 Source-Code Edits)
+
+- Current Stage is `6`: `No`
+- Code Edit Permission is `Unlocked`: `No`
+- Stage 5 gate is `Go Confirmed`: `Yes`
+- Required upstream artifacts are current: `Yes`
+- Pre-Edit Checklist Result: `Not Applicable (Stage 10)`
+- Source code edits are currently not permitted.
+
+## Re-Entry Declaration
+
+- Trigger Stage (`5`/`6`/`7`/`8`): `N/A`
+- Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
+- Required Return Path: `N/A`
+- Required Upstream Artifacts To Update Before Code Edits: `N/A`
+- Resume Condition: `Completed`
+
+Note:
+- Stage 5 re-entry normally uses `Design Impact` / `Requirement Gap` / `Unclear` only (not `Local Fix`).
+- Stage 6 re-entry uses `Local Fix` (stay in `6`) or non-local classified return path (`Design Impact`/`Requirement Gap`/`Unclear`) before further source edits.
+
+## Transition Log (Append-Only)
+
+| Transition ID | Date | From Stage | To Stage | Reason | Classification | Code Edit Permission After Transition | Evidence Updated |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| T-000 | 2026-02-28 | N/A | 0 | Ticket/worktree bootstrap initialized and draft requirements captured | N/A | Locked | `tickets/in-progress/claude-agent-sdk-runtime-support/requirements.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| T-001 | 2026-02-28 | 0 | 1 | Stage 0 gate already satisfied; starting mandatory investigation and scope triage | N/A | Locked | `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| T-002 | 2026-02-28 | 1 | 2 | Investigation notes and scope triage completed; entering requirements refinement | N/A | Locked | `tickets/in-progress/claude-agent-sdk-runtime-support/investigation-notes.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| T-003 | 2026-02-28 | 2 | 3 | Requirements reached Design-ready with requirement and acceptance traceability maps | N/A | Locked | `tickets/in-progress/claude-agent-sdk-runtime-support/requirements.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| T-004 | 2026-02-28 | 3 | 4 | Proposed design v1 captured with runtime-neutral boundaries and claude runtime integration plan | N/A | Locked | `tickets/in-progress/claude-agent-sdk-runtime-support/proposed-design.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| T-005 | 2026-02-28 | 4 | 5 | Future-state runtime call stacks v1 captured for all in-scope use cases; entering iterative review gate | N/A | Locked | `tickets/in-progress/claude-agent-sdk-runtime-support/future-state-runtime-call-stack.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| T-006 | 2026-02-28 | 5 | 6 | Stage 5 review gate reached Go Confirmed; implementation started and code-edit lock released | N/A | Unlocked | `tickets/in-progress/claude-agent-sdk-runtime-support/future-state-runtime-call-stack-review.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/implementation-plan.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/implementation-progress.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| T-007 | 2026-02-28 | 6 | 7 | Implementation verification completed; API/E2E gate entered and passed | N/A | Unlocked | `tickets/in-progress/claude-agent-sdk-runtime-support/implementation-progress.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/api-e2e-testing.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| T-008 | 2026-02-28 | 7 | 8 | Stage 7 gate passed; strict code-review gate executed | N/A | Locked | `tickets/in-progress/claude-agent-sdk-runtime-support/code-review.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| T-009 | 2026-02-28 | 8 | 9 | Stage 8 code-review gate passed; docs sync decision required | N/A | Locked | `tickets/in-progress/claude-agent-sdk-runtime-support/docs-sync.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| T-010 | 2026-02-28 | 9 | 10 | Docs sync recorded as no-impact and final handoff artifacts prepared | N/A | Locked | `tickets/in-progress/claude-agent-sdk-runtime-support/handoff-summary.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| T-011 | 2026-02-28 | 10 | 6 | User requested full-suite backend/frontend and live runtime verification; reopened implementation verification with local-fix allowance | Local Fix | Unlocked | `tickets/in-progress/claude-agent-sdk-runtime-support/implementation-progress.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| T-012 | 2026-02-28 | 6 | 7 | Full backend suite found one fixture regression; local fix applied and full backend suite rerun to pass | Local Fix | Unlocked | `autobyteus-server-ts/tests/unit/run-history/team-run-continuation-service.test.ts`, `tickets/in-progress/claude-agent-sdk-runtime-support/implementation-progress.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| T-013 | 2026-02-28 | 7 | 10 | Live Codex E2E enabled and passed, full frontend test suite passed, explicit Claude runtime tests passed; handoff refreshed | N/A | Locked | `tickets/in-progress/claude-agent-sdk-runtime-support/implementation-progress.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| T-014 | 2026-02-28 | 10 | 6 | User requested Codex-level comprehensive Claude runtime tests and strict end-to-end rerun; implementation/test expansion reopened | Local Fix | Unlocked | `tickets/in-progress/claude-agent-sdk-runtime-support/implementation-progress.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| T-015 | 2026-02-28 | 6 | 7 | Added Claude runtime service/adapter/external-event-source unit suites and fixed whitespace-preserving Claude delta normalization regression | Local Fix | Unlocked | `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.ts`, `autobyteus-server-ts/tests/unit/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.test.ts`, `autobyteus-server-ts/tests/unit/runtime-execution/adapters/claude-agent-sdk-runtime-adapter.test.ts`, `autobyteus-server-ts/tests/unit/runtime-execution/external-runtime-event-source-registry.test.ts`, `tickets/in-progress/claude-agent-sdk-runtime-support/implementation-progress.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| T-016 | 2026-02-28 | 7 | 10 | Full backend suite, live Codex E2E, expanded Claude-enabled runtime matrix, and full frontend suite rerun to pass; handoff refreshed | N/A | Locked | `tickets/in-progress/claude-agent-sdk-runtime-support/implementation-progress.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/api-e2e-testing.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/code-review.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| T-017 | 2026-02-28 | 10 | 6 | User requested renewed investigation and strict real Claude runtime verification; reopened implementation with local-fix test expansion and code-edit lock release | Local Fix | Unlocked | `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/implementation-progress.md` |
+| T-018 | 2026-02-28 | 6 | 7 | Added targeted regression checks (resume-by-session-id unit test and live Claude model alias assertion) and reran Stage 6 verification | Local Fix | Unlocked | `autobyteus-server-ts/tests/unit/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.test.ts`, `autobyteus-server-ts/tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts`, `tickets/in-progress/claude-agent-sdk-runtime-support/implementation-progress.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| T-019 | 2026-02-28 | 7 | 8 | API/E2E gate refreshed with live Claude GraphQL run + full backend run including both live runtime flags | N/A | Locked | `tickets/in-progress/claude-agent-sdk-runtime-support/api-e2e-testing.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| T-020 | 2026-02-28 | 8 | 9 | Code review gate refreshed after resume/model-regression coverage additions and no open findings | N/A | Locked | `tickets/in-progress/claude-agent-sdk-runtime-support/code-review.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| T-021 | 2026-02-28 | 9 | 10 | Final handoff refreshed after full frontend rerun and verification artifact sync | N/A | Locked | `tickets/in-progress/claude-agent-sdk-runtime-support/handoff-summary.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| T-022 | 2026-02-28 | 10 | 1 | User raised acceptance criteria to hard Codex-parity Claude live E2E count and required renewed investigation-first re-entry | Requirement Gap | Locked | `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/investigation-notes.md` |
+| T-023 | 2026-02-28 | 1 | 2 | Investigation delta captured and requirements refinement started for Codex-parity Claude live E2E acceptance criterion | Requirement Gap | Locked | `tickets/in-progress/claude-agent-sdk-runtime-support/investigation-notes.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/requirements.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| T-024 | 2026-02-28 | 2 | 3 | Requirements refinement completed and implementation plan updated with Batch G for Claude live E2E parity expansion | Requirement Gap | Locked | `tickets/in-progress/claude-agent-sdk-runtime-support/requirements.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/implementation-plan.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| T-025 | 2026-02-28 | 3 | 4 | Runtime modeling updated with UC-011 parity-count gate and explicit Stage 7 failure path | Requirement Gap | Locked | `tickets/in-progress/claude-agent-sdk-runtime-support/future-state-runtime-call-stack.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| T-026 | 2026-02-28 | 4 | 5 | Re-entry Stage 5 review rounds completed with Candidate Go then Go Confirmed for parity delta artifacts | Requirement Gap | Locked | `tickets/in-progress/claude-agent-sdk-runtime-support/future-state-runtime-call-stack-review.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| T-027 | 2026-02-28 | 5 | 6 | Stage 5 re-entry gate passed; code edit lock released for Claude live E2E parity implementation | Requirement Gap | Unlocked | `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/implementation-progress.md` |
+| T-028 | 2026-02-28 | 6 | 7 | Codex-vs-Claude live E2E count parity confirmed (`13 vs 13`) and full backend + focused team/run-history E2E verification rerun to pass | Local Fix | Unlocked | `autobyteus-server-ts/tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts`, `autobyteus-server-ts/tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts`, `tickets/in-progress/claude-agent-sdk-runtime-support/implementation-progress.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/api-e2e-testing.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| T-029 | 2026-02-28 | 7 | 8 | Code review rerun after parity closure and external-member session restore fix; no open findings | N/A | Locked | `tickets/in-progress/claude-agent-sdk-runtime-support/code-review.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| T-030 | 2026-02-28 | 8 | 9 | Docs-sync gate rerun with no-impact decision retained and updated evidence totals | N/A | Locked | `tickets/in-progress/claude-agent-sdk-runtime-support/docs-sync.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| T-031 | 2026-02-28 | 9 | 10 | Final handoff refreshed with full backend/frontend results and focused team routing + continuation/run-history E2E pass evidence | N/A | Locked | `tickets/in-progress/claude-agent-sdk-runtime-support/handoff-summary.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+
+## Audible Notification Log (Optional Tracking)
+
+| Date | Trigger Type (`Transition`/`Gate`/`Re-entry`/`LockChange`) | Summary Spoken | Speak Tool Result (`Success`/`Failed`) | Fallback Text Logged |
+| --- | --- | --- | --- | --- |
+| 2026-02-28 | Transition | Stage 0 initialized with bootstrap complete and draft requirements captured; next step is Stage 1 investigation with code edits locked. | Success | N/A |
+| 2026-02-28 | Transition | Stage 1 activated after Stage 0 pass; investigation and scope triage started with code edits still locked. | Success | N/A |
+| 2026-02-28 | Transition | Stage 1 completed with investigation notes and scope triage; Stage 2 requirements refinement started while code edits stay locked. | Success | N/A |
+| 2026-02-28 | Transition | Stage 2 requirements are design-ready and Stage 3 design basis started; code edits remain locked pending runtime-model review gates. | Success | N/A |
+| 2026-02-28 | Transition | Stage 3 design basis completed and Stage 4 runtime modeling started; code edits remain locked until review gate confirms Go. | Success | N/A |
+| 2026-02-28 | Transition | Stage 4 runtime modeling completed and Stage 5 review gate started; code edits remain locked pending Go confirmation. | Success | N/A |
+| 2026-02-28 | Transition | Stage 5 reached Go Confirmed and Stage 6 implementation started with code edit permission unlocked. | Success | N/A |
+| 2026-02-28 | Transition | Stages 6 through 10 completed in sequence: verification passed, code review passed, docs sync recorded, and code-edit permission relocked for handoff. | Success | N/A |
+| 2026-02-28 | Transition | Re-entry for full-suite verification completed: one local-fix regression resolved, live Codex E2E enabled/passed, full frontend suite passed, and code-edit lock restored at Stage 10. | Success | N/A |
+| 2026-02-28 | Transition | Re-entry completed for comprehensive Claude coverage: runtime-layer test expansion and Claude delta-text normalization fix verified; full backend/Codex/Claude/frontend gates passed and code-edit lock restored at Stage 10. | Success | N/A |
+| 2026-02-28 | Transition | Re-entry reopened from Stage 10 to Stage 6 for strict real-transport Claude verification and test expansion; code edits unlocked and Stage 7 refresh is next. | Success | N/A |
+| 2026-02-28 | Transition | Re-entry closed: Stage 6 through Stage 10 gates rerun with live Claude and live Codex coverage, full frontend pass, and code-edit permission relocked for handoff. | Success | N/A |
+| 2026-02-28 | Transition | Re-entry reopened from Stage 10 to Stage 1 under Requirement Gap classification to investigate and implement Codex-parity Claude live E2E counts with code edits locked. | Success | N/A |
+| 2026-02-28 | Transition | Stage 1 investigation delta completed and Stage 2 requirements refinement started for new E2E parity acceptance criterion. | Success | N/A |
+| 2026-02-28 | Transition | Stages 2 through 5 re-entry artifacts were updated and review reconfirmed Go; stage 6 is active with code edits unlocked for parity implementation. | Success | N/A |
+| 2026-02-28 | Transition | Re-entry closed again: Codex/Claude parity achieved, full backend and frontend suites passed, focused team routing and run-history continuation E2E passed, and stage returned to 10 with code edits locked. | Success | N/A |
+
+## Process Violation Log
+
+| Date | Violation ID | Violation | Detected At Stage | Action Taken | Cleared |
+| --- | --- | --- | --- | --- | --- |
+| None | None | None | N/A | N/A | N/A |

@@ -61,8 +61,14 @@ describe('AgentRunConfigForm', () => {
       fetchRuntimeCapabilities: vi.fn().mockResolvedValue([
         { runtimeKind: 'autobyteus', enabled: true, reason: null },
         { runtimeKind: 'codex_app_server', enabled: true, reason: null },
+        { runtimeKind: 'claude_agent_sdk', enabled: true, reason: null },
       ]),
-      isRuntimeEnabled: vi.fn((runtimeKind: string) => runtimeKind === 'autobyteus' || runtimeKind === 'codex_app_server'),
+      isRuntimeEnabled: vi.fn(
+        (runtimeKind: string) =>
+          runtimeKind === 'autobyteus' ||
+          runtimeKind === 'codex_app_server' ||
+          runtimeKind === 'claude_agent_sdk',
+      ),
       runtimeReason: vi.fn(() => null),
     };
 

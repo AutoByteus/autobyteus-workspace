@@ -1,6 +1,10 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
+import {
+  getTeamMemberRuntimeOrchestrator,
+  type TeamMemberRuntimeOrchestrator,
+} from "../../agent-team-execution/services/team-member-runtime-orchestrator.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import {
   TeamMemberRunManifest,
@@ -48,11 +52,13 @@ export class TeamRunHistoryService {
   private readonly memberLayoutStore: TeamMemberMemoryLayoutStore;
   private readonly memberRunManifestStore: TeamMemberRunManifestStore;
   private readonly teamRunManager: AgentTeamRunManager;
+  private readonly teamMemberRuntimeOrchestrator: TeamMemberRuntimeOrchestrator | null;
 
   constructor(
     memoryDir: string,
     options: {
       teamRunManager?: AgentTeamRunManager;
+      teamMemberRuntimeOrchestrator?: TeamMemberRuntimeOrchestrator;
     } = {},
   ) {
     this.manifestStore = new TeamRunManifestStore(memoryDir);
@@ -60,6 +66,7 @@ export class TeamRunHistoryService {
     this.memberLayoutStore = new TeamMemberMemoryLayoutStore(memoryDir);
     this.memberRunManifestStore = new TeamMemberRunManifestStore(memoryDir);
     this.teamRunManager = options.teamRunManager ?? AgentTeamRunManager.getInstance();
+    this.teamMemberRuntimeOrchestrator = options.teamMemberRuntimeOrchestrator ?? null;
   }
 
   async listTeamRunHistory(): Promise<TeamRunHistoryItem[]> {
@@ -74,7 +81,7 @@ export class TeamRunHistoryService {
       if (!manifest) {
         continue;
       }
-      const isActive = this.teamRunManager.getTeamRun(row.teamRunId) !== null;
+      const isActive = this.isTeamRunActive(row.teamRunId);
       items.push({
         teamRunId: row.teamRunId,
         teamDefinitionId: row.teamDefinitionId,
@@ -200,7 +207,7 @@ export class TeamRunHistoryService {
     }
     return {
       teamRunId,
-      isActive: this.teamRunManager.getTeamRun(teamRunId) !== null,
+      isActive: this.isTeamRunActive(teamRunId),
       manifest,
     };
   }
@@ -214,6 +221,12 @@ export class TeamRunHistoryService {
       };
     }
     if (this.teamRunManager.getTeamRun(normalizedTeamRunId)) {
+      return {
+        success: false,
+        message: "Team run is active. Terminate it before deleting history.",
+      };
+    }
+    if (this.teamMemberRuntimeOrchestrator?.hasActiveMemberBinding?.(normalizedTeamRunId)) {
       return {
         success: false,
         message: "Team run is active. Terminate it before deleting history.",
@@ -259,7 +272,7 @@ export class TeamRunHistoryService {
         workspaceRootPath: manifest.workspaceRootPath,
         summary: "",
         lastActivityAt: manifest.updatedAt || manifest.createdAt || nowIso(),
-        lastKnownStatus: this.teamRunManager.getTeamRun(teamRunId) ? "ACTIVE" : "IDLE",
+        lastKnownStatus: this.isTeamRunActive(teamRunId) ? "ACTIVE" : "IDLE",
         deleteLifecycle: "READY",
       });
     }
@@ -281,6 +294,13 @@ export class TeamRunHistoryService {
       return null;
     }
     return targetPath;
+  }
+
+  private isTeamRunActive(teamRunId: string): boolean {
+    return (
+      this.teamRunManager.getTeamRun(teamRunId) !== null ||
+      this.teamMemberRuntimeOrchestrator?.hasActiveMemberBinding?.(teamRunId) === true
+    );
   }
 
   private async writeMemberRunManifests(
@@ -317,7 +337,12 @@ let cachedTeamRunHistoryService: TeamRunHistoryService | null = null;
 
 export const getTeamRunHistoryService = (): TeamRunHistoryService => {
   if (!cachedTeamRunHistoryService) {
-    cachedTeamRunHistoryService = new TeamRunHistoryService(appConfigProvider.config.getMemoryDir());
+    cachedTeamRunHistoryService = new TeamRunHistoryService(
+      appConfigProvider.config.getMemoryDir(),
+      {
+        teamMemberRuntimeOrchestrator: getTeamMemberRuntimeOrchestrator(),
+      },
+    );
   }
   return cachedTeamRunHistoryService;
 };

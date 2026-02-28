@@ -113,15 +113,17 @@ describe("TeamMemberRunProjectionService", () => {
       lastActivityAt: "2026-02-26T13:00:00.000Z",
       conversation: [{ role: "user", content: "PING-TO-PONG token" }],
     });
+    const resolveProvider = vi.fn().mockReturnValue({ buildProjection });
 
     const service = new TeamMemberRunProjectionService({
       teamRunHistoryService: { getTeamRunResumeConfig } as any,
       projectionReader: { getProjection } as any,
-      codexProjectionProvider: { buildProjection } as any,
+      projectionProviderRegistry: { resolveProvider } as any,
     });
 
     const result = await service.getProjection("team-1", "pong");
 
+    expect(resolveProvider).toHaveBeenCalledWith("codex_app_server");
     expect(buildProjection).toHaveBeenCalledTimes(1);
     expect(result.agentRunId).toBe("pong-run");
     expect(result.summary).toBe("summary-from-codex");

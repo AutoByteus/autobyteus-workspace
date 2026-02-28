@@ -1,0 +1,90 @@
+# Implementation Progress
+
+- Ticket: `claude-agent-sdk-runtime-support`
+- Started: `2026-02-28`
+- Current Stage: `10`
+- Overall Status: `Handoff Ready`
+
+## Batch Status
+
+| Batch | Description | Status |
+| --- | --- | --- |
+| A | Runtime core contracts and registries | Completed |
+| B | Claude runtime service + adapter | Completed |
+| C | Model catalog + projection | Completed |
+| D | Team runtime decoupling | Completed |
+| E | Frontend runtime option support | Completed |
+| F | Verification and stabilization | Completed |
+| G | Codex parity closure + final regression validation | Completed |
+
+## Change Tracking
+
+| Change ID | Type | Target | Build State | Test State | Notes |
+| --- | --- | --- | --- | --- | --- |
+| C-001 | Modify | `runtime-kind.ts` | Done | Done | Added `claude_agent_sdk` runtime kind |
+| C-002 | Modify | `runtime-capability-service.ts` | Done | Done | Descriptor-based capability probes (`CODEX_APP_SERVER_ENABLED`, `CLAUDE_AGENT_SDK_ENABLED`) |
+| C-003 | Add | `external-runtime-event-source-port.ts` | Done | Done | Runtime-neutral external event source contract |
+| C-004 | Add | `external-runtime-event-source-registry.ts` | Done | Done | Runtime-kind dispatch + codex/claude source registration |
+| C-005 | Add | `claude-agent-sdk-runtime-service.ts` | Done | Done | Session lifecycle, stream events, model/session APIs |
+| C-006 | Add | `claude-agent-sdk-runtime-adapter.ts` | Done | Done | Runtime adapter integration |
+| C-007 | Modify | `runtime-adapter-registry.ts` | Done | Done | Default registry includes Claude adapter |
+| C-008 | Modify | `agent-stream-handler.ts` | Done | Done | Generic external runtime stream path via source registry |
+| C-009 | Modify | team runtime event bridge | Done | Done | Runtime-neutral bridge (`team-external-runtime-event-bridge.ts`) |
+| C-010 | Modify | `agent-team-stream-handler.ts` | Done | Done | Runtime-neutral external member mode handling |
+| C-011 | Modify | `team-runtime-binding-registry.ts` | Done | Done | Mode rename to `external_member_runtime` |
+| C-012 | Modify | `team-run-mutation-service.ts` | Done | Done | Runtime-neutral mode resolution and branch routing |
+| C-013 | Modify | `team-member-runtime-orchestrator.ts` | Done | Done | External runtime sessions + codex relay isolation |
+| C-014 | Modify | `run-projection-provider-registry.ts` | Done | Done | Registered Claude projection provider |
+| C-015 | Add | `claude-session-run-projection-provider.ts` | Done | Done | Claude session transcript projection |
+| C-016 | Modify | `team-member-run-projection-service.ts` | Done | Done | Runtime-kind projection provider fallback |
+| C-017 | Modify | `runtime-model-catalog-service.ts` | Done | Done | Registered Claude model provider |
+| C-018 | Add | `claude-runtime-model-provider.ts` | Done | Done | Claude model listing/reload provider |
+| C-019 | Modify | web `AgentRunConfig` type | Done | Done | Added `claude_agent_sdk` union value + runtime guard |
+| C-020 | Modify | web `AgentRunConfigForm.vue` | Done | Done | Added Claude runtime option + generic normalization |
+| C-021 | Modify | web `TeamRunConfigForm.vue` | Done | Done | Added Claude runtime option + generic normalization |
+| C-022 | Modify | tests (server/web) | Done | Done | Updated runtime-kind/mode/capability/projection/config-form expectations |
+| C-023 | Modify | `team-run-history-service.ts` | Done | Done | Wired external-member activity checks into singleton |
+| C-024 | Modify | `team-run-continuation-service.test.ts` | Done | Done | Fixed manifest fixture shape for stricter external-runtime branching semantics |
+| C-025 | Add | Claude runtime unit suites | Done | Done | Added runtime-layer coverage for Claude runtime service, adapter, and external runtime event-source registry |
+| C-026 | Modify | `claude-agent-sdk-runtime-service.ts` | Done | Done | Fixed Claude stream delta normalization to preserve intentional whitespace |
+| C-027 | Modify | Verification matrix | Done | Done | Expanded Claude-enabled verification to include runtime-layer suites plus full backend/frontend and live Codex reruns |
+| C-028 | Modify | Claude runtime regression tests | Done | Done | Added unit coverage for resume-by-session-id behavior and live GraphQL assertion preventing fallback to legacy model IDs |
+| C-029 | Modify | `claude-agent-sdk-runtime-service.ts` | Done | Done | Fixed first-turn restore semantics to avoid placeholder resume IDs for team external-member runs |
+| C-030 | Modify | `team-member-runtime-orchestrator.ts` | Done | Done | Persist refreshed external runtime reference into team binding registry after member sends |
+| C-031 | Add | Claude parity team E2E suite | Done | Done | Added `claude-team-external-runtime.e2e.test.ts` to mirror Codex team live parity coverage |
+
+## Verification Log
+
+| Timestamp | Command | Result | Notes |
+| --- | --- | --- | --- |
+| 2026-02-28 | `pnpm install` | Pass | Dependencies installed for workspace |
+| 2026-02-28 | `pnpm -C autobyteus-server-ts build` | Pass | Includes `autobyteus-ts` prebuild + server build |
+| 2026-02-28 | `pnpm -C autobyteus-server-ts exec vitest run tests/unit/runtime-management/runtime-kind.test.ts tests/unit/runtime-management/runtime-capability-service.test.ts tests/unit/runtime-management/model-catalog/runtime-model-catalog-service.test.ts tests/unit/runtime-management/model-catalog/claude-runtime-model-provider.test.ts tests/unit/runtime-execution/runtime-adapter-registry.test.ts tests/unit/runtime-execution/runtime-command-ingress-service.test.ts tests/unit/run-history/projection/run-projection-provider-registry.test.ts tests/unit/run-history/team-member-run-projection-service.test.ts tests/unit/run-history/team-run-history-service.test.ts tests/unit/agent-team-execution/team-member-runtime-orchestrator.test.ts tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts` | Pass | 11 files, 38 tests passed |
+| 2026-02-28 | `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/runtime-capability-graphql.e2e.test.ts tests/e2e/agent-team-execution/send-message-to-team-graphql-contract.e2e.test.ts` | Pass | 2 files, 4 tests passed |
+| 2026-02-28 | `pnpm -C autobyteus-server-ts exec vitest run` | Failed | 1 failure (`team-run-continuation-service.test.ts`) uncovered by full-suite run; fixed in C-024 |
+| 2026-02-28 | `pnpm -C autobyteus-server-ts exec vitest run` | Pass | Full backend suite passed: 243 files, 1052 tests (plus 5 skipped files / 21 skipped tests) |
+| 2026-02-28 | `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts` | Pass | Live Codex runtime E2E explicitly enabled: 13 tests passed |
+| 2026-02-28 | `CLAUDE_AGENT_SDK_ENABLED=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/runtime-capability-graphql.e2e.test.ts tests/unit/runtime-management/model-catalog/claude-runtime-model-provider.test.ts tests/unit/runtime-management/runtime-capability-service.test.ts` | Pass | Explicit Claude runtime capability/model-provider verification with enable toggle |
+| 2026-02-28 | `pnpm -C autobyteus-web exec nuxt prepare` | Pass | Generated `.nuxt` test prerequisites |
+| 2026-02-28 | `pnpm -C autobyteus-web exec vitest run components/workspace/config/__tests__/AgentRunConfigForm.spec.ts components/workspace/config/__tests__/TeamRunConfigForm.spec.ts stores/__tests__/runtimeCapabilitiesStore.spec.ts` | Pass | 3 files, 14 tests passed |
+| 2026-02-28 | `pnpm -C autobyteus-web test` | Pass | Full frontend suite passed (`test:nuxt` 706 tests + `test:electron` 38 tests) |
+| 2026-02-28 | `pnpm -C autobyteus-web test` | Failed | Non-deterministic Nuxt post-teardown `$fetch` error observed once; reproduced test:nuxt independently and reran full frontend suite to green |
+| 2026-02-28 | `pnpm -C autobyteus-server-ts exec vitest run tests/unit/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.test.ts tests/unit/runtime-execution/adapters/claude-agent-sdk-runtime-adapter.test.ts tests/unit/runtime-execution/external-runtime-event-source-registry.test.ts` | Pass | New Claude runtime-layer unit suites: 3 files, 14 tests passed |
+| 2026-02-28 | `CLAUDE_AGENT_SDK_ENABLED=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/runtime-capability-graphql.e2e.test.ts tests/e2e/agent-team-execution/send-message-to-team-graphql-contract.e2e.test.ts tests/unit/runtime-management/runtime-kind.test.ts tests/unit/runtime-management/runtime-capability-service.test.ts tests/unit/runtime-management/model-catalog/runtime-model-catalog-service.test.ts tests/unit/runtime-management/model-catalog/claude-runtime-model-provider.test.ts tests/unit/runtime-execution/runtime-adapter-registry.test.ts tests/unit/runtime-execution/runtime-command-ingress-service.test.ts tests/unit/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.test.ts tests/unit/runtime-execution/adapters/claude-agent-sdk-runtime-adapter.test.ts tests/unit/runtime-execution/external-runtime-event-source-registry.test.ts tests/unit/run-history/projection/run-projection-provider-registry.test.ts tests/unit/run-history/team-member-run-projection-service.test.ts tests/unit/run-history/team-run-history-service.test.ts tests/unit/agent-team-execution/team-member-runtime-orchestrator.test.ts tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts` | Pass | Expanded Claude runtime matrix: 16 files, 56 tests passed |
+| 2026-02-28 | `pnpm -C autobyteus-server-ts exec vitest run` | Pass | Full backend suite rerun after Claude runtime-layer additions: 246 files, 1066 tests (plus 5 skipped files / 21 skipped tests) |
+| 2026-02-28 | `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts` | Pass | Live Codex runtime E2E rerun: 2 files, 13 tests passed |
+| 2026-02-28 | `pnpm -C autobyteus-web test` | Pass | Full frontend suite rerun after backend/runtime changes: `test:nuxt` 706 + `test:electron` 38 |
+| 2026-02-28 | `pnpm -C autobyteus-server-ts typecheck` | Failed | Repository baseline issue (`rootDir: src` + `include: tests`) not introduced by this ticket |
+| 2026-02-28 | `pnpm -C autobyteus-server-ts exec vitest run tests/unit/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.test.ts tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts` | Pass | Unit/runtime checks passed; Claude e2e intentionally skipped without live flag |
+| 2026-02-28 | `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts` | Pass | Live Claude GraphQL transport validated: model listing + send/terminate (`2 tests`) |
+| 2026-02-28 | `RUN_CODEX_E2E=1 RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=1 pnpm -C autobyteus-server-ts test` | Pass | Full backend with both live runtimes enabled: `249 files / 1083 tests`, `3 skipped files / 8 skipped tests` |
+| 2026-02-28 | `pnpm -C autobyteus-web test` | Pass | Full frontend verification refresh: `test:nuxt 706` + `test:electron 38` |
+| 2026-02-28 | `rg --line-number "\\bit\\(" autobyteus-server-ts/tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts autobyteus-server-ts/tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts \| wc -l` | Pass | Codex live E2E count baseline confirmed: `13` |
+| 2026-02-28 | `rg --line-number "\\bit\\(" autobyteus-server-ts/tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts autobyteus-server-ts/tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts \| wc -l` | Pass | Claude live E2E count matched Codex baseline: `13` |
+| 2026-02-28 | `RUN_CODEX_E2E=1 RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=1 pnpm -C autobyteus-server-ts test` | Pass | Final full backend with both live runtimes: `250 files passed / 3 skipped`, `1095 tests passed / 8 skipped` |
+| 2026-02-28 | `pnpm -C autobyteus-web test` | Pass | Final full frontend pass: `test:nuxt 143 files / 706 tests`, `test:electron 6 files / 38 tests` |
+| 2026-02-28 | `RUN_CODEX_E2E=1 RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts tests/e2e/run-history/team-run-history-graphql.e2e.test.ts` | Pass | Focused team routing + continuation/run-history: `3 files passed`, `8 passed / 1 skipped` |
+
+## Blockers
+
+- No open blockers for this ticket.

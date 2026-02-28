@@ -129,6 +129,7 @@ import type { TeamRunConfig, MemberConfigOverride } from '~/types/agent/TeamRunC
 import type { AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore';
 import {
   DEFAULT_AGENT_RUNTIME_KIND,
+  isAgentRuntimeKind,
   type AgentRuntimeKind,
 } from '~/types/agent/AgentRunConfig';
 import WorkspaceSelector from './WorkspaceSelector.vue';
@@ -163,7 +164,7 @@ void runtimeCapabilitiesStore.fetchRuntimeCapabilities().catch((error) => {
 });
 
 const normalizeRuntimeKind = (runtimeKind: unknown): AgentRuntimeKind =>
-  runtimeKind === 'codex_app_server' ? 'codex_app_server' : DEFAULT_AGENT_RUNTIME_KIND;
+  isAgentRuntimeKind(runtimeKind) ? runtimeKind : DEFAULT_AGENT_RUNTIME_KIND;
 
 const sanitizeMemberOverridesForRuntime = () => {
   const modelSet = new Set(llmStore.models);
@@ -216,6 +217,7 @@ const runtimeOptions = computed<
 >(() => {
   const autobyteusEnabled = runtimeCapabilitiesStore.isRuntimeEnabled('autobyteus');
   const codexEnabled = runtimeCapabilitiesStore.isRuntimeEnabled('codex_app_server');
+  const claudeEnabled = runtimeCapabilitiesStore.isRuntimeEnabled('claude_agent_sdk');
 
   return [
     {
@@ -227,6 +229,11 @@ const runtimeOptions = computed<
       value: 'codex_app_server',
       label: 'Codex App Server',
       enabled: codexEnabled,
+    },
+    {
+      value: 'claude_agent_sdk',
+      label: 'Claude Agent SDK',
+      enabled: claudeEnabled,
     },
   ].filter((option) => option.enabled || props.config.runtimeKind === option.value);
 });

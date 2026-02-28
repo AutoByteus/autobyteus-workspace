@@ -135,7 +135,7 @@ describe("TeamMemberRuntimeOrchestrator", () => {
     expect(bindings[0]?.workspaceRootPath).toBe("/tmp/team-workspace");
     expect(mocks.teamRuntimeBindingRegistry.upsertTeamBindings).toHaveBeenCalledWith(
       "team-1",
-      "codex_members",
+      "external_member_runtime",
       expect.arrayContaining([
         expect.objectContaining({
           memberRunId: "member-run-1",
@@ -220,6 +220,7 @@ describe("TeamMemberRuntimeOrchestrator", () => {
         memberRunId: "sender-run-1",
         memberName: "Sender",
         memberRouteKey: "sender",
+        runtimeKind: "codex_app_server",
       },
     });
     mocks.teamRuntimeBindingRegistry.resolveMemberBinding.mockReturnValue({
@@ -248,6 +249,7 @@ describe("TeamMemberRuntimeOrchestrator", () => {
         memberRunId: "sender-run-1",
         memberName: "Sender Agent",
         memberRouteKey: "sender",
+        runtimeKind: "codex_app_server",
       },
     });
     mocks.teamRuntimeBindingRegistry.resolveMemberBinding.mockReturnValue({
@@ -255,6 +257,7 @@ describe("TeamMemberRuntimeOrchestrator", () => {
         memberRunId: "recipient-run-1",
         memberName: "Recipient Agent",
         memberRouteKey: "recipient",
+        runtimeKind: "codex_app_server",
       },
       code: null,
       message: null,
@@ -296,6 +299,7 @@ describe("TeamMemberRuntimeOrchestrator", () => {
         memberRunId: "sender-run-1",
         memberName: "Sender Agent",
         memberRouteKey: "sender",
+        runtimeKind: "codex_app_server",
       },
     });
     mocks.teamRuntimeBindingRegistry.resolveMemberBinding.mockReturnValue({
@@ -303,6 +307,7 @@ describe("TeamMemberRuntimeOrchestrator", () => {
         memberRunId: "recipient-run-1",
         memberName: "Recipient Agent",
         memberRouteKey: "recipient",
+        runtimeKind: "codex_app_server",
       },
       code: null,
       message: null,
@@ -334,6 +339,7 @@ describe("TeamMemberRuntimeOrchestrator", () => {
         memberRunId: "sender-run-1",
         memberName: "Sender Agent",
         memberRouteKey: "sender",
+        runtimeKind: "codex_app_server",
       },
     });
     mocks.teamRuntimeBindingRegistry.resolveMemberBinding.mockReturnValue({
@@ -341,6 +347,7 @@ describe("TeamMemberRuntimeOrchestrator", () => {
         memberRunId: "recipient-run-1",
         memberName: "Recipient Agent",
         memberRouteKey: "recipient",
+        runtimeKind: "codex_app_server",
       },
       code: null,
       message: null,

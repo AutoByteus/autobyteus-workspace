@@ -9,6 +9,7 @@ describe("runtime-kind", () => {
   it("validates known runtime kinds", () => {
     expect(isRuntimeKind("autobyteus")).toBe(true);
     expect(isRuntimeKind("codex_app_server")).toBe(true);
+    expect(isRuntimeKind("claude_agent_sdk")).toBe(true);
     expect(isRuntimeKind("unknown")).toBe(false);
     expect(isRuntimeKind(null)).toBe(false);
   });
