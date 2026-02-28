@@ -91,6 +91,11 @@ print(f"Removed {removed} external symlinks from {scan_root}")
 PY
 fi
 
+echo -e "\n${YELLOW}Removing non-runtime test fixtures from deployed dependencies...${NC}"
+if [ -d "${TARGET_DIR}/node_modules" ]; then
+  find "${TARGET_DIR}/node_modules" -type d \( -name test -o -name tests -o -name __tests__ \) -prune -exec rm -rf {} +
+fi
+
 echo -e "\n${YELLOW}Generating Prisma client (ensures engines are bundled)...${NC}"
 PRISMA_BIN="${TARGET_DIR}/node_modules/.bin/prisma"
 if [ ! -x "$PRISMA_BIN" ] && [ -f "${PRISMA_BIN}.cmd" ]; then
