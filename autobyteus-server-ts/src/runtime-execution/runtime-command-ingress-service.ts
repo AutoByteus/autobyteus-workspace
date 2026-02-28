@@ -21,6 +21,7 @@ import type {
   RuntimeApproveToolInput,
   RuntimeCommandResult,
   RuntimeInterruptRunInput,
+  RuntimeRelayInterAgentMessageInput,
   RuntimeMode,
   RuntimeSendTurnInput,
   RuntimeSessionRecord,
@@ -70,6 +71,22 @@ export class RuntimeCommandIngressService {
     return this.execute(input.runId, input.mode, "approve_tool", (session) =>
       this.adapterRegistry.resolveAdapter(session.runtimeKind).approveTool(input),
     );
+  }
+
+  async relayInterAgentMessage(
+    input: RuntimeRelayInterAgentMessageInput,
+  ): Promise<RuntimeIngressResult> {
+    return this.execute(input.runId, "agent", "relay_inter_agent_message", (session) => {
+      const adapter = this.adapterRegistry.resolveAdapter(session.runtimeKind);
+      if (!adapter.relayInterAgentMessage) {
+        return Promise.resolve({
+          accepted: false,
+          code: "INTER_AGENT_RELAY_UNSUPPORTED",
+          message: `Runtime '${session.runtimeKind}' does not support inter-agent relay.`,
+        });
+      }
+      return adapter.relayInterAgentMessage(input);
+    });
   }
 
   async interruptRun(input: RuntimeInterruptRunInput): Promise<RuntimeIngressResult> {

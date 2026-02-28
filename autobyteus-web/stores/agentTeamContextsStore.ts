@@ -94,7 +94,7 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
           agentDefinitionId: node.referenceId,
           agentDefinitionName: defName,
           llmModelIdentifier: override?.llmModelIdentifier || template.llmModelIdentifier,
-          runtimeKind: DEFAULT_AGENT_RUNTIME_KIND,
+          runtimeKind: template.runtimeKind || DEFAULT_AGENT_RUNTIME_KIND,
           workspaceId: template.workspaceId,
           autoExecuteTools: override?.autoExecuteTools ?? template.autoExecuteTools,
           skillAccessMode: 'PRELOADED_ONLY',

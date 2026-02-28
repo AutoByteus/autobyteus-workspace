@@ -95,6 +95,41 @@ describe('segmentHandler', () => {
       );
     });
 
+    it('hydrates tool_call arguments when metadata.arguments is serialized JSON', () => {
+      const payload: SegmentStartPayload = {
+        id: 'image-call-1',
+        segment_type: 'tool_call',
+        metadata: {
+          tool_name: 'generate_image',
+          arguments:
+            '{"prompt":"cute otter","output_file_path":"/tmp/cute-otter.png"}',
+        },
+      };
+
+      handleSegmentStart(payload, mockContext);
+
+      const segment = findSegmentById(mockContext, 'image-call-1') as any;
+      expect(segment).toBeTruthy();
+      expect(segment.type).toBe('tool_call');
+      expect(segment.toolName).toBe('generate_image');
+      expect(segment.arguments).toEqual({
+        prompt: 'cute otter',
+        output_file_path: '/tmp/cute-otter.png',
+      });
+
+      expect(mockActivityStore.addActivity).toHaveBeenCalledWith(
+        'test-agent-id',
+        expect.objectContaining({
+          toolName: 'generate_image',
+          type: 'tool_call',
+          arguments: {
+            prompt: 'cute otter',
+            output_file_path: '/tmp/cute-otter.png',
+          },
+        }),
+      );
+    });
+
     it('should log error and use placeholder when tool_name is missing in metadata for tool_call', () => {
       const payload: SegmentStartPayload = {
         id: 'test-id-missing',

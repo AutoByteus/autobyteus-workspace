@@ -11,6 +11,7 @@ import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { TeamStreamingService } from '~/services/agentStreaming';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
+import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 
@@ -139,9 +140,11 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
             .filter(node => node.referenceType === 'AGENT')
             .map((node) => {
               const override = activeTeam.config.memberOverrides[node.memberName];
+              const teamRuntimeKind = activeTeam.config.runtimeKind || DEFAULT_AGENT_RUNTIME_KIND;
               return {
                 memberName: node.memberName,
                 agentDefinitionId: node.referenceId,
+                runtimeKind: teamRuntimeKind,
                 llmModelIdentifier: override?.llmModelIdentifier || activeTeam.config.llmModelIdentifier,
                 workspaceId: activeTeam.config.workspaceId,
                 autoExecuteTools: override?.autoExecuteTools ?? activeTeam.config.autoExecuteTools,

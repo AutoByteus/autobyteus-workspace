@@ -49,10 +49,10 @@ export const useTeamRunConfigStore = defineStore('teamRunConfig', {
     },
 
     /**
-     * Check if the required configuration is complete (model selected).
+     * Check if the required configuration is complete (model + workspace selected).
      */
     isConfigured(): boolean {
-      return !!this.config?.llmModelIdentifier;
+      return !!this.config?.llmModelIdentifier && !!this.config?.workspaceId;
     },
 
     /**

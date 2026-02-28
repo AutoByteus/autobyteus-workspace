@@ -62,6 +62,25 @@ describe("RuntimeEventMessageMapper", () => {
     expect(progress.payload.runtime_event_method).toBe("turn/taskProgressUpdated");
   });
 
+  it("maps synthetic codex inter_agent_message runtime events to INTER_AGENT_MESSAGE payload", () => {
+    const message = mapper.map({
+      method: "inter_agent_message",
+      params: {
+        sender_agent_id: "run-professor",
+        recipient_role_name: "Student",
+        content: "hello student",
+        message_type: "agent_message",
+      },
+    });
+
+    expect(message.type).toBe(ServerMessageType.INTER_AGENT_MESSAGE);
+    expect(message.payload.sender_agent_id).toBe("run-professor");
+    expect(message.payload.recipient_role_name).toBe("Student");
+    expect(message.payload.content).toBe("hello student");
+    expect(message.payload.message_type).toBe("agent_message");
+    expect(message.payload.runtime_event_method).toBe("inter_agent_message");
+  });
+
   it("maps codex item lifecycle methods", () => {
     const added = mapper.map({
       method: "item.created",
@@ -170,6 +189,123 @@ describe("RuntimeEventMessageMapper", () => {
       queries: ["Elon Musk latest news", "Elon Musk Reuters"],
     });
     expect(completed.payload.runtime_event_method).toBe("item/completed");
+  });
+
+  it("maps codex mcpToolCall item lifecycle to canonical tool_call with tool_name", () => {
+    const started = mapper.map({
+      method: "item/started",
+      params: {
+        item: {
+          id: "mcp_1",
+          type: "mcpToolCall",
+          server: "autobyteus",
+          tool: "generate_image",
+          arguments: {
+            prompt: "cute cat",
+            output_file_path: "/tmp/cute-cat.png",
+          },
+          status: "inProgress",
+        },
+      },
+    });
+
+    expect(started.type).toBe(ServerMessageType.SEGMENT_START);
+    expect(started.payload.id).toBe("mcp_1");
+    expect(started.payload.segment_type).toBe("tool_call");
+    expect(started.payload.metadata?.tool_name).toBe("generate_image");
+    expect(started.payload.metadata?.arguments).toEqual({
+      prompt: "cute cat",
+      output_file_path: "/tmp/cute-cat.png",
+    });
+    expect(started.payload.runtime_event_method).toBe("item/added");
+
+    const completed = mapper.map({
+      method: "item/completed",
+      params: {
+        item: {
+          id: "mcp_1",
+          type: "mcpToolCall",
+          server: "autobyteus",
+          tool: "generate_image",
+          status: "completed",
+        },
+      },
+    });
+
+    expect(completed.type).toBe(ServerMessageType.SEGMENT_END);
+    expect(completed.payload.id).toBe("mcp_1");
+    expect(completed.payload.metadata?.tool_name).toBe("generate_image");
+    expect(completed.payload.runtime_event_method).toBe("item/completed");
+  });
+
+  it("maps codex mcpToolCall metadata tool_name when tool is nested object", () => {
+    const started = mapper.map({
+      method: "item/started",
+      params: {
+        item: {
+          id: "mcp_2",
+          type: "mcpToolCall",
+          tool: { name: "autobyteus.generate_image" },
+          status: "inProgress",
+        },
+      },
+    });
+
+    expect(started.type).toBe(ServerMessageType.SEGMENT_START);
+    expect(started.payload.id).toBe("mcp_2");
+    expect(started.payload.segment_type).toBe("tool_call");
+    expect(started.payload.metadata?.tool_name).toBe("autobyteus.generate_image");
+  });
+
+  it("maps codex mcpToolCall metadata arguments from top-level payload fields", () => {
+    const started = mapper.map({
+      method: "item/started",
+      params: {
+        id: "mcp_3",
+        item: {
+          id: "mcp_3",
+          type: "mcpToolCall",
+          tool: "generate_image",
+        },
+        arguments: {
+          prompt: "orange cat",
+          output_file_path: "/tmp/orange-cat.png",
+        },
+      },
+    });
+
+    expect(started.type).toBe(ServerMessageType.SEGMENT_START);
+    expect(started.payload.id).toBe("mcp_3");
+    expect(started.payload.segment_type).toBe("tool_call");
+    expect(started.payload.metadata?.tool_name).toBe("generate_image");
+    expect(started.payload.metadata?.arguments).toEqual({
+      prompt: "orange cat",
+      output_file_path: "/tmp/orange-cat.png",
+    });
+  });
+
+  it("maps codex tool_call metadata arguments when arguments are serialized JSON strings", () => {
+    const started = mapper.map({
+      method: "item/started",
+      params: {
+        item: {
+          id: "mcp_4",
+          type: "mcpToolCall",
+          tool: "generate_image",
+          arguments:
+            "{\"prompt\":\"cute otter\",\"output_file_path\":\"/tmp/cute-otter.png\"}",
+        },
+      },
+    });
+
+    expect(started.type).toBe(ServerMessageType.SEGMENT_START);
+    expect(started.payload.id).toBe("mcp_4");
+    expect(started.payload.segment_type).toBe("tool_call");
+    expect(started.payload.metadata?.tool_name).toBe("generate_image");
+    expect(started.payload.metadata?.arguments).toEqual({
+      prompt: "cute otter",
+      output_file_path: "/tmp/cute-otter.png",
+    });
   });
 
   it("suppresses codex web_search_begin/end mirror events as no-op segment content", () => {

@@ -225,6 +225,306 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
     expect(terminateResult.terminateAgentRun.success).toBe(true);
   });
 
+  it("restores a terminated codex run in the same workspace after continueRun", async () => {
+    const modelIdentifier = await fetchPreferredCodexToolModelIdentifier();
+    const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "codex-continue-workspace-e2e-"));
+    let runId: string | null = null;
+
+    const continueMutation = `
+      mutation ContinueRun($input: ContinueRunInput!) {
+        continueRun(input: $input) {
+          success
+          message
+          runId
+        }
+      }
+    `;
+    const terminateMutation = `
+      mutation Terminate($id: String!) {
+        terminateAgentRun(id: $id) {
+          success
+          message
+        }
+      }
+    `;
+    const resumeQuery = `
+      query Resume($runId: String!) {
+        getRunResumeConfig(runId: $runId) {
+          runId
+          isActive
+          manifestConfig {
+            runtimeKind
+            workspaceRootPath
+          }
+        }
+      }
+    `;
+
+    try {
+      const createResult = await execGraphql<{
+        continueRun: {
+          success: boolean;
+          message: string;
+          runId: string | null;
+        };
+      }>(continueMutation, {
+        input: {
+          runtimeKind: "codex_app_server",
+          agentDefinitionId: "codex-e2e-agent-def",
+          workspaceRootPath,
+          llmModelIdentifier: modelIdentifier,
+          userInput: {
+            content: "Reply with READY.",
+          },
+        },
+      });
+      expect(createResult.continueRun.success).toBe(true);
+      expect(createResult.continueRun.runId).toBeTruthy();
+      runId = createResult.continueRun.runId;
+
+      const beforeTerminate = await execGraphql<{
+        getRunResumeConfig: {
+          runId: string;
+          isActive: boolean;
+          manifestConfig: {
+            runtimeKind: string;
+            workspaceRootPath: string;
+          };
+        };
+      }>(resumeQuery, { runId });
+      expect(beforeTerminate.getRunResumeConfig.runId).toBe(runId);
+      expect(beforeTerminate.getRunResumeConfig.manifestConfig.runtimeKind).toBe("codex_app_server");
+      expect(beforeTerminate.getRunResumeConfig.manifestConfig.workspaceRootPath).toBe(workspaceRootPath);
+
+      const terminateResult = await execGraphql<{
+        terminateAgentRun: { success: boolean; message: string };
+      }>(terminateMutation, { id: runId });
+      expect(terminateResult.terminateAgentRun.success).toBe(true);
+
+      const continueResult = await execGraphql<{
+        continueRun: {
+          success: boolean;
+          message: string;
+          runId: string | null;
+        };
+      }>(continueMutation, {
+        input: {
+          runId,
+          userInput: {
+            content: "Reply with READY again.",
+          },
+        },
+      });
+      expect(continueResult.continueRun.success).toBe(true);
+      expect(continueResult.continueRun.runId).toBe(runId);
+
+      const afterContinue = await execGraphql<{
+        getRunResumeConfig: {
+          runId: string;
+          isActive: boolean;
+          manifestConfig: {
+            runtimeKind: string;
+            workspaceRootPath: string;
+          };
+        };
+      }>(resumeQuery, { runId });
+      expect(afterContinue.getRunResumeConfig.runId).toBe(runId);
+      expect(afterContinue.getRunResumeConfig.manifestConfig.runtimeKind).toBe("codex_app_server");
+      expect(afterContinue.getRunResumeConfig.manifestConfig.workspaceRootPath).toBe(workspaceRootPath);
+    } finally {
+      if (runId) {
+        try {
+          await execGraphql<{
+            terminateAgentRun: { success: boolean };
+          }>(terminateMutation, { id: runId });
+        } catch {
+          // best-effort cleanup
+        }
+      }
+      await rm(workspaceRootPath, { recursive: true, force: true });
+    }
+  });
+
+  it(
+    "preserves workspace mapping for codex runs created with workspaceId across send->terminate->continue",
+    async () => {
+      const modelIdentifier = await fetchPreferredCodexToolModelIdentifier();
+      const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "codex-workspaceid-continue-e2e-"));
+      let runId: string | null = null;
+
+      const createWorkspaceMutation = `
+        mutation CreateWorkspace($input: CreateWorkspaceInput!) {
+          createWorkspace(input: $input) {
+            workspaceId
+          }
+        }
+      `;
+      const continueMutation = `
+        mutation ContinueRun($input: ContinueRunInput!) {
+          continueRun(input: $input) {
+            success
+            message
+            runId
+          }
+        }
+      `;
+      const terminateMutation = `
+        mutation Terminate($id: String!) {
+          terminateAgentRun(id: $id) {
+            success
+            message
+          }
+        }
+      `;
+      const resumeQuery = `
+        query Resume($runId: String!) {
+          getRunResumeConfig(runId: $runId) {
+            runId
+            isActive
+            manifestConfig {
+              runtimeKind
+              workspaceRootPath
+            }
+          }
+        }
+      `;
+      const listRunHistoryQuery = `
+        query ListRunHistory {
+          listRunHistory(limitPerAgent: 200) {
+            workspaceRootPath
+            agents {
+              runs {
+                runId
+              }
+            }
+          }
+        }
+      `;
+
+      try {
+        const createWorkspaceResult = await execGraphql<{
+          createWorkspace: { workspaceId: string };
+        }>(createWorkspaceMutation, {
+          input: {
+            rootPath: workspaceRootPath,
+          },
+        });
+        const workspaceId = createWorkspaceResult.createWorkspace.workspaceId;
+        expect(workspaceId).toBeTruthy();
+
+        const createResult = await execGraphql<{
+          continueRun: {
+            success: boolean;
+            message: string;
+            runId: string | null;
+          };
+        }>(continueMutation, {
+          input: {
+            runtimeKind: "codex_app_server",
+            agentDefinitionId: "codex-e2e-agent-def",
+            workspaceId,
+            llmModelIdentifier: modelIdentifier,
+            userInput: {
+              content: "Reply with READY.",
+            },
+          },
+        });
+        expect(createResult.continueRun.success).toBe(true);
+        expect(createResult.continueRun.runId).toBeTruthy();
+        runId = createResult.continueRun.runId;
+
+        const beforeTerminateResume = await execGraphql<{
+          getRunResumeConfig: {
+            runId: string;
+            isActive: boolean;
+            manifestConfig: {
+              runtimeKind: string;
+              workspaceRootPath: string;
+            };
+          };
+        }>(resumeQuery, { runId });
+        expect(beforeTerminateResume.getRunResumeConfig.runId).toBe(runId);
+        expect(beforeTerminateResume.getRunResumeConfig.manifestConfig.runtimeKind).toBe(
+          "codex_app_server",
+        );
+        expect(beforeTerminateResume.getRunResumeConfig.manifestConfig.workspaceRootPath).toBe(
+          workspaceRootPath,
+        );
+
+        const terminateResult = await execGraphql<{
+          terminateAgentRun: { success: boolean; message: string };
+        }>(terminateMutation, { id: runId });
+        expect(terminateResult.terminateAgentRun.success).toBe(true);
+
+        const historyDeadline = Date.now() + 120_000;
+        let groupedInSelectedWorkspace = false;
+        while (Date.now() < historyDeadline) {
+          const historyResult = await execGraphql<{
+            listRunHistory: Array<{
+              workspaceRootPath: string;
+              agents: Array<{ runs: Array<{ runId: string }> }>;
+            }>;
+          }>(listRunHistoryQuery);
+          groupedInSelectedWorkspace = historyResult.listRunHistory.some(
+            (workspaceGroup) =>
+              workspaceGroup.workspaceRootPath === workspaceRootPath &&
+              workspaceGroup.agents.some((agentGroup) =>
+                agentGroup.runs.some((run) => run.runId === runId),
+              ),
+          );
+          if (groupedInSelectedWorkspace) {
+            break;
+          }
+          await new Promise((resolve) => setTimeout(resolve, 2_000));
+        }
+        expect(groupedInSelectedWorkspace).toBe(true);
+
+        const continueResult = await execGraphql<{
+          continueRun: {
+            success: boolean;
+            message: string;
+            runId: string | null;
+          };
+        }>(continueMutation, {
+          input: {
+            runId,
+            userInput: {
+              content: "Reply with READY again.",
+            },
+          },
+        });
+        expect(continueResult.continueRun.success).toBe(true);
+        expect(continueResult.continueRun.runId).toBe(runId);
+
+        const resumeResult = await execGraphql<{
+          getRunResumeConfig: {
+            runId: string;
+            isActive: boolean;
+            manifestConfig: {
+              runtimeKind: string;
+              workspaceRootPath: string;
+            };
+          };
+        }>(resumeQuery, { runId });
+        expect(resumeResult.getRunResumeConfig.runId).toBe(runId);
+        expect(resumeResult.getRunResumeConfig.manifestConfig.runtimeKind).toBe("codex_app_server");
+        expect(resumeResult.getRunResumeConfig.manifestConfig.workspaceRootPath).toBe(workspaceRootPath);
+      } finally {
+        if (runId) {
+          try {
+            await execGraphql<{
+              terminateAgentRun: { success: boolean };
+            }>(terminateMutation, { id: runId });
+          } catch {
+            // best-effort cleanup
+          }
+        }
+        await rm(workspaceRootPath, { recursive: true, force: true });
+      }
+    },
+    180_000,
+  );
+
   it(
     "returns non-empty run projection conversation for completed codex runs",
     async () => {
@@ -1008,6 +1308,213 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
       }
     },
     60000,
+  );
+
+  it(
+    "streams codex generate_image tool_call metadata with non-empty arguments over websocket",
+    async () => {
+      const previousApprovalPolicy = process.env.CODEX_APP_SERVER_APPROVAL_POLICY;
+      const previousSandbox = process.env.CODEX_APP_SERVER_SANDBOX;
+      process.env.CODEX_APP_SERVER_APPROVAL_POLICY = "never";
+      process.env.CODEX_APP_SERVER_SANDBOX = "workspace-write";
+
+      const modelIdentifier = await fetchPreferredCodexToolModelIdentifier();
+      const imageToken = `generate_image_meta_${randomUUID().replace(/-/g, "_")}`;
+      const outputFilePath = `/tmp/${imageToken}.png`;
+
+      const sendMutation = `
+        mutation SendAgentUserInput($input: SendAgentUserInputInput!) {
+          sendAgentUserInput(input: $input) {
+            success
+            message
+            agentRunId
+          }
+        }
+      `;
+
+      const warmupResult = await execGraphql<{
+        sendAgentUserInput: {
+          success: boolean;
+          message: string;
+          agentRunId: string | null;
+        };
+      }>(sendMutation, {
+        input: {
+          runtimeKind: "codex_app_server",
+          agentDefinitionId: "codex-e2e-agent-def",
+          llmModelIdentifier: modelIdentifier,
+          autoExecuteTools: true,
+          userInput: {
+            content: "Reply with READY.",
+          },
+        },
+      });
+
+      expect(warmupResult.sendAgentUserInput.success).toBe(true);
+      expect(warmupResult.sendAgentUserInput.agentRunId).toBeTruthy();
+      const runId = warmupResult.sendAgentUserInput.agentRunId as string;
+
+      const app = fastify();
+      await app.register(websocket);
+      const dummyTeamHandler = {
+        connect: async () => null,
+        handleMessage: async () => {},
+        disconnect: async () => {},
+      } as unknown as Parameters<typeof registerAgentWebsocket>[2];
+      await registerAgentWebsocket(app, undefined, dummyTeamHandler);
+      const address = await app.listen({ port: 0, host: "127.0.0.1" });
+      const url = new URL(address);
+      const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent/${runId}`);
+
+      const seenEventTypes = new Set<string>();
+      const seenSegmentSnapshots: Array<Record<string, unknown>> = [];
+      let sentPrompt = false;
+      let sawGenerateImageArguments = false;
+      let promptAttemptCount = 0;
+      const maxPromptAttempts = 3;
+
+      await waitForSocketOpen(socket);
+
+      const finished = new Promise<void>((resolve, reject) => {
+        const buildPrompt = (attempt: number): string => {
+          if (attempt === 1) {
+            return `Call the generate_image tool exactly once using these exact JSON arguments: {"prompt":"cute sea animal ${imageToken}","output_file_path":"${outputFilePath}"}. Do not call run_bash or edit_file. Do not simulate tool output.`;
+          }
+          return `Retry attempt ${attempt}: you must call generate_image now with exact JSON arguments {"prompt":"cute sea animal ${imageToken}","output_file_path":"${outputFilePath}"} and nothing else.`;
+        };
+
+        const sendPrompt = () => {
+          if (promptAttemptCount >= maxPromptAttempts) {
+            return;
+          }
+          promptAttemptCount += 1;
+          sentPrompt = true;
+          socket.send(
+            JSON.stringify({
+              type: "SEND_MESSAGE",
+              payload: { content: buildPrompt(promptAttemptCount) },
+            }),
+          );
+        };
+
+        const fallbackSendTimer = setTimeout(() => {
+          if (!sentPrompt) {
+            sendPrompt();
+          }
+        }, 5000);
+        const timeout = setTimeout(() => {
+          reject(
+            new Error(
+              `Timed out waiting for generate_image metadata arguments. promptSent=${String(sentPrompt)} promptAttempts=${String(promptAttemptCount)} argumentsSeen=${String(sawGenerateImageArguments)} seenTypes=${Array.from(seenEventTypes).join(", ")} segmentSnapshots=${JSON.stringify(seenSegmentSnapshots)}`,
+            ),
+          );
+        }, 70000);
+
+        socket.on("message", (raw) => {
+          const message = JSON.parse(raw.toString()) as {
+            type: string;
+            payload?: Record<string, unknown>;
+          };
+          seenEventTypes.add(message.type);
+
+          if (message.type === "AGENT_STATUS") {
+            const status = message.payload?.new_status;
+            if (status === "IDLE" && !sentPrompt) {
+              sendPrompt();
+              return;
+            }
+            if (status === "IDLE" && sentPrompt && sawGenerateImageArguments) {
+              clearTimeout(fallbackSendTimer);
+              clearTimeout(timeout);
+              resolve();
+              return;
+            }
+            if (status === "IDLE" && sentPrompt && !sawGenerateImageArguments && promptAttemptCount < maxPromptAttempts) {
+              sendPrompt();
+            }
+            return;
+          }
+
+          if (message.type !== "SEGMENT_START" && message.type !== "SEGMENT_END") {
+            return;
+          }
+
+          const segmentType =
+            typeof message.payload?.segment_type === "string" ? message.payload.segment_type : null;
+          const metadata =
+            message.payload?.metadata && typeof message.payload.metadata === "object"
+              ? (message.payload.metadata as Record<string, unknown>)
+              : null;
+          const metadataToolName =
+            typeof metadata?.tool_name === "string" ? String(metadata.tool_name) : "";
+          const metadataArguments =
+            metadata?.arguments && typeof metadata.arguments === "object"
+              ? (metadata.arguments as Record<string, unknown>)
+              : null;
+          const promptArg =
+            metadataArguments && typeof metadataArguments.prompt === "string"
+              ? String(metadataArguments.prompt)
+              : null;
+          const outputPathArg =
+            metadataArguments && typeof metadataArguments.output_file_path === "string"
+              ? String(metadataArguments.output_file_path)
+              : null;
+
+          seenSegmentSnapshots.push({
+            messageType: message.type,
+            segmentType,
+            metadataToolName: metadataToolName || null,
+            hasMetadataArguments: Boolean(metadataArguments),
+            promptArgPreview: promptArg?.slice(0, 64) ?? null,
+            outputPathArg: outputPathArg ?? null,
+          });
+
+          const isToolCallSegment = segmentType === "tool_call";
+          const isGenerateImageTool =
+            metadataToolName === "generate_image" || metadataToolName.endsWith(".generate_image");
+          if (!isToolCallSegment || !isGenerateImageTool) {
+            return;
+          }
+
+          if (
+            promptArg &&
+            promptArg.includes(imageToken) &&
+            outputPathArg &&
+            outputPathArg.length > 0
+          ) {
+            sawGenerateImageArguments = true;
+          }
+        });
+
+        socket.once("error", (error) => {
+          clearTimeout(fallbackSendTimer);
+          clearTimeout(timeout);
+          reject(error);
+        });
+      });
+
+      try {
+        await finished;
+        expect(sawGenerateImageArguments).toBe(true);
+      } finally {
+        process.env.CODEX_APP_SERVER_APPROVAL_POLICY = previousApprovalPolicy;
+        process.env.CODEX_APP_SERVER_SANDBOX = previousSandbox;
+        socket.close();
+        await app.close();
+        const terminateMutation = `
+          mutation Terminate($id: String!) {
+            terminateAgentRun(id: $id) {
+              success
+              message
+            }
+          }
+        `;
+        await execGraphql<{
+          terminateAgentRun: { success: boolean; message: string };
+        }>(terminateMutation, { id: runId });
+      }
+    },
+    90000,
   );
 
   it(

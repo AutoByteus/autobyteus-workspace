@@ -274,13 +274,18 @@ const options: Configuration = {
     signIgnore: [
       'node-pty/prebuilds/win32-.*'
     ],
-    // Notarization: set to true, it reads APPLE_ID, APPLE_APP_SPECIFIC_PASSWORD, APPLE_TEAM_ID from env
-    notarize: !!process.env.APPLE_TEAM_ID,
+    // Notarize only when full Apple credentials are present.
+    notarize: !!(
+      process.env.APPLE_ID &&
+      process.env.APPLE_APP_SPECIFIC_PASSWORD &&
+      process.env.APPLE_TEAM_ID
+    ),
     // Debugging: Allow disabling timestamp to isolate network issues
     timestamp: process.env.NO_TIMESTAMP ? null : undefined
   },
   dmg: {
-    sign: false // DMG signing is optional and can cause issues
+    // Sign DMG whenever app signing identity is configured.
+    sign: !!process.env.APPLE_SIGNING_IDENTITY
   },
   linux: {
     target: ['AppImage'],

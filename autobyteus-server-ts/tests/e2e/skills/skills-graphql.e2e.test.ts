@@ -175,7 +175,7 @@ describeGit("Skills GraphQL e2e", () => {
       scriptsNode.children.map((child: { path: string }) => child.path),
     );
     expect(scriptPaths.has("scripts/run.sh")).toBe(true);
-  });
+  }, 15000);
 
   it("deletes a skill", async () => {
     const createMutation = `

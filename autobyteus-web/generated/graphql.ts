@@ -1400,6 +1400,7 @@ export type TeamMemberConfigInput = {
   memberName: Scalars['String']['input'];
   memberRouteKey?: InputMaybe<Scalars['String']['input']>;
   memberRunId?: InputMaybe<Scalars['String']['input']>;
+  runtimeKind?: InputMaybe<Scalars['String']['input']>;
   workspaceId?: InputMaybe<Scalars['String']['input']>;
   workspaceRootPath?: InputMaybe<Scalars['String']['input']>;
 };
@@ -1442,6 +1443,8 @@ export type TeamRunMemberHistoryObject = {
   memberName: Scalars['String']['output'];
   memberRouteKey: Scalars['String']['output'];
   memberRunId: Scalars['String']['output'];
+  runtimeKind: Scalars['String']['output'];
+  runtimeReference?: Maybe<Scalars['JSON']['output']>;
   workspaceRootPath?: Maybe<Scalars['String']['output']>;
 };
 
@@ -2052,7 +2055,7 @@ export type ListRunHistoryQuery = { __typename?: 'Query', listRunHistory: Array<
 export type ListTeamRunHistoryQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ListTeamRunHistoryQuery = { __typename?: 'Query', listTeamRunHistory: Array<{ __typename?: 'TeamRunHistoryItemObject', teamRunId: string, teamDefinitionId: string, teamDefinitionName: string, workspaceRootPath?: string | null, summary: string, lastActivityAt: string, lastKnownStatus: string, deleteLifecycle: string, isActive: boolean, members: Array<{ __typename?: 'TeamRunMemberHistoryObject', memberRouteKey: string, memberName: string, memberRunId: string, workspaceRootPath?: string | null }> }> };
+export type ListTeamRunHistoryQuery = { __typename?: 'Query', listTeamRunHistory: Array<{ __typename?: 'TeamRunHistoryItemObject', teamRunId: string, teamDefinitionId: string, teamDefinitionName: string, workspaceRootPath?: string | null, summary: string, lastActivityAt: string, lastKnownStatus: string, deleteLifecycle: string, isActive: boolean, members: Array<{ __typename?: 'TeamRunMemberHistoryObject', memberRouteKey: string, memberName: string, memberRunId: string, runtimeKind: string, runtimeReference?: any | null, workspaceRootPath?: string | null }> }> };
 
 export type GetRunProjectionQueryVariables = Exact<{
   runId: Scalars['String']['input'];
@@ -4618,6 +4621,8 @@ export const ListTeamRunHistoryDocument = gql`
       memberRouteKey
       memberName
       memberRunId
+      runtimeKind
+      runtimeReference
       workspaceRootPath
     }
   }

@@ -3,6 +3,7 @@ import type { RuntimeCapability } from "../runtime-management/runtime-capability
 export type RuntimeCommandOperation =
   | "create_or_restore"
   | "send_turn"
+  | "relay_inter_agent_message"
   | "approve_tool"
   | "interrupt_run"
   | "terminate_run";
@@ -32,7 +33,12 @@ export const evaluateCommandCapability = (
     return { allowed: true };
   }
 
-  if (operation === "send_turn" || operation === "approve_tool" || operation === "create_or_restore") {
+  if (
+    operation === "send_turn" ||
+    operation === "relay_inter_agent_message" ||
+    operation === "approve_tool" ||
+    operation === "create_or_restore"
+  ) {
     return {
       allowed: false,
       code: "RUNTIME_UNAVAILABLE",

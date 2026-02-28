@@ -8,6 +8,7 @@ import type {
   RuntimeCreateAgentRunInput,
   RuntimeCreateResult,
   RuntimeInterruptRunInput,
+  RuntimeRelayInterAgentMessageInput,
   RuntimeTerminateRunInput,
   RuntimeRestoreAgentRunInput,
   RuntimeSendTurnInput,
@@ -142,6 +143,17 @@ export class AutobyteusRuntimeAdapter implements RuntimeAdapter {
     }
     await agent.postToolExecutionApproval(input.invocationId, input.approved, input.reason ?? null);
     return { accepted: true };
+  }
+
+  async relayInterAgentMessage(
+    input: RuntimeRelayInterAgentMessageInput,
+  ): Promise<RuntimeCommandResult> {
+    void input;
+    return {
+      accepted: false,
+      code: "INTER_AGENT_RELAY_UNSUPPORTED",
+      message: "Autobyteus team runtime does not use runtime-level inter-agent relay.",
+    };
   }
 
   async interruptRun(input: RuntimeInterruptRunInput): Promise<RuntimeCommandResult> {

@@ -116,6 +116,7 @@ export const useApplicationRunStore = defineStore('applicationRun', {
         const teamRunConfig: TeamRunConfig = {
           teamDefinitionId: profile.teamDefinition.id,
           teamDefinitionName: profile.teamDefinition.name,
+          runtimeKind: DEFAULT_AGENT_RUNTIME_KIND,
           workspaceId: null,
           llmModelIdentifier: profile.globalLlmModelIdentifier,
           autoExecuteTools: true,

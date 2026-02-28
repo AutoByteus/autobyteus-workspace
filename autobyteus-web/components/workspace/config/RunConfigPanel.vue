@@ -300,6 +300,10 @@ const isRunDisabled = computed(() => {
 const handleRun = () => {
     if (!isSelectionMode.value) {
         if (effectiveTeamConfig.value) {
+            if (!effectiveTeamConfig.value.workspaceId) {
+                teamRunConfigStore.setWorkspaceError('Workspace is required to run a team.');
+                return;
+            }
             teamContextsStore.createRunFromTemplate();
             teamRunConfigStore.clearConfig();
         } else if (effectiveAgentConfig.value) {

@@ -46,6 +46,21 @@ export interface RuntimeSendTurnInput {
   targetMemberName?: string | null;
 }
 
+export interface RuntimeInterAgentEnvelope {
+  senderAgentId: string;
+  senderAgentName?: string | null;
+  recipientName: string;
+  messageType: string;
+  content: string;
+  teamRunId?: string | null;
+  metadata?: Record<string, unknown> | null;
+}
+
+export interface RuntimeRelayInterAgentMessageInput {
+  runId: string;
+  envelope: RuntimeInterAgentEnvelope;
+}
+
 export interface RuntimeApproveToolInput {
   runId: string;
   mode: RuntimeMode;
@@ -78,6 +93,9 @@ export interface RuntimeAdapter {
   createAgentRun?: (input: RuntimeCreateAgentRunInput) => Promise<RuntimeCreateResult>;
   restoreAgentRun?: (input: RuntimeRestoreAgentRunInput) => Promise<RuntimeCreateResult>;
   sendTurn: (input: RuntimeSendTurnInput) => Promise<RuntimeCommandResult>;
+  relayInterAgentMessage?: (
+    input: RuntimeRelayInterAgentMessageInput,
+  ) => Promise<RuntimeCommandResult>;
   approveTool: (input: RuntimeApproveToolInput) => Promise<RuntimeCommandResult>;
   interruptRun: (input: RuntimeInterruptRunInput) => Promise<RuntimeCommandResult>;
   terminateRun?: (input: RuntimeTerminateRunInput) => Promise<RuntimeCommandResult>;

@@ -181,6 +181,27 @@ describe('RunConfigPanel', () => {
         expect(teamStore.clearConfig).toHaveBeenCalled();
     });
 
+    it('blocks team run when workspace is missing (defensive path)', async () => {
+         const { useTeamRunConfigStore } = await import('~/stores/teamRunConfigStore');
+         const teamStore = useTeamRunConfigStore();
+         teamStore.config = { teamDefinitionId: 'team-def-1', workspaceId: null } as any;
+         teamStore.isConfigured = true;
+         const { useAgentTeamContextsStore } = await import('~/stores/agentTeamContextsStore');
+         const contextStore = useAgentTeamContextsStore();
+         const callsBefore = contextStore.createRunFromTemplate.mock.calls.length;
+
+         const wrapper = mount(RunConfigPanel, {
+            global: {
+                stubs: { AgentRunConfigForm: true, TeamRunConfigForm: true }
+            }
+        });
+
+        await wrapper.find('.run-btn').trigger('click');
+
+        expect(contextStore.createRunFromTemplate.mock.calls.length).toBe(callsBefore);
+        expect(teamStore.setWorkspaceError).toHaveBeenCalledWith('Workspace is required to run a team.');
+    });
+
     it('blocks agent run when workspace is missing (defensive path)', async () => {
         const { useAgentRunConfigStore } = await import('~/stores/agentRunConfigStore');
         const agentStore = useAgentRunConfigStore();

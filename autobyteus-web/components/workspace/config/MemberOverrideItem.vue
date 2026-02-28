@@ -78,7 +78,11 @@ const llmStore = useLLMProviderConfigStore();
 
 const hasOverride = computed(() => {
   if (!props.override) return false;
-  return props.override.llmModelIdentifier || props.override.autoExecuteTools !== undefined || (props.override.llmConfig && Object.keys(props.override.llmConfig).length > 0);
+  return (
+    props.override.llmModelIdentifier ||
+    props.override.autoExecuteTools !== undefined ||
+    (props.override.llmConfig && Object.keys(props.override.llmConfig).length > 0)
+  );
 });
 
 const autoExecuteLabel = computed(() => {

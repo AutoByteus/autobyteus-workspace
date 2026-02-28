@@ -31,7 +31,7 @@ CI build behavior:
 - `AUTOBYTEUS_BUILD_FLAVOR=personal` is set in release build jobs.
 - macOS build runs with `--arm64` explicitly.
 - `NO_TIMESTAMP=1` is enabled for macOS build stability.
-- `APPLE_TEAM_ID=""` is set in CI, so notarization is disabled by design.
+- Apple signing/notarization is enabled when required secrets are configured.
 
 ## Publish Behavior
 
@@ -54,6 +54,8 @@ Published file patterns:
 
 If omitted, macOS build still runs but output is unsigned and not notarized.
 
+- `APPLE_CERTIFICATE_P12_BASE64` (base64 of your `Developer ID Application` `.p12`)
+- `APPLE_CERTIFICATE_P12_PASSWORD`
 - `APPLE_SIGNING_IDENTITY`
 - `APPLE_ID`
 - `APPLE_APP_SPECIFIC_PASSWORD`

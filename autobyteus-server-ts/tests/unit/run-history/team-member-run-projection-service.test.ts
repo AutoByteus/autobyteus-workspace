@@ -79,4 +79,52 @@ describe("TeamMemberRunProjectionService", () => {
       "Member route key 'missing' not found for team run 'team-1'.",
     );
   });
+
+  it("falls back to codex thread projection when local member memory projection is empty", async () => {
+    const getTeamRunResumeConfig = vi.fn().mockResolvedValue({
+      teamRunId: "team-1",
+      manifest: {
+        workspaceRootPath: "/tmp/workspace",
+        memberBindings: [
+          {
+            memberRouteKey: "pong",
+            memberName: "pong",
+            memberRunId: "pong-run",
+            runtimeKind: "codex_app_server",
+            runtimeReference: {
+              runtimeKind: "codex_app_server",
+              sessionId: "pong-run",
+              threadId: "thread-1",
+              metadata: null,
+            },
+          },
+        ],
+      },
+    });
+    const getProjection = vi.fn().mockResolvedValue({
+      runId: "pong-run",
+      summary: null,
+      lastActivityAt: null,
+      conversation: [],
+    });
+    const buildProjection = vi.fn().mockResolvedValue({
+      runId: "pong-run",
+      summary: "summary-from-codex",
+      lastActivityAt: "2026-02-26T13:00:00.000Z",
+      conversation: [{ role: "user", content: "PING-TO-PONG token" }],
+    });
+
+    const service = new TeamMemberRunProjectionService({
+      teamRunHistoryService: { getTeamRunResumeConfig } as any,
+      projectionReader: { getProjection } as any,
+      codexProjectionProvider: { buildProjection } as any,
+    });
+
+    const result = await service.getProjection("team-1", "pong");
+
+    expect(buildProjection).toHaveBeenCalledTimes(1);
+    expect(result.agentRunId).toBe("pong-run");
+    expect(result.summary).toBe("summary-from-codex");
+    expect(result.conversation).toHaveLength(1);
+  });
 });

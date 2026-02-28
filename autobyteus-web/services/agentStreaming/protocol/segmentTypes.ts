@@ -65,10 +65,28 @@ function createToolCallSegment(
   invocationId: string, 
   metadata?: Record<string, any>
 ): ToolCallSegment {
-  const metadataArguments =
-    metadata?.arguments && typeof metadata.arguments === 'object' && !Array.isArray(metadata.arguments)
-      ? { ...(metadata.arguments as Record<string, any>) }
-      : {};
+  const parseArgumentsCandidate = (value: unknown): Record<string, any> => {
+    if (value && typeof value === 'object' && !Array.isArray(value)) {
+      return { ...(value as Record<string, any>) };
+    }
+    if (typeof value === 'string') {
+      const trimmed = value.trim();
+      if (!trimmed) {
+        return {};
+      }
+      try {
+        const parsed = JSON.parse(trimmed);
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+          return parsed as Record<string, any>;
+        }
+      } catch {
+        return {};
+      }
+    }
+    return {};
+  };
+
+  const metadataArguments = parseArgumentsCandidate(metadata?.arguments);
   if (
     typeof metadata?.query === 'string' &&
     metadata.query.trim().length > 0 &&

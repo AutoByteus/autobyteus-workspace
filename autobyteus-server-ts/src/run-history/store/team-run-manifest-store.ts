@@ -3,6 +3,7 @@ import path from "node:path";
 import { TeamRunManifest, TeamRunMemberBinding } from "../domain/team-models.js";
 import { canonicalizeWorkspaceRootPath } from "../utils/workspace-path-normalizer.js";
 import { normalizeMemberRouteKey } from "../utils/team-member-run-id.js";
+import { normalizeRuntimeKind } from "../../runtime-management/runtime-kind.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
@@ -26,6 +27,19 @@ const normalizeMemberBinding = (binding: TeamRunMemberBinding): TeamRunMemberBin
   memberRouteKey: normalizeMemberRouteKey(binding.memberRouteKey),
   memberName: binding.memberName.trim(),
   memberRunId: binding.memberRunId.trim(),
+  runtimeKind: normalizeRuntimeKind(binding.runtimeKind),
+  runtimeReference:
+    binding.runtimeReference && typeof binding.runtimeReference === "object"
+      ? {
+          runtimeKind: normalizeRuntimeKind(
+            binding.runtimeReference.runtimeKind,
+            normalizeRuntimeKind(binding.runtimeKind),
+          ),
+          sessionId: binding.runtimeReference.sessionId ?? null,
+          threadId: binding.runtimeReference.threadId ?? null,
+          metadata: binding.runtimeReference.metadata ?? null,
+        }
+      : null,
   agentDefinitionId: binding.agentDefinitionId.trim(),
   llmModelIdentifier: binding.llmModelIdentifier.trim(),
   autoExecuteTools: Boolean(binding.autoExecuteTools),
@@ -61,6 +75,10 @@ const isMemberBindingLike = (value: unknown): value is TeamRunMemberBinding => {
     typeof payload.memberRouteKey === "string" &&
     typeof payload.memberName === "string" &&
     typeof payload.memberRunId === "string" &&
+    typeof payload.runtimeKind === "string" &&
+    (payload.runtimeReference === null ||
+      (typeof payload.runtimeReference === "object" &&
+        !Array.isArray(payload.runtimeReference))) &&
     typeof payload.agentDefinitionId === "string" &&
     typeof payload.llmModelIdentifier === "string" &&
     typeof payload.autoExecuteTools === "boolean" &&
@@ -100,6 +118,40 @@ const validateManifest = (value: unknown): TeamRunManifest | null => {
       memberRouteKey: String(normalizedBinding.memberRouteKey),
       memberName: String(normalizedBinding.memberName),
       memberRunId: String(normalizedBinding.memberRunId),
+      runtimeKind: normalizeRuntimeKind(normalizedBinding.runtimeKind),
+      runtimeReference:
+        normalizedBinding.runtimeReference &&
+        typeof normalizedBinding.runtimeReference === "object" &&
+        !Array.isArray(normalizedBinding.runtimeReference)
+          ? {
+              runtimeKind: normalizeRuntimeKind(
+                (normalizedBinding.runtimeReference as Record<string, unknown>).runtimeKind,
+                normalizeRuntimeKind(normalizedBinding.runtimeKind),
+              ),
+              sessionId:
+                typeof (normalizedBinding.runtimeReference as Record<string, unknown>).sessionId ===
+                "string"
+                  ? ((normalizedBinding.runtimeReference as Record<string, unknown>).sessionId as string)
+                  : null,
+              threadId:
+                typeof (normalizedBinding.runtimeReference as Record<string, unknown>).threadId ===
+                "string"
+                  ? ((normalizedBinding.runtimeReference as Record<string, unknown>).threadId as string)
+                  : null,
+              metadata:
+                (normalizedBinding.runtimeReference as Record<string, unknown>).metadata &&
+                typeof (normalizedBinding.runtimeReference as Record<string, unknown>).metadata ===
+                  "object" &&
+                !Array.isArray(
+                  (normalizedBinding.runtimeReference as Record<string, unknown>).metadata,
+                )
+                  ? ((normalizedBinding.runtimeReference as Record<string, unknown>).metadata as Record<
+                      string,
+                      unknown
+                    >)
+                  : null,
+            }
+          : null,
       agentDefinitionId: String(normalizedBinding.agentDefinitionId),
       llmModelIdentifier: String(normalizedBinding.llmModelIdentifier),
       autoExecuteTools: Boolean(normalizedBinding.autoExecuteTools),

@@ -1,3 +1,5 @@
+import type { RuntimeKind } from "../../runtime-management/runtime-kind.js";
+
 export const TEAM_RUN_HISTORY_INDEX_VERSION = 1;
 
 export type TeamRunKnownStatus = "ACTIVE" | "IDLE" | "ERROR";
@@ -8,11 +10,20 @@ export interface TeamRunMemberBinding {
   memberRouteKey: string;
   memberName: string;
   memberRunId: string;
+  runtimeKind: RuntimeKind;
+  runtimeReference: TeamMemberRuntimeReference | null;
   agentDefinitionId: string;
   llmModelIdentifier: string;
   autoExecuteTools: boolean;
   llmConfig: Record<string, unknown> | null;
   workspaceRootPath: string | null;
+}
+
+export interface TeamMemberRuntimeReference {
+  runtimeKind: RuntimeKind;
+  sessionId: string | null;
+  threadId: string | null;
+  metadata: Record<string, unknown> | null;
 }
 
 export interface TeamRunManifest {
@@ -47,6 +58,8 @@ export interface TeamRunMemberHistoryItem {
   memberRouteKey: string;
   memberName: string;
   memberRunId: string;
+  runtimeKind: RuntimeKind;
+  runtimeReference: TeamMemberRuntimeReference | null;
   agentDefinitionId: string;
   llmModelIdentifier: string;
   autoExecuteTools: boolean;
@@ -74,6 +87,8 @@ export interface TeamMemberRunManifest {
   memberRouteKey: string;
   memberName: string;
   memberRunId: string;
+  runtimeKind: RuntimeKind;
+  runtimeReference: TeamMemberRuntimeReference | null;
   agentDefinitionId: string;
   llmModelIdentifier: string;
   autoExecuteTools: boolean;

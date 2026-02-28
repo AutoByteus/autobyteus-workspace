@@ -1,9 +1,15 @@
 import type { AgentInputUserMessage } from "autobyteus-ts";
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
+import {
+  TeamMemberRuntimeOrchestrator,
+  TeamRuntimeRoutingError,
+  getTeamMemberRuntimeOrchestrator,
+} from "../../agent-team-execution/services/team-member-runtime-orchestrator.js";
 import { UserInputConverter } from "../../api/graphql/converters/user-input-converter.js";
 import type { AgentUserInput } from "../../api/graphql/types/agent-user-input.js";
 import { getWorkspaceManager, type WorkspaceManager } from "../../workspaces/workspace-manager.js";
 import { TeamMemberMemoryLayoutStore } from "../store/team-member-memory-layout-store.js";
+import type { TeamRunManifest } from "../domain/team-models.js";
 import { normalizeMemberRouteKey } from "../utils/team-member-run-id.js";
 import {
   TeamRunHistoryService,
@@ -61,16 +67,20 @@ export class TeamRunContinuationService {
   private readonly teamRunHistoryService: TeamRunHistoryService;
   private readonly workspaceManager: WorkspaceManager;
   private readonly memberLayoutStore: TeamMemberMemoryLayoutStore;
+  private readonly teamMemberRuntimeOrchestrator: TeamMemberRuntimeOrchestrator;
 
   constructor(options: {
     teamRunManager?: TeamRunManagerLike;
     teamRunHistoryService?: TeamRunHistoryService;
     workspaceManager?: WorkspaceManager;
+    teamMemberRuntimeOrchestrator?: TeamMemberRuntimeOrchestrator;
     memoryDir?: string;
   } = {}) {
     this.teamRunManager = options.teamRunManager ?? AgentTeamRunManager.getInstance();
     this.teamRunHistoryService = options.teamRunHistoryService ?? getTeamRunHistoryService();
     this.workspaceManager = options.workspaceManager ?? getWorkspaceManager();
+    this.teamMemberRuntimeOrchestrator =
+      options.teamMemberRuntimeOrchestrator ?? getTeamMemberRuntimeOrchestrator();
     this.memberLayoutStore = new TeamMemberMemoryLayoutStore(
       options.memoryDir ?? appConfigProvider.config.getMemoryDir(),
     );
@@ -79,16 +89,29 @@ export class TeamRunContinuationService {
   async continueTeamRun(input: ContinueTeamRunInput): Promise<ContinueTeamRunResult> {
     const teamRunId = normalizeRequiredString(input.teamRunId, "teamRunId");
     const content = normalizeRequiredString(input.userInput?.content ?? "", "userInput.content");
+    const resumeConfig = await this.teamRunHistoryService.getTeamRunResumeConfig(teamRunId);
+    const manifest = resumeConfig.manifest;
+
     const userMessage = UserInputConverter.toAgentInputUserMessage({
       ...input.userInput,
       content,
     });
 
+    if (this.isCodexMemberManifest(manifest)) {
+      return this.continueCodexTeamRun({
+        teamRunId,
+        userMessage,
+        targetMemberRouteKey: input.targetMemberRouteKey ?? null,
+        content,
+        manifest,
+      });
+    }
+
     let restored = false;
     try {
       let team = this.teamRunManager.getTeamRun(teamRunId) as TeamLike | null;
       if (!team) {
-        await this.restoreTeamRuntime(teamRunId);
+        await this.restoreAutobyteusTeamRuntime(teamRunId, manifest);
         restored = true;
         team = this.teamRunManager.getTeamRun(teamRunId) as TeamLike | null;
       }
@@ -96,8 +119,8 @@ export class TeamRunContinuationService {
         throw new Error(`Team run '${teamRunId}' restore failed.`);
       }
 
-      const targetMemberName = await this.resolveTargetMemberName(
-        teamRunId,
+      const targetMemberName = this.resolveTargetMemberName(
+        manifest,
         input.targetMemberRouteKey ?? null,
       );
       await team.postMessage(userMessage, targetMemberName);
@@ -108,16 +131,56 @@ export class TeamRunContinuationService {
       };
     } catch (error) {
       if (restored) {
-        await this.safeTerminate(teamRunId);
+        await this.safeTerminateAutobyteus(teamRunId);
       }
       throw error;
     }
   }
 
-  private async restoreTeamRuntime(teamRunId: string): Promise<void> {
-    const resumeConfig = await this.teamRunHistoryService.getTeamRunResumeConfig(teamRunId);
-    const manifest = resumeConfig.manifest;
+  private async continueCodexTeamRun(input: {
+    teamRunId: string;
+    userMessage: AgentInputUserMessage;
+    targetMemberRouteKey: string | null;
+    content: string;
+    manifest: TeamRunManifest;
+  }): Promise<ContinueTeamRunResult> {
+    let restored = false;
+    try {
+      if (!this.teamMemberRuntimeOrchestrator.hasActiveMemberBinding(input.teamRunId)) {
+        await this.teamMemberRuntimeOrchestrator.restoreCodexTeamRunSessions(input.manifest);
+        restored = true;
+      }
 
+      const targetMemberName = this.resolveTargetMemberName(
+        input.manifest,
+        input.targetMemberRouteKey,
+      );
+      const fallbackTargetMemberName = this.resolveCoordinatorMemberName(input.manifest);
+
+      await this.teamMemberRuntimeOrchestrator.sendToMember(
+        input.teamRunId,
+        targetMemberName,
+        input.userMessage,
+        { fallbackTargetMemberName },
+      );
+      await this.safeRecordActivity(input.teamRunId, input.content);
+
+      return {
+        teamRunId: input.teamRunId,
+        restored,
+      };
+    } catch (error) {
+      if (restored) {
+        this.teamMemberRuntimeOrchestrator.removeTeam(input.teamRunId);
+      }
+      if (error instanceof TeamRuntimeRoutingError) {
+        throw new Error(`[${error.code}] ${error.message}`);
+      }
+      throw error;
+    }
+  }
+
+  private async restoreAutobyteusTeamRuntime(teamRunId: string, manifest: TeamRunManifest): Promise<void> {
     const memberConfigs = await Promise.all(
       manifest.memberBindings.map(async (binding) => {
         let workspaceId: string | null = null;
@@ -148,27 +211,36 @@ export class TeamRunContinuationService {
     );
   }
 
-  private async resolveTargetMemberName(
-    teamRunId: string,
+  private resolveTargetMemberName(
+    manifest: TeamRunManifest,
     targetMemberRouteKey: string | null,
-  ): Promise<string | null> {
+  ): string | null {
     const normalizedTarget = normalizeOptionalString(targetMemberRouteKey);
     if (!normalizedTarget) {
       return null;
     }
 
-    try {
-      const resumeConfig = await this.teamRunHistoryService.getTeamRunResumeConfig(teamRunId);
-      const normalizedRoute = normalizeRouteKey(normalizedTarget);
-      const member = resumeConfig.manifest.memberBindings.find(
-        (binding) =>
-          normalizeRouteKey(binding.memberRouteKey) === normalizedRoute ||
-          binding.memberName.trim() === normalizedTarget,
-      );
-      return member?.memberName ?? normalizedTarget;
-    } catch {
-      return normalizedTarget;
+    const normalizedRoute = normalizeRouteKey(normalizedTarget);
+    const member = manifest.memberBindings.find(
+      (binding) =>
+        normalizeRouteKey(binding.memberRouteKey) === normalizedRoute ||
+        binding.memberName.trim() === normalizedTarget,
+    );
+    return member?.memberName ?? normalizedTarget;
+  }
+
+  private resolveCoordinatorMemberName(manifest: TeamRunManifest): string | null {
+    const coordinator = manifest.memberBindings.find(
+      (binding) => binding.memberRouteKey === manifest.coordinatorMemberRouteKey,
+    );
+    return coordinator?.memberName ?? null;
+  }
+
+  private isCodexMemberManifest(manifest: TeamRunManifest): boolean {
+    if (manifest.memberBindings.length === 0) {
+      return false;
     }
+    return manifest.memberBindings.every((binding) => binding.runtimeKind === "codex_app_server");
   }
 
   private async safeRecordActivity(teamRunId: string, summary: string): Promise<void> {
@@ -182,7 +254,7 @@ export class TeamRunContinuationService {
     }
   }
 
-  private async safeTerminate(teamRunId: string): Promise<void> {
+  private async safeTerminateAutobyteus(teamRunId: string): Promise<void> {
     try {
       await this.teamRunManager.terminateTeamRun(teamRunId);
     } catch (error) {

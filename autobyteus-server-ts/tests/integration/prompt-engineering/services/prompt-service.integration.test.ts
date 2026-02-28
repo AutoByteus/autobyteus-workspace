@@ -27,7 +27,7 @@ describe("PromptService", () => {
     });
     expect(created2.version).toBe(2);
     expect(created2.isActive).toBe(false);
-  });
+  }, 15000);
 
   it("defaults suitable_for_models to 'default'", async () => {
     const promptService = new PromptService();

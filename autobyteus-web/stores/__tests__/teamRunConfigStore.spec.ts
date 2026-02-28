@@ -24,6 +24,7 @@ describe('teamRunConfigStore', () => {
 
       expect(store.config?.teamDefinitionId).toBe('team-def-1');
       expect(store.config?.teamDefinitionName).toBe('Research Team');
+      expect(store.config?.runtimeKind).toBe('autobyteus');
       expect(store.config?.llmModelIdentifier).toBe('');
       expect(store.config?.workspaceId).toBeNull();
       expect(store.config?.autoExecuteTools).toBe(false);
@@ -65,6 +66,27 @@ describe('teamRunConfigStore', () => {
       const store = useTeamRunConfigStore();
       store.setTemplate(mockTeamDef);
       expect(store.hasConfig).toBe(true);
+    });
+  });
+
+  describe('isConfigured getter', () => {
+    it('returns false when workspace is missing', () => {
+      const store = useTeamRunConfigStore();
+      store.setTemplate(mockTeamDef);
+      store.updateConfig({ llmModelIdentifier: 'gpt-4.1' });
+
+      expect(store.isConfigured).toBe(false);
+    });
+
+    it('returns true when model and workspace are both present', () => {
+      const store = useTeamRunConfigStore();
+      store.setTemplate(mockTeamDef);
+      store.updateConfig({
+        llmModelIdentifier: 'gpt-4.1',
+        workspaceId: 'ws-1',
+      } as any);
+
+      expect(store.isConfigured).toBe(true);
     });
   });
 

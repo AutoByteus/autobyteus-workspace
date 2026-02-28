@@ -4,6 +4,7 @@ import { TeamMemberRunManifest, TeamRunKnownStatus } from "../domain/team-models
 import { TeamMemberMemoryLayoutStore } from "./team-member-memory-layout-store.js";
 import { canonicalizeWorkspaceRootPath } from "../utils/workspace-path-normalizer.js";
 import { normalizeMemberRouteKey } from "../utils/team-member-run-id.js";
+import { normalizeRuntimeKind } from "../../runtime-management/runtime-kind.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
@@ -39,6 +40,19 @@ const normalizeManifest = (manifest: TeamMemberRunManifest): TeamMemberRunManife
   memberRouteKey: normalizeMemberRouteKey(manifest.memberRouteKey),
   memberName: normalizeRequiredString(manifest.memberName, "memberName"),
   memberRunId: normalizeRequiredString(manifest.memberRunId, "memberRunId"),
+  runtimeKind: normalizeRuntimeKind(manifest.runtimeKind),
+  runtimeReference:
+    manifest.runtimeReference && typeof manifest.runtimeReference === "object"
+      ? {
+          runtimeKind: normalizeRuntimeKind(
+            manifest.runtimeReference.runtimeKind,
+            normalizeRuntimeKind(manifest.runtimeKind),
+          ),
+          sessionId: manifest.runtimeReference.sessionId ?? null,
+          threadId: manifest.runtimeReference.threadId ?? null,
+          metadata: manifest.runtimeReference.metadata ?? null,
+        }
+      : null,
   agentDefinitionId: normalizeRequiredString(manifest.agentDefinitionId, "agentDefinitionId"),
   llmModelIdentifier: normalizeRequiredString(manifest.llmModelIdentifier, "llmModelIdentifier"),
   autoExecuteTools: Boolean(manifest.autoExecuteTools),
@@ -66,6 +80,11 @@ const validateManifest = (value: unknown): TeamMemberRunManifest | null => {
     typeof payload.memberRouteKey !== "string" ||
     typeof payload.memberName !== "string" ||
     typeof payload.memberRunId !== "string" ||
+    typeof payload.runtimeKind !== "string" ||
+    (payload.runtimeReference !== null &&
+      payload.runtimeReference !== undefined &&
+      (typeof payload.runtimeReference !== "object" ||
+        Array.isArray(payload.runtimeReference))) ||
     typeof payload.agentDefinitionId !== "string" ||
     typeof payload.llmModelIdentifier !== "string" ||
     typeof payload.autoExecuteTools !== "boolean" ||
@@ -87,6 +106,35 @@ const validateManifest = (value: unknown): TeamMemberRunManifest | null => {
     memberRouteKey: payload.memberRouteKey,
     memberName: payload.memberName,
     memberRunId: payload.memberRunId,
+    runtimeKind: normalizeRuntimeKind(payload.runtimeKind),
+    runtimeReference:
+      payload.runtimeReference &&
+      typeof payload.runtimeReference === "object" &&
+      !Array.isArray(payload.runtimeReference)
+        ? {
+            runtimeKind: normalizeRuntimeKind(
+              (payload.runtimeReference as Record<string, unknown>).runtimeKind,
+              normalizeRuntimeKind(payload.runtimeKind),
+            ),
+            sessionId:
+              typeof (payload.runtimeReference as Record<string, unknown>).sessionId === "string"
+                ? ((payload.runtimeReference as Record<string, unknown>).sessionId as string)
+                : null,
+            threadId:
+              typeof (payload.runtimeReference as Record<string, unknown>).threadId === "string"
+                ? ((payload.runtimeReference as Record<string, unknown>).threadId as string)
+                : null,
+            metadata:
+              (payload.runtimeReference as Record<string, unknown>).metadata &&
+              typeof (payload.runtimeReference as Record<string, unknown>).metadata === "object" &&
+              !Array.isArray((payload.runtimeReference as Record<string, unknown>).metadata)
+                ? ((payload.runtimeReference as Record<string, unknown>).metadata as Record<
+                    string,
+                    unknown
+                  >)
+                : null,
+          }
+        : null,
     agentDefinitionId: payload.agentDefinitionId,
     llmModelIdentifier: payload.llmModelIdentifier,
     autoExecuteTools: payload.autoExecuteTools,

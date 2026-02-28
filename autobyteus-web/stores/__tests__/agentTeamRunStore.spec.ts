@@ -13,6 +13,7 @@ const {
   mockClearActivities,
   teamContextsStoreMock,
   runHistoryStoreMock,
+  teamDefinitionStoreMock,
 } = vi.hoisted(() => ({
   mockConnect: vi.fn(),
   mockDisconnect: vi.fn(),
@@ -30,6 +31,9 @@ const {
   runHistoryStoreMock: {
     markTeamAsActive: vi.fn(),
     refreshTreeQuietly: vi.fn().mockResolvedValue(undefined),
+  },
+  teamDefinitionStoreMock: {
+    getAgentTeamDefinitionById: vi.fn(),
   },
 }));
 
@@ -69,6 +73,10 @@ vi.mock('~/stores/agentActivityStore', () => ({
 
 vi.mock('~/stores/runHistoryStore', () => ({
   useRunHistoryStore: () => runHistoryStoreMock,
+}));
+
+vi.mock('~/stores/agentTeamDefinitionStore', () => ({
+  useAgentTeamDefinitionStore: () => teamDefinitionStoreMock,
 }));
 
 describe('agentTeamRunStore', () => {
@@ -232,5 +240,80 @@ describe('agentTeamRunStore', () => {
     expect(result).toBe(true);
     expect(mockStopGeneration).toHaveBeenCalledTimes(1);
     expect(focusedMember.isSending).toBe(false);
+  });
+
+  it('uses team runtime kind for all member configs when launching a temporary team', async () => {
+    const focusedMember = {
+      isSending: false,
+      state: {
+        runId: 'member-1',
+        conversation: {
+          messages: [] as any[],
+          updatedAt: '2026-02-21T00:00:00.000Z',
+        },
+      },
+    };
+    const teamContext = {
+      teamRunId: 'temp-team-123',
+      focusedMemberName: 'professor',
+      isSubscribed: false,
+      config: {
+        teamDefinitionId: 'team-def-1',
+        runtimeKind: 'codex_app_server',
+        workspaceId: 'ws-1',
+        llmModelIdentifier: 'gpt-5.3-codex',
+        autoExecuteTools: false,
+        memberOverrides: {
+          professor: {
+            agentDefinitionId: 'agent-a',
+            llmModelIdentifier: 'gpt-5.3-codex',
+            runtimeKind: 'autobyteus',
+          },
+        },
+      },
+      members: new Map([['professor', focusedMember]]),
+    };
+
+    teamDefinitionStoreMock.getAgentTeamDefinitionById.mockReturnValue({
+      id: 'team-def-1',
+      nodes: [
+        { memberName: 'professor', referenceType: 'AGENT', referenceId: 'agent-a' },
+        { memberName: 'student', referenceType: 'AGENT', referenceId: 'agent-b' },
+      ],
+    });
+
+    teamContextsStoreMock.activeTeamContext = teamContext;
+    teamContextsStoreMock.focusedMemberContext = focusedMember;
+    teamContextsStoreMock.getTeamContextById.mockImplementation((teamRunId: string) =>
+      teamRunId === 'team-1' ? { ...teamContext, teamRunId: 'team-1' } : null,
+    );
+
+    mockMutate.mockResolvedValue({
+      data: {
+        sendMessageToTeam: {
+          success: true,
+          teamRunId: 'team-1',
+          message: 'ok',
+        },
+      },
+      errors: [],
+    });
+
+    const store = useAgentTeamRunStore();
+    await store.sendMessageToFocusedMember('launch', []);
+
+    expect(mockMutate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        variables: {
+          input: expect.objectContaining({
+            teamRunId: null,
+            memberConfigs: expect.arrayContaining([
+              expect.objectContaining({ memberName: 'professor', runtimeKind: 'codex_app_server' }),
+              expect.objectContaining({ memberName: 'student', runtimeKind: 'codex_app_server' }),
+            ]),
+          }),
+        },
+      }),
+    );
   });
 });

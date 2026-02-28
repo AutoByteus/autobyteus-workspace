@@ -56,6 +56,16 @@ pnpm --filter autobyteus-server-ts build
 pnpm --filter autobyteus-message-gateway build
 ```
 
+## Testing (Codex Runtime)
+
+For Codex-related tickets, run backend tests with Codex live transport enabled.
+Without this env var, Codex live E2E suites are skipped.
+
+```bash
+RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts test -- --run
+pnpm -C autobyteus-web test
+```
+
 ## Android (Termux) Quick Start
 
 Run inside Termux:

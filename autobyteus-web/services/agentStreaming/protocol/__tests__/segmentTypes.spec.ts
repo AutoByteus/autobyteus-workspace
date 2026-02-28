@@ -39,3 +39,27 @@ describe('createSegmentFromPayload (media)', () => {
     }
   });
 });
+
+describe('createSegmentFromPayload (tool_call arguments)', () => {
+  it('parses tool_call metadata.arguments when it is serialized JSON', () => {
+    const payload: SegmentStartPayload = {
+      id: 'tool-1',
+      segment_type: 'tool_call',
+      metadata: {
+        tool_name: 'generate_image',
+        arguments:
+          '{"prompt":"cute sea animal","output_file_path":"/tmp/cute-sea-animal.png"}',
+      },
+    };
+
+    const segment = createSegmentFromPayload(payload);
+    expect(segment.type).toBe('tool_call');
+    if (segment.type === 'tool_call') {
+      expect(segment.toolName).toBe('generate_image');
+      expect(segment.arguments).toEqual({
+        prompt: 'cute sea animal',
+        output_file_path: '/tmp/cute-sea-animal.png',
+      });
+    }
+  });
+});
