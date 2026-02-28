@@ -58,7 +58,10 @@ function getRuntimeTargetPreference(): string[] {
     return ["windows"];
   }
   if (process.platform === "darwin") {
-    return ["darwin-arm64", "darwin"];
+    if (process.arch === "arm64") {
+      return ["darwin-arm64", "darwin"];
+    }
+    return ["darwin", "darwin-arm64"];
   }
   return ["debian-openssl-3.0.x", "debian-openssl-1.1.x", "linux-musl"];
 }
