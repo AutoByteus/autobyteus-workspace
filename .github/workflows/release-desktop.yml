@@ -113,11 +113,21 @@ jobs:
       - name: Install Python setuptools for node-gyp
         run: python3 -m pip install --user --break-system-packages --upgrade setuptools
 
+      - name: Import Apple code signing certificate
+        if: ${{ secrets.APPLE_CERTIFICATE_P12_BASE64 != '' && secrets.APPLE_CERTIFICATE_P12_PASSWORD != '' }}
+        uses: apple-actions/import-codesign-certs@v3
+        with:
+          p12-file-base64: ${{ secrets.APPLE_CERTIFICATE_P12_BASE64 }}
+          p12-password: ${{ secrets.APPLE_CERTIFICATE_P12_PASSWORD }}
+
       - name: Build Electron macOS Intel x64
         working-directory: autobyteus-web
         env:
           NO_TIMESTAMP: "1"
-          APPLE_TEAM_ID: ""
+          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           AUTOBYTEUS_BUILD_FLAVOR: "personal"
         run: pnpm build:electron:mac -- --x64
 
