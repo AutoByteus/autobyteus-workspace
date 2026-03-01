@@ -150,10 +150,16 @@ export class TeamStreamingService {
 
   private handleConnect = (): void => {
     console.log('Team WebSocket connected');
+    if (this.teamContext) {
+      this.teamContext.isSubscribed = true;
+    }
   };
 
   private handleDisconnect = (reason?: string): void => {
     console.log('Team WebSocket disconnected:', reason);
+    if (this.teamContext) {
+      this.teamContext.isSubscribed = false;
+    }
   };
 
   private handleError = (error: Error): void => {
