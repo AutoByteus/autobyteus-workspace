@@ -53,6 +53,8 @@
 | C-030 | Modify | `team-member-runtime-orchestrator.ts` | Done | Done | Persist refreshed external runtime reference into team binding registry after member sends |
 | C-031 | Add | Claude parity team E2E suite | Done | Done | Added `claude-team-external-runtime.e2e.test.ts` to mirror Codex team live parity coverage |
 | C-032 | Modify | Team stream reconnect behavior (web) | Done | Done | Reconnect stale/disconnected team websocket streams after send and sync `isSubscribed` on connect/disconnect callbacks |
+| C-033 | Modify | `claude-agent-sdk-runtime-service.ts` | Done | Done | Added live Claude assistant chunk (`assistant.message.content[].text`) and `result` fallback normalization to prevent empty assistant output |
+| C-034 | Modify | Claude live runtime E2E assertions | Done | Done | Hardened live tests to require non-empty assistant output content for single-agent and team-member turns |
 
 ## Verification Log
 
@@ -88,6 +90,9 @@
 | 2026-03-01 | `RUN_CODEX_E2E=1 RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts tests/e2e/run-history/team-run-history-graphql.e2e.test.ts` | Pass | Revalidated fundamental live runtime/team flows after user-reported manual symptom: `4 files passed`, `19 passed / 1 skipped` |
 | 2026-03-01 | `pnpm -C autobyteus-web exec vitest run stores/__tests__/agentTeamRunStore.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts` | Pass | New reconnect regression tests passed: `2 files`, `8 tests` |
 | 2026-03-01 | `pnpm -C autobyteus-web test` | Pass | Full frontend regression rerun after reconnect fix: `test:nuxt 143 files / 708 tests` + `test:electron 6 files / 38 tests` |
+| 2026-03-01 | `pnpm -C autobyteus-server-ts exec vitest run tests/unit/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.test.ts` | Pass | Added regression for real Claude chunk shape; unit suite now validates assistant content extraction |
+| 2026-03-01 | `RUN_CLAUDE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts` | Pass | Live Claude runtime/team E2E rerun with strict non-empty assistant output assertions: `13/13` |
+| 2026-03-01 | `pnpm -C autobyteus-server-ts test` | Pass | Full backend suite rerun after normalization + E2E assertion hardening: `246 passed / 7 skipped`, `1070 passed / 34 skipped` |
 
 ## Blockers
 

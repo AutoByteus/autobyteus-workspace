@@ -151,3 +151,21 @@
 4. Update frontend runtime enums/options to runtime-kind-driven rendering.
 - Include `claude_agent_sdk` in runtime kind union and runtime selects.
 - Keep capability store as source of runtime enablement.
+
+## Re-Entry Delta (2026-03-01, no-reply after restart)
+
+1. Live Claude SDK stream shape mismatch caused silent assistant output loss.
+- Manual probe of `@anthropic-ai/claude-agent-sdk` returned chunks shaped as:
+  - `type: "assistant"` with `message.content: [{ type: "text", text: "..." }]`
+  - `type: "result"` with `result: "..."`
+- Existing `normalizeClaudeStreamChunk` only extracted `delta`-style fields (`delta`, `textDelta`, etc.) and ignored `assistant.message.content`, so assistant text remained empty and UI appeared stuck/no-reply.
+
+2. Existing live E2E coverage had a blind spot in assertion strength.
+- Runtime websocket tests validated lifecycle (`RUNNING -> IDLE`) and absence of runtime errors, but did not require non-empty assistant output text for every live turn.
+- This allowed lifecycle-only success even when assistant output normalization regressed.
+
+3. Required corrective actions for this cycle.
+- Extend Claude stream normalization to parse assistant content blocks (`message.content[].text`) and safe `result` fallback without duplicating emitted output.
+- Tighten live Claude E2E assertions to fail unless assistant text is non-empty:
+  - single-agent websocket lifecycle test now asserts non-empty assistant output containing expected keyword.
+  - team external-member routing test now asserts each targeted member emits non-empty output containing the requested marker token.

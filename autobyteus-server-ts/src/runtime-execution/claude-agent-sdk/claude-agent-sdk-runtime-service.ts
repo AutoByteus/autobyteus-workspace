@@ -256,6 +256,9 @@ export class ClaudeAgentSdkRuntimeService {
         }
 
         if (normalized.delta) {
+          if (normalized.source === "result" && assistantOutput.length > 0) {
+            continue;
+          }
           assistantOutput += normalized.delta;
           this.emitEvent(state, {
             method: "item/outputText/delta",
@@ -755,11 +758,12 @@ const normalizeSessionMessages = (value: unknown): Array<Record<string, unknown>
 
 const normalizeClaudeStreamChunk = (
   chunk: unknown,
-): { sessionId: string | null; delta: string | null } => {
+): { sessionId: string | null; delta: string | null; source: "stream_delta" | "assistant_message" | "result" | "unknown" } => {
   if (typeof chunk === "string") {
     return {
       sessionId: null,
       delta: chunk,
+      source: "stream_delta",
     };
   }
 
@@ -768,6 +772,7 @@ const normalizeClaudeStreamChunk = (
     return {
       sessionId: null,
       delta: null,
+      source: "unknown",
     };
   }
 
@@ -786,7 +791,7 @@ const normalizeClaudeStreamChunk = (
     null;
 
   if (delta) {
-    return { sessionId, delta };
+    return { sessionId, delta, source: "stream_delta" };
   }
 
   const nested = asObject(payload.message) ?? asObject(payload.content) ?? null;
@@ -795,11 +800,77 @@ const normalizeClaudeStreamChunk = (
     asNonEmptyRawString(nested?.textDelta) ??
     asNonEmptyRawString(nested?.text_delta) ??
     null;
+  if (nestedDelta) {
+    return {
+      sessionId,
+      delta: nestedDelta,
+      source: "stream_delta",
+    };
+  }
+
+  const assistantMessage = asObject(payload.message);
+  const assistantMessageText = extractAssistantMessageText(assistantMessage);
+  if (assistantMessageText) {
+    return {
+      sessionId,
+      delta: assistantMessageText,
+      source: "assistant_message",
+    };
+  }
+
+  const fallbackResult =
+    asNonEmptyRawString(payload.result) ?? asNonEmptyRawString(payload.text) ?? null;
+  if (fallbackResult) {
+    return {
+      sessionId,
+      delta: fallbackResult,
+      source: "result",
+    };
+  }
 
   return {
     sessionId,
-    delta: nestedDelta,
+    delta: null,
+    source: "unknown",
   };
+};
+
+const extractAssistantMessageText = (messagePayload: Record<string, unknown> | null): string | null => {
+  if (!messagePayload) {
+    return null;
+  }
+
+  const content = messagePayload.content;
+  if (typeof content === "string" && content.length > 0) {
+    return content;
+  }
+
+  if (!Array.isArray(content)) {
+    return null;
+  }
+
+  const textParts: string[] = [];
+  for (const entry of content) {
+    if (typeof entry === "string" && entry.length > 0) {
+      textParts.push(entry);
+      continue;
+    }
+    const block = asObject(entry);
+    if (!block) {
+      continue;
+    }
+    const text =
+      asNonEmptyRawString(block.text) ??
+      asNonEmptyRawString(block.delta) ??
+      asNonEmptyRawString(block.textDelta) ??
+      asNonEmptyRawString(block.text_delta) ??
+      null;
+    if (text) {
+      textParts.push(text);
+    }
+  }
+
+  return textParts.length > 0 ? textParts.join("") : null;
 };
 
 let cachedClaudeAgentSdkRuntimeService: ClaudeAgentSdkRuntimeService | null = null;

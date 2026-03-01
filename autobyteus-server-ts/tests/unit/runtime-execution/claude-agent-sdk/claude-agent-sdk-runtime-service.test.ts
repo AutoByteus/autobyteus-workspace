@@ -65,6 +65,63 @@ describe("ClaudeAgentSdkRuntimeService", () => {
     ).toBe(true);
   });
 
+  it("extracts assistant message content chunks from Claude SDK stream shape", async () => {
+    const query = vi.fn().mockResolvedValue(
+      toAsyncIterable([
+        {
+          type: "system",
+          subtype: "init",
+          session_id: "claude-session-real",
+        },
+        {
+          type: "assistant",
+          session_id: "claude-session-real",
+          message: {
+            role: "assistant",
+            content: [{ type: "text", text: "OK" }],
+          },
+        },
+        {
+          type: "result",
+          subtype: "success",
+          session_id: "claude-session-real",
+          result: "OK",
+        },
+      ]),
+    );
+
+    const service = new ClaudeAgentSdkRuntimeService() as ClaudeAgentSdkRuntimeService & {
+      cachedSdkModule: unknown;
+    };
+    service.cachedSdkModule = { query };
+
+    await service.createRunSession("run-real-shape", {
+      modelIdentifier: "default",
+      workingDirectory: "/tmp/workspace",
+      llmConfig: null,
+    });
+
+    const methods: string[] = [];
+    service.subscribeToRunEvents("run-real-shape", (event) => methods.push(event.method));
+
+    await service.sendTurn(
+      "run-real-shape",
+      AgentInputUserMessage.fromDict({ content: "Reply with exactly OK" }),
+    );
+
+    expect(methods).toEqual([
+      "turn/started",
+      "item/outputText/delta",
+      "item/outputText/completed",
+      "turn/completed",
+    ]);
+
+    const transcript = await service.getSessionMessages("claude-session-real");
+    expect(
+      transcript.some((entry) => entry.role === "assistant" && entry.content === "OK"),
+    ).toBe(true);
+  });
+
   it("omits resume on first turn and resumes by session id on subsequent turns", async () => {
     const query = vi
       .fn()

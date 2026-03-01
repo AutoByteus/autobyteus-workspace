@@ -378,6 +378,26 @@ describeClaudeRuntime("Claude team external-member runtime e2e (live transport)"
         throw new Error(`Timed out waiting for member '${memberName}' running+idle events.`);
       };
 
+      const collectMemberAssistantOutput = (memberName: "ping" | "pong"): string =>
+        teamMessages
+          .filter(
+            (message) =>
+              (message.type === "SEGMENT_CONTENT" || message.type === "SEGMENT_END") &&
+              message.payload.agent_name === memberName,
+          )
+          .map((message) => {
+            const delta = message.payload.delta;
+            if (typeof delta === "string") {
+              return delta;
+            }
+            const text = message.payload.text;
+            if (typeof text === "string") {
+              return text;
+            }
+            return "";
+          })
+          .join("");
+
       try {
         const pingSendResult = await execGraphql<{
           sendMessageToTeam: { success: boolean; message: string; teamRunId: string | null };
@@ -393,6 +413,9 @@ describeClaudeRuntime("Claude team external-member runtime e2e (live transport)"
         });
         expect(pingSendResult.sendMessageToTeam.success).toBe(true);
         await waitForMemberLifecycle("ping");
+        const pingOutput = collectMemberAssistantOutput("ping").trim();
+        expect(pingOutput.length).toBeGreaterThan(0);
+        expect(pingOutput.toUpperCase()).toContain(`READY-PING-${unique}`.toUpperCase());
 
         const pongSendResult = await execGraphql<{
           sendMessageToTeam: { success: boolean; message: string; teamRunId: string | null };
@@ -408,6 +431,9 @@ describeClaudeRuntime("Claude team external-member runtime e2e (live transport)"
         });
         expect(pongSendResult.sendMessageToTeam.success).toBe(true);
         await waitForMemberLifecycle("pong");
+        const pongOutput = collectMemberAssistantOutput("pong").trim();
+        expect(pongOutput.length).toBeGreaterThan(0);
+        expect(pongOutput.toUpperCase()).toContain(`READY-PONG-${unique}`.toUpperCase());
 
         const interAgentMessages = teamMessages.filter((message) => message.type === "INTER_AGENT_MESSAGE");
         expect(interAgentMessages.length).toBe(0);

@@ -780,6 +780,9 @@ describeClaudeRuntime("Claude runtime GraphQL e2e (live transport)", () => {
 
       expect(capture.rawMessages.length).toBeGreaterThan(0);
       expect(capture.errorCodes).not.toContain("CLAUDE_RUNTIME_TURN_FAILED");
+      const assistantText = capture.assistantOutputFragments.join("").trim();
+      expect(assistantText.length).toBeGreaterThan(0);
+      expect(assistantText.toUpperCase()).toContain("READY");
     } finally {
       if (runId) {
         await terminateRun(runId);

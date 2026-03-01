@@ -12,8 +12,8 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-033`
-- Last Updated: `2026-02-28`
+- Last Transition ID: `T-035`
+- Last Updated: `2026-03-01`
 
 ## Stage Gates
 
@@ -132,6 +132,8 @@ Note:
 | T-031 | 2026-02-28 | 9 | 10 | Final handoff refreshed with full backend/frontend results and focused team routing + continuation/run-history E2E pass evidence | N/A | Locked | `tickets/in-progress/claude-agent-sdk-runtime-support/handoff-summary.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
 | T-032 | 2026-03-01 | 10 | 6 | User-reported runtime symptom (`send hello` with no reply) triggered local-fix re-entry to investigate frontend send/stream reconnect path | Local Fix | Unlocked | `autobyteus-web/stores/agentTeamRunStore.ts`, `autobyteus-web/services/agentStreaming/TeamStreamingService.ts`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
 | T-033 | 2026-03-01 | 6 | 10 | Fixed stale/disconnected team websocket reconnect gap, added regression tests, and reran full frontend suite to pass | Local Fix | Locked | `autobyteus-web/stores/agentTeamRunStore.ts`, `autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts`, `autobyteus-web/services/agentStreaming/TeamStreamingService.ts`, `autobyteus-web/services/agentStreaming/__tests__/TeamStreamingService.spec.ts`, `tickets/in-progress/claude-agent-sdk-runtime-support/implementation-progress.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| T-034 | 2026-03-01 | 10 | 6 | User-reported no-reply symptom after restart triggered local-fix re-entry; investigation identified Claude SDK assistant chunk shape mismatch (`assistant.message.content[].text`) not captured by runtime normalizer | Local Fix | Unlocked | `tickets/in-progress/claude-agent-sdk-runtime-support/investigation-notes.md`, `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.ts`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| T-035 | 2026-03-01 | 6 | 10 | Fixed Claude stream normalization for assistant/result chunk shapes, strengthened live Claude e2e assertions to require non-empty assistant output, and reran live+full backend suites to pass | Local Fix | Locked | `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.ts`, `autobyteus-server-ts/tests/unit/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.test.ts`, `autobyteus-server-ts/tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts`, `autobyteus-server-ts/tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts`, `tickets/in-progress/claude-agent-sdk-runtime-support/implementation-progress.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
 
 ## Audible Notification Log (Optional Tracking)
 
@@ -154,6 +156,7 @@ Note:
 | 2026-02-28 | Transition | Stages 2 through 5 re-entry artifacts were updated and review reconfirmed Go; stage 6 is active with code edits unlocked for parity implementation. | Success | N/A |
 | 2026-02-28 | Transition | Re-entry closed again: Codex/Claude parity achieved, full backend and frontend suites passed, focused team routing and run-history continuation E2E passed, and stage returned to 10 with code edits locked. | Success | N/A |
 | 2026-03-01 | Transition | Local-fix re-entry resolved: frontend now reconnects stale team websocket streams after send, and targeted plus full frontend regression suites passed before returning to stage 10. | Success | N/A |
+| 2026-03-01 | Transition | Local-fix re-entry resolved: Claude runtime now parses live assistant chunk format and runtime E2E now enforces non-empty assistant output before stage returned to 10. | Success | N/A |
 
 ## Process Violation Log
 
