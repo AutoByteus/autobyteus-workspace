@@ -52,6 +52,7 @@
 | C-029 | Modify | `claude-agent-sdk-runtime-service.ts` | Done | Done | Fixed first-turn restore semantics to avoid placeholder resume IDs for team external-member runs |
 | C-030 | Modify | `team-member-runtime-orchestrator.ts` | Done | Done | Persist refreshed external runtime reference into team binding registry after member sends |
 | C-031 | Add | Claude parity team E2E suite | Done | Done | Added `claude-team-external-runtime.e2e.test.ts` to mirror Codex team live parity coverage |
+| C-032 | Modify | Team stream reconnect behavior (web) | Done | Done | Reconnect stale/disconnected team websocket streams after send and sync `isSubscribed` on connect/disconnect callbacks |
 
 ## Verification Log
 
@@ -84,6 +85,9 @@
 | 2026-02-28 | `RUN_CODEX_E2E=1 RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=1 pnpm -C autobyteus-server-ts test` | Pass | Final full backend with both live runtimes: `250 files passed / 3 skipped`, `1095 tests passed / 8 skipped` |
 | 2026-02-28 | `pnpm -C autobyteus-web test` | Pass | Final full frontend pass: `test:nuxt 143 files / 706 tests`, `test:electron 6 files / 38 tests` |
 | 2026-02-28 | `RUN_CODEX_E2E=1 RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts tests/e2e/run-history/team-run-history-graphql.e2e.test.ts` | Pass | Focused team routing + continuation/run-history: `3 files passed`, `8 passed / 1 skipped` |
+| 2026-03-01 | `RUN_CODEX_E2E=1 RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts tests/e2e/run-history/team-run-history-graphql.e2e.test.ts` | Pass | Revalidated fundamental live runtime/team flows after user-reported manual symptom: `4 files passed`, `19 passed / 1 skipped` |
+| 2026-03-01 | `pnpm -C autobyteus-web exec vitest run stores/__tests__/agentTeamRunStore.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts` | Pass | New reconnect regression tests passed: `2 files`, `8 tests` |
+| 2026-03-01 | `pnpm -C autobyteus-web test` | Pass | Full frontend regression rerun after reconnect fix: `test:nuxt 143 files / 708 tests` + `test:electron 6 files / 38 tests` |
 
 ## Blockers
 
