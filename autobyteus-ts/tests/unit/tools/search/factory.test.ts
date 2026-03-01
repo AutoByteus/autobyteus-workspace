@@ -102,13 +102,13 @@ describe('SearchClientFactory', () => {
     expect(() => factory.createSearchClient()).toThrow("DEFAULT_SEARCH_PROVIDER 'google_cse' is no longer supported");
   });
 
-  it('returns the same client instance on subsequent calls', () => {
+  it('returns a new client instance on subsequent calls (ensures fresh config)', () => {
     process.env.SERPER_API_KEY = 'serper-key';
 
     const factory = new SearchClientFactory();
     const first = factory.createSearchClient();
     const second = factory.createSearchClient();
 
-    expect(first).toBe(second);
+    expect(first).not.toBe(second);
   });
 });

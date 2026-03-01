@@ -8,8 +8,6 @@ import { VertexAISearchStrategy } from './vertex-ai-search-strategy.js';
 export class SearchClientFactory extends Singleton {
   protected static instance?: SearchClientFactory;
 
-  private client: SearchClient | null = null;
-
   constructor() {
     super();
     if (SearchClientFactory.instance) {
@@ -19,10 +17,6 @@ export class SearchClientFactory extends Singleton {
   }
 
   createSearchClient(): SearchClient {
-    if (this.client) {
-      return this.client;
-    }
-
     const providerName = (process.env.DEFAULT_SEARCH_PROVIDER || '').toLowerCase();
     const serperKey = process.env.SERPER_API_KEY;
     const serpapiKey = process.env.SERPAPI_API_KEY;
@@ -81,7 +75,6 @@ export class SearchClientFactory extends Singleton {
       );
     }
 
-    this.client = new SearchClient(strategy);
-    return this.client;
+    return new SearchClient(strategy);
   }
 }
