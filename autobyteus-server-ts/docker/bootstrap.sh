@@ -2,13 +2,19 @@
 set -euo pipefail
 
 log() {
-  printf '[%s] %s\n' "$(date --iso-8601=seconds)" "$*"
+  printf '[%s] %s
+' "$(date --iso-8601=seconds)" "$*"
 }
 
-WORKSPACE_ROOT="${AUTOBYTEUS_WORKSPACE_ROOT:-/home/autobyteus/workspace}"
+WORKSPACE_ROOT="${AUTOBYTEUS_WORKSPACE_ROOT:-/app}"
 SRC_ROOT="${WORKSPACE_ROOT}/src"
 GIT_AUTH_MODE="${AUTOBYTEUS_GIT_AUTH_MODE:-pat}"
-SKIP_SYNC="${AUTOBYTEUS_SKIP_SYNC:-0}"
+SKIP_SYNC="${AUTOBYTEUS_SKIP_SYNC:-1}"
+
+if [[ "${SKIP_SYNC}" == "1" ]]; then
+  log "Skipping bootstrap sync (AUTOBYTEUS_SKIP_SYNC=1)"
+  exit 0
+fi
 
 mkdir -p "${WORKSPACE_ROOT}" "${SRC_ROOT}"
 
@@ -46,43 +52,17 @@ ASKPASS
 resolve_ref() {
   local repo="$1"
   case "${repo}" in
-    autobyteus-server-ts)
-      printf '%s' "${AUTOBYTEUS_SERVER_REF:-${AUTOBYTEUS_REF:-main}}"
-      ;;
-    autobyteus-ts)
-      printf '%s' "${AUTOBYTEUS_TS_REF:-${AUTOBYTEUS_REF:-main}}"
-      ;;
-    repository_prisma)
-      printf '%s' "${AUTOBYTEUS_REPOSITORY_PRISMA_REF:-${AUTOBYTEUS_REF:-main}}"
-      ;;
-    *)
-      printf '%s' "main"
-      ;;
+    autobyteus-server-ts) printf '%s' "${AUTOBYTEUS_SERVER_REF:-${AUTOBYTEUS_REF:-main}}" ;;
+    autobyteus-ts) printf '%s' "${AUTOBYTEUS_TS_REF:-${AUTOBYTEUS_REF:-main}}" ;;
+    *) printf '%s' "main" ;;
   esac
 }
 
 resolve_repo_url() {
   local repo="$1"
-
   case "${repo}" in
-    autobyteus-server-ts)
-      if [[ -n "${AUTOBYTEUS_SERVER_TS_REPO_URL:-}" ]]; then
-        printf '%s' "${AUTOBYTEUS_SERVER_TS_REPO_URL}"
-        return
-      fi
-      ;;
-    autobyteus-ts)
-      if [[ -n "${AUTOBYTEUS_TS_REPO_URL:-}" ]]; then
-        printf '%s' "${AUTOBYTEUS_TS_REPO_URL}"
-        return
-      fi
-      ;;
-    repository_prisma)
-      if [[ -n "${AUTOBYTEUS_REPOSITORY_PRISMA_REPO_URL:-}" ]]; then
-        printf '%s' "${AUTOBYTEUS_REPOSITORY_PRISMA_REPO_URL}"
-        return
-      fi
-      ;;
+    autobyteus-server-ts) [[ -n "${AUTOBYTEUS_SERVER_TS_REPO_URL:-}" ]] && { printf '%s' "${AUTOBYTEUS_SERVER_TS_REPO_URL}"; return; } ;;
+    autobyteus-ts) [[ -n "${AUTOBYTEUS_TS_REPO_URL:-}" ]] && { printf '%s' "${AUTOBYTEUS_TS_REPO_URL}"; return; } ;;
   esac
 
   local org="${AUTOBYTEUS_GITHUB_ORG:-AutoByteus}"
@@ -103,56 +83,16 @@ sync_repo() {
   if [[ ! -d "${dest}/.git" ]]; then
     log "Cloning ${repo}@${ref}"
     git clone --branch "${ref}" "${origin_url}" "${dest}"
-    git config --global --add safe.directory "${dest}" >/dev/null 2>&1 || true
-    return
+  else
+    log "Updating ${repo}@${ref}"
+    git -C "${dest}" fetch origin
+    git -C "${dest}" checkout "${ref}"
+    git -C "${dest}" pull origin "${ref}"
   fi
-
-  git config --global --add safe.directory "${dest}" >/dev/null 2>&1 || true
-
-  if [[ "${SKIP_SYNC}" == "1" ]]; then
-    log "AUTOBYTEUS_SKIP_SYNC=1; leaving ${repo} unchanged"
-    return
-  fi
-
-  log "Updating ${repo}@${ref}"
-  git -C "${dest}" remote set-url origin "${origin_url}"
-  git -C "${dest}" config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
-  git -C "${dest}" fetch --prune origin
-  git -C "${dest}" checkout "${ref}"
-  git -C "${dest}" reset --hard "origin/${ref}"
 }
 
-write_workspace_file() {
-  cat > "${WORKSPACE_ROOT}/pnpm-workspace.yaml" <<'WORKSPACE'
-packages:
-  - "src/autobyteus-server-ts"
-  - "src/autobyteus-ts"
-  - "src/repository_prisma"
-WORKSPACE
-}
+setup_git_auth
+sync_repo "autobyteus-ts" "$(resolve_ref autobyteus-ts)"
+sync_repo "autobyteus-server-ts" "$(resolve_ref autobyteus-server-ts)"
 
-install_and_build() {
-  log "Installing Node.js dependencies"
-  (
-    cd "${WORKSPACE_ROOT}"
-    pnpm install
-    log "Generating Prisma client for Linux runtime"
-    pnpm -C src/autobyteus-server-ts exec prisma generate --schema prisma/schema.prisma
-    pnpm -C src/autobyteus-server-ts build
-  )
-}
-
-main() {
-  setup_git_auth
-
-  sync_repo "autobyteus-server-ts" "$(resolve_ref autobyteus-server-ts)"
-  sync_repo "autobyteus-ts" "$(resolve_ref autobyteus-ts)"
-  sync_repo "repository_prisma" "$(resolve_ref repository_prisma)"
-
-  write_workspace_file
-  install_and_build
-
-  log "Bootstrap completed."
-}
-
-main "$@"
+log "Bootstrap complete."

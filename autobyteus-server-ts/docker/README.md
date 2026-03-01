@@ -9,129 +9,68 @@ It automatically clones and builds the required workspace dependencies:
 
 - `autobyteus-server-ts`
 - `autobyteus-ts`
-- `repository_prisma`
-
-## What Changed
-
-- No frontend in this container.
-- Single service: TypeScript server on port `8000` (mapped to host `AUTOBYTEUS_BACKEND_PORT`, default `8001`).
-- VNC-related ports are exposed for base-image desktop access:
-  - VNC: container `5900` -> host `AUTOBYTEUS_VNC_PORT` (default `5908`)
-  - noVNC: container `6080` -> host `AUTOBYTEUS_WEB_VNC_PORT` (default `6080`)
-  - Chrome debug proxy: container `9223` -> host `AUTOBYTEUS_CHROME_DEBUG_PORT` (default `9228`)
 
 ## Quick Start
 
-1. Copy env template:
+The easiest way to build and start the server is using the `docker-start.sh` script. It automatically detects available ports to avoid collisions and supports multiple isolated instances.
 
 ```bash
-cp .env.example .env
+cd autobyteus-server-ts/docker
+
+# Start default server (builds if needed)
+./docker-start.sh up
+
+# Start Chinese (zh) variant
+./docker-start.sh up --variant zh
+
+# Start multiple isolated instances
+./docker-start.sh up --project instance-1
+./docker-start.sh up --project instance-2
 ```
 
-2. Set `GITHUB_PAT` in `.env` if repos are private.
+The script saves the assigned ports for each project in a hidden `.runtime/` folder, ensuring consistent mapping.
 
-3. Build and start:
+## Management Commands
+
+- `./docker-start.sh ps`: Show running instances and their names.
+- `./docker-start.sh logs`: Tail logs for an instance.
+- `./docker-start.sh ports`: Show mapped ports and URLs for an instance.
+- `./docker-start.sh down`: Stop an instance.
+- `./docker-start.sh down --delete-state`: Stop and remove saved port configuration.
+
+## Manual Build (Advanced)
+
+If you only want to build the image without starting it:
 
 ```bash
 ./build.sh
-./start.sh
-```
-
-4. Check logs:
-
-```bash
-docker compose logs -f autobyteus-server
-```
-
-## Rebuild After Base Image Update
-
-If `autobyteus/chrome-vnc:latest` (or any Docker base layer) was updated, run:
-
-```bash
-cd autobyteus-server-ts/docker
-test -f .env || cp .env.example .env
-docker pull autobyteus/chrome-vnc:latest
-docker compose down
-./build.sh --no-cache
-./start.sh
-docker compose logs -f autobyteus-server
-```
-
-This keeps existing data volumes.
-
-For a fully clean rebuild (remove cached source and server data too):
-
-```bash
-cd autobyteus-server-ts/docker
-docker compose down --volumes --remove-orphans
-docker pull autobyteus/chrome-vnc:latest
-./build.sh --no-cache
-./start.sh
+./build.sh --variant zh
 ```
 
 ## Multi-Arch Release Image
 
-For a publishable image that is fully built at image-build time (does not clone repos at container startup), use the monorepo Dockerfile:
+For a publishable image that is fully built at image-build time, use the multi-arch script:
 
 ```bash
 ./build-multi-arch.sh --push
+./build-multi-arch.sh --push --variant zh
 ```
-
-The monorepo image now starts both:
-- the desktop stack from `autobyteus/chrome-vnc` (Xvnc/noVNC/Chrome), and
-- `autobyteus-server-ts` under `supervisord`.
 
 Default target image is:
 
-- `autobyteus/autobyteus-server:<version-from-package-json>`
-- `autobyteus/autobyteus-server:latest`
-
-Optional overrides:
-
-```bash
-./build-multi-arch.sh --push --version 1.4.3
-./build-multi-arch.sh --push --image-name autobyteus/autobyteus-server-ts
-```
+- `autobyteus/autobyteus-server:<version>-<variant>`
+- `autobyteus/autobyteus-server:latest-<variant>`
 
 ## GitHub Release Automation
 
-Workflow file:
-
-- `.github/workflows/release-docker-image.yml`
+Workflow file: `.github/workflows/release-docker-image.yml`
 
 What it does:
-
-- Triggers when a Git tag is pushed (for example `v1.2.3`).
-- Also triggers when `AutoByteus/autobyteus-ts` receives a push to `main`.
-- Also supports manual run via GitHub Actions `workflow_dispatch`.
-- Checks out `autobyteus-server-ts` + public dependencies:
-  - `AutoByteus/autobyteus-ts`
-  - `ryan-zheng-teki/repository_prisma`
+- Triggers on Git tags (e.g. `v1.2.3`).
 - Builds `docker/Dockerfile.monorepo` for `linux/amd64,linux/arm64`.
-- Pushes Docker tags to Docker Hub (`latest` + one normalized release tag in `X.Y.Z` format).
+- Pushes Docker tags to Docker Hub.
 
-Required repository secrets:
-
-- In `autobyteus-server-ts`:
-  - `DOCKERHUB_USERNAME`
-  - `DOCKERHUB_TOKEN`
-- In `autobyteus-ts`:
-  - `AUTOBYTEUS_SERVER_TS_WORKFLOW_TOKEN`
-    - A GitHub token that can send `repository_dispatch` to `AutoByteus/autobyteus-server-ts`.
-
-Tag patterns currently matched:
-
-- `v*.*.*` (recommended, e.g. `v1.2.3`)
-- `*.*.*` (e.g. `1.2.3`)
-
-Manual run inputs:
-
-- `release_tag` (optional, for re-running a released build like `0.1.0` or `v0.1.0`; published as `0.1.0`)
-- `image_name` (optional)
-
-## Endpoints
-
-With default port mapping:
+## Endpoints (Default)
 
 - GraphQL: `http://localhost:8001/graphql`
 - REST: `http://localhost:8001/rest/*`
@@ -140,63 +79,10 @@ With default port mapping:
 - noVNC: `http://localhost:6080`
 - Chrome debug proxy: `localhost:9228`
 
-For `autobyteus-web`'s built-in VNC viewer, set `AUTOBYTEUS_VNC_SERVER_HOSTS` to comma-separated WebSocket endpoint host:port values (default `localhost:6080`), not raw VNC TCP ports.
-
-## Authentication for Git Clones
-
-Default mode is PAT (`AUTOBYTEUS_GIT_AUTH_MODE=pat`).
-
-Required in `.env`:
-
-```env
-GITHUB_PAT=YOUR_TOKEN
-```
-
-Optional:
-
-```env
-GITHUB_USERNAME=x-access-token
-AUTOBYTEUS_GITHUB_ORG=AutoByteus
-```
-
-SSH mode is also supported (`AUTOBYTEUS_GIT_AUTH_MODE=ssh`) if the container can access a valid SSH key configuration.
-
-## Branch and Repo Overrides
-
-You can pin refs or override repository URLs:
-
-```env
-AUTOBYTEUS_SERVER_REF=main
-AUTOBYTEUS_TS_REF=main
-AUTOBYTEUS_REPOSITORY_PRISMA_REF=main
-
-# optional explicit URLs
-AUTOBYTEUS_SERVER_TS_REPO_URL=
-AUTOBYTEUS_TS_REPO_URL=
-AUTOBYTEUS_REPOSITORY_PRISMA_REPO_URL=
-```
-
 ## Data and Persistence
 
-Named volumes:
-
-- `autobyteus-server-workspace`: cloned source + node modules
-- `autobyteus-server-data`: `.env`, SQLite DB, logs, media, memory
+Named volumes (per project):
+- `<project>_autobyteus-server-workspace`: built artifacts
+- `<project>_autobyteus-server-data`: `.env`, SQLite DB, logs, media, memory
 
 Server data directory in container: `/home/autobyteus/data`
-
-A minimal `.env` is auto-created at `/home/autobyteus/data/.env` on first boot.
-
-## Stop and Reset
-
-Stop:
-
-```bash
-docker compose down
-```
-
-Full reset (remove source cache and data):
-
-```bash
-docker compose down --volumes
-```
