@@ -2,7 +2,7 @@
 
 ## Design Version
 
-- Current Version: `v1`
+- Current Version: `v2`
 
 ## Artifact Basis
 
@@ -12,7 +12,7 @@
 
 ## Summary
 
-Current runtime orchestration has partial abstraction but still routes many shared flows through codex-specific classes and literals. This design introduces runtime-neutral extension points for external runtimes and adds `claude_agent_sdk` as a first-class runtime while keeping codex-specific advanced relay logic isolated to codex modules.
+Current runtime orchestration has partial abstraction but still routes many shared flows through codex-specific classes and literals. This design introduces runtime-neutral extension points for external runtimes and adds `claude_agent_sdk` as a first-class runtime while keeping codex-specific advanced relay logic isolated to codex modules. For this re-entry cycle, Claude integration must also move to SDK V2 session APIs only (no active V1 `query()` turn path).
 
 ## Goals
 
@@ -21,6 +21,7 @@ Current runtime orchestration has partial abstraction but still routes many shar
 - Remove codex-branded conditionals from runtime-neutral orchestration branches.
 - Keep Codex and AutoByteus behavior stable for existing paths.
 - Maintain independent runtime disablement controls for Codex and Claude.
+- Enforce Claude runtime V2-only execution path and isolate unstable SDK-control dependencies behind one interop module.
 
 ## Legacy Removal Policy
 
@@ -46,6 +47,9 @@ Current runtime orchestration has partial abstraction but still routes many shar
 - Team external-member runtime mode is generic (non-autobyteus external runtime mode), not codex-branded.
 - Run projection fallback uses runtime provider registry for runtime-kind-based projection providers.
 - Frontend runtime kind types/selectors include Claude runtime and remain capability-driven.
+- Claude runtime session lifecycle (`create/restore/send`) uses SDK V2 session APIs (`unstable_v2_createSession` / `unstable_v2_resumeSession`).
+- Dynamic MCP tool attachment for Claude team relay uses a dedicated SDK-control interop boundary (feature-detected internal query-control path) instead of direct broad runtime coupling.
+- Teammate instructions for Claude V2 are injected at runtime turn-construction boundary (user-turn preamble strategy), not via V1 `systemPrompt` query options.
 
 ## Architecture Direction Decision
 
@@ -158,3 +162,25 @@ Disallowed direction:
   - Mitigation: include restore-path integration tests and explicit runtime reference persistence checks.
 - Risk: Residual codex coupling in team/runtime shared paths.
   - Mitigation: enforce runtime-neutral mode naming and registry dispatch in shared modules; codex internals remain isolated.
+- Risk: V2 control hooks needed for dynamic MCP are not part of stable `SDKSession` public surface.
+  - Mitigation: isolate this dependency in one interop module with deterministic capability checks and fail-fast runtime error codes.
+
+## Re-Entry Design Delta (V2-Only Path)
+
+### Key Boundary Decisions
+
+1. Replace Claude turn execution entrypoint from `query()` invoker to V2 session invoker.
+- Session creation/restoration uses `unstable_v2_createSession` / `unstable_v2_resumeSession`.
+- Runtime service keeps session object per run id and streams events from `session.stream()`.
+
+2. Introduce dedicated V2 control interop adapter.
+- New interop boundary resolves optional internal controls from the V2 session object (`setMcpServers`, controlled request path).
+- Runtime service may only access unstable controls through this boundary, never directly.
+
+3. Preserve team relay parity with deterministic tooling path.
+- Dynamic `send_message_to` MCP registration happens through V2 interop control.
+- Team-manifest instructions are prepended in turn payload construction so teammate context is deterministic even without V1 `systemPrompt` API.
+
+4. No-legacy enforcement for touched Claude runtime path.
+- Active turn execution path must not call SDK `query()` for Claude runtime send/continue flows.
+- Any legacy V1 helpers remain out of active execution and are removed if no longer needed by model/projection probes.

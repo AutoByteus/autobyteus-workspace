@@ -3,7 +3,7 @@
 ## Design Basis
 
 - Scope Classification: `Large`
-- Call Stack Version: `v2`
+- Call Stack Version: `v3`
 - Requirements: `tickets/in-progress/claude-agent-sdk-runtime-support/requirements.md` (`Design-ready`)
 - Source Artifact: `tickets/in-progress/claude-agent-sdk-runtime-support/proposed-design.md` (`v1`)
 
@@ -24,6 +24,7 @@
 | UC-011 | Requirement | R-012 | Claude live E2E parity-count gate | Yes/N/A/Yes |
 | UC-013 | Requirement | R-013 | External runtime listener continuity across terminate/continue | Yes/N/A/Yes |
 | UC-014 | Requirement | R-014 | Claude team `send_message_to` relay tooling parity | Yes/N/A/Yes |
+| UC-015 | Requirement | R-015,R-016,R-017 | Claude V2-only session/runtime execution path | Yes/N/A/Yes |
 
 ## UC-001: Create Single-Agent Claude Runtime Run
 
@@ -58,7 +59,13 @@ runtime-composition-service.ts:assertRuntimeAvailableForCreateOrRestore("claude_
 │   ├── runtime-command-ingress-service.ts:resolveSession(runId,"agent")
 │   └── [ASYNC] claude-agent-sdk-runtime-adapter.ts:sendTurn(...)
 │       └── [ASYNC] claude-agent-sdk-runtime-service.ts:sendTurn(runId,message)
-│           ├── [ASYNC] @anthropic-ai/claude-agent-sdk:query(...resume/session options...)
+│           ├── [ASYNC] claude-runtime-v2-session-invoker.ts:resolveOrCreateSession(...)
+│           │   ├── @anthropic-ai/claude-agent-sdk:unstable_v2_createSession(...) or unstable_v2_resumeSession(...)
+│           │   └── claude-runtime-v2-control-interop.ts:resolveSessionControls(...)
+│           ├── [ASYNC] claude-runtime-v2-control-interop.ts:configureDynamicMcpServers(...) when team relay is enabled
+│           ├── claude-runtime-turn-preamble.ts:buildTeamAwareTurnPreamble(runtimeMetadata)
+│           ├── [ASYNC] SDKSession.send(...)
+│           ├── [ASYNC] SDKSession.stream()
 │           ├── claude-agent-sdk-runtime-service.ts:emitRuntimeEvent("turn/started")
 │           ├── claude-agent-sdk-runtime-service.ts:emitRuntimeEvent("assistant/delta", ...)
 │           └── claude-agent-sdk-runtime-service.ts:emitRuntimeEvent("turn/completed")
@@ -72,7 +79,7 @@ runtime-composition-service.ts:assertRuntimeAvailableForCreateOrRestore("claude_
 ### Error Path
 
 ```text
-[ERROR] SDK query failure
+[ERROR] SDK V2 turn execution failure
 claude-agent-sdk-runtime-service.ts:sendTurn(...)
 └── emitRuntimeEvent("error", { code, message }) -> mapped to ServerMessageType.ERROR
 ```
@@ -310,10 +317,10 @@ stage 7 gate fails -> re-entry required before stage 8 review
 ├── runtimeReference.metadata includes teamRunId/memberName/sendMessageToEnabled/teamMemberManifest
 ├── claude-agent-sdk-runtime-adapter.ts:restoreAgentRun(...)
 │   └── claude-agent-sdk-runtime-service.ts:restoreRunSession(...runtimeMetadata)
-├── send turn path: claude-agent-sdk-runtime-service.ts:invokeQueryStream(...)
-│   ├── builds teammate-aware system prompt append
+├── send turn path: claude-agent-sdk-runtime-service.ts:sendTurn(...)
+│   ├── builds teammate-aware turn preamble from runtime metadata
 │   ├── registers in-process MCP server with custom `send_message_to` tool
-│   └── passes mcp server via Claude SDK query options (`mcpServers`)
+│   └── applies MCP dynamic registration via V2 session-control interop
 ├── Claude calls `send_message_to` MCP tool
 │   └── claude-agent-sdk-runtime-service.ts tool handler -> team-member-runtime-orchestrator relay handler
 ├── team-member-runtime-orchestrator.ts:relayInterAgentMessage(...)
@@ -330,4 +337,27 @@ stage 7 gate fails -> re-entry required before stage 8 review
 [ERROR] relay handler unavailable or recipient unresolved
 Claude MCP tool handler returns deterministic error payload/code
 └── sender emits tool-call completion metadata with error and no false success claim
+```
+
+## UC-015: Claude V2-Only Session/Runtime Execution Path
+
+### Primary Path
+
+```text
+[ENTRY] claude-agent-sdk-runtime-service.ts:createRunSession/restoreRunSession/sendTurn
+├── claude-runtime-v2-session-invoker.ts:createOrResumeSession(...)
+│   ├── @anthropic-ai/claude-agent-sdk:unstable_v2_createSession(...)
+│   └── @anthropic-ai/claude-agent-sdk:unstable_v2_resumeSession(...)
+├── claude-runtime-v2-control-interop.ts:resolveSessionControls(session)
+├── claude-runtime-v2-control-interop.ts:configureDynamicMcpServers(...) when tooling is required
+├── claude-runtime-turn-preamble.ts:prepend teammate context onto outgoing user turn payload
+└── claude-agent-sdk-runtime-service.ts:consume SDKSession.stream() and normalize into runtime events
+```
+
+### Error Path
+
+```text
+[ERROR] required V2 control capability unavailable on session object
+claude-runtime-v2-control-interop.ts:requireControlMethod(...)
+└── throws deterministic `CLAUDE_V2_CONTROL_UNAVAILABLE` runtime error and aborts turn dispatch
 ```

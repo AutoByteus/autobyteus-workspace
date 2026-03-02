@@ -9,12 +9,16 @@ export type ClaudeSdkModuleLike = {
   listModels?: (...args: unknown[]) => unknown;
   createSdkMcpServer?: (...args: unknown[]) => unknown;
   tool?: (...args: unknown[]) => unknown;
+  unstable_v2_createSession?: (...args: unknown[]) => unknown;
+  unstable_v2_resumeSession?: (...args: unknown[]) => unknown;
   default?: {
     query?: (...args: unknown[]) => unknown;
     getSessionMessages?: (...args: unknown[]) => unknown;
     listModels?: (...args: unknown[]) => unknown;
     createSdkMcpServer?: (...args: unknown[]) => unknown;
     tool?: (...args: unknown[]) => unknown;
+    unstable_v2_createSession?: (...args: unknown[]) => unknown;
+    unstable_v2_resumeSession?: (...args: unknown[]) => unknown;
   };
 };
 

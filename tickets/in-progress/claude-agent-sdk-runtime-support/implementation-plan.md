@@ -1,7 +1,7 @@
 # Implementation Plan
 
 - Ticket: `claude-agent-sdk-runtime-support`
-- Plan Version: `v3`
+- Plan Version: `v4`
 - Scope: `Large`
 - Stage Preconditions:
   - Stage 5 gate: `Go Confirmed`
@@ -9,7 +9,7 @@
 
 ## Objective
 
-Implement `claude_agent_sdk` runtime support and refactor shared runtime orchestration to runtime-neutral boundaries for external runtimes, while preserving existing `autobyteus` and `codex_app_server` behavior.
+Implement `claude_agent_sdk` runtime support and refactor shared runtime orchestration to runtime-neutral boundaries for external runtimes, while preserving existing `autobyteus` and `codex_app_server` behavior. For this cycle, enforce a V2-only Claude session execution path and remove active V1 `query()` turn execution.
 
 ## Change Batches
 
@@ -76,6 +76,14 @@ Implement `claude_agent_sdk` runtime support and refactor shared runtime orchest
 - I5. Extend live Claude team E2E to assert real `send_message_to` tool-call lifecycle + recipient `INTER_AGENT_MESSAGE` delivery parity.
 - I6. Re-run unit/live/full-suite verification for Claude and Codex runtime matrices.
 
+### Batch J: Claude V2-Only Runtime Migration
+
+- J1. Introduce V2 session invoker module (`unstable_v2_createSession`/`unstable_v2_resumeSession`) and route Claude runtime create/restore/send through it.
+- J2. Add dedicated V2 control interop module that feature-detects and wraps unstable control methods required for dynamic MCP registration.
+- J3. Migrate Claude team metadata instruction path from V1 `systemPrompt` wiring to runtime-owned turn preamble injection for V2 sends.
+- J4. Remove active Claude V1 `query()` turn execution path and keep V1 helpers only where still required for non-turn ancillary operations (or decommission when unused).
+- J5. Extend unit/integration/live tests to enforce V2-only behavior and deterministic error signaling when required V2 controls are unavailable.
+
 ## Planned File Groups
 
 - Server core/runtime:
@@ -127,6 +135,9 @@ Implement `claude_agent_sdk` runtime support and refactor shared runtime orchest
 | R-012 | G | live Claude E2E count parity verification (`13`) + full-suite rerun |
 | R-013 | H | live continue/send websocket assertions + runtime-service listener lifecycle tests |
 | R-014 | I | live Claude team relay roundtrip assertions + runtime-neutral orchestrator relay unit coverage |
+| R-015 | J | source/test assertions that Claude turn execution uses V2 session APIs only |
+| R-016 | J | interop-boundary unit tests for available/unavailable V2 control capabilities |
+| R-017 | J | team-metadata turn-preamble assertions + live teammate-aware relay checks |
 
 ## Test Plan
 
@@ -154,3 +165,4 @@ Implement `claude_agent_sdk` runtime support and refactor shared runtime orchest
 7. Batch G (Claude live E2E parity expansion and full-suite proof).
 8. Batch H (listener continuity hardening + live continue/send proof).
 9. Batch I (Claude inter-agent tooling parity and runtime-neutral relay completion).
+10. Batch J (Claude V2-only runtime migration and V1 turn-path retirement).

@@ -83,3 +83,52 @@ Validated API/E2E acceptance behavior for Claude runtime support, external-membe
 - Live Codex team E2E passed with matching routing + continuation assertions (`2/2`).
 - Latest full backend suite pass: `247 files passed / 7 skipped`, `1081 passed / 34 skipped`.
 - Latest full frontend suite pass: `test:nuxt 143 files / 708 tests` and `test:electron 6 files / 38 tests`.
+
+## Re-Entry Delta (2026-03-02, R-015..R-017 V2-only control-binding fix + quota block)
+
+### Additional Commands
+
+28. `pnpm -C autobyteus-server-ts exec vitest run tests/unit/runtime-execution/claude-agent-sdk/claude-runtime-v2-control-interop.test.ts tests/unit/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.test.ts`
+29. `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts -t "routes live inter-agent send_message_to ping->pong->ping roundtrip in Claude team runtime"`
+30. `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts`
+31. `pnpm -C autobyteus-server-ts build`
+32. `pnpm -C autobyteus-server-ts test`
+33. `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts`
+
+### Delta Results
+
+- V2 runtime crash fixed: `TypeError: Cannot read properties of undefined (reading 'sdkMcpServerInstances')` no longer reproduces after bound control-method invocation patch.
+- Codex live runtime/team suites remain green (`13/13`), confirming no regression in existing runtime.
+- Backend build + full backend suite are green (`248 files passed / 7 skipped`, `1087 passed / 34 skipped`).
+- Live Claude E2E currently fails on provider quota output (`You've hit your limit · resets 8pm (Europe/Berlin)`), which prevents token-based scenario assertions from completing.
+- Stage 7 remains `Blocked` until quota reset, then live Claude command (33) must be rerun to close the gate.
+
+## Re-Entry Delta (2026-03-02, quota reset verification closure)
+
+### Additional Commands
+
+34. `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts --reporter=verbose`
+35. `RUN_CODEX_E2E=1 RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts`
+36. `pnpm -C autobyteus-server-ts test`
+37. `pnpm -C autobyteus-web test`
+
+### Delta Results
+
+- Live Claude quota window cleared and both live suites now pass end-to-end.
+- `tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts`: `11/11` passed.
+- `tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts`: `2/2` passed.
+- Combined live Claude runtime matrix: `13/13` passed.
+
+## Re-Entry Delta (2026-03-02, post-reset full confidence rerun)
+
+### Additional Commands
+
+35. `RUN_CODEX_E2E=1 RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts`
+36. `pnpm -C autobyteus-server-ts test`
+37. `pnpm -C autobyteus-web test`
+
+### Delta Results
+
+- Live Codex+Claude runtime/team matrix rerun passed: `4 files`, `26/26 tests`.
+- Full backend suite rerun passed: `248 files passed / 7 skipped`, `1087 passed / 34 skipped`.
+- Full frontend suite rerun passed: `test:nuxt 143 files / 708 tests` and `test:electron 6 files / 38 tests`.

@@ -2,7 +2,7 @@
 
 - Ticket: `claude-agent-sdk-runtime-support`
 - Stage: `1 (Investigation + Triage)`
-- Last Updated: `2026-02-28`
+- Last Updated: `2026-03-02`
 
 ## Sources Consulted
 
@@ -45,6 +45,8 @@
 - Claude Agent SDK docs (custom tools): https://docs.anthropic.com/en/docs/claude-code/sdk/sdk-custom-tools
 - Claude Agent SDK docs (MCP): https://docs.anthropic.com/en/docs/claude-code/sdk/sdk-mcp
 - Claude Agent SDK docs (multi-turn + streaming input): https://docs.anthropic.com/en/docs/claude-code/sdk/sdk-python
+- Claude Agent SDK v2 preview docs: https://docs.anthropic.com/en/docs/claude-code/sdk/sdk-v2
+- Claude Agent SDK TypeScript SDK docs: https://docs.anthropic.com/en/docs/claude-code/sdk/sdk-typescript
 
 ## Key Findings
 
@@ -228,3 +230,58 @@
   - runtime-specific tool surface implementation in Claude runtime service (MCP custom tool),
   - runtime adapter parity so recipient delivery works for Claude sessions via ingress port.
 - Keep codex internal implementation intact while sharing runtime-neutral orchestration contracts.
+
+## Re-Entry Delta (2026-03-02, user-mandated V2-only migration)
+
+1. Latest SDK package version is already current, and V2 APIs are available.
+- Workspace + npm latest are both `@anthropic-ai/claude-agent-sdk@0.2.63`.
+- V2 exported APIs are present: `unstable_v2_createSession`, `unstable_v2_resumeSession`, `unstable_v2_prompt`.
+
+2. Public V2 session options are feature-reduced vs V1 query options.
+- `SDKSessionOptions` includes `model`, `allowedTools`, `disallowedTools`, `canUseTool`, `hooks`, `permissionMode`, etc.
+- `SDKSessionOptions` does not expose `mcpServers` or `systemPrompt` fields.
+- V1 `query()` options still expose `mcpServers` and `systemPrompt`.
+
+3. Internal V2 session control path exposes capabilities not surfaced on public `SDKSession`.
+- Runtime inspection of `unstable_v2_createSession(...)` objects shows an internal `query` control object with methods including `setMcpServers(...)`, `request(...)`, and `applyFlagSettings(...)`.
+- SDK runtime source confirms V2 constructor currently hardcodes initial `mcpServers: {}` and does not pass init `systemPrompt` config into the V2 initialization path.
+
+4. Live probe result: V2 session + internal query control can execute dynamic MCP tools.
+- Executed local live probe in this worktree:
+  - create V2 session (`unstable_v2_createSession`)
+  - call internal `query.setMcpServers(...)` with `createSdkMcpServer(...)` and `tool(...)`
+  - send forced token-return prompt
+- Evidence outcome:
+  - tool call executed (`TOOL_CALLS 1`)
+  - model returned exact handler token (`RESULT == EXPECTED`), proving real MCP tool invocation via V2 session path.
+
+5. Live probe result: dynamic system prompt injection via V2 control is not currently reliable.
+- Attempted `query.applyFlagSettings({ appendSystemPrompt: ... })` and related variants.
+- Behavior did not show deterministic system-instruction enforcement in probes; treat as unsupported/unreliable for architecture-critical teammate instruction injection.
+
+6. Design implications for V2-only requirement.
+- V2-only migration is feasible for session lifecycle and dynamic MCP tooling if we isolate internal query-control usage behind a dedicated interop boundary.
+- Team-manifest instruction strategy cannot rely on V1 `systemPrompt` options in V2-only mode; we need an alternate deterministic path (turn-preamble injection at runtime service boundary) until official V2 system prompt support is exposed.
+- Because internal `session.query` is not part of public `SDKSession` contract, we must contain this in one module with defensive feature detection and deterministic degradation errors.
+
+7. Risk updates.
+- Main risk shifts from "MCP unavailable in V2" to "MCP available only via unstable internal control surface".
+- Secondary risk is teammate-instruction fidelity without first-class V2 system prompt configuration.
+- Required mitigation is stronger live E2E assertions on actual tool-call/recipient-delivery behavior, not lifecycle-only checks.
+
+## Re-Entry Delta (2026-03-02, V2 control-binding regression + live quota block)
+
+1. Real runtime failure was caused by control-method binding, not missing MCP capability.
+- Claude SDK source (`sdk.mjs`) shows `setMcpServers()` reads internal state via `this.sdkMcpServerInstances`.
+- Our V2 interop extracted the method and invoked it unbound, losing `this` and producing:
+  - `TypeError: Cannot read properties of undefined (reading 'sdkMcpServerInstances')`.
+- Fix: invoke control methods with owner binding preserved (`fn.call(owner, ...)`), and add unit coverage that fails when method binding is lost.
+
+2. Post-fix live behavior confirms crash removal.
+- Live team roundtrip rerun no longer emits `CLAUDE_RUNTIME_TURN_FAILED` / `sdkMcpServerInstances` errors.
+- Remaining live failure switched to provider-response gating (quota text), proving the runtime wiring defect is resolved in this cycle.
+
+3. Current Stage 7 blocker is external account quota, with concrete reset window.
+- Live Claude turns now return: `You've hit your limit · resets 8pm (Europe/Berlin)`.
+- This prevents deterministic assertion tokens (`READY`, `READY-FIRST-*`, `send_message_to` lifecycle token paths) from being produced.
+- Blocker classification: external/infrastructure (provider quota), not design/runtime regression.

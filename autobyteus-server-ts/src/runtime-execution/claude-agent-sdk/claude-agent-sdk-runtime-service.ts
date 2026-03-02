@@ -4,11 +4,11 @@ import type { ModelInfo } from "autobyteus-ts/llm/models.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { getWorkspaceManager } from "../../workspaces/workspace-manager.js";
 import {
-  asAsyncIterable,
   asString,
   CLAUDE_AGENT_SDK_MODULE_NAME,
   logger,
   nowTimestampSeconds,
+  resolveClaudeCodeExecutablePath,
   type ClaudeInterAgentRelayHandler,
   type ClaudeRuntimeEvent,
   type ClaudeRunSessionState,
@@ -21,6 +21,7 @@ import {
   toModelInfo,
 } from "./claude-runtime-model-catalog.js";
 import {
+  normalizeClaudeStreamChunk,
   normalizeSessionMessages,
 } from "./claude-runtime-message-normalizers.js";
 import {
@@ -29,8 +30,16 @@ import {
   tryGetSupportedModelsFromQueryControl,
 } from "./claude-runtime-sdk-interop.js";
 import { createClaudeRunSessionState } from "./claude-runtime-session-state.js";
-import { executeClaudeTurnStream } from "./claude-runtime-turn-executor.js";
-import { invokeClaudeQueryStream } from "./claude-runtime-query-invoker.js";
+import { buildClaudeTeamMcpServers } from "./claude-send-message-tooling.js";
+import {
+  configureClaudeV2DynamicMcpServers,
+  createOrResumeClaudeV2Session,
+  interruptClaudeV2SessionTurn,
+  resolveClaudeV2SessionControl,
+  type ClaudeV2SessionControlLike,
+  type ClaudeV2SessionLike,
+} from "./claude-runtime-v2-control-interop.js";
+import { buildClaudeTurnInput } from "./claude-runtime-turn-preamble.js";
 
 export type {
   ClaudeInterAgentRelayHandler,
@@ -54,6 +63,8 @@ export class ClaudeAgentSdkRuntimeService {
   private readonly activeTurnTasks = new Map<string, Promise<void>>();
   private globalTurnQueue: Promise<void> = Promise.resolve();
   private cachedSdkModule: ClaudeSdkModuleLike | null = null;
+  private readonly v2SessionsByRunId = new Map<string, ClaudeV2SessionLike>();
+  private readonly v2SessionControlsByRunId = new Map<string, ClaudeV2SessionControlLike | null>();
   private interAgentRelayHandler: ClaudeInterAgentRelayHandler | null = null;
 
   setInterAgentRelayHandler(handler: ClaudeInterAgentRelayHandler | null): void {
@@ -188,18 +199,11 @@ export class ClaudeAgentSdkRuntimeService {
     state.activeAbortController = abortController;
     const runTurn = async () => {
       try {
-        await executeClaudeTurnStream({
+        await this.executeV2Turn({
           state,
           turnId,
           content,
-          invokeQueryStream: (sessionState, prompt, signal) =>
-            this.invokeQueryStream(sessionState, prompt, signal),
           signal: abortController.signal,
-          ensureSessionTranscript: (sessionId) => this.ensureSessionTranscript(sessionId),
-          recordSessionMessage: (sessionId, payload) => this.recordSessionMessage(sessionId, payload),
-          emitEvent: (event) => {
-            this.emitEvent(state, event);
-          },
         });
         state.hasCompletedTurn = true;
       } catch (error) {
@@ -284,6 +288,7 @@ export class ClaudeAgentSdkRuntimeService {
     const state = this.requireSession(runId);
     state.activeAbortController?.abort();
     state.activeAbortController = null;
+    await interruptClaudeV2SessionTurn(this.v2SessionControlsByRunId.get(runId) ?? null);
     this.emitEvent(state, {
       method: "turn/interrupted",
       params: {
@@ -321,6 +326,16 @@ export class ClaudeAgentSdkRuntimeService {
       }
     }
     state.listeners.clear();
+    this.v2SessionControlsByRunId.delete(runId);
+    const session = this.v2SessionsByRunId.get(runId);
+    if (session) {
+      try {
+        session.close();
+      } catch {
+        // best-effort cleanup
+      }
+      this.v2SessionsByRunId.delete(runId);
+    }
     this.sessions.delete(runId);
   }
 
@@ -393,19 +408,145 @@ export class ClaudeAgentSdkRuntimeService {
     }
   }
 
-  private async invokeQueryStream(
-    state: ClaudeRunSessionState,
-    prompt: string,
-    signal: AbortSignal,
-  ): Promise<AsyncIterable<unknown>> {
+  private async executeV2Turn(options: {
+    state: ClaudeRunSessionState;
+    turnId: string;
+    content: string;
+    signal: AbortSignal;
+  }): Promise<void> {
     const sdk = await this.loadSdkModuleSafe();
-    return invokeClaudeQueryStream({
+    const { session, control } = await this.resolveOrCreateV2Session(options.state, sdk);
+    const sendMessageToToolingEnabled = this.isSendMessageToToolingEnabled(options.state);
+    await this.configureTeamToolingIfNeeded(options.state, sdk, control, sendMessageToToolingEnabled);
+
+    const turnInput = buildClaudeTurnInput({
+      state: options.state,
+      content: options.content,
+      sendMessageToToolingEnabled,
+    });
+    await session.send(turnInput);
+
+    let userMessageBoundToResolvedSession = false;
+    let assistantOutput = "";
+    for await (const chunk of session.stream()) {
+      if (options.signal.aborted) {
+        break;
+      }
+      const normalized = normalizeClaudeStreamChunk(chunk);
+      if (normalized.sessionId && normalized.sessionId !== options.state.sessionId) {
+        const previousSessionId = options.state.sessionId;
+        options.state.sessionId = normalized.sessionId;
+        this.ensureSessionTranscript(options.state.sessionId);
+        if (!userMessageBoundToResolvedSession && previousSessionId !== options.state.sessionId) {
+          this.recordSessionMessage(options.state.sessionId, {
+            role: "user",
+            content: options.content,
+            createdAt: nowTimestampSeconds(),
+          });
+          userMessageBoundToResolvedSession = true;
+        }
+      }
+
+      if (normalized.delta) {
+        if (normalized.source === "result" && assistantOutput.length > 0) {
+          continue;
+        }
+        assistantOutput += normalized.delta;
+        this.emitEvent(options.state, {
+          method: "item/outputText/delta",
+          params: {
+            id: options.turnId,
+            turnId: options.turnId,
+            delta: normalized.delta,
+          },
+        });
+      }
+    }
+
+    if (assistantOutput.length > 0) {
+      this.recordSessionMessage(options.state.sessionId, {
+        role: "assistant",
+        content: assistantOutput,
+        createdAt: nowTimestampSeconds(),
+      });
+    }
+
+    this.emitEvent(options.state, {
+      method: "item/outputText/completed",
+      params: {
+        id: options.turnId,
+        turnId: options.turnId,
+        text: assistantOutput,
+      },
+    });
+    this.emitEvent(options.state, {
+      method: "turn/completed",
+      params: {
+        turnId: options.turnId,
+      },
+    });
+  }
+
+  private async resolveOrCreateV2Session(
+    state: ClaudeRunSessionState,
+    sdk: ClaudeSdkModuleLike | null,
+  ): Promise<{ session: ClaudeV2SessionLike; control: ClaudeV2SessionControlLike | null }> {
+    const existing = this.v2SessionsByRunId.get(state.runId);
+    if (existing) {
+      return {
+        session: existing,
+        control: this.v2SessionControlsByRunId.get(state.runId) ?? null,
+      };
+    }
+
+    const session = await createOrResumeClaudeV2Session({
+      sdk,
+      model: state.model,
+      pathToClaudeCodeExecutable: resolveClaudeCodeExecutablePath({
+        runtimeMetadata: state.runtimeMetadata,
+      }),
+      resumeSessionId: state.hasCompletedTurn ? state.sessionId : null,
+      enableSendMessageToTooling: this.isSendMessageToToolingEnabled(state),
+    });
+    const control = resolveClaudeV2SessionControl(session);
+    this.v2SessionsByRunId.set(state.runId, session);
+    this.v2SessionControlsByRunId.set(state.runId, control);
+    return { session, control };
+  }
+
+  private isSendMessageToToolingEnabled(state: ClaudeRunSessionState): boolean {
+    return (
+      state.sendMessageToEnabled &&
+      Boolean(this.interAgentRelayHandler) &&
+      Boolean(state.teamRunId) &&
+      state.allowedRecipientNames.length > 0
+    );
+  }
+
+  private async configureTeamToolingIfNeeded(
+    state: ClaudeRunSessionState,
+    sdk: ClaudeSdkModuleLike | null,
+    control: ClaudeV2SessionControlLike | null,
+    sendMessageToToolingEnabled: boolean,
+  ): Promise<void> {
+    if (!sendMessageToToolingEnabled) {
+      return;
+    }
+
+    const mcpServers = await buildClaudeTeamMcpServers({
       state,
       sdk,
-      prompt,
-      signal,
       interAgentRelayHandler: this.interAgentRelayHandler,
       emitEvent: (sessionState, event) => this.emitEvent(sessionState, event),
+    });
+    if (!mcpServers) {
+      throw new Error(
+        "CLAUDE_V2_CONTROL_UNAVAILABLE: Unable to build team MCP server configuration.",
+      );
+    }
+    await configureClaudeV2DynamicMcpServers({
+      control,
+      servers: mcpServers,
     });
   }
 

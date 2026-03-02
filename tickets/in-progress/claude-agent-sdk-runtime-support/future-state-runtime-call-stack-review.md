@@ -325,3 +325,70 @@
 - Gate Decision: `Pass`
 - Decision Reason: two consecutive clean rounds completed with no blockers, no new use cases, and no required persisted artifact updates.
 - Next Stage: `6 (Implementation for Claude inter-agent tooling parity)`
+
+## Re-Entry Round 9 (Deep Review, V2-Only Runtime Delta)
+
+### Missing-Use-Case Discovery Sweep
+
+- Requirement delta sweep: `R-015..R-017` add explicit V2-only runtime path, unstable-control interop boundary, and team-instruction injection strategy.
+- Boundary sweep: confirmed V2 control access is confined to interop boundary in modeled flow; runtime service does not directly depend on raw internal SDK control members.
+- Legacy sweep: modeled flow removes V1 `query()` turn path from active Claude runtime execution.
+- New use cases discovered: `Yes` (`UC-015`).
+
+### Findings
+
+- Blocking findings: `None`.
+- Required persisted artifact updates: `investigation-notes.md`, `requirements.md`, `proposed-design.md`, `future-state-runtime-call-stack.md` (updated in this cycle).
+
+### Applied Updates
+
+- Updated files:
+  - `tickets/in-progress/claude-agent-sdk-runtime-support/investigation-notes.md`
+  - `tickets/in-progress/claude-agent-sdk-runtime-support/requirements.md`
+  - `tickets/in-progress/claude-agent-sdk-runtime-support/proposed-design.md`
+  - `tickets/in-progress/claude-agent-sdk-runtime-support/future-state-runtime-call-stack.md`
+- New artifact versions:
+  - `proposed-design.md` -> `v2`
+  - `future-state-runtime-call-stack.md` -> `v3`
+- Changed sections:
+  - V2 capability evidence + live probe findings
+  - Requirements/AC additions `R-015..R-017` / `AC-015..AC-017`
+  - V2-only architecture direction and runtime call stacks
+- Resolved findings: V2-only path and unstable-control boundary are now explicitly modeled.
+
+### Round Verdict
+
+- Status: `Candidate Go`
+- Clean-review streak state: `Candidate Go (1/2)` (V2-only runtime cycle)
+
+## Re-Entry Round 10 (Deep Review, V2-Only Confirmation)
+
+### Missing-Use-Case Discovery Sweep
+
+- Coverage re-check: `R-001..R-017` are mapped, including V2-only contracts and new acceptance criteria.
+- Decoupling re-check: runtime-neutral orchestration remains separate from runtime-specific V2 interop module.
+- Legacy re-check: no remaining modeled dependency on V1 `query()` in active Claude turn execution.
+- New use cases discovered: `No`.
+
+### Findings
+
+- Blocking findings: `None`.
+- Required persisted artifact updates: `None`.
+
+### Applied Updates
+
+- Updated files: `None`.
+- New artifact versions: `None`.
+- Changed sections: `None`.
+- Resolved findings: `N/A`.
+
+### Round Verdict
+
+- Status: `Go Confirmed`
+- Clean-review streak state: `Go Confirmed (2/2)` (V2-only runtime cycle)
+
+## Re-Entry Stage 5 Decision (V2-Only Runtime Delta)
+
+- Gate Decision: `Pass`
+- Decision Reason: two consecutive clean rounds completed with no blockers, no new use cases, and no required persisted artifact updates.
+- Next Stage: `6 (Implementation for V2-only Claude runtime path)`

@@ -11,7 +11,14 @@ import {
 
 export const resolveSdkFunction = (
   sdk: ClaudeSdkModuleLike | null,
-  functionName: "query" | "getSessionMessages" | "listModels" | "createSdkMcpServer" | "tool",
+  functionName:
+    | "query"
+    | "getSessionMessages"
+    | "listModels"
+    | "createSdkMcpServer"
+    | "tool"
+    | "unstable_v2_createSession"
+    | "unstable_v2_resumeSession",
 ): ((...args: unknown[]) => unknown) | null => {
   if (!sdk) {
     return null;

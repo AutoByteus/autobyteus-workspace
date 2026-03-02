@@ -2,13 +2,6 @@ import { AgentInputUserMessage } from "autobyteus-ts";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { ClaudeAgentSdkRuntimeService } from "../../../../src/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.js";
 
-const toAsyncIterable = (items: unknown[]): AsyncIterable<unknown> =>
-  (async function* () {
-    for (const item of items) {
-      yield item;
-    }
-  })();
-
 const waitFor = async (
   predicate: () => boolean,
   options: { timeoutMs?: number; intervalMs?: number } = {},
@@ -24,6 +17,32 @@ const waitFor = async (
   }
 };
 
+const createFakeV2Session = (
+  turns: unknown[][],
+  queryControl: Record<string, unknown> = {},
+): {
+  send: ReturnType<typeof vi.fn>;
+  stream: ReturnType<typeof vi.fn>;
+  close: ReturnType<typeof vi.fn>;
+  query: Record<string, unknown>;
+} => {
+  let turnIndex = 0;
+  return {
+    send: vi.fn().mockResolvedValue(undefined),
+    stream: vi.fn().mockImplementation(() =>
+      (async function* () {
+        const chunks = turns[turnIndex] ?? [];
+        turnIndex += 1;
+        for (const chunk of chunks) {
+          yield chunk;
+        }
+      })(),
+    ),
+    close: vi.fn(),
+    query: queryControl,
+  };
+};
+
 describe("ClaudeAgentSdkRuntimeService", () => {
   afterEach(() => {
     delete process.env.CLAUDE_AGENT_SDK_MODELS;
@@ -31,17 +50,28 @@ describe("ClaudeAgentSdkRuntimeService", () => {
   });
 
   it("streams turn deltas, emits lifecycle events, and records session transcript", async () => {
-    const query = vi.fn().mockResolvedValue(
-      toAsyncIterable([
-        { sessionId: "claude-session-1", delta: "Hello " },
-        { delta: "world" },
+    const createSession = vi.fn().mockReturnValue(
+      createFakeV2Session([
+        [
+          {
+            type: "assistant",
+            session_id: "claude-session-1",
+            message: { content: [{ type: "text", text: "Hello " }] },
+          },
+          { delta: "world" },
+          { type: "result", session_id: "claude-session-1", result: "Hello world" },
+        ],
       ]),
     );
+    const resumeSession = vi.fn();
 
     const service = new ClaudeAgentSdkRuntimeService() as ClaudeAgentSdkRuntimeService & {
       cachedSdkModule: unknown;
     };
-    service.cachedSdkModule = { query };
+    service.cachedSdkModule = {
+      unstable_v2_createSession: createSession,
+      unstable_v2_resumeSession: resumeSession,
+    };
 
     await service.createRunSession("run-1", {
       modelIdentifier: "claude-sonnet-4-5",
@@ -59,7 +89,8 @@ describe("ClaudeAgentSdkRuntimeService", () => {
     await waitFor(() => methods.includes("turn/completed"));
 
     expect(result.turnId).toContain("run-1:turn:");
-    expect(query).toHaveBeenCalledTimes(1);
+    expect(createSession).toHaveBeenCalledTimes(1);
+    expect(resumeSession).toHaveBeenCalledTimes(0);
     expect(methods).toEqual([
       "turn/started",
       "item/outputText/delta",
@@ -83,34 +114,30 @@ describe("ClaudeAgentSdkRuntimeService", () => {
   });
 
   it("extracts assistant message content chunks from Claude SDK stream shape", async () => {
-    const query = vi.fn().mockResolvedValue(
-      toAsyncIterable([
-        {
-          type: "system",
-          subtype: "init",
-          session_id: "claude-session-real",
-        },
-        {
-          type: "assistant",
-          session_id: "claude-session-real",
-          message: {
-            role: "assistant",
-            content: [{ type: "text", text: "OK" }],
+    const createSession = vi.fn().mockReturnValue(
+      createFakeV2Session([
+        [
+          { type: "system", subtype: "init", session_id: "claude-session-real" },
+          {
+            type: "assistant",
+            session_id: "claude-session-real",
+            message: {
+              role: "assistant",
+              content: [{ type: "text", text: "OK" }],
+            },
           },
-        },
-        {
-          type: "result",
-          subtype: "success",
-          session_id: "claude-session-real",
-          result: "OK",
-        },
+          { type: "result", subtype: "success", session_id: "claude-session-real", result: "OK" },
+        ],
       ]),
     );
 
     const service = new ClaudeAgentSdkRuntimeService() as ClaudeAgentSdkRuntimeService & {
       cachedSdkModule: unknown;
     };
-    service.cachedSdkModule = { query };
+    service.cachedSdkModule = {
+      unstable_v2_createSession: createSession,
+      unstable_v2_resumeSession: vi.fn(),
+    };
 
     await service.createRunSession("run-real-shape", {
       modelIdentifier: "default",
@@ -140,24 +167,22 @@ describe("ClaudeAgentSdkRuntimeService", () => {
     ).toBe(true);
   });
 
-  it("omits resume on first turn and resumes by session id on subsequent turns", async () => {
-    const query = vi
-      .fn()
-      .mockResolvedValueOnce(
-        toAsyncIterable([
-          { sessionId: "claude-session-2", delta: "First reply" },
-        ]),
-      )
-      .mockResolvedValueOnce(
-        toAsyncIterable([
-          { delta: "Second reply" },
-        ]),
-      );
+  it("creates one V2 session and reuses it across multiple turns", async () => {
+    const createSession = vi.fn().mockReturnValue(
+      createFakeV2Session([
+        [{ session_id: "claude-session-2", delta: "First reply" }],
+        [{ delta: "Second reply" }],
+      ]),
+    );
+    const resumeSession = vi.fn();
 
     const service = new ClaudeAgentSdkRuntimeService() as ClaudeAgentSdkRuntimeService & {
       cachedSdkModule: unknown;
     };
-    service.cachedSdkModule = { query };
+    service.cachedSdkModule = {
+      unstable_v2_createSession: createSession,
+      unstable_v2_resumeSession: resumeSession,
+    };
 
     await service.createRunSession("run-resume", {
       modelIdentifier: "default",
@@ -173,40 +198,70 @@ describe("ClaudeAgentSdkRuntimeService", () => {
       AgentInputUserMessage.fromDict({ content: "First turn" }),
     );
     await waitFor(() => methods.filter((method) => method === "turn/completed").length >= 1);
+
     await service.sendTurn(
       "run-resume",
       AgentInputUserMessage.fromDict({ content: "Second turn" }),
     );
     await waitFor(() => methods.filter((method) => method === "turn/completed").length >= 2);
 
-    expect(query).toHaveBeenCalledTimes(2);
-    expect(query.mock.calls[0]?.[0]).toMatchObject({
-      options: {
-        model: "default",
-        cwd: "/tmp/workspace",
-      },
-    });
-    expect(query.mock.calls[0]?.[0]?.options?.resume).toBeUndefined();
-    expect(query.mock.calls[0]?.[0]?.options?.pathToClaudeCodeExecutable).toEqual(
-      expect.any(String),
-    );
-    expect(query.mock.calls[1]?.[0]?.options?.resume).toBe("claude-session-2");
-    expect(typeof query.mock.calls[1]?.[0]?.options?.resume).toBe("string");
-    expect(query.mock.calls[1]?.[0]?.options?.pathToClaudeCodeExecutable).toEqual(
-      expect.any(String),
-    );
+    expect(createSession).toHaveBeenCalledTimes(1);
+    expect(resumeSession).toHaveBeenCalledTimes(0);
   });
 
-  it("keeps websocket-style run listeners active across close and restore for the same run id", async () => {
-    const query = vi
-      .fn()
-      .mockResolvedValueOnce(toAsyncIterable([{ delta: "first" }]))
-      .mockResolvedValueOnce(toAsyncIterable([{ delta: "second" }]));
+  it("uses unstable_v2_resumeSession for restored runs with prior session id", async () => {
+    const createSession = vi.fn();
+    const resumeSession = vi.fn().mockReturnValue(
+      createFakeV2Session([[{ session_id: "restored-session-1", delta: "restored" }]]),
+    );
 
     const service = new ClaudeAgentSdkRuntimeService() as ClaudeAgentSdkRuntimeService & {
       cachedSdkModule: unknown;
     };
-    service.cachedSdkModule = { query };
+    service.cachedSdkModule = {
+      unstable_v2_createSession: createSession,
+      unstable_v2_resumeSession: resumeSession,
+    };
+
+    await service.restoreRunSession(
+      "run-restored",
+      {
+        modelIdentifier: "default",
+        workingDirectory: "/tmp/workspace",
+        llmConfig: null,
+      },
+      { sessionId: "restored-session-1", metadata: null },
+    );
+
+    const methods: string[] = [];
+    service.subscribeToRunEvents("run-restored", (event) => methods.push(event.method));
+
+    await service.sendTurn(
+      "run-restored",
+      AgentInputUserMessage.fromDict({ content: "continue please" }),
+    );
+    await waitFor(() => methods.includes("turn/completed"));
+
+    expect(createSession).toHaveBeenCalledTimes(0);
+    expect(resumeSession).toHaveBeenCalledTimes(1);
+    expect(resumeSession.mock.calls[0]?.[0]).toBe("restored-session-1");
+  });
+
+  it("keeps websocket-style run listeners active across close and restore for the same run id", async () => {
+    const createSession = vi.fn().mockReturnValue(
+      createFakeV2Session([[{ session_id: "session-first", delta: "first" }]]),
+    );
+    const resumeSession = vi.fn().mockReturnValue(
+      createFakeV2Session([[{ session_id: "restored-session-1", delta: "second" }]]),
+    );
+
+    const service = new ClaudeAgentSdkRuntimeService() as ClaudeAgentSdkRuntimeService & {
+      cachedSdkModule: unknown;
+    };
+    service.cachedSdkModule = {
+      unstable_v2_createSession: createSession,
+      unstable_v2_resumeSession: resumeSession,
+    };
 
     const methods: string[] = [];
     const unsubscribe = service.subscribeToRunEvents("run-rebind", (event) => methods.push(event.method));
@@ -232,7 +287,6 @@ describe("ClaudeAgentSdkRuntimeService", () => {
       },
       { sessionId: "restored-session-1", metadata: null },
     );
-
     await service.sendTurn(
       "run-rebind",
       AgentInputUserMessage.fromDict({ content: "Second turn" }),
@@ -240,18 +294,22 @@ describe("ClaudeAgentSdkRuntimeService", () => {
     await waitFor(() => methods.filter((method) => method === "turn/completed").length >= 2);
 
     unsubscribe();
-    expect(query).toHaveBeenCalledTimes(2);
+    expect(createSession).toHaveBeenCalledTimes(1);
+    expect(resumeSession).toHaveBeenCalledTimes(1);
   });
 
   it("injects inter-agent envelopes as agent messages and emits inter_agent_message", async () => {
-    const query = vi.fn().mockResolvedValue(
-      toAsyncIterable([{ delta: "agent-delivered" }]),
+    const createSession = vi.fn().mockReturnValue(
+      createFakeV2Session([[{ delta: "agent-delivered" }]]),
     );
 
     const service = new ClaudeAgentSdkRuntimeService() as ClaudeAgentSdkRuntimeService & {
       cachedSdkModule: unknown;
     };
-    service.cachedSdkModule = { query };
+    service.cachedSdkModule = {
+      unstable_v2_createSession: createSession,
+      unstable_v2_resumeSession: vi.fn(),
+    };
 
     await service.createRunSession("run-relay-target", {
       modelIdentifier: "default",
@@ -280,13 +338,13 @@ describe("ClaudeAgentSdkRuntimeService", () => {
 
   it("enables Claude MCP send_message_to tooling for team sessions and routes through relay handler", async () => {
     let capturedToolHandler: ((args: unknown) => Promise<unknown>) | null = null;
-    const createSdkMcpServer = vi.fn().mockImplementation((input: any) => {
-      capturedToolHandler = input?.tools?.[0]?.handler ?? null;
-      return { type: "sdk", name: input?.name ?? "autobyteus_team", instance: {} };
+    const createSdkMcpServer = vi.fn().mockImplementation((input: Record<string, unknown>) => {
+      const tools = Array.isArray(input.tools) ? (input.tools as Array<Record<string, unknown>>) : [];
+      capturedToolHandler = (tools[0]?.handler as ((args: unknown) => Promise<unknown>) | undefined) ?? null;
+      return { type: "sdk", name: input.name ?? "autobyteus_team", instance: {} };
     });
 
-    const relayHandler = vi.fn().mockResolvedValue({ accepted: true });
-    const query = vi.fn().mockImplementation(async () => {
+    const setMcpServers = vi.fn().mockImplementation(async () => {
       if (capturedToolHandler) {
         await capturedToolHandler({
           recipient_name: "pong",
@@ -294,13 +352,27 @@ describe("ClaudeAgentSdkRuntimeService", () => {
           message_type: "roundtrip_ping",
         });
       }
-      return toAsyncIterable([{ delta: "done" }]);
+      return { added: ["autobyteus_team"], removed: [], errors: {} };
     });
+
+    const relayHandler = vi.fn().mockResolvedValue({ accepted: true });
+    const resumeSession = vi.fn().mockReturnValue(
+      createFakeV2Session(
+        [[{ delta: "done" }]],
+        {
+          setMcpServers,
+        },
+      ),
+    );
 
     const service = new ClaudeAgentSdkRuntimeService() as ClaudeAgentSdkRuntimeService & {
       cachedSdkModule: unknown;
     };
-    service.cachedSdkModule = { query, createSdkMcpServer };
+    service.cachedSdkModule = {
+      unstable_v2_createSession: vi.fn(),
+      unstable_v2_resumeSession: resumeSession,
+      createSdkMcpServer,
+    };
     service.setInterAgentRelayHandler(relayHandler);
 
     await service.restoreRunSession(
@@ -343,9 +415,7 @@ describe("ClaudeAgentSdkRuntimeService", () => {
     await waitFor(() => methods.includes("turn/completed"));
 
     expect(createSdkMcpServer).toHaveBeenCalledTimes(1);
-    expect(query).toHaveBeenCalledTimes(1);
-    expect(query.mock.calls[0]?.[0]?.options?.mcpServers?.autobyteus_team).toBeTruthy();
-    expect(query.mock.calls[0]?.[0]?.options?.systemPrompt?.append).toContain("Teammates:");
+    expect(setMcpServers).toHaveBeenCalledTimes(1);
     expect(relayHandler).toHaveBeenCalledWith({
       senderRunId: "run-team-member",
       senderMemberName: "ping",
@@ -426,13 +496,17 @@ describe("ClaudeAgentSdkRuntimeService", () => {
     const invalidExecutablePath = "/definitely-missing/claude";
     process.env.CLAUDE_CODE_EXECUTABLE_PATH = invalidExecutablePath;
 
-    const query = vi.fn().mockResolvedValue(
-      toAsyncIterable([{ delta: "hello" }]),
+    const createSession = vi.fn().mockReturnValue(
+      createFakeV2Session([[{ delta: "hello" }]]),
     );
+
     const service = new ClaudeAgentSdkRuntimeService() as ClaudeAgentSdkRuntimeService & {
       cachedSdkModule: unknown;
     };
-    service.cachedSdkModule = { query };
+    service.cachedSdkModule = {
+      unstable_v2_createSession: createSession,
+      unstable_v2_resumeSession: vi.fn(),
+    };
 
     await service.createRunSession("run-exec-fallback", {
       modelIdentifier: "default",
@@ -444,9 +518,9 @@ describe("ClaudeAgentSdkRuntimeService", () => {
       "run-exec-fallback",
       AgentInputUserMessage.fromDict({ content: "hello" }),
     );
-    await waitFor(() => query.mock.calls.length > 0);
+    await waitFor(() => createSession.mock.calls.length > 0);
 
-    const resolvedExecutable = query.mock.calls[0]?.[0]?.options?.pathToClaudeCodeExecutable;
+    const resolvedExecutable = createSession.mock.calls[0]?.[0]?.pathToClaudeCodeExecutable;
     expect(typeof resolvedExecutable).toBe("string");
     expect(resolvedExecutable).not.toBe(invalidExecutablePath);
   });

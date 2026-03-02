@@ -3,7 +3,7 @@
 - Ticket: `claude-agent-sdk-runtime-support`
 - Started: `2026-02-28`
 - Current Stage: `10`
-- Overall Status: `Handoff Ready (Re-entry R-014 completed; team-tooling parity evidence refreshed)`
+- Overall Status: `Completed (all Stage 7 live-Claude gates revalidated after quota reset)`
 
 ## Batch Status
 
@@ -18,6 +18,7 @@
 | G | Codex parity closure + final regression validation | Completed |
 | H | External runtime listener continuity across restore | Completed |
 | I | Claude SDK tooling hardening + runtime decoupling refactor | Completed |
+| J | Claude V2-only runtime migration + legacy turn-path retirement | Completed |
 
 ## Change Tracking
 
@@ -68,6 +69,7 @@
 | C-043 | Refactor | Claude runtime module boundaries | Done | Done | Split oversized Claude runtime service into focused modules; reduced main service file below hard size-review threshold |
 | C-044 | Modify | Frontend test setup stability | Done | Done | Hardened websocket test setup fetch binding (`$fetch`) to prevent intermittent post-teardown failures in full Nuxt suite |
 | C-045 | Modify | Claude team metadata guidance + tests | Done | Done | Strengthened teammate-aware `send_message_to` instructions and added focused unit coverage for metadata/prompt composition |
+| C-046 | Modify | `claude-runtime-v2-control-interop.ts` + unit test | Done | Done | Fixed V2 `setMcpServers` invocation to preserve control-object method binding (`this`) and added regression test that fails on unbound call |
 
 ## Verification Log
 
@@ -121,6 +123,17 @@
 | 2026-03-02 | `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts` | Pass | Live Codex team routing + continuation workspace mapping passed (`2/2`) for parity regression guard |
 | 2026-03-02 | `pnpm -C autobyteus-server-ts test --run` | Pass | Latest full backend suite: `247 files passed / 7 skipped`, `1081 tests passed / 34 skipped` |
 | 2026-03-02 | `pnpm -C autobyteus-web test` | Pass | Latest full frontend suite: `test:nuxt 143 files / 708 tests`, `test:electron 6 files / 38 tests` |
+| 2026-03-02 | `pnpm -C autobyteus-server-ts exec vitest run tests/unit/runtime-execution/claude-agent-sdk/claude-runtime-v2-control-interop.test.ts tests/unit/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.test.ts` | Pass | Validated V2 control-binding fix and Claude runtime service unit coverage (`19/19`) |
+| 2026-03-02 | `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts -t \"routes live inter-agent send_message_to ping->pong->ping roundtrip in Claude team runtime\"` | Failed | Runtime crash removed; failure now due provider quota response (`You've hit your limit · resets 8pm`) instead of `sdkMcpServerInstances` error |
+| 2026-03-02 | `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts` | Pass | Live Codex runtime/team matrix still green (`13/13`) |
+| 2026-03-02 | `pnpm -C autobyteus-server-ts build` | Pass | Server + dependency build passed after V2 control-binding fix |
+| 2026-03-02 | `pnpm -C autobyteus-server-ts test` | Pass | Full backend suite passed (`248 files passed / 7 skipped`, `1087 passed / 34 skipped`) |
+| 2026-03-02 | `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts` | Failed | 4 assertions fail only because live Claude replies with quota-limit text; no runtime wiring exceptions observed |
+| 2026-03-02 | `pnpm -C autobyteus-web test` | Pass | Frontend regression rerun after backend V2 binding fix: `test:nuxt 143 files / 708 tests`, `test:electron 6 files / 38 tests` |
+| 2026-03-02 | `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts --reporter=verbose` | Pass | Post-reset live Claude verification closure: `13/13` passed (`11 runtime + 2 team`) |
+| 2026-03-02 | `RUN_CODEX_E2E=1 RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts` | Pass | Full live Codex+Claude runtime/team matrix rerun: `4 files`, `26/26` |
+| 2026-03-02 | `pnpm -C autobyteus-server-ts test` | Pass | Post-reset backend confidence rerun: `248 files passed / 7 skipped`, `1087 passed / 34 skipped` |
+| 2026-03-02 | `pnpm -C autobyteus-web test` | Pass | Post-reset frontend confidence rerun: `test:nuxt 143 files / 708 tests`, `test:electron 6 files / 38 tests` |
 
 ## Blockers
 
