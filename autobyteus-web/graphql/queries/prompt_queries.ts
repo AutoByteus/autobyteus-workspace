@@ -8,8 +8,6 @@ export const GET_PROMPTS = gql`
       name
       category
       promptContent
-      description
-      suitableForModels
       version
       createdAt
       updatedAt
@@ -27,8 +25,6 @@ export const GET_PROMPT_BY_ID = gql`
       name
       category
       promptContent
-      description
-      suitableForModels
       version
       createdAt
       updatedAt
@@ -42,7 +38,6 @@ export const GetPromptDetailsByNameAndCategory = gql`
   query GetPromptDetailsByNameAndCategory($category: String!, $name: String!) {
     promptDetailsByNameAndCategory(category: $category, name: $name) {
       __typename
-      description
       promptContent
     }
   }

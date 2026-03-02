@@ -3,8 +3,6 @@ export class Prompt {
   name: string;
   category: string;
   promptContent: string;
-  description?: string | null;
-  suitableForModels?: string | null;
   version?: number | null;
   createdAt?: Date | null;
   updatedAt?: Date | null;
@@ -15,8 +13,6 @@ export class Prompt {
     name: string;
     category: string;
     promptContent: string;
-    description?: string | null;
-    suitableForModels?: string | null;
     id?: string | null;
     version?: number | null;
     createdAt?: Date | null;
@@ -27,8 +23,6 @@ export class Prompt {
     this.name = options.name;
     this.category = options.category;
     this.promptContent = options.promptContent;
-    this.description = options.description ?? null;
-    this.suitableForModels = options.suitableForModels ?? null;
     this.id = options.id ?? null;
     this.version = options.version ?? 1;
     this.createdAt = options.createdAt ?? null;

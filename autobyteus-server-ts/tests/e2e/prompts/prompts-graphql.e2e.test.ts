@@ -65,8 +65,6 @@ describe("Prompts GraphQL e2e", () => {
         name: promptName,
         category,
         promptContent: "Hello world",
-        description: "Prompt for e2e",
-        suitableForModels: "default",
       },
     });
 
@@ -135,12 +133,11 @@ describe("Prompts GraphQL e2e", () => {
       query DetailsByName($category: String!, $name: String!) {
         promptDetailsByNameAndCategory(category: $category, name: $name) {
           promptContent
-          description
         }
       }
     `;
     const detailsByName = await execGraphql<{
-      promptDetailsByNameAndCategory: { promptContent: string; description: string | null } | null;
+      promptDetailsByNameAndCategory: { promptContent: string } | null;
     }>(detailsByNameQuery, { category, name: promptName });
     expect(detailsByName.promptDetailsByNameAndCategory?.promptContent).toBe("Hello world v2");
 

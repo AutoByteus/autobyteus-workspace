@@ -145,15 +145,11 @@ export class CachedPromptProvider {
   async findAllByNameAndCategory(
     name: string,
     category: string,
-    suitableForModels?: string | null,
   ): Promise<Prompt[]> {
     await this.ensureCachePopulated();
     const matches = Array.from(this.cache.values()).filter(
       (prompt) => prompt.name === name && prompt.category === category,
     );
-    if (suitableForModels !== undefined && suitableForModels !== null) {
-      return matches.filter((prompt) => prompt.suitableForModels === suitableForModels);
-    }
     return matches;
   }
 

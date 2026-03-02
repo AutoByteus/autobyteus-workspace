@@ -95,58 +95,18 @@ export class PromptLoader {
     prompts: Prompt[],
     modelIdentifier: string,
   ): Promise<string | null> {
-    const canonicalName = await this.llmFactory.getCanonicalName(modelIdentifier);
-    if (!canonicalName) {
-      logger.warn(`No canonical name found for model '${modelIdentifier}'.`);
+    if (prompts.length === 0) {
+      logger.warn(`No active prompts available for model '${modelIdentifier}'.`);
       return null;
     }
 
-    let primaryMatch: Prompt | null = null;
-    let fallbackMatch: Prompt | null = null;
-
-    for (const prompt of prompts) {
-      if (!prompt.suitableForModels) {
-        continue;
-      }
-
-      const suitableModels = new Set(
-        prompt.suitableForModels
-          .split(",")
-          .map((model) => model.trim())
-          .filter((model) => model.length > 0),
-      );
-
-      if (suitableModels.has(canonicalName)) {
-        primaryMatch = prompt;
-        break;
-      }
-
-      if (
-        !fallbackMatch &&
-        suitableModels.has(PromptLoader.DEFAULT_CANONICAL_MODEL)
-      ) {
-        fallbackMatch = prompt;
-      }
-    }
-
-    if (primaryMatch) {
-      logger.debug(
-        `Found primary match prompt '${primaryMatch.name}' (ID: ${String(primaryMatch.id)}) suitable for model '${modelIdentifier}' (canonical: '${canonicalName}')`,
-      );
-      return primaryMatch.promptContent;
-    }
-
-    if (fallbackMatch) {
-      logger.info(
-        `No specific prompt for model '${modelIdentifier}' (canonical: '${canonicalName}'). Falling back to default model '${PromptLoader.DEFAULT_CANONICAL_MODEL}'. Using prompt '${fallbackMatch.name}' (ID: ${String(fallbackMatch.id)}).`,
-      );
-      return fallbackMatch.promptContent;
-    }
-
-    logger.warn(
-      `Found ${prompts.length} active prompt(s), but none are suitable for model '${modelIdentifier}' (canonical: '${canonicalName}') or the default model '${PromptLoader.DEFAULT_CANONICAL_MODEL}'.`,
+    // With suitableForModels removed, all prompts are model-agnostic.
+    // Return the first active prompt's content.
+    const prompt = prompts[0]!;
+    logger.debug(
+      `Using prompt '${prompt.name}' (ID: ${String(prompt.id)}) for model '${modelIdentifier}'.`,
     );
-    return null;
+    return prompt.promptContent;
   }
 
   invalidateCache(): void {

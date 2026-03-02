@@ -8,8 +8,6 @@ export const CREATE_PROMPT = gql`
       name
       category
       promptContent
-      description
-      suitableForModels
       version
       createdAt
       parentPromptId
@@ -26,8 +24,6 @@ export const UPDATE_PROMPT = gql`
       name
       category
       promptContent
-      description
-      suitableForModels
       version
       createdAt
       updatedAt
@@ -45,8 +41,6 @@ export const ADD_NEW_PROMPT_REVISION = gql`
       name
       category
       promptContent
-      description
-      suitableForModels
       version
       createdAt
       parentPromptId

@@ -27,8 +27,6 @@ describe("updatePromptTool", () => {
       version: 1,
       isActive: true,
       parentId: null,
-      suitableForModels: "gpt-4",
-      description: "Test",
       createdAt: new Date(),
       updatedAt: new Date(),
     });
@@ -40,8 +38,6 @@ describe("updatePromptTool", () => {
       version: 2,
       isActive: false,
       parentId: "1",
-      suitableForModels: "gpt-4",
-      description: "Test",
       createdAt: new Date(),
       updatedAt: new Date(),
     });

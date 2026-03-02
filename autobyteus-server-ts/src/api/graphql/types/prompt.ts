@@ -20,9 +20,6 @@ export class PromptCategory {
 
 @ObjectType()
 export class PromptDetails {
-  @Field(() => String, { nullable: true })
-  description?: string | null;
-
   @Field(() => String)
   promptContent!: string;
 }
@@ -43,12 +40,6 @@ export class Prompt {
 
   @Field(() => Boolean)
   isActive!: boolean;
-
-  @Field(() => String, { nullable: true })
-  description?: string | null;
-
-  @Field(() => String, { nullable: true })
-  suitableForModels?: string | null;
 
   @Field(() => Int)
   version!: number;
@@ -73,12 +64,6 @@ export class CreatePromptInput {
 
   @Field(() => String)
   promptContent!: string;
-
-  @Field(() => String, { nullable: true })
-  description?: string | null;
-
-  @Field(() => String, { nullable: true })
-  suitableForModels?: string | null;
 }
 
 @InputType()
@@ -94,12 +79,6 @@ export class UpdatePromptInput {
 
   @Field(() => String, { nullable: true })
   promptContent?: string | null;
-
-  @Field(() => String, { nullable: true })
-  description?: string | null;
-
-  @Field(() => String, { nullable: true })
-  suitableForModels?: string | null;
 
   @Field(() => Boolean, { nullable: true })
   isActive?: boolean | null;
@@ -151,8 +130,6 @@ export const mapPromptToGraphql = (prompt: DomainPrompt): Prompt => ({
   name: prompt.name,
   category: prompt.category,
   promptContent: prompt.promptContent,
-  description: prompt.description ?? null,
-  suitableForModels: prompt.suitableForModels ?? null,
   version: prompt.version ?? 1,
   createdAt: ensureTimestamp(prompt.createdAt ?? null),
   updatedAt: ensureTimestamp(prompt.updatedAt ?? null),
@@ -226,7 +203,6 @@ export class PromptResolver {
         return null;
       }
       return {
-        description: prompt.description ?? null,
         promptContent: prompt.promptContent,
       };
     } catch (error) {
@@ -243,8 +219,6 @@ export class PromptResolver {
       name: input.name,
       category: input.category,
       promptContent: input.promptContent,
-      description: input.description ?? null,
-      suitableForModels: input.suitableForModels ?? null,
     });
     return mapPromptToGraphql(prompt);
   }
@@ -258,8 +232,6 @@ export class PromptResolver {
       name: input.name ?? null,
       category: input.category ?? null,
       promptContent: input.promptContent ?? null,
-      description: input.description ?? null,
-      suitableForModels: input.suitableForModels ?? null,
       isActive: input.isActive ?? null,
     });
     return mapPromptToGraphql(updated);

@@ -14,13 +14,11 @@ describe("SqlPromptRepository", () => {
       category: "SQL",
       promptContent: "...",
       version: 1,
-      suitableForModels: "gpt-4o",
       isActive: true,
     });
 
     expect(created.id).toBeTruthy();
     expect(created.name).toBe(name);
-    expect(created.suitableForModels).toBe("gpt-4o");
   });
 
   it("rejects duplicate prompt attributes", async () => {
@@ -31,7 +29,6 @@ describe("SqlPromptRepository", () => {
       category: "SQL",
       promptContent: "...",
       version: 1,
-      suitableForModels: "gpt-4o",
       isActive: true,
     };
 
@@ -100,7 +97,6 @@ describe("SqlPromptRepository", () => {
       name,
       category: "SQL",
       promptContent: "Non-Team",
-      suitableForModels: "g",
       version: 1,
       isActive: true,
     });
@@ -108,7 +104,6 @@ describe("SqlPromptRepository", () => {
       name,
       category: "SQL",
       promptContent: "Team",
-      suitableForModels: "g",
       version: 2,
       isActive: true,
     });
@@ -116,16 +111,11 @@ describe("SqlPromptRepository", () => {
       name,
       category: "SQL",
       promptContent: "Team-claude",
-      suitableForModels: "c",
       version: 1,
       isActive: true,
     });
 
     const allPrompts = await repo.findAllByNameAndCategory(name, "SQL");
     expect(allPrompts.length).toBe(3);
-
-    const claudePrompts = await repo.findAllByNameAndCategory(name, "SQL", "c");
-    expect(claudePrompts.length).toBe(1);
-    expect(claudePrompts[0]?.promptContent).toBe("Team-claude");
   });
 });

@@ -24,8 +24,6 @@ describe("getPromptTool", () => {
       version: 1,
       isActive: true,
       parentId: null,
-      suitableForModels: "gpt-4",
-      description: "Desc",
       createdAt: new Date(),
       updatedAt: new Date(),
     });

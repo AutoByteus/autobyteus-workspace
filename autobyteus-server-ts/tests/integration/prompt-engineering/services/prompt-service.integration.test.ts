@@ -14,7 +14,6 @@ describe("PromptService", () => {
       name,
       category,
       promptContent: "Content v1",
-      suitableForModels: "gpt-4o",
     });
     expect(created1.version).toBe(1);
     expect(created1.isActive).toBe(true);
@@ -23,15 +22,14 @@ describe("PromptService", () => {
       name,
       category,
       promptContent: "Content v2",
-      suitableForModels: "gpt-4o",
     });
     expect(created2.version).toBe(2);
     expect(created2.isActive).toBe(false);
   }, 15000);
 
-  it("defaults suitable_for_models to 'default'", async () => {
+  it("auto-increments version on duplicate name+category", async () => {
     const promptService = new PromptService();
-    const name = makeName("Default Model Test");
+    const name = makeName("Version Test");
     const category = "Service";
 
     const created1 = await promptService.createPrompt({
@@ -39,7 +37,6 @@ describe("PromptService", () => {
       category,
       promptContent: "Content v1",
     });
-    expect(created1.suitableForModels).toBe("default");
     expect(created1.version).toBe(1);
     expect(created1.isActive).toBe(true);
 
@@ -48,12 +45,11 @@ describe("PromptService", () => {
       category,
       promptContent: "Content v2",
     });
-    expect(created2.suitableForModels).toBe("default");
     expect(created2.version).toBe(2);
     expect(created2.isActive).toBe(false);
   });
 
-  it("creates separate v1 prompts for different models", async () => {
+  it("creates prompts with same name+category as new versions", async () => {
     const promptService = new PromptService();
     const name = makeName("Model Variation Test");
     const category = "Service";
@@ -62,7 +58,6 @@ describe("PromptService", () => {
       name,
       category,
       promptContent: "GPT prompt",
-      suitableForModels: "gpt-4o",
     });
     expect(prompt1.version).toBe(1);
     expect(prompt1.id).toBeTruthy();
@@ -71,9 +66,9 @@ describe("PromptService", () => {
       name,
       category,
       promptContent: "Claude prompt",
-      suitableForModels: "claude-3",
     });
-    expect(prompt2.version).toBe(1);
+    // Now same name+category auto-increments version
+    expect(prompt2.version).toBe(2);
     expect(prompt2.id).toBeTruthy();
     expect(prompt2.id).not.toBe(prompt1.id);
   });
@@ -87,13 +82,11 @@ describe("PromptService", () => {
       name,
       category,
       promptContent: "v1",
-      suitableForModels: "gpt-4o",
     });
     const promptV2 = await promptService.createPrompt({
       name,
       category,
       promptContent: "v2",
-      suitableForModels: "gpt-4o",
     });
 
     const fetchedV1 = await promptService.getPromptById(promptV1.id ?? "");
@@ -118,7 +111,6 @@ describe("PromptService", () => {
       name,
       category,
       promptContent: "v1",
-      suitableForModels: "gpt-4o",
     });
 
     await promptService.updatePrompt({
@@ -130,7 +122,6 @@ describe("PromptService", () => {
       name,
       category,
       promptContent: "v2",
-      suitableForModels: "gpt-4o",
     });
 
     const activated = await promptService.markActivePrompt(promptV2.id ?? "");
@@ -174,13 +165,11 @@ describe("PromptService", () => {
       name,
       category,
       promptContent: "...",
-      suitableForModels: "gpt-4o",
     });
     await promptService.createPrompt({
       name,
       category,
       promptContent: "...",
-      suitableForModels: "claude-3",
     });
     await promptService.createPrompt({
       name: `${name}-other`,

@@ -11,7 +11,6 @@ export type PromptPersistenceProvider = {
   findAllByNameAndCategory(
     name: string,
     category: string,
-    suitableForModels?: string | null,
   ): Promise<Prompt[]>;
   getActivePromptsByContext(name: string, category: string): Promise<Prompt[]>;
   updatePrompt(prompt: Prompt): Promise<Prompt>;

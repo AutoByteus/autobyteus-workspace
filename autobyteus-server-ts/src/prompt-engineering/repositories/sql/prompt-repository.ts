@@ -69,12 +69,8 @@ export class SqlPromptRepository extends BaseRepository.forModel(Prisma.ModelNam
   async findAllByNameAndCategory(
     name: string,
     category: string,
-    suitableForModels?: string | null,
   ): Promise<PrismaPrompt[]> {
     const where: Prisma.PromptWhereInput = { name, category };
-    if (suitableForModels !== undefined && suitableForModels !== null) {
-      where.suitableForModels = suitableForModels;
-    }
     return this.findMany({ where });
   }
 

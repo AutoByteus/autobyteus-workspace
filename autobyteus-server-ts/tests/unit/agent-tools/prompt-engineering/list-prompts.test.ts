@@ -24,8 +24,6 @@ describe("listPromptsTool", () => {
       version: 1,
       isActive: true,
       parentId: null,
-      suitableForModels: "gpt-4",
-      description: "Desc",
       createdAt: new Date("2024-01-01T00:00:00Z"),
       updatedAt: new Date("2024-01-02T00:00:00Z"),
     });

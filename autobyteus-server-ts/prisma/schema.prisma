@@ -51,12 +51,11 @@ model Prompt {
   updatedAt         DateTime @default(now()) @map("updated_at")
   parentId          Int?     @map("parent_id")
   isActive          Boolean  @default(true) @map("is_active")
-  description       String?
-  suitableForModels String?  @map("suitable_for_models")
+
   syncId            String?  @unique(map: "uq_prompts_sync_id") @map("sync_id")
   syncRevision      String?  @map("sync_revision")
 
-  @@unique([name, category, version, suitableForModels], map: "uq_prompt_version")
+  @@unique([name, category, version], map: "uq_prompt_version")
   @@map("prompts")
 }
 
