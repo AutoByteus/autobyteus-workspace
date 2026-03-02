@@ -85,8 +85,9 @@ describe("AgentTeamStreamHandler", () => {
     expect(sendToMember).toHaveBeenCalledTimes(1);
     expect(sendToMember.mock.calls[0]?.[0]).toBe("team-codex-1");
     expect(sendToMember.mock.calls[0]?.[1]).toBe("member-b");
+    expect(subscribeTeam).toHaveBeenCalledTimes(2);
 
     await handler.disconnect(sessionId as string);
-    expect(unsubscribe).toHaveBeenCalledTimes(1);
+    expect(unsubscribe).toHaveBeenCalledTimes(2);
   });
 });

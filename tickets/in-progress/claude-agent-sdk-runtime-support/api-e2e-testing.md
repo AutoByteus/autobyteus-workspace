@@ -1,12 +1,12 @@
 # API/E2E Testing
 
 - Stage: `7`
-- Date: `2026-02-28`
+- Date: `2026-03-02`
 - Result: `Pass`
 
 ## Scope
 
-Validated API/E2E acceptance behavior for Claude runtime support, external-member runtime routing, Codex-vs-Claude live E2E parity, and team run continuation/run-history behavior.
+Validated API/E2E acceptance behavior for Claude runtime support, external-member runtime routing, Codex-vs-Claude live E2E parity, team run continuation/run-history behavior, and strict continuation send/receive checks (`send -> receive`, `continue -> send -> receive`).
 
 ## Commands Executed
 
@@ -24,6 +24,10 @@ Validated API/E2E acceptance behavior for Claude runtime support, external-membe
 12. `RUN_CODEX_E2E=1 RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=1 pnpm -C autobyteus-server-ts test`
 13. `pnpm -C autobyteus-web test`
 14. `RUN_CODEX_E2E=1 RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts tests/e2e/run-history/team-run-history-graphql.e2e.test.ts`
+15. `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts`
+16. `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts`
+17. `pnpm -C autobyteus-server-ts test`
+18. `pnpm -C autobyteus-web test`
 
 ## Results
 
@@ -36,6 +40,10 @@ Validated API/E2E acceptance behavior for Claude runtime support, external-membe
 - Final full backend with both live runtime flags: `250 files passed / 3 skipped`, `1095 passed / 8 skipped`
 - Final full frontend suite gate: `test:nuxt 143 files / 706 passed` + `test:electron 6 files / 38 passed`
 - Focused team routing + continuation/run-history rerun: `3 files passed`, `8 passed / 1 skipped`
+- Strict continuation checks: Claude live E2E now enforces `send -> non-empty READY`, then `continue -> send -> non-empty READY` and post-continue team websocket professor output assertions.
+- Latest live Claude rerun: `13/13 passed`; latest live Codex rerun: `13/13 passed`.
+- Latest full backend rerun: `246 passed / 7 skipped`, `1070 passed / 34 skipped`.
+- Latest full frontend rerun: `test:nuxt 143 files / 708 passed` + `test:electron 6 files / 38 passed`.
 - No Stage 7 blockers remain.
 
 ## Notes

@@ -927,6 +927,9 @@ describeClaudeRuntime("Claude runtime GraphQL e2e (live transport)", () => {
         prompt: "Reply with READY from websocket turn.",
       });
       expect(capture.errorCodes).not.toContain("CLAUDE_RUNTIME_TURN_FAILED");
+      const beforeContinueOutput = capture.assistantOutputFragments.join("").trim();
+      expect(beforeContinueOutput.length).toBeGreaterThan(0);
+      expect(beforeContinueOutput.toUpperCase()).toContain("READY");
 
       const continueResult = await execGraphql<{
         continueRun: {
@@ -945,6 +948,15 @@ describeClaudeRuntime("Claude runtime GraphQL e2e (live transport)", () => {
 
       expect(continueResult.continueRun.success).toBe(true);
       expect(continueResult.continueRun.runId).toBe(runId);
+
+      const postContinueCapture = await captureSingleWebsocketTurn({
+        runId,
+        prompt: "Reply with READY after continueRun.",
+      });
+      expect(postContinueCapture.errorCodes).not.toContain("CLAUDE_RUNTIME_TURN_FAILED");
+      const afterContinueOutput = postContinueCapture.assistantOutputFragments.join("").trim();
+      expect(afterContinueOutput.length).toBeGreaterThan(0);
+      expect(afterContinueOutput.toUpperCase()).toContain("READY");
 
       const resumeResult = await execGraphql<{
         getRunResumeConfig: {

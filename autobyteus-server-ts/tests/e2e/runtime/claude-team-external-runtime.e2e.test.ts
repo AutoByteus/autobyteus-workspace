@@ -608,92 +608,236 @@ describeClaudeRuntime("Claude team external-member runtime e2e (live transport)"
         }
       `;
 
-      const firstSendResult = await execGraphql<{
-        sendMessageToTeam: { success: boolean; message: string; teamRunId: string | null };
-      }>(sendMessageToTeamMutation, {
-        input: {
-          teamRunId,
-          targetMemberName: "professor",
-          userInput: {
-            content: "Reply with READY.",
-            contextFiles: [],
-          },
-        },
-      });
-      expect(firstSendResult.sendMessageToTeam.success).toBe(true);
-      expect(firstSendResult.sendMessageToTeam.teamRunId).toBe(teamRunId);
+      const streamApp = fastify();
+      await streamApp.register(websocket);
+      await registerAgentWebsocket(streamApp);
+      const streamAddress = await streamApp.listen({ port: 0, host: "127.0.0.1" });
+      const streamUrl = new URL(streamAddress);
+      const teamSocket = new WebSocket(`ws://${streamUrl.hostname}:${streamUrl.port}/ws/agent-team/${teamRunId}`);
+      await waitForSocketOpen(teamSocket);
 
-      const deadline = Date.now() + 120_000;
-      let matchedRow:
-        | {
-            teamRunId: string;
-            workspaceRootPath: string | null;
-            members: Array<{ memberName: string; workspaceRootPath: string | null }>;
-          }
-        | null = null;
-      while (Date.now() < deadline) {
-        const listResult = await execGraphql<{
-          listTeamRunHistory: Array<{
-            teamRunId: string;
-            workspaceRootPath: string | null;
-            members: Array<{ memberName: string; workspaceRootPath: string | null }>;
-          }>;
-        }>(listTeamRunHistoryQuery);
-        matchedRow = listResult.listTeamRunHistory.find((row) => row.teamRunId === teamRunId) ?? null;
-        if (
-          matchedRow &&
-          matchedRow.workspaceRootPath === workspaceRootPath &&
-          matchedRow.members.every((member) => member.workspaceRootPath === workspaceRootPath)
-        ) {
-          break;
-        }
-        await wait(2_000);
-      }
-
-      expect(matchedRow).toBeTruthy();
-      expect(matchedRow?.workspaceRootPath).toBe(workspaceRootPath);
-      expect(matchedRow?.members.every((member) => member.workspaceRootPath === workspaceRootPath)).toBe(
-        true,
-      );
-
-      const terminateResult = await execGraphql<{
-        terminateAgentTeamRun: { success: boolean; message: string };
-      }>(terminateTeamRunMutation, { id: teamRunId });
-      expect(terminateResult.terminateAgentTeamRun.success).toBe(true);
-
-      const continueResult = await execGraphql<{
-        sendMessageToTeam: { success: boolean; message: string; teamRunId: string | null };
-      }>(sendMessageToTeamMutation, {
-        input: {
-          teamRunId,
-          targetMemberName: "professor",
-          userInput: {
-            content: "Reply with READY again.",
-            contextFiles: [],
-          },
-        },
-      });
-      expect(continueResult.sendMessageToTeam.success).toBe(true);
-      expect(continueResult.sendMessageToTeam.teamRunId).toBe(teamRunId);
-
-      const resumeResult = await execGraphql<{
-        getTeamRunResumeConfig: {
-          teamRunId: string;
-          isActive: boolean;
-          manifest: {
-            workspaceRootPath: string | null;
-            memberBindings: Array<{ memberName: string; workspaceRootPath: string | null }>;
+      const teamMessages: Array<{ type: string; payload: Record<string, unknown> }> = [];
+      teamSocket.on("message", (raw) => {
+        try {
+          const parsed = JSON.parse(String(raw)) as {
+            type?: unknown;
+            payload?: unknown;
           };
-        };
-      }>(teamResumeQuery, { teamRunId });
+          if (typeof parsed.type !== "string") {
+            return;
+          }
+          const payload =
+            parsed.payload && typeof parsed.payload === "object" && !Array.isArray(parsed.payload)
+              ? (parsed.payload as Record<string, unknown>)
+              : {};
+          teamMessages.push({
+            type: parsed.type,
+            payload,
+          });
+        } catch {
+          // ignore malformed rows in stream capture
+        }
+      });
+      let resumedTeamSocket: WebSocket | null = null;
 
-      expect(resumeResult.getTeamRunResumeConfig.teamRunId).toBe(teamRunId);
-      expect(resumeResult.getTeamRunResumeConfig.manifest.workspaceRootPath).toBe(workspaceRootPath);
-      expect(
-        resumeResult.getTeamRunResumeConfig.manifest.memberBindings.every(
-          (binding) => binding.workspaceRootPath === workspaceRootPath,
-        ),
-      ).toBe(true);
+      const waitForProfessorTurnOutput = async (
+        expectedToken: string,
+        startIndex: number,
+        messageBuffer: Array<{ type: string; payload: Record<string, unknown> }>,
+      ): Promise<void> => {
+        const deadline = Date.now() + 120_000;
+        let lastSawRunning = false;
+        let lastSawIdle = false;
+        let lastOutput = "";
+        while (Date.now() < deadline) {
+          const phaseMessages = messageBuffer.slice(startIndex);
+          const sawRunning = phaseMessages.some(
+            (message) =>
+              message.type === "AGENT_STATUS" &&
+              message.payload.agent_name === "professor" &&
+              message.payload.new_status === "RUNNING",
+          );
+          const sawIdle = phaseMessages.some(
+            (message) =>
+              message.type === "AGENT_STATUS" &&
+              message.payload.agent_name === "professor" &&
+              message.payload.new_status === "IDLE",
+          );
+          const output = phaseMessages
+            .filter(
+              (message) =>
+                (message.type === "SEGMENT_CONTENT" || message.type === "SEGMENT_END") &&
+                message.payload.agent_name === "professor",
+            )
+            .map((message) => {
+              const delta = message.payload.delta;
+              if (typeof delta === "string") {
+                return delta;
+              }
+              const text = message.payload.text;
+              if (typeof text === "string") {
+                return text;
+              }
+              return "";
+            })
+            .join("")
+            .trim();
+          lastSawRunning = sawRunning;
+          lastSawIdle = sawIdle;
+          lastOutput = output;
+
+          if (sawRunning && sawIdle && output.length > 0) {
+            expect(output.toUpperCase()).toContain(expectedToken.toUpperCase());
+            return;
+          }
+          await wait(500);
+        }
+        throw new Error(
+          `Timed out waiting for professor output containing '${expectedToken}' (running=${String(lastSawRunning)} idle=${String(lastSawIdle)} outputLength=${String(lastOutput.length)} recentTypes=${messageBuffer
+            .slice(Math.max(startIndex, messageBuffer.length - 12))
+            .map((message) => message.type)
+            .join(",")}).`,
+        );
+      };
+
+      try {
+        let phaseStart = teamMessages.length;
+        const firstSendResult = await execGraphql<{
+          sendMessageToTeam: { success: boolean; message: string; teamRunId: string | null };
+        }>(sendMessageToTeamMutation, {
+          input: {
+            teamRunId,
+            targetMemberName: "professor",
+            userInput: {
+              content: `Reply with exactly READY-FIRST-${unique}.`,
+              contextFiles: [],
+            },
+          },
+        });
+        expect(firstSendResult.sendMessageToTeam.success).toBe(true);
+        expect(firstSendResult.sendMessageToTeam.teamRunId).toBe(teamRunId);
+        await waitForProfessorTurnOutput(`READY-FIRST-${unique}`, phaseStart, teamMessages);
+
+        const deadline = Date.now() + 120_000;
+        let matchedRow:
+          | {
+              teamRunId: string;
+              workspaceRootPath: string | null;
+              members: Array<{ memberName: string; workspaceRootPath: string | null }>;
+            }
+          | null = null;
+        while (Date.now() < deadline) {
+          const listResult = await execGraphql<{
+            listTeamRunHistory: Array<{
+              teamRunId: string;
+              workspaceRootPath: string | null;
+              members: Array<{ memberName: string; workspaceRootPath: string | null }>;
+            }>;
+          }>(listTeamRunHistoryQuery);
+          matchedRow = listResult.listTeamRunHistory.find((row) => row.teamRunId === teamRunId) ?? null;
+          if (
+            matchedRow &&
+            matchedRow.workspaceRootPath === workspaceRootPath &&
+            matchedRow.members.every((member) => member.workspaceRootPath === workspaceRootPath)
+          ) {
+            break;
+          }
+          await wait(2_000);
+        }
+
+        expect(matchedRow).toBeTruthy();
+        expect(matchedRow?.workspaceRootPath).toBe(workspaceRootPath);
+        expect(matchedRow?.members.every((member) => member.workspaceRootPath === workspaceRootPath)).toBe(
+          true,
+        );
+
+        const terminateResult = await execGraphql<{
+          terminateAgentTeamRun: { success: boolean; message: string };
+        }>(terminateTeamRunMutation, { id: teamRunId });
+        expect(terminateResult.terminateAgentTeamRun.success).toBe(true);
+
+        teamSocket.close();
+        const continueResult = await execGraphql<{
+          sendMessageToTeam: { success: boolean; message: string; teamRunId: string | null };
+        }>(sendMessageToTeamMutation, {
+          input: {
+            teamRunId,
+            targetMemberName: "professor",
+            userInput: {
+              content: `Reply with exactly READY-CONTINUE-${unique}.`,
+              contextFiles: [],
+            },
+          },
+        });
+        expect(continueResult.sendMessageToTeam.success).toBe(true);
+        expect(continueResult.sendMessageToTeam.teamRunId).toBe(teamRunId);
+
+        const resumedTeamMessages: Array<{ type: string; payload: Record<string, unknown> }> = [];
+        resumedTeamSocket = new WebSocket(
+          `ws://${streamUrl.hostname}:${streamUrl.port}/ws/agent-team/${teamRunId}`,
+        );
+        await waitForSocketOpen(resumedTeamSocket);
+        resumedTeamSocket.on("message", (raw) => {
+          try {
+            const parsed = JSON.parse(String(raw)) as {
+              type?: unknown;
+              payload?: unknown;
+            };
+            if (typeof parsed.type !== "string") {
+              return;
+            }
+            const payload =
+              parsed.payload && typeof parsed.payload === "object" && !Array.isArray(parsed.payload)
+                ? (parsed.payload as Record<string, unknown>)
+                : {};
+            resumedTeamMessages.push({
+              type: parsed.type,
+              payload,
+            });
+          } catch {
+            // ignore malformed rows in stream capture
+          }
+        });
+
+        phaseStart = resumedTeamMessages.length;
+        resumedTeamSocket.send(
+          JSON.stringify({
+            type: "SEND_MESSAGE",
+            payload: {
+              content: `Reply with exactly READY-POST-CONTINUE-${unique}.`,
+              target_member_name: "professor",
+            },
+          }),
+        );
+        await waitForProfessorTurnOutput(
+          `READY-POST-CONTINUE-${unique}`,
+          phaseStart,
+          resumedTeamMessages,
+        );
+
+        const resumeResult = await execGraphql<{
+          getTeamRunResumeConfig: {
+            teamRunId: string;
+            isActive: boolean;
+            manifest: {
+              workspaceRootPath: string | null;
+              memberBindings: Array<{ memberName: string; workspaceRootPath: string | null }>;
+            };
+          };
+        }>(teamResumeQuery, { teamRunId });
+
+        expect(resumeResult.getTeamRunResumeConfig.teamRunId).toBe(teamRunId);
+        expect(resumeResult.getTeamRunResumeConfig.manifest.workspaceRootPath).toBe(workspaceRootPath);
+        expect(
+          resumeResult.getTeamRunResumeConfig.manifest.memberBindings.every(
+            (binding) => binding.workspaceRootPath === workspaceRootPath,
+          ),
+        ).toBe(true);
+      } finally {
+        teamSocket.close();
+        resumedTeamSocket?.close();
+        await streamApp.close();
+      }
     },
     180_000,
   );

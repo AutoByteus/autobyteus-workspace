@@ -55,6 +55,9 @@
 | C-032 | Modify | Team stream reconnect behavior (web) | Done | Done | Reconnect stale/disconnected team websocket streams after send and sync `isSubscribed` on connect/disconnect callbacks |
 | C-033 | Modify | `claude-agent-sdk-runtime-service.ts` | Done | Done | Added live Claude assistant chunk (`assistant.message.content[].text`) and `result` fallback normalization to prevent empty assistant output |
 | C-034 | Modify | Claude live runtime E2E assertions | Done | Done | Hardened live tests to require non-empty assistant output content for single-agent and team-member turns |
+| C-035 | Modify | `agent-team-stream-handler.ts` | Done | Done | Added external-member runtime bridge subscription refresh after member sends so post-continue events reach reattached sockets |
+| C-036 | Modify | Claude continuation live E2E assertions | Done | Done | Enforced send->receive and continue->send->receive checks with explicit non-empty `READY` output assertions |
+| C-037 | Modify | team stream handler unit + Claude team E2E | Done | Done | Updated unit expectations for resubscribe behavior and added strict post-continue websocket professor output checks |
 
 ## Verification Log
 
@@ -93,6 +96,11 @@
 | 2026-03-01 | `pnpm -C autobyteus-server-ts exec vitest run tests/unit/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.test.ts` | Pass | Added regression for real Claude chunk shape; unit suite now validates assistant content extraction |
 | 2026-03-01 | `RUN_CLAUDE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts` | Pass | Live Claude runtime/team E2E rerun with strict non-empty assistant output assertions: `13/13` |
 | 2026-03-01 | `pnpm -C autobyteus-server-ts test` | Pass | Full backend suite rerun after normalization + E2E assertion hardening: `246 passed / 7 skipped`, `1070 passed / 34 skipped` |
+| 2026-03-02 | `pnpm -C autobyteus-server-ts exec vitest run tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts` | Pass | Unit verification for external-member bridge resubscribe behavior (`2/2`) |
+| 2026-03-02 | `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts` | Pass | Live Claude runtime/team E2E with strict continuation send/receive checks (`13/13`) |
+| 2026-03-02 | `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts` | Pass | Live Codex runtime/team E2E rerun for parity and guard against regressions (`13/13`) |
+| 2026-03-02 | `pnpm -C autobyteus-server-ts test` | Pass | Full backend suite passed after rerun (`246 passed / 7 skipped`, `1070 passed / 34 skipped`) |
+| 2026-03-02 | `pnpm -C autobyteus-web test` | Pass | Full frontend suite passed (`test:nuxt 143 files / 708 tests`, `test:electron 6 files / 38 tests`) |
 
 ## Blockers
 

@@ -69,6 +69,7 @@ export class AgentTeamStreamHandler {
   private activeTasks = new Map<string, Promise<void>>();
   private eventStreams = new Map<string, AgentTeamEventStream>();
   private externalRuntimeBridgeUnsubscribers = new Map<string, () => Promise<void>>();
+  private connections = new Map<string, WebSocketConnection>();
   private sessionMode = new Map<string, "autobyteus_team" | "external_member_runtime">();
 
   constructor(
@@ -108,18 +109,10 @@ export class AgentTeamStreamHandler {
       return null;
     }
 
+    this.connections.set(sessionId, connection);
+
     if (runtimeMode === "external_member_runtime") {
-      const unsubscribe = this.teamExternalRuntimeEventBridge.subscribeTeam(
-        teamRunId,
-        (message) => {
-          try {
-            connection.send(message.toJson());
-          } catch (error) {
-            logger.error(`Error sending external runtime team event to WebSocket: ${String(error)}`);
-          }
-        },
-      );
-      this.externalRuntimeBridgeUnsubscribers.set(sessionId, unsubscribe);
+      this.registerExternalRuntimeBridgeSubscription(sessionId, teamRunId, connection);
       this.sessionMode.set(sessionId, "external_member_runtime");
     } else {
       const eventStream = this.teamManager.getTeamEventStream(teamRunId);
@@ -183,6 +176,7 @@ export class AgentTeamStreamHandler {
     const task = this.activeTasks.get(sessionId);
     this.activeTasks.delete(sessionId);
     this.sessionMode.delete(sessionId);
+    this.connections.delete(sessionId);
 
     const stream = this.eventStreams.get(sessionId);
     this.eventStreams.delete(sessionId);
@@ -273,6 +267,7 @@ export class AgentTeamStreamHandler {
     if (mode === "external_member_runtime") {
       try {
         await this.teamMemberRuntimeOrchestrator.sendToMember(teamRunId, targetMemberName, userMessage);
+        await this.refreshExternalRuntimeBridgeSubscriptions(teamRunId);
       } catch (error) {
         if (error instanceof TeamRuntimeRoutingError) {
           logger.warn(
@@ -445,6 +440,50 @@ export class AgentTeamStreamHandler {
     }
 
     return createErrorMessage("UNKNOWN_TEAM_EVENT", `Unmapped team event source: ${String(sourceType)}`);
+  }
+
+  private registerExternalRuntimeBridgeSubscription(
+    sessionId: string,
+    teamRunId: string,
+    connection: WebSocketConnection,
+  ): void {
+    const unsubscribe = this.teamExternalRuntimeEventBridge.subscribeTeam(
+      teamRunId,
+      (message) => {
+        try {
+          connection.send(message.toJson());
+        } catch (error) {
+          logger.error(`Error sending external runtime team event to WebSocket: ${String(error)}`);
+        }
+      },
+    );
+    this.externalRuntimeBridgeUnsubscribers.set(sessionId, unsubscribe);
+  }
+
+  private async refreshExternalRuntimeBridgeSubscriptions(teamRunId: string): Promise<void> {
+    const sessions = this.sessionManager.getSessionsForRun(teamRunId);
+    for (const session of sessions) {
+      if (this.sessionMode.get(session.sessionId) !== "external_member_runtime") {
+        continue;
+      }
+
+      const connection = this.connections.get(session.sessionId);
+      if (!connection) {
+        continue;
+      }
+
+      const previousUnsubscribe = this.externalRuntimeBridgeUnsubscribers.get(session.sessionId);
+      if (previousUnsubscribe) {
+        this.externalRuntimeBridgeUnsubscribers.delete(session.sessionId);
+        try {
+          await previousUnsubscribe();
+        } catch {
+          // best effort cleanup
+        }
+      }
+
+      this.registerExternalRuntimeBridgeSubscription(session.sessionId, teamRunId, connection);
+    }
   }
 
   static parseMessage(raw: string): ClientMessage {
