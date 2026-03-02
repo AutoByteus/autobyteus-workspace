@@ -418,3 +418,59 @@ describe("CodexAppServerRuntimeService team-manifest instructions", () => {
     );
   });
 });
+
+describe("CodexAppServerRuntimeService listener continuity", () => {
+  it("keeps run listeners attachable across close/restore boundaries", async () => {
+    const service = new CodexAppServerRuntimeService();
+    const listener = vi.fn();
+
+    const unsubscribe = service.subscribeToRunEvents("run-rebind", listener);
+    expect(
+      (service as unknown as { deferredListenersByRunId: Map<string, Set<unknown>> })
+        .deferredListenersByRunId.get("run-rebind")?.size,
+    ).toBe(1);
+
+    const firstState = {
+      listeners: new Set(),
+      approvalRecords: new Map(),
+      unbindHandlers: [],
+    } as any;
+    (service as unknown as { sessions: Map<string, unknown> }).sessions.set("run-rebind", firstState);
+    (service as unknown as { rebindDeferredListeners: (runId: string, state: unknown) => void }).rebindDeferredListeners(
+      "run-rebind",
+      firstState,
+    );
+    (service as unknown as { emitEvent: (state: unknown, event: unknown) => void }).emitEvent(firstState, {
+      method: "turn/completed",
+      params: {},
+    });
+
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    await service.closeRunSession("run-rebind");
+
+    const restoredState = {
+      listeners: new Set(),
+      approvalRecords: new Map(),
+      unbindHandlers: [],
+    } as any;
+    (service as unknown as { sessions: Map<string, unknown> }).sessions.set(
+      "run-rebind",
+      restoredState,
+    );
+    (service as unknown as { rebindDeferredListeners: (runId: string, state: unknown) => void }).rebindDeferredListeners(
+      "run-rebind",
+      restoredState,
+    );
+    (service as unknown as { emitEvent: (state: unknown, event: unknown) => void }).emitEvent(
+      restoredState,
+      {
+        method: "turn/completed",
+        params: {},
+      },
+    );
+
+    expect(listener).toHaveBeenCalledTimes(2);
+    unsubscribe();
+  });
+});

@@ -3,7 +3,7 @@
 - Ticket: `claude-agent-sdk-runtime-support`
 - Started: `2026-02-28`
 - Current Stage: `10`
-- Overall Status: `Handoff Ready`
+- Overall Status: `Handoff Ready (Re-entry R-014 completed; team-tooling parity evidence refreshed)`
 
 ## Batch Status
 
@@ -16,6 +16,8 @@
 | E | Frontend runtime option support | Completed |
 | F | Verification and stabilization | Completed |
 | G | Codex parity closure + final regression validation | Completed |
+| H | External runtime listener continuity across restore | Completed |
+| I | Claude SDK tooling hardening + runtime decoupling refactor | Completed |
 
 ## Change Tracking
 
@@ -58,6 +60,14 @@
 | C-035 | Modify | `agent-team-stream-handler.ts` | Done | Done | Added external-member runtime bridge subscription refresh after member sends so post-continue events reach reattached sockets |
 | C-036 | Modify | Claude continuation live E2E assertions | Done | Done | Enforced send->receive and continue->send->receive checks with explicit non-empty `READY` output assertions |
 | C-037 | Modify | team stream handler unit + Claude team E2E | Done | Done | Updated unit expectations for resubscribe behavior and added strict post-continue websocket professor output checks |
+| C-038 | Modify | external runtime services listener lifecycle | Done | Done | Added `runId`-keyed deferred listener continuity across close/restore in Claude and Codex runtime services |
+| C-039 | Modify | runtime service tests + live continuation verification | Done | Done | Added listener continuity unit coverage and reran live Claude/Codex runtime-team E2E plus full backend/frontend suites |
+| C-040 | Modify | Claude runtime executable resolution | Done | Done | Added runtime metadata/env/default executable resolver and passed `pathToClaudeCodeExecutable` for Claude turn/query calls |
+| C-041 | Modify | Claude model-discovery SDK interop | Done | Done | Wired executable path into query-control model discovery to avoid bundled `cli.js` resolution failure |
+| C-042 | Modify | Claude runtime unit tests | Done | Done | Added assertions for executable-path propagation on turn execution + model discovery |
+| C-043 | Refactor | Claude runtime module boundaries | Done | Done | Split oversized Claude runtime service into focused modules; reduced main service file below hard size-review threshold |
+| C-044 | Modify | Frontend test setup stability | Done | Done | Hardened websocket test setup fetch binding (`$fetch`) to prevent intermittent post-teardown failures in full Nuxt suite |
+| C-045 | Modify | Claude team metadata guidance + tests | Done | Done | Strengthened teammate-aware `send_message_to` instructions and added focused unit coverage for metadata/prompt composition |
 
 ## Verification Log
 
@@ -101,6 +111,16 @@
 | 2026-03-02 | `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts` | Pass | Live Codex runtime/team E2E rerun for parity and guard against regressions (`13/13`) |
 | 2026-03-02 | `pnpm -C autobyteus-server-ts test` | Pass | Full backend suite passed after rerun (`246 passed / 7 skipped`, `1070 passed / 34 skipped`) |
 | 2026-03-02 | `pnpm -C autobyteus-web test` | Pass | Full frontend suite passed (`test:nuxt 143 files / 708 tests`, `test:electron 6 files / 38 tests`) |
+| 2026-03-02 | `pnpm -C autobyteus-server-ts exec vitest run tests/unit/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.test.ts tests/unit/runtime-execution/codex-app-server/codex-app-server-runtime-service.test.ts` | Pass | Runtime listener continuity unit coverage validated (`22/22`) |
+| 2026-03-02 | `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts` | Pass | Previously failing live continue/send websocket assertion now passes (`2/2`) |
+| 2026-03-02 | `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts` | Pass | Live Claude runtime e2e still green after listener continuity change (`11/11`) |
+| 2026-03-02 | `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts` | Pass | Live Codex runtime/team regression guard after runtime listener lifecycle changes (`13/13`) |
+| 2026-03-02 | `pnpm -C autobyteus-server-ts test` | Pass | Full backend suite passed after listener continuity change (`246 passed / 7 skipped`, `1072 passed / 34 skipped`) |
+| 2026-03-02 | `pnpm -C autobyteus-web test` | Pass | Full frontend suite passed unchanged (`test:nuxt 143/708`, `test:electron 6/38`) |
+| 2026-03-02 | `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts` | Pass | Live Claude team routing + continuation workspace mapping passed (`2/2`) with real `send_message_to` ping->pong->ping verification |
+| 2026-03-02 | `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts` | Pass | Live Codex team routing + continuation workspace mapping passed (`2/2`) for parity regression guard |
+| 2026-03-02 | `pnpm -C autobyteus-server-ts test --run` | Pass | Latest full backend suite: `247 files passed / 7 skipped`, `1081 tests passed / 34 skipped` |
+| 2026-03-02 | `pnpm -C autobyteus-web test` | Pass | Latest full frontend suite: `test:nuxt 143 files / 708 tests`, `test:electron 6 files / 38 tests` |
 
 ## Blockers
 

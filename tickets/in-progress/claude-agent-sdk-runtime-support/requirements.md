@@ -28,10 +28,10 @@ Add Claude Agent SDK as a first-class runtime (`claude_agent_sdk`) alongside `au
 - `UC-009`: Existing `autobyteus` and `codex_app_server` flows continue to work without behavior regression in covered runtime paths.
 - `UC-010`: Shared orchestration layers avoid codex-branded hardcoding in generic external-runtime paths.
 - `UC-011`: Claude live E2E coverage depth matches Codex live E2E coverage count baseline, with explicit assertions for both supported and intentionally unsupported Claude runtime paths.
+- `UC-014`: Claude team members receive teammate-aware runtime instructions and can execute `send_message_to` to route inter-agent messages through team runtime relay.
 
 ## Out of Scope
 
-- Claude-specific parity for codex-only inter-agent dynamic `send_message_to` relay tooling.
 - Mixed-runtime teams in one team run (different member runtime kinds in same launch).
 - Product redesign unrelated to runtime execution.
 
@@ -49,6 +49,8 @@ Add Claude Agent SDK as a first-class runtime (`claude_agent_sdk`) alongside `au
 - `R-010`: Existing Autobyteus and Codex runtime behavior remains intact for in-scope run create/send/stream/continue/terminate/model-capability paths.
 - `R-011`: Decoupling boundary must be explicit: codex-specific advanced relay behavior remains isolated to codex modules and is not embedded into runtime-neutral orchestration branches.
 - `R-012`: Claude live runtime/team E2E suite must match Codex live runtime/team E2E suite in test count baseline (`13`) using real live runtime execution (`RUN_CLAUDE_E2E=1`) and must include explicit negative-path assertions where Claude intentionally does not support Codex-only features.
+- `R-013`: External runtime websocket subscriptions must remain event-delivery-capable across runtime session teardown/restore for the same run id (terminate/continue), independent of whether message send is triggered via GraphQL or websocket command paths.
+- `R-014`: Claude runtime must support team inter-agent relay by exposing a usable `send_message_to` tool surface with teammate-aware routing context and runtime-level relay delivery (no codex-only hard gate in team relay orchestration).
 
 ## Acceptance Criteria
 
@@ -64,6 +66,8 @@ Add Claude Agent SDK as a first-class runtime (`claude_agent_sdk`) alongside `au
 - `AC-010` (`R-010`): Existing Codex and Autobyteus runtime unit/integration tests for touched modules remain passing after Claude runtime integration.
 - `AC-011` (`R-011`): Codex-only relay/tooling modules remain codex-scoped; runtime-neutral interfaces do not import codex-specific relay utilities.
 - `AC-012` (`R-012`): Claude live E2E suite contains `13` tests total (runtime + team), all executable under live Claude runtime flags, and CI/local execution evidence shows the full Claude suite passing without skipped parity scenarios.
+- `AC-013` (`R-013`): In live external-runtime terminate->continue scenarios with existing websocket connection, post-continue sends produce observable runtime status/content events without requiring route-specific websocket bridge refresh hooks.
+- `AC-014` (`R-014`): In live Claude team runtime, member prompts that instruct `send_message_to` produce observable tool-call lifecycle events and corresponding recipient `INTER_AGENT_MESSAGE` delivery with correct sender/recipient/content payload, matching Codex roundtrip contract semantics.
 
 ## Constraints / Dependencies
 
@@ -71,12 +75,13 @@ Add Claude Agent SDK as a first-class runtime (`claude_agent_sdk`) alongside `au
 - Must keep runtime disablement controllable per runtime via capability service.
 - Must avoid adding backward-compat wrapper branches for obsolete abstractions in touched scope.
 - Claude runtime integration depends on `@anthropic-ai/claude-agent-sdk` package behavior and session persistence semantics.
+- Claude relay tooling depends on Claude SDK MCP custom-tool support (`mcpServers`/`createSdkMcpServer`) and team metadata propagation into runtime options.
 
 ## Assumptions
 
 - Claude SDK session persistence/resume works when session IDs are persisted and runtime working directory is stable.
 - First delivery only needs homogeneous runtime per team run.
-- Claude-specific inter-agent dynamic relay parity is deferred and not required for this ticket acceptance.
+- Claude Agent SDK MCP custom tools are available in runtime environment and callable in non-interactive server execution mode.
 
 ## Open Questions / Risks
 
@@ -98,6 +103,8 @@ Add Claude Agent SDK as a first-class runtime (`claude_agent_sdk`) alongside `au
 - `R-010` -> `UC-009`
 - `R-011` -> `UC-010`
 - `R-012` -> `UC-011`
+- `R-013` -> `UC-002`, `UC-004`, `UC-006`
+- `R-014` -> `UC-014`, `UC-006`, `UC-010`
 
 ## Acceptance Criteria Coverage Map (AC -> Stage 7 Scenario)
 
@@ -113,3 +120,5 @@ Add Claude Agent SDK as a first-class runtime (`claude_agent_sdk`) alongside `au
 - `AC-010` -> `AV-010`
 - `AC-011` -> `AV-011`
 - `AC-012` -> `AV-012`
+- `AC-013` -> `AV-013`
+- `AC-014` -> `AV-014`

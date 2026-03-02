@@ -15,6 +15,7 @@ const buildRuntimeService = () =>
       metadata: { restored: true },
     }),
     sendTurn: vi.fn().mockResolvedValue({ turnId: "turn-1" }),
+    injectInterAgentEnvelope: vi.fn().mockResolvedValue({ turnId: "turn-relay-1" }),
     getRunRuntimeReference: vi.fn().mockReturnValue({
       sessionId: "claude-session-1",
       metadata: { model: "claude-sonnet-4-5" },
@@ -122,8 +123,9 @@ describe("ClaudeAgentSdkRuntimeAdapter", () => {
     });
   });
 
-  it("reports inter-agent relay as unsupported", async () => {
-    const adapter = new ClaudeAgentSdkRuntimeAdapter(buildRuntimeService());
+  it("routes inter-agent relay through Claude runtime service envelope injection", async () => {
+    const runtimeService = buildRuntimeService();
+    const adapter = new ClaudeAgentSdkRuntimeAdapter(runtimeService);
 
     const result = await adapter.relayInterAgentMessage({
       runId: "run-1",
@@ -135,11 +137,8 @@ describe("ClaudeAgentSdkRuntimeAdapter", () => {
       },
     });
 
-    expect(result).toEqual({
-      accepted: false,
-      code: "INTER_AGENT_RELAY_UNSUPPORTED",
-      message: "Claude Agent SDK runtime does not support inter-agent relay.",
-    });
+    expect(result).toEqual({ accepted: true });
+    expect((runtimeService.injectInterAgentEnvelope as any).mock.calls[0][0]).toBe("run-1");
   });
 
   it("maps tool approval errors to TOOL_APPROVAL_UNSUPPORTED", async () => {

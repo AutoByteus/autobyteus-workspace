@@ -18,15 +18,17 @@ import type {
 } from "../../run-history/domain/team-models.js";
 import { normalizeMemberRouteKey } from "../../run-history/utils/team-member-run-id.js";
 import {
-  getTeamCodexInterAgentMessageRelay,
-  type TeamCodexInterAgentMessageRelay,
-} from "../../runtime-execution/codex-app-server/team-codex-inter-agent-message-relay.js";
-import {
   getCodexAppServerRuntimeService,
   type CodexAppServerRuntimeService,
   type CodexInterAgentRelayRequest,
   type CodexInterAgentRelayResult,
 } from "../../runtime-execution/codex-app-server/codex-app-server-runtime-service.js";
+import {
+  getClaudeAgentSdkRuntimeService,
+  type ClaudeAgentSdkRuntimeService,
+  type ClaudeInterAgentRelayRequest,
+  type ClaudeInterAgentRelayResult,
+} from "../../runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.js";
 import { isSendMessageToToolName } from "../../runtime-execution/codex-app-server/codex-send-message-tooling.js";
 import {
   getTeamRuntimeBindingRegistry,
@@ -101,6 +103,22 @@ const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
 };
 
+const parseMetadataBoolean = (value: unknown): boolean | null => {
+  if (typeof value === "boolean") {
+    return value;
+  }
+  if (typeof value === "string") {
+    const normalized = value.trim().toLowerCase();
+    if (normalized === "true" || normalized === "1") {
+      return true;
+    }
+    if (normalized === "false" || normalized === "0") {
+      return false;
+    }
+  }
+  return null;
+};
+
 const resolveWorkspaceRootPathFromWorkspace = (
   workspace: { getBasePath?: () => string; rootPath?: string } | null | undefined,
 ): string | null => {
@@ -144,7 +162,6 @@ export class TeamMemberRuntimeOrchestrator {
   private readonly runtimeCompositionService: RuntimeCompositionService;
   private readonly runtimeCommandIngressService: RuntimeCommandIngressService;
   private readonly teamRuntimeBindingRegistry: TeamRuntimeBindingRegistry;
-  private readonly teamCodexInterAgentMessageRelay: TeamCodexInterAgentMessageRelay;
   private readonly workspaceManager: WorkspaceManager;
   private readonly agentDefinitionService: AgentDefinitionService;
 
@@ -152,7 +169,6 @@ export class TeamMemberRuntimeOrchestrator {
     runtimeCompositionService?: RuntimeCompositionService;
     runtimeCommandIngressService?: RuntimeCommandIngressService;
     teamRuntimeBindingRegistry?: TeamRuntimeBindingRegistry;
-    teamCodexInterAgentMessageRelay?: TeamCodexInterAgentMessageRelay;
     workspaceManager?: WorkspaceManager;
     agentDefinitionService?: AgentDefinitionService;
   } = {}) {
@@ -162,8 +178,6 @@ export class TeamMemberRuntimeOrchestrator {
       options.runtimeCommandIngressService ?? getRuntimeCommandIngressService();
     this.teamRuntimeBindingRegistry =
       options.teamRuntimeBindingRegistry ?? getTeamRuntimeBindingRegistry();
-    this.teamCodexInterAgentMessageRelay =
-      options.teamCodexInterAgentMessageRelay ?? getTeamCodexInterAgentMessageRelay();
     this.workspaceManager = options.workspaceManager ?? getWorkspaceManager();
     this.agentDefinitionService = options.agentDefinitionService ?? AgentDefinitionService.getInstance();
   }
@@ -258,19 +272,19 @@ export class TeamMemberRuntimeOrchestrator {
     runtimeReference?: TeamMemberRuntimeReference | null;
   }): Promise<boolean> {
     const metadata = options.runtimeReference?.metadata;
-    const metadataFlag =
-      metadata?.sendMessageToEnabled ?? metadata?.send_message_to_enabled;
-    if (typeof metadataFlag === "boolean") {
-      return metadataFlag;
+    const explicitDisableFlag = parseMetadataBoolean(
+      metadata?.sendMessageToExplicitlyDisabled ??
+        metadata?.send_message_to_explicitly_disabled,
+    );
+    if (explicitDisableFlag === true) {
+      return false;
     }
-    if (typeof metadataFlag === "string") {
-      const normalized = metadataFlag.trim().toLowerCase();
-      if (normalized === "true" || normalized === "1") {
-        return true;
-      }
-      if (normalized === "false" || normalized === "0") {
-        return false;
-      }
+
+    const metadataFlag = parseMetadataBoolean(
+      metadata?.sendMessageToEnabled ?? metadata?.send_message_to_enabled,
+    );
+    if (metadataFlag === true) {
+      return true;
     }
 
     try {
@@ -278,15 +292,21 @@ export class TeamMemberRuntimeOrchestrator {
         options.agentDefinitionId,
       );
       const toolNames = definition?.toolNames ?? [];
-      return toolNames.some((toolName) =>
-        isSendMessageToToolName(typeof toolName === "string" ? toolName : null),
-      );
+      if (
+        toolNames.some((toolName) =>
+          isSendMessageToToolName(typeof toolName === "string" ? toolName : null),
+        )
+      ) {
+        return true;
+      }
     } catch (error) {
       logger.warn(
         `Failed resolving send_message_to capability for agent definition '${options.agentDefinitionId}': ${String(error)}`,
       );
-      return false;
     }
+
+    // Team member runs should support inter-agent delegation by default.
+    return true;
   }
 
   private async buildTeamManifestMetadata(
@@ -632,29 +652,19 @@ export class TeamMemberRuntimeOrchestrator {
       };
     }
 
-    if (
-      sender.binding.runtimeKind !== "codex_app_server" ||
-      resolveResult.binding.runtimeKind !== "codex_app_server"
-    ) {
-      return {
-        accepted: false,
-        code: "INTER_AGENT_RELAY_UNSUPPORTED",
-        message:
-          "Inter-agent relay is currently supported only for codex_app_server external members.",
-      };
-    }
-
-    const relayResult = await this.teamCodexInterAgentMessageRelay.deliverInterAgentMessage({
-      teamRunId: input.teamRunId,
-      recipientMemberRunId: resolveResult.binding.memberRunId,
-      senderAgentId: sender.binding.memberRunId,
-      senderAgentName: normalizeOptionalString(input.senderAgentName) ?? sender.binding.memberName,
-      recipientName: resolveResult.binding.memberName,
-      messageType: normalizeOptionalString(input.messageType) ?? "agent_message",
-      content: normalizeRequiredString(input.content, "content"),
-      metadata: {
-        senderMemberRouteKey: sender.binding.memberRouteKey,
-        recipientMemberRouteKey: resolveResult.binding.memberRouteKey,
+    const relayResult = await this.runtimeCommandIngressService.relayInterAgentMessage({
+      runId: resolveResult.binding.memberRunId,
+      envelope: {
+        senderAgentId: sender.binding.memberRunId,
+        senderAgentName: normalizeOptionalString(input.senderAgentName) ?? sender.binding.memberName,
+        recipientName: resolveResult.binding.memberName,
+        messageType: normalizeOptionalString(input.messageType) ?? "agent_message",
+        content: normalizeRequiredString(input.content, "content"),
+        teamRunId: input.teamRunId,
+        metadata: {
+          senderMemberRouteKey: sender.binding.memberRouteKey,
+          recipientMemberRouteKey: resolveResult.binding.memberRouteKey,
+        },
       },
     });
 
@@ -718,11 +728,60 @@ export class TeamMemberRuntimeOrchestrator {
       senderAgentName: request.senderMemberName,
     });
   }
+
+  async handleClaudeInterAgentRelayRequest(
+    request: ClaudeInterAgentRelayRequest,
+  ): Promise<ClaudeInterAgentRelayResult> {
+    const recipientNameRaw =
+      request.toolArguments.recipient_name ??
+      request.toolArguments.recipientName ??
+      request.toolArguments.recipient;
+    const contentRaw = request.toolArguments.content;
+    const messageTypeRaw =
+      request.toolArguments.message_type ?? request.toolArguments.messageType ?? "agent_message";
+
+    if (typeof recipientNameRaw !== "string" || recipientNameRaw.trim().length === 0) {
+      return {
+        accepted: false,
+        code: "RECIPIENT_NOT_FOUND_OR_AMBIGUOUS",
+        message: "send_message_to requires a non-empty recipient_name.",
+      };
+    }
+    if (typeof contentRaw !== "string" || contentRaw.trim().length === 0) {
+      return {
+        accepted: false,
+        code: "INVALID_MESSAGE_CONTENT",
+        message: "send_message_to requires a non-empty content field.",
+      };
+    }
+
+    const resolvedTeamRunId =
+      normalizeOptionalString(request.senderTeamRunId) ??
+      this.teamRuntimeBindingRegistry.resolveByMemberRunId(request.senderRunId)?.teamRunId ??
+      null;
+    if (!resolvedTeamRunId) {
+      return {
+        accepted: false,
+        code: "SENDER_MEMBER_NOT_FOUND",
+        message: `Sender member run '${request.senderRunId}' is not mapped to an active team runtime binding.`,
+      };
+    }
+
+    return this.relayInterAgentMessage({
+      teamRunId: resolvedTeamRunId,
+      senderMemberRunId: request.senderRunId,
+      recipientName: recipientNameRaw,
+      content: contentRaw,
+      messageType: typeof messageTypeRaw === "string" ? messageTypeRaw : "agent_message",
+      senderAgentName: request.senderMemberName,
+    });
+  }
 }
 
 let cachedTeamMemberRuntimeOrchestrator: TeamMemberRuntimeOrchestrator | null = null;
 let cachedRelayUnbind: (() => void) | null = null;
 const relayBindingTokenByRuntimeService = new WeakMap<CodexAppServerRuntimeService, symbol>();
+const claudeRelayBindingTokenByRuntimeService = new WeakMap<ClaudeAgentSdkRuntimeService, symbol>();
 
 const getOrCreateTeamMemberRuntimeOrchestrator = (): TeamMemberRuntimeOrchestrator => {
   if (!cachedTeamMemberRuntimeOrchestrator) {
@@ -734,22 +793,37 @@ const getOrCreateTeamMemberRuntimeOrchestrator = (): TeamMemberRuntimeOrchestrat
 export const bindTeamMemberRuntimeRelayHandler = (options: {
   orchestrator?: TeamMemberRuntimeOrchestrator;
   codexRuntimeService?: CodexAppServerRuntimeService;
+  claudeRuntimeService?: ClaudeAgentSdkRuntimeService;
 } = {}): (() => void) => {
   const orchestrator = options.orchestrator ?? getOrCreateTeamMemberRuntimeOrchestrator();
   const codexRuntimeService = options.codexRuntimeService ?? getCodexAppServerRuntimeService();
+  const claudeRuntimeService = options.claudeRuntimeService ?? getClaudeAgentSdkRuntimeService();
   const bindingToken = Symbol("team-member-runtime-relay-binding");
+  const claudeBindingToken = Symbol("team-member-runtime-claude-relay-binding");
 
   codexRuntimeService.setInterAgentRelayHandler((request) =>
     orchestrator.handleCodexInterAgentRelayRequest(request),
   );
   relayBindingTokenByRuntimeService.set(codexRuntimeService, bindingToken);
+  claudeRuntimeService.setInterAgentRelayHandler((request) =>
+    orchestrator.handleClaudeInterAgentRelayRequest(request),
+  );
+  claudeRelayBindingTokenByRuntimeService.set(claudeRuntimeService, claudeBindingToken);
 
   return () => {
     if (relayBindingTokenByRuntimeService.get(codexRuntimeService) !== bindingToken) {
-      return;
+      // continue to claude cleanup path
+    } else {
+      relayBindingTokenByRuntimeService.delete(codexRuntimeService);
+      codexRuntimeService.setInterAgentRelayHandler(null);
     }
-    relayBindingTokenByRuntimeService.delete(codexRuntimeService);
-    codexRuntimeService.setInterAgentRelayHandler(null);
+
+    if (
+      claudeRelayBindingTokenByRuntimeService.get(claudeRuntimeService) === claudeBindingToken
+    ) {
+      claudeRelayBindingTokenByRuntimeService.delete(claudeRuntimeService);
+      claudeRuntimeService.setInterAgentRelayHandler(null);
+    }
   };
 };
 

@@ -180,11 +180,11 @@ describeClaudeRuntime("Claude team external-member runtime e2e (live transport)"
   };
 
   it(
-    "routes targeted member messages in Claude team runtime and emits member-tagged websocket events",
+    "routes live inter-agent send_message_to ping->pong->ping roundtrip in Claude team runtime",
     async () => {
       const unique = randomUUID();
       const modelIdentifier = await fetchClaudeModelIdentifier();
-      const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "claude-team-routing-e2e-"));
+      const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "claude-team-roundtrip-e2e-"));
       createdWorkspaceRoots.add(workspaceRootPath);
 
       const createPromptMutation = `
@@ -194,13 +194,24 @@ describeClaudeRuntime("Claude team external-member runtime e2e (live transport)"
           }
         }
       `;
-      const promptName = `claude_team_prompt_${unique}`;
-      const promptCategory = `claude_team_category_${unique}`;
+      const promptName = `claude_team_roundtrip_prompt_${unique}`;
+      const promptCategory = `claude_team_roundtrip_category_${unique}`;
+      const promptContent = `
+You are participating in a two-agent team roundtrip validation in a team with members "ping" and "pong".
+
+Rules:
+1. Follow direct user instructions exactly.
+2. You must not explore the environment or run diagnostics.
+3. The only tool you may execute is send_message_to.
+4. If the user asks you to call send_message_to with explicit arguments, call send_message_to exactly once with those exact arguments and do not call any other tool.
+5. Keep assistant text responses very short.
+`;
+
       const promptResult = await execGraphql<{ createPrompt: { id: string } }>(createPromptMutation, {
         input: {
           name: promptName,
           category: promptCategory,
-          promptContent: "Reply with one concise sentence that follows user instructions.",
+          promptContent,
         },
       });
       createdPromptIds.add(promptResult.createPrompt.id);
@@ -218,7 +229,7 @@ describeClaudeRuntime("Claude team external-member runtime e2e (live transport)"
           input: {
             name: `claude-ping-${unique}`,
             role: "assistant",
-            description: "Claude ping agent for targeted routing validation.",
+            description: "Claude ping agent for inter-agent roundtrip validation.",
             systemPromptCategory: promptCategory,
             systemPromptName: promptName,
           },
@@ -230,7 +241,7 @@ describeClaudeRuntime("Claude team external-member runtime e2e (live transport)"
           input: {
             name: `claude-pong-${unique}`,
             role: "assistant",
-            description: "Claude pong agent for targeted routing validation.",
+            description: "Claude pong agent for inter-agent roundtrip validation.",
             systemPromptCategory: promptCategory,
             systemPromptName: promptName,
           },
@@ -252,8 +263,8 @@ describeClaudeRuntime("Claude team external-member runtime e2e (live transport)"
         createTeamDefinitionMutation,
         {
           input: {
-            name: `claude-team-${unique}`,
-            description: "Claude external-member runtime targeted routing validation team.",
+            name: `claude-roundtrip-team-${unique}`,
+            description: "Live Claude inter-agent roundtrip validation team.",
             coordinatorMemberName: "ping",
             nodes: [
               {
@@ -321,7 +332,7 @@ describeClaudeRuntime("Claude team external-member runtime e2e (live transport)"
       const teamSocket = new WebSocket(`ws://${streamUrl.hostname}:${streamUrl.port}/ws/agent-team/${teamRunId}`);
       await waitForSocketOpen(teamSocket);
 
-      const teamMessages: Array<{ type: string; payload: Record<string, unknown> }> = [];
+      const streamMessages: Array<{ type: string; payload: Record<string, unknown> }> = [];
       teamSocket.on("message", (raw) => {
         try {
           const parsed = JSON.parse(String(raw)) as {
@@ -335,7 +346,7 @@ describeClaudeRuntime("Claude team external-member runtime e2e (live transport)"
             parsed.payload && typeof parsed.payload === "object" && !Array.isArray(parsed.payload)
               ? (parsed.payload as Record<string, unknown>)
               : {};
-          teamMessages.push({
+          streamMessages.push({
             type: parsed.type,
             payload,
           });
@@ -353,90 +364,113 @@ describeClaudeRuntime("Claude team external-member runtime e2e (live transport)"
           }
         }
       `;
+      const sendRelayInstruction = async (input: {
+        targetMemberName: "ping" | "pong";
+        recipientName: "ping" | "pong";
+        messageType: string;
+        content: string;
+      }): Promise<void> => {
+        const argsJson = JSON.stringify({
+          recipient_name: input.recipientName,
+          content: input.content,
+          message_type: input.messageType,
+        });
+        const result = await execGraphql<{
+          sendMessageToTeam: { success: boolean; message: string; teamRunId: string | null };
+        }>(sendMessageToTeamMutation, {
+          input: {
+            teamRunId,
+            targetMemberName: input.targetMemberName,
+            userInput: {
+              content:
+                "Call send_message_to exactly once now with these exact JSON arguments: " +
+                `${argsJson}. Do not call any other tool.`,
+              contextFiles: [],
+            },
+          },
+        });
+        expect(result.sendMessageToTeam.success).toBe(true);
+      };
 
-      const waitForMemberLifecycle = async (memberName: "ping" | "pong"): Promise<void> => {
+      const waitForTeamStreamEvent = async (
+        predicate: (message: { type: string; payload: Record<string, unknown> }) => boolean,
+        label: string,
+      ): Promise<void> => {
         const deadline = Date.now() + 120_000;
         while (Date.now() < deadline) {
-          const sawRunning = teamMessages.some(
-            (message) =>
-              message.type === "AGENT_STATUS" &&
-              message.payload.agent_name === memberName &&
-              message.payload.new_status === "RUNNING",
-          );
-          const sawIdle = teamMessages.some(
-            (message) =>
-              message.type === "AGENT_STATUS" &&
-              message.payload.agent_name === memberName &&
-              message.payload.new_status === "IDLE",
-          );
-
-          if (sawRunning && sawIdle) {
+          if (streamMessages.some(predicate)) {
             return;
           }
           await wait(500);
         }
-        throw new Error(`Timed out waiting for member '${memberName}' running+idle events.`);
+        const preview = streamMessages
+          .slice(-20)
+          .map((entry) => `${entry.type}:${JSON.stringify(entry.payload).slice(0, 200)}`)
+          .join(" | ");
+        throw new Error(`Timed out waiting for team websocket event '${label}'. preview='${preview}'`);
       };
 
-      const collectMemberAssistantOutput = (memberName: "ping" | "pong"): string =>
-        teamMessages
-          .filter(
-            (message) =>
-              (message.type === "SEGMENT_CONTENT" || message.type === "SEGMENT_END") &&
-              message.payload.agent_name === memberName,
-          )
-          .map((message) => {
-            const delta = message.payload.delta;
-            if (typeof delta === "string") {
-              return delta;
-            }
-            const text = message.payload.text;
-            if (typeof text === "string") {
-              return text;
-            }
-            return "";
-          })
-          .join("");
+      const waitForSendMessageLifecycleAndReceipt = async (input: {
+        senderMemberName: "ping" | "pong";
+        recipientMemberName: "ping" | "pong";
+        content: string;
+      }): Promise<void> => {
+        await waitForTeamStreamEvent(
+          (message) =>
+            message.type === "SEGMENT_START" &&
+            message.payload.agent_name === input.senderMemberName &&
+            message.payload.segment_type === "tool_call" &&
+            (message.payload.metadata as Record<string, unknown> | undefined)?.tool_name ===
+              "send_message_to" &&
+            ((message.payload.metadata as Record<string, unknown> | undefined)?.arguments as
+              | Record<string, unknown>
+              | undefined)?.recipient_name === input.recipientMemberName &&
+            ((message.payload.metadata as Record<string, unknown> | undefined)?.arguments as
+              | Record<string, unknown>
+              | undefined)?.content === input.content,
+          `${input.senderMemberName} send_message_to SEGMENT_START`,
+        );
+
+        await waitForTeamStreamEvent(
+          (message) =>
+            message.type === "INTER_AGENT_MESSAGE" &&
+            message.payload.agent_name === input.recipientMemberName &&
+            typeof message.payload.sender_agent_id === "string" &&
+            (message.payload.sender_agent_id as string).trim().length > 0 &&
+            message.payload.sender_agent_name === input.senderMemberName &&
+            message.payload.recipient_role_name === input.recipientMemberName &&
+            message.payload.content === input.content,
+          `${input.recipientMemberName} INTER_AGENT_MESSAGE`,
+        );
+      };
+
+      const pingToken = `ROUNDTRIP_PING:${unique}`;
+      const pongToken = `ROUNDTRIP_PONG:${unique}`;
 
       try {
-        const pingSendResult = await execGraphql<{
-          sendMessageToTeam: { success: boolean; message: string; teamRunId: string | null };
-        }>(sendMessageToTeamMutation, {
-          input: {
-            teamRunId,
-            targetMemberName: "ping",
-            userInput: {
-              content: `Reply with exactly READY-PING-${unique}.`,
-              contextFiles: [],
-            },
-          },
+        await sendRelayInstruction({
+          targetMemberName: "ping",
+          recipientName: "pong",
+          content: `PING-TO-PONG ${pingToken}`,
+          messageType: "roundtrip_ping",
         });
-        expect(pingSendResult.sendMessageToTeam.success).toBe(true);
-        await waitForMemberLifecycle("ping");
-        const pingOutput = collectMemberAssistantOutput("ping").trim();
-        expect(pingOutput.length).toBeGreaterThan(0);
-        expect(pingOutput.toUpperCase()).toContain(`READY-PING-${unique}`.toUpperCase());
-
-        const pongSendResult = await execGraphql<{
-          sendMessageToTeam: { success: boolean; message: string; teamRunId: string | null };
-        }>(sendMessageToTeamMutation, {
-          input: {
-            teamRunId,
-            targetMemberName: "pong",
-            userInput: {
-              content: `Reply with exactly READY-PONG-${unique}.`,
-              contextFiles: [],
-            },
-          },
+        await waitForSendMessageLifecycleAndReceipt({
+          senderMemberName: "ping",
+          recipientMemberName: "pong",
+          content: `PING-TO-PONG ${pingToken}`,
         });
-        expect(pongSendResult.sendMessageToTeam.success).toBe(true);
-        await waitForMemberLifecycle("pong");
-        const pongOutput = collectMemberAssistantOutput("pong").trim();
-        expect(pongOutput.length).toBeGreaterThan(0);
-        expect(pongOutput.toUpperCase()).toContain(`READY-PONG-${unique}`.toUpperCase());
 
-        const interAgentMessages = teamMessages.filter((message) => message.type === "INTER_AGENT_MESSAGE");
-        expect(interAgentMessages.length).toBe(0);
+        await sendRelayInstruction({
+          targetMemberName: "pong",
+          recipientName: "ping",
+          content: `PONG-TO-PING ${pongToken}`,
+          messageType: "roundtrip_pong",
+        });
+        await waitForSendMessageLifecycleAndReceipt({
+          senderMemberName: "pong",
+          recipientMemberName: "ping",
+          content: `PONG-TO-PING ${pongToken}`,
+        });
       } finally {
         teamSocket.close();
         await streamApp.close();
@@ -756,7 +790,7 @@ describeClaudeRuntime("Claude team external-member runtime e2e (live transport)"
         }>(terminateTeamRunMutation, { id: teamRunId });
         expect(terminateResult.terminateAgentTeamRun.success).toBe(true);
 
-        teamSocket.close();
+        const continuePhaseStart = teamMessages.length;
         const continueResult = await execGraphql<{
           sendMessageToTeam: { success: boolean; message: string; teamRunId: string | null };
         }>(sendMessageToTeamMutation, {
@@ -771,6 +805,13 @@ describeClaudeRuntime("Claude team external-member runtime e2e (live transport)"
         });
         expect(continueResult.sendMessageToTeam.success).toBe(true);
         expect(continueResult.sendMessageToTeam.teamRunId).toBe(teamRunId);
+        await waitForProfessorTurnOutput(
+          `READY-CONTINUE-${unique}`,
+          continuePhaseStart,
+          teamMessages,
+        );
+
+        teamSocket.close();
 
         const resumedTeamMessages: Array<{ type: string; payload: Record<string, unknown> }> = [];
         resumedTeamSocket = new WebSocket(

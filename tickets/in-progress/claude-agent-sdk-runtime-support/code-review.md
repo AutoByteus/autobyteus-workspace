@@ -1,7 +1,7 @@
 # Code Review
 
 - Stage: `8`
-- Date: `2026-02-28`
+- Date: `2026-03-02`
 - Decision: `Pass`
 
 ## Review Scope
@@ -10,6 +10,8 @@
 - Runtime-neutral streaming and command-ingress decoupling
 - Team external-member runtime orchestration and routing
 - Run-history/projection updates and web runtime option wiring
+- External runtime websocket listener lifecycle continuity across terminate/continue restore boundaries
+- Claude team metadata normalization and teammate-aware `send_message_to` prompt guidance
 
 ## Findings
 
@@ -41,6 +43,23 @@
    - Fixed in: `autobyteus-server-ts/src/agent-team-execution/services/team-member-runtime-orchestrator.ts`
    - Guarded by tests:
      - `autobyteus-server-ts/tests/unit/agent-team-execution/team-member-runtime-orchestrator.test.ts`
+     - `autobyteus-server-ts/tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts`
+9. External runtime websocket listeners could be dropped after session close/restore in GraphQL continuation paths, causing accepted sends with no received runtime events.
+   - Fixed in:
+     - `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.ts`
+     - `autobyteus-server-ts/src/runtime-execution/codex-app-server/codex-app-server-runtime-service.ts`
+   - Guarded by tests:
+     - `autobyteus-server-ts/tests/unit/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.test.ts`
+     - `autobyteus-server-ts/tests/unit/runtime-execution/codex-app-server/codex-app-server-runtime-service.test.ts`
+     - `autobyteus-server-ts/tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts`
+     - `autobyteus-server-ts/tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts`
+     - `autobyteus-server-ts/tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts`
+     - `autobyteus-server-ts/tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts`
+10. Claude team responses could still present as standalone assistant behavior when asked about team tooling, reducing reliability of explicit `send_message_to` delegation guidance.
+   - Fixed in:
+     - `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-runtime-team-metadata.ts`
+   - Guarded by tests:
+     - `autobyteus-server-ts/tests/unit/runtime-execution/claude-agent-sdk/claude-runtime-team-metadata.test.ts`
      - `autobyteus-server-ts/tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts`
 
 ### Open Findings

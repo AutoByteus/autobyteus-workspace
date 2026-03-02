@@ -42,6 +42,9 @@
 - Claude Code SDK docs: https://docs.anthropic.com/en/docs/claude-code/sdk
 - npm package metadata: https://www.npmjs.com/package/@anthropic-ai/claude-agent-sdk
 - npm tarball type declarations inspected locally from `@anthropic-ai/claude-agent-sdk@0.2.63` (`sdk.d.ts`, `sdk-tools.d.ts`)
+- Claude Agent SDK docs (custom tools): https://docs.anthropic.com/en/docs/claude-code/sdk/sdk-custom-tools
+- Claude Agent SDK docs (MCP): https://docs.anthropic.com/en/docs/claude-code/sdk/sdk-mcp
+- Claude Agent SDK docs (multi-turn + streaming input): https://docs.anthropic.com/en/docs/claude-code/sdk/sdk-python
 
 ## Key Findings
 
@@ -169,3 +172,59 @@
 - Tighten live Claude E2E assertions to fail unless assistant text is non-empty:
   - single-agent websocket lifecycle test now asserts non-empty assistant output containing expected keyword.
   - team external-member routing test now asserts each targeted member emits non-empty output containing the requested marker token.
+
+## Re-Entry Delta (2026-03-02, live continue/send websocket drop)
+
+1. Real live Claude team continuation E2E reproduces websocket no-reply after terminate->continue.
+- Command:
+  - `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts`
+- Failure:
+  - `Timed out waiting for professor output containing 'READY-CONTINUE-*' (running=false idle=false outputLength=0 recentTypes=)`
+- This validates the user-reported symptom class: message accepted but websocket receives no runtime events.
+
+2. Root-cause boundary is runtime-listener lifecycle, not only test flake.
+- Team external runtime websocket bridge subscribes by member run id once at websocket connect.
+- Claude runtime `subscribeToRunEvents(runId, listener)` currently returns no-op when no active runtime session object exists for that run id.
+- On terminate/close, runtime session state (including listeners) is dropped. Continue restores session state, but prior websocket listener is not reattached unless a separate bridge-refresh path runs.
+- GraphQL continuation path (`TeamRunMutationService -> TeamRunContinuationService`) does not invoke the websocket bridge refresh helper used in websocket `SEND_MESSAGE` path.
+
+3. Design consequence.
+- A route-specific patch (refresh in one mutation path) would keep control-flow coupling and miss other restore paths.
+- Runtime service should preserve run-level listeners across session teardown/restore for external runtimes, so any transport path (GraphQL mutation, websocket command, or continuation service) keeps streaming continuity.
+
+4. Validation direction for this cycle.
+- Add runtime-level deferred listener persistence keyed by `runId`, applied on `subscribe`, `create/restore`, and `close`.
+- Re-run live Claude runtime + team E2E with real send->receive and continue->send->receive assertions.
+
+## Re-Entry Delta (2026-03-02, Claude team inter-agent tooling parity gap)
+
+1. User-visible bug is reproducible and maps to a real backend capability gap.
+- In Claude team runs, members respond as standalone Claude Code assistants and do not expose teammate-aware `send_message_to` behavior.
+- This is consistent with current implementation: Claude runtime path does not consume team metadata for prompt/tool wiring and adapter relay is hard-disabled.
+
+2. Current code explicitly blocks Claude inter-agent relay.
+- `src/runtime-execution/adapters/claude-agent-sdk-runtime-adapter.ts` returns `INTER_AGENT_RELAY_UNSUPPORTED` from `relayInterAgentMessage`.
+- `src/agent-team-execution/services/team-member-runtime-orchestrator.ts` currently enforces codex-only relay delivery in `relayInterAgentMessage` (both sender and recipient runtime kinds must be `codex_app_server`).
+
+3. Claude runtime currently ignores team-manifest metadata that is already persisted.
+- Team orchestrator stores `teamRunId`, `memberName`, `sendMessageToEnabled`, and `teamMemberManifest` in member `runtimeReference.metadata`.
+- Claude runtime service restore path keeps metadata in state but does not apply it to Claude query options (`systemPrompt`, `mcpServers`, tool restrictions, or relay callbacks).
+
+4. Claude Agent SDK supports custom tool integration via MCP servers.
+- Local SDK type and runtime inspection confirms:
+  - `Options.mcpServers`, `Options.systemPrompt`, `Options.allowedTools`, `Options.tools`, `Options.resume` are supported in `@anthropic-ai/claude-agent-sdk` (`sdk.d.ts`).
+  - SDK exports `createSdkMcpServer` and `tool` helpers in `sdk.mjs`.
+  - `createSdkMcpServer({ name, tools })` can register in-process MCP tools and pass them through `mcpServers`.
+- Official docs also state custom tools are exposed via MCP server wiring and can be added dynamically in SDK usage.
+
+5. Requirements delta identified.
+- Earlier ticket revision intentionally excluded Claude parity for codex-style `send_message_to`.
+- User has now made this a hard requirement, so this is a `Requirement Gap` re-entry, not a local patch.
+
+6. Design implication for separation of concerns.
+- Correct fix is not a Claude-only prompt hack.
+- Needed boundary updates:
+  - runtime-neutral relay routing in team orchestrator,
+  - runtime-specific tool surface implementation in Claude runtime service (MCP custom tool),
+  - runtime adapter parity so recipient delivery works for Claude sessions via ingress port.
+- Keep codex internal implementation intact while sharing runtime-neutral orchestration contracts.

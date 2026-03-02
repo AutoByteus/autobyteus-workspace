@@ -37,6 +37,7 @@ export class ClaudeAgentSdkRuntimeAdapter implements RuntimeAdapter {
       modelIdentifier: input.llmModelIdentifier,
       workingDirectory,
       llmConfig: input.llmConfig ?? null,
+      runtimeMetadata: null,
     });
 
     return {
@@ -58,6 +59,7 @@ export class ClaudeAgentSdkRuntimeAdapter implements RuntimeAdapter {
         modelIdentifier: input.llmModelIdentifier,
         workingDirectory,
         llmConfig: input.llmConfig ?? null,
+        runtimeMetadata: input.runtimeReference?.metadata ?? null,
       },
       {
         sessionId: input.runtimeReference?.sessionId ?? input.runtimeReference?.threadId ?? input.runId,
@@ -97,13 +99,14 @@ export class ClaudeAgentSdkRuntimeAdapter implements RuntimeAdapter {
   }
 
   async relayInterAgentMessage(
-    _input: RuntimeRelayInterAgentMessageInput,
+    input: RuntimeRelayInterAgentMessageInput,
   ): Promise<RuntimeCommandResult> {
-    return {
-      accepted: false,
-      code: "INTER_AGENT_RELAY_UNSUPPORTED",
-      message: "Claude Agent SDK runtime does not support inter-agent relay.",
-    };
+    try {
+      await this.runtimeService.injectInterAgentEnvelope(input.runId, input.envelope);
+      return { accepted: true };
+    } catch (error) {
+      return buildCommandFailure(error);
+    }
   }
 
   async approveTool(input: RuntimeApproveToolInput): Promise<RuntimeCommandResult> {

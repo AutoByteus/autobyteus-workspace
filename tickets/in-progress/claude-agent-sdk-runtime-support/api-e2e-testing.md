@@ -49,3 +49,37 @@ Validated API/E2E acceptance behavior for Claude runtime support, external-membe
 ## Notes
 
 - Web tests require generated `.nuxt` artifacts; running `nuxt prepare` is required in a clean worktree.
+
+## Re-Entry Delta (2026-03-02, R-013 listener continuity)
+
+### Additional Commands
+
+19. `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts`
+20. `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts`
+21. `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts`
+22. `pnpm -C autobyteus-server-ts test`
+23. `pnpm -C autobyteus-web test`
+
+### Delta Results
+
+- Live Claude team continuation scenario that previously failed now passes with explicit continue/send websocket assertions (`2/2`).
+- Live Claude runtime GraphQL suite remains green after the listener lifecycle fix (`11/11`).
+- Live Codex runtime/team suites remain green after the shared runtime listener lifecycle change (`13/13`).
+- Full backend suite pass (latest): `246 passed / 7 skipped`, `1072 passed / 34 skipped`.
+- Full frontend suite pass (latest): `test:nuxt 143 files / 708 tests` and `test:electron 6 files / 38 tests`.
+
+## Re-Entry Delta (2026-03-02, R-014 team-tooling parity evidence refresh)
+
+### Additional Commands
+
+24. `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts`
+25. `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts`
+26. `pnpm -C autobyteus-server-ts test --run`
+27. `pnpm -C autobyteus-web test`
+
+### Delta Results
+
+- Live Claude team E2E passed with real `send_message_to` ping->pong->ping relay assertions and continuation workspace mapping checks (`2/2`).
+- Live Codex team E2E passed with matching routing + continuation assertions (`2/2`).
+- Latest full backend suite pass: `247 files passed / 7 skipped`, `1081 passed / 34 skipped`.
+- Latest full frontend suite pass: `test:nuxt 143 files / 708 tests` and `test:electron 6 files / 38 tests`.

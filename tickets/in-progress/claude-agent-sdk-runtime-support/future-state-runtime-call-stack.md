@@ -3,7 +3,7 @@
 ## Design Basis
 
 - Scope Classification: `Large`
-- Call Stack Version: `v1`
+- Call Stack Version: `v2`
 - Requirements: `tickets/in-progress/claude-agent-sdk-runtime-support/requirements.md` (`Design-ready`)
 - Source Artifact: `tickets/in-progress/claude-agent-sdk-runtime-support/proposed-design.md` (`v1`)
 
@@ -22,6 +22,8 @@
 | UC-009 | Requirement | R-010 | Existing codex/autobyteus no-regression path | Yes/N/A/Yes |
 | UC-010 | Requirement | R-003,R-011 | Runtime-neutral orchestration dispatch | Yes/N/A/Yes |
 | UC-011 | Requirement | R-012 | Claude live E2E parity-count gate | Yes/N/A/Yes |
+| UC-013 | Requirement | R-013 | External runtime listener continuity across terminate/continue | Yes/N/A/Yes |
+| UC-014 | Requirement | R-014 | Claude team `send_message_to` relay tooling parity | Yes/N/A/Yes |
 
 ## UC-001: Create Single-Agent Claude Runtime Run
 
@@ -258,6 +260,28 @@ registry resolve throws deterministic runtime-kind missing message
 
 ## UC-011: Claude Live E2E Parity-Count Gate
 
+## UC-013: External Runtime Listener Continuity Across Terminate/Continue
+
+### Primary Path
+
+```text
+[ENTRY] Existing websocket session subscribes to external runtime run events
+├── agent/team stream handlers call external runtime source subscribe(runId, listener)
+├── runtime service persists listener by runId even if session is later closed
+├── terminate/close removes runtime session state but keeps deferred listeners for runId
+├── continue/restore recreates runtime session for same runId
+└── runtime service rebinds deferred listeners to restored session before/at turn emission
+    └── websocket receives AGENT_STATUS + SEGMENT_* events for post-continue send
+```
+
+### Error Path
+
+```text
+[ERROR] Listener continuity not preserved across close/restore
+terminate->continue send accepted but websocket receives no runtime events
+└── Stage 7 live E2E fails on explicit running/idle/output assertion
+```
+
 ### Primary Path
 
 ```text
@@ -265,7 +289,7 @@ registry resolve throws deterministic runtime-kind missing message
 ├── live runtime gate enabled (`RUN_CLAUDE_E2E=1`, `CLAUDE_AGENT_SDK_ENABLED=1`)
 ├── GraphQL + websocket transport checks execute against real Claude runtime sessions
 ├── supported-path checks assert create/send/continue/projection/workspace/team routing behavior
-├── unsupported-path checks assert deterministic rejection behavior for Claude-only unsupported contracts
+├── team relay checks assert tool-call lifecycle and recipient delivery for `send_message_to`
 └── parity-check script verifies Claude live E2E test count equals Codex baseline count (`13`)
 ```
 
@@ -275,4 +299,35 @@ registry resolve throws deterministic runtime-kind missing message
 [ERROR] parity count mismatch or failing live scenario
 stage 7 gate fails -> re-entry required before stage 8 review
 └── no handoff allowed until parity-count and pass-state are both satisfied
+```
+
+## UC-014: Claude Team `send_message_to` Relay Tooling Parity
+
+### Primary Path
+
+```text
+[ENTRY] team-member-runtime-orchestrator.ts:createExternalMemberSessions(...)
+├── runtimeReference.metadata includes teamRunId/memberName/sendMessageToEnabled/teamMemberManifest
+├── claude-agent-sdk-runtime-adapter.ts:restoreAgentRun(...)
+│   └── claude-agent-sdk-runtime-service.ts:restoreRunSession(...runtimeMetadata)
+├── send turn path: claude-agent-sdk-runtime-service.ts:invokeQueryStream(...)
+│   ├── builds teammate-aware system prompt append
+│   ├── registers in-process MCP server with custom `send_message_to` tool
+│   └── passes mcp server via Claude SDK query options (`mcpServers`)
+├── Claude calls `send_message_to` MCP tool
+│   └── claude-agent-sdk-runtime-service.ts tool handler -> team-member-runtime-orchestrator relay handler
+├── team-member-runtime-orchestrator.ts:relayInterAgentMessage(...)
+│   └── runtime-command-ingress-service.ts:relayInterAgentMessage(recipientRunId,envelope)
+│       └── recipient runtime adapter `relayInterAgentMessage` injects inter-agent envelope
+└── team websocket bridge emits:
+    ├── sender `SEGMENT_START/SEGMENT_END` for tool call metadata
+    └── recipient `INTER_AGENT_MESSAGE` with sender/recipient/content payload
+```
+
+### Error Path
+
+```text
+[ERROR] relay handler unavailable or recipient unresolved
+Claude MCP tool handler returns deterministic error payload/code
+└── sender emits tool-call completion metadata with error and no false success claim
 ```

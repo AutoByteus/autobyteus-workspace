@@ -1,7 +1,7 @@
 # Implementation Plan
 
 - Ticket: `claude-agent-sdk-runtime-support`
-- Plan Version: `v2`
+- Plan Version: `v3`
 - Scope: `Large`
 - Stage Preconditions:
   - Stage 5 gate: `Go Confirmed`
@@ -60,6 +60,22 @@ Implement `claude_agent_sdk` runtime support and refactor shared runtime orchest
 - G3. Include explicit live assertions for intentionally unsupported Claude runtime behaviors (tool approval routing and inter-agent relay) rather than skipping.
 - G4. Rerun full backend and frontend suites after parity expansion.
 
+### Batch H: External Runtime Listener Continuity Across Restore
+
+- H1. Add deferred run-listener persistence in external runtime services so listener subscriptions survive session close/restore (`runId`-keyed continuity).
+- H2. Ensure create/restore rebinds deferred listeners before turn events can emit.
+- H3. Add/adjust live and unit tests that verify terminate->continue keeps websocket event delivery without path-specific bridge refresh hooks.
+- H4. Re-run Claude live runtime/team E2E to validate real send->receive and continue->send->receive behavior.
+
+### Batch I: Claude Inter-Agent Tooling Parity (`send_message_to`)
+
+- I1. Add Claude runtime relay callback contract + runtime-service wiring for team metadata-aware tool enablement.
+- I2. Use Claude Agent SDK MCP custom tool integration (`createSdkMcpServer` + `mcpServers`) to expose `send_message_to` for team-bound Claude sessions.
+- I3. Generalize team inter-agent relay orchestration to runtime-neutral ingress delivery (remove codex-only hard gate in orchestrator path).
+- I4. Implement Claude runtime adapter recipient delivery path for inter-agent envelopes (`relayInterAgentMessage`).
+- I5. Extend live Claude team E2E to assert real `send_message_to` tool-call lifecycle + recipient `INTER_AGENT_MESSAGE` delivery parity.
+- I6. Re-run unit/live/full-suite verification for Claude and Codex runtime matrices.
+
 ## Planned File Groups
 
 - Server core/runtime:
@@ -109,6 +125,8 @@ Implement `claude_agent_sdk` runtime support and refactor shared runtime orchest
 | R-010 | F | regression run of touched codex/autobyteus tests |
 | R-011 | D, F | code-level boundary checks + tests around generic mode naming |
 | R-012 | G | live Claude E2E count parity verification (`13`) + full-suite rerun |
+| R-013 | H | live continue/send websocket assertions + runtime-service listener lifecycle tests |
+| R-014 | I | live Claude team relay roundtrip assertions + runtime-neutral orchestrator relay unit coverage |
 
 ## Test Plan
 
@@ -134,3 +152,5 @@ Implement `claude_agent_sdk` runtime support and refactor shared runtime orchest
 5. Batch E (frontend runtime kind option wiring).
 6. Batch F (test stabilization and final cleanup).
 7. Batch G (Claude live E2E parity expansion and full-suite proof).
+8. Batch H (listener continuity hardening + live continue/send proof).
+9. Batch I (Claude inter-agent tooling parity and runtime-neutral relay completion).

@@ -50,6 +50,10 @@ const logger = {
 
 export class CodexAppServerRuntimeService {
   private readonly sessions = new Map<string, CodexRunSessionState>();
+  private readonly deferredListenersByRunId = new Map<
+    string,
+    Set<(event: CodexRuntimeEvent) => void>
+  >();
   private readonly workspaceManager = getWorkspaceManager();
   private readonly processManager: CodexAppServerProcessManager;
   private interAgentRelayHandler: CodexInterAgentRelayHandler | null = null;
@@ -71,6 +75,7 @@ export class CodexAppServerRuntimeService {
     await this.closeRunSession(runId);
     const state = await this.startSession(runId, options, null);
     this.sessions.set(runId, state);
+    this.rebindDeferredListeners(runId, state);
     return {
       threadId: state.threadId,
       metadata: {
@@ -99,6 +104,7 @@ export class CodexAppServerRuntimeService {
       runtimeReference?.threadId ?? null,
     );
     this.sessions.set(runId, state);
+    this.rebindDeferredListeners(runId, state);
     return {
       threadId: state.threadId,
       metadata: {
@@ -119,12 +125,20 @@ export class CodexAppServerRuntimeService {
     listener: (event: CodexRuntimeEvent) => void,
   ): () => void {
     const state = this.sessions.get(runId);
-    if (!state) {
-      return () => {};
+    if (state) {
+      state.listeners.add(listener);
+    } else {
+      this.getOrCreateDeferredListenerSet(runId).add(listener);
     }
-    state.listeners.add(listener);
     return () => {
-      state.listeners.delete(listener);
+      this.sessions.get(runId)?.listeners.delete(listener);
+      const deferred = this.deferredListenersByRunId.get(runId);
+      if (deferred) {
+        deferred.delete(listener);
+        if (deferred.size === 0) {
+          this.deferredListenersByRunId.delete(runId);
+        }
+      }
     };
   }
 
@@ -230,6 +244,13 @@ export class CodexAppServerRuntimeService {
       return;
     }
     this.sessions.delete(runId);
+    const listenerSnapshot = Array.from(state.listeners);
+    if (listenerSnapshot.length > 0) {
+      const deferred = this.getOrCreateDeferredListenerSet(runId);
+      for (const listener of listenerSnapshot) {
+        deferred.add(listener);
+      }
+    }
     state.listeners.clear();
     state.approvalRecords.clear();
     for (const unbind of state.unbindHandlers) {
@@ -238,6 +259,28 @@ export class CodexAppServerRuntimeService {
       } catch {
         // ignore
       }
+    }
+  }
+
+  private getOrCreateDeferredListenerSet(
+    runId: string,
+  ): Set<(event: CodexRuntimeEvent) => void> {
+    const existing = this.deferredListenersByRunId.get(runId);
+    if (existing) {
+      return existing;
+    }
+    const created = new Set<(event: CodexRuntimeEvent) => void>();
+    this.deferredListenersByRunId.set(runId, created);
+    return created;
+  }
+
+  private rebindDeferredListeners(runId: string, state: CodexRunSessionState): void {
+    const deferred = this.deferredListenersByRunId.get(runId);
+    if (!deferred) {
+      return;
+    }
+    for (const listener of deferred) {
+      state.listeners.add(listener);
     }
   }
 
