@@ -89,12 +89,10 @@ describe("Node sync GraphQL endpoint e2e", () => {
           entities: {
             prompt: [
               {
-                key: `${category}::${name}::1::default`,
+                key: `${category}::${name}::1`,
                 name,
                 category,
                 promptContent: "sync-import-v1",
-                description: "created by sync endpoint e2e",
-                suitableForModels: "default",
                 version: 1,
                 isActive: true,
               },
@@ -126,12 +124,10 @@ describe("Node sync GraphQL endpoint e2e", () => {
           entities: {
             prompt: [
               {
-                key: `${category}::${name}::1::default`,
+                key: `${category}::${name}::1`,
                 name,
                 category,
                 promptContent: "sync-import-v2",
-                description: "updated by sync endpoint e2e",
-                suitableForModels: "default",
                 version: 1,
                 isActive: true,
               },
@@ -182,7 +178,6 @@ describe("Node sync GraphQL endpoint e2e", () => {
         name: nameA,
         category: categoryA,
         promptContent: "prompt-a",
-        description: "selective sync prompt a",
       },
     });
     await execGraphql(createPromptMutation, {
@@ -190,7 +185,6 @@ describe("Node sync GraphQL endpoint e2e", () => {
         name: nameB,
         category: categoryB,
         promptContent: "prompt-b",
-        description: "selective sync prompt b",
       },
     });
 
@@ -317,7 +311,6 @@ describe("Node sync GraphQL endpoint e2e", () => {
         name: promptName,
         category,
         promptContent: "full sync prompt",
-        description: "full sync prompt",
       },
     });
 
@@ -419,7 +412,6 @@ describe("Node sync GraphQL endpoint e2e", () => {
         name: promptName,
         category,
         promptContent: "overwrite prompt",
-        description: "overwrite prompt",
       },
     });
 

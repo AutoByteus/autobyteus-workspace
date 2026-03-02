@@ -40,20 +40,6 @@
         <!-- Category -->
         <CreatableCategorySelect v-model="formData.category" />
 
-        <!-- Description -->
-        <div>
-          <label for="prompt-description" class="block text-sm font-medium text-gray-700">Description</label>
-          <textarea
-            id="prompt-description"
-            v-model="formData.description"
-            rows="3"
-            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-            placeholder="A short description of what this prompt is for."
-          ></textarea>
-        </div>
-
-        <!-- Suitable for Models (Multi-select) -->
-        <CanonicalModelSelector v-model="formData.suitableForModels" />
 
         <!-- Prompt Content -->
         <div class="flex-grow flex flex-col">
@@ -94,7 +80,6 @@
 import { ref, reactive, computed, onMounted, watch } from 'vue';
 import { usePromptStore } from '~/stores/promptStore';
 import { usePromptEngineeringViewStore } from '~/stores/promptEngineeringViewStore';
-import CanonicalModelSelector from './CanonicalModelSelector.vue';
 import CreatableCategorySelect from './CreatableCategorySelect.vue';
 
 const promptStore = usePromptStore();
@@ -104,8 +89,6 @@ const viewStore = usePromptEngineeringViewStore();
 const formData = reactive({
   name: '',
   category: '',
-  description: '',
-  suitableForModels: [] as string[],
   promptContent: '',
 });
 
@@ -133,9 +116,7 @@ onMounted(() => {
     // Load existing draft
     formData.name = viewStore.activeDraft.name;
     formData.category = viewStore.activeDraft.category;
-    formData.description = viewStore.activeDraft.description;
     formData.promptContent = viewStore.activeDraft.promptContent;
-    formData.suitableForModels = [...viewStore.activeDraft.suitableForModels];
   } else {
     viewStore.startNewDraft(viewStore.currentSectionContext);
   }
@@ -147,9 +128,7 @@ watch(formData, (newVal) => {
     viewStore.updateActiveDraft({
       name: newVal.name,
       category: newVal.category,
-      description: newVal.description,
       promptContent: newVal.promptContent,
-      suitableForModels: newVal.suitableForModels,
     });
     
     savedIndicator.value = true;
@@ -166,8 +145,6 @@ async function submitPrompt() {
       formData.name,
       formData.category,
       formData.promptContent,
-      formData.description,
-      formData.suitableForModels.join(', ')
     );
     
     // On success, remove draft

@@ -103,7 +103,6 @@ def ensure_prompt(client: GraphqlClient, *, name: str, content: str) -> None:
             name
             category
             promptContent
-            suitableForModels
           }
         }
         """,
@@ -128,8 +127,6 @@ def ensure_prompt(client: GraphqlClient, *, name: str, content: str) -> None:
                     "name": name,
                     "category": PROMPT_CATEGORY,
                     "promptContent": content,
-                    "description": f"Fixture prompt for {name}",
-                    "suitableForModels": "default",
                 }
             },
         )
@@ -147,8 +144,6 @@ def ensure_prompt(client: GraphqlClient, *, name: str, content: str) -> None:
                 "input": {
                     "id": current.get("id"),
                     "promptContent": content,
-                    "description": f"Fixture prompt for {name}",
-                    "suitableForModels": current.get("suitableForModels") or "default",
                 }
             },
         )

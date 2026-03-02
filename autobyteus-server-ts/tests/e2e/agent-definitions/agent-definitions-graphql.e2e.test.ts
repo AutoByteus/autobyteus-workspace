@@ -52,7 +52,6 @@ describe("Agent definitions GraphQL e2e", () => {
         name: promptName,
         category: promptCategory,
         promptContent: "System prompt content",
-        description: "Prompt for agent definition test",
       },
     });
 

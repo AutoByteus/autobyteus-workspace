@@ -20,14 +20,12 @@ describe("updatePromptMetadataTool", () => {
     const tool = registerUpdatePromptMetadataTool();
     const result = await tool.execute(
       { agentId: "test-agent" } as any,
-      { prompt_id: "1", description: "new desc", is_active: false },
+      { prompt_id: "1", is_active: false },
     );
 
     expect(mockUpdatePrompt).toHaveBeenCalledOnce();
     expect(mockUpdatePrompt).toHaveBeenCalledWith({
       promptId: "1",
-      description: "new desc",
-      suitableForModels: null,
       isActive: false,
     });
     expect(result).toContain("updated successfully");
@@ -47,7 +45,7 @@ describe("updatePromptMetadataTool", () => {
     await expect(
       tool.execute(
         { agentId: "test-agent" } as any,
-        { prompt_id: "99", description: "update" },
+        { prompt_id: "99", is_active: true },
       ),
     ).rejects.toThrow("Prompt not found");
   });

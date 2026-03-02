@@ -12,8 +12,6 @@ type PromptRecord = {
   name: string;
   category: string;
   promptContent: string;
-  description: string | null;
-  suitableForModels: string | null;
   version: number;
   createdAt: string;
   updatedAt: string;
@@ -29,8 +27,6 @@ const toDomain = (record: PromptRecord): Prompt =>
     name: record.name,
     category: record.category,
     promptContent: record.promptContent,
-    description: record.description,
-    suitableForModels: record.suitableForModels,
     version: record.version,
     createdAt: parseDate(record.createdAt),
     updatedAt: parseDate(record.updatedAt),
@@ -43,8 +39,6 @@ const toRecord = (prompt: Prompt, now: Date, fallbackId: string): PromptRecord =
   name: prompt.name,
   category: prompt.category,
   promptContent: prompt.promptContent,
-  description: prompt.description ?? null,
-  suitableForModels: prompt.suitableForModels ?? null,
   version: prompt.version ?? 1,
   createdAt: (prompt.createdAt ?? now).toISOString(),
   updatedAt: (prompt.updatedAt ?? now).toISOString(),
@@ -119,17 +113,10 @@ export class FilePromptProvider {
   async findAllByNameAndCategory(
     name: string,
     category: string,
-    suitableForModels?: string | null,
   ): Promise<Prompt[]> {
     const rows = await readJsonArrayFile<PromptRecord>(promptFilePath);
     const filtered = rows.filter((row) => {
-      if (row.name !== name || row.category !== category) {
-        return false;
-      }
-      if (suitableForModels === undefined || suitableForModels === null) {
-        return true;
-      }
-      return row.suitableForModels === suitableForModels;
+      return row.name === name && row.category === category;
     });
     return filtered.map((row) => toDomain(row));
   }

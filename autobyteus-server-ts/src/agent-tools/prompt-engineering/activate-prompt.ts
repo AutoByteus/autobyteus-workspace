@@ -49,7 +49,6 @@ export async function activatePrompt(
     const familyPrompts = await promptService.findAllByNameAndCategory(
       targetPrompt.name,
       targetPrompt.category,
-      targetPrompt.suitableForModels ?? null,
     );
 
     let oldActivePromptId: string | null = null;

@@ -37,22 +37,7 @@ argumentSchema.addParameter(
     required: true,
   }),
 );
-argumentSchema.addParameter(
-  new ParameterDefinition({
-    name: "description",
-    type: ParameterType.STRING,
-    description: "A brief description of what the prompt is for.",
-    required: false,
-  }),
-);
-argumentSchema.addParameter(
-  new ParameterDefinition({
-    name: "suitable_for_models",
-    type: ParameterType.STRING,
-    description: "A comma-separated string of model names this prompt is designed for.",
-    required: false,
-  }),
-);
+
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -69,8 +54,6 @@ export async function createPrompt(
   name: string,
   category: string,
   prompt_content: string,
-  description?: string | null,
-  suitable_for_models?: string | null,
 ): Promise<string> {
   const agentRunId = context?.agentId ?? "unknown";
   logger.info(`create_prompt tool invoked by agent run ${agentRunId} for prompt name '${name}'.`);
@@ -81,8 +64,6 @@ export async function createPrompt(
       name,
       category,
       promptContent: prompt_content,
-      description: description ?? null,
-      suitableForModels: suitable_for_models ?? null,
     });
     const successMessage = `Prompt '${name}' created successfully with ID: ${String(
       newPrompt.id,

@@ -53,7 +53,6 @@ type PromptServiceLike = {
   findAllByNameAndCategory: (
     name: string,
     category: string,
-    suitableForModels?: string | null,
   ) => Promise<unknown[]>;
 };
 

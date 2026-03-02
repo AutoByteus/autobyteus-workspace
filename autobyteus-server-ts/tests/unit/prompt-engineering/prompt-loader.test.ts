@@ -7,13 +7,11 @@ const makePrompt = (options: {
   name?: string;
   category?: string;
   content?: string;
-  models?: string;
 }) =>
   new Prompt({
     name: options.name ?? "Coder",
     category: options.category ?? "System",
     promptContent: options.content ?? "",
-    suitableForModels: options.models ?? null,
   });
 
 describe("PromptLoader", () => {
@@ -29,7 +27,7 @@ describe("PromptLoader", () => {
 
     const promptService = {
       getActivePromptsByContext: vi.fn().mockResolvedValue([
-        makePrompt({ content: "This is for GPT-4o", models: "gpt-4o" }),
+        makePrompt({ content: "This is for GPT-4o" }),
       ]),
     };
 
@@ -55,7 +53,7 @@ describe("PromptLoader", () => {
     expect(content).toBe("This is for GPT-4o");
   });
 
-  it("falls back to default model prompt for agent when no specific match", async () => {
+  it("returns the first active prompt when model-agnostic", async () => {
     const agentDef = new AgentDefinition({
       id: "agent1",
       name: "TestAgent",
@@ -69,7 +67,6 @@ describe("PromptLoader", () => {
       getActivePromptsByContext: vi.fn().mockResolvedValue([
         makePrompt({
           content: "Default Content",
-          models: PromptLoader.DEFAULT_CANONICAL_MODEL,
         }),
       ]),
     };
@@ -120,7 +117,7 @@ describe("PromptLoader", () => {
     expect(promptService.getActivePromptsByContext).not.toHaveBeenCalled();
   });
 
-  it("returns null if no suitable prompts for model or default", async () => {
+  it("returns first available prompt content regardless of model", async () => {
     const agentDef = new AgentDefinition({
       id: "agent1",
       name: "TestAgent",
@@ -132,7 +129,7 @@ describe("PromptLoader", () => {
 
     const promptService = {
       getActivePromptsByContext: vi.fn().mockResolvedValue([
-        makePrompt({ content: "Other", models: "some-other-model" }),
+        makePrompt({ content: "Other" }),
       ]),
     };
 
@@ -152,7 +149,8 @@ describe("PromptLoader", () => {
 
     const content = await loader.getPromptTemplateForAgent("agent1", "GPT_4o_API");
 
-    expect(content).toBeNull();
+    // With suitableForModels removed, any available prompt is returned
+    expect(content).toBe("Other");
   });
 
   it("caches agent prompt results", async () => {
@@ -167,7 +165,7 @@ describe("PromptLoader", () => {
 
     const promptService = {
       getActivePromptsByContext: vi.fn().mockResolvedValue([
-        makePrompt({ content: "Cached Content", models: "gpt-4o" }),
+        makePrompt({ content: "Cached Content" }),
       ]),
     };
 

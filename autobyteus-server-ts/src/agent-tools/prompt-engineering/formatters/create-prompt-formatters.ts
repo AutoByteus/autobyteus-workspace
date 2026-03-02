@@ -11,9 +11,6 @@ export class CreatePromptXmlSchemaFormatter implements BaseSchemaFormatter {
             IMPORTANT: To ensure reliable streaming, you MUST enclose the prompt content with the sentinel tags __START_CONTENT__ and __END_CONTENT__.
             The parser will strip these tags, but they are critical for preventing XML parsing errors if the content contains special characters.
         </arg>
-
-        <arg name="description" type="string" description="A brief description of what the prompt is for." required="false" />
-        <arg name="suitable_for_models" type="string" description="A comma-separated string of model names this prompt is designed for." required="false" />
     </arguments>
 </tool>`;
   }
@@ -27,7 +24,6 @@ export class CreatePromptXmlExampleFormatter implements BaseExampleFormatter {
     <arguments>
         <arg name="name">ExpertCoder</arg>
         <arg name="category">Coding</arg>
-        <arg name="description">Expert coding assistant for Python.</arg>
         <arg name="prompt_content">
 __START_CONTENT__
 You are an expert Python developer.

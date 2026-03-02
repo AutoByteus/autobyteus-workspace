@@ -16,7 +16,6 @@ describe("XmlCreatePromptToolParsingState", () => {
     <arguments>
         <arg name="name">TestPrompt</arg>
         <arg name="category">Testing</arg>
-        <arg name="description">A test prompt</arg>
         <arg name="prompt_content">
 __START_CONTENT__
 You are an AI assistant.
@@ -41,7 +40,6 @@ __END_CONTENT__
     const args = metadata?.arguments ?? {};
     expect(args.name).toBe("TestPrompt");
     expect(args.category).toBe("Testing");
-    expect(args.description).toBe("A test prompt");
     expect(args.prompt_content).toContain("You are an AI assistant.");
     expect(args.prompt_content).toContain("Be helpful and concise.");
     expect(args.prompt_content).not.toContain("__START_CONTENT__");
