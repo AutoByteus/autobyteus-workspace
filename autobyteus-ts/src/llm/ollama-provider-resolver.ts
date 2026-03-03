@@ -7,7 +7,7 @@ export class OllamaProviderResolver {
     [['mistral'], LLMProvider.MISTRAL],
     [['deepseek'], LLMProvider.DEEPSEEK],
     [['qwen'], LLMProvider.QWEN],
-    [['glm'], LLMProvider.ZHIPU]
+    [['glm'], LLMProvider.GLM]
   ];
 
   static resolve(modelName: string): LLMProvider {
