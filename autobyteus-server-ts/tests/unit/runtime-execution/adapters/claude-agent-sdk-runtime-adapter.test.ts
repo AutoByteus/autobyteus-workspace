@@ -130,7 +130,7 @@ describe("ClaudeAgentSdkRuntimeAdapter", () => {
     const result = await adapter.relayInterAgentMessage({
       runId: "run-1",
       envelope: {
-        senderAgentId: "agent-a",
+        senderAgentRunId: "agent-a",
         recipientName: "agent-b",
         messageType: "agent_message",
         content: "ping",

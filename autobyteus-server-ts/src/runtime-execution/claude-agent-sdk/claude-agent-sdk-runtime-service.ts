@@ -2,6 +2,7 @@ import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-u
 import { SenderType } from "autobyteus-ts/agent/sender-type.js";
 import type { ModelInfo } from "autobyteus-ts/llm/models.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
+import type { RuntimeInterAgentEnvelope } from "../runtime-adapter-port.js";
 import { getWorkspaceManager } from "../../workspaces/workspace-manager.js";
 import {
   asString,
@@ -230,15 +231,7 @@ export class ClaudeAgentSdkRuntimeService {
 
   async injectInterAgentEnvelope(
     runId: string,
-    envelope: {
-      senderAgentId: string;
-      senderAgentName?: string | null;
-      recipientName: string;
-      messageType: string;
-      content: string;
-      teamRunId?: string | null;
-      metadata?: Record<string, unknown> | null;
-    },
+    envelope: RuntimeInterAgentEnvelope,
   ): Promise<{ turnId: string | null }> {
     const state = this.requireSession(runId);
     const content = asString(envelope.content) ?? "";
@@ -249,7 +242,7 @@ export class ClaudeAgentSdkRuntimeService {
     this.emitEvent(state, {
       method: "inter_agent_message",
       params: {
-        sender_agent_id: asString(envelope.senderAgentId) ?? "unknown_sender",
+        sender_agent_id: asString(envelope.senderAgentRunId) ?? "unknown_sender",
         sender_agent_name: asString(envelope.senderAgentName) ?? null,
         recipient_role_name: asString(envelope.recipientName) ?? "unknown_recipient",
         content,
@@ -260,7 +253,7 @@ export class ClaudeAgentSdkRuntimeService {
 
     const message = new AgentInputUserMessage(content, SenderType.AGENT, null, {
       inter_agent_envelope: {
-        senderAgentId: asString(envelope.senderAgentId) ?? "unknown_sender",
+        senderAgentRunId: asString(envelope.senderAgentRunId) ?? "unknown_sender",
         senderAgentName: asString(envelope.senderAgentName),
         recipientName: asString(envelope.recipientName) ?? "unknown_recipient",
         messageType: asString(envelope.messageType) ?? "agent_message",

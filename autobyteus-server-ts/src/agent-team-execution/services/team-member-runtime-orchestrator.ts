@@ -655,7 +655,7 @@ export class TeamMemberRuntimeOrchestrator {
     const relayResult = await this.runtimeCommandIngressService.relayInterAgentMessage({
       runId: resolveResult.binding.memberRunId,
       envelope: {
-        senderAgentId: sender.binding.memberRunId,
+        senderAgentRunId: sender.binding.memberRunId,
         senderAgentName: normalizeOptionalString(input.senderAgentName) ?? sender.binding.memberName,
         recipientName: resolveResult.binding.memberName,
         messageType: normalizeOptionalString(input.messageType) ?? "agent_message",

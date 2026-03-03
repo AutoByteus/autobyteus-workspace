@@ -328,7 +328,7 @@ describe("ClaudeAgentSdkRuntimeService", () => {
     service.subscribeToRunEvents("run-relay-target", (event) => methods.push(event.method));
 
     await service.injectInterAgentEnvelope("run-relay-target", {
-      senderAgentId: "member-a",
+      senderAgentRunId: "member-a",
       senderAgentName: "ping",
       recipientName: "pong",
       messageType: "agent_message",

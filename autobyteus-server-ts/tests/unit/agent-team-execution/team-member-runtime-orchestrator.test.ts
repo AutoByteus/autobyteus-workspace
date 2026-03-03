@@ -353,7 +353,7 @@ describe("TeamMemberRuntimeOrchestrator", () => {
     expect(mocks.runtimeCommandIngressService.relayInterAgentMessage).toHaveBeenCalledWith({
       runId: "recipient-run-1",
       envelope: {
-        senderAgentId: "sender-run-1",
+        senderAgentRunId: "sender-run-1",
         senderAgentName: "Sender Agent",
         recipientName: "Recipient Agent",
         messageType: "agent_message",
@@ -492,7 +492,7 @@ describe("TeamMemberRuntimeOrchestrator", () => {
     expect(mocks.runtimeCommandIngressService.relayInterAgentMessage).toHaveBeenCalledWith({
       runId: "recipient-run-1",
       envelope: expect.objectContaining({
-        senderAgentId: "sender-run-1",
+        senderAgentRunId: "sender-run-1",
         senderAgentName: "Sender Agent",
         recipientName: "Recipient Agent",
         content: "hello from Claude tool",
