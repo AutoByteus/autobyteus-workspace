@@ -4,28 +4,28 @@
 
 - Ticket: `run-history-reload-after-stop`
 - Current Stage: `10`
-- Next Stage: `Awaiting user verification/confirmation`
+- Next Stage: `Done`
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-010`
-- Last Updated: `2026-03-03 10:09 CET`
+- Last Transition ID: `T-011`
+- Last Updated: `2026-03-03 11:17 CET`
 
 ## Stage Gates
 
 | Stage | Gate Status (`Not Started`/`In Progress`/`Pass`/`Fail`/`Blocked`) | Gate Rule Summary | Evidence |
 | --- | --- | --- | --- |
-| 0 Bootstrap + Draft Requirement | Pass | Ticket bootstrap complete + `requirements.md` Draft captured | `tickets/in-progress/run-history-reload-after-stop/requirements.md` |
-| 1 Investigation + Triage | Pass | `investigation-notes.md` current + scope triage recorded | `tickets/in-progress/run-history-reload-after-stop/investigation-notes.md` |
-| 2 Requirements | Pass | `requirements.md` is `Design-ready`/`Refined` | `tickets/in-progress/run-history-reload-after-stop/requirements.md` |
-| 3 Design Basis | Pass | Design basis updated for scope (`implementation-plan.md` sketch or `proposed-design.md`) | `tickets/in-progress/run-history-reload-after-stop/proposed-design.md` |
-| 4 Runtime Modeling | Pass | `future-state-runtime-call-stack.md` current | `tickets/in-progress/run-history-reload-after-stop/future-state-runtime-call-stack.md` |
-| 5 Review Gate | Pass | Runtime review `Go Confirmed` (two clean rounds, no blockers/persisted updates/new use cases) | `tickets/in-progress/run-history-reload-after-stop/future-state-runtime-call-stack-review.md` |
-| 6 Implementation | Pass | Plan/progress current + source + unit/integration verification complete | `tickets/in-progress/run-history-reload-after-stop/implementation-plan.md`, `tickets/in-progress/run-history-reload-after-stop/implementation-progress.md` |
-| 7 API/E2E Testing | Pass | API/E2E test implementation complete + AC scenario gate complete | `tickets/in-progress/run-history-reload-after-stop/api-e2e-testing.md` |
-| 8 Code Review | Pass | Code review gate `Pass`/`Fail` recorded | `tickets/in-progress/run-history-reload-after-stop/code-review.md` |
-| 9 Docs Sync | Pass | Docs updated or no-impact rationale recorded | `tickets/in-progress/run-history-reload-after-stop/implementation-progress.md` |
-| 10 Handoff / Ticket State | Pass | Final handoff complete + ticket state decision recorded | `tickets/in-progress/run-history-reload-after-stop/final-handoff.md` |
+| 0 Bootstrap + Draft Requirement | Pass | Ticket bootstrap complete + `requirements.md` Draft captured | `tickets/done/run-history-reload-after-stop/requirements.md` |
+| 1 Investigation + Triage | Pass | `investigation-notes.md` current + scope triage recorded | `tickets/done/run-history-reload-after-stop/investigation-notes.md` |
+| 2 Requirements | Pass | `requirements.md` is `Design-ready`/`Refined` | `tickets/done/run-history-reload-after-stop/requirements.md` |
+| 3 Design Basis | Pass | Design basis updated for scope (`implementation-plan.md` sketch or `proposed-design.md`) | `tickets/done/run-history-reload-after-stop/proposed-design.md` |
+| 4 Runtime Modeling | Pass | `future-state-runtime-call-stack.md` current | `tickets/done/run-history-reload-after-stop/future-state-runtime-call-stack.md` |
+| 5 Review Gate | Pass | Runtime review `Go Confirmed` (two clean rounds, no blockers/persisted updates/new use cases) | `tickets/done/run-history-reload-after-stop/future-state-runtime-call-stack-review.md` |
+| 6 Implementation | Pass | Plan/progress current + source + unit/integration verification complete | `tickets/done/run-history-reload-after-stop/implementation-plan.md`, `tickets/done/run-history-reload-after-stop/implementation-progress.md` |
+| 7 API/E2E Testing | Pass | API/E2E test implementation complete + AC scenario gate complete | `tickets/done/run-history-reload-after-stop/api-e2e-testing.md` |
+| 8 Code Review | Pass | Code review gate `Pass`/`Fail` recorded | `tickets/done/run-history-reload-after-stop/code-review.md` |
+| 9 Docs Sync | Pass | Docs updated or no-impact rationale recorded | `tickets/done/run-history-reload-after-stop/implementation-progress.md` |
+| 10 Handoff / Ticket State | Pass | Final handoff complete + ticket state decision recorded | `tickets/done/run-history-reload-after-stop/final-handoff.md` |
 
 ## Transition Log (Append-Only)
 
@@ -42,6 +42,7 @@
 | T-008 | 2026-03-03 | 7 | 8 | Stage 7 API/E2E gate passed; entering code review and locking code edits | N/A | Locked | `api-e2e-testing.md`, `workflow-state.md` |
 | T-009 | 2026-03-03 | 8 | 9 | Stage 8 code review passed; entering docs sync | N/A | Locked | `code-review.md`, `workflow-state.md` |
 | T-010 | 2026-03-03 | 9 | 10 | Stage 9 docs sync recorded no impact; final handoff completed | N/A | Locked | `implementation-progress.md`, `final-handoff.md`, `workflow-state.md` |
+| T-011 | 2026-03-03 | 10 | 10 | User confirmed fix; ticket moved from `tickets/in-progress` to `tickets/done`. | N/A | Locked | `final-handoff.md`, `workflow-state.md` |
 
 ## Audible Notification Log (Optional Tracking)
 
@@ -54,6 +55,7 @@
 | 2026-03-03 | Transition | Stage 4 runtime modeling passed; entering Stage 5 review gate with code edits locked. | Success | N/A |
 | 2026-03-03 | Transition/LockChange | Stage 5 review gate is Go Confirmed; entering Stage 6 implementation and unlocking code edits. | Success | N/A |
 | 2026-03-03 | Transition/LockChange | Stages 7 to 10 completed; code edits are now locked and the ticket is awaiting user verification. | Success | N/A |
+| 2026-03-03 | Transition | User confirmed fix verification; ticket moved to done state. | Success | N/A |
 
 ## Process Violation Log
 

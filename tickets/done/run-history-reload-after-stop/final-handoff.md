@@ -23,4 +23,5 @@ Forward-only fix implemented for single-agent run memory wiring so future runs p
 ## Ticket State
 
 - Technical workflow complete through Stage 10.
-- Ticket remains in `tickets/in-progress/` pending explicit user confirmation to move to `tickets/done/`.
+- User confirmed fix validation on 2026-03-03.
+- Ticket moved to `tickets/done/run-history-reload-after-stop/`.
