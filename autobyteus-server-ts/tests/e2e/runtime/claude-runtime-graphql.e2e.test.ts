@@ -4,7 +4,7 @@ import path from "node:path";
 import os from "node:os";
 import { spawnSync } from "node:child_process";
 import { randomUUID } from "node:crypto";
-import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import { mkdtemp, realpath, rm, writeFile } from "node:fs/promises";
 import fastify from "fastify";
 import websocket from "@fastify/websocket";
 import WebSocket from "ws";
@@ -251,6 +251,9 @@ describeClaudeRuntime("Claude runtime GraphQL e2e (live transport)", () => {
         }
 
         if (parsed.type === "SEGMENT_CONTENT") {
+          if (!promptSent) {
+            return;
+          }
           const segmentType = payload.segment_type;
           const delta = payload.delta;
           if (segmentType === "text" && typeof delta === "string" && delta.length > 0) {
@@ -261,6 +264,9 @@ describeClaudeRuntime("Claude runtime GraphQL e2e (live transport)", () => {
         }
 
         if (parsed.type === "SEGMENT_END") {
+          if (!promptSent) {
+            return;
+          }
           const runtimeMethod = payload.runtime_event_method;
           if (typeof runtimeMethod === "string") {
             segmentEndMethods.push(runtimeMethod);
@@ -645,6 +651,117 @@ describeClaudeRuntime("Claude runtime GraphQL e2e (live transport)", () => {
         expect(afterContinueResume.getRunResumeConfig.manifestConfig.workspaceRootPath).toBe(
           workspaceRootPath,
         );
+      } finally {
+        if (runId) {
+          try {
+            await terminateRun(runId);
+          } catch {
+            // best-effort cleanup
+          }
+        }
+        await rm(workspaceRootPath, { recursive: true, force: true });
+      }
+    },
+    180_000,
+  );
+
+  it(
+    "executes Claude tool commands inside the selected workspace across terminate->continue",
+    async () => {
+      const modelIdentifier = await fetchClaudeModelIdentifier();
+      const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "claude-workspace-cwd-e2e-"));
+      const canonicalWorkspaceRootPath = await realpath(workspaceRootPath).catch(() => workspaceRootPath);
+      let runId: string | null = null;
+
+      const continueMutation = `
+        mutation ContinueRun($input: ContinueRunInput!) {
+          continueRun(input: $input) {
+            success
+            message
+            runId
+          }
+        }
+      `;
+
+      const probeWorkspaceCwd = async (targetRunId: string, phase: string): Promise<string> => {
+        const attemptOutputs: string[] = [];
+
+        for (let attempt = 1; attempt <= 3; attempt += 1) {
+          const probePrompt = [
+            "Call run_bash exactly once with this command: pwd",
+            "Do not answer without running the tool.",
+            "Return only the command output with no extra words.",
+            `Probe attempt ${attempt}.`,
+          ].join("\n");
+
+          const probeTurn = await captureSingleWebsocketTurn({
+            runId: targetRunId,
+            prompt: probePrompt,
+          });
+          expect(probeTurn.errorCodes).toEqual([]);
+
+          const probeOutput = probeTurn.assistantOutputFragments.join("\n");
+          attemptOutputs.push(probeOutput);
+
+          const matchesWorkspace =
+            probeOutput.includes(workspaceRootPath) ||
+            probeOutput.includes(canonicalWorkspaceRootPath);
+          if (matchesWorkspace) {
+            return probeOutput;
+          }
+        }
+
+        throw new Error(
+          `Workspace probe output did not include expected cwd (${phase}). outputs=${JSON.stringify(
+            attemptOutputs,
+          )} workspace=${workspaceRootPath} canonical=${canonicalWorkspaceRootPath}`,
+        );
+      };
+
+      try {
+        const createResult = await execGraphql<{
+          continueRun: {
+            success: boolean;
+            message: string;
+            runId: string | null;
+          };
+        }>(continueMutation, {
+          input: {
+            runtimeKind: "claude_agent_sdk",
+            agentDefinitionId: "claude-e2e-agent-def",
+            workspaceRootPath,
+            llmModelIdentifier: modelIdentifier,
+            userInput: {
+              content: "Reply with READY.",
+            },
+          },
+        });
+        expect(createResult.continueRun.success).toBe(true);
+        expect(createResult.continueRun.runId).toBeTruthy();
+        runId = createResult.continueRun.runId;
+
+        await probeWorkspaceCwd(runId as string, "before-continue");
+
+        await terminateRun(runId as string);
+
+        const continueResult = await execGraphql<{
+          continueRun: {
+            success: boolean;
+            message: string;
+            runId: string | null;
+          };
+        }>(continueMutation, {
+          input: {
+            runId,
+            userInput: {
+              content: "Reply with READY again.",
+            },
+          },
+        });
+        expect(continueResult.continueRun.success).toBe(true);
+        expect(continueResult.continueRun.runId).toBe(runId);
+
+        await probeWorkspaceCwd(runId as string, "after-continue");
       } finally {
         if (runId) {
           try {
