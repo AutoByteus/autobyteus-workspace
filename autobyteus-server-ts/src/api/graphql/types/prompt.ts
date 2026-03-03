@@ -49,9 +49,6 @@ export class Prompt {
 
   @Field(() => String)
   updatedAt!: string;
-
-  @Field(() => String, { nullable: true })
-  parentPromptId?: string | null;
 }
 
 @InputType()
@@ -133,7 +130,6 @@ export const mapPromptToGraphql = (prompt: DomainPrompt): Prompt => ({
   version: prompt.version ?? 1,
   createdAt: ensureTimestamp(prompt.createdAt ?? null),
   updatedAt: ensureTimestamp(prompt.updatedAt ?? null),
-  parentPromptId: prompt.parentId ? String(prompt.parentId) : null,
   isActive: prompt.isActive,
 });
 

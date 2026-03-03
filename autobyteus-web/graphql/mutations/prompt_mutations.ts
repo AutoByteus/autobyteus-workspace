@@ -10,7 +10,6 @@ export const CREATE_PROMPT = gql`
       promptContent
       version
       createdAt
-      parentPromptId
       isActive
     }
   }
@@ -27,7 +26,6 @@ export const UPDATE_PROMPT = gql`
       version
       createdAt
       updatedAt
-      parentPromptId
       isActive
     }
   }
@@ -43,7 +41,6 @@ export const ADD_NEW_PROMPT_REVISION = gql`
       promptContent
       version
       createdAt
-      parentPromptId
       isActive
     }
   }

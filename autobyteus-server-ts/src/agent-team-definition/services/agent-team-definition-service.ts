@@ -13,6 +13,7 @@ type AgentTeamDefinitionProvider = {
   getAll: () => Promise<AgentTeamDefinition[]>;
   update: (definition: AgentTeamDefinition) => Promise<AgentTeamDefinition>;
   delete: (id: string) => Promise<boolean>;
+  refresh?: () => Promise<void>;
 };
 
 type AgentTeamDefinitionServiceOptions = {
@@ -99,5 +100,11 @@ export class AgentTeamDefinitionService {
       logger.warn(`Failed to delete agent team definition with ID ${definitionId}.`);
     }
     return success;
+  }
+
+  async refreshCache(): Promise<void> {
+    if (typeof this.provider.refresh === "function") {
+      await this.provider.refresh();
+    }
   }
 }

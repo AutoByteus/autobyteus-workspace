@@ -47,10 +47,10 @@ describe("Node sync GraphQL endpoint e2e", () => {
       variableValues: variables,
     });
 
-  it("imports prompt payload via sync endpoint and applies update on repeat import", async () => {
-    const unique = uniqueId("sync_prompt");
-    const category = `cat_${unique}`;
-    const name = `Prompt_${unique}`;
+  it("imports agent payload via sync endpoint and applies update on repeat import", async () => {
+    const unique = uniqueId("sync_agent");
+    const agentId = `agent_${unique}`;
+    const agentName = `Agent_${unique}`;
 
     const importMutation = `
       mutation ImportSyncBundle($input: ImportNodeSyncBundleInput!) {
@@ -81,20 +81,33 @@ describe("Node sync GraphQL endpoint e2e", () => {
       };
     }>(importMutation, {
       input: {
-        scope: ["PROMPT"],
+        scope: ["AGENT_DEFINITION"],
         conflictPolicy: "SOURCE_WINS",
         tombstonePolicy: "SOURCE_DELETE_WINS",
         bundle: {
           watermark: new Date().toISOString(),
           entities: {
-            prompt: [
+            agent_definition: [
               {
-                key: `${category}::${name}::1`,
-                name,
-                category,
-                promptContent: "sync-import-v1",
-                version: 1,
-                isActive: true,
+                agentId,
+                agent: {
+                  name: agentName,
+                  role: "assistant",
+                  description: "sync-import-v1",
+                  avatarUrl: null,
+                  activePromptVersion: 1,
+                  toolNames: [],
+                  inputProcessorNames: [],
+                  llmResponseProcessorNames: [],
+                  systemPromptProcessorNames: [],
+                  toolExecutionResultProcessorNames: [],
+                  toolInvocationPreprocessorNames: [],
+                  lifecycleProcessorNames: [],
+                  skillNames: [],
+                },
+                promptVersions: {
+                  "1": "prompt-content-v1",
+                },
               },
             ],
           },
@@ -116,20 +129,33 @@ describe("Node sync GraphQL endpoint e2e", () => {
       };
     }>(importMutation, {
       input: {
-        scope: ["PROMPT"],
+        scope: ["AGENT_DEFINITION"],
         conflictPolicy: "SOURCE_WINS",
         tombstonePolicy: "SOURCE_DELETE_WINS",
         bundle: {
           watermark: new Date().toISOString(),
           entities: {
-            prompt: [
+            agent_definition: [
               {
-                key: `${category}::${name}::1`,
-                name,
-                category,
-                promptContent: "sync-import-v2",
-                version: 1,
-                isActive: true,
+                agentId,
+                agent: {
+                  name: agentName,
+                  role: "assistant",
+                  description: "sync-import-v2",
+                  avatarUrl: null,
+                  activePromptVersion: 1,
+                  toolNames: [],
+                  inputProcessorNames: [],
+                  llmResponseProcessorNames: [],
+                  systemPromptProcessorNames: [],
+                  toolExecutionResultProcessorNames: [],
+                  toolInvocationPreprocessorNames: [],
+                  lifecycleProcessorNames: [],
+                  skillNames: [],
+                },
+                promptVersions: {
+                  "1": "prompt-content-v2",
+                },
               },
             ],
           },
@@ -144,49 +170,29 @@ describe("Node sync GraphQL endpoint e2e", () => {
     expect(updateResult.importSyncBundle.failures).toHaveLength(0);
 
     const detailsQuery = `
-      query PromptDetailsByNameAndCategory($category: String!, $name: String!) {
-        promptDetailsByNameAndCategory(category: $category, name: $name) {
-          promptContent
+      query AgentDefinition($id: String!) {
+        agentDefinition(id: $id) {
+          id
+          name
+          description
+          activePromptVersion
         }
       }
     `;
 
     const details = await execGraphql<{
-      promptDetailsByNameAndCategory: { promptContent: string } | null;
-    }>(detailsQuery, { category, name });
+      agentDefinition:
+        | { id: string; name: string; description: string; activePromptVersion: number }
+        | null;
+    }>(detailsQuery, { id: agentId });
 
-    expect(details.promptDetailsByNameAndCategory?.promptContent).toBe("sync-import-v2");
+    expect(details.agentDefinition?.name).toBe(agentName);
+    expect(details.agentDefinition?.description).toBe("sync-import-v2");
+    expect(details.agentDefinition?.activePromptVersion).toBe(1);
   });
 
   it("exports only selected team dependency closure from exportSyncBundle endpoint", async () => {
     const unique = uniqueId("sync_selective");
-    const categoryA = `cat_a_${unique}`;
-    const nameA = `PromptA_${unique}`;
-    const categoryB = `cat_b_${unique}`;
-    const nameB = `PromptB_${unique}`;
-
-    const createPromptMutation = `
-      mutation CreatePrompt($input: CreatePromptInput!) {
-        createPrompt(input: $input) {
-          id
-        }
-      }
-    `;
-
-    await execGraphql(createPromptMutation, {
-      input: {
-        name: nameA,
-        category: categoryA,
-        promptContent: "prompt-a",
-      },
-    });
-    await execGraphql(createPromptMutation, {
-      input: {
-        name: nameB,
-        category: categoryB,
-        promptContent: "prompt-b",
-      },
-    });
 
     const createAgentMutation = `
       mutation CreateAgentDefinition($input: CreateAgentDefinitionInput!) {
@@ -204,8 +210,8 @@ describe("Node sync GraphQL endpoint e2e", () => {
           name: `agent_a_${unique}`,
           role: "assistant",
           description: "agent a",
-          systemPromptCategory: categoryA,
-          systemPromptName: nameA,
+          systemPromptCategory: "default",
+          systemPromptName: "default",
         },
       },
     );
@@ -217,8 +223,8 @@ describe("Node sync GraphQL endpoint e2e", () => {
           name: `agent_b_${unique}`,
           role: "assistant",
           description: "agent b",
-          systemPromptCategory: categoryB,
-          systemPromptName: nameB,
+          systemPromptCategory: "default",
+          systemPromptName: "default",
         },
       },
     );
@@ -266,12 +272,7 @@ describe("Node sync GraphQL endpoint e2e", () => {
       };
     }>(exportQuery, {
       input: {
-        scope: [
-          "PROMPT",
-          "AGENT_DEFINITION",
-          "AGENT_TEAM_DEFINITION",
-          "MCP_SERVER_CONFIGURATION",
-        ],
+        scope: ["AGENT_DEFINITION", "AGENT_TEAM_DEFINITION", "MCP_SERVER_CONFIGURATION"],
         selection: {
           agentTeamDefinitionIds: [createdTeam.createAgentTeamDefinition.id],
           includeDependencies: true,
@@ -279,40 +280,18 @@ describe("Node sync GraphQL endpoint e2e", () => {
       },
     });
 
-    const promptEntities = exported.exportSyncBundle.entities.prompt ?? [];
     const agentEntities = exported.exportSyncBundle.entities.agent_definition ?? [];
     const teamEntities = exported.exportSyncBundle.entities.agent_team_definition ?? [];
     const mcpEntities = exported.exportSyncBundle.entities.mcp_server_configuration ?? [];
 
-    expect(teamEntities.map((team) => team.name)).toEqual([createdTeam.createAgentTeamDefinition.name]);
-    expect(agentEntities.map((agent) => agent.name)).toContain(agentA.createAgentDefinition.name);
-    expect(agentEntities.map((agent) => agent.name)).not.toContain(agentB.createAgentDefinition.name);
-    expect(promptEntities.map((prompt) => prompt.name)).toContain(nameA);
-    expect(promptEntities.map((prompt) => prompt.name)).not.toContain(nameB);
+    expect(teamEntities.map((team) => team.teamId)).toEqual([createdTeam.createAgentTeamDefinition.id]);
+    expect(agentEntities.map((agent) => agent.agentId)).toContain(agentA.createAgentDefinition.id);
+    expect(agentEntities.map((agent) => agent.agentId)).not.toContain(agentB.createAgentDefinition.id);
     expect(mcpEntities).toHaveLength(0);
   });
 
   it("exports full scope when no selection is provided", async () => {
     const unique = uniqueId("sync_full");
-    const category = `cat_${unique}`;
-    const promptName = `Prompt_${unique}`;
-
-    const createPromptMutation = `
-      mutation CreatePrompt($input: CreatePromptInput!) {
-        createPrompt(input: $input) {
-          id
-          name
-          category
-        }
-      }
-    `;
-    await execGraphql(createPromptMutation, {
-      input: {
-        name: promptName,
-        category,
-        promptContent: "full sync prompt",
-      },
-    });
 
     const createAgentMutation = `
       mutation CreateAgentDefinition($input: CreateAgentDefinitionInput!) {
@@ -329,8 +308,8 @@ describe("Node sync GraphQL endpoint e2e", () => {
         name: `agent_${unique}`,
         role: "assistant",
         description: "full sync agent",
-        systemPromptCategory: category,
-        systemPromptName: promptName,
+        systemPromptCategory: "default",
+        systemPromptName: "default",
         toolNames: ["tool_alpha"],
       },
     });
@@ -374,46 +353,22 @@ describe("Node sync GraphQL endpoint e2e", () => {
       };
     }>(exportQuery, {
       input: {
-        scope: [
-          "PROMPT",
-          "AGENT_DEFINITION",
-          "AGENT_TEAM_DEFINITION",
-          "MCP_SERVER_CONFIGURATION",
-        ],
+        scope: ["AGENT_DEFINITION", "AGENT_TEAM_DEFINITION", "MCP_SERVER_CONFIGURATION"],
       },
     });
 
-    const prompts = exported.exportSyncBundle.entities.prompt ?? [];
     const agents = exported.exportSyncBundle.entities.agent_definition ?? [];
     const teams = exported.exportSyncBundle.entities.agent_team_definition ?? [];
     const mcps = exported.exportSyncBundle.entities.mcp_server_configuration ?? [];
 
-    expect(prompts.some((p) => p.name === promptName && p.category === category)).toBe(true);
-    expect(agents.some((a) => a.name === createdAgent.createAgentDefinition.name)).toBe(true);
-    expect(teams.some((t) => t.name === createdTeam.createAgentTeamDefinition.name)).toBe(true);
+    expect(agents.some((a) => a.agentId === createdAgent.createAgentDefinition.id)).toBe(true);
+    expect(teams.some((t) => t.teamId === createdTeam.createAgentTeamDefinition.id)).toBe(true);
     expect(Array.isArray(mcps)).toBe(true);
   });
 
   it("overwrites existing agent fields on sync import when conflictPolicy=SOURCE_WINS", async () => {
     const unique = uniqueId("sync_overwrite");
-    const category = `cat_${unique}`;
-    const promptName = `Prompt_${unique}`;
     const agentName = `agent_${unique}`;
-
-    const createPromptMutation = `
-      mutation CreatePrompt($input: CreatePromptInput!) {
-        createPrompt(input: $input) {
-          id
-        }
-      }
-    `;
-    await execGraphql(createPromptMutation, {
-      input: {
-        name: promptName,
-        category,
-        promptContent: "overwrite prompt",
-      },
-    });
 
     const createAgentMutation = `
       mutation CreateAgentDefinition($input: CreateAgentDefinitionInput!) {
@@ -437,8 +392,8 @@ describe("Node sync GraphQL endpoint e2e", () => {
         name: agentName,
         role: "assistant",
         description: "target-old-description",
-        systemPromptCategory: category,
-        systemPromptName: promptName,
+        systemPromptCategory: "default",
+        systemPromptName: "default",
         toolNames: ["tool_old"],
       },
     });
@@ -480,20 +435,25 @@ describe("Node sync GraphQL endpoint e2e", () => {
           entities: {
             agent_definition: [
               {
-                name: agentName,
-                role: "assistant",
-                description: "source-new-description",
-                avatarUrl: null,
-                systemPromptCategory: category,
-                systemPromptName: promptName,
-                toolNames: ["tool_old", "tool_new"],
-                inputProcessorNames: [],
-                llmResponseProcessorNames: [],
-                systemPromptProcessorNames: [],
-                toolExecutionResultProcessorNames: [],
-                toolInvocationPreprocessorNames: [],
-                lifecycleProcessorNames: [],
-                skillNames: [],
+                agentId: existingAgent.createAgentDefinition.id,
+                agent: {
+                  name: agentName,
+                  role: "assistant",
+                  description: "source-new-description",
+                  avatarUrl: null,
+                  activePromptVersion: 1,
+                  toolNames: ["tool_old", "tool_new"],
+                  inputProcessorNames: [],
+                  llmResponseProcessorNames: [],
+                  systemPromptProcessorNames: [],
+                  toolExecutionResultProcessorNames: [],
+                  toolInvocationPreprocessorNames: [],
+                  lifecycleProcessorNames: [],
+                  skillNames: [],
+                },
+                promptVersions: {
+                  "1": "overwrite prompt",
+                },
               },
             ],
           },
@@ -542,7 +502,7 @@ describe("Node sync GraphQL endpoint e2e", () => {
 
     const result = await runGraphql(exportQuery, {
       input: {
-        scope: ["PROMPT", "AGENT_DEFINITION"],
+        scope: ["AGENT_DEFINITION"],
         selection: {
           agentDefinitionIds: [uniqueId("missing_agent_id")],
           includeDependencies: true,

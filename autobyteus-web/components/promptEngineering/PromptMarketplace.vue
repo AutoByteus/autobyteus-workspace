@@ -323,7 +323,6 @@ interface Prompt {
   promptContent: string;
   version: number;
   createdAt: string;
-  parentPromptId?: string | null;
   isActive: boolean;
 }
 

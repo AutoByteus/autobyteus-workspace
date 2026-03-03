@@ -89,4 +89,11 @@ export class CachedAgentTeamDefinitionProvider {
     }
     return success;
   }
+
+  async refresh(): Promise<void> {
+    this.cache.clear();
+    this.cachePopulated = false;
+    this.populatePromise = null;
+    await this.ensureCachePopulated();
+  }
 }

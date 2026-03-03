@@ -13,7 +13,6 @@ interface GraphqlResponse<TData> {
 }
 
 type GraphqlSyncEntityType =
-  | 'PROMPT'
   | 'AGENT_DEFINITION'
   | 'AGENT_TEAM_DEFINITION'
   | 'MCP_SERVER_CONFIGURATION';
@@ -22,14 +21,12 @@ type GraphqlSyncConflictPolicy = 'SOURCE_WINS' | 'TARGET_WINS';
 type GraphqlSyncTombstonePolicy = 'SOURCE_DELETE_WINS';
 
 const ENTITY_TYPE_TO_GRAPHQL: Record<SyncEntityType, GraphqlSyncEntityType> = {
-  prompt: 'PROMPT',
   agent_definition: 'AGENT_DEFINITION',
   agent_team_definition: 'AGENT_TEAM_DEFINITION',
   mcp_server_configuration: 'MCP_SERVER_CONFIGURATION',
 };
 
 const ENTITY_TYPE_FROM_GRAPHQL: Record<GraphqlSyncEntityType, SyncEntityType> = {
-  PROMPT: 'prompt',
   AGENT_DEFINITION: 'agent_definition',
   AGENT_TEAM_DEFINITION: 'agent_team_definition',
   MCP_SERVER_CONFIGURATION: 'mcp_server_configuration',

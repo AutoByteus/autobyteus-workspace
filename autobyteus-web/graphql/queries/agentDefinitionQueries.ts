@@ -29,7 +29,6 @@ export const GetAgentDefinitions = gql`
         version
         createdAt
         updatedAt
-        parentPromptId
         isActive
       }
     }

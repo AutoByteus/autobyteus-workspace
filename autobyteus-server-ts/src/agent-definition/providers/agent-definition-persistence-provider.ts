@@ -1,46 +1,34 @@
-import { getPersistenceProfile } from "../../persistence/profile.js";
 import { AgentDefinition } from "../domain/models.js";
-import {
-  AgentDefinitionPersistenceProviderRegistry,
-  type AgentDefinitionPersistenceProviderContract,
-} from "./definition-persistence-provider-registry.js";
+import { FileAgentDefinitionProvider } from "./file-agent-definition-provider.js";
+
+export type AgentDefinitionPersistenceProviderContract = {
+  create(domainObj: AgentDefinition): Promise<AgentDefinition>;
+  getById(id: string): Promise<AgentDefinition | null>;
+  getAll(): Promise<AgentDefinition[]>;
+  update(domainObj: AgentDefinition): Promise<AgentDefinition>;
+  delete(id: string): Promise<boolean>;
+};
 
 export class AgentDefinitionPersistenceProvider {
-  private readonly registry = AgentDefinitionPersistenceProviderRegistry.getInstance();
-  private providerPromise: Promise<AgentDefinitionPersistenceProviderContract> | null = null;
-
-  private async getProvider(): Promise<AgentDefinitionPersistenceProviderContract> {
-    if (!this.providerPromise) {
-      const profile = getPersistenceProfile();
-      const loader = this.registry.getProviderLoader(profile);
-      if (!loader) {
-        const available = this.registry.getAvailableProviders().join(", ");
-        throw new Error(
-          `Unsupported agent-definition provider: ${profile}. Available providers: ${available}`,
-        );
-      }
-      this.providerPromise = loader();
-    }
-    return this.providerPromise;
-  }
+  private readonly provider: AgentDefinitionPersistenceProviderContract = new FileAgentDefinitionProvider();
 
   async create(domainObj: AgentDefinition): Promise<AgentDefinition> {
-    return (await this.getProvider()).create(domainObj);
+    return this.provider.create(domainObj);
   }
 
   async getById(objId: string): Promise<AgentDefinition | null> {
-    return (await this.getProvider()).getById(objId);
+    return this.provider.getById(objId);
   }
 
   async getAll(): Promise<AgentDefinition[]> {
-    return (await this.getProvider()).getAll();
+    return this.provider.getAll();
   }
 
   async update(domainObj: AgentDefinition): Promise<AgentDefinition> {
-    return (await this.getProvider()).update(domainObj);
+    return this.provider.update(domainObj);
   }
 
   async delete(objId: string): Promise<boolean> {
-    return (await this.getProvider()).delete(objId);
+    return this.provider.delete(objId);
   }
 }

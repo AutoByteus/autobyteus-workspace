@@ -1,22 +1,20 @@
 import { describe, expect, it, vi } from "vitest";
 import { McpServerPersistenceProvider } from "../../../src/mcp-server-management/providers/persistence-provider.js";
-import { SqlMcpServerConfigProvider } from "../../../src/mcp-server-management/providers/sql-provider.js";
+import { FileMcpServerConfigProvider } from "../../../src/mcp-server-management/providers/file-provider.js";
 import { StdioMcpServerConfig } from "autobyteus-ts/tools/mcp/types.js";
 
 describe("McpServerPersistenceProvider", () => {
-  it("uses SqlMcpServerConfigProvider for the sqlite profile", async () => {
-    process.env.PERSISTENCE_PROVIDER = "sqlite";
+  it("uses FileMcpServerConfigProvider", async () => {
     const proxy = new McpServerPersistenceProvider();
     const getAllSpy = vi
-      .spyOn(SqlMcpServerConfigProvider.prototype, "getAll")
+      .spyOn(FileMcpServerConfigProvider.prototype, "getAll")
       .mockResolvedValue([]);
 
     await proxy.getAll();
     expect(getAllSpy).toHaveBeenCalledOnce();
   });
 
-  it("delegates calls to the SQL provider", async () => {
-    process.env.PERSISTENCE_PROVIDER = "sqlite";
+  it("delegates calls to the file provider", async () => {
     const proxy = new McpServerPersistenceProvider();
 
     const sampleConfig = new StdioMcpServerConfig({
@@ -25,19 +23,19 @@ describe("McpServerPersistenceProvider", () => {
     });
 
     const createSpy = vi
-      .spyOn(SqlMcpServerConfigProvider.prototype, "create")
+      .spyOn(FileMcpServerConfigProvider.prototype, "create")
       .mockResolvedValue(sampleConfig);
     const updateSpy = vi
-      .spyOn(SqlMcpServerConfigProvider.prototype, "update")
+      .spyOn(FileMcpServerConfigProvider.prototype, "update")
       .mockResolvedValue(sampleConfig);
     const getSpy = vi
-      .spyOn(SqlMcpServerConfigProvider.prototype, "getByServerId")
+      .spyOn(FileMcpServerConfigProvider.prototype, "getByServerId")
       .mockResolvedValue(sampleConfig);
     const deleteSpy = vi
-      .spyOn(SqlMcpServerConfigProvider.prototype, "deleteByServerId")
+      .spyOn(FileMcpServerConfigProvider.prototype, "deleteByServerId")
       .mockResolvedValue(true);
     const getAllSpy = vi
-      .spyOn(SqlMcpServerConfigProvider.prototype, "getAll")
+      .spyOn(FileMcpServerConfigProvider.prototype, "getAll")
       .mockResolvedValue([sampleConfig]);
 
     await proxy.create(sampleConfig);
