@@ -776,6 +776,92 @@ describeClaudeRuntime("Claude runtime GraphQL e2e (live transport)", () => {
     180_000,
   );
 
+  it(
+    "keeps default temp workspace isolated from the server worktree git root",
+    async () => {
+      const modelIdentifier = await fetchClaudeModelIdentifier();
+      let runId: string | null = null;
+      const expectedTempWorkspaceRoot = path.join(os.tmpdir(), "autobyteus", "temp_workspace");
+
+      const continueMutation = `
+        mutation ContinueRun($input: ContinueRunInput!) {
+          continueRun(input: $input) {
+            success
+            message
+            runId
+          }
+        }
+      `;
+
+      const probeIsolation = async (targetRunId: string): Promise<string> => {
+        const attemptOutputs: string[] = [];
+        const probeCommand =
+          "pwd; git rev-parse --show-toplevel >/dev/null 2>&1 || echo __NO_GIT_REPO__";
+
+        for (let attempt = 1; attempt <= 3; attempt += 1) {
+          const probePrompt = [
+            `Call run_bash exactly once with this command: ${probeCommand}`,
+            "Do not run any other command.",
+            "Return only the command output with no extra words.",
+            `Probe attempt ${attempt}.`,
+          ].join("\n");
+
+          const probeTurn = await captureSingleWebsocketTurn({
+            runId: targetRunId,
+            prompt: probePrompt,
+          });
+          expect(probeTurn.errorCodes).toEqual([]);
+          const output = probeTurn.assistantOutputFragments.join("\n");
+          attemptOutputs.push(output);
+
+          if (output.includes(expectedTempWorkspaceRoot) && output.includes("__NO_GIT_REPO__")) {
+            return output;
+          }
+        }
+
+        throw new Error(
+          `Default temp workspace isolation probe failed. outputs=${JSON.stringify(
+            attemptOutputs,
+          )} expectedTempWorkspaceRoot=${expectedTempWorkspaceRoot}`,
+        );
+      };
+
+      try {
+        const createResult = await execGraphql<{
+          continueRun: {
+            success: boolean;
+            message: string;
+            runId: string | null;
+          };
+        }>(continueMutation, {
+          input: {
+            runtimeKind: "claude_agent_sdk",
+            agentDefinitionId: "claude-e2e-agent-def",
+            workspaceId: "temp_ws_default",
+            llmModelIdentifier: modelIdentifier,
+            userInput: {
+              content: "Reply with READY.",
+            },
+          },
+        });
+        expect(createResult.continueRun.success).toBe(true);
+        expect(createResult.continueRun.runId).toBeTruthy();
+        runId = createResult.continueRun.runId;
+
+        await probeIsolation(runId as string);
+      } finally {
+        if (runId) {
+          try {
+            await terminateRun(runId);
+          } catch {
+            // best-effort cleanup
+          }
+        }
+      }
+    },
+    180_000,
+  );
+
   it("returns non-empty run projection conversation for completed Claude runs", async () => {
     const modelIdentifier = await fetchClaudeModelIdentifier();
     const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "claude-history-projection-e2e-"));
