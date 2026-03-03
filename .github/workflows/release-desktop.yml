@@ -219,6 +219,48 @@ jobs:
             autobyteus-web/electron-dist/latest-linux.yml
           if-no-files-found: error
 
+  build-windows:
+    name: Build Windows x64
+    runs-on: windows-2022
+    steps:
+      - name: Checkout workspace + submodules
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.2
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install workspace dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Install Python setuptools for node-gyp
+        run: python -m pip install --user --upgrade setuptools
+
+      - name: Build Electron Windows x64
+        working-directory: autobyteus-web
+        env:
+          AUTOBYTEUS_BUILD_FLAVOR: "personal"
+        run: pnpm build:electron:windows
+
+      - name: Upload Windows artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-x64
+          path: |
+            autobyteus-web/electron-dist/*windows-*.exe
+            autobyteus-web/electron-dist/latest.yml
+          if-no-files-found: error
+
   publish-release:
     name: Publish GitHub Release
     if: >
@@ -230,6 +272,7 @@ jobs:
       - build-macos-arm64
       - build-macos-x64
       - build-linux
+      - build-windows
     runs-on: ubuntu-latest
     steps:
       - name: Resolve release metadata
@@ -265,6 +308,8 @@ jobs:
             release-artifacts/**/*.dmg.blockmap
             release-artifacts/**/*.zip
             release-artifacts/**/*.zip.blockmap
+            release-artifacts/**/*.exe
             release-artifacts/**/*.AppImage
             release-artifacts/**/*.AppImage.blockmap
             release-artifacts/**/latest-*.yml
+            release-artifacts/**/latest.yml

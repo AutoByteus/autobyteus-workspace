@@ -10,6 +10,6 @@ export enum LLMProvider {
   KIMI = "KIMI",
   QWEN = "QWEN",
   LMSTUDIO = "LMSTUDIO",
-  ZHIPU = "ZHIPU",
+  GLM = "GLM",
   MINIMAX = "MINIMAX",
 }

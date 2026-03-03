@@ -7,7 +7,7 @@ import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
 import { MemoryType } from '../../../src/memory/models/memory-types.js';
 import { RawTraceItem } from '../../../src/memory/models/raw-trace-item.js';
 import { LLMUserMessage } from '../../../src/llm/user-message.js';
-import { MessageRole } from '../../../src/llm/utils/messages.js';
+import { MessageRole, ToolCallPayload } from '../../../src/llm/utils/messages.js';
 import { ToolResultEvent } from '../../../src/agent/events/agent-events.js';
 import { ToolInvocation } from '../../../src/agent/tool-invocation.js';
 import { ToolInteractionStatus } from '../../../src/memory/models/tool-interaction.js';
@@ -90,6 +90,56 @@ describe('MemoryManager', () => {
       expect(interactions).toHaveLength(1);
       expect(interactions[0].toolName).toBe('read_file');
       expect(interactions[0].status).toBe(ToolInteractionStatus.SUCCESS);
+    } finally {
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('groups multiple tool intents into one assistant tool-call message', () => {
+    const tempDir = makeTempDir();
+    try {
+      const store = new FileMemoryStore(tempDir, 'agent_mem_grouped_tool_calls');
+      const manager = new MemoryManager({ store });
+      const turnId = manager.startTurn();
+
+      const first = new ToolInvocation('write_file', { path: 'a.txt' }, 'call_1', turnId);
+      const second = new ToolInvocation('read_file', { path: 'b.txt' }, 'call_2', turnId);
+      manager.ingestToolIntents([first, second], turnId);
+
+      const snapshot = manager.getWorkingContextMessages();
+      expect(snapshot).toHaveLength(1);
+      expect(snapshot[0].role).toBe(MessageRole.ASSISTANT);
+      expect(snapshot[0].tool_payload).toBeInstanceOf(ToolCallPayload);
+      const payload = snapshot[0].tool_payload as ToolCallPayload;
+      expect(payload.toolCalls.map((call) => call.id)).toEqual(['call_1', 'call_2']);
+
+      const rawItems = store.list(MemoryType.RAW_TRACE);
+      expect(rawItems.filter((item) => item.traceType === 'tool_call')).toHaveLength(2);
+    } finally {
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it('can skip appending assistant response to working context snapshot', () => {
+    const tempDir = makeTempDir();
+    try {
+      const store = new FileMemoryStore(tempDir, 'agent_mem_skip_assistant_append');
+      const manager = new MemoryManager({ store });
+      const turnId = manager.startTurn();
+
+      manager.ingestAssistantResponse(
+        { content: 'tool planning text', reasoning: null } as any,
+        turnId,
+        'LLMCompleteResponseReceivedEvent',
+        { appendToWorkingContext: false }
+      );
+
+      expect(manager.getWorkingContextMessages()).toHaveLength(0);
+
+      const rawItems = store.list(MemoryType.RAW_TRACE);
+      expect(rawItems).toHaveLength(1);
+      expect(rawItems[0].traceType).toBe('assistant');
+      expect(rawItems[0].content).toBe('tool planning text');
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }

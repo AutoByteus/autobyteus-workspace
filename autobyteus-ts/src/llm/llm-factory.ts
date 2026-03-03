@@ -13,7 +13,7 @@ import { DeepSeekLLM } from './api/deepseek-llm.js';
 import { GeminiLLM } from './api/gemini-llm.js';
 import { KimiLLM } from './api/kimi-llm.js';
 import { QwenLLM } from './api/qwen-llm.js';
-import { ZhipuLLM } from './api/zhipu-llm.js';
+import { GlmLLM } from './api/glm-llm.js';
 import { MinimaxLLM } from './api/minimax-llm.js';
 
 import { OllamaModelProvider } from './ollama-provider.js';
@@ -78,7 +78,7 @@ const geminiSchema = new ParameterSchema([
   })
 ]);
 
-const zhipuSchema = new ParameterSchema([
+const glmSchema = new ParameterSchema([
   new ParameterDefinition({
     name: 'thinking_type',
     type: ParameterType.ENUM,
@@ -246,28 +246,12 @@ export class LLMFactory {
         configSchema: geminiSchema
       }),
       new LLMModel({
-        name: 'kimi-k2-0711-preview',
-        value: 'kimi-k2-0711-preview',
+        name: 'kimi-k2.5',
+        value: 'kimi-k2.5',
         provider: LLMProvider.KIMI,
         llmClass: KimiLLM,
-        canonicalName: 'kimi-k2-0711-preview',
-        defaultConfig: new LLMConfig({ pricingConfig: pricing(0.55, 2.21) })
-      }),
-      new LLMModel({
-        name: 'kimi-k2-0905-preview',
-        value: 'kimi-k2-0905-preview',
-        provider: LLMProvider.KIMI,
-        llmClass: KimiLLM,
-        canonicalName: 'kimi-k2-0905-preview',
-        defaultConfig: new LLMConfig({ pricingConfig: pricing(0.55, 2.21) })
-      }),
-      new LLMModel({
-        name: 'kimi-k2-turbo-preview',
-        value: 'kimi-k2-turbo-preview',
-        provider: LLMProvider.KIMI,
-        llmClass: KimiLLM,
-        canonicalName: 'kimi-k2-turbo-preview',
-        defaultConfig: new LLMConfig({ pricingConfig: pricing(2.76, 2.76) })
+        canonicalName: 'kimi-k2.5',
+        defaultConfig: new LLMConfig({ pricingConfig: pricing(1.38, 4.14) })
       }),
       new LLMModel({
         name: 'kimi-latest',
@@ -278,11 +262,19 @@ export class LLMFactory {
         defaultConfig: new LLMConfig({ pricingConfig: pricing(1.38, 4.14) })
       }),
       new LLMModel({
-        name: 'kimi-thinking-preview',
-        value: 'kimi-thinking-preview',
+        name: 'kimi-k2-thinking',
+        value: 'kimi-k2-thinking',
         provider: LLMProvider.KIMI,
         llmClass: KimiLLM,
-        canonicalName: 'kimi-thinking-preview',
+        canonicalName: 'kimi-k2-thinking',
+        defaultConfig: new LLMConfig({ pricingConfig: pricing(27.59, 27.59) })
+      }),
+      new LLMModel({
+        name: 'kimi-k2-thinking-turbo',
+        value: 'kimi-k2-thinking-turbo',
+        provider: LLMProvider.KIMI,
+        llmClass: KimiLLM,
+        canonicalName: 'kimi-k2-thinking-turbo',
         defaultConfig: new LLMConfig({ pricingConfig: pricing(27.59, 27.59) })
       }),
       new LLMModel({
@@ -297,13 +289,13 @@ export class LLMFactory {
         })
       }),
       new LLMModel({
-        name: 'glm-4.7',
-        value: 'glm-4.7',
-        provider: LLMProvider.ZHIPU,
-        llmClass: ZhipuLLM,
-        canonicalName: 'glm-4.7',
+        name: 'glm-5',
+        value: 'glm-5',
+        provider: LLMProvider.GLM,
+        llmClass: GlmLLM,
+        canonicalName: 'glm-5',
         defaultConfig: new LLMConfig({ pricingConfig: pricing(13.8, 13.8) }),
-        configSchema: zhipuSchema
+        configSchema: glmSchema
       }),
       new LLMModel({
         name: 'minimax-m2.1',
