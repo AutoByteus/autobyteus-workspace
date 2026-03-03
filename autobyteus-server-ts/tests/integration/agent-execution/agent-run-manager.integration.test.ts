@@ -117,8 +117,10 @@ const registerDummyTool = () => {
 
 const createManager = (overrides: Partial<ConstructorParameters<typeof AgentRunManager>[0]> = {}) => {
   const fakeAgent = { agentId: "agent_123", start: vi.fn() };
+  const restoredAgent = { agentId: "restored_123", start: vi.fn() };
   const agentFactory = {
     createAgent: vi.fn().mockReturnValue(fakeAgent),
+    restoreAgent: vi.fn().mockReturnValue(restoredAgent),
     getAgent: vi.fn().mockReturnValue(fakeAgent),
     removeAgent: vi.fn().mockResolvedValue(true),
     listActiveAgentIds: vi.fn().mockReturnValue(["agent_123"]),
@@ -436,5 +438,56 @@ describe("AgentRunManager integration", () => {
 
     expect(createdId).toBe("agent_123");
     expect(llmFactory.createLLM).toHaveBeenCalledWith("gpt-4", undefined);
+  });
+
+  it("does not force explicit memoryDir on newly created single-agent runs", async () => {
+    const { manager, agentDefinitionService, agentFactory } = createManager();
+    const agentDef = new AgentDefinition({
+      id: "def_1",
+      name: "MemoryScopedAgent",
+      role: "Worker",
+      description: "Checks memory layout wiring",
+    });
+
+    agentDefinitionService.getAgentDefinitionById.mockResolvedValue(agentDef);
+
+    const createdId = await manager.createAgentRun({
+      agentDefinitionId: "def_1",
+      llmModelIdentifier: "gpt-4",
+      autoExecuteTools: true,
+    });
+
+    expect(createdId).toBe("agent_123");
+    const createdConfig = agentFactory.createAgent.mock.calls[0][0] as { memoryDir?: string | null };
+    expect(createdConfig.memoryDir).toBeUndefined();
+  });
+
+  it("restores single-agent runs without explicit memory root override", async () => {
+    const { manager, agentDefinitionService, agentFactory } = createManager();
+    const agentDef = new AgentDefinition({
+      id: "def_1",
+      name: "MemoryScopedAgent",
+      role: "Worker",
+      description: "Checks memory layout wiring",
+    });
+
+    agentDefinitionService.getAgentDefinitionById.mockResolvedValue(agentDef);
+
+    const restoredRunId = await manager.restoreAgentRun({
+      runId: "run-restore-1",
+      agentDefinitionId: "def_1",
+      llmModelIdentifier: "gpt-4",
+      autoExecuteTools: true,
+    });
+
+    expect(restoredRunId).toBe("restored_123");
+    expect(agentFactory.restoreAgent).toHaveBeenCalledWith(
+      "run-restore-1",
+      expect.any(Object),
+      null,
+    );
+
+    const restoredConfig = agentFactory.restoreAgent.mock.calls[0][1] as { memoryDir?: string | null };
+    expect(restoredConfig.memoryDir).toBeUndefined();
   });
 });

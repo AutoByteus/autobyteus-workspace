@@ -170,6 +170,37 @@ describe("Run history GraphQL e2e", () => {
     };
   };
 
+  const seedRunScopedConversation = async (runId: string): Promise<void> => {
+    const memoryDir = appConfigProvider.config.getMemoryDir();
+    const runDir = path.join(memoryDir, "agents", runId);
+    await fs.mkdir(runDir, { recursive: true });
+    const traces = [
+      {
+        id: "trace-user-1",
+        ts: 1772526528.006,
+        turn_id: "turn_0001",
+        seq: 1,
+        trace_type: "user",
+        content: "hello from persisted run scope",
+        source_event: "LLMUserMessageReadyEvent",
+      },
+      {
+        id: "trace-assistant-1",
+        ts: 1772526557.906,
+        turn_id: "turn_0001",
+        seq: 2,
+        trace_type: "assistant",
+        content: "persisted response from run scope",
+        source_event: "LLMCompleteResponseReceivedEvent",
+      },
+    ];
+    await fs.writeFile(
+      path.join(runDir, "raw_traces.jsonl"),
+      `${traces.map((entry) => JSON.stringify(entry)).join("\n")}\n`,
+      "utf-8",
+    );
+  };
+
   it("lists seeded run history, returns resume config, and deletes run history", async () => {
     const { runId, expectedWorkspaceRootPath, manifest } = await seedRunHistory();
 
@@ -285,6 +316,30 @@ describe("Run history GraphQL e2e", () => {
 
     expect(projectionResult.getRunProjection.runId).toBe(runId);
     expect(Array.isArray(projectionResult.getRunProjection.conversation)).toBe(true);
+  });
+
+  it("returns non-empty projection for inactive runs when run-scoped traces exist", async () => {
+    const { runId } = await seedRunHistory();
+    await seedRunScopedConversation(runId);
+
+    const projectionResult = await execGraphql<{
+      getRunProjection: {
+        runId: string;
+        conversation: Array<Record<string, unknown>>;
+      };
+    }>(getRunProjectionQuery, { runId });
+
+    expect(projectionResult.getRunProjection.runId).toBe(runId);
+    expect(projectionResult.getRunProjection.conversation.length).toBeGreaterThan(0);
+    expect(
+      projectionResult.getRunProjection.conversation.some(
+        (entry) =>
+          entry.kind === "message" &&
+          entry.role === "user" &&
+          typeof entry.content === "string" &&
+          entry.content.includes("persisted run scope"),
+      ),
+    ).toBe(true);
   });
 
   it("returns a structured failure payload when continueRun references a missing manifest", async () => {

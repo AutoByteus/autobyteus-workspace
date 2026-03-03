@@ -29,7 +29,6 @@ import { SkillService } from "../../skills/services/skill-service.js";
 import { TempWorkspace } from "../../workspaces/temp-workspace.js";
 import { WorkspaceManager, getWorkspaceManager } from "../../workspaces/workspace-manager.js";
 import { AgentCreationError, AgentTerminationError } from "../errors.js";
-import { appConfigProvider } from "../../config/app-config-provider.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -154,7 +153,7 @@ export class AgentRunManager {
     const agent = this.agentFactory.restoreAgent(
       options.runId,
       built.agentConfig,
-      appConfigProvider.config.getMemoryDir(),
+      null,
     ) as AgentLike & { start?: () => void };
     agent.start?.();
     await this.waitForIdle(agent as Agent);
@@ -375,7 +374,7 @@ export class AgentRunManager {
         lifecycleProcessors,
         initialCustomData,
         skillPaths,
-        appConfigProvider.config.getMemoryDir(),
+        null,
         skillAccessMode ?? null,
       ),
     };
