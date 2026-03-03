@@ -72,3 +72,40 @@
 - No backward-compatibility dead paths introduced: `Pass` (compat wrappers remain intentional and thin)
 - No legacy retention in new integration path: `Pass`
 - Codex-vs-Claude live E2E parity gate: `Pass` (`13` Codex tests == `13` Claude tests)
+
+## Re-Review Round (2026-03-03)
+
+- Scope:
+  - `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.ts`
+  - `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-runtime-transcript-store.ts`
+  - `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-runtime-turn-scheduler.ts`
+  - `autobyteus-server-ts/tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts`
+- Review focus:
+  - Layering and separation of concerns inside Claude runtime execution path
+  - Runtime event payload completeness for downstream run-history projection
+  - E2E run-history validation depth for terminate/continue lifecycle
+
+### Findings
+
+1. `Resolved`: transcript persistence/merge logic was embedded in the runtime orchestrator service.
+   - Change: extracted to dedicated transcript layer.
+   - Files:
+     - `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-runtime-transcript-store.ts`
+     - `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.ts`
+2. `Resolved`: turn scheduling policy and run-level idle waiting were embedded in service flow control.
+   - Change: extracted to dedicated scheduler layer.
+   - Files:
+     - `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-runtime-turn-scheduler.ts`
+     - `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.ts`
+3. `Resolved`: Claude runtime event payloads lacked `sessionId` on core turn/text events, weakening run-history runtime-reference updates.
+   - Change: added `sessionId` to `turn/started`, `item/outputText/delta`, `item/outputText/completed`, `turn/completed`.
+   - File:
+     - `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.ts`
+4. `Resolved`: no integrated Claude live E2E that validates history growth through terminate and continue lifecycle.
+   - Change: added/validated history-focused live scenario.
+   - File:
+     - `autobyteus-server-ts/tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts`
+
+### Decision
+
+- `Pass with residual size risk`: runtime service effective non-empty lines reduced to ~570 with explicit split boundaries for transcript and scheduling concerns, but still above 500; further split candidates remain (listener hub / session lifecycle coordinator) for future reduction.

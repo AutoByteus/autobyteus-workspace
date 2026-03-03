@@ -538,6 +538,29 @@ describe("ClaudeAgentSdkRuntimeService", () => {
     expect(messages).toEqual([{ role: "assistant", content: "from-sdk" }]);
   });
 
+  it("merges SDK and local transcript session messages", async () => {
+    const getSessionMessages = vi
+      .fn()
+      .mockResolvedValue({ messages: [{ role: "assistant", content: "from-sdk" }] });
+    const service = new ClaudeAgentSdkRuntimeService() as ClaudeAgentSdkRuntimeService & {
+      cachedSdkModule: unknown;
+      transcriptStore: {
+        appendMessage: (sessionId: string, message: Record<string, unknown>) => void;
+      };
+    };
+    service.cachedSdkModule = { getSessionMessages };
+    service.transcriptStore.appendMessage("session-merge", {
+      role: "user",
+      content: "from-local",
+    });
+
+    const messages = await service.getSessionMessages("session-merge");
+    expect(messages).toEqual([
+      { role: "assistant", content: "from-sdk" },
+      { role: "user", content: "from-local" },
+    ]);
+  });
+
   it("resolves workspace path from workspace manager when available", async () => {
     const service = new ClaudeAgentSdkRuntimeService() as ClaudeAgentSdkRuntimeService & {
       workspaceManager: {

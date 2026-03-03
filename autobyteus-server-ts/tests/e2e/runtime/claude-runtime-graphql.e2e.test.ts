@@ -738,6 +738,301 @@ describeClaudeRuntime("Claude runtime GraphQL e2e (live transport)", () => {
     }
   }, 120_000);
 
+  it("retains two streamed turns in Claude run projection after terminate", async () => {
+    const modelIdentifier = await fetchClaudeModelIdentifier();
+    const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "claude-two-turn-history-e2e-"));
+    const turnOneMarker = `claude-history-turn-one-${randomUUID()}`;
+    const turnTwoMarker = `claude-history-turn-two-${randomUUID()}`;
+    let runId: string | null = null;
+
+    const projectionQuery = `
+      query Projection($runId: String!) {
+        getRunProjection(runId: $runId) {
+          runId
+          conversation
+        }
+      }
+    `;
+
+    try {
+      runId = await createClaudeRun({
+        modelIdentifier,
+        workspaceRootPath,
+        prompt: "Reply with READY for bootstrap turn.",
+      });
+
+      // Ensure the bootstrap turn has completed before sending websocket turns.
+      const bootstrapDeadline = Date.now() + 45_000;
+      let bootstrapConversation: Array<Record<string, unknown>> = [];
+      while (Date.now() < bootstrapDeadline) {
+        const projection = await execGraphql<{
+          getRunProjection: {
+            runId: string;
+            conversation: Array<Record<string, unknown>>;
+          };
+        }>(projectionQuery, { runId });
+        bootstrapConversation = projection.getRunProjection.conversation ?? [];
+        const hasAssistantMessage = bootstrapConversation.some((entry) => {
+          if (!entry || typeof entry !== "object") {
+            return false;
+          }
+          const role = (entry as Record<string, unknown>).role;
+          return role === "assistant";
+        });
+        if (hasAssistantMessage) {
+          break;
+        }
+        await wait(1_500);
+      }
+      expect(bootstrapConversation.length).toBeGreaterThan(0);
+
+      const turnOneCapture = await captureSingleWebsocketTurn({
+        runId,
+        prompt: `Reply with EXACT token ${turnOneMarker}.`,
+      });
+      expect(turnOneCapture.sawRunningAfterPrompt).toBe(true);
+      expect(turnOneCapture.sawIdleAfterPrompt).toBe(true);
+      expect(turnOneCapture.errorCodes).not.toContain("CLAUDE_RUNTIME_TURN_FAILED");
+      expect(turnOneCapture.assistantOutputFragments.join("").trim().length).toBeGreaterThan(0);
+
+      const turnTwoCapture = await captureSingleWebsocketTurn({
+        runId,
+        prompt: `Reply with EXACT token ${turnTwoMarker}.`,
+      });
+      expect(turnTwoCapture.sawRunningAfterPrompt).toBe(true);
+      expect(turnTwoCapture.sawIdleAfterPrompt).toBe(true);
+      expect(turnTwoCapture.errorCodes).not.toContain("CLAUDE_RUNTIME_TURN_FAILED");
+      expect(turnTwoCapture.assistantOutputFragments.join("").trim().length).toBeGreaterThan(0);
+
+      await terminateRun(runId);
+
+      const projectionDeadline = Date.now() + 45_000;
+      let projectionConversation: Array<Record<string, unknown>> = [];
+      let serializedConversation = "";
+
+      while (Date.now() < projectionDeadline) {
+        const projection = await execGraphql<{
+          getRunProjection: {
+            runId: string;
+            conversation: Array<Record<string, unknown>>;
+          };
+        }>(projectionQuery, { runId });
+
+        projectionConversation = projection.getRunProjection.conversation ?? [];
+        serializedConversation = projectionConversation.map((entry) => JSON.stringify(entry)).join("\n");
+
+        if (
+          serializedConversation.includes(turnOneMarker) &&
+          serializedConversation.includes(turnTwoMarker)
+        ) {
+          break;
+        }
+        await wait(1_500);
+      }
+
+      expect(projectionConversation.length).toBeGreaterThan(0);
+      expect(serializedConversation).toContain(turnOneMarker);
+      expect(serializedConversation).toContain(turnTwoMarker);
+
+      const userEntriesWithMarkers = projectionConversation.filter((entry) => {
+        if (!entry || typeof entry !== "object") {
+          return false;
+        }
+        const role = (entry as Record<string, unknown>).role;
+        const serialized = JSON.stringify(entry);
+        return role === "user" && (serialized.includes(turnOneMarker) || serialized.includes(turnTwoMarker));
+      });
+      expect(userEntriesWithMarkers.length).toBeGreaterThanOrEqual(2);
+    } finally {
+      if (runId) {
+        try {
+          await terminateRun(runId);
+        } catch {
+          // best-effort cleanup
+        }
+      }
+      await rm(workspaceRootPath, { recursive: true, force: true });
+    }
+  }, 180_000);
+
+  it("retains two-turn history and grows it after continue", async () => {
+    const modelIdentifier = await fetchClaudeModelIdentifier();
+    const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "claude-history-continue-e2e-"));
+    let runId: string | null = null;
+
+    const projectionQuery = `
+      query Projection($runId: String!) {
+        getRunProjection(runId: $runId) {
+          runId
+          conversation
+        }
+      }
+    `;
+
+    const continueMutation = `
+      mutation ContinueRun($input: ContinueRunInput!) {
+        continueRun(input: $input) {
+          success
+          message
+          runId
+        }
+      }
+    `;
+
+    const roleCounts = (conversation: Array<Record<string, unknown>>): { user: number; assistant: number } => {
+      let user = 0;
+      let assistant = 0;
+      for (const entry of conversation) {
+        if (!entry || typeof entry !== "object") {
+          continue;
+        }
+        const role = (entry as Record<string, unknown>).role;
+        if (role === "user") {
+          user += 1;
+          continue;
+        }
+        if (role === "assistant") {
+          assistant += 1;
+        }
+      }
+      return { user, assistant };
+    };
+
+    const waitForMinimumRoleCounts = async (
+      minimumUserCount: number,
+      minimumAssistantCount: number,
+      timeoutMs = 60_000,
+    ): Promise<{ user: number; assistant: number }> => {
+      const deadline = Date.now() + timeoutMs;
+      let lastUserCount = 0;
+      let lastAssistantCount = 0;
+
+      while (Date.now() < deadline) {
+        if (!runId) {
+          throw new Error("Run ID is required before polling run projection.");
+        }
+        const projection = await execGraphql<{
+          getRunProjection: {
+            runId: string;
+            conversation: Array<Record<string, unknown>>;
+          };
+        }>(projectionQuery, { runId });
+        const counts = roleCounts(projection.getRunProjection.conversation ?? []);
+        lastUserCount = counts.user;
+        lastAssistantCount = counts.assistant;
+        if (lastUserCount >= minimumUserCount && lastAssistantCount >= minimumAssistantCount) {
+          return counts;
+        }
+        await wait(1_500);
+      }
+
+      throw new Error(
+        `Timed out waiting for run projection counts. expected user>=${minimumUserCount},assistant>=${minimumAssistantCount}; got user=${lastUserCount},assistant=${lastAssistantCount}`,
+      );
+    };
+
+    try {
+      runId = await createClaudeRun({
+        modelIdentifier,
+        workspaceRootPath,
+        prompt: "Reply with READY for bootstrap turn.",
+      });
+      await waitForMinimumRoleCounts(1, 0, 45_000);
+
+      const turnOneContinueResult = await execGraphql<{
+        continueRun: {
+          success: boolean;
+          message: string;
+          runId: string | null;
+        };
+      }>(continueMutation, {
+        input: {
+          runId,
+          userInput: {
+            content: "Reply with READY for history turn one.",
+          },
+        },
+      });
+      expect(turnOneContinueResult.continueRun.success).toBe(true);
+      expect(turnOneContinueResult.continueRun.runId).toBe(runId);
+      await waitForMinimumRoleCounts(2, 1, 60_000);
+
+      const turnTwoContinueResult = await execGraphql<{
+        continueRun: {
+          success: boolean;
+          message: string;
+          runId: string | null;
+        };
+      }>(continueMutation, {
+        input: {
+          runId,
+          userInput: {
+            content: "Reply with READY for history turn two.",
+          },
+        },
+      });
+      expect(turnTwoContinueResult.continueRun.success).toBe(true);
+      expect(turnTwoContinueResult.continueRun.runId).toBe(runId);
+
+      const beforeTerminateCounts = await waitForMinimumRoleCounts(3, 2, 60_000);
+      await terminateRun(runId);
+
+      const beforeUserCount = beforeTerminateCounts.user;
+      const beforeAssistantCount = beforeTerminateCounts.assistant;
+      const beforeTotalCount = beforeUserCount + beforeAssistantCount;
+      expect(beforeTotalCount).toBeGreaterThanOrEqual(5);
+
+      const postTerminateCounts = await waitForMinimumRoleCounts(beforeUserCount, beforeAssistantCount, 45_000);
+      const postTerminateTotalCount = postTerminateCounts.user + postTerminateCounts.assistant;
+      expect(postTerminateCounts.user).toBeGreaterThanOrEqual(3);
+      expect(postTerminateCounts.assistant).toBeGreaterThanOrEqual(2);
+      expect(postTerminateTotalCount).toBeGreaterThanOrEqual(4);
+
+      const continueResult = await execGraphql<{
+        continueRun: {
+          success: boolean;
+          message: string;
+          runId: string | null;
+        };
+      }>(continueMutation, {
+        input: {
+          runId,
+          userInput: {
+            content: "Reply with READY from continueRun mutation.",
+          },
+        },
+      });
+      expect(continueResult.continueRun.success).toBe(true);
+      expect(continueResult.continueRun.runId).toBe(runId);
+
+      const afterContinueCounts = await waitForMinimumRoleCounts(beforeUserCount + 1, beforeAssistantCount, 60_000);
+
+      expect(afterContinueCounts.user).toBeGreaterThanOrEqual(beforeUserCount + 1);
+      expect(afterContinueCounts.assistant).toBeGreaterThanOrEqual(beforeAssistantCount);
+      expect(afterContinueCounts.user + afterContinueCounts.assistant).toBeGreaterThanOrEqual(beforeTotalCount + 1);
+
+      await terminateRun(runId);
+
+      const finalCounts = await waitForMinimumRoleCounts(
+        afterContinueCounts.user,
+        afterContinueCounts.assistant,
+        45_000,
+      );
+
+      expect(finalCounts.user).toBeGreaterThanOrEqual(afterContinueCounts.user);
+      expect(finalCounts.assistant).toBeGreaterThanOrEqual(afterContinueCounts.assistant);
+    } finally {
+      if (runId) {
+        try {
+          await terminateRun(runId);
+        } catch {
+          // best-effort cleanup
+        }
+      }
+      await rm(workspaceRootPath, { recursive: true, force: true });
+    }
+  }, 240_000);
+
   it("streams Claude AGENT_STATUS transitions over websocket for a live turn", async () => {
     const modelIdentifier = await fetchClaudeModelIdentifier();
     let runId: string | null = null;

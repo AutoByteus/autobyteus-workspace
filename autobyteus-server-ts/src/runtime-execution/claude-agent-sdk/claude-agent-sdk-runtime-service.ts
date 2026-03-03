@@ -31,6 +31,8 @@ import {
 } from "./claude-runtime-sdk-interop.js";
 import { createClaudeRunSessionState } from "./claude-runtime-session-state.js";
 import { buildClaudeTeamMcpServers } from "./claude-send-message-tooling.js";
+import { ClaudeRuntimeTranscriptStore } from "./claude-runtime-transcript-store.js";
+import { ClaudeRuntimeTurnScheduler } from "./claude-runtime-turn-scheduler.js";
 import {
   configureClaudeV2DynamicMcpServers,
   createOrResumeClaudeV2Session,
@@ -55,13 +57,12 @@ export type {
 export class ClaudeAgentSdkRuntimeService {
   private readonly sessions = new Map<string, ClaudeRunSessionState>();
   private readonly workspaceManager = getWorkspaceManager();
-  private readonly sessionMessagesBySessionId = new Map<string, Array<Record<string, unknown>>>();
+  private readonly transcriptStore = new ClaudeRuntimeTranscriptStore();
+  private readonly turnScheduler = new ClaudeRuntimeTurnScheduler();
   private readonly deferredListenersByRunId = new Map<
     string,
     Set<(event: ClaudeRuntimeEvent) => void>
   >();
-  private readonly activeTurnTasks = new Map<string, Promise<void>>();
-  private globalTurnQueue: Promise<void> = Promise.resolve();
   private cachedSdkModule: ClaudeSdkModuleLike | null = null;
   private readonly v2SessionsByRunId = new Map<string, ClaudeV2SessionLike>();
   private readonly v2SessionControlsByRunId = new Map<string, ClaudeV2SessionControlLike | null>();
@@ -87,7 +88,7 @@ export class ClaudeAgentSdkRuntimeService {
     });
     this.sessions.set(runId, state);
     this.rebindDeferredListeners(runId, state);
-    this.ensureSessionTranscript(state.sessionId);
+    this.transcriptStore.ensureSession(state.sessionId);
     return {
       sessionId: state.sessionId,
       metadata: {
@@ -121,7 +122,7 @@ export class ClaudeAgentSdkRuntimeService {
     });
     this.sessions.set(runId, state);
     this.rebindDeferredListeners(runId, state);
-    this.ensureSessionTranscript(sessionId);
+    this.transcriptStore.ensureSession(sessionId);
     return {
       sessionId,
       metadata: {
@@ -176,13 +177,11 @@ export class ClaudeAgentSdkRuntimeService {
     if (!content) {
       throw new Error("Claude runtime message content is required.");
     }
-    if (this.activeTurnTasks.has(runId)) {
-      await this.activeTurnTasks.get(runId);
-    }
+    await this.turnScheduler.waitForRunIdle(runId);
 
     const turnId = `${runId}:turn:${Date.now()}`;
     state.activeTurnId = turnId;
-    this.recordSessionMessage(state.sessionId, {
+    this.transcriptStore.appendMessage(state.sessionId, {
       role: "user",
       content,
       createdAt: nowTimestampSeconds(),
@@ -192,6 +191,7 @@ export class ClaudeAgentSdkRuntimeService {
       method: "turn/started",
       params: {
         turnId,
+        sessionId: state.sessionId,
       },
     });
 
@@ -218,11 +218,9 @@ export class ClaudeAgentSdkRuntimeService {
       } finally {
         state.activeAbortController = null;
         state.activeTurnId = null;
-        this.activeTurnTasks.delete(runId);
       }
     };
-    const turnTask = this.enqueueGlobalTurn(runTurn);
-    this.activeTurnTasks.set(runId, turnTask);
+    const turnTask = this.turnScheduler.schedule(runId, runTurn);
     void turnTask.catch((error) => {
       logger.warn(`Claude runtime turn failed for run '${runId}': ${String(error)}`);
     });
@@ -365,6 +363,7 @@ export class ClaudeAgentSdkRuntimeService {
     if (!normalizedSessionId) {
       return [];
     }
+    const cachedMessages = this.transcriptStore.getCachedMessages(normalizedSessionId);
 
     const sdk = await this.loadSdkModuleSafe();
     const getSessionMessagesFn = resolveSdkFunction(sdk, "getSessionMessages");
@@ -375,11 +374,11 @@ export class ClaudeAgentSdkRuntimeService {
       ]);
       const normalized = normalizeSessionMessages(raw);
       if (normalized.length > 0) {
-        return normalized;
+        return this.transcriptStore.getMergedMessages(normalizedSessionId, normalized);
       }
     }
 
-    return this.sessionMessagesBySessionId.get(normalizedSessionId) ?? [];
+    return cachedMessages;
   }
 
   async resolveWorkingDirectory(workspaceId?: string | null): Promise<string> {
@@ -436,9 +435,9 @@ export class ClaudeAgentSdkRuntimeService {
       if (normalized.sessionId && normalized.sessionId !== options.state.sessionId) {
         const previousSessionId = options.state.sessionId;
         options.state.sessionId = normalized.sessionId;
-        this.ensureSessionTranscript(options.state.sessionId);
+        this.transcriptStore.ensureSession(options.state.sessionId);
         if (!userMessageBoundToResolvedSession && previousSessionId !== options.state.sessionId) {
-          this.recordSessionMessage(options.state.sessionId, {
+          this.transcriptStore.appendMessage(options.state.sessionId, {
             role: "user",
             content: options.content,
             createdAt: nowTimestampSeconds(),
@@ -457,6 +456,7 @@ export class ClaudeAgentSdkRuntimeService {
           params: {
             id: options.turnId,
             turnId: options.turnId,
+            sessionId: options.state.sessionId,
             delta: normalized.delta,
           },
         });
@@ -464,7 +464,7 @@ export class ClaudeAgentSdkRuntimeService {
     }
 
     if (assistantOutput.length > 0) {
-      this.recordSessionMessage(options.state.sessionId, {
+      this.transcriptStore.appendMessage(options.state.sessionId, {
         role: "assistant",
         content: assistantOutput,
         createdAt: nowTimestampSeconds(),
@@ -476,6 +476,7 @@ export class ClaudeAgentSdkRuntimeService {
       params: {
         id: options.turnId,
         turnId: options.turnId,
+        sessionId: options.state.sessionId,
         text: assistantOutput,
       },
     });
@@ -483,6 +484,7 @@ export class ClaudeAgentSdkRuntimeService {
       method: "turn/completed",
       params: {
         turnId: options.turnId,
+        sessionId: options.state.sessionId,
       },
     });
   }
@@ -560,12 +562,6 @@ export class ClaudeAgentSdkRuntimeService {
     }
   }
 
-  private enqueueGlobalTurn(task: () => Promise<void>): Promise<void> {
-    const queued = this.globalTurnQueue.then(task, task);
-    this.globalTurnQueue = queued.catch(() => undefined);
-    return queued;
-  }
-
   private getOrCreateDeferredListenerSet(
     runId: string,
   ): Set<(event: ClaudeRuntimeEvent) => void> {
@@ -585,19 +581,6 @@ export class ClaudeAgentSdkRuntimeService {
     }
     for (const listener of deferred) {
       state.listeners.add(listener);
-    }
-  }
-
-  private recordSessionMessage(sessionId: string, message: Record<string, unknown>): void {
-    this.ensureSessionTranscript(sessionId);
-    const existing = this.sessionMessagesBySessionId.get(sessionId) ?? [];
-    existing.push(message);
-    this.sessionMessagesBySessionId.set(sessionId, existing);
-  }
-
-  private ensureSessionTranscript(sessionId: string): void {
-    if (!this.sessionMessagesBySessionId.has(sessionId)) {
-      this.sessionMessagesBySessionId.set(sessionId, []);
     }
   }
 
