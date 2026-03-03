@@ -209,7 +209,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         void runHistoryStore.refreshTreeQuietly();
 
         if (isTemporary) {
-          teamContextsStore.promoteTemporaryTeamId(activeTeam.teamRunId, teamRunId);
+          teamContextsStore.promoteTemporaryTeamRunId(activeTeam.teamRunId, teamRunId);
           teamContextsStore.lockConfig(teamRunId);
         }
 

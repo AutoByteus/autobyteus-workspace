@@ -12,11 +12,14 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
-type AgentContextLike = { agentId?: string };
+type AgentContextLike = {
+  // Core boundary from autobyteus-ts runtime; normalize immediately to `agentRunId` in local code.
+  agentId?: string;
+};
 
 export async function listLlmResponseProcessors(context: AgentContextLike): Promise<string> {
-  const agentId = context?.agentId ?? "N/A";
-  logger.info(`list_llm_response_processors tool invoked by agent ${agentId}.`);
+  const agentRunId = context?.agentId ?? "N/A";
+  logger.info(`list_llm_response_processors tool invoked by agent run ${agentRunId}.`);
 
   try {
     const definitions = Object.values(defaultLlmResponseProcessorRegistry.getAllDefinitions());

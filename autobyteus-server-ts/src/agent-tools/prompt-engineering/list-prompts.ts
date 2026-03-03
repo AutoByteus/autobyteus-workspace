@@ -46,7 +46,10 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
-type AgentContextLike = { agentId?: string };
+type AgentContextLike = {
+  // Core boundary from autobyteus-ts runtime; normalize immediately to `agentRunId` in local code.
+  agentId?: string;
+};
 
 const serializePromptSummary = (prompt: Prompt): Record<string, unknown> => ({
   id: prompt.id,
@@ -67,7 +70,7 @@ export async function listPrompts(
   category?: string | null,
   is_active: boolean | string | null = true,
 ): Promise<string> {
-  const agentId = context?.agentId ?? "unknown";
+  const agentRunId = context?.agentId ?? "unknown";
 
   let activeFilter: boolean | null | undefined;
   if (is_active === null || is_active === undefined) {
@@ -90,7 +93,7 @@ export async function listPrompts(
   }
 
   logger.info(
-    `list_prompts tool invoked by agent ${agentId} with filters: name='${name}', category='${category}', is_active=${String(
+    `list_prompts tool invoked by agent run ${agentRunId} with filters: name='${name}', category='${category}', is_active=${String(
       activeFilter,
     )}.`,
   );

@@ -27,6 +27,13 @@ export const useApplicationStore = defineStore('application', {
   },
   actions: {
     async fetchApplications() {
+      const config = useRuntimeConfig()
+      if (!config.public.enableApplications) {
+        this.loading = false
+        this.error = null
+        return
+      }
+
       // Avoid re-fetching if we already have the data and are not in an error state
       if (this.applications.length > 0 && !this.error) {
         return
@@ -50,6 +57,11 @@ export const useApplicationStore = defineStore('application', {
     },
 
     async runApplication(appId: string, input: any) {
+      const config = useRuntimeConfig()
+      if (!config.public.enableApplications) {
+        throw new Error('Applications feature is disabled')
+      }
+
       this.isRunLoading = true
       this.runError = null
       this.lastRunResult = null

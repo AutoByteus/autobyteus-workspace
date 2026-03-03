@@ -102,8 +102,14 @@ if [ ! -x "$PRISMA_BIN" ] && [ -f "${PRISMA_BIN}.cmd" ]; then
   PRISMA_BIN="${PRISMA_BIN}.cmd"
 fi
 if [ -x "$PRISMA_BIN" ]; then
-  if [ "$(uname -s)" = "Linux" ]; then
-    PRISMA_CLI_BINARY_TARGETS="${PRISMA_CLI_BINARY_TARGETS:-$LINUX_PRISMA_BINARY_TARGETS}" \
+  PRISMA_GENERATE_BINARY_TARGETS="${PRISMA_CLI_BINARY_TARGETS:-}"
+  if [ -z "${PRISMA_GENERATE_BINARY_TARGETS}" ] && [ "$(uname -s)" = "Linux" ]; then
+    PRISMA_GENERATE_BINARY_TARGETS="$LINUX_PRISMA_BINARY_TARGETS"
+  fi
+
+  if [ -n "${PRISMA_GENERATE_BINARY_TARGETS}" ]; then
+    echo -e "${GREEN}✓${NC} Using PRISMA_CLI_BINARY_TARGETS=${PRISMA_GENERATE_BINARY_TARGETS}"
+    PRISMA_CLI_BINARY_TARGETS="${PRISMA_GENERATE_BINARY_TARGETS}" \
       "$PRISMA_BIN" generate --schema "${TARGET_DIR}/prisma/schema.prisma"
   else
     "$PRISMA_BIN" generate --schema "${TARGET_DIR}/prisma/schema.prisma"

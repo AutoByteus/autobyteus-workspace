@@ -559,7 +559,9 @@ describe("Node sync GraphQL endpoint e2e", () => {
     });
 
     expect(result.errors?.length ?? 0).toBeGreaterThan(0);
-    expect(result.errors?.[0]?.message).toContain("Selected agent id was not found on source node");
+    expect(result.errors?.[0]?.message).toContain(
+      "Selected agent definition ID was not found on source node",
+    );
   });
 
   it("never returns MCP HTTP token/headers from sync export endpoint", async () => {

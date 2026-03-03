@@ -187,9 +187,6 @@ describe("CodexAppServerRuntimeService.sendTurn", () => {
       }),
     );
     expect(events.map((event) => event.method)).toEqual([
-      "item/added",
-      "item/commandExecution/started",
-      "item/commandExecution/completed",
       "item/completed",
     ]);
     expect(events[0]?.params?.tool).toBe("send_message_to");
@@ -249,12 +246,62 @@ describe("CodexAppServerRuntimeService.sendTurn", () => {
       }),
     );
     expect(events.map((event) => event.method)).toEqual([
-      "item/added",
-      "item/commandExecution/started",
-      "item/commandExecution/completed",
       "item/completed",
     ]);
     expect((events[0]?.params?.arguments as Record<string, unknown>)?.content).toBe("hello");
+  });
+
+  it("reuses command-scoped invocation id for intercepted send_message_to tool calls", async () => {
+    const service = new CodexAppServerRuntimeService();
+    service.setInterAgentRelayHandler(async () => ({
+      accepted: true,
+      message: "relayed",
+    }));
+    const respondSuccess = vi.fn();
+    const events: Array<{ method: string; params: Record<string, unknown> }> = [];
+    const state = {
+      runId: "run-professor",
+      teamRunId: "team-1",
+      memberName: "Professor",
+      sendMessageToEnabled: true,
+      client: {
+        respondSuccess,
+        respondError: vi.fn(),
+      },
+      listeners: new Set([
+        (event: { method: string; params: Record<string, unknown> }) => {
+          events.push(event);
+        },
+      ]),
+      approvalRecords: new Map(),
+      unbindHandlers: [],
+    } as any;
+
+    (service as any).handleServerRequest(
+      state,
+      1,
+      "item/tool/call",
+      {
+        tool: "send_message_to",
+        command: {
+          id: "call_3",
+        },
+        arguments: {
+          recipient_name: "Student",
+          content: "hello",
+        },
+      },
+    );
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(events.map((event) => event.method)).toEqual([
+      "item/completed",
+    ]);
+    expect(events[0]?.params?.id).toBe("call_3");
+    expect(events[0]?.params?.item_id).toBe("call_3");
+    expect(events[0]?.params?.invocation_id).toBe("call_3");
+    expect(events[0]?.params?.id).not.toBe("1");
   });
 
   it("emits synthetic sender tool-call events for intercepted send_message_to approval requests", async () => {
@@ -306,9 +353,6 @@ describe("CodexAppServerRuntimeService.sendTurn", () => {
     expect(respondError).not.toHaveBeenCalled();
     expect(respondSuccess).toHaveBeenCalledWith("request-approval-1", { decision: "accept" });
     expect(events.map((event) => event.method)).toEqual([
-      "item/added",
-      "item/commandExecution/started",
-      "item/commandExecution/completed",
       "item/completed",
     ]);
     expect((events[0]?.params?.arguments as Record<string, unknown>)?.recipient_name).toBe(
@@ -317,6 +361,59 @@ describe("CodexAppServerRuntimeService.sendTurn", () => {
     expect((events[0]?.params?.arguments as Record<string, unknown>)?.content).toBe(
       "hello via approval path",
     );
+  });
+
+  it("reuses command-scoped invocation id for intercepted send_message_to approvals", async () => {
+    const service = new CodexAppServerRuntimeService();
+    service.setInterAgentRelayHandler(async () => ({
+      accepted: true,
+      message: "relayed-from-approval",
+    }));
+    const respondSuccess = vi.fn();
+    const respondError = vi.fn();
+    const events: Array<{ method: string; params: Record<string, unknown> }> = [];
+    const state = {
+      runId: "run-professor",
+      teamRunId: "team-1",
+      memberName: "Professor",
+      sendMessageToEnabled: true,
+      client: {
+        respondSuccess,
+        respondError,
+      },
+      listeners: new Set([
+        (event: { method: string; params: Record<string, unknown> }) => {
+          events.push(event);
+        },
+      ]),
+      approvalRecords: new Map(),
+      unbindHandlers: [],
+    } as any;
+
+    (service as any).handleServerRequest(
+      state,
+      2,
+      "item/commandExecution/requestApproval",
+      {
+        command_name: "send_message_to",
+        command: {
+          call_id: "call_4",
+        },
+        arguments: {
+          recipient_name: "Student",
+          content: "hello via approval path",
+        },
+      },
+    );
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(respondError).not.toHaveBeenCalled();
+    expect(respondSuccess).toHaveBeenCalledWith(2, { decision: "accept" });
+    expect(events[0]?.params?.id).toBe("call_4");
+    expect(events[0]?.params?.item_id).toBe("call_4");
+    expect(events[0]?.params?.invocation_id).toBe("call_4");
+    expect(events[0]?.params?.id).not.toBe("2");
   });
 
   it("emits structured inter_agent_message event before recipient envelope turn dispatch", async () => {
@@ -348,7 +445,7 @@ describe("CodexAppServerRuntimeService.sendTurn", () => {
     });
 
     await service.injectInterAgentEnvelope("run-student", {
-      senderAgentId: "run-professor",
+      senderAgentRunId: "run-professor",
       senderAgentName: "Professor",
       recipientName: "Student",
       messageType: "agent_message",
@@ -387,6 +484,7 @@ describe("CodexAppServerRuntimeService team-manifest instructions", () => {
     await service.createRunSession("run-1", {
       modelIdentifier: "gpt-5-codex",
       workingDirectory: "/tmp/workspace",
+      autoExecuteTools: true,
       runtimeMetadata: {
         teamRunId: "team-1",
         memberName: "Professor",
@@ -472,5 +570,61 @@ describe("CodexAppServerRuntimeService listener continuity", () => {
 
     expect(listener).toHaveBeenCalledTimes(2);
     unsubscribe();
+  });
+});
+
+describe("CodexAppServerRuntimeService approval policy mapping", () => {
+  it("uses approvalPolicy=never when autoExecuteTools=true", async () => {
+    const request = vi.fn().mockResolvedValue({ thread: { id: "thread-1" } });
+    const processManager = {
+      getClient: vi.fn().mockResolvedValue({
+        request,
+        onNotification: vi.fn().mockReturnValue(() => {}),
+        onServerRequest: vi.fn().mockReturnValue(() => {}),
+        onClose: vi.fn().mockReturnValue(() => {}),
+      }),
+    } as any;
+    const service = new CodexAppServerRuntimeService(processManager);
+
+    await service.createRunSession("run-auto", {
+      modelIdentifier: "gpt-5-codex",
+      workingDirectory: "/tmp/workspace",
+      autoExecuteTools: true,
+      runtimeMetadata: null,
+    });
+
+    expect(request).toHaveBeenCalledWith(
+      "thread/start",
+      expect.objectContaining({
+        approvalPolicy: "never",
+      }),
+    );
+  });
+
+  it("uses approvalPolicy=on-request when autoExecuteTools=false", async () => {
+    const request = vi.fn().mockResolvedValue({ thread: { id: "thread-2" } });
+    const processManager = {
+      getClient: vi.fn().mockResolvedValue({
+        request,
+        onNotification: vi.fn().mockReturnValue(() => {}),
+        onServerRequest: vi.fn().mockReturnValue(() => {}),
+        onClose: vi.fn().mockReturnValue(() => {}),
+      }),
+    } as any;
+    const service = new CodexAppServerRuntimeService(processManager);
+
+    await service.createRunSession("run-manual", {
+      modelIdentifier: "gpt-5-codex",
+      workingDirectory: "/tmp/workspace",
+      autoExecuteTools: false,
+      runtimeMetadata: null,
+    });
+
+    expect(request).toHaveBeenCalledWith(
+      "thread/start",
+      expect.objectContaining({
+        approvalPolicy: "on-request",
+      }),
+    );
   });
 });

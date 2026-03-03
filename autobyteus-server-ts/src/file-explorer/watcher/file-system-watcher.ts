@@ -121,17 +121,21 @@ export class FileSystemWatcher {
     }
   }
 
-  async *events(): AsyncGenerator<string, void, void> {
+  events(): AsyncGenerator<string, void, void> {
+    // Subscribe immediately on stream creation so callers do not miss
+    // early events before the first `next()` call.
     const queue = this.subscribe();
-    try {
-      const batcher = new EventBatcher(this.queueEvents(queue), 0.25);
-      for await (const batchedEvent of batcher.getBatchedEvents()) {
-        yield batchedEvent;
+    const self = this;
+    return (async function* () {
+      try {
+        const batcher = new EventBatcher(self.queueEvents(queue), 0.25);
+        for await (const batchedEvent of batcher.getBatchedEvents()) {
+          yield batchedEvent;
+        }
+      } finally {
+        self.unsubscribe(queue);
       }
-    } finally {
-      queue.push(null);
-      this.unsubscribe(queue);
-    }
+    })();
   }
 
   private handleChangeEvent(serializedEvent: string): void {

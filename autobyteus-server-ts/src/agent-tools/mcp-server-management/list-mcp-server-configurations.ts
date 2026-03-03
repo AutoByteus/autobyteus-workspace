@@ -13,7 +13,10 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
-type AgentContextLike = { agentId?: string };
+type AgentContextLike = {
+  // Core boundary from autobyteus-ts runtime; normalize immediately to `agentRunId` in local code.
+  agentId?: string;
+};
 
 const serializeMcpConfigSummary = (config: BaseMcpConfig): Record<string, unknown> => {
   const data = { ...config } as Record<string, unknown>;
@@ -22,8 +25,8 @@ const serializeMcpConfigSummary = (config: BaseMcpConfig): Record<string, unknow
 };
 
 export async function listMcpServerConfigurations(context: AgentContextLike): Promise<string> {
-  const agentId = context?.agentId ?? "unknown";
-  logger.info(`list_mcp_server_configurations tool invoked by agent ${agentId}.`);
+  const agentRunId = context?.agentId ?? "unknown";
+  logger.info(`list_mcp_server_configurations tool invoked by agent run ${agentRunId}.`);
 
   try {
     const service = McpConfigService.getInstance();

@@ -63,7 +63,7 @@ type ProcessorRegistries = {
 };
 
 type TeamLike = {
-  // autobyteus-ts runtime names team run ID as `teamId`.
+  // Core boundary: autobyteus-ts runtime still exposes team run identity as `teamId`.
   teamId: string;
   notifier?: unknown;
 };

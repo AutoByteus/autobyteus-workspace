@@ -2,11 +2,9 @@ import { asObject, asString, type JsonObject } from "./codex-runtime-json.js";
 
 const DEFAULT_APP_SERVER_COMMAND = "codex";
 const DEFAULT_APP_SERVER_ARGS = ["app-server"];
-const DEFAULT_APPROVAL_POLICY = "on-request";
 const DEFAULT_SANDBOX_MODE = "workspace-write";
 const DEFAULT_REQUEST_TIMEOUT_MS = 120_000;
 
-const VALID_APPROVAL_POLICIES = new Set(["untrusted", "on-failure", "on-request", "never"]);
 const VALID_SANDBOX_MODES = new Set(["read-only", "workspace-write", "danger-full-access"]);
 
 const logger = {
@@ -36,15 +34,13 @@ export const parseArgs = (): string[] => {
     .filter((part) => part.length > 0);
 };
 
-export const normalizeApprovalPolicy = (): string => {
-  const policy = process.env.CODEX_APP_SERVER_APPROVAL_POLICY?.trim() ?? DEFAULT_APPROVAL_POLICY;
-  if (VALID_APPROVAL_POLICIES.has(policy)) {
-    return policy;
+export const resolveApprovalPolicyForAutoExecuteTools = (
+  autoExecuteTools: boolean,
+): string => {
+  if (autoExecuteTools) {
+    return "never";
   }
-  logger.warn(
-    `Invalid CODEX_APP_SERVER_APPROVAL_POLICY '${policy}', falling back to '${DEFAULT_APPROVAL_POLICY}'.`,
-  );
-  return DEFAULT_APPROVAL_POLICY;
+  return "on-request";
 };
 
 export const normalizeSandboxMode = (): string => {

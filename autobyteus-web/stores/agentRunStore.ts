@@ -135,15 +135,15 @@ export const useAgentRunStore = defineStore('agentRun', {
           throw new Error(result.message || 'Failed to continue run.');
         }
 
-        const permanentAgentId = result.runId;
-        if (!permanentAgentId) {
+        const permanentRunId = result.runId;
+        if (!permanentRunId) {
           throw new Error('Failed to continue run: No runId returned on success.');
         }
 
         let finalRunId = runId;
         if (isNewAgent) {
-          finalRunId = permanentAgentId;
-          agentContextsStore.promoteTemporaryId(runId, permanentAgentId);
+          finalRunId = permanentRunId;
+          agentContextsStore.promoteTemporaryId(runId, permanentRunId);
         }
 
         agentContextsStore.lockConfig(finalRunId);

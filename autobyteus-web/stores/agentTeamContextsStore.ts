@@ -153,25 +153,31 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
       });
     },
 
-    promoteTemporaryTeamId(temporaryId: string, permanentId: string) {
-      const context = this.teams.get(temporaryId);
+    promoteTemporaryTeamRunId(temporaryTeamRunId: string, permanentTeamRunId: string) {
+      const context = this.teams.get(temporaryTeamRunId);
       if (!context) return;
 
-      context.teamRunId = permanentId;
+      context.teamRunId = permanentTeamRunId;
       context.members.forEach(member => {
-        if (member.state.conversation.id.startsWith(temporaryId)) {
-          const memberRunId = member.state.conversation.id.replace(temporaryId, permanentId);
+        if (member.state.conversation.id.startsWith(temporaryTeamRunId)) {
+          const memberRunId = member.state.conversation.id.replace(
+            temporaryTeamRunId,
+            permanentTeamRunId,
+          );
           member.state.conversation.id = memberRunId;
           member.state.runId = memberRunId;
         }
       });
 
-      this.teams.delete(temporaryId);
-      this.teams.set(permanentId, context);
+      this.teams.delete(temporaryTeamRunId);
+      this.teams.set(permanentTeamRunId, context);
 
       const selectionStore = useAgentSelectionStore();
-      if (selectionStore.selectedType === 'team' && selectionStore.selectedRunId === temporaryId) {
-        selectionStore.selectRun(permanentId, 'team');
+      if (
+        selectionStore.selectedType === 'team' &&
+        selectionStore.selectedRunId === temporaryTeamRunId
+      ) {
+        selectionStore.selectRun(permanentTeamRunId, 'team');
       }
     },
 

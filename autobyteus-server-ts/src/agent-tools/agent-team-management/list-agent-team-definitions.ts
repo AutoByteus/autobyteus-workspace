@@ -12,7 +12,10 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
-type AgentContextLike = { agentId?: string };
+type AgentContextLike = {
+  // Core boundary from autobyteus-ts runtime; normalize immediately to `agentRunId` in local code.
+  agentId?: string;
+};
 
 const serializeDefinition = (definition: AgentTeamDefinition): Record<string, unknown> => ({
   id: definition.id ?? null,
@@ -29,8 +32,8 @@ const serializeDefinition = (definition: AgentTeamDefinition): Record<string, un
 });
 
 export async function listAgentTeamDefinitions(context: AgentContextLike): Promise<string> {
-  const agentId = context?.agentId ?? "unknown";
-  logger.info(`list_agent_team_definitions tool invoked by agent ${agentId}.`);
+  const agentRunId = context?.agentId ?? "unknown";
+  logger.info(`list_agent_team_definitions tool invoked by agent run ${agentRunId}.`);
 
   try {
     const service = AgentTeamDefinitionService.getInstance();

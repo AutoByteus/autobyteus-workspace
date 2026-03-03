@@ -5,6 +5,7 @@ import type { LLMCompleteResponseReceivedEvent } from "autobyteus-ts/agent/event
 import type { CompleteResponse } from "autobyteus-ts/llm/utils/response-types.js";
 import { SegmentEvent, SegmentType } from "autobyteus-ts/agent/streaming/segments/segment-events.js";
 import { MediaStorageService } from "../../../services/media-storage-service.js";
+import { resolveAgentRunIdFromRuntimeContext } from "../../utils/core-boundary-id-normalizer.js";
 
 const logger = {
   debug: (...args: unknown[]) => console.debug(...args),
@@ -68,7 +69,7 @@ export class MediaUrlTransformerProcessor extends BaseLLMResponseProcessor {
     context: AgentContext,
     _triggeringEvent: LLMCompleteResponseReceivedEvent,
   ): Promise<boolean> {
-    const agentId = context.agentId;
+    const agentRunId = resolveAgentRunIdFromRuntimeContext(context);
 
     try {
       const [newImageUrls, newAudioUrls, newVideoUrls] = await Promise.all([
@@ -88,11 +89,11 @@ export class MediaUrlTransformerProcessor extends BaseLLMResponseProcessor {
       }
 
       logger.info(
-        `Agent '${agentId}': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.`,
+        `Agent run '${agentRunId}': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.`,
       );
     } catch (error) {
       logger.error(
-        `Agent '${agentId}': Error during media URL transformation: ${String(error)}`,
+        `Agent run '${agentRunId}': Error during media URL transformation: ${String(error)}`,
       );
     }
 

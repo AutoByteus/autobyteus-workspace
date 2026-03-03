@@ -4,6 +4,7 @@ import { BaseToolExecutionResultProcessor, type AgentContext } from "autobyteus-
 import type { ToolResultEvent } from "autobyteus-ts/agent/events/agent-events.js";
 import { MediaStorageService } from "../../../services/media-storage-service.js";
 import { extractCandidateOutputPath, inferArtifactType } from "../../../utils/artifact-utils.js";
+import { resolveAgentRunIdFromRuntimeContext } from "../../utils/core-boundary-id-normalizer.js";
 
 const logger = {
   debug: (...args: unknown[]) => console.debug(...args),
@@ -34,7 +35,7 @@ export class MediaToolResultUrlTransformerProcessor extends BaseToolExecutionRes
   }
 
   async process(event: ToolResultEvent, context: AgentContext): Promise<ToolResultEvent> {
-    const agentId = context.agentId;
+    const agentRunId = resolveAgentRunIdFromRuntimeContext(context);
     const toolName = event.toolName;
 
     try {
@@ -81,11 +82,11 @@ export class MediaToolResultUrlTransformerProcessor extends BaseToolExecutionRes
       }
 
       logger.info(
-        `Agent ${agentId}: Transformed media result for ${toolName} to server-hosted URL: ${newUrl}`,
+        `Agent run ${agentRunId}: Transformed media result for ${toolName} to server-hosted URL: ${newUrl}`,
       );
     } catch (error) {
       logger.error(
-        `Agent ${agentId}: Error during media URL transformation for ${toolName}: ${String(error)}`,
+        `Agent run ${agentRunId}: Error during media URL transformation for ${toolName}: ${String(error)}`,
       );
     }
 

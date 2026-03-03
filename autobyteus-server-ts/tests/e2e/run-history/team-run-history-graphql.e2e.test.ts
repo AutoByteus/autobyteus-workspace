@@ -466,6 +466,7 @@ describe("Team run history GraphQL e2e", () => {
     vi.spyOn(LLMFactory, "getProvider").mockResolvedValue(LLMProvider.OPENAI);
 
     const unique = `${Date.now()}_${Math.random().toString(16).slice(2)}`;
+    const runMarker = `${turnOneMarker}_${unique}`;
     const promptName = `team_history_prompt_${unique}`;
     const promptCategory = `team_history_category_${unique}`;
     const workspaceRootPath = path.join(os.tmpdir(), `team-history-workspace-${unique}`);
@@ -547,7 +548,7 @@ describe("Team run history GraphQL e2e", () => {
         teamRunId,
         targetMemberName: "professor",
         userInput: {
-          content: `please remember ${turnOneMarker}`,
+          content: `please remember ${runMarker}`,
           contextFiles: [],
         },
       },
@@ -584,11 +585,16 @@ describe("Team run history GraphQL e2e", () => {
     await waitFor(async () => {
       try {
         const rawTrace = await fs.readFile(rawTraceFile, "utf-8");
-        return rawTrace.includes(turnOneMarker);
+        return rawTrace.includes(runMarker);
       } catch {
         return false;
       }
     });
+
+    const rootRawTrace = await fs
+      .readFile(path.join(memoryDir, "raw_traces.jsonl"), "utf-8")
+      .catch(() => "");
+    expect(rootRawTrace.includes(runMarker)).toBe(false);
 
     await waitFor(async () => {
       try {
@@ -651,9 +657,9 @@ describe("Team run history GraphQL e2e", () => {
     });
 
     expect(projection).toBeTruthy();
-    expect(projection?.conversation.some((entry) => String(entry.content ?? "").includes(turnOneMarker))).toBe(true);
+    expect(projection?.conversation.some((entry) => String(entry.content ?? "").includes(runMarker))).toBe(true);
     expect(projection?.conversation.some((entry) => String(entry.content ?? "").includes("history_visible=true"))).toBe(true);
-    expect(projection?.summary).toContain(turnOneMarker);
+    expect(projection?.summary).toContain(runMarker);
   });
 
   it("restores targeted professor member in a multi-member team after terminate/continue", async () => {

@@ -40,7 +40,7 @@ The Pinia stores act as the primary interface for the UI components to interact 
 - **Role**: Manages the execution lifecycle of individual agents.
 - **Key Actions**:
   - `sendUserInputAndSubscribe()`: Sends user messages via mutation and ensures an agent WebSocket stream is connected.
-  - `connectToAgentStream(agentId)`: Listens for real-time events specific to an agent run via WebSocket.
+  - `connectToAgentStream(runId)`: Listens for real-time events specific to an agent run via WebSocket.
   - `postToolExecutionApproval()`: Sends user decisions (Approve/Deny) for "Awaiting Approval" tool calls.
   - `closeAgent()`: Cleans up local state and unsubscribes.
 
@@ -50,7 +50,7 @@ The Pinia stores act as the primary interface for the UI components to interact 
 - **Key Actions**:
   - `createAndLaunchTeam()`: Orchestrates the creation of a new team run configuration and starts the session.
   - `launchExistingTeam()`: Resumes or starts a session from an existing team instance.
-  - `connectToTeamStream(teamId)`: Listens for team-level events (e.g., task updates, status changes) via WebSocket.
+  - `connectToTeamStream(teamRunId)`: Listens for team-level events (e.g., task updates, status changes) via WebSocket.
   - `sendMessageToFocusedMember()`: Routes user input to a specific agent within the team context.
 
 ---

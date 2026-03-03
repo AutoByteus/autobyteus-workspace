@@ -12,11 +12,14 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
-type AgentContextLike = { agentId?: string };
+type AgentContextLike = {
+  // Core boundary from autobyteus-ts runtime; normalize immediately to `agentRunId` in local code.
+  agentId?: string;
+};
 
 export async function getAvailableSkills(context: AgentContextLike): Promise<string> {
-  const agentId = context?.agentId ?? "unknown";
-  logger.info(`get_available_skills tool invoked by agent ${agentId}.`);
+  const agentRunId = context?.agentId ?? "unknown";
+  logger.info(`get_available_skills tool invoked by agent run ${agentRunId}.`);
 
   try {
     const service = SkillService.getInstance();

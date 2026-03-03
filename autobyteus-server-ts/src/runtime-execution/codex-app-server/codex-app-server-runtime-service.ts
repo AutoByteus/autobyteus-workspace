@@ -9,7 +9,11 @@ import {
 } from "./codex-app-server-process-manager.js";
 import { toCodexUserInput } from "./codex-user-input-mapper.js";
 import { asString, type JsonObject } from "./codex-runtime-json.js";
-import { resolveDefaultModel, resolveTurnId } from "./codex-runtime-launch-config.js";
+import {
+  resolveApprovalPolicyForAutoExecuteTools,
+  resolveDefaultModel,
+  resolveTurnId,
+} from "./codex-runtime-launch-config.js";
 import {
   renderTeamManifestDeveloperInstructions,
   resolveAllowedRecipientNamesFromManifest,
@@ -174,7 +178,7 @@ export class CodexAppServerRuntimeService {
     this.emitEvent(state, {
       method: "inter_agent_message",
       params: {
-        sender_agent_id: asString(envelope.senderAgentId) ?? "unknown_sender",
+        sender_agent_id: asString(envelope.senderAgentRunId) ?? "unknown_sender",
         sender_agent_name: asString(envelope.senderAgentName) ?? null,
         recipient_role_name: asString(envelope.recipientName) ?? "unknown_recipient",
         content,
@@ -189,7 +193,7 @@ export class CodexAppServerRuntimeService {
       null,
       {
         inter_agent_envelope: {
-          senderAgentId: asString(envelope.senderAgentId) ?? "unknown_sender",
+          senderAgentRunId: asString(envelope.senderAgentRunId) ?? "unknown_sender",
           senderAgentName: asString(envelope.senderAgentName),
           recipientName: asString(envelope.recipientName) ?? "unknown_recipient",
           messageType: asString(envelope.messageType) ?? "agent_message",
@@ -338,6 +342,7 @@ export class CodexAppServerRuntimeService {
       sendMessageToEnabled,
       allowedRecipientNames,
     });
+    const approvalPolicy = resolveApprovalPolicyForAutoExecuteTools(options.autoExecuteTools);
     const client = await this.processManager.getClient(workingDirectory);
 
     const threadId = resumeThreadId
@@ -346,6 +351,7 @@ export class CodexAppServerRuntimeService {
           resumeThreadId,
           workingDirectory,
           model,
+          approvalPolicy,
           dynamicTools,
           developerInstructions,
         )
@@ -353,6 +359,7 @@ export class CodexAppServerRuntimeService {
           client,
           workingDirectory,
           model,
+          approvalPolicy,
           dynamicTools,
           developerInstructions,
         );

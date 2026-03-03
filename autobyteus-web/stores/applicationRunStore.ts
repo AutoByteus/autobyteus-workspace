@@ -101,7 +101,7 @@ export const useApplicationRunStore = defineStore('applicationRun', {
         }
 
         const applicationRunId = uuidv4();
-        const tempTeamId = `temp-app-team-${Date.now()}`;
+        const temporaryTeamRunId = `temp-app-team-${Date.now()}`;
 
         const memberOverrides: Record<string, MemberConfigOverride> = {};
         for (const [memberName, modelId] of Object.entries(profile.memberLlmConfigOverrides)) {
@@ -129,7 +129,7 @@ export const useApplicationRunStore = defineStore('applicationRun', {
         for (const agentNode of profile.teamDefinition.nodes.filter(n => n.referenceType === 'AGENT')) {
           const memberName = agentNode.memberName;
           const conversation: Conversation = {
-            id: `${tempTeamId}::${memberName}`,
+            id: `${temporaryTeamRunId}::${memberName}`,
             messages: [],
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
@@ -150,7 +150,7 @@ export const useApplicationRunStore = defineStore('applicationRun', {
         }
         
         const teamContext: AgentTeamContext = {
-          teamRunId: tempTeamId,
+          teamRunId: temporaryTeamRunId,
           config: teamRunConfig,
           members: members,
           focusedMemberName: profile.teamDefinition.coordinatorMemberName,
@@ -228,14 +228,14 @@ export const useApplicationRunStore = defineStore('applicationRun', {
           throw new Error(errors.map(e => e.message).join(', '));
         }
 
-        const permanentId = data?.sendMessageToTeam?.teamRunId;
+        const permanentTeamRunId = data?.sendMessageToTeam?.teamRunId;
 
-        if (!data?.sendMessageToTeam?.success || !permanentId) {
+        if (!data?.sendMessageToTeam?.success || !permanentTeamRunId) {
           throw new Error(data?.sendMessageToTeam?.message || 'Failed to send message.');
         }
 
         if (isTemporary) {
-          appContextStore.promoteTemporaryTeamId(applicationRunId, permanentId);
+          appContextStore.promoteTemporaryTeamRunId(applicationRunId, permanentTeamRunId);
           this.connectToApplicationStream(applicationRunId);
         }
       } catch (error: any) {

@@ -12,6 +12,7 @@ import { SenderType } from "autobyteus-ts/agent/sender-type.js";
 import { LLMFactory } from "autobyteus-ts/llm/llm-factory.js";
 import { LLMProvider } from "autobyteus-ts/llm/providers.js";
 import { PromptContextBuilder } from "./prompt-context-builder.js";
+import { resolveAgentRunIdFromRuntimeContext } from "../../utils/core-boundary-id-normalizer.js";
 
 const logger = {
   debug: (...args: unknown[]) => console.debug(...args),
@@ -96,7 +97,7 @@ export class UserInputContextBuildingProcessor extends BaseAgentUserInputMessage
       return [];
     }
 
-    const agentId = context.agentId;
+    const agentRunId = resolveAgentRunIdFromRuntimeContext(context);
     const processed: ContextFile[] = [];
 
     for (const contextFile of message.contextFiles) {
@@ -112,7 +113,7 @@ export class UserInputContextBuildingProcessor extends BaseAgentUserInputMessage
             absolutePath = path.resolve(contextFile.uri);
           } else {
             logger.warn(
-              `Agent '${agentId}': Absolute file path '${contextFile.uri}' does not exist or is not a file. Skipping.`,
+              `Agent run '${agentRunId}': Absolute file path '${contextFile.uri}' does not exist or is not a file. Skipping.`,
             );
           }
         } else if (context.workspaceRootPath) {
@@ -123,7 +124,7 @@ export class UserInputContextBuildingProcessor extends BaseAgentUserInputMessage
             path.isAbsolute(relativePath)
           ) {
             logger.warn(
-              `Agent '${agentId}': Security error resolving path '${contextFile.uri}' outside workspace root. Skipping.`,
+              `Agent run '${agentRunId}': Security error resolving path '${contextFile.uri}' outside workspace root. Skipping.`,
             );
             continue;
           }
@@ -132,17 +133,17 @@ export class UserInputContextBuildingProcessor extends BaseAgentUserInputMessage
             absolutePath = resolvedPath;
           } else {
             logger.warn(
-              `Agent '${agentId}': Relative path '${contextFile.uri}' not found in workspace root '${context.workspaceRootPath}'. Skipping.`,
+              `Agent run '${agentRunId}': Relative path '${contextFile.uri}' not found in workspace root '${context.workspaceRootPath}'. Skipping.`,
             );
           }
         } else {
           logger.warn(
-            `Agent '${agentId}': Cannot resolve relative path '${contextFile.uri}' without workspaceRootPath. Skipping.`,
+            `Agent run '${agentRunId}': Cannot resolve relative path '${contextFile.uri}' without workspaceRootPath. Skipping.`,
           );
         }
       } catch (error) {
         logger.warn(
-          `Agent '${agentId}': Security error resolving path '${contextFile.uri}': ${String(
+          `Agent run '${agentRunId}': Security error resolving path '${contextFile.uri}': ${String(
             error,
           )}. Skipping.`,
         );
@@ -187,7 +188,7 @@ export class UserInputContextBuildingProcessor extends BaseAgentUserInputMessage
     context: AgentContext,
     _triggeringEvent: UserMessageReceivedEvent,
   ): Promise<AgentInputUserMessage> {
-    const agentId = context.agentId;
+    const agentRunId = resolveAgentRunIdFromRuntimeContext(context);
     const customData = context.customData ?? {};
     const isFirstUserTurn =
       typeof customData.is_first_user_turn === "boolean" ? customData.is_first_user_turn : true;
@@ -206,7 +207,7 @@ export class UserInputContextBuildingProcessor extends BaseAgentUserInputMessage
       const builder = new PromptContextBuilder(
         message,
         context.workspaceRootPath ?? null,
-        agentId,
+        agentRunId,
       );
       contextString = builder.buildContextString();
     }
@@ -223,7 +224,7 @@ export class UserInputContextBuildingProcessor extends BaseAgentUserInputMessage
 
     if (isFirstUserTurn && isAutobyteusModel) {
       logger.debug(
-        `Agent '${agentId}': First turn for AUTOBYTEUS model '${llmModelName}'. Prepending system prompt.`,
+        `Agent run '${agentRunId}': First turn for AUTOBYTEUS model '${llmModelName}'. Prepending system prompt.`,
       );
       const systemPrompt =
         context.llmInstance?.systemMessage ?? context.config?.systemPrompt ?? "";
@@ -231,23 +232,23 @@ export class UserInputContextBuildingProcessor extends BaseAgentUserInputMessage
         finalContent = `${systemPrompt}\n\n${formattedMessage}`;
       } else {
         logger.warn(
-          `Agent '${agentId}': AUTOBYTEUS model's first turn, but system prompt is empty. Not prepending.`,
+          `Agent run '${agentRunId}': AUTOBYTEUS model's first turn, but system prompt is empty. Not prepending.`,
         );
       }
     } else {
       logger.debug(
-        `Agent '${agentId}': Standard prompt processing. isFirstUserTurn=${isFirstUserTurn}, isAutobyteusModel=${isAutobyteusModel}.`,
+        `Agent run '${agentRunId}': Standard prompt processing. isFirstUserTurn=${isFirstUserTurn}, isAutobyteusModel=${isAutobyteusModel}.`,
       );
     }
 
     if (isFirstUserTurn && context.customData) {
       context.customData.is_first_user_turn = false;
-      logger.debug(`Agent '${agentId}': First turn processed, 'is_first_user_turn' set to false.`);
+      logger.debug(`Agent run '${agentRunId}': First turn processed, 'is_first_user_turn' set to false.`);
     }
 
     message.content = finalContent;
     logger.info(
-      `Agent '${agentId}': ${this.constructor.name} completed. Final content length: ${message.content.length}`,
+      `Agent run '${agentRunId}': ${this.constructor.name} completed. Final content length: ${message.content.length}`,
     );
     return message;
   }

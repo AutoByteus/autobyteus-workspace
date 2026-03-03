@@ -4,7 +4,7 @@ import {
   type CodexAppServerProcessManager,
 } from "./codex-app-server-process-manager.js";
 import {
-  normalizeApprovalPolicy,
+  resolveApprovalPolicyForAutoExecuteTools,
   normalizeSandboxMode,
 } from "./codex-runtime-launch-config.js";
 
@@ -81,7 +81,7 @@ export class CodexThreadHistoryReader {
       model: null,
       modelProvider: null,
       cwd,
-      approvalPolicy: normalizeApprovalPolicy(),
+      approvalPolicy: resolveApprovalPolicyForAutoExecuteTools(false),
       sandbox: normalizeSandboxMode(),
       config: null,
       baseInstructions: null,

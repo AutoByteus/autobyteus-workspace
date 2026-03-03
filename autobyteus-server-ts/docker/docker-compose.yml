@@ -1,6 +1,5 @@
 services:
   autobyteus-server:
-    container_name: autobyteus-server
     image: autobyteus-server:${AUTOBYTEUS_IMAGE_TAG:-latest}
     build:
       context: ../..
@@ -9,24 +8,9 @@ services:
       - SYS_ADMIN
     security_opt:
       - seccomp=unconfined
-    env_file:
-      - .env
     environment:
-      AUTOBYTEUS_WORKSPACE_ROOT: /home/autobyteus/workspace
+      AUTOBYTEUS_WORKSPACE_ROOT: /app
       AUTOBYTEUS_DATA_DIR: /home/autobyteus/data
-      AUTOBYTEUS_GIT_AUTH_MODE: ${AUTOBYTEUS_GIT_AUTH_MODE:-pat}
-      GITHUB_USERNAME: ${GITHUB_USERNAME:-x-access-token}
-      GITHUB_EMAIL: ${GITHUB_EMAIL:-autobyteus-bot@autobyteus.dev}
-      GITHUB_PAT: ${GITHUB_PAT:-}
-      AUTOBYTEUS_GITHUB_ORG: ${AUTOBYTEUS_GITHUB_ORG:-AutoByteus}
-      AUTOBYTEUS_REF: ${AUTOBYTEUS_REF:-main}
-      AUTOBYTEUS_SERVER_REF: ${AUTOBYTEUS_SERVER_REF:-main}
-      AUTOBYTEUS_TS_REF: ${AUTOBYTEUS_TS_REF:-main}
-      AUTOBYTEUS_REPOSITORY_PRISMA_REF: ${AUTOBYTEUS_REPOSITORY_PRISMA_REF:-main}
-      AUTOBYTEUS_SERVER_TS_REPO_URL: ${AUTOBYTEUS_SERVER_TS_REPO_URL:-}
-      AUTOBYTEUS_TS_REPO_URL: ${AUTOBYTEUS_TS_REPO_URL:-}
-      AUTOBYTEUS_REPOSITORY_PRISMA_REPO_URL: ${AUTOBYTEUS_REPOSITORY_PRISMA_REPO_URL:-}
-      AUTOBYTEUS_SKIP_SYNC: ${AUTOBYTEUS_SKIP_SYNC:-0}
       AUTOBYTEUS_BIND_HOST: 0.0.0.0
       AUTOBYTEUS_SERVER_PORT: 8000
       AUTOBYTEUS_SERVER_HOST: ${AUTOBYTEUS_SERVER_HOST:-http://localhost:${AUTOBYTEUS_BACKEND_PORT:-8001}}
@@ -35,14 +19,24 @@ services:
       PERSISTENCE_PROVIDER: ${PERSISTENCE_PROVIDER:-sqlite}
       DB_TYPE: ${DB_TYPE:-sqlite}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      # Git / GitHub setup (optional runtime sync)
+      GITHUB_PAT: ${GITHUB_PAT:-}
+      GITHUB_USERNAME: ${GITHUB_USERNAME:-}
+      GITHUB_EMAIL: ${GITHUB_EMAIL:-}
+      AUTOBYTEUS_GIT_AUTH_MODE: ${AUTOBYTEUS_GIT_AUTH_MODE:-pat}
+      AUTOBYTEUS_SKIP_SYNC: ${AUTOBYTEUS_SKIP_SYNC:-1}
+      AUTOBYTEUS_REF: ${AUTOBYTEUS_REF:-main}
+      AUTOBYTEUS_SERVER_REF: ${AUTOBYTEUS_SERVER_REF:-main}
+      AUTOBYTEUS_TS_REF: ${AUTOBYTEUS_TS_REF:-main}
+      AUTOBYTEUS_SERVER_TS_REPO_URL: ${AUTOBYTEUS_SERVER_TS_REPO_URL:-}
+      AUTOBYTEUS_TS_REPO_URL: ${AUTOBYTEUS_TS_REPO_URL:-}
     ports:
       - "${AUTOBYTEUS_BACKEND_PORT:-8001}:8000"
       - "${AUTOBYTEUS_VNC_PORT:-5908}:5900"
       - "${AUTOBYTEUS_WEB_VNC_PORT:-6080}:6080"
       - "${AUTOBYTEUS_CHROME_DEBUG_PORT:-9228}:9223"
     volumes:
-      - ./.env:/app/autobyteus-server-ts/.env:ro
-      - autobyteus-server-workspace:/home/autobyteus/workspace
+      - autobyteus-server-workspace:/app/autobyteus-server-ts/workspace
       - autobyteus-server-data:/home/autobyteus/data
     restart: unless-stopped
 

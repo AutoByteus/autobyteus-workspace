@@ -64,7 +64,7 @@ describe('AIMessage.vue', () => {
       segments: [
         {
           type: 'inter_agent_message',
-          senderAgentId: 'member_abc123',
+          senderAgentRunId: 'member_abc123',
           recipientRoleName: 'Student',
           messageType: 'task_assignment',
           content: 'hello',

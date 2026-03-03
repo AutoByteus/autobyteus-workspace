@@ -151,7 +151,7 @@ interface AgentContext {
 }
 
 interface AgentRunState {
-  agentId: string;
+  runId: string;
   currentStreamState: string | null;
   conversationHistory: ConversationEntry[];
 }
@@ -212,9 +212,9 @@ Handles agent execution and real-time communication:
 | Action                           | Description                                |
 | -------------------------------- | ------------------------------------------ |
 | `sendUserInputAndSubscribe()`    | Send input and connect WebSocket stream    |
-| `connectToAgentStream(agentId)`  | Open WebSocket stream for events           |
+| `connectToAgentStream(runId)`    | Open WebSocket stream for events           |
 | `postToolExecutionApproval(...)` | Approve/reject tool invocation             |
-| `closeAgent(agentId, options)`   | Close agent, optionally terminate run      |
+| `closeAgent(runId, options)`     | Close agent, optionally terminate run      |
 
 ## User Flows
 
@@ -256,9 +256,9 @@ sequenceDiagram
     User->>ChatInput: Type message, press Send
     ChatInput->>RunStore: sendUserInputAndSubscribe(config, input)
     RunStore->>Backend: SendAgentUserInput mutation
-    Backend-->>RunStore: agentId
-    RunStore->>ContextsStore: promoteTemporaryId(temp, agentId)
-    RunStore->>ContextsStore: lockConfig(agentId)
+    Backend-->>RunStore: runId
+    RunStore->>ContextsStore: promoteTemporaryId(temp, runId)
+    RunStore->>ContextsStore: lockConfig(runId)
     RunStore->>Backend: Connect to WebSocket stream
 
     loop Real-time Events

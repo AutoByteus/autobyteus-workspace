@@ -20,14 +20,17 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
-type AgentContextLike = { agentId?: string };
+type AgentContextLike = {
+  // Core boundary from autobyteus-ts runtime; normalize immediately to `agentRunId` in local code.
+  agentId?: string;
+};
 
 export async function deleteAgentDefinition(
   context: AgentContextLike,
   definition_id: string,
 ): Promise<string> {
-  const agentId = context?.agentId ?? "unknown";
-  logger.info(`delete_agent_definition tool invoked by agent ${agentId} for ID '${definition_id}'.`);
+  const agentRunId = context?.agentId ?? "unknown";
+  logger.info(`delete_agent_definition tool invoked by agent run ${agentRunId} for ID '${definition_id}'.`);
 
   try {
     const service = AgentDefinitionService.getInstance();

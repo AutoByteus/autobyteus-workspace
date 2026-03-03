@@ -13,15 +13,15 @@ This document explains the minimal set of frontend pieces required to integrate 
 
 1) Your UI collects user input (prompt).
 2) Your feature store calls the GraphQL mutation `sendAgentUserInput`.
-3) The backend returns a new `agentId`.
-4) Your streaming service opens a WebSocket to `/ws/agent/<agentId>`.
+3) The backend returns a new `runId`.
+4) Your streaming service opens a WebSocket to `/ws/agent/<runId>`.
 5) Incoming stream events build AI segments in the conversation state.
 6) The UI renders the latest AI message (streaming text).
 
 ## Minimal building blocks
 
 ### 1) GraphQL sender
-A tiny wrapper that sends `sendAgentUserInput` and returns `agentId`.
+A tiny wrapper that sends `sendAgentUserInput` and returns `runId`.
 
 Required fields for a new agent run:
 - `agentDefinitionId` (string)
@@ -37,7 +37,7 @@ Orchestrates:
 
 ### 3) Streaming service + protocol
 A WebSocket client that:
-- connects to `/ws/agent/<agentId>`
+- connects to `/ws/agent/<runId>`
 - parses server messages
 - dispatches to handlers
 
@@ -92,7 +92,7 @@ Agent teams use the same streaming protocol but connect to a different WebSocket
 2) **Team run store**
 - Creates an `AgentTeamContext` with member contexts
 - Sends the initial team message
-- Opens `/ws/agent-team/<teamId>` stream
+- Opens `/ws/agent-team/<teamRunId>` stream
 
 3) **Team streaming service**
 - Routes incoming events to the correct member by `agent_name` or `agent_id`
@@ -172,11 +172,11 @@ export const useMyFeatureStore = defineStore('myFeature', {
 - "agentDefinitionId and llmModelIdentifier are required"
   - Both must be provided for a new agent run.
 - No stream output
-  - Verify WebSocket endpoint (`/ws/agent/<agentId>`) and backend logs.
+  - Verify WebSocket endpoint (`/ws/agent/<runId>`) and backend logs.
 - "String cannot represent a non string value"
   - Ensure `agentDefinitionId` is a string, not a number.
 
 ## Notes
 
-- Agent IDs are internal; use the agent **definition ID**, not the display name.
+- Agent run IDs are internal runtime IDs; use the agent **definition ID**, not the display name, when creating a new run.
 - If you want to use agent names, add a lookup layer that resolves name -> id first.

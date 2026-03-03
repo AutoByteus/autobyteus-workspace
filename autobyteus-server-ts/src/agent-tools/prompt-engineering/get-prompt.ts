@@ -27,7 +27,10 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
-type AgentContextLike = { agentId?: string };
+type AgentContextLike = {
+  // Core boundary from autobyteus-ts runtime; normalize immediately to `agentRunId` in local code.
+  agentId?: string;
+};
 
 const splitLines = (content: string): string[] => {
   const lines = content.split(/\r?\n/);
@@ -41,8 +44,8 @@ export async function getPrompt(
   context: AgentContextLike,
   prompt_id: string,
 ): Promise<string> {
-  const agentId = context?.agentId ?? "unknown";
-  logger.info(`get_prompt tool invoked by agent ${agentId} for prompt ID '${prompt_id}'.`);
+  const agentRunId = context?.agentId ?? "unknown";
+  logger.info(`get_prompt tool invoked by agent run ${agentRunId} for prompt ID '${prompt_id}'.`);
 
   if (!prompt_id) {
     throw new Error("prompt_id is a required argument.");

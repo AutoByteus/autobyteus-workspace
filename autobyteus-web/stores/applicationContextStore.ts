@@ -60,13 +60,13 @@ export const useApplicationContextStore = defineStore('applicationContext', {
         this.activeRunId = applicationRunId;
       }
     },
-    promoteTemporaryTeamId(applicationRunId: string, permanentId: string) {
+    promoteTemporaryTeamRunId(applicationRunId: string, permanentTeamRunId: string) {
       const run = this.activeRuns.get(applicationRunId);
       if (run) {
         const teamContext = run.teamContext;
-        teamContext.teamRunId = permanentId;
+        teamContext.teamRunId = permanentTeamRunId;
         teamContext.members.forEach(member => {
-          member.state.conversation.id = `${permanentId}::${member.state.runId}`;
+          member.state.conversation.id = `${permanentTeamRunId}::${member.state.runId}`;
         });
       }
     }

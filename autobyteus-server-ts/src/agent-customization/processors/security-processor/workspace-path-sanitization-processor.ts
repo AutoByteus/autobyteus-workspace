@@ -5,6 +5,7 @@ import {
   type AgentInputUserMessage,
 } from "autobyteus-ts";
 import type { UserMessageReceivedEvent } from "autobyteus-ts/agent/events/agent-events.js";
+import { resolveAgentRunIdFromRuntimeContext } from "../../utils/core-boundary-id-normalizer.js";
 
 const logger = {
   debug: (...args: unknown[]) => console.debug(...args),
@@ -35,7 +36,7 @@ export class WorkspacePathSanitizationProcessor extends BaseAgentUserInputMessag
     _triggeringEvent: UserMessageReceivedEvent,
   ): Promise<AgentInputUserMessage> {
     const workspaceRootPath = context.workspaceRootPath;
-    const agentRunId = context.agentId;
+    const agentRunId = resolveAgentRunIdFromRuntimeContext(context);
 
     if (!workspaceRootPath) {
       logger.debug(

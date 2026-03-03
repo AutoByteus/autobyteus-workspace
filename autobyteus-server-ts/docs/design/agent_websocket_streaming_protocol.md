@@ -6,8 +6,8 @@ Defines runtime behavior for agent and team streaming WebSocket endpoints.
 
 ## Endpoints
 
-- `GET /ws/agent/:agentId`
-- `GET /ws/agent-team/:teamId`
+- `GET /ws/agent/:runId`
+- `GET /ws/agent-team/:teamRunId`
 
 ## Core Components
 

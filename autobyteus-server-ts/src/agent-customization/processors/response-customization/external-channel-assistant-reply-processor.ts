@@ -14,6 +14,7 @@ import { DeliveryEventService } from "../../../external-channel/services/deliver
 import { ExternalChannelReplyContentFormatter } from "../../../external-channel/services/external-channel-reply-content-formatter.js";
 import { ReplyCallbackService } from "../../../external-channel/services/reply-callback-service.js";
 import type { PublishAssistantReplyReason } from "../../../external-channel/services/reply-callback-service.js";
+import { resolveAgentRunIdFromRuntimeContext } from "../../utils/core-boundary-id-normalizer.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -69,7 +70,7 @@ export class ExternalChannelAssistantReplyProcessor extends BaseLLMResponseProce
     context: AgentContext,
     triggeringEvent: LLMCompleteResponseReceivedEvent,
   ): Promise<boolean> {
-    const agentRunId = context.agentId;
+    const agentRunId = resolveAgentRunIdFromRuntimeContext(context);
     const formatted = this.formatter.format(response);
     const turnId = normalizeOptionalString(triggeringEvent.turnId);
     const callbackIdempotencyKey = buildCallbackIdempotencyKey(agentRunId, turnId);

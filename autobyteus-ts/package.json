@@ -15,7 +15,7 @@
   ],
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "devDependencies": {
     "@types/mime-types": "^3.0.1",
     "@types/node": "^25.0.10",

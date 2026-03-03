@@ -34,6 +34,7 @@ describe("CodexAppServerRuntimeAdapter", () => {
       expect.objectContaining({
         modelIdentifier: "gpt-5.3-codex",
         workingDirectory: "/tmp/workspace",
+        autoExecuteTools: false,
         llmConfig: { reasoning_effort: "high" },
       }),
     );
@@ -76,6 +77,7 @@ describe("CodexAppServerRuntimeAdapter", () => {
       expect.objectContaining({
         modelIdentifier: "gpt-5.3-codex",
         workingDirectory: "/tmp/workspace",
+        autoExecuteTools: false,
         llmConfig: { reasoning_effort: "medium" },
       }),
       expect.objectContaining({

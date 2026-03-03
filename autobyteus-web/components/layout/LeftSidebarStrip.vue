@@ -42,6 +42,8 @@ import { computed } from 'vue';
 import { useRoute, useRouter, type RouteLocationRaw } from 'vue-router';
 import { useLeftPanel } from '~/composables/useLeftPanel';
 
+const config = useRuntimeConfig();
+
 type PrimaryNavKey =
   | 'agents'
   | 'agentTeams'
@@ -51,7 +53,7 @@ type PrimaryNavKey =
   | 'memory'
   | 'media';
 
-const primaryNavItems: Array<{ key: PrimaryNavKey; label: string; icon: string }> = [
+const allPrimaryNavItems: Array<{ key: PrimaryNavKey; label: string; icon: string }> = [
   { key: 'agents', label: 'Agents', icon: 'heroicons:users' },
   { key: 'agentTeams', label: 'Agent Teams', icon: 'heroicons:user-group' },
   { key: 'applications', label: 'Applications', icon: 'heroicons:squares-2x2' },
@@ -60,6 +62,15 @@ const primaryNavItems: Array<{ key: PrimaryNavKey; label: string; icon: string }
   { key: 'memory', label: 'Memory', icon: 'ph:brain' },
   { key: 'media', label: 'Media', icon: 'heroicons:photo' },
 ];
+
+const primaryNavItems = computed(() => {
+  return allPrimaryNavItems.filter((item) => {
+    if (item.key === 'applications') {
+      return config.public.enableApplications;
+    }
+    return true;
+  });
+});
 
 const route = useRoute();
 const router = useRouter();

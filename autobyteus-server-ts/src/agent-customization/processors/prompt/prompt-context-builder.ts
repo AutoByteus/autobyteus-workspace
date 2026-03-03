@@ -11,16 +11,16 @@ const logger = {
 export class PromptContextBuilder {
   private userRequirementInput: AgentInputUserMessage;
   private workspaceRootPath: string | null;
-  private agentId: string;
+  private agentRunId: string;
 
   constructor(
     userRequirementInput: AgentInputUserMessage,
     workspaceRootPath: string | null,
-    agentId: string
+    agentRunId: string
   ) {
     this.userRequirementInput = userRequirementInput;
     this.workspaceRootPath = workspaceRootPath;
-    this.agentId = agentId;
+    this.agentRunId = agentRunId;
   }
 
   private isUrl(value: string): boolean {
@@ -46,7 +46,7 @@ export class PromptContextBuilder {
 
       if (this.isUrl(contextFile.uri)) {
         logger.warn(
-          `Agent '${this.agentId}': PromptContextBuilder cannot read URL content for '${contextFile.uri}'. Skipping.`,
+          `Agent run '${this.agentRunId}': PromptContextBuilder cannot read URL content for '${contextFile.uri}'. Skipping.`,
         );
         continue;
       }
@@ -69,13 +69,13 @@ export class PromptContextBuilder {
           parts.push(`File: ${displayPath}\n${content}`);
         } else {
           logger.warn(
-            `Agent '${this.agentId}': PromptContextBuilder: Context file not found at pre-validated path: '${absolutePath}'.`,
+            `Agent run '${this.agentRunId}': PromptContextBuilder: Context file not found at pre-validated path: '${absolutePath}'.`,
           );
           parts.push(`File: ${absolutePath}\nError: File not found.`);
         }
       } catch (error) {
         logger.error(
-          `Agent '${this.agentId}': PromptContextBuilder error reading file '${absolutePath}': ${String(error)}`,
+          `Agent run '${this.agentRunId}': PromptContextBuilder error reading file '${absolutePath}': ${String(error)}`,
         );
         parts.push(`File: ${absolutePath}\nError: Could not read file (${String(error)}).`);
       }

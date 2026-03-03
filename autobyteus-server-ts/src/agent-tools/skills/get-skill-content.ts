@@ -28,7 +28,10 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
-type AgentContextLike = { agentId?: string };
+type AgentContextLike = {
+  // Core boundary from autobyteus-ts runtime; normalize immediately to `agentRunId` in local code.
+  agentId?: string;
+};
 
 const serializeTree = (node: TreeNode, prefix = ""): string => {
   const label = node.isFile ? node.name : `${node.name}/`;
@@ -43,8 +46,8 @@ export async function getSkillContent(
   context: AgentContextLike,
   skill_name: string,
 ): Promise<string> {
-  const agentId = context?.agentId ?? "unknown";
-  logger.info(`get_skill_content tool invoked by agent ${agentId} for skill '${skill_name}'.`);
+  const agentRunId = context?.agentId ?? "unknown";
+  logger.info(`get_skill_content tool invoked by agent run ${agentRunId} for skill '${skill_name}'.`);
 
   if (!skill_name) {
     throw new Error("skill_name is a required argument.");
