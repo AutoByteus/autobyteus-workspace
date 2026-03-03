@@ -138,6 +138,7 @@ Implement `claude_agent_sdk` runtime support and refactor shared runtime orchest
 | R-015 | J | source/test assertions that Claude turn execution uses V2 session APIs only |
 | R-016 | J | interop-boundary unit tests for available/unavailable V2 control capabilities |
 | R-017 | J | team-metadata turn-preamble assertions + live teammate-aware relay checks |
+| R-018 | K | Claude V2 interop unit tests for workspace cwd scoping and runtime-service forwarding assertions |
 
 ## Test Plan
 
@@ -166,3 +167,4 @@ Implement `claude_agent_sdk` runtime support and refactor shared runtime orchest
 8. Batch H (listener continuity hardening + live continue/send proof).
 9. Batch I (Claude inter-agent tooling parity and runtime-neutral relay completion).
 10. Batch J (Claude V2-only runtime migration and V1 turn-path retirement).
+11. Batch K (Claude V2 workspace cwd propagation hardening via interop-level scoped session creation).

@@ -23,6 +23,59 @@ export type ClaudeV2SessionControlLike = {
   close?: () => void;
 };
 
+let v2SessionSpawnQueue: Promise<void> = Promise.resolve();
+
+const runInV2SessionSpawnCriticalSection = async <T>(
+  operation: () => Promise<T>,
+): Promise<T> => {
+  const previous = v2SessionSpawnQueue;
+  let release!: () => void;
+  v2SessionSpawnQueue = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  await previous;
+  try {
+    return await operation();
+  } finally {
+    release();
+  }
+};
+
+const withScopedProcessCwd = async <T>(
+  workingDirectory: string | null,
+  operation: () => Promise<T>,
+): Promise<T> => {
+  const targetWorkingDirectory = workingDirectory?.trim();
+  if (!targetWorkingDirectory) {
+    return operation();
+  }
+
+  const originalWorkingDirectory = process.cwd();
+  if (originalWorkingDirectory === targetWorkingDirectory) {
+    return operation();
+  }
+
+  try {
+    process.chdir(targetWorkingDirectory);
+  } catch (error) {
+    throw new Error(
+      `CLAUDE_V2_WORKING_DIRECTORY_INVALID: Unable to switch cwd to '${targetWorkingDirectory}': ${String(
+        error,
+      )}`,
+    );
+  }
+
+  try {
+    return await operation();
+  } finally {
+    try {
+      process.chdir(originalWorkingDirectory);
+    } catch {
+      // best-effort cwd restoration to avoid masking the original error
+    }
+  }
+};
+
 const asClaudeV2Session = (value: unknown): ClaudeV2SessionLike | null => {
   const payload = asObject(value);
   if (!payload) {
@@ -41,6 +94,7 @@ export const createOrResumeClaudeV2Session = async (options: {
   sdk: ClaudeSdkModuleLike | null;
   model: string;
   pathToClaudeCodeExecutable: string;
+  workingDirectory: string | null;
   resumeSessionId: string | null;
   enableSendMessageToTooling: boolean;
 }): Promise<ClaudeV2SessionLike> => {
@@ -54,14 +108,19 @@ export const createOrResumeClaudeV2Session = async (options: {
     model: options.model,
     pathToClaudeCodeExecutable: options.pathToClaudeCodeExecutable,
     permissionMode: "default",
+    ...(options.workingDirectory ? { cwd: options.workingDirectory } : {}),
     ...(options.enableSendMessageToTooling
       ? { allowedTools: [...SEND_MESSAGE_TO_ALLOWED_TOOLS] }
       : {}),
   };
 
-  const rawSession = options.resumeSessionId
-    ? await tryCallWithVariants(resumeFn, [[options.resumeSessionId, sessionOptions]])
-    : await tryCallWithVariants(createFn, [[sessionOptions]]);
+  const rawSession = await runInV2SessionSpawnCriticalSection(async () =>
+    withScopedProcessCwd(options.workingDirectory, async () =>
+      options.resumeSessionId
+        ? tryCallWithVariants(resumeFn, [[options.resumeSessionId, sessionOptions]])
+        : tryCallWithVariants(createFn, [[sessionOptions]]),
+    ),
+  );
   const normalized = asClaudeV2Session(rawSession);
   if (!normalized) {
     throw new Error("Claude SDK V2 session object is invalid.");

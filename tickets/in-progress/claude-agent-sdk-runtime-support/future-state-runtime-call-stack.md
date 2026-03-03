@@ -361,3 +361,25 @@ Claude MCP tool handler returns deterministic error payload/code
 claude-runtime-v2-control-interop.ts:requireControlMethod(...)
 └── throws deterministic `CLAUDE_V2_CONTROL_UNAVAILABLE` runtime error and aborts turn dispatch
 ```
+
+## UC-016: Claude V2 Workspace CWD Propagation
+
+### Primary Path
+
+```text
+[ENTRY] claude-agent-sdk-runtime-service.ts:resolveOrCreateV2Session(state,...)
+├── forwards `state.workingDirectory` into claude-runtime-v2-control-interop.ts:createOrResumeClaudeV2Session(...)
+├── interop acquires serialized session-creation critical section
+├── interop temporarily scopes `process.cwd()` to run workspace path
+├── invokes SDK V2 create/resume API while cwd scope is active
+├── restores original `process.cwd()` immediately after API call
+└── returns validated session/control handles for normal turn flow
+```
+
+### Error Path
+
+```text
+[ERROR] workspace path cannot be activated for cwd-scoped V2 session create/resume
+claude-runtime-v2-control-interop.ts fails deterministic cwd scope setup
+└── emits `CLAUDE_V2_WORKING_DIRECTORY_INVALID` and fails turn start without silent fallback to wrong cwd
+```

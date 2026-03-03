@@ -507,6 +507,7 @@ export class ClaudeAgentSdkRuntimeService {
       pathToClaudeCodeExecutable: resolveClaudeCodeExecutablePath({
         runtimeMetadata: state.runtimeMetadata,
       }),
+      workingDirectory: state.workingDirectory,
       resumeSessionId: state.hasCompletedTurn ? state.sessionId : null,
       enableSendMessageToTooling: this.isSendMessageToToolingEnabled(state),
     });

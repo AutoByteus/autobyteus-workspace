@@ -1,6 +1,9 @@
 import { AgentInputUserMessage } from "autobyteus-ts";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { mkdirSync } from "node:fs";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ClaudeAgentSdkRuntimeService } from "../../../../src/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.js";
+
+const TEST_WORKSPACE_DIR = `${process.cwd()}/tests/.tmp/claude-runtime-unit-workspace`;
 
 const waitFor = async (
   predicate: () => boolean,
@@ -44,6 +47,10 @@ const createFakeV2Session = (
 };
 
 describe("ClaudeAgentSdkRuntimeService", () => {
+  beforeEach(() => {
+    mkdirSync(TEST_WORKSPACE_DIR, { recursive: true });
+  });
+
   afterEach(() => {
     delete process.env.CLAUDE_AGENT_SDK_MODELS;
     delete process.env.CLAUDE_CODE_EXECUTABLE_PATH;
@@ -75,7 +82,7 @@ describe("ClaudeAgentSdkRuntimeService", () => {
 
     await service.createRunSession("run-1", {
       modelIdentifier: "claude-sonnet-4-5",
-      workingDirectory: "/tmp/workspace",
+      workingDirectory: TEST_WORKSPACE_DIR,
       llmConfig: null,
     });
 
@@ -141,7 +148,7 @@ describe("ClaudeAgentSdkRuntimeService", () => {
 
     await service.createRunSession("run-real-shape", {
       modelIdentifier: "default",
-      workingDirectory: "/tmp/workspace",
+      workingDirectory: TEST_WORKSPACE_DIR,
       llmConfig: null,
     });
 
@@ -186,7 +193,7 @@ describe("ClaudeAgentSdkRuntimeService", () => {
 
     await service.createRunSession("run-resume", {
       modelIdentifier: "default",
-      workingDirectory: "/tmp/workspace",
+      workingDirectory: TEST_WORKSPACE_DIR,
       llmConfig: null,
     });
 
@@ -227,7 +234,7 @@ describe("ClaudeAgentSdkRuntimeService", () => {
       "run-restored",
       {
         modelIdentifier: "default",
-        workingDirectory: "/tmp/workspace",
+        workingDirectory: TEST_WORKSPACE_DIR,
         llmConfig: null,
       },
       { sessionId: "restored-session-1", metadata: null },
@@ -268,7 +275,7 @@ describe("ClaudeAgentSdkRuntimeService", () => {
 
     await service.createRunSession("run-rebind", {
       modelIdentifier: "default",
-      workingDirectory: "/tmp/workspace",
+      workingDirectory: TEST_WORKSPACE_DIR,
       llmConfig: null,
     });
     await service.sendTurn(
@@ -282,7 +289,7 @@ describe("ClaudeAgentSdkRuntimeService", () => {
       "run-rebind",
       {
         modelIdentifier: "default",
-        workingDirectory: "/tmp/workspace",
+        workingDirectory: TEST_WORKSPACE_DIR,
         llmConfig: null,
       },
       { sessionId: "restored-session-1", metadata: null },
@@ -313,7 +320,7 @@ describe("ClaudeAgentSdkRuntimeService", () => {
 
     await service.createRunSession("run-relay-target", {
       modelIdentifier: "default",
-      workingDirectory: "/tmp/workspace",
+      workingDirectory: TEST_WORKSPACE_DIR,
       llmConfig: null,
     });
 
@@ -379,7 +386,7 @@ describe("ClaudeAgentSdkRuntimeService", () => {
       "run-team-member",
       {
         modelIdentifier: "default",
-        workingDirectory: "/tmp/workspace",
+        workingDirectory: TEST_WORKSPACE_DIR,
         llmConfig: null,
         runtimeMetadata: {
           teamRunId: "team-1",
@@ -434,7 +441,7 @@ describe("ClaudeAgentSdkRuntimeService", () => {
     const service = new ClaudeAgentSdkRuntimeService();
     await service.createRunSession("run-empty", {
       modelIdentifier: "claude-sonnet-4-5",
-      workingDirectory: "/tmp/workspace",
+      workingDirectory: TEST_WORKSPACE_DIR,
       llmConfig: null,
     });
 
@@ -510,7 +517,7 @@ describe("ClaudeAgentSdkRuntimeService", () => {
 
     await service.createRunSession("run-exec-fallback", {
       modelIdentifier: "default",
-      workingDirectory: "/tmp/workspace",
+      workingDirectory: TEST_WORKSPACE_DIR,
       llmConfig: null,
     });
 
@@ -521,8 +528,10 @@ describe("ClaudeAgentSdkRuntimeService", () => {
     await waitFor(() => createSession.mock.calls.length > 0);
 
     const resolvedExecutable = createSession.mock.calls[0]?.[0]?.pathToClaudeCodeExecutable;
+    const resolvedWorkingDirectory = createSession.mock.calls[0]?.[0]?.cwd;
     expect(typeof resolvedExecutable).toBe("string");
     expect(resolvedExecutable).not.toBe(invalidExecutablePath);
+    expect(resolvedWorkingDirectory).toBe(TEST_WORKSPACE_DIR);
   });
 
   it("prefers SDK session messages when available", async () => {
@@ -582,7 +591,7 @@ describe("ClaudeAgentSdkRuntimeService", () => {
     const service = new ClaudeAgentSdkRuntimeService();
     await service.createRunSession("run-approve", {
       modelIdentifier: "claude-sonnet-4-5",
-      workingDirectory: "/tmp/workspace",
+      workingDirectory: TEST_WORKSPACE_DIR,
       llmConfig: null,
     });
 

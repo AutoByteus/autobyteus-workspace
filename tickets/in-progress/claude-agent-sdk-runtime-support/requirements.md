@@ -2,7 +2,7 @@
 
 - Status: `Design-ready`
 - Ticket: `claude-agent-sdk-runtime-support`
-- Last Updated: `2026-02-28`
+- Last Updated: `2026-03-03`
 
 ## Goal / Problem Statement
 
@@ -30,6 +30,7 @@ Add Claude Agent SDK as a first-class runtime (`claude_agent_sdk`) alongside `au
 - `UC-011`: Claude live E2E coverage depth matches Codex live E2E coverage count baseline, with explicit assertions for both supported and intentionally unsupported Claude runtime paths.
 - `UC-014`: Claude team members receive teammate-aware runtime instructions and can execute `send_message_to` to route inter-agent messages through team runtime relay.
 - `UC-015`: Claude runtime turn execution and session continuation run through Claude SDK V2 session APIs only (no legacy V1 `query()` runtime-turn path).
+- `UC-016`: Claude runtime sessions execute inside the selected workspace path (for example `temp_workspace`) rather than inheriting server-process worktree cwd.
 
 ## Out of Scope
 
@@ -55,6 +56,7 @@ Add Claude Agent SDK as a first-class runtime (`claude_agent_sdk`) alongside `au
 - `R-015`: Claude runtime implementation must use SDK V2 session APIs (`unstable_v2_createSession` / `unstable_v2_resumeSession`) for run create/restore/send flows and must not keep V1 `query()` as the active runtime-turn execution path.
 - `R-016`: Any required use of non-public V2 control capabilities (for example dynamic MCP server control) must be isolated behind a dedicated SDK interop boundary with capability detection and deterministic error handling (no broad runtime service coupling to SDK internals).
 - `R-017`: Team-member awareness for Claude V2 sessions must remain deterministic without V1 `systemPrompt` options by applying runtime-owned teammate instruction injection at the turn-construction boundary.
+- `R-018`: Claude V2 session creation/resume must honor the resolved run workspace directory for each run, with deterministic restoration/isolation so concurrent run creation cannot leak cwd across runs.
 
 ## Acceptance Criteria
 
@@ -75,6 +77,7 @@ Add Claude Agent SDK as a first-class runtime (`claude_agent_sdk`) alongside `au
 - `AC-015` (`R-015`): Claude runtime service source and tests show V2 session API invocation for create/restore/send (`unstable_v2_createSession`/`unstable_v2_resumeSession`) and no active V1 `query()` turn-execution path remains in Claude runtime flow.
 - `AC-016` (`R-016`): A dedicated interop module gates any non-public V2 control usage (e.g., dynamic MCP registration) and emits deterministic runtime errors when control capabilities are unavailable, with unit coverage for both supported and unavailable branches.
 - `AC-017` (`R-017`): Team-manifest metadata is injected through the V2 turn-construction path and live Claude team tests confirm teammate-aware `send_message_to` behavior remains available without relying on V1 `systemPrompt` option wiring.
+- `AC-018` (`R-018`): Claude V2 session initialization path applies the run workspace cwd during SDK session create/resume and restores the original process cwd afterward, with regression tests covering both create and resume branches.
 
 ## Constraints / Dependencies
 
@@ -115,6 +118,7 @@ Add Claude Agent SDK as a first-class runtime (`claude_agent_sdk`) alongside `au
 - `R-015` -> `UC-015`, `UC-001`, `UC-004`
 - `R-016` -> `UC-015`, `UC-014`, `UC-010`
 - `R-017` -> `UC-014`, `UC-015`, `UC-006`
+- `R-018` -> `UC-016`, `UC-001`, `UC-004`
 
 ## Acceptance Criteria Coverage Map (AC -> Stage 7 Scenario)
 
@@ -135,3 +139,4 @@ Add Claude Agent SDK as a first-class runtime (`claude_agent_sdk`) alongside `au
 - `AC-015` -> `AV-015`
 - `AC-016` -> `AV-016`
 - `AC-017` -> `AV-017`
+- `AC-018` -> `AV-018`

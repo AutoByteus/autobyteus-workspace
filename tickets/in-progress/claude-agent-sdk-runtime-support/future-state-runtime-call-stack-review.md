@@ -392,3 +392,73 @@
 - Gate Decision: `Pass`
 - Decision Reason: two consecutive clean rounds completed with no blockers, no new use cases, and no required persisted artifact updates.
 - Next Stage: `6 (Implementation for V2-only Claude runtime path)`
+
+## Re-Entry Round 11 (Deep Review, Workspace CWD Propagation Delta)
+
+### Missing-Use-Case Discovery Sweep
+
+- Requirement delta sweep: `R-018` / `AC-018` require selected workspace path to be honored for Claude V2 run creation/restore.
+- Boundary sweep: confirms workaround must stay in V2 interop boundary; runtime service should only forward workspace path.
+- Concurrency sweep: identified race-risk if process cwd is scoped without serialization; requires explicit critical section.
+- New use cases discovered: `Yes` (`UC-016`).
+
+### Findings
+
+- Blocking findings: `None`.
+- Required persisted artifact updates:
+  - `investigation-notes.md`
+  - `requirements.md`
+  - `implementation-plan.md`
+  - `future-state-runtime-call-stack.md`
+
+### Applied Updates
+
+- Updated files:
+  - `tickets/in-progress/claude-agent-sdk-runtime-support/investigation-notes.md`
+  - `tickets/in-progress/claude-agent-sdk-runtime-support/requirements.md`
+  - `tickets/in-progress/claude-agent-sdk-runtime-support/implementation-plan.md`
+  - `tickets/in-progress/claude-agent-sdk-runtime-support/future-state-runtime-call-stack.md`
+- New artifact versions:
+  - `future-state-runtime-call-stack.md` -> `v4`
+- Changed sections:
+  - Workspace mismatch root-cause evidence against Claude SDK V2 source
+  - Requirement/acceptance additions `R-018` / `AC-018`
+  - New runtime call stack `UC-016` with serialized cwd scoping
+- Resolved findings: workspace propagation is now modeled with explicit isolation/concurrency guardrails.
+
+### Round Verdict
+
+- Status: `Candidate Go`
+- Clean-review streak state: `Candidate Go (1/2)` (workspace-cwd cycle)
+
+## Re-Entry Round 12 (Deep Review, Workspace CWD Propagation Confirmation)
+
+### Missing-Use-Case Discovery Sweep
+
+- Coverage re-check: `R-001..R-018` mapped; `UC-016` included in runtime model.
+- Decoupling re-check: no orchestration/service-layer SDK-internal leakage; interop owns workaround.
+- Concurrency re-check: serialized critical section in model prevents cross-run cwd overlap during session spawn.
+- New use cases discovered: `No`.
+
+### Findings
+
+- Blocking findings: `None`.
+- Required persisted artifact updates: `None`.
+
+### Applied Updates
+
+- Updated files: `None`.
+- New artifact versions: `None`.
+- Changed sections: `None`.
+- Resolved findings: `N/A`.
+
+### Round Verdict
+
+- Status: `Go Confirmed`
+- Clean-review streak state: `Go Confirmed (2/2)` (workspace-cwd cycle)
+
+## Re-Entry Stage 5 Decision (Workspace CWD Propagation Delta)
+
+- Gate Decision: `Pass`
+- Decision Reason: two consecutive clean rounds completed with no blockers, no newly discovered use cases, and no required persisted artifact updates.
+- Next Stage: `6 (Implementation for workspace cwd propagation hardening)`

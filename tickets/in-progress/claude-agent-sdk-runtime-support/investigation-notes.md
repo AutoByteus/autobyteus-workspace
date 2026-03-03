@@ -259,6 +259,38 @@
 - Attempted `query.applyFlagSettings({ appendSystemPrompt: ... })` and related variants.
 - Behavior did not show deterministic system-instruction enforcement in probes; treat as unsupported/unreliable for architecture-critical teammate instruction injection.
 
+## Re-Entry Delta (2026-03-03, workspace mismatch in Claude V2 sessions)
+
+1. User-reported runtime behavior is reproducible.
+- Selected UI workspace is `temp_workspace`, but Claude agent replies indicate it is operating from the server worktree root.
+- Repro evidence from user screenshots:
+  - Claude can read ticket/worktree files not expected in selected temp workspace.
+  - Team relay and continuation otherwise work, isolating fault to workspace propagation.
+
+2. Root cause in current server implementation.
+- `claude-agent-sdk-runtime-service.ts` resolves and stores `state.workingDirectory`, but `resolveOrCreateV2Session(...)` did not pass that value into V2 session creation interop.
+- `claude-runtime-v2-control-interop.ts` only passed model/executable/permission/tool allowlist options.
+
+3. Root cause in upstream Claude Agent SDK V2 implementation (`@anthropic-ai/claude-agent-sdk@0.2.63`).
+- Public TypeScript surface:
+  - `query()` options include `cwd` (v1-style path).
+  - `SDKSessionOptions` for `unstable_v2_createSession` / `unstable_v2_resumeSession` do not expose `cwd`.
+- SDK source inspection (`sdk.mjs`, class `SQ`):
+  - V2 session constructor builds `new V4({...})` without forwarding `cwd`.
+  - Therefore child Claude process inherits `process.cwd()` from server process at spawn time.
+
+4. Design implication.
+- We cannot rely on normal V2 option passing for per-run workspace at the current SDK version.
+- A runtime-local workaround is required: scope `process.cwd()` around V2 session create/resume and serialize that critical section to prevent cross-run cwd races.
+- Keep workaround isolated in `claude-runtime-v2-control-interop.ts` so orchestration/service layers stay decoupled from SDK internals.
+
+5. Validation direction for this cycle.
+- Add interop-level regression tests that assert:
+  - selected workspace cwd is applied during V2 create/resume calls,
+  - original cwd is restored after session creation,
+  - serialized critical section prevents overlapping cwd mutation windows.
+- Add runtime-service unit assertion that `state.workingDirectory` is forwarded into interop session-creation call.
+
 6. Design implications for V2-only requirement.
 - V2-only migration is feasible for session lifecycle and dynamic MCP tooling if we isolate internal query-control usage behind a dedicated interop boundary.
 - Team-manifest instruction strategy cannot rely on V1 `systemPrompt` options in V2-only mode; we need an alternate deterministic path (turn-preamble injection at runtime service boundary) until official V2 system prompt support is exposed.
