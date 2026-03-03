@@ -25,6 +25,8 @@ NUXT_PUBLIC_GRAPHQL_BASE_URL=http://localhost:8000/graphql
 NUXT_PUBLIC_REST_BASE_URL=http://localhost:8000/rest
 # WebSocket endpoint
 NUXT_PUBLIC_WS_BASE_URL=ws://localhost:8000/graphql
+# Feature Flags (Optional)
+ENABLE_APPLICATIONS=false
 ```
 
 > **Note for Electron App**: When running as an Electron application with the integrated backend server, these endpoint URLs are automatically configured with the dynamically allocated port.

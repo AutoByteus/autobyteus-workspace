@@ -170,6 +170,8 @@ jobs:
           path: |
             autobyteus-web/electron-dist/*macos-x64*.dmg
             autobyteus-web/electron-dist/*macos-x64*.dmg.blockmap
+            autobyteus-web/electron-dist/*macos-x64*.zip
+            autobyteus-web/electron-dist/*macos-x64*.zip.blockmap
           if-no-files-found: error
 
   build-linux:
