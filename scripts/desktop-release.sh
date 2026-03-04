@@ -95,6 +95,9 @@ prepare_release() {
 
   while [[ $# -gt 0 ]]; do
     case "$1" in
+      --)
+        shift
+        ;;
       --branch)
         branch="${2:-}"
         shift 2
@@ -156,6 +159,9 @@ test_release_workflow() {
   local ref="$DEFAULT_BRANCH"
   while [[ $# -gt 0 ]]; do
     case "$1" in
+      --)
+        shift
+        ;;
       --ref)
         ref="${2:-}"
         shift 2
@@ -181,6 +187,9 @@ publish_release_workflow() {
 
   while [[ $# -gt 0 ]]; do
     case "$1" in
+      --)
+        shift
+        ;;
       --ref)
         ref="${2:-}"
         shift 2
