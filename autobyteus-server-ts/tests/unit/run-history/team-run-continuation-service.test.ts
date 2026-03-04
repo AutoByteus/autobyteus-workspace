@@ -79,4 +79,142 @@ describe("TeamRunContinuationService", () => {
       summary: "hello",
     });
   });
+
+  it("persists refreshed codex member runtime references after restore", async () => {
+    const persistTeamRunManifest = vi.fn().mockResolvedValue(undefined);
+    const onTeamEvent = vi.fn().mockResolvedValue(undefined);
+    const sendToMember = vi.fn().mockResolvedValue(undefined);
+    const restoreCodexTeamRunSessions = vi.fn().mockResolvedValue([
+      {
+        memberName: "professor",
+        memberRouteKey: "professor",
+        memberRunId: "member-professor",
+        runtimeKind: "codex_app_server",
+        runtimeReference: {
+          runtimeKind: "codex_app_server",
+          sessionId: "member-professor",
+          threadId: "thread-professor",
+          metadata: null,
+        },
+        agentDefinitionId: "agent-prof",
+        llmModelIdentifier: "model-prof",
+        autoExecuteTools: false,
+        llmConfig: null,
+        workspaceRootPath: null,
+      },
+      {
+        memberName: "student",
+        memberRouteKey: "student",
+        memberRunId: "member-student",
+        runtimeKind: "codex_app_server",
+        runtimeReference: {
+          runtimeKind: "codex_app_server",
+          sessionId: "member-student",
+          threadId: "thread-student-new",
+          metadata: null,
+        },
+        agentDefinitionId: "agent-student",
+        llmModelIdentifier: "model-student",
+        autoExecuteTools: false,
+        llmConfig: null,
+        workspaceRootPath: null,
+      },
+    ]);
+
+    const service = new TeamRunContinuationService({
+      memoryDir,
+      teamRunManager: {
+        getTeamRun: vi.fn().mockReturnValue(null),
+        createTeamRunWithId: vi.fn(),
+        terminateTeamRun: vi.fn(),
+      } as any,
+      teamRunHistoryService: {
+        getTeamRunResumeConfig: vi.fn().mockResolvedValue({
+          teamRunId: "team-codex-1",
+          manifest: {
+            teamRunId: "team-codex-1",
+            teamDefinitionId: "team-def-1",
+            teamDefinitionName: "Team Def",
+            workspaceRootPath: null,
+            coordinatorMemberRouteKey: "professor",
+            runVersion: 1,
+            createdAt: "2026-03-04T00:00:00.000Z",
+            updatedAt: "2026-03-04T00:00:00.000Z",
+            memberBindings: [
+              {
+                memberName: "professor",
+                memberRouteKey: "professor",
+                memberRunId: "member-professor",
+                runtimeKind: "codex_app_server",
+                runtimeReference: {
+                  runtimeKind: "codex_app_server",
+                  sessionId: "member-professor",
+                  threadId: "thread-professor",
+                  metadata: null,
+                },
+                agentDefinitionId: "agent-prof",
+                llmModelIdentifier: "model-prof",
+                autoExecuteTools: false,
+                llmConfig: null,
+                workspaceRootPath: null,
+              },
+              {
+                memberName: "student",
+                memberRouteKey: "student",
+                memberRunId: "member-student",
+                runtimeKind: "codex_app_server",
+                runtimeReference: {
+                  runtimeKind: "codex_app_server",
+                  sessionId: "member-student",
+                  threadId: "thread-student-old",
+                  metadata: null,
+                },
+                agentDefinitionId: "agent-student",
+                llmModelIdentifier: "model-student",
+                autoExecuteTools: false,
+                llmConfig: null,
+                workspaceRootPath: null,
+              },
+            ],
+          },
+        }),
+        persistTeamRunManifest,
+        onTeamEvent,
+      } as any,
+      teamMemberRuntimeOrchestrator: {
+        hasActiveMemberBinding: vi.fn().mockReturnValue(false),
+        restoreCodexTeamRunSessions,
+        sendToMember,
+        removeTeam: vi.fn(),
+      } as any,
+      workspaceManager: {
+        ensureWorkspaceByRootPath: vi.fn(),
+      } as any,
+    });
+
+    await service.continueTeamRun({
+      teamRunId: "team-codex-1",
+      userInput: { content: "hello codex team", contextFiles: [] } as any,
+      targetMemberRouteKey: "student",
+    });
+
+    expect(restoreCodexTeamRunSessions).toHaveBeenCalledTimes(1);
+    expect(persistTeamRunManifest).toHaveBeenCalledTimes(1);
+    const persistedManifest = persistTeamRunManifest.mock.calls[0]?.[1];
+    const persistedStudentBinding = persistedManifest?.memberBindings?.find(
+      (binding: any) => binding.memberRouteKey === "student",
+    );
+    expect(persistedStudentBinding?.runtimeReference?.threadId).toBe("thread-student-new");
+
+    expect(sendToMember).toHaveBeenCalledWith(
+      "team-codex-1",
+      "student",
+      expect.any(Object),
+      { fallbackTargetMemberName: "professor" },
+    );
+    expect(onTeamEvent).toHaveBeenCalledWith("team-codex-1", {
+      status: "ACTIVE",
+      summary: "hello codex team",
+    });
+  });
 });

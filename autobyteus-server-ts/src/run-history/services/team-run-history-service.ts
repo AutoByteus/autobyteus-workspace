@@ -135,6 +135,55 @@ export class TeamRunHistoryService {
     await this.indexStore.upsertRow(row);
   }
 
+  async persistTeamRunManifest(teamRunId: string, manifest: TeamRunManifest): Promise<void> {
+    const normalizedTeamRunId = teamRunId.trim();
+    if (!normalizedTeamRunId) {
+      throw new Error("teamRunId is required.");
+    }
+
+    const existing = await this.indexStore.getRow(normalizedTeamRunId);
+    const timestamp = nowIso();
+    const persistedManifest: TeamRunManifest = {
+      ...manifest,
+      teamRunId: normalizedTeamRunId,
+      updatedAt: timestamp,
+    };
+    const lastKnownStatus = existing?.lastKnownStatus ?? "ACTIVE";
+    const lastActivityAt = existing?.lastActivityAt ?? timestamp;
+
+    await this.memberLayoutStore.ensureLocalMemberSubtrees(
+      normalizedTeamRunId,
+      persistedManifest.memberBindings.map((binding) => binding.memberRunId),
+    );
+    await this.writeMemberRunManifests(
+      normalizedTeamRunId,
+      persistedManifest,
+      lastKnownStatus,
+      lastActivityAt,
+    );
+    await this.manifestStore.writeManifest(normalizedTeamRunId, persistedManifest);
+
+    if (existing) {
+      await this.indexStore.updateRow(normalizedTeamRunId, {
+        teamDefinitionId: persistedManifest.teamDefinitionId,
+        teamDefinitionName: persistedManifest.teamDefinitionName,
+        workspaceRootPath: persistedManifest.workspaceRootPath,
+      });
+      return;
+    }
+
+    await this.indexStore.upsertRow({
+      teamRunId: normalizedTeamRunId,
+      teamDefinitionId: persistedManifest.teamDefinitionId,
+      teamDefinitionName: persistedManifest.teamDefinitionName,
+      workspaceRootPath: persistedManifest.workspaceRootPath,
+      summary: "",
+      lastActivityAt,
+      lastKnownStatus,
+      deleteLifecycle: "READY",
+    });
+  }
+
   async onTeamEvent(
     teamRunId: string,
     options: { status?: TeamRunKnownStatus; summary?: string } = {},
