@@ -2,9 +2,10 @@ import "reflect-metadata";
 import { createRequire } from "node:module";
 import path from "node:path";
 import os from "node:os";
+import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 import { randomUUID } from "node:crypto";
-import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { copyFile, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import fastify from "fastify";
 import websocket from "@fastify/websocket";
 import WebSocket from "ws";
@@ -13,6 +14,8 @@ import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { getMediaStorageService } from "../../../src/services/media-storage-service.js";
+import { getCodexThreadHistoryReader } from "../../../src/runtime-execution/codex-app-server/codex-thread-history-reader.js";
 
 const waitForSocketOpen = (socket: WebSocket, timeoutMs = 10000): Promise<void> =>
   new Promise((resolve, reject) => {
@@ -35,6 +38,8 @@ const codexBinaryReady = spawnSync("codex", ["--version"], {
 
 const liveCodexTestsEnabled = process.env.RUN_CODEX_E2E === "1";
 const describeCodexRuntime = codexBinaryReady && liveCodexTestsEnabled ? describe : describe.skip;
+const runtimeE2eDir = path.dirname(fileURLToPath(import.meta.url));
+const imageInputFixturePath = path.join(runtimeE2eDir, "fixtures", "codex-image-input-fixture.png");
 
 describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
   let schema: GraphQLSchema;
@@ -240,6 +245,237 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
     });
     expect(terminateResult.terminateAgentRun.success).toBe(true);
   });
+
+  it(
+    "accepts image contextFiles from URL and absolute path and records both in Codex thread history",
+    async () => {
+      const modelIdentifier = await fetchPreferredCodexToolModelIdentifier();
+      const mediaStorageService = getMediaStorageService();
+      const relativeMediaPathFromUrl = `ingested_context/${randomUUID()}.png`;
+      const expectedLocalImagePathFromUrl = path.resolve(
+        path.join(mediaStorageService.getMediaRoot(), relativeMediaPathFromUrl),
+      );
+      await copyFile(imageInputFixturePath, expectedLocalImagePathFromUrl);
+      const ingestedImageUrl = `http://localhost:8000/rest/files/${relativeMediaPathFromUrl}`;
+
+      const relativeMediaPathFromPath = `ingested_context/${randomUUID()}.png`;
+      const expectedLocalImagePathFromPath = path.resolve(
+        path.join(mediaStorageService.getMediaRoot(), relativeMediaPathFromPath),
+      );
+      await copyFile(imageInputFixturePath, expectedLocalImagePathFromPath);
+
+      const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "codex-image-input-e2e-"));
+      const promptToken = `codex_image_input_${randomUUID().replace(/-/g, "_")}`;
+      let runId: string | null = null;
+
+      const continueMutation = `
+        mutation ContinueRun($input: ContinueRunInput!) {
+          continueRun(input: $input) {
+            success
+            message
+            runId
+          }
+        }
+      `;
+      const resumeQuery = `
+        query Resume($runId: String!) {
+          getRunResumeConfig(runId: $runId) {
+            runId
+            manifestConfig {
+              workspaceRootPath
+              runtimeReference {
+                threadId
+              }
+            }
+          }
+        }
+      `;
+      const terminateMutation = `
+        mutation Terminate($id: String!) {
+          terminateAgentRun(id: $id) {
+            success
+            message
+          }
+        }
+      `;
+
+      const asObject = (value: unknown): Record<string, unknown> | null =>
+        value && typeof value === "object" && !Array.isArray(value)
+          ? (value as Record<string, unknown>)
+          : null;
+      const asArray = (value: unknown): unknown[] => (Array.isArray(value) ? value : []);
+      const asString = (value: unknown): string | null =>
+        typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
+      const toAbsoluteLocalPath = (value: string | null): string | null => {
+        if (!value) {
+          return null;
+        }
+        if (value.startsWith("file://")) {
+          try {
+            return path.resolve(fileURLToPath(value));
+          } catch {
+            return null;
+          }
+        }
+        return path.resolve(value);
+      };
+      const extractTurns = (payload: Record<string, unknown>): Array<Record<string, unknown>> => {
+        const thread = asObject(payload.thread);
+        return asArray(thread?.turns ?? payload.turns)
+          .map((turn) => asObject(turn))
+          .filter((turn): turn is Record<string, unknown> => Boolean(turn));
+      };
+      const collectStrings = (value: unknown, depth = 0): string[] => {
+        if (depth > 8 || value === null || value === undefined) {
+          return [];
+        }
+        if (typeof value === "string") {
+          const normalized = value.trim();
+          return normalized ? [normalized] : [];
+        }
+        if (Array.isArray(value)) {
+          return value.flatMap((item) => collectStrings(item, depth + 1));
+        }
+        const objectValue = asObject(value);
+        if (!objectValue) {
+          return [];
+        }
+        return Object.values(objectValue).flatMap((item) => collectStrings(item, depth + 1));
+      };
+      const hasImageReference = (
+        allStrings: string[],
+        options: { url?: string; relativePath: string; absolutePath: string },
+      ): boolean =>
+        allStrings.some((value) => {
+          if (options.url && value === options.url) {
+            return true;
+          }
+          if (value.includes(options.relativePath)) {
+            return true;
+          }
+          return toAbsoluteLocalPath(asString(value)) === options.absolutePath;
+        });
+      const turnIncludesPromptAndBothImageReferences = (turn: Record<string, unknown>): boolean => {
+        const allStrings = collectStrings(turn);
+        const hasPromptToken = allStrings.some((value) => value.includes(promptToken));
+        if (!hasPromptToken) {
+          return false;
+        }
+        const hasUrlImageReference = hasImageReference(allStrings, {
+          url: ingestedImageUrl,
+          relativePath: relativeMediaPathFromUrl,
+          absolutePath: expectedLocalImagePathFromUrl,
+        });
+        const hasPathImageReference = hasImageReference(allStrings, {
+          relativePath: relativeMediaPathFromPath,
+          absolutePath: expectedLocalImagePathFromPath,
+        });
+        return hasUrlImageReference && hasPathImageReference;
+      };
+
+      try {
+        const continueResult = await execGraphql<{
+          continueRun: {
+            success: boolean;
+            message: string;
+            runId: string | null;
+          };
+        }>(continueMutation, {
+          input: {
+            runtimeKind: "codex_app_server",
+            agentDefinitionId: "codex-e2e-agent-def",
+            workspaceRootPath,
+            llmModelIdentifier: modelIdentifier,
+            userInput: {
+              content: `Reply with READY. ${promptToken}`,
+              contextFiles: [
+                { path: ingestedImageUrl, type: "IMAGE" },
+                { path: expectedLocalImagePathFromPath, type: "IMAGE" },
+              ],
+            },
+          },
+        });
+        expect(continueResult.continueRun.success).toBe(true);
+        expect(continueResult.continueRun.runId).toBeTruthy();
+        runId = continueResult.continueRun.runId;
+
+        const historyReader = getCodexThreadHistoryReader();
+        const deadline = Date.now() + 60_000;
+        let observedThreadId: string | null = null;
+        let observedImageInputInThread = false;
+        let observedTurnCount = 0;
+        const debugStringSamples: string[] = [];
+
+        while (Date.now() < deadline) {
+          const resumeResult = await execGraphql<{
+            getRunResumeConfig: {
+              runId: string;
+              manifestConfig: {
+                workspaceRootPath: string;
+                runtimeReference: {
+                  threadId: string | null;
+                };
+              };
+            };
+          }>(resumeQuery, { runId });
+          observedThreadId =
+            resumeResult.getRunResumeConfig?.manifestConfig?.runtimeReference?.threadId ?? null;
+          const runWorkspacePath =
+            resumeResult.getRunResumeConfig?.manifestConfig?.workspaceRootPath ?? workspaceRootPath;
+
+          if (observedThreadId) {
+            const threadPayload = await historyReader.readThread(observedThreadId, runWorkspacePath);
+            if (threadPayload) {
+              const turns = extractTurns(threadPayload);
+              observedTurnCount = turns.length;
+              for (const turn of turns) {
+                if (debugStringSamples.length >= 20) {
+                  break;
+                }
+                for (const value of collectStrings(turn)) {
+                  if (debugStringSamples.length >= 20) {
+                    break;
+                  }
+                  if (!debugStringSamples.includes(value)) {
+                    debugStringSamples.push(value);
+                  }
+                }
+              }
+              observedImageInputInThread = turns.some((turn) =>
+                turnIncludesPromptAndBothImageReferences(turn),
+              );
+              if (observedImageInputInThread) {
+                break;
+              }
+            }
+          }
+
+          await new Promise((resolve) => setTimeout(resolve, 1_500));
+        }
+
+        expect(observedThreadId).toBeTruthy();
+        if (!observedImageInputInThread) {
+          throw new Error(
+            `Did not observe both URL+path image inputs in thread history. turns=${String(observedTurnCount)} samples=${JSON.stringify(debugStringSamples)}`,
+          );
+        }
+      } finally {
+        if (runId) {
+          try {
+            await execGraphql<{
+              terminateAgentRun: { success: boolean; message: string };
+            }>(terminateMutation, { id: runId });
+          } catch {
+            // best-effort cleanup
+          }
+        }
+        await rm(expectedLocalImagePathFromUrl, { force: true });
+        await rm(expectedLocalImagePathFromPath, { force: true });
+        await rm(workspaceRootPath, { recursive: true, force: true });
+      }
+    },
+    90000,
+  );
 
   it("restores a terminated codex run in the same workspace after continueRun", async () => {
     const modelIdentifier = await fetchPreferredCodexToolModelIdentifier();
