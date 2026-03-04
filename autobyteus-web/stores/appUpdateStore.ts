@@ -9,6 +9,7 @@ type AppUpdateStatus =
   | 'available'
   | 'downloading'
   | 'downloaded'
+  | 'installing'
   | 'no-update'
   | 'error';
 
@@ -151,8 +152,30 @@ export const useAppUpdateStore = defineStore('appUpdate', {
         return;
       }
 
-      const result = await window.electronAPI.installAppUpdateAndRestart();
+      this.applyRemoteState({
+        status: 'installing',
+        message: 'Installing update and restarting... The app will close automatically.',
+        error: null,
+      });
+
+      let result: { accepted: boolean };
+      try {
+        result = await window.electronAPI.installAppUpdateAndRestart();
+      } catch (error) {
+        this.applyRemoteState({
+          status: 'error',
+          message: 'Failed to trigger app restart for update installation.',
+          error: error instanceof Error ? error.message : 'Unknown error',
+          checkedAt: new Date().toISOString(),
+        });
+        return;
+      }
+
       if (!result.accepted) {
+        this.applyRemoteState({
+          status: 'downloaded',
+          message: 'Update downloaded. Restart to install.',
+        });
         const { addToast } = useToasts();
         addToast('Update is not ready to install yet.', 'info');
       }
@@ -187,7 +210,7 @@ export const useAppUpdateStore = defineStore('appUpdate', {
         if (!this.availableVersion || this.availableVersion !== this.dismissedVersion) {
           this.visible = true;
         }
-      } else if (this.status === 'downloading' || this.status === 'downloaded' || this.status === 'checking' || this.status === 'error') {
+      } else if (this.status === 'downloading' || this.status === 'downloaded' || this.status === 'installing' || this.status === 'checking' || this.status === 'error') {
         this.visible = true;
       } else if (this.status === 'no-update') {
         this.visible = true;

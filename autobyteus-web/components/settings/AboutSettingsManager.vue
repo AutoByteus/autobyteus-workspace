@@ -61,6 +61,16 @@
           >
             Install &amp; Restart
           </button>
+
+          <button
+            v-if="appUpdateStore.status === 'installing'"
+            type="button"
+            class="cursor-not-allowed rounded-md bg-emerald-500 px-3 py-2 text-sm font-medium text-white opacity-80"
+            data-testid="settings-updates-installing"
+            disabled
+          >
+            Restarting...
+          </button>
         </div>
       </section>
     </div>
@@ -91,6 +101,8 @@ const statusLabel = computed(() => {
       return 'Downloading';
     case 'downloaded':
       return 'Ready to install';
+    case 'installing':
+      return 'Restarting app';
     case 'no-update':
       return 'Up to date';
     case 'error':
@@ -121,7 +133,7 @@ const lastCheckedLabel = computed(() => {
 });
 
 const isCheckDisabled = computed(
-  () => appUpdateStore.status === 'checking' || appUpdateStore.status === 'downloading',
+  () => appUpdateStore.status === 'checking' || appUpdateStore.status === 'downloading' || appUpdateStore.status === 'installing',
 );
 
 const checkForUpdates = async (): Promise<void> => {

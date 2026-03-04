@@ -15,6 +15,7 @@ export type AppUpdateStatus =
   | 'available'
   | 'downloading'
   | 'downloaded'
+  | 'installing'
   | 'no-update'
   | 'error';
 
@@ -195,12 +196,17 @@ export class AppUpdater {
     }
 
     this.applyState({
+      status: 'installing',
       message: 'Installing update and restarting...',
       error: null,
     });
 
     setTimeout(() => {
-      autoUpdater.quitAndInstall(false, true);
+      try {
+        autoUpdater.quitAndInstall(false, true);
+      } catch (error) {
+        this.handleError(error, 'Failed to install update and restart.');
+      }
     }, 100);
 
     return { accepted: true };
