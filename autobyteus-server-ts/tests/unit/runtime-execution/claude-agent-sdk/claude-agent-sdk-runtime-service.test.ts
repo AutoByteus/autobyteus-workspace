@@ -180,6 +180,165 @@ describe("ClaudeAgentSdkRuntimeService", () => {
     ).toBe(true);
   });
 
+  it("prefers stream_event text deltas over duplicate assistant/result fallback snapshots", async () => {
+    const createSession = vi.fn().mockReturnValue(
+      createFakeV2Session([
+        [
+          {
+            type: "stream_event",
+            session_id: "claude-session-stream-event",
+            event: {
+              type: "content_block_delta",
+              delta: { type: "text_delta", text: "Hello " },
+            },
+          },
+          {
+            type: "stream_event",
+            session_id: "claude-session-stream-event",
+            event: {
+              type: "content_block_delta",
+              delta: { type: "text_delta", text: "world" },
+            },
+          },
+          {
+            type: "assistant",
+            session_id: "claude-session-stream-event",
+            message: {
+              role: "assistant",
+              content: [{ type: "text", text: "Hello world" }],
+            },
+          },
+          {
+            type: "result",
+            subtype: "success",
+            session_id: "claude-session-stream-event",
+            result: "Hello world",
+          },
+        ],
+      ]),
+    );
+
+    const service = new ClaudeAgentSdkRuntimeService() as ClaudeAgentSdkRuntimeService & {
+      cachedSdkModule: unknown;
+    };
+    service.cachedSdkModule = {
+      unstable_v2_createSession: createSession,
+      unstable_v2_resumeSession: vi.fn(),
+    };
+
+    await service.createRunSession("run-stream-event-priority", {
+      modelIdentifier: "default",
+      workingDirectory: TEST_WORKSPACE_DIR,
+      llmConfig: null,
+    });
+
+    const outputDeltas: string[] = [];
+    const methods: string[] = [];
+    service.subscribeToRunEvents("run-stream-event-priority", (event) => {
+      methods.push(event.method);
+      if (event.method === "item/outputText/delta") {
+        const delta =
+          event.params && typeof event.params.delta === "string"
+            ? event.params.delta
+            : null;
+        if (delta) {
+          outputDeltas.push(delta);
+        }
+      }
+    });
+
+    await service.sendTurn(
+      "run-stream-event-priority",
+      AgentInputUserMessage.fromDict({ content: "Say hello with stream event chunks" }),
+    );
+    await waitFor(() => methods.includes("turn/completed"));
+
+    expect(outputDeltas).toEqual(["Hello ", "world"]);
+    expect(methods).toEqual([
+      "turn/started",
+      "item/outputText/delta",
+      "item/outputText/delta",
+      "item/outputText/completed",
+      "turn/completed",
+    ]);
+
+    const transcript = await service.getSessionMessages("claude-session-stream-event");
+    expect(
+      transcript.some((entry) => entry.role === "assistant" && entry.content === "Hello world"),
+    ).toBe(true);
+  });
+
+  it("derives incremental suffix from assistant snapshot after partial stream_event output", async () => {
+    const createSession = vi.fn().mockReturnValue(
+      createFakeV2Session([
+        [
+          {
+            type: "stream_event",
+            session_id: "claude-session-snapshot-suffix",
+            event: {
+              type: "content_block_delta",
+              delta: { type: "text_delta", text: "Hel" },
+            },
+          },
+          {
+            type: "assistant",
+            session_id: "claude-session-snapshot-suffix",
+            message: {
+              role: "assistant",
+              content: [{ type: "text", text: "Hello" }],
+            },
+          },
+          {
+            type: "result",
+            subtype: "success",
+            session_id: "claude-session-snapshot-suffix",
+            result: "Hello",
+          },
+        ],
+      ]),
+    );
+
+    const service = new ClaudeAgentSdkRuntimeService() as ClaudeAgentSdkRuntimeService & {
+      cachedSdkModule: unknown;
+    };
+    service.cachedSdkModule = {
+      unstable_v2_createSession: createSession,
+      unstable_v2_resumeSession: vi.fn(),
+    };
+
+    await service.createRunSession("run-stream-snapshot-suffix", {
+      modelIdentifier: "default",
+      workingDirectory: TEST_WORKSPACE_DIR,
+      llmConfig: null,
+    });
+
+    const outputDeltas: string[] = [];
+    service.subscribeToRunEvents("run-stream-snapshot-suffix", (event) => {
+      if (event.method === "item/outputText/delta") {
+        const delta =
+          event.params && typeof event.params.delta === "string"
+            ? event.params.delta
+            : null;
+        if (delta) {
+          outputDeltas.push(delta);
+        }
+      }
+    });
+
+    await service.sendTurn(
+      "run-stream-snapshot-suffix",
+      AgentInputUserMessage.fromDict({ content: "complete hello" }),
+    );
+    await waitFor(() => outputDeltas.length >= 2);
+
+    expect(outputDeltas).toEqual(["Hel", "lo"]);
+
+    const transcript = await service.getSessionMessages("claude-session-snapshot-suffix");
+    expect(
+      transcript.some((entry) => entry.role === "assistant" && entry.content === "Hello"),
+    ).toBe(true);
+  });
+
   it("maps autoExecuteTools to Claude V2 auto-allow permission callback", async () => {
     const createSession = vi.fn().mockReturnValue(
       createFakeV2Session([[{ session_id: "claude-session-auto-approve", delta: "ok" }]]),

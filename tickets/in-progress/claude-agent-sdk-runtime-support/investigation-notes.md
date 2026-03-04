@@ -342,3 +342,31 @@
   - map `autoExecuteTools=true` to a V2 session `canUseTool` callback that returns `allow`,
   - keep `autoExecuteTools=false` on default permission behavior.
 - Preserve this mapping in interop/service layers only; no frontend protocol branching required.
+
+## Re-Entry Delta (2026-03-04, Claude output appears full-buffered instead of incremental streaming)
+
+1. User-visible symptom is reproducible in UI behavior.
+- Claude responses eventually arrive and render correctly, but message content appears in one large burst instead of visibly incremental token/segment growth.
+- Team relay/tool execution still work, indicating runtime is alive and tool calls are not the primary blocker.
+
+2. Backend event path currently intends incremental forwarding.
+- `claude-agent-sdk-runtime-service.ts` (`executeV2Turn`) iterates `for await (const chunk of session.stream())` and emits `item/outputText/delta` for each normalized delta, followed by `item/outputText/completed`.
+- Runtime event adapter maps these to websocket `SEGMENT_CONTENT` and `SEGMENT_END`.
+- Frontend segment handler appends each `SEGMENT_CONTENT` payload delta as received.
+
+3. Likely fault domain is upstream chunk cadence or normalization precedence.
+- If `session.stream()` yields only coarse/final payloads, frontend will naturally appear non-streaming.
+- Current normalizer accepts multiple payload shapes and may prefer fully materialized message text when present, which can collapse visible incremental cadence.
+- Need raw chunk instrumentation for V2 stream and emitted runtime-event timestamps to confirm whether collapse occurs before or during normalization.
+
+4. Investigation decision and classification.
+- Classification remains `Unclear` until instrumentation proves whether issue is:
+  - SDK stream granularity limitation,
+  - normalization precedence collapse,
+  - or runtime event emission buffering.
+- Re-entry follows workflow path `0 -> 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8` with source edits blocked until Stage 6 unlock.
+
+5. Planned diagnostic evidence for next stage.
+- Add temporary debug instrumentation in Claude runtime stream loop (chunk index, normalized delta length, fallback-source markers, timestamp).
+- Add focused runtime unit/API assertion verifying that multiple `SEGMENT_CONTENT` emissions occur before completion for synthetic multi-chunk stream input.
+- If SDK emits coarse chunks only, design fallback strategy (server-side chunk slicing is explicitly disallowed; must preserve semantic source fidelity).

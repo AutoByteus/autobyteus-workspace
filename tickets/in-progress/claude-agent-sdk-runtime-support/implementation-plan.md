@@ -1,7 +1,7 @@
 # Implementation Plan
 
 - Ticket: `claude-agent-sdk-runtime-support`
-- Plan Version: `v5`
+- Plan Version: `v6`
 - Scope: `Large`
 - Stage Preconditions:
   - Stage 5 gate: `Go Confirmed`
@@ -97,6 +97,13 @@ Implement `claude_agent_sdk` runtime support and refactor shared runtime orchest
 - L3. Keep explicit runtime `approveTool` command unsupported for Claude while ensuring no prompt regression when auto-approve is enabled.
 - L4. Add unit tests for adapter forwarding and V2 session-option policy branches.
 
+### Batch M: Claude Incremental Streaming Cadence Preservation
+
+- M1. Instrument Claude V2 stream normalization path to distinguish real chunk deltas from full-message fallback payloads.
+- M2. Enforce delta-priority emission policy: when delta chunks are present for a turn/item, suppress duplicate full-buffer fallback emission for that same stream progression.
+- M3. Add/extend runtime unit coverage to assert multi-chunk Claude input yields multiple progressive `item/outputText/delta` emissions before completion.
+- M4. Add API/E2E assertion updates to verify websocket-visible `SEGMENT_CONTENT` cadence precedes `SEGMENT_END` for Claude runtime turns.
+
 ## Planned File Groups
 
 - Server core/runtime:
@@ -153,6 +160,7 @@ Implement `claude_agent_sdk` runtime support and refactor shared runtime orchest
 | R-017 | J | team-metadata turn-preamble assertions + live teammate-aware relay checks |
 | R-018 | K | Claude V2 interop unit tests for workspace cwd scoping and runtime-service forwarding assertions |
 | R-019 | L | Claude adapter + V2 interop unit tests for auto-approval mapping branches |
+| R-020 | M | Claude stream normalizer/service tests and API/E2E assertions for multi-delta cadence without duplicate fallback flush |
 
 ## Test Plan
 
@@ -183,3 +191,4 @@ Implement `claude_agent_sdk` runtime support and refactor shared runtime orchest
 10. Batch J (Claude V2-only runtime migration and V1 turn-path retirement).
 11. Batch K (Claude V2 workspace cwd propagation hardening via interop-level scoped session creation).
 12. Batch L (Claude auto-approve permission policy mapping through V2 session options).
+13. Batch M (Claude incremental streaming cadence preservation and cadence-focused verification updates).

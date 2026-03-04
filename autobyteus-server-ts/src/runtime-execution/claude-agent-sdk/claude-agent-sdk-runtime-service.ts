@@ -99,6 +99,43 @@ const isSendMessageToToolName = (value: string | null): boolean => {
   );
 };
 
+const resolveIncrementalDelta = (options: {
+  normalizedDelta: string;
+  source: "stream_delta" | "assistant_message" | "result" | "unknown";
+  assistantOutput: string;
+  hasObservedStreamingDelta: boolean;
+}): string | null => {
+  const {
+    normalizedDelta,
+    source,
+    assistantOutput,
+    hasObservedStreamingDelta,
+  } = options;
+
+  if (source === "stream_delta") {
+    return normalizedDelta;
+  }
+
+  if (source === "result" && assistantOutput.length > 0 && !hasObservedStreamingDelta) {
+    return null;
+  }
+
+  if (!hasObservedStreamingDelta || (source !== "assistant_message" && source !== "result")) {
+    return normalizedDelta;
+  }
+
+  if (normalizedDelta.startsWith(assistantOutput)) {
+    const suffix = normalizedDelta.slice(assistantOutput.length);
+    return suffix.length > 0 ? suffix : null;
+  }
+
+  if (assistantOutput.startsWith(normalizedDelta)) {
+    return null;
+  }
+
+  return null;
+};
+
 export class ClaudeAgentSdkRuntimeService {
   private readonly sessions = new Map<string, ClaudeRunSessionState>();
   private readonly workspaceManager = getWorkspaceManager();
@@ -491,6 +528,7 @@ export class ClaudeAgentSdkRuntimeService {
 
     let userMessageBoundToResolvedSession = false;
     let assistantOutput = "";
+    let hasObservedStreamingDelta = false;
     for await (const chunk of session.stream()) {
       if (options.signal.aborted) {
         break;
@@ -512,17 +550,26 @@ export class ClaudeAgentSdkRuntimeService {
       }
 
       if (normalized.delta) {
-        if (normalized.source === "result" && assistantOutput.length > 0) {
+        const incrementalDelta = resolveIncrementalDelta({
+          normalizedDelta: normalized.delta,
+          source: normalized.source,
+          assistantOutput,
+          hasObservedStreamingDelta,
+        });
+        if (!incrementalDelta) {
           continue;
         }
-        assistantOutput += normalized.delta;
+        if (normalized.source === "stream_delta") {
+          hasObservedStreamingDelta = true;
+        }
+        assistantOutput += incrementalDelta;
         this.emitEvent(options.state, {
           method: "item/outputText/delta",
           params: {
             id: options.turnId,
             turnId: options.turnId,
             sessionId: options.state.sessionId,
-            delta: normalized.delta,
+            delta: incrementalDelta,
           },
         });
       }

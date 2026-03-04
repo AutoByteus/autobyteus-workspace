@@ -50,6 +50,15 @@ export const normalizeClaudeStreamChunk = (
     asString(payload.thread_id) ??
     null;
 
+  const streamEventDelta = extractStreamEventDelta(payload);
+  if (streamEventDelta) {
+    return {
+      sessionId,
+      delta: streamEventDelta,
+      source: "stream_delta",
+    };
+  }
+
   const delta =
     asNonEmptyRawString(payload.delta) ??
     asNonEmptyRawString(payload.textDelta) ??
@@ -100,6 +109,27 @@ export const normalizeClaudeStreamChunk = (
     delta: null,
     source: "unknown",
   };
+};
+
+const extractStreamEventDelta = (payload: Record<string, unknown>): string | null => {
+  const type = asString(payload.type)?.toLowerCase();
+  if (type !== "stream_event") {
+    return null;
+  }
+
+  const event = asObject(payload.event);
+  if (!event) {
+    return null;
+  }
+
+  const eventDelta = asObject(event.delta);
+  const eventContentBlock = asObject(event.content_block);
+  return (
+    asNonEmptyRawString(eventDelta?.text) ??
+    asNonEmptyRawString(event.text) ??
+    asNonEmptyRawString(eventContentBlock?.text) ??
+    null
+  );
 };
 
 const extractAssistantMessageText = (messagePayload: Record<string, unknown> | null): string | null => {

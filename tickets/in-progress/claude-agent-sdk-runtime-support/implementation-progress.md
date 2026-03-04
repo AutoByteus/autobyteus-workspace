@@ -2,8 +2,8 @@
 
 - Ticket: `claude-agent-sdk-runtime-support`
 - Started: `2026-02-28`
-- Current Stage: `10`
-- Overall Status: `Completed (all Stage 7 live-Claude gates revalidated after quota reset)`
+- Current Stage: `8`
+- Overall Status: `In Progress (streaming-cadence re-entry implemented and Stage 7 live matrix rerun passed; Stage 8 review refresh pending)`
 
 ## Batch Status
 
@@ -19,6 +19,9 @@
 | H | External runtime listener continuity across restore | Completed |
 | I | Claude SDK tooling hardening + runtime decoupling refactor | Completed |
 | J | Claude V2-only runtime migration + legacy turn-path retirement | Completed |
+| K | Claude V2 workspace cwd propagation hardening | Completed |
+| L | Claude auto-approve permission policy mapping | Completed |
+| M | Claude incremental streaming cadence preservation | Completed |
 
 ## Change Tracking
 
@@ -70,6 +73,8 @@
 | C-044 | Modify | Frontend test setup stability | Done | Done | Hardened websocket test setup fetch binding (`$fetch`) to prevent intermittent post-teardown failures in full Nuxt suite |
 | C-045 | Modify | Claude team metadata guidance + tests | Done | Done | Strengthened teammate-aware `send_message_to` instructions and added focused unit coverage for metadata/prompt composition |
 | C-046 | Modify | `claude-runtime-v2-control-interop.ts` + unit test | Done | Done | Fixed V2 `setMcpServers` invocation to preserve control-object method binding (`this`) and added regression test that fails on unbound call |
+| C-047 | Modify | `claude-runtime-message-normalizers.ts` + runtime service | Done | Done | Added `stream_event` text extraction and delta-priority reconciliation to suppress duplicate assistant/result fallback snapshots once streaming deltas are observed |
+| C-048 | Modify | Claude runtime unit coverage | Done | Done | Added tests for stream-event priority and snapshot-suffix reconciliation to keep incremental emission semantics deterministic |
 
 ## Verification Log
 
@@ -134,6 +139,9 @@
 | 2026-03-02 | `RUN_CODEX_E2E=1 RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts` | Pass | Full live Codex+Claude runtime/team matrix rerun: `4 files`, `26/26` |
 | 2026-03-02 | `pnpm -C autobyteus-server-ts test` | Pass | Post-reset backend confidence rerun: `248 files passed / 7 skipped`, `1087 passed / 34 skipped` |
 | 2026-03-02 | `pnpm -C autobyteus-web test` | Pass | Post-reset frontend confidence rerun: `test:nuxt 143 files / 708 tests`, `test:electron 6 files / 38 tests` |
+| 2026-03-04 | `CLAUDE_AGENT_SDK_AUTH_MODE=cli node --input-type=module (...) unstable_v2_createSession + stream probe` | Pass | Investigation evidence: V2 session stream emits `assistant` + `result` chunks and no token-level `stream_event` deltas under current SDK behavior |
+| 2026-03-04 | `pnpm -C autobyteus-server-ts exec vitest run tests/unit/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.test.ts` | Pass | Updated Claude runtime unit suite (`21/21`) including stream-event priority/snapshot-suffix cadence guards |
+| 2026-03-04 | `RUN_CLAUDE_E2E=1 RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts tests/e2e/run-history/team-run-history-graphql.e2e.test.ts` | Pass | Live runtime/team/run-history matrix passed after cadence fix (`5 files`, `37 passed / 1 skipped`) |
 
 ## Blockers
 

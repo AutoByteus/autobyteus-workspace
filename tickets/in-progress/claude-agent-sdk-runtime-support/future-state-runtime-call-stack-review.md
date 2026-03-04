@@ -462,3 +462,68 @@
 - Gate Decision: `Pass`
 - Decision Reason: two consecutive clean rounds completed with no blockers, no newly discovered use cases, and no required persisted artifact updates.
 - Next Stage: `6 (Implementation for workspace cwd propagation hardening)`
+
+## Re-Entry Round 7 (Deep Review, Streaming-Cadence Delta)
+
+### Missing-Use-Case Discovery Sweep
+
+- Requirement delta sweep: `R-020` / `AC-020` adds explicit incremental stream cadence contract.
+- Boundary sweep: fix boundary remains Claude normalizer/runtime event shaping; no frontend protocol branching.
+- Fallback/error sweep: explicit no-op behavior retained for chunks without usable delta/fallback text.
+- New use cases discovered: `Yes` (`UC-018`).
+
+### Findings
+
+- Blocking findings: `None`.
+- Required persisted artifact updates: `requirements.md`, `proposed-design.md`, `future-state-runtime-call-stack.md`.
+
+### Applied Updates
+
+- Updated files:
+  - `tickets/in-progress/claude-agent-sdk-runtime-support/requirements.md`
+  - `tickets/in-progress/claude-agent-sdk-runtime-support/proposed-design.md`
+  - `tickets/in-progress/claude-agent-sdk-runtime-support/future-state-runtime-call-stack.md`
+- New artifact versions:
+  - `requirements.md` -> `Design-ready (delta R-020/AC-020)`
+  - `future-state-runtime-call-stack.md` -> `v3 + UC-018 delta`
+- Changed sections:
+  - `UC-018` addition and `UC-002` normalization precedence step
+  - Re-entry design delta section for streaming cadence
+- Resolved findings: streaming-cadence scope is now explicitly modeled.
+
+### Round Verdict
+
+- Status: `Candidate Go`
+- Clean-review streak state: `Candidate Go (1/2)` (streaming-cadence delta cycle)
+
+## Re-Entry Round 8 (Deep Review, Streaming-Cadence Confirmation)
+
+### Missing-Use-Case Discovery Sweep
+
+- Requirement coverage re-check: `R-001..R-020` mapped to call-stack use cases.
+- Boundary re-check: runtime-neutral layers unchanged; Claude-specific behavior isolated.
+- Fallback/error re-check: no synthetic chunk-splitting or client-side hacks introduced in model.
+- New use cases discovered: `No`.
+
+### Findings
+
+- Blocking findings: `None`.
+- Required persisted artifact updates: `None`.
+
+### Applied Updates
+
+- Updated files: `None`.
+- New artifact versions: `None`.
+- Changed sections: `None`.
+- Resolved findings: `N/A`.
+
+### Round Verdict
+
+- Status: `Go Confirmed`
+- Clean-review streak state: `Go Confirmed (2/2)` (streaming-cadence delta cycle)
+
+## Re-Entry Stage 5 Decision (Streaming-Cadence Delta)
+
+- Gate Decision: `Pass`
+- Decision Reason: two consecutive clean rounds completed for streaming-cadence delta with no blockers and no additional persisted updates required.
+- Next Stage: `6 (Implementation for Claude stream cadence fix)`

@@ -1,7 +1,7 @@
 # API/E2E Testing
 
 - Stage: `7`
-- Date: `2026-03-02`
+- Date: `2026-03-04`
 - Result: `Pass`
 
 ## Scope
@@ -132,3 +132,20 @@ Validated API/E2E acceptance behavior for Claude runtime support, external-membe
 - Live Codex+Claude runtime/team matrix rerun passed: `4 files`, `26/26 tests`.
 - Full backend suite rerun passed: `248 files passed / 7 skipped`, `1087 passed / 34 skipped`.
 - Full frontend suite rerun passed: `test:nuxt 143 files / 708 tests` and `test:electron 6 files / 38 tests`.
+
+## Re-Entry Delta (2026-03-04, Claude streaming-cadence investigation + verification)
+
+### Additional Commands
+
+38. `CLAUDE_AGENT_SDK_AUTH_MODE=cli node --input-type=module (...) unstable_v2_createSession + session.stream() chunk probe`
+39. `pnpm -C autobyteus-server-ts exec vitest run tests/unit/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.test.ts`
+40. `RUN_CLAUDE_E2E=1 RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts tests/e2e/run-history/team-run-history-graphql.e2e.test.ts`
+
+### Delta Results
+
+- Live SDK probe confirms current Claude V2 session stream shape is coarse-grained (`system`, `assistant`, `result`) with no token-level `stream_event` deltas exposed by default session path.
+- Claude runtime unit suite passed after cadence fix (`21/21`), including:
+  - stream-event delta priority over assistant/result snapshots,
+  - snapshot-suffix reconciliation to avoid duplicate full-buffer flush behavior.
+- Live runtime/team/run-history matrix rerun passed after implementation: `5 files`, `37 passed / 1 skipped`.
+- Codex live runtime/team scenarios remain green in the same matrix run, confirming no cross-runtime regression.

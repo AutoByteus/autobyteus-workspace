@@ -1,7 +1,7 @@
 # Code Review
 
 - Stage: `8`
-- Date: `2026-03-02`
+- Date: `2026-03-04`
 - Decision: `Pass`
 
 ## Review Scope
@@ -155,3 +155,34 @@
 ### Decision
 
 - `Pass with one structural follow-up`: behavior and parity gates are green; remaining architectural risk is Claude runtime service length (`~923` lines) still over the strict `<=500` guideline and should be addressed in a dedicated split round.
+
+## Re-Review Round (2026-03-04, streaming cadence)
+
+- Scope:
+  - `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-runtime-message-normalizers.ts`
+  - `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.ts`
+  - `autobyteus-server-ts/tests/unit/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.test.ts`
+- Review focus:
+  - Claude delta extraction completeness for SDK `stream_event` payloads
+  - Duplicate full-snapshot fallback suppression after streaming starts
+  - Separation-of-concerns adherence (runtime-specific logic stays in Claude boundary)
+
+### Findings
+
+1. `Resolved`: Claude stream normalization did not parse `stream_event` text-delta payloads, reducing future compatibility with partial event surfaces.
+   - Change: added explicit `stream_event` extraction path in normalizer.
+2. `Resolved`: once streaming deltas are present, assistant/result fallback snapshots could be re-emitted as duplicate full-buffer content.
+   - Change: added delta-priority reconciliation in runtime service (`resolveIncrementalDelta`) and preserved suffix-only catch-up behavior when snapshot extends partial output.
+3. `Investigated limitation (non-blocking)`: current Claude SDK V2 session implementation hardcodes `includePartialMessages: false` in constructor path (`sdk.mjs` class `SQ`), so token-level partials are often unavailable from `session.stream()`.
+   - Outcome: treated as upstream SDK behavior; runtime now handles available chunks deterministically without synthetic client-hack chunking.
+
+### Validation
+
+- Unit:
+  - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.test.ts`
+- Live E2E matrix (Claude + Codex + run-history):
+  - `RUN_CLAUDE_E2E=1 RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts tests/e2e/run-history/team-run-history-graphql.e2e.test.ts`
+
+### Decision
+
+- `Pass`: no new architectural coupling introduced; streaming-cadence handling is safer and deterministic for currently available SDK event shapes. Residual user-visible “all-at-once” behavior can still occur when upstream V2 emits only full assistant snapshots.

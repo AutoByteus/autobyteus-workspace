@@ -25,6 +25,7 @@
 | UC-013 | Requirement | R-013 | External runtime listener continuity across terminate/continue | Yes/N/A/Yes |
 | UC-014 | Requirement | R-014 | Claude team `send_message_to` relay tooling parity | Yes/N/A/Yes |
 | UC-015 | Requirement | R-015,R-016,R-017 | Claude V2-only session/runtime execution path | Yes/N/A/Yes |
+| UC-018 | Requirement | R-020 | Claude incremental streaming cadence preserved to websocket deltas | Yes/N/A/Yes |
 
 ## UC-001: Create Single-Agent Claude Runtime Run
 
@@ -66,6 +67,7 @@ runtime-composition-service.ts:assertRuntimeAvailableForCreateOrRestore("claude_
 │           ├── claude-runtime-turn-preamble.ts:buildTeamAwareTurnPreamble(runtimeMetadata)
 │           ├── [ASYNC] SDKSession.send(...)
 │           ├── [ASYNC] SDKSession.stream()
+│           ├── claude-runtime-message-normalizers.ts:normalizeClaudeStreamChunk(...) [delta-priority, fallback-suppression when delta already emitted]
 │           ├── claude-agent-sdk-runtime-service.ts:emitRuntimeEvent("turn/started")
 │           ├── claude-agent-sdk-runtime-service.ts:emitRuntimeEvent("assistant/delta", ...)
 │           └── claude-agent-sdk-runtime-service.ts:emitRuntimeEvent("turn/completed")
@@ -82,6 +84,30 @@ runtime-composition-service.ts:assertRuntimeAvailableForCreateOrRestore("claude_
 [ERROR] SDK V2 turn execution failure
 claude-agent-sdk-runtime-service.ts:sendTurn(...)
 └── emitRuntimeEvent("error", { code, message }) -> mapped to ServerMessageType.ERROR
+```
+
+## UC-018: Preserve Incremental Streaming Cadence
+
+### Primary Path
+
+```text
+[ENTRY] claude-agent-sdk-runtime-service.ts:executeV2Turn(...)
+├── [ASYNC] session.stream() yields chunk[n]
+├── claude-runtime-message-normalizers.ts:normalizeClaudeStreamChunk(chunk[n], context)
+│   ├── extract incremental delta text when present
+│   ├── mark turn/item delta-emitted state
+│   └── suppress full-message fallback payload for same item once delta-emitted=true
+├── claude-agent-sdk-runtime-service.ts:emitRuntimeEvent("item/outputText/delta", ...)
+├── runtime-event-message-mapper.ts:map(...) -> `SEGMENT_CONTENT`
+└── websocket delivers multiple incremental `SEGMENT_CONTENT` before terminal `SEGMENT_END`
+```
+
+### Error Path
+
+```text
+[ERROR] chunk has neither delta nor deterministic fallback text
+claude-runtime-message-normalizers.ts:normalizeClaudeStreamChunk(...)
+└── returns null (no-op emission) and stream continues without synthetic buffering hacks
 ```
 
 ## UC-003: Interrupt/Terminate Claude Runtime Run

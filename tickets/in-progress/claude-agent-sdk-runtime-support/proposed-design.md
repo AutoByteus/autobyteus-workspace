@@ -184,3 +184,33 @@ Disallowed direction:
 4. No-legacy enforcement for touched Claude runtime path.
 - Active turn execution path must not call SDK `query()` for Claude runtime send/continue flows.
 - Any legacy V1 helpers remain out of active execution and are removed if no longer needed by model/projection probes.
+
+## Re-Entry Design Delta (2026-03-04, Claude incremental streaming cadence)
+
+### Problem Framing
+
+- User-observed behavior shows Claude assistant content arriving as a large final burst rather than progressive visible stream updates.
+- Existing pipeline already supports progressive websocket segments; therefore the high-probability fault is in Claude chunk normalization precedence and/or fallback emission rules.
+
+### Boundary-Constrained Fix Strategy
+
+1. Keep frontend segment rendering contract unchanged.
+- Do not add frontend hacks or artificial client-side chunk splitting.
+- Preserve existing `SEGMENT_CONTENT`/`SEGMENT_END` semantics.
+
+2. Constrain fix to Claude runtime normalization and event shaping boundary.
+- Update Claude stream normalizer to track whether a chunk-derived delta has already been emitted for the current assistant item.
+- Suppress full-message fallback (`assistant_message` / `result`) when real deltas are already present for the same turn/item.
+
+3. Add deterministic observability for cadence verification.
+- Add runtime debug markers and unit assertions for stream sequence (`delta* -> completed`) to prove incremental cadence survives mapping.
+- Keep instrumentation local to Claude runtime service/normalizer tests; no cross-runtime behavior changes.
+
+4. Preserve separation of concerns.
+- Streaming-cadence policy remains runtime-specific within Claude normalization modules.
+- Runtime-neutral adapter/stream handlers continue consuming generic runtime events without Claude-specific branching.
+
+### Expected Outcome
+
+- For multi-chunk Claude stream input, backend emits multiple progressive `item/outputText/delta` events before completion.
+- Frontend receives and renders incremental `SEGMENT_CONTENT` updates with no duplicate trailing full-buffer tool/message artifact.
