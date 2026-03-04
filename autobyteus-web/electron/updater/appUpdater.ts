@@ -200,7 +200,11 @@ export class AppUpdater {
     });
 
     setTimeout(() => {
-      autoUpdater.quitAndInstall(false, true);
+      try {
+        autoUpdater.quitAndInstall(false, true);
+      } catch (error) {
+        this.handleError(error, 'Failed to install update and restart.');
+      }
     }, 100);
 
     return { accepted: true };
