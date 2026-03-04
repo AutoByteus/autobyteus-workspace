@@ -1045,6 +1045,23 @@ describe("ClaudeAgentSdkRuntimeService", () => {
     expect(messages).toEqual([{ role: "assistant", content: "from-sdk" }]);
   });
 
+  it("uses alternate SDK session-message signature when object form returns empty", async () => {
+    const getSessionMessages = vi.fn(async (input: unknown) => {
+      if (typeof input === "string") {
+        return [{ role: "assistant", content: "from-string-signature" }];
+      }
+      return [];
+    });
+    const service = new ClaudeAgentSdkRuntimeService() as ClaudeAgentSdkRuntimeService & {
+      cachedSdkModule: unknown;
+    };
+    service.cachedSdkModule = { getSessionMessages };
+
+    const messages = await service.getSessionMessages("session-signature-variant");
+    expect(messages).toEqual([{ role: "assistant", content: "from-string-signature" }]);
+    expect(getSessionMessages).toHaveBeenCalledWith("session-signature-variant");
+  });
+
   it("merges SDK and local transcript session messages", async () => {
     const getSessionMessages = vi
       .fn()

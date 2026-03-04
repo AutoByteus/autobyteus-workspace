@@ -470,13 +470,20 @@ export class ClaudeAgentSdkRuntimeService {
     const sdk = await this.loadSdkModuleSafe();
     const getSessionMessagesFn = resolveSdkFunction(sdk, "getSessionMessages");
     if (getSessionMessagesFn) {
-      const raw = await tryCallWithVariants(getSessionMessagesFn, [
-        [{ sessionId: normalizedSessionId }],
+      const variants: unknown[][] = [
         [normalizedSessionId],
-      ]);
-      const normalized = normalizeSessionMessages(raw);
-      if (normalized.length > 0) {
-        return this.transcriptStore.getMergedMessages(normalizedSessionId, normalized);
+        [{ sessionId: normalizedSessionId }],
+      ];
+      for (const args of variants) {
+        try {
+          const raw = await getSessionMessagesFn(...args);
+          const normalized = normalizeSessionMessages(raw);
+          if (normalized.length > 0) {
+            return this.transcriptStore.getMergedMessages(normalizedSessionId, normalized);
+          }
+        } catch {
+          // Try the next supported signature variant.
+        }
       }
     }
 
