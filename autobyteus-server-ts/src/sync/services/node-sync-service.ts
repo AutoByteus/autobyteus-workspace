@@ -70,8 +70,6 @@ type SyncPrompt = {
   name: string;
   category: string;
   promptContent: string;
-  description?: string | null;
-  suitableForModels?: string | null;
   version: number;
   isActive: boolean;
 };
@@ -135,9 +133,8 @@ function promptKey(input: {
   name: string;
   category: string;
   version: number;
-  suitableForModels?: string | null;
 }): string {
-  return `${input.category}::${input.name}::${input.version}::${input.suitableForModels ?? ''}`;
+  return `${input.category}::${input.name}::${input.version}`;
 }
 
 function promptFamilyKey(input: { name: string; category: string }): string {
@@ -246,13 +243,10 @@ export class NodeSyncService {
           name: prompt.name,
           category: prompt.category,
           version: prompt.version ?? 1,
-          suitableForModels: prompt.suitableForModels ?? null,
         }),
         name: prompt.name,
         category: prompt.category,
         promptContent: prompt.promptContent,
-        description: prompt.description ?? null,
-        suitableForModels: prompt.suitableForModels ?? null,
         version: prompt.version ?? 1,
         isActive: prompt.isActive,
       } satisfies SyncPrompt));
@@ -445,7 +439,6 @@ export class NodeSyncService {
           name: prompt.name,
           category: prompt.category,
           version: prompt.version ?? 1,
-          suitableForModels: prompt.suitableForModels ?? null,
         }),
         prompt,
       );
@@ -461,8 +454,6 @@ export class NodeSyncService {
             name: prompt.name,
             category: prompt.category,
             promptContent: prompt.promptContent,
-            description: prompt.description ?? null,
-            suitableForModels: prompt.suitableForModels ?? null,
           });
           if (prompt.isActive && created.id) {
             await this.promptService.markActivePrompt(created.id);
@@ -483,8 +474,6 @@ export class NodeSyncService {
         const updated = await this.promptService.updatePrompt({
           promptId: existing.id,
           promptContent: prompt.promptContent,
-          description: prompt.description ?? null,
-          suitableForModels: prompt.suitableForModels ?? null,
         });
 
         if (prompt.isActive && updated.id) {

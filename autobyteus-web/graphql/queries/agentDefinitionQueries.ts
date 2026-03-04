@@ -26,8 +26,6 @@ export const GetAgentDefinitions = gql`
         name
         category
         promptContent
-        description
-        suitableForModels
         version
         createdAt
         updatedAt

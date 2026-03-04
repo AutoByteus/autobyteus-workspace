@@ -10,7 +10,7 @@ import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.
 import { PromptService } from "../../prompt-engineering/services/prompt-service.js";
 
 const DESCRIPTION =
-  "Updates prompt metadata (description, suitable models, active flag) without changing content.";
+  "Updates prompt metadata (active flag) without changing content.";
 
 const argumentSchema = new ParameterSchema();
 argumentSchema.addParameter(
@@ -19,22 +19,6 @@ argumentSchema.addParameter(
     type: ParameterType.STRING,
     description: "The unique ID of the prompt to update.",
     required: true,
-  }),
-);
-argumentSchema.addParameter(
-  new ParameterDefinition({
-    name: "description",
-    type: ParameterType.STRING,
-    description: "Optional new description for the prompt.",
-    required: false,
-  }),
-);
-argumentSchema.addParameter(
-  new ParameterDefinition({
-    name: "suitable_for_models",
-    type: ParameterType.STRING,
-    description: "Optional comma-separated string of suitable model names.",
-    required: false,
   }),
 );
 argumentSchema.addParameter(
@@ -59,8 +43,6 @@ type AgentContextLike = {
 export async function updatePromptMetadata(
   context: AgentContextLike,
   prompt_id: string,
-  description?: string | null,
-  suitable_for_models?: string | null,
   is_active?: boolean | null,
 ): Promise<string> {
   const agentRunId = context?.agentId ?? "unknown";
@@ -68,18 +50,14 @@ export async function updatePromptMetadata(
     `update_prompt_metadata tool invoked by agent run ${agentRunId} for prompt ID '${prompt_id}'.`,
   );
 
-  if (description === undefined && suitable_for_models === undefined && is_active === undefined) {
-    throw new Error(
-      "At least one metadata field (description, suitable_for_models, is_active) must be provided to update.",
-    );
+  if (is_active === undefined) {
+    throw new Error("The metadata field `is_active` must be provided to update.");
   }
 
   try {
     const promptService = new PromptService();
     await promptService.updatePrompt({
       promptId: prompt_id,
-      description: description ?? null,
-      suitableForModels: suitable_for_models ?? null,
       isActive: is_active ?? null,
     });
     const successMessage = `Prompt metadata for ID ${prompt_id} updated successfully.`;

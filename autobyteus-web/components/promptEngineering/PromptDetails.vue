@@ -187,34 +187,6 @@
         </div>
 
 
-        <!-- Model compatibility -->
-        <div class="mb-6">
-          <h2 class="text-lg font-semibold text-gray-900 mb-2">Compatible Models</h2>
-          <div v-if="isEditing">
-            <CanonicalModelSelector v-model="formData.suitableForModels" />
-          </div>
-          <div v-else-if="prompt.suitableForModels" class="flex flex-wrap gap-2">
-            <ModelBadge
-              v-for="model in modelList"
-              :key="model"
-              :model="model"
-            />
-          </div>
-           <p v-else class="text-gray-500 text-sm">None specified.</p>
-        </div>
-
-        <!-- Description -->
-        <div class="mb-6">
-          <h2 class="text-lg font-semibold text-gray-900 mb-2">Description</h2>
-          <textarea
-            v-if="isEditing"
-            v-model="formData.description"
-            rows="4"
-            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-          ></textarea>
-          <p v-else class="text-gray-700">{{ prompt.description || 'No description provided' }}</p>
-        </div>
-
         <!-- Prompt content -->
         <div>
           <h2 class="text-lg font-semibold text-gray-900 mb-3">Prompt Content</h2>
@@ -277,9 +249,7 @@
 import { ref, onMounted, watch, computed, reactive, nextTick } from 'vue';
 import { usePromptStore } from '~/stores/promptStore';
 import { usePromptEngineeringViewStore } from '~/stores/promptEngineeringViewStore';
-import ModelBadge from '~/components/promptEngineering/ModelBadge.vue';
 import PromptCompare from '~/components/promptEngineering/PromptCompare.vue';
-import CanonicalModelSelector from './CanonicalModelSelector.vue';
 import { formatDate } from '~/utils/dateUtils';
 import { useLeftPanel } from '~/composables/useLeftPanel';
 
@@ -308,9 +278,7 @@ const isDeleting = ref(false);
 const formData = reactive({
   name: '',
   category: '',
-  description: '',
   promptContent: '',
-  suitableForModels: [] as string[],
 });
 
 function adjustTextareaHeight() {
@@ -326,9 +294,7 @@ function startEditing() {
   if (!prompt.value) return;
   formData.name = prompt.value.name || '';
   formData.category = prompt.value.category || '';
-  formData.description = prompt.value.description || '';
   formData.promptContent = prompt.value.promptContent || '';
-  formData.suitableForModels = modelList.value;
   isEditing.value = true;
   nextTick(() => {
     adjustTextareaHeight();
@@ -350,8 +316,6 @@ async function saveChanges() {
     const updatedPrompt = await promptStore.updatePrompt(
       prompt.value.id,
       formData.promptContent,
-      formData.description,
-      formData.suitableForModels.join(', '),
       undefined,
       formData.name,
       formData.category
@@ -417,12 +381,6 @@ async function confirmDelete() {
 const comparisonMode = ref(false);
 const compareWithPromptId = ref('');
 
-// Parse models into a list for display
-const modelList = computed(() => {
-  if (!prompt.value?.suitableForModels) return [];
-  return prompt.value.suitableForModels.split(',').map((model: string) => model.trim()).filter(Boolean);
-});
-
 async function loadPrompt() {
   loading.value = true;
   isEditing.value = false; // Ensure we are not in edit mode when a new prompt loads
@@ -453,8 +411,7 @@ async function loadRelatedPrompts() {
     const allPrompts = promptStore.getPrompts;
     relatedPrompts.value = allPrompts.filter(p => 
       p.name === prompt.value.name && 
-      p.category === prompt.value.category &&
-      p.suitableForModels === prompt.value.suitableForModels
+      p.category === prompt.value.category
     ).sort((a, b) => b.version - a.version); // Sort by version descending
   } catch (e: any) {
     console.error('Failed to load related prompts:', e);

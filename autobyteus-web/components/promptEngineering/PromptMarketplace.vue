@@ -321,8 +321,6 @@ interface Prompt {
   name: string;
   category: string;
   promptContent: string;
-  description?: string | null;
-  suitableForModels?: string | null;
   version: number;
   createdAt: string;
   parentPromptId?: string | null;
@@ -399,7 +397,6 @@ const filteredPrompts = computed(() => {
     const lowerCaseQuery = searchQuery.value.trim().toLowerCase();
     filtered = filtered.filter(prompt => 
       prompt.name.toLowerCase().includes(lowerCaseQuery) ||
-      (prompt.description?.toLowerCase().includes(lowerCaseQuery) || false) ||
       prompt.promptContent.toLowerCase().includes(lowerCaseQuery) ||
       (prompt.category?.toLowerCase().includes(lowerCaseQuery) || false)
     );
@@ -423,34 +420,18 @@ const groupedPrompts = computed(() => {
   const processedGroups: Record<string, Prompt[]> = {};
   for (const key in groups) {
     const promptList = groups[key];
-    
-    // Group prompts by suitableForModels to handle variants
-    const promptsByModels = new Map<string, Prompt[]>();
-    promptList.forEach(p => {
-        const modelsKey = p.suitableForModels || 'None';
-        if (!promptsByModels.has(modelsKey)) {
-            promptsByModels.set(modelsKey, []);
-        }
-        promptsByModels.get(modelsKey)!.push(p);
-    });
 
-    // For each model group, find the active prompt, or fall back to the latest version
-    const variants: Prompt[] = [];
-    for (const modelPrompts of promptsByModels.values()) {
-        if (modelPrompts.length === 0) continue;
+    if (promptList.length === 0) {
+      continue;
+    }
 
-        let chosenPrompt = modelPrompts.find(p => p.isActive);
-        if (!chosenPrompt) {
-            chosenPrompt = modelPrompts.reduce((latest, current) => {
-                return current.version > latest.version ? current : latest;
-            });
-        }
-        variants.push(chosenPrompt);
+    let chosenPrompt = promptList.find(p => p.isActive);
+    if (!chosenPrompt) {
+      chosenPrompt = promptList.reduce((latest, current) => {
+        return current.version > latest.version ? current : latest;
+      });
     }
-    
-    if (variants.length > 0) {
-      processedGroups[key] = variants.sort((a, b) => b.version - a.version);
-    }
+    processedGroups[key] = [chosenPrompt];
   }
 
   return processedGroups;

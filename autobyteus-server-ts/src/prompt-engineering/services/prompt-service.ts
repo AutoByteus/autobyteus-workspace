@@ -54,23 +54,15 @@ export class PromptService {
     name: string;
     category: string;
     promptContent: string;
-    description?: string | null;
-    suitableForModels?: string | null;
     parentId?: string | null;
   }): Promise<Prompt> {
     if (!options.name || !options.category || !options.promptContent) {
       throw new Error("Name, category, and prompt content are required");
     }
 
-    let suitableForModels = options.suitableForModels ?? null;
-    if (!suitableForModels || !suitableForModels.trim()) {
-      suitableForModels = "default";
-    }
-
     const familyPrompts = await this.provider.findAllByNameAndCategory(
       options.name,
       options.category,
-      suitableForModels,
     );
     let latestVersion = 0;
     for (const prompt of familyPrompts) {
@@ -84,8 +76,6 @@ export class PromptService {
       name: options.name,
       category: options.category,
       promptContent: options.promptContent,
-      description: options.description ?? null,
-      suitableForModels,
       version: newVersion,
       isActive: false,
       parentId: options.parentId ?? null,
@@ -108,8 +98,6 @@ export class PromptService {
       name: basePrompt.name,
       category: basePrompt.category,
       promptContent: newPromptContent,
-      description: basePrompt.description ?? null,
-      suitableForModels: basePrompt.suitableForModels ?? null,
       parentId: basePrompt.id ?? null,
     });
     logger.info(
@@ -140,12 +128,9 @@ export class PromptService {
   async findAllByNameAndCategory(
     name: string,
     category: string,
-    suitableForModels?: string | null,
   ): Promise<Prompt[]> {
-    logger.debug(
-      `Fetching prompts: name='${name}', category='${category}', models='${suitableForModels}'`,
-    );
-    return this.provider.findAllByNameAndCategory(name, category, suitableForModels);
+    logger.debug(`Fetching prompts: name='${name}', category='${category}'`);
+    return this.provider.findAllByNameAndCategory(name, category);
   }
 
   async getActivePromptsByContext(name: string, category: string): Promise<Prompt[]> {
@@ -170,8 +155,6 @@ export class PromptService {
     name?: string | null;
     category?: string | null;
     promptContent?: string | null;
-    description?: string | null;
-    suitableForModels?: string | null;
     isActive?: boolean | null;
   }): Promise<Prompt> {
     const prompt = await this.provider.getPromptById(options.promptId);
@@ -190,12 +173,6 @@ export class PromptService {
     }
     if (options.promptContent !== undefined && options.promptContent !== null) {
       prompt.promptContent = options.promptContent;
-    }
-    if (options.description !== undefined) {
-      prompt.description = options.description;
-    }
-    if (options.suitableForModels !== undefined) {
-      prompt.suitableForModels = options.suitableForModels;
     }
     if (options.isActive !== undefined && options.isActive !== null) {
       prompt.isActive = options.isActive;
@@ -224,7 +201,6 @@ export class PromptService {
     const familyPrompts = await this.findAllByNameAndCategory(
       target.name,
       target.category,
-      target.suitableForModels ?? null,
     );
 
     for (const prompt of familyPrompts) {

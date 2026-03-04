@@ -12,8 +12,6 @@ export class XmlCreatePromptToolParsingState extends XmlToolParsingState {
 
   private static ARG_NAME_PATTERN = /<arg\s+name=["']name["']\s*>([^<]+)<\/arg>/i;
   private static CATEGORY_PATTERN = /<arg\s+name=["']category["']\s*>([^<]+)<\/arg>/i;
-  private static DESCRIPTION_PATTERN = /<arg\s+name=["']description["']\s*>([^<]+)<\/arg>/i;
-  private static SUITABLE_MODELS_PATTERN = /<arg\s+name=["']suitable_for_models["']\s*>([^<]+)<\/arg>/i;
   private static PROMPT_CONTENT_ARG_OPEN_PATTERN = /<arg\s+name=["']prompt_content["']\s*>/i;
 
   private contentMode: "seek" | "marker" | "passthrough" = "seek";
@@ -24,8 +22,6 @@ export class XmlCreatePromptToolParsingState extends XmlToolParsingState {
 
   private capturedName?: string;
   private capturedCategory?: string;
-  private capturedDescription?: string;
-  private capturedSuitableModels?: string;
   private accumulatedContent = "";
 
   constructor(context: ParserContext, openingTag: string) {
@@ -42,8 +38,6 @@ export class XmlCreatePromptToolParsingState extends XmlToolParsingState {
 
     if (this.capturedName) args.name = this.capturedName;
     if (this.capturedCategory) args.category = this.capturedCategory;
-    if (this.capturedDescription) args.description = this.capturedDescription;
-    if (this.capturedSuitableModels) args.suitable_for_models = this.capturedSuitableModels;
     if (this.accumulatedContent) args.prompt_content = this.accumulatedContent;
 
     if (Object.keys(args).length > 0) {
@@ -94,20 +88,6 @@ export class XmlCreatePromptToolParsingState extends XmlToolParsingState {
       const match = XmlCreatePromptToolParsingState.CATEGORY_PATTERN.exec(this.contentBuffering);
       if (match) {
         this.capturedCategory = match[1].trim();
-      }
-    }
-
-    if (!this.capturedDescription) {
-      const match = XmlCreatePromptToolParsingState.DESCRIPTION_PATTERN.exec(this.contentBuffering);
-      if (match) {
-        this.capturedDescription = match[1].trim();
-      }
-    }
-
-    if (!this.capturedSuitableModels) {
-      const match = XmlCreatePromptToolParsingState.SUITABLE_MODELS_PATTERN.exec(this.contentBuffering);
-      if (match) {
-        this.capturedSuitableModels = match[1].trim();
       }
     }
 
