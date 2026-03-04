@@ -105,7 +105,18 @@ export class ClaudeAgentSdkRuntimeAdapter implements RuntimeAdapter {
   ): Promise<RuntimeCommandResult> {
     try {
       await this.runtimeService.injectInterAgentEnvelope(input.runId, input.envelope);
-      return { accepted: true };
+      const runtimeReference = this.runtimeService.getRunRuntimeReference(input.runId);
+      return {
+        accepted: true,
+        runtimeReference: runtimeReference
+          ? {
+              runtimeKind: this.runtimeKind,
+              sessionId: runtimeReference.sessionId,
+              threadId: runtimeReference.sessionId,
+              metadata: runtimeReference.metadata,
+            }
+          : null,
+      };
     } catch (error) {
       return buildCommandFailure(error);
     }
@@ -136,8 +147,19 @@ export class ClaudeAgentSdkRuntimeAdapter implements RuntimeAdapter {
 
   async terminateRun(input: RuntimeTerminateRunInput): Promise<RuntimeCommandResult> {
     try {
+      const runtimeReference = this.runtimeService.getRunRuntimeReference(input.runId);
       await this.runtimeService.terminateRun(input.runId);
-      return { accepted: true };
+      return {
+        accepted: true,
+        runtimeReference: runtimeReference
+          ? {
+              runtimeKind: this.runtimeKind,
+              sessionId: runtimeReference.sessionId,
+              threadId: runtimeReference.sessionId,
+              metadata: runtimeReference.metadata,
+            }
+          : null,
+      };
     } catch (error) {
       return buildCommandFailure(error);
     }

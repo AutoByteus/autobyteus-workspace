@@ -8,11 +8,11 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 
 - Ticket: `claude-agent-sdk-runtime-support`
 - Current Stage: `8`
-- Next Stage: `Stage 9 docs sync refresh`
+- Next Stage: `Stage 9 docs sync`
 - Code Edit Permission: `Locked`
-- Active Re-Entry: `Yes`
-- Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `Unclear`
-- Last Transition ID: `T-077`
+- Active Re-Entry: `No`
+- Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
+- Last Transition ID: `T-085`
 - Last Updated: `2026-03-04`
 
 ## Stage Gates
@@ -20,14 +20,14 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | Stage | Gate Status (`Not Started`/`In Progress`/`Pass`/`Fail`/`Blocked`) | Gate Rule Summary | Evidence |
 | --- | --- | --- | --- |
 | 0 Bootstrap + Draft Requirement | Pass | Ticket bootstrap complete + `requirements.md` Draft captured | `tickets/in-progress/claude-agent-sdk-runtime-support/requirements.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
-| 1 Investigation + Triage | Pass | Streaming-cadence investigation captured with fault-domain hypotheses (SDK chunk cadence vs normalization precedence vs emission buffering) and diagnostic plan | `tickets/in-progress/claude-agent-sdk-runtime-support/investigation-notes.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
-| 2 Requirements | Pass | Requirements refined with explicit incremental-stream cadence contract (`R-020` / `AC-020`) and traceability updates | `tickets/in-progress/claude-agent-sdk-runtime-support/requirements.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
-| 3 Design Basis | Pass | Streaming-cadence re-entry design delta captured with Claude-normalizer boundary constraints and no frontend-hack policy | `tickets/in-progress/claude-agent-sdk-runtime-support/proposed-design.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/implementation-plan.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
-| 4 Runtime Modeling | Pass | Future-state call stack updated with `UC-018` and delta-priority normalization flow detail for Claude V2 streaming | `tickets/in-progress/claude-agent-sdk-runtime-support/future-state-runtime-call-stack.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
-| 5 Review Gate | Pass | Re-entry rounds 7/8 completed with `Go Confirmed` for streaming-cadence delta and no blockers | `tickets/in-progress/claude-agent-sdk-runtime-support/future-state-runtime-call-stack-review.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
-| 6 Implementation | Pass | Implemented Claude stream-event normalization and delta-priority fallback reconciliation for streaming cadence integrity (`C-047`, `C-048`) | `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-runtime-message-normalizers.ts`, `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.ts`, `autobyteus-server-ts/tests/unit/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.test.ts`, `tickets/in-progress/claude-agent-sdk-runtime-support/implementation-progress.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
-| 7 API/E2E Testing | Pass | Live Claude/Codex runtime+team+run-history matrix rerun passed after cadence fix (`37 passed / 1 skipped`) | `tickets/in-progress/claude-agent-sdk-runtime-support/api-e2e-testing.md`, `autobyteus-server-ts/tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts`, `autobyteus-server-ts/tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts`, `autobyteus-server-ts/tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts`, `autobyteus-server-ts/tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts`, `autobyteus-server-ts/tests/e2e/run-history/team-run-history-graphql.e2e.test.ts`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
-| 8 Code Review | Pass | Streaming-cadence re-review completed; no new coupling regressions and SDK V2 partial-stream limitation documented as non-blocking upstream behavior | `tickets/in-progress/claude-agent-sdk-runtime-support/code-review.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| 1 Investigation + Triage | Pass | Investigation confirmed team-member projection arbitration gap: external-runtime runtime projection is skipped when local projection is non-empty but incomplete, causing first-message-only rehydration | `tickets/in-progress/claude-agent-sdk-runtime-support/investigation-notes.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| 2 Requirements | Pass | Requirements updated with explicit team-member run-history completeness contract for external runtimes (`R-021` / `AC-021` / `UC-019`) | `tickets/in-progress/claude-agent-sdk-runtime-support/requirements.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| 3 Design Basis | Pass | Design basis refreshed with external-runtime projection arbitration strategy (prefer richer runtime projection while preserving deterministic local fallback) | `tickets/in-progress/claude-agent-sdk-runtime-support/proposed-design.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/implementation-plan.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| 4 Runtime Modeling | Pass | Call stack updated with `UC-019` for team-member projection completeness across terminate/reopen | `tickets/in-progress/claude-agent-sdk-runtime-support/future-state-runtime-call-stack.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| 5 Review Gate | Pass | Re-entry rounds 13/14 completed with `Go Confirmed` for run-history projection completeness delta | `tickets/in-progress/claude-agent-sdk-runtime-support/future-state-runtime-call-stack-review.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| 6 Implementation | Pass | Orchestrator layering tightened by extracting relay policy into dedicated relay service and preserving lifecycle/state orchestration boundaries | `autobyteus-server-ts/src/agent-team-execution/services/team-member-runtime-relay-service.ts`, `autobyteus-server-ts/src/agent-team-execution/services/team-member-runtime-orchestrator.ts`, `tickets/in-progress/claude-agent-sdk-runtime-support/implementation-progress.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| 7 API/E2E Testing | Pass | Live Claude team runtime E2E rerun passed (`5/5`) including send_message_to lifecycle, workspace continue, and two-member terminate/reopen run-history restoration | `autobyteus-server-ts/tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts`, `tickets/in-progress/claude-agent-sdk-runtime-support/api-e2e-testing.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| 8 Code Review | Pass | Re-review confirms improved separation of concerns for team-member relay/lifecycle boundaries with no live regression | `tickets/in-progress/claude-agent-sdk-runtime-support/code-review.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
 | 9 Docs Sync | Not Started | Re-entry docs sync pending Stage 8 pass | `tickets/in-progress/claude-agent-sdk-runtime-support/docs-sync.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
 | 10 Handoff / Ticket State | Not Started | Re-entry handoff pending Stage 9 completion | `tickets/in-progress/claude-agent-sdk-runtime-support/handoff-summary.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
 
@@ -80,15 +80,15 @@ Note:
 - Stage 5 gate is `Go Confirmed`: `Yes`
 - Required upstream artifacts are current: `Yes`
 - Pre-Edit Checklist Result: `Locked`
-- Source code edits are not permitted unless workflow returns to Stage 6 with explicit unlock.
+- Source code edits are not permitted until workflow returns to Stage 6.
 
 ## Re-Entry Declaration
 
-- Trigger Stage (`5`/`6`/`7`/`8`): `8 (user-reported Claude assistant output appears full-buffered in UI rather than visibly streamed)`
-- Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `Unclear`
-- Required Return Path: `0 -> 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8`
-- Required Upstream Artifacts To Update Before Code Edits: `workflow-state.md`, `investigation-notes.md`, `requirements.md`, `proposed-design.md`, `future-state-runtime-call-stack.md`, `future-state-runtime-call-stack-review.md`, `implementation-plan.md`, `implementation-progress.md`
-- Resume Condition: `Stage 8 passed; proceed to Stage 9 docs sync`
+- Trigger Stage (`5`/`6`/`7`/`8`): `N/A (re-entry closed at T-085)`
+- Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
+- Required Return Path: `N/A`
+- Required Upstream Artifacts To Update Before Code Edits: `N/A`
+- Resume Condition: `N/A`
 
 Note:
 - Stage 5 re-entry normally uses `Design Impact` / `Requirement Gap` / `Unclear` only (not `Local Fix`).
@@ -176,6 +176,14 @@ Note:
 | T-075 | 2026-03-04 | 1 | 3 | Investigation evidence completed and requirements refined for incremental streaming cadence; design-basis refresh started for re-entry runtime-model update | Unclear | Locked | `tickets/in-progress/claude-agent-sdk-runtime-support/investigation-notes.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/requirements.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
 | T-076 | 2026-03-04 | 3 | 6 | Completed Stage 3/4/5 re-entry artifacts for streaming cadence (`UC-018`, round 7/8 Go Confirmed) and unlocked Stage 6 implementation for batch M fixes | Unclear | Unlocked | `tickets/in-progress/claude-agent-sdk-runtime-support/proposed-design.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/future-state-runtime-call-stack.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/future-state-runtime-call-stack-review.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/implementation-plan.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
 | T-077 | 2026-03-04 | 6 | 8 | Implemented streaming-cadence reconciliation fixes, passed targeted unit and live Claude/Codex API-E2E matrix reruns, and closed Stage 8 re-review with documented SDK V2 stream-shape limitation | Unclear | Locked | `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-runtime-message-normalizers.ts`, `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.ts`, `autobyteus-server-ts/tests/unit/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.test.ts`, `tickets/in-progress/claude-agent-sdk-runtime-support/implementation-progress.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/api-e2e-testing.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/code-review.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| T-078 | 2026-03-04 | 8 | 1 | User-reported team-member run-history rehydration regression (only first message restored after reload) reopened investigation-first path with lock retained | Unclear | Locked | `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/investigation-notes.md` |
+| T-079 | 2026-03-04 | 1 | 2 | Investigation evidence captured and fault domain narrowed to team-member projection arbitration logic; proceeding to requirements refinement | Unclear | Locked | `tickets/in-progress/claude-agent-sdk-runtime-support/investigation-notes.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| T-080 | 2026-03-04 | 2 | 3 | Requirements refined with explicit team-member run-history completeness acceptance criteria; entering design-basis refresh | Unclear | Locked | `tickets/in-progress/claude-agent-sdk-runtime-support/requirements.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| T-081 | 2026-03-04 | 3 | 6 | Completed Stage 3/4/5 re-entry artifacts for team-member run-history completeness (`UC-019`, rounds 13/14 Go Confirmed) and unlocked Stage 6 implementation for Batch N | Unclear | Unlocked | `tickets/in-progress/claude-agent-sdk-runtime-support/proposed-design.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/future-state-runtime-call-stack.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/future-state-runtime-call-stack-review.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/implementation-plan.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| T-082 | 2026-03-04 | 6 | 7 | Implemented run-history completeness fix (manifest runtime-reference persistence + projection arbitration), added focused unit coverage, and passed live Claude team E2E including two-turn terminate/projection restore case | Local Fix | Unlocked | `autobyteus-server-ts/src/run-history/services/team-run-history-service.ts`, `autobyteus-server-ts/src/run-history/services/team-member-run-projection-service.ts`, `autobyteus-server-ts/src/agent-team-execution/services/team-member-runtime-orchestrator.ts`, `autobyteus-server-ts/tests/unit/run-history/team-run-history-service.test.ts`, `autobyteus-server-ts/tests/unit/run-history/team-member-run-projection-service.test.ts`, `autobyteus-server-ts/tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts`, `tickets/in-progress/claude-agent-sdk-runtime-support/api-e2e-testing.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/implementation-progress.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| T-083 | 2026-03-04 | 7 | 8 | Code review re-round completed with pass decision for team-member run-history completeness delta; no open findings and build gate green | Local Fix | Locked | `tickets/in-progress/claude-agent-sdk-runtime-support/code-review.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/implementation-progress.md` |
+| T-084 | 2026-03-04 | 8 | 6 | User-provided real production journey reproduces team-member history truncation after terminate/reopen; reopened Local Fix implementation path for runtime-reference persistence and strict journey E2E | Local Fix | Unlocked | `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/investigation-notes.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/implementation-progress.md` |
+| T-085 | 2026-03-04 | 6 | 8 | Completed orchestrator decoupling follow-up (relay policy extraction), reran unit/build/live Claude team E2E, and closed code-review round with pass | Local Fix | Locked | `autobyteus-server-ts/src/agent-team-execution/services/team-member-runtime-relay-service.ts`, `autobyteus-server-ts/src/agent-team-execution/services/team-member-runtime-orchestrator.ts`, `autobyteus-server-ts/tests/unit/agent-team-execution/team-member-runtime-orchestrator.test.ts`, `autobyteus-server-ts/tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts`, `tickets/in-progress/claude-agent-sdk-runtime-support/implementation-progress.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/code-review.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
 
 ## Audible Notification Log (Optional Tracking)
 
@@ -216,6 +224,12 @@ Note:
 | 2026-03-04 | Transition | Investigation and requirements refinement completed (`R-020`/`AC-020`), and workflow advanced to Stage 3 design refresh while code edits remain locked. | Pending | N/A |
 | 2026-03-04 | Transition | Stage 3 through Stage 5 artifacts were refreshed (`UC-018`, review rounds 7 and 8) and Stage 6 implementation was unlocked for the runtime streaming cadence fix. | Pending | N/A |
 | 2026-03-04 | Transition | Stage 6 implementation and Stage 7/8 gates completed for streaming-cadence re-entry; code edits relocked and workflow now awaits docs-sync refresh. | Pending | N/A |
+| 2026-03-04 | Transition | Stage 8 reopened to Stage 1 for team-member run-history rehydration regression investigation, with code edits locked until upstream gates are refreshed. | Success | N/A |
+| 2026-03-04 | Transition | Stage 1 investigation for team-member run-history truncation completed and workflow advanced to Stage 2 requirements refinement with code edits still locked. | Success | N/A |
+| 2026-03-04 | Transition | Stage 2 requirements refinement completed with `R-021` and `AC-021`; workflow advanced to Stage 3 design refresh while code edits remain locked. | Success | N/A |
+| 2026-03-04 | Transition | Stage 3 through Stage 5 artifacts were refreshed for team-member run-history completeness and Stage 6 implementation was unlocked for source changes. | Success | N/A |
+| 2026-03-04 | Transition | Stage 8 was reopened to Stage 6 under Local Fix classification after user-provided real journey evidence still showed first-message-only team-member history restore. | Success | N/A |
+| 2026-03-04 | Transition | Completed Local Fix cycle to Stage 8: relay-policy extraction from orchestrator shipped, live Claude team E2E passed, and code-edit lock was restored. | Success | N/A |
 
 ## Process Violation Log
 

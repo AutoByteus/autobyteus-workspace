@@ -214,3 +214,64 @@ Disallowed direction:
 
 - For multi-chunk Claude stream input, backend emits multiple progressive `item/outputText/delta` events before completion.
 - Frontend receives and renders incremental `SEGMENT_CONTENT` updates with no duplicate trailing full-buffer tool/message artifact.
+
+## Re-Entry Design Delta (2026-03-04, Team-Member Run-History Rehydration Completeness)
+
+### Problem Framing
+
+- User-observed behavior for team-member history reopen shows only the first message for external-runtime members, while standalone run history remains complete.
+- Team-member projection currently short-circuits to local projection when non-empty, even if that local snapshot is incomplete.
+
+### Boundary-Constrained Fix Strategy
+
+1. Keep resolver and frontend contracts unchanged.
+- Preserve `getTeamMemberRunProjection(teamRunId, memberRouteKey)` API and existing frontend conversation mapping.
+- Avoid frontend-side merge hacks.
+
+2. Constrain fix to team-member projection arbitration layer.
+- In `TeamMemberRunProjectionService`, always attempt runtime projection for non-`autobyteus` runtimes.
+- Compare local vs runtime projections and select the richer projection deterministically.
+
+3. Define deterministic richness policy.
+- Primary signal: larger `conversation.length`.
+- Secondary fallback: retain local projection when runtime projection is empty/unavailable/error.
+- Error policy: throw only when both sources are unavailable/empty with source error context.
+
+4. Preserve separation of concerns.
+- Runtime provider internals remain runtime-specific in projection providers.
+- Team-member service remains orchestration-only and does not embed runtime-specific parsing logic.
+
+### Expected Outcome
+
+- Team-member reopen after terminate/reload returns complete multi-turn conversation (user/assistant/user/assistant) instead of first-message-only partial snapshots.
+- Existing standalone run projection behavior remains unchanged.
+
+## Re-Entry Design Delta (2026-03-04, TeamMemberRuntimeOrchestrator layering refinement)
+
+### Problem Framing
+
+- `TeamMemberRuntimeOrchestrator` still held relay-specific policy (argument parsing + routing + runtime-reference refresh) in addition to lifecycle orchestration.
+- This increased coupling and reduced maintainability for runtime-neutral team-member orchestration.
+
+### Boundary-Constrained Fix Strategy
+
+1. Keep runtime relay binding contract unchanged.
+- No API changes to runtime services (`setInterAgentRelayHandler`) or GraphQL surfaces.
+
+2. Split relay policy into dedicated service layer.
+- Introduce `TeamMemberRuntimeRelayService` for:
+  - tool-argument parsing/validation,
+  - sender/recipient member resolution,
+  - ingress relay invocation,
+  - runtime-reference refresh updates.
+
+3. Reduce orchestrator to composition + delegation.
+- Orchestrator retains lifecycle/state coordination and delegates relay operations to the new relay service.
+
+### Expected Outcome
+
+- Cleaner layering in team-member runtime path:
+  - lifecycle/session concerns in orchestrator + lifecycle service,
+  - relay policy in relay service,
+  - state mutation in binding-state service.
+- Lower risk of regression when extending relay policies for Claude/Codex parity.

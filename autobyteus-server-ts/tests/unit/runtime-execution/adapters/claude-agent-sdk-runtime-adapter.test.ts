@@ -143,8 +143,37 @@ describe("ClaudeAgentSdkRuntimeAdapter", () => {
       },
     });
 
-    expect(result).toEqual({ accepted: true });
+    expect(result).toEqual({
+      accepted: true,
+      runtimeReference: {
+        runtimeKind: "claude_agent_sdk",
+        sessionId: "claude-session-1",
+        threadId: "claude-session-1",
+        metadata: { model: "claude-sonnet-4-5" },
+      },
+    });
     expect((runtimeService.injectInterAgentEnvelope as any).mock.calls[0][0]).toBe("run-1");
+  });
+
+  it("returns last known runtime reference on terminate", async () => {
+    const runtimeService = buildRuntimeService();
+    const adapter = new ClaudeAgentSdkRuntimeAdapter(runtimeService);
+
+    const result = await adapter.terminateRun({
+      runId: "run-1",
+      mode: "agent",
+    });
+
+    expect(result).toEqual({
+      accepted: true,
+      runtimeReference: {
+        runtimeKind: "claude_agent_sdk",
+        sessionId: "claude-session-1",
+        threadId: "claude-session-1",
+        metadata: { model: "claude-sonnet-4-5" },
+      },
+    });
+    expect((runtimeService.terminateRun as any).mock.calls[0][0]).toBe("run-1");
   });
 
   it("maps tool approval errors to deterministic command failure payload", async () => {

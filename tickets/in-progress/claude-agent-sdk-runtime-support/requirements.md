@@ -2,7 +2,7 @@
 
 - Status: `Design-ready`
 - Ticket: `claude-agent-sdk-runtime-support`
-- Last Updated: `2026-03-04`
+- Last Updated: `2026-03-04 (team-member run-history re-entry)`
 
 ## Goal / Problem Statement
 
@@ -33,6 +33,7 @@ Add Claude Agent SDK as a first-class runtime (`claude_agent_sdk`) alongside `au
 - `UC-016`: Claude runtime sessions execute inside the selected workspace path (for example `temp_workspace`) rather than inheriting server-process worktree cwd.
 - `UC-017`: Claude runtime honors `autoExecuteTools` by auto-allowing permission-gated tool calls when enabled and preserving default permission prompts when disabled.
 - `UC-018`: Claude runtime emits incremental assistant text segment deltas to frontend during active turns (not only full-buffer final text), while preserving existing completion semantics.
+- `UC-019`: Team-member run-history projection for external runtimes restores complete multi-turn conversation after terminate/reopen (not first-message-only partial projection).
 
 ## Out of Scope
 
@@ -61,6 +62,7 @@ Add Claude Agent SDK as a first-class runtime (`claude_agent_sdk`) alongside `au
 - `R-018`: Claude V2 session creation/resume must honor the resolved run workspace directory for each run, with deterministic restoration/isolation so concurrent run creation cannot leak cwd across runs.
 - `R-019`: Claude runtime must map run-level `autoExecuteTools` to Claude V2 permission policy so "Auto approve tools" behaves consistently with Codex expectations for permission-gated tool calls.
 - `R-020`: Claude runtime stream mapping must preserve incremental emission cadence by preferring real chunk deltas over full-message fallback payloads whenever delta data exists, so websocket `SEGMENT_CONTENT` arrives progressively before `SEGMENT_END`.
+- `R-021`: Team-member run-history projection arbitration for external runtimes must evaluate runtime projection even when local member-memory projection is non-empty, and must return the richer complete conversation snapshot to avoid partial first-turn-only restores.
 
 ## Acceptance Criteria
 
@@ -84,6 +86,7 @@ Add Claude Agent SDK as a first-class runtime (`claude_agent_sdk`) alongside `au
 - `AC-018` (`R-018`): Claude V2 session initialization path applies the run workspace cwd during SDK session create/resume and restores the original process cwd afterward, with regression tests covering both create and resume branches.
 - `AC-019` (`R-019`): Claude V2 session init options receive run-level auto-approval policy (`autoExecuteTools=true` -> SDK auto-allow callback; `false` -> no auto-allow callback) and unit tests validate both branches.
 - `AC-020` (`R-020`): Claude runtime unit/API evidence shows multi-chunk Claude stream input yields multiple websocket-visible `SEGMENT_CONTENT` events before completion, and no duplicate full-buffer fallback segment is emitted when delta chunks are available.
+- `AC-021` (`R-021`): In Claude team-member real API/E2E flow, after two user messages + assistant replies, terminate and reopen projection retrieval returns both turn markers and at least four conversation message entries for that member (user/assistant/user/assistant), rather than a single first user message.
 
 ## Constraints / Dependencies
 
@@ -127,6 +130,7 @@ Add Claude Agent SDK as a first-class runtime (`claude_agent_sdk`) alongside `au
 - `R-018` -> `UC-016`, `UC-001`, `UC-004`
 - `R-019` -> `UC-017`, `UC-001`, `UC-006`
 - `R-020` -> `UC-018`, `UC-002`, `UC-010`
+- `R-021` -> `UC-019`, `UC-005`, `UC-006`
 
 ## Acceptance Criteria Coverage Map (AC -> Stage 7 Scenario)
 
@@ -150,3 +154,4 @@ Add Claude Agent SDK as a first-class runtime (`claude_agent_sdk`) alongside `au
 - `AC-018` -> `AV-018`
 - `AC-019` -> `AV-019`
 - `AC-020` -> `AV-020`
+- `AC-021` -> `AV-021`

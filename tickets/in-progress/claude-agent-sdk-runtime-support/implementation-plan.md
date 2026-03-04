@@ -1,7 +1,7 @@
 # Implementation Plan
 
 - Ticket: `claude-agent-sdk-runtime-support`
-- Plan Version: `v6`
+- Plan Version: `v7`
 - Scope: `Large`
 - Stage Preconditions:
   - Stage 5 gate: `Go Confirmed`
@@ -9,7 +9,7 @@
 
 ## Objective
 
-Implement `claude_agent_sdk` runtime support and refactor shared runtime orchestration to runtime-neutral boundaries for external runtimes, while preserving existing `autobyteus` and `codex_app_server` behavior. For this cycle, enforce a V2-only Claude session execution path and remove active V1 `query()` turn execution.
+Implement `claude_agent_sdk` runtime support and refactor shared runtime orchestration to runtime-neutral boundaries for external runtimes, while preserving existing `autobyteus` and `codex_app_server` behavior. For this cycle, also fix team-member run-history rehydration so external-runtime member projections prefer richer runtime transcript data over partial local snapshots.
 
 ## Change Batches
 
@@ -104,6 +104,13 @@ Implement `claude_agent_sdk` runtime support and refactor shared runtime orchest
 - M3. Add/extend runtime unit coverage to assert multi-chunk Claude input yields multiple progressive `item/outputText/delta` emissions before completion.
 - M4. Add API/E2E assertion updates to verify websocket-visible `SEGMENT_CONTENT` cadence precedes `SEGMENT_END` for Claude runtime turns.
 
+### Batch N: Team-Member Run-History Completeness Arbitration
+
+- N1. Refactor `TeamMemberRunProjectionService` arbitration to always attempt runtime projection for external runtimes, even when local projection is non-empty.
+- N2. Introduce deterministic “richer projection” selection policy (prefer projection with more conversation entries; preserve local fallback on runtime failure/unavailability).
+- N3. Add unit coverage for partial-local vs richer-runtime arbitration and runtime-provider failure fallback.
+- N4. Add live Claude API/E2E scenario: two user turns + assistant replies, terminate, fetch team-member projection, assert both turn markers and message-count floor (`>=4`).
+
 ## Planned File Groups
 
 - Server core/runtime:
@@ -161,6 +168,7 @@ Implement `claude_agent_sdk` runtime support and refactor shared runtime orchest
 | R-018 | K | Claude V2 interop unit tests for workspace cwd scoping and runtime-service forwarding assertions |
 | R-019 | L | Claude adapter + V2 interop unit tests for auto-approval mapping branches |
 | R-020 | M | Claude stream normalizer/service tests and API/E2E assertions for multi-delta cadence without duplicate fallback flush |
+| R-021 | N | Team-member projection service arbitration unit tests + live Claude team-member projection post-terminate E2E assertions |
 
 ## Test Plan
 
@@ -192,3 +200,4 @@ Implement `claude_agent_sdk` runtime support and refactor shared runtime orchest
 11. Batch K (Claude V2 workspace cwd propagation hardening via interop-level scoped session creation).
 12. Batch L (Claude auto-approve permission policy mapping through V2 session options).
 13. Batch M (Claude incremental streaming cadence preservation and cadence-focused verification updates).
+14. Batch N (team-member run-history completeness arbitration + live rehydration proof).

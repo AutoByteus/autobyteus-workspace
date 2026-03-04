@@ -1,5 +1,6 @@
 import {
   asObject,
+  asString,
   type ClaudeSdkModuleLike,
 } from "./claude-runtime-shared.js";
 import { resolveSdkFunction, tryCallWithVariants } from "./claude-runtime-sdk-interop.js";
@@ -169,6 +170,38 @@ export const resolveClaudeV2SessionControl = (
     return null;
   }
   return control as ClaudeV2SessionControlLike;
+};
+
+const resolveSessionIdFromObject = (value: unknown): string | null => {
+  const payload = asObject(value);
+  if (!payload) {
+    return null;
+  }
+  const safeRead = (key: string): unknown => {
+    try {
+      return (payload as Record<string, unknown>)[key];
+    } catch {
+      return undefined;
+    }
+  };
+  return (
+    asString(safeRead("sessionId")) ??
+    asString(safeRead("session_id")) ??
+    asString(safeRead("threadId")) ??
+    asString(safeRead("thread_id")) ??
+    asString(safeRead("id")) ??
+    null
+  );
+};
+
+export const resolveClaudeV2SessionId = (
+  session: ClaudeV2SessionLike,
+): string | null => {
+  return (
+    resolveSessionIdFromObject(session) ??
+    resolveSessionIdFromObject((session as { query?: unknown }).query) ??
+    null
+  );
 };
 
 const requireControlMethod = <T extends keyof ClaudeV2SessionControlLike>(

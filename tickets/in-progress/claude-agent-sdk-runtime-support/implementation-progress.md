@@ -146,3 +146,39 @@
 ## Blockers
 
 - No open blockers for this ticket.
+
+## Re-Entry Delta (2026-03-04, team-member run-history completeness)
+
+### Implemented
+
+- `C-049` `Modify` `team-run-history-service.ts`
+  - Persisted active external-runtime member binding updates (including refreshed runtime references/session IDs) back into team manifests during `onTeamEvent` and `onTeamTerminated`.
+- `C-050` `Modify` `team-member-runtime-orchestrator.ts`
+  - Added active member-binding snapshot accessor for run-history persistence layer use.
+- `C-051` `Modify` `team-member-run-projection-service.ts`
+  - External-runtime projection arbitration now always evaluates runtime projection and deterministically prefers richer/newer projection over partial local projection.
+- `C-052` `Add/Modify` tests
+  - Added unit coverage for runtime-reference persistence refresh and richer external-runtime projection preference.
+  - Added live Claude team E2E for two-turn send + terminate + projection restore completeness.
+
+### Verification
+
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/run-history/team-run-history-service.test.ts tests/unit/run-history/team-member-run-projection-service.test.ts` -> Pass
+- `RUN_CLAUDE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts` -> Pass (`4/4`)
+- `pnpm -C autobyteus-server-ts build` -> Pass
+
+## Re-Entry Delta (2026-03-04, orchestrator decoupling follow-up)
+
+### Implemented
+
+- `C-053` `Add` `src/agent-team-execution/services/team-member-runtime-relay-service.ts`
+  - Extracted inter-agent relay parsing/routing/runtime-reference-refresh policy into a dedicated service.
+- `C-054` `Modify` `src/agent-team-execution/services/team-member-runtime-orchestrator.ts`
+  - Orchestrator now delegates relay handling to `TeamMemberRuntimeRelayService`, reducing direct policy coupling and keeping lifecycle/state orchestration concerns separated.
+
+### Verification
+
+- `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/team-member-runtime-orchestrator.test.ts` -> Pass (`11/11`)
+- `pnpm -C autobyteus-server-ts build` -> Pass
+- `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts` -> Pass (`5/5`)
+- `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts` -> Pass (`2/2`)

@@ -43,6 +43,7 @@ import {
   createOrResumeClaudeV2Session,
   interruptClaudeV2SessionTurn,
   resolveClaudeV2SessionControl,
+  resolveClaudeV2SessionId,
   type ClaudeV2SessionControlLike,
   type ClaudeV2SessionLike,
 } from "./claude-runtime-v2-control-interop.js";
@@ -526,7 +527,6 @@ export class ClaudeAgentSdkRuntimeService {
     });
     await session.send(turnInput);
 
-    let userMessageBoundToResolvedSession = false;
     let assistantOutput = "";
     let hasObservedStreamingDelta = false;
     for await (const chunk of session.stream()) {
@@ -535,19 +535,7 @@ export class ClaudeAgentSdkRuntimeService {
       }
       this.processToolLifecycleChunk(options.state, chunk);
       const normalized = normalizeClaudeStreamChunk(chunk);
-      if (normalized.sessionId && normalized.sessionId !== options.state.sessionId) {
-        const previousSessionId = options.state.sessionId;
-        options.state.sessionId = normalized.sessionId;
-        this.transcriptStore.ensureSession(options.state.sessionId);
-        if (!userMessageBoundToResolvedSession && previousSessionId !== options.state.sessionId) {
-          this.transcriptStore.appendMessage(options.state.sessionId, {
-            role: "user",
-            content: options.content,
-            createdAt: nowTimestampSeconds(),
-          });
-          userMessageBoundToResolvedSession = true;
-        }
-      }
+      this.adoptResolvedSessionId(options.state, normalized.sessionId);
 
       if (normalized.delta) {
         const incrementalDelta = resolveIncrementalDelta({
@@ -630,7 +618,21 @@ export class ClaudeAgentSdkRuntimeService {
     const control = resolveClaudeV2SessionControl(session);
     this.v2SessionsByRunId.set(state.runId, session);
     this.v2SessionControlsByRunId.set(state.runId, control);
+    this.adoptResolvedSessionId(state, resolveClaudeV2SessionId(session));
     return { session, control };
+  }
+
+  private adoptResolvedSessionId(
+    state: ClaudeRunSessionState,
+    sessionId: string | null | undefined,
+  ): void {
+    const normalized = asString(sessionId);
+    if (!normalized || normalized === state.sessionId) {
+      return;
+    }
+    const previousSessionId = state.sessionId;
+    state.sessionId = normalized;
+    this.transcriptStore.migrateSessionMessages(previousSessionId, normalized);
   }
 
   private isSendMessageToToolingEnabled(state: ClaudeRunSessionState): boolean {

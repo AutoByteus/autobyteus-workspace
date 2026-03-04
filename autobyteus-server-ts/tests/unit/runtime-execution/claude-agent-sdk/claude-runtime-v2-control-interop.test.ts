@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   configureClaudeV2DynamicMcpServers,
   createOrResumeClaudeV2Session,
+  resolveClaudeV2SessionId,
   resolveClaudeV2SessionControl,
 } from "../../../../src/runtime-execution/claude-agent-sdk/claude-runtime-v2-control-interop.js";
 
@@ -172,6 +173,25 @@ describe("claude-runtime-v2-control-interop", () => {
     });
 
     expect(resolved).toEqual(control);
+  });
+
+  it("resolves session id from session payload and query fallback", () => {
+    const directSessionId = resolveClaudeV2SessionId({
+      send: vi.fn().mockResolvedValue(undefined),
+      stream: vi.fn().mockReturnValue((async function* () {})()),
+      close: vi.fn(),
+      sessionId: "session-direct",
+      query: {},
+    });
+    expect(directSessionId).toBe("session-direct");
+
+    const querySessionId = resolveClaudeV2SessionId({
+      send: vi.fn().mockResolvedValue(undefined),
+      stream: vi.fn().mockReturnValue((async function* () {})()),
+      close: vi.fn(),
+      query: { session_id: "session-from-query" },
+    });
+    expect(querySessionId).toBe("session-from-query");
   });
 
   it("preserves control method binding when configuring dynamic MCP servers", async () => {

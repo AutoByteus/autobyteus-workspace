@@ -12,6 +12,7 @@ import {
   TeamRunIndexRow,
   TeamRunKnownStatus,
   TeamRunManifest,
+  TeamRunMemberBinding,
 } from "../domain/team-models.js";
 import { TeamMemberMemoryLayoutStore } from "../store/team-member-memory-layout-store.js";
 import { TeamMemberRunManifestStore } from "../store/team-member-run-manifest-store.js";
@@ -162,12 +163,15 @@ export class TeamRunHistoryService {
         lastKnownStatus: options.status ?? "ACTIVE",
         deleteLifecycle: "READY",
       });
-      await this.writeMemberRunManifests(
+      const nextStatus = options.status ?? "ACTIVE";
+      const timestamp = nowIso();
+      const refreshedManifest = this.mergeManifestWithActiveBindings(
         teamRunId,
         manifest,
-        options.status ?? "ACTIVE",
-        nowIso(),
+        timestamp,
       );
+      await this.writeMemberRunManifests(teamRunId, refreshedManifest, nextStatus, timestamp);
+      await this.manifestStore.writeManifest(teamRunId, refreshedManifest);
       return;
     }
     const nextStatus = options.status ?? existing.lastKnownStatus;
@@ -179,16 +183,20 @@ export class TeamRunHistoryService {
     });
     const manifest = await this.manifestStore.readManifest(teamRunId);
     if (manifest) {
-      await this.writeMemberRunManifests(
+      const refreshedManifest = this.mergeManifestWithActiveBindings(
         teamRunId,
         manifest,
-        nextStatus,
         nextLastActivityAt,
       );
+      await this.writeMemberRunManifests(teamRunId, refreshedManifest, nextStatus, nextLastActivityAt);
+      await this.manifestStore.writeManifest(teamRunId, refreshedManifest);
     }
   }
 
-  async onTeamTerminated(teamRunId: string): Promise<void> {
+  async onTeamTerminated(
+    teamRunId: string,
+    options: { memberBindingsOverride?: TeamRunMemberBinding[] } = {},
+  ): Promise<void> {
     const terminatedAt = nowIso();
     await this.indexStore.updateRow(teamRunId, {
       lastKnownStatus: "IDLE",
@@ -196,7 +204,14 @@ export class TeamRunHistoryService {
     });
     const manifest = await this.manifestStore.readManifest(teamRunId);
     if (manifest) {
-      await this.writeMemberRunManifests(teamRunId, manifest, "IDLE", terminatedAt);
+      const refreshedManifest = this.mergeManifestWithActiveBindings(
+        teamRunId,
+        manifest,
+        terminatedAt,
+        options.memberBindingsOverride ?? null,
+      );
+      await this.writeMemberRunManifests(teamRunId, refreshedManifest, "IDLE", terminatedAt);
+      await this.manifestStore.writeManifest(teamRunId, refreshedManifest);
     }
   }
 
@@ -330,6 +345,61 @@ export class TeamRunHistoryService {
       };
       await this.memberRunManifestStore.writeManifest(teamRunId, memberManifest);
     }
+  }
+
+  private mergeManifestWithActiveBindings(
+    teamRunId: string,
+    manifest: TeamRunManifest,
+    timestamp: string,
+    activeBindingsOverride: TeamRunMemberBinding[] | null = null,
+  ): TeamRunManifest {
+    const activeBindings =
+      activeBindingsOverride ?? this.teamMemberRuntimeOrchestrator?.getActiveMemberBindings?.(teamRunId) ?? [];
+    if (activeBindings.length === 0) {
+      return manifest;
+    }
+
+    const activeBindingByRunId = new Map<string, TeamRunMemberBinding>();
+    for (const binding of activeBindings) {
+      activeBindingByRunId.set(binding.memberRunId, binding);
+    }
+
+    let changed = false;
+    const mergedBindings = manifest.memberBindings.map((binding) => {
+      const active = activeBindingByRunId.get(binding.memberRunId);
+      if (!active) {
+        return binding;
+      }
+
+      const mergedBinding: TeamRunMemberBinding = {
+        ...binding,
+        memberRouteKey: active.memberRouteKey,
+        memberName: active.memberName,
+        memberRunId: active.memberRunId,
+        runtimeKind: active.runtimeKind,
+        runtimeReference: active.runtimeReference ?? null,
+        agentDefinitionId: active.agentDefinitionId,
+        llmModelIdentifier: active.llmModelIdentifier,
+        autoExecuteTools: active.autoExecuteTools,
+        llmConfig: active.llmConfig ?? null,
+        workspaceRootPath: active.workspaceRootPath ?? binding.workspaceRootPath,
+      };
+
+      if (JSON.stringify(mergedBinding) !== JSON.stringify(binding)) {
+        changed = true;
+      }
+      return mergedBinding;
+    });
+
+    if (!changed) {
+      return manifest;
+    }
+
+    return {
+      ...manifest,
+      updatedAt: timestamp,
+      memberBindings: mergedBindings,
+    };
   }
 }
 

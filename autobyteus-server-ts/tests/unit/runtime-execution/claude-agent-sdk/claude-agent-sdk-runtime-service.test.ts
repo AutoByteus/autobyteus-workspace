@@ -113,15 +113,65 @@ describe("ClaudeAgentSdkRuntimeService", () => {
     ]);
 
     const initialSessionTranscript = await service.getSessionMessages("run-1");
-    expect(initialSessionTranscript).toHaveLength(1);
-    expect(initialSessionTranscript[0]?.role).toBe("user");
-    expect(initialSessionTranscript[0]?.content).toBe("Say hello");
+    expect(initialSessionTranscript).toHaveLength(0);
 
     const switchedSessionTranscript = await service.getSessionMessages("claude-session-1");
-    expect(switchedSessionTranscript.length).toBeGreaterThanOrEqual(1);
+    expect(switchedSessionTranscript.length).toBeGreaterThanOrEqual(2);
+    expect(
+      switchedSessionTranscript.some(
+        (entry) => entry.role === "user" && entry.content === "Say hello",
+      ),
+    ).toBe(true);
     expect(
       switchedSessionTranscript.some(
         (entry) => entry.role === "assistant" && entry.content === "Hello world",
+      ),
+    ).toBe(true);
+  });
+
+  it("adopts session id from the v2 session object and migrates cached transcript", async () => {
+    const v2Session = createFakeV2Session([[{ delta: "tool output without session id" }]]) as ReturnType<
+      typeof createFakeV2Session
+    > & { sessionId?: string };
+    v2Session.sessionId = "claude-session-from-object";
+    const createSession = vi.fn().mockReturnValue(v2Session);
+
+    const service = new ClaudeAgentSdkRuntimeService() as ClaudeAgentSdkRuntimeService & {
+      cachedSdkModule: unknown;
+    };
+    service.cachedSdkModule = {
+      unstable_v2_createSession: createSession,
+      unstable_v2_resumeSession: vi.fn(),
+    };
+
+    await service.createRunSession("run-adopt-session-id", {
+      modelIdentifier: "default",
+      workingDirectory: TEST_WORKSPACE_DIR,
+      llmConfig: null,
+    });
+
+    await service.sendTurn(
+      "run-adopt-session-id",
+      AgentInputUserMessage.fromDict({ content: "persist this turn" }),
+    );
+
+    await waitFor(() => {
+      const runtimeReference = service.getRunRuntimeReference("run-adopt-session-id");
+      return runtimeReference?.sessionId === "claude-session-from-object";
+    });
+
+    const runScopedTranscript = await service.getSessionMessages("run-adopt-session-id");
+    expect(runScopedTranscript).toEqual([]);
+
+    const resolvedTranscript = await service.getSessionMessages("claude-session-from-object");
+    expect(
+      resolvedTranscript.some(
+        (entry) => entry.role === "user" && entry.content === "persist this turn",
+      ),
+    ).toBe(true);
+    expect(
+      resolvedTranscript.some(
+        (entry) => entry.role === "assistant" && entry.content === "tool output without session id",
       ),
     ).toBe(true);
   });

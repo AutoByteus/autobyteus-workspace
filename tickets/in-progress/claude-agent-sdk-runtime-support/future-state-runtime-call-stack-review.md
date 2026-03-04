@@ -527,3 +527,75 @@
 - Gate Decision: `Pass`
 - Decision Reason: two consecutive clean rounds completed for streaming-cadence delta with no blockers and no additional persisted updates required.
 - Next Stage: `6 (Implementation for Claude stream cadence fix)`
+
+## Re-Entry Round 13 (Deep Review, Team-Member Run-History Completeness Delta)
+
+### Missing-Use-Case Discovery Sweep
+
+- Requirement delta sweep: `R-021` / `AC-021` introduces explicit external team-member projection completeness contract after terminate/reopen.
+- Boundary sweep: confirms fix belongs in `team-member-run-projection-service` arbitration layer, not resolver/frontend/runtime-provider internals.
+- Fallback/error sweep: requires deterministic behavior when runtime projection fails (retain local projection if present; throw only when both sources unavailable).
+- New use cases discovered: `Yes` (`UC-019`).
+
+### Findings
+
+- Blocking findings: `None`.
+- Required persisted artifact updates:
+  - `requirements.md`
+  - `proposed-design.md`
+  - `implementation-plan.md`
+  - `future-state-runtime-call-stack.md`
+
+### Applied Updates
+
+- Updated files:
+  - `tickets/in-progress/claude-agent-sdk-runtime-support/requirements.md`
+  - `tickets/in-progress/claude-agent-sdk-runtime-support/proposed-design.md`
+  - `tickets/in-progress/claude-agent-sdk-runtime-support/implementation-plan.md`
+  - `tickets/in-progress/claude-agent-sdk-runtime-support/future-state-runtime-call-stack.md`
+- New artifact versions:
+  - `implementation-plan.md` -> `v7`
+  - `future-state-runtime-call-stack.md` -> `v3 + UC-019 delta`
+- Changed sections:
+  - Requirement and acceptance additions `R-021` / `AC-021`
+  - Re-entry design delta for projection arbitration policy
+  - Batch N implementation plan and traceability
+  - `UC-019` runtime-model primary/fallback/error paths
+- Resolved findings: team-member projection arbitration scope and verification strategy are explicitly modeled.
+
+### Round Verdict
+
+- Status: `Candidate Go`
+- Clean-review streak state: `Candidate Go (1/2)` (team-member run-history delta cycle)
+
+## Re-Entry Round 14 (Deep Review, Team-Member Run-History Completeness Confirmation)
+
+### Missing-Use-Case Discovery Sweep
+
+- Coverage re-check: `R-001..R-021` are mapped including `UC-019`.
+- Boundary re-check: runtime-neutral layering remains intact; no new coupling to frontend or resolver internals.
+- Fallback/error re-check: arbitration strategy remains deterministic and avoids masking source failures.
+- New use cases discovered: `No`.
+
+### Findings
+
+- Blocking findings: `None`.
+- Required persisted artifact updates: `None`.
+
+### Applied Updates
+
+- Updated files: `None`.
+- New artifact versions: `None`.
+- Changed sections: `None`.
+- Resolved findings: `N/A`.
+
+### Round Verdict
+
+- Status: `Go Confirmed`
+- Clean-review streak state: `Go Confirmed (2/2)` (team-member run-history delta cycle)
+
+## Re-Entry Stage 5 Decision (Team-Member Run-History Completeness Delta)
+
+- Gate Decision: `Pass`
+- Decision Reason: two consecutive clean rounds completed for the projection-completeness delta with no blockers or additional required persisted updates.
+- Next Stage: `6 (Implementation for team-member projection arbitration fix)`

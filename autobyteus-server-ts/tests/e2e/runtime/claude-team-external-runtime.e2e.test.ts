@@ -1232,4 +1232,696 @@ Rules:
     },
     180_000,
   );
+
+  it(
+    "restores complete team-member projection history after two turns and terminate",
+    async () => {
+      const unique = randomUUID();
+      const modelIdentifier = await fetchClaudeModelIdentifier();
+      const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "claude-team-history-projection-e2e-"));
+      createdWorkspaceRoots.add(workspaceRootPath);
+
+      const createPromptMutation = `
+        mutation CreatePrompt($input: CreatePromptInput!) {
+          createPrompt(input: $input) {
+            id
+          }
+        }
+      `;
+      const promptName = `claude_team_history_projection_prompt_${unique}`;
+      const promptCategory = `claude_team_history_projection_category_${unique}`;
+      const promptResult = await execGraphql<{ createPrompt: { id: string } }>(createPromptMutation, {
+        input: {
+          name: promptName,
+          category: promptCategory,
+          promptContent: "Reply exactly with the requested token and no additional text.",
+        },
+      });
+      createdPromptIds.add(promptResult.createPrompt.id);
+
+      const createAgentDefinitionMutation = `
+        mutation CreateAgentDefinition($input: CreateAgentDefinitionInput!) {
+          createAgentDefinition(input: $input) {
+            id
+          }
+        }
+      `;
+      const professorDefResult = await execGraphql<{ createAgentDefinition: { id: string } }>(
+        createAgentDefinitionMutation,
+        {
+          input: {
+            name: `claude-history-professor-${unique}`,
+            role: "assistant",
+            description: "Claude team-history projection professor agent.",
+            systemPromptCategory: promptCategory,
+            systemPromptName: promptName,
+          },
+        },
+      );
+      const professorAgentDefinitionId = professorDefResult.createAgentDefinition.id;
+      createdAgentDefinitionIds.add(professorAgentDefinitionId);
+
+      const createTeamDefinitionMutation = `
+        mutation CreateAgentTeamDefinition($input: CreateAgentTeamDefinitionInput!) {
+          createAgentTeamDefinition(input: $input) {
+            id
+          }
+        }
+      `;
+      const teamDefinitionResult = await execGraphql<{ createAgentTeamDefinition: { id: string } }>(
+        createTeamDefinitionMutation,
+        {
+          input: {
+            name: `claude-history-team-${unique}`,
+            description: "Claude team-member history projection validation team.",
+            coordinatorMemberName: "professor",
+            nodes: [
+              {
+                memberName: "professor",
+                referenceId: professorAgentDefinitionId,
+                referenceType: "AGENT",
+              },
+            ],
+          },
+        },
+      );
+      const teamDefinitionId = teamDefinitionResult.createAgentTeamDefinition.id;
+      createdTeamDefinitionIds.add(teamDefinitionId);
+
+      const createTeamRunMutation = `
+        mutation CreateAgentTeamRun($input: CreateAgentTeamRunInput!) {
+          createAgentTeamRun(input: $input) {
+            success
+            message
+            teamRunId
+          }
+        }
+      `;
+      const createTeamRunResult = await execGraphql<{
+        createAgentTeamRun: { success: boolean; message: string; teamRunId: string | null };
+      }>(createTeamRunMutation, {
+        input: {
+          teamDefinitionId,
+          memberConfigs: [
+            {
+              memberName: "professor",
+              agentDefinitionId: professorAgentDefinitionId,
+              llmModelIdentifier: modelIdentifier,
+              autoExecuteTools: true,
+              runtimeKind: "claude_agent_sdk",
+              workspaceRootPath,
+            },
+          ],
+        },
+      });
+
+      expect(createTeamRunResult.createAgentTeamRun.success).toBe(true);
+      expect(createTeamRunResult.createAgentTeamRun.teamRunId).toBeTruthy();
+      const teamRunId = createTeamRunResult.createAgentTeamRun.teamRunId as string;
+      createdTeamRunIds.add(teamRunId);
+
+      const sendMessageToTeamMutation = `
+        mutation SendMessageToTeam($input: SendMessageToTeamInput!) {
+          sendMessageToTeam(input: $input) {
+            success
+            message
+            teamRunId
+          }
+        }
+      `;
+      const terminateTeamRunMutation = `
+        mutation TerminateAgentTeamRun($id: String!) {
+          terminateAgentTeamRun(id: $id) {
+            success
+            message
+          }
+        }
+      `;
+      const getTeamMemberProjectionQuery = `
+        query TeamMemberProjection($teamRunId: String!, $memberRouteKey: String!) {
+          getTeamMemberRunProjection(teamRunId: $teamRunId, memberRouteKey: $memberRouteKey) {
+            agentRunId
+            summary
+            lastActivityAt
+            conversation
+          }
+        }
+      `;
+
+      const streamApp = fastify();
+      await streamApp.register(websocket);
+      await registerAgentWebsocket(streamApp);
+      const streamAddress = await streamApp.listen({ port: 0, host: "127.0.0.1" });
+      const streamUrl = new URL(streamAddress);
+      const teamSocket = new WebSocket(`ws://${streamUrl.hostname}:${streamUrl.port}/ws/agent-team/${teamRunId}`);
+      await waitForSocketOpen(teamSocket);
+
+      const teamMessages: Array<{ type: string; payload: Record<string, unknown> }> = [];
+      teamSocket.on("message", (raw) => {
+        try {
+          const parsed = JSON.parse(String(raw)) as {
+            type?: unknown;
+            payload?: unknown;
+          };
+          if (typeof parsed.type !== "string") {
+            return;
+          }
+          const payload =
+            parsed.payload && typeof parsed.payload === "object" && !Array.isArray(parsed.payload)
+              ? (parsed.payload as Record<string, unknown>)
+              : {};
+          teamMessages.push({
+            type: parsed.type,
+            payload,
+          });
+        } catch {
+          // ignore malformed rows in stream capture
+        }
+      });
+
+      const waitForProfessorTurnOutput = async (
+        expectedToken: string,
+        startIndex: number,
+      ): Promise<void> => {
+        const deadline = Date.now() + 120_000;
+        while (Date.now() < deadline) {
+          const phaseMessages = teamMessages.slice(startIndex);
+          const sawRunning = phaseMessages.some(
+            (message) =>
+              message.type === "AGENT_STATUS" &&
+              message.payload.agent_name === "professor" &&
+              message.payload.new_status === "RUNNING",
+          );
+          const sawIdle = phaseMessages.some(
+            (message) =>
+              message.type === "AGENT_STATUS" &&
+              message.payload.agent_name === "professor" &&
+              message.payload.new_status === "IDLE",
+          );
+          const output = phaseMessages
+            .filter(
+              (message) =>
+                (message.type === "SEGMENT_CONTENT" || message.type === "SEGMENT_END") &&
+                message.payload.agent_name === "professor",
+            )
+            .map((message) => {
+              const delta = message.payload.delta;
+              if (typeof delta === "string") {
+                return delta;
+              }
+              const text = message.payload.text;
+              if (typeof text === "string") {
+                return text;
+              }
+              return "";
+            })
+            .join("")
+            .trim();
+
+          if (sawRunning && sawIdle && output.length > 0) {
+            expect(output.toUpperCase()).toContain(expectedToken.toUpperCase());
+            return;
+          }
+
+          await wait(500);
+        }
+        throw new Error(`Timed out waiting for professor output containing '${expectedToken}'.`);
+      };
+
+      const turnOneToken = `TEAM-HISTORY-TURN-ONE-${unique}`;
+      const turnTwoToken = `TEAM-HISTORY-TURN-TWO-${unique}`;
+
+      try {
+        let phaseStart = teamMessages.length;
+        const sendTurnOneResult = await execGraphql<{
+          sendMessageToTeam: { success: boolean; message: string; teamRunId: string | null };
+        }>(sendMessageToTeamMutation, {
+          input: {
+            teamRunId,
+            targetMemberName: "professor",
+            userInput: {
+              content: `Reply with exactly ${turnOneToken}.`,
+              contextFiles: [],
+            },
+          },
+        });
+        expect(sendTurnOneResult.sendMessageToTeam.success).toBe(true);
+        await waitForProfessorTurnOutput(turnOneToken, phaseStart);
+
+        phaseStart = teamMessages.length;
+        const sendTurnTwoResult = await execGraphql<{
+          sendMessageToTeam: { success: boolean; message: string; teamRunId: string | null };
+        }>(sendMessageToTeamMutation, {
+          input: {
+            teamRunId,
+            targetMemberName: "professor",
+            userInput: {
+              content: `Reply with exactly ${turnTwoToken}.`,
+              contextFiles: [],
+            },
+          },
+        });
+        expect(sendTurnTwoResult.sendMessageToTeam.success).toBe(true);
+        await waitForProfessorTurnOutput(turnTwoToken, phaseStart);
+
+        const terminateResult = await execGraphql<{
+          terminateAgentTeamRun: { success: boolean; message: string };
+        }>(terminateTeamRunMutation, { id: teamRunId });
+        expect(terminateResult.terminateAgentTeamRun.success).toBe(true);
+
+        const projectionDeadline = Date.now() + 120_000;
+        let projection:
+          | {
+              agentRunId: string;
+              conversation: Array<Record<string, unknown>>;
+            }
+          | null = null;
+
+        while (Date.now() < projectionDeadline) {
+          const projectionResult = await execGraphql<{
+            getTeamMemberRunProjection: {
+              agentRunId: string;
+              conversation: Array<Record<string, unknown>>;
+            };
+          }>(getTeamMemberProjectionQuery, {
+            teamRunId,
+            memberRouteKey: "professor",
+          });
+
+          const candidate = projectionResult.getTeamMemberRunProjection;
+          const serializedConversation = (candidate.conversation ?? [])
+            .map((entry) => JSON.stringify(entry))
+            .join("\n");
+
+          if (
+            (candidate.conversation ?? []).length >= 4 &&
+            serializedConversation.includes(turnOneToken) &&
+            serializedConversation.includes(turnTwoToken)
+          ) {
+            projection = candidate;
+            break;
+          }
+
+          await wait(2_000);
+        }
+
+        expect(projection).toBeTruthy();
+        expect((projection?.conversation ?? []).length).toBeGreaterThanOrEqual(4);
+        const finalSerializedConversation = (projection?.conversation ?? [])
+          .map((entry) => JSON.stringify(entry))
+          .join("\n");
+        expect(finalSerializedConversation).toContain(turnOneToken);
+        expect(finalSerializedConversation).toContain(turnTwoToken);
+      } finally {
+        teamSocket.close();
+        await streamApp.close();
+      }
+    },
+    180_000,
+  );
+
+  it(
+    "restores two-member team history after terminate/reopen and continues with full projection",
+    async () => {
+      const unique = randomUUID();
+      const modelIdentifier = await fetchClaudeModelIdentifier();
+      const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "claude-team-two-member-history-e2e-"));
+      createdWorkspaceRoots.add(workspaceRootPath);
+
+      const createPromptMutation = `
+        mutation CreatePrompt($input: CreatePromptInput!) {
+          createPrompt(input: $input) {
+            id
+          }
+        }
+      `;
+      const promptName = `claude_team_two_member_history_prompt_${unique}`;
+      const promptCategory = `claude_team_two_member_history_category_${unique}`;
+      const promptResult = await execGraphql<{ createPrompt: { id: string } }>(createPromptMutation, {
+        input: {
+          name: promptName,
+          category: promptCategory,
+          promptContent: `
+You are in a two-member team ("professor", "student").
+Rules:
+1. If user asks for exact reply token, reply exactly that token.
+2. If user asks to call send_message_to with explicit JSON args, call send_message_to exactly once with those args.
+3. Do not run any other tool.
+`,
+        },
+      });
+      createdPromptIds.add(promptResult.createPrompt.id);
+
+      const createAgentDefinitionMutation = `
+        mutation CreateAgentDefinition($input: CreateAgentDefinitionInput!) {
+          createAgentDefinition(input: $input) {
+            id
+          }
+        }
+      `;
+      const professorDef = await execGraphql<{ createAgentDefinition: { id: string } }>(
+        createAgentDefinitionMutation,
+        {
+          input: {
+            name: `claude-professor-history-${unique}`,
+            role: "assistant",
+            description: "Professor for two-member history restore test.",
+            systemPromptCategory: promptCategory,
+            systemPromptName: promptName,
+          },
+        },
+      );
+      const studentDef = await execGraphql<{ createAgentDefinition: { id: string } }>(
+        createAgentDefinitionMutation,
+        {
+          input: {
+            name: `claude-student-history-${unique}`,
+            role: "assistant",
+            description: "Student for two-member history restore test.",
+            systemPromptCategory: promptCategory,
+            systemPromptName: promptName,
+          },
+        },
+      );
+      createdAgentDefinitionIds.add(professorDef.createAgentDefinition.id);
+      createdAgentDefinitionIds.add(studentDef.createAgentDefinition.id);
+
+      const createTeamDefinitionMutation = `
+        mutation CreateAgentTeamDefinition($input: CreateAgentTeamDefinitionInput!) {
+          createAgentTeamDefinition(input: $input) {
+            id
+          }
+        }
+      `;
+      const teamDef = await execGraphql<{ createAgentTeamDefinition: { id: string } }>(
+        createTeamDefinitionMutation,
+        {
+          input: {
+            name: `claude-two-member-history-team-${unique}`,
+            description: "Two-member history restore regression test.",
+            coordinatorMemberName: "professor",
+            nodes: [
+              {
+                memberName: "professor",
+                referenceId: professorDef.createAgentDefinition.id,
+                referenceType: "AGENT",
+              },
+              {
+                memberName: "student",
+                referenceId: studentDef.createAgentDefinition.id,
+                referenceType: "AGENT",
+              },
+            ],
+          },
+        },
+      );
+      const teamDefinitionId = teamDef.createAgentTeamDefinition.id;
+      createdTeamDefinitionIds.add(teamDefinitionId);
+
+      const createTeamRunMutation = `
+        mutation CreateAgentTeamRun($input: CreateAgentTeamRunInput!) {
+          createAgentTeamRun(input: $input) {
+            success
+            message
+            teamRunId
+          }
+        }
+      `;
+      const createTeamRunResult = await execGraphql<{
+        createAgentTeamRun: { success: boolean; message: string; teamRunId: string | null };
+      }>(createTeamRunMutation, {
+        input: {
+          teamDefinitionId,
+          memberConfigs: [
+            {
+              memberName: "professor",
+              agentDefinitionId: professorDef.createAgentDefinition.id,
+              llmModelIdentifier: modelIdentifier,
+              autoExecuteTools: true,
+              runtimeKind: "claude_agent_sdk",
+              workspaceRootPath,
+            },
+            {
+              memberName: "student",
+              agentDefinitionId: studentDef.createAgentDefinition.id,
+              llmModelIdentifier: modelIdentifier,
+              autoExecuteTools: true,
+              runtimeKind: "claude_agent_sdk",
+              workspaceRootPath,
+            },
+          ],
+        },
+      });
+      expect(createTeamRunResult.createAgentTeamRun.success).toBe(true);
+      const teamRunId = createTeamRunResult.createAgentTeamRun.teamRunId as string;
+      expect(teamRunId).toBeTruthy();
+      createdTeamRunIds.add(teamRunId);
+
+      const sendMessageToTeamMutation = `
+        mutation SendMessageToTeam($input: SendMessageToTeamInput!) {
+          sendMessageToTeam(input: $input) {
+            success
+            message
+            teamRunId
+          }
+        }
+      `;
+      const terminateTeamRunMutation = `
+        mutation TerminateAgentTeamRun($id: String!) {
+          terminateAgentTeamRun(id: $id) {
+            success
+            message
+          }
+        }
+      `;
+      const getTeamMemberProjectionQuery = `
+        query TeamMemberProjection($teamRunId: String!, $memberRouteKey: String!) {
+          getTeamMemberRunProjection(teamRunId: $teamRunId, memberRouteKey: $memberRouteKey) {
+            agentRunId
+            summary
+            lastActivityAt
+            conversation
+          }
+        }
+      `;
+
+      const streamApp = fastify();
+      await streamApp.register(websocket);
+      await registerAgentWebsocket(streamApp);
+      const streamAddress = await streamApp.listen({ port: 0, host: "127.0.0.1" });
+      const streamUrl = new URL(streamAddress);
+      const teamSocket = new WebSocket(`ws://${streamUrl.hostname}:${streamUrl.port}/ws/agent-team/${teamRunId}`);
+      await waitForSocketOpen(teamSocket);
+
+      const streamMessages: Array<{ type: string; payload: Record<string, unknown> }> = [];
+      teamSocket.on("message", (raw) => {
+        try {
+          const parsed = JSON.parse(String(raw)) as {
+            type?: unknown;
+            payload?: unknown;
+          };
+          if (typeof parsed.type !== "string") {
+            return;
+          }
+          const payload =
+            parsed.payload && typeof parsed.payload === "object" && !Array.isArray(parsed.payload)
+              ? (parsed.payload as Record<string, unknown>)
+              : {};
+          streamMessages.push({
+            type: parsed.type,
+            payload,
+          });
+        } catch {
+          // ignore malformed messages
+        }
+      });
+
+      const waitForEvent = async (
+        predicate: (message: { type: string; payload: Record<string, unknown> }) => boolean,
+        label: string,
+      ): Promise<void> => {
+        const deadline = Date.now() + 120_000;
+        while (Date.now() < deadline) {
+          if (streamMessages.some(predicate)) {
+            return;
+          }
+          await wait(500);
+        }
+        throw new Error(`Timed out waiting for ${label}.`);
+      };
+
+      const waitForAgentOutputToken = async (agentName: "professor" | "student", token: string): Promise<void> => {
+        const deadline = Date.now() + 120_000;
+        while (Date.now() < deadline) {
+          const output = streamMessages
+            .filter(
+              (message) =>
+                (message.type === "SEGMENT_CONTENT" || message.type === "SEGMENT_END") &&
+                message.payload.agent_name === agentName,
+            )
+            .map((message) => {
+              const delta = message.payload.delta;
+              if (typeof delta === "string") {
+                return delta;
+              }
+              const text = message.payload.text;
+              return typeof text === "string" ? text : "";
+            })
+            .join("");
+          if (output.toUpperCase().includes(token.toUpperCase())) {
+            return;
+          }
+          await wait(500);
+        }
+        throw new Error(`Timed out waiting for ${agentName} output token '${token}'.`);
+      };
+
+      const fetchProjection = async (memberRouteKey: "professor" | "student") => {
+        const result = await execGraphql<{
+          getTeamMemberRunProjection: {
+            conversation: Array<Record<string, unknown>>;
+          };
+        }>(getTeamMemberProjectionQuery, {
+          teamRunId,
+          memberRouteKey,
+        });
+        return result.getTeamMemberRunProjection;
+      };
+
+      const professorTurnOneToken = `TEAM-HISTORY-PROF-TURN-1-${unique}`;
+      const professorTurnTwoToken = `TEAM-HISTORY-PROF-TURN-2-${unique}`;
+      const studentTurnOneToken = `TEAM-HISTORY-STUDENT-TURN-1-${unique}`;
+      const studentTurnTwoToken = `TEAM-HISTORY-STUDENT-TURN-2-${unique}`;
+      const continueToken = `TEAM-HISTORY-CONTINUE-${unique}`;
+
+      let resumedSocket: WebSocket | null = null;
+      try {
+        const sendExactTokenInstruction = async (
+          targetMemberName: "professor" | "student",
+          token: string,
+        ): Promise<void> => {
+          const sendResult = await execGraphql<{
+            sendMessageToTeam: { success: boolean };
+          }>(sendMessageToTeamMutation, {
+            input: {
+              teamRunId,
+              targetMemberName,
+              userInput: {
+                content: `Reply with exactly ${token}.`,
+                contextFiles: [],
+              },
+            },
+          });
+          expect(sendResult.sendMessageToTeam.success).toBe(true);
+          await waitForAgentOutputToken(targetMemberName, token);
+        };
+
+        await sendExactTokenInstruction("professor", professorTurnOneToken);
+        await sendExactTokenInstruction("professor", professorTurnTwoToken);
+        await sendExactTokenInstruction("student", studentTurnOneToken);
+        await sendExactTokenInstruction("student", studentTurnTwoToken);
+
+        const terminateResult = await execGraphql<{
+          terminateAgentTeamRun: { success: boolean };
+        }>(terminateTeamRunMutation, { id: teamRunId });
+        expect(terminateResult.terminateAgentTeamRun.success).toBe(true);
+
+        teamSocket.close();
+
+        const projectionDeadline = Date.now() + 120_000;
+        let professorProjection: { conversation: Array<Record<string, unknown>> } | null = null;
+        let studentProjection: { conversation: Array<Record<string, unknown>> } | null = null;
+        while (Date.now() < projectionDeadline) {
+          const candidateProfessor = await fetchProjection("professor");
+          const candidateStudent = await fetchProjection("student");
+          const professorSerialized = candidateProfessor.conversation
+            .map((entry) => JSON.stringify(entry))
+            .join("\n");
+          const studentSerialized = candidateStudent.conversation
+            .map((entry) => JSON.stringify(entry))
+            .join("\n");
+          if (
+            candidateProfessor.conversation.length >= 4 &&
+            candidateStudent.conversation.length >= 4 &&
+            professorSerialized.includes(professorTurnOneToken) &&
+            professorSerialized.includes(professorTurnTwoToken) &&
+            studentSerialized.includes(studentTurnOneToken) &&
+            studentSerialized.includes(studentTurnTwoToken)
+          ) {
+            professorProjection = candidateProfessor;
+            studentProjection = candidateStudent;
+            break;
+          }
+          await wait(2_000);
+        }
+
+        expect(professorProjection).toBeTruthy();
+        expect(studentProjection).toBeTruthy();
+
+        resumedSocket = new WebSocket(`ws://${streamUrl.hostname}:${streamUrl.port}/ws/agent-team/${teamRunId}`);
+        await waitForSocketOpen(resumedSocket);
+        resumedSocket.on("message", (raw) => {
+          try {
+            const parsed = JSON.parse(String(raw)) as {
+              type?: unknown;
+              payload?: unknown;
+            };
+            if (typeof parsed.type !== "string") {
+              return;
+            }
+            const payload =
+              parsed.payload && typeof parsed.payload === "object" && !Array.isArray(parsed.payload)
+                ? (parsed.payload as Record<string, unknown>)
+                : {};
+            streamMessages.push({
+              type: parsed.type,
+              payload,
+            });
+          } catch {
+            // ignore malformed messages
+          }
+        });
+
+        const continueResult = await execGraphql<{
+          sendMessageToTeam: { success: boolean };
+        }>(sendMessageToTeamMutation, {
+          input: {
+            teamRunId,
+            targetMemberName: "professor",
+            userInput: {
+              content: `Reply with exactly ${continueToken}.`,
+              contextFiles: [],
+            },
+          },
+        });
+        expect(continueResult.sendMessageToTeam.success).toBe(true);
+
+        const finalProjectionDeadline = Date.now() + 120_000;
+        let finalProfessorProjection: { conversation: Array<Record<string, unknown>> } | null = null;
+        while (Date.now() < finalProjectionDeadline) {
+          const candidate = await fetchProjection("professor");
+          const serialized = candidate.conversation
+            .map((entry) => JSON.stringify(entry))
+            .join("\n");
+          if (
+            candidate.conversation.length >= 6 &&
+            serialized.includes(professorTurnOneToken) &&
+            serialized.includes(professorTurnTwoToken) &&
+            serialized.includes(continueToken)
+          ) {
+            finalProfessorProjection = candidate;
+            break;
+          }
+          await wait(2_000);
+        }
+
+        expect(finalProfessorProjection).toBeTruthy();
+      } finally {
+        teamSocket.close();
+        resumedSocket?.close();
+        await streamApp.close();
+      }
+    },
+    240_000,
+  );
 });

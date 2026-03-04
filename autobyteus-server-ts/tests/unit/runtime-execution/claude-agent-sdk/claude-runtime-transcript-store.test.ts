@@ -25,4 +25,20 @@ describe("ClaudeRuntimeTranscriptStore", () => {
       { role: "user", content: "from-local" },
     ]);
   });
+
+  it("migrates cached transcript rows to a resolved session id", () => {
+    const store = new ClaudeRuntimeTranscriptStore();
+    store.appendMessage("run-1", { role: "user", content: "first-turn" });
+    store.appendMessage("run-1", { role: "assistant", content: "first-reply" });
+    store.appendMessage("resolved-session-1", { role: "assistant", content: "from-resolved" });
+
+    store.migrateSessionMessages("run-1", "resolved-session-1");
+
+    expect(store.getCachedMessages("run-1")).toEqual([]);
+    expect(store.getCachedMessages("resolved-session-1")).toEqual([
+      { role: "user", content: "first-turn" },
+      { role: "assistant", content: "first-reply" },
+      { role: "assistant", content: "from-resolved" },
+    ]);
+  });
 });

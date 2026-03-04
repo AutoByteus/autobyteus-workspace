@@ -2,7 +2,7 @@
 
 - Ticket: `claude-agent-sdk-runtime-support`
 - Stage: `1 (Investigation + Triage)`
-- Last Updated: `2026-03-02`
+- Last Updated: `2026-03-04`
 
 ## Sources Consulted
 
@@ -258,6 +258,30 @@
 5. Live probe result: dynamic system prompt injection via V2 control is not currently reliable.
 - Attempted `query.applyFlagSettings({ appendSystemPrompt: ... })` and related variants.
 - Behavior did not show deterministic system-instruction enforcement in probes; treat as unsupported/unreliable for architecture-critical teammate instruction injection.
+
+## Re-Entry Delta (2026-03-04, team-member run-history reload truncation)
+
+1. User-reported symptom is isolated to team-member projection hydration, not standalone run projection.
+- Repro from UI: after team run with multiple turns, reopening the app/tab and selecting a team member shows only the first message.
+- Standalone agent run history reopens with full multi-turn conversation in the same environment.
+
+2. Current team-member projection fallback policy can return a truncated local snapshot and skip richer runtime projection.
+- `src/run-history/services/team-member-run-projection-service.ts` currently tries runtime projection only when local member-memory projection is empty or throws.
+- For external runtimes (`claude_agent_sdk`), if local projection has non-zero rows (for example only first user message), the service returns local data directly and never consults runtime provider output.
+
+3. This differs from standalone run projection strategy and creates a plausible mismatch with user-observed behavior.
+- Standalone projection path (`src/run-history/services/run-projection-service.ts`) treats runtime provider as primary and fallback provider as secondary.
+- Team-member path currently treats local member-memory projection as primary even for external runtimes where runtime provider (`claude_session_projection`) is expected to be more complete.
+
+4. Hypothesis with highest confidence for this defect.
+- Team-member local memory projection can be partially populated (first turn only) while runtime provider can reconstruct richer multi-turn transcript.
+- Because fallback trigger is `conversation.length === 0` only, partial history is treated as complete and returned to frontend, producing the “first-message-only” reopen symptom.
+
+5. Investigation decision for fix direction.
+- Update team-member projection arbitration for external runtimes to always attempt runtime projection and prefer the richer projection (at minimum by conversation cardinality), with deterministic fallback to local projection when runtime provider fails/unavailable.
+- Add regression coverage in:
+  - unit: team-member projection service richer-runtime arbitration behavior,
+  - live API/E2E: Claude team member two-turn -> terminate -> projection fetch must contain both turn markers and at least four conversation messages.
 
 ## Re-Entry Delta (2026-03-03, workspace mismatch in Claude V2 sessions)
 

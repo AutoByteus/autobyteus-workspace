@@ -57,6 +57,47 @@ export interface TeamMemberRunProjection {
   lastActivityAt: string | null;
 }
 
+const toTimestampMs = (value: string | null | undefined): number => {
+  if (typeof value !== "string" || value.trim().length === 0) {
+    return 0;
+  }
+  const parsed = Date.parse(value);
+  return Number.isFinite(parsed) ? parsed : 0;
+};
+
+const hasConversation = (projection: RunProjection | null): boolean =>
+  Boolean(projection && projection.conversation.length > 0);
+
+const selectPreferredProjection = (options: {
+  localProjection: RunProjection | null;
+  runtimeProjection: RunProjection | null;
+}): RunProjection | null => {
+  const { localProjection, runtimeProjection } = options;
+  if (!localProjection) {
+    return runtimeProjection;
+  }
+  if (!runtimeProjection) {
+    return localProjection;
+  }
+
+  const localConversationLength = localProjection.conversation.length;
+  const runtimeConversationLength = runtimeProjection.conversation.length;
+  if (runtimeConversationLength > localConversationLength) {
+    return runtimeProjection;
+  }
+  if (runtimeConversationLength < localConversationLength) {
+    return localProjection;
+  }
+
+  const runtimeLastActivityMs = toTimestampMs(runtimeProjection.lastActivityAt);
+  const localLastActivityMs = toTimestampMs(localProjection.lastActivityAt);
+  if (runtimeLastActivityMs > localLastActivityMs) {
+    return runtimeProjection;
+  }
+
+  return localProjection;
+};
+
 export class TeamMemberRunProjectionService {
   private readonly teamRunHistoryService: TeamRunHistoryService;
   private readonly projectionReader: TeamMemberMemoryProjectionReader;
@@ -88,46 +129,61 @@ export class TeamMemberRunProjectionService {
       );
     }
 
-    let projection: RunProjection | null = null;
-    let projectionReadError: unknown = null;
+    let localProjection: RunProjection | null = null;
+    let localProjectionReadError: unknown = null;
     try {
-      projection = await this.projectionReader.getProjection(
+      localProjection = await this.projectionReader.getProjection(
         normalizedTeamRunId,
         binding.memberRunId,
       );
     } catch (error) {
-      projectionReadError = error;
+      localProjectionReadError = error;
     }
 
-    const shouldTryRuntimeProjectionFallback =
-      binding.runtimeKind !== "autobyteus" &&
-      (projectionReadError !== null || !projection || projection.conversation.length === 0);
-
-    if (shouldTryRuntimeProjectionFallback) {
+    let runtimeProjection: RunProjection | null = null;
+    let runtimeProjectionError: unknown = null;
+    if (binding.runtimeKind !== "autobyteus") {
       const runtimeProjectionProvider = this.projectionProviderRegistry.resolveProvider(
         binding.runtimeKind,
       );
-      const runtimeProjection = await runtimeProjectionProvider.buildProjection({
-        runId: binding.memberRunId,
-        runtimeKind: binding.runtimeKind,
-        manifest: {
-          workspaceRootPath:
-            binding.workspaceRootPath ?? resumeConfig.manifest.workspaceRootPath ?? "",
-        } as any,
-        runtimeReference: binding.runtimeReference as any,
-      });
-      if (runtimeProjection && runtimeProjection.conversation.length > 0) {
-        projection = runtimeProjection;
-        projectionReadError = null;
+      try {
+        runtimeProjection = await runtimeProjectionProvider.buildProjection({
+          runId: binding.memberRunId,
+          runtimeKind: binding.runtimeKind,
+          manifest: {
+            workspaceRootPath:
+              binding.workspaceRootPath ?? resumeConfig.manifest.workspaceRootPath ?? "",
+          } as any,
+          runtimeReference: binding.runtimeReference as any,
+        });
+      } catch (error) {
+        runtimeProjectionError = error;
       }
     }
 
+    const projection = selectPreferredProjection({
+      localProjection,
+      runtimeProjection,
+    });
+
     if (!projection) {
-      throw projectionReadError ?? new Error("Team member projection is unavailable.");
+      throw (
+        runtimeProjectionError ??
+        localProjectionReadError ??
+        new Error("Team member projection is unavailable.")
+      );
     }
 
-    if (projection.conversation.length === 0 && projectionReadError) {
-      throw projectionReadError;
+    if (
+      !hasConversation(projection) &&
+      localProjectionReadError &&
+      runtimeProjectionError
+    ) {
+      throw runtimeProjectionError;
+    }
+
+    if (!hasConversation(projection) && localProjectionReadError) {
+      throw localProjectionReadError;
     }
 
     return {

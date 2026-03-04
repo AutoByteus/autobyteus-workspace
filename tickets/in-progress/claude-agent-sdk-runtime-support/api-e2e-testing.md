@@ -149,3 +149,42 @@ Validated API/E2E acceptance behavior for Claude runtime support, external-membe
   - snapshot-suffix reconciliation to avoid duplicate full-buffer flush behavior.
 - Live runtime/team/run-history matrix rerun passed after implementation: `5 files`, `37 passed / 1 skipped`.
 - Codex live runtime/team scenarios remain green in the same matrix run, confirming no cross-runtime regression.
+
+## Re-Entry Delta (2026-03-04, team-member run-history completeness after terminate/reopen)
+
+### Additional Commands
+
+41. `pnpm -C autobyteus-server-ts exec vitest run tests/unit/run-history/team-run-history-service.test.ts tests/unit/run-history/team-member-run-projection-service.test.ts`
+42. `RUN_CLAUDE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts`
+43. `pnpm -C autobyteus-server-ts build`
+
+### Delta Results
+
+- Added and passed targeted unit coverage for persisted team-member runtime-reference refresh on team events (`team-run-history-service.test.ts`).
+- Added and passed live Claude team E2E for two-turn send, terminate, and team-member projection restore completeness.
+- Live Claude team runtime suite now passes all scenarios (`4/4`), including:
+  - inter-agent roundtrip,
+  - auto-approve routing,
+  - workspace mapping continuity,
+  - post-terminate two-turn run-history projection completeness.
+- Server build succeeded after changes (`tsc` pass).
+
+## Re-Entry Delta (2026-03-04, orchestrator decoupling regression guard)
+
+### Additional Commands
+
+44. `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/team-member-runtime-orchestrator.test.ts`
+45. `pnpm -C autobyteus-server-ts build`
+46. `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts`
+47. `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts`
+
+### Delta Results
+
+- Relay policy extraction from orchestrator (`team-member-runtime-relay-service.ts`) preserved orchestrator unit behavior (`11/11`).
+- Build remains green after module split (`pnpm build` pass).
+- Live Claude team external-runtime E2E stayed green after decoupling (`5/5`), including:
+  - inter-agent send_message_to roundtrip,
+  - auto-approve lifecycle behavior,
+  - workspace create/terminate/continue continuity,
+  - two-turn and two-member run-history restore scenarios.
+- Live Codex team roundtrip/continue suite stayed green after the same orchestrator split (`2/2`).

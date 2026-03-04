@@ -186,3 +186,74 @@
 ### Decision
 
 - `Pass`: no new architectural coupling introduced; streaming-cadence handling is safer and deterministic for currently available SDK event shapes. Residual user-visible “all-at-once” behavior can still occur when upstream V2 emits only full assistant snapshots.
+
+## Re-Review Round (2026-03-04, team-member run-history completeness)
+
+- Scope:
+  - `autobyteus-server-ts/src/run-history/services/team-run-history-service.ts`
+  - `autobyteus-server-ts/src/run-history/services/team-member-run-projection-service.ts`
+  - `autobyteus-server-ts/src/agent-team-execution/services/team-member-runtime-orchestrator.ts`
+  - `autobyteus-server-ts/tests/unit/run-history/team-run-history-service.test.ts`
+  - `autobyteus-server-ts/tests/unit/run-history/team-member-run-projection-service.test.ts`
+  - `autobyteus-server-ts/tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts`
+- Review focus:
+  - Correct layering between active runtime binding state and persisted run-history manifests
+  - Deterministic projection arbitration for external runtimes when local projection is partial
+  - Real live API/E2E validation of two-turn terminate/reload history behavior
+
+### Findings
+
+1. `Resolved`: team-member runtime reference/session updates were held only in in-memory binding registry and not persisted into team-run history manifests during active turns.
+   - Impact: post-terminate projection queries could resolve with stale runtime references and return incomplete conversation history.
+   - Change: `TeamRunHistoryService.onTeamEvent/onTeamTerminated` now refreshes manifest bindings from active orchestrator bindings and rewrites manifest + member manifests.
+2. `Resolved`: team-member projection arbitration only attempted runtime projection fallback when local projection was empty/error.
+   - Impact: non-empty but partial local projections masked richer runtime projections and caused first-message-only restore behavior.
+   - Change: always attempt runtime projection for external runtimes and deterministically prefer richer/newer projection.
+3. `Resolved`: no live Claude team E2E test existed for two-turn terminate/reload projection completeness.
+   - Change: added real live test asserting `>=4` conversation entries and both turn markers after terminate + projection query.
+
+### Validation
+
+- Unit:
+  - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/run-history/team-run-history-service.test.ts tests/unit/run-history/team-member-run-projection-service.test.ts`
+- Live E2E:
+  - `RUN_CLAUDE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts`
+- Build:
+  - `pnpm -C autobyteus-server-ts build`
+
+### Decision
+
+- `Pass`: layering and separation are improved (runtime-binding state remains in orchestrator layer; persistence responsibility remains in run-history service), and real live E2E now covers the previously missing terminate/reload team-member history contract.
+
+## Re-Review Round (2026-03-04, orchestrator separation-of-concerns tightening)
+
+- Scope:
+  - `autobyteus-server-ts/src/agent-team-execution/services/team-member-runtime-orchestrator.ts`
+  - `autobyteus-server-ts/src/agent-team-execution/services/team-member-runtime-relay-service.ts`
+  - `autobyteus-server-ts/tests/unit/agent-team-execution/team-member-runtime-orchestrator.test.ts`
+  - `autobyteus-server-ts/tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts`
+- Review focus:
+  - Orchestrator responsibility boundaries and service layering
+  - Runtime-neutral relay policy centralization
+  - Regression risk on live Claude team send/history flows
+
+### Findings
+
+1. `Resolved`: `TeamMemberRuntimeOrchestrator` still embedded relay argument parsing and inter-agent routing policy, increasing policy coupling inside orchestration class.
+   - Change: extracted relay policy into `TeamMemberRuntimeRelayService` and converted orchestrator relay methods to delegation-only.
+2. `Resolved`: runtime-reference refresh-on-relay behavior was coupled to orchestration flow and not encapsulated as a dedicated relay concern.
+   - Change: moved refresh update logic into relay service to keep lifecycle/session orchestration and relay policy independent.
+
+### Validation
+
+- Unit:
+  - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/team-member-runtime-orchestrator.test.ts`
+- Build:
+  - `pnpm -C autobyteus-server-ts build`
+- Live E2E:
+  - `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts`
+  - `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts`
+
+### Decision
+
+- `Pass`: orchestrator layering is improved with clearer separation between session lifecycle/state orchestration and relay policy, and live Claude team behavior remains green (`5/5`).

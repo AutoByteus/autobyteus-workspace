@@ -26,6 +26,7 @@
 | UC-014 | Requirement | R-014 | Claude team `send_message_to` relay tooling parity | Yes/N/A/Yes |
 | UC-015 | Requirement | R-015,R-016,R-017 | Claude V2-only session/runtime execution path | Yes/N/A/Yes |
 | UC-018 | Requirement | R-020 | Claude incremental streaming cadence preserved to websocket deltas | Yes/N/A/Yes |
+| UC-019 | Requirement | R-021 | Team-member run-history projection selects richer external-runtime transcript on reopen | Yes/Yes/Yes |
 
 ## UC-001: Create Single-Agent Claude Runtime Run
 
@@ -182,6 +183,37 @@ run-projection-service.ts:resolveFallbackProvider()
 [ERROR] Provider failure
 run-projection-service.ts:tryBuildProjection(provider,...)
 └── warning logged, returns empty projection deterministically
+```
+
+## UC-019: Team-Member Run-History Rehydration Completeness (External Runtime)
+
+### Primary Path
+
+```text
+[ENTRY] src/api/graphql/types/team-run-history.ts:getTeamMemberRunProjection(teamRunId, memberRouteKey)
+└── [ASYNC] src/run-history/services/team-member-run-projection-service.ts:getProjection(...)
+    ├── [ASYNC] team-member-memory-projection-reader.ts:getProjection(teamRunId, memberRunId)
+    ├── resolve runtime provider by binding.runtimeKind (non-autobyteus)
+    ├── [ASYNC] runtime provider buildProjection(...)
+    │   └── claude-session-run-projection-provider.ts:getSessionMessages(sessionId)
+    ├── projection arbitration: choose richer projection (conversation cardinality priority)
+    └── return projection used by frontend run-history hydration
+```
+
+### Fallback Path
+
+```text
+[FALLBACK] Runtime projection unavailable/error/empty
+team-member-run-projection-service.ts:getProjection(...)
+└── return local member-memory projection when available
+```
+
+### Error Path
+
+```text
+[ERROR] Both local and runtime projections unavailable
+team-member-run-projection-service.ts:getProjection(...)
+└── throw deterministic projection-unavailable error with source context
 ```
 
 ## UC-006: Team External-Member Mode With Claude Members
