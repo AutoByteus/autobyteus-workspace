@@ -87,7 +87,28 @@ pnpm android:server:stop
 - Artifacts:
   - macOS ARM64 DMG + blockmap
   - Linux x64 AppImage + blockmap
+- Version/tag sync is mandatory:
+  - `autobyteus-web/package.json` version must match release tag version (`vX.Y.Z`).
+  - The release workflow enforces this and fails on mismatch.
 - No git submodules are required in this workspace.
+
+### Consistent release commands
+
+Use the release helper script from repo root:
+
+```bash
+# 1) Prepare a real release (bump package version, commit, create tag, push branch+tag)
+pnpm release:prepare -- 1.2.7
+
+# 2) Build-only release test (no GitHub release publish)
+pnpm release:test -- --ref personal
+
+# 3) Publish/update GitHub release for an existing tag
+pnpm release:publish -- v1.2.7 --ref personal
+```
+
+Script file:
+- `scripts/desktop-release.sh`
 
 ## License
 
