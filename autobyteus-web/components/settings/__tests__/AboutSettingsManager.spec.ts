@@ -71,4 +71,15 @@ describe('AboutSettingsManager', () => {
     await wrapper.get('[data-testid="settings-updates-install-update"]').trigger('click');
     expect(appUpdateStoreMock.installUpdateAndRestart).toHaveBeenCalledTimes(1);
   });
+
+  it('renders restarting state and disables manual checks while installing', () => {
+    appUpdateStoreMock.status = 'installing';
+    appUpdateStoreMock.message = 'Installing update and restarting...';
+
+    const wrapper = mount(AboutSettingsManager);
+
+    expect(wrapper.get('[data-testid="settings-updates-status"]').text()).toContain('Restarting app');
+    expect(wrapper.find('[data-testid="settings-updates-installing"]').exists()).toBe(true);
+    expect(wrapper.get('[data-testid="settings-updates-check-updates"]').attributes('disabled')).toBeDefined();
+  });
 });

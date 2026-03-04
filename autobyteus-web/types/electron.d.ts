@@ -12,6 +12,7 @@ type AppUpdateStatus =
   | 'available'
   | 'downloading'
   | 'downloaded'
+  | 'installing'
   | 'no-update'
   | 'error';
 
