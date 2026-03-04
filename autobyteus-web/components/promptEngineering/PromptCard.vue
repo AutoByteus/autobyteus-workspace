@@ -48,9 +48,6 @@
 
       <!-- Content Body -->
       <div class="flex-grow mb-4">
-        <p v-if="prompt.description" class="text-sm text-gray-600 line-clamp-2 mb-3 leading-relaxed">
-          {{ prompt.description }}
-        </p>
         <!-- Code Preview -->
         <div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
           <p class="text-sm text-gray-600 font-mono line-clamp-4 leading-relaxed">{{ prompt.promptContent }}</p>
@@ -59,17 +56,6 @@
       
       <!-- Footer -->
       <div class="pt-3 mt-auto border-t border-gray-100 flex flex-col gap-3">
-        <!-- Model compatibility text instead of bulky badges if too many -->
-        <div v-if="prompt.suitableForModels" class="flex flex-wrap gap-1.5">
-           <ModelBadge
-              v-for="model in modelList"
-              :key="model"
-              :model="model"
-              size="small"
-              class="opacity-90 hover:opacity-100 transition-opacity"
-            />
-        </div>
-        
         <div class="flex justify-between items-center text-xs text-gray-400">
           <span class="flex items-center">
              <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
@@ -82,16 +68,12 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
-import ModelBadge from '~/components/promptEngineering/ModelBadge.vue';
 
 interface Prompt {
   id: string;
   name: string;
   category: string;
   promptContent: string;
-  description?: string | null;
-  suitableForModels?: string | null;
   version: number;
   createdAt: string;
   parentPromptId?: string | null;
@@ -111,12 +93,6 @@ const emit = defineEmits<{
   (e: 'delete', id: string): void;
   (e: 'toggle-compare-selection'): void;
 }>();
-
-// Parse models into a list for display
-const modelList = computed(() => {
-  if (!props.prompt.suitableForModels) return [];
-  return props.prompt.suitableForModels.split(',').map(model => model.trim());
-});
 
 const formatDate = (dateString: string) =>
   new Date(dateString).toLocaleDateString('en-US', {

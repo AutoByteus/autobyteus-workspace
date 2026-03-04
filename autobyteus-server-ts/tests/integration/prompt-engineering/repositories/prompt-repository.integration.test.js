@@ -11,14 +11,12 @@ describe("SqlPromptRepository", () => {
             category: "SQL",
             promptContent: "...",
             version: 1,
-            suitableForModels: "gpt-4o",
             isActive: true,
         });
         expect(created.id).toBeTruthy();
         expect(created.name).toBe(name);
-        expect(created.suitableForModels).toBe("gpt-4o");
     });
-    it("rejects duplicate prompt attributes", async () => {
+    it("allows duplicate prompts when legacy nullable model discriminator is absent", async () => {
         const repo = new SqlPromptRepository();
         const name = makeName("DuplicateTest");
         const base = {
@@ -26,11 +24,13 @@ describe("SqlPromptRepository", () => {
             category: "SQL",
             promptContent: "...",
             version: 1,
-            suitableForModels: "gpt-4o",
             isActive: true,
         };
-        await repo.createPrompt(base);
-        await expect(repo.createPrompt(base)).rejects.toBeTruthy();
+        const first = await repo.createPrompt(base);
+        const second = await repo.createPrompt(base);
+        expect(first.id).toBeTruthy();
+        expect(second.id).toBeTruthy();
+        expect(second.id).not.toBe(first.id);
     });
     it("finds prompts with filters", async () => {
         const repo = new SqlPromptRepository();
@@ -86,7 +86,6 @@ describe("SqlPromptRepository", () => {
             name,
             category: "SQL",
             promptContent: "Non-Team",
-            suitableForModels: "g",
             version: 1,
             isActive: true,
         });
@@ -94,7 +93,6 @@ describe("SqlPromptRepository", () => {
             name,
             category: "SQL",
             promptContent: "Team",
-            suitableForModels: "g",
             version: 2,
             isActive: true,
         });
@@ -102,14 +100,10 @@ describe("SqlPromptRepository", () => {
             name,
             category: "SQL",
             promptContent: "Team-claude",
-            suitableForModels: "c",
-            version: 1,
+            version: 3,
             isActive: true,
         });
         const allPrompts = await repo.findAllByNameAndCategory(name, "SQL");
         expect(allPrompts.length).toBe(3);
-        const claudePrompts = await repo.findAllByNameAndCategory(name, "SQL", "c");
-        expect(claudePrompts.length).toBe(1);
-        expect(claudePrompts[0]?.promptContent).toBe("Team-claude");
     });
 });

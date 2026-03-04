@@ -13,23 +13,21 @@ describe("updatePromptMetadataTool", () => {
     it("updates prompt metadata", async () => {
         mockUpdatePrompt.mockResolvedValue({});
         const tool = registerUpdatePromptMetadataTool();
-        const result = await tool.execute({ agentId: "test-agent" }, { prompt_id: "1", description: "new desc", is_active: false });
+        const result = await tool.execute({ agentId: "test-agent" }, { prompt_id: "1", is_active: false });
         expect(mockUpdatePrompt).toHaveBeenCalledOnce();
         expect(mockUpdatePrompt).toHaveBeenCalledWith({
             promptId: "1",
-            description: "new desc",
-            suitableForModels: null,
             isActive: false,
         });
         expect(result).toContain("updated successfully");
     });
     it("throws when no metadata fields are provided", async () => {
         const tool = registerUpdatePromptMetadataTool();
-        await expect(tool.execute({ agentId: "test-agent" }, { prompt_id: "1" })).rejects.toThrow("At least one metadata field");
+        await expect(tool.execute({ agentId: "test-agent" }, { prompt_id: "1" })).rejects.toThrow("The metadata field `is_active` must be provided to update.");
     });
     it("propagates service errors", async () => {
         mockUpdatePrompt.mockRejectedValue(new Error("Prompt not found"));
         const tool = registerUpdatePromptMetadataTool();
-        await expect(tool.execute({ agentId: "test-agent" }, { prompt_id: "99", description: "update" })).rejects.toThrow("Prompt not found");
+        await expect(tool.execute({ agentId: "test-agent" }, { prompt_id: "99", is_active: true })).rejects.toThrow("Prompt not found");
     });
 });

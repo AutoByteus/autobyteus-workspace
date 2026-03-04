@@ -142,19 +142,11 @@ export class CachedPromptProvider {
     return Array.from(this.cache.values()).filter((prompt) => prompt.isActive);
   }
 
-  async findAllByNameAndCategory(
-    name: string,
-    category: string,
-    suitableForModels?: string | null,
-  ): Promise<Prompt[]> {
+  async findAllByNameAndCategory(name: string, category: string): Promise<Prompt[]> {
     await this.ensureCachePopulated();
-    const matches = Array.from(this.cache.values()).filter(
+    return Array.from(this.cache.values()).filter(
       (prompt) => prompt.name === name && prompt.category === category,
     );
-    if (suitableForModels !== undefined && suitableForModels !== null) {
-      return matches.filter((prompt) => prompt.suitableForModels === suitableForModels);
-    }
-    return matches;
   }
 
   async getActivePromptsByContext(name: string, category: string): Promise<Prompt[]> {

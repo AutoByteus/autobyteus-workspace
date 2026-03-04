@@ -39,7 +39,7 @@ describe("SqlPromptProvider", () => {
     expect(updated.isActive).toBe(false);
   });
 
-  it("finds prompts by name/category with suitable model filter", async () => {
+  it("finds prompts by name and category", async () => {
     const provider = new SqlPromptProvider();
     const name = makeName("Context");
 
@@ -48,7 +48,6 @@ describe("SqlPromptProvider", () => {
         name,
         category: "Provider",
         promptContent: "Model gpt",
-        suitableForModels: "gpt-4o",
       }),
     );
     await provider.createPrompt(
@@ -56,20 +55,11 @@ describe("SqlPromptProvider", () => {
         name,
         category: "Provider",
         promptContent: "Model claude",
-        suitableForModels: "claude-3",
       }),
     );
 
     const results = await provider.findAllByNameAndCategory(name, "Provider");
     expect(results.length).toBe(2);
-
-    const gptResults = await provider.findAllByNameAndCategory(
-      name,
-      "Provider",
-      "gpt-4o",
-    );
-    expect(gptResults.length).toBe(1);
-    expect(gptResults[0]?.promptContent).toBe("Model gpt");
   });
 
   it("retrieves active prompts by context", async () => {

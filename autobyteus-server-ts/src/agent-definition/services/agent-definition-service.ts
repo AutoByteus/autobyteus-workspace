@@ -50,11 +50,7 @@ type AgentPromptMappingProvider = {
 };
 
 type PromptServiceLike = {
-  findAllByNameAndCategory: (
-    name: string,
-    category: string,
-    suitableForModels?: string | null,
-  ) => Promise<unknown[]>;
+  findAllByNameAndCategory: (name: string, category: string) => Promise<unknown[]>;
 };
 
 const normalizeOptionalString = (value: unknown): string | null => {
