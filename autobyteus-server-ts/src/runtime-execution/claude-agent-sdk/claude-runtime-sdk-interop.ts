@@ -89,6 +89,7 @@ const closeQueryControl = async (controlLike: Record<string, unknown> | null): P
 
 export const tryGetSupportedModelsFromQueryControl = async (
   sdk: ClaudeSdkModuleLike | null,
+  env?: Record<string, string | undefined>,
 ): Promise<NormalizedModelDescriptor[]> => {
   const queryFn = resolveSdkFunction(sdk, "query");
   if (!queryFn) {
@@ -108,6 +109,7 @@ export const tryGetSupportedModelsFromQueryControl = async (
             permissionMode: "plan",
             cwd: process.cwd(),
             pathToClaudeCodeExecutable,
+            ...(env ? { env } : {}),
           },
         },
       ],
@@ -118,6 +120,7 @@ export const tryGetSupportedModelsFromQueryControl = async (
             maxTurns: 0,
             permissionMode: "plan",
             pathToClaudeCodeExecutable,
+            ...(env ? { env } : {}),
           },
         },
       ],
@@ -128,6 +131,7 @@ export const tryGetSupportedModelsFromQueryControl = async (
           permissionMode: "plan",
           cwd: process.cwd(),
           pathToClaudeCodeExecutable,
+          ...(env ? { env } : {}),
         },
       ],
     ]);

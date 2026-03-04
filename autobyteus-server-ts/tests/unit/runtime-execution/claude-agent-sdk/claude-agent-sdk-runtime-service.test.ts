@@ -54,9 +54,14 @@ describe("ClaudeAgentSdkRuntimeService", () => {
   afterEach(() => {
     delete process.env.CLAUDE_AGENT_SDK_MODELS;
     delete process.env.CLAUDE_CODE_EXECUTABLE_PATH;
+    delete process.env.CLAUDE_AGENT_SDK_AUTH_MODE;
+    delete process.env.ANTHROPIC_API_KEY;
   });
 
   it("streams turn deltas, emits lifecycle events, and records session transcript", async () => {
+    process.env.CLAUDE_AGENT_SDK_AUTH_MODE = "cli";
+    process.env.ANTHROPIC_API_KEY = "invalid-test-key";
+
     const createSession = vi.fn().mockReturnValue(
       createFakeV2Session([
         [
@@ -97,6 +102,7 @@ describe("ClaudeAgentSdkRuntimeService", () => {
 
     expect(result.turnId).toContain("run-1:turn:");
     expect(createSession).toHaveBeenCalledTimes(1);
+    expect(createSession.mock.calls[0]?.[0]?.env?.ANTHROPIC_API_KEY).toBeUndefined();
     expect(resumeSession).toHaveBeenCalledTimes(0);
     expect(methods).toEqual([
       "turn/started",
@@ -172,6 +178,41 @@ describe("ClaudeAgentSdkRuntimeService", () => {
     expect(
       transcript.some((entry) => entry.role === "assistant" && entry.content === "OK"),
     ).toBe(true);
+  });
+
+  it("maps autoExecuteTools to Claude V2 auto-allow permission callback", async () => {
+    const createSession = vi.fn().mockReturnValue(
+      createFakeV2Session([[{ session_id: "claude-session-auto-approve", delta: "ok" }]]),
+    );
+
+    const service = new ClaudeAgentSdkRuntimeService() as ClaudeAgentSdkRuntimeService & {
+      cachedSdkModule: unknown;
+    };
+    service.cachedSdkModule = {
+      unstable_v2_createSession: createSession,
+      unstable_v2_resumeSession: vi.fn(),
+    };
+
+    await service.createRunSession("run-auto-approve", {
+      modelIdentifier: "default",
+      workingDirectory: TEST_WORKSPACE_DIR,
+      autoExecuteTools: true,
+      llmConfig: null,
+    });
+
+    await service.sendTurn(
+      "run-auto-approve",
+      AgentInputUserMessage.fromDict({ content: "create file" }),
+    );
+    await waitFor(() => createSession.mock.calls.length > 0);
+
+    const createOptions = createSession.mock.calls[0]?.[0];
+    expect(typeof createOptions?.canUseTool).toBe("function");
+    await expect(createOptions.canUseTool("Write", {}, { toolUseID: "tool-1" })).resolves.toEqual({
+      behavior: "allow",
+      updatedInput: {},
+      toolUseID: "tool-1",
+    });
   });
 
   it("creates one V2 session and reuses it across multiple turns", async () => {
@@ -387,6 +428,7 @@ describe("ClaudeAgentSdkRuntimeService", () => {
       {
         modelIdentifier: "default",
         workingDirectory: TEST_WORKSPACE_DIR,
+        autoExecuteTools: true,
         llmConfig: null,
         runtimeMetadata: {
           teamRunId: "team-1",
@@ -435,6 +477,253 @@ describe("ClaudeAgentSdkRuntimeService", () => {
     });
     expect(methods).toContain("item/added");
     expect(methods).toContain("item/completed");
+  });
+
+  it("requires explicit approval for Claude send_message_to tool when autoExecuteTools is disabled", async () => {
+    let capturedToolHandler: ((args: unknown) => Promise<unknown>) | null = null;
+    const createSdkMcpServer = vi.fn().mockImplementation((input: Record<string, unknown>) => {
+      const tools = Array.isArray(input.tools) ? (input.tools as Array<Record<string, unknown>>) : [];
+      capturedToolHandler = (tools[0]?.handler as ((args: unknown) => Promise<unknown>) | undefined) ?? null;
+      return { type: "sdk", name: input.name ?? "autobyteus_team", instance: {} };
+    });
+
+    const setMcpServers = vi.fn().mockImplementation(async () => {
+      if (capturedToolHandler) {
+        await capturedToolHandler({
+          recipient_name: "pong",
+          content: "PING",
+          message_type: "roundtrip_ping",
+        });
+      }
+      return { added: ["autobyteus_team"], removed: [], errors: {} };
+    });
+
+    const relayHandler = vi.fn().mockResolvedValue({ accepted: true });
+    const resumeSession = vi.fn().mockReturnValue(
+      createFakeV2Session(
+        [[{ delta: "done" }]],
+        {
+          setMcpServers,
+        },
+      ),
+    );
+
+    const service = new ClaudeAgentSdkRuntimeService() as ClaudeAgentSdkRuntimeService & {
+      cachedSdkModule: unknown;
+    };
+    service.cachedSdkModule = {
+      unstable_v2_createSession: vi.fn(),
+      unstable_v2_resumeSession: resumeSession,
+      createSdkMcpServer,
+    };
+    service.setInterAgentRelayHandler(relayHandler);
+
+    await service.restoreRunSession(
+      "run-team-member-manual",
+      {
+        modelIdentifier: "default",
+        workingDirectory: TEST_WORKSPACE_DIR,
+        autoExecuteTools: false,
+        llmConfig: null,
+        runtimeMetadata: {
+          teamRunId: "team-1",
+          memberName: "ping",
+          sendMessageToEnabled: true,
+          teamMemberManifest: [
+            { memberName: "ping", role: "assistant", description: "sender" },
+            { memberName: "pong", role: "assistant", description: "recipient" },
+          ],
+        },
+      },
+      {
+        sessionId: "session-manual",
+        metadata: {
+          teamRunId: "team-1",
+          memberName: "ping",
+          sendMessageToEnabled: true,
+          teamMemberManifest: [
+            { memberName: "ping", role: "assistant", description: "sender" },
+            { memberName: "pong", role: "assistant", description: "recipient" },
+          ],
+        },
+      },
+    );
+
+    const events: Array<{ method: string; params: Record<string, unknown> }> = [];
+    service.subscribeToRunEvents("run-team-member-manual", (event) => {
+      events.push({
+        method: event.method,
+        params:
+          event.params && typeof event.params === "object" && !Array.isArray(event.params)
+            ? (event.params as Record<string, unknown>)
+            : {},
+      });
+    });
+
+    await service.sendTurn(
+      "run-team-member-manual",
+      AgentInputUserMessage.fromDict({ content: "relay now with approval" }),
+    );
+
+    await waitFor(() =>
+      events.some((event) => event.method === "item/commandExecution/requestApproval"),
+    );
+    const approvalRequest = events.find(
+      (event) => event.method === "item/commandExecution/requestApproval",
+    );
+    const invocationId = approvalRequest?.params?.invocation_id;
+    expect(typeof invocationId).toBe("string");
+    await service.approveTool(
+      "run-team-member-manual",
+      invocationId as string,
+      true,
+      "unit-test-manual-approve",
+    );
+
+    await waitFor(() => events.some((event) => event.method === "turn/completed"));
+
+    expect(relayHandler).toHaveBeenCalledWith({
+      senderRunId: "run-team-member-manual",
+      senderMemberName: "ping",
+      senderTeamRunId: "team-1",
+      toolArguments: {
+        recipient_name: "pong",
+        content: "PING",
+        message_type: "roundtrip_ping",
+      },
+    });
+    expect(events.some((event) => event.method === "item/commandExecution/approved")).toBe(true);
+  });
+
+  it("does not emit unknown_tool completion events for orphan tool_result chunks", async () => {
+    const createSession = vi.fn().mockReturnValue(
+      createFakeV2Session([
+        [
+          {
+            type: "user",
+            message: {
+              content: [
+                {
+                  type: "tool_result",
+                  tool_use_id: "toolu_orphan_1",
+                  content: [{ type: "text", text: "delivered" }],
+                },
+              ],
+            },
+          },
+          { delta: "done" },
+        ],
+      ]),
+    );
+    const service = new ClaudeAgentSdkRuntimeService() as ClaudeAgentSdkRuntimeService & {
+      cachedSdkModule: unknown;
+    };
+    service.cachedSdkModule = {
+      unstable_v2_createSession: createSession,
+      unstable_v2_resumeSession: vi.fn(),
+    };
+
+    await service.createRunSession("run-orphan-result", {
+      modelIdentifier: "default",
+      workingDirectory: TEST_WORKSPACE_DIR,
+      llmConfig: null,
+    });
+
+    const events: Array<{ method: string; params: Record<string, unknown> }> = [];
+    service.subscribeToRunEvents("run-orphan-result", (event) => {
+      events.push({
+        method: event.method,
+        params:
+          event.params && typeof event.params === "object" && !Array.isArray(event.params)
+            ? (event.params as Record<string, unknown>)
+            : {},
+      });
+    });
+
+    await service.sendTurn(
+      "run-orphan-result",
+      AgentInputUserMessage.fromDict({ content: "trigger orphan result handling" }),
+    );
+    await waitFor(() => events.some((event) => event.method === "turn/completed"));
+
+    const completionEvents = events.filter(
+      (event) => event.method === "item/commandExecution/completed",
+    );
+    expect(completionEvents).toHaveLength(0);
+  });
+
+  it("does not emit duplicate command completion for Claude MCP send_message_to tool_result chunks", async () => {
+    const createSession = vi.fn().mockReturnValue(
+      createFakeV2Session([
+        [
+          {
+            type: "assistant",
+            message: {
+              content: [
+                {
+                  type: "tool_use",
+                  id: "toolu_send_1",
+                  name: "mcp__autobyteus_team__send_message_to",
+                  input: {
+                    recipient_name: "student",
+                    content: "hello",
+                    message_type: "agent_message",
+                  },
+                },
+              ],
+            },
+          },
+          {
+            type: "user",
+            message: {
+              content: [
+                {
+                  type: "tool_result",
+                  tool_use_id: "toolu_send_1",
+                  content: [{ type: "text", text: "Delivered message to 'student'." }],
+                },
+              ],
+            },
+          },
+          { delta: "done" },
+        ],
+      ]),
+    );
+    const service = new ClaudeAgentSdkRuntimeService() as ClaudeAgentSdkRuntimeService & {
+      cachedSdkModule: unknown;
+    };
+    service.cachedSdkModule = {
+      unstable_v2_createSession: createSession,
+      unstable_v2_resumeSession: vi.fn(),
+    };
+
+    await service.createRunSession("run-mcp-send-message-result", {
+      modelIdentifier: "default",
+      workingDirectory: TEST_WORKSPACE_DIR,
+      llmConfig: null,
+    });
+
+    const events: Array<{ method: string; params: Record<string, unknown> }> = [];
+    service.subscribeToRunEvents("run-mcp-send-message-result", (event) => {
+      events.push({
+        method: event.method,
+        params:
+          event.params && typeof event.params === "object" && !Array.isArray(event.params)
+            ? (event.params as Record<string, unknown>)
+            : {},
+      });
+    });
+
+    await service.sendTurn(
+      "run-mcp-send-message-result",
+      AgentInputUserMessage.fromDict({ content: "trigger mcp send_message_to result handling" }),
+    );
+    await waitFor(() => events.some((event) => event.method === "turn/completed"));
+
+    const completionEvents = events.filter(
+      (event) => event.method === "item/commandExecution/completed",
+    );
+    expect(completionEvents).toHaveLength(0);
   });
 
   it("rejects empty turn payloads deterministically", async () => {
@@ -587,16 +876,45 @@ describe("ClaudeAgentSdkRuntimeService", () => {
     expect(cwd).toBe("/workspace/existing");
   });
 
-  it("rejects tool approval routing as unsupported", async () => {
-    const service = new ClaudeAgentSdkRuntimeService();
+  it("routes manual Claude tool approvals through canUseTool callback", async () => {
+    const createSession = vi.fn().mockReturnValue(
+      createFakeV2Session([[{ session_id: "claude-session-approve", delta: "ok" }]]),
+    );
+
+    const service = new ClaudeAgentSdkRuntimeService() as ClaudeAgentSdkRuntimeService & {
+      cachedSdkModule: unknown;
+    };
+    service.cachedSdkModule = {
+      unstable_v2_createSession: createSession,
+      unstable_v2_resumeSession: vi.fn(),
+    };
+
     await service.createRunSession("run-approve", {
-      modelIdentifier: "claude-sonnet-4-5",
+      modelIdentifier: "default",
       workingDirectory: TEST_WORKSPACE_DIR,
+      autoExecuteTools: false,
       llmConfig: null,
     });
-
-    await expect(service.approveTool("run-approve", "tool-1", true)).rejects.toThrow(
-      "Claude Agent SDK runtime does not support tool approval routing.",
+    await service.sendTurn(
+      "run-approve",
+      AgentInputUserMessage.fromDict({ content: "tool approval roundtrip" }),
     );
+    await waitFor(() => createSession.mock.calls.length > 0);
+
+    const createOptions = createSession.mock.calls[0]?.[0];
+    expect(typeof createOptions?.canUseTool).toBe("function");
+
+    const pendingApproval = createOptions.canUseTool(
+      "Write",
+      { file_path: "/tmp/demo.txt", content: "hello" },
+      { toolUseID: "tool-1", signal: new AbortController().signal },
+    );
+
+    await expect(service.approveTool("run-approve", "tool-1", true, "unit-test-approve")).resolves.toBeUndefined();
+    await expect(pendingApproval).resolves.toEqual({
+      behavior: "allow",
+      updatedInput: { file_path: "/tmp/demo.txt", content: "hello" },
+      toolUseID: "tool-1",
+    });
   });
 });

@@ -317,3 +317,28 @@
 - Live Claude turns now return: `You've hit your limit · resets 8pm (Europe/Berlin)`.
 - This prevents deterministic assertion tokens (`READY`, `READY-FIRST-*`, `send_message_to` lifecycle token paths) from being produced.
 - Blocker classification: external/infrastructure (provider quota), not design/runtime regression.
+
+## Re-Entry Delta (2026-03-03, auto-approve tools not honored for Claude writes)
+
+1. User-visible bug is reproducible and maps to Claude permission handling.
+- With Claude runtime selected and UI `Auto approve tools` enabled, write attempts still produce permission prompts (for example "approve the permission prompt so I can create hello.py").
+- Team routing and normal turn streaming continue to work, isolating this to permission policy wiring rather than session lifecycle.
+
+2. Current implementation drops `autoExecuteTools` before Claude session creation.
+- `runtime-adapter-port.ts` includes `RuntimeCreateAgentRunInput.autoExecuteTools`.
+- `claude-agent-sdk-runtime-adapter.ts` currently passes model/workspace/llmConfig but does not forward `autoExecuteTools` into Claude runtime session options.
+- `claude-runtime-v2-control-interop.ts` hardcodes `permissionMode: "default"` with no `canUseTool` override.
+
+3. Official SDK type surface supports a deterministic runtime-side fix.
+- Local package source (`autobyteus-server-ts/node_modules/@anthropic-ai/claude-agent-sdk/sdk.d.ts`) defines:
+  - `PermissionMode = 'default' | 'acceptEdits' | 'bypassPermissions' | 'plan' | 'dontAsk'`.
+  - V2 session options include `canUseTool?: CanUseTool`.
+  - `CanUseTool` can return `PermissionResult` with `{ behavior: 'allow' }`.
+- This allows an SDK-native "auto approve" path without routing through unsupported runtime `approveTool` command handling.
+
+4. Design implication for separation of concerns.
+- Keep runtime ingress `approveTool` unsupported for Claude (unchanged contract).
+- Implement auto-approval at Claude V2 session policy boundary:
+  - map `autoExecuteTools=true` to a V2 session `canUseTool` callback that returns `allow`,
+  - keep `autoExecuteTools=false` on default permission behavior.
+- Preserve this mapping in interop/service layers only; no frontend protocol branching required.

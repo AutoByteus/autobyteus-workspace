@@ -36,6 +36,7 @@ export class ClaudeAgentSdkRuntimeAdapter implements RuntimeAdapter {
     const session = await this.runtimeService.createRunSession(runId, {
       modelIdentifier: input.llmModelIdentifier,
       workingDirectory,
+      autoExecuteTools: input.autoExecuteTools,
       llmConfig: input.llmConfig ?? null,
       runtimeMetadata: null,
     });
@@ -58,6 +59,7 @@ export class ClaudeAgentSdkRuntimeAdapter implements RuntimeAdapter {
       {
         modelIdentifier: input.llmModelIdentifier,
         workingDirectory,
+        autoExecuteTools: input.autoExecuteTools,
         llmConfig: input.llmConfig ?? null,
         runtimeMetadata: input.runtimeReference?.metadata ?? null,
       },
@@ -111,14 +113,15 @@ export class ClaudeAgentSdkRuntimeAdapter implements RuntimeAdapter {
 
   async approveTool(input: RuntimeApproveToolInput): Promise<RuntimeCommandResult> {
     try {
-      await this.runtimeService.approveTool(input.runId, input.invocationId, input.approved);
+      await this.runtimeService.approveTool(
+        input.runId,
+        input.invocationId,
+        input.approved,
+        input.reason ?? null,
+      );
       return { accepted: true };
     } catch (error) {
-      return {
-        accepted: false,
-        code: "TOOL_APPROVAL_UNSUPPORTED",
-        message: String(error),
-      };
+      return buildCommandFailure(error);
     }
   }
 

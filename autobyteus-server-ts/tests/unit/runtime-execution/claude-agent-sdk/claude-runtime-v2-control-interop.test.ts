@@ -34,8 +34,10 @@ describe("claude-runtime-v2-control-interop", () => {
       model: "claude-sonnet-4-5",
       pathToClaudeCodeExecutable: "claude",
       workingDirectory: TEST_WORKSPACE_DIR,
+      env: { CLAUDE_AGENT_SDK_CLIENT_APP: "autobyteus-test/1.0.0" },
       resumeSessionId: null,
       enableSendMessageToTooling: true,
+      autoExecuteTools: true,
     });
 
     expect(createSession).toHaveBeenCalledTimes(1);
@@ -44,7 +46,16 @@ describe("claude-runtime-v2-control-interop", () => {
       pathToClaudeCodeExecutable: "claude",
       permissionMode: "default",
       cwd: TEST_WORKSPACE_DIR,
+      env: { CLAUDE_AGENT_SDK_CLIENT_APP: "autobyteus-test/1.0.0" },
       allowedTools: ["send_message_to", "mcp__autobyteus_team__send_message_to"],
+    });
+    expect(typeof createSession.mock.calls[0]?.[0]?.canUseTool).toBe("function");
+    await expect(
+      createSession.mock.calls[0]?.[0]?.canUseTool("Write", {}, { toolUseID: "tool-1" }),
+    ).resolves.toEqual({
+      behavior: "allow",
+      updatedInput: {},
+      toolUseID: "tool-1",
     });
   });
 
@@ -67,6 +78,7 @@ describe("claude-runtime-v2-control-interop", () => {
       workingDirectory: TEST_WORKSPACE_DIR,
       resumeSessionId: "session-123",
       enableSendMessageToTooling: false,
+      autoExecuteTools: false,
     });
 
     expect(createSession).toHaveBeenCalledTimes(0);
@@ -75,6 +87,7 @@ describe("claude-runtime-v2-control-interop", () => {
     expect(resumeSession.mock.calls[0]?.[1]).toMatchObject({
       cwd: TEST_WORKSPACE_DIR,
     });
+    expect(resumeSession.mock.calls[0]?.[1]?.canUseTool).toBeUndefined();
   });
 
   it("scopes process cwd during V2 session create and restores it afterward", async () => {

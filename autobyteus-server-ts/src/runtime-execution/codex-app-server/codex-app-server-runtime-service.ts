@@ -37,6 +37,12 @@ import {
   resolveCodexSessionReasoningEffort,
 } from "./codex-runtime-model-catalog.js";
 import {
+  emitRuntimeEvent,
+  moveRuntimeListenersToDeferred,
+  rebindDeferredRuntimeListeners,
+  subscribeToRuntimeRunEvents,
+} from "../runtime-event-listener-hub.js";
+import {
   resumeCodexThread,
   startCodexThread,
 } from "./codex-runtime-thread-lifecycle.js";
@@ -79,7 +85,11 @@ export class CodexAppServerRuntimeService {
     await this.closeRunSession(runId);
     const state = await this.startSession(runId, options, null);
     this.sessions.set(runId, state);
-    this.rebindDeferredListeners(runId, state);
+    rebindDeferredRuntimeListeners({
+      runId,
+      activeListeners: state.listeners,
+      deferredListenersByRunId: this.deferredListenersByRunId,
+    });
     return {
       threadId: state.threadId,
       metadata: {
@@ -108,7 +118,11 @@ export class CodexAppServerRuntimeService {
       runtimeReference?.threadId ?? null,
     );
     this.sessions.set(runId, state);
-    this.rebindDeferredListeners(runId, state);
+    rebindDeferredRuntimeListeners({
+      runId,
+      activeListeners: state.listeners,
+      deferredListenersByRunId: this.deferredListenersByRunId,
+    });
     return {
       threadId: state.threadId,
       metadata: {
@@ -128,22 +142,12 @@ export class CodexAppServerRuntimeService {
     runId: string,
     listener: (event: CodexRuntimeEvent) => void,
   ): () => void {
-    const state = this.sessions.get(runId);
-    if (state) {
-      state.listeners.add(listener);
-    } else {
-      this.getOrCreateDeferredListenerSet(runId).add(listener);
-    }
-    return () => {
-      this.sessions.get(runId)?.listeners.delete(listener);
-      const deferred = this.deferredListenersByRunId.get(runId);
-      if (deferred) {
-        deferred.delete(listener);
-        if (deferred.size === 0) {
-          this.deferredListenersByRunId.delete(runId);
-        }
-      }
-    };
+    return subscribeToRuntimeRunEvents({
+      runId,
+      listener,
+      resolveActiveListenerSet: (activeRunId) => this.sessions.get(activeRunId)?.listeners,
+      deferredListenersByRunId: this.deferredListenersByRunId,
+    });
   }
 
   async sendTurn(runId: string, message: AgentInputUserMessage): Promise<{ turnId: string | null }> {
@@ -248,13 +252,11 @@ export class CodexAppServerRuntimeService {
       return;
     }
     this.sessions.delete(runId);
-    const listenerSnapshot = Array.from(state.listeners);
-    if (listenerSnapshot.length > 0) {
-      const deferred = this.getOrCreateDeferredListenerSet(runId);
-      for (const listener of listenerSnapshot) {
-        deferred.add(listener);
-      }
-    }
+    moveRuntimeListenersToDeferred({
+      runId,
+      activeListeners: state.listeners,
+      deferredListenersByRunId: this.deferredListenersByRunId,
+    });
     state.listeners.clear();
     state.approvalRecords.clear();
     for (const unbind of state.unbindHandlers) {
@@ -263,28 +265,6 @@ export class CodexAppServerRuntimeService {
       } catch {
         // ignore
       }
-    }
-  }
-
-  private getOrCreateDeferredListenerSet(
-    runId: string,
-  ): Set<(event: CodexRuntimeEvent) => void> {
-    const existing = this.deferredListenersByRunId.get(runId);
-    if (existing) {
-      return existing;
-    }
-    const created = new Set<(event: CodexRuntimeEvent) => void>();
-    this.deferredListenersByRunId.set(runId, created);
-    return created;
-  }
-
-  private rebindDeferredListeners(runId: string, state: CodexRunSessionState): void {
-    const deferred = this.deferredListenersByRunId.get(runId);
-    if (!deferred) {
-      return;
-    }
-    for (const listener of deferred) {
-      state.listeners.add(listener);
     }
   }
 
@@ -448,13 +428,13 @@ export class CodexAppServerRuntimeService {
   }
 
   private emitEvent(state: CodexRunSessionState, event: CodexRuntimeEvent): void {
-    for (const listener of state.listeners) {
-      try {
-        listener(event);
-      } catch (error) {
+    emitRuntimeEvent({
+      listeners: state.listeners,
+      event,
+      onListenerError: (error) => {
         logger.warn(`Codex runtime event listener failed: ${String(error)}`);
-      }
-    }
+      },
+    });
   }
 
   private findApprovalRecord(

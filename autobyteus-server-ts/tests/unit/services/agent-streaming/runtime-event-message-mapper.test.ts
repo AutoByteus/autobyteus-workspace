@@ -606,7 +606,7 @@ describe("RuntimeEventMessageMapper", () => {
     expect(completedFailure.payload.error).toBe("Tool execution failed.");
   });
 
-  it("ignores send_message_to command-execution lifecycle methods to prevent duplicate UI rows", () => {
+  it("ignores send_message_to command-execution started/delta but maps completion", () => {
     const started = mapper.map({
       method: "item/command_execution/started",
       params: {
@@ -639,9 +639,75 @@ describe("RuntimeEventMessageMapper", () => {
         success: true,
       },
     });
-    expect(completed.type).toBe(ServerMessageType.SEGMENT_CONTENT);
-    expect(completed.payload.delta).toBe("");
+    expect(completed.type).toBe(ServerMessageType.TOOL_EXECUTION_SUCCEEDED);
+    expect(completed.payload.invocation_id).toBe("call-send-1");
+    expect(completed.payload.tool_name).toBe("send_message_to");
     expect(completed.payload.runtime_event_method).toBe("item/commandExecution/completed");
+  });
+
+  it("normalizes Claude MCP send_message_to tool names to canonical send_message_to", () => {
+    const requested = mapper.map({
+      method: "item/command_execution/request_approval",
+      params: {
+        invocation_id: "toolu_123",
+        tool_name: "mcp__autobyteus_team__send_message_to",
+        arguments: { recipient_name: "student", content: "hello" },
+      },
+    });
+    expect(requested.type).toBe(ServerMessageType.TOOL_APPROVAL_REQUESTED);
+    expect(requested.payload.tool_name).toBe("send_message_to");
+
+    const completed = mapper.map({
+      method: "item/command_execution/completed",
+      params: {
+        invocation_id: "toolu_123",
+        tool_name: "mcp__autobyteus_team__send_message_to",
+        result: [{ type: "text", text: "Delivered message to 'student'." }],
+      },
+    });
+    expect(completed.type).toBe(ServerMessageType.TOOL_EXECUTION_SUCCEEDED);
+    expect(completed.payload.invocation_id).toBe("toolu_123");
+    expect(completed.payload.tool_name).toBe("send_message_to");
+  });
+
+  it("maps send_message_to approval lifecycle methods for explicit user approval UX", () => {
+    const requested = mapper.map({
+      method: "item/command_execution/request_approval",
+      params: {
+        invocation_id: "send-approval-1",
+        tool_name: "send_message_to",
+        arguments: { recipient_name: "student", content: "hello" },
+      },
+    });
+    expect(requested.type).toBe(ServerMessageType.TOOL_APPROVAL_REQUESTED);
+    expect(requested.payload.invocation_id).toBe("send-approval-1");
+    expect(requested.payload.tool_name).toBe("send_message_to");
+
+    const approved = mapper.map({
+      method: "item/command_execution/approved",
+      params: {
+        invocation_id: "send-approval-1",
+        tool_name: "send_message_to",
+        reason: "approved in test",
+      },
+    });
+    expect(approved.type).toBe(ServerMessageType.TOOL_APPROVED);
+    expect(approved.payload.invocation_id).toBe("send-approval-1");
+    expect(approved.payload.tool_name).toBe("send_message_to");
+    expect(approved.payload.reason).toBe("approved in test");
+
+    const denied = mapper.map({
+      method: "item/command_execution/denied",
+      params: {
+        invocation_id: "send-approval-2",
+        tool_name: "send_message_to",
+        reason: "denied in test",
+      },
+    });
+    expect(denied.type).toBe(ServerMessageType.TOOL_DENIED);
+    expect(denied.payload.invocation_id).toBe("send-approval-2");
+    expect(denied.payload.tool_name).toBe("send_message_to");
+    expect(denied.payload.reason).toBe("denied in test");
   });
 
   it("maps codex approval request methods", () => {

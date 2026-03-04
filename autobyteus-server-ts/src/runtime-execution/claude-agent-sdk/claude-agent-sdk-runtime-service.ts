@@ -6,6 +6,7 @@ import type { RuntimeInterAgentEnvelope } from "../runtime-adapter-port.js";
 import { getWorkspaceManager } from "../../workspaces/workspace-manager.js";
 import {
   asString,
+  buildClaudeSdkSpawnEnvironment,
   CLAUDE_AGENT_SDK_MODULE_NAME,
   logger,
   nowTimestampSeconds,
@@ -31,7 +32,10 @@ import {
   tryGetSupportedModelsFromQueryControl,
 } from "./claude-runtime-sdk-interop.js";
 import { createClaudeRunSessionState } from "./claude-runtime-session-state.js";
-import { buildClaudeTeamMcpServers } from "./claude-send-message-tooling.js";
+import {
+  buildClaudeTeamMcpServers,
+  type ClaudeSendMessageToolApprovalDecision,
+} from "./claude-send-message-tooling.js";
 import { ClaudeRuntimeTranscriptStore } from "./claude-runtime-transcript-store.js";
 import { ClaudeRuntimeTurnScheduler } from "./claude-runtime-turn-scheduler.js";
 import {
@@ -43,6 +47,12 @@ import {
   type ClaudeV2SessionLike,
 } from "./claude-runtime-v2-control-interop.js";
 import { buildClaudeTurnInput } from "./claude-runtime-turn-preamble.js";
+import {
+  emitRuntimeEvent,
+  moveRuntimeListenersToDeferred,
+  rebindDeferredRuntimeListeners,
+  subscribeToRuntimeRunEvents,
+} from "../runtime-event-listener-hub.js";
 
 export type {
   ClaudeInterAgentRelayHandler,
@@ -54,6 +64,40 @@ export type {
   ClaudeSessionRuntimeOptions,
   TeamManifestMetadataMember,
 } from "./claude-runtime-shared.js";
+
+type ClaudeCanUseToolOptions = {
+  signal?: AbortSignal;
+  toolUseID?: string;
+};
+
+type ClaudeToolApprovalDecision = {
+  approved: boolean;
+  reason: string | null;
+};
+
+type PendingClaudeToolApproval = {
+  resolveDecision: (decision: ClaudeToolApprovalDecision) => void;
+};
+
+type ObservedClaudeToolInvocation = {
+  toolName: string | null;
+  toolInput: Record<string, unknown>;
+};
+
+const CLAUDE_TOOL_APPROVAL_TIMEOUT_MS = 120_000;
+
+const isSendMessageToToolName = (value: string | null): boolean => {
+  if (!value) {
+    return false;
+  }
+  const normalized = value.trim().toLowerCase();
+  return (
+    normalized === "send_message_to" ||
+    normalized.endsWith("__send_message_to") ||
+    normalized.endsWith(".send_message_to") ||
+    normalized.endsWith("/send_message_to")
+  );
+};
 
 export class ClaudeAgentSdkRuntimeService {
   private readonly sessions = new Map<string, ClaudeRunSessionState>();
@@ -67,6 +111,11 @@ export class ClaudeAgentSdkRuntimeService {
   private cachedSdkModule: ClaudeSdkModuleLike | null = null;
   private readonly v2SessionsByRunId = new Map<string, ClaudeV2SessionLike>();
   private readonly v2SessionControlsByRunId = new Map<string, ClaudeV2SessionControlLike | null>();
+  private readonly pendingToolApprovalsByRunId = new Map<string, Map<string, PendingClaudeToolApproval>>();
+  private readonly observedToolInvocationsByRunId = new Map<
+    string,
+    Map<string, ObservedClaudeToolInvocation>
+  >();
   private interAgentRelayHandler: ClaudeInterAgentRelayHandler | null = null;
 
   setInterAgentRelayHandler(handler: ClaudeInterAgentRelayHandler | null): void {
@@ -84,11 +133,16 @@ export class ClaudeAgentSdkRuntimeService {
       sessionId: runId,
       modelIdentifier: options.modelIdentifier,
       workingDirectory: options.workingDirectory,
+      autoExecuteTools: Boolean(options.autoExecuteTools),
       runtimeMetadata,
       hasCompletedTurn: false,
     });
     this.sessions.set(runId, state);
-    this.rebindDeferredListeners(runId, state);
+    rebindDeferredRuntimeListeners({
+      runId,
+      activeListeners: state.listeners,
+      deferredListenersByRunId: this.deferredListenersByRunId,
+    });
     this.transcriptStore.ensureSession(state.sessionId);
     return {
       sessionId: state.sessionId,
@@ -109,6 +163,13 @@ export class ClaudeAgentSdkRuntimeService {
     await this.closeRunSession(runId);
     const resolvedSessionId = asString(runtimeReference?.sessionId);
     const sessionId = resolvedSessionId ?? runId;
+    const metadataAutoExecuteTools = runtimeReference?.metadata?.autoExecuteTools;
+    const resolvedAutoExecuteTools =
+      typeof options.autoExecuteTools === "boolean"
+        ? options.autoExecuteTools
+        : typeof metadataAutoExecuteTools === "boolean"
+          ? metadataAutoExecuteTools
+          : false;
     // Team external-runtime bootstraps may seed sessionId with memberRunId before any Claude turn exists.
     // Avoid sending resume on first turn until we have a confirmed non-placeholder Claude session id.
     const hasCompletedTurn = resolvedSessionId !== null && resolvedSessionId !== runId;
@@ -118,11 +179,16 @@ export class ClaudeAgentSdkRuntimeService {
       sessionId,
       modelIdentifier: options.modelIdentifier,
       workingDirectory: options.workingDirectory,
+      autoExecuteTools: resolvedAutoExecuteTools,
       runtimeMetadata,
       hasCompletedTurn,
     });
     this.sessions.set(runId, state);
-    this.rebindDeferredListeners(runId, state);
+    rebindDeferredRuntimeListeners({
+      runId,
+      activeListeners: state.listeners,
+      deferredListenersByRunId: this.deferredListenersByRunId,
+    });
     this.transcriptStore.ensureSession(sessionId);
     return {
       sessionId,
@@ -154,22 +220,12 @@ export class ClaudeAgentSdkRuntimeService {
   }
 
   subscribeToRunEvents(runId: string, listener: (event: ClaudeRuntimeEvent) => void): () => void {
-    const state = this.sessions.get(runId);
-    if (state) {
-      state.listeners.add(listener);
-    } else {
-      this.getOrCreateDeferredListenerSet(runId).add(listener);
-    }
-    return () => {
-      this.sessions.get(runId)?.listeners.delete(listener);
-      const deferred = this.deferredListenersByRunId.get(runId);
-      if (deferred) {
-        deferred.delete(listener);
-        if (deferred.size === 0) {
-          this.deferredListenersByRunId.delete(runId);
-        }
-      }
-    };
+    return subscribeToRuntimeRunEvents({
+      runId,
+      listener,
+      resolveActiveListenerSet: (activeRunId) => this.sessions.get(activeRunId)?.listeners,
+      deferredListenersByRunId: this.deferredListenersByRunId,
+    });
   }
 
   async sendTurn(runId: string, message: AgentInputUserMessage): Promise<{ turnId: string | null }> {
@@ -268,17 +324,29 @@ export class ClaudeAgentSdkRuntimeService {
 
   async approveTool(
     runId: string,
-    _invocationId: string,
-    _approved: boolean,
+    invocationId: string,
+    approved: boolean,
+    reason: string | null = null,
   ): Promise<void> {
     this.requireSession(runId);
-    throw new Error("Claude Agent SDK runtime does not support tool approval routing.");
+    const pendingApprovals = this.pendingToolApprovalsByRunId.get(runId);
+    const pendingApproval = pendingApprovals?.get(invocationId);
+    if (!pendingApproval) {
+      throw new Error(
+        `No pending Claude tool approval found for invocation '${invocationId}'.`,
+      );
+    }
+    pendingApproval.resolveDecision({
+      approved,
+      reason: asString(reason),
+    });
   }
 
   async interruptRun(runId: string): Promise<void> {
     const state = this.requireSession(runId);
     state.activeAbortController?.abort();
     state.activeAbortController = null;
+    this.clearPendingToolApprovals(runId, "Tool approval interrupted.");
     await interruptClaudeV2SessionTurn(this.v2SessionControlsByRunId.get(runId) ?? null);
     this.emitEvent(state, {
       method: "turn/interrupted",
@@ -309,13 +377,13 @@ export class ClaudeAgentSdkRuntimeService {
       return;
     }
     state.activeAbortController?.abort();
-    const listenerSnapshot = Array.from(state.listeners);
-    if (listenerSnapshot.length > 0) {
-      const deferred = this.getOrCreateDeferredListenerSet(runId);
-      for (const listener of listenerSnapshot) {
-        deferred.add(listener);
-      }
-    }
+    this.clearPendingToolApprovals(runId, "Tool approval cancelled because run was closed.");
+    this.observedToolInvocationsByRunId.delete(runId);
+    moveRuntimeListenersToDeferred({
+      runId,
+      activeListeners: state.listeners,
+      deferredListenersByRunId: this.deferredListenersByRunId,
+    });
     state.listeners.clear();
     this.v2SessionControlsByRunId.delete(runId);
     const session = this.v2SessionsByRunId.get(runId);
@@ -332,7 +400,10 @@ export class ClaudeAgentSdkRuntimeService {
 
   async listModels(): Promise<ModelInfo[]> {
     const sdk = await this.loadSdkModuleSafe();
-    const supportedRows = await tryGetSupportedModelsFromQueryControl(sdk);
+    const supportedRows = await tryGetSupportedModelsFromQueryControl(
+      sdk,
+      buildClaudeSdkSpawnEnvironment(),
+    );
     if (supportedRows.length > 0) {
       return supportedRows.map((row) => toModelInfo(row.identifier, row.displayName));
     }
@@ -424,6 +495,7 @@ export class ClaudeAgentSdkRuntimeService {
       if (options.signal.aborted) {
         break;
       }
+      this.processToolLifecycleChunk(options.state, chunk);
       const normalized = normalizeClaudeStreamChunk(chunk);
       if (normalized.sessionId && normalized.sessionId !== options.state.sessionId) {
         const previousSessionId = options.state.sessionId;
@@ -501,8 +573,12 @@ export class ClaudeAgentSdkRuntimeService {
         runtimeMetadata: state.runtimeMetadata,
       }),
       workingDirectory: state.workingDirectory,
+      env: buildClaudeSdkSpawnEnvironment(),
       resumeSessionId: state.hasCompletedTurn ? state.sessionId : null,
       enableSendMessageToTooling: this.isSendMessageToToolingEnabled(state),
+      autoExecuteTools: state.autoExecuteTools,
+      canUseTool: (toolName, input, options) =>
+        this.handleToolPermissionCheck(state, toolName, input, options),
     });
     const control = resolveClaudeV2SessionControl(session);
     this.v2SessionsByRunId.set(state.runId, session);
@@ -533,6 +609,18 @@ export class ClaudeAgentSdkRuntimeService {
       state,
       sdk,
       interAgentRelayHandler: this.interAgentRelayHandler,
+      autoExecuteTools: state.autoExecuteTools,
+      requestToolApproval: async ({
+        invocationId,
+        toolName,
+        toolArguments,
+      }): Promise<ClaudeSendMessageToolApprovalDecision> =>
+        this.resolveToolApprovalDecision({
+          state,
+          invocationId,
+          toolName,
+          toolInput: toolArguments,
+        }),
       emitEvent: (sessionState, event) => this.emitEvent(sessionState, event),
     });
     if (!mcpServers) {
@@ -546,36 +634,343 @@ export class ClaudeAgentSdkRuntimeService {
     });
   }
 
-  private emitEvent(state: ClaudeRunSessionState, event: ClaudeRuntimeEvent): void {
-    for (const listener of state.listeners) {
-      try {
-        listener(event);
-      } catch (error) {
-        logger.warn(`Claude runtime event listener failed: ${String(error)}`);
+  private async handleToolPermissionCheck(
+    state: ClaudeRunSessionState,
+    toolNameRaw: string,
+    toolInputRaw: Record<string, unknown>,
+    options: ClaudeCanUseToolOptions,
+  ): Promise<Record<string, unknown>> {
+    const invocationId =
+      asString(options.toolUseID) ??
+      `${state.runId}:tool:${Date.now()}:${Math.random().toString(16).slice(2, 10)}`;
+    const toolName = asString(toolNameRaw) ?? "unknown_tool";
+    const toolInput =
+      toolInputRaw && typeof toolInputRaw === "object" && !Array.isArray(toolInputRaw)
+        ? { ...toolInputRaw }
+        : {};
+
+    this.trackObservedToolInvocation(state.runId, invocationId, {
+      toolName,
+      toolInput,
+    });
+    this.emitEvent(state, {
+      method: "item/commandExecution/started",
+      params: {
+        invocation_id: invocationId,
+        tool_name: toolName,
+        arguments: toolInput,
+      },
+    });
+
+    const decision = await this.resolveToolApprovalDecision({
+      state,
+      invocationId,
+      toolName,
+      toolInput,
+      signal: options.signal,
+    });
+
+    if (decision.approved) {
+      return {
+        behavior: "allow",
+        updatedInput: toolInput,
+        toolUseID: invocationId,
+      };
+    }
+
+    const denialReason = decision.reason ?? "Tool execution denied by user.";
+    return {
+      behavior: "deny",
+      message: denialReason,
+      toolUseID: invocationId,
+    };
+  }
+
+  private async resolveToolApprovalDecision(input: {
+    state: ClaudeRunSessionState;
+    invocationId: string;
+    toolName: string;
+    toolInput: Record<string, unknown>;
+    signal?: AbortSignal;
+  }): Promise<ClaudeSendMessageToolApprovalDecision> {
+    if (input.state.autoExecuteTools) {
+      this.emitEvent(input.state, {
+        method: "item/commandExecution/approved",
+        params: {
+          invocation_id: input.invocationId,
+          tool_name: input.toolName,
+          arguments: input.toolInput,
+          reason: "auto_execute_tools_enabled",
+        },
+      });
+      return {
+        approved: true,
+        reason: "auto_execute_tools_enabled",
+      };
+    }
+
+    const decision = await this.awaitToolApprovalDecision({
+      state: input.state,
+      invocationId: input.invocationId,
+      toolName: input.toolName,
+      toolInput: input.toolInput,
+      signal: input.signal,
+    });
+
+    if (decision.approved) {
+      this.emitEvent(input.state, {
+        method: "item/commandExecution/approved",
+        params: {
+          invocation_id: input.invocationId,
+          tool_name: input.toolName,
+          arguments: input.toolInput,
+          ...(decision.reason ? { reason: decision.reason } : {}),
+        },
+      });
+      return decision;
+    }
+
+    const denialReason = decision.reason ?? "Tool execution denied by user.";
+    this.emitEvent(input.state, {
+      method: "item/commandExecution/denied",
+      params: {
+        invocation_id: input.invocationId,
+        tool_name: input.toolName,
+        arguments: input.toolInput,
+        reason: denialReason,
+        error: denialReason,
+      },
+    });
+    return {
+      approved: false,
+      reason: denialReason,
+    };
+  }
+
+  private awaitToolApprovalDecision(input: {
+    state: ClaudeRunSessionState;
+    invocationId: string;
+    toolName: string;
+    toolInput: Record<string, unknown>;
+    signal?: AbortSignal;
+  }): Promise<ClaudeToolApprovalDecision> {
+    const pendingApprovals = this.getOrCreatePendingApprovals(input.state.runId);
+
+    return new Promise((resolve) => {
+      let settled = false;
+      let timeoutHandle: ReturnType<typeof setTimeout> | null = null;
+
+      const finalize = (decision: ClaudeToolApprovalDecision): void => {
+        if (settled) {
+          return;
+        }
+        settled = true;
+        pendingApprovals.delete(input.invocationId);
+        if (pendingApprovals.size === 0) {
+          this.pendingToolApprovalsByRunId.delete(input.state.runId);
+        }
+        if (timeoutHandle) {
+          clearTimeout(timeoutHandle);
+          timeoutHandle = null;
+        }
+        if (input.signal) {
+          input.signal.removeEventListener("abort", onAbortSignal);
+        }
+        resolve(decision);
+      };
+
+      const onAbortSignal = (): void => {
+        finalize({
+          approved: false,
+          reason: "Tool approval interrupted.",
+        });
+      };
+
+      pendingApprovals.set(input.invocationId, {
+        resolveDecision: finalize,
+      });
+
+      timeoutHandle = setTimeout(() => {
+        finalize({
+          approved: false,
+          reason: "Tool approval timed out.",
+        });
+      }, CLAUDE_TOOL_APPROVAL_TIMEOUT_MS);
+
+      if (input.signal) {
+        input.signal.addEventListener("abort", onAbortSignal, { once: true });
       }
+
+      this.emitEvent(input.state, {
+        method: "item/commandExecution/requestApproval",
+        params: {
+          invocation_id: input.invocationId,
+          tool_name: input.toolName,
+          arguments: input.toolInput,
+        },
+      });
+    });
+  }
+
+  private processToolLifecycleChunk(state: ClaudeRunSessionState, chunk: unknown): void {
+    const payload =
+      chunk && typeof chunk === "object" && !Array.isArray(chunk)
+        ? (chunk as Record<string, unknown>)
+        : null;
+    if (!payload) {
+      return;
+    }
+
+    const messagePayload =
+      payload.message && typeof payload.message === "object" && !Array.isArray(payload.message)
+        ? (payload.message as Record<string, unknown>)
+        : null;
+    const contentBlocks = Array.isArray(messagePayload?.content)
+      ? (messagePayload?.content as unknown[])
+      : [];
+
+    const type = asString(payload.type);
+    for (const blockRaw of contentBlocks) {
+      const block =
+        blockRaw && typeof blockRaw === "object" && !Array.isArray(blockRaw)
+          ? (blockRaw as Record<string, unknown>)
+          : null;
+      if (!block) {
+        continue;
+      }
+
+      const blockType = asString(block.type);
+      if (blockType === "tool_use" && type === "assistant") {
+        const invocationId = asString(block.id) ?? asString(block.tool_use_id);
+        const toolName = asString(block.name) ?? asString(block.tool_name);
+        if (!invocationId || !toolName) {
+          continue;
+        }
+        const toolInput =
+          (block.input && typeof block.input === "object" && !Array.isArray(block.input)
+            ? (block.input as Record<string, unknown>)
+            : null) ??
+          (block.arguments && typeof block.arguments === "object" && !Array.isArray(block.arguments)
+            ? (block.arguments as Record<string, unknown>)
+            : null) ??
+          {};
+        this.trackObservedToolInvocation(state.runId, invocationId, {
+          toolName,
+          toolInput,
+        });
+        continue;
+      }
+
+      if (blockType !== "tool_result" || type !== "user") {
+        continue;
+      }
+
+      const invocationId = asString(block.tool_use_id) ?? asString(block.id);
+      if (!invocationId) {
+        continue;
+      }
+
+      const tracked = this.consumeObservedToolInvocation(state.runId, invocationId);
+      const toolName = tracked?.toolName ?? asString(block.tool_name) ?? asString(block.name);
+      if (!toolName) {
+        continue;
+      }
+      if (isSendMessageToToolName(toolName)) {
+        // send_message_to command completion is emitted by the MCP wrapper using
+        // the synthetic invocation id shared with approval lifecycle events.
+        continue;
+      }
+      const blockResult = block.content;
+      const isError = block.is_error === true;
+
+      if (isError) {
+        const errorMessage = typeof blockResult === "string" ? blockResult : JSON.stringify(blockResult);
+        this.emitEvent(state, {
+          method: "item/commandExecution/completed",
+          params: {
+            invocation_id: invocationId,
+            tool_name: toolName,
+            error: errorMessage,
+          },
+        });
+        continue;
+      }
+
+      this.emitEvent(state, {
+        method: "item/commandExecution/completed",
+        params: {
+          invocation_id: invocationId,
+          tool_name: toolName,
+          result: blockResult,
+        },
+      });
     }
   }
 
-  private getOrCreateDeferredListenerSet(
-    runId: string,
-  ): Set<(event: ClaudeRuntimeEvent) => void> {
-    const existing = this.deferredListenersByRunId.get(runId);
+  private getOrCreatePendingApprovals(runId: string): Map<string, PendingClaudeToolApproval> {
+    const existing = this.pendingToolApprovalsByRunId.get(runId);
     if (existing) {
       return existing;
     }
-    const created = new Set<(event: ClaudeRuntimeEvent) => void>();
-    this.deferredListenersByRunId.set(runId, created);
+    const created = new Map<string, PendingClaudeToolApproval>();
+    this.pendingToolApprovalsByRunId.set(runId, created);
     return created;
   }
 
-  private rebindDeferredListeners(runId: string, state: ClaudeRunSessionState): void {
-    const deferred = this.deferredListenersByRunId.get(runId);
-    if (!deferred) {
+  private clearPendingToolApprovals(runId: string, reason: string): void {
+    const pendingApprovals = this.pendingToolApprovalsByRunId.get(runId);
+    if (!pendingApprovals) {
       return;
     }
-    for (const listener of deferred) {
-      state.listeners.add(listener);
+    const approvals = Array.from(pendingApprovals.values());
+    this.pendingToolApprovalsByRunId.delete(runId);
+    for (const approval of approvals) {
+      approval.resolveDecision({
+        approved: false,
+        reason,
+      });
     }
+  }
+
+  private trackObservedToolInvocation(
+    runId: string,
+    invocationId: string,
+    observed: ObservedClaudeToolInvocation,
+  ): void {
+    const existing = this.observedToolInvocationsByRunId.get(runId);
+    if (existing) {
+      existing.set(invocationId, observed);
+      return;
+    }
+    const created = new Map<string, ObservedClaudeToolInvocation>();
+    created.set(invocationId, observed);
+    this.observedToolInvocationsByRunId.set(runId, created);
+  }
+
+  private consumeObservedToolInvocation(
+    runId: string,
+    invocationId: string,
+  ): ObservedClaudeToolInvocation | null {
+    const existing = this.observedToolInvocationsByRunId.get(runId);
+    if (!existing) {
+      return null;
+    }
+    const observed = existing.get(invocationId) ?? null;
+    existing.delete(invocationId);
+    if (existing.size === 0) {
+      this.observedToolInvocationsByRunId.delete(runId);
+    }
+    return observed;
+  }
+
+  private emitEvent(state: ClaudeRunSessionState, event: ClaudeRuntimeEvent): void {
+    emitRuntimeEvent({
+      listeners: state.listeners,
+      event,
+      onListenerError: (error) => {
+        logger.warn(`Claude runtime event listener failed: ${String(error)}`);
+      },
+    });
   }
 
   private async loadSdkModuleSafe(): Promise<ClaudeSdkModuleLike | null> {

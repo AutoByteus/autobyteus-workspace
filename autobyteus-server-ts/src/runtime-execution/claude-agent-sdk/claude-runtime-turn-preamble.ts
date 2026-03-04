@@ -16,13 +16,12 @@ export const buildClaudeTurnInput = (options: {
   }
 
   return [
-    "<autobyteus_team_context>",
+    "<team_context>",
     promptAppend,
-    "</autobyteus_team_context>",
+    "</team_context>",
     "",
     "<user_message>",
     options.content,
     "</user_message>",
   ].join("\n");
 };
-

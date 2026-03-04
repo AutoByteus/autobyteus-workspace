@@ -519,7 +519,23 @@ describe("CodexAppServerRuntimeService team-manifest instructions", () => {
 
 describe("CodexAppServerRuntimeService listener continuity", () => {
   it("keeps run listeners attachable across close/restore boundaries", async () => {
-    const service = new CodexAppServerRuntimeService();
+    const request = vi.fn().mockImplementation(async (method: string) => {
+      if (method === "thread/start" || method === "thread/resume") {
+        return { thread: { id: "thread-rebind" } };
+      }
+      return {};
+    });
+    const processManager = {
+      getClient: vi.fn().mockResolvedValue({
+        request,
+        onNotification: vi.fn().mockReturnValue(() => {}),
+        onServerRequest: vi.fn().mockReturnValue(() => {}),
+        onClose: vi.fn().mockReturnValue(() => {}),
+        respondSuccess: vi.fn(),
+        respondError: vi.fn(),
+      }),
+    } as any;
+    const service = new CodexAppServerRuntimeService(processManager);
     const listener = vi.fn();
 
     const unsubscribe = service.subscribeToRunEvents("run-rebind", listener);
@@ -528,16 +544,17 @@ describe("CodexAppServerRuntimeService listener continuity", () => {
         .deferredListenersByRunId.get("run-rebind")?.size,
     ).toBe(1);
 
-    const firstState = {
-      listeners: new Set(),
-      approvalRecords: new Map(),
-      unbindHandlers: [],
-    } as any;
-    (service as unknown as { sessions: Map<string, unknown> }).sessions.set("run-rebind", firstState);
-    (service as unknown as { rebindDeferredListeners: (runId: string, state: unknown) => void }).rebindDeferredListeners(
+    await service.createRunSession("run-rebind", {
+      modelIdentifier: "gpt-5-codex",
+      workingDirectory: "/tmp/workspace",
+      autoExecuteTools: false,
+      runtimeMetadata: null,
+    });
+
+    const firstState = (service as unknown as { sessions: Map<string, unknown> }).sessions.get(
       "run-rebind",
-      firstState,
     );
+    expect(firstState).toBeTruthy();
     (service as unknown as { emitEvent: (state: unknown, event: unknown) => void }).emitEvent(firstState, {
       method: "turn/completed",
       params: {},
@@ -547,19 +564,21 @@ describe("CodexAppServerRuntimeService listener continuity", () => {
 
     await service.closeRunSession("run-rebind");
 
-    const restoredState = {
-      listeners: new Set(),
-      approvalRecords: new Map(),
-      unbindHandlers: [],
-    } as any;
-    (service as unknown as { sessions: Map<string, unknown> }).sessions.set(
+    await service.restoreRunSession(
       "run-rebind",
-      restoredState,
+      {
+        modelIdentifier: "gpt-5-codex",
+        workingDirectory: "/tmp/workspace",
+        autoExecuteTools: false,
+        runtimeMetadata: null,
+      },
+      { threadId: "thread-rebind", metadata: null },
     );
-    (service as unknown as { rebindDeferredListeners: (runId: string, state: unknown) => void }).rebindDeferredListeners(
+
+    const restoredState = (service as unknown as { sessions: Map<string, unknown> }).sessions.get(
       "run-rebind",
-      restoredState,
     );
+    expect(restoredState).toBeTruthy();
     (service as unknown as { emitEvent: (state: unknown, event: unknown) => void }).emitEvent(
       restoredState,
       {

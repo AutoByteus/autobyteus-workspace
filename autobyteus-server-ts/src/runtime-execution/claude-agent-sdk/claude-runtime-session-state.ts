@@ -12,6 +12,7 @@ export const createClaudeRunSessionState = (options: {
   sessionId: string;
   modelIdentifier: string;
   workingDirectory: string;
+  autoExecuteTools: boolean;
   runtimeMetadata: Record<string, unknown>;
   hasCompletedTurn: boolean;
 }): ClaudeRunSessionState => {
@@ -23,11 +24,13 @@ export const createClaudeRunSessionState = (options: {
     sessionId: options.sessionId,
     model: options.modelIdentifier,
     workingDirectory: options.workingDirectory,
+    autoExecuteTools: options.autoExecuteTools,
     hasCompletedTurn: options.hasCompletedTurn,
     runtimeMetadata: {
       ...options.runtimeMetadata,
       model: options.modelIdentifier,
       cwd: options.workingDirectory,
+      autoExecuteTools: options.autoExecuteTools,
     },
     teamRunId: resolveTeamRunIdFromMetadata(options.runtimeMetadata),
     memberName,

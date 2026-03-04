@@ -109,3 +109,49 @@
 ### Decision
 
 - `Pass with residual size risk`: runtime service effective non-empty lines reduced to ~570 with explicit split boundaries for transcript and scheduling concerns, but still above 500; further split candidates remain (listener hub / session lifecycle coordinator) for future reduction.
+
+## Re-Review Round (2026-03-04)
+
+- Scope:
+  - `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-runtime-turn-preamble.ts`
+  - `autobyteus-server-ts/src/runtime-execution/runtime-event-listener-hub.ts`
+  - `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.ts`
+  - `autobyteus-server-ts/src/runtime-execution/codex-app-server/codex-app-server-runtime-service.ts`
+  - `autobyteus-server-ts/tests/unit/runtime-execution/claude-agent-sdk/claude-runtime-turn-preamble.test.ts`
+  - `autobyteus-server-ts/tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts`
+- Review focus:
+  - Prompt wrapper naming neutrality and prompt-schema readability
+  - Cross-runtime listener lifecycle duplication and boundary consistency
+  - Claude auto-approve E2E robustness against runtime-equivalent event shapes
+
+### Findings
+
+1. `Resolved`: Claude turn preamble used vendor-specific XML tag naming (`autobyteus_team_context`) that was semantically noisy and reduced portability of prompt framing.
+   - Change: replaced wrapper with neutral `team_context` tags.
+   - Files:
+     - `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-runtime-turn-preamble.ts`
+     - `autobyteus-server-ts/tests/unit/runtime-execution/claude-agent-sdk/claude-runtime-turn-preamble.test.ts`
+2. `Resolved`: listener continuity behavior was duplicated across Claude/Codex runtime services and had already diverged in tests through private-method coupling.
+   - Change: consolidated listener subscribe/rebind/defer/emit logic into shared `runtime-event-listener-hub`.
+   - Files:
+     - `autobyteus-server-ts/src/runtime-execution/runtime-event-listener-hub.ts`
+     - `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.ts`
+     - `autobyteus-server-ts/src/runtime-execution/codex-app-server/codex-app-server-runtime-service.ts`
+     - `autobyteus-server-ts/tests/unit/runtime-execution/codex-app-server/codex-app-server-runtime-service.test.ts`
+3. `Resolved`: Claude auto-approve E2E assertion was overly strict (`commandExecution`-only lifecycle), causing false failures when valid file-change lifecycle events were emitted.
+   - Change: widened accepted lifecycle evidence while preserving strict no-approval-request requirement and filesystem side-effect verification.
+   - File:
+     - `autobyteus-server-ts/tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts`
+
+### Validation
+
+- Unit:
+  - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/runtime-execution/claude-agent-sdk/claude-runtime-turn-preamble.test.ts tests/unit/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.test.ts tests/unit/runtime-execution/codex-app-server/codex-app-server-runtime-service.test.ts`
+- Live E2E (Claude + Codex):
+  - `RUN_CLAUDE_E2E=1 RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts tests/e2e/run-history/team-run-history-graphql.e2e.test.ts`
+- Build:
+  - `pnpm -C autobyteus-server-ts run build:full`
+
+### Decision
+
+- `Pass with one structural follow-up`: behavior and parity gates are green; remaining architectural risk is Claude runtime service length (`~923` lines) still over the strict `<=500` guideline and should be addressed in a dedicated split round.

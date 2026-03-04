@@ -1,7 +1,7 @@
 # Implementation Plan
 
 - Ticket: `claude-agent-sdk-runtime-support`
-- Plan Version: `v4`
+- Plan Version: `v5`
 - Scope: `Large`
 - Stage Preconditions:
   - Stage 5 gate: `Go Confirmed`
@@ -84,6 +84,19 @@ Implement `claude_agent_sdk` runtime support and refactor shared runtime orchest
 - J4. Remove active Claude V1 `query()` turn execution path and keep V1 helpers only where still required for non-turn ancillary operations (or decommission when unused).
 - J5. Extend unit/integration/live tests to enforce V2-only behavior and deterministic error signaling when required V2 controls are unavailable.
 
+### Batch K: Claude V2 Workspace CWD Propagation Hardening
+
+- K1. Ensure V2 create/resume path applies the resolved run workspace cwd during session spawn and restores process cwd after session initialization.
+- K2. Serialize V2 session spawn critical section to prevent concurrent run cwd leakage.
+- K3. Add interop/service unit tests for cwd forwarding and restore behavior.
+
+### Batch L: Claude Auto-Approve Permission Policy Mapping
+
+- L1. Forward run-level `autoExecuteTools` through Claude adapter/service session options.
+- L2. Add Claude V2 interop permission-policy mapping (`autoExecuteTools=true` -> SDK `canUseTool` allow callback).
+- L3. Keep explicit runtime `approveTool` command unsupported for Claude while ensuring no prompt regression when auto-approve is enabled.
+- L4. Add unit tests for adapter forwarding and V2 session-option policy branches.
+
 ## Planned File Groups
 
 - Server core/runtime:
@@ -139,6 +152,7 @@ Implement `claude_agent_sdk` runtime support and refactor shared runtime orchest
 | R-016 | J | interop-boundary unit tests for available/unavailable V2 control capabilities |
 | R-017 | J | team-metadata turn-preamble assertions + live teammate-aware relay checks |
 | R-018 | K | Claude V2 interop unit tests for workspace cwd scoping and runtime-service forwarding assertions |
+| R-019 | L | Claude adapter + V2 interop unit tests for auto-approval mapping branches |
 
 ## Test Plan
 
@@ -168,3 +182,4 @@ Implement `claude_agent_sdk` runtime support and refactor shared runtime orchest
 9. Batch I (Claude inter-agent tooling parity and runtime-neutral relay completion).
 10. Batch J (Claude V2-only runtime migration and V1 turn-path retirement).
 11. Batch K (Claude V2 workspace cwd propagation hardening via interop-level scoped session creation).
+12. Batch L (Claude auto-approve permission policy mapping through V2 session options).

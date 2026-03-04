@@ -7,13 +7,13 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 ## Current Snapshot
 
 - Ticket: `claude-agent-sdk-runtime-support`
-- Current Stage: `6`
-- Next Stage: `Implement workspace cwd propagation hardening, then run Stage 7 API/E2E verification`
-- Code Edit Permission: `Unlocked`
-- Active Re-Entry: `Yes`
-- Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `Local Fix`
-- Last Transition ID: `T-070`
-- Last Updated: `2026-03-03`
+- Current Stage: `8`
+- Next Stage: `Stage 9 docs sync refresh, then Stage 10 handoff refresh`
+- Code Edit Permission: `Locked`
+- Active Re-Entry: `No`
+- Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
+- Last Transition ID: `T-073`
+- Last Updated: `2026-03-04`
 
 ## Stage Gates
 
@@ -25,9 +25,9 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | 3 Design Basis | Pass | Design basis updated for scope (`implementation-plan.md` sketch or `proposed-design.md`) | `tickets/in-progress/claude-agent-sdk-runtime-support/proposed-design.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
 | 4 Runtime Modeling | Pass | `future-state-runtime-call-stack.md` current | `tickets/in-progress/claude-agent-sdk-runtime-support/future-state-runtime-call-stack.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
 | 5 Review Gate | Pass | Runtime review `Go Confirmed` (two clean rounds, no blockers/persisted updates/new use cases) | `tickets/in-progress/claude-agent-sdk-runtime-support/future-state-runtime-call-stack-review.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
-| 6 Implementation | In Progress | Workspace cwd propagation hardening for Claude V2 session create/resume is being implemented with interop-level isolation | `tickets/in-progress/claude-agent-sdk-runtime-support/implementation-plan.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/implementation-progress.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
-| 7 API/E2E Testing | Not Started | Re-entry Stage 7 run pending workspace-cwd implementation completion | `tickets/in-progress/claude-agent-sdk-runtime-support/api-e2e-testing.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
-| 8 Code Review | Not Started | Re-entry Stage 8 review pending Stage 7 pass | `tickets/in-progress/claude-agent-sdk-runtime-support/code-review.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| 6 Implementation | Pass | Claude runtime prompt-wrapper naming cleanup and cross-runtime listener hub dedup completed with runtime unit coverage updates | `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-runtime-turn-preamble.ts`, `autobyteus-server-ts/src/runtime-execution/runtime-event-listener-hub.ts`, `autobyteus-server-ts/tests/unit/runtime-execution/claude-agent-sdk/claude-runtime-turn-preamble.test.ts`, `autobyteus-server-ts/tests/unit/runtime-execution/codex-app-server/codex-app-server-runtime-service.test.ts`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| 7 API/E2E Testing | Pass | Live Claude/Codex runtime + team + run-history suites rerun with auto-approve assertion hardened for runtime-equivalent event shapes | `autobyteus-server-ts/tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts`, `autobyteus-server-ts/tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts`, `autobyteus-server-ts/tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts`, `autobyteus-server-ts/tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts`, `autobyteus-server-ts/tests/e2e/run-history/team-run-history-graphql.e2e.test.ts`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| 8 Code Review | Pass | Re-review round recorded with naming/duplication/assertion findings closed and residual size risk explicitly tracked | `tickets/in-progress/claude-agent-sdk-runtime-support/code-review.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
 | 9 Docs Sync | Not Started | Re-entry docs sync pending Stage 8 pass | `tickets/in-progress/claude-agent-sdk-runtime-support/docs-sync.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
 | 10 Handoff / Ticket State | Not Started | Re-entry handoff pending Stage 9 completion | `tickets/in-progress/claude-agent-sdk-runtime-support/handoff-summary.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
 
@@ -84,10 +84,10 @@ Note:
 
 ## Re-Entry Declaration
 
-- Trigger Stage (`5`/`6`/`7`/`8`): `6 (handoff reopened by user-reported workspace defect)`
+- Trigger Stage (`5`/`6`/`7`/`8`): `7 (user-reported Claude auto-approve toggle not honored for write-permission flows)`
 - Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `Local Fix`
 - Required Return Path: `6 -> 7 -> 8 -> 9 -> 10`
-- Required Upstream Artifacts To Update Before Code Edits: `investigation-notes.md`, `requirements.md`, `implementation-plan.md`, `future-state-runtime-call-stack.md`, `future-state-runtime-call-stack-review.md`, `workflow-state.md`
+- Required Upstream Artifacts To Update Before Code Edits: `investigation-notes.md`, `requirements.md`, `implementation-plan.md`, `workflow-state.md`
 - Resume Condition: `Stage 6 in progress`
 
 Note:
@@ -169,6 +169,9 @@ Note:
 | T-068 | 2026-03-02 | 9 | 10 | Docs-sync and handoff artifacts refreshed after live Claude closure; ticket remains in-progress pending user completion confirmation | Local Fix | Locked | `tickets/in-progress/claude-agent-sdk-runtime-support/docs-sync.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/handoff-summary.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/implementation-progress.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
 | T-069 | 2026-03-02 | 10 | 10 | User-requested post-reset confidence rerun completed with live Codex+Claude matrix and full backend/frontend suites all passing | Local Fix | Locked | `tickets/in-progress/claude-agent-sdk-runtime-support/api-e2e-testing.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/implementation-progress.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/handoff-summary.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
 | T-070 | 2026-03-03 | 10 | 6 | User-reported workspace mismatch (`temp_workspace` selection not honored in Claude V2 run context) triggered investigation-first local-fix re-entry; upstream artifacts refreshed and Stage 6 unlocked for implementation | Local Fix | Unlocked | `tickets/in-progress/claude-agent-sdk-runtime-support/investigation-notes.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/requirements.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/implementation-plan.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/future-state-runtime-call-stack.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/future-state-runtime-call-stack-review.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| T-071 | 2026-03-03 | 6 | 6 | User-reported Claude write-permission prompt persisted despite auto-approve toggle; investigation and requirements/planning artifacts refreshed for local-fix permission-policy mapping | Local Fix | Unlocked | `tickets/in-progress/claude-agent-sdk-runtime-support/investigation-notes.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/requirements.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/implementation-plan.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| T-072 | 2026-03-04 | 6 | 7 | Implemented neutral Claude team-context tag naming, added dedicated preamble unit coverage, repaired Codex listener-continuity unit to assert public API behavior, and reran targeted runtime unit suites | Local Fix | Unlocked | `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-runtime-turn-preamble.ts`, `autobyteus-server-ts/tests/unit/runtime-execution/claude-agent-sdk/claude-runtime-turn-preamble.test.ts`, `autobyteus-server-ts/tests/unit/runtime-execution/codex-app-server/codex-app-server-runtime-service.test.ts`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
+| T-073 | 2026-03-04 | 7 | 8 | Reran live Claude/Codex runtime+team+run-history E2E gates and build verification to pass, then completed code-review re-round documentation with remaining service-size follow-up recorded | Local Fix | Locked | `autobyteus-server-ts/tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts`, `autobyteus-server-ts/tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts`, `autobyteus-server-ts/tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts`, `autobyteus-server-ts/tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts`, `autobyteus-server-ts/tests/e2e/run-history/team-run-history-graphql.e2e.test.ts`, `autobyteus-server-ts/tsconfig.build.json`, `tickets/in-progress/claude-agent-sdk-runtime-support/code-review.md`, `tickets/in-progress/claude-agent-sdk-runtime-support/workflow-state.md` |
 
 ## Audible Notification Log (Optional Tracking)
 
@@ -204,6 +207,7 @@ Note:
 | 2026-03-02 | Transition | Quota block cleared: Stage 7 live Claude gate passed (`13/13`), Stage 8 and Stage 9 closed, and workflow returned to Stage 10 with code edits locked pending user completion confirmation. | Success | N/A |
 | 2026-03-02 | Transition | Stage 10 verification refresh completed with live Codex+Claude matrix plus full backend/frontend reruns all passing; ticket remains in-progress awaiting user completion confirmation. | Success | N/A |
 | 2026-03-03 | Transition | Re-entry reopened from Stage 10 to Stage 6 for Claude V2 workspace-cwd propagation hardening; investigation/design/runtime-review artifacts were refreshed and code edits unlocked for implementation. | Pending | N/A |
+| 2026-03-03 | Transition | Stage 6 local-fix scope updated for Claude auto-approve permission-policy mapping with code edits remaining unlocked and Stage 7 verification pending implementation. | Pending | N/A |
 
 ## Process Violation Log
 

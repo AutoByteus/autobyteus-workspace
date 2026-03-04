@@ -48,6 +48,9 @@ describe("ClaudeAgentSdkRuntimeAdapter", () => {
     });
     expect((runtimeService.resolveWorkingDirectory as any).mock.calls[0][0]).toBe("workspace-1");
     expect((runtimeService.createRunSession as any).mock.calls[0][0]).toBe(result.runId);
+    expect((runtimeService.createRunSession as any).mock.calls[0][1]).toMatchObject({
+      autoExecuteTools: false,
+    });
   });
 
   it("restores run sessions from persisted runtime reference", async () => {
@@ -83,6 +86,9 @@ describe("ClaudeAgentSdkRuntimeAdapter", () => {
     expect((runtimeService.restoreRunSession as any).mock.calls[0][2]).toEqual({
       sessionId: "persisted-session",
       metadata: { previous: true },
+    });
+    expect((runtimeService.restoreRunSession as any).mock.calls[0][1]).toMatchObject({
+      autoExecuteTools: true,
     });
   });
 
@@ -141,17 +147,18 @@ describe("ClaudeAgentSdkRuntimeAdapter", () => {
     expect((runtimeService.injectInterAgentEnvelope as any).mock.calls[0][0]).toBe("run-1");
   });
 
-  it("maps tool approval errors to TOOL_APPROVAL_UNSUPPORTED", async () => {
+  it("maps tool approval errors to deterministic command failure payload", async () => {
     const adapter = new ClaudeAgentSdkRuntimeAdapter(buildRuntimeService());
     const result = await adapter.approveTool({
       runId: "run-1",
       mode: "agent",
       invocationId: "tool-1",
       approved: true,
+      reason: "unit-test",
     });
 
     expect(result.accepted).toBe(false);
-    expect(result.code).toBe("TOOL_APPROVAL_UNSUPPORTED");
+    expect(result.code).toBe("CLAUDE_RUNTIME_COMMAND_FAILED");
     expect(result.message).toContain("unsupported approval");
   });
 });

@@ -202,6 +202,9 @@ const baseConfig = {
 
   ...(!isTest ? {
     hooks: {
+      'build:before': () => {
+        ensureClientPrecomputedFile(join(process.cwd(), '.nuxt', 'dist', 'server'))
+      },
       'nitro:init': (nitro: any) => {
         const outputDir = resolve(nitro.options.output.dir)
         ensureClientPrecomputedFile(join(outputDir, 'server'))

@@ -9,6 +9,30 @@ const SEND_MESSAGE_TO_ALLOWED_TOOLS = [
   "mcp__autobyteus_team__send_message_to",
 ] as const;
 
+type ClaudePermissionDecision = { behavior: "allow" };
+
+type ClaudeCanUseToolOptions = {
+  toolUseID?: string;
+};
+
+type ClaudeCanUseTool = (
+  toolName: string,
+  input: Record<string, unknown>,
+  options: ClaudeCanUseToolOptions,
+) => Promise<Record<string, unknown>>;
+
+const allowToolUseWithoutPrompt: ClaudeCanUseTool = async (
+  _toolName,
+  input,
+  options,
+): Promise<ClaudePermissionDecision & { updatedInput: Record<string, unknown>; toolUseID?: string }> => ({
+  behavior: "allow",
+  updatedInput: input,
+  ...(typeof options.toolUseID === "string" && options.toolUseID.length > 0
+    ? { toolUseID: options.toolUseID }
+    : {}),
+});
+
 export type ClaudeV2SessionLike = {
   send: (message: string | Record<string, unknown>) => Promise<void>;
   stream: () => AsyncIterable<unknown>;
@@ -95,8 +119,11 @@ export const createOrResumeClaudeV2Session = async (options: {
   model: string;
   pathToClaudeCodeExecutable: string;
   workingDirectory: string | null;
+  env?: Record<string, string | undefined>;
   resumeSessionId: string | null;
   enableSendMessageToTooling: boolean;
+  autoExecuteTools?: boolean;
+  canUseTool?: ClaudeCanUseTool;
 }): Promise<ClaudeV2SessionLike> => {
   const createFn = resolveSdkFunction(options.sdk, "unstable_v2_createSession");
   const resumeFn = resolveSdkFunction(options.sdk, "unstable_v2_resumeSession");
@@ -109,9 +136,15 @@ export const createOrResumeClaudeV2Session = async (options: {
     pathToClaudeCodeExecutable: options.pathToClaudeCodeExecutable,
     permissionMode: "default",
     ...(options.workingDirectory ? { cwd: options.workingDirectory } : {}),
+    ...(options.env ? { env: options.env } : {}),
     ...(options.enableSendMessageToTooling
       ? { allowedTools: [...SEND_MESSAGE_TO_ALLOWED_TOOLS] }
       : {}),
+    ...(options.canUseTool
+      ? { canUseTool: options.canUseTool }
+      : options.autoExecuteTools
+        ? { canUseTool: allowToolUseWithoutPrompt }
+        : {}),
   };
 
   const rawSession = await runInV2SessionSpawnCriticalSection(async () =>

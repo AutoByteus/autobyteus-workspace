@@ -10,6 +10,17 @@ import {
 import { resolveSdkFunction, tryCallWithVariants } from "./claude-runtime-sdk-interop.js";
 import { z } from "zod";
 
+export type ClaudeSendMessageToolApprovalDecision = {
+  approved: boolean;
+  reason: string | null;
+};
+
+export type ClaudeSendMessageToolApprovalHandler = (input: {
+  invocationId: string;
+  toolName: string;
+  toolArguments: Record<string, unknown>;
+}) => Promise<ClaudeSendMessageToolApprovalDecision>;
+
 const emitSendMessageToolStart = (options: {
   state: ClaudeRunSessionState;
   emitEvent: (state: ClaudeRunSessionState, event: ClaudeRuntimeEvent) => void;
@@ -40,6 +51,27 @@ const emitSendMessageToolCompleted = (options: {
   result: ClaudeInterAgentRelayResult;
 }): void => {
   options.emitEvent(options.state, {
+    method: "item/commandExecution/completed",
+    params: {
+      invocation_id: options.invocationId,
+      tool_name: "send_message_to",
+      ...(options.result.accepted
+        ? {
+            result: {
+              accepted: true,
+              code: options.result.code ?? null,
+              message: options.result.message ?? null,
+            },
+          }
+        : {
+            error:
+              options.result.message ??
+              "Failed delivering message to teammate.",
+          }),
+    },
+  });
+
+  options.emitEvent(options.state, {
     method: "item/completed",
     params: {
       id: options.invocationId,
@@ -62,6 +94,8 @@ const handleSendMessageToToolInvocation = async (options: {
   state: ClaudeRunSessionState;
   rawArguments: unknown;
   interAgentRelayHandler: ClaudeInterAgentRelayHandler | null;
+  autoExecuteTools: boolean;
+  requestToolApproval: ClaudeSendMessageToolApprovalHandler | null;
   emitEvent: (state: ClaudeRunSessionState, event: ClaudeRuntimeEvent) => void;
 }): Promise<Record<string, unknown>> => {
   const args = asObject(options.rawArguments) ?? {};
@@ -143,6 +177,53 @@ const handleSendMessageToToolInvocation = async (options: {
     };
   }
 
+  if (!options.autoExecuteTools) {
+    if (!options.requestToolApproval) {
+      const result = {
+        accepted: false,
+        code: "TOOL_APPROVAL_UNAVAILABLE",
+        message:
+          "send_message_to approval handler is unavailable for this runtime session.",
+      };
+      emitSendMessageToolCompleted({
+        state: options.state,
+        emitEvent: options.emitEvent,
+        invocationId,
+        toolArguments: normalizedArguments,
+        result,
+      });
+      return {
+        content: [{ type: "text", text: result.message }],
+        isError: true,
+      };
+    }
+
+    const decision = await options.requestToolApproval({
+      invocationId,
+      toolName: "send_message_to",
+      toolArguments: normalizedArguments,
+    });
+    if (!decision.approved) {
+      const denialMessage = decision.reason ?? "send_message_to was denied by user.";
+      const result = {
+        accepted: false,
+        code: "TOOL_EXECUTION_DENIED",
+        message: denialMessage,
+      };
+      emitSendMessageToolCompleted({
+        state: options.state,
+        emitEvent: options.emitEvent,
+        invocationId,
+        toolArguments: normalizedArguments,
+        result,
+      });
+      return {
+        content: [{ type: "text", text: denialMessage }],
+        isError: true,
+      };
+    }
+  }
+
   const relayResult = await options.interAgentRelayHandler({
     senderRunId: options.state.runId,
     senderMemberName: options.state.memberName,
@@ -183,6 +264,8 @@ export const buildClaudeTeamMcpServers = async (options: {
   state: ClaudeRunSessionState;
   sdk: ClaudeSdkModuleLike | null;
   interAgentRelayHandler: ClaudeInterAgentRelayHandler | null;
+  autoExecuteTools: boolean;
+  requestToolApproval: ClaudeSendMessageToolApprovalHandler | null;
   emitEvent: (state: ClaudeRunSessionState, event: ClaudeRuntimeEvent) => void;
 }): Promise<Record<string, unknown> | null> => {
   if (
@@ -217,6 +300,8 @@ export const buildClaudeTeamMcpServers = async (options: {
       state: options.state,
       rawArguments: args,
       interAgentRelayHandler: options.interAgentRelayHandler,
+      autoExecuteTools: options.autoExecuteTools,
+      requestToolApproval: options.requestToolApproval,
       emitEvent: options.emitEvent,
     });
 

@@ -303,7 +303,7 @@ Rules:
               memberName: "ping",
               agentDefinitionId: pingAgentDefinitionId,
               llmModelIdentifier: modelIdentifier,
-              autoExecuteTools: true,
+              autoExecuteTools: false,
               runtimeKind: "claude_agent_sdk",
               workspaceRootPath,
             },
@@ -311,7 +311,7 @@ Rules:
               memberName: "pong",
               agentDefinitionId: pongAgentDefinitionId,
               llmModelIdentifier: modelIdentifier,
-              autoExecuteTools: true,
+              autoExecuteTools: false,
               runtimeKind: "claude_agent_sdk",
               workspaceRootPath,
             },
@@ -333,6 +333,7 @@ Rules:
       await waitForSocketOpen(teamSocket);
 
       const streamMessages: Array<{ type: string; payload: Record<string, unknown> }> = [];
+      const approvedInvocationIds = new Set<string>();
       teamSocket.on("message", (raw) => {
         try {
           const parsed = JSON.parse(String(raw)) as {
@@ -350,6 +351,28 @@ Rules:
             type: parsed.type,
             payload,
           });
+
+          if (
+            parsed.type === "TOOL_APPROVAL_REQUESTED" &&
+            typeof payload.invocation_id === "string" &&
+            payload.invocation_id.length > 0
+          ) {
+            if (!approvedInvocationIds.has(payload.invocation_id)) {
+              approvedInvocationIds.add(payload.invocation_id);
+              teamSocket.send(
+                JSON.stringify({
+                  type: "APPROVE_TOOL",
+                  payload: {
+                    invocation_id: payload.invocation_id,
+                    ...(typeof payload.agent_name === "string" && payload.agent_name.length > 0
+                      ? { agent_name: payload.agent_name }
+                      : {}),
+                    reason: "claude-team-send-message-approval-e2e",
+                  },
+                }),
+              );
+            }
+          }
         } catch {
           // ignore malformed rows in stream capture
         }
@@ -417,6 +440,22 @@ Rules:
       }): Promise<void> => {
         await waitForTeamStreamEvent(
           (message) =>
+            message.type === "TOOL_APPROVAL_REQUESTED" &&
+            message.payload.agent_name === input.senderMemberName &&
+            message.payload.tool_name === "send_message_to",
+          `${input.senderMemberName} TOOL_APPROVAL_REQUESTED`,
+        );
+
+        await waitForTeamStreamEvent(
+          (message) =>
+            message.type === "TOOL_APPROVED" &&
+            message.payload.agent_name === input.senderMemberName &&
+            message.payload.tool_name === "send_message_to",
+          `${input.senderMemberName} TOOL_APPROVED`,
+        );
+
+        await waitForTeamStreamEvent(
+          (message) =>
             message.type === "SEGMENT_START" &&
             message.payload.agent_name === input.senderMemberName &&
             message.payload.segment_type === "tool_call" &&
@@ -442,6 +481,30 @@ Rules:
             message.payload.content === input.content,
           `${input.recipientMemberName} INTER_AGENT_MESSAGE`,
         );
+
+        await waitForTeamStreamEvent(
+          (message) =>
+            message.type === "TOOL_EXECUTION_SUCCEEDED" &&
+            message.payload.agent_name === input.senderMemberName &&
+            message.payload.tool_name === "send_message_to",
+          `${input.senderMemberName} send_message_to TOOL_EXECUTION_SUCCEEDED`,
+        );
+
+        const hasUnknownToolSuccess = streamMessages.some(
+          (message) =>
+            message.type === "TOOL_EXECUTION_SUCCEEDED" &&
+            message.payload.agent_name === input.senderMemberName &&
+            message.payload.tool_name === "unknown_tool",
+        );
+        expect(hasUnknownToolSuccess).toBe(false);
+
+        const hasMcpPrefixedSuccess = streamMessages.some(
+          (message) =>
+            message.type === "TOOL_EXECUTION_SUCCEEDED" &&
+            message.payload.agent_name === input.senderMemberName &&
+            message.payload.tool_name === "mcp__autobyteus_team__send_message_to",
+        );
+        expect(hasMcpPrefixedSuccess).toBe(false);
       };
 
       const pingToken = `ROUNDTRIP_PING:${unique}`;
@@ -471,6 +534,293 @@ Rules:
           recipientMemberName: "ping",
           content: `PONG-TO-PING ${pongToken}`,
         });
+      } finally {
+        teamSocket.close();
+        await streamApp.close();
+      }
+    },
+    180_000,
+  );
+
+  it(
+    "auto-approves send_message_to in Claude team runtime when autoExecuteTools is enabled",
+    async () => {
+      const unique = randomUUID();
+      const modelIdentifier = await fetchClaudeModelIdentifier();
+      const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "claude-team-auto-approve-e2e-"));
+      createdWorkspaceRoots.add(workspaceRootPath);
+
+      const createPromptMutation = `
+        mutation CreatePrompt($input: CreatePromptInput!) {
+          createPrompt(input: $input) {
+            id
+          }
+        }
+      `;
+      const promptName = `claude_team_auto_approve_prompt_${unique}`;
+      const promptCategory = `claude_team_auto_approve_category_${unique}`;
+      const promptContent = `
+You are participating in a two-agent team validation in a team with members "ping" and "pong".
+
+Rules:
+1. Follow direct user instructions exactly.
+2. You must not explore the environment or run diagnostics.
+3. The only tool you may execute is send_message_to.
+4. If the user asks you to call send_message_to with explicit arguments, call send_message_to exactly once with those exact arguments and do not call any other tool.
+5. Keep assistant text responses very short.
+`;
+
+      const promptResult = await execGraphql<{ createPrompt: { id: string } }>(createPromptMutation, {
+        input: {
+          name: promptName,
+          category: promptCategory,
+          promptContent,
+        },
+      });
+      createdPromptIds.add(promptResult.createPrompt.id);
+
+      const createAgentDefinitionMutation = `
+        mutation CreateAgentDefinition($input: CreateAgentDefinitionInput!) {
+          createAgentDefinition(input: $input) {
+            id
+          }
+        }
+      `;
+      const pingDefResult = await execGraphql<{ createAgentDefinition: { id: string } }>(
+        createAgentDefinitionMutation,
+        {
+          input: {
+            name: `claude-auto-approve-ping-${unique}`,
+            role: "assistant",
+            description: "Claude ping agent for auto-approve validation.",
+            systemPromptCategory: promptCategory,
+            systemPromptName: promptName,
+          },
+        },
+      );
+      const pongDefResult = await execGraphql<{ createAgentDefinition: { id: string } }>(
+        createAgentDefinitionMutation,
+        {
+          input: {
+            name: `claude-auto-approve-pong-${unique}`,
+            role: "assistant",
+            description: "Claude pong agent for auto-approve validation.",
+            systemPromptCategory: promptCategory,
+            systemPromptName: promptName,
+          },
+        },
+      );
+      const pingAgentDefinitionId = pingDefResult.createAgentDefinition.id;
+      const pongAgentDefinitionId = pongDefResult.createAgentDefinition.id;
+      createdAgentDefinitionIds.add(pingAgentDefinitionId);
+      createdAgentDefinitionIds.add(pongAgentDefinitionId);
+
+      const createTeamDefinitionMutation = `
+        mutation CreateAgentTeamDefinition($input: CreateAgentTeamDefinitionInput!) {
+          createAgentTeamDefinition(input: $input) {
+            id
+          }
+        }
+      `;
+      const teamDefResult = await execGraphql<{ createAgentTeamDefinition: { id: string } }>(
+        createTeamDefinitionMutation,
+        {
+          input: {
+            name: `claude-auto-approve-team-${unique}`,
+            description: "Live Claude inter-agent auto-approve validation team.",
+            coordinatorMemberName: "ping",
+            nodes: [
+              {
+                memberName: "ping",
+                referenceId: pingAgentDefinitionId,
+                referenceType: "AGENT",
+              },
+              {
+                memberName: "pong",
+                referenceId: pongAgentDefinitionId,
+                referenceType: "AGENT",
+              },
+            ],
+          },
+        },
+      );
+      const teamDefinitionId = teamDefResult.createAgentTeamDefinition.id;
+      createdTeamDefinitionIds.add(teamDefinitionId);
+
+      const createTeamRunMutation = `
+        mutation CreateAgentTeamRun($input: CreateAgentTeamRunInput!) {
+          createAgentTeamRun(input: $input) {
+            success
+            message
+            teamRunId
+          }
+        }
+      `;
+      const createTeamRunResult = await execGraphql<{
+        createAgentTeamRun: { success: boolean; message: string; teamRunId: string | null };
+      }>(createTeamRunMutation, {
+        input: {
+          teamDefinitionId,
+          memberConfigs: [
+            {
+              memberName: "ping",
+              agentDefinitionId: pingAgentDefinitionId,
+              llmModelIdentifier: modelIdentifier,
+              autoExecuteTools: true,
+              runtimeKind: "claude_agent_sdk",
+              workspaceRootPath,
+            },
+            {
+              memberName: "pong",
+              agentDefinitionId: pongAgentDefinitionId,
+              llmModelIdentifier: modelIdentifier,
+              autoExecuteTools: true,
+              runtimeKind: "claude_agent_sdk",
+              workspaceRootPath,
+            },
+          ],
+        },
+      });
+
+      expect(createTeamRunResult.createAgentTeamRun.success).toBe(true);
+      expect(createTeamRunResult.createAgentTeamRun.teamRunId).toBeTruthy();
+      const teamRunId = createTeamRunResult.createAgentTeamRun.teamRunId as string;
+      createdTeamRunIds.add(teamRunId);
+
+      const streamApp = fastify();
+      await streamApp.register(websocket);
+      await registerAgentWebsocket(streamApp);
+      const streamAddress = await streamApp.listen({ port: 0, host: "127.0.0.1" });
+      const streamUrl = new URL(streamAddress);
+      const teamSocket = new WebSocket(`ws://${streamUrl.hostname}:${streamUrl.port}/ws/agent-team/${teamRunId}`);
+      await waitForSocketOpen(teamSocket);
+
+      const streamMessages: Array<{ type: string; payload: Record<string, unknown> }> = [];
+      teamSocket.on("message", (raw) => {
+        try {
+          const parsed = JSON.parse(String(raw)) as {
+            type?: unknown;
+            payload?: unknown;
+          };
+          if (typeof parsed.type !== "string") {
+            return;
+          }
+          const payload =
+            parsed.payload && typeof parsed.payload === "object" && !Array.isArray(parsed.payload)
+              ? (parsed.payload as Record<string, unknown>)
+              : {};
+          streamMessages.push({
+            type: parsed.type,
+            payload,
+          });
+        } catch {
+          // ignore malformed rows in stream capture
+        }
+      });
+
+      const sendMessageToTeamMutation = `
+        mutation SendMessageToTeam($input: SendMessageToTeamInput!) {
+          sendMessageToTeam(input: $input) {
+            success
+            message
+            teamRunId
+          }
+        }
+      `;
+      const token = `AUTO_APPROVE_SEND_MESSAGE_TO:${unique}`;
+      const argsJson = JSON.stringify({
+        recipient_name: "pong",
+        content: token,
+        message_type: "auto_approve_roundtrip",
+      });
+
+      const waitForTeamStreamEvent = async (
+        predicate: (message: { type: string; payload: Record<string, unknown> }) => boolean,
+        label: string,
+      ): Promise<void> => {
+        const deadline = Date.now() + 120_000;
+        while (Date.now() < deadline) {
+          if (streamMessages.some(predicate)) {
+            return;
+          }
+          await wait(500);
+        }
+        const preview = streamMessages
+          .slice(-20)
+          .map((entry) => `${entry.type}:${JSON.stringify(entry.payload).slice(0, 200)}`)
+          .join(" | ");
+        throw new Error(`Timed out waiting for team websocket event '${label}'. preview='${preview}'`);
+      };
+
+      try {
+        const sendResult = await execGraphql<{
+          sendMessageToTeam: { success: boolean; message: string; teamRunId: string | null };
+        }>(sendMessageToTeamMutation, {
+          input: {
+            teamRunId,
+            targetMemberName: "ping",
+            userInput: {
+              content:
+                "Call send_message_to exactly once now with these exact JSON arguments: " +
+                `${argsJson}. Do not call any other tool.`,
+              contextFiles: [],
+            },
+          },
+        });
+        expect(sendResult.sendMessageToTeam.success).toBe(true);
+
+        await waitForTeamStreamEvent(
+          (message) =>
+            message.type === "SEGMENT_START" &&
+            message.payload.agent_name === "ping" &&
+            message.payload.segment_type === "tool_call" &&
+            (message.payload.metadata as Record<string, unknown> | undefined)?.tool_name ===
+              "send_message_to",
+          "ping send_message_to SEGMENT_START",
+        );
+
+        await waitForTeamStreamEvent(
+          (message) =>
+            message.type === "INTER_AGENT_MESSAGE" &&
+            message.payload.agent_name === "pong" &&
+            message.payload.sender_agent_name === "ping" &&
+            message.payload.content === token,
+          "pong INTER_AGENT_MESSAGE",
+        );
+
+        await wait(1_000);
+
+        const hasCanonicalSendMessageSuccess = streamMessages.some(
+          (message) =>
+            message.type === "TOOL_EXECUTION_SUCCEEDED" &&
+            message.payload.agent_name === "ping" &&
+            message.payload.tool_name === "send_message_to",
+        );
+        expect(hasCanonicalSendMessageSuccess).toBe(true);
+
+        const hasApprovalRequest = streamMessages.some(
+          (message) =>
+            message.type === "TOOL_APPROVAL_REQUESTED" &&
+            message.payload.agent_name === "ping" &&
+            message.payload.tool_name === "send_message_to",
+        );
+        expect(hasApprovalRequest).toBe(false);
+
+        const hasUnknownToolSuccess = streamMessages.some(
+          (message) =>
+            message.type === "TOOL_EXECUTION_SUCCEEDED" &&
+            message.payload.agent_name === "ping" &&
+            message.payload.tool_name === "unknown_tool",
+        );
+        expect(hasUnknownToolSuccess).toBe(false);
+
+        const hasMcpPrefixedSuccess = streamMessages.some(
+          (message) =>
+            message.type === "TOOL_EXECUTION_SUCCEEDED" &&
+            message.payload.agent_name === "ping" &&
+            message.payload.tool_name === "mcp__autobyteus_team__send_message_to",
+        );
+        expect(hasMcpPrefixedSuccess).toBe(false);
       } finally {
         teamSocket.close();
         await streamApp.close();
