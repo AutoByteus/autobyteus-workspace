@@ -43,7 +43,7 @@ export class McpConfigService {
   }
 
   async loadAllAndRegister(): Promise<void> {
-    logger.info("Loading and registering all MCP server configurations from database...");
+    logger.info("Loading and registering all MCP server configurations from file...");
     try {
       const allDbConfigs = await this.provider.getAll();
       logger.info(`Found ${allDbConfigs.length} total MCP server configs.`);

@@ -12,11 +12,11 @@ export type AgentPromptMappingProviderLoader = () => Promise<AgentPromptMappingP
 const importRuntimeModule = async <T>(modulePath: string): Promise<T> =>
   (await import(modulePath)) as T;
 
-const loadSqlAgentPromptMappingProvider = async (): Promise<AgentPromptMappingPersistenceProviderContract> => {
+const loadFileAgentPromptMappingProvider = async (): Promise<AgentPromptMappingPersistenceProviderContract> => {
   const module = await importRuntimeModule<{
-    SqlAgentPromptMappingProvider: new () => AgentPromptMappingPersistenceProviderContract;
-  }>(["./", "sql-agent-prompt-mapping-provider.js"].join(""));
-  return new module.SqlAgentPromptMappingProvider();
+    FileAgentPromptMappingProvider: new () => AgentPromptMappingPersistenceProviderContract;
+  }>(["./", "file-agent-prompt-mapping-provider.js"].join(""));
+  return new module.FileAgentPromptMappingProvider();
 };
 
 export class AgentPromptMappingPersistenceProviderRegistry {
@@ -33,12 +33,11 @@ export class AgentPromptMappingPersistenceProviderRegistry {
   private loaders = new Map<string, AgentPromptMappingProviderLoader>();
 
   private constructor() {
-    this.registerProviderLoader("sqlite", loadSqlAgentPromptMappingProvider);
-    this.registerProviderLoader("postgresql", loadSqlAgentPromptMappingProvider);
-    this.registerProviderLoader("file", async () => {
-      const { FileAgentPromptMappingProvider } = await import("./file-agent-prompt-mapping-provider.js");
-      return new FileAgentPromptMappingProvider();
-    });
+    // File-based persistence is canonical for agent prompt mappings.
+    // Keep non-file profile aliases for compatibility while avoiding SQL paths.
+    this.registerProviderLoader("sqlite", loadFileAgentPromptMappingProvider);
+    this.registerProviderLoader("postgresql", loadFileAgentPromptMappingProvider);
+    this.registerProviderLoader("file", loadFileAgentPromptMappingProvider);
   }
 
   registerProviderLoader(name: string, loader: AgentPromptMappingProviderLoader): void {

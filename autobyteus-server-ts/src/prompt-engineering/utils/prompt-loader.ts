@@ -1,6 +1,9 @@
+import { promises as fs } from "node:fs";
+import path from "node:path";
 import { Prompt } from "../domain/models.js";
 import { PromptService } from "../services/prompt-service.js";
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
+import { appConfigProvider } from "../../config/app-config-provider.js";
 import { LLMFactory } from "autobyteus-ts";
 
 const logger = {
@@ -64,31 +67,33 @@ export class PromptLoader {
 
     const agentDef =
       await this.agentDefinitionService.getAgentDefinitionById(agentDefinitionId);
-    if (!agentDef || !agentDef.systemPromptName || !agentDef.systemPromptCategory) {
-      logger.warn(`No prompt mapping found for agent_definition_id='${agentDefinitionId}'`);
+    if (!agentDef) {
+      logger.warn(`No agent definition found for id='${agentDefinitionId}'`);
       this.cache.set(cacheKey, null);
       return null;
     }
 
-    const activePrompts = await this.promptService.getActivePromptsByContext(
-      agentDef.systemPromptName,
-      agentDef.systemPromptCategory,
+    const activePromptVersion = Number.isInteger(agentDef.activePromptVersion)
+      && agentDef.activePromptVersion > 0
+      ? agentDef.activePromptVersion
+      : 1;
+    const promptPath = path.join(
+      appConfigProvider.config.getAppDataDir(),
+      "agents",
+      agentDefinitionId,
+      `prompt-v${activePromptVersion}.md`,
     );
-
-    if (!activePrompts.length) {
+    try {
+      const content = await fs.readFile(promptPath, "utf-8");
+      this.cache.set(cacheKey, content);
+      return content;
+    } catch {
       logger.warn(
-        `No active prompts found for agent_definition_id='${agentDefinitionId}' in context (name=${agentDef.systemPromptName}, category=${agentDef.systemPromptCategory})`,
+        `Prompt file not found for agent_definition_id='${agentDefinitionId}', version=${activePromptVersion}`,
       );
       this.cache.set(cacheKey, null);
       return null;
     }
-
-    const resultContent = await this.findBestPromptForModel(
-      activePrompts,
-      modelIdentifier,
-    );
-    this.cache.set(cacheKey, resultContent ?? null);
-    return resultContent;
   }
 
   private async findBestPromptForModel(

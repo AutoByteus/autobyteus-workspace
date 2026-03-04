@@ -4,6 +4,7 @@ export class AgentDefinition {
   role: string;
   description: string;
   avatarUrl?: string | null;
+  activePromptVersion: number;
   toolNames: string[];
   inputProcessorNames: string[];
   llmResponseProcessorNames: string[];
@@ -21,6 +22,7 @@ export class AgentDefinition {
     description: string;
     avatarUrl?: string | null;
     id?: string | null;
+    activePromptVersion?: number;
     toolNames?: string[];
     inputProcessorNames?: string[];
     llmResponseProcessorNames?: string[];
@@ -37,6 +39,7 @@ export class AgentDefinition {
     this.description = options.description;
     this.avatarUrl = options.avatarUrl ?? null;
     this.id = options.id ?? null;
+    this.activePromptVersion = options.activePromptVersion ?? 1;
     this.toolNames = options.toolNames ?? [];
     this.inputProcessorNames = options.inputProcessorNames ?? [];
     this.llmResponseProcessorNames = options.llmResponseProcessorNames ?? [];

@@ -16,6 +16,7 @@ import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { CompleteResponse } from '../../../../src/llm/utils/response-types.js';
 import { ToolSchemaProvider } from '../../../../src/tools/usage/providers/tool-schema-provider.js';
 import type { ChunkResponse as ChunkResponseType } from '../../../../src/llm/utils/response-types.js';
+import { MessageRole, ToolCallPayload } from '../../../../src/llm/utils/messages.js';
 import { MemoryManager } from '../../../../src/memory/memory-manager.js';
 import { MemoryStore } from '../../../../src/memory/store/base-store.js';
 import { MemoryType } from '../../../../src/memory/models/memory-types.js';
@@ -255,5 +256,37 @@ describe('LLMUserMessageReadyEventHandler', () => {
     expect(completionEvent.isError).toBe(true);
     expect(typeof completionEvent.turnId).toBe('string');
     expect(completionEvent.turnId).not.toBeNull();
+  });
+
+  it('does not append assistant text to working context when tool calls are emitted', async () => {
+    process.env.AUTOBYTEUS_STREAM_PARSER = 'api_tool_call';
+    const handler = new LLMUserMessageReadyEventHandler();
+    const { context, inputQueues } = makeContext(LLMProvider.DEEPSEEK, ['search']);
+
+    const mockLLM = {
+      model: { provider: LLMProvider.DEEPSEEK },
+      config: { systemMessage: 'system' },
+      streamMessages: async function* () {
+        yield new ChunkResponse({
+          content: 'I will call a tool now.',
+          tool_calls: [
+            { index: 0, call_id: 'call_1', name: 'search', arguments_delta: '{"query":"autobyteus"}' }
+          ]
+        });
+        yield new ChunkResponse({ content: '', is_complete: true });
+      }
+    };
+    context.state.llmInstance = mockLLM as any;
+
+    const event = new LLMUserMessageReadyEvent(new LLMUserMessage({ content: 'prompt' }));
+    await handler.handle(event, context);
+
+    expect(inputQueues.enqueueToolInvocationRequest).toHaveBeenCalledOnce();
+
+    const messages = context.state.memoryManager?.getWorkingContextMessages() ?? [];
+    const assistantMessages = messages.filter((message) => message.role === MessageRole.ASSISTANT);
+    expect(assistantMessages).toHaveLength(1);
+    expect(assistantMessages[0].content).toBeNull();
+    expect(assistantMessages[0].tool_payload).toBeInstanceOf(ToolCallPayload);
   });
 });

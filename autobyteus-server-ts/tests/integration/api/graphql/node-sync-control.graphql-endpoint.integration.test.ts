@@ -75,7 +75,7 @@ async function startFakeNode(options: FakeNodeOptions = {}): Promise<FakeNodeSer
                 options.exportBundle ??
                 {
                   watermark: "wm-endpoint",
-                  entities: { prompt: [] },
+                  entities: { agent_definition: [] },
                   tombstones: {},
                 },
             },
@@ -188,7 +188,7 @@ describe("GraphQL /graphql endpoint integration: runNodeSync", () => {
     const sourceNode = await startFakeNode({
       exportBundle: {
         watermark: "wm-endpoint-success",
-        entities: { prompt: [] },
+        entities: { agent_definition: [] },
         tombstones: {},
       },
     });
@@ -204,7 +204,7 @@ describe("GraphQL /graphql endpoint integration: runNodeSync", () => {
           input: {
             source: { nodeId: "source", baseUrl: sourceNode.baseUrl },
             targets: [{ nodeId: "target", baseUrl: targetNode.baseUrl }],
-            scope: ["PROMPT"],
+            scope: ["AGENT_DEFINITION"],
             conflictPolicy: "SOURCE_WINS",
             tombstonePolicy: "SOURCE_DELETE_WINS",
           },
@@ -221,10 +221,10 @@ describe("GraphQL /graphql endpoint integration: runNodeSync", () => {
         sourceNodeId: "source",
         report: {
           sourceNodeId: "source",
-          scope: ["PROMPT"],
+          scope: ["AGENT_DEFINITION"],
           exportByEntity: [
             {
-              entityType: "PROMPT",
+              entityType: "AGENT_DEFINITION",
               exportedCount: 0,
             },
           ],
@@ -243,10 +243,10 @@ describe("GraphQL /graphql endpoint integration: runNodeSync", () => {
     expect(sourceNode.state.exportCalls).toHaveLength(1);
     expect(targetNode.state.importCalls).toHaveLength(1);
     expect(sourceNode.state.exportCalls[0]).toMatchObject({
-      scope: ["PROMPT"],
+      scope: ["AGENT_DEFINITION"],
     });
     expect(targetNode.state.importCalls[0]).toMatchObject({
-      scope: ["PROMPT"],
+      scope: ["AGENT_DEFINITION"],
       conflictPolicy: "SOURCE_WINS",
       tombstonePolicy: "SOURCE_DELETE_WINS",
     });
@@ -266,7 +266,7 @@ describe("GraphQL /graphql endpoint integration: runNodeSync", () => {
           input: {
             source: { nodeId: "source", baseUrl: sourceNode.baseUrl },
             targets: [{ nodeId: "target-bad", baseUrl: unhealthyTarget.baseUrl }],
-            scope: ["PROMPT"],
+            scope: ["AGENT_DEFINITION"],
             conflictPolicy: "SOURCE_WINS",
             tombstonePolicy: "SOURCE_DELETE_WINS",
           },

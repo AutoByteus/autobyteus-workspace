@@ -12,21 +12,6 @@ type LoaderSpec = {
 
 const loaderSpecs: LoaderSpec[] = [
   {
-    name: "Agent Management Tools",
-    modulePath: "../agent-tools/agent-management/register-agent-tools.js",
-    exportName: "registerAgentManagementTools",
-  },
-  {
-    name: "Agent Team Management Tools",
-    modulePath: "../agent-tools/agent-team-management/register-agent-team-tools.js",
-    exportName: "registerAgentTeamManagementTools",
-  },
-  {
-    name: "Prompt Engineering Tools",
-    modulePath: "../agent-tools/prompt-engineering/register-prompt-tools.js",
-    exportName: "registerPromptTools",
-  },
-  {
     name: "Tool Management Tools",
     modulePath: "../agent-tools/tool-management/register-tool-management-tools.js",
     exportName: "registerToolManagementTools",
@@ -35,11 +20,6 @@ const loaderSpecs: LoaderSpec[] = [
     name: "Skills Tools",
     modulePath: "../agent-tools/skills/register-skills-tools.js",
     exportName: "registerSkillsTools",
-  },
-  {
-    name: "MCP Server Management Tools",
-    modulePath: "../agent-tools/mcp-server-management/register-mcp-server-management-tools.js",
-    exportName: "registerMcpServerManagementTools",
   },
   {
     name: "Application Tools",

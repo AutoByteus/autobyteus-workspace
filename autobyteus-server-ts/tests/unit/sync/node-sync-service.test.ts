@@ -5,30 +5,6 @@ import { NodeSyncService } from '../../../src/sync/services/node-sync-service.js
 function buildService(options?: {
   mcpConfigs?: Array<Record<string, unknown>>;
 }) {
-  const promptService = {
-    findPrompts: vi.fn(async () => [
-      {
-        id: 'prompt-1',
-        name: 'Prompt One',
-        category: 'cat-a',
-        promptContent: 'Prompt A',
-        version: 1,
-        isActive: true,
-      },
-      {
-        id: 'prompt-2',
-        name: 'Prompt Two',
-        category: 'cat-b',
-        promptContent: 'Prompt B',
-        version: 1,
-        isActive: true,
-      },
-    ]),
-    createPrompt: vi.fn(),
-    markActivePrompt: vi.fn(),
-    updatePrompt: vi.fn(),
-  };
-
   const agentDefinitionService = {
     getAllAgentDefinitions: vi.fn(async () => [
       {
@@ -37,8 +13,7 @@ function buildService(options?: {
         role: 'Role One',
         description: 'Description One',
         avatarUrl: null,
-        systemPromptCategory: 'cat-a',
-        systemPromptName: 'Prompt One',
+        activePromptVersion: 1,
         toolNames: [],
         inputProcessorNames: [],
         llmResponseProcessorNames: [],
@@ -54,8 +29,7 @@ function buildService(options?: {
         role: 'Role Two',
         description: 'Description Two',
         avatarUrl: null,
-        systemPromptCategory: 'cat-b',
-        systemPromptName: 'Prompt Two',
+        activePromptVersion: 2,
         toolNames: [],
         inputProcessorNames: [],
         llmResponseProcessorNames: [],
@@ -111,7 +85,6 @@ function buildService(options?: {
   };
 
   const service = new NodeSyncService({
-    promptService,
     agentDefinitionService,
     agentTeamDefinitionService,
     mcpConfigService,
@@ -125,14 +98,12 @@ describe('NodeSyncService exportBundle', () => {
     const { service } = buildService();
     const bundle = await service.exportBundle({
       scope: [
-        'prompt',
         'agent_definition',
         'agent_team_definition',
         'mcp_server_configuration',
       ],
     });
 
-    expect((bundle.entities.prompt ?? []) as unknown[]).toHaveLength(2);
     expect((bundle.entities.agent_definition ?? []) as unknown[]).toHaveLength(2);
     expect((bundle.entities.agent_team_definition ?? []) as unknown[]).toHaveLength(1);
     expect((bundle.entities.mcp_server_configuration ?? []) as unknown[]).toHaveLength(1);
@@ -142,7 +113,6 @@ describe('NodeSyncService exportBundle', () => {
     const { service } = buildService();
     const bundle = await service.exportBundle({
       scope: [
-        'prompt',
         'agent_definition',
         'agent_team_definition',
         'mcp_server_configuration',
@@ -153,18 +123,27 @@ describe('NodeSyncService exportBundle', () => {
       },
     });
 
-    const promptEntities = (bundle.entities.prompt ?? []) as Array<{ name: string; category: string }>;
-    const agentEntities = (bundle.entities.agent_definition ?? []) as Array<{ name: string }>;
-    const teamEntities = (bundle.entities.agent_team_definition ?? []) as Array<{ name: string }>;
+    const agentEntities = (bundle.entities.agent_definition ?? []) as Array<{
+      agentId: string;
+      agent: { name: string };
+      promptVersions: Record<string, string>;
+    }>;
+    const teamEntities = (bundle.entities.agent_team_definition ?? []) as Array<{
+      teamId: string;
+      team: { name: string };
+    }>;
 
-    expect(promptEntities).toEqual([
-      expect.objectContaining({ name: 'Prompt One', category: 'cat-a' }),
-    ]);
     expect(agentEntities).toEqual([
-      expect.objectContaining({ name: 'Agent One' }),
+      expect.objectContaining({
+        agentId: 'agent-1',
+        agent: expect.objectContaining({ name: 'Agent One' }),
+      }),
     ]);
     expect(teamEntities).toEqual([
-      expect.objectContaining({ name: 'Team One' }),
+      expect.objectContaining({
+        teamId: 'team-1',
+        team: expect.objectContaining({ name: 'Team One' }),
+      }),
     ]);
     expect((bundle.entities.mcp_server_configuration ?? []) as unknown[]).toHaveLength(0);
   });

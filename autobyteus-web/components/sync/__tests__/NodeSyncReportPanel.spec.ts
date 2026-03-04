@@ -8,17 +8,11 @@ describe('NodeSyncReportPanel', () => {
       props: {
         report: {
           sourceNodeId: 'embedded-local',
-          scope: ['prompt', 'agent_definition'],
+          scope: ['agent_definition'],
           exportByEntity: [
             {
-              entityType: 'prompt',
-              exportedCount: 2,
-              sampledKeys: ['prompt-1', 'prompt-2'],
-              sampleTruncated: false,
-            },
-            {
               entityType: 'agent_definition',
-              exportedCount: 1,
+              exportedCount: 2,
               sampledKeys: ['agent-1'],
               sampleTruncated: false,
             },
@@ -44,7 +38,6 @@ describe('NodeSyncReportPanel', () => {
     });
 
     expect(wrapper.text()).toContain('Source: embedded-local');
-    expect(wrapper.text()).toContain('Prompts');
     expect(wrapper.text()).toContain('Agents');
     expect(wrapper.text()).toContain('2 exported');
     expect(wrapper.text()).toContain('remote-1');
@@ -56,12 +49,12 @@ describe('NodeSyncReportPanel', () => {
       props: {
         report: {
           sourceNodeId: 'embedded-local',
-          scope: ['prompt'],
+          scope: ['agent_definition'],
           exportByEntity: [
             {
-              entityType: 'prompt',
+              entityType: 'agent_definition',
               exportedCount: 60,
-              sampledKeys: ['prompt-1'],
+              sampledKeys: ['agent-1'],
               sampleTruncated: true,
             },
           ],
@@ -71,7 +64,7 @@ describe('NodeSyncReportPanel', () => {
               status: 'failed',
               failureCountTotal: 2,
               failureSamples: [
-                { entityType: 'prompt', key: 'prompt-1', message: 'conflict' },
+                { entityType: 'agent_definition', key: 'agent-1', message: 'conflict' },
               ],
               failureSampleTruncated: true,
               message: 'Import failed with 2 issue(s).',
@@ -83,7 +76,7 @@ describe('NodeSyncReportPanel', () => {
 
     expect(wrapper.text()).toContain('Key sample truncated.');
     expect(wrapper.text()).toContain('Failure sample truncated.');
-    expect(wrapper.text()).not.toContain('[Prompts] prompt-1: conflict');
+    expect(wrapper.text()).not.toContain('[Agents] agent-1: conflict');
 
     expect(wrapper.text()).toContain('Show failure samples (1)');
   });

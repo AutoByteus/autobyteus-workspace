@@ -104,8 +104,6 @@ const expandedTargetIds = ref<Record<string, boolean>>({});
 
 function entityTypeLabel(entityType: SyncEntityType): string {
   switch (entityType) {
-    case 'prompt':
-      return 'Prompts';
     case 'agent_definition':
       return 'Agents';
     case 'agent_team_definition':

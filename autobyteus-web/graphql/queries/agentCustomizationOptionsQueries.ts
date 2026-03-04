@@ -9,10 +9,5 @@ export const GetAgentCustomizationOptions = gql`
     availableOptionalToolExecutionResultProcessorNames
     availableOptionalToolInvocationPreprocessorNames
     availableOptionalLifecycleProcessorNames
-    availablePromptCategories {
-      __typename
-      category
-      names
-    }
   }
 `

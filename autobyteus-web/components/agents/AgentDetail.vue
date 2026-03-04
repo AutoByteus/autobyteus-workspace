@@ -80,21 +80,6 @@
             </div>
 
             <div class="rounded-xl border border-gray-200 bg-white p-5">
-              <h2 class="text-lg font-semibold text-gray-800 mb-3">System Prompt</h2>
-              <div v-if="agentDef.systemPromptCategory && agentDef.systemPromptName" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <h3 class="text-xs font-semibold uppercase tracking-wide text-gray-500">Category</h3>
-                  <p class="text-sm text-gray-800 font-mono bg-gray-50 px-3 py-2 rounded-md mt-1 border border-gray-100">{{ agentDef.systemPromptCategory }}</p>
-                </div>
-                <div>
-                  <h3 class="text-xs font-semibold uppercase tracking-wide text-gray-500">Name</h3>
-                  <p class="text-sm text-gray-800 font-mono bg-gray-50 px-3 py-2 rounded-md mt-1 border border-gray-100">{{ agentDef.systemPromptName }}</p>
-                </div>
-              </div>
-              <p v-else class="text-sm text-gray-500 italic">No system prompt configured.</p>
-            </div>
-
-            <div class="rounded-xl border border-gray-200 bg-white p-5">
               <h2 class="text-lg font-semibold text-gray-800 mb-3">Skills</h2>
               <ul v-if="agentDef.skillNames && agentDef.skillNames.length" class="space-y-2">
                 <li v-for="item in agentDef.skillNames" :key="item" class="text-sm font-mono bg-gray-50 text-gray-800 px-4 py-2 rounded-md border border-gray-200">

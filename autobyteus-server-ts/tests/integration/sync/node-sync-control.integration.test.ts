@@ -76,7 +76,7 @@ async function startFakeNode(options: FakeNodeOptions = {}): Promise<FakeNodeSer
                 {
                   watermark: 'wm-integration',
                   entities: {
-                    prompt: [],
+                    agent_definition: [],
                   },
                   tombstones: {},
                 },
@@ -233,14 +233,27 @@ describe('Node sync control integration', () => {
       exportBundle: {
         watermark: 'wm-fanout',
         entities: {
-          prompt: [
+          agent_definition: [
             {
-              key: 'cat::name::1::default',
-              name: 'name',
-              category: 'cat',
-              promptContent: 'content',
-              version: 1,
-              isActive: true,
+              agentId: 'agent-1',
+              agent: {
+                name: 'agent-1',
+                role: 'assistant',
+                description: 'content',
+                avatarUrl: null,
+                activePromptVersion: 1,
+                toolNames: [],
+                inputProcessorNames: [],
+                llmResponseProcessorNames: [],
+                systemPromptProcessorNames: [],
+                toolExecutionResultProcessorNames: [],
+                toolInvocationPreprocessorNames: [],
+                lifecycleProcessorNames: [],
+                skillNames: [],
+              },
+              promptVersions: {
+                '1': 'content',
+              },
             },
           ],
         },
@@ -258,7 +271,7 @@ describe('Node sync control integration', () => {
           { nodeId: 'target-a', baseUrl: targetA.baseUrl },
           { nodeId: 'target-b', baseUrl: targetB.baseUrl },
         ],
-        scope: ['PROMPT', 'AGENT_DEFINITION'],
+        scope: ['AGENT_DEFINITION'],
         selection: {
           agentDefinitionIds: ['agent-1'],
           includeDependencies: true,
@@ -276,18 +289,12 @@ describe('Node sync control integration', () => {
         sourceNodeId: 'source',
         report: {
           sourceNodeId: 'source',
-          scope: ['PROMPT', 'AGENT_DEFINITION'],
+          scope: ['AGENT_DEFINITION'],
           exportByEntity: [
             {
-              entityType: 'PROMPT',
-              exportedCount: 1,
-              sampledKeys: ['cat::name::1::default'],
-              sampleTruncated: false,
-            },
-            {
               entityType: 'AGENT_DEFINITION',
-              exportedCount: 0,
-              sampledKeys: [],
+              exportedCount: 1,
+              sampledKeys: ['agent-1'],
               sampleTruncated: false,
             },
           ],
@@ -301,7 +308,7 @@ describe('Node sync control integration', () => {
 
     expect(sourceNode.state.exportCalls).toHaveLength(1);
     expect(sourceNode.state.exportCalls[0]).toMatchObject({
-      scope: ['PROMPT', 'AGENT_DEFINITION'],
+      scope: ['AGENT_DEFINITION'],
       selection: {
         agentDefinitionIds: ['agent-1'],
         includeDependencies: true,
@@ -312,12 +319,12 @@ describe('Node sync control integration', () => {
     expect(targetA.state.importCalls).toHaveLength(1);
     expect(targetB.state.importCalls).toHaveLength(1);
     expect(targetA.state.importCalls[0]).toMatchObject({
-      scope: ['PROMPT', 'AGENT_DEFINITION'],
+      scope: ['AGENT_DEFINITION'],
       conflictPolicy: 'SOURCE_WINS',
       tombstonePolicy: 'SOURCE_DELETE_WINS',
     });
     expect(targetB.state.importCalls[0]).toMatchObject({
-      scope: ['PROMPT', 'AGENT_DEFINITION'],
+      scope: ['AGENT_DEFINITION'],
       conflictPolicy: 'SOURCE_WINS',
       tombstonePolicy: 'SOURCE_DELETE_WINS',
     });
@@ -341,8 +348,8 @@ describe('Node sync control integration', () => {
         },
         failures: [
           {
-            entityType: 'PROMPT',
-            key: 'cat::name::1::default',
+            entityType: 'AGENT_DEFINITION',
+            key: 'agent-1',
             message: 'conflict',
           },
         ],
@@ -357,7 +364,7 @@ describe('Node sync control integration', () => {
           { nodeId: 'target-ok', baseUrl: successTarget.baseUrl },
           { nodeId: 'target-failed', baseUrl: failingTarget.baseUrl },
         ],
-        scope: ['PROMPT'],
+        scope: ['AGENT_DEFINITION'],
         conflictPolicy: 'SOURCE_WINS',
         tombstonePolicy: 'SOURCE_DELETE_WINS',
       },
@@ -369,7 +376,7 @@ describe('Node sync control integration', () => {
         status: 'partial-success',
         report: {
           sourceNodeId: 'source',
-          scope: ['PROMPT'],
+          scope: ['AGENT_DEFINITION'],
           targets: [
             {
               targetNodeId: 'target-ok',
@@ -381,13 +388,13 @@ describe('Node sync control integration', () => {
             {
               targetNodeId: 'target-failed',
               status: 'failed',
-              message: 'Import failed with 1 issue(s). First: [prompt] cat::name::1::default: conflict',
+              message: 'Import failed with 1 issue(s). First: [agent_definition] agent-1: conflict',
               failureCountTotal: 1,
               failureSampleTruncated: false,
               failureSamples: [
                 {
-                  entityType: 'PROMPT',
-                  key: 'cat::name::1::default',
+                  entityType: 'AGENT_DEFINITION',
+                  key: 'agent-1',
                   message: 'conflict',
                 },
               ],
@@ -399,7 +406,7 @@ describe('Node sync control integration', () => {
           {
             targetNodeId: 'target-failed',
             status: 'failed',
-            message: 'Import failed with 1 issue(s). First: [prompt] cat::name::1::default: conflict',
+            message: 'Import failed with 1 issue(s). First: [agent_definition] agent-1: conflict',
           },
         ],
       },
@@ -407,17 +414,17 @@ describe('Node sync control integration', () => {
 
     expect(sourceNode.state.exportCalls).toHaveLength(1);
     expect(sourceNode.state.exportCalls[0]).toMatchObject({
-      scope: ['PROMPT'],
+      scope: ['AGENT_DEFINITION'],
     });
     expect(successTarget.state.importCalls).toHaveLength(1);
     expect(failingTarget.state.importCalls).toHaveLength(1);
     expect(successTarget.state.importCalls[0]).toMatchObject({
-      scope: ['PROMPT'],
+      scope: ['AGENT_DEFINITION'],
       conflictPolicy: 'SOURCE_WINS',
       tombstonePolicy: 'SOURCE_DELETE_WINS',
     });
     expect(failingTarget.state.importCalls[0]).toMatchObject({
-      scope: ['PROMPT'],
+      scope: ['AGENT_DEFINITION'],
       conflictPolicy: 'SOURCE_WINS',
       tombstonePolicy: 'SOURCE_DELETE_WINS',
     });
@@ -432,7 +439,7 @@ describe('Node sync control integration', () => {
       input: {
         source: { nodeId: 'source', baseUrl: sourceNode.baseUrl },
         targets: [{ nodeId: 'target-bad', baseUrl: unhealthyTarget.baseUrl }],
-        scope: ['PROMPT'],
+        scope: ['AGENT_DEFINITION'],
         conflictPolicy: 'SOURCE_WINS',
         tombstonePolicy: 'SOURCE_DELETE_WINS',
       },

@@ -54,7 +54,6 @@ export class PromptService {
     name: string;
     category: string;
     promptContent: string;
-    parentId?: string | null;
   }): Promise<Prompt> {
     if (!options.name || !options.category || !options.promptContent) {
       throw new Error("Name, category, and prompt content are required");
@@ -78,7 +77,6 @@ export class PromptService {
       promptContent: options.promptContent,
       version: newVersion,
       isActive: false,
-      parentId: options.parentId ?? null,
     });
 
     if (familyPrompts.length === 0) {
@@ -98,7 +96,6 @@ export class PromptService {
       name: basePrompt.name,
       category: basePrompt.category,
       promptContent: newPromptContent,
-      parentId: basePrompt.id ?? null,
     });
     logger.info(
       `Successfully created new revision with ID ${String(revision.id)} for base prompt ${basePromptId}.`,

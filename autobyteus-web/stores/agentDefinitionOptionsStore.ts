@@ -4,12 +4,6 @@ import { getApolloClient } from '~/utils/apolloClient';
 import { GetAgentCustomizationOptions } from '~/graphql/queries/agentCustomizationOptionsQueries';
 import type { GetAgentCustomizationOptionsQuery } from '~/generated/graphql';
 
-interface PromptCategory {
-  __typename?: 'PromptCategory';
-  category: string;
-  names: string[];
-}
-
 export const useAgentDefinitionOptionsStore = defineStore('agentDefinitionOptions', () => {
   // State
   const toolNames = ref<string[]>([]);
@@ -19,7 +13,6 @@ export const useAgentDefinitionOptionsStore = defineStore('agentDefinitionOption
   const toolExecutionResultProcessors = ref<string[]>([]);
   const toolInvocationPreprocessors = ref<string[]>([]);
   const lifecycleProcessors = ref<string[]>([]);
-  const promptCategories = ref<PromptCategory[]>([]);
   
   const loading = ref(false);
   const error = ref<any>(null);
@@ -46,7 +39,6 @@ export const useAgentDefinitionOptionsStore = defineStore('agentDefinitionOption
         llmResponseProcessors.value = data.availableOptionalLlmResponseProcessorNames || [];
         systemPromptProcessors.value = data.availableOptionalSystemPromptProcessorNames || [];
         toolExecutionResultProcessors.value = data.availableOptionalToolExecutionResultProcessorNames || [];
-        promptCategories.value = data.availablePromptCategories || [];
       }
     } catch (e) {
       error.value = e;
@@ -65,7 +57,6 @@ export const useAgentDefinitionOptionsStore = defineStore('agentDefinitionOption
     toolExecutionResultProcessors,
     toolInvocationPreprocessors,
     lifecycleProcessors,
-    promptCategories,
     loading,
     error,
     // Actions

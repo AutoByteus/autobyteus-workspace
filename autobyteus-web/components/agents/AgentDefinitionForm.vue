@@ -89,40 +89,6 @@
       </div>
     </fieldset>
 
-    <!-- System Prompt Selection -->
-    <fieldset class="border-t border-gray-200 pt-8">
-      <legend class="text-xl font-semibold text-gray-900">System Prompt</legend>
-      <div class="mt-4 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-6">
-        <div>
-          <label for="prompt-category" class="block text-base font-medium text-gray-800">Prompt Category</label>
-          <select
-            id="prompt-category"
-            v-model="formData.system_prompt_category"
-            class="mt-2 block w-full pl-3 pr-10 py-2.5 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md"
-          >
-            <option value="" disabled>Select a Prompt Category</option>
-            <option v-for="category in optionsStore.promptCategories" :key="category.category" :value="category.category">
-              {{ category.category }}
-            </option>
-          </select>
-        </div>
-        <div>
-          <label for="prompt-name" class="block text-base font-medium text-gray-800">Prompt Name</label>
-          <select
-            id="prompt-name"
-            v-model="formData.system_prompt_name"
-            :disabled="!formData.system_prompt_category"
-            class="mt-2 block w-full pl-3 pr-10 py-2.5 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md disabled:bg-gray-100"
-          >
-            <option value="" disabled>{{ formData.system_prompt_category ? 'Select a name' : 'Select a category first' }}</option>
-            <option v-for="name in availablePromptNames" :key="name" :value="name">
-              {{ name }}
-            </option>
-          </select>
-        </div>
-      </div>
-    </fieldset>
-
     <!-- Skills Configuration -->
     <fieldset class="border-t border-gray-200 pt-8">
       <legend class="text-xl font-semibold text-gray-900">Skills Configuration</legend>
@@ -335,8 +301,6 @@ const getInitialValue = (): { [key: string]: any } => ({
   role: '',
   description: '',
   avatar_url: '',
-  system_prompt_category: '',
-  system_prompt_name: '',
   ...Object.fromEntries(componentFields.value.map(f => [f.name, [] as string[]]))
 });
 
@@ -348,8 +312,6 @@ watch(initialData, (newData) => {
     formData.role = newData.role || '';
     formData.description = newData.description || '';
     formData.avatar_url = newData.avatarUrl || newData.avatar_url || '';
-    formData.system_prompt_category = newData.systemPromptCategory || '';
-    formData.system_prompt_name = newData.systemPromptName || '';
     componentFields.value.forEach(field => {
       const key = field.name as keyof typeof formData;
       formData[key] = newData[field.camelCase] || newData[key] || [];
@@ -361,16 +323,6 @@ watch(initialData, (newData) => {
 
 watch(() => formData.avatar_url, () => {
   avatarPreviewBroken.value = false;
-});
-
-const availablePromptNames = computed(() => {
-  if (!formData.system_prompt_category) return [];
-  const selectedCat = optionsStore.promptCategories.find(c => c.category === formData.system_prompt_category);
-  return selectedCat ? selectedCat.names : [];
-});
-
-watch(() => formData.system_prompt_category, () => {
-  formData.system_prompt_name = '';
 });
 
 function handleAddAllTools(groupName: string) {
@@ -448,8 +400,6 @@ const handleSubmit = () => {
     role: formData.role,
     description: formData.description,
     avatarUrl: formData.avatar_url,
-    systemPromptCategory: formData.system_prompt_category,
-    systemPromptName: formData.system_prompt_name,
     skillNames: formData.skill_names,
     toolNames: formData.tool_names,
     inputProcessorNames: formData.input_processor_names,

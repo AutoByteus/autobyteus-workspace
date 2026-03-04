@@ -11,7 +11,6 @@ export const GET_PROMPTS = gql`
       version
       createdAt
       updatedAt
-      parentPromptId
       isActive
     }
   }
@@ -28,7 +27,6 @@ export const GET_PROMPT_BY_ID = gql`
       version
       createdAt
       updatedAt
-      parentPromptId
       isActive
     }
   }

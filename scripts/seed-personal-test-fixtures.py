@@ -14,15 +14,18 @@ from typing import Any, Dict, List, Optional
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
-PROMPT_CATEGORY = "system"
-PROFESSOR_PROMPT_NAME = "Professor Fixture Prompt"
-STUDENT_PROMPT_NAME = "Student Fixture Prompt"
-PROFESSOR_PROMPT_CONTENT = "You are a professor."
-STUDENT_PROMPT_CONTENT = "You are a student."
-
 PROFESSOR_AGENT_NAME = "Professor Agent"
 STUDENT_AGENT_NAME = "Student Agent"
 TEAM_NAME = "Professor Student Team"
+SEED_PROMPT_CATEGORY = "Seeded Agents"
+PROFESSOR_PROMPT_NAME = "Professor Agent Prompt"
+STUDENT_PROMPT_NAME = "Student Agent Prompt"
+PROFESSOR_PROMPT_CONTENT = (
+    "You are Professor Agent. Explain concepts clearly, structure your answers, and check understanding."
+)
+STUDENT_PROMPT_CONTENT = (
+    "You are Student Agent. Ask concise follow-up questions and summarize what you learned."
+)
 
 
 def log(message: str) -> None:
@@ -94,72 +97,12 @@ def first_by_name(entries: List[Dict[str, Any]], name: str) -> Optional[Dict[str
     return None
 
 
-def ensure_prompt(client: GraphqlClient, *, name: str, content: str) -> None:
-    prompts_data = client.execute(
-        """
-        query SeedPrompts($isActive: Boolean) {
-          prompts(isActive: $isActive) {
-            id
-            name
-            category
-            promptContent
-          }
-        }
-        """,
-        {"isActive": True},
-    )
-    prompts = prompts_data.get("prompts") or []
-    current = None
-    for prompt in prompts:
-        if prompt.get("name") == name and prompt.get("category") == PROMPT_CATEGORY:
-            current = prompt
-            break
-
-    if current is None:
-        client.execute(
-            """
-            mutation SeedCreatePrompt($input: CreatePromptInput!) {
-              createPrompt(input: $input) { id name category }
-            }
-            """,
-            {
-                "input": {
-                    "name": name,
-                    "category": PROMPT_CATEGORY,
-                    "promptContent": content,
-                }
-            },
-        )
-        log(f"Prompt created: {PROMPT_CATEGORY}/{name}")
-        return
-
-    if current.get("promptContent") != content:
-        client.execute(
-            """
-            mutation SeedUpdatePrompt($input: UpdatePromptInput!) {
-              updatePrompt(input: $input) { id name category }
-            }
-            """,
-            {
-                "input": {
-                    "id": current.get("id"),
-                    "promptContent": content,
-                }
-            },
-        )
-        log(f"Prompt updated: {PROMPT_CATEGORY}/{name}")
-        return
-
-    log(f"Prompt unchanged: {PROMPT_CATEGORY}/{name}")
-
-
 def ensure_agent(
     client: GraphqlClient,
     *,
     name: str,
     role: str,
     description: str,
-    system_prompt_name: str,
 ) -> str:
     definitions = client.execute(
         """
@@ -170,8 +113,6 @@ def ensure_agent(
             role
             description
             toolNames
-            systemPromptCategory
-            systemPromptName
           }
         }
         """
@@ -184,8 +125,6 @@ def ensure_agent(
         "role": role,
         "description": description,
         "toolNames": expected_tool_names,
-        "systemPromptCategory": PROMPT_CATEGORY,
-        "systemPromptName": system_prompt_name,
     }
 
     if current is None:
@@ -217,8 +156,6 @@ def ensure_agent(
         current.get("role") != role
         or current.get("description") != description
         or sorted(current.get("toolNames") or []) != sorted(expected_tool_names)
-        or current.get("systemPromptCategory") != PROMPT_CATEGORY
-        or current.get("systemPromptName") != system_prompt_name
     )
     if update_needed:
         client.execute(
@@ -343,6 +280,95 @@ def ensure_team(client: GraphqlClient, professor_agent_id: str, student_agent_id
         log(f"Team unchanged: {TEAM_NAME} (id={current.get('id')})")
 
 
+def ensure_prompt(
+    client: GraphqlClient,
+    *,
+    name: str,
+    category: str,
+    prompt_content: str,
+) -> str:
+    prompts = client.execute(
+        """
+        query SeedPrompts {
+          prompts {
+            id
+            name
+            category
+            promptContent
+            version
+            isActive
+          }
+        }
+        """
+    ).get("prompts") or []
+
+    family = [
+        prompt
+        for prompt in prompts
+        if prompt.get("name") == name and prompt.get("category") == category
+    ]
+
+    if not family:
+        created = client.execute(
+            """
+            mutation SeedCreatePrompt($input: CreatePromptInput!) {
+              createPrompt(input: $input) { id name category version isActive }
+            }
+            """,
+            {
+                "input": {
+                    "name": name,
+                    "category": category,
+                    "promptContent": prompt_content,
+                }
+            },
+        )["createPrompt"]
+        prompt_id = str(created["id"])
+        log(f"Prompt created: {category}/{name} (id={prompt_id}, version={created.get('version')})")
+        return prompt_id
+
+    active_prompt = next((prompt for prompt in family if prompt.get("isActive")), None)
+    if active_prompt is None:
+        active_prompt = max(
+            family,
+            key=lambda prompt: int(prompt.get("version") or 0),
+        )
+
+    if active_prompt.get("promptContent") == prompt_content:
+        prompt_id = str(active_prompt["id"])
+        log(
+            f"Prompt unchanged: {category}/{name} (id={prompt_id}, version={active_prompt.get('version')})"
+        )
+        return prompt_id
+
+    revised = client.execute(
+        """
+        mutation SeedAddNewPromptRevision($input: AddNewPromptRevisionInput!) {
+          addNewPromptRevision(input: $input) { id version isActive }
+        }
+        """,
+        {
+            "input": {
+                "id": str(active_prompt["id"]),
+                "newPromptContent": prompt_content,
+            }
+        },
+    )["addNewPromptRevision"]
+
+    client.execute(
+        """
+        mutation SeedMarkActivePrompt($input: MarkActivePromptInput!) {
+          markActivePrompt(input: $input) { id isActive }
+        }
+        """,
+        {"input": {"id": str(revised["id"])}},
+    )
+
+    prompt_id = str(revised["id"])
+    log(f"Prompt updated: {category}/{name} (id={prompt_id}, version={revised.get('version')})")
+    return prompt_id
+
+
 def parse_args(argv: List[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Seed personal Docker test fixtures.")
     parser.add_argument("--graphql-url", required=True, help="GraphQL endpoint URL")
@@ -357,25 +383,32 @@ def main(argv: List[str]) -> int:
 
     wait_for_backend(client, retries=args.wait_retries, delay_seconds=args.wait_delay)
 
-    ensure_prompt(client, name=PROFESSOR_PROMPT_NAME, content=PROFESSOR_PROMPT_CONTENT)
-    ensure_prompt(client, name=STUDENT_PROMPT_NAME, content=STUDENT_PROMPT_CONTENT)
-
     professor_id = ensure_agent(
         client,
         name=PROFESSOR_AGENT_NAME,
         role="Professor",
         description="Fixture professor agent.",
-        system_prompt_name=PROFESSOR_PROMPT_NAME,
     )
     student_id = ensure_agent(
         client,
         name=STUDENT_AGENT_NAME,
         role="Student",
         description="Fixture student agent.",
-        system_prompt_name=STUDENT_PROMPT_NAME,
     )
 
     ensure_team(client, professor_agent_id=professor_id, student_agent_id=student_id)
+    ensure_prompt(
+        client,
+        name=PROFESSOR_PROMPT_NAME,
+        category=SEED_PROMPT_CATEGORY,
+        prompt_content=PROFESSOR_PROMPT_CONTENT,
+    )
+    ensure_prompt(
+        client,
+        name=STUDENT_PROMPT_NAME,
+        category=SEED_PROMPT_CATEGORY,
+        prompt_content=STUDENT_PROMPT_CONTENT,
+    )
 
     log("Fixture seed completed.")
     return 0

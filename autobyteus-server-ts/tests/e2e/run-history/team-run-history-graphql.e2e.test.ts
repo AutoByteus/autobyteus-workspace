@@ -20,7 +20,6 @@ import { getTeamRunHistoryService } from "../../../src/run-history/services/team
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
 import { AgentTeamDefinitionService } from "../../../src/agent-team-definition/services/agent-team-definition-service.js";
-import { PromptService } from "../../../src/prompt-engineering/services/prompt-service.js";
 
 const listTeamRunHistoryQuery = `
   query ListTeamRunHistory {
@@ -80,16 +79,6 @@ const sendMessageToTeamMutation = `
       success
       message
       teamRunId
-    }
-  }
-`;
-
-const createPromptMutation = `
-  mutation CreatePrompt($input: CreatePromptInput!) {
-    createPrompt(input: $input) {
-      id
-      name
-      category
     }
   }
 `;
@@ -226,7 +215,6 @@ describe("Team run history GraphQL e2e", () => {
   let schema: GraphQLSchema;
   let graphql: typeof graphqlFn;
   const seededTeamIds = new Set<string>();
-  const createdPromptIds = new Set<string>();
   const createdAgentDefinitionIds = new Set<string>();
   const createdTeamDefinitionIds = new Set<string>();
 
@@ -273,16 +261,6 @@ describe("Team run history GraphQL e2e", () => {
       }
     }
     createdAgentDefinitionIds.clear();
-
-    const promptService = PromptService.getInstance();
-    for (const promptId of createdPromptIds) {
-      try {
-        await promptService.deletePrompt(promptId);
-      } catch {
-        // Ignore cleanup failures caused by already-deleted records.
-      }
-    }
-    createdPromptIds.clear();
   });
 
   const execGraphql = async <T>(
@@ -466,21 +444,9 @@ describe("Team run history GraphQL e2e", () => {
     vi.spyOn(LLMFactory, "getProvider").mockResolvedValue(LLMProvider.OPENAI);
 
     const unique = `${Date.now()}_${Math.random().toString(16).slice(2)}`;
-    const promptName = `team_history_prompt_${unique}`;
-    const promptCategory = `team_history_category_${unique}`;
+    const runMarker = `${turnOneMarker}_${unique}`;
     const workspaceRootPath = path.join(os.tmpdir(), `team-history-workspace-${unique}`);
     await fs.mkdir(workspaceRootPath, { recursive: true });
-
-    const promptResult = await execGraphql<{
-      createPrompt: { id: string };
-    }>(createPromptMutation, {
-      input: {
-        name: promptName,
-        category: promptCategory,
-        promptContent: "You are a concise assistant.",
-      },
-    });
-    createdPromptIds.add(promptResult.createPrompt.id);
 
     const agentDefinitionResult = await execGraphql<{
       createAgentDefinition: { id: string };
@@ -489,8 +455,6 @@ describe("Team run history GraphQL e2e", () => {
         name: `history-agent-${unique}`,
         role: "assistant",
         description: "History restore test agent",
-        systemPromptCategory: promptCategory,
-        systemPromptName: promptName,
       },
     });
     const agentDefinitionId = agentDefinitionResult.createAgentDefinition.id;
@@ -547,7 +511,7 @@ describe("Team run history GraphQL e2e", () => {
         teamRunId,
         targetMemberName: "professor",
         userInput: {
-          content: `please remember ${turnOneMarker}`,
+          content: `please remember ${runMarker}`,
           contextFiles: [],
         },
       },
@@ -584,11 +548,16 @@ describe("Team run history GraphQL e2e", () => {
     await waitFor(async () => {
       try {
         const rawTrace = await fs.readFile(rawTraceFile, "utf-8");
-        return rawTrace.includes(turnOneMarker);
+        return rawTrace.includes(runMarker);
       } catch {
         return false;
       }
     });
+
+    const rootRawTrace = await fs
+      .readFile(path.join(memoryDir, "raw_traces.jsonl"), "utf-8")
+      .catch(() => "");
+    expect(rootRawTrace.includes(runMarker)).toBe(false);
 
     await waitFor(async () => {
       try {
@@ -651,9 +620,9 @@ describe("Team run history GraphQL e2e", () => {
     });
 
     expect(projection).toBeTruthy();
-    expect(projection?.conversation.some((entry) => String(entry.content ?? "").includes(turnOneMarker))).toBe(true);
+    expect(projection?.conversation.some((entry) => String(entry.content ?? "").includes(runMarker))).toBe(true);
     expect(projection?.conversation.some((entry) => String(entry.content ?? "").includes("history_visible=true"))).toBe(true);
-    expect(projection?.summary).toContain(turnOneMarker);
+    expect(projection?.summary).toContain(runMarker);
   });
 
   it("restores targeted professor member in a multi-member team after terminate/continue", async () => {
@@ -661,21 +630,8 @@ describe("Team run history GraphQL e2e", () => {
     vi.spyOn(LLMFactory, "getProvider").mockResolvedValue(LLMProvider.OPENAI);
 
     const unique = `${Date.now()}_${Math.random().toString(16).slice(2)}`;
-    const promptName = `team_history_prompt_multi_${unique}`;
-    const promptCategory = `team_history_category_multi_${unique}`;
     const workspaceRootPath = path.join(os.tmpdir(), `team-history-multi-workspace-${unique}`);
     await fs.mkdir(workspaceRootPath, { recursive: true });
-
-    const promptResult = await execGraphql<{
-      createPrompt: { id: string };
-    }>(createPromptMutation, {
-      input: {
-        name: promptName,
-        category: promptCategory,
-        promptContent: "You are a concise assistant.",
-      },
-    });
-    createdPromptIds.add(promptResult.createPrompt.id);
 
     const professorDefinitionResult = await execGraphql<{
       createAgentDefinition: { id: string };
@@ -684,8 +640,6 @@ describe("Team run history GraphQL e2e", () => {
         name: `history-professor-${unique}`,
         role: "assistant",
         description: "History restore test professor agent",
-        systemPromptCategory: promptCategory,
-        systemPromptName: promptName,
       },
     });
     const professorDefinitionId = professorDefinitionResult.createAgentDefinition.id;
@@ -698,8 +652,6 @@ describe("Team run history GraphQL e2e", () => {
         name: `history-student-${unique}`,
         role: "assistant",
         description: "History restore test student agent",
-        systemPromptCategory: promptCategory,
-        systemPromptName: promptName,
       },
     });
     const studentDefinitionId = studentDefinitionResult.createAgentDefinition.id;
@@ -872,21 +824,8 @@ describe("Team run history GraphQL e2e", () => {
       const unique = `${Date.now()}_${Math.random().toString(16).slice(2)}`;
       const memoryToken = `restore-token-${unique}`;
       const recallPrompt = "What exact token did I ask you to remember earlier? Reply with only that token.";
-      const promptName = `team_history_prompt_lmstudio_${unique}`;
-      const promptCategory = `team_history_category_lmstudio_${unique}`;
       const workspaceRootPath = path.join(os.tmpdir(), `team-history-lmstudio-workspace-${unique}`);
       await fs.mkdir(workspaceRootPath, { recursive: true });
-
-      const promptResult = await execGraphql<{
-        createPrompt: { id: string };
-      }>(createPromptMutation, {
-        input: {
-          name: promptName,
-          category: promptCategory,
-          promptContent: "You are a concise assistant. Follow user instructions exactly.",
-        },
-      });
-      createdPromptIds.add(promptResult.createPrompt.id);
 
       const agentDefinitionResult = await execGraphql<{
         createAgentDefinition: { id: string };
@@ -895,8 +834,6 @@ describe("Team run history GraphQL e2e", () => {
           name: `history-lmstudio-agent-${unique}`,
           role: "assistant",
           description: "Real LM Studio continuation restore agent",
-          systemPromptCategory: promptCategory,
-          systemPromptName: promptName,
         },
       });
       const agentDefinitionId = agentDefinitionResult.createAgentDefinition.id;

@@ -1,45 +1,34 @@
 import type { BaseMcpConfig } from "autobyteus-ts/tools/mcp/types.js";
-import { getPersistenceProfile } from "../../persistence/profile.js";
-import {
-  McpPersistenceProviderRegistry,
-  type McpPersistenceProviderContract,
-} from "./persistence-provider-registry.js";
+import { FileMcpServerConfigProvider } from "./file-provider.js";
+
+export type McpPersistenceProviderContract = {
+  getByServerId(serverId: string): Promise<BaseMcpConfig | null>;
+  getAll(): Promise<BaseMcpConfig[]>;
+  deleteByServerId(serverId: string): Promise<boolean>;
+  create(domainObj: BaseMcpConfig): Promise<BaseMcpConfig>;
+  update(domainObj: BaseMcpConfig): Promise<BaseMcpConfig>;
+};
 
 export class McpServerPersistenceProvider {
-  private readonly registry = McpPersistenceProviderRegistry.getInstance();
-  private providerPromise: Promise<McpPersistenceProviderContract> | null = null;
-
-  private async getProvider(): Promise<McpPersistenceProviderContract> {
-    if (!this.providerPromise) {
-      const profile = getPersistenceProfile();
-      const loader = this.registry.getProviderLoader(profile);
-      if (!loader) {
-        const available = this.registry.getAvailableProviders().join(", ");
-        throw new Error(`Unsupported mcp persistence provider: ${profile}. Available providers: ${available}`);
-      }
-      this.providerPromise = loader();
-    }
-
-    return this.providerPromise;
-  }
+  private readonly provider: McpPersistenceProviderContract = new FileMcpServerConfigProvider();
 
   async getByServerId(serverId: string): Promise<BaseMcpConfig | null> {
-    return (await this.getProvider()).getByServerId(serverId);
+    return this.provider.getByServerId(serverId);
   }
 
   async getAll(): Promise<BaseMcpConfig[]> {
-    return (await this.getProvider()).getAll();
+    return this.provider.getAll();
   }
 
   async deleteByServerId(serverId: string): Promise<boolean> {
-    return (await this.getProvider()).deleteByServerId(serverId);
+    return this.provider.deleteByServerId(serverId);
   }
 
   async create(domainObj: BaseMcpConfig): Promise<BaseMcpConfig> {
-    return (await this.getProvider()).create(domainObj);
+    return this.provider.create(domainObj);
   }
 
   async update(domainObj: BaseMcpConfig): Promise<BaseMcpConfig> {
-    return (await this.getProvider()).update(domainObj);
+    return this.provider.update(domainObj);
   }
 }

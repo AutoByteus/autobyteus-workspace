@@ -16,6 +16,13 @@ function getPnpmCommand(): string {
 }
 
 function getPrismaCommand(appRoot: string): { command: string; argsPrefix: string[] } {
+  const localPrismaJs = path.join(appRoot, "node_modules", "prisma", "build", "index.js");
+  if (fs.existsSync(localPrismaJs)) {
+    // Prefer running the JS entrypoint directly via current Node runtime.
+    // This avoids Windows `.cmd` invocation edge cases in packaged Electron apps.
+    return { command: process.execPath, argsPrefix: [localPrismaJs] };
+  }
+
   const prismaBin = process.platform === "win32" ? "prisma.cmd" : "prisma";
   const localPrisma = path.join(appRoot, "node_modules", ".bin", prismaBin);
   if (fs.existsSync(localPrisma)) {

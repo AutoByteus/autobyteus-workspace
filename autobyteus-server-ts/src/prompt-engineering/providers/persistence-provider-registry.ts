@@ -23,11 +23,11 @@ export type PromptProviderLoader = () => Promise<PromptPersistenceProvider>;
 const importRuntimeModule = async <T>(modulePath: string): Promise<T> =>
   (await import(modulePath)) as T;
 
-const loadSqlPromptProvider = async (): Promise<PromptPersistenceProvider> => {
+const loadFilePromptProvider = async (): Promise<PromptPersistenceProvider> => {
   const module = await importRuntimeModule<{
-    SqlPromptProvider: new () => PromptPersistenceProvider;
-  }>(["./", "sql-provider.js"].join(""));
-  return new module.SqlPromptProvider();
+    FilePromptProvider: new () => PromptPersistenceProvider;
+  }>(["./", "file-provider.js"].join(""));
+  return new module.FilePromptProvider();
 };
 
 export class PromptPersistenceProviderRegistry {
@@ -43,12 +43,11 @@ export class PromptPersistenceProviderRegistry {
   private loaders = new Map<string, PromptProviderLoader>();
 
   private constructor() {
-    this.registerProviderLoader("sqlite", loadSqlPromptProvider);
-    this.registerProviderLoader("postgresql", loadSqlPromptProvider);
-    this.registerProviderLoader("file", async () => {
-      const { FilePromptProvider } = await import("./file-provider.js");
-      return new FilePromptProvider();
-    });
+    // File-based persistence is canonical for prompts.
+    // Keep non-file profile aliases for compatibility while avoiding SQL paths.
+    this.registerProviderLoader("sqlite", loadFilePromptProvider);
+    this.registerProviderLoader("postgresql", loadFilePromptProvider);
+    this.registerProviderLoader("file", loadFilePromptProvider);
   }
 
   registerProviderLoader(name: string, loader: PromptProviderLoader): void {

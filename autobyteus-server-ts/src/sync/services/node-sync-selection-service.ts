@@ -12,8 +12,7 @@ export type NodeSyncSelectionErrorCode =
   | 'invalid-selection-agent-id'
   | 'invalid-selection-team-id'
   | 'team-member-missing'
-  | 'nested-team-missing'
-  | 'agent-prompt-missing';
+  | 'nested-team-missing';
 
 export class NodeSyncSelectionValidationError extends Error {
   readonly code: NodeSyncSelectionErrorCode;
@@ -28,8 +27,6 @@ export class NodeSyncSelectionValidationError extends Error {
 type AgentDefinitionSnapshot = {
   id?: string | null;
   name: string;
-  systemPromptCategory?: string | null;
-  systemPromptName?: string | null;
 };
 
 type TeamNodeSnapshot = {
@@ -55,7 +52,6 @@ type AgentTeamDefinitionServiceLike = {
 export interface ResolvedNodeSyncSelection {
   agentDefinitionIds: Set<string>;
   agentTeamDefinitionIds: Set<string>;
-  promptFamilies: Set<string>;
   includeDeletes: boolean;
 }
 
@@ -80,10 +76,6 @@ function normalizeIds(values: string[] | null | undefined): string[] {
     .map((value) => normalizeNonEmptyString(value))
     .filter((value): value is string => value !== null);
   return Array.from(new Set(normalized));
-}
-
-function promptFamilyKey(category: string, name: string): string {
-  return `${category}::${name}`;
 }
 
 export class NodeSyncSelectionService {
@@ -157,14 +149,9 @@ export class NodeSyncSelectionService {
       );
     }
 
-    const promptFamilies = includeDependencies
-      ? this.resolvePromptFamilies(resolvedAgentDefinitionIds, agentsById)
-      : new Set<string>();
-
     return {
       agentDefinitionIds: resolvedAgentDefinitionIds,
       agentTeamDefinitionIds: resolvedAgentTeamDefinitionIds,
-      promptFamilies,
       includeDeletes,
     };
   }
@@ -216,30 +203,5 @@ export class NodeSyncSelectionService {
       }
     }
   }
-
-  private resolvePromptFamilies(
-    resolvedAgentDefinitionIds: Set<string>,
-    agentsById: Map<string, AgentDefinitionSnapshot>,
-  ): Set<string> {
-    const families = new Set<string>();
-    for (const agentDefinitionId of resolvedAgentDefinitionIds) {
-      const agent = agentsById.get(agentDefinitionId);
-      if (!agent) {
-        throw new NodeSyncSelectionValidationError(
-          'team-member-missing',
-          `Resolved dependency agent definition '${agentDefinitionId}' is missing on source node.`,
-        );
-      }
-      const category = normalizeNonEmptyString(agent.systemPromptCategory);
-      const name = normalizeNonEmptyString(agent.systemPromptName);
-      if (!category || !name) {
-        throw new NodeSyncSelectionValidationError(
-          'agent-prompt-missing',
-          `Agent '${agent.name}' is missing system prompt mapping.`,
-        );
-      }
-      families.add(promptFamilyKey(category, name));
-    }
-    return families;
-  }
 }
+

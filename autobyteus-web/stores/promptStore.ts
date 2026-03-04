@@ -14,7 +14,6 @@ interface Prompt {
   version: number;
   createdAt: string;
   updatedAt: string;
-  parentPromptId?: string | null;
   isActive: boolean;
 }
 

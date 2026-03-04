@@ -15,7 +15,6 @@ type PromptRecord = {
   version: number;
   createdAt: string;
   updatedAt: string;
-  parentId: string | null;
   isActive: boolean;
 };
 
@@ -30,7 +29,6 @@ const toDomain = (record: PromptRecord): Prompt =>
     version: record.version,
     createdAt: parseDate(record.createdAt),
     updatedAt: parseDate(record.updatedAt),
-    parentId: record.parentId,
     isActive: record.isActive,
   });
 
@@ -42,7 +40,6 @@ const toRecord = (prompt: Prompt, now: Date, fallbackId: string): PromptRecord =
   version: prompt.version ?? 1,
   createdAt: (prompt.createdAt ?? now).toISOString(),
   updatedAt: (prompt.updatedAt ?? now).toISOString(),
-  parentId: prompt.parentId ?? null,
   isActive: prompt.isActive,
 });
 

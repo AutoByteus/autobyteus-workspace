@@ -137,8 +137,6 @@ class NodeSyncRunReport {
 
 function toGraphqlEntityType(entityType: string): SyncEntityTypeEnum {
   switch (entityType) {
-    case 'prompt':
-      return SyncEntityTypeEnum.PROMPT;
     case 'agent_definition':
       return SyncEntityTypeEnum.AGENT_DEFINITION;
     case 'agent_team_definition':
