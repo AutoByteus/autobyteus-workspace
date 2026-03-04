@@ -29,16 +29,8 @@ export class SqlPromptProvider {
     return results.map((prompt) => PrismaPromptConverter.toDomain(prompt));
   }
 
-  async findAllByNameAndCategory(
-    name: string,
-    category: string,
-    suitableForModels?: string | null,
-  ): Promise<Prompt[]> {
-    const results = await this.repository.findAllByNameAndCategory(
-      name,
-      category,
-      suitableForModels,
-    );
+  async findAllByNameAndCategory(name: string, category: string): Promise<Prompt[]> {
+    const results = await this.repository.findAllByNameAndCategory(name, category);
     return results.map((prompt) => PrismaPromptConverter.toDomain(prompt));
   }
 

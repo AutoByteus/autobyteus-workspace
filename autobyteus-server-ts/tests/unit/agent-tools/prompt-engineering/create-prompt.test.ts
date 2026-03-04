@@ -24,7 +24,6 @@ describe("createPromptTool", () => {
         name: "New Family",
         category: "Test",
         prompt_content: "Content here",
-        suitable_for_models: "gpt-4",
       },
     );
 
@@ -33,8 +32,6 @@ describe("createPromptTool", () => {
       name: "New Family",
       category: "Test",
       promptContent: "Content here",
-      description: null,
-      suitableForModels: "gpt-4",
     });
     expect(result).toContain("created successfully");
     expect(result).toContain("123");

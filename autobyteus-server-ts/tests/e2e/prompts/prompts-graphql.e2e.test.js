@@ -46,8 +46,6 @@ describe("Prompts GraphQL e2e", () => {
                 name: promptName,
                 category,
                 promptContent: "Hello world",
-                description: "Prompt for e2e",
-                suitableForModels: "default",
             },
         });
         expect(created.createPrompt.name).toBe(promptName);
@@ -97,7 +95,6 @@ describe("Prompts GraphQL e2e", () => {
       query DetailsByName($category: String!, $name: String!) {
         promptDetailsByNameAndCategory(category: $category, name: $name) {
           promptContent
-          description
         }
       }
     `;

@@ -66,16 +66,8 @@ export class SqlPromptRepository extends BaseRepository.forModel(Prisma.ModelNam
     return this.findMany({ where: { isActive: true } });
   }
 
-  async findAllByNameAndCategory(
-    name: string,
-    category: string,
-    suitableForModels?: string | null,
-  ): Promise<PrismaPrompt[]> {
-    const where: Prisma.PromptWhereInput = { name, category };
-    if (suitableForModels !== undefined && suitableForModels !== null) {
-      where.suitableForModels = suitableForModels;
-    }
-    return this.findMany({ where });
+  async findAllByNameAndCategory(name: string, category: string): Promise<PrismaPrompt[]> {
+    return this.findMany({ where: { name, category } });
   }
 
   async getActivePromptsByContext(name: string, category: string): Promise<PrismaPrompt[]> {

@@ -130,7 +130,7 @@ describe("CachedPromptProvider", () => {
     expect(persistenceProvider.findPrompts).toHaveBeenCalledOnce();
   });
 
-  it("filters by name and category with model filter", async () => {
+  it("filters by name and category", async () => {
     const { persistenceProvider, cachedProvider } = createProvider();
 
     await cachedProvider.findPrompts();
@@ -138,20 +138,6 @@ describe("CachedPromptProvider", () => {
     const family = await cachedProvider.findAllByNameAndCategory("System Prompt", "General");
     expect(family.length).toBe(2);
     expect(new Set(family.map((prompt) => prompt.id))).toEqual(new Set(["1", "2"]));
-
-    const gptFamily = await cachedProvider.findAllByNameAndCategory(
-      "System Prompt",
-      "General",
-      "gpt-4",
-    );
-    expect(gptFamily.length).toBe(2);
-
-    const none = await cachedProvider.findAllByNameAndCategory(
-      "System Prompt",
-      "General",
-      "nonexistent-model",
-    );
-    expect(none.length).toBe(0);
 
     expect(persistenceProvider.findPrompts).toHaveBeenCalledOnce();
   });

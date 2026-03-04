@@ -31,7 +31,7 @@ describe("PromptPersistenceProvider", () => {
         await proxy.getActivePromptsByContext("Test", "Test");
         expect(provider.getActivePromptsByContext).toHaveBeenCalledWith("Test", "Test");
         await proxy.findAllByNameAndCategory("Test", "Test");
-        expect(provider.findAllByNameAndCategory).toHaveBeenCalledWith("Test", "Test", undefined);
+        expect(provider.findAllByNameAndCategory).toHaveBeenCalledWith("Test", "Test");
         await proxy.findPrompts({ name: "Test" });
         expect(provider.findPrompts).toHaveBeenCalledWith({ name: "Test" });
     });

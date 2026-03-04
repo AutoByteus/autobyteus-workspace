@@ -9,9 +9,7 @@ export interface PromptDraft {
   id: string;
   name: string;
   category: string;
-  description: string;
   promptContent: string;
-  suitableForModels: string[];
   updatedAt: number;
 }
 
@@ -97,9 +95,7 @@ export const usePromptEngineeringViewStore = defineStore('promptEngineeringView'
         id: uuidv4(),
         name: '',
         category: '',
-        description: '',
         promptContent: '',
-        suitableForModels: [],
         updatedAt: Date.now(),
       };
       this.drafts.unshift(newDraft);
@@ -112,22 +108,13 @@ export const usePromptEngineeringViewStore = defineStore('promptEngineeringView'
     duplicateDraft(prompt: {
       name: string;
       category: string;
-      description?: string | null;
       promptContent: string;
-      suitableForModels?: string | null;
     }) {
       const newDraft: PromptDraft = {
         id: uuidv4(),
         name: prompt.name,
         category: prompt.category,
-        description: prompt.description || '',
         promptContent: prompt.promptContent,
-        suitableForModels: prompt.suitableForModels
-          ? prompt.suitableForModels
-              .split(',')
-              .map((value) => value.trim())
-              .filter(Boolean)
-          : [],
         updatedAt: Date.now(),
       };
 
@@ -202,7 +189,6 @@ export const usePromptEngineeringViewStore = defineStore('promptEngineeringView'
       return (
         !draft.name?.trim() &&
         !draft.category?.trim() &&
-        !draft.description?.trim() &&
         !draft.promptContent?.trim()
       );
     },
@@ -212,7 +198,6 @@ export const usePromptEngineeringViewStore = defineStore('promptEngineeringView'
         return (
           draft.name?.trim() ||
           draft.category?.trim() ||
-          draft.description?.trim() ||
           draft.promptContent?.trim()
         );
       });

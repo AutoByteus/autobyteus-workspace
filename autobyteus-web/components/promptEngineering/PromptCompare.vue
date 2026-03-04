@@ -46,7 +46,7 @@
                 @change="updateDiffView()"
               >
                 <option v-for="prompt in prompts" :key="`left-${prompt.id}`" :value="prompt.id">
-                  {{ prompt.name }} ({{ getModelsSummary(prompt) }})
+                  {{ prompt.name }} (v{{ prompt.version }})
                 </option>
               </select>
             </div>
@@ -57,46 +57,10 @@
                 @change="updateDiffView()"
               >
                 <option v-for="prompt in prompts" :key="`right-${prompt.id}`" :value="prompt.id">
-                  {{ prompt.name }} ({{ getModelsSummary(prompt) }})
+                  {{ prompt.name }} (v{{ prompt.version }})
                 </option>
               </select>
             </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Model badges and info -->
-      <div class="bg-gray-50 p-4 border-b grid grid-cols-2 gap-4">
-        <div v-if="leftPrompt" class="flex flex-col">
-          <div class="flex items-center justify-between mb-2">
-            <h3 class="font-medium text-gray-900">{{ leftPrompt.name }}</h3>
-            <span class="text-xs bg-gray-100 text-gray-700 rounded-full px-2 py-1">
-              v{{ leftPrompt.version }}
-            </span>
-          </div>
-          <div class="flex flex-wrap gap-1 mb-2">
-            <ModelBadge
-              v-for="model in getModelList(leftPrompt)"
-              :key="`left-${model}`"
-              :model="model"
-              size="small"
-            />
-          </div>
-        </div>
-        <div v-if="rightPrompt" class="flex flex-col">
-          <div class="flex items-center justify-between mb-2">
-            <h3 class="font-medium text-gray-900">{{ rightPrompt.name }}</h3>
-            <span class="text-xs bg-gray-100 text-gray-700 rounded-full px-2 py-1">
-              v{{ rightPrompt.version }}
-            </span>
-          </div>
-          <div class="flex flex-wrap gap-1 mb-2">
-            <ModelBadge
-              v-for="model in getModelList(rightPrompt)"
-              :key="`right-${model}`"
-              :model="model"
-              size="small"
-            />
           </div>
         </div>
       </div>
@@ -137,7 +101,6 @@
 import { ref, computed, onMounted, watch, nextTick } from 'vue';
 import { diff_match_patch } from 'diff-match-patch';
 import { usePromptStore } from '~/stores/promptStore';
-import ModelBadge from '~/components/promptEngineering/ModelBadge.vue';
 import { useLeftPanel } from '~/composables/useLeftPanel';
 
 const props = defineProps<{  promptIds: string[];
@@ -197,19 +160,6 @@ const lineByLineDiffContent = computed(() => {
     rightPrompt.value.promptContent || ''
   );
 });
-
-// Helper functions
-function getModelList(prompt: any) {
-  if (!prompt?.suitableForModels) return [];
-  return prompt.suitableForModels.split(',').map((model: string) => model.trim());
-}
-
-function getModelsSummary(prompt: any) {
-  const models = getModelList(prompt);
-  if (models.length === 0) return 'No models specified';
-  if (models.length === 1) return models[0];
-  return `${models[0]} + ${models.length - 1} more`;
-}
 
 // Compute text differences with highlighting for side-by-side view
 function computeDiffHighlighting(oldText: string, newText: string, highlightType: 'addition' | 'removal') {

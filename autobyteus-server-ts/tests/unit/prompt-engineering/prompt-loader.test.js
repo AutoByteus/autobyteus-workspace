@@ -92,7 +92,7 @@ describe("PromptLoader", () => {
         expect(content).toBeNull();
         expect(promptService.getActivePromptsByContext).not.toHaveBeenCalled();
     });
-    it("returns null if no suitable prompts for model or default", async () => {
+    it("returns the available active prompt when model filtering is not used", async () => {
         const agentDef = new AgentDefinition({
             id: "agent1",
             name: "TestAgent",
@@ -118,7 +118,7 @@ describe("PromptLoader", () => {
             llmFactory,
         });
         const content = await loader.getPromptTemplateForAgent("agent1", "GPT_4o_API");
-        expect(content).toBeNull();
+        expect(content).toBe("Other");
     });
     it("caches agent prompt results", async () => {
         const agentDef = new AgentDefinition({

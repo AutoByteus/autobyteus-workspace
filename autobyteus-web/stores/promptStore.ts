@@ -11,8 +11,6 @@ interface Prompt {
   name: string;
   category: string;
   promptContent: string;
-  description?: string | null;
-  suitableForModels?: string | null;
   version: number;
   createdAt: string;
   updatedAt: string;
@@ -125,14 +123,12 @@ export const usePromptStore = defineStore('prompt', () => {
     name: string,
     category: string,
     promptContent: string,
-    description?: string,
-    suitableForModels?: string,
   ) {
     try {
       const client = getApolloClient();
       const { data, errors } = await client.mutate({
         mutation: CREATE_PROMPT,
-        variables: { input: { name, category, promptContent, description, suitableForModels } },
+        variables: { input: { name, category, promptContent } },
         refetchQueries: [
           { query: GET_PROMPTS },
           { query: GetAgentCustomizationOptions }
@@ -158,8 +154,6 @@ export const usePromptStore = defineStore('prompt', () => {
   async function updatePrompt(
     id: string,
     promptContent?: string,
-    description?: string,
-    suitableForModels?: string,
     isActive?: boolean,
     name?: string,
     category?: string,
@@ -168,7 +162,7 @@ export const usePromptStore = defineStore('prompt', () => {
       const client = getApolloClient();
       const { data, errors } = await client.mutate({
         mutation: UPDATE_PROMPT,
-        variables: { input: { id, promptContent, description, suitableForModels, isActive, name, category } },
+        variables: { input: { id, promptContent, isActive, name, category } },
         refetchQueries: [{ query: GetAgentCustomizationOptions }]
       });
 
