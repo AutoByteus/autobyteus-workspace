@@ -219,6 +219,30 @@ export class TeamMemberRuntimeOrchestrator {
     });
   }
 
+  updateMemberRuntimeReference(input: {
+    teamRunId: string;
+    memberRunId: string;
+    runtimeReference: {
+      sessionId?: string | null;
+      threadId?: string | null;
+      metadata?: Record<string, unknown> | null;
+    } | null;
+  }): boolean {
+    const bindings = this.teamRuntimeBindingRegistry.getTeamBindings(input.teamRunId);
+    const targetBinding = bindings.find((binding) => binding.memberRunId === input.memberRunId);
+    if (!targetBinding) {
+      return false;
+    }
+
+    return this.bindingStateService.applyRuntimeReferenceUpdate({
+      teamRunId: input.teamRunId,
+      memberRunId: input.memberRunId,
+      runtimeKind: targetBinding.runtimeKind,
+      runtimeReference: input.runtimeReference,
+      existingMetadata: targetBinding.runtimeReference?.metadata ?? null,
+    });
+  }
+
   async approveForMember(
     teamRunId: string,
     targetMemberName: string | null | undefined,

@@ -42,10 +42,10 @@ export class TeamMemberRuntimeBindingStateService {
       metadata?: Record<string, unknown> | null;
     } | null;
     existingMetadata: Record<string, unknown> | null;
-  }): void {
+  }): boolean {
     const { runtimeReference } = input;
     if (!runtimeReference) {
-      return;
+      return false;
     }
 
     const refreshedRuntimeReference: TeamMemberRuntimeReference = {
@@ -60,19 +60,31 @@ export class TeamMemberRuntimeBindingStateService {
 
     const state = this.teamRuntimeBindingRegistry.getTeamBindingState(input.teamRunId);
     if (!state) {
-      return;
+      return false;
     }
 
+    let changed = false;
     const updatedBindings = state.memberBindings.map((binding) =>
-      binding.memberRunId === input.memberRunId
-        ? {
-            ...binding,
-            runtimeReference: refreshedRuntimeReference,
-          }
-        : binding,
+      binding.memberRunId !== input.memberRunId
+        ? binding
+        : (() => {
+            if (!isRuntimeReferenceChanged(binding.runtimeReference, refreshedRuntimeReference)) {
+              return binding;
+            }
+            changed = true;
+            return {
+              ...binding,
+              runtimeReference: refreshedRuntimeReference,
+            };
+          })(),
     );
 
+    if (!changed) {
+      return false;
+    }
+
     this.teamRuntimeBindingRegistry.upsertTeamBindings(input.teamRunId, state.mode, updatedBindings);
+    return true;
   }
 
   refreshTeamBindingsFromRuntimeState(teamRunId: string): TeamRunMemberBinding[] {

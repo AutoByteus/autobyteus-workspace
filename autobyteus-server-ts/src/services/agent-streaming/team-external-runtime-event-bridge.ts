@@ -17,6 +17,12 @@ const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
 };
 
+export interface TeamExternalRuntimeMemberEvent {
+  teamRunId: string;
+  binding: TeamRunMemberBinding;
+  event: unknown;
+}
+
 export class TeamExternalRuntimeEventBridge {
   private readonly bindingRegistry: TeamRuntimeBindingRegistry;
   private readonly externalRuntimeEventSourceRegistry: ExternalRuntimeEventSourceRegistry;
@@ -36,13 +42,14 @@ export class TeamExternalRuntimeEventBridge {
   subscribeTeam(
     teamRunId: string,
     onMessage: (message: ServerMessage) => void,
+    onRuntimeEvent?: (input: TeamExternalRuntimeMemberEvent) => void | Promise<void>,
   ): () => Promise<void> {
     const externalBindings = this.bindingRegistry
       .getTeamBindings(teamRunId)
       .filter((binding) => binding.runtimeKind !== "autobyteus");
 
     const unsubscribers = externalBindings
-      .map((binding) => this.trySubscribeMember(binding, onMessage))
+      .map((binding) => this.trySubscribeMember(teamRunId, binding, onMessage, onRuntimeEvent))
       .filter((unsubscribe): unsubscribe is () => void => typeof unsubscribe === "function");
 
     return async () => {
@@ -57,12 +64,21 @@ export class TeamExternalRuntimeEventBridge {
   }
 
   private trySubscribeMember(
+    teamRunId: string,
     binding: TeamRunMemberBinding,
     onMessage: (message: ServerMessage) => void,
+    onRuntimeEvent?: (input: TeamExternalRuntimeMemberEvent) => void | Promise<void>,
   ): (() => void) | null {
     try {
       const source = this.externalRuntimeEventSourceRegistry.resolveSource(binding.runtimeKind);
       return source.subscribeToRunEvents(binding.memberRunId, (event: unknown) => {
+        if (onRuntimeEvent) {
+          void Promise.resolve(onRuntimeEvent({ teamRunId, binding, event })).catch((error) => {
+            logger.warn(
+              `Failed handling team member runtime reference event for '${binding.memberRunId}': ${String(error)}`,
+            );
+          });
+        }
         try {
           const mapped = this.runtimeEventMessageMapper.map(event);
           const payload =

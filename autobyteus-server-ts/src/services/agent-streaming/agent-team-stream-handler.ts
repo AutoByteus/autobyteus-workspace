@@ -24,10 +24,12 @@ import type { ApprovalTargetSource } from "../../runtime-execution/runtime-adapt
 import {
   getTeamExternalRuntimeEventBridge,
   type TeamExternalRuntimeEventBridge,
+  type TeamExternalRuntimeMemberEvent,
 } from "./team-external-runtime-event-bridge.js";
 import { AgentSession } from "./agent-session.js";
 import { AgentSessionManager } from "./agent-session-manager.js";
 import { getAgentStreamHandler } from "./agent-stream-handler.js";
+import { getTeamRunHistoryService, type TeamRunHistoryService } from "../../run-history/services/team-run-history-service.js";
 import {
   ClientMessageType,
   createErrorMessage,
@@ -66,6 +68,7 @@ export class AgentTeamStreamHandler {
   private commandIngressService: RuntimeCommandIngressService;
   private teamMemberRuntimeOrchestrator: TeamMemberRuntimeOrchestrator;
   private teamExternalRuntimeEventBridge: TeamExternalRuntimeEventBridge;
+  private teamRunHistoryService: TeamRunHistoryService;
   private activeTasks = new Map<string, Promise<void>>();
   private eventStreams = new Map<string, AgentTeamEventStream>();
   private externalRuntimeBridgeUnsubscribers = new Map<string, () => Promise<void>>();
@@ -79,12 +82,14 @@ export class AgentTeamStreamHandler {
     teamMemberRuntimeOrchestrator: TeamMemberRuntimeOrchestrator = getTeamMemberRuntimeOrchestrator(),
     teamExternalRuntimeEventBridge: TeamExternalRuntimeEventBridge =
       getTeamExternalRuntimeEventBridge(),
+    teamRunHistoryService: TeamRunHistoryService = getTeamRunHistoryService(),
   ) {
     this.sessionManager = sessionManager;
     this.teamManager = teamManager;
     this.commandIngressService = commandIngressService;
     this.teamMemberRuntimeOrchestrator = teamMemberRuntimeOrchestrator;
     this.teamExternalRuntimeEventBridge = teamExternalRuntimeEventBridge;
+    this.teamRunHistoryService = teamRunHistoryService;
   }
 
   async connect(connection: WebSocketConnection, teamRunId: string): Promise<string | null> {
@@ -456,8 +461,83 @@ export class AgentTeamStreamHandler {
           logger.error(`Error sending external runtime team event to WebSocket: ${String(error)}`);
         }
       },
+      (event) => this.handleExternalRuntimeMemberEvent(event),
     );
     this.externalRuntimeBridgeUnsubscribers.set(sessionId, unsubscribe);
+  }
+
+  private async handleExternalRuntimeMemberEvent(input: TeamExternalRuntimeMemberEvent): Promise<void> {
+    const runtimeReference = this.extractRuntimeReferenceFromRuntimeEvent(input.event);
+    if (!runtimeReference) {
+      return;
+    }
+
+    const changed = this.teamMemberRuntimeOrchestrator.updateMemberRuntimeReference({
+      teamRunId: input.teamRunId,
+      memberRunId: input.binding.memberRunId,
+      runtimeReference,
+    });
+    if (!changed) {
+      return;
+    }
+
+    try {
+      await this.teamRunHistoryService.onTeamEvent(input.teamRunId, {
+        status: "ACTIVE",
+      });
+    } catch (error) {
+      logger.warn(
+        `Failed to persist runtime reference update for team run '${input.teamRunId}' member '${input.binding.memberRunId}': ${String(error)}`,
+      );
+    }
+  }
+
+  private extractRuntimeReferenceFromRuntimeEvent(
+    event: unknown,
+  ): { sessionId?: string | null; threadId?: string | null; metadata?: Record<string, unknown> | null } | null {
+    const payload = this.asObject(event);
+    if (!payload) {
+      return null;
+    }
+
+    const params = this.asObject(payload.params);
+    const thread = this.asObject(params?.thread);
+    const sessionId =
+      this.asNonEmptyString(params?.sessionId) ??
+      this.asNonEmptyString(params?.session_id) ??
+      this.asNonEmptyString(params?.threadId) ??
+      this.asNonEmptyString(params?.thread_id) ??
+      this.asNonEmptyString(thread?.id);
+    const threadId =
+      this.asNonEmptyString(params?.threadId) ??
+      this.asNonEmptyString(params?.thread_id) ??
+      this.asNonEmptyString(thread?.id) ??
+      this.asNonEmptyString(params?.sessionId) ??
+      this.asNonEmptyString(params?.session_id);
+
+    if (!sessionId && !threadId) {
+      return null;
+    }
+
+    return {
+      sessionId: sessionId ?? threadId ?? null,
+      threadId: threadId ?? sessionId ?? null,
+      metadata: null,
+    };
+  }
+
+  private asObject(value: unknown): Record<string, unknown> | null {
+    return value && typeof value === "object" && !Array.isArray(value)
+      ? (value as Record<string, unknown>)
+      : null;
+  }
+
+  private asNonEmptyString(value: unknown): string | null {
+    if (typeof value !== "string") {
+      return null;
+    }
+    const normalized = value.trim();
+    return normalized.length > 0 ? normalized : null;
   }
 
   private async refreshExternalRuntimeBridgeSubscriptions(teamRunId: string): Promise<void> {
