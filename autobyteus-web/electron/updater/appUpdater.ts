@@ -15,6 +15,7 @@ export type AppUpdateStatus =
   | 'available'
   | 'downloading'
   | 'downloaded'
+  | 'installing'
   | 'no-update'
   | 'error';
 
@@ -195,6 +196,7 @@ export class AppUpdater {
     }
 
     this.applyState({
+      status: 'installing',
       message: 'Installing update and restarting...',
       error: null,
     });

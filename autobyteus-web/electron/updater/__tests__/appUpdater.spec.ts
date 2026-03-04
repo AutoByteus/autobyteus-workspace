@@ -208,6 +208,10 @@ describe('AppUpdater', () => {
     const accepted = await install();
     expect(accepted).toEqual({ accepted: true });
 
+    const stateAfterInstall = await getIpcHandler('app-update:get-state')();
+    expect(stateAfterInstall.status).toBe('installing');
+    expect(stateAfterInstall.message).toBe('Installing update and restarting...');
+
     await vi.advanceTimersByTimeAsync(100);
     expect(autoUpdaterMock.quitAndInstall).toHaveBeenCalledWith(false, true);
   });
