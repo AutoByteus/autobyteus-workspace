@@ -97,6 +97,7 @@ describe("DiscordBusinessAdapter", () => {
   });
 
   it("records inbound observations and lists Discord peer candidates", async () => {
+    const observedAt = new Date().toISOString();
     const gatewayClient = new FakeGatewayClient();
     const adapter = new DiscordBusinessAdapter({
       botToken: "bot-token",
@@ -116,7 +117,7 @@ describe("DiscordBusinessAdapter", () => {
       guildId: null,
       threadId: null,
       content: "hello from dm",
-      timestamp: "2026-02-10T12:00:00.000Z",
+      timestamp: observedAt,
       mentioned: true,
       mentionsAgent: true,
       attachments: [],
@@ -135,7 +136,7 @@ describe("DiscordBusinessAdapter", () => {
         peerType: "USER",
         threadId: null,
         displayName: "Alice",
-        lastMessageAt: "2026-02-10T12:00:00.000Z",
+        lastMessageAt: observedAt,
       },
     ]);
   });

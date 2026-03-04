@@ -25,9 +25,6 @@ export class AgentDefinitionConverter {
         toolInvocationPreprocessorNames: domainDefinition.toolInvocationPreprocessorNames,
         lifecycleProcessorNames: domainDefinition.lifecycleProcessorNames,
         skillNames: domainDefinition.skillNames,
-        prompts: [],
-        systemPromptCategory: domainDefinition.systemPromptCategory ?? null,
-        systemPromptName: domainDefinition.systemPromptName ?? null,
       };
     } catch (error) {
       logger.error(

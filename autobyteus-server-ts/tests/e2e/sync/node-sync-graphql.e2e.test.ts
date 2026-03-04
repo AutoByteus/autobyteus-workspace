@@ -210,8 +210,6 @@ describe("Node sync GraphQL endpoint e2e", () => {
           name: `agent_a_${unique}`,
           role: "assistant",
           description: "agent a",
-          systemPromptCategory: "default",
-          systemPromptName: "default",
         },
       },
     );
@@ -223,8 +221,6 @@ describe("Node sync GraphQL endpoint e2e", () => {
           name: `agent_b_${unique}`,
           role: "assistant",
           description: "agent b",
-          systemPromptCategory: "default",
-          systemPromptName: "default",
         },
       },
     );
@@ -308,8 +304,6 @@ describe("Node sync GraphQL endpoint e2e", () => {
         name: `agent_${unique}`,
         role: "assistant",
         description: "full sync agent",
-        systemPromptCategory: "default",
-        systemPromptName: "default",
         toolNames: ["tool_alpha"],
       },
     });
@@ -392,8 +386,6 @@ describe("Node sync GraphQL endpoint e2e", () => {
         name: agentName,
         role: "assistant",
         description: "target-old-description",
-        systemPromptCategory: "default",
-        systemPromptName: "default",
         toolNames: ["tool_old"],
       },
     });

@@ -13,11 +13,11 @@ export type AgentTeamDefinitionProviderLoader = () => Promise<AgentTeamDefinitio
 const importRuntimeModule = async <T>(modulePath: string): Promise<T> =>
   (await import(modulePath)) as T;
 
-const loadSqlAgentTeamDefinitionProvider = async (): Promise<AgentTeamDefinitionProviderContract> => {
+const loadFileAgentTeamDefinitionProvider = async (): Promise<AgentTeamDefinitionProviderContract> => {
   const module = await importRuntimeModule<{
-    SqlAgentTeamDefinitionProvider: new () => AgentTeamDefinitionProviderContract;
-  }>(["./", "sql-agent-team-definition-provider.js"].join(""));
-  return new module.SqlAgentTeamDefinitionProvider();
+    FileAgentTeamDefinitionProvider: new () => AgentTeamDefinitionProviderContract;
+  }>(["./", "file-agent-team-definition-provider.js"].join(""));
+  return new module.FileAgentTeamDefinitionProvider();
 };
 
 export class AgentTeamDefinitionPersistenceProviderRegistry {
@@ -34,12 +34,11 @@ export class AgentTeamDefinitionPersistenceProviderRegistry {
   private loaders = new Map<string, AgentTeamDefinitionProviderLoader>();
 
   private constructor() {
-    this.registerProviderLoader("sqlite", loadSqlAgentTeamDefinitionProvider);
-    this.registerProviderLoader("postgresql", loadSqlAgentTeamDefinitionProvider);
-    this.registerProviderLoader("file", async () => {
-      const { FileAgentTeamDefinitionProvider } = await import("./file-agent-team-definition-provider.js");
-      return new FileAgentTeamDefinitionProvider();
-    });
+    // File-based persistence is canonical for agent team definitions.
+    // Keep non-file profile aliases for compatibility while avoiding SQL paths.
+    this.registerProviderLoader("sqlite", loadFileAgentTeamDefinitionProvider);
+    this.registerProviderLoader("postgresql", loadFileAgentTeamDefinitionProvider);
+    this.registerProviderLoader("file", loadFileAgentTeamDefinitionProvider);
   }
 
   registerProviderLoader(name: string, loader: AgentTeamDefinitionProviderLoader): void {

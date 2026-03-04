@@ -100,8 +100,6 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
-import { useAgentDefinitionOptionsStore } from '~/stores/agentDefinitionOptionsStore';
-import { storeToRefs } from 'pinia';
 
 const props = withDefaults(defineProps<{
   modelValue: string;
@@ -114,10 +112,6 @@ const emit = defineEmits<{
   (e: 'update:modelValue', value: string): void;
 }>();
 
-// Store
-const optionsStore = useAgentDefinitionOptionsStore();
-const { promptCategories } = storeToRefs(optionsStore);
-
 // Local state
 const inputValue = ref(props.modelValue);
 const isOpen = ref(false);
@@ -127,7 +121,7 @@ const inputRef = ref<HTMLInputElement | null>(null);
 
 // Computed: Extract category names from promptCategories
 const categoryNames = computed(() => {
-  return promptCategories.value.map(pc => pc.category);
+  return [] as string[];
 });
 
 // Computed: Filter categories based on input
@@ -164,9 +158,6 @@ watch(inputValue, (newVal) => {
 
 // Fetch categories on mount if not loaded
 onMounted(() => {
-  if (promptCategories.value.length === 0) {
-    optionsStore.fetchAllAvailableOptions();
-  }
   document.addEventListener('click', handleClickOutside, true);
 });
 

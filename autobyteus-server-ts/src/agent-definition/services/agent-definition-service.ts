@@ -145,6 +145,8 @@ export class AgentDefinitionService {
       role: data.role,
       description: data.description,
       avatarUrl: normalizeOptionalString(data.avatarUrl),
+      systemPromptCategory: normalizeOptionalString(data.systemPromptCategory),
+      systemPromptName: normalizeOptionalString(data.systemPromptName),
       activePromptVersion:
         Number.isInteger(data.activePromptVersion) && (data.activePromptVersion as number) > 0
           ? (data.activePromptVersion as number)
@@ -246,6 +248,10 @@ export class AgentDefinitionService {
             throw new Error("activePromptVersion must be a positive integer.");
           }
           break;
+        case "systemPromptCategory":
+        case "systemPromptName":
+          nextValue = normalizeOptionalString(value);
+          break;
         default:
           break;
       }
@@ -278,4 +284,3 @@ export class AgentDefinitionService {
     }
   }
 }
-

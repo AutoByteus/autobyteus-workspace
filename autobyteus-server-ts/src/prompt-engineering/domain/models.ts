@@ -6,7 +6,6 @@ export class Prompt {
   version?: number | null;
   createdAt?: Date | null;
   updatedAt?: Date | null;
-  parentId?: string | null;
   isActive: boolean;
 
   constructor(options: {
@@ -17,7 +16,6 @@ export class Prompt {
     version?: number | null;
     createdAt?: Date | null;
     updatedAt?: Date | null;
-    parentId?: string | null;
     isActive?: boolean;
   }) {
     this.name = options.name;
@@ -27,7 +25,6 @@ export class Prompt {
     this.version = options.version ?? 1;
     this.createdAt = options.createdAt ?? null;
     this.updatedAt = options.updatedAt ?? null;
-    this.parentId = options.parentId ?? null;
     this.isActive = options.isActive ?? true;
   }
 }

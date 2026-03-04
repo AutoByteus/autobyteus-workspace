@@ -57,7 +57,6 @@ const serializePromptSummary = (prompt: Prompt): Record<string, unknown> => ({
   category: prompt.category,
   version: prompt.version ?? null,
   is_active: prompt.isActive,
-  parent_id: prompt.parentId ?? null,
   created_at: prompt.createdAt ? prompt.createdAt.toISOString() : null,
   updated_at: prompt.updatedAt ? prompt.updatedAt.toISOString() : null,
 });

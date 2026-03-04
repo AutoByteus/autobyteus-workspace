@@ -21,6 +21,14 @@ type AgentTeamDefinitionServiceOptions = {
   persistenceProvider?: AgentTeamDefinitionPersistenceProvider;
 };
 
+const normalizeOptionalString = (value: unknown): string | null => {
+  if (typeof value !== "string") {
+    return null;
+  }
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : null;
+};
+
 export class AgentTeamDefinitionService {
   private static instance: AgentTeamDefinitionService | null = null;
 
@@ -43,6 +51,8 @@ export class AgentTeamDefinitionService {
     if (definition.id) {
       throw new Error("Cannot create a definition that already has an ID.");
     }
+    definition.role = normalizeOptionalString(definition.role);
+    definition.avatarUrl = normalizeOptionalString(definition.avatarUrl);
     const created = await this.provider.create(definition);
     logger.info(`Agent Team Definition created successfully with ID: ${created.id}`);
     return created;
@@ -78,7 +88,11 @@ export class AgentTeamDefinitionService {
     for (const [key, value] of Object.entries(updates)) {
       if (value !== null && value !== undefined) {
         if (key in existing) {
-          updateRecord[key] = value;
+          if (key === "role" || key === "avatarUrl") {
+            updateRecord[key] = normalizeOptionalString(value);
+          } else {
+            updateRecord[key] = value;
+          }
         }
       }
     }

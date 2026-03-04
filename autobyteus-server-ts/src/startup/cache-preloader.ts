@@ -1,7 +1,6 @@
 import { AgentDefinitionService } from "../agent-definition/services/agent-definition-service.js";
 import { AgentTeamDefinitionService } from "../agent-team-definition/services/agent-team-definition-service.js";
 import { getMcpConfigService } from "../mcp-server-management/services/mcp-config-service.js";
-import { PromptService } from "../prompt-engineering/services/prompt-service.js";
 import { getRuntimeModelCatalogService } from "../runtime-management/model-catalog/runtime-model-catalog-service.js";
 
 const logger = {
@@ -35,14 +34,6 @@ export async function runCachePreloading(): Promise<void> {
     logger.info(`Pre-loaded ${configs.length} MCP server configs into cache.`);
   } catch (error) {
     logger.error(`Failed to preload MCP server configs: ${String(error)}`);
-  }
-
-  try {
-    const promptService = new PromptService();
-    const prompts = await promptService.findPrompts();
-    logger.info(`Pre-loaded ${prompts.length} prompts into cache.`);
-  } catch (error) {
-    logger.error(`Failed to preload prompts: ${String(error)}`);
   }
 
   try {

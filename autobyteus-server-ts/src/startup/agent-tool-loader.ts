@@ -22,11 +22,6 @@ const loaderSpecs: LoaderSpec[] = [
     exportName: "registerSkillsTools",
   },
   {
-    name: "MCP Server Management Tools",
-    modulePath: "../agent-tools/mcp-server-management/register-mcp-server-management-tools.js",
-    exportName: "registerMcpServerManagementTools",
-  },
-  {
     name: "Application Tools",
     modulePath: "../applications/socratic-math-teacher/tools/frontend-builder-tool.js",
     exportName: "registerFrontendBuilderTool",

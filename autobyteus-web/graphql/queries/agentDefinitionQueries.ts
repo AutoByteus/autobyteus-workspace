@@ -18,19 +18,6 @@ export const GetAgentDefinitions = gql`
       toolInvocationPreprocessorNames
       lifecycleProcessorNames
       skillNames
-      systemPromptCategory
-      systemPromptName
-      prompts {
-        __typename
-        id
-        name
-        category
-        promptContent
-        version
-        createdAt
-        updatedAt
-        isActive
-      }
     }
   }
 `

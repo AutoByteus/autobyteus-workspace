@@ -8,71 +8,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model AgentDefinition {
-  id                                Int    @id @default(autoincrement())
-  name                              String @unique
-  role                              String
-  description                       String
-  avatarUrl                         String? @map("avatar_url")
-  toolNames                         String @default("[]") @map("tool_names")
-  inputProcessorNames               String @default("[]") @map("input_processor_names")
-  llmResponseProcessorNames         String @default("[]") @map("llm_response_processor_names")
-  systemPromptProcessorNames        String @default("[]") @map("system_prompt_processor_names")
-  toolExecutionResultProcessorNames String @default("[]") @map("tool_execution_result_processor_names")
-  toolInvocationPreprocessorNames   String @default("[]") @map("tool_invocation_preprocessor_names")
-  lifecycleProcessorNames           String @default("[]") @map("lifecycle_processor_names")
-  skillNames                        String @default("[]") @map("skill_names")
-  syncId                            String? @unique(map: "uq_agent_definitions_sync_id") @map("sync_id")
-  syncRevision                      String? @map("sync_revision")
-
-  promptMapping AgentPromptMapping?
-
-  @@map("agent_definitions")
-}
-
-model AgentPromptMapping {
-  id                 Int    @id @default(autoincrement())
-  agentDefinitionId  Int    @unique @map("agent_definition_id")
-  promptName         String @map("prompt_name")
-  promptCategory     String @map("prompt_category")
-
-  agentDefinition AgentDefinition @relation(fields: [agentDefinitionId], references: [id], onDelete: Cascade)
-
-  @@map("agent_prompt_mappings")
-}
-
-model Prompt {
-  id                Int      @id @default(autoincrement())
-  name              String
-  category          String
-  promptContent     String   @map("prompt_content")
-  version           Int      @default(1)
-  createdAt         DateTime @default(now()) @map("created_at")
-  updatedAt         DateTime @default(now()) @map("updated_at")
-  parentId          Int?     @map("parent_id")
-  isActive          Boolean  @default(true) @map("is_active")
-
-  syncId            String?  @unique(map: "uq_prompts_sync_id") @map("sync_id")
-  syncRevision      String?  @map("sync_revision")
-
-  @@unique([name, category, version], map: "uq_prompt_version")
-  @@map("prompts")
-}
-
-model AgentTeamDefinition {
-  id                     Int    @id @default(autoincrement())
-  name                   String @unique
-  description            String
-  role                   String?
-  avatarUrl              String? @map("avatar_url")
-  nodes                  String
-  coordinatorMemberName  String @map("coordinator_member_name")
-  syncId                 String? @unique(map: "uq_agent_team_definitions_sync_id") @map("sync_id")
-  syncRevision           String? @map("sync_revision")
-
-  @@map("agent_team_definitions")
-}
-
 model TokenUsageRecord {
   id             Int      @id @default(autoincrement())
   usageRecordId  String   @unique @default(uuid()) @map("usage_record_id")
@@ -98,35 +33,6 @@ model AgentArtifact {
 
   @@index([runId])
   @@map("agent_artifacts")
-}
-
-model McpServerConfiguration {
-  id             Int      @id @default(autoincrement())
-  serverId       String   @unique @map("server_id")
-  transportType  String   @map("transport_type")
-  enabled        Boolean  @default(true)
-  toolNamePrefix String?  @map("tool_name_prefix")
-  configDetails  String   @map("config_details")
-  createdAt      DateTime @default(now()) @map("created_at")
-  updatedAt      DateTime @updatedAt @map("updated_at")
-  syncId         String?  @unique(map: "uq_mcp_server_configurations_sync_id") @map("sync_id")
-  syncRevision   String?  @map("sync_revision")
-
-  @@map("mcp_server_configurations")
-}
-
-model SyncTombstone {
-  id           Int      @id @default(autoincrement())
-  entityType   String   @map("entity_type")
-  syncId       String   @map("sync_id")
-  sourceNodeId String   @map("source_node_id")
-  sourceEpoch  Int      @map("source_epoch")
-  sequence     Int
-  createdAt    DateTime @default(now()) @map("created_at")
-
-  @@unique([entityType, syncId, sourceNodeId, sourceEpoch, sequence], map: "uq_sync_tombstones_revision")
-  @@index([entityType, syncId], map: "idx_sync_tombstones_entity_sync_id")
-  @@map("sync_tombstones")
 }
 
 model ChannelBinding {

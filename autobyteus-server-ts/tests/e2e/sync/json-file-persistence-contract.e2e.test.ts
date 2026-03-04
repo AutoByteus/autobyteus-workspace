@@ -89,8 +89,6 @@ describe("JSON file persistence contract e2e (no mocks)", () => {
         name: agentName,
         role: "assistant",
         description: "Agent contract test description",
-        systemPromptCategory: "default",
-        systemPromptName: "default",
         toolNames: ["send_message_to"],
       },
     });
@@ -286,8 +284,6 @@ describe("JSON file persistence contract e2e (no mocks)", () => {
         name: `Sync Agent ${unique}`,
         role: "assistant",
         description: "old-description",
-        systemPromptCategory: "default",
-        systemPromptName: "default",
       },
     });
     const agentId = createdAgent.createAgentDefinition.id;

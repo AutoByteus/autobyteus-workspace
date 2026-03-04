@@ -1,7 +1,9 @@
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { promises as fs } from "node:fs";
 import { PromptLoader } from "../../../src/prompt-engineering/utils/prompt-loader.js";
 import { Prompt } from "../../../src/prompt-engineering/domain/models.js";
 import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
+import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 
 const makePrompt = (options: {
   name?: string;
@@ -15,6 +17,10 @@ const makePrompt = (options: {
   });
 
 describe("PromptLoader", () => {
+  beforeEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it("returns a direct model match for an agent prompt", async () => {
     const agentDef = new AgentDefinition({
       id: "agent1",
@@ -44,12 +50,17 @@ describe("PromptLoader", () => {
       agentDefinitionService: agentDefinitionService as any,
       llmFactory,
     });
+    const dataDir = "/tmp/autobyteus-prompt-loader-test";
+    vi.spyOn(appConfigProvider.config, "getAppDataDir").mockReturnValue(dataDir);
+    const readSpy = vi
+      .spyOn(fs, "readFile")
+      .mockResolvedValue("This is for GPT-4o");
 
     const content = await loader.getPromptTemplateForAgent("agent1", "GPT_4o_API");
 
     expect(agentDefinitionService.getAgentDefinitionById).toHaveBeenCalledOnce();
-    expect(promptService.getActivePromptsByContext).toHaveBeenCalledWith("Coder", "System");
-    expect(promptService.getActivePromptsByContext).toHaveBeenCalledTimes(1);
+    expect(readSpy).toHaveBeenCalledOnce();
+    expect(promptService.getActivePromptsByContext).not.toHaveBeenCalled();
     expect(content).toBe("This is for GPT-4o");
   });
 
@@ -84,11 +95,13 @@ describe("PromptLoader", () => {
       agentDefinitionService: agentDefinitionService as any,
       llmFactory,
     });
+    const dataDir = "/tmp/autobyteus-prompt-loader-test";
+    vi.spyOn(appConfigProvider.config, "getAppDataDir").mockReturnValue(dataDir);
+    vi.spyOn(fs, "readFile").mockResolvedValue("Default Content");
 
     const content = await loader.getPromptTemplateForAgent("agent1", "SomeNewModel_API");
 
-    expect(promptService.getActivePromptsByContext).toHaveBeenCalledWith("Coder", "System");
-    expect(promptService.getActivePromptsByContext).toHaveBeenCalledTimes(1);
+    expect(promptService.getActivePromptsByContext).not.toHaveBeenCalled();
     expect(content).toBe("Default Content");
   });
 
@@ -110,11 +123,13 @@ describe("PromptLoader", () => {
       agentDefinitionService: agentDefinitionService as any,
       llmFactory,
     });
+    const readSpy = vi.spyOn(fs, "readFile");
 
     const content = await loader.getPromptTemplateForAgent("agent_no_mapping", "GPT_4o_API");
 
     expect(content).toBeNull();
     expect(promptService.getActivePromptsByContext).not.toHaveBeenCalled();
+    expect(readSpy).not.toHaveBeenCalled();
   });
 
   it("returns first available prompt content regardless of model", async () => {
@@ -146,10 +161,13 @@ describe("PromptLoader", () => {
       agentDefinitionService: agentDefinitionService as any,
       llmFactory,
     });
+    const dataDir = "/tmp/autobyteus-prompt-loader-test";
+    vi.spyOn(appConfigProvider.config, "getAppDataDir").mockReturnValue(dataDir);
+    vi.spyOn(fs, "readFile").mockResolvedValue("Other");
 
     const content = await loader.getPromptTemplateForAgent("agent1", "GPT_4o_API");
 
-    // With suitableForModels removed, any available prompt is returned
+    expect(promptService.getActivePromptsByContext).not.toHaveBeenCalled();
     expect(content).toBe("Other");
   });
 
@@ -182,12 +200,16 @@ describe("PromptLoader", () => {
       agentDefinitionService: agentDefinitionService as any,
       llmFactory,
     });
+    const dataDir = "/tmp/autobyteus-prompt-loader-test";
+    vi.spyOn(appConfigProvider.config, "getAppDataDir").mockReturnValue(dataDir);
+    const readSpy = vi.spyOn(fs, "readFile").mockResolvedValue("Cached Content");
 
     const content1 = await loader.getPromptTemplateForAgent("agent1", "GPT_4o_API");
     const content2 = await loader.getPromptTemplateForAgent("agent1", "GPT_4o_API");
 
     expect(agentDefinitionService.getAgentDefinitionById).toHaveBeenCalledOnce();
-    expect(promptService.getActivePromptsByContext).toHaveBeenCalledOnce();
+    expect(readSpy).toHaveBeenCalledOnce();
+    expect(promptService.getActivePromptsByContext).not.toHaveBeenCalled();
     expect(content1).toBe("Cached Content");
     expect(content1).toBe(content2);
   });

@@ -75,6 +75,21 @@ class FakeSessionClient implements WhatsAppSessionClient {
   }
 }
 
+const cleanupAuthRoot = async (authRoot: string): Promise<void> => {
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    try {
+      await rm(authRoot, { recursive: true, force: true });
+      return;
+    } catch (error) {
+      const code = (error as NodeJS.ErrnoException).code;
+      if (code !== "ENOTEMPTY" && code !== "EBUSY") {
+        throw error;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 25 * (attempt + 1)));
+    }
+  }
+};
+
 describe("WhatsAppPersonalAdapter", () => {
   it("starts session and exposes QR/status after real connection events", async () => {
     const nowRef = { value: Date.UTC(2026, 1, 9, 0, 0, 0) };
@@ -117,7 +132,7 @@ describe("WhatsAppPersonalAdapter", () => {
       expect(status.status).toBe("ACTIVE");
       expect(status.accountLabel).toBe("home");
     } finally {
-      await rm(authRoot, { recursive: true, force: true });
+      await cleanupAuthRoot(authRoot);
     }
   });
 
@@ -169,7 +184,7 @@ describe("WhatsAppPersonalAdapter", () => {
 
       await adapter.stopSession(created.sessionId);
     } finally {
-      await rm(authRoot, { recursive: true, force: true });
+      await cleanupAuthRoot(authRoot);
     }
   });
 
@@ -240,7 +255,7 @@ describe("WhatsAppPersonalAdapter", () => {
       expect(afterStop.status).toBe("STOPPED");
       expect(afterStop.items).toEqual([]);
     } finally {
-      await rm(authRoot, { recursive: true, force: true });
+      await cleanupAuthRoot(authRoot);
     }
   });
 
@@ -299,7 +314,7 @@ describe("WhatsAppPersonalAdapter", () => {
       unsubscribe();
       await adapter.stopSession(created.sessionId);
     } finally {
-      await rm(authRoot, { recursive: true, force: true });
+      await cleanupAuthRoot(authRoot);
     }
   });
 
@@ -364,7 +379,7 @@ describe("WhatsAppPersonalAdapter", () => {
       unsubscribe();
       await adapter.stopSession(created.sessionId);
     } finally {
-      await rm(authRoot, { recursive: true, force: true });
+      await cleanupAuthRoot(authRoot);
     }
   });
 
@@ -425,7 +440,7 @@ describe("WhatsAppPersonalAdapter", () => {
       await adapter.stopSession(created.sessionId);
       await expect(adapter.sendOutbound(payload)).rejects.toBeInstanceOf(SessionNotActiveError);
     } finally {
-      await rm(authRoot, { recursive: true, force: true });
+      await cleanupAuthRoot(authRoot);
     }
   });
 
@@ -454,7 +469,7 @@ describe("WhatsAppPersonalAdapter", () => {
         }),
       ).rejects.toBeInstanceOf(SessionAlreadyRunningError);
     } finally {
-      await rm(authRoot, { recursive: true, force: true });
+      await cleanupAuthRoot(authRoot);
     }
   });
 });

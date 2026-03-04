@@ -105,6 +105,19 @@ export class FileAgentDefinitionProvider {
     return candidate;
   }
 
+  private async ensureActivePromptFile(
+    agentId: string,
+    activePromptVersion: number,
+    fallbackContent: string,
+  ): Promise<void> {
+    const version = ensurePositiveInteger(activePromptVersion);
+    const promptPath = path.join(this.getAgentDir(agentId), `prompt-v${version}.md`);
+    if (await this.exists(promptPath)) {
+      return;
+    }
+    await fs.writeFile(promptPath, fallbackContent, "utf-8");
+  }
+
   async getPromptContents(agentId: string): Promise<Record<string, string>> {
     const agentDir = this.getAgentDir(agentId);
     const versions: Record<string, string> = {};
@@ -159,11 +172,17 @@ export class FileAgentDefinitionProvider {
 
   async create(domainObj: AgentDefinition): Promise<AgentDefinition> {
     const agentId = domainObj.id ?? (await this.nextAgentId(domainObj.name));
-    await fs.mkdir(this.getAgentDir(agentId), { recursive: true });
-    await fs.writeFile(this.getAgentJsonPath(agentId), toJson(toRecord(new AgentDefinition({
+    const definition = new AgentDefinition({
       ...domainObj,
       id: agentId,
-    }))), "utf-8");
+    });
+    await fs.mkdir(this.getAgentDir(agentId), { recursive: true });
+    await fs.writeFile(this.getAgentJsonPath(agentId), toJson(toRecord(definition)), "utf-8");
+    await this.ensureActivePromptFile(
+      agentId,
+      definition.activePromptVersion,
+      definition.description,
+    );
     const created = await this.getById(agentId);
     if (!created) {
       throw new Error(`Failed to create agent definition '${agentId}'.`);
@@ -205,6 +224,11 @@ export class FileAgentDefinitionProvider {
     }
     await fs.mkdir(this.getAgentDir(domainObj.id), { recursive: true });
     await fs.writeFile(this.getAgentJsonPath(domainObj.id), toJson(toRecord(domainObj)), "utf-8");
+    await this.ensureActivePromptFile(
+      domainObj.id,
+      domainObj.activePromptVersion,
+      domainObj.description,
+    );
     const updated = await this.getById(domainObj.id);
     if (!updated) {
       throw new Error(`Failed to update agent definition '${domainObj.id}'.`);

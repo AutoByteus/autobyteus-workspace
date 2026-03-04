@@ -23,14 +23,6 @@ export interface AgentDefinition {
   toolInvocationPreprocessorNames: string[];
   lifecycleProcessorNames: string[];
   skillNames: string[];
-  prompts: {
-    __typename?: 'Prompt';
-    id: string;
-    name: string;
-    category: string;
-  }[];
-  systemPromptCategory?: string;
-  systemPromptName?: string;
 }
 
 // Interfaces for mutation inputs
@@ -39,8 +31,6 @@ export interface CreateAgentDefinitionInput {
   role: string;
   description: string;
   avatarUrl?: string;
-  systemPromptCategory: string;
-  systemPromptName: string;
   toolNames?: string[];
   inputProcessorNames?: string[];
   llmResponseProcessorNames?: string[];
@@ -57,8 +47,6 @@ export interface UpdateAgentDefinitionInput {
   role?: string;
   description?: string;
   avatarUrl?: string;
-  systemPromptCategory?: string;
-  systemPromptName?: string;
   toolNames?: string[];
   inputProcessorNames?: string[];
   llmResponseProcessorNames?: string[];

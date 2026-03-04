@@ -10,4 +10,4 @@ if (fs.existsSync(envPath)) {
 
 process.env.DATABASE_URL = getTestDatabaseUrl();
 process.env.DATABASE_URL_TEST = process.env.DATABASE_URL;
-process.env.PERSISTENCE_PROVIDER = "sqlite";
+process.env.PERSISTENCE_PROVIDER = "file";

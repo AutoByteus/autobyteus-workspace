@@ -35,25 +35,6 @@ describe("Agent definitions GraphQL e2e", () => {
 
   it("creates, updates, and deletes agent definitions", async () => {
     const unique = `agent_def_${Date.now()}_${Math.random().toString(16).slice(2)}`;
-    const promptName = `Prompt_${unique}`;
-    const promptCategory = `Category_${unique}`;
-
-    const createPromptMutation = `
-      mutation CreatePrompt($input: CreatePromptInput!) {
-        createPrompt(input: $input) {
-          id
-          name
-          category
-        }
-      }
-    `;
-    await execGraphql(createPromptMutation, {
-      input: {
-        name: promptName,
-        category: promptCategory,
-        promptContent: "System prompt content",
-      },
-    });
 
     const createMutation = `
       mutation CreateAgentDefinition($input: CreateAgentDefinitionInput!) {
@@ -63,14 +44,8 @@ describe("Agent definitions GraphQL e2e", () => {
           role
           description
           avatarUrl
+          activePromptVersion
           toolNames
-          systemPromptCategory
-          systemPromptName
-          prompts {
-            id
-            name
-            category
-          }
         }
       }
     `;
@@ -82,10 +57,8 @@ describe("Agent definitions GraphQL e2e", () => {
         role: string;
         description: string;
         avatarUrl: string | null;
+        activePromptVersion: number;
         toolNames: string[];
-        systemPromptCategory: string | null;
-        systemPromptName: string | null;
-        prompts: Array<{ id: string; name: string; category: string }>;
       };
     }>(createMutation, {
       input: {
@@ -93,25 +66,16 @@ describe("Agent definitions GraphQL e2e", () => {
         role: "assistant",
         description: "Agent definition for e2e",
         avatarUrl: "http://localhost:8000/rest/files/images/e2e-avatar.png",
-        systemPromptCategory: promptCategory,
-        systemPromptName: promptName,
         toolNames: ["tool_a", "tool_b"],
         skillNames: ["skill_one"],
       },
     });
 
     expect(created.createAgentDefinition.name).toBe(`agent_${unique}`);
-    expect(created.createAgentDefinition.systemPromptCategory).toBe(promptCategory);
-    expect(created.createAgentDefinition.systemPromptName).toBe(promptName);
     expect(created.createAgentDefinition.avatarUrl).toBe(
       "http://localhost:8000/rest/files/images/e2e-avatar.png",
     );
-    expect(created.createAgentDefinition.prompts.length).toBeGreaterThan(0);
-    expect(
-      created.createAgentDefinition.prompts.some(
-        (prompt) => prompt.name === promptName && prompt.category === promptCategory,
-      ),
-    ).toBe(true);
+    expect(created.createAgentDefinition.activePromptVersion).toBe(1);
 
     const updateMutation = `
       mutation UpdateAgentDefinition($input: UpdateAgentDefinitionInput!) {

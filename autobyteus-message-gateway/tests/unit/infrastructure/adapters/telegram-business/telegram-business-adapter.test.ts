@@ -67,6 +67,7 @@ describe("TelegramBusinessAdapter", () => {
   });
 
   it("maps polling updates to canonical envelopes and peer discovery observations", async () => {
+    const observedAt = new Date().toISOString();
     const botClient = new FakeTelegramBotClient();
     const adapter = new TelegramBusinessAdapter({
       accountId: "telegram-acct-1",
@@ -91,7 +92,7 @@ describe("TelegramBusinessAdapter", () => {
         senderIsBot: false,
         senderDisplayName: "Alice",
         threadId: "11",
-        dateIso: "2026-02-13T00:00:00.000Z",
+        dateIso: observedAt,
         text: "hello team",
         entities: [],
         replyToSenderId: null,
