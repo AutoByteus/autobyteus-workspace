@@ -1,6 +1,6 @@
 import type { UiModelConfigSchema } from '~/utils/llmConfigSchema';
 
-type ThinkingProvider = 'openai' | 'claude' | 'gemini' | 'zhipu';
+type ThinkingProvider = 'openai' | 'claude' | 'gemini' | 'glm';
 
 type ThinkingConfig = Record<string, unknown>;
 
@@ -8,7 +8,7 @@ const PROVIDER_KEYS: Record<ThinkingProvider, string[]> = {
   openai: ['reasoning_effort', 'reasoning_summary'],
   claude: ['thinking_enabled', 'thinking_budget_tokens'],
   gemini: ['thinking_level', 'include_thoughts'],
-  zhipu: ['thinking_type'],
+  glm: ['thinking_type'],
 };
 
 export const detectThinkingProvider = (schema: UiModelConfigSchema | null): ThinkingProvider | null => {
@@ -16,7 +16,7 @@ export const detectThinkingProvider = (schema: UiModelConfigSchema | null): Thin
   if ('reasoning_effort' in schema || 'reasoning_summary' in schema) return 'openai';
   if ('thinking_enabled' in schema || 'thinking_budget_tokens' in schema) return 'claude';
   if ('thinking_level' in schema || 'include_thoughts' in schema) return 'gemini';
-  if ('thinking_type' in schema) return 'zhipu';
+  if ('thinking_type' in schema) return 'glm';
   return null;
 };
 
@@ -44,7 +44,7 @@ export const getThinkingToggleState = (
       const level = config.thinking_level as string | undefined;
       return includeThoughts || (level !== undefined && level !== 'minimal');
     }
-    case 'zhipu':
+    case 'glm':
       return config.thinking_type === 'enabled';
     default:
       return false;
@@ -112,7 +112,7 @@ export const applyThinkingToggle = (
       }
       break;
     }
-    case 'zhipu': {
+    case 'glm': {
       applyKey(next, schema, 'thinking_type', enabled ? 'enabled' : 'disabled');
       break;
     }

@@ -7,11 +7,13 @@ import { AgentRuntimeState } from '../../../src/agent/context/agent-runtime-stat
 import { AgentContext } from '../../../src/agent/context/agent-context.js';
 import { LLMUserMessageReadyEventHandler } from '../../../src/agent/handlers/llm-user-message-ready-event-handler.js';
 import { ToolInvocationRequestEventHandler } from '../../../src/agent/handlers/tool-invocation-request-event-handler.js';
+import { ToolInvocationExecutionEventHandler } from '../../../src/agent/handlers/tool-invocation-execution-event-handler.js';
 import { ToolResultEventHandler } from '../../../src/agent/handlers/tool-result-event-handler.js';
 import { MemoryIngestInputProcessor } from '../../../src/agent/input-processor/memory-ingest-input-processor.js';
 import { MemoryIngestToolResultProcessor } from '../../../src/agent/tool-execution-result-processor/memory-ingest-tool-result-processor.js';
 import {
   LLMUserMessageReadyEvent,
+  ExecuteToolInvocationEvent,
   PendingToolInvocationEvent,
   ToolResultEvent,
   UserMessageReceivedEvent
@@ -121,6 +123,16 @@ runIntegration('Full tool roundtrip flow (LM Studio)', () => {
       for (const event of (runtimeState.inputEventQueues as any).toolInvocationEvents) {
         expect(event).toBeInstanceOf(PendingToolInvocationEvent);
         await toolInvocationHandler.handle(event, context);
+      }
+
+      const executionEvents = (runtimeState.inputEventQueues as any).internalEvents.filter(
+        (event: any) => event instanceof ExecuteToolInvocationEvent
+      );
+      expect(executionEvents.length).toBeGreaterThan(0);
+
+      const toolExecutionHandler = new ToolInvocationExecutionEventHandler();
+      for (const event of executionEvents) {
+        await toolExecutionHandler.handle(event, context);
       }
 
       expect((runtimeState.inputEventQueues as any).toolResultEvents.length).toBeGreaterThan(0);

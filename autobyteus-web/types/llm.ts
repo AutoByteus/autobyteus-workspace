@@ -8,6 +8,7 @@ export enum LLMProvider {
     PERPLEXITY = "PERPLEXITY",
     OLLAMA = "OLLAMA",
     DEEPSEEK = "DEEPSEEK",
+    GLM = "GLM",
     GROK = "GROK",
     AUTOBYTEUS = "AUTOBYTEUS",
 }

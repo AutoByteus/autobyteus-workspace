@@ -29,13 +29,84 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  prepare-release:
+    name: Resolve Release Metadata
+    runs-on: ubuntu-latest
+    outputs:
+      release_tag: ${{ steps.meta.outputs.release_tag }}
+      release_ref: ${{ steps.meta.outputs.release_ref }}
+      prerelease: ${{ steps.meta.outputs.prerelease }}
+      enforce_version: ${{ steps.meta.outputs.enforce_version }}
+      release_sha: ${{ steps.sha.outputs.release_sha }}
+    steps:
+      - name: Resolve release metadata
+        id: meta
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            RELEASE_TAG="${GITHUB_REF_NAME}"
+            RELEASE_REF="${GITHUB_REF_NAME}"
+            ENFORCE_VERSION="true"
+            PRERELEASE="false"
+          elif [[ -n "${{ github.event.inputs.release_tag }}" ]]; then
+            RELEASE_TAG="${{ github.event.inputs.release_tag }}"
+            RELEASE_REF="${{ github.event.inputs.release_tag }}"
+            ENFORCE_VERSION="true"
+            if [[ "${{ github.event.inputs.prerelease }}" == "true" ]]; then
+              PRERELEASE="true"
+            else
+              PRERELEASE="false"
+            fi
+          else
+            RELEASE_TAG=""
+            RELEASE_REF="${GITHUB_REF_NAME}"
+            ENFORCE_VERSION="false"
+            if [[ "${{ github.event.inputs.prerelease }}" == "true" ]]; then
+              PRERELEASE="true"
+            else
+              PRERELEASE="false"
+            fi
+          fi
+
+          echo "release_tag=$RELEASE_TAG" >> "$GITHUB_OUTPUT"
+          echo "release_ref=$RELEASE_REF" >> "$GITHUB_OUTPUT"
+          echo "prerelease=$PRERELEASE" >> "$GITHUB_OUTPUT"
+          echo "enforce_version=$ENFORCE_VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout release ref
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.meta.outputs.release_ref }}
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Validate desktop package version matches release tag
+        if: ${{ steps.meta.outputs.enforce_version == 'true' }}
+        run: |
+          TAG_VERSION="${{ steps.meta.outputs.release_tag }}"
+          TAG_VERSION="${TAG_VERSION#v}"
+          PACKAGE_VERSION="$(grep -m1 '"version"' autobyteus-web/package.json | sed -E 's/.*\"version\": \"([^\"]+)\".*/\1/')"
+          echo "Release tag version: $TAG_VERSION"
+          echo "Desktop package version: $PACKAGE_VERSION"
+          if [[ "$PACKAGE_VERSION" != "$TAG_VERSION" ]]; then
+            echo "::error::autobyteus-web/package.json version ($PACKAGE_VERSION) must match release tag ($TAG_VERSION)."
+            exit 1
+          fi
+
+      - name: Resolve release commit SHA
+        id: sha
+        run: |
+          RELEASE_SHA="$(git rev-list -n 1 "${{ steps.meta.outputs.release_ref }}")"
+          echo "release_sha=$RELEASE_SHA" >> "$GITHUB_OUTPUT"
+
   build-macos-arm64:
     name: Build macOS ARM64
+    needs: prepare-release
     runs-on: macos-14
     steps:
       - name: Checkout workspace + submodules
         uses: actions/checkout@v4
         with:
+          ref: ${{ needs.prepare-release.outputs.release_ref }}
           fetch-depth: 0
           submodules: recursive
 
@@ -104,11 +175,13 @@ jobs:
 
   build-macos-x64:
     name: Build macOS Intel x64
+    needs: prepare-release
     runs-on: macos-14
     steps:
       - name: Checkout workspace + submodules
         uses: actions/checkout@v4
         with:
+          ref: ${{ needs.prepare-release.outputs.release_ref }}
           fetch-depth: 0
           submodules: recursive
 
@@ -176,11 +249,13 @@ jobs:
 
   build-linux:
     name: Build Linux x64
+    needs: prepare-release
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout workspace + submodules
         uses: actions/checkout@v4
         with:
+          ref: ${{ needs.prepare-release.outputs.release_ref }}
           fetch-depth: 0
           submodules: recursive
 
@@ -219,6 +294,50 @@ jobs:
             autobyteus-web/electron-dist/latest-linux.yml
           if-no-files-found: error
 
+  build-windows:
+    name: Build Windows x64
+    needs: prepare-release
+    runs-on: windows-2022
+    steps:
+      - name: Checkout workspace + submodules
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare-release.outputs.release_ref }}
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.2
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install workspace dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Install Python setuptools for node-gyp
+        run: python -m pip install --user --upgrade setuptools
+
+      - name: Build Electron Windows x64
+        working-directory: autobyteus-web
+        env:
+          AUTOBYTEUS_BUILD_FLAVOR: "personal"
+        run: pnpm build:electron:windows
+
+      - name: Upload Windows artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-x64
+          path: |
+            autobyteus-web/electron-dist/*windows-*.exe
+            autobyteus-web/electron-dist/latest.yml
+          if-no-files-found: error
+
   publish-release:
     name: Publish GitHub Release
     if: >
@@ -227,26 +346,13 @@ jobs:
        github.event.inputs.publish_release == 'true' &&
        github.event.inputs.release_tag != '')
     needs:
+      - prepare-release
       - build-macos-arm64
       - build-macos-x64
       - build-linux
+      - build-windows
     runs-on: ubuntu-latest
     steps:
-      - name: Resolve release metadata
-        id: release_meta
-        run: |
-          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
-            echo "tag=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
-            echo "prerelease=false" >> "$GITHUB_OUTPUT"
-          else
-            echo "tag=${{ github.event.inputs.release_tag }}" >> "$GITHUB_OUTPUT"
-            if [[ "${{ github.event.inputs.prerelease }}" == "true" ]]; then
-              echo "prerelease=true" >> "$GITHUB_OUTPUT"
-            else
-              echo "prerelease=false" >> "$GITHUB_OUTPUT"
-            fi
-          fi
-
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
@@ -255,16 +361,18 @@ jobs:
       - name: Publish release assets
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.release_meta.outputs.tag }}
-          target_commitish: ${{ github.sha }}
+          tag_name: ${{ needs.prepare-release.outputs.release_tag }}
+          target_commitish: ${{ needs.prepare-release.outputs.release_sha }}
           draft: false
-          prerelease: ${{ steps.release_meta.outputs.prerelease }}
+          prerelease: ${{ needs.prepare-release.outputs.prerelease }}
           generate_release_notes: true
           files: |
             release-artifacts/**/*.dmg
             release-artifacts/**/*.dmg.blockmap
             release-artifacts/**/*.zip
             release-artifacts/**/*.zip.blockmap
+            release-artifacts/**/*.exe
             release-artifacts/**/*.AppImage
             release-artifacts/**/*.AppImage.blockmap
             release-artifacts/**/latest-*.yml
+            release-artifacts/**/latest.yml

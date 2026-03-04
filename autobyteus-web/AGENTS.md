@@ -36,6 +36,15 @@ The tools and environments where agents live and users interact.
 ### Git Guidelines
 *   **NEVER use `git add .` or `git add -A`**. Always stage files individually or by specific patterns to avoid committing unintended changes.
 
+### Release Guidelines
+*   Keep desktop release tag and package version in sync:
+    * `autobyteus-web/package.json` version must match release tag version (`vX.Y.Z`).
+*   Prefer the root helper script to avoid drift:
+    * `pnpm release:prepare -- <x.y.z>`: bump version, commit, tag, and push branch+tag.
+    * `pnpm release:test -- --ref personal`: run release workflow build-only (no publish).
+    * `pnpm release:publish -- v<x.y.z> --ref personal`: publish/update GitHub release for an existing tag.
+*   Do not create release tags manually unless there is an explicit exception.
+
 ### Testing Overview
 We follow a **colocated testing strategy** where tests live alongside the code in `__tests__` directories.
 *   **Philosophy**: See **[Testing Strategy in Architecture](./ARCHITECTURE.md#testing-strategy)**.

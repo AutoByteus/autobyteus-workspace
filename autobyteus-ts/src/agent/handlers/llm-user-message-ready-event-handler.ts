@@ -133,6 +133,7 @@ export class LLMUserMessageReadyEventHandler extends AgentEventHandler {
     const assembler = new LLMRequestAssembler(memoryManager, renderer);
     const systemPrompt = context.state.processedSystemPrompt ?? llmInstance.config.systemMessage ?? null;
     const request = await assembler.prepareRequest(llmUserMessage, activeTurnId, systemPrompt ?? undefined);
+    let parsedToolInvocationCount = 0;
 
     try {
       for await (const chunkResponse of llmInstance.streamMessages(
@@ -178,16 +179,17 @@ export class LLMUserMessageReadyEventHandler extends AgentEventHandler {
       if (toolNames.length) {
         const toolInvocations = streamingHandler.getAllInvocations();
         if (toolInvocations.length) {
+          parsedToolInvocationCount = toolInvocations.length;
           context.state.activeToolInvocationTurn = new ToolInvocationTurn(activeTurnId, toolInvocations);
           console.info(
             `Agent '${agentId}': Parsed ${toolInvocations.length} tool invocations from streaming parser.`
           );
+          if (memoryManager) {
+            memoryManager.ingestToolIntents(toolInvocations, activeTurnId ?? undefined);
+          }
           for (const invocation of toolInvocations) {
             if (activeTurnId && !invocation.turnId) {
               invocation.turnId = activeTurnId;
-            }
-            if (memoryManager) {
-              memoryManager.ingestToolIntent(invocation, activeTurnId ?? undefined);
             }
             await context.inputEventQueues.enqueueToolInvocationRequest(
               new PendingToolInvocationEvent(invocation)
@@ -235,7 +237,16 @@ export class LLMUserMessageReadyEventHandler extends AgentEventHandler {
     });
 
     if (memoryManager && activeTurnId) {
-      memoryManager.ingestAssistantResponse(completeResponse, activeTurnId, 'LLMCompleteResponseReceivedEvent');
+      memoryManager.ingestAssistantResponse(
+        completeResponse,
+        activeTurnId,
+        'LLMCompleteResponseReceivedEvent',
+        {
+          // For tool-calling turns, strict OpenAI-compatible providers require:
+          // assistant(tool_calls) -> tool(result) before any next assistant text.
+          appendToWorkingContext: parsedToolInvocationCount === 0
+        }
+      );
       if (tokenUsage) {
         const budget = resolveTokenBudget(llmInstance.model, llmInstance.config, memoryManager.compactionPolicy);
         if (budget) {
