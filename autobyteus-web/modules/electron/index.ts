@@ -230,7 +230,8 @@ export default defineNuxtModule<ElectronOptions>({
         
         logger.info('Configuring for Electron build target')
         nuxt.options.app.baseURL = './'
-        nuxt.options.app.buildAssetsDir = '/'
+        // Use renderer-local asset directory for packaged file:// loads.
+        nuxt.options.app.buildAssetsDir = '_nuxt/'
         nuxt.options.router.options.hashMode = true
         
         logger.debug('Electron build config applied:', {

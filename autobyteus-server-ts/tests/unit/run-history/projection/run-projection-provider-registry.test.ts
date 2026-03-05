@@ -4,7 +4,7 @@ import type { RunProjectionProvider } from "../../../../src/run-history/projecti
 
 const createProvider = (
   providerId: string,
-  runtimeKind?: "autobyteus" | "codex_app_server",
+  runtimeKind?: "autobyteus" | "codex_app_server" | "claude_agent_sdk",
 ): RunProjectionProvider => ({
   providerId,
   runtimeKind,

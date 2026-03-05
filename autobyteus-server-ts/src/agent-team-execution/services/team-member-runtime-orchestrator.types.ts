@@ -1,0 +1,16 @@
+import type { RuntimeKind } from "../../runtime-management/runtime-kind.js";
+import type { TeamMemberRuntimeReference } from "../../run-history/domain/team-models.js";
+
+export interface TeamRuntimeMemberConfig {
+  memberName: string;
+  memberRouteKey: string;
+  memberRunId: string;
+  runtimeKind: RuntimeKind;
+  runtimeReference?: TeamMemberRuntimeReference | null;
+  agentDefinitionId: string;
+  llmModelIdentifier: string;
+  autoExecuteTools: boolean;
+  workspaceId?: string | null;
+  workspaceRootPath?: string | null;
+  llmConfig?: Record<string, unknown> | null;
+}

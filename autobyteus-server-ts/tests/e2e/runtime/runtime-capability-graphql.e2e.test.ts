@@ -45,5 +45,6 @@ describe("Runtime capability GraphQL e2e", () => {
     const runtimeKinds = new Set(capabilities.map((capability) => capability.runtimeKind));
     expect(runtimeKinds.has("autobyteus")).toBe(true);
     expect(runtimeKinds.has("codex_app_server")).toBe(true);
+    expect(runtimeKinds.has("claude_agent_sdk")).toBe(true);
   });
 });

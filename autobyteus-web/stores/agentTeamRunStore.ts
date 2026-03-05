@@ -9,7 +9,7 @@ import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
-import { TeamStreamingService } from '~/services/agentStreaming';
+import { ConnectionState, TeamStreamingService } from '~/services/agentStreaming';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig';
 import { AgentStatus } from '~/types/agent/AgentStatus';
@@ -40,15 +40,20 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
      * Establish WebSocket connection for a team run.
      */
     connectToTeamStream(teamRunId: string) {
-      if (teamStreamingServices.has(teamRunId)) {
-        return;
-      }
-
       const teamContextsStore = useAgentTeamContextsStore();
       const teamContext = teamContextsStore.getTeamContextById(teamRunId);
 
       if (!teamContext) {
         console.warn(`Could not find team context for ID ${teamRunId} to connect stream.`);
+        return;
+      }
+
+      const existingService = teamStreamingServices.get(teamRunId);
+      if (existingService) {
+        if (existingService.connectionState === ConnectionState.DISCONNECTED) {
+          existingService.connect(teamRunId, teamContext);
+          teamContext.isSubscribed = true;
+        }
         return;
       }
 
@@ -209,7 +214,10 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         }
 
         const teamContextAfterSend = teamContextsStore.getTeamContextById(teamRunId);
-        if (teamContextAfterSend && !teamContextAfterSend.isSubscribed) {
+        const activeService = teamStreamingServices.get(teamRunId);
+        const streamDisconnected =
+          !activeService || activeService.connectionState === ConnectionState.DISCONNECTED;
+        if (teamContextAfterSend && (!teamContextAfterSend.isSubscribed || streamDisconnected)) {
           this.connectToTeamStream(teamRunId);
         }
       } catch (error: any) {

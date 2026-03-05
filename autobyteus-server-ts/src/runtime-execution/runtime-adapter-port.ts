@@ -104,6 +104,7 @@ export interface RuntimeCommandResult {
   accepted: boolean;
   code?: string;
   message?: string;
+  runtimeReference?: RuntimeRunReference | null;
 }
 
 export interface RuntimeEventInterpretation {

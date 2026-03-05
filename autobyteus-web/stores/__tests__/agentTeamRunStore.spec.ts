@@ -8,6 +8,7 @@ import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 const {
   mockConnect,
   mockDisconnect,
+  mockConnectionState,
   mockStopGeneration,
   mockMutate,
   mockClearActivities,
@@ -17,6 +18,7 @@ const {
 } = vi.hoisted(() => ({
   mockConnect: vi.fn(),
   mockDisconnect: vi.fn(),
+  mockConnectionState: { value: 'connected' as 'connected' | 'disconnected' | 'connecting' | 'reconnecting' },
   mockStopGeneration: vi.fn(),
   mockMutate: vi.fn(),
   mockClearActivities: vi.fn(),
@@ -38,7 +40,16 @@ const {
 }));
 
 vi.mock('~/services/agentStreaming', () => ({
+  ConnectionState: {
+    DISCONNECTED: 'disconnected',
+    CONNECTING: 'connecting',
+    CONNECTED: 'connected',
+    RECONNECTING: 'reconnecting',
+  },
   TeamStreamingService: vi.fn().mockImplementation(() => ({
+    get connectionState() {
+      return mockConnectionState.value;
+    },
     connect: mockConnect,
     disconnect: mockDisconnect,
     approveTool: vi.fn(),
@@ -83,6 +94,7 @@ describe('agentTeamRunStore', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
+    mockConnectionState.value = 'connected';
     mockStopGeneration.mockReset();
     teamContextsStoreMock.activeTeamContext = null;
     teamContextsStoreMock.focusedMemberContext = null;
@@ -202,6 +214,60 @@ describe('agentTeamRunStore', () => {
     expect(TeamStreamingService).toHaveBeenCalledWith('ws://node-a.example/ws/agent-team');
     expect(mockConnect).toHaveBeenCalledWith('team-1', teamContext);
     expect(teamContext.isSubscribed).toBe(true);
+  });
+
+  it('reconnects stale disconnected team stream after successful send', async () => {
+    const teamRunId = `team-reconnect-${Date.now()}`;
+    const focusedMember = {
+      state: {
+        runId: 'member-1',
+        conversation: {
+          messages: [] as any[],
+          updatedAt: '2026-02-21T00:00:00.000Z',
+        },
+      },
+      isSending: false,
+    };
+    const teamContext = {
+      teamRunId,
+      focusedMemberName: 'professor',
+      isSubscribed: true,
+      config: {
+        teamDefinitionId: 'team-def-1',
+        workspaceId: 'ws-1',
+        llmModelIdentifier: 'model-x',
+        autoExecuteTools: false,
+        memberOverrides: {},
+      },
+      members: new Map([['professor', focusedMember]]),
+    };
+
+    teamContextsStoreMock.activeTeamContext = teamContext;
+    teamContextsStoreMock.focusedMemberContext = focusedMember;
+    teamContextsStoreMock.getTeamContextById.mockImplementation((teamRunId: string) =>
+      teamRunId === teamContext.teamRunId ? teamContext : null,
+    );
+
+    mockMutate.mockResolvedValue({
+      data: {
+        sendMessageToTeam: {
+          success: true,
+          teamRunId,
+          message: 'ok',
+        },
+      },
+      errors: [],
+    });
+
+    const store = useAgentTeamRunStore();
+    store.connectToTeamStream(teamRunId);
+    expect(mockConnect).toHaveBeenCalledTimes(1);
+
+    mockConnectionState.value = 'disconnected';
+    await store.sendMessageToFocusedMember('hello after reconnect', []);
+
+    expect(mockConnect).toHaveBeenCalledTimes(2);
+    expect(mockConnect).toHaveBeenLastCalledWith(teamRunId, teamContext);
   });
 
   it('stopGeneration should send STOP_GENERATION to the active team stream', () => {

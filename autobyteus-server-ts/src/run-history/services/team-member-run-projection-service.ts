@@ -5,6 +5,7 @@ import {
 } from "./team-run-history-service.js";
 import type { TeamRunMemberBinding } from "../domain/team-models.js";
 import { normalizeMemberRouteKey } from "../utils/team-member-run-id.js";
+import { DEFAULT_RUNTIME_KIND } from "../../runtime-management/runtime-kind.js";
 import {
   TeamMemberMemoryProjectionReader,
   getTeamMemberMemoryProjectionReader,
@@ -48,6 +49,16 @@ const resolveMemberBinding = (
   }
 
   return null;
+};
+
+const projectionRichnessScore = (projection: RunProjection | null): number => {
+  if (!projection) {
+    return -1;
+  }
+  const conversationScore = projection.conversation.length * 10;
+  const summaryScore = projection.summary ? 1 : 0;
+  const activityScore = projection.lastActivityAt ? 1 : 0;
+  return conversationScore + summaryScore + activityScore;
 };
 
 export interface TeamMemberRunProjection {
@@ -100,27 +111,35 @@ export class TeamMemberRunProjectionService {
     }
 
     const resolvedProvider = this.projectionProviderRegistry.resolveProvider(binding.runtimeKind);
-    const fallbackProvider =
-      resolvedProvider.runtimeKind === binding.runtimeKind ? resolvedProvider : null;
-    const shouldTryRuntimeFallback =
-      Boolean(fallbackProvider) &&
-      (projectionReadError !== null ||
-        !projection ||
-        projection.conversation.length === 0);
+    const providerMatchesRuntime =
+      !resolvedProvider.runtimeKind || resolvedProvider.runtimeKind === binding.runtimeKind;
+    const shouldTryRuntimeProjection =
+      binding.runtimeKind !== DEFAULT_RUNTIME_KIND &&
+      providerMatchesRuntime;
 
-    if (shouldTryRuntimeFallback && fallbackProvider) {
-      const runtimeProjection = await fallbackProvider.buildProjection({
-        runId: binding.memberRunId,
-        runtimeKind: binding.runtimeKind,
-        manifest: {
-          workspaceRootPath:
-            binding.workspaceRootPath ?? resumeConfig.manifest.workspaceRootPath ?? "",
-        } as any,
-        runtimeReference: binding.runtimeReference as any,
-      });
-      if (runtimeProjection && runtimeProjection.conversation.length > 0) {
-        projection = runtimeProjection;
-        projectionReadError = null;
+    if (shouldTryRuntimeProjection) {
+      try {
+        const runtimeProjection = await resolvedProvider.buildProjection({
+          runId: binding.memberRunId,
+          runtimeKind: binding.runtimeKind,
+          manifest: {
+            workspaceRootPath:
+              binding.workspaceRootPath ?? resumeConfig.manifest.workspaceRootPath ?? "",
+          } as any,
+          runtimeReference: binding.runtimeReference as any,
+        });
+
+        if (
+          runtimeProjection &&
+          projectionRichnessScore(runtimeProjection) > projectionRichnessScore(projection)
+        ) {
+          projection = runtimeProjection;
+          projectionReadError = null;
+        }
+      } catch (error) {
+        if (!projection) {
+          projectionReadError = error;
+        }
       }
     }
 

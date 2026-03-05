@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import dotenv from "dotenv";
@@ -297,7 +298,13 @@ export class AppConfig {
   }
 
   getTempWorkspaceDir(): string {
-    const tempWorkspaceDir = path.join(this.dataDir, "temp_workspace");
+    const configuredPath = this.get("AUTOBYTEUS_TEMP_WORKSPACE_DIR");
+    const tempWorkspaceDir =
+      typeof configuredPath === "string" && configuredPath.trim().length > 0
+        ? path.isAbsolute(configuredPath.trim())
+          ? path.resolve(configuredPath.trim())
+          : path.resolve(this.dataDir, configuredPath.trim())
+        : path.join(os.tmpdir(), "autobyteus", "temp_workspace");
     try {
       fs.mkdirSync(tempWorkspaceDir, { recursive: true });
     } catch (error) {

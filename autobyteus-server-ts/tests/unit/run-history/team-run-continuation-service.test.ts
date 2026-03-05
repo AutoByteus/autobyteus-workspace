@@ -38,12 +38,21 @@ describe("TeamRunContinuationService", () => {
         getTeamRunResumeConfig: vi.fn().mockResolvedValue({
           teamRunId: "team-1",
           manifest: {
+            teamRunId: "team-1",
             teamDefinitionId: "team-def-1",
+            teamDefinitionName: "Team 1",
+            workspaceRootPath: null,
+            coordinatorMemberRouteKey: "professor",
+            runVersion: 1,
+            createdAt: "2026-01-01T00:00:00.000Z",
+            updatedAt: "2026-01-01T00:00:00.000Z",
             memberBindings: [
               {
                 memberName: "Professor",
                 memberRouteKey: "professor",
                 memberRunId: "member-1",
+                runtimeKind: "autobyteus",
+                runtimeReference: null,
                 agentDefinitionId: "agent-1",
                 llmModelIdentifier: "model-1",
                 autoExecuteTools: false,

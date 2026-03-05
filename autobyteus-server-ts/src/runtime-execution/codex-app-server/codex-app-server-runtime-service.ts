@@ -37,6 +37,12 @@ import {
   resolveCodexSessionReasoningEffort,
 } from "./codex-runtime-model-catalog.js";
 import {
+  emitRuntimeEvent,
+  moveRuntimeListenersToDeferred,
+  rebindDeferredRuntimeListeners,
+  subscribeToRuntimeRunEvents,
+} from "../runtime-event-listener-hub.js";
+import {
   resumeCodexThread,
   startCodexThread,
 } from "./codex-runtime-thread-lifecycle.js";
@@ -54,6 +60,10 @@ const logger = {
 
 export class CodexAppServerRuntimeService {
   private readonly sessions = new Map<string, CodexRunSessionState>();
+  private readonly deferredListenersByRunId = new Map<
+    string,
+    Set<(event: CodexRuntimeEvent) => void>
+  >();
   private readonly workspaceManager = getWorkspaceManager();
   private readonly processManager: CodexAppServerProcessManager;
   private interAgentRelayHandler: CodexInterAgentRelayHandler | null = null;
@@ -75,6 +85,11 @@ export class CodexAppServerRuntimeService {
     await this.closeRunSession(runId);
     const state = await this.startSession(runId, options, null);
     this.sessions.set(runId, state);
+    rebindDeferredRuntimeListeners({
+      runId,
+      activeListeners: state.listeners,
+      deferredListenersByRunId: this.deferredListenersByRunId,
+    });
     return {
       threadId: state.threadId,
       metadata: {
@@ -103,6 +118,11 @@ export class CodexAppServerRuntimeService {
       runtimeReference?.threadId ?? null,
     );
     this.sessions.set(runId, state);
+    rebindDeferredRuntimeListeners({
+      runId,
+      activeListeners: state.listeners,
+      deferredListenersByRunId: this.deferredListenersByRunId,
+    });
     return {
       threadId: state.threadId,
       metadata: {
@@ -122,14 +142,12 @@ export class CodexAppServerRuntimeService {
     runId: string,
     listener: (event: CodexRuntimeEvent) => void,
   ): () => void {
-    const state = this.sessions.get(runId);
-    if (!state) {
-      return () => {};
-    }
-    state.listeners.add(listener);
-    return () => {
-      state.listeners.delete(listener);
-    };
+    return subscribeToRuntimeRunEvents({
+      runId,
+      listener,
+      resolveActiveListenerSet: (activeRunId) => this.sessions.get(activeRunId)?.listeners,
+      deferredListenersByRunId: this.deferredListenersByRunId,
+    });
   }
 
   async sendTurn(runId: string, message: AgentInputUserMessage): Promise<{ turnId: string | null }> {
@@ -234,6 +252,11 @@ export class CodexAppServerRuntimeService {
       return;
     }
     this.sessions.delete(runId);
+    moveRuntimeListenersToDeferred({
+      runId,
+      activeListeners: state.listeners,
+      deferredListenersByRunId: this.deferredListenersByRunId,
+    });
     state.listeners.clear();
     state.approvalRecords.clear();
     for (const unbind of state.unbindHandlers) {
@@ -405,13 +428,13 @@ export class CodexAppServerRuntimeService {
   }
 
   private emitEvent(state: CodexRunSessionState, event: CodexRuntimeEvent): void {
-    for (const listener of state.listeners) {
-      try {
-        listener(event);
-      } catch (error) {
+    emitRuntimeEvent({
+      listeners: state.listeners,
+      event,
+      onListenerError: (error) => {
         logger.warn(`Codex runtime event listener failed: ${String(error)}`);
-      }
-    }
+      },
+    });
   }
 
   private findApprovalRecord(

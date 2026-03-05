@@ -6,6 +6,7 @@ const REQUIRED_RUNTIME_CLIENT_DESCRIPTOR_MODULE_SPECS: readonly string[] = [
 ];
 const DEFAULT_OPTIONAL_RUNTIME_CLIENT_DESCRIPTOR_MODULE_SPECS: readonly string[] = [
   "./codex-runtime-client-module.js",
+  "./claude-runtime-client-module.js",
 ];
 
 interface RuntimeClientDescriptorModule {
