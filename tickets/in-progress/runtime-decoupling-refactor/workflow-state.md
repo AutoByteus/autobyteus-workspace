@@ -7,12 +7,12 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 ## Current Snapshot
 
 - Ticket: `runtime-decoupling-refactor`
-- Current Stage: `10`
-- Next Stage: `N/A`
+- Current Stage: `1`
+- Next Stage: `2`
 - Code Edit Permission: `Locked`
-- Active Re-Entry: `No`
-- Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-085`
+- Active Re-Entry: `Yes`
+- Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `Design Impact`
+- Last Transition ID: `T-086`
 - Last Updated: `2026-03-05`
 
 ## Stage Gates
@@ -20,16 +20,16 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | Stage | Gate Status (`Not Started`/`In Progress`/`Pass`/`Fail`/`Blocked`) | Gate Rule Summary | Evidence |
 | --- | --- | --- | --- |
 | 0 Bootstrap + Draft Requirement | Pass | Ticket bootstrap complete + `requirements.md` Draft captured | `tickets/in-progress/runtime-decoupling-refactor/requirements.md` |
-| 1 Investigation + Triage | Pass | Re-entry investigation refreshed for final descriptor module-spec discovery seam (`C-033`) and scope triage reconfirmed `Medium`. | `tickets/in-progress/runtime-decoupling-refactor/investigation-notes.md` |
-| 2 Requirements | Pass | Requirements refined with runtime-client descriptor module-spec discovery acceptance criteria (`R-012`, `AC-021`, `AC-022`, `UC-018`). | `tickets/in-progress/runtime-decoupling-refactor/requirements.md` |
-| 3 Design Basis | Pass | Design updated to `v10` with module-spec descriptor discovery at runtime-client index boundary (`C-033`, `C-034`). | `tickets/in-progress/runtime-decoupling-refactor/proposed-design.md` |
-| 4 Runtime Modeling | Pass | Future-state runtime call stack updated to `v9` with explicit `UC-018` module-spec descriptor discovery flow and fallback/error branches. | `tickets/in-progress/runtime-decoupling-refactor/future-state-runtime-call-stack.md` |
-| 5 Review Gate | Pass | Runtime review reached `Go Confirmed` for design `v10` + call stack `v9` (clean rounds `17`,`18`) with no new use cases or blocking updates. | `tickets/in-progress/runtime-decoupling-refactor/future-state-runtime-call-stack-review.md` |
-| 6 Implementation | Pass | Stage-10 continuation iteration 4 implementation completed for runtime-client index module-spec descriptor discovery + focused regression coverage (`C-033`, `C-034`) with targeted and full-suite verification. | `tickets/in-progress/runtime-decoupling-refactor/implementation-plan.md`, `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md` |
-| 7 API/E2E Testing | Pass | Acceptance/API coverage closed for `AC-021` and `AC-022` (`AV-023`, `AV-024`) with backend/full-suite regression evidence. | `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md` |
-| 8 Code Review | Pass | Iteration-4 code review passed with no blocking findings; runtime-client descriptor composition seam is now module-spec discovery driven and runtime-neutral at shared index boundary. | `tickets/in-progress/runtime-decoupling-refactor/code-review.md`, `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md` |
-| 9 Docs Sync | Pass | Iteration-4 docs sync closed with explicit no-impact rationale. | `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md` |
-| 10 Handoff / Ticket State | In Progress | Stage-10 continuation iteration 4 completed; ticket remains in-progress awaiting explicit user completion confirmation. | `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
+| 1 Investigation + Triage | In Progress | Reopened from Stage 10 after merge of `origin/personal` introduced Claude Agent SDK runtime changes that were authored on pre-refactor architecture; fresh impact inventory in progress. | `tickets/in-progress/runtime-decoupling-refactor/investigation-notes.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
+| 2 Requirements | Not Started | Requirements delta for Claude runtime decoupling alignment pending refreshed investigation closure. | `tickets/in-progress/runtime-decoupling-refactor/requirements.md` |
+| 3 Design Basis | Not Started | Awaiting updated requirements and redesign for Claude runtime integration through decoupled runtime-client module seams. | `tickets/in-progress/runtime-decoupling-refactor/proposed-design.md` |
+| 4 Runtime Modeling | Not Started | Awaiting refreshed design basis for updated future-state call-stack modeling. | `tickets/in-progress/runtime-decoupling-refactor/future-state-runtime-call-stack.md` |
+| 5 Review Gate | Not Started | Awaiting updated runtime call-stack artifacts and deep-review rounds. | `tickets/in-progress/runtime-decoupling-refactor/future-state-runtime-call-stack-review.md` |
+| 6 Implementation | Not Started | Locked pending refreshed Stage 5 Go confirmation for Claude-runtime-aligned architecture. | `tickets/in-progress/runtime-decoupling-refactor/implementation-plan.md`, `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md` |
+| 7 API/E2E Testing | Not Started | Awaiting post-implementation Stage 6 completion on reopened scope. | `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md` |
+| 8 Code Review | Not Started | Awaiting refreshed implementation and Stage 7 closure. | `tickets/in-progress/runtime-decoupling-refactor/code-review.md`, `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md` |
+| 9 Docs Sync | Not Started | Awaiting refreshed Stage 8 pass for reopened scope. | `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md` |
+| 10 Handoff / Ticket State | In Progress | Ticket reopened from prior handoff after upstream personal-branch merge; new decoupling iteration active. | `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -80,11 +80,11 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 
 ## Re-Entry Declaration
 
-- Trigger Stage (`5`/`6`/`7`/`8`): `N/A`
-- Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Required Return Path: `N/A`
-- Required Upstream Artifacts To Update Before Code Edits: `N/A`
-- Resume Condition: `N/A`
+- Trigger Stage (`5`/`6`/`7`/`8`): `10`
+- Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `Design Impact`
+- Required Return Path: `1 -> 2 -> 3 -> 4 -> 5 -> 6`
+- Required Upstream Artifacts To Update Before Code Edits: `investigation-notes.md`, `requirements.md`, `proposed-design.md`, `future-state-runtime-call-stack.md`, `future-state-runtime-call-stack-review.md`
+- Resume Condition: `Stage 5 Go Confirmed re-established for Claude-runtime-aligned decoupled architecture and Stage 6 unlocked`
 
 ## Transition Log (Append-Only)
 
@@ -176,6 +176,7 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | T-083 | 2026-03-05 | 7 | 8 | Stage-10 continuation iteration 4 acceptance/API closure completed for `AC-021`/`AC-022`; entering Stage 8 code review and relocking code edits. | N/A | Locked | implementation-progress.md, workflow-state.md |
 | T-084 | 2026-03-05 | 8 | 9 | Stage-10 continuation iteration 4 code review passed with no blocking findings; proceeding to docs sync closure. | N/A | Locked | code-review.md, implementation-progress.md, workflow-state.md |
 | T-085 | 2026-03-05 | 9 | 10 | Stage-10 continuation iteration 4 docs sync closed with no-impact rationale; returning to final handoff pending explicit user confirmation. | N/A | Locked | implementation-progress.md, workflow-state.md |
+| T-086 | 2026-03-05 | 10 | 1 | Merged latest `origin/personal` (including Claude Agent SDK runtime support) into refactor branch; reopened workflow for Design Impact re-entry because incoming runtime integration was built on pre-refactor architecture and needs decoupled-runtime realignment. | Design Impact | Locked | workflow-state.md, investigation-notes.md, requirements.md |
 
 ## Audible Notification Log (Optional Tracking)
 

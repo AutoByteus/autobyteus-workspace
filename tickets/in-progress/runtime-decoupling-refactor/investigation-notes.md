@@ -432,3 +432,45 @@
   - confined to runtime composition boundary with localized implementation,
   - behavior-preserving refactor (no protocol/schema changes),
   - full backend/frontend regression remains feasible.
+
+## Stage-10 Re-Entry Investigation Refresh (Post-Merge Claude Runtime Intake)
+
+- Date: `2026-03-05`
+- Trigger: `Stage 10 -> Stage 1` re-entry (`Design Impact`) after merging `origin/personal` into `codex/runtime-decoupling-refactor`
+- Objective: integrate incoming Claude Agent SDK runtime support into the decoupled runtime-client architecture without regressing runtime neutrality.
+
+### Additional Sources Consulted In This Refresh
+
+- `autobyteus-server-ts/src/runtime-execution/adapters/claude-agent-sdk-runtime-adapter.ts`
+- `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/*.ts`
+- `autobyteus-server-ts/src/runtime-management/runtime-client/index.ts`
+- `autobyteus-server-ts/src/runtime-management/runtime-client/runtime-client-module.ts`
+- `autobyteus-server-ts/src/runtime-management/runtime-client/runtime-client-modules-defaults.ts`
+- `autobyteus-server-ts/src/runtime-management/runtime-client/codex-runtime-client-module.ts`
+- `autobyteus-server-ts/src/run-history/services/team-member-run-projection-service.ts`
+- `autobyteus-server-ts/src/services/agent-streaming/agent-stream-handler.ts`
+- `autobyteus-server-ts/src/services/agent-streaming/team-runtime-event-bridge.ts`
+- `autobyteus-server-ts/src/services/agent-streaming/team-external-runtime-event-bridge.ts`
+- `autobyteus-server-ts/tests/unit/runtime-management/runtime-client/runtime-client-index.test.ts`
+- `autobyteus-server-ts/tests/unit/runtime-management/runtime-client/runtime-client-modules-defaults.test.ts`
+
+### Refresh Findings
+
+1. Incoming personal-branch Claude runtime code is largely feature-complete but was initially wired with non-refactor assumptions (direct registry/default integrations and optional-runtime static coupling points).
+2. The current refactor branch already has the correct long-term seam: runtime-client descriptor/module discovery + centralized registration defaults.
+3. Claude runtime integration needs to land through runtime-client module composition, not through hardcoded shared registry wiring.
+4. Team/runtime projection behavior requires richer external-runtime projection preference for member-runtime sessions so local-memory snapshots do not mask fuller runtime-backed transcripts.
+5. Optional-runtime safety remains critical: shared runtime-neutral barrels/services should avoid static optional-runtime imports; optional runtime modules must fail-soft when unavailable.
+
+### Immediate Integration Adjustments Completed During Merge Conflict Resolution
+
+- Added a dedicated optional runtime-client module for Claude runtime registration (`claude-runtime-client-module.ts`) and added descriptor-module discovery default entry.
+- Expanded Claude adapter capabilities to align with decoupled shared contracts (`teamExecutionMode`, `isRunActive`, `subscribeToRunEvents`, relay handler binding, runtime-event interpretation).
+- Updated team member projection service selection logic to prefer richer runtime projections for non-default runtimes while preserving safe local fallback behavior on runtime-provider errors.
+
+### Scope Triage Confirmation
+
+- Classification remains: `Medium`
+- Reason:
+  - Cross-layer impact across runtime registration, streaming contracts, team member runtime orchestration, and run-history projection behavior.
+  - Requires requirements + design + runtime-model refresh to ensure Claude runtime lands without reintroducing runtime-specific coupling in shared layers.

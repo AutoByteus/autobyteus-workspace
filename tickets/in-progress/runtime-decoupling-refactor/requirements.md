@@ -140,3 +140,24 @@ Decouple runtime integration boundaries so each runtime (including Codex) is plu
 
 - Team runtime execution currently has explicit Codex-only orchestration branches; removal may need phased migration.
 - Run-history projection has codex-linked provider assumptions that may require a transitional provider registry redesign.
+
+## Re-Entry Delta (Post-Merge Claude Runtime Intake)
+
+- Date: `2026-03-05`
+- Status: `Refined` (delta captured for next design/runtime-model iteration)
+
+### Added/Refined Requirements
+
+- `R-013`: Claude Agent SDK runtime registration must be integrated through runtime-client descriptor/module discovery (no shared-registry static wiring).
+  - Expected outcome: Claude runtime adapter/model/capability/projection/event-mapper registration is provided by an optional runtime-client module descriptor.
+- `R-014`: Optional runtime integrations must remain fail-soft under missing optional dependencies.
+  - Expected outcome: shared runtime-neutral entrypoints keep loading when Claude runtime dependencies are unavailable; optional module discovery skips failing optional modules safely.
+- `R-015`: Team-member run-history projection for non-default runtimes must select the richer projection source between local-memory and runtime-backed providers.
+  - Expected outcome: runtime-backed projection can supersede incomplete local projection snapshots, while local projection remains fallback on runtime-provider failure.
+
+### Added Acceptance Criteria
+
+- `AC-023`: `runtime-management/runtime-client/index.ts` includes Claude descriptor module-spec discovery without introducing static shared-layer optional-runtime imports.
+- `AC-024`: Claude runtime registration is encapsulated in `claude-runtime-client-module.ts` and includes adapter/model/capability/projection/event-mapper registration hooks.
+- `AC-025`: Claude runtime adapter satisfies decoupled shared runtime contracts required by stream/team orchestration (`teamExecutionMode`, run-active probe, runtime event subscription, relay handler binding).
+- `AC-026`: Team member projection service chooses richer runtime projection for non-default runtimes and keeps local projection when runtime provider fails.
