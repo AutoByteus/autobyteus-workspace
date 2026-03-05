@@ -8,10 +8,7 @@ export type PromptPersistenceProvider = {
     isActive?: boolean;
   }): Promise<Prompt[]>;
   getAllActivePrompts(): Promise<Prompt[]>;
-  findAllByNameAndCategory(
-    name: string,
-    category: string,
-  ): Promise<Prompt[]>;
+  findAllByNameAndCategory(name: string, category: string): Promise<Prompt[]>;
   getActivePromptsByContext(name: string, category: string): Promise<Prompt[]>;
   updatePrompt(prompt: Prompt): Promise<Prompt>;
   getPromptById(promptId: string): Promise<Prompt>;

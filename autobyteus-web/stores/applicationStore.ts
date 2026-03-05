@@ -34,6 +34,7 @@ export const useApplicationStore = defineStore('application', {
     async fetchApplications() {
       if (!this.isApplicationsEnabled()) {
         this.loading = false
+        this.error = null
         return
       }
 

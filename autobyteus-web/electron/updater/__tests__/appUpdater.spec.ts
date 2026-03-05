@@ -208,7 +208,36 @@ describe('AppUpdater', () => {
     const accepted = await install();
     expect(accepted).toEqual({ accepted: true });
 
+    const stateAfterInstall = await getIpcHandler('app-update:get-state')();
+    expect(stateAfterInstall.status).toBe('installing');
+    expect(stateAfterInstall.message).toBe('Installing update and restarting...');
+
     await vi.advanceTimersByTimeAsync(100);
     expect(autoUpdaterMock.quitAndInstall).toHaveBeenCalledWith(false, true);
+  });
+
+  it('maps synchronous install invocation failure to updater error state', async () => {
+    vi.useFakeTimers();
+    const updater = new AppUpdater();
+    updater.initialize();
+
+    autoUpdaterMock.emit('update-downloaded', {
+      version: '1.2.0',
+    });
+
+    autoUpdaterMock.quitAndInstall.mockImplementation(() => {
+      throw new Error('install boom');
+    });
+
+    const install = getIpcHandler('app-update:install');
+    const accepted = await install();
+    expect(accepted).toEqual({ accepted: true });
+
+    await vi.advanceTimersByTimeAsync(100);
+
+    const state = await getIpcHandler('app-update:get-state')();
+    expect(state.status).toBe('error');
+    expect(state.message).toBe('Failed to install update and restart.');
+    expect(state.error).toBe('install boom');
   });
 });

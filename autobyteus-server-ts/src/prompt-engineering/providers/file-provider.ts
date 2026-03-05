@@ -107,14 +107,9 @@ export class FilePromptProvider {
     return filterPrompts(rows, { isActive: true }).map((row) => toDomain(row));
   }
 
-  async findAllByNameAndCategory(
-    name: string,
-    category: string,
-  ): Promise<Prompt[]> {
+  async findAllByNameAndCategory(name: string, category: string): Promise<Prompt[]> {
     const rows = await readJsonArrayFile<PromptRecord>(promptFilePath);
-    const filtered = rows.filter((row) => {
-      return row.name === name && row.category === category;
-    });
+    const filtered = rows.filter((row) => row.name === name && row.category === category);
     return filtered.map((row) => toDomain(row));
   }
 

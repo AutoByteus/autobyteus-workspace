@@ -181,8 +181,6 @@ const lineByLineDiffContent = computed(() => {
   );
 });
 
-
-
 // Compute text differences with highlighting for side-by-side view
 function computeDiffHighlighting(oldText: string, newText: string, highlightType: 'addition' | 'removal') {
   if (!oldText || !newText) return '';

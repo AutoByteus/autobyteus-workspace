@@ -190,6 +190,12 @@ const fileInputRef = ref<HTMLInputElement | null>(null);
 const failedImagePreviewPaths = ref<Set<string>>(new Set());
 const isImageModalVisible = ref(false);
 const selectedImageUrl = ref<string | null>(null);
+const isEmbeddedElectronRuntime = computed(
+  () =>
+    windowNodeContextStore.isEmbeddedWindow &&
+    typeof window !== 'undefined' &&
+    Boolean(window.electronAPI),
+);
 
 const getIconForFileType = (type: ContextFilePath['type']) => {
   switch (type) {
@@ -235,7 +241,7 @@ const resolveImagePreviewUrl = (filePath: ContextFilePath): string | null => {
     return path;
   }
 
-  if (isElectron.value && isAbsoluteLocalPath(path)) {
+  if (isEmbeddedElectronRuntime.value && isAbsoluteLocalPath(path)) {
     return `local-file://${path}`;
   }
 

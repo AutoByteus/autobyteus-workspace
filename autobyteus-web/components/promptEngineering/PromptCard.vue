@@ -56,7 +56,6 @@
       
         <!-- Footer -->
       <div class="pt-3 mt-auto border-t border-gray-100 flex flex-col gap-3">
-        
         <div class="flex justify-between items-center text-xs text-gray-400">
           <span class="flex items-center">
              <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
@@ -69,7 +68,6 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
 
 interface Prompt {
   id: string;
@@ -94,8 +92,6 @@ const emit = defineEmits<{
   (e: 'delete', id: string): void;
   (e: 'toggle-compare-selection'): void;
 }>();
-
-
 
 const formatDate = (dateString: string) =>
   new Date(dateString).toLocaleDateString('en-US', {

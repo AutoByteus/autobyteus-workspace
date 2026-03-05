@@ -186,8 +186,6 @@
             </div>
         </div>
 
-
-
         <!-- Prompt content -->
         <div>
           <h2 class="text-lg font-semibold text-gray-900 mb-3">Prompt Content</h2>

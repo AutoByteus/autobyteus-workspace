@@ -72,11 +72,15 @@ export class TeamManager {
         }
 
         console.info(`Lazily creating agent node '${uniqueName}' using pre-prepared configuration.`);
-        const preferredAgentIdRaw = (finalConfig.initialCustomData as Record<string, unknown> | null)?.member_agent_id;
+        const initialCustomData = finalConfig.initialCustomData as Record<string, unknown> | null;
+        const preferredAgentRunIdRaw = initialCustomData?.member_run_id;
+        const preferredLegacyAgentIdRaw = initialCustomData?.member_agent_id;
         const preferredAgentId =
-          typeof preferredAgentIdRaw === 'string' && preferredAgentIdRaw.trim().length > 0
-            ? preferredAgentIdRaw.trim()
-            : null;
+          typeof preferredAgentRunIdRaw === 'string' && preferredAgentRunIdRaw.trim().length > 0
+            ? preferredAgentRunIdRaw.trim()
+            : typeof preferredLegacyAgentIdRaw === 'string' && preferredLegacyAgentIdRaw.trim().length > 0
+              ? preferredLegacyAgentIdRaw.trim()
+              : null;
         nodeInstance = preferredAgentId
           ? this.agentFactory.restoreAgent(preferredAgentId, finalConfig)
           : this.agentFactory.createAgent(finalConfig);

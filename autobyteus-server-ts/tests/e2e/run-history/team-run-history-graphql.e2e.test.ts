@@ -578,6 +578,26 @@ describe("Team run history GraphQL e2e", () => {
       }
     });
 
+    // Ensure the first turn fully completed before terminate->continue assertions.
+    await waitFor(
+      async () => {
+        const projectionResult = await execGraphql<{
+          getTeamMemberRunProjection: {
+            conversation: Array<{ role?: string; content?: string | null }>;
+          };
+        }>(getTeamMemberRunProjectionQuery, {
+          teamRunId,
+          memberRouteKey,
+        });
+        const conversation = projectionResult.getTeamMemberRunProjection.conversation;
+        return (
+          conversation.some((entry) => String(entry.content ?? "").includes(runMarker)) &&
+          conversation.some((entry) => String(entry.content ?? "").includes("acknowledged"))
+        );
+      },
+      20000,
+    );
+
     const terminateResult = await execGraphql<{
       terminateAgentTeamRun: { success: boolean; message: string };
     }>(terminateAgentTeamRunMutation, { id: teamRunId });
@@ -623,7 +643,7 @@ describe("Team run history GraphQL e2e", () => {
     expect(projection?.conversation.some((entry) => String(entry.content ?? "").includes(runMarker))).toBe(true);
     expect(projection?.conversation.some((entry) => String(entry.content ?? "").includes("history_visible=true"))).toBe(true);
     expect(projection?.summary).toContain(runMarker);
-  });
+  }, 30000);
 
   it("restores targeted professor member in a multi-member team after terminate/continue", async () => {
     vi.spyOn(LLMFactory, "createLLM").mockImplementation(async () => createDummyLLM());
@@ -757,6 +777,23 @@ describe("Team run history GraphQL e2e", () => {
       );
     });
 
+    await waitFor(
+      async () => {
+        const projectionResult = await execGraphql<{
+          getTeamMemberRunProjection: {
+            conversation: Array<{ role?: string; content?: string | null }>;
+          };
+        }>(getTeamMemberRunProjectionQuery, {
+          teamRunId,
+          memberRouteKey: professorRouteKey,
+        });
+        return projectionResult.getTeamMemberRunProjection.conversation.some((entry) =>
+          String(entry.content ?? "").includes("acknowledged"),
+        );
+      },
+      20000,
+    );
+
     const terminateResult = await execGraphql<{
       terminateAgentTeamRun: { success: boolean };
     }>(terminateAgentTeamRunMutation, { id: teamRunId });
@@ -796,7 +833,7 @@ describe("Team run history GraphQL e2e", () => {
       return professorProjection.conversation.some((entry) =>
         String(entry.content ?? "").includes("history_visible=true"),
       );
-    });
+    }, 20000);
 
     expect(professorProjection).toBeTruthy();
     expect(
@@ -810,7 +847,7 @@ describe("Team run history GraphQL e2e", () => {
       ),
     ).toBe(true);
     expect(professorProjection?.summary).toContain(turnOneMarker);
-  }, 20000);
+  }, 30000);
 
   runLmstudioIt(
     "continues a terminated team with real LM Studio provider and restores recall context (no mocks)",

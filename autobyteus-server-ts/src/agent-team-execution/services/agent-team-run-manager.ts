@@ -144,7 +144,7 @@ export class AgentTeamRunManager {
     return this.createTeamRunInternal({
       teamDefinitionId,
       memberConfigs,
-      preferredTeamId: null,
+      preferredTeamRunId: null,
     });
   }
 
@@ -156,14 +156,14 @@ export class AgentTeamRunManager {
     return this.createTeamRunInternal({
       teamDefinitionId,
       memberConfigs,
-      preferredTeamId: teamRunId,
+      preferredTeamRunId: teamRunId,
     });
   }
 
   private async createTeamRunInternal(input: {
     teamDefinitionId: string;
     memberConfigs: TeamMemberConfigInput[];
-    preferredTeamId: string | null;
+    preferredTeamRunId: string | null;
   }): Promise<string> {
     logger.info(
       `Attempting to create agent team run from definition ID: ${input.teamDefinitionId}`,
@@ -186,18 +186,19 @@ export class AgentTeamRunManager {
 
       const createTeamWithId = (this.teamFactory as any).createTeamWithId;
       const team =
-        input.preferredTeamId && typeof createTeamWithId === "function"
-          ? (createTeamWithId.call(this.teamFactory, input.preferredTeamId, teamConfig) as TeamLike & {
+        input.preferredTeamRunId && typeof createTeamWithId === "function"
+          ? (createTeamWithId.call(this.teamFactory, input.preferredTeamRunId, teamConfig) as TeamLike & {
               start?: () => void;
             })
           : (this.teamFactory.createTeam(teamConfig) as TeamLike & {
               start?: () => void;
             });
 
+      // Boundary adapter: autobyteus-ts exposes the runtime team-run identity as `teamId`.
       const teamRunId = team.teamId;
-      if (input.preferredTeamId && teamRunId !== input.preferredTeamId) {
+      if (input.preferredTeamRunId && teamRunId !== input.preferredTeamRunId) {
         throw new Error(
-          `Failed to restore team '${input.preferredTeamId}': runtime created '${teamRunId}'.`,
+          `Failed to restore team '${input.preferredTeamRunId}': runtime created '${teamRunId}'.`,
         );
       }
 
@@ -377,7 +378,7 @@ export class AgentTeamRunManager {
         typeof memberConfig.memberRouteKey === "string" && memberConfig.memberRouteKey.trim().length > 0
           ? normalizeMemberRouteKey(memberConfig.memberRouteKey)
           : normalizeMemberRouteKey(memberName),
-      member_agent_id:
+      member_run_id:
         typeof memberConfig.memberRunId === "string" && memberConfig.memberRunId.trim().length > 0
           ? memberConfig.memberRunId.trim()
           : null,

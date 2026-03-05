@@ -1,19 +1,27 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { TeamRunHistoryService } from "../../../src/run-history/services/team-run-history-service.js";
 import type { TeamRunManifest } from "../../../src/run-history/domain/team-models.js";
 
 describe("TeamRunHistoryService", () => {
   let memoryDir: string;
   let service: TeamRunHistoryService;
+  let hasActiveMemberBinding: ReturnType<typeof vi.fn>;
+  let getActiveMemberBindings: ReturnType<typeof vi.fn>;
 
   beforeEach(async () => {
     memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-team-run-history-service-"));
+    hasActiveMemberBinding = vi.fn().mockReturnValue(false);
+    getActiveMemberBindings = vi.fn().mockReturnValue([]);
     service = new TeamRunHistoryService(memoryDir, {
       teamRunManager: {
         getTeamRun: () => null,
+      } as any,
+      teamMemberRuntimeOrchestrator: {
+        hasActiveMemberBinding,
+        getActiveMemberBindings,
       } as any,
     });
   });
@@ -36,6 +44,13 @@ describe("TeamRunHistoryService", () => {
         memberRouteKey: "professor",
         memberName: "Professor",
         memberRunId: "member-professor",
+        runtimeKind: "codex_app_server",
+        runtimeReference: {
+          runtimeKind: "codex_app_server",
+          sessionId: "member-professor",
+          threadId: "thread-old",
+          metadata: null,
+        },
         agentDefinitionId: "agent-professor",
         llmModelIdentifier: "model-a",
         autoExecuteTools: false,
@@ -82,6 +97,171 @@ describe("TeamRunHistoryService", () => {
         "utf-8",
       ),
     ) as { lastKnownStatus?: string };
+    expect(memberManifest.lastKnownStatus).toBe("IDLE");
+  });
+
+  it("treats external-member runtime bindings as active for resume and delete guards", async () => {
+    const teamRunId = "team-3";
+    await service.upsertTeamRunHistoryRow({
+      teamRunId,
+      manifest: buildManifest(teamRunId),
+      summary: "",
+      lastKnownStatus: "IDLE",
+    });
+    hasActiveMemberBinding.mockReturnValue(true);
+
+    const resumeConfig = await service.getTeamRunResumeConfig(teamRunId);
+    expect(resumeConfig.isActive).toBe(true);
+
+    const deleteResult = await service.deleteTeamRunHistory(teamRunId);
+    expect(deleteResult.success).toBe(false);
+    expect(deleteResult.message).toContain("active");
+  });
+
+  it("persists refreshed team manifest runtime references without resetting summary/status", async () => {
+    const teamRunId = "team-4";
+    await service.upsertTeamRunHistoryRow({
+      teamRunId,
+      manifest: buildManifest(teamRunId),
+      summary: "kept-summary",
+      lastKnownStatus: "IDLE",
+    });
+
+    const refreshedManifest: TeamRunManifest = {
+      ...buildManifest(teamRunId),
+      memberBindings: [
+        {
+          ...buildManifest(teamRunId).memberBindings[0]!,
+          runtimeReference: {
+            runtimeKind: "codex_app_server",
+            sessionId: "member-professor",
+            threadId: "thread-new",
+            metadata: { refreshed: true },
+          },
+        },
+      ],
+    };
+
+    await service.persistTeamRunManifest(teamRunId, refreshedManifest);
+
+    const persistedManifest = JSON.parse(
+      await fs.readFile(
+        path.join(memoryDir, "agent_teams", teamRunId, "team_run_manifest.json"),
+        "utf-8",
+      ),
+    ) as TeamRunManifest;
+    expect(
+      persistedManifest.memberBindings[0]?.runtimeReference?.threadId,
+    ).toBe("thread-new");
+
+    const memberManifest = JSON.parse(
+      await fs.readFile(
+        path.join(memoryDir, "agent_teams", teamRunId, "member-professor", "run_manifest.json"),
+        "utf-8",
+      ),
+    ) as { runtimeReference?: { threadId?: string | null }; lastKnownStatus?: string };
+    expect(memberManifest.runtimeReference?.threadId).toBe("thread-new");
+    expect(memberManifest.lastKnownStatus).toBe("IDLE");
+
+    const rows = await service.listTeamRunHistory();
+    const row = rows.find((item) => item.teamRunId === teamRunId);
+    expect(row?.summary).toBe("kept-summary");
+    expect(row?.lastKnownStatus).toBe("IDLE");
+  });
+
+  it("refreshes stored member runtime reference from active bindings on team event", async () => {
+    const teamRunId = "team-5";
+    await service.upsertTeamRunHistoryRow({
+      teamRunId,
+      manifest: buildManifest(teamRunId),
+      summary: "",
+      lastKnownStatus: "IDLE",
+    });
+
+    getActiveMemberBindings.mockReturnValue([
+      {
+        memberRouteKey: "professor",
+        memberName: "Professor",
+        memberRunId: "member-professor",
+        runtimeKind: "claude_agent_sdk",
+        runtimeReference: {
+          runtimeKind: "claude_agent_sdk",
+          sessionId: "claude-session-123",
+          threadId: "claude-session-123",
+          metadata: { teamRunId },
+        },
+        agentDefinitionId: "agent-professor",
+        llmModelIdentifier: "claude-opus-4-1",
+        autoExecuteTools: true,
+        llmConfig: null,
+        workspaceRootPath: "/tmp/team-workspace",
+      },
+    ]);
+
+    await service.onTeamEvent(teamRunId, {
+      status: "ACTIVE",
+      summary: "turn-1",
+    });
+
+    const manifest = JSON.parse(
+      await fs.readFile(
+        path.join(memoryDir, "agent_teams", teamRunId, "team_run_manifest.json"),
+        "utf-8",
+      ),
+    ) as TeamRunManifest;
+    const binding = manifest.memberBindings[0];
+    expect(binding?.runtimeKind).toBe("claude_agent_sdk");
+    expect(binding?.runtimeReference?.sessionId).toBe("claude-session-123");
+    expect(binding?.workspaceRootPath).toBe("/tmp/team-workspace");
+  });
+
+  it("persists termination binding override even when orchestrator bindings are already removed", async () => {
+    const teamRunId = "team-6";
+    await service.upsertTeamRunHistoryRow({
+      teamRunId,
+      manifest: buildManifest(teamRunId),
+      summary: "",
+      lastKnownStatus: "ACTIVE",
+    });
+
+    getActiveMemberBindings.mockReturnValue([]);
+    await service.onTeamTerminated(teamRunId, {
+      memberBindingsOverride: [
+        {
+          memberRouteKey: "professor",
+          memberName: "Professor",
+          memberRunId: "member-professor",
+          runtimeKind: "claude_agent_sdk",
+          runtimeReference: {
+            runtimeKind: "claude_agent_sdk",
+            sessionId: "claude-session-final",
+            threadId: "claude-session-final",
+            metadata: { teamRunId },
+          },
+          agentDefinitionId: "agent-professor",
+          llmModelIdentifier: "claude-opus-4-1",
+          autoExecuteTools: true,
+          llmConfig: null,
+          workspaceRootPath: "/tmp/team-workspace-final",
+        },
+      ],
+    });
+
+    const memberManifest = JSON.parse(
+      await fs.readFile(
+        path.join(memoryDir, "agent_teams", teamRunId, "member-professor", "run_manifest.json"),
+        "utf-8",
+      ),
+    ) as {
+      runtimeKind?: string;
+      runtimeReference?: { sessionId?: string | null };
+      workspaceRootPath?: string | null;
+      lastKnownStatus?: string;
+    };
+
+    expect(memberManifest.runtimeKind).toBe("claude_agent_sdk");
+    expect(memberManifest.runtimeReference?.sessionId).toBe("claude-session-final");
+    expect(memberManifest.workspaceRootPath).toBe("/tmp/team-workspace-final");
     expect(memberManifest.lastKnownStatus).toBe("IDLE");
   });
 });

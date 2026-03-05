@@ -153,7 +153,7 @@ describe("RuntimeCommandIngressService", () => {
       new RuntimeAdapterRegistry([adapter]),
       { getAgentRun: vi.fn().mockReturnValue(null) } as any,
       { getTeamRun: vi.fn().mockReturnValue(null) } as any,
-      { hasRunSession: vi.fn().mockReturnValue(true) } as any,
+      { hasActiveRunSession: vi.fn().mockReturnValue(true) } as any,
     );
 
     const result = await service.relayInterAgentMessage({
@@ -232,7 +232,7 @@ describe("RuntimeCommandIngressService", () => {
       new RuntimeAdapterRegistry([codexAdapter]),
       { getAgentRun: vi.fn().mockReturnValue(null) } as any,
       { getTeamRun: vi.fn().mockReturnValue(null) } as any,
-      { hasRunSession: vi.fn().mockReturnValue(true) } as any,
+      { hasActiveRunSession: vi.fn().mockReturnValue(true) } as any,
       {
         getRuntimeCapability: vi.fn().mockReturnValue({
           runtimeKind: "codex_app_server",
@@ -280,7 +280,7 @@ describe("RuntimeCommandIngressService", () => {
       new RuntimeAdapterRegistry([codexAdapter]),
       { getAgentRun: vi.fn().mockReturnValue(null) } as any,
       { getTeamRun: vi.fn().mockReturnValue(null) } as any,
-      { hasRunSession: vi.fn().mockReturnValue(true) } as any,
+      { hasActiveRunSession: vi.fn().mockReturnValue(true) } as any,
       {
         getRuntimeCapability: vi.fn().mockReturnValue({
           runtimeKind: "codex_app_server",

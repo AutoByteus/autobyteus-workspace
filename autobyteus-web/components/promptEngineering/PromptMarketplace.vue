@@ -419,10 +419,10 @@ const groupedPrompts = computed(() => {
   const processedGroups: Record<string, Prompt[]> = {};
   for (const key in groups) {
     const promptList = groups[key];
-    
-    // Find the active prompt, or fall back to the latest version
-    const variants: Prompt[] = [];
-    if (promptList.length === 0) continue;
+
+    if (promptList.length === 0) {
+      continue;
+    }
 
     let chosenPrompt = promptList.find(p => p.isActive);
     if (!chosenPrompt) {
@@ -430,11 +430,7 @@ const groupedPrompts = computed(() => {
         return current.version > latest.version ? current : latest;
       });
     }
-    variants.push(chosenPrompt);
-    
-    if (variants.length > 0) {
-      processedGroups[key] = variants.sort((a, b) => b.version - a.version);
-    }
+    processedGroups[key] = [chosenPrompt];
   }
 
   return processedGroups;

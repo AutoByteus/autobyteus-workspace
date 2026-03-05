@@ -4,7 +4,6 @@ import { Prompt } from "../domain/models.js";
 import { PromptService } from "../services/prompt-service.js";
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
-import { LLMFactory } from "autobyteus-ts";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -12,29 +11,20 @@ const logger = {
   debug: (...args: unknown[]) => console.debug(...args),
 };
 
-type LlmFactoryLike = {
-  getCanonicalName: (modelIdentifier: string) => Promise<string | null>;
-};
-
 type PromptLoaderOptions = {
   promptService?: PromptService;
   agentDefinitionService?: AgentDefinitionService;
-  llmFactory?: LlmFactoryLike;
 };
 
 export class PromptLoader {
-  static readonly DEFAULT_CANONICAL_MODEL = "default";
-
   private promptService: PromptService;
   private agentDefinitionService: AgentDefinitionService;
-  private llmFactory: LlmFactoryLike;
   private cache = new Map<string, string | null>();
 
   constructor(options: PromptLoaderOptions = {}) {
     this.promptService = options.promptService ?? new PromptService();
     this.agentDefinitionService =
       options.agentDefinitionService ?? AgentDefinitionService.getInstance();
-    this.llmFactory = options.llmFactory ?? LLMFactory;
   }
 
   async getPromptTemplate(
@@ -98,7 +88,7 @@ export class PromptLoader {
 
   private async findBestPromptForModel(
     prompts: Prompt[],
-    modelIdentifier: string,
+    _modelIdentifier: string,
   ): Promise<string | null> {
     if (prompts.length === 0) {
       logger.warn(`No active prompts available for model '${modelIdentifier}'.`);

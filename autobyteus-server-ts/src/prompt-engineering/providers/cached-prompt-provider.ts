@@ -142,15 +142,11 @@ export class CachedPromptProvider {
     return Array.from(this.cache.values()).filter((prompt) => prompt.isActive);
   }
 
-  async findAllByNameAndCategory(
-    name: string,
-    category: string,
-  ): Promise<Prompt[]> {
+  async findAllByNameAndCategory(name: string, category: string): Promise<Prompt[]> {
     await this.ensureCachePopulated();
-    const matches = Array.from(this.cache.values()).filter(
+    return Array.from(this.cache.values()).filter(
       (prompt) => prompt.name === name && prompt.category === category,
     );
-    return matches;
   }
 
   async getActivePromptsByContext(name: string, category: string): Promise<Prompt[]> {

@@ -11,6 +11,7 @@
           <h3 class="text-sm font-semibold text-slate-900">{{ statusTitle }}</h3>
         </div>
         <button
+          v-if="appUpdateStore.status !== 'installing'"
           class="rounded-md p-1 text-slate-500 transition hover:bg-sky-100 hover:text-slate-700"
           aria-label="Dismiss update notice"
           data-testid="app-update-dismiss"
@@ -43,6 +44,17 @@
         </div>
       </div>
 
+      <div
+        v-if="appUpdateStore.status === 'installing'"
+        class="mt-3 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-800"
+        data-testid="app-update-installing-indicator"
+      >
+        <div class="flex items-center gap-2">
+          <span class="i-heroicons-arrow-path h-4 w-4 animate-spin" aria-hidden="true" />
+          <span>Restarting to install update. This window will close automatically.</span>
+        </div>
+      </div>
+
       <details
         v-if="appUpdateStore.releaseNotes"
         class="mt-3 rounded-md border border-sky-100 bg-white/70 p-2 text-xs text-slate-700"
@@ -68,6 +80,15 @@
           @click="appUpdateStore.installUpdateAndRestart()"
         >
           Install &amp; Restart
+        </button>
+
+        <button
+          v-if="appUpdateStore.status === 'installing'"
+          class="cursor-not-allowed rounded-md bg-emerald-500 px-3 py-2 text-sm font-medium text-white opacity-80"
+          data-testid="app-update-installing"
+          disabled
+        >
+          Restarting...
         </button>
 
         <button
@@ -108,6 +129,8 @@ const statusTitle = computed(() => {
       return 'Downloading update';
     case 'downloaded':
       return 'Ready to install';
+    case 'installing':
+      return 'Restarting to install';
     case 'no-update':
       return 'You are up to date';
     case 'error':
@@ -128,6 +151,10 @@ const statusMessage = computed(() => {
 
   if (appUpdateStore.status === 'downloaded') {
     return 'Update downloaded. Restart to apply the new version.';
+  }
+
+  if (appUpdateStore.status === 'installing') {
+    return 'Restarting to install update. This window will close automatically.';
   }
 
   if (appUpdateStore.status === 'error') {

@@ -1,5 +1,6 @@
 import type { RuntimeKind } from "../runtime-management/runtime-kind.js";
 import { AutobyteusRuntimeAdapter } from "./adapters/autobyteus-runtime-adapter.js";
+import { ClaudeAgentSdkRuntimeAdapter } from "./adapters/claude-agent-sdk-runtime-adapter.js";
 import { CodexAppServerRuntimeAdapter } from "./adapters/codex-app-server-runtime-adapter.js";
 import type { RuntimeAdapter } from "./runtime-adapter-port.js";
 
@@ -10,7 +11,11 @@ export class RuntimeAdapterRegistry {
     const defaults =
       adapters && adapters.length > 0
         ? adapters
-        : [new AutobyteusRuntimeAdapter(), new CodexAppServerRuntimeAdapter()];
+        : [
+            new AutobyteusRuntimeAdapter(),
+            new CodexAppServerRuntimeAdapter(),
+            new ClaudeAgentSdkRuntimeAdapter(),
+          ];
 
     for (const adapter of defaults) {
       this.registerAdapter(adapter);

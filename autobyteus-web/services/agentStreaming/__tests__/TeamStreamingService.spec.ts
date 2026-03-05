@@ -65,4 +65,40 @@ describe('TeamStreamingService', () => {
       targetMemberName: 'worker-a',
     });
   });
+
+  it('marks team subscription state on connect and disconnect callbacks', () => {
+    const callbacks = new Map<string, (payload?: any) => void>();
+    const wsClient = {
+      state: 'disconnected',
+      connect: vi.fn(),
+      disconnect: vi.fn(),
+      send: vi.fn(),
+      on: vi.fn((event: string, cb: (payload?: any) => void) => {
+        callbacks.set(event, cb);
+      }),
+      off: vi.fn(),
+    } as any;
+
+    const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
+    const teamContext = {
+      isSubscribed: false,
+      focusedMemberName: 'worker-a',
+      members: new Map([
+        [
+          'worker-a',
+          {
+            state: { runId: 'agent-1' },
+            conversation: { messages: [], updatedAt: '' },
+          },
+        ],
+      ]),
+    } as any;
+
+    service.connect('team-1', teamContext);
+    callbacks.get('onConnect')?.();
+    expect(teamContext.isSubscribed).toBe(true);
+
+    callbacks.get('onDisconnect')?.('closed');
+    expect(teamContext.isSubscribed).toBe(false);
+  });
 });

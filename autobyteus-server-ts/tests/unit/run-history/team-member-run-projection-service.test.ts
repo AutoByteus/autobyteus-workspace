@@ -64,6 +64,99 @@ describe("TeamMemberRunProjectionService", () => {
     expect(result.agentRunId).toBe("member-1");
   });
 
+  it("prefers richer runtime projection when local projection is non-empty but incomplete", async () => {
+    const getTeamRunResumeConfig = vi.fn().mockResolvedValue({
+      teamRunId: "team-1",
+      manifest: {
+        workspaceRootPath: "/tmp/workspace",
+        memberBindings: [
+          {
+            memberRouteKey: "professor",
+            memberName: "Professor",
+            memberRunId: "member-1",
+            runtimeKind: "claude_agent_sdk",
+            runtimeReference: {
+              runtimeKind: "claude_agent_sdk",
+              sessionId: "session-1",
+            },
+          },
+        ],
+      },
+    });
+    const getProjection = vi.fn().mockResolvedValue({
+      runId: "member-1",
+      summary: "local-summary",
+      lastActivityAt: "2026-03-04T12:00:00.000Z",
+      conversation: [{ role: "user", content: "turn-1" }],
+    });
+    const buildProjection = vi.fn().mockResolvedValue({
+      runId: "member-1",
+      summary: "runtime-summary",
+      lastActivityAt: "2026-03-04T12:05:00.000Z",
+      conversation: [
+        { role: "user", content: "turn-1" },
+        { role: "assistant", content: "reply-1" },
+        { role: "user", content: "turn-2" },
+        { role: "assistant", content: "reply-2" },
+      ],
+    });
+    const resolveProvider = vi.fn().mockReturnValue({ buildProjection });
+
+    const service = new TeamMemberRunProjectionService({
+      teamRunHistoryService: { getTeamRunResumeConfig } as any,
+      projectionReader: { getProjection } as any,
+      projectionProviderRegistry: { resolveProvider } as any,
+    });
+
+    const result = await service.getProjection("team-1", "professor");
+
+    expect(resolveProvider).toHaveBeenCalledWith("claude_agent_sdk");
+    expect(result.summary).toBe("runtime-summary");
+    expect(result.conversation).toHaveLength(4);
+    expect(String(result.conversation[3]?.content ?? "")).toContain("reply-2");
+  });
+
+  it("keeps local projection when runtime provider fails", async () => {
+    const getTeamRunResumeConfig = vi.fn().mockResolvedValue({
+      teamRunId: "team-1",
+      manifest: {
+        workspaceRootPath: "/tmp/workspace",
+        memberBindings: [
+          {
+            memberRouteKey: "professor",
+            memberName: "Professor",
+            memberRunId: "member-1",
+            runtimeKind: "claude_agent_sdk",
+            runtimeReference: {
+              runtimeKind: "claude_agent_sdk",
+              sessionId: "session-1",
+            },
+          },
+        ],
+      },
+    });
+    const getProjection = vi.fn().mockResolvedValue({
+      runId: "member-1",
+      summary: "local-summary",
+      lastActivityAt: "2026-03-04T12:00:00.000Z",
+      conversation: [{ role: "user", content: "local-turn" }],
+    });
+    const buildProjection = vi.fn().mockRejectedValue(new Error("runtime unavailable"));
+    const resolveProvider = vi.fn().mockReturnValue({ buildProjection });
+
+    const service = new TeamMemberRunProjectionService({
+      teamRunHistoryService: { getTeamRunResumeConfig } as any,
+      projectionReader: { getProjection } as any,
+      projectionProviderRegistry: { resolveProvider } as any,
+    });
+
+    const result = await service.getProjection("team-1", "professor");
+
+    expect(result.summary).toBe("local-summary");
+    expect(result.conversation).toHaveLength(1);
+    expect(String(result.conversation[0]?.content ?? "")).toContain("local-turn");
+  });
+
   it("throws when member binding is missing", async () => {
     const getTeamRunResumeConfig = vi.fn().mockResolvedValue({
       teamRunId: "team-1",
@@ -113,15 +206,17 @@ describe("TeamMemberRunProjectionService", () => {
       lastActivityAt: "2026-02-26T13:00:00.000Z",
       conversation: [{ role: "user", content: "PING-TO-PONG token" }],
     });
+    const resolveProvider = vi.fn().mockReturnValue({ buildProjection });
 
     const service = new TeamMemberRunProjectionService({
       teamRunHistoryService: { getTeamRunResumeConfig } as any,
       projectionReader: { getProjection } as any,
-      codexProjectionProvider: { buildProjection } as any,
+      projectionProviderRegistry: { resolveProvider } as any,
     });
 
     const result = await service.getProjection("team-1", "pong");
 
+    expect(resolveProvider).toHaveBeenCalledWith("codex_app_server");
     expect(buildProjection).toHaveBeenCalledTimes(1);
     expect(result.agentRunId).toBe("pong-run");
     expect(result.summary).toBe("summary-from-codex");

@@ -41,10 +41,7 @@ export class PromptPersistenceProvider {
     return (await this.getProvider()).getAllActivePrompts();
   }
 
-  async findAllByNameAndCategory(
-    name: string,
-    category: string,
-  ): Promise<Prompt[]> {
+  async findAllByNameAndCategory(name: string, category: string): Promise<Prompt[]> {
     return (await this.getProvider()).findAllByNameAndCategory(name, category);
   }
 

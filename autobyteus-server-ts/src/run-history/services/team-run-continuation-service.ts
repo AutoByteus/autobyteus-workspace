@@ -10,6 +10,7 @@ import type { AgentUserInput } from "../../api/graphql/types/agent-user-input.js
 import { getWorkspaceManager, type WorkspaceManager } from "../../workspaces/workspace-manager.js";
 import { TeamMemberMemoryLayoutStore } from "../store/team-member-memory-layout-store.js";
 import type { TeamRunManifest } from "../domain/team-models.js";
+import type { TeamRunMemberBinding } from "../domain/team-models.js";
 import { normalizeMemberRouteKey } from "../utils/team-member-run-id.js";
 import {
   TeamRunHistoryService,
@@ -62,6 +63,28 @@ const normalizeRouteKey = (value: string): string => {
   }
 };
 
+const mergeRestoredMemberBindings = (
+  currentBindings: TeamRunMemberBinding[],
+  restoredBindings: TeamRunMemberBinding[],
+): TeamRunMemberBinding[] => {
+  const restoredByRunId = new Map<string, TeamRunMemberBinding>();
+  const restoredByRouteKey = new Map<string, TeamRunMemberBinding>();
+
+  for (const binding of restoredBindings) {
+    restoredByRunId.set(binding.memberRunId, binding);
+    restoredByRouteKey.set(normalizeRouteKey(binding.memberRouteKey), binding);
+  }
+
+  return currentBindings.map((binding) => {
+    const byRunId = restoredByRunId.get(binding.memberRunId);
+    if (byRunId) {
+      return byRunId;
+    }
+    const byRouteKey = restoredByRouteKey.get(normalizeRouteKey(binding.memberRouteKey));
+    return byRouteKey ?? binding;
+  });
+};
+
 export class TeamRunContinuationService {
   private readonly teamRunManager: TeamRunManagerLike;
   private readonly teamRunHistoryService: TeamRunHistoryService;
@@ -97,8 +120,8 @@ export class TeamRunContinuationService {
       content,
     });
 
-    if (this.isCodexMemberManifest(manifest)) {
-      return this.continueCodexTeamRun({
+    if (this.isExternalMemberRuntimeManifest(manifest)) {
+      return this.continueExternalTeamRun({
         teamRunId,
         userMessage,
         targetMemberRouteKey: input.targetMemberRouteKey ?? null,
@@ -137,7 +160,7 @@ export class TeamRunContinuationService {
     }
   }
 
-  private async continueCodexTeamRun(input: {
+  private async continueExternalTeamRun(input: {
     teamRunId: string;
     userMessage: AgentInputUserMessage;
     targetMemberRouteKey: string | null;
@@ -145,17 +168,37 @@ export class TeamRunContinuationService {
     manifest: TeamRunManifest;
   }): Promise<ContinueTeamRunResult> {
     let restored = false;
+    let effectiveManifest = input.manifest;
     try {
       if (!this.teamMemberRuntimeOrchestrator.hasActiveMemberBinding(input.teamRunId)) {
-        await this.teamMemberRuntimeOrchestrator.restoreCodexTeamRunSessions(input.manifest);
+        const restoredBindings =
+          await this.teamMemberRuntimeOrchestrator.restoreCodexTeamRunSessions(input.manifest);
+        effectiveManifest = {
+          ...input.manifest,
+          updatedAt: new Date().toISOString(),
+          memberBindings: mergeRestoredMemberBindings(
+            input.manifest.memberBindings,
+            restoredBindings,
+          ),
+        };
+        try {
+          await this.teamRunHistoryService.persistTeamRunManifest(
+            input.teamRunId,
+            effectiveManifest,
+          );
+        } catch (persistError) {
+          console.warn(
+            `Failed to persist refreshed codex team manifest for '${input.teamRunId}': ${String(persistError)}`,
+          );
+        }
         restored = true;
       }
 
       const targetMemberName = this.resolveTargetMemberName(
-        input.manifest,
+        effectiveManifest,
         input.targetMemberRouteKey,
       );
-      const fallbackTargetMemberName = this.resolveCoordinatorMemberName(input.manifest);
+      const fallbackTargetMemberName = this.resolveCoordinatorMemberName(effectiveManifest);
 
       await this.teamMemberRuntimeOrchestrator.sendToMember(
         input.teamRunId,
@@ -236,11 +279,11 @@ export class TeamRunContinuationService {
     return coordinator?.memberName ?? null;
   }
 
-  private isCodexMemberManifest(manifest: TeamRunManifest): boolean {
+  private isExternalMemberRuntimeManifest(manifest: TeamRunManifest): boolean {
     if (manifest.memberBindings.length === 0) {
       return false;
     }
-    return manifest.memberBindings.every((binding) => binding.runtimeKind === "codex_app_server");
+    return manifest.memberBindings.every((binding) => binding.runtimeKind !== "autobyteus");
   }
 
   private async safeRecordActivity(teamRunId: string, summary: string): Promise<void> {

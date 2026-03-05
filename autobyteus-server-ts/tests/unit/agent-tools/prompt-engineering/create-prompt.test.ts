@@ -24,7 +24,6 @@ describe("createPromptTool", () => {
         name: "New Family",
         category: "Test",
         prompt_content: "Content here",
-        suitable_for_models: "gpt-4",
       },
     );
 

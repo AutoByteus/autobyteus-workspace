@@ -51,10 +51,11 @@ describe("AgentTeamStreamHandler", () => {
         interruptRun: vi.fn(),
       } as any,
       {
-        getTeamRuntimeMode: () => "codex_members",
+        getTeamRuntimeMode: () => "external_member_runtime",
         sendToMember,
         approveForMember: vi.fn(),
         getTeamBindings: vi.fn().mockReturnValue([]),
+        updateMemberRuntimeReference: vi.fn().mockReturnValue(false),
       } as any,
       {
         subscribeTeam,
@@ -85,8 +86,98 @@ describe("AgentTeamStreamHandler", () => {
     expect(sendToMember).toHaveBeenCalledTimes(1);
     expect(sendToMember.mock.calls[0]?.[0]).toBe("team-codex-1");
     expect(sendToMember.mock.calls[0]?.[1]).toBe("member-b");
+    expect(subscribeTeam).toHaveBeenCalledTimes(2);
 
     await handler.disconnect(sessionId as string);
-    expect(unsubscribe).toHaveBeenCalledTimes(1);
+    expect(unsubscribe).toHaveBeenCalledTimes(2);
+  });
+
+  it("persists runtime reference updates emitted by external member runtime events", async () => {
+    const unsubscribe = vi.fn().mockResolvedValue(undefined);
+    const subscribeTeam = vi.fn().mockImplementation(
+      (
+        teamRunId: string,
+        _onMessage: (message: any) => void,
+        onRuntimeEvent?: (input: any) => void | Promise<void>,
+      ) => {
+        void onRuntimeEvent?.({
+          teamRunId,
+          binding: {
+            memberRouteKey: "professor",
+            memberName: "professor",
+            memberRunId: "professor-run-1",
+            runtimeKind: "claude_agent_sdk",
+            runtimeReference: null,
+            agentDefinitionId: "agent-def-1",
+            llmModelIdentifier: "claude-sonnet-4-5",
+            autoExecuteTools: true,
+            llmConfig: null,
+            workspaceRootPath: null,
+          },
+          event: {
+            method: "item/outputText/completed",
+            params: {
+              sessionId: "claude-session-123",
+            },
+          },
+        });
+        return unsubscribe;
+      },
+    );
+    const updateMemberRuntimeReference = vi.fn().mockReturnValue(true);
+    const onTeamEvent = vi.fn().mockResolvedValue(undefined);
+
+    const handler = new AgentTeamStreamHandler(
+      undefined,
+      {
+        getTeamRun: () => null,
+        getTeamEventStream: () => null,
+      } as any,
+      {
+        sendTurn: vi.fn(),
+        approveTool: vi.fn(),
+        interruptRun: vi.fn(),
+      } as any,
+      {
+        getTeamRuntimeMode: () => "external_member_runtime",
+        sendToMember: vi.fn(),
+        approveForMember: vi.fn(),
+        getTeamBindings: vi.fn().mockReturnValue([]),
+        updateMemberRuntimeReference,
+      } as any,
+      {
+        subscribeTeam,
+      } as any,
+      {
+        onTeamEvent,
+      } as any,
+    );
+
+    const connection = {
+      send: vi.fn(),
+      close: vi.fn(),
+    };
+
+    const sessionId = await handler.connect(connection, "team-claude-1");
+    expect(sessionId).toBeTruthy();
+
+    await Promise.resolve();
+
+    expect(updateMemberRuntimeReference).toHaveBeenCalledTimes(1);
+    expect(updateMemberRuntimeReference).toHaveBeenCalledWith({
+      teamRunId: "team-claude-1",
+      memberRunId: "professor-run-1",
+      runtimeReference: {
+        sessionId: "claude-session-123",
+        threadId: "claude-session-123",
+        metadata: null,
+      },
+    });
+    expect(onTeamEvent).toHaveBeenCalledTimes(1);
+    expect(onTeamEvent).toHaveBeenCalledWith("team-claude-1", {
+      status: "ACTIVE",
+    });
+
+    await handler.disconnect(sessionId as string);
   });
 });

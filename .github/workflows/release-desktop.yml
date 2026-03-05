@@ -245,6 +245,7 @@ jobs:
             autobyteus-web/electron-dist/*macos-x64*.dmg.blockmap
             autobyteus-web/electron-dist/*macos-x64*.zip
             autobyteus-web/electron-dist/*macos-x64*.zip.blockmap
+            autobyteus-web/electron-dist/latest-mac.yml
           if-no-files-found: error
 
   build-linux:
@@ -353,10 +354,30 @@ jobs:
       - build-windows
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout workspace + submodules
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare-release.outputs.release_ref }}
+          fetch-depth: 0
+          submodules: recursive
+
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
           path: release-artifacts
+
+      - name: Merge macOS updater metadata
+        run: |
+          python3 scripts/merge_latest_mac_metadata.py \
+            --arm64 release-artifacts/macos-arm64/latest-mac.yml \
+            --x64 release-artifacts/macos-x64/latest-mac.yml \
+            --output release-artifacts/latest-mac.yml
+
+      - name: Validate merged macOS updater metadata
+        run: |
+          test -f release-artifacts/latest-mac.yml
+          grep -Eq 'macos-arm64.*\.zip' release-artifacts/latest-mac.yml
+          grep -Eq 'macos-x64.*\.zip' release-artifacts/latest-mac.yml
 
       - name: Publish release assets
         uses: softprops/action-gh-release@v2
@@ -374,5 +395,6 @@ jobs:
             release-artifacts/**/*.exe
             release-artifacts/**/*.AppImage
             release-artifacts/**/*.AppImage.blockmap
-            release-artifacts/**/latest-*.yml
+            release-artifacts/**/latest-linux.yml
+            release-artifacts/latest-mac.yml
             release-artifacts/**/latest.yml

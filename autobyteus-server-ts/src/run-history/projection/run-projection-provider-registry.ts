@@ -6,6 +6,10 @@ import {
   LocalMemoryRunProjectionProvider,
 } from "./providers/local-memory-run-projection-provider.js";
 import {
+  ClaudeSessionRunProjectionProvider,
+  getClaudeSessionRunProjectionProvider,
+} from "./providers/claude-session-run-projection-provider.js";
+import {
   CodexThreadRunProjectionProvider,
   getCodexThreadRunProjectionProvider,
 } from "./providers/codex-thread-run-projection-provider.js";
@@ -45,9 +49,10 @@ export const getRunProjectionProviderRegistry = (): RunProjectionProviderRegistr
   if (!cachedRunProjectionProviderRegistry) {
     const localProvider = getLocalMemoryRunProjectionProvider();
     const codexProvider = getCodexThreadRunProjectionProvider();
+    const claudeProvider = getClaudeSessionRunProjectionProvider();
     cachedRunProjectionProviderRegistry = new RunProjectionProviderRegistry(
       localProvider,
-      [localProvider, codexProvider],
+      [localProvider, codexProvider, claudeProvider],
     );
   }
   return cachedRunProjectionProviderRegistry;
@@ -56,4 +61,5 @@ export const getRunProjectionProviderRegistry = (): RunProjectionProviderRegistr
 export type {
   LocalMemoryRunProjectionProvider,
   CodexThreadRunProjectionProvider,
+  ClaudeSessionRunProjectionProvider,
 };

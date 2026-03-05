@@ -9,10 +9,6 @@ import {
 import { AgentRunManager } from "../agent-execution/services/agent-run-manager.js";
 import { AgentTeamRunManager } from "../agent-team-execution/services/agent-team-run-manager.js";
 import {
-  CodexAppServerRuntimeService,
-  getCodexAppServerRuntimeService,
-} from "./codex-app-server/codex-app-server-runtime-service.js";
-import {
   evaluateCommandCapability,
   type RuntimeCommandOperation,
 } from "./runtime-capability-policy.js";
@@ -27,6 +23,10 @@ import type {
   RuntimeSessionRecord,
   RuntimeTerminateRunInput,
 } from "./runtime-adapter-port.js";
+import {
+  getExternalRuntimeEventSourceRegistry,
+  type ExternalRuntimeEventSourceRegistry,
+} from "./external-runtime-event-source-registry.js";
 import { getRuntimeSessionStore, type RuntimeSessionStore } from "./runtime-session-store.js";
 
 export interface RuntimeIngressResult extends RuntimeCommandResult {
@@ -38,7 +38,7 @@ export class RuntimeCommandIngressService {
   private adapterRegistry: RuntimeAdapterRegistry;
   private agentManager: AgentRunManager;
   private teamManager: AgentTeamRunManager;
-  private codexRuntimeService: CodexAppServerRuntimeService;
+  private externalRuntimeEventSourceRegistry: ExternalRuntimeEventSourceRegistry;
   private runtimeCapabilityService: RuntimeCapabilityService;
 
   constructor(
@@ -46,14 +46,15 @@ export class RuntimeCommandIngressService {
     adapterRegistry: RuntimeAdapterRegistry = getRuntimeAdapterRegistry(),
     agentManager: AgentRunManager = AgentRunManager.getInstance(),
     teamManager: AgentTeamRunManager = AgentTeamRunManager.getInstance(),
-    codexRuntimeService: CodexAppServerRuntimeService = getCodexAppServerRuntimeService(),
+    externalRuntimeEventSourceRegistry: ExternalRuntimeEventSourceRegistry =
+      getExternalRuntimeEventSourceRegistry(),
     runtimeCapabilityService: RuntimeCapabilityService = getRuntimeCapabilityService(),
   ) {
     this.sessionStore = sessionStore;
     this.adapterRegistry = adapterRegistry;
     this.agentManager = agentManager;
     this.teamManager = teamManager;
-    this.codexRuntimeService = codexRuntimeService;
+    this.externalRuntimeEventSourceRegistry = externalRuntimeEventSourceRegistry;
     this.runtimeCapabilityService = runtimeCapabilityService;
   }
 
@@ -156,8 +157,8 @@ export class RuntimeCommandIngressService {
     const existing = this.sessionStore.getSession(runId);
     if (existing) {
       if (
-        existing.runtimeKind === "codex_app_server" &&
-        !this.codexRuntimeService.hasRunSession(runId)
+        existing.runtimeKind !== "autobyteus" &&
+        !this.externalRuntimeEventSourceRegistry.hasActiveRunSession(existing.runtimeKind, runId)
       ) {
         this.sessionStore.removeSession(runId);
         return null;

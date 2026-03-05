@@ -17,9 +17,20 @@ const isSendMessageToToolName = (value: string | null): boolean => {
   const normalized = value.trim().toLowerCase();
   return (
     normalized === "send_message_to" ||
+    normalized.endsWith("__send_message_to") ||
     normalized.endsWith(".send_message_to") ||
     normalized.endsWith("/send_message_to")
   );
+};
+
+const normalizeToolNameForUi = (value: string | null): string | null => {
+  if (!value) {
+    return null;
+  }
+  if (isSendMessageToToolName(value)) {
+    return "send_message_to";
+  }
+  return value;
 };
 
 export class CodexRuntimeEventAdapter extends CodexRuntimeEventSegmentHelper {
@@ -180,7 +191,7 @@ export class CodexRuntimeEventAdapter extends CodexRuntimeEventSegmentHelper {
 
     if (method === "item/commandExecution/started") {
       const invocationId = this.resolveInvocationId(payload);
-      const toolName = this.resolveToolName(payload, "run_bash");
+      const toolName = normalizeToolNameForUi(this.resolveToolName(payload, "run_bash"));
       const commandValue = this.resolveCommandValue(payload);
       if (isSendMessageToToolName(toolName) || isSendMessageToToolName(commandValue)) {
         return this.toNoopMessage(method, payload);
@@ -196,7 +207,7 @@ export class CodexRuntimeEventAdapter extends CodexRuntimeEventSegmentHelper {
 
     if (method === "item/commandExecution/delta") {
       const invocationId = this.resolveInvocationId(payload);
-      const toolName = this.resolveToolName(payload, "run_bash");
+      const toolName = normalizeToolNameForUi(this.resolveToolName(payload, "run_bash"));
       const commandValue = this.resolveCommandValue(payload);
       if (isSendMessageToToolName(toolName) || isSendMessageToToolName(commandValue)) {
         return this.toNoopMessage(method, payload);
@@ -212,11 +223,7 @@ export class CodexRuntimeEventAdapter extends CodexRuntimeEventSegmentHelper {
 
     if (method === "item/commandExecution/completed") {
       const invocationId = this.resolveInvocationId(payload);
-      const toolName = this.resolveToolName(payload, "run_bash");
-      const commandValue = this.resolveCommandValue(payload);
-      if (isSendMessageToToolName(toolName) || isSendMessageToToolName(commandValue)) {
-        return this.toNoopMessage(method, payload);
-      }
+      const toolName = normalizeToolNameForUi(this.resolveToolName(payload, "run_bash"));
       return new ServerMessage(
         this.isExecutionFailure(payload)
           ? ServerMessageType.TOOL_EXECUTION_FAILED
@@ -236,14 +243,7 @@ export class CodexRuntimeEventAdapter extends CodexRuntimeEventSegmentHelper {
     if (method === "item/commandExecution/requestApproval" || method === "item/fileChange/requestApproval") {
       const invocationId = this.resolveInvocationId(payload);
       const fallbackToolName = method === "item/fileChange/requestApproval" ? "edit_file" : "run_bash";
-      const toolName = this.resolveToolName(payload, fallbackToolName);
-      const commandValue = this.resolveCommandValue(payload);
-      if (
-        method === "item/commandExecution/requestApproval" &&
-        (isSendMessageToToolName(toolName) || isSendMessageToToolName(commandValue))
-      ) {
-        return this.toNoopMessage(method, payload);
-      }
+      const toolName = normalizeToolNameForUi(this.resolveToolName(payload, fallbackToolName));
       return new ServerMessage(ServerMessageType.TOOL_APPROVAL_REQUESTED, {
         ...serializePayload(payload),
         ...(invocationId ? { invocation_id: invocationId } : {}),
@@ -255,11 +255,7 @@ export class CodexRuntimeEventAdapter extends CodexRuntimeEventSegmentHelper {
 
     if (method === "item/commandExecution/approved") {
       const invocationId = this.resolveInvocationId(payload);
-      const toolName = this.resolveToolName(payload, "run_bash");
-      const commandValue = this.resolveCommandValue(payload);
-      if (isSendMessageToToolName(toolName) || isSendMessageToToolName(commandValue)) {
-        return this.toNoopMessage(method, payload);
-      }
+      const toolName = normalizeToolNameForUi(this.resolveToolName(payload, "run_bash"));
       const reason = this.resolveToolDecisionReason(payload);
       return new ServerMessage(ServerMessageType.TOOL_APPROVED, {
         ...serializePayload(payload),
@@ -272,11 +268,7 @@ export class CodexRuntimeEventAdapter extends CodexRuntimeEventSegmentHelper {
 
     if (method === "item/commandExecution/denied") {
       const invocationId = this.resolveInvocationId(payload);
-      const toolName = this.resolveToolName(payload, "run_bash");
-      const commandValue = this.resolveCommandValue(payload);
-      if (isSendMessageToToolName(toolName) || isSendMessageToToolName(commandValue)) {
-        return this.toNoopMessage(method, payload);
-      }
+      const toolName = normalizeToolNameForUi(this.resolveToolName(payload, "run_bash"));
       const reason = this.resolveToolDecisionReason(payload) ?? "Tool execution denied.";
       return new ServerMessage(ServerMessageType.TOOL_DENIED, {
         ...serializePayload(payload),

@@ -153,6 +153,36 @@ describe('appUpdateStore', () => {
     expect(installAppUpdateAndRestart).toHaveBeenCalledTimes(1);
   });
 
+  it('enters installing state immediately when restart installation is triggered', async () => {
+    const installAppUpdateAndRestart = vi.fn().mockResolvedValue({ accepted: true });
+
+    setElectronApiMock({
+      getAppUpdateState: vi.fn().mockResolvedValue({
+        status: 'downloaded',
+        currentVersion: '1.1.9',
+        availableVersion: '1.2.0',
+        downloadPercent: 100,
+        downloadTransferredBytes: 100,
+        downloadTotalBytes: 100,
+        releaseNotes: null,
+        message: 'Update downloaded. Restart to install.',
+        error: null,
+        checkedAt: '2026-02-26T00:00:00.000Z',
+      }),
+      onAppUpdateState: vi.fn().mockReturnValue(vi.fn()),
+      installAppUpdateAndRestart,
+    });
+
+    const store = useAppUpdateStore();
+    await store.initialize();
+
+    await store.installUpdateAndRestart();
+
+    expect(installAppUpdateAndRestart).toHaveBeenCalledTimes(1);
+    expect(store.status).toBe('installing');
+    expect(store.message).toContain('The app will close automatically');
+  });
+
   it('dismisses currently available update notice', async () => {
     setElectronApiMock({
       getAppUpdateState: vi.fn().mockResolvedValue({

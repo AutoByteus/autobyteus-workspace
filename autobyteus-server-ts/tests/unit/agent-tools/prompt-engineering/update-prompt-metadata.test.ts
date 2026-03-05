@@ -35,7 +35,7 @@ describe("updatePromptMetadataTool", () => {
     const tool = registerUpdatePromptMetadataTool();
     await expect(
       tool.execute({ agentId: "test-agent" } as any, { prompt_id: "1" }),
-    ).rejects.toThrow("At least one metadata field");
+    ).rejects.toThrow("The metadata field `is_active` must be provided to update.");
   });
 
   it("propagates service errors", async () => {

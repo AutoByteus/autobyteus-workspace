@@ -46,7 +46,8 @@ export function applyElectronConfig(baseConfig: NuxtConfig): NuxtConfig {
     // Electron-specific app settings
     app: {
       baseURL: './',
-      buildAssetsDir: '/',
+      // Keep bundled assets under renderer-local _nuxt directory so file:// loads work.
+      buildAssetsDir: '_nuxt/',
     },
 
     // Electron-specific nitro settings
@@ -66,9 +67,9 @@ export function applyElectronConfig(baseConfig: NuxtConfig): NuxtConfig {
         assetsDir: '_nuxt',
         rollupOptions: {
           output: {
-            assetFileNames: '[name].[hash][extname]',
-            chunkFileNames: '[name].[hash].js',
-            entryFileNames: '[name].[hash].js',
+            assetFileNames: '_nuxt/[name].[hash][extname]',
+            chunkFileNames: '_nuxt/[name].[hash].js',
+            entryFileNames: '_nuxt/[name].[hash].js',
           }
         }
       },

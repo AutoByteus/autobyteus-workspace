@@ -77,6 +77,18 @@ describe('AppUpdateNotice', () => {
     expect(appUpdateStoreMock.installUpdateAndRestart).toHaveBeenCalledTimes(1);
   });
 
+  it('renders installing state with disabled restart affordance', () => {
+    appUpdateStoreMock.status = 'installing';
+    appUpdateStoreMock.message = 'Installing update and restarting...';
+
+    const wrapper = mount(AppUpdateNotice);
+
+    expect(wrapper.find('[data-testid="app-update-installing-indicator"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="app-update-installing"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="app-update-install"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="app-update-dismiss"]').exists()).toBe(false);
+  });
+
   it('hides when shouldShow is false', () => {
     appUpdateStoreMock.shouldShow = false;
 

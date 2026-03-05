@@ -40,7 +40,6 @@
         <!-- Category -->
         <CreatableCategorySelect v-model="formData.category" />
 
-
         <!-- Prompt Content -->
         <div class="flex-grow flex flex-col">
           <label for="prompt-content" class="block text-sm font-medium text-gray-700">Prompt Content</label>
