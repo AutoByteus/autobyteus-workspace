@@ -85,4 +85,47 @@ describe("CodexAppServerRuntimeAdapter", () => {
       }),
     );
   });
+
+  it("uses runtime service liveness for isRunActive()", () => {
+    const runtimeService = {
+      hasRunSession: vi.fn().mockReturnValue(true),
+      resolveWorkingDirectory: vi.fn(),
+      createRunSession: vi.fn(),
+      restoreRunSession: vi.fn(),
+      sendTurn: vi.fn(),
+      approveTool: vi.fn(),
+      interruptRun: vi.fn(),
+      terminateRun: vi.fn(),
+    } as unknown as CodexAppServerRuntimeService;
+    const adapter = new CodexAppServerRuntimeAdapter(runtimeService);
+
+    expect(adapter.isRunActive("run-1")).toBe(true);
+    expect((runtimeService.hasRunSession as any)).toHaveBeenCalledWith("run-1");
+  });
+
+  it("normalizes runtime events into status/thread hints", () => {
+    const runtimeService = {
+      resolveWorkingDirectory: vi.fn(),
+      createRunSession: vi.fn(),
+      restoreRunSession: vi.fn(),
+      sendTurn: vi.fn(),
+      approveTool: vi.fn(),
+      interruptRun: vi.fn(),
+      terminateRun: vi.fn(),
+    } as unknown as CodexAppServerRuntimeService;
+    const adapter = new CodexAppServerRuntimeAdapter(runtimeService);
+
+    const interpretation = adapter.interpretRuntimeEvent({
+      method: "turn.started",
+      params: {
+        threadId: "thread-2",
+      },
+    });
+
+    expect(interpretation).toEqual({
+      normalizedMethod: "turn/started",
+      statusHint: "ACTIVE",
+      threadIdHint: "thread-2",
+    });
+  });
 });

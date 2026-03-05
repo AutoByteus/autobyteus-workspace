@@ -4,28 +4,27 @@ import {
   type TeamRuntimeBindingRegistry,
 } from "../../agent-team-execution/services/team-runtime-binding-registry.js";
 import {
-  getCodexAppServerRuntimeService,
-  type CodexRuntimeEvent,
-  type CodexAppServerRuntimeService,
-} from "../../runtime-execution/codex-app-server/codex-app-server-runtime-service.js";
+  getRuntimeAdapterRegistry,
+  type RuntimeAdapterRegistry,
+} from "../../runtime-execution/runtime-adapter-registry.js";
 import {
   getRuntimeEventMessageMapper,
   type RuntimeEventMessageMapper,
 } from "./runtime-event-message-mapper.js";
 import { createErrorMessage, ServerMessage, type ServerMessageType } from "./models.js";
 
-export class TeamCodexRuntimeEventBridge {
+export class TeamRuntimeEventBridge {
   private readonly bindingRegistry: TeamRuntimeBindingRegistry;
-  private readonly codexRuntimeService: CodexAppServerRuntimeService;
+  private readonly runtimeAdapterRegistry: RuntimeAdapterRegistry;
   private readonly runtimeEventMessageMapper: RuntimeEventMessageMapper;
 
   constructor(
     bindingRegistry: TeamRuntimeBindingRegistry = getTeamRuntimeBindingRegistry(),
-    codexRuntimeService: CodexAppServerRuntimeService = getCodexAppServerRuntimeService(),
+    runtimeAdapterRegistry: RuntimeAdapterRegistry = getRuntimeAdapterRegistry(),
     runtimeEventMessageMapper: RuntimeEventMessageMapper = getRuntimeEventMessageMapper(),
   ) {
     this.bindingRegistry = bindingRegistry;
-    this.codexRuntimeService = codexRuntimeService;
+    this.runtimeAdapterRegistry = runtimeAdapterRegistry;
     this.runtimeEventMessageMapper = runtimeEventMessageMapper;
   }
 
@@ -33,10 +32,8 @@ export class TeamCodexRuntimeEventBridge {
     teamRunId: string,
     onMessage: (message: ServerMessage) => void,
   ): () => Promise<void> {
-    const codexBindings = this.bindingRegistry
-      .getTeamBindings(teamRunId)
-      .filter((binding) => binding.runtimeKind === "codex_app_server");
-    const unsubscribers = codexBindings.map((binding) =>
+    const runtimeBindings = this.bindingRegistry.getTeamBindings(teamRunId);
+    const unsubscribers = runtimeBindings.map((binding) =>
       this.subscribeMember(binding, onMessage),
     );
 
@@ -55,11 +52,34 @@ export class TeamCodexRuntimeEventBridge {
     binding: TeamRunMemberBinding,
     onMessage: (message: ServerMessage) => void,
   ): () => void {
-    return this.codexRuntimeService.subscribeToRunEvents(
+    let adapter;
+    try {
+      adapter = this.runtimeAdapterRegistry.resolveAdapter(binding.runtimeKind);
+    } catch (error) {
+      onMessage(
+        createErrorMessage(
+          "TEAM_RUNTIME_EVENT_BRIDGE_ERROR",
+          `Runtime adapter not found for '${binding.runtimeKind}': ${String(error)}`,
+        ),
+      );
+      return () => {};
+    }
+
+    if (!adapter.subscribeToRunEvents) {
+      onMessage(
+        createErrorMessage(
+          "TEAM_RUNTIME_EVENT_BRIDGE_ERROR",
+          `Runtime '${binding.runtimeKind}' does not support event subscriptions.`,
+        ),
+      );
+      return () => {};
+    }
+
+    return adapter.subscribeToRunEvents(
       binding.memberRunId,
-      (event: CodexRuntimeEvent) => {
+      (event: unknown) => {
         try {
-          const mapped = this.runtimeEventMessageMapper.map(event);
+          const mapped = this.runtimeEventMessageMapper.mapForRuntime(binding.runtimeKind, event);
           const payload =
             mapped.payload && typeof mapped.payload === "object"
               ? mapped.payload
@@ -75,8 +95,8 @@ export class TeamCodexRuntimeEventBridge {
         } catch (error) {
           onMessage(
             createErrorMessage(
-              "TEAM_CODEX_EVENT_BRIDGE_ERROR",
-              `Failed mapping codex member event: ${String(error)}`,
+              "TEAM_RUNTIME_EVENT_BRIDGE_ERROR",
+              `Failed mapping runtime member event: ${String(error)}`,
             ),
           );
         }
@@ -85,11 +105,11 @@ export class TeamCodexRuntimeEventBridge {
   }
 }
 
-let cachedTeamCodexRuntimeEventBridge: TeamCodexRuntimeEventBridge | null = null;
+let cachedTeamRuntimeEventBridge: TeamRuntimeEventBridge | null = null;
 
-export const getTeamCodexRuntimeEventBridge = (): TeamCodexRuntimeEventBridge => {
-  if (!cachedTeamCodexRuntimeEventBridge) {
-    cachedTeamCodexRuntimeEventBridge = new TeamCodexRuntimeEventBridge();
+export const getTeamRuntimeEventBridge = (): TeamRuntimeEventBridge => {
+  if (!cachedTeamRuntimeEventBridge) {
+    cachedTeamRuntimeEventBridge = new TeamRuntimeEventBridge();
   }
-  return cachedTeamCodexRuntimeEventBridge;
+  return cachedTeamRuntimeEventBridge;
 };

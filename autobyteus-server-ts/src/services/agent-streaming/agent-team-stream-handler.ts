@@ -22,9 +22,9 @@ import {
 } from "../../runtime-execution/runtime-command-ingress-service.js";
 import type { ApprovalTargetSource } from "../../runtime-execution/runtime-adapter-port.js";
 import {
-  getTeamCodexRuntimeEventBridge,
-  type TeamCodexRuntimeEventBridge,
-} from "./team-codex-runtime-event-bridge.js";
+  getTeamRuntimeEventBridge,
+  type TeamRuntimeEventBridge,
+} from "./team-runtime-event-bridge.js";
 import { AgentSession } from "./agent-session.js";
 import { AgentSessionManager } from "./agent-session-manager.js";
 import { getAgentStreamHandler } from "./agent-stream-handler.js";
@@ -65,30 +65,30 @@ export class AgentTeamStreamHandler {
   private teamManager: AgentTeamRunManager;
   private commandIngressService: RuntimeCommandIngressService;
   private teamMemberRuntimeOrchestrator: TeamMemberRuntimeOrchestrator;
-  private teamCodexRuntimeEventBridge: TeamCodexRuntimeEventBridge;
+  private teamMemberRuntimeEventBridge: TeamRuntimeEventBridge;
   private activeTasks = new Map<string, Promise<void>>();
   private eventStreams = new Map<string, AgentTeamEventStream>();
-  private codexBridgeUnsubscribers = new Map<string, () => Promise<void>>();
-  private sessionMode = new Map<string, "autobyteus_team" | "codex_members">();
+  private memberRuntimeBridgeUnsubscribers = new Map<string, () => Promise<void>>();
+  private sessionMode = new Map<string, "native_team" | "member_runtime">();
 
   constructor(
     sessionManager: AgentSessionManager = new AgentSessionManager(AgentTeamSession),
     teamManager: AgentTeamRunManager = AgentTeamRunManager.getInstance(),
     commandIngressService: RuntimeCommandIngressService = getRuntimeCommandIngressService(),
     teamMemberRuntimeOrchestrator: TeamMemberRuntimeOrchestrator = getTeamMemberRuntimeOrchestrator(),
-    teamCodexRuntimeEventBridge: TeamCodexRuntimeEventBridge = getTeamCodexRuntimeEventBridge(),
+    teamMemberRuntimeEventBridge: TeamRuntimeEventBridge = getTeamRuntimeEventBridge(),
   ) {
     this.sessionManager = sessionManager;
     this.teamManager = teamManager;
     this.commandIngressService = commandIngressService;
     this.teamMemberRuntimeOrchestrator = teamMemberRuntimeOrchestrator;
-    this.teamCodexRuntimeEventBridge = teamCodexRuntimeEventBridge;
+    this.teamMemberRuntimeEventBridge = teamMemberRuntimeEventBridge;
   }
 
   async connect(connection: WebSocketConnection, teamRunId: string): Promise<string | null> {
     const runtimeMode = this.teamMemberRuntimeOrchestrator.getTeamRuntimeMode(teamRunId);
     const team = this.teamManager.getTeamRun(teamRunId) as TeamLike | null;
-    if (!team && runtimeMode !== "codex_members") {
+    if (!team && runtimeMode !== "member_runtime") {
       const errorMsg = createErrorMessage("TEAM_NOT_FOUND", `Team run '${teamRunId}' not found`);
       connection.send(errorMsg.toJson());
       connection.close(4004);
@@ -107,19 +107,19 @@ export class AgentTeamStreamHandler {
       return null;
     }
 
-    if (runtimeMode === "codex_members") {
-      const unsubscribe = this.teamCodexRuntimeEventBridge.subscribeTeam(
+    if (runtimeMode === "member_runtime") {
+      const unsubscribe = this.teamMemberRuntimeEventBridge.subscribeTeam(
         teamRunId,
         (message) => {
           try {
             connection.send(message.toJson());
           } catch (error) {
-            logger.error(`Error sending codex team event to WebSocket: ${String(error)}`);
+            logger.error(`Error sending member-runtime team event to WebSocket: ${String(error)}`);
           }
         },
       );
-      this.codexBridgeUnsubscribers.set(sessionId, unsubscribe);
-      this.sessionMode.set(sessionId, "codex_members");
+      this.memberRuntimeBridgeUnsubscribers.set(sessionId, unsubscribe);
+      this.sessionMode.set(sessionId, "member_runtime");
     } else {
       const eventStream = this.teamManager.getTeamEventStream(teamRunId);
       if (!eventStream) {
@@ -132,7 +132,7 @@ export class AgentTeamStreamHandler {
         return null;
       }
       this.eventStreams.set(sessionId, eventStream);
-      this.sessionMode.set(sessionId, "autobyteus_team");
+      this.sessionMode.set(sessionId, "native_team");
 
       const task = this.streamLoop(connection, teamRunId, sessionId);
       this.activeTasks.set(sessionId, task);
@@ -160,7 +160,7 @@ export class AgentTeamStreamHandler {
       const msgType = data.type;
       const payload = data.payload ?? {};
       const teamRunId = session.runId;
-      const teamRuntimeMode = this.sessionMode.get(sessionId) ?? "autobyteus_team";
+      const teamRuntimeMode = this.sessionMode.get(sessionId) ?? "native_team";
 
       if (msgType === ClientMessageType.SEND_MESSAGE) {
         await this.handleSendMessage(teamRunId, payload, teamRuntimeMode);
@@ -189,10 +189,10 @@ export class AgentTeamStreamHandler {
       await stream.close();
     }
 
-    const codexUnsubscribe = this.codexBridgeUnsubscribers.get(sessionId);
-    this.codexBridgeUnsubscribers.delete(sessionId);
-    if (codexUnsubscribe) {
-      await codexUnsubscribe();
+    const memberRuntimeUnsubscribe = this.memberRuntimeBridgeUnsubscribers.get(sessionId);
+    this.memberRuntimeBridgeUnsubscribers.delete(sessionId);
+    if (memberRuntimeUnsubscribe) {
+      await memberRuntimeUnsubscribe();
     }
 
     this.sessionManager.closeSession(sessionId);
@@ -239,7 +239,7 @@ export class AgentTeamStreamHandler {
   private async handleSendMessage(
     teamRunId: string,
     payload: Record<string, unknown>,
-    mode: "autobyteus_team" | "codex_members",
+    mode: "native_team" | "member_runtime",
   ): Promise<void> {
     const content = typeof payload.content === "string" ? payload.content : "";
     const targetMemberName =
@@ -269,13 +269,13 @@ export class AgentTeamStreamHandler {
       context_files: contextPayload.length > 0 ? contextPayload : null,
     });
 
-    if (mode === "codex_members") {
+    if (mode === "member_runtime") {
       try {
         await this.teamMemberRuntimeOrchestrator.sendToMember(teamRunId, targetMemberName, userMessage);
       } catch (error) {
         if (error instanceof TeamRuntimeRoutingError) {
           logger.warn(
-            `SEND_MESSAGE rejected for codex team run ${teamRunId}: [${error.code}] ${error.message}`,
+            `SEND_MESSAGE rejected for member-runtime team run ${teamRunId}: [${error.code}] ${error.message}`,
           );
           return;
         }
@@ -299,9 +299,9 @@ export class AgentTeamStreamHandler {
 
   private async handleStopGeneration(
     teamRunId: string,
-    mode: "autobyteus_team" | "codex_members",
+    mode: "native_team" | "member_runtime",
   ): Promise<void> {
-    if (mode === "codex_members") {
+    if (mode === "member_runtime") {
       const bindings = this.teamMemberRuntimeOrchestrator.getTeamBindings(teamRunId);
       for (const binding of bindings) {
         const result = await this.commandIngressService.interruptRun({
@@ -311,7 +311,7 @@ export class AgentTeamStreamHandler {
         });
         if (!result.accepted) {
           logger.warn(
-            `STOP_GENERATION rejected for codex member run ${binding.memberRunId}: [${result.code ?? "UNKNOWN"}] ${result.message ?? "no message"}`,
+            `STOP_GENERATION rejected for member-runtime run ${binding.memberRunId}: [${result.code ?? "UNKNOWN"}] ${result.message ?? "no message"}`,
           );
         }
       }
@@ -334,7 +334,7 @@ export class AgentTeamStreamHandler {
     teamRunId: string,
     payload: Record<string, unknown>,
     approved: boolean,
-    mode: "autobyteus_team" | "codex_members",
+    mode: "native_team" | "member_runtime",
   ): Promise<void> {
     const invocationId = payload.invocation_id;
     if (typeof invocationId !== "string" || invocationId.length === 0) {
@@ -360,7 +360,7 @@ export class AgentTeamStreamHandler {
     }
 
     const reason = typeof payload.reason === "string" ? payload.reason : null;
-    if (mode === "codex_members") {
+    if (mode === "member_runtime") {
       try {
         await this.teamMemberRuntimeOrchestrator.approveForMember(
           teamRunId,
@@ -372,7 +372,7 @@ export class AgentTeamStreamHandler {
       } catch (error) {
         if (error instanceof TeamRuntimeRoutingError) {
           logger.warn(
-            `TOOL_APPROVAL rejected for codex team run ${teamRunId}: [${error.code}] ${error.message}`,
+            `TOOL_APPROVAL rejected for member-runtime team run ${teamRunId}: [${error.code}] ${error.message}`,
           );
           return;
         }

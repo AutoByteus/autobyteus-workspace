@@ -80,11 +80,11 @@ describe("TeamRunContinuationService", () => {
     });
   });
 
-  it("persists refreshed codex member runtime references after restore", async () => {
+  it("persists refreshed member-runtime references after restore", async () => {
     const persistTeamRunManifest = vi.fn().mockResolvedValue(undefined);
     const onTeamEvent = vi.fn().mockResolvedValue(undefined);
     const sendToMember = vi.fn().mockResolvedValue(undefined);
-    const restoreCodexTeamRunSessions = vi.fn().mockResolvedValue([
+    const restoreMemberRuntimeSessions = vi.fn().mockResolvedValue([
       {
         memberName: "professor",
         memberRouteKey: "professor",
@@ -183,7 +183,7 @@ describe("TeamRunContinuationService", () => {
       } as any,
       teamMemberRuntimeOrchestrator: {
         hasActiveMemberBinding: vi.fn().mockReturnValue(false),
-        restoreCodexTeamRunSessions,
+        restoreMemberRuntimeSessions,
         sendToMember,
         removeTeam: vi.fn(),
       } as any,
@@ -198,7 +198,7 @@ describe("TeamRunContinuationService", () => {
       targetMemberRouteKey: "student",
     });
 
-    expect(restoreCodexTeamRunSessions).toHaveBeenCalledTimes(1);
+    expect(restoreMemberRuntimeSessions).toHaveBeenCalledTimes(1);
     expect(persistTeamRunManifest).toHaveBeenCalledTimes(1);
     const persistedManifest = persistTeamRunManifest.mock.calls[0]?.[1];
     const persistedStudentBinding = persistedManifest?.memberBindings?.find(

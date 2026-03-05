@@ -10,6 +10,10 @@ import {
   getRuntimeCommandIngressService,
   type RuntimeCommandIngressService,
 } from "../../runtime-execution/runtime-command-ingress-service.js";
+import {
+  getRuntimeAdapterRegistry,
+  type RuntimeAdapterRegistry,
+} from "../../runtime-execution/runtime-adapter-registry.js";
 import { normalizeRuntimeKind, type RuntimeKind } from "../../runtime-management/runtime-kind.js";
 import type {
   TeamRunManifest,
@@ -18,16 +22,15 @@ import type {
 } from "../../run-history/domain/team-models.js";
 import { normalizeMemberRouteKey } from "../../run-history/utils/team-member-run-id.js";
 import {
-  getTeamCodexInterAgentMessageRelay,
-  type TeamCodexInterAgentMessageRelay,
-} from "../../runtime-execution/codex-app-server/team-codex-inter-agent-message-relay.js";
-import {
-  getCodexAppServerRuntimeService,
-  type CodexAppServerRuntimeService,
-  type CodexInterAgentRelayRequest,
-  type CodexInterAgentRelayResult,
-} from "../../runtime-execution/codex-app-server/codex-app-server-runtime-service.js";
-import { isSendMessageToToolName } from "../../runtime-execution/codex-app-server/codex-send-message-tooling.js";
+  getTeamRuntimeInterAgentMessageRelay,
+  type TeamRuntimeInterAgentMessageRelay,
+} from "../../runtime-execution/team-runtime-inter-agent-message-relay.js";
+import type {
+  RuntimeAdapter,
+  RuntimeInterAgentRelayRequest,
+  RuntimeInterAgentRelayResult,
+  TeamRuntimeExecutionMode,
+} from "../../runtime-execution/runtime-adapter-port.js";
 import {
   getTeamRuntimeBindingRegistry,
   type TeamRuntimeBindingRegistry,
@@ -97,6 +100,18 @@ const normalizeOptionalString = (value: string | null | undefined): string | nul
   return normalized.length > 0 ? normalized : null;
 };
 
+const isSendMessageToToolName = (toolName: string | null): boolean => {
+  if (!toolName) {
+    return false;
+  }
+  const normalized = toolName.trim().toLowerCase();
+  return (
+    normalized === "send_message_to" ||
+    normalized.endsWith(".send_message_to") ||
+    normalized.endsWith("/send_message_to")
+  );
+};
+
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
 };
@@ -131,28 +146,21 @@ const toRuntimeReference = (
   },
 });
 
-const ensureCodexRuntime = (runtimeKind: RuntimeKind): void => {
-  if (runtimeKind !== "codex_app_server") {
-    throw new TeamRuntimeRoutingError({
-      code: "TEAM_RUNTIME_MODE_UNSUPPORTED",
-      message: `Runtime '${runtimeKind}' is not supported by codex member orchestrator.`,
-    });
-  }
-};
-
 export class TeamMemberRuntimeOrchestrator {
   private readonly runtimeCompositionService: RuntimeCompositionService;
   private readonly runtimeCommandIngressService: RuntimeCommandIngressService;
+  private readonly runtimeAdapterRegistry: RuntimeAdapterRegistry;
   private readonly teamRuntimeBindingRegistry: TeamRuntimeBindingRegistry;
-  private readonly teamCodexInterAgentMessageRelay: TeamCodexInterAgentMessageRelay;
+  private readonly teamRuntimeInterAgentMessageRelay: TeamRuntimeInterAgentMessageRelay;
   private readonly workspaceManager: WorkspaceManager;
   private readonly agentDefinitionService: AgentDefinitionService;
 
   constructor(options: {
     runtimeCompositionService?: RuntimeCompositionService;
     runtimeCommandIngressService?: RuntimeCommandIngressService;
+    runtimeAdapterRegistry?: RuntimeAdapterRegistry;
     teamRuntimeBindingRegistry?: TeamRuntimeBindingRegistry;
-    teamCodexInterAgentMessageRelay?: TeamCodexInterAgentMessageRelay;
+    teamRuntimeInterAgentMessageRelay?: TeamRuntimeInterAgentMessageRelay;
     workspaceManager?: WorkspaceManager;
     agentDefinitionService?: AgentDefinitionService;
   } = {}) {
@@ -160,10 +168,12 @@ export class TeamMemberRuntimeOrchestrator {
       options.runtimeCompositionService ?? getRuntimeCompositionService();
     this.runtimeCommandIngressService =
       options.runtimeCommandIngressService ?? getRuntimeCommandIngressService();
+    this.runtimeAdapterRegistry =
+      options.runtimeAdapterRegistry ?? getRuntimeAdapterRegistry();
     this.teamRuntimeBindingRegistry =
       options.teamRuntimeBindingRegistry ?? getTeamRuntimeBindingRegistry();
-    this.teamCodexInterAgentMessageRelay =
-      options.teamCodexInterAgentMessageRelay ?? getTeamCodexInterAgentMessageRelay();
+    this.teamRuntimeInterAgentMessageRelay =
+      options.teamRuntimeInterAgentMessageRelay ?? getTeamRuntimeInterAgentMessageRelay();
     this.workspaceManager = options.workspaceManager ?? getWorkspaceManager();
     this.agentDefinitionService = options.agentDefinitionService ?? AgentDefinitionService.getInstance();
   }
@@ -176,7 +186,7 @@ export class TeamMemberRuntimeOrchestrator {
     this.teamRuntimeBindingRegistry.removeTeam(teamRunId);
   }
 
-  async terminateCodexTeamRunSessions(teamRunId: string): Promise<boolean> {
+  async terminateMemberRuntimeSessions(teamRunId: string): Promise<boolean> {
     const bindings = this.teamRuntimeBindingRegistry.getTeamBindings(teamRunId);
     if (bindings.length === 0) {
       return false;
@@ -204,6 +214,21 @@ export class TeamMemberRuntimeOrchestrator {
 
   getTeamBindings(teamRunId: string): TeamRunMemberBinding[] {
     return this.teamRuntimeBindingRegistry.getTeamBindings(teamRunId);
+  }
+
+  private resolveTeamExecutionMode(runtimeKind: RuntimeKind): TeamRuntimeExecutionMode {
+    const adapter = this.runtimeAdapterRegistry.resolveAdapter(runtimeKind);
+    return adapter.teamExecutionMode ?? "member_runtime";
+  }
+
+  private ensureSupportedMemberRuntime(runtimeKind: RuntimeKind): void {
+    const mode = this.resolveTeamExecutionMode(runtimeKind);
+    if (mode !== "member_runtime") {
+      throw new TeamRuntimeRoutingError({
+        code: "TEAM_RUNTIME_MODE_UNSUPPORTED",
+        message: `Runtime '${runtimeKind}' is not supported by member-runtime orchestration.`,
+      });
+    }
   }
 
   private async resolveWorkspaceRootPath(config: TeamRuntimeMemberConfig): Promise<string | null> {
@@ -328,7 +353,7 @@ export class TeamMemberRuntimeOrchestrator {
     return manifest;
   }
 
-  async createCodexMemberSessions(
+  async createMemberRuntimeSessions(
     teamRunId: string,
     memberConfigs: TeamRuntimeMemberConfig[],
   ): Promise<TeamRunMemberBinding[]> {
@@ -343,7 +368,7 @@ export class TeamMemberRuntimeOrchestrator {
 
     for (const config of memberConfigs) {
       const runtimeKind = normalizeRuntimeKind(config.runtimeKind);
-      ensureCodexRuntime(runtimeKind);
+      this.ensureSupportedMemberRuntime(runtimeKind);
       const memberRouteKey = normalizeMemberRouteKey(config.memberRouteKey);
       const memberRunId = normalizeRequiredString(config.memberRunId, "memberRunId");
       const workspaceRootPath = await this.resolveWorkspaceRootPath(config);
@@ -400,11 +425,11 @@ export class TeamMemberRuntimeOrchestrator {
       });
     }
 
-    this.teamRuntimeBindingRegistry.upsertTeamBindings(normalizedTeamRunId, "codex_members", bindings);
+    this.teamRuntimeBindingRegistry.upsertTeamBindings(normalizedTeamRunId, "member_runtime", bindings);
     return bindings;
   }
 
-  async restoreCodexTeamRunSessions(manifest: TeamRunManifest): Promise<TeamRunMemberBinding[]> {
+  async restoreMemberRuntimeSessions(manifest: TeamRunManifest): Promise<TeamRunMemberBinding[]> {
     const normalizedTeamRunId = normalizeRequiredString(manifest.teamRunId, "teamRunId");
     const teamMemberManifest = await this.buildTeamManifestMetadata(
       manifest.memberBindings.map((member) => ({
@@ -416,7 +441,7 @@ export class TeamMemberRuntimeOrchestrator {
 
     for (const binding of manifest.memberBindings) {
       const runtimeKind = normalizeRuntimeKind(binding.runtimeKind);
-      ensureCodexRuntime(runtimeKind);
+      this.ensureSupportedMemberRuntime(runtimeKind);
       const sendMessageToEnabled = await this.resolveSendMessageToCapability({
         agentDefinitionId: binding.agentDefinitionId,
         runtimeReference: binding.runtimeReference ?? null,
@@ -476,7 +501,7 @@ export class TeamMemberRuntimeOrchestrator {
       });
     }
 
-    this.teamRuntimeBindingRegistry.upsertTeamBindings(normalizedTeamRunId, "codex_members", bindings);
+    this.teamRuntimeBindingRegistry.upsertTeamBindings(normalizedTeamRunId, "member_runtime", bindings);
     return bindings;
   }
 
@@ -576,7 +601,7 @@ export class TeamMemberRuntimeOrchestrator {
       };
     }
 
-    const relayResult = await this.teamCodexInterAgentMessageRelay.deliverInterAgentMessage({
+    const relayResult = await this.teamRuntimeInterAgentMessageRelay.deliverInterAgentMessage({
       teamRunId: input.teamRunId,
       recipientMemberRunId: resolveResult.binding.memberRunId,
       senderAgentRunId: sender.binding.memberRunId,
@@ -603,9 +628,9 @@ export class TeamMemberRuntimeOrchestrator {
     return { accepted: true };
   }
 
-  async handleCodexInterAgentRelayRequest(
-    request: CodexInterAgentRelayRequest,
-  ): Promise<CodexInterAgentRelayResult> {
+  async handleRuntimeInterAgentRelayRequest(
+    request: RuntimeInterAgentRelayRequest,
+  ): Promise<RuntimeInterAgentRelayResult> {
     const recipientNameRaw =
       request.toolArguments.recipient_name ??
       request.toolArguments.recipientName ??
@@ -654,7 +679,7 @@ export class TeamMemberRuntimeOrchestrator {
 
 let cachedTeamMemberRuntimeOrchestrator: TeamMemberRuntimeOrchestrator | null = null;
 let cachedRelayUnbind: (() => void) | null = null;
-const relayBindingTokenByRuntimeService = new WeakMap<CodexAppServerRuntimeService, symbol>();
+const relayBindingTokenByAdapter = new WeakMap<RuntimeAdapter, symbol>();
 
 const getOrCreateTeamMemberRuntimeOrchestrator = (): TeamMemberRuntimeOrchestrator => {
   if (!cachedTeamMemberRuntimeOrchestrator) {
@@ -665,23 +690,35 @@ const getOrCreateTeamMemberRuntimeOrchestrator = (): TeamMemberRuntimeOrchestrat
 
 export const bindTeamMemberRuntimeRelayHandler = (options: {
   orchestrator?: TeamMemberRuntimeOrchestrator;
-  codexRuntimeService?: CodexAppServerRuntimeService;
+  runtimeAdapterRegistry?: RuntimeAdapterRegistry;
 } = {}): (() => void) => {
   const orchestrator = options.orchestrator ?? getOrCreateTeamMemberRuntimeOrchestrator();
-  const codexRuntimeService = options.codexRuntimeService ?? getCodexAppServerRuntimeService();
-  const bindingToken = Symbol("team-member-runtime-relay-binding");
+  const runtimeAdapterRegistry = options.runtimeAdapterRegistry ?? getRuntimeAdapterRegistry();
+  const unbindHandlers: Array<() => void> = [];
 
-  codexRuntimeService.setInterAgentRelayHandler((request) =>
-    orchestrator.handleCodexInterAgentRelayRequest(request),
-  );
-  relayBindingTokenByRuntimeService.set(codexRuntimeService, bindingToken);
+  for (const runtimeKind of runtimeAdapterRegistry.listRuntimeKinds()) {
+    const adapter = runtimeAdapterRegistry.resolveAdapter(runtimeKind);
+    if (!adapter.bindInterAgentRelayHandler) {
+      continue;
+    }
+    const bindingToken = Symbol(`team-member-runtime-relay-binding:${runtimeKind}`);
+    const unbind = adapter.bindInterAgentRelayHandler((request) =>
+      orchestrator.handleRuntimeInterAgentRelayRequest(request),
+    );
+    relayBindingTokenByAdapter.set(adapter, bindingToken);
+    unbindHandlers.push(() => {
+      if (relayBindingTokenByAdapter.get(adapter) !== bindingToken) {
+        return;
+      }
+      relayBindingTokenByAdapter.delete(adapter);
+      unbind();
+    });
+  }
 
   return () => {
-    if (relayBindingTokenByRuntimeService.get(codexRuntimeService) !== bindingToken) {
-      return;
+    for (const unbind of unbindHandlers) {
+      unbind();
     }
-    relayBindingTokenByRuntimeService.delete(codexRuntimeService);
-    codexRuntimeService.setInterAgentRelayHandler(null);
   };
 };
 

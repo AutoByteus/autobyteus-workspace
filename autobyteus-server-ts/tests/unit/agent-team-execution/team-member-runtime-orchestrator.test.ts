@@ -1,12 +1,12 @@
 import { describe, expect, it, vi } from "vitest";
-import type { CodexInterAgentRelayRequest } from "../../../src/runtime-execution/codex-app-server/codex-app-server-runtime-service.js";
+import type { RuntimeInterAgentRelayRequest } from "../../../src/runtime-execution/runtime-adapter-port.js";
 import {
   bindTeamMemberRuntimeRelayHandler,
   TeamMemberRuntimeOrchestrator,
 } from "../../../src/agent-team-execution/services/team-member-runtime-orchestrator.js";
 
 const createSubject = () => {
-  let relayHandler: ((request: CodexInterAgentRelayRequest) => Promise<{
+  let relayHandler: ((request: RuntimeInterAgentRelayRequest) => Promise<{
     accepted: boolean;
     code?: string;
     message?: string;
@@ -20,6 +20,17 @@ const createSubject = () => {
     approveTool: vi.fn(),
     terminateRun: vi.fn(),
   } as any;
+  const relayAdapterUnbind = vi.fn();
+  const relayAdapter = {
+    bindInterAgentRelayHandler: vi.fn((handler: typeof relayHandler) => {
+      relayHandler = handler;
+      return relayAdapterUnbind;
+    }),
+  } as any;
+  const runtimeAdapterRegistry = {
+    listRuntimeKinds: vi.fn().mockReturnValue(["codex_app_server"]),
+    resolveAdapter: vi.fn().mockReturnValue(relayAdapter),
+  } as any;
   const teamRuntimeBindingRegistry = {
     getTeamMode: vi.fn(),
     removeTeam: vi.fn(),
@@ -28,7 +39,7 @@ const createSubject = () => {
     resolveByMemberRunId: vi.fn(),
     resolveMemberBinding: vi.fn(),
   } as any;
-  const teamCodexInterAgentMessageRelay = {
+  const teamRuntimeInterAgentMessageRelay = {
     deliverInterAgentMessage: vi.fn(),
   } as any;
   const workspaceManager = {
@@ -46,34 +57,32 @@ const createSubject = () => {
   const orchestrator = new TeamMemberRuntimeOrchestrator({
     runtimeCompositionService,
     runtimeCommandIngressService,
+    runtimeAdapterRegistry,
     teamRuntimeBindingRegistry,
-    teamCodexInterAgentMessageRelay,
+    teamRuntimeInterAgentMessageRelay,
     workspaceManager,
     agentDefinitionService,
   });
 
-  const codexRuntimeService = {
-    setInterAgentRelayHandler: vi.fn((handler: typeof relayHandler) => {
-      relayHandler = handler;
-    }),
-  } as any;
   const unbindRelayHandler = bindTeamMemberRuntimeRelayHandler({
     orchestrator,
-    codexRuntimeService,
+    runtimeAdapterRegistry,
   });
 
   return {
     orchestrator,
     mocks: {
       runtimeCompositionService,
+      runtimeAdapterRegistry,
+      relayAdapter,
+      relayAdapterUnbind,
       teamRuntimeBindingRegistry,
-      teamCodexInterAgentMessageRelay,
+      teamRuntimeInterAgentMessageRelay,
       workspaceManager,
       agentDefinitionService,
-      codexRuntimeService,
     },
     unbindRelayHandler,
-    invokeHandler: async (request: CodexInterAgentRelayRequest) => {
+    invokeHandler: async (request: RuntimeInterAgentRelayRequest) => {
       if (!relayHandler) {
         throw new Error("Expected inter-agent relay handler to be registered.");
       }
@@ -83,7 +92,7 @@ const createSubject = () => {
 };
 
 describe("TeamMemberRuntimeOrchestrator", () => {
-  it("derives workspaceRootPath from workspaceId when creating codex member sessions", async () => {
+  it("derives workspaceRootPath from workspaceId when creating member runtime sessions", async () => {
     const { orchestrator, mocks } = createSubject();
     mocks.workspaceManager.getWorkspaceById.mockReturnValue({
       getBasePath: () => "/tmp/team-workspace",
@@ -97,7 +106,7 @@ describe("TeamMemberRuntimeOrchestrator", () => {
       },
     });
 
-    const bindings = await orchestrator.createCodexMemberSessions("team-1", [
+    const bindings = await orchestrator.createMemberRuntimeSessions("team-1", [
       {
         memberName: "Professor",
         memberRouteKey: "professor",
@@ -135,7 +144,7 @@ describe("TeamMemberRuntimeOrchestrator", () => {
     expect(bindings[0]?.workspaceRootPath).toBe("/tmp/team-workspace");
     expect(mocks.teamRuntimeBindingRegistry.upsertTeamBindings).toHaveBeenCalledWith(
       "team-1",
-      "codex_members",
+      "member_runtime",
       expect.arrayContaining([
         expect.objectContaining({
           memberRunId: "member-run-1",
@@ -163,7 +172,7 @@ describe("TeamMemberRuntimeOrchestrator", () => {
       },
     });
 
-    await orchestrator.createCodexMemberSessions("team-1", [
+    await orchestrator.createMemberRuntimeSessions("team-1", [
       {
         memberName: "Professor",
         memberRouteKey: "professor",
@@ -259,7 +268,7 @@ describe("TeamMemberRuntimeOrchestrator", () => {
       code: null,
       message: null,
     });
-    mocks.teamCodexInterAgentMessageRelay.deliverInterAgentMessage.mockResolvedValue({
+    mocks.teamRuntimeInterAgentMessageRelay.deliverInterAgentMessage.mockResolvedValue({
       accepted: true,
     });
 
@@ -273,7 +282,7 @@ describe("TeamMemberRuntimeOrchestrator", () => {
     });
 
     expect(result).toEqual({ accepted: true });
-    expect(mocks.teamCodexInterAgentMessageRelay.deliverInterAgentMessage).toHaveBeenCalledWith({
+    expect(mocks.teamRuntimeInterAgentMessageRelay.deliverInterAgentMessage).toHaveBeenCalledWith({
       teamRunId: "team-1",
       recipientMemberRunId: "recipient-run-1",
       senderAgentRunId: "sender-run-1",
@@ -307,7 +316,7 @@ describe("TeamMemberRuntimeOrchestrator", () => {
       code: null,
       message: null,
     });
-    mocks.teamCodexInterAgentMessageRelay.deliverInterAgentMessage.mockResolvedValue({
+    mocks.teamRuntimeInterAgentMessageRelay.deliverInterAgentMessage.mockResolvedValue({
       accepted: false,
       code: "RECIPIENT_SESSION_UNAVAILABLE",
       message: "Recipient session is unavailable.",
@@ -326,7 +335,7 @@ describe("TeamMemberRuntimeOrchestrator", () => {
     expect(result.message).toBe("Recipient session is unavailable.");
   });
 
-  it("registers codex relay handler and routes send_message_to tool arguments", async () => {
+  it("registers runtime relay handler and routes send_message_to tool arguments", async () => {
     const { mocks, invokeHandler, unbindRelayHandler } = createSubject();
     mocks.teamRuntimeBindingRegistry.resolveByMemberRunId.mockReturnValue({
       teamRunId: "team-1",
@@ -345,7 +354,7 @@ describe("TeamMemberRuntimeOrchestrator", () => {
       code: null,
       message: null,
     });
-    mocks.teamCodexInterAgentMessageRelay.deliverInterAgentMessage.mockResolvedValue({
+    mocks.teamRuntimeInterAgentMessageRelay.deliverInterAgentMessage.mockResolvedValue({
       accepted: true,
     });
 
@@ -359,11 +368,11 @@ describe("TeamMemberRuntimeOrchestrator", () => {
       },
     });
 
-    expect(mocks.codexRuntimeService.setInterAgentRelayHandler).toHaveBeenCalledTimes(1);
+    expect(mocks.relayAdapter.bindInterAgentRelayHandler).toHaveBeenCalledTimes(1);
     expect(result).toEqual({ accepted: true });
-    expect(mocks.teamCodexInterAgentMessageRelay.deliverInterAgentMessage).toHaveBeenCalledTimes(1);
+    expect(mocks.teamRuntimeInterAgentMessageRelay.deliverInterAgentMessage).toHaveBeenCalledTimes(1);
 
     unbindRelayHandler();
-    expect(mocks.codexRuntimeService.setInterAgentRelayHandler).toHaveBeenLastCalledWith(null);
+    expect(mocks.relayAdapterUnbind).toHaveBeenCalledTimes(1);
   });
 });

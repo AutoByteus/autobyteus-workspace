@@ -51,7 +51,7 @@ describe("AgentTeamStreamHandler", () => {
         interruptRun: vi.fn(),
       } as any,
       {
-        getTeamRuntimeMode: () => "codex_members",
+        getTeamRuntimeMode: () => "member_runtime",
         sendToMember,
         approveForMember: vi.fn(),
         getTeamBindings: vi.fn().mockReturnValue([]),

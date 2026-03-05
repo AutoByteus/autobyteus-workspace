@@ -4,15 +4,19 @@ import { AgentRunManager } from "../../agent-execution/services/agent-run-manage
 import { UserInputConverter } from "../../api/graphql/converters/user-input-converter.js";
 import { AgentUserInput } from "../../api/graphql/types/agent-user-input.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
-import { getCodexAppServerRuntimeService } from "../../runtime-execution/codex-app-server/codex-app-server-runtime-service.js";
 import {
   getRuntimeCommandIngressService,
   RuntimeCommandIngressService,
 } from "../../runtime-execution/runtime-command-ingress-service.js";
 import {
+  getRuntimeAdapterRegistry,
+  RuntimeAdapterRegistry,
+} from "../../runtime-execution/runtime-adapter-registry.js";
+import {
   getRuntimeCompositionService,
   RuntimeCompositionService,
 } from "../../runtime-execution/runtime-composition-service.js";
+import type { RuntimeSessionRecord } from "../../runtime-execution/runtime-adapter-port.js";
 import {
   normalizeRuntimeKind,
   type RuntimeKind,
@@ -102,11 +106,12 @@ export class RunContinuationService {
   private manifestStore: RunManifestStore;
   private indexStore: RunHistoryIndexStore;
   private runHistoryService = getRunHistoryService();
-  private codexRuntimeService = getCodexAppServerRuntimeService();
+  private runtimeAdapterRegistry: RuntimeAdapterRegistry;
 
   constructor(memoryDir: string) {
     this.runtimeCompositionService = getRuntimeCompositionService();
     this.runtimeCommandIngressService = getRuntimeCommandIngressService();
+    this.runtimeAdapterRegistry = getRuntimeAdapterRegistry();
     this.activeRunOverridePolicy = getActiveRunOverridePolicy();
     this.agentRunManager = AgentRunManager.getInstance();
     this.manifestStore = new RunManifestStore(memoryDir);
@@ -132,10 +137,7 @@ export class RunContinuationService {
     const ignoredConfigFields: string[] = [];
     const activeSession = this.runtimeCompositionService.getRunSession(runId);
     const normalizedSession =
-      activeSession?.runtimeKind === "codex_app_server" &&
-      !this.codexRuntimeService.hasRunSession(runId)
-        ? null
-        : activeSession;
+      activeSession && this.isRuntimeSessionActive(activeSession) ? activeSession : null;
     if (!normalizedSession && activeSession) {
       this.runtimeCompositionService.removeRunSession(runId);
     }
@@ -210,6 +212,18 @@ export class RunContinuationService {
       lastActivityAt: new Date().toISOString(),
     });
     return { runId, ignoredConfigFields };
+  }
+
+  private isRuntimeSessionActive(session: RuntimeSessionRecord): boolean {
+    try {
+      const adapter = this.runtimeAdapterRegistry.resolveAdapter(session.runtimeKind);
+      if (!adapter.isRunActive) {
+        return true;
+      }
+      return adapter.isRunActive(session.runId);
+    } catch {
+      return false;
+    }
   }
 
   private async createAndContinueNewRun(input: ContinueRunInput): Promise<ContinueRunResult> {

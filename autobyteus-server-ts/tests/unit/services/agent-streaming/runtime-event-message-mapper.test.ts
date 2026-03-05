@@ -1,6 +1,7 @@
 import { StreamEventType } from "autobyteus-ts";
 import { beforeEach, describe, expect, it } from "vitest";
 import { RuntimeEventMessageMapper } from "../../../../src/services/agent-streaming/runtime-event-message-mapper.js";
+import { registerDefaultRuntimeEventMappers } from "../../../../src/services/agent-streaming/runtime-event-message-mapper-defaults.js";
 import { ServerMessageType } from "../../../../src/services/agent-streaming/models.js";
 
 describe("RuntimeEventMessageMapper", () => {
@@ -8,10 +9,20 @@ describe("RuntimeEventMessageMapper", () => {
 
   beforeEach(() => {
     mapper = new RuntimeEventMessageMapper();
+    registerDefaultRuntimeEventMappers(mapper);
   });
 
+  const mapEvent = (event: unknown) => {
+    const payload =
+      event && typeof event === "object" && !Array.isArray(event)
+        ? (event as Record<string, unknown>)
+        : {};
+    const runtimeKind = typeof payload.method === "string" ? "codex_app_server" : "autobyteus";
+    return mapper.map(event, runtimeKind);
+  };
+
   it("maps autobyteus segment stream events", () => {
-    const message = mapper.map({
+    const message = mapEvent({
       event_type: StreamEventType.SEGMENT_EVENT,
       data: {
         event_type: "SEGMENT_CONTENT",
@@ -28,7 +39,7 @@ describe("RuntimeEventMessageMapper", () => {
   });
 
   it("maps autobyteus assistant-complete stream events", () => {
-    const complete = mapper.map({
+    const complete = mapEvent({
       event_type: StreamEventType.ASSISTANT_COMPLETE_RESPONSE,
       data: { content: "done" },
       agent_id: "agent-complete",
@@ -37,7 +48,7 @@ describe("RuntimeEventMessageMapper", () => {
   });
 
   it("normalizes codex method aliases and maps output delta to segment content", () => {
-    const message = mapper.map({
+    const message = mapEvent({
       method: "item.outputText.delta",
       params: { itemId: "item-1", delta: "abc" },
     });
@@ -49,21 +60,37 @@ describe("RuntimeEventMessageMapper", () => {
   });
 
   it("maps codex turn lifecycle and progress methods", () => {
-    const started = mapper.map({ method: "turn.started", params: { turn_id: "turn-1" } });
+    const started = mapEvent({ method: "turn.started", params: { turn_id: "turn-1" } });
     expect(started.type).toBe(ServerMessageType.AGENT_STATUS);
     expect(started.payload.runtime_event_method).toBe("turn/started");
 
-    const diff = mapper.map({ method: "turn.diff_updated", params: { path: "a.ts" } });
+    const diff = mapEvent({ method: "turn.diff_updated", params: { path: "a.ts" } });
     expect(diff.type).toBe(ServerMessageType.ARTIFACT_UPDATED);
     expect(diff.payload.runtime_event_method).toBe("turn/diffUpdated");
 
-    const progress = mapper.map({ method: "turn.plan_updated", params: { tasks: [] } });
+    const progress = mapEvent({ method: "turn.plan_updated", params: { tasks: [] } });
     expect(progress.type).toBe(ServerMessageType.TODO_LIST_UPDATE);
     expect(progress.payload.runtime_event_method).toBe("turn/taskProgressUpdated");
   });
 
+  it("returns an explicit error when runtime kind is omitted", () => {
+    const message = mapper.map({ method: "turn.started", params: { turn_id: "turn-1" } });
+    expect(message.type).toBe(ServerMessageType.ERROR);
+    expect(message.payload.code).toBe("RUNTIME_KIND_REQUIRED");
+  });
+
+  it("returns mapper-not-found when runtime mapper is not registered", () => {
+    const localMapper = new RuntimeEventMessageMapper();
+    const message = localMapper.mapForRuntime("codex_app_server", {
+      method: "turn.started",
+      params: { turn_id: "turn-1" },
+    });
+    expect(message.type).toBe(ServerMessageType.ERROR);
+    expect(message.payload.code).toBe("RUNTIME_EVENT_MAPPER_NOT_FOUND");
+  });
+
   it("maps synthetic codex inter_agent_message runtime events to INTER_AGENT_MESSAGE payload", () => {
-    const message = mapper.map({
+    const message = mapEvent({
       method: "inter_agent_message",
       params: {
         sender_agent_id: "run-professor",
@@ -82,7 +109,7 @@ describe("RuntimeEventMessageMapper", () => {
   });
 
   it("maps codex item lifecycle methods", () => {
-    const added = mapper.map({
+    const added = mapEvent({
       method: "item.created",
       params: { item: { id: "item-1", type: "assistant_message" } },
     });
@@ -91,17 +118,17 @@ describe("RuntimeEventMessageMapper", () => {
     expect(added.payload.segment_type).toBe("text");
     expect(added.payload.runtime_event_method).toBe("item/added");
 
-    const delta = mapper.map({ method: "item.updated", params: { id: "item-1", delta: "d" } });
+    const delta = mapEvent({ method: "item.updated", params: { id: "item-1", delta: "d" } });
     expect(delta.type).toBe(ServerMessageType.SEGMENT_CONTENT);
     expect(delta.payload.runtime_event_method).toBe("item/delta");
 
-    const completed = mapper.map({ method: "item.completed", params: { id: "item-1" } });
+    const completed = mapEvent({ method: "item.completed", params: { id: "item-1" } });
     expect(completed.type).toBe(ServerMessageType.SEGMENT_END);
     expect(completed.payload.runtime_event_method).toBe("item/completed");
   });
 
   it("maps codex command-execution item variants to run_bash segment start", () => {
-    const added = mapper.map({
+    const added = mapEvent({
       method: "item.created",
       params: {
         item: {
@@ -122,7 +149,7 @@ describe("RuntimeEventMessageMapper", () => {
   });
 
   it("maps codex file-change item variants to edit_file segment start", () => {
-    const added = mapper.map({
+    const added = mapEvent({
       method: "item.created",
       params: {
         item: {
@@ -142,7 +169,7 @@ describe("RuntimeEventMessageMapper", () => {
   });
 
   it("maps codex web-search item lifecycle to canonical search_web tool_call segment", () => {
-    const started = mapper.map({
+    const started = mapEvent({
       method: "item/started",
       params: {
         item: {
@@ -162,7 +189,7 @@ describe("RuntimeEventMessageMapper", () => {
     expect(started.payload.metadata?.tool_name).toBe("search_web");
     expect(started.payload.runtime_event_method).toBe("item/added");
 
-    const completed = mapper.map({
+    const completed = mapEvent({
       method: "item/completed",
       params: {
         item: {
@@ -192,7 +219,7 @@ describe("RuntimeEventMessageMapper", () => {
   });
 
   it("maps codex mcpToolCall item lifecycle to canonical tool_call with tool_name", () => {
-    const started = mapper.map({
+    const started = mapEvent({
       method: "item/started",
       params: {
         item: {
@@ -219,7 +246,7 @@ describe("RuntimeEventMessageMapper", () => {
     });
     expect(started.payload.runtime_event_method).toBe("item/added");
 
-    const completed = mapper.map({
+    const completed = mapEvent({
       method: "item/completed",
       params: {
         item: {
@@ -239,7 +266,7 @@ describe("RuntimeEventMessageMapper", () => {
   });
 
   it("maps codex mcpToolCall metadata tool_name when tool is nested object", () => {
-    const started = mapper.map({
+    const started = mapEvent({
       method: "item/started",
       params: {
         item: {
@@ -258,7 +285,7 @@ describe("RuntimeEventMessageMapper", () => {
   });
 
   it("maps codex mcpToolCall metadata arguments from top-level payload fields", () => {
-    const started = mapper.map({
+    const started = mapEvent({
       method: "item/started",
       params: {
         id: "mcp_3",
@@ -285,7 +312,7 @@ describe("RuntimeEventMessageMapper", () => {
   });
 
   it("maps codex tool_call metadata arguments when arguments are serialized JSON strings", () => {
-    const started = mapper.map({
+    const started = mapEvent({
       method: "item/started",
       params: {
         item: {
@@ -309,7 +336,7 @@ describe("RuntimeEventMessageMapper", () => {
   });
 
   it("suppresses codex web_search_begin/end mirror events as no-op segment content", () => {
-    const begin = mapper.map({
+    const begin = mapEvent({
       method: "codex/event/web_search_begin",
       params: {
         id: "turn-77",
@@ -323,7 +350,7 @@ describe("RuntimeEventMessageMapper", () => {
     expect(begin.payload.delta).toBe("");
     expect(begin.payload.runtime_event_method).toBe("codex/event/web_search_begin");
 
-    const end = mapper.map({
+    const end = mapEvent({
       method: "codex/event/web_search_end",
       params: {
         id: "turn-77",
@@ -343,7 +370,7 @@ describe("RuntimeEventMessageMapper", () => {
   });
 
   it("suppresses empty reasoning item lifecycle events", () => {
-    const started = mapper.map({
+    const started = mapEvent({
       method: "item.started",
       params: { item: { id: "reason-1", type: "reasoning", summary: [], content: [] } },
     });
@@ -352,7 +379,7 @@ describe("RuntimeEventMessageMapper", () => {
     expect(started.payload.delta).toBe("");
     expect(started.payload.runtime_event_method).toBe("item/added");
 
-    const completed = mapper.map({
+    const completed = mapEvent({
       method: "item.completed",
       params: { item: { id: "reason-1", type: "reasoning", summary: [], content: [] } },
     });
@@ -363,7 +390,7 @@ describe("RuntimeEventMessageMapper", () => {
   });
 
   it("maps reasoning summary snapshot from completed item payload", () => {
-    const completed = mapper.map({
+    const completed = mapEvent({
       method: "item.completed",
       params: {
         item: {
@@ -382,7 +409,7 @@ describe("RuntimeEventMessageMapper", () => {
   });
 
   it("suppresses user message lifecycle events", () => {
-    const started = mapper.map({
+    const started = mapEvent({
       method: "item.started",
       params: { item: { id: "user-1", type: "userMessage", content: [] } },
     });
@@ -392,7 +419,7 @@ describe("RuntimeEventMessageMapper", () => {
   });
 
   it("maps codex reasoning and plan methods", () => {
-    const reasoningDelta = mapper.map({
+    const reasoningDelta = mapEvent({
       method: "item.reasoning.outputDelta",
       params: { itemId: "item-r", delta: "why" },
     });
@@ -402,7 +429,7 @@ describe("RuntimeEventMessageMapper", () => {
     expect(reasoningDelta.payload.segment_type).toBe("reasoning");
     expect(reasoningDelta.payload.runtime_event_method).toBe("item/reasoning/delta");
 
-    const summaryPart = mapper.map({
+    const summaryPart = mapEvent({
       method: "item/reasoning/summaryPartAdded",
       params: { itemId: "item-r", summary_part: "summary" },
     });
@@ -410,13 +437,13 @@ describe("RuntimeEventMessageMapper", () => {
     expect(summaryPart.payload.runtime_event_method).toBe("item/reasoning/summaryPartAdded");
     expect(summaryPart.payload.delta).toBe("summary");
 
-    const plan = mapper.map({ method: "item/plan/delta", params: { tasks: [] } });
+    const plan = mapEvent({ method: "item/plan/delta", params: { tasks: [] } });
     expect(plan.type).toBe(ServerMessageType.TODO_LIST_UPDATE);
     expect(plan.payload.runtime_event_method).toBe("item/plan/delta");
   });
 
   it("uses stable reasoning item id instead of per-event envelope id", () => {
-    const summaryPart = mapper.map({
+    const summaryPart = mapEvent({
       method: "item/reasoning/summaryPartAdded",
       params: {
         id: "event-1",
@@ -428,7 +455,7 @@ describe("RuntimeEventMessageMapper", () => {
     expect(summaryPart.payload.id).toBe("reason-item-1");
     expect(summaryPart.payload.delta).toBe("first summary chunk");
 
-    const completed = mapper.map({
+    const completed = mapEvent({
       method: "item/reasoning/completed",
       params: {
         id: "event-2",
@@ -441,7 +468,7 @@ describe("RuntimeEventMessageMapper", () => {
   });
 
   it("coalesces reasoning chunks by turn id when item ids are absent", () => {
-    const first = mapper.map({
+    const first = mapEvent({
       method: "item/reasoning/summaryPartAdded",
       params: {
         id: "event-a",
@@ -453,7 +480,7 @@ describe("RuntimeEventMessageMapper", () => {
     expect(first.payload.id).toBe("event-a");
     expect(first.payload.delta).toBe("first");
 
-    const second = mapper.map({
+    const second = mapEvent({
       method: "item/reasoning/summaryPartAdded",
       params: {
         id: "event-b",
@@ -465,7 +492,7 @@ describe("RuntimeEventMessageMapper", () => {
     expect(second.payload.id).toBe("event-a");
     expect(second.payload.delta).toBe("second");
 
-    const third = mapper.map({
+    const third = mapEvent({
       method: "item/reasoning/summaryPartAdded",
       params: {
         id: "event-c",
@@ -479,7 +506,7 @@ describe("RuntimeEventMessageMapper", () => {
   });
 
   it("coalesces generic item/delta reasoning chunks by turn id", () => {
-    const first = mapper.map({
+    const first = mapEvent({
       method: "item.updated",
       params: {
         id: "event-r1",
@@ -493,7 +520,7 @@ describe("RuntimeEventMessageMapper", () => {
     expect(first.payload.segment_type).toBe("reasoning");
     expect(first.payload.runtime_event_method).toBe("item/delta");
 
-    const second = mapper.map({
+    const second = mapEvent({
       method: "item.updated",
       params: {
         id: "event-r2",
@@ -509,7 +536,7 @@ describe("RuntimeEventMessageMapper", () => {
   });
 
   it("coalesces reasoning chunks by turn id even when item ids differ", () => {
-    const first = mapper.map({
+    const first = mapEvent({
       method: "item/reasoning/summaryPartAdded",
       params: {
         id: "event-x1",
@@ -521,7 +548,7 @@ describe("RuntimeEventMessageMapper", () => {
     expect(first.type).toBe(ServerMessageType.SEGMENT_CONTENT);
     expect(first.payload.id).toBe("reason-item-1");
 
-    const second = mapper.map({
+    const second = mapEvent({
       method: "item/reasoning/summaryPartAdded",
       params: {
         id: "event-x2",
@@ -536,7 +563,7 @@ describe("RuntimeEventMessageMapper", () => {
   });
 
   it("resets turn-level reasoning coalescing after turn completion", () => {
-    const first = mapper.map({
+    const first = mapEvent({
       method: "item/reasoning/summaryPartAdded",
       params: {
         id: "event-d",
@@ -547,7 +574,7 @@ describe("RuntimeEventMessageMapper", () => {
     expect(first.type).toBe(ServerMessageType.SEGMENT_CONTENT);
     expect(first.payload.id).toBe("event-d");
 
-    const completedTurn = mapper.map({
+    const completedTurn = mapEvent({
       method: "turn/completed",
       params: {
         turnId: "turn-99",
@@ -555,7 +582,7 @@ describe("RuntimeEventMessageMapper", () => {
     });
     expect(completedTurn.type).toBe(ServerMessageType.AGENT_STATUS);
 
-    const afterReset = mapper.map({
+    const afterReset = mapEvent({
       method: "item/reasoning/summaryPartAdded",
       params: {
         id: "event-e",
@@ -569,7 +596,7 @@ describe("RuntimeEventMessageMapper", () => {
   });
 
   it("maps codex command execution methods", () => {
-    const started = mapper.map({
+    const started = mapEvent({
       method: "item/command_execution/started",
       params: { invocation_id: "inv-1" },
     });
@@ -578,7 +605,7 @@ describe("RuntimeEventMessageMapper", () => {
     expect(started.payload.tool_name).toBe("run_bash");
     expect(started.payload.runtime_event_method).toBe("item/commandExecution/started");
 
-    const delta = mapper.map({
+    const delta = mapEvent({
       method: "item.commandExecution.outputDelta",
       params: { invocation_id: "inv-1", chunk: "out" },
     });
@@ -588,7 +615,7 @@ describe("RuntimeEventMessageMapper", () => {
     expect(delta.payload.log_entry).toBe("out");
     expect(delta.payload.runtime_event_method).toBe("item/commandExecution/delta");
 
-    const completedSuccess = mapper.map({
+    const completedSuccess = mapEvent({
       method: "item/command_execution/completed",
       params: { invocation_id: "inv-1", success: true },
     });
@@ -596,7 +623,7 @@ describe("RuntimeEventMessageMapper", () => {
     expect(completedSuccess.payload.invocation_id).toBe("inv-1");
     expect(completedSuccess.payload.tool_name).toBe("run_bash");
 
-    const completedFailure = mapper.map({
+    const completedFailure = mapEvent({
       method: "item/command_execution/completed",
       params: { invocation_id: "inv-2", success: false },
     });
@@ -607,7 +634,7 @@ describe("RuntimeEventMessageMapper", () => {
   });
 
   it("ignores send_message_to command-execution lifecycle methods to prevent duplicate UI rows", () => {
-    const started = mapper.map({
+    const started = mapEvent({
       method: "item/command_execution/started",
       params: {
         invocation_id: "call-send-1",
@@ -619,7 +646,7 @@ describe("RuntimeEventMessageMapper", () => {
     expect(started.payload.delta).toBe("");
     expect(started.payload.runtime_event_method).toBe("item/commandExecution/started");
 
-    const delta = mapper.map({
+    const delta = mapEvent({
       method: "item.commandExecution.outputDelta",
       params: {
         invocation_id: "call-send-1",
@@ -631,7 +658,7 @@ describe("RuntimeEventMessageMapper", () => {
     expect(delta.payload.delta).toBe("");
     expect(delta.payload.runtime_event_method).toBe("item/commandExecution/delta");
 
-    const completed = mapper.map({
+    const completed = mapEvent({
       method: "item/command_execution/completed",
       params: {
         invocation_id: "call-send-1",
@@ -645,7 +672,7 @@ describe("RuntimeEventMessageMapper", () => {
   });
 
   it("maps codex approval request methods", () => {
-    const message = mapper.map({
+    const message = mapEvent({
       method: "item/command_execution/request_approval",
       params: { invocation_id: "inv-1", command: "read_file" },
     });
@@ -656,7 +683,7 @@ describe("RuntimeEventMessageMapper", () => {
   });
 
   it("maps codex file-change approval requests to canonical tool payload", () => {
-    const message = mapper.map({
+    const message = mapEvent({
       method: "item/file_change/request_approval",
       params: { itemId: "item-9", approvalId: "approval-1", path: "src/a.ts", patch: "@@..." },
     });
@@ -667,7 +694,7 @@ describe("RuntimeEventMessageMapper", () => {
   });
 
   it("maps codex file-change approval payloads using changes[] when explicit args are empty", () => {
-    const message = mapper.map({
+    const message = mapEvent({
       method: "item/file_change/request_approval",
       params: {
         item: {
@@ -695,7 +722,7 @@ describe("RuntimeEventMessageMapper", () => {
   });
 
   it("maps codex file-change segment metadata path from changes[] when metadata/path are empty", () => {
-    const added = mapper.map({
+    const added = mapEvent({
       method: "item/added",
       params: {
         metadata: { path: "" },
@@ -716,7 +743,7 @@ describe("RuntimeEventMessageMapper", () => {
   });
 
   it("maps codex file-change segment end metadata path/patch from changes[]", () => {
-    const completed = mapper.map({
+    const completed = mapEvent({
       method: "item/completed",
       params: {
         item: {
@@ -742,7 +769,7 @@ describe("RuntimeEventMessageMapper", () => {
   });
 
   it("maps codex command-execution segment end metadata command from item.command", () => {
-    const completed = mapper.map({
+    const completed = mapEvent({
       method: "item/completed",
       params: {
         item: {
@@ -762,21 +789,21 @@ describe("RuntimeEventMessageMapper", () => {
   });
 
   it("maps codex file change and token usage methods", () => {
-    const fileDelta = mapper.map({
+    const fileDelta = mapEvent({
       method: "item.fileChange.outputDelta",
       params: { path: "/tmp/a.ts", delta: "patch" },
     });
     expect(fileDelta.type).toBe(ServerMessageType.ARTIFACT_UPDATED);
     expect(fileDelta.payload.runtime_event_method).toBe("item/fileChange/delta");
 
-    const fileCompleted = mapper.map({
+    const fileCompleted = mapEvent({
       method: "item/fileChange/completed",
       params: { path: "/tmp/a.ts" },
     });
     expect(fileCompleted.type).toBe(ServerMessageType.ARTIFACT_PERSISTED);
     expect(fileCompleted.payload.runtime_event_method).toBe("item/fileChange/completed");
 
-    const tokenUsage = mapper.map({
+    const tokenUsage = mapEvent({
       method: "thread/token_usage/updated",
       params: { total_tokens: 42 },
     });
@@ -785,7 +812,7 @@ describe("RuntimeEventMessageMapper", () => {
   });
 
   it("returns deterministic non-silent fallback for unknown codex methods", () => {
-    const message = mapper.map({
+    const message = mapEvent({
       method: "custom.method",
       params: { foo: "bar" },
     });
@@ -793,11 +820,11 @@ describe("RuntimeEventMessageMapper", () => {
     expect(message.payload.runtime_event_method).toBe("custom/method");
   });
 
-  it("emits runtime-unmapped error when codex event method is missing", () => {
-    const message = mapper.map({
+  it("emits runtime-unmapped error when runtime event shape is unknown", () => {
+    const message = mapEvent({
       params: { foo: "bar" },
     });
     expect(message.type).toBe(ServerMessageType.ERROR);
-    expect(message.payload.code).toBe("RUNTIME_EVENT_UNMAPPED");
+    expect(message.payload.code).toBe("UNMAPPED_RUNTIME_EVENT_SHAPE");
   });
 });

@@ -39,6 +39,42 @@ describe("RuntimeCommandIngressService", () => {
     expect(sendTurn).toHaveBeenCalledTimes(0);
   });
 
+  it("evicts stale runtime sessions when adapter reports inactive run", async () => {
+    const codexAdapter: RuntimeAdapter = {
+      runtimeKind: "codex_app_server",
+      isRunActive: vi.fn().mockReturnValue(false),
+      sendTurn: vi.fn(),
+      approveTool: vi.fn(),
+      interruptRun: vi.fn(),
+    };
+    const sessionStore = new RuntimeSessionStore();
+    sessionStore.upsertSession({
+      runId: "stale-run",
+      runtimeKind: "codex_app_server",
+      mode: "agent",
+      runtimeReference: {
+        runtimeKind: "codex_app_server",
+        sessionId: "stale-run",
+        threadId: "thread-1",
+        metadata: null,
+      },
+    });
+
+    const service = new RuntimeCommandIngressService(
+      sessionStore,
+      new RuntimeAdapterRegistry([codexAdapter]),
+    );
+    const result = await service.sendTurn({
+      runId: "stale-run",
+      mode: "agent",
+      message: AgentInputUserMessage.fromDict({ content: "hello" }),
+    });
+
+    expect(result.accepted).toBe(false);
+    expect(result.code).toBe("RUN_SESSION_NOT_FOUND");
+    expect(sessionStore.getSession("stale-run")).toBeNull();
+  });
+
   it("creates implicit autobyteus session for active agent runs", async () => {
     const sendTurn = vi.fn().mockResolvedValue({ accepted: true });
     const adapter: RuntimeAdapter = {
@@ -153,7 +189,6 @@ describe("RuntimeCommandIngressService", () => {
       new RuntimeAdapterRegistry([adapter]),
       { getAgentRun: vi.fn().mockReturnValue(null) } as any,
       { getTeamRun: vi.fn().mockReturnValue(null) } as any,
-      { hasRunSession: vi.fn().mockReturnValue(true) } as any,
     );
 
     const result = await service.relayInterAgentMessage({
@@ -232,7 +267,6 @@ describe("RuntimeCommandIngressService", () => {
       new RuntimeAdapterRegistry([codexAdapter]),
       { getAgentRun: vi.fn().mockReturnValue(null) } as any,
       { getTeamRun: vi.fn().mockReturnValue(null) } as any,
-      { hasRunSession: vi.fn().mockReturnValue(true) } as any,
       {
         getRuntimeCapability: vi.fn().mockReturnValue({
           runtimeKind: "codex_app_server",
@@ -280,7 +314,6 @@ describe("RuntimeCommandIngressService", () => {
       new RuntimeAdapterRegistry([codexAdapter]),
       { getAgentRun: vi.fn().mockReturnValue(null) } as any,
       { getTeamRun: vi.fn().mockReturnValue(null) } as any,
-      { hasRunSession: vi.fn().mockReturnValue(true) } as any,
       {
         getRuntimeCapability: vi.fn().mockReturnValue({
           runtimeKind: "codex_app_server",

@@ -43,6 +43,7 @@ const runNotFoundResult = (runId: string): RuntimeCommandResult => ({
 
 export class AutobyteusRuntimeAdapter implements RuntimeAdapter {
   readonly runtimeKind = "autobyteus" as const;
+  readonly teamExecutionMode = "native_team" as const;
   private agentManager: AgentRunManager;
   private teamManager: AgentTeamRunManager;
 
@@ -95,6 +96,10 @@ export class AutobyteusRuntimeAdapter implements RuntimeAdapter {
         metadata: input.runtimeReference?.metadata ?? null,
       },
     };
+  }
+
+  isRunActive(runId: string): boolean {
+    return this.agentManager.getAgentRun(runId) !== null || this.teamManager.getTeamRun(runId) !== null;
   }
 
   async sendTurn(input: RuntimeSendTurnInput): Promise<RuntimeCommandResult> {

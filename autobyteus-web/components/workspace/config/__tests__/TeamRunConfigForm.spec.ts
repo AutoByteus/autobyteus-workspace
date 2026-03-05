@@ -50,9 +50,20 @@ describe('TeamRunConfigForm', () => {
 
     runtimeStore = {
       hasFetched: true,
+      capabilities: [
+        { runtimeKind: 'autobyteus', enabled: true, reason: null },
+        { runtimeKind: 'codex_app_server', enabled: true, reason: null },
+      ],
       fetchRuntimeCapabilities: vi.fn().mockResolvedValue([]),
-      isRuntimeEnabled: vi.fn((runtimeKind: string) => runtimeKind === 'autobyteus' || runtimeKind === 'codex_app_server'),
-      runtimeReason: vi.fn(() => null),
+      capabilityByKind: vi.fn((runtimeKind: string) =>
+        runtimeStore.capabilities.find((capability: any) => capability.runtimeKind === runtimeKind) ?? null,
+      ),
+      isRuntimeEnabled: vi.fn((runtimeKind: string) =>
+        runtimeStore.capabilityByKind(runtimeKind)?.enabled ?? runtimeKind === 'autobyteus',
+      ),
+      runtimeReason: vi.fn((runtimeKind: string) =>
+        runtimeStore.capabilityByKind(runtimeKind)?.reason ?? null,
+      ),
     };
 
     (useLLMProviderConfigStore as any).mockReturnValue(llmStore);

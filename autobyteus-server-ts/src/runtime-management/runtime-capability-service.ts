@@ -1,5 +1,5 @@
-import { spawnSync } from "node:child_process";
-import { RUNTIME_KIND_VALUES, type RuntimeKind } from "./runtime-kind.js";
+import { DEFAULT_RUNTIME_KIND, normalizeRuntimeKind, type RuntimeKind } from "./runtime-kind.js";
+import { registerDefaultRuntimeCapabilityProviders } from "./runtime-capability-service-defaults.js";
 
 export interface RuntimeCapability {
   runtimeKind: RuntimeKind;
@@ -7,113 +7,59 @@ export interface RuntimeCapability {
   reason: string | null;
 }
 
-type CodexAvailabilityProbe = () => {
-  enabled: boolean;
-  reason: string | null;
-};
+export interface RuntimeCapabilityProvider {
+  readonly runtimeKind: RuntimeKind;
+  getRuntimeCapability(): RuntimeCapability;
+}
 
-const CODEX_DISABLED_VALUES = new Set(["0", "false", "off", "disabled", "no"]);
-const CODEX_ENABLED_VALUES = new Set(["1", "true", "on", "enabled", "yes"]);
-const DEFAULT_CACHE_TTL_MS = 15_000;
-
-const normalizeEnvToggle = (value: string | undefined): string | null => {
-  const normalized = value?.trim().toLowerCase() ?? "";
-  return normalized.length > 0 ? normalized : null;
-};
-
-const resolveCodexEnvOverride = (): RuntimeCapability | null => {
-  const toggle = normalizeEnvToggle(process.env.CODEX_APP_SERVER_ENABLED);
-  if (!toggle) {
-    return null;
-  }
-  if (CODEX_DISABLED_VALUES.has(toggle)) {
-    return {
-      runtimeKind: "codex_app_server",
-      enabled: false,
-      reason: "Disabled by CODEX_APP_SERVER_ENABLED.",
-    };
-  }
-  if (CODEX_ENABLED_VALUES.has(toggle)) {
-    return {
-      runtimeKind: "codex_app_server",
-      enabled: true,
-      reason: null,
-    };
-  }
-  return {
-    runtimeKind: "codex_app_server",
-    enabled: false,
-    reason: `Invalid CODEX_APP_SERVER_ENABLED value '${toggle}'.`,
-  };
-};
-
-const probeCodexBinary: CodexAvailabilityProbe = () => {
-  try {
-    const result = spawnSync("codex", ["--version"], {
-      stdio: "ignore",
-      timeout: 3_000,
-    });
-    if (result.status === 0) {
-      return { enabled: true, reason: null };
-    }
-    return {
-      enabled: false,
-      reason: "Codex CLI is not available on PATH.",
-    };
-  } catch {
-    return {
-      enabled: false,
-      reason: "Codex CLI is not available on PATH.",
-    };
-  }
-};
+const createAlwaysEnabledCapabilityProvider = (
+  runtimeKind: RuntimeKind = DEFAULT_RUNTIME_KIND,
+): RuntimeCapabilityProvider => ({
+  runtimeKind,
+  getRuntimeCapability: () => ({
+    runtimeKind,
+    enabled: true,
+    reason: null,
+  }),
+});
 
 export class RuntimeCapabilityService {
-  private readonly codexProbe: CodexAvailabilityProbe;
-  private readonly cacheTtlMs: number;
-  private cachedCodexCapability: RuntimeCapability | null = null;
-  private cachedCodexCapabilityAt = 0;
+  private readonly providers = new Map<RuntimeKind, RuntimeCapabilityProvider>();
 
-  constructor(codexProbe: CodexAvailabilityProbe = probeCodexBinary, cacheTtlMs = DEFAULT_CACHE_TTL_MS) {
-    this.codexProbe = codexProbe;
-    this.cacheTtlMs = cacheTtlMs;
+  constructor(providers?: RuntimeCapabilityProvider[]) {
+    for (const provider of providers ?? []) {
+      this.registerProvider(provider);
+    }
+    if (!this.hasProvider(DEFAULT_RUNTIME_KIND)) {
+      this.registerProvider(createAlwaysEnabledCapabilityProvider(DEFAULT_RUNTIME_KIND));
+    }
+  }
+
+  registerProvider(provider: RuntimeCapabilityProvider): void {
+    this.providers.set(provider.runtimeKind, provider);
+  }
+
+  hasProvider(runtimeKind: RuntimeKind): boolean {
+    return this.providers.has(runtimeKind);
   }
 
   listRuntimeCapabilities(): RuntimeCapability[] {
-    return RUNTIME_KIND_VALUES.map((runtimeKind) => this.getRuntimeCapability(runtimeKind));
+    return Array.from(this.providers.keys()).map((runtimeKind) =>
+      this.getRuntimeCapability(runtimeKind),
+    );
   }
 
-  getRuntimeCapability(runtimeKind: RuntimeKind): RuntimeCapability {
-    if (runtimeKind === "autobyteus") {
+  getRuntimeCapability(runtimeKind: RuntimeKind | string): RuntimeCapability {
+    const normalized = normalizeRuntimeKind(runtimeKind, DEFAULT_RUNTIME_KIND);
+    const provider = this.providers.get(normalized);
+    if (!provider) {
       return {
-        runtimeKind,
-        enabled: true,
-        reason: null,
+        runtimeKind: normalized,
+        enabled: false,
+        reason: `Runtime '${normalized}' is not configured.`,
       };
     }
-
-    const envOverride = resolveCodexEnvOverride();
-    if (envOverride) {
-      return envOverride;
-    }
-
-    const now = Date.now();
-    if (
-      this.cachedCodexCapability &&
-      now - this.cachedCodexCapabilityAt < this.cacheTtlMs
-    ) {
-      return this.cachedCodexCapability;
-    }
-
-    const probe = this.codexProbe();
-    const capability: RuntimeCapability = {
-      runtimeKind: "codex_app_server",
-      enabled: probe.enabled,
-      reason: probe.reason,
-    };
-    this.cachedCodexCapability = capability;
-    this.cachedCodexCapabilityAt = now;
-    return capability;
+    return provider.getRuntimeCapability();
   }
 }
 
@@ -122,6 +68,7 @@ let cachedRuntimeCapabilityService: RuntimeCapabilityService | null = null;
 export const getRuntimeCapabilityService = (): RuntimeCapabilityService => {
   if (!cachedRuntimeCapabilityService) {
     cachedRuntimeCapabilityService = new RuntimeCapabilityService();
+    registerDefaultRuntimeCapabilityProviders(cachedRuntimeCapabilityService);
   }
   return cachedRuntimeCapabilityService;
 };

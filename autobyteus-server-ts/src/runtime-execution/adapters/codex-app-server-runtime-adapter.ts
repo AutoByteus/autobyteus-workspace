@@ -5,16 +5,20 @@ import type {
   RuntimeCommandResult,
   RuntimeCreateAgentRunInput,
   RuntimeCreateResult,
+  RuntimeInterAgentRelayHandler,
   RuntimeInterruptRunInput,
   RuntimeRelayInterAgentMessageInput,
   RuntimeTerminateRunInput,
   RuntimeRestoreAgentRunInput,
   RuntimeSendTurnInput,
+  RuntimeEventInterpretation,
 } from "../runtime-adapter-port.js";
 import {
   CodexAppServerRuntimeService,
+  type CodexRuntimeEvent,
   getCodexAppServerRuntimeService,
 } from "../codex-app-server/codex-app-server-runtime-service.js";
+import { normalizeCodexRuntimeMethod } from "../codex-app-server/codex-runtime-method-normalizer.js";
 
 const buildCommandFailure = (error: unknown): RuntimeCommandResult => ({
   accepted: false,
@@ -22,8 +26,17 @@ const buildCommandFailure = (error: unknown): RuntimeCommandResult => ({
   message: String(error),
 });
 
+const asObject = (value: unknown): Record<string, unknown> | null =>
+  value && typeof value === "object" && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : null;
+
+const asNonEmptyString = (value: unknown): string | null =>
+  typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
+
 export class CodexAppServerRuntimeAdapter implements RuntimeAdapter {
   readonly runtimeKind = "codex_app_server" as const;
+  readonly teamExecutionMode = "member_runtime" as const;
   private readonly runtimeService: CodexAppServerRuntimeService;
 
   constructor(runtimeService: CodexAppServerRuntimeService = getCodexAppServerRuntimeService()) {
@@ -76,6 +89,53 @@ export class CodexAppServerRuntimeAdapter implements RuntimeAdapter {
     };
   }
 
+  isRunActive(runId: string): boolean {
+    return this.runtimeService.hasRunSession(runId);
+  }
+
+  subscribeToRunEvents(runId: string, onEvent: (event: unknown) => void): () => void {
+    return this.runtimeService.subscribeToRunEvents(
+      runId,
+      (event: CodexRuntimeEvent) => {
+        onEvent(event);
+      },
+    );
+  }
+
+  interpretRuntimeEvent(event: unknown): RuntimeEventInterpretation | null {
+    const payload = asObject(event);
+    if (!payload) {
+      return null;
+    }
+
+    const rawMethod = typeof payload.method === "string" ? payload.method : null;
+    const normalizedMethod = rawMethod ? normalizeCodexRuntimeMethod(rawMethod) : null;
+    let statusHint: RuntimeEventInterpretation["statusHint"] = null;
+    if (normalizedMethod === "turn/started") {
+      statusHint = "ACTIVE";
+    } else if (normalizedMethod === "turn/completed") {
+      statusHint = "IDLE";
+    } else if (normalizedMethod === "error") {
+      statusHint = "ERROR";
+    }
+
+    const params = asObject(payload.params);
+    const thread = asObject(params?.thread);
+    const threadIdHint =
+      asNonEmptyString(params?.threadId) ??
+      asNonEmptyString(params?.thread_id) ??
+      asNonEmptyString(thread?.id);
+
+    if (!normalizedMethod && !statusHint && !threadIdHint) {
+      return null;
+    }
+    return {
+      normalizedMethod,
+      statusHint,
+      threadIdHint,
+    };
+  }
+
   async sendTurn(input: RuntimeSendTurnInput): Promise<RuntimeCommandResult> {
     try {
       await this.runtimeService.sendTurn(input.runId, input.message);
@@ -107,6 +167,13 @@ export class CodexAppServerRuntimeAdapter implements RuntimeAdapter {
     } catch (error) {
       return buildCommandFailure(error);
     }
+  }
+
+  bindInterAgentRelayHandler(handler: RuntimeInterAgentRelayHandler): () => void {
+    this.runtimeService.setInterAgentRelayHandler(handler);
+    return () => {
+      this.runtimeService.setInterAgentRelayHandler(null);
+    };
   }
 
   async interruptRun(input: RuntimeInterruptRunInput): Promise<RuntimeCommandResult> {

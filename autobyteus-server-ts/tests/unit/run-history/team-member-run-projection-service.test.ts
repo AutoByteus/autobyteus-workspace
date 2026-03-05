@@ -2,6 +2,13 @@ import { describe, expect, it, vi } from "vitest";
 import { TeamMemberRunProjectionService } from "../../../src/run-history/services/team-member-run-projection-service.js";
 
 describe("TeamMemberRunProjectionService", () => {
+  const createProjectionProviderRegistry = () => ({
+    resolveProvider: vi.fn().mockReturnValue({
+      runtimeKind: "autobyteus",
+      buildProjection: vi.fn().mockResolvedValue(null),
+    }),
+  });
+
   it("resolves by memberRouteKey and reads canonical projection", async () => {
     const getTeamRunResumeConfig = vi.fn().mockResolvedValue({
       teamRunId: "team-1",
@@ -25,6 +32,7 @@ describe("TeamMemberRunProjectionService", () => {
     const service = new TeamMemberRunProjectionService({
       teamRunHistoryService: { getTeamRunResumeConfig } as any,
       projectionReader: { getProjection } as any,
+      projectionProviderRegistry: createProjectionProviderRegistry() as any,
     });
 
     const result = await service.getProjection("team-1", "professor");
@@ -58,6 +66,7 @@ describe("TeamMemberRunProjectionService", () => {
     const service = new TeamMemberRunProjectionService({
       teamRunHistoryService: { getTeamRunResumeConfig } as any,
       projectionReader: { getProjection } as any,
+      projectionProviderRegistry: createProjectionProviderRegistry() as any,
     });
 
     const result = await service.getProjection("team-1", "professor");
@@ -73,6 +82,7 @@ describe("TeamMemberRunProjectionService", () => {
     const service = new TeamMemberRunProjectionService({
       teamRunHistoryService: { getTeamRunResumeConfig } as any,
       projectionReader: { getProjection: vi.fn() } as any,
+      projectionProviderRegistry: createProjectionProviderRegistry() as any,
     });
 
     await expect(service.getProjection("team-1", "missing")).rejects.toThrow(
@@ -114,14 +124,20 @@ describe("TeamMemberRunProjectionService", () => {
       conversation: [{ role: "user", content: "PING-TO-PONG token" }],
     });
 
+    const resolveProvider = vi.fn().mockReturnValue({
+      runtimeKind: "codex_app_server",
+      buildProjection,
+    });
+
     const service = new TeamMemberRunProjectionService({
       teamRunHistoryService: { getTeamRunResumeConfig } as any,
       projectionReader: { getProjection } as any,
-      codexProjectionProvider: { buildProjection } as any,
+      projectionProviderRegistry: { resolveProvider } as any,
     });
 
     const result = await service.getProjection("team-1", "pong");
 
+    expect(resolveProvider).toHaveBeenCalledWith("codex_app_server");
     expect(buildProjection).toHaveBeenCalledTimes(1);
     expect(result.agentRunId).toBe("pong-run");
     expect(result.summary).toBe("summary-from-codex");

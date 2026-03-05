@@ -1,32 +1,79 @@
 import { StreamEventType, type StreamEvent } from "autobyteus-ts";
+import type { RuntimeKind } from "../../runtime-management/runtime-kind.js";
 import {
   ServerMessage,
   ServerMessageType,
 } from "./models.js";
 import { serializePayload } from "./payload-serialization.js";
-import { CodexRuntimeEventAdapter } from "./codex-runtime-event-adapter.js";
+import { registerDefaultRuntimeEventMappers } from "./runtime-event-message-mapper-defaults.js";
 
 const asObject = (value: unknown): Record<string, unknown> =>
   value && typeof value === "object" && !Array.isArray(value)
     ? (value as Record<string, unknown>)
     : {};
 
-export class RuntimeEventMessageMapper {
-  private codexAdapter: CodexRuntimeEventAdapter;
+export interface RuntimeEventMapper {
+  map(event: unknown): ServerMessage;
+  normalizeMethodAlias?(method: string): string;
+}
 
-  constructor(codexAdapter: CodexRuntimeEventAdapter = new CodexRuntimeEventAdapter()) {
-    this.codexAdapter = codexAdapter;
+export interface RuntimeEventMapperRegistrationTarget {
+  registerRuntimeMapper(runtimeKind: RuntimeKind, mapper: RuntimeEventMapper): void;
+  hasRuntimeMapper(runtimeKind: RuntimeKind): boolean;
+}
+
+export class RuntimeEventMessageMapper implements RuntimeEventMapperRegistrationTarget {
+  private readonly runtimeMappers = new Map<RuntimeKind, RuntimeEventMapper>();
+
+  constructor() {
+    this.runtimeMappers.set("autobyteus", {
+      map: (event: unknown) => {
+        if (!this.isAutobyteusStreamEvent(event)) {
+          return new ServerMessage(ServerMessageType.ERROR, {
+            code: "UNMAPPED_RUNTIME_EVENT_SHAPE",
+            message: "Autobyteus runtime event does not match expected stream-event shape.",
+          });
+        }
+        return this.mapAutobyteusStreamEvent(event);
+      },
+    });
   }
 
-  map(event: unknown): ServerMessage {
-    if (this.isAutobyteusStreamEvent(event)) {
-      return this.mapAutobyteusStreamEvent(event);
+  registerRuntimeMapper(runtimeKind: RuntimeKind, mapper: RuntimeEventMapper): void {
+    this.runtimeMappers.set(runtimeKind, mapper);
+  }
+
+  hasRuntimeMapper(runtimeKind: RuntimeKind): boolean {
+    return this.runtimeMappers.has(runtimeKind);
+  }
+
+  map(event: unknown, runtimeKind?: RuntimeKind): ServerMessage {
+    if (!runtimeKind) {
+      return new ServerMessage(ServerMessageType.ERROR, {
+        code: "RUNTIME_KIND_REQUIRED",
+        message: "Runtime kind is required for runtime event mapping.",
+      });
     }
-    return this.codexAdapter.map(event);
+    return this.mapForRuntime(runtimeKind, event);
   }
 
-  normalizeCodexEventMethodAlias(method: string): string {
-    return this.codexAdapter.normalizeMethodAlias(method);
+  mapForRuntime(runtimeKind: RuntimeKind, event: unknown): ServerMessage {
+    const mapper = this.runtimeMappers.get(runtimeKind);
+    if (!mapper) {
+      return new ServerMessage(ServerMessageType.ERROR, {
+        code: "RUNTIME_EVENT_MAPPER_NOT_FOUND",
+        message: `No runtime event mapper is registered for runtime '${runtimeKind}'.`,
+      });
+    }
+    return mapper.map(event);
+  }
+
+  normalizeRuntimeEventMethodAlias(method: string, runtimeKind?: RuntimeKind): string {
+    if (!runtimeKind) {
+      return method;
+    }
+    const mapper = this.runtimeMappers.get(runtimeKind);
+    return mapper?.normalizeMethodAlias?.(method) ?? method;
   }
 
   private isAutobyteusStreamEvent(value: unknown): value is StreamEvent {
@@ -110,6 +157,7 @@ let cachedRuntimeEventMessageMapper: RuntimeEventMessageMapper | null = null;
 export const getRuntimeEventMessageMapper = (): RuntimeEventMessageMapper => {
   if (!cachedRuntimeEventMessageMapper) {
     cachedRuntimeEventMessageMapper = new RuntimeEventMessageMapper();
+    registerDefaultRuntimeEventMappers(cachedRuntimeEventMessageMapper);
   }
   return cachedRuntimeEventMessageMapper;
 };

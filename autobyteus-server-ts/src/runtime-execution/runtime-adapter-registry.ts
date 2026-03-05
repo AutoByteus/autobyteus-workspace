@@ -1,24 +1,22 @@
 import type { RuntimeKind } from "../runtime-management/runtime-kind.js";
-import { AutobyteusRuntimeAdapter } from "./adapters/autobyteus-runtime-adapter.js";
-import { CodexAppServerRuntimeAdapter } from "./adapters/codex-app-server-runtime-adapter.js";
+import { registerDefaultRuntimeAdapters } from "./runtime-adapter-registry-defaults.js";
 import type { RuntimeAdapter } from "./runtime-adapter-port.js";
 
 export class RuntimeAdapterRegistry {
   private adapters = new Map<RuntimeKind, RuntimeAdapter>();
 
   constructor(adapters?: RuntimeAdapter[]) {
-    const defaults =
-      adapters && adapters.length > 0
-        ? adapters
-        : [new AutobyteusRuntimeAdapter(), new CodexAppServerRuntimeAdapter()];
-
-    for (const adapter of defaults) {
+    for (const adapter of adapters ?? []) {
       this.registerAdapter(adapter);
     }
   }
 
   registerAdapter(adapter: RuntimeAdapter): void {
     this.adapters.set(adapter.runtimeKind, adapter);
+  }
+
+  hasAdapter(runtimeKind: RuntimeKind): boolean {
+    return this.adapters.has(runtimeKind);
   }
 
   resolveAdapter(runtimeKind: RuntimeKind): RuntimeAdapter {
@@ -39,6 +37,7 @@ let cachedRuntimeAdapterRegistry: RuntimeAdapterRegistry | null = null;
 export const getRuntimeAdapterRegistry = (): RuntimeAdapterRegistry => {
   if (!cachedRuntimeAdapterRegistry) {
     cachedRuntimeAdapterRegistry = new RuntimeAdapterRegistry();
+    registerDefaultRuntimeAdapters(cachedRuntimeAdapterRegistry);
   }
   return cachedRuntimeAdapterRegistry;
 };

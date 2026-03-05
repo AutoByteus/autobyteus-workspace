@@ -58,12 +58,23 @@ describe('AgentRunConfigForm', () => {
 
     runtimeCapabilityStore = {
       hasFetched: true,
+      capabilities: [
+        { runtimeKind: 'autobyteus', enabled: true, reason: null },
+        { runtimeKind: 'codex_app_server', enabled: true, reason: null },
+      ],
       fetchRuntimeCapabilities: vi.fn().mockResolvedValue([
         { runtimeKind: 'autobyteus', enabled: true, reason: null },
         { runtimeKind: 'codex_app_server', enabled: true, reason: null },
       ]),
-      isRuntimeEnabled: vi.fn((runtimeKind: string) => runtimeKind === 'autobyteus' || runtimeKind === 'codex_app_server'),
-      runtimeReason: vi.fn(() => null),
+      capabilityByKind: vi.fn((runtimeKind: string) =>
+        runtimeCapabilityStore.capabilities.find((capability: any) => capability.runtimeKind === runtimeKind) ?? null,
+      ),
+      isRuntimeEnabled: vi.fn((runtimeKind: string) =>
+        runtimeCapabilityStore.capabilityByKind(runtimeKind)?.enabled ?? runtimeKind === 'autobyteus',
+      ),
+      runtimeReason: vi.fn((runtimeKind: string) =>
+        runtimeCapabilityStore.capabilityByKind(runtimeKind)?.reason ?? null,
+      ),
     };
 
     (useLLMProviderConfigStore as any).mockReturnValue(mockStore);
@@ -166,10 +177,10 @@ describe('AgentRunConfigForm', () => {
   });
 
   it('filters unavailable runtime options from selector', async () => {
-    runtimeCapabilityStore.isRuntimeEnabled = vi.fn((runtimeKind: string) => runtimeKind === 'autobyteus');
-    runtimeCapabilityStore.runtimeReason = vi.fn((runtimeKind: string) =>
-      runtimeKind === 'codex_app_server' ? 'Codex CLI is not available on PATH.' : null,
-    );
+    runtimeCapabilityStore.capabilities = [
+      { runtimeKind: 'autobyteus', enabled: true, reason: null },
+      { runtimeKind: 'codex_app_server', enabled: false, reason: 'Codex CLI is not available on PATH.' },
+    ];
 
     const localConfig = { ...mockConfig, runtimeKind: 'autobyteus' };
     const wrapper = mount(AgentRunConfigForm, {

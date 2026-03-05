@@ -6,8 +6,10 @@ import { AgentDefinitionService } from "../../agent-definition/services/agent-de
 import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import { MemoryFileStore } from "../../agent-memory-view/store/memory-file-store.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
-import { getCodexAppServerRuntimeService } from "../../runtime-execution/codex-app-server/codex-app-server-runtime-service.js";
-import { normalizeCodexRuntimeMethod } from "../../runtime-execution/codex-app-server/codex-runtime-method-normalizer.js";
+import {
+  getRuntimeAdapterRegistry,
+  type RuntimeAdapterRegistry,
+} from "../../runtime-execution/runtime-adapter-registry.js";
 import { getRuntimeSessionStore, type RuntimeSessionStore } from "../../runtime-execution/runtime-session-store.js";
 import {
   RunEditableFieldFlags,
@@ -70,9 +72,6 @@ const asObject = (value: unknown): Record<string, unknown> | null =>
     ? (value as Record<string, unknown>)
     : null;
 
-const asNonEmptyString = (value: unknown): string | null =>
-  typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
-
 const extractSummaryFromRawTraces = (
   active: Array<Record<string, unknown>>,
   archive: Array<Record<string, unknown>>,
@@ -106,7 +105,7 @@ export class RunHistoryService {
   private definitionService: AgentDefinitionService;
   private definitionNameCache = new Map<string, string>();
   private runtimeSessionStore: RuntimeSessionStore;
-  private codexRuntimeService = getCodexAppServerRuntimeService();
+  private runtimeAdapterRegistry: RuntimeAdapterRegistry;
 
   constructor(memoryDir: string) {
     this.indexStore = new RunHistoryIndexStore(memoryDir);
@@ -115,6 +114,7 @@ export class RunHistoryService {
     this.agentRunManager = AgentRunManager.getInstance();
     this.definitionService = AgentDefinitionService.getInstance();
     this.runtimeSessionStore = getRuntimeSessionStore();
+    this.runtimeAdapterRegistry = getRuntimeAdapterRegistry();
   }
 
   async listRunHistory(limitPerAgent = 6): Promise<RunHistoryWorkspaceGroup[]> {
@@ -127,11 +127,7 @@ export class RunHistoryService {
     const activeRuntimeIds = new Set(
       this.runtimeSessionStore
         .listSessions()
-        .filter((session) =>
-          session.runtimeKind === "codex_app_server"
-            ? this.codexRuntimeService.hasRunSession(session.runId)
-            : true,
-        )
+        .filter((session) => this.isRuntimeSessionRecordActive(session.runId, session.runtimeKind))
         .map((session) => session.runId),
     );
     const normalizedRows = rows.map((row) => ({
@@ -265,16 +261,41 @@ export class RunHistoryService {
       return;
     }
 
-    const method = typeof payload.method === "string"
-      ? normalizeCodexRuntimeMethod(payload.method)
-      : null;
-    if (!method) {
+    const runtimeSession = this.runtimeSessionStore.getSession(runId);
+    const manifest = await this.manifestStore.readManifest(runId);
+    const runtimeKind = runtimeSession?.runtimeKind ?? manifest?.runtimeKind ?? null;
+    if (!runtimeKind) {
       return;
     }
 
+    let interpretation: { normalizedMethod?: string | null; statusHint?: string | null; threadIdHint?: string | null } | null = null;
+    try {
+      const adapter = this.runtimeAdapterRegistry.resolveAdapter(runtimeKind);
+      interpretation = adapter.interpretRuntimeEvent?.(payload) ?? null;
+    } catch {
+      interpretation = null;
+    }
+    if (!interpretation) {
+      return;
+    }
+
+    const method =
+      typeof interpretation.normalizedMethod === "string" && interpretation.normalizedMethod.trim().length > 0
+        ? interpretation.normalizedMethod
+        : null;
+    const statusHint =
+      interpretation.statusHint === "ACTIVE" ||
+      interpretation.statusHint === "IDLE" ||
+      interpretation.statusHint === "ERROR"
+        ? interpretation.statusHint
+        : null;
+    const threadIdHint =
+      typeof interpretation.threadIdHint === "string" && interpretation.threadIdHint.trim().length > 0
+        ? interpretation.threadIdHint.trim()
+        : null;
+
     const existing = await this.indexStore.getRow(runId);
     if (!existing) {
-      const manifest = await this.manifestStore.readManifest(runId);
       if (!manifest) {
         return;
       }
@@ -285,17 +306,19 @@ export class RunHistoryService {
         lastKnownStatus: "ACTIVE",
         lastActivityAt: nowIso(),
       });
+      if (threadIdHint) {
+        await this.updateManifestThreadId(runId, threadIdHint);
+      }
       return;
     }
 
-    const status = this.deriveStatusFromRuntimeMethod(method);
-    const threadId = this.deriveThreadIdFromRuntimePayload(payload);
+    const status = statusHint ?? (method ? this.deriveStatusFromRuntimeMethod(method) : null);
     await this.indexStore.updateRow(runId, {
       lastActivityAt: nowIso(),
       lastKnownStatus: status ?? existing.lastKnownStatus,
     });
-    if (threadId) {
-      await this.updateManifestThreadId(runId, threadId);
+    if (threadIdHint) {
+      await this.updateManifestThreadId(runId, threadIdHint);
     }
   }
 
@@ -432,19 +455,9 @@ export class RunHistoryService {
     return null;
   }
 
-  private deriveThreadIdFromRuntimePayload(payload: Record<string, unknown>): string | null {
-    const params = asObject(payload.params);
-    const thread = asObject(params?.thread);
-    return (
-      asNonEmptyString(params?.threadId) ??
-      asNonEmptyString(params?.thread_id) ??
-      asNonEmptyString(thread?.id)
-    );
-  }
-
   private async updateManifestThreadId(runId: string, threadId: string): Promise<void> {
     const manifest = await this.manifestStore.readManifest(runId);
-    if (!manifest || manifest.runtimeKind !== "codex_app_server") {
+    if (!manifest) {
       return;
     }
     if (manifest.runtimeReference.threadId === threadId) {
@@ -464,10 +477,22 @@ export class RunHistoryService {
     if (!session) {
       return false;
     }
-    if (session.runtimeKind === "codex_app_server") {
-      return this.codexRuntimeService.hasRunSession(runId);
+    return this.isRuntimeSessionRecordActive(runId, session.runtimeKind);
+  }
+
+  private isRuntimeSessionRecordActive(
+    runId: string,
+    runtimeKind: Parameters<RuntimeAdapterRegistry["resolveAdapter"]>[0],
+  ): boolean {
+    try {
+      const adapter = this.runtimeAdapterRegistry.resolveAdapter(runtimeKind);
+      if (!adapter.isRunActive) {
+        return true;
+      }
+      return adapter.isRunActive(runId);
+    } catch {
+      return false;
     }
-    return true;
   }
 
   private resolveSafeRunDirectory(runId: string): string | null {

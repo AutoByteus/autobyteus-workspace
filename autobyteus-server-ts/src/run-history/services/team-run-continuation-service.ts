@@ -120,8 +120,8 @@ export class TeamRunContinuationService {
       content,
     });
 
-    if (this.isCodexMemberManifest(manifest)) {
-      return this.continueCodexTeamRun({
+    if (this.isMemberRuntimeManifest(manifest)) {
+      return this.continueMemberRuntimeTeamRun({
         teamRunId,
         userMessage,
         targetMemberRouteKey: input.targetMemberRouteKey ?? null,
@@ -160,7 +160,7 @@ export class TeamRunContinuationService {
     }
   }
 
-  private async continueCodexTeamRun(input: {
+  private async continueMemberRuntimeTeamRun(input: {
     teamRunId: string;
     userMessage: AgentInputUserMessage;
     targetMemberRouteKey: string | null;
@@ -172,7 +172,7 @@ export class TeamRunContinuationService {
     try {
       if (!this.teamMemberRuntimeOrchestrator.hasActiveMemberBinding(input.teamRunId)) {
         const restoredBindings =
-          await this.teamMemberRuntimeOrchestrator.restoreCodexTeamRunSessions(input.manifest);
+          await this.teamMemberRuntimeOrchestrator.restoreMemberRuntimeSessions(input.manifest);
         effectiveManifest = {
           ...input.manifest,
           updatedAt: new Date().toISOString(),
@@ -188,7 +188,7 @@ export class TeamRunContinuationService {
           );
         } catch (persistError) {
           console.warn(
-            `Failed to persist refreshed codex team manifest for '${input.teamRunId}': ${String(persistError)}`,
+              `Failed to persist refreshed member-runtime team manifest for '${input.teamRunId}': ${String(persistError)}`,
           );
         }
         restored = true;
@@ -279,11 +279,16 @@ export class TeamRunContinuationService {
     return coordinator?.memberName ?? null;
   }
 
-  private isCodexMemberManifest(manifest: TeamRunManifest): boolean {
+  private isMemberRuntimeManifest(manifest: TeamRunManifest): boolean {
     if (manifest.memberBindings.length === 0) {
       return false;
     }
-    return manifest.memberBindings.every((binding) => binding.runtimeKind === "codex_app_server");
+    return manifest.memberBindings.every(
+      (binding) =>
+        typeof binding.runtimeKind === "string" &&
+        binding.runtimeKind.length > 0 &&
+        binding.runtimeKind !== "autobyteus",
+    );
   }
 
   private async safeRecordActivity(teamRunId: string, summary: string): Promise<void> {

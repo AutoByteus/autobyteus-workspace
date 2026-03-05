@@ -1,7 +1,27 @@
 export type SkillAccessMode = 'PRELOADED_ONLY' | 'GLOBAL_DISCOVERY' | 'NONE';
-export const AGENT_RUNTIME_KINDS = ['autobyteus', 'codex_app_server'] as const;
-export type AgentRuntimeKind = (typeof AGENT_RUNTIME_KINDS)[number];
+export type AgentRuntimeKind = string;
 export const DEFAULT_AGENT_RUNTIME_KIND: AgentRuntimeKind = 'autobyteus';
+
+const AGENT_RUNTIME_KIND_LABELS: Record<string, string> = {
+  autobyteus: 'AutoByteus Runtime',
+  codex_app_server: 'Codex App Server',
+};
+
+export const runtimeKindToLabel = (runtimeKind: string): string => {
+  const normalized = runtimeKind.trim();
+  if (!normalized) {
+    return AGENT_RUNTIME_KIND_LABELS[DEFAULT_AGENT_RUNTIME_KIND] ?? 'Runtime';
+  }
+  const known = AGENT_RUNTIME_KIND_LABELS[normalized];
+  if (known) {
+    return known;
+  }
+  return normalized
+    .split(/[_-]+/g)
+    .filter((token) => token.length > 0)
+    .map((token) => `${token.slice(0, 1).toUpperCase()}${token.slice(1)}`)
+    .join(' ');
+};
 
 /**
  * Configuration for a running agent run.

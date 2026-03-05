@@ -7,22 +7,24 @@ import {
   normalizeRuntimeKind,
   type RuntimeKind,
 } from "../runtime-kind.js";
-import { AutobyteusRuntimeModelProvider } from "./providers/autobyteus-runtime-model-provider.js";
-import { CodexRuntimeModelProvider } from "./providers/codex-runtime-model-provider.js";
+import { registerDefaultRuntimeModelProviders } from "./runtime-model-catalog-defaults.js";
 import type { RuntimeModelProvider } from "./runtime-model-provider.js";
 
 export class RuntimeModelCatalogService {
   private providers = new Map<RuntimeKind, RuntimeModelProvider>();
 
   constructor(providers?: RuntimeModelProvider[]) {
-    const defaults =
-      providers && providers.length > 0
-        ? providers
-        : [new AutobyteusRuntimeModelProvider(), new CodexRuntimeModelProvider()];
-
-    for (const provider of defaults) {
-      this.providers.set(provider.runtimeKind, provider);
+    for (const provider of providers ?? []) {
+      this.registerRuntimeModelProvider(provider);
     }
+  }
+
+  registerRuntimeModelProvider(provider: RuntimeModelProvider): void {
+    this.providers.set(provider.runtimeKind, provider);
+  }
+
+  hasRuntimeModelProvider(runtimeKind: RuntimeKind): boolean {
+    return this.providers.has(runtimeKind);
   }
 
   async listLlmModels(runtimeKind?: string | null): Promise<ModelInfo[]> {
@@ -71,6 +73,7 @@ let cachedRuntimeModelCatalogService: RuntimeModelCatalogService | null = null;
 export const getRuntimeModelCatalogService = (): RuntimeModelCatalogService => {
   if (!cachedRuntimeModelCatalogService) {
     cachedRuntimeModelCatalogService = new RuntimeModelCatalogService();
+    registerDefaultRuntimeModelProviders(cachedRuntimeModelCatalogService);
   }
   return cachedRuntimeModelCatalogService;
 };

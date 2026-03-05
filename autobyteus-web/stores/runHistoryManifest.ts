@@ -8,6 +8,14 @@ const asRecord = (value: unknown): Record<string, unknown> => {
   return value as Record<string, unknown>;
 };
 
+const normalizeRuntimeKind = (value: unknown) => {
+  if (typeof value !== 'string') {
+    return DEFAULT_AGENT_RUNTIME_KIND;
+  }
+  const normalized = value.trim();
+  return (normalized.length > 0 ? normalized : DEFAULT_AGENT_RUNTIME_KIND) as TeamRunManifestPayload['memberBindings'][number]['runtimeKind'];
+};
+
 export const parseTeamRunManifest = (value: unknown): TeamRunManifestPayload => {
   const payload = asRecord(value);
   const memberBindings = Array.isArray(payload.memberBindings)
@@ -17,20 +25,15 @@ export const parseTeamRunManifest = (value: unknown): TeamRunManifestPayload => 
           memberRouteKey: String(binding.memberRouteKey || ''),
           memberName: String(binding.memberName || ''),
           memberRunId: String(binding.memberRunId ?? ''),
-          runtimeKind:
-            binding.runtimeKind === 'codex_app_server'
-              ? 'codex_app_server'
-              : DEFAULT_AGENT_RUNTIME_KIND,
+          runtimeKind: normalizeRuntimeKind(binding.runtimeKind),
           runtimeReference:
             binding.runtimeReference &&
             typeof binding.runtimeReference === 'object' &&
             !Array.isArray(binding.runtimeReference)
               ? {
-                  runtimeKind:
-                    (binding.runtimeReference as Record<string, unknown>).runtimeKind ===
-                    'codex_app_server'
-                      ? 'codex_app_server'
-                      : DEFAULT_AGENT_RUNTIME_KIND,
+                  runtimeKind: normalizeRuntimeKind(
+                    (binding.runtimeReference as Record<string, unknown>).runtimeKind,
+                  ),
                   sessionId:
                     typeof (binding.runtimeReference as Record<string, unknown>).sessionId ===
                     'string'
@@ -79,4 +82,3 @@ export const parseTeamRunManifest = (value: unknown): TeamRunManifestPayload => 
 
 export const toTeamMemberKey = (member: { memberRouteKey: string; memberName: string }): string =>
   member.memberRouteKey || member.memberName;
-
