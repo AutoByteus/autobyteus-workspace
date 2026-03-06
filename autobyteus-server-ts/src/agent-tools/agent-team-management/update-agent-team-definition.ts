@@ -1,7 +1,6 @@
 import { tool, ParameterSchema, ParameterDefinition, ParameterType, BaseTool } from "autobyteus-ts";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
 import { AgentTeamDefinitionUpdate, TeamMember } from "../../agent-team-definition/domain/models.js";
-import { NodeType } from "../../agent-team-definition/domain/enums.js";
 import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 
 const DESCRIPTION =
@@ -34,9 +33,17 @@ argumentSchema.addParameter(
 );
 argumentSchema.addParameter(
   new ParameterDefinition({
-    name: "role",
+    name: "instructions",
     type: ParameterType.STRING,
-    description: "The new role for the team.",
+    description: "The new coordinator instructions for the team.",
+    required: false,
+  }),
+);
+argumentSchema.addParameter(
+  new ParameterDefinition({
+    name: "category",
+    type: ParameterType.STRING,
+    description: "The new category for the team.",
     required: false,
   }),
 );
@@ -71,8 +78,27 @@ const logger = {
 };
 
 type AgentContextLike = {
-  // Core boundary from autobyteus-ts runtime; normalize immediately to `agentRunId` in local code.
   agentId?: string;
+};
+
+const toRefType = (value: unknown): "agent" | "agent_team" | null => {
+  if (typeof value !== "string") {
+    return null;
+  }
+  if (value === "AGENT") {
+    return "agent";
+  }
+  if (value === "AGENT_TEAM") {
+    return "agent_team";
+  }
+  const normalized = value.trim().toLowerCase();
+  if (normalized === "agent") {
+    return "agent";
+  }
+  if (normalized === "agent_team" || normalized === "agentteam") {
+    return "agent_team";
+  }
+  return null;
 };
 
 const parseTeamMembers = (nodes: string): TeamMember[] => {
@@ -83,28 +109,22 @@ const parseTeamMembers = (nodes: string): TeamMember[] => {
 
   return parsed.map((node) => {
     const memberName = node.member_name as string | undefined;
-    const referenceId = node.reference_id as string | undefined;
-    const referenceTypeRaw = node.reference_type as string | undefined;
+    const ref = node.ref as string | undefined;
+    const refTypeRaw = node.ref_type as string | undefined;
 
-    if (!memberName || !referenceId || !referenceTypeRaw) {
-      throw new Error("Each node must include member_name, reference_id, and reference_type.");
+    if (!memberName || !ref || !refTypeRaw) {
+      throw new Error("Each node must include member_name, ref, and ref_type.");
     }
 
-    const referenceType =
-      referenceTypeRaw === NodeType.AGENT
-        ? NodeType.AGENT
-        : referenceTypeRaw === NodeType.AGENT_TEAM
-          ? NodeType.AGENT_TEAM
-          : null;
-
-    if (!referenceType) {
-      throw new Error("reference_type must be 'AGENT' or 'AGENT_TEAM'.");
+    const refType = toRefType(refTypeRaw);
+    if (!refType) {
+      throw new Error("ref_type must be 'agent' or 'agent_team'.");
     }
 
     return new TeamMember({
       memberName,
-      referenceId,
-      referenceType,
+      ref,
+      refType,
     });
   });
 };
@@ -114,7 +134,8 @@ export async function updateAgentTeamDefinition(
   definition_id: string,
   name?: string | null,
   description?: string | null,
-  role?: string | null,
+  instructions?: string | null,
+  category?: string | null,
   nodes?: string | null,
   coordinator_member_name?: string | null,
   avatar_url?: string | null,
@@ -124,9 +145,15 @@ export async function updateAgentTeamDefinition(
     `update_agent_team_definition tool invoked by agent run ${agentRunId} for ID '${definition_id}'.`,
   );
 
-  const hasUpdates = [name, description, role, nodes, coordinator_member_name, avatar_url].some(
-    (value) => value !== null && value !== undefined,
-  );
+  const hasUpdates = [
+    name,
+    description,
+    instructions,
+    category,
+    nodes,
+    coordinator_member_name,
+    avatar_url,
+  ].some((value) => value !== null && value !== undefined);
   if (!hasUpdates) {
     throw new Error("At least one field must be provided to update the agent team definition.");
   }
@@ -136,7 +163,8 @@ export async function updateAgentTeamDefinition(
     const updateData = new AgentTeamDefinitionUpdate({
       name: name ?? null,
       description: description ?? null,
-      role: role ?? null,
+      instructions: instructions ?? null,
+      category: category ?? null,
       nodes: teamMembers,
       coordinatorMemberName: coordinator_member_name ?? null,
       avatarUrl: avatar_url ?? null,
@@ -152,7 +180,7 @@ export async function updateAgentTeamDefinition(
     if (
       error instanceof SyntaxError ||
       message.includes("member_name") ||
-      message.includes("reference_type")
+      message.includes("ref_type")
     ) {
       logger.error(
         `Error updating agent team definition ID '${definition_id}' due to invalid input: ${message}`,

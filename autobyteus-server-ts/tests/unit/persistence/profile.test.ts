@@ -6,9 +6,9 @@ import {
 } from "../../../src/persistence/profile.js";
 
 describe("persistence profile", () => {
-  it("defaults to sqlite on non-Android runtimes", () => {
+  it("defaults to file on non-Android runtimes", () => {
     const env: NodeJS.ProcessEnv = {};
-    expect(getPersistenceProfile(env, "linux")).toBe("sqlite");
+    expect(getPersistenceProfile(env, "linux")).toBe("file");
   });
 
   it("forces file profile when platform is android", () => {

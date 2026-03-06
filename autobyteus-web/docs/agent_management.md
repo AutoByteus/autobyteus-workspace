@@ -6,7 +6,7 @@ This document describes the design and implementation of the **Agent Management*
 
 The Agent Management module enables users to:
 
-- Browse and manage agent definitions (tools, processors, prompts)
+- Browse and manage agent definitions (tools, processors, markdown instructions)
 - Configure and run agents with ephemeral run configurations
 - Run agents with real-time streaming responses
 - Approve or reject tool invocations during agent execution
@@ -110,8 +110,10 @@ flowchart TD
 interface AgentDefinition {
   id: string;
   name: string;
-  role: string;
+  role?: string;
   description: string;
+  instructions: string;
+  category?: string;
   toolNames: string[];
   inputProcessorNames: string[];
   llmResponseProcessorNames: string[];
@@ -120,7 +122,6 @@ interface AgentDefinition {
   toolInvocationPreprocessorNames: string[];
   lifecycleProcessorNames: string[];
   skillNames: string[];
-  prompts?: Prompt[];
 }
 ```
 
@@ -300,12 +301,13 @@ The `AgentDefinitionForm.vue` component allows configuring:
 | -------------------------------- | ---------------------------------- |
 | Name                             | Agent display name                 |
 | Role                             | Agent's role description           |
+| Category                         | Optional classification label      |
 | Description                      | Detailed description               |
-| System Prompt                    | Category + name of prompt to use   |
+| Instructions                     | Markdown instruction body          |
 | Tools                            | List of tools agent can invoke     |
 | Input Processors                 | Transform user input before LLM    |
 | LLM Response Processors          | Transform LLM output               |
-| System Prompt Processors         | Modify system prompt dynamically   |
+| System Prompt Processors         | Modify generated prompt dynamically |
 | Tool Execution Result Processors | Transform tool outputs             |
 | Tool Invocation Preprocessors    | Modify tool calls before execution |
 | Lifecycle Processors             | Hook into agent lifecycle events   |
@@ -318,5 +320,4 @@ The `AgentDefinitionForm.vue` component allows configuring:
 - **[Agent Teams](./agent_teams.md)**: Agents can be combined into teams for complex workflows.
 - **[Skills](./skills.md)**: Agents can be equipped with file-based skills (scripts).
 - **[Tools & MCP](./tools_and_mcp.md)**: Agents invoke configured tools and MCP servers during execution.
-- **[Prompt Engineering](./prompt_engineering.md)**: System prompts define the core persona and behavior of the agent.
 - **[Settings](./settings.md)**: API keys for LLMs must be configured in Settings.

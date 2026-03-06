@@ -22,7 +22,6 @@ const logger = {
 };
 
 export enum SyncEntityTypeEnum {
-  PROMPT = 'prompt',
   AGENT_DEFINITION = 'agent_definition',
   AGENT_TEAM_DEFINITION = 'agent_team_definition',
   MCP_SERVER_CONFIGURATION = 'mcp_server_configuration',

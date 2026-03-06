@@ -13,8 +13,8 @@ vi.mock('~/stores/agentTeamDefinitionStore', () => ({
                 name: 'Test Team',
                 coordinatorMemberName: 'agent-1',
                 nodes: [
-                    { memberName: 'agent-1', referenceType: 'AGENT', referenceId: 'def-1' },
-                    { memberName: 'agent-2', referenceType: 'AGENT', referenceId: 'def-2' }
+                    { memberName: 'agent-1', refType: 'AGENT', ref: 'def-1' },
+                    { memberName: 'agent-2', refType: 'AGENT', ref: 'def-2' }
                 ]
             };
             return null;
@@ -44,8 +44,8 @@ describe('agentTeamContextsStore', () => {
                  name: 'Test Team',
                  coordinatorMemberName: 'agent-1',
                  nodes: [
-                     { memberName: 'agent-1', referenceType: 'AGENT', referenceId: 'def-1' },
-                     { memberName: 'agent-2', referenceType: 'AGENT', referenceId: 'def-2' }
+                     { memberName: 'agent-1', refType: 'AGENT', ref: 'def-1' },
+                     { memberName: 'agent-2', refType: 'AGENT', ref: 'def-2' }
                  ]
              } as any);
 
@@ -94,7 +94,7 @@ describe('agentTeamContextsStore', () => {
                 name: 'Test Team',
                 coordinatorMemberName: 'agent-1',
                 nodes: [
-                    { memberName: 'agent-1', referenceType: 'AGENT', referenceId: 'def-1' }
+                    { memberName: 'agent-1', refType: 'AGENT', ref: 'def-1' }
                 ]
             } as any);
             runConfigStore.updateConfig({

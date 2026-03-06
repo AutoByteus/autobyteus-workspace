@@ -1,7 +1,6 @@
 import { Arg, Field, InputType, Mutation, ObjectType, Query, Resolver } from "type-graphql";
 import { AgentDefinitionService } from "../../../agent-definition/services/agent-definition-service.js";
 import { AgentDefinitionConverter } from "../converters/agent-definition-converter.js";
-import { Prompt } from "./prompt.js";
 
 const logger = {
   error: (...args: unknown[]) => console.error(...args),
@@ -15,11 +14,17 @@ export class AgentDefinition {
   @Field(() => String)
   name!: string;
 
-  @Field(() => String)
-  role!: string;
+  @Field(() => String, { nullable: true })
+  role?: string | null;
 
   @Field(() => String)
   description!: string;
+
+  @Field(() => String)
+  instructions!: string;
+
+  @Field(() => String, { nullable: true })
+  category?: string | null;
 
   @Field(() => String, { nullable: true })
   avatarUrl?: string | null;
@@ -47,15 +52,6 @@ export class AgentDefinition {
 
   @Field(() => [String])
   skillNames!: string[];
-
-  @Field(() => [Prompt])
-  prompts!: Prompt[];
-
-  @Field(() => String, { nullable: true })
-  systemPromptCategory?: string | null;
-
-  @Field(() => String, { nullable: true })
-  systemPromptName?: string | null;
 }
 
 @InputType()
@@ -63,20 +59,20 @@ export class CreateAgentDefinitionInput {
   @Field(() => String)
   name!: string;
 
-  @Field(() => String)
-  role!: string;
+  @Field(() => String, { nullable: true })
+  role?: string | null;
 
   @Field(() => String)
   description!: string;
 
+  @Field(() => String)
+  instructions!: string;
+
+  @Field(() => String, { nullable: true })
+  category?: string | null;
+
   @Field(() => String, { nullable: true })
   avatarUrl?: string | null;
-
-  @Field(() => String)
-  systemPromptCategory!: string;
-
-  @Field(() => String)
-  systemPromptName!: string;
 
   @Field(() => [String], { nullable: true })
   toolNames?: string[] | null;
@@ -118,13 +114,13 @@ export class UpdateAgentDefinitionInput {
   description?: string | null;
 
   @Field(() => String, { nullable: true })
+  instructions?: string | null;
+
+  @Field(() => String, { nullable: true })
+  category?: string | null;
+
+  @Field(() => String, { nullable: true })
   avatarUrl?: string | null;
-
-  @Field(() => String, { nullable: true })
-  systemPromptCategory?: string | null;
-
-  @Field(() => String, { nullable: true })
-  systemPromptName?: string | null;
 
   @Field(() => [String], { nullable: true })
   toolNames?: string[] | null;
@@ -149,6 +145,15 @@ export class UpdateAgentDefinitionInput {
 
   @Field(() => [String], { nullable: true })
   skillNames?: string[] | null;
+}
+
+@InputType()
+export class DuplicateAgentDefinitionInput {
+  @Field(() => String)
+  sourceId!: string;
+
+  @Field(() => String)
+  newName!: string;
 }
 
 @ObjectType()
@@ -191,6 +196,20 @@ export class AgentDefinitionResolver {
     }
   }
 
+  @Query(() => [AgentDefinition])
+  async agentTemplates(): Promise<AgentDefinition[]> {
+    try {
+      const service = AgentDefinitionService.getInstance();
+      const templates = await service.getAgentTemplates();
+      return await Promise.all(
+        templates.map(async (definition) => AgentDefinitionConverter.toGraphql(definition)),
+      );
+    } catch (error) {
+      logger.error(`Error fetching agent templates: ${String(error)}`);
+      throw new Error("Unable to fetch agent templates at this time.");
+    }
+  }
+
   @Mutation(() => AgentDefinition)
   async createAgentDefinition(
     @Arg("input", () => CreateAgentDefinitionInput) input: CreateAgentDefinitionInput,
@@ -199,11 +218,11 @@ export class AgentDefinitionResolver {
       const service = AgentDefinitionService.getInstance();
       const domainDefinition = await service.createAgentDefinition({
         name: input.name,
-        role: input.role,
+        role: input.role ?? undefined,
         description: input.description,
+        instructions: input.instructions,
+        category: input.category ?? undefined,
         avatarUrl: input.avatarUrl ?? undefined,
-        systemPromptCategory: input.systemPromptCategory,
-        systemPromptName: input.systemPromptName,
         toolNames: input.toolNames ?? undefined,
         inputProcessorNames: input.inputProcessorNames ?? undefined,
         llmResponseProcessorNames: input.llmResponseProcessorNames ?? undefined,
@@ -217,6 +236,20 @@ export class AgentDefinitionResolver {
     } catch (error) {
       logger.error(`Error creating agent definition: ${String(error)}`);
       throw new Error(`Failed to create agent definition: ${String(error)}`);
+    }
+  }
+
+  @Mutation(() => AgentDefinition)
+  async duplicateAgentDefinition(
+    @Arg("input", () => DuplicateAgentDefinitionInput) input: DuplicateAgentDefinitionInput,
+  ): Promise<AgentDefinition> {
+    try {
+      const service = AgentDefinitionService.getInstance();
+      const duplicated = await service.duplicateAgentDefinition(input.sourceId, input.newName);
+      return await AgentDefinitionConverter.toGraphql(duplicated);
+    } catch (error) {
+      logger.error(`Error duplicating agent definition: ${String(error)}`);
+      throw new Error(`Failed to duplicate agent definition: ${String(error)}`);
     }
   }
 

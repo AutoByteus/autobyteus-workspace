@@ -6,6 +6,17 @@ export const CreateAgentTeamDefinition = gql`
       __typename
       id
       name
+      description
+      instructions
+      category
+      avatarUrl
+      coordinatorMemberName
+      nodes {
+        __typename
+        memberName
+        ref
+        refType
+      }
     }
   }
 `
@@ -16,6 +27,17 @@ export const UpdateAgentTeamDefinition = gql`
       __typename
       id
       name
+      description
+      instructions
+      category
+      avatarUrl
+      coordinatorMemberName
+      nodes {
+        __typename
+        memberName
+        ref
+        refType
+      }
     }
   }
 `

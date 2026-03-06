@@ -77,7 +77,6 @@ type PrimaryNavKey =
   | 'agents'
   | 'agentTeams'
   | 'applications'
-  | 'promptEngineering'
   | 'skills'
   | 'memory'
   | 'media';
@@ -86,7 +85,6 @@ const allPrimaryNavItems: Array<{ key: PrimaryNavKey; label: string; icon: strin
   { key: 'agents', label: 'Agents', icon: 'heroicons:users' },
   { key: 'agentTeams', label: 'Agent Teams', icon: 'heroicons:user-group' },
   { key: 'applications', label: 'Applications', icon: 'heroicons:squares-2x2' },
-  { key: 'promptEngineering', label: 'Prompts', icon: 'heroicons:light-bulb' },
   { key: 'skills', label: 'Skills', icon: 'heroicons:sparkles' },
   { key: 'memory', label: 'Memory', icon: 'ph:brain' },
   { key: 'media', label: 'Media', icon: 'heroicons:photo' },
@@ -115,8 +113,6 @@ const resolvePrimaryRoute = (key: PrimaryNavKey): RouteLocationRaw => {
       return { path: '/agent-teams', query: { view: 'team-list' } };
     case 'applications':
       return '/applications';
-    case 'promptEngineering':
-      return '/prompt-engineering';
     case 'skills':
       return '/skills';
     case 'memory':
@@ -134,8 +130,6 @@ const isPrimaryNavActive = (key: PrimaryNavKey): boolean => {
       return route.path.startsWith('/agent-teams');
     case 'applications':
       return route.path.startsWith('/applications');
-    case 'promptEngineering':
-      return route.path === '/prompt-engineering';
     case 'skills':
       return route.path.startsWith('/skills');
     case 'memory':

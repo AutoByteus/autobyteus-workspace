@@ -40,7 +40,7 @@ export class WorkspaceManager {
       return existing;
     }
 
-    const rootPathValue = config.get('rootPath') ?? config.get('root_path');
+    const rootPathValue = config.get('rootPath');
     logger.info(`Creating new workspace for rootPath: ${String(rootPathValue)}`);
     const workspace = new FileSystemWorkspace(config);
 

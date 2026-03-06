@@ -14,7 +14,6 @@ import urllib.request
 from typing import Any, Dict, List
 
 DEFAULT_SCOPE = [
-    "PROMPT",
     "AGENT_DEFINITION",
     "AGENT_TEAM_DEFINITION",
     "MCP_SERVER_CONFIGURATION",

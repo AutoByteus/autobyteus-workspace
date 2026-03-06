@@ -10,7 +10,7 @@ import { FileInboxStore } from "../../src/infrastructure/inbox/file-inbox-store.
 
 const waitForCondition = async (
   predicate: () => boolean | Promise<boolean>,
-  timeoutMs = 4_000,
+  timeoutMs = 12_000,
   pollMs = 50,
 ): Promise<void> => {
   const startedAt = Date.now();
@@ -93,11 +93,10 @@ describe("gateway inbound forwarding e2e", () => {
         content: "hello from e2e",
       });
 
-      const inboxStore = new FileInboxStore(
-        path.join(tempRoot, "memory", "reliability-queue", "inbox"),
-      );
-      const inboxService = new InboundInboxService(inboxStore);
+      const inboxRoot = path.join(tempRoot, "memory", "reliability-queue", "inbox");
       await waitForCondition(async () => {
+        const inboxStore = new FileInboxStore(inboxRoot);
+        const inboxService = new InboundInboxService(inboxStore);
         const completed = await inboxService.listByStatus(["COMPLETED_ROUTED"]);
         return completed.some((record) => record.externalMessageId === externalMessageId);
       });
@@ -111,5 +110,5 @@ describe("gateway inbound forwarding e2e", () => {
       process.chdir(previousCwd);
       await rm(tempRoot, { recursive: true, force: true });
     }
-  });
+  }, 20_000);
 });

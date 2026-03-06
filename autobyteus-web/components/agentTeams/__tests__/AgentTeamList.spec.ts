@@ -56,17 +56,19 @@ describe('AgentTeamList', () => {
       id: 't1',
       name: 'Team Alpha',
       description: 'Alpha description',
-      role: 'Creative',
+      instructions: 'Alpha orchestration instructions',
+      category: 'creative',
       coordinatorMemberName: 'alpha_lead',
-      nodes: [{ memberName: 'alpha_lead', referenceType: 'AGENT', referenceId: 'a1' }],
+      nodes: [{ memberName: 'alpha_lead', refType: 'AGENT', ref: 'a1' }],
     },
     {
       id: 't2',
       name: 'Team Beta',
       description: 'Beta description',
-      role: 'Ops',
+      instructions: 'Beta orchestration instructions',
+      category: 'ops',
       coordinatorMemberName: 'beta_lead',
-      nodes: [{ memberName: 'beta_lead', referenceType: 'AGENT', referenceId: 'a2' }],
+      nodes: [{ memberName: 'beta_lead', refType: 'AGENT', ref: 'a2' }],
     },
   ];
 
@@ -153,6 +155,18 @@ describe('AgentTeamList', () => {
     expect(readSetupRef<string | null>(wrapper, 'syncError')).toBe('No target nodes available for sync.');
   });
 
+  it('reloads team definitions when reload is clicked', async () => {
+    const wrapper = await mountComponent();
+    const store = useAgentTeamDefinitionStore();
+
+    const reloadButton = wrapper.findAll('button').find((button) => button.text().includes('Reload'));
+    expect(reloadButton).toBeDefined();
+    await reloadButton!.trigger('click');
+    await flushAsyncUi();
+
+    expect(store.reloadAllAgentTeamDefinitions).toHaveBeenCalledTimes(1);
+  });
+
   it('opens target picker and runs selective team sync after confirmation', async () => {
     const wrapper = await mountComponent();
     const nodeSyncStore = useNodeSyncStore();
@@ -163,7 +177,7 @@ describe('AgentTeamList', () => {
       error: null,
       report: {
         sourceNodeId: 'embedded-local',
-        scope: ['prompt', 'agent_definition', 'agent_team_definition'],
+        scope: ['agent_definition', 'agent_team_definition'],
         exportByEntity: [],
         targets: [],
       },
@@ -186,7 +200,7 @@ describe('AgentTeamList', () => {
     });
     expect(readSetupRef(wrapper, 'lastTeamSyncReport')).toEqual({
       sourceNodeId: 'embedded-local',
-      scope: ['prompt', 'agent_definition', 'agent_team_definition'],
+      scope: ['agent_definition', 'agent_team_definition'],
       exportByEntity: [],
       targets: [],
     });

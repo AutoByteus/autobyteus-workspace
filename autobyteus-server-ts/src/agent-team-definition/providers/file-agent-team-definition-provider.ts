@@ -1,96 +1,271 @@
-import { AgentTeamDefinition } from "../domain/models.js";
-import {
-  nextNumericStringId,
-  normalizeNullableString,
-  readJsonArrayFile,
-  resolvePersistencePath,
-  updateJsonArrayFile,
-} from "../../persistence/file/store-utils.js";
-import { NodeType } from "../domain/enums.js";
+import { promises as fs } from "node:fs";
+import type { Dirent } from "node:fs";
+import path from "node:path";
+import { appConfigProvider } from "../../config/app-config-provider.js";
+import { readJsonFile, writeJsonFile, writeRawFile } from "../../persistence/file/store-utils.js";
+import { AgentTeamDefinition, TeamMember } from "../domain/models.js";
+import { TeamMdParseError, parseTeamMd, serializeTeamMd } from "../utils/team-md-parser.js";
 
-type TeamMemberRecord = {
+const logger = {
+  warn: (...args: unknown[]) => console.warn(...args),
+};
+
+type TeamConfigMember = {
   memberName: string;
-  referenceId: string;
-  referenceType: NodeType;
+  ref: string;
+  refType: "agent" | "agent_team";
 };
 
-type AgentTeamDefinitionRecord = {
-  id: string;
-  name: string;
-  description: string;
-  nodes: TeamMemberRecord[];
-  coordinatorMemberName: string;
-  role: string | null;
-  avatarUrl: string | null;
-  createdAt: string;
-  updatedAt: string;
+type TeamConfigRecord = {
+  coordinatorMemberName?: string;
+  members?: TeamConfigMember[];
+  avatarUrl?: string | null;
 };
 
-const definitionFilePath = resolvePersistencePath("agent-team-definition", "definitions.json");
+const slugify = (value: string): string => {
+  const normalized = value
+    .toLowerCase()
+    .trim()
+    .replace(/[_\s]+/g, "-")
+    .replace(/[^a-z0-9-]/g, "")
+    .replace(/-+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  return normalized || "team";
+};
 
-const toDomain = (record: AgentTeamDefinitionRecord): AgentTeamDefinition =>
-  new AgentTeamDefinition({
-    id: record.id,
-    name: record.name,
-    description: record.description,
-    nodes: record.nodes.map((node) => ({
-      memberName: node.memberName,
-      referenceId: node.referenceId,
-      referenceType: node.referenceType,
-    })),
-    coordinatorMemberName: record.coordinatorMemberName,
-    role: record.role,
-    avatarUrl: record.avatarUrl,
-  });
+const normalizeMembers = (value: unknown): TeamConfigMember[] => {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+  const members: TeamConfigMember[] = [];
+  for (const entry of value) {
+    if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
+      continue;
+    }
+    const candidate = entry as Record<string, unknown>;
+    const memberName = typeof candidate.memberName === "string" ? candidate.memberName : "";
+    const ref = typeof candidate.ref === "string" ? candidate.ref : "";
+    const refType = candidate.refType === "agent_team" ? "agent_team" : candidate.refType === "agent" ? "agent" : null;
+    if (!memberName || !ref || !refType) {
+      continue;
+    }
+    members.push({ memberName, ref, refType });
+  }
+  return members;
+};
 
-const toRecord = (
-  definition: AgentTeamDefinition,
-  now: Date,
-  fallbackId: string,
-  createdAtOverride?: string,
-): AgentTeamDefinitionRecord => ({
-  id: definition.id ?? fallbackId,
-  name: definition.name,
-  description: definition.description,
-  nodes: definition.nodes.map((node) => ({
-    memberName: node.memberName,
-    referenceId: node.referenceId,
-    referenceType: node.referenceType,
-  })),
-  coordinatorMemberName: definition.coordinatorMemberName,
-  role: normalizeNullableString(definition.role ?? null),
-  avatarUrl: normalizeNullableString(definition.avatarUrl ?? null),
-  createdAt: createdAtOverride ?? now.toISOString(),
-  updatedAt: now.toISOString(),
-});
+function defaultTeamConfig(): TeamConfigRecord {
+  return {
+    coordinatorMemberName: "",
+    members: [],
+    avatarUrl: null,
+  };
+}
 
 export class FileAgentTeamDefinitionProvider {
-  async create(domainObj: AgentTeamDefinition): Promise<AgentTeamDefinition> {
-    const now = new Date();
-    let created: AgentTeamDefinitionRecord | null = null;
+  private getTeamsDir(): string {
+    return appConfigProvider.config.getAgentTeamsDir();
+  }
 
-    await updateJsonArrayFile<AgentTeamDefinitionRecord>(definitionFilePath, (rows) => {
-      const id = domainObj.id ?? nextNumericStringId(rows);
-      const createdRecord = toRecord(new AgentTeamDefinition({ ...domainObj, id }), now, id, now.toISOString());
-      created = createdRecord;
-      return [...rows, createdRecord];
-    });
+  private getTeamDir(teamId: string): string {
+    return path.join(this.getTeamsDir(), teamId);
+  }
 
-    if (!created) {
-      throw new Error("Failed to create agent team definition record.");
+  private getReadTeamRoots(): string[] {
+    const roots = [this.getTeamsDir()];
+    for (const sourceRoot of appConfigProvider.config.getAdditionalDefinitionSourceRoots()) {
+      roots.push(path.join(sourceRoot, "agent-teams"));
     }
-    return toDomain(created);
+    return roots;
+  }
+
+  private async readTeamFromRoot(teamRoot: string, teamId: string): Promise<AgentTeamDefinition | null> {
+    const mdPath = path.join(teamRoot, teamId, "team.md");
+    const configPath = path.join(teamRoot, teamId, "team-config.json");
+
+    try {
+      const mdContent = await fs.readFile(mdPath, "utf-8");
+      const parsed = parseTeamMd(mdContent, mdPath);
+      const config = await readJsonFile<TeamConfigRecord>(configPath, defaultTeamConfig());
+      const members = normalizeMembers(config.members);
+
+      return new AgentTeamDefinition({
+        id: teamId,
+        name: parsed.name,
+        description: parsed.description,
+        instructions: parsed.instructions,
+        category: parsed.category,
+        avatarUrl: config.avatarUrl ?? null,
+        coordinatorMemberName:
+          typeof config.coordinatorMemberName === "string" ? config.coordinatorMemberName : "",
+        nodes: members.map(
+          (member) =>
+            new TeamMember({
+              memberName: member.memberName,
+              ref: member.ref,
+              refType: member.refType,
+            }),
+        ),
+      });
+    } catch (error) {
+      if (error instanceof TeamMdParseError) {
+        throw error;
+      }
+      if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+        return null;
+      }
+      throw error;
+    }
+  }
+
+  private async exists(filePath: string): Promise<boolean> {
+    try {
+      await fs.access(filePath);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  private async nextTeamId(name: string): Promise<string> {
+    const base = slugify(name);
+    let candidate = base;
+    let index = 2;
+    while (await this.exists(this.getTeamDir(candidate))) {
+      candidate = `${base}-${index}`;
+      index += 1;
+    }
+    return candidate;
+  }
+
+  async create(domainObj: AgentTeamDefinition): Promise<AgentTeamDefinition> {
+    const teamId = domainObj.id ?? (await this.nextTeamId(domainObj.name));
+    const teamDir = this.getTeamDir(teamId);
+    await fs.mkdir(teamDir, { recursive: true });
+
+    const mdContent = serializeTeamMd(
+      {
+        name: domainObj.name,
+        description: domainObj.description,
+        category: domainObj.category,
+      },
+      domainObj.instructions,
+    );
+    await writeRawFile(appConfigProvider.config.getTeamMdPath(teamId), mdContent);
+
+    const configRecord: TeamConfigRecord = {
+      coordinatorMemberName: domainObj.coordinatorMemberName,
+      avatarUrl: domainObj.avatarUrl ?? null,
+      members: domainObj.nodes.map((member) => ({
+        memberName: member.memberName,
+        ref: member.ref,
+        refType: member.refType,
+      })),
+    };
+    await writeJsonFile(appConfigProvider.config.getTeamConfigPath(teamId), configRecord);
+
+    const created = await this.getById(teamId);
+    if (!created) {
+      throw new Error(`Failed to create team definition '${teamId}'.`);
+    }
+    return created;
   }
 
   async getById(id: string): Promise<AgentTeamDefinition | null> {
-    const rows = await readJsonArrayFile<AgentTeamDefinitionRecord>(definitionFilePath);
-    const found = rows.find((row) => row.id === id);
-    return found ? toDomain(found) : null;
+    if (id.startsWith("_")) {
+      return null;
+    }
+    for (const rootPath of this.getReadTeamRoots()) {
+      const definition = await this.readTeamFromRoot(rootPath, id);
+      if (definition) {
+        return definition;
+      }
+    }
+    return null;
   }
 
   async getAll(): Promise<AgentTeamDefinition[]> {
-    const rows = await readJsonArrayFile<AgentTeamDefinitionRecord>(definitionFilePath);
-    return rows.map((row) => toDomain(row));
+    const definitions: AgentTeamDefinition[] = [];
+    const seenIds = new Set<string>();
+
+    for (const rootPath of this.getReadTeamRoots()) {
+      let entries: Dirent[] = [];
+      try {
+        entries = await fs.readdir(rootPath, { withFileTypes: true });
+      } catch {
+        continue;
+      }
+
+      for (const entry of entries) {
+        if (!entry.isDirectory()) {
+          continue;
+        }
+        const teamId = entry.name;
+        if (teamId.startsWith("_")) {
+          continue;
+        }
+        if (seenIds.has(teamId)) {
+          continue;
+        }
+        try {
+          const definition = await this.readTeamFromRoot(rootPath, teamId);
+          if (definition) {
+            definitions.push(definition);
+            seenIds.add(teamId);
+          }
+        } catch (error) {
+          if (error instanceof TeamMdParseError) {
+            logger.warn(`Skipping team '${teamId}' due to parse error: ${error.message}`);
+            continue;
+          }
+          throw error;
+        }
+      }
+    }
+
+    return definitions;
+  }
+
+  async getTemplates(): Promise<AgentTeamDefinition[]> {
+    const definitions: AgentTeamDefinition[] = [];
+    const seenIds = new Set<string>();
+
+    for (const rootPath of this.getReadTeamRoots()) {
+      let entries: Dirent[] = [];
+      try {
+        entries = await fs.readdir(rootPath, { withFileTypes: true });
+      } catch {
+        continue;
+      }
+
+      for (const entry of entries) {
+        if (!entry.isDirectory()) {
+          continue;
+        }
+        const teamId = entry.name;
+        if (!teamId.startsWith("_")) {
+          continue;
+        }
+        if (seenIds.has(teamId)) {
+          continue;
+        }
+        try {
+          const definition = await this.readTeamFromRoot(rootPath, teamId);
+          if (definition) {
+            definitions.push(definition);
+            seenIds.add(teamId);
+          }
+        } catch (error) {
+          if (error instanceof TeamMdParseError) {
+            logger.warn(`Skipping template team '${teamId}' due to parse error: ${error.message}`);
+            continue;
+          }
+          throw error;
+        }
+      }
+    }
+
+    return definitions;
   }
 
   async update(domainObj: AgentTeamDefinition): Promise<AgentTeamDefinition> {
@@ -98,35 +273,47 @@ export class FileAgentTeamDefinitionProvider {
       throw new Error("Agent team definition id is required for update.");
     }
 
-    const now = new Date();
-    let updated: AgentTeamDefinitionRecord | null = null;
-
-    await updateJsonArrayFile<AgentTeamDefinitionRecord>(definitionFilePath, (rows) => {
-      const index = rows.findIndex((row) => row.id === domainObj.id);
-      if (index < 0) {
-        throw new Error("Agent team definition not found.");
-      }
-      const current = rows[index] as AgentTeamDefinitionRecord;
-      const updatedRecord = toRecord(domainObj, now, current.id, current.createdAt);
-      const next = [...rows];
-      updated = updatedRecord;
-      next[index] = updatedRecord;
-      return next;
-    });
-
-    if (!updated) {
-      throw new Error("Failed to update agent team definition record.");
+    const teamId = domainObj.id;
+    const teamDir = this.getTeamDir(teamId);
+    if (!(await this.exists(teamDir))) {
+      throw new Error(`Team definition '${teamId}' is read-only or does not exist in default source.`);
     }
-    return toDomain(updated);
+
+    const mdContent = serializeTeamMd(
+      {
+        name: domainObj.name,
+        description: domainObj.description,
+        category: domainObj.category,
+      },
+      domainObj.instructions,
+    );
+    await writeRawFile(appConfigProvider.config.getTeamMdPath(teamId), mdContent);
+
+    const configRecord: TeamConfigRecord = {
+      coordinatorMemberName: domainObj.coordinatorMemberName,
+      avatarUrl: domainObj.avatarUrl ?? null,
+      members: domainObj.nodes.map((member) => ({
+        memberName: member.memberName,
+        ref: member.ref,
+        refType: member.refType,
+      })),
+    };
+    await writeJsonFile(appConfigProvider.config.getTeamConfigPath(teamId), configRecord);
+
+    const updated = await this.getById(teamId);
+    if (!updated) {
+      throw new Error(`Failed to update team definition '${teamId}'.`);
+    }
+    return updated;
   }
 
   async delete(id: string): Promise<boolean> {
-    let deleted = false;
-    await updateJsonArrayFile<AgentTeamDefinitionRecord>(definitionFilePath, (rows) => {
-      const next = rows.filter((row) => row.id !== id);
-      deleted = next.length !== rows.length;
-      return next;
-    });
-    return deleted;
+    const teamDir = this.getTeamDir(id);
+    const existed = await this.exists(teamDir);
+    if (!existed) {
+      return false;
+    }
+    await fs.rm(teamDir, { recursive: true, force: true });
+    return existed;
   }
 }

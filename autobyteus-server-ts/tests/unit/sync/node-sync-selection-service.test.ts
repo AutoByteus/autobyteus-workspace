@@ -1,5 +1,4 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { NodeType as TeamNodeType } from '../../../src/agent-team-definition/domain/enums.js';
 import {
   NodeSyncSelectionService,
 } from '../../../src/sync/services/node-sync-selection-service.js';
@@ -22,20 +21,14 @@ describe('NodeSyncSelectionService', () => {
         {
           id: 'agent-1',
           name: 'Agent One',
-          systemPromptCategory: 'cat-a',
-          systemPromptName: 'prompt-a',
         },
         {
           id: 'agent-2',
           name: 'Agent Two',
-          systemPromptCategory: 'cat-b',
-          systemPromptName: 'prompt-b',
         },
         {
           id: 'agent-3',
           name: 'Agent Three',
-          systemPromptCategory: null,
-          systemPromptName: null,
         },
       ]),
     };
@@ -47,13 +40,13 @@ describe('NodeSyncSelectionService', () => {
           nodes: [
             {
               memberName: 'member-a',
-              referenceId: 'agent-2',
-              referenceType: TeamNodeType.AGENT,
+              ref: 'agent-2',
+              refType: 'agent',
             },
             {
               memberName: 'member-b',
-              referenceId: 'team-2',
-              referenceType: TeamNodeType.AGENT_TEAM,
+              ref: 'team-2',
+              refType: 'agent_team',
             },
           ],
         },
@@ -63,8 +56,8 @@ describe('NodeSyncSelectionService', () => {
           nodes: [
             {
               memberName: 'member-c',
-              referenceId: 'agent-1',
-              referenceType: TeamNodeType.AGENT,
+              ref: 'agent-1',
+              refType: 'agent',
             },
           ],
         },
@@ -96,7 +89,7 @@ describe('NodeSyncSelectionService', () => {
     });
   });
 
-  it('expands nested team dependencies and prompt families', async () => {
+  it('expands nested team dependencies', async () => {
     const service = buildService();
     const resolved = await service.resolveSelection({
       agentTeamDefinitionIds: ['team-1'],
@@ -109,7 +102,6 @@ describe('NodeSyncSelectionService', () => {
     }
     expect(toSortedArray(resolved.agentTeamDefinitionIds)).toEqual(['team-1', 'team-2']);
     expect(toSortedArray(resolved.agentDefinitionIds)).toEqual(['agent-1', 'agent-2']);
-    expect(toSortedArray(resolved.promptFamilies)).toEqual(['cat-a::prompt-a', 'cat-b::prompt-b']);
     expect(resolved.includeDeletes).toBe(false);
   });
 
@@ -126,19 +118,15 @@ describe('NodeSyncSelectionService', () => {
     }
     expect(toSortedArray(resolved.agentDefinitionIds)).toEqual(['agent-2']);
     expect(toSortedArray(resolved.agentTeamDefinitionIds)).toEqual([]);
-    expect(toSortedArray(resolved.promptFamilies)).toEqual([]);
   });
 
-  it('fails when selected agent cannot resolve prompt dependency', async () => {
+  it('allows selected agents without prompt family metadata', async () => {
     const service = buildService();
-    await expect(
-      service.resolveSelection({
-        agentDefinitionIds: ['agent-3'],
-        includeDependencies: true,
-      }),
-    ).rejects.toMatchObject({
-      name: 'NodeSyncSelectionValidationError',
-      code: 'agent-prompt-missing',
+    await expect(service.resolveSelection({
+      agentDefinitionIds: ['agent-3'],
+      includeDependencies: true,
+    })).resolves.toMatchObject({
+      includeDeletes: false,
     });
   });
 });

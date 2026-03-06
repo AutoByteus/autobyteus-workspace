@@ -2,7 +2,7 @@ export type PersistenceProfile = "sqlite" | "postgresql" | "file";
 
 const SUPPORTED_PERSISTENCE_PROFILES: PersistenceProfile[] = ["sqlite", "postgresql", "file"];
 const SQL_PROFILES = new Set<PersistenceProfile>(["sqlite", "postgresql"]);
-const DEFAULT_PERSISTENCE_PROFILE: PersistenceProfile = "sqlite";
+const DEFAULT_PERSISTENCE_PROFILE: PersistenceProfile = "file";
 
 export const normalizePersistenceProfile = (rawValue: string | null | undefined): PersistenceProfile => {
   const normalized = (rawValue ?? DEFAULT_PERSISTENCE_PROFILE).trim().toLowerCase();

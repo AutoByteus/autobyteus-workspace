@@ -97,6 +97,7 @@ describe("DiscordBusinessAdapter", () => {
   });
 
   it("records inbound observations and lists Discord peer candidates", async () => {
+    const observedAt = new Date().toISOString();
     const gatewayClient = new FakeGatewayClient();
     const adapter = new DiscordBusinessAdapter({
       botToken: "bot-token",

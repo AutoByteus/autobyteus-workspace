@@ -247,7 +247,6 @@ import { probeNodeCapabilities } from '~/utils/nodeCapabilityProbe';
 import { validateServerHostConfiguration } from '~/utils/nodeHostValidation';
 
 const scopeOptions: Array<{ value: SyncEntityType; label: string }> = [
-  { value: 'prompt', label: 'Prompts' },
   { value: 'agent_definition', label: 'Agents' },
   { value: 'agent_team_definition', label: 'Agent Teams' },
   { value: 'mcp_server_configuration', label: 'MCP Servers' },

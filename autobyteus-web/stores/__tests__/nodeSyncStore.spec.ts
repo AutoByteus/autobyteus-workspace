@@ -74,12 +74,12 @@ describe('nodeSyncStore', () => {
           error: null,
           report: {
             sourceNodeId: 'embedded-local',
-            scope: ['PROMPT', 'AGENT_DEFINITION'],
+            scope: ['AGENT_DEFINITION'],
             exportByEntity: [
               {
-                entityType: 'PROMPT',
+                entityType: 'AGENT_DEFINITION',
                 exportedCount: 1,
-                sampledKeys: ['prompt-1'],
+                sampledKeys: ['agent-1'],
                 sampleTruncated: false,
               },
             ],
@@ -118,12 +118,12 @@ describe('nodeSyncStore', () => {
     expect(result.status).toBe('success');
     expect(result.report).toEqual({
       sourceNodeId: 'embedded-local',
-      scope: ['prompt', 'agent_definition'],
+      scope: ['agent_definition'],
       exportByEntity: [
         {
-          entityType: 'prompt',
+          entityType: 'agent_definition',
           exportedCount: 1,
-          sampledKeys: ['prompt-1'],
+          sampledKeys: ['agent-1'],
           sampleTruncated: false,
         },
       ],
@@ -151,7 +151,7 @@ describe('nodeSyncStore', () => {
           input: {
             source: { nodeId: 'embedded-local', baseUrl: 'http://localhost:29695' },
             targets: [{ nodeId: 'remote-1', baseUrl: 'http://localhost:8001' }],
-            scope: ['PROMPT', 'AGENT_DEFINITION'],
+            scope: ['AGENT_DEFINITION'],
             selection: {
               agentDefinitionIds: ['agent-1'],
               includeDependencies: true,

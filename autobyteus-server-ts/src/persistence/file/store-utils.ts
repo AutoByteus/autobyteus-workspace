@@ -120,11 +120,41 @@ export const readJsonArrayFile = async <T>(filePath: string): Promise<T[]> => {
   }
 };
 
+export const readJsonFile = async <T>(filePath: string, fallback: T): Promise<T> => {
+  try {
+    const raw = await fs.readFile(filePath, "utf-8");
+    return JSON.parse(raw) as T;
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+      return fallback;
+    }
+    throw error;
+  }
+};
+
 export const writeJsonArrayFile = async <T>(filePath: string, rows: T[]): Promise<void> => {
   await withPathLock(filePath, async () => {
     await ensureParentDir(filePath);
     const tempPath = getTempPath(filePath);
     await fs.writeFile(tempPath, encodeJson(rows), "utf-8");
+    await fs.rename(tempPath, filePath);
+  });
+};
+
+export const writeJsonFile = async <T>(filePath: string, value: T): Promise<void> => {
+  await withPathLock(filePath, async () => {
+    await ensureParentDir(filePath);
+    const tempPath = getTempPath(filePath);
+    await fs.writeFile(tempPath, encodeJson(value), "utf-8");
+    await fs.rename(tempPath, filePath);
+  });
+};
+
+export const writeRawFile = async (filePath: string, content: string): Promise<void> => {
+  await withPathLock(filePath, async () => {
+    await ensureParentDir(filePath);
+    const tempPath = getTempPath(filePath);
+    await fs.writeFile(tempPath, content, "utf-8");
     await fs.rename(tempPath, filePath);
   });
 };
@@ -141,6 +171,21 @@ export const updateJsonArrayFile = async <T>(
     await fs.writeFile(tempPath, encodeJson(nextRows), "utf-8");
     await fs.rename(tempPath, filePath);
     return nextRows;
+  });
+
+export const updateJsonFile = async <T>(
+  filePath: string,
+  fallback: T,
+  updater: (value: T) => Promise<T> | T,
+): Promise<T> =>
+  withPathLock(filePath, async () => {
+    await ensureParentDir(filePath);
+    const existing = await readJsonFile<T>(filePath, fallback);
+    const nextValue = await updater(existing);
+    const tempPath = getTempPath(filePath);
+    await fs.writeFile(tempPath, encodeJson(nextValue), "utf-8");
+    await fs.rename(tempPath, filePath);
+    return nextValue;
   });
 
 export const appendJsonlFile = async <T>(filePath: string, row: T): Promise<void> => {

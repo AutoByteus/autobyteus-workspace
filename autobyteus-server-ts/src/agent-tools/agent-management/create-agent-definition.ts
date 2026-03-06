@@ -16,14 +16,6 @@ argumentSchema.addParameter(
 );
 argumentSchema.addParameter(
   new ParameterDefinition({
-    name: "role",
-    type: ParameterType.STRING,
-    description: "A description of the agent's role and personality.",
-    required: true,
-  }),
-);
-argumentSchema.addParameter(
-  new ParameterDefinition({
     name: "description",
     type: ParameterType.STRING,
     description: "A detailed description of the agent's purpose.",
@@ -32,18 +24,26 @@ argumentSchema.addParameter(
 );
 argumentSchema.addParameter(
   new ParameterDefinition({
-    name: "system_prompt_category",
+    name: "instructions",
     type: ParameterType.STRING,
-    description: "The category of the system prompt to be used.",
+    description: "Agent instructions/system prompt content.",
     required: true,
   }),
 );
 argumentSchema.addParameter(
   new ParameterDefinition({
-    name: "system_prompt_name",
+    name: "role",
     type: ParameterType.STRING,
-    description: "The name of the system prompt to be used.",
-    required: true,
+    description: "Optional description of the agent's role and personality.",
+    required: false,
+  }),
+);
+argumentSchema.addParameter(
+  new ParameterDefinition({
+    name: "category",
+    type: ParameterType.STRING,
+    description: "Optional category label for this agent.",
+    required: false,
   }),
 );
 argumentSchema.addParameter(
@@ -109,7 +109,6 @@ const logger = {
 };
 
 type AgentContextLike = {
-  // Core boundary from autobyteus-ts runtime; normalize immediately to `agentRunId` in local code.
   agentId?: string;
 };
 
@@ -124,10 +123,10 @@ const parseCsvList = (value?: string | null): string[] =>
 export async function createAgentDefinition(
   context: AgentContextLike,
   name: string,
-  role: string,
   description: string,
-  system_prompt_category: string,
-  system_prompt_name: string,
+  instructions: string,
+  role?: string | null,
+  category?: string | null,
   avatar_url?: string | null,
   tool_names?: string | null,
   system_prompt_processor_names?: string | null,
@@ -143,11 +142,11 @@ export async function createAgentDefinition(
     const service = AgentDefinitionService.getInstance();
     const newDefinition = await service.createAgentDefinition({
       name,
-      role,
       description,
+      instructions,
+      role: role ?? undefined,
+      category: category ?? undefined,
       avatarUrl: avatar_url ?? undefined,
-      systemPromptCategory: system_prompt_category,
-      systemPromptName: system_prompt_name,
       toolNames: parseCsvList(tool_names),
       systemPromptProcessorNames: parseCsvList(system_prompt_processor_names),
       inputProcessorNames: parseCsvList(input_processor_names),

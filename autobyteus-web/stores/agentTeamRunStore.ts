@@ -142,13 +142,13 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
           if (!teamDef) throw new Error(`Team definition ${activeTeam.config.teamDefinitionId} not found.`);
 
           const memberConfigs: TeamMemberConfigInput[] = teamDef.nodes
-            .filter(node => node.referenceType === 'AGENT')
+            .filter(node => node.refType === 'AGENT')
             .map((node) => {
               const override = activeTeam.config.memberOverrides[node.memberName];
               const teamRuntimeKind = activeTeam.config.runtimeKind || DEFAULT_AGENT_RUNTIME_KIND;
               return {
                 memberName: node.memberName,
-                agentDefinitionId: node.referenceId,
+                agentDefinitionId: node.ref,
                 runtimeKind: teamRuntimeKind,
                 llmModelIdentifier: override?.llmModelIdentifier || activeTeam.config.llmModelIdentifier,
                 workspaceId: activeTeam.config.workspaceId,

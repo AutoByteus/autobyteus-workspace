@@ -17,8 +17,8 @@ const mockTeamDef = {
   id: 'team-1',
   name: 'Test Team',
   nodes: [
-    { memberName: 'Member A', referenceType: 'AGENT', referenceId: 'agent-a' },
-    { memberName: 'Member B', referenceType: 'AGENT', referenceId: 'agent-b' },
+    { memberName: 'Member A', refType: 'AGENT', ref: 'agent-a' },
+    { memberName: 'Member B', refType: 'AGENT', ref: 'agent-b' },
   ],
   coordinatorMemberName: 'Member A',
 };

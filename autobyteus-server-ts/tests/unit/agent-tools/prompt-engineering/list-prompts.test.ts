@@ -23,9 +23,6 @@ describe("listPromptsTool", () => {
       promptContent: "Secret content",
       version: 1,
       isActive: true,
-      parentId: null,
-      suitableForModels: "gpt-4",
-      description: "Desc",
       createdAt: new Date("2024-01-01T00:00:00Z"),
       updatedAt: new Date("2024-01-02T00:00:00Z"),
     });
@@ -42,7 +39,7 @@ describe("listPromptsTool", () => {
     expect(parsed).toHaveLength(1);
     expect(parsed[0]?.name).toBe("Test");
     expect(parsed[0]).not.toHaveProperty("prompt_content");
-    expect(parsed[0]).toHaveProperty("parent_id");
+    expect(parsed[0]).not.toHaveProperty("parent_id");
   });
 
   it("returns empty array string when no prompts found", async () => {

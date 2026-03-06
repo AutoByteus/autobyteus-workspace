@@ -3,43 +3,35 @@ import { ref, computed } from 'vue';
 import { getApolloClient } from '~/utils/apolloClient';
 import { GetAgentTeamDefinitions } from '~/graphql/queries/agentTeamDefinitionQueries';
 import { CreateAgentTeamDefinition, UpdateAgentTeamDefinition, DeleteAgentTeamDefinition } from '~/graphql/mutations/agentTeamDefinitionMutations';
-import type { 
-  GetAgentTeamDefinitionsQuery,
-  CreateAgentTeamDefinitionMutation,
-  CreateAgentTeamDefinitionMutationVariables,
-  UpdateAgentTeamDefinitionMutation,
-  UpdateAgentTeamDefinitionMutationVariables,
-  DeleteAgentTeamDefinitionMutation,
-  DeleteAgentTeamDefinitionMutationVariables,
-  TeamMemberInput,
-} from '~/generated/graphql';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 
 // Re-exporting this for use in forms
-export type { TeamMemberInput };
+export interface TeamMemberInput {
+  __typename?: string;
+  memberName: string;
+  ref: string;
+  refType: 'AGENT' | 'AGENT_TEAM';
+}
 
 export interface AgentTeamDefinition {
   __typename?: 'AgentTeamDefinition';
   id: string;
   name: string;
   description: string;
-  role?: string | null;
+  instructions: string;
+  category?: string | null;
   avatarUrl?: string | null;
   updatedAt?: string | null;
   coordinatorMemberName: string;
-  nodes: {
-    __typename?: 'TeamMember';
-    memberName: string;
-    referenceId: string;
-    referenceType: 'AGENT' | 'AGENT_TEAM';
-  }[];
+  nodes: TeamMemberInput[];
 }
 
 export interface CreateAgentTeamDefinitionInput {
   name: string;
   description: string;
+  instructions: string;
+  category?: string | null;
   coordinatorMemberName: string;
-  role?: string | null;
   avatarUrl?: string | null;
   nodes: TeamMemberInput[];
 }
@@ -48,8 +40,9 @@ export interface UpdateAgentTeamDefinitionInput {
   id: string;
   name?: string | null;
   description?: string | null;
+  instructions?: string | null;
+  category?: string | null;
   coordinatorMemberName?: string | null;
-  role?: string | null;
   avatarUrl?: string | null;
   nodes?: TeamMemberInput[] | null;
 }
@@ -75,7 +68,7 @@ export const useAgentTeamDefinitionStore = defineStore('agentTeamDefinition', ()
     error.value = null;
     try {
       const client = getApolloClient();
-      const { data, errors } = await client.query<GetAgentTeamDefinitionsQuery>({
+      const { data, errors } = await client.query({
         query: GetAgentTeamDefinitions,
         // Uses default 'cache-first'
       });
@@ -98,7 +91,7 @@ export const useAgentTeamDefinitionStore = defineStore('agentTeamDefinition', ()
     error.value = null;
     try {
       const client = getApolloClient();
-      const { data, errors } = await client.query<GetAgentTeamDefinitionsQuery>({
+      const { data, errors } = await client.query({
         query: GetAgentTeamDefinitions,
         fetchPolicy: 'network-only',
       });
@@ -125,7 +118,7 @@ export const useAgentTeamDefinitionStore = defineStore('agentTeamDefinition', ()
         cleanedInput.nodes.forEach((node: any) => delete node.__typename);
       }
 
-      const { data, errors } = await client.mutate<CreateAgentTeamDefinitionMutation, CreateAgentTeamDefinitionMutationVariables>({
+      const { data, errors } = await client.mutate({
         mutation: CreateAgentTeamDefinition,
         variables: { input: cleanedInput },
         refetchQueries: [{ query: GetAgentTeamDefinitions }]
@@ -159,7 +152,7 @@ export const useAgentTeamDefinitionStore = defineStore('agentTeamDefinition', ()
         cleanedInput.nodes.forEach((node: any) => delete node.__typename);
       }
 
-      const { data, errors } = await client.mutate<UpdateAgentTeamDefinitionMutation, UpdateAgentTeamDefinitionMutationVariables>({
+      const { data, errors } = await client.mutate({
         mutation: UpdateAgentTeamDefinition,
         variables: { input: cleanedInput },
         refetchQueries: [{ query: GetAgentTeamDefinitions }]
@@ -186,7 +179,7 @@ export const useAgentTeamDefinitionStore = defineStore('agentTeamDefinition', ()
   async function deleteAgentTeamDefinition(id: string): Promise<boolean> {
     try {
       const client = getApolloClient();
-      const { data, errors } = await client.mutate<DeleteAgentTeamDefinitionMutation, DeleteAgentTeamDefinitionMutationVariables>({
+      const { data, errors } = await client.mutate({
         mutation: DeleteAgentTeamDefinition,
         variables: { id },
         update: (cache) => {

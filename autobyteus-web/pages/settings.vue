@@ -90,6 +90,19 @@
               </button>
             </li>
             <li class="w-full">
+              <button
+                @click="activeSection = 'definition-sources'"
+                data-testid="settings-nav-definition-sources"
+                class="flex w-full items-center justify-start px-4 py-2 rounded-md transition-colors duration-200 text-gray-700 hover:bg-gray-100 hover:text-gray-900 group"
+                :class="{ 'bg-gray-100 text-gray-900': activeSection === 'definition-sources' }"
+              >
+                <div class="flex items-center min-w-[20px] mr-3">
+                  <span class="i-heroicons-folder-open-20-solid w-5 h-5"></span>
+                </div>
+                <span class="text-left">Import</span>
+              </button>
+            </li>
+            <li class="w-full">
               <button 
                 @click="selectServerSettings()"
                 data-testid="settings-nav-server-settings"
@@ -156,6 +169,7 @@
           v-if="activeSection === 'mcp-servers'"
           initial-root-section="mcp-servers"
         />
+        <DefinitionSourcesManager v-if="activeSection === 'definition-sources'" />
         <ServerSettingsManager
           v-if="activeSection === 'server-settings'"
           :section-mode="serverSettingsMode"
@@ -182,6 +196,7 @@ import NodeManager from '~/components/settings/NodeManager.vue';
 import ServerSettingsManager from '~/components/settings/ServerSettingsManager.vue';
 import MessagingSetupManager from '~/components/settings/MessagingSetupManager.vue';
 import AboutSettingsManager from '~/components/settings/AboutSettingsManager.vue';
+import DefinitionSourcesManager from '~/components/settings/DefinitionSourcesManager.vue';
 import ToolsManagementWorkspace from '~/components/tools/ToolsManagementWorkspace.vue';
 
 definePageMeta({
@@ -196,6 +211,7 @@ type SettingsSection =
   | 'updates'
   | 'local-tools'
   | 'mcp-servers'
+  | 'definition-sources'
   | 'server-settings';
 type ServerSettingsMode = 'quick' | 'advanced';
 
@@ -214,6 +230,7 @@ const validSections = new Set<SettingsSection>([
   'updates',
   'local-tools',
   'mcp-servers',
+  'definition-sources',
   'server-settings',
 ]);
 

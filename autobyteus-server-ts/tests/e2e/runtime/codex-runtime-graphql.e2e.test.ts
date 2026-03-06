@@ -1651,6 +1651,15 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
         };
         let resolved = false;
 
+        const resolveIfComplete = () => {
+          if (!resolved && sawGenerateImageArguments) {
+            resolved = true;
+            clearTimeout(fallbackSendTimer);
+            clearTimeout(timeout);
+            resolve();
+          }
+        };
+
         const sendPrompt = () => {
           if (promptAttemptCount >= maxPromptAttempts) {
             return;
@@ -1676,16 +1685,7 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
               `Timed out waiting for generate_image metadata arguments. promptSent=${String(sentPrompt)} promptAttempts=${String(promptAttemptCount)} argumentsSeen=${String(sawGenerateImageArguments)} seenTypes=${Array.from(seenEventTypes).join(", ")} segmentSnapshots=${JSON.stringify(seenSegmentSnapshots)}`,
             ),
           );
-        }, 120000);
-        const resolveWhenReady = () => {
-          if (resolved || !sawGenerateImageArguments) {
-            return;
-          }
-          resolved = true;
-          clearTimeout(fallbackSendTimer);
-          clearTimeout(timeout);
-          resolve();
-        };
+        }, 70000);
 
         socket.on("message", (raw) => {
           const message = JSON.parse(raw.toString()) as {
@@ -1700,8 +1700,9 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
               sendPrompt();
               return;
             }
-            if (status === "IDLE" && sentPrompt) {
-              resolveWhenReady();
+            if (status === "IDLE" && sentPrompt && sawGenerateImageArguments) {
+              resolveIfComplete();
+              return;
             }
             if (
               status === "IDLE" &&
@@ -1766,7 +1767,7 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
             outputPathArg.length > 0
           ) {
             sawGenerateImageArguments = true;
-            resolveWhenReady();
+            resolveIfComplete();
           }
         });
 

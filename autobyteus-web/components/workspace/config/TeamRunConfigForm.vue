@@ -81,7 +81,7 @@
                 v-for="node in teamDefinition.nodes"
                 :key="node.memberName"
                 :member-name="node.memberName"
-                :agent-definition-id="node.referenceId"
+                :agent-definition-id="node.ref"
                 :override="config.memberOverrides[node.memberName]"
                 :global-llm-model="config.llmModelIdentifier"
                 :options="groupedModelOptions"

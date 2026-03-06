@@ -343,8 +343,8 @@ describe('agentTeamRunStore', () => {
     teamDefinitionStoreMock.getAgentTeamDefinitionById.mockReturnValue({
       id: 'team-def-1',
       nodes: [
-        { memberName: 'professor', referenceType: 'AGENT', referenceId: 'agent-a' },
-        { memberName: 'student', referenceType: 'AGENT', referenceId: 'agent-b' },
+        { memberName: 'professor', refType: 'AGENT', ref: 'agent-a' },
+        { memberName: 'student', refType: 'AGENT', ref: 'agent-b' },
       ],
     });
 

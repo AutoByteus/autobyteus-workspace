@@ -8,6 +8,8 @@ export const CreateAgentDefinition = gql`
       name
       role
       description
+      instructions
+      category
       avatarUrl
       toolNames
       inputProcessorNames
@@ -17,14 +19,6 @@ export const CreateAgentDefinition = gql`
       toolInvocationPreprocessorNames
       lifecycleProcessorNames
       skillNames
-      systemPromptCategory
-      systemPromptName
-      prompts {
-        __typename
-        id
-        name
-        category
-      }
     }
   }
 `
@@ -37,6 +31,8 @@ export const UpdateAgentDefinition = gql`
       name
       role
       description
+      instructions
+      category
       avatarUrl
       toolNames
       inputProcessorNames
@@ -46,8 +42,6 @@ export const UpdateAgentDefinition = gql`
       toolInvocationPreprocessorNames
       lifecycleProcessorNames
       skillNames
-      systemPromptCategory
-      systemPromptName
     }
   }
 `
@@ -58,6 +52,29 @@ export const DeleteAgentDefinition = gql`
       __typename
       success
       message
+    }
+  }
+`
+
+export const DuplicateAgentDefinition = gql`
+  mutation DuplicateAgentDefinition($input: DuplicateAgentDefinitionInput!) {
+    duplicateAgentDefinition(input: $input) {
+      __typename
+      id
+      name
+      role
+      description
+      instructions
+      category
+      avatarUrl
+      toolNames
+      inputProcessorNames
+      llmResponseProcessorNames
+      systemPromptProcessorNames
+      toolExecutionResultProcessorNames
+      toolInvocationPreprocessorNames
+      lifecycleProcessorNames
+      skillNames
     }
   }
 `

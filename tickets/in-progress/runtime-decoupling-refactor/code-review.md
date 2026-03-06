@@ -78,6 +78,55 @@ Notes:
 - Decision: `Pass`
 - Re-entry required: `No`
 
+## Stage-10 Continuation Iteration 17 Deep Re-Review Addendum (Post-Commit)
+
+## Review Scope
+
+- Stage: `8`
+- Review slice: post-commit deep architecture verification after full runtime-enabled backend/frontend green gates
+- Reviewed source files:
+  - `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-runtime-transcript-store.ts`
+  - `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.ts`
+  - `autobyteus-server-ts/src/services/agent-streaming/method-runtime-event-adapter.ts`
+  - `autobyteus-server-ts/src/services/agent-streaming/method-runtime-event-tool-helper.ts`
+  - `autobyteus-server-ts/src/services/agent-streaming/method-runtime-event-segment-helper.ts`
+  - `autobyteus-server-ts/src/runtime-management/runtime-client/index.ts`
+  - `autobyteus-server-ts/src/runtime-management/runtime-client/runtime-client-modules-defaults.ts`
+  - `autobyteus-server-ts/src/runtime-execution/runtime-command-ingress-service.ts`
+  - `autobyteus-server-ts/src/api/graphql/services/team-runtime-mode-policy.ts`
+  - `autobyteus-server-ts/src/agent-team-execution/services/team-member-runtime-orchestrator.ts`
+- Verification evidence:
+  - committed snapshot: `ef3db39 Refactor Claude and Codex runtime decoupling`
+  - runtime-enabled backend suite: `262 passed | 3 skipped` files, `1197 passed | 8 skipped` tests
+  - frontend suite: pass
+
+## Findings
+
+1. `[P2] Claude transcript migration still retains a compatibility alias path`
+   - File: `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-runtime-transcript-store.ts:46-48`
+   - `migrateSessionMessages(...)` writes the merged transcript under both the resolved `targetSessionId` and the old `sourceSessionId`, and the code comment explicitly states this is to preserve a compatibility lookup key for pre-resolved ids. That is a direct violation of the ticket's strict no-legacy/no-compatibility requirement. It also keeps two valid lookup keys alive for the same transcript after session-id resolution, so the architecture is not yet fully converged on one canonical runtime-session identity.
+
+## Mandatory Gate Checks
+
+| File | Effective Non-Empty Lines | Delta (+/-) | `<=500` Hard Limit | `>220` Delta Gate | Result |
+| --- | --- | --- | --- | --- | --- |
+| `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-runtime-transcript-store.ts` | 46 | `+7/-2` (9) | Pass | Pass | Pass |
+| `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.ts` | 1126 | `+30/-0` (30) | N/A (unchanged review focus file exceeds gate baseline) | Pass | Pass |
+| `autobyteus-server-ts/src/services/agent-streaming/method-runtime-event-adapter.ts` | 363 | `+363/-0` (363) | Pass | Pass | Pass |
+
+## Architecture / Decoupling Review
+
+- Shared runtime layers reviewed in this round remain runtime-neutral by registry/capability/composition seams; no new direct Codex-or-Claude imports were found in the shared orchestration and stream entrypoints reviewed.
+- The remaining issue is localized inside the Claude runtime implementation, but it still violates the ticket-level architectural rule because it preserves a legacy compatibility path instead of converging on the resolved runtime session id.
+- `send_message_to` policy and method-runtime event normalization remain shared, tool-name-driven seams rather than runtime-name branching; that part is consistent with the designed architecture.
+
+## Gate Decision
+
+- Decision: `Fail`
+- Classification: `Local Fix`
+- Required re-entry path: `6 -> 7 -> 8`
+- Rationale: runtime gates are green, but the Claude transcript-store compatibility alias prevents strict no-legacy closure.
+
 ## Stage-10 Continuation Iteration 10 Re-Review Addendum (Post-Unblock)
 
 ## Review Scope

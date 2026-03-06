@@ -67,6 +67,7 @@ describe("TelegramBusinessAdapter", () => {
   });
 
   it("maps polling updates to canonical envelopes and peer discovery observations", async () => {
+    const observedAt = new Date().toISOString();
     const botClient = new FakeTelegramBotClient();
     const adapter = new TelegramBusinessAdapter({
       accountId: "telegram-acct-1",

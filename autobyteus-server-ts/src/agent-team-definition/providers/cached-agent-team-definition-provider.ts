@@ -71,6 +71,10 @@ export class CachedAgentTeamDefinitionProvider {
     return Array.from(this.cache.values());
   }
 
+  async getTemplates(): Promise<AgentTeamDefinition[]> {
+    return this.persistenceProvider.getTemplates();
+  }
+
   async update(domainObj: AgentTeamDefinition): Promise<AgentTeamDefinition> {
     const updated = await this.persistenceProvider.update(domainObj);
     if (this.cachePopulated && updated.id) {
@@ -88,5 +92,12 @@ export class CachedAgentTeamDefinitionProvider {
       }
     }
     return success;
+  }
+
+  async refresh(): Promise<void> {
+    this.cache.clear();
+    this.cachePopulated = false;
+    this.populatePromise = null;
+    await this.ensureCachePopulated();
   }
 }

@@ -13,15 +13,16 @@ const logger = {
 };
 
 type AgentContextLike = {
-  // Core boundary from autobyteus-ts runtime; normalize immediately to `agentRunId` in local code.
   agentId?: string;
 };
 
 const serializeDefinition = (definition: AgentDefinition): Record<string, unknown> => ({
   id: definition.id ?? null,
   name: definition.name,
-  role: definition.role,
+  role: definition.role ?? null,
   description: definition.description,
+  instructions: definition.instructions,
+  category: definition.category ?? null,
   tool_names: definition.toolNames,
   input_processor_names: definition.inputProcessorNames,
   llm_response_processor_names: definition.llmResponseProcessorNames,
@@ -30,8 +31,6 @@ const serializeDefinition = (definition: AgentDefinition): Record<string, unknow
   tool_invocation_preprocessor_names: definition.toolInvocationPreprocessorNames,
   lifecycle_processor_names: definition.lifecycleProcessorNames,
   skill_names: definition.skillNames,
-  system_prompt_category: definition.systemPromptCategory ?? null,
-  system_prompt_name: definition.systemPromptName ?? null,
 });
 
 export async function listAgentDefinitions(context: AgentContextLike): Promise<string> {

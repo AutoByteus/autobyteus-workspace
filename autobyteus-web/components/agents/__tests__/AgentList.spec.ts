@@ -161,6 +161,18 @@ describe('AgentList', () => {
     expect(readSetupRef<string | null>(wrapper, 'syncError')).toBe('No target nodes available for sync.');
   });
 
+  it('reloads agent definitions when reload is clicked', async () => {
+    const wrapper = await mountComponent();
+    const store = useAgentDefinitionStore();
+
+    const reloadButton = wrapper.findAll('button').find((button) => button.text().includes('Reload'));
+    expect(reloadButton).toBeDefined();
+    await reloadButton!.trigger('click');
+    await flushAsyncUi();
+
+    expect(store.reloadAllAgentDefinitions).toHaveBeenCalledTimes(1);
+  });
+
   it('opens target picker and runs selective sync after confirmation', async () => {
     const wrapper = await mountComponent();
     const nodeSyncStore = useNodeSyncStore();
@@ -171,7 +183,7 @@ describe('AgentList', () => {
       error: null,
       report: {
         sourceNodeId: 'embedded-local',
-        scope: ['prompt', 'agent_definition'],
+        scope: ['agent_definition'],
         exportByEntity: [],
         targets: [],
       },
@@ -194,7 +206,7 @@ describe('AgentList', () => {
     });
     expect(readSetupRef(wrapper, 'lastAgentSyncReport')).toEqual({
       sourceNodeId: 'embedded-local',
-      scope: ['prompt', 'agent_definition'],
+      scope: ['agent_definition'],
       exportByEntity: [],
       targets: [],
     });

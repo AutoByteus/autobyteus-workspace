@@ -46,6 +46,7 @@ const mountSettings = () =>
         NodeManager: { template: '<div data-testid="section-nodes" />' },
         MessagingSetupManager: { template: '<div data-testid="section-messaging" />' },
         AboutSettingsManager: { template: '<div data-testid="section-updates" />' },
+        DefinitionSourcesManager: { template: '<div data-testid="section-definition-sources" />' },
         ToolsManagementWorkspace: { template: '<div data-testid="section-tools-management" />' },
         ServerSettingsManager: { props: ['sectionMode'], template: '<div data-testid="section-server-settings">mode={{ sectionMode }}</div>' },
       },
@@ -70,6 +71,7 @@ describe('settings page', () => {
     expect(wrapper.text()).toContain('Updates');
     expect(wrapper.text()).toContain('Local Tools');
     expect(wrapper.text()).toContain('MCP Servers');
+    expect(wrapper.text()).toContain('Import');
     expect(wrapper.text()).toContain('Server Settings');
     const sidebarText = wrapper.text();
     expect(sidebarText.indexOf('Server Settings')).toBeLessThan(sidebarText.indexOf('Updates'));
@@ -140,6 +142,15 @@ describe('settings page', () => {
     const setupState = (wrapper.vm as any).$?.setupState;
 
     expect(setupState.activeSection).toBe('mcp-servers');
+  });
+
+  it('supports definition-sources section query and activates definition-sources section', async () => {
+    routeMock.query = { section: 'definition-sources' };
+    const wrapper = mountSettings();
+    await nextTick();
+    const setupState = (wrapper.vm as any).$?.setupState;
+
+    expect(setupState.activeSection).toBe('definition-sources');
   });
 
   it('navigates back to workspace when back item is clicked', async () => {

@@ -216,7 +216,7 @@ const filteredOverrideLlmOptions = computed(() => {
 const requiredAgentNames = computed(() => {
   if (!teamDef.value) return [];
   return teamDef.value.nodes
-    .filter(node => node.referenceType === 'AGENT')
+    .filter(node => node.refType === 'AGENT')
     .map(node => node.memberName);
 });
 

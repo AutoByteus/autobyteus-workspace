@@ -14,15 +14,18 @@ from typing import Any, Dict, List, Optional
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
-PROMPT_CATEGORY = "system"
-PROFESSOR_PROMPT_NAME = "Professor Fixture Prompt"
-STUDENT_PROMPT_NAME = "Student Fixture Prompt"
-PROFESSOR_PROMPT_CONTENT = "You are a professor."
-STUDENT_PROMPT_CONTENT = "You are a student."
-
 PROFESSOR_AGENT_NAME = "Professor Agent"
 STUDENT_AGENT_NAME = "Student Agent"
 TEAM_NAME = "Professor Student Team"
+PROFESSOR_INSTRUCTIONS = (
+    "You are Professor Agent. Explain concepts clearly, structure your answers, and check understanding."
+)
+STUDENT_INSTRUCTIONS = (
+    "You are Student Agent. Ask concise follow-up questions and summarize what you learned."
+)
+TEAM_INSTRUCTIONS = (
+    "You are the Professor Student Team coordinator. Route explanations to Professor and follow-up questions to Student."
+)
 
 
 def log(message: str) -> None:
@@ -94,72 +97,14 @@ def first_by_name(entries: List[Dict[str, Any]], name: str) -> Optional[Dict[str
     return None
 
 
-def ensure_prompt(client: GraphqlClient, *, name: str, content: str) -> None:
-    prompts_data = client.execute(
-        """
-        query SeedPrompts($isActive: Boolean) {
-          prompts(isActive: $isActive) {
-            id
-            name
-            category
-            promptContent
-          }
-        }
-        """,
-        {"isActive": True},
-    )
-    prompts = prompts_data.get("prompts") or []
-    current = None
-    for prompt in prompts:
-        if prompt.get("name") == name and prompt.get("category") == PROMPT_CATEGORY:
-            current = prompt
-            break
-
-    if current is None:
-        client.execute(
-            """
-            mutation SeedCreatePrompt($input: CreatePromptInput!) {
-              createPrompt(input: $input) { id name category }
-            }
-            """,
-            {
-                "input": {
-                    "name": name,
-                    "category": PROMPT_CATEGORY,
-                    "promptContent": content,
-                }
-            },
-        )
-        log(f"Prompt created: {PROMPT_CATEGORY}/{name}")
-        return
-
-    if current.get("promptContent") != content:
-        client.execute(
-            """
-            mutation SeedUpdatePrompt($input: UpdatePromptInput!) {
-              updatePrompt(input: $input) { id name category }
-            }
-            """,
-            {
-                "input": {
-                    "id": current.get("id"),
-                    "promptContent": content,
-                }
-            },
-        )
-        log(f"Prompt updated: {PROMPT_CATEGORY}/{name}")
-        return
-
-    log(f"Prompt unchanged: {PROMPT_CATEGORY}/{name}")
-
-
 def ensure_agent(
     client: GraphqlClient,
     *,
     name: str,
     role: str,
     description: str,
-    system_prompt_name: str,
+    instructions: str,
+    category: str = "seeded",
 ) -> str:
     definitions = client.execute(
         """
@@ -169,9 +114,9 @@ def ensure_agent(
             name
             role
             description
+            instructions
+            category
             toolNames
-            systemPromptCategory
-            systemPromptName
           }
         }
         """
@@ -183,9 +128,9 @@ def ensure_agent(
         "name": name,
         "role": role,
         "description": description,
+        "instructions": instructions,
+        "category": category,
         "toolNames": expected_tool_names,
-        "systemPromptCategory": PROMPT_CATEGORY,
-        "systemPromptName": system_prompt_name,
     }
 
     if current is None:
@@ -216,9 +161,9 @@ def ensure_agent(
     update_needed = (
         current.get("role") != role
         or current.get("description") != description
+        or current.get("instructions") != instructions
+        or current.get("category") != category
         or sorted(current.get("toolNames") or []) != sorted(expected_tool_names)
-        or current.get("systemPromptCategory") != PROMPT_CATEGORY
-        or current.get("systemPromptName") != system_prompt_name
     )
     if update_needed:
         client.execute(
@@ -256,11 +201,13 @@ def ensure_team(client: GraphqlClient, professor_agent_id: str, student_agent_id
             id
             name
             description
+            instructions
+            category
             coordinatorMemberName
             nodes {
               memberName
-              referenceId
-              referenceType
+              ref
+              refType
             }
           }
         }
@@ -271,16 +218,18 @@ def ensure_team(client: GraphqlClient, professor_agent_id: str, student_agent_id
     expected_nodes = [
         {
             "memberName": "Professor",
-            "referenceId": professor_agent_id,
-            "referenceType": "AGENT",
+            "ref": professor_agent_id,
+            "refType": "AGENT",
         },
         {
             "memberName": "Student",
-            "referenceId": student_agent_id,
-            "referenceType": "AGENT",
+            "ref": student_agent_id,
+            "refType": "AGENT",
         },
     ]
     expected_description = "Fixture team for Professor/Student communication tests."
+    expected_instructions = TEAM_INSTRUCTIONS
+    expected_category = "seeded"
     expected_coordinator = "Professor"
 
     if current is None:
@@ -294,6 +243,8 @@ def ensure_team(client: GraphqlClient, professor_agent_id: str, student_agent_id
                 "input": {
                     "name": TEAM_NAME,
                     "description": expected_description,
+                    "instructions": expected_instructions,
+                    "category": expected_category,
                     "coordinatorMemberName": expected_coordinator,
                     "nodes": expected_nodes,
                 }
@@ -306,18 +257,20 @@ def ensure_team(client: GraphqlClient, professor_agent_id: str, student_agent_id
         [
             (
                 node.get("memberName"),
-                node.get("referenceId"),
-                node.get("referenceType"),
+                node.get("ref"),
+                node.get("refType"),
             )
             for node in (current.get("nodes") or [])
         ]
     )
     expected_nodes_normalized = sorted(
-        [(node["memberName"], node["referenceId"], node["referenceType"]) for node in expected_nodes]
+        [(node["memberName"], node["ref"], node["refType"]) for node in expected_nodes]
     )
 
     update_needed = (
         current.get("description") != expected_description
+        or current.get("instructions") != expected_instructions
+        or current.get("category") != expected_category
         or current.get("coordinatorMemberName") != expected_coordinator
         or nodes_normalized != expected_nodes_normalized
     )
@@ -333,6 +286,8 @@ def ensure_team(client: GraphqlClient, professor_agent_id: str, student_agent_id
                 "input": {
                     "id": current.get("id"),
                     "description": expected_description,
+                    "instructions": expected_instructions,
+                    "category": expected_category,
                     "coordinatorMemberName": expected_coordinator,
                     "nodes": expected_nodes,
                 }
@@ -357,22 +312,19 @@ def main(argv: List[str]) -> int:
 
     wait_for_backend(client, retries=args.wait_retries, delay_seconds=args.wait_delay)
 
-    ensure_prompt(client, name=PROFESSOR_PROMPT_NAME, content=PROFESSOR_PROMPT_CONTENT)
-    ensure_prompt(client, name=STUDENT_PROMPT_NAME, content=STUDENT_PROMPT_CONTENT)
-
     professor_id = ensure_agent(
         client,
         name=PROFESSOR_AGENT_NAME,
         role="Professor",
         description="Fixture professor agent.",
-        system_prompt_name=PROFESSOR_PROMPT_NAME,
+        instructions=PROFESSOR_INSTRUCTIONS,
     )
     student_id = ensure_agent(
         client,
         name=STUDENT_AGENT_NAME,
         role="Student",
         description="Fixture student agent.",
-        system_prompt_name=STUDENT_PROMPT_NAME,
+        instructions=STUDENT_INSTRUCTIONS,
     )
 
     ensure_team(client, professor_agent_id=professor_id, student_agent_id=student_id)

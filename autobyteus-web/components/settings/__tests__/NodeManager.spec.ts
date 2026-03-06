@@ -70,12 +70,12 @@ const {
       error: null,
       report: {
         sourceNodeId: 'embedded-local',
-        scope: ['prompt'],
+        scope: ['agent_definition'],
         exportByEntity: [
           {
-            entityType: 'prompt',
+            entityType: 'agent_definition',
             exportedCount: 1,
-            sampledKeys: ['prompt-1'],
+            sampledKeys: ['agent-1'],
             sampleTruncated: false,
           },
         ],
@@ -205,7 +205,6 @@ describe('NodeManager', () => {
       sourceNodeId: 'embedded-local',
       targetNodeIds: ['remote-1'],
       scope: [
-        'prompt',
         'agent_definition',
         'agent_team_definition',
         'mcp_server_configuration',
@@ -214,12 +213,12 @@ describe('NodeManager', () => {
     const setupState = (wrapper.vm as any).$?.setupState;
     expect(setupState.fullSyncReport).toEqual({
       sourceNodeId: 'embedded-local',
-      scope: ['prompt'],
+      scope: ['agent_definition'],
       exportByEntity: [
         {
-          entityType: 'prompt',
+          entityType: 'agent_definition',
           exportedCount: 1,
-          sampledKeys: ['prompt-1'],
+          sampledKeys: ['agent-1'],
           sampleTruncated: false,
         },
       ],

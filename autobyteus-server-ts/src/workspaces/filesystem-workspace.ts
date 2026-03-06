@@ -36,12 +36,11 @@ export class FileSystemWorkspace {
     }
 
     const rootPathValue = config.get('rootPath');
-    const legacyRootPathValue = typeof rootPathValue === 'string' ? rootPathValue : config.get('root_path');
-    if (typeof legacyRootPathValue !== 'string' || !legacyRootPathValue.trim()) {
+    if (typeof rootPathValue !== 'string' || !rootPathValue.trim()) {
       throw new Error("FileSystemWorkspace requires a 'rootPath' in its config.");
     }
 
-    this.rootPath = legacyRootPathValue;
+    this.rootPath = rootPathValue;
     this.fileExplorer = new LocalFileExplorer(this.rootPath);
 
     logger.info(`Initialized FileSystemWorkspace at ${this.rootPath}. Call initialize() to build file tree.`);

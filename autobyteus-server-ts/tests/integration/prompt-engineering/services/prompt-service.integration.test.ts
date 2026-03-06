@@ -27,9 +27,9 @@ describe("PromptService", () => {
     expect(created2.isActive).toBe(false);
   }, 15000);
 
-  it("increments versions when creating multiple prompts in the same family", async () => {
+  it("auto-increments version on duplicate name+category", async () => {
     const promptService = new PromptService();
-    const name = makeName("Default Model Test");
+    const name = makeName("Version Test");
     const category = "Service";
 
     const created1 = await promptService.createPrompt({
@@ -49,7 +49,7 @@ describe("PromptService", () => {
     expect(created2.isActive).toBe(false);
   });
 
-  it("continues versioning within the same prompt family", async () => {
+  it("creates prompts with same name+category as new versions", async () => {
     const promptService = new PromptService();
     const name = makeName("Model Variation Test");
     const category = "Service";
@@ -67,6 +67,7 @@ describe("PromptService", () => {
       category,
       promptContent: "Claude prompt",
     });
+    // Now same name+category auto-increments version
     expect(prompt2.version).toBe(2);
     expect(prompt2.id).toBeTruthy();
     expect(prompt2.id).not.toBe(prompt1.id);

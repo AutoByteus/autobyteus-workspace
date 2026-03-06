@@ -943,3 +943,20 @@ This document tracks implementation and testing progress in real time, including
 - No deterministic refactor regression is currently isolated in the `run_bash` metadata path.
 - The only deterministic Codex live backend blocker left from this investigation round is the `generate_image` websocket metadata case.
 - Workflow correction: Stage 7 should be treated as `Blocked` pending environment availability or explicit waiver, not as an active Stage-6 local-fix source-code task.
+
+## Stage-10 Continuation Iteration 17 Kickoff (Legacy Alias Removal + Personal Merge Reconciliation)
+
+### Chronological Log
+
+- 2026-03-06: User explicitly requested continued no-legacy cleanup under the software-engineering workflow skill.
+- 2026-03-06: Workflow re-entered Stage 6 for a bounded local fix.
+- 2026-03-06: `origin/personal` advanced from `d9338ca` to `40842a3`.
+- 2026-03-06: Merge of `origin/personal` into `codex/runtime-decoupling-refactor` was started.
+- 2026-03-06: Conflicts were isolated to:
+  - `autobyteus-server-ts/src/services/agent-streaming/team-external-runtime-event-bridge.ts`
+  - `autobyteus-server-ts/tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts`
+  - `autobyteus-server-ts/tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts`
+- 2026-03-06: This iteration will:
+  - keep the decoupled shared-team bridge deletion,
+  - reconcile incoming Codex live-test updates with the refactored branch behavior,
+  - remove the Claude transcript compatibility alias path and update its tests.

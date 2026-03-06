@@ -24,7 +24,6 @@ describe("activatePromptTool", () => {
     const targetPrompt = {
       name: "FamilyName",
       category: "Test",
-      suitableForModels: "gpt-4",
       id: "101",
     };
     const oldActive = { isActive: true, id: "100" };
@@ -48,7 +47,6 @@ describe("activatePromptTool", () => {
     const targetPrompt = {
       name: "FamilyName",
       category: "Test",
-      suitableForModels: "gpt-4",
       id: "101",
     };
 
