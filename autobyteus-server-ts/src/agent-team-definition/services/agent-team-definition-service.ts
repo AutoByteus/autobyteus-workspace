@@ -11,13 +11,33 @@ type AgentTeamDefinitionProvider = {
   create: (definition: AgentTeamDefinition) => Promise<AgentTeamDefinition>;
   getById: (id: string) => Promise<AgentTeamDefinition | null>;
   getAll: () => Promise<AgentTeamDefinition[]>;
+  getTemplates: () => Promise<AgentTeamDefinition[]>;
   update: (definition: AgentTeamDefinition) => Promise<AgentTeamDefinition>;
   delete: (id: string) => Promise<boolean>;
+  refresh?: () => Promise<void>;
 };
 
 type AgentTeamDefinitionServiceOptions = {
   provider?: AgentTeamDefinitionProvider;
   persistenceProvider?: AgentTeamDefinitionPersistenceProvider;
+};
+
+const normalizeOptionalString = (value: unknown): string | null => {
+  if (typeof value !== "string") {
+    return null;
+  }
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : null;
+};
+
+const assertValidCoordinatorMember = (
+  coordinatorMemberName: string,
+  nodes: Array<{ memberName: string }>,
+): void => {
+  const matches = nodes.some((member) => member.memberName === coordinatorMemberName);
+  if (!matches) {
+    throw new Error("Coordinator member name must match one of nodes.memberName values.");
+  }
 };
 
 export class AgentTeamDefinitionService {
@@ -42,6 +62,9 @@ export class AgentTeamDefinitionService {
     if (definition.id) {
       throw new Error("Cannot create a definition that already has an ID.");
     }
+
+    assertValidCoordinatorMember(definition.coordinatorMemberName, definition.nodes);
+    definition.avatarUrl = normalizeOptionalString(definition.avatarUrl);
     const created = await this.provider.create(definition);
     logger.info(`Agent Team Definition created successfully with ID: ${created.id}`);
     return created;
@@ -55,6 +78,10 @@ export class AgentTeamDefinitionService {
     return this.provider.getAll();
   }
 
+  async getTemplateDefinitions(): Promise<AgentTeamDefinition[]> {
+    return this.provider.getTemplates();
+  }
+
   async updateDefinition(
     definitionId: string,
     updateData: AgentTeamDefinitionUpdate,
@@ -64,23 +91,32 @@ export class AgentTeamDefinitionService {
       throw new Error(`Agent Team Definition with ID ${definitionId} not found.`);
     }
 
-    const updates: Record<string, unknown> = {
-      name: updateData.name,
-      description: updateData.description,
-      role: updateData.role,
-      nodes: updateData.nodes,
-      coordinatorMemberName: updateData.coordinatorMemberName,
-      avatarUrl: updateData.avatarUrl,
-    };
-
-    const updateRecord = existing as unknown as Record<string, unknown>;
-    for (const [key, value] of Object.entries(updates)) {
-      if (value !== null && value !== undefined) {
-        if (key in existing) {
-          updateRecord[key] = value;
-        }
-      }
+    if (updateData.name !== null && updateData.name !== undefined) {
+      existing.name = updateData.name;
     }
+    if (updateData.description !== null && updateData.description !== undefined) {
+      existing.description = updateData.description;
+    }
+    if (updateData.instructions !== null && updateData.instructions !== undefined) {
+      existing.instructions = updateData.instructions;
+    }
+    if (updateData.category !== null && updateData.category !== undefined) {
+      existing.category = updateData.category;
+    }
+    if (updateData.nodes !== null && updateData.nodes !== undefined) {
+      existing.nodes = updateData.nodes;
+    }
+    if (
+      updateData.coordinatorMemberName !== null &&
+      updateData.coordinatorMemberName !== undefined
+    ) {
+      existing.coordinatorMemberName = updateData.coordinatorMemberName;
+    }
+    if (updateData.avatarUrl !== null && updateData.avatarUrl !== undefined) {
+      existing.avatarUrl = normalizeOptionalString(updateData.avatarUrl);
+    }
+
+    assertValidCoordinatorMember(existing.coordinatorMemberName, existing.nodes);
 
     const updated = await this.provider.update(existing);
     logger.info(`Agent Team Definition with ID ${definitionId} updated successfully.`);
@@ -99,5 +135,11 @@ export class AgentTeamDefinitionService {
       logger.warn(`Failed to delete agent team definition with ID ${definitionId}.`);
     }
     return success;
+  }
+
+  async refreshCache(): Promise<void> {
+    if (typeof this.provider.refresh === "function") {
+      await this.provider.refresh();
+    }
   }
 }

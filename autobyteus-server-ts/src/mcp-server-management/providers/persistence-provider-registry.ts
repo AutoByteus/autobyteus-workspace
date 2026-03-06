@@ -13,11 +13,11 @@ export type McpProviderLoader = () => Promise<McpPersistenceProviderContract>;
 const importRuntimeModule = async <T>(modulePath: string): Promise<T> =>
   (await import(modulePath)) as T;
 
-const loadSqlMcpProvider = async (): Promise<McpPersistenceProviderContract> => {
+const loadFileMcpProvider = async (): Promise<McpPersistenceProviderContract> => {
   const module = await importRuntimeModule<{
-    SqlMcpServerConfigProvider: new () => McpPersistenceProviderContract;
-  }>(["./", "sql-provider.js"].join(""));
-  return new module.SqlMcpServerConfigProvider();
+    FileMcpServerConfigProvider: new () => McpPersistenceProviderContract;
+  }>(["./", "file-provider.js"].join(""));
+  return new module.FileMcpServerConfigProvider();
 };
 
 export class McpPersistenceProviderRegistry {
@@ -33,12 +33,11 @@ export class McpPersistenceProviderRegistry {
   private loaders = new Map<string, McpProviderLoader>();
 
   private constructor() {
-    this.registerProviderLoader("sqlite", loadSqlMcpProvider);
-    this.registerProviderLoader("postgresql", loadSqlMcpProvider);
-    this.registerProviderLoader("file", async () => {
-      const { FileMcpServerConfigProvider } = await import("./file-provider.js");
-      return new FileMcpServerConfigProvider();
-    });
+    // File-based persistence is canonical for MCP server configurations.
+    // Keep non-file profile aliases for compatibility while avoiding SQL paths.
+    this.registerProviderLoader("sqlite", loadFileMcpProvider);
+    this.registerProviderLoader("postgresql", loadFileMcpProvider);
+    this.registerProviderLoader("file", loadFileMcpProvider);
   }
 
   registerProviderLoader(name: string, loader: McpProviderLoader): void {

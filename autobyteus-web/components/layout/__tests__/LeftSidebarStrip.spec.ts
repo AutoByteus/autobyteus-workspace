@@ -55,6 +55,7 @@ describe('LeftSidebarStrip Component', () => {
     expect(labels).not.toContain('Applications');
     expect(labels).toContain('Agents');
     expect(labels).toContain('Agent Teams');
+    expect(labels).not.toContain('Prompt Engineering');
   });
 
   it('shows Applications link when feature flag is true', () => {
@@ -71,5 +72,6 @@ describe('LeftSidebarStrip Component', () => {
     const labels = items.map(item => item.attributes('title'));
     
     expect(labels).toContain('Applications');
+    expect(labels).not.toContain('Prompt Engineering');
   });
 });

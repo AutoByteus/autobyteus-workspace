@@ -13,6 +13,8 @@ describe('AppLeftPanel', () => {
     expect(content).toContain("{ path: '/agent-teams', query: { view: 'team-list' } }");
     expect(content).not.toContain("return '/messaging';");
     expect(content).not.toContain("return '/tools';");
+    expect(content).not.toContain('/prompt-engineering');
+    expect(content).not.toContain('Prompt Engineering');
   });
 
   it('renders running-panel event hooks in host component', () => {

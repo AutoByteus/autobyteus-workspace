@@ -81,7 +81,7 @@
                 v-for="node in teamDefinition.nodes"
                 :key="node.memberName"
                 :member-name="node.memberName"
-                :agent-definition-id="node.referenceId"
+                :agent-definition-id="node.ref"
                 :override="config.memberOverrides[node.memberName]"
                 :global-llm-model="config.llmModelIdentifier"
                 :options="groupedModelOptions"
@@ -175,11 +175,6 @@ const sanitizeMemberOverridesForRuntime = () => {
     if (!override || typeof override !== 'object') {
       delete overrides[memberName];
       continue;
-    }
-
-    // Backward-compatible cleanup: ignore legacy per-member runtime overrides.
-    if (override.runtimeKind && override.runtimeKind !== normalizedRuntimeKind) {
-      override.runtimeKind = normalizedRuntimeKind;
     }
 
     if (override.llmModelIdentifier && !modelSet.has(override.llmModelIdentifier)) {

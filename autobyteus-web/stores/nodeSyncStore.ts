@@ -13,14 +13,12 @@ import type {
 import { getApolloClient } from '~/utils/apolloClient';
 
 const DEFAULT_SCOPE: SyncEntityType[] = [
-  'prompt',
   'agent_definition',
   'agent_team_definition',
   'mcp_server_configuration',
 ];
 
 type GraphqlSyncEntityType =
-  | 'PROMPT'
   | 'AGENT_DEFINITION'
   | 'AGENT_TEAM_DEFINITION'
   | 'MCP_SERVER_CONFIGURATION';
@@ -93,8 +91,6 @@ interface GraphqlNodeSyncRunReport {
 
 function mapScopeToGraphql(scope: SyncEntityType): GraphqlSyncEntityType {
   switch (scope) {
-    case 'prompt':
-      return 'PROMPT';
     case 'agent_definition':
       return 'AGENT_DEFINITION';
     case 'agent_team_definition':
@@ -114,8 +110,6 @@ function mapConflictPolicyToGraphql(policy: SyncConflictPolicy): GraphqlSyncConf
 
 function mapScopeFromGraphql(scope: GraphqlSyncEntityType): SyncEntityType {
   switch (scope) {
-    case 'PROMPT':
-      return 'prompt';
     case 'AGENT_DEFINITION':
       return 'agent_definition';
     case 'AGENT_TEAM_DEFINITION':
@@ -311,7 +305,7 @@ export const useNodeSyncStore = defineStore('nodeSyncStore', () => {
     return runNodeSync({
       sourceNodeId: input.sourceNodeId,
       targetNodeIds: input.targetNodeIds,
-      scope: ['prompt', 'agent_definition'],
+      scope: ['agent_definition'],
       selection: {
         agentDefinitionIds: [...input.agentDefinitionIds],
         includeDependencies: input.includeDependencies ?? true,
@@ -332,7 +326,7 @@ export const useNodeSyncStore = defineStore('nodeSyncStore', () => {
     return runNodeSync({
       sourceNodeId: input.sourceNodeId,
       targetNodeIds: input.targetNodeIds,
-      scope: ['prompt', 'agent_definition', 'agent_team_definition'],
+      scope: ['agent_definition', 'agent_team_definition'],
       selection: {
         agentTeamDefinitionIds: [...input.agentTeamDefinitionIds],
         includeDependencies: input.includeDependencies ?? true,

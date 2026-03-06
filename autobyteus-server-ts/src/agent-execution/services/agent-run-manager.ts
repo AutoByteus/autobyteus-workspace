@@ -24,7 +24,7 @@ import { LLMConfig } from "autobyteus-ts/llm/utils/llm-config.js";
 import { AgentDefinition } from "../../agent-definition/domain/models.js";
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import { mergeMandatoryAndOptional } from "../../agent-definition/utils/processor-defaults.js";
-import { PromptLoader, getPromptLoader } from "../../prompt-engineering/utils/prompt-loader.js";
+import { PromptLoader, promptLoader } from "../../agent-definition/utils/prompt-loader.js";
 import { SkillService } from "../../skills/services/skill-service.js";
 import { TempWorkspace } from "../../workspaces/temp-workspace.js";
 import { WorkspaceManager, getWorkspaceManager } from "../../workspaces/workspace-manager.js";
@@ -115,7 +115,7 @@ export class AgentRunManager {
     this.llmFactory = options.llmFactory ?? LLMFactory;
     this.workspaceManager = options.workspaceManager ?? getWorkspaceManager();
     this.skillService = options.skillService ?? SkillService.getInstance();
-    this.promptLoader = options.promptLoader ?? getPromptLoader();
+    this.promptLoader = options.promptLoader ?? promptLoader;
     this.registries = {
       input: options.registries?.input ?? defaultInputProcessorRegistry,
       llmResponse: options.registries?.llmResponse ?? defaultLlmResponseProcessorRegistry,
@@ -191,19 +191,16 @@ export class AgentRunManager {
       );
     }
 
-    const systemPrompt = await this.promptLoader.getPromptTemplateForAgent(
-      agentDefinitionId,
-      llmModelIdentifier,
-    );
+    const systemPrompt = await this.promptLoader.getPromptTemplateForAgent(agentDefinitionId);
 
     const resolvedPrompt = systemPrompt ?? agentDef.description;
     if (!systemPrompt) {
       logger.warn(
-        `No suitable active system prompt found for AgentDefinition ${agentDefinitionId} and model '${llmModelIdentifier}'. Using agent description as fallback.`,
+        `No readable agent.md instructions found for AgentDefinition ${agentDefinitionId}. Using agent description as fallback.`,
       );
     } else {
       logger.info(
-        `Resolved system prompt for AgentDefinition ${agentDefinitionId} and model '${llmModelIdentifier}'.`,
+        `Resolved system prompt from agent.md for AgentDefinition ${agentDefinitionId}.`,
       );
     }
 
@@ -359,7 +356,7 @@ export class AgentRunManager {
       agentName: agentDef.name,
       agentConfig: new AgentConfig(
         agentDef.name,
-        agentDef.role,
+        agentDef.role ?? "",
         agentDef.description,
         llmInstance,
         resolvedPrompt,

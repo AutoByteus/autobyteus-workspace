@@ -46,7 +46,6 @@ describeCodexRuntime("Codex team inter-agent roundtrip e2e (live transport)", ()
   let schema: GraphQLSchema;
   let graphql: typeof graphqlFn;
   let testDataDir: string | null = null;
-  const createdPromptIds = new Set<string>();
   const createdAgentDefinitionIds = new Set<string>();
   const createdTeamDefinitionIds = new Set<string>();
   const createdTeamRunIds = new Set<string>();
@@ -128,18 +127,6 @@ describeCodexRuntime("Codex team inter-agent roundtrip e2e (live transport)", ()
     }
     createdAgentDefinitionIds.clear();
 
-    const deletePromptMutation = `
-      mutation DeletePrompt($id: String!) {
-        deletePrompt(id: $id) {
-          id
-        }
-      }
-    `;
-    for (const id of createdPromptIds) {
-      await exec(deletePromptMutation, { id });
-    }
-    createdPromptIds.clear();
-
     for (const root of createdWorkspaceRoots) {
       await rm(root, { recursive: true, force: true });
     }
@@ -220,16 +207,7 @@ describeCodexRuntime("Codex team inter-agent roundtrip e2e (live transport)", ()
       const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "codex-team-roundtrip-e2e-"));
       createdWorkspaceRoots.add(workspaceRootPath);
 
-      const createPromptMutation = `
-        mutation CreatePrompt($input: CreatePromptInput!) {
-          createPrompt(input: $input) {
-            id
-          }
-        }
-      `;
-      const promptName = `codex_team_roundtrip_prompt_${unique}`;
-      const promptCategory = `codex_team_roundtrip_category_${unique}`;
-      const promptContent = `
+      const teamInstructions = `
 You are participating in a two-agent team roundtrip validation in a team with members "ping" and "pong".
 
 Rules:
@@ -239,15 +217,6 @@ Rules:
 4. If the user asks you to call send_message_to with explicit arguments, call send_message_to exactly once with those exact arguments and do not call any other tool.
 5. Keep assistant text responses very short.
 `;
-
-      const promptResult = await execGraphql<{ createPrompt: { id: string } }>(createPromptMutation, {
-        input: {
-          name: promptName,
-          category: promptCategory,
-          promptContent,
-        },
-      });
-      createdPromptIds.add(promptResult.createPrompt.id);
 
       const createAgentDefinitionMutation = `
         mutation CreateAgentDefinition($input: CreateAgentDefinitionInput!) {
@@ -263,8 +232,7 @@ Rules:
             name: `codex-ping-${unique}`,
             role: "assistant",
             description: "Codex ping agent for live inter-agent roundtrip validation.",
-            systemPromptCategory: promptCategory,
-            systemPromptName: promptName,
+            instructions: teamInstructions,
           },
         },
       );
@@ -275,8 +243,7 @@ Rules:
             name: `codex-pong-${unique}`,
             role: "assistant",
             description: "Codex pong agent for live inter-agent roundtrip validation.",
-            systemPromptCategory: promptCategory,
-            systemPromptName: promptName,
+            instructions: teamInstructions,
           },
         },
       );
@@ -298,17 +265,18 @@ Rules:
           input: {
             name: `codex-roundtrip-team-${unique}`,
             description: "Live codex inter-agent roundtrip validation team.",
+            instructions: "Coordinate ping and pong to execute directed send_message_to hops.",
             coordinatorMemberName: "ping",
             nodes: [
               {
                 memberName: "ping",
-                referenceId: pingAgentDefinitionId,
-                referenceType: "AGENT",
+                ref: pingAgentDefinitionId,
+                refType: "AGENT",
               },
               {
                 memberName: "pong",
-                referenceId: pongAgentDefinitionId,
-                referenceType: "AGENT",
+                ref: pongAgentDefinitionId,
+                refType: "AGENT",
               },
             ],
           },
@@ -584,24 +552,6 @@ Rules:
       const workspaceId = createWorkspaceResult.createWorkspace.workspaceId;
       expect(workspaceId).toBeTruthy();
 
-      const createPromptMutation = `
-        mutation CreatePrompt($input: CreatePromptInput!) {
-          createPrompt(input: $input) {
-            id
-          }
-        }
-      `;
-      const promptName = `codex_team_workspace_prompt_${unique}`;
-      const promptCategory = `codex_team_workspace_category_${unique}`;
-      const promptResult = await execGraphql<{ createPrompt: { id: string } }>(createPromptMutation, {
-        input: {
-          name: promptName,
-          category: promptCategory,
-          promptContent: "Reply concisely in one sentence.",
-        },
-      });
-      createdPromptIds.add(promptResult.createPrompt.id);
-
       const createAgentDefinitionMutation = `
         mutation CreateAgentDefinition($input: CreateAgentDefinitionInput!) {
           createAgentDefinition(input: $input) {
@@ -616,8 +566,7 @@ Rules:
             name: `codex-professor-${unique}`,
             role: "assistant",
             description: "Codex team workspace lifecycle professor agent.",
-            systemPromptCategory: promptCategory,
-            systemPromptName: promptName,
+            instructions: "Reply concisely in one sentence.",
           },
         },
       );
@@ -637,12 +586,13 @@ Rules:
           input: {
             name: `codex-workspace-team-${unique}`,
             description: "Codex workspace lifecycle validation team.",
+            instructions: "Coordinate workspace lifecycle checks.",
             coordinatorMemberName: "professor",
             nodes: [
               {
                 memberName: "professor",
-                referenceId: professorAgentDefinitionId,
-                referenceType: "AGENT",
+                ref: professorAgentDefinitionId,
+                refType: "AGENT",
               },
             ],
           },

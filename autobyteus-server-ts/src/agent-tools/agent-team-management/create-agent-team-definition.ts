@@ -1,7 +1,6 @@
 import { tool, ParameterSchema, ParameterDefinition, ParameterType, BaseTool } from "autobyteus-ts";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
 import { AgentTeamDefinition, TeamMember } from "../../agent-team-definition/domain/models.js";
-import { NodeType } from "../../agent-team-definition/domain/enums.js";
 import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 
 const DESCRIPTION =
@@ -26,10 +25,17 @@ argumentSchema.addParameter(
 );
 argumentSchema.addParameter(
   new ParameterDefinition({
+    name: "instructions",
+    type: ParameterType.STRING,
+    description: "Team coordinator instructions.",
+    required: true,
+  }),
+);
+argumentSchema.addParameter(
+  new ParameterDefinition({
     name: "nodes",
     type: ParameterType.STRING,
-    description:
-      "A JSON string representing the list of team members (member_name, reference_id, reference_type).",
+    description: "A JSON string representing team members (member_name, ref, ref_type).",
     required: true,
   }),
 );
@@ -43,9 +49,9 @@ argumentSchema.addParameter(
 );
 argumentSchema.addParameter(
   new ParameterDefinition({
-    name: "role",
+    name: "category",
     type: ParameterType.STRING,
-    description: "The role of this team if it's nested inside another team.",
+    description: "Optional category label for this team.",
     required: false,
   }),
 );
@@ -64,8 +70,27 @@ const logger = {
 };
 
 type AgentContextLike = {
-  // Core boundary from autobyteus-ts runtime; normalize immediately to `agentRunId` in local code.
   agentId?: string;
+};
+
+const toRefType = (value: unknown): "agent" | "agent_team" | null => {
+  if (typeof value !== "string") {
+    return null;
+  }
+  if (value === "AGENT") {
+    return "agent";
+  }
+  if (value === "AGENT_TEAM") {
+    return "agent_team";
+  }
+  const normalized = value.trim().toLowerCase();
+  if (normalized === "agent") {
+    return "agent";
+  }
+  if (normalized === "agent_team" || normalized === "agentteam") {
+    return "agent_team";
+  }
+  return null;
 };
 
 const parseTeamMembers = (nodes: string): TeamMember[] => {
@@ -76,28 +101,22 @@ const parseTeamMembers = (nodes: string): TeamMember[] => {
 
   return parsed.map((node) => {
     const memberName = node.member_name as string | undefined;
-    const referenceId = node.reference_id as string | undefined;
-    const referenceTypeRaw = node.reference_type as string | undefined;
+    const ref = node.ref as string | undefined;
+    const refTypeRaw = node.ref_type as string | undefined;
 
-    if (!memberName || !referenceId || !referenceTypeRaw) {
-      throw new Error("Each node must include member_name, reference_id, and reference_type.");
+    if (!memberName || !ref || !refTypeRaw) {
+      throw new Error("Each node must include member_name, ref, and ref_type.");
     }
 
-    const referenceType =
-      referenceTypeRaw === NodeType.AGENT
-        ? NodeType.AGENT
-        : referenceTypeRaw === NodeType.AGENT_TEAM
-          ? NodeType.AGENT_TEAM
-          : null;
-
-    if (!referenceType) {
-      throw new Error("reference_type must be 'AGENT' or 'AGENT_TEAM'.");
+    const refType = toRefType(refTypeRaw);
+    if (!refType) {
+      throw new Error("ref_type must be 'agent' or 'agent_team'.");
     }
 
     return new TeamMember({
       memberName,
-      referenceId,
-      referenceType,
+      ref,
+      refType,
     });
   });
 };
@@ -106,9 +125,10 @@ export async function createAgentTeamDefinition(
   context: AgentContextLike,
   name: string,
   description: string,
+  instructions: string,
   nodes: string,
   coordinator_member_name: string,
-  role?: string | null,
+  category?: string | null,
   avatar_url?: string | null,
 ): Promise<string> {
   const agentRunId = context?.agentId ?? "unknown";
@@ -121,7 +141,8 @@ export async function createAgentTeamDefinition(
     const definition = new AgentTeamDefinition({
       name,
       description,
-      role: role ?? null,
+      instructions,
+      category: category ?? undefined,
       avatarUrl: avatar_url ?? null,
       nodes: teamMembers,
       coordinatorMemberName: coordinator_member_name,
@@ -139,7 +160,7 @@ export async function createAgentTeamDefinition(
     if (
       error instanceof SyntaxError ||
       message.includes("member_name") ||
-      message.includes("reference_type")
+      message.includes("ref_type")
     ) {
       logger.error(`Error creating agent team definition '${name}' due to invalid input: ${message}`);
       throw new Error(`Invalid input for agent team definition: ${message}`);

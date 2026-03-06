@@ -55,7 +55,7 @@
               <div class="min-w-0">
                 <h1 class="truncate text-3xl font-semibold text-slate-900">{{ teamDef.name }}</h1>
                 <div class="mt-1 flex flex-wrap items-center gap-2">
-                  <span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">{{ teamDef.role || 'No role specified' }}</span>
+                  <span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">{{ teamDef.category || 'Uncategorized' }}</span>
                 </div>
                 <p class="mt-2 text-sm text-slate-600">{{ teamDef.description || 'No description provided.' }}</p>
 
@@ -107,6 +107,11 @@
         </section>
 
         <section class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+          <h2 class="text-lg font-semibold text-slate-900">Instructions</h2>
+          <p class="mt-2 whitespace-pre-wrap font-mono text-sm text-slate-700">{{ teamDef.instructions }}</p>
+        </section>
+
+        <section class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
           <h2 class="text-xl font-semibold text-slate-900">Members ({{ teamDef.nodes.length }})</h2>
           <div class="mt-4 grid grid-cols-1 gap-3 lg:grid-cols-2">
             <article
@@ -117,7 +122,7 @@
               <div class="flex items-start justify-between gap-3">
                 <div class="flex min-w-0 items-start gap-3">
                   <div class="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full text-xs font-semibold"
-                    :class="node.referenceType === 'AGENT' ? 'bg-blue-100 text-blue-700' : 'bg-violet-100 text-violet-700'"
+                    :class="node.refType === 'AGENT' ? 'bg-blue-100 text-blue-700' : 'bg-violet-100 text-violet-700'"
                   >
                     <img
                       v-if="showMemberAvatarImage(node)"
@@ -130,15 +135,15 @@
                   </div>
                   <div class="min-w-0">
                     <p class="truncate text-sm font-semibold text-slate-900">{{ node.memberName }}</p>
-                    <p class="truncate text-xs text-slate-500">Blueprint: {{ getBlueprintName(node.referenceType, node.referenceId) }}</p>
+                    <p class="truncate text-xs text-slate-500">Blueprint: {{ getBlueprintName(node.refType, node.ref) }}</p>
                   </div>
                 </div>
 
                 <div class="flex shrink-0 items-center gap-1">
                   <span class="rounded-full px-2 py-0.5 text-[10px] font-semibold"
-                    :class="node.referenceType === 'AGENT' ? 'bg-blue-50 text-blue-700' : 'bg-violet-50 text-violet-700'"
+                    :class="node.refType === 'AGENT' ? 'bg-blue-50 text-blue-700' : 'bg-violet-50 text-violet-700'"
                   >
-                    {{ node.referenceType === 'AGENT' ? 'AGENT' : 'TEAM' }}
+                    {{ node.refType === 'AGENT' ? 'AGENT' : 'TEAM' }}
                   </span>
                   <span
                     v-if="node.memberName === teamDef.coordinatorMemberName"
@@ -229,8 +234,8 @@ const teamInitials = computed(() => {
   return parts.map((part) => part[0]?.toUpperCase() ?? '').join('') || 'AT';
 });
 
-const nestedTeamCount = computed(() => teamDef.value?.nodes.filter((node) => node.referenceType === 'AGENT_TEAM').length || 0);
-const agentCount = computed(() => teamDef.value?.nodes.filter((node) => node.referenceType === 'AGENT').length || 0);
+const nestedTeamCount = computed(() => teamDef.value?.nodes.filter((node) => node.refType === 'AGENT_TEAM').length || 0);
+const agentCount = computed(() => teamDef.value?.nodes.filter((node) => node.refType === 'AGENT').length || 0);
 
 onMounted(async () => {
   loading.value = true;
@@ -254,13 +259,13 @@ const memberInitials = (memberName: string): string => {
 };
 
 const getMemberAvatarErrorKey = (node: TeamMemberNode): string =>
-  `${node.referenceType}:${node.referenceId}:${node.memberName}`;
+  `${node.refType}:${node.ref}:${node.memberName}`;
 
 const getMemberAvatarUrl = (node: TeamMemberNode): string => {
-  if (node.referenceType === 'AGENT') {
-    return (agentDefStore.getAgentDefinitionById(node.referenceId)?.avatarUrl || '').trim();
+  if (node.refType === 'AGENT') {
+    return (agentDefStore.getAgentDefinitionById(node.ref)?.avatarUrl || '').trim();
   }
-  return (teamStore.getAgentTeamDefinitionById(node.referenceId)?.avatarUrl || '').trim();
+  return (teamStore.getAgentTeamDefinitionById(node.ref)?.avatarUrl || '').trim();
 };
 
 const showMemberAvatarImage = (node: TeamMemberNode): boolean => {

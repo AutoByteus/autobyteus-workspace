@@ -313,6 +313,34 @@ export class AppConfig {
     return tempWorkspaceDir;
   }
 
+  getAgentsDir(): string {
+    const agentsDir = path.join(this.dataDir, "agents");
+    fs.mkdirSync(agentsDir, { recursive: true });
+    return agentsDir;
+  }
+
+  getAgentTeamsDir(): string {
+    const teamsDir = path.join(this.dataDir, "agent-teams");
+    fs.mkdirSync(teamsDir, { recursive: true });
+    return teamsDir;
+  }
+
+  getAgentMdPath(agentId: string): string {
+    return path.join(this.getAgentsDir(), agentId, "agent.md");
+  }
+
+  getAgentConfigPath(agentId: string): string {
+    return path.join(this.getAgentsDir(), agentId, "agent-config.json");
+  }
+
+  getTeamMdPath(teamId: string): string {
+    return path.join(this.getAgentTeamsDir(), teamId, "team.md");
+  }
+
+  getTeamConfigPath(teamId: string): string {
+    return path.join(this.getAgentTeamsDir(), teamId, "team-config.json");
+  }
+
   getAdditionalSkillsDirs(): string[] {
     const raw = this.get("AUTOBYTEUS_SKILLS_PATHS", "");
     if (!raw || !raw.trim()) {
@@ -333,6 +361,38 @@ export class AppConfig {
     }
 
     return paths;
+  }
+
+  getAdditionalDefinitionSourceRoots(): string[] {
+    const raw = this.get("AUTOBYTEUS_DEFINITION_SOURCE_PATHS", "");
+    if (!raw || !raw.trim()) {
+      return [];
+    }
+
+    const seen = new Set<string>();
+    const roots: string[] = [];
+    for (const rawPath of raw.split(",")) {
+      const trimmed = rawPath.trim();
+      if (!trimmed) {
+        continue;
+      }
+      if (!path.isAbsolute(trimmed)) {
+        logger.warn(`Definition source path must be absolute and will be ignored: ${trimmed}`);
+        continue;
+      }
+      const resolved = path.resolve(trimmed);
+      if (seen.has(resolved)) {
+        continue;
+      }
+      if (!fs.existsSync(resolved) || !fs.statSync(resolved).isDirectory()) {
+        logger.warn(`Definition source path does not exist or is not a directory: ${resolved}`);
+        continue;
+      }
+      seen.add(resolved);
+      roots.push(resolved);
+    }
+
+    return roots;
   }
 
   getChannelCallbackBaseUrl(): string | null {

@@ -32,14 +32,15 @@ async function mountComponent(options?: { memberAvatarUrl?: string | null }) {
       id: 'team-1',
       name: 'SuperTeam',
       description: 'A team with one coordinator',
-      role: 'Coordinator team',
+      instructions: 'Coordinate tasks among members.',
+      category: 'coordination',
       avatarUrl: null,
       coordinatorMemberName: 'superagent',
       nodes: [
         {
           memberName: 'superagent',
-          referenceId: 'agent-1',
-          referenceType: 'AGENT',
+          ref: 'agent-1',
+          refType: 'AGENT',
         },
       ],
     },
@@ -52,6 +53,8 @@ async function mountComponent(options?: { memberAvatarUrl?: string | null }) {
       name: 'SuperAgent',
       role: 'Coordinator',
       description: 'Lead coordinator',
+      instructions: 'Lead and delegate work.',
+      category: 'coordination',
       avatarUrl: options?.memberAvatarUrl ?? null,
       toolNames: [],
       inputProcessorNames: [],
@@ -61,7 +64,6 @@ async function mountComponent(options?: { memberAvatarUrl?: string | null }) {
       toolInvocationPreprocessorNames: [],
       lifecycleProcessorNames: [],
       skillNames: [],
-      prompts: [],
     },
   ] as any;
 

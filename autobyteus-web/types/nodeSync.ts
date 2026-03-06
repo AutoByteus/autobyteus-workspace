@@ -1,5 +1,4 @@
 export type SyncEntityType =
-  | 'prompt'
   | 'agent_definition'
   | 'agent_team_definition'
   | 'mcp_server_configuration';

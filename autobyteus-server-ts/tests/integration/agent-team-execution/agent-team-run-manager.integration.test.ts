@@ -6,7 +6,6 @@ import {
   TeamMemberConfigInput,
 } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
 import { AgentTeamDefinition, TeamMember } from "../../../src/agent-team-definition/domain/models.js";
-import { NodeType } from "../../../src/agent-team-definition/domain/enums.js";
 import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
 import { AgentTeamCreationError, AgentTeamTerminationError } from "../../../src/agent-team-execution/errors.js";
 
@@ -128,12 +127,14 @@ describe("AgentTeamRunManager integration", () => {
       name: "CoordinatorBlueprint",
       role: "Coord",
       description: "...",
+      instructions: "Coordinate work.",
     });
     const workerAgentDef = new AgentDefinition({
       id: "2",
       name: "WorkerBlueprint",
       role: "Worker",
       description: "...",
+      instructions: "Execute tasks.",
     });
 
     agentDefinitionService.getAgentDefinitionById.mockImplementation(async (id: string) => {
@@ -146,16 +147,17 @@ describe("AgentTeamRunManager integration", () => {
       id: "main1",
       name: "MainTeam",
       description: "...",
+      instructions: "Coordinate members.",
       nodes: [
         new TeamMember({
           memberName: "TheCoordinator",
-          referenceId: "1",
-          referenceType: NodeType.AGENT,
+          ref: "1",
+          refType: "agent",
         }),
         new TeamMember({
           memberName: "TheWorker",
-          referenceId: "2",
-          referenceType: NodeType.AGENT,
+          ref: "2",
+          refType: "agent",
         }),
       ],
       coordinatorMemberName: "TheCoordinator",
@@ -206,11 +208,12 @@ describe("AgentTeamRunManager integration", () => {
       id: "main1",
       name: "MainTeam",
       description: "...",
+      instructions: "Coordinate members.",
       nodes: [
         new TeamMember({
           memberName: "AgentOne",
-          referenceId: "1",
-          referenceType: NodeType.AGENT,
+          ref: "1",
+          refType: "agent",
         }),
       ],
       coordinatorMemberName: "AgentOne",
@@ -223,6 +226,7 @@ describe("AgentTeamRunManager integration", () => {
         name: "A",
         role: "B",
         description: "C",
+        instructions: "Do work.",
       }),
     );
 
@@ -238,11 +242,12 @@ describe("AgentTeamRunManager integration", () => {
       id: "A",
       name: "TeamA",
       description: "...",
+      instructions: "Coordinate TeamA.",
       nodes: [
         new TeamMember({
           memberName: "SubTeamB",
-          referenceId: "B",
-          referenceType: NodeType.AGENT_TEAM,
+          ref: "B",
+          refType: "agent_team",
         }),
       ],
       coordinatorMemberName: "SubTeamB",
@@ -252,11 +257,12 @@ describe("AgentTeamRunManager integration", () => {
       id: "B",
       name: "TeamB",
       description: "...",
+      instructions: "Coordinate TeamB.",
       nodes: [
         new TeamMember({
           memberName: "SubTeamA",
-          referenceId: "A",
-          referenceType: NodeType.AGENT_TEAM,
+          ref: "A",
+          refType: "agent_team",
         }),
       ],
       coordinatorMemberName: "SubTeamA",
@@ -281,17 +287,19 @@ describe("AgentTeamRunManager integration", () => {
       name: "SubCoordinator",
       role: "Sub",
       description: "...",
+      instructions: "Coordinate sub team.",
     });
 
     const subTeamDef = new AgentTeamDefinition({
       id: "sub1",
       name: "SubTeam",
       description: "...",
+      instructions: "Sub team instructions.",
       nodes: [
         new TeamMember({
           memberName: "SubCoordinator",
-          referenceId: "sub_agent_1",
-          referenceType: NodeType.AGENT,
+          ref: "sub_agent_1",
+          refType: "agent",
         }),
       ],
       coordinatorMemberName: "SubCoordinator",
@@ -301,11 +309,12 @@ describe("AgentTeamRunManager integration", () => {
       id: "main1",
       name: "MainTeam",
       description: "...",
+      instructions: "Main team instructions.",
       nodes: [
         new TeamMember({
           memberName: "MySubTeam",
-          referenceId: "sub1",
-          referenceType: NodeType.AGENT_TEAM,
+          ref: "sub1",
+          refType: "agent_team",
         }),
       ],
       coordinatorMemberName: "MySubTeam",
@@ -365,6 +374,7 @@ describe("AgentTeamRunManager integration", () => {
       name: "Coordinator",
       role: "Coord",
       description: "...",
+      instructions: "Coordinate team.",
     });
     agentDefinitionService.getAgentDefinitionById.mockResolvedValue(coordinator);
 
@@ -372,11 +382,12 @@ describe("AgentTeamRunManager integration", () => {
       id: "team_def",
       name: "PreferredIdTeam",
       description: "...",
+      instructions: "Preferred team instructions.",
       nodes: [
         new TeamMember({
           memberName: "TheCoordinator",
-          referenceId: "1",
-          referenceType: NodeType.AGENT,
+          ref: "1",
+          refType: "agent",
         }),
       ],
       coordinatorMemberName: "TheCoordinator",
@@ -409,6 +420,7 @@ describe("AgentTeamRunManager integration", () => {
         name: "TestAgent",
         role: "Worker",
         description: "...",
+        instructions: "Handle tasks.",
       }),
     );
 
@@ -416,11 +428,12 @@ describe("AgentTeamRunManager integration", () => {
       id: "main1",
       name: "MainTeam",
       description: "...",
+      instructions: "Coordinate members.",
       nodes: [
         new TeamMember({
           memberName: "TheAgent",
-          referenceId: "1",
-          referenceType: NodeType.AGENT,
+          ref: "1",
+          refType: "agent",
         }),
       ],
       coordinatorMemberName: "TheAgent",

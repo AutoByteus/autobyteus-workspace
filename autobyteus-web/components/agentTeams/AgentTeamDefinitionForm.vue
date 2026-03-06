@@ -78,13 +78,25 @@
         </div>
 
         <div class="mt-3">
-          <label for="team-role" class="block text-sm font-medium text-slate-700">Team Role</label>
+          <label for="team-category" class="block text-sm font-medium text-slate-700">Category</label>
           <input
-            id="team-role"
-            v-model="formData.role"
+            id="team-category"
+            v-model="formData.category"
             type="text"
             class="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-            placeholder="e.g., End-to-end content generation"
+            placeholder="e.g., software-engineering"
+          />
+        </div>
+
+        <div class="mt-3">
+          <label for="team-instructions" class="block text-sm font-medium text-slate-700">Instructions</label>
+          <textarea
+            id="team-instructions"
+            v-model="formData.instructions"
+            rows="8"
+            class="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 font-mono text-sm text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+            placeholder="Enter the team coordinator's instructions..."
+            required
           />
         </div>
       </section>
@@ -183,7 +195,7 @@
               class="rounded-md border p-3"
               :class="[
                 selectedNodeIndex === index ? 'border-blue-300 bg-blue-50/40' : 'border-slate-200 bg-white',
-                node.referenceType === 'AGENT' ? 'shadow-sm' : '',
+                node.refType === 'AGENT' ? 'shadow-sm' : '',
               ]"
               @click="selectNode(index)"
             >
@@ -196,13 +208,13 @@
                 <div class="flex shrink-0 items-center gap-2">
                   <span
                     class="rounded-full px-2 py-0.5 text-[10px] font-semibold"
-                    :class="node.referenceType === 'AGENT' ? 'bg-blue-50 text-blue-700' : 'bg-violet-50 text-violet-700'"
+                    :class="node.refType === 'AGENT' ? 'bg-blue-50 text-blue-700' : 'bg-violet-50 text-violet-700'"
                   >
-                    {{ node.referenceType === 'AGENT' ? 'AGENT' : 'TEAM' }}
+                    {{ node.refType === 'AGENT' ? 'AGENT' : 'TEAM' }}
                   </span>
 
                   <div
-                    v-if="node.referenceType === 'AGENT'"
+                    v-if="node.refType === 'AGENT'"
                     class="inline-flex items-center gap-2 text-xs text-slate-600"
                     @click.stop
                   >
@@ -265,7 +277,7 @@
 
               <div>
                 <p class="text-xs font-medium text-slate-600">Type</p>
-                <p class="mt-1 text-sm text-slate-900">{{ selectedNode.referenceType }}</p>
+                <p class="mt-1 text-sm text-slate-900">{{ selectedNode.refType }}</p>
               </div>
 
               <div>
@@ -275,7 +287,7 @@
 
               <div>
                 <p class="text-xs font-medium text-slate-600">Coordinator</p>
-                <div class="mt-1 inline-flex items-center gap-2 text-sm text-slate-800" v-if="selectedNode.referenceType === 'AGENT'">
+                <div class="mt-1 inline-flex items-center gap-2 text-sm text-slate-800" v-if="selectedNode.refType === 'AGENT'">
                   <span>{{ isCoordinator(selectedNode) ? 'Enabled' : 'Disabled' }}</span>
                   <button
                     type="button"
@@ -345,7 +357,7 @@ type ReferenceType = 'AGENT' | 'AGENT_TEAM';
 interface LibraryItem {
   id: string;
   name: string;
-  referenceType: ReferenceType;
+  refType: ReferenceType;
 }
 
 const props = defineProps<{
@@ -373,8 +385,9 @@ const formErrors = reactive<Record<string, string>>({});
 
 const getInitialFormData = () => ({
   name: '',
-  role: '',
+  category: '',
   description: '',
+  instructions: '',
   avatarUrl: '',
   coordinatorMemberName: '',
   nodes: [] as TeamMemberInput[],
@@ -404,7 +417,7 @@ const agentLibraryItems = computed<LibraryItem[]>(() =>
   (agentDefStore.agentDefinitions || []).map((agent) => ({
     id: agent.id,
     name: agent.name,
-    referenceType: 'AGENT',
+    refType: 'AGENT',
   })),
 );
 
@@ -414,7 +427,7 @@ const teamLibraryItems = computed<LibraryItem[]>(() =>
     .map((team) => ({
       id: team.id,
       name: team.name,
-      referenceType: 'AGENT_TEAM',
+      refType: 'AGENT_TEAM',
     })),
 );
 
@@ -443,23 +456,30 @@ const selectedNode = computed(() => {
 
 const nameValid = computed(() => Boolean(formData.name.trim()));
 const descriptionValid = computed(() => Boolean(formData.description.trim()));
+const instructionsValid = computed(() => Boolean(formData.instructions.trim()));
 const membersValid = computed(() => formData.nodes.length > 0);
 const coordinatorValid = computed(() => {
   if (!formData.coordinatorMemberName) {
     return false;
   }
   return formData.nodes.some(
-    (node) => node.referenceType === 'AGENT' && node.memberName === formData.coordinatorMemberName,
+    (node) => node.refType === 'AGENT' && node.memberName === formData.coordinatorMemberName,
   );
 });
 
-const canSubmit = computed(() => nameValid.value && descriptionValid.value && membersValid.value && coordinatorValid.value);
+const canSubmit = computed(() => (
+  nameValid.value
+  && descriptionValid.value
+  && instructionsValid.value
+  && membersValid.value
+  && coordinatorValid.value
+));
 
 const getReferenceName = (node: TeamMemberInput): string => {
-  if (node.referenceType === 'AGENT') {
-    return agentDefStore.getAgentDefinitionById(node.referenceId)?.name || node.referenceId;
+  if (node.refType === 'AGENT') {
+    return agentDefStore.getAgentDefinitionById(node.ref)?.name || node.ref;
   }
-  return agentTeamDefStore.getAgentTeamDefinitionById(node.referenceId)?.name || node.referenceId;
+  return agentTeamDefStore.getAgentTeamDefinitionById(node.ref)?.name || node.ref;
 };
 
 const buildMemberBaseName = (rawName: string): string => {
@@ -491,14 +511,14 @@ const buildUniqueMemberName = (rawName: string): string => {
 const addNodeFromLibrary = (item: LibraryItem) => {
   const newNode: TeamMemberInput = {
     memberName: buildUniqueMemberName(item.name),
-    referenceType: item.referenceType,
-    referenceId: item.id,
+    refType: item.refType,
+    ref: item.id,
   };
 
   formData.nodes.push(newNode);
   selectedNodeIndex.value = formData.nodes.length - 1;
 
-  if (!formData.coordinatorMemberName && newNode.referenceType === 'AGENT') {
+  if (!formData.coordinatorMemberName && newNode.refType === 'AGENT') {
     formData.coordinatorMemberName = newNode.memberName;
   }
 };
@@ -520,7 +540,7 @@ const handleCanvasDrop = (event: DragEvent) => {
 
   try {
     const item = JSON.parse(payload) as LibraryItem;
-    if (!item?.id || !item?.name || !item?.referenceType) {
+    if (!item?.id || !item?.name || !item?.refType) {
       return;
     }
     addNodeFromLibrary(item);
@@ -556,7 +576,7 @@ const removeNode = (index: number) => {
 const isCoordinator = (node: TeamMemberInput) => formData.coordinatorMemberName === node.memberName;
 
 const toggleCoordinator = (node: TeamMemberInput) => {
-  if (node.referenceType !== 'AGENT') {
+  if (node.refType !== 'AGENT') {
     return;
   }
   formData.coordinatorMemberName = isCoordinator(node) ? '' : node.memberName;
@@ -601,7 +621,7 @@ const validateForm = () => {
       valid = false;
       break;
     }
-    if (!node.referenceId) {
+    if (!node.ref) {
       formErrors.nodes = 'Each member needs a source reference.';
       valid = false;
       break;
@@ -615,8 +635,8 @@ const validateForm = () => {
 
     if (
       currentTeamDefinitionId.value &&
-      node.referenceType === 'AGENT_TEAM' &&
-      node.referenceId === currentTeamDefinitionId.value
+      node.refType === 'AGENT_TEAM' &&
+      node.ref === currentTeamDefinitionId.value
     ) {
       formErrors.nodes = 'A team cannot include itself as a nested team member.';
       valid = false;
@@ -629,7 +649,7 @@ const validateForm = () => {
     valid = false;
   } else {
     const coordinatorExists = formData.nodes.some(
-      (node) => node.referenceType === 'AGENT' && node.memberName === formData.coordinatorMemberName,
+      (node) => node.refType === 'AGENT' && node.memberName === formData.coordinatorMemberName,
     );
     if (!coordinatorExists) {
       formErrors.coordinatorMemberName = 'Coordinator must be one of the AGENT members.';
@@ -674,13 +694,14 @@ const handleSubmit = () => {
 
   const payload = {
     name: formData.name.trim(),
-    role: formData.role.trim(),
+    category: formData.category.trim() || undefined,
     description: formData.description.trim(),
+    instructions: formData.instructions.trim(),
     coordinatorMemberName: formData.coordinatorMemberName,
     nodes: formData.nodes.map((node) => ({
       memberName: node.memberName.trim(),
-      referenceType: node.referenceType,
-      referenceId: node.referenceId,
+      refType: node.refType,
+      ref: node.ref,
     })),
     avatarUrl: formData.avatarUrl,
   };
@@ -696,11 +717,16 @@ watch(
 
     if (newData) {
       formData.name = newData.name || '';
-      formData.role = newData.role || '';
+      formData.category = newData.category || '';
       formData.description = newData.description || '';
+      formData.instructions = newData.instructions || '';
       formData.coordinatorMemberName = newData.coordinatorMemberName || '';
       formData.avatarUrl = newData.avatarUrl || newData.avatar_url || '';
-      formData.nodes = JSON.parse(JSON.stringify(newData.nodes || []));
+      formData.nodes = (newData.nodes || []).map((node: any) => ({
+        memberName: node.memberName,
+        refType: node.refType,
+        ref: node.ref,
+      }));
       selectedNodeIndex.value = formData.nodes.length > 0 ? 0 : null;
     } else {
       selectedNodeIndex.value = null;

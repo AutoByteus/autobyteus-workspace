@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { registerCreateAgentTeamDefinitionTool } from "../../../../src/agent-tools/agent-team-management/create-agent-team-definition.js";
 import { AgentTeamDefinition } from "../../../../src/agent-team-definition/domain/models.js";
-import { NodeType } from "../../../../src/agent-team-definition/domain/enums.js";
 
 const mockService = {
   createDefinition: vi.fn(),
@@ -28,8 +27,8 @@ describe("createAgentTeamDefinitionTool", () => {
     const nodesJson = JSON.stringify([
       {
         member_name: "coder",
-        reference_id: "1",
-        reference_type: "AGENT",
+        ref: "1",
+        ref_type: "agent",
       },
     ]);
 
@@ -39,9 +38,10 @@ describe("createAgentTeamDefinitionTool", () => {
       {
         name: "TestTeam",
         description: "A team for testing",
+        instructions: "Coordinate team members for tests.",
         nodes: nodesJson,
         coordinator_member_name: "coder",
-        role: "TestRole",
+        category: "TestCategory",
       },
     );
 
@@ -50,7 +50,7 @@ describe("createAgentTeamDefinitionTool", () => {
     expect(createdDef.name).toBe("TestTeam");
     expect(createdDef.nodes).toHaveLength(1);
     expect(createdDef.nodes[0].memberName).toBe("coder");
-    expect(createdDef.nodes[0].referenceType).toBe(NodeType.AGENT);
+    expect(createdDef.nodes[0].refType).toBe("agent");
     expect(result).toContain("created successfully");
     expect(result).toContain("456");
   });
@@ -63,6 +63,7 @@ describe("createAgentTeamDefinitionTool", () => {
         {
           name: "TestTeam",
           description: "A team",
+          instructions: "Coordinate team members for tests.",
           nodes: "this is not json",
           coordinator_member_name: "coder",
         },

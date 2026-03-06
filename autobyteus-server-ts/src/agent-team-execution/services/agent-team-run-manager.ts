@@ -23,9 +23,8 @@ import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.
 import { LLMConfig } from "autobyteus-ts/llm/utils/llm-config.js";
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import { mergeMandatoryAndOptional } from "../../agent-definition/utils/processor-defaults.js";
-import { NodeType } from "../../agent-team-definition/domain/enums.js";
 import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
-import { PromptLoader, getPromptLoader } from "../../prompt-engineering/utils/prompt-loader.js";
+import { PromptLoader, promptLoader } from "../../agent-definition/utils/prompt-loader.js";
 import { normalizeMemberRouteKey } from "../../run-history/utils/team-member-run-id.js";
 import { SkillService } from "../../skills/services/skill-service.js";
 import { TempWorkspace } from "../../workspaces/temp-workspace.js";
@@ -120,7 +119,7 @@ export class AgentTeamRunManager {
     this.llmFactory = options.llmFactory ?? LLMFactory;
     this.workspaceManager = options.workspaceManager ?? getWorkspaceManager();
     this.skillService = options.skillService ?? SkillService.getInstance();
-    this.promptLoader = options.promptLoader ?? getPromptLoader();
+    this.promptLoader = options.promptLoader ?? promptLoader;
     this.registries = {
       input: options.registries?.input ?? defaultInputProcessorRegistry,
       llmResponse: options.registries?.llmResponse ?? defaultLlmResponseProcessorRegistry,
@@ -230,10 +229,7 @@ export class AgentTeamRunManager {
       throw new Error(`AgentDefinition with ID ${agentDefinitionId} not found.`);
     }
 
-    const systemPrompt = await this.promptLoader.getPromptTemplateForAgent(
-      agentDefinitionId,
-      memberConfig.llmModelIdentifier,
-    );
+    const systemPrompt = await this.promptLoader.getPromptTemplateForAgent(agentDefinitionId);
     const resolvedPrompt = systemPrompt ?? agentDef.description;
 
     const tools = [];
@@ -397,7 +393,7 @@ export class AgentTeamRunManager {
 
     return new AgentConfig(
       memberName,
-      agentDef.role,
+      agentDef.role ?? "",
       agentDef.description,
       llmInstance,
       resolvedPrompt,
@@ -435,7 +431,7 @@ export class AgentTeamRunManager {
 
     const hydratedConfigs: Record<string, AgentConfig | AgentTeamConfig> = {};
     for (const member of teamDef.nodes) {
-      if (member.referenceType === NodeType.AGENT) {
+      if (member.refType === "agent") {
         const memberConfig =
           memberConfigsMap[member.memberName] ??
           memberConfigsMap[normalizeMemberRouteKey(member.memberName)];
@@ -446,12 +442,12 @@ export class AgentTeamRunManager {
         }
         hydratedConfigs[member.memberName] = await this.buildAgentConfigFromDefinition(
           member.memberName,
-          member.referenceId,
+          member.ref,
           memberConfig,
         );
-      } else if (member.referenceType === NodeType.AGENT_TEAM) {
+      } else if (member.refType === "agent_team") {
         hydratedConfigs[member.memberName] = await this.buildTeamConfigFromDefinition(
-          member.referenceId,
+          member.ref,
           memberConfigsMap,
           new Set(visited),
         );
@@ -478,7 +474,7 @@ export class AgentTeamRunManager {
     return new AgentTeamConfig({
       name: teamDef.name,
       description: teamDef.description,
-      role: teamDef.role ?? null,
+      role: null,
       nodes: Array.from(teamNodeMap.values()),
       coordinatorNode,
     });

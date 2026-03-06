@@ -1,0 +1,300 @@
+import "reflect-metadata";
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
+import { createRequire } from "node:module";
+import { afterEach, beforeAll, describe, expect, it } from "vitest";
+import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
+import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
+import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+
+const createAgentMd = (name: string, description: string, instructions: string): string =>
+  ["---", `name: ${name}`, `description: ${description}`, "---", "", instructions].join("\n");
+
+const createTeamMd = (name: string, description: string, instructions: string): string =>
+  ["---", `name: ${name}`, `description: ${description}`, "---", "", instructions].join("\n");
+
+const writeAgentDefinition = async (
+  rootPath: string,
+  agentId: string,
+  payload: { name: string; description: string; instructions: string },
+): Promise<void> => {
+  const dirPath = path.join(rootPath, "agents", agentId);
+  await fs.mkdir(dirPath, { recursive: true });
+  await fs.writeFile(
+    path.join(dirPath, "agent.md"),
+    createAgentMd(payload.name, payload.description, payload.instructions),
+    "utf-8",
+  );
+  await fs.writeFile(path.join(dirPath, "agent-config.json"), JSON.stringify({}, null, 2), "utf-8");
+};
+
+const writeTeamDefinition = async (
+  rootPath: string,
+  teamId: string,
+  payload: {
+    name: string;
+    description: string;
+    instructions: string;
+    coordinator: string;
+    memberRef: string;
+  },
+): Promise<void> => {
+  const dirPath = path.join(rootPath, "agent-teams", teamId);
+  await fs.mkdir(dirPath, { recursive: true });
+  await fs.writeFile(
+    path.join(dirPath, "team.md"),
+    createTeamMd(payload.name, payload.description, payload.instructions),
+    "utf-8",
+  );
+  await fs.writeFile(
+    path.join(dirPath, "team-config.json"),
+    JSON.stringify(
+      {
+        coordinatorMemberName: payload.coordinator,
+        members: [
+          {
+            memberName: payload.coordinator,
+            ref: payload.memberRef,
+            refType: "agent",
+          },
+        ],
+      },
+      null,
+      2,
+    ),
+    "utf-8",
+  );
+};
+
+describe("Definition source GraphQL e2e", () => {
+  let schema: GraphQLSchema;
+  let graphql: typeof graphqlFn;
+  const cleanupPaths = new Set<string>();
+
+  beforeAll(async () => {
+    schema = await buildGraphqlSchema();
+    const require = createRequire(import.meta.url);
+    const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
+    const graphqlPath = require.resolve("graphql", { paths: [typeGraphqlRoot] });
+    const graphqlModule = await import(graphqlPath);
+    graphql = graphqlModule.graphql as typeof graphqlFn;
+  });
+
+  afterEach(async () => {
+    for (const filePath of cleanupPaths) {
+      await fs.rm(filePath, { recursive: true, force: true }).catch(() => undefined);
+    }
+    cleanupPaths.clear();
+
+    process.env.AUTOBYTEUS_DEFINITION_SOURCE_PATHS = "";
+  });
+
+  const execGraphql = async <T>(
+    query: string,
+    variables?: Record<string, unknown>,
+  ): Promise<T> => {
+    const result = await graphql({
+      schema,
+      source: query,
+      variableValues: variables,
+    });
+    if (result.errors?.length) {
+      throw result.errors[0];
+    }
+    return result.data as T;
+  };
+
+  const runGraphql = async (query: string, variables?: Record<string, unknown>) =>
+    graphql({
+      schema,
+      source: query,
+      variableValues: variables,
+    });
+
+  it("adds and removes definition sources and aggregates agent/team reads with precedence", async () => {
+    const unique = `${Date.now()}_${Math.random().toString(16).slice(2)}`;
+    const defaultRoot = appConfigProvider.config.getAppDataDir();
+    const externalRoot = await fs.mkdtemp(path.join(os.tmpdir(), `definition-source-${unique}-`));
+    cleanupPaths.add(externalRoot);
+
+    const duplicateAgentId = `duplicate-agent-${unique}`;
+    const duplicateTeamId = `duplicate-team-${unique}`;
+    const externalAgentId = `external-agent-${unique}`;
+    const externalTeamId = `external-team-${unique}`;
+    const defaultAgentId = `default-agent-${unique}`;
+    const defaultTeamId = `default-team-${unique}`;
+
+    await writeAgentDefinition(defaultRoot, defaultAgentId, {
+      name: "Default Agent",
+      description: "Default-only agent",
+      instructions: "default instructions",
+    });
+    await writeAgentDefinition(defaultRoot, duplicateAgentId, {
+      name: "Default Duplicate Agent",
+      description: "Default precedence agent",
+      instructions: "default duplicate instructions",
+    });
+    await writeTeamDefinition(defaultRoot, defaultTeamId, {
+      name: "Default Team",
+      description: "Default-only team",
+      instructions: "default team instructions",
+      coordinator: "coordinator",
+      memberRef: defaultAgentId,
+    });
+    await writeTeamDefinition(defaultRoot, duplicateTeamId, {
+      name: "Default Duplicate Team",
+      description: "Default precedence team",
+      instructions: "default duplicate team instructions",
+      coordinator: "coordinator",
+      memberRef: duplicateAgentId,
+    });
+
+    cleanupPaths.add(path.join(defaultRoot, "agents", defaultAgentId));
+    cleanupPaths.add(path.join(defaultRoot, "agents", duplicateAgentId));
+    cleanupPaths.add(path.join(defaultRoot, "agent-teams", defaultTeamId));
+    cleanupPaths.add(path.join(defaultRoot, "agent-teams", duplicateTeamId));
+
+    await writeAgentDefinition(externalRoot, externalAgentId, {
+      name: "External Agent",
+      description: "External-only agent",
+      instructions: "external instructions",
+    });
+    await writeAgentDefinition(externalRoot, duplicateAgentId, {
+      name: "External Duplicate Agent",
+      description: "External duplicate agent",
+      instructions: "external duplicate instructions",
+    });
+    await writeTeamDefinition(externalRoot, externalTeamId, {
+      name: "External Team",
+      description: "External-only team",
+      instructions: "external team instructions",
+      coordinator: "coordinator",
+      memberRef: externalAgentId,
+    });
+    await writeTeamDefinition(externalRoot, duplicateTeamId, {
+      name: "External Duplicate Team",
+      description: "External duplicate team",
+      instructions: "external duplicate team instructions",
+      coordinator: "coordinator",
+      memberRef: duplicateAgentId,
+    });
+
+    const addResult = await execGraphql<{
+      addDefinitionSource: Array<{
+        path: string;
+        agentCount: number;
+        agentTeamCount: number;
+        isDefault: boolean;
+      }>;
+    }>(
+      `
+        mutation AddDefinitionSource($path: String!) {
+          addDefinitionSource(path: $path) {
+            path
+            agentCount
+            agentTeamCount
+            isDefault
+          }
+        }
+      `,
+      { path: externalRoot },
+    );
+
+    const addedExternal = addResult.addDefinitionSource.find((entry) => entry.path === externalRoot);
+    expect(addedExternal).toBeDefined();
+    expect(addedExternal?.agentCount).toBe(2);
+    expect(addedExternal?.agentTeamCount).toBe(2);
+    expect(addedExternal?.isDefault).toBe(false);
+
+    const copiedAgentPath = path.join(defaultRoot, "agents", externalAgentId);
+    const copiedTeamPath = path.join(defaultRoot, "agent-teams", externalTeamId);
+    await expect(fs.access(copiedAgentPath)).rejects.toBeDefined();
+    await expect(fs.access(copiedTeamPath)).rejects.toBeDefined();
+
+    const listResult = await execGraphql<{
+      agents: Array<{ id: string; name: string }>;
+      teams: Array<{ id: string; name: string }>;
+      duplicateAgent: { id: string; name: string } | null;
+      duplicateTeam: { id: string; name: string } | null;
+    }>(`
+      query DefinitionReads {
+        agents: agentDefinitions { id name }
+        teams: agentTeamDefinitions { id name }
+        duplicateAgent: agentDefinition(id: "${duplicateAgentId}") { id name }
+        duplicateTeam: agentTeamDefinition(id: "${duplicateTeamId}") { id name }
+      }
+    `);
+
+    expect(listResult.agents.some((entry) => entry.id === externalAgentId)).toBe(true);
+    expect(listResult.teams.some((entry) => entry.id === externalTeamId)).toBe(true);
+    expect(listResult.duplicateAgent?.name).toBe("Default Duplicate Agent");
+    expect(listResult.duplicateTeam?.name).toBe("Default Duplicate Team");
+
+    const removeResult = await execGraphql<{
+      removeDefinitionSource: Array<{ path: string }>;
+    }>(
+      `
+        mutation RemoveDefinitionSource($path: String!) {
+          removeDefinitionSource(path: $path) {
+            path
+          }
+        }
+      `,
+      { path: externalRoot },
+    );
+
+    expect(removeResult.removeDefinitionSource.some((entry) => entry.path === externalRoot)).toBe(false);
+
+    const postRemoveList = await execGraphql<{
+      agents: Array<{ id: string }>;
+      teams: Array<{ id: string }>;
+    }>(`
+      query PostRemoveReads {
+        agents: agentDefinitions { id }
+        teams: agentTeamDefinitions { id }
+      }
+    `);
+
+    expect(postRemoveList.agents.some((entry) => entry.id === externalAgentId)).toBe(false);
+    expect(postRemoveList.teams.some((entry) => entry.id === externalTeamId)).toBe(false);
+  });
+
+  it("rejects invalid definition source paths and unsupported url-like inputs", async () => {
+    const emptyRoot = await fs.mkdtemp(path.join(os.tmpdir(), "definition-source-empty-"));
+    cleanupPaths.add(emptyRoot);
+
+    const invalidUrl = await runGraphql(
+      `
+        mutation AddDefinitionSource($path: String!) {
+          addDefinitionSource(path: $path) { path }
+        }
+      `,
+      { path: "https://github.com/example/definitions" },
+    );
+    expect(invalidUrl.errors?.length ?? 0).toBeGreaterThan(0);
+    expect(invalidUrl.errors?.[0]?.message).toContain("absolute");
+
+    const emptyRootResult = await runGraphql(
+      `
+        mutation AddDefinitionSource($path: String!) {
+          addDefinitionSource(path: $path) { path }
+        }
+      `,
+      { path: emptyRoot },
+    );
+    expect(emptyRootResult.errors?.length ?? 0).toBeGreaterThan(0);
+    expect(emptyRootResult.errors?.[0]?.message).toContain("agents");
+
+    const notFoundResult = await runGraphql(
+      `
+        mutation AddDefinitionSource($path: String!) {
+          addDefinitionSource(path: $path) { path }
+        }
+      `,
+      { path: path.join(os.tmpdir(), "definition-source-does-not-exist") },
+    );
+    expect(notFoundResult.errors?.length ?? 0).toBeGreaterThan(0);
+    expect(notFoundResult.errors?.[0]?.message).toContain("not found");
+  });
+});

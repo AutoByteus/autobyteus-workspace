@@ -1,38 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
-import { NodeType as TeamNodeType } from '../../../src/agent-team-definition/domain/enums.js';
 import { NodeSyncService } from '../../../src/sync/services/node-sync-service.js';
 
 function buildService(options?: {
   mcpConfigs?: Array<Record<string, unknown>>;
 }) {
-  const promptService = {
-    findPrompts: vi.fn(async () => [
-      {
-        id: 'prompt-1',
-        name: 'Prompt One',
-        category: 'cat-a',
-        promptContent: 'Prompt A',
-        description: null,
-        suitableForModels: 'default',
-        version: 1,
-        isActive: true,
-      },
-      {
-        id: 'prompt-2',
-        name: 'Prompt Two',
-        category: 'cat-b',
-        promptContent: 'Prompt B',
-        description: null,
-        suitableForModels: 'default',
-        version: 1,
-        isActive: true,
-      },
-    ]),
-    createPrompt: vi.fn(),
-    markActivePrompt: vi.fn(),
-    updatePrompt: vi.fn(),
-  };
-
   const agentDefinitionService = {
     getAllAgentDefinitions: vi.fn(async () => [
       {
@@ -40,9 +11,9 @@ function buildService(options?: {
         name: 'Agent One',
         role: 'Role One',
         description: 'Description One',
+        instructions: 'Agent one instructions',
+        category: null,
         avatarUrl: null,
-        systemPromptCategory: 'cat-a',
-        systemPromptName: 'Prompt One',
         toolNames: [],
         inputProcessorNames: [],
         llmResponseProcessorNames: [],
@@ -57,9 +28,9 @@ function buildService(options?: {
         name: 'Agent Two',
         role: 'Role Two',
         description: 'Description Two',
+        instructions: 'Agent two instructions',
+        category: null,
         avatarUrl: null,
-        systemPromptCategory: 'cat-b',
-        systemPromptName: 'Prompt Two',
         toolNames: [],
         inputProcessorNames: [],
         llmResponseProcessorNames: [],
@@ -80,14 +51,15 @@ function buildService(options?: {
         id: 'team-1',
         name: 'Team One',
         description: 'Team description',
-        role: null,
+        instructions: 'Team one instructions',
+        category: null,
         avatarUrl: null,
         coordinatorMemberName: 'member-1',
         nodes: [
           {
             memberName: 'member-1',
-            referenceId: 'agent-1',
-            referenceType: TeamNodeType.AGENT,
+            ref: 'agent-1',
+            refType: 'agent',
           },
         ],
       },
@@ -115,7 +87,6 @@ function buildService(options?: {
   };
 
   const service = new NodeSyncService({
-    promptService,
     agentDefinitionService,
     agentTeamDefinitionService,
     mcpConfigService,
@@ -129,14 +100,12 @@ describe('NodeSyncService exportBundle', () => {
     const { service } = buildService();
     const bundle = await service.exportBundle({
       scope: [
-        'prompt',
         'agent_definition',
         'agent_team_definition',
         'mcp_server_configuration',
       ],
     });
 
-    expect((bundle.entities.prompt ?? []) as unknown[]).toHaveLength(2);
     expect((bundle.entities.agent_definition ?? []) as unknown[]).toHaveLength(2);
     expect((bundle.entities.agent_team_definition ?? []) as unknown[]).toHaveLength(1);
     expect((bundle.entities.mcp_server_configuration ?? []) as unknown[]).toHaveLength(1);
@@ -146,7 +115,6 @@ describe('NodeSyncService exportBundle', () => {
     const { service } = buildService();
     const bundle = await service.exportBundle({
       scope: [
-        'prompt',
         'agent_definition',
         'agent_team_definition',
         'mcp_server_configuration',
@@ -157,18 +125,32 @@ describe('NodeSyncService exportBundle', () => {
       },
     });
 
-    const promptEntities = (bundle.entities.prompt ?? []) as Array<{ name: string; category: string }>;
-    const agentEntities = (bundle.entities.agent_definition ?? []) as Array<{ name: string }>;
-    const teamEntities = (bundle.entities.agent_team_definition ?? []) as Array<{ name: string }>;
+    const agentEntities = (bundle.entities.agent_definition ?? []) as Array<{
+      agentId: string;
+      files: { agentMd: string; agentConfigJson: string };
+    }>;
+    const teamEntities = (bundle.entities.agent_team_definition ?? []) as Array<{
+      teamId: string;
+      files: { teamMd: string; teamConfigJson: string };
+    }>;
 
-    expect(promptEntities).toEqual([
-      expect.objectContaining({ name: 'Prompt One', category: 'cat-a' }),
-    ]);
     expect(agentEntities).toEqual([
-      expect.objectContaining({ name: 'Agent One' }),
+      expect.objectContaining({
+        agentId: 'agent-1',
+        files: expect.objectContaining({
+          agentMd: expect.any(String),
+          agentConfigJson: expect.any(String),
+        }),
+      }),
     ]);
     expect(teamEntities).toEqual([
-      expect.objectContaining({ name: 'Team One' }),
+      expect.objectContaining({
+        teamId: 'team-1',
+        files: expect.objectContaining({
+          teamMd: expect.any(String),
+          teamConfigJson: expect.any(String),
+        }),
+      }),
     ]);
     expect((bundle.entities.mcp_server_configuration ?? []) as unknown[]).toHaveLength(0);
   });

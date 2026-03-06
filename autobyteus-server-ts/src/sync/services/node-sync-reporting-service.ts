@@ -137,12 +137,10 @@ export class NodeSyncReportingService {
   ): string {
     const fallback = `${entityType}#${index + 1}`;
     switch (entityType) {
-      case 'prompt':
-        return asString(record.key, fallback);
       case 'agent_definition':
-        return asString(record.id, asString(record.name, fallback));
+        return asString(record.agentId, asString(record.id, asString(record.name, fallback)));
       case 'agent_team_definition':
-        return asString(record.id, asString(record.name, fallback));
+        return asString(record.teamId, asString(record.id, asString(record.name, fallback)));
       case 'mcp_server_configuration':
         return asString(
           record.serverId,

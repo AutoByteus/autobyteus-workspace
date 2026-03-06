@@ -6,7 +6,6 @@ import { SkillResolver } from "./types/skills.js";
 import { AgentRunResolver } from "./types/agent-run.js";
 import { AgentTeamRunResolver } from "./types/agent-team-run.js";
 import { WorkspaceResolver } from "./types/workspace.js";
-import { PromptResolver } from "./types/prompt.js";
 import { AgentDefinitionResolver } from "./types/agent-definition.js";
 import { AgentTeamDefinitionResolver } from "./types/agent-team-definition.js";
 import { TokenUsageStatisticsResolver } from "./types/token-usage-stats.js";
@@ -24,6 +23,7 @@ import { NodeSyncControlResolver } from "./types/node-sync-control.js";
 import { RunHistoryResolver } from "./types/run-history.js";
 import { TeamRunHistoryResolver } from "./types/team-run-history.js";
 import { RuntimeCapabilityResolver } from "./types/runtime-capability.js";
+import { DefinitionSourceResolver } from "./types/definition-sources.js";
 import { DateTimeScalar } from "./scalars/date-time.js";
 
 export async function buildGraphqlSchema() {
@@ -36,7 +36,6 @@ export async function buildGraphqlSchema() {
       AgentRunResolver,
       AgentTeamRunResolver,
       WorkspaceResolver,
-      PromptResolver,
       AgentDefinitionResolver,
       AgentTeamDefinitionResolver,
       TokenUsageStatisticsResolver,
@@ -54,6 +53,7 @@ export async function buildGraphqlSchema() {
       RunHistoryResolver,
       TeamRunHistoryResolver,
       RuntimeCapabilityResolver,
+      DefinitionSourceResolver,
     ],
     scalarsMap: [{ type: Date, scalar: DateTimeScalar }],
   });

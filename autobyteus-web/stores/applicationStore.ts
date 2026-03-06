@@ -26,9 +26,13 @@ export const useApplicationStore = defineStore('application', {
     }
   },
   actions: {
+    isApplicationsEnabled() {
+      const runtimeConfig = useRuntimeConfig()
+      return Boolean(runtimeConfig.public.enableApplications)
+    },
+
     async fetchApplications() {
-      const config = useRuntimeConfig()
-      if (!config.public.enableApplications) {
+      if (!this.isApplicationsEnabled()) {
         this.loading = false
         this.error = null
         return
@@ -57,8 +61,7 @@ export const useApplicationStore = defineStore('application', {
     },
 
     async runApplication(appId: string, input: any) {
-      const config = useRuntimeConfig()
-      if (!config.public.enableApplications) {
+      if (!this.isApplicationsEnabled()) {
         throw new Error('Applications feature is disabled')
       }
 

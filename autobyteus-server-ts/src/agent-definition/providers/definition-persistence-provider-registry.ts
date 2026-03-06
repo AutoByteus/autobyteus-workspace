@@ -4,8 +4,10 @@ export type AgentDefinitionPersistenceProviderContract = {
   create(domainObj: AgentDefinition): Promise<AgentDefinition>;
   getById(id: string): Promise<AgentDefinition | null>;
   getAll(): Promise<AgentDefinition[]>;
+  getTemplates(): Promise<AgentDefinition[]>;
   update(domainObj: AgentDefinition): Promise<AgentDefinition>;
   delete(id: string): Promise<boolean>;
+  duplicate(sourceId: string, newId: string, newName: string): Promise<AgentDefinition>;
 };
 
 export type AgentDefinitionProviderLoader = () => Promise<AgentDefinitionPersistenceProviderContract>;
@@ -13,11 +15,11 @@ export type AgentDefinitionProviderLoader = () => Promise<AgentDefinitionPersist
 const importRuntimeModule = async <T>(modulePath: string): Promise<T> =>
   (await import(modulePath)) as T;
 
-const loadSqlAgentDefinitionProvider = async (): Promise<AgentDefinitionPersistenceProviderContract> => {
+const loadFileAgentDefinitionProvider = async (): Promise<AgentDefinitionPersistenceProviderContract> => {
   const module = await importRuntimeModule<{
-    SqlAgentDefinitionProvider: new () => AgentDefinitionPersistenceProviderContract;
-  }>(["./", "sql-agent-definition-provider.js"].join(""));
-  return new module.SqlAgentDefinitionProvider();
+    FileAgentDefinitionProvider: new () => AgentDefinitionPersistenceProviderContract;
+  }>(["./", "file-agent-definition-provider.js"].join(""));
+  return new module.FileAgentDefinitionProvider();
 };
 
 export class AgentDefinitionPersistenceProviderRegistry {
@@ -34,12 +36,10 @@ export class AgentDefinitionPersistenceProviderRegistry {
   private loaders = new Map<string, AgentDefinitionProviderLoader>();
 
   private constructor() {
-    this.registerProviderLoader("sqlite", loadSqlAgentDefinitionProvider);
-    this.registerProviderLoader("postgresql", loadSqlAgentDefinitionProvider);
-    this.registerProviderLoader("file", async () => {
-      const { FileAgentDefinitionProvider } = await import("./file-agent-definition-provider.js");
-      return new FileAgentDefinitionProvider();
-    });
+    // File-based persistence is canonical for agent definitions.
+    this.registerProviderLoader("sqlite", loadFileAgentDefinitionProvider);
+    this.registerProviderLoader("postgresql", loadFileAgentDefinitionProvider);
+    this.registerProviderLoader("file", loadFileAgentDefinitionProvider);
   }
 
   registerProviderLoader(name: string, loader: AgentDefinitionProviderLoader): void {

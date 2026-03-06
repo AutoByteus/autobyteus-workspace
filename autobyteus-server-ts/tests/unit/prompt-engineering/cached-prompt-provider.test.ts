@@ -10,7 +10,6 @@ const samplePrompts = [
     promptContent: "Content1",
     isActive: true,
     version: 1,
-    suitableForModels: "gpt-4",
   }),
   new Prompt({
     id: "2",
@@ -19,7 +18,6 @@ const samplePrompts = [
     promptContent: "Content2",
     isActive: false,
     version: 2,
-    suitableForModels: "gpt-4",
   }),
   new Prompt({
     id: "3",
@@ -28,7 +26,6 @@ const samplePrompts = [
     promptContent: "Content3",
     isActive: true,
     version: 1,
-    suitableForModels: "claude-3",
   }),
   new Prompt({
     id: "4",
@@ -138,6 +135,12 @@ describe("CachedPromptProvider", () => {
     const family = await cachedProvider.findAllByNameAndCategory("System Prompt", "General");
     expect(family.length).toBe(2);
     expect(new Set(family.map((prompt) => prompt.id))).toEqual(new Set(["1", "2"]));
+
+    const none = await cachedProvider.findAllByNameAndCategory(
+      "Nonexistent",
+      "General",
+    );
+    expect(none.length).toBe(0);
 
     expect(persistenceProvider.findPrompts).toHaveBeenCalledOnce();
   });

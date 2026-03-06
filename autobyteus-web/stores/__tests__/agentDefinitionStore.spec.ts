@@ -45,6 +45,8 @@ describe('agentDefinitionStore', () => {
             name: 'Planner',
             role: 'Planner role',
             description: 'Plans tasks',
+            instructions: 'Plan and execute tasks.',
+            category: 'software-engineering',
             toolNames: [],
             inputProcessorNames: [],
             llmResponseProcessorNames: [],
@@ -53,7 +55,6 @@ describe('agentDefinitionStore', () => {
             toolInvocationPreprocessorNames: [],
             lifecycleProcessorNames: [],
             skillNames: [],
-            prompts: [],
           },
         ],
       },
@@ -67,5 +68,7 @@ describe('agentDefinitionStore', () => {
     expect(mockQuery).toHaveBeenCalledTimes(1);
     expect(store.agentDefinitions).toHaveLength(1);
     expect(store.agentDefinitions[0].id).toBe('agent-1');
+    expect(store.agentDefinitions[0].instructions).toBe('Plan and execute tasks.');
+    expect((store.agentDefinitions[0] as any).activePromptVersion).toBeUndefined();
   });
 });
