@@ -1,5 +1,4 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { NodeType as TeamNodeType } from '../../../src/agent-team-definition/domain/enums.js';
 import {
   NodeSyncSelectionService,
 } from '../../../src/sync/services/node-sync-selection-service.js';
@@ -41,13 +40,13 @@ describe('NodeSyncSelectionService', () => {
           nodes: [
             {
               memberName: 'member-a',
-              referenceId: 'agent-2',
-              referenceType: TeamNodeType.AGENT,
+              ref: 'agent-2',
+              refType: 'agent',
             },
             {
               memberName: 'member-b',
-              referenceId: 'team-2',
-              referenceType: TeamNodeType.AGENT_TEAM,
+              ref: 'team-2',
+              refType: 'agent_team',
             },
           ],
         },
@@ -57,8 +56,8 @@ describe('NodeSyncSelectionService', () => {
           nodes: [
             {
               memberName: 'member-c',
-              referenceId: 'agent-1',
-              referenceType: TeamNodeType.AGENT,
+              ref: 'agent-1',
+              refType: 'agent',
             },
           ],
         },

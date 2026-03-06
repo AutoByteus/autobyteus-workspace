@@ -12,6 +12,7 @@ const ENV_KEYS = [
   "PERSISTENCE_PROVIDER",
   "DATABASE_URL",
   "AUTOBYTEUS_SKILLS_PATHS",
+  "AUTOBYTEUS_DEFINITION_SOURCE_PATHS",
   "AUTOBYTEUS_LOG_DIR",
   "AUTOBYTEUS_TEMP_WORKSPACE_DIR",
   "LOG_LEVEL",
@@ -132,6 +133,39 @@ describe("AppConfig", () => {
     const result = config.getAdditionalSkillsDirs();
 
     expect(result).toEqual([skillsDirA, skillsDirB]);
+
+    await fsPromises.rm(configDir, { recursive: true, force: true });
+  });
+
+  it("returns additional definition source roots that are absolute and exist", async () => {
+    const configDir = await createTempConfigDir("AUTOBYTEUS_SERVER_HOST=http://localhost:8000\n");
+    const sourceA = path.join(configDir, "source-a");
+    const sourceB = path.join(configDir, "source-b");
+    await fsPromises.mkdir(sourceA, { recursive: true });
+    await fsPromises.mkdir(sourceB, { recursive: true });
+
+    process.env.AUTOBYTEUS_DEFINITION_SOURCE_PATHS = `${sourceA},relative-source,${sourceB},/nope,${sourceA}`;
+    const config = new AppConfig();
+
+    expect(config.getAdditionalDefinitionSourceRoots()).toEqual([sourceA, sourceB]);
+
+    await fsPromises.rm(configDir, { recursive: true, force: true });
+  });
+
+  it("exposes md-centric agent/team path helpers", async () => {
+    const configDir = await createTempConfigDir("AUTOBYTEUS_SERVER_HOST=http://localhost:8000\n");
+    const config = new AppConfig();
+    config.setCustomAppDataDir(configDir);
+    config.initialize();
+
+    expect(config.getAgentMdPath("agent-x")).toBe(path.join(configDir, "agents", "agent-x", "agent.md"));
+    expect(config.getAgentConfigPath("agent-x")).toBe(
+      path.join(configDir, "agents", "agent-x", "agent-config.json"),
+    );
+    expect(config.getTeamMdPath("team-x")).toBe(path.join(configDir, "agent-teams", "team-x", "team.md"));
+    expect(config.getTeamConfigPath("team-x")).toBe(
+      path.join(configDir, "agent-teams", "team-x", "team-config.json"),
+    );
 
     await fsPromises.rm(configDir, { recursive: true, force: true });
   });

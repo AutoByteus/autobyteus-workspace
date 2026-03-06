@@ -1,25 +1,22 @@
 import { promises as fs } from "node:fs";
+import type { Dirent } from "node:fs";
 import path from "node:path";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { AgentDefinition } from "../domain/models.js";
+import {
+  writeRawFile,
+  writeJsonFile,
+  readJsonFile,
+} from "../../persistence/file/store-utils.js";
+import {
+  parseAgentMd,
+  serializeAgentMd,
+  AgentMdParseError,
+} from "../utils/agent-md-parser.js";
 
-type AgentJsonRecord = {
-  name: string;
-  role: string;
-  description: string;
-  avatarUrl?: string | null;
-  activePromptVersion?: number;
-  toolNames?: string[];
-  inputProcessorNames?: string[];
-  llmResponseProcessorNames?: string[];
-  systemPromptProcessorNames?: string[];
-  toolExecutionResultProcessorNames?: string[];
-  toolInvocationPreprocessorNames?: string[];
-  lifecycleProcessorNames?: string[];
-  skillNames?: string[];
+const logger = {
+  warn: (...args: unknown[]) => console.warn(...args),
 };
-
-const toJson = (value: unknown): string => `${JSON.stringify(value, null, 2)}\n`;
 
 const slugify = (value: string): string => {
   const normalized = value
@@ -32,57 +29,105 @@ const slugify = (value: string): string => {
   return normalized || "agent";
 };
 
-const ensurePositiveInteger = (value: number | undefined): number =>
-  Number.isInteger(value) && (value as number) > 0 ? (value as number) : 1;
-
 const normalizeStringArray = (value: unknown): string[] =>
   Array.isArray(value) ? value.filter((entry): entry is string => typeof entry === "string") : [];
 
-const toDomain = (agentId: string, record: AgentJsonRecord): AgentDefinition =>
-  new AgentDefinition({
-    id: agentId,
-    name: record.name,
-    role: record.role,
-    description: record.description,
-    avatarUrl: record.avatarUrl ?? null,
-    activePromptVersion: ensurePositiveInteger(record.activePromptVersion),
-    toolNames: normalizeStringArray(record.toolNames),
-    inputProcessorNames: normalizeStringArray(record.inputProcessorNames),
-    llmResponseProcessorNames: normalizeStringArray(record.llmResponseProcessorNames),
-    systemPromptProcessorNames: normalizeStringArray(record.systemPromptProcessorNames),
-    toolExecutionResultProcessorNames: normalizeStringArray(record.toolExecutionResultProcessorNames),
-    toolInvocationPreprocessorNames: normalizeStringArray(record.toolInvocationPreprocessorNames),
-    lifecycleProcessorNames: normalizeStringArray(record.lifecycleProcessorNames),
-    skillNames: normalizeStringArray(record.skillNames),
-  });
+type AgentConfigRecord = {
+  toolNames?: string[];
+  skillNames?: string[];
+  inputProcessorNames?: string[];
+  llmResponseProcessorNames?: string[];
+  systemPromptProcessorNames?: string[];
+  toolExecutionResultProcessorNames?: string[];
+  toolInvocationPreprocessorNames?: string[];
+  lifecycleProcessorNames?: string[];
+  avatarUrl?: string | null;
+};
 
-const toRecord = (definition: AgentDefinition): AgentJsonRecord => ({
-  name: definition.name,
-  role: definition.role,
-  description: definition.description,
-  avatarUrl: definition.avatarUrl ?? null,
-  activePromptVersion: ensurePositiveInteger(definition.activePromptVersion),
-  toolNames: [...definition.toolNames],
-  inputProcessorNames: [...definition.inputProcessorNames],
-  llmResponseProcessorNames: [...definition.llmResponseProcessorNames],
-  systemPromptProcessorNames: [...definition.systemPromptProcessorNames],
-  toolExecutionResultProcessorNames: [...definition.toolExecutionResultProcessorNames],
-  toolInvocationPreprocessorNames: [...definition.toolInvocationPreprocessorNames],
-  lifecycleProcessorNames: [...definition.lifecycleProcessorNames],
-  skillNames: [...definition.skillNames],
-});
+function defaultAgentConfig(): AgentConfigRecord {
+  return {
+    toolNames: [],
+    skillNames: [],
+    inputProcessorNames: [],
+    llmResponseProcessorNames: [],
+    systemPromptProcessorNames: [],
+    toolExecutionResultProcessorNames: [],
+    toolInvocationPreprocessorNames: [],
+    lifecycleProcessorNames: [],
+    avatarUrl: null,
+  };
+}
 
 export class FileAgentDefinitionProvider {
   private getAgentsDir(): string {
-    return path.join(appConfigProvider.config.getAppDataDir(), "agents");
+    return appConfigProvider.config.getAgentsDir();
   }
 
   private getAgentDir(agentId: string): string {
     return path.join(this.getAgentsDir(), agentId);
   }
 
-  private getAgentJsonPath(agentId: string): string {
-    return path.join(this.getAgentDir(agentId), "agent.json");
+  private getReadAgentRoots(): string[] {
+    const roots = [this.getAgentsDir()];
+    for (const sourceRoot of appConfigProvider.config.getAdditionalDefinitionSourceRoots()) {
+      roots.push(path.join(sourceRoot, "agents"));
+    }
+    return roots;
+  }
+
+  private async readAgentFromRoot(agentRoot: string, agentId: string): Promise<AgentDefinition | null> {
+    const mdPath = path.join(agentRoot, agentId, "agent.md");
+    const configPath = path.join(agentRoot, agentId, "agent-config.json");
+
+    try {
+      const mdContent = await fs.readFile(mdPath, "utf-8");
+      const parsed = parseAgentMd(mdContent, mdPath);
+      const config = await readJsonFile<AgentConfigRecord>(configPath, defaultAgentConfig());
+
+      return new AgentDefinition({
+        id: agentId,
+        name: parsed.name,
+        description: parsed.description,
+        instructions: parsed.instructions,
+        category: parsed.category,
+        role: parsed.role,
+        avatarUrl: config.avatarUrl ?? null,
+        toolNames: normalizeStringArray(config.toolNames),
+        skillNames: normalizeStringArray(config.skillNames),
+        inputProcessorNames: normalizeStringArray(config.inputProcessorNames),
+        llmResponseProcessorNames: normalizeStringArray(config.llmResponseProcessorNames),
+        systemPromptProcessorNames: normalizeStringArray(config.systemPromptProcessorNames),
+        toolExecutionResultProcessorNames: normalizeStringArray(config.toolExecutionResultProcessorNames),
+        toolInvocationPreprocessorNames: normalizeStringArray(config.toolInvocationPreprocessorNames),
+        lifecycleProcessorNames: normalizeStringArray(config.lifecycleProcessorNames),
+      });
+    } catch (error) {
+      if (error instanceof AgentMdParseError) {
+        throw error;
+      }
+      if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+        return null;
+      }
+      throw error;
+    }
+  }
+
+  private async findAgentSourcePaths(agentId: string): Promise<{
+    mdPath: string;
+    configPath: string;
+    rootPath: string;
+  } | null> {
+    for (const rootPath of this.getReadAgentRoots()) {
+      const mdPath = path.join(rootPath, agentId, "agent.md");
+      const configPath = path.join(rootPath, agentId, "agent-config.json");
+      try {
+        await fs.access(mdPath);
+        return { mdPath, configPath, rootPath };
+      } catch {
+        continue;
+      }
+    }
+    return null;
   }
 
   private async exists(filePath: string): Promise<boolean> {
@@ -94,7 +139,7 @@ export class FileAgentDefinitionProvider {
     }
   }
 
-  private async nextAgentId(name: string): Promise<string> {
+  async nextAgentId(name: string): Promise<string> {
     const base = slugify(name);
     let candidate = base;
     let index = 2;
@@ -105,84 +150,35 @@ export class FileAgentDefinitionProvider {
     return candidate;
   }
 
-  private async ensureActivePromptFile(
-    agentId: string,
-    activePromptVersion: number,
-    fallbackContent: string,
-  ): Promise<void> {
-    const version = ensurePositiveInteger(activePromptVersion);
-    const promptPath = path.join(this.getAgentDir(agentId), `prompt-v${version}.md`);
-    if (await this.exists(promptPath)) {
-      return;
-    }
-    await fs.writeFile(promptPath, fallbackContent, "utf-8");
-  }
-
-  async getPromptContents(agentId: string): Promise<Record<string, string>> {
-    const agentDir = this.getAgentDir(agentId);
-    const versions: Record<string, string> = {};
-    let names: string[];
-    try {
-      names = await fs.readdir(agentDir);
-    } catch {
-      return versions;
-    }
-
-    for (const name of names) {
-      const match = /^prompt-v(\d+)\.md$/.exec(name);
-      if (!match || !match[1]) {
-        continue;
-      }
-      try {
-        versions[match[1]] = await fs.readFile(path.join(agentDir, name), "utf-8");
-      } catch {
-        // ignore unreadable prompt files
-      }
-    }
-    return versions;
-  }
-
-  async writeAgentFolder(
-    agentId: string,
-    record: AgentJsonRecord,
-    promptVersions: Record<string, string>,
-  ): Promise<void> {
-    const agentDir = this.getAgentDir(agentId);
-    await fs.mkdir(agentDir, { recursive: true });
-    await fs.writeFile(this.getAgentJsonPath(agentId), toJson(record), "utf-8");
-
-    let existingNames: string[] = [];
-    try {
-      existingNames = await fs.readdir(agentDir);
-    } catch {
-      existingNames = [];
-    }
-    for (const name of existingNames) {
-      if (/^prompt-v\d+\.md$/.test(name)) {
-        await fs.unlink(path.join(agentDir, name)).catch(() => undefined);
-      }
-    }
-
-    const sortedVersions = Object.keys(promptVersions).sort((a, b) => Number(a) - Number(b));
-    for (const version of sortedVersions) {
-      const promptPath = path.join(agentDir, `prompt-v${version}.md`);
-      await fs.writeFile(promptPath, promptVersions[version] ?? "", "utf-8");
-    }
-  }
-
   async create(domainObj: AgentDefinition): Promise<AgentDefinition> {
     const agentId = domainObj.id ?? (await this.nextAgentId(domainObj.name));
-    const definition = new AgentDefinition({
-      ...domainObj,
-      id: agentId,
-    });
-    await fs.mkdir(this.getAgentDir(agentId), { recursive: true });
-    await fs.writeFile(this.getAgentJsonPath(agentId), toJson(toRecord(definition)), "utf-8");
-    await this.ensureActivePromptFile(
-      agentId,
-      definition.activePromptVersion,
-      definition.description,
+    const agentDir = this.getAgentDir(agentId);
+    await fs.mkdir(agentDir, { recursive: true });
+
+    const mdContent = serializeAgentMd(
+      {
+        name: domainObj.name,
+        description: domainObj.description,
+        category: domainObj.category,
+        role: domainObj.role,
+      },
+      domainObj.instructions,
     );
+    await writeRawFile(appConfigProvider.config.getAgentMdPath(agentId), mdContent);
+
+    const configRecord: AgentConfigRecord = {
+      toolNames: domainObj.toolNames ?? [],
+      skillNames: domainObj.skillNames ?? [],
+      inputProcessorNames: domainObj.inputProcessorNames ?? [],
+      llmResponseProcessorNames: domainObj.llmResponseProcessorNames ?? [],
+      systemPromptProcessorNames: domainObj.systemPromptProcessorNames ?? [],
+      toolExecutionResultProcessorNames: domainObj.toolExecutionResultProcessorNames ?? [],
+      toolInvocationPreprocessorNames: domainObj.toolInvocationPreprocessorNames ?? [],
+      lifecycleProcessorNames: domainObj.lifecycleProcessorNames ?? [],
+      avatarUrl: domainObj.avatarUrl ?? null,
+    };
+    await writeJsonFile(appConfigProvider.config.getAgentConfigPath(agentId), configRecord);
+
     const created = await this.getById(agentId);
     if (!created) {
       throw new Error(`Failed to create agent definition '${agentId}'.`);
@@ -191,30 +187,100 @@ export class FileAgentDefinitionProvider {
   }
 
   async getById(id: string): Promise<AgentDefinition | null> {
-    try {
-      const raw = await fs.readFile(this.getAgentJsonPath(id), "utf-8");
-      const parsed = JSON.parse(raw) as AgentJsonRecord;
-      return toDomain(id, parsed);
-    } catch {
+    // Skip _ prefixed directories (templates)
+    if (id.startsWith("_")) {
       return null;
     }
+    for (const rootPath of this.getReadAgentRoots()) {
+      const definition = await this.readAgentFromRoot(rootPath, id);
+      if (definition) {
+        return definition;
+      }
+    }
+    return null;
   }
 
   async getAll(): Promise<AgentDefinition[]> {
-    let entries: string[] = [];
-    try {
-      entries = await fs.readdir(this.getAgentsDir());
-    } catch {
-      return [];
-    }
-
     const definitions: AgentDefinition[] = [];
-    for (const agentId of entries) {
-      const definition = await this.getById(agentId);
-      if (definition) {
-        definitions.push(definition);
+    const seenIds = new Set<string>();
+
+    for (const rootPath of this.getReadAgentRoots()) {
+      let entries: Dirent[] = [];
+      try {
+        entries = await fs.readdir(rootPath, { withFileTypes: true });
+      } catch {
+        continue;
+      }
+
+      for (const entry of entries) {
+        if (!entry.isDirectory()) {
+          continue;
+        }
+        const agentId = entry.name;
+        if (agentId.startsWith("_")) {
+          continue;
+        }
+        if (seenIds.has(agentId)) {
+          continue;
+        }
+        try {
+          const definition = await this.readAgentFromRoot(rootPath, agentId);
+          if (definition) {
+            definitions.push(definition);
+            seenIds.add(agentId);
+          }
+        } catch (error) {
+          if (error instanceof AgentMdParseError) {
+            logger.warn(`Skipping agent '${agentId}' due to parse error: ${error.message}`);
+            continue;
+          }
+          throw error;
+        }
       }
     }
+
+    return definitions;
+  }
+
+  async getTemplates(): Promise<AgentDefinition[]> {
+    const definitions: AgentDefinition[] = [];
+    const seenIds = new Set<string>();
+
+    for (const rootPath of this.getReadAgentRoots()) {
+      let entries: Dirent[] = [];
+      try {
+        entries = await fs.readdir(rootPath, { withFileTypes: true });
+      } catch {
+        continue;
+      }
+
+      for (const entry of entries) {
+        if (!entry.isDirectory()) {
+          continue;
+        }
+        const agentId = entry.name;
+        if (!agentId.startsWith("_")) {
+          continue;
+        }
+        if (seenIds.has(agentId)) {
+          continue;
+        }
+        try {
+          const definition = await this.readAgentFromRoot(rootPath, agentId);
+          if (definition) {
+            definitions.push(definition);
+            seenIds.add(agentId);
+          }
+        } catch (error) {
+          if (error instanceof AgentMdParseError) {
+            logger.warn(`Skipping template agent '${agentId}' due to parse error: ${error.message}`);
+            continue;
+          }
+          throw error;
+        }
+      }
+    }
+
     return definitions;
   }
 
@@ -222,16 +288,45 @@ export class FileAgentDefinitionProvider {
     if (!domainObj.id) {
       throw new Error("Agent definition id is required for update.");
     }
-    await fs.mkdir(this.getAgentDir(domainObj.id), { recursive: true });
-    await fs.writeFile(this.getAgentJsonPath(domainObj.id), toJson(toRecord(domainObj)), "utf-8");
-    await this.ensureActivePromptFile(
-      domainObj.id,
-      domainObj.activePromptVersion,
-      domainObj.description,
+    const id = domainObj.id;
+    const agentDir = this.getAgentDir(id);
+    if (!(await this.exists(agentDir))) {
+      throw new Error(`Agent definition '${id}' is read-only or does not exist in default source.`);
+    }
+
+    const mdContent = serializeAgentMd(
+      {
+        name: domainObj.name,
+        description: domainObj.description,
+        category: domainObj.category,
+        role: domainObj.role,
+      },
+      domainObj.instructions,
     );
-    const updated = await this.getById(domainObj.id);
+    await writeRawFile(appConfigProvider.config.getAgentMdPath(id), mdContent);
+
+    const existingConfig = await readJsonFile<Record<string, unknown>>(
+      appConfigProvider.config.getAgentConfigPath(id),
+      {},
+    );
+
+    const configRecord: Record<string, unknown> = {
+      ...existingConfig,
+      toolNames: domainObj.toolNames ?? [],
+      skillNames: domainObj.skillNames ?? [],
+      inputProcessorNames: domainObj.inputProcessorNames ?? [],
+      llmResponseProcessorNames: domainObj.llmResponseProcessorNames ?? [],
+      systemPromptProcessorNames: domainObj.systemPromptProcessorNames ?? [],
+      toolExecutionResultProcessorNames: domainObj.toolExecutionResultProcessorNames ?? [],
+      toolInvocationPreprocessorNames: domainObj.toolInvocationPreprocessorNames ?? [],
+      lifecycleProcessorNames: domainObj.lifecycleProcessorNames ?? [],
+      avatarUrl: domainObj.avatarUrl ?? null,
+    };
+    await writeJsonFile(appConfigProvider.config.getAgentConfigPath(id), configRecord);
+
+    const updated = await this.getById(id);
     if (!updated) {
-      throw new Error(`Failed to update agent definition '${domainObj.id}'.`);
+      throw new Error(`Failed to update agent definition '${id}'.`);
     }
     return updated;
   }
@@ -239,7 +334,48 @@ export class FileAgentDefinitionProvider {
   async delete(id: string): Promise<boolean> {
     const agentDir = this.getAgentDir(id);
     const existed = await this.exists(agentDir);
+    if (!existed) {
+      return false;
+    }
     await fs.rm(agentDir, { recursive: true, force: true });
     return existed;
+  }
+
+  async duplicate(sourceId: string, newId: string, newName: string): Promise<AgentDefinition> {
+    const sourcePaths = await this.findAgentSourcePaths(sourceId);
+    if (!sourcePaths) {
+      throw new Error(`Agent definition '${sourceId}' not found.`);
+    }
+    const sourceMdPath = sourcePaths.mdPath;
+    const sourceConfigPath = sourcePaths.configPath;
+
+    const sourceMdContent = await fs.readFile(sourceMdPath, "utf-8");
+    const parsed = parseAgentMd(sourceMdContent, sourceMdPath);
+    const sourceConfig = await readJsonFile<AgentConfigRecord>(sourceConfigPath, defaultAgentConfig());
+
+    const newAgentDir = this.getAgentDir(newId);
+    await fs.mkdir(newAgentDir, { recursive: true });
+
+    const newMdContent = serializeAgentMd(
+      {
+        name: newName,
+        description: parsed.description,
+        category: parsed.category,
+        role: parsed.role,
+      },
+      parsed.instructions,
+    );
+    await writeRawFile(appConfigProvider.config.getAgentMdPath(newId), newMdContent);
+    await writeJsonFile(appConfigProvider.config.getAgentConfigPath(newId), sourceConfig);
+
+    const created = await this.getById(newId);
+    if (!created) {
+      throw new Error(`Failed to duplicate agent definition from '${sourceId}' to '${newId}'.`);
+    }
+    return created;
+  }
+
+  async agentExists(id: string): Promise<boolean> {
+    return this.exists(this.getAgentDir(id));
   }
 }

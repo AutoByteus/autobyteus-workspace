@@ -13,10 +13,11 @@ export class AgentDefinitionConverter {
       return {
         id: String(domainDefinition.id ?? ""),
         name: domainDefinition.name,
-        role: domainDefinition.role,
+        role: domainDefinition.role ?? null,
         description: domainDefinition.description,
+        instructions: domainDefinition.instructions,
+        category: domainDefinition.category ?? null,
         avatarUrl: domainDefinition.avatarUrl ?? null,
-        activePromptVersion: domainDefinition.activePromptVersion,
         toolNames: domainDefinition.toolNames,
         inputProcessorNames: domainDefinition.inputProcessorNames,
         llmResponseProcessorNames: domainDefinition.llmResponseProcessorNames,

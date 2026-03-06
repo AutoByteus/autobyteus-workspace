@@ -20,9 +20,19 @@
           type="text"
           id="role"
           v-model="formData.role"
-          required
           class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-base"
           placeholder="e.g., Senior Software Developer"
+        />
+      </div>
+
+      <div>
+        <label for="category" class="block text-base font-medium text-gray-800">Category</label>
+        <input
+          type="text"
+          id="category"
+          v-model="formData.category"
+          class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-base"
+          placeholder="e.g., software-engineering"
         />
       </div>
 
@@ -35,6 +45,18 @@
           rows="4"
           class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-base"
           placeholder="A detailed description of the agent's purpose and capabilities."
+        ></textarea>
+      </div>
+
+      <div>
+        <label for="instructions" class="block text-base font-medium text-gray-800">Instructions</label>
+        <textarea
+          id="instructions"
+          v-model="formData.instructions"
+          required
+          rows="10"
+          class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm font-mono text-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+          placeholder="Enter the agent's system instructions..."
         ></textarea>
       </div>
 
@@ -299,7 +321,9 @@ function hasSelection(fieldName: string) {
 const getInitialValue = (): { [key: string]: any } => ({
   name: '',
   role: '',
+  category: '',
   description: '',
+  instructions: '',
   avatar_url: '',
   ...Object.fromEntries(componentFields.value.map(f => [f.name, [] as string[]]))
 });
@@ -310,7 +334,9 @@ watch(initialData, (newData) => {
   if (newData && !isCreateMode.value) {
     formData.name = newData.name || '';
     formData.role = newData.role || '';
+    formData.category = newData.category || '';
     formData.description = newData.description || '';
+    formData.instructions = newData.instructions || '';
     formData.avatar_url = newData.avatarUrl || newData.avatar_url || '';
     componentFields.value.forEach(field => {
       const key = field.name as keyof typeof formData;
@@ -397,8 +423,10 @@ async function handleAvatarFileSelected(event: Event) {
 const handleSubmit = () => {
   const submissionData = {
     name: formData.name,
-    role: formData.role,
+    role: formData.role || undefined,
+    category: formData.category || undefined,
     description: formData.description,
+    instructions: formData.instructions,
     avatarUrl: formData.avatar_url,
     skillNames: formData.skill_names,
     toolNames: formData.tool_names,

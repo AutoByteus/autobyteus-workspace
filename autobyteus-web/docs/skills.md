@@ -35,7 +35,7 @@ autobyteus-web/
 
 ## Navigation
 
-Skills is a **standalone top-level module** accessible via the main sidebar (wrench/screwdriver icon). It is independent from the Prompt Engineering module.
+Skills is a **standalone top-level module** accessible via the main sidebar (wrench/screwdriver icon). It is independent from the agent/team definition modules.
 
 **Route:** `/skills`
 

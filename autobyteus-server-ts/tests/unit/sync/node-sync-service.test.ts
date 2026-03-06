@@ -1,5 +1,4 @@
 import { describe, expect, it, vi } from 'vitest';
-import { NodeType as TeamNodeType } from '../../../src/agent-team-definition/domain/enums.js';
 import { NodeSyncService } from '../../../src/sync/services/node-sync-service.js';
 
 function buildService(options?: {
@@ -12,8 +11,9 @@ function buildService(options?: {
         name: 'Agent One',
         role: 'Role One',
         description: 'Description One',
+        instructions: 'Agent one instructions',
+        category: null,
         avatarUrl: null,
-        activePromptVersion: 1,
         toolNames: [],
         inputProcessorNames: [],
         llmResponseProcessorNames: [],
@@ -28,8 +28,9 @@ function buildService(options?: {
         name: 'Agent Two',
         role: 'Role Two',
         description: 'Description Two',
+        instructions: 'Agent two instructions',
+        category: null,
         avatarUrl: null,
-        activePromptVersion: 2,
         toolNames: [],
         inputProcessorNames: [],
         llmResponseProcessorNames: [],
@@ -50,14 +51,15 @@ function buildService(options?: {
         id: 'team-1',
         name: 'Team One',
         description: 'Team description',
-        role: null,
+        instructions: 'Team one instructions',
+        category: null,
         avatarUrl: null,
         coordinatorMemberName: 'member-1',
         nodes: [
           {
             memberName: 'member-1',
-            referenceId: 'agent-1',
-            referenceType: TeamNodeType.AGENT,
+            ref: 'agent-1',
+            refType: 'agent',
           },
         ],
       },
@@ -125,24 +127,29 @@ describe('NodeSyncService exportBundle', () => {
 
     const agentEntities = (bundle.entities.agent_definition ?? []) as Array<{
       agentId: string;
-      agent: { name: string };
-      promptVersions: Record<string, string>;
+      files: { agentMd: string; agentConfigJson: string };
     }>;
     const teamEntities = (bundle.entities.agent_team_definition ?? []) as Array<{
       teamId: string;
-      team: { name: string };
+      files: { teamMd: string; teamConfigJson: string };
     }>;
 
     expect(agentEntities).toEqual([
       expect.objectContaining({
         agentId: 'agent-1',
-        agent: expect.objectContaining({ name: 'Agent One' }),
+        files: expect.objectContaining({
+          agentMd: expect.any(String),
+          agentConfigJson: expect.any(String),
+        }),
       }),
     ]);
     expect(teamEntities).toEqual([
       expect.objectContaining({
         teamId: 'team-1',
-        team: expect.objectContaining({ name: 'Team One' }),
+        files: expect.objectContaining({
+          teamMd: expect.any(String),
+          teamConfigJson: expect.any(String),
+        }),
       }),
     ]);
     expect((bundle.entities.mcp_server_configuration ?? []) as unknown[]).toHaveLength(0);

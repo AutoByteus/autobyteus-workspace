@@ -18,7 +18,39 @@ function slugify(value: string, fallback: string): string {
   return normalized || fallback;
 }
 
-describe("JSON file persistence contract e2e (no mocks)", () => {
+function buildAgentMd(input: {
+  name: string;
+  description: string;
+  category?: string;
+  role?: string;
+  instructions: string;
+}): string {
+  const lines = ["---", `name: ${input.name}`, `description: ${input.description}`];
+  if (input.category) {
+    lines.push(`category: ${input.category}`);
+  }
+  if (input.role) {
+    lines.push(`role: ${input.role}`);
+  }
+  lines.push("---", "", input.instructions);
+  return lines.join("\n");
+}
+
+function buildTeamMd(input: {
+  name: string;
+  description: string;
+  category?: string;
+  instructions: string;
+}): string {
+  const lines = ["---", `name: ${input.name}`, `description: ${input.description}`];
+  if (input.category) {
+    lines.push(`category: ${input.category}`);
+  }
+  lines.push("---", "", input.instructions);
+  return lines.join("\n");
+}
+
+describe("JSON file persistence contract e2e (md-centric, no mocks)", () => {
   let schema: GraphQLSchema;
   let graphql: typeof graphqlFn;
   const cleanupPaths = new Set<string>();
@@ -54,7 +86,7 @@ describe("JSON file persistence contract e2e (no mocks)", () => {
     return result.data as T;
   };
 
-  it("persists agent/team/mcp JSON contracts on disk through GraphQL APIs", async () => {
+  it("persists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json", async () => {
     const unique = `ac_${Date.now()}_${Math.random().toString(16).slice(2, 8)}`;
     const dataDir = appConfigProvider.config.getAppDataDir();
 
@@ -70,8 +102,10 @@ describe("JSON file persistence contract e2e (no mocks)", () => {
           name
           role
           description
-          activePromptVersion
+          category
+          instructions
           toolNames
+          skillNames
         }
       }
     `;
@@ -79,57 +113,76 @@ describe("JSON file persistence contract e2e (no mocks)", () => {
       createAgentDefinition: {
         id: string;
         name: string;
-        role: string;
+        role: string | null;
         description: string;
-        activePromptVersion: number;
+        category: string | null;
+        instructions: string;
         toolNames: string[];
+        skillNames: string[];
       };
     }>(createAgentMutation, {
       input: {
         name: agentName,
         role: "assistant",
         description: "Agent contract test description",
+        category: "contract",
+        instructions: "Contract agent instructions",
         toolNames: ["send_message_to"],
+        skillNames: ["skill_contract"],
       },
     });
 
     expect(createdAgent.createAgentDefinition.id).toBe(expectedAgentId);
-    const agentJsonPath = path.join(agentDir, "agent.json");
-    const agentJsonRaw = await fs.readFile(agentJsonPath, "utf-8");
-    const agentRecord = JSON.parse(agentJsonRaw) as Record<string, unknown>;
-    expect(agentRecord).toMatchObject({
-      name: agentName,
-      role: "assistant",
-      description: "Agent contract test description",
-      activePromptVersion: 1,
+
+    const agentMdPath = path.join(agentDir, "agent.md");
+    const agentConfigPath = path.join(agentDir, "agent-config.json");
+    const [agentMdRaw, agentConfigRaw, agentFiles] = await Promise.all([
+      fs.readFile(agentMdPath, "utf-8"),
+      fs.readFile(agentConfigPath, "utf-8"),
+      fs.readdir(agentDir),
+    ]);
+
+    expect(agentMdRaw).toContain(`name: ${agentName}`);
+    expect(agentMdRaw).toContain("description: Agent contract test description");
+    expect(agentMdRaw).toContain("category: contract");
+    expect(agentMdRaw).toContain("Contract agent instructions");
+
+    const agentConfig = JSON.parse(agentConfigRaw) as Record<string, unknown>;
+    expect(agentConfig).toMatchObject({
       toolNames: ["send_message_to"],
+      skillNames: ["skill_contract"],
+      avatarUrl: null,
     });
-    expect(Array.isArray(agentRecord.inputProcessorNames)).toBe(true);
-    expect(Array.isArray(agentRecord.llmResponseProcessorNames)).toBe(true);
-    expect(Array.isArray(agentRecord.systemPromptProcessorNames)).toBe(true);
-    expect(Array.isArray(agentRecord.toolExecutionResultProcessorNames)).toBe(true);
-    expect(Array.isArray(agentRecord.toolInvocationPreprocessorNames)).toBe(true);
-    expect(Array.isArray(agentRecord.lifecycleProcessorNames)).toBe(true);
-    expect(Array.isArray(agentRecord.skillNames)).toBe(true);
-    const agentFiles = await fs.readdir(agentDir);
+    expect(Array.isArray(agentConfig.inputProcessorNames)).toBe(true);
+    expect(Array.isArray(agentConfig.llmResponseProcessorNames)).toBe(true);
+    expect(Array.isArray(agentConfig.systemPromptProcessorNames)).toBe(true);
+    expect(Array.isArray(agentConfig.toolExecutionResultProcessorNames)).toBe(true);
+    expect(Array.isArray(agentConfig.toolInvocationPreprocessorNames)).toBe(true);
+    expect(Array.isArray(agentConfig.lifecycleProcessorNames)).toBe(true);
+    expect(agentFiles.some((name) => /^prompt-v\d+\.md$/.test(name))).toBe(false);
     expect(agentFiles.some((name) => name.endsWith(".yaml") || name.endsWith(".yml"))).toBe(false);
 
     const updateAgentMutation = `
       mutation UpdateAgentDefinition($input: UpdateAgentDefinitionInput!) {
         updateAgentDefinition(input: $input) {
           id
+          name
+          description
+          instructions
         }
       }
     `;
+    const unchangedMd = await fs.readFile(agentMdPath, "utf-8");
     await execGraphql(updateAgentMutation, {
       input: {
         id: createdAgent.createAgentDefinition.id,
+        name: agentName,
         description: "Agent contract test description",
-        toolNames: ["send_message_to"],
+        instructions: "Contract agent instructions",
       },
     });
-    const agentJsonRawAfterNoop = await fs.readFile(agentJsonPath, "utf-8");
-    expect(agentJsonRawAfterNoop).toBe(agentJsonRaw);
+    const unchangedMdAfterNoop = await fs.readFile(agentMdPath, "utf-8");
+    expect(unchangedMdAfterNoop).toBe(unchangedMd);
 
     await execGraphql(updateAgentMutation, {
       input: {
@@ -137,13 +190,8 @@ describe("JSON file persistence contract e2e (no mocks)", () => {
         name: `${agentName} renamed`,
       },
     });
-    const renamedAgentJsonPath = path.join(dataDir, "agents", expectedAgentId, "agent.json");
-    const renamedAgentJson = JSON.parse(await fs.readFile(renamedAgentJsonPath, "utf-8")) as Record<
-      string,
-      unknown
-    >;
-    expect(renamedAgentJson.name).toBe(`${agentName} renamed`);
-    expect(createdAgent.createAgentDefinition.id).toBe(expectedAgentId);
+    const renamedAgentMd = await fs.readFile(agentMdPath, "utf-8");
+    expect(renamedAgentMd).toContain(`name: ${agentName} renamed`);
 
     const teamName = `Professor Team ${unique}`;
     const expectedTeamId = slugify(teamName, "team");
@@ -155,6 +203,15 @@ describe("JSON file persistence contract e2e (no mocks)", () => {
         createAgentTeamDefinition(input: $input) {
           id
           name
+          description
+          category
+          instructions
+          coordinatorMemberName
+          nodes {
+            memberName
+            ref
+            refType
+          }
         }
       }
     `;
@@ -162,33 +219,50 @@ describe("JSON file persistence contract e2e (no mocks)", () => {
       createAgentTeamDefinition: {
         id: string;
         name: string;
+        description: string;
+        category: string | null;
+        instructions: string;
+        coordinatorMemberName: string;
+        nodes: Array<{ memberName: string; ref: string; refType: "AGENT" | "AGENT_TEAM" }>;
       };
     }>(createTeamMutation, {
       input: {
         name: teamName,
         description: "Team contract test description",
+        category: "contract",
+        instructions: "Team contract instructions",
         coordinatorMemberName: "leader",
         nodes: [
           {
             memberName: "leader",
-            referenceId: createdAgent.createAgentDefinition.id,
-            referenceType: "AGENT",
+            ref: createdAgent.createAgentDefinition.id,
+            refType: "AGENT",
           },
         ],
       },
     });
+
     expect(createdTeam.createAgentTeamDefinition.id).toBe(expectedTeamId);
 
-    const teamJsonPath = path.join(teamDir, "team.json");
-    const teamJsonRaw = await fs.readFile(teamJsonPath, "utf-8");
-    const teamRecord = JSON.parse(teamJsonRaw) as Record<string, unknown>;
-    expect(teamRecord).toMatchObject({
-      name: teamName,
-      description: "Team contract test description",
+    const teamMdPath = path.join(teamDir, "team.md");
+    const teamConfigPath = path.join(teamDir, "team-config.json");
+    const [teamMdRaw, teamConfigRaw, teamFiles] = await Promise.all([
+      fs.readFile(teamMdPath, "utf-8"),
+      fs.readFile(teamConfigPath, "utf-8"),
+      fs.readdir(teamDir),
+    ]);
+
+    expect(teamMdRaw).toContain(`name: ${teamName}`);
+    expect(teamMdRaw).toContain("description: Team contract test description");
+    expect(teamMdRaw).toContain("category: contract");
+    expect(teamMdRaw).toContain("Team contract instructions");
+
+    const teamConfig = JSON.parse(teamConfigRaw) as Record<string, unknown>;
+    expect(teamConfig).toMatchObject({
       coordinatorMemberName: "leader",
-      members: [{ memberName: "leader", agentId: expectedAgentId }],
+      members: [{ memberName: "leader", ref: expectedAgentId, refType: "agent" }],
+      avatarUrl: null,
     });
-    const teamFiles = await fs.readdir(teamDir);
     expect(teamFiles.some((name) => name.endsWith(".yaml") || name.endsWith(".yml"))).toBe(false);
 
     const updateTeamMutation = `
@@ -205,28 +279,13 @@ describe("JSON file persistence contract e2e (no mocks)", () => {
         name: `${teamName} renamed`,
       },
     });
-    const renamedTeamJsonPath = path.join(dataDir, "agent-teams", expectedTeamId, "team.json");
-    const renamedTeamJson = JSON.parse(await fs.readFile(renamedTeamJsonPath, "utf-8")) as Record<
-      string,
-      unknown
-    >;
-    expect(renamedTeamJson.name).toBe(`${teamName} renamed`);
-    expect((renamedTeamJson.members as Array<Record<string, unknown>>)[0]?.agentId).toBe(expectedAgentId);
-    expect(createdTeam.createAgentTeamDefinition.id).toBe(expectedTeamId);
-
-    const teamJsonRawAfterRename = await fs.readFile(teamJsonPath, "utf-8");
-    await execGraphql(updateTeamMutation, {
-      input: {
-        id: createdTeam.createAgentTeamDefinition.id,
-        name: `${teamName} renamed`,
-      },
-    });
-    const teamJsonRawAfterNoop = await fs.readFile(teamJsonPath, "utf-8");
-    expect(teamJsonRawAfterNoop).toBe(teamJsonRawAfterRename);
+    const renamedTeamMd = await fs.readFile(teamMdPath, "utf-8");
+    expect(renamedTeamMd).toContain(`name: ${teamName} renamed`);
 
     const serverId = `stdio_${unique}`;
     const mcpsJsonPath = path.join(dataDir, "mcps.json");
     cleanupPaths.add(mcpsJsonPath);
+
     const configureMcpMutation = `
       mutation ConfigureMcpServer($input: McpServerInput!) {
         configureMcpServer(input: $input) {
@@ -262,7 +321,7 @@ describe("JSON file persistence contract e2e (no mocks)", () => {
     expect(mcpServers[serverId]).not.toHaveProperty("transport_type");
   });
 
-  it("reconstructs prompt markdown versions from sync import and keeps API cache coherent", async () => {
+  it("imports md/config sync payloads and keeps API cache coherent", async () => {
     const unique = `sync_${Date.now()}_${Math.random().toString(16).slice(2, 8)}`;
     const dataDir = appConfigProvider.config.getAppDataDir();
 
@@ -284,11 +343,45 @@ describe("JSON file persistence contract e2e (no mocks)", () => {
         name: `Sync Agent ${unique}`,
         role: "assistant",
         description: "old-description",
+        instructions: "old-instructions",
       },
     });
+
+    const createTeamMutation = `
+      mutation CreateAgentTeamDefinition($input: CreateAgentTeamDefinitionInput!) {
+        createAgentTeamDefinition(input: $input) {
+          id
+          name
+        }
+      }
+    `;
+    const createdTeam = await execGraphql<{
+      createAgentTeamDefinition: {
+        id: string;
+        name: string;
+      };
+    }>(createTeamMutation, {
+      input: {
+        name: `Sync Team ${unique}`,
+        description: "old-team-description",
+        instructions: "old-team-instructions",
+        coordinatorMemberName: "lead",
+        nodes: [
+          {
+            memberName: "lead",
+            ref: createdAgent.createAgentDefinition.id,
+            refType: "AGENT",
+          },
+        ],
+      },
+    });
+
     const agentId = createdAgent.createAgentDefinition.id;
+    const teamId = createdTeam.createAgentTeamDefinition.id;
     const agentDir = path.join(dataDir, "agents", agentId);
+    const teamDir = path.join(dataDir, "agent-teams", teamId);
     cleanupPaths.add(agentDir);
+    cleanupPaths.add(teamDir);
 
     const importMutation = `
       mutation ImportSyncBundle($input: ImportNodeSyncBundleInput!) {
@@ -306,8 +399,46 @@ describe("JSON file persistence contract e2e (no mocks)", () => {
         }
       }
     `;
-    const promptV1 = `You are agent ${unique} prompt v1.`;
-    const promptV2 = `You are agent ${unique} prompt v2.`;
+
+    const importedAgentMd = buildAgentMd({
+      name: createdAgent.createAgentDefinition.name,
+      role: "assistant",
+      description: "updated-description",
+      category: "sync",
+      instructions: "updated-instructions",
+    });
+    const importedAgentConfig = JSON.stringify(
+      {
+        toolNames: ["send_message_to"],
+        skillNames: ["sync_skill"],
+        inputProcessorNames: [],
+        llmResponseProcessorNames: [],
+        systemPromptProcessorNames: [],
+        toolExecutionResultProcessorNames: [],
+        toolInvocationPreprocessorNames: [],
+        lifecycleProcessorNames: [],
+        avatarUrl: null,
+      },
+      null,
+      2,
+    );
+
+    const importedTeamMd = buildTeamMd({
+      name: createdTeam.createAgentTeamDefinition.name,
+      description: "updated-team-description",
+      category: "sync",
+      instructions: "updated-team-instructions",
+    });
+    const importedTeamConfig = JSON.stringify(
+      {
+        coordinatorMemberName: "lead",
+        members: [{ memberName: "lead", ref: agentId, refType: "agent" }],
+        avatarUrl: null,
+      },
+      null,
+      2,
+    );
+
     const importResult = await execGraphql<{
       importSyncBundle: {
         success: boolean;
@@ -316,7 +447,7 @@ describe("JSON file persistence contract e2e (no mocks)", () => {
       };
     }>(importMutation, {
       input: {
-        scope: ["AGENT_DEFINITION"],
+        scope: ["AGENT_DEFINITION", "AGENT_TEAM_DEFINITION"],
         conflictPolicy: "SOURCE_WINS",
         tombstonePolicy: "SOURCE_DELETE_WINS",
         bundle: {
@@ -325,24 +456,18 @@ describe("JSON file persistence contract e2e (no mocks)", () => {
             agent_definition: [
               {
                 agentId,
-                agent: {
-                  name: createdAgent.createAgentDefinition.name,
-                  role: "assistant",
-                  description: "updated-description",
-                  avatarUrl: null,
-                  activePromptVersion: 2,
-                  toolNames: ["send_message_to"],
-                  inputProcessorNames: [],
-                  llmResponseProcessorNames: [],
-                  systemPromptProcessorNames: [],
-                  toolExecutionResultProcessorNames: [],
-                  toolInvocationPreprocessorNames: [],
-                  lifecycleProcessorNames: [],
-                  skillNames: [],
+                files: {
+                  agentMd: importedAgentMd,
+                  agentConfigJson: importedAgentConfig,
                 },
-                promptVersions: {
-                  "1": promptV1,
-                  "2": promptV2,
+              },
+            ],
+            agent_team_definition: [
+              {
+                teamId,
+                files: {
+                  teamMd: importedTeamMd,
+                  teamConfigJson: importedTeamConfig,
                 },
               },
             ],
@@ -353,32 +478,30 @@ describe("JSON file persistence contract e2e (no mocks)", () => {
     });
 
     expect(importResult.importSyncBundle.success).toBe(true);
-    expect(importResult.importSyncBundle.summary.processed).toBe(1);
-    expect(importResult.importSyncBundle.summary.updated).toBe(1);
+    expect(importResult.importSyncBundle.summary.processed).toBe(2);
+    expect(importResult.importSyncBundle.summary.updated).toBe(2);
     expect(importResult.importSyncBundle.failures).toHaveLength(0);
 
-    const promptV1Path = path.join(agentDir, "prompt-v1.md");
-    const promptV2Path = path.join(agentDir, "prompt-v2.md");
-    const [promptV1Content, promptV2Content] = await Promise.all([
-      fs.readFile(promptV1Path, "utf-8"),
-      fs.readFile(promptV2Path, "utf-8"),
+    const [agentMdDisk, agentConfigDisk, teamMdDisk, teamConfigDisk] = await Promise.all([
+      fs.readFile(path.join(agentDir, "agent.md"), "utf-8"),
+      fs.readFile(path.join(agentDir, "agent-config.json"), "utf-8"),
+      fs.readFile(path.join(teamDir, "team.md"), "utf-8"),
+      fs.readFile(path.join(teamDir, "team-config.json"), "utf-8"),
     ]);
-    expect(promptV1Content).toBe(promptV1);
-    expect(promptV2Content).toBe(promptV2);
 
-    const agentJson = JSON.parse(await fs.readFile(path.join(agentDir, "agent.json"), "utf-8")) as Record<
-      string,
-      unknown
-    >;
-    expect(agentJson.activePromptVersion).toBe(2);
-    expect(agentJson.description).toBe("updated-description");
+    expect(agentMdDisk).toBe(importedAgentMd);
+    expect(JSON.parse(agentConfigDisk)).toEqual(JSON.parse(importedAgentConfig));
+    expect(teamMdDisk).toBe(importedTeamMd);
+    expect(JSON.parse(teamConfigDisk)).toEqual(JSON.parse(importedTeamConfig));
 
     const agentQuery = `
       query AgentDefinition($id: String!) {
         agentDefinition(id: $id) {
           id
           description
-          activePromptVersion
+          instructions
+          toolNames
+          skillNames
         }
       }
     `;
@@ -387,12 +510,16 @@ describe("JSON file persistence contract e2e (no mocks)", () => {
         | {
             id: string;
             description: string;
-            activePromptVersion: number;
+            instructions: string;
+            toolNames: string[];
+            skillNames: string[];
           }
         | null;
     }>(agentQuery, { id: agentId });
     expect(queriedAgent.agentDefinition?.description).toBe("updated-description");
-    expect(queriedAgent.agentDefinition?.activePromptVersion).toBe(2);
+    expect(queriedAgent.agentDefinition?.instructions).toBe("updated-instructions");
+    expect(queriedAgent.agentDefinition?.toolNames).toEqual(["send_message_to"]);
+    expect(queriedAgent.agentDefinition?.skillNames).toEqual(["sync_skill"]);
 
     const exportQuery = `
       query ExportSyncBundle($input: ExportNodeSyncBundleInput!) {
@@ -407,22 +534,34 @@ describe("JSON file persistence contract e2e (no mocks)", () => {
       };
     }>(exportQuery, {
       input: {
-        scope: ["AGENT_DEFINITION"],
+        scope: ["AGENT_DEFINITION", "AGENT_TEAM_DEFINITION"],
         selection: {
           agentDefinitionIds: [agentId],
+          agentTeamDefinitionIds: [teamId],
           includeDependencies: true,
         },
       },
     });
 
     const agentEntities = exported.exportSyncBundle.entities.agent_definition ?? [];
+    const teamEntities = exported.exportSyncBundle.entities.agent_team_definition ?? [];
     expect(agentEntities).toHaveLength(1);
-    expect(agentEntities[0]).toMatchObject({
-      agentId,
-      promptVersions: {
-        "1": promptV1,
-        "2": promptV2,
-      },
-    });
+    expect(teamEntities).toHaveLength(1);
+
+    const exportedAgentFiles = agentEntities[0]?.files as
+      | { agentMd?: string; agentConfigJson?: string }
+      | undefined;
+    const exportedTeamFiles = teamEntities[0]?.files as
+      | { teamMd?: string; teamConfigJson?: string }
+      | undefined;
+
+    expect(exportedAgentFiles?.agentMd).toBe(importedAgentMd);
+    expect(JSON.parse(exportedAgentFiles?.agentConfigJson ?? "{}")).toEqual(
+      JSON.parse(importedAgentConfig),
+    );
+    expect(exportedTeamFiles?.teamMd).toBe(importedTeamMd);
+    expect(JSON.parse(exportedTeamFiles?.teamConfigJson ?? "{}")).toEqual(
+      JSON.parse(importedTeamConfig),
+    );
   });
 });

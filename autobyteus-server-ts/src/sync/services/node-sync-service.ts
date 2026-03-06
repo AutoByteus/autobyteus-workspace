@@ -7,12 +7,8 @@ import {
 } from "autobyteus-ts";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import type { AgentDefinition } from "../../agent-definition/domain/models.js";
+import type { AgentTeamDefinition } from "../../agent-team-definition/domain/models.js";
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
-import {
-  AgentTeamDefinition,
-  TeamMember,
-} from "../../agent-team-definition/domain/models.js";
-import { NodeType as TeamNodeType } from "../../agent-team-definition/domain/enums.js";
 import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import {
   getMcpConfigService,
@@ -66,38 +62,17 @@ export interface NodeSyncImportResult {
 
 type SyncAgentDefinition = {
   agentId: string;
-  agent: {
-    name: string;
-    role: string;
-    description: string;
-    avatarUrl?: string | null;
-    activePromptVersion: number;
-    toolNames?: string[];
-    inputProcessorNames?: string[];
-    llmResponseProcessorNames?: string[];
-    systemPromptProcessorNames?: string[];
-    toolExecutionResultProcessorNames?: string[];
-    toolInvocationPreprocessorNames?: string[];
-    lifecycleProcessorNames?: string[];
-    skillNames?: string[];
+  files: {
+    agentMd: string;
+    agentConfigJson: string;
   };
-  promptVersions: Record<string, string>;
-};
-
-type SyncTeamMember = {
-  memberName: string;
-  agentId: string;
 };
 
 type SyncAgentTeamDefinition = {
   teamId: string;
-  team: {
-    name: string;
-    description: string;
-    role?: string | null;
-    avatarUrl?: string | null;
-    coordinatorMemberName: string;
-    members: SyncTeamMember[];
+  files: {
+    teamMd: string;
+    teamConfigJson: string;
   };
 };
 
@@ -174,11 +149,21 @@ type NodeSyncServiceOptions = {
 
 const getDataDir = (): string => appConfigProvider.config.getAppDataDir();
 const getAgentDir = (agentId: string): string => path.join(getDataDir(), "agents", agentId);
-const getAgentJsonPath = (agentId: string): string => path.join(getAgentDir(agentId), "agent.json");
 const getTeamDir = (teamId: string): string => path.join(getDataDir(), "agent-teams", teamId);
-const getTeamJsonPath = (teamId: string): string => path.join(getTeamDir(teamId), "team.json");
 
-const toJson = (value: unknown): string => `${JSON.stringify(value, null, 2)}\n`;
+const getAgentMdPath = (agentId: string): string => appConfigProvider.config.getAgentMdPath(agentId);
+const getAgentConfigPath = (agentId: string): string =>
+  appConfigProvider.config.getAgentConfigPath(agentId);
+const getTeamMdPath = (teamId: string): string => appConfigProvider.config.getTeamMdPath(teamId);
+const getTeamConfigPath = (teamId: string): string => appConfigProvider.config.getTeamConfigPath(teamId);
+
+async function readTextFile(filePath: string, fallback: string): Promise<string> {
+  try {
+    return await fs.readFile(filePath, "utf-8");
+  } catch {
+    return fallback;
+  }
+}
 
 export class NodeSyncService {
   private static instance: NodeSyncService | null = null;
@@ -221,27 +206,12 @@ export class NodeSyncService {
         if (!definition.id) {
           continue;
         }
-        const promptVersions = await this.readPromptVersions(definition.id);
         payloads.push({
           agentId: definition.id,
-          agent: {
-            name: definition.name,
-            role: definition.role,
-            description: definition.description,
-            avatarUrl: definition.avatarUrl ?? null,
-            activePromptVersion: Number.isInteger(definition.activePromptVersion)
-              ? definition.activePromptVersion
-              : 1,
-            toolNames: definition.toolNames,
-            inputProcessorNames: definition.inputProcessorNames,
-            llmResponseProcessorNames: definition.llmResponseProcessorNames,
-            systemPromptProcessorNames: definition.systemPromptProcessorNames,
-            toolExecutionResultProcessorNames: definition.toolExecutionResultProcessorNames,
-            toolInvocationPreprocessorNames: definition.toolInvocationPreprocessorNames,
-            lifecycleProcessorNames: definition.lifecycleProcessorNames,
-            skillNames: definition.skillNames,
+          files: {
+            agentMd: await readTextFile(getAgentMdPath(definition.id), ""),
+            agentConfigJson: await readTextFile(getAgentConfigPath(definition.id), "{}\n"),
           },
-          promptVersions,
         });
       }
       entities.agent_definition = payloads;
@@ -250,24 +220,20 @@ export class NodeSyncService {
     if (scope.has("agent_team_definition")) {
       const teams = await this.agentTeamDefinitionService.getAllDefinitions();
       const selectedTeams = this.filterAgentTeamDefinitionsBySelection(teams, selection);
-      entities.agent_team_definition = selectedTeams
-        .filter((team): team is AgentTeamDefinition & { id: string } => Boolean(team.id))
-        .map((team) => ({
+      const payloads: SyncAgentTeamDefinition[] = [];
+      for (const team of selectedTeams) {
+        if (!team.id) {
+          continue;
+        }
+        payloads.push({
           teamId: team.id,
-          team: {
-            name: team.name,
-            description: team.description,
-            role: team.role ?? null,
-            avatarUrl: team.avatarUrl ?? null,
-            coordinatorMemberName: team.coordinatorMemberName,
-            members: team.nodes
-              .filter((node) => node.referenceType === TeamNodeType.AGENT)
-              .map((node) => ({
-                memberName: node.memberName,
-                agentId: node.referenceId,
-              })),
+          files: {
+            teamMd: await readTextFile(getTeamMdPath(team.id), ""),
+            teamConfigJson: await readTextFile(getTeamConfigPath(team.id), "{}\n"),
           },
-        } satisfies SyncAgentTeamDefinition));
+        });
+      }
+      entities.agent_team_definition = payloads;
     }
 
     if (scope.has("mcp_server_configuration")) {
@@ -432,47 +398,29 @@ export class NodeSyncService {
     failures: NodeSyncImportResult["failures"],
   ): Promise<void> {
     const existingTeams = await this.agentTeamDefinitionService.getAllDefinitions();
-    const existingById = new Map(
+    const existingIds = new Set(
       existingTeams
-        .filter((team): team is AgentTeamDefinition & { id: string } => Boolean(team.id))
-        .map((team) => [team.id, team]),
+        .map((team) => team.id)
+        .filter((id): id is string => typeof id === "string" && id.length > 0),
     );
 
     for (const payload of incoming) {
       summary.processed += 1;
       const key = payload.teamId;
       try {
-        const existing = existingById.get(payload.teamId);
-        if (existing && conflictPolicy === "target_wins") {
+        const exists = existingIds.has(payload.teamId);
+        if (exists && conflictPolicy === "target_wins") {
           summary.skipped += 1;
           continue;
         }
 
         await this.writeTeamFolder(payload.teamId, payload);
-        if (!existing) {
-          summary.created += 1;
-          const createdTeam = new AgentTeamDefinition({
-            id: payload.teamId,
-            name: payload.team.name,
-            description: payload.team.description,
-            role: payload.team.role ?? null,
-            avatarUrl: payload.team.avatarUrl ?? null,
-            coordinatorMemberName: payload.team.coordinatorMemberName,
-            nodes: payload.team.members.map(
-              (member) =>
-                new TeamMember({
-                  memberName: member.memberName,
-                  referenceId: member.agentId,
-                  referenceType: TeamNodeType.AGENT,
-                }),
-            ),
-          }) as AgentTeamDefinition & { id: string };
-          existingById.set(
-            payload.teamId,
-            createdTeam,
-          );
-        } else {
+
+        if (exists) {
           summary.updated += 1;
+        } else {
+          summary.created += 1;
+          existingIds.add(payload.teamId);
         }
       } catch (error) {
         failures.push({
@@ -544,84 +492,17 @@ export class NodeSyncService {
     }
   }
 
-  private async readPromptVersions(agentId: string): Promise<Record<string, string>> {
-    const versions: Record<string, string> = {};
-    let files: string[] = [];
-    try {
-      files = await fs.readdir(getAgentDir(agentId));
-    } catch {
-      return versions;
-    }
-    for (const file of files) {
-      const match = /^prompt-v(\d+)\.md$/.exec(file);
-      if (!match || !match[1]) {
-        continue;
-      }
-      try {
-        versions[match[1]] = await fs.readFile(path.join(getAgentDir(agentId), file), "utf-8");
-      } catch {
-        // ignore unreadable version file
-      }
-    }
-    return versions;
-  }
-
   private async writeAgentFolder(agentId: string, payload: SyncAgentDefinition): Promise<void> {
     const agentDir = getAgentDir(agentId);
     await fs.mkdir(agentDir, { recursive: true });
-    const agentJson = {
-      name: payload.agent.name,
-      role: payload.agent.role,
-      description: payload.agent.description,
-      avatarUrl: payload.agent.avatarUrl ?? null,
-      activePromptVersion: payload.agent.activePromptVersion,
-      toolNames: payload.agent.toolNames ?? [],
-      inputProcessorNames: payload.agent.inputProcessorNames ?? [],
-      llmResponseProcessorNames: payload.agent.llmResponseProcessorNames ?? [],
-      systemPromptProcessorNames: payload.agent.systemPromptProcessorNames ?? [],
-      toolExecutionResultProcessorNames: payload.agent.toolExecutionResultProcessorNames ?? [],
-      toolInvocationPreprocessorNames: payload.agent.toolInvocationPreprocessorNames ?? [],
-      lifecycleProcessorNames: payload.agent.lifecycleProcessorNames ?? [],
-      skillNames: payload.agent.skillNames ?? [],
-    };
-    await fs.writeFile(getAgentJsonPath(agentId), toJson(agentJson), "utf-8");
-
-    let existing: string[] = [];
-    try {
-      existing = await fs.readdir(agentDir);
-    } catch {
-      existing = [];
-    }
-    for (const name of existing) {
-      if (/^prompt-v\d+\.md$/.test(name)) {
-        await fs.unlink(path.join(agentDir, name)).catch(() => undefined);
-      }
-    }
-
-    const sortedVersions = Object.keys(payload.promptVersions ?? {}).sort((a, b) => Number(a) - Number(b));
-    for (const version of sortedVersions) {
-      await fs.writeFile(
-        path.join(agentDir, `prompt-v${version}.md`),
-        payload.promptVersions[version] ?? "",
-        "utf-8",
-      );
-    }
+    await fs.writeFile(getAgentMdPath(agentId), payload.files.agentMd ?? "", "utf-8");
+    await fs.writeFile(getAgentConfigPath(agentId), payload.files.agentConfigJson ?? "{}\n", "utf-8");
   }
 
   private async writeTeamFolder(teamId: string, payload: SyncAgentTeamDefinition): Promise<void> {
     const teamDir = getTeamDir(teamId);
     await fs.mkdir(teamDir, { recursive: true });
-    const teamJson = {
-      name: payload.team.name,
-      description: payload.team.description,
-      coordinatorMemberName: payload.team.coordinatorMemberName,
-      role: payload.team.role ?? null,
-      avatarUrl: payload.team.avatarUrl ?? null,
-      members: (payload.team.members ?? []).map((member) => ({
-        memberName: member.memberName,
-        agentId: member.agentId,
-      })),
-    };
-    await fs.writeFile(getTeamJsonPath(teamId), toJson(teamJson), "utf-8");
+    await fs.writeFile(getTeamMdPath(teamId), payload.files.teamMd ?? "", "utf-8");
+    await fs.writeFile(getTeamConfigPath(teamId), payload.files.teamConfigJson ?? "{}\n", "utf-8");
   }
 }

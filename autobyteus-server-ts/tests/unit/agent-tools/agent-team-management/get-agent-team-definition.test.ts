@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { registerGetAgentTeamDefinitionTool } from "../../../../src/agent-tools/agent-team-management/get-agent-team-definition.js";
 import { AgentTeamDefinition, TeamMember } from "../../../../src/agent-team-definition/domain/models.js";
-import { NodeType } from "../../../../src/agent-team-definition/domain/enums.js";
 
 const mockService = {
   createDefinition: vi.fn(),
@@ -27,12 +26,13 @@ describe("getAgentTeamDefinitionTool", () => {
       id: "1",
       name: "TestTeam",
       description: "Desc",
+      instructions: "Team instructions",
       avatarUrl: "http://localhost:8000/rest/files/images/team-avatar.png",
       nodes: [
         new TeamMember({
           memberName: "coder",
-          referenceId: "1",
-          referenceType: NodeType.AGENT,
+          ref: "1",
+          refType: "agent",
         }),
       ],
       coordinatorMemberName: "coder",

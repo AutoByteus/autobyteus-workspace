@@ -1,0 +1,89 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { mount } from '@vue/test-utils'
+import AgentTeamDefinitionForm from '../AgentTeamDefinitionForm.vue'
+
+const { mockFileUploadStore, mockAgentDefinitionStore, mockAgentTeamDefinitionStore } = vi.hoisted(() => ({
+  mockFileUploadStore: {
+    isUploading: false,
+    error: null as string | null,
+    uploadFile: vi.fn().mockResolvedValue(''),
+  },
+  mockAgentDefinitionStore: {
+    agentDefinitions: [
+      {
+        id: 'agent-1',
+        name: 'Agent One',
+      },
+    ],
+    fetchAllAgentDefinitions: vi.fn().mockResolvedValue(undefined),
+    getAgentDefinitionById: vi.fn((id: string) => (id === 'agent-1' ? { id: 'agent-1', name: 'Agent One' } : null)),
+  },
+  mockAgentTeamDefinitionStore: {
+    agentTeamDefinitions: [],
+    fetchAllAgentTeamDefinitions: vi.fn().mockResolvedValue(undefined),
+    getAgentTeamDefinitionById: vi.fn(() => null),
+  },
+}))
+
+vi.mock('~/stores/fileUploadStore', () => ({
+  useFileUploadStore: () => mockFileUploadStore,
+}))
+
+vi.mock('~/stores/agentDefinitionStore', () => ({
+  useAgentDefinitionStore: () => mockAgentDefinitionStore,
+}))
+
+vi.mock('~/stores/agentTeamDefinitionStore', () => ({
+  useAgentTeamDefinitionStore: () => mockAgentTeamDefinitionStore,
+}))
+
+describe('AgentTeamDefinitionForm', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('renders required instructions input with expected placeholder', () => {
+    const wrapper = mount(AgentTeamDefinitionForm, {
+      props: {
+        isSubmitting: false,
+        submitButtonText: 'Create Team',
+      },
+    })
+
+    const instructions = wrapper.get('textarea#team-instructions')
+    expect(instructions.attributes('required')).toBeDefined()
+    expect(instructions.attributes('placeholder')).toBe("Enter the team coordinator's instructions...")
+  })
+
+  it('emits submit payload containing instructions', async () => {
+    const wrapper = mount(AgentTeamDefinitionForm, {
+      props: {
+        isSubmitting: false,
+        submitButtonText: 'Create Team',
+      },
+    })
+
+    await wrapper.get('input#team-name').setValue('Ops Team')
+    await wrapper.get('textarea#team-description').setValue('Handles deployment and operations')
+    await wrapper.get('textarea#team-instructions').setValue('Coordinate and delegate operations tasks.')
+
+    const agentButton = wrapper
+      .findAll('button')
+      .find((btn) => btn.text().includes('Agent One'))
+    expect(agentButton).toBeDefined()
+    await agentButton!.trigger('click')
+
+    await wrapper.get('form').trigger('submit.prevent')
+
+    const submitEvents = wrapper.emitted('submit') || []
+    expect(submitEvents.length).toBe(1)
+
+    const payload = submitEvents[0]?.[0] as any
+    expect(payload.instructions).toBe('Coordinate and delegate operations tasks.')
+    expect(payload.nodes).toHaveLength(1)
+    expect(payload.nodes[0]).toMatchObject({
+      refType: 'AGENT',
+      ref: 'agent-1',
+    })
+  })
+})

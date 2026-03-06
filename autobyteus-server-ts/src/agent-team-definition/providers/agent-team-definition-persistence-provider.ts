@@ -5,6 +5,7 @@ export type AgentTeamDefinitionProviderContract = {
   create(domainObj: AgentTeamDefinition): Promise<AgentTeamDefinition>;
   getById(id: string): Promise<AgentTeamDefinition | null>;
   getAll(): Promise<AgentTeamDefinition[]>;
+  getTemplates(): Promise<AgentTeamDefinition[]>;
   update(domainObj: AgentTeamDefinition): Promise<AgentTeamDefinition>;
   delete(id: string): Promise<boolean>;
 };
@@ -22,6 +23,10 @@ export class AgentTeamDefinitionPersistenceProvider {
 
   async getAll(): Promise<AgentTeamDefinition[]> {
     return this.provider.getAll();
+  }
+
+  async getTemplates(): Promise<AgentTeamDefinition[]> {
+    return this.provider.getTemplates();
   }
 
   async update(domainObj: AgentTeamDefinition): Promise<AgentTeamDefinition> {

@@ -23,16 +23,19 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
+const toDomainRefType = (value: NodeType): "agent" | "agent_team" =>
+  value === NodeType.AGENT ? "agent" : "agent_team";
+
 @ObjectType()
 export class TeamMember {
   @Field(() => String)
   memberName!: string;
 
   @Field(() => String)
-  referenceId!: string;
+  ref!: string;
 
   @Field(() => NodeType)
-  referenceType!: NodeType;
+  refType!: NodeType;
 }
 
 @ObjectType()
@@ -46,14 +49,17 @@ export class AgentTeamDefinition {
   @Field(() => String)
   description!: string;
 
+  @Field(() => String)
+  instructions!: string;
+
+  @Field(() => String, { nullable: true })
+  category?: string | null;
+
   @Field(() => [TeamMember])
   nodes!: TeamMember[];
 
   @Field(() => String)
   coordinatorMemberName!: string;
-
-  @Field(() => String, { nullable: true })
-  role?: string | null;
 
   @Field(() => String, { nullable: true })
   avatarUrl?: string | null;
@@ -65,10 +71,10 @@ export class TeamMemberInput {
   memberName!: string;
 
   @Field(() => String)
-  referenceId!: string;
+  ref!: string;
 
   @Field(() => NodeType)
-  referenceType!: NodeType;
+  refType!: NodeType;
 }
 
 @InputType()
@@ -79,14 +85,17 @@ export class CreateAgentTeamDefinitionInput {
   @Field(() => String)
   description!: string;
 
+  @Field(() => String)
+  instructions!: string;
+
+  @Field(() => String, { nullable: true })
+  category?: string | null;
+
   @Field(() => [TeamMemberInput])
   nodes!: TeamMemberInput[];
 
   @Field(() => String)
   coordinatorMemberName!: string;
-
-  @Field(() => String, { nullable: true })
-  role?: string | null;
 
   @Field(() => String, { nullable: true })
   avatarUrl?: string | null;
@@ -104,7 +113,10 @@ export class UpdateAgentTeamDefinitionInput {
   description?: string | null;
 
   @Field(() => String, { nullable: true })
-  role?: string | null;
+  instructions?: string | null;
+
+  @Field(() => String, { nullable: true })
+  category?: string | null;
 
   @Field(() => [TeamMemberInput], { nullable: true })
   nodes?: TeamMemberInput[] | null;
@@ -156,6 +168,18 @@ export class AgentTeamDefinitionResolver {
     }
   }
 
+  @Query(() => [AgentTeamDefinition])
+  async agentTeamTemplates(): Promise<AgentTeamDefinition[]> {
+    try {
+      const service = AgentTeamDefinitionService.getInstance();
+      const definitions = await service.getTemplateDefinitions();
+      return definitions.map((definition) => AgentTeamDefinitionConverter.toGraphql(definition));
+    } catch (error) {
+      logger.error(`Error fetching agent team templates: ${String(error)}`);
+      throw new Error("Unable to fetch agent team templates at this time.");
+    }
+  }
+
   @Mutation(() => AgentTeamDefinition)
   async createAgentTeamDefinition(
     @Arg("input", () => CreateAgentTeamDefinitionInput) input: CreateAgentTeamDefinitionInput,
@@ -166,15 +190,16 @@ export class AgentTeamDefinitionResolver {
         (node) =>
           new DomainTeamMember({
             memberName: node.memberName,
-            referenceId: node.referenceId,
-            referenceType: node.referenceType,
+            ref: node.ref,
+            refType: toDomainRefType(node.refType),
           }),
       );
 
       const domainDefinition = new DomainAgentTeamDefinition({
         name: input.name,
         description: input.description,
-        role: input.role ?? null,
+        instructions: input.instructions,
+        category: input.category ?? undefined,
         avatarUrl: input.avatarUrl ?? null,
         nodes: domainNodes,
         coordinatorMemberName: input.coordinatorMemberName,
@@ -201,15 +226,16 @@ export class AgentTeamDefinitionResolver {
               (node) =>
                 new DomainTeamMember({
                   memberName: node.memberName,
-                  referenceId: node.referenceId,
-                  referenceType: node.referenceType,
+                  ref: node.ref,
+                  refType: toDomainRefType(node.refType),
                 }),
             );
 
       const update = new AgentTeamDefinitionUpdate({
         name: input.name ?? null,
         description: input.description ?? null,
-        role: input.role ?? null,
+        instructions: input.instructions ?? null,
+        category: input.category ?? null,
         nodes: nodesUpdate,
         coordinatorMemberName: input.coordinatorMemberName ?? null,
         avatarUrl: input.avatarUrl ?? null,

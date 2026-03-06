@@ -2,8 +2,12 @@ import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import { getApolloClient } from '~/utils/apolloClient';
 import { GetAgentDefinitions } from '~/graphql/queries/agentDefinitionQueries';
-import { CreateAgentDefinition, UpdateAgentDefinition, DeleteAgentDefinition } from '~/graphql/mutations/agentDefinitionMutations';
-import type { GetAgentDefinitionsQuery } from '~/generated/graphql';
+import {
+  CreateAgentDefinition,
+  UpdateAgentDefinition,
+  DeleteAgentDefinition,
+  DuplicateAgentDefinition,
+} from '~/graphql/mutations/agentDefinitionMutations';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 
 // This interface should match the GraphQL AgentDefinition type
@@ -11,8 +15,10 @@ export interface AgentDefinition {
   __typename?: 'AgentDefinition';
   id: string;
   name: string;
-  role: string;
+  role?: string | null;
   description: string;
+  instructions: string;
+  category?: string | null;
   avatarUrl?: string | null;
   toolNames: string[];
   inputProcessorNames: string[];
@@ -28,8 +34,10 @@ export interface AgentDefinition {
 // Interfaces for mutation inputs
 export interface CreateAgentDefinitionInput {
   name: string;
-  role: string;
+  role?: string;
   description: string;
+  instructions: string;
+  category?: string;
   avatarUrl?: string;
   toolNames?: string[];
   inputProcessorNames?: string[];
@@ -46,6 +54,8 @@ export interface UpdateAgentDefinitionInput {
   name?: string;
   role?: string;
   description?: string;
+  instructions?: string;
+  category?: string;
   avatarUrl?: string;
   toolNames?: string[];
   inputProcessorNames?: string[];
@@ -62,10 +72,9 @@ interface DeleteResult {
   message: string;
 }
 
-interface AgentDefinitionState {
-  agentDefinitions: AgentDefinition[];
-  loading: boolean;
-  error: any;
+interface DuplicateAgentDefinitionInput {
+  sourceId: string;
+  newName: string;
 }
 
 export const useAgentDefinitionStore = defineStore('agentDefinition', () => {
@@ -91,7 +100,7 @@ export const useAgentDefinitionStore = defineStore('agentDefinition', () => {
     error.value = null;
     try {
       const client = getApolloClient();
-      const { data, errors } = await client.query<GetAgentDefinitionsQuery>({
+      const { data, errors } = await client.query({
         query: GetAgentDefinitions,
         // The default fetchPolicy is now 'cache-first'
       });
@@ -115,7 +124,7 @@ export const useAgentDefinitionStore = defineStore('agentDefinition', () => {
     error.value = null;
     try {
       const client = getApolloClient();
-      const { data, errors } = await client.query<GetAgentDefinitionsQuery>({
+      const { data, errors } = await client.query({
         query: GetAgentDefinitions,
         fetchPolicy: 'network-only', // Bypass the cache
       });
@@ -145,7 +154,7 @@ export const useAgentDefinitionStore = defineStore('agentDefinition', () => {
           if (!data?.createAgentDefinition) return;
 
           // Read the existing agent definitions from the cache
-          const existingData = cache.readQuery<GetAgentDefinitionsQuery>({ query: GetAgentDefinitions });
+          const existingData = cache.readQuery<{ agentDefinitions: AgentDefinition[] }>({ query: GetAgentDefinitions });
           if (!existingData) return;
 
           // Add the new agent to the beginning of the list
@@ -241,6 +250,31 @@ export const useAgentDefinitionStore = defineStore('agentDefinition', () => {
     }
   }
 
+  async function duplicateAgentDefinition(input: DuplicateAgentDefinitionInput): Promise<AgentDefinition | null> {
+    try {
+      const client = getApolloClient();
+      const { data, errors } = await client.mutate({
+        mutation: DuplicateAgentDefinition,
+        variables: { input },
+      });
+
+      if (errors && errors.length > 0) {
+        throw new Error(errors.map((e) => e.message).join(', '));
+      }
+
+      if (!data?.duplicateAgentDefinition) {
+        return null;
+      }
+
+      await reloadAllAgentDefinitions();
+      return data.duplicateAgentDefinition;
+    } catch (e) {
+      error.value = e;
+      console.error('Failed to duplicate agent definition:', e);
+      throw e;
+    }
+  }
+
   function clearDeleteResult() {
     deleteResult.value = null;
   }
@@ -263,6 +297,7 @@ export const useAgentDefinitionStore = defineStore('agentDefinition', () => {
     createAgentDefinition,
     updateAgentDefinition,
     deleteAgentDefinition,
+    duplicateAgentDefinition,
     clearDeleteResult,
     // Getters
     getAgentDefinitionById,

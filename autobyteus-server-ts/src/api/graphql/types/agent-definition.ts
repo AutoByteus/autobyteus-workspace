@@ -1,71 +1,9 @@
 import { Arg, Field, InputType, Mutation, ObjectType, Query, Resolver } from "type-graphql";
-import { promises as fs } from "node:fs";
-import path from "node:path";
 import { AgentDefinitionService } from "../../../agent-definition/services/agent-definition-service.js";
-import { AgentPromptMapping } from "../../../agent-definition/domain/models.js";
-import { AgentPromptMappingPersistenceProvider } from "../../../agent-definition/providers/agent-prompt-mapping-persistence-provider.js";
-import { PromptService } from "../../../prompt-engineering/services/prompt-service.js";
-import { appConfigProvider } from "../../../config/app-config-provider.js";
 import { AgentDefinitionConverter } from "../converters/agent-definition-converter.js";
 
 const logger = {
   error: (...args: unknown[]) => console.error(...args),
-};
-
-const writeAgentPromptVersionFile = async (
-  agentId: string,
-  version: number,
-  promptContent: string,
-): Promise<void> => {
-  const safeVersion = Number.isInteger(version) && version > 0 ? version : 1;
-  const agentDir = path.join(appConfigProvider.config.getAppDataDir(), "agents", agentId);
-  await fs.mkdir(agentDir, { recursive: true });
-  await fs.writeFile(path.join(agentDir, `prompt-v${safeVersion}.md`), promptContent, "utf-8");
-};
-
-const resolveLatestActivePrompt = async () => {
-  const promptService = PromptService.getInstance();
-  const activePrompts = await promptService.findPrompts({ isActive: true });
-  if (activePrompts.length === 0) {
-    return null;
-  }
-  activePrompts.sort((a, b) => {
-    const aTs = (a.updatedAt ?? a.createdAt ?? new Date(0)).getTime();
-    const bTs = (b.updatedAt ?? b.createdAt ?? new Date(0)).getTime();
-    return bTs - aTs;
-  });
-  return activePrompts[0] ?? null;
-};
-
-const bindAgentToPromptFamily = async (agentIdInput: string): Promise<void> => {
-  const agentId = agentIdInput.trim();
-  if (!agentId) {
-    return;
-  }
-
-  const boundPrompt = await resolveLatestActivePrompt();
-  if (!boundPrompt || !boundPrompt.id) {
-    return;
-  }
-
-  const version = Number.isInteger(boundPrompt.version) && (boundPrompt.version as number) > 0
-    ? (boundPrompt.version as number)
-    : 1;
-  const mappingProvider = new AgentPromptMappingPersistenceProvider();
-  await mappingProvider.upsert(
-    new AgentPromptMapping({
-      agentDefinitionId: agentId,
-      promptCategory: boundPrompt.category,
-      promptName: boundPrompt.name,
-    }),
-  );
-
-  const agentService = AgentDefinitionService.getInstance();
-  const existing = await agentService.getAgentDefinitionById(agentId);
-  if (existing && existing.activePromptVersion !== version) {
-    await agentService.updateAgentDefinition(agentId, { activePromptVersion: version });
-  }
-  await writeAgentPromptVersionFile(agentId, version, boundPrompt.promptContent);
 };
 
 @ObjectType()
@@ -76,17 +14,20 @@ export class AgentDefinition {
   @Field(() => String)
   name!: string;
 
-  @Field(() => String)
-  role!: string;
+  @Field(() => String, { nullable: true })
+  role?: string | null;
 
   @Field(() => String)
   description!: string;
 
+  @Field(() => String)
+  instructions!: string;
+
+  @Field(() => String, { nullable: true })
+  category?: string | null;
+
   @Field(() => String, { nullable: true })
   avatarUrl?: string | null;
-
-  @Field(() => Number)
-  activePromptVersion!: number;
 
   @Field(() => [String])
   toolNames!: string[];
@@ -111,7 +52,6 @@ export class AgentDefinition {
 
   @Field(() => [String])
   skillNames!: string[];
-
 }
 
 @InputType()
@@ -119,17 +59,20 @@ export class CreateAgentDefinitionInput {
   @Field(() => String)
   name!: string;
 
-  @Field(() => String)
-  role!: string;
+  @Field(() => String, { nullable: true })
+  role?: string | null;
 
   @Field(() => String)
   description!: string;
 
+  @Field(() => String)
+  instructions!: string;
+
+  @Field(() => String, { nullable: true })
+  category?: string | null;
+
   @Field(() => String, { nullable: true })
   avatarUrl?: string | null;
-
-  @Field(() => Number, { nullable: true })
-  activePromptVersion?: number | null;
 
   @Field(() => [String], { nullable: true })
   toolNames?: string[] | null;
@@ -171,10 +114,13 @@ export class UpdateAgentDefinitionInput {
   description?: string | null;
 
   @Field(() => String, { nullable: true })
-  avatarUrl?: string | null;
+  instructions?: string | null;
 
-  @Field(() => Number, { nullable: true })
-  activePromptVersion?: number | null;
+  @Field(() => String, { nullable: true })
+  category?: string | null;
+
+  @Field(() => String, { nullable: true })
+  avatarUrl?: string | null;
 
   @Field(() => [String], { nullable: true })
   toolNames?: string[] | null;
@@ -199,6 +145,15 @@ export class UpdateAgentDefinitionInput {
 
   @Field(() => [String], { nullable: true })
   skillNames?: string[] | null;
+}
+
+@InputType()
+export class DuplicateAgentDefinitionInput {
+  @Field(() => String)
+  sourceId!: string;
+
+  @Field(() => String)
+  newName!: string;
 }
 
 @ObjectType()
@@ -241,18 +196,33 @@ export class AgentDefinitionResolver {
     }
   }
 
+  @Query(() => [AgentDefinition])
+  async agentTemplates(): Promise<AgentDefinition[]> {
+    try {
+      const service = AgentDefinitionService.getInstance();
+      const templates = await service.getAgentTemplates();
+      return await Promise.all(
+        templates.map(async (definition) => AgentDefinitionConverter.toGraphql(definition)),
+      );
+    } catch (error) {
+      logger.error(`Error fetching agent templates: ${String(error)}`);
+      throw new Error("Unable to fetch agent templates at this time.");
+    }
+  }
+
   @Mutation(() => AgentDefinition)
   async createAgentDefinition(
     @Arg("input", () => CreateAgentDefinitionInput) input: CreateAgentDefinitionInput,
   ): Promise<AgentDefinition> {
     try {
       const service = AgentDefinitionService.getInstance();
-      let domainDefinition = await service.createAgentDefinition({
+      const domainDefinition = await service.createAgentDefinition({
         name: input.name,
-        role: input.role,
+        role: input.role ?? undefined,
         description: input.description,
+        instructions: input.instructions,
+        category: input.category ?? undefined,
         avatarUrl: input.avatarUrl ?? undefined,
-        activePromptVersion: input.activePromptVersion ?? undefined,
         toolNames: input.toolNames ?? undefined,
         inputProcessorNames: input.inputProcessorNames ?? undefined,
         llmResponseProcessorNames: input.llmResponseProcessorNames ?? undefined,
@@ -262,18 +232,24 @@ export class AgentDefinitionResolver {
         lifecycleProcessorNames: input.lifecycleProcessorNames ?? undefined,
         skillNames: input.skillNames ?? undefined,
       });
-      const agentId = String(domainDefinition.id ?? "");
-      if (agentId) {
-        await bindAgentToPromptFamily(agentId);
-        const refreshed = await service.getAgentDefinitionById(agentId);
-        if (refreshed) {
-          domainDefinition = refreshed;
-        }
-      }
       return await AgentDefinitionConverter.toGraphql(domainDefinition);
     } catch (error) {
       logger.error(`Error creating agent definition: ${String(error)}`);
       throw new Error(`Failed to create agent definition: ${String(error)}`);
+    }
+  }
+
+  @Mutation(() => AgentDefinition)
+  async duplicateAgentDefinition(
+    @Arg("input", () => DuplicateAgentDefinitionInput) input: DuplicateAgentDefinitionInput,
+  ): Promise<AgentDefinition> {
+    try {
+      const service = AgentDefinitionService.getInstance();
+      const duplicated = await service.duplicateAgentDefinition(input.sourceId, input.newName);
+      return await AgentDefinitionConverter.toGraphql(duplicated);
+    } catch (error) {
+      logger.error(`Error duplicating agent definition: ${String(error)}`);
+      throw new Error(`Failed to duplicate agent definition: ${String(error)}`);
     }
   }
 
@@ -290,7 +266,7 @@ export class AgentDefinitionResolver {
           updatePayload[key] = value;
         }
       }
-      let domainDefinition = await service.updateAgentDefinition(
+      const domainDefinition = await service.updateAgentDefinition(
         id,
         updatePayload as unknown as Parameters<typeof service.updateAgentDefinition>[1],
       );

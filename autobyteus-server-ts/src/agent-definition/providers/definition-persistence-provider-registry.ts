@@ -4,8 +4,10 @@ export type AgentDefinitionPersistenceProviderContract = {
   create(domainObj: AgentDefinition): Promise<AgentDefinition>;
   getById(id: string): Promise<AgentDefinition | null>;
   getAll(): Promise<AgentDefinition[]>;
+  getTemplates(): Promise<AgentDefinition[]>;
   update(domainObj: AgentDefinition): Promise<AgentDefinition>;
   delete(id: string): Promise<boolean>;
+  duplicate(sourceId: string, newId: string, newName: string): Promise<AgentDefinition>;
 };
 
 export type AgentDefinitionProviderLoader = () => Promise<AgentDefinitionPersistenceProviderContract>;
@@ -35,7 +37,6 @@ export class AgentDefinitionPersistenceProviderRegistry {
 
   private constructor() {
     // File-based persistence is canonical for agent definitions.
-    // Keep non-file profile aliases for compatibility while avoiding SQL paths.
     this.registerProviderLoader("sqlite", loadFileAgentDefinitionProvider);
     this.registerProviderLoader("postgresql", loadFileAgentDefinitionProvider);
     this.registerProviderLoader("file", loadFileAgentDefinitionProvider);

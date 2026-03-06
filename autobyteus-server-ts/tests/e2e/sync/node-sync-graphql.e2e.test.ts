@@ -9,6 +9,38 @@ function uniqueId(prefix: string): string {
   return `${prefix}_${Date.now()}_${Math.random().toString(16).slice(2)}`;
 }
 
+function buildAgentMd(input: {
+  name: string;
+  description: string;
+  category?: string;
+  role?: string;
+  instructions: string;
+}): string {
+  const lines = ["---", `name: ${input.name}`, `description: ${input.description}`];
+  if (input.category) {
+    lines.push(`category: ${input.category}`);
+  }
+  if (input.role) {
+    lines.push(`role: ${input.role}`);
+  }
+  lines.push("---", "", input.instructions);
+  return lines.join("\n");
+}
+
+function buildTeamMd(input: {
+  name: string;
+  description: string;
+  category?: string;
+  instructions: string;
+}): string {
+  const lines = ["---", `name: ${input.name}`, `description: ${input.description}`];
+  if (input.category) {
+    lines.push(`category: ${input.category}`);
+  }
+  lines.push("---", "", input.instructions);
+  return lines.join("\n");
+}
+
 describe("Node sync GraphQL endpoint e2e", () => {
   let schema: GraphQLSchema;
   let graphql: typeof graphqlFn;
@@ -90,23 +122,25 @@ describe("Node sync GraphQL endpoint e2e", () => {
             agent_definition: [
               {
                 agentId,
-                agent: {
-                  name: agentName,
-                  role: "assistant",
-                  description: "sync-import-v1",
-                  avatarUrl: null,
-                  activePromptVersion: 1,
-                  toolNames: [],
-                  inputProcessorNames: [],
-                  llmResponseProcessorNames: [],
-                  systemPromptProcessorNames: [],
-                  toolExecutionResultProcessorNames: [],
-                  toolInvocationPreprocessorNames: [],
-                  lifecycleProcessorNames: [],
-                  skillNames: [],
-                },
-                promptVersions: {
-                  "1": "prompt-content-v1",
+                files: {
+                  agentMd: buildAgentMd({
+                    name: agentName,
+                    role: "assistant",
+                    description: "sync-import-v1",
+                    category: "sync",
+                    instructions: "sync agent instructions v1",
+                  }),
+                  agentConfigJson: JSON.stringify({
+                    toolNames: ["tool_a"],
+                    skillNames: ["skill_a"],
+                    inputProcessorNames: [],
+                    llmResponseProcessorNames: [],
+                    systemPromptProcessorNames: [],
+                    toolExecutionResultProcessorNames: [],
+                    toolInvocationPreprocessorNames: [],
+                    lifecycleProcessorNames: [],
+                    avatarUrl: null,
+                  }),
                 },
               },
             ],
@@ -138,23 +172,25 @@ describe("Node sync GraphQL endpoint e2e", () => {
             agent_definition: [
               {
                 agentId,
-                agent: {
-                  name: agentName,
-                  role: "assistant",
-                  description: "sync-import-v2",
-                  avatarUrl: null,
-                  activePromptVersion: 1,
-                  toolNames: [],
-                  inputProcessorNames: [],
-                  llmResponseProcessorNames: [],
-                  systemPromptProcessorNames: [],
-                  toolExecutionResultProcessorNames: [],
-                  toolInvocationPreprocessorNames: [],
-                  lifecycleProcessorNames: [],
-                  skillNames: [],
-                },
-                promptVersions: {
-                  "1": "prompt-content-v2",
+                files: {
+                  agentMd: buildAgentMd({
+                    name: agentName,
+                    role: "assistant",
+                    description: "sync-import-v2",
+                    category: "sync",
+                    instructions: "sync agent instructions v2",
+                  }),
+                  agentConfigJson: JSON.stringify({
+                    toolNames: ["tool_a", "tool_b"],
+                    skillNames: ["skill_a", "skill_b"],
+                    inputProcessorNames: [],
+                    llmResponseProcessorNames: [],
+                    systemPromptProcessorNames: [],
+                    toolExecutionResultProcessorNames: [],
+                    toolInvocationPreprocessorNames: [],
+                    lifecycleProcessorNames: [],
+                    avatarUrl: null,
+                  }),
                 },
               },
             ],
@@ -175,20 +211,65 @@ describe("Node sync GraphQL endpoint e2e", () => {
           id
           name
           description
-          activePromptVersion
+          instructions
+          toolNames
+          skillNames
         }
       }
     `;
 
     const details = await execGraphql<{
       agentDefinition:
-        | { id: string; name: string; description: string; activePromptVersion: number }
+        | {
+            id: string;
+            name: string;
+            description: string;
+            instructions: string;
+            toolNames: string[];
+            skillNames: string[];
+          }
         | null;
     }>(detailsQuery, { id: agentId });
 
     expect(details.agentDefinition?.name).toBe(agentName);
     expect(details.agentDefinition?.description).toBe("sync-import-v2");
-    expect(details.agentDefinition?.activePromptVersion).toBe(1);
+    expect(details.agentDefinition?.instructions).toBe("sync agent instructions v2");
+    expect(details.agentDefinition?.toolNames).toEqual(["tool_a", "tool_b"]);
+    expect(details.agentDefinition?.skillNames).toEqual(["skill_a", "skill_b"]);
+
+    const exportQuery = `
+      query ExportSyncBundle($input: ExportNodeSyncBundleInput!) {
+        exportSyncBundle(input: $input) {
+          entities
+        }
+      }
+    `;
+
+    const exported = await execGraphql<{
+      exportSyncBundle: {
+        entities: Record<string, Array<Record<string, unknown>>>;
+      };
+    }>(exportQuery, {
+      input: {
+        scope: ["AGENT_DEFINITION"],
+        selection: {
+          agentDefinitionIds: [agentId],
+          includeDependencies: true,
+        },
+      },
+    });
+
+    const agentEntities = exported.exportSyncBundle.entities.agent_definition ?? [];
+    expect(agentEntities).toHaveLength(1);
+    expect(agentEntities[0]?.agentId).toBe(agentId);
+    expect(agentEntities[0]).not.toHaveProperty("agent");
+    expect(agentEntities[0]).not.toHaveProperty("promptVersions");
+    const exportedFiles = agentEntities[0]?.files as
+      | { agentMd?: string; agentConfigJson?: string }
+      | undefined;
+    expect(typeof exportedFiles?.agentMd).toBe("string");
+    expect(typeof exportedFiles?.agentConfigJson).toBe("string");
+    expect(exportedFiles?.agentMd).toContain("sync agent instructions v2");
   });
 
   it("exports only selected team dependency closure from exportSyncBundle endpoint", async () => {
@@ -210,6 +291,7 @@ describe("Node sync GraphQL endpoint e2e", () => {
           name: `agent_a_${unique}`,
           role: "assistant",
           description: "agent a",
+          instructions: "agent a instructions",
         },
       },
     );
@@ -221,6 +303,7 @@ describe("Node sync GraphQL endpoint e2e", () => {
           name: `agent_b_${unique}`,
           role: "assistant",
           description: "agent b",
+          instructions: "agent b instructions",
         },
       },
     );
@@ -240,12 +323,13 @@ describe("Node sync GraphQL endpoint e2e", () => {
         input: {
           name: `team_${unique}`,
           description: "team selective",
+          instructions: "team selective instructions",
           coordinatorMemberName: "leader",
           nodes: [
             {
               memberName: "leader",
-              referenceId: agentA.createAgentDefinition.id,
-              referenceType: "AGENT",
+              ref: agentA.createAgentDefinition.id,
+              refType: "AGENT",
             },
           ],
         },
@@ -304,6 +388,7 @@ describe("Node sync GraphQL endpoint e2e", () => {
         name: `agent_${unique}`,
         role: "assistant",
         description: "full sync agent",
+        instructions: "full sync agent instructions",
         toolNames: ["tool_alpha"],
       },
     });
@@ -322,12 +407,13 @@ describe("Node sync GraphQL endpoint e2e", () => {
       input: {
         name: `team_${unique}`,
         description: "full sync team",
+        instructions: "full sync team instructions",
         coordinatorMemberName: "leader",
         nodes: [
           {
             memberName: "leader",
-            referenceId: createdAgent.createAgentDefinition.id,
-            referenceType: "AGENT",
+            ref: createdAgent.createAgentDefinition.id,
+            refType: "AGENT",
           },
         ],
       },
@@ -371,6 +457,7 @@ describe("Node sync GraphQL endpoint e2e", () => {
           name
           toolNames
           description
+          instructions
         }
       }
     `;
@@ -380,12 +467,14 @@ describe("Node sync GraphQL endpoint e2e", () => {
         name: string;
         toolNames: string[];
         description: string;
+        instructions: string;
       };
     }>(createAgentMutation, {
       input: {
         name: agentName,
         role: "assistant",
         description: "target-old-description",
+        instructions: "target-old-instructions",
         toolNames: ["tool_old"],
       },
     });
@@ -428,23 +517,24 @@ describe("Node sync GraphQL endpoint e2e", () => {
             agent_definition: [
               {
                 agentId: existingAgent.createAgentDefinition.id,
-                agent: {
-                  name: agentName,
-                  role: "assistant",
-                  description: "source-new-description",
-                  avatarUrl: null,
-                  activePromptVersion: 1,
-                  toolNames: ["tool_old", "tool_new"],
-                  inputProcessorNames: [],
-                  llmResponseProcessorNames: [],
-                  systemPromptProcessorNames: [],
-                  toolExecutionResultProcessorNames: [],
-                  toolInvocationPreprocessorNames: [],
-                  lifecycleProcessorNames: [],
-                  skillNames: [],
-                },
-                promptVersions: {
-                  "1": "overwrite prompt",
+                files: {
+                  agentMd: buildAgentMd({
+                    name: agentName,
+                    role: "assistant",
+                    description: "source-new-description",
+                    instructions: "source-new-instructions",
+                  }),
+                  agentConfigJson: JSON.stringify({
+                    toolNames: ["tool_old", "tool_new"],
+                    inputProcessorNames: [],
+                    llmResponseProcessorNames: [],
+                    systemPromptProcessorNames: [],
+                    toolExecutionResultProcessorNames: [],
+                    toolInvocationPreprocessorNames: [],
+                    lifecycleProcessorNames: [],
+                    skillNames: [],
+                    avatarUrl: null,
+                  }),
                 },
               },
             ],
@@ -465,6 +555,7 @@ describe("Node sync GraphQL endpoint e2e", () => {
           id
           name
           description
+          instructions
           toolNames
         }
       }
@@ -474,12 +565,14 @@ describe("Node sync GraphQL endpoint e2e", () => {
         id: string;
         name: string;
         description: string;
+        instructions: string;
         toolNames: string[];
       } | null;
     }>(agentQuery, { id: existingAgent.createAgentDefinition.id });
 
     expect(updatedAgent.agentDefinition?.name).toBe(agentName);
     expect(updatedAgent.agentDefinition?.description).toBe("source-new-description");
+    expect(updatedAgent.agentDefinition?.instructions).toBe("source-new-instructions");
     expect(updatedAgent.agentDefinition?.toolNames).toEqual(["tool_old", "tool_new"]);
   });
 
@@ -657,5 +750,128 @@ describe("Node sync GraphQL endpoint e2e", () => {
     expect(importedConfig).toBeDefined();
     expect(importedConfig?.token ?? null).toBeNull();
     expect(importedConfig?.headers ?? null).toBeNull();
+  });
+
+  it("exports and imports team file payloads with files.teamMd/teamConfigJson", async () => {
+    const unique = uniqueId("sync_team");
+    const teamId = `team_${unique}`;
+    const agentId = `agent_${unique}`;
+
+    const importMutation = `
+      mutation ImportSyncBundle($input: ImportNodeSyncBundleInput!) {
+        importSyncBundle(input: $input) {
+          success
+          summary {
+            processed
+            created
+            updated
+          }
+          failures {
+            entityType
+            key
+            message
+          }
+        }
+      }
+    `;
+
+    const importResult = await execGraphql<{
+      importSyncBundle: {
+        success: boolean;
+        summary: { processed: number; created: number; updated: number };
+      };
+    }>(importMutation, {
+      input: {
+        scope: ["AGENT_DEFINITION", "AGENT_TEAM_DEFINITION"],
+        conflictPolicy: "SOURCE_WINS",
+        tombstonePolicy: "SOURCE_DELETE_WINS",
+        bundle: {
+          watermark: new Date().toISOString(),
+          entities: {
+            agent_definition: [
+              {
+                agentId,
+                files: {
+                  agentMd: buildAgentMd({
+                    name: `Agent ${unique}`,
+                    role: "assistant",
+                    description: "team sync dependency agent",
+                    instructions: "dependency agent instructions",
+                  }),
+                  agentConfigJson: JSON.stringify({
+                    toolNames: [],
+                    skillNames: [],
+                    inputProcessorNames: [],
+                    llmResponseProcessorNames: [],
+                    systemPromptProcessorNames: [],
+                    toolExecutionResultProcessorNames: [],
+                    toolInvocationPreprocessorNames: [],
+                    lifecycleProcessorNames: [],
+                    avatarUrl: null,
+                  }),
+                },
+              },
+            ],
+            agent_team_definition: [
+              {
+                teamId,
+                files: {
+                  teamMd: buildTeamMd({
+                    name: `Team ${unique}`,
+                    description: "team sync import",
+                    category: "sync",
+                    instructions: "team sync instructions",
+                  }),
+                  teamConfigJson: JSON.stringify({
+                    coordinatorMemberName: "leader",
+                    members: [{ memberName: "leader", ref: agentId, refType: "agent" }],
+                    avatarUrl: null,
+                  }),
+                },
+              },
+            ],
+          },
+          tombstones: {},
+        },
+      },
+    });
+
+    expect(importResult.importSyncBundle.success).toBe(true);
+    expect(importResult.importSyncBundle.summary.processed).toBe(2);
+    expect(importResult.importSyncBundle.summary.created).toBe(2);
+
+    const exportQuery = `
+      query ExportSyncBundle($input: ExportNodeSyncBundleInput!) {
+        exportSyncBundle(input: $input) {
+          entities
+        }
+      }
+    `;
+
+    const exported = await execGraphql<{
+      exportSyncBundle: {
+        entities: Record<string, Array<Record<string, unknown>>>;
+      };
+    }>(exportQuery, {
+      input: {
+        scope: ["AGENT_TEAM_DEFINITION"],
+        selection: {
+          agentTeamDefinitionIds: [teamId],
+          includeDependencies: true,
+        },
+      },
+    });
+
+    const teamEntities = exported.exportSyncBundle.entities.agent_team_definition ?? [];
+    expect(teamEntities).toHaveLength(1);
+    expect(teamEntities[0]?.teamId).toBe(teamId);
+    expect(teamEntities[0]).not.toHaveProperty("team");
+
+    const files = teamEntities[0]?.files as
+      | { teamMd?: string; teamConfigJson?: string }
+      | undefined;
+    expect(typeof files?.teamMd).toBe("string");
+    expect(typeof files?.teamConfigJson).toBe("string");
+    expect(files?.teamMd).toContain("team sync instructions");
   });
 });

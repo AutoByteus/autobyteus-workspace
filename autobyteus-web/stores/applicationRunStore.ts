@@ -23,7 +23,7 @@ import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 
 function _resolveAgentLlmConfig(profile: ApplicationLaunchProfile): Record<string, string> {
   const finalConfig: Record<string, string> = {};
-  const agentMembers = profile.teamDefinition.nodes.filter(n => n.referenceType === 'AGENT');
+  const agentMembers = profile.teamDefinition.nodes.filter(n => n.refType === 'AGENT');
 
   for (const member of agentMembers) {
     finalConfig[member.memberName] = 
@@ -38,7 +38,7 @@ function _resolveApplicationMemberConfigs(
   const resolvedLlmConfig = _resolveAgentLlmConfig(profile);
   
   return profile.teamDefinition.nodes
-    .filter(n => n.referenceType === 'AGENT')
+    .filter(n => n.refType === 'AGENT')
     .map(memberNode => ({
       memberName: memberNode.memberName,
       llmModelIdentifier: resolvedLlmConfig[memberNode.memberName],
@@ -106,9 +106,9 @@ export const useApplicationRunStore = defineStore('applicationRun', {
         const memberOverrides: Record<string, MemberConfigOverride> = {};
         for (const [memberName, modelId] of Object.entries(profile.memberLlmConfigOverrides)) {
           const node = profile.teamDefinition.nodes.find(n => n.memberName === memberName);
-          if (!node || node.referenceType !== 'AGENT') continue;
+          if (!node || node.refType !== 'AGENT') continue;
           memberOverrides[memberName] = {
-            agentDefinitionId: node.referenceId,
+            agentDefinitionId: node.ref,
             llmModelIdentifier: modelId,
           };
         }
@@ -126,18 +126,18 @@ export const useApplicationRunStore = defineStore('applicationRun', {
 
         const resolvedLlmConfig = _resolveAgentLlmConfig(profile);
         const members = new Map<string, AgentContext>();
-        for (const agentNode of profile.teamDefinition.nodes.filter(n => n.referenceType === 'AGENT')) {
+        for (const agentNode of profile.teamDefinition.nodes.filter(n => n.refType === 'AGENT')) {
           const memberName = agentNode.memberName;
           const conversation: Conversation = {
             id: `${temporaryTeamRunId}::${memberName}`,
             messages: [],
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
-            agentDefinitionId: agentNode.referenceId,
+            agentDefinitionId: agentNode.ref,
           };
           const agentState = new AgentRunState(conversation.id, conversation);
           const agentConfig: AgentRunConfig = {
-            agentDefinitionId: agentNode.referenceId,
+            agentDefinitionId: agentNode.ref,
             agentDefinitionName: memberName,
             workspaceId: null,
             llmModelIdentifier: resolvedLlmConfig[memberName],

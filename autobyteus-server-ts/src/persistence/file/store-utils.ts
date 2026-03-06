@@ -150,6 +150,15 @@ export const writeJsonFile = async <T>(filePath: string, value: T): Promise<void
   });
 };
 
+export const writeRawFile = async (filePath: string, content: string): Promise<void> => {
+  await withPathLock(filePath, async () => {
+    await ensureParentDir(filePath);
+    const tempPath = getTempPath(filePath);
+    await fs.writeFile(tempPath, content, "utf-8");
+    await fs.rename(tempPath, filePath);
+  });
+};
+
 export const updateJsonArrayFile = async <T>(
   filePath: string,
   updater: (rows: T[]) => Promise<T[]> | T[],

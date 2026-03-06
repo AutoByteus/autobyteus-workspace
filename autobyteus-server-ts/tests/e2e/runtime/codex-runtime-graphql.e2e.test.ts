@@ -1628,11 +1628,21 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
       await waitForSocketOpen(socket);
 
       const finished = new Promise<void>((resolve, reject) => {
+        let completed = false;
         const buildPrompt = (attempt: number): string => {
           if (attempt === 1) {
             return `Call the generate_image tool exactly once using these exact JSON arguments: {"prompt":"cute sea animal ${imageToken}","output_file_path":"${outputFilePath}"}. Do not call run_bash or edit_file. Do not simulate tool output.`;
           }
           return `Retry attempt ${attempt}: you must call generate_image now with exact JSON arguments {"prompt":"cute sea animal ${imageToken}","output_file_path":"${outputFilePath}"} and nothing else.`;
+        };
+
+        const resolveIfComplete = () => {
+          if (!completed && sawGenerateImageArguments) {
+            completed = true;
+            clearTimeout(fallbackSendTimer);
+            clearTimeout(timeout);
+            resolve();
+          }
         };
 
         const sendPrompt = () => {
@@ -1676,9 +1686,7 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
               return;
             }
             if (status === "IDLE" && sentPrompt && sawGenerateImageArguments) {
-              clearTimeout(fallbackSendTimer);
-              clearTimeout(timeout);
-              resolve();
+              resolveIfComplete();
               return;
             }
             if (status === "IDLE" && sentPrompt && !sawGenerateImageArguments && promptAttemptCount < maxPromptAttempts) {
@@ -1735,6 +1743,7 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
             outputPathArg.length > 0
           ) {
             sawGenerateImageArguments = true;
+            resolveIfComplete();
           }
         });
 

@@ -1,5 +1,3 @@
-import { NodeType as TeamNodeType } from '../../agent-team-definition/domain/enums.js';
-
 export interface NodeSyncSelectionSpec {
   agentDefinitionIds?: string[] | null;
   agentTeamDefinitionIds?: string[] | null;
@@ -8,18 +6,18 @@ export interface NodeSyncSelectionSpec {
 }
 
 export type NodeSyncSelectionErrorCode =
-  | 'selection-empty'
-  | 'invalid-selection-agent-id'
-  | 'invalid-selection-team-id'
-  | 'team-member-missing'
-  | 'nested-team-missing';
+  | "selection-empty"
+  | "invalid-selection-agent-id"
+  | "invalid-selection-team-id"
+  | "team-member-missing"
+  | "nested-team-missing";
 
 export class NodeSyncSelectionValidationError extends Error {
   readonly code: NodeSyncSelectionErrorCode;
 
   constructor(code: NodeSyncSelectionErrorCode, message: string) {
     super(message);
-    this.name = 'NodeSyncSelectionValidationError';
+    this.name = "NodeSyncSelectionValidationError";
     this.code = code;
   }
 }
@@ -31,8 +29,8 @@ type AgentDefinitionSnapshot = {
 
 type TeamNodeSnapshot = {
   memberName: string;
-  referenceId: string;
-  referenceType: TeamNodeType;
+  ref: string;
+  refType: "agent" | "agent_team";
 };
 
 type AgentTeamDefinitionSnapshot = {
@@ -61,7 +59,7 @@ type ResolveSelectionOptions = {
 };
 
 function normalizeNonEmptyString(value: string | null | undefined): string | null {
-  if (typeof value !== 'string') {
+  if (typeof value !== "string") {
     return null;
   }
   const trimmed = value.trim();
@@ -95,8 +93,8 @@ export class NodeSyncSelectionService {
 
     if (requestedAgentDefinitionIds.length === 0 && requestedAgentTeamDefinitionIds.length === 0) {
       throw new NodeSyncSelectionValidationError(
-        'selection-empty',
-        'Selective sync requires at least one agent definition ID or team definition ID.',
+        "selection-empty",
+        "Selective sync requires at least one agent definition ID or team definition ID.",
       );
     }
 
@@ -110,19 +108,19 @@ export class NodeSyncSelectionService {
 
     const agentsById = new Map(
       allAgents
-        .filter((agent) => typeof agent.id === 'string' && agent.id.length > 0)
+        .filter((agent) => typeof agent.id === "string" && agent.id.length > 0)
         .map((agent) => [agent.id as string, agent]),
     );
     const teamsById = new Map(
       allTeams
-        .filter((team) => typeof team.id === 'string' && team.id.length > 0)
+        .filter((team) => typeof team.id === "string" && team.id.length > 0)
         .map((team) => [team.id as string, team]),
     );
 
     for (const agentDefinitionId of requestedAgentDefinitionIds) {
       if (!agentsById.has(agentDefinitionId)) {
         throw new NodeSyncSelectionValidationError(
-          'invalid-selection-agent-id',
+          "invalid-selection-agent-id",
           `Selected agent definition ID was not found on source node: ${agentDefinitionId}`,
         );
       }
@@ -131,7 +129,7 @@ export class NodeSyncSelectionService {
     for (const teamDefinitionId of requestedAgentTeamDefinitionIds) {
       if (!teamsById.has(teamDefinitionId)) {
         throw new NodeSyncSelectionValidationError(
-          'invalid-selection-team-id',
+          "invalid-selection-team-id",
           `Selected team definition ID was not found on source node: ${teamDefinitionId}`,
         );
       }
@@ -171,37 +169,36 @@ export class NodeSyncSelectionService {
       const team = teamsById.get(teamDefinitionId);
       if (!team) {
         throw new NodeSyncSelectionValidationError(
-          'invalid-selection-team-id',
+          "invalid-selection-team-id",
           `Selected team definition ID was not found on source node: ${teamDefinitionId}`,
         );
       }
 
       for (const member of team.nodes) {
-        if (member.referenceType === TeamNodeType.AGENT) {
-          if (!agentsById.has(member.referenceId)) {
+        if (member.refType === "agent") {
+          if (!agentsById.has(member.ref)) {
             throw new NodeSyncSelectionValidationError(
-              'team-member-missing',
-              `Team '${team.name}' references missing agent '${member.referenceId}'.`,
+              "team-member-missing",
+              `Team '${team.name}' references missing agent '${member.ref}'.`,
             );
           }
-          resolvedAgentDefinitionIds.add(member.referenceId);
+          resolvedAgentDefinitionIds.add(member.ref);
           continue;
         }
 
-        if (member.referenceType === TeamNodeType.AGENT_TEAM) {
-          if (!teamsById.has(member.referenceId)) {
+        if (member.refType === "agent_team") {
+          if (!teamsById.has(member.ref)) {
             throw new NodeSyncSelectionValidationError(
-              'nested-team-missing',
-              `Team '${team.name}' references missing team '${member.referenceId}'.`,
+              "nested-team-missing",
+              `Team '${team.name}' references missing team '${member.ref}'.`,
             );
           }
-          if (!resolvedAgentTeamDefinitionIds.has(member.referenceId)) {
-            resolvedAgentTeamDefinitionIds.add(member.referenceId);
-            queue.push(member.referenceId);
+          if (!resolvedAgentTeamDefinitionIds.has(member.ref)) {
+            resolvedAgentTeamDefinitionIds.add(member.ref);
+            queue.push(member.ref);
           }
         }
       }
     }
   }
 }
-

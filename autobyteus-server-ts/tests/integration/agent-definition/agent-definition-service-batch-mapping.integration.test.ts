@@ -12,7 +12,8 @@ describe("AgentDefinitionService integration", () => {
         name: `File Mapping Agent ${i}-${randomUUID()}`,
         role: "Test",
         description: "Agent definition persistence verification",
-        activePromptVersion: i + 1,
+        instructions: `Agent instruction ${i}`,
+        category: `category-${i}`,
       });
       if (created.id) {
         createdAgentIds.push(created.id);
@@ -25,9 +26,8 @@ describe("AgentDefinitionService integration", () => {
     for (const [index, createdId] of createdAgentIds.entries()) {
       const definition = definitions.find((item) => item.id === createdId) ?? null;
       expect(definition).toBeDefined();
-      expect(definition?.systemPromptName ?? null).toBeNull();
-      expect(definition?.systemPromptCategory ?? null).toBeNull();
-      expect(definition?.activePromptVersion).toBe(index + 1);
+      expect(definition?.instructions).toBe(`Agent instruction ${index}`);
+      expect(definition?.category).toBe(`category-${index}`);
     }
   });
 });

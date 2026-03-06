@@ -35,8 +35,10 @@ type AgentDefinitionProvider = {
   create: (definition: AgentDefinition) => Promise<AgentDefinition>;
   getById: (id: string) => Promise<AgentDefinition | null>;
   getAll: () => Promise<AgentDefinition[]>;
+  getTemplates: () => Promise<AgentDefinition[]>;
   update: (definition: AgentDefinition) => Promise<AgentDefinition>;
   delete: (id: string) => Promise<boolean>;
+  duplicate: (sourceId: string, newId: string, newName: string) => Promise<AgentDefinition>;
   refresh?: () => Promise<void>;
 };
 
@@ -48,12 +50,24 @@ const normalizeOptionalString = (value: unknown): string | null => {
   return trimmed.length > 0 ? trimmed : null;
 };
 
+const slugify = (value: string): string => {
+  const normalized = value
+    .toLowerCase()
+    .trim()
+    .replace(/[_\s]+/g, "-")
+    .replace(/[^a-z0-9-]/g, "")
+    .replace(/-+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  return normalized || "agent";
+};
+
 export type AgentDefinitionCreateInput = {
   name: string;
-  role: string;
+  role?: string;
   description: string;
+  instructions: string;
+  category?: string;
   avatarUrl?: string | null;
-  activePromptVersion?: number;
   toolNames?: string[];
   inputProcessorNames?: string[];
   llmResponseProcessorNames?: string[];
@@ -62,8 +76,6 @@ export type AgentDefinitionCreateInput = {
   toolInvocationPreprocessorNames?: string[];
   lifecycleProcessorNames?: string[];
   skillNames?: string[];
-  systemPromptCategory?: string;
-  systemPromptName?: string;
 };
 
 export type AgentDefinitionUpdateInput = Partial<AgentDefinitionCreateInput>;
@@ -135,8 +147,12 @@ export class AgentDefinitionService {
     return definition;
   }
 
+  private nextAgentId(name: string): string {
+    return slugify(name);
+  }
+
   async createAgentDefinition(data: AgentDefinitionCreateInput): Promise<AgentDefinition> {
-    if (!data.name || !data.role || !data.description) {
+    if (!data.name || !data.description) {
       throw new Error("Missing required fields for agent definition creation.");
     }
 
@@ -144,13 +160,9 @@ export class AgentDefinitionService {
       name: data.name,
       role: data.role,
       description: data.description,
+      instructions: data.instructions ?? "",
+      category: data.category,
       avatarUrl: normalizeOptionalString(data.avatarUrl),
-      systemPromptCategory: normalizeOptionalString(data.systemPromptCategory),
-      systemPromptName: normalizeOptionalString(data.systemPromptName),
-      activePromptVersion:
-        Number.isInteger(data.activePromptVersion) && (data.activePromptVersion as number) > 0
-          ? (data.activePromptVersion as number)
-          : 1,
       toolNames: data.toolNames ?? [],
       inputProcessorNames: filterOptionalProcessorNames(
         data.inputProcessorNames ?? [],
@@ -191,6 +203,13 @@ export class AgentDefinitionService {
 
   async getAllAgentDefinitions(): Promise<AgentDefinition[]> {
     const definitions = await this.provider.getAll();
+    return definitions
+      .map((definition) => this.stripMandatoryProcessors(definition))
+      .filter((item): item is AgentDefinition => item !== null);
+  }
+
+  async getAgentTemplates(): Promise<AgentDefinition[]> {
+    const definitions = await this.provider.getTemplates();
     return definitions
       .map((definition) => this.stripMandatoryProcessors(definition))
       .filter((item): item is AgentDefinition => item !== null);
@@ -243,15 +262,6 @@ export class AgentDefinitionService {
         case "avatarUrl":
           nextValue = normalizeOptionalString(value);
           break;
-        case "activePromptVersion":
-          if (!Number.isInteger(value) || (value as number) <= 0) {
-            throw new Error("activePromptVersion must be a positive integer.");
-          }
-          break;
-        case "systemPromptCategory":
-        case "systemPromptName":
-          nextValue = normalizeOptionalString(value);
-          break;
         default:
           break;
       }
@@ -278,9 +288,24 @@ export class AgentDefinitionService {
     return success;
   }
 
+  async duplicateAgentDefinition(sourceId: string, newName: string): Promise<AgentDefinition> {
+    const source = await this.provider.getById(sourceId);
+    if (!source) {
+      throw new Error(`Agent Definition with ID ${sourceId} not found.`);
+    }
+    const newId = this.nextAgentId(newName);
+    const duplicated = await this.provider.duplicate(sourceId, newId, newName);
+    logger.info(`Agent Definition duplicated from '${sourceId}' to '${duplicated.id}'.`);
+    return this.stripMandatoryProcessors(duplicated) ?? duplicated;
+  }
+
   async refreshCache(): Promise<void> {
     if (typeof this.provider.refresh === "function") {
       await this.provider.refresh();
     }
+  }
+
+  async refresh(): Promise<void> {
+    return this.refreshCache();
   }
 }

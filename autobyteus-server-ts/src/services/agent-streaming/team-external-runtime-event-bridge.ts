@@ -125,7 +125,3 @@ export const getTeamExternalRuntimeEventBridge = (): TeamExternalRuntimeEventBri
   }
   return cachedTeamExternalRuntimeEventBridge;
 };
-
-// Backward-compatible aliases while callers migrate to runtime-neutral naming.
-export { TeamExternalRuntimeEventBridge as TeamCodexRuntimeEventBridge };
-export const getTeamCodexRuntimeEventBridge = getTeamExternalRuntimeEventBridge;

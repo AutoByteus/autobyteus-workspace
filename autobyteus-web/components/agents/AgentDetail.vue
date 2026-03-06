@@ -43,7 +43,7 @@
 
             <div class="text-center">
               <h1 class="text-2xl font-bold text-gray-900">{{ agentDef.name }}</h1>
-              <p class="text-sm text-indigo-700 font-medium mt-1">{{ agentDef.role }}</p>
+              <p v-if="agentDef.role" class="text-sm text-indigo-700 font-medium mt-1">{{ agentDef.role }}</p>
             </div>
 
             <div class="grid grid-cols-2 gap-2 text-center">
@@ -66,6 +66,11 @@
                 <span class="block i-heroicons-pencil-square-20-solid w-5 h-5 mr-2"></span>
                 Edit
               </button>
+              <AgentDuplicateButton
+                :agent-id="agentDef.id"
+                :default-name="agentDef.name"
+                @duplicated="handleDuplicated"
+              />
               <button @click="handleDelete(agentDef.id)" class="w-full px-4 py-2 bg-red-50 text-red-700 font-semibold rounded-md hover:bg-red-100 transition-colors flex items-center justify-center">
                 <span class="block i-heroicons-trash-20-solid w-5 h-5 mr-2"></span>
                 Delete
@@ -77,6 +82,15 @@
             <div class="rounded-xl border border-gray-200 bg-white p-5">
               <h2 class="text-lg font-semibold text-gray-800 mb-2">Description</h2>
               <p class="text-gray-600 whitespace-pre-wrap">{{ agentDef.description }}</p>
+              <div class="mt-4 border-t border-gray-200 pt-4">
+                <p class="text-xs uppercase tracking-wide text-gray-500">Category</p>
+                <p class="mt-1 text-sm text-gray-700">{{ agentDef.category || 'Uncategorized' }}</p>
+              </div>
+            </div>
+
+            <div class="rounded-xl border border-gray-200 bg-white p-5">
+              <h2 class="text-lg font-semibold text-gray-800 mb-2">Instructions</h2>
+              <p class="text-gray-600 whitespace-pre-wrap font-mono text-sm">{{ agentDef.instructions }}</p>
             </div>
 
             <div class="rounded-xl border border-gray-200 bg-white p-5">
@@ -133,6 +147,7 @@
 import { ref, computed, onMounted, toRefs, watch } from 'vue';
 import { useAgentDefinitionStore, type AgentDefinition } from '~/stores/agentDefinitionStore';
 import AgentDeleteConfirmDialog from '~/components/agents/AgentDeleteConfirmDialog.vue';
+import AgentDuplicateButton from '~/components/agents/AgentDuplicateButton.vue';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 
@@ -239,5 +254,9 @@ const onDeleteCanceled = () => {
 
 const goBackToList = () => {
   emit('navigate', { view: 'list' });
+};
+
+const handleDuplicated = (duplicatedId: string) => {
+  emit('navigate', { view: 'edit', id: duplicatedId });
 };
 </script>

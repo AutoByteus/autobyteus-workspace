@@ -16,7 +16,7 @@
         <h3 class="truncate text-xl font-semibold text-slate-900">{{ teamDef.name }}</h3>
         <p class="mt-1 line-clamp-2 text-sm text-slate-600">{{ descriptionText }}</p>
         <span class="mt-2 inline-flex items-center rounded-md bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">
-          {{ teamDef.role || 'No role specified' }}
+          {{ teamDef.category || 'Uncategorized' }}
         </span>
       </div>
 
@@ -46,15 +46,15 @@
     <div class="mt-4 flex flex-wrap items-center gap-2">
       <div
         v-for="node in previewNodes"
-        :key="`${node.memberName}-${node.referenceId}`"
-        :title="`${node.memberName} (${node.referenceType})`"
+        :key="`${node.memberName}-${node.ref}`"
+        :title="`${node.memberName} (${node.refType})`"
         class="inline-flex max-w-[14rem] items-center gap-1.5 rounded-full border px-2 py-0.5 text-xs font-medium"
-        :class="node.referenceType === 'AGENT' ? 'border-blue-200 bg-blue-50 text-blue-700' : 'border-violet-200 bg-violet-50 text-violet-700'"
+        :class="node.refType === 'AGENT' ? 'border-blue-200 bg-blue-50 text-blue-700' : 'border-violet-200 bg-violet-50 text-violet-700'"
       >
         <span class="inline-flex h-4 w-4 items-center justify-center rounded-full bg-white/80 text-[10px] font-semibold">{{ node.memberName.slice(0, 1).toUpperCase() }}</span>
         <span class="truncate">{{ node.memberName }}</span>
         <span
-          v-if="node.referenceType === 'AGENT_TEAM'"
+          v-if="node.refType === 'AGENT_TEAM'"
           class="shrink-0 rounded-full bg-violet-100 px-1.5 py-0.5 text-[10px] font-semibold text-violet-700"
         >
           TEAM
@@ -107,7 +107,7 @@ const teamNodes = computed(() =>
 );
 const previewNodes = computed(() => teamNodes.value.slice(0, MAX_MEMBER_PREVIEW));
 const remainingNodesCount = computed(() => Math.max(0, teamNodes.value.length - MAX_MEMBER_PREVIEW));
-const nestedTeamCount = computed(() => teamNodes.value.filter((node) => node.referenceType === 'AGENT_TEAM').length);
+const nestedTeamCount = computed(() => teamNodes.value.filter((node) => node.refType === 'AGENT_TEAM').length);
 
 const avatarUrl = computed(() => (teamDef.value.avatarUrl || '').trim());
 const showAvatarImage = computed(() => Boolean(avatarUrl.value) && !avatarLoadError.value);

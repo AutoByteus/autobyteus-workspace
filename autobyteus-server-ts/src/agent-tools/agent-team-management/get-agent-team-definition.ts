@@ -21,7 +21,6 @@ const logger = {
 };
 
 type AgentContextLike = {
-  // Core boundary from autobyteus-ts runtime; normalize immediately to `agentRunId` in local code.
   agentId?: string;
 };
 
@@ -29,12 +28,13 @@ const serializeDefinition = (definition: AgentTeamDefinition): Record<string, un
   id: definition.id ?? null,
   name: definition.name,
   description: definition.description,
-  role: definition.role ?? null,
+  instructions: definition.instructions,
+  category: definition.category ?? null,
   avatar_url: definition.avatarUrl ?? null,
   nodes: definition.nodes.map((node) => ({
     member_name: node.memberName,
-    reference_id: node.referenceId,
-    reference_type: node.referenceType,
+    ref: node.ref,
+    ref_type: node.refType,
   })),
   coordinator_member_name: definition.coordinatorMemberName,
 });

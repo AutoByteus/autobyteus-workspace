@@ -32,13 +32,14 @@ describe('agent-team-definition integration', () => {
             id: 'team-42',
             name: 'Distributed Team',
             description: 'Team across nodes',
-            role: null,
+            instructions: 'Coordinate team tasks across nodes.',
+            category: null,
             coordinatorMemberName: 'writer_agent',
             nodes: [
               {
                 memberName: 'writer_agent',
-                referenceId: 'agent-1',
-                referenceType: 'AGENT',
+                ref: 'agent-1',
+                refType: 'AGENT',
                 homeNodeId: 'embedded-local',
                 requiredNodeId: 'node-host',
                 preferredNodeId: 'node-worker',
@@ -54,13 +55,14 @@ describe('agent-team-definition integration', () => {
     const created = await store.createAgentTeamDefinition({
       name: 'Distributed Team',
       description: 'Team across nodes',
+      instructions: 'Coordinate team tasks across nodes.',
       coordinatorMemberName: 'writer_agent',
       nodes: [
         {
           __typename: 'TeamMember',
           memberName: 'writer_agent',
-          referenceId: 'agent-1',
-          referenceType: 'AGENT',
+          ref: 'agent-1',
+          refType: 'AGENT',
           requiredNodeId: 'node-host',
           preferredNodeId: 'node-worker',
         } as any,
@@ -70,8 +72,8 @@ describe('agent-team-definition integration', () => {
     const mutatePayload = mockMutate.mock.calls[0]?.[0]
     expect(mutatePayload?.variables?.input?.nodes?.[0]).toEqual({
       memberName: 'writer_agent',
-      referenceId: 'agent-1',
-      referenceType: 'AGENT',
+      ref: 'agent-1',
+      refType: 'AGENT',
       requiredNodeId: 'node-host',
       preferredNodeId: 'node-worker',
     })

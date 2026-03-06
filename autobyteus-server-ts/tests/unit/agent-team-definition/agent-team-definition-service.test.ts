@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { AgentTeamDefinitionService } from "../../../src/agent-team-definition/services/agent-team-definition-service.js";
 import { AgentTeamDefinition, AgentTeamDefinitionUpdate, TeamMember } from "../../../src/agent-team-definition/domain/models.js";
-import { NodeType } from "../../../src/agent-team-definition/domain/enums.js";
 
 describe("AgentTeamDefinitionService", () => {
   let provider: {
@@ -17,17 +16,18 @@ describe("AgentTeamDefinitionService", () => {
       id,
       name: "Team",
       description: "Desc",
-      role: "Role",
+      instructions: "Team instructions",
+      category: "coordination",
       nodes: [
         new TeamMember({
           memberName: "coord1",
-          referenceId: "agent1",
-          referenceType: NodeType.AGENT,
+          ref: "agent1",
+          refType: "agent",
         }),
         new TeamMember({
           memberName: "subteam2",
-          referenceId: "team2",
-          referenceType: NodeType.AGENT_TEAM,
+          ref: "team2",
+          refType: "agent_team",
         }),
       ],
       coordinatorMemberName: "coord1",
@@ -41,7 +41,8 @@ describe("AgentTeamDefinitionService", () => {
             id: "def-123",
             name: definition.name,
             description: definition.description,
-            role: definition.role ?? null,
+            instructions: definition.instructions,
+            category: definition.category ?? null,
             nodes: definition.nodes,
             coordinatorMemberName: definition.coordinatorMemberName,
           }),
@@ -116,7 +117,8 @@ describe("AgentTeamDefinitionService", () => {
 
     const updateData = new AgentTeamDefinitionUpdate({
       description: "Updated Description",
-      role: "New Role",
+      instructions: "Updated team instructions",
+      category: "updated-category",
       avatarUrl: "http://localhost:8000/rest/files/images/updated-team-avatar.png",
     });
 
@@ -125,9 +127,10 @@ describe("AgentTeamDefinitionService", () => {
     expect(provider.getById).toHaveBeenCalledWith("def-123");
     expect(provider.update).toHaveBeenCalledOnce();
     expect(updated.description).toBe("Updated Description");
-    expect(updated.role).toBe("New Role");
+    expect(updated.instructions).toBe("Updated team instructions");
+    expect(updated.category).toBe("updated-category");
     expect(updated.avatarUrl).toBe("http://localhost:8000/rest/files/images/updated-team-avatar.png");
-    expect(updated.nodes[1].referenceType).toBe(NodeType.AGENT_TEAM);
+    expect(updated.nodes[1].refType).toBe("agent_team");
   });
 
   it("throws when updating missing definitions", async () => {

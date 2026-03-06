@@ -84,14 +84,14 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
       const members = new Map<string, AgentContext>();
 
       for (const node of teamDef.nodes) {
-        if (node.referenceType !== 'AGENT') continue;
+        if (node.refType !== 'AGENT') continue;
 
-        const agentDef = agentDefinitionStore.getAgentDefinitionById(node.referenceId);
+        const agentDef = agentDefinitionStore.getAgentDefinitionById(node.ref);
         const defName = agentDef?.name || node.memberName;
         const override = template.memberOverrides[node.memberName];
 
         const memberConfig: AgentRunConfig = {
-          agentDefinitionId: node.referenceId,
+          agentDefinitionId: node.ref,
           agentDefinitionName: defName,
           llmModelIdentifier: override?.llmModelIdentifier || template.llmModelIdentifier,
           runtimeKind: template.runtimeKind || DEFAULT_AGENT_RUNTIME_KIND,
@@ -106,7 +106,7 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
           messages: [],
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
-          agentDefinitionId: node.referenceId,
+          agentDefinitionId: node.ref,
           agentName: defName,
         };
 

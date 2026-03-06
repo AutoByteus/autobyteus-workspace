@@ -112,8 +112,8 @@ Each team consists of **nodes** (members) that can be:
 ```typescript
 interface TeamMember {
   memberName: string; // Unique identifier within team
-  referenceId: string; // ID of agent or team
-  referenceType: "AGENT" | "AGENT_TEAM";
+  ref: string; // ID of agent or team
+  refType: "AGENT" | "AGENT_TEAM";
 }
 ```
 
@@ -134,12 +134,13 @@ interface AgentTeamDefinition {
   id: string;
   name: string;
   description: string;
-  role?: string;
+  instructions: string;
+  category?: string;
   coordinatorMemberName: string;
   nodes: {
     memberName: string;
-    referenceId: string;
-    referenceType: "AGENT" | "AGENT_TEAM";
+    ref: string;
+    refType: "AGENT" | "AGENT_TEAM";
   }[];
 }
 ```

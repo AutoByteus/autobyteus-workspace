@@ -5,10 +5,10 @@ import type { AgentConfig } from "autobyteus-ts/agent/context/agent-config.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
 import { FileAgentDefinitionProvider } from "../../../src/agent-definition/providers/file-agent-definition-provider.js";
-import { PromptLoader } from "../../../src/prompt-engineering/utils/prompt-loader.js";
+import { PromptLoader } from "../../../src/agent-definition/utils/prompt-loader.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 
-describe("AgentRunManager prompt fallback integration (no mocks)", () => {
+describe("AgentRunManager prompt loading integration (no mocks)", () => {
   const cleanupPaths = new Set<string>();
 
   afterEach(async () => {
@@ -18,7 +18,7 @@ describe("AgentRunManager prompt fallback integration (no mocks)", () => {
     cleanupPaths.clear();
   });
 
-  it("falls back to agent description when active prompt markdown file is missing", async () => {
+  it("uses instructions from agent.md as the system prompt", async () => {
     const provider = new FileAgentDefinitionProvider();
     const agentDefinitionService = new AgentDefinitionService({
       provider,
@@ -26,15 +26,17 @@ describe("AgentRunManager prompt fallback integration (no mocks)", () => {
 
     const unique = `fallback_${Date.now()}_${Math.random().toString(16).slice(2, 8)}`;
     const description = `Description fallback for ${unique}`;
+    const instructions = `Follow instructions for ${unique}`;
     const created = await agentDefinitionService.createAgentDefinition({
       name: `Fallback Agent ${unique}`,
       role: "assistant",
       description,
-      activePromptVersion: 99,
+      instructions,
       toolNames: [],
     });
     expect(created.id).toBeTruthy();
-    cleanupPaths.add(path.join(appConfigProvider.config.getAppDataDir(), "agents", created.id as string));
+    const agentDir = path.join(appConfigProvider.config.getAppDataDir(), "agents", created.id as string);
+    cleanupPaths.add(agentDir);
 
     let capturedConfig: AgentConfig | null = null;
     const manager = new AgentRunManager({
@@ -100,6 +102,6 @@ describe("AgentRunManager prompt fallback integration (no mocks)", () => {
 
     expect(runId).toBe(`run_${unique}`);
     expect(capturedConfig).not.toBeNull();
-    expect(capturedConfig?.systemPrompt).toBe(description);
+    expect(capturedConfig?.systemPrompt).toBe(instructions);
   });
 });

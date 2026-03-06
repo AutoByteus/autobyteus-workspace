@@ -455,6 +455,7 @@ describe("Team run history GraphQL e2e", () => {
         name: `history-agent-${unique}`,
         role: "assistant",
         description: "History restore test agent",
+        instructions: "Respond concisely and preserve conversation context.",
       },
     });
     const agentDefinitionId = agentDefinitionResult.createAgentDefinition.id;
@@ -466,12 +467,13 @@ describe("Team run history GraphQL e2e", () => {
       input: {
         name: `history-team-${unique}`,
         description: "History restore team",
+        instructions: "Coordinate team members for history restore validation.",
         coordinatorMemberName: "professor",
         nodes: [
           {
             memberName: "professor",
-            referenceId: agentDefinitionId,
-            referenceType: "AGENT",
+            ref: agentDefinitionId,
+            refType: "AGENT",
           },
         ],
       },
@@ -660,6 +662,7 @@ describe("Team run history GraphQL e2e", () => {
         name: `history-professor-${unique}`,
         role: "assistant",
         description: "History restore test professor agent",
+        instructions: "Act as professor and preserve memory across turns.",
       },
     });
     const professorDefinitionId = professorDefinitionResult.createAgentDefinition.id;
@@ -672,6 +675,7 @@ describe("Team run history GraphQL e2e", () => {
         name: `history-student-${unique}`,
         role: "assistant",
         description: "History restore test student agent",
+        instructions: "Act as student and preserve memory across turns.",
       },
     });
     const studentDefinitionId = studentDefinitionResult.createAgentDefinition.id;
@@ -683,17 +687,18 @@ describe("Team run history GraphQL e2e", () => {
       input: {
         name: `history-team-multi-${unique}`,
         description: "History restore multi-member team",
+        instructions: "Coordinate professor and student for memory restore validation.",
         coordinatorMemberName: "professor",
         nodes: [
           {
             memberName: "professor",
-            referenceId: professorDefinitionId,
-            referenceType: "AGENT",
+            ref: professorDefinitionId,
+            refType: "AGENT",
           },
           {
             memberName: "student",
-            referenceId: studentDefinitionId,
-            referenceType: "AGENT",
+            ref: studentDefinitionId,
+            refType: "AGENT",
           },
         ],
       },
@@ -871,6 +876,7 @@ describe("Team run history GraphQL e2e", () => {
           name: `history-lmstudio-agent-${unique}`,
           role: "assistant",
           description: "Real LM Studio continuation restore agent",
+          instructions: "Respond accurately and preserve remembered tokens.",
         },
       });
       const agentDefinitionId = agentDefinitionResult.createAgentDefinition.id;
@@ -882,12 +888,13 @@ describe("Team run history GraphQL e2e", () => {
         input: {
           name: `history-team-lmstudio-${unique}`,
           description: "Real LM Studio continuation restore team",
+          instructions: "Coordinate continuation and preserve member context.",
           coordinatorMemberName: "professor",
           nodes: [
             {
               memberName: "professor",
-              referenceId: agentDefinitionId,
-              referenceType: "AGENT",
+              ref: agentDefinitionId,
+              refType: "AGENT",
             },
           ],
         },
