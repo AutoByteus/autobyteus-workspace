@@ -1,6 +1,7 @@
 import {
   asObject,
   asString,
+  type ClaudeSdkPermissionMode,
   type ClaudeSdkModuleLike,
 } from "./claude-runtime-shared.js";
 import { resolveSdkFunction, tryCallWithVariants } from "./claude-runtime-sdk-interop.js";
@@ -123,6 +124,7 @@ export const createOrResumeClaudeV2Session = async (options: {
   env?: Record<string, string | undefined>;
   resumeSessionId: string | null;
   enableSendMessageToTooling: boolean;
+  permissionMode?: ClaudeSdkPermissionMode;
   autoExecuteTools?: boolean;
   canUseTool?: ClaudeCanUseTool;
 }): Promise<ClaudeV2SessionLike> => {
@@ -135,7 +137,7 @@ export const createOrResumeClaudeV2Session = async (options: {
   const sessionOptions: Record<string, unknown> = {
     model: options.model,
     pathToClaudeCodeExecutable: options.pathToClaudeCodeExecutable,
-    permissionMode: "default",
+    permissionMode: options.permissionMode ?? "default",
     ...(options.workingDirectory ? { cwd: options.workingDirectory } : {}),
     ...(options.env ? { env: options.env } : {}),
     ...(options.enableSendMessageToTooling

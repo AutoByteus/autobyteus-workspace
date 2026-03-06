@@ -6,7 +6,7 @@ This review validates alignment with target (`to-be`) design behavior, not parit
 ## Review Meta
 
 - Scope Classification: `Medium`
-- Current Round: `18`
+- Current Round: `26`
 - Current Review Type: `Deep Review`
 - Clean-Review Streak Before This Round: `1`
 - Clean-Review Streak After This Round: `2`
@@ -24,8 +24,8 @@ This review validates alignment with target (`to-be`) design behavior, not parit
   - `Medium/Large`: `tickets/in-progress/runtime-decoupling-refactor/proposed-design.md`
 - Artifact Versions In This Round:
   - Requirements Status: `Refined`
-  - Design Version: `v10`
-  - Call Stack Version: `v9`
+  - Design Version: `v14`
+  - Call Stack Version: `v13`
 - Required Persisted Artifact Updates Completed For This Round: `Yes`
 
 ## Review Intent (Mandatory)
@@ -63,6 +63,14 @@ This review validates alignment with target (`to-be`) design behavior, not parit
 | 16 | Refined | v9 | v8 | No | No | N/A | N/A | N/A | 2 | Go Confirmed | Go |
 | 17 | Refined | v10 | v9 | No | No | N/A | N/A | N/A | 1 | Candidate Go | No-Go |
 | 18 | Refined | v10 | v9 | No | No | N/A | N/A | N/A | 2 | Go Confirmed | Go |
+| 19 | Refined | v11 | v10 | No | No | N/A | N/A | N/A | 1 | Candidate Go | No-Go |
+| 20 | Refined | v11 | v10 | No | No | N/A | N/A | N/A | 2 | Go Confirmed | Go |
+| 21 | Refined | v12 | v11 | No | No | N/A | N/A | N/A | 1 | Candidate Go | No-Go |
+| 22 | Refined | v12 | v11 | No | No | N/A | N/A | N/A | 2 | Go Confirmed | Go |
+| 23 | Refined | v13 | v12 | No | No | N/A | N/A | N/A | 1 | Candidate Go | No-Go |
+| 24 | Refined | v13 | v12 | No | No | N/A | N/A | N/A | 2 | Go Confirmed | Go |
+| 25 | Refined | v14 | v13 | No | No | N/A | N/A | N/A | 1 | Candidate Go | No-Go |
+| 26 | Refined | v14 | v13 | No | No | N/A | N/A | N/A | 2 | Go Confirmed | Go |
 
 Notes:
 - No fixed round count is hard-coded.
@@ -92,6 +100,14 @@ Notes:
 | 16 | No | None | None | None | N/A |
 | 17 | No | None | None | None | N/A |
 | 18 | No | None | None | None | N/A |
+| 19 | No | `workflow-state.md`, `investigation-notes.md`, `requirements.md`, `proposed-design.md`, `future-state-runtime-call-stack.md` | Design `v10 -> v11`; Call stack `v9 -> v10` | Claude post-merge residual cleanup delta (`C-035`, `C-036`) | N/A |
+| 20 | No | `future-state-runtime-call-stack-review.md`, `workflow-state.md` | Review rounds `19 -> 20` | Gate reconfirmation for single team-runtime bridge seam | N/A |
+| 21 | No | `workflow-state.md`, `investigation-notes.md`, `proposed-design.md`, `future-state-runtime-call-stack.md` | Design `v11 -> v12`; Call stack `v10 -> v11` | Re-review blocker remediation scope (`C-037`, `C-038`) | N/A |
+| 22 | No | `future-state-runtime-call-stack-review.md`, `workflow-state.md` | Review rounds `21 -> 22` | Gate reconfirmation for residual coupling cleanup seam | N/A |
+| 23 | No | `workflow-state.md`, `investigation-notes.md`, `requirements.md`, `proposed-design.md`, `future-state-runtime-call-stack.md` | Design `v12 -> v13`; Call stack `v11 -> v12` | Strict no-legacy refinement scope (`C-042`, `C-043`) | N/A |
+| 24 | No | `future-state-runtime-call-stack-review.md`, `workflow-state.md` | Review rounds `23 -> 24` | Gate reconfirmation for strict no-legacy scope | N/A |
+| 25 | No | `workflow-state.md`, `investigation-notes.md`, `requirements.md`, `proposed-design.md`, `future-state-runtime-call-stack.md` | Design `v13 -> v14`; Call stack `v12 -> v13` | Claude sandbox/permission parity refinement scope (`C-047`, `C-048`) | N/A |
+| 26 | No | `future-state-runtime-call-stack-review.md`, `workflow-state.md` | Review rounds `25 -> 26` | Gate reconfirmation for Claude sandbox parity scope | N/A |
 
 Rule:
 - A round is incomplete until required file updates are physically written and logged.
@@ -119,6 +135,14 @@ Rule:
 | 16 | Requirement coverage / boundary crossing / fallback-error / design-risk | None | N/A | N/A | N/A | No |
 | 17 | Requirement coverage / boundary crossing / fallback-error / design-risk | None | N/A | N/A | N/A | No |
 | 18 | Requirement coverage / boundary crossing / fallback-error / design-risk | None | N/A | N/A | N/A | No |
+| 19 | Requirement coverage / boundary crossing / fallback-error / design-risk | None | N/A | N/A | N/A | No |
+| 20 | Requirement coverage / boundary crossing / fallback-error / design-risk | None | N/A | N/A | N/A | No |
+| 21 | Requirement coverage / boundary crossing / fallback-error / design-risk | None | N/A | N/A | N/A | No |
+| 22 | Requirement coverage / boundary crossing / fallback-error / design-risk | None | N/A | N/A | N/A | No |
+| 23 | Requirement coverage / boundary crossing / fallback-error / design-risk | None | N/A | N/A | N/A | No |
+| 24 | Requirement coverage / boundary crossing / fallback-error / design-risk | None | N/A | N/A | N/A | No |
+| 25 | Requirement coverage / boundary crossing / fallback-error / design-risk | None | N/A | N/A | N/A | No |
+| 26 | Requirement coverage / boundary crossing / fallback-error / design-risk | None | N/A | N/A | N/A | No |
 
 Rule:
 - Missing-use-case discovery must run in every round before gate verdict.
@@ -146,6 +170,12 @@ Rule:
 | UC-016 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | Pass | Pass | Pass | Pass |
 | UC-017 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | Pass | Pass | Pass | Pass |
 | UC-018 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | Pass | Pass | Pass | Pass |
+| UC-019 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | Pass | Pass | Pass | Pass |
+| UC-020 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | None | Pass | Pass | Pass | Pass | Pass | Pass |
+| UC-021 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | None | Pass | Pass | Pass | Pass | Pass | Pass |
+| UC-022 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | Pass | Pass | Pass | Pass |
+| UC-023 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | Pass | Pass | Pass | Pass |
+| UC-024 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | Pass | Pass | Pass | Pass |
 
 ## Findings
 

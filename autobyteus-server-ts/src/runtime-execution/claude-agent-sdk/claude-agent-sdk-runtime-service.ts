@@ -11,6 +11,7 @@ import {
   logger,
   nowTimestampSeconds,
   resolveClaudeCodeExecutablePath,
+  resolveClaudeSdkPermissionMode,
   type ClaudeInterAgentRelayHandler,
   type ClaudeRuntimeEvent,
   type ClaudeRunSessionState,
@@ -137,6 +138,14 @@ const resolveIncrementalDelta = (options: {
   return null;
 };
 
+const isTurnTerminalChunk = (chunk: unknown): boolean => {
+  const payload =
+    chunk && typeof chunk === "object" && !Array.isArray(chunk)
+      ? (chunk as Record<string, unknown>)
+      : null;
+  return asString(payload?.type)?.toLowerCase() === "result";
+};
+
 export class ClaudeAgentSdkRuntimeService {
   private readonly sessions = new Map<string, ClaudeRunSessionState>();
   private readonly workspaceManager = getWorkspaceManager();
@@ -166,12 +175,17 @@ export class ClaudeAgentSdkRuntimeService {
   ): Promise<{ sessionId: string; metadata: Record<string, unknown> }> {
     await this.closeRunSession(runId);
     const runtimeMetadata = { ...(options.runtimeMetadata ?? {}) };
+    const permissionMode = resolveClaudeSdkPermissionMode({
+      runtimeMetadata,
+      llmConfig: options.llmConfig,
+    });
     const state = createClaudeRunSessionState({
       runId,
       sessionId: runId,
       modelIdentifier: options.modelIdentifier,
       workingDirectory: options.workingDirectory,
       autoExecuteTools: Boolean(options.autoExecuteTools),
+      permissionMode,
       runtimeMetadata,
       hasCompletedTurn: false,
     });
@@ -212,12 +226,17 @@ export class ClaudeAgentSdkRuntimeService {
     // Avoid sending resume on first turn until we have a confirmed non-placeholder Claude session id.
     const hasCompletedTurn = resolvedSessionId !== null && resolvedSessionId !== runId;
     const runtimeMetadata = { ...(runtimeReference?.metadata ?? {}), ...(options.runtimeMetadata ?? {}) };
+    const permissionMode = resolveClaudeSdkPermissionMode({
+      runtimeMetadata,
+      llmConfig: options.llmConfig,
+    });
     const state = createClaudeRunSessionState({
       runId,
       sessionId,
       modelIdentifier: options.modelIdentifier,
       workingDirectory: options.workingDirectory,
       autoExecuteTools: resolvedAutoExecuteTools,
+      permissionMode,
       runtimeMetadata,
       hasCompletedTurn,
     });
@@ -542,6 +561,7 @@ export class ClaudeAgentSdkRuntimeService {
       }
       this.processToolLifecycleChunk(options.state, chunk);
       const normalized = normalizeClaudeStreamChunk(chunk);
+      const isTerminalChunk = isTurnTerminalChunk(chunk);
       this.adoptResolvedSessionId(options.state, normalized.sessionId);
 
       if (normalized.delta) {
@@ -552,6 +572,9 @@ export class ClaudeAgentSdkRuntimeService {
           hasObservedStreamingDelta,
         });
         if (!incrementalDelta) {
+          if (isTerminalChunk) {
+            break;
+          }
           continue;
         }
         if (normalized.source === "stream_delta") {
@@ -567,6 +590,12 @@ export class ClaudeAgentSdkRuntimeService {
             delta: incrementalDelta,
           },
         });
+      }
+
+      // Claude V2 sessions are long-lived; terminate this turn on the SDK result message
+      // instead of waiting for the stream itself to close.
+      if (isTerminalChunk) {
+        break;
       }
     }
 
@@ -618,6 +647,7 @@ export class ClaudeAgentSdkRuntimeService {
       env: buildClaudeSdkSpawnEnvironment(),
       resumeSessionId: state.hasCompletedTurn ? state.sessionId : null,
       enableSendMessageToTooling: this.isSendMessageToToolingEnabled(state),
+      permissionMode: state.permissionMode,
       autoExecuteTools: state.autoExecuteTools,
       canUseTool: (toolName, input, options) =>
         this.handleToolPermissionCheck(state, toolName, input, options),

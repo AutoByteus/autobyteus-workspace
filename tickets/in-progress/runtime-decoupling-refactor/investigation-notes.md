@@ -259,6 +259,37 @@
 - Trigger: `Stage 10` user-requested continuation for deeper runtime removability
 - Objective: remove final shared-layer edit requirements by centralizing runtime default registration behind one runtime-client composition seam.
 
+## Stage-10 Re-Entry Investigation Refresh 5 (Strict No-Legacy Sweep)
+
+- Date: `2026-03-05`
+- Trigger: user-requested strict no-legacy quality iteration after handoff-ready state
+- Objective: remove remaining legacy/compatibility behavior in active runtime-decoupling seams.
+
+### Additional Sources Consulted
+
+- `autobyteus-server-ts/src/runtime-execution/runtime-command-ingress-service.ts`
+- `autobyteus-server-ts/tests/unit/runtime-execution/runtime-command-ingress-service.test.ts`
+- `autobyteus-web/components/workspace/config/TeamRunConfigForm.vue`
+- `autobyteus-web/types/agent/TeamRunConfig.ts`
+- `autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts`
+
+### Findings
+
+1. `C-042` Runtime ingress retains legacy implicit-session fallback:
+   - `resolveSession()` still contains `canUseLegacyImplicitSession` behavior and auto-creates runtime sessions for active runs without explicit binding.
+   - This is a compatibility path that weakens explicit runtime session ownership boundaries.
+2. `C-043` Team config override model still carries legacy per-member runtime shape:
+   - `MemberConfigOverride` still exposes `runtimeKind?`.
+   - `TeamRunConfigForm` still rewrites legacy per-member runtime overrides under a backward-compatible cleanup branch.
+   - This keeps legacy schema compatibility logic in active shared frontend config path.
+
+### Scope Triage Confirmation
+
+- Classification: `Requirement Gap`
+- Reason:
+  - strict no-legacy/no-compat behavior must be explicit in requirements for active runtime ingress and team override shape,
+  - this is a bounded cross-backend/frontend cleanup that still impacts runtime contract expectations and should be reflected in design/runtime-model artifacts before implementation.
+
 ### Additional Sources Consulted In This Re-Entry
 
 - `autobyteus-server-ts/src/runtime-execution/runtime-adapter-registry.ts`
@@ -474,3 +505,379 @@
 - Reason:
   - Cross-layer impact across runtime registration, streaming contracts, team member runtime orchestration, and run-history projection behavior.
   - Requires requirements + design + runtime-model refresh to ensure Claude runtime lands without reintroducing runtime-specific coupling in shared layers.
+
+## Stage-10 Re-Entry Investigation Refresh 6 (Legacy External Team Runtime Bridge Cleanup)
+
+- Date: `2026-03-05`
+- Trigger: `Stage 10 -> Stage 1` re-entry continuation after Claude merge alignment
+- Objective: remove residual orphaned external-runtime event bridge wiring that still hardcodes optional runtimes in shared-layer modules.
+
+### Additional Sources Consulted In This Refresh
+
+- `autobyteus-server-ts/src/services/agent-streaming/team-runtime-event-bridge.ts`
+- `autobyteus-server-ts/src/services/agent-streaming/team-external-runtime-event-bridge.ts`
+- `autobyteus-server-ts/src/runtime-execution/external-runtime-event-source-registry.ts`
+- `autobyteus-server-ts/src/runtime-execution/external-runtime-event-source-port.ts`
+- `autobyteus-server-ts/src/services/agent-streaming/index.ts`
+- `autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts`
+- `autobyteus-server-ts/tests/unit/runtime-execution/external-runtime-event-source-registry.test.ts`
+
+### Findings
+
+1. Team member runtime event streaming already runs through runtime-neutral adapter seams:
+   - `AgentTeamStreamHandler` depends on `TeamRuntimeEventBridge`, which resolves adapters via `RuntimeAdapterRegistry` and maps by explicit `binding.runtimeKind`.
+2. Legacy external bridge path remains in tree but is unused by runtime entrypoints:
+   - `TeamExternalRuntimeEventBridge` is exported from streaming index but not referenced by runtime orchestration or handlers.
+3. Orphaned external runtime source registry is still hardcoded to Codex + Claude:
+   - `ExternalRuntimeEventSourceRegistry` directly imports and constructs runtime services in shared layer, violating current decoupling direction.
+4. Keeping both bridges increases architectural drift risk:
+   - duplicated team member-runtime event bridge concepts create competing seams and invite future regressions back to hardcoded runtime wiring.
+
+### Refined Design Implications For This Iteration
+
+- `C-035`: remove orphaned external-runtime source abstraction and legacy team external bridge (`team-external-runtime-event-bridge.ts`, `external-runtime-event-source-registry.ts`, `external-runtime-event-source-port.ts`).
+- `C-036`: standardize shared streaming exports on `TeamRuntimeEventBridge` as the sole team member-runtime bridge seam and add focused unit coverage for its runtime-kind mapping and error behavior.
+
+### Scope Triage Confirmation
+
+- Classification remains: `Medium`
+- Reason:
+  - this is a cross-cutting cleanup touching shared-layer boundaries and test coverage,
+  - behavior remains unchanged for active runtime paths,
+  - validation is feasible with focused backend unit suites.
+
+## Stage-8 Re-Review Investigation Refresh (User-Requested Deep Audit)
+
+- Date: `2026-03-05`
+- Trigger: Stage-8 deep re-review request after iteration 5 handoff
+- Objective: verify there are no residual Codex/Claude coupling leftovers in shared/runtime-neutral layers.
+
+### Additional Sources Consulted
+
+- `autobyteus-server-ts/src/runtime-management/runtime-client/claude-runtime-client-module.ts`
+- `autobyteus-server-ts/src/agent-team-execution/services/team-member-runtime-session-lifecycle-service.ts`
+- `autobyteus-server-ts/src/agent-team-execution/services/team-member-runtime-binding-state-service.ts`
+- `autobyteus-server-ts/src/services/agent-streaming/team-runtime-event-bridge.ts`
+- `autobyteus-server-ts/src/runtime-management/runtime-client/index.ts`
+- `autobyteus-server-ts/src/runtime-management/runtime-client/runtime-client-modules-defaults.ts`
+
+### Findings
+
+1. `P1`: Claude runtime client module currently depends on `CodexRuntimeEventAdapter` for mapping.
+   - Decoupling risk: runtime-to-runtime compile-time dependency violates plugin independence and runtime removability goals.
+2. `P2`: Shared team-member lifecycle service imports Codex-specific `send_message_to` tooling.
+   - Decoupling risk: shared layer references runtime-specific package path (`runtime-execution/codex-app-server/*`).
+3. `P3`: Shared binding-state service is Claude-specific and dormant.
+   - It imports Claude runtime service and runtime-kind branches on `claude_agent_sdk`; currently appears uninstantiated but remains residual coupling/dead path.
+
+### Verification Notes
+
+- Focused multi-runtime unit slice passed (runtime-client index/defaults, Codex + Claude adapters, ingress, orchestrator, team runtime bridge).
+- Review outcome remains `Design Impact` despite test pass because architecture boundary violations persist.
+
+### Scope Triage Confirmation
+
+- Classification remains: `Medium`
+- Reason:
+  - Findings are architectural boundary issues across runtime composition and shared team orchestration layers.
+  - Fixing requires design/runtime-model updates before implementation.
+
+## Stage-8 Re-Review Investigation Refresh 2 (Claude Sandbox/Permission Parity)
+
+- Date: `2026-03-06`
+- Trigger: `Stage 8 -> Stage 2` re-entry (`Requirement Gap`) from user-requested parity audit
+- Objective: align Claude runtime operational control with Codex-style sandbox configurability while preserving runtime-neutral architecture and existing behavior.
+
+### Additional Sources Consulted In This Refresh
+
+- `autobyteus-server-ts/src/runtime-execution/codex-app-server/codex-runtime-launch-config.ts`
+- `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-runtime-shared.ts`
+- `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-runtime-v2-control-interop.ts`
+- `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.ts`
+- `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-runtime-session-state.ts`
+- `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-runtime-team-metadata.ts`
+- `autobyteus-server-ts/src/agent-team-execution/services/team-member-runtime-orchestrator.ts`
+- `autobyteus-server-ts/tests/unit/runtime-execution/claude-agent-sdk/claude-runtime-shared.test.ts`
+- `autobyteus-server-ts/tests/unit/runtime-execution/claude-agent-sdk/claude-runtime-v2-control-interop.test.ts`
+- `autobyteus-server-ts/tests/unit/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.test.ts`
+
+### Findings
+
+1. Codex already exposes runtime sandbox mode via env-driven launch normalization (`CODEX_APP_SERVER_SANDBOX`) and picks it up during thread/session lifecycle creation.
+2. Claude runtime session creation currently hardcodes `permissionMode: "default"` in V2 session control interop; there is no equivalent configurable path.
+3. `send_message_to` capability resolution is already runtime-neutral and tool-name driven in shared team orchestration:
+   - metadata override first,
+   - then agent `toolNames` allowlist semantics,
+   - default-enabled when no explicit allowlist exists.
+4. Server settings already supports arbitrary environment keys; adding a Claude permission-mode env key is sufficient for operational toggle symmetry without introducing runtime-specific shared-layer branching.
+
+### Refined Design Implications For This Iteration
+
+- `C-047`: add Claude permission/sandbox mode resolver with precedence (`runtimeMetadata` -> `llmConfig` -> env `CLAUDE_AGENT_SDK_PERMISSION_MODE` -> default), and thread it through Claude run-session state and V2 session create/resume options.
+- `C-048`: add focused unit coverage for permission-mode resolution and V2 session option propagation; verify existing `send_message_to` tool-name behavior remains unchanged.
+
+### Scope Triage Confirmation
+
+- Classification remains: `Medium`
+- Reason:
+  - changes span runtime option resolution, runtime session state propagation, and focused unit tests,
+  - behavior is intentionally preserved except for newly configurable Claude permission mode,
+  - verification remains feasible with focused tests plus full backend/frontend gate reruns.
+
+## 2026-03-06 Investigation Refresh (Parallel + Claude Approval Regression)
+
+- Trigger: user-requested certainty check to determine ownership of parallel-test failures and Claude approval-flow instability.
+- Classification outcome: `Local Fix` for Claude turn-completion handling; separate infra issue confirmed for parallel DB lock.
+
+### Sources Consulted
+
+- `autobyteus-server-ts/tests/setup/prisma-test-config.ts`
+- `autobyteus-server-ts/tests/setup/prisma-global-setup.ts`
+- `autobyteus-server-ts/tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts`
+- `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.ts`
+- `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-runtime-message-normalizers.ts`
+- `autobyteus-server-ts/src/services/agent-streaming/method-runtime-event-adapter.ts`
+- `autobyteus-server-ts/node_modules/@anthropic-ai/claude-agent-sdk/sdk.d.ts`
+- `autobyteus-server-ts/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs`
+
+### Findings
+
+1. Parallel Vitest process lock is infrastructure-owned (not Claude runtime behavior):
+- Global setup runs `prisma migrate reset` against a single fixed SQLite file under `tests/.tmp/autobyteus-server-test.db`.
+- Concurrent Vitest processes therefore contend for the same DB and lock each other.
+
+2. Claude manual-approval E2E failure is not purely an upstream SDK limitation; our integration loop is a contributing defect:
+- Reproduced repeated failures where tool execution succeeded (file created) but websocket never reached `AGENT_STATUS=IDLE`.
+- In `ClaudeAgentSdkRuntimeService.executeV2Turn`, we currently iterate `for await (const chunk of session.stream())` until generator closure.
+- Claude SDK V2 `SDKSession.stream()` is session-level and emits `type: "result"` terminal messages per turn; stream closure is not guaranteed per turn.
+- SDK's own helper (`unstable_v2_prompt`) returns on `message.type === "result"`, not on stream close.
+- Result: our turn can hang waiting for stream termination even after turn result is emitted, causing Stage-7 timeout and cleanup-side `ERR_STREAM_WRITE_AFTER_END` noise.
+
+3. Supplemental behavior gap:
+- Shared runtime-event adapter maps `turn/completed -> IDLE` only.
+- On runtime error path, event mapping sends `ERROR` but does not produce an idle-equivalent status transition, making websocket wait loops brittle if they depend strictly on `RUNNING -> IDLE`.
+
+### Ownership Decision
+
+- `database is locked` in parallel external Vitest runs: **our test infra setup**.
+- Claude manual approval timeout/hang: **our runtime integration turn-completion logic defect** (with SDK behavior as a trigger), therefore actionable in our code.
+
+### Stage Decision
+
+- Re-entry classification finalized as `Local Fix`.
+- Required path: `6 -> 7 -> 8` after implementing bounded turn-completion fix and rerunning runtime-enabled verification.
+
+## 2026-03-06 Investigation Refresh (`origin/personal` Parity)
+
+- Trigger: user-requested parity check to verify whether refactor changed runtime behavior relative to the known-good `origin/personal` branch.
+- Classification outcome: `Local Fix` for a refactor-introduced Codex test-runtime regression; separate Codex thread-history retry gap confirmed as inherited from `origin/personal`, not introduced by this refactor.
+
+### Sources Consulted
+
+- `autobyteus-server-ts/src/runtime-execution/codex-app-server/codex-app-server-process-manager.ts`
+- `autobyteus-server-ts/src/runtime-execution/codex-app-server/codex-thread-history-reader.ts`
+- `autobyteus-server-ts/tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts`
+- `origin/personal:autobyteus-server-ts/src/runtime-execution/codex-app-server/codex-app-server-process-manager.ts`
+- `origin/personal:autobyteus-server-ts/src/runtime-execution/codex-app-server/codex-thread-history-reader.ts`
+- `origin/personal:autobyteus-server-ts/tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts`
+
+### Findings
+
+1. `origin/personal` remains green for the focused live Codex lifecycle scenario:
+   - `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts -t "streams real codex tool lifecycle events over websocket"`
+   - Result: pass in detached worktree at `origin/personal`.
+
+2. The current refactor branch also remains green for that same focused scenario when using the normal Codex home path:
+   - same command in current worktree,
+   - Result: pass.
+
+3. The current refactor branch fails for the same focused scenario only when the refactor-introduced Vitest home-isolation path is enabled:
+   - `RUN_CODEX_E2E=1 CODEX_APP_SERVER_TEST_HOME_BASE="$(mktemp -d /tmp/codex-app-server-test-home-XXXXXX)" pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts -t "streams real codex tool lifecycle events over websocket"`
+   - Result: fail with repeated `stream disconnected - retrying sampling request` warnings and websocket timeout after only `SEGMENT_CONTENT`, `ERROR`, and `AGENT_STATUS` events.
+
+4. `origin/personal` does not contain the new isolation behavior:
+   - current refactor branch added `resolveAppServerEnv()` in `codex-app-server-process-manager.ts`,
+   - under Vitest, when `CODEX_APP_SERVER_TEST_HOME_BASE` is set and `CODEX_HOME` is otherwise unset, it creates a worker-scoped `CODEX_HOME` and passes it into `CodexAppServerClient`,
+   - `origin/personal` has no equivalent override.
+
+5. Therefore the focused Codex parity regression is attributable to our refactor branch, not to a generic internet problem:
+   - baseline behavior matches `origin/personal` without the new override,
+   - the failure appears only when exercising the new refactor-only app-server environment path.
+
+6. Separate Codex thread-history behavior is not a refactor regression:
+   - `codex-thread-history-reader.ts` is unchanged relative to `origin/personal`,
+   - it still retries `thread/read` only for `"thread not loaded"` and not for `"not materialized yet"`,
+   - this remains a real behavior gap, but it is inherited from the known-good branch rather than introduced by the decoupling refactor.
+
+### Ownership Decision
+
+- Focused live Codex lifecycle regression under `CODEX_APP_SERVER_TEST_HOME_BASE`: **our refactor branch change**.
+- Codex thread-history `"not materialized yet"` retry gap: **shared upstream behavior**, not evidence that the refactor changed functionality.
+
+### Stage Decision
+
+- Re-entry classification finalized as `Local Fix`.
+- Required path: `6 -> 7 -> 8` after implementing a bounded Codex process-manager parity fix and rerunning runtime-enabled verification.
+
+## 2026-03-06 Investigation Refresh (Runtime-Enabled Backend Gate Rerun)
+
+- Trigger: user requested a full backend confirmation pass with all runtime-enabled tests running cleanly.
+- Classification outcome: `Local Fix` in the Codex thread-history reader; the failure is deterministic in the current branch's full backend gate and is not explained by the earlier `CODEX_HOME` parity regression.
+
+### Sources Consulted
+
+- `autobyteus-server-ts/src/runtime-execution/codex-app-server/codex-thread-history-reader.ts`
+- `autobyteus-server-ts/tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts`
+- `autobyteus-server-ts/src/run-history/projection/providers/codex-thread-run-projection-provider.ts`
+- full runtime-enabled backend rerun command and live output
+
+### Findings
+
+1. The full runtime-enabled backend rerun advanced further than the prior attempt:
+   - `tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts` completed cleanly with `17/17` passing.
+
+2. The first deterministic Stage-7 blocker is now in the live Codex GraphQL file:
+   - command: `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=true RUN_CODEX_E2E=1 CODEX_APP_SERVER_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run`
+   - failure surfaced in `tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts`
+   - failing scenario: `accepts image contextFiles from URL and absolute path and records both in Codex thread history`
+
+3. The repeated runtime error is stable and local to the thread-history reader seam:
+   - `Failed to read Codex thread '...'`
+   - `Codex app server RPC error -32600: thread ... is not materialized yet; includeTurns is unavailable before first user message`
+   - the reader currently retries only on `"thread not loaded"` and therefore logs and returns `null` on the materialization case.
+
+4. This failure mode is compatible with the e2e polling loop:
+   - the test polls `historyReader.readThread(...)` until deadline,
+   - but the reader treats the materialization state as terminal instead of transient,
+   - causing repeated null reads and preventing Stage-7 closure for the full backend gate.
+
+### Ownership Decision
+
+- Current full-suite Codex thread-history materialization failure: **our code issue**, bounded to the reader retry policy.
+- Earlier Claude live-file slowness/process-exit warnings: **not an active gate blocker** in this rerun because the full Claude GraphQL file completed cleanly.
+
+### Stage Decision
+
+- Re-entry classification finalized as `Local Fix`.
+- Required path: `6 -> 7` after extending Codex thread-history retry handling to cover the materialization state and rerunning the runtime-enabled backend gate.
+
+## 2026-03-06 Investigation Refresh (Full Backend Rerun After Thread-History Fix)
+
+- Trigger: confirm whether the bounded Codex thread-history retry fix closes the full backend runtime-enabled gate.
+- Classification outcome: `Local Fix` remains, but the active blocker moved forward to a later live Codex websocket metadata case.
+
+### Sources Consulted
+
+- full runtime-enabled backend rerun output after the thread-history fix
+- `autobyteus-server-ts/tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts`
+
+### Findings
+
+1. The fixed Stage-7 blocker is resolved:
+   - the full rerun advanced past `accepts image contextFiles from URL and absolute path and records both in Codex thread history`
+   - that scenario had been the deterministic failure before the `CodexThreadHistoryReader` retry update.
+
+2. The next blocker is a later live Codex websocket metadata case:
+   - file: `tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts`
+   - scenario: `streams codex generate_image tool_call metadata with non-empty arguments over websocket`
+   - observed behavior: the suite remained stuck on that scenario for several minutes with no terminal pass/fail event before manual interruption.
+
+3. This means the backend gate still cannot be called green:
+   - full rerun state at interruption:
+     - `4` test files passed,
+     - `44` tests passed,
+     - active test stuck at `9/12` in the Codex runtime GraphQL file.
+
+### Ownership Decision
+
+- Codex thread-history materialization failure: **fixed local code issue**.
+- Current `generate_image` metadata hang: **new unresolved blocker**, ownership not yet finalized from the available evidence.
+
+### Stage Decision
+
+- Stage 6 remains open.
+- Next action is a focused investigation/repro of the Codex `generate_image` metadata test to determine whether the stall is caused by our websocket/tool-event path or by external runtime/tool availability.
+
+## 2026-03-06 Investigation Refresh (Latest Full Backend + Frontend Rerun)
+
+- Trigger: user requested another complete rerun of backend and frontend suites, explicitly including Codex and Claude/Claude Agent SDK paths.
+
+### Findings
+
+1. Full backend suite completed and did not pass cleanly:
+   - command:
+     - `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=true RUN_CODEX_E2E=1 CODEX_APP_SERVER_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run`
+   - result:
+     - `1 failed | 261 passed | 3 skipped` files
+     - `1 failed | 1196 passed | 8 skipped` tests
+
+2. The failing backend test is now precise and reproducible:
+   - file: `tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts`
+   - case: `streams codex run_bash metadata with non-empty command over websocket`
+   - failure:
+     - `Timed out waiting for run_bash metadata command`
+     - `promptSent=true`
+     - `commandSeen=false`
+     - seen websocket types were only `SEGMENT_CONTENT`, `AGENT_STATUS`, `SEGMENT_START`, `SEGMENT_END`
+
+3. Frontend full suite passed cleanly:
+   - command:
+     - `pnpm -C autobyteus-web test`
+   - result:
+     - Nuxt: `148 passed`, `730 passed`
+     - Electron: `6 passed`, `39 passed`
+
+### Ownership Decision
+
+- Backend gate status: **still failing** due to one live Codex websocket metadata case.
+- Frontend gate status: **green**.
+
+### Stage Decision
+
+- Stage 6 remains open with a bounded backend-only local-fix investigation target:
+  - Codex websocket `run_bash` metadata emission/observation path in the live GraphQL e2e flow.
+
+## 2026-03-06 Investigation Refresh (Codex `run_bash` Isolation + `origin/personal` Comparison)
+
+- Trigger: user requested another investigation round to verify whether the backend failure was introduced by refactoring and, if needed, compare current behavior against `origin/personal`.
+
+### Sources Consulted
+
+- focused live Codex reruns of:
+  - `tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts -t "streams codex run_bash metadata with non-empty command over websocket"`
+- full live Codex GraphQL file rerun of:
+  - `tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts`
+- detached `origin/personal` worktree at `/private/tmp/origin-personal-runtime-review`
+
+### Findings
+
+1. The previously reported `run_bash` backend failure does not reproduce deterministically on the refactor branch:
+   - the focused `run_bash` case passed once during the earlier isolation round,
+   - the full Codex GraphQL file also passed the `run_bash` case,
+   - three additional focused `run_bash` reruns all passed.
+
+2. The only deterministic failure left in the full Codex GraphQL file is still `generate_image`:
+   - file: `tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts`
+   - case: `streams codex generate_image tool_call metadata with non-empty arguments over websocket`
+   - result: timed out after `90000ms`
+
+3. The detached `origin/personal` baseline is not clean in this environment either:
+   - the same full Codex GraphQL file in `/private/tmp/origin-personal-runtime-review` failed early with multiple errors before completion,
+   - observed runtime stderr included repeated shell-snapshot failures:
+     - `Shell snapshot validation failed: Failed to execute bash`
+     - `No such file or directory (os error 2)`
+   - the run was interrupted after reaching `4 failed | 3 passed` by test `7/12`.
+
+4. This means the current evidence does not support the claim that refactoring broke the `run_bash` behavior path:
+   - current branch `run_bash` path is green in focused and file-level isolation,
+   - `origin/personal` is not a clean control baseline under the same local environment,
+   - the remaining deterministic blocker is confined to the live `generate_image` case.
+
+### Ownership Decision
+
+- `run_bash` metadata timeout in the prior full-backend suite: **non-deterministic live-runtime failure; not currently attributable to a refactor code regression**.
+- `generate_image` metadata timeout: **environment/tool-availability blocker unless a deterministic product-code defect is later isolated**.
+
+### Stage Decision
+
+- Stage 7 should be treated as **Blocked**, not **Fail**, because the only reproducible Codex live blocker left is the environment-constrained `generate_image` case and there is no bounded source-code fix isolated from this investigation round.

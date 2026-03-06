@@ -247,7 +247,15 @@ describeClaudeRuntime("Claude runtime GraphQL e2e (live transport)", () => {
     runId: string;
     prompt: string;
     preClientMessages?: Array<Record<string, unknown>>;
-    onServerMessage?: (message: WsMessage, socket: WebSocket) => Promise<void> | void;
+    onServerMessage?: (
+      message: WsMessage,
+      socket: WebSocket,
+      context: {
+        promptSent: boolean;
+        sawRunningAfterPrompt: boolean;
+        sawIdleAfterPrompt: boolean;
+      },
+    ) => Promise<void> | void;
   }): Promise<WsTurnCapture> => {
     const app = fastify();
     await app.register(websocket);
@@ -382,7 +390,11 @@ describeClaudeRuntime("Claude runtime GraphQL e2e (live transport)", () => {
         registerMessage(raw);
         const latest = rawMessages[rawMessages.length - 1];
         if (latest && input.onServerMessage) {
-          void input.onServerMessage(latest, socket);
+          void input.onServerMessage(latest, socket, {
+            promptSent,
+            sawRunningAfterPrompt,
+            sawIdleAfterPrompt,
+          });
         }
         maybeResolve();
       });
@@ -682,22 +694,14 @@ describeClaudeRuntime("Claude runtime GraphQL e2e (live transport)", () => {
 
         await terminateRun(runId as string);
 
-        const continueResult = await execGraphql<{
-          continueRun: {
-            success: boolean;
-            message: string;
-            runId: string | null;
-          };
-        }>(continueMutation, {
-          input: {
-            runId,
-            userInput: {
-              content: "Reply with READY again.",
-            },
-          },
+        const continueResult = await continueClaudeRunWithRetry({
+          runId: runId as string,
+          content: "Reply with READY again.",
+          maxAttempts: 5,
+          retryDelayMs: 1_000,
         });
-        expect(continueResult.continueRun.success).toBe(true);
-        expect(continueResult.continueRun.runId).toBe(runId);
+        expect(continueResult.success).toBe(true);
+        expect(continueResult.runId).toBe(runId);
 
         const afterContinueResume = await execGraphql<{
           getRunResumeConfig: {
@@ -1009,11 +1013,6 @@ describeClaudeRuntime("Claude runtime GraphQL e2e (live transport)", () => {
     async () => {
       const modelIdentifier = await fetchClaudeModelIdentifier();
       const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "claude-manual-approve-e2e-"));
-      let runId: string | null = null;
-      let sawApprovalRequest = false;
-      let sentApprovalDecision = false;
-      let sawApproved = false;
-      let sawSucceeded = false;
       let observedErrorCodes: string[] = [];
       let resolvedTargetFilePath: string | null = null;
       let resolvedFileToken: string | null = null;
@@ -1045,95 +1044,131 @@ describeClaudeRuntime("Claude runtime GraphQL e2e (live transport)", () => {
       };
 
       try {
-        runId = await createClaudeRun({
-          modelIdentifier,
-          workspaceRootPath,
-          autoExecuteTools: false,
-          prompt: "Reply with READY for manual-approve bootstrap.",
-        });
-
         for (let attempt = 1; attempt <= 3; attempt += 1) {
+          let attemptRunId: string | null = null;
           const attemptFileToken = `MANUAL_APPROVE_${randomUUID()}`;
           const attemptTargetFilePath = path.join(
             workspaceRootPath,
             `manual-approve-attempt-${attempt}-${randomUUID()}.txt`,
           );
-          const capture = await captureSingleWebsocketTurn({
-            runId,
-            prompt: [
-              "You must call the Write tool exactly once in this turn.",
-              "Do not use Bash.",
-              "Do not ask follow-up questions.",
-              `Create file at path: ${attemptTargetFilePath}`,
-              `Write exact content: ${attemptFileToken}`,
-              "After tool execution, reply with DONE.",
-            ].join("\n"),
-            onServerMessage: async (message, socket) => {
-              if (message.type === "TOOL_APPROVAL_REQUESTED") {
-                sawApprovalRequest = true;
-                const invocationId = message.payload.invocation_id;
-                if (!sentApprovalDecision && typeof invocationId === "string" && invocationId.length > 0) {
-                  sentApprovalDecision = true;
-                  socket.send(
-                    JSON.stringify({
-                      type: "APPROVE_TOOL",
-                      payload: {
-                        invocation_id: invocationId,
-                        reason: "claude-e2e-manual-approve",
-                      },
-                    }),
-                  );
-                }
-              }
-              if (message.type === "TOOL_APPROVED") {
-                sawApproved = true;
-              }
-              if (message.type === "TOOL_EXECUTION_SUCCEEDED") {
-                sawSucceeded = true;
-              }
-            },
-          });
+          let attemptSawApprovalRequest = false;
+          let attemptSentApprovalDecision = false;
+          let attemptSawApproved = false;
+          let attemptSawSucceeded = false;
+          let approvedInvocationId: string | null = null;
+          try {
+            attemptRunId = await createClaudeRun({
+              modelIdentifier,
+              workspaceRootPath,
+              autoExecuteTools: false,
+              prompt: "Reply with READY for manual-approve bootstrap.",
+            });
 
-          observedErrorCodes = [...observedErrorCodes, ...capture.errorCodes];
-          attemptTraces.push({
-            attempt,
-            messageTypes: capture.rawMessages.map((message) => message.type),
-            assistantOutput: capture.assistantOutputFragments.join(""),
-            errorCodes: capture.errorCodes,
-          });
-          if (sawApprovalRequest && sentApprovalDecision && sawApproved && sawSucceeded) {
-            resolvedTargetFilePath = attemptTargetFilePath;
-            resolvedFileToken = attemptFileToken;
-            break;
+            const capture = await captureSingleWebsocketTurn({
+              runId: attemptRunId,
+              prompt: [
+                "You must call the Write tool exactly once in this turn.",
+                "Do not use Bash.",
+                "Do not ask follow-up questions.",
+                `Create file at path: ${attemptTargetFilePath}`,
+                `Write exact content: ${attemptFileToken}`,
+                "After tool execution, reply with DONE.",
+              ].join("\n"),
+              onServerMessage: async (message, socket, context) => {
+                if (!context.promptSent || !context.sawRunningAfterPrompt) {
+                  return;
+                }
+                if (message.type === "TOOL_APPROVAL_REQUESTED") {
+                  const invocationId = message.payload.invocation_id;
+                  const argumentsPayload =
+                    message.payload.arguments &&
+                    typeof message.payload.arguments === "object" &&
+                    !Array.isArray(message.payload.arguments)
+                      ? (message.payload.arguments as Record<string, unknown>)
+                      : null;
+                  const requestedFilePath =
+                    typeof argumentsPayload?.file_path === "string"
+                      ? argumentsPayload.file_path
+                      : typeof argumentsPayload?.path === "string"
+                        ? argumentsPayload.path
+                        : null;
+                  if (requestedFilePath !== attemptTargetFilePath) {
+                    return;
+                  }
+                  attemptSawApprovalRequest = true;
+                  if (
+                    !attemptSentApprovalDecision &&
+                    typeof invocationId === "string" &&
+                    invocationId.length > 0
+                  ) {
+                    attemptSentApprovalDecision = true;
+                    approvedInvocationId = invocationId;
+                    socket.send(
+                      JSON.stringify({
+                        type: "APPROVE_TOOL",
+                        payload: {
+                          invocation_id: invocationId,
+                          reason: "claude-e2e-manual-approve",
+                        },
+                      }),
+                    );
+                  }
+                }
+                if (
+                  message.type === "TOOL_APPROVED" &&
+                  typeof message.payload.invocation_id === "string" &&
+                  message.payload.invocation_id === approvedInvocationId
+                ) {
+                  attemptSawApproved = true;
+                }
+                if (
+                  message.type === "TOOL_EXECUTION_SUCCEEDED" &&
+                  typeof message.payload.invocation_id === "string" &&
+                  message.payload.invocation_id === approvedInvocationId
+                ) {
+                  attemptSawSucceeded = true;
+                }
+              },
+            });
+
+            observedErrorCodes = [...observedErrorCodes, ...capture.errorCodes];
+            attemptTraces.push({
+              attempt,
+              messageTypes: capture.rawMessages.map((message) => message.type),
+              assistantOutput: capture.assistantOutputFragments.join(""),
+              errorCodes: capture.errorCodes,
+            });
+            const attemptFullyObserved =
+              attemptSawApprovalRequest &&
+              attemptSentApprovalDecision &&
+              attemptSawApproved &&
+              attemptSawSucceeded;
+            if (attemptFullyObserved) {
+              await waitForFile(attemptTargetFilePath, attemptFileToken);
+              resolvedTargetFilePath = attemptTargetFilePath;
+              resolvedFileToken = attemptFileToken;
+              break;
+            }
+          } finally {
+            if (attemptRunId) {
+              try {
+                await terminateRun(attemptRunId);
+              } catch {
+                // best-effort cleanup
+              }
+            }
           }
         }
 
         expect(observedErrorCodes).toEqual([]);
-        if (!sawApprovalRequest || !sentApprovalDecision || !sawApproved || !sawSucceeded) {
+        if (!resolvedTargetFilePath || !resolvedFileToken) {
           throw new Error(
-            `Claude manual approval flow was not fully observed after retries. sawApprovalRequest=${String(
-              sawApprovalRequest,
-            )} sentApprovalDecision=${String(sentApprovalDecision)} sawApproved=${String(
-              sawApproved,
-            )} sawSucceeded=${String(sawSucceeded)} traces=${JSON.stringify(attemptTraces)}`,
+            `Claude manual approval flow was not fully observed after retries. traces=${JSON.stringify(attemptTraces)}`,
           );
         }
-        expect(sawApprovalRequest).toBe(true);
-        expect(sentApprovalDecision).toBe(true);
-        expect(sawApproved).toBe(true);
-        expect(sawSucceeded).toBe(true);
-
         expect(resolvedTargetFilePath).toBeTruthy();
         expect(resolvedFileToken).toBeTruthy();
-        await waitForFile(resolvedTargetFilePath as string, resolvedFileToken as string);
       } finally {
-        if (runId) {
-          try {
-            await terminateRun(runId);
-          } catch {
-            // best-effort cleanup
-          }
-        }
         await rm(workspaceRootPath, { recursive: true, force: true });
       }
     },

@@ -177,7 +177,13 @@ export class ClaudeAgentSdkRuntimeAdapter implements RuntimeAdapter {
   }
 
   bindInterAgentRelayHandler(handler: RuntimeInterAgentRelayHandler): () => void {
-    this.runtimeService.setInterAgentRelayHandler(handler);
+    this.runtimeService.setInterAgentRelayHandler((request) =>
+      handler({
+        ...request,
+        senderMemberName: request.senderMemberName ?? null,
+        senderTeamRunId: request.senderTeamRunId ?? null,
+      }),
+    );
     return () => {
       this.runtimeService.setInterAgentRelayHandler(null);
     };

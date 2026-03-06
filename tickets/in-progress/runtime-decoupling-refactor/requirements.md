@@ -2,7 +2,7 @@
 
 - Ticket: `runtime-decoupling-refactor`
 - Status: `Refined`
-- Last Updated: `2026-03-05`
+- Last Updated: `2026-03-06`
 
 ## Goal / Problem Statement
 
@@ -161,3 +161,79 @@ Decouple runtime integration boundaries so each runtime (including Codex) is plu
 - `AC-024`: Claude runtime registration is encapsulated in `claude-runtime-client-module.ts` and includes adapter/model/capability/projection/event-mapper registration hooks.
 - `AC-025`: Claude runtime adapter satisfies decoupled shared runtime contracts required by stream/team orchestration (`teamExecutionMode`, run-active probe, runtime event subscription, relay handler binding).
 - `AC-026`: Team member projection service chooses richer runtime projection for non-default runtimes and keeps local projection when runtime provider fails.
+
+## Re-Entry Delta 2 (Legacy External Team Runtime Bridge Cleanup)
+
+- Date: `2026-03-05`
+- Status: `Refined`
+
+### Added/Refined Use Case
+
+- `UC-019`: Team member runtime event streaming uses one runtime-neutral bridge seam only; no legacy external-source bridge with runtime-specific shared wiring remains.
+
+### Added/Refined Requirement
+
+- `R-016`: Shared team member-runtime streaming must use a single runtime-neutral bridge path based on `RuntimeAdapterRegistry` capability seams.
+  - Expected outcome: legacy external-runtime source bridge abstractions are removed, and team runtime event mapping always includes explicit runtime kind routing.
+
+### Added Acceptance Criteria
+
+- `AC-027`: `team-external-runtime-event-bridge.ts` and external runtime source registry/port files are removed, and shared streaming exports reference `TeamRuntimeEventBridge` only.
+- `AC-028`: Focused tests validate `TeamRuntimeEventBridge` runtime-kind-aware mapping and error paths when adapter resolution/subscription capability is unavailable.
+
+### Coverage Delta
+
+| Requirement ID | Use Case IDs | Acceptance Criteria IDs |
+| --- | --- | --- |
+| `R-016` | `UC-019` | `AC-027`, `AC-028` |
+
+## Re-Entry Delta 3 (Strict No-Legacy / No-Compatibility Sweep)
+
+- Date: `2026-03-05`
+- Status: `Refined`
+
+### Added/Refined Use Cases
+
+- `UC-022`: Runtime command ingress requires explicit runtime session binding and contains no implicit-session compatibility fallback path.
+- `UC-023`: Team member override schema/config sanitization contains no per-member runtime-kind compatibility handling; team runtime selection remains team-level only.
+
+### Added/Refined Requirement
+
+- `R-017`: Active runtime ingress and team-run-config flows must not retain legacy/compatibility branches for pre-decoupled behavior.
+  - Expected outcome: runtime ingress rejects unbound runs instead of creating implicit compatibility sessions, and team member override model omits legacy per-member runtime-kind compatibility fields/cleanup branches.
+
+### Added Acceptance Criteria
+
+- `AC-029`: `runtime-command-ingress-service.ts` contains no legacy implicit-session fallback branch (`canUseLegacyImplicitSession`) and no implicit session creation path for unbound runs.
+- `AC-030`: `TeamRunConfigForm.vue` and `TeamRunConfig` member override model contain no legacy per-member runtime-kind compatibility cleanup/field (`override.runtimeKind` rewrite or `MemberConfigOverride.runtimeKind`).
+
+### Coverage Delta
+
+| Requirement ID | Use Case IDs | Acceptance Criteria IDs |
+| --- | --- | --- |
+| `R-017` | `UC-022`, `UC-023` | `AC-029`, `AC-030` |
+
+## Re-Entry Delta 4 (Claude Sandbox/Permission Parity)
+
+- Date: `2026-03-06`
+- Status: `Refined`
+
+### Added/Refined Use Cases
+
+- `UC-024`: Claude runtime session creation honors a configurable permission/sandbox mode with runtime-neutral precedence and preserves behavior defaults when unset.
+
+### Added/Refined Requirement
+
+- `R-018`: Claude Agent SDK runtime must expose Codex-symmetric operational sandbox control through configurable permission mode without introducing runtime-specific branches in shared layers.
+  - Expected outcome: Claude runtime resolves permission mode from runtime metadata/llm config/env and passes it to V2 session create/resume options, defaulting safely to `default`.
+
+### Added Acceptance Criteria
+
+- `AC-031`: `claude-runtime-v2-control-interop.ts` contains no hard-coded fixed permission mode; permission mode is provided by resolved runtime-session state.
+- `AC-032`: `send_message_to` capability policy remains tool-name/metadata driven in shared team orchestration and is unaffected by Claude permission-mode configurability changes.
+
+### Coverage Delta
+
+| Requirement ID | Use Case IDs | Acceptance Criteria IDs |
+| --- | --- | --- |
+| `R-018` | `UC-024` | `AC-031`, `AC-032` |

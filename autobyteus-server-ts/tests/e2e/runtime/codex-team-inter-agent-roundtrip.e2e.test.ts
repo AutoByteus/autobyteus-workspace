@@ -76,6 +76,10 @@ describeCodexRuntime("Codex team inter-agent roundtrip e2e (live transport)", ()
     } else {
       delete process.env.CODEX_APP_SERVER_APPROVAL_POLICY;
     }
+    for (const root of createdWorkspaceRoots) {
+      await rm(root, { recursive: true, force: true });
+    }
+    createdWorkspaceRoots.clear();
     if (testDataDir) {
       await rm(testDataDir, { recursive: true, force: true });
       testDataDir = null;
@@ -140,10 +144,6 @@ describeCodexRuntime("Codex team inter-agent roundtrip e2e (live transport)", ()
     }
     createdPromptIds.clear();
 
-    for (const root of createdWorkspaceRoots) {
-      await rm(root, { recursive: true, force: true });
-    }
-    createdWorkspaceRoots.clear();
   });
 
   const execGraphql = async <T>(query: string, variables?: Record<string, unknown>): Promise<T> => {

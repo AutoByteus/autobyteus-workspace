@@ -55,6 +55,7 @@ describe("ClaudeAgentSdkRuntimeService", () => {
     delete process.env.CLAUDE_AGENT_SDK_MODELS;
     delete process.env.CLAUDE_CODE_EXECUTABLE_PATH;
     delete process.env.CLAUDE_AGENT_SDK_AUTH_MODE;
+    delete process.env.CLAUDE_AGENT_SDK_PERMISSION_MODE;
     delete process.env.ANTHROPIC_API_KEY;
   });
 
@@ -113,7 +114,7 @@ describe("ClaudeAgentSdkRuntimeService", () => {
     ]);
 
     const initialSessionTranscript = await service.getSessionMessages("run-1");
-    expect(initialSessionTranscript).toHaveLength(0);
+    expect(initialSessionTranscript.length).toBeGreaterThanOrEqual(2);
 
     const switchedSessionTranscript = await service.getSessionMessages("claude-session-1");
     expect(switchedSessionTranscript.length).toBeGreaterThanOrEqual(2);
@@ -127,6 +128,47 @@ describe("ClaudeAgentSdkRuntimeService", () => {
         (entry) => entry.role === "assistant" && entry.content === "Hello world",
       ),
     ).toBe(true);
+  });
+
+  it("completes a turn when the Claude stream stays open after a result chunk", async () => {
+    const createSession = vi.fn().mockReturnValue({
+      send: vi.fn().mockResolvedValue(undefined),
+      stream: vi.fn().mockImplementation(() =>
+        (async function* () {
+          yield { delta: "Hello" };
+          yield { type: "result", session_id: "claude-session-open-stream", result: "Hello" };
+          await new Promise(() => {});
+        })(),
+      ),
+      close: vi.fn(),
+      query: {},
+    });
+
+    const service = new ClaudeAgentSdkRuntimeService() as ClaudeAgentSdkRuntimeService & {
+      cachedSdkModule: unknown;
+    };
+    service.cachedSdkModule = {
+      unstable_v2_createSession: createSession,
+      unstable_v2_resumeSession: vi.fn(),
+    };
+
+    await service.createRunSession("run-open-stream", {
+      modelIdentifier: "default",
+      workingDirectory: TEST_WORKSPACE_DIR,
+      llmConfig: null,
+    });
+
+    const methods: string[] = [];
+    service.subscribeToRunEvents("run-open-stream", (event) => methods.push(event.method));
+
+    await service.sendTurn(
+      "run-open-stream",
+      AgentInputUserMessage.fromDict({ content: "Respond with hello" }),
+    );
+
+    await waitFor(() => methods.includes("turn/completed"), { timeoutMs: 1_000 });
+    expect(methods).toContain("turn/completed");
+    await service.closeRunSession("run-open-stream");
   });
 
   it("adopts session id from the v2 session object and migrates cached transcript", async () => {
@@ -160,10 +202,9 @@ describe("ClaudeAgentSdkRuntimeService", () => {
       return runtimeReference?.sessionId === "claude-session-from-object";
     });
 
-    const runScopedTranscript = await service.getSessionMessages("run-adopt-session-id");
-    expect(runScopedTranscript).toEqual([]);
-
     const resolvedTranscript = await service.getSessionMessages("claude-session-from-object");
+    const runScopedTranscript = await service.getSessionMessages("run-adopt-session-id");
+    expect(runScopedTranscript).toEqual(resolvedTranscript);
     expect(
       resolvedTranscript.some(
         (entry) => entry.role === "user" && entry.content === "persist this turn",
@@ -422,6 +463,42 @@ describe("ClaudeAgentSdkRuntimeService", () => {
       updatedInput: {},
       toolUseID: "tool-1",
     });
+  });
+
+  it("resolves and persists Claude permission mode with metadata-over-llmConfig-over-env precedence", async () => {
+    process.env.CLAUDE_AGENT_SDK_PERMISSION_MODE = "plan";
+    const createSession = vi.fn().mockReturnValue(
+      createFakeV2Session([[{ session_id: "claude-session-permission", delta: "ok" }]]),
+    );
+
+    const service = new ClaudeAgentSdkRuntimeService() as ClaudeAgentSdkRuntimeService & {
+      cachedSdkModule: unknown;
+    };
+    service.cachedSdkModule = {
+      unstable_v2_createSession: createSession,
+      unstable_v2_resumeSession: vi.fn(),
+    };
+
+    await service.createRunSession("run-permission-mode", {
+      modelIdentifier: "default",
+      workingDirectory: TEST_WORKSPACE_DIR,
+      llmConfig: {
+        permissionMode: "accept-edits",
+      },
+      runtimeMetadata: {
+        permission_mode: "bypass-permissions",
+      },
+    });
+
+    await service.sendTurn(
+      "run-permission-mode",
+      AgentInputUserMessage.fromDict({ content: "permission check" }),
+    );
+    await waitFor(() => createSession.mock.calls.length > 0);
+
+    expect(createSession.mock.calls[0]?.[0]?.permissionMode).toBe("bypassPermissions");
+    const runtimeReference = service.getRunRuntimeReference("run-permission-mode");
+    expect(runtimeReference?.metadata.permissionMode).toBe("bypassPermissions");
   });
 
   it("creates one V2 session and reuses it across multiple turns", async () => {

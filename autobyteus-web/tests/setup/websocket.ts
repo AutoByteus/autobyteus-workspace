@@ -6,12 +6,12 @@ import { beforeEach, vi } from 'vitest';
 
 // Some Nuxt internals may invoke `$fetch` on delayed timers after a test completes.
 // Ensure it exists in the test runtime to avoid post-teardown ReferenceError noise.
-const fetchMock = vi.fn(async () => ({}));
+const fetchMock = async () => ({});
 
 const ensureFetchBinding = (): void => {
-  vi.stubGlobal('$fetch', fetchMock);
-  // Nuxt's app-manifest composable references bare `$fetch` in ESM. Ensure
-  // a true global binding exists (not just a global object property).
+  // Nuxt's app-manifest composable references bare `$fetch` in ESM. Keep a
+  // persistent global binding so delayed timers after test teardown still
+  // resolve safely instead of throwing ReferenceError.
   (globalThis as typeof globalThis & { $fetch?: typeof fetchMock }).$fetch = fetchMock;
   (0, eval)('var $fetch = globalThis.$fetch');
 };

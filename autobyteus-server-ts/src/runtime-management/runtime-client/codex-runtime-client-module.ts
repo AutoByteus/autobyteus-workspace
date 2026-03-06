@@ -10,7 +10,7 @@ import type {
 } from "../runtime-capability-service.js";
 import type { RuntimeCapabilityService } from "../runtime-capability-service.js";
 import { ServerMessage, ServerMessageType } from "../../services/agent-streaming/models.js";
-import { CodexRuntimeEventAdapter } from "../../services/agent-streaming/codex-runtime-event-adapter.js";
+import { MethodRuntimeEventAdapter } from "../../services/agent-streaming/method-runtime-event-adapter.js";
 import type {
   RuntimeEventMapper,
   RuntimeEventMapperRegistrationTarget,
@@ -29,6 +29,10 @@ type CodexAvailabilityProbe = () => {
 const CODEX_DISABLED_VALUES = new Set(["0", "false", "off", "disabled", "no"]);
 const CODEX_ENABLED_VALUES = new Set(["1", "true", "on", "enabled", "yes"]);
 const DEFAULT_CACHE_TTL_MS = 15_000;
+const CODEX_SUPPRESSED_METHODS = new Set<string>([
+  "codex/event/web_search_begin",
+  "codex/event/web_search_end",
+]);
 
 const asObject = (value: unknown): Record<string, unknown> =>
   value && typeof value === "object" && !Array.isArray(value)
@@ -129,7 +133,10 @@ class CodexRuntimeCapabilityProvider implements RuntimeCapabilityProvider {
 }
 
 const createCodexRuntimeMapper = (): RuntimeEventMapper => {
-  const codexAdapter = new CodexRuntimeEventAdapter();
+  const methodRuntimeAdapter = new MethodRuntimeEventAdapter({
+    suppressedMethods: CODEX_SUPPRESSED_METHODS,
+    suppressSendMessageToToolLifecycle: true,
+  });
   return {
     map: (event: unknown) => {
       const payload = asObject(event);
@@ -139,9 +146,9 @@ const createCodexRuntimeMapper = (): RuntimeEventMapper => {
           message: "Codex runtime event does not match expected method-based shape.",
         });
       }
-      return codexAdapter.map(event);
+      return methodRuntimeAdapter.map(event);
     },
-    normalizeMethodAlias: (method: string) => codexAdapter.normalizeMethodAlias(method),
+    normalizeMethodAlias: (method: string) => methodRuntimeAdapter.normalizeMethodAlias(method),
   };
 };
 

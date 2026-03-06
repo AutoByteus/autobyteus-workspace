@@ -17,7 +17,7 @@ const parseJsonRecord = (value: string): Record<string, unknown> => {
 export const asString = (value: unknown): string | null =>
   typeof value === "string" && value.length > 0 ? value : null;
 
-export class CodexRuntimeEventToolHelper {
+export class MethodRuntimeEventToolHelper {
   protected asRecord(value: unknown): Record<string, unknown> {
     if (value && typeof value === "object" && !Array.isArray(value)) {
       return value as Record<string, unknown>;

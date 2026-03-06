@@ -43,10 +43,9 @@ export class ClaudeRuntimeTranscriptStore {
     const targetMessages = this.getCachedMessages(targetSessionId);
     const mergedMessages = mergeMessages(sourceMessages, targetMessages);
     this.messagesBySessionId.set(targetSessionId, mergedMessages);
-
-    if (this.messagesBySessionId.has(sourceSessionId)) {
-      this.messagesBySessionId.delete(sourceSessionId);
-    }
+    // Keep the source alias as a compatibility lookup key because existing run manifests
+    // may still reference pre-resolved IDs (for example runId/memberRunId).
+    this.messagesBySessionId.set(sourceSessionId, mergedMessages);
   }
 
   getCachedMessages(sessionId: string): Array<Record<string, unknown>> {

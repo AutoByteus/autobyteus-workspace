@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   buildClaudeSdkSpawnEnvironment,
   resolveClaudeSdkAuthMode,
+  resolveClaudeSdkPermissionMode,
 } from "../../../../src/runtime-execution/claude-agent-sdk/claude-runtime-shared.js";
 
 describe("claude-runtime-shared auth mode", () => {
@@ -64,5 +65,61 @@ describe("claude-runtime-shared auth mode", () => {
 
     expect(resolved.ANTHROPIC_API_KEY).toBe("valid-key");
     expect(resolved.KEEP_ME).toBe("yes");
+  });
+});
+
+describe("claude-runtime-shared permission mode", () => {
+  it("defaults to default permission mode when no override is configured", () => {
+    expect(resolveClaudeSdkPermissionMode({ env: {} })).toBe("default");
+  });
+
+  it("resolves permission mode from runtime metadata before llmConfig/env", () => {
+    const permissionMode = resolveClaudeSdkPermissionMode({
+      runtimeMetadata: {
+        permissionMode: "bypass-permissions",
+      },
+      llmConfig: {
+        permissionMode: "plan",
+      },
+      env: {
+        CLAUDE_AGENT_SDK_PERMISSION_MODE: "default",
+      },
+    });
+
+    expect(permissionMode).toBe("bypassPermissions");
+  });
+
+  it("falls back to llmConfig when runtime metadata does not specify permission mode", () => {
+    const permissionMode = resolveClaudeSdkPermissionMode({
+      runtimeMetadata: {},
+      llmConfig: {
+        claude_permission_mode: "accept_edits",
+      },
+      env: {
+        CLAUDE_AGENT_SDK_PERMISSION_MODE: "plan",
+      },
+    });
+
+    expect(permissionMode).toBe("acceptEdits");
+  });
+
+  it("uses env override when metadata and llmConfig are not set", () => {
+    const permissionMode = resolveClaudeSdkPermissionMode({
+      env: {
+        CLAUDE_AGENT_SDK_PERMISSION_MODE: "plan",
+      },
+    });
+
+    expect(permissionMode).toBe("plan");
+  });
+
+  it("falls back to default on invalid env override", () => {
+    const permissionMode = resolveClaudeSdkPermissionMode({
+      env: {
+        CLAUDE_AGENT_SDK_PERMISSION_MODE: "invalid-mode",
+      },
+    });
+
+    expect(permissionMode).toBe("default");
   });
 });

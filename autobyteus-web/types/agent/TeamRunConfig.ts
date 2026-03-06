@@ -3,7 +3,6 @@ import { DEFAULT_AGENT_RUNTIME_KIND, type AgentRuntimeKind } from '~/types/agent
 
 export interface MemberConfigOverride {
     agentDefinitionId: string; // The ID of the agent definition for this member (for verification/display)
-    runtimeKind?: AgentRuntimeKind;
     llmModelIdentifier?: string;
     autoExecuteTools?: boolean;
     llmConfig?: Record<string, unknown> | null;

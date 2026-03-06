@@ -6,8 +6,6 @@ import {
   getRuntimeCapabilityService,
   type RuntimeCapabilityService,
 } from "../runtime-management/runtime-capability-service.js";
-import { AgentRunManager } from "../agent-execution/services/agent-run-manager.js";
-import { AgentTeamRunManager } from "../agent-team-execution/services/agent-team-run-manager.js";
 import {
   evaluateCommandCapability,
   type RuntimeCommandOperation,
@@ -32,21 +30,15 @@ export interface RuntimeIngressResult extends RuntimeCommandResult {
 export class RuntimeCommandIngressService {
   private sessionStore: RuntimeSessionStore;
   private adapterRegistry: RuntimeAdapterRegistry;
-  private agentManager: AgentRunManager;
-  private teamManager: AgentTeamRunManager;
   private runtimeCapabilityService: RuntimeCapabilityService;
 
   constructor(
     sessionStore: RuntimeSessionStore = getRuntimeSessionStore(),
     adapterRegistry: RuntimeAdapterRegistry = getRuntimeAdapterRegistry(),
-    agentManager: AgentRunManager = AgentRunManager.getInstance(),
-    teamManager: AgentTeamRunManager = AgentTeamRunManager.getInstance(),
     runtimeCapabilityService: RuntimeCapabilityService = getRuntimeCapabilityService(),
   ) {
     this.sessionStore = sessionStore;
     this.adapterRegistry = adapterRegistry;
-    this.agentManager = agentManager;
-    this.teamManager = teamManager;
     this.runtimeCapabilityService = runtimeCapabilityService;
   }
 
@@ -108,7 +100,7 @@ export class RuntimeCommandIngressService {
     operation: RuntimeCommandOperation,
     fn: (session: RuntimeSessionRecord) => Promise<RuntimeCommandResult>,
   ): Promise<RuntimeIngressResult> {
-    const session = this.resolveSession(runId, mode);
+    const session = this.resolveSession(runId);
     if (!session) {
       return {
         accepted: false,
@@ -145,7 +137,7 @@ export class RuntimeCommandIngressService {
     }
   }
 
-  private resolveSession(runId: string, mode: RuntimeMode): RuntimeSessionRecord | null {
+  private resolveSession(runId: string): RuntimeSessionRecord | null {
     const existing = this.sessionStore.getSession(runId);
     if (existing) {
       const adapter = this.adapterRegistry.resolveAdapter(existing.runtimeKind);
@@ -158,42 +150,7 @@ export class RuntimeCommandIngressService {
       }
       return existing;
     }
-
-    const hasActiveRun =
-      mode === "agent"
-        ? this.agentManager.getAgentRun(runId) !== null
-        : this.teamManager.getTeamRun(runId) !== null;
-    if (!hasActiveRun) {
-      const configuredRuntimeKinds = this.adapterRegistry.listRuntimeKinds();
-      const canUseLegacyImplicitSession =
-        configuredRuntimeKinds.length === 1 &&
-        configuredRuntimeKinds[0] === DEFAULT_RUNTIME_KIND;
-      if (!canUseLegacyImplicitSession) {
-        return null;
-      }
-    }
-
-    const implicitRuntimeKind =
-      this.adapterRegistry.listRuntimeKinds().includes(DEFAULT_RUNTIME_KIND)
-        ? DEFAULT_RUNTIME_KIND
-        : this.adapterRegistry.listRuntimeKinds()[0];
-    if (!implicitRuntimeKind) {
-      return null;
-    }
-
-    const implicitSession: RuntimeSessionRecord = {
-      runId,
-      runtimeKind: implicitRuntimeKind,
-      mode,
-      runtimeReference: {
-        runtimeKind: implicitRuntimeKind,
-        sessionId: runId,
-        threadId: null,
-        metadata: null,
-      },
-    };
-    this.sessionStore.upsertSession(implicitSession);
-    return implicitSession;
+    return null;
   }
 }
 

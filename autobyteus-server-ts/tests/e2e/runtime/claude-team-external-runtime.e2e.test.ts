@@ -65,6 +65,10 @@ describeClaudeRuntime("Claude team external-member runtime e2e (live transport)"
   });
 
   afterAll(async () => {
+    for (const root of createdWorkspaceRoots) {
+      await rm(root, { recursive: true, force: true });
+    }
+    createdWorkspaceRoots.clear();
     if (testDataDir) {
       await rm(testDataDir, { recursive: true, force: true });
       testDataDir = null;
@@ -129,10 +133,6 @@ describeClaudeRuntime("Claude team external-member runtime e2e (live transport)"
     }
     createdPromptIds.clear();
 
-    for (const root of createdWorkspaceRoots) {
-      await rm(root, { recursive: true, force: true });
-    }
-    createdWorkspaceRoots.clear();
   });
 
   const execGraphql = async <T>(query: string, variables?: Record<string, unknown>): Promise<T> => {

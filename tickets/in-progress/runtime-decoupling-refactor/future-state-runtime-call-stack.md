@@ -21,11 +21,11 @@ Do not treat this document as an as-is trace of current code behavior.
 ## Design Basis
 
 - Scope Classification: `Medium`
-- Call Stack Version: `v9`
+- Call Stack Version: `v11`
 - Requirements: `tickets/in-progress/runtime-decoupling-refactor/requirements.md` (status `Refined`)
 - Source Artifact:
   - `Medium/Large`: `tickets/in-progress/runtime-decoupling-refactor/proposed-design.md`
-- Source Design Version: `v10`
+- Source Design Version: `v12`
 - Referenced Sections:
   - `Target State (To-Be)`
   - `Change Inventory (Delta)`
@@ -58,6 +58,7 @@ Do not treat this document as an as-is trace of current code behavior.
 | UC-016 | Requirement | R-010 | N/A | Team runtime mode resolution is adapter-capability-driven (not runtime-name-driven) | Yes/N/A/Yes |
 | UC-017 | Requirement | R-011 | N/A | Runtime-client composition defaults discover runtime module descriptors without direct optional-runtime imports | Yes/Yes/Yes |
 | UC-018 | Requirement | R-012 | N/A | Runtime-client descriptor composition is module-spec discovery driven with no compile-time optional-runtime descriptor imports in shared index | Yes/Yes/Yes |
+| UC-019 | Requirement | R-016 | N/A | Team member runtime event streaming uses one runtime-adapter-registry bridge seam only (legacy external-source bridge removed) | Yes/Yes/Yes |
 
 Rules:
 - Every in-scope requirement must map to at least one use case in this index.
@@ -1056,6 +1057,236 @@ runtime-client/index.ts:loadRuntimeClientDescriptorModules(...)
 [ERROR] no required runtime descriptor can be resolved into module list
 runtime-client-modules-defaults.ts:getDefaultRuntimeClientModules()
 └── throw "Autobyteus runtime client module must always be present."
+```
+
+### Coverage Status
+
+- Primary Path: `Covered`
+- Fallback Path: `Covered`
+- Error Path: `Covered`
+
+## Use Case Delta (`v10`)
+
+| use_case_id | Source Type (`Requirement`/`Design-Risk`) | Requirement ID(s) | Use Case Name | Coverage Target (Primary/Fallback/Error) |
+| --- | --- | --- | --- | --- |
+| UC-019 | Requirement | R-016 | Team member runtime event streaming uses only the runtime-adapter-registry bridge seam (legacy external-source bridge removed) | Yes/Yes/Yes |
+
+## Use Case: UC-019 [Single Team Runtime Bridge Seam]
+
+### Goal
+
+Keep one team member-runtime event bridge path (`TeamRuntimeEventBridge`) and remove legacy bridge/source abstractions that hardcode runtime services in shared layers.
+
+### Preconditions
+
+- Team binding registry has member bindings.
+- Runtime adapters are registered for member runtime kinds.
+
+### Expected Outcome
+
+- Team runtime streaming subscribes via adapter capabilities only.
+- No shared-layer external runtime source registry remains.
+
+### Primary Runtime Call Stack
+
+```text
+[ENTRY] src/services/agent-streaming/agent-team-stream-handler.ts:connect(...)
+├── src/services/agent-streaming/team-runtime-event-bridge.ts:subscribeTeam(teamRunId, onMessage)
+│   ├── src/agent-team-execution/services/team-runtime-binding-registry.ts:getTeamBindings(teamRunId)
+│   ├── src/runtime-execution/runtime-adapter-registry.ts:resolveAdapter(binding.runtimeKind)
+│   ├── src/runtime-execution/runtime-adapter-port.ts:RuntimeAdapter.subscribeToRunEvents(memberRunId, onEvent) [ASYNC]
+│   └── src/services/agent-streaming/runtime-event-message-mapper.ts:mapForRuntime(binding.runtimeKind, event)
+└── websocket send
+```
+
+### Branching / Fallback Paths
+
+```text
+[FALLBACK] adapter exists but has no subscribeToRunEvents capability
+team-runtime-event-bridge.ts:subscribeMember(...)
+└── emit TEAM_RUNTIME_EVENT_BRIDGE_ERROR and keep session alive
+```
+
+```text
+[ERROR] adapter resolution fails for binding.runtimeKind
+team-runtime-event-bridge.ts:subscribeMember(...)
+└── emit TEAM_RUNTIME_EVENT_BRIDGE_ERROR and skip member subscription
+```
+
+### Coverage Status
+
+- Primary Path: `Covered`
+- Fallback Path: `Covered`
+- Error Path: `Covered`
+
+## Use Case Delta (`v11`)
+
+| use_case_id | Source Type (`Requirement`/`Design-Risk`) | Requirement ID(s) | Use Case Name | Coverage Target (Primary/Fallback/Error) |
+| --- | --- | --- | --- | --- |
+| UC-020 | Design-Risk | N/A | Method-based runtime event mapping is consumed via a shared protocol adapter seam (no Claude->Codex runtime-module dependency) | Yes/N/A/Yes |
+| UC-021 | Design-Risk | N/A | Dormant shared team-member services with runtime-specific imports are removed from active architecture surface | Yes/N/A/N/A |
+
+## Use Case: UC-020 [Shared Method-Protocol Event Mapper Seam]
+
+### Goal
+
+Ensure method-based runtime event mapping is provided by a shared protocol adapter seam so Claude runtime module does not import Codex runtime module implementation directly.
+
+### Primary Runtime Call Stack
+
+```text
+[ENTRY] src/runtime-management/runtime-client/claude-runtime-client-module.ts:registerRuntimeEventMappers(target)
+├── src/services/agent-streaming/method-runtime-event-adapter.ts:map(event)
+└── src/services/agent-streaming/runtime-event-message-mapper.ts:registerRuntimeMapper("claude_agent_sdk", mapper)
+```
+
+### Coverage Status
+
+- Primary Path: `Covered`
+- Fallback Path: `N/A`
+- Error Path: `Covered`
+
+## Use Case: UC-021 [Dormant Shared Runtime-Specific Service Cleanup]
+
+### Goal
+
+Remove dormant shared team-member services that retain runtime-specific imports/branches and are not part of active runtime orchestration.
+
+### Primary Runtime Call Stack
+
+```text
+[ENTRY] static architecture audit
+├── src/agent-team-execution/services/team-member-runtime-orchestrator.ts (active)
+├── src/services/agent-streaming/team-runtime-event-bridge.ts (active)
+└── src/runtime-execution/runtime-adapter-registry.ts (active)
+# dormant runtime-specific shared services removed from runtime graph
+```
+
+### Coverage Status
+
+- Primary Path: `Covered`
+- Fallback Path: `N/A`
+- Error Path: `N/A`
+
+## Use Case Delta (`v12`)
+
+| use_case_id | Source Type (`Requirement`/`Design-Risk`) | Requirement ID(s) | Use Case Name | Coverage Target (Primary/Fallback/Error) |
+| --- | --- | --- | --- | --- |
+| UC-022 | Requirement | R-017 | Runtime command ingress rejects unbound runs without implicit compatibility session synthesis | Yes/N/A/Yes |
+| UC-023 | Requirement | R-017 | Team member override schema/form path contains no per-member runtime-kind compatibility handling | Yes/N/A/N/A |
+
+## Use Case: UC-022 [Explicit Session-Only Runtime Ingress]
+
+### Goal
+
+Enforce explicit runtime session binding in command ingress with no legacy implicit-session fallback behavior.
+
+### Primary Runtime Call Stack
+
+```text
+[ENTRY] src/runtime-execution/runtime-command-ingress-service.ts:execute(...)
+└── runtime-command-ingress-service.ts:resolveSession(runId, mode)
+    ├── runtime-session-store.ts:getSession(runId)
+    ├── runtime-adapter-registry.ts:resolveAdapter(existing.runtimeKind) [if existing session]
+    └── return null when no explicit session exists
+```
+
+### Error Path
+
+```text
+[ERROR] no explicit runtime session binding exists for runId
+runtime-command-ingress-service.ts:execute(...)
+└── return { accepted: false, code: "RUN_SESSION_NOT_FOUND", ... }
+```
+
+### Coverage Status
+
+- Primary Path: `Covered`
+- Fallback Path: `N/A`
+- Error Path: `Covered`
+
+## Use Case: UC-023 [Legacy-Free Team Member Override Schema]
+
+### Goal
+
+Keep team runtime selection strictly team-level and remove legacy per-member runtime-kind compatibility handling from team config schema/form.
+
+### Primary Runtime Call Stack
+
+```text
+[ENTRY] autobyteus-web/components/workspace/config/TeamRunConfigForm.vue
+└── sanitizeMemberOverridesForRuntime()
+    ├── validate llmModelIdentifier against current runtime model catalog
+    ├── prune empty overrides
+    └── no member-level runtimeKind rewrite/normalization branch
+```
+
+### Coverage Status
+
+- Primary Path: `Covered`
+- Fallback Path: `N/A`
+- Error Path: `N/A`
+
+## Use Case Delta (`v13`)
+
+| use_case_id | Source Type (`Requirement`/`Design-Risk`) | Requirement ID(s) | Use Case Name | Coverage Target (Primary/Fallback/Error) |
+| --- | --- | --- | --- | --- |
+| UC-024 | Requirement | R-018 | Claude runtime permission mode is resolved through runtime-neutral precedence and propagated to V2 session create/resume options | Yes/Yes/Yes |
+
+## Use Case: UC-024 [Claude Permission/Sandbox Mode Resolution]
+
+### Goal
+
+Allow Claude runtime sessions to use a configurable permission/sandbox mode with deterministic precedence while preserving default behavior and shared-layer decoupling.
+
+### Preconditions
+
+- Claude runtime session bootstrap receives runtime metadata + llm config inputs.
+- Optional environment override `CLAUDE_AGENT_SDK_PERMISSION_MODE` may be set through server settings.
+
+### Expected Outcome
+
+- Claude runtime resolves one permission mode per run session (`runtimeMetadata` -> `llmConfig` -> env -> `default`).
+- Resolved mode is persisted in Claude runtime session state/runtime metadata and used for both create and resume V2 session calls.
+- `send_message_to` team tooling policy remains resolved independently by shared tool-name/metadata policy.
+
+### Primary Runtime Call Stack
+
+```text
+[ENTRY] src/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.ts:createRunSession(runId, options)
+├── claude-runtime-shared.ts:resolveClaudeSdkPermissionMode({ runtimeMetadata, llmConfig, env })
+├── claude-runtime-session-state.ts:createClaudeRunSessionState(...)
+│   └── persist permissionMode into runtime metadata/state
+└── sessions.set(runId, state)
+```
+
+```text
+[ENTRY] claude-agent-sdk-runtime-service.ts:resolveOrCreateV2Session(state, sdk)
+└── claude-runtime-v2-control-interop.ts:createOrResumeClaudeV2Session({
+    permissionMode: state.permissionMode, ...
+  })
+    ├── build sessionOptions.permissionMode
+    └── invoke unstable_v2_createSession/resumeSession
+```
+
+### Branching / Fallback Paths
+
+```text
+[FALLBACK] runtime metadata does not define permission mode
+resolveClaudeSdkPermissionMode(...)
+└── check llmConfig, then env override
+```
+
+```text
+[FALLBACK] llmConfig/env permission mode missing or invalid
+resolveClaudeSdkPermissionMode(...)
+└── return "default"
+```
+
+```text
+[ERROR] invalid configured permission mode token
+resolveClaudeSdkPermissionMode(...)
+└── warn and continue fallback chain; never crash session bootstrap
 ```
 
 ### Coverage Status

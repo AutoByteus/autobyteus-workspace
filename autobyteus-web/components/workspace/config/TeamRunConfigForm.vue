@@ -174,17 +174,11 @@ const normalizeRuntimeKind = (runtimeKind: unknown): AgentRuntimeKind => {
 const sanitizeMemberOverridesForRuntime = () => {
   const modelSet = new Set(llmStore.models);
   const overrides = props.config.memberOverrides || {};
-  const normalizedRuntimeKind = normalizeRuntimeKind(props.config.runtimeKind);
 
   for (const [memberName, override] of Object.entries(overrides)) {
     if (!override || typeof override !== 'object') {
       delete overrides[memberName];
       continue;
-    }
-
-    // Backward-compatible cleanup: ignore legacy per-member runtime overrides.
-    if (override.runtimeKind && override.runtimeKind !== normalizedRuntimeKind) {
-      override.runtimeKind = normalizedRuntimeKind;
     }
 
     if (override.llmModelIdentifier && !modelSet.has(override.llmModelIdentifier)) {

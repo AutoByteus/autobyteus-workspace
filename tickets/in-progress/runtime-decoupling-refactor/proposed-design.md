@@ -2,7 +2,7 @@
 
 ## Design Version
 
-- Current Version: `v10`
+- Current Version: `v12`
 
 ## Revision History
 
@@ -375,3 +375,74 @@ Refactor remaining shared runtime seams so runtime command flow, runtime-event m
 
 - Should runtime capability discovery be fully runtime-registration driven in backend (not hardcoded runtime-kind constants) in this ticket or immediate follow-up?
 - Should frontend `AgentRuntimeKind` be widened to branded string + known-runtime helper now, or phased after backend runtime-registration endpoint is introduced?
+
+## Revision Addendum (`v11`)
+
+- Trigger: `Stage 10 -> Stage 1` re-entry continuation after Claude merge intake
+- Summary: remove orphaned legacy external-runtime team event bridge/source abstractions and keep a single runtime-neutral team-runtime bridge seam.
+
+### Change Inventory Delta (`v11`)
+
+| Change ID | Change Type (`Add`/`Modify`/`Rename/Move`/`Remove`) | Current Path | Target Path | Rationale | Impacted Areas | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| C-035 | Remove | `src/services/agent-streaming/team-external-runtime-event-bridge.ts`, `src/runtime-execution/external-runtime-event-source-registry.ts`, `src/runtime-execution/external-runtime-event-source-port.ts` | Removed | Eliminate dead shared-layer path that still hardcodes Codex/Claude runtime services and duplicates active bridge behavior. | Shared streaming + runtime execution seams | Active runtime flows already use `TeamRuntimeEventBridge`. |
+| C-036 | Modify/Add | `src/services/agent-streaming/index.ts`, `tests/unit/services/agent-streaming/*` | same | Standardize shared exports on `TeamRuntimeEventBridge` and add focused unit coverage for runtime-kind mapping and missing-adapter/subscription errors. | Shared streaming + tests | Keeps frontend/server message contract unchanged. |
+
+### Decommission Delta
+
+- Remove legacy external bridge + source abstractions instead of maintaining compatibility aliases.
+- Retain only `TeamRuntimeEventBridge` as the team member-runtime streaming seam.
+- Keep dependency direction unchanged: `shared streaming -> runtime adapter registry -> runtime adapters`.
+
+## Revision Addendum (`v12`)
+
+- Trigger: Stage-8 deep re-review (`Design Impact`) after requested Codex + Claude architecture verification
+- Summary: remove residual runtime-to-runtime and shared-layer runtime-specific coupling leftovers identified in re-review findings (`P1`..`P3`).
+
+### Change Inventory Delta (`v12`)
+
+| Change ID | Change Type (`Add`/`Modify`/`Rename/Move`/`Remove`) | Current Path | Target Path | Rationale | Impacted Areas | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| C-037 | Add/Modify | `src/services/agent-streaming/codex-runtime-event-adapter.ts`, `src/runtime-management/runtime-client/claude-runtime-client-module.ts`, `src/runtime-management/runtime-client/codex-runtime-client-module.ts` | add protocol-level method-runtime adapter seam and consume it from runtime modules | Remove direct Claude->Codex runtime module dependency while preserving event-mapping behavior for method-based runtimes. | Runtime-client modules + streaming mapping seam | Both Codex and Claude runtime modules use shared protocol adapter contract. |
+| C-038 | Remove | `src/agent-team-execution/services/team-member-runtime-session-lifecycle-service.ts`, `src/agent-team-execution/services/team-member-runtime-binding-state-service.ts`, `src/agent-team-execution/services/team-member-runtime-relay-service.ts` | removed | Eliminate dormant shared-layer services that retain runtime-specific imports/branches and are not active in runtime orchestration paths. | Team execution shared-layer hygiene | Verified zero active references before removal. |
+
+### Decommission Delta
+
+- Remove dormant shared services with runtime-specific imports instead of retaining dead-code compatibility.
+- Keep active team-runtime path centered on `TeamMemberRuntimeOrchestrator` + `TeamRuntimeEventBridge` + `RuntimeAdapterRegistry`.
+
+## Revision Addendum (`v13`)
+
+- Trigger: Stage-8 re-review fail (`Requirement Gap`) under strict no-legacy directive
+- Summary: remove remaining compatibility behavior in active runtime ingress and team-run override schema paths.
+
+### Change Inventory Delta (`v13`)
+
+| Change ID | Change Type (`Add`/`Modify`/`Rename/Move`/`Remove`) | Current Path | Target Path | Rationale | Impacted Areas | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| C-042 | Modify | `src/runtime-execution/runtime-command-ingress-service.ts`, `tests/unit/runtime-execution/runtime-command-ingress-service.test.ts` | same | Remove legacy implicit-session compatibility fallback and require explicit runtime session binding for command ingress. | Runtime command ingress + backend unit tests | Keeps deterministic `RUN_SESSION_NOT_FOUND` behavior for unbound runs. |
+| C-043 | Modify | `autobyteus-web/components/workspace/config/TeamRunConfigForm.vue`, `autobyteus-web/types/agent/TeamRunConfig.ts`, `autobyteus-web/components/workspace/config/__tests__/TeamRunConfigForm.spec.ts` | same | Remove legacy per-member runtime-kind compatibility field/cleanup; enforce team-level runtime model only. | Frontend team config schema + form sanitization/tests | No per-member runtime override semantics are retained. |
+
+### Decommission Delta
+
+- Remove `canUseLegacyImplicitSession` and implicit session creation branch from runtime ingress.
+- Remove `MemberConfigOverride.runtimeKind` field and associated backward-compatible cleanup branch in team run config form.
+- Preserve existing runtime capability-driven team runtime selection behavior and explicit session binding contracts.
+
+## Revision Addendum (`v14`)
+
+- Trigger: Stage-8 re-review parity request (`Requirement Gap`) for Claude operational sandbox/permission toggle symmetry
+- Summary: introduce configurable Claude permission-mode resolution and propagate it through runtime-session state into Claude V2 create/resume session options while preserving runtime-neutral shared-layer boundaries.
+
+### Change Inventory Delta (`v14`)
+
+| Change ID | Change Type (`Add`/`Modify`/`Rename/Move`/`Remove`) | Current Path | Target Path | Rationale | Impacted Areas | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| C-047 | Modify | `src/runtime-execution/claude-agent-sdk/claude-runtime-shared.ts`, `src/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.ts`, `src/runtime-execution/claude-agent-sdk/claude-runtime-session-state.ts`, `src/runtime-execution/claude-agent-sdk/claude-runtime-v2-control-interop.ts` | same | Replace hard-coded Claude V2 `permissionMode: "default"` with resolved permission-mode seam (`runtimeMetadata -> llmConfig -> env -> default`) and propagate through session state. | Claude runtime execution internals | Keeps defaults unchanged when no override is configured. |
+| C-048 | Add/Modify | `tests/unit/runtime-execution/claude-agent-sdk/claude-runtime-shared.test.ts`, `tests/unit/runtime-execution/claude-agent-sdk/claude-runtime-v2-control-interop.test.ts`, `tests/unit/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.test.ts` | same | Add focused regression coverage for permission-mode resolution precedence and V2 session option propagation; ensure tool-name-based `send_message_to` policy remains intact. | Backend unit tests | No API contract changes required. |
+
+### Design Guardrails Delta
+
+- Keep shared orchestration (`team-member-runtime-orchestrator.ts`) unchanged for `send_message_to` policy because it is already runtime-neutral and tool-name driven.
+- Do not add compatibility wrappers for prior hard-coded permission behavior; default mode remains `default` through resolver fallback.
+- Scope operational toggle to Claude runtime-specific module path only; no shared-layer runtime-specific branching.

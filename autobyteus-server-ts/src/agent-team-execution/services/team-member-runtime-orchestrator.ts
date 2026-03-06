@@ -107,6 +107,7 @@ const isSendMessageToToolName = (toolName: string | null): boolean => {
   const normalized = toolName.trim().toLowerCase();
   return (
     normalized === "send_message_to" ||
+    normalized.endsWith("__send_message_to") ||
     normalized.endsWith(".send_message_to") ||
     normalized.endsWith("/send_message_to")
   );
@@ -298,7 +299,14 @@ export class TeamMemberRuntimeOrchestrator {
       const definition = await this.agentDefinitionService.getAgentDefinitionById(
         options.agentDefinitionId,
       );
-      const toolNames = definition?.toolNames ?? [];
+      const toolNames = Array.isArray(definition?.toolNames)
+        ? definition.toolNames.filter((toolName): toolName is string => typeof toolName === "string")
+        : [];
+      // Team runtimes inject send_message_to by default. Only disable it when an explicit
+      // tool allowlist is present and it excludes send_message_to.
+      if (toolNames.length === 0) {
+        return true;
+      }
       return toolNames.some((toolName) =>
         isSendMessageToToolName(typeof toolName === "string" ? toolName : null),
       );
@@ -306,7 +314,8 @@ export class TeamMemberRuntimeOrchestrator {
       logger.warn(
         `Failed resolving send_message_to capability for agent definition '${options.agentDefinitionId}': ${String(error)}`,
       );
-      return false;
+      // Avoid disabling inter-agent relay on transient definition lookup failures.
+      return true;
     }
   }
 

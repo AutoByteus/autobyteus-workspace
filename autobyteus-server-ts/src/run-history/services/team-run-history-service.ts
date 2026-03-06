@@ -403,7 +403,7 @@ export class TeamRunHistoryService {
     activeBindingsOverride: TeamRunMemberBinding[] | null = null,
   ): TeamRunManifest {
     const activeBindings =
-      activeBindingsOverride ?? this.teamMemberRuntimeOrchestrator?.getActiveMemberBindings?.(teamRunId) ?? [];
+      activeBindingsOverride ?? this.teamMemberRuntimeOrchestrator?.getTeamBindings?.(teamRunId) ?? [];
     if (activeBindings.length === 0) {
       return manifest;
     }

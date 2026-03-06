@@ -33,7 +33,8 @@ describe("runtime-client descriptor module discovery", () => {
 
     expect(runtimeKinds).toContain("autobyteus");
     expect(runtimeKinds).toContain("codex_app_server");
-  });
+    expect(runtimeKinds).toContain("claude_agent_sdk");
+  }, 20_000);
 
   it("supports descriptor module env override while preserving required autobyteus module", async () => {
     process.env[DESCRIPTOR_MODULES_ENV] =
@@ -44,7 +45,8 @@ describe("runtime-client descriptor module discovery", () => {
     expect(runtimeKinds).toContain("autobyteus");
     expect(runtimeKinds).toContain("test_runtime");
     expect(runtimeKinds).not.toContain("codex_app_server");
-  });
+    expect(runtimeKinds).not.toContain("claude_agent_sdk");
+  }, 20_000);
 
   it("tolerates invalid optional module specs", async () => {
     process.env[DESCRIPTOR_MODULES_ENV] =
@@ -54,5 +56,6 @@ describe("runtime-client descriptor module discovery", () => {
 
     expect(runtimeKinds).toContain("autobyteus");
     expect(runtimeKinds).toContain("codex_app_server");
-  });
+    expect(runtimeKinds).not.toContain("claude_agent_sdk");
+  }, 20_000);
 });

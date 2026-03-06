@@ -7,29 +7,29 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 ## Current Snapshot
 
 - Ticket: `runtime-decoupling-refactor`
-- Current Stage: `1`
-- Next Stage: `2`
+- Current Stage: `7`
+- Next Stage: `7 (Blocked: environment fix or explicit waiver required)`
 - Code Edit Permission: `Locked`
-- Active Re-Entry: `Yes`
-- Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `Design Impact`
-- Last Transition ID: `T-086`
-- Last Updated: `2026-03-05`
+- Active Re-Entry: `No`
+- Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
+- Last Transition ID: `T-156`
+- Last Updated: `2026-03-06`
 
 ## Stage Gates
 
 | Stage | Gate Status (`Not Started`/`In Progress`/`Pass`/`Fail`/`Blocked`) | Gate Rule Summary | Evidence |
 | --- | --- | --- | --- |
 | 0 Bootstrap + Draft Requirement | Pass | Ticket bootstrap complete + `requirements.md` Draft captured | `tickets/in-progress/runtime-decoupling-refactor/requirements.md` |
-| 1 Investigation + Triage | In Progress | Reopened from Stage 10 after merge of `origin/personal` introduced Claude Agent SDK runtime changes that were authored on pre-refactor architecture; fresh impact inventory in progress. | `tickets/in-progress/runtime-decoupling-refactor/investigation-notes.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
-| 2 Requirements | Not Started | Requirements delta for Claude runtime decoupling alignment pending refreshed investigation closure. | `tickets/in-progress/runtime-decoupling-refactor/requirements.md` |
-| 3 Design Basis | Not Started | Awaiting updated requirements and redesign for Claude runtime integration through decoupled runtime-client module seams. | `tickets/in-progress/runtime-decoupling-refactor/proposed-design.md` |
-| 4 Runtime Modeling | Not Started | Awaiting refreshed design basis for updated future-state call-stack modeling. | `tickets/in-progress/runtime-decoupling-refactor/future-state-runtime-call-stack.md` |
-| 5 Review Gate | Not Started | Awaiting updated runtime call-stack artifacts and deep-review rounds. | `tickets/in-progress/runtime-decoupling-refactor/future-state-runtime-call-stack-review.md` |
-| 6 Implementation | Not Started | Locked pending refreshed Stage 5 Go confirmation for Claude-runtime-aligned architecture. | `tickets/in-progress/runtime-decoupling-refactor/implementation-plan.md`, `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md` |
-| 7 API/E2E Testing | Not Started | Awaiting post-implementation Stage 6 completion on reopened scope. | `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md` |
-| 8 Code Review | Not Started | Awaiting refreshed implementation and Stage 7 closure. | `tickets/in-progress/runtime-decoupling-refactor/code-review.md`, `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md` |
-| 9 Docs Sync | Not Started | Awaiting refreshed Stage 8 pass for reopened scope. | `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md` |
-| 10 Handoff / Ticket State | In Progress | Ticket reopened from prior handoff after upstream personal-branch merge; new decoupling iteration active. | `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
+| 1 Investigation + Triage | Pass | Known-good parity investigation completed: focused live Codex lifecycle behavior matches `origin/personal` on the normal path, and the remaining deterministic delta is isolated to the refactor-only Vitest `CODEX_HOME` override path. | `tickets/in-progress/runtime-decoupling-refactor/investigation-notes.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
+| 2 Requirements | Pass | Requirements refined with Claude sandbox/permission-mode configurability and parity acceptance checks (`R-018`, `AC-031`, `AC-032`). | `tickets/in-progress/runtime-decoupling-refactor/requirements.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
+| 3 Design Basis | Pass | Proposed design updated to `v14` for Claude permission-mode resolution seam and session-state propagation (`C-047`, `C-048`). | `tickets/in-progress/runtime-decoupling-refactor/proposed-design.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
+| 4 Runtime Modeling | Pass | Future-state call stack updated to `v13` with `UC-024` covering Claude permission-mode resolution precedence + persistence behavior. | `tickets/in-progress/runtime-decoupling-refactor/future-state-runtime-call-stack.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
+| 5 Review Gate | Pass | Deep-review rounds `25` and `26` completed clean; `Go Confirmed` established for Claude sandbox parity refinement scope. | `tickets/in-progress/runtime-decoupling-refactor/future-state-runtime-call-stack-review.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
+| 6 Implementation | Pass | Iteration-14 fixed the Codex thread-history materialization retry gap, and follow-up isolation found no remaining deterministic local code regression in the live `run_bash` metadata path. | `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md`, `tickets/in-progress/runtime-decoupling-refactor/investigation-notes.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
+| 7 API/E2E Testing | Blocked | The earlier full-backend `run_bash` timeout did not reproduce: the focused `run_bash` case passed repeatedly and the full Codex GraphQL file passed `run_bash`, but the file still fails deterministically on `streams codex generate_image tool_call metadata with non-empty arguments over websocket` (90s timeout). `origin/personal` is not clean in this environment either, so the remaining blocker is treated as live-environment/tool availability pending fix or explicit waiver. | `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md`, `tickets/in-progress/runtime-decoupling-refactor/investigation-notes.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
+| 8 Code Review | Not Started | Deferred until the Stage-7 live-runtime blocker is resolved or explicitly waived. | `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
+| 9 Docs Sync | Not Started | Deferred pending Stage-7 closure. | `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
+| 10 Handoff / Ticket State | In Progress | Handoff remains blocked until the live Codex `generate_image` acceptance case is either executable in this environment or explicitly waived. | `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md`, `tickets/in-progress/runtime-decoupling-refactor/investigation-notes.md` |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -80,11 +80,11 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 
 ## Re-Entry Declaration
 
-- Trigger Stage (`5`/`6`/`7`/`8`): `10`
-- Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `Design Impact`
-- Required Return Path: `1 -> 2 -> 3 -> 4 -> 5 -> 6`
-- Required Upstream Artifacts To Update Before Code Edits: `investigation-notes.md`, `requirements.md`, `proposed-design.md`, `future-state-runtime-call-stack.md`, `future-state-runtime-call-stack-review.md`
-- Resume Condition: `Stage 5 Go Confirmed re-established for Claude-runtime-aligned decoupled architecture and Stage 6 unlocked`
+- Trigger Stage (`5`/`6`/`7`/`8`): `7`
+- Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `Local Fix`
+- Required Return Path: `6 -> 7`
+- Required Upstream Artifacts To Update Before Code Edits: `workflow-state.md`, `investigation-notes.md`, `implementation-progress.md`
+- Resume Condition: `Codex thread-history materialization retry gap is patched and Stage-7 runtime-enabled backend verification is rerun`
 
 ## Transition Log (Append-Only)
 
@@ -177,6 +177,76 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | T-084 | 2026-03-05 | 8 | 9 | Stage-10 continuation iteration 4 code review passed with no blocking findings; proceeding to docs sync closure. | N/A | Locked | code-review.md, implementation-progress.md, workflow-state.md |
 | T-085 | 2026-03-05 | 9 | 10 | Stage-10 continuation iteration 4 docs sync closed with no-impact rationale; returning to final handoff pending explicit user confirmation. | N/A | Locked | implementation-progress.md, workflow-state.md |
 | T-086 | 2026-03-05 | 10 | 1 | Merged latest `origin/personal` (including Claude Agent SDK runtime support) into refactor branch; reopened workflow for Design Impact re-entry because incoming runtime integration was built on pre-refactor architecture and needs decoupled-runtime realignment. | Design Impact | Locked | workflow-state.md, investigation-notes.md, requirements.md |
+| T-087 | 2026-03-05 | 1 | 2 | Investigation refresh completed for Claude post-merge residual coupling; moving to requirements refinement for single team-runtime bridge seam cleanup (`C-035`, `C-036`). | Design Impact | Locked | investigation-notes.md, workflow-state.md |
+| T-088 | 2026-03-05 | 2 | 3 | Requirements refined with `R-016` and `AC-027`/`AC-028`; proceeding to design update for legacy external bridge/source removal scope. | Requirement Gap | Locked | requirements.md, workflow-state.md |
+| T-089 | 2026-03-05 | 3 | 4 | Proposed design updated to `v11`; proceeding to runtime call-stack regeneration for single-bridge seam target state. | Design Impact | Locked | proposed-design.md, workflow-state.md |
+| T-090 | 2026-03-05 | 4 | 5 | Runtime call stack updated to `v10` with `UC-019`; entering review gate rounds for go confirmation. | Design Impact | Locked | future-state-runtime-call-stack.md, workflow-state.md |
+| T-091 | 2026-03-05 | 5 | 6 | Review rounds `19` and `20` re-achieved `Go Confirmed`; Stage 6 implementation reopened with code-edit permission unlocked for `C-035`/`C-036`. | Design Impact | Unlocked | future-state-runtime-call-stack-review.md, implementation-plan.md, implementation-progress.md, workflow-state.md |
+| T-092 | 2026-03-05 | 6 | 7 | Iteration 5 implementation completed for legacy external bridge/source cleanup with focused verification evidence; proceeding to acceptance closure. | N/A | Unlocked | implementation-progress.md, workflow-state.md |
+| T-093 | 2026-03-05 | 7 | 8 | Stage-7 acceptance closure completed for `AC-027` and `AC-028`; entering Stage 8 code review and relocking code edits. | N/A | Locked | implementation-progress.md, workflow-state.md |
+| T-094 | 2026-03-05 | 8 | 9 | Stage-8 code review passed for iteration 5 with no blocking findings; proceeding to docs sync closure. | N/A | Locked | code-review.md, implementation-progress.md, workflow-state.md |
+| T-095 | 2026-03-05 | 9 | 10 | Stage-9 docs sync closed with no-impact rationale; returning to final handoff pending explicit user confirmation. | N/A | Locked | implementation-progress.md, workflow-state.md |
+| T-096 | 2026-03-05 | 10 | 8 | User-requested additional deep review round reopened Stage 8 code review gate for Codex + Claude decoupling verification. | N/A | Locked | code-review.md, workflow-state.md |
+| T-097 | 2026-03-05 | 8 | 1 | Stage-8 deep re-review found residual decoupling blockers (`P1` Claude mapper coupling, shared-layer runtime-specific imports); Design Impact re-entry declared and investigation reopened. | Design Impact | Locked | code-review.md, workflow-state.md |
+| T-098 | 2026-03-05 | 1 | 3 | Re-entry investigation refresh completed for re-review blockers; proceeding to redesign update for `C-037`/`C-038`. | Design Impact | Locked | investigation-notes.md, proposed-design.md, workflow-state.md |
+| T-099 | 2026-03-05 | 3 | 4 | Re-entry design updated to `v12`; proceeding to runtime-model regeneration for blocker-remediation scope. | Design Impact | Locked | proposed-design.md, future-state-runtime-call-stack.md, workflow-state.md |
+| T-100 | 2026-03-05 | 4 | 5 | Runtime call stack updated to `v11`; entering review rounds `21` and `22` for go reconfirmation. | Design Impact | Locked | future-state-runtime-call-stack.md, future-state-runtime-call-stack-review.md, workflow-state.md |
+| T-101 | 2026-03-05 | 5 | 6 | Re-entry review gate re-achieved Go Confirmed (rounds `21` and `22`); implementation reopened with code-edit unlock for `C-037`/`C-038`. | Design Impact | Unlocked | future-state-runtime-call-stack-review.md, implementation-plan.md, implementation-progress.md, workflow-state.md |
+| T-102 | 2026-03-05 | 6 | 7 | Re-entry implementation completed for `C-037`/`C-038` (method-runtime seam hardening + dormant shared-service removals) with focused verification and full-suite execution started for gate closure. | N/A | Unlocked | implementation-progress.md, workflow-state.md |
+| T-103 | 2026-03-05 | 7 | 8 | Stage-7 acceptance/API closure completed after full backend/frontend suite pass evidence (`autobyteus-server-ts` full pass, `autobyteus-web` Nuxt+Electron pass). | N/A | Locked | implementation-progress.md, workflow-state.md |
+| T-104 | 2026-03-05 | 8 | 9 | Final re-review passed; prior decoupling blockers (`P1`..`P3`) resolved and Stage-8 gate closed. | N/A | Locked | code-review.md, implementation-progress.md, workflow-state.md |
+| T-105 | 2026-03-05 | 9 | 10 | Docs sync closed with no-impact rationale for iteration-6 internal seam/test-harness updates; returning to handoff-ready state. | N/A | Locked | implementation-progress.md, workflow-state.md |
+| T-106 | 2026-03-05 | 10 | 8 | User-requested additional re-review reopened Stage 8 for another Codex + Claude decoupling verification pass. | N/A | Locked | code-review.md, workflow-state.md |
+| T-107 | 2026-03-05 | 8 | 6 | Stage-8 re-review found bounded residual Codex-branded helper ownership leakage in shared method-runtime internals; classified as Local Fix and reopened Stage 6 with code-edit unlock. | Local Fix | Unlocked | implementation-plan.md, implementation-progress.md, code-review.md, workflow-state.md |
+| T-108 | 2026-03-05 | 6 | 7 | Iteration-7 local-fix implementation completed (`C-039` helper neutralization + `C-040` test-timeout stabilization); proceeding to Stage-7 full gate verification. | Local Fix | Unlocked | implementation-progress.md, workflow-state.md |
+| T-109 | 2026-03-05 | 7 | 8 | Stage-7 gate closed after focused backend + full backend/frontend pass evidence (backend full gate required flaky-test rerun); entering Stage-8 review and relocking code edits. | Local Fix | Locked | implementation-progress.md, workflow-state.md |
+| T-110 | 2026-03-05 | 8 | 9 | Iteration-7 final re-review passed with no residual helper coupling findings; proceeding to docs-sync closure. | Local Fix | Locked | code-review.md, implementation-progress.md, workflow-state.md |
+| T-111 | 2026-03-05 | 9 | 10 | Docs-sync closed with no-impact rationale for iteration-7 internal helper-neutralization/test-stability updates; returning to handoff-ready state. | Local Fix | Locked | implementation-progress.md, workflow-state.md |
+| T-112 | 2026-03-05 | 10 | 8 | User-requested additional re-review reopened Stage 8 for another Codex + Claude decoupling verification pass. | N/A | Locked | code-review.md, workflow-state.md |
+| T-113 | 2026-03-05 | 8 | 6 | Stage-8 re-review found residual dead compatibility wrapper (`codex-runtime-event-adapter.ts`) in shared streaming seam; classified as Local Fix and reopened Stage 6 with code-edit unlock. | Local Fix | Unlocked | code-review.md, implementation-plan.md, implementation-progress.md, workflow-state.md |
+| T-114 | 2026-03-05 | 6 | 7 | Iteration-8 local-fix implementation completed (`C-041` compatibility wrapper decommission) with focused backend and full backend/frontend verification evidence. | Local Fix | Unlocked | implementation-progress.md, workflow-state.md |
+| T-115 | 2026-03-05 | 7 | 8 | Stage-7 gate closed after focused backend + full backend/frontend suite pass evidence; entering Stage-8 re-review and relocking code edits. | Local Fix | Locked | implementation-progress.md, workflow-state.md |
+| T-116 | 2026-03-05 | 8 | 9 | Iteration-8 final re-review passed with no residual compatibility wrapper artifacts or scoped decoupling leftovers. | Local Fix | Locked | code-review.md, implementation-progress.md, workflow-state.md |
+| T-117 | 2026-03-05 | 9 | 10 | Iteration-8 docs-sync closed with no-impact rationale for internal compatibility-wrapper decommission update. | Local Fix | Locked | implementation-progress.md, workflow-state.md |
+| T-118 | 2026-03-05 | 10 | 10 | Handoff-ready snapshot refreshed after iteration-8 local-fix closure; awaiting explicit user confirmation for ticket completion. | Local Fix | Locked | workflow-state.md, code-review.md |
+| T-119 | 2026-03-05 | 10 | 8 | User-requested strict no-legacy quality iteration reopened Stage 8 for another full Codex + Claude decoupling verification pass. | N/A | Locked | code-review.md, workflow-state.md |
+| T-120 | 2026-03-05 | 8 | 1 | Stage-8 re-review found additional residual legacy compatibility paths (runtime ingress implicit-session fallback, legacy member-runtime override cleanup); Requirement Gap re-entry declared and investigation reopened. | Requirement Gap | Locked | code-review.md, investigation-notes.md, workflow-state.md |
+| T-121 | 2026-03-05 | 1 | 2 | Investigation refresh completed for strict no-legacy scope (`C-042`, `C-043`); proceeding to requirements refinement. | Requirement Gap | Locked | investigation-notes.md, requirements.md, workflow-state.md |
+| T-122 | 2026-03-05 | 2 | 3 | Requirements refined with explicit no-legacy acceptance criteria (`R-017`, `AC-029`, `AC-030`); proceeding to design update `v13`. | Requirement Gap | Locked | requirements.md, proposed-design.md, workflow-state.md |
+| T-123 | 2026-03-05 | 3 | 4 | Design `v13` persisted for strict no-legacy cleanup; runtime call stack regenerated to `v12`. | Design Impact | Locked | proposed-design.md, future-state-runtime-call-stack.md, workflow-state.md |
+| T-124 | 2026-03-05 | 4 | 5 | Runtime call-stack review refreshed to rounds `23`/`24` and re-achieved `Go Confirmed` for strict no-legacy scope. | Requirement Gap | Locked | future-state-runtime-call-stack-review.md, workflow-state.md |
+| T-125 | 2026-03-05 | 5 | 6 | Stage 5 gate reconfirmed with Go Confirmed; iteration-9 implementation opened and code-edit permission unlocked for `C-042`/`C-043`. | Requirement Gap | Unlocked | future-state-runtime-call-stack-review.md, implementation-plan.md, implementation-progress.md, workflow-state.md |
+| T-126 | 2026-03-05 | 6 | 7 | Iteration-9 implementation completed (`C-042` explicit-session ingress, `C-043` team-override legacy cleanup) with focused verification and full-suite execution started for gate closure. | N/A | Unlocked | implementation-progress.md, workflow-state.md |
+| T-127 | 2026-03-05 | 7 | 8 | Stage-7 gate closed after focused + full backend/frontend pass evidence; entering Stage-8 re-review and relocking code edits. | N/A | Locked | implementation-progress.md, workflow-state.md |
+| T-128 | 2026-03-05 | 8 | 9 | Iteration-9 final re-review passed with no residual legacy/compatibility findings in reviewed decoupling seams. | N/A | Locked | code-review.md, implementation-progress.md, workflow-state.md |
+| T-129 | 2026-03-05 | 9 | 10 | Iteration-9 docs-sync closed with no-impact rationale; returning to handoff-ready state pending explicit user confirmation. | N/A | Locked | implementation-progress.md, workflow-state.md |
+| T-130 | 2026-03-05 | 10 | 8 | User-requested additional code review + runtime-enabled test gate reopened Stage 8 for Codex + Claude decoupling verification. | N/A | Locked | workflow-state.md, code-review.md |
+| T-131 | 2026-03-05 | 8 | 6 | Stage-8 re-review found bounded shared-layer Codex-specific method suppression logic in `MethodRuntimeEventAdapter`; classified as Local Fix and reopened Stage 6 with code-edit unlock. | Local Fix | Unlocked | code-review.md, implementation-plan.md, implementation-progress.md, workflow-state.md |
+| T-132 | 2026-03-05 | 6 | 7 | Iteration-10 local fix (`C-044`) completed with focused mapper regression pass; proceeding to Stage-7 runtime-enabled backend/frontend gates. | Local Fix | Unlocked | implementation-progress.md, workflow-state.md |
+| T-133 | 2026-03-05 | 7 | 7 | Stage-7 runtime-enabled gate blocked: Codex live team roundtrip reproducibly fails (`RUN_CODEX_E2E=1`) because `send_message_to` is unavailable at runtime; code-edit lock applied pending blocker classification/unblock path. | Unclear | Locked | implementation-progress.md, workflow-state.md |
+| T-134 | 2026-03-05 | 7 | 7 | Additional review + runtime-enabled verification round completed; architecture boundary checks remained clean, but Stage-7 remains blocked due reproducible live Codex/Claude team roundtrip hangs and missing `send_message_to` lifecycle evidence in Codex team runtime. | Unclear | Locked | code-review.md, implementation-progress.md, workflow-state.md |
+| T-135 | 2026-03-05 | 7 | 6 | Stage-7 unblock local-fix iteration opened after targeted diagnosis identified remaining runtime capability/lifecycle and Claude transcript-alias defects; code-edit permission unlocked for bounded remediation. | Local Fix | Unlocked | implementation-progress.md, workflow-state.md |
+| T-136 | 2026-03-05 | 6 | 7 | Stage-7 unblock local-fix implementation completed (`send_message_to` capability defaulting, Claude lifecycle suppression scoping, transcript alias migration preservation, and aligned unit expectations); proceeding to full runtime-enabled gate rerun. | Local Fix | Unlocked | implementation-progress.md, workflow-state.md |
+| T-137 | 2026-03-05 | 7 | 7 | Full backend runtime-enabled rerun passed (`RUN_CLAUDE_E2E=1` + `RUN_CODEX_E2E=1`: `261 files / 1186 tests`); frontend gate initially failed due Nuxt test-only app-manifest teardown error. | Local Fix | Unlocked | implementation-progress.md, workflow-state.md |
+| T-138 | 2026-03-05 | 7 | 6 | Frontend test harness issue classified as bounded Local Fix (`appManifest` teardown `$fetch` exception in Vitest); reopened Stage 6 for test-only configuration hardening. | Local Fix | Unlocked | implementation-progress.md, workflow-state.md |
+| T-139 | 2026-03-05 | 6 | 7 | Applied test-only Nuxt config hardening (`experimental.appManifest: false` when test) and reran full frontend gate to pass (`Nuxt 148/730`, `Electron 6/39`). | Local Fix | Unlocked | implementation-progress.md, workflow-state.md |
+| T-140 | 2026-03-05 | 7 | 8 | Stage-7 API/E2E gate closed with runtime-enabled backend + frontend full-suite pass evidence; entering Stage-8 re-review with code edits relocked. | N/A | Locked | implementation-progress.md, workflow-state.md |
+| T-141 | 2026-03-06 | 8 | 2 | User-requested Claude parity re-review identified requirement-level gap for Claude sandbox/permission-mode configurability symmetry and reopened workflow under Requirement Gap path. | Requirement Gap | Locked | workflow-state.md, code-review.md |
+| T-142 | 2026-03-06 | 2 | 3 | Requirements refined for Claude permission-mode/sandbox parity (`R-018`, `AC-031`, `AC-032`); proceeding to design update `v14`. | Requirement Gap | Locked | requirements.md, workflow-state.md |
+| T-143 | 2026-03-06 | 3 | 4 | Design `v14` persisted for Claude permission-mode resolution seam and runtime-session propagation (`C-047`, `C-048`). | Design Impact | Locked | proposed-design.md, workflow-state.md |
+| T-144 | 2026-03-06 | 4 | 5 | Runtime call stack updated to `v13` with `UC-024`; entering review rounds `25` and `26` for go reconfirmation. | Requirement Gap | Locked | future-state-runtime-call-stack.md, future-state-runtime-call-stack-review.md, workflow-state.md |
+| T-145 | 2026-03-06 | 5 | 6 | Stage-5 review reconfirmed `Go Confirmed` (rounds `25`/`26`); Stage-6 implementation reopened with code-edit permission unlocked for `C-047`/`C-048`. | Requirement Gap | Unlocked | future-state-runtime-call-stack-review.md, implementation-plan.md, workflow-state.md |
+| T-146 | 2026-03-06 | 6 | 7 | Iteration-12 implementation completed (`C-047`, `C-048`) with focused unit verification and runtime-enabled/full-suite gate execution started. | Requirement Gap | Unlocked | implementation-progress.md, workflow-state.md |
+| T-147 | 2026-03-06 | 7 | 8 | Stage-7 gate closed after runtime-enabled backend full pass and frontend full pass evidence; entering Stage-8 re-review and relocking code edits. | Requirement Gap | Locked | implementation-progress.md, workflow-state.md |
+| T-148 | 2026-03-06 | 8 | 9 | Stage-8 re-review passed with no remaining Claude/Codex decoupling parity findings in scope. | Requirement Gap | Locked | code-review.md, workflow-state.md |
+| T-149 | 2026-03-06 | 9 | 10 | Stage-9 docs sync closed with no-impact rationale for iteration-12 internal runtime seam/test updates; entering handoff-ready state. | Requirement Gap | Locked | implementation-progress.md, workflow-state.md |
+| T-150 | 2026-03-06 | 10 | 1 | User-requested root-cause certainty pass reopened investigation: validate whether parallel failures were SQLite test infra or Claude runtime integration defects. | Unclear | Locked | workflow-state.md, investigation-notes.md |
+| T-151 | 2026-03-06 | 1 | 6 | Investigation confirmed bounded local integration fix scope (Claude stream completion detection) and reopened Stage 6 for implementation with code-edit unlock. | Local Fix | Unlocked | workflow-state.md, investigation-notes.md, implementation-progress.md |
+| T-152 | 2026-03-06 | 6 | 1 | User-requested parity investigation reopened Stage 1 because refactor must preserve `origin/personal` runtime behavior; code edits relocked until Codex live failures are classified against the known-good branch. | Unclear | Locked | workflow-state.md, investigation-notes.md |
+| T-153 | 2026-03-06 | 1 | 6 | `origin/personal` parity investigation isolated a bounded refactor regression: the Vitest-only `CODEX_APP_SERVER_TEST_HOME_BASE` -> worker-scoped `CODEX_HOME` override in Codex process manager breaks focused live lifecycle streaming while both `origin/personal` and the normal current-branch path remain green. | Local Fix | Unlocked | workflow-state.md, investigation-notes.md, implementation-progress.md |
+| T-154 | 2026-03-06 | 6 | 7 | Iteration-13 bounded Codex parity fix completed by removing the refactor-only Vitest `CODEX_HOME` override; focused live Codex lifecycle verification and broader live Codex runtime/team slice both passed, and full runtime-enabled backend/frontend gates are now in progress. | Local Fix | Unlocked | workflow-state.md, implementation-progress.md |
+| T-155 | 2026-03-06 | 7 | 6 | Stage-7 full backend rerun failed deterministically in the live Codex image-context/history scenario: `CodexThreadHistoryReader` does not treat `thread ... is not materialized yet; includeTurns is unavailable before first user message` as a transient retry condition, so the workflow re-enters Stage 6 for a bounded local fix with code edits remaining unlocked. | Local Fix | Unlocked | workflow-state.md, investigation-notes.md, implementation-progress.md |
+| T-156 | 2026-03-06 | 6 | 7 | Investigation correction completed: the earlier full-backend `run_bash` timeout does not reproduce in isolation or at file scope, while the remaining deterministic Codex blocker is the live `generate_image` metadata case. Stage 7 is therefore blocked on environment/tool availability or explicit waiver, and code edits are relocked. | N/A | Locked | workflow-state.md, investigation-notes.md, implementation-progress.md |
 
 ## Audible Notification Log (Optional Tracking)
 
@@ -229,6 +299,23 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | 2026-03-05 | Re-entry | User-requested continuation reopened Stage 10 to Stage 1 under Design Impact for runtime-client descriptor seam cleanup; code edits remain locked. | Success | N/A |
 | 2026-03-05 | Transition | Stage-10 continuation iteration 4 transitioned through stages 1->2->3->4->5->6 with Go Confirmed on rounds 17 and 18; code edit permission is now unlocked for C-033/C-034 implementation. | Success | N/A |
 | 2026-03-05 | Transition | Stage-10 continuation iteration 4 completed transitions 6->7->8->9->10 with full backend/frontend regression pass evidence; code edits are relocked and handoff is ready pending user confirmation. | Success | N/A |
+| 2026-03-05 | Transition | Claude post-merge residual cleanup advanced through stages 1->2->3->4->5->6 with Go Confirmed on rounds 19 and 20; code-edit permission is now unlocked for iteration 5 implementation (`C-035`, `C-036`). | Success | N/A |
+| 2026-03-05 | Transition | Iteration 5 completed transitions 6->7->8->9->10 with acceptance closure, code review pass, and docs-sync no-impact closure; code edits are relocked and final handoff is ready. | Success | N/A |
+| 2026-03-05 | Transition | User-requested deep re-review reopened Stage 8 and identified Design Impact blockers; workflow transitioned to Stage 1 investigation with code edits locked. | Success | N/A |
+| 2026-03-05 | Transition | Re-review blocker-remediation artifacts progressed through stages 1->3->4->5->6 with Go Confirmed on rounds 21 and 22; code edits are now unlocked for implementation. | Success | N/A |
+| 2026-03-05 | Transition | Re-review blocker-remediation implementation completed and workflow advanced through stages 6->7->8->9->10 with focused + full backend/frontend suite pass evidence; code edits are relocked and handoff is ready. | Success | N/A |
+| 2026-03-05 | Transition | User-requested additional re-review reopened Stage 8 and identified bounded helper-neutralization residue; workflow transitioned to Stage 6 local-fix re-entry with code edits unlocked. | Success | N/A |
+| 2026-03-05 | Transition | Iteration-7 local-fix closure completed through stages 6->7->8->9->10 with focused + full backend/frontend gate evidence (backend full pass confirmed after flaky rerun); code edits are relocked and handoff is ready. | Success | N/A |
+| 2026-03-05 | Transition | User-requested additional re-review reopened Stage 8 and identified a residual dead compatibility wrapper; workflow transitioned to Stage 6 local-fix re-entry with code edits unlocked. | Success | N/A |
+| 2026-03-05 | Transition | Iteration-8 local-fix closure completed through stages 6->7->8->9->10 with focused + full backend/frontend gate evidence; code edits are relocked and handoff is ready. | Success | N/A |
+| 2026-03-05 | Transition | Iteration-9 strict no-legacy closure completed through stages 6->7->8->9->10 with focused + full backend/frontend gate evidence; code edits are relocked and handoff is ready. | Failed | Speak timeout; transition summary persisted in workflow-state and provided via text update. |
+| 2026-03-05 | Transition | User-requested re-review reopened Stage 10 to Stage 8 for another Codex + Claude architecture verification pass; code edits remained locked. | Success | N/A |
+| 2026-03-05 | Re-entry | Stage-8 re-review found shared-layer Codex-specific mapper suppression residue and transitioned to Stage 6 local-fix re-entry with code edits unlocked. | Success | N/A |
+| 2026-03-05 | Gate | Stage-7 runtime-enabled gate is blocked by reproducible Codex team roundtrip failure (`send_message_to` unavailable); code edits relocked pending blocker path decision. | Success | N/A |
+| 2026-03-05 | Gate | Additional review + runtime-enabled verification reconfirmed Stage-7 blocked status; Codex and Claude live team roundtrip checks did not close cleanly and blocker remains active. | Failed | Speak timeout; gate status persisted via workflow-state text update. |
+| 2026-03-06 | Transition | Stage-8 requirement-gap re-entry completed transitions `8->2->3->4->5->6`; Stage-5 reconfirmed Go and code edits are now unlocked for Claude sandbox parity implementation. | Success | N/A |
+| 2026-03-06 | Transition | Iteration-12 completed transitions `6->7->8->9->10` with runtime-enabled backend/full frontend pass evidence and code edits relocked in handoff-ready state. | Success | N/A |
+| 2026-03-06 | Gate | Stage 7 is blocked: the previously reported `run_bash` timeout did not reproduce, but the live Codex `generate_image` case remains the only deterministic backend blocker and code edits are now relocked pending environment fix or explicit waiver. | Success | N/A |
 
 ## Process Violation Log
 

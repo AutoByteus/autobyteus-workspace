@@ -1,10 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { setActivePinia, createPinia } from 'pinia';
+import { mockNuxtImport } from '@nuxt/test-utils/runtime';
 
-const { apolloClientMock } = vi.hoisted(() => ({
+const { apolloClientMock, mockRuntimeConfig } = vi.hoisted(() => ({
   apolloClientMock: {
     query: vi.fn(),
     mutate: vi.fn(),
+  },
+  mockRuntimeConfig: {
+    public: {
+      enableApplications: true,
+    },
   },
 }));
 
@@ -20,12 +26,15 @@ vi.mock('~/graphql/mutations/applicationMutations', () => ({
   RunApplication: {},
 }));
 
+mockNuxtImport('useRuntimeConfig', () => () => mockRuntimeConfig);
+
 // Now import the store and other things
 import { useApplicationStore } from '../applicationStore';
 
 describe('applicationStore', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
+    mockRuntimeConfig.public.enableApplications = true;
     vi.clearAllMocks();
   });
 

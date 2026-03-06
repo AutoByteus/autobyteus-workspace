@@ -304,6 +304,30 @@ Make runtime-client module loading discovery-driven so Autobyteus stays always-o
   - `pnpm -C autobyteus-server-ts exec vitest run`
   - `pnpm -C autobyteus-web test`
 
+## Stage-10 Continuation Iteration Addendum 9 (`C-041`)
+
+### Iteration Goal
+
+Remove residual dead compatibility wrapper retention in shared streaming so Codex/Claude decoupling closure has no leftover compatibility artifacts.
+
+### Iteration Tasks
+
+1. `T-041`: remove `autobyteus-server-ts/src/services/agent-streaming/codex-runtime-event-adapter.ts` (unused compatibility wrapper).
+2. Confirm no residual imports/usages of `CodexRuntimeEventAdapter` remain in source/tests.
+3. Execute focused verification for streaming/runtime-client seams plus full backend/frontend suites.
+4. Re-run Stage 8 review gate and close docs sync with no-impact rationale if no external docs contract changed.
+
+### Iteration Verification Targets
+
+- Focused backend:
+  - `tests/unit/services/agent-streaming/runtime-event-message-mapper.test.ts`
+  - `tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts`
+  - `tests/unit/runtime-management/runtime-client/runtime-client-index.test.ts`
+  - `tests/unit/runtime-management/runtime-client/runtime-client-modules-defaults.test.ts`
+- Full suites:
+  - `pnpm -C autobyteus-server-ts exec vitest run`
+  - `pnpm -C autobyteus-web test`
+
 ## Backward-Compat And Decoupling Guardrails (Mandatory)
 
 - Backward-compatibility mechanisms introduced: `None`
@@ -466,3 +490,185 @@ Remove the remaining compile-time optional-runtime descriptor seam by making run
   - Full backend suite: `pnpm -C autobyteus-server-ts exec vitest run`
 - Frontend:
   - Full frontend suite: `pnpm -C autobyteus-web test`
+
+## Stage-10 Continuation Iteration Addendum 5 (`C-035`..`C-036`)
+
+### Iteration Goal
+
+Remove orphaned legacy external-runtime team event bridge/source abstractions introduced by upstream merge alignment and keep `TeamRuntimeEventBridge` as the sole runtime-neutral team member-runtime event seam.
+
+### Iteration Tasks
+
+1. `T-035`: remove legacy modules:
+   - `src/services/agent-streaming/team-external-runtime-event-bridge.ts`
+   - `src/runtime-execution/external-runtime-event-source-registry.ts`
+   - `src/runtime-execution/external-runtime-event-source-port.ts`
+2. `T-036`: update shared streaming exports to expose `TeamRuntimeEventBridge` only.
+3. `T-037`: add focused unit coverage for `TeamRuntimeEventBridge` runtime-kind mapping and adapter resolution/subscription capability error paths.
+4. Execute targeted backend test slices for bridge and team stream handler integration points.
+
+### Iteration Verification Targets
+
+- Backend:
+  - `tests/unit/services/agent-streaming/team-runtime-event-bridge.test.ts`
+  - `tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts`
+  - `tests/unit/services/agent-streaming/runtime-event-message-mapper.test.ts`
+- Optional regression confidence:
+  - `tests/unit/runtime-execution/runtime-command-ingress-service.test.ts`
+
+## Stage-10 Continuation Iteration Addendum 6 (`C-037`..`C-038`)
+
+### Iteration Goal
+
+Resolve residual re-review blockers so Codex + Claude runtimes satisfy decoupled architecture closure criteria without cross-runtime/shared-layer coupling leftovers.
+
+### Iteration Tasks
+
+1. `T-038`: introduce a shared method-runtime event adapter seam and migrate runtime-client mapper registration so Claude runtime module no longer imports Codex runtime module adapter directly.
+2. `T-039`: remove dormant shared team-member services carrying runtime-specific imports/branches:
+   - `team-member-runtime-session-lifecycle-service.ts`
+   - `team-member-runtime-binding-state-service.ts`
+   - `team-member-runtime-relay-service.ts`
+3. `T-040`: update/extend focused tests for shared method-runtime adapter seam and ensure no references remain to removed dormant services.
+4. Execute focused backend runtime slices and full backend/frontend suites for closure evidence.
+
+### Iteration Verification Targets
+
+- Backend focused:
+  - `tests/unit/runtime-management/runtime-client/runtime-client-index.test.ts`
+  - `tests/unit/runtime-management/runtime-client/runtime-client-modules-defaults.test.ts`
+  - `tests/unit/runtime-execution/adapters/claude-agent-sdk-runtime-adapter.test.ts`
+  - `tests/unit/runtime-execution/adapters/codex-app-server-runtime-adapter.test.ts`
+  - `tests/unit/services/agent-streaming/team-runtime-event-bridge.test.ts`
+  - `tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts`
+- Full suites:
+  - `pnpm -C autobyteus-server-ts exec vitest run`
+  - `pnpm -C autobyteus-web test`
+
+## Stage-10 Continuation Iteration Addendum 7 (`C-037` Hardening + Gate Stabilization)
+
+### Iteration Goal
+
+Finalize the `C-037` method-runtime mapping seam so Claude runtime mapping has no indirect Codex adapter implementation dependency, and close Stage-7 full-suite gate blockers discovered during end-to-end verification.
+
+### Iteration Tasks
+
+1. `T-041`: Promote `MethodRuntimeEventAdapter` to the primary method-protocol mapping implementation and keep `CodexRuntimeEventAdapter` as a compatibility specialization.
+2. `T-042`: Introduce a runtime-neutral method normalizer utility (`runtime-method-normalizer.ts`) and wire Codex normalizer through that utility.
+3. `T-043`: Close mapper behavior regression (`send_message_to` suppression for `item/commandExecution/completed`) in the shared method adapter.
+4. `T-044`: Extend runtime-client discovery tests for Claude descriptor/default-module behavior and optional-runtime env-gating.
+5. `T-045`: Resolve frontend full-suite gate failures by fixing `applicationStore` feature-flag test harness setup and stabilizing Nuxt `$fetch` test-runtime binding for post-teardown timers.
+6. Execute full backend and frontend suites as final gate evidence for this re-entry cycle.
+
+### Iteration Verification Targets
+
+- Backend focused:
+  - `tests/unit/services/agent-streaming/runtime-event-message-mapper.test.ts`
+  - `tests/unit/runtime-management/runtime-client/runtime-client-index.test.ts`
+  - `tests/unit/runtime-management/runtime-client/runtime-client-modules-defaults.test.ts`
+- Backend full:
+  - `pnpm -C autobyteus-server-ts exec vitest run`
+- Frontend:
+  - `pnpm -C autobyteus-web test`
+
+## Stage-10 Continuation Iteration Addendum 8 (`C-039` Helper Neutralization Cleanup)
+
+### Iteration Goal
+
+Remove residual Codex-branded helper ownership from shared method-runtime event mapping internals so Codex and Claude continue using the same method-protocol seam without runtime-branded helper leakage.
+
+### Iteration Tasks
+
+1. `T-046`: rename/refactor shared helper modules/classes used by `MethodRuntimeEventAdapter` from Codex-branded identifiers to method-runtime-neutral identifiers.
+2. `T-047`: keep runtime behavior unchanged while updating internal imports and debug helper naming to align with shared method-runtime ownership.
+3. `T-048`: add/adjust focused mapper tests for unchanged behavior and rerun targeted + full suites.
+4. Execute Stage-7 full backend/frontend gate commands and Stage-8 review checks after local-fix implementation.
+
+### Iteration Verification Targets
+
+- Backend focused:
+  - `tests/unit/services/agent-streaming/runtime-event-message-mapper.test.ts`
+- Backend full:
+  - `pnpm -C autobyteus-server-ts exec vitest run`
+- Frontend full:
+  - `pnpm -C autobyteus-web test`
+
+## Stage-10 Continuation Iteration Addendum 10 (`C-042`, `C-043`)
+
+### Iteration Goal
+
+Eliminate remaining active legacy/compatibility behavior in runtime ingress and team-run config override schema so strict no-legacy architecture rules are fully enforced.
+
+### Iteration Tasks
+
+1. `T-042`: remove implicit-session compatibility fallback from `runtime-command-ingress-service.ts` and require explicit session binding for command ingress.
+2. `T-043`: remove legacy per-member runtime-kind compatibility handling from team-run override model and form sanitization.
+3. Update affected backend/frontend unit tests for new explicit-session/no-legacy behavior.
+4. Execute focused backend/frontend verification and full backend/frontend suites.
+
+### Iteration Verification Targets
+
+- Focused backend:
+  - `tests/unit/runtime-execution/runtime-command-ingress-service.test.ts`
+  - `tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts`
+- Focused frontend:
+  - `components/workspace/config/__tests__/TeamRunConfigForm.spec.ts`
+  - `stores/__tests__/teamRunConfigStore.spec.ts`
+- Full suites:
+  - `pnpm -C autobyteus-server-ts exec vitest run`
+  - `pnpm -C autobyteus-web test`
+
+## Stage-10 Continuation Iteration Addendum 11 (`C-044`)
+
+### Iteration Goal
+
+Remove residual runtime-specific suppression logic from shared method-runtime mapping seam so Codex/Claude runtime-specific policy is owned by runtime modules, not by shared adapter code.
+
+### Iteration Tasks
+
+1. `T-044`: refactor `MethodRuntimeEventAdapter` to accept runtime-supplied noop-method policy instead of embedding Codex-specific method literals.
+2. `T-045`: move Codex-only noop web-search method policy into `codex-runtime-client-module.ts` mapper wiring; keep Claude mapper runtime-neutral.
+3. `T-046`: update focused mapper tests to preserve behavior while validating shared-adapter neutrality.
+4. Execute Stage-7 gate with runtime-enabled backend and full frontend regression.
+
+### Iteration Verification Targets
+
+- Focused backend:
+  - `tests/unit/services/agent-streaming/runtime-event-message-mapper.test.ts`
+- Backend full (runtime-enabled):
+  - `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run`
+  - `RUN_CODEX_E2E=1 CODEX_APP_SERVER_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run`
+- Frontend full:
+  - `pnpm -C autobyteus-web test`
+
+## Stage-10 Continuation Iteration Addendum 12 (`C-047`, `C-048`)
+
+### Iteration Goal
+
+Implement Claude runtime sandbox/permission-mode configurability parity with Codex operational controls while keeping shared orchestration runtime-neutral and preserving existing `send_message_to` tool-name policy behavior.
+
+### Iteration Tasks
+
+1. `T-047`: add Claude permission-mode resolver in runtime execution shared utilities with precedence:
+   - `runtimeMetadata` override,
+   - `llmConfig` override,
+   - env override (`CLAUDE_AGENT_SDK_PERMISSION_MODE`),
+   - fallback `default`.
+2. `T-048`: propagate resolved permission mode through Claude runtime session state (`create/restore`) and into V2 session create/resume interop options.
+3. `T-049`: add/adjust focused unit tests for:
+   - permission-mode resolution behavior,
+   - V2 session option propagation,
+   - runtime-service state propagation.
+4. `T-050`: rerun runtime-enabled backend full suite and frontend full suite for stage-gate closure.
+
+### Iteration Verification Targets
+
+- Focused backend:
+  - `tests/unit/runtime-execution/claude-agent-sdk/claude-runtime-shared.test.ts`
+  - `tests/unit/runtime-execution/claude-agent-sdk/claude-runtime-v2-control-interop.test.ts`
+  - `tests/unit/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.test.ts`
+  - `tests/unit/agent-team-execution/team-member-runtime-orchestrator.test.ts`
+- Backend full (runtime-enabled):
+  - `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=true RUN_CODEX_E2E=1 CODEX_APP_SERVER_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run`
+- Frontend full:
+  - `pnpm -C autobyteus-web test`

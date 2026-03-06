@@ -155,7 +155,51 @@ describe("TeamMemberRuntimeOrchestrator", () => {
     expect(mocks.workspaceManager.getOrCreateWorkspace).not.toHaveBeenCalled();
   });
 
-  it("marks send_message_to capability as disabled when agent definition does not configure the tool", async () => {
+  it("defaults send_message_to capability to enabled when agent definition has no explicit tool list", async () => {
+    const { orchestrator, mocks } = createSubject();
+    mocks.agentDefinitionService.getAgentDefinitionById.mockResolvedValue({
+      toolNames: [],
+    });
+    mocks.workspaceManager.getWorkspaceById.mockReturnValue({
+      getBasePath: () => "/tmp/team-workspace",
+    });
+    mocks.runtimeCompositionService.restoreAgentRun.mockResolvedValue({
+      runtimeReference: {
+        runtimeKind: "codex_app_server",
+        sessionId: "member-run-1",
+        threadId: "thread-1",
+        metadata: null,
+      },
+    });
+
+    await orchestrator.createMemberRuntimeSessions("team-1", [
+      {
+        memberName: "Professor",
+        memberRouteKey: "professor",
+        memberRunId: "member-run-1",
+        runtimeKind: "codex_app_server",
+        runtimeReference: null,
+        agentDefinitionId: "agent-professor",
+        llmModelIdentifier: "gpt-5",
+        autoExecuteTools: true,
+        workspaceId: "workspace-1",
+        workspaceRootPath: null,
+        llmConfig: null,
+      },
+    ]);
+
+    expect(mocks.runtimeCompositionService.restoreAgentRun).toHaveBeenCalledWith(
+      expect.objectContaining({
+        runtimeReference: expect.objectContaining({
+          metadata: expect.objectContaining({
+            sendMessageToEnabled: true,
+          }),
+        }),
+      }),
+    );
+  });
+
+  it("marks send_message_to capability as disabled when explicit tool allowlist excludes the tool", async () => {
     const { orchestrator, mocks } = createSubject();
     mocks.agentDefinitionService.getAgentDefinitionById.mockResolvedValue({
       toolNames: ["run_bash"],
@@ -200,6 +244,50 @@ describe("TeamMemberRuntimeOrchestrator", () => {
                 description: null,
               },
             ],
+          }),
+        }),
+      }),
+    );
+  });
+
+  it("enables send_message_to capability for namespaced tool names in explicit allowlist", async () => {
+    const { orchestrator, mocks } = createSubject();
+    mocks.agentDefinitionService.getAgentDefinitionById.mockResolvedValue({
+      toolNames: ["mcp__autobyteus_team__send_message_to"],
+    });
+    mocks.workspaceManager.getWorkspaceById.mockReturnValue({
+      getBasePath: () => "/tmp/team-workspace",
+    });
+    mocks.runtimeCompositionService.restoreAgentRun.mockResolvedValue({
+      runtimeReference: {
+        runtimeKind: "claude_agent_sdk",
+        sessionId: "member-run-1",
+        threadId: "thread-1",
+        metadata: null,
+      },
+    });
+
+    await orchestrator.createMemberRuntimeSessions("team-1", [
+      {
+        memberName: "Professor",
+        memberRouteKey: "professor",
+        memberRunId: "member-run-1",
+        runtimeKind: "claude_agent_sdk",
+        runtimeReference: null,
+        agentDefinitionId: "agent-professor",
+        llmModelIdentifier: "claude-sonnet-4-5",
+        autoExecuteTools: true,
+        workspaceId: "workspace-1",
+        workspaceRootPath: null,
+        llmConfig: null,
+      },
+    ]);
+
+    expect(mocks.runtimeCompositionService.restoreAgentRun).toHaveBeenCalledWith(
+      expect.objectContaining({
+        runtimeReference: expect.objectContaining({
+          metadata: expect.objectContaining({
+            sendMessageToEnabled: true,
           }),
         }),
       }),

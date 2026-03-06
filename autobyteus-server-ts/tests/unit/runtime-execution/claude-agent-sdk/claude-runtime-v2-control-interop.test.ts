@@ -60,6 +60,31 @@ describe("claude-runtime-v2-control-interop", () => {
     });
   });
 
+  it("uses provided permission mode for V2 create-session options", async () => {
+    const createSession = vi.fn().mockReturnValue({
+      send: vi.fn().mockResolvedValue(undefined),
+      stream: vi.fn().mockReturnValue((async function* () {})()),
+      close: vi.fn(),
+      query: {},
+    });
+
+    await createOrResumeClaudeV2Session({
+      sdk: {
+        unstable_v2_createSession: createSession,
+        unstable_v2_resumeSession: vi.fn(),
+      },
+      model: "claude-sonnet-4-5",
+      pathToClaudeCodeExecutable: "claude",
+      workingDirectory: TEST_WORKSPACE_DIR,
+      resumeSessionId: null,
+      permissionMode: "bypassPermissions",
+      enableSendMessageToTooling: false,
+    });
+
+    expect(createSession).toHaveBeenCalledTimes(1);
+    expect(createSession.mock.calls[0]?.[0]?.permissionMode).toBe("bypassPermissions");
+  });
+
   it("resumes V2 session when resumeSessionId is provided", async () => {
     const createSession = vi.fn();
     const resumeSession = vi.fn().mockReturnValue({

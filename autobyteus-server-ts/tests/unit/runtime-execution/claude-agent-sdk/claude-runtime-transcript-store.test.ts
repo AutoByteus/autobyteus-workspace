@@ -26,7 +26,7 @@ describe("ClaudeRuntimeTranscriptStore", () => {
     ]);
   });
 
-  it("migrates cached transcript rows to a resolved session id", () => {
+  it("migrates cached transcript rows to a resolved session id and keeps source alias lookup", () => {
     const store = new ClaudeRuntimeTranscriptStore();
     store.appendMessage("run-1", { role: "user", content: "first-turn" });
     store.appendMessage("run-1", { role: "assistant", content: "first-reply" });
@@ -34,7 +34,11 @@ describe("ClaudeRuntimeTranscriptStore", () => {
 
     store.migrateSessionMessages("run-1", "resolved-session-1");
 
-    expect(store.getCachedMessages("run-1")).toEqual([]);
+    expect(store.getCachedMessages("run-1")).toEqual([
+      { role: "user", content: "first-turn" },
+      { role: "assistant", content: "first-reply" },
+      { role: "assistant", content: "from-resolved" },
+    ]);
     expect(store.getCachedMessages("resolved-session-1")).toEqual([
       { role: "user", content: "first-turn" },
       { role: "assistant", content: "first-reply" },

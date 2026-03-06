@@ -2,7 +2,7 @@ import { createRequire } from "node:module";
 import { getClaudeSessionRunProjectionProvider } from "../../run-history/projection/providers/claude-session-run-projection-provider.js";
 import { ClaudeAgentSdkRuntimeAdapter } from "../../runtime-execution/adapters/claude-agent-sdk-runtime-adapter.js";
 import type { RuntimeAdapterRegistry } from "../../runtime-execution/runtime-adapter-registry.js";
-import { CodexRuntimeEventAdapter } from "../../services/agent-streaming/codex-runtime-event-adapter.js";
+import { MethodRuntimeEventAdapter } from "../../services/agent-streaming/method-runtime-event-adapter.js";
 import { ServerMessage, ServerMessageType } from "../../services/agent-streaming/models.js";
 import type {
   RuntimeEventMapper,
@@ -125,7 +125,7 @@ class ClaudeRuntimeCapabilityProvider implements RuntimeCapabilityProvider {
 }
 
 const createClaudeRuntimeMapper = (): RuntimeEventMapper => {
-  const adapter = new CodexRuntimeEventAdapter();
+  const methodRuntimeAdapter = new MethodRuntimeEventAdapter();
   return {
     map: (event: unknown) => {
       const payload = asObject(event);
@@ -135,9 +135,9 @@ const createClaudeRuntimeMapper = (): RuntimeEventMapper => {
           message: "Claude runtime event does not match expected method-based shape.",
         });
       }
-      return adapter.map(event);
+      return methodRuntimeAdapter.map(event);
     },
-    normalizeMethodAlias: (method: string) => adapter.normalizeMethodAlias(method),
+    normalizeMethodAlias: (method: string) => methodRuntimeAdapter.normalizeMethodAlias(method),
   };
 };
 
