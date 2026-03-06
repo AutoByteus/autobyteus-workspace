@@ -65,6 +65,7 @@
 | T-58 C-045 | Backend API/E2E for definition source management and aggregated reads | Completed | Added `tests/e2e/agent-definitions/definition-sources-graphql.e2e.test.ts`. |
 | T-59 C-046 | Frontend settings/component tests for definition source UX + reload coverage | Completed | Added `DefinitionSourcesManager.spec.ts`; updated `AgentList.spec.ts` and `AgentTeamList.spec.ts` reload assertions. |
 | T-60 Stage10 Local-Fix | Duplicate UX refinement: remove browser prompt and route duplicate directly to edit | Completed | Updated `AgentDuplicateButton.vue` collision-safe auto-name flow and `AgentDetail.vue` duplicate navigation; added focused frontend tests. |
+| T-61 Stage10 Local-Fix | Add and execute legacy DB-to-file migration utility for agents/teams/prompts | Completed | Added `scripts/migrate-legacy-agent-db-to-files.py`; executed dry-run + apply in main-allinone container and verified idempotence + GraphQL visibility after restart. |
 
 ## Stage 6 Verification Evidence
 
@@ -97,3 +98,20 @@
 - Frontend duplicate UX verification:
   - `pnpm -C autobyteus-web exec vitest run components/agents/__tests__/AgentDuplicateButton.spec.ts components/agents/__tests__/AgentDetail.spec.ts`
   - Result: `2` files, `3` tests passed.
+
+## Stage 6 Local-Fix Verification (Legacy DB Migration Utility)
+
+- Migration script syntax check:
+  - `python3 -m py_compile scripts/migrate-legacy-agent-db-to-files.py`
+  - Result: passed.
+- Migration dry-run execution (containerized real DB):
+  - `docker exec autobyteus-workspace-superrepo-main-allinone-1 python3 /tmp/migrate-legacy-agent-db-to-files.py --mode dry-run --db-path /home/autobyteus/data/db/production.db --data-root /home/autobyteus/data`
+  - Result: `agents total=3 created=1 skipped=2`, `teams total=1 created=0 skipped=1`.
+- Migration apply execution (containerized real DB):
+  - `docker exec autobyteus-workspace-superrepo-main-allinone-1 python3 /tmp/migrate-legacy-agent-db-to-files.py --mode apply --db-path /home/autobyteus/data/db/production.db --data-root /home/autobyteus/data`
+  - Result: created `agents/superagent/{agent.md,agent-config.json}` from DB row + active prompt mapping.
+- Idempotence re-run:
+  - same apply command as above.
+  - Result: `created=0`, `skipped_existing=3` agents and `1` team.
+- Runtime visibility verification:
+  - restarted container and queried GraphQL: `agentDefinitions` now includes `superagent`.

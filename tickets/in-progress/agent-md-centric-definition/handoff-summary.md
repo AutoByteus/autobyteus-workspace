@@ -7,7 +7,8 @@
 - Ticket was re-opened again for Stage 8 Local-Fix re-entry (Round 5 code review findings) to remove remaining compatibility/legacy paths in active md-centric surfaces.
 - Ticket was reopened again for Requirement-Gap re-entry to implement Settings-based definition source registration (`REQ-025..REQ-032`).
 - Ticket was reopened again for Stage 10 Local-Fix re-entry to refine duplicate UX (`REQ-033`): remove browser-native prompt and route duplicate directly to edit view.
-- Re-entry closure is complete; user confirmed completion and the ticket is archived at `tickets/done/agent-md-centric-definition/`.
+- Ticket was reopened again for Stage 10 Local-Fix re-entry to add/execute legacy DB migration utility (`REQ-034`) and verify runtime visibility.
+- Re-entry closure for `REQ-034` is complete; ticket remains in `tickets/in-progress/agent-md-centric-definition/` pending explicit user archival confirmation.
 
 ## Implemented Scope
 
@@ -47,11 +48,14 @@
   - Frontend impacted suites: `4` files, `11` tests passed.
 - Stage 10 Local-Fix duplicate UX verification passed:
   - Frontend focused suites: `2` files, `3` tests passed.
+- Stage 10 Local-Fix migration utility verification passed:
+  - real DB dry-run/apply/idempotence checks passed in running container,
+  - post-restart GraphQL query confirms migrated `superagent` is visible.
 - Frontend executable integration/unit suite passed:
   - `18` files, `47` tests passed.
 - Requirement-level closure:
   - `REQ-001..REQ-024` now each have explicit executable evidence in `api-e2e-testing.md`.
-  - Addendum closure: `REQ-025..REQ-032` now each have explicit executable evidence in `api-e2e-testing.md`.
+  - Addendum closure: `REQ-025..REQ-034` now each have explicit executable evidence in `api-e2e-testing.md`.
 
 ## Docs Sync Status
 
@@ -65,4 +69,4 @@
 
 ## Remaining Action
 
-- None. Ticket is complete and archived.
+- Await explicit user confirmation to archive/move ticket to `tickets/done/agent-md-centric-definition/`.

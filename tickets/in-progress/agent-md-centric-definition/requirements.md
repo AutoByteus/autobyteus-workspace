@@ -2,7 +2,7 @@
 
 - **Status**: `Design-ready` (2026-03-06 addendums integrated)
 - **Ticket**: `agent-md-centric-definition`
-- **Branch**: `codex/json-file-persistence-sync-parity`
+- **Branch**: `personal`
 - **Date**: 2026-03-06
 - **Triage**: `Large`
 
@@ -113,6 +113,9 @@ User edits files under a registered source root (or changes source registration)
 
 ### UC-023 — User Duplicates an Agent and Immediately Edits It
 From Agent detail view, user clicks Duplicate. UI duplicates using an auto-generated collision-safe copy name, then navigates directly to edit view for the duplicated agent so user can adjust and save.
+
+### UC-024 — Operator Migrates Legacy DB Definitions to File-Based Layout
+Operator executes a migration utility against legacy SQLite tables (`agent_definitions`, `prompts`, `agent_prompt_mappings`, `agent_team_definitions`). Utility writes md-centric files under `agents/` and `agent-teams/`, resolves each agent's active prompt into `agent.md` instructions, and rewrites team member references to md-centric IDs.
 
 ---
 
@@ -460,6 +463,15 @@ Agent duplication from frontend detail view MUST follow this flow:
 - MUST navigate directly to agent edit view for the duplicated agent after duplicate mutation succeeds.
 - MUST keep duplicate action asynchronous with in-flight disabled state to prevent accidental double-submit.
 
+#### REQ-034 — Legacy DB to File Migration Utility
+Repository MUST provide an operator-run migration script that converts legacy DB definitions into md-centric files:
+- Input tables: `agent_definitions`, `prompts`, `agent_prompt_mappings`, `agent_team_definitions`.
+- Agent instruction source: resolve via `agent_prompt_mappings` to prompt row where `is_active=true` for (`prompt_name`, `prompt_category`); fallback to highest version if no active row exists.
+- Output for each migrated agent: `agents/{agent-id}/agent.md` and `agents/{agent-id}/agent-config.json`.
+- Output for each migrated team: `agent-teams/{team-id}/team.md` and `agent-teams/{team-id}/team-config.json`.
+- Team member references MUST be rewritten to md-centric refs (`ref`, `refType`) using migrated ID mapping (legacy numeric agent/team IDs must not remain in config references).
+- Script MUST support `dry-run` and `apply` modes and MUST be idempotent when re-run without `overwrite`.
+
 ---
 
 ## Acceptance Criteria
@@ -604,6 +616,11 @@ Agent duplication from frontend detail view MUST follow this flow:
 - **When**: duplicate mutation succeeds
 - **Then**: no browser-native prompt/alert is shown, duplicated agent is created with collision-safe generated name, and navigation goes directly to `view=edit&id={duplicatedId}`
 
+### AC-029 — Legacy DB Rows Migrate to Valid md-centric Files
+- **Given**: legacy rows exist in `agent_definitions`, `prompts`, `agent_prompt_mappings`, and `agent_team_definitions`
+- **When**: migration utility runs in `apply` mode
+- **Then**: corresponding `agent.md`/`agent-config.json` and `team.md`/`team-config.json` files exist, agent instructions match resolved active prompt content, and migrated team refs use md-centric IDs instead of legacy numeric DB IDs
+
 ---
 
 ## Constraints / Dependencies
@@ -615,7 +632,7 @@ Agent duplication from frontend detail view MUST follow this flow:
 - Agent duplication (UC-018) is in scope as a new mutation
 - git-repo import UI is out of scope
 - Definition-source v1 is filesystem-path only (no GitHub clone/fetch in this phase)
-- Migration of existing on-disk agent data is out of scope (clean install assumed)
+- Migration utility executes against existing DB rows and writes file-based definitions under the default app-data root
 
 ---
 
@@ -666,6 +683,7 @@ Agent duplication from frontend detail view MUST follow this flow:
 | REQ-031 | Settings UI section for definition sources | UC-020, UC-021 |
 | REQ-032 | Reload behavior stays compatible with source-managed items | UC-022 |
 | REQ-033 | Duplicate action avoids system prompts and routes directly to edit | UC-018, UC-023 |
+| REQ-034 | Legacy DB-to-file migration utility with active-prompt resolution | UC-024 |
 
 ---
 
@@ -699,3 +717,4 @@ Agent duplication from frontend detail view MUST follow this flow:
 | AC-026 | Reload reflects source-managed definitions | S-026 |
 | AC-027 | No GitHub clone surface in v1 | S-027 |
 | AC-028 | Duplicate avoids native prompt and routes directly to edit | S-028 |
+| AC-029 | Legacy DB rows migrate into md-centric files and refs | S-029 |

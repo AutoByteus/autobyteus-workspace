@@ -5,7 +5,7 @@
 - Ticket: `agent-md-centric-definition`
 - Scope classification: `Large`
 - Re-entry path: `Stage 8 Local Fix` (`8 -> 6 -> 7 -> 8`) + `Requirement Gap` addendum path (`10 -> 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7`) + `Stage 10 Local Fix` (`10 -> 6 -> 7 -> 8`)
-- Objective: prove executable coverage for `REQ-001` through `REQ-024`, plus reopened addendum coverage for `REQ-025` through `REQ-033`
+- Objective: prove executable coverage for `REQ-001` through `REQ-024`, plus reopened addendum coverage for `REQ-025` through `REQ-034`
 - Workflow state source: `tickets/in-progress/agent-md-centric-definition/workflow-state.md`
 
 ## Requirement Coverage Matrix (REQ-001..REQ-024)
@@ -189,5 +189,48 @@
 
 - Addendum Stage 7 complete: `Yes`
 - All mapped executable requirements (`REQ-033`) passed: `Yes`
+- Blockers/open failures: `No`
+- Ready for Stage 8 addendum review: `Yes`
+
+---
+
+## Legacy DB Migration Utility Addendum (REQ-034)
+
+### Requirement Coverage Matrix
+
+| Requirement ID | Requirement Summary | Scenario ID(s) | Evidence Type | Status |
+| --- | --- | --- | --- | --- |
+| REQ-034 | Operator utility migrates legacy DB rows to md-centric files with active-prompt resolution and idempotent apply behavior | MG-001, MG-002 | Real containerized integration + GraphQL API verification | Passed |
+
+### Scenario Catalog
+
+| Scenario ID | Coverage | Command/Harness | Status |
+| --- | --- | --- | --- |
+| MG-001 | Execute migration utility against real legacy DB (`dry-run` + `apply`), validate generated files, active-prompt body content, and non-numeric team refs | `scripts/migrate-legacy-agent-db-to-files.py` run via `docker exec` against `/home/autobyteus/data/db/production.db` | Passed |
+| MG-002 | Verify post-migration runtime/API visibility and idempotent re-run behavior | container restart + GraphQL `agentDefinitions`/`agentTeamDefinitions` query + repeated apply execution | Passed |
+
+### Execution Evidence
+
+- Script syntax check:
+  - `python3 -m py_compile scripts/migrate-legacy-agent-db-to-files.py`
+  - Result: passed.
+- Real DB migration dry-run:
+  - `docker exec autobyteus-workspace-superrepo-main-allinone-1 python3 /tmp/migrate-legacy-agent-db-to-files.py --mode dry-run --db-path /home/autobyteus/data/db/production.db --data-root /home/autobyteus/data`
+  - Result: `agents total=3 created=1 skipped_existing=2`; `teams total=1 created=0 skipped_existing=1`.
+- Real DB migration apply:
+  - same command with `--mode apply`.
+  - Result: migrated `SuperAgent` row to `agents/superagent/*`; prompt body in `agent.md` matches active legacy prompt content (`You are super agent.`).
+- Idempotence check:
+  - repeated `--mode apply`.
+  - Result: `created=0` and all entries skipped as existing.
+- API visibility check:
+  - `docker restart autobyteus-workspace-superrepo-main-allinone-1`
+  - `curl -sS -H 'content-type: application/json' -d '{"query":"query Q{agentDefinitions{id name} agentTeamDefinitions{id name}}"}' http://127.0.0.1:8000/graphql`
+  - Result: GraphQL list includes newly migrated `superagent`.
+
+### Addendum Stage 7 Decision
+
+- Addendum Stage 7 complete: `Yes`
+- All mapped executable requirements (`REQ-034`) passed: `Yes`
 - Blockers/open failures: `No`
 - Ready for Stage 8 addendum review: `Yes`

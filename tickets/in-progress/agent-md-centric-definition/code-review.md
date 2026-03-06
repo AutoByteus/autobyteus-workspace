@@ -3,7 +3,7 @@
 ## Review Meta
 
 - Ticket: `agent-md-centric-definition`
-- Review Round: `7` (duplicate UX local-fix addendum after Stage 10 re-entry)
+- Review Round: `8` (legacy DB migration-utility addendum after Stage 10 re-entry)
 - Trigger Stage: `8`
 - Workflow state source: `tickets/in-progress/agent-md-centric-definition/workflow-state.md`
 
@@ -135,6 +135,49 @@
 | No legacy retention added | Pass | Duplicate UX now uses deterministic in-component naming + direct edit navigation only. |
 
 ### Gate Decision (Round 7)
+
+- Decision: `Pass`
+- Ready to proceed to Stage 9: `Yes`
+
+---
+
+## Review Round 8 (Legacy DB Migration Utility Addendum)
+
+### Scope Reviewed
+
+- Script:
+  - `scripts/migrate-legacy-agent-db-to-files.py`
+- Runtime/data verification evidence:
+  - containerized execution logs (`dry-run`, `apply`, idempotence re-run),
+  - file output inspection under `/home/autobyteus/data/agents` and `/home/autobyteus/data/agent-teams`,
+  - GraphQL post-restart visibility check.
+- Ticket artifacts:
+  - `requirements.md` (`REQ-034`, `AC-029`)
+  - `api-e2e-testing.md` (MG-001, MG-002)
+
+### Findings
+
+- Blocking findings: None.
+- Non-blocking notes:
+  - Script defaults to safe non-overwrite mode and exposes explicit `--overwrite-existing` flag for operator-controlled replacement.
+
+### Verification Inputs
+
+- `python3 -m py_compile scripts/migrate-legacy-agent-db-to-files.py` (passed)
+- `docker exec ... /tmp/migrate-legacy-agent-db-to-files.py --mode dry-run` (passed)
+- `docker exec ... /tmp/migrate-legacy-agent-db-to-files.py --mode apply` (passed)
+- repeated `--mode apply` idempotence check (passed: created `0`)
+- GraphQL query after container restart confirms migrated `superagent` appears in `agentDefinitions`.
+
+### Mandatory Checks (Round 8)
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| Decoupling preserved | Pass | Migration utility is isolated under `scripts/`; no runtime service/module coupling changes. |
+| No backward-compat shims introduced | Pass | Utility writes canonical md-centric file shapes only (`agent.md`, `agent-config.json`, `team.md`, `team-config.json`). |
+| No legacy retention added | Pass | Team member refs are rewritten to canonical `ref/refType`; numeric legacy IDs are not persisted in migrated team config references. |
+
+### Gate Decision (Round 8)
 
 - Decision: `Pass`
 - Ready to proceed to Stage 9: `Yes`

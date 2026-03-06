@@ -4,11 +4,11 @@
 
 - Ticket: `agent-md-centric-definition`
 - Current Stage: `10`
-- Next Stage: `Archived (Completed)`
+- Next Stage: `Awaiting User Completion Confirmation`
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification: `N/A (last completed: Local Fix)`
-- Last Transition ID: `T-055`
+- Last Transition ID: `T-060`
 - Last Updated: 2026-03-06
 
 ## Stage Gates
@@ -21,11 +21,11 @@
 | 3 Design Basis | `Pass` | Design basis updated with definition-source v1 addendum (configuration, API, provider aggregation, settings UI) | `implementation-plan.md`, `proposed-design.md` |
 | 4 Runtime Modeling | `Pass` | Runtime call stack updated to v3 with definition-source flows (`UC-020..UC-022`, `DR-005..DR-006`) | `future-state-runtime-call-stack.md` |
 | 5 Review Gate | `Pass` | Definition-source scope review reached `Go Confirmed` with two consecutive clean rounds (Round 6 + Round 7) | `future-state-runtime-call-stack-review.md` |
-| 6 Implementation | `Pass` | Local-fix UX scope implemented (`T-60`): removed browser prompt duplicate flow and routed duplicate success to edit view | `implementation-progress.md`, `workflow-state.md` |
-| 7 API/E2E Testing | `Pass` | Duplicate UX addendum requirement (`REQ-033`) validated with executable frontend integration evidence | `api-e2e-testing.md` |
-| 8 Code Review | `Pass` | Round 7 local-fix addendum review passed with no blockers | `code-review.md` |
-| 9 Docs Sync | `Pass` | Ticket docs synchronized for duplicate UX addendum scope (`REQ-033`/`AC-028`) | `handoff-summary.md`, `requirements.md` |
-| 10 Handoff / Ticket State | `Pass` | User confirmed completion; ticket archived under `tickets/done/agent-md-centric-definition` | `handoff-summary.md`, `workflow-state.md` |
+| 6 Implementation | `Pass` | Local-fix migration utility implemented/executed (`T-61`): legacy DB rows migrated into canonical md-centric file layout with idempotent behavior | `implementation-progress.md`, `workflow-state.md` |
+| 7 API/E2E Testing | `Pass` | Migration addendum executable verification completed (real DB dry-run/apply/idempotence + GraphQL visibility after restart) | `api-e2e-testing.md` |
+| 8 Code Review | `Pass` | Round 8 migration-utility addendum review passed with no blockers | `code-review.md` |
+| 9 Docs Sync | `Pass` | Ticket docs synchronized for migration addendum scope (`REQ-034`/`AC-029`) | `handoff-summary.md`, `requirements.md` |
+| 10 Handoff / Ticket State | `Pass` | Re-entry path closed technically; awaiting explicit user archival confirmation | `handoff-summary.md`, `workflow-state.md` |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -141,6 +141,11 @@
 | T-053 | 2026-03-06 | 8 | 9 | Stage 8 code review pass (Round 7) for duplicate UX addendum with no blockers. Proceeding to docs sync. | Local Fix | Locked | code-review.md, workflow-state.md |
 | T-054 | 2026-03-06 | 9 | 10 | Stage 9 docs sync refreshed for duplicate UX addendum (`REQ-033`/`AC-028`); returned to Stage 10 awaiting explicit user archival confirmation. | Local Fix | Locked | handoff-summary.md, requirements.md, workflow-state.md |
 | T-055 | 2026-03-06 | 10 | 10 | User confirmed task completion; ticket archived from `tickets/in-progress/` to `tickets/done/`. | N/A | Locked | workflow-state.md, handoff-summary.md |
+| T-056 | 2026-03-06 | 10 | 6 | User requested legacy DB-to-file migration script creation/execution/verification for existing agent+team+active-prompt data. Re-entry declared as Local Fix and ticket reopened to in-progress for implementation. | Local Fix | Unlocked | workflow-state.md, requirements.md |
+| T-057 | 2026-03-06 | 6 | 7 | Stage 6 local-fix implementation completed (`T-61`): migration utility added and executed against real container DB with idempotence validation. Entering Stage 7 gate. | Local Fix | Unlocked | implementation-progress.md, workflow-state.md |
+| T-058 | 2026-03-06 | 7 | 8 | Stage 7 migration addendum gate passed (`REQ-034` executable evidence in `api-e2e-testing.md`); entering Stage 8 and locking code edits. | Local Fix | Locked | api-e2e-testing.md, workflow-state.md |
+| T-059 | 2026-03-06 | 8 | 9 | Stage 8 code review pass (Round 8) for migration utility addendum. Proceeding to Stage 9 docs sync. | Local Fix | Locked | code-review.md, workflow-state.md |
+| T-060 | 2026-03-06 | 9 | 10 | Stage 9 docs sync completed for migration utility addendum (`REQ-034`/`AC-029`); returned to Stage 10 awaiting explicit user archival confirmation. | Local Fix | Locked | handoff-summary.md, requirements.md, workflow-state.md |
 
 ## Audible Notification Log
 
@@ -165,6 +170,8 @@
 | 2026-03-06 | Transition + Gate + Lock Change | Definition-source addendum completed Stage 6 through Stage 10 progression: API/E2E gate passed, code review passed, docs synced, and ticket returned to Stage 10 with code edits locked pending user archival confirmation. | Success | N/A |
 | 2026-03-06 | Re-entry + Transition + Gate + Lock Change | Reopened workflow from Stage 10 to Stage 6 for duplicate UX Local Fix, then completed `6 -> 7 -> 8 -> 9 -> 10`: prompt-free duplicate flow implemented, `REQ-033` validation passed, review/docs synced, and code edits relocked. | Success | N/A |
 | 2026-03-06 | Transition | User confirmed completion and archival; ticket moved to `tickets/done/agent-md-centric-definition`. | Success | N/A |
+| 2026-03-06 | Re-entry + Transition + Lock Change | Reopened workflow from Stage 10 to Stage 6 for Local-Fix addendum: implement and run legacy DB-to-file migration utility for agent/team/active-prompt data. Code edits unlocked for Stage 6. | Success | N/A |
+| 2026-03-06 | Transition + Gate + Lock Change | Migration utility addendum progressed through `6 -> 7 -> 8 -> 9 -> 10`: implementation, executable verification, review, and docs sync completed; code edits relocked at Stage 8 and ticket returned to Stage 10 pending user archival confirmation. | Success | N/A |
 
 ## Process Violation Log
 
