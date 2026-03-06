@@ -7,7 +7,7 @@
 - Ticket was re-opened again for Stage 8 Local-Fix re-entry (Round 5 code review findings) to remove remaining compatibility/legacy paths in active md-centric surfaces.
 - Ticket was reopened again for Requirement-Gap re-entry to implement Settings-based definition source registration (`REQ-025..REQ-032`).
 - Ticket was reopened again for Stage 10 Local-Fix re-entry to refine duplicate UX (`REQ-033`): remove browser-native prompt and route duplicate directly to edit view.
-- Re-entry closure is complete; ticket remains in `tickets/in-progress/agent-md-centric-definition/` pending explicit user archival confirmation.
+- Re-entry closure is complete; user confirmed completion and the ticket is archived at `tickets/done/agent-md-centric-definition/`.
 
 ## Implemented Scope
 
@@ -65,4 +65,4 @@
 
 ## Remaining Action
 
-- Await explicit user confirmation to move ticket folder to `tickets/done/`.
+- None. Ticket is complete and archived.
