@@ -159,7 +159,7 @@
                 >
                 <span v-else>{{ avatars.getTeamInitials(team.teamDefinitionName) }}</span>
               </span>
-              <span class="truncate font-medium">{{ team.teamDefinitionName }}</span>
+              <span class="truncate font-medium">{{ team.teamRunId }}</span>
               <span class="ml-1 text-xs text-gray-400">({{ team.members.length }})</span>
             </button>
 
