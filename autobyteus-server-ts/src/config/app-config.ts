@@ -1,5 +1,4 @@
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import dotenv from "dotenv";
@@ -304,7 +303,7 @@ export class AppConfig {
         ? path.isAbsolute(configuredPath.trim())
           ? path.resolve(configuredPath.trim())
           : path.resolve(this.dataDir, configuredPath.trim())
-        : path.join(os.tmpdir(), "autobyteus", "temp_workspace");
+        : path.join(this.dataDir, "temp_workspace");
     try {
       fs.mkdirSync(tempWorkspaceDir, { recursive: true });
     } catch (error) {

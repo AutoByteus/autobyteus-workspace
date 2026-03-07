@@ -848,7 +848,7 @@ describeClaudeRuntime("Claude runtime GraphQL e2e (live transport)", () => {
     async () => {
       const modelIdentifier = await fetchClaudeModelIdentifier();
       let runId: string | null = null;
-      const expectedTempWorkspaceRoot = path.join(os.tmpdir(), "autobyteus", "temp_workspace");
+      const expectedTempWorkspaceRoot = path.join(testDataDir ?? "", "temp_workspace");
 
       const continueMutation = `
         mutation ContinueRun($input: ContinueRunInput!) {
