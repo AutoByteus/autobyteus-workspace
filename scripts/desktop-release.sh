@@ -15,9 +15,10 @@ Usage:
 
 Commands:
   prepare   Bump autobyteus-web/package.json version, commit, and create matching tag.
-            Defaults: --branch personal, push enabled.
+            Defaults: --branch personal, push enabled. Pushing the tag starts the real release workflow.
   test      Trigger release-desktop workflow for build-only validation (no GitHub release publish).
   publish   Trigger release-desktop workflow to publish/update GitHub release for an existing tag.
+            Use this for an existing tag or manual re-publish, not immediately after a fresh prepare.
 
 Examples:
   scripts/desktop-release.sh prepare 1.2.7
@@ -228,6 +229,12 @@ main() {
 
   local command="$1"
   shift
+
+  # pnpm users often invoke script aliases as `pnpm release:prepare -- 1.2.7`.
+  # Accept and discard that separator so both forms work.
+  if [[ "${1:-}" == "--" ]]; then
+    shift
+  fi
 
   case "$command" in
     prepare)

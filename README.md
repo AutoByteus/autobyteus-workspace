@@ -97,15 +97,24 @@ pnpm android:server:stop
 Use the release helper script from repo root:
 
 ```bash
-# 1) Prepare a real release (bump package version, commit, create tag, push branch+tag)
-pnpm release:prepare -- 1.2.7
+# Normal new personal release:
+# 1) Prepare the release (bump package version, commit, create tag, push branch+tag)
+#    This already starts the real release workflow because the pushed tag matches v*.
+pnpm release:prepare 1.2.7
 
-# 2) Build-only release test (no GitHub release publish)
-pnpm release:test -- --ref personal
+# Optional manual build-only validation (no GitHub release publish)
+pnpm release:test --ref personal
 
-# 3) Publish/update GitHub release for an existing tag
-pnpm release:publish -- v1.2.7 --ref personal
+# Manual publish/update for an existing tag only
+# Use this when you need to re-run publish for a tag that already exists.
+pnpm release:publish v1.2.7 --ref personal
 ```
+
+Important:
+
+- Do not run `release:publish` immediately after a fresh `release:prepare` for the same version.
+- `release:prepare` already pushes `vX.Y.Z`, and `.github/workflows/release-desktop.yml` publishes on tag push.
+- `release:publish` is the manual recovery / re-publish path for an existing tag, not the normal second step of a new release.
 
 Script file:
 - `scripts/desktop-release.sh`

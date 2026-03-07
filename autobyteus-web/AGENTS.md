@@ -40,9 +40,10 @@ The tools and environments where agents live and users interact.
 *   Keep desktop release tag and package version in sync:
     * `autobyteus-web/package.json` version must match release tag version (`vX.Y.Z`).
 *   Prefer the root helper script to avoid drift:
-    * `pnpm release:prepare -- <x.y.z>`: bump version, commit, tag, and push branch+tag.
-    * `pnpm release:test -- --ref personal`: run release workflow build-only (no publish).
-    * `pnpm release:publish -- v<x.y.z> --ref personal`: publish/update GitHub release for an existing tag.
+    * `pnpm release:prepare <x.y.z>`: normal new personal release path; bumps version, commits, tags, and pushes branch+tag. The pushed tag starts the real release workflow.
+    * `pnpm release:test --ref personal`: run release workflow build-only (no publish).
+    * `pnpm release:publish v<x.y.z> --ref personal`: manual publish/update path for an existing tag or recovery case.
+*   Do not run `release:publish` immediately after a fresh `release:prepare` for the same version; that creates a second release workflow for the same tag.
 *   Do not create release tags manually unless there is an explicit exception.
 
 ### Testing Overview
