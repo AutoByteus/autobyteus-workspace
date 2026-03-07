@@ -883,3 +883,72 @@ Assessment note for `>220` delta-gate rows:
 
 - Decision: `Defer`
 - Re-entry required: `No new Stage-8 finding; wait for Stage-7 closure`
+
+## Stage-8 Re-Review Addendum (2026-03-07) - Codex Reasoning Streaming Fix
+
+## Review Scope
+
+- Stage: `8`
+- Review slice: bounded Codex reasoning-streaming local fix after live team websocket/API verification
+- Reviewed source files:
+  - `autobyteus-server-ts/src/runtime-execution/runtime-method-normalizer.ts`
+- Reviewed tests:
+  - `autobyteus-server-ts/tests/unit/services/agent-streaming/runtime-event-message-mapper.test.ts`
+  - `autobyteus-server-ts/tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts`
+- Verification commands:
+  - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`
+  - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/services/agent-streaming/runtime-event-message-mapper.test.ts`
+  - `RUN_CODEX_E2E=1 CODEX_APP_SERVER_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts -t "streams recipient reasoning incrementally after send_message_to in codex team runtime"`
+  - `RUN_CODEX_E2E=1 CODEX_APP_SERVER_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts`
+
+## Findings
+
+- None.
+
+## Architecture / Decoupling Review
+
+- The source fix is a pure method-alias normalization update inside the shared method normalizer. It does not introduce runtime-name branching, a Codex-specific adapter seam in shared layers, or any compatibility fallback.
+- The new behavior converges on the existing canonical method `item/reasoning/delta`; it removes an implicit gap instead of creating a second path.
+- The new live E2E coverage exercises the real professor -> student `send_message_to` team path without introducing test-only compatibility hooks or legacy fixtures.
+- No new backward-compatibility or legacy retention path was introduced by this bounded fix slice.
+
+## Gate Decision
+
+- Decision: `Pass`
+- Re-entry required: `No`
+- Residual risk: live Codex transport remains environment-dependent in general, but this specific reasoning-streaming regression is now covered at unit and live team websocket/API levels.
+
+## Stage-8 Closure Addendum (2026-03-07) - Broader Runtime-Decoupling Re-Review
+
+## Review Scope
+
+- Stage: `8`
+- Review slice: broader post-fix deep review before handoff
+- Reviewed source files and seams:
+  - `autobyteus-server-ts/src/runtime-execution/*`
+  - `autobyteus-server-ts/src/runtime-management/*`
+  - `autobyteus-server-ts/src/services/agent-streaming/*`
+  - `autobyteus-server-ts/src/agent-team-execution/services/*`
+  - `autobyteus-server-ts/src/run-history/services/*`
+  - `autobyteus-server-ts/src/api/graphql/services/*`
+- Review checks performed:
+  - changed-source effective-line count sweep vs `origin/personal`
+  - no-legacy / no-backward-compatibility grep sweep in runtime-decoupling scope
+  - runtime-name scan in shared seams
+  - bounded-fix source/test diff review
+
+## Findings
+
+- None in the current broader review slice.
+
+## Architecture / Decoupling Review
+
+- Changed source files in the runtime-decoupling scope remain at or below the Stage-8 `<=500` effective non-empty line hard limit in the current worktree.
+- The broader scan did not identify a remaining legacy compatibility path inside the runtime-decoupling seams reviewed here.
+- Shared streaming, team orchestration, runtime command ingress, runtime-client composition, and run-history seams remain registry/capability/adapter driven rather than runtime-name branched.
+- The bounded Codex reasoning-streaming fix remains canonical-path normalization, not a compatibility shim.
+
+## Gate Decision
+
+- Decision: `Pass`
+- Re-entry required: `No`

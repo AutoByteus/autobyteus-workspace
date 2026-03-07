@@ -442,6 +442,18 @@ describe("RuntimeEventMessageMapper", () => {
     expect(plan.payload.runtime_event_method).toBe("item/plan/delta");
   });
 
+  it("normalizes codex summaryTextDelta into incremental reasoning content", () => {
+    const reasoningDelta = mapEvent({
+      method: "item/reasoning/summaryTextDelta",
+      params: { itemId: "item-r", delta: "step one" },
+    });
+    expect(reasoningDelta.type).toBe(ServerMessageType.SEGMENT_CONTENT);
+    expect(reasoningDelta.payload.id).toBe("item-r");
+    expect(reasoningDelta.payload.delta).toBe("step one");
+    expect(reasoningDelta.payload.segment_type).toBe("reasoning");
+    expect(reasoningDelta.payload.runtime_event_method).toBe("item/reasoning/delta");
+  });
+
   it("uses stable reasoning item id instead of per-event envelope id", () => {
     const summaryPart = mapEvent({
       method: "item/reasoning/summaryPartAdded",

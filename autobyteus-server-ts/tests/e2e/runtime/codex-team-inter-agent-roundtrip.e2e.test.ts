@@ -532,6 +532,269 @@ Rules:
   );
 
   it(
+    "streams recipient reasoning incrementally after send_message_to in codex team runtime",
+    async () => {
+      const unique = randomUUID();
+      const modelIdentifier = await fetchPreferredCodexToolModelIdentifier();
+      const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "codex-team-reasoning-e2e-"));
+      createdWorkspaceRoots.add(workspaceRootPath);
+
+      const professorInstructions = `
+You are the professor member in a two-agent team with members "professor" and "student".
+
+Rules:
+1. Follow direct user instructions exactly.
+2. You must not explore the environment or run diagnostics.
+3. The only tool you may execute is send_message_to.
+4. If the user asks you to call send_message_to with explicit JSON arguments, call send_message_to exactly once with those exact arguments and do not call any other tool.
+5. Keep assistant text responses empty unless the user explicitly asks for them.
+`;
+      const studentInstructions = `
+You are the student member in a two-agent team with members "professor" and "student".
+
+Rules:
+1. Never call tools.
+2. When you receive a reasoning task from the professor, think carefully and answer directly in one concise sentence.
+3. Do not ask clarifying questions.
+`;
+
+      const createAgentDefinitionMutation = `
+        mutation CreateAgentDefinition($input: CreateAgentDefinitionInput!) {
+          createAgentDefinition(input: $input) {
+            id
+          }
+        }
+      `;
+      const professorResult = await execGraphql<{ createAgentDefinition: { id: string } }>(
+        createAgentDefinitionMutation,
+        {
+          input: {
+            name: `codex-professor-${unique}`,
+            role: "assistant",
+            description: "Codex professor agent for recipient reasoning streaming validation.",
+            instructions: professorInstructions,
+          },
+        },
+      );
+      const studentResult = await execGraphql<{ createAgentDefinition: { id: string } }>(
+        createAgentDefinitionMutation,
+        {
+          input: {
+            name: `codex-student-${unique}`,
+            role: "assistant",
+            description: "Codex student agent for recipient reasoning streaming validation.",
+            instructions: studentInstructions,
+          },
+        },
+      );
+      const professorAgentDefinitionId = professorResult.createAgentDefinition.id;
+      const studentAgentDefinitionId = studentResult.createAgentDefinition.id;
+      createdAgentDefinitionIds.add(professorAgentDefinitionId);
+      createdAgentDefinitionIds.add(studentAgentDefinitionId);
+
+      const createTeamDefinitionMutation = `
+        mutation CreateAgentTeamDefinition($input: CreateAgentTeamDefinitionInput!) {
+          createAgentTeamDefinition(input: $input) {
+            id
+          }
+        }
+      `;
+      const teamDefinitionResult = await execGraphql<{ createAgentTeamDefinition: { id: string } }>(
+        createTeamDefinitionMutation,
+        {
+          input: {
+            name: `codex-reasoning-team-${unique}`,
+            description: "Codex team for recipient reasoning streaming verification.",
+            instructions: "Professor delegates a reasoning task to student; student answers directly.",
+            coordinatorMemberName: "professor",
+            nodes: [
+              {
+                memberName: "professor",
+                ref: professorAgentDefinitionId,
+                refType: "AGENT",
+              },
+              {
+                memberName: "student",
+                ref: studentAgentDefinitionId,
+                refType: "AGENT",
+              },
+            ],
+          },
+        },
+      );
+      const teamDefinitionId = teamDefinitionResult.createAgentTeamDefinition.id;
+      createdTeamDefinitionIds.add(teamDefinitionId);
+
+      const createTeamRunMutation = `
+        mutation CreateAgentTeamRun($input: CreateAgentTeamRunInput!) {
+          createAgentTeamRun(input: $input) {
+            success
+            message
+            teamRunId
+          }
+        }
+      `;
+      const createTeamRunResult = await execGraphql<{
+        createAgentTeamRun: { success: boolean; message: string; teamRunId: string | null };
+      }>(createTeamRunMutation, {
+        input: {
+          teamDefinitionId,
+          memberConfigs: [
+            {
+              memberName: "professor",
+              agentDefinitionId: professorAgentDefinitionId,
+              llmModelIdentifier: modelIdentifier,
+              llmConfig: { reasoning_effort: "high" },
+              autoExecuteTools: true,
+              runtimeKind: "codex_app_server",
+              workspaceRootPath,
+            },
+            {
+              memberName: "student",
+              agentDefinitionId: studentAgentDefinitionId,
+              llmModelIdentifier: modelIdentifier,
+              llmConfig: { reasoning_effort: "high" },
+              autoExecuteTools: true,
+              runtimeKind: "codex_app_server",
+              workspaceRootPath,
+            },
+          ],
+        },
+      });
+
+      expect(createTeamRunResult.createAgentTeamRun.success).toBe(true);
+      expect(createTeamRunResult.createAgentTeamRun.teamRunId).toBeTruthy();
+      const teamRunId = createTeamRunResult.createAgentTeamRun.teamRunId as string;
+      createdTeamRunIds.add(teamRunId);
+
+      const streamApp = fastify();
+      await streamApp.register(websocket);
+      await registerAgentWebsocket(streamApp);
+      const streamAddress = await streamApp.listen({ port: 0, host: "127.0.0.1" });
+      const streamUrl = new URL(streamAddress);
+      const teamSocket = new WebSocket(
+        `ws://${streamUrl.hostname}:${streamUrl.port}/ws/agent-team/${teamRunId}`,
+      );
+      await waitForSocketOpen(teamSocket);
+
+      const streamMessages: Array<{ type: string; payload: Record<string, unknown> }> = [];
+      teamSocket.on("message", (raw) => {
+        try {
+          const parsed = JSON.parse(String(raw)) as { type?: unknown; payload?: unknown };
+          if (typeof parsed.type !== "string") {
+            return;
+          }
+          const payload =
+            parsed.payload && typeof parsed.payload === "object" && !Array.isArray(parsed.payload)
+              ? (parsed.payload as Record<string, unknown>)
+              : {};
+          streamMessages.push({ type: parsed.type, payload });
+        } catch {
+          // ignore malformed rows in test stream capture
+        }
+      });
+
+      const waitForTeamStreamEvent = async (
+        predicate: (message: { type: string; payload: Record<string, unknown> }) => boolean,
+        label: string,
+      ): Promise<void> => {
+        const deadline = Date.now() + 120_000;
+        while (Date.now() < deadline) {
+          if (streamMessages.some(predicate)) {
+            return;
+          }
+          await wait(500);
+        }
+        const preview = streamMessages
+          .slice(-20)
+          .map((entry) => `${entry.type}:${JSON.stringify(entry.payload).slice(0, 200)}`)
+          .join(" | ");
+        throw new Error(`Timed out waiting for team websocket event '${label}'. preview='${preview}'`);
+      };
+
+      const sendMessageToTeamMutation = `
+        mutation SendMessageToTeam($input: SendMessageToTeamInput!) {
+          sendMessageToTeam(input: $input) {
+            success
+            message
+            teamRunId
+          }
+        }
+      `;
+      const reasoningPrompt =
+        "Solve this carefully before replying: " +
+        "1. Find the next number in the sequence 2, 6, 12, 20, 30. " +
+        "2. Rearrange the letters in LISTEN into another common English word. " +
+        "Reply with exactly one short sentence containing both answers.";
+      const argsJson = JSON.stringify({
+        recipient_name: "student",
+        content: reasoningPrompt,
+        message_type: "reasoning_check",
+      });
+
+      try {
+        const startIndex = streamMessages.length;
+        const sendResult = await execGraphql<{
+          sendMessageToTeam: { success: boolean; message: string; teamRunId: string | null };
+        }>(sendMessageToTeamMutation, {
+          input: {
+            teamRunId,
+            targetMemberName: "professor",
+            userInput: {
+              content:
+                "Call send_message_to exactly once now with these exact JSON arguments: " +
+                `${argsJson}. Do not call any other tool.`,
+              contextFiles: [],
+            },
+          },
+        });
+        expect(sendResult.sendMessageToTeam.success).toBe(true);
+
+        await waitForTeamStreamEvent(
+          (message) =>
+            message.type === "INTER_AGENT_MESSAGE" &&
+            message.payload.agent_name === "student" &&
+            message.payload.sender_agent_name === "professor" &&
+            message.payload.content === reasoningPrompt,
+          "student inter-agent receipt",
+        );
+        await waitForTeamStreamEvent(
+          (message) =>
+            message.type === "SEGMENT_END" &&
+            message.payload.agent_name === "student",
+          "student text SEGMENT_END",
+        );
+        await wait(1_500);
+
+        const relevantMessages = streamMessages.slice(startIndex);
+        const reasoningChunks = relevantMessages.filter(
+          (message) =>
+            message.type === "SEGMENT_CONTENT" &&
+            message.payload.agent_name === "student" &&
+            message.payload.segment_type === "reasoning" &&
+            typeof message.payload.delta === "string" &&
+            message.payload.delta.trim().length > 0,
+        );
+        const textChunks = relevantMessages.filter(
+          (message) =>
+            message.type === "SEGMENT_CONTENT" &&
+            message.payload.agent_name === "student" &&
+            message.payload.segment_type === "text" &&
+            typeof message.payload.delta === "string" &&
+            message.payload.delta.trim().length > 0,
+        );
+
+        expect(textChunks.length).toBeGreaterThan(0);
+        expect(reasoningChunks.length).toBeGreaterThan(1);
+      } finally {
+        teamSocket.close();
+        await streamApp.close();
+      }
+    },
+    180_000,
+  );
+
+  it(
     "preserves workspace mapping across create->send->terminate->continue for codex team runs created with workspaceId",
     async () => {
       const unique = randomUUID();

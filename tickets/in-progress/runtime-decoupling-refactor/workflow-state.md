@@ -7,29 +7,30 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 ## Current Snapshot
 
 - Ticket: `runtime-decoupling-refactor`
-- Current Stage: `7`
-- Next Stage: `7`
+- Current Stage: `10`
+- Next Stage: `10`
 - Code Edit Permission: `Locked`
-- Active Re-Entry: `No`
-- Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-172`
+- Active Re-Entry: `Yes`
+- Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `Local Fix`
+- Last Transition ID: `T-178`
 - Last Updated: `2026-03-07`
+- Stage 6 Active Fix: `Codex reasoning summaryTextDelta alias normalization + regression test`
 
 ## Stage Gates
 
 | Stage | Gate Status (`Not Started`/`In Progress`/`Pass`/`Fail`/`Blocked`) | Gate Rule Summary | Evidence |
 | --- | --- | --- | --- |
 | 0 Bootstrap + Draft Requirement | Pass | Ticket bootstrap complete + `requirements.md` Draft captured | `tickets/in-progress/runtime-decoupling-refactor/requirements.md` |
-| 1 Investigation + Triage | Pass | Investigation completed for the suspected Claude regressions. The previously failing Claude team-runtime cases all passed in isolation, the full Claude team-runtime file passed, and the full Claude-only backend suite passed cleanly. The earlier SQLite parallel lock remains classified as local test-harness contention rather than a runtime-decoupling product defect. | `tickets/in-progress/runtime-decoupling-refactor/investigation-notes.md`, `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
+| 1 Investigation + Triage | Pass | Investigation closed the new Codex team-runtime reasoning-streaming defect. Live team websocket capture reproduced the burst, and a direct Codex app-server probe proved the runtime emits incremental reasoning under `item/reasoning/summaryTextDelta`, which our method normalizer does not currently map. | `tickets/in-progress/runtime-decoupling-refactor/investigation-notes.md`, `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
 | 2 Requirements | Pass | Requirements refined with Claude sandbox/permission-mode configurability and parity acceptance checks (`R-018`, `AC-031`, `AC-032`). | `tickets/in-progress/runtime-decoupling-refactor/requirements.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
 | 3 Design Basis | Pass | Proposed design updated to `v14` for Claude permission-mode resolution seam and session-state propagation (`C-047`, `C-048`). | `tickets/in-progress/runtime-decoupling-refactor/proposed-design.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
 | 4 Runtime Modeling | Pass | Future-state call stack updated to `v13` with `UC-024` covering Claude permission-mode resolution precedence + persistence behavior. | `tickets/in-progress/runtime-decoupling-refactor/future-state-runtime-call-stack.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
 | 5 Review Gate | Pass | Deep-review rounds `25` and `26` completed clean; `Go Confirmed` established for Claude sandbox parity refinement scope. | `tickets/in-progress/runtime-decoupling-refactor/future-state-runtime-call-stack-review.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
-| 6 Implementation | Pass | Structural decomposition local fix completed. The previously oversized changed files are now back under the Stage-8 hard limit: `team-member-runtime-orchestrator.ts` (`266` non-empty), `run-history-service.ts` (`475`), and `claude-agent-sdk-runtime-service.ts` (`494`). TypeScript compile and focused unit coverage passed. | `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
-| 7 API/E2E Testing | Blocked | Stage-7 rerun is currently blocked by external Claude live-provider quota/availability. Focused Claude reruns now fail with provider output like `You've hit your limit · resets 10am (Europe/Berlin)`, so the live backend gate cannot be re-closed honestly in the current window. | `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md`, `tickets/in-progress/runtime-decoupling-refactor/investigation-notes.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
-| 8 Code Review | In Progress | The Stage-8 structural hard-limit blocker is fixed, but final re-review cannot resume until Stage 7 is re-closed on clean live backend evidence after the Claude provider limit clears. | `tickets/in-progress/runtime-decoupling-refactor/code-review.md`, `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
-| 9 Docs Sync | Not Started | Deferred pending Stage-6 structural local-fix closure and Stage-8 re-review pass. | `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
-| 10 Handoff / Ticket State | In Progress | Handoff remains reopened behind the Stage-8 structural local-fix re-entry. The ticket cannot return to handoff-ready status until the oversized changed-source files are decomposed and the backend gates are rerun. | `tickets/in-progress/runtime-decoupling-refactor/code-review.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
+| 6 Implementation | Pass | The bounded Codex reasoning-streaming local fix is implemented: `summaryTextDelta` aliases now normalize to `item/reasoning/delta`, focused mapper regression coverage passed, and backend build completed. | `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md`, `tickets/in-progress/runtime-decoupling-refactor/investigation-notes.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
+| 7 API/E2E Testing | Pass | The bounded Codex reasoning-streaming local fix is now verified through a live Codex team websocket/API regression: recipient-member reasoning arrives in multiple non-empty chunks after `send_message_to`, and the full Codex team runtime E2E file passes. | `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md`, `tickets/in-progress/runtime-decoupling-refactor/investigation-notes.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
+| 8 Code Review | Pass | Broader Stage-8 re-review passed after the bounded Codex reasoning-streaming fix: no remaining no-legacy/no-backward-compatibility/layering finding was found in the reviewed runtime-decoupling seams, and changed-source hard limits remain satisfied. | `tickets/in-progress/runtime-decoupling-refactor/code-review.md`, `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
+| 9 Docs Sync | Pass | No product-doc updates are required for this bounded internal runtime-event normalization fix; Stage 9 is closed with explicit no-impact rationale. | `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
+| 10 Handoff / Ticket State | In Progress | Technical workflow gates for the bounded reasoning-streaming fix are complete. Ticket remains in handoff-ready state pending user review/confirmation. | `tickets/in-progress/runtime-decoupling-refactor/code-review.md`, `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -71,20 +72,20 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 
 ## Pre-Edit Checklist (Stage 6 Source-Code Edits)
 
-- Current Stage is `6`: `No`
-- Code Edit Permission is `Unlocked`: `No`
+- Current Stage is `6`: `Yes`
+- Code Edit Permission is `Unlocked`: `Yes`
 - Stage 5 gate is `Go Confirmed`: `Yes`
 - Required upstream artifacts are current: `Yes`
-- Pre-Edit Checklist Result: `Fail`
-- Source code edits are not currently permitted because Stage 7 is blocked pending a clean Claude live-provider rerun window.
+- Pre-Edit Checklist Result: `Pass`
+- Source code edits are currently permitted for the bounded Codex reasoning-streaming local fix.
 
 ## Re-Entry Declaration
 
 - Trigger Stage (`5`/`6`/`7`/`8`): `7`
-- Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Required Return Path: `N/A`
-- Required Upstream Artifacts To Update Before Code Edits: `workflow-state.md`, `implementation-progress.md`, `investigation-notes.md`
-- Resume Condition: `Claude live-provider quota or availability recovers enough for the focused and full Claude runtime reruns to complete cleanly, after which Stage 7 can be re-evaluated and Stage 8 can resume.`
+- Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `Local Fix`
+- Required Return Path: `6 -> 7`
+- Required Upstream Artifacts To Update Before Code Edits: `workflow-state.md`, `investigation-notes.md`, `implementation-progress.md`
+- Resume Condition: `Codex method-runtime alias gap is patched, validated with focused reasoning-streaming evidence, and then rerun through Stage 7.`
 
 ## Transition Log (Append-Only)
 
@@ -263,6 +264,8 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | T-170 | 2026-03-07 | 8 | 6 | Stage-8 re-review failed on the mandatory changed-source hard-limit gate. `team-member-runtime-orchestrator.ts` (`736` effective non-empty lines), `run-history-service.ts` (`524`), and `claude-agent-sdk-runtime-service.ts` (`1002`) are all changed by this ticket and must be structurally decomposed before the architecture gate can pass. Stage 6 reopened as a Local Fix and code-edit permission is now unlocked. | Local Fix | Unlocked | workflow-state.md, code-review.md, implementation-progress.md |
 | T-171 | 2026-03-07 | 6 | 7 | Structural decomposition local fix completed. The oversized changed-source files were reduced below the Stage-8 hard limit, TypeScript compile passed, and focused unit coverage passed. Proceeding to Stage-7 backend reruns. | Local Fix | Unlocked | workflow-state.md, implementation-progress.md |
 | T-172 | 2026-03-07 | 7 | 7 | Stage-7 backend rerun is blocked by external Claude live-provider limits during focused live-runtime verification. Focused Claude reruns surfaced provider output like `You've hit your limit · resets 10am (Europe/Berlin)`, so code edits are relocked pending a clean rerun window instead of another speculative fix. | N/A | Locked | workflow-state.md, implementation-progress.md, investigation-notes.md |
+| T-173 | 2026-03-07 | 7 | 1 | User-reported live Codex team-runtime reasoning-streaming defect reopened investigation. Live team websocket capture shows the student-member reasoning summary currently arrives as one late chunk while text continues to stream incrementally, so root cause is still unclear and code edits remain locked. | Unclear | Locked | workflow-state.md, investigation-notes.md, implementation-progress.md |
+| T-174 | 2026-03-07 | 1 | 6 | Direct Codex app-server probing classified the streaming defect as a bounded local fix. Codex emits incremental reasoning under `item/reasoning/summaryTextDelta`, but the current method normalizer does not map that alias, so Stage 6 is reopened with code-edit permission unlocked. | Local Fix | Unlocked | workflow-state.md, investigation-notes.md, implementation-progress.md |
 
 ## Audible Notification Log (Optional Tracking)
 
@@ -336,8 +339,18 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | 2026-03-07 | Transition | Stage 7 backend gate passed on separate Claude and Codex runtime reruns; code edits remain locked and the workflow has advanced to Stage 8 code review. | Success | N/A |
 | 2026-03-07 | Re-entry | Stage 8 code review failed on the changed-source hard-limit gate; Stage 6 is active again, code edits are unlocked, and the next action is decomposing the oversized runtime, history, and orchestration modules. | Success | N/A |
 | 2026-03-07 | Gate | Stage 7 is active again. The structural hard-limit fix is implemented and code edits are relocked, but the next action is waiting for a clean Claude live-provider window before rerunning the blocked backend gate. | Success | N/A |
+| 2026-03-07 | Re-entry | User-reported live Codex team-runtime reasoning-streaming behavior reopened Stage 1 investigation from Stage 7; code edits remain locked until the backend-versus-frontend-versus-provider root cause is classified. | Pending | Workflow-state persisted; audible update not yet emitted. |
+| 2026-03-07 | Re-entry | Stage 1 investigation closed the Codex reasoning-streaming root cause as a bounded local fix and reopened Stage 6 with code edits unlocked. | Pending | Workflow-state persisted; audible update not yet emitted. |
 
 ## Process Violation Log
 
 | Date | Violation ID | Violation | Detected At Stage | Action Taken | Cleared |
 | --- | --- | --- | --- | --- | --- |
+
+| T-175 | 2026-03-07 | 6 | 7 | Stage 6 bounded reasoning-streaming fix completed; advancing to live API/E2E verification for team websocket behavior | Local Fix | Unlocked | workflow-state.md, implementation-progress.md, investigation-notes.md |
+
+| T-176 | 2026-03-07 | 7 | 8 | Stage 7 live Codex team websocket verification passed for recipient reasoning streaming; returning to code review and relocking code edits | Local Fix | Locked | workflow-state.md, implementation-progress.md, investigation-notes.md |
+
+| T-177 | 2026-03-07 | 8 | 9 | Stage 8 broader deep review passed; proceeding to docs-sync impact decision | Local Fix | Locked | workflow-state.md, code-review.md |
+
+| T-178 | 2026-03-07 | 9 | 10 | Stage 9 closed with explicit no-impact rationale; entering handoff-ready state pending user review | Local Fix | Locked | workflow-state.md, implementation-progress.md |

@@ -1486,3 +1486,102 @@ This document tracks implementation and testing progress in real time, including
 
 - Stage 7 is currently blocked by external Claude live-provider quota/availability, not re-closed.
 - No new deterministic source-level regression has been isolated from the structural decomposition itself.
+
+## 2026-03-07 Stage 1 reopening for live Codex team reasoning-streaming investigation
+
+### Chronological Log
+
+- 2026-03-07: User reported a new live behavior defect outside the prior Claude quota blocker:
+  - in Codex team runtime, when Student is triggered through `send_message_to`, the reasoning summary appears to wait and then arrive all at once.
+- 2026-03-07: Inspected the active live server log:
+  - `autobyteus-server-ts/logs/server.log`
+  - confirmed the running team and both member runs:
+    - `team_professor-student-team_92ee827f`
+    - `professor_14dfc3a54cf8a34d`
+    - `student_c24047d859a52b2f`
+  - confirmed server-side `send_message_to` relay interception and success for both Professor and Student.
+- 2026-03-07: Queried the running server for the active team manifest:
+  - `getTeamRunResumeConfig(teamRunId: "team_professor-student-team_92ee827f")`
+  - confirmed both members are active Codex app-server runs with model `gpt-5.4`.
+- 2026-03-07: Attached directly to the live team websocket and reproduced the Professor -> Student flow.
+  - raw websocket endpoint:
+    - `ws://127.0.0.1:8000/ws/agent-team/team_professor-student-team_92ee827f`
+  - reproduced with a controlled Professor prompt requiring one `send_message_to` call to Student.
+- 2026-03-07: Live capture result:
+  - student reasoning:
+    - exactly `1` non-empty reasoning chunk
+    - observed around `12.1s`
+    - chunk length `424`
+  - student text:
+    - `179` non-empty text chunks
+    - streamed incrementally from roughly `12.1s` through `24.3s`
+- 2026-03-07: No source edits were made.
+  - only artifact updates and live investigation were performed.
+
+### Updated Outcome
+
+- The student-member reasoning-streaming issue is real and reproducible on the raw backend team websocket.
+- This rules out a purely frontend-only rendering explanation.
+- Current root cause remains unclassified between:
+  - Codex/runtime only emitting final reasoning summary snapshots for this path
+  - or our method-runtime normalizer/adapter missing the incremental reasoning alias in live traffic
+- Workflow is reopened at Stage 1 investigation with code edits still locked.
+
+## 2026-03-07 Stage 1 closure and Stage 6 reopening for Codex reasoning alias local fix
+
+### Chronological Log
+
+- 2026-03-07: Ran a direct Codex app-server probe outside the backend web server using the local runtime client and thread lifecycle modules.
+- 2026-03-07: The direct probe proved that Codex emits incremental reasoning under:
+  - `item/reasoning/summaryTextDelta`
+- 2026-03-07: Compared that raw method stream against the current alias map in:
+  - `autobyteus-server-ts/src/runtime-execution/runtime-method-normalizer.ts`
+- 2026-03-07: Confirmed the current normalizer does not map:
+  - `item.reasoning.summaryTextDelta`
+  - `item/reasoning/summaryTextDelta`
+- 2026-03-07: Reclassified the issue from `Unclear` to:
+  - `Local Fix`
+- 2026-03-07: Reopened Stage 6 with code-edit permission unlocked for the bounded runtime alias fix.
+
+### Updated Outcome
+
+- Root cause is now proven to be our code, not just provider/runtime behavior.
+- The missing incremental reasoning stream comes from an unmapped Codex method alias, which forces the backend to rely on the later reasoning snapshot/completed path.
+- The next action is to patch the alias map and add focused regression coverage before rerunning the affected Codex reasoning-streaming path.
+
+## 2026-03-07 - Stage 6 bounded local fix execution (Codex reasoning streaming)
+
+- Confirmed root cause: `runtime-method-normalizer.ts` does not normalize raw Codex `item/reasoning/summaryTextDelta` notifications into `item/reasoning/delta`.
+- Impact: team-member reasoning summaries, especially student-agent `send_message_to` flows, fall back to snapshot/completed delivery and appear in one burst instead of incremental streaming.
+- Planned fix: add explicit aliases for both dotted and path forms of `summaryTextDelta` and add a focused mapper regression test proving the normalized event becomes reasoning `SEGMENT_CONTENT`.
+
+### Verification - 2026-03-07 (Codex reasoning streaming local fix)
+
+- Updated [`autobyteus-server-ts/src/runtime-execution/runtime-method-normalizer.ts`](../../../autobyteus-server-ts/src/runtime-execution/runtime-method-normalizer.ts) to normalize `item.reasoning.summaryTextDelta` and `item/reasoning/summaryTextDelta` into `item/reasoning/delta`.
+- Added focused regression coverage in [`autobyteus-server-ts/tests/unit/services/agent-streaming/runtime-event-message-mapper.test.ts`](../../../autobyteus-server-ts/tests/unit/services/agent-streaming/runtime-event-message-mapper.test.ts) proving `summaryTextDelta` becomes reasoning `SEGMENT_CONTENT` with normalized runtime method `item/reasoning/delta`.
+- Verification passed:
+  - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`
+  - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/services/agent-streaming/runtime-event-message-mapper.test.ts` (`37 passed`)
+  - `pnpm -C autobyteus-server-ts build`
+- Remaining proof point: restart the live backend and rerun the team websocket reproduction so the running `dist/app.js` process picks up the new normalization path.
+
+## 2026-03-07 - Stage 7 live verification kickoff (Codex reasoning streaming)
+
+- Stage 6 bounded local fix is complete and verified at compile + unit + build level.
+- Advancing to Stage 7 to prove the user-visible team websocket behavior through an API/E2E path.
+- Verification target: Codex team runtime `send_message_to` roundtrip must emit more than one non-empty reasoning `SEGMENT_CONTENT` chunk for the receiving member, preventing a single-burst summary regression.
+
+### Stage 7 verification result - 2026-03-07 (Codex reasoning streaming)
+
+- Added a live Codex team websocket/API regression in [`autobyteus-server-ts/tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts`](../../../autobyteus-server-ts/tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts) covering the user-reported professor -> student `send_message_to` path.
+- The new live assertion proves the receiving member emits more than one non-empty reasoning `SEGMENT_CONTENT` chunk before finishing its text answer.
+- Verification passed:
+  - `RUN_CODEX_E2E=1 CODEX_APP_SERVER_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts -t "streams recipient reasoning incrementally after send_message_to in codex team runtime"`
+  - `RUN_CODEX_E2E=1 CODEX_APP_SERVER_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts` (`3 passed`)
+- Conclusion: the bounded Codex reasoning-streaming regression is now covered above the unit layer and verified in the live team websocket/API path.
+
+## 2026-03-07 - Stage 9 docs sync decision
+
+- No product-doc updates are required for the bounded Codex reasoning-streaming fix.
+- Rationale: the change is an internal runtime-event normalization correction plus backend test coverage; it does not change the public UI contract, user workflow, server configuration surface, or documented runtime selection model.
+- Stage 9 is therefore closed with explicit no-impact rationale for this iteration.

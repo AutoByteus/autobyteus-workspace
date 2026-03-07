@@ -1417,3 +1417,117 @@
 - Current evidence is sufficient to classify the immediate blocker as external Claude live-provider quota/availability rather than a clean deterministic architecture regression from the structural split.
 - The auto-approve timeout remains suspicious, but without a clean provider window it is not reliable evidence of a source-code regression.
 - The correct next action is to rerun the focused Claude live cases after the provider limit resets, not to continue speculative code edits.
+
+## 2026-03-07 Investigation Addendum (live Codex team reasoning-streaming defect)
+
+### Sources Consulted
+
+- live server log:
+  - `autobyteus-server-ts/logs/server.log`
+- live GraphQL inspection against the running server:
+  - `getTeamRunResumeConfig(teamRunId: "team_professor-student-team_92ee827f")`
+- live team websocket capture against the running server:
+  - `ws://127.0.0.1:8000/ws/agent-team/team_professor-student-team_92ee827f`
+- runtime/team streaming code:
+  - `autobyteus-server-ts/src/services/agent-streaming/team-runtime-event-bridge.ts`
+  - `autobyteus-server-ts/src/services/agent-streaming/runtime-event-message-mapper.ts`
+  - `autobyteus-server-ts/src/services/agent-streaming/method-runtime-event-adapter.ts`
+  - `autobyteus-server-ts/src/services/agent-streaming/method-runtime-event-segment-helper.ts`
+  - `autobyteus-web/services/agentStreaming/TeamStreamingService.ts`
+  - `autobyteus-web/services/agentStreaming/handlers/segmentHandler.ts`
+
+### Findings
+
+1. The user-reported symptom is real.
+   - On the live team run `team_professor-student-team_92ee827f`, the student member (`student_c24047d859a52b2f`) was reproduced through the backend team websocket while being triggered by Professor via `send_message_to`.
+   - The student member's non-empty reasoning stream contained exactly one chunk:
+     - observed at approximately `12.1s`
+     - length `424`
+     - sample started with:
+       - `**Considering interagent task**`
+   - The student member's text stream remained incremental in the same run:
+     - `179` non-empty text chunks
+     - first text chunks began at approximately `12.1s`
+     - continued incrementally until roughly `24.3s`
+
+2. The burst happens before frontend rendering.
+   - The raw backend team websocket already shows only one non-empty student reasoning chunk.
+   - Therefore this is not just a frontend batching/render-only issue.
+   - The frontend `handleSegmentContent(...)` path also ignores empty deltas, so the many no-op `SEGMENT_CONTENT` events are not what creates the visible burst.
+
+3. The current failure shape is specific to reasoning, not general member streaming.
+   - Student text streamed incrementally.
+   - Student `AGENT_STATUS` transitioned normally (`RUNNING` -> `IDLE`).
+   - Inter-agent routing itself also succeeded:
+     - `send_message_to` interception and relay are present in the live server log.
+
+4. Current strongest root-cause candidates
+   - `Most likely`: the Codex app server/runtime is only surfacing a final reasoning snapshot for this member-runtime path, so the mapper never receives incremental reasoning parts to forward.
+   - `Possible`: the runtime does emit incremental reasoning, but under an alias not currently normalized by `normalizeMethodRuntimeMethod(...)` / `MethodRuntimeEventAdapter`.
+   - `Less likely`: frontend-only buffering, because the raw backend team websocket already shows the one-chunk reasoning shape.
+
+### Ownership Decision
+
+- Proven:
+  - there is a real live Codex team-runtime reasoning-streaming defect from the user perspective.
+  - the defect is upstream of frontend rendering.
+- Not yet proven:
+  - whether the missing incrementality is our mapper/normalizer bug or Codex runtime/provider behavior.
+
+### Next Investigation Action
+
+- Start an isolated debug backend with raw method-runtime event logging enabled and reproduce the same Professor -> Student path.
+- Inspect the raw Codex method names and payloads for the student run to determine whether incremental reasoning notifications exist and are being dropped or whether only a final reasoning snapshot is emitted.
+
+## 2026-03-07 Investigation Addendum (direct Codex app-server raw method proof)
+
+### Sources Consulted
+
+- direct Codex app-server probe via local runtime client:
+  - `autobyteus-server-ts/dist/runtime-execution/codex-app-server/codex-app-server-client.js`
+  - `autobyteus-server-ts/dist/runtime-execution/codex-app-server/codex-runtime-thread-lifecycle.js`
+- method normalization/runtime mapping source:
+  - `autobyteus-server-ts/src/runtime-execution/runtime-method-normalizer.ts`
+  - `autobyteus-server-ts/src/services/agent-streaming/method-runtime-event-adapter.ts`
+
+### Findings
+
+1. Codex itself does emit incremental reasoning events.
+   - The direct app-server probe produced repeated raw notifications with method:
+     - `item/reasoning/summaryTextDelta`
+   - These were emitted incrementally with many small non-empty deltas over time.
+   - The same probe also emitted:
+     - `item/reasoning/summaryPartAdded`
+     - `item/completed` for the reasoning item
+
+2. The current backend alias map does not cover the incremental method actually emitted by Codex.
+   - `runtime-method-normalizer.ts` currently normalizes:
+     - `item.reasoning.outputDelta`
+     - `item/reasoning/outputDelta`
+   - It does not normalize:
+     - `item.reasoning.summaryTextDelta`
+     - `item/reasoning/summaryTextDelta`
+
+3. This is the concrete root cause of the bursty reasoning summary.
+   - Because `summaryTextDelta` is unmapped, `MethodRuntimeEventAdapter` does not route those incremental deltas through the `item/reasoning/delta` path.
+   - The backend therefore falls back to the later completed/snapshot reasoning event, which is why the live team websocket only showed one non-empty reasoning chunk for the student member.
+
+### Ownership Decision
+
+- Root cause classification: **our code issue**
+- Scope classification: **bounded Local Fix**
+- Required fix shape:
+  - extend method normalization to map `summaryTextDelta` aliases into `item/reasoning/delta`
+  - add focused regression coverage at the runtime-event-message-mapper layer
+
+## 2026-03-07 - Root-cause fix applied
+
+- Implemented the bounded local fix in `runtime-method-normalizer.ts`: Codex `summaryTextDelta` aliases now normalize to `item/reasoning/delta`.
+- Focused mapper coverage now protects this seam and proves reasoning chunks are emitted as incremental `SEGMENT_CONTENT` instead of relying on the later completed snapshot.
+- Compile, focused unit verification, and backend build all passed. Live confirmation still requires a backend restart because the currently running `node dist/app.js` process was started before the rebuilt `dist` output was generated.
+
+## 2026-03-07 - Live API/E2E confirmation for reasoning streaming fix
+
+- The unit-level alias fix is now confirmed in the live Codex team runtime path, not just in isolated mapper tests.
+- A new professor -> student team websocket regression test proves that after `send_message_to`, the student emits multiple non-empty reasoning `SEGMENT_CONTENT` deltas before completing the text answer.
+- The full Codex team runtime E2E file passed with the new regression in place (`3 passed`).
