@@ -3,6 +3,7 @@ import { GraphQLJSON } from "graphql-scalars";
 import { appConfigProvider } from "../../../config/app-config-provider.js";
 import { MemoryFileStore } from "../../../agent-memory-view/store/memory-file-store.js";
 import { AgentMemoryViewService } from "../../../agent-memory-view/services/agent-memory-view-service.js";
+import { TeamMemberMemoryLayoutStore } from "../../../run-history/store/team-member-memory-layout-store.js";
 import { MemoryViewConverter } from "../converters/memory-view-converter.js";
 
 @ObjectType()
@@ -126,6 +127,38 @@ export class MemoryViewResolver {
     const store = new MemoryFileStore(baseDir);
     const service = new AgentMemoryViewService(store);
     const view = service.getRunMemoryView(runId, {
+      includeWorkingContext,
+      includeEpisodic,
+      includeSemantic,
+      includeConversation,
+      includeRawTraces,
+      includeArchive,
+      rawTraceLimit: rawTraceLimit ?? null,
+      conversationLimit: conversationLimit ?? null,
+    });
+    return MemoryViewConverter.toGraphql(view);
+  }
+
+  @Query(() => AgentMemoryView)
+  async getTeamMemberRunMemoryView(
+    @Arg("teamRunId", () => String) teamRunId: string,
+    @Arg("memberRunId", () => String) memberRunId: string,
+    @Arg("includeWorkingContext", () => Boolean, { defaultValue: true })
+    includeWorkingContext = true,
+    @Arg("includeEpisodic", () => Boolean, { defaultValue: true }) includeEpisodic = true,
+    @Arg("includeSemantic", () => Boolean, { defaultValue: true }) includeSemantic = true,
+    @Arg("includeConversation", () => Boolean, { defaultValue: true }) includeConversation = true,
+    @Arg("includeRawTraces", () => Boolean, { defaultValue: false }) includeRawTraces = false,
+    @Arg("includeArchive", () => Boolean, { defaultValue: false }) includeArchive = false,
+    @Arg("rawTraceLimit", () => Int, { nullable: true }) rawTraceLimit?: number | null,
+    @Arg("conversationLimit", () => Int, { nullable: true }) conversationLimit?: number | null,
+  ): Promise<AgentMemoryView> {
+    const baseDir = appConfigProvider.config.getMemoryDir();
+    const layoutStore = new TeamMemberMemoryLayoutStore(baseDir);
+    const teamDir = layoutStore.getTeamDirPath(teamRunId);
+    const store = new MemoryFileStore(teamDir, { runRootSubdir: "" });
+    const service = new AgentMemoryViewService(store);
+    const view = service.getRunMemoryView(memberRunId, {
       includeWorkingContext,
       includeEpisodic,
       includeSemantic,

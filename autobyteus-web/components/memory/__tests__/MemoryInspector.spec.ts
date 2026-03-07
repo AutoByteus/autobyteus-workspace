@@ -3,6 +3,8 @@ import { mount } from '@vue/test-utils';
 import { createTestingPinia } from '@pinia/testing';
 import MemoryInspector from '../MemoryInspector.vue';
 import { useAgentMemoryViewStore } from '~/stores/agentMemoryViewStore';
+import { useMemoryScopeStore } from '~/stores/memoryScopeStore';
+import { useTeamMemoryViewStore } from '~/stores/teamMemoryViewStore';
 
 describe('MemoryInspector', () => {
   const mountComponent = () => {
@@ -31,5 +33,20 @@ describe('MemoryInspector', () => {
     await rawTab!.trigger('click');
 
     expect(viewStore.setIncludeRawTraces).toHaveBeenCalledWith(true);
+  });
+
+  it('renders team context header when team scope selection exists', async () => {
+    const { wrapper } = mountComponent();
+    const scopeStore = useMemoryScopeStore();
+    const teamViewStore = useTeamMemoryViewStore();
+
+    scopeStore.scope = 'team';
+    teamViewStore.selectedTeamRunId = 'team-1';
+    teamViewStore.selectedTeamDefinitionName = 'Alpha Team';
+    teamViewStore.selectedMemberName = 'Coordinator';
+    teamViewStore.selectedMemberRunId = 'member-1';
+
+    await wrapper.vm.$nextTick();
+    expect(wrapper.text()).toContain('Team: Alpha Team / Member: Coordinator / Run: member-1');
   });
 });
