@@ -16,10 +16,19 @@ import { onMounted } from 'vue';
 import MemoryIndexPanel from '~/components/memory/MemoryIndexPanel.vue';
 import MemoryInspector from '~/components/memory/MemoryInspector.vue';
 import { useAgentMemoryIndexStore } from '~/stores/agentMemoryIndexStore';
+import { useMemoryScopeStore } from '~/stores/memoryScopeStore';
+import { useTeamMemoryIndexStore } from '~/stores/teamMemoryIndexStore';
 
+const scopeStore = useMemoryScopeStore();
 const indexStore = useAgentMemoryIndexStore();
+const teamIndexStore = useTeamMemoryIndexStore();
 
 onMounted(() => {
+  scopeStore.resetToDefault();
+  if (scopeStore.scope === 'team') {
+    teamIndexStore.fetchIndex();
+    return;
+  }
   indexStore.fetchIndex();
 });
 </script>

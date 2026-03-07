@@ -368,6 +368,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     expect(wrapper.text()).toContain('Teams');
     const row = wrapper.find('[data-test="workspace-team-row-team-1"]');
     expect(row.exists()).toBe(true);
+    expect(row.text()).toContain('team-1');
 
     await row.trigger('click');
     await flushPromises();

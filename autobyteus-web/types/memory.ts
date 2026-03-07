@@ -16,6 +16,34 @@ export interface MemorySnapshotPage {
   totalPages: number;
 }
 
+export interface TeamMemberMemorySnapshotSummary {
+  memberRouteKey: string;
+  memberName: string;
+  memberRunId: string;
+  lastUpdatedAt?: string | null;
+  hasWorkingContext: boolean;
+  hasEpisodic: boolean;
+  hasSemantic: boolean;
+  hasRawTraces: boolean;
+  hasRawArchive: boolean;
+}
+
+export interface TeamRunMemorySnapshotSummary {
+  teamRunId: string;
+  teamDefinitionId: string;
+  teamDefinitionName: string;
+  lastUpdatedAt?: string | null;
+  members: TeamMemberMemorySnapshotSummary[];
+}
+
+export interface TeamRunMemorySnapshotPage {
+  entries: TeamRunMemorySnapshotSummary[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}
+
 export interface MemoryMessage {
   role: string;
   content?: string | null;

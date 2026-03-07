@@ -9,11 +9,11 @@
       </div>
     </div>
 
-    <div v-if="viewStore.error" class="px-6 py-3 border-b border-red-200 bg-red-50 text-sm text-red-700">
-      {{ viewStore.error }}
+    <div v-if="activeError" class="px-6 py-3 border-b border-red-200 bg-red-50 text-sm text-red-700">
+      {{ activeError }}
     </div>
 
-    <div v-if="!viewStore.selectedRunId" class="flex-1 flex items-center justify-center text-gray-400">
+    <div v-if="!hasSelection" class="flex-1 flex items-center justify-center text-gray-400">
       Select a memory entry to inspect.
     </div>
 
@@ -33,30 +33,30 @@
       </div>
 
       <div class="flex-1 overflow-y-auto px-6 py-4">
-        <div v-if="viewStore.loading && !viewStore.memoryView" class="py-12 text-center text-sm text-gray-500">
+        <div v-if="activeLoading && !activeMemoryView" class="py-12 text-center text-sm text-gray-500">
           Loading memory view...
         </div>
 
         <WorkingContextTab
           v-else-if="activeTab === 'working'"
-          :messages="viewStore.memoryView?.workingContext ?? null"
+          :messages="activeMemoryView?.workingContext ?? null"
         />
 
         <EpisodicTab
           v-else-if="activeTab === 'episodic'"
-          :items="viewStore.memoryView?.episodic ?? null"
+          :items="activeMemoryView?.episodic ?? null"
         />
 
         <SemanticTab
           v-else-if="activeTab === 'semantic'"
-          :items="viewStore.memoryView?.semantic ?? null"
+          :items="activeMemoryView?.semantic ?? null"
         />
 
         <RawTracesTab
           v-else-if="activeTab === 'raw'"
-          :traces="viewStore.memoryView?.rawTraces ?? null"
-          :limit="viewStore.rawTraceLimit"
-          :loading="viewStore.loading"
+          :traces="activeMemoryView?.rawTraces ?? null"
+          :limit="activeRawTraceLimit"
+          :loading="activeLoading"
           @updateLimit="updateRawTraceLimit"
         />
       </div>
@@ -67,12 +67,16 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { useAgentMemoryViewStore } from '~/stores/agentMemoryViewStore';
+import { useMemoryScopeStore } from '~/stores/memoryScopeStore';
+import { useTeamMemoryViewStore } from '~/stores/teamMemoryViewStore';
 import WorkingContextTab from './WorkingContextTab.vue';
 import EpisodicTab from './EpisodicTab.vue';
 import SemanticTab from './SemanticTab.vue';
 import RawTracesTab from './RawTracesTab.vue';
 
-const viewStore = useAgentMemoryViewStore();
+const scopeStore = useMemoryScopeStore();
+const agentViewStore = useAgentMemoryViewStore();
+const teamViewStore = useTeamMemoryViewStore();
 
 const tabs = [
   { id: 'working', label: 'Working Context' },
@@ -83,17 +87,64 @@ const tabs = [
 
 const activeTab = ref('working');
 
+const isAgentScope = computed(() => scopeStore.scope === 'agent');
+
+const hasSelection = computed(() => {
+  if (isAgentScope.value) {
+    return Boolean(agentViewStore.selectedRunId);
+  }
+  return Boolean(teamViewStore.selectedTeamRunId && teamViewStore.selectedMemberRunId);
+});
+
+const activeError = computed(() => {
+  return isAgentScope.value ? agentViewStore.error : teamViewStore.error;
+});
+
+const activeLoading = computed(() => {
+  return isAgentScope.value ? agentViewStore.loading : teamViewStore.loading;
+});
+
+const activeMemoryView = computed(() => {
+  return isAgentScope.value ? agentViewStore.memoryView : teamViewStore.memoryView;
+});
+
+const activeRawTraceLimit = computed(() => {
+  return isAgentScope.value ? agentViewStore.rawTraceLimit : teamViewStore.rawTraceLimit;
+});
+
 const headerSubtitle = computed(() => {
-  if (!viewStore.selectedRunId) return 'No selection';
-  return `Run: ${viewStore.selectedRunId}`;
+  if (isAgentScope.value) {
+    if (!agentViewStore.selectedRunId) {
+      return 'Agent Runs: no selection';
+    }
+    return `Agent Run: ${agentViewStore.selectedRunId}`;
+  }
+
+  if (!teamViewStore.selectedTeamRunId || !teamViewStore.selectedMemberRunId) {
+    return 'Team Runs: no selection';
+  }
+
+  const teamName = teamViewStore.selectedTeamDefinitionName || teamViewStore.selectedTeamRunId;
+  const memberName = teamViewStore.selectedMemberName || teamViewStore.selectedMemberRouteKey || 'member';
+  return `Team: ${teamName} / Member: ${memberName} / Run: ${teamViewStore.selectedMemberRunId}`;
 });
 
 const setTab = async (tabId: string) => {
   activeTab.value = tabId;
-  await viewStore.setIncludeRawTraces(tabId === 'raw');
+  const includeRawTraces = tabId === 'raw';
+
+  if (isAgentScope.value) {
+    await agentViewStore.setIncludeRawTraces(includeRawTraces);
+    return;
+  }
+  await teamViewStore.setIncludeRawTraces(includeRawTraces);
 };
 
 const updateRawTraceLimit = async (limit: number) => {
-  await viewStore.setRawTraceLimit(limit);
+  if (isAgentScope.value) {
+    await agentViewStore.setRawTraceLimit(limit);
+    return;
+  }
+  await teamViewStore.setRawTraceLimit(limit);
 };
 </script>
