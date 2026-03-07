@@ -140,6 +140,48 @@ Notes:
 - Decision: `Pass`
 - Re-entry required: `No`
 
+## Stage-8 Deep Re-Review Addendum (2026-03-07) - Post-Merge Architecture Pass
+
+## Review Scope
+
+- Stage: `8`
+- Review slice: user-requested deep architecture verification after the Claude history reload fix and the latest `origin/personal` merge
+- Reviewed source areas:
+  - `autobyteus-server-ts/src/runtime-execution/`
+  - `autobyteus-server-ts/src/runtime-management/runtime-client/`
+  - `autobyteus-server-ts/src/run-history/services/`
+  - `autobyteus-server-ts/src/run-history/projection/`
+  - `autobyteus-server-ts/src/agent-team-execution/services/`
+  - `autobyteus-server-ts/src/services/agent-streaming/`
+- Verification commands:
+  - `git show --stat --oneline --summary 0806664`
+  - `git diff --stat origin/personal...HEAD -- autobyteus-server-ts/src autobyteus-server-ts/tests`
+  - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`
+  - shared-layer runtime-name sweep across `run-history/services`, `agent-team-execution/services`, `services/agent-streaming`, and root `runtime-execution` files
+  - changed-file hard-limit sweep against `origin/personal`
+
+## Findings
+
+- None.
+
+## Architecture / Decoupling Review
+
+- The latest `origin/personal` tip merged into this branch (`0806664`) is only a desktop version bump in `autobyteus-web/package.json`, so it did not reopen runtime-decoupling behavior by itself.
+- Shared runtime/team/history/streaming layers reviewed in this round remain provider-neutral:
+  - the shared-file runtime-name sweep returned no `codex`/`claude` identifiers in root `runtime-execution` files or the shared `run-history/services`, `agent-team-execution/services`, and `services/agent-streaming` layers
+  - provider-specific code remains under explicit provider ownership folders (`runtime-execution/claude-agent-sdk/`, `runtime-execution/codex-app-server/`, provider-specific run-projection providers, runtime-client modules, and model providers)
+- File locality is consistent with the intended architecture after the earlier cleanup:
+  - team relay ownership stays under `agent-team-execution/services/`
+  - method-runtime canonicalization stays under `runtime-execution/method-runtime/`
+  - provider-specific wrappers remain in the corresponding provider folders
+- No new legacy/backward-compatibility path was found in the reviewed runtime-decoupling slice.
+- No changed source file in the reviewed branch delta exceeds the `<=500` effective non-empty line hard limit.
+
+## Gate Decision
+
+- Decision: `Pass`
+- Re-entry required: `No`
+
 ## Stage-10 Continuation Iteration 17 Deep Re-Review Addendum (Post-Commit)
 
 ## Review Scope

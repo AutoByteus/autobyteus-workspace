@@ -1700,3 +1700,8 @@ This document tracks implementation and testing progress in real time, including
 
 - No product-doc updates are required for the bounded file-locality cleanup.
 - Rationale: the change is an internal source-tree ownership correction plus import updates; it does not change the user-facing runtime model, configuration surface, or product workflow.
+
+## 2026-03-07 - Stage 9 docs sync decision (post-merge deep architecture review)
+
+- No product-doc updates are required for the post-merge deep review round.
+- Rationale: this step only records review evidence for the merged branch snapshot and reconfirms internal runtime-decoupling structure. It does not change source behavior, the user-facing runtime model, configuration, or documented workflows.

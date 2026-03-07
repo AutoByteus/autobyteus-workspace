@@ -12,9 +12,9 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-192`
+- Last Transition ID: `T-195`
 - Last Updated: `2026-03-07`
-- Stage 6 Active Fix: `N/A (closed; file-locality cleanup passed and handoff-ready state is restored)`
+- Stage 6 Active Fix: `N/A (closed; post-merge deep review passed and handoff-ready state is restored)`
 
 ## Stage Gates
 
@@ -28,9 +28,9 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | 5 Review Gate | Pass | Deep-review rounds `25` and `26` completed clean; `Go Confirmed` established for Claude sandbox parity refinement scope. | `tickets/in-progress/runtime-decoupling-refactor/future-state-runtime-call-stack-review.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
 | 6 Implementation | Pass | Bounded file-locality cleanup completed: the team-runtime relay now lives with team orchestration, and the shared method-runtime normalizer now lives in an explicit shared method-runtime folder. Impacted compile, unit, and focused live runtime verification all passed. | `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md`, `tickets/in-progress/runtime-decoupling-refactor/code-review.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
 | 7 API/E2E Testing | Pass | File-locality cleanup preserved behavior on impacted live paths: focused Claude team roundtrip and focused Codex team reasoning-streaming roundtrip both passed after the moves. | `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
-| 8 Code Review | Pass | File-locality review is now closed: `team-runtime-inter-agent-message-relay.ts` was moved into team-execution locality, the shared method-runtime normalizer was moved into `runtime-execution/method-runtime/`, and the post-fix review found no remaining locality or provider-placement finding in this slice. | `tickets/in-progress/runtime-decoupling-refactor/code-review.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
-| 9 Docs Sync | Pass | No product-doc updates are required for the bounded file-locality cleanup; the change is internal to source-tree ownership and import paths only. | `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
-| 10 Handoff / Ticket State | In Progress | Handoff-ready state is restored after the bounded file-locality cleanup. Runtime-specific placement concerns are re-reviewed, code edits are relocked, and the ticket remains ready for user verification or commit. | `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md`, `tickets/in-progress/runtime-decoupling-refactor/code-review.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
+| 8 Code Review | Pass | Post-merge deep review passed. The merged branch keeps provider-specific code under explicit provider ownership, shared team/history/streaming/runtime-root layers remain runtime-neutral, and no reviewed changed source file exceeds the `<=500` effective non-empty line hard limit. | `tickets/in-progress/runtime-decoupling-refactor/code-review.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
+| 9 Docs Sync | Pass | No product-doc updates are required for the post-merge architecture review. The work only records review evidence and workflow closure; there is no user-facing product or configuration change. | `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
+| 10 Handoff / Ticket State | In Progress | Handoff-ready state is restored after the post-merge deep review passed. Code edits remain locked and the branch is ready for the next explicit user instruction. | `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md`, `tickets/in-progress/runtime-decoupling-refactor/code-review.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -386,3 +386,6 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | T-191 | 2026-03-07 | 8 | 9 | Stage-8 locality re-review passed. Provider-specific placement is clarified, the shared method-runtime seam now has explicit locality, and no remaining locality/backward-compatibility finding remains in this slice. | Local Fix | Locked | workflow-state.md, code-review.md |
 
 | T-192 | 2026-03-07 | 9 | 10 | Stage 9 closed with explicit no-impact rationale for the internal file-locality cleanup. The ticket returns to handoff-ready state with code edits locked. | Local Fix | Locked | workflow-state.md, implementation-progress.md |
+| T-193 | 2026-03-07 | 10 | 8 | User requested another deep architecture review after confirming the Claude history reload fix. Stage 8 is reopened on the merged branch snapshot to verify decoupling boundaries, file locality, and no-legacy constraints still hold end-to-end. | N/A | Locked | workflow-state.md, code-review.md |
+| T-194 | 2026-03-07 | 8 | 9 | Post-merge deep review passed with no new decoupling or file-locality findings. Shared runtime/team/history/streaming layers remain provider-neutral and reviewed changed source files stay within the hard size limit. | N/A | Locked | workflow-state.md, code-review.md |
+| T-195 | 2026-03-07 | 9 | 10 | Stage 9 closed with explicit no-impact rationale for the post-merge architecture review. The ticket returns to handoff-ready state with code edits locked. | N/A | Locked | workflow-state.md, implementation-progress.md |
