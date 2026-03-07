@@ -12,9 +12,11 @@ const {
   agentRunConfigStoreMock,
   selectionStoreMock,
   workspaceCenterViewStoreMock,
+  teamWorkspaceViewStoreMock,
 } = vi.hoisted(() => {
   const localState = {
     activeTeamContext: null as any,
+    currentMode: 'focus' as 'focus' | 'grid' | 'spotlight',
   };
 
   return {
@@ -23,6 +25,7 @@ const {
       get activeTeamContext() {
         return localState.activeTeamContext;
       },
+      setFocusedMember: vi.fn(),
     },
     agentDefinitionStoreMock: {
       agentDefinitions: [
@@ -56,6 +59,12 @@ const {
     workspaceCenterViewStoreMock: {
       showConfig: vi.fn(),
     },
+    teamWorkspaceViewStoreMock: {
+      getMode: vi.fn(() => localState.currentMode),
+      setMode: vi.fn((_: string, mode: 'focus' | 'grid' | 'spotlight') => {
+        localState.currentMode = mode;
+      }),
+    },
   };
 });
 
@@ -83,6 +92,10 @@ vi.mock('~/stores/workspaceCenterViewStore', () => ({
   useWorkspaceCenterViewStore: () => workspaceCenterViewStoreMock,
 }));
 
+vi.mock('~/stores/teamWorkspaceViewStore', () => ({
+  useTeamWorkspaceViewStore: () => teamWorkspaceViewStoreMock,
+}));
+
 const buildTeamContext = (overrides: Record<string, any> = {}) => ({
   teamRunId: 'team-1',
   config: {
@@ -101,7 +114,21 @@ const buildTeamContext = (overrides: Record<string, any> = {}) => ({
         },
         state: {
           currentStatus: AgentStatus.ExecutingTool,
-          conversation: { agentName: 'Professor' },
+          conversation: { agentName: 'Professor', messages: [] },
+        },
+      },
+    ],
+    [
+      'student',
+      {
+        config: {
+          agentDefinitionId: 'agent-student-def',
+          agentDefinitionName: 'Student',
+          agentAvatarUrl: null,
+        },
+        state: {
+          currentStatus: AgentStatus.Idle,
+          conversation: { agentName: 'Student', messages: [] },
         },
       },
     ],
@@ -113,6 +140,7 @@ const buildTeamContext = (overrides: Record<string, any> = {}) => ({
 describe('TeamWorkspaceView', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    state.currentMode = 'focus';
     state.activeTeamContext = buildTeamContext();
   });
 
@@ -120,6 +148,17 @@ describe('TeamWorkspaceView', () => {
     global: {
       stubs: {
         AgentTeamEventMonitor: { template: '<div data-test="team-event-monitor" />' },
+        TeamGridView: {
+          template: '<button type="button" data-test="team-grid" @click="$emit(\'select-member\', \'student\')" />',
+        },
+        TeamSpotlightView: {
+          template: '<div data-test="team-spotlight" />',
+        },
+        TeamWorkspaceModeSwitch: {
+          props: ['mode'],
+          template: '<button type="button" data-test="mode-switch" @click="$emit(\'update:mode\', \'grid\')">{{ mode }}</button>',
+        },
+        AgentUserInputForm: { template: '<div data-test="agent-user-input-form" />' },
         WorkspaceHeaderActions: {
           template: `
             <div>
@@ -166,5 +205,29 @@ describe('TeamWorkspaceView', () => {
     const wrapper = mountComponent();
     await wrapper.get('[data-test="edit-config"]').trigger('click');
     expect(workspaceCenterViewStoreMock.showConfig).toHaveBeenCalledTimes(1);
+  });
+
+  it('renders the focused monitor in focus mode by default', () => {
+    const wrapper = mountComponent();
+    expect(wrapper.find('[data-test="team-event-monitor"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="agent-user-input-form"]').exists()).toBe(false);
+  });
+
+  it('sets the requested mode from the mode switcher', async () => {
+    const wrapper = mountComponent();
+    await wrapper.get('[data-test="mode-switch"]').trigger('click');
+    expect(teamWorkspaceViewStoreMock.setMode).toHaveBeenCalledWith('team-1', 'grid');
+  });
+
+  it('shows shared composer in grid mode and routes tile focus changes', async () => {
+    state.currentMode = 'grid';
+    const wrapper = mountComponent();
+    expect(wrapper.find('[data-test="team-grid"]').exists()).toBe(true);
+    expect(wrapper.text()).toContain('Replying to:');
+    expect(wrapper.text()).toContain('Professor');
+    expect(wrapper.find('[data-test="agent-user-input-form"]').exists()).toBe(true);
+
+    await wrapper.get('[data-test="team-grid"]').trigger('click');
+    expect(teamContextsStoreMock.setFocusedMember).toHaveBeenCalledWith('student');
   });
 });

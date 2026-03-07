@@ -3,6 +3,7 @@ import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
+import { useTeamWorkspaceViewStore } from '~/stores/teamWorkspaceViewStore';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import type { TeamRunConfig } from '~/types/agent/TeamRunConfig';
 import { AgentContext } from '~/types/agent/AgentContext';
@@ -171,6 +172,7 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
 
       this.teams.delete(temporaryTeamRunId);
       this.teams.set(permanentTeamRunId, context);
+      useTeamWorkspaceViewStore().migrateMode(temporaryTeamRunId, permanentTeamRunId);
 
       const selectionStore = useAgentSelectionStore();
       if (
@@ -209,9 +211,35 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
     },
 
     setFocusedMember(memberName: string) {
-      if (this.activeTeamContext && this.activeTeamContext.members.has(memberName)) {
-        this.activeTeamContext.focusedMemberName = memberName;
+      const activeTeam = this.activeTeamContext;
+      if (!activeTeam || !activeTeam.members.has(memberName) || activeTeam.focusedMemberName === memberName) {
+        return;
       }
+
+      const currentFocusedMember = activeTeam.members.get(activeTeam.focusedMemberName);
+      const nextFocusedMember = activeTeam.members.get(memberName);
+
+      if (!nextFocusedMember) {
+        return;
+      }
+
+      const shouldRetargetDraft = Boolean(
+        currentFocusedMember && (
+          currentFocusedMember.requirement.length > 0
+          || currentFocusedMember.contextFilePaths.length > 0
+        ),
+      );
+
+      if (currentFocusedMember && shouldRetargetDraft) {
+        nextFocusedMember.requirement = currentFocusedMember.requirement;
+        nextFocusedMember.contextFilePaths = currentFocusedMember.contextFilePaths.map((contextFilePath) => ({
+          ...contextFilePath,
+        }));
+        currentFocusedMember.requirement = '';
+        currentFocusedMember.contextFilePaths = [];
+      }
+
+      activeTeam.focusedMemberName = memberName;
     },
   },
 });

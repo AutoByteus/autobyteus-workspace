@@ -22,77 +22,33 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
-import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
+import { useTeamMemberPresentation } from '~/composables/useTeamMemberPresentation';
 import AgentEventMonitor from '~/components/workspace/agent/AgentEventMonitor.vue';
 
 const teamContextsStore = useAgentTeamContextsStore();
-const agentDefinitionStore = useAgentDefinitionStore();
+const { getInterAgentSenderNameById, getMemberAvatarUrl, getMemberDisplayName } = useTeamMemberPresentation();
 
 const activeTeam = computed(() => teamContextsStore.activeTeamContext);
 const focusedMember = computed(() => teamContextsStore.focusedMemberContext);
 const conversationOfFocusedMember = computed(() => focusedMember.value?.state.conversation);
 
 const focusedMemberDisplayName = computed(() => {
-  const context = focusedMember.value;
-  if (!context) {
+  const team = activeTeam.value;
+  if (!team?.focusedMemberName) {
     return '';
   }
-  return context.config.agentDefinitionName?.trim() || context.state.conversation.agentName?.trim() || 'Agent';
+  return getMemberDisplayName(team.focusedMemberName, focusedMember.value);
 });
 
 const focusedMemberAvatarUrl = computed(() => {
-  const context = focusedMember.value;
-  if (!context) {
+  const team = activeTeam.value;
+  if (!team?.focusedMemberName || !focusedMember.value) {
     return null;
   }
-
-  const fromContext = context.config.agentAvatarUrl?.trim();
-  if (fromContext) {
-    return fromContext;
-  }
-
-  const definitionId = context.config.agentDefinitionId?.trim();
-  if (definitionId) {
-    const fromDefinition = agentDefinitionStore.getAgentDefinitionById(definitionId)?.avatarUrl?.trim();
-    if (fromDefinition) {
-      return fromDefinition;
-    }
-  }
-
-  const normalizedName = focusedMemberDisplayName.value.trim().toLowerCase();
-  if (!normalizedName) {
-    return null;
-  }
-  const byName = agentDefinitionStore.agentDefinitions.find((definition) =>
-    (definition.name || '').trim().toLowerCase() === normalizedName
-  )?.avatarUrl?.trim();
-  return byName || null;
+  return getMemberAvatarUrl(team.focusedMemberName, focusedMember.value) || null;
 });
 
-const formatMemberDisplayName = (memberRouteKey: string): string => {
-  const routeLeaf = memberRouteKey
-    .split('/')
-    .map((segment) => segment.trim())
-    .filter((segment) => segment.length > 0)
-    .pop() || memberRouteKey;
-  if (!routeLeaf) return 'Teammate';
-  return `${routeLeaf.charAt(0).toUpperCase()}${routeLeaf.slice(1)}`;
-};
-
 const interAgentSenderNameById = computed<Record<string, string>>(() => {
-  const team = activeTeam.value;
-  if (!team) {
-    return {};
-  }
-
-  const mapping: Record<string, string> = {};
-  team.members.forEach((memberContext, memberRouteKey) => {
-    const memberRunId = String(memberContext.state.runId || '').trim();
-    if (!memberRunId || mapping[memberRunId]) {
-      return;
-    }
-    mapping[memberRunId] = formatMemberDisplayName(memberRouteKey);
-  });
-  return mapping;
+  return getInterAgentSenderNameById(activeTeam.value);
 });
 </script>
