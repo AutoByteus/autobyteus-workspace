@@ -10,11 +10,11 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 - Current Stage: `10`
 - Next Stage: `10`
 - Code Edit Permission: `Locked`
-- Active Re-Entry: `Yes`
-- Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `Local Fix`
-- Last Transition ID: `T-178`
+- Active Re-Entry: `No`
+- Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
+- Last Transition ID: `T-180`
 - Last Updated: `2026-03-07`
-- Stage 6 Active Fix: `Codex reasoning summaryTextDelta alias normalization + regression test`
+- Stage 6 Active Fix: `None`
 
 ## Stage Gates
 
@@ -27,10 +27,10 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | 4 Runtime Modeling | Pass | Future-state call stack updated to `v13` with `UC-024` covering Claude permission-mode resolution precedence + persistence behavior. | `tickets/in-progress/runtime-decoupling-refactor/future-state-runtime-call-stack.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
 | 5 Review Gate | Pass | Deep-review rounds `25` and `26` completed clean; `Go Confirmed` established for Claude sandbox parity refinement scope. | `tickets/in-progress/runtime-decoupling-refactor/future-state-runtime-call-stack-review.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
 | 6 Implementation | Pass | The bounded Codex reasoning-streaming local fix is implemented: `summaryTextDelta` aliases now normalize to `item/reasoning/delta`, focused mapper regression coverage passed, and backend build completed. | `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md`, `tickets/in-progress/runtime-decoupling-refactor/investigation-notes.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
-| 7 API/E2E Testing | Pass | The bounded Codex reasoning-streaming local fix is now verified through a live Codex team websocket/API regression: recipient-member reasoning arrives in multiple non-empty chunks after `send_message_to`, and the full Codex team runtime E2E file passes. | `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md`, `tickets/in-progress/runtime-decoupling-refactor/investigation-notes.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
+| 7 API/E2E Testing | Pass | User-requested post-commit Claude verification rerun passed cleanly from committed snapshot `86146f8`: `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run` completed with `230 passed | 5 skipped` files and `1090 passed | 23 skipped` tests. | `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
 | 8 Code Review | Pass | Broader Stage-8 re-review passed after the bounded Codex reasoning-streaming fix: no remaining no-legacy/no-backward-compatibility/layering finding was found in the reviewed runtime-decoupling seams, and changed-source hard limits remain satisfied. | `tickets/in-progress/runtime-decoupling-refactor/code-review.md`, `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
 | 9 Docs Sync | Pass | No product-doc updates are required for this bounded internal runtime-event normalization fix; Stage 9 is closed with explicit no-impact rationale. | `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
-| 10 Handoff / Ticket State | In Progress | Technical workflow gates for the bounded reasoning-streaming fix are complete. Ticket remains in handoff-ready state pending user review/confirmation. | `tickets/in-progress/runtime-decoupling-refactor/code-review.md`, `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
+| 10 Handoff / Ticket State | In Progress | Handoff-ready state is re-established after the clean post-commit Claude backend verification. Awaiting user review / next instruction. | `tickets/in-progress/runtime-decoupling-refactor/code-review.md`, `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -81,11 +81,11 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 
 ## Re-Entry Declaration
 
-- Trigger Stage (`5`/`6`/`7`/`8`): `7`
-- Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `Local Fix`
-- Required Return Path: `6 -> 7`
-- Required Upstream Artifacts To Update Before Code Edits: `workflow-state.md`, `investigation-notes.md`, `implementation-progress.md`
-- Resume Condition: `Codex method-runtime alias gap is patched, validated with focused reasoning-streaming evidence, and then rerun through Stage 7.`
+- Trigger Stage (`5`/`6`/`7`/`8`): `N/A`
+- Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
+- Required Return Path: `N/A`
+- Required Upstream Artifacts To Update Before Code Edits: `workflow-state.md`
+- Resume Condition: `Explicit user request to reopen the workflow from handoff-ready state.`
 
 ## Transition Log (Append-Only)
 
@@ -354,3 +354,7 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | T-177 | 2026-03-07 | 8 | 9 | Stage 8 broader deep review passed; proceeding to docs-sync impact decision | Local Fix | Locked | workflow-state.md, code-review.md |
 
 | T-178 | 2026-03-07 | 9 | 10 | Stage 9 closed with explicit no-impact rationale; entering handoff-ready state pending user review | Local Fix | Locked | workflow-state.md, implementation-progress.md |
+
+| T-179 | 2026-03-07 | 10 | 7 | User requested a post-commit Claude verification rerun; reopening Stage 7 from committed snapshot 86146f8 with code edits still locked | Local Fix | Locked | workflow-state.md, implementation-progress.md |
+
+| T-180 | 2026-03-07 | 7 | 10 | Post-commit Claude verification rerun passed cleanly from committed snapshot 86146f8; returning to handoff-ready state with code edits locked | Local Fix | Locked | workflow-state.md, implementation-progress.md |

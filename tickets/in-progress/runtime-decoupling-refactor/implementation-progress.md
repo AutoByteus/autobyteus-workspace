@@ -1585,3 +1585,27 @@ This document tracks implementation and testing progress in real time, including
 - No product-doc updates are required for the bounded Codex reasoning-streaming fix.
 - Rationale: the change is an internal runtime-event normalization correction plus backend test coverage; it does not change the public UI contract, user workflow, server configuration surface, or documented runtime selection model.
 - Stage 9 is therefore closed with explicit no-impact rationale for this iteration.
+
+## 2026-03-07 - Post-commit Claude verification rerun
+
+- Checkpoint commit created: `86146f8 Fix codex team reasoning streaming`.
+- Reopened Stage 7 at user request to run another full Claude-enabled backend verification round from the committed snapshot.
+- Code edits remain locked during this verification pass unless a new failure forces classified re-entry.
+
+### Verification result - 2026-03-07 (Claude post-commit rerun)
+
+- Full Claude-only backend verification passed from the committed snapshot:
+  - `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run`
+  - Result:
+    - `230 passed | 5 skipped` files
+    - `1090 passed | 23 skipped` tests
+- Live Claude runtime files both closed green in this rerun:
+  - [`autobyteus-server-ts/tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts`](../../../autobyteus-server-ts/tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts) (`17 passed`)
+  - [`autobyteus-server-ts/tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts`](../../../autobyteus-server-ts/tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts) (`5 passed`)
+- Non-blocking runtime noise still appeared during the run, but it did not fail acceptance:
+  - intermittent `Claude Code process exited with code 1`
+  - cleanup warnings such as `Agent ... not found for removal`
+  - memory-file-missing warnings for optional raw trace files during history cleanup
+- Outcome:
+  - Stage 7 is re-closed as `Pass`
+  - the ticket returns to Stage 10 handoff-ready with code edits locked
