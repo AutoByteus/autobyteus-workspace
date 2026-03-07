@@ -64,6 +64,12 @@ describe("RunHistoryService runtime-event status derivation", () => {
     return manifest?.runtimeReference.threadId ?? null;
   };
 
+  const readManifestSessionId = async (runId: string): Promise<string | null> => {
+    const manifestStore = (service as any).manifestStore;
+    const manifest = await manifestStore.readManifest(runId);
+    return manifest?.runtimeReference.sessionId ?? null;
+  };
+
   it("treats alias and canonical turn lifecycle methods equivalently", async () => {
     await seedRun("run-alias", "IDLE");
     await seedRun("run-canonical", "IDLE");
@@ -95,5 +101,39 @@ describe("RunHistoryService runtime-event status derivation", () => {
     });
 
     expect(await readManifestThreadId("run-thread")).toBe("thread-2");
+  });
+
+  it("promotes Claude session-id hints into persisted sessionId after runtime events", async () => {
+    const manifestStore = (service as any).manifestStore;
+    const indexStore = (service as any).indexStore;
+    const manifest: RunManifest = {
+      ...makeManifest(),
+      runtimeKind: "claude_agent_sdk",
+      runtimeReference: {
+        runtimeKind: "claude_agent_sdk",
+        sessionId: "run-claude",
+        threadId: "run-claude",
+        metadata: null,
+      },
+    };
+
+    await manifestStore.writeManifest("run-claude", manifest);
+    await indexStore.upsertRow({
+      runId: "run-claude",
+      agentDefinitionId: "agent-def-1",
+      agentName: "Agent",
+      workspaceRootPath: "/tmp/workspace",
+      summary: "seed",
+      lastActivityAt: new Date("2026-01-01T00:00:00.000Z").toISOString(),
+      lastKnownStatus: "ACTIVE",
+    });
+
+    await service.onRuntimeEvent("run-claude", {
+      method: "turn/completed",
+      params: { sessionId: "claude-session-final" },
+    });
+
+    expect(await readManifestSessionId("run-claude")).toBe("claude-session-final");
+    expect(await readManifestThreadId("run-claude")).toBe("claude-session-final");
   });
 });

@@ -1,9 +1,9 @@
 import {
-  debugCodexRuntimeAdapter,
-  formatRawCodexRuntimeEventForDebug,
-  shouldLogRawCodexRuntimeEvent,
-} from "./codex-runtime-event-debug.js";
-import { asObject, asString, CodexRuntimeEventToolHelper } from "./codex-runtime-event-tool-helper.js";
+  debugMethodRuntimeAdapter,
+  formatRawMethodRuntimeEventForDebug,
+  shouldLogRawMethodRuntimeEvent,
+} from "./method-runtime-event-debug.js";
+import { asObject, asString, MethodRuntimeEventToolHelper } from "./method-runtime-event-tool-helper.js";
 
 const normalizeSegmentTypeToken = (value: string): string =>
   value.toLowerCase().replace(/[^a-z0-9]+/g, "");
@@ -82,7 +82,7 @@ const asSegmentType = (value: string | null): string => {
   return "text";
 };
 
-export class CodexRuntimeEventSegmentHelper extends CodexRuntimeEventToolHelper {
+export class MethodRuntimeEventSegmentHelper extends MethodRuntimeEventToolHelper {
   private readonly reasoningSegmentIdByTurnId = new Map<string, string>();
   private readonly maxReasoningTurnCacheSize = 128;
   private rawEventSequence = 0;
@@ -284,7 +284,7 @@ export class CodexRuntimeEventSegmentHelper extends CodexRuntimeEventToolHelper 
     const turnId = this.resolveTurnId(payload);
     if (turnId) {
       this.reasoningSegmentIdByTurnId.delete(turnId);
-      debugCodexRuntimeAdapter("Cleared reasoning turn cache", {
+      debugMethodRuntimeAdapter("Cleared reasoning turn cache", {
         turnId,
         cacheSize: this.reasoningSegmentIdByTurnId.size,
       });
@@ -297,7 +297,7 @@ export class CodexRuntimeEventSegmentHelper extends CodexRuntimeEventToolHelper 
     normalizedMethod: string,
     payload: Record<string, unknown>,
   ): void {
-    if (!shouldLogRawCodexRuntimeEvent()) {
+    if (!shouldLogRawMethodRuntimeEvent()) {
       return;
     }
     this.rawEventSequence += 1;
@@ -305,7 +305,7 @@ export class CodexRuntimeEventSegmentHelper extends CodexRuntimeEventToolHelper 
     const turn = asObject(payload.turn);
     const summaryPart = asString(payload.summary_part) ?? asString(payload.summaryPart) ?? "";
 
-    debugCodexRuntimeAdapter("Raw runtime event", {
+    debugMethodRuntimeAdapter("Raw runtime event", {
       sequence: this.rawEventSequence,
       rawMethod,
       normalizedMethod: normalizedMethod || null,
@@ -315,7 +315,7 @@ export class CodexRuntimeEventSegmentHelper extends CodexRuntimeEventToolHelper 
       turnId: asString(payload.turnId) ?? asString(payload.turn_id) ?? asString(turn.id),
       payloadKeys: Object.keys(payload),
       summaryPartLength: summaryPart.length,
-      rawEventJson: formatRawCodexRuntimeEventForDebug(rawEvent),
+      rawEventJson: formatRawMethodRuntimeEventForDebug(rawEvent),
     });
   }
 
@@ -441,7 +441,7 @@ export class CodexRuntimeEventSegmentHelper extends CodexRuntimeEventToolHelper 
   ): void {
     const item = asObject(payload.item);
     const itemId = asString(item.id) ?? asString(payload.item_id) ?? asString(payload.itemId);
-    debugCodexRuntimeAdapter("Resolved reasoning segment id", {
+    debugMethodRuntimeAdapter("Resolved reasoning segment id", {
       strategy,
       resolvedSegmentId,
       eventId,

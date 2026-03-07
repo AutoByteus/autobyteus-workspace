@@ -3,6 +3,7 @@ import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-in
 import type { RuntimeKind } from "../runtime-management/runtime-kind.js";
 
 export type RuntimeMode = "agent" | "team";
+export type TeamRuntimeExecutionMode = "native_team" | "member_runtime";
 
 export type ApprovalTargetSource = "agent_name" | "target_member_name" | "agent_id";
 
@@ -61,6 +62,23 @@ export interface RuntimeRelayInterAgentMessageInput {
   envelope: RuntimeInterAgentEnvelope;
 }
 
+export interface RuntimeInterAgentRelayRequest {
+  senderRunId: string;
+  senderTeamRunId: string | null;
+  senderMemberName: string | null;
+  toolArguments: Record<string, unknown>;
+}
+
+export interface RuntimeInterAgentRelayResult {
+  accepted: boolean;
+  code?: string;
+  message?: string;
+}
+
+export type RuntimeInterAgentRelayHandler = (
+  request: RuntimeInterAgentRelayRequest,
+) => Promise<RuntimeInterAgentRelayResult>;
+
 export interface RuntimeApproveToolInput {
   runId: string;
   mode: RuntimeMode;
@@ -89,14 +107,38 @@ export interface RuntimeCommandResult {
   runtimeReference?: RuntimeRunReference | null;
 }
 
+export interface RuntimeReferenceHint {
+  sessionId?: string | null;
+  threadId?: string | null;
+}
+
+export interface RuntimeEventInterpretation {
+  normalizedMethod?: string | null;
+  statusHint?: "ACTIVE" | "IDLE" | "ERROR" | null;
+  runtimeReferenceHint?: RuntimeReferenceHint | null;
+}
+
+export type RuntimeEventUnsubscribe = () => void;
+
+export type RuntimeEventListener = (event: unknown) => void;
+
 export interface RuntimeAdapter {
   readonly runtimeKind: RuntimeKind;
+  readonly teamExecutionMode?: TeamRuntimeExecutionMode;
   createAgentRun?: (input: RuntimeCreateAgentRunInput) => Promise<RuntimeCreateResult>;
   restoreAgentRun?: (input: RuntimeRestoreAgentRunInput) => Promise<RuntimeCreateResult>;
+  getRunRuntimeReference?: (runId: string) => RuntimeRunReference | null;
+  isRunActive?: (runId: string) => boolean;
+  subscribeToRunEvents?: (
+    runId: string,
+    onEvent: RuntimeEventListener,
+  ) => RuntimeEventUnsubscribe;
+  interpretRuntimeEvent?: (event: unknown) => RuntimeEventInterpretation | null;
   sendTurn: (input: RuntimeSendTurnInput) => Promise<RuntimeCommandResult>;
   relayInterAgentMessage?: (
     input: RuntimeRelayInterAgentMessageInput,
   ) => Promise<RuntimeCommandResult>;
+  bindInterAgentRelayHandler?: (handler: RuntimeInterAgentRelayHandler) => RuntimeEventUnsubscribe;
   approveTool: (input: RuntimeApproveToolInput) => Promise<RuntimeCommandResult>;
   interruptRun: (input: RuntimeInterruptRunInput) => Promise<RuntimeCommandResult>;
   terminateRun?: (input: RuntimeTerminateRunInput) => Promise<RuntimeCommandResult>;

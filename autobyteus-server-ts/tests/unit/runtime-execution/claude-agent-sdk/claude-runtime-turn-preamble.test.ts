@@ -10,6 +10,7 @@ const createState = (
   model: "default",
   workingDirectory: "/tmp",
   autoExecuteTools: false,
+  permissionMode: "default",
   hasCompletedTurn: false,
   runtimeMetadata: {},
   teamRunId: null,

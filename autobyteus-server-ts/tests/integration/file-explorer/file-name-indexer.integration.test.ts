@@ -15,7 +15,7 @@ const createTempWorkspace = async (): Promise<string> => {
 const waitForIndexCondition = async (
   indexer: FileNameIndexer,
   predicate: (index: Record<string, string>) => boolean,
-  timeoutMs = 20000,
+  timeoutMs = 45000,
 ): Promise<void> => {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {

@@ -5,7 +5,10 @@ import {
   resolveTeamManifestMembersFromMetadata,
   resolveTeamRunIdFromMetadata,
 } from "./claude-runtime-team-metadata.js";
-import { type ClaudeRunSessionState } from "./claude-runtime-shared.js";
+import {
+  type ClaudeRunSessionState,
+  type ClaudeSdkPermissionMode,
+} from "./claude-runtime-shared.js";
 
 export const createClaudeRunSessionState = (options: {
   runId: string;
@@ -13,6 +16,7 @@ export const createClaudeRunSessionState = (options: {
   modelIdentifier: string;
   workingDirectory: string;
   autoExecuteTools: boolean;
+  permissionMode: ClaudeSdkPermissionMode;
   runtimeMetadata: Record<string, unknown>;
   hasCompletedTurn: boolean;
 }): ClaudeRunSessionState => {
@@ -25,12 +29,14 @@ export const createClaudeRunSessionState = (options: {
     model: options.modelIdentifier,
     workingDirectory: options.workingDirectory,
     autoExecuteTools: options.autoExecuteTools,
+    permissionMode: options.permissionMode,
     hasCompletedTurn: options.hasCompletedTurn,
     runtimeMetadata: {
       ...options.runtimeMetadata,
       model: options.modelIdentifier,
       cwd: options.workingDirectory,
       autoExecuteTools: options.autoExecuteTools,
+      permissionMode: options.permissionMode,
     },
     teamRunId: resolveTeamRunIdFromMetadata(options.runtimeMetadata),
     memberName,

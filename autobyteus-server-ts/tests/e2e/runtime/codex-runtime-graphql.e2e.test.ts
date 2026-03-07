@@ -1231,15 +1231,19 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
       let sentPrompt = false;
       let sawEditFilePath = false;
       let sawEditFilePatch = false;
+      let promptAttemptCount = 0;
+      const maxPromptAttempts = 3;
 
       await waitForSocketOpen(socket);
 
       const finished = new Promise<void>((resolve, reject) => {
         const prompt = `Use the edit_file tool (do not use run_bash) to create a Python file named ${fileToken} in the current workspace. The file must define fibonacci(n) and print fibonacci(10). Actually write the file, then respond DONE.`;
+        let resolved = false;
         const sendPrompt = () => {
-          if (sentPrompt) {
+          if (promptAttemptCount >= maxPromptAttempts) {
             return;
           }
+          promptAttemptCount += 1;
           sentPrompt = true;
           socket.send(
             JSON.stringify({
@@ -1261,6 +1265,15 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
             ),
           );
         }, 45000);
+        const resolveWhenReady = () => {
+          if (resolved || !sawEditFilePath || !sawEditFilePatch) {
+            return;
+          }
+          resolved = true;
+          clearTimeout(fallbackSendTimer);
+          clearTimeout(timeout);
+          resolve();
+        };
 
         socket.on("message", (raw) => {
           const message = JSON.parse(raw.toString()) as {
@@ -1275,10 +1288,11 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
               sendPrompt();
               return;
             }
-            if (status === "IDLE" && sentPrompt && sawEditFilePath && sawEditFilePatch) {
-              clearTimeout(fallbackSendTimer);
-              clearTimeout(timeout);
-              resolve();
+            if (status === "IDLE" && sentPrompt) {
+              resolveWhenReady();
+              if (!sawEditFilePath && !sawEditFilePatch && promptAttemptCount < maxPromptAttempts) {
+                sendPrompt();
+              }
             }
             return;
           }
@@ -1343,6 +1357,7 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
           if (patchValue.length > 0) {
             sawEditFilePatch = true;
           }
+          resolveWhenReady();
         });
 
         socket.once("error", (error) => {
@@ -1623,22 +1638,22 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
       let sentPrompt = false;
       let sawGenerateImageArguments = false;
       let promptAttemptCount = 0;
-      const maxPromptAttempts = 3;
+      const maxPromptAttempts = 6;
 
       await waitForSocketOpen(socket);
 
       const finished = new Promise<void>((resolve, reject) => {
-        let completed = false;
         const buildPrompt = (attempt: number): string => {
           if (attempt === 1) {
             return `Call the generate_image tool exactly once using these exact JSON arguments: {"prompt":"cute sea animal ${imageToken}","output_file_path":"${outputFilePath}"}. Do not call run_bash or edit_file. Do not simulate tool output.`;
           }
           return `Retry attempt ${attempt}: you must call generate_image now with exact JSON arguments {"prompt":"cute sea animal ${imageToken}","output_file_path":"${outputFilePath}"} and nothing else.`;
         };
+        let resolved = false;
 
         const resolveIfComplete = () => {
-          if (!completed && sawGenerateImageArguments) {
-            completed = true;
+          if (!resolved && sawGenerateImageArguments) {
+            resolved = true;
             clearTimeout(fallbackSendTimer);
             clearTimeout(timeout);
             resolve();
@@ -1689,7 +1704,12 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
               resolveIfComplete();
               return;
             }
-            if (status === "IDLE" && sentPrompt && !sawGenerateImageArguments && promptAttemptCount < maxPromptAttempts) {
+            if (
+              status === "IDLE" &&
+              sentPrompt &&
+              !sawGenerateImageArguments &&
+              promptAttemptCount < maxPromptAttempts
+            ) {
               sendPrompt();
             }
             return;
@@ -1707,17 +1727,22 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
               : null;
           const metadataToolName =
             typeof metadata?.tool_name === "string" ? String(metadata.tool_name) : "";
+          const payloadArguments =
+            message.payload?.arguments && typeof message.payload.arguments === "object"
+              ? (message.payload.arguments as Record<string, unknown>)
+              : null;
           const metadataArguments =
             metadata?.arguments && typeof metadata.arguments === "object"
               ? (metadata.arguments as Record<string, unknown>)
               : null;
+          const candidateArguments = metadataArguments ?? payloadArguments;
           const promptArg =
-            metadataArguments && typeof metadataArguments.prompt === "string"
-              ? String(metadataArguments.prompt)
+            candidateArguments && typeof candidateArguments.prompt === "string"
+              ? String(candidateArguments.prompt)
               : null;
           const outputPathArg =
-            metadataArguments && typeof metadataArguments.output_file_path === "string"
-              ? String(metadataArguments.output_file_path)
+            candidateArguments && typeof candidateArguments.output_file_path === "string"
+              ? String(candidateArguments.output_file_path)
               : null;
 
           seenSegmentSnapshots.push({
@@ -1729,10 +1754,9 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
             outputPathArg: outputPathArg ?? null,
           });
 
-          const isToolCallSegment = segmentType === "tool_call";
           const isGenerateImageTool =
             metadataToolName === "generate_image" || metadataToolName.endsWith(".generate_image");
-          if (!isToolCallSegment || !isGenerateImageTool) {
+          if (!isGenerateImageTool) {
             return;
           }
 

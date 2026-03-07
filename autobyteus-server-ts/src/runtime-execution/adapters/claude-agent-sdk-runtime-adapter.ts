@@ -5,6 +5,8 @@ import type {
   RuntimeCommandResult,
   RuntimeCreateAgentRunInput,
   RuntimeCreateResult,
+  RuntimeEventInterpretation,
+  RuntimeInterAgentRelayHandler,
   RuntimeInterruptRunInput,
   RuntimeRelayInterAgentMessageInput,
   RuntimeRestoreAgentRunInput,
@@ -22,8 +24,17 @@ const buildCommandFailure = (error: unknown): RuntimeCommandResult => ({
   message: String(error),
 });
 
+const asObject = (value: unknown): Record<string, unknown> | null =>
+  value && typeof value === "object" && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : null;
+
+const asNonEmptyString = (value: unknown): string | null =>
+  typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
+
 export class ClaudeAgentSdkRuntimeAdapter implements RuntimeAdapter {
   readonly runtimeKind = "claude_agent_sdk" as const;
+  readonly teamExecutionMode = "member_runtime" as const;
   private readonly runtimeService: ClaudeAgentSdkRuntimeService;
 
   constructor(runtimeService: ClaudeAgentSdkRuntimeService = getClaudeAgentSdkRuntimeService()) {
@@ -80,6 +91,68 @@ export class ClaudeAgentSdkRuntimeAdapter implements RuntimeAdapter {
     };
   }
 
+  getRunRuntimeReference(runId: string) {
+    const runtimeReference = this.runtimeService.getRunRuntimeReference(runId);
+    if (!runtimeReference) {
+      return null;
+    }
+    return {
+      runtimeKind: this.runtimeKind,
+      sessionId: runtimeReference.sessionId,
+      threadId: runtimeReference.sessionId,
+      metadata: runtimeReference.metadata,
+    };
+  }
+
+  isRunActive(runId: string): boolean {
+    return this.runtimeService.hasRunSession(runId);
+  }
+
+  subscribeToRunEvents(runId: string, onEvent: (event: unknown) => void): () => void {
+    return this.runtimeService.subscribeToRunEvents(runId, (event) => {
+      onEvent(event);
+    });
+  }
+
+  interpretRuntimeEvent(event: unknown): RuntimeEventInterpretation | null {
+    const payload = asObject(event);
+    if (!payload) {
+      return null;
+    }
+
+    const rawMethod = asNonEmptyString(payload.method);
+    let statusHint: RuntimeEventInterpretation["statusHint"] = null;
+    if (rawMethod === "turn/started") {
+      statusHint = "ACTIVE";
+    } else if (rawMethod === "turn/completed") {
+      statusHint = "IDLE";
+    } else if (rawMethod === "error") {
+      statusHint = "ERROR";
+    }
+
+    const params = asObject(payload.params);
+    const resolvedSessionId =
+      asNonEmptyString(params?.sessionId) ??
+      asNonEmptyString(params?.session_id) ??
+      asNonEmptyString(params?.threadId) ??
+      asNonEmptyString(params?.thread_id);
+    const runtimeReferenceHint = resolvedSessionId
+      ? {
+          sessionId: resolvedSessionId,
+          threadId: resolvedSessionId,
+        }
+      : null;
+
+    if (!rawMethod && !statusHint && !runtimeReferenceHint) {
+      return null;
+    }
+    return {
+      normalizedMethod: rawMethod,
+      statusHint,
+      runtimeReferenceHint,
+    };
+  }
+
   async sendTurn(input: RuntimeSendTurnInput): Promise<RuntimeCommandResult> {
     try {
       await this.runtimeService.sendTurn(input.runId, input.message);
@@ -120,6 +193,19 @@ export class ClaudeAgentSdkRuntimeAdapter implements RuntimeAdapter {
     } catch (error) {
       return buildCommandFailure(error);
     }
+  }
+
+  bindInterAgentRelayHandler(handler: RuntimeInterAgentRelayHandler): () => void {
+    this.runtimeService.setInterAgentRelayHandler((request) =>
+      handler({
+        ...request,
+        senderMemberName: request.senderMemberName ?? null,
+        senderTeamRunId: request.senderTeamRunId ?? null,
+      }),
+    );
+    return () => {
+      this.runtimeService.setInterAgentRelayHandler(null);
+    };
   }
 
   async approveTool(input: RuntimeApproveToolInput): Promise<RuntimeCommandResult> {

@@ -97,7 +97,7 @@ describe("SendMessageToTeam GraphQL contract e2e", () => {
 
   it("surfaces deterministic codex-member routing errors through GraphQL response payload", async () => {
     const orchestrator = getTeamMemberRuntimeOrchestrator();
-    vi.spyOn(orchestrator, "getTeamRuntimeMode").mockReturnValue("external_member_runtime");
+    vi.spyOn(orchestrator, "getTeamRuntimeMode").mockReturnValue("member_runtime");
     vi.spyOn(orchestrator, "sendToMember").mockRejectedValue(
       new TeamRuntimeRoutingError({
         code: "TARGET_MEMBER_NOT_FOUND",

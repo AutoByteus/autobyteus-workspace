@@ -26,7 +26,7 @@ describe("ClaudeRuntimeTranscriptStore", () => {
     ]);
   });
 
-  it("migrates cached transcript rows to a resolved session id", () => {
+  it("migrates cached transcript rows to a resolved session id only", () => {
     const store = new ClaudeRuntimeTranscriptStore();
     store.appendMessage("run-1", { role: "user", content: "first-turn" });
     store.appendMessage("run-1", { role: "assistant", content: "first-reply" });

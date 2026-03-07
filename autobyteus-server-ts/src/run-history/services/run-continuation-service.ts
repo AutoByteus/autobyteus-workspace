@@ -9,10 +9,14 @@ import {
   RuntimeCommandIngressService,
 } from "../../runtime-execution/runtime-command-ingress-service.js";
 import {
+  getRuntimeAdapterRegistry,
+  RuntimeAdapterRegistry,
+} from "../../runtime-execution/runtime-adapter-registry.js";
+import {
   getRuntimeCompositionService,
   RuntimeCompositionService,
 } from "../../runtime-execution/runtime-composition-service.js";
-import { getExternalRuntimeEventSourceRegistry } from "../../runtime-execution/external-runtime-event-source-registry.js";
+import type { RuntimeSessionRecord } from "../../runtime-execution/runtime-adapter-port.js";
 import {
   normalizeRuntimeKind,
   type RuntimeKind,
@@ -89,6 +93,27 @@ const toRunRuntimeReference = (
   metadata: reference?.metadata ?? null,
 });
 
+const mergeUpdatedRuntimeReference = (
+  manifest: RunManifest,
+  runId: string,
+  runtimeKind: RuntimeKind,
+  runtimeReference:
+    | {
+        runtimeKind: RuntimeKind;
+        sessionId?: string | null;
+        threadId?: string | null;
+        metadata?: Record<string, unknown> | null;
+      }
+    | null
+    | undefined,
+): RunManifest =>
+  runtimeReference
+    ? {
+        ...manifest,
+        runtimeReference: toRunRuntimeReference(runId, runtimeKind, runtimeReference),
+      }
+    : manifest;
+
 type AgentLike = {
   postUserMessage: (message: AgentInputUserMessage) => Promise<void>;
 };
@@ -102,11 +127,12 @@ export class RunContinuationService {
   private manifestStore: RunManifestStore;
   private indexStore: RunHistoryIndexStore;
   private runHistoryService = getRunHistoryService();
-  private externalRuntimeEventSourceRegistry = getExternalRuntimeEventSourceRegistry();
+  private runtimeAdapterRegistry: RuntimeAdapterRegistry;
 
   constructor(memoryDir: string) {
     this.runtimeCompositionService = getRuntimeCompositionService();
     this.runtimeCommandIngressService = getRuntimeCommandIngressService();
+    this.runtimeAdapterRegistry = getRuntimeAdapterRegistry();
     this.activeRunOverridePolicy = getActiveRunOverridePolicy();
     this.agentRunManager = AgentRunManager.getInstance();
     this.manifestStore = new RunManifestStore(memoryDir);
@@ -132,11 +158,7 @@ export class RunContinuationService {
     const ignoredConfigFields: string[] = [];
     const activeSession = this.runtimeCompositionService.getRunSession(runId);
     const normalizedSession =
-      activeSession &&
-      activeSession.runtimeKind !== "autobyteus" &&
-      !this.externalRuntimeEventSourceRegistry.hasActiveRunSession(activeSession.runtimeKind, runId)
-        ? null
-        : activeSession;
+      activeSession && this.isRuntimeSessionActive(activeSession) ? activeSession : null;
     if (!normalizedSession && activeSession) {
       this.runtimeCompositionService.removeRunSession(runId);
     }
@@ -152,17 +174,20 @@ export class RunContinuationService {
       if (!sendResult.accepted) {
         throw buildCommandFailureError(sendResult.code, sendResult.message);
       }
-      if (normalizedSession && sendResult.runtimeReference) {
-        this.runtimeCommandIngressService.bindRunSession({
-          ...normalizedSession,
-          runtimeReference: sendResult.runtimeReference,
-        });
+      if (sendResult.runtimeReference) {
+        const manifest = await this.manifestStore.readManifest(runId);
+        if (manifest) {
+          const refreshedManifest = mergeUpdatedRuntimeReference(
+            manifest,
+            runId,
+            manifest.runtimeKind,
+            sendResult.runtimeReference,
+          );
+          if (refreshedManifest !== manifest) {
+            await this.manifestStore.writeManifest(runId, refreshedManifest);
+          }
+        }
       }
-      await this.persistRuntimeReferenceForRun(
-        runId,
-        normalizedSession?.runtimeKind,
-        sendResult.runtimeReference,
-      );
       await this.indexStore.updateRow(runId, {
         lastKnownStatus: "ACTIVE",
         lastActivityAt: new Date().toISOString(),
@@ -193,7 +218,7 @@ export class RunContinuationService {
     });
     this.runtimeCommandIngressService.bindRunSession(restoredSession);
 
-    let persistedManifest: RunManifest = {
+    const persistedManifest: RunManifest = {
       ...effectiveConfig,
       runtimeKind: restoredSession.runtimeKind,
       runtimeReference: toRunRuntimeReference(
@@ -213,30 +238,37 @@ export class RunContinuationService {
     if (!sendResult.accepted) {
       throw buildCommandFailureError(sendResult.code, sendResult.message);
     }
-    if (sendResult.runtimeReference) {
-      persistedManifest = {
-        ...persistedManifest,
-        runtimeReference: toRunRuntimeReference(
-          runId,
-          restoredSession.runtimeKind,
-          sendResult.runtimeReference,
-        ),
-      };
-      await this.manifestStore.writeManifest(runId, persistedManifest);
-      this.runtimeCommandIngressService.bindRunSession({
-        ...restoredSession,
-        runtimeReference: sendResult.runtimeReference,
-      });
+
+    const refreshedManifest = mergeUpdatedRuntimeReference(
+      persistedManifest,
+      runId,
+      persistedManifest.runtimeKind,
+      sendResult.runtimeReference,
+    );
+    if (refreshedManifest !== persistedManifest) {
+      await this.manifestStore.writeManifest(runId, refreshedManifest);
     }
 
     await this.runHistoryService.upsertRunHistoryRow({
       runId,
-      manifest: persistedManifest,
+      manifest: refreshedManifest,
       summary: compactSummary(input.userInput.content),
       lastKnownStatus: "ACTIVE",
       lastActivityAt: new Date().toISOString(),
     });
     return { runId, ignoredConfigFields };
+  }
+
+  private isRuntimeSessionActive(session: RuntimeSessionRecord): boolean {
+    try {
+      const adapter = this.runtimeAdapterRegistry.resolveAdapter(session.runtimeKind);
+      if (!adapter.isRunActive) {
+        return true;
+      }
+      return adapter.isRunActive(session.runId);
+    } catch {
+      return false;
+    }
   }
 
   private async createAndContinueNewRun(input: ContinueRunInput): Promise<ContinueRunResult> {
@@ -273,7 +305,7 @@ export class RunContinuationService {
     });
 
     const runId = createdSession.runId;
-    let manifest: RunManifest = {
+    const manifest: RunManifest = {
       agentDefinitionId: input.agentDefinitionId.trim(),
       workspaceRootPath: resolvedWorkspaceRootPath,
       llmModelIdentifier: input.llmModelIdentifier.trim(),
@@ -305,19 +337,21 @@ export class RunContinuationService {
     if (!sendResult.accepted) {
       throw buildCommandFailureError(sendResult.code, sendResult.message);
     }
-    if (sendResult.runtimeReference) {
-      manifest = {
-        ...manifest,
-        runtimeReference: toRunRuntimeReference(
-          runId,
-          createdSession.runtimeKind,
-          sendResult.runtimeReference,
-        ),
-      };
-      await this.manifestStore.writeManifest(runId, manifest);
-      this.runtimeCommandIngressService.bindRunSession({
-        ...createdSession,
-        runtimeReference: sendResult.runtimeReference,
+
+    const refreshedManifest = mergeUpdatedRuntimeReference(
+      manifest,
+      runId,
+      manifest.runtimeKind,
+      sendResult.runtimeReference,
+    );
+    if (refreshedManifest !== manifest) {
+      await this.manifestStore.writeManifest(runId, refreshedManifest);
+      await this.runHistoryService.upsertRunHistoryRow({
+        runId,
+        manifest: refreshedManifest,
+        summary: compactSummary(input.userInput.content),
+        lastKnownStatus: "ACTIVE",
+        lastActivityAt: new Date().toISOString(),
       });
     }
 
@@ -388,46 +422,6 @@ export class RunContinuationService {
       }
     }
     return canonicalizeWorkspaceRootPath(appConfigProvider.config.getTempWorkspaceDir());
-  }
-
-  private async persistRuntimeReferenceForRun(
-    runId: string,
-    runtimeKind: RuntimeKind | undefined,
-    runtimeReference:
-      | RunRuntimeReference
-      | {
-          runtimeKind: RuntimeKind;
-          sessionId?: string | null;
-          threadId?: string | null;
-          metadata?: Record<string, unknown> | null;
-        }
-      | null
-      | undefined,
-  ): Promise<void> {
-    if (!runtimeReference) {
-      return;
-    }
-    const manifest = await this.manifestStore.readManifest(runId);
-    if (!manifest) {
-      return;
-    }
-    const effectiveRuntimeKind = runtimeKind ?? manifest.runtimeKind;
-    if (effectiveRuntimeKind !== manifest.runtimeKind) {
-      return;
-    }
-    const nextReference = toRunRuntimeReference(runId, effectiveRuntimeKind, runtimeReference);
-    const unchanged =
-      manifest.runtimeReference.sessionId === nextReference.sessionId &&
-      manifest.runtimeReference.threadId === nextReference.threadId &&
-      JSON.stringify(manifest.runtimeReference.metadata ?? null) ===
-        JSON.stringify(nextReference.metadata ?? null);
-    if (unchanged) {
-      return;
-    }
-    await this.manifestStore.writeManifest(runId, {
-      ...manifest,
-      runtimeReference: nextReference,
-    });
   }
 }
 

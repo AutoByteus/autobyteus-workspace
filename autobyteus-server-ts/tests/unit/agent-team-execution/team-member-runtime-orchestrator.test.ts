@@ -1,18 +1,12 @@
 import { describe, expect, it, vi } from "vitest";
-import type { CodexInterAgentRelayRequest } from "../../../src/runtime-execution/codex-app-server/codex-app-server-runtime-service.js";
-import type { ClaudeInterAgentRelayRequest } from "../../../src/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.js";
+import type { RuntimeInterAgentRelayRequest } from "../../../src/runtime-execution/runtime-adapter-port.js";
 import {
   bindTeamMemberRuntimeRelayHandler,
   TeamMemberRuntimeOrchestrator,
 } from "../../../src/agent-team-execution/services/team-member-runtime-orchestrator.js";
 
 const createSubject = () => {
-  let codexRelayHandler: ((request: CodexInterAgentRelayRequest) => Promise<{
-    accepted: boolean;
-    code?: string;
-    message?: string;
-  }>) | null = null;
-  let claudeRelayHandler: ((request: ClaudeInterAgentRelayRequest) => Promise<{
+  let relayHandler: ((request: RuntimeInterAgentRelayRequest) => Promise<{
     accepted: boolean;
     code?: string;
     message?: string;
@@ -25,25 +19,40 @@ const createSubject = () => {
     sendTurn: vi.fn(),
     approveTool: vi.fn(),
     terminateRun: vi.fn(),
-    relayInterAgentMessage: vi.fn(),
+  } as any;
+  const relayAdapterUnbind = vi.fn();
+  const relayAdapter = {
+    bindInterAgentRelayHandler: vi.fn((handler: typeof relayHandler) => {
+      relayHandler = handler;
+      return relayAdapterUnbind;
+    }),
+  } as any;
+  const claudeAdapter = {
+    getRunRuntimeReference: vi.fn(),
+  } as any;
+  const runtimeAdapterRegistry = {
+    listRuntimeKinds: vi.fn().mockReturnValue(["codex_app_server", "claude_agent_sdk"]),
+    resolveAdapter: vi.fn((runtimeKind: string) =>
+      runtimeKind === "claude_agent_sdk" ? claudeAdapter : relayAdapter,
+    ),
   } as any;
   const teamRuntimeBindingRegistry = {
     getTeamMode: vi.fn(),
     removeTeam: vi.fn(),
     getTeamBindings: vi.fn().mockReturnValue([]),
-    getTeamBindingState: vi.fn().mockReturnValue(null),
+    getTeamBindingState: vi.fn(),
     upsertTeamBindings: vi.fn(),
     resolveByMemberRunId: vi.fn(),
     resolveMemberBinding: vi.fn(),
+  } as any;
+  const teamRuntimeInterAgentMessageRelay = {
+    deliverInterAgentMessage: vi.fn(),
   } as any;
   const workspaceManager = {
     ensureWorkspaceByRootPath: vi.fn(),
     getWorkspaceById: vi.fn(),
     getOrCreateWorkspace: vi.fn(),
     getOrCreateTempWorkspace: vi.fn(),
-  } as any;
-  const claudeRuntimeReferenceService = {
-    getRunRuntimeReference: vi.fn(),
   } as any;
   const agentDefinitionService = {
     getAgentDefinitionById: vi.fn().mockResolvedValue({
@@ -54,26 +63,16 @@ const createSubject = () => {
   const orchestrator = new TeamMemberRuntimeOrchestrator({
     runtimeCompositionService,
     runtimeCommandIngressService,
+    runtimeAdapterRegistry,
     teamRuntimeBindingRegistry,
+    teamRuntimeInterAgentMessageRelay,
     workspaceManager,
     agentDefinitionService,
-    claudeRuntimeService: claudeRuntimeReferenceService,
   });
 
-  const codexRuntimeService = {
-    setInterAgentRelayHandler: vi.fn((handler: typeof codexRelayHandler) => {
-      codexRelayHandler = handler;
-    }),
-  } as any;
-  const claudeRelayRuntimeService = {
-    setInterAgentRelayHandler: vi.fn((handler: typeof claudeRelayHandler) => {
-      claudeRelayHandler = handler;
-    }),
-  } as any;
   const unbindRelayHandler = bindTeamMemberRuntimeRelayHandler({
     orchestrator,
-    codexRuntimeService,
-    claudeRuntimeService: claudeRelayRuntimeService,
+    runtimeAdapterRegistry,
   });
 
   return {
@@ -81,31 +80,27 @@ const createSubject = () => {
     mocks: {
       runtimeCompositionService,
       runtimeCommandIngressService,
+      runtimeAdapterRegistry,
+      relayAdapter,
+      claudeAdapter,
+      relayAdapterUnbind,
       teamRuntimeBindingRegistry,
+      teamRuntimeInterAgentMessageRelay,
       workspaceManager,
-      claudeRuntimeReferenceService,
       agentDefinitionService,
-      codexRuntimeService,
-      claudeRuntimeService: claudeRelayRuntimeService,
     },
     unbindRelayHandler,
-    invokeCodexHandler: async (request: CodexInterAgentRelayRequest) => {
-      if (!codexRelayHandler) {
-        throw new Error("Expected codex inter-agent relay handler to be registered.");
+    invokeHandler: async (request: RuntimeInterAgentRelayRequest) => {
+      if (!relayHandler) {
+        throw new Error("Expected inter-agent relay handler to be registered.");
       }
-      return codexRelayHandler(request);
-    },
-    invokeClaudeHandler: async (request: ClaudeInterAgentRelayRequest) => {
-      if (!claudeRelayHandler) {
-        throw new Error("Expected Claude inter-agent relay handler to be registered.");
-      }
-      return claudeRelayHandler(request);
+      return relayHandler(request);
     },
   };
 };
 
 describe("TeamMemberRuntimeOrchestrator", () => {
-  it("derives workspaceRootPath from workspaceId when creating codex member sessions", async () => {
+  it("derives workspaceRootPath from workspaceId when creating member runtime sessions", async () => {
     const { orchestrator, mocks } = createSubject();
     mocks.workspaceManager.getWorkspaceById.mockReturnValue({
       getBasePath: () => "/tmp/team-workspace",
@@ -119,7 +114,7 @@ describe("TeamMemberRuntimeOrchestrator", () => {
       },
     });
 
-    const bindings = await orchestrator.createCodexMemberSessions("team-1", [
+    const bindings = await orchestrator.createMemberRuntimeSessions("team-1", [
       {
         memberName: "Professor",
         memberRouteKey: "professor",
@@ -157,7 +152,7 @@ describe("TeamMemberRuntimeOrchestrator", () => {
     expect(bindings[0]?.workspaceRootPath).toBe("/tmp/team-workspace");
     expect(mocks.teamRuntimeBindingRegistry.upsertTeamBindings).toHaveBeenCalledWith(
       "team-1",
-      "external_member_runtime",
+      "member_runtime",
       expect.arrayContaining([
         expect.objectContaining({
           memberRunId: "member-run-1",
@@ -168,10 +163,10 @@ describe("TeamMemberRuntimeOrchestrator", () => {
     expect(mocks.workspaceManager.getOrCreateWorkspace).not.toHaveBeenCalled();
   });
 
-  it("enables send_message_to capability by default for team member sessions", async () => {
+  it("defaults send_message_to capability to enabled when agent definition has no explicit tool list", async () => {
     const { orchestrator, mocks } = createSubject();
     mocks.agentDefinitionService.getAgentDefinitionById.mockResolvedValue({
-      toolNames: ["run_bash"],
+      toolNames: [],
     });
     mocks.workspaceManager.getWorkspaceById.mockReturnValue({
       getBasePath: () => "/tmp/team-workspace",
@@ -185,7 +180,7 @@ describe("TeamMemberRuntimeOrchestrator", () => {
       },
     });
 
-    await orchestrator.createCodexMemberSessions("team-1", [
+    await orchestrator.createMemberRuntimeSessions("team-1", [
       {
         memberName: "Professor",
         memberRouteKey: "professor",
@@ -206,23 +201,16 @@ describe("TeamMemberRuntimeOrchestrator", () => {
         runtimeReference: expect.objectContaining({
           metadata: expect.objectContaining({
             sendMessageToEnabled: true,
-            teamMemberManifest: [
-              {
-                memberName: "Professor",
-                role: null,
-                description: null,
-              },
-            ],
           }),
         }),
       }),
     );
   });
 
-  it("supports explicit runtime-metadata disable for send_message_to capability", async () => {
+  it("marks send_message_to capability as disabled when explicit tool allowlist excludes the tool", async () => {
     const { orchestrator, mocks } = createSubject();
     mocks.agentDefinitionService.getAgentDefinitionById.mockResolvedValue({
-      toolNames: ["send_message_to"],
+      toolNames: ["run_bash"],
     });
     mocks.workspaceManager.getWorkspaceById.mockReturnValue({
       getBasePath: () => "/tmp/team-workspace",
@@ -236,20 +224,13 @@ describe("TeamMemberRuntimeOrchestrator", () => {
       },
     });
 
-    await orchestrator.createCodexMemberSessions("team-1", [
+    await orchestrator.createMemberRuntimeSessions("team-1", [
       {
         memberName: "Professor",
         memberRouteKey: "professor",
         memberRunId: "member-run-1",
         runtimeKind: "codex_app_server",
-        runtimeReference: {
-          runtimeKind: "codex_app_server",
-          sessionId: "member-run-1",
-          threadId: "thread-1",
-          metadata: {
-            send_message_to_explicitly_disabled: true,
-          },
-        },
+        runtimeReference: null,
         agentDefinitionId: "agent-professor",
         llmModelIdentifier: "gpt-5",
         autoExecuteTools: true,
@@ -271,6 +252,50 @@ describe("TeamMemberRuntimeOrchestrator", () => {
                 description: null,
               },
             ],
+          }),
+        }),
+      }),
+    );
+  });
+
+  it("enables send_message_to capability for namespaced tool names in explicit allowlist", async () => {
+    const { orchestrator, mocks } = createSubject();
+    mocks.agentDefinitionService.getAgentDefinitionById.mockResolvedValue({
+      toolNames: ["mcp__autobyteus_team__send_message_to"],
+    });
+    mocks.workspaceManager.getWorkspaceById.mockReturnValue({
+      getBasePath: () => "/tmp/team-workspace",
+    });
+    mocks.runtimeCompositionService.restoreAgentRun.mockResolvedValue({
+      runtimeReference: {
+        runtimeKind: "claude_agent_sdk",
+        sessionId: "member-run-1",
+        threadId: "thread-1",
+        metadata: null,
+      },
+    });
+
+    await orchestrator.createMemberRuntimeSessions("team-1", [
+      {
+        memberName: "Professor",
+        memberRouteKey: "professor",
+        memberRunId: "member-run-1",
+        runtimeKind: "claude_agent_sdk",
+        runtimeReference: null,
+        agentDefinitionId: "agent-professor",
+        llmModelIdentifier: "claude-sonnet-4-5",
+        autoExecuteTools: true,
+        workspaceId: "workspace-1",
+        workspaceRootPath: null,
+        llmConfig: null,
+      },
+    ]);
+
+    expect(mocks.runtimeCompositionService.restoreAgentRun).toHaveBeenCalledWith(
+      expect.objectContaining({
+        runtimeReference: expect.objectContaining({
+          metadata: expect.objectContaining({
+            sendMessageToEnabled: true,
           }),
         }),
       }),
@@ -300,7 +325,6 @@ describe("TeamMemberRuntimeOrchestrator", () => {
         memberRunId: "sender-run-1",
         memberName: "Sender",
         memberRouteKey: "sender",
-        runtimeKind: "codex_app_server",
       },
     });
     mocks.teamRuntimeBindingRegistry.resolveMemberBinding.mockReturnValue({
@@ -321,7 +345,7 @@ describe("TeamMemberRuntimeOrchestrator", () => {
     expect(result.message).toBe("Recipient member was not found.");
   });
 
-  it("delivers normalized inter-agent envelope through runtime ingress with deterministic defaults", async () => {
+  it("delivers normalized inter-agent envelope with deterministic defaults", async () => {
     const { orchestrator, mocks } = createSubject();
     mocks.teamRuntimeBindingRegistry.resolveByMemberRunId.mockReturnValue({
       teamRunId: "team-1",
@@ -329,7 +353,6 @@ describe("TeamMemberRuntimeOrchestrator", () => {
         memberRunId: "sender-run-1",
         memberName: "Sender Agent",
         memberRouteKey: "sender",
-        runtimeKind: "codex_app_server",
       },
     });
     mocks.teamRuntimeBindingRegistry.resolveMemberBinding.mockReturnValue({
@@ -337,12 +360,11 @@ describe("TeamMemberRuntimeOrchestrator", () => {
         memberRunId: "recipient-run-1",
         memberName: "Recipient Agent",
         memberRouteKey: "recipient",
-        runtimeKind: "codex_app_server",
       },
       code: null,
       message: null,
     });
-    mocks.runtimeCommandIngressService.relayInterAgentMessage.mockResolvedValue({
+    mocks.teamRuntimeInterAgentMessageRelay.deliverInterAgentMessage.mockResolvedValue({
       accepted: true,
     });
 
@@ -356,173 +378,22 @@ describe("TeamMemberRuntimeOrchestrator", () => {
     });
 
     expect(result).toEqual({ accepted: true });
-    expect(mocks.runtimeCommandIngressService.relayInterAgentMessage).toHaveBeenCalledWith({
-      runId: "recipient-run-1",
-      envelope: {
-        senderAgentRunId: "sender-run-1",
-        senderAgentName: "Sender Agent",
-        recipientName: "Recipient Agent",
-        messageType: "agent_message",
-        content: "hello recipient",
-        teamRunId: "team-1",
-        metadata: {
-          senderMemberRouteKey: "sender",
-          recipientMemberRouteKey: "recipient",
-        },
-      },
-    });
-  });
-
-  it("updates recipient runtime reference after successful inter-agent relay", async () => {
-    const { orchestrator, mocks } = createSubject();
-    mocks.teamRuntimeBindingRegistry.resolveByMemberRunId.mockReturnValue({
+    expect(mocks.teamRuntimeInterAgentMessageRelay.deliverInterAgentMessage).toHaveBeenCalledWith({
       teamRunId: "team-1",
-      binding: {
-        memberRunId: "sender-run-1",
-        memberName: "Sender Agent",
-        memberRouteKey: "sender",
-        runtimeKind: "claude_agent_sdk",
-      },
-    });
-    mocks.teamRuntimeBindingRegistry.resolveMemberBinding.mockReturnValue({
-      binding: {
-        memberRunId: "recipient-run-1",
-        memberName: "Recipient Agent",
-        memberRouteKey: "recipient",
-        runtimeKind: "claude_agent_sdk",
-        runtimeReference: {
-          runtimeKind: "claude_agent_sdk",
-          sessionId: "recipient-run-1",
-          threadId: null,
-          metadata: { teamRunId: "team-1" },
-        },
-      },
-      code: null,
-      message: null,
-    });
-    mocks.teamRuntimeBindingRegistry.getTeamBindingState.mockReturnValue({
-      teamRunId: "team-1",
-      mode: "external_member_runtime",
-      memberBindings: [
-        {
-          memberRunId: "sender-run-1",
-          memberName: "Sender Agent",
-          memberRouteKey: "sender",
-          runtimeKind: "claude_agent_sdk",
-          runtimeReference: null,
-        },
-        {
-          memberRunId: "recipient-run-1",
-          memberName: "Recipient Agent",
-          memberRouteKey: "recipient",
-          runtimeKind: "claude_agent_sdk",
-          runtimeReference: {
-            runtimeKind: "claude_agent_sdk",
-            sessionId: "recipient-run-1",
-            threadId: null,
-            metadata: { teamRunId: "team-1" },
-          },
-        },
-      ],
-    });
-    mocks.runtimeCommandIngressService.relayInterAgentMessage.mockResolvedValue({
-      accepted: true,
-      runtimeReference: {
-        runtimeKind: "claude_agent_sdk",
-        sessionId: "claude-session-recipient",
-        threadId: "claude-session-recipient",
-        metadata: { model: "claude-opus-4-1" },
-      },
-    });
-
-    const result = await orchestrator.relayInterAgentMessage({
-      teamRunId: "team-1",
-      senderMemberRunId: "sender-run-1",
+      recipientMemberRunId: "recipient-run-1",
+      senderAgentRunId: "sender-run-1",
+      senderAgentName: "Sender Agent",
       recipientName: "Recipient Agent",
-      content: "hello relay",
-    });
-
-    expect(result).toEqual({ accepted: true });
-    expect(mocks.teamRuntimeBindingRegistry.upsertTeamBindings).toHaveBeenCalledWith(
-      "team-1",
-      "external_member_runtime",
-      expect.arrayContaining([
-        expect.objectContaining({
-          memberRunId: "recipient-run-1",
-          runtimeReference: expect.objectContaining({
-            sessionId: "claude-session-recipient",
-            threadId: "claude-session-recipient",
-            metadata: expect.objectContaining({
-              teamRunId: "team-1",
-              model: "claude-opus-4-1",
-            }),
-          }),
-        }),
-      ]),
-    );
-  });
-
-  it("returns binding snapshot on external termination and removes registry team state", async () => {
-    const { orchestrator, mocks } = createSubject();
-    mocks.teamRuntimeBindingRegistry.getTeamBindings.mockReturnValue([
-      {
-        memberRunId: "recipient-run-1",
-        memberName: "Recipient Agent",
-        memberRouteKey: "recipient",
-        runtimeKind: "claude_agent_sdk",
-        runtimeReference: {
-          runtimeKind: "claude_agent_sdk",
-          sessionId: "recipient-run-1",
-          threadId: null,
-          metadata: { teamRunId: "team-1" },
-        },
+      messageType: "agent_message",
+      content: "hello recipient",
+      metadata: {
+        senderMemberRouteKey: "sender",
+        recipientMemberRouteKey: "recipient",
       },
-    ]);
-    mocks.teamRuntimeBindingRegistry.getTeamBindingState.mockReturnValue({
-      teamRunId: "team-1",
-      mode: "external_member_runtime",
-      memberBindings: [
-        {
-          memberRunId: "recipient-run-1",
-          memberName: "Recipient Agent",
-          memberRouteKey: "recipient",
-          runtimeKind: "claude_agent_sdk",
-          runtimeReference: {
-            runtimeKind: "claude_agent_sdk",
-            sessionId: "recipient-run-1",
-            threadId: null,
-            metadata: { teamRunId: "team-1" },
-          },
-        },
-      ],
     });
-    mocks.claudeRuntimeReferenceService.getRunRuntimeReference.mockReturnValue({
-      sessionId: "claude-session-final",
-      metadata: { model: "claude-opus-4-1" },
-    });
-    mocks.runtimeCommandIngressService.terminateRun.mockResolvedValue({ accepted: true });
-
-    const result = await orchestrator.terminateExternalTeamRunSessionsWithSnapshot("team-1");
-
-    expect(result.terminated).toBe(true);
-    expect(result.memberBindings).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          memberRunId: "recipient-run-1",
-          runtimeReference: expect.objectContaining({
-            sessionId: "claude-session-final",
-            metadata: expect.objectContaining({
-              teamRunId: "team-1",
-              model: "claude-opus-4-1",
-            }),
-          }),
-        }),
-      ]),
-    );
-    expect(mocks.teamRuntimeBindingRegistry.removeTeam).toHaveBeenCalledWith("team-1");
   });
 
-  it("returns deterministic recipient unavailable failure when runtime ingress relay rejects", async () => {
+  it("returns deterministic recipient unavailable failure when delivery rejects", async () => {
     const { orchestrator, mocks } = createSubject();
     mocks.teamRuntimeBindingRegistry.resolveByMemberRunId.mockReturnValue({
       teamRunId: "team-1",
@@ -530,7 +401,6 @@ describe("TeamMemberRuntimeOrchestrator", () => {
         memberRunId: "sender-run-1",
         memberName: "Sender Agent",
         memberRouteKey: "sender",
-        runtimeKind: "codex_app_server",
       },
     });
     mocks.teamRuntimeBindingRegistry.resolveMemberBinding.mockReturnValue({
@@ -538,12 +408,11 @@ describe("TeamMemberRuntimeOrchestrator", () => {
         memberRunId: "recipient-run-1",
         memberName: "Recipient Agent",
         memberRouteKey: "recipient",
-        runtimeKind: "codex_app_server",
       },
       code: null,
       message: null,
     });
-    mocks.runtimeCommandIngressService.relayInterAgentMessage.mockResolvedValue({
+    mocks.teamRuntimeInterAgentMessageRelay.deliverInterAgentMessage.mockResolvedValue({
       accepted: false,
       code: "RECIPIENT_SESSION_UNAVAILABLE",
       message: "Recipient session is unavailable.",
@@ -562,15 +431,299 @@ describe("TeamMemberRuntimeOrchestrator", () => {
     expect(result.message).toBe("Recipient session is unavailable.");
   });
 
-  it("registers codex relay handler and routes send_message_to tool arguments", async () => {
-    const { mocks, invokeCodexHandler, unbindRelayHandler } = createSubject();
+  it("refreshes member runtime reference after successful send", async () => {
+    const { orchestrator, mocks } = createSubject();
+    mocks.teamRuntimeBindingRegistry.resolveMemberBinding.mockReturnValue({
+      binding: {
+        memberRunId: "member-run-1",
+        memberName: "Professor",
+        memberRouteKey: "professor",
+        runtimeKind: "claude_agent_sdk",
+        runtimeReference: {
+          runtimeKind: "claude_agent_sdk",
+          sessionId: "placeholder-session",
+          threadId: null,
+          metadata: {
+            teamRunId: "team-1",
+            memberRouteKey: "professor",
+            sendMessageToEnabled: true,
+          },
+        },
+      },
+      code: null,
+      message: null,
+    });
+    mocks.teamRuntimeBindingRegistry.getTeamBindingState.mockReturnValue({
+      teamRunId: "team-1",
+      mode: "member_runtime",
+      memberBindings: [
+        {
+          memberRunId: "member-run-1",
+          memberName: "Professor",
+          memberRouteKey: "professor",
+          runtimeKind: "claude_agent_sdk",
+          runtimeReference: {
+            runtimeKind: "claude_agent_sdk",
+            sessionId: "placeholder-session",
+            threadId: null,
+            metadata: {
+              teamRunId: "team-1",
+              memberRouteKey: "professor",
+              sendMessageToEnabled: true,
+            },
+          },
+          agentDefinitionId: "agent-professor",
+          llmModelIdentifier: "claude-sonnet-4-5",
+          autoExecuteTools: true,
+          llmConfig: null,
+          workspaceRootPath: "/tmp/team-workspace",
+        },
+      ],
+    });
+    mocks.runtimeCommandIngressService.sendTurn.mockResolvedValue({
+      accepted: true,
+      runtimeKind: "claude_agent_sdk",
+      runtimeReference: {
+        runtimeKind: "claude_agent_sdk",
+        sessionId: "claude-session-1",
+        threadId: "thread-1",
+        metadata: {
+          sdkSessionReady: true,
+        },
+      },
+    });
+
+    await orchestrator.sendToMember("team-1", "Professor", { text: "hello professor" } as any);
+
+    expect(mocks.teamRuntimeBindingRegistry.upsertTeamBindings).toHaveBeenCalledWith(
+      "team-1",
+      "member_runtime",
+      [
+        expect.objectContaining({
+          memberRunId: "member-run-1",
+          runtimeReference: {
+            runtimeKind: "claude_agent_sdk",
+            sessionId: "claude-session-1",
+            threadId: "thread-1",
+            metadata: {
+              teamRunId: "team-1",
+              memberRouteKey: "professor",
+              sendMessageToEnabled: true,
+              sdkSessionReady: true,
+            },
+          },
+        }),
+      ],
+    );
+  });
+
+  it("refreshes member runtime reference after successful approval", async () => {
+    const { orchestrator, mocks } = createSubject();
+    mocks.teamRuntimeBindingRegistry.resolveMemberBinding.mockReturnValue({
+      binding: {
+        memberRunId: "member-run-1",
+        memberName: "Professor",
+        memberRouteKey: "professor",
+        runtimeKind: "codex_app_server",
+        runtimeReference: {
+          runtimeKind: "codex_app_server",
+          sessionId: "member-run-1",
+          threadId: "thread-old",
+          metadata: {
+            teamRunId: "team-1",
+          },
+        },
+      },
+      code: null,
+      message: null,
+    });
+    mocks.teamRuntimeBindingRegistry.getTeamBindingState.mockReturnValue({
+      teamRunId: "team-1",
+      mode: "member_runtime",
+      memberBindings: [
+        {
+          memberRunId: "member-run-1",
+          memberName: "Professor",
+          memberRouteKey: "professor",
+          runtimeKind: "codex_app_server",
+          runtimeReference: {
+            runtimeKind: "codex_app_server",
+            sessionId: "member-run-1",
+            threadId: "thread-old",
+            metadata: {
+              teamRunId: "team-1",
+            },
+          },
+          agentDefinitionId: "agent-professor",
+          llmModelIdentifier: "gpt-5",
+          autoExecuteTools: true,
+          llmConfig: null,
+          workspaceRootPath: "/tmp/team-workspace",
+        },
+      ],
+    });
+    mocks.runtimeCommandIngressService.approveTool.mockResolvedValue({
+      accepted: true,
+      runtimeKind: "codex_app_server",
+      runtimeReference: {
+        runtimeKind: "codex_app_server",
+        sessionId: "member-run-1",
+        threadId: "thread-new",
+        metadata: {
+          approvalObserved: true,
+        },
+      },
+    });
+
+    await orchestrator.approveForMember("team-1", "Professor", "invoke-1", true, "approved");
+
+    expect(mocks.teamRuntimeBindingRegistry.upsertTeamBindings).toHaveBeenCalledWith(
+      "team-1",
+      "member_runtime",
+      [
+        expect.objectContaining({
+          memberRunId: "member-run-1",
+          runtimeReference: {
+            runtimeKind: "codex_app_server",
+            sessionId: "member-run-1",
+            threadId: "thread-new",
+            metadata: {
+              teamRunId: "team-1",
+              approvalObserved: true,
+            },
+          },
+        }),
+      ],
+    );
+  });
+
+  it("refreshes active Claude bindings from the runtime adapter before returning them", () => {
+    const { orchestrator, mocks } = createSubject();
+    mocks.teamRuntimeBindingRegistry.getTeamBindingState.mockReturnValue({
+      teamRunId: "team-1",
+      mode: "member_runtime",
+      memberBindings: [
+        {
+          memberRunId: "member-run-1",
+          memberName: "Professor",
+          memberRouteKey: "professor",
+          runtimeKind: "claude_agent_sdk",
+          runtimeReference: {
+            runtimeKind: "claude_agent_sdk",
+            sessionId: "member-run-1",
+            threadId: "member-run-1",
+            metadata: {
+              teamRunId: "team-1",
+            },
+          },
+          agentDefinitionId: "agent-professor",
+          llmModelIdentifier: "claude-sonnet-4-5",
+          autoExecuteTools: true,
+          llmConfig: null,
+          workspaceRootPath: "/tmp/team-workspace",
+        },
+      ],
+    });
+    mocks.claudeAdapter.getRunRuntimeReference.mockReturnValue({
+      runtimeKind: "claude_agent_sdk",
+      sessionId: "claude-session-1",
+      threadId: "claude-session-1",
+      metadata: {
+        permissionMode: "default",
+      },
+    });
+
+    const bindings = orchestrator.getActiveMemberBindings("team-1");
+
+    expect(mocks.teamRuntimeBindingRegistry.upsertTeamBindings).toHaveBeenCalledWith(
+      "team-1",
+      "member_runtime",
+      [
+        expect.objectContaining({
+          memberRunId: "member-run-1",
+          runtimeReference: {
+            runtimeKind: "claude_agent_sdk",
+            sessionId: "claude-session-1",
+            threadId: "claude-session-1",
+            metadata: {
+              teamRunId: "team-1",
+              permissionMode: "default",
+            },
+          },
+        }),
+      ],
+    );
+    expect(bindings[0]?.runtimeReference?.sessionId).toBe("claude-session-1");
+  });
+
+  it("returns refreshed binding snapshots when terminating member runtime sessions", async () => {
+    const { orchestrator, mocks } = createSubject();
+    mocks.teamRuntimeBindingRegistry.getTeamBindingState.mockReturnValue({
+      teamRunId: "team-1",
+      mode: "member_runtime",
+      memberBindings: [
+        {
+          memberRunId: "member-run-1",
+          memberName: "Professor",
+          memberRouteKey: "professor",
+          runtimeKind: "claude_agent_sdk",
+          runtimeReference: {
+            runtimeKind: "claude_agent_sdk",
+            sessionId: "member-run-1",
+            threadId: "member-run-1",
+            metadata: {
+              teamRunId: "team-1",
+            },
+          },
+          agentDefinitionId: "agent-professor",
+          llmModelIdentifier: "claude-sonnet-4-5",
+          autoExecuteTools: true,
+          llmConfig: null,
+          workspaceRootPath: "/tmp/team-workspace",
+        },
+      ],
+    });
+    mocks.claudeAdapter.getRunRuntimeReference.mockReturnValue({
+      runtimeKind: "claude_agent_sdk",
+      sessionId: "claude-session-final",
+      threadId: "claude-session-final",
+      metadata: {
+        permissionMode: "default",
+      },
+    });
+    mocks.runtimeCommandIngressService.terminateRun.mockResolvedValue({
+      accepted: true,
+    });
+
+    const result = await orchestrator.terminateMemberRuntimeSessionsWithSnapshot("team-1");
+
+    expect(result).toEqual({
+      terminated: true,
+      memberBindings: [
+        expect.objectContaining({
+          memberRunId: "member-run-1",
+          runtimeReference: expect.objectContaining({
+            sessionId: "claude-session-final",
+            threadId: "claude-session-final",
+          }),
+        }),
+      ],
+    });
+    expect(mocks.runtimeCommandIngressService.terminateRun).toHaveBeenCalledWith({
+      runId: "member-run-1",
+      mode: "agent",
+    });
+    expect(mocks.teamRuntimeBindingRegistry.removeTeam).toHaveBeenCalledWith("team-1");
+  });
+
+  it("registers runtime relay handler and routes send_message_to tool arguments", async () => {
+    const { mocks, invokeHandler, unbindRelayHandler } = createSubject();
     mocks.teamRuntimeBindingRegistry.resolveByMemberRunId.mockReturnValue({
       teamRunId: "team-1",
       binding: {
         memberRunId: "sender-run-1",
         memberName: "Sender Agent",
         memberRouteKey: "sender",
-        runtimeKind: "codex_app_server",
       },
     });
     mocks.teamRuntimeBindingRegistry.resolveMemberBinding.mockReturnValue({
@@ -578,16 +731,15 @@ describe("TeamMemberRuntimeOrchestrator", () => {
         memberRunId: "recipient-run-1",
         memberName: "Recipient Agent",
         memberRouteKey: "recipient",
-        runtimeKind: "codex_app_server",
       },
       code: null,
       message: null,
     });
-    mocks.runtimeCommandIngressService.relayInterAgentMessage.mockResolvedValue({
+    mocks.teamRuntimeInterAgentMessageRelay.deliverInterAgentMessage.mockResolvedValue({
       accepted: true,
     });
 
-    const result = await invokeCodexHandler({
+    const result = await invokeHandler({
       senderRunId: "sender-run-1",
       senderTeamRunId: null,
       senderMemberName: "Sender Agent",
@@ -597,61 +749,11 @@ describe("TeamMemberRuntimeOrchestrator", () => {
       },
     });
 
-    expect(mocks.codexRuntimeService.setInterAgentRelayHandler).toHaveBeenCalledTimes(1);
+    expect(mocks.relayAdapter.bindInterAgentRelayHandler).toHaveBeenCalledTimes(1);
     expect(result).toEqual({ accepted: true });
-    expect(mocks.runtimeCommandIngressService.relayInterAgentMessage).toHaveBeenCalledTimes(1);
+    expect(mocks.teamRuntimeInterAgentMessageRelay.deliverInterAgentMessage).toHaveBeenCalledTimes(1);
 
     unbindRelayHandler();
-    expect(mocks.codexRuntimeService.setInterAgentRelayHandler).toHaveBeenLastCalledWith(null);
-    expect(mocks.claudeRuntimeService.setInterAgentRelayHandler).toHaveBeenLastCalledWith(null);
-  });
-
-  it("registers Claude relay handler and routes send_message_to tool arguments", async () => {
-    const { mocks, invokeClaudeHandler } = createSubject();
-    mocks.teamRuntimeBindingRegistry.resolveByMemberRunId.mockReturnValue({
-      teamRunId: "team-1",
-      binding: {
-        memberRunId: "sender-run-1",
-        memberName: "Sender Agent",
-        memberRouteKey: "sender",
-        runtimeKind: "claude_agent_sdk",
-      },
-    });
-    mocks.teamRuntimeBindingRegistry.resolveMemberBinding.mockReturnValue({
-      binding: {
-        memberRunId: "recipient-run-1",
-        memberName: "Recipient Agent",
-        memberRouteKey: "recipient",
-        runtimeKind: "claude_agent_sdk",
-      },
-      code: null,
-      message: null,
-    });
-    mocks.runtimeCommandIngressService.relayInterAgentMessage.mockResolvedValue({
-      accepted: true,
-    });
-
-    const result = await invokeClaudeHandler({
-      senderRunId: "sender-run-1",
-      senderTeamRunId: "team-1",
-      senderMemberName: "Sender Agent",
-      toolArguments: {
-        recipient_name: "Recipient Agent",
-        content: "hello from Claude tool",
-        message_type: "agent_message",
-      },
-    });
-
-    expect(mocks.claudeRuntimeService.setInterAgentRelayHandler).toHaveBeenCalledTimes(1);
-    expect(result).toEqual({ accepted: true });
-    expect(mocks.runtimeCommandIngressService.relayInterAgentMessage).toHaveBeenCalledWith({
-      runId: "recipient-run-1",
-      envelope: expect.objectContaining({
-        senderAgentRunId: "sender-run-1",
-        senderAgentName: "Sender Agent",
-        recipientName: "Recipient Agent",
-        content: "hello from Claude tool",
-      }),
-    });
+    expect(mocks.relayAdapterUnbind).toHaveBeenCalledTimes(1);
   });
 });

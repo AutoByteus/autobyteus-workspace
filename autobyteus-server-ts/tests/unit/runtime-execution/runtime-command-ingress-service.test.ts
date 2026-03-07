@@ -39,7 +39,43 @@ describe("RuntimeCommandIngressService", () => {
     expect(sendTurn).toHaveBeenCalledTimes(0);
   });
 
-  it("creates implicit autobyteus session for active agent runs", async () => {
+  it("evicts stale runtime sessions when adapter reports inactive run", async () => {
+    const codexAdapter: RuntimeAdapter = {
+      runtimeKind: "codex_app_server",
+      isRunActive: vi.fn().mockReturnValue(false),
+      sendTurn: vi.fn(),
+      approveTool: vi.fn(),
+      interruptRun: vi.fn(),
+    };
+    const sessionStore = new RuntimeSessionStore();
+    sessionStore.upsertSession({
+      runId: "stale-run",
+      runtimeKind: "codex_app_server",
+      mode: "agent",
+      runtimeReference: {
+        runtimeKind: "codex_app_server",
+        sessionId: "stale-run",
+        threadId: "thread-1",
+        metadata: null,
+      },
+    });
+
+    const service = new RuntimeCommandIngressService(
+      sessionStore,
+      new RuntimeAdapterRegistry([codexAdapter]),
+    );
+    const result = await service.sendTurn({
+      runId: "stale-run",
+      mode: "agent",
+      message: AgentInputUserMessage.fromDict({ content: "hello" }),
+    });
+
+    expect(result.accepted).toBe(false);
+    expect(result.code).toBe("RUN_SESSION_NOT_FOUND");
+    expect(sessionStore.getSession("stale-run")).toBeNull();
+  });
+
+  it("rejects commands when session binding is missing, even with one configured runtime", async () => {
     const sendTurn = vi.fn().mockResolvedValue({ accepted: true });
     const adapter: RuntimeAdapter = {
       runtimeKind: "autobyteus",
@@ -48,20 +84,10 @@ describe("RuntimeCommandIngressService", () => {
       interruptRun: vi.fn(),
     };
 
-    const agentManager = {
-      getAgentRun: vi.fn().mockReturnValue({ runId: "run-active" }),
-    } as any;
-
-    const teamManager = {
-      getTeamRun: vi.fn().mockReturnValue(null),
-    } as any;
-
     const sessionStore = new RuntimeSessionStore();
     const service = new RuntimeCommandIngressService(
       sessionStore,
       new RuntimeAdapterRegistry([adapter]),
-      agentManager,
-      teamManager,
     );
 
     const result = await service.sendTurn({
@@ -70,9 +96,10 @@ describe("RuntimeCommandIngressService", () => {
       message: AgentInputUserMessage.fromDict({ content: "hello" }),
     });
 
-    expect(result.accepted).toBe(true);
-    expect(sessionStore.getSession("run-active")?.runtimeKind).toBe("autobyteus");
-    expect(sendTurn).toHaveBeenCalledTimes(1);
+    expect(result.accepted).toBe(false);
+    expect(result.code).toBe("RUN_SESSION_NOT_FOUND");
+    expect(sessionStore.getSession("run-active")).toBeNull();
+    expect(sendTurn).not.toHaveBeenCalled();
   });
 
   it("returns rejected result when adapter throws", async () => {
@@ -82,8 +109,20 @@ describe("RuntimeCommandIngressService", () => {
       approveTool: vi.fn(),
       interruptRun: vi.fn(),
     };
+    const sessionStore = new RuntimeSessionStore();
+    sessionStore.upsertSession({
+      runId: "run-2",
+      runtimeKind: "autobyteus",
+      mode: "agent",
+      runtimeReference: {
+        runtimeKind: "autobyteus",
+        sessionId: "run-2",
+        threadId: null,
+        metadata: null,
+      },
+    });
     const service = new RuntimeCommandIngressService(
-      new RuntimeSessionStore(),
+      sessionStore,
       new RuntimeAdapterRegistry([adapter]),
     );
 
@@ -106,8 +145,20 @@ describe("RuntimeCommandIngressService", () => {
       approveTool: vi.fn(),
       interruptRun,
     };
+    const sessionStore = new RuntimeSessionStore();
+    sessionStore.upsertSession({
+      runId: "run-3",
+      runtimeKind: "autobyteus",
+      mode: "agent",
+      runtimeReference: {
+        runtimeKind: "autobyteus",
+        sessionId: "run-3",
+        threadId: null,
+        metadata: null,
+      },
+    });
     const service = new RuntimeCommandIngressService(
-      new RuntimeSessionStore(),
+      sessionStore,
       new RuntimeAdapterRegistry([adapter]),
     );
 
@@ -151,9 +202,6 @@ describe("RuntimeCommandIngressService", () => {
     const service = new RuntimeCommandIngressService(
       sessionStore,
       new RuntimeAdapterRegistry([adapter]),
-      { getAgentRun: vi.fn().mockReturnValue(null) } as any,
-      { getTeamRun: vi.fn().mockReturnValue(null) } as any,
-      { hasActiveRunSession: vi.fn().mockReturnValue(true) } as any,
     );
 
     const result = await service.relayInterAgentMessage({
@@ -230,9 +278,6 @@ describe("RuntimeCommandIngressService", () => {
     const service = new RuntimeCommandIngressService(
       sessionStore,
       new RuntimeAdapterRegistry([codexAdapter]),
-      { getAgentRun: vi.fn().mockReturnValue(null) } as any,
-      { getTeamRun: vi.fn().mockReturnValue(null) } as any,
-      { hasActiveRunSession: vi.fn().mockReturnValue(true) } as any,
       {
         getRuntimeCapability: vi.fn().mockReturnValue({
           runtimeKind: "codex_app_server",
@@ -278,9 +323,6 @@ describe("RuntimeCommandIngressService", () => {
     const service = new RuntimeCommandIngressService(
       sessionStore,
       new RuntimeAdapterRegistry([codexAdapter]),
-      { getAgentRun: vi.fn().mockReturnValue(null) } as any,
-      { getTeamRun: vi.fn().mockReturnValue(null) } as any,
-      { hasActiveRunSession: vi.fn().mockReturnValue(true) } as any,
       {
         getRuntimeCapability: vi.fn().mockReturnValue({
           runtimeKind: "codex_app_server",

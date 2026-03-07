@@ -6,8 +6,6 @@ import {
   getRuntimeCapabilityService,
   type RuntimeCapabilityService,
 } from "../runtime-management/runtime-capability-service.js";
-import { AgentRunManager } from "../agent-execution/services/agent-run-manager.js";
-import { AgentTeamRunManager } from "../agent-team-execution/services/agent-team-run-manager.js";
 import {
   evaluateCommandCapability,
   type RuntimeCommandOperation,
@@ -23,10 +21,6 @@ import type {
   RuntimeSessionRecord,
   RuntimeTerminateRunInput,
 } from "./runtime-adapter-port.js";
-import {
-  getExternalRuntimeEventSourceRegistry,
-  type ExternalRuntimeEventSourceRegistry,
-} from "./external-runtime-event-source-registry.js";
 import { getRuntimeSessionStore, type RuntimeSessionStore } from "./runtime-session-store.js";
 
 export interface RuntimeIngressResult extends RuntimeCommandResult {
@@ -36,25 +30,15 @@ export interface RuntimeIngressResult extends RuntimeCommandResult {
 export class RuntimeCommandIngressService {
   private sessionStore: RuntimeSessionStore;
   private adapterRegistry: RuntimeAdapterRegistry;
-  private agentManager: AgentRunManager;
-  private teamManager: AgentTeamRunManager;
-  private externalRuntimeEventSourceRegistry: ExternalRuntimeEventSourceRegistry;
   private runtimeCapabilityService: RuntimeCapabilityService;
 
   constructor(
     sessionStore: RuntimeSessionStore = getRuntimeSessionStore(),
     adapterRegistry: RuntimeAdapterRegistry = getRuntimeAdapterRegistry(),
-    agentManager: AgentRunManager = AgentRunManager.getInstance(),
-    teamManager: AgentTeamRunManager = AgentTeamRunManager.getInstance(),
-    externalRuntimeEventSourceRegistry: ExternalRuntimeEventSourceRegistry =
-      getExternalRuntimeEventSourceRegistry(),
     runtimeCapabilityService: RuntimeCapabilityService = getRuntimeCapabilityService(),
   ) {
     this.sessionStore = sessionStore;
     this.adapterRegistry = adapterRegistry;
-    this.agentManager = agentManager;
-    this.teamManager = teamManager;
-    this.externalRuntimeEventSourceRegistry = externalRuntimeEventSourceRegistry;
     this.runtimeCapabilityService = runtimeCapabilityService;
   }
 
@@ -116,7 +100,7 @@ export class RuntimeCommandIngressService {
     operation: RuntimeCommandOperation,
     fn: (session: RuntimeSessionRecord) => Promise<RuntimeCommandResult>,
   ): Promise<RuntimeIngressResult> {
-    const session = this.resolveSession(runId, mode);
+    const session = this.resolveSession(runId);
     if (!session) {
       return {
         accepted: false,
@@ -153,54 +137,20 @@ export class RuntimeCommandIngressService {
     }
   }
 
-  private resolveSession(runId: string, mode: RuntimeMode): RuntimeSessionRecord | null {
+  private resolveSession(runId: string): RuntimeSessionRecord | null {
     const existing = this.sessionStore.getSession(runId);
     if (existing) {
-      if (
-        existing.runtimeKind !== "autobyteus" &&
-        !this.externalRuntimeEventSourceRegistry.hasActiveRunSession(existing.runtimeKind, runId)
-      ) {
-        this.sessionStore.removeSession(runId);
-        return null;
+      const adapter = this.adapterRegistry.resolveAdapter(existing.runtimeKind);
+      if (adapter.isRunActive) {
+        const isActive = adapter.isRunActive(runId);
+        if (!isActive) {
+          this.sessionStore.removeSession(runId);
+          return null;
+        }
       }
       return existing;
     }
-
-    const hasActiveRun =
-      mode === "agent"
-        ? this.agentManager.getAgentRun(runId) !== null
-        : this.teamManager.getTeamRun(runId) !== null;
-    if (!hasActiveRun) {
-      const configuredRuntimeKinds = this.adapterRegistry.listRuntimeKinds();
-      const canUseLegacyImplicitSession =
-        configuredRuntimeKinds.length === 1 &&
-        configuredRuntimeKinds[0] === DEFAULT_RUNTIME_KIND;
-      if (!canUseLegacyImplicitSession) {
-        return null;
-      }
-    }
-
-    const implicitRuntimeKind =
-      this.adapterRegistry.listRuntimeKinds().includes(DEFAULT_RUNTIME_KIND)
-        ? DEFAULT_RUNTIME_KIND
-        : this.adapterRegistry.listRuntimeKinds()[0];
-    if (!implicitRuntimeKind) {
-      return null;
-    }
-
-    const implicitSession: RuntimeSessionRecord = {
-      runId,
-      runtimeKind: implicitRuntimeKind,
-      mode,
-      runtimeReference: {
-        runtimeKind: implicitRuntimeKind,
-        sessionId: runId,
-        threadId: null,
-        metadata: null,
-      },
-    };
-    this.sessionStore.upsertSession(implicitSession);
-    return implicitSession;
+    return null;
   }
 }
 

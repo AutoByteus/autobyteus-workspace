@@ -20,6 +20,21 @@ const asObject = (value: unknown): Record<string, unknown> | null =>
 const asString = (value: unknown): string | null =>
   typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
 
+const THREAD_READ_RETRY_DELAY_MS = 250;
+const THREAD_READ_MAX_ATTEMPTS = 4;
+
+const isThreadNotLoadedError = (message: string): boolean =>
+  message.toLowerCase().includes("thread not loaded");
+
+const isThreadNotMaterializedError = (message: string): boolean =>
+  message.toLowerCase().includes("not materialized yet");
+
+const isTransientThreadReadError = (message: string): boolean =>
+  isThreadNotLoadedError(message) || isThreadNotMaterializedError(message);
+
+const delay = async (ms: number): Promise<void> =>
+  new Promise((resolve) => setTimeout(resolve, ms));
+
 export class CodexThreadHistoryReader {
   private readonly processManager: CodexAppServerProcessManager;
 
@@ -41,26 +56,32 @@ export class CodexThreadHistoryReader {
     const client = await this.processManager.getClient(cwd);
 
     try {
-      try {
-        const response = await client.request<unknown>("thread/read", {
-          threadId: normalizedThreadId,
-          includeTurns: true,
-        });
-        return asObject(response);
-      } catch (error) {
-        const message = String(error);
-        const threadNotLoaded = message.toLowerCase().includes("thread not loaded");
-        if (!threadNotLoaded) {
-          throw error;
-        }
+      for (let attempt = 1; attempt <= THREAD_READ_MAX_ATTEMPTS; attempt += 1) {
+        try {
+          const response = await client.request<unknown>("thread/read", {
+            threadId: normalizedThreadId,
+            includeTurns: true,
+          });
+          return asObject(response);
+        } catch (error) {
+          const message = String(error);
+          if (!isTransientThreadReadError(message)) {
+            throw error;
+          }
 
-        await this.resumeThread(client, normalizedThreadId, cwd);
-        const retriedResponse = await client.request<unknown>("thread/read", {
-          threadId: normalizedThreadId,
-          includeTurns: true,
-        });
-        return asObject(retriedResponse);
+          if (isThreadNotLoadedError(message)) {
+            await this.resumeThread(client, normalizedThreadId, cwd);
+          }
+
+          if (attempt >= THREAD_READ_MAX_ATTEMPTS) {
+            throw error;
+          }
+
+          await delay(THREAD_READ_RETRY_DELAY_MS * attempt);
+        }
       }
+
+      return null;
     } catch (error) {
       logger.warn(
         `Failed to read Codex thread '${normalizedThreadId}': ${String(error)}`,

@@ -4,6 +4,8 @@ export const CLAUDE_AGENT_SDK_MODULE_NAME = "@anthropic-ai/claude-agent-sdk";
 export const MODEL_DISCOVERY_PROBE_PROMPT = "Enumerate supported models only.";
 
 const CLAUDE_AGENT_SDK_AUTH_MODE_ENV_KEY = "CLAUDE_AGENT_SDK_AUTH_MODE";
+const CLAUDE_AGENT_SDK_PERMISSION_MODE_ENV_KEY = "CLAUDE_AGENT_SDK_PERMISSION_MODE";
+const DEFAULT_CLAUDE_PERMISSION_MODE = "default";
 const CLAUDE_OAUTH_TOKEN_ENV_KEYS = [
   "CLAUDE_CODE_OAUTH_TOKEN",
   "CLAUDE_CODE_OAUTH_TOKEN_FILE_DESCRIPTOR",
@@ -15,6 +17,7 @@ const CLAUDE_API_KEY_ENV_KEYS = [
 ] as const;
 
 export type ClaudeSdkAuthMode = "auto" | "cli" | "api-key";
+export type ClaudeSdkPermissionMode = "default" | "plan" | "acceptEdits" | "bypassPermissions";
 
 export type ClaudeSdkModuleLike = {
   query?: (...args: unknown[]) => unknown;
@@ -88,6 +91,28 @@ const CLAUDE_EXECUTABLE_ENV_KEYS = [
   "CLAUDE_CODE_PATH",
   "CLAUDE_CLI_PATH",
 ] as const;
+const CLAUDE_PERMISSION_MODE_METADATA_KEYS = [
+  "permissionMode",
+  "permission_mode",
+  "claudePermissionMode",
+  "claude_permission_mode",
+] as const;
+const CLAUDE_PERMISSION_MODE_LLM_CONFIG_KEYS = [
+  "permissionMode",
+  "permission_mode",
+  "claudePermissionMode",
+  "claude_permission_mode",
+] as const;
+const CLAUDE_PERMISSION_MODE_ALIASES = new Map<string, ClaudeSdkPermissionMode>([
+  ["default", "default"],
+  ["plan", "plan"],
+  ["acceptedits", "acceptEdits"],
+  ["accept_edits", "acceptEdits"],
+  ["accept-edits", "acceptEdits"],
+  ["bypasspermissions", "bypassPermissions"],
+  ["bypass_permissions", "bypassPermissions"],
+  ["bypass-permissions", "bypassPermissions"],
+]);
 
 let cachedDiscoveredClaudeExecutablePath: string | null | undefined = undefined;
 const cachedClaudeExecutableProbeByCandidate = new Map<string, boolean>();
@@ -99,6 +124,7 @@ export interface ClaudeRunSessionState {
   model: string;
   workingDirectory: string;
   autoExecuteTools: boolean;
+  permissionMode: ClaudeSdkPermissionMode;
   hasCompletedTurn: boolean;
   runtimeMetadata: Record<string, unknown>;
   teamRunId: string | null;
@@ -136,6 +162,74 @@ export const resolveClaudeSdkAuthMode = (
 
   // Claude Agent SDK runtime should prefer Claude CLI auth by default.
   return "cli";
+};
+
+const normalizeClaudePermissionMode = (value: unknown): ClaudeSdkPermissionMode | null => {
+  const raw = asString(value);
+  if (!raw) {
+    return null;
+  }
+  return CLAUDE_PERMISSION_MODE_ALIASES.get(raw.trim().toLowerCase()) ?? null;
+};
+
+const tryResolveConfiguredPermissionMode = (options: {
+  values: Record<string, unknown> | null | undefined;
+  keys: readonly string[];
+  sourceName: string;
+}): ClaudeSdkPermissionMode | null => {
+  for (const key of options.keys) {
+    const rawValue = options.values?.[key];
+    const normalized = normalizeClaudePermissionMode(rawValue);
+    if (normalized) {
+      return normalized;
+    }
+    const rawString = asString(rawValue);
+    if (rawString) {
+      logger.warn(
+        `Invalid Claude permission mode '${rawString}' from ${options.sourceName} key '${key}'.`,
+      );
+      return null;
+    }
+  }
+  return null;
+};
+
+export const resolveClaudeSdkPermissionMode = (options?: {
+  runtimeMetadata?: Record<string, unknown> | null;
+  llmConfig?: Record<string, unknown> | null;
+  env?: NodeJS.ProcessEnv;
+}): ClaudeSdkPermissionMode => {
+  const fromMetadata = tryResolveConfiguredPermissionMode({
+    values: options?.runtimeMetadata,
+    keys: CLAUDE_PERMISSION_MODE_METADATA_KEYS,
+    sourceName: "runtimeMetadata",
+  });
+  if (fromMetadata) {
+    return fromMetadata;
+  }
+
+  const fromLlmConfig = tryResolveConfiguredPermissionMode({
+    values: options?.llmConfig,
+    keys: CLAUDE_PERMISSION_MODE_LLM_CONFIG_KEYS,
+    sourceName: "llmConfig",
+  });
+  if (fromLlmConfig) {
+    return fromLlmConfig;
+  }
+
+  const env = options?.env ?? process.env;
+  const envRaw = asString(env[CLAUDE_AGENT_SDK_PERMISSION_MODE_ENV_KEY]);
+  const fromEnv = normalizeClaudePermissionMode(envRaw);
+  if (fromEnv) {
+    return fromEnv;
+  }
+  if (envRaw) {
+    logger.warn(
+      `Invalid ${CLAUDE_AGENT_SDK_PERMISSION_MODE_ENV_KEY} '${envRaw}', falling back to '${DEFAULT_CLAUDE_PERMISSION_MODE}'.`,
+    );
+  }
+
+  return DEFAULT_CLAUDE_PERMISSION_MODE;
 };
 
 export const buildClaudeSdkSpawnEnvironment = (

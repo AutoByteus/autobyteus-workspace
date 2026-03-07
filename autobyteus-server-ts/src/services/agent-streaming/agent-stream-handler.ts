@@ -12,12 +12,16 @@ import {
   getRuntimeCommandIngressService,
   type RuntimeCommandIngressService,
 } from "../../runtime-execution/runtime-command-ingress-service.js";
-import { getRuntimeCompositionService } from "../../runtime-execution/runtime-composition-service.js";
 import {
-  getExternalRuntimeEventSourceRegistry,
-  type ExternalRuntimeEventSourceRegistry,
-} from "../../runtime-execution/external-runtime-event-source-registry.js";
-import type { ExternalRuntimeEventSource } from "../../runtime-execution/external-runtime-event-source-port.js";
+  getRuntimeAdapterRegistry,
+  type RuntimeAdapterRegistry,
+} from "../../runtime-execution/runtime-adapter-registry.js";
+import type { RuntimeAdapter } from "../../runtime-execution/runtime-adapter-port.js";
+import {
+  getRuntimeCompositionService,
+  type RuntimeCompositionService,
+} from "../../runtime-execution/runtime-composition-service.js";
+import type { RuntimeKind } from "../../runtime-management/runtime-kind.js";
 import { AgentSessionManager } from "./agent-session-manager.js";
 import {
   RuntimeEventMessageMapper,
@@ -51,13 +55,13 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
-const isCodexRuntimeRawEventDebugEnabled = process.env.CODEX_RUNTIME_RAW_EVENT_DEBUG === "1";
-const codexRuntimeRawEventMaxChars = Number.isFinite(Number(process.env.CODEX_RUNTIME_RAW_EVENT_MAX_CHARS))
-  ? Math.max(512, Number(process.env.CODEX_RUNTIME_RAW_EVENT_MAX_CHARS))
+const isRuntimeRawEventDebugEnabled = process.env.RUNTIME_RAW_EVENT_DEBUG === "1";
+const runtimeRawEventMaxChars = Number.isFinite(Number(process.env.RUNTIME_RAW_EVENT_MAX_CHARS))
+  ? Math.max(512, Number(process.env.RUNTIME_RAW_EVENT_MAX_CHARS))
   : 20_000;
 
 const truncateForDebug = (value: string): string =>
-  value.length <= codexRuntimeRawEventMaxChars ? value : `${value.slice(0, codexRuntimeRawEventMaxChars)}...<truncated>`;
+  value.length <= runtimeRawEventMaxChars ? value : `${value.slice(0, runtimeRawEventMaxChars)}...<truncated>`;
 
 const stringifyForDebug = (value: unknown): string => {
   try {
@@ -71,44 +75,49 @@ export class AgentStreamHandler {
   private sessionManager: AgentSessionManager;
   private agentManager: AgentRunManager;
   private commandIngressService: RuntimeCommandIngressService;
-  private externalRuntimeEventSourceRegistry: ExternalRuntimeEventSourceRegistry;
+  private adapterRegistry: RuntimeAdapterRegistry;
   private eventMessageMapper: RuntimeEventMessageMapper;
   private activeTasks = new Map<string, Promise<void>>();
   private activeStreams = new Map<string, AgentEventStream>();
-  private activeExternalRuntimeUnsubscribers = new Map<string, () => void>();
+  private activeRuntimeUnsubscribers = new Map<string, () => void>();
   private runHistoryService = getRunHistoryService();
-  private runtimeCompositionService = getRuntimeCompositionService();
-  private externalRuntimeEventSequence = 0;
+  private runtimeCompositionService: RuntimeCompositionService;
+  private runtimeEventSequence = 0;
 
   constructor(
     sessionManager: AgentSessionManager = new AgentSessionManager(),
     agentManager: AgentRunManager = AgentRunManager.getInstance(),
     commandIngressService: RuntimeCommandIngressService = getRuntimeCommandIngressService(),
-    externalRuntimeEventSourceRegistry: ExternalRuntimeEventSourceRegistry =
-      getExternalRuntimeEventSourceRegistry(),
+    adapterRegistry: RuntimeAdapterRegistry = getRuntimeAdapterRegistry(),
     eventMessageMapper: RuntimeEventMessageMapper = getRuntimeEventMessageMapper(),
+    runtimeCompositionService: RuntimeCompositionService = getRuntimeCompositionService(),
   ) {
     this.sessionManager = sessionManager;
     this.agentManager = agentManager;
     this.commandIngressService = commandIngressService;
-    this.externalRuntimeEventSourceRegistry = externalRuntimeEventSourceRegistry;
+    this.adapterRegistry = adapterRegistry;
     this.eventMessageMapper = eventMessageMapper;
+    this.runtimeCompositionService = runtimeCompositionService;
   }
 
   async connect(connection: WebSocketConnection, agentRunId: string): Promise<string | null> {
     const agent = this.agentManager.getAgentRun(agentRunId) as AgentLike | null;
     const runtimeSession = this.runtimeCompositionService.getRunSession(agentRunId);
-    const runtimeEventSource =
-      runtimeSession && runtimeSession.runtimeKind !== "autobyteus"
-        ? this.externalRuntimeEventSourceRegistry.tryResolveSource(runtimeSession.runtimeKind)
-        : null;
-    const hasExternalRuntimeSession = runtimeEventSource
-      ? typeof runtimeEventSource.hasRunSession === "function"
-        ? runtimeEventSource.hasRunSession(agentRunId)
-        : true
-      : false;
+    let runtimeAdapter: RuntimeAdapter | null = null;
+    if (runtimeSession) {
+      try {
+        runtimeAdapter = this.adapterRegistry.resolveAdapter(runtimeSession.runtimeKind);
+      } catch (error) {
+        logger.warn(
+          `Runtime adapter resolution failed for '${runtimeSession.runtimeKind}' on run '${agentRunId}': ${String(error)}`,
+        );
+      }
+    }
+    const hasRuntimeEventStream =
+      !!runtimeAdapter?.subscribeToRunEvents &&
+      this.isRuntimeRunActive(runtimeAdapter, agentRunId);
 
-    if (!agent && !hasExternalRuntimeSession) {
+    if (!agent && !hasRuntimeEventStream) {
       const errorMsg = createErrorMessage("AGENT_NOT_FOUND", `Agent run '${agentRunId}' not found`);
       connection.send(errorMsg.toJson());
       connection.close(4004);
@@ -143,14 +152,8 @@ export class AgentStreamHandler {
     if (agent) {
       const task = this.streamLoop(connection, agentRunId, sessionId);
       this.activeTasks.set(sessionId, task);
-    } else if (runtimeSession && runtimeEventSource && hasExternalRuntimeSession) {
-      this.startExternalRuntimeStreamLoop(
-        connection,
-        agentRunId,
-        sessionId,
-        runtimeSession.runtimeKind,
-        runtimeEventSource,
-      );
+    } else if (runtimeAdapter?.subscribeToRunEvents) {
+      this.startRuntimeStreamLoop(connection, agentRunId, sessionId, runtimeAdapter);
     }
 
     logger.info(`Agent WebSocket connected: session=${sessionId}, run=${agentRunId}`);
@@ -187,10 +190,10 @@ export class AgentStreamHandler {
   }
 
   async disconnect(sessionId: string): Promise<void> {
-    const externalRuntimeUnsubscribe = this.activeExternalRuntimeUnsubscribers.get(sessionId);
-    if (externalRuntimeUnsubscribe) {
-      this.activeExternalRuntimeUnsubscribers.delete(sessionId);
-      externalRuntimeUnsubscribe();
+    const runtimeUnsubscribe = this.activeRuntimeUnsubscribers.get(sessionId);
+    if (runtimeUnsubscribe) {
+      this.activeRuntimeUnsubscribers.delete(sessionId);
+      runtimeUnsubscribe();
     }
 
     const stream = this.activeStreams.get(sessionId);
@@ -243,77 +246,90 @@ export class AgentStreamHandler {
     }
   }
 
-  private startExternalRuntimeStreamLoop(
+  private isRuntimeRunActive(adapter: RuntimeAdapter, runId: string): boolean {
+    if (!adapter.isRunActive) {
+      return true;
+    }
+    try {
+      return adapter.isRunActive(runId);
+    } catch {
+      return false;
+    }
+  }
+
+  private startRuntimeStreamLoop(
     connection: WebSocketConnection,
     runId: string,
     sessionId: string,
-    runtimeKind: string,
-    source: ExternalRuntimeEventSource,
+    adapter: RuntimeAdapter,
   ): void {
-    const unsubscribe = source.subscribeToRunEvents(
+    const unsubscribe = adapter.subscribeToRunEvents!(
       runId,
       (event: unknown) => {
-        void this.forwardExternalRuntimeEvent(connection, runId, runtimeKind, event);
+        void this.forwardRuntimeEvent(connection, runId, adapter.runtimeKind, event);
       },
     );
-    this.activeExternalRuntimeUnsubscribers.set(sessionId, unsubscribe);
+    this.activeRuntimeUnsubscribers.set(sessionId, unsubscribe);
   }
 
-  private async forwardExternalRuntimeEvent(
+  private async forwardRuntimeEvent(
     connection: WebSocketConnection,
     runId: string,
-    runtimeKind: string,
+    runtimeKind: RuntimeKind,
     event: unknown,
   ): Promise<void> {
     try {
-      if (isCodexRuntimeRawEventDebugEnabled) {
-        this.externalRuntimeEventSequence += 1;
-        const eventPayload =
+      if (isRuntimeRawEventDebugEnabled) {
+        this.runtimeEventSequence += 1;
+        const runtimePayload =
           event && typeof event === "object" && !Array.isArray(event)
             ? (event as Record<string, unknown>)
             : {};
-        const eventParams =
-          eventPayload.params && typeof eventPayload.params === "object"
-            ? (eventPayload.params as Record<string, unknown>)
+        const params =
+          runtimePayload.params &&
+          typeof runtimePayload.params === "object" &&
+          !Array.isArray(runtimePayload.params)
+            ? (runtimePayload.params as Record<string, unknown>)
             : {};
-        const eventId =
-          (typeof eventParams.id === "string" && eventParams.id) ||
-          (typeof eventParams.itemId === "string" && eventParams.itemId) ||
-          (typeof eventParams.item_id === "string" && eventParams.item_id) ||
-          null;
         const turnPayload =
-          eventParams.turn && typeof eventParams.turn === "object"
-            ? (eventParams.turn as Record<string, unknown>)
+          params.turn && typeof params.turn === "object" && !Array.isArray(params.turn)
+            ? (params.turn as Record<string, unknown>)
             : null;
+        const rawMethod = typeof runtimePayload.method === "string" ? runtimePayload.method : null;
+        const normalizedMethod = rawMethod
+          ? this.eventMessageMapper.normalizeRuntimeEventMethodAlias(rawMethod, runtimeKind)
+          : null;
+        const eventId =
+          (typeof params.id === "string" && params.id) ||
+          (typeof params.itemId === "string" && params.itemId) ||
+          (typeof params.item_id === "string" && params.item_id) ||
+          null;
         const turnId =
-          (typeof eventParams.turnId === "string" && eventParams.turnId) ||
-          (typeof eventParams.turn_id === "string" && eventParams.turn_id) ||
+          (typeof params.turnId === "string" && params.turnId) ||
+          (typeof params.turn_id === "string" && params.turn_id) ||
           (typeof turnPayload?.id === "string" && turnPayload.id) ||
           null;
-        const method =
-          typeof eventPayload.method === "string" ? eventPayload.method : "unknown_method";
 
-        console.log("[ExternalRuntimeRawEvent]", {
-          sequence: this.externalRuntimeEventSequence,
+        console.log("[RuntimeRawEvent]", {
+          sequence: this.runtimeEventSequence,
           runId,
           runtimeKind,
-          method,
+          method: rawMethod,
+          normalizedMethod,
           requestId:
-            typeof eventPayload.request_id === "string" || typeof eventPayload.request_id === "number"
-              ? eventPayload.request_id
-              : null,
+            typeof runtimePayload.request_id === "string" ? runtimePayload.request_id : null,
           eventId,
           turnId,
-          payloadKeys: Object.keys(eventParams),
+          payloadKeys: Object.keys(params),
           rawEventJson: truncateForDebug(stringifyForDebug(event)),
         });
       }
 
       await this.runHistoryService.onRuntimeEvent(runId, event);
-      const message = this.eventMessageMapper.map(event);
-      if (isCodexRuntimeRawEventDebugEnabled) {
-        console.log("[ExternalRuntimeMappedMessage]", {
-          sequence: this.externalRuntimeEventSequence,
+      const message = this.eventMessageMapper.mapForRuntime(runtimeKind, event);
+      if (isRuntimeRawEventDebugEnabled) {
+        console.log("[RuntimeMappedMessage]", {
+          sequence: this.runtimeEventSequence,
           runId,
           runtimeKind,
           messageType: message.type,
@@ -331,7 +347,7 @@ export class AgentStreamHandler {
       }
       connection.send(message.toJson());
     } catch (error) {
-      logger.error(`Error forwarding external runtime event: ${String(error)}`);
+      logger.error(`Error forwarding runtime event: ${String(error)}`);
     }
   }
 
@@ -411,7 +427,7 @@ export class AgentStreamHandler {
   }
 
   convertStreamEvent(event: StreamEvent): ServerMessage {
-    return this.eventMessageMapper.map(event);
+    return this.eventMessageMapper.mapForRuntime("autobyteus", event);
   }
 
   static parseMessage(raw: string): ClientMessage {
@@ -438,7 +454,7 @@ export const getAgentStreamHandler = (): AgentStreamHandler => {
       new AgentSessionManager(),
       AgentRunManager.getInstance(),
       getRuntimeCommandIngressService(),
-      getExternalRuntimeEventSourceRegistry(),
+      getRuntimeAdapterRegistry(),
       getRuntimeEventMessageMapper(),
     );
   }

@@ -100,6 +100,12 @@ const baseConfig = {
     ...(isTest ? ['@nuxt/test-utils/module'] : [])
   ],
 
+  // Nuxt app-manifest can schedule delayed fetches that outlive Vitest teardown.
+  // Keep it disabled in tests to avoid cross-test unhandled timer noise.
+  experimental: {
+    appManifest: !isTest
+  },
+
   routeRules: {
     '/workspace/**': { middleware: ['workspace'] },
     '/': { middleware: ['workspace'] }

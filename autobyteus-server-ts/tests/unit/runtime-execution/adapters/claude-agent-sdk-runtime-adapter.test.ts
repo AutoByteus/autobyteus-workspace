@@ -108,6 +108,27 @@ describe("ClaudeAgentSdkRuntimeAdapter", () => {
     expect(result.message).toContain("sdk crashed");
   });
 
+  it("normalizes Claude runtime events into status and runtime-reference hints", () => {
+    const runtimeService = buildRuntimeService();
+    const adapter = new ClaudeAgentSdkRuntimeAdapter(runtimeService);
+
+    const interpretation = adapter.interpretRuntimeEvent({
+      method: "turn/completed",
+      params: {
+        sessionId: "claude-session-2",
+      },
+    });
+
+    expect(interpretation).toEqual({
+      normalizedMethod: "turn/completed",
+      statusHint: "IDLE",
+      runtimeReferenceHint: {
+        sessionId: "claude-session-2",
+        threadId: "claude-session-2",
+      },
+    });
+  });
+
   it("returns refreshed runtime reference after successful sendTurn", async () => {
     const runtimeService = buildRuntimeService();
     const adapter = new ClaudeAgentSdkRuntimeAdapter(runtimeService);

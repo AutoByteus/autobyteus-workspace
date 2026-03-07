@@ -1,10 +1,10 @@
 import {
   getRuntimeCommandIngressService,
   type RuntimeCommandIngressService,
-} from "../runtime-command-ingress-service.js";
-import type { RuntimeCommandResult } from "../runtime-adapter-port.js";
+} from "../../runtime-execution/runtime-command-ingress-service.js";
+import type { RuntimeCommandResult } from "../../runtime-execution/runtime-adapter-port.js";
 
-export interface TeamCodexInterAgentRelayInput {
+export interface TeamRuntimeInterAgentRelayInput {
   teamRunId: string;
   recipientMemberRunId: string;
   senderAgentRunId: string;
@@ -15,7 +15,7 @@ export interface TeamCodexInterAgentRelayInput {
   metadata?: Record<string, unknown> | null;
 }
 
-export class TeamCodexInterAgentMessageRelay {
+export class TeamRuntimeInterAgentMessageRelay {
   private readonly runtimeCommandIngressService: RuntimeCommandIngressService;
 
   constructor(
@@ -25,7 +25,7 @@ export class TeamCodexInterAgentMessageRelay {
   }
 
   async deliverInterAgentMessage(
-    input: TeamCodexInterAgentRelayInput,
+    input: TeamRuntimeInterAgentRelayInput,
   ): Promise<RuntimeCommandResult> {
     const result = await this.runtimeCommandIngressService.relayInterAgentMessage({
       runId: input.recipientMemberRunId,
@@ -47,11 +47,11 @@ export class TeamCodexInterAgentMessageRelay {
   }
 }
 
-let cachedTeamCodexInterAgentMessageRelay: TeamCodexInterAgentMessageRelay | null = null;
+let cachedTeamRuntimeInterAgentMessageRelay: TeamRuntimeInterAgentMessageRelay | null = null;
 
-export const getTeamCodexInterAgentMessageRelay = (): TeamCodexInterAgentMessageRelay => {
-  if (!cachedTeamCodexInterAgentMessageRelay) {
-    cachedTeamCodexInterAgentMessageRelay = new TeamCodexInterAgentMessageRelay();
+export const getTeamRuntimeInterAgentMessageRelay = (): TeamRuntimeInterAgentMessageRelay => {
+  if (!cachedTeamRuntimeInterAgentMessageRelay) {
+    cachedTeamRuntimeInterAgentMessageRelay = new TeamRuntimeInterAgentMessageRelay();
   }
-  return cachedTeamCodexInterAgentMessageRelay;
+  return cachedTeamRuntimeInterAgentMessageRelay;
 };

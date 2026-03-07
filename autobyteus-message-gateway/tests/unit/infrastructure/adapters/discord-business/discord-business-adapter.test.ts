@@ -107,6 +107,7 @@ describe("DiscordBusinessAdapter", () => {
         sendMessage: vi.fn(),
       },
     });
+    const observedAt = new Date().toISOString();
 
     await gatewayClient.emitMessageCreate({
       id: "msg-1",

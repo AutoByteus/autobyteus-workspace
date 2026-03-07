@@ -1,10 +1,10 @@
-import { normalizeCodexRuntimeMethod } from "../../runtime-execution/codex-app-server/codex-runtime-method-normalizer.js";
-import { serializePayload } from "./payload-serialization.js";
+import { normalizeMethodRuntimeMethod } from "../../runtime-execution/method-runtime/runtime-method-normalizer.js";
+import { asObject } from "./method-runtime-event-tool-helper.js";
 import { ServerMessage, ServerMessageType } from "./models.js";
-import { CodexRuntimeEventSegmentHelper } from "./codex-runtime-event-segment-helper.js";
-import { asObject } from "./codex-runtime-event-tool-helper.js";
+import { serializePayload } from "./payload-serialization.js";
+import { MethodRuntimeEventSegmentHelper } from "./method-runtime-event-segment-helper.js";
 
-type CodexRuntimeNotification = {
+type MethodRuntimeNotification = {
   method?: unknown;
   params?: unknown;
   payload?: unknown;
@@ -33,9 +33,23 @@ const normalizeToolNameForUi = (value: string | null): string | null => {
   return value;
 };
 
-export class CodexRuntimeEventAdapter extends CodexRuntimeEventSegmentHelper {
+export class MethodRuntimeEventAdapter extends MethodRuntimeEventSegmentHelper {
+  private readonly suppressedMethods: ReadonlySet<string>;
+  private readonly suppressSendMessageToToolLifecycle: boolean;
+
+  constructor(options?: {
+    suppressedMethods?: Iterable<string>;
+    suppressSendMessageToToolLifecycle?: boolean;
+  }) {
+    super();
+    this.suppressedMethods = new Set(options?.suppressedMethods ?? []);
+    this.suppressSendMessageToToolLifecycle = Boolean(
+      options?.suppressSendMessageToToolLifecycle,
+    );
+  }
+
   map(rawEvent: unknown): ServerMessage {
-    const envelope = asObject(rawEvent) as CodexRuntimeNotification;
+    const envelope = asObject(rawEvent) as MethodRuntimeNotification;
     const rawMethod = typeof envelope.method === "string" ? envelope.method : null;
     const method = rawMethod ? this.normalizeMethodAlias(rawMethod) : "";
     const payload = asObject(envelope.params ?? envelope.payload ?? {});
@@ -79,7 +93,7 @@ export class CodexRuntimeEventAdapter extends CodexRuntimeEventSegmentHelper {
       });
     }
 
-    if (method === "codex/event/web_search_begin" || method === "codex/event/web_search_end") {
+    if (this.suppressedMethods.has(method)) {
       return this.toNoopMessage(method, payload);
     }
 
@@ -193,7 +207,10 @@ export class CodexRuntimeEventAdapter extends CodexRuntimeEventSegmentHelper {
       const invocationId = this.resolveInvocationId(payload);
       const toolName = normalizeToolNameForUi(this.resolveToolName(payload, "run_bash"));
       const commandValue = this.resolveCommandValue(payload);
-      if (isSendMessageToToolName(toolName) || isSendMessageToToolName(commandValue)) {
+      if (
+        this.suppressSendMessageToToolLifecycle &&
+        (isSendMessageToToolName(toolName) || isSendMessageToToolName(commandValue))
+      ) {
         return this.toNoopMessage(method, payload);
       }
       return new ServerMessage(ServerMessageType.TOOL_EXECUTION_STARTED, {
@@ -209,7 +226,10 @@ export class CodexRuntimeEventAdapter extends CodexRuntimeEventSegmentHelper {
       const invocationId = this.resolveInvocationId(payload);
       const toolName = normalizeToolNameForUi(this.resolveToolName(payload, "run_bash"));
       const commandValue = this.resolveCommandValue(payload);
-      if (isSendMessageToToolName(toolName) || isSendMessageToToolName(commandValue)) {
+      if (
+        this.suppressSendMessageToToolLifecycle &&
+        (isSendMessageToToolName(toolName) || isSendMessageToToolName(commandValue))
+      ) {
         return this.toNoopMessage(method, payload);
       }
       return new ServerMessage(ServerMessageType.TOOL_LOG, {
@@ -224,6 +244,13 @@ export class CodexRuntimeEventAdapter extends CodexRuntimeEventSegmentHelper {
     if (method === "item/commandExecution/completed") {
       const invocationId = this.resolveInvocationId(payload);
       const toolName = normalizeToolNameForUi(this.resolveToolName(payload, "run_bash"));
+      const commandValue = this.resolveCommandValue(payload);
+      if (
+        this.suppressSendMessageToToolLifecycle &&
+        (isSendMessageToToolName(toolName) || isSendMessageToToolName(commandValue))
+      ) {
+        return this.toNoopMessage(method, payload);
+      }
       return new ServerMessage(
         this.isExecutionFailure(payload)
           ? ServerMessageType.TOOL_EXECUTION_FAILED
@@ -362,7 +389,7 @@ export class CodexRuntimeEventAdapter extends CodexRuntimeEventSegmentHelper {
   }
 
   normalizeMethodAlias(method: string): string {
-    return normalizeCodexRuntimeMethod(method);
+    return normalizeMethodRuntimeMethod(method);
   }
 
   private mapSegmentDelta(

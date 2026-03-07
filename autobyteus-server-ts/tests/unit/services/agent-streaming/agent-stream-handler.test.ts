@@ -3,6 +3,8 @@ import { StreamEventType, type AgentEventStream, type StreamEvent } from "autoby
 import { AgentStreamHandler } from "../../../../src/services/agent-streaming/agent-stream-handler.js";
 import { AgentSessionManager } from "../../../../src/services/agent-streaming/agent-session-manager.js";
 import { ClientMessageType, ServerMessageType } from "../../../../src/services/agent-streaming/models.js";
+import { RuntimeAdapterRegistry } from "../../../../src/runtime-execution/runtime-adapter-registry.js";
+import { getRuntimeEventMessageMapper } from "../../../../src/services/agent-streaming/runtime-event-message-mapper.js";
 
 const createStream = (events: StreamEvent[]): AgentEventStream => {
   const allEvents = async function* () {
@@ -92,6 +94,58 @@ describe("AgentStreamHandler", () => {
     const payload = JSON.parse(connection.send.mock.calls[0][0]);
     expect(payload.type).toBe(ServerMessageType.ERROR);
     expect(payload.payload.code).toBe("AGENT_NOT_FOUND");
+  });
+
+  it("connects to runtime event stream via adapter when agent instance is missing", async () => {
+    const subscribeToRunEvents = vi.fn().mockReturnValue(() => {});
+    const adapterRegistry = new RuntimeAdapterRegistry([
+      {
+        runtimeKind: "codex_app_server",
+        isRunActive: vi.fn().mockReturnValue(true),
+        subscribeToRunEvents,
+        sendTurn: vi.fn(),
+        approveTool: vi.fn(),
+        interruptRun: vi.fn(),
+      },
+    ] as any);
+    const runtimeCompositionService = {
+      getRunSession: vi.fn().mockReturnValue({
+        runId: "runtime-run-1",
+        runtimeKind: "codex_app_server",
+        mode: "agent",
+        runtimeReference: {
+          runtimeKind: "codex_app_server",
+          sessionId: "runtime-run-1",
+          threadId: "thread-1",
+          metadata: null,
+        },
+      }),
+    };
+
+    const handler = new AgentStreamHandler(
+      new AgentSessionManager(),
+      {
+        getAgentRun: vi.fn().mockReturnValue(null),
+        getAgentEventStream: vi.fn(),
+      } as any,
+      createIngress() as any,
+      adapterRegistry,
+      getRuntimeEventMessageMapper(),
+      runtimeCompositionService as any,
+    );
+    const connection = {
+      send: vi.fn(),
+      close: vi.fn(),
+    };
+
+    const sessionId = await handler.connect(connection, "runtime-run-1");
+
+    expect(sessionId).toBeTruthy();
+    expect(subscribeToRunEvents).toHaveBeenCalledWith(
+      "runtime-run-1",
+      expect.any(Function),
+    );
+    expect(connection.close).not.toHaveBeenCalled();
   });
 
   it("handles SEND_MESSAGE and forwards to runtime ingress", async () => {

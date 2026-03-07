@@ -1,8 +1,4 @@
-import {
-  DEFAULT_AGENT_RUNTIME_KIND,
-  isAgentRuntimeKind,
-  type AgentRuntimeKind,
-} from '~/types/agent/AgentRunConfig';
+import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig';
 import type { TeamRunManifestPayload } from '~/stores/runHistoryTypes';
 
 const asRecord = (value: unknown): Record<string, unknown> => {
@@ -12,8 +8,13 @@ const asRecord = (value: unknown): Record<string, unknown> => {
   return value as Record<string, unknown>;
 };
 
-const normalizeRuntimeKind = (value: unknown): AgentRuntimeKind =>
-  isAgentRuntimeKind(value) ? value : DEFAULT_AGENT_RUNTIME_KIND;
+const normalizeRuntimeKind = (value: unknown) => {
+  if (typeof value !== 'string') {
+    return DEFAULT_AGENT_RUNTIME_KIND;
+  }
+  const normalized = value.trim();
+  return (normalized.length > 0 ? normalized : DEFAULT_AGENT_RUNTIME_KIND) as TeamRunManifestPayload['memberBindings'][number]['runtimeKind'];
+};
 
 export const parseTeamRunManifest = (value: unknown): TeamRunManifestPayload => {
   const payload = asRecord(value);

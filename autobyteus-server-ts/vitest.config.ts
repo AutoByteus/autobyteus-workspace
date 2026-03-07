@@ -4,6 +4,8 @@ import tsconfigPaths from "vite-tsconfig-paths";
 export default defineConfig({
   plugins: [tsconfigPaths({ projects: ["./tsconfig.json"] })],
   test: {
+    pool: "forks",
+    fileParallelism: false,
     environment: "node",
     include: ["tests/**/*.test.ts"],
     exclude: [

@@ -1,6 +1,8 @@
+import fs from "node:fs";
 import {
   asObject,
   asString,
+  type ClaudeSdkPermissionMode,
   type ClaudeSdkModuleLike,
 } from "./claude-runtime-shared.js";
 import { resolveSdkFunction, tryCallWithVariants } from "./claude-runtime-sdk-interop.js";
@@ -66,37 +68,40 @@ const runInV2SessionSpawnCriticalSection = async <T>(
   }
 };
 
-const withScopedProcessCwd = async <T>(
+const canScopeProcessCwd = (workingDirectory: string | null): workingDirectory is string => {
+  const targetWorkingDirectory = workingDirectory?.trim();
+  if (!targetWorkingDirectory) {
+    return false;
+  }
+
+  try {
+    return fs.statSync(targetWorkingDirectory).isDirectory();
+  } catch {
+    return false;
+  }
+};
+
+const withGuardedProcessCwd = async <T>(
   workingDirectory: string | null,
   operation: () => Promise<T>,
 ): Promise<T> => {
-  const targetWorkingDirectory = workingDirectory?.trim();
-  if (!targetWorkingDirectory) {
+  if (!canScopeProcessCwd(workingDirectory)) {
     return operation();
   }
 
   const originalWorkingDirectory = process.cwd();
-  if (originalWorkingDirectory === targetWorkingDirectory) {
+  if (originalWorkingDirectory === workingDirectory) {
     return operation();
   }
 
-  try {
-    process.chdir(targetWorkingDirectory);
-  } catch (error) {
-    throw new Error(
-      `CLAUDE_V2_WORKING_DIRECTORY_INVALID: Unable to switch cwd to '${targetWorkingDirectory}': ${String(
-        error,
-      )}`,
-    );
-  }
-
+  process.chdir(workingDirectory);
   try {
     return await operation();
   } finally {
     try {
       process.chdir(originalWorkingDirectory);
     } catch {
-      // best-effort cwd restoration to avoid masking the original error
+      // best-effort restoration to avoid masking the original failure
     }
   }
 };
@@ -123,6 +128,7 @@ export const createOrResumeClaudeV2Session = async (options: {
   env?: Record<string, string | undefined>;
   resumeSessionId: string | null;
   enableSendMessageToTooling: boolean;
+  permissionMode?: ClaudeSdkPermissionMode;
   autoExecuteTools?: boolean;
   canUseTool?: ClaudeCanUseTool;
 }): Promise<ClaudeV2SessionLike> => {
@@ -135,7 +141,7 @@ export const createOrResumeClaudeV2Session = async (options: {
   const sessionOptions: Record<string, unknown> = {
     model: options.model,
     pathToClaudeCodeExecutable: options.pathToClaudeCodeExecutable,
-    permissionMode: "default",
+    permissionMode: options.permissionMode ?? "default",
     ...(options.workingDirectory ? { cwd: options.workingDirectory } : {}),
     ...(options.env ? { env: options.env } : {}),
     ...(options.enableSendMessageToTooling
@@ -149,7 +155,7 @@ export const createOrResumeClaudeV2Session = async (options: {
   };
 
   const rawSession = await runInV2SessionSpawnCriticalSection(async () =>
-    withScopedProcessCwd(options.workingDirectory, async () =>
+    withGuardedProcessCwd(options.workingDirectory, async () =>
       options.resumeSessionId
         ? tryCallWithVariants(resumeFn, [[options.resumeSessionId, sessionOptions]])
         : tryCallWithVariants(createFn, [[sessionOptions]]),

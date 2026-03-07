@@ -1,18 +1,7 @@
 import type { RuntimeKind } from "../../runtime-management/runtime-kind.js";
 import { DEFAULT_RUNTIME_KIND, normalizeRuntimeKind } from "../../runtime-management/runtime-kind.js";
 import type { RunProjectionProvider } from "./run-projection-provider-port.js";
-import {
-  getLocalMemoryRunProjectionProvider,
-  LocalMemoryRunProjectionProvider,
-} from "./providers/local-memory-run-projection-provider.js";
-import {
-  ClaudeSessionRunProjectionProvider,
-  getClaudeSessionRunProjectionProvider,
-} from "./providers/claude-session-run-projection-provider.js";
-import {
-  CodexThreadRunProjectionProvider,
-  getCodexThreadRunProjectionProvider,
-} from "./providers/codex-thread-run-projection-provider.js";
+import { resolveDefaultRunProjectionProviders } from "./run-projection-provider-registry-defaults.js";
 
 export class RunProjectionProviderRegistry {
   private readonly providersByRuntime = new Map<RuntimeKind, RunProjectionProvider>();
@@ -47,19 +36,11 @@ let cachedRunProjectionProviderRegistry: RunProjectionProviderRegistry | null = 
 
 export const getRunProjectionProviderRegistry = (): RunProjectionProviderRegistry => {
   if (!cachedRunProjectionProviderRegistry) {
-    const localProvider = getLocalMemoryRunProjectionProvider();
-    const codexProvider = getCodexThreadRunProjectionProvider();
-    const claudeProvider = getClaudeSessionRunProjectionProvider();
+    const defaults = resolveDefaultRunProjectionProviders();
     cachedRunProjectionProviderRegistry = new RunProjectionProviderRegistry(
-      localProvider,
-      [localProvider, codexProvider, claudeProvider],
+      defaults.fallbackProvider,
+      defaults.runtimeProviders,
     );
   }
   return cachedRunProjectionProviderRegistry;
-};
-
-export type {
-  LocalMemoryRunProjectionProvider,
-  CodexThreadRunProjectionProvider,
-  ClaudeSessionRunProjectionProvider,
 };

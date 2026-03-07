@@ -129,8 +129,20 @@ describe("Agent websocket integration", () => {
     const agent = new FakeAgent("agent-1");
     const stream = new FakeEventStream();
     const manager = new FakeAgentManager(agent, stream);
+    const sessionStore = new RuntimeSessionStore();
+    sessionStore.upsertSession({
+      runId: agent.agentRunId,
+      runtimeKind: "autobyteus",
+      mode: "agent",
+      runtimeReference: {
+        runtimeKind: "autobyteus",
+        sessionId: agent.agentRunId,
+        threadId: null,
+        metadata: null,
+      },
+    });
     const ingress = new RuntimeCommandIngressService(
-      new RuntimeSessionStore(),
+      sessionStore,
       new RuntimeAdapterRegistry([
         new AutobyteusRuntimeAdapter(
           manager as unknown as any,

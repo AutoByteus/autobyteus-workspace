@@ -1,4 +1,4 @@
-import { mkdirSync } from "node:fs";
+import fs, { mkdirSync } from "node:fs";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   configureClaudeV2DynamicMcpServers,
@@ -60,6 +60,31 @@ describe("claude-runtime-v2-control-interop", () => {
     });
   });
 
+  it("uses provided permission mode for V2 create-session options", async () => {
+    const createSession = vi.fn().mockReturnValue({
+      send: vi.fn().mockResolvedValue(undefined),
+      stream: vi.fn().mockReturnValue((async function* () {})()),
+      close: vi.fn(),
+      query: {},
+    });
+
+    await createOrResumeClaudeV2Session({
+      sdk: {
+        unstable_v2_createSession: createSession,
+        unstable_v2_resumeSession: vi.fn(),
+      },
+      model: "claude-sonnet-4-5",
+      pathToClaudeCodeExecutable: "claude",
+      workingDirectory: TEST_WORKSPACE_DIR,
+      resumeSessionId: null,
+      permissionMode: "bypassPermissions",
+      enableSendMessageToTooling: false,
+    });
+
+    expect(createSession).toHaveBeenCalledTimes(1);
+    expect(createSession.mock.calls[0]?.[0]?.permissionMode).toBe("bypassPermissions");
+  });
+
   it("resumes V2 session when resumeSessionId is provided", async () => {
     const createSession = vi.fn();
     const resumeSession = vi.fn().mockReturnValue({
@@ -91,16 +116,12 @@ describe("claude-runtime-v2-control-interop", () => {
     expect(resumeSession.mock.calls[0]?.[1]?.canUseTool).toBeUndefined();
   });
 
-  it("scopes process cwd during V2 session create and restores it afterward", async () => {
-    const observedCreateCwds: string[] = [];
-    const createSession = vi.fn().mockImplementation(() => {
-      observedCreateCwds.push(process.cwd());
-      return {
-        send: vi.fn().mockResolvedValue(undefined),
-        stream: vi.fn().mockReturnValue((async function* () {})()),
-        close: vi.fn(),
-        query: {},
-      };
+  it("passes configured cwd through session options and scopes process cwd when the directory exists", async () => {
+    const createSession = vi.fn().mockReturnValue({
+      send: vi.fn().mockResolvedValue(undefined),
+      stream: vi.fn().mockReturnValue((async function* () {})()),
+      close: vi.fn(),
+      query: {},
     });
     const resumeSession = vi.fn();
     let currentWorkingDirectory = "/server/worktree";
@@ -108,6 +129,9 @@ describe("claude-runtime-v2-control-interop", () => {
     const chdirSpy = vi.spyOn(process, "chdir").mockImplementation((directory: string | URL) => {
       currentWorkingDirectory = String(directory);
     });
+    const statSpy = vi.spyOn(fs, "statSync").mockReturnValue({
+      isDirectory: () => true,
+    } as fs.Stats);
 
     await createOrResumeClaudeV2Session({
       sdk: {
@@ -121,34 +145,47 @@ describe("claude-runtime-v2-control-interop", () => {
       enableSendMessageToTooling: false,
     });
 
-    expect(observedCreateCwds).toEqual([TEST_WORKSPACE_DIR]);
-    expect(currentWorkingDirectory).toBe("/server/worktree");
+    expect(createSession).toHaveBeenCalledTimes(1);
+    expect(createSession.mock.calls[0]?.[0]).toMatchObject({
+      cwd: TEST_WORKSPACE_DIR,
+    });
+    expect(statSpy).toHaveBeenCalledWith(TEST_WORKSPACE_DIR);
     expect(chdirSpy).toHaveBeenNthCalledWith(1, TEST_WORKSPACE_DIR);
     expect(chdirSpy).toHaveBeenNthCalledWith(2, "/server/worktree");
     expect(cwdSpy).toHaveBeenCalled();
   });
 
-  it("throws deterministic error when configured workspace cwd is invalid", async () => {
-    const createSession = vi.fn();
+  it("forwards missing workspace cwd to the SDK without process-global chdir", async () => {
+    const createSession = vi.fn().mockReturnValue({
+      send: vi.fn().mockResolvedValue(undefined),
+      stream: vi.fn().mockReturnValue((async function* () {})()),
+      close: vi.fn(),
+      query: {},
+    });
     const resumeSession = vi.fn();
-    vi.spyOn(process, "cwd").mockReturnValue("/server/worktree");
-    vi.spyOn(process, "chdir").mockImplementation(() => {
+    const chdirSpy = vi.spyOn(process, "chdir");
+    const statSpy = vi.spyOn(fs, "statSync").mockImplementation(() => {
       throw new Error("ENOENT");
     });
 
-    await expect(
-      createOrResumeClaudeV2Session({
-        sdk: {
-          unstable_v2_createSession: createSession,
-          unstable_v2_resumeSession: resumeSession,
-        },
-        model: "claude-sonnet-4-5",
-        pathToClaudeCodeExecutable: "claude",
-        workingDirectory: "/missing/workspace",
-        resumeSessionId: null,
-        enableSendMessageToTooling: false,
-      }),
-    ).rejects.toThrow("CLAUDE_V2_WORKING_DIRECTORY_INVALID");
+    await createOrResumeClaudeV2Session({
+      sdk: {
+        unstable_v2_createSession: createSession,
+        unstable_v2_resumeSession: resumeSession,
+      },
+      model: "claude-sonnet-4-5",
+      pathToClaudeCodeExecutable: "claude",
+      workingDirectory: "/missing/workspace",
+      resumeSessionId: null,
+      enableSendMessageToTooling: false,
+    });
+
+    expect(createSession).toHaveBeenCalledTimes(1);
+    expect(createSession.mock.calls[0]?.[0]).toMatchObject({
+      cwd: "/missing/workspace",
+    });
+    expect(statSpy).toHaveBeenCalledWith("/missing/workspace");
+    expect(chdirSpy).not.toHaveBeenCalled();
   });
 
   it("throws deterministic error when dynamic MCP control is unavailable", async () => {

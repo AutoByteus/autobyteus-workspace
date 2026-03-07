@@ -75,6 +75,7 @@ describe("TelegramBusinessAdapter", () => {
       webhookEnabled: false,
       botClient,
     });
+    const observedAt = new Date().toISOString();
 
     const received: ExternalMessageEnvelope[] = [];
     adapter.subscribeInbound(async (envelope) => {

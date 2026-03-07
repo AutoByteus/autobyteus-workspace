@@ -8,7 +8,6 @@ import { AgentTeamDefinitionService } from "../../../agent-team-definition/servi
 import {
   TeamRunManifest,
   TeamRunMemberBinding,
-  type TeamMemberRuntimeReference,
 } from "../../../run-history/domain/team-models.js";
 import { getTeamRunContinuationService } from "../../../run-history/services/team-run-continuation-service.js";
 import { getTeamRunHistoryService } from "../../../run-history/services/team-run-history-service.js";
@@ -23,73 +22,36 @@ import {
   isRuntimeKind,
   type RuntimeKind,
 } from "../../../runtime-management/runtime-kind.js";
+import {
+  getRuntimeAdapterRegistry,
+  type RuntimeAdapterRegistry,
+} from "../../../runtime-execution/runtime-adapter-registry.js";
 import { getWorkspaceManager } from "../../../workspaces/workspace-manager.js";
 import { appConfigProvider } from "../../../config/app-config-provider.js";
 import { UserInputConverter } from "../converters/user-input-converter.js";
+import { resolveTeamRuntimeMode } from "./team-runtime-mode-policy.js";
+import type {
+  CreateAgentTeamRunPayload,
+  CreateAgentTeamRunResultPayload,
+  SendMessageToTeamPayload,
+  SendMessageToTeamResultPayload,
+  TeamMemberConfigPayload,
+  TeamRuntimeMemberConfig,
+  TerminateAgentTeamRunResultPayload,
+} from "./team-run-mutation-types.js";
+export type {
+  CreateAgentTeamRunPayload,
+  CreateAgentTeamRunResultPayload,
+  SendMessageToTeamPayload,
+  SendMessageToTeamResultPayload,
+  TeamMemberConfigPayload,
+  TerminateAgentTeamRunResultPayload,
+} from "./team-run-mutation-types.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
   warn: (...args: unknown[]) => console.warn(...args),
   error: (...args: unknown[]) => console.error(...args),
-};
-
-export interface TeamMemberConfigPayload {
-  memberName: string;
-  agentDefinitionId: string;
-  llmModelIdentifier: string;
-  autoExecuteTools: boolean;
-  workspaceId?: string | null;
-  workspaceRootPath?: string | null;
-  llmConfig?: Record<string, unknown> | null;
-  memberRouteKey?: string | null;
-  memberRunId?: string | null;
-  runtimeKind?: string | null;
-}
-
-export interface CreateAgentTeamRunPayload {
-  teamDefinitionId: string;
-  memberConfigs: TeamMemberConfigPayload[];
-}
-
-export interface SendMessageToTeamPayload {
-  userInput: unknown;
-  teamRunId?: string | null;
-  targetNodeName?: string | null;
-  targetMemberName?: string | null;
-  teamDefinitionId?: string | null;
-  memberConfigs?: TeamMemberConfigPayload[] | null;
-}
-
-export interface CreateAgentTeamRunResultPayload {
-  success: boolean;
-  message: string;
-  teamRunId?: string | null;
-}
-
-export interface TerminateAgentTeamRunResultPayload {
-  success: boolean;
-  message: string;
-}
-
-export interface SendMessageToTeamResultPayload {
-  success: boolean;
-  message: string;
-  teamRunId?: string | null;
-}
-
-type TeamRuntimeMemberConfig = {
-  memberName: string;
-  runtimeKind: RuntimeKind;
-  runtimeReference?: TeamMemberRuntimeReference | null;
-  agentDefinitionId: string;
-  llmModelIdentifier: string;
-  autoExecuteTools: boolean;
-  workspaceId?: string | null;
-  memoryDir?: string | null;
-  workspaceRootPath?: string | null;
-  llmConfig?: Record<string, unknown> | null;
-  memberRouteKey: string;
-  memberRunId: string;
 };
 
 export class TeamRunMutationService {
@@ -98,6 +60,7 @@ export class TeamRunMutationService {
   private readonly teamMemberRuntimeOrchestrator = getTeamMemberRuntimeOrchestrator();
   private readonly teamDefinitionService = AgentTeamDefinitionService.getInstance();
   private readonly workspaceManager = getWorkspaceManager();
+  private readonly runtimeAdapterRegistry: RuntimeAdapterRegistry = getRuntimeAdapterRegistry();
   private readonly teamMemberMemoryLayoutStore = new TeamMemberMemoryLayoutStore(
     appConfigProvider.config.getMemoryDir(),
   );
@@ -191,22 +154,6 @@ export class TeamRunMutationService {
       );
     }
     return raw;
-  }
-
-  private resolveTeamRuntimeMode(
-    memberConfigs: TeamRuntimeMemberConfig[],
-  ): "autobyteus_team" | "external_member_runtime" {
-    const runtimeKinds = new Set<RuntimeKind>(memberConfigs.map((config) => config.runtimeKind));
-    if (runtimeKinds.size === 0) {
-      return "autobyteus_team";
-    }
-    if (runtimeKinds.size > 1) {
-      throw new Error(
-        "[MIXED_TEAM_RUNTIME_UNSUPPORTED] Team members must use one runtime kind per team run.",
-      );
-    }
-    const runtimeKind = Array.from(runtimeKinds)[0] ?? DEFAULT_RUNTIME_KIND;
-    return runtimeKind === "autobyteus" ? "autobyteus_team" : "external_member_runtime";
   }
 
   private resolveRuntimeMemberConfigs(
@@ -390,7 +337,7 @@ export class TeamRunMutationService {
   private async ensureTeamCreated(options: {
     teamDefinitionId: string;
     memberConfigs: TeamMemberConfigPayload[];
-  }): Promise<{ teamRunId: string; runtimeMode: "autobyteus_team" | "external_member_runtime" }> {
+  }): Promise<{ teamRunId: string; runtimeMode: "native_team" | "member_runtime" }> {
     const metadata = await this.resolveTeamDefinitionMetadata(options.teamDefinitionId);
     const teamRunId = this.generateTeamRunId(
       metadata.teamDefinitionName || options.teamDefinitionId,
@@ -403,11 +350,11 @@ export class TeamRunMutationService {
       })),
     );
     const resolvedMemberConfigs = this.resolveRuntimeMemberConfigs(teamRunId, memberConfigs);
-    const runtimeMode = this.resolveTeamRuntimeMode(resolvedMemberConfigs);
+    const runtimeMode = resolveTeamRuntimeMode(resolvedMemberConfigs, this.runtimeAdapterRegistry);
     let memberBindingsOverride: TeamRunMemberBinding[] | null = null;
 
-    if (runtimeMode === "external_member_runtime") {
-      memberBindingsOverride = await this.teamMemberRuntimeOrchestrator.createExternalMemberSessions(
+    if (runtimeMode === "member_runtime") {
+      memberBindingsOverride = await this.teamMemberRuntimeOrchestrator.createMemberRuntimeSessions(
         teamRunId,
         resolvedMemberConfigs,
       );
@@ -468,9 +415,9 @@ export class TeamRunMutationService {
       const runtimeMode = this.teamMemberRuntimeOrchestrator.getTeamRuntimeMode(id);
       let success = false;
       let terminatedMemberBindingsOverride: TeamRunMemberBinding[] | null = null;
-      if (runtimeMode === "external_member_runtime") {
+      if (runtimeMode === "member_runtime") {
         const terminationResult =
-          await this.teamMemberRuntimeOrchestrator.terminateExternalTeamRunSessionsWithSnapshot(id);
+          await this.teamMemberRuntimeOrchestrator.terminateMemberRuntimeSessionsWithSnapshot(id);
         success = terminationResult.terminated;
         terminatedMemberBindingsOverride = terminationResult.memberBindings;
       } else {
@@ -501,7 +448,7 @@ export class TeamRunMutationService {
   async sendMessageToTeam(input: SendMessageToTeamPayload): Promise<SendMessageToTeamResultPayload> {
     try {
       let teamRunId = input.teamRunId ?? null;
-      let runtimeMode: "autobyteus_team" | "external_member_runtime" | null = null;
+      let runtimeMode: "native_team" | "member_runtime" | null = null;
 
       if (teamRunId && !input.teamDefinitionId && !input.memberConfigs) {
         await this.teamRunContinuationService.continueTeamRun({
@@ -540,7 +487,7 @@ export class TeamRunMutationService {
       if (!runtimeMode) {
         runtimeMode = this.teamMemberRuntimeOrchestrator.getTeamRuntimeMode(teamRunId);
       }
-      if (runtimeMode === "external_member_runtime") {
+      if (runtimeMode === "member_runtime") {
         await this.teamMemberRuntimeOrchestrator.sendToMember(
           teamRunId,
           targetMemberName,

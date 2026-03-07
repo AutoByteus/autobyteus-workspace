@@ -129,7 +129,7 @@ import type { TeamRunConfig, MemberConfigOverride } from '~/types/agent/TeamRunC
 import type { AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore';
 import {
   DEFAULT_AGENT_RUNTIME_KIND,
-  isAgentRuntimeKind,
+  runtimeKindToLabel,
   type AgentRuntimeKind,
 } from '~/types/agent/AgentRunConfig';
 import WorkspaceSelector from './WorkspaceSelector.vue';
@@ -163,13 +163,17 @@ void runtimeCapabilitiesStore.fetchRuntimeCapabilities().catch((error) => {
   console.error('Failed to fetch runtime capabilities:', error);
 });
 
-const normalizeRuntimeKind = (runtimeKind: unknown): AgentRuntimeKind =>
-  isAgentRuntimeKind(runtimeKind) ? runtimeKind : DEFAULT_AGENT_RUNTIME_KIND;
+const normalizeRuntimeKind = (runtimeKind: unknown): AgentRuntimeKind => {
+  if (typeof runtimeKind !== 'string') {
+    return DEFAULT_AGENT_RUNTIME_KIND;
+  }
+  const normalized = runtimeKind.trim();
+  return (normalized.length > 0 ? normalized : DEFAULT_AGENT_RUNTIME_KIND) as AgentRuntimeKind;
+};
 
 const sanitizeMemberOverridesForRuntime = () => {
   const modelSet = new Set(llmStore.models);
   const overrides = props.config.memberOverrides || {};
-  const normalizedRuntimeKind = normalizeRuntimeKind(props.config.runtimeKind);
 
   for (const [memberName, override] of Object.entries(overrides)) {
     if (!override || typeof override !== 'object') {
@@ -210,32 +214,47 @@ const ensureModelsForRuntime = async (runtimeKind: AgentRuntimeKind, validateSel
 const runtimeOptions = computed<
   Array<{ value: AgentRuntimeKind; label: string; enabled: boolean }>
 >(() => {
-  const autobyteusEnabled = runtimeCapabilitiesStore.isRuntimeEnabled('autobyteus');
-  const codexEnabled = runtimeCapabilitiesStore.isRuntimeEnabled('codex_app_server');
-  const claudeEnabled = runtimeCapabilitiesStore.isRuntimeEnabled('claude_agent_sdk');
+  const selectedRuntimeKind = normalizeRuntimeKind(props.config.runtimeKind);
+  const optionByKind = new Map<AgentRuntimeKind, { value: AgentRuntimeKind; label: string; enabled: boolean }>();
 
-  return [
-    {
-      value: 'autobyteus',
-      label: 'AutoByteus Runtime',
-      enabled: autobyteusEnabled,
-    },
-    {
-      value: 'codex_app_server',
-      label: 'Codex App Server',
-      enabled: codexEnabled,
-    },
-    {
-      value: 'claude_agent_sdk',
-      label: 'Claude Agent SDK',
-      enabled: claudeEnabled,
-    },
-  ].filter((option) => option.enabled || props.config.runtimeKind === option.value);
+  for (const capability of runtimeCapabilitiesStore.capabilities) {
+    optionByKind.set(capability.runtimeKind, {
+      value: capability.runtimeKind,
+      label: runtimeKindToLabel(capability.runtimeKind),
+      enabled: capability.enabled,
+    });
+  }
+
+  if (!optionByKind.has(DEFAULT_AGENT_RUNTIME_KIND)) {
+    optionByKind.set(DEFAULT_AGENT_RUNTIME_KIND, {
+      value: DEFAULT_AGENT_RUNTIME_KIND,
+      label: runtimeKindToLabel(DEFAULT_AGENT_RUNTIME_KIND),
+      enabled: true,
+    });
+  }
+
+  if (!optionByKind.has(selectedRuntimeKind)) {
+    optionByKind.set(selectedRuntimeKind, {
+      value: selectedRuntimeKind,
+      label: runtimeKindToLabel(selectedRuntimeKind),
+      enabled: runtimeCapabilitiesStore.isRuntimeEnabled(selectedRuntimeKind),
+    });
+  }
+
+  return Array.from(optionByKind.values()).filter(
+    (option) => option.enabled || selectedRuntimeKind === option.value,
+  );
 });
 
 const selectedRuntimeUnavailableReason = computed(() => {
   const runtimeKind = normalizeRuntimeKind(props.config.runtimeKind);
-  if (runtimeCapabilitiesStore.isRuntimeEnabled(runtimeKind)) {
+  const capability = runtimeCapabilitiesStore.capabilityByKind(runtimeKind);
+  if (!capability) {
+    return runtimeKind === DEFAULT_AGENT_RUNTIME_KIND
+      ? null
+      : 'Runtime is not available in current capabilities.';
+  }
+  if (capability.enabled) {
     return null;
   }
   return runtimeCapabilitiesStore.runtimeReason(runtimeKind);
@@ -263,7 +282,11 @@ watch(
       return;
     }
     const normalizedRuntime = normalizeRuntimeKind(runtimeKind);
-    if (runtimeCapabilitiesStore.isRuntimeEnabled(normalizedRuntime)) {
+    const capability = runtimeCapabilitiesStore.capabilityByKind(normalizedRuntime);
+    if (!capability) {
+      return;
+    }
+    if (capability.enabled) {
       return;
     }
 

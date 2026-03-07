@@ -181,7 +181,7 @@ export class AgentRunResolver {
       const localSuccess = await this.agentRunManager.terminateAgentRun(id);
       let runtimeSuccess = false;
       const runtimeSession = this.runtimeCompositionService.getRunSession(id);
-      if (runtimeSession && runtimeSession.runtimeKind !== "autobyteus") {
+      if (runtimeSession) {
         const result = await this.runtimeCommandIngressService.terminateRun({
           runId: id,
           mode: "agent",

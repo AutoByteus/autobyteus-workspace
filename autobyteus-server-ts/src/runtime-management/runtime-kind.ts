@@ -1,23 +1,21 @@
-export const RUNTIME_KIND_VALUES = [
-  "autobyteus",
-  "codex_app_server",
-  "claude_agent_sdk",
-] as const;
-
-export type RuntimeKind = (typeof RUNTIME_KIND_VALUES)[number];
+export type RuntimeKind = string;
 
 export const DEFAULT_RUNTIME_KIND: RuntimeKind = "autobyteus";
 
+const normalizeRuntimeKindValue = (value: unknown): string | null => {
+  if (typeof value !== "string") {
+    return null;
+  }
+  const normalized = value.trim();
+  return normalized.length > 0 ? normalized : null;
+};
+
 export const isRuntimeKind = (value: unknown): value is RuntimeKind =>
-  typeof value === "string" &&
-  (RUNTIME_KIND_VALUES as readonly string[]).includes(value);
+  normalizeRuntimeKindValue(value) !== null;
 
 export const normalizeRuntimeKind = (
   value: unknown,
   fallback: RuntimeKind = DEFAULT_RUNTIME_KIND,
 ): RuntimeKind => {
-  if (isRuntimeKind(value)) {
-    return value;
-  }
-  return fallback;
+  return normalizeRuntimeKindValue(value) ?? normalizeRuntimeKindValue(fallback) ?? DEFAULT_RUNTIME_KIND;
 };

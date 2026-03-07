@@ -143,8 +143,20 @@ describe("Agent team websocket integration", () => {
     const team = new FakeTeam("team-1");
     const stream = new FakeTeamStream();
     const manager = new FakeTeamManager(team, stream);
+    const sessionStore = new RuntimeSessionStore();
+    sessionStore.upsertSession({
+      runId: team.teamRunId,
+      runtimeKind: "autobyteus",
+      mode: "team",
+      runtimeReference: {
+        runtimeKind: "autobyteus",
+        sessionId: team.teamRunId,
+        threadId: null,
+        metadata: null,
+      },
+    });
     const ingress = new RuntimeCommandIngressService(
-      new RuntimeSessionStore(),
+      sessionStore,
       new RuntimeAdapterRegistry([
         new AutobyteusRuntimeAdapter(
           { getAgentRun: () => null } as any,
@@ -312,8 +324,20 @@ describe("Agent team websocket integration", () => {
     const team = new FakeTeam("team-approvals");
     const stream = new FakeTeamStream();
     const manager = new FakeTeamManager(team, stream);
+    const sessionStore = new RuntimeSessionStore();
+    sessionStore.upsertSession({
+      runId: team.teamRunId,
+      runtimeKind: "autobyteus",
+      mode: "team",
+      runtimeReference: {
+        runtimeKind: "autobyteus",
+        sessionId: team.teamRunId,
+        threadId: null,
+        metadata: null,
+      },
+    });
     const ingress = new RuntimeCommandIngressService(
-      new RuntimeSessionStore(),
+      sessionStore,
       new RuntimeAdapterRegistry([
         new AutobyteusRuntimeAdapter(
           { getAgentRun: () => null } as any,

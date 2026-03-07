@@ -9,42 +9,38 @@ import {
   getRuntimeCommandIngressService,
   type RuntimeCommandIngressService,
 } from "../../runtime-execution/runtime-command-ingress-service.js";
-import type { TeamRunManifest, TeamRunMemberBinding } from "../../run-history/domain/team-models.js";
 import {
-  getCodexAppServerRuntimeService,
-  type CodexAppServerRuntimeService,
-  type CodexInterAgentRelayRequest,
-  type CodexInterAgentRelayResult,
-} from "../../runtime-execution/codex-app-server/codex-app-server-runtime-service.js";
+  getRuntimeAdapterRegistry,
+  type RuntimeAdapterRegistry,
+} from "../../runtime-execution/runtime-adapter-registry.js";
+import { normalizeRuntimeKind, type RuntimeKind } from "../../runtime-management/runtime-kind.js";
+import type { TeamRunManifest, TeamRunMemberBinding, TeamMemberRuntimeReference } from "../../run-history/domain/team-models.js";
 import {
-  getClaudeAgentSdkRuntimeService,
-  type ClaudeAgentSdkRuntimeService,
-  type ClaudeInterAgentRelayRequest,
-  type ClaudeInterAgentRelayResult,
-} from "../../runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.js";
+  getTeamRuntimeInterAgentMessageRelay,
+  type TeamRuntimeInterAgentMessageRelay,
+} from "./team-runtime-inter-agent-message-relay.js";
+import type {
+  RuntimeAdapter,
+  RuntimeInterAgentRelayRequest,
+  RuntimeInterAgentRelayResult,
+} from "../../runtime-execution/runtime-adapter-port.js";
 import {
   getTeamRuntimeBindingRegistry,
   type TeamRuntimeBindingRegistry,
   type TeamRuntimeMode,
 } from "./team-runtime-binding-registry.js";
+import type {
+  RelayInterAgentMessageInput,
+  TeamRuntimeMemberConfig,
+} from "./team-member-runtime-orchestrator.types.js";
 import {
+  TeamRuntimeRoutingError,
   normalizeOptionalString,
-  TeamRuntimeRoutingError,
 } from "./team-member-runtime-errors.js";
-import type { TeamRuntimeMemberConfig } from "./team-member-runtime-orchestrator.types.js";
-import { TeamMemberRuntimeBindingStateService } from "./team-member-runtime-binding-state-service.js";
+import { TeamMemberRuntimeRelayService } from "./team-member-runtime-relay-service.js";
 import { TeamMemberRuntimeSessionLifecycleService } from "./team-member-runtime-session-lifecycle-service.js";
-import {
-  TeamMemberRuntimeRelayService,
-  type InterAgentRelayRequest,
-  type RelayInterAgentMessageInput,
-} from "./team-member-runtime-relay-service.js";
+export { TeamRuntimeRoutingError } from "./team-member-runtime-errors.js";
 
-export type { TeamRuntimeMemberConfig } from "./team-member-runtime-orchestrator.types.js";
-export {
-  TeamRuntimeRoutingError,
-  type TeamRuntimeRoutingErrorShape,
-} from "./team-member-runtime-errors.js";
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
 };
@@ -52,78 +48,69 @@ const logger = {
 export class TeamMemberRuntimeOrchestrator {
   private readonly runtimeCommandIngressService: RuntimeCommandIngressService;
   private readonly teamRuntimeBindingRegistry: TeamRuntimeBindingRegistry;
-  private readonly bindingStateService: TeamMemberRuntimeBindingStateService;
   private readonly sessionLifecycleService: TeamMemberRuntimeSessionLifecycleService;
   private readonly relayService: TeamMemberRuntimeRelayService;
 
   constructor(options: {
     runtimeCompositionService?: RuntimeCompositionService;
     runtimeCommandIngressService?: RuntimeCommandIngressService;
+    runtimeAdapterRegistry?: RuntimeAdapterRegistry;
     teamRuntimeBindingRegistry?: TeamRuntimeBindingRegistry;
+    teamRuntimeInterAgentMessageRelay?: TeamRuntimeInterAgentMessageRelay;
     workspaceManager?: WorkspaceManager;
     agentDefinitionService?: AgentDefinitionService;
-    claudeRuntimeService?: Pick<ClaudeAgentSdkRuntimeService, "getRunRuntimeReference">;
-    bindingStateService?: TeamMemberRuntimeBindingStateService;
-    sessionLifecycleService?: TeamMemberRuntimeSessionLifecycleService;
-    relayService?: TeamMemberRuntimeRelayService;
   } = {}) {
-    const runtimeCompositionService = options.runtimeCompositionService ?? getRuntimeCompositionService();
     this.runtimeCommandIngressService =
       options.runtimeCommandIngressService ?? getRuntimeCommandIngressService();
+    const runtimeCompositionService =
+      options.runtimeCompositionService ?? getRuntimeCompositionService();
+    const runtimeAdapterRegistry =
+      options.runtimeAdapterRegistry ?? getRuntimeAdapterRegistry();
     this.teamRuntimeBindingRegistry =
       options.teamRuntimeBindingRegistry ?? getTeamRuntimeBindingRegistry();
+    const teamRuntimeInterAgentMessageRelay =
+      options.teamRuntimeInterAgentMessageRelay ?? getTeamRuntimeInterAgentMessageRelay();
     const workspaceManager = options.workspaceManager ?? getWorkspaceManager();
-    const agentDefinitionService = options.agentDefinitionService ?? AgentDefinitionService.getInstance();
-    const claudeRuntimeService = options.claudeRuntimeService ?? getClaudeAgentSdkRuntimeService();
-
-    this.bindingStateService =
-      options.bindingStateService ??
-      new TeamMemberRuntimeBindingStateService({
-        teamRuntimeBindingRegistry: this.teamRuntimeBindingRegistry,
-        claudeRuntimeService,
-      });
-
-    this.sessionLifecycleService =
-      options.sessionLifecycleService ??
-      new TeamMemberRuntimeSessionLifecycleService({
-        runtimeCompositionService,
-        teamRuntimeBindingRegistry: this.teamRuntimeBindingRegistry,
-        workspaceManager,
-        agentDefinitionService,
-      });
-
-    this.relayService =
-      options.relayService ??
-      new TeamMemberRuntimeRelayService({
-        runtimeCommandIngressService: this.runtimeCommandIngressService,
-        teamRuntimeBindingRegistry: this.teamRuntimeBindingRegistry,
-        bindingStateService: this.bindingStateService,
-      });
+    const agentDefinitionService =
+      options.agentDefinitionService ?? AgentDefinitionService.getInstance();
+    this.sessionLifecycleService = new TeamMemberRuntimeSessionLifecycleService(
+      runtimeCompositionService,
+      runtimeAdapterRegistry,
+      this.teamRuntimeBindingRegistry,
+      workspaceManager,
+      agentDefinitionService,
+    );
+    this.relayService = new TeamMemberRuntimeRelayService(
+      this.teamRuntimeBindingRegistry,
+      teamRuntimeInterAgentMessageRelay,
+    );
   }
 
   getTeamRuntimeMode(teamRunId: string): TeamRuntimeMode | null {
-    return this.teamRuntimeBindingRegistry.getTeamMode(teamRunId);
+    return this.sessionLifecycleService.getTeamRuntimeMode(teamRunId);
   }
 
   removeTeam(teamRunId: string): void {
-    this.teamRuntimeBindingRegistry.removeTeam(teamRunId);
+    this.sessionLifecycleService.removeTeam(teamRunId);
   }
 
-  async terminateExternalTeamRunSessions(teamRunId: string): Promise<boolean> {
-    const result = await this.terminateExternalTeamRunSessionsWithSnapshot(teamRunId);
+  async terminateMemberRuntimeSessions(teamRunId: string): Promise<boolean> {
+    const result = await this.terminateMemberRuntimeSessionsWithSnapshot(teamRunId);
     return result.terminated;
   }
 
-  async terminateExternalTeamRunSessionsWithSnapshot(
+  async terminateMemberRuntimeSessionsWithSnapshot(
     teamRunId: string,
   ): Promise<{ terminated: boolean; memberBindings: TeamRunMemberBinding[] }> {
-    const bindings = this.teamRuntimeBindingRegistry.getTeamBindings(teamRunId);
+    const bindings = this.sessionLifecycleService.getActiveMemberBindings(teamRunId);
     if (bindings.length === 0) {
-      return { terminated: false, memberBindings: [] };
+      return {
+        terminated: false,
+        memberBindings: [],
+      };
     }
 
-    const refreshedBindings = this.bindingStateService.refreshTeamBindingsFromRuntimeState(teamRunId);
-    for (const binding of refreshedBindings) {
+    for (const binding of bindings) {
       const result = await this.runtimeCommandIngressService.terminateRun({
         runId: binding.memberRunId,
         mode: "agent",
@@ -135,49 +122,34 @@ export class TeamMemberRuntimeOrchestrator {
       }
     }
 
-    this.teamRuntimeBindingRegistry.removeTeam(teamRunId);
+    this.sessionLifecycleService.removeTeam(teamRunId);
     return {
       terminated: true,
-      memberBindings: refreshedBindings.map((binding) => this.bindingStateService.cloneMemberBinding(binding)),
+      memberBindings: bindings,
     };
   }
 
-  async terminateCodexTeamRunSessions(teamRunId: string): Promise<boolean> {
-    return this.terminateExternalTeamRunSessions(teamRunId);
-  }
-
   hasActiveMemberBinding(teamRunId: string): boolean {
-    return this.teamRuntimeBindingRegistry.getTeamBindings(teamRunId).length > 0;
+    return this.sessionLifecycleService.hasActiveMemberBinding(teamRunId);
   }
 
   getActiveMemberBindings(teamRunId: string): TeamRunMemberBinding[] {
-    return this.bindingStateService.getActiveMemberBindings(teamRunId);
+    return this.sessionLifecycleService.getActiveMemberBindings(teamRunId);
   }
 
   getTeamBindings(teamRunId: string): TeamRunMemberBinding[] {
-    return this.teamRuntimeBindingRegistry.getTeamBindings(teamRunId);
+    return this.sessionLifecycleService.getTeamBindings(teamRunId);
   }
 
-  async createExternalMemberSessions(
+  async createMemberRuntimeSessions(
     teamRunId: string,
     memberConfigs: TeamRuntimeMemberConfig[],
   ): Promise<TeamRunMemberBinding[]> {
-    return this.sessionLifecycleService.createExternalMemberSessions(teamRunId, memberConfigs);
+    return this.sessionLifecycleService.createMemberRuntimeSessions(teamRunId, memberConfigs);
   }
 
-  async restoreExternalTeamRunSessions(manifest: TeamRunManifest): Promise<TeamRunMemberBinding[]> {
-    return this.sessionLifecycleService.restoreExternalTeamRunSessions(manifest);
-  }
-
-  async createCodexMemberSessions(
-    teamRunId: string,
-    memberConfigs: TeamRuntimeMemberConfig[],
-  ): Promise<TeamRunMemberBinding[]> {
-    return this.createExternalMemberSessions(teamRunId, memberConfigs);
-  }
-
-  async restoreCodexTeamRunSessions(manifest: TeamRunManifest): Promise<TeamRunMemberBinding[]> {
-    return this.restoreExternalTeamRunSessions(manifest);
+  async restoreMemberRuntimeSessions(manifest: TeamRunManifest): Promise<TeamRunMemberBinding[]> {
+    return this.sessionLifecycleService.restoreMemberRuntimeSessions(manifest);
   }
 
   async sendToMember(
@@ -189,58 +161,36 @@ export class TeamMemberRuntimeOrchestrator {
     const resolvedTarget =
       normalizeOptionalString(targetMemberName) ??
       normalizeOptionalString(options.fallbackTargetMemberName);
-    const resolveResult = this.teamRuntimeBindingRegistry.resolveMemberBinding(teamRunId, resolvedTarget);
+    const resolveResult = this.teamRuntimeBindingRegistry.resolveMemberBinding(
+      teamRunId,
+      resolvedTarget,
+    );
     if (!resolveResult.binding) {
       throw new TeamRuntimeRoutingError({
         code: resolveResult.code,
         message: resolveResult.message,
       });
     }
-    const targetBinding = resolveResult.binding;
 
     const commandResult = await this.runtimeCommandIngressService.sendTurn({
-      runId: targetBinding.memberRunId,
+      runId: resolveResult.binding.memberRunId,
       mode: "agent",
       message,
     });
     if (!commandResult.accepted) {
       throw new TeamRuntimeRoutingError({
         code: commandResult.code ?? "TEAM_MEMBER_RUNTIME_SEND_FAILED",
-        message: commandResult.message ?? `Failed routing message to member '${targetBinding.memberName}'.`,
+        message:
+          commandResult.message ??
+          `Failed routing message to member '${resolveResult.binding.memberName}'.`,
       });
     }
-
-    this.bindingStateService.applyRuntimeReferenceUpdate({
+    this.sessionLifecycleService.refreshBindingRuntimeReference(
       teamRunId,
-      memberRunId: targetBinding.memberRunId,
-      runtimeKind: targetBinding.runtimeKind,
-      runtimeReference: commandResult.runtimeReference ?? null,
-      existingMetadata: targetBinding.runtimeReference?.metadata ?? null,
-    });
-  }
-
-  updateMemberRuntimeReference(input: {
-    teamRunId: string;
-    memberRunId: string;
-    runtimeReference: {
-      sessionId?: string | null;
-      threadId?: string | null;
-      metadata?: Record<string, unknown> | null;
-    } | null;
-  }): boolean {
-    const bindings = this.teamRuntimeBindingRegistry.getTeamBindings(input.teamRunId);
-    const targetBinding = bindings.find((binding) => binding.memberRunId === input.memberRunId);
-    if (!targetBinding) {
-      return false;
-    }
-
-    return this.bindingStateService.applyRuntimeReferenceUpdate({
-      teamRunId: input.teamRunId,
-      memberRunId: input.memberRunId,
-      runtimeKind: targetBinding.runtimeKind,
-      runtimeReference: input.runtimeReference,
-      existingMetadata: targetBinding.runtimeReference?.metadata ?? null,
-    });
+      resolveResult.binding.memberRunId,
+      normalizeRuntimeKind(commandResult.runtimeKind ?? resolveResult.binding.runtimeKind),
+      (commandResult.runtimeReference as TeamMemberRuntimeReference | null | undefined) ?? null,
+    );
   }
 
   async approveForMember(
@@ -250,7 +200,10 @@ export class TeamMemberRuntimeOrchestrator {
     approved: boolean,
     reason?: string | null,
   ): Promise<void> {
-    const resolveResult = this.teamRuntimeBindingRegistry.resolveMemberBinding(teamRunId, targetMemberName);
+    const resolveResult = this.teamRuntimeBindingRegistry.resolveMemberBinding(
+      teamRunId,
+      targetMemberName,
+    );
     if (!resolveResult.binding) {
       throw new TeamRuntimeRoutingError({
         code: resolveResult.code,
@@ -275,6 +228,12 @@ export class TeamMemberRuntimeOrchestrator {
           `Failed routing tool approval to member '${resolveResult.binding.memberName}'.`,
       });
     }
+    this.sessionLifecycleService.refreshBindingRuntimeReference(
+      teamRunId,
+      resolveResult.binding.memberRunId,
+      normalizeRuntimeKind(commandResult.runtimeKind ?? resolveResult.binding.runtimeKind),
+      (commandResult.runtimeReference as TeamMemberRuntimeReference | null | undefined) ?? null,
+    );
   }
 
   async relayInterAgentMessage(
@@ -283,29 +242,16 @@ export class TeamMemberRuntimeOrchestrator {
     return this.relayService.relayInterAgentMessage(input);
   }
 
-  async handleCodexInterAgentRelayRequest(
-    request: CodexInterAgentRelayRequest,
-  ): Promise<CodexInterAgentRelayResult> {
-    return this.handleInterAgentRelayRequest(request);
-  }
-
-  async handleClaudeInterAgentRelayRequest(
-    request: ClaudeInterAgentRelayRequest,
-  ): Promise<ClaudeInterAgentRelayResult> {
-    return this.handleInterAgentRelayRequest(request);
-  }
-
-  private async handleInterAgentRelayRequest(
-    request: InterAgentRelayRequest,
-  ): Promise<{ accepted: boolean; code?: string; message?: string }> {
-    return this.relayService.handleInterAgentRelayRequest(request);
+  async handleRuntimeInterAgentRelayRequest(
+    request: RuntimeInterAgentRelayRequest,
+  ): Promise<RuntimeInterAgentRelayResult> {
+    return this.relayService.handleRuntimeInterAgentRelayRequest(request);
   }
 }
 
 let cachedTeamMemberRuntimeOrchestrator: TeamMemberRuntimeOrchestrator | null = null;
 let cachedRelayUnbind: (() => void) | null = null;
-const relayBindingTokenByRuntimeService = new WeakMap<CodexAppServerRuntimeService, symbol>();
-const claudeRelayBindingTokenByRuntimeService = new WeakMap<ClaudeAgentSdkRuntimeService, symbol>();
+const relayBindingTokenByAdapter = new WeakMap<RuntimeAdapter, symbol>();
 
 const getOrCreateTeamMemberRuntimeOrchestrator = (): TeamMemberRuntimeOrchestrator => {
   if (!cachedTeamMemberRuntimeOrchestrator) {
@@ -316,37 +262,34 @@ const getOrCreateTeamMemberRuntimeOrchestrator = (): TeamMemberRuntimeOrchestrat
 
 export const bindTeamMemberRuntimeRelayHandler = (options: {
   orchestrator?: TeamMemberRuntimeOrchestrator;
-  codexRuntimeService?: CodexAppServerRuntimeService;
-  claudeRuntimeService?: ClaudeAgentSdkRuntimeService;
+  runtimeAdapterRegistry?: RuntimeAdapterRegistry;
 } = {}): (() => void) => {
   const orchestrator = options.orchestrator ?? getOrCreateTeamMemberRuntimeOrchestrator();
-  const codexRuntimeService = options.codexRuntimeService ?? getCodexAppServerRuntimeService();
-  const claudeRuntimeService = options.claudeRuntimeService ?? getClaudeAgentSdkRuntimeService();
-  const bindingToken = Symbol("team-member-runtime-relay-binding");
-  const claudeBindingToken = Symbol("team-member-runtime-claude-relay-binding");
+  const runtimeAdapterRegistry = options.runtimeAdapterRegistry ?? getRuntimeAdapterRegistry();
+  const unbindHandlers: Array<() => void> = [];
 
-  codexRuntimeService.setInterAgentRelayHandler((request) =>
-    orchestrator.handleCodexInterAgentRelayRequest(request),
-  );
-  relayBindingTokenByRuntimeService.set(codexRuntimeService, bindingToken);
-  claudeRuntimeService.setInterAgentRelayHandler((request) =>
-    orchestrator.handleClaudeInterAgentRelayRequest(request),
-  );
-  claudeRelayBindingTokenByRuntimeService.set(claudeRuntimeService, claudeBindingToken);
+  for (const runtimeKind of runtimeAdapterRegistry.listRuntimeKinds()) {
+    const adapter = runtimeAdapterRegistry.resolveAdapter(runtimeKind);
+    if (!adapter.bindInterAgentRelayHandler) {
+      continue;
+    }
+    const bindingToken = Symbol(`team-member-runtime-relay-binding:${runtimeKind}`);
+    const unbind = adapter.bindInterAgentRelayHandler((request) =>
+      orchestrator.handleRuntimeInterAgentRelayRequest(request),
+    );
+    relayBindingTokenByAdapter.set(adapter, bindingToken);
+    unbindHandlers.push(() => {
+      if (relayBindingTokenByAdapter.get(adapter) !== bindingToken) {
+        return;
+      }
+      relayBindingTokenByAdapter.delete(adapter);
+      unbind();
+    });
+  }
 
   return () => {
-    if (relayBindingTokenByRuntimeService.get(codexRuntimeService) !== bindingToken) {
-      // continue to claude cleanup path
-    } else {
-      relayBindingTokenByRuntimeService.delete(codexRuntimeService);
-      codexRuntimeService.setInterAgentRelayHandler(null);
-    }
-
-    if (
-      claudeRelayBindingTokenByRuntimeService.get(claudeRuntimeService) === claudeBindingToken
-    ) {
-      claudeRelayBindingTokenByRuntimeService.delete(claudeRuntimeService);
-      claudeRuntimeService.setInterAgentRelayHandler(null);
+    for (const unbind of unbindHandlers) {
+      unbind();
     }
   };
 };
