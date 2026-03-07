@@ -9,9 +9,9 @@
     "android:server:start:bg": "bash scripts/android-run-server-termux.sh --background",
     "android:server:stop": "bash scripts/android-run-server-termux.sh --stop",
     "android:server:status": "bash scripts/android-run-server-termux.sh --status",
-    "release:prepare": "bash scripts/desktop-release.sh prepare",
+    "release": "bash scripts/desktop-release.sh release",
     "release:test": "bash scripts/desktop-release.sh test",
-    "release:publish": "bash scripts/desktop-release.sh publish"
+    "release:manual-dispatch": "bash scripts/desktop-release.sh manual-dispatch"
   },
   "packageManager": "pnpm@10.28.2",
   "pnpm": {

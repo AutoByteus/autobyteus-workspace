@@ -40,18 +40,18 @@ The tools and environments where agents live and users interact.
 *   Keep desktop release tag and package version in sync:
     * `autobyteus-web/package.json` version must match release tag version (`vX.Y.Z`).
 *   Prefer the root helper script to avoid drift:
-    * `pnpm release:prepare <x.y.z>`: normal new personal release path. It bumps the version, creates the release commit, creates the tag, and pushes branch + tag.
+    * `pnpm release <x.y.z>`: normal new personal release path. It bumps the version, creates the release commit, creates the tag, and pushes branch + tag.
     * `pnpm release:test --ref personal`: build-only validation path. This does **not** publish a release.
-    * `pnpm release:publish v<x.y.z> --ref personal`: manual publish/update path for an **existing** tag or a recovery/retry case.
+    * `pnpm release:manual-dispatch v<x.y.z> --ref personal`: manual workflow-dispatch path for an **existing** tag or a recovery/retry case.
 *   Canonical new release flow:
     * `1.` merge finished work into `personal`
-    * `2.` run `pnpm release:prepare <x.y.z>`
+    * `2.` run `pnpm release <x.y.z>`
     * `3.` stop there and monitor the single tag-push release workflow started by the pushed `v<x.y.z>` tag
 *   Important:
-    * `release:prepare` already starts the real release workflow by pushing the tag.
-    * Do **not** run `release:publish` immediately after a fresh `release:prepare` for the same version.
-    * Doing both creates two release jobs for the same release: one `push` run from the tag and one `workflow_dispatch` run from the manual publish command.
-*   Use `release:publish` only when:
+    * `release` already starts the real release workflow by pushing the tag.
+    * Do **not** run `release:manual-dispatch` immediately after a fresh `release` for the same version.
+    * Doing both creates two release jobs for the same release: one `push` run from the tag and one `workflow_dispatch` run from the manual dispatch command.
+*   Use `release:manual-dispatch` only when:
     * the tag already exists and you intentionally need a manual re-publish
     * the previous release workflow needs recovery without creating a new version
 *   Do not create release tags manually unless there is an explicit exception.

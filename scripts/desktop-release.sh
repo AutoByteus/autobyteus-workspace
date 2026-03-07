@@ -9,22 +9,23 @@ DEFAULT_BRANCH="personal"
 usage() {
   cat <<'USAGE'
 Usage:
-  scripts/desktop-release.sh prepare <version> [--branch <branch>] [--no-push]
+  scripts/desktop-release.sh release <version> [--branch <branch>] [--no-push]
   scripts/desktop-release.sh test [--ref <git-ref>]
-  scripts/desktop-release.sh publish <tag> [--ref <git-ref>] [--prerelease]
+  scripts/desktop-release.sh manual-dispatch <tag> [--ref <git-ref>] [--prerelease]
 
 Commands:
-  prepare   Bump autobyteus-web/package.json version, commit, and create matching tag.
+  release   Bump autobyteus-web/package.json version, commit, and create matching tag.
             Defaults: --branch personal, push enabled. Pushing the tag starts the real release workflow.
   test      Trigger release-desktop workflow for build-only validation (no GitHub release publish).
-  publish   Trigger release-desktop workflow to publish/update GitHub release for an existing tag.
-            Use this for an existing tag or manual re-publish, not immediately after a fresh prepare.
+  manual-dispatch
+            Trigger release-desktop workflow manually for an existing tag.
+            Use this for an existing tag or manual re-publish, not immediately after a fresh release.
 
 Examples:
-  scripts/desktop-release.sh prepare 1.2.7
-  scripts/desktop-release.sh prepare 1.2.7 --no-push
+  scripts/desktop-release.sh release 1.2.7
+  scripts/desktop-release.sh release 1.2.7 --no-push
   scripts/desktop-release.sh test --ref personal
-  scripts/desktop-release.sh publish v1.2.7 --ref personal
+  scripts/desktop-release.sh manual-dispatch v1.2.7 --ref personal
 USAGE
 }
 
@@ -88,7 +89,7 @@ ensure_tag_absent() {
   fi
 }
 
-prepare_release() {
+run_release() {
   local version="$1"
   shift
   local branch="$DEFAULT_BRANCH"
@@ -108,7 +109,7 @@ prepare_release() {
         shift
         ;;
       *)
-        echo "Error: unknown option for prepare: $1" >&2
+        echo "Error: unknown option for release: $1" >&2
         usage
         exit 1
         ;;
@@ -147,9 +148,9 @@ prepare_release() {
   if [[ "$push_enabled" == "true" ]]; then
     git -C "$REPO_ROOT" push origin "$branch"
     git -C "$REPO_ROOT" push origin "$tag"
-    echo "Release preparation complete and pushed: branch '$branch', tag '$tag'."
+    echo "Release complete and pushed: branch '$branch', tag '$tag'."
   else
-    echo "Release preparation complete locally (not pushed)."
+    echo "Release prepared locally (not pushed)."
     echo "To push later:"
     echo "  git push origin $branch"
     echo "  git push origin $tag"
@@ -180,7 +181,7 @@ test_release_workflow() {
   echo "Triggered build-only release workflow on ref '$ref' (no GitHub release publish)."
 }
 
-publish_release_workflow() {
+manual_dispatch_release_workflow() {
   local tag="$1"
   shift
   local ref="$DEFAULT_BRANCH"
@@ -200,7 +201,7 @@ publish_release_workflow() {
         shift
         ;;
       *)
-        echo "Error: unknown option for publish: $1" >&2
+        echo "Error: unknown option for manual-dispatch: $1" >&2
         usage
         exit 1
         ;;
@@ -218,7 +219,7 @@ publish_release_workflow() {
     -f publish_release=true \
     -f release_tag="$tag" \
     -f prerelease="$prerelease"
-  echo "Triggered publish release workflow for tag '$tag' using ref '$ref'."
+  echo "Triggered manual-dispatch release workflow for tag '$tag' using ref '$ref'."
 }
 
 main() {
@@ -230,31 +231,49 @@ main() {
   local command="$1"
   shift
 
-  # pnpm users often invoke script aliases as `pnpm release:prepare -- 1.2.7`.
+  # pnpm users often invoke script aliases as `pnpm release -- 1.2.7`.
   # Accept and discard that separator so both forms work.
   if [[ "${1:-}" == "--" ]]; then
     shift
   fi
 
   case "$command" in
-    prepare)
+    release)
       if [[ $# -lt 1 ]]; then
-        echo "Error: prepare requires <version>." >&2
+        echo "Error: release requires <version>." >&2
         usage
         exit 1
       fi
-      prepare_release "$@"
+      run_release "$@"
       ;;
     test)
       test_release_workflow "$@"
       ;;
-    publish)
+    manual-dispatch)
       if [[ $# -lt 1 ]]; then
-        echo "Error: publish requires <tag>." >&2
+        echo "Error: manual-dispatch requires <tag>." >&2
         usage
         exit 1
       fi
-      publish_release_workflow "$@"
+      manual_dispatch_release_workflow "$@"
+      ;;
+    prepare)
+      echo "Warning: 'prepare' is deprecated. Use 'release' instead." >&2
+      if [[ $# -lt 1 ]]; then
+        echo "Error: release requires <version>." >&2
+        usage
+        exit 1
+      fi
+      run_release "$@"
+      ;;
+    publish)
+      echo "Warning: 'publish' is deprecated. Use 'manual-dispatch' instead." >&2
+      if [[ $# -lt 1 ]]; then
+        echo "Error: manual-dispatch requires <tag>." >&2
+        usage
+        exit 1
+      fi
+      manual_dispatch_release_workflow "$@"
       ;;
     -h|--help|help)
       usage
