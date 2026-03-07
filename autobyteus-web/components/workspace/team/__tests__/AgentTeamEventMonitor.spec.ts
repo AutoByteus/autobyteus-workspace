@@ -86,6 +86,7 @@ describe('AgentTeamEventMonitor.vue', () => {
 
     state.activeTeamContext = {
       teamRunId: 'team-1',
+      focusedMemberName: 'professor',
       members: new Map<string, any>([
         ['professor', professorContext],
         ['sub-team/student', studentContext],

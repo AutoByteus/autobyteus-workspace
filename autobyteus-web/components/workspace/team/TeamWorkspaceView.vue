@@ -1,8 +1,7 @@
 <template>
   <div class="flex flex-col h-full bg-white">
-    <!-- Header Bar -->
-    <div class="flex items-center justify-between px-4 py-2 border-b border-gray-200 flex-shrink-0">
-      <div class="flex items-center space-x-3 min-w-0">
+    <div class="flex flex-wrap items-center justify-between gap-3 px-4 py-2 border-b border-gray-200 flex-shrink-0">
+      <div class="flex items-center space-x-3 min-w-0 flex-1">
         <div class="h-8 w-8 shrink-0 overflow-hidden rounded-lg bg-slate-100 flex items-center justify-center">
           <img
             v-if="showHeaderAvatarImage"
@@ -20,19 +19,45 @@
         </h4>
         <AgentStatusDisplay v-if="activeTeamContext" :status="headerStatus" />
       </div>
-      <WorkspaceHeaderActions
-        @new-agent="createNewTeamRun"
-        @edit-config="openSelectedTeamConfig"
-      />
+
+      <div class="flex items-center gap-3 flex-wrap justify-end">
+        <TeamWorkspaceModeSwitch
+          v-if="activeTeamContext"
+          :mode="currentMode"
+          @update:mode="setCurrentMode"
+        />
+        <WorkspaceHeaderActions
+          @new-agent="createNewTeamRun"
+          @edit-config="openSelectedTeamConfig"
+        />
+      </div>
     </div>
 
-    <!-- Main Content Area -->
-    <div v-if="activeTeamContext" class="flex-grow min-h-0">
-      <!-- The Event Monitor now takes up the full space -->
-      <AgentTeamEventMonitor />
+    <div v-if="activeTeamContext" class="flex-grow min-h-0 flex flex-col">
+      <div class="flex-grow min-h-0">
+        <AgentTeamEventMonitor v-if="currentMode === 'focus'" />
+        <TeamGridView
+          v-else-if="currentMode === 'grid'"
+          :team-context="activeTeamContext"
+          :focused-member-name="activeTeamContext.focusedMemberName"
+          @select-member="setFocusedMember"
+        />
+        <TeamSpotlightView
+          v-else
+          :team-context="activeTeamContext"
+          :focused-member-name="activeTeamContext.focusedMemberName"
+          @select-member="setFocusedMember"
+        />
+      </div>
+
+      <div v-if="showSharedComposer" class="border-t border-gray-200 bg-white px-4 py-3">
+        <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
+          Replying to: <span class="text-gray-800">{{ headerTitle }}</span>
+        </p>
+        <AgentUserInputForm />
+      </div>
     </div>
-    
-    <!-- Empty state when no runs are active -->
+
     <div v-else class="flex-grow flex items-center justify-center p-8 text-center text-gray-500 bg-gray-50">
       <div>
         <h3 class="text-lg font-medium text-gray-900">No Active Team Runs</h3>
@@ -41,7 +66,6 @@
         </p>
       </div>
     </div>
-
   </div>
 </template>
 
@@ -53,9 +77,15 @@ import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore';
+import { useTeamWorkspaceViewStore, type TeamWorkspaceViewMode } from '~/stores/teamWorkspaceViewStore';
+import { useTeamMemberPresentation } from '~/composables/useTeamMemberPresentation';
 import { AgentStatus } from '~/types/agent/AgentStatus';
+import AgentUserInputForm from '~/components/agentInput/AgentUserInputForm.vue';
 import AgentStatusDisplay from '~/components/workspace/agent/AgentStatusDisplay.vue';
 import AgentTeamEventMonitor from '~/components/workspace/team/AgentTeamEventMonitor.vue';
+import TeamGridView from '~/components/workspace/team/TeamGridView.vue';
+import TeamSpotlightView from '~/components/workspace/team/TeamSpotlightView.vue';
+import TeamWorkspaceModeSwitch from '~/components/workspace/team/TeamWorkspaceModeSwitch.vue';
 import WorkspaceHeaderActions from '~/components/workspace/common/WorkspaceHeaderActions.vue';
 
 const teamContextsStore = useAgentTeamContextsStore();
@@ -64,7 +94,9 @@ const teamRunConfigStore = useTeamRunConfigStore();
 const agentRunConfigStore = useAgentRunConfigStore();
 const selectionStore = useAgentSelectionStore();
 const workspaceCenterViewStore = useWorkspaceCenterViewStore();
+const teamWorkspaceViewStore = useTeamWorkspaceViewStore();
 const headerAvatarLoadError = ref(false);
+const { getMemberAvatarUrl, getMemberDisplayName, getMemberInitials } = useTeamMemberPresentation();
 
 const activeTeamContext = computed(() => teamContextsStore.activeTeamContext);
 const focusedMemberContext = computed(() => {
@@ -73,6 +105,14 @@ const focusedMemberContext = computed(() => {
     return null;
   }
   return team.members.get(team.focusedMemberName) ?? null;
+});
+
+const currentMode = computed<TeamWorkspaceViewMode>(() => {
+  return teamWorkspaceViewStore.getMode(activeTeamContext.value?.teamRunId);
+});
+
+const showSharedComposer = computed(() => {
+  return Boolean(activeTeamContext.value) && currentMode.value !== 'focus';
 });
 
 const headerStatus = computed(() => {
@@ -92,73 +132,37 @@ const headerTitle = computed(() => {
     return team.config.teamDefinitionName || 'Team';
   }
 
-  const focusedContext = team.members.get(focusedMemberRouteKey);
-  const routeSegments = focusedMemberRouteKey
-    .split('/')
-    .map((segment) => segment.trim())
-    .filter((segment) => segment.length > 0);
-  const routeLeaf = routeSegments.length > 0
-    ? routeSegments[routeSegments.length - 1]
-    : focusedMemberRouteKey;
-
-  const focusedMemberName =
-    focusedContext?.config.agentDefinitionName?.trim()
-    || focusedContext?.state.conversation.agentName?.trim()
-    || routeLeaf
-    || focusedMemberRouteKey;
-
-  return focusedMemberName || team.config.teamDefinitionName || 'Team';
+  return getMemberDisplayName(focusedMemberRouteKey, focusedMemberContext.value)
+    || team.config.teamDefinitionName
+    || 'Team';
 });
 
 const headerAvatarUrl = computed(() => {
-  const focusedContext = focusedMemberContext.value;
-  if (!focusedContext) {
+  const team = activeTeamContext.value;
+  if (!team?.focusedMemberName) {
     return '';
   }
 
-  const fromContext = focusedContext.config.agentAvatarUrl?.trim();
-  if (fromContext) {
-    return fromContext;
-  }
-
-  const definitionId = focusedContext.config.agentDefinitionId?.trim();
-  if (definitionId) {
-    const fromDefinition = agentDefinitionStore.getAgentDefinitionById(definitionId)?.avatarUrl?.trim();
-    if (fromDefinition) {
-      return fromDefinition;
-    }
-  }
-
-  const normalizedName = headerTitle.value.trim().toLowerCase();
-  if (!normalizedName) {
-    return '';
-  }
-  return (
-    agentDefinitionStore.agentDefinitions.find((definition) =>
-      (definition.name || '').trim().toLowerCase() === normalizedName
-    )?.avatarUrl?.trim() || ''
-  );
+  return getMemberAvatarUrl(team.focusedMemberName, focusedMemberContext.value);
 });
 
 const showHeaderAvatarImage = computed(() => Boolean(headerAvatarUrl.value) && !headerAvatarLoadError.value);
-
-const headerAvatarInitials = computed(() => {
-  const name = headerTitle.value.trim();
-  if (!name) {
-    return 'AI';
-  }
-  const initials = name
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase() ?? '')
-    .join('');
-  return initials || 'AI';
-});
+const headerAvatarInitials = computed(() => getMemberInitials(headerTitle.value));
 
 watch(headerAvatarUrl, () => {
   headerAvatarLoadError.value = false;
 });
+
+const setCurrentMode = (mode: TeamWorkspaceViewMode) => {
+  if (!activeTeamContext.value) {
+    return;
+  }
+  teamWorkspaceViewStore.setMode(activeTeamContext.value.teamRunId, mode);
+};
+
+const setFocusedMember = (memberName: string) => {
+  teamContextsStore.setFocusedMember(memberName);
+};
 
 const createNewTeamRun = () => {
   if (!activeTeamContext.value) return;

@@ -3,6 +3,7 @@ import { createPinia, setActivePinia } from 'pinia';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
+import { useTeamWorkspaceViewStore } from '~/stores/teamWorkspaceViewStore';
 
 // Mock dependencies
 vi.mock('~/stores/agentTeamDefinitionStore', () => ({
@@ -108,6 +109,65 @@ describe('agentTeamContextsStore', () => {
 
              const [teamId] = Array.from(store.teams.keys());
              expect(store.activeTeamContext?.teamRunId).toBe(teamId);
+        });
+    });
+
+    describe('setFocusedMember', () => {
+        it('retargets unsent draft text and context files to the next focused member', () => {
+            const store = useAgentTeamContextsStore();
+            const selectionStore = useAgentSelectionStore();
+
+            store.addTeamContext({
+                teamRunId: 'team-1',
+                config: {} as any,
+                members: new Map([
+                    ['agent-1', { requirement: 'draft text', contextFilePaths: [{ path: '/tmp/a.txt', type: 'Text' }] }],
+                    ['agent-2', { requirement: '', contextFilePaths: [] }],
+                ]) as any,
+                focusedMemberName: 'agent-1',
+                currentStatus: 'idle' as any,
+                isSubscribed: false,
+                taskPlan: null,
+                taskStatuses: null,
+            });
+
+            selectionStore.selectRun('team-1', 'team');
+            store.setFocusedMember('agent-2');
+
+            const team = store.activeTeamContext!;
+            expect(team.focusedMemberName).toBe('agent-2');
+            expect(team.members.get('agent-1')?.requirement).toBe('');
+            expect(team.members.get('agent-1')?.contextFilePaths).toEqual([]);
+            expect(team.members.get('agent-2')?.requirement).toBe('draft text');
+            expect(team.members.get('agent-2')?.contextFilePaths).toEqual([{ path: '/tmp/a.txt', type: 'Text' }]);
+        });
+    });
+
+    describe('promoteTemporaryTeamRunId', () => {
+        it('migrates the stored workspace view mode to the permanent team id', () => {
+            const store = useAgentTeamContextsStore();
+            const selectionStore = useAgentSelectionStore();
+            const teamWorkspaceViewStore = useTeamWorkspaceViewStore();
+
+            store.addTeamContext({
+                teamRunId: 'temp-team-1',
+                config: {} as any,
+                members: new Map([['agent-1', { state: { conversation: { id: 'temp-team-1::agent-1' }, runId: 'temp-team-1::agent-1' } }]]) as any,
+                focusedMemberName: 'agent-1',
+                currentStatus: 'idle' as any,
+                isSubscribed: false,
+                taskPlan: null,
+                taskStatuses: null,
+            });
+
+            selectionStore.selectRun('temp-team-1', 'team');
+            teamWorkspaceViewStore.setMode('temp-team-1', 'grid');
+
+            store.promoteTemporaryTeamRunId('temp-team-1', 'team-1');
+
+            expect(teamWorkspaceViewStore.getMode('temp-team-1')).toBe('focus');
+            expect(teamWorkspaceViewStore.getMode('team-1')).toBe('grid');
+            expect(store.activeTeamContext?.teamRunId).toBe('team-1');
         });
     });
 });
