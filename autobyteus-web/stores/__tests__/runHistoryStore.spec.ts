@@ -930,6 +930,39 @@ describe('runHistoryStore', () => {
     );
   });
 
+  it('keeps team node order stable instead of re-sorting by last activity time', () => {
+    const store = useRunHistoryStore();
+    store.teamRuns = [
+      {
+        teamRunId: 'team-older',
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Team Alpha',
+        workspaceRootPath: '/ws/a',
+        summary: 'Older team',
+        lastActivityAt: '2026-01-01T00:00:00.000Z',
+        lastKnownStatus: 'IDLE',
+        deleteLifecycle: 'READY',
+        isActive: false,
+        members: [],
+      },
+      {
+        teamRunId: 'team-newer',
+        teamDefinitionId: 'team-def-2',
+        teamDefinitionName: 'Team Beta',
+        workspaceRootPath: '/ws/a',
+        summary: 'Newer team',
+        lastActivityAt: '2026-01-02T00:00:00.000Z',
+        lastKnownStatus: 'IDLE',
+        deleteLifecycle: 'READY',
+        isActive: false,
+        members: [],
+      },
+    ];
+
+    const teamNodes = store.getTeamNodes('/ws/a');
+    expect(teamNodes.map((team) => team.teamRunId)).toEqual(['team-older', 'team-newer']);
+  });
+
   it('selectTreeRun opens persisted team member when local team context is absent', async () => {
     const store = useRunHistoryStore();
     const openTeamMemberRunSpy = vi.spyOn(store, 'openTeamMemberRun').mockResolvedValue(undefined);

@@ -191,8 +191,8 @@ export const buildTeamNodes = (params: {
     });
   }
 
-  const allNodes = Array.from(nodesByTeamRunId.values())
-    .sort((a, b) => b.lastActivityAt.localeCompare(a.lastActivityAt));
+  // Preserve source/insertion order to avoid dynamic recency-based row jumping in the tree.
+  const allNodes = Array.from(nodesByTeamRunId.values());
   if (!params.workspaceRootPath) {
     return allNodes;
   }
