@@ -35,6 +35,7 @@ const createSubject = () => {
     getTeamMode: vi.fn(),
     removeTeam: vi.fn(),
     getTeamBindings: vi.fn().mockReturnValue([]),
+    getTeamBindingState: vi.fn(),
     upsertTeamBindings: vi.fn(),
     resolveByMemberRunId: vi.fn(),
     resolveMemberBinding: vi.fn(),
@@ -73,6 +74,7 @@ const createSubject = () => {
     orchestrator,
     mocks: {
       runtimeCompositionService,
+      runtimeCommandIngressService,
       runtimeAdapterRegistry,
       relayAdapter,
       relayAdapterUnbind,
@@ -421,6 +423,172 @@ describe("TeamMemberRuntimeOrchestrator", () => {
     expect(result.accepted).toBe(false);
     expect(result.code).toBe("RECIPIENT_SESSION_UNAVAILABLE");
     expect(result.message).toBe("Recipient session is unavailable.");
+  });
+
+  it("refreshes member runtime reference after successful send", async () => {
+    const { orchestrator, mocks } = createSubject();
+    mocks.teamRuntimeBindingRegistry.resolveMemberBinding.mockReturnValue({
+      binding: {
+        memberRunId: "member-run-1",
+        memberName: "Professor",
+        memberRouteKey: "professor",
+        runtimeKind: "claude_agent_sdk",
+        runtimeReference: {
+          runtimeKind: "claude_agent_sdk",
+          sessionId: "placeholder-session",
+          threadId: null,
+          metadata: {
+            teamRunId: "team-1",
+            memberRouteKey: "professor",
+            sendMessageToEnabled: true,
+          },
+        },
+      },
+      code: null,
+      message: null,
+    });
+    mocks.teamRuntimeBindingRegistry.getTeamBindingState.mockReturnValue({
+      teamRunId: "team-1",
+      mode: "member_runtime",
+      memberBindings: [
+        {
+          memberRunId: "member-run-1",
+          memberName: "Professor",
+          memberRouteKey: "professor",
+          runtimeKind: "claude_agent_sdk",
+          runtimeReference: {
+            runtimeKind: "claude_agent_sdk",
+            sessionId: "placeholder-session",
+            threadId: null,
+            metadata: {
+              teamRunId: "team-1",
+              memberRouteKey: "professor",
+              sendMessageToEnabled: true,
+            },
+          },
+          agentDefinitionId: "agent-professor",
+          llmModelIdentifier: "claude-sonnet-4-5",
+          autoExecuteTools: true,
+          llmConfig: null,
+          workspaceRootPath: "/tmp/team-workspace",
+        },
+      ],
+    });
+    mocks.runtimeCommandIngressService.sendTurn.mockResolvedValue({
+      accepted: true,
+      runtimeKind: "claude_agent_sdk",
+      runtimeReference: {
+        runtimeKind: "claude_agent_sdk",
+        sessionId: "claude-session-1",
+        threadId: "thread-1",
+        metadata: {
+          sdkSessionReady: true,
+        },
+      },
+    });
+
+    await orchestrator.sendToMember("team-1", "Professor", { text: "hello professor" } as any);
+
+    expect(mocks.teamRuntimeBindingRegistry.upsertTeamBindings).toHaveBeenCalledWith(
+      "team-1",
+      "member_runtime",
+      [
+        expect.objectContaining({
+          memberRunId: "member-run-1",
+          runtimeReference: {
+            runtimeKind: "claude_agent_sdk",
+            sessionId: "claude-session-1",
+            threadId: "thread-1",
+            metadata: {
+              teamRunId: "team-1",
+              memberRouteKey: "professor",
+              sendMessageToEnabled: true,
+              sdkSessionReady: true,
+            },
+          },
+        }),
+      ],
+    );
+  });
+
+  it("refreshes member runtime reference after successful approval", async () => {
+    const { orchestrator, mocks } = createSubject();
+    mocks.teamRuntimeBindingRegistry.resolveMemberBinding.mockReturnValue({
+      binding: {
+        memberRunId: "member-run-1",
+        memberName: "Professor",
+        memberRouteKey: "professor",
+        runtimeKind: "codex_app_server",
+        runtimeReference: {
+          runtimeKind: "codex_app_server",
+          sessionId: "member-run-1",
+          threadId: "thread-old",
+          metadata: {
+            teamRunId: "team-1",
+          },
+        },
+      },
+      code: null,
+      message: null,
+    });
+    mocks.teamRuntimeBindingRegistry.getTeamBindingState.mockReturnValue({
+      teamRunId: "team-1",
+      mode: "member_runtime",
+      memberBindings: [
+        {
+          memberRunId: "member-run-1",
+          memberName: "Professor",
+          memberRouteKey: "professor",
+          runtimeKind: "codex_app_server",
+          runtimeReference: {
+            runtimeKind: "codex_app_server",
+            sessionId: "member-run-1",
+            threadId: "thread-old",
+            metadata: {
+              teamRunId: "team-1",
+            },
+          },
+          agentDefinitionId: "agent-professor",
+          llmModelIdentifier: "gpt-5",
+          autoExecuteTools: true,
+          llmConfig: null,
+          workspaceRootPath: "/tmp/team-workspace",
+        },
+      ],
+    });
+    mocks.runtimeCommandIngressService.approveTool.mockResolvedValue({
+      accepted: true,
+      runtimeKind: "codex_app_server",
+      runtimeReference: {
+        runtimeKind: "codex_app_server",
+        sessionId: "member-run-1",
+        threadId: "thread-new",
+        metadata: {
+          approvalObserved: true,
+        },
+      },
+    });
+
+    await orchestrator.approveForMember("team-1", "Professor", "invoke-1", true, "approved");
+
+    expect(mocks.teamRuntimeBindingRegistry.upsertTeamBindings).toHaveBeenCalledWith(
+      "team-1",
+      "member_runtime",
+      [
+        expect.objectContaining({
+          memberRunId: "member-run-1",
+          runtimeReference: {
+            runtimeKind: "codex_app_server",
+            sessionId: "member-run-1",
+            threadId: "thread-new",
+            metadata: {
+              teamRunId: "team-1",
+              approvalObserved: true,
+            },
+          },
+        }),
+      ],
+    );
   });
 
   it("registers runtime relay handler and routes send_message_to tool arguments", async () => {

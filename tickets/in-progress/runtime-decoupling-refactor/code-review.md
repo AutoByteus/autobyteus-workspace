@@ -31,6 +31,68 @@
 
 1. `Resolved in iteration 4`: The previously identified compile-time runtime descriptor composition seam in `runtime-client/index.ts` has been removed by `C-033`; descriptor loading is now module-spec discovery driven (see Stage-10 continuation iteration 4 addendum below).
 
+## Stage-8 Re-Review Addendum (2026-03-07)
+
+## Review Scope
+
+- Stage: `8`
+- Review slice: post-gate structural architecture review after separate Claude-only and Codex-only backend passes
+- Reviewed source files:
+  - `autobyteus-server-ts/src/agent-team-execution/services/team-member-runtime-orchestrator.ts`
+  - `autobyteus-server-ts/src/run-history/services/run-history-service.ts`
+  - `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.ts`
+  - `autobyteus-server-ts/src/runtime-execution/adapters/claude-agent-sdk-runtime-adapter.ts`
+  - `autobyteus-server-ts/src/runtime-execution/adapters/codex-app-server-runtime-adapter.ts`
+  - `autobyteus-server-ts/src/runtime-execution/runtime-adapter-port.ts`
+  - `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-runtime-transcript-store.ts`
+- Verification evidence:
+  - `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run`
+  - `RUN_CODEX_E2E=1 CODEX_APP_SERVER_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run`
+  - `git diff --name-only origin/personal -- autobyteus-server-ts/src`
+  - effective-line counts captured from the current worktree
+
+## Findings
+
+1. `[P1]` Stage-8 hard-limit gate is still violated by three changed source files
+   - Files:
+     - `autobyteus-server-ts/src/agent-team-execution/services/team-member-runtime-orchestrator.ts`
+     - `autobyteus-server-ts/src/run-history/services/run-history-service.ts`
+     - `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.ts`
+   - Current effective non-empty line counts are `736`, `524`, and `1002` respectively, and all three files are changed versus `origin/personal`. The workflow’s Stage-8 exit condition is explicit: changed source files must stay within the `<=500` hard limit. The previous review artifact treated the orchestrator as a “Recorded Risk / Follow-up”, but that is no longer defensible under the ticket’s strict architecture gate. This is a structural blocker because these modules still concentrate multiple responsibilities behind the new decoupled seams, making the architecture harder to reason about and leaving the ticket formally short of its declared review standard even though runtime tests are green.
+
+## Mandatory Gate Checks
+
+| File | Effective Non-Empty Lines | Changed vs `origin/personal` | `<=500` Hard Limit | Result |
+| --- | --- | --- | --- | --- |
+| `autobyteus-server-ts/src/agent-team-execution/services/team-member-runtime-orchestrator.ts` | 736 | Yes | Fail | Fail |
+| `autobyteus-server-ts/src/run-history/services/run-history-service.ts` | 524 | Yes | Fail | Fail |
+| `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.ts` | 1002 | Yes | Fail | Fail |
+| `autobyteus-server-ts/src/runtime-execution/adapters/claude-agent-sdk-runtime-adapter.ts` | 219 | Yes | Pass | Pass |
+| `autobyteus-server-ts/src/runtime-execution/adapters/codex-app-server-runtime-adapter.ts` | 182 | Yes | Pass | Pass |
+| `autobyteus-server-ts/src/runtime-execution/runtime-adapter-port.ts` | 122 | Yes | Pass | Pass |
+| `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-runtime-transcript-store.ts` | 43 | Yes | Pass | Pass |
+
+## Architecture / Decoupling Review
+
+- I did not find a new direct Codex/Claude runtime-name branch reintroduced into the shared `run-history-service.ts` runtime-event interpretation path in the current worktree. That part remains adapter-driven.
+- The remaining Stage-8 blocker is structural concentration, not a newly discovered behavior regression or legacy compatibility path.
+- The current architecture is close to the desired decoupled seam model, but the three oversized changed modules still exceed the workflow’s review gate and should be decomposed before the ticket can close.
+
+## Gate Decision
+
+- Decision: `Fail`
+- Classification: `Local Fix`
+- Required re-entry path: `6 -> 7 -> 8`
+- Rationale: runtime acceptance is green again, but the changed-source hard-limit gate is still violated and cannot be waived as a “recorded risk” under the current workflow rules.
+
+## Structural Fix Follow-Up
+
+- The structural hard-limit issue identified in this addendum has now been implemented:
+  - `team-member-runtime-orchestrator.ts` reduced to `266` effective non-empty lines
+  - `run-history-service.ts` reduced to `475`
+  - `claude-agent-sdk-runtime-service.ts` reduced to `494`
+- Stage-8 re-review is still pending because Stage 7 is currently blocked by external Claude live-provider quota/availability. The review gate should resume only after a clean Claude rerun window is available.
+
 ## Mandatory Gate Checks
 
 | File | Effective Non-Empty Lines | Delta (+/-) | `<=500` Hard Limit | `>220` Delta Gate | Result |
@@ -217,6 +279,40 @@ Notes:
 - Blocker: Stage-7 runtime-enabled Codex team roundtrip E2E remains failing in current live runtime context (`send_message_to` unavailable at runtime), so Stage-8 closure is pending Stage-7 gate resolution.
 
 ## Stage-10 Continuation Iteration 10 Re-Review Addendum (Pre-Fix, Local Fix Classification)
+
+## Stage-10 Continuation Iteration 18 Deep Re-Review Addendum
+
+## Review Scope
+
+- Stage: `8` re-review while Stage-7 rerun evidence was being refreshed
+- Review slice: latest Claude runtime-reference persistence changes after transcript-alias removal
+- Reviewed source files:
+  - `autobyteus-server-ts/src/run-history/services/run-history-service.ts`
+  - `autobyteus-server-ts/src/runtime-execution/adapters/claude-agent-sdk-runtime-adapter.ts`
+  - `autobyteus-server-ts/src/runtime-execution/adapters/codex-app-server-runtime-adapter.ts`
+  - `autobyteus-server-ts/src/runtime-execution/runtime-adapter-port.ts`
+- Verification evidence:
+  - combined backend rerun failed separately (`3 failed | 229 passed | 3 skipped` files, `7 failed | 1094 passed | 8 skipped` tests)
+  - focused/standalone Claude runtime live file had already passed before this rerun
+
+## Findings
+
+1. `[P2] Shared run-history persistence now embeds Claude-specific runtime semantics`
+   - File: `autobyteus-server-ts/src/run-history/services/run-history-service.ts`
+   - `updateManifestRuntimeReferenceHint(...)` branches on `runtimeKind === "claude_agent_sdk"` and decides inside a shared service that Claude runtime-event hints should update both `sessionId` and `threadId`. That behavior belongs behind the runtime adapter contract, not in shared run-history persistence. The current fix restores behavior, but it does so by reintroducing runtime-specific knowledge into a shared layer, which violates the desired decoupled architecture.
+
+## Architecture / Decoupling Review
+
+- Runtime adapters already own runtime-event interpretation, so the correct seam exists.
+- The current implementation stops one layer too late: the shared run-history service still knows that Claude event hints mean session-id promotion while Codex hints only affect thread id.
+- This should be normalized by the adapter contract into a runtime-neutral `runtimeReference` patch/hint object so shared run-history code can persist it generically.
+
+## Gate Decision
+
+- Decision: `Fail`
+- Classification: `Local Fix`
+- Required re-entry path: `6 -> 7 -> 8`
+- Rationale: behavior is restored for the Claude projection path, but the latest fix reintroduced runtime-specific logic into a shared persistence service.
 
 ## Review Scope
 
@@ -723,3 +819,67 @@ Assessment note for `>220` delta-gate rows:
 
 - Decision: `Pass`
 - Re-entry required: `No`
+
+## Stage-10 Continuation Iteration 19 Re-Review Addendum
+
+## Review Scope
+
+- Stage: `8` follow-up re-review while Stage 7 remains open
+- Reviewed source files:
+  - `autobyteus-server-ts/src/agent-team-execution/services/team-member-runtime-orchestrator.ts`
+  - `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-runtime-v2-control-interop.ts`
+  - `autobyteus-server-ts/src/run-history/services/run-history-service.ts`
+  - `autobyteus-server-ts/src/runtime-execution/adapters/codex-app-server-runtime-adapter.ts`
+- Reviewed tests:
+  - `autobyteus-server-ts/tests/unit/agent-team-execution/team-member-runtime-orchestrator.test.ts`
+  - `autobyteus-server-ts/tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts`
+  - `autobyteus-server-ts/tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts`
+- Verification commands:
+  - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`
+  - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/team-member-runtime-orchestrator.test.ts tests/unit/runtime-execution/claude-agent-sdk/claude-runtime-v2-control-interop.test.ts tests/unit/runtime-execution/adapters/codex-app-server-runtime-adapter.test.ts tests/unit/runtime-execution/adapters/claude-agent-sdk-runtime-adapter.test.ts tests/unit/run-history/services/run-history-service.test.ts tests/unit/run-history/team-run-history-service.test.ts`
+  - `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts`
+  - `RUN_CODEX_E2E=1 CODEX_APP_SERVER_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts -t "streams codex edit_file metadata with non-empty path and patch over websocket"`
+
+## Findings
+
+- None in the latest deterministic local-fix scope.
+
+## Architecture / Decoupling Review
+
+- The prior shared-layer `RunHistoryService` Claude-specific branch is removed; runtime-specific reference extraction now stays behind the adapter contract.
+- Team-member runtime reference refresh now happens inside the team-member orchestration boundary before history persistence, which matches the intended decoupled ownership.
+- No new backward-compatibility or legacy path was introduced by the current local fixes.
+- Stage 8 is not re-closed only because Stage 7 is still open on an unclear Codex live-runtime blocker, not because of a new architecture finding.
+
+## Gate Decision
+
+- Decision: `Defer`
+- Re-entry required: `No new Stage-8 finding; wait for Stage-7 closure`
+
+## Stage-10 Continuation Iteration 21 Re-Review Addendum
+
+## Review Scope
+
+- Stage: `8` follow-up review while Stage 7 remains open
+- Reviewed source files:
+  - `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-runtime-v2-control-interop.ts`
+  - `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.ts`
+- Reviewed backend evidence:
+  - `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run`
+  - `RUN_CODEX_E2E=1 CODEX_APP_SERVER_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run`
+
+## Findings
+
+- No new architecture/decoupling finding.
+- The newly isolated Claude failure is a bounded implementation defect inside the Claude runtime interop boundary: session bootstrap still mutates process-global cwd even though explicit per-session `cwd` is already passed to the SDK.
+
+## Architecture / Decoupling Review
+
+- Claude and Codex remain behind runtime-specific adapters/services; the isolated Claude failure does not require a new cross-layer coupling path or compatibility fallback.
+- The required fix is to keep workspace ownership inside explicit runtime session options rather than process-global cwd mutation.
+- Stage 8 remains deferred only because Stage 7 must be rerun after the bounded local fix.
+
+## Gate Decision
+
+- Decision: `Defer`
+- Re-entry required: `No new Stage-8 finding; wait for Stage-7 closure`

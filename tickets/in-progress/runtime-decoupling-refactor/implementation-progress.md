@@ -960,3 +960,529 @@ This document tracks implementation and testing progress in real time, including
   - keep the decoupled shared-team bridge deletion,
   - reconcile incoming Codex live-test updates with the refactored branch behavior,
   - remove the Claude transcript compatibility alias path and update its tests.
+
+## Stage-10 Continuation Iteration 17 Update (Merge Resolved + Legacy Alias Removed)
+
+### Chronological Log
+
+- 2026-03-06: Kept `autobyteus-server-ts/src/services/agent-streaming/team-external-runtime-event-bridge.ts` deleted during merge resolution so the old external runtime bridge is not reintroduced from `origin/personal`.
+- 2026-03-06: Reconciled incoming Codex live-test changes in:
+  - `autobyteus-server-ts/tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts`
+  - `autobyteus-server-ts/tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts`
+- 2026-03-06: Removed the Claude transcript compatibility alias path:
+  - `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-runtime-transcript-store.ts`
+  - session migration now converges on the resolved session id and deletes the placeholder source-session entry.
+- 2026-03-06: Updated focused unit coverage:
+  - `autobyteus-server-ts/tests/unit/runtime-execution/claude-agent-sdk/claude-runtime-transcript-store.test.ts`
+  - expectation now verifies that the placeholder source session id no longer resolves after migration.
+- 2026-03-06: Focused verification passed:
+  - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/runtime-execution/claude-agent-sdk/claude-runtime-transcript-store.test.ts`
+  - Result: `1 passed` file, `3 passed` tests.
+- 2026-03-06: Reconciled Codex e2e files load cleanly under Vitest after merge:
+  - `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts`
+  - Result: `2 skipped` files, `14 skipped` tests (expected without live runtime env), no parse/runtime-bootstrap failures.
+- 2026-03-06: Backend build passed after merge resolution:
+  - `pnpm -C autobyteus-server-ts build`
+- 2026-03-06: Completed merge commit:
+  - `ca19faf Merge origin/personal into codex/runtime-decoupling-refactor`
+
+### Outcome
+
+- Latest `origin/personal` is merged into the refactor branch.
+- The previously identified Claude transcript legacy compatibility alias is removed in source.
+- Stage 6 implementation work for this iteration is complete at the focused-verification level; Stage 7 rerun is still required before the next Stage 8 re-review can close cleanly.
+
+## Stage-10 Continuation Iteration 17 Verification Follow-up
+
+### Chronological Log
+
+- 2026-03-06: Full runtime-enabled backend rerun was restarted after the merge + legacy cleanup.
+- 2026-03-06: During that rerun, the Claude live suite advanced deep into the file but did not reach a clean terminal result before investigation redirected to a newly exposed persistence path.
+- 2026-03-06: Removing the transcript alias uncovered a real local integration dependency:
+  - `ClaudeAgentSdkRuntimeService.getSessionMessages(...)` still needed to resolve `runId -> state.sessionId` after the runtime adopted the real Claude session id.
+- 2026-03-06: Fixed that canonical lookup seam in:
+  - `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.ts`
+- 2026-03-06: The same investigation then exposed a second local persistence gap:
+  - `RunContinuationService` was discarding the updated `runtimeReference` returned by `sendTurn(...)`, so manifests could keep the placeholder Claude session id even after the live runtime had resolved a real one.
+- 2026-03-06: Fixed manifest persistence in:
+  - `autobyteus-server-ts/src/run-history/services/run-continuation-service.ts`
+- 2026-03-06: Focused unit verification passed after the canonical lookup fix:
+  - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.test.ts tests/unit/runtime-execution/claude-agent-sdk/claude-runtime-transcript-store.test.ts`
+  - Result: `2 passed` files, `28 passed` tests.
+- 2026-03-06: Focused live Claude projection rerun remains blocked, but now for a different reason:
+  - `tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts -t "retains two streamed turns in Claude run projection after terminate"`
+  - repeated failure happens before projection assertion closure:
+    - `Claude runtime turn failed for run '...' : Error: Claude Code process exited with code 1`
+  - the test fails at the initial `continueRun.success === true` assertion, so the current blocker is live Claude runtime startup/transport behavior, not the previously identified transcript-alias lookup path.
+
+### Outcome
+
+- Local architecture cleanup progressed further:
+  - legacy transcript alias removed,
+  - canonical run-id/session-id lookup added,
+  - manifest runtime-reference persistence after `sendTurn(...)` added.
+- Stage 6 remains in progress because the post-fix Stage-7 Claude live verification is now blocked by a repeated external/runtime startup failure (`Claude Code process exited with code 1`) before the target projection assertion path can close.
+
+## Stage-10 Continuation Iteration 17 Investigation Refresh (Workspace-backed Claude startup failure)
+
+### Chronological Log
+
+- 2026-03-07: Resumed the focused live Claude blocker investigation under the existing Stage-6 local-fix re-entry.
+- 2026-03-07: Re-ran the focused live Claude projection case:
+  - `tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts -t "retains two streamed turns in Claude run projection after terminate"`
+  - result: deterministic failure before the projection assertions with `Claude Code process exited with code 1`.
+- 2026-03-07: Re-ran an independent workspace-backed Claude create/continue scenario:
+  - `tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts -t "preserves workspace mapping for Claude runs created with workspaceId across send->terminate->continue"`
+  - result: same deterministic first-turn failure with `Claude Code process exited with code 1`.
+- 2026-03-07: Re-ran the simple non-workspace Claude create scenario:
+  - `tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts -t "creates and terminates a Claude runtime run through GraphQL"`
+  - result: passed.
+- 2026-03-07: Enabled Claude SDK debug output for the failing workspace-backed scenario and inspected the generated SDK log:
+  - `/Users/normy/.claude/debug/sdk-7399c74f-e265-43b7-b121-9583c4d590b9.txt`
+- 2026-03-07: The SDK debug log showed the concrete runtime error emitted by Claude Code:
+  - `error: The current working directory was deleted, so that command didn't work. Please cd into a different directory and try again.`
+- 2026-03-07: Root cause isolated to the local integration layer, not external Claude service behavior:
+  - `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-runtime-v2-control-interop.ts`
+  - `createOrResumeClaudeV2Session(...)` wraps session creation in `withScopedProcessCwd(...)`, which mutates the Node process-global cwd even though the Claude SDK session options already pass `cwd` explicitly.
+  - This process-global cwd mutation is unsafe for long-lived test/server execution and is the concrete local cause behind the workspace-backed Claude startup failures.
+- 2026-03-07: Investigation also revalidated that the uncommitted `RunContinuationService` follow-up patch still needs repair before closure:
+  - the current WIP diff references `manifest` before declaration in the active-session branch,
+  - and references `persistedManifest` instead of `manifest` in the new-run branch.
+
+### Outcome
+
+- The current live Claude blocker is now classified as a local implementation defect, not an external runtime/service failure.
+- Stage 6 remains the correct active stage under `Local Fix` classification.
+- Next implementation steps are:
+  - remove process-global cwd mutation from Claude V2 session creation while preserving explicit session `cwd` option passing,
+  - repair the `RunContinuationService` runtime-reference persistence patch,
+  - rerun focused Claude workspace-backed live e2e coverage and then the broader backend gate.
+
+## Stage-10 Continuation Iteration 18 Backend Gate Rerun Failure
+
+### Chronological Log
+
+- 2026-03-07: Restarted the combined runtime-enabled backend gate after the focused Claude cwd/runtime-reference fixes:
+  - `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=true RUN_CODEX_E2E=1 CODEX_APP_SERVER_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run`
+- 2026-03-07: The rerun advanced through:
+  - full live Claude runtime GraphQL file,
+  - full live Codex team roundtrip file,
+  - most of the live Codex runtime GraphQL file.
+- 2026-03-07: The rerun then terminated red with:
+  - `3 failed | 229 passed | 3 skipped` files
+  - `7 failed | 1094 passed | 8 skipped` tests
+- 2026-03-07: Failing slices were:
+  - `tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts`
+    - five failures, all rejecting the GraphQL document before runtime execution:
+      - `GraphQLError: Unknown type "CreatePromptInput". Did you mean "CreateSkillInput" or "CreateWorkspaceInput"?`
+  - `tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts`
+    - `streams codex tool approval requested and approved lifecycle over websocket`
+    - timeout after `50101ms`
+    - observed websocket types only: `SEGMENT_CONTENT`, `AGENT_STATUS`, `SEGMENT_START`, `SEGMENT_END`
+  - `tests/unit/run-history/team-run-history-service.test.ts`
+    - `refreshes stored member runtime reference from active bindings on team event`
+    - expected refreshed member binding runtime kind `claude_agent_sdk`, received `codex_app_server`
+
+### Outcome
+
+- Stage 7 did not re-close.
+- The rerun exposed two deterministic local regressions:
+  - merged Claude team GraphQL schema drift around `CreatePromptInput`,
+  - team-run history runtime-binding refresh regression.
+- The rerun also left one remaining live Codex approval-lifecycle timeout to re-isolate after the deterministic local failures are fixed.
+- Workflow has been re-entered into Stage 6 under `Local Fix` classification for bounded remediation.
+
+## Stage-10 Continuation Iteration 19 Deterministic Local Fix Closure + Backend Gate Reclassification
+
+### Chronological Log
+
+- 2026-03-07: Implemented the team-member runtime binding refresh seam in:
+  - `autobyteus-server-ts/src/agent-team-execution/services/team-member-runtime-orchestrator.ts`
+  - successful member `sendTurn(...)` and `approveTool(...)` results now refresh the active team binding runtime reference before downstream history persistence reads the registry state.
+- 2026-03-07: Added focused unit coverage for the new canonical binding-refresh behavior in:
+  - `autobyteus-server-ts/tests/unit/agent-team-execution/team-member-runtime-orchestrator.test.ts`
+- 2026-03-07: Fixed a separate TypeScript control-flow defect exposed during the local-fix verification pass in:
+  - `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-runtime-v2-control-interop.ts`
+- 2026-03-07: Focused compile + targeted verification passed:
+  - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`
+  - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/team-member-runtime-orchestrator.test.ts tests/unit/runtime-execution/claude-agent-sdk/claude-runtime-v2-control-interop.test.ts tests/unit/runtime-execution/adapters/codex-app-server-runtime-adapter.test.ts tests/unit/runtime-execution/adapters/claude-agent-sdk-runtime-adapter.test.ts tests/unit/run-history/services/run-history-service.test.ts tests/unit/run-history/team-run-history-service.test.ts`
+  - result: `6 passed` files, `43 passed` tests.
+- 2026-03-07: Focused live Claude team backend file passed after the local fixes:
+  - `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts`
+  - result: `1 passed` file, `5 passed` tests.
+- 2026-03-07: Combined runtime-enabled backend rerun was started again:
+  - `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=true RUN_CODEX_E2E=1 CODEX_APP_SERVER_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run`
+- 2026-03-07: That rerun still failed in the live Codex websocket slice:
+  - `tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts`
+  - `streams codex edit_file metadata with non-empty path and patch over websocket`
+- 2026-03-07: The failing Codex `edit_file` case then passed in isolation:
+  - `RUN_CODEX_E2E=1 CODEX_APP_SERVER_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts -t "streams codex edit_file metadata with non-empty path and patch over websocket"`
+  - result: `1 passed`, `11 skipped`.
+- 2026-03-07: Reduced reproduction with the immediately preceding live Codex lifecycle case did not preserve the same failure.
+  - command:
+    - `RUN_CODEX_E2E=1 CODEX_APP_SERVER_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts --testNamePattern "streams real codex tool lifecycle events over websocket \(auto-approves in test\)|streams codex edit_file metadata with non-empty path and patch over websocket"`
+  - result:
+    - the earlier lifecycle case timed out instead,
+    - the `edit_file` case passed.
+
+### Outcome
+
+- The deterministic local-fix scope is complete and verified.
+- Stage 7 is not re-closed.
+- The remaining backend blocker is now classified as an unclear/nondeterministic live Codex runtime instability, not a proven refactor regression in the latest local-fix scope.
+
+## Stage-10 Continuation Iteration 20 Investigation Refresh Only (Claude narrowing, no code edits)
+
+### Chronological Log
+
+- 2026-03-07: Restarted the combined runtime-enabled backend gate as an investigation action only:
+  - `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=true RUN_CODEX_E2E=1 CODEX_APP_SERVER_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run`
+- 2026-03-07: The rerun again produced live Claude warnings during the runtime GraphQL file:
+  - `Claude runtime turn failed for run '...' : Error: Claude Code process exited with code 1`
+  - warnings were observed during continue/workspace and later AGENT_STATUS-related flows.
+- 2026-03-07: The broad rerun was not used as closure evidence because those warnings appeared before the suite reached a clean terminal result.
+- 2026-03-07: Narrowed the Claude live scope to four acceptance cases only:
+  - `preserves workspace mapping for Claude runs created with workspaceId across send->terminate->continue`
+  - `executes Claude tool commands inside the selected workspace across terminate->continue`
+  - `retains two-turn history and grows it after continue`
+  - `streams Claude AGENT_STATUS transitions over websocket for a live turn`
+- 2026-03-07: Focused Claude subset result:
+  - `1 passed` file
+  - `4 passed | 13 skipped` tests
+- 2026-03-07: The focused subset still emitted recoverable runtime/logging noise:
+  - repeated `Claude Code process exited with code 1` warnings that did not fail the focused assertions,
+  - `Error forwarding runtime event: Error: ENOENT ... run_history_index.json...tmp -> run_history_index.json`
+- 2026-03-07: Started a runtime-only four-file suite (`Claude runtime`, `Claude team`, `Codex runtime`, `Codex team`) to test whether the blocker is inside the live runtime slice itself or only in the wider backend suite.
+- 2026-03-07: Stopped that runtime-only suite after it advanced through the Claude-only portion without a deterministic acceptance failure; visible signals were teardown noise (`Memory file missing`, removal warnings), not a stable assertion break.
+- 2026-03-07: Performed a source review of the earlier `RunContinuationService` runtime-reference refactor delta and determined it is not yet a proven blocker because active send-turn dispatch does not read the stale in-memory runtime reference and restore paths consume the manifest, which is updated.
+
+### Outcome
+
+- No source code was changed in this iteration.
+- Claude continue/history/AGENT_STATUS acceptance behavior is currently verified as passing in focused live coverage.
+- The remaining backend instability is still not narrowed to one deterministic refactor defect.
+- The most credible new signal from this iteration is a temp-app-data teardown race in run-history index persistence, but that signal has not yet been proven to fail the Stage-7 gate directly.
+- Workflow remains in **Stage 1 Investigation** with **Code Edit Permission = Locked**.
+
+### Investigation addendum: Codex-only runtime pair narrowing
+
+- 2026-03-07: Ran the Codex live runtime pair without Claude or the wider backend suite:
+  - `RUN_CODEX_E2E=1 CODEX_APP_SERVER_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts`
+- 2026-03-07: The pair advanced through the earlier suspicious Codex GraphQL points in order:
+  - continue/workspace restore cases passed,
+  - live lifecycle case passed in-sequence,
+  - `edit_file` metadata case began after lifecycle instead of reproducing the previous full-gate failure immediately.
+- 2026-03-07: Stopped the pair after this narrowing evidence was captured because the investigation target was no longer the Codex runtime file in isolation but the broader full-gate instability.
+- 2026-03-07: Visible Codex runtime noise remained unchanged from prior runs:
+  - shell snapshot validation failures / delete warnings,
+  - slow SQLite/log writes,
+  - thread-resume fallback `no rollout found` warnings.
+
+### Updated Outcome
+
+- Both narrowed live-runtime slices now trend green through the earlier suspect paths:
+  - Claude focused continue/history/AGENT_STATUS slice passed.
+  - Codex pair advanced through lifecycle into `edit_file` without reproducing the full-gate failure immediately.
+- The remaining backend blocker is therefore best described as **wider full-gate nondeterminism / runtime-environment instability**, not a deterministic refactor regression isolated inside the narrowed Claude or Codex runtime slices.
+
+## Stage-10 Continuation Iteration 21 Separate Backend Gates Reclassification
+
+### Chronological Log
+
+- 2026-03-07: Started the full backend suite with only Claude live runtime enabled:
+  - `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run`
+- 2026-03-07: Claude team live backend file passed inside that run:
+  - `tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts`
+  - result inside the broad run: `5 passed`
+- 2026-03-07: The same Claude-only backend run then failed in the live Claude runtime GraphQL file with a concrete local error:
+  - `CLAUDE_V2_WORKING_DIRECTORY_INVALID`
+  - underlying `ENOENT` on `process.chdir(...)` into a temp workspace that had already been deleted
+- 2026-03-07: Isolated the failing seam to:
+  - `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-runtime-v2-control-interop.ts`
+  - `withScopedProcessCwd(...)` still mutates global cwd during Claude V2 session creation even though explicit session `cwd` is already supplied through options.
+- 2026-03-07: Started a focused Claude history/projection slice after the broad failure to confirm the affected area:
+  - `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts -t "returns non-empty run projection conversation for completed Claude runs|retains two streamed turns in Claude run projection after terminate|retains two-turn history and grows it after continue"`
+- 2026-03-07: Started the full backend suite with only Codex live runtime enabled:
+  - `RUN_CODEX_E2E=1 CODEX_APP_SERVER_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run`
+- 2026-03-07: Stopped the Codex-only broad run once the Claude local-fix target was identified.
+  - Before interruption, Codex runtime GraphQL had progressed through early create/continue/image-history paths without a separate deterministic failure.
+
+### Outcome
+
+- Stage 7 is still failing, but no longer under `Unclear` classification.
+- Separate runtime gates changed the diagnosis:
+  - Claude-only backend gate exposed a concrete local implementation defect.
+  - Codex-only backend gate did not yet expose a separate deterministic failure before interruption.
+- Workflow should re-enter **Stage 6 Local Fix** for the Claude cwd-mutation seam, then rerun:
+  - full backend with Claude live runtime only,
+  - full backend with Codex live runtime only.
+
+## 2026-03-07 Separate Backend Full-Suite Reruns (Completed)
+
+### Chronological Log
+
+- 2026-03-07: Attempted to start Codex-only and Claude-only full backend suites in parallel:
+  - `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run`
+  - `RUN_CODEX_E2E=1 CODEX_APP_SERVER_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run`
+- 2026-03-07: Parallel launch was invalid in the current test harness.
+  - shared Prisma global setup resets the same SQLite database at:
+    - `autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db`
+  - one suite failed immediately with `database is locked`.
+- 2026-03-07: Reran the Codex-only full backend suite sequentially:
+  - `RUN_CODEX_E2E=1 CODEX_APP_SERVER_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run`
+  - result:
+    - `1 failed | 229 passed | 5 skipped` files
+    - `1 failed | 1080 passed | 30 skipped` tests
+- 2026-03-07: Codex-only backend failure was narrowed to one live runtime test:
+  - file:
+    - `tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts`
+  - case:
+    - `streams codex generate_image tool_call metadata with non-empty arguments over websocket`
+  - failure signature:
+    - timed out waiting for non-empty `generate_image` metadata arguments,
+    - observed websocket types: `SEGMENT_CONTENT`, `AGENT_STATUS`, `SEGMENT_START`, `SEGMENT_END`,
+    - no `tool_call` metadata arguments were emitted.
+- 2026-03-07: Reran the Claude-only full backend suite sequentially:
+  - `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run`
+  - result:
+    - `1 failed | 229 passed | 5 skipped` files
+    - `3 failed | 1086 passed | 22 skipped` tests
+- 2026-03-07: Claude-only backend failures were all inside the live Claude runtime GraphQL file:
+  - file:
+    - `tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts`
+  - explicitly captured failing cases:
+    - `keeps default temp workspace isolated from the server worktree git root`
+    - `streams Claude tool approval request and executes tool after explicit approve`
+  - plus one additional failing live-runtime test in the same file, reflected in the `3 failed` total.
+- 2026-03-07: Detailed Claude failure signatures captured during the sequential rerun:
+  - default temp workspace isolation failure:
+    - runtime output stayed at:
+      - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-decoupling-refactor/autobyteus-server-ts`
+    - expected temp workspace root:
+      - `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus/temp_workspace`
+  - manual approval flow failure:
+    - after retries, only `SEGMENT_CONTENT`, `SEGMENT_END`, and `AGENT_STATUS` events were observed,
+    - assistant output remained `READYREADY`,
+    - no approval-request lifecycle was emitted.
+
+### Outcome
+
+- The separated backend gates are complete and **not green**.
+- Codex-only full backend is blocked by one deterministic live `generate_image` websocket metadata regression.
+- Claude-only full backend is blocked by three deterministic live runtime failures in `claude-runtime-graphql.e2e.test.ts`.
+- Stage 7 remains open.
+- Workflow is back in **Stage 6 Local Fix** for bounded remediation, not ready for Stage 8 closure.
+
+## 2026-03-07 Isolated reruns of the previously failing live tests
+
+### Chronological Log
+
+- 2026-03-07: Reran the previously failing Codex live case in isolation:
+  - `RUN_CODEX_E2E=1 CODEX_APP_SERVER_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts -t "streams codex generate_image tool_call metadata with non-empty arguments over websocket"`
+  - result:
+    - `1 passed | 11 skipped`
+- 2026-03-07: Reran the previously failing Claude manual-approval case in isolation:
+  - `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts -t "streams Claude tool approval request and executes tool after explicit approve"`
+  - result:
+    - `1 passed | 16 skipped`
+- 2026-03-07: Reran the Claude default temp-workspace isolation case in isolation:
+  - `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts -t "keeps default temp workspace isolated from the server worktree git root"`
+  - result:
+    - `1 failed | 16 skipped`
+  - failure signature remained deterministic:
+    - runtime output still reported:
+      - `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-decoupling-refactor/autobyteus-server-ts`
+    - expected temp workspace root:
+      - `/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus/temp_workspace`
+
+### Updated Outcome
+
+- The earlier Codex `generate_image` failure is not currently deterministic when isolated.
+- The earlier Claude manual-approval failure is not currently deterministic when isolated.
+- The Claude default temp-workspace isolation failure **does reproduce in isolation** and remains the clearest current local fix target.
+
+## 2026-03-07 Claude temp-workspace isolation local fix
+
+### Chronological Log
+
+- 2026-03-07: Implemented a guarded Claude V2 session-bootstrap cwd fix in:
+  - `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-runtime-v2-control-interop.ts`
+- 2026-03-07: New behavior:
+  - keep explicit `cwd` in Claude session options,
+  - scope `process.chdir(...)` only when the target directory currently exists,
+  - skip process-global cwd mutation entirely for missing/deleted workspaces so the previous `ENOENT` regression does not return.
+- 2026-03-07: Updated focused unit coverage in:
+  - `autobyteus-server-ts/tests/unit/runtime-execution/claude-agent-sdk/claude-runtime-v2-control-interop.test.ts`
+  - verified:
+    - existing directories still get guarded cwd scoping,
+    - missing directories do not trigger `chdir`.
+- 2026-03-07: Focused verification passed:
+  - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`
+  - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/runtime-execution/claude-agent-sdk/claude-runtime-v2-control-interop.test.ts`
+  - result:
+    - compile passed
+    - `9 passed` tests
+- 2026-03-07: Previously failing isolated Claude temp-workspace case now passes:
+  - `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts -t "keeps default temp workspace isolated from the server worktree git root"`
+  - result:
+    - `1 passed | 16 skipped`
+
+### Follow-up Full Suite Signal
+
+- 2026-03-07: Reran the full Claude-only backend suite:
+  - `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run`
+- 2026-03-07: The suite is still not green after the temp-workspace fix.
+  - The live Claude team runtime file reported:
+    - `tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts`
+    - `5 tests | 3 failed`
+  - visible failing cases during the run:
+    - `routes live inter-agent send_message_to ping->pong->ping roundtrip in Claude team runtime`
+    - `preserves workspace mapping across create->send->terminate->continue for Claude team runs created with workspaceId`
+    - `restores complete team-member projection history after two turns and terminate`
+
+### Updated Outcome
+
+- The deterministic isolated Claude temp-workspace bug is fixed.
+- Stage 7 is still open because the full Claude-only backend suite now fails in the live Claude team runtime slice.
+
+## 2026-03-07 Runtime investigation continuation (no source edits)
+
+### Chronological Log
+
+- 2026-03-07: Reran the three previously failing Claude team-runtime cases individually:
+  - `routes live inter-agent send_message_to ping->pong->ping roundtrip in Claude team runtime`
+  - `preserves workspace mapping across create->send->terminate->continue for Claude team runs created with workspaceId`
+  - `restores complete team-member projection history after two turns and terminate`
+- 2026-03-07: Result for all three isolated Claude team-runtime cases:
+  - `1 passed | 4 skipped`
+- 2026-03-07: Reran the full Claude team-runtime file:
+  - `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts`
+  - result:
+    - `5 passed`
+- 2026-03-07: Started a full Claude-only backend rerun to verify whether the remaining gate still fails outside the team-runtime slice:
+  - `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run`
+- 2026-03-07: During that rerun, the live Claude runtime GraphQL file completed successfully:
+  - `tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts`
+  - result:
+    - `17 passed`
+- 2026-03-07: The same runtime GraphQL file emitted intermittent stderr warnings such as:
+  - `Claude runtime turn failed for run '...' : Error: Claude Code process exited with code 1`
+  - `Agent with ID '...' not found for removal.`
+  - but these warnings did not cause failing assertions in the file.
+- 2026-03-07: No source edits were made in this investigation continuation.
+  - only ticket artifacts were updated while Stage 1 remained active and code-edit permission stayed locked.
+
+### Updated Outcome
+
+- The previously suspected Claude team-runtime failures are not currently reproducible as deterministic regressions.
+- The live Claude runtime GraphQL acceptance file is also green in the current rerun.
+- The remaining open item is to let the long full Claude-only suite reach a terminal result and then update the workflow state based on that final gate outcome.
+
+## 2026-03-07 Stage 7 backend gate reconfirmation (separate runtime reruns)
+
+### Chronological Log
+
+- 2026-03-07: Full Claude-only backend rerun completed cleanly:
+  - `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run`
+  - result:
+    - `230 passed | 5 skipped` files
+    - `1089 passed | 22 skipped` tests
+- 2026-03-07: Full Codex-only backend rerun completed cleanly:
+  - `RUN_CODEX_E2E=1 CODEX_APP_SERVER_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run`
+  - result:
+    - `230 passed | 5 skipped` files
+    - `1081 passed | 30 skipped` tests
+- 2026-03-07: The live Codex runtime file passed inside the full Codex-only rerun:
+  - `tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts`
+  - result:
+    - `12 passed`
+  - this included successful execution of the previously unstable live cases:
+    - `edit_file`
+    - `run_bash`
+    - `generate_image`
+- 2026-03-07: The live Codex team roundtrip file also completed inside the same rerun, and the suite reached a clean terminal summary.
+- 2026-03-07: No source edits were required during this gate reconfirmation.
+  - only runtime-enabled verification and workflow artifact updates were performed.
+
+### Updated Outcome
+
+- Backend Stage-7 runtime acceptance is re-confirmed cleanly when Claude and Codex full backend suites are run separately.
+- The SQLite parallel lock remains a local test-harness limitation and is not treated as a product/runtime-decoupling blocker for this ticket.
+- With Claude-only and Codex-only backend gates both green again, the workflow can return to Stage 8 code review.
+
+## 2026-03-07 Stage 8 structural re-review failure
+
+### Chronological Log
+
+- 2026-03-07: Re-ran the Stage-8 architecture gate against the current changed-source set versus `origin/personal`.
+- 2026-03-07: Measured effective non-empty lines for the currently changed oversized modules:
+  - `autobyteus-server-ts/src/agent-team-execution/services/team-member-runtime-orchestrator.ts`: `736`
+  - `autobyteus-server-ts/src/run-history/services/run-history-service.ts`: `524`
+  - `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.ts`: `1002`
+- 2026-03-07: Confirmed all three files are changed by this ticket relative to `origin/personal`.
+- 2026-03-07: Reclassified the review outcome from “in progress” to a deterministic Stage-8 `Fail`.
+  - classification:
+    - `Local Fix`
+  - required return path:
+    - `6 -> 7 -> 8`
+- 2026-03-07: Reopened Stage 6 with code-edit permission unlocked for structural decomposition of the oversized changed-source files before any further attempt to close the review gate.
+
+### Updated Outcome
+
+- Stage 7 remains passed.
+- Stage 8 is currently failed on the mandatory changed-source hard-limit gate.
+- The next implementation slice is structural decomposition, not behavior repair.
+
+## 2026-03-07 Stage 8 structural decomposition local fix
+
+### Chronological Log
+
+- 2026-03-07: Extracted helper responsibilities out of the oversized changed-source files:
+  - `autobyteus-server-ts/src/run-history/services/run-history-service-helpers.ts`
+  - `autobyteus-server-ts/src/agent-team-execution/services/team-member-runtime-session-lifecycle-service.ts`
+  - `autobyteus-server-ts/src/agent-team-execution/services/team-member-runtime-relay-service.ts`
+  - `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-runtime-service-support.ts`
+  - `autobyteus-server-ts/src/runtime-execution/claude-agent-sdk/claude-runtime-tooling-coordinator.ts`
+- 2026-03-07: Reduced the previously blocking file sizes to:
+  - `team-member-runtime-orchestrator.ts`: `266` effective non-empty lines
+  - `run-history-service.ts`: `475`
+  - `claude-agent-sdk-runtime-service.ts`: `494`
+- 2026-03-07: Verified compile:
+  - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`
+  - result:
+    - pass
+- 2026-03-07: Verified focused unit coverage:
+  - `tests/unit/agent-team-execution/team-member-runtime-orchestrator.test.ts`
+  - `tests/unit/run-history/services/run-history-service.test.ts`
+  - `tests/unit/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.test.ts`
+  - result:
+    - `3 passed` files
+    - `40 passed` tests
+
+### Updated Outcome
+
+- The Stage-8 changed-source hard-limit issue is structurally fixed.
+- Stage 6 is complete again and the workflow has returned to Stage 7 for reruns.
+
+## 2026-03-07 Stage 7 rerun blocked by Claude live-provider limit
+
+### Chronological Log
+
+- 2026-03-07: Started a fresh Claude-only full backend rerun after the structural decomposition.
+- 2026-03-07: The rerun reached the live Claude runtime GraphQL file and failed multiple cases.
+- 2026-03-07: Isolated the first failing case:
+  - `tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts -t "keeps default temp workspace isolated from the server worktree git root"`
+  - result:
+    - fail
+  - captured provider evidence:
+    - `You've hit your limit · resets 10am (Europe/Berlin)`
+- 2026-03-07: Isolated the auto-approve case:
+  - `tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts -t "auto-approves Claude tool execution when autoExecuteTools is enabled"`
+  - result:
+    - fail
+  - the test timed out waiting for the Claude-driven file write after the provider-limited window had already been observed in the prior focused rerun.
+
+### Updated Outcome
+
+- Stage 7 is currently blocked by external Claude live-provider quota/availability, not re-closed.
+- No new deterministic source-level regression has been isolated from the structural decomposition itself.

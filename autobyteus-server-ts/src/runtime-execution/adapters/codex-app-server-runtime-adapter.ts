@@ -125,14 +125,19 @@ export class CodexAppServerRuntimeAdapter implements RuntimeAdapter {
       asNonEmptyString(params?.threadId) ??
       asNonEmptyString(params?.thread_id) ??
       asNonEmptyString(thread?.id);
+    const runtimeReferenceHint = threadIdHint
+      ? {
+          threadId: threadIdHint,
+        }
+      : null;
 
-    if (!normalizedMethod && !statusHint && !threadIdHint) {
+    if (!normalizedMethod && !statusHint && !runtimeReferenceHint) {
       return null;
     }
     return {
       normalizedMethod,
       statusHint,
-      threadIdHint,
+      runtimeReferenceHint,
     };
   }
 

@@ -93,6 +93,27 @@ const toRunRuntimeReference = (
   metadata: reference?.metadata ?? null,
 });
 
+const mergeUpdatedRuntimeReference = (
+  manifest: RunManifest,
+  runId: string,
+  runtimeKind: RuntimeKind,
+  runtimeReference:
+    | {
+        runtimeKind: RuntimeKind;
+        sessionId?: string | null;
+        threadId?: string | null;
+        metadata?: Record<string, unknown> | null;
+      }
+    | null
+    | undefined,
+): RunManifest =>
+  runtimeReference
+    ? {
+        ...manifest,
+        runtimeReference: toRunRuntimeReference(runId, runtimeKind, runtimeReference),
+      }
+    : manifest;
+
 type AgentLike = {
   postUserMessage: (message: AgentInputUserMessage) => Promise<void>;
 };
@@ -153,6 +174,20 @@ export class RunContinuationService {
       if (!sendResult.accepted) {
         throw buildCommandFailureError(sendResult.code, sendResult.message);
       }
+      if (sendResult.runtimeReference) {
+        const manifest = await this.manifestStore.readManifest(runId);
+        if (manifest) {
+          const refreshedManifest = mergeUpdatedRuntimeReference(
+            manifest,
+            runId,
+            manifest.runtimeKind,
+            sendResult.runtimeReference,
+          );
+          if (refreshedManifest !== manifest) {
+            await this.manifestStore.writeManifest(runId, refreshedManifest);
+          }
+        }
+      }
       await this.indexStore.updateRow(runId, {
         lastKnownStatus: "ACTIVE",
         lastActivityAt: new Date().toISOString(),
@@ -204,9 +239,19 @@ export class RunContinuationService {
       throw buildCommandFailureError(sendResult.code, sendResult.message);
     }
 
+    const refreshedManifest = mergeUpdatedRuntimeReference(
+      persistedManifest,
+      runId,
+      persistedManifest.runtimeKind,
+      sendResult.runtimeReference,
+    );
+    if (refreshedManifest !== persistedManifest) {
+      await this.manifestStore.writeManifest(runId, refreshedManifest);
+    }
+
     await this.runHistoryService.upsertRunHistoryRow({
       runId,
-      manifest: persistedManifest,
+      manifest: refreshedManifest,
       summary: compactSummary(input.userInput.content),
       lastKnownStatus: "ACTIVE",
       lastActivityAt: new Date().toISOString(),
@@ -291,6 +336,23 @@ export class RunContinuationService {
     });
     if (!sendResult.accepted) {
       throw buildCommandFailureError(sendResult.code, sendResult.message);
+    }
+
+    const refreshedManifest = mergeUpdatedRuntimeReference(
+      manifest,
+      runId,
+      manifest.runtimeKind,
+      sendResult.runtimeReference,
+    );
+    if (refreshedManifest !== manifest) {
+      await this.manifestStore.writeManifest(runId, refreshedManifest);
+      await this.runHistoryService.upsertRunHistoryRow({
+        runId,
+        manifest: refreshedManifest,
+        summary: compactSummary(input.userInput.content),
+        lastKnownStatus: "ACTIVE",
+        lastActivityAt: new Date().toISOString(),
+      });
     }
 
     return { runId, ignoredConfigFields: [] };

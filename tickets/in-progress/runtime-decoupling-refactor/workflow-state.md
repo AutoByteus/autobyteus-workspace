@@ -7,29 +7,29 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 ## Current Snapshot
 
 - Ticket: `runtime-decoupling-refactor`
-- Current Stage: `6`
+- Current Stage: `7`
 - Next Stage: `7`
-- Code Edit Permission: `Unlocked`
-- Active Re-Entry: `Yes`
-- Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `Local Fix`
-- Last Transition ID: `T-157`
-- Last Updated: `2026-03-06`
+- Code Edit Permission: `Locked`
+- Active Re-Entry: `No`
+- Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
+- Last Transition ID: `T-172`
+- Last Updated: `2026-03-07`
 
 ## Stage Gates
 
 | Stage | Gate Status (`Not Started`/`In Progress`/`Pass`/`Fail`/`Blocked`) | Gate Rule Summary | Evidence |
 | --- | --- | --- | --- |
 | 0 Bootstrap + Draft Requirement | Pass | Ticket bootstrap complete + `requirements.md` Draft captured | `tickets/in-progress/runtime-decoupling-refactor/requirements.md` |
-| 1 Investigation + Triage | Pass | Known-good parity investigation completed: focused live Codex lifecycle behavior matches `origin/personal` on the normal path, and the remaining deterministic delta is isolated to the refactor-only Vitest `CODEX_HOME` override path. | `tickets/in-progress/runtime-decoupling-refactor/investigation-notes.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
+| 1 Investigation + Triage | Pass | Investigation completed for the suspected Claude regressions. The previously failing Claude team-runtime cases all passed in isolation, the full Claude team-runtime file passed, and the full Claude-only backend suite passed cleanly. The earlier SQLite parallel lock remains classified as local test-harness contention rather than a runtime-decoupling product defect. | `tickets/in-progress/runtime-decoupling-refactor/investigation-notes.md`, `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
 | 2 Requirements | Pass | Requirements refined with Claude sandbox/permission-mode configurability and parity acceptance checks (`R-018`, `AC-031`, `AC-032`). | `tickets/in-progress/runtime-decoupling-refactor/requirements.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
 | 3 Design Basis | Pass | Proposed design updated to `v14` for Claude permission-mode resolution seam and session-state propagation (`C-047`, `C-048`). | `tickets/in-progress/runtime-decoupling-refactor/proposed-design.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
 | 4 Runtime Modeling | Pass | Future-state call stack updated to `v13` with `UC-024` covering Claude permission-mode resolution precedence + persistence behavior. | `tickets/in-progress/runtime-decoupling-refactor/future-state-runtime-call-stack.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
 | 5 Review Gate | Pass | Deep-review rounds `25` and `26` completed clean; `Go Confirmed` established for Claude sandbox parity refinement scope. | `tickets/in-progress/runtime-decoupling-refactor/future-state-runtime-call-stack-review.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
-| 6 Implementation | In Progress | Stage-8 local-fix re-entry is active to remove the Claude transcript compatibility alias and reconcile the latest `origin/personal` merge conflicts against the decoupled architecture. | `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
-| 7 API/E2E Testing | Pass | Full runtime-enabled backend suite completed green (`262 passed | 3 skipped` files, `1197 passed | 8 skipped` tests) and the frontend suite remained green, so executable acceptance criteria are closed for the prior snapshot. | `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
-| 8 Code Review | Fail | Deep re-review found one remaining no-legacy violation: Claude transcript migration still preserves source session ids as a compatibility alias cache key after session-id resolution. | `tickets/in-progress/runtime-decoupling-refactor/code-review.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
-| 9 Docs Sync | Not Started | Deferred pending Stage-6 local-fix re-entry closure. | `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
-| 10 Handoff / Ticket State | In Progress | Handoff is reopened behind a Stage-6 local-fix re-entry because runtime gates are green but one architecture review finding remains. | `tickets/in-progress/runtime-decoupling-refactor/code-review.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
+| 6 Implementation | Pass | Structural decomposition local fix completed. The previously oversized changed files are now back under the Stage-8 hard limit: `team-member-runtime-orchestrator.ts` (`266` non-empty), `run-history-service.ts` (`475`), and `claude-agent-sdk-runtime-service.ts` (`494`). TypeScript compile and focused unit coverage passed. | `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
+| 7 API/E2E Testing | Blocked | Stage-7 rerun is currently blocked by external Claude live-provider quota/availability. Focused Claude reruns now fail with provider output like `You've hit your limit · resets 10am (Europe/Berlin)`, so the live backend gate cannot be re-closed honestly in the current window. | `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md`, `tickets/in-progress/runtime-decoupling-refactor/investigation-notes.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
+| 8 Code Review | In Progress | The Stage-8 structural hard-limit blocker is fixed, but final re-review cannot resume until Stage 7 is re-closed on clean live backend evidence after the Claude provider limit clears. | `tickets/in-progress/runtime-decoupling-refactor/code-review.md`, `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
+| 9 Docs Sync | Not Started | Deferred pending Stage-6 structural local-fix closure and Stage-8 re-review pass. | `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
+| 10 Handoff / Ticket State | In Progress | Handoff remains reopened behind the Stage-8 structural local-fix re-entry. The ticket cannot return to handoff-ready status until the oversized changed-source files are decomposed and the backend gates are rerun. | `tickets/in-progress/runtime-decoupling-refactor/code-review.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -76,15 +76,15 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 - Stage 5 gate is `Go Confirmed`: `Yes`
 - Required upstream artifacts are current: `Yes`
 - Pre-Edit Checklist Result: `Fail`
-- If `Fail`, source code edits are prohibited.
+- Source code edits are not currently permitted because Stage 7 is blocked pending a clean Claude live-provider rerun window.
 
 ## Re-Entry Declaration
 
-- Trigger Stage (`5`/`6`/`7`/`8`): `8`
-- Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `Local Fix`
-- Required Return Path: `6 -> 7`
-- Required Upstream Artifacts To Update Before Code Edits: `workflow-state.md`, `code-review.md`, `implementation-progress.md`
-- Resume Condition: `Claude transcript-store compatibility alias retention is removed, latest personal-merge conflicts are reconciled, runtime verification is rerun as needed, and Stage-8 re-review passes cleanly`
+- Trigger Stage (`5`/`6`/`7`/`8`): `7`
+- Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
+- Required Return Path: `N/A`
+- Required Upstream Artifacts To Update Before Code Edits: `workflow-state.md`, `implementation-progress.md`, `investigation-notes.md`
+- Resume Condition: `Claude live-provider quota or availability recovers enough for the focused and full Claude runtime reruns to complete cleanly, after which Stage 7 can be re-evaluated and Stage 8 can resume.`
 
 ## Transition Log (Append-Only)
 
@@ -248,6 +248,21 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | T-155 | 2026-03-06 | 7 | 6 | Stage-7 full backend rerun failed deterministically in the live Codex image-context/history scenario: `CodexThreadHistoryReader` does not treat `thread ... is not materialized yet; includeTurns is unavailable before first user message` as a transient retry condition, so the workflow re-enters Stage 6 for a bounded local fix with code edits remaining unlocked. | Local Fix | Unlocked | workflow-state.md, investigation-notes.md, implementation-progress.md |
 | T-156 | 2026-03-06 | 6 | 7 | Investigation correction completed: the earlier full-backend `run_bash` timeout does not reproduce in isolation or at file scope, while the remaining deterministic Codex blocker is the live `generate_image` metadata case. Stage 7 is therefore blocked on environment/tool availability or explicit waiver, and code edits are relocked. | N/A | Locked | workflow-state.md, investigation-notes.md, implementation-progress.md |
 | T-157 | 2026-03-06 | 8 | 6 | User requested continued no-legacy cleanup under the workflow skill; Stage-8 local-fix re-entry is active for Claude transcript alias removal and latest `origin/personal` merge reconciliation, and code edits are now unlocked. | Local Fix | Unlocked | workflow-state.md, implementation-progress.md |
+| T-158 | 2026-03-07 | 6 | 7 | Focused Claude cwd/runtime-reference fixes were verified and the combined runtime-enabled backend rerun was started to re-close Stage 7. | Local Fix | Unlocked | workflow-state.md, implementation-progress.md |
+| T-159 | 2026-03-07 | 7 | 7 | Combined runtime-enabled backend rerun failed (`3 files / 7 tests`) and code edits were relocked while the failure set was classified. | Local Fix | Locked | workflow-state.md, implementation-progress.md, investigation-notes.md |
+| T-160 | 2026-03-07 | 7 | 6 | Stage-7 failure classified as Local Fix: merged Claude team GraphQL schema drift, team-run history runtime-binding regression, and shared-layer Claude-specific run-history branching require bounded remediation before rerunning Stage 7. | Local Fix | Unlocked | workflow-state.md, implementation-progress.md, investigation-notes.md, code-review.md |
+| T-161 | 2026-03-07 | 6 | 7 | Deterministic Claude/team local fixes completed with focused compile, unit, and live Claude team verification; proceeding to rerun the combined backend gate. | Local Fix | Unlocked | workflow-state.md, implementation-progress.md |
+| T-162 | 2026-03-07 | 7 | 7 | Combined backend rerun still failed in the live Codex websocket slice after deterministic fixes, so code edits were relocked while the remaining blocker was classified. | Unclear | Locked | workflow-state.md, implementation-progress.md, investigation-notes.md |
+| T-163 | 2026-03-07 | 7 | 1 | Remaining Stage-7 blocker classified as Unclear because isolated and reduced Codex reruns flipped between passing `edit_file` and timing out earlier lifecycle coverage, so workflow re-entered investigation before any further code edits. | Unclear | Locked | workflow-state.md, implementation-progress.md, investigation-notes.md, code-review.md |
+| T-164 | 2026-03-07 | 1 | 6 | Separate backend gates by runtime isolated a bounded Claude local defect: Claude V2 session bootstrap still mutates process-global cwd and fails when temp workspaces have already been removed. Reclassified from Unclear to Local Fix and reopened Stage 6 with code-edit permission unlocked. | Local Fix | Unlocked | workflow-state.md, implementation-progress.md, investigation-notes.md, code-review.md |
+| T-165 | 2026-03-07 | 6 | 7 | Separate backend full-suite reruns completed for Codex-only and Claude-only runtime gates; both gates remained red, so Stage 7 was explicitly re-evaluated with code edits relocked for classification. | Local Fix | Locked | workflow-state.md, implementation-progress.md, investigation-notes.md |
+| T-166 | 2026-03-07 | 7 | 6 | Stage-7 failures classified as Local Fix. Codex-only full backend failed only the live `generate_image` websocket metadata case, while Claude-only full backend failed three live runtime cases (manual approval flow, temp-workspace git-root isolation, and default temp-workspace isolation). Stage 6 reopened with code-edit permission unlocked for bounded remediation. | Local Fix | Unlocked | workflow-state.md, implementation-progress.md, investigation-notes.md |
+| T-167 | 2026-03-07 | 6 | 1 | After the isolated Claude temp-workspace fix, the full Claude-only backend suite still failed in the live Claude team-runtime file. User requested a return to investigation to determine whether the remaining failures are caused by the refactor. Code edits were relocked and workflow re-entered Stage 1 under `Unclear` classification. | Unclear | Locked | workflow-state.md, implementation-progress.md, investigation-notes.md |
+| T-168 | 2026-03-07 | 1 | 7 | Investigation completed: the previously suspected Claude regressions were not reproducible as deterministic refactor failures, the full Claude team-runtime file passed, and the full Claude-only backend suite passed cleanly. Workflow returned to Stage 7 with code edits still locked while the remaining ticket-level runtime-enabled backend gate is reconfirmed. | Local Fix | Locked | workflow-state.md, implementation-progress.md, investigation-notes.md |
+| T-169 | 2026-03-07 | 7 | 8 | Stage-7 backend gate re-closed on separate runtime-enabled reruns: full Claude-only backend passed (`230 files / 1089 tests`) and full Codex-only backend passed (`230 files / 1081 tests`), including the previously unstable live Codex runtime cases. Code edits remain locked while Stage 8 code review resumes. | Local Fix | Locked | workflow-state.md, implementation-progress.md, investigation-notes.md |
+| T-170 | 2026-03-07 | 8 | 6 | Stage-8 re-review failed on the mandatory changed-source hard-limit gate. `team-member-runtime-orchestrator.ts` (`736` effective non-empty lines), `run-history-service.ts` (`524`), and `claude-agent-sdk-runtime-service.ts` (`1002`) are all changed by this ticket and must be structurally decomposed before the architecture gate can pass. Stage 6 reopened as a Local Fix and code-edit permission is now unlocked. | Local Fix | Unlocked | workflow-state.md, code-review.md, implementation-progress.md |
+| T-171 | 2026-03-07 | 6 | 7 | Structural decomposition local fix completed. The oversized changed-source files were reduced below the Stage-8 hard limit, TypeScript compile passed, and focused unit coverage passed. Proceeding to Stage-7 backend reruns. | Local Fix | Unlocked | workflow-state.md, implementation-progress.md |
+| T-172 | 2026-03-07 | 7 | 7 | Stage-7 backend rerun is blocked by external Claude live-provider limits during focused live-runtime verification. Focused Claude reruns surfaced provider output like `You've hit your limit · resets 10am (Europe/Berlin)`, so code edits are relocked pending a clean rerun window instead of another speculative fix. | N/A | Locked | workflow-state.md, implementation-progress.md, investigation-notes.md |
 
 ## Audible Notification Log (Optional Tracking)
 
@@ -317,6 +332,10 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | 2026-03-06 | Transition | Stage-8 requirement-gap re-entry completed transitions `8->2->3->4->5->6`; Stage-5 reconfirmed Go and code edits are now unlocked for Claude sandbox parity implementation. | Success | N/A |
 | 2026-03-06 | Transition | Iteration-12 completed transitions `6->7->8->9->10` with runtime-enabled backend/full frontend pass evidence and code edits relocked in handoff-ready state. | Success | N/A |
 | 2026-03-06 | Gate | Stage 7 is blocked: the previously reported `run_bash` timeout did not reproduce, but the live Codex `generate_image` case remains the only deterministic backend blocker and code edits are now relocked pending environment fix or explicit waiver. | Success | N/A |
+| 2026-03-07 | Transition | Stage 1 investigation completed; Claude-only backend runtime acceptance is green again, code edits remain locked, and the workflow has returned to Stage 7 to reconfirm the remaining ticket-level backend runtime gate. | Success | N/A |
+| 2026-03-07 | Transition | Stage 7 backend gate passed on separate Claude and Codex runtime reruns; code edits remain locked and the workflow has advanced to Stage 8 code review. | Success | N/A |
+| 2026-03-07 | Re-entry | Stage 8 code review failed on the changed-source hard-limit gate; Stage 6 is active again, code edits are unlocked, and the next action is decomposing the oversized runtime, history, and orchestration modules. | Success | N/A |
+| 2026-03-07 | Gate | Stage 7 is active again. The structural hard-limit fix is implemented and code edits are relocked, but the next action is waiting for a clean Claude live-provider window before rerunning the blocked backend gate. | Success | N/A |
 
 ## Process Violation Log
 

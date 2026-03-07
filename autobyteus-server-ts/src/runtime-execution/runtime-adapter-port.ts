@@ -107,10 +107,15 @@ export interface RuntimeCommandResult {
   runtimeReference?: RuntimeRunReference | null;
 }
 
+export interface RuntimeReferenceHint {
+  sessionId?: string | null;
+  threadId?: string | null;
+}
+
 export interface RuntimeEventInterpretation {
   normalizedMethod?: string | null;
   statusHint?: "ACTIVE" | "IDLE" | "ERROR" | null;
-  threadIdHint?: string | null;
+  runtimeReferenceHint?: RuntimeReferenceHint | null;
 }
 
 export type RuntimeEventUnsubscribe = () => void;

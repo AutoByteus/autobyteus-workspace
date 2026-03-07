@@ -14,3 +14,12 @@ export interface TeamRuntimeMemberConfig {
   workspaceRootPath?: string | null;
   llmConfig?: Record<string, unknown> | null;
 }
+
+export interface RelayInterAgentMessageInput {
+  teamRunId: string;
+  senderMemberRunId: string;
+  recipientName: string;
+  content: string;
+  messageType?: string | null;
+  senderAgentName?: string | null;
+}

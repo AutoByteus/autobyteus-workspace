@@ -125,7 +125,9 @@ describe("CodexAppServerRuntimeAdapter", () => {
     expect(interpretation).toEqual({
       normalizedMethod: "turn/started",
       statusHint: "ACTIVE",
-      threadIdHint: "thread-2",
+      runtimeReferenceHint: {
+        threadId: "thread-2",
+      },
     });
   });
 });

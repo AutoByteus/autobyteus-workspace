@@ -42,7 +42,6 @@ describeClaudeRuntime("Claude team external-member runtime e2e (live transport)"
   let schema: GraphQLSchema;
   let graphql: typeof graphqlFn;
   let testDataDir: string | null = null;
-  const createdPromptIds = new Set<string>();
   const createdAgentDefinitionIds = new Set<string>();
   const createdTeamDefinitionIds = new Set<string>();
   const createdTeamRunIds = new Set<string>();
@@ -121,18 +120,6 @@ describeClaudeRuntime("Claude team external-member runtime e2e (live transport)"
     }
     createdAgentDefinitionIds.clear();
 
-    const deletePromptMutation = `
-      mutation DeletePrompt($id: String!) {
-        deletePrompt(id: $id) {
-          id
-        }
-      }
-    `;
-    for (const id of createdPromptIds) {
-      await exec(deletePromptMutation, { id });
-    }
-    createdPromptIds.clear();
-
   });
 
   const execGraphql = async <T>(query: string, variables?: Record<string, unknown>): Promise<T> => {
@@ -187,16 +174,7 @@ describeClaudeRuntime("Claude team external-member runtime e2e (live transport)"
       const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "claude-team-roundtrip-e2e-"));
       createdWorkspaceRoots.add(workspaceRootPath);
 
-      const createPromptMutation = `
-        mutation CreatePrompt($input: CreatePromptInput!) {
-          createPrompt(input: $input) {
-            id
-          }
-        }
-      `;
-      const promptName = `claude_team_roundtrip_prompt_${unique}`;
-      const promptCategory = `claude_team_roundtrip_category_${unique}`;
-      const promptContent = `
+      const instructions = `
 You are participating in a two-agent team roundtrip validation in a team with members "ping" and "pong".
 
 Rules:
@@ -206,15 +184,6 @@ Rules:
 4. If the user asks you to call send_message_to with explicit arguments, call send_message_to exactly once with those exact arguments and do not call any other tool.
 5. Keep assistant text responses very short.
 `;
-
-      const promptResult = await execGraphql<{ createPrompt: { id: string } }>(createPromptMutation, {
-        input: {
-          name: promptName,
-          category: promptCategory,
-          promptContent,
-        },
-      });
-      createdPromptIds.add(promptResult.createPrompt.id);
 
       const createAgentDefinitionMutation = `
         mutation CreateAgentDefinition($input: CreateAgentDefinitionInput!) {
@@ -230,8 +199,7 @@ Rules:
             name: `claude-ping-${unique}`,
             role: "assistant",
             description: "Claude ping agent for inter-agent roundtrip validation.",
-            systemPromptCategory: promptCategory,
-            systemPromptName: promptName,
+            instructions,
           },
         },
       );
@@ -242,8 +210,7 @@ Rules:
             name: `claude-pong-${unique}`,
             role: "assistant",
             description: "Claude pong agent for inter-agent roundtrip validation.",
-            systemPromptCategory: promptCategory,
-            systemPromptName: promptName,
+            instructions,
           },
         },
       );
@@ -265,17 +232,18 @@ Rules:
           input: {
             name: `claude-roundtrip-team-${unique}`,
             description: "Live Claude inter-agent roundtrip validation team.",
+            instructions: "Coordinate ping and pong to execute directed send_message_to hops.",
             coordinatorMemberName: "ping",
             nodes: [
               {
                 memberName: "ping",
-                referenceId: pingAgentDefinitionId,
-                referenceType: "AGENT",
+                ref: pingAgentDefinitionId,
+                refType: "AGENT",
               },
               {
                 memberName: "pong",
-                referenceId: pongAgentDefinitionId,
-                referenceType: "AGENT",
+                ref: pongAgentDefinitionId,
+                refType: "AGENT",
               },
             ],
           },
@@ -550,16 +518,7 @@ Rules:
       const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "claude-team-auto-approve-e2e-"));
       createdWorkspaceRoots.add(workspaceRootPath);
 
-      const createPromptMutation = `
-        mutation CreatePrompt($input: CreatePromptInput!) {
-          createPrompt(input: $input) {
-            id
-          }
-        }
-      `;
-      const promptName = `claude_team_auto_approve_prompt_${unique}`;
-      const promptCategory = `claude_team_auto_approve_category_${unique}`;
-      const promptContent = `
+      const instructions = `
 You are participating in a two-agent team validation in a team with members "ping" and "pong".
 
 Rules:
@@ -569,15 +528,6 @@ Rules:
 4. If the user asks you to call send_message_to with explicit arguments, call send_message_to exactly once with those exact arguments and do not call any other tool.
 5. Keep assistant text responses very short.
 `;
-
-      const promptResult = await execGraphql<{ createPrompt: { id: string } }>(createPromptMutation, {
-        input: {
-          name: promptName,
-          category: promptCategory,
-          promptContent,
-        },
-      });
-      createdPromptIds.add(promptResult.createPrompt.id);
 
       const createAgentDefinitionMutation = `
         mutation CreateAgentDefinition($input: CreateAgentDefinitionInput!) {
@@ -593,8 +543,7 @@ Rules:
             name: `claude-auto-approve-ping-${unique}`,
             role: "assistant",
             description: "Claude ping agent for auto-approve validation.",
-            systemPromptCategory: promptCategory,
-            systemPromptName: promptName,
+            instructions,
           },
         },
       );
@@ -605,8 +554,7 @@ Rules:
             name: `claude-auto-approve-pong-${unique}`,
             role: "assistant",
             description: "Claude pong agent for auto-approve validation.",
-            systemPromptCategory: promptCategory,
-            systemPromptName: promptName,
+            instructions,
           },
         },
       );
@@ -628,17 +576,18 @@ Rules:
           input: {
             name: `claude-auto-approve-team-${unique}`,
             description: "Live Claude inter-agent auto-approve validation team.",
+            instructions: "Coordinate ping and pong to execute directed send_message_to hops.",
             coordinatorMemberName: "ping",
             nodes: [
               {
                 memberName: "ping",
-                referenceId: pingAgentDefinitionId,
-                referenceType: "AGENT",
+                ref: pingAgentDefinitionId,
+                refType: "AGENT",
               },
               {
                 memberName: "pong",
-                referenceId: pongAgentDefinitionId,
-                referenceType: "AGENT",
+                ref: pongAgentDefinitionId,
+                refType: "AGENT",
               },
             ],
           },
@@ -854,23 +803,7 @@ Rules:
       const workspaceId = createWorkspaceResult.createWorkspace.workspaceId;
       expect(workspaceId).toBeTruthy();
 
-      const createPromptMutation = `
-        mutation CreatePrompt($input: CreatePromptInput!) {
-          createPrompt(input: $input) {
-            id
-          }
-        }
-      `;
-      const promptName = `claude_team_workspace_prompt_${unique}`;
-      const promptCategory = `claude_team_workspace_category_${unique}`;
-      const promptResult = await execGraphql<{ createPrompt: { id: string } }>(createPromptMutation, {
-        input: {
-          name: promptName,
-          category: promptCategory,
-          promptContent: "Reply concisely in one sentence.",
-        },
-      });
-      createdPromptIds.add(promptResult.createPrompt.id);
+      const instructions = "Reply concisely in one sentence.";
 
       const createAgentDefinitionMutation = `
         mutation CreateAgentDefinition($input: CreateAgentDefinitionInput!) {
@@ -886,8 +819,7 @@ Rules:
             name: `claude-professor-${unique}`,
             role: "assistant",
             description: "Claude team workspace lifecycle professor agent.",
-            systemPromptCategory: promptCategory,
-            systemPromptName: promptName,
+            instructions,
           },
         },
       );
@@ -907,12 +839,13 @@ Rules:
           input: {
             name: `claude-workspace-team-${unique}`,
             description: "Claude workspace lifecycle validation team.",
+            instructions: "Coordinate workspace lifecycle checks.",
             coordinatorMemberName: "professor",
             nodes: [
               {
                 memberName: "professor",
-                referenceId: professorAgentDefinitionId,
-                referenceType: "AGENT",
+                ref: professorAgentDefinitionId,
+                refType: "AGENT",
               },
             ],
           },
@@ -1241,23 +1174,7 @@ Rules:
       const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "claude-team-history-projection-e2e-"));
       createdWorkspaceRoots.add(workspaceRootPath);
 
-      const createPromptMutation = `
-        mutation CreatePrompt($input: CreatePromptInput!) {
-          createPrompt(input: $input) {
-            id
-          }
-        }
-      `;
-      const promptName = `claude_team_history_projection_prompt_${unique}`;
-      const promptCategory = `claude_team_history_projection_category_${unique}`;
-      const promptResult = await execGraphql<{ createPrompt: { id: string } }>(createPromptMutation, {
-        input: {
-          name: promptName,
-          category: promptCategory,
-          promptContent: "Reply exactly with the requested token and no additional text.",
-        },
-      });
-      createdPromptIds.add(promptResult.createPrompt.id);
+      const instructions = "Reply exactly with the requested token and no additional text.";
 
       const createAgentDefinitionMutation = `
         mutation CreateAgentDefinition($input: CreateAgentDefinitionInput!) {
@@ -1273,8 +1190,7 @@ Rules:
             name: `claude-history-professor-${unique}`,
             role: "assistant",
             description: "Claude team-history projection professor agent.",
-            systemPromptCategory: promptCategory,
-            systemPromptName: promptName,
+            instructions,
           },
         },
       );
@@ -1294,12 +1210,13 @@ Rules:
           input: {
             name: `claude-history-team-${unique}`,
             description: "Claude team-member history projection validation team.",
+            instructions: "Coordinate continuation and preserve member context.",
             coordinatorMemberName: "professor",
             nodes: [
               {
                 memberName: "professor",
-                referenceId: professorAgentDefinitionId,
-                referenceType: "AGENT",
+                ref: professorAgentDefinitionId,
+                refType: "AGENT",
               },
             ],
           },
@@ -1548,29 +1465,13 @@ Rules:
       const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "claude-team-two-member-history-e2e-"));
       createdWorkspaceRoots.add(workspaceRootPath);
 
-      const createPromptMutation = `
-        mutation CreatePrompt($input: CreatePromptInput!) {
-          createPrompt(input: $input) {
-            id
-          }
-        }
-      `;
-      const promptName = `claude_team_two_member_history_prompt_${unique}`;
-      const promptCategory = `claude_team_two_member_history_category_${unique}`;
-      const promptResult = await execGraphql<{ createPrompt: { id: string } }>(createPromptMutation, {
-        input: {
-          name: promptName,
-          category: promptCategory,
-          promptContent: `
+      const instructions = `
 You are in a two-member team ("professor", "student").
 Rules:
 1. If user asks for exact reply token, reply exactly that token.
 2. If user asks to call send_message_to with explicit JSON args, call send_message_to exactly once with those args.
 3. Do not run any other tool.
-`,
-        },
-      });
-      createdPromptIds.add(promptResult.createPrompt.id);
+`;
 
       const createAgentDefinitionMutation = `
         mutation CreateAgentDefinition($input: CreateAgentDefinitionInput!) {
@@ -1586,8 +1487,7 @@ Rules:
             name: `claude-professor-history-${unique}`,
             role: "assistant",
             description: "Professor for two-member history restore test.",
-            systemPromptCategory: promptCategory,
-            systemPromptName: promptName,
+            instructions,
           },
         },
       );
@@ -1598,8 +1498,7 @@ Rules:
             name: `claude-student-history-${unique}`,
             role: "assistant",
             description: "Student for two-member history restore test.",
-            systemPromptCategory: promptCategory,
-            systemPromptName: promptName,
+            instructions,
           },
         },
       );
@@ -1619,17 +1518,18 @@ Rules:
           input: {
             name: `claude-two-member-history-team-${unique}`,
             description: "Two-member history restore regression test.",
+            instructions: "Coordinate professor and student for history restore validation.",
             coordinatorMemberName: "professor",
             nodes: [
               {
                 memberName: "professor",
-                referenceId: professorDef.createAgentDefinition.id,
-                referenceType: "AGENT",
+                ref: professorDef.createAgentDefinition.id,
+                refType: "AGENT",
               },
               {
                 memberName: "student",
-                referenceId: studentDef.createAgentDefinition.id,
-                referenceType: "AGENT",
+                ref: studentDef.createAgentDefinition.id,
+                refType: "AGENT",
               },
             ],
           },

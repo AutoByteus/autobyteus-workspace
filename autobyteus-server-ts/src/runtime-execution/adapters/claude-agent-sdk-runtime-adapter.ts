@@ -118,19 +118,25 @@ export class ClaudeAgentSdkRuntimeAdapter implements RuntimeAdapter {
     }
 
     const params = asObject(payload.params);
-    const threadIdHint =
-      asNonEmptyString(params?.threadId) ??
-      asNonEmptyString(params?.thread_id) ??
+    const resolvedSessionId =
       asNonEmptyString(params?.sessionId) ??
-      asNonEmptyString(params?.session_id);
+      asNonEmptyString(params?.session_id) ??
+      asNonEmptyString(params?.threadId) ??
+      asNonEmptyString(params?.thread_id);
+    const runtimeReferenceHint = resolvedSessionId
+      ? {
+          sessionId: resolvedSessionId,
+          threadId: resolvedSessionId,
+        }
+      : null;
 
-    if (!rawMethod && !statusHint && !threadIdHint) {
+    if (!rawMethod && !statusHint && !runtimeReferenceHint) {
       return null;
     }
     return {
       normalizedMethod: rawMethod,
       statusHint,
-      threadIdHint,
+      runtimeReferenceHint,
     };
   }
 

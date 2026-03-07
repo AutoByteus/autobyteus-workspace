@@ -10,6 +10,7 @@ import {
   getRuntimeAdapterRegistry,
   type RuntimeAdapterRegistry,
 } from "../../runtime-execution/runtime-adapter-registry.js";
+import type { RuntimeReferenceHint } from "../../runtime-execution/runtime-adapter-port.js";
 import { getRuntimeSessionStore, type RuntimeSessionStore } from "../../runtime-execution/runtime-session-store.js";
 import {
   RunEditableFieldFlags,
@@ -26,71 +27,18 @@ import {
   canonicalizeWorkspaceRootPath,
   workspaceDisplayNameFromRootPath,
 } from "../utils/workspace-path-normalizer.js";
+import {
+  asObject,
+  compactSummary,
+  extractSummaryFromRawTraces,
+  parseStatus,
+} from "./run-history-service-helpers.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
 };
 
 const nowIso = (): string => new Date().toISOString();
-
-const compactSummary = (value: string | null): string => {
-  const normalized = (value ?? "").replace(/\s+/g, " ").trim();
-  if (!normalized) {
-    return "";
-  }
-  if (normalized.length <= 100) {
-    return normalized;
-  }
-  return `${normalized.slice(0, 97)}...`;
-};
-
-const parseStatus = (value: unknown): RunKnownStatus | null => {
-  if (typeof value !== "string") {
-    return null;
-  }
-  const normalized = value.toUpperCase();
-  if (normalized.includes("IDLE") || normalized.includes("SHUTDOWN")) {
-    return "IDLE";
-  }
-  if (normalized.includes("ERROR") || normalized.includes("FAIL")) {
-    return "ERROR";
-  }
-  if (normalized.includes("UNINITIALIZED")) {
-    return "IDLE";
-  }
-  if (normalized.includes("RUN") || normalized.includes("ACTIVE") || normalized.includes("THINK")) {
-    return "ACTIVE";
-  }
-  if (normalized.length > 0) {
-    return "ACTIVE";
-  }
-  return null;
-};
-
-const asObject = (value: unknown): Record<string, unknown> | null =>
-  value && typeof value === "object" && !Array.isArray(value)
-    ? (value as Record<string, unknown>)
-    : null;
-
-const extractSummaryFromRawTraces = (
-  active: Array<Record<string, unknown>>,
-  archive: Array<Record<string, unknown>>,
-): string => {
-  const traces = [...archive, ...active].sort((a, b) => {
-    const tsA = Number(a.ts ?? 0);
-    const tsB = Number(b.ts ?? 0);
-    return tsA - tsB;
-  });
-  for (const trace of traces) {
-    if (trace.trace_type !== "user") {
-      continue;
-    }
-    if (typeof trace.content === "string" && trace.content.trim()) {
-      return compactSummary(trace.content);
-    }
-  }
-  return "";
-};
 
 export interface DeleteRunHistoryResult {
   success: boolean;
@@ -268,7 +216,13 @@ export class RunHistoryService {
       return;
     }
 
-    let interpretation: { normalizedMethod?: string | null; statusHint?: string | null; threadIdHint?: string | null } | null = null;
+    let interpretation:
+      | {
+          normalizedMethod?: string | null;
+          statusHint?: string | null;
+          runtimeReferenceHint?: RuntimeReferenceHint | null;
+        }
+      | null = null;
     try {
       const adapter = this.runtimeAdapterRegistry.resolveAdapter(runtimeKind);
       interpretation = adapter.interpretRuntimeEvent?.(payload) ?? null;
@@ -289,10 +243,7 @@ export class RunHistoryService {
       interpretation.statusHint === "ERROR"
         ? interpretation.statusHint
         : null;
-    const threadIdHint =
-      typeof interpretation.threadIdHint === "string" && interpretation.threadIdHint.trim().length > 0
-        ? interpretation.threadIdHint.trim()
-        : null;
+    const runtimeReferenceHint = this.normalizeRuntimeReferenceHint(interpretation.runtimeReferenceHint);
 
     const existing = await this.indexStore.getRow(runId);
     if (!existing) {
@@ -306,8 +257,8 @@ export class RunHistoryService {
         lastKnownStatus: "ACTIVE",
         lastActivityAt: nowIso(),
       });
-      if (threadIdHint) {
-        await this.updateManifestThreadId(runId, threadIdHint);
+      if (runtimeReferenceHint) {
+        await this.updateManifestRuntimeReferenceHint(runId, runtimeReferenceHint);
       }
       return;
     }
@@ -317,8 +268,8 @@ export class RunHistoryService {
       lastActivityAt: nowIso(),
       lastKnownStatus: status ?? existing.lastKnownStatus,
     });
-    if (threadIdHint) {
-      await this.updateManifestThreadId(runId, threadIdHint);
+    if (runtimeReferenceHint) {
+      await this.updateManifestRuntimeReferenceHint(runId, runtimeReferenceHint);
     }
   }
 
@@ -455,19 +406,48 @@ export class RunHistoryService {
     return null;
   }
 
-  private async updateManifestThreadId(runId: string, threadId: string): Promise<void> {
+  private normalizeRuntimeReferenceHint(
+    hint: RuntimeReferenceHint | null | undefined,
+  ): RuntimeReferenceHint | null {
+    const sessionId =
+      typeof hint?.sessionId === "string" && hint.sessionId.trim().length > 0
+        ? hint.sessionId.trim()
+        : null;
+    const threadId =
+      typeof hint?.threadId === "string" && hint.threadId.trim().length > 0
+        ? hint.threadId.trim()
+        : null;
+    if (!sessionId && !threadId) {
+      return null;
+    }
+    return {
+      sessionId,
+      threadId,
+    };
+  }
+
+  private async updateManifestRuntimeReferenceHint(
+    runId: string,
+    hint: RuntimeReferenceHint,
+  ): Promise<void> {
     const manifest = await this.manifestStore.readManifest(runId);
     if (!manifest) {
       return;
     }
-    if (manifest.runtimeReference.threadId === threadId) {
+    const nextSessionId = hint.sessionId ?? manifest.runtimeReference.sessionId ?? null;
+    const nextThreadId = hint.threadId ?? manifest.runtimeReference.threadId ?? null;
+    if (
+      manifest.runtimeReference.sessionId === nextSessionId &&
+      manifest.runtimeReference.threadId === nextThreadId
+    ) {
       return;
     }
     await this.manifestStore.writeManifest(runId, {
       ...manifest,
       runtimeReference: {
         ...manifest.runtimeReference,
-        threadId,
+        sessionId: nextSessionId,
+        threadId: nextThreadId,
       },
     });
   }

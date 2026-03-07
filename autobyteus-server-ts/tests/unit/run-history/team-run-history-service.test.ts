@@ -9,19 +9,19 @@ describe("TeamRunHistoryService", () => {
   let memoryDir: string;
   let service: TeamRunHistoryService;
   let hasActiveMemberBinding: ReturnType<typeof vi.fn>;
-  let getActiveMemberBindings: ReturnType<typeof vi.fn>;
+  let getTeamBindings: ReturnType<typeof vi.fn>;
 
   beforeEach(async () => {
     memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-team-run-history-service-"));
     hasActiveMemberBinding = vi.fn().mockReturnValue(false);
-    getActiveMemberBindings = vi.fn().mockReturnValue([]);
+    getTeamBindings = vi.fn().mockReturnValue([]);
     service = new TeamRunHistoryService(memoryDir, {
       teamRunManager: {
         getTeamRun: () => null,
       } as any,
       teamMemberRuntimeOrchestrator: {
         hasActiveMemberBinding,
-        getActiveMemberBindings,
+        getTeamBindings,
       } as any,
     });
   });
@@ -178,7 +178,7 @@ describe("TeamRunHistoryService", () => {
       lastKnownStatus: "IDLE",
     });
 
-    getActiveMemberBindings.mockReturnValue([
+    getTeamBindings.mockReturnValue([
       {
         memberRouteKey: "professor",
         memberName: "Professor",
@@ -224,7 +224,7 @@ describe("TeamRunHistoryService", () => {
       lastKnownStatus: "ACTIVE",
     });
 
-    getActiveMemberBindings.mockReturnValue([]);
+    getTeamBindings.mockReturnValue([]);
     await service.onTeamTerminated(teamRunId, {
       memberBindingsOverride: [
         {
