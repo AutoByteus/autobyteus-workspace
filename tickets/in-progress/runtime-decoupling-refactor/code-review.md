@@ -952,3 +952,134 @@ Assessment note for `>220` delta-gate rows:
 
 - Decision: `Pass`
 - Re-entry required: `No`
+
+## Stage-8 Re-Review Addendum (2026-03-07) - Claude History Reload Restart Regression Fix
+
+## Review Scope
+
+- Stage: `8`
+- Review slice: bounded Claude restart-history local fix after focused and broader live verification
+- Reviewed source files:
+  - `autobyteus-server-ts/src/runtime-execution/runtime-adapter-port.ts`
+  - `autobyteus-server-ts/src/runtime-execution/adapters/claude-agent-sdk-runtime-adapter.ts`
+  - `autobyteus-server-ts/src/agent-team-execution/services/team-member-runtime-session-lifecycle-service.ts`
+  - `autobyteus-server-ts/src/agent-team-execution/services/team-member-runtime-orchestrator.ts`
+  - `autobyteus-server-ts/src/run-history/services/team-run-history-service.ts`
+  - `autobyteus-server-ts/src/api/graphql/services/team-run-mutation-service.ts`
+- Reviewed tests:
+  - `autobyteus-server-ts/tests/unit/agent-team-execution/team-member-runtime-orchestrator.test.ts`
+  - `autobyteus-server-ts/tests/unit/run-history/team-run-history-service.test.ts`
+  - `autobyteus-server-ts/tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts`
+- Verification commands:
+  - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`
+  - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/team-member-runtime-orchestrator.test.ts tests/unit/run-history/team-run-history-service.test.ts`
+  - `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts -t "restores complete team-member projection history after two turns and terminate|restores two-member team history after terminate/reopen and continues with full projection"`
+  - `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts`
+- Changed-line delta assessment:
+  - combined diff versus `HEAD`: `298` changed lines (`283` insertions, `15` deletions) -> `Pass`
+- Changed-source effective non-empty line sweep:
+  - `runtime-adapter-port.ts`: `123`
+  - `claude-agent-sdk-runtime-adapter.ts`: `231`
+  - `team-member-runtime-session-lifecycle-service.ts`: `482`
+  - `team-member-runtime-orchestrator.ts`: `281`
+  - `team-run-history-service.ts`: `434`
+  - `team-run-mutation-service.ts`: `493`
+  - all changed source files remain within the Stage-8 `<=500` hard limit -> `Pass`
+
+## Findings
+
+- None.
+
+## Architecture / Decoupling Review
+
+- The runtime-reference refresh stays behind the runtime-adapter contract instead of reintroducing a Claude-specific branch inside shared run-history services.
+- Team-manifest persistence now consumes refreshed active member bindings from the team-member orchestration boundary, which is the correct ownership boundary for member-runtime session state.
+- Termination persistence now captures the refreshed member-binding snapshot before the registry is cleared. This restores canonical state persistence without adding a backward-compatibility alias or legacy lookup path.
+- The restart-equivalent E2E strengthening clears in-memory Claude runtime state before projection checks, so the test now proves persisted canonical state rather than passing through in-memory transcript leftovers.
+- No new legacy or backward-compatibility path was introduced by this fix slice.
+
+## Gate Decision
+
+- Decision: `Pass`
+- Re-entry required: `No`
+- Residual risk: non-blocking Claude cleanup warnings remain visible in live tests, but the restart-equivalent projection/history acceptance path now closes cleanly.
+
+## Stage-8 Re-Review Addendum (2026-03-07) - File Locality Pass
+
+## Review Scope
+
+- Stage: `8`
+- Review slice: user-requested file-locality audit across runtime-decoupling surfaces
+- Review focus:
+  - provider-specific logic outside `codex-app-server/` and `claude-agent-sdk/`
+  - shared runtime files whose actual consumers live in a narrower domain and should be colocated there
+  - naming/location ambiguity that makes a shared seam look provider-specific
+
+## Findings
+
+1. `[P2]` `team-runtime-inter-agent-message-relay.ts` is misplaced under `runtime-execution/`.
+- File: `autobyteus-server-ts/src/runtime-execution/team-runtime-inter-agent-message-relay.ts`
+- Why this is a locality problem:
+  - it contains team-orchestration semantics (`teamRunId`, recipient member run id, sender agent ids)
+  - its only consumers are under `agent-team-execution/services/`
+  - it is not a reusable runtime-execution primitive in the same sense as adapter ports, session stores, or listener hubs
+- Locality consequence:
+  - readers looking in `runtime-execution/` now see a team-orchestration service mixed into the runtime boundary layer
+  - the real ownership boundary is obscured
+- Required fix:
+  - move it into `agent-team-execution/services/` (or equivalent team-orchestration locality) and update imports
+
+2. `[P3]` `runtime-method-normalizer.ts` is not a Codex-only file, but its current root-level placement makes the shared seam look provider-specific and caused real confusion.
+- File: `autobyteus-server-ts/src/runtime-execution/runtime-method-normalizer.ts`
+- What the audit proved:
+  - it is consumed by both the shared `MethodRuntimeEventAdapter` and the Codex-local wrapper `codex-runtime-method-normalizer.ts`
+  - root-level `runtime-execution/` files do not contain provider-name branching, so this is not a Codex leakage bug
+- Why it is still a locality clarity problem:
+  - its name and flat placement under `runtime-execution/` do not communicate that it is a shared method-runtime canonicalization seam
+  - it is easy to mistake it for misplaced Codex logic, which is exactly what happened in this review
+- Required fix:
+  - move it into a dedicated shared method-runtime locality (for example `runtime-execution/method-runtime/`) and keep the Codex-local wrapper in `codex-app-server/`
+
+## Gate Decision
+
+- Decision: `Fail`
+- Re-entry required: `Local Fix (6 -> 7 -> 8)`
+- Required fix scope:
+  - move the team-runtime relay into team-execution locality
+  - move the shared method-runtime normalizer into an explicit shared method-runtime locality
+
+## Stage-8 Closure Addendum (2026-03-07) - File Locality Cleanup
+
+## Review Scope
+
+- Stage: `8`
+- Review slice: bounded file-locality cleanup after Stage-8 locality finding
+- Reviewed source moves:
+  - `autobyteus-server-ts/src/agent-team-execution/services/team-runtime-inter-agent-message-relay.ts`
+  - `autobyteus-server-ts/src/runtime-execution/method-runtime/runtime-method-normalizer.ts`
+- Reviewed touched import sites:
+  - `autobyteus-server-ts/src/agent-team-execution/services/team-member-runtime-orchestrator.ts`
+  - `autobyteus-server-ts/src/agent-team-execution/services/team-member-runtime-relay-service.ts`
+  - `autobyteus-server-ts/src/services/agent-streaming/method-runtime-event-adapter.ts`
+  - `autobyteus-server-ts/src/runtime-execution/codex-app-server/codex-runtime-method-normalizer.ts`
+- Verification commands:
+  - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`
+  - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/team-member-runtime-orchestrator.test.ts tests/unit/services/agent-streaming/runtime-event-message-mapper.test.ts`
+  - `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts -t "routes live inter-agent send_message_to ping->pong->ping roundtrip in Claude team runtime"`
+  - `RUN_CODEX_E2E=1 CODEX_APP_SERVER_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts -t "streams recipient reasoning incrementally after send_message_to in codex team runtime"`
+
+## Findings
+
+- None in the post-fix locality slice.
+
+## Architecture / Decoupling Review
+
+- The team-runtime relay is now colocated with the team-member orchestration services that own it. This improves file locality without changing the runtime boundary contract.
+- The shared method-runtime normalizer remains intentionally outside provider folders because it is not Codex-only logic. Moving it into `runtime-execution/method-runtime/` makes that shared ownership explicit while preserving the Codex-local wrapper in `codex-app-server/`.
+- No new legacy, backward-compatibility path, or cross-runtime branching was introduced by the locality cleanup.
+- The file-locality concern raised in review is now resolved without expanding provider-specific logic into shared root files.
+
+## Gate Decision
+
+- Decision: `Pass`
+- Re-entry required: `No`

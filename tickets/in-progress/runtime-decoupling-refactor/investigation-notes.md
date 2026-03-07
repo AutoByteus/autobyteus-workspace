@@ -1531,3 +1531,67 @@
 - The unit-level alias fix is now confirmed in the live Codex team runtime path, not just in isolated mapper tests.
 - A new professor -> student team websocket regression test proves that after `send_message_to`, the student emits multiple non-empty reasoning `SEGMENT_CONTENT` deltas before completing the text answer.
 - The full Codex team runtime E2E file passed with the new regression in place (`3 passed`).
+
+## 2026-03-07 Investigation Addendum (Claude blank history after restart)
+
+### User-Reported Symptom
+
+- After closing and reopening the desktop app, previously completed team-member runs still reload correctly for:
+  - `autobyteus`
+  - `codex_app_server`
+- Equivalent Claude team-member runs come back blank in the UI after restart.
+- The report specifically called out earlier session-id handling work and asked for a comparison against `origin/personal`.
+
+### Evidence Gathered
+
+1. Current persisted Claude team manifests in installed app data show inconsistent member runtime references.
+   - Source:
+     - `~/.autobyteus/server-data/memory/agent_teams/team_class-room-simulation_6c7069df/team_run_manifest.json`
+     - `~/.autobyteus/server-data/memory/agent_teams/team_class-room-simulation_6c7069df/professor_93616d657c7cb106/run_manifest.json`
+     - `~/.autobyteus/server-data/memory/agent_teams/team_class-room-simulation_6c7069df/student_5cb89946f442f93e/run_manifest.json`
+   - Observed:
+     - `student.runtimeReference.sessionId = f06a5cbe-cd42-4e25-9706-cd7665cc7b8e` (resolved Claude session id)
+     - `professor.runtimeReference.sessionId = professor_93616d657c7cb106` (placeholder member run id)
+
+2. The placeholder session id is sufficient to blank projection after restart.
+   - `TeamMemberRunProjectionService` uses the persisted member binding runtime reference when it asks the runtime projection provider for Claude history.
+   - After a full process restart, the in-memory transcript store is empty, so the provider must query Claude using the persisted session id.
+   - If the persisted session id is still the placeholder member run id, the provider cannot retrieve the completed Claude conversation and the projection returns empty/blank.
+
+3. `origin/personal` had an active-binding refresh step that the refactor removed.
+   - `origin/personal` `team-run-history-service.ts` merged manifests using:
+     - `teamMemberRuntimeOrchestrator.getActiveMemberBindings(...)`
+   - `origin/personal` `team-member-runtime-orchestrator.ts` implemented `getActiveMemberBindings(...)` via `TeamMemberRuntimeBindingStateService`.
+   - `origin/personal` `TeamMemberRuntimeBindingStateService.refreshTeamBindingsFromRuntimeState(...)` explicitly pulled the latest Claude runtime reference from live runtime state:
+     - `claudeRuntimeService.getRunRuntimeReference(binding.memberRunId)`
+
+4. The refactor replaced that refresh path with a raw registry read.
+   - Current `team-run-history-service.ts` merges manifests using:
+     - `teamMemberRuntimeOrchestrator.getTeamBindings(...)`
+   - Current `team-member-runtime-orchestrator.ts` no longer exposes `getActiveMemberBindings(...)`.
+   - Current `team-member-runtime-session-lifecycle-service.ts.refreshBindingRuntimeReference(...)` only updates a binding when a direct command result already carries a new runtime reference.
+
+5. That is not enough for the coordinator/member receiving the original user turn.
+   - `ClaudeAgentSdkRuntimeAdapter.sendTurn(...)` returns `runtimeService.getRunRuntimeReference(runId)` immediately after scheduling the turn.
+   - At that moment the resolved Claude session id may not have been observed yet, so the returned runtime reference can still contain the placeholder member run id.
+   - Without the old active-binding refresh from live runtime state, the later resolved Claude session id is never persisted back into the team manifest for that member.
+
+### Root-Cause Classification
+
+- Classification: `Local Fix`
+- Ownership: `our refactor regression`
+- Confidence: high
+
+### Root Cause
+
+- The refactor removed the live Claude binding refresh path that used to canonicalize persisted team-member runtime references before team-manifest writes.
+- As a result, Claude coordinator/member runs can persist placeholder member-run ids instead of resolved Claude session ids.
+- After app restart, history reload for those members asks Claude for messages under the wrong session id and the UI shows a blank conversation.
+
+### Planned Fix Shape
+
+- Reintroduce a canonical, decoupled active-binding refresh path before team-manifest persistence.
+- Preserve the runtime-decoupled architecture by resolving refreshed runtime references through runtime adapters / runtime services rather than reintroducing shared-layer Claude-specific legacy behavior.
+- Add regression coverage for:
+  - persisted Claude member runtime reference canonicalization
+  - history/projection reload after restart-equivalent restore path

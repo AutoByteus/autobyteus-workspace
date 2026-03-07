@@ -10,7 +10,10 @@ import type {
 import { normalizeMemberRouteKey } from "../../run-history/utils/team-member-run-id.js";
 import { TempWorkspace } from "../../workspaces/temp-workspace.js";
 import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
-import type { TeamRuntimeExecutionMode } from "../../runtime-execution/runtime-adapter-port.js";
+import type {
+  RuntimeRunReference,
+  TeamRuntimeExecutionMode,
+} from "../../runtime-execution/runtime-adapter-port.js";
 import type { TeamRuntimeBindingRegistry, TeamRuntimeMode } from "./team-runtime-binding-registry.js";
 import type { TeamRuntimeMemberConfig } from "./team-member-runtime-orchestrator.types.js";
 import {
@@ -83,6 +86,25 @@ const mergeRuntimeReferenceMetadata = (
   return Object.keys(merged).length > 0 ? merged : null;
 };
 
+const isRuntimeReferenceChanged = (
+  current: TeamMemberRuntimeReference | null | undefined,
+  next: TeamMemberRuntimeReference | null | undefined,
+): boolean =>
+  current?.sessionId !== next?.sessionId ||
+  current?.threadId !== next?.threadId ||
+  JSON.stringify(current?.metadata ?? null) !== JSON.stringify(next?.metadata ?? null);
+
+const cloneMemberBinding = (binding: TeamRunMemberBinding): TeamRunMemberBinding => ({
+  ...binding,
+  runtimeReference: binding.runtimeReference
+    ? {
+        ...binding.runtimeReference,
+        metadata: binding.runtimeReference.metadata ? { ...binding.runtimeReference.metadata } : null,
+      }
+    : null,
+  llmConfig: binding.llmConfig ? { ...binding.llmConfig } : null,
+});
+
 export class TeamMemberRuntimeSessionLifecycleService {
   constructor(
     private readonly runtimeCompositionService: RuntimeCompositionService,
@@ -102,6 +124,31 @@ export class TeamMemberRuntimeSessionLifecycleService {
 
   getTeamBindings(teamRunId: string): TeamRunMemberBinding[] {
     return this.teamRuntimeBindingRegistry.getTeamBindings(teamRunId);
+  }
+
+  getActiveMemberBindings(teamRunId: string): TeamRunMemberBinding[] {
+    const state = this.teamRuntimeBindingRegistry.getTeamBindingState(teamRunId);
+    if (!state || state.memberBindings.length === 0) {
+      return [];
+    }
+
+    let changed = false;
+    const refreshedBindings = state.memberBindings.map((binding) => {
+      const nextRuntimeReference = this.resolveLatestRuntimeReference(binding);
+      if (isRuntimeReferenceChanged(binding.runtimeReference, nextRuntimeReference)) {
+        changed = true;
+      }
+      return {
+        ...binding,
+        runtimeReference: nextRuntimeReference,
+      };
+    });
+
+    if (changed) {
+      this.teamRuntimeBindingRegistry.upsertTeamBindings(teamRunId, state.mode, refreshedBindings);
+    }
+
+    return refreshedBindings.map((binding) => cloneMemberBinding(binding));
   }
 
   hasActiveMemberBinding(teamRunId: string): boolean {
@@ -433,5 +480,48 @@ export class TeamMemberRuntimeSessionLifecycleService {
     });
 
     this.teamRuntimeBindingRegistry.upsertTeamBindings(teamRunId, state.mode, nextBindings);
+  }
+
+  private resolveLatestRuntimeReference(
+    binding: TeamRunMemberBinding,
+  ): TeamMemberRuntimeReference | null {
+    const existingReference = binding.runtimeReference ?? null;
+
+    try {
+      const adapter = this.runtimeAdapterRegistry.resolveAdapter(binding.runtimeKind);
+      const latestReference = adapter.getRunRuntimeReference?.(binding.memberRunId) ?? null;
+      if (!latestReference) {
+        return existingReference;
+      }
+      return this.mergeLatestRuntimeReference(binding, latestReference);
+    } catch (error) {
+      logger.warn(
+        `Failed refreshing runtime reference for member '${binding.memberRunId}' (${binding.runtimeKind}): ${String(error)}`,
+      );
+      return existingReference;
+    }
+  }
+
+  private mergeLatestRuntimeReference(
+    binding: TeamRunMemberBinding,
+    latestReference: RuntimeRunReference,
+  ): TeamMemberRuntimeReference {
+    return {
+      runtimeKind: binding.runtimeKind,
+      sessionId:
+        latestReference.sessionId ??
+        latestReference.threadId ??
+        binding.runtimeReference?.sessionId ??
+        binding.memberRunId,
+      threadId:
+        latestReference.threadId ??
+        latestReference.sessionId ??
+        binding.runtimeReference?.threadId ??
+        null,
+      metadata: {
+        ...(binding.runtimeReference?.metadata ?? {}),
+        ...(latestReference.metadata ?? {}),
+      },
+    };
   }
 }

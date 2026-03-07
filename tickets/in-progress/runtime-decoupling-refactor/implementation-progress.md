@@ -1609,3 +1609,94 @@ This document tracks implementation and testing progress in real time, including
 - Outcome:
   - Stage 7 is re-closed as `Pass`
   - the ticket returns to Stage 10 handoff-ready with code edits locked
+
+## 2026-03-07 - Claude history reload regression (new local-fix slice)
+
+- User reported a new Claude-only regression after restart:
+  - completed team-member history reloads for AutoByteus and Codex
+  - equivalent Claude team-member runs come back blank after app restart
+- Investigation compared the refactor branch against `origin/personal` and inspected live installed app-data manifests under:
+  - `~/.autobyteus/server-data/memory/agent_teams/...`
+- Root cause is now classified as a bounded local refactor regression:
+  - the refactor removed the old active-binding refresh path that pulled the latest Claude session id from live runtime state before persisting team manifests
+  - current manifest persistence reads raw in-memory bindings without refreshing them, so coordinator members can keep placeholder member-run ids instead of resolved Claude session ids
+  - after restart, the history/projection restore path asks Claude for messages using the wrong persisted session id and returns a blank projection
+- Planned fix slice:
+  - add a decoupled active-binding runtime-reference refresh step before team-manifest persistence
+  - cover the seam with focused regression tests for persisted Claude member runtime references and restart-equivalent history reload
+
+## 2026-03-07 - Stage 6 bounded local fix execution (Claude history reload after restart)
+
+- Implemented a runtime-neutral refresh seam so team-member bindings pull the latest runtime reference from the owning runtime adapter before team manifest persistence.
+- Added `getRunRuntimeReference` to the runtime adapter port and implemented it for Claude in:
+  - [`autobyteus-server-ts/src/runtime-execution/runtime-adapter-port.ts`](../../../autobyteus-server-ts/src/runtime-execution/runtime-adapter-port.ts)
+  - [`autobyteus-server-ts/src/runtime-execution/adapters/claude-agent-sdk-runtime-adapter.ts`](../../../autobyteus-server-ts/src/runtime-execution/adapters/claude-agent-sdk-runtime-adapter.ts)
+- Restored canonical active-binding refresh and termination snapshot capture in:
+  - [`autobyteus-server-ts/src/agent-team-execution/services/team-member-runtime-session-lifecycle-service.ts`](../../../autobyteus-server-ts/src/agent-team-execution/services/team-member-runtime-session-lifecycle-service.ts)
+  - [`autobyteus-server-ts/src/agent-team-execution/services/team-member-runtime-orchestrator.ts`](../../../autobyteus-server-ts/src/agent-team-execution/services/team-member-runtime-orchestrator.ts)
+- Updated team-run persistence to consume refreshed bindings and to persist the termination snapshot even after the binding registry is cleared:
+  - [`autobyteus-server-ts/src/run-history/services/team-run-history-service.ts`](../../../autobyteus-server-ts/src/run-history/services/team-run-history-service.ts)
+  - [`autobyteus-server-ts/src/api/graphql/services/team-run-mutation-service.ts`](../../../autobyteus-server-ts/src/api/graphql/services/team-run-mutation-service.ts)
+- Strengthened regression coverage in:
+  - [`autobyteus-server-ts/tests/unit/agent-team-execution/team-member-runtime-orchestrator.test.ts`](../../../autobyteus-server-ts/tests/unit/agent-team-execution/team-member-runtime-orchestrator.test.ts)
+  - [`autobyteus-server-ts/tests/unit/run-history/team-run-history-service.test.ts`](../../../autobyteus-server-ts/tests/unit/run-history/team-run-history-service.test.ts)
+  - [`autobyteus-server-ts/tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts`](../../../autobyteus-server-ts/tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts)
+
+### Verification - 2026-03-07 (Claude history reload after restart)
+
+- Passed compile:
+  - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`
+- Passed focused unit verification:
+  - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/team-member-runtime-orchestrator.test.ts tests/unit/run-history/team-run-history-service.test.ts`
+  - result: `2 passed` files, `19 passed` tests
+- Passed focused restart-equivalent live Claude verification:
+  - `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts -t "restores complete team-member projection history after two turns and terminate|restores two-member team history after terminate/reopen and continues with full projection"`
+  - result: `1 passed` file, `2 passed` tests, `3 skipped`
+- Passed broader live Claude team-runtime file:
+  - `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts`
+  - result: `1 passed` file, `5 passed` tests
+- Non-blocking warnings still appeared during the full live file:
+  - optional raw-trace memory files missing during cleanup
+  - already-removed agent-team cleanup warning
+- Those warnings did not fail acceptance and did not affect the restored projection/history assertions.
+
+## 2026-03-07 - Stage 9 docs sync decision (Claude history reload regression)
+
+- No product-doc updates are required for the bounded Claude history-reload fix.
+- Rationale: the change is internal to runtime-reference persistence, team-run termination snapshotting, and restart-equivalent regression coverage. It does not change the public product workflow, UI contract, configuration surface, or documented runtime model.
+
+## 2026-03-07 - Stage 6 bounded local fix execution (file locality cleanup)
+
+- Stage 8 locality review found one real placement issue and one shared-seam clarity issue:
+  - moved [`autobyteus-server-ts/src/runtime-execution/team-runtime-inter-agent-message-relay.ts`](../../../autobyteus-server-ts/src/runtime-execution/team-runtime-inter-agent-message-relay.ts) into team-execution locality as [`autobyteus-server-ts/src/agent-team-execution/services/team-runtime-inter-agent-message-relay.ts`](../../../autobyteus-server-ts/src/agent-team-execution/services/team-runtime-inter-agent-message-relay.ts)
+  - moved shared [`autobyteus-server-ts/src/runtime-execution/runtime-method-normalizer.ts`](../../../autobyteus-server-ts/src/runtime-execution/runtime-method-normalizer.ts) into explicit shared method-runtime locality as [`autobyteus-server-ts/src/runtime-execution/method-runtime/runtime-method-normalizer.ts`](../../../autobyteus-server-ts/src/runtime-execution/method-runtime/runtime-method-normalizer.ts)
+- Updated the affected imports in:
+  - [`autobyteus-server-ts/src/agent-team-execution/services/team-member-runtime-orchestrator.ts`](../../../autobyteus-server-ts/src/agent-team-execution/services/team-member-runtime-orchestrator.ts)
+  - [`autobyteus-server-ts/src/agent-team-execution/services/team-member-runtime-relay-service.ts`](../../../autobyteus-server-ts/src/agent-team-execution/services/team-member-runtime-relay-service.ts)
+  - [`autobyteus-server-ts/src/services/agent-streaming/method-runtime-event-adapter.ts`](../../../autobyteus-server-ts/src/services/agent-streaming/method-runtime-event-adapter.ts)
+  - [`autobyteus-server-ts/src/runtime-execution/codex-app-server/codex-runtime-method-normalizer.ts`](../../../autobyteus-server-ts/src/runtime-execution/codex-app-server/codex-runtime-method-normalizer.ts)
+- Behavioral intent remains unchanged. The fix is strictly ownership/locality cleanup:
+  - team relay now lives with team orchestration
+  - method-runtime canonicalization now lives in an explicit shared method-runtime folder instead of looking like stray provider logic at the root of `runtime-execution/`
+
+### Verification - 2026-03-07 (file locality cleanup)
+
+- Passed compile:
+  - `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --noEmit`
+- Passed impacted unit verification:
+  - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/team-member-runtime-orchestrator.test.ts tests/unit/services/agent-streaming/runtime-event-message-mapper.test.ts`
+  - result: `2 passed` files, `50 passed` tests
+- Passed focused live Claude team verification:
+  - `RUN_CLAUDE_E2E=1 CLAUDE_AGENT_SDK_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts -t "routes live inter-agent send_message_to ping->pong->ping roundtrip in Claude team runtime"`
+  - result: `1 passed` file, `1 passed` test, `4 skipped`
+- Passed focused live Codex team verification:
+  - `RUN_CODEX_E2E=1 CODEX_APP_SERVER_ENABLED=true pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts -t "streams recipient reasoning incrementally after send_message_to in codex team runtime"`
+  - result: `1 passed` file, `1 passed` test, `2 skipped`
+- Outcome:
+  - file locality is improved without changing runtime behavior
+  - both impacted live team-runtime surfaces remained green after the moves
+
+## 2026-03-07 - Stage 9 docs sync decision (file locality cleanup)
+
+- No product-doc updates are required for the bounded file-locality cleanup.
+- Rationale: the change is an internal source-tree ownership correction plus import updates; it does not change the user-facing runtime model, configuration surface, or product workflow.

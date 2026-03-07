@@ -127,6 +127,7 @@ export interface RuntimeAdapter {
   readonly teamExecutionMode?: TeamRuntimeExecutionMode;
   createAgentRun?: (input: RuntimeCreateAgentRunInput) => Promise<RuntimeCreateResult>;
   restoreAgentRun?: (input: RuntimeRestoreAgentRunInput) => Promise<RuntimeCreateResult>;
+  getRunRuntimeReference?: (runId: string) => RuntimeRunReference | null;
   isRunActive?: (runId: string) => boolean;
   subscribeToRunEvents?: (
     runId: string,

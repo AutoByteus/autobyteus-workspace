@@ -414,14 +414,20 @@ export class TeamRunMutationService {
     try {
       const runtimeMode = this.teamMemberRuntimeOrchestrator.getTeamRuntimeMode(id);
       let success = false;
+      let terminatedMemberBindingsOverride: TeamRunMemberBinding[] | null = null;
       if (runtimeMode === "member_runtime") {
-        success = await this.teamMemberRuntimeOrchestrator.terminateMemberRuntimeSessions(id);
+        const terminationResult =
+          await this.teamMemberRuntimeOrchestrator.terminateMemberRuntimeSessionsWithSnapshot(id);
+        success = terminationResult.terminated;
+        terminatedMemberBindingsOverride = terminationResult.memberBindings;
       } else {
         success = await this.agentTeamRunManager.terminateTeamRun(id);
       }
       if (success) {
         try {
-          await this.teamRunHistoryService.onTeamTerminated(id);
+          await this.teamRunHistoryService.onTeamTerminated(id, {
+            memberBindingsOverride: terminatedMemberBindingsOverride ?? undefined,
+          });
         } catch (historyError) {
           logger.warn(`Failed to mark team run '${id}' terminated in history: ${String(historyError)}`);
         }

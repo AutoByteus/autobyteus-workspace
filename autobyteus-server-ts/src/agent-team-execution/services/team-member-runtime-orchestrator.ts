@@ -18,7 +18,7 @@ import type { TeamRunManifest, TeamRunMemberBinding, TeamMemberRuntimeReference 
 import {
   getTeamRuntimeInterAgentMessageRelay,
   type TeamRuntimeInterAgentMessageRelay,
-} from "../../runtime-execution/team-runtime-inter-agent-message-relay.js";
+} from "./team-runtime-inter-agent-message-relay.js";
 import type {
   RuntimeAdapter,
   RuntimeInterAgentRelayRequest,
@@ -95,9 +95,19 @@ export class TeamMemberRuntimeOrchestrator {
   }
 
   async terminateMemberRuntimeSessions(teamRunId: string): Promise<boolean> {
-    const bindings = this.teamRuntimeBindingRegistry.getTeamBindings(teamRunId);
+    const result = await this.terminateMemberRuntimeSessionsWithSnapshot(teamRunId);
+    return result.terminated;
+  }
+
+  async terminateMemberRuntimeSessionsWithSnapshot(
+    teamRunId: string,
+  ): Promise<{ terminated: boolean; memberBindings: TeamRunMemberBinding[] }> {
+    const bindings = this.sessionLifecycleService.getActiveMemberBindings(teamRunId);
     if (bindings.length === 0) {
-      return false;
+      return {
+        terminated: false,
+        memberBindings: [],
+      };
     }
 
     for (const binding of bindings) {
@@ -112,12 +122,19 @@ export class TeamMemberRuntimeOrchestrator {
       }
     }
 
-    this.teamRuntimeBindingRegistry.removeTeam(teamRunId);
-    return true;
+    this.sessionLifecycleService.removeTeam(teamRunId);
+    return {
+      terminated: true,
+      memberBindings: bindings,
+    };
   }
 
   hasActiveMemberBinding(teamRunId: string): boolean {
     return this.sessionLifecycleService.hasActiveMemberBinding(teamRunId);
+  }
+
+  getActiveMemberBindings(teamRunId: string): TeamRunMemberBinding[] {
+    return this.sessionLifecycleService.getActiveMemberBindings(teamRunId);
   }
 
   getTeamBindings(teamRunId: string): TeamRunMemberBinding[] {

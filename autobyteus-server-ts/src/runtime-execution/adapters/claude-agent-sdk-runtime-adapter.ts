@@ -91,6 +91,19 @@ export class ClaudeAgentSdkRuntimeAdapter implements RuntimeAdapter {
     };
   }
 
+  getRunRuntimeReference(runId: string) {
+    const runtimeReference = this.runtimeService.getRunRuntimeReference(runId);
+    if (!runtimeReference) {
+      return null;
+    }
+    return {
+      runtimeKind: this.runtimeKind,
+      sessionId: runtimeReference.sessionId,
+      threadId: runtimeReference.sessionId,
+      metadata: runtimeReference.metadata,
+    };
+  }
+
   isRunActive(runId: string): boolean {
     return this.runtimeService.hasRunSession(runId);
   }

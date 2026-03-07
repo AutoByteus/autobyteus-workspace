@@ -27,9 +27,14 @@ const createSubject = () => {
       return relayAdapterUnbind;
     }),
   } as any;
+  const claudeAdapter = {
+    getRunRuntimeReference: vi.fn(),
+  } as any;
   const runtimeAdapterRegistry = {
-    listRuntimeKinds: vi.fn().mockReturnValue(["codex_app_server"]),
-    resolveAdapter: vi.fn().mockReturnValue(relayAdapter),
+    listRuntimeKinds: vi.fn().mockReturnValue(["codex_app_server", "claude_agent_sdk"]),
+    resolveAdapter: vi.fn((runtimeKind: string) =>
+      runtimeKind === "claude_agent_sdk" ? claudeAdapter : relayAdapter,
+    ),
   } as any;
   const teamRuntimeBindingRegistry = {
     getTeamMode: vi.fn(),
@@ -77,6 +82,7 @@ const createSubject = () => {
       runtimeCommandIngressService,
       runtimeAdapterRegistry,
       relayAdapter,
+      claudeAdapter,
       relayAdapterUnbind,
       teamRuntimeBindingRegistry,
       teamRuntimeInterAgentMessageRelay,
@@ -589,6 +595,125 @@ describe("TeamMemberRuntimeOrchestrator", () => {
         }),
       ],
     );
+  });
+
+  it("refreshes active Claude bindings from the runtime adapter before returning them", () => {
+    const { orchestrator, mocks } = createSubject();
+    mocks.teamRuntimeBindingRegistry.getTeamBindingState.mockReturnValue({
+      teamRunId: "team-1",
+      mode: "member_runtime",
+      memberBindings: [
+        {
+          memberRunId: "member-run-1",
+          memberName: "Professor",
+          memberRouteKey: "professor",
+          runtimeKind: "claude_agent_sdk",
+          runtimeReference: {
+            runtimeKind: "claude_agent_sdk",
+            sessionId: "member-run-1",
+            threadId: "member-run-1",
+            metadata: {
+              teamRunId: "team-1",
+            },
+          },
+          agentDefinitionId: "agent-professor",
+          llmModelIdentifier: "claude-sonnet-4-5",
+          autoExecuteTools: true,
+          llmConfig: null,
+          workspaceRootPath: "/tmp/team-workspace",
+        },
+      ],
+    });
+    mocks.claudeAdapter.getRunRuntimeReference.mockReturnValue({
+      runtimeKind: "claude_agent_sdk",
+      sessionId: "claude-session-1",
+      threadId: "claude-session-1",
+      metadata: {
+        permissionMode: "default",
+      },
+    });
+
+    const bindings = orchestrator.getActiveMemberBindings("team-1");
+
+    expect(mocks.teamRuntimeBindingRegistry.upsertTeamBindings).toHaveBeenCalledWith(
+      "team-1",
+      "member_runtime",
+      [
+        expect.objectContaining({
+          memberRunId: "member-run-1",
+          runtimeReference: {
+            runtimeKind: "claude_agent_sdk",
+            sessionId: "claude-session-1",
+            threadId: "claude-session-1",
+            metadata: {
+              teamRunId: "team-1",
+              permissionMode: "default",
+            },
+          },
+        }),
+      ],
+    );
+    expect(bindings[0]?.runtimeReference?.sessionId).toBe("claude-session-1");
+  });
+
+  it("returns refreshed binding snapshots when terminating member runtime sessions", async () => {
+    const { orchestrator, mocks } = createSubject();
+    mocks.teamRuntimeBindingRegistry.getTeamBindingState.mockReturnValue({
+      teamRunId: "team-1",
+      mode: "member_runtime",
+      memberBindings: [
+        {
+          memberRunId: "member-run-1",
+          memberName: "Professor",
+          memberRouteKey: "professor",
+          runtimeKind: "claude_agent_sdk",
+          runtimeReference: {
+            runtimeKind: "claude_agent_sdk",
+            sessionId: "member-run-1",
+            threadId: "member-run-1",
+            metadata: {
+              teamRunId: "team-1",
+            },
+          },
+          agentDefinitionId: "agent-professor",
+          llmModelIdentifier: "claude-sonnet-4-5",
+          autoExecuteTools: true,
+          llmConfig: null,
+          workspaceRootPath: "/tmp/team-workspace",
+        },
+      ],
+    });
+    mocks.claudeAdapter.getRunRuntimeReference.mockReturnValue({
+      runtimeKind: "claude_agent_sdk",
+      sessionId: "claude-session-final",
+      threadId: "claude-session-final",
+      metadata: {
+        permissionMode: "default",
+      },
+    });
+    mocks.runtimeCommandIngressService.terminateRun.mockResolvedValue({
+      accepted: true,
+    });
+
+    const result = await orchestrator.terminateMemberRuntimeSessionsWithSnapshot("team-1");
+
+    expect(result).toEqual({
+      terminated: true,
+      memberBindings: [
+        expect.objectContaining({
+          memberRunId: "member-run-1",
+          runtimeReference: expect.objectContaining({
+            sessionId: "claude-session-final",
+            threadId: "claude-session-final",
+          }),
+        }),
+      ],
+    });
+    expect(mocks.runtimeCommandIngressService.terminateRun).toHaveBeenCalledWith({
+      runId: "member-run-1",
+      mode: "agent",
+    });
+    expect(mocks.teamRuntimeBindingRegistry.removeTeam).toHaveBeenCalledWith("team-1");
   });
 
   it("registers runtime relay handler and routes send_message_to tool arguments", async () => {

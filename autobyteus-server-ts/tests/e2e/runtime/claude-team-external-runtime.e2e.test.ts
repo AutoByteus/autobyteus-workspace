@@ -13,6 +13,8 @@ import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { getClaudeAgentSdkRuntimeService } from "../../../src/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.js";
+import { ClaudeRuntimeTranscriptStore } from "../../../src/runtime-execution/claude-agent-sdk/claude-runtime-transcript-store.js";
 
 const claudeBinaryReady = spawnSync("claude", ["--version"], {
   stdio: "ignore",
@@ -37,6 +39,15 @@ const waitForSocketOpen = (socket: WebSocket, timeoutMs = 10_000): Promise<void>
       reject(error);
     });
   });
+
+const simulateClaudeRuntimeRestart = (): void => {
+  const runtimeService = getClaudeAgentSdkRuntimeService() as any;
+  runtimeService.sessions?.clear?.();
+  runtimeService.v2SessionsByRunId?.clear?.();
+  runtimeService.v2SessionControlsByRunId?.clear?.();
+  runtimeService.deferredListenersByRunId?.clear?.();
+  runtimeService.transcriptStore = new ClaudeRuntimeTranscriptStore();
+};
 
 describeClaudeRuntime("Claude team external-member runtime e2e (live transport)", () => {
   let schema: GraphQLSchema;
@@ -1406,6 +1417,8 @@ Rules:
         }>(terminateTeamRunMutation, { id: teamRunId });
         expect(terminateResult.terminateAgentTeamRun.success).toBe(true);
 
+        simulateClaudeRuntimeRestart();
+
         const projectionDeadline = Date.now() + 120_000;
         let projection:
           | {
@@ -1727,6 +1740,7 @@ Rules:
         expect(terminateResult.terminateAgentTeamRun.success).toBe(true);
 
         teamSocket.close();
+        simulateClaudeRuntimeRestart();
 
         const projectionDeadline = Date.now() + 120_000;
         let professorProjection: { conversation: Array<Record<string, unknown>> } | null = null;

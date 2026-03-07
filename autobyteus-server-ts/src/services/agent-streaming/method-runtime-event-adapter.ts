@@ -1,4 +1,4 @@
-import { normalizeMethodRuntimeMethod } from "../../runtime-execution/runtime-method-normalizer.js";
+import { normalizeMethodRuntimeMethod } from "../../runtime-execution/method-runtime/runtime-method-normalizer.js";
 import { asObject } from "./method-runtime-event-tool-helper.js";
 import { ServerMessage, ServerMessageType } from "./models.js";
 import { serializePayload } from "./payload-serialization.js";

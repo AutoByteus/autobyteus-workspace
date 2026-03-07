@@ -1,8 +1,8 @@
 import {
   getRuntimeCommandIngressService,
   type RuntimeCommandIngressService,
-} from "./runtime-command-ingress-service.js";
-import type { RuntimeCommandResult } from "./runtime-adapter-port.js";
+} from "../../runtime-execution/runtime-command-ingress-service.js";
+import type { RuntimeCommandResult } from "../../runtime-execution/runtime-adapter-port.js";
 
 export interface TeamRuntimeInterAgentRelayInput {
   teamRunId: string;

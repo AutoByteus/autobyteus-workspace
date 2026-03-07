@@ -2,7 +2,7 @@ import type {
   RuntimeInterAgentRelayRequest,
   RuntimeInterAgentRelayResult,
 } from "../../runtime-execution/runtime-adapter-port.js";
-import type { TeamRuntimeInterAgentMessageRelay } from "../../runtime-execution/team-runtime-inter-agent-message-relay.js";
+import type { TeamRuntimeInterAgentMessageRelay } from "./team-runtime-inter-agent-message-relay.js";
 import type { TeamRuntimeBindingRegistry } from "./team-runtime-binding-registry.js";
 import type { RelayInterAgentMessageInput } from "./team-member-runtime-orchestrator.types.js";
 import {
