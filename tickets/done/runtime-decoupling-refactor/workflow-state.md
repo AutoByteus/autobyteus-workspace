@@ -8,11 +8,11 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 
 - Ticket: `runtime-decoupling-refactor`
 - Current Stage: `10`
-- Next Stage: `10`
+- Next Stage: `Completed (archived in tickets/done)`
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-195`
+- Last Transition ID: `T-196`
 - Last Updated: `2026-03-07`
 - Stage 6 Active Fix: `N/A (closed; post-merge deep review passed and handoff-ready state is restored)`
 
@@ -30,7 +30,7 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | 7 API/E2E Testing | Pass | File-locality cleanup preserved behavior on impacted live paths: focused Claude team roundtrip and focused Codex team reasoning-streaming roundtrip both passed after the moves. | `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
 | 8 Code Review | Pass | Post-merge deep review passed. The merged branch keeps provider-specific code under explicit provider ownership, shared team/history/streaming/runtime-root layers remain runtime-neutral, and no reviewed changed source file exceeds the `<=500` effective non-empty line hard limit. | `tickets/in-progress/runtime-decoupling-refactor/code-review.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
 | 9 Docs Sync | Pass | No product-doc updates are required for the post-merge architecture review. The work only records review evidence and workflow closure; there is no user-facing product or configuration change. | `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
-| 10 Handoff / Ticket State | In Progress | Handoff-ready state is restored after the post-merge deep review passed. Code edits remain locked and the branch is ready for the next explicit user instruction. | `tickets/in-progress/runtime-decoupling-refactor/implementation-progress.md`, `tickets/in-progress/runtime-decoupling-refactor/code-review.md`, `tickets/in-progress/runtime-decoupling-refactor/workflow-state.md` |
+| 10 Handoff / Ticket State | Pass | Final handoff complete + ticket state decision recorded. User confirmed completion and requested archival + merge/release actions. | User confirmation in thread + `workflow-state.md` |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -389,3 +389,4 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | T-193 | 2026-03-07 | 10 | 8 | User requested another deep architecture review after confirming the Claude history reload fix. Stage 8 is reopened on the merged branch snapshot to verify decoupling boundaries, file locality, and no-legacy constraints still hold end-to-end. | N/A | Locked | workflow-state.md, code-review.md |
 | T-194 | 2026-03-07 | 8 | 9 | Post-merge deep review passed with no new decoupling or file-locality findings. Shared runtime/team/history/streaming layers remain provider-neutral and reviewed changed source files stay within the hard size limit. | N/A | Locked | workflow-state.md, code-review.md |
 | T-195 | 2026-03-07 | 9 | 10 | Stage 9 closed with explicit no-impact rationale for the post-merge architecture review. The ticket returns to handoff-ready state with code edits locked. | N/A | Locked | workflow-state.md, implementation-progress.md |
+| T-196 | 2026-03-07 | 10 | 10 | User confirmed completion and requested archival followed by branch merge and release workflow. Ticket is now marked complete and ready to move from `tickets/in-progress/` to `tickets/done/`. | N/A | Locked | workflow-state.md |
