@@ -103,12 +103,12 @@ describe("AppConfig", () => {
         expect(process.env.TEST_KEY).toBe("VALUE");
         await fsPromises.rm(configDir, { recursive: true, force: true });
     });
-    it("creates temp workspace directory under the isolated OS temp root by default", async () => {
+    it("creates temp workspace directory under the app data dir by default", async () => {
         const configDir = await createTempConfigDir("AUTOBYTEUS_SERVER_HOST=http://localhost:8000\n");
         const config = new AppConfig();
         config.setCustomAppDataDir(configDir);
         const tempDir = config.getTempWorkspaceDir();
-        expect(tempDir).toBe(path.join(os.tmpdir(), "autobyteus", "temp_workspace"));
+        expect(tempDir).toBe(path.join(configDir, "temp_workspace"));
         expect(fs.existsSync(tempDir)).toBe(true);
         await fsPromises.rm(configDir, { recursive: true, force: true });
     });
