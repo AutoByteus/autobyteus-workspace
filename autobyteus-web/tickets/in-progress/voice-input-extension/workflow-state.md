@@ -7,12 +7,12 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 ## Current Snapshot
 
 - Ticket: `voice-input-extension`
-- Current Stage: `6`
-- Next Stage: `7`
-- Code Edit Permission: `Unlocked`
-- Active Re-Entry: `Yes`
-- Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `Requirement Gap`
-- Last Transition ID: `T-020`
+- Current Stage: `10`
+- Next Stage: `End`
+- Code Edit Permission: `Locked`
+- Active Re-Entry: `No`
+- Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
+- Last Transition ID: `T-024`
 - Last Updated: `2026-03-08`
 
 ## Stage Gates
@@ -25,11 +25,11 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | 3 Design Basis | Pass | Proposed design was revised to require Stage 7 validation against actual published runtime assets instead of fixture-only proof | `proposed-design.md`, `workflow-state.md` |
 | 4 Runtime Modeling | Pass | Runtime modeling was refreshed to include the real published-release validation loop before handoff | `future-state-runtime-call-stack.md`, `workflow-state.md` |
 | 5 Review Gate | Pass | Runtime review was rerun against the real published-runtime validation requirement and reached `Go Confirmed` again | `future-state-runtime-call-stack-review.md`, `workflow-state.md` |
-| 6 Implementation | In Progress | Implementation baseline is active again so the real release-validation loop can proceed and any concrete fixes can be applied if needed | `implementation-progress.md`, `workflow-state.md` |
-| 7 API/E2E Testing | Not Started | Stage 7 will be rerun against the real published runtime release lane after the refreshed implementation loop | `api-e2e-testing.md`, `implementation-progress.md`, `workflow-state.md` |
-| 8 Code Review | Not Started | Code review must be rerun after the real-release Stage 7 path completes again | `code-review.md`, `workflow-state.md` |
-| 9 Docs Sync | Not Started | Docs sync must be rerun after the post-re-entry code review completes again | `implementation-progress.md`, `workflow-state.md` |
-| 10 Handoff / Ticket State | Not Started | Final handoff is blocked until the published-runtime validation loop completes | `workflow-state.md` |
+| 6 Implementation | Pass | Implementation completed, the portability/local-fix delta was applied, and the app now points at the real published runtime lane | `implementation-progress.md`, `workflow-state.md` |
+| 7 API/E2E Testing | Pass | Real published-runtime validation completed: the release lane built/published `voice-runtime-v0.1.1`, the app downloaded/installed the published assets, and transcription succeeded through the compiled Electron service | `api-e2e-testing.md`, `implementation-progress.md`, `workflow-state.md` |
+| 8 Code Review | Pass | Code review was rerun on the post-release-validation delta and passed with no findings | `code-review.md`, `workflow-state.md` |
+| 9 Docs Sync | Pass | Stage 7/8 evidence and workflow-state artifacts were refreshed to reflect the real published-runtime proof | `implementation-progress.md`, `api-e2e-testing.md`, `code-review.md`, `workflow-state.md` |
+| 10 Handoff / Ticket State | In Progress | Ticket is ready for handoff and remains in-progress until the user explicitly confirms completion | `workflow-state.md`, `implementation-progress.md` |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -84,11 +84,11 @@ Note:
 
 ## Re-Entry Declaration
 
-- Trigger Stage (`5`/`6`/`7`/`8`): `7`
-- Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `Requirement Gap`
-- Required Return Path: `2 -> 3 -> 4 -> 5 -> 6 -> 7`
-- Required Upstream Artifacts To Update Before Code Edits: `requirements.md`, `proposed-design.md`, `future-state-runtime-call-stack.md`, `future-state-runtime-call-stack-review.md`, `implementation-plan.md`, `implementation-progress.md`, `api-e2e-testing.md`
-- Resume Condition: `Requirements/design/runtime-review artifacts are updated for real published-runtime validation, the branch is pushed, the runtime release is published, and Stage 7 passes again with real-release evidence`
+- Trigger Stage (`5`/`6`/`7`/`8`): `N/A`
+- Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
+- Required Return Path: `N/A`
+- Required Upstream Artifacts To Update Before Code Edits: `N/A`
+- Resume Condition: `N/A`
 
 ## Transition Log (Append-Only)
 
@@ -115,6 +115,10 @@ Note:
 | T-018 | 2026-03-08 | 3 | 4 | Design revision completed for real published-runtime validation and runtime-model refresh is next | Requirement Gap | Locked | `proposed-design.md`, `workflow-state.md` |
 | T-019 | 2026-03-08 | 4 | 5 | Runtime modeling refreshed for real published-runtime validation and review rerun is next | Requirement Gap | Locked | `future-state-runtime-call-stack.md`, `workflow-state.md` |
 | T-020 | 2026-03-08 | 5 | 6 | Runtime review returned to `Go Confirmed` for the real published-runtime validation requirement and implementation/testing may resume | Requirement Gap | Unlocked | `future-state-runtime-call-stack-review.md`, `workflow-state.md` |
+| T-021 | 2026-03-08 | 6 | 7 | Real published-runtime validation completed after fixing the release portability issue: `voice-runtime-v0.1.1` built and published successfully, and the compiled Electron service installed and invoked the published runtime | Local Fix | Unlocked | `api-e2e-testing.md`, `implementation-progress.md`, `workflow-state.md` |
+| T-022 | 2026-03-08 | 7 | 8 | Stage 8 code review reran on the portability/tag-separation delta and passed with no findings | N/A | Locked | `code-review.md`, `workflow-state.md` |
+| T-023 | 2026-03-08 | 8 | 9 | Stage 9 docs sync refreshed Stage 7/8 evidence and workflow-state artifacts for the real published-runtime proof | N/A | Locked | `api-e2e-testing.md`, `implementation-progress.md`, `code-review.md`, `workflow-state.md` |
+| T-024 | 2026-03-08 | 9 | 10 | Docs sync is complete and the ticket is ready for final handoff, remaining in-progress until explicit user confirmation | N/A | Locked | `implementation-progress.md`, `workflow-state.md` |
 
 ## Audible Notification Log (Optional Tracking)
 
@@ -140,6 +144,9 @@ Note:
 | 2026-03-08 | Transition | The design has been revised for real published-runtime validation. Runtime modeling is next and code edits remain locked. | Failed | `mlx-audio` local install is outdated; status provided in text instead |
 | 2026-03-08 | Transition | Runtime modeling has been refreshed for real published-runtime validation. Review rerun is next and code edits remain locked. | Failed | `mlx-audio` local install is outdated; status provided in text instead |
 | 2026-03-08 | LockChange | Runtime review is back to Go Confirmed for real published-runtime validation. Stage 6 is active again and code edits are now unlocked. | Failed | `mlx-audio` local install is outdated; status provided in text instead |
+| 2026-03-08 | Transition | Real published-runtime validation is complete. Stage 7 passed after the `voice-runtime-v0.1.1` release succeeded and the app installed and transcribed through the published runtime. | Failed | `mlx-audio` local install is outdated; status provided in text instead |
+| 2026-03-08 | Gate | Code review passed again after the release portability and tag-separation fixes. Docs sync is next and code edits remain locked. | Failed | `mlx-audio` local install is outdated; status provided in text instead |
+| 2026-03-08 | Transition | Docs sync is complete for the real published-runtime proof. The ticket is ready for handoff and remains in progress until user confirmation. | Failed | `mlx-audio` local install is outdated; status provided in text instead |
 
 ## Process Violation Log
 
