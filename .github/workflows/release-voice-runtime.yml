@@ -1,0 +1,134 @@
+name: Voice Runtime Release
+
+on:
+  push:
+    tags:
+      - "voice-runtime-v*"
+  workflow_dispatch:
+    inputs:
+      runtime_version:
+        description: "Voice runtime version (example: 0.1.0)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  resolve-release:
+    name: Resolve Voice Runtime Release Metadata
+    runs-on: ubuntu-latest
+    outputs:
+      runtime_version: ${{ steps.resolve.outputs.runtime_version }}
+      release_tag: ${{ steps.resolve.outputs.release_tag }}
+    steps:
+      - name: Resolve version and tag
+        id: resolve
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            runtime_version="${{ inputs.runtime_version }}"
+            release_tag="voice-runtime-v${runtime_version}"
+          else
+            release_tag="${GITHUB_REF_NAME}"
+            runtime_version="${release_tag#voice-runtime-v}"
+          fi
+          echo "runtime_version=${runtime_version}" >> "$GITHUB_OUTPUT"
+          echo "release_tag=${release_tag}" >> "$GITHUB_OUTPUT"
+
+  build-runtime:
+    name: Build ${{ matrix.platform }} ${{ matrix.arch }}
+    needs: resolve-release
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: darwin
+            arch: arm64
+            runner: macos-14
+          - platform: darwin
+            arch: x64
+            runner: macos-14
+          - platform: linux
+            arch: x64
+            runner: ubuntu-22.04
+          - platform: win32
+            arch: x64
+            runner: windows-2022
+    steps:
+      - name: Checkout workspace
+        uses: actions/checkout@v4
+
+      - name: Run runtime build script
+        shell: bash
+        env:
+          AUTOBYTEUS_VOICE_RUNTIME_VERSION: ${{ needs.resolve-release.outputs.runtime_version }}
+        run: |
+          chmod +x autobyteus-voice-runtime/scripts/build-runtime.sh
+          autobyteus-voice-runtime/scripts/build-runtime.sh "${{ matrix.platform }}" "${{ matrix.arch }}"
+
+      - name: Upload runtime artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: voice-runtime-${{ matrix.platform }}-${{ matrix.arch }}
+          path: |
+            autobyteus-voice-runtime/dist/whisper-cli-${{ matrix.platform }}-${{ matrix.arch }}*
+          if-no-files-found: error
+
+  download-model:
+    name: Download Shared Voice Model
+    needs: resolve-release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout workspace
+        uses: actions/checkout@v4
+
+      - name: Download model asset
+        run: node autobyteus-voice-runtime/scripts/download-model.mjs
+
+      - name: Upload model artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: voice-runtime-model
+          path: autobyteus-voice-runtime/dist/ggml-*.bin
+          if-no-files-found: error
+
+  publish-release:
+    name: Publish Voice Runtime Release
+    needs:
+      - resolve-release
+      - build-runtime
+      - download-model
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout workspace
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: autobyteus-voice-runtime/dist
+          merge-multiple: true
+
+      - name: Generate manifest
+        env:
+          AUTOBYTEUS_VOICE_RUNTIME_VERSION: ${{ needs.resolve-release.outputs.runtime_version }}
+          AUTOBYTEUS_RELEASE_REPOSITORY: ${{ github.repository }}
+          AUTOBYTEUS_RELEASE_TAG: ${{ needs.resolve-release.outputs.release_tag }}
+        run: node autobyteus-voice-runtime/scripts/generate-manifest.mjs
+
+      - name: Verify release payload
+        shell: bash
+        run: |
+          ls -lah autobyteus-voice-runtime/dist
+          test -f autobyteus-voice-runtime/dist/voice-input-runtime-manifest.json
+
+      - name: Publish release assets
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.resolve-release.outputs.release_tag }}
+          target_commitish: ${{ github.sha }}
+          generate_release_notes: true
+          files: |
+            autobyteus-voice-runtime/dist/*

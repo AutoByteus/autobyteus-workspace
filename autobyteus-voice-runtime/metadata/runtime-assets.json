@@ -1,0 +1,38 @@
+{
+  "whisperCppVersion": "1.8.3",
+  "model": {
+    "id": "tiny.en-q5_1",
+    "fileName": "ggml-tiny.en-q5_1.bin",
+    "sourceUrl": "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-tiny.en-q5_1.bin"
+  },
+  "assets": [
+    {
+      "platform": "darwin",
+      "arch": "arm64",
+      "fileName": "whisper-cli-darwin-arm64",
+      "entrypoint": "whisper-cli-darwin-arm64",
+      "distributionType": "file"
+    },
+    {
+      "platform": "darwin",
+      "arch": "x64",
+      "fileName": "whisper-cli-darwin-x64",
+      "entrypoint": "whisper-cli-darwin-x64",
+      "distributionType": "file"
+    },
+    {
+      "platform": "linux",
+      "arch": "x64",
+      "fileName": "whisper-cli-linux-x64",
+      "entrypoint": "whisper-cli-linux-x64",
+      "distributionType": "file"
+    },
+    {
+      "platform": "win32",
+      "arch": "x64",
+      "fileName": "whisper-cli-win32-x64.exe",
+      "entrypoint": "whisper-cli-win32-x64.exe",
+      "distributionType": "file"
+    }
+  ]
+}

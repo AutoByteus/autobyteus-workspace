@@ -2,6 +2,11 @@
 
 import { contextBridge, ipcRenderer, webUtils } from 'electron'
 import type { NodeRegistryChange } from './nodeRegistryTypes'
+import type {
+  ExtensionId,
+  ManagedExtensionState,
+  VoiceInputTranscriptionResult,
+} from './extensions/types'
 
 type Cleanup = () => void
 
@@ -82,6 +87,13 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // Method for getting file path from a dropped file object
   // In sandboxed renderers, `file.path` is removed. This is the secure way to get the real path.
   getPathForFile: (file: File) => webUtils.getPathForFile(file),
+
+  getExtensionsState: () => ipcRenderer.invoke('extensions:get-state') as Promise<ManagedExtensionState[]>,
+  installExtension: (extensionId: ExtensionId) => ipcRenderer.invoke('extensions:install', extensionId) as Promise<ManagedExtensionState[]>,
+  removeExtension: (extensionId: ExtensionId) => ipcRenderer.invoke('extensions:remove', extensionId) as Promise<ManagedExtensionState[]>,
+  reinstallExtension: (extensionId: ExtensionId) => ipcRenderer.invoke('extensions:reinstall', extensionId) as Promise<ManagedExtensionState[]>,
+  transcribeVoiceInput: (audioData: ArrayBuffer, language?: string) =>
+    ipcRenderer.invoke('voice-input:transcribe', { audioData, language }) as Promise<VoiceInputTranscriptionResult>,
 })
 
 // The previous global drop handler has been removed.

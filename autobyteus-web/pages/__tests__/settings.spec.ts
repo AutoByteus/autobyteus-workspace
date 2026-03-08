@@ -47,6 +47,7 @@ const mountSettings = () =>
         MessagingSetupManager: { template: '<div data-testid="section-messaging" />' },
         AboutSettingsManager: { template: '<div data-testid="section-updates" />' },
         DefinitionSourcesManager: { template: '<div data-testid="section-definition-sources" />' },
+        ExtensionsManager: { template: '<div data-testid="section-extensions" />' },
         ToolsManagementWorkspace: { template: '<div data-testid="section-tools-management" />' },
         ServerSettingsManager: { props: ['sectionMode'], template: '<div data-testid="section-server-settings">mode={{ sectionMode }}</div>' },
       },
@@ -151,6 +152,16 @@ describe('settings page', () => {
     const setupState = (wrapper.vm as any).$?.setupState;
 
     expect(setupState.activeSection).toBe('definition-sources');
+  });
+
+  it('supports extensions section query and activates extensions section', async () => {
+    routeMock.query = { section: 'extensions' };
+    const wrapper = mountSettings();
+    await nextTick();
+    const setupState = (wrapper.vm as any).$?.setupState;
+
+    expect(setupState.activeSection).toBe('extensions');
+    expect(wrapper.find('[data-testid="section-extensions"]').exists()).toBe(true);
   });
 
   it('navigates back to workspace when back item is clicked', async () => {

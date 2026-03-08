@@ -21,6 +21,21 @@
       ></textarea>
 
       <button 
+        v-if="voiceInputStore.isAvailable || voiceInputStore.isRecording || voiceInputStore.isTranscribing"
+        type="button"
+        @click="handleVoiceAction"
+        :disabled="voiceInputStore.isTranscribing || !activeContextStore.activeAgentContext"
+        :title="voiceButtonTitle"
+        class="absolute bottom-2 right-14 flex items-center justify-center p-2 rounded-full focus:outline-none focus:ring-2 transition-all duration-200 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+        :class="voiceButtonClass"
+      >
+        <Icon
+          :icon="voiceInputStore.isRecording ? 'heroicons:stop-solid' : 'heroicons:microphone-solid'"
+          class="h-5 w-5"
+        />
+      </button>
+
+      <button 
         @click="handlePrimaryAction"
         :disabled="isActionDisabled"
         :title="isSending ? 'Stop generation' : 'Send message'"
@@ -40,6 +55,7 @@
 import { ref, computed, onMounted, nextTick, watch, onUnmounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useActiveContextStore } from '~/stores/activeContextStore';
+import { useVoiceInputStore } from '~/stores/voiceInputStore';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { useWorkspaceStore } from '~/stores/workspace';
 import { Icon } from '@iconify/vue';
@@ -48,6 +64,7 @@ import type { TreeNode } from '~/utils/fileExplorer/TreeNode';
 
 // Initialize stores
 const activeContextStore = useActiveContextStore();
+const voiceInputStore = useVoiceInputStore();
 const windowNodeContextStore = useWindowNodeContextStore();
 const workspaceStore = useWorkspaceStore();
 
@@ -61,6 +78,18 @@ const isActionDisabled = computed(() => {
     return false;
   }
   return !internalRequirement.value.trim();
+});
+const voiceButtonTitle = computed(() => {
+  if (voiceInputStore.isTranscribing) {
+    return 'Transcribing...';
+  }
+  return voiceInputStore.isRecording ? 'Stop recording' : 'Start voice input';
+});
+const voiceButtonClass = computed(() => {
+  if (voiceInputStore.isRecording) {
+    return 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500/50';
+  }
+  return 'bg-slate-100 text-slate-700 hover:bg-slate-200 focus:ring-slate-400/50';
 });
 
 // Local component state
@@ -182,6 +211,14 @@ const handlePrimaryAction = () => {
   void handleSend();
 };
 
+const handleVoiceAction = async () => {
+  try {
+    await voiceInputStore.toggleRecording();
+  } catch (error) {
+    console.error('Error toggling voice input:', error);
+  }
+};
+
 const insertFilePaths = (filePaths: string[]) => {
   if (!textarea.value || filePaths.length === 0) return;
 
@@ -259,12 +296,14 @@ const handleResize = () => {
 
 onMounted(async () => {
   await nextTick();
+  await voiceInputStore.initialize();
   adjustTextareaHeight();
   window.addEventListener('resize', handleResize);
 });
 
 onUnmounted(() => {
   flushDebouncedUpdateStore(); 
+  void voiceInputStore.cleanup();
   window.removeEventListener('resize', handleResize);
 });
 </script>

@@ -3,6 +3,11 @@ import type {
   NodeRegistrySnapshot,
   WindowNodeContext,
 } from './node';
+import type {
+  ExtensionId,
+  ManagedExtensionState,
+  VoiceInputTranscriptionResult,
+} from '../electron/extensions/types';
 
 type Cleanup = () => void;
 
@@ -86,6 +91,11 @@ declare global {
       resetServerData: () => Promise<{ success: boolean; error?: string }>;
       showFolderDialog: () => Promise<{ canceled: boolean; path: string | null; error?: string }>;
       getPathForFile: (file: File) => Promise<string | null>;
+      getExtensionsState: () => Promise<ManagedExtensionState[]>;
+      installExtension: (extensionId: ExtensionId) => Promise<ManagedExtensionState[]>;
+      removeExtension: (extensionId: ExtensionId) => Promise<ManagedExtensionState[]>;
+      reinstallExtension: (extensionId: ExtensionId) => Promise<ManagedExtensionState[]>;
+      transcribeVoiceInput: (audioData: ArrayBuffer, language?: string) => Promise<VoiceInputTranscriptionResult>;
     };
   }
 }
