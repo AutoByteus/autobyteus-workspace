@@ -8,28 +8,28 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 
 - Ticket: `imported-definition-editability-skill-import`
 - Current Stage: `10`
-- Next Stage: `User verification / completion decision`
+- Next Stage: `Completed (archived in tickets/done)`
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-015`
+- Last Transition ID: `T-016`
 - Last Updated: `2026-03-08`
 
 ## Stage Gates
 
 | Stage | Gate Status (`Not Started`/`In Progress`/`Pass`/`Fail`/`Blocked`) | Gate Rule Summary | Evidence |
 | --- | --- | --- | --- |
-| 0 Bootstrap + Draft Requirement | Pass | Ticket bootstrap complete + `requirements.md` Draft captured | `tickets/in-progress/imported-definition-editability-skill-import/requirements.md` |
-| 1 Investigation + Triage | Pass | `investigation-notes.md` current + scope triage recorded | `tickets/in-progress/imported-definition-editability-skill-import/investigation-notes.md` |
-| 2 Requirements | Pass | `requirements.md` is `Design-ready`/`Refined` | `tickets/in-progress/imported-definition-editability-skill-import/requirements.md` |
-| 3 Design Basis | Pass | Design basis updated for scope (`implementation-plan.md` sketch or `proposed-design.md`) | `tickets/in-progress/imported-definition-editability-skill-import/proposed-design.md` |
-| 4 Runtime Modeling | Pass | `future-state-runtime-call-stack.md` current | `tickets/in-progress/imported-definition-editability-skill-import/future-state-runtime-call-stack.md` |
-| 5 Review Gate | Pass | Runtime review `Go Confirmed` (two clean rounds, no blockers/persisted updates/new use cases) | `tickets/in-progress/imported-definition-editability-skill-import/future-state-runtime-call-stack-review.md` |
+| 0 Bootstrap + Draft Requirement | Pass | Ticket bootstrap complete + `requirements.md` Draft captured | `tickets/done/imported-definition-editability-skill-import/requirements.md` |
+| 1 Investigation + Triage | Pass | `investigation-notes.md` current + scope triage recorded | `tickets/done/imported-definition-editability-skill-import/investigation-notes.md` |
+| 2 Requirements | Pass | `requirements.md` is `Design-ready`/`Refined` | `tickets/done/imported-definition-editability-skill-import/requirements.md` |
+| 3 Design Basis | Pass | Design basis updated for scope (`implementation-plan.md` sketch or `proposed-design.md`) | `tickets/done/imported-definition-editability-skill-import/proposed-design.md` |
+| 4 Runtime Modeling | Pass | `future-state-runtime-call-stack.md` current | `tickets/done/imported-definition-editability-skill-import/future-state-runtime-call-stack.md` |
+| 5 Review Gate | Pass | Runtime review `Go Confirmed` (two clean rounds, no blockers/persisted updates/new use cases) | `tickets/done/imported-definition-editability-skill-import/future-state-runtime-call-stack-review.md` |
 | 6 Implementation | Pass | Plan/progress current + source + unit/integration verification complete + no backward-compat/legacy retention + decoupling preserved + touched-file placement preserved/corrected | Additional verification tests added |
-| 7 API/E2E Testing | Pass | API/E2E test implementation complete + AC scenario gate complete | `tickets/in-progress/imported-definition-editability-skill-import/api-e2e-testing.md` |
-| 8 Code Review | Pass | Code review gate `Pass`/`Fail` recorded + all changed source files `<=500` effective non-empty lines + `>220` delta-gate assessments recorded + shared-principles/layering + decoupling + module/file placement + no-backward-compat/no-legacy checks satisfied for `Pass` | `tickets/in-progress/imported-definition-editability-skill-import/code-review.md` |
-| 9 Docs Sync | Pass | Docs updated or no-impact rationale recorded | `tickets/in-progress/imported-definition-editability-skill-import/implementation-progress.md` |
-| 10 Handoff / Ticket State | In Progress | Final handoff complete + ticket state decision recorded | `tickets/in-progress/imported-definition-editability-skill-import/workflow-state.md` |
+| 7 API/E2E Testing | Pass | API/E2E test implementation complete + AC scenario gate complete | `tickets/done/imported-definition-editability-skill-import/api-e2e-testing.md` |
+| 8 Code Review | Pass | Code review gate `Pass`/`Fail` recorded + all changed source files `<=500` effective non-empty lines + `>220` delta-gate assessments recorded + shared-principles/layering + decoupling + module/file placement + no-backward-compat/no-legacy checks satisfied for `Pass` | `tickets/done/imported-definition-editability-skill-import/code-review.md` |
+| 9 Docs Sync | Pass | Docs updated or no-impact rationale recorded | `tickets/done/imported-definition-editability-skill-import/implementation-progress.md` |
+| 10 Handoff / Ticket State | Pass | User confirmed verification passed; ticket archived under `tickets/done` and is ready for merge/release | `tickets/done/imported-definition-editability-skill-import/workflow-state.md` |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -113,6 +113,7 @@ Note:
 | T-013 | 2026-03-08 | 7 | 8 | Expanded API/E2E-relevant suite passed | Local Fix | Locked | `api-e2e-testing.md`, `workflow-state.md` |
 | T-014 | 2026-03-08 | 8 | 9 | Re-review completed after test expansion | Local Fix | Locked | `code-review.md`, `workflow-state.md` |
 | T-015 | 2026-03-08 | 9 | 10 | Re-entry closed; stronger verification recorded for handoff | Local Fix | Locked | `implementation-progress.md`, `workflow-state.md` |
+| T-016 | 2026-03-08 | 10 | 10 | User confirmed the fix worked in manual testing and requested archival, merge to `personal`, and release preparation | Local Fix | Locked | `workflow-state.md`, ticket folder move |
 
 ## Audible Notification Log (Optional Tracking)
 
@@ -123,6 +124,7 @@ Note:
 | 2026-03-08 | Transition | Stage 10 handoff is prepared, verification passed, and code edits are locked. | Failed | `TTS backend outdated; status was logged in text instead.` |
 | 2026-03-08 | Re-entry | Reopened for stronger verification, returning to Stage 6 with code edits unlocked. | Failed | `TTS backend outdated; status was logged in text instead.` |
 | 2026-03-08 | Transition | Stronger verification completed, expanded suite passed, and handoff returned to Stage 10 with code edits locked. | Failed | `TTS backend outdated; status was logged in text instead.` |
+| 2026-03-08 | Transition | User confirmed manual verification passed; the ticket was archived to `tickets/done` and is ready for merge/release. | Failed | `TTS backend outdated; status was logged in text instead.` |
 
 ## Process Violation Log
 
