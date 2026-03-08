@@ -15,6 +15,10 @@ on:
         description: "Release tag to publish/update when publish_release is enabled (example: v0.1.0-rc1)"
         required: false
         type: string
+      release_ref:
+        description: "Git ref to build from during manual dispatch (branch, tag, or SHA). Defaults to release_tag when omitted."
+        required: false
+        type: string
       prerelease:
         description: "Mark manual-dispatch release as prerelease"
         required: false
@@ -49,7 +53,11 @@ jobs:
             PRERELEASE="false"
           elif [[ -n "${{ github.event.inputs.release_tag }}" ]]; then
             RELEASE_TAG="${{ github.event.inputs.release_tag }}"
-            RELEASE_REF="${{ github.event.inputs.release_tag }}"
+            if [[ -n "${{ github.event.inputs.release_ref }}" ]]; then
+              RELEASE_REF="${{ github.event.inputs.release_ref }}"
+            else
+              RELEASE_REF="${{ github.event.inputs.release_tag }}"
+            fi
             ENFORCE_VERSION="true"
             if [[ "${{ github.event.inputs.prerelease }}" == "true" ]]; then
               PRERELEASE="true"

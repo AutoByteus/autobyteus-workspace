@@ -3,13 +3,13 @@
   "releases": [
     {
       "serverVersion": "0.1.1",
-      "releaseTag": "v1.2.21",
+      "releaseTag": "v1.2.25",
       "artifactVersion": "0.1.0",
       "platformKey": "node-generic",
       "archiveType": "tar.gz",
-      "downloadUrl": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.2.21/autobyteus-message-gateway-0.1.0-node-generic.tar.gz",
-      "sha256Url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.2.21/autobyteus-message-gateway-0.1.0-node-generic.tar.gz.sha256",
-      "metadataUrl": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.2.21/autobyteus-message-gateway-0.1.0-node-generic.tar.gz.json",
+      "downloadUrl": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.2.25/autobyteus-message-gateway-0.1.0-node-generic.tar.gz",
+      "sha256Url": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.2.25/autobyteus-message-gateway-0.1.0-node-generic.tar.gz.sha256",
+      "metadataUrl": "https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.2.25/autobyteus-message-gateway-0.1.0-node-generic.tar.gz.json",
       "supportedProviders": [
         "WHATSAPP",
         "WECOM",
