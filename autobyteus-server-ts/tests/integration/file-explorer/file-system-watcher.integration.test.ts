@@ -104,6 +104,16 @@ const waitForChange = async (
   throw new Error("Timed out waiting for change");
 };
 
+const getWatchedDirectories = (explorer: FileExplorer): string[] => {
+  const watcher = (explorer.fileWatcher as { watcher?: { getWatched: () => Record<string, string[]> } } | null)
+    ?.watcher;
+  if (!watcher) {
+    throw new Error("Watcher internals unavailable");
+  }
+
+  return Object.keys(watcher.getWatched()).map((dir) => path.resolve(dir));
+};
+
 describe("FileSystemWatcher integration", () => {
   let workspace: string;
   let explorer: FileExplorer;
@@ -119,6 +129,68 @@ describe("FileSystemWatcher integration", () => {
     await explorer.close();
     await fs.rm(workspace, { recursive: true, force: true });
   });
+
+  it(
+    "does not register pre-existing root .gitignore excluded directories in the watch map",
+    { timeout: 15000 },
+    async () => {
+      const isolatedWorkspace = await createTempWorkspace();
+      const isolatedExplorer = new FileExplorer(isolatedWorkspace);
+
+      try {
+        await fs.writeFile(path.join(isolatedWorkspace, ".gitignore"), ".nuxt/\nnode_modules/\n", "utf-8");
+        await fs.mkdir(path.join(isolatedWorkspace, ".nuxt", "types"), { recursive: true });
+        await fs.mkdir(path.join(isolatedWorkspace, "node_modules", "pkg"), { recursive: true });
+        await fs.mkdir(path.join(isolatedWorkspace, "src"), { recursive: true });
+
+        await isolatedExplorer.buildWorkspaceDirectoryTree();
+        await isolatedExplorer.startWatcher();
+
+        const watchedDirs = getWatchedDirectories(isolatedExplorer);
+        expect(watchedDirs).toContain(path.resolve(isolatedWorkspace));
+        expect(watchedDirs).toContain(path.join(isolatedWorkspace, "src"));
+        expect(watchedDirs).not.toContain(path.join(isolatedWorkspace, ".nuxt"));
+        expect(watchedDirs).not.toContain(path.join(isolatedWorkspace, ".nuxt", "types"));
+        expect(watchedDirs).not.toContain(path.join(isolatedWorkspace, "node_modules"));
+        expect(watchedDirs).not.toContain(path.join(isolatedWorkspace, "node_modules", "pkg"));
+      } finally {
+        await isolatedExplorer.close();
+        await fs.rm(isolatedWorkspace, { recursive: true, force: true });
+      }
+    },
+  );
+
+  it(
+    "does not register pre-existing nested .gitignore excluded directories in the watch map",
+    { timeout: 15000 },
+    async () => {
+      const isolatedWorkspace = await createTempWorkspace();
+      const isolatedExplorer = new FileExplorer(isolatedWorkspace);
+
+      try {
+        await fs.mkdir(path.join(isolatedWorkspace, "project", "build", "generated"), {
+          recursive: true,
+        });
+        await fs.mkdir(path.join(isolatedWorkspace, "project", "src"), { recursive: true });
+        await fs.writeFile(path.join(isolatedWorkspace, "project", ".gitignore"), "build/\n", "utf-8");
+
+        await isolatedExplorer.buildWorkspaceDirectoryTree();
+        await isolatedExplorer.startWatcher();
+
+        const watchedDirs = getWatchedDirectories(isolatedExplorer);
+        expect(watchedDirs).toContain(path.resolve(isolatedWorkspace));
+        expect(watchedDirs).toContain(path.join(isolatedWorkspace, "project"));
+        expect(watchedDirs).toContain(path.join(isolatedWorkspace, "project", "src"));
+        expect(watchedDirs).not.toContain(path.join(isolatedWorkspace, "project", "build"));
+        expect(watchedDirs).not.toContain(
+          path.join(isolatedWorkspace, "project", "build", "generated"),
+        );
+      } finally {
+        await isolatedExplorer.close();
+        await fs.rm(isolatedWorkspace, { recursive: true, force: true });
+      }
+    },
+  );
 
   it(
     "emits add + modify + delete events",
@@ -383,7 +455,7 @@ describe("FileSystemWatcher integration", () => {
   );
 
   it(
-    "ignores moves into ignored directories",
+    "treats moves into ignored directories as deletes from the visible tree",
     { timeout: 15000 },
     async () => {
       const stream = explorer.fileWatcher?.events();
@@ -397,6 +469,10 @@ describe("FileSystemWatcher integration", () => {
 
       const sourceFile = path.join(workspace, "main.js");
       await expectEventAfterAction(stream, () => fs.writeFile(sourceFile, "main", "utf-8"));
+      const sourceNode = explorer.getTree()?.findNodeByPath("main.js");
+      if (!sourceNode || !sourceNode.parent) {
+        throw new Error("Source node missing in tree");
+      }
 
       const buildDir = path.join(workspace, "build");
       const ignoreStream = explorer.fileWatcher?.events();
@@ -409,11 +485,15 @@ describe("FileSystemWatcher integration", () => {
       if (!ignoreStream2) {
         throw new Error("Watcher not started");
       }
-      await expectNoEventAfterAction(
+      const deleteChangePromise = waitForChange(
         ignoreStream2,
-        () => fs.rename(sourceFile, path.join(buildDir, "main.js")),
-        1000,
+        (change) => change.type === ChangeType.DELETE,
+        4000,
       );
+      await fs.rename(sourceFile, path.join(buildDir, "main.js"));
+      const deleteChange = (await deleteChangePromise) as DeleteChange;
+      expect(deleteChange.nodeId).toBe(sourceNode.id);
+      expect(deleteChange.parentId).toBe(sourceNode.parent.id);
 
       await stream.return?.();
     },
