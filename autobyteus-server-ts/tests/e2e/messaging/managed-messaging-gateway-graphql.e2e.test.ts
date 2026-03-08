@@ -29,6 +29,8 @@ describe("Managed messaging gateway GraphQL e2e", () => {
   let healthyArchivePath: string;
 
   beforeAll(async () => {
+    process.env.MANAGED_MESSAGING_GATEWAY_HEALTH_STARTUP_TIMEOUT_MS = "10000";
+
     const require = createRequire(import.meta.url);
     const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
     const graphqlPath = require.resolve("graphql", { paths: [typeGraphqlRoot] });
@@ -110,6 +112,7 @@ describe("Managed messaging gateway GraphQL e2e", () => {
   });
 
   afterAll(async () => {
+    delete process.env.MANAGED_MESSAGING_GATEWAY_HEALTH_STARTUP_TIMEOUT_MS;
     delete process.env.MANAGED_MESSAGING_GATEWAY_MANIFEST_PATH;
     await __resetManagedMessagingGatewayServiceForTests();
     await new Promise<void>((resolve, reject) => {

@@ -136,7 +136,7 @@ export class MessagingGatewayProcessSupervisor {
 
   private async waitForHealth(host: string, port: number): Promise<void> {
     const url = `http://${host}:${port}/health`;
-    const deadline = Date.now() + 20_000;
+    const deadline = Date.now() + getHealthStartupTimeoutMs();
     let lastError = "Gateway did not become healthy.";
     while (Date.now() < deadline) {
       try {
@@ -165,6 +165,21 @@ export class MessagingGatewayProcessSupervisor {
     return findAvailablePort(host);
   }
 }
+
+const HEALTH_STARTUP_TIMEOUT_MS = 60_000;
+const HEALTH_STARTUP_TIMEOUT_ENV = "MANAGED_MESSAGING_GATEWAY_HEALTH_STARTUP_TIMEOUT_MS";
+
+const getHealthStartupTimeoutMs = (): number => {
+  const raw = process.env[HEALTH_STARTUP_TIMEOUT_ENV];
+  if (!raw) {
+    return HEALTH_STARTUP_TIMEOUT_MS;
+  }
+  const parsed = Number(raw);
+  if (!Number.isFinite(parsed) || parsed < 1_000) {
+    return HEALTH_STARTUP_TIMEOUT_MS;
+  }
+  return parsed;
+};
 
 const delay = (ms: number): Promise<void> =>
   new Promise((resolve) => setTimeout(resolve, ms));

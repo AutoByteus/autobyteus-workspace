@@ -8,7 +8,7 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 
 - Ticket: `messaging-gateway-desktop-distribution`
 - Current Stage: `6`
-- Next Stage: `Commit the prerelease preparation, push the merged ticket branch, trigger the remote messaging-gateway release workflow for \`v1.2.26-rc1\`, then rerun Stages 7 through 10 against GitHub-hosted assets`
+- Next Stage: `Apply the release-lane Local Fix for gateway direct-run detection, publish a fresh prerelease, and rerun Stages 7 through 10 against GitHub-hosted assets`
 - Code Edit Permission: `Unlocked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
@@ -25,7 +25,7 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | 3 Design Basis | Pass | Proposed design v2 incorporates provider-configuration writes plus disable/update lifecycle and rollback behavior | `tickets/in-progress/messaging-gateway-desktop-distribution/proposed-design.md` |
 | 4 Runtime Modeling | Pass | Future-state runtime call stack v2 now covers configuration writes, disable flow, and update-with-rollback flow | `tickets/in-progress/messaging-gateway-desktop-distribution/future-state-runtime-call-stack.md` |
 | 5 Review Gate | Pass | Runtime review reached `Go Confirmed` after one Requirement Gap re-entry and two consecutive clean deep-review rounds | `tickets/in-progress/messaging-gateway-desktop-distribution/future-state-runtime-call-stack-review.md` |
-| 6 Source + Unit/Integration | In Progress | Post-merge validation is complete locally; the remaining Stage 6 work is prerelease preparation, branch push, and remote release-lane execution against GitHub-hosted artifacts | `tickets/in-progress/messaging-gateway-desktop-distribution/implementation-progress.md`, `tickets/in-progress/messaging-gateway-desktop-distribution/workflow-state.md` |
+| 6 Source + Unit/Integration | In Progress | Remote release validation found a Local Fix: the packaged gateway entrypoint exits immediately when launched through the server supervisor's absolute script path, so Stage 6 is active again for the release-lane repair and republish | `tickets/in-progress/messaging-gateway-desktop-distribution/implementation-progress.md`, `tickets/in-progress/messaging-gateway-desktop-distribution/workflow-state.md` |
 | 7 API/E2E Gate | Not Started | Stage 7 must be rerun against the published GitHub release assets after the remote workflow succeeds | N/A |
 | 8 Code Review Gate | Not Started | Stage 8 must be rerun after remote release validation to review any release-lane follow-up changes | N/A |
 | 9 Docs Sync | Not Started | Docs impact must be rechecked after the remote release validation path finishes | N/A |
