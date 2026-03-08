@@ -1,4 +1,5 @@
 import { promises as fs } from "node:fs";
+import { constants as fsConstants } from "node:fs";
 import type { Dirent } from "node:fs";
 import path from "node:path";
 import { appConfigProvider } from "../../config/app-config-provider.js";
@@ -124,6 +125,59 @@ export class FileAgentTeamDefinitionProvider {
       return true;
     } catch {
       return false;
+    }
+  }
+
+  private async findTeamSourcePaths(teamId: string): Promise<{
+    teamDir: string;
+    mdPath: string;
+    configPath: string;
+    rootPath: string;
+  } | null> {
+    for (const rootPath of this.getReadTeamRoots()) {
+      const teamDir = path.join(rootPath, teamId);
+      const mdPath = path.join(teamDir, "team.md");
+      const configPath = path.join(teamDir, "team-config.json");
+      try {
+        await fs.access(mdPath);
+        return { teamDir, mdPath, configPath, rootPath };
+      } catch {
+        continue;
+      }
+    }
+    return null;
+  }
+
+  private async isWritable(filePath: string): Promise<boolean> {
+    try {
+      await fs.access(filePath, fsConstants.W_OK);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  private async ensureWritableSourcePaths(
+    sourcePaths: { teamDir: string; mdPath: string; configPath: string; rootPath: string },
+    teamId: string,
+  ): Promise<void> {
+    if (!(await this.isWritable(sourcePaths.teamDir))) {
+      throw new Error(
+        `Team definition '${teamId}' is read-only at source path '${sourcePaths.rootPath}'.`,
+      );
+    }
+    if ((await this.exists(sourcePaths.mdPath)) && !(await this.isWritable(sourcePaths.mdPath))) {
+      throw new Error(
+        `Team definition '${teamId}' is read-only at source path '${sourcePaths.rootPath}'.`,
+      );
+    }
+    if (
+      (await this.exists(sourcePaths.configPath)) &&
+      !(await this.isWritable(sourcePaths.configPath))
+    ) {
+      throw new Error(
+        `Team definition '${teamId}' is read-only at source path '${sourcePaths.rootPath}'.`,
+      );
     }
   }
 
@@ -274,10 +328,11 @@ export class FileAgentTeamDefinitionProvider {
     }
 
     const teamId = domainObj.id;
-    const teamDir = this.getTeamDir(teamId);
-    if (!(await this.exists(teamDir))) {
-      throw new Error(`Team definition '${teamId}' is read-only or does not exist in default source.`);
+    const sourcePaths = await this.findTeamSourcePaths(teamId);
+    if (!sourcePaths) {
+      throw new Error(`Team definition '${teamId}' does not exist in any registered source.`);
     }
+    await this.ensureWritableSourcePaths(sourcePaths, teamId);
 
     const mdContent = serializeTeamMd(
       {
@@ -287,7 +342,7 @@ export class FileAgentTeamDefinitionProvider {
       },
       domainObj.instructions,
     );
-    await writeRawFile(appConfigProvider.config.getTeamMdPath(teamId), mdContent);
+    await writeRawFile(sourcePaths.mdPath, mdContent);
 
     const configRecord: TeamConfigRecord = {
       coordinatorMemberName: domainObj.coordinatorMemberName,
@@ -298,7 +353,7 @@ export class FileAgentTeamDefinitionProvider {
         refType: member.refType,
       })),
     };
-    await writeJsonFile(appConfigProvider.config.getTeamConfigPath(teamId), configRecord);
+    await writeJsonFile(sourcePaths.configPath, configRecord);
 
     const updated = await this.getById(teamId);
     if (!updated) {
@@ -308,12 +363,12 @@ export class FileAgentTeamDefinitionProvider {
   }
 
   async delete(id: string): Promise<boolean> {
-    const teamDir = this.getTeamDir(id);
-    const existed = await this.exists(teamDir);
-    if (!existed) {
+    const sourcePaths = await this.findTeamSourcePaths(id);
+    if (!sourcePaths) {
       return false;
     }
-    await fs.rm(teamDir, { recursive: true, force: true });
-    return existed;
+    await this.ensureWritableSourcePaths(sourcePaths, id);
+    await fs.rm(sourcePaths.teamDir, { recursive: true, force: true });
+    return true;
   }
 }
