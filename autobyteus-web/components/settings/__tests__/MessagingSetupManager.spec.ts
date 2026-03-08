@@ -10,10 +10,11 @@ import { useGatewaySessionSetupStore } from '~/stores/gatewaySessionSetupStore';
 describe('MessagingSetupManager', () => {
   let pinia: ReturnType<typeof createPinia>;
   const capabilitiesFixture = {
-    wechatModes: ['WECOM_APP_BRIDGE'] as const,
-    defaultWeChatMode: 'WECOM_APP_BRIDGE' as const,
+    whatsappBusinessEnabled: true,
+    wechatModes: ['WECOM_APP_BRIDGE'],
+    defaultWeChatMode: 'WECOM_APP_BRIDGE',
     wecomAppEnabled: true,
-    wechatPersonalEnabled: true,
+    wechatPersonalEnabled: false,
     discordEnabled: true,
     discordAccountId: 'discord-1',
     telegramEnabled: true,
@@ -33,6 +34,9 @@ describe('MessagingSetupManager', () => {
     const optionsStore = useMessagingChannelBindingOptionsStore();
 
     const initSpy = vi.spyOn(gatewayStore, 'initializeFromConfig').mockImplementation(() => {});
+    const refreshStatusSpy = vi
+      .spyOn(gatewayStore, 'refreshManagedGatewayStatus')
+      .mockResolvedValue(null);
     const loadGatewayCapabilitiesSpy = vi
       .spyOn(capabilityStore, 'loadCapabilities')
       .mockImplementation(async () => {
@@ -54,6 +58,7 @@ describe('MessagingSetupManager', () => {
     await flushPromises();
 
     expect(initSpy).toHaveBeenCalledTimes(1);
+    expect(refreshStatusSpy).toHaveBeenCalledTimes(1);
     expect(loadGatewayCapabilitiesSpy).toHaveBeenCalledTimes(1);
     expect(loadWeComAccountsSpy).toHaveBeenCalledTimes(1);
     expect(loadCapabilitiesSpy).toHaveBeenCalledTimes(1);
@@ -68,6 +73,7 @@ describe('MessagingSetupManager', () => {
     const optionsStore = useMessagingChannelBindingOptionsStore();
 
     vi.spyOn(gatewayStore, 'initializeFromConfig').mockImplementation(() => {});
+    vi.spyOn(gatewayStore, 'refreshManagedGatewayStatus').mockResolvedValue(null);
     vi.spyOn(capabilityStore, 'loadCapabilities').mockImplementation(async () => {
       capabilityStore.capabilities = { ...capabilitiesFixture };
       return { ...capabilitiesFixture };

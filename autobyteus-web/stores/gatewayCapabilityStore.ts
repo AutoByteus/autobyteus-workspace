@@ -1,8 +1,4 @@
 import { defineStore } from 'pinia';
-import {
-  GatewayClientError,
-} from '~/services/messagingGatewayClient';
-import { createGatewayClient } from '~/services/gatewayClientFactory';
 import { useGatewaySessionSetupStore } from '~/stores/gatewaySessionSetupStore';
 import type {
   GatewayCapabilitiesModel,
@@ -19,17 +15,15 @@ interface GatewayCapabilityState {
 }
 
 function normalizeErrorMessage(error: unknown): string {
-  if (error instanceof GatewayClientError) {
-    return error.message;
-  }
   if (error instanceof Error) {
     return error.message;
   }
-  return 'Gateway request failed';
+  return 'Managed messaging request failed';
 }
 
-function normalizeCapabilities(capabilities: GatewayCapabilitiesModel): GatewayCapabilitiesModel {
+function normalizeCapabilities(capabilities: Partial<GatewayCapabilitiesModel>): GatewayCapabilitiesModel {
   return {
+    whatsappBusinessEnabled: capabilities.whatsappBusinessEnabled === true,
     wechatModes: Array.isArray(capabilities.wechatModes) ? capabilities.wechatModes : [],
     defaultWeChatMode: capabilities.defaultWeChatMode ?? null,
     wecomAppEnabled: capabilities.wecomAppEnabled === true,
@@ -59,19 +53,33 @@ export const useGatewayCapabilityStore = defineStore('gatewayCapabilityStore', {
   }),
 
   actions: {
-    createClient() {
-      const gatewaySessionStore = useGatewaySessionSetupStore();
-      return createGatewayClient({
-        baseUrl: gatewaySessionStore.gatewayBaseUrl,
-        adminToken: gatewaySessionStore.gatewayAdminToken || undefined,
-      });
-    },
-
     async loadCapabilities() {
       this.isCapabilitiesLoading = true;
       this.capabilitiesError = null;
       try {
-        const capabilities = normalizeCapabilities(await this.createClient().getCapabilities());
+        const gatewaySessionStore = useGatewaySessionSetupStore();
+        const status =
+          gatewaySessionStore.managedStatus ||
+          (await gatewaySessionStore.refreshManagedGatewayStatus());
+        const supportedProviders = new Set(status?.supportedProviders || []);
+        const providerStatus = status?.providerStatusByProvider || {};
+        const capabilities = normalizeCapabilities({
+          whatsappBusinessEnabled: supportedProviders.has('WHATSAPP'),
+          wechatModes: supportedProviders.has('WECOM') ? ['WECOM_APP_BRIDGE'] : [],
+          defaultWeChatMode: supportedProviders.has('WECOM') ? 'WECOM_APP_BRIDGE' : null,
+          wecomAppEnabled: supportedProviders.has('WECOM'),
+          wechatPersonalEnabled: false,
+          discordEnabled: supportedProviders.has('DISCORD'),
+          discordAccountId:
+            typeof providerStatus.DISCORD?.accountId === 'string'
+              ? providerStatus.DISCORD.accountId
+              : null,
+          telegramEnabled: supportedProviders.has('TELEGRAM'),
+          telegramAccountId:
+            typeof providerStatus.TELEGRAM?.accountId === 'string'
+              ? providerStatus.TELEGRAM.accountId
+              : null,
+        });
         this.capabilities = capabilities;
         return capabilities;
       } catch (error) {
@@ -86,8 +94,8 @@ export const useGatewayCapabilityStore = defineStore('gatewayCapabilityStore', {
       this.isAccountsLoading = true;
       this.accountsError = null;
       try {
-        const response = await this.createClient().getWeComAccounts();
-        this.accounts = response.items;
+        const gatewaySessionStore = useGatewaySessionSetupStore();
+        this.accounts = await gatewaySessionStore.loadWeComAccounts();
         return this.accounts;
       } catch (error) {
         this.accountsError = normalizeErrorMessage(error);

@@ -78,6 +78,7 @@ export interface ExternalChannelCapabilityModel {
 export type WeChatSetupMode = 'WECOM_APP_BRIDGE' | 'DIRECT_PERSONAL_SESSION';
 
 export interface GatewayCapabilitiesModel {
+  whatsappBusinessEnabled: boolean;
   wechatModes: WeChatSetupMode[];
   defaultWeChatMode: WeChatSetupMode | null;
   wecomAppEnabled: boolean;
@@ -189,6 +190,59 @@ export interface GatewayRuntimeReliabilityStatusModel {
     inboundCompletedUnboundCount: number;
     outboundDeadLetterCount: number;
   };
+}
+
+export interface ManagedMessagingGatewayProviderConfigModel {
+  whatsappBusinessEnabled: boolean;
+  whatsappBusinessSecret: string;
+  wecomAppEnabled: boolean;
+  wecomWebhookToken: string;
+  wecomAppAccounts: GatewayWeComAccountModel[];
+  discordEnabled: boolean;
+  discordBotToken: string;
+  discordAccountId: string;
+  discordDiscoveryMaxCandidates: number;
+  discordDiscoveryTtlSeconds: number;
+  telegramEnabled: boolean;
+  telegramBotToken: string;
+  telegramAccountId: string;
+  telegramPollingEnabled: boolean;
+  telegramWebhookEnabled: boolean;
+  telegramWebhookSecretToken: string;
+}
+
+export interface ManagedMessagingGatewayProviderStatusModel {
+  provider: MessagingProvider;
+  supported: boolean;
+  selectedTransport: MessagingTransport;
+  configured: boolean;
+  effectivelyEnabled: boolean;
+  blockedReason: string | null;
+  accountId: string | null;
+}
+
+export interface ManagedMessagingGatewayStatusModel {
+  supported: boolean;
+  enabled: boolean;
+  lifecycleState: string;
+  message: string | null;
+  lastError: string | null;
+  activeVersion: string | null;
+  desiredVersion: string | null;
+  releaseTag: string | null;
+  installedVersions: string[];
+  bindHost: string | null;
+  bindPort: number | null;
+  pid: number | null;
+  providerConfig: ManagedMessagingGatewayProviderConfigModel;
+  providerStatusByProvider: Partial<
+    Record<MessagingProvider, ManagedMessagingGatewayProviderStatusModel>
+  >;
+  supportedProviders: MessagingProvider[];
+  excludedProviders: MessagingProvider[];
+  diagnostics: Record<string, unknown>;
+  runtimeReliabilityStatus: GatewayRuntimeReliabilityStatusModel | null;
+  runtimeRunning: boolean;
 }
 
 export interface SetupStepState {

@@ -17,6 +17,7 @@ import { scheduleBackgroundTasks } from "./startup/background-runner.js";
 import { registerRestRoutes } from "./api/rest/index.js";
 import { registerGraphql } from "./api/graphql/index.js";
 import { registerWebsocketRoutes } from "./api/websocket/index.js";
+import { getManagedMessagingGatewayService } from "./managed-capabilities/messaging-gateway/defaults.js";
 import { getWorkspaceManager } from "./workspaces/workspace-manager.js";
 
 const logger = {
@@ -110,6 +111,9 @@ export async function buildApp(options?: BuildAppOptions): Promise<FastifyInstan
   await app.register(registerRestRoutes, { prefix: "/rest" });
   await registerWebsocketRoutes(app);
   await registerGraphql(app);
+  app.addHook("onClose", async () => {
+    await getManagedMessagingGatewayService().close();
+  });
 
   return app;
 }
@@ -165,6 +169,12 @@ export async function startServer(): Promise<void> {
   registerShutdownHandlers(app);
   await app.listen({ host: options.host, port: options.port });
   logger.info(`Server listening on ${options.host}:${options.port}`);
+
+  try {
+    await getManagedMessagingGatewayService().restoreIfEnabled();
+  } catch (error) {
+    logger.error(`Failed to restore managed messaging gateway: ${String(error)}`);
+  }
 
   try {
     await getWorkspaceManager().getOrCreateTempWorkspace();

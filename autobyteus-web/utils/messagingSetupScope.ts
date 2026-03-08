@@ -6,7 +6,6 @@ import type {
 
 export const MESSAGING_PROVIDERS: MessagingProvider[] = [
   'WHATSAPP',
-  'WECHAT',
   'WECOM',
   'DISCORD',
   'TELEGRAM',
@@ -21,14 +20,11 @@ function normalizeBindingScopeAccountId(accountId: string | null | undefined): s
 }
 
 export function providerRequiresPersonalSession(provider: MessagingProvider): boolean {
-  return provider === 'WHATSAPP' || provider === 'WECHAT';
+  return provider === 'WECHAT';
 }
 
 export function providerTransport(provider: MessagingProvider): MessagingTransport {
-  if (provider === 'WECOM' || provider === 'DISCORD' || provider === 'TELEGRAM') {
-    return 'BUSINESS_API';
-  }
-  return 'PERSONAL_SESSION';
+  return provider === 'WECHAT' ? 'PERSONAL_SESSION' : 'BUSINESS_API';
 }
 
 export function providerSessionLabel(provider: MessagingProvider): string {
@@ -36,7 +32,7 @@ export function providerSessionLabel(provider: MessagingProvider): string {
     return 'WeChat';
   }
   if (provider === 'WHATSAPP') {
-    return 'WhatsApp';
+    return 'WhatsApp Business';
   }
   if (provider === 'DISCORD') {
     return 'Discord';
@@ -61,7 +57,7 @@ export function resolveBindingScope(input: {
       ? input.discordAccountId
       : input.provider === 'TELEGRAM'
         ? input.telegramAccountId
-      : null;
+        : null;
 
   return {
     provider: input.provider,

@@ -2,42 +2,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import { useGatewayCapabilityStore } from '~/stores/gatewayCapabilityStore';
 import { useGatewaySessionSetupStore } from '~/stores/gatewaySessionSetupStore';
-import { GatewayClientError } from '~/services/messagingGatewayClient';
-
-const { gatewayClientMock, createGatewayClientMock } = vi.hoisted(() => {
-  const client = {
-    getCapabilities: vi.fn(),
-    getWeComAccounts: vi.fn(),
-  };
-  return {
-    gatewayClientMock: client,
-    createGatewayClientMock: vi.fn(() => client),
-  };
-});
-
-vi.mock('~/services/messagingGatewayClient', () => ({
-  createMessagingGatewayClient: createGatewayClientMock,
-  GatewayClientError: class GatewayClientError extends Error {
-    statusCode: number | null;
-
-    code: string | null;
-
-    details: { sessionId?: string } | null;
-
-    constructor(
-      message: string,
-      statusCode: number | null,
-      code: string | null,
-      details: { sessionId?: string } | null = null,
-    ) {
-      super(message);
-      this.name = 'GatewayClientError';
-      this.statusCode = statusCode;
-      this.code = code;
-      this.details = details;
-    }
-  },
-}));
 
 describe('gatewayCapabilityStore', () => {
   beforeEach(() => {
@@ -45,93 +9,79 @@ describe('gatewayCapabilityStore', () => {
     vi.clearAllMocks();
   });
 
-  it('loads capabilities using gateway session config as source-of-truth', async () => {
-    gatewayClientMock.getCapabilities.mockResolvedValue({
-      wechatModes: ['WECOM_APP_BRIDGE'],
-      defaultWeChatMode: 'WECOM_APP_BRIDGE',
-      wecomAppEnabled: true,
-      wechatPersonalEnabled: false,
-      discordEnabled: true,
-      discordAccountId: 'discord-acct-1',
-      telegramEnabled: true,
-      telegramAccountId: 'telegram-acct-1',
-    });
-
+  it('maps managed gateway status into provider capability flags', async () => {
     const sessionStore = useGatewaySessionSetupStore();
-    sessionStore.gatewayBaseUrl = 'http://localhost:8010';
-    sessionStore.gatewayAdminToken = 'admin-token';
+    vi.spyOn(sessionStore, 'refreshManagedGatewayStatus').mockResolvedValue({
+      supported: true,
+      enabled: true,
+      lifecycleState: 'RUNNING',
+      message: null,
+      lastError: null,
+      activeVersion: '0.1.0',
+      desiredVersion: '0.1.0',
+      releaseTag: 'v-test-1',
+      installedVersions: ['0.1.0'],
+      bindHost: '127.0.0.1',
+      bindPort: 8010,
+      pid: 1111,
+      providerConfig: sessionStore.providerConfig,
+      providerStatusByProvider: {
+        DISCORD: {
+          provider: 'DISCORD',
+          supported: true,
+          selectedTransport: 'BUSINESS_API',
+          configured: true,
+          effectivelyEnabled: true,
+          blockedReason: null,
+          accountId: 'discord-acct-1',
+        },
+        TELEGRAM: {
+          provider: 'TELEGRAM',
+          supported: true,
+          selectedTransport: 'BUSINESS_API',
+          configured: true,
+          effectivelyEnabled: true,
+          blockedReason: null,
+          accountId: 'telegram-acct-1',
+        },
+      },
+      supportedProviders: ['WHATSAPP', 'WECOM', 'DISCORD', 'TELEGRAM'],
+      excludedProviders: ['WECHAT'],
+      diagnostics: {},
+      runtimeReliabilityStatus: null,
+      runtimeRunning: true,
+    } as any);
 
     const store = useGatewayCapabilityStore();
-    await store.loadCapabilities();
+    const capabilities = await store.loadCapabilities();
 
-    expect(createGatewayClientMock).toHaveBeenCalledWith({
-      baseUrl: 'http://localhost:8010',
-      adminToken: 'admin-token',
-    });
-    expect(store.capabilities?.defaultWeChatMode).toBe('WECOM_APP_BRIDGE');
-    expect(store.capabilities?.discordEnabled).toBe(true);
-    expect(store.capabilities?.discordAccountId).toBe('discord-acct-1');
-    expect(store.capabilities?.telegramEnabled).toBe(true);
-    expect(store.capabilities?.telegramAccountId).toBe('telegram-acct-1');
+    expect(capabilities.whatsappBusinessEnabled).toBe(true);
+    expect(capabilities.wechatPersonalEnabled).toBe(false);
+    expect(capabilities.discordEnabled).toBe(true);
+    expect(capabilities.discordAccountId).toBe('discord-acct-1');
+    expect(capabilities.telegramEnabled).toBe(true);
+    expect(capabilities.telegramAccountId).toBe('telegram-acct-1');
   });
 
-  it('loads wecom accounts from gateway', async () => {
-    gatewayClientMock.getWeComAccounts.mockResolvedValue({
-      items: [
-        {
-          accountId: 'corp-main',
-          label: 'Corporate Main',
-          mode: 'APP',
-        },
-      ],
-    });
-
+  it('loads wecom accounts through the managed session store', async () => {
     const sessionStore = useGatewaySessionSetupStore();
-    sessionStore.gatewayBaseUrl = 'http://localhost:8010';
-
-    const store = useGatewayCapabilityStore();
-    await store.loadWeComAccounts();
-
-    expect(store.accounts).toEqual([
+    vi.spyOn(sessionStore, 'loadWeComAccounts').mockResolvedValue([
       {
         accountId: 'corp-main',
         label: 'Corporate Main',
         mode: 'APP',
       },
     ]);
-  });
-
-  it('surfaces capability errors as user-readable messages', async () => {
-    gatewayClientMock.getCapabilities.mockRejectedValue(
-      new GatewayClientError('gateway unavailable', 503, 'GATEWAY_UNAVAILABLE'),
-    );
-
-    const sessionStore = useGatewaySessionSetupStore();
-    sessionStore.gatewayBaseUrl = 'http://localhost:8010';
 
     const store = useGatewayCapabilityStore();
+    const accounts = await store.loadWeComAccounts();
 
-    await expect(store.loadCapabilities()).rejects.toThrow('gateway unavailable');
-    expect(store.capabilitiesError).toBe('gateway unavailable');
-  });
-
-  it('normalizes missing discord fields to safe defaults', async () => {
-    gatewayClientMock.getCapabilities.mockResolvedValue({
-      wechatModes: ['WECOM_APP_BRIDGE'],
-      defaultWeChatMode: 'WECOM_APP_BRIDGE',
-      wecomAppEnabled: true,
-      wechatPersonalEnabled: false,
-    });
-
-    const sessionStore = useGatewaySessionSetupStore();
-    sessionStore.gatewayBaseUrl = 'http://localhost:8010';
-
-    const store = useGatewayCapabilityStore();
-    const capabilities = await store.loadCapabilities();
-
-    expect(capabilities.discordEnabled).toBe(false);
-    expect(capabilities.discordAccountId).toBeNull();
-    expect(capabilities.telegramEnabled).toBe(false);
-    expect(capabilities.telegramAccountId).toBeNull();
+    expect(accounts).toEqual([
+      {
+        accountId: 'corp-main',
+        label: 'Corporate Main',
+        mode: 'APP',
+      },
+    ]);
   });
 });

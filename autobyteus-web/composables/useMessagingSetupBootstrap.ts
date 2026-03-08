@@ -19,6 +19,7 @@ export function useMessagingSetupBootstrap() {
     gatewayStore.initializeFromConfig();
 
     try {
+      await gatewayStore.refreshManagedGatewayStatus({ silent: true });
       await capabilityStore.loadCapabilities();
       providerScopeStore.initialize(capabilityStore.capabilities);
       await capabilityStore.loadWeComAccounts();
@@ -37,7 +38,7 @@ export function useMessagingSetupBootstrap() {
   watch(
     () => providerScopeStore.selectedProvider,
     (provider) => {
-      if (provider === 'WHATSAPP' || provider === 'WECHAT') {
+      if (provider === 'WECHAT') {
         gatewayStore.setSessionProvider(provider);
       }
     },

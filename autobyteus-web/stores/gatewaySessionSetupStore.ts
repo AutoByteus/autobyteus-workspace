@@ -1,42 +1,54 @@
 import { defineStore } from 'pinia';
 import {
-  GatewayClientError,
-} from '~/services/messagingGatewayClient';
-import { createGatewayClient } from '~/services/gatewayClientFactory';
+  DISABLE_MANAGED_MESSAGING_GATEWAY,
+  ENABLE_MANAGED_MESSAGING_GATEWAY,
+  SAVE_MANAGED_MESSAGING_GATEWAY_PROVIDER_CONFIG,
+  UPDATE_MANAGED_MESSAGING_GATEWAY,
+} from '~/graphql/mutations/managedMessagingGatewayMutations';
 import {
-  createPersonalSessionSyncPolicy,
-  shouldContinuePolling,
-} from '~/services/sessionSync/personalSessionStatusSyncPolicy';
+  MANAGED_MESSAGING_GATEWAY_PEER_CANDIDATES,
+  MANAGED_MESSAGING_GATEWAY_STATUS,
+  MANAGED_MESSAGING_GATEWAY_WECOM_ACCOUNTS,
+} from '~/graphql/queries/managedMessagingGatewayQueries';
 import {
-  normalizeGatewayErrorMessage,
-  persistGatewayConfig,
-  readPersistedGatewayConfig,
-} from '~/stores/gatewaySessionSetup/config-health';
-import { mergeSessionWithStatusAwareQr } from '~/stores/gatewaySessionSetup/personal-session-lifecycle';
-import {
-  detachTimer,
-  nextAutoSyncStateForReason,
-} from '~/stores/gatewaySessionSetup/session-auto-sync';
+  createDefaultManagedProviderConfig,
+  deriveManagedGatewayStepStatus,
+  normalizeManagedGatewayError,
+  normalizeManagedStatus,
+  normalizeProviderConfig,
+} from '~/stores/gatewaySessionSetup/managedGatewayStatus';
 import type {
-  PersonalSessionProvider,
+  GatewayDiscordPeerCandidatesModel,
   GatewayHealthModel,
-  GatewayRuntimeReliabilityStatusModel,
   GatewayPersonalSessionModel,
   GatewayPersonalSessionQrModel,
   GatewayReadinessSnapshot,
-  SessionStatusAutoSyncState,
+  GatewayRuntimeReliabilityStatusModel,
   GatewayStepStatus,
+  GatewayTelegramPeerCandidatesModel,
+  GatewayWeComAccountModel,
+  ManagedMessagingGatewayProviderConfigModel,
+  ManagedMessagingGatewayProviderStatusModel,
+  ManagedMessagingGatewayStatusModel,
+  PersonalSessionProvider,
+  SessionStatusAutoSyncState,
 } from '~/types/messaging';
+import { getApolloClient } from '~/utils/apolloClient';
 
 interface GatewaySessionSetupState {
-  gatewayBaseUrl: string;
-  gatewayAdminToken: string;
   gatewayStatus: GatewayStepStatus;
   gatewayError: string | null;
   gatewayHealth: GatewayHealthModel | null;
   runtimeReliabilityStatus: GatewayRuntimeReliabilityStatusModel | null;
   runtimeReliabilityError: string | null;
   isGatewayChecking: boolean;
+  isGatewayMutating: boolean;
+  isProviderConfigSaving: boolean;
+  managedStatus: ManagedMessagingGatewayStatusModel | null;
+  providerConfig: ManagedMessagingGatewayProviderConfigModel;
+  providerStatusByProvider: Partial<
+    Record<string, ManagedMessagingGatewayProviderStatusModel>
+  >;
   isSessionLoading: boolean;
   sessionError: string | null;
   personalModeBlockedReason: string | null;
@@ -53,14 +65,17 @@ interface GatewaySessionSetupState {
 
 export const useGatewaySessionSetupStore = defineStore('gatewaySessionSetupStore', {
   state: (): GatewaySessionSetupState => ({
-    gatewayBaseUrl: '',
-    gatewayAdminToken: '',
     gatewayStatus: 'UNKNOWN',
     gatewayError: null,
     gatewayHealth: null,
     runtimeReliabilityStatus: null,
     runtimeReliabilityError: null,
     isGatewayChecking: false,
+    isGatewayMutating: false,
+    isProviderConfigSaving: false,
+    managedStatus: null,
+    providerConfig: createDefaultManagedProviderConfig(),
+    providerStatusByProvider: {},
     isSessionLoading: false,
     sessionError: null,
     personalModeBlockedReason: null,
@@ -77,244 +92,140 @@ export const useGatewaySessionSetupStore = defineStore('gatewaySessionSetupStore
 
   getters: {
     gatewayReady: (state) => state.gatewayStatus === 'READY',
-    personalSessionReady: (state) => state.session?.status === 'ACTIVE',
+    personalSessionReady: () => false,
     sessionProviderLabel: (state) =>
       state.sessionProvider === 'WECHAT' ? 'WeChat' : 'WhatsApp',
   },
 
   actions: {
     clearSessionStatusSyncTimer() {
-      if (!this.sessionStatusAutoSyncTimer) {
-        return;
+      if (this.sessionStatusAutoSyncTimer) {
+        clearTimeout(this.sessionStatusAutoSyncTimer);
       }
-      clearTimeout(this.sessionStatusAutoSyncTimer);
       this.sessionStatusAutoSyncTimer = null;
-    },
-
-    scheduleSessionStatusSyncTick(delayMs: number) {
-      this.clearSessionStatusSyncTimer();
-      this.sessionStatusAutoSyncTimer = setTimeout(() => {
-        void this.runSessionStatusSyncTick();
-      }, delayMs);
-      detachTimer(this.sessionStatusAutoSyncTimer);
     },
 
     stopSessionStatusAutoSync(reason = 'manual') {
       this.clearSessionStatusSyncTimer();
       this.sessionStatusAutoSyncReason = reason;
-      this.sessionStatusAutoSyncState = nextAutoSyncStateForReason(reason);
+      this.sessionStatusAutoSyncState = reason === 'view_unmounted' ? 'stopped' : 'idle';
       this.sessionStatusAutoSyncSessionId = null;
       this.sessionStatusAutoSyncStartedAtMs = null;
       this.sessionStatusAutoSyncConsecutiveErrors = 0;
-
-      if (reason === 'retry_budget_exhausted') {
-        this.sessionError =
-          'Automatic status sync paused after repeated errors. Use Refresh Status to continue.';
-      } else if (reason === 'timeout') {
-        this.sessionError = 'Automatic status sync timed out. Use Refresh Status to continue.';
-      }
     },
 
-    startSessionStatusAutoSync(sessionId?: string) {
-      const resolvedSessionId = sessionId || this.session?.sessionId;
-      if (!resolvedSessionId) {
-        return;
-      }
-
+    startSessionStatusAutoSync() {
       this.clearSessionStatusSyncTimer();
-      this.sessionStatusAutoSyncState = 'running';
-      this.sessionStatusAutoSyncReason = null;
-      this.sessionStatusAutoSyncSessionId = resolvedSessionId;
-      this.sessionStatusAutoSyncStartedAtMs = Date.now();
-      this.sessionStatusAutoSyncConsecutiveErrors = 0;
-
-      const currentStatus =
-        this.session && this.session.sessionId === resolvedSessionId ? this.session.status : null;
-      if (currentStatus === 'ACTIVE' || currentStatus === 'STOPPED') {
-        this.stopSessionStatusAutoSync(currentStatus.toLowerCase());
-        return;
-      }
-
-      const policy = createPersonalSessionSyncPolicy();
-      this.scheduleSessionStatusSyncTick(policy.baseIntervalMs);
+      this.sessionStatusAutoSyncState = 'idle';
+      this.sessionStatusAutoSyncReason = 'unsupported';
     },
 
     async runSessionStatusSyncTick() {
-      if (
-        this.sessionStatusAutoSyncState !== 'running' ||
-        !this.sessionStatusAutoSyncSessionId ||
-        !this.sessionStatusAutoSyncStartedAtMs
-      ) {
-        return;
-      }
-
-      const policy = createPersonalSessionSyncPolicy();
-      const sessionId = this.sessionStatusAutoSyncSessionId;
-
-      try {
-        const session = await this.fetchPersonalSessionStatus(sessionId, { silent: true });
-        this.sessionStatusAutoSyncConsecutiveErrors = 0;
-
-        const elapsedMs = Date.now() - this.sessionStatusAutoSyncStartedAtMs;
-        const decision = shouldContinuePolling(policy, {
-          status: session.status,
-          elapsedMs,
-          consecutiveErrors: this.sessionStatusAutoSyncConsecutiveErrors,
-        });
-
-        if (!decision.shouldContinue) {
-          this.stopSessionStatusAutoSync(decision.reason || 'stopped');
-          return;
-        }
-
-        this.scheduleSessionStatusSyncTick(decision.nextDelayMs);
-      } catch (error) {
-        if (error instanceof GatewayClientError && error.statusCode === 404) {
-          this.stopSessionStatusAutoSync('session_not_found');
-          return;
-        }
-
-        this.sessionStatusAutoSyncConsecutiveErrors += 1;
-        const elapsedMs = Date.now() - this.sessionStatusAutoSyncStartedAtMs;
-        const decision = shouldContinuePolling(policy, {
-          elapsedMs,
-          consecutiveErrors: this.sessionStatusAutoSyncConsecutiveErrors,
-        });
-
-        if (!decision.shouldContinue) {
-          this.stopSessionStatusAutoSync(decision.reason || 'retry_budget_exhausted');
-          return;
-        }
-
-        this.scheduleSessionStatusSyncTick(decision.nextDelayMs);
-      }
+      this.stopSessionStatusAutoSync('unsupported');
     },
 
     initializeFromConfig() {
-      const persistedConfig = readPersistedGatewayConfig();
-
-      try {
-        const runtimeConfig = useRuntimeConfig();
-        const runtimeBaseUrl =
-          typeof runtimeConfig.public.messageGatewayBaseUrl === 'string'
-            ? runtimeConfig.public.messageGatewayBaseUrl
-            : '';
-        const runtimeAdminToken =
-          typeof runtimeConfig.public.messageGatewayAdminToken === 'string'
-            ? runtimeConfig.public.messageGatewayAdminToken
-            : '';
-
-        // Runtime config should seed initial values only.
-        // Do not clobber values entered by the user in the current UI session.
-        if (!this.gatewayBaseUrl) {
-          this.gatewayBaseUrl = persistedConfig?.baseUrl || runtimeBaseUrl;
-        }
-        if (!this.gatewayAdminToken) {
-          this.gatewayAdminToken = persistedConfig?.adminToken || runtimeAdminToken;
-        }
-      } catch {
-        // Keep defaults for non-Nuxt unit test environments and still allow local persistence.
-        if (!this.gatewayBaseUrl && persistedConfig?.baseUrl) {
-          this.gatewayBaseUrl = persistedConfig.baseUrl;
-        }
-        if (!this.gatewayAdminToken && persistedConfig?.adminToken) {
-          this.gatewayAdminToken = persistedConfig.adminToken;
-        }
-      }
-    },
-
-    setGatewayConfig(input: { baseUrl?: string; adminToken?: string }) {
-      const nextBaseUrl =
-        typeof input.baseUrl === 'string' ? input.baseUrl : this.gatewayBaseUrl;
-      const nextAdminToken =
-        typeof input.adminToken === 'string' ? input.adminToken : this.gatewayAdminToken;
-      const changed =
-        nextBaseUrl !== this.gatewayBaseUrl || nextAdminToken !== this.gatewayAdminToken;
-
-      if (typeof input.baseUrl === 'string') {
-        this.gatewayBaseUrl = input.baseUrl;
-      }
-      if (typeof input.adminToken === 'string') {
-        this.gatewayAdminToken = input.adminToken;
-      }
-
-      if (changed) {
-        this.gatewayStatus = 'UNKNOWN';
-        this.gatewayError = null;
-        this.gatewayHealth = null;
-      }
-
-      persistGatewayConfig({
-        baseUrl: this.gatewayBaseUrl,
-        adminToken: this.gatewayAdminToken,
-      });
+      this.gatewayError = null;
     },
 
     setSessionProvider(provider: PersonalSessionProvider) {
-      if (provider === this.sessionProvider) {
-        return;
-      }
-
-      this.stopSessionStatusAutoSync('provider_switched');
       this.sessionProvider = provider;
-      this.session = null;
-      this.sessionError = null;
-      this.personalModeBlockedReason = null;
-      this.qrExpiredAt = null;
     },
 
-    createClient() {
-      return createGatewayClient({
-        baseUrl: this.gatewayBaseUrl,
-        adminToken: this.gatewayAdminToken || undefined,
-      });
-    },
-
-    async validateGatewayConnection(input?: { baseUrl?: string; adminToken?: string }) {
-      if (input) {
-        this.setGatewayConfig(input);
-      }
-
+    async refreshManagedGatewayStatus(options?: { silent?: boolean }) {
+      const runSilently = options?.silent === true;
       this.isGatewayChecking = true;
-      this.gatewayError = null;
+      if (!runSilently) {
+        this.gatewayError = null;
+      }
 
       try {
-        const health = await this.createClient().getHealth();
-        this.gatewayHealth = health;
-        this.gatewayStatus = health.status === 'error' ? 'BLOCKED' : 'READY';
-        if (this.gatewayStatus === 'BLOCKED') {
-          this.gatewayError = 'Gateway reported unhealthy status.';
-          this.runtimeReliabilityStatus = null;
-          this.runtimeReliabilityError = null;
-        } else {
-          await this.refreshRuntimeReliabilityStatus({ silent: true });
+        const client = getApolloClient();
+        const { data, errors } = await client.query({
+          query: MANAGED_MESSAGING_GATEWAY_STATUS,
+          fetchPolicy: 'network-only',
+        });
+        if (errors && errors.length > 0) {
+          throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '));
         }
-        return health;
+
+        const status = normalizeManagedStatus(data?.managedMessagingGatewayStatus);
+        this.applyManagedStatus(status);
+        return status;
       } catch (error) {
+        const message = normalizeManagedGatewayError(error);
         this.gatewayStatus = 'BLOCKED';
-        this.gatewayError = normalizeGatewayErrorMessage(error);
-        this.runtimeReliabilityStatus = null;
-        this.runtimeReliabilityError = null;
-        throw error;
+        this.gatewayError = message;
+        if (!runSilently) {
+          throw error;
+        }
+        return null;
       } finally {
         this.isGatewayChecking = false;
       }
     },
 
-    async refreshRuntimeReliabilityStatus(options?: { silent?: boolean }) {
-      const runSilently = options?.silent === true;
-      if (!runSilently) {
-        this.runtimeReliabilityError = null;
-      }
+    async validateGatewayConnection() {
+      return this.refreshManagedGatewayStatus();
+    },
+
+    async enableManagedGateway() {
+      return this.runManagedMutation('enable', ENABLE_MANAGED_MESSAGING_GATEWAY, 'enableManagedMessagingGateway');
+    },
+
+    async disableManagedGateway() {
+      return this.runManagedMutation('disable', DISABLE_MANAGED_MESSAGING_GATEWAY, 'disableManagedMessagingGateway');
+    },
+
+    async updateManagedGateway() {
+      return this.runManagedMutation('update', UPDATE_MANAGED_MESSAGING_GATEWAY, 'updateManagedMessagingGateway');
+    },
+
+    async saveManagedGatewayProviderConfig(
+      input?: Partial<ManagedMessagingGatewayProviderConfigModel>,
+    ) {
+      const nextConfig = normalizeProviderConfig({
+        ...this.providerConfig,
+        ...(input || {}),
+      });
+      this.isProviderConfigSaving = true;
+      this.gatewayError = null;
 
       try {
-        const status = await this.createClient().getRuntimeReliabilityStatus();
-        this.runtimeReliabilityStatus = status;
-        this.runtimeReliabilityError = null;
+        const client = getApolloClient();
+        const { data, errors } = await client.mutate({
+          mutation: SAVE_MANAGED_MESSAGING_GATEWAY_PROVIDER_CONFIG,
+          variables: {
+            input: nextConfig,
+          },
+        });
+        if (errors && errors.length > 0) {
+          throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '));
+        }
+
+        const status = normalizeManagedStatus(
+          data?.saveManagedMessagingGatewayProviderConfig,
+        );
+        this.applyManagedStatus(status);
         return status;
       } catch (error) {
+        this.gatewayError = normalizeManagedGatewayError(error);
+        throw error;
+      } finally {
+        this.isProviderConfigSaving = false;
+      }
+    },
+
+    async refreshRuntimeReliabilityStatus(options?: { silent?: boolean }) {
+      const runSilently = options?.silent === true;
+      try {
+        const status = await this.refreshManagedGatewayStatus({ silent: true });
+        this.runtimeReliabilityStatus = status?.runtimeReliabilityStatus ?? null;
+        this.runtimeReliabilityError = null;
+        return this.runtimeReliabilityStatus;
+      } catch (error) {
         this.runtimeReliabilityStatus = null;
-        this.runtimeReliabilityError = normalizeGatewayErrorMessage(error);
+        this.runtimeReliabilityError = normalizeManagedGatewayError(error);
         if (!runSilently) {
           throw error;
         }
@@ -322,197 +233,102 @@ export const useGatewaySessionSetupStore = defineStore('gatewaySessionSetupStore
       }
     },
 
-    async startPersonalSession(accountLabel: string) {
-      this.isSessionLoading = true;
-      this.sessionError = null;
-      this.personalModeBlockedReason = null;
-      this.qrExpiredAt = null;
-      const provider = this.sessionProvider;
-
+    async loadWeComAccounts(): Promise<GatewayWeComAccountModel[]> {
       try {
-        const client = this.createClient();
-        const session =
-          provider === 'WECHAT'
-            ? await client.startWeChatPersonalSession(accountLabel)
-            : await client.startWhatsAppPersonalSession(accountLabel);
-        this.session = session;
-        await this.fetchPersonalSessionQr(session.sessionId);
-        this.startSessionStatusAutoSync(session.sessionId);
-        return this.session;
+        const client = getApolloClient();
+        const { data, errors } = await client.query({
+          query: MANAGED_MESSAGING_GATEWAY_WECOM_ACCOUNTS,
+          fetchPolicy: 'network-only',
+        });
+        if (errors && errors.length > 0) {
+          throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '));
+        }
+        const items = Array.isArray(data?.managedMessagingGatewayWeComAccounts)
+          ? data.managedMessagingGatewayWeComAccounts
+          : [];
+        return items.map((item: Record<string, unknown>) => ({
+          accountId: String(item.accountId ?? ''),
+          label: String(item.label ?? ''),
+          mode: item.mode === 'LEGACY' ? 'LEGACY' : 'APP',
+        }));
       } catch (error) {
-        if (error instanceof GatewayClientError) {
-          if (error.statusCode === 403) {
-            this.personalModeBlockedReason = error.message;
-          }
-
-          if (error.statusCode === 409 && error.code === 'SESSION_ALREADY_RUNNING') {
-            const existingSessionId = error.details?.sessionId;
-            if (existingSessionId) {
-              const attachedSession = await this.attachToExistingSession(existingSessionId);
-              this.personalModeBlockedReason = null;
-              this.sessionError = null;
-              return attachedSession;
-            }
-
-            this.personalModeBlockedReason =
-              'A personal session is already running, but gateway did not return its session id.';
-          }
-        }
-        this.sessionError = normalizeGatewayErrorMessage(error);
+        this.gatewayError = normalizeManagedGatewayError(error);
         throw error;
-      } finally {
-        this.isSessionLoading = false;
       }
     },
 
-    async attachToExistingSession(sessionId: string): Promise<GatewayPersonalSessionModel> {
-      const session = await this.fetchPersonalSessionStatus(sessionId);
-      await this.fetchPersonalSessionQr(sessionId);
-      this.startSessionStatusAutoSync(sessionId);
-      return this.session || session;
-    },
-
-    async fetchPersonalSessionQr(sessionId?: string): Promise<GatewayPersonalSessionQrModel | null> {
-      const resolvedSessionId = sessionId || this.session?.sessionId;
-      if (!resolvedSessionId) {
-        throw new Error('No active session id');
-      }
-
+    async loadPeerCandidates(
+      provider: 'DISCORD' | 'TELEGRAM',
+      options?: { includeGroups?: boolean; limit?: number },
+    ): Promise<GatewayDiscordPeerCandidatesModel | GatewayTelegramPeerCandidatesModel> {
       try {
-        const client = this.createClient();
-        const qr =
-          this.sessionProvider === 'WECHAT'
-            ? await client.getWeChatPersonalQr(resolvedSessionId)
-            : await client.getWhatsAppPersonalQr(resolvedSessionId);
-        if (!this.session || this.session.sessionId !== resolvedSessionId) {
-          return qr;
+        const client = getApolloClient();
+        const { data, errors } = await client.query({
+          query: MANAGED_MESSAGING_GATEWAY_PEER_CANDIDATES,
+          variables: {
+            provider,
+            includeGroups: options?.includeGroups ?? true,
+            limit: options?.limit ?? 50,
+          },
+          fetchPolicy: 'network-only',
+        });
+        if (errors && errors.length > 0) {
+          throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '));
         }
 
-        this.session = {
-          ...this.session,
-          qr,
-          status: this.session.status === 'STOPPED' ? 'PENDING_QR' : this.session.status,
+        const response = data?.managedMessagingGatewayPeerCandidates;
+        const normalized = {
+          accountId:
+            typeof response?.accountId === 'string' ? response.accountId : '',
+          updatedAt:
+            typeof response?.updatedAt === 'string'
+              ? response.updatedAt
+              : new Date().toISOString(),
+          items: Array.isArray(response?.items)
+            ? response.items.map((item: Record<string, unknown>) => ({
+                peerId: String(item.peerId ?? ''),
+                peerType: item.peerType === 'GROUP' ? 'GROUP' : 'USER',
+                threadId:
+                  typeof item.threadId === 'string' ? item.threadId : null,
+                displayName:
+                  typeof item.displayName === 'string' ? item.displayName : null,
+                lastMessageAt: String(item.lastMessageAt ?? new Date().toISOString()),
+              }))
+            : [],
         };
-        this.qrExpiredAt = null;
-        this.sessionError = null;
-        return qr;
-      } catch (error) {
-        if (error instanceof GatewayClientError) {
-          if (error.statusCode === 409 && error.code === 'SESSION_QR_NOT_READY') {
-            if (this.session && this.session.sessionId === resolvedSessionId) {
-              this.session = {
-                ...this.session,
-                status: 'PENDING_QR',
-                qr: undefined,
-              };
-            }
-            this.sessionError = 'QR code is not ready yet. Please retry in a few seconds.';
-            return null;
-          }
 
-          if (error.statusCode === 410 && error.code === 'SESSION_QR_EXPIRED') {
-            this.qrExpiredAt = new Date().toISOString();
-            if (this.session && this.session.sessionId === resolvedSessionId) {
-              const nextSession: GatewayPersonalSessionModel = {
-                ...this.session,
-              };
-              delete nextSession.qr;
-              this.session = nextSession;
-            }
-          }
-        }
-        this.sessionError = normalizeGatewayErrorMessage(error);
+        return normalized;
+      } catch (error) {
+        this.gatewayError = normalizeManagedGatewayError(error);
         throw error;
       }
     },
 
-    async fetchPersonalSessionStatus(sessionId?: string, options?: { silent?: boolean }) {
-      const resolvedSessionId = sessionId || this.session?.sessionId;
-      if (!resolvedSessionId) {
-        throw new Error('No active session id');
-      }
-
-      if (!options?.silent) {
-        this.isSessionLoading = true;
-        this.sessionError = null;
-      }
-
-      try {
-        const client = this.createClient();
-        const session =
-          this.sessionProvider === 'WECHAT'
-            ? await client.getWeChatPersonalStatus(resolvedSessionId)
-            : await client.getWhatsAppPersonalStatus(resolvedSessionId);
-        this.session = mergeSessionWithStatusAwareQr(session, this.session);
-
-        if (
-          this.sessionStatusAutoSyncSessionId === resolvedSessionId &&
-          (session.status === 'ACTIVE' || session.status === 'STOPPED')
-        ) {
-          this.stopSessionStatusAutoSync(session.status.toLowerCase());
-        }
-
-        if (
-          !options?.silent &&
-          (this.sessionStatusAutoSyncState === 'paused' || this.sessionStatusAutoSyncState === 'stopped') &&
-          (session.status === 'PENDING_QR' || session.status === 'DEGRADED')
-        ) {
-          this.startSessionStatusAutoSync(resolvedSessionId);
-        }
-
-        return session;
-      } catch (error) {
-        if (error instanceof GatewayClientError && error.statusCode === 404) {
-          this.session = null;
-          if (this.sessionStatusAutoSyncSessionId === resolvedSessionId) {
-            this.stopSessionStatusAutoSync('session_not_found');
-          }
-        }
-        this.sessionError = normalizeGatewayErrorMessage(error);
-        throw error;
-      } finally {
-        if (!options?.silent) {
-          this.isSessionLoading = false;
-        }
-      }
+    async startPersonalSession(_accountLabel: string) {
+      throw new Error('Personal sessions are not supported in the managed messaging flow.');
     },
 
-    async stopPersonalSession(sessionId?: string) {
-      const resolvedSessionId = sessionId || this.session?.sessionId;
-      if (!resolvedSessionId) {
-        this.stopSessionStatusAutoSync('session_stopped');
-        return { success: true };
-      }
+    async attachToExistingSession(_sessionId: string): Promise<GatewayPersonalSessionModel> {
+      throw new Error('Personal sessions are not supported in the managed messaging flow.');
+    },
 
-      this.isSessionLoading = true;
-      this.sessionError = null;
-      let stopReason = 'session_stopped';
+    async fetchPersonalSessionQr(_sessionId?: string): Promise<GatewayPersonalSessionQrModel | null> {
+      throw new Error('Personal sessions are not supported in the managed messaging flow.');
+    },
 
-      try {
-        const client = this.createClient();
-        const response =
-          this.sessionProvider === 'WECHAT'
-            ? await client.stopWeChatPersonalSession(resolvedSessionId)
-            : await client.stopWhatsAppPersonalSession(resolvedSessionId);
-        this.session = null;
-        this.qrExpiredAt = null;
-        this.personalModeBlockedReason = null;
-        return response;
-      } catch (error) {
-        this.sessionError = normalizeGatewayErrorMessage(error);
-        stopReason = 'stop_failed';
-        throw error;
-      } finally {
-        this.stopSessionStatusAutoSync(stopReason);
-        this.isSessionLoading = false;
-      }
+    async fetchPersonalSessionStatus(_sessionId?: string) {
+      throw new Error('Personal sessions are not supported in the managed messaging flow.');
+    },
+
+    async stopPersonalSession() {
+      throw new Error('Personal sessions are not supported in the managed messaging flow.');
     },
 
     getReadinessSnapshot(): GatewayReadinessSnapshot {
       const runtimeState = this.runtimeReliabilityStatus?.runtime.state ?? null;
       const runtimeCriticalReason =
         runtimeState === 'CRITICAL_LOCK_LOST'
-          ? 'Gateway reliability lock ownership was lost. Restart gateway to recover.'
+          ? 'Managed messaging reliability lock ownership was lost. Restart the gateway to recover.'
           : null;
       const blockedReason =
         this.gatewayStatus === 'BLOCKED' ? this.gatewayError : runtimeCriticalReason;
@@ -521,9 +337,68 @@ export const useGatewaySessionSetupStore = defineStore('gatewaySessionSetupStore
         gatewayBlockedReason: blockedReason,
         runtimeReliabilityState: runtimeState,
         runtimeReliabilityCriticalReason: runtimeCriticalReason,
-        personalSessionReady: this.session?.status === 'ACTIVE',
-        personalSessionBlockedReason: this.personalModeBlockedReason,
+        personalSessionReady: false,
+        personalSessionBlockedReason: null,
       };
+    },
+
+    applyManagedStatus(status: ManagedMessagingGatewayStatusModel) {
+      this.managedStatus = status;
+      this.providerConfig = normalizeProviderConfig(status.providerConfig);
+      this.providerStatusByProvider = status.providerStatusByProvider;
+      this.runtimeReliabilityStatus = status.runtimeReliabilityStatus;
+      this.runtimeReliabilityError =
+        status.runtimeRunning || !status.enabled
+          ? null
+          : 'Managed messaging runtime is not running.';
+      this.gatewayHealth = {
+        status: status.runtimeRunning
+          ? 'ok'
+          : status.enabled
+            ? 'degraded'
+            : 'error',
+        version: status.activeVersion ?? undefined,
+        timestamp: new Date().toISOString(),
+      };
+      this.gatewayStatus = deriveManagedGatewayStepStatus(status);
+      this.gatewayError =
+        this.gatewayStatus === 'BLOCKED'
+          ? status.lastError || status.message || 'Managed messaging is blocked.'
+          : null;
+      this.session = null;
+      this.sessionError = null;
+      this.personalModeBlockedReason = null;
+      this.qrExpiredAt = null;
+    },
+
+    async runManagedMutation(
+      _operation: 'enable' | 'disable' | 'update',
+      mutation: unknown,
+      responseKey:
+        | 'enableManagedMessagingGateway'
+        | 'disableManagedMessagingGateway'
+        | 'updateManagedMessagingGateway',
+    ) {
+      this.isGatewayMutating = true;
+      this.gatewayError = null;
+
+      try {
+        const client = getApolloClient();
+        const { data, errors } = await client.mutate({
+          mutation,
+        });
+        if (errors && errors.length > 0) {
+          throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '));
+        }
+        const status = normalizeManagedStatus(data?.[responseKey]);
+        this.applyManagedStatus(status);
+        return status;
+      } catch (error) {
+        this.gatewayError = normalizeManagedGatewayError(error);
+        throw error;
+      } finally {
+        this.isGatewayMutating = false;
+      }
     },
   },
 });

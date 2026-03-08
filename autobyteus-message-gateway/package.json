@@ -8,6 +8,7 @@
   "scripts": {
     "prebuild": "pnpm -C .. -r --filter autobyteus-ts build",
     "build": "tsc -p tsconfig.build.json",
+    "build:runtime-package": "node ./scripts/build-runtime-package.mjs",
     "pretypecheck": "pnpm -C .. -r --filter autobyteus-ts build",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "pretest": "pnpm -C .. -r --filter autobyteus-ts build",

@@ -112,50 +112,35 @@ export const useMessagingChannelBindingOptionsStore = defineStore(
         }
       },
 
-      async loadPeerCandidates(
-        contextId: string,
-        options?: { includeGroups?: boolean; limit?: number },
-        provider: MessagingProvider = 'WHATSAPP',
-      ): Promise<GatewayPeerCandidate[]> {
-        const normalizedContextId = contextId.trim();
-        if (provider !== 'DISCORD' && provider !== 'TELEGRAM' && !normalizedContextId) {
-          throw new Error('sessionId is required to load peer candidates.');
-        }
+    async loadPeerCandidates(
+      _contextId: string,
+      options?: { includeGroups?: boolean; limit?: number },
+      provider: MessagingProvider = 'WHATSAPP',
+    ): Promise<GatewayPeerCandidate[]> {
+      if (provider !== 'DISCORD' && provider !== 'TELEGRAM') {
+        this.peerCandidatesError =
+          'Peer discovery is only available for Discord and Telegram in managed mode.';
+        throw new Error(this.peerCandidatesError);
+      }
 
-        this.isPeerCandidatesLoading = true;
-        this.peerCandidatesError = null;
+      this.isPeerCandidatesLoading = true;
+      this.peerCandidatesError = null;
 
-        try {
-          const gatewayStore = useGatewaySessionSetupStore();
-          const client = gatewayStore.createClient();
-          const response =
-            provider === 'DISCORD'
-              ? await client.getDiscordPeerCandidates({
-                  accountId: normalizedContextId || undefined,
-                  includeGroups: options?.includeGroups,
-                  limit: options?.limit,
-                })
-              : provider === 'TELEGRAM'
-              ? await client.getTelegramPeerCandidates({
-                  accountId: normalizedContextId || undefined,
-                  includeGroups: options?.includeGroups,
-                  limit: options?.limit,
-                })
-              : provider === 'WECHAT'
-              ? await client.getWeChatPersonalPeerCandidates(normalizedContextId, {
-                  includeGroups: options?.includeGroups,
-                  limit: options?.limit,
-                })
-              : await client.getWhatsAppPersonalPeerCandidates(normalizedContextId, {
-                  includeGroups: options?.includeGroups,
-                  limit: options?.limit,
-                });
+      try {
+        const gatewayStore = useGatewaySessionSetupStore();
+        const response =
+          provider === 'DISCORD'
+            ? await gatewayStore.loadPeerCandidates('DISCORD', {
+                includeGroups: options?.includeGroups,
+                limit: options?.limit,
+              })
+            : await gatewayStore.loadPeerCandidates('TELEGRAM', {
+                includeGroups: options?.includeGroups,
+                limit: options?.limit,
+              });
 
           this.peerCandidates = response.items;
-          this.peerCandidatesSessionId =
-            provider === 'DISCORD' || provider === 'TELEGRAM'
-              ? null
-              : (response as { sessionId: string }).sessionId;
+          this.peerCandidatesSessionId = null;
           return this.peerCandidates;
         } catch (error) {
           this.peerCandidatesError = normalizeErrorMessage(error);

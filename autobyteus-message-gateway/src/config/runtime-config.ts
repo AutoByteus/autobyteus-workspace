@@ -12,6 +12,7 @@ type GatewayWeComAccountRecord = {
 type GatewayWeChatSetupMode = "WECOM_APP_BRIDGE" | "DIRECT_PERSONAL_SESSION";
 
 export type GatewayRuntimeConfig = {
+  runtimeDataRoot: string;
   serverBaseUrl: string;
   serverSharedSecret: string | null;
   serverCallbackSharedSecret: string | null;
@@ -62,6 +63,9 @@ export function buildRuntimeConfig(env: GatewayEnv): GatewayRuntimeConfig {
     env.GATEWAY_SERVER_SHARED_SECRET ??
     null;
   const config: GatewayRuntimeConfig = {
+    runtimeDataRoot:
+      env.GATEWAY_RUNTIME_DATA_ROOT ??
+      path.resolve(process.cwd(), "memory"),
     serverBaseUrl: env.GATEWAY_SERVER_BASE_URL ?? "http://localhost:8000",
     serverSharedSecret,
     serverCallbackSharedSecret,
@@ -157,7 +161,10 @@ export function buildRuntimeConfig(env: GatewayEnv): GatewayRuntimeConfig {
       env.GATEWAY_WECHAT_PERSONAL_SIDECAR_SHARED_SECRET ?? null,
     wechatPersonalStateRoot:
       env.GATEWAY_WECHAT_PERSONAL_STATE_ROOT ??
-      path.resolve(process.cwd(), "memory", "wechat-personal"),
+      path.resolve(
+        env.GATEWAY_RUNTIME_DATA_ROOT ?? path.resolve(process.cwd(), "memory"),
+        "wechat-personal",
+      ),
     whatsappPersonalEnabled: parseBoolean(
       env.GATEWAY_WHATSAPP_PERSONAL_ENABLED,
       false,
@@ -170,7 +177,10 @@ export function buildRuntimeConfig(env: GatewayEnv): GatewayRuntimeConfig {
     ),
     whatsappPersonalAuthRoot:
       env.GATEWAY_WHATSAPP_PERSONAL_AUTH_ROOT ??
-      path.resolve(process.cwd(), "memory", "whatsapp-personal"),
+      path.resolve(
+        env.GATEWAY_RUNTIME_DATA_ROOT ?? path.resolve(process.cwd(), "memory"),
+        "whatsapp-personal",
+      ),
     whatsappPersonalPeerCandidateLimit: parsePositiveInteger(
       env.GATEWAY_WHATSAPP_PERSONAL_PEER_CANDIDATE_LIMIT,
       200,

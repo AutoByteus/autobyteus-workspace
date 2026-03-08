@@ -21,7 +21,7 @@ interface MessagingProviderScopeState {
 const PROVIDER_OPTIONS: Record<MessagingProvider, ProviderScopeOption> = {
   WHATSAPP: {
     provider: 'WHATSAPP',
-    label: 'WhatsApp Personal',
+    label: 'WhatsApp Business',
   },
   WECHAT: {
     provider: 'WECHAT',
@@ -44,7 +44,10 @@ const PROVIDER_OPTIONS: Record<MessagingProvider, ProviderScopeOption> = {
 function resolveAvailableProviders(
   capabilities: GatewayCapabilitiesModel | null | undefined,
 ): MessagingProvider[] {
-  const providers: MessagingProvider[] = ['WHATSAPP'];
+  const providers: MessagingProvider[] = [];
+  if (capabilities?.whatsappBusinessEnabled !== false) {
+    providers.push('WHATSAPP');
+  }
   if (capabilities?.wechatPersonalEnabled) {
     providers.push('WECHAT');
   }
@@ -81,18 +84,11 @@ export const useMessagingProviderScopeStore = defineStore(
       },
 
       requiresPersonalSession(state): boolean {
-        return state.selectedProvider === 'WHATSAPP' || state.selectedProvider === 'WECHAT';
+        return state.selectedProvider === 'WECHAT';
       },
 
       resolvedTransport(state): MessagingTransport {
-        if (
-          state.selectedProvider === 'WECOM' ||
-          state.selectedProvider === 'DISCORD' ||
-          state.selectedProvider === 'TELEGRAM'
-        ) {
-          return 'BUSINESS_API';
-        }
-        return 'PERSONAL_SESSION';
+        return state.selectedProvider === 'WECHAT' ? 'PERSONAL_SESSION' : 'BUSINESS_API';
       },
     },
 

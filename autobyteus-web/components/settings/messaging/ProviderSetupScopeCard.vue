@@ -41,6 +41,9 @@ function providerIcon(provider: MessagingProvider): string {
   if (provider === 'WHATSAPP') {
     return 'logos:whatsapp-icon';
   }
+  if (provider === 'TELEGRAM') {
+    return 'logos:telegram';
+  }
   if (provider === 'WECHAT') {
     return 'simple-icons:wechat';
   }

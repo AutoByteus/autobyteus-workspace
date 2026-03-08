@@ -148,7 +148,7 @@ export function createGatewayApp(config: GatewayRuntimeConfig): FastifyInstance 
     adaptersByProvider.set(telegramAdapter.provider, telegramAdapter);
   }
 
-  const queueRootDir = path.resolve(process.cwd(), "memory", "reliability-queue");
+  const queueRootDir = path.resolve(config.runtimeDataRoot, "reliability-queue");
   const inboxStore = new FileInboxStore(path.join(queueRootDir, "inbox"));
   const outboxStore = new FileOutboxStore(path.join(queueRootDir, "outbox"));
   const inboundInboxService = new InboundInboxService(inboxStore);

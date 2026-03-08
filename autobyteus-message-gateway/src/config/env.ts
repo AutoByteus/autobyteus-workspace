@@ -1,4 +1,5 @@
 export type GatewayEnv = {
+  GATEWAY_RUNTIME_DATA_ROOT?: string;
   GATEWAY_SERVER_BASE_URL?: string;
   GATEWAY_SERVER_SHARED_SECRET?: string;
   GATEWAY_SERVER_CALLBACK_SHARED_SECRET?: string;
@@ -40,6 +41,7 @@ export type GatewayEnv = {
 
 export function readEnv(source: NodeJS.ProcessEnv = process.env): GatewayEnv {
   return {
+    GATEWAY_RUNTIME_DATA_ROOT: normalize(source.GATEWAY_RUNTIME_DATA_ROOT),
     GATEWAY_SERVER_BASE_URL: normalize(source.GATEWAY_SERVER_BASE_URL),
     GATEWAY_SERVER_SHARED_SECRET: normalize(source.GATEWAY_SERVER_SHARED_SECRET),
     GATEWAY_SERVER_CALLBACK_SHARED_SECRET: normalize(

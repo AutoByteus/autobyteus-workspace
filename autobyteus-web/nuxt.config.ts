@@ -180,8 +180,6 @@ const baseConfig = {
       graphqlBaseUrl: serverUrls.graphqlBaseUrl,
       restBaseUrl: serverUrls.restBaseUrl,
       defaultNodeBaseUrl,
-      messageGatewayBaseUrl: process.env.MESSAGE_GATEWAY_BASE_URL || '',
-      messageGatewayAdminToken: process.env.MESSAGE_GATEWAY_ADMIN_TOKEN || '',
       agentWsEndpoint: serverUrls.agentWsEndpoint,
       teamWsEndpoint: serverUrls.teamWsEndpoint,
       graphqlWsEndpoint: serverUrls.graphqlWsEndpoint,
