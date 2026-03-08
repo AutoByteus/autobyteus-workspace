@@ -20,7 +20,22 @@
         data-file-drop-target="true"
       ></textarea>
 
-      <button 
+      <button
+        v-if="voiceInputStore.isAvailable || voiceInputStore.isRecording || voiceInputStore.isTranscribing"
+        type="button"
+        @click="handleVoiceAction"
+        :disabled="voiceInputStore.isTranscribing || !activeContextStore.activeAgentContext"
+        :title="voiceButtonTitle"
+        class="absolute bottom-2 right-14 flex items-center justify-center p-2 rounded-full focus:outline-none focus:ring-2 transition-all duration-200 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+        :class="voiceButtonClass"
+      >
+        <Icon
+          :icon="voiceInputStore.isRecording ? 'heroicons:stop-solid' : 'heroicons:microphone-solid'"
+          class="h-5 w-5"
+        />
+      </button>
+
+      <button
         @click="handlePrimaryAction"
         :disabled="isActionDisabled"
         :title="isSending ? 'Stop generation' : 'Send message'"
@@ -33,6 +48,23 @@
         <Icon v-else icon="heroicons:paper-airplane-solid" class="h-5 w-5" />
       </button>
     </div>
+
+    <div
+      v-if="voiceInputStore.isRecording || voiceInputStore.isTranscribing"
+      class="mx-3 mb-2 flex items-center justify-between rounded-lg border px-3 py-2 text-xs font-medium"
+      :class="voiceStatusClass"
+    >
+      <div class="flex items-center gap-2">
+        <span
+          class="h-2.5 w-2.5 rounded-full"
+          :class="voiceInputStore.isRecording ? 'animate-pulse bg-red-500' : 'bg-blue-500'"
+        ></span>
+        <span>{{ voiceStatusText }}</span>
+      </div>
+      <span v-if="voiceInputStore.isRecording" class="tabular-nums text-[11px] text-current/80">
+        {{ recordingDurationLabel }}
+      </span>
+    </div>
   </div>
 </template>
 
@@ -40,6 +72,7 @@
 import { ref, computed, onMounted, nextTick, watch, onUnmounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useActiveContextStore } from '~/stores/activeContextStore';
+import { useVoiceInputStore } from '~/stores/voiceInputStore';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { useWorkspaceStore } from '~/stores/workspace';
 import { Icon } from '@iconify/vue';
@@ -48,6 +81,7 @@ import type { TreeNode } from '~/utils/fileExplorer/TreeNode';
 
 // Initialize stores
 const activeContextStore = useActiveContextStore();
+const voiceInputStore = useVoiceInputStore();
 const windowNodeContextStore = useWindowNodeContextStore();
 const workspaceStore = useWorkspaceStore();
 
@@ -62,6 +96,30 @@ const isActionDisabled = computed(() => {
   }
   return !internalRequirement.value.trim();
 });
+const voiceButtonTitle = computed(() => {
+  if (voiceInputStore.isTranscribing) {
+    return 'Transcribing...';
+  }
+  return voiceInputStore.isRecording ? 'Stop recording' : 'Start voice input';
+});
+const voiceButtonClass = computed(() => {
+  if (voiceInputStore.isRecording) {
+    return 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500/50';
+  }
+  return 'bg-slate-100 text-slate-700 hover:bg-slate-200 focus:ring-slate-400/50';
+});
+const voiceStatusText = computed(() => {
+  if (voiceInputStore.isRecording) {
+    return 'Recording... Tap stop when you are done.';
+  }
+  return 'Transcribing voice input...';
+});
+const voiceStatusClass = computed(() => {
+  if (voiceInputStore.isRecording) {
+    return 'border-red-200 bg-red-50 text-red-700';
+  }
+  return 'border-blue-200 bg-blue-50 text-blue-700';
+});
 
 // Local component state
 const internalRequirement = ref(''); // Local state for textarea
@@ -69,6 +127,15 @@ const textarea = ref<HTMLTextAreaElement | null>(null);
 const MIN_TEXTAREA_HEIGHT = 56;
 const MAX_TEXTAREA_HEIGHT = 220;
 const textareaHeight = ref(MIN_TEXTAREA_HEIGHT);
+const recordingElapsedSeconds = ref(0);
+let recordingStartedAt = 0;
+let recordingTimer: ReturnType<typeof setInterval> | null = null;
+
+const recordingDurationLabel = computed(() => {
+  const minutes = Math.floor(recordingElapsedSeconds.value / 60);
+  const seconds = recordingElapsedSeconds.value % 60;
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+});
 
 // Enhanced Debounce function
 function debounce<T extends (...args: any[]) => any>(
@@ -125,7 +192,7 @@ const adjustTextareaHeight = () => {
   }
 };
 
-const { call: debouncedUpdateStore, cancel: cancelDebouncedUpdateStore, flush: flushDebouncedUpdateStore } = 
+const { call: debouncedUpdateStore, cancel: cancelDebouncedUpdateStore, flush: flushDebouncedUpdateStore } =
   debounce((text: string) => {
     if (text !== storeCurrentRequirement.value) {
       activeContextStore.updateRequirement(text);
@@ -135,30 +202,30 @@ const { call: debouncedUpdateStore, cancel: cancelDebouncedUpdateStore, flush: f
 watch(storeCurrentRequirement, (newValFromStore) => {
   if (newValFromStore !== internalRequirement.value) {
     internalRequirement.value = newValFromStore;
-    nextTick(adjustTextareaHeight); 
+    nextTick(adjustTextareaHeight);
   }
-}, { immediate: true }); 
+}, { immediate: true });
 
 const handleInput = (event: Event) => {
   const target = event.target as HTMLTextAreaElement;
-  internalRequirement.value = target.value; 
+  internalRequirement.value = target.value;
   nextTick(adjustTextareaHeight);
   debouncedUpdateStore(internalRequirement.value);
 };
 
 const syncStoreImmediately = () => {
-  cancelDebouncedUpdateStore(); 
+  cancelDebouncedUpdateStore();
   if (internalRequirement.value !== storeCurrentRequirement.value) {
     activeContextStore.updateRequirement(internalRequirement.value);
   }
 };
 
 const handleBlur = () => {
-  flushDebouncedUpdateStore(); 
+  flushDebouncedUpdateStore();
 };
 
 const handleSend = async () => {
-  syncStoreImmediately(); 
+  syncStoreImmediately();
   try {
     await activeContextStore.send();
   } catch (error) {
@@ -182,13 +249,21 @@ const handlePrimaryAction = () => {
   void handleSend();
 };
 
+const handleVoiceAction = async () => {
+  try {
+    await voiceInputStore.toggleRecording();
+  } catch (error) {
+    console.error('Error toggling voice input:', error);
+  }
+};
+
 const insertFilePaths = (filePaths: string[]) => {
   if (!textarea.value || filePaths.length === 0) return;
 
   const textToInsert = filePaths.join(' ');
   const start = textarea.value.selectionStart;
   const end = textarea.value.selectionEnd;
-  
+
   const newText = internalRequirement.value.substring(0, start) + textToInsert + internalRequirement.value.substring(end);
   internalRequirement.value = newText;
 
@@ -206,7 +281,7 @@ const insertFilePaths = (filePaths: string[]) => {
 
 const handleDrop = async (event: DragEvent) => {
   if (!activeContextStore.activeAgentContext) return;
-  
+
   const dataTransfer = event.dataTransfer;
   if (!dataTransfer) return;
 
@@ -242,7 +317,7 @@ const handleDrop = async (event: DragEvent) => {
     console.log('[INFO] Drop event from native OS in browser, using filenames as fallback.');
     filePaths = Array.from(dataTransfer.files).map(file => file.name);
   }
-  
+
   insertFilePaths(filePaths);
 };
 
@@ -257,14 +332,41 @@ const handleResize = () => {
   adjustTextareaHeight();
 };
 
+const stopRecordingTimer = () => {
+  if (recordingTimer) {
+    clearInterval(recordingTimer);
+    recordingTimer = null;
+  }
+};
+
+watch(
+  () => voiceInputStore.isRecording,
+  (isRecording) => {
+    stopRecordingTimer();
+    if (!isRecording) {
+      recordingElapsedSeconds.value = 0;
+      return;
+    }
+
+    recordingStartedAt = Date.now();
+    recordingElapsedSeconds.value = 0;
+    recordingTimer = setInterval(() => {
+      recordingElapsedSeconds.value = Math.floor((Date.now() - recordingStartedAt) / 1000);
+    }, 250);
+  },
+);
+
 onMounted(async () => {
   await nextTick();
+  await voiceInputStore.initialize();
   adjustTextareaHeight();
   window.addEventListener('resize', handleResize);
 });
 
 onUnmounted(() => {
-  flushDebouncedUpdateStore(); 
+  flushDebouncedUpdateStore();
+  void voiceInputStore.cleanup();
+  stopRecordingTimer();
   window.removeEventListener('resize', handleResize);
 });
 </script>

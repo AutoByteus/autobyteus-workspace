@@ -36,6 +36,8 @@ export class RenameFileOperation extends BaseFileOperation {
       throw new Error(`A file or folder named '${this.newName}' already exists.`);
     }
 
+    this.fileExplorer.suppressWatcherPaths?.([absoluteTarget, absoluteDestination]);
+
     try {
       await fs.rename(absoluteTarget, absoluteDestination);
     } catch (error) {

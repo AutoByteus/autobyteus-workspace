@@ -29,6 +29,14 @@ import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import type { FileSystemChangeEvent } from '~/types/fileSystemChangeTypes'
 import { findFileByPath, determineFileType } from '~/utils/fileExplorer/fileUtils'
 import { TreeNode } from '~/utils/fileExplorer/TreeNode'
+import {
+  consumeRecentStructuralChangeEchoes,
+  recordRecentStructuralChangeEchoes,
+  remapOpenFilePaths,
+  remapOpenFolderPaths,
+  remapPrefixedPath,
+  type RecentStructuralChangeEcho,
+} from '~/utils/fileExplorer/stateSync'
 
 // --- NEW TYPES FOR MULTI-CONTENT SUPPORT ---
 export type FileDataType = 'Text' | 'Image' | 'Audio' | 'Video' | 'Excel' | 'PDF' | 'Unsupported';
@@ -73,6 +81,7 @@ interface WorkspaceFileExplorerState {
 
   // Used to prevent re-fetching content for self-initiated saves
   filesToIgnoreNextModify: Set<string>;
+  recentStructuralChangeEchoes: RecentStructuralChangeEcho[];
 }
 
 interface FileExplorerStoreState {
@@ -98,6 +107,7 @@ const createDefaultWorkspaceFileExplorerState = (): WorkspaceFileExplorerState =
   createError: {},
   createLoading: {},
   filesToIgnoreNextModify: new Set(),
+  recentStructuralChangeEchoes: [],
 });
 
 /**
@@ -413,6 +423,32 @@ export const useFileExplorerStore = defineStore('fileExplorer', {
       }
     },
 
+    remapPathScopedState(oldPrefix: string, newPrefix: string, workspaceId: string) {
+      const wsState = this._getOrCreateWorkspaceState(workspaceId);
+
+      wsState.openFolders = remapOpenFolderPaths(wsState.openFolders, oldPrefix, newPrefix);
+      wsState.openFiles = remapOpenFilePaths(wsState.openFiles, oldPrefix, newPrefix);
+
+      if (wsState.activeFile) {
+        wsState.activeFile = remapPrefixedPath(wsState.activeFile, oldPrefix, newPrefix);
+      }
+    },
+
+    recordRecentStructuralChangeEcho(workspaceId: string, event: FileSystemChangeEvent) {
+      const wsState = this._getOrCreateWorkspaceState(workspaceId);
+      wsState.recentStructuralChangeEchoes = recordRecentStructuralChangeEchoes(
+        wsState.recentStructuralChangeEchoes,
+        event,
+      );
+    },
+
+    consumeRecentStructuralChangeEchoes(workspaceId: string, event: FileSystemChangeEvent): FileSystemChangeEvent {
+      const wsState = this._getOrCreateWorkspaceState(workspaceId);
+      const result = consumeRecentStructuralChangeEchoes(wsState.recentStructuralChangeEchoes, event);
+      wsState.recentStructuralChangeEchoes = result.remainingEchoes;
+      return result.filteredEvent;
+    },
+
     /**
      * Core private action for writing file content. Handles the GraphQL mutation and
      * updates the primary state. It is called by public wrapper actions.
@@ -451,7 +487,8 @@ export const useFileExplorerStore = defineStore('fileExplorer', {
           // ignore the 'modify' event for this file path.
           const changeEvent: FileSystemChangeEvent = JSON.parse(data.writeFileContent);
           const workspaceStore = useWorkspaceStore();
-          workspaceStore.handleFileSystemChange(workspaceId, changeEvent);
+          this.recordRecentStructuralChangeEcho(workspaceId, changeEvent);
+          workspaceStore.handleFileSystemChange(workspaceId, changeEvent, 'mutation');
         } else {
           wsState.filesToIgnoreNextModify.delete(filePath); // Clean up tag on error
           throw new Error('An unknown error occurred while writing the file.');
@@ -511,7 +548,8 @@ export const useFileExplorerStore = defineStore('fileExplorer', {
           
           const changeEvent: FileSystemChangeEvent = JSON.parse(data.deleteFileOrFolder);
           const workspaceStore = useWorkspaceStore();
-          workspaceStore.handleFileSystemChange(workspaceId, changeEvent);
+          this.recordRecentStructuralChangeEcho(workspaceId, changeEvent);
+          workspaceStore.handleFileSystemChange(workspaceId, changeEvent, 'mutation');
         }
         wsState.deleteLoading[filePath] = false;
         return data;
@@ -547,17 +585,12 @@ export const useFileExplorerStore = defineStore('fileExplorer', {
           segments[segments.length - 1] = newName;
           const newPath = segments.join('/');
     
-          const file = wsState.openFiles.find(f => f.path === targetPath);
-          if (file) {
-            file.path = newPath;
-          }
-          if (wsState.activeFile === targetPath) {
-            wsState.activeFile = newPath;
-          }
+          this.remapPathScopedState(targetPath, newPath, workspaceId);
     
           const changeEvent: FileSystemChangeEvent = JSON.parse(data.renameFileOrFolder);
           const workspaceStore = useWorkspaceStore();
-          workspaceStore.handleFileSystemChange(workspaceId, changeEvent);
+          this.recordRecentStructuralChangeEcho(workspaceId, changeEvent);
+          workspaceStore.handleFileSystemChange(workspaceId, changeEvent, 'mutation');
         }
     
         wsState.renameLoading[targetPath] = false;
@@ -589,17 +622,12 @@ export const useFileExplorerStore = defineStore('fileExplorer', {
         }
     
         if (data?.moveFileOrFolder) {
-          const file = wsState.openFiles.find(f => f.path === sourcePath);
-          if (file) {
-            file.path = destinationPath;
-          }
-          if (wsState.activeFile === sourcePath) {
-            wsState.activeFile = destinationPath;
-          }
+          this.remapPathScopedState(sourcePath, destinationPath, workspaceId);
    
           const changeEvent: FileSystemChangeEvent = JSON.parse(data.moveFileOrFolder);
           const workspaceStore = useWorkspaceStore();
-          workspaceStore.handleFileSystemChange(workspaceId, changeEvent);
+          this.recordRecentStructuralChangeEcho(workspaceId, changeEvent);
+          workspaceStore.handleFileSystemChange(workspaceId, changeEvent, 'mutation');
         }
         wsState.moveLoading[sourcePath] = false;
         return data;
@@ -633,7 +661,8 @@ export const useFileExplorerStore = defineStore('fileExplorer', {
         if (data?.createFileOrFolder) {
             const changeEvent: FileSystemChangeEvent = JSON.parse(data.createFileOrFolder);
             const workspaceStore = useWorkspaceStore();
-            workspaceStore.handleFileSystemChange(workspaceId, changeEvent);
+            this.recordRecentStructuralChangeEcho(workspaceId, changeEvent);
+            workspaceStore.handleFileSystemChange(workspaceId, changeEvent, 'mutation');
         }
         wsState.createLoading[path] = false;
         return data;

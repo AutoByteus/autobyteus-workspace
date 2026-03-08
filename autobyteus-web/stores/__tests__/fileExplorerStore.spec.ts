@@ -82,10 +82,14 @@ describe('fileExplorerStore', () => {
         expect(store._getOrCreateWorkspaceState(workspaceId).activeFile).toBeNull();
 
         // Workspace store handleFileSystemChange should be called
-        expect(workspaceStoreMock.handleFileSystemChange).toHaveBeenCalledWith(workspaceId, expect.objectContaining({
-            changes: expect.arrayContaining([
-                expect.objectContaining({ type: 'delete' })
-            ])
-        }));
+        expect(workspaceStoreMock.handleFileSystemChange).toHaveBeenCalledWith(
+            workspaceId,
+            expect.objectContaining({
+                changes: expect.arrayContaining([
+                    expect.objectContaining({ type: 'delete' })
+                ])
+            }),
+            'mutation'
+        );
     });
 });

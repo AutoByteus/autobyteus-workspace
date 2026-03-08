@@ -320,6 +320,23 @@ describe('workspaceStore', () => {
          expect(fileExplorerStore.invalidateFileContent).not.toHaveBeenCalled();
          expect(workspaceState.filesToIgnoreNextModify.has('root/file.txt')).toBe(false); // Should be consumed
     });
+
+    it('should ignore a streamed structural echo that was already applied by a mutation path', () => {
+        const changeEvent = {
+            changes: [{
+                type: 'add',
+                node: { name: 'new-file.txt', path: 'root/new-file.txt', is_file: true, id: 'file-1', children: [] },
+                parent_id: 'root-id'
+            }]
+        };
+
+        fileExplorerStore.recordRecentStructuralChangeEcho('ws-1', changeEvent);
+        store.handleFileSystemChange('ws-1', changeEvent, 'stream');
+
+        const ws = store.workspaces['ws-1'];
+        expect(ws.fileExplorer.children).toHaveLength(0);
+        expect(ws.nodeIdToNode['file-1']).toBeUndefined();
+    });
   });
 
   describe('resetWorkspaceStateForBackendContextChange', () => {

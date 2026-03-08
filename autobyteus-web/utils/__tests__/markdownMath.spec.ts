@@ -39,21 +39,34 @@ describe('normalizeMath', () => {
     expect(out).toBe(input);
   });
 
-  it('wraps inline math equation embedded in prose', () => {
+  it('leaves implicit inline math equation embedded in prose unchanged', () => {
     const input = 'Therefore I_n=1/(2n)+O(1/n^2), and';
     const out = normalizeMath(input);
-    expect(out).toContain('Therefore $I_n=1/(2n)+O(1/n^2)$, and');
+    expect(out).toBe(input);
   });
 
-  it('wraps mixed inline exponent equation without forcing full-line display math', () => {
+  it('leaves mixed inline exponent equation in prose unchanged', () => {
     const input = 'Set x=e^{-t/n} and continue.';
     const out = normalizeMath(input);
-    expect(out).toContain('Set $x=e^{-t/n}$ and continue.');
-    expect(out).not.toContain('$$Set');
+    expect(out).toBe(input);
   });
 
   it('does not convert plain config-like assignment text without math markers', () => {
     const input = 'config file_name=report_v1';
+    const out = normalizeMath(input);
+    expect(out).toBe(input);
+  });
+
+  it('preserves markdown links with underscore-heavy file paths', () => {
+    const input =
+      '[evidence_extract.md](/Users/normy/.autobyteus/server-data/temp_workspace/paul-paper/evidence_extract.md)';
+    const out = normalizeMath(input);
+    expect(out).toBe(input);
+    expect(out).not.toContain('$Users');
+  });
+
+  it('preserves plain path-like prose with underscores and slashes', () => {
+    const input = 'Files live in /tmp/temp_workspace/claim_evidence_ledger.md for later review.';
     const out = normalizeMath(input);
     expect(out).toBe(input);
   });

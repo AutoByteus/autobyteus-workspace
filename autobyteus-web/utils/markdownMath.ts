@@ -9,14 +9,6 @@ const hasMathDelimiterRe = /(?:\\\[|\\\(|\$\$?)/;
 // This avoids accidentally converting snake_case or caret usage in plain text
 // into KaTeX blocks (which changes the font for entire sentences).
 const latexCommandRe = /\\(frac|sqrt|sum|int|lim|alpha|beta|gamma|delta|theta|pi|sin|cos|tan|log|ln)/i;
-const mathInlineCandidateRe = /(?:\^|_|\/|\\[a-zA-Z]+|[≤≥≈→]|\bO\(|=)/;
-const mathOperatorRe = /(?:=|<=|>=|<|>|≈|≤|≥|→|\+|-|\*|\/)/;
-const strongMathMarkerRe = /(?:\^|\/|\\[a-zA-Z]+|[≤≥≈→]|\bO\(|\b[A-Za-z]{1,2}_[A-Za-z0-9]{1,3}\b)/;
-const equationLikeRe =
-  /([A-Za-z][A-Za-z0-9_{}^\\]*(?:\s*(?:=|<=|>=|<|>|≈|≤|≥|→|\\le|\\ge|\\to|\+|-|\/|\*)\s*[A-Za-z0-9_{}^\\().,\[\]∞+-]+)+)/g;
-const trailingPunctuationRe = /^([\s\S]*?)([.,;:])$/;
-const inlineCodeSplitRe = /(`[^`]*`)/g;
-
 const isFenceLine = (line: string) => fenceLineRe.test(line);
 const isBracketStart = (line: string) => line.trim() === '[';
 const isBracketEnd = (line: string) => line.trim() === ']';
@@ -27,40 +19,6 @@ const isLatexBlockEnd = (line: string) => line.trim() === '\\]';
 const looksLikeLatex = (line: string) =>
   latexCommandRe.test(line);
 
-const wrapInlineMath = (value: string): string => {
-  const trimmed = value.trim();
-  if (!trimmed) {
-    return value;
-  }
-
-  const punctMatch = trimmed.match(trailingPunctuationRe);
-  const core = punctMatch ? punctMatch[1] : trimmed;
-  const suffix = punctMatch ? punctMatch[2] : '';
-
-  return `$${core}$${suffix}`;
-};
-
-const isLikelyMathExpression = (value: string): boolean =>
-  strongMathMarkerRe.test(value) && mathOperatorRe.test(value) && /[A-Za-z]/.test(value);
-
-const normalizeInlineMathExpressions = (line: string): string => {
-  if (!line.trim() || !mathInlineCandidateRe.test(line) || hasMathDelimiterRe.test(line)) {
-    return line;
-  }
-
-  const parts = line.split(inlineCodeSplitRe);
-  return parts
-    .map((part) => {
-      if (!part || (part.startsWith('`') && part.endsWith('`'))) {
-        return part;
-      }
-      return part.replace(equationLikeRe, (match) =>
-        isLikelyMathExpression(match) ? wrapInlineMath(match) : match,
-      );
-    })
-    .join('');
-};
-
 /**
  * Normalize math so KaTeX renders it:
  * - Converts bracket blocks:
@@ -68,8 +26,9 @@ const normalizeInlineMathExpressions = (line: string): string => {
  *       a^2 + b^2 = c^2
  *     ]
  *   into $$...$$
- * - Wraps loose LaTeX-like lines (no delimiters) in $$...$$
+ * - Wraps loose standalone LaTeX-like lines (no delimiters) in $$...$$
  * - Leaves code fences untouched
+ * - Does not infer inline math from plain prose; explicit delimiters are canonical
  */
 export const normalizeMath = (raw: string): string => {
   const lines = raw.split('\n');
@@ -140,7 +99,7 @@ export const normalizeMath = (raw: string): string => {
     if (!hasDelimiter && looksLikeLatex(trimmed) && trimmed) {
       out.push(`$$${trimmed}$$`);
     } else {
-      out.push(normalizeInlineMathExpressions(line));
+      out.push(line);
     }
   }
 
@@ -153,6 +112,4 @@ export const __testables = {
   isBracketStart,
   isBracketEnd,
   looksLikeLatex,
-  normalizeInlineMathExpressions,
-  isLikelyMathExpression,
 };
