@@ -137,6 +137,19 @@
             </li>
             <li class="w-full">
               <button
+                @click="activeSection = 'extensions'"
+                data-testid="settings-nav-extensions"
+                class="flex w-full items-center justify-start px-4 py-2 rounded-md transition-colors duration-200 text-gray-700 hover:bg-gray-100 hover:text-gray-900 group"
+                :class="{ 'bg-gray-100 text-gray-900': activeSection === 'extensions' }"
+              >
+                <div class="flex items-center min-w-[20px] mr-3">
+                  <span class="i-heroicons-squares-2x2-20-solid w-5 h-5"></span>
+                </div>
+                <span class="text-left">Extensions</span>
+              </button>
+            </li>
+            <li class="w-full">
+              <button
                 @click="activeSection = 'updates'"
                 data-testid="settings-nav-updates"
                 class="flex w-full items-center justify-start px-4 py-2 rounded-md transition-colors duration-200 text-gray-700 hover:bg-gray-100 hover:text-gray-900 group"
@@ -160,6 +173,7 @@
         <TokenUsageStatistics v-if="activeSection === 'token-usage'" />
         <NodeManager v-if="activeSection === 'nodes'" />
         <MessagingSetupManager v-if="activeSection === 'messaging'" />
+        <ExtensionsManager v-if="activeSection === 'extensions'" />
         <AboutSettingsManager v-if="activeSection === 'updates'" />
         <ToolsManagementWorkspace
           v-if="activeSection === 'local-tools'"
@@ -195,6 +209,7 @@ import TokenUsageStatistics from '~/components/settings/TokenUsageStatistics.vue
 import NodeManager from '~/components/settings/NodeManager.vue';
 import ServerSettingsManager from '~/components/settings/ServerSettingsManager.vue';
 import MessagingSetupManager from '~/components/settings/MessagingSetupManager.vue';
+import ExtensionsManager from '~/components/settings/ExtensionsManager.vue';
 import AboutSettingsManager from '~/components/settings/AboutSettingsManager.vue';
 import DefinitionSourcesManager from '~/components/settings/DefinitionSourcesManager.vue';
 import ToolsManagementWorkspace from '~/components/tools/ToolsManagementWorkspace.vue';
@@ -208,6 +223,7 @@ type SettingsSection =
   | 'token-usage'
   | 'nodes'
   | 'messaging'
+  | 'extensions'
   | 'updates'
   | 'local-tools'
   | 'mcp-servers'
@@ -227,6 +243,7 @@ const validSections = new Set<SettingsSection>([
   'token-usage',
   'nodes',
   'messaging',
+  'extensions',
   'updates',
   'local-tools',
   'mcp-servers',
