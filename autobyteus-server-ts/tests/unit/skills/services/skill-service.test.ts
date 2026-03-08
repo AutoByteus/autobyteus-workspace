@@ -20,6 +20,7 @@ describe("SkillService", () => {
   let skillsDir: string;
   let service: SkillService;
   let additionalDirs: string[];
+  let additionalDefinitionRoots: string[];
   let versioningService: { initializeVersioning: ReturnType<typeof vi.fn> };
 
   beforeEach(() => {
@@ -27,6 +28,7 @@ describe("SkillService", () => {
     skillsDir = path.join(tempRoot, "skills");
     fs.mkdirSync(skillsDir, { recursive: true });
     additionalDirs = [];
+    additionalDefinitionRoots = [];
 
     versioningService = {
       initializeVersioning: vi.fn(
@@ -44,6 +46,7 @@ describe("SkillService", () => {
     const config = {
       getSkillsDir: () => skillsDir,
       getAdditionalSkillsDirs: () => additionalDirs,
+      getAdditionalDefinitionSourceRoots: () => additionalDefinitionRoots,
       getAppDataDir: () => tempRoot,
       get: (_key: string, defaultValue = "") => defaultValue,
     };
@@ -102,6 +105,43 @@ describe("SkillService", () => {
 
   it("returns null for missing skills", () => {
     expect(service.getSkill("nonexistent")).toBeNull();
+  });
+
+  it("discovers bundled agent-local skills from definition source roots without adding a skill source", () => {
+    const definitionRoot = path.join(tempRoot, "definition-package");
+    const bundledDir = path.join(definitionRoot, "agents", "requirements-engineer");
+    fs.mkdirSync(bundledDir, { recursive: true });
+    fs.writeFileSync(
+      path.join(bundledDir, "SKILL.md"),
+      "---\nname: requirements-engineer\ndescription: Bundled requirements skill\n---\n\nBundled content\n",
+      "utf-8",
+    );
+    additionalDefinitionRoots = [definitionRoot];
+
+    const skills = service.listSkills();
+    expect(skills.map((skill) => skill.name)).toContain("requirements-engineer");
+
+    const bundled = service.getSkill("requirements-engineer");
+    expect(bundled?.description).toBe("Bundled requirements skill");
+    expect(bundled?.rootPath).toBe(bundledDir);
+  });
+
+  it("prefers standalone skills over bundled definition-root skills when names collide", () => {
+    writeSkill(skillsDir, "requirements-engineer", "Standalone skill", "Standalone content");
+
+    const definitionRoot = path.join(tempRoot, "definition-package");
+    const bundledDir = path.join(definitionRoot, "agents", "requirements-engineer");
+    fs.mkdirSync(bundledDir, { recursive: true });
+    fs.writeFileSync(
+      path.join(bundledDir, "SKILL.md"),
+      "---\nname: requirements-engineer\ndescription: Bundled skill\n---\n\nBundled content\n",
+      "utf-8",
+    );
+    additionalDefinitionRoots = [definitionRoot];
+
+    const skill = service.getSkill("requirements-engineer");
+    expect(skill?.description).toBe("Standalone skill");
+    expect(skill?.rootPath).toBe(path.join(skillsDir, "requirements-engineer"));
   });
 
   it("enables versioning for existing skills", () => {

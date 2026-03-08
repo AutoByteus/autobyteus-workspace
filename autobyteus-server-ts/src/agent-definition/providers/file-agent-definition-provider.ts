@@ -1,4 +1,5 @@
 import { promises as fs } from "node:fs";
+import { constants as fsConstants } from "node:fs";
 import type { Dirent } from "node:fs";
 import path from "node:path";
 import { appConfigProvider } from "../../config/app-config-provider.js";
@@ -113,21 +114,56 @@ export class FileAgentDefinitionProvider {
   }
 
   private async findAgentSourcePaths(agentId: string): Promise<{
+    agentDir: string;
     mdPath: string;
     configPath: string;
     rootPath: string;
   } | null> {
     for (const rootPath of this.getReadAgentRoots()) {
+      const agentDir = path.join(rootPath, agentId);
       const mdPath = path.join(rootPath, agentId, "agent.md");
       const configPath = path.join(rootPath, agentId, "agent-config.json");
       try {
         await fs.access(mdPath);
-        return { mdPath, configPath, rootPath };
+        return { agentDir, mdPath, configPath, rootPath };
       } catch {
         continue;
       }
     }
     return null;
+  }
+
+  private async isWritable(filePath: string): Promise<boolean> {
+    try {
+      await fs.access(filePath, fsConstants.W_OK);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  private async ensureWritableSourcePaths(
+    sourcePaths: { agentDir: string; mdPath: string; configPath: string; rootPath: string },
+    agentId: string,
+  ): Promise<void> {
+    if (!(await this.isWritable(sourcePaths.agentDir))) {
+      throw new Error(
+        `Agent definition '${agentId}' is read-only at source path '${sourcePaths.rootPath}'.`,
+      );
+    }
+    if ((await this.exists(sourcePaths.mdPath)) && !(await this.isWritable(sourcePaths.mdPath))) {
+      throw new Error(
+        `Agent definition '${agentId}' is read-only at source path '${sourcePaths.rootPath}'.`,
+      );
+    }
+    if (
+      (await this.exists(sourcePaths.configPath)) &&
+      !(await this.isWritable(sourcePaths.configPath))
+    ) {
+      throw new Error(
+        `Agent definition '${agentId}' is read-only at source path '${sourcePaths.rootPath}'.`,
+      );
+    }
   }
 
   private async exists(filePath: string): Promise<boolean> {
@@ -289,10 +325,11 @@ export class FileAgentDefinitionProvider {
       throw new Error("Agent definition id is required for update.");
     }
     const id = domainObj.id;
-    const agentDir = this.getAgentDir(id);
-    if (!(await this.exists(agentDir))) {
-      throw new Error(`Agent definition '${id}' is read-only or does not exist in default source.`);
+    const sourcePaths = await this.findAgentSourcePaths(id);
+    if (!sourcePaths) {
+      throw new Error(`Agent definition '${id}' does not exist in any registered source.`);
     }
+    await this.ensureWritableSourcePaths(sourcePaths, id);
 
     const mdContent = serializeAgentMd(
       {
@@ -303,10 +340,10 @@ export class FileAgentDefinitionProvider {
       },
       domainObj.instructions,
     );
-    await writeRawFile(appConfigProvider.config.getAgentMdPath(id), mdContent);
+    await writeRawFile(sourcePaths.mdPath, mdContent);
 
     const existingConfig = await readJsonFile<Record<string, unknown>>(
-      appConfigProvider.config.getAgentConfigPath(id),
+      sourcePaths.configPath,
       {},
     );
 
@@ -322,7 +359,7 @@ export class FileAgentDefinitionProvider {
       lifecycleProcessorNames: domainObj.lifecycleProcessorNames ?? [],
       avatarUrl: domainObj.avatarUrl ?? null,
     };
-    await writeJsonFile(appConfigProvider.config.getAgentConfigPath(id), configRecord);
+    await writeJsonFile(sourcePaths.configPath, configRecord);
 
     const updated = await this.getById(id);
     if (!updated) {
@@ -332,13 +369,13 @@ export class FileAgentDefinitionProvider {
   }
 
   async delete(id: string): Promise<boolean> {
-    const agentDir = this.getAgentDir(id);
-    const existed = await this.exists(agentDir);
-    if (!existed) {
+    const sourcePaths = await this.findAgentSourcePaths(id);
+    if (!sourcePaths) {
       return false;
     }
-    await fs.rm(agentDir, { recursive: true, force: true });
-    return existed;
+    await this.ensureWritableSourcePaths(sourcePaths, id);
+    await fs.rm(sourcePaths.agentDir, { recursive: true, force: true });
+    return true;
   }
 
   async duplicate(sourceId: string, newId: string, newName: string): Promise<AgentDefinition> {

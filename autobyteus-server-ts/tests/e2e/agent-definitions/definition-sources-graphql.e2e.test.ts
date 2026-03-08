@@ -29,6 +29,20 @@ const writeAgentDefinition = async (
   await fs.writeFile(path.join(dirPath, "agent-config.json"), JSON.stringify({}, null, 2), "utf-8");
 };
 
+const writeBundledSkill = async (
+  rootPath: string,
+  agentId: string,
+  description = "Bundled skill",
+): Promise<void> => {
+  const dirPath = path.join(rootPath, "agents", agentId);
+  await fs.mkdir(dirPath, { recursive: true });
+  await fs.writeFile(
+    path.join(dirPath, "SKILL.md"),
+    `---\nname: ${agentId}\ndescription: ${description}\n---\n\nBundled skill content\n`,
+    "utf-8",
+  );
+};
+
 const writeTeamDefinition = async (
   rootPath: string,
   teamId: string,
@@ -160,6 +174,7 @@ describe("Definition source GraphQL e2e", () => {
       description: "External-only agent",
       instructions: "external instructions",
     });
+    await writeBundledSkill(externalRoot, externalAgentId);
     await writeAgentDefinition(externalRoot, duplicateAgentId, {
       name: "External Duplicate Agent",
       description: "External duplicate agent",
@@ -230,6 +245,96 @@ describe("Definition source GraphQL e2e", () => {
     expect(listResult.teams.some((entry) => entry.id === externalTeamId)).toBe(true);
     expect(listResult.duplicateAgent?.name).toBe("Default Duplicate Agent");
     expect(listResult.duplicateTeam?.name).toBe("Default Duplicate Team");
+
+    const updateImportedResult = await execGraphql<{
+      updateAgentDefinition: { id: string; description: string; skillNames: string[] };
+      updateAgentTeamDefinition: { id: string; description: string };
+    }>(
+      `
+        mutation UpdateImportedDefinitions(
+          $agentInput: UpdateAgentDefinitionInput!
+          $teamInput: UpdateAgentTeamDefinitionInput!
+        ) {
+          updateAgentDefinition(input: $agentInput) {
+            id
+            description
+            skillNames
+          }
+          updateAgentTeamDefinition(input: $teamInput) {
+            id
+            description
+          }
+        }
+      `,
+      {
+        agentInput: {
+          id: externalAgentId,
+          description: "External agent updated in place",
+          toolNames: ["tool-a"],
+        },
+        teamInput: {
+          id: externalTeamId,
+          description: "External team updated in place",
+        },
+      },
+    );
+
+    expect(updateImportedResult.updateAgentDefinition.description).toBe(
+      "External agent updated in place",
+    );
+    expect(updateImportedResult.updateAgentDefinition.skillNames).toEqual([]);
+    expect(updateImportedResult.updateAgentTeamDefinition.description).toBe(
+      "External team updated in place",
+    );
+
+    const externalAgentMd = await fs.readFile(
+      path.join(externalRoot, "agents", externalAgentId, "agent.md"),
+      "utf-8",
+    );
+    const externalTeamMd = await fs.readFile(
+      path.join(externalRoot, "agent-teams", externalTeamId, "team.md"),
+      "utf-8",
+    );
+    const externalAgentConfig = JSON.parse(
+      await fs.readFile(path.join(externalRoot, "agents", externalAgentId, "agent-config.json"), "utf-8"),
+    ) as Record<string, unknown>;
+
+    expect(externalAgentMd).toContain("External agent updated in place");
+    expect(externalTeamMd).toContain("External team updated in place");
+    expect(externalAgentConfig.toolNames).toEqual(["tool-a"]);
+
+    const deleteImportedResult = await execGraphql<{
+      deleteAgentDefinition: { success: boolean };
+      deleteAgentTeamDefinition: { success: boolean };
+    }>(
+      `
+        mutation DeleteImportedDefinitions($agentId: String!, $teamId: String!) {
+          deleteAgentDefinition(id: $agentId) { success }
+          deleteAgentTeamDefinition(id: $teamId) { success }
+        }
+      `,
+      { agentId: externalAgentId, teamId: externalTeamId },
+    );
+
+    expect(deleteImportedResult.deleteAgentDefinition.success).toBe(true);
+    expect(deleteImportedResult.deleteAgentTeamDefinition.success).toBe(true);
+
+    const postDeleteList = await execGraphql<{
+      agents: Array<{ id: string }>;
+      teams: Array<{ id: string }>;
+    }>(`
+      query PostDeleteReads {
+        agents: agentDefinitions { id }
+        teams: agentTeamDefinitions { id }
+      }
+    `);
+
+    expect(postDeleteList.agents.some((entry) => entry.id === externalAgentId)).toBe(false);
+    expect(postDeleteList.teams.some((entry) => entry.id === externalTeamId)).toBe(false);
+    await expect(fs.access(path.join(externalRoot, "agents", externalAgentId))).rejects.toBeDefined();
+    await expect(
+      fs.access(path.join(externalRoot, "agent-teams", externalTeamId)),
+    ).rejects.toBeDefined();
 
     const removeResult = await execGraphql<{
       removeDefinitionSource: Array<{ path: string }>;

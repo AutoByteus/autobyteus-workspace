@@ -22,6 +22,7 @@ describe("md-centric provider integration", () => {
       await fs.rm(filePath, { recursive: true, force: true }).catch(() => undefined);
     }
     cleanupPaths.clear();
+    process.env.AUTOBYTEUS_DEFINITION_SOURCE_PATHS = "";
   });
 
   it("throws AgentMdParseError when agent.md is malformed", async () => {
@@ -119,5 +120,104 @@ describe("md-centric provider integration", () => {
     expect(updatedConfig.futureConfig).toEqual({ nestedFlag: true });
     expect(updatedConfig.toolNames).toEqual(["tool-a", "tool-b"]);
     expect(updatedConfig.skillNames).toEqual(["skill-a", "skill-b"]);
+  });
+
+  it("updates imported definitions in place without inferring bundled skills when config skillNames are empty", async () => {
+    const externalRoot = path.join(
+      path.dirname(appConfigProvider.config.getAppDataDir()),
+      uniqueId("external_definition_source"),
+    );
+    cleanupPaths.add(externalRoot);
+    process.env.AUTOBYTEUS_DEFINITION_SOURCE_PATHS = externalRoot;
+
+    const agentId = uniqueId("imported_agent");
+    const agentDir = path.join(externalRoot, "agents", agentId);
+    await fs.mkdir(agentDir, { recursive: true });
+    await fs.writeFile(
+      path.join(agentDir, "agent.md"),
+      serializeAgentMd(
+        {
+          name: "Imported Agent",
+          description: "Imported description",
+          category: "integration",
+          role: "assistant",
+        },
+        "Imported instructions",
+      ),
+      "utf-8",
+    );
+    await fs.writeFile(path.join(agentDir, "agent-config.json"), "{}\n", "utf-8");
+    await fs.writeFile(
+      path.join(agentDir, "SKILL.md"),
+      `---\nname: ${agentId}\ndescription: Bundled skill\n---\n\nBundled content\n`,
+      "utf-8",
+    );
+
+    const provider = new FileAgentDefinitionProvider();
+    const imported = await provider.getById(agentId);
+    expect(imported?.skillNames).toEqual([]);
+
+    await provider.update(
+      new AgentDefinition({
+        id: agentId,
+        name: "Imported Agent Updated",
+        role: "assistant",
+        description: "Updated imported description",
+        category: "integration",
+        instructions: "Updated instructions",
+        toolNames: ["tool-a"],
+        skillNames: [],
+      }),
+    );
+
+    const updatedMd = await fs.readFile(path.join(agentDir, "agent.md"), "utf-8");
+    const updatedConfig = JSON.parse(
+      await fs.readFile(path.join(agentDir, "agent-config.json"), "utf-8"),
+    ) as Record<string, unknown>;
+
+    expect(updatedMd).toContain("Imported Agent Updated");
+    expect(updatedMd).toContain("Updated imported description");
+    expect(updatedConfig.toolNames).toEqual(["tool-a"]);
+    expect(updatedConfig.skillNames).toEqual([]);
+  });
+
+  it("keeps explicit skillNames authoritative when a bundled skill is also present", async () => {
+    const externalRoot = path.join(
+      path.dirname(appConfigProvider.config.getAppDataDir()),
+      uniqueId("external_definition_source_explicit_skills"),
+    );
+    cleanupPaths.add(externalRoot);
+    process.env.AUTOBYTEUS_DEFINITION_SOURCE_PATHS = externalRoot;
+
+    const agentId = uniqueId("explicit_skill_agent");
+    const agentDir = path.join(externalRoot, "agents", agentId);
+    await fs.mkdir(agentDir, { recursive: true });
+    await fs.writeFile(
+      path.join(agentDir, "agent.md"),
+      serializeAgentMd(
+        {
+          name: "Explicit Skills Agent",
+          description: "Imported description",
+          category: "integration",
+          role: "assistant",
+        },
+        "Imported instructions",
+      ),
+      "utf-8",
+    );
+    await fs.writeFile(
+      path.join(agentDir, "agent-config.json"),
+      JSON.stringify({ skillNames: ["shared-skill"] }, null, 2),
+      "utf-8",
+    );
+    await fs.writeFile(
+      path.join(agentDir, "SKILL.md"),
+      `---\nname: ${agentId}\ndescription: Bundled skill\n---\n\nBundled content\n`,
+      "utf-8",
+    );
+
+    const provider = new FileAgentDefinitionProvider();
+    const imported = await provider.getById(agentId);
+    expect(imported?.skillNames).toEqual(["shared-skill"]);
   });
 });

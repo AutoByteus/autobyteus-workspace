@@ -19,6 +19,7 @@ const logger = {
 type AppConfigLike = {
   getSkillsDir(): string;
   getAdditionalSkillsDirs(): string[];
+  getAdditionalDefinitionSourceRoots(): string[];
   getAppDataDir(): string;
   get(key: string, defaultValue?: string): string | undefined;
 };
@@ -67,7 +68,17 @@ export class SkillService {
         return match;
       }
     }
+    for (const definitionRoot of this.getAllDefinitionRoots()) {
+      const bundledMatch = this.searchBundledSkillDirectory(definitionRoot, name);
+      if (bundledMatch) {
+        return bundledMatch;
+      }
+    }
     return null;
+  }
+
+  private isSkillDirectory(directory: string): boolean {
+    return fs.existsSync(path.join(directory, "SKILL.md"));
   }
 
   private searchDirectoryRecursive(directory: string, name: string): string | null {
@@ -76,8 +87,13 @@ export class SkillService {
     }
 
     const candidate = path.join(directory, name);
-    if (fs.existsSync(candidate) && fs.existsSync(path.join(candidate, "SKILL.md"))) {
+    if (fs.existsSync(candidate) && this.isSkillDirectory(candidate)) {
       return candidate;
+    }
+
+    const bundledCandidate = this.searchBundledSkillDirectory(directory, name);
+    if (bundledCandidate) {
+      return bundledCandidate;
     }
 
     const nestedSkills = path.join(directory, "skills");
@@ -86,6 +102,53 @@ export class SkillService {
     }
 
     return null;
+  }
+
+  private searchBundledSkillDirectory(definitionRoot: string, name: string): string | null {
+    const candidate = path.join(definitionRoot, "agents", name);
+    if (fs.existsSync(candidate) && this.isSkillDirectory(candidate)) {
+      return candidate;
+    }
+    return null;
+  }
+
+  private scanBundledSkillsFromDefinitionRoot(definitionRoot: string): Skill[] {
+    const skills: Skill[] = [];
+    const agentsDir = path.join(definitionRoot, "agents");
+    if (!fs.existsSync(agentsDir) || !fs.statSync(agentsDir).isDirectory()) {
+      return skills;
+    }
+
+    const entries = fs.readdirSync(agentsDir, { withFileTypes: true });
+    for (const entry of entries) {
+      if (!entry.isDirectory()) {
+        continue;
+      }
+      const skillDir = path.join(agentsDir, entry.name);
+      if (!this.isSkillDirectory(skillDir)) {
+        continue;
+      }
+      try {
+        skills.push(this.loader.loadSkill(skillDir, this.isReadonlyPath(skillDir)));
+      } catch (error) {
+        logger.warn(`Error loading bundled skill ${entry.name}: ${String(error)}`);
+      }
+    }
+
+    return skills;
+  }
+
+  private getAllDefinitionRoots(): string[] {
+    const roots = [this.config.getAppDataDir(), ...this.config.getAdditionalDefinitionSourceRoots()];
+    const seen = new Set<string>();
+    return roots.filter((root) => {
+      const resolved = path.resolve(root);
+      if (seen.has(resolved)) {
+        return false;
+      }
+      seen.add(resolved);
+      return true;
+    });
   }
 
   private scanDirectory(directory: string): Skill[] {
@@ -100,7 +163,7 @@ export class SkillService {
         continue;
       }
       const itemPath = path.join(directory, entry.name);
-      if (!fs.existsSync(path.join(itemPath, "SKILL.md"))) {
+      if (!this.isSkillDirectory(itemPath)) {
         continue;
       }
       try {
@@ -119,6 +182,9 @@ export class SkillService {
       const nestedSkills = this.scanDirectory(nestedSkillsDir);
       skills.push(...nestedSkills);
     }
+
+    const bundledSkills = this.scanBundledSkillsFromDefinitionRoot(directory);
+    skills.push(...bundledSkills);
 
     return skills;
   }
@@ -154,6 +220,17 @@ export class SkillService {
 
     for (const directory of this.getAllSkillDirectories()) {
       for (const skill of this.scanDirectory(directory)) {
+        if (seen.has(skill.name)) {
+          continue;
+        }
+        skill.isDisabled = this.disabledStore.isDisabled(skill.name);
+        skills.push(skill);
+        seen.add(skill.name);
+      }
+    }
+
+    for (const definitionRoot of this.getAllDefinitionRoots()) {
+      for (const skill of this.scanBundledSkillsFromDefinitionRoot(definitionRoot)) {
         if (seen.has(skill.name)) {
           continue;
         }
