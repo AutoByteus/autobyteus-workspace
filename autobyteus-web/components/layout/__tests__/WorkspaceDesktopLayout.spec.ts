@@ -96,6 +96,17 @@ describe('WorkspaceDesktopLayout', () => {
     expect(wrapper.text()).toContain('Select or run an agent/team to begin');
   });
 
+  it('keeps the center content shell clipped instead of making it an outer scroll owner', () => {
+    const wrapper = mountComponent({
+      agentSelection: { selectedType: 'agent', selectedRunId: '123' },
+      workspaceCenterView: { mode: 'chat' },
+    });
+
+    const shell = wrapper.get('[data-test="workspace-center-content-shell"]');
+    expect(shell.classes()).toContain('overflow-hidden');
+    expect(shell.classes()).not.toContain('overflow-auto');
+  });
+
   it('renders RunConfigPanel for selected run when config view mode is active', () => {
     const wrapper = mountComponent({
       agentSelection: { selectedType: 'agent', selectedRunId: '123' },

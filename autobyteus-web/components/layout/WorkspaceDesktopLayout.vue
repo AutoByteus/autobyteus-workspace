@@ -2,7 +2,7 @@
   <div class="hidden md:flex flex-1 relative space-x-0 min-h-0">
     <!-- Content Area -->
     <div class="bg-white p-0 flex flex-col min-h-0 flex-1 min-w-[200px]">
-      <div class="flex-1 overflow-auto">
+      <div data-test="workspace-center-content-shell" class="flex-1 min-h-0 overflow-hidden">
         <RunConfigPanel v-if="showSelectedRunConfig" />
         <AgentWorkspaceView v-else-if="isAgentSelected" />
         <TeamWorkspaceView v-else-if="isTeamSelected" />

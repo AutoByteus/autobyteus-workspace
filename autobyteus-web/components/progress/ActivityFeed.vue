@@ -27,7 +27,12 @@
     </div>
 
     <!-- Feed -->
-    <div v-show="!collapsed" ref="feedContainer" class="flex-1 overflow-y-auto custom-scrollbar">
+    <div
+      v-show="!collapsed"
+      ref="feedContainer"
+      data-test="activity-feed-scroll-container"
+      class="flex-1 overflow-y-auto custom-scrollbar"
+    >
       <div v-if="activities.length === 0" class="p-8 text-center text-gray-700 text-sm">
         No activity history yet.
       </div>
@@ -79,6 +84,25 @@ const setItemRef = (id: string, el: any) => {
   if (el) itemRefs.value[id] = el;
 };
 
+const scrollItemIntoFeedViewport = (targetEl: HTMLElement) => {
+  const container = feedContainer.value;
+  if (!container) return;
+
+  const containerRect = container.getBoundingClientRect();
+  const targetRect = targetEl.getBoundingClientRect();
+  const nextTop = Math.max(
+    0,
+    container.scrollTop + (targetRect.top - containerRect.top) - ((container.clientHeight - targetRect.height) / 2)
+  );
+
+  if (typeof container.scrollTo === 'function') {
+    container.scrollTo({ top: nextTop, behavior: 'smooth' });
+    return;
+  }
+
+  container.scrollTop = nextTop;
+};
+
 // Scroll to bottom on new activity
 watch(() => activities.value.length, () => {
   nextTick(() => {
@@ -98,10 +122,9 @@ watch(highlightedId, (newId) => {
     nextTick(() => {
       const refEntry = itemRefs.value[newId];
       if (refEntry) {
-        // Determine strict Vue component or DOM element
-        const el = refEntry.$el || refEntry; 
-        if (el && typeof el.scrollIntoView === 'function') {
-          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        const el = refEntry.$el || refEntry;
+        if (el instanceof HTMLElement) {
+          scrollItemIntoFeedViewport(el);
         }
       }
     });

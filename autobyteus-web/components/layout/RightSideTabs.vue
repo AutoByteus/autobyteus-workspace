@@ -21,23 +21,23 @@
     </div>
 
     <!-- Tab Content -->
-    <div class="flex-grow overflow-auto relative">
-      <div v-if="activeTab === 'files'" class="h-full">
+    <div data-test="right-side-tab-content-shell" class="flex-1 min-h-0 overflow-hidden relative">
+      <div v-if="activeTab === 'files'" class="h-full min-h-0">
         <FileExplorerLayout />
       </div>
-      <div v-if="activeTab === 'teamMembers'" class="h-full">
+      <div v-if="activeTab === 'teamMembers'" class="h-full min-h-0">
         <TeamOverviewPanel />
       </div>
-      <div v-if="activeTab === 'terminal'" class="h-full">
+      <div v-if="activeTab === 'terminal'" class="h-full min-h-0">
         <Terminal />
       </div>
-      <div v-if="activeTab === 'vnc'" class="h-full">
+      <div v-if="activeTab === 'vnc'" class="h-full min-h-0">
         <VncViewer />
       </div>
-      <div v-if="activeTab === 'artifacts'" class="h-full">
+      <div v-if="activeTab === 'artifacts'" class="h-full min-h-0">
         <ArtifactsTab />
       </div>
-      <div v-if="activeTab === 'progress'" class="h-full">
+      <div v-if="activeTab === 'progress'" class="h-full min-h-0">
         <ProgressPanel />
       </div>
     </div>
