@@ -1,3 +1,4 @@
+import { realpathSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { startGateway } from "./bootstrap/start-gateway.js";
@@ -11,7 +12,14 @@ const isExecutedDirectly = (): boolean => {
   if (!entryArg) {
     return false;
   }
-  return fileURLToPath(import.meta.url) === path.resolve(entryArg);
+  try {
+    return (
+      realpathSync(fileURLToPath(import.meta.url)) ===
+      realpathSync(path.resolve(entryArg))
+    );
+  } catch {
+    return fileURLToPath(import.meta.url) === path.resolve(entryArg);
+  }
 };
 
 if (isExecutedDirectly()) {
