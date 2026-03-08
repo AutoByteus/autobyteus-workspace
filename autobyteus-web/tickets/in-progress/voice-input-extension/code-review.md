@@ -3,7 +3,7 @@
 ## Review Meta
 
 - Ticket: `voice-input-extension`
-- Review Round: `3`
+- Review Round: `4`
 - Trigger Stage: `7`
 - Workflow state source: `autobyteus-web/tickets/in-progress/voice-input-extension/workflow-state.md`
 - Design basis artifact: `autobyteus-web/tickets/in-progress/voice-input-extension/proposed-design.md`
@@ -12,51 +12,35 @@
 ## Scope
 
 - Review basis:
-  - Round 1 covered the initial feature implementation.
-  - Round 2 covered the first real-release validation fixes.
-  - Round 3 covers the repository extraction, workspace repoint, and standalone runtime repository bootstrap that resolved the production release-surface problem.
-- Files reviewed in Round 3:
-  - workspace repo:
-    - `.github/workflows/release-voice-runtime.yml` (deleted)
-    - `autobyteus-voice-runtime/**` (deleted)
-    - `autobyteus-web/electron/extensions/extensionCatalog.ts`
-    - `autobyteus-web/electron/extensions/__tests__/extensionCatalog.spec.ts`
-  - standalone runtime repo:
-    - `/Users/normy/autobyteus_org/autobyteus-voice-runtime/.github/workflows/release-voice-runtime.yml`
-    - `/Users/normy/autobyteus_org/autobyteus-voice-runtime/scripts/generate-manifest.mjs`
-    - `/Users/normy/autobyteus_org/autobyteus-voice-runtime/tests/generate-manifest.test.mjs`
-    - `/Users/normy/autobyteus_org/autobyteus-voice-runtime/README.md`
-- Why these files:
-  - They are the full delta required to move runtime publication out of the workspace repo and make the app consume the new repository without relying on “latest release” behavior.
+  - Round 4 covers the final cleanup after the repository split: removing the stale desktop-release exclusion that was temporarily added before the runtime moved into its own repository.
+- Files reviewed in Round 4:
+  - `.github/workflows/release-desktop.yml`
+- Why this file:
+  - It is the only remaining workspace-side functional change that no longer belongs in the final architecture after the runtime release lane moved into `AutoByteus/autobyteus-voice-runtime`.
 
 ## Source File Size And Structure Audit
 
 | File | Effective Non-Empty Line Count | Adds/Changes Functionality | `>500` Hard-Limit Check | `>220` Changed-Line Delta Gate | Module/File Placement Check | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| `autobyteus-web/electron/extensions/extensionCatalog.ts` | `64` | Yes | Pass | Pass | Pass | Keep |
-| `autobyteus-web/electron/extensions/__tests__/extensionCatalog.spec.ts` | `21` | Yes | Pass | Pass | Pass | Keep |
-| `/Users/normy/autobyteus_org/autobyteus-voice-runtime/.github/workflows/release-voice-runtime.yml` | `108` | Yes | Pass | Pass | Pass | Keep |
-| `/Users/normy/autobyteus_org/autobyteus-voice-runtime/scripts/generate-manifest.mjs` | `70` | Yes | Pass | Pass | Pass | Keep |
-| `/Users/normy/autobyteus_org/autobyteus-voice-runtime/tests/generate-manifest.test.mjs` | `67` | Yes | Pass | Pass | Pass | Keep |
-| `/Users/normy/autobyteus_org/autobyteus-voice-runtime/README.md` | `35` | No | Pass | Pass | Pass | Keep |
+| `.github/workflows/release-desktop.yml` | `355` | Yes | Pass | Pass (`+0/-1`) | Pass | Keep |
 
 Measurement notes:
 
 - Effective non-empty line counts measured with `rg -n "\\S" <file> | wc -l`
-- Round 3 changed-line deltas are comfortably below the `>220` escalation threshold
-- The workspace deletions reduce ownership ambiguity rather than increasing code surface
+- Round 4 changed-line deltas are comfortably below the `>220` escalation threshold
+- The cleanup restores the workflow to the original branch shape instead of introducing a new branch-specific release rule
 
 ## Structural Integrity Checks
 
 | Check | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Shared-principles alignment check (`SoC`, emergent layering, decoupling directionality) | Pass | Runtime publication now lives in its own repo; app consumption stays in Electron extension catalog; UI/store/runtime boundaries are unchanged | Keep |
-| Layering extraction check | Pass | The release concern moved outward into the correct repository boundary instead of staying mixed into the app repo | Keep |
-| Anti-overlayering check | Pass | No wrapper layer was added; the change removes an ownership seam rather than adding one | Keep |
-| Decoupling check | Pass | Workspace repo no longer owns runtime release workflows or assets, and the app now points directly at the dedicated runtime repo | Keep |
-| Module/file placement check | Pass | Runtime release logic is now in the runtime repo; app runtime coordinates remain in the Electron extension catalog | Keep |
-| No backward-compatibility mechanisms | Pass | No dual release lanes, compatibility fallbacks, or “check both repos” behavior were introduced | Keep |
-| No legacy code retention for old behavior | Pass | The workspace runtime workflow and runtime project were removed instead of retained as a second path | Keep |
+| Shared-principles alignment check (`SoC`, emergent layering, decoupling directionality) | Pass | The desktop release workflow now owns only desktop release triggers again; runtime publication remains fully outside the workspace repo | Keep |
+| Layering extraction check | Pass | The cleanup removes a now-unused workaround instead of leaving policy drift in the workflow | Keep |
+| Anti-overlayering check | Pass | No wrapper rule or dual trigger logic remains in the workflow | Keep |
+| Decoupling check | Pass | Desktop and runtime release concerns stay separated by repository boundary instead of by an in-file exclusion rule | Keep |
+| Module/file placement check | Pass | `.github/workflows/release-desktop.yml` now reflects only the desktop app release concern | Keep |
+| No backward-compatibility mechanisms | Pass | No compatibility filter for voice-runtime tags remains in the desktop workflow | Keep |
+| No legacy code retention for old behavior | Pass | The stale exclusion line was removed instead of kept as dead defensive config | Keep |
 
 ## Findings
 
@@ -77,6 +61,5 @@ None.
   - No backward-compatibility mechanisms = `Pass`
   - No legacy code retention = `Pass`
 - Notes:
-  - The separate runtime repository is live at `AutoByteus/autobyteus-voice-runtime`.
-  - The first standalone runtime release `v0.1.1` built and published successfully in run `22818941304`.
-  - The compiled Electron service proved the app-owned install/download/transcribe path against the published manifest and returned `Hello world!`.
+  - `release-desktop.yml` now matches `origin/personal` again.
+  - The workspace repo latest release remains `v1.2.24`, so the desktop release surface is no longer advanced by voice-runtime publication.

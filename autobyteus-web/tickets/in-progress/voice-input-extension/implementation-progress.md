@@ -22,6 +22,7 @@ This document tracks implementation execution, targeted verification, Stage 7 sc
 - 2026-03-08: Fixed a standalone-repo workflow dispatch bug caused by invalid GitHub Actions expression syntax for version normalization.
 - 2026-03-08: Published standalone runtime release `v0.1.1` with manifest, model, and all four platform binaries in `AutoByteus/autobyteus-voice-runtime` via run `22818941304`.
 - 2026-03-08: Validated the published standalone release through the compiled Electron service: real install/download succeeded and real transcription returned `Hello world!` from a generated WAV sample.
+- 2026-03-08: Removed the now-redundant `!voice-runtime-v*` exclusion from the workspace desktop release workflow so `.github/workflows/release-desktop.yml` is restored to its original tag trigger shape.
 
 ## File-Level Progress Table (Stage 6)
 
@@ -40,6 +41,7 @@ This document tracks implementation execution, targeted verification, Stage 7 sc
 | `C-011` | `electron/extensions/voice-input/voiceInputRuntimeService.ts` | Completed | `pnpm -C autobyteus-web exec vitest --config electron/vitest.config.ts run electron/extensions/__tests__/managedExtensionService.spec.ts`; published-manifest Node proof | Passed | Manifest download, checksum verification, spawn/invoke, and transcription verified with both fixture and real runtime |
 | `C-012` | `electron/preload.ts`, `types/electron.d.ts`, `electron/main.ts` | Completed | `pnpm -C autobyteus-web transpile-electron` | Passed | Typed bridge and handler registration compile cleanly with the extension APIs |
 | `C-013` | New voice path isolation from dormant websocket transcription flow | Completed | `rg -n "transcriptionStore|audioStore|websocket" autobyteus-web/stores/voiceInputStore.ts autobyteus-web/components/agentInput/AgentUserInputTextArea.vue autobyteus-web/electron/extensions -g '!node_modules'` | Passed | New flow stays independent from the dormant websocket dictation path |
+| `C-014` | `.github/workflows/release-desktop.yml` | Completed | `diff -u <(git show origin/personal:.github/workflows/release-desktop.yml) .github/workflows/release-desktop.yml`; `gh release list --repo AutoByteus/autobyteus-workspace --limit 3` | Passed | Desktop release workflow no longer carries the stale voice-runtime exclusion and the workspace repo latest release remains the desktop app |
 
 ## Stage 7 Scenario Log
 
@@ -55,6 +57,7 @@ This document tracks implementation execution, targeted verification, Stage 7 sc
 | 2026-03-08 | `S7-008` | `AC-008` | Passed | `pnpm -C autobyteus-web exec vitest --config vitest.config.mts run tests/integration/voice-input-extension.integration.test.ts` | Fixture-backed app-level proof remains green |
 | 2026-03-08 | `S7-009` | `AC-003`, `AC-003A`, `AC-003B`, `AC-008` | Passed | `gh run watch 22818941304 --repo AutoByteus/autobyteus-voice-runtime --exit-status`; `gh release view v0.1.1 --repo AutoByteus/autobyteus-voice-runtime` | Standalone runtime assets were built and published successfully |
 | 2026-03-08 | `S7-010` | `AC-003`, `AC-003A`, `AC-005`, `AC-008` | Passed | Published-manifest `ManagedExtensionService` Node proof against `autobyteus-web/dist/electron/extensions/managedExtensionService.js` | Real app-owned install/download/transcribe path returned `Hello world!` |
+| 2026-03-08 | `S7-011` | `N/A` | Passed | `diff -u <(git show origin/personal:.github/workflows/release-desktop.yml) .github/workflows/release-desktop.yml`; `gh release list --repo AutoByteus/autobyteus-workspace --limit 3` | Desktop release workflow is restored to its original trigger shape and the workspace repo latest release remains `v1.2.24` |
 
 ## Acceptance Criteria Closure Matrix
 
@@ -76,7 +79,7 @@ This document tracks implementation execution, targeted verification, Stage 7 sc
 - Review artifact: `code-review.md`
 - Result: `Pass`
 - Notes:
-  - Review round 3 covered the repository extraction, workspace repoint, and standalone runtime repository bootstrap.
+  - Review round 4 covered the final desktop workflow cleanup after the runtime repository split.
   - No changed source/workflow file exceeded the `>220` delta gate.
   - No changed file exceeded the `<=500` effective non-empty-line hard limit.
   - No new backward-compatibility or legacy-retention path was introduced.

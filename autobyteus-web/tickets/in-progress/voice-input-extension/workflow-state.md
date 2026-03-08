@@ -12,7 +12,7 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-034`
+- Last Transition ID: `T-039`
 - Last Updated: `2026-03-08`
 
 ## Stage Gates
@@ -25,10 +25,10 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | 3 Design Basis | Pass | Proposed design now moves runtime packaging and release ownership into the dedicated runtime repository while keeping the app on pinned manifest consumption | `proposed-design.md`, `workflow-state.md` |
 | 4 Runtime Modeling | Pass | Runtime modeling is refreshed to use the dedicated runtime repository release lane for publication, install, and Stage 7 validation | `future-state-runtime-call-stack.md`, `workflow-state.md` |
 | 5 Review Gate | Pass | Runtime review reconfirmed the dedicated runtime-repository split and returned to `Go Confirmed` with no further upstream blockers | `future-state-runtime-call-stack-review.md`, `workflow-state.md` |
-| 6 Implementation | Pass | Runtime packaging was extracted into `AutoByteus/autobyteus-voice-runtime`, workspace release ownership was removed, and the app was repointed to the standalone runtime feed | `implementation-plan.md`, `implementation-progress.md`, `workflow-state.md` |
-| 7 API/E2E Testing | Pass | Stage 7 reran against the dedicated runtime repository: release `v0.1.1` published successfully and the compiled Electron service installed and invoked the published runtime | `api-e2e-testing.md`, `implementation-progress.md`, `workflow-state.md` |
-| 8 Code Review | Pass | Code review reran on the repository extraction and repoint delta and passed with no findings | `code-review.md`, `workflow-state.md` |
-| 9 Docs Sync | Pass | Ticket artifacts were refreshed to reflect the standalone runtime repository, release run `22818941304`, and the real app-side proof | `implementation-progress.md`, `api-e2e-testing.md`, `code-review.md`, `workflow-state.md` |
+| 6 Implementation | Pass | The stale `!voice-runtime-v*` exclusion was removed from the desktop release workflow after the runtime moved into its own repository | `implementation-plan.md`, `implementation-progress.md`, `workflow-state.md` |
+| 7 API/E2E Testing | Pass | Cleanup validation confirmed `release-desktop.yml` matches `origin/personal` again and the workspace repo latest release remains the Electron app release | `api-e2e-testing.md`, `implementation-progress.md`, `workflow-state.md` |
+| 8 Code Review | Pass | Code review reran on the desktop workflow cleanup delta and passed with no findings | `code-review.md`, `workflow-state.md` |
+| 9 Docs Sync | Pass | Ticket artifacts were refreshed to record the final desktop workflow cleanup and validation evidence | `implementation-progress.md`, `api-e2e-testing.md`, `code-review.md`, `workflow-state.md` |
 | 10 Handoff / Ticket State | In Progress | Ticket is ready for handoff and remains in progress until the user explicitly confirms completion | `workflow-state.md`, `implementation-progress.md` |
 
 ## Stage Transition Contract (Quick Reference)
@@ -129,6 +129,11 @@ Note:
 | T-032 | 2026-03-08 | 7 | 8 | Stage 7 passed after standalone runtime release `v0.1.1` published successfully in `AutoByteus/autobyteus-voice-runtime` and the compiled Electron service installed and transcribed through the published runtime | N/A | Locked | `api-e2e-testing.md`, `implementation-progress.md`, `workflow-state.md` |
 | T-033 | 2026-03-08 | 8 | 9 | Code review passed on the repository extraction and standalone runtime release delta | N/A | Locked | `code-review.md`, `workflow-state.md` |
 | T-034 | 2026-03-08 | 9 | 10 | Docs sync completed for the standalone runtime repository split and the ticket is ready for final handoff pending user confirmation | N/A | Locked | `implementation-progress.md`, `api-e2e-testing.md`, `code-review.md`, `workflow-state.md` |
+| T-035 | 2026-03-08 | 10 | 6 | Re-entry declared to remove the now-redundant `!voice-runtime-v*` exclusion from the desktop release workflow after the runtime moved into its own repository | Local Fix | Unlocked | `workflow-state.md` |
+| T-036 | 2026-03-08 | 6 | 7 | Desktop workflow cleanup implementation completed and targeted cleanup validation became active | Local Fix | Unlocked | `implementation-progress.md`, `api-e2e-testing.md`, `workflow-state.md` |
+| T-037 | 2026-03-08 | 7 | 8 | Cleanup validation passed after confirming `release-desktop.yml` matches `origin/personal` and the workspace repo latest release remains `v1.2.24` | N/A | Locked | `api-e2e-testing.md`, `implementation-progress.md`, `workflow-state.md` |
+| T-038 | 2026-03-08 | 8 | 9 | Code review passed on the final desktop workflow cleanup delta | N/A | Locked | `code-review.md`, `workflow-state.md` |
+| T-039 | 2026-03-08 | 9 | 10 | Docs sync completed for the desktop workflow cleanup and the ticket returned to final handoff state | N/A | Locked | `implementation-progress.md`, `api-e2e-testing.md`, `code-review.md`, `workflow-state.md` |
 
 ## Audible Notification Log (Optional Tracking)
 
@@ -163,6 +168,11 @@ Note:
 | 2026-03-08 | Gate | Standalone runtime release `v0.1.1` published successfully and the compiled Electron service returned `Hello world!` through the real published runtime. Code review is next and code edits are locked. | Failed | `mlx-audio` local install is outdated; status provided in text instead |
 | 2026-03-08 | Gate | Code review passed for the repository extraction and runtime repoint delta with no findings. Docs sync is next and code edits remain locked. | Failed | `mlx-audio` local install is outdated; status provided in text instead |
 | 2026-03-08 | Transition | Docs sync is complete for the standalone runtime repository split. The ticket is ready for handoff and remains in progress until user confirmation. | Failed | `mlx-audio` local install is outdated; status provided in text instead |
+| 2026-03-08 | Re-entry | Voice input extension work has re-entered Stage 6 for local cleanup. The next step is to remove the stale desktop-release exclusion now that the runtime publishes from its own repository, and code edits are unlocked. | Failed | `mlx-audio` local install is outdated; status provided in text instead |
+| 2026-03-08 | Transition | The stale desktop-release exclusion has been removed. Targeted cleanup validation is next and code edits remain unlocked until the Stage 7 cleanup check closes. | Failed | `mlx-audio` local install is outdated; status provided in text instead |
+| 2026-03-08 | Gate | Cleanup validation passed. The desktop release workflow now matches `origin/personal` again and the workspace repo latest release remains `v1.2.24`. Code review is next and code edits are locked. | Failed | `mlx-audio` local install is outdated; status provided in text instead |
+| 2026-03-08 | Gate | Code review passed for the final desktop workflow cleanup delta with no findings. Docs sync is next and code edits remain locked. | Failed | `mlx-audio` local install is outdated; status provided in text instead |
+| 2026-03-08 | Transition | Docs sync is complete for the desktop workflow cleanup. The ticket is ready for handoff again and remains in progress until user confirmation. | Failed | `mlx-audio` local install is outdated; status provided in text instead |
 
 ## Process Violation Log
 

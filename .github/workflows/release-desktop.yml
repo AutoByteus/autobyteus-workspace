@@ -4,7 +4,6 @@ on:
   push:
     tags:
       - "v*"
-      - "!voice-runtime-v*"
   workflow_dispatch:
     inputs:
       publish_release:

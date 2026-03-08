@@ -35,6 +35,7 @@
 | `AV-005` | Requirement | `AC-005`, `AC-008` | `R-005`, `R-006`, `R-007`, `R-010` | `UC-005`, `UC-008` | E2E | Equivalent app-level proof must validate install, discovery, invoke, and transcript propagation through the renderer bridge | Fixture-backed integration proves install + invoke + draft insertion through the renderer/Electron boundary | `pnpm -C autobyteus-web exec vitest --config vitest.config.mts run tests/integration/voice-input-extension.integration.test.ts` | Passed |
 | `AV-006` | Requirement | `AC-003`, `AC-003A`, `AC-003B`, `AC-008` | `R-002`, `R-002A`, `R-003B`, `R-010` | `UC-003`, `UC-008`, `UC-009` | E2E | The standalone runtime repository must build and publish the pinned runtime assets independently of the workspace repo | Release `v0.1.1` in `AutoByteus/autobyteus-voice-runtime` publishes the manifest, model, and all four platform binaries | `gh run watch 22818941304 --repo AutoByteus/autobyteus-voice-runtime --exit-status` and `gh release view v0.1.1 --repo AutoByteus/autobyteus-voice-runtime` | Passed |
 | `AV-007` | Requirement | `AC-003`, `AC-003A`, `AC-005`, `AC-008` | `R-002`, `R-002A`, `R-005`, `R-010` | `UC-003`, `UC-005`, `UC-009` | E2E | The app-owned install and transcription path must work against the real published manifest from the separate repo, not only fixtures | Real `ManagedExtensionService` downloads published runtime/model assets, installs them into app data, invokes the published `whisper-cli`, and returns transcript text | `say` + `afconvert` WAV sample, then `node --input-type=module -` using `autobyteus-web/dist/electron/extensions/managedExtensionService.js` against `https://github.com/AutoByteus/autobyteus-voice-runtime/releases/download/v0.1.1/voice-input-runtime-manifest.json` | Passed |
+| `AV-008` | Cleanup | `N/A` | `N/A` | `N/A` | E2E | The temporary desktop-release exclusion introduced before the repo split must be removed once the runtime moves to its own repository | `release-desktop.yml` matches `origin/personal` again and the workspace repo latest release remains the Electron app release | `diff -u <(git show origin/personal:.github/workflows/release-desktop.yml) .github/workflows/release-desktop.yml`; `gh release list --repo AutoByteus/autobyteus-workspace --limit 3` | Passed |
 
 ## Failure Escalation Log
 
@@ -52,6 +53,7 @@
   - Real standalone release workflow success: run `22818941304` for `v0.1.1`
   - Real published release assets visible via `gh release view v0.1.1 --repo AutoByteus/autobyteus-voice-runtime`
   - Real app-side install/transcribe proof through compiled Electron service against the published manifest
+  - Desktop release workflow restored to the original trigger shape and verified against `origin/personal`
 - Residual risk notes:
   - `tiny.en-q5_1` on synthetic TTS clips is not always perfectly verbatim, which is expected for a tiny quantized model.
   - Product correctness for install/download/invoke is proven; model-accuracy tuning remains a future quality iteration, not a release blocker for this ticket.
@@ -75,6 +77,9 @@
   - Real standalone release evidence:
     - `gh run watch 22818941304 --repo AutoByteus/autobyteus-voice-runtime --exit-status`
     - `gh release view v0.1.1 --repo AutoByteus/autobyteus-voice-runtime`
+  - Cleanup proof:
+    - `diff -u <(git show origin/personal:.github/workflows/release-desktop.yml) .github/workflows/release-desktop.yml`
+    - `gh release list --repo AutoByteus/autobyteus-workspace --limit 3`
   - Real published-runtime app proof:
     - Published manifest URL: `https://github.com/AutoByteus/autobyteus-voice-runtime/releases/download/v0.1.1/voice-input-runtime-manifest.json`
     - Compiled Electron service installed the runtime and model into app data and returned `Hello world!` from a generated WAV sample.
