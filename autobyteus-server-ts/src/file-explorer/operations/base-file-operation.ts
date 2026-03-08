@@ -5,6 +5,7 @@ export type FileExplorerOperationContext = {
   workspaceRootPath: string;
   rootNode: TreeNode | null;
   findNodeByPath: (relativePath: string) => TreeNode | null;
+  suppressWatcherPaths?: (paths: string[]) => void;
 };
 
 export abstract class BaseFileOperation {

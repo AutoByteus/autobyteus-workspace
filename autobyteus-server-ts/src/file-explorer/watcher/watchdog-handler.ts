@@ -1,10 +1,7 @@
-import fs from "node:fs";
 import path from "node:path";
 import type { FileExplorer } from "../file-explorer.js";
 import { FileSystemChangeEvent } from "../file-system-changes.js";
-import { DefaultIgnoreStrategy } from "../traversal-ignore-strategy/default-ignore-strategy.js";
-import { GitIgnoreStrategy } from "../traversal-ignore-strategy/git-ignore-strategy.js";
-import type { TraversalIgnoreStrategy } from "../traversal-ignore-strategy/traversal-ignore-strategy.js";
+import { WorkspaceIgnoreMatcher } from "../traversal-ignore-strategy/workspace-ignore-matcher.js";
 import { AddNodeSynchronizer } from "../tree-state-synchronizers/add-node-synchronizer.js";
 import { ModifyNodeSynchronizer } from "../tree-state-synchronizers/modify-node-synchronizer.js";
 import { MoveNodeSynchronizer } from "../tree-state-synchronizers/move-node-synchronizer.js";
@@ -20,53 +17,25 @@ const logger = {
 export class WatchdogHandler {
   private fileExplorer: FileExplorer;
   private callback: (event: FileSystemChangeEvent) => void;
-  private ignoreStrategies: TraversalIgnoreStrategy[];
+  private ignoreMatcher: WorkspaceIgnoreMatcher;
 
   constructor(
     fileExplorer: FileExplorer,
     callback: (event: FileSystemChangeEvent) => void,
-    ignoreStrategies: TraversalIgnoreStrategy[],
+    ignoreMatcher: WorkspaceIgnoreMatcher,
   ) {
     this.fileExplorer = fileExplorer;
     this.callback = callback;
-    this.ignoreStrategies = [
-      new DefaultIgnoreStrategy(this.fileExplorer.workspaceRootPath),
-      ...ignoreStrategies,
-    ];
+    this.ignoreMatcher = ignoreMatcher;
   }
 
   shouldIgnore(targetPath: string, isDirectory: boolean): boolean {
-    if (this.ignoreStrategies.some((strategy) => strategy.shouldIgnore(targetPath, isDirectory))) {
-      logger.debug(`Ignoring path ${targetPath} due to base ignore strategy`);
-      return true;
+    const resolvedPath = path.resolve(targetPath);
+    const ignored = this.ignoreMatcher.shouldIgnore(resolvedPath, isDirectory);
+    if (ignored) {
+      logger.debug(`Ignoring path ${resolvedPath} due to workspace ignore matcher`);
     }
-
-    let currentDir: string;
-    let workspaceRoot: string;
-    try {
-      currentDir = path.dirname(path.resolve(targetPath));
-      workspaceRoot = path.resolve(this.fileExplorer.workspaceRootPath);
-    } catch {
-      return false;
-    }
-
-    while (true) {
-      const gitignorePath = path.join(currentDir, ".gitignore");
-      if (fs.existsSync(gitignorePath)) {
-        const localGitStrategy = new GitIgnoreStrategy(currentDir);
-        if (localGitStrategy.shouldIgnore(targetPath, isDirectory)) {
-          logger.debug(`Ignoring path ${targetPath} due to local .gitignore in ${currentDir}`);
-          return true;
-        }
-      }
-
-      if (currentDir === workspaceRoot || currentDir === path.dirname(currentDir)) {
-        break;
-      }
-      currentDir = path.dirname(currentDir);
-    }
-
-    return false;
+    return ignored;
   }
 
   handleAdd(eventPath: string, isDirectory: boolean): void {
@@ -134,6 +103,11 @@ export class WatchdogHandler {
   }
 
   handleModify(eventPath: string): void {
+    if (this.shouldIgnore(eventPath, false)) {
+      logger.debug(`Skipping modification event for ignored path: ${eventPath}`);
+      return;
+    }
+
     logger.info(`Watcher detected modification: ${eventPath}`);
     const relativePath = path.relative(this.fileExplorer.workspaceRootPath, eventPath);
     try {

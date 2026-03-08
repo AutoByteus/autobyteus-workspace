@@ -57,6 +57,8 @@ export class MoveFileOperation extends BaseFileOperation {
       throw new Error(`Destination path already exists: ${finalDestinationRelative}`);
     }
 
+    this.fileExplorer.suppressWatcherPaths?.([absoluteSource, finalDestinationPath]);
+
     try {
       await this.movePath(absoluteSource, finalDestinationPath, sourceStats);
     } catch (error) {

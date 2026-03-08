@@ -107,6 +107,47 @@ describe("Workspaces GraphQL e2e", () => {
     expect(found?.absolutePath).toBe(rootPath);
   });
 
+  it("returns a shallow file explorer payload from createWorkspace", async () => {
+    const rootPath = path.join(tempRoot, "test_ws_root");
+    fs.mkdirSync(path.join(rootPath, "project", "nested"), { recursive: true });
+    fs.writeFileSync(path.join(rootPath, "project", "nested", "index.ts"), "export {};\n", "utf-8");
+    fs.writeFileSync(path.join(rootPath, "README.md"), "# test\n", "utf-8");
+
+    const createMutation = `
+      mutation CreateWorkspace($input: CreateWorkspaceInput!) {
+        createWorkspace(input: $input) {
+          workspaceId
+          fileExplorer
+        }
+      }
+    `;
+
+    const created = await execGraphql<{
+      createWorkspace: { workspaceId: string; fileExplorer: string | null };
+    }>(createMutation, { input: { rootPath } });
+
+    expect(created.createWorkspace.workspaceId).toBeTruthy();
+    expect(created.createWorkspace.fileExplorer).toBeTruthy();
+
+    const explorerTree = JSON.parse(created.createWorkspace.fileExplorer ?? "null") as {
+      name: string;
+      children: Array<{
+        name: string;
+        children: unknown[];
+        children_loaded?: boolean;
+      }>;
+    };
+
+    expect(explorerTree.name).toBe("test_ws_root");
+    const projectNode = explorerTree.children.find((child) => child.name === "project");
+    expect(projectNode).toBeTruthy();
+    expect(projectNode?.children).toEqual([]);
+    expect(projectNode?.children_loaded).toBe(false);
+    expect(
+      explorerTree.children.some((child) => child.name === "README.md"),
+    ).toBe(true);
+  });
+
   it("lists the temp workspace with the backend-selected app-data-relative path", async () => {
     const appDataDir = path.join(tempRoot, "server-data");
     const expectedTempRoot = path.join(appDataDir, "temp_workspace");

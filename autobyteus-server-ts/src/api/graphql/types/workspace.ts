@@ -9,16 +9,6 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
-const ensureJsonString = (payload: string | object | null): string | null => {
-  if (payload === null) {
-    return null;
-  }
-  if (typeof payload === "string") {
-    return payload;
-  }
-  return JSON.stringify(payload);
-};
-
 @ObjectType()
 export class WorkspaceInfo {
   @Field(() => String)
@@ -76,18 +66,7 @@ export class WorkspaceResolver {
     try {
       const workspaceConfig = new WorkspaceConfig({ rootPath: input.rootPath });
       const workspace = await this.workspaceManager.createWorkspace(workspaceConfig);
-
-      const fileExplorer = await workspace.getFileExplorer();
-      const fileExplorerJson = await fileExplorer.toJson();
-
-      return {
-        workspaceId: workspace.workspaceId,
-        name: workspace.getName(),
-        config: workspace.config.toDict(),
-        fileExplorer: ensureJsonString(fileExplorerJson),
-        absolutePath: workspace.getBasePath(),
-        isTemp: false,
-      };
+      return WorkspaceConverter.toGraphql(workspace);
     } catch (error) {
       logger.error(`Unexpected error creating workspace: ${String(error)}`);
       throw new Error(String(error));
