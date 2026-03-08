@@ -11,7 +11,7 @@ const projectRoot = path.resolve(__dirname, '..')
 const distDir = process.env.AUTOBYTEUS_VOICE_RUNTIME_DIST_DIR || path.join(projectRoot, 'dist')
 const metadataPath = process.env.AUTOBYTEUS_VOICE_RUNTIME_METADATA_PATH || path.join(projectRoot, 'metadata', 'runtime-assets.json')
 const outputPath = process.argv[2] || path.join(distDir, 'voice-input-runtime-manifest.json')
-const runtimeVersion = process.env.AUTOBYTEUS_VOICE_RUNTIME_VERSION || '0.1.0'
+const runtimeVersion = process.env.AUTOBYTEUS_VOICE_RUNTIME_VERSION || '0.1.1'
 const releaseRepository = process.env.AUTOBYTEUS_RELEASE_REPOSITORY || 'AutoByteus/autobyteus-workspace'
 const releaseTag = process.env.AUTOBYTEUS_RELEASE_TAG || `voice-runtime-v${runtimeVersion}`
 

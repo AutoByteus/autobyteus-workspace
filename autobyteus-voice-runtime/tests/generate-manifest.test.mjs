@@ -44,9 +44,9 @@ test('generate-manifest emits release-backed URLs and checksums', async () => {
   await execFileAsync('node', [scriptPath, outputPath], {
     env: {
       ...process.env,
-      AUTOBYTEUS_VOICE_RUNTIME_VERSION: '0.1.0',
+      AUTOBYTEUS_VOICE_RUNTIME_VERSION: '0.1.1',
       AUTOBYTEUS_RELEASE_REPOSITORY: 'AutoByteus/autobyteus-workspace',
-      AUTOBYTEUS_RELEASE_TAG: 'voice-runtime-v0.1.0',
+      AUTOBYTEUS_RELEASE_TAG: 'voice-runtime-v0.1.1',
       AUTOBYTEUS_VOICE_RUNTIME_DIST_DIR: distDir,
       AUTOBYTEUS_VOICE_RUNTIME_METADATA_PATH: metadataPath,
     },
@@ -54,16 +54,16 @@ test('generate-manifest emits release-backed URLs and checksums', async () => {
 
   const manifest = JSON.parse(await fs.readFile(outputPath, 'utf8'))
 
-  assert.equal(manifest.runtimeVersion, '0.1.0')
+  assert.equal(manifest.runtimeVersion, '0.1.1')
   assert.equal(manifest.assets.length, 1)
   assert.equal(
     manifest.assets[0].url,
-    'https://github.com/AutoByteus/autobyteus-workspace/releases/download/voice-runtime-v0.1.0/whisper-cli-darwin-arm64',
+    'https://github.com/AutoByteus/autobyteus-workspace/releases/download/voice-runtime-v0.1.1/whisper-cli-darwin-arm64',
   )
   assert.match(manifest.assets[0].sha256, /^[a-f0-9]{64}$/)
   assert.equal(
     manifest.model.url,
-    'https://github.com/AutoByteus/autobyteus-workspace/releases/download/voice-runtime-v0.1.0/ggml-tiny.en-q5_1.bin',
+    'https://github.com/AutoByteus/autobyteus-workspace/releases/download/voice-runtime-v0.1.1/ggml-tiny.en-q5_1.bin',
   )
   assert.equal(manifest.model.version, 'tiny.en-q5_1')
   assert.equal(manifest.model.sizeBytes, 'model-bytes'.length)
