@@ -138,6 +138,10 @@ export class FileExplorer {
     }
   }
 
+  suppressWatcherPaths(paths: string[]): void {
+    this.fileWatcher?.suppressPaths(paths);
+  }
+
   getTree(): TreeNode | null {
     return this.rootNode;
   }

@@ -243,7 +243,11 @@ export const useWorkspaceStore = defineStore('workspace', {
       }
     },
 
-    handleFileSystemChange(workspaceId: string, event: FileSystemChangeEvent) {
+    handleFileSystemChange(
+      workspaceId: string,
+      event: FileSystemChangeEvent,
+      source: 'mutation' | 'stream' = 'stream',
+    ) {
       const workspace = this.workspaces[workspaceId];
       if (!workspace) {
         console.error(`Workspace with ID ${workspaceId} not found`);
@@ -251,12 +255,20 @@ export const useWorkspaceStore = defineStore('workspace', {
       }
       
       const fileExplorerStore = useFileExplorerStore();
+      const effectiveEvent =
+        source === 'stream'
+          ? fileExplorerStore.consumeRecentStructuralChangeEchoes(workspaceId, event)
+          : event;
+
+      if (effectiveEvent.changes.length === 0) {
+        return;
+      }
       
       // Apply structural changes to the tree
-      applyTreeChanges(workspace.fileExplorer, workspace.nodeIdToNode, event);
+      applyTreeChanges(workspace.fileExplorer, workspace.nodeIdToNode, effectiveEvent);
 
       // Handle content invalidation intelligently
-      event.changes.forEach(change => {
+      effectiveEvent.changes.forEach(change => {
         if (change.type === 'modify') {
           const node = workspace.nodeIdToNode[change.node_id];
           if (node && node.is_file) {
@@ -292,7 +304,7 @@ export const useWorkspaceStore = defineStore('workspace', {
       const service = new FileExplorerStreamingService(wsEndpoint, {
         onFileSystemChange: (event: FileSystemChangeEvent) => {
           console.log(`[Workspace] Received file system change for ${workspaceId}:`, event);
-          this.handleFileSystemChange(workspaceId, event);
+          this.handleFileSystemChange(workspaceId, event, 'stream');
         },
         onConnect: (sessionId: string) => {
           console.log(`[Workspace] Connected to file system changes: ${sessionId}`);
