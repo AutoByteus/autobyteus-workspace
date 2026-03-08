@@ -18,10 +18,15 @@
 - `autobyteus-web/electron/preload.ts`
 - `autobyteus-web/types/electron.d.ts`
 - `autobyteus-web/electron/main.ts`
+- `autobyteus-web/electron/extensions/extensionCatalog.ts`
 - `autobyteus-web/electron/updater/appUpdater.ts`
 - `autobyteus-web/electron/updater/__tests__/appUpdater.spec.ts`
 - `autobyteus-web/electron/server/services/AppDataService.ts`
 - `autobyteus-web/electron/server/__tests__/BaseServerManager.spec.ts`
+- `.github/workflows/release-desktop.yml`
+- `.github/workflows/release-voice-runtime.yml`
+- `autobyteus-voice-runtime/scripts/generate-manifest.mjs`
+- `autobyteus-voice-runtime/tests/generate-manifest.test.mjs`
 - `autobyteus-web/components/AudioRecorder.vue`
 - `autobyteus-web/stores/audioStore.ts`
 - `autobyteus-web/stores/transcriptionStore.ts`
@@ -149,21 +154,30 @@
    - A local validation attempt to compile `whisper.cpp` in this workspace was blocked because `cmake` is not installed in the current environment.
    - This does not block design selection, because the upstream build instructions and CI workflow already confirm the intended build path and supported target platforms.
 
-## Monorepo Runtime-Project Investigation
+## Runtime Repository Separation Investigation
 
-1. A top-level sibling project is the right structure inside this repository.
-   - The root workspace currently enumerates only the four existing application packages in `pnpm-workspace.yaml`.
-   - The voice runtime packaging concern does not naturally belong inside `autobyteus-web`, because it is cross-platform native build/release infrastructure rather than frontend or Electron app source.
-   - Recommended project location:
-     - `autobyteus-voice-runtime/`
+1. Same-repository runtime releases are not operationally safe enough.
+   - The workspace repository already serves desktop app releases and update metadata.
+   - A newer voice-runtime release in the same repository can become the repository’s visible latest release and interfere with systems that assume the repo’s latest release belongs to the Electron app.
+   - Re-entry-time evidence confirmed the overlap:
+     - `autobyteus-web/electron/extensions/extensionCatalog.ts` pointed to `AutoByteus/autobyteus-workspace`.
+     - `.github/workflows/release-voice-runtime.yml` published from the workspace repository.
+     - `autobyteus-voice-runtime/scripts/generate-manifest.mjs` defaulted release URLs into the workspace repository.
+   - The user reported a real production symptom from this exact overlap.
+   - Conclusion: voice runtime assets should not be released from the Electron app repository.
 
-2. The runtime project should be repo-local but operationally separate from the pnpm workspace unless a strong reason appears later.
-   - Current root scripts and workspace management are Node/pnpm-oriented.
-   - The runtime packaging path is fundamentally CMake + shell/CI driven.
-   - Conclusion: treat `autobyteus-voice-runtime/` as a top-level project in the same monorepo, but do not add it to the pnpm workspace by default unless helper tooling later requires that.
+2. A dedicated repository is now the correct structure.
+   - The runtime packaging path is fundamentally CMake + shell/CI driven and already stands apart from the Node/pnpm application code.
+   - The runtime needs its own release history, tags, artifacts, and “latest release” semantics.
+   - Recommended repository:
+     - `AutoByteus/autobyteus-voice-runtime`
+   - Recommended local path:
+     - `/Users/normy/autobyteus_org/autobyteus-voice-runtime`
+   - Repository availability check at investigation time:
+     - `gh repo view AutoByteus/autobyteus-voice-runtime` reported the repository did not exist, so the name was available for creation.
 
-3. The repository already has a proven cross-platform release pattern we can mirror.
-   - `.github/workflows/release-desktop.yml` already fans out by platform:
+3. The existing workspace repository still provides a proven workflow shape we can mirror in the separate repo.
+   - `.github/workflows/release-desktop.yml` already demonstrates the cross-platform fan-out shape:
      - `macos-14`
      - `ubuntu-22.04`
      - `windows-2022`
@@ -175,17 +189,14 @@
      - `softprops/action-gh-release`
    - Conclusion: the voice runtime should reuse this workflow shape rather than inventing a new release mechanism.
 
-4. The voice runtime should not share the desktop app workflow or tag namespace.
-   - The current desktop release workflow is tightly coupled to:
-     - `autobyteus-web/package.json`
-     - app tag pattern `v*`
-     - Electron packaging outputs
-   - Reusing that workflow for voice runtime artifacts would couple unrelated versioning and create confusion around release ownership.
+4. The separate runtime repository can use normal release tags because it no longer shares a release surface with the desktop app.
+   - The current desktop release workflow is tightly coupled to `autobyteus-web/package.json`, desktop packaging outputs, and the workspace repo release history.
+   - In a separate repository, the runtime no longer needs a special tag namespace to avoid clashing with Electron releases.
    - Recommended release mechanism:
-     - dedicated workflow, for example `.github/workflows/release-voice-runtime.yml`
-     - dedicated tag prefix, for example `voice-runtime-v*`
+     - dedicated workflow inside `AutoByteus/autobyteus-voice-runtime`
+     - normal runtime tags, recommended pattern `v*`
 
-5. The runtime release should publish an AutoByteus-owned contract, not raw upstream outputs.
+5. The runtime release should publish an AutoByteus-owned contract from the separate runtime repository, not raw upstream outputs.
    - Each release should publish:
      - platform-specific runtime archives
      - the selected model asset
@@ -207,7 +218,7 @@
      - companion libs only if a static build is not achievable on that target
 
 7. The app-consumption path should avoid ambiguous “latest release” discovery.
-   - Because the main repository already publishes desktop app releases, relying on a global “latest release” lookup would be brittle.
+   - The production issue confirms that relying on a repository-wide latest release is brittle when multiple product surfaces share one repo.
    - Initial recommendation:
      - the app pins the voice runtime version/tag in code or in a bundled extension catalog
      - install uses the runtime manifest associated with that pinned release
@@ -230,7 +241,7 @@
 
 ## Unknowns / Risks
 
-1. Exact hosting location for AutoByteus-owned runtime archives and whether that lives in the main repo releases or a separate runtime repo.
+1. Whether the dedicated runtime repository should be public immediately or staged privately first while the desktop app branch is being updated.
 2. Whether the first runtime package should be fully static on every platform or allow a small normalized archive with companion libraries.
 3. Whether the app should pin runtime versions purely in code or via a bundled per-extension catalog file.
 4. Whether a true browser/Electron E2E harness can be introduced quickly enough for this ticket versus a stronger integration-level automated scenario.

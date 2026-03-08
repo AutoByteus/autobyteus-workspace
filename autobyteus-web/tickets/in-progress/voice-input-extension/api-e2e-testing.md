@@ -28,33 +28,33 @@
 
 | Scenario ID | Source Type | Acceptance Criteria ID(s) | Requirement ID(s) | Use Case ID(s) | Level | Objective/Risk | Expected Outcome | Command/Harness | Status |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `AV-001` | Requirement | `AC-001`, `AC-002` | `R-001`, `R-003` | `UC-001`, `UC-002` | API | Settings surface must expose the new managed-extension UX without routing regressions | `Settings -> Extensions` renders and `Voice Input` card shows lifecycle actions | `pnpm -C autobyteus-web exec vitest --config vitest.config.mts run pages/__tests__/settings.spec.ts components/settings/__tests__/VoiceInputExtensionCard.spec.ts` | Passed |
+| `AV-001` | Requirement | `AC-001`, `AC-002` | `R-001`, `R-003` | `UC-001`, `UC-002` | API | Settings surface must expose the managed-extension UX without routing regressions | `Settings -> Extensions` renders and `Voice Input` card shows lifecycle actions | `pnpm -C autobyteus-web exec vitest --config vitest.config.mts run pages/__tests__/settings.spec.ts components/settings/__tests__/VoiceInputExtensionCard.spec.ts` | Passed |
 | `AV-002` | Requirement | `AC-002`, `AC-003`, `AC-003A`, `AC-003B`, `AC-007` | `R-002`, `R-002A`, `R-003`, `R-003A`, `R-003B`, `R-008` | `UC-002`, `UC-003`, `UC-007` | API | Managed extension lifecycle must install/remove from app data using pinned AutoByteus manifest metadata | Install/remove/reinstall succeeds and persists normalized registry state | `pnpm -C autobyteus-web exec vitest --config electron/vitest.config.ts run electron/extensions/__tests__/extensionCatalog.spec.ts electron/extensions/__tests__/managedExtensionService.spec.ts` | Passed |
 | `AV-003` | Design-Risk | `AC-003`, `AC-006` | `R-002`, `R-009` | `UC-003`, `UC-006` | API | Corrupted installation or runtime/transcription failure must stay actionable instead of breaking the composer | Broken runtime is flagged as `error`; transcription failure leaves draft unchanged and shows feedback | `pnpm -C autobyteus-web exec vitest --config electron/vitest.config.ts run electron/extensions/__tests__/managedExtensionService.spec.ts` and `pnpm -C autobyteus-web exec vitest --config vitest.config.mts run stores/__tests__/voiceInputStore.spec.ts` | Passed |
 | `AV-004` | Requirement | `AC-004` | `R-004`, `R-006` | `UC-004` | API | Shared composer must expose the mic only when Voice Input is installed/ready | Mic button hidden when unavailable and rendered when ready | `pnpm -C autobyteus-web exec vitest --config vitest.config.mts run components/agentInput/__tests__/AgentUserInputTextArea.spec.ts` | Passed |
 | `AV-005` | Requirement | `AC-005`, `AC-008` | `R-005`, `R-006`, `R-007`, `R-010` | `UC-005`, `UC-008` | E2E | Equivalent app-level proof must validate install, discovery, invoke, and transcript propagation through the renderer bridge | Fixture-backed integration proves install + invoke + draft insertion through the renderer/Electron boundary | `pnpm -C autobyteus-web exec vitest --config vitest.config.mts run tests/integration/voice-input-extension.integration.test.ts` | Passed |
-| `AV-006` | Requirement | `AC-003`, `AC-003A`, `AC-003B`, `AC-008` | `R-002`, `R-002A`, `R-003B`, `R-010` | `UC-003`, `UC-008`, `UC-009` | E2E | The real runtime release lane must build and publish assets under the dedicated voice-runtime tag namespace | `voice-runtime-v0.1.1` release publishes manifest, model, and all four platform binaries from the dedicated workflow | `gh run watch 22818608625 --repo AutoByteus/autobyteus-workspace --exit-status` and `gh release view voice-runtime-v0.1.1 --repo AutoByteus/autobyteus-workspace` | Passed |
-| `AV-007` | Requirement | `AC-003`, `AC-003A`, `AC-005`, `AC-008` | `R-002`, `R-002A`, `R-005`, `R-010` | `UC-003`, `UC-005`, `UC-009` | E2E | The app-owned install and transcription path must work against the real published manifest, not only fixtures | Real `ManagedExtensionService` downloads published runtime/model assets, installs them into app data, invokes the published `whisper-cli`, and returns transcript text | `say` + `afconvert` WAV sample, then `node -` script using `autobyteus-web/dist/electron/extensions/managedExtensionService.js` against `voice-runtime-v0.1.1` | Passed |
+| `AV-006` | Requirement | `AC-003`, `AC-003A`, `AC-003B`, `AC-008` | `R-002`, `R-002A`, `R-003B`, `R-010` | `UC-003`, `UC-008`, `UC-009` | E2E | The standalone runtime repository must build and publish the pinned runtime assets independently of the workspace repo | Release `v0.1.1` in `AutoByteus/autobyteus-voice-runtime` publishes the manifest, model, and all four platform binaries | `gh run watch 22818941304 --repo AutoByteus/autobyteus-voice-runtime --exit-status` and `gh release view v0.1.1 --repo AutoByteus/autobyteus-voice-runtime` | Passed |
+| `AV-007` | Requirement | `AC-003`, `AC-003A`, `AC-005`, `AC-008` | `R-002`, `R-002A`, `R-005`, `R-010` | `UC-003`, `UC-005`, `UC-009` | E2E | The app-owned install and transcription path must work against the real published manifest from the separate repo, not only fixtures | Real `ManagedExtensionService` downloads published runtime/model assets, installs them into app data, invokes the published `whisper-cli`, and returns transcript text | `say` + `afconvert` WAV sample, then `node --input-type=module -` using `autobyteus-web/dist/electron/extensions/managedExtensionService.js` against `https://github.com/AutoByteus/autobyteus-voice-runtime/releases/download/v0.1.1/voice-input-runtime-manifest.json` | Passed |
 
 ## Failure Escalation Log
 
 | Date | Scenario ID | Failure Summary | Investigation Required | Classification | Action Path | `investigation-notes.md` Updated | Requirements Updated | Design Updated | Call Stack Regenerated | Review Re-Entry Round | Resolved |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 2026-03-08 | `AV-006` | First real release attempt on `voice-runtime-v0.1.0` failed for `darwin/x64` because the runtime packager allowed `ggml` to use `-march=native` during Apple Silicon cross-compilation, producing an invalid `apple-m1` CPU target for the x64 build | No | `Local Fix` | `6 -> 7` | No | No | No | No | N/A | Yes |
+| 2026-03-08 | `AV-006` | The first standalone-repo workflow dispatch failed immediately because the workflow used invalid GitHub expression syntax (`inputs.runtime_version#v`) instead of doing version normalization in bash | No | `Local Fix` | `6 -> 7` | No | No | No | No | N/A | Yes |
 
 ## Feasibility And Risk Record
 
 - Any infeasible scenarios: `No`
 - Environment constraints:
-  - The local workstation still does not have `cmake`, so the real native runtime build was validated through GitHub Actions rather than through a local compile.
+  - The local workstation still does not have `cmake`, so the native runtime build was validated through GitHub Actions in `AutoByteus/autobyteus-voice-runtime` rather than through a local compile.
   - This is acceptable for Stage 7 because the real published runtime assets were built successfully in the dedicated CI workflow and then consumed locally by the app code.
 - Compensating executable evidence:
-  - Real release workflow success: run `22818608625` for `voice-runtime-v0.1.1`
-  - Real published release assets visible via `gh release view voice-runtime-v0.1.1 --repo AutoByteus/autobyteus-workspace`
+  - Real standalone release workflow success: run `22818941304` for `v0.1.1`
+  - Real published release assets visible via `gh release view v0.1.1 --repo AutoByteus/autobyteus-voice-runtime`
   - Real app-side install/transcribe proof through compiled Electron service against the published manifest
 - Residual risk notes:
-  - `tiny.en-q5_1` on synthetic TTS clips is not always verbatim, which is expected for a tiny quantized model.
-  - End-to-end product correctness for install/download/invoke is proven; model-accuracy tuning remains a future product-quality iteration, not a release blocker for this ticket.
+  - `tiny.en-q5_1` on synthetic TTS clips is not always perfectly verbatim, which is expected for a tiny quantized model.
+  - Product correctness for install/download/invoke is proven; model-accuracy tuning remains a future quality iteration, not a release blocker for this ticket.
 - User waiver for infeasible acceptance criteria recorded: `N/A`
 
 ## Stage 7 Gate Decision
@@ -72,9 +72,9 @@
     - `pnpm -C autobyteus-web exec vitest --config electron/vitest.config.ts run electron/extensions/__tests__/extensionCatalog.spec.ts electron/extensions/__tests__/managedExtensionService.spec.ts`
   - Final targeted Stage 7 renderer/integration command:
     - `pnpm -C autobyteus-web exec vitest --config vitest.config.mts run pages/__tests__/settings.spec.ts components/settings/__tests__/VoiceInputExtensionCard.spec.ts components/agentInput/__tests__/AgentUserInputTextArea.spec.ts stores/__tests__/extensionsStore.spec.ts stores/__tests__/voiceInputStore.spec.ts tests/integration/voice-input-extension.integration.test.ts`
-  - Real release evidence:
-    - `gh run watch 22818608625 --repo AutoByteus/autobyteus-workspace --exit-status`
-    - `gh release view voice-runtime-v0.1.1 --repo AutoByteus/autobyteus-workspace`
+  - Real standalone release evidence:
+    - `gh run watch 22818941304 --repo AutoByteus/autobyteus-voice-runtime --exit-status`
+    - `gh release view v0.1.1 --repo AutoByteus/autobyteus-voice-runtime`
   - Real published-runtime app proof:
-    - Published manifest URL: `https://github.com/AutoByteus/autobyteus-workspace/releases/download/voice-runtime-v0.1.1/voice-input-runtime-manifest.json`
+    - Published manifest URL: `https://github.com/AutoByteus/autobyteus-voice-runtime/releases/download/v0.1.1/voice-input-runtime-manifest.json`
     - Compiled Electron service installed the runtime and model into app data and returned `Hello world!` from a generated WAV sample.

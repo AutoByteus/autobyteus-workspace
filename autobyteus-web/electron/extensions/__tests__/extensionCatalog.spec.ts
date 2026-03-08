@@ -11,9 +11,9 @@ describe('extensionCatalog', () => {
     const [voiceInput] = getExtensionCatalog()
 
     expect(runtime.runtimeVersion).toBe('0.1.1')
-    expect(runtime.runtimeReleaseTag).toBe('voice-runtime-v0.1.1')
+    expect(runtime.runtimeReleaseTag).toBe('v0.1.1')
     expect(runtime.runtimeManifestUrl).toBe(
-      'https://github.com/AutoByteus/autobyteus-workspace/releases/download/voice-runtime-v0.1.1/voice-input-runtime-manifest.json',
+      'https://github.com/AutoByteus/autobyteus-voice-runtime/releases/download/v0.1.1/voice-input-runtime-manifest.json',
     )
     expect(voiceInput.id).toBe('voice-input')
   })

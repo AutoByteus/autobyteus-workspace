@@ -7,7 +7,7 @@
 
 ## Goal / Problem Statement
 
-The desktop app should support optional voice dictation in the shared message composer without increasing the base Electron installer size. Users should install Voice Input from a new `Extensions` settings area, and the app should download a platform-specific `whisper.cpp` runtime package plus speech model on demand into AutoByteus app data. Those downloadable assets must come from an AutoByteus-owned runtime feed produced by a dedicated top-level runtime project in this monorepo rather than from direct upstream release URLs. After install, users can use a microphone button in the composer to record speech, transcribe it locally, and insert the resulting text into the current draft.
+The desktop app should support optional voice dictation in the shared message composer without increasing the base Electron installer size. Users should install Voice Input from a new `Extensions` settings area, and the app should download a platform-specific `whisper.cpp` runtime package plus speech model on demand into AutoByteus app data. Those downloadable assets must come from an AutoByteus-owned runtime feed published from a dedicated standalone repository, recommended as `AutoByteus/autobyteus-voice-runtime`, rather than from direct upstream release URLs or from the Electron app repository releases. After install, users can use a microphone button in the composer to record speech, transcribe it locally, and insert the resulting text into the current draft.
 
 ## Scope Classification
 
@@ -26,7 +26,7 @@ The desktop app should support optional voice dictation in the shared message co
 - `UC-006`: User sees clear states for extension install progress, install failure, runtime not ready, recording, transcribing, and transcription failure.
 - `UC-007`: User can remove or reinstall the `Voice Input` extension from Settings.
 - `UC-008`: End-to-end validation proves the installed runtime can be invoked successfully through the app-managed flow before handoff.
-- `UC-009`: The real published `voice-runtime-v*` release can be built, downloaded by the app, and used for transcription from the pinned manifest URL before handoff.
+- `UC-009`: The real published runtime release in `AutoByteus/autobyteus-voice-runtime` can be built, downloaded by the app, and used for transcription from the pinned manifest URL before handoff.
 
 ## Out Of Scope / Non-Goals
 
@@ -44,8 +44,8 @@ The desktop app should support optional voice dictation in the shared message co
 - The feature must not be considered complete without automated API/E2E validation of the installed-runtime flow.
 - The workflow enforces no source edits until Stage 6 with `Code Edit Permission = Unlocked`.
 - No local speech server, websocket transcription service, or backend dependency may be introduced for v1.
-- Runtime packaging and release publication must be owned by a dedicated top-level monorepo project, recommended as `autobyteus-voice-runtime/`.
-- Voice runtime releases must not be coupled to the desktop app `v*` tag workflow; they need a separate workflow and tag/version lane.
+- Runtime packaging and release publication must be owned by a dedicated standalone repository, recommended as `AutoByteus/autobyteus-voice-runtime`.
+- Voice runtime releases must not be published from the Electron app repository or coupled to the desktop app `v*` tag workflow.
 - The desktop app should consume a pinned AutoByteus runtime version/catalog instead of relying on ambiguous global “latest release” discovery.
 - Stage 7 cannot close on fixture-only evidence; it must include validation against actual published runtime assets from the AutoByteus runtime release lane unless the user explicitly waives that requirement.
 
@@ -53,7 +53,7 @@ The desktop app should support optional voice dictation in the shared message co
 
 - `whisper.cpp` is the initial voice runtime choice for all supported platforms.
 - Initial model choice can be English-first if that materially reduces download size and implementation risk.
-- AutoByteus will publish versioned runtime packages, model assets, and a manifest from the same repository through the dedicated voice-runtime release workflow.
+- AutoByteus will publish versioned runtime packages, model assets, and a manifest from the dedicated `autobyteus-voice-runtime` repository through its own release workflow.
 - Electron has sufficient filesystem/process permissions to install and execute the extension in user app data.
 
 ## Open Questions / Risks
@@ -73,7 +73,7 @@ The desktop app should support optional voice dictation in the shared message co
   - Expected outcome: Users can install `Voice Input`, and the app downloads the platform-specific runtime package and configured speech model into the managed extensions directory.
 
 - `R-002A` (App-Owned Runtime Feed):
-  - Expected outcome: Runtime packages, model assets, and install metadata are resolved from an AutoByteus-owned runtime feed produced by the monorepo runtime project rather than from direct upstream `whisper.cpp` or Hugging Face URLs at install time.
+  - Expected outcome: Runtime packages, model assets, and install metadata are resolved from an AutoByteus-owned runtime feed produced by the dedicated `autobyteus-voice-runtime` repository rather than from direct upstream `whisper.cpp` or Hugging Face URLs at install time.
 
 - `R-003` (Managed Extension State):
   - Expected outcome: The app persists enough metadata to show whether `Voice Input` is not installed, installing, installed, failed, or needs reinstall.
@@ -103,7 +103,7 @@ The desktop app should support optional voice dictation in the shared message co
   - Expected outcome: Install/runtime/recording/transcription failures surface actionable UI feedback without breaking normal text input.
 
 - `R-010` (Mandatory Automated Validation):
-  - Expected outcome: End-to-end validation verifies the real published runtime release can be built, published, downloaded, installed, and invoked through the app before handoff; fixture-only evidence is insufficient for ticket closure without an explicit user waiver.
+  - Expected outcome: End-to-end validation verifies the real published runtime release from `AutoByteus/autobyteus-voice-runtime` can be built, published, downloaded, installed, and invoked through the app before handoff; fixture-only evidence is insufficient for ticket closure without an explicit user waiver.
 
 ## Acceptance Criteria
 
@@ -117,7 +117,7 @@ The desktop app should support optional voice dictation in the shared message co
   - Measurable outcome: Installing `Voice Input` downloads the correct runtime package for the local platform plus the speech model into the managed extensions directory and records installed state.
 
 - `AC-003A` App-owned runtime provenance:
-  - Measurable outcome: The install flow resolves runtime assets through AutoByteus-managed release metadata produced by the monorepo runtime project, not by direct upstream asset discovery.
+  - Measurable outcome: The install flow resolves runtime assets through AutoByteus-managed release metadata produced by the dedicated runtime repository, not by direct upstream asset discovery.
 
 - `AC-003B` Pinned runtime resolution:
   - Measurable outcome: The app resolves the Voice Input install against a specific runtime version/catalog selected by the app, not against a repository-wide “latest release” query.
@@ -135,7 +135,7 @@ The desktop app should support optional voice dictation in the shared message co
   - Measurable outcome: Users can remove or reinstall `Voice Input`, and composer availability updates accordingly.
 
 - `AC-008` Automated app-level validation:
-  - Measurable outcome: Stage 7 includes validation against actual published runtime assets from the AutoByteus `voice-runtime-v*` release lane, proving the managed runtime can be downloaded, installed/discovered, and invoked through the app-owned flow; if any criterion is infeasible in this environment, the ticket remains blocked unless explicitly waived by the user.
+  - Measurable outcome: Stage 7 includes validation against actual published runtime assets from `AutoByteus/autobyteus-voice-runtime`, proving the managed runtime can be downloaded, installed/discovered, and invoked through the app-owned flow; if any criterion is infeasible in this environment, the ticket remains blocked unless explicitly waived by the user.
 
 ## Requirement Coverage Map
 

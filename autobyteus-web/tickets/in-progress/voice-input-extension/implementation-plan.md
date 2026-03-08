@@ -14,10 +14,10 @@
 ## Implementation Principles
 
 - Keep the base installer unchanged; all runtime/model payloads go to app data.
-- Keep native runtime build/release concerns in `autobyteus-voice-runtime/`, not inside `autobyteus-web`.
+- Keep native runtime build/release concerns in a dedicated `AutoByteus/autobyteus-voice-runtime` repository, not inside the workspace repo.
 - Add a thin managed extension lifecycle instead of a full plugin framework.
 - Keep `Voice Input` runtime execution in Electron only; no local speech server.
-- Publish voice runtime assets through a dedicated workflow/tag space separate from desktop app releases.
+- Publish voice runtime assets through the separate runtime repository so they cannot affect desktop app release consumers.
 - Keep the shared composer as the single integration point for both agent and team messaging.
 - Do not reuse the dormant websocket transcription path.
 - Treat Stage 7 as mandatory proof of the app-owned install/discovery/invoke contract against the real published runtime release lane.
@@ -26,7 +26,7 @@
 
 | Task ID | Change ID(s) | File / Module | Planned Action | Verification |
 | --- | --- | --- | --- | --- |
-| `T-001` | `C-001`, `C-002` | `autobyteus-voice-runtime/`, `.github/workflows/release-voice-runtime.yml` | Add top-level runtime project, runtime packaging scripts, manifest generation, and dedicated release workflow/tag lane | workflow YAML validation + script/unit checks |
+| `T-001` | `C-001`, `C-002` | separate runtime repository + `autobyteus-web/electron/extensions/extensionCatalog.ts` | Extract runtime packaging to its own repository, publish runtime assets there, remove workspace-repo runtime release ownership, and point the app at that separate release lane | repository push + workflow/run validation + script/unit checks |
 | `T-002` | `C-009`, `C-010`, `C-011` | `electron/extensions/extensionCatalog.ts`, `managedExtensionService.ts`, `voice-input/voiceInputRuntimeService.ts` | Add pinned runtime catalog, registry persistence, manifest-driven install/remove/discovery, and transcription invocation | Electron-main/service tests |
 | `T-003` | `C-012`, `C-013` | `electron/preload.ts`, `types/electron.d.ts`, `electron/main.ts` | Expose typed extension/voice IPC and register handlers | Electron-main/preload tests |
 | `T-004` | `C-006` | `stores/extensionsStore.ts` | Add managed extension lifecycle store with initialize/install/remove/reinstall flows | store tests |
@@ -52,8 +52,8 @@
 
 | File | Done Criteria | Test Criteria |
 | --- | --- | --- |
-| `autobyteus-voice-runtime/` | Produces platform runtime archives, model asset metadata, and manifest JSON for the selected runtime version | packaging script checks pass |
-| `.github/workflows/release-voice-runtime.yml` | Builds/publishes runtime assets under dedicated tag lane with deterministic artifact names and real GitHub release assets | workflow YAML validation and actual release evidence pass |
+| separate runtime repository | Produces platform runtime archives, model asset metadata, and manifest JSON for the selected runtime version | packaging script checks pass |
+| runtime repository release workflow | Builds/publishes runtime assets in the separate repository with deterministic artifact names and real GitHub release assets | workflow YAML validation and actual release evidence pass |
 | `pages/settings.vue` | Renders `Extensions` section and routes query correctly | updated settings page spec passes |
 | `components/settings/ExtensionsManager.vue` | Shows extension list and action surfaces | component spec passes |
 | `components/settings/VoiceInputExtensionCard.vue` | Renders install/remove/reinstall/status UI | component spec passes |
@@ -79,7 +79,7 @@
 | `S7-005` | `AC-005` | Renderer integration + Electron mocked bridge | Transcript inserts into current draft without send |
 | `S7-006` | `AC-006` | Renderer integration | Permission/runtime/transcription errors remain non-destructive |
 | `S7-007` | `AC-007` | Renderer integration | Remove/reinstall updates composer availability |
-| `S7-008` | `AC-008` | App-owned end-to-end scenario | Real published `voice-runtime-v*` release assets are built, downloaded, installed, discovered, invoked, and return transcript through the app flow |
+| `S7-008` | `AC-008` | App-owned end-to-end scenario | Real published runtime-repository release assets are built, downloaded, installed, discovered, invoked, and return transcript through the app flow |
 
 ### Proof Strategy
 
@@ -91,8 +91,9 @@
   - process invocation,
   - transcript propagation into draft.
 - Final Stage 7 closure additionally requires:
-  - committed/pushed branch state,
-  - manual or tag-driven `release-voice-runtime.yml` execution,
+  - committed/pushed workspace branch state,
+  - committed/pushed runtime-repository branch state,
+  - manual or tag-driven runtime-repository release execution,
   - published GitHub release assets for the pinned runtime version,
   - app-side validation against the published manifest URL.
 - Treat speech-model accuracy benchmarking as an external concern; Stage 7 is responsible for verifying the real published release lane and app lifecycle/orchestration behavior.
@@ -100,7 +101,7 @@
 ## Risks To Watch During Implementation
 
 - Official `whisper.cpp` upstream artifacts are not sufficient for a single cross-platform download story; the manifest must remain app-owned.
-- Runtime workflow/tag naming must stay separate from desktop app releases to avoid version coupling or ambiguous “latest” discovery.
+- Runtime release ownership must stay outside the workspace repository to avoid version coupling or ambiguous “latest” discovery.
 - Recording implementation must stay simple and not reintroduce streaming/websocket complexity.
 - Composer integration must not regress stop/send behavior or draft persistence.
 - The real runtime release may fail on CI runners due to missing toolchain or target-specific packaging issues and must be treated as part of the Stage 7 closure risk, not as post-handoff follow-up.

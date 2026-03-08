@@ -2,7 +2,7 @@
 
 ## Design Version
 
-- Current Version: `v3`
+- Current Version: `v4`
 
 ## Revision History
 
@@ -11,6 +11,7 @@
 | `v1` | Initial draft | Defined managed `Extensions` surface, `Voice Input` extension lifecycle, Electron runtime orchestration, shared-composer integration, and Stage 7 proof strategy | `Pending` |
 | `v2` | Deepened investigation on runtime sourcing and monorepo structure | Reframed the solution around a top-level `autobyteus-voice-runtime/` project, dedicated runtime release workflow/tag space, AutoByteus-owned runtime manifest/assets, and app-pinned runtime resolution | `Pending` |
 | `v3` | Stage 7 requirement-gap re-entry | Tightened the validation strategy so handoff requires a real published `voice-runtime-v*` release build/download/install/transcribe loop, with fixtures retained only as preflight coverage | `Pending` |
+| `v4` | Production release-surface correction | Moved the runtime architecture from a monorepo sibling project to a dedicated repository so voice-runtime releases cannot interfere with workspace desktop-release consumers | `Pending` |
 
 ## Artifact Basis
 
@@ -24,8 +25,8 @@ Implement a minimal managed extension system in the Electron app and ship `Voice
 
 - Settings gains an `Extensions` section.
 - `Voice Input` can be installed, removed, or reinstalled from that section.
-- A new top-level sibling project, `autobyteus-voice-runtime/`, owns `whisper.cpp` integration, packaging scripts, manifest generation, and runtime-release automation.
-- A dedicated runtime workflow publishes versioned AutoByteus-owned assets under a separate tag namespace, for example `voice-runtime-v*`.
+- A dedicated repository, `AutoByteus/autobyteus-voice-runtime`, owns `whisper.cpp` integration, packaging scripts, manifest generation, and runtime-release automation.
+- The runtime repository publishes its own versioned AutoByteus-owned assets without sharing a release surface with the workspace repository.
 - Installing `Voice Input` downloads two payload types into app data from that AutoByteus-owned runtime release:
   - a platform-specific runtime archive,
   - a speech model file.
@@ -81,7 +82,7 @@ Implement a minimal managed extension system in the Electron app and ship `Voice
 - The shared composer has only send/stop controls.
 - Existing voice-related code is an unused standalone recorder plus a dead backend-coupled transcription path.
 - Electron has no IPC surface for extension install/remove/status/transcribe.
-- There is no top-level voice-runtime project and no dedicated runtime release workflow/tag namespace yet.
+- Prior to the repository split, runtime releases still interfered with the workspace repository’s release surface because no dedicated runtime repository existed.
 
 ## Target State (To-Be)
 
@@ -89,8 +90,8 @@ Implement a minimal managed extension system in the Electron app and ship `Voice
 - Renderer owns a small generic extension state store and a focused voice-input interaction store.
 - Electron owns a generic managed-extension lifecycle service plus a voice-input runtime service.
 - `Voice Input` is the first extension in the catalog.
-- A top-level `autobyteus-voice-runtime/` project owns native runtime packaging.
-- A dedicated runtime workflow publishes runtime archives, model assets, and a manifest JSON under a voice-runtime-specific tag namespace.
+- A dedicated repository, `AutoByteus/autobyteus-voice-runtime`, owns native runtime packaging.
+- The runtime repository publishes runtime archives, model assets, and a manifest JSON under its own standalone release history.
 - Extension files live under AutoByteus app data:
   - `extensions/registry.json`
   - `extensions/voice-input/...`
@@ -106,18 +107,18 @@ Implement a minimal managed extension system in the Electron app and ship `Voice
 ## Runtime Distribution Strategy
 
 - Runtime source of truth:
-  - `autobyteus-voice-runtime/`
+  - separate repository `AutoByteus/autobyteus-voice-runtime`
 - Runtime implementation base:
   - pinned `whisper.cpp` source revision
 - Runtime release workflow:
-  - dedicated workflow, recommended name `.github/workflows/release-voice-runtime.yml`
-  - dedicated tag namespace, recommended pattern `voice-runtime-v*`
+  - dedicated workflow inside the runtime repository
+  - normal repository-local tags, recommended pattern `v*`
 - Runtime release assets:
   - one archive per supported platform/arch
   - one model asset for the selected v1 model
   - one generated manifest JSON describing versions, checksums, asset names, and entrypoints
 - App consumption strategy:
-  - `autobyteus-web` ships a pinned runtime version/catalog reference
+  - `autobyteus-web` ships a pinned runtime version/catalog reference including the runtime repository name
   - install flow resolves platform-specific assets through the AutoByteus manifest for that pinned version
   - install flow does not query repository-wide “latest release”
 - Packaging direction:
@@ -130,8 +131,8 @@ Implement a minimal managed extension system in the Electron app and ship `Voice
 - Preflight validation:
   - deterministic fixture manifest/runtime assets remain useful for fast local tests of the app-owned orchestration path
 - Release-lane validation required for closure:
-  - commit and push the implementation branch
-  - trigger the dedicated `voice-runtime-v*` release workflow
+- commit and push both the workspace branch and the runtime-repository branch as needed
+- trigger the dedicated runtime-repository release workflow
   - confirm GitHub release assets exist for the pinned runtime version
   - point the app validation path at the published manifest URL
   - prove runtime download, install, and transcription through the app against the real release assets
@@ -148,7 +149,7 @@ Implement a minimal managed extension system in the Electron app and ship `Voice
 
 ## Architecture Direction Decision (Mandatory)
 
-- Chosen direction: `Add` a minimal managed-extension architecture plus a voice-specific runtime service and a dedicated top-level runtime packaging project in the monorepo.
+- Chosen direction: `Add` a minimal managed-extension architecture plus a voice-specific runtime service in the workspace repo, and `Move` runtime packaging/release ownership into a dedicated repository.
 - Rationale (`complexity`, `testability`, `operability`, `evolution cost`):
   - A fully voice-specific one-off path would be slightly smaller today but would create avoidable debt because the user explicitly expects more extensions later.
   - A full plugin framework would be overbuilt.
@@ -179,8 +180,8 @@ Implement a minimal managed extension system in the Electron app and ship `Voice
 
 | Change ID | Change Type (`Add`/`Modify`/`Rename/Move`/`Remove`) | Current Path | Target Path | Rationale | Impacted Areas | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| `C-001` | `Add` | N/A | `autobyteus-voice-runtime/` | Dedicated monorepo project for runtime packaging, manifests, and release tooling | Native runtime packaging | Keep outside `autobyteus-web` |
-| `C-002` | `Add` | N/A | `.github/workflows/release-voice-runtime.yml` | Separate runtime release workflow/tag space from desktop app workflow | Release automation | Publish AutoByteus-owned runtime assets |
+| `C-001` | `Move` | workspace-local runtime packaging project | dedicated repository `AutoByteus/autobyteus-voice-runtime` | Runtime packaging must not share the desktop app repository release surface | Native runtime packaging | Extract to standalone repo |
+| `C-002` | `Modify` | `autobyteus-web/electron/extensions/extensionCatalog.ts` | same | Point the desktop app at the separate runtime repository and pinned runtime release | Electron runtime resolution | No workspace-repo release lookup |
 | `C-003` | `Modify` | `autobyteus-web/pages/settings.vue` | same | Add `Extensions` nav section and render new manager | Settings navigation | Keep `Updates` intact |
 | `C-004` | `Add` | N/A | `autobyteus-web/components/settings/ExtensionsManager.vue` | Managed extensions landing surface | Settings UI | Mirrors manager pattern |
 | `C-005` | `Add` | N/A | `autobyteus-web/components/settings/VoiceInputExtensionCard.vue` | Focused card for install/remove/reinstall/status | Settings UI | Optional split if manager stays simple |
@@ -198,7 +199,7 @@ Implement a minimal managed extension system in the Electron app and ship `Voice
 
 | File/Module | Current Path | Target Path | Owning Concern / Platform | Path Matches Concern? (`Yes`/`No`) | Action (`Keep`/`Move`/`Split`/`Promote Shared`) | Rationale |
 | --- | --- | --- | --- | --- | --- | --- |
-| Voice runtime packaging project | N/A | `autobyteus-voice-runtime/` | Native runtime build/release tooling | Yes | Add | Keeps native packaging separate from web app source |
+| Voice runtime packaging project | workspace repository root | separate repository `AutoByteus/autobyteus-voice-runtime` | Native runtime build/release tooling | Yes | Move | Keeps native packaging and runtime releases fully separate from the desktop app repo |
 | Settings navigation | `pages/settings.vue` | same | Settings route shell | Yes | Keep | Correct place for section registration |
 | Updates manager pattern | `components/settings/AboutSettingsManager.vue` | same | Settings section manager example | Yes | Keep | Reuse pattern only |
 | New extensions manager | N/A | `components/settings/ExtensionsManager.vue` | Settings UI | Yes | Add | Canonical owner for extension cards |
@@ -211,7 +212,7 @@ Implement a minimal managed extension system in the Electron app and ship `Voice
 
 | Layer/Boundary | Purpose | Owns | Must Not Own | Notes |
 | --- | --- | --- | --- | --- |
-| Runtime packaging project | Build/package/publish AutoByteus-owned voice runtime assets | `autobyteus-voice-runtime/`, release manifest generation, platform packaging scripts | Renderer/Electron UI behavior | Same repo, separate concern |
+| Runtime packaging repository | Build/package/publish AutoByteus-owned voice runtime assets | `AutoByteus/autobyteus-voice-runtime`, release manifest generation, platform packaging scripts | Renderer/Electron UI behavior | Separate repo, separate concern |
 | Settings UI | Extension management presentation | `ExtensionsManager.vue`, extension cards | Filesystem/process logic | Reads renderer store only |
 | Shared composer UI | Voice button and local interaction feedback | `AgentUserInputTextArea.vue` | Install lifecycle persistence | Delegates to `voiceInputStore` |
 | Renderer extension lifecycle store | Fetch/list/install/remove/reinstall extension state | `extensionsStore.ts` | Process spawning or file writes | Mirrors updater-store pattern |
@@ -232,8 +233,8 @@ Implement a minimal managed extension system in the Electron app and ship `Voice
 
 | File/Module | Change Type | Layer / Boundary | Concern / Responsibility | Public APIs | Inputs/Outputs | Dependencies |
 | --- | --- | --- | --- | --- | --- | --- |
-| `autobyteus-voice-runtime/` | Add | Runtime packaging project | Build, package, checksum, and publish voice runtime assets | build/release scripts only | upstream source + model inputs -> AutoByteus release assets | CMake, shell/CI tooling |
-| `.github/workflows/release-voice-runtime.yml` | Add | Release automation | Build/publish runtime assets under dedicated tag namespace | workflow dispatch/tag entry only | git ref -> release assets | GitHub Actions, `autobyteus-voice-runtime/` |
+| `AutoByteus/autobyteus-voice-runtime` repository | Add | Runtime packaging repository | Build, package, checksum, and publish voice runtime assets | build/release scripts only | upstream source + model inputs -> AutoByteus release assets | CMake, shell/CI tooling |
+| `AutoByteus/autobyteus-voice-runtime/.github/workflows/release-voice-runtime.yml` | Add | Release automation | Build/publish runtime assets under dedicated runtime-repository release history | workflow dispatch/tag entry only | git ref -> release assets | GitHub Actions, runtime packaging repository |
 | `pages/settings.vue` | Modify | UI shell | Register `extensions` section and manager mount | section routing only | route query -> section UI | existing settings managers |
 | `components/settings/ExtensionsManager.vue` | Add | UI | Render available extensions and actions | N/A | store state -> settings cards | `extensionsStore` |
 | `components/settings/VoiceInputExtensionCard.vue` | Add | UI | Render voice-specific copy, status, and controls | props or store-driven | extension state -> action buttons | `extensionsStore` |
@@ -375,7 +376,7 @@ Implement a minimal managed extension system in the Electron app and ship `Voice
 
 | Change ID | Implementation Plan Task(s) | Verification (Unit/Integration/API/E2E) | Status |
 | --- | --- | --- | --- |
-| `C-001` | `T-001` | page/component tests | Planned |
+| `C-001` | `T-001` | repository creation + runtime release validation | Planned |
 | `C-002`, `C-003`, `C-004` | `T-002`, `T-003` | component/store tests | Planned |
 | `C-005`, `C-006` | `T-004`, `T-005` | store/component/integration tests | Planned |
 | `C-007`, `C-008`, `C-009`, `C-010`, `C-011` | `T-006`, `T-007`, `T-008` | Electron-main tests + app-level integration proof | Planned |
@@ -390,4 +391,4 @@ Implement a minimal managed extension system in the Electron app and ship `Voice
 
 1. Whether v1 should use `tiny.en` or `tiny.en-q5_1` by default.
 2. Whether the app should ship a hardcoded AutoByteus-hosted runtime manifest, env-overridable runtime manifest URLs, or both.
-3. Whether Stage 7 can exercise a real third-party runtime in this environment or should rely on a deterministic fixture runtime package for install/discovery/invocation proof.
+3. Whether the first extracted runtime repository should be public immediately or staged privately first before the workspace branch merges.

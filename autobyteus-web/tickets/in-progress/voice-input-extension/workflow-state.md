@@ -12,7 +12,7 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-024`
+- Last Transition ID: `T-034`
 - Last Updated: `2026-03-08`
 
 ## Stage Gates
@@ -20,16 +20,16 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | Stage | Gate Status (`Not Started`/`In Progress`/`Pass`/`Fail`/`Blocked`) | Gate Rule Summary | Evidence |
 | --- | --- | --- | --- |
 | 0 Bootstrap + Draft Requirement | Pass | Dedicated worktree/branch created and initial draft requirements captured under the web project ticket folder | `requirements.md`, `workflow-state.md` |
-| 1 Investigation + Triage | Pass | Investigation deepened; the selected direction is a top-level `autobyteus-voice-runtime/` project in this repo with its own runtime release workflow, prefixed tag space, and AutoByteus-owned manifest/assets | `investigation-notes.md`, `workflow-state.md` |
-| 2 Requirements | Pass | Requirements were refined again to require real published-runtime validation through the GitHub release lane before handoff | `requirements.md`, `workflow-state.md` |
-| 3 Design Basis | Pass | Proposed design was revised to require Stage 7 validation against actual published runtime assets instead of fixture-only proof | `proposed-design.md`, `workflow-state.md` |
-| 4 Runtime Modeling | Pass | Runtime modeling was refreshed to include the real published-release validation loop before handoff | `future-state-runtime-call-stack.md`, `workflow-state.md` |
-| 5 Review Gate | Pass | Runtime review was rerun against the real published-runtime validation requirement and reached `Go Confirmed` again | `future-state-runtime-call-stack-review.md`, `workflow-state.md` |
-| 6 Implementation | Pass | Implementation completed, the portability/local-fix delta was applied, and the app now points at the real published runtime lane | `implementation-progress.md`, `workflow-state.md` |
-| 7 API/E2E Testing | Pass | Real published-runtime validation completed: the release lane built/published `voice-runtime-v0.1.1`, the app downloaded/installed the published assets, and transcription succeeded through the compiled Electron service | `api-e2e-testing.md`, `implementation-progress.md`, `workflow-state.md` |
-| 8 Code Review | Pass | Code review was rerun on the post-release-validation delta and passed with no findings | `code-review.md`, `workflow-state.md` |
-| 9 Docs Sync | Pass | Stage 7/8 evidence and workflow-state artifacts were refreshed to reflect the real published-runtime proof | `implementation-progress.md`, `api-e2e-testing.md`, `code-review.md`, `workflow-state.md` |
-| 10 Handoff / Ticket State | In Progress | Ticket is ready for handoff and remains in-progress until the user explicitly confirms completion | `workflow-state.md`, `implementation-progress.md` |
+| 1 Investigation + Triage | Pass | Investigation confirmed that runtime publication must move to a dedicated `AutoByteus/autobyteus-voice-runtime` repository to avoid polluting workspace desktop-release consumers | `investigation-notes.md`, `workflow-state.md` |
+| 2 Requirements | Pass | Requirements are refined around the dedicated runtime-repository constraint, pinned runtime resolution, and mandatory rerun of Stage 7 against the separate release lane | `requirements.md`, `workflow-state.md` |
+| 3 Design Basis | Pass | Proposed design now moves runtime packaging and release ownership into the dedicated runtime repository while keeping the app on pinned manifest consumption | `proposed-design.md`, `workflow-state.md` |
+| 4 Runtime Modeling | Pass | Runtime modeling is refreshed to use the dedicated runtime repository release lane for publication, install, and Stage 7 validation | `future-state-runtime-call-stack.md`, `workflow-state.md` |
+| 5 Review Gate | Pass | Runtime review reconfirmed the dedicated runtime-repository split and returned to `Go Confirmed` with no further upstream blockers | `future-state-runtime-call-stack-review.md`, `workflow-state.md` |
+| 6 Implementation | Pass | Runtime packaging was extracted into `AutoByteus/autobyteus-voice-runtime`, workspace release ownership was removed, and the app was repointed to the standalone runtime feed | `implementation-plan.md`, `implementation-progress.md`, `workflow-state.md` |
+| 7 API/E2E Testing | Pass | Stage 7 reran against the dedicated runtime repository: release `v0.1.1` published successfully and the compiled Electron service installed and invoked the published runtime | `api-e2e-testing.md`, `implementation-progress.md`, `workflow-state.md` |
+| 8 Code Review | Pass | Code review reran on the repository extraction and repoint delta and passed with no findings | `code-review.md`, `workflow-state.md` |
+| 9 Docs Sync | Pass | Ticket artifacts were refreshed to reflect the standalone runtime repository, release run `22818941304`, and the real app-side proof | `implementation-progress.md`, `api-e2e-testing.md`, `code-review.md`, `workflow-state.md` |
+| 10 Handoff / Ticket State | In Progress | Ticket is ready for handoff and remains in progress until the user explicitly confirms completion | `workflow-state.md`, `implementation-progress.md` |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -119,6 +119,16 @@ Note:
 | T-022 | 2026-03-08 | 7 | 8 | Stage 8 code review reran on the portability/tag-separation delta and passed with no findings | N/A | Locked | `code-review.md`, `workflow-state.md` |
 | T-023 | 2026-03-08 | 8 | 9 | Stage 9 docs sync refreshed Stage 7/8 evidence and workflow-state artifacts for the real published-runtime proof | N/A | Locked | `api-e2e-testing.md`, `implementation-progress.md`, `code-review.md`, `workflow-state.md` |
 | T-024 | 2026-03-08 | 9 | 10 | Docs sync is complete and the ticket is ready for final handoff, remaining in-progress until explicit user confirmation | N/A | Locked | `implementation-progress.md`, `workflow-state.md` |
+| T-025 | 2026-03-08 | 10 | 1 | Re-entry declared because publishing voice-runtime releases from the workspace repo interferes with desktop latest-release consumers; investigation restarts around a dedicated `AutoByteus/autobyteus-voice-runtime` repository | Requirement Gap | Locked | `investigation-notes.md`, `requirements.md`, `workflow-state.md` |
+| T-026 | 2026-03-08 | 1 | 2 | Investigation refresh completed and confirmed the runtime must move into a dedicated `AutoByteus/autobyteus-voice-runtime` repository | Requirement Gap | Locked | `investigation-notes.md`, `workflow-state.md` |
+| T-027 | 2026-03-08 | 2 | 3 | Requirements were refined around the dedicated runtime repository and pinned runtime install contract | Requirement Gap | Locked | `requirements.md`, `workflow-state.md` |
+| T-028 | 2026-03-08 | 3 | 4 | Proposed design now treats the runtime repository as a separate owned release surface and keeps the app on pinned manifest consumption | Requirement Gap | Locked | `proposed-design.md`, `workflow-state.md` |
+| T-029 | 2026-03-08 | 4 | 5 | Runtime modeling was refreshed for the separate runtime repository release lane and dedicated Stage 7 validation path | Requirement Gap | Locked | `future-state-runtime-call-stack.md`, `workflow-state.md` |
+| T-030 | 2026-03-08 | 5 | 6 | Review reconfirmed the repository split design and implementation may resume with code edits unlocked | Requirement Gap | Unlocked | `future-state-runtime-call-stack-review.md`, `implementation-plan.md`, `workflow-state.md` |
+| T-031 | 2026-03-08 | 6 | 7 | Repository extraction and app repoint implementation completed; Stage 7 validation against the standalone runtime repository became active | N/A | Unlocked | `implementation-progress.md`, `api-e2e-testing.md`, `workflow-state.md` |
+| T-032 | 2026-03-08 | 7 | 8 | Stage 7 passed after standalone runtime release `v0.1.1` published successfully in `AutoByteus/autobyteus-voice-runtime` and the compiled Electron service installed and transcribed through the published runtime | N/A | Locked | `api-e2e-testing.md`, `implementation-progress.md`, `workflow-state.md` |
+| T-033 | 2026-03-08 | 8 | 9 | Code review passed on the repository extraction and standalone runtime release delta | N/A | Locked | `code-review.md`, `workflow-state.md` |
+| T-034 | 2026-03-08 | 9 | 10 | Docs sync completed for the standalone runtime repository split and the ticket is ready for final handoff pending user confirmation | N/A | Locked | `implementation-progress.md`, `api-e2e-testing.md`, `code-review.md`, `workflow-state.md` |
 
 ## Audible Notification Log (Optional Tracking)
 
@@ -147,6 +157,12 @@ Note:
 | 2026-03-08 | Transition | Real published-runtime validation is complete. Stage 7 passed after the `voice-runtime-v0.1.1` release succeeded and the app installed and transcribed through the published runtime. | Failed | `mlx-audio` local install is outdated; status provided in text instead |
 | 2026-03-08 | Gate | Code review passed again after the release portability and tag-separation fixes. Docs sync is next and code edits remain locked. | Failed | `mlx-audio` local install is outdated; status provided in text instead |
 | 2026-03-08 | Transition | Docs sync is complete for the real published-runtime proof. The ticket is ready for handoff and remains in progress until user confirmation. | Failed | `mlx-audio` local install is outdated; status provided in text instead |
+| 2026-03-08 | Re-entry | Voice input extension work has re-entered investigation because the workspace repo release lane is not safe for runtime publication. The next step is to extract runtime packaging and releases into a dedicated `AutoByteus/autobyteus-voice-runtime` repository, and code edits remain locked. | Failed | `mlx-audio` local install is outdated; status provided in text instead |
+| 2026-03-08 | LockChange | Investigation, requirements, design, runtime modeling, and review are now aligned on the dedicated runtime repository split. Stage 6 is active again and code edits are unlocked. | Failed | `mlx-audio` local install is outdated; status provided in text instead |
+| 2026-03-08 | Transition | Repository extraction is implemented. Stage 7 validation is running against the standalone `AutoByteus/autobyteus-voice-runtime` release lane. | Failed | `mlx-audio` local install is outdated; status provided in text instead |
+| 2026-03-08 | Gate | Standalone runtime release `v0.1.1` published successfully and the compiled Electron service returned `Hello world!` through the real published runtime. Code review is next and code edits are locked. | Failed | `mlx-audio` local install is outdated; status provided in text instead |
+| 2026-03-08 | Gate | Code review passed for the repository extraction and runtime repoint delta with no findings. Docs sync is next and code edits remain locked. | Failed | `mlx-audio` local install is outdated; status provided in text instead |
+| 2026-03-08 | Transition | Docs sync is complete for the standalone runtime repository split. The ticket is ready for handoff and remains in progress until user confirmation. | Failed | `mlx-audio` local install is outdated; status provided in text instead |
 
 ## Process Violation Log
 

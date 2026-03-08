@@ -1,8 +1,8 @@
 import type { ExtensionDescriptor, ExtensionId, SupportedArch, SupportedPlatform } from './types'
 
 const DEFAULT_RUNTIME_VERSION = '0.1.1'
-const DEFAULT_RUNTIME_RELEASE_TAG = `voice-runtime-v${DEFAULT_RUNTIME_VERSION}`
-const DEFAULT_REPOSITORY = 'AutoByteus/autobyteus-workspace'
+const DEFAULT_RUNTIME_RELEASE_TAG = `v${DEFAULT_RUNTIME_VERSION}`
+const DEFAULT_REPOSITORY = 'AutoByteus/autobyteus-voice-runtime'
 const DEFAULT_MANIFEST_ASSET_NAME = 'voice-input-runtime-manifest.json'
 
 function normalizeRepository(repository: string): string {

@@ -1,7 +1,7 @@
 # Future-State Runtime Call Stack Review - Voice Input Extension
 
 - **Ticket**: `voice-input-extension`
-- **Design Basis**: `proposed-design.md` (`v3`)
+- **Design Basis**: `proposed-design.md` (`v4`)
 
 ## Review Round 1
 
@@ -9,8 +9,8 @@
 - **Clean Streak**: `1`
 - **Missing Use Case Discovery**: None.
 - **Round Notes**:
-  - The revised design now covers the missing half of the contract: AutoByteus-owned runtime publication from `autobyteus-voice-runtime/` plus app-side manifest consumption.
-  - The separation is cleaner than embedding native packaging logic inside `autobyteus-web`; release automation, Electron lifecycle, and renderer UX each keep their own ownership boundary.
+  - The revised design now covers the missing half of the contract: AutoByteus-owned runtime publication from a dedicated runtime repository plus app-side manifest consumption.
+  - The separation is cleaner than embedding native packaging logic or runtime releases inside the workspace repo; release automation, Electron lifecycle, and renderer UX each keep their own ownership boundary.
   - The pinned runtime-version contract removes the ambiguity that would come from repository-wide “latest release” lookups.
 - **Persisted Artifact Updates Required This Round**: None.
 
@@ -51,7 +51,7 @@
 - **Classification**: `Requirement Gap`
 - **Reason**:
   - The prior proof strategy was too weak for final closure because it allowed fixture-only validation of the install/invoke path.
-  - The user clarified that handoff requires exercising the real published `voice-runtime-v*` release lane.
+  - The user clarified that handoff requires exercising the real published runtime release lane, and the production issue proved those releases must live outside the workspace repo.
 
 ## Review Round 3
 
@@ -59,8 +59,8 @@
 - **Clean Streak**: `1`
 - **Missing Use Case Discovery**: None.
 - **Round Notes**:
-  - The refreshed requirements/design/model do not change the runtime architecture itself; they tighten the Stage 7 closure condition to require a real published release build/download/install/transcribe loop.
-  - `UC-000` and `UC-006` now connect cleanly: runtime publication is not merely designed, it is a required precondition for final validation.
+  - The refreshed requirements/design/model change the release ownership boundary: runtime publication moves to a dedicated repository while the app keeps pinned manifest consumption.
+  - `UC-000` and `UC-006` now connect cleanly: runtime publication from the separate repository is not merely designed, it is a required precondition for final validation.
   - Fixture-based scenarios remain useful as preflight checks, but no longer satisfy the closure gate on their own.
 - **Persisted Artifact Updates Required This Round**:
   - `requirements.md`

@@ -27,10 +27,10 @@ AutoByteus publishes the owned runtime contract that the desktop app will later 
 
 ### Call Stack
 
-`[ENTRY][CI] .github/workflows/release-voice-runtime.yml (tag push or workflow_dispatch)`
--> checkout repository ref for runtime release
--> validate runtime version/tag format, recommended `voice-runtime-vX.Y.Z`
--> run per-platform build jobs using `autobyteus-voice-runtime/`
+`[ENTRY][CI] AutoByteus/autobyteus-voice-runtime:.github/workflows/release-voice-runtime.yml`
+-> checkout runtime-repository ref for runtime release
+-> validate runtime version/tag format, recommended `vX.Y.Z`
+-> run per-platform build jobs using the dedicated runtime repository
 -> `[CI] autobyteus-voice-runtime/scripts/build-*.sh`
 -> obtain pinned `whisper.cpp` source revision for the runtime project
 -> configure platform build for minimal CLI package:
@@ -55,7 +55,7 @@ AutoByteus publishes the owned runtime contract that the desktop app will later 
 
 ### Output
 
-- AutoByteus-owned runtime archives, model asset, and manifest JSON exist under the dedicated voice-runtime release/tag and form the stable install contract for the app.
+- AutoByteus-owned runtime archives, model asset, and manifest JSON exist under the dedicated runtime repository release/tag and form the stable install contract for the app.
 
 ---
 
@@ -270,10 +270,10 @@ Automated validation proves the app-managed install/discovery/invocation flow wo
 ### Call Stack
 
 `[ENTRY][TEST] Stage 7 automated scenario`
--> commit and push the implementation branch that contains the runtime project and release workflow
--> dispatch or observe the dedicated `voice-runtime-v*` release workflow
+-> commit and push the workspace implementation branch and the runtime-repository branch as needed
+-> dispatch or observe the dedicated runtime-repository release workflow
 -> `[CI]` workflow builds runtime assets and publishes release manifest + model + platform binaries
--> confirm the GitHub release exposes the pinned manifest asset URL expected by the app
+-> confirm the runtime repository GitHub release exposes the pinned manifest asset URL expected by the app
 -> create isolated temp app-data directory
 -> provide app config / environment pointing to the real published manifest URL for the pinned runtime version
 -> `[MAIN][SERVICE] managedExtensionService.install('voice-input')`
