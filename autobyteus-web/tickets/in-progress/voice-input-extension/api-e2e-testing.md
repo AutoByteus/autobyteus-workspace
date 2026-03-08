@@ -83,3 +83,18 @@
   - Real published-runtime app proof:
     - Published manifest URL: `https://github.com/AutoByteus/autobyteus-voice-runtime/releases/download/v0.1.1/voice-input-runtime-manifest.json`
     - Compiled Electron service installed the runtime and model into app data and returned `Hello world!` from a generated WAV sample.
+
+## UX Refinement Re-Entry Validation (2026-03-08)
+
+### Additional Scenario Coverage
+
+| Scenario ID | Acceptance Criteria | Status | Command / Harness | Notes |
+| --- | --- | --- | --- | --- |
+| `AV-009` | `AC-003C`, `AC-003D` | Passed | `pnpm -C autobyteus-web exec vitest --config vitest.config.mts run components/settings/__tests__/VoiceInputExtensionCard.spec.ts stores/__tests__/extensionsStore.spec.ts` plus `pnpm -C autobyteus-web transpile-electron` | Settings now shows immediate install progress and exposes `Open Folder` for installed Voice Input |
+| `AV-010` | `AC-006A` | Passed | `pnpm -C autobyteus-web exec vitest --config vitest.config.mts run components/agentInput/__tests__/AgentUserInputTextArea.spec.ts stores/__tests__/voiceInputStore.spec.ts tests/integration/voice-input-extension.integration.test.ts` | Shared composer now shows visible recording/transcribing state while dictation is active |
+
+### Gate Outcome For Re-Entry
+
+- Stage 7 reopened for the UX refinement: `Yes`
+- All newly added executable acceptance criteria passed: `Yes`
+- Additional blockers introduced: `No`

@@ -392,3 +392,35 @@ Implement a minimal managed extension system in the Electron app and ship `Voice
 1. Whether v1 should use `tiny.en` or `tiny.en-q5_1` by default.
 2. Whether the app should ship a hardcoded AutoByteus-hosted runtime manifest, env-overridable runtime manifest URLs, or both.
 3. Whether the first extracted runtime repository should be public immediately or staged privately first before the workspace branch merges.
+
+## UX Refinement Addendum (2026-03-08)
+
+### Goal
+
+Tighten the existing Electron-only voice-input UX so users see immediate install progress, can access the managed install folder after installation, and can clearly tell when recording/transcription is active in the composer.
+
+### Design Decisions
+
+1. Renderer-side optimistic install state
+   - `stores/extensionsStore.ts` will set the relevant extension entry to `installing` before awaiting the Electron install/reinstall IPC response.
+   - This preserves the authoritative final state from Electron while fixing the dead-click perception during runtime/model download.
+
+2. Explicit install-progress card UI
+   - `components/settings/VoiceInputExtensionCard.vue` will render an installing CTA/indicator instead of leaving the card visually unchanged.
+   - Install/reinstall controls remain disabled while the store is busy.
+
+3. Installed-folder reveal
+   - Add an Electron IPC action that opens the managed extension directory for `voice-input`.
+   - Expose it only for installed extensions from the settings card as `Open Folder`.
+   - Do not expose arbitrary path browsing or a browser-mode fallback.
+
+4. Composer activity indicator
+   - `components/agentInput/AgentUserInputTextArea.vue` will render a visible recording/transcribing status chip near the composer controls.
+   - The mic button remains the control surface, but the chip becomes the primary feedback surface so users know capture is active.
+   - The initial refinement can use copy + timer/pulse styling; a waveform is explicitly optional.
+
+### Non-Goals For This Refinement
+
+- No live audio spectrum rendering.
+- No background streaming or partial transcript UX.
+- No web-mode support outside Electron.

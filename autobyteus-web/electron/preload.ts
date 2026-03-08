@@ -92,6 +92,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   installExtension: (extensionId: ExtensionId) => ipcRenderer.invoke('extensions:install', extensionId) as Promise<ManagedExtensionState[]>,
   removeExtension: (extensionId: ExtensionId) => ipcRenderer.invoke('extensions:remove', extensionId) as Promise<ManagedExtensionState[]>,
   reinstallExtension: (extensionId: ExtensionId) => ipcRenderer.invoke('extensions:reinstall', extensionId) as Promise<ManagedExtensionState[]>,
+  openExtensionFolder: (extensionId: ExtensionId) =>
+    ipcRenderer.invoke('extensions:open-folder', extensionId) as Promise<{ success: boolean; error?: string }>,
   transcribeVoiceInput: (audioData: ArrayBuffer, language?: string) =>
     ipcRenderer.invoke('voice-input:transcribe', { audioData, language }) as Promise<VoiceInputTranscriptionResult>,
 })

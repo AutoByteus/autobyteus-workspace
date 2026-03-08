@@ -48,6 +48,23 @@
         <Icon v-else icon="heroicons:paper-airplane-solid" class="h-5 w-5" />
       </button>
     </div>
+
+    <div
+      v-if="voiceInputStore.isRecording || voiceInputStore.isTranscribing"
+      class="mx-3 mb-2 flex items-center justify-between rounded-lg border px-3 py-2 text-xs font-medium"
+      :class="voiceStatusClass"
+    >
+      <div class="flex items-center gap-2">
+        <span
+          class="h-2.5 w-2.5 rounded-full"
+          :class="voiceInputStore.isRecording ? 'animate-pulse bg-red-500' : 'bg-blue-500'"
+        ></span>
+        <span>{{ voiceStatusText }}</span>
+      </div>
+      <span v-if="voiceInputStore.isRecording" class="tabular-nums text-[11px] text-current/80">
+        {{ recordingDurationLabel }}
+      </span>
+    </div>
   </div>
 </template>
 
@@ -91,6 +108,18 @@ const voiceButtonClass = computed(() => {
   }
   return 'bg-slate-100 text-slate-700 hover:bg-slate-200 focus:ring-slate-400/50';
 });
+const voiceStatusText = computed(() => {
+  if (voiceInputStore.isRecording) {
+    return 'Recording... Tap stop when you are done.';
+  }
+  return 'Transcribing voice input...';
+});
+const voiceStatusClass = computed(() => {
+  if (voiceInputStore.isRecording) {
+    return 'border-red-200 bg-red-50 text-red-700';
+  }
+  return 'border-blue-200 bg-blue-50 text-blue-700';
+});
 
 // Local component state
 const internalRequirement = ref(''); // Local state for textarea
@@ -98,6 +127,15 @@ const textarea = ref<HTMLTextAreaElement | null>(null);
 const MIN_TEXTAREA_HEIGHT = 56;
 const MAX_TEXTAREA_HEIGHT = 220;
 const textareaHeight = ref(MIN_TEXTAREA_HEIGHT);
+const recordingElapsedSeconds = ref(0);
+let recordingStartedAt = 0;
+let recordingTimer: ReturnType<typeof setInterval> | null = null;
+
+const recordingDurationLabel = computed(() => {
+  const minutes = Math.floor(recordingElapsedSeconds.value / 60);
+  const seconds = recordingElapsedSeconds.value % 60;
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+});
 
 // Enhanced Debounce function
 function debounce<T extends (...args: any[]) => any>(
@@ -294,6 +332,30 @@ const handleResize = () => {
   adjustTextareaHeight();
 };
 
+const stopRecordingTimer = () => {
+  if (recordingTimer) {
+    clearInterval(recordingTimer);
+    recordingTimer = null;
+  }
+};
+
+watch(
+  () => voiceInputStore.isRecording,
+  (isRecording) => {
+    stopRecordingTimer();
+    if (!isRecording) {
+      recordingElapsedSeconds.value = 0;
+      return;
+    }
+
+    recordingStartedAt = Date.now();
+    recordingElapsedSeconds.value = 0;
+    recordingTimer = setInterval(() => {
+      recordingElapsedSeconds.value = Math.floor((Date.now() - recordingStartedAt) / 1000);
+    }, 250);
+  },
+);
+
 onMounted(async () => {
   await nextTick();
   await voiceInputStore.initialize();
@@ -304,6 +366,7 @@ onMounted(async () => {
 onUnmounted(() => {
   flushDebouncedUpdateStore(); 
   void voiceInputStore.cleanup();
+  stopRecordingTimer();
   window.removeEventListener('resize', handleResize);
 });
 </script>

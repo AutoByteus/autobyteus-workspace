@@ -2,11 +2,14 @@ import { defineStore } from 'pinia';
 import { useToasts } from '~/composables/useToasts';
 import type { ExtensionId, ManagedExtensionState } from '~/electron/extensions/types';
 
+type ExtensionAction = 'install' | 'remove' | 'reinstall' | null;
+
 interface ExtensionsStoreState {
   initialized: boolean;
   isElectron: boolean;
   extensions: ManagedExtensionState[];
   isBusy: boolean;
+  pendingAction: ExtensionAction;
   error: string | null;
 }
 
@@ -16,6 +19,7 @@ export const useExtensionsStore = defineStore('extensions', {
     isElectron: typeof window !== 'undefined' && Boolean(window.electronAPI),
     extensions: [],
     isBusy: false,
+    pendingAction: null,
     error: null,
   }),
 
@@ -29,6 +33,18 @@ export const useExtensionsStore = defineStore('extensions', {
     applyRemoteState(extensions: ManagedExtensionState[]): void {
       this.extensions = extensions;
       this.error = null;
+    },
+
+    updateLocalExtension(extensionId: ExtensionId, patch: Partial<ManagedExtensionState>): void {
+      const index = this.extensions.findIndex((extension) => extension.id === extensionId);
+      if (index === -1) {
+        return;
+      }
+
+      this.extensions[index] = {
+        ...this.extensions[index],
+        ...patch,
+      };
     },
 
     async initialize(): Promise<void> {
@@ -66,15 +82,27 @@ export const useExtensionsStore = defineStore('extensions', {
       }
 
       this.isBusy = true;
+      this.pendingAction = 'install';
+      this.updateLocalExtension(extensionId, {
+        status: 'installing',
+        message: 'Downloading runtime and model. This can take a minute on first install.',
+        lastError: null,
+      });
       try {
         const state = await window.electronAPI.installExtension(extensionId);
         this.applyRemoteState(state);
       } catch (error) {
         const message = error instanceof Error ? error.message : 'Failed to install extension'
         this.error = message;
+        this.updateLocalExtension(extensionId, {
+          status: 'error',
+          message: 'Failed to install Voice Input.',
+          lastError: message,
+        });
         useToasts().addToast(message, 'error');
       } finally {
         this.isBusy = false;
+        this.pendingAction = null;
       }
     },
 
@@ -84,6 +112,7 @@ export const useExtensionsStore = defineStore('extensions', {
       }
 
       this.isBusy = true;
+      this.pendingAction = 'remove';
       try {
         const state = await window.electronAPI.removeExtension(extensionId);
         this.applyRemoteState(state);
@@ -93,6 +122,7 @@ export const useExtensionsStore = defineStore('extensions', {
         useToasts().addToast(message, 'error');
       } finally {
         this.isBusy = false;
+        this.pendingAction = null;
       }
     },
 
@@ -102,15 +132,39 @@ export const useExtensionsStore = defineStore('extensions', {
       }
 
       this.isBusy = true;
+      this.pendingAction = 'reinstall';
+      this.updateLocalExtension(extensionId, {
+        status: 'installing',
+        message: 'Reinstalling Voice Input. Runtime assets are being refreshed now.',
+        lastError: null,
+      });
       try {
         const state = await window.electronAPI.reinstallExtension(extensionId);
         this.applyRemoteState(state);
       } catch (error) {
         const message = error instanceof Error ? error.message : 'Failed to reinstall extension'
         this.error = message;
+        this.updateLocalExtension(extensionId, {
+          status: 'error',
+          message: 'Failed to reinstall Voice Input.',
+          lastError: message,
+        });
         useToasts().addToast(message, 'error');
       } finally {
         this.isBusy = false;
+        this.pendingAction = null;
+      }
+    },
+
+    async openExtensionFolder(extensionId: ExtensionId): Promise<void> {
+      if (!window.electronAPI?.openExtensionFolder) {
+        return;
+      }
+
+      const result = await window.electronAPI.openExtensionFolder(extensionId);
+      if (!result.success) {
+        const message = result.error || 'Failed to open extension folder'
+        useToasts().addToast(message, 'error');
       }
     },
   },

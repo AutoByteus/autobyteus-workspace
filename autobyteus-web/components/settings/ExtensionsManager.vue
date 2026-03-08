@@ -20,9 +20,11 @@
       v-if="voiceInput"
       :extension="voiceInput"
       :busy="extensionsStore.isBusy"
+      :pending-action="extensionsStore.pendingAction"
       @install="extensionsStore.installExtension('voice-input')"
       @remove="extensionsStore.removeExtension('voice-input')"
       @reinstall="extensionsStore.reinstallExtension('voice-input')"
+      @open-folder="extensionsStore.openExtensionFolder('voice-input')"
     />
   </div>
 </template>

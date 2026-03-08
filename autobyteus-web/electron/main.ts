@@ -23,8 +23,8 @@ import {
 import { serverManager } from './server/serverManagerFactory';
 import { ServerStatusManager } from './server/serverStatusManager';
 import { AppUpdater } from './updater/appUpdater';
+import { registerExtensionIpcHandlers } from './extensionIpcHandlers';
 import { ManagedExtensionService } from './extensions/managedExtensionService';
-import type { ExtensionId, VoiceInputTranscriptionRequest } from './extensions/types';
 
 const serverStatusManager = new ServerStatusManager(serverManager);
 const appUpdater = new AppUpdater();
@@ -460,25 +460,7 @@ function installIpcHandlers(): void {
     }
   });
 
-  ipcMain.handle('extensions:get-state', async () => {
-    return await managedExtensionService!.listExtensions();
-  });
-
-  ipcMain.handle('extensions:install', async (_event, extensionId: ExtensionId) => {
-    return await managedExtensionService!.install(extensionId);
-  });
-
-  ipcMain.handle('extensions:remove', async (_event, extensionId: ExtensionId) => {
-    return await managedExtensionService!.remove(extensionId);
-  });
-
-  ipcMain.handle('extensions:reinstall', async (_event, extensionId: ExtensionId) => {
-    return await managedExtensionService!.reinstall(extensionId);
-  });
-
-  ipcMain.handle('voice-input:transcribe', async (_event, payload: VoiceInputTranscriptionRequest) => {
-    return await managedExtensionService!.transcribeVoiceInput(payload);
-  });
+  registerExtensionIpcHandlers(ipcMain, managedExtensionService!);
 }
 
 function installAppLifecycleHandlers(): void {

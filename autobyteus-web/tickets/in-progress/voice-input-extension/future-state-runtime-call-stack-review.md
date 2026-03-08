@@ -112,3 +112,43 @@
   - The design now owns both runtime publication and runtime consumption, closing the gap that previously forced re-entry.
   - The install/discovery/invoke path is explicit and still fits the app’s existing Electron IPC architecture.
   - Stage 7 now retains a concrete proof path that validates the real published runtime-release lane end to end.
+
+## Review Round 5
+
+- **Status**: `Go Confirmed`
+- **Clean Streak**: `1`
+- **Missing Use Case Discovery**:
+  - Added `UC-010` immediate install progress
+  - Added `UC-011` installed-folder access
+  - Added `UC-012` visible recording/transcribing state
+- **Round Notes**:
+  - The refinement remains local to existing renderer-store, component, and Electron IPC boundaries; no architecture split is required.
+  - Opening the managed install folder reuses an existing Electron shell pattern and does not introduce broader filesystem capabilities.
+  - Visible recording/transcribing feedback closes the usability gap without requiring a waveform or changes to the recording/transcription transport.
+- **Persisted Artifact Updates Required This Round**:
+  - `requirements.md`
+  - `proposed-design.md`
+  - `future-state-runtime-call-stack.md`
+
+| Use Case ID | Architecture Fit | Layering Fitness | Boundary Placement | Decoupling | Existing Bias | Anti-Hack | Local-Fix Degr. | Terminology | Naming | Drift | Future Align | SoC | Coverage | Traceability | Closure | Justification | Redundancy | Simplification | Cleanup | Legacy | Back-Compat | Verdict |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `UC-010` | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| `UC-011` | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| `UC-012` | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+
+## Review Round 6
+
+- **Status**: `Go Confirmed`
+- **Clean Streak**: `2`
+- **Missing Use Case Discovery**: None.
+- **Round Notes**:
+  - Rechecked the UX refinement against the existing renderer/Electron separation and found no reason to reopen architecture or requirements again.
+  - The chosen approach is minimal, keeps the Electron-only boundary intact, and avoids speculative waveform work.
+  - No new blockers or persisted artifact updates were found in this round.
+- **Persisted Artifact Updates Required This Round**: None.
+
+| Use Case ID | Architecture Fit | Layering Fitness | Boundary Placement | Decoupling | Existing Bias | Anti-Hack | Local-Fix Degr. | Terminology | Naming | Drift | Future Align | SoC | Coverage | Traceability | Closure | Justification | Redundancy | Simplification | Cleanup | Legacy | Back-Compat | Verdict |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `UC-010` | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| `UC-011` | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| `UC-012` | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass |

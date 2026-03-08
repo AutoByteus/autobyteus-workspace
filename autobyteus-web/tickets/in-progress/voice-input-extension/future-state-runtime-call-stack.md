@@ -297,3 +297,79 @@ Automated validation proves the app-managed install/discovery/invocation flow wo
 ### Output
 
 - Stage 7 has app-level automated evidence for published-release build/download/install/invocation behavior without relying on the dormant backend transcription path.
+
+---
+
+## UC-010: Immediate Install Progress Feedback
+
+### Intent
+
+The settings card should visibly enter an in-progress state as soon as the user clicks `Install` or `Reinstall`, before the Electron install call finishes.
+
+### Call Stack
+
+`[ENTRY][UI] Settings -> Extensions -> Voice Input -> Install/Reinstall click`
+-> `[STORE] extensionsStore.installExtension()` or `reinstallExtension()`
+-> renderer immediately patches local extension state:
+  -> `status = installing`
+  -> progress copy updated
+  -> buttons disabled
+-> `[IPC] window.electronAPI.installExtension()` or `reinstallExtension()`
+-> `[MAIN][SERVICE] managedExtensionService` writes installing state to registry and downloads runtime/model
+-> install resolves with authoritative extension state
+-> `[STORE] extensionsStore.applyRemoteState()`
+-> `[UI] VoiceInputExtensionCard` renders final installed/error state
+
+### Output
+
+- Users see immediate installation feedback rather than a dead click.
+
+---
+
+## UC-011: Open Installed Voice Runtime Folder
+
+### Intent
+
+After installation, users can open the managed extension folder from Settings to inspect what was downloaded.
+
+### Call Stack
+
+`[ENTRY][UI] Settings -> Extensions -> Voice Input -> Open Folder`
+-> `[STORE] extensionsStore.openExtensionFolder('voice-input')`
+-> `[IPC] window.electronAPI.openExtensionFolder('voice-input')`
+-> `[MAIN] electron/main.ts` delegates to managed extension service or path helper
+-> `[MAIN] shell.openPath(extensionRoot)`
+-> native file manager opens the managed voice-input directory
+
+### Output
+
+- Installed runtime assets are discoverable without exposing arbitrary filesystem access.
+
+---
+
+## UC-012: Visible Recording / Transcribing State In Composer
+
+### Intent
+
+The shared composer clearly communicates when dictation is recording or transcribing so the user knows voice capture is active.
+
+### Call Stack
+
+`[ENTRY][UI] Shared composer mic click`
+-> `[STORE] voiceInputStore.toggleRecording()`
+-> if starting:
+  -> request microphone
+  -> create audio graph/worklet
+  -> set `isRecording = true`
+  -> `[UI] AgentUserInputTextArea` shows recording-status chip/pulse/timer
+-> if stopping:
+  -> set `isRecording = false`
+  -> set `isTranscribing = true`
+  -> `[UI] AgentUserInputTextArea` swaps chip copy to transcribing state
+  -> flush audio and request Electron transcription
+  -> merge transcript into draft
+  -> clear transcribing state
+
+### Output
+
+- The composer makes recording/transcription activity visible without changing the underlying local-recording pipeline.

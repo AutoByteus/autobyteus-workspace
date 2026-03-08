@@ -105,3 +105,12 @@
 - Recording implementation must stay simple and not reintroduce streaming/websocket complexity.
 - Composer integration must not regress stop/send behavior or draft persistence.
 - The real runtime release may fail on CI runners due to missing toolchain or target-specific packaging issues and must be treated as part of the Stage 7 closure risk, not as post-handoff follow-up.
+
+## UX Refinement Tasks (2026-03-08 Re-Entry)
+
+| Task ID | Change | Files / Areas |
+| --- | --- | --- |
+| `T-009` | Add optimistic install/reinstall state so the extension card visibly enters `installing` before Electron returns | `stores/extensionsStore.ts`, `components/settings/VoiceInputExtensionCard.vue`, `components/settings/ExtensionsManager.vue` |
+| `T-010` | Add `Open Folder` lifecycle action for installed voice input using Electron IPC | `electron/main.ts`, `electron/preload.ts`, `types/electron.d.ts`, `stores/extensionsStore.ts`, `components/settings/VoiceInputExtensionCard.vue`, `components/settings/ExtensionsManager.vue` |
+| `T-011` | Add visible recording/transcribing indicator in the shared composer without changing the underlying local-recording pipeline | `components/agentInput/AgentUserInputTextArea.vue`, `stores/voiceInputStore.ts` |
+| `T-012` | Extend targeted tests for install-progress UX, open-folder lifecycle action, and recording/transcribing indicator | `components/settings/__tests__/VoiceInputExtensionCard.spec.ts`, `stores/__tests__/extensionsStore.spec.ts`, `components/agentInput/__tests__/AgentUserInputTextArea.spec.ts`, `tests/integration/voice-input-extension.integration.test.ts` |

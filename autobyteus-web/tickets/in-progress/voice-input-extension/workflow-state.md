@@ -8,11 +8,11 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 
 - Ticket: `voice-input-extension`
 - Current Stage: `10`
-- Next Stage: `End`
+- Next Stage: `Final Handoff`
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-039`
+- Last Transition ID: `T-048`
 - Last Updated: `2026-03-08`
 
 ## Stage Gates
@@ -21,15 +21,15 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | --- | --- | --- | --- |
 | 0 Bootstrap + Draft Requirement | Pass | Dedicated worktree/branch created and initial draft requirements captured under the web project ticket folder | `requirements.md`, `workflow-state.md` |
 | 1 Investigation + Triage | Pass | Investigation confirmed that runtime publication must move to a dedicated `AutoByteus/autobyteus-voice-runtime` repository to avoid polluting workspace desktop-release consumers | `investigation-notes.md`, `workflow-state.md` |
-| 2 Requirements | Pass | Requirements are refined around the dedicated runtime-repository constraint, pinned runtime resolution, and mandatory rerun of Stage 7 against the separate release lane | `requirements.md`, `workflow-state.md` |
-| 3 Design Basis | Pass | Proposed design now moves runtime packaging and release ownership into the dedicated runtime repository while keeping the app on pinned manifest consumption | `proposed-design.md`, `workflow-state.md` |
-| 4 Runtime Modeling | Pass | Runtime modeling is refreshed to use the dedicated runtime repository release lane for publication, install, and Stage 7 validation | `future-state-runtime-call-stack.md`, `workflow-state.md` |
-| 5 Review Gate | Pass | Runtime review reconfirmed the dedicated runtime-repository split and returned to `Go Confirmed` with no further upstream blockers | `future-state-runtime-call-stack-review.md`, `workflow-state.md` |
-| 6 Implementation | Pass | The stale `!voice-runtime-v*` exclusion was removed from the desktop release workflow after the runtime moved into its own repository | `implementation-plan.md`, `implementation-progress.md`, `workflow-state.md` |
-| 7 API/E2E Testing | Pass | Cleanup validation confirmed `release-desktop.yml` matches `origin/personal` again and the workspace repo latest release remains the Electron app release | `api-e2e-testing.md`, `implementation-progress.md`, `workflow-state.md` |
-| 8 Code Review | Pass | Code review reran on the desktop workflow cleanup delta and passed with no findings | `code-review.md`, `workflow-state.md` |
-| 9 Docs Sync | Pass | Ticket artifacts were refreshed to record the final desktop workflow cleanup and validation evidence | `implementation-progress.md`, `api-e2e-testing.md`, `code-review.md`, `workflow-state.md` |
-| 10 Handoff / Ticket State | In Progress | Ticket is ready for handoff and remains in progress until the user explicitly confirms completion | `workflow-state.md`, `implementation-progress.md` |
+| 2 Requirements | Pass | Requirements now include immediate install feedback, install-folder access, and explicit recording/transcribing visibility in the shared composer | `requirements.md`, `workflow-state.md` |
+| 3 Design Basis | Pass | Proposed design was refreshed for optimistic install state, an Electron `Open Folder` action, and composer recording-state visibility | `proposed-design.md`, `workflow-state.md` |
+| 4 Runtime Modeling | Pass | Runtime modeling now covers optimistic install progression, installed-folder reveal, and visible recording/transcribing feedback | `future-state-runtime-call-stack.md`, `workflow-state.md` |
+| 5 Review Gate | Pass | Review reconfirmed the UX refinement with two clean rounds and no need to reopen architecture | `future-state-runtime-call-stack-review.md`, `workflow-state.md` |
+| 6 Implementation | Pass | Optimistic install state, Electron folder reveal, composer recording feedback, and IPC extraction were implemented for the UX refinement delta | `implementation-plan.md`, `implementation-progress.md`, `workflow-state.md` |
+| 7 API/E2E Testing | Pass | Targeted validation proved the new install-progress, open-folder, and recording/transcribing visibility behaviors | `api-e2e-testing.md`, `implementation-progress.md`, `workflow-state.md` |
+| 8 Code Review | Pass | Code review reran on the UX refinement delta and passed with no findings after extracting extension IPC out of `electron/main.ts` | `code-review.md`, `workflow-state.md` |
+| 9 Docs Sync | Pass | Ticket artifacts were refreshed to capture the UX refinement requirements, implementation, validation, and review evidence | `implementation-progress.md`, `api-e2e-testing.md`, `code-review.md`, `workflow-state.md` |
+| 10 Handoff / Ticket State | In Progress | The UX refinement is complete and ready for handoff while the ticket remains in progress until the user confirms completion | `workflow-state.md`, `implementation-progress.md` |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -134,6 +134,15 @@ Note:
 | T-037 | 2026-03-08 | 7 | 8 | Cleanup validation passed after confirming `release-desktop.yml` matches `origin/personal` and the workspace repo latest release remains `v1.2.24` | N/A | Locked | `api-e2e-testing.md`, `implementation-progress.md`, `workflow-state.md` |
 | T-038 | 2026-03-08 | 8 | 9 | Code review passed on the final desktop workflow cleanup delta | N/A | Locked | `code-review.md`, `workflow-state.md` |
 | T-039 | 2026-03-08 | 9 | 10 | Docs sync completed for the desktop workflow cleanup and the ticket returned to final handoff state | N/A | Locked | `implementation-progress.md`, `api-e2e-testing.md`, `code-review.md`, `workflow-state.md` |
+| T-040 | 2026-03-08 | 10 | 2 | Re-entry declared because real-user testing exposed a requirement gap: the extensions UI does not show immediate install progress and does not offer direct install-folder access after Voice Input is installed | Requirement Gap | Locked | `workflow-state.md` |
+| T-041 | 2026-03-08 | 2 | 3 | Requirements were refined to add immediate install feedback, install-folder access, and explicit recording/transcribing visibility | Requirement Gap | Locked | `requirements.md`, `workflow-state.md` |
+| T-042 | 2026-03-08 | 3 | 4 | Proposed design was refreshed for the Electron-safe UX refinement path | Requirement Gap | Locked | `proposed-design.md`, `workflow-state.md` |
+| T-043 | 2026-03-08 | 4 | 5 | Runtime modeling and review were rerun for the UX refinement and returned to Go Confirmed | Requirement Gap | Locked | `future-state-runtime-call-stack.md`, `future-state-runtime-call-stack-review.md`, `workflow-state.md` |
+| T-044 | 2026-03-08 | 5 | 6 | The UX refinement implementation plan is ready and code edits are unlocked for source changes | Requirement Gap | Unlocked | `implementation-plan.md`, `workflow-state.md` |
+| T-045 | 2026-03-08 | 6 | 7 | UX refinement implementation completed and targeted validation for install progress, folder access, and recording visibility became active | Requirement Gap | Unlocked | `implementation-progress.md`, `api-e2e-testing.md`, `workflow-state.md` |
+| T-046 | 2026-03-08 | 7 | 8 | Targeted validation passed for the UX refinement delta and code review reran on the changed files | N/A | Locked | `api-e2e-testing.md`, `implementation-progress.md`, `workflow-state.md` |
+| T-047 | 2026-03-08 | 8 | 9 | Code review passed with no findings after extracting extension IPC out of `electron/main.ts` | N/A | Locked | `code-review.md`, `workflow-state.md` |
+| T-048 | 2026-03-08 | 9 | 10 | Docs sync completed for the UX refinement re-entry and the ticket returned to final handoff state | N/A | Locked | `implementation-progress.md`, `api-e2e-testing.md`, `code-review.md`, `workflow-state.md` |
 
 ## Audible Notification Log (Optional Tracking)
 

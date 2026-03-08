@@ -256,3 +256,32 @@
   - New Electron service and preload contract.
   - New shared-composer interaction.
   - New app-owned runtime distribution contract and multiple test layers, including a mandatory Stage 7 proof path for the installed-runtime flow.
+
+## UX Refinement Re-Entry (2026-03-08)
+
+### User-Observed Gaps
+
+1. The `Extensions` card does not visibly enter an installing state immediately after the user clicks `Install`.
+   - Root cause:
+     - `stores/extensionsStore.ts` sets `isBusy = true`, but it only applies remote extension state after `window.electronAPI.installExtension()` resolves.
+     - `components/settings/VoiceInputExtensionCard.vue` already supports an `installing` badge, but no renderer-side optimistic transition exists, so the card stays visually idle during the actual download.
+
+2. The composer recording flow has a state change, but not enough visible feedback.
+   - Root cause:
+     - `components/agentInput/AgentUserInputTextArea.vue` changes the mic button to a red stop icon while recording, but there is no separate recording-status surface or progress copy.
+     - Users can miss the icon-only state change, especially while focused on the textarea.
+
+3. Installed runtime assets are not easily discoverable from Settings.
+   - Root cause:
+     - The runtime is stored in managed app data under the Electron process, but the current UI exposes only runtime/model versions.
+     - The Electron app already has an `openPath` pattern for logs in `electron/main.ts`, so install-folder reveal is low-risk and consistent with existing IPC conventions.
+
+### Investigation Conclusion
+
+- The correct refinement is still Electron-only.
+- The smallest clean UX delta is:
+  - optimistic `installing` state in the renderer store,
+  - explicit installing CTA/indicator in the extension card,
+  - `Open Folder` action for installed voice input,
+  - visible recording/transcribing status in the shared composer.
+- A live waveform is not required for this pass. A clear recording/transcribing indicator is enough to close the usability gap without changing the audio pipeline.

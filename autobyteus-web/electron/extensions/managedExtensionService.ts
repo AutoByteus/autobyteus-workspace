@@ -160,6 +160,16 @@ export class ManagedExtensionService {
     return await this.install(id)
   }
 
+  async getInstalledExtensionPath(id: ExtensionId): Promise<string> {
+    const extensionRoot = this.getExtensionRoot(id)
+    try {
+      await fs.access(extensionRoot)
+      return extensionRoot
+    } catch {
+      throw new Error('Voice Input is not installed yet.')
+    }
+  }
+
   async transcribeVoiceInput(request: VoiceInputTranscriptionRequest): Promise<VoiceInputTranscriptionResult> {
     return await this.runtimeService.transcribe(request, this.getExtensionRoot('voice-input'))
   }

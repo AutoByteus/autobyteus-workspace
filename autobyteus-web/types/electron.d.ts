@@ -95,6 +95,7 @@ declare global {
       installExtension: (extensionId: ExtensionId) => Promise<ManagedExtensionState[]>;
       removeExtension: (extensionId: ExtensionId) => Promise<ManagedExtensionState[]>;
       reinstallExtension: (extensionId: ExtensionId) => Promise<ManagedExtensionState[]>;
+      openExtensionFolder: (extensionId: ExtensionId) => Promise<{ success: boolean; error?: string }>;
       transcribeVoiceInput: (audioData: ArrayBuffer, language?: string) => Promise<VoiceInputTranscriptionResult>;
     };
   }

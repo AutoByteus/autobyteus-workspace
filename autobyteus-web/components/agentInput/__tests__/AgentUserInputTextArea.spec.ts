@@ -94,4 +94,15 @@ describe('AgentUserInputTextArea', () => {
 
     expect(wrapper.find('button[title="Start voice input"]').exists()).toBe(true)
   })
+
+  it('shows visible recording feedback while voice input is active', async () => {
+    voiceInputStoreMock.isAvailable = true
+    voiceInputStoreMock.isRecording = true
+
+    const wrapper = mount(AgentUserInputTextArea)
+    await nextTick()
+
+    expect(wrapper.text()).toContain('Recording... Tap stop when you are done.')
+    expect(wrapper.find('button[title="Stop recording"]').exists()).toBe(true)
+  })
 })

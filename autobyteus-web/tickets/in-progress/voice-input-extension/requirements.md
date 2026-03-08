@@ -27,6 +27,9 @@ The desktop app should support optional voice dictation in the shared message co
 - `UC-007`: User can remove or reinstall the `Voice Input` extension from Settings.
 - `UC-008`: End-to-end validation proves the installed runtime can be invoked successfully through the app-managed flow before handoff.
 - `UC-009`: The real published runtime release in `AutoByteus/autobyteus-voice-runtime` can be built, downloaded by the app, and used for transcription from the pinned manifest URL before handoff.
+- `UC-010`: Immediately after clicking `Install` or `Reinstall`, the extensions UI shows that installation is actively in progress instead of waiting for the Electron install call to return.
+- `UC-011`: After `Voice Input` is installed, the extensions UI lets the user open the managed install folder from Electron.
+- `UC-012`: While dictation is active in the shared composer, users see visible recording or transcribing feedback so they know the microphone flow is live.
 
 ## Out Of Scope / Non-Goals
 
@@ -78,6 +81,12 @@ The desktop app should support optional voice dictation in the shared message co
 - `R-003` (Managed Extension State):
   - Expected outcome: The app persists enough metadata to show whether `Voice Input` is not installed, installing, installed, failed, or needs reinstall.
 
+- `R-003C` (Immediate Install Feedback):
+  - Expected outcome: The `Extensions` UI flips into an `installing` state as soon as the user starts install or reinstall, with visible in-progress feedback before the Electron install promise resolves.
+
+- `R-003D` (Install Location Access):
+  - Expected outcome: After `Voice Input` is installed, the Electron settings UI provides a direct action to open the managed install folder.
+
 - `R-003A` (Managed Extension Location):
   - Expected outcome: The extension runtime and model are stored under an AutoByteus-managed app-data `extensions/voice-input/` subtree rather than inside the packaged app.
 
@@ -102,6 +111,9 @@ The desktop app should support optional voice dictation in the shared message co
 - `R-009` (Failure Visibility):
   - Expected outcome: Install/runtime/recording/transcription failures surface actionable UI feedback without breaking normal text input.
 
+- `R-009A` (Recording Activity Visibility):
+  - Expected outcome: While recording or transcribing, the shared composer visibly communicates that voice capture is active, rather than only changing the mic button affordance.
+
 - `R-010` (Mandatory Automated Validation):
   - Expected outcome: End-to-end validation verifies the real published runtime release from `AutoByteus/autobyteus-voice-runtime` can be built, published, downloaded, installed, and invoked through the app before handoff; fixture-only evidence is insufficient for ticket closure without an explicit user waiver.
 
@@ -115,6 +127,12 @@ The desktop app should support optional voice dictation in the shared message co
 
 - `AC-003` Runtime installation:
   - Measurable outcome: Installing `Voice Input` downloads the correct runtime package for the local platform plus the speech model into the managed extensions directory and records installed state.
+
+- `AC-003C` Immediate install UX:
+  - Measurable outcome: Clicking `Install` or `Reinstall` immediately updates the extension card into an in-progress state with disabled controls and visible status copy.
+
+- `AC-003D` Install folder access:
+  - Measurable outcome: Once `Voice Input` is installed, the settings UI offers an `Open Folder` action that opens the managed install directory in Electron.
 
 - `AC-003A` App-owned runtime provenance:
   - Measurable outcome: The install flow resolves runtime assets through AutoByteus-managed release metadata produced by the dedicated runtime repository, not by direct upstream asset discovery.
@@ -130,6 +148,9 @@ The desktop app should support optional voice dictation in the shared message co
 
 - `AC-006` Error handling:
   - Measurable outcome: Install, permission, and transcription failures show visible error state and leave text messaging usable.
+
+- `AC-006A` Recording visibility:
+  - Measurable outcome: While dictation is recording or transcribing, the shared composer displays a visible status indicator so users know voice capture is in progress.
 
 - `AC-007` Extension lifecycle:
   - Measurable outcome: Users can remove or reinstall `Voice Input`, and composer availability updates accordingly.
@@ -151,6 +172,9 @@ The desktop app should support optional voice dictation in the shared message co
 - `R-007` -> `UC-003`, `UC-005`
 - `R-008` -> `UC-007`
 - `R-009` -> `UC-006`
+- `R-003C` -> `UC-006`, `UC-010`
+- `R-003D` -> `UC-002`, `UC-011`
+- `R-009A` -> `UC-006`, `UC-012`
 - `R-010` -> `UC-008`, `UC-009`
 
 ## Acceptance Criteria Coverage Map (Stage 7)
@@ -158,10 +182,13 @@ The desktop app should support optional voice dictation in the shared message co
 - `AC-001` -> `S7-001`
 - `AC-002` -> `S7-001`, `S7-002`
 - `AC-003` -> `S7-002`, `S7-003`
+- `AC-003C` -> `S7-002`
+- `AC-003D` -> `S7-002`
 - `AC-003A` -> `S7-002`, `S7-003`
 - `AC-003B` -> `S7-002`, `S7-003`
 - `AC-004` -> `S7-004`
 - `AC-005` -> `S7-005`
 - `AC-006` -> `S7-003`, `S7-006`
+- `AC-006A` -> `S7-004`, `S7-005`
 - `AC-007` -> `S7-002`, `S7-007`
 - `AC-008` -> `S7-008`

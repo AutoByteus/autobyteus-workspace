@@ -155,6 +155,7 @@ describe('ManagedExtensionService', () => {
     expect(await fs.readFile(registryPath, 'utf8')).toContain('"status": "installed"')
     await expect(fs.access(path.join(extensionRoot, 'bin', process.platform === 'win32' ? 'whisper-cli.exe' : 'whisper-cli'))).resolves.toBeUndefined()
     await expect(fs.access(path.join(extensionRoot, 'models', 'ggml-tiny.en-q5_1.bin'))).resolves.toBeUndefined()
+    await expect(service.getInstalledExtensionPath('voice-input')).resolves.toBe(extensionRoot)
 
     const result = await service.transcribeVoiceInput({
       audioData: new Uint8Array([82, 73, 70, 70]).buffer,
@@ -169,6 +170,7 @@ describe('ManagedExtensionService', () => {
 
     const removedState = await service.remove('voice-input')
     expect(removedState.find((entry) => entry.id === 'voice-input')?.status).toBe('not-installed')
+    await expect(service.getInstalledExtensionPath('voice-input')).rejects.toThrow('Voice Input is not installed yet.')
   })
 
   it('marks a broken installation as requiring attention', async () => {

@@ -95,3 +95,20 @@ This document tracks implementation execution, targeted verification, Stage 7 sc
   - `autobyteus-web/tickets/in-progress/voice-input-extension/workflow-state.md`
 - Rationale:
   - The repo split changed the release surface, runtime coordinates, review scope, and Stage 7 evidence, so the ticket artifacts needed a full refresh.
+
+## UX Refinement Re-Entry (2026-03-08)
+
+### Implemented Changes
+
+| Change ID | Files | Status | Verification | Result | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `C-015` | `stores/extensionsStore.ts`, `components/settings/VoiceInputExtensionCard.vue`, `components/settings/ExtensionsManager.vue` | Completed | `pnpm -C autobyteus-web exec vitest --config vitest.config.mts run components/settings/__tests__/VoiceInputExtensionCard.spec.ts stores/__tests__/extensionsStore.spec.ts` | Passed | Install/reinstall now enter visible in-progress state immediately |
+| `C-016` | `electron/extensions/managedExtensionService.ts`, `electron/extensionIpcHandlers.ts`, `electron/preload.ts`, `types/electron.d.ts`, `stores/extensionsStore.ts`, `components/settings/VoiceInputExtensionCard.vue` | Completed | `pnpm -C autobyteus-web exec vitest --config electron/vitest.config.ts run electron/extensions/__tests__/managedExtensionService.spec.ts`; `pnpm -C autobyteus-web transpile-electron` | Passed | Installed Voice Input now exposes an Electron `Open Folder` action |
+| `C-017` | `components/agentInput/AgentUserInputTextArea.vue` | Completed | `pnpm -C autobyteus-web exec vitest --config vitest.config.mts run components/agentInput/__tests__/AgentUserInputTextArea.spec.ts stores/__tests__/voiceInputStore.spec.ts tests/integration/voice-input-extension.integration.test.ts` | Passed | Composer now shows visible recording/transcribing feedback during dictation |
+| `C-018` | `electron/main.ts`, `electron/extensionIpcHandlers.ts` | Completed | `rg -n "\\S" autobyteus-web/electron/main.ts autobyteus-web/electron/extensionIpcHandlers.ts`; `pnpm -C autobyteus-web transpile-electron` | Passed | Extension IPC was extracted so `electron/main.ts` returns under the 500-line review cap |
+
+### Validation Commands Rerun
+
+- `pnpm -C autobyteus-web exec vitest --config vitest.config.mts run components/settings/__tests__/VoiceInputExtensionCard.spec.ts stores/__tests__/extensionsStore.spec.ts components/agentInput/__tests__/AgentUserInputTextArea.spec.ts tests/integration/voice-input-extension.integration.test.ts pages/__tests__/settings.spec.ts stores/__tests__/voiceInputStore.spec.ts`
+- `pnpm -C autobyteus-web exec vitest --config electron/vitest.config.ts run electron/extensions/__tests__/managedExtensionService.spec.ts`
+- `pnpm -C autobyteus-web transpile-electron`
