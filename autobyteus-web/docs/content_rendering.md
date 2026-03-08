@@ -61,7 +61,7 @@ Markdown files are rendered using `MarkdownRenderer.vue`, which uses `markdown-i
 
 - **Standard Markdown**: CommonMark compliant.
 - **Syntax Highlighting**: Uses PrismJS for code blocks.
-- **Math Support**: Uses KaTeX for LaTeX equations (blocks enclosed in `$$` or `math` fences).
+- **Math Support**: Uses KaTeX for explicit LaTeX equations (`$...$`, `$$...$$`, `\(...\)`, `\[...\]`, and `math` fences). The renderer does not infer inline math from ordinary prose or file paths.
 - **Mermaid Diagrams**: Native support for Mermaid diagrams.
 
 ### Mermaid Support

@@ -91,4 +91,21 @@ describe('InterAgentMessageSegment', () => {
     expect(wrapper.find('.katex').exists()).toBe(true);
     expect(wrapper.find('.katex-display').exists()).toBe(true);
   });
+
+  it('keeps file path links intact without misrendering them as math', () => {
+    const wrapper = mount(InterAgentMessageSegment, {
+      props: {
+        segment: {
+          ...baseSegment,
+          content:
+            'Files: [evidence_extract.md](/Users/normy/.autobyteus/server-data/temp_workspace/paul-paper/evidence_extract.md)',
+        },
+      },
+    });
+
+    const link = wrapper.get('a');
+    expect(link.text()).toBe('evidence_extract.md');
+    expect(link.attributes('href')).toContain('/Users/normy/.autobyteus/server-data/temp_workspace/paul-paper/evidence_extract.md');
+    expect(wrapper.find('.katex').exists()).toBe(false);
+  });
 });
