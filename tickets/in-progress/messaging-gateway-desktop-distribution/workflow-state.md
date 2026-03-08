@@ -7,12 +7,12 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 ## Current Snapshot
 
 - Ticket: `messaging-gateway-desktop-distribution`
-- Current Stage: `6`
-- Next Stage: `Commit the realpath-based gateway startup fix, publish prerelease \`v1.2.26-rc3\`, and rerun Stages 7 through 10 against GitHub-hosted assets`
-- Code Edit Permission: `Unlocked`
+- Current Stage: `10`
+- Next Stage: `Await user handoff review on the completed rc3 release-lane validation result`
+- Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-025`
+- Last Transition ID: `T-029`
 - Last Updated: `2026-03-08`
 
 ## Stage Gates
@@ -25,11 +25,11 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | 3 Design Basis | Pass | Proposed design v2 incorporates provider-configuration writes plus disable/update lifecycle and rollback behavior | `tickets/in-progress/messaging-gateway-desktop-distribution/proposed-design.md` |
 | 4 Runtime Modeling | Pass | Future-state runtime call stack v2 now covers configuration writes, disable flow, and update-with-rollback flow | `tickets/in-progress/messaging-gateway-desktop-distribution/future-state-runtime-call-stack.md` |
 | 5 Review Gate | Pass | Runtime review reached `Go Confirmed` after one Requirement Gap re-entry and two consecutive clean deep-review rounds | `tickets/in-progress/messaging-gateway-desktop-distribution/future-state-runtime-call-stack-review.md` |
-| 6 Source + Unit/Integration | In Progress | Remote release validation found a second Local Fix: the packaged gateway entrypoint also needed realpath-based direct-run detection for `/var`-backed temp installs, and the repaired `rc3` artifact has now passed the local supervisor smoke proof before republish | `tickets/in-progress/messaging-gateway-desktop-distribution/implementation-progress.md`, `tickets/in-progress/messaging-gateway-desktop-distribution/workflow-state.md` |
-| 7 API/E2E Gate | Not Started | Stage 7 must be rerun against the published GitHub release assets after the remote workflow succeeds | N/A |
-| 8 Code Review Gate | Not Started | Stage 8 must be rerun after remote release validation to review any release-lane follow-up changes | N/A |
-| 9 Docs Sync | Not Started | Docs impact must be rechecked after the remote release validation path finishes | N/A |
-| 10 Final Handoff | Not Started | Await remote release validation, review, and docs recheck | N/A |
+| 6 Source + Unit/Integration | Pass | Release-lane Local Fixes closed: gateway entrypoint startup is canonicalized, supervisor startup budget is configurable, and the repaired `rc3` artifact passed the local supervisor smoke proof before publish | `tickets/in-progress/messaging-gateway-desktop-distribution/implementation-progress.md`, `tickets/in-progress/messaging-gateway-desktop-distribution/workflow-state.md` |
+| 7 API/E2E Gate | Pass | Live GitHub release validation passed against the published `v1.2.26-rc3` manifest URL, covering managed download, install, supervised start, status/diagnostics, and disable | `tickets/in-progress/messaging-gateway-desktop-distribution/implementation-progress.md`, `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/22826096208` |
+| 8 Code Review Gate | Pass | Round 3 deep review rechecked the release-lane Local Fixes, confirmed no new blockers, and reconfirmed the `<=500` hard limit across reviewed files | `tickets/in-progress/messaging-gateway-desktop-distribution/code-review.md`, `tickets/in-progress/messaging-gateway-desktop-distribution/workflow-state.md` |
+| 9 Docs Sync | Pass | No additional docs changes were required after the rc1 through rc3 release-lane fixes because the existing managed-flow README remains accurate | `tickets/in-progress/messaging-gateway-desktop-distribution/implementation-progress.md`, `autobyteus-web/README.md` |
+| 10 Final Handoff | In Progress | Implementation, live release validation, review, and docs sync are complete; the ticket is ready for user handoff review | `tickets/in-progress/messaging-gateway-desktop-distribution/implementation-progress.md`, `tickets/in-progress/messaging-gateway-desktop-distribution/workflow-state.md`, `tickets/in-progress/messaging-gateway-desktop-distribution/code-review.md` |
 
 ## Transition Log (Append-Only)
 
@@ -60,6 +60,10 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | T-023 | 2026-03-08 | 8 | 9 | Stage 8 Round 2 passed after closing the three Local Fix findings and reconfirming the `<=500` hard limit across all changed source/test files. | N/A | Locked | `tickets/in-progress/messaging-gateway-desktop-distribution/code-review.md`, `tickets/in-progress/messaging-gateway-desktop-distribution/implementation-progress.md`, `tickets/in-progress/messaging-gateway-desktop-distribution/workflow-state.md` |
 | T-024 | 2026-03-08 | 9 | 10 | Stage 9 recheck confirmed no additional docs impact beyond the already-synced README, and the ticket is ready for final handoff again while remaining in `in-progress` until explicit user confirmation. | N/A | Locked | `tickets/in-progress/messaging-gateway-desktop-distribution/implementation-progress.md`, `tickets/in-progress/messaging-gateway-desktop-distribution/workflow-state.md`, `autobyteus-web/README.md` |
 | T-025 | 2026-03-08 | 10 | 6 | User directed the ticket to continue into release-lane validation by committing the current work and merging `origin/personal` into the ticket branch before rerunning downstream gates. | N/A | Unlocked | `tickets/in-progress/messaging-gateway-desktop-distribution/workflow-state.md` |
+| T-026 | 2026-03-08 | 6 | 7 | Release-lane Local Fixes were completed through prerelease `v1.2.26-rc3`, including canonicalized gateway startup detection and the successful local supervisor smoke proof for extracted temp installs. | N/A | Unlocked | `tickets/in-progress/messaging-gateway-desktop-distribution/implementation-progress.md`, `tickets/in-progress/messaging-gateway-desktop-distribution/workflow-state.md` |
+| T-027 | 2026-03-08 | 7 | 8 | Stage 7 rerun passed against the live `v1.2.26-rc3` GitHub release assets, proving the server can download, install, start, query, and disable the published gateway artifact. | N/A | Locked | `tickets/in-progress/messaging-gateway-desktop-distribution/implementation-progress.md`, `tickets/in-progress/messaging-gateway-desktop-distribution/workflow-state.md` |
+| T-028 | 2026-03-08 | 8 | 9 | Stage 8 Round 3 deep review passed after rechecking the release-lane Local Fixes and confirming there are no remaining blockers. | N/A | Locked | `tickets/in-progress/messaging-gateway-desktop-distribution/code-review.md`, `tickets/in-progress/messaging-gateway-desktop-distribution/workflow-state.md` |
+| T-029 | 2026-03-08 | 9 | 10 | Stage 9 recheck found no new docs impact after the rc1 through rc3 release-lane fixes, and the ticket is ready for final handoff with live GitHub release validation complete. | N/A | Locked | `tickets/in-progress/messaging-gateway-desktop-distribution/implementation-progress.md`, `tickets/in-progress/messaging-gateway-desktop-distribution/workflow-state.md`, `autobyteus-web/README.md` |
 
 ## Audible Notification Log (Optional Tracking)
 
@@ -81,6 +85,7 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | 2026-03-08 | Re-entry | Stage 8 failed with Local Fix findings. Stage 6 is active again, code edits are unlocked, and the next work is fixing secret propagation, update semantics, and release-manifest generation. | Failed | `TTS still unavailable because local mlx-audio is outdated; same status communicated in text.` |
 | 2026-03-08 | Transition | Stage 10 is active again. Local Fix implementation, Stage 7 validation, Stage 8 review, and Stage 9 docs recheck are complete, code edits are locked, and the ticket is ready for final handoff. | Failed | `TTS still unavailable because local mlx-audio is outdated (0.3.1 vs 0.4.0); same status communicated in text.` |
 | 2026-03-08 | Transition | Stage 6 is active again for release-lane validation. Code edits are unlocked, and the next step is to commit the current work and merge origin personal into the ticket branch before rerunning validation. | Failed | `TTS still unavailable because local mlx-audio is outdated (0.3.1 vs 0.4.0); same status communicated in text.` |
+| 2026-03-08 | Transition | Stage 10 is active again after live rc3 GitHub release validation. The managed gateway artifact now downloads, starts, reports diagnostics, and disables cleanly through the server-owned flow, and the ticket is ready for final handoff review. | Failed | `TTS still unavailable because local mlx-audio is outdated (0.3.1 vs 0.4.0); same status communicated in text.` |
 
 ## Process Violation Log
 
