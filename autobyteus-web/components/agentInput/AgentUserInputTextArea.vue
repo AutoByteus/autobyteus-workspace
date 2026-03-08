@@ -20,7 +20,7 @@
         data-file-drop-target="true"
       ></textarea>
 
-      <button 
+      <button
         v-if="voiceInputStore.isAvailable || voiceInputStore.isRecording || voiceInputStore.isTranscribing"
         type="button"
         @click="handleVoiceAction"
@@ -35,7 +35,7 @@
         />
       </button>
 
-      <button 
+      <button
         @click="handlePrimaryAction"
         :disabled="isActionDisabled"
         :title="isSending ? 'Stop generation' : 'Send message'"
@@ -192,7 +192,7 @@ const adjustTextareaHeight = () => {
   }
 };
 
-const { call: debouncedUpdateStore, cancel: cancelDebouncedUpdateStore, flush: flushDebouncedUpdateStore } = 
+const { call: debouncedUpdateStore, cancel: cancelDebouncedUpdateStore, flush: flushDebouncedUpdateStore } =
   debounce((text: string) => {
     if (text !== storeCurrentRequirement.value) {
       activeContextStore.updateRequirement(text);
@@ -202,30 +202,30 @@ const { call: debouncedUpdateStore, cancel: cancelDebouncedUpdateStore, flush: f
 watch(storeCurrentRequirement, (newValFromStore) => {
   if (newValFromStore !== internalRequirement.value) {
     internalRequirement.value = newValFromStore;
-    nextTick(adjustTextareaHeight); 
+    nextTick(adjustTextareaHeight);
   }
-}, { immediate: true }); 
+}, { immediate: true });
 
 const handleInput = (event: Event) => {
   const target = event.target as HTMLTextAreaElement;
-  internalRequirement.value = target.value; 
+  internalRequirement.value = target.value;
   nextTick(adjustTextareaHeight);
   debouncedUpdateStore(internalRequirement.value);
 };
 
 const syncStoreImmediately = () => {
-  cancelDebouncedUpdateStore(); 
+  cancelDebouncedUpdateStore();
   if (internalRequirement.value !== storeCurrentRequirement.value) {
     activeContextStore.updateRequirement(internalRequirement.value);
   }
 };
 
 const handleBlur = () => {
-  flushDebouncedUpdateStore(); 
+  flushDebouncedUpdateStore();
 };
 
 const handleSend = async () => {
-  syncStoreImmediately(); 
+  syncStoreImmediately();
   try {
     await activeContextStore.send();
   } catch (error) {
@@ -263,7 +263,7 @@ const insertFilePaths = (filePaths: string[]) => {
   const textToInsert = filePaths.join(' ');
   const start = textarea.value.selectionStart;
   const end = textarea.value.selectionEnd;
-  
+
   const newText = internalRequirement.value.substring(0, start) + textToInsert + internalRequirement.value.substring(end);
   internalRequirement.value = newText;
 
@@ -281,7 +281,7 @@ const insertFilePaths = (filePaths: string[]) => {
 
 const handleDrop = async (event: DragEvent) => {
   if (!activeContextStore.activeAgentContext) return;
-  
+
   const dataTransfer = event.dataTransfer;
   if (!dataTransfer) return;
 
@@ -317,7 +317,7 @@ const handleDrop = async (event: DragEvent) => {
     console.log('[INFO] Drop event from native OS in browser, using filenames as fallback.');
     filePaths = Array.from(dataTransfer.files).map(file => file.name);
   }
-  
+
   insertFilePaths(filePaths);
 };
 
@@ -364,7 +364,7 @@ onMounted(async () => {
 });
 
 onUnmounted(() => {
-  flushDebouncedUpdateStore(); 
+  flushDebouncedUpdateStore();
   void voiceInputStore.cleanup();
   stopRecordingTimer();
   window.removeEventListener('resize', handleResize);
