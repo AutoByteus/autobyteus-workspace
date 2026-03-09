@@ -185,7 +185,7 @@ describe('ManagedExtensionService', () => {
     const service = new ManagedExtensionService(tempDir)
 
     await service.install('voice-input')
-    await service.updateVoiceInputSettings('voice-input', { languageMode: 'zh' })
+    await service.updateVoiceInputSettings('voice-input', { languageMode: 'zh', audioInputDeviceId: 'virtual-source' })
     await service.enable('voice-input')
 
     const state = await service.reinstall('voice-input')
@@ -194,6 +194,7 @@ describe('ManagedExtensionService', () => {
     expect(voiceInput?.status).toBe('installed')
     expect(voiceInput?.enabled).toBe(true)
     expect(voiceInput?.settings.languageMode).toBe('zh')
+    expect(voiceInput?.settings.audioInputDeviceId).toBe('virtual-source')
   })
 
   it('marks a broken installation as requiring attention', async () => {

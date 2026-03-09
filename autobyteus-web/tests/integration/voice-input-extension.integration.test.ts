@@ -165,7 +165,7 @@ describe('voice input extension integration', () => {
       installExtension: (id: 'voice-input') => managedExtensionService.install(id),
       enableExtension: (id: 'voice-input') => managedExtensionService.enable(id),
       disableExtension: (id: 'voice-input') => managedExtensionService.disable(id),
-      updateVoiceInputSettings: (id: 'voice-input', payload: { languageMode: 'auto' | 'en' | 'zh' }) =>
+      updateVoiceInputSettings: (id: 'voice-input', payload: { languageMode?: 'auto' | 'en' | 'zh'; audioInputDeviceId?: string | null }) =>
         managedExtensionService.updateVoiceInputSettings(id, payload),
       removeExtension: (id: 'voice-input') => managedExtensionService.remove(id),
       reinstallExtension: (id: 'voice-input') => managedExtensionService.reinstall(id),

@@ -6,11 +6,16 @@ import { vi } from 'vitest'
 const { voiceInputStoreMock } = vi.hoisted(() => ({
   voiceInputStoreMock: {
     initialize: vi.fn().mockResolvedValue(undefined),
+    refreshAudioInputDevices: vi.fn().mockResolvedValue(undefined),
     toggleRecording: vi.fn().mockResolvedValue(undefined),
     isRecording: false,
     isTranscribing: false,
     recordingSource: null,
     liveInputLevel: 0,
+    audioInputDevices: [],
+    microphonePermissionState: 'granted',
+    selectedAudioInputUnavailable: false,
+    selectedAudioInputLabel: 'System default',
     latestResult: null,
   },
 }))
@@ -39,6 +44,7 @@ function makeExtension(overrides: Record<string, unknown> = {}) {
     enabled: false,
     settings: {
       languageMode: 'auto',
+      audioInputDeviceId: null,
     },
     message: '',
     installProgress: null,
@@ -54,11 +60,16 @@ function makeExtension(overrides: Record<string, unknown> = {}) {
 describe('VoiceInputExtensionCard', () => {
   beforeEach(() => {
     voiceInputStoreMock.initialize.mockClear()
+    voiceInputStoreMock.refreshAudioInputDevices.mockClear()
     voiceInputStoreMock.toggleRecording.mockClear()
     voiceInputStoreMock.isRecording = false
     voiceInputStoreMock.isTranscribing = false
     voiceInputStoreMock.recordingSource = null
     voiceInputStoreMock.liveInputLevel = 0
+    voiceInputStoreMock.audioInputDevices = []
+    voiceInputStoreMock.microphonePermissionState = 'granted'
+    voiceInputStoreMock.selectedAudioInputUnavailable = false
+    voiceInputStoreMock.selectedAudioInputLabel = 'System default'
     voiceInputStoreMock.latestResult = null
   })
 
@@ -77,6 +88,10 @@ describe('VoiceInputExtensionCard', () => {
   })
 
   it('shows enable and language controls for an installed disabled extension', () => {
+    voiceInputStoreMock.audioInputDevices = [
+      { deviceId: 'virtual-source', label: 'Virtual Source' },
+    ]
+
     const wrapper = mount(VoiceInputExtensionCard, {
       props: {
         busy: false,
@@ -100,6 +115,8 @@ describe('VoiceInputExtensionCard', () => {
     expect(wrapper.text()).toContain('Remove')
     expect(wrapper.text()).toContain('Reinstall')
     expect(wrapper.text()).toContain('Language')
+    expect(wrapper.text()).toContain('Audio source')
+    expect(wrapper.text()).toContain('Virtual Source')
     expect(wrapper.text()).toContain('Backend: faster-whisper')
   })
 
@@ -123,6 +140,54 @@ describe('VoiceInputExtensionCard', () => {
     expect(wrapper.text()).toContain('Enabled')
     expect(wrapper.text()).toContain('Disable')
     expect(wrapper.text()).toContain('Backend: MLX')
+  })
+
+  it('shows a no-device warning when no audio inputs are available', () => {
+    voiceInputStoreMock.microphonePermissionState = 'granted'
+    voiceInputStoreMock.audioInputDevices = []
+
+    const wrapper = mount(VoiceInputExtensionCard, {
+      props: {
+        busy: false,
+        pendingAction: null,
+        extension: makeExtension({
+          status: 'installed',
+          enabled: true,
+          message: 'Voice Input is installed and enabled.',
+          runtimeVersion: '0.3.0',
+          modelVersion: 'mlx-community/whisper-small-mlx',
+          backendKind: 'mlx',
+        }),
+      },
+    })
+
+    expect(wrapper.text()).toContain('No audio input devices found.')
+  })
+
+  it('emits audio source updates when the selected device changes', async () => {
+    voiceInputStoreMock.audioInputDevices = [
+      { deviceId: 'virtual-source', label: 'Virtual Source' },
+    ]
+
+    const wrapper = mount(VoiceInputExtensionCard, {
+      props: {
+        busy: false,
+        pendingAction: null,
+        extension: makeExtension({
+          status: 'installed',
+          enabled: true,
+          message: 'Voice Input is installed and enabled.',
+          runtimeVersion: '0.3.0',
+          modelVersion: 'mlx-community/whisper-small-mlx',
+          backendKind: 'mlx',
+        }),
+      },
+    })
+
+    const selects = wrapper.findAll('select')
+    await selects[1].setValue('virtual-source')
+
+    expect(wrapper.emitted('updateAudioInputDevice')).toEqual([['virtual-source']])
   })
 
   it('shows an in-progress state while installation is running', () => {

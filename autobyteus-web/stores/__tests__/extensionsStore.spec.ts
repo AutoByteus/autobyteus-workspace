@@ -21,6 +21,7 @@ function makeVoiceInputState(overrides: Record<string, unknown> = {}) {
     enabled: false,
     settings: {
       languageMode: 'auto',
+      audioInputDeviceId: null,
     },
     message: '',
     installProgress: null,
@@ -80,6 +81,7 @@ describe('extensionsStore', () => {
           enabled: true,
           settings: {
             languageMode: 'zh',
+            audioInputDeviceId: 'virtual-source',
           },
           message: 'Voice Input is installed and enabled.',
           installedAt: '2026-03-08T10:00:00.000Z',
@@ -97,6 +99,7 @@ describe('extensionsStore', () => {
           enabled: true,
           settings: {
             languageMode: 'zh',
+            audioInputDeviceId: 'virtual-source',
           },
           message: 'Voice Input is installed and enabled.',
           installedAt: '2026-03-08T10:00:00.000Z',
@@ -173,6 +176,9 @@ describe('extensionsStore', () => {
 
     await store.updateVoiceInputLanguageMode('zh')
     expect(store.voiceInput?.settings.languageMode).toBe('zh')
+
+    await store.updateVoiceInputAudioInputDevice('virtual-source')
+    expect(store.voiceInput?.settings.audioInputDeviceId).toBe('virtual-source')
 
     await store.disableExtension('voice-input')
     expect(store.voiceInput?.enabled).toBe(false)

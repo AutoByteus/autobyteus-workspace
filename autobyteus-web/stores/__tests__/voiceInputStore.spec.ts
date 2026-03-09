@@ -5,6 +5,9 @@ const {
   activeContextStoreMock,
   extensionsStoreMock,
   addToastMock,
+  enumerateDevicesMock,
+  getUserMediaMock,
+  permissionsQueryMock,
 } = vi.hoisted(() => ({
   activeContextStoreMock: {
     currentRequirement: 'hello',
@@ -16,9 +19,16 @@ const {
     voiceInput: {
       status: 'installed',
       enabled: true,
+      settings: {
+        languageMode: 'auto',
+        audioInputDeviceId: null,
+      },
     },
   },
   addToastMock: vi.fn(),
+  enumerateDevicesMock: vi.fn(),
+  getUserMediaMock: vi.fn(),
+  permissionsQueryMock: vi.fn(),
 }))
 
 vi.mock('~/stores/activeContextStore', () => ({
@@ -46,7 +56,12 @@ describe('voiceInputStore', () => {
     extensionsStoreMock.initialize.mockClear()
     extensionsStoreMock.voiceInput.status = 'installed'
     extensionsStoreMock.voiceInput.enabled = true
+    extensionsStoreMock.voiceInput.settings.languageMode = 'auto'
+    extensionsStoreMock.voiceInput.settings.audioInputDeviceId = null
     addToastMock.mockReset()
+    enumerateDevicesMock.mockReset()
+    getUserMediaMock.mockReset()
+    permissionsQueryMock.mockReset()
     ;(window as typeof window & { electronAPI?: any }).electronAPI = {
       transcribeVoiceInput: vi.fn().mockResolvedValue({
         ok: true,
@@ -56,6 +71,26 @@ describe('voiceInputStore', () => {
         error: null,
       }),
     }
+
+    Object.defineProperty(navigator, 'mediaDevices', {
+      configurable: true,
+      value: {
+        enumerateDevices: enumerateDevicesMock.mockResolvedValue([
+          { kind: 'audioinput', deviceId: 'mic-1', label: 'USB Microphone' },
+        ]),
+        getUserMedia: getUserMediaMock.mockResolvedValue({
+          getTracks: () => [{ stop: vi.fn() }],
+        }),
+        addEventListener: vi.fn(),
+      },
+    })
+
+    Object.defineProperty(navigator, 'permissions', {
+      configurable: true,
+      value: {
+        query: permissionsQueryMock.mockResolvedValue({ state: 'granted' }),
+      },
+    })
   })
 
   it('appends transcript text into the current draft without sending', async () => {
@@ -233,5 +268,60 @@ describe('voiceInputStore', () => {
 
     expect(store.latestResult?.outcome).toBe('empty-transcript')
     expect(addToastMock).toHaveBeenCalledWith('No transcript returned. Try speaking closer to the microphone.', 'info')
+  })
+
+  it('uses the selected audio input device when starting recording', async () => {
+    extensionsStoreMock.voiceInput.settings.audioInputDeviceId = 'virtual-source'
+    enumerateDevicesMock.mockResolvedValue([
+      { kind: 'audioinput', deviceId: 'virtual-source', label: 'Virtual Source' },
+      { kind: 'audioinput', deviceId: 'usb-mic', label: 'USB Microphone' },
+    ])
+
+    const addModuleMock = vi.fn().mockResolvedValue(undefined)
+    const closeMock = vi.fn().mockResolvedValue(undefined)
+    const connectMock = vi.fn()
+
+    vi.stubGlobal('AudioContext', class {
+      audioWorklet = { addModule: addModuleMock }
+      createMediaStreamSource() {
+        return { connect: connectMock }
+      }
+      close = closeMock
+    } as any)
+
+    vi.stubGlobal('AudioWorkletNode', class {
+      port = { onmessage: null }
+      connect = connectMock
+    } as any)
+
+    const store = useVoiceInputStore()
+
+    await store.startRecording('settings-test')
+
+    expect(getUserMediaMock).toHaveBeenCalledWith({
+      audio: {
+        channelCount: 1,
+        deviceId: { exact: 'virtual-source' },
+      },
+    })
+    expect(store.isRecording).toBe(true)
+    expect(store.selectedAudioInputLabel).toBe('Virtual Source')
+
+    vi.unstubAllGlobals()
+  })
+
+  it('fails early when no audio input devices are available', async () => {
+    enumerateDevicesMock.mockResolvedValue([])
+
+    const store = useVoiceInputStore()
+
+    await store.startRecording('settings-test')
+
+    expect(store.latestResult?.outcome).toBe('error')
+    expect(store.latestResult?.error).toContain('No audio input devices found')
+    expect(addToastMock).toHaveBeenCalledWith(
+      'No audio input devices found. Connect a microphone or enable a virtual audio source.',
+      'error',
+    )
   })
 })

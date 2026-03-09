@@ -5,6 +5,12 @@ import { useExtensionsStore } from '~/stores/extensionsStore';
 
 export type VoiceInputRecordingSource = 'composer' | 'settings-test';
 export type VoiceInputResultOutcome = 'idle' | 'recording' | 'transcribing' | 'transcript-ready' | 'no-speech' | 'empty-transcript' | 'error';
+export type VoiceInputPermissionState = 'unknown' | 'prompt' | 'granted' | 'denied' | 'unsupported';
+
+export interface VoiceInputAudioInputDevice {
+  deviceId: string;
+  label: string;
+}
 
 export interface VoiceInputCaptureDiagnostics {
   inputSampleRate: number;
@@ -43,6 +49,9 @@ interface VoiceInputStoreState {
   audioWorklet: AudioWorkletNode | null;
   stream: MediaStream | null;
   flushPromiseResolve: ((payload: VoiceInputCapturePayload) => void) | null;
+  audioInputDevices: VoiceInputAudioInputDevice[];
+  microphonePermissionState: VoiceInputPermissionState;
+  mediaDeviceListenerRegistered: boolean;
 }
 
 function mergeTranscriptWithDraft(currentDraft: string, transcript: string): string {
@@ -55,6 +64,48 @@ function mergeTranscriptWithDraft(currentDraft: string, transcript: string): str
   }
   const separator = /\s$/.test(currentDraft) ? '' : ' ';
   return `${currentDraft}${separator}${trimmedTranscript}`;
+}
+
+function selectAudioInputDevices(devices: MediaDeviceInfo[]): VoiceInputAudioInputDevice[] {
+  const audioInputs = devices.filter((device) => device.kind === 'audioinput');
+  const dedicatedInputs = audioInputs.filter((device) => device.deviceId !== 'default' && device.deviceId !== 'communications');
+  const visibleInputs = dedicatedInputs.length > 0 ? dedicatedInputs : audioInputs;
+
+  return visibleInputs.map((device, index) => ({
+    deviceId: device.deviceId,
+    label: device.label.trim() || `Audio input ${index + 1}`,
+  }));
+}
+
+function toPermissionState(state: PermissionState | null): VoiceInputPermissionState {
+  if (state === 'granted' || state === 'prompt' || state === 'denied') {
+    return state;
+  }
+  return 'unknown';
+}
+
+function buildMicrophoneAccessError(error: unknown, selectedDeviceId: string | null): string {
+  const name = typeof error === 'object' && error && 'name' in error ? String((error as { name?: unknown }).name) : '';
+
+  if (name === 'NotAllowedError' || name === 'SecurityError') {
+    return 'Microphone permission is denied. Allow microphone access for AutoByteus and try again.';
+  }
+
+  if (name === 'OverconstrainedError') {
+    return 'The selected audio source is unavailable. Choose another input device in Voice Input settings.';
+  }
+
+  if (name === 'NotFoundError' || name === 'DevicesNotFoundError') {
+    return selectedDeviceId
+      ? 'The selected audio source is unavailable. Choose another input device in Voice Input settings.'
+      : 'No audio input devices found. Connect a microphone or enable a virtual audio source.';
+  }
+
+  if (name === 'NotReadableError' || name === 'TrackStartError') {
+    return 'The selected audio source could not be opened. It may already be in use by another application.';
+  }
+
+  return error instanceof Error ? error.message : 'Failed to access microphone';
 }
 
 export const useVoiceInputStore = defineStore('voiceInput', {
@@ -71,12 +122,37 @@ export const useVoiceInputStore = defineStore('voiceInput', {
     audioWorklet: null,
     stream: null,
     flushPromiseResolve: null,
+    audioInputDevices: [],
+    microphonePermissionState: 'unknown',
+    mediaDeviceListenerRegistered: false,
   }),
 
   getters: {
     isAvailable(): boolean {
       const extensionsStore = useExtensionsStore();
       return extensionsStore.voiceInput?.status === 'installed' && extensionsStore.voiceInput?.enabled === true;
+    },
+
+    selectedAudioInputDeviceId(): string | null {
+      const extensionsStore = useExtensionsStore();
+      return extensionsStore.voiceInput?.settings.audioInputDeviceId ?? null;
+    },
+
+    selectedAudioInputUnavailable(): boolean {
+      return Boolean(
+        this.selectedAudioInputDeviceId
+        && this.audioInputDevices.length > 0
+        && !this.audioInputDevices.some((device) => device.deviceId === this.selectedAudioInputDeviceId),
+      );
+    },
+
+    selectedAudioInputLabel(): string {
+      if (!this.selectedAudioInputDeviceId) {
+        return 'System default';
+      }
+
+      return this.audioInputDevices.find((device) => device.deviceId === this.selectedAudioInputDeviceId)?.label
+        || 'Saved device unavailable';
     },
   },
 
@@ -101,6 +177,49 @@ export const useVoiceInputStore = defineStore('voiceInput', {
       await extensionsStore.initialize();
       this.isElectron = typeof window !== 'undefined' && Boolean(window.electronAPI);
       this.initialized = true;
+      await this.refreshAudioInputDevices();
+      this.registerMediaDeviceListener();
+    },
+
+    async queryMicrophonePermission(): Promise<VoiceInputPermissionState> {
+      if (typeof navigator === 'undefined' || !('permissions' in navigator) || !navigator.permissions?.query) {
+        return 'unknown';
+      }
+
+      try {
+        const status = await navigator.permissions.query({ name: 'microphone' as PermissionName });
+        return toPermissionState(status.state);
+      } catch {
+        return 'unknown';
+      }
+    },
+
+    registerMediaDeviceListener(): void {
+      if (this.mediaDeviceListenerRegistered || typeof navigator === 'undefined' || !navigator.mediaDevices?.addEventListener) {
+        return;
+      }
+
+      navigator.mediaDevices.addEventListener('devicechange', () => {
+        void this.refreshAudioInputDevices();
+      });
+      this.mediaDeviceListenerRegistered = true;
+    },
+
+    async refreshAudioInputDevices(): Promise<void> {
+      if (typeof navigator === 'undefined' || !navigator.mediaDevices?.enumerateDevices) {
+        this.audioInputDevices = [];
+        this.microphonePermissionState = 'unsupported';
+        return;
+      }
+
+      this.microphonePermissionState = await this.queryMicrophonePermission();
+
+      try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        this.audioInputDevices = selectAudioInputDevices(devices);
+      } catch {
+        this.audioInputDevices = [];
+      }
     },
 
     async startRecording(source: VoiceInputRecordingSource = 'composer'): Promise<void> {
@@ -111,15 +230,40 @@ export const useVoiceInputStore = defineStore('voiceInput', {
         return;
       }
 
+      const selectedDeviceId = this.selectedAudioInputDeviceId;
+
       try {
         this.error = null;
         this.recordingSource = source;
         this.liveInputLevel = 0;
+
+        await this.refreshAudioInputDevices();
+
+        if (this.microphonePermissionState === 'denied') {
+          throw new Error('Microphone permission is denied. Allow microphone access for AutoByteus and try again.');
+        }
+
+        if (this.selectedAudioInputUnavailable) {
+          throw new Error('The selected audio source is unavailable. Choose another input device in Voice Input settings.');
+        }
+
+        if (this.audioInputDevices.length === 0 && this.microphonePermissionState === 'granted') {
+          throw new Error('No audio input devices found. Connect a microphone or enable a virtual audio source.');
+        }
+
+        const audioConstraints: MediaTrackConstraints = {
+          channelCount: 1,
+        };
+
+        if (selectedDeviceId) {
+          audioConstraints.deviceId = { exact: selectedDeviceId };
+        }
+
         this.stream = await navigator.mediaDevices.getUserMedia({
-          audio: {
-            channelCount: 1,
-          },
+          audio: audioConstraints,
         });
+
+        await this.refreshAudioInputDevices();
 
         this.audioContext = new AudioContext({ latencyHint: 'interactive' });
 
@@ -167,7 +311,10 @@ export const useVoiceInputStore = defineStore('voiceInput', {
           diagnostics: null,
         });
       } catch (error) {
-        this.error = error instanceof Error ? error.message : 'Failed to access microphone';
+        this.error = buildMicrophoneAccessError(error, selectedDeviceId);
+        if (this.error.includes('permission is denied')) {
+          this.microphonePermissionState = 'denied';
+        }
         this.setLatestResult({
           source,
           outcome: 'error',
