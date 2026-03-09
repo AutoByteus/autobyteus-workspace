@@ -92,6 +92,13 @@ jobs:
             exit 1
           fi
 
+      - name: Validate managed messaging release manifest matches release tag
+        if: ${{ steps.meta.outputs.enforce_version == 'true' }}
+        run: |
+          node autobyteus-message-gateway/scripts/build-runtime-package.mjs \
+            --check-release-manifest \
+            --release-tag "${{ steps.meta.outputs.release_tag }}"
+
       - name: Resolve release commit SHA
         id: sha
         run: |

@@ -5,6 +5,14 @@ import { spawn } from "node:child_process";
 import { mkdir, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import {
+  buildArchiveFileName,
+  buildReleaseManifest,
+  checkDefaultReleaseManifest,
+  defaultReleaseManifestPath,
+  resolveReleaseMetadata,
+  syncDefaultReleaseManifest,
+} from "./release-manifest.mjs";
 
 const COLORS = {
   green: "\x1b[32m",
@@ -17,29 +25,9 @@ const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const gatewayRoot = path.resolve(scriptDir, "..");
 const workspaceRoot = path.resolve(gatewayRoot, "..");
 const packageJsonPath = path.join(gatewayRoot, "package.json");
-const serverPackageJsonPath = path.join(
-  workspaceRoot,
-  "autobyteus-server-ts",
-  "package.json",
-);
-const desktopPackageJsonPath = path.join(
-  workspaceRoot,
-  "autobyteus-web",
-  "package.json",
-);
-const defaultReleaseManifestPath = path.join(
-  workspaceRoot,
-  "autobyteus-server-ts",
-  "src",
-  "managed-capabilities",
-  "messaging-gateway",
-  "release-manifest.json",
-);
 const defaultOutputDir = path.join(gatewayRoot, "dist-runtime");
 const stageDir = path.join(gatewayRoot, ".runtime-package-stage");
 const localPackageDir = path.join(stageDir, "_local-packages");
-const defaultRepositorySlug =
-  process.env.GITHUB_REPOSITORY ?? "AutoByteus/autobyteus-workspace";
 const PRUNE_STAGE_PATHS = [
   "src",
   "tests",
@@ -146,6 +134,9 @@ function printHelp() {
 
 Options:
   --skip-build           Skip workspace/gateway build steps and package existing build output.
+  --sync-manifest-only   Only sync the checked-in managed messaging release manifest.
+  --check-release-manifest
+                         Validate that the checked-in managed messaging release manifest matches the target release tag.
   --output-dir <path>    Write runtime artifacts to a custom directory.
   --release-tag <tag>    Generate release metadata for a specific tag.
   --help                 Show this help message.
@@ -155,6 +146,8 @@ Options:
 function parseArgs(argv) {
   const options = {
     skipBuild: false,
+    syncManifestOnly: false,
+    checkReleaseManifest: false,
     outputDir: defaultOutputDir,
     releaseTag: null,
   };
@@ -167,6 +160,14 @@ function parseArgs(argv) {
     }
     if (arg === "--skip-build") {
       options.skipBuild = true;
+      continue;
+    }
+    if (arg === "--sync-manifest-only") {
+      options.syncManifestOnly = true;
+      continue;
+    }
+    if (arg === "--check-release-manifest") {
+      options.checkReleaseManifest = true;
       continue;
     }
     if (arg === "--output-dir") {
@@ -188,6 +189,13 @@ function parseArgs(argv) {
       continue;
     }
     throw new Error(`Unknown argument: ${arg}`);
+  }
+
+  if (options.syncManifestOnly && options.checkReleaseManifest) {
+    throw new Error("--sync-manifest-only and --check-release-manifest cannot be used together.");
+  }
+  if ((options.syncManifestOnly || options.checkReleaseManifest) && options.skipBuild) {
+    throw new Error("--skip-build is not needed with manifest-only modes.");
   }
 
   return options;
@@ -307,48 +315,15 @@ async function writeRuntimeMetadata(sourceManifest, archivePath) {
   return { metadataPath, checksumPath, metadata };
 }
 
-async function resolveReleaseMetadata(options) {
-  const [serverManifest, desktopManifest] = await Promise.all([
-    readJson(serverPackageJsonPath),
-    readJson(desktopPackageJsonPath),
-  ]);
-
-  if (!serverManifest.version) {
-    throw new Error("autobyteus-server-ts package version is missing.");
-  }
-  if (!desktopManifest.version) {
-    throw new Error("autobyteus-web package version is missing.");
-  }
-
-  return {
-    serverVersion: serverManifest.version,
-    releaseTag: normalizeReleaseTag(options.releaseTag ?? `v${desktopManifest.version}`),
-    repositorySlug: defaultRepositorySlug,
-  };
-}
-
 async function writeReleaseManifest(input) {
-  const archiveName = path.basename(input.archivePath);
-  const releaseAssetBaseUrl = `https://github.com/${input.repositorySlug}/releases/download/${input.releaseTag}`;
-  const manifest = {
-    schemaVersion: 1,
-    releases: [
-      {
-        serverVersion: input.serverVersion,
-        releaseTag: input.releaseTag,
-        artifactVersion: input.gatewayManifest.version,
-        platformKey: "node-generic",
-        archiveType: "tar.gz",
-        downloadUrl: `${releaseAssetBaseUrl}/${archiveName}`,
-        sha256Url: `${releaseAssetBaseUrl}/${archiveName}.sha256`,
-        metadataUrl: `${releaseAssetBaseUrl}/${archiveName}.json`,
-        supportedProviders: ["WHATSAPP", "WECOM", "DISCORD", "TELEGRAM"],
-        excludedProviders: ["WECHAT"],
-      },
-    ],
-  };
-
-  const serializedManifest = `${JSON.stringify(manifest, null, 2)}\n`;
+  const manifest = buildReleaseManifest({
+    serverVersion: input.serverVersion,
+    releaseTag: input.releaseTag,
+    repositorySlug: input.repositorySlug,
+    gatewayManifest: input.gatewayManifest,
+    archiveFileName: path.basename(input.archivePath),
+  });
+  const serializedManifest = serializeManifest(manifest);
   const artifactManifestPath = path.join(
     path.dirname(input.archivePath),
     "release-manifest.json",
@@ -375,6 +350,27 @@ async function run() {
   const options = parseArgs(process.argv.slice(2));
   const sourceManifest = await readJson(packageJsonPath);
   const releaseMetadata = await resolveReleaseMetadata(options);
+  const manifestInput = {
+    serverVersion: releaseMetadata.serverVersion,
+    releaseTag: releaseMetadata.releaseTag,
+    repositorySlug: releaseMetadata.repositorySlug,
+    gatewayManifest: sourceManifest,
+    archiveFileName: buildArchiveFileName(sourceManifest),
+  };
+
+  if (options.syncManifestOnly) {
+    const manifest = await syncDefaultReleaseManifest(manifestInput);
+    info(`Synced default release manifest: ${defaultReleaseManifestPath}`);
+    info(`Release tag: ${manifest.releases[0].releaseTag}`);
+    info(`Server version: ${manifest.releases[0].serverVersion}`);
+    return;
+  }
+
+  if (options.checkReleaseManifest) {
+    await checkDefaultReleaseManifest(manifestInput);
+    info(`Managed messaging release manifest matches release tag ${releaseMetadata.releaseTag}.`);
+    return;
+  }
 
   await cleanDirectory(stageDir);
   await cleanDirectory(options.outputDir);
@@ -437,14 +433,3 @@ run().catch((error) => {
   fail(`Failed to build runtime package: ${error instanceof Error ? error.message : String(error)}`);
   process.exit(1);
 });
-
-function normalizeReleaseTag(value) {
-  if (typeof value !== "string") {
-    throw new Error("Release tag must be a string.");
-  }
-  const normalized = value.trim();
-  if (normalized.length === 0) {
-    throw new Error("Release tag cannot be empty.");
-  }
-  return normalized.startsWith("v") ? normalized : `v${normalized}`;
-}

@@ -140,8 +140,14 @@ run_release() {
 
   echo "Updating autobyteus-web/package.json: $current_version -> $version"
   set_package_version "$version"
+  echo "Syncing managed messaging release manifest to $tag"
+  node "$REPO_ROOT/autobyteus-message-gateway/scripts/build-runtime-package.mjs" \
+    --sync-manifest-only \
+    --release-tag "$tag"
 
-  git -C "$REPO_ROOT" add autobyteus-web/package.json
+  git -C "$REPO_ROOT" add \
+    autobyteus-web/package.json \
+    autobyteus-server-ts/src/managed-capabilities/messaging-gateway/release-manifest.json
   git -C "$REPO_ROOT" commit -m "chore(release): bump desktop app version to $version"
   git -C "$REPO_ROOT" tag -a "$tag" -m "Release $tag"
 
