@@ -11,4 +11,5 @@
 - Repository state:
   - branch `codex/messaging-gateway-release-hotfix` pushed
   - `personal` updated to commit `697597a`
-  - ticket remains in `tickets/in-progress/` pending explicit user confirmation before archive
+  - user confirmed completion on `2026-03-09`
+  - ticket archived to `tickets/done/messaging-gateway-release-hotfix`
