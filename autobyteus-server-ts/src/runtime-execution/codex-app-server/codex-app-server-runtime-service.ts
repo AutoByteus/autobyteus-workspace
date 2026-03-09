@@ -15,7 +15,6 @@ import {
   resolveTurnId,
 } from "./codex-runtime-launch-config.js";
 import {
-  renderTeamManifestDeveloperInstructions,
   resolveAllowedRecipientNamesFromManifest,
   resolveDynamicTools,
   resolveMemberNameFromMetadata,
@@ -23,6 +22,12 @@ import {
   resolveTeamManifestMembersFromMetadata,
   resolveTeamRunIdFromMetadata,
 } from "./codex-send-message-tooling.js";
+import {
+  composeMemberRuntimeInstructions,
+  renderMarkdownInstructionSection,
+  renderMarkdownInstructionSections,
+  resolveMemberRuntimeInstructionSourcesFromMetadata,
+} from "../member-runtime/member-runtime-instruction-composer.js";
 import {
   deleteApprovalRecord,
   findApprovalRecord,
@@ -53,10 +58,14 @@ import type {
   CodexRuntimeEvent,
   SessionRuntimeOptions,
 } from "./codex-runtime-shared.js";
+import { createCodexSessionStartupState } from "./codex-runtime-shared.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
 };
+
+const STARTUP_READY_TIMEOUT_MS = 60_000;
+const isRuntimeRawEventDebugEnabled = process.env.RUNTIME_RAW_EVENT_DEBUG === "1";
 
 export class CodexAppServerRuntimeService {
   private readonly sessions = new Map<string, CodexRunSessionState>();
@@ -138,6 +147,29 @@ export class CodexAppServerRuntimeService {
     return this.sessions.has(runId);
   }
 
+  getRunStatus(runId: string): string | null {
+    return this.sessions.get(runId)?.currentStatus ?? null;
+  }
+
+  getRunRuntimeReference(
+    runId: string,
+  ): { threadId: string; metadata: JsonObject } | null {
+    const state = this.sessions.get(runId);
+    if (!state) {
+      return null;
+    }
+    return {
+      threadId: state.threadId,
+      metadata: {
+        ...(state.teamRunId ? { teamRunId: state.teamRunId } : {}),
+        ...(state.memberName ? { memberName: state.memberName } : {}),
+        model: state.model,
+        cwd: state.workingDirectory,
+        reasoning_effort: state.reasoningEffort,
+      },
+    };
+  }
+
   subscribeToRunEvents(
     runId: string,
     listener: (event: CodexRuntimeEvent) => void,
@@ -152,6 +184,16 @@ export class CodexAppServerRuntimeService {
 
   async sendTurn(runId: string, message: AgentInputUserMessage): Promise<{ turnId: string | null }> {
     const state = this.requireSession(runId);
+    if (isRuntimeRawEventDebugEnabled) {
+      console.log("[CodexSendTurnStart]", {
+        runId,
+        threadId: state.threadId,
+        activeTurnId: state.activeTurnId,
+        startupStatus: state.startup.status,
+        contentPreview: message.content.slice(0, 160),
+      });
+    }
+    await this.awaitStartupReady(state);
     const payload = await state.client.request<unknown>("turn/start", {
       threadId: state.threadId,
       input: toCodexUserInput(message),
@@ -165,7 +207,20 @@ export class CodexAppServerRuntimeService {
     });
 
     const turnId = resolveTurnId(payload);
+    state.currentStatus = "RUNNING";
     state.activeTurnId = turnId;
+    if (isRuntimeRawEventDebugEnabled) {
+      console.log("[CodexSendTurnResponse]", {
+        runId,
+        threadId: state.threadId,
+        turnId,
+        payloadType: typeof payload,
+        payloadKeys:
+          payload && typeof payload === "object" && !Array.isArray(payload)
+            ? Object.keys(payload)
+            : [],
+      });
+    }
     return { turnId };
   }
 
@@ -252,6 +307,9 @@ export class CodexAppServerRuntimeService {
       return;
     }
     this.sessions.delete(runId);
+    state.startup.rejectReady(
+      new Error(`Codex runtime session '${runId}' was closed before startup completed.`),
+    );
     moveRuntimeListenersToDeferred({
       runId,
       activeListeners: state.listeners,
@@ -311,11 +369,30 @@ export class CodexAppServerRuntimeService {
       currentMemberName: memberName,
       members: teamManifestMembers,
     });
-    const developerInstructions = renderTeamManifestDeveloperInstructions({
+    const instructionSources = resolveMemberRuntimeInstructionSourcesFromMetadata(
+      options.runtimeMetadata,
+    );
+    const instructionComposition = composeMemberRuntimeInstructions({
+      teamInstructions: instructionSources.teamInstructions,
+      agentInstructions: instructionSources.agentInstructions,
       currentMemberName: memberName,
-      members: teamManifestMembers,
       sendMessageToEnabled,
+      teammates: teamManifestMembers,
     });
+    const baseInstructions = renderMarkdownInstructionSections([
+      {
+        title: "Team Instruction",
+        content: instructionComposition.teamInstruction,
+      },
+      {
+        title: "Agent Instruction",
+        content: instructionComposition.agentInstruction,
+      },
+    ]);
+    const developerInstructions = renderMarkdownInstructionSection(
+      "Runtime Instruction",
+      instructionComposition.runtimeInstruction,
+    );
     const dynamicTools = resolveDynamicTools({
       teamRunId,
       interAgentRelayEnabled: Boolean(this.interAgentRelayHandler),
@@ -333,6 +410,7 @@ export class CodexAppServerRuntimeService {
           model,
           approvalPolicy,
           dynamicTools,
+          baseInstructions,
           developerInstructions,
         )
       : await startCodexThread(
@@ -341,6 +419,7 @@ export class CodexAppServerRuntimeService {
           model,
           approvalPolicy,
           dynamicTools,
+          baseInstructions,
           developerInstructions,
         );
     if (!threadId) {
@@ -354,7 +433,9 @@ export class CodexAppServerRuntimeService {
       model,
       workingDirectory,
       reasoningEffort,
+      currentStatus: "IDLE",
       activeTurnId: null,
+      startup: createCodexSessionStartupState(),
       approvalRecords: new Map(),
       listeners: new Set(),
       unbindHandlers: [],
@@ -365,7 +446,24 @@ export class CodexAppServerRuntimeService {
 
     state.unbindHandlers.push(
       client.onNotification((message) => {
-        if (!isRuntimeMessageForSession(state, message.params, this.sessions.size)) {
+        const matchesSession = isRuntimeMessageForSession(
+          state,
+          message.method,
+          message.params,
+          this.sessions.size,
+        );
+        if (isRuntimeRawEventDebugEnabled) {
+          console.log("[CodexRuntimeNotification]", {
+            runId,
+            method: message.method,
+            matchesSession,
+            threadId: state.threadId,
+            activeTurnId: state.activeTurnId,
+            sessionCount: this.sessions.size,
+            paramKeys: Object.keys(message.params ?? {}),
+          });
+        }
+        if (!matchesSession) {
           return;
         }
         handleRuntimeNotification(state, message.method, message.params, this.emitEvent.bind(this));
@@ -373,7 +471,25 @@ export class CodexAppServerRuntimeService {
     );
     state.unbindHandlers.push(
       client.onServerRequest((message) => {
-        if (!isRuntimeMessageForSession(state, message.params, this.sessions.size)) {
+        const matchesSession = isRuntimeMessageForSession(
+          state,
+          message.method,
+          message.params,
+          this.sessions.size,
+        );
+        if (isRuntimeRawEventDebugEnabled) {
+          console.log("[CodexRuntimeServerRequest]", {
+            runId,
+            id: message.id,
+            method: message.method,
+            matchesSession,
+            threadId: state.threadId,
+            activeTurnId: state.activeTurnId,
+            sessionCount: this.sessions.size,
+            paramKeys: Object.keys(message.params ?? {}),
+          });
+        }
+        if (!matchesSession) {
           return;
         }
         this.handleServerRequest(state, message.id, message.method, message.params);
@@ -382,6 +498,13 @@ export class CodexAppServerRuntimeService {
     state.unbindHandlers.push(
       client.onClose((error) => {
         this.sessions.delete(runId);
+        state.startup.rejectReady(
+          new Error(
+            error?.message
+              ? `Codex app server closed before startup completed: ${error.message}`
+              : "Codex app server closed before startup completed.",
+          ),
+        );
         if (error) {
           this.emitEvent(state, {
             method: "error",
@@ -428,6 +551,14 @@ export class CodexAppServerRuntimeService {
   }
 
   private emitEvent(state: CodexRunSessionState, event: CodexRuntimeEvent): void {
+    if (isRuntimeRawEventDebugEnabled) {
+      console.log("[CodexEmitRuntimeEvent]", {
+        runId: state.runId,
+        method: event.method,
+        listenerCount: state.listeners.size,
+        paramKeys: Object.keys(event.params ?? {}),
+      });
+    }
     emitRuntimeEvent({
       listeners: state.listeners,
       event,
@@ -454,6 +585,32 @@ export class CodexAppServerRuntimeService {
       throw new Error(`Codex runtime session '${runId}' is not available.`);
     }
     return session;
+  }
+
+  private async awaitStartupReady(state: CodexRunSessionState): Promise<void> {
+    if (state.startup.status === "ready") {
+      return;
+    }
+
+    let timeoutHandle: ReturnType<typeof setTimeout> | null = null;
+    try {
+      await Promise.race([
+        state.startup.waitForReady,
+        new Promise<never>((_, reject) => {
+          timeoutHandle = setTimeout(() => {
+            reject(
+              new Error(
+                `Codex runtime session '${state.runId}' did not reach startup-ready state within ${String(STARTUP_READY_TIMEOUT_MS)}ms.`,
+              ),
+            );
+          }, STARTUP_READY_TIMEOUT_MS);
+        }),
+      ]);
+    } finally {
+      if (timeoutHandle) {
+        clearTimeout(timeoutHandle);
+      }
+    }
   }
 
   async resolveWorkingDirectory(workspaceId?: string | null): Promise<string> {

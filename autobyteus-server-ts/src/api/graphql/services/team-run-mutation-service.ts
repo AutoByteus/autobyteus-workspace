@@ -356,6 +356,7 @@ export class TeamRunMutationService {
     if (runtimeMode === "member_runtime") {
       memberBindingsOverride = await this.teamMemberRuntimeOrchestrator.createMemberRuntimeSessions(
         teamRunId,
+        options.teamDefinitionId,
         resolvedMemberConfigs,
       );
     } else {

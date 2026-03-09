@@ -2,6 +2,15 @@ import { describe, expect, it, vi } from "vitest";
 import type { CodexAppServerRuntimeService } from "../../../../src/runtime-execution/codex-app-server/codex-app-server-runtime-service.js";
 import { CodexAppServerRuntimeAdapter } from "../../../../src/runtime-execution/adapters/codex-app-server-runtime-adapter.js";
 
+vi.mock("../../../../src/runtime-execution/single-agent-runtime-metadata.js", () => ({
+  resolveSingleAgentInstructionRuntimeMetadata: vi.fn().mockResolvedValue({
+    agentInstructions: "Use tools when needed.",
+    memberInstructionSources: {
+      agentInstructions: "Use tools when needed.",
+    },
+  }),
+}));
+
 describe("CodexAppServerRuntimeAdapter", () => {
   it("forwards llmConfig into createRunSession options", async () => {
     const runtimeService = {
@@ -36,6 +45,12 @@ describe("CodexAppServerRuntimeAdapter", () => {
         workingDirectory: "/tmp/workspace",
         autoExecuteTools: false,
         llmConfig: { reasoning_effort: "high" },
+        runtimeMetadata: {
+          agentInstructions: "Use tools when needed.",
+          memberInstructionSources: {
+            agentInstructions: "Use tools when needed.",
+          },
+        },
       }),
     );
   });
@@ -79,9 +94,23 @@ describe("CodexAppServerRuntimeAdapter", () => {
         workingDirectory: "/tmp/workspace",
         autoExecuteTools: false,
         llmConfig: { reasoning_effort: "medium" },
+        runtimeMetadata: {
+          model: "gpt-5.3-codex",
+          agentInstructions: "Use tools when needed.",
+          memberInstructionSources: {
+            agentInstructions: "Use tools when needed.",
+          },
+        },
       }),
       expect.objectContaining({
         threadId: "thread-old",
+        metadata: {
+          model: "gpt-5.3-codex",
+          agentInstructions: "Use tools when needed.",
+          memberInstructionSources: {
+            agentInstructions: "Use tools when needed.",
+          },
+        },
       }),
     );
   });
@@ -101,6 +130,48 @@ describe("CodexAppServerRuntimeAdapter", () => {
 
     expect(adapter.isRunActive("run-1")).toBe(true);
     expect((runtimeService.hasRunSession as any)).toHaveBeenCalledWith("run-1");
+  });
+
+  it("surfaces live runtime reference from the runtime service", async () => {
+    const runtimeService = {
+      getRunRuntimeReference: vi.fn().mockReturnValue({
+        threadId: "thread-live",
+        metadata: { model: "gpt-5.3-codex" },
+      }),
+      sendTurn: vi.fn().mockResolvedValue({ turnId: "turn-1" }),
+      hasRunSession: vi.fn().mockReturnValue(true),
+      resolveWorkingDirectory: vi.fn(),
+      createRunSession: vi.fn(),
+      restoreRunSession: vi.fn(),
+      approveTool: vi.fn(),
+      interruptRun: vi.fn(),
+      terminateRun: vi.fn(),
+      getRunStatus: vi.fn().mockReturnValue("RUNNING"),
+    } as unknown as CodexAppServerRuntimeService;
+    const adapter = new CodexAppServerRuntimeAdapter(runtimeService);
+
+    expect(adapter.getRunRuntimeReference("run-1")).toEqual({
+      runtimeKind: "codex_app_server",
+      sessionId: "run-1",
+      threadId: "thread-live",
+      metadata: { model: "gpt-5.3-codex" },
+    });
+    expect(adapter.getRunStatus("run-1")).toBe("RUNNING");
+
+    const result = await adapter.sendTurn({
+      runId: "run-1",
+      mode: "agent",
+      message: { content: "hello", contextFiles: [] } as any,
+    });
+    expect(result).toEqual({
+      accepted: true,
+      runtimeReference: {
+        runtimeKind: "codex_app_server",
+        sessionId: "run-1",
+        threadId: "thread-live",
+        metadata: { model: "gpt-5.3-codex" },
+      },
+    });
   });
 
   it("normalizes runtime events into status/thread hints", () => {

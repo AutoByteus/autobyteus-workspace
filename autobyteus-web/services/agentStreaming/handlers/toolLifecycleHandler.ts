@@ -37,6 +37,7 @@ import {
   parseToolExecutionSucceededPayload,
   parseToolLogPayload,
 } from './toolLifecycleParsers';
+import { isPlaceholderToolName } from '~/utils/toolNamePlaceholders';
 
 const buildInvocationAliases = (invocationId: string): string[] => {
   const trimmed = invocationId.trim();
@@ -349,7 +350,7 @@ export function handleToolApprovalRequested(
 
   if (!isTerminalStatus(segment.status)) {
     mergeArguments(segment, parsed.arguments);
-    if (!segment.toolName) {
+    if (isPlaceholderToolName(segment.toolName)) {
       segment.toolName = parsed.toolName;
     }
   }
@@ -372,7 +373,7 @@ export function handleToolApproved(payload: ToolApprovedPayload, context: AgentC
 
   const segment = ensureToolLifecycleSegment(context, parsed.invocationId, parsed.toolName, {});
 
-  if (!segment.toolName) {
+  if (isPlaceholderToolName(segment.toolName)) {
     segment.toolName = parsed.toolName;
   }
   syncActivityToolName(context, parsed.invocationId, parsed.toolName);
@@ -393,7 +394,7 @@ export function handleToolDenied(payload: ToolDeniedPayload, context: AgentConte
 
   const segment = ensureToolLifecycleSegment(context, parsed.invocationId, parsed.toolName, {});
 
-  if (!segment.toolName) {
+  if (isPlaceholderToolName(segment.toolName)) {
     segment.toolName = parsed.toolName;
   }
   syncActivityToolName(context, parsed.invocationId, parsed.toolName);
@@ -424,7 +425,7 @@ export function handleToolExecutionStarted(
 
   if (!isTerminalStatus(segment.status)) {
     mergeArguments(segment, parsed.arguments);
-    if (!segment.toolName) {
+    if (isPlaceholderToolName(segment.toolName)) {
       segment.toolName = parsed.toolName;
     }
   }
@@ -452,7 +453,7 @@ export function handleToolExecutionSucceeded(
 
   const segment = ensureToolLifecycleSegment(context, parsed.invocationId, parsed.toolName, {});
 
-  if (!segment.toolName) {
+  if (isPlaceholderToolName(segment.toolName)) {
     segment.toolName = parsed.toolName;
   }
   syncActivityToolName(context, parsed.invocationId, parsed.toolName);
@@ -476,7 +477,7 @@ export function handleToolExecutionFailed(
 
   const segment = ensureToolLifecycleSegment(context, parsed.invocationId, parsed.toolName, {});
 
-  if (!segment.toolName) {
+  if (isPlaceholderToolName(segment.toolName)) {
     segment.toolName = parsed.toolName;
   }
   syncActivityToolName(context, parsed.invocationId, parsed.toolName);

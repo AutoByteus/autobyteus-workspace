@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import {
-  renderTeamManifestSystemPromptAppend,
   resolveAllowedRecipientNamesFromManifest,
   resolveMemberNameFromMetadata,
   resolveSendMessageToEnabledFromMetadata,
@@ -39,37 +38,5 @@ describe("claude-runtime-team-metadata", () => {
       members,
     });
     expect(recipients).toEqual(["Student"]);
-  });
-
-  it("renders explicit delegation guidance for enabled team messaging", () => {
-    const promptAppend = renderTeamManifestSystemPromptAppend({
-      currentMemberName: "Professor",
-      sendMessageToEnabled: true,
-      members: [
-        { memberName: "Professor", role: "coordinator", description: "Leads delegation" },
-        { memberName: "Student", role: "implementer", description: "Executes tasks" },
-      ],
-    });
-
-    expect(promptAppend).toContain("You are a member of an agent team.");
-    expect(promptAppend).toContain("Use `send_message_to`");
-    expect(promptAppend).toContain("explicitly mention `send_message_to`");
-    expect(promptAppend).toContain("Never claim you have no teammates");
-    expect(promptAppend).toContain("- Student: implementer | Executes tasks");
-    expect(promptAppend).not.toContain("- Professor: coordinator");
-  });
-
-  it("renders disabled guidance when team tool is unavailable", () => {
-    const promptAppend = renderTeamManifestSystemPromptAppend({
-      currentMemberName: "Professor",
-      sendMessageToEnabled: false,
-      members: [
-        { memberName: "Professor", role: null, description: null },
-        { memberName: "Student", role: null, description: null },
-      ],
-    });
-    expect(promptAppend).toContain("Do not attempt `send_message_to`");
-    expect(promptAppend).toContain("Teammates:");
-    expect(promptAppend).toContain("- Student");
   });
 });

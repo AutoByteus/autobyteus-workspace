@@ -57,6 +57,12 @@ const createSubject = () => {
   const agentDefinitionService = {
     getAgentDefinitionById: vi.fn().mockResolvedValue({
       toolNames: ["send_message_to"],
+      instructions: "Investigate and report implementation details.",
+    }),
+  } as any;
+  const agentTeamDefinitionService = {
+    getDefinitionById: vi.fn().mockResolvedValue({
+      instructions: "Coordinate with the rest of the team and share results clearly.",
     }),
   } as any;
 
@@ -68,6 +74,7 @@ const createSubject = () => {
     teamRuntimeInterAgentMessageRelay,
     workspaceManager,
     agentDefinitionService,
+    agentTeamDefinitionService,
   });
 
   const unbindRelayHandler = bindTeamMemberRuntimeRelayHandler({
@@ -88,6 +95,7 @@ const createSubject = () => {
       teamRuntimeInterAgentMessageRelay,
       workspaceManager,
       agentDefinitionService,
+      agentTeamDefinitionService,
     },
     unbindRelayHandler,
     invokeHandler: async (request: RuntimeInterAgentRelayRequest) => {
@@ -114,7 +122,7 @@ describe("TeamMemberRuntimeOrchestrator", () => {
       },
     });
 
-    const bindings = await orchestrator.createMemberRuntimeSessions("team-1", [
+    const bindings = await orchestrator.createMemberRuntimeSessions("team-1", "team-def-1", [
       {
         memberName: "Professor",
         memberRouteKey: "professor",
@@ -136,6 +144,7 @@ describe("TeamMemberRuntimeOrchestrator", () => {
         workspaceId: "workspace-1",
         runtimeReference: expect.objectContaining({
           metadata: expect.objectContaining({
+            teamDefinitionId: "team-def-1",
             sendMessageToEnabled: true,
             teamMemberManifest: [
               {
@@ -144,6 +153,12 @@ describe("TeamMemberRuntimeOrchestrator", () => {
                 description: null,
               },
             ],
+            memberInstructionSources: {
+              teamInstructions: "Coordinate with the rest of the team and share results clearly.",
+              agentInstructions: "Investigate and report implementation details.",
+            },
+            teamInstructions: "Coordinate with the rest of the team and share results clearly.",
+            agentInstructions: "Investigate and report implementation details.",
           }),
         }),
       }),
@@ -180,7 +195,7 @@ describe("TeamMemberRuntimeOrchestrator", () => {
       },
     });
 
-    await orchestrator.createMemberRuntimeSessions("team-1", [
+    await orchestrator.createMemberRuntimeSessions("team-1", "team-def-1", [
       {
         memberName: "Professor",
         memberRouteKey: "professor",
@@ -224,7 +239,7 @@ describe("TeamMemberRuntimeOrchestrator", () => {
       },
     });
 
-    await orchestrator.createMemberRuntimeSessions("team-1", [
+    await orchestrator.createMemberRuntimeSessions("team-1", "team-def-1", [
       {
         memberName: "Professor",
         memberRouteKey: "professor",
@@ -275,7 +290,7 @@ describe("TeamMemberRuntimeOrchestrator", () => {
       },
     });
 
-    await orchestrator.createMemberRuntimeSessions("team-1", [
+    await orchestrator.createMemberRuntimeSessions("team-1", "team-def-1", [
       {
         memberName: "Professor",
         memberRouteKey: "professor",

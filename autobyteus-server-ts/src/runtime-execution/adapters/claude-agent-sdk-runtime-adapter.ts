@@ -17,6 +17,7 @@ import {
   ClaudeAgentSdkRuntimeService,
   getClaudeAgentSdkRuntimeService,
 } from "../claude-agent-sdk/claude-agent-sdk-runtime-service.js";
+import { resolveSingleAgentInstructionRuntimeMetadata } from "../single-agent-runtime-metadata.js";
 
 const buildCommandFailure = (error: unknown): RuntimeCommandResult => ({
   accepted: false,
@@ -44,12 +45,15 @@ export class ClaudeAgentSdkRuntimeAdapter implements RuntimeAdapter {
   async createAgentRun(input: RuntimeCreateAgentRunInput): Promise<RuntimeCreateResult> {
     const runId = randomUUID();
     const workingDirectory = await this.runtimeService.resolveWorkingDirectory(input.workspaceId);
+    const runtimeMetadata = await resolveSingleAgentInstructionRuntimeMetadata(
+      input.agentDefinitionId,
+    );
     const session = await this.runtimeService.createRunSession(runId, {
       modelIdentifier: input.llmModelIdentifier,
       workingDirectory,
       autoExecuteTools: input.autoExecuteTools,
       llmConfig: input.llmConfig ?? null,
-      runtimeMetadata: null,
+      runtimeMetadata,
     });
 
     return {
@@ -58,13 +62,20 @@ export class ClaudeAgentSdkRuntimeAdapter implements RuntimeAdapter {
         runtimeKind: this.runtimeKind,
         sessionId: session.sessionId,
         threadId: session.sessionId,
-        metadata: session.metadata,
+        metadata: {
+          ...runtimeMetadata,
+          ...session.metadata,
+        },
       },
     };
   }
 
   async restoreAgentRun(input: RuntimeRestoreAgentRunInput): Promise<RuntimeCreateResult> {
     const workingDirectory = await this.runtimeService.resolveWorkingDirectory(input.workspaceId);
+    const runtimeMetadata = {
+      ...(input.runtimeReference?.metadata ?? {}),
+      ...(await resolveSingleAgentInstructionRuntimeMetadata(input.agentDefinitionId)),
+    };
     const session = await this.runtimeService.restoreRunSession(
       input.runId,
       {
@@ -72,11 +83,11 @@ export class ClaudeAgentSdkRuntimeAdapter implements RuntimeAdapter {
         workingDirectory,
         autoExecuteTools: input.autoExecuteTools,
         llmConfig: input.llmConfig ?? null,
-        runtimeMetadata: input.runtimeReference?.metadata ?? null,
+        runtimeMetadata,
       },
       {
         sessionId: input.runtimeReference?.sessionId ?? input.runtimeReference?.threadId ?? input.runId,
-        metadata: input.runtimeReference?.metadata ?? null,
+        metadata: runtimeMetadata,
       },
     );
 
@@ -86,7 +97,10 @@ export class ClaudeAgentSdkRuntimeAdapter implements RuntimeAdapter {
         runtimeKind: this.runtimeKind,
         sessionId: session.sessionId,
         threadId: session.sessionId,
-        metadata: session.metadata,
+        metadata: {
+          ...runtimeMetadata,
+          ...session.metadata,
+        },
       },
     };
   }

@@ -19,6 +19,7 @@ import {
   getCodexAppServerRuntimeService,
 } from "../codex-app-server/codex-app-server-runtime-service.js";
 import { normalizeCodexRuntimeMethod } from "../codex-app-server/codex-runtime-method-normalizer.js";
+import { resolveSingleAgentInstructionRuntimeMetadata } from "../single-agent-runtime-metadata.js";
 
 const buildCommandFailure = (error: unknown): RuntimeCommandResult => ({
   accepted: false,
@@ -46,11 +47,15 @@ export class CodexAppServerRuntimeAdapter implements RuntimeAdapter {
   async createAgentRun(input: RuntimeCreateAgentRunInput): Promise<RuntimeCreateResult> {
     const runId = randomUUID();
     const workingDirectory = await this.runtimeService.resolveWorkingDirectory(input.workspaceId);
+    const runtimeMetadata = await resolveSingleAgentInstructionRuntimeMetadata(
+      input.agentDefinitionId,
+    );
     const session = await this.runtimeService.createRunSession(runId, {
       modelIdentifier: input.llmModelIdentifier,
       workingDirectory,
       autoExecuteTools: input.autoExecuteTools,
       llmConfig: input.llmConfig ?? null,
+      runtimeMetadata,
     });
     return {
       runId,
@@ -58,13 +63,20 @@ export class CodexAppServerRuntimeAdapter implements RuntimeAdapter {
         runtimeKind: this.runtimeKind,
         sessionId: runId,
         threadId: session.threadId,
-        metadata: session.metadata,
+        metadata: {
+          ...runtimeMetadata,
+          ...session.metadata,
+        },
       },
     };
   }
 
   async restoreAgentRun(input: RuntimeRestoreAgentRunInput): Promise<RuntimeCreateResult> {
     const workingDirectory = await this.runtimeService.resolveWorkingDirectory(input.workspaceId);
+    const runtimeMetadata = {
+      ...(input.runtimeReference?.metadata ?? {}),
+      ...(await resolveSingleAgentInstructionRuntimeMetadata(input.agentDefinitionId)),
+    };
     const session = await this.runtimeService.restoreRunSession(
       input.runId,
       {
@@ -72,10 +84,11 @@ export class CodexAppServerRuntimeAdapter implements RuntimeAdapter {
         workingDirectory,
         autoExecuteTools: input.autoExecuteTools,
         llmConfig: input.llmConfig ?? null,
+        runtimeMetadata,
       },
       {
         threadId: input.runtimeReference?.threadId ?? null,
-        metadata: input.runtimeReference?.metadata ?? null,
+        metadata: runtimeMetadata,
       },
     );
     return {
@@ -84,13 +97,33 @@ export class CodexAppServerRuntimeAdapter implements RuntimeAdapter {
         runtimeKind: this.runtimeKind,
         sessionId: input.runId,
         threadId: session.threadId,
-        metadata: session.metadata,
+        metadata: {
+          ...runtimeMetadata,
+          ...session.metadata,
+        },
       },
     };
   }
 
   isRunActive(runId: string): boolean {
     return this.runtimeService.hasRunSession(runId);
+  }
+
+  getRunRuntimeReference(runId: string) {
+    const runtimeReference = this.runtimeService.getRunRuntimeReference(runId);
+    if (!runtimeReference) {
+      return null;
+    }
+    return {
+      runtimeKind: this.runtimeKind,
+      sessionId: runId,
+      threadId: runtimeReference.threadId,
+      metadata: runtimeReference.metadata,
+    };
+  }
+
+  getRunStatus(runId: string): string | null {
+    return this.runtimeService.getRunStatus(runId);
   }
 
   subscribeToRunEvents(runId: string, onEvent: (event: unknown) => void): () => void {
@@ -144,7 +177,10 @@ export class CodexAppServerRuntimeAdapter implements RuntimeAdapter {
   async sendTurn(input: RuntimeSendTurnInput): Promise<RuntimeCommandResult> {
     try {
       await this.runtimeService.sendTurn(input.runId, input.message);
-      return { accepted: true };
+      return {
+        accepted: true,
+        runtimeReference: this.getRunRuntimeReference(input.runId),
+      };
     } catch (error) {
       return buildCommandFailure(error);
     }
@@ -168,7 +204,10 @@ export class CodexAppServerRuntimeAdapter implements RuntimeAdapter {
   ): Promise<RuntimeCommandResult> {
     try {
       await this.runtimeService.injectInterAgentEnvelope(input.runId, input.envelope);
-      return { accepted: true };
+      return {
+        accepted: true,
+        runtimeReference: this.getRunRuntimeReference(input.runId),
+      };
     } catch (error) {
       return buildCommandFailure(error);
     }
@@ -192,8 +231,12 @@ export class CodexAppServerRuntimeAdapter implements RuntimeAdapter {
 
   async terminateRun(input: RuntimeTerminateRunInput): Promise<RuntimeCommandResult> {
     try {
+      const runtimeReference = this.getRunRuntimeReference(input.runId);
       await this.runtimeService.terminateRun(input.runId);
-      return { accepted: true };
+      return {
+        accepted: true,
+        runtimeReference,
+      };
     } catch (error) {
       return buildCommandFailure(error);
     }

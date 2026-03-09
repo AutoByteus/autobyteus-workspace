@@ -4,6 +4,7 @@ import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { AgentStatusPayload, AssistantCompletePayload, ErrorPayload } from '../../protocol/messageTypes';
 
 const mockActivityStore = {
+  updateActivityToolName: vi.fn(),
   updateActivityStatus: vi.fn(),
   setActivityResult: vi.fn(),
   addActivityLog: vi.fn(),
@@ -141,6 +142,11 @@ describe('agentStatusHandler', () => {
       expect(aiMsg.segments).toHaveLength(1);
       expect(toolSegment.status).toBe('error');
       expect(toolSegment.error).toBe(payload.message);
+      expect(mockActivityStore.updateActivityToolName).toHaveBeenCalledWith(
+        mockContext.state.runId,
+        'inv-123',
+        'read_file',
+      );
       expect(mockContext.isSending).toBe(false);
       expect(aiMsg.isComplete).toBe(true);
     });

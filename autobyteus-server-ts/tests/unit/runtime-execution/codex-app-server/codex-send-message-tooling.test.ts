@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
   isSendMessageToToolName,
-  renderTeamManifestDeveloperInstructions,
   resolveAllowedRecipientNamesFromManifest,
   resolveDynamicToolArgsFromParams,
   resolveDynamicToolNameFromParams,
@@ -159,22 +158,5 @@ describe("codex-send-message-tooling", () => {
         ],
       }),
     ).toEqual(["Student"]);
-  });
-
-  it("renders team-manifest developer instructions for codex sessions", () => {
-    const instructions = renderTeamManifestDeveloperInstructions({
-      currentMemberName: "Professor",
-      sendMessageToEnabled: true,
-      members: [
-        { memberName: "Professor", role: "coordinator", description: "Leads delegation" },
-        { memberName: "Student", role: "implementer", description: "Executes tasks" },
-      ],
-    });
-    expect(instructions).toContain("You are a member of an agent team.");
-    expect(instructions).toContain("Student");
-    expect(instructions).not.toContain("Professor: coordinator");
-    expect(instructions).toContain("Use `send_message_to`");
-    expect(instructions).toContain("plain text does not deliver messages");
-    expect(instructions).toContain("Do not claim a teammate message was sent");
   });
 });

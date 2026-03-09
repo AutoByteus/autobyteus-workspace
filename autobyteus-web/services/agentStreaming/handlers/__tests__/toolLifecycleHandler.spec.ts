@@ -201,6 +201,33 @@ describe('toolLifecycleHandler', () => {
     expect(mockActivityStore.updateActivityStatus).toHaveBeenCalledWith(runId, invocationId, 'executing');
   });
 
+  it('replaces unknown_tool placeholders when later lifecycle events carry the concrete tool name', () => {
+    const invocationId = 'tool-send-message';
+    const segment = buildToolCallSegment(invocationId);
+    segment.toolName = 'unknown_tool';
+    const context = buildContextWithSegment(segment);
+
+    handleToolExecutionStarted(
+      {
+        invocation_id: invocationId,
+        tool_name: 'send_message_to',
+        arguments: {
+          recipient_name: 'Student',
+          content: 'Hard question',
+        },
+      },
+      context,
+    );
+
+    expect(segment.toolName).toBe('send_message_to');
+    expect(segment.status).toBe('executing');
+    expect(mockActivityStore.updateActivityToolName).toHaveBeenCalledWith(
+      runId,
+      invocationId,
+      'send_message_to',
+    );
+  });
+
   it('does not regress from executing back to approved', () => {
     const invocationId = 'bash-2';
     const segment = buildTerminalSegment(invocationId);

@@ -15,6 +15,7 @@ import type {
 import { findOrCreateAIMessage, findSegmentById } from './segmentHandler';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
+import { isPlaceholderToolName } from '~/utils/toolNamePlaceholders';
 
 
 /**
@@ -129,12 +130,15 @@ function applyToolError(info: ToolErrorInfo, context: AgentContext): boolean {
   if (Array.isArray(toolSegment.logs) && !toolSegment.logs.includes(info.message)) {
     toolSegment.logs.push(info.message);
   }
-  if (!toolSegment.toolName && info.toolName) {
+  if (info.toolName && isPlaceholderToolName(toolSegment.toolName)) {
     toolSegment.toolName = info.toolName;
   }
 
   const activityStore = useAgentActivityStore();
   const agentRunId = context.state.runId;
+  if (info.toolName) {
+    activityStore.updateActivityToolName(agentRunId, info.invocationId, info.toolName);
+  }
   activityStore.updateActivityStatus(agentRunId, info.invocationId, 'error');
   activityStore.setActivityResult(agentRunId, info.invocationId, null, info.message);
 

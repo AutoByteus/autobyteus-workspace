@@ -13,6 +13,7 @@ import { createSegmentFromPayload } from '../protocol/segmentTypes';
 
 import { useAgentArtifactsStore } from '~/stores/agentArtifactsStore';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
+import { isPlaceholderToolName } from '~/utils/toolNamePlaceholders';
 
 /**
  * Extract context text for the activity store (e.g. filename, command, or partial tool name).
@@ -82,6 +83,18 @@ export function handleSegmentStart(
   const existingSegment = findSegmentById(context, payload.id);
   if (existingSegment) {
     mergeSegmentStartMetadata(existingSegment, payload);
+    if (
+      ['tool_call', 'write_file', 'terminal_command', 'edit_file'].includes(existingSegment.type) &&
+      typeof payload.metadata?.tool_name === 'string' &&
+      payload.metadata.tool_name.trim().length > 0
+    ) {
+      const activityStore = useAgentActivityStore();
+      activityStore.updateActivityToolName(
+        context.state.runId,
+        payload.id,
+        payload.metadata.tool_name,
+      );
+    }
     return;
   }
   const aiMessage = findOrCreateAIMessage(context);
@@ -177,9 +190,7 @@ function mergeSegmentStartMetadata(
       segment.type === 'terminal_command' ||
       segment.type === 'edit_file') &&
     metadata.tool_name &&
-    (!segment.toolName ||
-      segment.toolName === 'MISSING_TOOL_NAME' ||
-      segment.toolName === 'tool_call')
+    isPlaceholderToolName(segment.toolName)
   ) {
     segment.toolName = String(metadata.tool_name);
   }
@@ -315,8 +326,12 @@ export function handleSegmentEnd(
   // --- Sidecar Activity Store ---
   if (['tool_call', 'write_file', 'terminal_command', 'edit_file'].includes(segment.type)) {
     const activityStore = useAgentActivityStore();
+    const toolSegment = segment as ToolInvocationLifecycle;
     // Update status to 'parsed' (handlers will move it to executing/awaiting later)
     activityStore.updateActivityStatus(context.state.runId, payload.id, 'parsed');
+    if (!isPlaceholderToolName(toolSegment.toolName)) {
+      activityStore.updateActivityToolName(context.state.runId, payload.id, toolSegment.toolName);
+    }
     
     // Potentially update context text if it was empty (e.g. terminal command)
     // For now, we rely on the initial extraction or specific handlers.

@@ -128,6 +128,7 @@ export interface RuntimeAdapter {
   createAgentRun?: (input: RuntimeCreateAgentRunInput) => Promise<RuntimeCreateResult>;
   restoreAgentRun?: (input: RuntimeRestoreAgentRunInput) => Promise<RuntimeCreateResult>;
   getRunRuntimeReference?: (runId: string) => RuntimeRunReference | null;
+  getRunStatus?: (runId: string) => string | null;
   isRunActive?: (runId: string) => boolean;
   subscribeToRunEvents?: (
     runId: string,

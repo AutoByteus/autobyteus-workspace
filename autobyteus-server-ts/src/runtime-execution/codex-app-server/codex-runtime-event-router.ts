@@ -76,11 +76,20 @@ const resolveTurnIdFromRuntimeMessage = (params: JsonObject): string | null => {
   return asString(params.turnId) ?? asString(turn?.id) ?? asString(item?.turnId);
 };
 
+const isSessionAgnosticStartupMethod = (normalizedMethod: string): boolean =>
+  normalizedMethod === "codex/event/mcp_startup_update" ||
+  normalizedMethod === "codex/event/mcp_startup_complete";
+
 export const isRuntimeMessageForSession = (
   state: CodexRunSessionState,
+  method: string,
   params: JsonObject,
   sessionCount: number,
 ): boolean => {
+  const normalizedMethod = normalizeCodexRuntimeMethod(method);
+  if (isSessionAgnosticStartupMethod(normalizedMethod)) {
+    return true;
+  }
   const threadId = resolveThreadIdFromRuntimeMessage(params);
   if (threadId) {
     return threadId === state.threadId;
@@ -99,16 +108,34 @@ export const handleRuntimeNotification = (
   emitEvent: (state: CodexRunSessionState, event: CodexRuntimeEvent) => void,
 ): void => {
   const normalizedMethod = normalizeCodexRuntimeMethod(method);
-  if (normalizedMethod === "turn/started") {
+  if (normalizedMethod === "codex/event/mcp_startup_complete") {
+    state.startup.resolveReady();
+  } else if (normalizedMethod === "turn/started") {
+    state.currentStatus = "RUNNING";
     const turn = asObject(params.turn);
     state.activeTurnId = asString(turn?.id);
   } else if (normalizedMethod === "turn/completed") {
+    state.currentStatus = "IDLE";
     state.activeTurnId = null;
   } else if (normalizedMethod === "thread/started") {
     const thread = asObject(params.thread);
     const nextThreadId = asString(thread?.id);
     if (nextThreadId) {
       state.threadId = nextThreadId;
+    }
+  } else if (normalizedMethod === "thread/status/changed") {
+    const status = asObject(params.status);
+    const statusType = asString(status?.type)?.toLowerCase();
+    if (statusType === "idle") {
+      state.currentStatus = "IDLE";
+    } else if (
+      statusType === "inprogress" ||
+      statusType === "running" ||
+      statusType === "active"
+    ) {
+      state.currentStatus = "RUNNING";
+    } else if (statusType === "error" || statusType === "failed") {
+      state.currentStatus = "ERROR";
     }
   } else if (normalizedMethod === "thread/tokenUsage/updated") {
     const nextThreadId = resolveThreadIdFromRuntimeMessage(params);

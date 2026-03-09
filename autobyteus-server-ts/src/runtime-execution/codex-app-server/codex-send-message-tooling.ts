@@ -116,46 +116,6 @@ export const resolveAllowedRecipientNamesFromManifest = (options: {
     .filter((name) => (self ? normalizeName(name) !== self : true));
 };
 
-const formatTeammateDescriptor = (member: CodexTeamManifestMember): string => {
-  const details = [member.role, member.description].filter((value) => Boolean(value));
-  if (details.length === 0) {
-    return `- ${member.memberName}`;
-  }
-  return `- ${member.memberName}: ${details.join(" | ")}`;
-};
-
-export const renderTeamManifestDeveloperInstructions = (options: {
-  currentMemberName: string | null;
-  members: CodexTeamManifestMember[];
-  sendMessageToEnabled: boolean;
-}): string | null => {
-  const recipients = resolveAllowedRecipientNamesFromManifest({
-    currentMemberName: options.currentMemberName,
-    members: options.members,
-  });
-  if (recipients.length === 0) {
-    return null;
-  }
-  const teammateRows = options.members.filter(
-    (member) =>
-      normalizeName(member.memberName) !==
-      normalizeName(options.currentMemberName ?? ""),
-  );
-  const guidance = options.sendMessageToEnabled
-    ? [
-        "Use `send_message_to` with `recipient_name` exactly matching a teammate name from the list below.",
-        "When you need to send/delegate to a teammate, call `send_message_to`; plain text does not deliver messages.",
-        "Do not claim a teammate message was sent unless the `send_message_to` tool call succeeded.",
-      ].join(" ")
-    : "Do not attempt `send_message_to`; this run does not expose that tool.";
-  return [
-    "You are a member of an agent team.",
-    guidance,
-    "Teammates:",
-    ...teammateRows.map((member) => formatTeammateDescriptor(member)),
-  ].join("\n");
-};
-
 const buildSendMessageToDynamicToolSpec = (allowedRecipientNames: string[]): JsonObject => ({
   name: "send_message_to",
   description: "Send a message to another member in the same team run.",

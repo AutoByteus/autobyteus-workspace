@@ -31,6 +31,7 @@ describe('segmentHandler', () => {
       addActivity: vi.fn(),
       updateActivityStatus: vi.fn(),
       updateActivityArguments: vi.fn(),
+      updateActivityToolName: vi.fn(),
     };
 
     (useAgentActivityStore as any).mockReturnValue(mockActivityStore);
@@ -149,6 +150,56 @@ describe('segmentHandler', () => {
           toolName: 'MISSING_TOOL_NAME', 
           type: 'tool_call',
         })
+      );
+    });
+
+    it('replaces unknown_tool when a later SEGMENT_START provides the concrete tool name', () => {
+      mockContext.conversation.messages.push({
+        type: 'ai',
+        text: '',
+        timestamp: new Date(),
+        isComplete: false,
+        segments: [
+          {
+            type: 'tool_call',
+            invocationId: 'send-msg-1',
+            toolName: 'unknown_tool',
+            arguments: {},
+            status: 'parsing',
+            logs: [],
+            result: null,
+            error: null,
+            rawContent: '',
+            _segmentId: 'send-msg-1',
+          },
+        ],
+      } as any);
+
+      handleSegmentStart(
+        {
+          id: 'send-msg-1',
+          segment_type: 'tool_call',
+          metadata: {
+            tool_name: 'send_message_to',
+            arguments: {
+              recipient_name: 'Student',
+              content: 'Question for you',
+            },
+          },
+        },
+        mockContext,
+      );
+
+      const segment = findSegmentById(mockContext, 'send-msg-1') as any;
+      expect(segment.toolName).toBe('send_message_to');
+      expect(segment.arguments).toEqual({
+        recipient_name: 'Student',
+        content: 'Question for you',
+      });
+      expect(mockActivityStore.updateActivityToolName).toHaveBeenCalledWith(
+        'test-agent-id',
+        'send-msg-1',
+        'send_message_to',
       );
     });
 
