@@ -101,6 +101,29 @@ describe('agentActivityStore', () => {
     expect(activity.toolName).toBe('send_message_to');
   });
 
+  it('updates unknown_tool placeholders from lifecycle metadata', () => {
+    const store = useAgentActivityStore();
+    const agentId = 'test-agent';
+
+    store.addActivity(agentId, {
+      invocationId: '1',
+      toolName: 'unknown_tool',
+      type: 'tool_call',
+      status: 'parsing',
+      contextText: '',
+      arguments: {},
+      logs: [],
+      result: null,
+      error: null,
+      timestamp: new Date(),
+    });
+
+    store.updateActivityToolName(agentId, '1', 'send_message_to');
+
+    const activity = store.getActivities(agentId)[0];
+    expect(activity.toolName).toBe('send_message_to');
+  });
+
   it('drops malformed activity entries without invocationId', () => {
     const store = useAgentActivityStore();
     const agentId = 'test-agent';

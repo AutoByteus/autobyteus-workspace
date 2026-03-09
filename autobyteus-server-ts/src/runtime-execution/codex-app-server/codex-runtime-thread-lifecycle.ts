@@ -15,6 +15,7 @@ export const startCodexThread = async (
   model: string | null,
   approvalPolicy: string,
   dynamicTools: JsonObject[] | null,
+  baseInstructions: string | null,
   developerInstructions: string | null,
 ): Promise<string | null> => {
   const response = await client.request<unknown>("thread/start", {
@@ -24,13 +25,13 @@ export const startCodexThread = async (
     approvalPolicy,
     sandbox: normalizeSandboxMode(),
     config: null,
-    baseInstructions: null,
+    baseInstructions,
     developerInstructions,
     personality: null,
     ephemeral: false,
     dynamicTools,
-    experimentalRawEvents: false,
-    persistExtendedHistory: false,
+    experimentalRawEvents: true,
+    persistExtendedHistory: true,
   });
   return resolveThreadId(response);
 };
@@ -42,6 +43,7 @@ export const resumeCodexThread = async (
   model: string | null,
   approvalPolicy: string,
   dynamicTools: JsonObject[] | null,
+  baseInstructions: string | null,
   developerInstructions: string | null,
 ): Promise<string | null> => {
   try {
@@ -55,15 +57,24 @@ export const resumeCodexThread = async (
       approvalPolicy,
       sandbox: normalizeSandboxMode(),
       config: null,
-      baseInstructions: null,
+      baseInstructions,
       developerInstructions,
       personality: null,
       dynamicTools,
-      persistExtendedHistory: false,
+      experimentalRawEvents: true,
+      persistExtendedHistory: true,
     });
     return resolveThreadId(response);
   } catch (error) {
     logger.warn(`Failed to resume Codex thread '${threadId}', starting a new thread: ${String(error)}`);
-    return startCodexThread(client, cwd, model, approvalPolicy, dynamicTools, developerInstructions);
+    return startCodexThread(
+      client,
+      cwd,
+      model,
+      approvalPolicy,
+      dynamicTools,
+      baseInstructions,
+      developerInstructions,
+    );
   }
 };

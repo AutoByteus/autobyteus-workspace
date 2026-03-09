@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import type { ToolInvocationStatus } from '~/types/segments';
+import { isPlaceholderToolName } from '~/utils/toolNamePlaceholders';
 
 export interface ToolActivity {
   invocationId: string;
@@ -124,11 +125,7 @@ export const useAgentActivityStore = defineStore('agentActivity', {
       if (!activity) {
         return;
       }
-      if (
-        activity.toolName === 'MISSING_TOOL_NAME' ||
-        activity.toolName.trim().length === 0 ||
-        activity.toolName === 'tool_call'
-      ) {
+      if (isPlaceholderToolName(activity.toolName)) {
         activity.toolName = toolName;
       }
     },

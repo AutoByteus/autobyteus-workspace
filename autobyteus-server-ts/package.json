@@ -17,7 +17,7 @@
     "cleanup:codex-e2e-history": "node ./scripts/cleanup-codex-e2e-run-history.mjs"
   },
   "dependencies": {
-    "@anthropic-ai/claude-agent-sdk": "^0.2.63",
+    "@anthropic-ai/claude-agent-sdk": "^0.2.71",
     "@fastify/cors": "^9.0.1",
     "@fastify/multipart": "^8.3.1",
     "@fastify/websocket": "^10.0.1",

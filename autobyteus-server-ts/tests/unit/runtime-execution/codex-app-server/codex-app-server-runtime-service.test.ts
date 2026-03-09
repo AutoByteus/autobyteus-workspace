@@ -5,6 +5,13 @@ import {
   normalizeCodexReasoningEffort,
   resolveCodexSessionReasoningEffort,
 } from "../../../../src/runtime-execution/codex-app-server/codex-app-server-runtime-service.js";
+import { createCodexSessionStartupState } from "../../../../src/runtime-execution/codex-app-server/codex-runtime-shared.js";
+
+const createReadyStartupState = () => {
+  const startup = createCodexSessionStartupState();
+  startup.resolveReady();
+  return startup;
+};
 
 describe("codex-app-server-runtime-service helpers", () => {
   it("normalizes codex reasoning effort values", () => {
@@ -77,7 +84,9 @@ describe("CodexAppServerRuntimeService.sendTurn", () => {
       model: "gpt-5.3-codex",
       workingDirectory: "/tmp",
       reasoningEffort: "high",
+      currentStatus: "IDLE",
       activeTurnId: null,
+      startup: createReadyStartupState(),
       approvalRecords: new Map(),
       listeners: new Set(),
       unbindHandlers: [],
@@ -135,6 +144,75 @@ describe("CodexAppServerRuntimeService.sendTurn", () => {
         success: false,
       }),
     );
+  });
+
+  it("waits for startup readiness before dispatching turn/start", async () => {
+    const service = new CodexAppServerRuntimeService();
+    const request = vi.fn().mockResolvedValue({ turn: { id: "turn-ready" } });
+    const startup = createCodexSessionStartupState();
+
+    (service as unknown as { sessions: Map<string, unknown> }).sessions.set("run-1", {
+      runId: "run-1",
+      client: {
+        request,
+        close: vi.fn().mockResolvedValue(undefined),
+      },
+      threadId: "thread-1",
+      model: "gpt-5.3-codex",
+      workingDirectory: "/tmp",
+      reasoningEffort: "medium",
+      currentStatus: "IDLE",
+      activeTurnId: null,
+      startup,
+      approvalRecords: new Map(),
+      listeners: new Set(),
+      unbindHandlers: [],
+      sendMessageToEnabled: true,
+    });
+
+    const sendPromise = service.sendTurn("run-1", {
+      content: "hello",
+      contextFiles: [],
+    } as any);
+    await Promise.resolve();
+
+    expect(request).not.toHaveBeenCalled();
+
+    startup.resolveReady();
+
+    await expect(sendPromise).resolves.toEqual({ turnId: "turn-ready" });
+    expect(request).toHaveBeenCalledWith(
+      "turn/start",
+      expect.objectContaining({
+        threadId: "thread-1",
+      }),
+    );
+  });
+
+  it("returns the current status for an active run session", () => {
+    const service = new CodexAppServerRuntimeService();
+
+    (service as unknown as { sessions: Map<string, unknown> }).sessions.set("run-1", {
+      runId: "run-1",
+      client: {
+        request: vi.fn(),
+        close: vi.fn().mockResolvedValue(undefined),
+      },
+      threadId: "thread-1",
+      model: "gpt-5.3-codex",
+      workingDirectory: "/tmp",
+      reasoningEffort: "medium",
+      currentStatus: "RUNNING",
+      activeTurnId: "turn-1",
+      startup: createReadyStartupState(),
+      approvalRecords: new Map(),
+      listeners: new Set(),
+      unbindHandlers: [],
+      sendMessageToEnabled: true,
+    });
+
+    expect(service.getRunStatus("run-1")).toBe("RUNNING");
+    expect(service.getRunStatus("missing")).toBeNull();
   });
 
   it("emits synthetic sender tool-call events for intercepted send_message_to item/tool/call", async () => {
@@ -431,7 +509,9 @@ describe("CodexAppServerRuntimeService.sendTurn", () => {
       model: "gpt-5.3-codex",
       workingDirectory: "/tmp",
       reasoningEffort: "medium",
+      currentStatus: "IDLE",
       activeTurnId: null,
+      startup: createReadyStartupState(),
       approvalRecords: new Map(),
       listeners: new Set([
         (event: { method: string; params: Record<string, unknown> }) => {
@@ -489,6 +569,10 @@ describe("CodexAppServerRuntimeService team-manifest instructions", () => {
         teamRunId: "team-1",
         memberName: "Professor",
         sendMessageToEnabled: true,
+        memberInstructionSources: {
+          teamInstructions: "Coordinate with the rest of the team.",
+          agentInstructions: "You implement and verify behavior changes.",
+        },
         teamMemberManifest: [
           { memberName: "Professor", role: "coordinator", description: "Leads delegation" },
           { memberName: "Student", role: "implementer", description: "Executes tasks" },
@@ -499,7 +583,10 @@ describe("CodexAppServerRuntimeService team-manifest instructions", () => {
     expect(request).toHaveBeenCalledWith(
       "thread/start",
       expect.objectContaining({
-        developerInstructions: expect.stringContaining("Student"),
+        baseInstructions: expect.stringContaining("## Team Instruction"),
+        developerInstructions: expect.stringContaining("## Runtime Instruction"),
+        experimentalRawEvents: true,
+        persistExtendedHistory: true,
         dynamicTools: [
           expect.objectContaining({
             name: "send_message_to",
@@ -514,6 +601,14 @@ describe("CodexAppServerRuntimeService team-manifest instructions", () => {
         ],
       }),
     );
+    const payload = request.mock.calls[0]?.[1] as {
+      baseInstructions?: string | null;
+      developerInstructions?: string | null;
+    };
+    expect(payload.baseInstructions).toContain("## Agent Instruction");
+    expect(payload.baseInstructions).toContain("Coordinate with the rest of the team.");
+    expect(payload.baseInstructions).toContain("You implement and verify behavior changes.");
+    expect(payload.developerInstructions).toContain("Student");
   });
 });
 

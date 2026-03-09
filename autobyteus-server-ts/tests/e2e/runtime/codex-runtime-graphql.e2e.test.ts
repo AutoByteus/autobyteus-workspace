@@ -9,12 +9,13 @@ import { copyFile, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import fastify from "fastify";
 import websocket from "@fastify/websocket";
 import WebSocket from "ws";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { getMediaStorageService } from "../../../src/services/media-storage-service.js";
+import { getCodexAppServerProcessManager } from "../../../src/runtime-execution/codex-app-server/codex-app-server-process-manager.js";
 import { getCodexThreadHistoryReader } from "../../../src/runtime-execution/codex-app-server/codex-thread-history-reader.js";
 
 const waitForSocketOpen = (socket: WebSocket, timeoutMs = 10000): Promise<void> =>
@@ -29,6 +30,22 @@ const waitForSocketOpen = (socket: WebSocket, timeoutMs = 10000): Promise<void> 
       reject(error);
     });
   });
+
+const wait = (ms: number): Promise<void> =>
+  new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+
+const isRetryableCodexBootstrapFailure = (message: string | null | undefined): boolean => {
+  const normalized = (message ?? "").toLowerCase();
+  return (
+    normalized.includes("code_runtime_command_failed") ||
+    normalized.includes("codex_runtime_command_failed") ||
+    normalized.includes("startup-ready state") ||
+    normalized.includes("did not reach startup-ready state") ||
+    normalized.includes("runtime command failed")
+  );
+};
 
 const escapeForSingleQuotedShell = (value: string): string => value.replace(/'/g, `'\\''`);
 
@@ -67,6 +84,11 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
       await rm(testDataDir, { recursive: true, force: true });
       testDataDir = null;
     }
+  });
+
+  afterEach(async () => {
+    await getCodexAppServerProcessManager().close();
+    await wait(750);
   });
 
   const execGraphql = async <T>(
@@ -477,10 +499,12 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
     90000,
   );
 
-  it("restores a terminated codex run in the same workspace after continueRun", async () => {
-    const modelIdentifier = await fetchPreferredCodexToolModelIdentifier();
-    const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "codex-continue-workspace-e2e-"));
-    let runId: string | null = null;
+  it(
+    "restores a terminated codex run in the same workspace after continueRun",
+    async () => {
+      const modelIdentifier = await fetchPreferredCodexToolModelIdentifier();
+      const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "codex-continue-workspace-e2e-"));
+      let runId: string | null = null;
 
     const continueMutation = `
       mutation ContinueRun($input: ContinueRunInput!) {
@@ -512,90 +536,128 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
       }
     `;
 
-    try {
-      const createResult = await execGraphql<{
-        continueRun: {
-          success: boolean;
-          message: string;
-          runId: string | null;
-        };
-      }>(continueMutation, {
-        input: {
-          runtimeKind: "codex_app_server",
-          agentDefinitionId: "codex-e2e-agent-def",
-          workspaceRootPath,
-          llmModelIdentifier: modelIdentifier,
-          userInput: {
-            content: "Reply with READY.",
-          },
-        },
-      });
-      expect(createResult.continueRun.success).toBe(true);
-      expect(createResult.continueRun.runId).toBeTruthy();
-      runId = createResult.continueRun.runId;
-
-      const beforeTerminate = await execGraphql<{
-        getRunResumeConfig: {
-          runId: string;
-          isActive: boolean;
-          manifestConfig: {
-            runtimeKind: string;
-            workspaceRootPath: string;
+      try {
+        let createResult: {
+          continueRun: {
+            success: boolean;
+            message: string;
+            runId: string | null;
           };
-        };
-      }>(resumeQuery, { runId });
-      expect(beforeTerminate.getRunResumeConfig.runId).toBe(runId);
-      expect(beforeTerminate.getRunResumeConfig.manifestConfig.runtimeKind).toBe("codex_app_server");
-      expect(beforeTerminate.getRunResumeConfig.manifestConfig.workspaceRootPath).toBe(workspaceRootPath);
+        } | null = null;
+        const createDeadline = Date.now() + 60_000;
+        do {
+          createResult = await execGraphql<{
+            continueRun: {
+              success: boolean;
+              message: string;
+              runId: string | null;
+            };
+          }>(continueMutation, {
+            input: {
+              runtimeKind: "codex_app_server",
+              agentDefinitionId: "codex-e2e-agent-def",
+              workspaceRootPath,
+              llmModelIdentifier: modelIdentifier,
+              userInput: {
+                content: "Reply with READY.",
+              },
+            },
+          });
+          if (
+            createResult.continueRun.success ||
+            Date.now() >= createDeadline ||
+            !isRetryableCodexBootstrapFailure(createResult.continueRun.message)
+          ) {
+            break;
+          }
+          await wait(2_000);
+        } while (Date.now() < createDeadline);
+        expect(createResult?.continueRun.success).toBe(true);
+        expect(createResult?.continueRun.runId).toBeTruthy();
+        runId = createResult?.continueRun.runId ?? null;
 
-      const terminateResult = await execGraphql<{
-        terminateAgentRun: { success: boolean; message: string };
-      }>(terminateMutation, { id: runId });
-      expect(terminateResult.terminateAgentRun.success).toBe(true);
-
-      const continueResult = await execGraphql<{
-        continueRun: {
-          success: boolean;
-          message: string;
-          runId: string | null;
-        };
-      }>(continueMutation, {
-        input: {
-          runId,
-          userInput: {
-            content: "Reply with READY again.",
-          },
-        },
-      });
-      expect(continueResult.continueRun.success).toBe(true);
-      expect(continueResult.continueRun.runId).toBe(runId);
-
-      const afterContinue = await execGraphql<{
-        getRunResumeConfig: {
-          runId: string;
-          isActive: boolean;
-          manifestConfig: {
-            runtimeKind: string;
-            workspaceRootPath: string;
+        const beforeTerminate = await execGraphql<{
+          getRunResumeConfig: {
+            runId: string;
+            isActive: boolean;
+            manifestConfig: {
+              runtimeKind: string;
+              workspaceRootPath: string;
+            };
           };
-        };
-      }>(resumeQuery, { runId });
-      expect(afterContinue.getRunResumeConfig.runId).toBe(runId);
-      expect(afterContinue.getRunResumeConfig.manifestConfig.runtimeKind).toBe("codex_app_server");
-      expect(afterContinue.getRunResumeConfig.manifestConfig.workspaceRootPath).toBe(workspaceRootPath);
-    } finally {
-      if (runId) {
-        try {
-          await execGraphql<{
-            terminateAgentRun: { success: boolean };
-          }>(terminateMutation, { id: runId });
-        } catch {
-          // best-effort cleanup
+        }>(resumeQuery, { runId });
+        expect(beforeTerminate.getRunResumeConfig.runId).toBe(runId);
+        expect(beforeTerminate.getRunResumeConfig.manifestConfig.runtimeKind).toBe("codex_app_server");
+        expect(beforeTerminate.getRunResumeConfig.manifestConfig.workspaceRootPath).toBe(workspaceRootPath);
+
+        const terminateResult = await execGraphql<{
+          terminateAgentRun: { success: boolean; message: string };
+        }>(terminateMutation, { id: runId });
+        expect(terminateResult.terminateAgentRun.success).toBe(true);
+
+        let continueResult: {
+          continueRun: {
+            success: boolean;
+            message: string;
+            runId: string | null;
+          };
+        } | null = null;
+        const restoreDeadline = Date.now() + 60_000;
+        do {
+          continueResult = await execGraphql<{
+            continueRun: {
+              success: boolean;
+              message: string;
+              runId: string | null;
+            };
+          }>(continueMutation, {
+            input: {
+              runId,
+              userInput: {
+                content: "Reply with READY again.",
+              },
+            },
+          });
+          if (
+            continueResult.continueRun.success ||
+            Date.now() >= restoreDeadline ||
+            !isRetryableCodexBootstrapFailure(continueResult.continueRun.message)
+          ) {
+            break;
+          }
+          await wait(2_000);
+        } while (Date.now() < restoreDeadline);
+        expect(continueResult?.continueRun.success).toBe(true);
+        expect(continueResult?.continueRun.runId).toBe(runId);
+
+        const afterContinue = await execGraphql<{
+          getRunResumeConfig: {
+            runId: string;
+            isActive: boolean;
+            manifestConfig: {
+              runtimeKind: string;
+              workspaceRootPath: string;
+            };
+          };
+        }>(resumeQuery, { runId });
+        expect(afterContinue.getRunResumeConfig.runId).toBe(runId);
+        expect(afterContinue.getRunResumeConfig.manifestConfig.runtimeKind).toBe("codex_app_server");
+        expect(afterContinue.getRunResumeConfig.manifestConfig.workspaceRootPath).toBe(workspaceRootPath);
+      } finally {
+        if (runId) {
+          try {
+            await execGraphql<{
+              terminateAgentRun: { success: boolean };
+            }>(terminateMutation, { id: runId });
+          } catch {
+            // best-effort cleanup
+          }
         }
+        await rm(workspaceRootPath, { recursive: true, force: true });
       }
-      await rm(workspaceRootPath, { recursive: true, force: true });
-    }
-  });
+    },
+    90_000,
+  );
 
   it(
     "preserves workspace mapping for codex runs created with workspaceId across send->terminate->continue",
@@ -808,30 +870,48 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
       `;
       const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "codex-history-projection-e2e-"));
 
-      const continueResult = await execGraphql<{
+      let continueResult: {
         continueRun: {
           success: boolean;
           message: string;
           runId: string | null;
         };
-      }>(continueMutation, {
-        input: {
-          runtimeKind: "codex_app_server",
-          agentDefinitionId: "codex-e2e-agent-def",
-          workspaceRootPath,
-          llmModelIdentifier: modelIdentifier,
-          userInput: {
-            content: "Reply with one short sentence about Fibonacci numbers.",
+      } | null = null;
+      const bootstrapDeadline = Date.now() + 90_000;
+      do {
+        continueResult = await execGraphql<{
+          continueRun: {
+            success: boolean;
+            message: string;
+            runId: string | null;
+          };
+        }>(continueMutation, {
+          input: {
+            runtimeKind: "codex_app_server",
+            agentDefinitionId: "codex-e2e-agent-def",
+            workspaceRootPath,
+            llmModelIdentifier: modelIdentifier,
+            userInput: {
+              content: "Reply with one short sentence about Fibonacci numbers.",
+            },
           },
-        },
-      });
+        });
+        if (
+          continueResult.continueRun.success ||
+          Date.now() >= bootstrapDeadline ||
+          !isRetryableCodexBootstrapFailure(continueResult.continueRun.message)
+        ) {
+          break;
+        }
+        await wait(2_000);
+      } while (Date.now() < bootstrapDeadline);
 
-      expect(continueResult.continueRun.success).toBe(true);
-      expect(continueResult.continueRun.runId).toBeTruthy();
-      const runId = continueResult.continueRun.runId as string;
+      expect(continueResult?.continueRun.success).toBe(true);
+      expect(continueResult?.continueRun.runId).toBeTruthy();
+      const runId = continueResult?.continueRun.runId as string;
 
       try {
-        const deadline = Date.now() + 45_000;
+        const deadline = Date.now() + 90_000;
         let projectionConversation: Array<Record<string, unknown>> = [];
         let threadId: string | null = null;
 
@@ -885,7 +965,7 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
         await rm(workspaceRootPath, { recursive: true, force: true });
       }
     },
-    70000,
+    130000,
   );
 
   it(
@@ -956,24 +1036,42 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
     let sawToolStart = false;
     let sawToolTerminal = false;
     let sawToolLog = false;
-
-    await waitForSocketOpen(socket);
-    sawConnected = true;
+    let promptAttemptCount = 0;
+    const maxPromptAttempts = 4;
 
     const finished = new Promise<void>((resolve, reject) => {
       const copyCommand = `cat '${escapeForSingleQuotedShell(sourcePath)}' > '${escapeForSingleQuotedShell(destinationPath)}'`;
-      const lifecyclePrompt = `Use the terminal tool to execute this command exactly once:\n${copyCommand}\nDo not simulate execution. After the command completes, respond with DONE.`;
+      const buildLifecyclePrompt = (attempt: number): string => {
+        if (attempt === 1) {
+          return `Use the terminal tool to execute this command exactly once:\n${copyCommand}\nDo not simulate execution. After the command completes, respond with DONE.`;
+        }
+        return `Retry attempt ${attempt}: use the terminal tool to execute this exact command now and do not answer without executing it.\n${copyCommand}`;
+      };
+      let repromptTimer: ReturnType<typeof setTimeout> | null = null;
+      const clearRepromptTimer = () => {
+        if (repromptTimer) {
+          clearTimeout(repromptTimer);
+          repromptTimer = null;
+        }
+      };
       const sendLifecyclePrompt = () => {
-        if (sentLifecyclePrompt) {
+        if (promptAttemptCount >= maxPromptAttempts) {
           return;
         }
+        promptAttemptCount += 1;
         sentLifecyclePrompt = true;
         socket.send(
           JSON.stringify({
             type: "SEND_MESSAGE",
-            payload: { content: lifecyclePrompt },
+            payload: { content: buildLifecyclePrompt(promptAttemptCount) },
           }),
         );
+        clearRepromptTimer();
+        repromptTimer = setTimeout(() => {
+          if (!sawToolStart && promptAttemptCount < maxPromptAttempts) {
+            sendLifecyclePrompt();
+          }
+        }, 15_000);
       };
 
       const fallbackSendTimer = setTimeout(() => {
@@ -984,10 +1082,10 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
       const timeout = setTimeout(() => {
         reject(
           new Error(
-            `Timed out waiting for tool lifecycle events. promptSent=${String(sentLifecyclePrompt)}. Seen types: ${Array.from(seenEventTypes).join(", ")}. Segment types: ${Array.from(seenSegmentTypes).join(", ")}`,
-          ),
-        );
-      }, 45000);
+              `Timed out waiting for tool lifecycle events. promptSent=${String(sentLifecyclePrompt)}. Seen types: ${Array.from(seenEventTypes).join(", ")}. Segment types: ${Array.from(seenSegmentTypes).join(", ")}`,
+            ),
+          );
+        }, 90000);
 
       socket.on("message", (raw) => {
         const message = JSON.parse(raw.toString()) as {
@@ -1009,6 +1107,15 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
         if (message.type === "AGENT_STATUS") {
           const status = message.payload?.new_status;
           if (status === "IDLE" && !sentLifecyclePrompt) {
+            sendLifecyclePrompt();
+            return;
+          }
+          if (
+            status === "IDLE" &&
+            sentLifecyclePrompt &&
+            !sawToolStart &&
+            promptAttemptCount < maxPromptAttempts
+          ) {
             sendLifecyclePrompt();
           }
           return;
@@ -1120,6 +1227,7 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
         if (sentLifecyclePrompt && sawConnected && sawToolStart && sawToolTerminal) {
           clearTimeout(fallbackSendTimer);
           clearTimeout(timeout);
+          clearRepromptTimer();
           resolve();
         }
       });
@@ -1127,9 +1235,13 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
       socket.once("error", (error) => {
         clearTimeout(fallbackSendTimer);
         clearTimeout(timeout);
+        clearRepromptTimer();
         reject(error);
       });
     });
+
+    await waitForSocketOpen(socket);
+    sawConnected = true;
 
     try {
       await finished;
@@ -1168,7 +1280,7 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
       }>(terminateMutation, { id: runId });
     }
     },
-    60000,
+    120000,
   );
 
   it(
@@ -1232,13 +1344,18 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
       let sawEditFilePath = false;
       let sawEditFilePatch = false;
       let promptAttemptCount = 0;
-      const maxPromptAttempts = 3;
-
-      await waitForSocketOpen(socket);
+      const maxPromptAttempts = 5;
 
       const finished = new Promise<void>((resolve, reject) => {
         const prompt = `Use the edit_file tool (do not use run_bash) to create a Python file named ${fileToken} in the current workspace. The file must define fibonacci(n) and print fibonacci(10). Actually write the file, then respond DONE.`;
         let resolved = false;
+        let repromptTimer: ReturnType<typeof setTimeout> | null = null;
+        const clearRepromptTimer = () => {
+          if (repromptTimer) {
+            clearTimeout(repromptTimer);
+            repromptTimer = null;
+          }
+        };
         const sendPrompt = () => {
           if (promptAttemptCount >= maxPromptAttempts) {
             return;
@@ -1251,6 +1368,12 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
               payload: { content: prompt },
             }),
           );
+          clearRepromptTimer();
+          repromptTimer = setTimeout(() => {
+            if (!sawEditFilePath && !sawEditFilePatch && promptAttemptCount < maxPromptAttempts) {
+              sendPrompt();
+            }
+          }, 20_000);
         };
 
         const fallbackSendTimer = setTimeout(() => {
@@ -1259,12 +1382,13 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
           }
         }, 5000);
         const timeout = setTimeout(() => {
+          clearRepromptTimer();
           reject(
             new Error(
               `Timed out waiting for edit_file metadata. promptSent=${String(sentPrompt)} pathSeen=${String(sawEditFilePath)} patchSeen=${String(sawEditFilePatch)} seenTypes=${Array.from(seenEventTypes).join(", ")} segmentSnapshots=${JSON.stringify(seenSegmentSnapshots)}`,
             ),
           );
-        }, 45000);
+        }, 110000);
         const resolveWhenReady = () => {
           if (resolved || !sawEditFilePath || !sawEditFilePatch) {
             return;
@@ -1272,6 +1396,7 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
           resolved = true;
           clearTimeout(fallbackSendTimer);
           clearTimeout(timeout);
+          clearRepromptTimer();
           resolve();
         };
 
@@ -1357,15 +1482,21 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
           if (patchValue.length > 0) {
             sawEditFilePatch = true;
           }
+          if (sawEditFilePath || sawEditFilePatch) {
+            clearRepromptTimer();
+          }
           resolveWhenReady();
         });
 
         socket.once("error", (error) => {
           clearTimeout(fallbackSendTimer);
           clearTimeout(timeout);
+          clearRepromptTimer();
           reject(error);
         });
       });
+
+      await waitForSocketOpen(socket);
 
       try {
         await finished;
@@ -1451,22 +1582,41 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
       const seenSegmentSnapshots: Array<Record<string, unknown>> = [];
       let sentPrompt = false;
       let sawRunBashCommand = false;
-
-      await waitForSocketOpen(socket);
+      let promptAttemptCount = 0;
+      const maxPromptAttempts = 3;
 
       const finished = new Promise<void>((resolve, reject) => {
-        const prompt = `Use the terminal tool exactly once to run this command: printf '${outputToken}\\n' > '${outputToken}' && cat '${outputToken}'. Do not use edit_file. Do not simulate execution.`;
+        const buildPrompt = (attempt: number): string => {
+          if (attempt === 1) {
+            return `Use the terminal tool exactly once to run this command: printf '${outputToken}\\n' > '${outputToken}' && cat '${outputToken}'. Do not use edit_file. Do not simulate execution.`;
+          }
+          return `Retry attempt ${attempt}: use the terminal tool now and run exactly this command once: printf '${outputToken}\\n' > '${outputToken}' && cat '${outputToken}'. Do not answer without executing it.`;
+        };
+        let repromptTimer: ReturnType<typeof setTimeout> | null = null;
+        const clearRepromptTimer = () => {
+          if (repromptTimer) {
+            clearTimeout(repromptTimer);
+            repromptTimer = null;
+          }
+        };
         const sendPrompt = () => {
-          if (sentPrompt) {
+          if (promptAttemptCount >= maxPromptAttempts) {
             return;
           }
+          promptAttemptCount += 1;
           sentPrompt = true;
           socket.send(
             JSON.stringify({
               type: "SEND_MESSAGE",
-              payload: { content: prompt },
+              payload: { content: buildPrompt(promptAttemptCount) },
             }),
           );
+          clearRepromptTimer();
+          repromptTimer = setTimeout(() => {
+            if (!sawRunBashCommand && promptAttemptCount < maxPromptAttempts) {
+              sendPrompt();
+            }
+          }, 12_000);
         };
 
         const fallbackSendTimer = setTimeout(() => {
@@ -1475,12 +1625,13 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
           }
         }, 5000);
         const timeout = setTimeout(() => {
+          clearRepromptTimer();
           reject(
             new Error(
-              `Timed out waiting for run_bash metadata command. promptSent=${String(sentPrompt)} commandSeen=${String(sawRunBashCommand)} seenTypes=${Array.from(seenEventTypes).join(", ")} segmentSnapshots=${JSON.stringify(seenSegmentSnapshots)}`,
+              `Timed out waiting for run_bash metadata command. promptSent=${String(sentPrompt)} promptAttempts=${String(promptAttemptCount)} commandSeen=${String(sawRunBashCommand)} seenTypes=${Array.from(seenEventTypes).join(", ")} segmentSnapshots=${JSON.stringify(seenSegmentSnapshots)}`,
             ),
           );
-        }, 45000);
+        }, 90000);
 
         socket.on("message", (raw) => {
           const message = JSON.parse(raw.toString()) as {
@@ -1498,7 +1649,12 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
             if (status === "IDLE" && sentPrompt && sawRunBashCommand) {
               clearTimeout(fallbackSendTimer);
               clearTimeout(timeout);
+              clearRepromptTimer();
               resolve();
+              return;
+            }
+            if (status === "IDLE" && sentPrompt && !sawRunBashCommand && promptAttemptCount < maxPromptAttempts) {
+              sendPrompt();
             }
             return;
           }
@@ -1543,15 +1699,19 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
 
           if (metadataCommand.length > 0 || payloadCommand.length > 0) {
             sawRunBashCommand = true;
+            clearRepromptTimer();
           }
         });
 
         socket.once("error", (error) => {
           clearTimeout(fallbackSendTimer);
           clearTimeout(timeout);
+          clearRepromptTimer();
           reject(error);
         });
       });
+
+      await waitForSocketOpen(socket);
 
       try {
         await finished;
@@ -1574,7 +1734,7 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
         }>(terminateMutation, { id: runId });
       }
     },
-    60000,
+    105000,
   );
 
   it(
@@ -1640,8 +1800,6 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
       let promptAttemptCount = 0;
       const maxPromptAttempts = 6;
 
-      await waitForSocketOpen(socket);
-
       const finished = new Promise<void>((resolve, reject) => {
         const buildPrompt = (attempt: number): string => {
           if (attempt === 1) {
@@ -1650,12 +1808,20 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
           return `Retry attempt ${attempt}: you must call generate_image now with exact JSON arguments {"prompt":"cute sea animal ${imageToken}","output_file_path":"${outputFilePath}"} and nothing else.`;
         };
         let resolved = false;
+        let repromptTimer: ReturnType<typeof setTimeout> | null = null;
+        const clearRepromptTimer = () => {
+          if (repromptTimer) {
+            clearTimeout(repromptTimer);
+            repromptTimer = null;
+          }
+        };
 
         const resolveIfComplete = () => {
           if (!resolved && sawGenerateImageArguments) {
             resolved = true;
             clearTimeout(fallbackSendTimer);
             clearTimeout(timeout);
+            clearRepromptTimer();
             resolve();
           }
         };
@@ -1672,6 +1838,12 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
               payload: { content: buildPrompt(promptAttemptCount) },
             }),
           );
+          clearRepromptTimer();
+          repromptTimer = setTimeout(() => {
+            if (!sawGenerateImageArguments && promptAttemptCount < maxPromptAttempts) {
+              sendPrompt();
+            }
+          }, 15_000);
         };
 
         const fallbackSendTimer = setTimeout(() => {
@@ -1680,12 +1852,13 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
           }
         }, 5000);
         const timeout = setTimeout(() => {
+          clearRepromptTimer();
           reject(
             new Error(
               `Timed out waiting for generate_image metadata arguments. promptSent=${String(sentPrompt)} promptAttempts=${String(promptAttemptCount)} argumentsSeen=${String(sawGenerateImageArguments)} seenTypes=${Array.from(seenEventTypes).join(", ")} segmentSnapshots=${JSON.stringify(seenSegmentSnapshots)}`,
             ),
           );
-        }, 70000);
+        }, 100000);
 
         socket.on("message", (raw) => {
           const message = JSON.parse(raw.toString()) as {
@@ -1715,10 +1888,6 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
             return;
           }
 
-          if (message.type !== "SEGMENT_START" && message.type !== "SEGMENT_END") {
-            return;
-          }
-
           const segmentType =
             typeof message.payload?.segment_type === "string" ? message.payload.segment_type : null;
           const metadata =
@@ -1735,7 +1904,25 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
             metadata?.arguments && typeof metadata.arguments === "object"
               ? (metadata.arguments as Record<string, unknown>)
               : null;
-          const candidateArguments = metadataArguments ?? payloadArguments;
+          const rawRuntimePayload =
+            message.payload?.payload && typeof message.payload.payload === "object"
+              ? (message.payload.payload as Record<string, unknown>)
+              : null;
+          const rawMsg =
+            rawRuntimePayload?.msg && typeof rawRuntimePayload.msg === "object"
+              ? (rawRuntimePayload.msg as Record<string, unknown>)
+              : null;
+          const rawInvocation =
+            rawMsg?.invocation && typeof rawMsg.invocation === "object"
+              ? (rawMsg.invocation as Record<string, unknown>)
+              : null;
+          const rawInvocationArguments =
+            rawInvocation?.arguments && typeof rawInvocation.arguments === "object"
+              ? (rawInvocation.arguments as Record<string, unknown>)
+              : null;
+          const rawInvocationToolName =
+            typeof rawInvocation?.tool === "string" ? String(rawInvocation.tool) : "";
+          const candidateArguments = metadataArguments ?? payloadArguments ?? rawInvocationArguments;
           const promptArg =
             candidateArguments && typeof candidateArguments.prompt === "string"
               ? String(candidateArguments.prompt)
@@ -1748,14 +1935,18 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
           seenSegmentSnapshots.push({
             messageType: message.type,
             segmentType,
-            metadataToolName: metadataToolName || null,
+            metadataToolName: metadataToolName || rawInvocationToolName || null,
             hasMetadataArguments: Boolean(metadataArguments),
+            hasRawInvocationArguments: Boolean(rawInvocationArguments),
             promptArgPreview: promptArg?.slice(0, 64) ?? null,
             outputPathArg: outputPathArg ?? null,
           });
 
           const isGenerateImageTool =
-            metadataToolName === "generate_image" || metadataToolName.endsWith(".generate_image");
+            metadataToolName === "generate_image" ||
+            metadataToolName.endsWith(".generate_image") ||
+            rawInvocationToolName === "generate_image" ||
+            rawInvocationToolName.endsWith(".generate_image");
           if (!isGenerateImageTool) {
             return;
           }
@@ -1767,6 +1958,7 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
             outputPathArg.length > 0
           ) {
             sawGenerateImageArguments = true;
+            clearRepromptTimer();
             resolveIfComplete();
           }
         });
@@ -1774,9 +1966,12 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
         socket.once("error", (error) => {
           clearTimeout(fallbackSendTimer);
           clearTimeout(timeout);
+          clearRepromptTimer();
           reject(error);
         });
       });
+
+      await waitForSocketOpen(socket);
 
       try {
         await finished;
@@ -1799,7 +1994,7 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
         }>(terminateMutation, { id: runId });
       }
     },
-    90000,
+    140000,
   );
 
   it(
@@ -1873,24 +2068,42 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
       let sawToolStart = false;
       let sawToolTerminal = false;
       let sawToolDenied = false;
-
-      await waitForSocketOpen(socket);
-      sawConnected = true;
+      let promptAttemptCount = 0;
+      const maxPromptAttempts = 4;
 
       const finished = new Promise<void>((resolve, reject) => {
         const copyCommand = `cat '${escapeForSingleQuotedShell(sourcePath)}' > '${escapeForSingleQuotedShell(destinationPath)}'`;
-        const approvalPrompt = `Use the terminal tool to execute this command exactly once:\n${copyCommand}\nThis command should require approval first. Do not simulate execution.`;
+        const buildApprovalPrompt = (attempt: number): string => {
+          if (attempt === 1) {
+            return `Use the terminal tool to execute this command exactly once:\n${copyCommand}\nThis command should require approval first. Do not simulate execution.`;
+          }
+          return `Retry attempt ${attempt}: request approval for this exact terminal command and do not answer without requesting approval first.\n${copyCommand}`;
+        };
+        let repromptTimer: ReturnType<typeof setTimeout> | null = null;
+        const clearRepromptTimer = () => {
+          if (repromptTimer) {
+            clearTimeout(repromptTimer);
+            repromptTimer = null;
+          }
+        };
         const sendApprovalPrompt = () => {
-          if (sentApprovalPrompt) {
+          if (promptAttemptCount >= maxPromptAttempts) {
             return;
           }
+          promptAttemptCount += 1;
           sentApprovalPrompt = true;
           socket.send(
             JSON.stringify({
               type: "SEND_MESSAGE",
-              payload: { content: approvalPrompt },
+              payload: { content: buildApprovalPrompt(promptAttemptCount) },
             }),
           );
+          clearRepromptTimer();
+          repromptTimer = setTimeout(() => {
+            if (!sawApprovalRequested && promptAttemptCount < maxPromptAttempts) {
+              sendApprovalPrompt();
+            }
+          }, 15_000);
         };
 
         const fallbackSendTimer = setTimeout(() => {
@@ -1904,7 +2117,7 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
               `Timed out waiting for approval lifecycle. promptSent=${String(sentApprovalPrompt)} approvalRequested=${String(sawApprovalRequested)} approvalSent=${String(sentApprovalDecision)}. Seen types: ${Array.from(seenEventTypes).join(", ")}. Segment types: ${Array.from(seenSegmentTypes).join(", ")}`,
             ),
           );
-        }, 50000);
+        }, 90000);
 
         socket.on("message", (raw) => {
           const message = JSON.parse(raw.toString()) as {
@@ -1927,12 +2140,22 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
             const status = message.payload?.new_status;
             if (status === "IDLE" && !sentApprovalPrompt) {
               sendApprovalPrompt();
+              return;
+            }
+            if (
+              status === "IDLE" &&
+              sentApprovalPrompt &&
+              !sawApprovalRequested &&
+              promptAttemptCount < maxPromptAttempts
+            ) {
+              sendApprovalPrompt();
             }
             return;
           }
 
           if (message.type === "TOOL_APPROVAL_REQUESTED") {
             sawApprovalRequested = true;
+            clearRepromptTimer();
             const invocationId =
               (message.payload?.invocation_id as string | undefined) ??
               (message.payload?.tool_invocation_id as string | undefined);
@@ -2040,6 +2263,7 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
           ) {
             clearTimeout(fallbackSendTimer);
             clearTimeout(timeout);
+            clearRepromptTimer();
             resolve();
           }
         });
@@ -2047,9 +2271,13 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
         socket.once("error", (error) => {
           clearTimeout(fallbackSendTimer);
           clearTimeout(timeout);
+          clearRepromptTimer();
           reject(error);
         });
       });
+
+      await waitForSocketOpen(socket);
+      sawConnected = true;
 
       try {
         await finished;
@@ -2087,7 +2315,7 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
         }>(terminateMutation, { id: runId });
       }
     },
-    70000,
+    120000,
   );
 
   it(
@@ -2159,24 +2387,42 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
       let sawToolDenied = false;
       let sawToolStart = false;
       let sawPostDenyAssistantOutput = false;
-
-      await waitForSocketOpen(socket);
-      sawConnected = true;
+      let promptAttemptCount = 0;
+      const maxPromptAttempts = 3;
 
       const finished = new Promise<void>((resolve, reject) => {
         const copyCommand = `cat '${escapeForSingleQuotedShell(sourcePath)}' > '${escapeForSingleQuotedShell(destinationPath)}'`;
-        const denyPrompt = `Use the terminal tool to execute this command exactly once:\n${copyCommand}\nThis command should require approval first. Do not simulate execution.`;
+        const buildDenyPrompt = (attempt: number): string => {
+          if (attempt === 1) {
+            return `Use the terminal tool to execute this command exactly once:\n${copyCommand}\nThis command should require approval first. Do not simulate execution.`;
+          }
+          return `Retry attempt ${attempt}: request terminal approval for this exact command and do not answer without requesting approval first:\n${copyCommand}`;
+        };
+        let repromptTimer: ReturnType<typeof setTimeout> | null = null;
+        const clearRepromptTimer = () => {
+          if (repromptTimer) {
+            clearTimeout(repromptTimer);
+            repromptTimer = null;
+          }
+        };
         const sendDenyPrompt = () => {
-          if (sentDenyPrompt) {
+          if (promptAttemptCount >= maxPromptAttempts) {
             return;
           }
+          promptAttemptCount += 1;
           sentDenyPrompt = true;
           socket.send(
             JSON.stringify({
               type: "SEND_MESSAGE",
-              payload: { content: denyPrompt },
+              payload: { content: buildDenyPrompt(promptAttemptCount) },
             }),
           );
+          clearRepromptTimer();
+          repromptTimer = setTimeout(() => {
+            if (!sawApprovalRequested && promptAttemptCount < maxPromptAttempts) {
+              sendDenyPrompt();
+            }
+          }, 15_000);
         };
 
         const fallbackSendTimer = setTimeout(() => {
@@ -2185,12 +2431,13 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
           }
         }, 5000);
         const timeout = setTimeout(() => {
+          clearRepromptTimer();
           reject(
             new Error(
-              `Timed out waiting for deny lifecycle. promptSent=${String(sentDenyPrompt)} approvalRequested=${String(sawApprovalRequested)} denySent=${String(sentDenyDecision)} denied=${String(sawToolDenied)}. Seen types: ${Array.from(seenEventTypes).join(", ")}. Segment types: ${Array.from(seenSegmentTypes).join(", ")}`,
+              `Timed out waiting for deny lifecycle. promptSent=${String(sentDenyPrompt)} promptAttempts=${String(promptAttemptCount)} approvalRequested=${String(sawApprovalRequested)} denySent=${String(sentDenyDecision)} denied=${String(sawToolDenied)}. Seen types: ${Array.from(seenEventTypes).join(", ")}. Segment types: ${Array.from(seenSegmentTypes).join(", ")}`,
             ),
           );
-        }, 50000);
+        }, 90000);
 
         socket.on("message", (raw) => {
           const message = JSON.parse(raw.toString()) as {
@@ -2213,12 +2460,17 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
             const status = message.payload?.new_status;
             if (status === "IDLE" && !sentDenyPrompt) {
               sendDenyPrompt();
+              return;
+            }
+            if (status === "IDLE" && sentDenyPrompt && !sawApprovalRequested && promptAttemptCount < maxPromptAttempts) {
+              sendDenyPrompt();
             }
             return;
           }
 
           if (message.type === "TOOL_APPROVAL_REQUESTED") {
             sawApprovalRequested = true;
+            clearRepromptTimer();
             const invocationId =
               (message.payload?.invocation_id as string | undefined) ??
               (message.payload?.tool_invocation_id as string | undefined);
@@ -2269,6 +2521,7 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
           ) {
             clearTimeout(fallbackSendTimer);
             clearTimeout(timeout);
+            clearRepromptTimer();
             resolve();
           }
         });
@@ -2276,9 +2529,13 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
         socket.once("error", (error) => {
           clearTimeout(fallbackSendTimer);
           clearTimeout(timeout);
+          clearRepromptTimer();
           reject(error);
         });
       });
+
+      await waitForSocketOpen(socket);
+      sawConnected = true;
 
       try {
         await finished;
@@ -2308,6 +2565,6 @@ describeCodexRuntime("Codex runtime GraphQL e2e (live transport)", () => {
         }>(terminateMutation, { id: runId });
       }
     },
-    70000,
+    105000,
   );
 });

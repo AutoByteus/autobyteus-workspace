@@ -1,4 +1,5 @@
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
+import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import type { RuntimeCompositionService } from "../../runtime-execution/runtime-composition-service.js";
 import type { RuntimeAdapterRegistry } from "../../runtime-execution/runtime-adapter-registry.js";
 import { normalizeRuntimeKind, type RuntimeKind } from "../../runtime-management/runtime-kind.js";
@@ -21,6 +22,16 @@ import {
   normalizeOptionalString,
   normalizeRequiredString,
 } from "./team-member-runtime-errors.js";
+import {
+  MemberRuntimeInstructionSourceResolver,
+  type MemberRuntimeInstructionSources,
+} from "./member-runtime-instruction-source-resolver.js";
+import {
+  cloneMemberBinding,
+  isRuntimeReferenceChanged,
+  mergeRuntimeReferenceMetadata,
+  toRuntimeReference,
+} from "./team-member-runtime-reference-utils.js";
 
 type TeamManifestMetadataMember = {
   memberName: string;
@@ -60,59 +71,22 @@ const resolveWorkspaceRootPathFromWorkspace = (
   return normalized.length > 0 ? normalized : null;
 };
 
-const toRuntimeReference = (
-  runtimeKind: RuntimeKind,
-  runId: string,
-  reference?: TeamMemberRuntimeReference | null,
-  metadata?: Record<string, unknown> | null,
-): TeamMemberRuntimeReference => ({
-  runtimeKind,
-  sessionId: reference?.sessionId ?? runId,
-  threadId: reference?.threadId ?? null,
-  metadata: {
-    ...(reference?.metadata ?? {}),
-    ...(metadata ?? {}),
-  },
-});
-
-const mergeRuntimeReferenceMetadata = (
-  current: TeamMemberRuntimeReference | null | undefined,
-  incoming: TeamMemberRuntimeReference | null | undefined,
-): Record<string, unknown> | null => {
-  const merged = {
-    ...(current?.metadata ?? {}),
-    ...(incoming?.metadata ?? {}),
-  };
-  return Object.keys(merged).length > 0 ? merged : null;
-};
-
-const isRuntimeReferenceChanged = (
-  current: TeamMemberRuntimeReference | null | undefined,
-  next: TeamMemberRuntimeReference | null | undefined,
-): boolean =>
-  current?.sessionId !== next?.sessionId ||
-  current?.threadId !== next?.threadId ||
-  JSON.stringify(current?.metadata ?? null) !== JSON.stringify(next?.metadata ?? null);
-
-const cloneMemberBinding = (binding: TeamRunMemberBinding): TeamRunMemberBinding => ({
-  ...binding,
-  runtimeReference: binding.runtimeReference
-    ? {
-        ...binding.runtimeReference,
-        metadata: binding.runtimeReference.metadata ? { ...binding.runtimeReference.metadata } : null,
-      }
-    : null,
-  llmConfig: binding.llmConfig ? { ...binding.llmConfig } : null,
-});
-
 export class TeamMemberRuntimeSessionLifecycleService {
+  private readonly instructionSourceResolver: MemberRuntimeInstructionSourceResolver;
+
   constructor(
     private readonly runtimeCompositionService: RuntimeCompositionService,
     private readonly runtimeAdapterRegistry: RuntimeAdapterRegistry,
     private readonly teamRuntimeBindingRegistry: TeamRuntimeBindingRegistry,
     private readonly workspaceManager: WorkspaceManager,
     private readonly agentDefinitionService: AgentDefinitionService,
-  ) {}
+    private readonly agentTeamDefinitionService: AgentTeamDefinitionService,
+  ) {
+    this.instructionSourceResolver = new MemberRuntimeInstructionSourceResolver(
+      agentDefinitionService,
+      agentTeamDefinitionService,
+    );
+  }
 
   getTeamRuntimeMode(teamRunId: string): TeamRuntimeMode | null {
     return this.teamRuntimeBindingRegistry.getTeamMode(teamRunId);
@@ -153,6 +127,10 @@ export class TeamMemberRuntimeSessionLifecycleService {
 
   hasActiveMemberBinding(teamRunId: string): boolean {
     return this.getTeamBindings(teamRunId).length > 0;
+  }
+
+  private getInstructionSourceResolver(): MemberRuntimeInstructionSourceResolver {
+    return this.instructionSourceResolver;
   }
 
   private resolveTeamExecutionMode(runtimeKind: RuntimeKind): TeamRuntimeExecutionMode {
@@ -295,11 +273,55 @@ export class TeamMemberRuntimeSessionLifecycleService {
     return manifest;
   }
 
+  private async buildRuntimeReferenceMetadata(input: {
+    teamRunId: string;
+    teamDefinitionId: string;
+    memberRouteKey: string;
+    memberName: string;
+    agentDefinitionId: string;
+    runtimeReference?: TeamMemberRuntimeReference | null;
+    teamMemberManifest: TeamManifestMetadataMember[];
+  }): Promise<{
+    metadata: Record<string, unknown>;
+    sendMessageToEnabled: boolean;
+    instructionSources: MemberRuntimeInstructionSources;
+  }> {
+    const sendMessageToEnabled = await this.resolveSendMessageToCapability({
+      agentDefinitionId: input.agentDefinitionId,
+      runtimeReference: input.runtimeReference ?? null,
+    });
+    const instructionSources = await this.getInstructionSourceResolver().resolveForMember({
+      teamDefinitionId: input.teamDefinitionId,
+      agentDefinitionId: input.agentDefinitionId,
+    });
+
+    return {
+      sendMessageToEnabled,
+      instructionSources,
+      metadata: {
+        teamRunId: input.teamRunId,
+        teamDefinitionId: input.teamDefinitionId,
+        memberRouteKey: input.memberRouteKey,
+        memberName: input.memberName,
+        sendMessageToEnabled,
+        teamMemberManifest: input.teamMemberManifest,
+        memberInstructionSources: {
+          teamInstructions: instructionSources.teamInstructions,
+          agentInstructions: instructionSources.agentInstructions,
+        },
+        teamInstructions: instructionSources.teamInstructions,
+        agentInstructions: instructionSources.agentInstructions,
+      },
+    };
+  }
+
   async createMemberRuntimeSessions(
     teamRunId: string,
+    teamDefinitionId: string,
     memberConfigs: TeamRuntimeMemberConfig[],
   ): Promise<TeamRunMemberBinding[]> {
     const normalizedTeamRunId = normalizeRequiredString(teamRunId, "teamRunId");
+    const normalizedTeamDefinitionId = normalizeRequiredString(teamDefinitionId, "teamDefinitionId");
     const teamMemberManifest = await this.buildTeamManifestMetadata(
       memberConfigs.map((member) => ({
         memberName: member.memberName,
@@ -314,21 +336,20 @@ export class TeamMemberRuntimeSessionLifecycleService {
       const memberRouteKey = normalizeMemberRouteKey(config.memberRouteKey);
       const memberRunId = normalizeRequiredString(config.memberRunId, "memberRunId");
       const workspaceRootPath = await this.resolveWorkspaceRootPath(config);
-      const sendMessageToEnabled = await this.resolveSendMessageToCapability({
+      const { metadata, sendMessageToEnabled } = await this.buildRuntimeReferenceMetadata({
+        teamRunId: normalizedTeamRunId,
+        teamDefinitionId: normalizedTeamDefinitionId,
+        memberRouteKey,
+        memberName: config.memberName,
         agentDefinitionId: config.agentDefinitionId,
         runtimeReference: config.runtimeReference ?? null,
+        teamMemberManifest,
       });
 
       const session = await this.runtimeCompositionService.restoreAgentRun({
         runId: memberRunId,
         runtimeKind,
-        runtimeReference: toRuntimeReference(runtimeKind, memberRunId, config.runtimeReference, {
-          teamRunId: normalizedTeamRunId,
-          memberRouteKey,
-          memberName: config.memberName,
-          sendMessageToEnabled,
-          teamMemberManifest,
-        }),
+        runtimeReference: toRuntimeReference(runtimeKind, memberRunId, config.runtimeReference, metadata),
         agentDefinitionId: normalizeRequiredString(config.agentDefinitionId, "agentDefinitionId"),
         llmModelIdentifier: normalizeRequiredString(
           config.llmModelIdentifier,
@@ -348,13 +369,7 @@ export class TeamMemberRuntimeSessionLifecycleService {
           runtimeKind,
           memberRunId,
           (session.runtimeReference as TeamMemberRuntimeReference | null | undefined) ?? null,
-          {
-            teamRunId: normalizedTeamRunId,
-            memberRouteKey,
-            memberName: config.memberName,
-            sendMessageToEnabled,
-            teamMemberManifest,
-          },
+          metadata,
         ),
         agentDefinitionId: normalizeRequiredString(config.agentDefinitionId, "agentDefinitionId"),
         llmModelIdentifier: normalizeRequiredString(
@@ -373,6 +388,10 @@ export class TeamMemberRuntimeSessionLifecycleService {
 
   async restoreMemberRuntimeSessions(manifest: TeamRunManifest): Promise<TeamRunMemberBinding[]> {
     const normalizedTeamRunId = normalizeRequiredString(manifest.teamRunId, "teamRunId");
+    const normalizedTeamDefinitionId = normalizeRequiredString(
+      manifest.teamDefinitionId,
+      "teamDefinitionId",
+    );
     const teamMemberManifest = await this.buildTeamManifestMetadata(
       manifest.memberBindings.map((member) => ({
         memberName: member.memberName,
@@ -384,9 +403,14 @@ export class TeamMemberRuntimeSessionLifecycleService {
     for (const binding of manifest.memberBindings) {
       const runtimeKind = normalizeRuntimeKind(binding.runtimeKind);
       this.ensureSupportedMemberRuntime(runtimeKind);
-      const sendMessageToEnabled = await this.resolveSendMessageToCapability({
+      const { metadata } = await this.buildRuntimeReferenceMetadata({
+        teamRunId: normalizedTeamRunId,
+        teamDefinitionId: normalizedTeamDefinitionId,
+        memberRouteKey: binding.memberRouteKey,
+        memberName: binding.memberName,
         agentDefinitionId: binding.agentDefinitionId,
         runtimeReference: binding.runtimeReference ?? null,
+        teamMemberManifest,
       });
 
       let workspaceId: string | null = null;
@@ -410,13 +434,7 @@ export class TeamMemberRuntimeSessionLifecycleService {
           runtimeKind,
           binding.memberRunId,
           binding.runtimeReference,
-          {
-            teamRunId: normalizedTeamRunId,
-            memberRouteKey: binding.memberRouteKey,
-            memberName: binding.memberName,
-            sendMessageToEnabled,
-            teamMemberManifest,
-          },
+          metadata,
         ),
         agentDefinitionId: binding.agentDefinitionId,
         llmModelIdentifier: binding.llmModelIdentifier,
@@ -432,13 +450,7 @@ export class TeamMemberRuntimeSessionLifecycleService {
           runtimeKind,
           binding.memberRunId,
           (session.runtimeReference as TeamMemberRuntimeReference | null | undefined) ?? null,
-          {
-            teamRunId: normalizedTeamRunId,
-            memberRouteKey: binding.memberRouteKey,
-            memberName: binding.memberName,
-            sendMessageToEnabled,
-            teamMemberManifest,
-          },
+          metadata,
         ),
       });
     }

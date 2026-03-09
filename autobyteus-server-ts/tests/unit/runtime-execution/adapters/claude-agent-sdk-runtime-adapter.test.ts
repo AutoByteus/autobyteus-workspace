@@ -3,6 +3,15 @@ import { describe, expect, it, vi } from "vitest";
 import { ClaudeAgentSdkRuntimeAdapter } from "../../../../src/runtime-execution/adapters/claude-agent-sdk-runtime-adapter.js";
 import type { ClaudeAgentSdkRuntimeService } from "../../../../src/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.js";
 
+vi.mock("../../../../src/runtime-execution/single-agent-runtime-metadata.js", () => ({
+  resolveSingleAgentInstructionRuntimeMetadata: vi.fn().mockResolvedValue({
+    agentInstructions: "Use tools when useful.",
+    memberInstructionSources: {
+      agentInstructions: "Use tools when useful.",
+    },
+  }),
+}));
+
 const buildRuntimeService = () =>
   ({
     resolveWorkingDirectory: vi.fn().mockResolvedValue("/workspace/path"),
@@ -44,12 +53,24 @@ describe("ClaudeAgentSdkRuntimeAdapter", () => {
       runtimeKind: "claude_agent_sdk",
       sessionId: "claude-session-1",
       threadId: "claude-session-1",
-      metadata: { model: "claude-sonnet-4-5" },
+      metadata: {
+        agentInstructions: "Use tools when useful.",
+        memberInstructionSources: {
+          agentInstructions: "Use tools when useful.",
+        },
+        model: "claude-sonnet-4-5",
+      },
     });
     expect((runtimeService.resolveWorkingDirectory as any).mock.calls[0][0]).toBe("workspace-1");
     expect((runtimeService.createRunSession as any).mock.calls[0][0]).toBe(result.runId);
     expect((runtimeService.createRunSession as any).mock.calls[0][1]).toMatchObject({
       autoExecuteTools: false,
+      runtimeMetadata: {
+        agentInstructions: "Use tools when useful.",
+        memberInstructionSources: {
+          agentInstructions: "Use tools when useful.",
+        },
+      },
     });
   });
 
@@ -80,15 +101,35 @@ describe("ClaudeAgentSdkRuntimeAdapter", () => {
         runtimeKind: "claude_agent_sdk",
         sessionId: "claude-session-restored",
         threadId: "claude-session-restored",
-        metadata: { restored: true },
+        metadata: {
+          previous: true,
+          agentInstructions: "Use tools when useful.",
+          memberInstructionSources: {
+            agentInstructions: "Use tools when useful.",
+          },
+          restored: true,
+        },
       },
     });
     expect((runtimeService.restoreRunSession as any).mock.calls[0][2]).toEqual({
       sessionId: "persisted-session",
-      metadata: { previous: true },
+      metadata: {
+        previous: true,
+        agentInstructions: "Use tools when useful.",
+        memberInstructionSources: {
+          agentInstructions: "Use tools when useful.",
+        },
+      },
     });
     expect((runtimeService.restoreRunSession as any).mock.calls[0][1]).toMatchObject({
       autoExecuteTools: true,
+      runtimeMetadata: {
+        previous: true,
+        agentInstructions: "Use tools when useful.",
+        memberInstructionSources: {
+          agentInstructions: "Use tools when useful.",
+        },
+      },
     });
   });
 

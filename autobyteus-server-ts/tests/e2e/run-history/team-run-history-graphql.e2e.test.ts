@@ -20,6 +20,7 @@ import { getTeamRunHistoryService } from "../../../src/run-history/services/team
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
 import { AgentTeamDefinitionService } from "../../../src/agent-team-definition/services/agent-team-definition-service.js";
+import { getRuntimeCompositionService } from "../../../src/runtime-execution/runtime-composition-service.js";
 
 const listTeamRunHistoryQuery = `
   query ListTeamRunHistory {
@@ -390,6 +391,139 @@ describe("Team run history GraphQL e2e", () => {
     expect(deleteResult.deleteTeamRunHistory.message).toContain(teamRunId);
 
     seededTeamIds.delete(teamRunId);
+  });
+
+  it("persists team and agent instruction sources in member-runtime manifest metadata", async () => {
+    vi.spyOn(getRuntimeCompositionService(), "restoreAgentRun").mockImplementation(async (options: any) => ({
+      runtimeReference: {
+        runtimeKind: options.runtimeKind,
+        sessionId: options.runId,
+        threadId: `thread-${options.runId}`,
+        metadata: options.runtimeReference?.metadata ?? null,
+      },
+    }));
+
+    const unique = `${Date.now()}_${Math.random().toString(16).slice(2)}`;
+    const professorDefinitionResult = await execGraphql<{
+      createAgentDefinition: { id: string };
+    }>(createAgentDefinitionMutation, {
+      input: {
+        name: `history-professor-${unique}`,
+        role: "coordinator",
+        description: "Leads delegation",
+        instructions: "Coordinate implementation and ask teammates for help when useful.",
+        toolNames: ["send_message_to"],
+      },
+    });
+    const professorDefinitionId = professorDefinitionResult.createAgentDefinition.id;
+    createdAgentDefinitionIds.add(professorDefinitionId);
+
+    const studentDefinitionResult = await execGraphql<{
+      createAgentDefinition: { id: string };
+    }>(createAgentDefinitionMutation, {
+      input: {
+        name: `history-student-${unique}`,
+        role: "implementer",
+        description: "Executes assigned work",
+        instructions: "Focus on implementation details and report findings clearly.",
+        toolNames: ["send_message_to"],
+      },
+    });
+    const studentDefinitionId = studentDefinitionResult.createAgentDefinition.id;
+    createdAgentDefinitionIds.add(studentDefinitionId);
+
+    const teamDefinitionResult = await execGraphql<{
+      createAgentTeamDefinition: { id: string };
+    }>(createAgentTeamDefinitionMutation, {
+      input: {
+        name: `history-team-${unique}`,
+        description: "Instruction composition e2e team",
+        instructions: "Operate as one team, divide work clearly, and share progress.",
+        coordinatorMemberName: "professor",
+        nodes: [
+          {
+            memberName: "professor",
+            ref: professorDefinitionId,
+            refType: "AGENT",
+          },
+          {
+            memberName: "student",
+            ref: studentDefinitionId,
+            refType: "AGENT",
+          },
+        ],
+      },
+    });
+    const teamDefinitionId = teamDefinitionResult.createAgentTeamDefinition.id;
+    createdTeamDefinitionIds.add(teamDefinitionId);
+
+    const createTeamResult = await execGraphql<{
+      createAgentTeamRun: {
+        success: boolean;
+        teamRunId: string | null;
+      };
+    }>(createAgentTeamRunMutation, {
+      input: {
+        teamDefinitionId,
+        memberConfigs: [
+          {
+            memberName: "professor",
+            agentDefinitionId: professorDefinitionId,
+            runtimeKind: "codex_app_server",
+            llmModelIdentifier: "gpt-5-codex",
+            autoExecuteTools: true,
+          },
+          {
+            memberName: "student",
+            agentDefinitionId: studentDefinitionId,
+            runtimeKind: "codex_app_server",
+            llmModelIdentifier: "gpt-5-codex",
+            autoExecuteTools: true,
+          },
+        ],
+      },
+    });
+
+    expect(createTeamResult.createAgentTeamRun.success).toBe(true);
+    expect(createTeamResult.createAgentTeamRun.teamRunId).toBeTruthy();
+    const teamRunId = createTeamResult.createAgentTeamRun.teamRunId as string;
+    seededTeamIds.add(teamRunId);
+
+    const resumeResult = await execGraphql<{
+      getTeamRunResumeConfig: {
+        manifest: TeamRunManifest;
+      };
+    }>(getTeamRunResumeConfigQuery, { teamRunId });
+
+    const professorBinding = resumeResult.getTeamRunResumeConfig.manifest.memberBindings.find(
+      (binding) => binding.memberName === "professor",
+    );
+    expect(professorBinding).toBeTruthy();
+    expect(professorBinding?.runtimeReference?.metadata).toEqual(
+      expect.objectContaining({
+        teamDefinitionId,
+        memberName: "professor",
+        sendMessageToEnabled: true,
+        teamInstructions: "Operate as one team, divide work clearly, and share progress.",
+        agentInstructions: "Coordinate implementation and ask teammates for help when useful.",
+        memberInstructionSources: {
+          teamInstructions: "Operate as one team, divide work clearly, and share progress.",
+          agentInstructions: "Coordinate implementation and ask teammates for help when useful.",
+        },
+        teamMemberManifest: expect.arrayContaining([
+          expect.objectContaining({
+            memberName: "professor",
+            role: "coordinator",
+            description: "Leads delegation",
+          }),
+          expect.objectContaining({
+            memberName: "student",
+            role: "implementer",
+            description: "Executes assigned work",
+          }),
+        ]),
+      }),
+    );
   });
 
   it("continues an offline team run for an existing teamRunId", async () => {

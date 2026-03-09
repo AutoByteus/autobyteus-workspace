@@ -27,7 +27,7 @@
     "vitest": "^4.0.18"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.71.2",
+    "@anthropic-ai/sdk": "^0.78.0",
     "@google/genai": "^1.38.0",
     "@mistralai/mistralai": "^1.13.0",
     "@modelcontextprotocol/sdk": "^1.25.3",

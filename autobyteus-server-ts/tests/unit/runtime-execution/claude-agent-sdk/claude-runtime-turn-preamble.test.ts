@@ -35,9 +35,15 @@ describe("claude-runtime-turn-preamble", () => {
     expect(input).toBe("hello");
   });
 
-  it("wraps teammate context using generic team_context tag", () => {
+  it("wraps team, agent, and runtime instructions with explicit section tags", () => {
     const input = buildClaudeTurnInput({
       state: createState({
+        runtimeMetadata: {
+          memberInstructionSources: {
+            teamInstructions: "Work as a coordinated research team.",
+            agentInstructions: "You verify sources before answering.",
+          },
+        },
         memberName: "professor",
         teamManifestMembers: [
           { memberName: "professor", role: "coordinator", description: null },
@@ -48,9 +54,19 @@ describe("claude-runtime-turn-preamble", () => {
       sendMessageToToolingEnabled: true,
     });
 
-    expect(input).toContain("<team_context>");
-    expect(input).toContain("</team_context>");
-    expect(input).not.toContain("<autobyteus_team_context>");
+    expect(input).toContain("<team_instruction>");
+    expect(input).toContain("Work as a coordinated research team.");
+    expect(input).toContain("</team_instruction>");
+    expect(input).toContain("<agent_instruction>");
+    expect(input).toContain("You verify sources before answering.");
+    expect(input).toContain("</agent_instruction>");
+    expect(input).toContain("<runtime_instruction>");
+    expect(input).toContain(
+      "If you use `send_message_to`, set `recipient_name` to exactly match one teammate name from the list below.",
+    );
+    expect(input).toContain("- student: researcher | finds references");
+    expect(input).toContain("</runtime_instruction>");
+    expect(input).not.toContain("definition_instructions");
     expect(input).toContain("<user_message>");
     expect(input).toContain("please delegate this");
     expect(input).toContain("</user_message>");

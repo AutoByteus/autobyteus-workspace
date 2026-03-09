@@ -15,6 +15,15 @@ export type CodexApprovalRecord = {
   approvalId: string | null;
 };
 
+export type CodexSessionStartupStatus = "pending" | "ready" | "failed";
+
+export type CodexSessionStartupState = {
+  status: CodexSessionStartupStatus;
+  waitForReady: Promise<void>;
+  resolveReady: () => void;
+  rejectReady: (error: Error) => void;
+};
+
 export type CodexRunSessionState = {
   runId: string;
   client: CodexAppServerClient;
@@ -22,13 +31,46 @@ export type CodexRunSessionState = {
   model: string | null;
   workingDirectory: string;
   reasoningEffort: string | null;
+  currentStatus: string | null;
   activeTurnId: string | null;
+  startup: CodexSessionStartupState;
   approvalRecords: Map<string, CodexApprovalRecord>;
   listeners: Set<(event: CodexRuntimeEvent) => void>;
   unbindHandlers: Array<() => void>;
   teamRunId: string | null;
   memberName: string | null;
   sendMessageToEnabled: boolean;
+};
+
+export const createCodexSessionStartupState = (): CodexSessionStartupState => {
+  const control = {
+    resolve: () => {},
+    reject: (_error: Error) => {},
+  };
+  const state = {
+    status: "pending" as CodexSessionStartupStatus,
+    waitForReady: Promise.resolve(),
+    resolveReady: () => control.resolve(),
+    rejectReady: (error: Error) => control.reject(error),
+  };
+  state.waitForReady = new Promise<void>((resolve, reject) => {
+    control.resolve = () => {
+      if (state.status !== "pending") {
+        return;
+      }
+      state.status = "ready";
+      resolve();
+    };
+    control.reject = (error: Error) => {
+      if (state.status !== "pending") {
+        return;
+      }
+      state.status = "failed";
+      reject(error);
+    };
+  });
+  void state.waitForReady.catch(() => {});
+  return state;
 };
 
 export interface CodexInterAgentEnvelope {

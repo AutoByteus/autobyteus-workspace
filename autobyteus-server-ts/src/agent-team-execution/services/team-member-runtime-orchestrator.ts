@@ -1,5 +1,6 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
+import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import { getWorkspaceManager, type WorkspaceManager } from "../../workspaces/workspace-manager.js";
 import {
   getRuntimeCompositionService,
@@ -59,6 +60,7 @@ export class TeamMemberRuntimeOrchestrator {
     teamRuntimeInterAgentMessageRelay?: TeamRuntimeInterAgentMessageRelay;
     workspaceManager?: WorkspaceManager;
     agentDefinitionService?: AgentDefinitionService;
+    agentTeamDefinitionService?: AgentTeamDefinitionService;
   } = {}) {
     this.runtimeCommandIngressService =
       options.runtimeCommandIngressService ?? getRuntimeCommandIngressService();
@@ -73,12 +75,15 @@ export class TeamMemberRuntimeOrchestrator {
     const workspaceManager = options.workspaceManager ?? getWorkspaceManager();
     const agentDefinitionService =
       options.agentDefinitionService ?? AgentDefinitionService.getInstance();
+    const agentTeamDefinitionService =
+      options.agentTeamDefinitionService ?? AgentTeamDefinitionService.getInstance();
     this.sessionLifecycleService = new TeamMemberRuntimeSessionLifecycleService(
       runtimeCompositionService,
       runtimeAdapterRegistry,
       this.teamRuntimeBindingRegistry,
       workspaceManager,
       agentDefinitionService,
+      agentTeamDefinitionService,
     );
     this.relayService = new TeamMemberRuntimeRelayService(
       this.teamRuntimeBindingRegistry,
@@ -143,9 +148,14 @@ export class TeamMemberRuntimeOrchestrator {
 
   async createMemberRuntimeSessions(
     teamRunId: string,
+    teamDefinitionId: string,
     memberConfigs: TeamRuntimeMemberConfig[],
   ): Promise<TeamRunMemberBinding[]> {
-    return this.sessionLifecycleService.createMemberRuntimeSessions(teamRunId, memberConfigs);
+    return this.sessionLifecycleService.createMemberRuntimeSessions(
+      teamRunId,
+      teamDefinitionId,
+      memberConfigs,
+    );
   }
 
   async restoreMemberRuntimeSessions(manifest: TeamRunManifest): Promise<TeamRunMemberBinding[]> {
