@@ -1,6 +1,6 @@
 # Implementation Progress
 
-- Status: `Stage 10 Finalization In Progress`
+- Status: `Completed`
 - Date: `2026-03-09`
 
 ## Planned Change List
@@ -43,6 +43,7 @@
 - 2026-03-09: The user clarified that AutoByteus runtime still routes replies correctly while Codex does not. That made the earlier recovered-runtime-only theory insufficient and narrowed the real gap to runtime-native callback lifecycle behavior.
 - 2026-03-09: Updated `runtime-external-channel-turn-bridge.ts` so it no longer caches `ReplyCallbackService` at singleton construction time. The bridge now resolves callback publishing lazily when the assistant reply is actually ready, matching the working in-house runtime behavior.
 - 2026-03-09: User live verification confirmed that the Codex runtime now routes replies back to the messaging provider and that the binding replacement plus gateway recovery scenario also works. Stage 7 closes and the ticket moves into finalization.
+- 2026-03-09: Ticket archived to `tickets/done/messaging-runtime-visibility`, merged into `personal`, pushed to origin, and released as `v1.2.33`.
 
 ## Validation
 

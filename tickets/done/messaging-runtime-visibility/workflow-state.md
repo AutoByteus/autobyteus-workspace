@@ -8,11 +8,11 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 
 - Ticket: `messaging-runtime-visibility`
 - Current Stage: `10`
-- Next Stage: `Archive the verified ticket, finalize git, merge into personal, and run the desktop release helper`
+- Next Stage: `Completed`
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `Design Impact`
-- Last Transition ID: `T-043`
+- Last Transition ID: `T-044`
 - Last Updated: `2026-03-09`
 
 ## Stage Gates
@@ -29,7 +29,7 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | 7 API/E2E Testing | Pass | User live verification confirms the previously failing packaged-app scenarios now work: Codex runtime replies route back to the provider, and replacement binding plus gateway recovery also passes | `tickets/in-progress/messaging-runtime-visibility/api-e2e-testing.md`, `tickets/in-progress/messaging-runtime-visibility/workflow-state.md` |
 | 8 Code Review | Pass | Final delta review found no new findings after the lazy runtime-native callback lifecycle fix | `tickets/in-progress/messaging-runtime-visibility/code-review.md`, `tickets/in-progress/messaging-runtime-visibility/workflow-state.md` |
 | 9 Docs Sync | Pass | No product-doc updates are required; implementation-progress records the no-impact rationale and final Stage 7 closure | `tickets/in-progress/messaging-runtime-visibility/implementation-progress.md`, `tickets/in-progress/messaging-runtime-visibility/workflow-state.md` |
-| 10 Handoff / Ticket State | In Progress | User verification is complete. Ticket archival and repository finalization are now the only remaining steps | `tickets/in-progress/messaging-runtime-visibility/workflow-state.md`, `tickets/in-progress/messaging-runtime-visibility/api-e2e-testing.md`, `tickets/in-progress/messaging-runtime-visibility/code-review.md` |
+| 10 Handoff / Ticket State | Pass | User verification, ticket archival, ticket-branch push, personal merge/push, and desktop release tag `v1.2.33` are complete | `tickets/done/messaging-runtime-visibility/workflow-state.md`, `tickets/done/messaging-runtime-visibility/api-e2e-testing.md`, `tickets/done/messaging-runtime-visibility/code-review.md`, `tickets/done/messaging-runtime-visibility/implementation-progress.md` |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -135,6 +135,7 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | T-041 | 2026-03-09 | 7 | 8 | User live verification passed for the previously failing packaged-app scenarios, so Stage 7 closes and the ticket enters code review. | N/A | Locked | `tickets/in-progress/messaging-runtime-visibility/api-e2e-testing.md`, `tickets/in-progress/messaging-runtime-visibility/workflow-state.md` |
 | T-042 | 2026-03-09 | 8 | 9 | Final delta code review passed with no findings after the runtime-native callback lifecycle fix. | N/A | Locked | `tickets/in-progress/messaging-runtime-visibility/code-review.md`, `tickets/in-progress/messaging-runtime-visibility/workflow-state.md` |
 | T-043 | 2026-03-09 | 9 | 10 | Docs sync remains no-impact and the ticket is now in Stage 10 awaiting archival and repository finalization. | N/A | Locked | `tickets/in-progress/messaging-runtime-visibility/implementation-progress.md`, `tickets/in-progress/messaging-runtime-visibility/workflow-state.md` |
+| T-044 | 2026-03-09 | 10 | 10 | Stage 10 finalization is complete. The ticket is archived under `tickets/done/`, the ticket branch and personal branch are pushed, and release `v1.2.33` has been created. | N/A | Locked | `tickets/done/messaging-runtime-visibility/workflow-state.md`, `tickets/done/messaging-runtime-visibility/implementation-progress.md` |
 
 ## Audible Notification Log (Optional Tracking)
 
@@ -152,6 +153,7 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | 2026-03-09 | Transition | Refreshed investigation and requirements refinement are complete. The ticket is now at Stage 3 with code edits still locked while I regenerate the runtime model and review for the recovered-runtime callback-publisher fix. | Success | N/A |
 | 2026-03-09 | Re-entry | The recovered-runtime callback-publisher scope is reviewed and approved. The ticket is back at Stage 6 with code edits unlocked for the packaged-app reply-routing fix. | Success | N/A |
 | 2026-03-09 | Transition | The runtime-native callback lifecycle fix is implemented and focused backend verification passed. The ticket is back at Stage 7 pending a fresh live packaged-app rerun for the Codex provider roundtrip. | Success | N/A |
+| 2026-03-09 | Transition | Stage 10 finalization is complete. The verified ticket is archived, merged into personal, and released as `v1.2.33`. | Success | N/A |
 
 ## Process Violation Log
 
