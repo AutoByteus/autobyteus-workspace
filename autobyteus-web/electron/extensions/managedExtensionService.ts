@@ -2,6 +2,7 @@ import * as fs from 'fs/promises'
 import * as path from 'path'
 import { getExtensionCatalog, getExtensionDescriptor } from './extensionCatalog'
 import type {
+  ExtensionInstallProgress,
   ExtensionId,
   ManagedExtensionRecord,
   ManagedExtensionState,
@@ -30,6 +31,7 @@ function createDefaultRecord(id: ExtensionId): ManagedExtensionRecord {
     enabled: false,
     settings: { ...DEFAULT_VOICE_INPUT_SETTINGS },
     message: '',
+    installProgress: null,
     installedAt: null,
     runtimeVersion: null,
     modelVersion: null,
@@ -115,6 +117,7 @@ export class ManagedExtensionService {
       enabled: record.enabled,
       settings: { ...record.settings },
       message: record.message,
+      installProgress: record.installProgress ? { ...record.installProgress } : null,
       installedAt: record.installedAt,
       runtimeVersion: record.runtimeVersion,
       modelVersion: record.modelVersion,
@@ -135,16 +138,52 @@ export class ManagedExtensionService {
     record.status = 'installing'
     record.enabled = false
     record.settings = { ...settings }
-    record.message = 'Installing Voice Input runtime...'
+    record.message = 'Fetching runtime manifest...'
+    record.installProgress = {
+      phase: 'fetching-manifest',
+      percent: null,
+      bytesReceived: null,
+      bytesTotal: null,
+    }
     record.lastError = null
     registry.extensions[id] = record
     await this.writeRegistry(registry)
 
     try {
-      const installResult = await this.runtimeService.installRuntime(descriptor, this.getExtensionRoot(id))
+      let lastInstallPhase: ExtensionInstallProgress['phase'] | null = record.installProgress.phase
+      let lastInstallPercent = record.installProgress.percent
+
+      const installResult = await this.runtimeService.installRuntime(
+        descriptor,
+        this.getExtensionRoot(id),
+        async (progress) => {
+          const shouldPersist =
+            progress.phase !== lastInstallPhase ||
+            progress.percent !== lastInstallPercent ||
+            progress.message !== record.message
+
+          if (!shouldPersist) {
+            return
+          }
+
+          lastInstallPhase = progress.phase
+          lastInstallPercent = progress.percent
+          record.status = 'installing'
+          record.message = progress.message
+          record.installProgress = {
+            phase: progress.phase,
+            percent: progress.percent,
+            bytesReceived: progress.bytesReceived,
+            bytesTotal: progress.bytesTotal,
+          }
+          registry.extensions[id] = record
+          await this.writeRegistry(registry)
+        },
+      )
       record.status = 'installed'
       record.enabled = enabledAfterInstall
       record.message = enabledAfterInstall ? 'Voice Input is installed and enabled.' : 'Voice Input is installed and disabled.'
+      record.installProgress = null
       record.installedAt = new Date().toISOString()
       record.runtimeVersion = installResult.runtimeVersion
       record.modelVersion = installResult.modelVersion
@@ -156,6 +195,7 @@ export class ManagedExtensionService {
       record.status = 'error'
       record.enabled = false
       record.message = 'Failed to install Voice Input.'
+      record.installProgress = null
       record.lastError = error instanceof Error ? error.message : 'Unknown install error'
     }
 

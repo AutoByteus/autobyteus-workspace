@@ -42,6 +42,7 @@
 | Date | Scenario ID | Failure Summary | Investigation Required | Classification | Action Path | `investigation-notes.md` Updated | Requirements Updated | Design Updated | Call Stack Regenerated | Review Re-Entry Round | Resolved |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 2026-03-08 | `AV-006` | The first standalone-repo workflow dispatch failed immediately because the workflow used invalid GitHub expression syntax (`inputs.runtime_version#v`) instead of doing version normalization in bash | No | `Local Fix` | `6 -> 7` | No | No | No | No | N/A | Yes |
+| 2026-03-09 | `AV-012` | Live packaged-app validation of the new settings-level Voice Input test failed with `FileNotFoundError: [Errno 2] No such file or directory: 'ffmpeg'` even though `ffmpeg` exists at `/opt/homebrew/bin/ffmpeg`; the worker launch path is not inheriting login-shell PATH | Yes | `Local Fix` | `6 -> 7` | Yes | No | No | No | N/A | No |
 
 ## Feasibility And Risk Record
 
@@ -97,4 +98,44 @@
 
 - Stage 7 reopened for the UX refinement: `Yes`
 - All newly added executable acceptance criteria passed: `Yes`
+- Additional blockers introduced: `No`
+
+## Live Diagnostics Re-Entry Validation (2026-03-09)
+
+### Additional Scenario Coverage
+
+| Scenario ID | Acceptance Criteria | Status | Command / Harness | Notes |
+| --- | --- | --- | --- | --- |
+| `AV-011` | `AC-003E` | Passed | `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/voice-input-bilingual-runtime/autobyteus-web exec vitest --config electron/vitest.config.ts run electron/extensions/__tests__/managedExtensionService.spec.ts` plus `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/voice-input-bilingual-runtime/autobyteus-web exec vitest --config vitest.config.mts run stores/__tests__/extensionsStore.spec.ts components/settings/__tests__/VoiceInputExtensionCard.spec.ts` | Install now exposes manifest/download/extract/bootstrap phases to the settings UI without fake percentage claims when the backend cannot provide them |
+| `AV-012` | `AC-006B`, `AC-006C` | Passed | `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/voice-input-bilingual-runtime/autobyteus-web exec vitest --config vitest.config.mts run components/settings/__tests__/VoiceInputExtensionCard.spec.ts stores/__tests__/voiceInputStore.spec.ts tests/integration/voice-input-extension.integration.test.ts components/agentInput/__tests__/AgentUserInputTextArea.spec.ts` | Settings page now supports a direct voice test flow and the store distinguishes `no-speech`, `empty-transcript`, and runtime-error outcomes |
+
+### Gate Outcome For Re-Entry
+
+- Stage 7 reopened for the live diagnostics delta: `Yes`
+- All newly added executable acceptance criteria passed: `Yes`
+- Additional blockers introduced: `No`
+- Residual risk:
+  - A fresh packaged-app microphone smoke is still required after rebuild to prove the real desktop binary now behaves correctly with live microphone hardware.
+
+## Packaged-App PATH Re-Entry Validation Plan (2026-03-09)
+
+### Planned Additional Scenario Coverage
+
+| Scenario ID | Acceptance Criteria | Planned Command / Harness | Goal |
+| --- | --- | --- | --- |
+| `AV-013` | `AC-006B`, `AC-006C` | `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/voice-input-bilingual-runtime/autobyteus-web exec vitest --config electron/vitest.config.ts run electron/extensions/__tests__/managedExtensionService.spec.ts` plus the new runtime-spawn env regression case | Prove the Voice Input runtime spawn path receives login-shell PATH enrichment |
+| `AV-014` | `AC-006B`, `AC-006C` | Rebuild macOS desktop app, launch packaged build, rerun `Settings -> Extensions -> Voice Input -> Test Voice Input` on the user machine | Prove packaged-app microphone test no longer fails on missing `ffmpeg` when Homebrew installs it outside the default GUI PATH |
+
+### Current Re-Entry Status
+
+| Scenario ID | Acceptance Criteria | Status | Command / Harness | Notes |
+| --- | --- | --- | --- | --- |
+| `AV-013` | `AC-006B`, `AC-006C` | Passed | `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/voice-input-bilingual-runtime/autobyteus-web exec vitest --config electron/vitest.config.ts run electron/extensions/__tests__/managedExtensionService.spec.ts electron/extensions/__tests__/voiceInputRuntimeService.spec.ts` | Targeted Electron validation now proves the PATH-enrichment helper and managed extension regression suite both pass after the worker-launch env fix |
+| `AV-014` | `AC-006B`, `AC-006C` | Passed | Rebuilt artifact at `/Users/normy/autobyteus_org/autobyteus-worktrees/voice-input-bilingual-runtime/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.2.27.dmg`; user ran `Settings -> Extensions -> Voice Input -> Test Voice Input` in the packaged app and confirmed it works | Live packaged-app verification closed successfully after the PATH-enrichment fix |
+
+### Gate Outcome For PATH Re-Entry
+
+- Stage 7 reopened for the packaged-app PATH fix: `Yes`
+- Targeted Electron regression checks passed: `Yes`
+- Live packaged-app microphone test after rebuild passed: `Yes`
 - Additional blockers introduced: `No`

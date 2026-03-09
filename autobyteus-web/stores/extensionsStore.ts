@@ -15,6 +15,9 @@ type ExtensionAction =
   | 'update-settings'
   | null;
 
+const INSTALL_POLL_INTERVAL_MS = 750;
+let installPollingTimer: ReturnType<typeof setInterval> | null = null;
+
 interface ExtensionsStoreState {
   initialized: boolean;
   isElectron: boolean;
@@ -41,6 +44,37 @@ export const useExtensionsStore = defineStore('extensions', {
   },
 
   actions: {
+    startInstallPolling(): void {
+      this.stopInstallPolling();
+      if (!window.electronAPI?.getExtensionsState) {
+        return;
+      }
+
+      installPollingTimer = setInterval(() => {
+        void this.refreshInstallState();
+      }, INSTALL_POLL_INTERVAL_MS);
+    },
+
+    stopInstallPolling(): void {
+      if (installPollingTimer) {
+        clearInterval(installPollingTimer);
+        installPollingTimer = null;
+      }
+    },
+
+    async refreshInstallState(): Promise<void> {
+      if (!window.electronAPI?.getExtensionsState) {
+        return;
+      }
+
+      try {
+        const state = await window.electronAPI.getExtensionsState();
+        this.applyRemoteState(state);
+      } catch {
+        // Keep the in-flight optimistic state if polling fails transiently.
+      }
+    },
+
     applyRemoteState(extensions: ManagedExtensionState[]): void {
       this.extensions = extensions;
       this.error = null;
@@ -97,9 +131,16 @@ export const useExtensionsStore = defineStore('extensions', {
       this.updateLocalExtension(extensionId, {
         status: 'installing',
         enabled: false,
-        message: 'Downloading runtime and model. This can take a minute on first install.',
+        message: 'Fetching runtime manifest...',
+        installProgress: {
+          phase: 'fetching-manifest',
+          percent: null,
+          bytesReceived: null,
+          bytesTotal: null,
+        },
         lastError: null,
       });
+      this.startInstallPolling();
       try {
         const state = await window.electronAPI.installExtension(extensionId);
         this.applyRemoteState(state);
@@ -110,10 +151,12 @@ export const useExtensionsStore = defineStore('extensions', {
           status: 'error',
           enabled: false,
           message: 'Failed to install Voice Input.',
+          installProgress: null,
           lastError: message,
         });
         useToasts().addToast(message, 'error');
       } finally {
+        this.stopInstallPolling();
         this.isBusy = false;
         this.pendingAction = null;
       }
@@ -208,9 +251,16 @@ export const useExtensionsStore = defineStore('extensions', {
       this.pendingAction = 'reinstall';
       this.updateLocalExtension(extensionId, {
         status: 'installing',
-        message: 'Reinstalling Voice Input. Runtime assets are being refreshed now.',
+        message: 'Fetching runtime manifest...',
+        installProgress: {
+          phase: 'fetching-manifest',
+          percent: null,
+          bytesReceived: null,
+          bytesTotal: null,
+        },
         lastError: null,
       });
+      this.startInstallPolling();
       try {
         const state = await window.electronAPI.reinstallExtension(extensionId);
         this.applyRemoteState(state);
@@ -221,10 +271,12 @@ export const useExtensionsStore = defineStore('extensions', {
           status: 'error',
           enabled: false,
           message: 'Failed to reinstall Voice Input.',
+          installProgress: null,
           lastError: message,
         });
         useToasts().addToast(message, 'error');
       } finally {
+        this.stopInstallPolling();
         this.isBusy = false;
         this.pendingAction = null;
       }

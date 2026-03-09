@@ -192,7 +192,17 @@ describe('voice input extension integration', () => {
   it('installs, enables, and inserts transcript text into the draft', async () => {
     const extensionsStore = useExtensionsStore()
     const voiceInputStore = useVoiceInputStore()
-    const audioBuffer = new Uint8Array([1, 2, 3]).buffer
+    const capturePayload = {
+      audioData: new Uint8Array([1, 2, 3]).buffer,
+      diagnostics: {
+        inputSampleRate: 48000,
+        wavSampleRate: 48000,
+        durationMs: 1000,
+        rms: 0.032,
+        peak: 0.4,
+        sampleCount: 48000,
+      },
+    }
 
     await extensionsStore.initialize()
     expect(extensionsStore.voiceInput?.status).toBe('not-installed')
@@ -208,7 +218,7 @@ describe('voice input extension integration', () => {
       port: {
         postMessage: vi.fn(() => {
           queueMicrotask(() => {
-            voiceInputStore.flushPromiseResolve?.(audioBuffer)
+            voiceInputStore.flushPromiseResolve?.(capturePayload)
           })
         }),
       },

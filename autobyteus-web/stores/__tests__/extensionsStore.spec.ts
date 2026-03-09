@@ -23,6 +23,7 @@ function makeVoiceInputState(overrides: Record<string, unknown> = {}) {
       languageMode: 'auto',
     },
     message: '',
+    installProgress: null,
     installedAt: null,
     runtimeVersion: null,
     modelVersion: null,
@@ -137,7 +138,8 @@ describe('extensionsStore', () => {
     expect(store.pendingAction).toBe('install')
     expect(store.voiceInput?.status).toBe('installing')
     expect(store.voiceInput?.enabled).toBe(false)
-    expect(store.voiceInput?.message).toContain('Downloading runtime and model')
+    expect(store.voiceInput?.message).toContain('Fetching runtime manifest')
+    expect(store.voiceInput?.installProgress?.phase).toBe('fetching-manifest')
 
     resolveInstall?.([
       makeVoiceInputState({

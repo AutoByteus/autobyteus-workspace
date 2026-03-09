@@ -8,28 +8,28 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 
 - Ticket: `voice-input-extension`
 - Current Stage: `10`
-- Next Stage: `Final Handoff`
+- Next Stage: `Complete / Archive Authorized`
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-048`
-- Last Updated: `2026-03-08`
+- Last Transition ID: `T-063`
+- Last Updated: `2026-03-09`
 
 ## Stage Gates
 
 | Stage | Gate Status (`Not Started`/`In Progress`/`Pass`/`Fail`/`Blocked`) | Gate Rule Summary | Evidence |
 | --- | --- | --- | --- |
 | 0 Bootstrap + Draft Requirement | Pass | Dedicated worktree/branch created and initial draft requirements captured under the web project ticket folder | `requirements.md`, `workflow-state.md` |
-| 1 Investigation + Triage | Pass | Investigation confirmed that runtime publication must move to a dedicated `AutoByteus/autobyteus-voice-runtime` repository to avoid polluting workspace desktop-release consumers | `investigation-notes.md`, `workflow-state.md` |
-| 2 Requirements | Pass | Requirements now include immediate install feedback, install-folder access, and explicit recording/transcribing visibility in the shared composer | `requirements.md`, `workflow-state.md` |
-| 3 Design Basis | Pass | Proposed design was refreshed for optimistic install state, an Electron `Open Folder` action, and composer recording-state visibility | `proposed-design.md`, `workflow-state.md` |
-| 4 Runtime Modeling | Pass | Runtime modeling now covers optimistic install progression, installed-folder reveal, and visible recording/transcribing feedback | `future-state-runtime-call-stack.md`, `workflow-state.md` |
-| 5 Review Gate | Pass | Review reconfirmed the UX refinement with two clean rounds and no need to reopen architecture | `future-state-runtime-call-stack-review.md`, `workflow-state.md` |
-| 6 Implementation | Pass | Optimistic install state, Electron folder reveal, composer recording feedback, and IPC extraction were implemented for the UX refinement delta | `implementation-plan.md`, `implementation-progress.md`, `workflow-state.md` |
-| 7 API/E2E Testing | Pass | Targeted validation proved the new install-progress, open-folder, and recording/transcribing visibility behaviors | `api-e2e-testing.md`, `implementation-progress.md`, `workflow-state.md` |
-| 8 Code Review | Pass | Code review reran on the UX refinement delta and passed with no findings after extracting extension IPC out of `electron/main.ts` | `code-review.md`, `workflow-state.md` |
-| 9 Docs Sync | Pass | Ticket artifacts were refreshed to capture the UX refinement requirements, implementation, validation, and review evidence | `implementation-progress.md`, `api-e2e-testing.md`, `code-review.md`, `workflow-state.md` |
-| 10 Handoff / Ticket State | In Progress | The UX refinement is complete and ready for handoff while the ticket remains in progress until the user confirms completion | `workflow-state.md`, `implementation-progress.md` |
+| 1 Investigation + Triage | Pass | Live-user validation isolated the remaining failure to the renderer capture/classification boundary and confirmed the installed MLX worker/model are healthy | `investigation-notes.md`, `workflow-state.md` |
+| 2 Requirements | Pass | Requirements now cover install-phase telemetry, a settings-level voice test surface, and explicit no-speech diagnostics | `requirements.md`, `workflow-state.md` |
+| 3 Design Basis | Pass | Proposed design now specifies polling-backed install telemetry, settings-level testing, and recorder/transcription diagnostics | `proposed-design.md`, `workflow-state.md` |
+| 4 Runtime Modeling | Pass | Runtime modeling now covers install telemetry, settings-level test execution, and explicit no-speech/empty-transcript outcomes | `future-state-runtime-call-stack.md`, `workflow-state.md` |
+| 5 Review Gate | Pass | Runtime review reconfirmed the diagnostics/test-surface delta with two clean rounds and no need to reopen architecture | `future-state-runtime-call-stack-review.md`, `workflow-state.md` |
+| 6 Implementation | Pass | Voice Input runtime spawn paths now reuse login-shell PATH enrichment for `prepare` and `serve`, matching the embedded server launch behavior on macOS/Linux | `implementation-plan.md`, `implementation-progress.md`, `workflow-state.md` |
+| 7 API/E2E Testing | Pass | Targeted Electron regression checks passed, the rebuilt packaged app was validated live, and the user confirmed the settings-level Voice Input test now works end to end | `api-e2e-testing.md`, `implementation-progress.md`, `workflow-state.md` |
+| 8 Code Review | Pass | Code review reran on the PATH-enrichment fix and helper extraction; no findings remained and the runtime service is back under the 500-line cap | `code-review.md`, `workflow-state.md` |
+| 9 Docs Sync | Pass | Ticket artifacts were refreshed with the packaged-app PATH root cause, the local fix, the helper extraction, and the final live validation outcome | `implementation-progress.md`, `api-e2e-testing.md`, `code-review.md`, `workflow-state.md` |
+| 10 Handoff / Ticket State | Pass | User explicitly confirmed the packaged app works and requested archival; the ticket is ready to move to `done` | `workflow-state.md`, `implementation-progress.md` |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -143,6 +143,21 @@ Note:
 | T-046 | 2026-03-08 | 7 | 8 | Targeted validation passed for the UX refinement delta and code review reran on the changed files | N/A | Locked | `api-e2e-testing.md`, `implementation-progress.md`, `workflow-state.md` |
 | T-047 | 2026-03-08 | 8 | 9 | Code review passed with no findings after extracting extension IPC out of `electron/main.ts` | N/A | Locked | `code-review.md`, `workflow-state.md` |
 | T-048 | 2026-03-08 | 9 | 10 | Docs sync completed for the UX refinement re-entry and the ticket returned to final handoff state | N/A | Locked | `implementation-progress.md`, `api-e2e-testing.md`, `code-review.md`, `workflow-state.md` |
+| T-049 | 2026-03-09 | 10 | 1 | Re-entry declared because live-user validation showed that install still lacks actionable progress telemetry and dictation returns `No speech detected` even though the installed MLX worker and model are healthy | Unclear | Locked | `workflow-state.md` |
+| T-050 | 2026-03-09 | 1 | 2 | Investigation refreshed the problem statement: runtime install is healthy, and the next step is to refine requirements around install telemetry, settings-level testing, and no-speech diagnostics | Unclear | Locked | `investigation-notes.md`, `requirements.md`, `workflow-state.md` |
+| T-051 | 2026-03-09 | 2 | 3 | Requirements were refined to design-ready for install telemetry, a settings-level test surface, and explicit no-speech diagnostics | Unclear | Locked | `requirements.md`, `workflow-state.md` |
+| T-052 | 2026-03-09 | 3 | 4 | Proposed design was refreshed for polling-backed install telemetry, settings-level testing, and recorder/transcription diagnostics | Unclear | Locked | `proposed-design.md`, `workflow-state.md` |
+| T-053 | 2026-03-09 | 4 | 5 | Runtime modeling and review were rerun for install telemetry and diagnostics and returned to Go Confirmed | Unclear | Locked | `future-state-runtime-call-stack.md`, `future-state-runtime-call-stack-review.md`, `workflow-state.md` |
+| T-054 | 2026-03-09 | 5 | 6 | Implementation planning is refreshed for the live diagnostics delta and Stage 6 source changes are now active | Unclear | Unlocked | `implementation-plan.md`, `workflow-state.md` |
+| T-055 | 2026-03-09 | 6 | 7 | Live diagnostics implementation completed and targeted validation for install telemetry, settings-level testing, and explicit no-speech diagnostics became active | Unclear | Unlocked | `implementation-progress.md`, `api-e2e-testing.md`, `workflow-state.md` |
+| T-056 | 2026-03-09 | 7 | 8 | Targeted validation passed for the live diagnostics delta and code review reran on the changed files | N/A | Locked | `api-e2e-testing.md`, `implementation-progress.md`, `workflow-state.md` |
+| T-057 | 2026-03-09 | 8 | 9 | Code review passed with no findings for the live diagnostics delta and docs sync became active | N/A | Locked | `code-review.md`, `workflow-state.md` |
+| T-058 | 2026-03-09 | 9 | 10 | Docs sync completed for the live diagnostics re-entry and the ticket returned to final handoff with live packaged-app microphone verification still noted as residual risk | N/A | Locked | `implementation-progress.md`, `api-e2e-testing.md`, `code-review.md`, `workflow-state.md` |
+| T-059 | 2026-03-09 | 10 | 6 | Re-entry declared because live packaged-app validation failed in the new settings-level test surface: `ffmpeg` exists in Homebrew, but the Voice Input runtime is not inheriting the login-shell PATH the embedded server already uses | Local Fix | Unlocked | `workflow-state.md`, `investigation-notes.md`, `implementation-plan.md`, `implementation-progress.md`, `api-e2e-testing.md` |
+| T-060 | 2026-03-09 | 6 | 7 | Voice Input runtime PATH enrichment fix implemented and targeted Electron validation passed; rebuilt packaged-app validation is next | Local Fix | Unlocked | `implementation-progress.md`, `api-e2e-testing.md`, `workflow-state.md` |
+| T-061 | 2026-03-09 | 7 | 8 | Stage 7 closed after the rebuilt packaged app was validated live and the user confirmed Voice Input now works in the settings-level test flow | Local Fix | Locked | `api-e2e-testing.md`, `implementation-progress.md`, `workflow-state.md` |
+| T-062 | 2026-03-09 | 8 | 9 | Code review reran on the PATH-enrichment fix and helper extraction and passed with no findings | Local Fix | Locked | `code-review.md`, `workflow-state.md` |
+| T-063 | 2026-03-09 | 9 | 10 | Docs sync completed, the user explicitly requested archival, and the ticket is authorized to move to `done` | N/A | Locked | `implementation-progress.md`, `api-e2e-testing.md`, `code-review.md`, `workflow-state.md` |
 
 ## Audible Notification Log (Optional Tracking)
 
@@ -182,6 +197,13 @@ Note:
 | 2026-03-08 | Gate | Cleanup validation passed. The desktop release workflow now matches `origin/personal` again and the workspace repo latest release remains `v1.2.24`. Code review is next and code edits are locked. | Failed | `mlx-audio` local install is outdated; status provided in text instead |
 | 2026-03-08 | Gate | Code review passed for the final desktop workflow cleanup delta with no findings. Docs sync is next and code edits remain locked. | Failed | `mlx-audio` local install is outdated; status provided in text instead |
 | 2026-03-08 | Transition | Docs sync is complete for the desktop workflow cleanup. The ticket is ready for handoff again and remains in progress until user confirmation. | Failed | `mlx-audio` local install is outdated; status provided in text instead |
+| 2026-03-09 | Re-entry | Voice input extension work has re-entered investigation because live-user validation shows the installed runtime is healthy, but the product still lacks real install telemetry and the dictation path collapses to `No speech detected`. Requirements, design, and runtime modeling will be refreshed next, and code edits remain locked. | Failed | No `Speak` tool is available in this environment; status provided in text instead |
+| 2026-03-09 | Transition | Investigation is refreshed for the live no-speech regression. Requirements are now being updated for install telemetry, a settings-level test flow, and explicit diagnostics, and code edits remain locked. | Failed | No `Speak` tool is available in this environment; status provided in text instead |
+| 2026-03-09 | Transition | Requirements, design, and runtime modeling are refreshed for the live diagnostics delta. Stage 6 is active now, and code edits are unlocked for the implementation. | Failed | No `Speak` tool is available in this environment; status provided in text instead |
+| 2026-03-09 | Transition | Live diagnostics implementation and targeted validation are complete. Code review and docs sync passed, code edits are locked again, and the ticket is ready for handoff pending a fresh desktop build verification. | Failed | No `Speak` tool is available in this environment; status provided in text instead |
+| 2026-03-09 | Re-entry | Voice Input work has re-entered Stage 6 because packaged-app validation found a local worker-launch environment bug. The next step is to reuse login-shell PATH enrichment for the Voice Input runtime, and code edits are unlocked. | Failed | No `Speak` tool is available in this environment; status provided in text instead |
+| 2026-03-09 | Transition | The Voice Input runtime now inherits login-shell PATH during bootstrap and worker launch, and the targeted Electron regression checks passed. A rebuilt packaged-app validation is next, and code edits remain unlocked while Stage 7 is active. | Failed | No `Speak` tool is available in this environment; status provided in text instead |
+| 2026-03-09 | Transition | The rebuilt packaged app passed live Voice Input testing, code review passed after the helper extraction, and docs sync is complete. The ticket is now ready to archive and code edits are locked. | Failed | No `Speak` tool is available in this environment; status provided in text instead |
 
 ## Process Violation Log
 

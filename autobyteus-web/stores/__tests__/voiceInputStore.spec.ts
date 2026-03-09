@@ -60,13 +60,23 @@ describe('voiceInputStore', () => {
 
   it('appends transcript text into the current draft without sending', async () => {
     const store = useVoiceInputStore()
-    const audioBuffer = new Uint8Array([1, 2, 3]).buffer
+    const capturePayload = {
+      audioData: new Uint8Array([1, 2, 3]).buffer,
+      diagnostics: {
+        inputSampleRate: 48000,
+        wavSampleRate: 48000,
+        durationMs: 1500,
+        rms: 0.031,
+        peak: 0.42,
+        sampleCount: 72000,
+      },
+    }
 
     store.audioWorklet = {
       port: {
         postMessage: vi.fn(() => {
           queueMicrotask(() => {
-            store.flushPromiseResolve?.(audioBuffer)
+            store.flushPromiseResolve?.(capturePayload)
           })
         }),
       },
@@ -84,11 +94,23 @@ describe('voiceInputStore', () => {
     expect(window.electronAPI.transcribeVoiceInput).toHaveBeenCalledOnce()
     expect(activeContextStoreMock.updateRequirement).toHaveBeenCalledWith('hello world')
     expect(activeContextStoreMock.send).not.toHaveBeenCalled()
+    expect(store.latestResult?.outcome).toBe('transcript-ready')
+    expect(store.latestResult?.diagnostics?.wavSampleRate).toBe(48000)
   })
 
   it('surfaces transcription failure without mutating the draft', async () => {
     const store = useVoiceInputStore()
-    const audioBuffer = new Uint8Array([1, 2, 3]).buffer
+    const capturePayload = {
+      audioData: new Uint8Array([1, 2, 3]).buffer,
+      diagnostics: {
+        inputSampleRate: 48000,
+        wavSampleRate: 48000,
+        durationMs: 900,
+        rms: 0.021,
+        peak: 0.18,
+        sampleCount: 43200,
+      },
+    }
 
     ;(window as typeof window & { electronAPI?: any }).electronAPI.transcribeVoiceInput.mockResolvedValue({
       ok: false,
@@ -102,7 +124,7 @@ describe('voiceInputStore', () => {
       port: {
         postMessage: vi.fn(() => {
           queueMicrotask(() => {
-            store.flushPromiseResolve?.(audioBuffer)
+            store.flushPromiseResolve?.(capturePayload)
           })
         }),
       },
@@ -119,11 +141,22 @@ describe('voiceInputStore', () => {
 
     expect(activeContextStoreMock.updateRequirement).not.toHaveBeenCalled()
     expect(addToastMock).toHaveBeenCalledWith('runtime failed', 'error')
+    expect(store.latestResult?.outcome).toBe('error')
   })
 
   it('does not mutate the draft when no speech is detected', async () => {
     const store = useVoiceInputStore()
-    const audioBuffer = new Uint8Array([1, 2, 3]).buffer
+    const capturePayload = {
+      audioData: new Uint8Array([1, 2, 3]).buffer,
+      diagnostics: {
+        inputSampleRate: 48000,
+        wavSampleRate: 48000,
+        durationMs: 600,
+        rms: 0.005,
+        peak: 0.03,
+        sampleCount: 28800,
+      },
+    }
 
     ;(window as typeof window & { electronAPI?: any }).electronAPI.transcribeVoiceInput.mockResolvedValue({
       ok: true,
@@ -137,7 +170,7 @@ describe('voiceInputStore', () => {
       port: {
         postMessage: vi.fn(() => {
           queueMicrotask(() => {
-            store.flushPromiseResolve?.(audioBuffer)
+            store.flushPromiseResolve?.(capturePayload)
           })
         }),
       },
@@ -154,5 +187,51 @@ describe('voiceInputStore', () => {
 
     expect(activeContextStoreMock.updateRequirement).not.toHaveBeenCalled()
     expect(addToastMock).toHaveBeenCalledWith('No speech detected.', 'info')
+    expect(store.latestResult?.outcome).toBe('no-speech')
+  })
+
+  it('distinguishes empty transcript from true no-speech', async () => {
+    const store = useVoiceInputStore()
+    const capturePayload = {
+      audioData: new Uint8Array([1, 2, 3]).buffer,
+      diagnostics: {
+        inputSampleRate: 48000,
+        wavSampleRate: 48000,
+        durationMs: 1200,
+        rms: 0.012,
+        peak: 0.11,
+        sampleCount: 57600,
+      },
+    }
+
+    ;(window as typeof window & { electronAPI?: any }).electronAPI.transcribeVoiceInput.mockResolvedValue({
+      ok: true,
+      text: '',
+      detectedLanguage: 'en',
+      noSpeech: false,
+      error: null,
+    })
+
+    store.audioWorklet = {
+      port: {
+        postMessage: vi.fn(() => {
+          queueMicrotask(() => {
+            store.flushPromiseResolve?.(capturePayload)
+          })
+        }),
+      },
+    } as any
+    store.stream = {
+      getTracks: () => [{ stop: vi.fn() }],
+    } as any
+    store.audioContext = {
+      close: vi.fn().mockResolvedValue(undefined),
+    } as any
+    store.isRecording = true
+
+    await store.stopRecording()
+
+    expect(store.latestResult?.outcome).toBe('empty-transcript')
+    expect(addToastMock).toHaveBeenCalledWith('No transcript returned. Try speaking closer to the microphone.', 'info')
   })
 })

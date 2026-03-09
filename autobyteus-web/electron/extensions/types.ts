@@ -11,6 +11,21 @@ export type SupportedArch = 'arm64' | 'x64'
 export type RuntimeDistributionType = 'file' | 'archive'
 export type VoiceInputLanguageMode = 'auto' | 'en' | 'zh'
 export type VoiceInputBackendKind = 'mlx' | 'faster-whisper'
+export type ExtensionInstallPhase =
+  | 'idle'
+  | 'fetching-manifest'
+  | 'downloading-runtime'
+  | 'extracting-runtime'
+  | 'bootstrapping-runtime'
+  | 'bootstrapping-model'
+  | 'ready'
+
+export interface ExtensionInstallProgress {
+  phase: ExtensionInstallPhase
+  percent: number | null
+  bytesReceived: number | null
+  bytesTotal: number | null
+}
 
 export interface VoiceModelSource {
   id: string
@@ -58,6 +73,7 @@ export interface ManagedExtensionRecord {
   enabled: boolean
   settings: VoiceInputSettings
   message: string
+  installProgress: ExtensionInstallProgress | null
   installedAt: string | null
   runtimeVersion: string | null
   modelVersion: string | null
@@ -75,6 +91,7 @@ export interface ManagedExtensionState {
   enabled: boolean
   settings: VoiceInputSettings
   message: string
+  installProgress: ExtensionInstallProgress | null
   installedAt: string | null
   runtimeVersion: string | null
   modelVersion: string | null

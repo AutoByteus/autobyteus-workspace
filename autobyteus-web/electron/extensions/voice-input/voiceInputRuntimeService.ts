@@ -1,36 +1,26 @@
 import { spawn, type ChildProcessWithoutNullStreams } from 'child_process'
-import { createHash } from 'crypto'
 import * as fs from 'fs/promises'
 import * as path from 'path'
-import * as tar from 'tar'
 import type {
   ExtensionDescriptor,
   VoiceInputBackendKind,
   VoiceInputLanguageMode,
-  VoiceInputRuntimeManifest,
   VoiceInputTranscriptionRequest,
   VoiceInputTranscriptionResult,
-  VoiceRuntimeAsset,
 } from '../types'
-import { getCurrentArch, getCurrentPlatform } from '../extensionCatalog'
-
-type InstallResult = {
-  runtimeVersion: string
-  modelVersion: string
-  runtimeEntrypoint: string
-  modelPath: string
-  backendKind: VoiceInputBackendKind
-}
-
-type InstallInspection = {
-  ready: boolean
-  runtimeEntrypoint: string | null
-  modelPath: string | null
-  runtimeVersion: string | null
-  modelVersion: string | null
-  backendKind: VoiceInputBackendKind | null
-  error: string | null
-}
+import {
+  buildVoiceInputRuntimeEnv,
+  downloadFile,
+  ensureDir,
+  extractArchive,
+  getRuntimeFilePaths,
+  type InstallInspection,
+  type InstallResult,
+  loadRuntimeManifest,
+  resolvePlatformAsset,
+  type RuntimeInstallProgressCallback,
+  verifySha256,
+} from './voiceInputRuntimeSupport'
 
 type WorkerRequest =
   | {
@@ -64,84 +54,6 @@ type WorkerProcessState = {
   pendingRequests: Map<string, { resolve: (response: WorkerResponse) => void; reject: (error: Error) => void }>
 }
 
-async function ensureDir(dirPath: string): Promise<void> {
-  await fs.mkdir(dirPath, { recursive: true })
-}
-
-async function fetchJson<T>(url: string): Promise<T> {
-  const response = await fetch(url)
-  if (!response.ok) {
-    throw new Error(`Failed to download JSON from ${url}: ${response.status} ${response.statusText}`)
-  }
-  return await response.json() as T
-}
-
-async function downloadFile(url: string, targetPath: string): Promise<void> {
-  const response = await fetch(url)
-  if (!response.ok) {
-    throw new Error(`Failed to download file from ${url}: ${response.status} ${response.statusText}`)
-  }
-
-  const arrayBuffer = await response.arrayBuffer()
-  await fs.writeFile(targetPath, Buffer.from(arrayBuffer))
-}
-
-async function computeSha256(filePath: string): Promise<string> {
-  const hash = createHash('sha256')
-  hash.update(await fs.readFile(filePath))
-  return hash.digest('hex')
-}
-
-async function verifySha256(filePath: string, expectedSha256: string): Promise<void> {
-  const actualSha256 = await computeSha256(filePath)
-  if (actualSha256 !== expectedSha256) {
-    throw new Error(`Checksum mismatch for ${path.basename(filePath)}`)
-  }
-}
-
-function resolvePlatformAsset(manifest: VoiceInputRuntimeManifest): VoiceRuntimeAsset {
-  const platform = getCurrentPlatform()
-  const arch = getCurrentArch()
-  const asset = manifest.assets.find((candidate) => candidate.platform === platform && candidate.arch === arch)
-  if (!asset) {
-    throw new Error(`No runtime asset found for ${platform}/${arch}`)
-  }
-  return asset
-}
-
-async function extractArchive(archivePath: string, destinationDir: string): Promise<void> {
-  await ensureDir(destinationDir)
-  await tar.x({
-    cwd: destinationDir,
-    file: archivePath,
-  })
-}
-
-function getRuntimeFilePaths(extensionRoot: string, asset: VoiceRuntimeAsset): {
-  runtimeDir: string
-  modelsDir: string
-  tempDir: string
-  downloadsDir: string
-  runtimeBundlePath: string
-  runtimeEntrypoint: string
-  modelPath: string
-} {
-  const runtimeDir = path.join(extensionRoot, 'runtime')
-  const modelsDir = path.join(extensionRoot, 'models')
-  const tempDir = path.join(extensionRoot, 'temp')
-  const downloadsDir = path.join(extensionRoot, 'downloads')
-
-  return {
-    runtimeDir,
-    modelsDir,
-    tempDir,
-    downloadsDir,
-    runtimeBundlePath: path.join(downloadsDir, asset.fileName),
-    runtimeEntrypoint: path.join(runtimeDir, asset.entrypoint),
-    modelPath: path.join(modelsDir, asset.model.id),
-  }
-}
-
 function isReadyResponse(response: WorkerResponse): response is Extract<WorkerResponse, { type: 'ready' }> {
   return 'type' in response && response.type === 'ready'
 }
@@ -159,6 +71,7 @@ export class VoiceInputRuntimeService {
       const child = spawn(runtimeEntrypoint, args, {
         stdio: ['ignore', 'pipe', 'pipe'],
         shell: this.shouldUseShell(runtimeEntrypoint),
+        env: buildVoiceInputRuntimeEnv(),
       })
 
       let stdout = ''
@@ -260,6 +173,7 @@ export class VoiceInputRuntimeService {
       {
         stdio: ['pipe', 'pipe', 'pipe'],
         shell: this.shouldUseShell(inspection.runtimeEntrypoint),
+        env: buildVoiceInputRuntimeEnv(),
       },
     )
 
@@ -339,8 +253,22 @@ export class VoiceInputRuntimeService {
     }
   }
 
-  async installRuntime(descriptor: ExtensionDescriptor, extensionRoot: string): Promise<InstallResult> {
-    const manifest = await fetchJson<VoiceInputRuntimeManifest>(descriptor.runtimeManifestUrl)
+  async installRuntime(
+    descriptor: ExtensionDescriptor,
+    extensionRoot: string,
+    onProgress?: RuntimeInstallProgressCallback,
+  ): Promise<InstallResult> {
+    if (onProgress) {
+      await onProgress({
+        phase: 'fetching-manifest',
+        message: 'Fetching runtime manifest...',
+        percent: null,
+        bytesReceived: null,
+        bytesTotal: null,
+      })
+    }
+
+    const manifest = await loadRuntimeManifest(descriptor)
     const asset = resolvePlatformAsset(manifest)
     const paths = getRuntimeFilePaths(extensionRoot, asset)
 
@@ -352,10 +280,19 @@ export class VoiceInputRuntimeService {
     await ensureDir(paths.tempDir)
     await ensureDir(paths.downloadsDir)
 
-    await downloadFile(asset.url, paths.runtimeBundlePath)
+    await downloadFile(asset.url, paths.runtimeBundlePath, onProgress)
     await verifySha256(paths.runtimeBundlePath, asset.sha256)
 
     if (asset.distributionType === 'archive') {
+      if (onProgress) {
+        await onProgress({
+          phase: 'extracting-runtime',
+          message: 'Extracting runtime bundle...',
+          percent: null,
+          bytesReceived: null,
+          bytesTotal: null,
+        })
+      }
       await extractArchive(paths.runtimeBundlePath, paths.runtimeDir)
     } else {
       await fs.copyFile(paths.runtimeBundlePath, paths.runtimeEntrypoint)
@@ -363,6 +300,26 @@ export class VoiceInputRuntimeService {
 
     if (process.platform !== 'win32') {
       await fs.chmod(paths.runtimeEntrypoint, 0o755)
+    }
+
+    if (onProgress) {
+      await onProgress({
+        phase: 'bootstrapping-runtime',
+        message: 'Bootstrapping local runtime dependencies...',
+        percent: null,
+        bytesReceived: null,
+        bytesTotal: null,
+      })
+    }
+
+    if (onProgress) {
+      await onProgress({
+        phase: 'bootstrapping-model',
+        message: 'Downloading and preparing the local speech model...',
+        percent: null,
+        bytesReceived: null,
+        bytesTotal: null,
+      })
     }
 
     await this.runRuntimeCommand(
@@ -379,6 +336,16 @@ export class VoiceInputRuntimeService {
       ],
     )
     await fs.access(paths.modelPath)
+
+    if (onProgress) {
+      await onProgress({
+        phase: 'ready',
+        message: 'Voice Input is ready.',
+        percent: 100,
+        bytesReceived: null,
+        bytesTotal: null,
+      })
+    }
 
     const installResult: InstallResult = {
       runtimeVersion: manifest.runtimeVersion,
