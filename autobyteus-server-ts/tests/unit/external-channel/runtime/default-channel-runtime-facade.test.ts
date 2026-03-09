@@ -91,10 +91,16 @@ describe("DefaultChannelRuntimeFacade", () => {
       accepted: true,
       code: null,
       message: null,
+      runtimeKind: "codex_app_server",
+      turnId: "turn-1",
     });
+    const publishExternalUserMessage = vi.fn();
+    const bindAcceptedExternalTurn = vi.fn().mockResolvedValue(undefined);
     const facade = new DefaultChannelRuntimeFacade({
       runtimeLauncher: { resolveOrStartAgentRun },
       runtimeCommandIngressService: { sendTurn },
+      liveMessagePublisher: { publishExternalUserMessage },
+      externalTurnBridge: { bindAcceptedExternalTurn },
       agentTeamRunManager: {
         getTeamRun: vi.fn(),
       },
@@ -107,6 +113,16 @@ describe("DefaultChannelRuntimeFacade", () => {
     expect(result.dispatchedAt).toBeInstanceOf(Date);
     expect(resolveOrStartAgentRun).toHaveBeenCalledOnce();
     expect(sendTurn).toHaveBeenCalledOnce();
+    expect(bindAcceptedExternalTurn).toHaveBeenCalledWith({
+      runId: "agent-1",
+      runtimeKind: "codex_app_server",
+      turnId: "turn-1",
+      envelope: createEnvelope(),
+    });
+    expect(publishExternalUserMessage).toHaveBeenCalledWith({
+      runId: "agent-1",
+      envelope: createEnvelope(),
+    });
     expect(sendTurn.mock.calls[0]?.[0]).toMatchObject({
       runId: "agent-1",
       mode: "agent",
@@ -121,6 +137,12 @@ describe("DefaultChannelRuntimeFacade", () => {
       },
       runtimeCommandIngressService: {
         sendTurn: vi.fn(),
+      },
+      liveMessagePublisher: {
+        publishExternalUserMessage: vi.fn(),
+      },
+      externalTurnBridge: {
+        bindAcceptedExternalTurn: vi.fn().mockResolvedValue(undefined),
       },
       agentTeamRunManager: {
         getTeamRun: vi.fn().mockReturnValue({
@@ -146,13 +168,23 @@ describe("DefaultChannelRuntimeFacade", () => {
       accepted: true,
       code: null,
       message: null,
+      runtimeKind: "codex_app_server",
+      turnId: "turn-attachment",
     });
+    const publishExternalUserMessage = vi.fn();
+    const bindAcceptedExternalTurn = vi.fn().mockResolvedValue(undefined);
     const facade = new DefaultChannelRuntimeFacade({
       runtimeLauncher: {
         resolveOrStartAgentRun: vi.fn().mockResolvedValue("agent-1"),
       },
       runtimeCommandIngressService: {
         sendTurn,
+      },
+      liveMessagePublisher: {
+        publishExternalUserMessage,
+      },
+      externalTurnBridge: {
+        bindAcceptedExternalTurn,
       },
       agentTeamRunManager: {
         getTeamRun: vi.fn(),
@@ -171,9 +203,12 @@ describe("DefaultChannelRuntimeFacade", () => {
       file_type: "image",
       file_name: "image.jpg",
     });
+    expect(bindAcceptedExternalTurn).toHaveBeenCalledOnce();
+    expect(publishExternalUserMessage).toHaveBeenCalledOnce();
   });
 
   it("throws when agent runtime rejects external dispatch", async () => {
+    const publishExternalUserMessage = vi.fn();
     const facade = new DefaultChannelRuntimeFacade({
       runtimeLauncher: {
         resolveOrStartAgentRun: vi.fn().mockResolvedValue("agent-1"),
@@ -183,7 +218,14 @@ describe("DefaultChannelRuntimeFacade", () => {
           accepted: false,
           code: "RUN_SESSION_NOT_FOUND",
           message: "Run session 'agent-1' is not active.",
+          runtimeKind: "codex_app_server",
         }),
+      },
+      liveMessagePublisher: {
+        publishExternalUserMessage,
+      },
+      externalTurnBridge: {
+        bindAcceptedExternalTurn: vi.fn().mockResolvedValue(undefined),
       },
       agentTeamRunManager: {
         getTeamRun: vi.fn(),
@@ -193,5 +235,89 @@ describe("DefaultChannelRuntimeFacade", () => {
     await expect(
       facade.dispatchToBinding(createAgentBinding(), createEnvelope()),
     ).rejects.toThrow("Run session 'agent-1' is not active.");
+    expect(publishExternalUserMessage).not.toHaveBeenCalled();
+  });
+
+  it("continues agent dispatch when live external-user publish fails", async () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const sendTurn = vi.fn().mockResolvedValue({
+      accepted: true,
+      code: null,
+      message: null,
+      runtimeKind: "codex_app_server",
+      turnId: "turn-2",
+    });
+    const publishExternalUserMessage = vi.fn(() => {
+      throw new Error("socket write failed");
+    });
+    const bindAcceptedExternalTurn = vi.fn().mockResolvedValue(undefined);
+    const facade = new DefaultChannelRuntimeFacade({
+      runtimeLauncher: {
+        resolveOrStartAgentRun: vi.fn().mockResolvedValue("agent-1"),
+      },
+      runtimeCommandIngressService: {
+        sendTurn,
+      },
+      liveMessagePublisher: {
+        publishExternalUserMessage,
+      },
+      externalTurnBridge: {
+        bindAcceptedExternalTurn,
+      },
+      agentTeamRunManager: {
+        getTeamRun: vi.fn(),
+      },
+    });
+
+    const result = await facade.dispatchToBinding(createAgentBinding(), createEnvelope());
+
+    expect(result.agentRunId).toBe("agent-1");
+    expect(sendTurn).toHaveBeenCalledOnce();
+    expect(bindAcceptedExternalTurn).toHaveBeenCalledOnce();
+    expect(publishExternalUserMessage).toHaveBeenCalledOnce();
+    expect(warnSpy).toHaveBeenCalledTimes(1);
+
+    warnSpy.mockRestore();
+  });
+
+  it("continues agent dispatch when accepted-turn binding fails", async () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const sendTurn = vi.fn().mockResolvedValue({
+      accepted: true,
+      code: null,
+      message: null,
+      runtimeKind: "codex_app_server",
+      turnId: "turn-3",
+    });
+    const publishExternalUserMessage = vi.fn();
+    const bindAcceptedExternalTurn = vi.fn().mockRejectedValue(
+      new Error("bind failed"),
+    );
+    const facade = new DefaultChannelRuntimeFacade({
+      runtimeLauncher: {
+        resolveOrStartAgentRun: vi.fn().mockResolvedValue("agent-1"),
+      },
+      runtimeCommandIngressService: {
+        sendTurn,
+      },
+      liveMessagePublisher: {
+        publishExternalUserMessage,
+      },
+      externalTurnBridge: {
+        bindAcceptedExternalTurn,
+      },
+      agentTeamRunManager: {
+        getTeamRun: vi.fn(),
+      },
+    });
+
+    const result = await facade.dispatchToBinding(createAgentBinding(), createEnvelope());
+
+    expect(result.agentRunId).toBe("agent-1");
+    expect(bindAcceptedExternalTurn).toHaveBeenCalledOnce();
+    expect(publishExternalUserMessage).toHaveBeenCalledOnce();
+    expect(warnSpy).toHaveBeenCalledTimes(1);
+
+    warnSpy.mockRestore();
   });
 });

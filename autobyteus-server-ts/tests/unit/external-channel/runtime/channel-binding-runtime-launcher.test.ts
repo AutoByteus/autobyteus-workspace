@@ -30,6 +30,7 @@ const createBinding = (): ChannelBinding => ({
 describe("ChannelBindingRuntimeLauncher", () => {
   it("reuses a cached active run when the runtime session is still alive", async () => {
     const binding = createBinding();
+    const bootstrapNewRun = vi.fn();
     const launcher = new ChannelBindingRuntimeLauncher({
       bindingService: {
         upsertBindingAgentRunId: vi.fn(),
@@ -54,11 +55,15 @@ describe("ChannelBindingRuntimeLauncher", () => {
       workspaceManager: {
         ensureWorkspaceByRootPath: vi.fn(),
       } as any,
+      runHistoryBootstrapper: {
+        bootstrapNewRun,
+      } as any,
     });
 
     const runId = await launcher.resolveOrStartAgentRun(binding);
 
     expect(runId).toBe("agent-run-1");
+    expect(bootstrapNewRun).not.toHaveBeenCalled();
   });
 
   it("creates a new run, binds it, and persists the cached run id when no active run exists", async () => {
@@ -79,6 +84,7 @@ describe("ChannelBindingRuntimeLauncher", () => {
       },
     });
     const bindRunSession = vi.fn();
+    const bootstrapNewRun = vi.fn().mockResolvedValue(undefined);
     const ensureWorkspaceByRootPath = vi.fn().mockResolvedValue({
       workspaceId: "workspace-1",
     });
@@ -100,9 +106,14 @@ describe("ChannelBindingRuntimeLauncher", () => {
       workspaceManager: {
         ensureWorkspaceByRootPath,
       } as any,
+      runHistoryBootstrapper: {
+        bootstrapNewRun,
+      } as any,
     });
 
-    const runId = await launcher.resolveOrStartAgentRun(binding);
+    const runId = await launcher.resolveOrStartAgentRun(binding, {
+      initialSummary: "First external message",
+    });
 
     expect(runId).toBe("agent-run-2");
     expect(ensureWorkspaceByRootPath).toHaveBeenCalledWith("/tmp/workspace");
@@ -116,6 +127,22 @@ describe("ChannelBindingRuntimeLauncher", () => {
       skillAccessMode: "PRELOADED_ONLY",
     });
     expect(bindRunSession).toHaveBeenCalledOnce();
+    expect(bootstrapNewRun).toHaveBeenCalledWith({
+      agentDefinitionId: "agent-definition-1",
+      launchPreset: binding.launchPreset,
+      session: {
+        runId: "agent-run-2",
+        runtimeKind: "AUTOBYTEUS",
+        mode: "agent",
+        runtimeReference: {
+          runtimeKind: "AUTOBYTEUS",
+          sessionId: "session-2",
+          threadId: null,
+          metadata: null,
+        },
+      },
+      initialSummary: "First external message",
+    });
     expect(upsertBindingAgentRunId).toHaveBeenCalledWith("binding-1", "agent-run-2");
   });
 
@@ -131,6 +158,9 @@ describe("ChannelBindingRuntimeLauncher", () => {
       runtimeCommandIngressService: {} as any,
       runtimeAdapterRegistry: {} as any,
       workspaceManager: {} as any,
+      runHistoryBootstrapper: {
+        bootstrapNewRun: vi.fn(),
+      } as any,
     });
 
     await expect(launcher.resolveOrStartAgentRun(binding)).rejects.toThrow(

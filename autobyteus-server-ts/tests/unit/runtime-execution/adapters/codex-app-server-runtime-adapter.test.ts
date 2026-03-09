@@ -165,6 +165,7 @@ describe("CodexAppServerRuntimeAdapter", () => {
     });
     expect(result).toEqual({
       accepted: true,
+      turnId: "turn-1",
       runtimeReference: {
         runtimeKind: "codex_app_server",
         sessionId: "run-1",
@@ -199,6 +200,34 @@ describe("CodexAppServerRuntimeAdapter", () => {
       runtimeReferenceHint: {
         threadId: "thread-2",
       },
+    });
+  });
+
+  it("returns accepted turnId after successful sendTurn", async () => {
+    const runtimeService = {
+      resolveWorkingDirectory: vi.fn(),
+      createRunSession: vi.fn(),
+      restoreRunSession: vi.fn(),
+      sendTurn: vi.fn().mockResolvedValue({ turnId: "turn-99" }),
+      getRunRuntimeReference: vi.fn().mockReturnValue(null),
+      approveTool: vi.fn(),
+      interruptRun: vi.fn(),
+      terminateRun: vi.fn(),
+    } as unknown as CodexAppServerRuntimeService;
+    const adapter = new CodexAppServerRuntimeAdapter(runtimeService);
+
+    const result = await adapter.sendTurn({
+      runId: "run-1",
+      mode: "agent",
+      message: {
+        content: "hello",
+      } as any,
+    });
+
+    expect(result).toEqual({
+      accepted: true,
+      turnId: "turn-99",
+      runtimeReference: null,
     });
   });
 });

@@ -24,6 +24,10 @@ import {
 import type { RuntimeKind } from "../../runtime-management/runtime-kind.js";
 import { AgentSessionManager } from "./agent-session-manager.js";
 import {
+  AgentStreamBroadcaster,
+  getAgentStreamBroadcaster,
+} from "./agent-stream-broadcaster.js";
+import {
   RuntimeEventMessageMapper,
   getRuntimeEventMessageMapper,
 } from "./runtime-event-message-mapper.js";
@@ -83,6 +87,7 @@ export class AgentStreamHandler {
   private runHistoryService = getRunHistoryService();
   private runtimeCompositionService: RuntimeCompositionService;
   private runtimeEventSequence = 0;
+  private broadcaster: AgentStreamBroadcaster;
 
   constructor(
     sessionManager: AgentSessionManager = new AgentSessionManager(),
@@ -91,6 +96,7 @@ export class AgentStreamHandler {
     adapterRegistry: RuntimeAdapterRegistry = getRuntimeAdapterRegistry(),
     eventMessageMapper: RuntimeEventMessageMapper = getRuntimeEventMessageMapper(),
     runtimeCompositionService: RuntimeCompositionService = getRuntimeCompositionService(),
+    broadcaster: AgentStreamBroadcaster = getAgentStreamBroadcaster(),
   ) {
     this.sessionManager = sessionManager;
     this.agentManager = agentManager;
@@ -98,6 +104,7 @@ export class AgentStreamHandler {
     this.adapterRegistry = adapterRegistry;
     this.eventMessageMapper = eventMessageMapper;
     this.runtimeCompositionService = runtimeCompositionService;
+    this.broadcaster = broadcaster;
   }
 
   async connect(connection: WebSocketConnection, agentRunId: string): Promise<string | null> {
@@ -137,6 +144,7 @@ export class AgentStreamHandler {
     }
 
     const connectedMsg = createConnectedMessage(agentRunId, sessionId);
+    this.broadcaster.registerConnection(sessionId, agentRunId, connection);
     connection.send(connectedMsg.toJson());
     const currentStatus =
       typeof agent?.currentStatus === "string" ? agent.currentStatus : null;
@@ -190,6 +198,8 @@ export class AgentStreamHandler {
   }
 
   async disconnect(sessionId: string): Promise<void> {
+    this.broadcaster.unregisterConnection(sessionId);
+
     const runtimeUnsubscribe = this.activeRuntimeUnsubscribers.get(sessionId);
     if (runtimeUnsubscribe) {
       this.activeRuntimeUnsubscribers.delete(sessionId);

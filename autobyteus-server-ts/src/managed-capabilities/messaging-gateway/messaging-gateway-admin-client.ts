@@ -73,9 +73,29 @@ export class MessagingGatewayAdminClient {
     return this.requestJson(url.toString(), input.adminToken);
   }
 
-  private async requestJson<T>(url: string, adminToken: string): Promise<T> {
+  async shutdownRuntime(input: {
+    host: string;
+    port: number;
+    adminToken: string;
+  }): Promise<{ accepted: boolean }> {
+    return this.requestJson(
+      `http://${input.host}:${input.port}/api/runtime-reliability/v1/shutdown`,
+      input.adminToken,
+      {
+        method: "POST",
+      },
+    );
+  }
+
+  private async requestJson<T>(
+    url: string,
+    adminToken: string,
+    init?: RequestInit,
+  ): Promise<T> {
     const response = await fetch(url, {
+      ...init,
       headers: {
+        ...(init?.headers ?? {}),
         Authorization: `Bearer ${adminToken}`,
       },
       signal: AbortSignal.timeout(10_000),
@@ -101,4 +121,3 @@ const safeReadJson = async (
     return null;
   }
 };
-

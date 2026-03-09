@@ -105,6 +105,7 @@ export interface RuntimeCommandResult {
   code?: string;
   message?: string;
   runtimeReference?: RuntimeRunReference | null;
+  turnId?: string | null;
 }
 
 export interface RuntimeReferenceHint {

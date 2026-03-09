@@ -110,6 +110,29 @@
         Send a {{ peerDiscoveryProviderLabel }} message from another account/contact to this linked
         account, then refresh peers.
       </p>
+      <div
+        v-if="supportsPeerDiscovery && !effectiveManualPeerInput && !canDiscoverPeers"
+        class="mt-2 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700"
+        data-testid="peer-discovery-recovery-hint"
+      >
+        Peer discovery is unavailable because the managed gateway is not ready. Recover the gateway
+        above or switch to manual peer ID to continue.
+        <button
+          type="button"
+          class="ml-2 rounded border border-amber-300 px-2 py-1 text-xs font-medium text-amber-800"
+          data-testid="peer-discovery-manual-fallback-button"
+          @click="onTogglePeerInputMode"
+        >
+          Switch to Manual Peer ID
+        </button>
+      </div>
+      <p
+        v-if="optionsStore.staleSelectionError"
+        class="mt-2 text-xs text-red-600"
+        data-testid="peer-selection-stale-error"
+      >
+        {{ optionsStore.staleSelectionError }}
+      </p>
       <p
         v-if="optionsStore.peerCandidatesError"
         class="mt-2 text-xs text-red-600"

@@ -100,7 +100,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue';
+import { computed, onBeforeUnmount, onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import { Icon } from '@iconify/vue';
 import ConfirmationModal from '~/components/common/ConfirmationModal.vue';
@@ -131,6 +131,8 @@ const emit = defineEmits<{
   (e: 'run-selected', payload: { type: 'team'; runId: string }): void;
   (e: 'run-created', payload: { type: 'agent'; definitionId: string }): void;
 }>();
+
+const HISTORY_REFRESH_INTERVAL_MS = 5000;
 
 const runHistoryStore = useRunHistoryStore();
 const workspaceStore = useWorkspaceStore();
@@ -266,6 +268,8 @@ const sectionActions: WorkspaceHistorySectionActions = {
   onSelectTeamMember,
 };
 
+let refreshTimerId: ReturnType<typeof setInterval> | null = null;
+
 onMounted(async () => {
   await Promise.all([
     workspaceStore.fetchAllWorkspaces().catch(() => undefined),
@@ -273,5 +277,15 @@ onMounted(async () => {
     agentDefinitionStore.fetchAllAgentDefinitions().catch(() => undefined),
     agentTeamDefinitionStore.fetchAllAgentTeamDefinitions().catch(() => undefined),
   ]);
+  refreshTimerId = setInterval(() => {
+    void runHistoryStore.refreshTreeQuietly();
+  }, HISTORY_REFRESH_INTERVAL_MS);
+});
+
+onBeforeUnmount(() => {
+  if (refreshTimerId !== null) {
+    clearInterval(refreshTimerId);
+    refreshTimerId = null;
+  }
 });
 </script>

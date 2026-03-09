@@ -410,6 +410,10 @@ export function createGatewayApp(config: GatewayRuntimeConfig): FastifyInstance 
     outboundOutboxService,
     reliabilityStatusService,
     adminToken: config.adminToken,
+    requestShutdown: async () => {
+      await app.close();
+      setTimeout(() => process.exit(0), 0).unref();
+    },
   });
   registerChannelAdminRoutes(app, {
     sessionService,

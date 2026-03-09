@@ -16,6 +16,10 @@ import {
   getWorkspaceManager,
   type WorkspaceManager,
 } from "../../workspaces/workspace-manager.js";
+import {
+  ChannelRunHistoryBootstrapper,
+  type ChannelRunHistoryBootstrapperDependencies,
+} from "./channel-run-history-bootstrapper.js";
 
 export type ChannelBindingRuntimeLauncherDependencies = {
   bindingService: Pick<ChannelBindingService, "upsertBindingAgentRunId">;
@@ -23,6 +27,8 @@ export type ChannelBindingRuntimeLauncherDependencies = {
   runtimeCommandIngressService?: RuntimeCommandIngressService;
   runtimeAdapterRegistry?: RuntimeAdapterRegistry;
   workspaceManager?: WorkspaceManager;
+  runHistoryBootstrapper?: ChannelRunHistoryBootstrapper;
+  runHistoryBootstrapperDeps?: ChannelRunHistoryBootstrapperDependencies;
 };
 
 export class ChannelBindingRuntimeLauncher {
@@ -30,6 +36,7 @@ export class ChannelBindingRuntimeLauncher {
   private readonly runtimeCommandIngressService: RuntimeCommandIngressService;
   private readonly runtimeAdapterRegistry: RuntimeAdapterRegistry;
   private readonly workspaceManager: WorkspaceManager;
+  private readonly runHistoryBootstrapper: ChannelRunHistoryBootstrapper;
 
   constructor(
     private readonly deps: ChannelBindingRuntimeLauncherDependencies,
@@ -41,9 +48,15 @@ export class ChannelBindingRuntimeLauncher {
     this.runtimeAdapterRegistry =
       deps.runtimeAdapterRegistry ?? getRuntimeAdapterRegistry();
     this.workspaceManager = deps.workspaceManager ?? getWorkspaceManager();
+    this.runHistoryBootstrapper =
+      deps.runHistoryBootstrapper ??
+      new ChannelRunHistoryBootstrapper(deps.runHistoryBootstrapperDeps);
   }
 
-  async resolveOrStartAgentRun(binding: ChannelBinding): Promise<string> {
+  async resolveOrStartAgentRun(
+    binding: ChannelBinding,
+    options: { initialSummary?: string | null } = {},
+  ): Promise<string> {
     const launchTarget = normalizeAgentLaunchTarget(binding);
     const cachedAgentRunId = normalizeNullableString(binding.agentRunId);
 
@@ -64,6 +77,12 @@ export class ChannelBindingRuntimeLauncher {
       skillAccessMode: launchTarget.launchPreset.skillAccessMode,
     });
     this.runtimeCommandIngressService.bindRunSession(session);
+    await this.runHistoryBootstrapper.bootstrapNewRun({
+      agentDefinitionId: launchTarget.agentDefinitionId,
+      launchPreset: launchTarget.launchPreset,
+      session,
+      initialSummary: options.initialSummary ?? null,
+    });
     await this.deps.bindingService.upsertBindingAgentRunId(binding.id, session.runId);
     return session.runId;
   }

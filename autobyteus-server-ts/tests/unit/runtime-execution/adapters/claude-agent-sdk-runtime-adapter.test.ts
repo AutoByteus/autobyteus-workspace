@@ -182,6 +182,7 @@ describe("ClaudeAgentSdkRuntimeAdapter", () => {
 
     expect(result).toEqual({
       accepted: true,
+      turnId: "turn-1",
       runtimeReference: {
         runtimeKind: "claude_agent_sdk",
         sessionId: "claude-session-1",

@@ -25,7 +25,7 @@
       <button
         class="px-4 py-2 rounded-md bg-emerald-600 text-white text-sm disabled:opacity-50"
         :disabled="gatewayStore.isGatewayChecking || gatewayStore.isGatewayMutating"
-        @click="onEnableGateway"
+        @click="onPrimaryAction"
         data-testid="gateway-enable-button"
       >
         {{ gatewayStore.isGatewayMutating ? 'Applying...' : primaryActionLabel }}
@@ -134,6 +134,32 @@
     >
       {{ gatewayStore.managedStatus.message }}
     </p>
+    <p
+      v-if="gatewayStore.managedStatus?.lastError"
+      class="mt-3 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
+      data-testid="managed-gateway-last-error"
+    >
+      {{ gatewayStore.managedStatus.lastError }}
+    </p>
+    <p
+      v-if="showRecoveryHint"
+      class="mt-3 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-700"
+      data-testid="managed-gateway-recovery-hint"
+    >
+      The runtime can often recover without reinstalling. Use Recover Gateway to reconcile or restart it.
+    </p>
+    <div
+      v-if="providerIssues.length > 0"
+      class="mt-3 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-700"
+      data-testid="managed-gateway-provider-issues"
+    >
+      <p class="font-medium text-amber-800">Provider issues</p>
+      <ul class="mt-2 list-disc pl-5 space-y-1">
+        <li v-for="issue in providerIssues" :key="issue.provider">
+          {{ issue.provider }}: {{ issue.blockedReason }}
+        </li>
+      </ul>
+    </div>
     <p v-if="gatewayStore.gatewayError" class="mt-3 text-sm text-red-600" data-testid="gateway-error">
       {{ gatewayStore.gatewayError }}
     </p>
@@ -195,6 +221,13 @@ const runtimeReliabilityStatus = computed<GatewayRuntimeReliabilityStatusModel |
   () => gatewayStore.runtimeReliabilityStatus,
 );
 
+const providerIssues = computed(() =>
+  Object.values(gatewayStore.providerStatusByProvider).filter(
+    (status): status is NonNullable<typeof status> =>
+      Boolean(status && typeof status.blockedReason === 'string' && status.blockedReason.length > 0),
+  ),
+);
+
 const inboxHeartbeatLabel = computed(() =>
   runtimeReliabilityStatus.value?.runtime.locks.inbox.lastHeartbeatAt || 'missing',
 );
@@ -205,6 +238,9 @@ const outboxHeartbeatLabel = computed(() =>
 
 const primaryActionLabel = computed(() => {
   const status = gatewayStore.managedStatus;
+  if (status?.lifecycleState === 'BLOCKED') {
+    return 'Recover Gateway';
+  }
   if (!status?.activeVersion) {
     return 'Install and Start Gateway';
   }
@@ -213,6 +249,8 @@ const primaryActionLabel = computed(() => {
   }
   return 'Restart Gateway';
 });
+
+const showRecoveryHint = computed(() => gatewayStore.managedStatus?.lifecycleState === 'BLOCKED');
 
 function workerStateLabel(running: boolean): string {
   return running ? 'running' : 'stopped';
@@ -226,8 +264,12 @@ async function onRefreshStatus(): Promise<void> {
   }
 }
 
-async function onEnableGateway(): Promise<void> {
+async function onPrimaryAction(): Promise<void> {
   try {
+    if (gatewayStore.managedStatus?.lifecycleState === 'BLOCKED') {
+      await gatewayStore.updateManagedGateway();
+      return;
+    }
     await gatewayStore.enableManagedGateway();
   } catch {
     // Store exposes error state.

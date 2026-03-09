@@ -177,4 +177,63 @@ describe('ChannelBindingSetupCard', () => {
     expect(wrapper.text()).toContain('runtime: AUTOBYTEUS | model: gpt-test | workspace: /tmp/workspace');
     expect(wrapper.text()).not.toContain('DISCORD / BUSINESS_API / discord-acct-1 / user:123456');
   });
+
+  it('shows gateway recovery guidance and manual fallback when peer discovery is unavailable', async () => {
+    const gatewayStore = useGatewaySessionSetupStore();
+    gatewayStore.gatewayStatus = 'BLOCKED';
+
+    const providerScopeStore = useMessagingProviderScopeStore();
+    providerScopeStore.initialize({
+      wechatModes: [],
+      defaultWeChatMode: null,
+      wechatPersonalEnabled: false,
+      wecomAppEnabled: false,
+      discordEnabled: false,
+      discordAccountId: null,
+      telegramEnabled: true,
+      telegramAccountId: 'telegram-acct-1',
+    });
+    providerScopeStore.setSelectedProvider('TELEGRAM');
+
+    const wrapper = mountWithPinia();
+    await flushPromises();
+
+    expect(wrapper.get('[data-testid="peer-discovery-recovery-hint"]').text()).toContain(
+      'Peer discovery is unavailable because the managed gateway is not ready.',
+    );
+
+    await wrapper.get('[data-testid="peer-discovery-manual-fallback-button"]').trigger('click');
+    await flushPromises();
+
+    expect(wrapper.find('[data-testid="binding-peer-id"]').exists()).toBe(true);
+  });
+
+  it('renders stale peer-selection errors from the options store', async () => {
+    const gatewayStore = useGatewaySessionSetupStore();
+    gatewayStore.gatewayStatus = 'READY';
+
+    const providerScopeStore = useMessagingProviderScopeStore();
+    providerScopeStore.initialize({
+      wechatModes: [],
+      defaultWeChatMode: null,
+      wechatPersonalEnabled: false,
+      wecomAppEnabled: false,
+      discordEnabled: false,
+      discordAccountId: null,
+      telegramEnabled: true,
+      telegramAccountId: 'telegram-acct-1',
+    });
+    providerScopeStore.setSelectedProvider('TELEGRAM');
+
+    const wrapper = mountWithPinia();
+    await flushPromises();
+
+    const optionsStore = useMessagingChannelBindingOptionsStore();
+    optionsStore.staleSelectionError = 'Selection is outdated. Refresh peers and select again.';
+    await flushPromises();
+
+    expect(wrapper.get('[data-testid="peer-selection-stale-error"]').text()).toContain(
+      'Selection is outdated. Refresh peers and select again.',
+    );
+  });
 });

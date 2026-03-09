@@ -436,4 +436,5 @@ describe("Managed messaging gateway GraphQL e2e", () => {
     expect(disabled.disableManagedMessagingGateway.lifecycleState).toBe("DISABLED");
     expect(disabled.disableManagedMessagingGateway.runtimeRunning).toBe(false);
   });
+
 });

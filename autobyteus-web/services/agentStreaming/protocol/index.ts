@@ -7,6 +7,7 @@ export type {
   SegmentStartPayload,
   SegmentContentPayload,
   SegmentEndPayload,
+  ExternalUserMessagePayload,
   AgentStatusPayload,
   TeamStatusPayload,
   ToolApprovalRequestedPayload,

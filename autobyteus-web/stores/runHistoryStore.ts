@@ -36,6 +36,11 @@ import {
   formatRunHistoryRelativeTime,
   normalizeRootPath,
 } from '~/stores/runHistoryReadModel';
+import {
+  buildNextAgentAvatarIndex,
+  removeRunFromWorkspaceGroups,
+  removeTeamRunById,
+} from '~/stores/runHistoryStoreSupport';
 import { openTeamMemberRunFromHistory, selectTreeRunFromHistory } from '~/stores/runHistorySelectionActions';
 import {
   type RunTreeRow,
@@ -57,28 +62,6 @@ const FALSE_EDITABLE_FIELDS: RunEditableFieldFlags = {
   workspaceRootPath: false,
   runtimeKind: false,
 };
-
-const removeRunFromWorkspaceGroups = (
-  groups: RunHistoryWorkspaceGroup[],
-  runId: string,
-): RunHistoryWorkspaceGroup[] => {
-  return groups
-    .map((workspace) => ({
-      ...workspace,
-      agents: workspace.agents
-        .map((agent) => ({
-          ...agent,
-          runs: agent.runs.filter((run) => run.runId !== runId),
-        }))
-        .filter((agent) => agent.runs.length > 0),
-    }))
-    .filter((workspace) => workspace.agents.length > 0);
-};
-
-const removeTeamRunById = (
-  rows: TeamRunHistoryItem[],
-  teamRunId: string,
-): TeamRunHistoryItem[] => rows.filter((row) => row.teamRunId !== teamRunId);
 
 export const useRunHistoryStore = defineStore('runHistory', {
   state: () => ({
@@ -127,9 +110,12 @@ export const useRunHistoryStore = defineStore('runHistory', {
   },
 
   actions: {
-    async fetchTree(limitPerAgent = 6): Promise<void> {
-      this.loading = true;
-      this.error = null;
+    async fetchTree(limitPerAgent = 6, options: { quiet?: boolean } = {}): Promise<void> {
+      const quiet = options.quiet === true;
+      if (!quiet) {
+        this.loading = true;
+        this.error = null;
+      }
 
       try {
         const windowNodeContextStore = useWindowNodeContextStore();
@@ -160,45 +146,19 @@ export const useRunHistoryStore = defineStore('runHistory', {
 
         this.workspaceGroups = agentHistoryResult.data?.listRunHistory || [];
         this.teamRuns = teamHistoryResult.data?.listTeamRunHistory || [];
-        await this.refreshAgentAvatarIndex({ loadDefinitionsIfNeeded: true });
+        this.agentAvatarByDefinitionId = await buildNextAgentAvatarIndex(
+          this.agentAvatarByDefinitionId,
+          { loadDefinitionsIfNeeded: true },
+        );
       } catch (error: any) {
-        this.error = error?.message || 'Failed to load run history.';
+        if (!quiet) {
+          this.error = error?.message || 'Failed to load run history.';
+        }
       } finally {
-        this.loading = false;
-      }
-    },
-
-    async refreshAgentAvatarIndex(options: { loadDefinitionsIfNeeded?: boolean } = {}): Promise<void> {
-      const agentDefinitionStore = useAgentDefinitionStore();
-      const agentContextsStore = useAgentContextsStore();
-      const shouldLoadDefinitions = options.loadDefinitionsIfNeeded ?? false;
-
-      if (shouldLoadDefinitions && agentDefinitionStore.agentDefinitions.length === 0) {
-        try {
-          await agentDefinitionStore.fetchAllAgentDefinitions();
-        } catch {
-          // Best-effort hydration only.
+        if (!quiet) {
+          this.loading = false;
         }
       }
-
-      const next: Record<string, string> = { ...this.agentAvatarByDefinitionId };
-
-      for (const definition of agentDefinitionStore.agentDefinitions) {
-        const avatarUrl = definition.avatarUrl?.trim();
-        if (avatarUrl) {
-          next[definition.id] = avatarUrl;
-        }
-      }
-
-      for (const context of agentContextsStore.runs.values()) {
-        const definitionId = context.config.agentDefinitionId;
-        const avatarUrl = context.config.agentAvatarUrl?.trim();
-        if (definitionId && avatarUrl) {
-          next[definitionId] = avatarUrl;
-        }
-      }
-
-      this.agentAvatarByDefinitionId = next;
     },
 
     async openRun(runId: string): Promise<void> {
@@ -528,7 +488,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
 
     async refreshTreeQuietly(limitPerAgent = 6): Promise<void> {
       try {
-        await this.fetchTree(limitPerAgent);
+        await this.fetchTree(limitPerAgent, { quiet: true });
       } catch {
         // No-op for best-effort refreshes.
       }

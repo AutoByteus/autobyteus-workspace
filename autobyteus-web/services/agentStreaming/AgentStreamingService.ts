@@ -12,6 +12,7 @@ import {
   handleSegmentStart,
   handleSegmentContent,
   handleSegmentEnd,
+  handleExternalUserMessage,
   handleToolApprovalRequested,
   handleToolApproved,
   handleToolDenied,
@@ -219,6 +220,10 @@ export class AgentStreamingService {
 
       case 'SEGMENT_END':
         handleSegmentEnd(message.payload, context);
+        break;
+
+      case 'EXTERNAL_USER_MESSAGE':
+        handleExternalUserMessage(message.payload, context);
         break;
 
       case 'TOOL_APPROVAL_REQUESTED':

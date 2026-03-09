@@ -9,6 +9,7 @@ export type RuntimeReliabilityRouteDeps = {
   outboundOutboxService: Pick<OutboundOutboxService, "listByStatus" | "replayFromStatus">;
   reliabilityStatusService: Pick<ReliabilityStatusService, "getSnapshot">;
   adminToken?: string | null;
+  requestShutdown?: (() => Promise<void> | void) | null;
 };
 
 export function registerRuntimeReliabilityRoutes(
@@ -34,6 +35,29 @@ export function registerRuntimeReliabilityRoutes(
           inboundCompletedUnboundCount: inboundUnbound.length,
           outboundDeadLetterCount: outboundDeadLetters.length,
         },
+      });
+    },
+  );
+
+  app.post(
+    "/api/runtime-reliability/v1/shutdown",
+    { preHandler: adminGuard },
+    async (_request, reply) => {
+      if (!deps.requestShutdown) {
+        return reply.code(503).send({
+          code: "RUNTIME_SHUTDOWN_UNAVAILABLE",
+          detail: "Runtime shutdown is not configured for this gateway process.",
+        });
+      }
+
+      void Promise.resolve()
+        .then(() => deps.requestShutdown?.())
+        .catch((error) => {
+          console.error("[gateway] runtime shutdown request failed", { error });
+        });
+
+      return reply.code(202).send({
+        accepted: true,
       });
     },
   );

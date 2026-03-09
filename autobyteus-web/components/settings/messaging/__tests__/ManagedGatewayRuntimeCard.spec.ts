@@ -114,4 +114,60 @@ describe('ManagedGatewayRuntimeCard', () => {
     expect(wrapper.text()).toContain('Inbound dead-letter 0');
     expect(wrapper.text()).toContain('unbound 1');
   });
+
+  it('surfaces actionable recovery details when the gateway lifecycle is blocked', async () => {
+    const store = useGatewaySessionSetupStore();
+    store.gatewayStatus = 'BLOCKED';
+    store.providerStatusByProvider = {
+      TELEGRAM: {
+        provider: 'TELEGRAM',
+        supported: true,
+        selectedTransport: 'BUSINESS_API',
+        configured: true,
+        effectivelyEnabled: false,
+        blockedReason: 'Telegram polling conflict detected.',
+        accountId: 'telegram-acct',
+      },
+    };
+    store.managedStatus = {
+      supported: true,
+      enabled: true,
+      lifecycleState: 'BLOCKED',
+      message: 'Managed messaging gateway exited unexpectedly.',
+      lastError: 'Process exit detected (code=1, signal=null).',
+      activeVersion: '0.1.0',
+      desiredVersion: '0.1.0',
+      releaseTag: 'v-test-1',
+      installedVersions: ['0.1.0'],
+      bindHost: null,
+      bindPort: null,
+      pid: null,
+      providerConfig: store.providerConfig,
+      providerStatusByProvider: store.providerStatusByProvider,
+      supportedProviders: ['WHATSAPP', 'WECOM', 'DISCORD', 'TELEGRAM'],
+      excludedProviders: ['WECHAT'],
+      diagnostics: {},
+      runtimeReliabilityStatus: null,
+      runtimeRunning: false,
+    };
+
+    const wrapper = mount(ManagedGatewayRuntimeCard, {
+      global: {
+        plugins: [pinia],
+      },
+    });
+
+    expect(wrapper.get('[data-testid="gateway-enable-button"]').text()).toContain(
+      'Recover Gateway',
+    );
+    expect(wrapper.get('[data-testid="managed-gateway-last-error"]').text()).toContain(
+      'Process exit detected',
+    );
+    expect(wrapper.get('[data-testid="managed-gateway-recovery-hint"]').text()).toContain(
+      'recover without reinstalling',
+    );
+    expect(wrapper.get('[data-testid="managed-gateway-provider-issues"]').text()).toContain(
+      'TELEGRAM: Telegram polling conflict detected.',
+    );
+  });
 });

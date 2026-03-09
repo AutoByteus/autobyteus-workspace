@@ -6,6 +6,18 @@ import type { ChannelBinding } from "../domain/models.js";
 import type { ChannelRuntimeDispatchResult, ChannelRuntimeFacade } from "./channel-runtime-facade.js";
 import type { ChannelBindingRuntimeLauncher } from "./channel-binding-runtime-launcher.js";
 import type { RuntimeCommandIngressService } from "../../runtime-execution/runtime-command-ingress-service.js";
+import {
+  getAgentLiveMessagePublisher,
+  type AgentLiveMessagePublisher,
+} from "../../services/agent-streaming/agent-live-message-publisher.js";
+import {
+  getRuntimeExternalChannelTurnBridge,
+  type RuntimeExternalChannelTurnBridge,
+} from "./runtime-external-channel-turn-bridge.js";
+
+const logger = {
+  warn: (...args: unknown[]) => console.warn(...args),
+};
 
 type TeamLike = {
   postMessage: (
@@ -22,12 +34,32 @@ export type DefaultChannelRuntimeFacadeDependencies = {
   runtimeLauncher: Pick<ChannelBindingRuntimeLauncher, "resolveOrStartAgentRun">;
   runtimeCommandIngressService: Pick<RuntimeCommandIngressService, "sendTurn">;
   agentTeamRunManager: AgentTeamRunManagerPort;
+  liveMessagePublisher?: Pick<AgentLiveMessagePublisher, "publishExternalUserMessage">;
+  externalTurnBridge?: Pick<
+    RuntimeExternalChannelTurnBridge,
+    "bindAcceptedExternalTurn"
+  >;
 };
 
 export class DefaultChannelRuntimeFacade implements ChannelRuntimeFacade {
+  private readonly liveMessagePublisher: Pick<
+    AgentLiveMessagePublisher,
+    "publishExternalUserMessage"
+  >;
+
+  private readonly externalTurnBridge: Pick<
+    RuntimeExternalChannelTurnBridge,
+    "bindAcceptedExternalTurn"
+  >;
+
   constructor(
     private readonly deps: DefaultChannelRuntimeFacadeDependencies,
-  ) {}
+  ) {
+    this.liveMessagePublisher =
+      deps.liveMessagePublisher ?? getAgentLiveMessagePublisher();
+    this.externalTurnBridge =
+      deps.externalTurnBridge ?? getRuntimeExternalChannelTurnBridge();
+  }
 
   async dispatchToBinding(
     binding: ChannelBinding,
@@ -43,7 +75,9 @@ export class DefaultChannelRuntimeFacade implements ChannelRuntimeFacade {
     binding: ChannelBinding,
     envelope: ExternalMessageEnvelope,
   ): Promise<ChannelRuntimeDispatchResult> {
-    const agentRunId = await this.deps.runtimeLauncher.resolveOrStartAgentRun(binding);
+    const agentRunId = await this.deps.runtimeLauncher.resolveOrStartAgentRun(binding, {
+      initialSummary: envelope.content,
+    });
     const result = await this.deps.runtimeCommandIngressService.sendTurn({
       runId: agentRunId,
       mode: "agent",
@@ -53,6 +87,30 @@ export class DefaultChannelRuntimeFacade implements ChannelRuntimeFacade {
       throw new Error(
         result.message ??
           `Agent run '${agentRunId}' rejected external channel dispatch (${result.code ?? "UNKNOWN"}).`,
+      );
+    }
+    try {
+      await this.externalTurnBridge.bindAcceptedExternalTurn({
+        runId: agentRunId,
+        runtimeKind: result.runtimeKind,
+        turnId: result.turnId ?? null,
+        envelope,
+      });
+    } catch (error) {
+      logger.warn(
+        `Agent run '${agentRunId}': failed to bind the accepted external runtime turn for provider reply routing. Continuing because inbound dispatch already succeeded.`,
+        error,
+      );
+    }
+    try {
+      this.liveMessagePublisher.publishExternalUserMessage({
+        runId: agentRunId,
+        envelope,
+      });
+    } catch (error) {
+      logger.warn(
+        `Agent run '${agentRunId}': failed to publish external user message to the live frontend stream. Continuing because provider reply routing depends on ingress receipt persistence.`,
+        error,
       );
     }
 

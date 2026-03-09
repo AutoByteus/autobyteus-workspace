@@ -14,6 +14,7 @@ export type ServerMessageType =
   | 'SEGMENT_START'
   | 'SEGMENT_CONTENT'
   | 'SEGMENT_END'
+  | 'EXTERNAL_USER_MESSAGE'
   | 'AGENT_STATUS'
   | 'TEAM_STATUS'
   | 'TOOL_APPROVAL_REQUESTED'
@@ -81,6 +82,23 @@ export interface AgentStatusPayload {
   tool_name?: string | null;
   error_message?: string | null;
   error_details?: string | null;
+}
+
+export interface ExternalUserMessageContextFilePathPayload {
+  path: string;
+  type?: 'Audio' | 'Csv' | 'Docx' | 'Html' | 'Image' | 'Javascript' | 'Json' | 'Markdown' | 'Pdf' | 'Pptx' | 'Python' | 'Text' | 'Unknown' | 'Video' | 'Xlsx' | 'Xml';
+}
+
+export interface ExternalUserMessagePayload {
+  content: string;
+  received_at?: string | null;
+  provider?: string | null;
+  transport?: string | null;
+  account_id?: string | null;
+  peer_id?: string | null;
+  thread_id?: string | null;
+  external_message_id?: string | null;
+  context_file_paths?: ExternalUserMessageContextFilePathPayload[];
 }
 
 export interface TeamStatusPayload {
@@ -259,6 +277,7 @@ export type ServerMessage =
   | { type: 'SEGMENT_START'; payload: SegmentStartPayload }
   | { type: 'SEGMENT_CONTENT'; payload: SegmentContentPayload }
   | { type: 'SEGMENT_END'; payload: SegmentEndPayload }
+  | { type: 'EXTERNAL_USER_MESSAGE'; payload: ExternalUserMessagePayload }
   | { type: 'AGENT_STATUS'; payload: AgentStatusPayload }
   | { type: 'TEAM_STATUS'; payload: TeamStatusPayload }
   | { type: 'TOOL_APPROVAL_REQUESTED'; payload: ToolApprovalRequestedPayload }

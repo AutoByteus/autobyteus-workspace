@@ -9,10 +9,16 @@ import type {
   ManagedMessagingRuntimeSnapshot,
 } from "./types.js";
 
-type ProcessExitListener = (event: { code: number | null; signal: NodeJS.Signals | null }) => void;
+type ProcessExitListener = (event: {
+  code: number | null;
+  signal: NodeJS.Signals | null;
+  expected: boolean;
+}) => void;
 
 export class MessagingGatewayProcessSupervisor {
   private process: ChildProcessByStdio<null, Readable, Readable> | null = null;
+  private expectedExitProcess: ChildProcessByStdio<null, Readable, Readable> | null =
+    null;
   private runtimeSnapshot: ManagedMessagingRuntimeSnapshot = {
     running: false,
     bindHost: null,
@@ -74,6 +80,10 @@ export class MessagingGatewayProcessSupervisor {
     child.stdout.pipe(stdoutStream);
     child.stderr.pipe(stderrStream);
     child.on("close", (code, signal) => {
+      const expected = this.expectedExitProcess === child;
+      if (expected) {
+        this.expectedExitProcess = null;
+      }
       stdoutStream.end();
       stderrStream.end();
       this.process = null;
@@ -85,7 +95,7 @@ export class MessagingGatewayProcessSupervisor {
         startedAt: this.runtimeSnapshot.startedAt,
       };
       for (const listener of this.exitListeners) {
-        listener({ code, signal });
+        listener({ code, signal, expected });
       }
     });
 
@@ -107,6 +117,7 @@ export class MessagingGatewayProcessSupervisor {
     if (!current) {
       return;
     }
+    this.expectedExitProcess = current;
 
     await new Promise<void>((resolve) => {
       let closed = false;

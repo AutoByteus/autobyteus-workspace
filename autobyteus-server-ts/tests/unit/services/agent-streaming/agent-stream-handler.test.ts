@@ -1,8 +1,13 @@
 import { describe, expect, it, vi } from "vitest";
 import { StreamEventType, type AgentEventStream, type StreamEvent } from "autobyteus-ts";
 import { AgentStreamHandler } from "../../../../src/services/agent-streaming/agent-stream-handler.js";
+import { AgentStreamBroadcaster } from "../../../../src/services/agent-streaming/agent-stream-broadcaster.js";
 import { AgentSessionManager } from "../../../../src/services/agent-streaming/agent-session-manager.js";
-import { ClientMessageType, ServerMessageType } from "../../../../src/services/agent-streaming/models.js";
+import {
+  ClientMessageType,
+  ServerMessage,
+  ServerMessageType,
+} from "../../../../src/services/agent-streaming/models.js";
 import { RuntimeAdapterRegistry } from "../../../../src/runtime-execution/runtime-adapter-registry.js";
 import { getRuntimeEventMessageMapper } from "../../../../src/services/agent-streaming/runtime-event-message-mapper.js";
 
@@ -146,6 +151,50 @@ describe("AgentStreamHandler", () => {
       expect.any(Function),
     );
     expect(connection.close).not.toHaveBeenCalled();
+  });
+
+  it("registers the websocket connection for run-scoped live message broadcasts", async () => {
+    const sessionManager = new AgentSessionManager();
+    const broadcaster = new AgentStreamBroadcaster();
+    const agentManager = {
+      getAgentRun: vi.fn().mockReturnValue({ runId: "agent-123" }),
+      getAgentEventStream: vi.fn().mockReturnValue(createStream([])),
+    };
+
+    const handler = new AgentStreamHandler(
+      sessionManager,
+      agentManager as any,
+      createIngress() as any,
+      undefined,
+      undefined,
+      undefined,
+      broadcaster,
+    );
+    const connection = {
+      send: vi.fn(),
+      close: vi.fn(),
+    };
+
+    const sessionId = await handler.connect(connection, "agent-123");
+
+    expect(sessionId).toBeTruthy();
+    expect(
+      broadcaster.publishToRun(
+        "agent-123",
+        new ServerMessage(ServerMessageType.EXTERNAL_USER_MESSAGE, {
+          content: "hello from telegram",
+        }),
+      ),
+    ).toBe(1);
+
+    expect(connection.send).toHaveBeenCalledTimes(2);
+    const payload = JSON.parse(connection.send.mock.calls[1][0]);
+    expect(payload).toMatchObject({
+      type: ServerMessageType.EXTERNAL_USER_MESSAGE,
+      payload: {
+        content: "hello from telegram",
+      },
+    });
   });
 
   it("handles SEND_MESSAGE and forwards to runtime ingress", async () => {

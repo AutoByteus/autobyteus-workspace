@@ -163,6 +163,14 @@ const server = http.createServer((request, response) => {
     return;
   }
 
+  if (url.pathname === "/api/runtime-reliability/v1/shutdown" && request.method === "POST") {
+    response.statusCode = 202;
+    response.setHeader("content-type", "application/json");
+    response.end(JSON.stringify({ accepted: true }));
+    setTimeout(() => server.close(() => process.exit(0)), 0);
+    return;
+  }
+
   if (url.pathname === "/api/channel-admin/v1/wecom/accounts") {
     response.setHeader("content-type", "application/json");
     response.end(JSON.stringify({ items: wecomAccounts }));

@@ -10,6 +10,8 @@ import { ChannelThreadLockService } from "../services/channel-thread-lock-servic
 import { DeliveryEventService } from "../services/delivery-event-service.js";
 import { ChannelBindingRuntimeLauncher } from "./channel-binding-runtime-launcher.js";
 import { DefaultChannelRuntimeFacade } from "./default-channel-runtime-facade.js";
+import { getAgentLiveMessagePublisher } from "../../services/agent-streaming/agent-live-message-publisher.js";
+import { getRuntimeExternalChannelTurnBridge } from "./runtime-external-channel-turn-bridge.js";
 
 let cachedDependencies: ChannelIngressRouteDependencies | null = null;
 
@@ -35,6 +37,8 @@ export const getDefaultChannelIngressRouteDependencies =
     const runtimeFacade = new DefaultChannelRuntimeFacade({
       runtimeLauncher,
       runtimeCommandIngressService,
+      liveMessagePublisher: getAgentLiveMessagePublisher(),
+      externalTurnBridge: getRuntimeExternalChannelTurnBridge(),
       agentTeamRunManager: {
         getTeamRun: (teamRunId: string) =>
           AgentTeamRunManager.getInstance().getTeamRun(teamRunId) as {

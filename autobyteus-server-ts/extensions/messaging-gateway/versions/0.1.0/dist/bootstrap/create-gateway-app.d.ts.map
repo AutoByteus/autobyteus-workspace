@@ -1,0 +1,1 @@
+{"version":3,"file":"create-gateway-app.d.ts","sourceRoot":"","sources":["../../src/bootstrap/create-gateway-app.ts"],"names":[],"mappings":"AAAA,OAAgB,EAAE,KAAK,eAAe,EAAE,MAAM,SAAS,CAAC;AAIxD,OAAO,KAAK,EAAE,oBAAoB,EAAE,MAAM,6BAA6B,CAAC;AAkDxE,wBAAgB,gBAAgB,CAAC,MAAM,EAAE,oBAAoB,GAAG,eAAe,CAsY9E"}

@@ -172,6 +172,7 @@ export function useMessagingChannelBindingSetupFlow() {
       draft.transport = providerScopeStore.resolvedTransport;
       draft.targetType = 'AGENT';
       optionsStore.resetPeerCandidates();
+      optionsStore.clearStaleSelectionError();
       selectedPeerKey.value = '';
       draft.peerId = '';
       draft.threadId = null;
@@ -218,6 +219,7 @@ export function useMessagingChannelBindingSetupFlow() {
   watch(
     () => selectedPeerKey.value,
     (key) => {
+      optionsStore.clearStaleSelectionError();
       if (effectiveManualPeerInput.value || !key) {
         return;
       }
@@ -231,6 +233,13 @@ export function useMessagingChannelBindingSetupFlow() {
 
       draft.peerId = candidate.peerId;
       draft.threadId = candidate.threadId;
+    },
+  );
+
+  watch(
+    () => useManualPeerInput.value,
+    () => {
+      optionsStore.clearStaleSelectionError();
     },
   );
 

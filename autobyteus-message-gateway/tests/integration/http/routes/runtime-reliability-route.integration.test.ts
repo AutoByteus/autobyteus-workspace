@@ -196,4 +196,63 @@ describe("runtime-reliability-route", () => {
 
     await app.close();
   });
+
+  it("accepts authenticated runtime shutdown requests", async () => {
+    const requestShutdown = vi.fn();
+    const app = fastify();
+    registerRuntimeReliabilityRoutes(app, {
+      inboundInboxService: {
+        listByStatus: vi.fn(async () => []),
+        replayFromStatus: vi.fn(),
+      } as any,
+      outboundOutboxService: {
+        listByStatus: vi.fn(async () => []),
+        replayFromStatus: vi.fn(),
+      } as any,
+      reliabilityStatusService: {
+        getSnapshot: vi.fn(() => ({
+          state: "HEALTHY",
+          criticalCode: null,
+          updatedAt: "2026-02-12T00:00:00.000Z",
+          workers: {
+            inboundForwarder: { running: true, lastError: null, lastErrorAt: null },
+            outboundSender: { running: true, lastError: null, lastErrorAt: null },
+          },
+          locks: {
+            inbox: {
+              ownerId: "owner-1",
+              held: true,
+              lost: false,
+              lastHeartbeatAt: "2026-02-12T00:00:00.000Z",
+              lastError: null,
+            },
+            outbox: {
+              ownerId: "owner-2",
+              held: true,
+              lost: false,
+              lastHeartbeatAt: "2026-02-12T00:00:00.000Z",
+              lastError: null,
+            },
+          },
+        })),
+      } as any,
+      adminToken: "secret-token",
+      requestShutdown,
+    });
+
+    const response = await app.inject({
+      method: "POST",
+      url: "/api/runtime-reliability/v1/shutdown",
+      headers: {
+        authorization: "Bearer secret-token",
+      },
+    });
+
+    expect(response.statusCode).toBe(202);
+    expect(response.json()).toEqual({ accepted: true });
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(requestShutdown).toHaveBeenCalledOnce();
+
+    await app.close();
+  });
 });

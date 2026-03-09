@@ -16,10 +16,20 @@ import {
   MANAGED_MESSAGING_EXCLUDED_PROVIDERS,
   MANAGED_MESSAGING_SUPPORTED_PROVIDERS,
   normalizeManagedMessagingProviderConfig,
-  type ManagedMessagingReleaseDescriptor,
   type ManagedMessagingPersistedState,
+  type ManagedMessagingReleaseDescriptor,
+  type ManagedMessagingRuntimeSnapshot,
   type ManagedMessagingStatus,
 } from "./types.js";
+
+type ReachableManagedRuntime = {
+  bindHost: string;
+  bindPort: number;
+  runtimeReliabilityStatus: Record<string, unknown>;
+};
+
+const DEFAULT_MANAGED_GATEWAY_HOST = "127.0.0.1";
+const MANAGED_GATEWAY_SHUTDOWN_TIMEOUT_MS = 10_000;
 
 export class ManagedMessagingGatewayService {
   private readonly storage: ManagedMessagingGatewayStorage;
@@ -35,19 +45,28 @@ export class ManagedMessagingGatewayService {
     this.storage = new ManagedMessagingGatewayStorage({
       installerService: deps.installerService,
     });
-    this.deps.processSupervisor.onExit(({ code, signal }) => {
-      void this.handleProcessExit(code, signal);
+    this.deps.processSupervisor.onExit(({ code, signal, expected }) => {
+      void this.handleProcessExit(code, signal, expected);
     });
   }
 
   async getStatus(): Promise<ManagedMessagingStatus> {
     await this.storage.ensureRoots();
-    const [state, providerConfig, installedVersions] = await Promise.all([
+    const [initialState, providerConfig, installedVersions] = await Promise.all([
       this.storage.readState(),
       this.storage.readProviderConfig(),
       this.deps.installerService.listInstalledVersions(),
     ]);
     const runtime = this.deps.processSupervisor.getRuntimeSnapshot();
+    const state = await this.reconcileReachableRuntime({
+      state: initialState,
+      runtime,
+      activeVersion: initialState.activeVersion,
+      desiredVersion: initialState.desiredVersion,
+      releaseTag: initialState.releaseTag,
+      allowMessageReset: true,
+    });
+
     const providerStatuses = buildManagedMessagingProviderStatuses(providerConfig);
     const installRoot = state.activeVersion
       ? this.deps.installerService.getVersionInstallDir(state.activeVersion)
@@ -65,9 +84,14 @@ export class ManagedMessagingGatewayService {
     };
 
     const runtimeReliabilityStatus =
-      runtime.running && state.bindHost && state.bindPort
-        ? await this.safeGetRuntimeReliabilityStatus(state.bindHost, state.bindPort, state.adminToken)
+      state.bindHost && state.bindPort
+        ? await this.safeGetRuntimeReliabilityStatus(
+            state.bindHost,
+            state.bindPort,
+            state.adminToken,
+          )
         : null;
+    const runtimeRunning = runtime.running || runtimeReliabilityStatus !== null;
 
     return {
       supported: true,
@@ -79,16 +103,16 @@ export class ManagedMessagingGatewayService {
       desiredVersion: state.desiredVersion,
       releaseTag: state.releaseTag,
       installedVersions,
-      bindHost: runtime.bindHost ?? state.bindHost,
-      bindPort: runtime.bindPort ?? state.bindPort,
-      pid: runtime.pid ?? state.pid,
+      bindHost: runtime.running ? runtime.bindHost : state.bindHost,
+      bindPort: runtime.running ? runtime.bindPort : state.bindPort,
+      pid: runtime.running ? runtime.pid : state.pid,
       providerConfig,
       providerStatuses,
       supportedProviders: [...MANAGED_MESSAGING_SUPPORTED_PROVIDERS],
       excludedProviders: [...MANAGED_MESSAGING_EXCLUDED_PROVIDERS],
       diagnostics,
       runtimeReliabilityStatus,
-      runtimeRunning: runtime.running,
+      runtimeRunning,
     };
   }
 
@@ -139,29 +163,37 @@ export class ManagedMessagingGatewayService {
     });
 
     const installResult = await this.installAndActivate(descriptor);
-    await this.startInstalledRuntime(installResult.installDir, descriptor.artifactVersion, {
-      lifecycleState: "STARTING",
-      message: installResult.reusedExistingInstall
-        ? "Starting managed messaging gateway."
-        : "Managed messaging gateway installed; starting runtime.",
-      releaseTag: descriptor.releaseTag,
-      desiredEnabled: true,
-      desiredVersion: descriptor.artifactVersion,
-      activeVersion: descriptor.artifactVersion,
-    });
+    await this.startInstalledRuntime(
+      installResult.installDir,
+      descriptor.artifactVersion,
+      {
+        lifecycleState: "STARTING",
+        message: installResult.reusedExistingInstall
+          ? "Starting managed messaging gateway."
+          : "Managed messaging gateway installed; starting runtime.",
+        releaseTag: descriptor.releaseTag,
+        desiredEnabled: true,
+        desiredVersion: descriptor.artifactVersion,
+        activeVersion: descriptor.artifactVersion,
+      },
+      {
+        allowAdoptExisting: true,
+      },
+    );
 
     return this.getStatus();
   }
 
   async disable(): Promise<ManagedMessagingStatus> {
     await this.storage.ensureRoots();
+    const state = await this.storage.readState();
     await this.storage.writeState({
       lifecycleState: "STOPPING",
       message: "Stopping managed messaging gateway.",
       lastError: null,
       desiredEnabled: false,
     });
-    await this.deps.processSupervisor.stop();
+    await this.stopTrackedOrReachableRuntime(state);
     await this.storage.writeState({
       lifecycleState: "DISABLED",
       message: "Managed messaging is disabled.",
@@ -203,7 +235,7 @@ export class ManagedMessagingGatewayService {
         previousVersion === descriptor.artifactVersion;
 
       if (!previousDesiredEnabled) {
-        await this.deps.processSupervisor.stop();
+        await this.stopTrackedOrReachableRuntime(previousState);
         await this.storage.writeState({
           lifecycleState: "DISABLED",
           message: alreadyOnLatestCompatibleVersion
@@ -221,10 +253,7 @@ export class ManagedMessagingGatewayService {
         return this.getStatus();
       }
 
-      if (
-        alreadyOnLatestCompatibleVersion &&
-        previousRuntimeSnapshot.running
-      ) {
+      if (alreadyOnLatestCompatibleVersion && previousRuntimeSnapshot.running) {
         await this.storage.writeState({
           lifecycleState: "RUNNING",
           message:
@@ -251,6 +280,9 @@ export class ManagedMessagingGatewayService {
           activeVersion: descriptor.artifactVersion,
           releaseTag: descriptor.releaseTag,
         },
+        {
+          stopReachableRuntimeFirst: previousDesiredEnabled,
+        },
       );
     } catch (error) {
       if (previousVersion && previousVersion !== descriptor.artifactVersion) {
@@ -258,16 +290,23 @@ export class ManagedMessagingGatewayService {
         if (previousDesiredEnabled) {
           const rollbackInstallDir =
             this.deps.installerService.getVersionInstallDir(previousVersion);
-          await this.startInstalledRuntime(rollbackInstallDir, previousVersion, {
-            lifecycleState: "RUNNING",
-            message:
-              "Managed messaging gateway update failed; previous version was restored.",
-            lastError: error instanceof Error ? error.message : String(error),
-            desiredEnabled: true,
-            desiredVersion: previousDesiredVersion ?? previousVersion,
-            activeVersion: previousVersion,
-            releaseTag: previousReleaseTag,
-          });
+          await this.startInstalledRuntime(
+            rollbackInstallDir,
+            previousVersion,
+            {
+              lifecycleState: "RUNNING",
+              message:
+                "Managed messaging gateway update failed; previous version was restored.",
+              lastError: error instanceof Error ? error.message : String(error),
+              desiredEnabled: true,
+              desiredVersion: previousDesiredVersion ?? previousVersion,
+              activeVersion: previousVersion,
+              releaseTag: previousReleaseTag,
+            },
+            {
+              stopReachableRuntimeFirst: true,
+            },
+          );
           await this.storage.writeState({
             lifecycleState: "RUNNING",
             message:
@@ -279,7 +318,7 @@ export class ManagedMessagingGatewayService {
             releaseTag: previousReleaseTag,
           });
         } else {
-          await this.deps.processSupervisor.stop();
+          await this.stopTrackedOrReachableRuntime(previousState);
           await this.storage.writeState({
             lifecycleState: "DISABLED",
             message:
@@ -331,14 +370,21 @@ export class ManagedMessagingGatewayService {
       return;
     }
 
-    await this.startInstalledRuntime(installDir, state.activeVersion, {
-      lifecycleState: "STARTING",
-      message: "Restoring managed messaging gateway after server startup.",
-      desiredEnabled: true,
-      desiredVersion: state.desiredVersion ?? state.activeVersion,
-      activeVersion: state.activeVersion,
-      releaseTag: state.releaseTag,
-    });
+    await this.startInstalledRuntime(
+      installDir,
+      state.activeVersion,
+      {
+        lifecycleState: "STARTING",
+        message: "Restoring managed messaging gateway after server startup.",
+        desiredEnabled: true,
+        desiredVersion: state.desiredVersion ?? state.activeVersion,
+        activeVersion: state.activeVersion,
+        releaseTag: state.releaseTag,
+      },
+      {
+        allowAdoptExisting: true,
+      },
+    );
   }
 
   async getWeComAccounts(): Promise<Array<Record<string, unknown>>> {
@@ -386,7 +432,8 @@ export class ManagedMessagingGatewayService {
   }
 
   async close(): Promise<void> {
-    await this.deps.processSupervisor.stop();
+    const state = await this.storage.readState();
+    await this.stopTrackedOrReachableRuntime(state);
   }
 
   private async installAndActivate(
@@ -401,10 +448,14 @@ export class ManagedMessagingGatewayService {
     installDir: string,
     version: string,
     statePatch: Partial<ManagedMessagingPersistedState>,
+    options?: {
+      allowAdoptExisting?: boolean;
+      stopReachableRuntimeFirst?: boolean;
+    },
   ): Promise<void> {
     const providerConfig = await this.storage.readProviderConfig();
     const currentState = await this.storage.readState();
-    const bindHost = "127.0.0.1";
+    const bindHost = DEFAULT_MANAGED_GATEWAY_HOST;
     const requestedPort = currentState.preferredBindPort ?? currentState.bindPort ?? 8010;
     const env = buildManagedMessagingGatewayRuntimeEnv({
       providerConfig,
@@ -416,17 +467,52 @@ export class ManagedMessagingGatewayService {
 
     await this.storage.writeRuntimeEnv(env);
 
+    if (options?.stopReachableRuntimeFirst) {
+      await this.stopTrackedOrReachableRuntime(currentState);
+    }
+
+    if (options?.allowAdoptExisting) {
+      const adoptedState = await this.reconcileReachableRuntime({
+        state: currentState,
+        activeVersion: version,
+        desiredVersion: statePatch.desiredVersion ?? currentState.desiredVersion ?? version,
+        releaseTag: statePatch.releaseTag ?? currentState.releaseTag,
+        preferredPort: requestedPort,
+        allowMessageReset: true,
+      });
+      if (this.hasRecoveredRuntime(adoptedState)) {
+        return;
+      }
+    }
+
     await this.storage.writeState(statePatch);
 
-    const runtime = await this.deps.processSupervisor.start({
-      installDir,
-      version,
-      bindHost,
-      bindPort: requestedPort,
-      env,
-      stdoutLogPath: path.join(this.deps.installerService.getLogsRoot(), "stdout.log"),
-      stderrLogPath: path.join(this.deps.installerService.getLogsRoot(), "stderr.log"),
-    });
+    let runtime;
+    try {
+      runtime = await this.deps.processSupervisor.start({
+        installDir,
+        version,
+        bindHost,
+        bindPort: requestedPort,
+        env,
+        stdoutLogPath: path.join(this.deps.installerService.getLogsRoot(), "stdout.log"),
+        stderrLogPath: path.join(this.deps.installerService.getLogsRoot(), "stderr.log"),
+      });
+    } catch (error) {
+      const adoptedState = await this.reconcileReachableRuntime({
+        state: await this.storage.readState(),
+        runtime: this.deps.processSupervisor.getRuntimeSnapshot(),
+        activeVersion: version,
+        desiredVersion: statePatch.desiredVersion ?? currentState.desiredVersion ?? version,
+        releaseTag: statePatch.releaseTag ?? currentState.releaseTag,
+        preferredPort: requestedPort,
+        allowMessageReset: true,
+      });
+      if (this.hasRecoveredRuntime(adoptedState)) {
+        return;
+      }
+      throw error;
+    }
 
     await this.storage.writeState({
       lifecycleState: "RUNNING",
@@ -448,31 +534,198 @@ export class ManagedMessagingGatewayService {
     }
     const installDir =
       this.deps.installerService.getVersionInstallDir(activeVersion);
-    await this.startInstalledRuntime(installDir, activeVersion, {
-      lifecycleState: "STARTING",
-      message: input.reason,
-      lastError: null,
-      desiredEnabled: true,
+    await this.startInstalledRuntime(
+      installDir,
       activeVersion,
-      desiredVersion: state.desiredVersion ?? activeVersion,
-      releaseTag: state.releaseTag,
-    });
+      {
+        lifecycleState: "STARTING",
+        message: input.reason,
+        lastError: null,
+        desiredEnabled: true,
+        activeVersion,
+        desiredVersion: state.desiredVersion ?? activeVersion,
+        releaseTag: state.releaseTag,
+      },
+      {
+        stopReachableRuntimeFirst: true,
+      },
+    );
   }
 
   private async handleProcessExit(
     code: number | null,
     signal: NodeJS.Signals | null,
+    expected: boolean,
   ): Promise<void> {
+    if (expected) {
+      return;
+    }
+
     const state = await this.storage.readState();
     if (!state.desiredEnabled) {
       return;
     }
+
+    const recoveredState = await this.reconcileReachableRuntime({
+      state,
+      runtime: this.deps.processSupervisor.getRuntimeSnapshot(),
+      activeVersion: state.activeVersion,
+      desiredVersion: state.desiredVersion,
+      releaseTag: state.releaseTag,
+      allowMessageReset: true,
+    });
+    if (recoveredState.lifecycleState === "RUNNING" && recoveredState.bindPort) {
+      return;
+    }
+
     await this.storage.writeState({
       lifecycleState: "BLOCKED",
       message: "Managed messaging gateway exited unexpectedly.",
       lastError: `Process exit detected (code=${code ?? "null"}, signal=${signal ?? "null"}).`,
+      bindHost: null,
+      bindPort: null,
       pid: null,
     });
+  }
+
+  private async reconcileReachableRuntime(input: {
+    state: ManagedMessagingPersistedState;
+    activeVersion: string | null;
+    desiredVersion: string | null;
+    releaseTag: string | null;
+    runtime?: ManagedMessagingRuntimeSnapshot;
+    preferredPort?: number | null;
+    allowMessageReset?: boolean;
+  }): Promise<ManagedMessagingPersistedState> {
+    if (!input.state.desiredEnabled || !input.activeVersion) {
+      return input.state;
+    }
+
+    const reachableRuntime = await this.findReachableRuntime({
+      state: input.state,
+      runtime: input.runtime,
+      preferredPort: input.preferredPort,
+    });
+    if (!reachableRuntime) {
+      return input.state;
+    }
+
+    const nextState: ManagedMessagingPersistedState = {
+      ...input.state,
+      lifecycleState: "RUNNING",
+      message:
+        input.allowMessageReset && input.state.lifecycleState !== "RUNNING"
+          ? "Managed messaging gateway recovered the existing runtime."
+          : input.state.message,
+      lastError: null,
+      activeVersion: input.activeVersion,
+      desiredVersion: input.desiredVersion,
+      releaseTag: input.releaseTag,
+      bindHost: reachableRuntime.bindHost,
+      bindPort: reachableRuntime.bindPort,
+      pid: null,
+      preferredBindPort: reachableRuntime.bindPort,
+      lastUpdatedAt: input.state.lastUpdatedAt,
+    };
+
+    const stateChanged =
+      input.state.lifecycleState !== nextState.lifecycleState ||
+      input.state.message !== nextState.message ||
+      input.state.lastError !== nextState.lastError ||
+      input.state.bindHost !== nextState.bindHost ||
+      input.state.bindPort !== nextState.bindPort ||
+      input.state.pid !== nextState.pid ||
+      input.state.preferredBindPort !== nextState.preferredBindPort;
+
+    if (stateChanged) {
+      await this.storage.writeState(nextState);
+    }
+
+    return nextState;
+  }
+
+  private async findReachableRuntime(input: {
+    state: ManagedMessagingPersistedState;
+    runtime?: ManagedMessagingRuntimeSnapshot;
+    preferredPort?: number | null;
+  }): Promise<ReachableManagedRuntime | null> {
+    const host =
+      input.state.bindHost ?? input.runtime?.bindHost ?? DEFAULT_MANAGED_GATEWAY_HOST;
+    const candidatePorts = [
+      input.preferredPort,
+      input.state.bindPort,
+      input.state.preferredBindPort,
+      input.runtime?.bindPort,
+    ].filter((value): value is number => typeof value === "number" && value > 0);
+
+    const seen = new Set<number>();
+    for (const port of candidatePorts) {
+      if (seen.has(port)) {
+        continue;
+      }
+      seen.add(port);
+      const runtimeReliabilityStatus = await this.safeGetRuntimeReliabilityStatus(
+        host,
+        port,
+        input.state.adminToken,
+      );
+      if (!runtimeReliabilityStatus) {
+        continue;
+      }
+      return {
+        bindHost: host,
+        bindPort: port,
+        runtimeReliabilityStatus,
+      };
+    }
+
+    return null;
+  }
+
+  private async stopTrackedOrReachableRuntime(
+    state: ManagedMessagingPersistedState,
+  ): Promise<void> {
+    if (this.deps.processSupervisor.isRunning()) {
+      await this.deps.processSupervisor.stop();
+      return;
+    }
+
+    const reachableRuntime = await this.findReachableRuntime({ state });
+    if (!reachableRuntime) {
+      return;
+    }
+
+    await this.deps.adminClient.shutdownRuntime({
+      host: reachableRuntime.bindHost,
+      port: reachableRuntime.bindPort,
+      adminToken: state.adminToken,
+    });
+    await this.waitForRuntimeShutdown({
+      host: reachableRuntime.bindHost,
+      port: reachableRuntime.bindPort,
+      adminToken: state.adminToken,
+    });
+  }
+
+  private async waitForRuntimeShutdown(input: {
+    host: string;
+    port: number;
+    adminToken: string;
+  }): Promise<void> {
+    const deadline = Date.now() + MANAGED_GATEWAY_SHUTDOWN_TIMEOUT_MS;
+    while (Date.now() < deadline) {
+      const status = await this.safeGetRuntimeReliabilityStatus(
+        input.host,
+        input.port,
+        input.adminToken,
+      );
+      if (!status) {
+        return;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 250));
+    }
+
+    throw new Error("Managed messaging gateway did not stop within the shutdown timeout.");
   }
 
   private async safeGetRuntimeReliabilityStatus(
@@ -489,5 +742,15 @@ export class ManagedMessagingGatewayService {
     } catch {
       return null;
     }
+  }
+
+  private hasRecoveredRuntime(state: ManagedMessagingPersistedState): boolean {
+    return (
+      state.lifecycleState === "RUNNING" &&
+      typeof state.bindPort === "number" &&
+      state.bindPort > 0 &&
+      typeof state.bindHost === "string" &&
+      state.bindHost.length > 0
+    );
   }
 }

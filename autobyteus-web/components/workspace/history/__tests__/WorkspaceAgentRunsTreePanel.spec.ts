@@ -84,6 +84,7 @@ const {
         return state.selectedRunId;
       },
       fetchTree: vi.fn().mockResolvedValue(undefined),
+      refreshTreeQuietly: vi.fn().mockResolvedValue(undefined),
       getTreeNodes: vi.fn(() => state.nodes),
       getTeamNodes: vi.fn((workspaceRootPath: string) => state.teamNodesByWorkspace[workspaceRootPath] || []),
       formatRelativeTime: vi.fn((iso: string) => (iso.includes('01:00') ? 'now' : '4h')),
@@ -256,6 +257,23 @@ describe('WorkspaceAgentRunsTreePanel', () => {
 
     expect(workspaceStoreMock.fetchAllWorkspaces).toHaveBeenCalledTimes(1);
     expect(runHistoryStoreMock.fetchTree).toHaveBeenCalledTimes(1);
+  });
+
+  it('refreshes run history quietly on the background interval while mounted', async () => {
+    vi.useFakeTimers();
+    try {
+      const wrapper = mountComponent();
+      await Promise.resolve();
+      await vi.advanceTimersByTimeAsync(0);
+
+      expect(runHistoryStoreMock.refreshTreeQuietly).not.toHaveBeenCalled();
+
+      await vi.advanceTimersByTimeAsync(5000);
+      expect(runHistoryStoreMock.refreshTreeQuietly).toHaveBeenCalledTimes(1);
+      wrapper.unmount();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('renders agent avatar image when the tree node provides avatar URL', async () => {

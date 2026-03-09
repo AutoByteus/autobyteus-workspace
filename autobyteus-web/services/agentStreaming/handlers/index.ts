@@ -23,6 +23,10 @@ export {
 } from './agentStatusHandler';
 
 export {
+  handleExternalUserMessage,
+} from './externalUserMessageHandler';
+
+export {
   handleTodoListUpdate,
 } from './todoHandler';
 

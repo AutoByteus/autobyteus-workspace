@@ -169,10 +169,11 @@ export class ClaudeAgentSdkRuntimeAdapter implements RuntimeAdapter {
 
   async sendTurn(input: RuntimeSendTurnInput): Promise<RuntimeCommandResult> {
     try {
-      await this.runtimeService.sendTurn(input.runId, input.message);
+      const turnResult = await this.runtimeService.sendTurn(input.runId, input.message);
       const runtimeReference = this.runtimeService.getRunRuntimeReference(input.runId);
       return {
         accepted: true,
+        turnId: turnResult.turnId ?? null,
         runtimeReference: runtimeReference
           ? {
               runtimeKind: this.runtimeKind,

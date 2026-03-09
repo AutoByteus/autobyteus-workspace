@@ -176,10 +176,11 @@ export class CodexAppServerRuntimeAdapter implements RuntimeAdapter {
 
   async sendTurn(input: RuntimeSendTurnInput): Promise<RuntimeCommandResult> {
     try {
-      await this.runtimeService.sendTurn(input.runId, input.message);
+      const result = await this.runtimeService.sendTurn(input.runId, input.message);
       return {
         accepted: true,
         runtimeReference: this.getRunRuntimeReference(input.runId),
+        turnId: result.turnId ?? null,
       };
     } catch (error) {
       return buildCommandFailure(error);

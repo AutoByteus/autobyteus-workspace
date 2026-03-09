@@ -25,14 +25,21 @@ vi.mock('../transport', () => {
 describe('AgentStreamingService', () => {
     let service: AgentStreamingService;
     let mockAgentContext: any;
+    let mockConversation: any;
 
     beforeEach(() => {
         service = new AgentStreamingService('ws://localhost:8000/ws/agent');
+        mockConversation = {
+            messages: [],
+            updatedAt: '',
+        };
         mockAgentContext = {
             state: { 
                 runId: 'test-agent-id',
-                conversation: { messages: [] }
+                conversation: mockConversation,
             },
+            conversation: mockConversation,
+            isSending: false,
             config: {}
         };
     });
@@ -48,5 +55,39 @@ describe('AgentStreamingService', () => {
         expect((service as any).context).toBe(mockAgentContext);
         const clientMock = (service as any).wsClient;
         expect(clientMock.connect).toHaveBeenCalledWith(expect.stringContaining(agentRunId));
+    });
+
+    it('mirrors external user messages into the open conversation', () => {
+        (service as any).dispatchMessage(
+            {
+                type: 'EXTERNAL_USER_MESSAGE',
+                payload: {
+                    content: 'hello from telegram',
+                    received_at: '2026-03-09T11:22:33.000Z',
+                    context_file_paths: [
+                        {
+                            path: 'https://example.com/voice.wav',
+                            type: 'Audio',
+                        },
+                    ],
+                },
+            },
+            mockAgentContext,
+        );
+
+        expect(mockConversation.messages).toHaveLength(1);
+        expect(mockConversation.messages[0]).toMatchObject({
+            type: 'user',
+            text: 'hello from telegram',
+            contextFilePaths: [
+                {
+                    path: 'https://example.com/voice.wav',
+                    type: 'Audio',
+                },
+            ],
+        });
+        expect(mockConversation.messages[0].timestamp.toISOString()).toBe('2026-03-09T11:22:33.000Z');
+        expect(mockConversation.updatedAt).toBeTruthy();
+        expect(mockAgentContext.isSending).toBe(true);
     });
 });

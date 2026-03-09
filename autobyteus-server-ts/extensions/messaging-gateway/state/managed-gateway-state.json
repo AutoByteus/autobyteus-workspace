@@ -1,0 +1,15 @@
+{
+  "desiredEnabled": true,
+  "lifecycleState": "RUNNING",
+  "message": "Managed messaging gateway is running.",
+  "lastError": null,
+  "activeVersion": "0.1.0",
+  "desiredVersion": "0.1.0",
+  "releaseTag": "v1.2.31",
+  "bindHost": "127.0.0.1",
+  "bindPort": 57345,
+  "pid": 91219,
+  "preferredBindPort": 57345,
+  "adminToken": "0043b852-6419-4635-bb1a-b7d368f80972",
+  "lastUpdatedAt": "2026-03-09T15:58:22.591Z"
+}
