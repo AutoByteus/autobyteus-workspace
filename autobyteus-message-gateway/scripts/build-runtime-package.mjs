@@ -11,6 +11,7 @@ import {
   checkDefaultReleaseManifest,
   defaultReleaseManifestPath,
   resolveReleaseMetadata,
+  serializeManifest,
   syncDefaultReleaseManifest,
 } from "./release-manifest.mjs";
 

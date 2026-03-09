@@ -42,7 +42,7 @@ function normalizeReleaseTag(value) {
   return normalized.startsWith("v") ? normalized : `v${normalized}`;
 }
 
-function serializeManifest(manifest) {
+export function serializeManifest(manifest) {
   return `${JSON.stringify(manifest, null, 2)}\n`;
 }
 
