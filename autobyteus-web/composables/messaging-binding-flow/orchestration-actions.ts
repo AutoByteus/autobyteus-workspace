@@ -7,21 +7,17 @@ import type {
 import type { useGatewaySessionSetupStore } from '~/stores/gatewaySessionSetupStore';
 import type {
   ExternalChannelBindingDraft,
-  ExternalChannelBindingTargetOption,
   GatewayPeerCandidate,
 } from '~/types/messaging';
 
 export function createBindingFlowActions(input: {
   draft: ExternalChannelBindingDraft;
   selectedPeerKey: Ref<string>;
-  selectedTargetRunId: Ref<string>;
   useManualPeerInput: Ref<boolean>;
-  useManualTargetInput: Ref<boolean>;
   supportsPeerDiscovery: Ref<boolean>;
   canDiscoverPeers: Ref<boolean>;
   effectiveManualPeerInput: Ref<boolean>;
   peerDiscoveryProviderLabel: Ref<string>;
-  filteredTargetOptions: Ref<ExternalChannelBindingTargetOption[]>;
   discordAccountHint: Ref<string>;
   telegramAccountHint: Ref<string>;
   bindingStore: ReturnType<typeof useMessagingChannelBindingSetupStore>;
@@ -32,14 +28,11 @@ export function createBindingFlowActions(input: {
   const {
     draft,
     selectedPeerKey,
-    selectedTargetRunId,
     useManualPeerInput,
-    useManualTargetInput,
     supportsPeerDiscovery,
     canDiscoverPeers,
     effectiveManualPeerInput,
     peerDiscoveryProviderLabel,
-    filteredTargetOptions,
     discordAccountHint,
     telegramAccountHint,
     bindingStore,
@@ -71,17 +64,6 @@ export function createBindingFlowActions(input: {
         (candidate.threadId ?? null) === (draft.threadId ?? null),
     );
     selectedPeerKey.value = existing ? buildPeerCandidateKey(existing) : '';
-  }
-
-  function onToggleTargetInputMode(): void {
-    useManualTargetInput.value = !useManualTargetInput.value;
-    if (useManualTargetInput.value) {
-      selectedTargetRunId.value = '';
-      return;
-    }
-
-    const existing = filteredTargetOptions.value.find((option) => option.targetRunId === draft.targetRunId);
-    selectedTargetRunId.value = existing ? existing.targetRunId : '';
   }
 
   async function onRefreshPeerCandidates(): Promise<void> {
@@ -158,24 +140,6 @@ export function createBindingFlowActions(input: {
     }
   }
 
-  async function onRefreshTargetOptions(): Promise<void> {
-    try {
-      await optionsStore.loadTargetOptions();
-
-      if (!useManualTargetInput.value && selectedTargetRunId.value) {
-        const stillExists = filteredTargetOptions.value.some(
-          (option) => option.targetRunId === selectedTargetRunId.value,
-        );
-        if (!stillExists) {
-          selectedTargetRunId.value = '';
-          draft.targetRunId = '';
-        }
-      }
-    } catch {
-      // Store exposes request errors.
-    }
-  }
-
   async function onSaveBinding(): Promise<void> {
     try {
       const resolvedAccountId =
@@ -188,9 +152,7 @@ export function createBindingFlowActions(input: {
       optionsStore.assertSelectionsFresh({
         draft,
         peerSelectionMode: effectiveManualPeerInput.value ? 'manual' : 'dropdown',
-        targetSelectionMode: useManualTargetInput.value ? 'manual' : 'dropdown',
         selectedPeerKey: selectedPeerKey.value,
-        selectedTargetRunId: selectedTargetRunId.value,
       });
 
       await bindingStore.upsertBinding({
@@ -222,9 +184,7 @@ export function createBindingFlowActions(input: {
   return {
     formatPeerCandidateLabel,
     onTogglePeerInputMode,
-    onToggleTargetInputMode,
     onRefreshPeerCandidates,
-    onRefreshTargetOptions,
     onSaveBinding,
     onDeleteBinding,
     onReloadBindings,

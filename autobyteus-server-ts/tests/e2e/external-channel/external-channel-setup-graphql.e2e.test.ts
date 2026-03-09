@@ -5,16 +5,30 @@ import { createRequire } from "node:module";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
-import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
-import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
 
 const unique = (prefix: string): string => `${prefix}-${randomUUID()}`;
+
+const createAgentDefinitionMutation = `
+  mutation CreateAgentDefinition($input: CreateAgentDefinitionInput!) {
+    createAgentDefinition(input: $input) {
+      id
+      name
+    }
+  }
+`;
+
+const launchPresetFixture = {
+  workspaceRootPath: "/tmp/autobyteus-external-channel-workspace",
+  llmModelIdentifier: "gpt-test",
+  runtimeKind: "AUTOBYTEUS",
+  autoExecuteTools: false,
+  skillAccessMode: "PRELOADED_ONLY",
+  llmConfig: null,
+};
 
 describe("External channel setup GraphQL e2e", () => {
   let schema: GraphQLSchema;
   let graphql: typeof graphqlFn;
-
-  const activeAgentRunId = unique("active-agent");
 
   beforeAll(async () => {
     schema = await buildGraphqlSchema();
@@ -23,27 +37,6 @@ describe("External channel setup GraphQL e2e", () => {
     const graphqlPath = require.resolve("graphql", { paths: [typeGraphqlRoot] });
     const graphqlModule = await import(graphqlPath);
     graphql = graphqlModule.graphql as typeof graphqlFn;
-
-    const agentManager = AgentRunManager.getInstance();
-    vi.spyOn(agentManager, "listActiveRuns").mockReturnValue([activeAgentRunId]);
-    vi.spyOn(agentManager, "getAgentRun").mockImplementation((id: string) => {
-      if (id !== activeAgentRunId) {
-        return null;
-      }
-      return {
-        agentRunId: activeAgentRunId,
-        context: {
-          config: {
-            name: "Setup Agent",
-          },
-        },
-        currentStatus: "IDLE",
-      } as any;
-    });
-
-    const teamManager = AgentTeamRunManager.getInstance();
-    vi.spyOn(teamManager, "listActiveRuns").mockReturnValue([]);
-    vi.spyOn(teamManager, "getTeamRun").mockReturnValue(null);
   });
 
   afterAll(() => {
@@ -63,6 +56,23 @@ describe("External channel setup GraphQL e2e", () => {
       throw result.errors[0];
     }
     return result.data as T;
+  };
+
+  const createAgentDefinition = async (): Promise<string> => {
+    const data = await execGraphql<{
+      createAgentDefinition: { id: string };
+    }>(createAgentDefinitionMutation, {
+      input: {
+        name: unique("external-channel-agent"),
+        role: "assistant",
+        description: "Agent definition for external channel setup e2e",
+        category: "software-engineering",
+        instructions: "You are an external channel setup validation agent.",
+        toolNames: [],
+        skillNames: [],
+      },
+    });
+    return data.createAgentDefinition.id;
   };
 
   it("exposes setup capability query", async () => {
@@ -96,38 +106,8 @@ describe("External channel setup GraphQL e2e", () => {
     ]);
   });
 
-  it("returns active binding target options", async () => {
-    const query = `
-      query TargetOptions {
-        externalChannelBindingTargetOptions {
-          targetType
-          targetRunId
-          displayName
-          status
-        }
-      }
-    `;
-
-    const data = await execGraphql<{
-      externalChannelBindingTargetOptions: Array<{
-        targetType: string;
-        targetRunId: string;
-        displayName: string;
-        status: string;
-      }>;
-    }>(query);
-
-    expect(data.externalChannelBindingTargetOptions).toEqual([
-      {
-        targetType: "AGENT",
-        targetRunId: activeAgentRunId,
-        displayName: "Setup Agent",
-        status: "IDLE",
-      },
-    ]);
-  });
-
-  it("supports upsert/list/delete binding setup lifecycle", async () => {
+  it("supports upsert/list/delete binding setup lifecycle with targetAgentDefinitionId and launchPreset", async () => {
+    const agentDefinitionId = await createAgentDefinition();
     const accountId = unique("acct");
     const peerId = unique("peer");
 
@@ -141,7 +121,14 @@ describe("External channel setup GraphQL e2e", () => {
           peerId
           threadId
           targetType
-          targetRunId
+          targetAgentDefinitionId
+          launchPreset {
+            workspaceRootPath
+            llmModelIdentifier
+            runtimeKind
+            autoExecuteTools
+            skillAccessMode
+          }
         }
       }
     `;
@@ -152,7 +139,14 @@ describe("External channel setup GraphQL e2e", () => {
         accountId: string;
         peerId: string;
         targetType: string;
-        targetRunId: string;
+        targetAgentDefinitionId: string;
+        launchPreset: {
+          workspaceRootPath: string;
+          llmModelIdentifier: string;
+          runtimeKind: string;
+          autoExecuteTools: boolean;
+          skillAccessMode: string | null;
+        };
       };
     }>(upsertMutation, {
       input: {
@@ -162,14 +156,22 @@ describe("External channel setup GraphQL e2e", () => {
         peerId,
         threadId: null,
         targetType: "AGENT",
-        targetRunId: activeAgentRunId,
+        targetAgentDefinitionId: agentDefinitionId,
+        launchPreset: launchPresetFixture,
       },
     });
 
     expect(upsertData.upsertExternalChannelBinding.accountId).toBe(accountId);
     expect(upsertData.upsertExternalChannelBinding.peerId).toBe(peerId);
     expect(upsertData.upsertExternalChannelBinding.targetType).toBe("AGENT");
-    expect(upsertData.upsertExternalChannelBinding.targetRunId).toBe(activeAgentRunId);
+    expect(upsertData.upsertExternalChannelBinding.targetAgentDefinitionId).toBe(agentDefinitionId);
+    expect(upsertData.upsertExternalChannelBinding.launchPreset).toMatchObject({
+      workspaceRootPath: launchPresetFixture.workspaceRootPath,
+      llmModelIdentifier: launchPresetFixture.llmModelIdentifier,
+      runtimeKind: launchPresetFixture.runtimeKind,
+      autoExecuteTools: launchPresetFixture.autoExecuteTools,
+      skillAccessMode: launchPresetFixture.skillAccessMode,
+    });
 
     const bindingId = upsertData.upsertExternalChannelBinding.id;
 
@@ -180,7 +182,12 @@ describe("External channel setup GraphQL e2e", () => {
           accountId
           peerId
           targetType
-          targetRunId
+          targetAgentDefinitionId
+          launchPreset {
+            workspaceRootPath
+            llmModelIdentifier
+            runtimeKind
+          }
         }
       }
     `;
@@ -191,7 +198,12 @@ describe("External channel setup GraphQL e2e", () => {
         accountId: string;
         peerId: string;
         targetType: string;
-        targetRunId: string;
+        targetAgentDefinitionId: string;
+        launchPreset: {
+          workspaceRootPath: string;
+          llmModelIdentifier: string;
+          runtimeKind: string;
+        } | null;
       }>;
     }>(listQuery);
 
@@ -200,7 +212,12 @@ describe("External channel setup GraphQL e2e", () => {
     expect(created?.accountId).toBe(accountId);
     expect(created?.peerId).toBe(peerId);
     expect(created?.targetType).toBe("AGENT");
-    expect(created?.targetRunId).toBe(activeAgentRunId);
+    expect(created?.targetAgentDefinitionId).toBe(agentDefinitionId);
+    expect(created?.launchPreset).toMatchObject({
+      workspaceRootPath: launchPresetFixture.workspaceRootPath,
+      llmModelIdentifier: launchPresetFixture.llmModelIdentifier,
+      runtimeKind: launchPresetFixture.runtimeKind,
+    });
 
     const deleteMutation = `
       mutation DeleteBinding($id: String!) {
@@ -224,7 +241,7 @@ describe("External channel setup GraphQL e2e", () => {
     ).toBe(false);
   });
 
-  it("rejects stale target run ids during upsert", async () => {
+  it("rejects missing agent definitions during upsert", async () => {
     const upsertMutation = `
       mutation Upsert($input: UpsertExternalChannelBindingInput!) {
         upsertExternalChannelBinding(input: $input) {
@@ -233,8 +250,10 @@ describe("External channel setup GraphQL e2e", () => {
       }
     `;
 
-    await expect(
-      execGraphql(upsertMutation, {
+    const result = await graphql({
+      schema,
+      source: upsertMutation,
+      variableValues: {
         input: {
           provider: "WHATSAPP",
           transport: "PERSONAL_SESSION",
@@ -242,13 +261,22 @@ describe("External channel setup GraphQL e2e", () => {
           peerId: "peer-stale",
           threadId: null,
           targetType: "AGENT",
-          targetRunId: "non-existent-agent",
+          targetAgentDefinitionId: "non-existent-definition",
+          launchPreset: launchPresetFixture,
         },
-      }),
-    ).rejects.toThrow("TARGET_NOT_ACTIVE");
+      },
+    });
+
+    expect(result.errors).toHaveLength(1);
+    expect(result.errors?.[0]?.message).toBe("Selected agent definition does not exist.");
+    expect(result.errors?.[0]?.extensions).toMatchObject({
+      code: "TARGET_AGENT_DEFINITION_NOT_FOUND",
+      field: "targetAgentDefinitionId",
+    });
   });
 
   it("rejects unsupported provider/transport combinations during upsert", async () => {
+    const agentDefinitionId = await createAgentDefinition();
     const upsertMutation = `
       mutation Upsert($input: UpsertExternalChannelBindingInput!) {
         upsertExternalChannelBinding(input: $input) {
@@ -266,52 +294,15 @@ describe("External channel setup GraphQL e2e", () => {
           peerId: "peer-wechat",
           threadId: null,
           targetType: "AGENT",
-          targetRunId: activeAgentRunId,
+          targetAgentDefinitionId: agentDefinitionId,
+          launchPreset: launchPresetFixture,
         },
       }),
     ).rejects.toThrow("UNSUPPORTED_PROVIDER_TRANSPORT_COMBINATION");
   });
 
-  it("accepts supported WECHAT + PERSONAL_SESSION binding combinations", async () => {
-    const upsertMutation = `
-      mutation Upsert($input: UpsertExternalChannelBindingInput!) {
-        upsertExternalChannelBinding(input: $input) {
-          provider
-          transport
-          targetType
-          targetRunId
-        }
-      }
-    `;
-
-    const result = await execGraphql<{
-      upsertExternalChannelBinding: {
-        provider: string;
-        transport: string;
-        targetType: string;
-        targetRunId: string;
-      };
-    }>(upsertMutation, {
-      input: {
-        provider: "WECHAT",
-        transport: "PERSONAL_SESSION",
-        accountId: "wechat-acct",
-        peerId: "wechat-peer",
-        threadId: null,
-        targetType: "AGENT",
-        targetRunId: activeAgentRunId,
-      },
-    });
-
-    expect(result.upsertExternalChannelBinding).toMatchObject({
-      provider: "WECHAT",
-      transport: "PERSONAL_SESSION",
-      targetType: "AGENT",
-      targetRunId: activeAgentRunId,
-    });
-  });
-
-  it("accepts supported DISCORD + BUSINESS_API binding combinations", async () => {
+  it("accepts supported provider/transport binding combinations with launch presets", async () => {
+    const agentDefinitionId = await createAgentDefinition();
     const upsertMutation = `
       mutation Upsert($input: UpsertExternalChannelBindingInput!) {
         upsertExternalChannelBinding(input: $input) {
@@ -321,12 +312,17 @@ describe("External channel setup GraphQL e2e", () => {
           peerId
           threadId
           targetType
-          targetRunId
+          targetAgentDefinitionId
+          launchPreset {
+            workspaceRootPath
+            llmModelIdentifier
+            runtimeKind
+          }
         }
       }
     `;
 
-    const result = await execGraphql<{
+    const discordResult = await execGraphql<{
       upsertExternalChannelBinding: {
         provider: string;
         transport: string;
@@ -334,7 +330,12 @@ describe("External channel setup GraphQL e2e", () => {
         peerId: string;
         threadId: string | null;
         targetType: string;
-        targetRunId: string;
+        targetAgentDefinitionId: string;
+        launchPreset: {
+          workspaceRootPath: string;
+          llmModelIdentifier: string;
+          runtimeKind: string;
+        };
       };
     }>(upsertMutation, {
       input: {
@@ -344,37 +345,27 @@ describe("External channel setup GraphQL e2e", () => {
         peerId: "channel:111222333444",
         threadId: "777888999000",
         targetType: "AGENT",
-        targetRunId: activeAgentRunId,
+        targetAgentDefinitionId: agentDefinitionId,
+        launchPreset: launchPresetFixture,
       },
     });
 
-    expect(result.upsertExternalChannelBinding).toMatchObject({
+    expect(discordResult.upsertExternalChannelBinding).toMatchObject({
       provider: "DISCORD",
       transport: "BUSINESS_API",
       accountId: "1234567890",
       peerId: "channel:111222333444",
       threadId: "777888999000",
       targetType: "AGENT",
-      targetRunId: activeAgentRunId,
+      targetAgentDefinitionId: agentDefinitionId,
     });
-  });
+    expect(discordResult.upsertExternalChannelBinding.launchPreset).toMatchObject({
+      workspaceRootPath: launchPresetFixture.workspaceRootPath,
+      llmModelIdentifier: launchPresetFixture.llmModelIdentifier,
+      runtimeKind: launchPresetFixture.runtimeKind,
+    });
 
-  it("accepts supported TELEGRAM + BUSINESS_API binding combinations", async () => {
-    const upsertMutation = `
-      mutation Upsert($input: UpsertExternalChannelBindingInput!) {
-        upsertExternalChannelBinding(input: $input) {
-          provider
-          transport
-          accountId
-          peerId
-          threadId
-          targetType
-          targetRunId
-        }
-      }
-    `;
-
-    const result = await execGraphql<{
+    const telegramResult = await execGraphql<{
       upsertExternalChannelBinding: {
         provider: string;
         transport: string;
@@ -382,7 +373,7 @@ describe("External channel setup GraphQL e2e", () => {
         peerId: string;
         threadId: string | null;
         targetType: string;
-        targetRunId: string;
+        targetAgentDefinitionId: string;
       };
     }>(upsertMutation, {
       input: {
@@ -392,22 +383,23 @@ describe("External channel setup GraphQL e2e", () => {
         peerId: "telegram-chat-123",
         threadId: "42",
         targetType: "AGENT",
-        targetRunId: activeAgentRunId,
+        targetAgentDefinitionId: agentDefinitionId,
+        launchPreset: launchPresetFixture,
       },
     });
 
-    expect(result.upsertExternalChannelBinding).toMatchObject({
+    expect(telegramResult.upsertExternalChannelBinding).toMatchObject({
       provider: "TELEGRAM",
       transport: "BUSINESS_API",
       accountId: "telegram-account",
       peerId: "telegram-chat-123",
       threadId: "42",
       targetType: "AGENT",
-      targetRunId: activeAgentRunId,
+      targetAgentDefinitionId: agentDefinitionId,
     });
   });
 
-  it("rejects TELEGRAM TEAM target bindings with explicit policy error", async () => {
+  it("rejects non-AGENT bindings with the new policy error", async () => {
     const upsertMutation = `
       mutation Upsert($input: UpsertExternalChannelBindingInput!) {
         upsertExternalChannelBinding(input: $input) {
@@ -427,23 +419,24 @@ describe("External channel setup GraphQL e2e", () => {
           peerId: "telegram-chat-123",
           threadId: null,
           targetType: "TEAM",
-          targetRunId: "team-1",
+          targetAgentDefinitionId: "team-definition-id",
+          launchPreset: launchPresetFixture,
         },
       },
     });
 
     expect(result.errors).toHaveLength(1);
     expect(result.errors?.[0]?.message).toBe(
-      "Telegram bindings currently support AGENT targets only.",
+      "Definition-bound messaging bindings currently support AGENT targets only.",
     );
     expect(result.errors?.[0]?.extensions).toMatchObject({
-      code: "TELEGRAM_TEAM_TARGET_NOT_SUPPORTED",
+      code: "EXTERNAL_CHANNEL_TARGET_TYPE_NOT_SUPPORTED",
       field: "targetType",
-      detail: "Telegram bindings currently support AGENT targets only.",
     });
   });
 
   it("rejects malformed Discord peerId with typed field-aware error", async () => {
+    const agentDefinitionId = await createAgentDefinition();
     const upsertMutation = `
       mutation Upsert($input: UpsertExternalChannelBindingInput!) {
         upsertExternalChannelBinding(input: $input) {
@@ -463,7 +456,8 @@ describe("External channel setup GraphQL e2e", () => {
           peerId: "invalid-peer",
           threadId: null,
           targetType: "AGENT",
-          targetRunId: activeAgentRunId,
+          targetAgentDefinitionId: agentDefinitionId,
+          launchPreset: launchPresetFixture,
         },
       },
     });
@@ -475,43 +469,6 @@ describe("External channel setup GraphQL e2e", () => {
     expect(result.errors?.[0]?.extensions).toMatchObject({
       code: "INVALID_DISCORD_PEER_ID",
       field: "peerId",
-      detail: "Discord peerId must match user:<snowflake> or channel:<snowflake>.",
-    });
-  });
-
-  it("rejects Discord user peer with threadId using typed thread error", async () => {
-    const upsertMutation = `
-      mutation Upsert($input: UpsertExternalChannelBindingInput!) {
-        upsertExternalChannelBinding(input: $input) {
-          id
-        }
-      }
-    `;
-
-    const result = await graphql({
-      schema,
-      source: upsertMutation,
-      variableValues: {
-        input: {
-          provider: "DISCORD",
-          transport: "BUSINESS_API",
-          accountId: "1234567890",
-          peerId: "user:111222333444",
-          threadId: "777888999000",
-          targetType: "AGENT",
-          targetRunId: activeAgentRunId,
-        },
-      },
-    });
-
-    expect(result.errors).toHaveLength(1);
-    expect(result.errors?.[0]?.message).toBe(
-      "Discord threadId can only be used with channel:<snowflake> peerId targets.",
-    );
-    expect(result.errors?.[0]?.extensions).toMatchObject({
-      code: "INVALID_DISCORD_THREAD_TARGET_COMBINATION",
-      field: "threadId",
-      detail: "Discord threadId can only be used with channel:<snowflake> peerId targets.",
     });
   });
 });

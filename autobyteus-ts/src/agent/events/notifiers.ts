@@ -3,6 +3,8 @@ import { EventType } from '../../events/event-types.js';
 import { AgentStatus } from '../status/status-enum.js';
 import type { ChunkResponse, CompleteResponse } from '../../llm/utils/response-types.js';
 
+const ENV_VERBOSE_AGENT_EVENT_LOGS = 'AUTOBYTEUS_VERBOSE_AGENT_EVENT_LOGS';
+
 export class AgentExternalEventNotifier extends EventEmitter {
   agentId: string;
 
@@ -26,6 +28,9 @@ export class AgentExternalEventNotifier extends EventEmitter {
       `emitted ${eventType}. Kwarg keys for emit: ${Object.keys(emitKwargs)}`;
 
     if ([EventType.AGENT_DATA_ASSISTANT_CHUNK, EventType.AGENT_DATA_SEGMENT_EVENT].includes(eventType)) {
+      if (!this.shouldLogStreamingEventDetails()) {
+        return;
+      }
       const summary = this.summarizePayload(eventType, payloadContent);
       if (summary) {
         console.debug(`${logMessage} | ${summary}`);
@@ -35,6 +40,16 @@ export class AgentExternalEventNotifier extends EventEmitter {
     } else {
       console.info(logMessage);
     }
+  }
+
+  private shouldLogStreamingEventDetails(): boolean {
+    const rawValue = typeof process !== 'undefined' ? process.env?.[ENV_VERBOSE_AGENT_EVENT_LOGS] : undefined;
+    if (!rawValue) {
+      return false;
+    }
+
+    const normalized = rawValue.trim().toLowerCase();
+    return ['1', 'true', 'yes', 'on'].includes(normalized);
   }
 
   private summarizePayload(eventType: EventType, payloadContent?: any): string | null {

@@ -5,14 +5,12 @@ import type { useMessagingProviderScopeStore } from '~/stores/messagingProviderS
 import type { useGatewaySessionSetupStore } from '~/stores/gatewaySessionSetupStore';
 import type {
   ExternalChannelBindingDraft,
-  ExternalChannelBindingTargetOption,
   ExternalChannelBindingTargetType,
 } from '~/types/messaging';
 
 export function useBindingFlowPolicyState(input: {
   draft: ExternalChannelBindingDraft;
   useManualPeerInput: Ref<boolean>;
-  useManualTargetInput: Ref<boolean>;
   bindingStore: ReturnType<typeof useMessagingChannelBindingSetupStore>;
   optionsStore: ReturnType<typeof useMessagingChannelBindingOptionsStore>;
   providerScopeStore: ReturnType<typeof useMessagingProviderScopeStore>;
@@ -22,17 +20,12 @@ export function useBindingFlowPolicyState(input: {
   const {
     draft,
     useManualPeerInput,
-    useManualTargetInput,
     bindingStore,
     optionsStore,
     providerScopeStore,
     gatewayStore,
     scopedAccountId,
   } = input;
-
-  const filteredTargetOptions = computed<ExternalChannelBindingTargetOption[]>(() =>
-    optionsStore.targetOptionsByType(draft.targetType),
-  );
 
   const supportsPeerDiscovery = computed(() => {
     if (
@@ -87,18 +80,9 @@ export function useBindingFlowPolicyState(input: {
       optionsStore.peerCandidates.length === 0,
   );
 
-  const showTargetOptionsInstruction = computed(
-    () =>
-      !useManualTargetInput.value &&
-      !optionsStore.isTargetOptionsLoading &&
-      filteredTargetOptions.value.length === 0,
-  );
-
   const showDiscordIdentityHint = computed(() => draft.provider === 'DISCORD');
   const showTelegramAgentOnlyHint = computed(() => draft.provider === 'TELEGRAM');
-  const allowedTargetTypes = computed<ExternalChannelBindingTargetType[]>(() =>
-    draft.provider === 'TELEGRAM' ? ['AGENT'] : ['AGENT', 'TEAM'],
-  );
+  const allowedTargetTypes = computed<ExternalChannelBindingTargetType[]>(() => ['AGENT']);
 
   const scopedBindings = computed(() =>
     bindingStore.bindingsForScope({
@@ -109,13 +93,11 @@ export function useBindingFlowPolicyState(input: {
   );
 
   return {
-    filteredTargetOptions,
     supportsPeerDiscovery,
     effectiveManualPeerInput,
     canDiscoverPeers,
     peerDiscoveryProviderLabel,
     showPeerDiscoveryInstruction,
-    showTargetOptionsInstruction,
     showDiscordIdentityHint,
     showTelegramAgentOnlyHint,
     allowedTargetTypes,

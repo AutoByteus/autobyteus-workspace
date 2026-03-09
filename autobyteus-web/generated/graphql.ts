@@ -16,19 +16,17 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  /** DateTime scalar supporting ISO strings and date-only YYYY-MM-DD values */
   DateTime: { input: any; output: any; }
+  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: { input: any; output: any; }
+  /** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSONObject: { input: any; output: any; }
 };
 
 export type ActivateSkillVersionInput = {
   skillName: Scalars['String']['input'];
   version: Scalars['String']['input'];
-};
-
-export type AddNewPromptRevisionInput = {
-  id: Scalars['String']['input'];
-  newPromptContent: Scalars['String']['input'];
 };
 
 export type AgentArtifact = {
@@ -45,17 +43,16 @@ export type AgentArtifact = {
 export type AgentDefinition = {
   __typename?: 'AgentDefinition';
   avatarUrl?: Maybe<Scalars['String']['output']>;
+  category?: Maybe<Scalars['String']['output']>;
   description: Scalars['String']['output'];
   id: Scalars['String']['output'];
   inputProcessorNames: Array<Scalars['String']['output']>;
+  instructions: Scalars['String']['output'];
   lifecycleProcessorNames: Array<Scalars['String']['output']>;
   llmResponseProcessorNames: Array<Scalars['String']['output']>;
   name: Scalars['String']['output'];
-  prompts: Array<Prompt>;
-  role: Scalars['String']['output'];
+  role?: Maybe<Scalars['String']['output']>;
   skillNames: Array<Scalars['String']['output']>;
-  systemPromptCategory?: Maybe<Scalars['String']['output']>;
-  systemPromptName?: Maybe<Scalars['String']['output']>;
   systemPromptProcessorNames: Array<Scalars['String']['output']>;
   toolExecutionResultProcessorNames: Array<Scalars['String']['output']>;
   toolInvocationPreprocessorNames: Array<Scalars['String']['output']>;
@@ -85,12 +82,13 @@ export type AgentRun = {
 export type AgentTeamDefinition = {
   __typename?: 'AgentTeamDefinition';
   avatarUrl?: Maybe<Scalars['String']['output']>;
+  category?: Maybe<Scalars['String']['output']>;
   coordinatorMemberName: Scalars['String']['output'];
   description: Scalars['String']['output'];
   id: Scalars['String']['output'];
+  instructions: Scalars['String']['output'];
   name: Scalars['String']['output'];
   nodes: Array<TeamMember>;
-  role?: Maybe<Scalars['String']['output']>;
 };
 
 export type AgentTeamRun = {
@@ -166,7 +164,8 @@ export type ContinueRunInput = {
   llmConfig?: InputMaybe<Scalars['JSON']['input']>;
   llmModelIdentifier?: InputMaybe<Scalars['String']['input']>;
   runId?: InputMaybe<Scalars['String']['input']>;
-  skillAccessMode?: InputMaybe<SkillAccessModeEnum>;
+  runtimeKind?: InputMaybe<Scalars['String']['input']>;
+  skillAccessMode?: InputMaybe<ExternalChannelSkillAccessModeEnum>;
   userInput: AgentUserInput;
   workspaceId?: InputMaybe<Scalars['String']['input']>;
   workspaceRootPath?: InputMaybe<Scalars['String']['input']>;
@@ -182,15 +181,15 @@ export type ContinueRunMutationResult = {
 
 export type CreateAgentDefinitionInput = {
   avatarUrl?: InputMaybe<Scalars['String']['input']>;
+  category?: InputMaybe<Scalars['String']['input']>;
   description: Scalars['String']['input'];
   inputProcessorNames?: InputMaybe<Array<Scalars['String']['input']>>;
+  instructions: Scalars['String']['input'];
   lifecycleProcessorNames?: InputMaybe<Array<Scalars['String']['input']>>;
   llmResponseProcessorNames?: InputMaybe<Array<Scalars['String']['input']>>;
   name: Scalars['String']['input'];
-  role: Scalars['String']['input'];
+  role?: InputMaybe<Scalars['String']['input']>;
   skillNames?: InputMaybe<Array<Scalars['String']['input']>>;
-  systemPromptCategory: Scalars['String']['input'];
-  systemPromptName: Scalars['String']['input'];
   systemPromptProcessorNames?: InputMaybe<Array<Scalars['String']['input']>>;
   toolExecutionResultProcessorNames?: InputMaybe<Array<Scalars['String']['input']>>;
   toolInvocationPreprocessorNames?: InputMaybe<Array<Scalars['String']['input']>>;
@@ -199,11 +198,12 @@ export type CreateAgentDefinitionInput = {
 
 export type CreateAgentTeamDefinitionInput = {
   avatarUrl?: InputMaybe<Scalars['String']['input']>;
+  category?: InputMaybe<Scalars['String']['input']>;
   coordinatorMemberName: Scalars['String']['input'];
   description: Scalars['String']['input'];
+  instructions: Scalars['String']['input'];
   name: Scalars['String']['input'];
   nodes: Array<TeamMemberInput>;
-  role?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type CreateAgentTeamRunInput = {
@@ -220,14 +220,6 @@ export type CreateAgentTeamRunResult = {
   teamRunId?: Maybe<Scalars['String']['output']>;
 };
 
-export type CreatePromptInput = {
-  category: Scalars['String']['input'];
-  description?: InputMaybe<Scalars['String']['input']>;
-  name: Scalars['String']['input'];
-  promptContent: Scalars['String']['input'];
-  suitableForModels?: InputMaybe<Scalars['String']['input']>;
-};
-
 export type CreateSkillInput = {
   content: Scalars['String']['input'];
   description: Scalars['String']['input'];
@@ -236,6 +228,14 @@ export type CreateSkillInput = {
 
 export type CreateWorkspaceInput = {
   rootPath: Scalars['String']['input'];
+};
+
+export type DefinitionSource = {
+  __typename?: 'DefinitionSource';
+  agentCount: Scalars['Int']['output'];
+  agentTeamCount: Scalars['Int']['output'];
+  isDefault: Scalars['Boolean']['output'];
+  path: Scalars['String']['output'];
 };
 
 export type DeleteAgentDefinitionResult = {
@@ -252,16 +252,6 @@ export type DeleteAgentTeamDefinitionResult = {
 
 export type DeleteMcpServerResult = {
   __typename?: 'DeleteMcpServerResult';
-  message: Scalars['String']['output'];
-  success: Scalars['Boolean']['output'];
-};
-
-export type DeletePromptInput = {
-  id: Scalars['String']['input'];
-};
-
-export type DeletePromptResult = {
-  __typename?: 'DeletePromptResult';
   message: Scalars['String']['output'];
   success: Scalars['Boolean']['output'];
 };
@@ -289,6 +279,11 @@ export type DiscoverAndRegisterMcpServerToolsResult = {
   discoveredTools: Array<ToolDefinitionDetail>;
   message: Scalars['String']['output'];
   success: Scalars['Boolean']['output'];
+};
+
+export type DuplicateAgentDefinitionInput = {
+  newName: Scalars['String']['input'];
+  sourceId: Scalars['String']['input'];
 };
 
 export type EnableSkillVersioningInput = {
@@ -319,21 +314,14 @@ export type ExternalChannelBindingGql = {
   __typename?: 'ExternalChannelBindingGql';
   accountId: Scalars['String']['output'];
   id: Scalars['String']['output'];
+  launchPreset?: Maybe<ExternalChannelLaunchPresetGql>;
   peerId: Scalars['String']['output'];
   provider: Scalars['String']['output'];
-  targetId: Scalars['String']['output'];
+  targetAgentDefinitionId?: Maybe<Scalars['String']['output']>;
   targetType: Scalars['String']['output'];
   threadId?: Maybe<Scalars['String']['output']>;
   transport: Scalars['String']['output'];
   updatedAt: Scalars['DateTime']['output'];
-};
-
-export type ExternalChannelBindingTargetOptionGql = {
-  __typename?: 'ExternalChannelBindingTargetOptionGql';
-  displayName: Scalars['String']['output'];
-  status: Scalars['String']['output'];
-  targetId: Scalars['String']['output'];
-  targetType: Scalars['String']['output'];
 };
 
 export type ExternalChannelCapabilities = {
@@ -342,6 +330,31 @@ export type ExternalChannelCapabilities = {
   bindingCrudEnabled: Scalars['Boolean']['output'];
   reason?: Maybe<Scalars['String']['output']>;
 };
+
+export type ExternalChannelLaunchPresetGql = {
+  __typename?: 'ExternalChannelLaunchPresetGql';
+  autoExecuteTools: Scalars['Boolean']['output'];
+  llmConfig?: Maybe<Scalars['JSONObject']['output']>;
+  llmModelIdentifier: Scalars['String']['output'];
+  runtimeKind: Scalars['String']['output'];
+  skillAccessMode?: Maybe<ExternalChannelSkillAccessModeEnum>;
+  workspaceRootPath: Scalars['String']['output'];
+};
+
+export type ExternalChannelLaunchPresetInput = {
+  autoExecuteTools?: InputMaybe<Scalars['Boolean']['input']>;
+  llmConfig?: InputMaybe<Scalars['JSONObject']['input']>;
+  llmModelIdentifier: Scalars['String']['input'];
+  runtimeKind?: InputMaybe<Scalars['String']['input']>;
+  skillAccessMode?: InputMaybe<ExternalChannelSkillAccessModeEnum>;
+  workspaceRootPath: Scalars['String']['input'];
+};
+
+export enum ExternalChannelSkillAccessModeEnum {
+  GlobalDiscovery = 'GLOBAL_DISCOVERY',
+  None = 'NONE',
+  PreloadedOnly = 'PRELOADED_ONLY'
+}
 
 export type GeminiSetupConfig = {
   __typename?: 'GeminiSetupConfig';
@@ -397,8 +410,50 @@ export type ImportNodeSyncSummary = {
   updated: Scalars['Float']['output'];
 };
 
-export type MarkActivePromptInput = {
-  id: Scalars['String']['input'];
+export type ManagedMessagingGatewayPeerCandidateListObject = {
+  __typename?: 'ManagedMessagingGatewayPeerCandidateListObject';
+  accountId?: Maybe<Scalars['String']['output']>;
+  items: Array<ManagedMessagingGatewayPeerCandidateObject>;
+  updatedAt: Scalars['String']['output'];
+};
+
+export type ManagedMessagingGatewayPeerCandidateObject = {
+  __typename?: 'ManagedMessagingGatewayPeerCandidateObject';
+  displayName?: Maybe<Scalars['String']['output']>;
+  lastMessageAt: Scalars['String']['output'];
+  peerId: Scalars['String']['output'];
+  peerType: Scalars['String']['output'];
+  threadId?: Maybe<Scalars['String']['output']>;
+};
+
+export type ManagedMessagingGatewayStatusObject = {
+  __typename?: 'ManagedMessagingGatewayStatusObject';
+  activeVersion?: Maybe<Scalars['String']['output']>;
+  bindHost?: Maybe<Scalars['String']['output']>;
+  bindPort?: Maybe<Scalars['Int']['output']>;
+  desiredVersion?: Maybe<Scalars['String']['output']>;
+  diagnostics: Scalars['JSONObject']['output'];
+  enabled: Scalars['Boolean']['output'];
+  excludedProviders: Array<Scalars['String']['output']>;
+  installedVersions: Array<Scalars['String']['output']>;
+  lastError?: Maybe<Scalars['String']['output']>;
+  lifecycleState: Scalars['String']['output'];
+  message?: Maybe<Scalars['String']['output']>;
+  pid?: Maybe<Scalars['Int']['output']>;
+  providerConfig: Scalars['JSONObject']['output'];
+  providerStatusByProvider: Scalars['JSONObject']['output'];
+  releaseTag?: Maybe<Scalars['String']['output']>;
+  runtimeReliabilityStatus?: Maybe<Scalars['JSONObject']['output']>;
+  runtimeRunning: Scalars['Boolean']['output'];
+  supported: Scalars['Boolean']['output'];
+  supportedProviders: Array<Scalars['String']['output']>;
+};
+
+export type ManagedMessagingGatewayWeComAccountObject = {
+  __typename?: 'ManagedMessagingGatewayWeComAccountObject';
+  accountId: Scalars['String']['output'];
+  label: Scalars['String']['output'];
+  mode: Scalars['String']['output'];
 };
 
 export type McpServerConfigUnion = StdioMcpServerConfig | StreamableHttpMcpServerConfig;
@@ -488,7 +543,7 @@ export type ModelDetail = {
 export type Mutation = {
   __typename?: 'Mutation';
   activateSkillVersion: SkillVersion;
-  addNewPromptRevision: Prompt;
+  addDefinitionSource: Array<DefinitionSource>;
   addSkillSource: Array<SkillSource>;
   approveToolInvocation: ApproveToolInvocationResult;
   configureMcpServer: ConfigureMcpServerResult;
@@ -497,7 +552,6 @@ export type Mutation = {
   createAgentTeamDefinition: AgentTeamDefinition;
   createAgentTeamRun: CreateAgentTeamRunResult;
   createFileOrFolder: Scalars['String']['output'];
-  createPrompt: Prompt;
   createSkill: Skill;
   createWorkspace: WorkspaceInfo;
   deleteAgentDefinition: DeleteAgentDefinitionResult;
@@ -505,27 +559,30 @@ export type Mutation = {
   deleteExternalChannelBinding: Scalars['Boolean']['output'];
   deleteFileOrFolder: Scalars['String']['output'];
   deleteMcpServer: DeleteMcpServerResult;
-  deletePrompt: DeletePromptResult;
   deleteRunHistory: DeleteRunHistoryMutationResult;
   deleteServerSetting: Scalars['String']['output'];
   deleteSkill: DeleteSkillResult;
   deleteSkillFile: Scalars['Boolean']['output'];
   deleteTeamRunHistory: DeleteTeamRunHistoryMutationResult;
+  disableManagedMessagingGateway: ManagedMessagingGatewayStatusObject;
   disableSkill: Skill;
   discoverAndRegisterMcpServerTools: DiscoverAndRegisterMcpServerToolsResult;
+  duplicateAgentDefinition: AgentDefinition;
+  enableManagedMessagingGateway: ManagedMessagingGatewayStatusObject;
   enableSkill: Skill;
   enableSkillVersioning: SkillVersion;
   importMcpServerConfigs: ImportMcpServerConfigsResult;
   importSyncBundle: ImportNodeSyncBundleResult;
-  markActivePrompt: Prompt;
   moveFileOrFolder: Scalars['String']['output'];
   reloadLlmModels: Scalars['String']['output'];
   reloadLlmProviderModels: Scalars['String']['output'];
   reloadToolSchema: ReloadToolSchemaResult;
+  removeDefinitionSource: Array<DefinitionSource>;
   removeSkillSource: Array<SkillSource>;
   renameFileOrFolder: Scalars['String']['output'];
   runApplication: Scalars['JSONObject']['output'];
   runNodeSync: RunNodeSyncResult;
+  saveManagedMessagingGatewayProviderConfig: ManagedMessagingGatewayStatusObject;
   sendAgentUserInput: SendAgentUserInputResult;
   sendMessageToTeam: SendMessageToTeamResult;
   setGeminiSetupConfig: Scalars['String']['output'];
@@ -535,7 +592,7 @@ export type Mutation = {
   terminateAgentTeamRun: TerminateAgentTeamRunResult;
   updateAgentDefinition: AgentDefinition;
   updateAgentTeamDefinition: AgentTeamDefinition;
-  updatePrompt: Prompt;
+  updateManagedMessagingGateway: ManagedMessagingGatewayStatusObject;
   updateServerSetting: Scalars['String']['output'];
   updateSkill: Skill;
   uploadSkillFile: Scalars['Boolean']['output'];
@@ -549,8 +606,8 @@ export type MutationActivateSkillVersionArgs = {
 };
 
 
-export type MutationAddNewPromptRevisionArgs = {
-  input: AddNewPromptRevisionInput;
+export type MutationAddDefinitionSourceArgs = {
+  path: Scalars['String']['input'];
 };
 
 
@@ -596,11 +653,6 @@ export type MutationCreateFileOrFolderArgs = {
 };
 
 
-export type MutationCreatePromptArgs = {
-  input: CreatePromptInput;
-};
-
-
 export type MutationCreateSkillArgs = {
   input: CreateSkillInput;
 };
@@ -634,11 +686,6 @@ export type MutationDeleteFileOrFolderArgs = {
 
 export type MutationDeleteMcpServerArgs = {
   serverId: Scalars['String']['input'];
-};
-
-
-export type MutationDeletePromptArgs = {
-  input: DeletePromptInput;
 };
 
 
@@ -678,6 +725,11 @@ export type MutationDiscoverAndRegisterMcpServerToolsArgs = {
 };
 
 
+export type MutationDuplicateAgentDefinitionArgs = {
+  input: DuplicateAgentDefinitionInput;
+};
+
+
 export type MutationEnableSkillArgs = {
   name: Scalars['String']['input'];
 };
@@ -698,15 +750,15 @@ export type MutationImportSyncBundleArgs = {
 };
 
 
-export type MutationMarkActivePromptArgs = {
-  input: MarkActivePromptInput;
-};
-
-
 export type MutationMoveFileOrFolderArgs = {
   destinationPath: Scalars['String']['input'];
   sourcePath: Scalars['String']['input'];
   workspaceId: Scalars['String']['input'];
+};
+
+
+export type MutationReloadLlmModelsArgs = {
+  runtimeKind?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -717,6 +769,11 @@ export type MutationReloadLlmProviderModelsArgs = {
 
 export type MutationReloadToolSchemaArgs = {
   name: Scalars['String']['input'];
+};
+
+
+export type MutationRemoveDefinitionSourceArgs = {
+  path: Scalars['String']['input'];
 };
 
 
@@ -740,6 +797,11 @@ export type MutationRunApplicationArgs = {
 
 export type MutationRunNodeSyncArgs = {
   input: RunNodeSyncInput;
+};
+
+
+export type MutationSaveManagedMessagingGatewayProviderConfigArgs = {
+  input: Scalars['JSONObject']['input'];
 };
 
 
@@ -796,11 +858,6 @@ export type MutationUpdateAgentDefinitionArgs = {
 
 export type MutationUpdateAgentTeamDefinitionArgs = {
   input: UpdateAgentTeamDefinitionInput;
-};
-
-
-export type MutationUpdatePromptArgs = {
-  input: UpdatePromptInput;
 };
 
 
@@ -880,33 +937,6 @@ export type NodeSyncTargetRunResult = {
   targetNodeId: Scalars['String']['output'];
 };
 
-export type Prompt = {
-  __typename?: 'Prompt';
-  category: Scalars['String']['output'];
-  createdAt: Scalars['String']['output'];
-  description?: Maybe<Scalars['String']['output']>;
-  id: Scalars['String']['output'];
-  isActive: Scalars['Boolean']['output'];
-  name: Scalars['String']['output'];
-  parentPromptId?: Maybe<Scalars['String']['output']>;
-  promptContent: Scalars['String']['output'];
-  suitableForModels?: Maybe<Scalars['String']['output']>;
-  updatedAt: Scalars['String']['output'];
-  version: Scalars['Int']['output'];
-};
-
-export type PromptCategory = {
-  __typename?: 'PromptCategory';
-  category: Scalars['String']['output'];
-  names: Array<Scalars['String']['output']>;
-};
-
-export type PromptDetails = {
-  __typename?: 'PromptDetails';
-  description?: Maybe<Scalars['String']['output']>;
-  promptContent: Scalars['String']['output'];
-};
-
 export type ProviderWithModels = {
   __typename?: 'ProviderWithModels';
   models: Array<ModelDetail>;
@@ -924,6 +954,8 @@ export type Query = {
   agentTeamDefinitions: Array<AgentTeamDefinition>;
   agentTeamRun?: Maybe<AgentTeamRun>;
   agentTeamRuns: Array<AgentTeamRun>;
+  agentTeamTemplates: Array<AgentTeamDefinition>;
+  agentTemplates: Array<AgentDefinition>;
   availableAudioProvidersWithModels: Array<ProviderWithModels>;
   availableImageProvidersWithModels: Array<ProviderWithModels>;
   availableLlmProvidersWithModels: Array<ProviderWithModels>;
@@ -933,10 +965,9 @@ export type Query = {
   availableOptionalSystemPromptProcessorNames: Array<Scalars['String']['output']>;
   availableOptionalToolExecutionResultProcessorNames: Array<Scalars['String']['output']>;
   availableOptionalToolInvocationPreprocessorNames: Array<Scalars['String']['output']>;
-  availablePromptCategories: Array<PromptCategory>;
   availableToolNames: Array<Scalars['String']['output']>;
+  definitionSources: Array<DefinitionSource>;
   exportSyncBundle: ExportNodeSyncBundleResult;
-  externalChannelBindingTargetOptions: Array<ExternalChannelBindingTargetOptionGql>;
   externalChannelBindings: Array<ExternalChannelBindingGql>;
   externalChannelCapabilities: ExternalChannelCapabilities;
   fileContent: Scalars['String']['output'];
@@ -948,6 +979,7 @@ export type Query = {
   getRunResumeConfig: RunResumeConfigPayload;
   getSearchConfig: SearchConfig;
   getServerSettings: Array<ServerSetting>;
+  getTeamMemberRunMemoryView: AgentMemoryView;
   getTeamMemberRunProjection: TeamMemberRunProjectionPayload;
   getTeamRunResumeConfig: TeamRunResumeConfigPayload;
   health: HealthStatus;
@@ -955,11 +987,13 @@ export type Query = {
   listRunHistory: Array<RunHistoryWorkspaceGroupObject>;
   listRunMemorySnapshots: MemorySnapshotPage;
   listTeamRunHistory: Array<TeamRunHistoryItemObject>;
+  listTeamRunMemorySnapshots: TeamRunMemorySnapshotPage;
+  managedMessagingGatewayPeerCandidates: ManagedMessagingGatewayPeerCandidateListObject;
+  managedMessagingGatewayStatus: ManagedMessagingGatewayStatusObject;
+  managedMessagingGatewayWeComAccounts: Array<ManagedMessagingGatewayWeComAccountObject>;
   mcpServers: Array<McpServerConfigUnion>;
   previewMcpServerTools: Array<ToolDefinitionDetail>;
-  promptDetails?: Maybe<Prompt>;
-  promptDetailsByNameAndCategory?: Maybe<PromptDetails>;
-  prompts: Array<Prompt>;
+  runtimeCapabilities: Array<RuntimeCapabilityObject>;
   searchFiles: Array<Scalars['String']['output']>;
   skill?: Maybe<Skill>;
   skillFileContent?: Maybe<Scalars['String']['output']>;
@@ -998,6 +1032,21 @@ export type QueryAgentTeamDefinitionArgs = {
 
 export type QueryAgentTeamRunArgs = {
   id: Scalars['String']['input'];
+};
+
+
+export type QueryAvailableAudioProvidersWithModelsArgs = {
+  runtimeKind?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryAvailableImageProvidersWithModelsArgs = {
+  runtimeKind?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryAvailableLlmProvidersWithModelsArgs = {
+  runtimeKind?: InputMaybe<Scalars['String']['input']>;
 };
 
 
@@ -1046,6 +1095,20 @@ export type QueryGetRunResumeConfigArgs = {
 };
 
 
+export type QueryGetTeamMemberRunMemoryViewArgs = {
+  conversationLimit?: InputMaybe<Scalars['Int']['input']>;
+  includeArchive?: Scalars['Boolean']['input'];
+  includeConversation?: Scalars['Boolean']['input'];
+  includeEpisodic?: Scalars['Boolean']['input'];
+  includeRawTraces?: Scalars['Boolean']['input'];
+  includeSemantic?: Scalars['Boolean']['input'];
+  includeWorkingContext?: Scalars['Boolean']['input'];
+  memberRunId: Scalars['String']['input'];
+  rawTraceLimit?: InputMaybe<Scalars['Int']['input']>;
+  teamRunId: Scalars['String']['input'];
+};
+
+
 export type QueryGetTeamMemberRunProjectionArgs = {
   memberRouteKey: Scalars['String']['input'];
   teamRunId: Scalars['String']['input'];
@@ -1069,24 +1132,22 @@ export type QueryListRunMemorySnapshotsArgs = {
 };
 
 
+export type QueryListTeamRunMemorySnapshotsArgs = {
+  page?: Scalars['Int']['input'];
+  pageSize?: Scalars['Int']['input'];
+  search?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryManagedMessagingGatewayPeerCandidatesArgs = {
+  includeGroups?: Scalars['Boolean']['input'];
+  limit?: Scalars['Int']['input'];
+  provider: Scalars['String']['input'];
+};
+
+
 export type QueryPreviewMcpServerToolsArgs = {
   input: McpServerInput;
-};
-
-
-export type QueryPromptDetailsArgs = {
-  id: Scalars['String']['input'];
-};
-
-
-export type QueryPromptDetailsByNameAndCategoryArgs = {
-  category: Scalars['String']['input'];
-  name: Scalars['String']['input'];
-};
-
-
-export type QueryPromptsArgs = {
-  isActive?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 
@@ -1158,6 +1219,7 @@ export type RunEditableFieldFlagsObject = {
   autoExecuteTools: Scalars['Boolean']['output'];
   llmConfig: Scalars['Boolean']['output'];
   llmModelIdentifier: Scalars['Boolean']['output'];
+  runtimeKind: Scalars['Boolean']['output'];
   skillAccessMode: Scalars['Boolean']['output'];
   workspaceRootPath: Scalars['Boolean']['output'];
 };
@@ -1191,7 +1253,9 @@ export type RunManifestConfigObject = {
   autoExecuteTools: Scalars['Boolean']['output'];
   llmConfig?: Maybe<Scalars['JSON']['output']>;
   llmModelIdentifier: Scalars['String']['output'];
-  skillAccessMode?: Maybe<SkillAccessModeEnum>;
+  runtimeKind: Scalars['String']['output'];
+  runtimeReference: RunRuntimeReferenceObject;
+  skillAccessMode?: Maybe<ExternalChannelSkillAccessModeEnum>;
   workspaceRootPath: Scalars['String']['output'];
 };
 
@@ -1229,6 +1293,21 @@ export type RunResumeConfigPayload = {
   runId: Scalars['String']['output'];
 };
 
+export type RunRuntimeReferenceObject = {
+  __typename?: 'RunRuntimeReferenceObject';
+  metadata?: Maybe<Scalars['JSON']['output']>;
+  runtimeKind: Scalars['String']['output'];
+  sessionId?: Maybe<Scalars['String']['output']>;
+  threadId?: Maybe<Scalars['String']['output']>;
+};
+
+export type RuntimeCapabilityObject = {
+  __typename?: 'RuntimeCapabilityObject';
+  enabled: Scalars['Boolean']['output'];
+  reason?: Maybe<Scalars['String']['output']>;
+  runtimeKind: Scalars['String']['output'];
+};
+
 export type SearchConfig = {
   __typename?: 'SearchConfig';
   googleCseApiKeyConfigured: Scalars['Boolean']['output'];
@@ -1246,7 +1325,8 @@ export type SendAgentUserInputInput = {
   autoExecuteTools?: InputMaybe<Scalars['Boolean']['input']>;
   llmConfig?: InputMaybe<Scalars['JSON']['input']>;
   llmModelIdentifier?: InputMaybe<Scalars['String']['input']>;
-  skillAccessMode?: InputMaybe<SkillAccessModeEnum>;
+  runtimeKind?: InputMaybe<Scalars['String']['input']>;
+  skillAccessMode?: InputMaybe<ExternalChannelSkillAccessModeEnum>;
   useXmlToolFormat?: InputMaybe<Scalars['Boolean']['input']>;
   userInput: AgentUserInput;
   workspaceId?: InputMaybe<Scalars['String']['input']>;
@@ -1298,12 +1378,6 @@ export type Skill = {
   rootPath: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
 };
-
-export enum SkillAccessModeEnum {
-  GlobalDiscovery = 'GLOBAL_DISCOVERY',
-  None = 'NONE',
-  PreloadedOnly = 'PRELOADED_ONLY'
-}
 
 export type SkillDiff = {
   __typename?: 'SkillDiff';
@@ -1372,8 +1446,7 @@ export enum SyncConflictPolicyEnum {
 export enum SyncEntityTypeEnum {
   AgentDefinition = 'AGENT_DEFINITION',
   AgentTeamDefinition = 'AGENT_TEAM_DEFINITION',
-  McpServerConfiguration = 'MCP_SERVER_CONFIGURATION',
-  Prompt = 'PROMPT'
+  McpServerConfiguration = 'MCP_SERVER_CONFIGURATION'
 }
 
 export enum SyncTombstonePolicyEnum {
@@ -1388,8 +1461,8 @@ export enum TaskNotificationModeEnum {
 export type TeamMember = {
   __typename?: 'TeamMember';
   memberName: Scalars['String']['output'];
-  referenceId: Scalars['String']['output'];
-  referenceType: TeamMemberType;
+  ref: Scalars['String']['output'];
+  refType: TeamMemberType;
 };
 
 export type TeamMemberConfigInput = {
@@ -1407,8 +1480,21 @@ export type TeamMemberConfigInput = {
 
 export type TeamMemberInput = {
   memberName: Scalars['String']['input'];
-  referenceId: Scalars['String']['input'];
-  referenceType: TeamMemberType;
+  ref: Scalars['String']['input'];
+  refType: TeamMemberType;
+};
+
+export type TeamMemberMemorySnapshotSummary = {
+  __typename?: 'TeamMemberMemorySnapshotSummary';
+  hasEpisodic: Scalars['Boolean']['output'];
+  hasRawArchive: Scalars['Boolean']['output'];
+  hasRawTraces: Scalars['Boolean']['output'];
+  hasSemantic: Scalars['Boolean']['output'];
+  hasWorkingContext: Scalars['Boolean']['output'];
+  lastUpdatedAt?: Maybe<Scalars['String']['output']>;
+  memberName: Scalars['String']['output'];
+  memberRouteKey: Scalars['String']['output'];
+  memberRunId: Scalars['String']['output'];
 };
 
 export type TeamMemberRunProjectionPayload = {
@@ -1446,6 +1532,24 @@ export type TeamRunMemberHistoryObject = {
   runtimeKind: Scalars['String']['output'];
   runtimeReference?: Maybe<Scalars['JSON']['output']>;
   workspaceRootPath?: Maybe<Scalars['String']['output']>;
+};
+
+export type TeamRunMemorySnapshotPage = {
+  __typename?: 'TeamRunMemorySnapshotPage';
+  entries: Array<TeamRunMemorySnapshotSummary>;
+  page: Scalars['Int']['output'];
+  pageSize: Scalars['Int']['output'];
+  total: Scalars['Int']['output'];
+  totalPages: Scalars['Int']['output'];
+};
+
+export type TeamRunMemorySnapshotSummary = {
+  __typename?: 'TeamRunMemorySnapshotSummary';
+  lastUpdatedAt?: Maybe<Scalars['String']['output']>;
+  members: Array<TeamMemberMemorySnapshotSummary>;
+  teamDefinitionId: Scalars['String']['output'];
+  teamDefinitionName: Scalars['String']['output'];
+  teamRunId: Scalars['String']['output'];
 };
 
 export type TeamRunResumeConfigPayload = {
@@ -1514,16 +1618,16 @@ export enum ToolParameterTypeEnum {
 
 export type UpdateAgentDefinitionInput = {
   avatarUrl?: InputMaybe<Scalars['String']['input']>;
+  category?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['String']['input'];
   inputProcessorNames?: InputMaybe<Array<Scalars['String']['input']>>;
+  instructions?: InputMaybe<Scalars['String']['input']>;
   lifecycleProcessorNames?: InputMaybe<Array<Scalars['String']['input']>>;
   llmResponseProcessorNames?: InputMaybe<Array<Scalars['String']['input']>>;
   name?: InputMaybe<Scalars['String']['input']>;
   role?: InputMaybe<Scalars['String']['input']>;
   skillNames?: InputMaybe<Array<Scalars['String']['input']>>;
-  systemPromptCategory?: InputMaybe<Scalars['String']['input']>;
-  systemPromptName?: InputMaybe<Scalars['String']['input']>;
   systemPromptProcessorNames?: InputMaybe<Array<Scalars['String']['input']>>;
   toolExecutionResultProcessorNames?: InputMaybe<Array<Scalars['String']['input']>>;
   toolInvocationPreprocessorNames?: InputMaybe<Array<Scalars['String']['input']>>;
@@ -1532,22 +1636,13 @@ export type UpdateAgentDefinitionInput = {
 
 export type UpdateAgentTeamDefinitionInput = {
   avatarUrl?: InputMaybe<Scalars['String']['input']>;
+  category?: InputMaybe<Scalars['String']['input']>;
   coordinatorMemberName?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['String']['input'];
+  instructions?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   nodes?: InputMaybe<Array<TeamMemberInput>>;
-  role?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type UpdatePromptInput = {
-  category?: InputMaybe<Scalars['String']['input']>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  id: Scalars['String']['input'];
-  isActive?: InputMaybe<Scalars['Boolean']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  promptContent?: InputMaybe<Scalars['String']['input']>;
-  suitableForModels?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateSkillInput = {
@@ -1558,9 +1653,10 @@ export type UpdateSkillInput = {
 
 export type UpsertExternalChannelBindingInput = {
   accountId: Scalars['String']['input'];
+  launchPreset: ExternalChannelLaunchPresetInput;
   peerId: Scalars['String']['input'];
   provider: Scalars['String']['input'];
-  targetId: Scalars['String']['input'];
+  targetAgentDefinitionId: Scalars['String']['input'];
   targetType: Scalars['String']['input'];
   threadId?: InputMaybe<Scalars['String']['input']>;
   transport: Scalars['String']['input'];
@@ -1586,19 +1682,38 @@ export type WorkspaceInfo = {
   workspaceId: Scalars['String']['output'];
 };
 
+export type GetDefinitionSourcesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetDefinitionSourcesQuery = { __typename?: 'Query', definitionSources: Array<{ __typename?: 'DefinitionSource', path: string, agentCount: number, agentTeamCount: number, isDefault: boolean }> };
+
+export type AddDefinitionSourceMutationVariables = Exact<{
+  path: Scalars['String']['input'];
+}>;
+
+
+export type AddDefinitionSourceMutation = { __typename?: 'Mutation', addDefinitionSource: Array<{ __typename?: 'DefinitionSource', path: string, agentCount: number, agentTeamCount: number, isDefault: boolean }> };
+
+export type RemoveDefinitionSourceMutationVariables = Exact<{
+  path: Scalars['String']['input'];
+}>;
+
+
+export type RemoveDefinitionSourceMutation = { __typename?: 'Mutation', removeDefinitionSource: Array<{ __typename?: 'DefinitionSource', path: string, agentCount: number, agentTeamCount: number, isDefault: boolean }> };
+
 export type CreateAgentDefinitionMutationVariables = Exact<{
   input: CreateAgentDefinitionInput;
 }>;
 
 
-export type CreateAgentDefinitionMutation = { __typename?: 'Mutation', createAgentDefinition: { __typename: 'AgentDefinition', id: string, name: string, role: string, description: string, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, systemPromptProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, systemPromptCategory?: string | null, systemPromptName?: string | null, prompts: Array<{ __typename: 'Prompt', id: string, name: string, category: string }> } };
+export type CreateAgentDefinitionMutation = { __typename?: 'Mutation', createAgentDefinition: { __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, systemPromptProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string> } };
 
 export type UpdateAgentDefinitionMutationVariables = Exact<{
   input: UpdateAgentDefinitionInput;
 }>;
 
 
-export type UpdateAgentDefinitionMutation = { __typename?: 'Mutation', updateAgentDefinition: { __typename: 'AgentDefinition', id: string, name: string, role: string, description: string, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, systemPromptProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, systemPromptCategory?: string | null, systemPromptName?: string | null } };
+export type UpdateAgentDefinitionMutation = { __typename?: 'Mutation', updateAgentDefinition: { __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, systemPromptProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string> } };
 
 export type DeleteAgentDefinitionMutationVariables = Exact<{
   id: Scalars['String']['input'];
@@ -1606,6 +1721,13 @@ export type DeleteAgentDefinitionMutationVariables = Exact<{
 
 
 export type DeleteAgentDefinitionMutation = { __typename?: 'Mutation', deleteAgentDefinition: { __typename: 'DeleteAgentDefinitionResult', success: boolean, message: string } };
+
+export type DuplicateAgentDefinitionMutationVariables = Exact<{
+  input: DuplicateAgentDefinitionInput;
+}>;
+
+
+export type DuplicateAgentDefinitionMutation = { __typename?: 'Mutation', duplicateAgentDefinition: { __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, systemPromptProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string> } };
 
 export type TerminateAgentRunMutationVariables = Exact<{
   id: Scalars['String']['input'];
@@ -1633,14 +1755,14 @@ export type CreateAgentTeamDefinitionMutationVariables = Exact<{
 }>;
 
 
-export type CreateAgentTeamDefinitionMutation = { __typename?: 'Mutation', createAgentTeamDefinition: { __typename: 'AgentTeamDefinition', id: string, name: string } };
+export type CreateAgentTeamDefinitionMutation = { __typename?: 'Mutation', createAgentTeamDefinition: { __typename: 'AgentTeamDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, coordinatorMemberName: string, nodes: Array<{ __typename: 'TeamMember', memberName: string, ref: string, refType: TeamMemberType }> } };
 
 export type UpdateAgentTeamDefinitionMutationVariables = Exact<{
   input: UpdateAgentTeamDefinitionInput;
 }>;
 
 
-export type UpdateAgentTeamDefinitionMutation = { __typename?: 'Mutation', updateAgentTeamDefinition: { __typename: 'AgentTeamDefinition', id: string, name: string } };
+export type UpdateAgentTeamDefinitionMutation = { __typename?: 'Mutation', updateAgentTeamDefinition: { __typename: 'AgentTeamDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, coordinatorMemberName: string, nodes: Array<{ __typename: 'TeamMember', memberName: string, ref: string, refType: TeamMemberType }> } };
 
 export type DeleteAgentTeamDefinitionMutationVariables = Exact<{
   id: Scalars['String']['input'];
@@ -1683,7 +1805,7 @@ export type UpsertExternalChannelBindingMutationVariables = Exact<{
 }>;
 
 
-export type UpsertExternalChannelBindingMutation = { __typename?: 'Mutation', upsertExternalChannelBinding: { __typename: 'ExternalChannelBindingGql', id: string, provider: string, transport: string, accountId: string, peerId: string, threadId?: string | null, targetType: string, targetId: string, updatedAt: any } };
+export type UpsertExternalChannelBindingMutation = { __typename?: 'Mutation', upsertExternalChannelBinding: { __typename: 'ExternalChannelBindingGql', id: string, provider: string, transport: string, accountId: string, peerId: string, threadId?: string | null, targetType: string, targetAgentDefinitionId?: string | null, updatedAt: any, launchPreset?: { __typename?: 'ExternalChannelLaunchPresetGql', workspaceRootPath: string, llmModelIdentifier: string, runtimeKind: string, autoExecuteTools: boolean, skillAccessMode?: ExternalChannelSkillAccessModeEnum | null, llmConfig?: any | null } | null } };
 
 export type DeleteExternalChannelBindingMutationVariables = Exact<{
   id: Scalars['String']['input'];
@@ -1744,7 +1866,9 @@ export type SetLlmProviderApiKeyMutationVariables = Exact<{
 
 export type SetLlmProviderApiKeyMutation = { __typename?: 'Mutation', setLlmProviderApiKey: string };
 
-export type ReloadLlmModelsMutationVariables = Exact<{ [key: string]: never; }>;
+export type ReloadLlmModelsMutationVariables = Exact<{
+  runtimeKind?: InputMaybe<Scalars['String']['input']>;
+}>;
 
 
 export type ReloadLlmModelsMutation = { __typename?: 'Mutation', reloadLlmModels: string };
@@ -1801,41 +1925,6 @@ export type RunNodeSyncMutationVariables = Exact<{
 
 
 export type RunNodeSyncMutation = { __typename?: 'Mutation', runNodeSync: { __typename?: 'RunNodeSyncResult', status: string, sourceNodeId: string, error?: string | null, report?: { __typename?: 'NodeSyncRunReport', sourceNodeId: string, scope: Array<SyncEntityTypeEnum>, exportByEntity: Array<{ __typename?: 'NodeSyncExportEntityReport', entityType: SyncEntityTypeEnum, exportedCount: number, sampledKeys: Array<string>, sampleTruncated: boolean }>, targets: Array<{ __typename?: 'NodeSyncTargetDetailedReport', targetNodeId: string, status: string, message?: string | null, failureCountTotal: number, failureSampleTruncated: boolean, failureSamples: Array<{ __typename?: 'NodeSyncFailureSample', entityType: SyncEntityTypeEnum, key: string, message: string }>, summary?: { __typename?: 'ImportNodeSyncSummary', processed: number, created: number, updated: number, deleted: number, skipped: number } | null }> } | null, targetResults: Array<{ __typename?: 'NodeSyncTargetRunResult', targetNodeId: string, status: string, message?: string | null, summary?: { __typename?: 'ImportNodeSyncSummary', processed: number, created: number, updated: number, deleted: number, skipped: number } | null }> } };
-
-export type CreatePromptMutationVariables = Exact<{
-  input: CreatePromptInput;
-}>;
-
-
-export type CreatePromptMutation = { __typename?: 'Mutation', createPrompt: { __typename: 'Prompt', id: string, name: string, category: string, promptContent: string, description?: string | null, suitableForModels?: string | null, version: number, createdAt: string, parentPromptId?: string | null, isActive: boolean } };
-
-export type UpdatePromptMutationVariables = Exact<{
-  input: UpdatePromptInput;
-}>;
-
-
-export type UpdatePromptMutation = { __typename?: 'Mutation', updatePrompt: { __typename: 'Prompt', id: string, name: string, category: string, promptContent: string, description?: string | null, suitableForModels?: string | null, version: number, createdAt: string, updatedAt: string, parentPromptId?: string | null, isActive: boolean } };
-
-export type AddNewPromptRevisionMutationVariables = Exact<{
-  input: AddNewPromptRevisionInput;
-}>;
-
-
-export type AddNewPromptRevisionMutation = { __typename?: 'Mutation', addNewPromptRevision: { __typename: 'Prompt', id: string, name: string, category: string, promptContent: string, description?: string | null, suitableForModels?: string | null, version: number, createdAt: string, parentPromptId?: string | null, isActive: boolean } };
-
-export type MarkActivePromptMutationVariables = Exact<{
-  input: MarkActivePromptInput;
-}>;
-
-
-export type MarkActivePromptMutation = { __typename?: 'Mutation', markActivePrompt: { __typename: 'Prompt', id: string, isActive: boolean } };
-
-export type DeletePromptMutationVariables = Exact<{
-  input: DeletePromptInput;
-}>;
-
-
-export type DeletePromptMutation = { __typename?: 'Mutation', deletePrompt: { __typename: 'DeletePromptResult', success: boolean, message: string } };
 
 export type ContinueRunMutationVariables = Exact<{
   input: ContinueRunInput;
@@ -1910,12 +1999,12 @@ export type GetAgentArtifactsQuery = { __typename?: 'Query', agentArtifacts: Arr
 export type GetAgentCustomizationOptionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAgentCustomizationOptionsQuery = { __typename?: 'Query', availableToolNames: Array<string>, availableOptionalInputProcessorNames: Array<string>, availableOptionalLlmResponseProcessorNames: Array<string>, availableOptionalSystemPromptProcessorNames: Array<string>, availableOptionalToolExecutionResultProcessorNames: Array<string>, availableOptionalToolInvocationPreprocessorNames: Array<string>, availableOptionalLifecycleProcessorNames: Array<string>, availablePromptCategories: Array<{ __typename: 'PromptCategory', category: string, names: Array<string> }> };
+export type GetAgentCustomizationOptionsQuery = { __typename?: 'Query', availableToolNames: Array<string>, availableOptionalInputProcessorNames: Array<string>, availableOptionalLlmResponseProcessorNames: Array<string>, availableOptionalSystemPromptProcessorNames: Array<string>, availableOptionalToolExecutionResultProcessorNames: Array<string>, availableOptionalToolInvocationPreprocessorNames: Array<string>, availableOptionalLifecycleProcessorNames: Array<string> };
 
 export type GetAgentDefinitionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAgentDefinitionsQuery = { __typename?: 'Query', agentDefinitions: Array<{ __typename: 'AgentDefinition', id: string, name: string, role: string, description: string, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, systemPromptProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, systemPromptCategory?: string | null, systemPromptName?: string | null, prompts: Array<{ __typename: 'Prompt', id: string, name: string, category: string, promptContent: string, description?: string | null, suitableForModels?: string | null, version: number, createdAt: string, updatedAt: string, parentPromptId?: string | null, isActive: boolean }> }> };
+export type GetAgentDefinitionsQuery = { __typename?: 'Query', agentDefinitions: Array<{ __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, systemPromptProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string> }> };
 
 export type ListRunMemorySnapshotsQueryVariables = Exact<{
   search?: InputMaybe<Scalars['String']['input']>;
@@ -1948,7 +2037,7 @@ export type GetAgentRunsQuery = { __typename?: 'Query', agentRuns: Array<{ __typ
 export type GetAgentTeamDefinitionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAgentTeamDefinitionsQuery = { __typename?: 'Query', agentTeamDefinitions: Array<{ __typename: 'AgentTeamDefinition', id: string, name: string, description: string, role?: string | null, avatarUrl?: string | null, coordinatorMemberName: string, nodes: Array<{ __typename: 'TeamMember', memberName: string, referenceId: string, referenceType: TeamMemberType }> }> };
+export type GetAgentTeamDefinitionsQuery = { __typename?: 'Query', agentTeamDefinitions: Array<{ __typename: 'AgentTeamDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, coordinatorMemberName: string, nodes: Array<{ __typename: 'TeamMember', memberName: string, ref: string, refType: TeamMemberType }> }> };
 
 export type ListApplicationsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1963,12 +2052,7 @@ export type ExternalChannelCapabilitiesQuery = { __typename?: 'Query', externalC
 export type ExternalChannelBindingsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ExternalChannelBindingsQuery = { __typename?: 'Query', externalChannelBindings: Array<{ __typename: 'ExternalChannelBindingGql', id: string, provider: string, transport: string, accountId: string, peerId: string, threadId?: string | null, targetType: string, targetId: string, updatedAt: any }> };
-
-export type ExternalChannelBindingTargetOptionsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type ExternalChannelBindingTargetOptionsQuery = { __typename?: 'Query', externalChannelBindingTargetOptions: Array<{ __typename: 'ExternalChannelBindingTargetOptionGql', targetType: string, targetId: string, displayName: string, status: string }> };
+export type ExternalChannelBindingsQuery = { __typename?: 'Query', externalChannelBindings: Array<{ __typename: 'ExternalChannelBindingGql', id: string, provider: string, transport: string, accountId: string, peerId: string, threadId?: string | null, targetType: string, targetAgentDefinitionId?: string | null, updatedAt: any, launchPreset?: { __typename?: 'ExternalChannelLaunchPresetGql', workspaceRootPath: string, llmModelIdentifier: string, runtimeKind: string, autoExecuteTools: boolean, skillAccessMode?: ExternalChannelSkillAccessModeEnum | null, llmConfig?: any | null } | null }> };
 
 export type GetFileContentQueryVariables = Exact<{
   workspaceId: Scalars['String']['input'];
@@ -2001,7 +2085,9 @@ export type GetLlmProviderApiKeyQueryVariables = Exact<{
 
 export type GetLlmProviderApiKeyQuery = { __typename?: 'Query', getLlmProviderApiKey?: string | null };
 
-export type GetAvailableLlmProvidersWithModelsQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetAvailableLlmProvidersWithModelsQueryVariables = Exact<{
+  runtimeKind?: InputMaybe<Scalars['String']['input']>;
+}>;
 
 
 export type GetAvailableLlmProvidersWithModelsQuery = { __typename?: 'Query', availableLlmProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: string, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, provider: string, runtime: string, hostUrl?: string | null, configSchema?: any | null }> }>, availableAudioProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: string, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, provider: string, runtime: string, hostUrl?: string | null }> }>, availableImageProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: string, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, provider: string, runtime: string, hostUrl?: string | null }> }> };
@@ -2010,6 +2096,25 @@ export type GetGeminiSetupConfigQueryVariables = Exact<{ [key: string]: never; }
 
 
 export type GetGeminiSetupConfigQuery = { __typename?: 'Query', getGeminiSetupConfig: { __typename?: 'GeminiSetupConfig', mode: string, geminiApiKeyConfigured: boolean, vertexApiKeyConfigured: boolean, vertexProject?: string | null, vertexLocation?: string | null } };
+
+export type ManagedMessagingGatewayStatusQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ManagedMessagingGatewayStatusQuery = { __typename?: 'Query', managedMessagingGatewayStatus: { __typename: 'ManagedMessagingGatewayStatusObject', supported: boolean, enabled: boolean, lifecycleState: string, message?: string | null, lastError?: string | null, activeVersion?: string | null, desiredVersion?: string | null, releaseTag?: string | null, installedVersions: Array<string>, bindHost?: string | null, bindPort?: number | null, pid?: number | null, providerConfig: any, providerStatusByProvider: any, supportedProviders: Array<string>, excludedProviders: Array<string>, diagnostics: any, runtimeReliabilityStatus?: any | null, runtimeRunning: boolean } };
+
+export type ManagedMessagingGatewayWeComAccountsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ManagedMessagingGatewayWeComAccountsQuery = { __typename?: 'Query', managedMessagingGatewayWeComAccounts: Array<{ __typename: 'ManagedMessagingGatewayWeComAccountObject', accountId: string, label: string, mode: string }> };
+
+export type ManagedMessagingGatewayPeerCandidatesQueryVariables = Exact<{
+  provider: Scalars['String']['input'];
+  includeGroups: Scalars['Boolean']['input'];
+  limit: Scalars['Int']['input'];
+}>;
+
+
+export type ManagedMessagingGatewayPeerCandidatesQuery = { __typename?: 'Query', managedMessagingGatewayPeerCandidates: { __typename: 'ManagedMessagingGatewayPeerCandidateListObject', accountId?: string | null, updatedAt: string, items: Array<{ __typename: 'ManagedMessagingGatewayPeerCandidateObject', peerId: string, peerType: string, threadId?: string | null, displayName?: string | null, lastMessageAt: string }> } };
 
 export type GetMcpServersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2022,28 +2127,6 @@ export type PreviewMcpServerToolsQueryVariables = Exact<{
 
 
 export type PreviewMcpServerToolsQuery = { __typename?: 'Query', previewMcpServerTools: Array<{ __typename: 'ToolDefinitionDetail', name: string, description: string }> };
-
-export type GetPromptsQueryVariables = Exact<{
-  isActive?: InputMaybe<Scalars['Boolean']['input']>;
-}>;
-
-
-export type GetPromptsQuery = { __typename?: 'Query', prompts: Array<{ __typename: 'Prompt', id: string, name: string, category: string, promptContent: string, description?: string | null, suitableForModels?: string | null, version: number, createdAt: string, updatedAt: string, parentPromptId?: string | null, isActive: boolean }> };
-
-export type GetPromptByIdQueryVariables = Exact<{
-  id: Scalars['String']['input'];
-}>;
-
-
-export type GetPromptByIdQuery = { __typename?: 'Query', promptDetails?: { __typename: 'Prompt', id: string, name: string, category: string, promptContent: string, description?: string | null, suitableForModels?: string | null, version: number, createdAt: string, updatedAt: string, parentPromptId?: string | null, isActive: boolean } | null };
-
-export type GetPromptDetailsByNameAndCategoryQueryVariables = Exact<{
-  category: Scalars['String']['input'];
-  name: Scalars['String']['input'];
-}>;
-
-
-export type GetPromptDetailsByNameAndCategoryQuery = { __typename?: 'Query', promptDetailsByNameAndCategory?: { __typename: 'PromptDetails', description?: string | null, promptContent: string } | null };
 
 export type ListRunHistoryQueryVariables = Exact<{
   limitPerAgent?: InputMaybe<Scalars['Int']['input']>;
@@ -2084,7 +2167,12 @@ export type GetRunResumeConfigQueryVariables = Exact<{
 }>;
 
 
-export type GetRunResumeConfigQuery = { __typename?: 'Query', getRunResumeConfig: { __typename?: 'RunResumeConfigPayload', runId: string, isActive: boolean, manifestConfig: { __typename?: 'RunManifestConfigObject', agentDefinitionId: string, workspaceRootPath: string, llmModelIdentifier: string, llmConfig?: any | null, autoExecuteTools: boolean, skillAccessMode?: SkillAccessModeEnum | null }, editableFields: { __typename?: 'RunEditableFieldFlagsObject', llmModelIdentifier: boolean, llmConfig: boolean, autoExecuteTools: boolean, skillAccessMode: boolean, workspaceRootPath: boolean } } };
+export type GetRunResumeConfigQuery = { __typename?: 'Query', getRunResumeConfig: { __typename?: 'RunResumeConfigPayload', runId: string, isActive: boolean, manifestConfig: { __typename?: 'RunManifestConfigObject', agentDefinitionId: string, workspaceRootPath: string, llmModelIdentifier: string, llmConfig?: any | null, autoExecuteTools: boolean, skillAccessMode?: ExternalChannelSkillAccessModeEnum | null, runtimeKind: string, runtimeReference: { __typename?: 'RunRuntimeReferenceObject', runtimeKind: string, sessionId?: string | null, threadId?: string | null, metadata?: any | null } }, editableFields: { __typename?: 'RunEditableFieldFlagsObject', llmModelIdentifier: boolean, llmConfig: boolean, autoExecuteTools: boolean, skillAccessMode: boolean, workspaceRootPath: boolean, runtimeKind: boolean } } };
+
+export type GetRuntimeCapabilitiesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetRuntimeCapabilitiesQuery = { __typename?: 'Query', runtimeCapabilities: Array<{ __typename?: 'RuntimeCapabilityObject', runtimeKind: string, enabled: boolean, reason?: string | null }> };
 
 export type GetServerSettingsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2095,6 +2183,30 @@ export type GetSearchConfigQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetSearchConfigQuery = { __typename?: 'Query', getSearchConfig: { __typename?: 'SearchConfig', provider: string, serperApiKeyConfigured: boolean, serpapiApiKeyConfigured: boolean, googleCseApiKeyConfigured: boolean, googleCseId?: string | null, vertexAiSearchApiKeyConfigured: boolean, vertexAiSearchServingConfig?: string | null } };
+
+export type ListTeamRunMemorySnapshotsQueryVariables = Exact<{
+  search?: InputMaybe<Scalars['String']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type ListTeamRunMemorySnapshotsQuery = { __typename?: 'Query', listTeamRunMemorySnapshots: { __typename?: 'TeamRunMemorySnapshotPage', total: number, page: number, pageSize: number, totalPages: number, entries: Array<{ __typename?: 'TeamRunMemorySnapshotSummary', teamRunId: string, teamDefinitionId: string, teamDefinitionName: string, lastUpdatedAt?: string | null, members: Array<{ __typename?: 'TeamMemberMemorySnapshotSummary', memberRouteKey: string, memberName: string, memberRunId: string, lastUpdatedAt?: string | null, hasWorkingContext: boolean, hasEpisodic: boolean, hasSemantic: boolean, hasRawTraces: boolean, hasRawArchive: boolean }> }> } };
+
+export type GetTeamMemberRunMemoryViewQueryVariables = Exact<{
+  teamRunId: Scalars['String']['input'];
+  memberRunId: Scalars['String']['input'];
+  includeWorkingContext?: InputMaybe<Scalars['Boolean']['input']>;
+  includeEpisodic?: InputMaybe<Scalars['Boolean']['input']>;
+  includeSemantic?: InputMaybe<Scalars['Boolean']['input']>;
+  includeRawTraces?: InputMaybe<Scalars['Boolean']['input']>;
+  includeArchive?: InputMaybe<Scalars['Boolean']['input']>;
+  rawTraceLimit?: InputMaybe<Scalars['Int']['input']>;
+  conversationLimit?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type GetTeamMemberRunMemoryViewQuery = { __typename?: 'Query', getTeamMemberRunMemoryView: { __typename?: 'AgentMemoryView', runId: string, episodic?: Array<any> | null, semantic?: Array<any> | null, workingContext?: Array<{ __typename?: 'MemoryMessage', role: string, content?: string | null, reasoning?: string | null, toolPayload?: any | null, ts?: number | null }> | null, rawTraces?: Array<{ __typename?: 'MemoryTraceEvent', traceType: string, content?: string | null, toolName?: string | null, toolArgs?: any | null, toolResult?: any | null, toolError?: string | null, media?: any | null, turnId: string, seq: number, ts: number }> | null } };
 
 export type GetUsageStatisticsInPeriodQueryVariables = Exact<{
   startTime: Scalars['DateTime']['input'];
@@ -2253,6 +2365,100 @@ export type ActivateSkillVersionMutationVariables = Exact<{
 export type ActivateSkillVersionMutation = { __typename?: 'Mutation', activateSkillVersion: { __typename?: 'SkillVersion', tag: string, commitHash: string, message: string, createdAt: string, isActive: boolean } };
 
 
+export const GetDefinitionSourcesDocument = gql`
+    query GetDefinitionSources {
+  definitionSources {
+    path
+    agentCount
+    agentTeamCount
+    isDefault
+  }
+}
+    `;
+
+/**
+ * __useGetDefinitionSourcesQuery__
+ *
+ * To run a query within a Vue component, call `useGetDefinitionSourcesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDefinitionSourcesQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetDefinitionSourcesQuery();
+ */
+export function useGetDefinitionSourcesQuery(options: VueApolloComposable.UseQueryOptions<GetDefinitionSourcesQuery, GetDefinitionSourcesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetDefinitionSourcesQuery, GetDefinitionSourcesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetDefinitionSourcesQuery, GetDefinitionSourcesQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetDefinitionSourcesQuery, GetDefinitionSourcesQueryVariables>(GetDefinitionSourcesDocument, {}, options);
+}
+export function useGetDefinitionSourcesLazyQuery(options: VueApolloComposable.UseQueryOptions<GetDefinitionSourcesQuery, GetDefinitionSourcesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetDefinitionSourcesQuery, GetDefinitionSourcesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetDefinitionSourcesQuery, GetDefinitionSourcesQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetDefinitionSourcesQuery, GetDefinitionSourcesQueryVariables>(GetDefinitionSourcesDocument, {}, options);
+}
+export type GetDefinitionSourcesQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetDefinitionSourcesQuery, GetDefinitionSourcesQueryVariables>;
+export const AddDefinitionSourceDocument = gql`
+    mutation AddDefinitionSource($path: String!) {
+  addDefinitionSource(path: $path) {
+    path
+    agentCount
+    agentTeamCount
+    isDefault
+  }
+}
+    `;
+
+/**
+ * __useAddDefinitionSourceMutation__
+ *
+ * To run a mutation, you first call `useAddDefinitionSourceMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useAddDefinitionSourceMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useAddDefinitionSourceMutation({
+ *   variables: {
+ *     path: // value for 'path'
+ *   },
+ * });
+ */
+export function useAddDefinitionSourceMutation(options: VueApolloComposable.UseMutationOptions<AddDefinitionSourceMutation, AddDefinitionSourceMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<AddDefinitionSourceMutation, AddDefinitionSourceMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<AddDefinitionSourceMutation, AddDefinitionSourceMutationVariables>(AddDefinitionSourceDocument, options);
+}
+export type AddDefinitionSourceMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<AddDefinitionSourceMutation, AddDefinitionSourceMutationVariables>;
+export const RemoveDefinitionSourceDocument = gql`
+    mutation RemoveDefinitionSource($path: String!) {
+  removeDefinitionSource(path: $path) {
+    path
+    agentCount
+    agentTeamCount
+    isDefault
+  }
+}
+    `;
+
+/**
+ * __useRemoveDefinitionSourceMutation__
+ *
+ * To run a mutation, you first call `useRemoveDefinitionSourceMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveDefinitionSourceMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useRemoveDefinitionSourceMutation({
+ *   variables: {
+ *     path: // value for 'path'
+ *   },
+ * });
+ */
+export function useRemoveDefinitionSourceMutation(options: VueApolloComposable.UseMutationOptions<RemoveDefinitionSourceMutation, RemoveDefinitionSourceMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<RemoveDefinitionSourceMutation, RemoveDefinitionSourceMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<RemoveDefinitionSourceMutation, RemoveDefinitionSourceMutationVariables>(RemoveDefinitionSourceDocument, options);
+}
+export type RemoveDefinitionSourceMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RemoveDefinitionSourceMutation, RemoveDefinitionSourceMutationVariables>;
 export const CreateAgentDefinitionDocument = gql`
     mutation CreateAgentDefinition($input: CreateAgentDefinitionInput!) {
   createAgentDefinition(input: $input) {
@@ -2261,6 +2467,8 @@ export const CreateAgentDefinitionDocument = gql`
     name
     role
     description
+    instructions
+    category
     avatarUrl
     toolNames
     inputProcessorNames
@@ -2270,14 +2478,6 @@ export const CreateAgentDefinitionDocument = gql`
     toolInvocationPreprocessorNames
     lifecycleProcessorNames
     skillNames
-    systemPromptCategory
-    systemPromptName
-    prompts {
-      __typename
-      id
-      name
-      category
-    }
   }
 }
     `;
@@ -2311,6 +2511,8 @@ export const UpdateAgentDefinitionDocument = gql`
     name
     role
     description
+    instructions
+    category
     avatarUrl
     toolNames
     inputProcessorNames
@@ -2320,8 +2522,6 @@ export const UpdateAgentDefinitionDocument = gql`
     toolInvocationPreprocessorNames
     lifecycleProcessorNames
     skillNames
-    systemPromptCategory
-    systemPromptName
   }
 }
     `;
@@ -2378,6 +2578,50 @@ export function useDeleteAgentDefinitionMutation(options: VueApolloComposable.Us
   return VueApolloComposable.useMutation<DeleteAgentDefinitionMutation, DeleteAgentDefinitionMutationVariables>(DeleteAgentDefinitionDocument, options);
 }
 export type DeleteAgentDefinitionMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<DeleteAgentDefinitionMutation, DeleteAgentDefinitionMutationVariables>;
+export const DuplicateAgentDefinitionDocument = gql`
+    mutation DuplicateAgentDefinition($input: DuplicateAgentDefinitionInput!) {
+  duplicateAgentDefinition(input: $input) {
+    __typename
+    id
+    name
+    role
+    description
+    instructions
+    category
+    avatarUrl
+    toolNames
+    inputProcessorNames
+    llmResponseProcessorNames
+    systemPromptProcessorNames
+    toolExecutionResultProcessorNames
+    toolInvocationPreprocessorNames
+    lifecycleProcessorNames
+    skillNames
+  }
+}
+    `;
+
+/**
+ * __useDuplicateAgentDefinitionMutation__
+ *
+ * To run a mutation, you first call `useDuplicateAgentDefinitionMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useDuplicateAgentDefinitionMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useDuplicateAgentDefinitionMutation({
+ *   variables: {
+ *     input: // value for 'input'
+ *   },
+ * });
+ */
+export function useDuplicateAgentDefinitionMutation(options: VueApolloComposable.UseMutationOptions<DuplicateAgentDefinitionMutation, DuplicateAgentDefinitionMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<DuplicateAgentDefinitionMutation, DuplicateAgentDefinitionMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<DuplicateAgentDefinitionMutation, DuplicateAgentDefinitionMutationVariables>(DuplicateAgentDefinitionDocument, options);
+}
+export type DuplicateAgentDefinitionMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<DuplicateAgentDefinitionMutation, DuplicateAgentDefinitionMutationVariables>;
 export const TerminateAgentRunDocument = gql`
     mutation TerminateAgentRun($id: String!) {
   terminateAgentRun(id: $id) {
@@ -2478,6 +2722,17 @@ export const CreateAgentTeamDefinitionDocument = gql`
     __typename
     id
     name
+    description
+    instructions
+    category
+    avatarUrl
+    coordinatorMemberName
+    nodes {
+      __typename
+      memberName
+      ref
+      refType
+    }
   }
 }
     `;
@@ -2509,6 +2764,17 @@ export const UpdateAgentTeamDefinitionDocument = gql`
     __typename
     id
     name
+    description
+    instructions
+    category
+    avatarUrl
+    coordinatorMemberName
+    nodes {
+      __typename
+      memberName
+      ref
+      refType
+    }
   }
 }
     `;
@@ -2699,7 +2965,15 @@ export const UpsertExternalChannelBindingDocument = gql`
     peerId
     threadId
     targetType
-    targetId
+    targetAgentDefinitionId
+    launchPreset {
+      workspaceRootPath
+      llmModelIdentifier
+      runtimeKind
+      autoExecuteTools
+      skillAccessMode
+      llmConfig
+    }
     updatedAt
   }
 }
@@ -2938,8 +3212,8 @@ export function useSetLlmProviderApiKeyMutation(options: VueApolloComposable.Use
 }
 export type SetLlmProviderApiKeyMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<SetLlmProviderApiKeyMutation, SetLlmProviderApiKeyMutationVariables>;
 export const ReloadLlmModelsDocument = gql`
-    mutation ReloadLLMModels {
-  reloadLlmModels
+    mutation ReloadLLMModels($runtimeKind: String) {
+  reloadLlmModels(runtimeKind: $runtimeKind)
 }
     `;
 
@@ -2954,7 +3228,11 @@ export const ReloadLlmModelsDocument = gql`
  * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
  *
  * @example
- * const { mutate, loading, error, onDone } = useReloadLlmModelsMutation();
+ * const { mutate, loading, error, onDone } = useReloadLlmModelsMutation({
+ *   variables: {
+ *     runtimeKind: // value for 'runtimeKind'
+ *   },
+ * });
  */
 export function useReloadLlmModelsMutation(options: VueApolloComposable.UseMutationOptions<ReloadLlmModelsMutation, ReloadLlmModelsMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<ReloadLlmModelsMutation, ReloadLlmModelsMutationVariables>> = {}) {
   return VueApolloComposable.useMutation<ReloadLlmModelsMutation, ReloadLlmModelsMutationVariables>(ReloadLlmModelsDocument, options);
@@ -3260,186 +3538,6 @@ export function useRunNodeSyncMutation(options: VueApolloComposable.UseMutationO
   return VueApolloComposable.useMutation<RunNodeSyncMutation, RunNodeSyncMutationVariables>(RunNodeSyncDocument, options);
 }
 export type RunNodeSyncMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RunNodeSyncMutation, RunNodeSyncMutationVariables>;
-export const CreatePromptDocument = gql`
-    mutation CreatePrompt($input: CreatePromptInput!) {
-  createPrompt(input: $input) {
-    __typename
-    id
-    name
-    category
-    promptContent
-    description
-    suitableForModels
-    version
-    createdAt
-    parentPromptId
-    isActive
-  }
-}
-    `;
-
-/**
- * __useCreatePromptMutation__
- *
- * To run a mutation, you first call `useCreatePromptMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useCreatePromptMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useCreatePromptMutation({
- *   variables: {
- *     input: // value for 'input'
- *   },
- * });
- */
-export function useCreatePromptMutation(options: VueApolloComposable.UseMutationOptions<CreatePromptMutation, CreatePromptMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<CreatePromptMutation, CreatePromptMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<CreatePromptMutation, CreatePromptMutationVariables>(CreatePromptDocument, options);
-}
-export type CreatePromptMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<CreatePromptMutation, CreatePromptMutationVariables>;
-export const UpdatePromptDocument = gql`
-    mutation UpdatePrompt($input: UpdatePromptInput!) {
-  updatePrompt(input: $input) {
-    __typename
-    id
-    name
-    category
-    promptContent
-    description
-    suitableForModels
-    version
-    createdAt
-    updatedAt
-    parentPromptId
-    isActive
-  }
-}
-    `;
-
-/**
- * __useUpdatePromptMutation__
- *
- * To run a mutation, you first call `useUpdatePromptMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useUpdatePromptMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useUpdatePromptMutation({
- *   variables: {
- *     input: // value for 'input'
- *   },
- * });
- */
-export function useUpdatePromptMutation(options: VueApolloComposable.UseMutationOptions<UpdatePromptMutation, UpdatePromptMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<UpdatePromptMutation, UpdatePromptMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<UpdatePromptMutation, UpdatePromptMutationVariables>(UpdatePromptDocument, options);
-}
-export type UpdatePromptMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UpdatePromptMutation, UpdatePromptMutationVariables>;
-export const AddNewPromptRevisionDocument = gql`
-    mutation AddNewPromptRevision($input: AddNewPromptRevisionInput!) {
-  addNewPromptRevision(input: $input) {
-    __typename
-    id
-    name
-    category
-    promptContent
-    description
-    suitableForModels
-    version
-    createdAt
-    parentPromptId
-    isActive
-  }
-}
-    `;
-
-/**
- * __useAddNewPromptRevisionMutation__
- *
- * To run a mutation, you first call `useAddNewPromptRevisionMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useAddNewPromptRevisionMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useAddNewPromptRevisionMutation({
- *   variables: {
- *     input: // value for 'input'
- *   },
- * });
- */
-export function useAddNewPromptRevisionMutation(options: VueApolloComposable.UseMutationOptions<AddNewPromptRevisionMutation, AddNewPromptRevisionMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<AddNewPromptRevisionMutation, AddNewPromptRevisionMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<AddNewPromptRevisionMutation, AddNewPromptRevisionMutationVariables>(AddNewPromptRevisionDocument, options);
-}
-export type AddNewPromptRevisionMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<AddNewPromptRevisionMutation, AddNewPromptRevisionMutationVariables>;
-export const MarkActivePromptDocument = gql`
-    mutation MarkActivePrompt($input: MarkActivePromptInput!) {
-  markActivePrompt(input: $input) {
-    __typename
-    id
-    isActive
-  }
-}
-    `;
-
-/**
- * __useMarkActivePromptMutation__
- *
- * To run a mutation, you first call `useMarkActivePromptMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useMarkActivePromptMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useMarkActivePromptMutation({
- *   variables: {
- *     input: // value for 'input'
- *   },
- * });
- */
-export function useMarkActivePromptMutation(options: VueApolloComposable.UseMutationOptions<MarkActivePromptMutation, MarkActivePromptMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<MarkActivePromptMutation, MarkActivePromptMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<MarkActivePromptMutation, MarkActivePromptMutationVariables>(MarkActivePromptDocument, options);
-}
-export type MarkActivePromptMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<MarkActivePromptMutation, MarkActivePromptMutationVariables>;
-export const DeletePromptDocument = gql`
-    mutation DeletePrompt($input: DeletePromptInput!) {
-  deletePrompt(input: $input) {
-    __typename
-    success
-    message
-  }
-}
-    `;
-
-/**
- * __useDeletePromptMutation__
- *
- * To run a mutation, you first call `useDeletePromptMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useDeletePromptMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useDeletePromptMutation({
- *   variables: {
- *     input: // value for 'input'
- *   },
- * });
- */
-export function useDeletePromptMutation(options: VueApolloComposable.UseMutationOptions<DeletePromptMutation, DeletePromptMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<DeletePromptMutation, DeletePromptMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<DeletePromptMutation, DeletePromptMutationVariables>(DeletePromptDocument, options);
-}
-export type DeletePromptMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<DeletePromptMutation, DeletePromptMutationVariables>;
 export const ContinueRunDocument = gql`
     mutation ContinueRun($input: ContinueRunInput!) {
   continueRun(input: $input) {
@@ -3755,11 +3853,6 @@ export const GetAgentCustomizationOptionsDocument = gql`
   availableOptionalToolExecutionResultProcessorNames
   availableOptionalToolInvocationPreprocessorNames
   availableOptionalLifecycleProcessorNames
-  availablePromptCategories {
-    __typename
-    category
-    names
-  }
 }
     `;
 
@@ -3790,6 +3883,8 @@ export const GetAgentDefinitionsDocument = gql`
     name
     role
     description
+    instructions
+    category
     avatarUrl
     toolNames
     inputProcessorNames
@@ -3799,22 +3894,6 @@ export const GetAgentDefinitionsDocument = gql`
     toolInvocationPreprocessorNames
     lifecycleProcessorNames
     skillNames
-    systemPromptCategory
-    systemPromptName
-    prompts {
-      __typename
-      id
-      name
-      category
-      promptContent
-      description
-      suitableForModels
-      version
-      createdAt
-      updatedAt
-      parentPromptId
-      isActive
-    }
   }
 }
     `;
@@ -3995,14 +4074,15 @@ export const GetAgentTeamDefinitionsDocument = gql`
     id
     name
     description
-    role
+    instructions
+    category
     avatarUrl
     coordinatorMemberName
     nodes {
       __typename
       memberName
-      referenceId
-      referenceType
+      ref
+      refType
     }
   }
 }
@@ -4101,7 +4181,15 @@ export const ExternalChannelBindingsDocument = gql`
     peerId
     threadId
     targetType
-    targetId
+    targetAgentDefinitionId
+    launchPreset {
+      workspaceRootPath
+      llmModelIdentifier
+      runtimeKind
+      autoExecuteTools
+      skillAccessMode
+      llmConfig
+    }
     updatedAt
   }
 }
@@ -4126,37 +4214,6 @@ export function useExternalChannelBindingsLazyQuery(options: VueApolloComposable
   return VueApolloComposable.useLazyQuery<ExternalChannelBindingsQuery, ExternalChannelBindingsQueryVariables>(ExternalChannelBindingsDocument, {}, options);
 }
 export type ExternalChannelBindingsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<ExternalChannelBindingsQuery, ExternalChannelBindingsQueryVariables>;
-export const ExternalChannelBindingTargetOptionsDocument = gql`
-    query ExternalChannelBindingTargetOptions {
-  externalChannelBindingTargetOptions {
-    __typename
-    targetType
-    targetId
-    displayName
-    status
-  }
-}
-    `;
-
-/**
- * __useExternalChannelBindingTargetOptionsQuery__
- *
- * To run a query within a Vue component, call `useExternalChannelBindingTargetOptionsQuery` and pass it any options that fit your needs.
- * When your component renders, `useExternalChannelBindingTargetOptionsQuery` returns an object from Apollo Client that contains result, loading and error properties
- * you can use to render your UI.
- *
- * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
- *
- * @example
- * const { result, loading, error } = useExternalChannelBindingTargetOptionsQuery();
- */
-export function useExternalChannelBindingTargetOptionsQuery(options: VueApolloComposable.UseQueryOptions<ExternalChannelBindingTargetOptionsQuery, ExternalChannelBindingTargetOptionsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ExternalChannelBindingTargetOptionsQuery, ExternalChannelBindingTargetOptionsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ExternalChannelBindingTargetOptionsQuery, ExternalChannelBindingTargetOptionsQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<ExternalChannelBindingTargetOptionsQuery, ExternalChannelBindingTargetOptionsQueryVariables>(ExternalChannelBindingTargetOptionsDocument, {}, options);
-}
-export function useExternalChannelBindingTargetOptionsLazyQuery(options: VueApolloComposable.UseQueryOptions<ExternalChannelBindingTargetOptionsQuery, ExternalChannelBindingTargetOptionsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ExternalChannelBindingTargetOptionsQuery, ExternalChannelBindingTargetOptionsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ExternalChannelBindingTargetOptionsQuery, ExternalChannelBindingTargetOptionsQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<ExternalChannelBindingTargetOptionsQuery, ExternalChannelBindingTargetOptionsQueryVariables>(ExternalChannelBindingTargetOptionsDocument, {}, options);
-}
-export type ExternalChannelBindingTargetOptionsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<ExternalChannelBindingTargetOptionsQuery, ExternalChannelBindingTargetOptionsQueryVariables>;
 export const GetFileContentDocument = gql`
     query GetFileContent($workspaceId: String!, $filePath: String!) {
   fileContent(workspaceId: $workspaceId, filePath: $filePath)
@@ -4273,8 +4330,8 @@ export function useGetLlmProviderApiKeyLazyQuery(variables?: GetLlmProviderApiKe
 }
 export type GetLlmProviderApiKeyQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetLlmProviderApiKeyQuery, GetLlmProviderApiKeyQueryVariables>;
 export const GetAvailableLlmProvidersWithModelsDocument = gql`
-    query GetAvailableLLMProvidersWithModels {
-  availableLlmProvidersWithModels {
+    query GetAvailableLLMProvidersWithModels($runtimeKind: String) {
+  availableLlmProvidersWithModels(runtimeKind: $runtimeKind) {
     __typename
     provider
     models {
@@ -4289,7 +4346,7 @@ export const GetAvailableLlmProvidersWithModelsDocument = gql`
       configSchema
     }
   }
-  availableAudioProvidersWithModels {
+  availableAudioProvidersWithModels(runtimeKind: $runtimeKind) {
     __typename
     provider
     models {
@@ -4303,7 +4360,7 @@ export const GetAvailableLlmProvidersWithModelsDocument = gql`
       hostUrl
     }
   }
-  availableImageProvidersWithModels {
+  availableImageProvidersWithModels(runtimeKind: $runtimeKind) {
     __typename
     provider
     models {
@@ -4327,16 +4384,19 @@ export const GetAvailableLlmProvidersWithModelsDocument = gql`
  * When your component renders, `useGetAvailableLlmProvidersWithModelsQuery` returns an object from Apollo Client that contains result, loading and error properties
  * you can use to render your UI.
  *
+ * @param variables that will be passed into the query
  * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
  *
  * @example
- * const { result, loading, error } = useGetAvailableLlmProvidersWithModelsQuery();
+ * const { result, loading, error } = useGetAvailableLlmProvidersWithModelsQuery({
+ *   runtimeKind: // value for 'runtimeKind'
+ * });
  */
-export function useGetAvailableLlmProvidersWithModelsQuery(options: VueApolloComposable.UseQueryOptions<GetAvailableLlmProvidersWithModelsQuery, GetAvailableLlmProvidersWithModelsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAvailableLlmProvidersWithModelsQuery, GetAvailableLlmProvidersWithModelsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAvailableLlmProvidersWithModelsQuery, GetAvailableLlmProvidersWithModelsQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<GetAvailableLlmProvidersWithModelsQuery, GetAvailableLlmProvidersWithModelsQueryVariables>(GetAvailableLlmProvidersWithModelsDocument, {}, options);
+export function useGetAvailableLlmProvidersWithModelsQuery(variables: GetAvailableLlmProvidersWithModelsQueryVariables | VueCompositionApi.Ref<GetAvailableLlmProvidersWithModelsQueryVariables> | ReactiveFunction<GetAvailableLlmProvidersWithModelsQueryVariables> = {}, options: VueApolloComposable.UseQueryOptions<GetAvailableLlmProvidersWithModelsQuery, GetAvailableLlmProvidersWithModelsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAvailableLlmProvidersWithModelsQuery, GetAvailableLlmProvidersWithModelsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAvailableLlmProvidersWithModelsQuery, GetAvailableLlmProvidersWithModelsQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetAvailableLlmProvidersWithModelsQuery, GetAvailableLlmProvidersWithModelsQueryVariables>(GetAvailableLlmProvidersWithModelsDocument, variables, options);
 }
-export function useGetAvailableLlmProvidersWithModelsLazyQuery(options: VueApolloComposable.UseQueryOptions<GetAvailableLlmProvidersWithModelsQuery, GetAvailableLlmProvidersWithModelsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAvailableLlmProvidersWithModelsQuery, GetAvailableLlmProvidersWithModelsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAvailableLlmProvidersWithModelsQuery, GetAvailableLlmProvidersWithModelsQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<GetAvailableLlmProvidersWithModelsQuery, GetAvailableLlmProvidersWithModelsQueryVariables>(GetAvailableLlmProvidersWithModelsDocument, {}, options);
+export function useGetAvailableLlmProvidersWithModelsLazyQuery(variables: GetAvailableLlmProvidersWithModelsQueryVariables | VueCompositionApi.Ref<GetAvailableLlmProvidersWithModelsQueryVariables> | ReactiveFunction<GetAvailableLlmProvidersWithModelsQueryVariables> = {}, options: VueApolloComposable.UseQueryOptions<GetAvailableLlmProvidersWithModelsQuery, GetAvailableLlmProvidersWithModelsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAvailableLlmProvidersWithModelsQuery, GetAvailableLlmProvidersWithModelsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAvailableLlmProvidersWithModelsQuery, GetAvailableLlmProvidersWithModelsQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetAvailableLlmProvidersWithModelsQuery, GetAvailableLlmProvidersWithModelsQueryVariables>(GetAvailableLlmProvidersWithModelsDocument, variables, options);
 }
 export type GetAvailableLlmProvidersWithModelsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAvailableLlmProvidersWithModelsQuery, GetAvailableLlmProvidersWithModelsQueryVariables>;
 export const GetGeminiSetupConfigDocument = gql`
@@ -4370,6 +4430,128 @@ export function useGetGeminiSetupConfigLazyQuery(options: VueApolloComposable.Us
   return VueApolloComposable.useLazyQuery<GetGeminiSetupConfigQuery, GetGeminiSetupConfigQueryVariables>(GetGeminiSetupConfigDocument, {}, options);
 }
 export type GetGeminiSetupConfigQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetGeminiSetupConfigQuery, GetGeminiSetupConfigQueryVariables>;
+export const ManagedMessagingGatewayStatusDocument = gql`
+    query ManagedMessagingGatewayStatus {
+  managedMessagingGatewayStatus {
+    __typename
+    supported
+    enabled
+    lifecycleState
+    message
+    lastError
+    activeVersion
+    desiredVersion
+    releaseTag
+    installedVersions
+    bindHost
+    bindPort
+    pid
+    providerConfig
+    providerStatusByProvider
+    supportedProviders
+    excludedProviders
+    diagnostics
+    runtimeReliabilityStatus
+    runtimeRunning
+  }
+}
+    `;
+
+/**
+ * __useManagedMessagingGatewayStatusQuery__
+ *
+ * To run a query within a Vue component, call `useManagedMessagingGatewayStatusQuery` and pass it any options that fit your needs.
+ * When your component renders, `useManagedMessagingGatewayStatusQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useManagedMessagingGatewayStatusQuery();
+ */
+export function useManagedMessagingGatewayStatusQuery(options: VueApolloComposable.UseQueryOptions<ManagedMessagingGatewayStatusQuery, ManagedMessagingGatewayStatusQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ManagedMessagingGatewayStatusQuery, ManagedMessagingGatewayStatusQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ManagedMessagingGatewayStatusQuery, ManagedMessagingGatewayStatusQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<ManagedMessagingGatewayStatusQuery, ManagedMessagingGatewayStatusQueryVariables>(ManagedMessagingGatewayStatusDocument, {}, options);
+}
+export function useManagedMessagingGatewayStatusLazyQuery(options: VueApolloComposable.UseQueryOptions<ManagedMessagingGatewayStatusQuery, ManagedMessagingGatewayStatusQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ManagedMessagingGatewayStatusQuery, ManagedMessagingGatewayStatusQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ManagedMessagingGatewayStatusQuery, ManagedMessagingGatewayStatusQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<ManagedMessagingGatewayStatusQuery, ManagedMessagingGatewayStatusQueryVariables>(ManagedMessagingGatewayStatusDocument, {}, options);
+}
+export type ManagedMessagingGatewayStatusQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<ManagedMessagingGatewayStatusQuery, ManagedMessagingGatewayStatusQueryVariables>;
+export const ManagedMessagingGatewayWeComAccountsDocument = gql`
+    query ManagedMessagingGatewayWeComAccounts {
+  managedMessagingGatewayWeComAccounts {
+    __typename
+    accountId
+    label
+    mode
+  }
+}
+    `;
+
+/**
+ * __useManagedMessagingGatewayWeComAccountsQuery__
+ *
+ * To run a query within a Vue component, call `useManagedMessagingGatewayWeComAccountsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useManagedMessagingGatewayWeComAccountsQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useManagedMessagingGatewayWeComAccountsQuery();
+ */
+export function useManagedMessagingGatewayWeComAccountsQuery(options: VueApolloComposable.UseQueryOptions<ManagedMessagingGatewayWeComAccountsQuery, ManagedMessagingGatewayWeComAccountsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ManagedMessagingGatewayWeComAccountsQuery, ManagedMessagingGatewayWeComAccountsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ManagedMessagingGatewayWeComAccountsQuery, ManagedMessagingGatewayWeComAccountsQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<ManagedMessagingGatewayWeComAccountsQuery, ManagedMessagingGatewayWeComAccountsQueryVariables>(ManagedMessagingGatewayWeComAccountsDocument, {}, options);
+}
+export function useManagedMessagingGatewayWeComAccountsLazyQuery(options: VueApolloComposable.UseQueryOptions<ManagedMessagingGatewayWeComAccountsQuery, ManagedMessagingGatewayWeComAccountsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ManagedMessagingGatewayWeComAccountsQuery, ManagedMessagingGatewayWeComAccountsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ManagedMessagingGatewayWeComAccountsQuery, ManagedMessagingGatewayWeComAccountsQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<ManagedMessagingGatewayWeComAccountsQuery, ManagedMessagingGatewayWeComAccountsQueryVariables>(ManagedMessagingGatewayWeComAccountsDocument, {}, options);
+}
+export type ManagedMessagingGatewayWeComAccountsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<ManagedMessagingGatewayWeComAccountsQuery, ManagedMessagingGatewayWeComAccountsQueryVariables>;
+export const ManagedMessagingGatewayPeerCandidatesDocument = gql`
+    query ManagedMessagingGatewayPeerCandidates($provider: String!, $includeGroups: Boolean!, $limit: Int!) {
+  managedMessagingGatewayPeerCandidates(
+    provider: $provider
+    includeGroups: $includeGroups
+    limit: $limit
+  ) {
+    __typename
+    accountId
+    updatedAt
+    items {
+      __typename
+      peerId
+      peerType
+      threadId
+      displayName
+      lastMessageAt
+    }
+  }
+}
+    `;
+
+/**
+ * __useManagedMessagingGatewayPeerCandidatesQuery__
+ *
+ * To run a query within a Vue component, call `useManagedMessagingGatewayPeerCandidatesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useManagedMessagingGatewayPeerCandidatesQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useManagedMessagingGatewayPeerCandidatesQuery({
+ *   provider: // value for 'provider'
+ *   includeGroups: // value for 'includeGroups'
+ *   limit: // value for 'limit'
+ * });
+ */
+export function useManagedMessagingGatewayPeerCandidatesQuery(variables: ManagedMessagingGatewayPeerCandidatesQueryVariables | VueCompositionApi.Ref<ManagedMessagingGatewayPeerCandidatesQueryVariables> | ReactiveFunction<ManagedMessagingGatewayPeerCandidatesQueryVariables>, options: VueApolloComposable.UseQueryOptions<ManagedMessagingGatewayPeerCandidatesQuery, ManagedMessagingGatewayPeerCandidatesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ManagedMessagingGatewayPeerCandidatesQuery, ManagedMessagingGatewayPeerCandidatesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ManagedMessagingGatewayPeerCandidatesQuery, ManagedMessagingGatewayPeerCandidatesQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<ManagedMessagingGatewayPeerCandidatesQuery, ManagedMessagingGatewayPeerCandidatesQueryVariables>(ManagedMessagingGatewayPeerCandidatesDocument, variables, options);
+}
+export function useManagedMessagingGatewayPeerCandidatesLazyQuery(variables?: ManagedMessagingGatewayPeerCandidatesQueryVariables | VueCompositionApi.Ref<ManagedMessagingGatewayPeerCandidatesQueryVariables> | ReactiveFunction<ManagedMessagingGatewayPeerCandidatesQueryVariables>, options: VueApolloComposable.UseQueryOptions<ManagedMessagingGatewayPeerCandidatesQuery, ManagedMessagingGatewayPeerCandidatesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ManagedMessagingGatewayPeerCandidatesQuery, ManagedMessagingGatewayPeerCandidatesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ManagedMessagingGatewayPeerCandidatesQuery, ManagedMessagingGatewayPeerCandidatesQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<ManagedMessagingGatewayPeerCandidatesQuery, ManagedMessagingGatewayPeerCandidatesQueryVariables>(ManagedMessagingGatewayPeerCandidatesDocument, variables, options);
+}
+export type ManagedMessagingGatewayPeerCandidatesQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<ManagedMessagingGatewayPeerCandidatesQuery, ManagedMessagingGatewayPeerCandidatesQueryVariables>;
 export const GetMcpServersDocument = gql`
     query GetMcpServers {
   mcpServers {
@@ -4448,121 +4630,6 @@ export function usePreviewMcpServerToolsLazyQuery(variables?: PreviewMcpServerTo
   return VueApolloComposable.useLazyQuery<PreviewMcpServerToolsQuery, PreviewMcpServerToolsQueryVariables>(PreviewMcpServerToolsDocument, variables, options);
 }
 export type PreviewMcpServerToolsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<PreviewMcpServerToolsQuery, PreviewMcpServerToolsQueryVariables>;
-export const GetPromptsDocument = gql`
-    query GetPrompts($isActive: Boolean) {
-  prompts(isActive: $isActive) {
-    __typename
-    id
-    name
-    category
-    promptContent
-    description
-    suitableForModels
-    version
-    createdAt
-    updatedAt
-    parentPromptId
-    isActive
-  }
-}
-    `;
-
-/**
- * __useGetPromptsQuery__
- *
- * To run a query within a Vue component, call `useGetPromptsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetPromptsQuery` returns an object from Apollo Client that contains result, loading and error properties
- * you can use to render your UI.
- *
- * @param variables that will be passed into the query
- * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
- *
- * @example
- * const { result, loading, error } = useGetPromptsQuery({
- *   isActive: // value for 'isActive'
- * });
- */
-export function useGetPromptsQuery(variables: GetPromptsQueryVariables | VueCompositionApi.Ref<GetPromptsQueryVariables> | ReactiveFunction<GetPromptsQueryVariables> = {}, options: VueApolloComposable.UseQueryOptions<GetPromptsQuery, GetPromptsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetPromptsQuery, GetPromptsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetPromptsQuery, GetPromptsQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<GetPromptsQuery, GetPromptsQueryVariables>(GetPromptsDocument, variables, options);
-}
-export function useGetPromptsLazyQuery(variables: GetPromptsQueryVariables | VueCompositionApi.Ref<GetPromptsQueryVariables> | ReactiveFunction<GetPromptsQueryVariables> = {}, options: VueApolloComposable.UseQueryOptions<GetPromptsQuery, GetPromptsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetPromptsQuery, GetPromptsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetPromptsQuery, GetPromptsQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<GetPromptsQuery, GetPromptsQueryVariables>(GetPromptsDocument, variables, options);
-}
-export type GetPromptsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetPromptsQuery, GetPromptsQueryVariables>;
-export const GetPromptByIdDocument = gql`
-    query GetPromptById($id: String!) {
-  promptDetails(id: $id) {
-    __typename
-    id
-    name
-    category
-    promptContent
-    description
-    suitableForModels
-    version
-    createdAt
-    updatedAt
-    parentPromptId
-    isActive
-  }
-}
-    `;
-
-/**
- * __useGetPromptByIdQuery__
- *
- * To run a query within a Vue component, call `useGetPromptByIdQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetPromptByIdQuery` returns an object from Apollo Client that contains result, loading and error properties
- * you can use to render your UI.
- *
- * @param variables that will be passed into the query
- * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
- *
- * @example
- * const { result, loading, error } = useGetPromptByIdQuery({
- *   id: // value for 'id'
- * });
- */
-export function useGetPromptByIdQuery(variables: GetPromptByIdQueryVariables | VueCompositionApi.Ref<GetPromptByIdQueryVariables> | ReactiveFunction<GetPromptByIdQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetPromptByIdQuery, GetPromptByIdQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetPromptByIdQuery, GetPromptByIdQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetPromptByIdQuery, GetPromptByIdQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<GetPromptByIdQuery, GetPromptByIdQueryVariables>(GetPromptByIdDocument, variables, options);
-}
-export function useGetPromptByIdLazyQuery(variables?: GetPromptByIdQueryVariables | VueCompositionApi.Ref<GetPromptByIdQueryVariables> | ReactiveFunction<GetPromptByIdQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetPromptByIdQuery, GetPromptByIdQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetPromptByIdQuery, GetPromptByIdQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetPromptByIdQuery, GetPromptByIdQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<GetPromptByIdQuery, GetPromptByIdQueryVariables>(GetPromptByIdDocument, variables, options);
-}
-export type GetPromptByIdQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetPromptByIdQuery, GetPromptByIdQueryVariables>;
-export const GetPromptDetailsByNameAndCategoryDocument = gql`
-    query GetPromptDetailsByNameAndCategory($category: String!, $name: String!) {
-  promptDetailsByNameAndCategory(category: $category, name: $name) {
-    __typename
-    description
-    promptContent
-  }
-}
-    `;
-
-/**
- * __useGetPromptDetailsByNameAndCategoryQuery__
- *
- * To run a query within a Vue component, call `useGetPromptDetailsByNameAndCategoryQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetPromptDetailsByNameAndCategoryQuery` returns an object from Apollo Client that contains result, loading and error properties
- * you can use to render your UI.
- *
- * @param variables that will be passed into the query
- * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
- *
- * @example
- * const { result, loading, error } = useGetPromptDetailsByNameAndCategoryQuery({
- *   category: // value for 'category'
- *   name: // value for 'name'
- * });
- */
-export function useGetPromptDetailsByNameAndCategoryQuery(variables: GetPromptDetailsByNameAndCategoryQueryVariables | VueCompositionApi.Ref<GetPromptDetailsByNameAndCategoryQueryVariables> | ReactiveFunction<GetPromptDetailsByNameAndCategoryQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetPromptDetailsByNameAndCategoryQuery, GetPromptDetailsByNameAndCategoryQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetPromptDetailsByNameAndCategoryQuery, GetPromptDetailsByNameAndCategoryQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetPromptDetailsByNameAndCategoryQuery, GetPromptDetailsByNameAndCategoryQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<GetPromptDetailsByNameAndCategoryQuery, GetPromptDetailsByNameAndCategoryQueryVariables>(GetPromptDetailsByNameAndCategoryDocument, variables, options);
-}
-export function useGetPromptDetailsByNameAndCategoryLazyQuery(variables?: GetPromptDetailsByNameAndCategoryQueryVariables | VueCompositionApi.Ref<GetPromptDetailsByNameAndCategoryQueryVariables> | ReactiveFunction<GetPromptDetailsByNameAndCategoryQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetPromptDetailsByNameAndCategoryQuery, GetPromptDetailsByNameAndCategoryQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetPromptDetailsByNameAndCategoryQuery, GetPromptDetailsByNameAndCategoryQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetPromptDetailsByNameAndCategoryQuery, GetPromptDetailsByNameAndCategoryQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<GetPromptDetailsByNameAndCategoryQuery, GetPromptDetailsByNameAndCategoryQueryVariables>(GetPromptDetailsByNameAndCategoryDocument, variables, options);
-}
-export type GetPromptDetailsByNameAndCategoryQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetPromptDetailsByNameAndCategoryQuery, GetPromptDetailsByNameAndCategoryQueryVariables>;
 export const ListRunHistoryDocument = gql`
     query ListRunHistory($limitPerAgent: Int = 6) {
   listRunHistory(limitPerAgent: $limitPerAgent) {
@@ -4762,6 +4829,13 @@ export const GetRunResumeConfigDocument = gql`
       llmConfig
       autoExecuteTools
       skillAccessMode
+      runtimeKind
+      runtimeReference {
+        runtimeKind
+        sessionId
+        threadId
+        metadata
+      }
     }
     editableFields {
       llmModelIdentifier
@@ -4769,6 +4843,7 @@ export const GetRunResumeConfigDocument = gql`
       autoExecuteTools
       skillAccessMode
       workspaceRootPath
+      runtimeKind
     }
   }
 }
@@ -4796,6 +4871,35 @@ export function useGetRunResumeConfigLazyQuery(variables?: GetRunResumeConfigQue
   return VueApolloComposable.useLazyQuery<GetRunResumeConfigQuery, GetRunResumeConfigQueryVariables>(GetRunResumeConfigDocument, variables, options);
 }
 export type GetRunResumeConfigQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetRunResumeConfigQuery, GetRunResumeConfigQueryVariables>;
+export const GetRuntimeCapabilitiesDocument = gql`
+    query GetRuntimeCapabilities {
+  runtimeCapabilities {
+    runtimeKind
+    enabled
+    reason
+  }
+}
+    `;
+
+/**
+ * __useGetRuntimeCapabilitiesQuery__
+ *
+ * To run a query within a Vue component, call `useGetRuntimeCapabilitiesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetRuntimeCapabilitiesQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetRuntimeCapabilitiesQuery();
+ */
+export function useGetRuntimeCapabilitiesQuery(options: VueApolloComposable.UseQueryOptions<GetRuntimeCapabilitiesQuery, GetRuntimeCapabilitiesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetRuntimeCapabilitiesQuery, GetRuntimeCapabilitiesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetRuntimeCapabilitiesQuery, GetRuntimeCapabilitiesQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetRuntimeCapabilitiesQuery, GetRuntimeCapabilitiesQueryVariables>(GetRuntimeCapabilitiesDocument, {}, options);
+}
+export function useGetRuntimeCapabilitiesLazyQuery(options: VueApolloComposable.UseQueryOptions<GetRuntimeCapabilitiesQuery, GetRuntimeCapabilitiesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetRuntimeCapabilitiesQuery, GetRuntimeCapabilitiesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetRuntimeCapabilitiesQuery, GetRuntimeCapabilitiesQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetRuntimeCapabilitiesQuery, GetRuntimeCapabilitiesQueryVariables>(GetRuntimeCapabilitiesDocument, {}, options);
+}
+export type GetRuntimeCapabilitiesQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetRuntimeCapabilitiesQuery, GetRuntimeCapabilitiesQueryVariables>;
 export const GetServerSettingsDocument = gql`
     query GetServerSettings {
   getServerSettings {
@@ -4859,6 +4963,128 @@ export function useGetSearchConfigLazyQuery(options: VueApolloComposable.UseQuer
   return VueApolloComposable.useLazyQuery<GetSearchConfigQuery, GetSearchConfigQueryVariables>(GetSearchConfigDocument, {}, options);
 }
 export type GetSearchConfigQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetSearchConfigQuery, GetSearchConfigQueryVariables>;
+export const ListTeamRunMemorySnapshotsDocument = gql`
+    query ListTeamRunMemorySnapshots($search: String, $page: Int, $pageSize: Int) {
+  listTeamRunMemorySnapshots(search: $search, page: $page, pageSize: $pageSize) {
+    total
+    page
+    pageSize
+    totalPages
+    entries {
+      teamRunId
+      teamDefinitionId
+      teamDefinitionName
+      lastUpdatedAt
+      members {
+        memberRouteKey
+        memberName
+        memberRunId
+        lastUpdatedAt
+        hasWorkingContext
+        hasEpisodic
+        hasSemantic
+        hasRawTraces
+        hasRawArchive
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useListTeamRunMemorySnapshotsQuery__
+ *
+ * To run a query within a Vue component, call `useListTeamRunMemorySnapshotsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListTeamRunMemorySnapshotsQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useListTeamRunMemorySnapshotsQuery({
+ *   search: // value for 'search'
+ *   page: // value for 'page'
+ *   pageSize: // value for 'pageSize'
+ * });
+ */
+export function useListTeamRunMemorySnapshotsQuery(variables: ListTeamRunMemorySnapshotsQueryVariables | VueCompositionApi.Ref<ListTeamRunMemorySnapshotsQueryVariables> | ReactiveFunction<ListTeamRunMemorySnapshotsQueryVariables> = {}, options: VueApolloComposable.UseQueryOptions<ListTeamRunMemorySnapshotsQuery, ListTeamRunMemorySnapshotsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ListTeamRunMemorySnapshotsQuery, ListTeamRunMemorySnapshotsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ListTeamRunMemorySnapshotsQuery, ListTeamRunMemorySnapshotsQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<ListTeamRunMemorySnapshotsQuery, ListTeamRunMemorySnapshotsQueryVariables>(ListTeamRunMemorySnapshotsDocument, variables, options);
+}
+export function useListTeamRunMemorySnapshotsLazyQuery(variables: ListTeamRunMemorySnapshotsQueryVariables | VueCompositionApi.Ref<ListTeamRunMemorySnapshotsQueryVariables> | ReactiveFunction<ListTeamRunMemorySnapshotsQueryVariables> = {}, options: VueApolloComposable.UseQueryOptions<ListTeamRunMemorySnapshotsQuery, ListTeamRunMemorySnapshotsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ListTeamRunMemorySnapshotsQuery, ListTeamRunMemorySnapshotsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ListTeamRunMemorySnapshotsQuery, ListTeamRunMemorySnapshotsQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<ListTeamRunMemorySnapshotsQuery, ListTeamRunMemorySnapshotsQueryVariables>(ListTeamRunMemorySnapshotsDocument, variables, options);
+}
+export type ListTeamRunMemorySnapshotsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<ListTeamRunMemorySnapshotsQuery, ListTeamRunMemorySnapshotsQueryVariables>;
+export const GetTeamMemberRunMemoryViewDocument = gql`
+    query GetTeamMemberRunMemoryView($teamRunId: String!, $memberRunId: String!, $includeWorkingContext: Boolean, $includeEpisodic: Boolean, $includeSemantic: Boolean, $includeRawTraces: Boolean, $includeArchive: Boolean, $rawTraceLimit: Int, $conversationLimit: Int) {
+  getTeamMemberRunMemoryView(
+    teamRunId: $teamRunId
+    memberRunId: $memberRunId
+    includeWorkingContext: $includeWorkingContext
+    includeEpisodic: $includeEpisodic
+    includeSemantic: $includeSemantic
+    includeRawTraces: $includeRawTraces
+    includeArchive: $includeArchive
+    rawTraceLimit: $rawTraceLimit
+    conversationLimit: $conversationLimit
+    includeConversation: false
+  ) {
+    runId
+    workingContext {
+      role
+      content
+      reasoning
+      toolPayload
+      ts
+    }
+    episodic
+    semantic
+    rawTraces {
+      traceType
+      content
+      toolName
+      toolArgs
+      toolResult
+      toolError
+      media
+      turnId
+      seq
+      ts
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetTeamMemberRunMemoryViewQuery__
+ *
+ * To run a query within a Vue component, call `useGetTeamMemberRunMemoryViewQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTeamMemberRunMemoryViewQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetTeamMemberRunMemoryViewQuery({
+ *   teamRunId: // value for 'teamRunId'
+ *   memberRunId: // value for 'memberRunId'
+ *   includeWorkingContext: // value for 'includeWorkingContext'
+ *   includeEpisodic: // value for 'includeEpisodic'
+ *   includeSemantic: // value for 'includeSemantic'
+ *   includeRawTraces: // value for 'includeRawTraces'
+ *   includeArchive: // value for 'includeArchive'
+ *   rawTraceLimit: // value for 'rawTraceLimit'
+ *   conversationLimit: // value for 'conversationLimit'
+ * });
+ */
+export function useGetTeamMemberRunMemoryViewQuery(variables: GetTeamMemberRunMemoryViewQueryVariables | VueCompositionApi.Ref<GetTeamMemberRunMemoryViewQueryVariables> | ReactiveFunction<GetTeamMemberRunMemoryViewQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetTeamMemberRunMemoryViewQuery, GetTeamMemberRunMemoryViewQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetTeamMemberRunMemoryViewQuery, GetTeamMemberRunMemoryViewQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetTeamMemberRunMemoryViewQuery, GetTeamMemberRunMemoryViewQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetTeamMemberRunMemoryViewQuery, GetTeamMemberRunMemoryViewQueryVariables>(GetTeamMemberRunMemoryViewDocument, variables, options);
+}
+export function useGetTeamMemberRunMemoryViewLazyQuery(variables?: GetTeamMemberRunMemoryViewQueryVariables | VueCompositionApi.Ref<GetTeamMemberRunMemoryViewQueryVariables> | ReactiveFunction<GetTeamMemberRunMemoryViewQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetTeamMemberRunMemoryViewQuery, GetTeamMemberRunMemoryViewQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetTeamMemberRunMemoryViewQuery, GetTeamMemberRunMemoryViewQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetTeamMemberRunMemoryViewQuery, GetTeamMemberRunMemoryViewQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetTeamMemberRunMemoryViewQuery, GetTeamMemberRunMemoryViewQueryVariables>(GetTeamMemberRunMemoryViewDocument, variables, options);
+}
+export type GetTeamMemberRunMemoryViewQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetTeamMemberRunMemoryViewQuery, GetTeamMemberRunMemoryViewQueryVariables>;
 export const GetUsageStatisticsInPeriodDocument = gql`
     query GetUsageStatisticsInPeriod($startTime: DateTime!, $endTime: DateTime!) {
   usageStatisticsInPeriod(startTime: $startTime, endTime: $endTime) {

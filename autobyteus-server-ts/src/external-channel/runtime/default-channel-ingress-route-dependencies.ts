@@ -1,6 +1,6 @@
-import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import type { ChannelIngressRouteDependencies } from "../../api/rest/channel-ingress.js";
+import { getRuntimeCommandIngressService } from "../../runtime-execution/runtime-command-ingress-service.js";
 import { getProviderProxySet } from "../providers/provider-proxy-set.js";
 import { ChannelBindingService } from "../services/channel-binding-service.js";
 import { ChannelIdempotencyService } from "../services/channel-idempotency-service.js";
@@ -8,6 +8,7 @@ import { ChannelIngressService } from "../services/channel-ingress-service.js";
 import { ChannelMessageReceiptService } from "../services/channel-message-receipt-service.js";
 import { ChannelThreadLockService } from "../services/channel-thread-lock-service.js";
 import { DeliveryEventService } from "../services/delivery-event-service.js";
+import { ChannelBindingRuntimeLauncher } from "./channel-binding-runtime-launcher.js";
 import { DefaultChannelRuntimeFacade } from "./default-channel-runtime-facade.js";
 
 let cachedDependencies: ChannelIngressRouteDependencies | null = null;
@@ -26,15 +27,14 @@ export const getDefaultChannelIngressRouteDependencies =
     const messageReceiptService = new ChannelMessageReceiptService(
       providerSet.messageReceiptProvider,
     );
+    const runtimeCommandIngressService = getRuntimeCommandIngressService();
+    const runtimeLauncher = new ChannelBindingRuntimeLauncher({
+      bindingService,
+      runtimeCommandIngressService,
+    });
     const runtimeFacade = new DefaultChannelRuntimeFacade({
-      agentRunManager: {
-        getAgentRun: (agentRunId: string) =>
-          AgentRunManager.getInstance().getAgentRun(agentRunId) as {
-            postUserMessage: (
-              message: import("autobyteus-ts").AgentInputUserMessage,
-            ) => Promise<void>;
-          } | null,
-      },
+      runtimeLauncher,
+      runtimeCommandIngressService,
       agentTeamRunManager: {
         getTeamRun: (teamRunId: string) =>
           AgentTeamRunManager.getInstance().getTeamRun(teamRunId) as {

@@ -19,6 +19,15 @@ const createBinding = (): ChannelBinding => ({
   peerId: "peer-1",
   threadId: null,
   targetType: "AGENT",
+  agentDefinitionId: "agent-definition-1",
+  launchPreset: {
+    workspaceRootPath: "/tmp/workspace",
+    llmModelIdentifier: "gpt-test",
+    runtimeKind: "AUTOBYTEUS",
+    autoExecuteTools: false,
+    skillAccessMode: "PRELOADED_ONLY",
+    llmConfig: null,
+  },
   agentRunId: "agent-1",
   teamRunId: null,
   targetNodeName: null,
@@ -224,6 +233,49 @@ describe("ChannelIngressService", () => {
     expect(messageReceiptService.recordIngressReceipt).toHaveBeenCalledWith(
       expect.objectContaining({
         agentRunId: "agent-1",
+        teamRunId: null,
+      }),
+    );
+  });
+
+  it("records the newly started agent run when definition-bound dispatch starts one on demand", async () => {
+    const binding = createBinding();
+    binding.agentRunId = null;
+    const idempotencyService = {
+      ensureFirstSeen: vi.fn().mockResolvedValue(createIdempotencyDecision(false)),
+    };
+    const bindingService = {
+      resolveBinding: vi.fn().mockResolvedValue({
+        binding,
+        usedTransportFallback: false,
+      } satisfies ResolvedBinding),
+    };
+    const threadLockService = {
+      withThreadLock: vi.fn(async (_key: string, work: () => Promise<unknown>) => work()),
+    };
+    const runtimeFacade: ChannelRuntimeFacade = {
+      dispatchToBinding: vi.fn().mockResolvedValue({
+        agentRunId: "agent-run-started-on-demand",
+        teamRunId: null,
+        dispatchedAt: new Date("2026-02-08T00:00:10.000Z"),
+      } satisfies ChannelRuntimeDispatchResult),
+    };
+    const messageReceiptService = {
+      recordIngressReceipt: vi.fn().mockResolvedValue(undefined),
+    };
+    const service = new ChannelIngressService({
+      idempotencyService,
+      bindingService,
+      threadLockService,
+      runtimeFacade,
+      messageReceiptService,
+    });
+
+    await service.handleInboundMessage(createEnvelope());
+
+    expect(messageReceiptService.recordIngressReceipt).toHaveBeenCalledWith(
+      expect.objectContaining({
+        agentRunId: "agent-run-started-on-demand",
         teamRunId: null,
       }),
     );

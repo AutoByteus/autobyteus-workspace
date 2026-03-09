@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
-import { routerKey } from 'vue-router';
 import SetupVerificationCard from '../SetupVerificationCard.vue';
 import { useMessagingProviderScopeStore } from '~/stores/messagingProviderScopeStore';
 import { useMessagingVerificationStore } from '~/stores/messagingVerificationStore';
@@ -15,7 +14,7 @@ describe('SetupVerificationCard', () => {
     vi.clearAllMocks();
   });
 
-  it('renders verification checks and blocker actions', async () => {
+  it('renders verification checks and rerun action for launch preset blockers', async () => {
     const verificationStore = useMessagingVerificationStore();
     verificationStore.verificationByProvider.WHATSAPP.verificationChecks = [
       {
@@ -24,10 +23,10 @@ describe('SetupVerificationCard', () => {
         status: 'PASSED',
       },
       {
-        key: 'target_runtime',
-        label: 'Target runtime activity',
+        key: 'launch_preset',
+        label: 'Binding launch preset',
         status: 'FAILED',
-        detail: 'AGENT runtime agent-1 is not active.',
+        detail: 'Binding for peer peer-1 is missing a complete launch preset.',
       },
     ];
     verificationStore.verificationByProvider.WHATSAPP.verificationResult = {
@@ -35,13 +34,10 @@ describe('SetupVerificationCard', () => {
       checks: verificationStore.verificationChecks,
       blockers: [
         {
-          code: 'TARGET_RUNTIME_NOT_ACTIVE',
-          step: 'verification',
-          message: 'Selected AGENT runtime agent-1 is not active.',
-          actions: [
-            { type: 'OPEN_AGENT_RUNTIME', label: 'Open Agent Runtime' },
-            { type: 'RERUN_VERIFICATION', label: 'Re-run Verification' },
-          ],
+          code: 'LAUNCH_PRESET_NOT_READY',
+          step: 'binding',
+          message: 'Binding for peer peer-1 is missing a complete launch preset.',
+          actions: [{ type: 'RERUN_VERIFICATION', label: 'Re-run Verification' }],
         },
       ],
       checkedAt: '2026-02-11T00:00:00.000Z',
@@ -54,8 +50,7 @@ describe('SetupVerificationCard', () => {
     });
     await flushPromises();
 
-    expect(wrapper.get('[data-testid="verification-check-target_runtime"]').text()).toContain('FAILED');
-    expect(wrapper.get('[data-testid="verification-action-OPEN_AGENT_RUNTIME"]').exists()).toBe(true);
+    expect(wrapper.get('[data-testid="verification-check-launch_preset"]').text()).toContain('FAILED');
     expect(wrapper.get('[data-testid="verification-action-RERUN_VERIFICATION"]').exists()).toBe(true);
   });
 
@@ -91,41 +86,6 @@ describe('SetupVerificationCard', () => {
     expect(runSpy).toHaveBeenCalledTimes(1);
   });
 
-  it('navigates to team runtime when team action is clicked', async () => {
-    const verificationStore = useMessagingVerificationStore();
-    verificationStore.verificationByProvider.WHATSAPP.verificationChecks = [];
-    verificationStore.verificationByProvider.WHATSAPP.verificationResult = {
-      ready: false,
-      checks: [],
-      blockers: [
-        {
-          code: 'TARGET_RUNTIME_NOT_ACTIVE',
-          step: 'verification',
-          message: 'Selected TEAM runtime is not active.',
-          actions: [{ type: 'OPEN_TEAM_RUNTIME', label: 'Open Team Runtime' }],
-        },
-      ],
-      checkedAt: '2026-02-11T00:00:00.000Z',
-    };
-    const routerMock = {
-      push: vi.fn().mockResolvedValue(undefined),
-    };
-
-    const wrapper = mount(SetupVerificationCard, {
-      global: {
-        plugins: [pinia],
-        provide: {
-          [routerKey as symbol]: routerMock,
-        },
-      },
-    });
-    await flushPromises();
-
-    await wrapper.get('[data-testid="verification-action-OPEN_TEAM_RUNTIME"]').trigger('click');
-
-    expect(routerMock.push).toHaveBeenCalledWith({ path: '/agent-teams', query: { view: 'team-list' } });
-  });
-
   it('emits open-step from verification check and blocker controls', async () => {
     const providerScopeStore = useMessagingProviderScopeStore();
     providerScopeStore.initialize({
@@ -135,6 +95,8 @@ describe('SetupVerificationCard', () => {
       wecomAppEnabled: true,
       discordEnabled: true,
       discordAccountId: 'discord-acct-1',
+      telegramEnabled: false,
+      telegramAccountId: null,
     });
     providerScopeStore.setSelectedProvider('WHATSAPP');
 

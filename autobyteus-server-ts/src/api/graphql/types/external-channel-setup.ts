@@ -2,6 +2,5 @@ export { ExternalChannelSetupResolver } from "./external-channel-setup/resolver.
 export {
   ExternalChannelCapabilities,
   ExternalChannelBindingGql,
-  ExternalChannelBindingTargetOptionGql,
   UpsertExternalChannelBindingInput,
 } from "./external-channel-setup/types.js";

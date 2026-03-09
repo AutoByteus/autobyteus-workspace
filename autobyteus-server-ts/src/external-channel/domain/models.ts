@@ -1,7 +1,18 @@
 import type { ExternalChannelProvider } from "autobyteus-ts/external-channel/provider.js";
 import type { ExternalChannelTransport } from "autobyteus-ts/external-channel/channel-transport.js";
+import type { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import type { RuntimeKind } from "../../runtime-management/runtime-kind.js";
 
 export type ChannelBindingTargetType = "AGENT" | "TEAM";
+
+export type ChannelBindingLaunchPreset = {
+  workspaceRootPath: string;
+  llmModelIdentifier: string;
+  runtimeKind: RuntimeKind;
+  autoExecuteTools: boolean;
+  skillAccessMode: SkillAccessMode | null;
+  llmConfig: Record<string, unknown> | null;
+};
 
 export type ChannelBinding = {
   id: string;
@@ -11,6 +22,8 @@ export type ChannelBinding = {
   peerId: string;
   threadId: string | null;
   targetType: ChannelBindingTargetType;
+  agentDefinitionId: string | null;
+  launchPreset: ChannelBindingLaunchPreset | null;
   agentRunId: string | null;
   teamRunId: string | null;
   targetNodeName: string | null;
@@ -41,6 +54,8 @@ export type UpsertChannelBindingInput = {
   peerId: string;
   threadId: string | null;
   targetType: ChannelBindingTargetType;
+  agentDefinitionId?: string | null;
+  launchPreset?: ChannelBindingLaunchPreset | null;
   agentRunId?: string | null;
   teamRunId?: string | null;
   targetNodeName?: string | null;
@@ -62,13 +77,6 @@ export type ChannelIdempotencyDecision = {
 export type ChannelDispatchTarget = {
   agentRunId: string | null;
   teamRunId: string | null;
-};
-
-export type ChannelBindingTargetOption = {
-  targetType: ChannelBindingTargetType;
-  targetRunId: string;
-  displayName: string;
-  status: string;
 };
 
 export type ChannelSourceContext = {

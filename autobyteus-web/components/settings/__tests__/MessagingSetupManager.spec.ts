@@ -4,7 +4,6 @@ import { createPinia, setActivePinia } from 'pinia';
 import { nextTick } from 'vue';
 import MessagingSetupManager from '../MessagingSetupManager.vue';
 import { useMessagingChannelBindingSetupStore } from '~/stores/messagingChannelBindingSetupStore';
-import { useMessagingChannelBindingOptionsStore } from '~/stores/messagingChannelBindingOptionsStore';
 import { useGatewayCapabilityStore } from '~/stores/gatewayCapabilityStore';
 import { useGatewaySessionSetupStore } from '~/stores/gatewaySessionSetupStore';
 import { useMessagingProviderScopeStore } from '~/stores/messagingProviderScopeStore';
@@ -33,7 +32,6 @@ describe('MessagingSetupManager', () => {
     const gatewayStore = useGatewaySessionSetupStore();
     const capabilityStore = useGatewayCapabilityStore();
     const bindingStore = useMessagingChannelBindingSetupStore();
-    const optionsStore = useMessagingChannelBindingOptionsStore();
 
     const initSpy = vi.spyOn(gatewayStore, 'initializeFromConfig').mockImplementation(() => {});
     const refreshStatusSpy = vi
@@ -50,7 +48,6 @@ describe('MessagingSetupManager', () => {
       .spyOn(bindingStore, 'loadCapabilities')
       .mockResolvedValue({ bindingCrudEnabled: true, reason: undefined });
     const loadBindingsSpy = vi.spyOn(bindingStore, 'loadBindingsIfEnabled').mockResolvedValue([]);
-    const loadTargetOptionsSpy = vi.spyOn(optionsStore, 'loadTargetOptions').mockResolvedValue([]);
 
     mount(MessagingSetupManager, {
       global: {
@@ -65,14 +62,12 @@ describe('MessagingSetupManager', () => {
     expect(loadWeComAccountsSpy).toHaveBeenCalledTimes(1);
     expect(loadCapabilitiesSpy).toHaveBeenCalledTimes(1);
     expect(loadBindingsSpy).toHaveBeenCalledTimes(1);
-    expect(loadTargetOptionsSpy).toHaveBeenCalledTimes(1);
   });
 
   it('stops session auto sync on unmount', async () => {
     const gatewayStore = useGatewaySessionSetupStore();
     const capabilityStore = useGatewayCapabilityStore();
     const bindingStore = useMessagingChannelBindingSetupStore();
-    const optionsStore = useMessagingChannelBindingOptionsStore();
 
     vi.spyOn(gatewayStore, 'initializeFromConfig').mockImplementation(() => {});
     vi.spyOn(gatewayStore, 'refreshManagedGatewayStatus').mockResolvedValue(null);
@@ -86,7 +81,6 @@ describe('MessagingSetupManager', () => {
       reason: undefined,
     });
     vi.spyOn(bindingStore, 'loadBindingsIfEnabled').mockResolvedValue([]);
-    vi.spyOn(optionsStore, 'loadTargetOptions').mockResolvedValue([]);
     const stopSyncSpy = vi
       .spyOn(gatewayStore, 'stopSessionStatusAutoSync')
       .mockImplementation(() => {});
@@ -106,7 +100,6 @@ describe('MessagingSetupManager', () => {
     const gatewayStore = useGatewaySessionSetupStore();
     const capabilityStore = useGatewayCapabilityStore();
     const bindingStore = useMessagingChannelBindingSetupStore();
-    const optionsStore = useMessagingChannelBindingOptionsStore();
     const providerScopeStore = useMessagingProviderScopeStore();
 
     vi.spyOn(gatewayStore, 'initializeFromConfig').mockImplementation(() => {});
@@ -121,7 +114,6 @@ describe('MessagingSetupManager', () => {
       reason: undefined,
     });
     vi.spyOn(bindingStore, 'loadBindingsIfEnabled').mockResolvedValue([]);
-    vi.spyOn(optionsStore, 'loadTargetOptions').mockResolvedValue([]);
 
     const wrapper = mount(MessagingSetupManager, {
       global: {

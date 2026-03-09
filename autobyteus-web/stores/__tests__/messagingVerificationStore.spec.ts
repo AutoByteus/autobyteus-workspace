@@ -1,10 +1,38 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
-import { useMessagingChannelBindingOptionsStore } from '~/stores/messagingChannelBindingOptionsStore';
 import { useMessagingChannelBindingSetupStore } from '~/stores/messagingChannelBindingSetupStore';
 import { useMessagingProviderScopeStore } from '~/stores/messagingProviderScopeStore';
 import { useMessagingVerificationStore } from '~/stores/messagingVerificationStore';
 import { useGatewaySessionSetupStore } from '~/stores/gatewaySessionSetupStore';
+
+function createBinding(overrides: Partial<ReturnType<typeof buildBinding>> = {}) {
+  return {
+    ...buildBinding(),
+    ...overrides,
+  };
+}
+
+function buildBinding() {
+  return {
+    id: 'binding-1',
+    provider: 'WHATSAPP' as const,
+    transport: 'BUSINESS_API' as const,
+    accountId: 'whatsapp-business',
+    peerId: 'peer-1',
+    threadId: null,
+    targetType: 'AGENT' as const,
+    targetAgentDefinitionId: 'agent-definition-1',
+    launchPreset: {
+      workspaceRootPath: '/tmp/workspace',
+      llmModelIdentifier: 'gpt-test',
+      runtimeKind: 'AUTOBYTEUS',
+      autoExecuteTools: false,
+      skillAccessMode: 'PRELOADED_ONLY' as const,
+      llmConfig: null,
+    },
+    updatedAt: '2026-02-09T12:00:00.000Z',
+  };
+}
 
 describe('messagingVerificationStore', () => {
   beforeEach(() => {
@@ -20,7 +48,6 @@ describe('messagingVerificationStore', () => {
 
   it('runSetupVerification returns ready=true when all prerequisites pass', async () => {
     const gatewayStore = useGatewaySessionSetupStore();
-    const optionsStore = useMessagingChannelBindingOptionsStore();
     const bindingStore = useMessagingChannelBindingSetupStore();
     const verificationStore = useMessagingVerificationStore();
 
@@ -38,33 +65,13 @@ describe('messagingVerificationStore', () => {
     };
     stubGatewayHealthRefresh();
     bindingStore.capabilities.bindingCrudEnabled = true;
-    bindingStore.bindings = [
-      {
-        id: 'binding-1',
-        provider: 'WHATSAPP',
-        transport: 'BUSINESS_API',
-        accountId: 'whatsapp-business',
-        peerId: 'peer-1',
-        threadId: null,
-        targetType: 'AGENT',
-        targetRunId: 'agent-1',
-        updatedAt: '2026-02-09T12:00:00.000Z',
-      },
-    ];
-    optionsStore.targetOptions = [
-      {
-        targetType: 'AGENT',
-        targetRunId: 'agent-1',
-        displayName: 'Agent One',
-        status: 'RUNNING',
-      },
-    ];
-    vi.spyOn(optionsStore, 'loadTargetOptions').mockResolvedValue(optionsStore.targetOptions);
+    bindingStore.bindings = [createBinding()];
 
     const result = await verificationStore.runSetupVerification();
 
     expect(result.ready).toBe(true);
     expect(result.blockers).toHaveLength(0);
+    expect(result.checks.find((check) => check.key === 'launch_preset')?.status).toBe('PASSED');
   });
 
   it('runSetupVerification reports binding capability blocker when disabled', async () => {
@@ -130,17 +137,11 @@ describe('messagingVerificationStore', () => {
     gatewayStore.session = null;
     bindingStore.capabilities.bindingCrudEnabled = true;
     bindingStore.bindings = [
-      {
-        id: 'binding-1',
+      createBinding({
         provider: 'WECHAT',
         transport: 'PERSONAL_SESSION',
         accountId: 'wechat-account',
-        peerId: 'peer-1',
-        threadId: null,
-        targetType: 'AGENT',
-        targetRunId: 'agent-1',
-        updatedAt: '2026-02-09T12:00:00.000Z',
-      },
+      }),
     ];
 
     const result = await verificationStore.runSetupVerification();
@@ -151,7 +152,6 @@ describe('messagingVerificationStore', () => {
 
   it('keeps verification state isolated per provider', async () => {
     const gatewayStore = useGatewaySessionSetupStore();
-    const optionsStore = useMessagingChannelBindingOptionsStore();
     const bindingStore = useMessagingChannelBindingSetupStore();
     const providerScopeStore = useMessagingProviderScopeStore();
     const verificationStore = useMessagingVerificationStore();
@@ -190,28 +190,7 @@ describe('messagingVerificationStore', () => {
     };
     stubGatewayHealthRefresh();
     bindingStore.capabilities.bindingCrudEnabled = true;
-    bindingStore.bindings = [
-      {
-        id: 'binding-whatsapp',
-        provider: 'WHATSAPP',
-        transport: 'BUSINESS_API',
-        accountId: 'whatsapp-business',
-        peerId: 'peer-1',
-        threadId: null,
-        targetType: 'AGENT',
-        targetRunId: 'agent-1',
-        updatedAt: '2026-02-09T12:00:00.000Z',
-      },
-    ];
-    optionsStore.targetOptions = [
-      {
-        targetType: 'AGENT',
-        targetRunId: 'agent-1',
-        displayName: 'Agent One',
-        status: 'RUNNING',
-      },
-    ];
-    vi.spyOn(optionsStore, 'loadTargetOptions').mockResolvedValue(optionsStore.targetOptions);
+    bindingStore.bindings = [createBinding()];
 
     providerScopeStore.setSelectedProvider('WHATSAPP');
     await verificationStore.runSetupVerification();
@@ -224,9 +203,8 @@ describe('messagingVerificationStore', () => {
     );
   });
 
-  it('reports runtime blocker with remediation actions when scoped target is inactive', async () => {
+  it('reports launch preset blocker when a scoped binding is incomplete', async () => {
     const gatewayStore = useGatewaySessionSetupStore();
-    const optionsStore = useMessagingChannelBindingOptionsStore();
     const bindingStore = useMessagingChannelBindingSetupStore();
     const verificationStore = useMessagingVerificationStore();
 
@@ -245,37 +223,17 @@ describe('messagingVerificationStore', () => {
     stubGatewayHealthRefresh();
     bindingStore.capabilities.bindingCrudEnabled = true;
     bindingStore.bindings = [
-      {
-        id: 'binding-1',
-        provider: 'WHATSAPP',
-        transport: 'BUSINESS_API',
-        accountId: 'whatsapp-business',
-        peerId: 'peer-1',
-        threadId: null,
-        targetType: 'AGENT',
-        targetRunId: 'agent-1',
-        updatedAt: '2026-02-09T12:00:00.000Z',
-      },
+      createBinding({
+        targetAgentDefinitionId: null,
+        launchPreset: null,
+      }),
     ];
-    optionsStore.targetOptions = [
-      {
-        targetType: 'AGENT',
-        targetRunId: 'agent-1',
-        displayName: 'Agent One',
-        status: 'STOPPED',
-      },
-    ];
-    vi.spyOn(optionsStore, 'loadTargetOptions').mockResolvedValue(optionsStore.targetOptions);
 
     const result = await verificationStore.runSetupVerification();
 
     expect(result.ready).toBe(false);
-    const runtimeBlocker = result.blockers.find((item) => item.code === 'TARGET_RUNTIME_NOT_ACTIVE');
-    expect(runtimeBlocker).toBeTruthy();
-    expect(runtimeBlocker?.actions?.some((action) => action.type === 'OPEN_AGENT_RUNTIME')).toBe(
-      true,
-    );
-    expect(result.checks.find((check) => check.key === 'target_runtime')?.status).toBe('FAILED');
+    expect(result.blockers.some((item) => item.code === 'LAUNCH_PRESET_NOT_READY')).toBe(true);
+    expect(result.checks.find((check) => check.key === 'launch_preset')?.status).toBe('FAILED');
   });
 
   it('reports gateway runtime critical blocker when reliability state is CRITICAL_LOCK_LOST', async () => {
@@ -328,7 +286,6 @@ describe('messagingVerificationStore', () => {
       },
     };
     stubGatewayHealthRefresh();
-
     bindingStore.capabilities.bindingCrudEnabled = true;
 
     const result = await verificationStore.runSetupVerification();
@@ -340,7 +297,6 @@ describe('messagingVerificationStore', () => {
 
   it('fails verification when Telegram provider configuration is not ready', async () => {
     const gatewayStore = useGatewaySessionSetupStore();
-    const optionsStore = useMessagingChannelBindingOptionsStore();
     const bindingStore = useMessagingChannelBindingSetupStore();
     const providerScopeStore = useMessagingProviderScopeStore();
     const verificationStore = useMessagingVerificationStore();
@@ -372,27 +328,11 @@ describe('messagingVerificationStore', () => {
     stubGatewayHealthRefresh();
     bindingStore.capabilities.bindingCrudEnabled = true;
     bindingStore.bindings = [
-      {
-        id: 'binding-telegram',
+      createBinding({
         provider: 'TELEGRAM',
-        transport: 'BUSINESS_API',
         accountId: 'telegram-main',
-        peerId: 'peer-1',
-        threadId: null,
-        targetType: 'AGENT',
-        targetRunId: 'agent-1',
-        updatedAt: '2026-02-09T12:00:00.000Z',
-      },
+      }),
     ];
-    optionsStore.targetOptions = [
-      {
-        targetType: 'AGENT',
-        targetRunId: 'agent-1',
-        displayName: 'Agent One',
-        status: 'RUNNING',
-      },
-    ];
-    vi.spyOn(optionsStore, 'loadTargetOptions').mockResolvedValue(optionsStore.targetOptions);
 
     const result = await verificationStore.runSetupVerification();
 

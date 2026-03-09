@@ -57,6 +57,15 @@ const createAgentBinding = (): ChannelBinding => ({
   peerId: "peer-1",
   threadId: "thread-1",
   targetType: "AGENT",
+  agentDefinitionId: "agent-definition-1",
+  launchPreset: {
+    workspaceRootPath: "/tmp/workspace",
+    llmModelIdentifier: "gpt-test",
+    runtimeKind: "AUTOBYTEUS",
+    autoExecuteTools: false,
+    skillAccessMode: "PRELOADED_ONLY",
+    llmConfig: null,
+  },
   agentRunId: "agent-1",
   teamRunId: null,
   targetNodeName: null,
@@ -68,20 +77,24 @@ const createAgentBinding = (): ChannelBinding => ({
 const createTeamBinding = (): ChannelBinding => ({
   ...createAgentBinding(),
   targetType: "TEAM",
+  agentDefinitionId: null,
+  launchPreset: null,
   agentRunId: null,
   teamRunId: "team-1",
   targetNodeName: "support-node",
 });
 
 describe("DefaultChannelRuntimeFacade", () => {
-  it("dispatches to agent run with external source metadata", async () => {
-    const postUserMessage = vi.fn().mockResolvedValue(undefined);
+  it("dispatches to agent run through the runtime launcher and ingress service", async () => {
+    const resolveOrStartAgentRun = vi.fn().mockResolvedValue("agent-1");
+    const sendTurn = vi.fn().mockResolvedValue({
+      accepted: true,
+      code: null,
+      message: null,
+    });
     const facade = new DefaultChannelRuntimeFacade({
-      agentRunManager: {
-        getAgentRun: vi.fn().mockReturnValue({
-          postUserMessage,
-        }),
-      },
+      runtimeLauncher: { resolveOrStartAgentRun },
+      runtimeCommandIngressService: { sendTurn },
       agentTeamRunManager: {
         getTeamRun: vi.fn(),
       },
@@ -92,22 +105,22 @@ describe("DefaultChannelRuntimeFacade", () => {
     expect(result.agentRunId).toBe("agent-1");
     expect(result.teamRunId).toBeNull();
     expect(result.dispatchedAt).toBeInstanceOf(Date);
-    expect(postUserMessage).toHaveBeenCalledOnce();
-    const sentMessage = postUserMessage.mock.calls[0][0];
-    expect(sentMessage.content).toBe("hello");
-    expect(sentMessage.metadata.externalSource).toMatchObject({
-      source: "external-channel",
-      provider: ExternalChannelProvider.WHATSAPP,
-      transport: ExternalChannelTransport.BUSINESS_API,
-      externalMessageId: "msg-1",
+    expect(resolveOrStartAgentRun).toHaveBeenCalledOnce();
+    expect(sendTurn).toHaveBeenCalledOnce();
+    expect(sendTurn.mock.calls[0]?.[0]).toMatchObject({
+      runId: "agent-1",
+      mode: "agent",
     });
   });
 
   it("dispatches to team run and passes target node", async () => {
     const postMessage = vi.fn().mockResolvedValue(undefined);
     const facade = new DefaultChannelRuntimeFacade({
-      agentRunManager: {
-        getAgentRun: vi.fn(),
+      runtimeLauncher: {
+        resolveOrStartAgentRun: vi.fn(),
+      },
+      runtimeCommandIngressService: {
+        sendTurn: vi.fn(),
       },
       agentTeamRunManager: {
         getTeamRun: vi.fn().mockReturnValue({
@@ -129,12 +142,17 @@ describe("DefaultChannelRuntimeFacade", () => {
   });
 
   it("maps inbound attachments to context files", async () => {
-    const postUserMessage = vi.fn().mockResolvedValue(undefined);
+    const sendTurn = vi.fn().mockResolvedValue({
+      accepted: true,
+      code: null,
+      message: null,
+    });
     const facade = new DefaultChannelRuntimeFacade({
-      agentRunManager: {
-        getAgentRun: vi.fn().mockReturnValue({
-          postUserMessage,
-        }),
+      runtimeLauncher: {
+        resolveOrStartAgentRun: vi.fn().mockResolvedValue("agent-1"),
+      },
+      runtimeCommandIngressService: {
+        sendTurn,
       },
       agentTeamRunManager: {
         getTeamRun: vi.fn(),
@@ -143,25 +161,29 @@ describe("DefaultChannelRuntimeFacade", () => {
 
     await facade.dispatchToBinding(createAgentBinding(), createEnvelopeWithAttachments());
 
-    expect(postUserMessage).toHaveBeenCalledOnce();
-    const sentMessage = postUserMessage.mock.calls[0][0];
-    expect(sentMessage.contextFiles).toHaveLength(2);
-    expect(sentMessage.contextFiles?.[0]?.toDict()).toMatchObject({
+    const sentTurn = sendTurn.mock.calls[0]?.[0];
+    expect(sentTurn?.message?.contextFiles).toHaveLength(2);
+    expect(sentTurn?.message?.contextFiles?.[0]?.toDict()).toMatchObject({
       file_type: "audio",
       file_name: "voice.wav",
     });
-    expect(sentMessage.contextFiles?.[1]?.toDict()).toMatchObject({
+    expect(sentTurn?.message?.contextFiles?.[1]?.toDict()).toMatchObject({
       file_type: "image",
       file_name: "image.jpg",
     });
   });
 
-  it("throws when agent binding has no agentRunId", async () => {
-    const binding = createAgentBinding();
-    binding.agentRunId = null;
+  it("throws when agent runtime rejects external dispatch", async () => {
     const facade = new DefaultChannelRuntimeFacade({
-      agentRunManager: {
-        getAgentRun: vi.fn(),
+      runtimeLauncher: {
+        resolveOrStartAgentRun: vi.fn().mockResolvedValue("agent-1"),
+      },
+      runtimeCommandIngressService: {
+        sendTurn: vi.fn().mockResolvedValue({
+          accepted: false,
+          code: "RUN_SESSION_NOT_FOUND",
+          message: "Run session 'agent-1' is not active.",
+        }),
       },
       agentTeamRunManager: {
         getTeamRun: vi.fn(),
@@ -169,22 +191,7 @@ describe("DefaultChannelRuntimeFacade", () => {
     });
 
     await expect(
-      facade.dispatchToBinding(binding, createEnvelope()),
-    ).rejects.toThrow("binding.agentRunId must be a non-empty string.");
-  });
-
-  it("throws when team run cannot be found", async () => {
-    const facade = new DefaultChannelRuntimeFacade({
-      agentRunManager: {
-        getAgentRun: vi.fn(),
-      },
-      agentTeamRunManager: {
-        getTeamRun: vi.fn().mockReturnValue(null),
-      },
-    });
-
-    await expect(
-      facade.dispatchToBinding(createTeamBinding(), createEnvelope()),
-    ).rejects.toThrow("Team run 'team-1' not found for channel dispatch.");
+      facade.dispatchToBinding(createAgentBinding(), createEnvelope()),
+    ).rejects.toThrow("Run session 'agent-1' is not active.");
   });
 });

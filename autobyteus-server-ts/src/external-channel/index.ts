@@ -11,7 +11,6 @@ export * from "./runtime/default-channel-ingress-route-dependencies.js";
 export * from "./runtime/gateway-callback-publisher.js";
 export * from "./services/channel-binding-service.js";
 export * from "./services/channel-binding-constraint-service.js";
-export * from "./services/channel-binding-target-options-service.js";
 export * from "./services/channel-ingress-service.js";
 export * from "./services/channel-idempotency-service.js";
 export * from "./services/callback-idempotency-service.js";

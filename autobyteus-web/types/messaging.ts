@@ -1,3 +1,5 @@
+import type { AgentRuntimeKind, SkillAccessMode } from '~/types/agent/AgentRunConfig';
+
 export type MessagingProvider = 'WHATSAPP' | 'WECOM' | 'WECHAT' | 'DISCORD' | 'TELEGRAM';
 export type PersonalSessionProvider = 'WHATSAPP' | 'WECHAT';
 
@@ -15,7 +17,7 @@ export type SetupStepKey = 'gateway' | 'personal_session' | 'binding' | 'verific
 
 export type SetupStepStateStatus = 'PENDING' | 'READY' | 'BLOCKED' | 'DONE';
 
-export type VerificationCheckKey = 'gateway' | 'provider' | 'session' | 'binding' | 'target_runtime';
+export type VerificationCheckKey = 'gateway' | 'provider' | 'session' | 'binding' | 'launch_preset';
 
 export type VerificationCheckStatus = 'PENDING' | 'RUNNING' | 'PASSED' | 'FAILED' | 'SKIPPED';
 
@@ -28,16 +30,11 @@ export interface SetupVerificationCheck {
   completedAt?: string;
 }
 
-export type SetupBlockerActionType =
-  | 'OPEN_AGENT_RUNTIME'
-  | 'OPEN_TEAM_RUNTIME'
-  | 'RERUN_VERIFICATION'
-  | 'REFRESH_TARGETS';
+export type SetupBlockerActionType = 'RERUN_VERIFICATION';
 
 export interface SetupBlockerAction {
   type: SetupBlockerActionType;
   label: string;
-  targetRunId?: string;
 }
 
 export interface ExternalChannelBindingModel {
@@ -48,8 +45,18 @@ export interface ExternalChannelBindingModel {
   peerId: string;
   threadId: string | null;
   targetType: ExternalChannelBindingTargetType;
-  targetRunId: string;
+  targetAgentDefinitionId: string | null;
+  launchPreset: ExternalChannelLaunchPresetModel | null;
   updatedAt: string;
+}
+
+export interface ExternalChannelLaunchPresetModel {
+  workspaceRootPath: string;
+  llmModelIdentifier: string;
+  runtimeKind: AgentRuntimeKind;
+  autoExecuteTools: boolean;
+  skillAccessMode: SkillAccessMode | null;
+  llmConfig: Record<string, unknown> | null;
 }
 
 export interface ExternalChannelBindingDraft {
@@ -59,14 +66,8 @@ export interface ExternalChannelBindingDraft {
   peerId: string;
   threadId: string | null;
   targetType: ExternalChannelBindingTargetType;
-  targetRunId: string;
-}
-
-export interface ExternalChannelBindingTargetOption {
-  targetType: ExternalChannelBindingTargetType;
-  targetRunId: string;
-  displayName: string;
-  status: string;
+  targetAgentDefinitionId: string;
+  launchPreset: ExternalChannelLaunchPresetModel;
 }
 
 export interface ExternalChannelCapabilityModel {

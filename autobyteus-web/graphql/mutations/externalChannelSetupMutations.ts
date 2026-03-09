@@ -11,7 +11,15 @@ export const UPSERT_EXTERNAL_CHANNEL_BINDING = gql`
       peerId
       threadId
       targetType
-      targetRunId
+      targetAgentDefinitionId
+      launchPreset {
+        workspaceRootPath
+        llmModelIdentifier
+        runtimeKind
+        autoExecuteTools
+        skillAccessMode
+        llmConfig
+      }
       updatedAt
     }
   }

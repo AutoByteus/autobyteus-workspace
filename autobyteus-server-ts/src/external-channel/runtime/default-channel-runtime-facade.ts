@@ -4,10 +4,8 @@ import type { ExternalAttachment } from "autobyteus-ts/external-channel/external
 import type { ExternalMessageEnvelope } from "autobyteus-ts/external-channel/external-message-envelope.js";
 import type { ChannelBinding } from "../domain/models.js";
 import type { ChannelRuntimeDispatchResult, ChannelRuntimeFacade } from "./channel-runtime-facade.js";
-
-type AgentLike = {
-  postUserMessage: (message: AgentInputUserMessage) => Promise<void>;
-};
+import type { ChannelBindingRuntimeLauncher } from "./channel-binding-runtime-launcher.js";
+import type { RuntimeCommandIngressService } from "../../runtime-execution/runtime-command-ingress-service.js";
 
 type TeamLike = {
   postMessage: (
@@ -16,16 +14,13 @@ type TeamLike = {
   ) => Promise<void>;
 };
 
-export type AgentRunManagerPort = {
-  getAgentRun(agentRunId: string): AgentLike | null;
-};
-
 export type AgentTeamRunManagerPort = {
   getTeamRun(teamRunId: string): TeamLike | null;
 };
 
 export type DefaultChannelRuntimeFacadeDependencies = {
-  agentRunManager: AgentRunManagerPort;
+  runtimeLauncher: Pick<ChannelBindingRuntimeLauncher, "resolveOrStartAgentRun">;
+  runtimeCommandIngressService: Pick<RuntimeCommandIngressService, "sendTurn">;
   agentTeamRunManager: AgentTeamRunManagerPort;
 };
 
@@ -48,13 +43,18 @@ export class DefaultChannelRuntimeFacade implements ChannelRuntimeFacade {
     binding: ChannelBinding,
     envelope: ExternalMessageEnvelope,
   ): Promise<ChannelRuntimeDispatchResult> {
-    const agentRunId = normalizeRequiredString(binding.agentRunId, "binding.agentRunId");
-    const agent = this.deps.agentRunManager.getAgentRun(agentRunId);
-    if (!agent?.postUserMessage) {
-      throw new Error(`Agent run '${agentRunId}' not found for channel dispatch.`);
+    const agentRunId = await this.deps.runtimeLauncher.resolveOrStartAgentRun(binding);
+    const result = await this.deps.runtimeCommandIngressService.sendTurn({
+      runId: agentRunId,
+      mode: "agent",
+      message: buildAgentInputMessage(envelope),
+    });
+    if (!result.accepted) {
+      throw new Error(
+        result.message ??
+          `Agent run '${agentRunId}' rejected external channel dispatch (${result.code ?? "UNKNOWN"}).`,
+      );
     }
-
-    await agent.postUserMessage(buildAgentInputMessage(envelope));
 
     return {
       agentRunId: agentRunId,

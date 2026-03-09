@@ -8,6 +8,7 @@ import {
 } from "autobyteus-ts/external-channel/channel-transport.js";
 import type {
   ChannelBinding,
+  ChannelBindingLaunchPreset,
   ChannelBindingLookup,
   ChannelBindingProviderDefaultLookup,
   ChannelDispatchTarget,
@@ -15,6 +16,7 @@ import type {
   UpsertChannelBindingInput,
 } from "../domain/models.js";
 import type { ChannelBindingProvider } from "./channel-binding-provider.js";
+import { normalizeRuntimeKind } from "../../runtime-management/runtime-kind.js";
 import {
   nextNumericStringId,
   normalizeNullableString,
@@ -33,12 +35,23 @@ type ChannelBindingRecord = {
   peerId: string;
   threadId: string;
   targetType: "AGENT" | "TEAM";
+  agentDefinitionId?: string | null;
+  launchPreset?: ChannelBindingLaunchPresetRecord | null;
   agentRunId: string | null;
   teamRunId: string | null;
   targetNodeName: string | null;
   allowTransportFallback: boolean;
   createdAt: string;
   updatedAt: string;
+};
+
+type ChannelBindingLaunchPresetRecord = {
+  workspaceRootPath: string;
+  llmModelIdentifier: string;
+  runtimeKind: string;
+  autoExecuteTools: boolean;
+  skillAccessMode: string | null;
+  llmConfig: Record<string, unknown> | null;
 };
 
 const bindingsFilePath = resolvePersistencePath("external-channel", "bindings.json");
@@ -53,6 +66,54 @@ const parseTargetType = (value: string): "AGENT" | "TEAM" => {
   throw new Error(`Unsupported channel target type stored in file: ${value}`);
 };
 
+const toDomainLaunchPreset = (
+  value: ChannelBindingLaunchPresetRecord | null | undefined,
+): ChannelBindingLaunchPreset | null => {
+  if (!value) {
+    return null;
+  }
+
+  return {
+    workspaceRootPath: normalizeRequiredString(
+      value.workspaceRootPath,
+      "launchPreset.workspaceRootPath",
+    ),
+    llmModelIdentifier: normalizeRequiredString(
+      value.llmModelIdentifier,
+      "launchPreset.llmModelIdentifier",
+    ),
+    runtimeKind: normalizeRuntimeKind(value.runtimeKind),
+    autoExecuteTools: value.autoExecuteTools,
+    skillAccessMode: normalizeNullableString(value.skillAccessMode) as
+      | ChannelBindingLaunchPreset["skillAccessMode"]
+      | null,
+    llmConfig: isJsonObject(value.llmConfig) ? value.llmConfig : null,
+  };
+};
+
+const toRecordLaunchPreset = (
+  value: ChannelBindingLaunchPreset | null | undefined,
+): ChannelBindingLaunchPresetRecord | null => {
+  if (!value) {
+    return null;
+  }
+
+  return {
+    workspaceRootPath: normalizeRequiredString(
+      value.workspaceRootPath,
+      "launchPreset.workspaceRootPath",
+    ),
+    llmModelIdentifier: normalizeRequiredString(
+      value.llmModelIdentifier,
+      "launchPreset.llmModelIdentifier",
+    ),
+    runtimeKind: normalizeRuntimeKind(value.runtimeKind),
+    autoExecuteTools: value.autoExecuteTools,
+    skillAccessMode: normalizeNullableString(value.skillAccessMode),
+    llmConfig: isJsonObject(value.llmConfig) ? value.llmConfig : null,
+  };
+};
+
 const toDomain = (value: ChannelBindingRecord): ChannelBinding => ({
   id: value.id,
   provider: parseExternalChannelProvider(value.provider),
@@ -61,6 +122,8 @@ const toDomain = (value: ChannelBindingRecord): ChannelBinding => ({
   peerId: value.peerId,
   threadId: fromThreadStorage(value.threadId),
   targetType: parseTargetType(value.targetType),
+  agentDefinitionId: normalizeNullableString(value.agentDefinitionId ?? null),
+  launchPreset: toDomainLaunchPreset(value.launchPreset),
   agentRunId: value.agentRunId,
   teamRunId: value.teamRunId,
   targetNodeName: value.targetNodeName,
@@ -77,6 +140,37 @@ const sortByUpdatedAtDesc = (rows: ChannelBindingRecord[]): ChannelBindingRecord
     }
     return parseDate(b.createdAt).getTime() - parseDate(a.createdAt).getTime();
   });
+
+const shouldResetCachedAgentRun = (
+  current: ChannelBindingRecord,
+  input: UpsertChannelBindingInput,
+): boolean => {
+  if (current.targetType !== input.targetType) {
+    return true;
+  }
+
+  if (input.targetType !== "AGENT") {
+    return false;
+  }
+
+  const currentAgentDefinitionId = normalizeNullableString(current.agentDefinitionId ?? null);
+  const nextAgentDefinitionId = normalizeNullableString(input.agentDefinitionId ?? null);
+  if (currentAgentDefinitionId !== nextAgentDefinitionId) {
+    return true;
+  }
+
+  return serializeLaunchPreset(current.launchPreset) !== serializeLaunchPreset(
+    toRecordLaunchPreset(input.launchPreset),
+  );
+};
+
+const serializeLaunchPreset = (
+  value: ChannelBindingLaunchPresetRecord | null | undefined,
+): string => JSON.stringify(value ?? null);
+
+const isJsonObject = (value: unknown): value is Record<string, unknown> => {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+};
 
 export class FileChannelBindingProvider implements ChannelBindingProvider {
   async findBinding(input: ChannelBindingLookup): Promise<ChannelBinding | null> {
@@ -176,11 +270,27 @@ export class FileChannelBindingProvider implements ChannelBindingProvider {
 
       if (index >= 0) {
         const current = rows[index] as ChannelBindingRecord;
+        const nextTargetType = input.targetType;
+        const resetCachedAgentRun = shouldResetCachedAgentRun(current, input);
         const savedRecord: ChannelBindingRecord = {
           ...current,
-          targetType: input.targetType,
-          agentRunId: normalizeNullableString(input.agentRunId ?? null),
-          teamRunId: normalizeNullableString(input.teamRunId ?? null),
+          targetType: nextTargetType,
+          agentDefinitionId:
+            nextTargetType === "AGENT"
+              ? normalizeNullableString(input.agentDefinitionId ?? null)
+              : null,
+          launchPreset:
+            nextTargetType === "AGENT" ? toRecordLaunchPreset(input.launchPreset) : null,
+          agentRunId:
+            nextTargetType === "AGENT"
+              ? resetCachedAgentRun
+                ? null
+                : normalizeNullableString(input.agentRunId ?? null) ?? current.agentRunId
+              : null,
+          teamRunId:
+            nextTargetType === "TEAM"
+              ? normalizeNullableString(input.teamRunId ?? null)
+              : null,
           targetNodeName: normalizeNullableString(input.targetNodeName ?? null),
           allowTransportFallback: input.allowTransportFallback ?? false,
           updatedAt: now,
@@ -199,8 +309,20 @@ export class FileChannelBindingProvider implements ChannelBindingProvider {
         peerId: input.peerId,
         threadId: toThreadStorage(input.threadId),
         targetType: input.targetType,
-        agentRunId: normalizeNullableString(input.agentRunId ?? null),
-        teamRunId: normalizeNullableString(input.teamRunId ?? null),
+        agentDefinitionId:
+          input.targetType === "AGENT"
+            ? normalizeNullableString(input.agentDefinitionId ?? null)
+            : null,
+        launchPreset:
+          input.targetType === "AGENT" ? toRecordLaunchPreset(input.launchPreset) : null,
+        agentRunId:
+          input.targetType === "AGENT"
+            ? normalizeNullableString(input.agentRunId ?? null)
+            : null,
+        teamRunId:
+          input.targetType === "TEAM"
+            ? normalizeNullableString(input.teamRunId ?? null)
+            : null,
         targetNodeName: normalizeNullableString(input.targetNodeName ?? null),
         allowTransportFallback: input.allowTransportFallback ?? false,
         createdAt: now,

@@ -2,6 +2,7 @@ import { computed, reactive } from 'vue';
 import type { useMessagingProviderScopeStore } from '~/stores/messagingProviderScopeStore';
 import type { useGatewaySessionSetupStore } from '~/stores/gatewaySessionSetupStore';
 import type { ExternalChannelBindingDraft } from '~/types/messaging';
+import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig';
 
 export function normalizeAccountId(value: string | null | undefined): string | null {
   if (typeof value !== 'string') {
@@ -25,11 +26,19 @@ export function useBindingDraftState(input: {
         ? providerScopeStore.discordAccountId || ''
         : providerScopeStore.selectedProvider === 'TELEGRAM'
           ? providerScopeStore.telegramAccountId || ''
-        : '',
+          : '',
     peerId: '',
     threadId: null,
     targetType: 'AGENT',
-    targetRunId: '',
+    targetAgentDefinitionId: '',
+    launchPreset: {
+      workspaceRootPath: '',
+      llmModelIdentifier: '',
+      runtimeKind: DEFAULT_AGENT_RUNTIME_KIND,
+      autoExecuteTools: false,
+      skillAccessMode: 'PRELOADED_ONLY',
+      llmConfig: null,
+    },
   });
 
   const discordAccountHint = computed(() => providerScopeStore.discordAccountId || '');

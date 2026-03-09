@@ -1,13 +1,10 @@
 import { defineStore } from 'pinia';
-import { useMessagingChannelBindingOptionsStore } from '~/stores/messagingChannelBindingOptionsStore';
 import { useMessagingChannelBindingSetupStore } from '~/stores/messagingChannelBindingSetupStore';
 import { useMessagingProviderScopeStore } from '~/stores/messagingProviderScopeStore';
 import { useGatewaySessionSetupStore } from '~/stores/gatewaySessionSetupStore';
 import type {
   ExternalChannelBindingModel,
-  ExternalChannelBindingTargetOption,
   MessagingProvider,
-  SetupBlockerAction,
   SetupBlocker,
   SetupVerificationCheck,
   SetupVerificationResult,
@@ -54,7 +51,7 @@ function buildDefaultVerificationChecks(provider: MessagingProvider): SetupVerif
       status: 'PENDING',
     },
     { key: 'binding', label: 'Scoped channel binding', status: 'PENDING' },
-    { key: 'target_runtime', label: 'Target runtime activity', status: 'PENDING' },
+    { key: 'launch_preset', label: 'Binding launch preset', status: 'PENDING' },
   ];
 }
 
@@ -77,26 +74,18 @@ function createVerificationStateByProvider(): Record<MessagingProvider, Provider
   };
 }
 
-function isRuntimeStatusActive(status: string): boolean {
-  const normalized = status.trim().toLowerCase();
-  if (!normalized) {
-    return false;
-  }
-  return ['running', 'active', 'ready', 'online', 'healthy'].some((token) =>
-    normalized.includes(token),
-  );
-}
-
-function resolveInactiveBinding(
+function resolveBindingWithInvalidLaunchPreset(
   bindings: ExternalChannelBindingModel[],
-  targetOptions: ExternalChannelBindingTargetOption[],
 ): ExternalChannelBindingModel | null {
   for (const binding of bindings) {
-    const matchedTarget = targetOptions.find(
-      (option) =>
-        option.targetType === binding.targetType && option.targetRunId.trim() === binding.targetRunId.trim(),
-    );
-    if (!matchedTarget || !isRuntimeStatusActive(matchedTarget.status)) {
+    const preset = binding.launchPreset;
+    if (
+      !binding.targetAgentDefinitionId?.trim() ||
+      !preset ||
+      !preset.workspaceRootPath.trim() ||
+      !preset.llmModelIdentifier.trim() ||
+      !preset.runtimeKind.trim()
+    ) {
       return binding;
     }
   }
@@ -204,7 +193,6 @@ export const useMessagingVerificationStore = defineStore('messagingVerificationS
 
       try {
         const gatewayStore = useGatewaySessionSetupStore();
-        const optionsStore = useMessagingChannelBindingOptionsStore();
         const bindingStore = useMessagingChannelBindingSetupStore();
         const providerScopeStore = useMessagingProviderScopeStore();
         const blockers: SetupBlocker[] = [];
@@ -356,59 +344,37 @@ export const useMessagingVerificationStore = defineStore('messagingVerificationS
           );
         }
 
-        this.setVerificationCheckStatusForProvider(providerKey, 'target_runtime', 'RUNNING');
+        this.setVerificationCheckStatusForProvider(providerKey, 'launch_preset', 'RUNNING');
         if (!bindingSnapshot.capabilityEnabled || !bindingSnapshot.hasBindings) {
           this.setVerificationCheckStatusForProvider(
             providerKey,
-            'target_runtime',
+            'launch_preset',
             'SKIPPED',
-            'Target runtime check skipped because binding prerequisites are not ready.',
+            'Launch preset check skipped because binding prerequisites are not ready.',
           );
         } else {
-          try {
-            await optionsStore.loadTargetOptions();
-            const inactiveBinding = resolveInactiveBinding(scopedBindings, optionsStore.targetOptions);
-            if (!inactiveBinding) {
-              this.setVerificationCheckStatusForProvider(
-                providerKey,
-                'target_runtime',
-                'PASSED',
-                'All bound targets are active.',
-              );
-            } else {
-              this.setVerificationCheckStatusForProvider(
-                providerKey,
-                'target_runtime',
-                'FAILED',
-                `${inactiveBinding.targetType} runtime ${inactiveBinding.targetRunId} is not active.`,
-              );
-              const runtimeAction: SetupBlockerAction =
-                inactiveBinding.targetType === 'TEAM'
-                  ? { type: 'OPEN_TEAM_RUNTIME', label: 'Open Team Runtime' }
-                  : { type: 'OPEN_AGENT_RUNTIME', label: 'Open Agent Runtime' };
-              blockers.push({
-                code: 'TARGET_RUNTIME_NOT_ACTIVE',
-                step: 'verification',
-                message: `Selected ${inactiveBinding.targetType} runtime ${inactiveBinding.targetRunId} is not active. Start the runtime and re-run verification.`,
-                actions: [
-                  runtimeAction,
-                  { type: 'RERUN_VERIFICATION', label: 'Re-run Verification' },
-                  { type: 'REFRESH_TARGETS', label: 'Refresh Targets' },
-                ],
-              });
-            }
-          } catch (error) {
-            const message =
-              error instanceof Error ? error.message : 'Unable to refresh target runtime options.';
-            this.setVerificationCheckStatusForProvider(providerKey, 'target_runtime', 'FAILED', message);
-            blockers.push({
-              code: 'TARGET_OPTIONS_UNAVAILABLE',
-              step: 'verification',
+          const invalidBinding = resolveBindingWithInvalidLaunchPreset(scopedBindings);
+          if (!invalidBinding) {
+            this.setVerificationCheckStatusForProvider(
+              providerKey,
+              'launch_preset',
+              'PASSED',
+              'Binding stores a complete launch preset. Runtime will auto-start on first inbound message.',
+            );
+          } else {
+            const agentDefinitionId = invalidBinding.targetAgentDefinitionId?.trim() || '(missing)';
+            const message = `Binding for peer ${invalidBinding.peerId} is missing a complete launch preset for agent definition ${agentDefinitionId}.`;
+            this.setVerificationCheckStatusForProvider(
+              providerKey,
+              'launch_preset',
+              'FAILED',
               message,
-              actions: [
-                { type: 'REFRESH_TARGETS', label: 'Refresh Targets' },
-                { type: 'RERUN_VERIFICATION', label: 'Re-run Verification' },
-              ],
+            );
+            blockers.push({
+              code: 'LAUNCH_PRESET_NOT_READY',
+              step: 'binding',
+              message,
+              actions: [{ type: 'RERUN_VERIFICATION', label: 'Re-run Verification' }],
             });
           }
         }

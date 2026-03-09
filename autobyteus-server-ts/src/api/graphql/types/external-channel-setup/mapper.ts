@@ -1,10 +1,10 @@
 import type {
   ChannelBinding,
-  ChannelBindingTargetOption,
+  ChannelBindingLaunchPreset,
 } from "../../../../external-channel/domain/models.js";
 import type {
   ExternalChannelBindingGql,
-  ExternalChannelBindingTargetOptionGql,
+  ExternalChannelLaunchPresetGql,
 } from "./types.js";
 
 export const toGraphqlBinding = (
@@ -17,29 +17,24 @@ export const toGraphqlBinding = (
   peerId: binding.peerId,
   threadId: binding.threadId,
   targetType: binding.targetType,
-  targetRunId: getTargetRunId(binding),
+  targetAgentDefinitionId: binding.agentDefinitionId,
+  launchPreset: toGraphqlLaunchPreset(binding.launchPreset),
   updatedAt: binding.updatedAt,
 });
 
-export const toGraphqlTargetOption = (
-  option: ChannelBindingTargetOption,
-): ExternalChannelBindingTargetOptionGql => ({
-  targetType: option.targetType,
-  targetRunId: option.targetRunId,
-  displayName: option.displayName,
-  status: option.status,
-});
-
-const getTargetRunId = (binding: ChannelBinding): string => {
-  if (binding.targetType === "AGENT") {
-    if (!binding.agentRunId) {
-      throw new Error(`Binding ${binding.id} has targetType AGENT but agentRunId is null.`);
-    }
-    return binding.agentRunId;
+const toGraphqlLaunchPreset = (
+  preset: ChannelBindingLaunchPreset | null,
+): ExternalChannelLaunchPresetGql | null => {
+  if (!preset) {
+    return null;
   }
 
-  if (!binding.teamRunId) {
-    throw new Error(`Binding ${binding.id} has targetType TEAM but teamRunId is null.`);
-  }
-  return binding.teamRunId;
+  return {
+    workspaceRootPath: preset.workspaceRootPath,
+    llmModelIdentifier: preset.llmModelIdentifier,
+    runtimeKind: preset.runtimeKind,
+    autoExecuteTools: preset.autoExecuteTools,
+    skillAccessMode: preset.skillAccessMode,
+    llmConfig: preset.llmConfig,
+  };
 };

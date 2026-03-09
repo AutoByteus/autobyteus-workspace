@@ -1,4 +1,10 @@
-import { Field, InputType, ObjectType } from "type-graphql";
+import { GraphQLJSONObject } from "graphql-scalars";
+import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import { Field, InputType, ObjectType, registerEnumType } from "type-graphql";
+
+registerEnumType(SkillAccessMode, {
+  name: "ExternalChannelSkillAccessModeEnum",
+});
 
 @ObjectType()
 export class ExternalChannelCapabilities {
@@ -35,26 +41,56 @@ export class ExternalChannelBindingGql {
   @Field(() => String)
   targetType!: string;
 
-  @Field(() => String)
-  targetRunId!: string;
+  @Field(() => String, { nullable: true })
+  targetAgentDefinitionId?: string | null;
+
+  @Field(() => ExternalChannelLaunchPresetGql, { nullable: true })
+  launchPreset?: ExternalChannelLaunchPresetGql | null;
 
   @Field(() => Date)
   updatedAt!: Date;
 }
 
 @ObjectType()
-export class ExternalChannelBindingTargetOptionGql {
+export class ExternalChannelLaunchPresetGql {
   @Field(() => String)
-  targetType!: string;
+  workspaceRootPath!: string;
 
   @Field(() => String)
-  targetRunId!: string;
+  llmModelIdentifier!: string;
 
   @Field(() => String)
-  displayName!: string;
+  runtimeKind!: string;
+
+  @Field(() => Boolean)
+  autoExecuteTools!: boolean;
+
+  @Field(() => SkillAccessMode, { nullable: true })
+  skillAccessMode?: SkillAccessMode | null;
+
+  @Field(() => GraphQLJSONObject, { nullable: true })
+  llmConfig?: Record<string, unknown> | null;
+}
+
+@InputType()
+export class ExternalChannelLaunchPresetInput {
+  @Field(() => String)
+  workspaceRootPath!: string;
 
   @Field(() => String)
-  status!: string;
+  llmModelIdentifier!: string;
+
+  @Field(() => String, { nullable: true })
+  runtimeKind?: string | null;
+
+  @Field(() => Boolean, { nullable: true })
+  autoExecuteTools?: boolean | null;
+
+  @Field(() => SkillAccessMode, { nullable: true })
+  skillAccessMode?: SkillAccessMode | null;
+
+  @Field(() => GraphQLJSONObject, { nullable: true })
+  llmConfig?: Record<string, unknown> | null;
 }
 
 @InputType()
@@ -78,5 +114,8 @@ export class UpsertExternalChannelBindingInput {
   targetType!: string;
 
   @Field(() => String)
-  targetRunId!: string;
+  targetAgentDefinitionId!: string;
+
+  @Field(() => ExternalChannelLaunchPresetInput)
+  launchPreset!: ExternalChannelLaunchPresetInput;
 }

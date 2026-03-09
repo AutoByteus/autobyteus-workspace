@@ -41,7 +41,15 @@ describe('useMessagingProviderStepFlow', () => {
         peerId: 'peer-1',
         threadId: null,
         targetType: 'AGENT',
-        targetRunId: 'agent-1',
+        targetAgentDefinitionId: 'agent-definition-1',
+        launchPreset: {
+          workspaceRootPath: '/tmp/workspace',
+          llmModelIdentifier: 'gpt-test',
+          runtimeKind: 'AUTOBYTEUS',
+          autoExecuteTools: false,
+          skillAccessMode: 'PRELOADED_ONLY',
+          llmConfig: null,
+        },
         updatedAt: '2026-02-12T00:00:00.000Z',
       },
     ];

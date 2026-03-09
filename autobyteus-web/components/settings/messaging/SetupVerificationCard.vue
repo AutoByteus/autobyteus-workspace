@@ -99,9 +99,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject } from 'vue';
-import { routerKey } from 'vue-router';
-import { useMessagingChannelBindingOptionsStore } from '~/stores/messagingChannelBindingOptionsStore';
+import { computed } from 'vue';
 import { useMessagingProviderScopeStore } from '~/stores/messagingProviderScopeStore';
 import { useMessagingVerificationStore } from '~/stores/messagingVerificationStore';
 import { useGatewaySessionSetupStore } from '~/stores/gatewaySessionSetupStore';
@@ -115,8 +113,6 @@ import type {
 const GATEWAY_SECTION_ID = 'managed-gateway-runtime-section';
 const PROVIDER_SECTION_ID = 'managed-provider-config-section';
 
-const router = inject(routerKey, null);
-const optionsStore = useMessagingChannelBindingOptionsStore();
 const providerScopeStore = useMessagingProviderScopeStore();
 const verificationStore = useMessagingVerificationStore();
 const gatewayStore = useGatewaySessionSetupStore();
@@ -234,26 +230,6 @@ function onOpenStepFromCheck(checkKey: VerificationCheckKey): void {
 async function onRunBlockerAction(action: SetupBlockerAction): Promise<void> {
   if (action.type === 'RERUN_VERIFICATION') {
     await onRunVerification();
-    return;
-  }
-  if (action.type === 'REFRESH_TARGETS') {
-    try {
-      await optionsStore.loadTargetOptions();
-    } catch {
-      // Target options store exposes errors.
-    }
-    return;
-  }
-  if (action.type === 'OPEN_TEAM_RUNTIME') {
-    if (router) {
-      await router.push({ path: '/agent-teams', query: { view: 'team-list' } });
-    }
-    return;
-  }
-  if (action.type === 'OPEN_AGENT_RUNTIME') {
-    if (router) {
-      await router.push('/agents');
-    }
   }
 }
 </script>

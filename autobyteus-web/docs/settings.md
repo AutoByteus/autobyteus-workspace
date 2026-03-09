@@ -57,7 +57,8 @@ Managed setup for external messaging providers on the selected node.
 
 - The `Managed Messaging Gateway` card at the top installs, starts, restarts, disables, and diagnoses the shared messaging runtime.
 - Provider selection and configuration sit below the runtime card.
-- Channel binding maps external identities to active agent/team runtimes.
+- Channel binding maps external identities to an agent definition plus a saved launch preset.
+- Inbound messages can auto-start the bound agent runtime when no cached live run is available.
 - Verification runs readiness checks across runtime, binding, and provider state.
 - Telegram is easiest in polling mode and is mostly configured from inside the app after bot creation.
 

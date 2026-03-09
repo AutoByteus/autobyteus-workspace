@@ -120,9 +120,9 @@ Use this acceptance checklist:
 1. Gateway runtime is `Running`.
 2. Telegram provider configuration saves without an error.
 3. `Refresh Peers` returns at least one Telegram peer after a real inbound message.
-4. A binding can be created for that peer and an active agent runtime.
+4. A binding can be created for that peer by selecting an agent definition plus launch preset in the app.
 5. `Run Verification` reports the setup as ready or shows actionable blockers only.
-6. A follow-up Telegram message from the bound peer reaches the expected agent runtime.
+6. A follow-up Telegram message from the bound peer auto-starts or reuses the expected agent runtime.
 
 If you need engineering-level Telegram runtime details, see the gateway README:
 

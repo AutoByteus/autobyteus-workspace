@@ -10,6 +10,7 @@ import {
 } from "autobyteus-ts/external-channel/channel-transport.js";
 import type {
   ChannelBinding,
+  ChannelBindingLaunchPreset,
   ChannelBindingLookup,
   ChannelBindingProviderDefaultLookup,
   ChannelDispatchTarget,
@@ -17,6 +18,7 @@ import type {
   UpsertChannelBindingInput,
 } from "../domain/models.js";
 import type { ChannelBindingProvider } from "./channel-binding-provider.js";
+import { normalizeRuntimeKind } from "../../runtime-management/runtime-kind.js";
 
 class SqlChannelBindingRepository extends BaseRepository.forModel(
   Prisma.ModelName.ChannelBinding,
@@ -141,6 +143,19 @@ export class SqlChannelBindingProvider implements ChannelBindingProvider {
   }
 
   async upsertBinding(input: UpsertChannelBindingInput): Promise<ChannelBinding> {
+    const existing = await this.repository.findUnique({
+      where: {
+        provider_transport_accountId_peerId_threadId: {
+          provider: input.provider,
+          transport: input.transport,
+          accountId: input.accountId,
+          peerId: input.peerId,
+          threadId: toThreadStorage(input.threadId),
+        },
+      },
+    });
+    const resetCachedAgentRun = shouldResetCachedAgentRun(existing, input);
+    const createOrUpdateData = buildUpsertPayload(input, existing, resetCachedAgentRun);
     const createdOrUpdated = await this.repository.upsert({
       where: {
         provider_transport_accountId_peerId_threadId: {
@@ -151,26 +166,8 @@ export class SqlChannelBindingProvider implements ChannelBindingProvider {
           threadId: toThreadStorage(input.threadId),
         },
       },
-      create: {
-        provider: input.provider,
-        transport: input.transport,
-        accountId: input.accountId,
-        peerId: input.peerId,
-        threadId: toThreadStorage(input.threadId),
-        targetType: input.targetType,
-        agentRunId: normalizeNullableString(input.agentRunId ?? null) ?? undefined,
-        teamRunId: normalizeNullableString(input.teamRunId ?? null) ?? undefined,
-        targetNodeName:
-          normalizeNullableString(input.targetNodeName ?? null) ?? undefined,
-        allowTransportFallback: input.allowTransportFallback ?? false,
-      },
-      update: {
-        targetType: input.targetType,
-        agentRunId: normalizeNullableString(input.agentRunId ?? null),
-        teamRunId: normalizeNullableString(input.teamRunId ?? null),
-        targetNodeName: normalizeNullableString(input.targetNodeName ?? null),
-        allowTransportFallback: input.allowTransportFallback ?? false,
-      },
+      create: createOrUpdateData,
+      update: createOrUpdateData,
     });
 
     return toDomain(createdOrUpdated);
@@ -250,6 +247,159 @@ const normalizeNullableString = (value: string | null): string | null => {
   return normalized.length > 0 ? normalized : null;
 };
 
+const parseNullableJsonObject = (
+  value: string | null | undefined,
+): Record<string, unknown> | null => {
+  if (!value) {
+    return null;
+  }
+  try {
+    const parsed = JSON.parse(value) as unknown;
+    if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) {
+      return null;
+    }
+    return parsed as Record<string, unknown>;
+  } catch {
+    return null;
+  }
+};
+
+const serializeNullableJsonObject = (
+  value: Record<string, unknown> | null | undefined,
+): string | null => {
+  if (!value) {
+    return null;
+  }
+  return JSON.stringify(value);
+};
+
+const toDomainLaunchPreset = (value: {
+  workspaceRootPath: string | null;
+  llmModelIdentifier: string | null;
+  runtimeKind: string | null;
+  autoExecuteTools: boolean | null;
+  skillAccessMode: string | null;
+  llmConfigJson: string | null;
+}): ChannelBindingLaunchPreset | null => {
+  const workspaceRootPath = normalizeNullableString(value.workspaceRootPath);
+  const llmModelIdentifier = normalizeNullableString(value.llmModelIdentifier);
+  if (!workspaceRootPath || !llmModelIdentifier) {
+    return null;
+  }
+
+  return {
+    workspaceRootPath,
+    llmModelIdentifier,
+    runtimeKind: normalizeRuntimeKind(value.runtimeKind),
+    autoExecuteTools: value.autoExecuteTools ?? false,
+    skillAccessMode: normalizeNullableString(value.skillAccessMode) as
+      | ChannelBindingLaunchPreset["skillAccessMode"]
+      | null,
+    llmConfig: parseNullableJsonObject(value.llmConfigJson),
+  };
+};
+
+const shouldResetCachedAgentRun = (
+  current:
+    | {
+        targetType: string;
+        agentDefinitionId: string | null;
+        workspaceRootPath: string | null;
+        llmModelIdentifier: string | null;
+        runtimeKind: string | null;
+        autoExecuteTools: boolean | null;
+        skillAccessMode: string | null;
+        llmConfigJson: string | null;
+      }
+    | null,
+  input: UpsertChannelBindingInput,
+): boolean => {
+  if (!current) {
+    return false;
+  }
+  if (current.targetType !== input.targetType) {
+    return true;
+  }
+  if (input.targetType !== "AGENT") {
+    return false;
+  }
+  if (normalizeNullableString(current.agentDefinitionId) !== normalizeNullableString(input.agentDefinitionId ?? null)) {
+    return true;
+  }
+
+  return serializeLaunchPreset(
+    toDomainLaunchPreset({
+      workspaceRootPath: current.workspaceRootPath,
+      llmModelIdentifier: current.llmModelIdentifier,
+      runtimeKind: current.runtimeKind,
+      autoExecuteTools: current.autoExecuteTools,
+      skillAccessMode: current.skillAccessMode,
+      llmConfigJson: current.llmConfigJson,
+    }),
+  ) !== serializeLaunchPreset(input.launchPreset ?? null);
+};
+
+const serializeLaunchPreset = (
+  value: ChannelBindingLaunchPreset | null | undefined,
+): string => JSON.stringify(value ?? null);
+
+const buildUpsertPayload = (
+  input: UpsertChannelBindingInput,
+  existing:
+    | {
+        agentRunId: string | null;
+      }
+    | null,
+  resetCachedAgentRun: boolean,
+) => {
+  const nextTargetType = input.targetType;
+  return {
+    provider: input.provider,
+    transport: input.transport,
+    accountId: input.accountId,
+    peerId: input.peerId,
+    threadId: toThreadStorage(input.threadId),
+    targetType: nextTargetType,
+    agentDefinitionId:
+      nextTargetType === "AGENT"
+        ? normalizeNullableString(input.agentDefinitionId ?? null) ?? undefined
+        : null,
+    workspaceRootPath:
+      nextTargetType === "AGENT"
+        ? normalizeNullableString(input.launchPreset?.workspaceRootPath ?? null) ?? undefined
+        : null,
+    llmModelIdentifier:
+      nextTargetType === "AGENT"
+        ? normalizeNullableString(input.launchPreset?.llmModelIdentifier ?? null) ?? undefined
+        : null,
+    runtimeKind:
+      nextTargetType === "AGENT" ? normalizeRuntimeKind(input.launchPreset?.runtimeKind) : null,
+    autoExecuteTools:
+      nextTargetType === "AGENT" ? input.launchPreset?.autoExecuteTools ?? false : null,
+    skillAccessMode:
+      nextTargetType === "AGENT"
+        ? normalizeNullableString(input.launchPreset?.skillAccessMode ?? null) ?? null
+        : null,
+    llmConfigJson:
+      nextTargetType === "AGENT"
+        ? serializeNullableJsonObject(input.launchPreset?.llmConfig ?? null)
+        : null,
+    agentRunId:
+      nextTargetType === "AGENT"
+        ? resetCachedAgentRun
+          ? null
+          : normalizeNullableString(input.agentRunId ?? null) ??
+            normalizeNullableString(existing?.agentRunId ?? null)
+        : null,
+    teamRunId:
+      nextTargetType === "TEAM"
+        ? normalizeNullableString(input.teamRunId ?? null)
+        : null,
+    targetNodeName: normalizeNullableString(input.targetNodeName ?? null),
+    allowTransportFallback: input.allowTransportFallback ?? false,
+  };
+};
+
 const toDomain = (value: {
   id: number;
   provider: string;
@@ -258,6 +408,13 @@ const toDomain = (value: {
   peerId: string;
   threadId: string;
   targetType: string;
+  agentDefinitionId: string | null;
+  workspaceRootPath: string | null;
+  llmModelIdentifier: string | null;
+  runtimeKind: string | null;
+  autoExecuteTools: boolean | null;
+  skillAccessMode: string | null;
+  llmConfigJson: string | null;
   agentRunId: string | null;
   teamRunId: string | null;
   targetNodeName: string | null;
@@ -272,6 +429,8 @@ const toDomain = (value: {
   peerId: value.peerId,
   threadId: fromThreadStorage(value.threadId),
   targetType: parseTargetType(value.targetType),
+  agentDefinitionId: normalizeNullableString(value.agentDefinitionId),
+  launchPreset: toDomainLaunchPreset(value),
   agentRunId: value.agentRunId,
   teamRunId: value.teamRunId,
   targetNodeName: value.targetNodeName,

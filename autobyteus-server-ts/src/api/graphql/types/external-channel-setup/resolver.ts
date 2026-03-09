@@ -1,19 +1,20 @@
 import { Arg, Mutation, Query, Resolver } from "type-graphql";
 import { GraphQLError } from "graphql";
 import { ExternalChannelProvider } from "autobyteus-ts/external-channel/provider.js";
+import { AgentDefinitionService } from "../../../../agent-definition/services/agent-definition-service.js";
+import type { ChannelBindingLaunchPreset } from "../../../../external-channel/domain/models.js";
+import { normalizeRuntimeKind } from "../../../../runtime-management/runtime-kind.js";
 import {
   ExternalChannelCapabilities,
   ExternalChannelBindingGql,
-  ExternalChannelBindingTargetOptionGql,
   UpsertExternalChannelBindingInput,
 } from "./types.js";
 import {
   getBindingService,
   getConstraintService,
   getDiscordBindingIdentityValidator,
-  getTargetOptionsService,
 } from "./services.js";
-import { toGraphqlBinding, toGraphqlTargetOption } from "./mapper.js";
+import { toGraphqlBinding } from "./mapper.js";
 import {
   normalizeOptionalString,
   normalizeRequiredString,
@@ -25,6 +26,8 @@ import {
 
 @Resolver()
 export class ExternalChannelSetupResolver {
+  private readonly agentDefinitionService = AgentDefinitionService.getInstance();
+
   @Query(() => ExternalChannelCapabilities)
   externalChannelCapabilities(): ExternalChannelCapabilities {
     return {
@@ -40,14 +43,6 @@ export class ExternalChannelSetupResolver {
     return bindings.map((binding) => toGraphqlBinding(binding));
   }
 
-  @Query(() => [ExternalChannelBindingTargetOptionGql])
-  async externalChannelBindingTargetOptions(): Promise<
-    ExternalChannelBindingTargetOptionGql[]
-  > {
-    const options = await getTargetOptionsService().listActiveTargetOptions();
-    return options.map((option) => toGraphqlTargetOption(option));
-  }
-
   @Mutation(() => ExternalChannelBindingGql)
   async upsertExternalChannelBinding(
     @Arg("input", () => UpsertExternalChannelBindingInput)
@@ -61,26 +56,35 @@ export class ExternalChannelSetupResolver {
     const threadId = normalizeOptionalString(input.threadId ?? null);
 
     const targetType = parseTargetType(input.targetType);
-    const targetRunId = normalizeRequiredString(input.targetRunId, "targetRunId");
-
-    if (provider === ExternalChannelProvider.TELEGRAM && targetType === "TEAM") {
-      throw new GraphQLError("Telegram bindings currently support AGENT targets only.", {
-        extensions: {
-          code: "TELEGRAM_TEAM_TARGET_NOT_SUPPORTED",
-          field: "targetType",
-          detail: "Telegram bindings currently support AGENT targets only.",
+    if (targetType !== "AGENT") {
+      throw new GraphQLError(
+        "Definition-bound messaging bindings currently support AGENT targets only.",
+        {
+          extensions: {
+            code: "EXTERNAL_CHANNEL_TARGET_TYPE_NOT_SUPPORTED",
+            field: "targetType",
+            detail:
+              "Definition-bound messaging bindings currently support AGENT targets only.",
+          },
         },
-      });
+      );
     }
 
-    const isActiveTarget = await getTargetOptionsService().isActiveTarget(
-      targetType,
-      targetRunId,
+    const targetAgentDefinitionId = normalizeRequiredString(
+      input.targetAgentDefinitionId,
+      "targetAgentDefinitionId",
     );
-    if (!isActiveTarget) {
-      throw new Error(
-        `TARGET_NOT_ACTIVE: selected ${targetType.toLowerCase()} target '${targetRunId}' is not active.`,
-      );
+    const agentDefinition = await this.agentDefinitionService.getAgentDefinitionById(
+      targetAgentDefinitionId,
+    );
+    if (!agentDefinition) {
+      throw new GraphQLError("Selected agent definition does not exist.", {
+        extensions: {
+          code: "TARGET_AGENT_DEFINITION_NOT_FOUND",
+          field: "targetAgentDefinitionId",
+          detail: `Agent definition '${targetAgentDefinitionId}' was not found.`,
+        },
+      });
     }
 
     if (provider === ExternalChannelProvider.DISCORD) {
@@ -100,9 +104,11 @@ export class ExternalChannelSetupResolver {
       accountId,
       peerId,
       threadId,
-      targetType,
-      agentRunId: targetType === "AGENT" ? targetRunId : null,
-      teamRunId: targetType === "TEAM" ? targetRunId : null,
+      targetType: "AGENT",
+      agentDefinitionId: targetAgentDefinitionId,
+      launchPreset: normalizeLaunchPreset(input.launchPreset),
+      agentRunId: null,
+      teamRunId: null,
     });
 
     return toGraphqlBinding(binding);
@@ -115,3 +121,22 @@ export class ExternalChannelSetupResolver {
     return getBindingService().deleteBinding(id);
   }
 }
+
+const normalizeLaunchPreset = (
+  input: UpsertExternalChannelBindingInput["launchPreset"],
+): ChannelBindingLaunchPreset => {
+  return {
+    workspaceRootPath: normalizeRequiredString(
+      input.workspaceRootPath,
+      "launchPreset.workspaceRootPath",
+    ),
+    llmModelIdentifier: normalizeRequiredString(
+      input.llmModelIdentifier,
+      "launchPreset.llmModelIdentifier",
+    ),
+    runtimeKind: normalizeRuntimeKind(input.runtimeKind),
+    autoExecuteTools: input.autoExecuteTools ?? false,
+    skillAccessMode: input.skillAccessMode ?? null,
+    llmConfig: input.llmConfig ?? null,
+  };
+};

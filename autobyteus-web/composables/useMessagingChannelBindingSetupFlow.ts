@@ -1,4 +1,5 @@
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
+import type { GroupedOption } from '~/components/agentTeams/SearchableGroupedSelect.vue';
 import { useMessagingChannelBindingSetupStore } from '~/stores/messagingChannelBindingSetupStore';
 import {
   buildPeerCandidateKey,
@@ -9,17 +10,34 @@ import { useGatewaySessionSetupStore } from '~/stores/gatewaySessionSetupStore';
 import { useBindingDraftState } from '~/composables/messaging-binding-flow/draft-state';
 import { useBindingFlowPolicyState } from '~/composables/messaging-binding-flow/policy-state';
 import { createBindingFlowActions } from '~/composables/messaging-binding-flow/orchestration-actions';
+import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
+import { useWorkspaceStore } from '~/stores/workspace';
+import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig';
+import { useRuntimeCapabilitiesStore } from '~/stores/runtimeCapabilitiesStore';
+import {
+  DEFAULT_AGENT_RUNTIME_KIND,
+  runtimeKindToLabel,
+  type AgentRuntimeKind,
+  type SkillAccessMode,
+} from '~/types/agent/AgentRunConfig';
+import type { ExternalChannelBindingModel } from '~/types/messaging';
+
+type WorkspaceSelectionMode = 'existing' | 'path';
 
 export function useMessagingChannelBindingSetupFlow() {
   const bindingStore = useMessagingChannelBindingSetupStore();
   const optionsStore = useMessagingChannelBindingOptionsStore();
   const providerScopeStore = useMessagingProviderScopeStore();
   const gatewayStore = useGatewaySessionSetupStore();
+  const agentDefinitionStore = useAgentDefinitionStore();
+  const workspaceStore = useWorkspaceStore();
+  const llmStore = useLLMProviderConfigStore();
+  const runtimeCapabilitiesStore = useRuntimeCapabilitiesStore();
 
   const useManualPeerInput = ref(false);
-  const useManualTargetInput = ref(false);
   const selectedPeerKey = ref('');
-  const selectedTargetRunId = ref('');
+  const workspaceSelectionMode = ref<WorkspaceSelectionMode>('existing');
+  const selectedWorkspaceId = ref('');
 
   const {
     draft,
@@ -33,13 +51,11 @@ export function useMessagingChannelBindingSetupFlow() {
   });
 
   const {
-    filteredTargetOptions,
     supportsPeerDiscovery,
     effectiveManualPeerInput,
     canDiscoverPeers,
     peerDiscoveryProviderLabel,
     showPeerDiscoveryInstruction,
-    showTargetOptionsInstruction,
     showDiscordIdentityHint,
     showTelegramAgentOnlyHint,
     allowedTargetTypes,
@@ -47,7 +63,6 @@ export function useMessagingChannelBindingSetupFlow() {
   } = useBindingFlowPolicyState({
     draft,
     useManualPeerInput,
-    useManualTargetInput,
     bindingStore,
     optionsStore,
     providerScopeStore,
@@ -58,23 +73,18 @@ export function useMessagingChannelBindingSetupFlow() {
   const {
     formatPeerCandidateLabel,
     onTogglePeerInputMode,
-    onToggleTargetInputMode,
     onRefreshPeerCandidates,
-    onRefreshTargetOptions,
     onSaveBinding,
     onDeleteBinding,
     onReloadBindings,
   } = createBindingFlowActions({
     draft,
     selectedPeerKey,
-    selectedTargetRunId,
     useManualPeerInput,
-    useManualTargetInput,
     supportsPeerDiscovery,
     canDiscoverPeers,
     effectiveManualPeerInput,
     peerDiscoveryProviderLabel,
-    filteredTargetOptions,
     discordAccountHint,
     telegramAccountHint,
     bindingStore,
@@ -82,6 +92,68 @@ export function useMessagingChannelBindingSetupFlow() {
     gatewayStore,
     buildPeerCandidateKey,
   });
+
+  void agentDefinitionStore.fetchAllAgentDefinitions();
+  void workspaceStore.fetchAllWorkspaces().catch((error) => {
+    console.error('Failed to fetch workspaces for messaging binding setup:', error);
+  });
+  void runtimeCapabilitiesStore.fetchRuntimeCapabilities();
+
+  const normalizeRuntimeKind = (runtimeKind: unknown): AgentRuntimeKind => {
+    if (typeof runtimeKind !== 'string') {
+      return DEFAULT_AGENT_RUNTIME_KIND;
+    }
+    const normalized = runtimeKind.trim();
+    return (normalized.length > 0 ? normalized : DEFAULT_AGENT_RUNTIME_KIND) as AgentRuntimeKind;
+  };
+
+  const ensureModelsForRuntime = async (
+    runtimeKind: AgentRuntimeKind,
+    validateSelectedModel = false,
+  ) => {
+    await llmStore.fetchProvidersWithModels(runtimeKind);
+    if (
+      validateSelectedModel &&
+      draft.launchPreset.llmModelIdentifier &&
+      !llmStore.models.includes(draft.launchPreset.llmModelIdentifier)
+    ) {
+      draft.launchPreset.llmModelIdentifier = '';
+      draft.launchPreset.llmConfig = null;
+    }
+  };
+
+  watch(
+    () => draft.launchPreset.runtimeKind,
+    (runtimeKind, previousRuntimeKind) => {
+      const normalizedRuntime = normalizeRuntimeKind(runtimeKind);
+      const validateSelectedModel =
+        typeof previousRuntimeKind === 'string' && previousRuntimeKind.trim().length > 0
+          ? previousRuntimeKind.trim() !== normalizedRuntime
+          : false;
+      void ensureModelsForRuntime(normalizedRuntime, validateSelectedModel);
+    },
+    { immediate: true },
+  );
+
+  watch(
+    () => [runtimeCapabilitiesStore.hasFetched, draft.launchPreset.runtimeKind] as const,
+    ([hasFetched, runtimeKind]) => {
+      if (!hasFetched) {
+        return;
+      }
+
+      const normalizedRuntime = normalizeRuntimeKind(runtimeKind);
+      if (runtimeCapabilitiesStore.isRuntimeEnabled(normalizedRuntime)) {
+        return;
+      }
+
+      draft.launchPreset.runtimeKind = DEFAULT_AGENT_RUNTIME_KIND;
+      draft.launchPreset.llmModelIdentifier = '';
+      draft.launchPreset.llmConfig = null;
+      void ensureModelsForRuntime(DEFAULT_AGENT_RUNTIME_KIND, false);
+    },
+    { immediate: true },
+  );
 
   watch(
     () => gatewayStore.session?.accountLabel,
@@ -98,6 +170,7 @@ export function useMessagingChannelBindingSetupFlow() {
     (provider) => {
       draft.provider = provider;
       draft.transport = providerScopeStore.resolvedTransport;
+      draft.targetType = 'AGENT';
       optionsStore.resetPeerCandidates();
       selectedPeerKey.value = '';
       draft.peerId = '';
@@ -117,10 +190,6 @@ export function useMessagingChannelBindingSetupFlow() {
         if (provider === 'TELEGRAM' && providerScopeStore.telegramAccountId) {
           draft.accountId = providerScopeStore.telegramAccountId;
         }
-      }
-
-      if (provider === 'TELEGRAM') {
-        draft.targetType = 'AGENT';
       }
     },
     { immediate: true },
@@ -166,66 +235,216 @@ export function useMessagingChannelBindingSetupFlow() {
   );
 
   watch(
-    () => selectedTargetRunId.value,
-    (targetRunId) => {
-      if (useManualTargetInput.value || !targetRunId) {
+    () => selectedWorkspaceId.value,
+    (workspaceId) => {
+      if (workspaceSelectionMode.value !== 'existing' || !workspaceId) {
         return;
       }
-
-      draft.targetRunId = targetRunId;
+      const workspace = workspaceStore.workspaces[workspaceId];
+      const workspaceRootPath =
+        workspace?.absolutePath ||
+        workspace?.workspaceConfig?.root_path ||
+        workspace?.workspaceConfig?.rootPath ||
+        '';
+      if (typeof workspaceRootPath === 'string' && workspaceRootPath.trim().length > 0) {
+        draft.launchPreset.workspaceRootPath = workspaceRootPath;
+      }
     },
+  );
+
+  const workspaceOptions = computed(() =>
+    Object.values(workspaceStore.workspaces)
+      .map((workspace) => ({
+        workspaceId: workspace.workspaceId,
+        label: workspace.absolutePath
+          ? `${workspace.name} (${workspace.absolutePath})`
+          : workspace.name,
+        rootPath:
+          workspace.absolutePath ||
+          workspace.workspaceConfig?.root_path ||
+          workspace.workspaceConfig?.rootPath ||
+          '',
+      }))
+      .filter((workspace) => workspace.rootPath.trim().length > 0)
+      .sort((left, right) => left.label.localeCompare(right.label)),
   );
 
   watch(
-    () => draft.targetType,
-    () => {
-      if (draft.provider === 'TELEGRAM' && draft.targetType !== 'AGENT') {
-        draft.targetType = 'AGENT';
-      }
-      if (useManualTargetInput.value) {
+    () => draft.launchPreset.workspaceRootPath,
+    (workspaceRootPath) => {
+      if (workspaceSelectionMode.value !== 'existing') {
         return;
       }
-
-      const selectedStillExists = filteredTargetOptions.value.some(
-        (option) => option.targetRunId === selectedTargetRunId.value,
+      const matchedWorkspace = workspaceOptions.value.find(
+        (workspace) => workspace.rootPath === workspaceRootPath,
       );
-      if (!selectedStillExists) {
-        selectedTargetRunId.value = '';
-        draft.targetRunId = '';
-      }
+      selectedWorkspaceId.value = matchedWorkspace?.workspaceId ?? '';
     },
+    { immediate: true },
   );
+
+  const agentDefinitionOptions = computed(() =>
+    [...agentDefinitionStore.agentDefinitions].sort((left, right) =>
+      left.name.localeCompare(right.name),
+    ),
+  );
+
+  const runtimeOptions = computed<
+    Array<{ value: AgentRuntimeKind; label: string; enabled: boolean }>
+  >(() => {
+    const selectedRuntimeKind = normalizeRuntimeKind(draft.launchPreset.runtimeKind);
+    const optionByKind = new Map<
+      AgentRuntimeKind,
+      { value: AgentRuntimeKind; label: string; enabled: boolean }
+    >();
+
+    for (const capability of runtimeCapabilitiesStore.capabilities) {
+      optionByKind.set(capability.runtimeKind, {
+        value: capability.runtimeKind,
+        label: runtimeKindToLabel(capability.runtimeKind),
+        enabled: capability.enabled,
+      });
+    }
+
+    if (!optionByKind.has(DEFAULT_AGENT_RUNTIME_KIND)) {
+      optionByKind.set(DEFAULT_AGENT_RUNTIME_KIND, {
+        value: DEFAULT_AGENT_RUNTIME_KIND,
+        label: runtimeKindToLabel(DEFAULT_AGENT_RUNTIME_KIND),
+        enabled: true,
+      });
+    }
+
+    if (!optionByKind.has(selectedRuntimeKind)) {
+      optionByKind.set(selectedRuntimeKind, {
+        value: selectedRuntimeKind,
+        label: runtimeKindToLabel(selectedRuntimeKind),
+        enabled: true,
+      });
+    }
+
+    return Array.from(optionByKind.values()).sort((left, right) =>
+      left.label.localeCompare(right.label),
+    );
+  });
+
+  const groupedModelOptions = computed<GroupedOption[]>(() => {
+    return llmStore.providersWithModels.map((provider) => ({
+      label: provider.provider,
+      items: provider.models.map((model) => ({
+        id: model.modelIdentifier,
+        name: model.name || model.modelIdentifier,
+      })),
+    }));
+  });
+
+  const modelConfigSchema = computed(() => {
+    if (!draft.launchPreset.llmModelIdentifier) {
+      return null;
+    }
+    return llmStore.modelConfigSchemaByIdentifier(draft.launchPreset.llmModelIdentifier);
+  });
+
+  const selectedRuntimeUnavailableReason = computed(() => {
+    return runtimeCapabilitiesStore.runtimeReason(
+      normalizeRuntimeKind(draft.launchPreset.runtimeKind),
+    );
+  });
+
+  const agentNameById = computed(() => {
+    const map = new Map<string, string>();
+    for (const definition of agentDefinitionStore.agentDefinitions) {
+      map.set(definition.id, definition.name);
+    }
+    return map;
+  });
+
+  const formatBindingTargetLabel = (binding: ExternalChannelBindingModel): string => {
+    const agentDefinitionId = binding.targetAgentDefinitionId?.trim();
+    if (!agentDefinitionId) {
+      return 'Agent definition missing';
+    }
+    return agentNameById.value.get(agentDefinitionId) || agentDefinitionId;
+  };
+
+  const updateRuntimeKind = (value: string) => {
+    const runtimeKind = normalizeRuntimeKind(value);
+    if (!runtimeCapabilitiesStore.isRuntimeEnabled(runtimeKind)) {
+      return;
+    }
+    if (draft.launchPreset.runtimeKind === runtimeKind) {
+      return;
+    }
+    draft.launchPreset.runtimeKind = runtimeKind;
+    draft.launchPreset.llmModelIdentifier = '';
+    draft.launchPreset.llmConfig = null;
+  };
+
+  const updateModel = (value: string) => {
+    draft.launchPreset.llmModelIdentifier = value;
+  };
+
+  const updateModelConfig = (config: Record<string, unknown> | null) => {
+    draft.launchPreset.llmConfig = config;
+  };
+
+  const updateAutoExecute = (checked: boolean) => {
+    draft.launchPreset.autoExecuteTools = checked;
+  };
+
+  const updateSkillAccessMode = (value: string) => {
+    draft.launchPreset.skillAccessMode = value as SkillAccessMode;
+  };
+
+  const setWorkspaceSelectionMode = (mode: WorkspaceSelectionMode) => {
+    workspaceSelectionMode.value = mode;
+    if (mode === 'existing') {
+      const matchedWorkspace = workspaceOptions.value.find(
+        (workspace) => workspace.rootPath === draft.launchPreset.workspaceRootPath,
+      );
+      selectedWorkspaceId.value = matchedWorkspace?.workspaceId ?? '';
+      return;
+    }
+    selectedWorkspaceId.value = '';
+  };
 
   return {
     accountIdModel,
+    agentDefinitionOptions,
     bindingStore,
     buildPeerCandidateKey,
     canDiscoverPeers,
     discordAccountHint,
     draft,
     effectiveManualPeerInput,
-    filteredTargetOptions,
+    allowedTargetTypes,
+    formatBindingTargetLabel,
     formatPeerCandidateLabel,
-    gatewayStore,
+    groupedModelOptions,
+    modelConfigSchema,
     onDeleteBinding,
     onRefreshPeerCandidates,
-    onRefreshTargetOptions,
     onReloadBindings,
     onSaveBinding,
     onTogglePeerInputMode,
-    onToggleTargetInputMode,
     optionsStore,
     peerDiscoveryProviderLabel,
     scopedBindings,
     selectedPeerKey,
-    selectedTargetRunId,
-    showTelegramAgentOnlyHint,
-    allowedTargetTypes,
+    selectedRuntimeUnavailableReason,
+    selectedWorkspaceId,
+    setWorkspaceSelectionMode,
     showDiscordIdentityHint,
     showPeerDiscoveryInstruction,
-    showTargetOptionsInstruction,
+    showTelegramAgentOnlyHint,
     supportsPeerDiscovery,
+    updateAutoExecute,
+    updateModel,
+    updateModelConfig,
+    updateRuntimeKind,
+    updateSkillAccessMode,
     useManualPeerInput,
-    useManualTargetInput,
+    workspaceOptions,
+    workspaceSelectionMode,
+    runtimeOptions,
   };
 }

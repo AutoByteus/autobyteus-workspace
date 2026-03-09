@@ -92,11 +92,12 @@ For most users, Telegram setup should stay close to a fully in-app flow:
 2. Open `Settings -> Messaging`.
 3. Start the managed gateway from the top runtime card.
 4. Select `Telegram Bot`.
-5. Enable Telegram, paste the bot token, and enter a stable account label.
+5. Paste the bot token and enter a stable account label.
 6. Save configuration, send a real Telegram message to the bot, then use `Refresh Peers`.
-8. Create a channel binding and run setup verification.
+7. Create a channel binding by selecting the target agent definition and launch preset.
+8. Run setup verification.
 
-The main thing users still do outside AutoByteus is the initial Telegram bot creation. The gateway install, runtime lifecycle, provider configuration, binding flow, and verification are handled from the app.
+The main thing users still do outside AutoByteus is the initial Telegram bot creation. The gateway install, runtime lifecycle, provider configuration, binding flow, runtime preset selection, and verification are handled from the app.
 
 ## Delivery Reliability
 

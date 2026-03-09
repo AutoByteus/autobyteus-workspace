@@ -22,20 +22,16 @@ export const EXTERNAL_CHANNEL_BINDINGS = gql`
       peerId
       threadId
       targetType
-      targetRunId
+      targetAgentDefinitionId
+      launchPreset {
+        workspaceRootPath
+        llmModelIdentifier
+        runtimeKind
+        autoExecuteTools
+        skillAccessMode
+        llmConfig
+      }
       updatedAt
-    }
-  }
-`;
-
-export const EXTERNAL_CHANNEL_BINDING_TARGET_OPTIONS = gql`
-  query ExternalChannelBindingTargetOptions {
-    externalChannelBindingTargetOptions {
-      __typename
-      targetType
-      targetRunId
-      displayName
-      status
     }
   }
 `;

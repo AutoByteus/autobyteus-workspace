@@ -29,10 +29,14 @@ interface BindingSetupState {
   isLoading: boolean;
   isMutating: boolean;
   error: string | null;
-  fieldErrors: Partial<Record<keyof ExternalChannelBindingDraft, string>>;
+  fieldErrors: Partial<Record<BindingField, string>>;
 }
 
-type BindingField = keyof ExternalChannelBindingDraft;
+type BindingField =
+  | keyof ExternalChannelBindingDraft
+  | 'workspaceRootPath'
+  | 'llmModelIdentifier'
+  | 'runtimeKind';
 
 class ServerFieldValidationError extends Error {
   readonly field: BindingField;
@@ -123,7 +127,10 @@ function isBindingField(value: unknown): value is BindingField {
     value === 'peerId' ||
     value === 'threadId' ||
     value === 'targetType' ||
-    value === 'targetRunId'
+    value === 'targetAgentDefinitionId' ||
+    value === 'workspaceRootPath' ||
+    value === 'llmModelIdentifier' ||
+    value === 'runtimeKind'
   );
 }
 
@@ -141,6 +148,12 @@ function issueCodeToField(code: string): BindingField | null {
     return 'threadId';
   }
   if (code === 'TELEGRAM_TEAM_TARGET_NOT_SUPPORTED') {
+    return 'targetType';
+  }
+  if (code === 'TARGET_AGENT_DEFINITION_NOT_FOUND') {
+    return 'targetAgentDefinitionId';
+  }
+  if (code === 'EXTERNAL_CHANNEL_TARGET_TYPE_NOT_SUPPORTED') {
     return 'targetType';
   }
   return null;
@@ -309,8 +322,8 @@ export const useMessagingChannelBindingSetupStore = defineStore(
 
     validateDraft(
       draft: ExternalChannelBindingDraft,
-    ): Partial<Record<keyof ExternalChannelBindingDraft, string>> {
-      const errors: Partial<Record<keyof ExternalChannelBindingDraft, string>> = {};
+    ): Partial<Record<BindingField, string>> {
+      const errors: Partial<Record<BindingField, string>> = {};
       const gatewayCapabilityStore = useGatewayCapabilityStore();
 
       if (!draft.accountId.trim()) {
@@ -319,15 +332,24 @@ export const useMessagingChannelBindingSetupStore = defineStore(
       if (!draft.peerId.trim()) {
         errors.peerId = 'Peer ID is required';
       }
-      if (!draft.targetRunId.trim()) {
-        errors.targetRunId = 'Target run ID is required';
+      if (!draft.targetAgentDefinitionId.trim()) {
+        errors.targetAgentDefinitionId = 'Agent definition is required';
+      }
+      if (!draft.launchPreset.workspaceRootPath.trim()) {
+        errors.workspaceRootPath = 'Workspace path is required';
+      }
+      if (!draft.launchPreset.llmModelIdentifier.trim()) {
+        errors.llmModelIdentifier = 'LLM model is required';
+      }
+      if (!draft.launchPreset.runtimeKind.trim()) {
+        errors.runtimeKind = 'Runtime is required';
       }
       if (!isProviderTransportSupported(draft, this.capabilities)) {
         errors.transport = `Transport ${draft.transport} is not supported for provider ${draft.provider}.`;
       }
 
-      if (draft.provider === 'TELEGRAM' && draft.targetType === 'TEAM') {
-        errors.targetType = 'Telegram bindings currently support AGENT targets only.';
+      if (draft.targetType !== 'AGENT') {
+        errors.targetType = 'Messaging bindings currently support AGENT targets only.';
       }
 
       if (draft.provider === 'DISCORD') {
@@ -385,7 +407,15 @@ export const useMessagingChannelBindingSetupStore = defineStore(
               peerId: draft.peerId,
               threadId: draft.threadId,
               targetType: draft.targetType,
-              targetRunId: draft.targetRunId,
+              targetAgentDefinitionId: draft.targetAgentDefinitionId,
+              launchPreset: {
+                workspaceRootPath: draft.launchPreset.workspaceRootPath,
+                llmModelIdentifier: draft.launchPreset.llmModelIdentifier,
+                runtimeKind: draft.launchPreset.runtimeKind,
+                autoExecuteTools: draft.launchPreset.autoExecuteTools,
+                skillAccessMode: draft.launchPreset.skillAccessMode,
+                llmConfig: draft.launchPreset.llmConfig,
+              },
             },
           },
         });

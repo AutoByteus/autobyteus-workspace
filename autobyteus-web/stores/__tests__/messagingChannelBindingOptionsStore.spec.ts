@@ -5,41 +5,11 @@ import {
   useMessagingChannelBindingOptionsStore,
 } from '~/stores/messagingChannelBindingOptionsStore';
 import { useGatewaySessionSetupStore } from '~/stores/gatewaySessionSetupStore';
-import { getApolloClient } from '~/utils/apolloClient';
-
-vi.mock('~/utils/apolloClient', () => ({
-  getApolloClient: vi.fn(),
-}));
 
 describe('messagingChannelBindingOptionsStore', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
-  });
-
-  it('loads target options from GraphQL', async () => {
-    const apolloMock = {
-      query: vi.fn().mockResolvedValue({
-        data: {
-          externalChannelBindingTargetOptions: [
-            {
-              targetType: 'AGENT',
-              targetRunId: 'agent-1',
-              displayName: 'Setup Agent',
-              status: 'IDLE',
-            },
-          ],
-        },
-        errors: [],
-      }),
-    };
-    vi.mocked(getApolloClient).mockReturnValue(apolloMock as any);
-
-    const store = useMessagingChannelBindingOptionsStore();
-    const result = await store.loadTargetOptions();
-
-    expect(result).toHaveLength(1);
-    expect(store.targetOptionsByType('AGENT')).toHaveLength(1);
   });
 
   it('loads Discord peer candidates through the managed gateway store', async () => {
@@ -79,16 +49,8 @@ describe('messagingChannelBindingOptionsStore', () => {
     );
   });
 
-  it('asserts stale selections for dropdown-driven values', () => {
+  it('accepts fresh dropdown peer selections', () => {
     const store = useMessagingChannelBindingOptionsStore();
-    store.targetOptions = [
-      {
-        targetType: 'AGENT',
-        targetRunId: 'agent-1',
-        displayName: 'Setup Agent',
-        status: 'IDLE',
-      },
-    ];
     store.peerCandidates = [
       {
         peerId: 'discord-peer-1',
@@ -108,13 +70,48 @@ describe('messagingChannelBindingOptionsStore', () => {
           peerId: 'discord-peer-1',
           threadId: null,
           targetType: 'AGENT',
-          targetRunId: 'agent-1',
+          targetAgentDefinitionId: 'agent-definition-1',
+          launchPreset: {
+            workspaceRootPath: '/tmp/workspace',
+            llmModelIdentifier: 'gpt-test',
+            runtimeKind: 'AUTOBYTEUS',
+            autoExecuteTools: false,
+            skillAccessMode: 'PRELOADED_ONLY',
+            llmConfig: null,
+          },
         },
         peerSelectionMode: 'dropdown',
-        targetSelectionMode: 'dropdown',
         selectedPeerKey: buildPeerCandidateKey(store.peerCandidates[0]),
-        selectedTargetRunId: 'agent-1',
       }),
     ).not.toThrow();
+  });
+
+  it('rejects stale dropdown peer selections', () => {
+    const store = useMessagingChannelBindingOptionsStore();
+    store.peerCandidates = [];
+
+    expect(() =>
+      store.assertSelectionsFresh({
+        draft: {
+          provider: 'DISCORD',
+          transport: 'BUSINESS_API',
+          accountId: 'discord-acct-1',
+          peerId: 'discord-peer-1',
+          threadId: null,
+          targetType: 'AGENT',
+          targetAgentDefinitionId: 'agent-definition-1',
+          launchPreset: {
+            workspaceRootPath: '/tmp/workspace',
+            llmModelIdentifier: 'gpt-test',
+            runtimeKind: 'AUTOBYTEUS',
+            autoExecuteTools: false,
+            skillAccessMode: 'PRELOADED_ONLY',
+            llmConfig: null,
+          },
+        },
+        peerSelectionMode: 'dropdown',
+        selectedPeerKey: 'discord-peer-1::',
+      }),
+    ).toThrow('Selection is outdated. Refresh peers and select again.');
   });
 });

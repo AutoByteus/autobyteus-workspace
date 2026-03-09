@@ -1,12 +1,8 @@
 import { defineStore } from 'pinia';
-import { EXTERNAL_CHANNEL_BINDING_TARGET_OPTIONS } from '~/graphql/queries/externalChannelSetupQueries';
 import { useGatewaySessionSetupStore } from '~/stores/gatewaySessionSetupStore';
-import { getApolloClient } from '~/utils/apolloClient';
 import type {
   ExternalChannelBindingDraft,
   MessagingProvider,
-  ExternalChannelBindingTargetOption,
-  ExternalChannelBindingTargetType,
   GatewayPeerCandidate,
 } from '~/types/messaging';
 
@@ -15,15 +11,10 @@ export type BindingSelectionMode = 'dropdown' | 'manual';
 export interface AssertSelectionFreshInput {
   draft: ExternalChannelBindingDraft;
   peerSelectionMode: BindingSelectionMode;
-  targetSelectionMode: BindingSelectionMode;
   selectedPeerKey?: string | null;
-  selectedTargetRunId?: string | null;
 }
 
 interface BindingOptionsState {
-  targetOptions: ExternalChannelBindingTargetOption[];
-  isTargetOptionsLoading: boolean;
-  targetOptionsError: string | null;
   peerCandidates: GatewayPeerCandidate[];
   peerCandidatesSessionId: string | null;
   isPeerCandidatesLoading: boolean;
@@ -31,8 +22,7 @@ interface BindingOptionsState {
   staleSelectionError: string | null;
 }
 
-const STALE_SELECTION_MESSAGE =
-  'Selection is outdated. Refresh peers/targets and select again.';
+const STALE_SELECTION_MESSAGE = 'Selection is outdated. Refresh peers and select again.';
 
 const normalizeErrorMessage = (error: unknown): string => {
   if (error instanceof Error) {
@@ -58,22 +48,12 @@ export const useMessagingChannelBindingOptionsStore = defineStore(
   'messagingChannelBindingOptionsStore',
   {
     state: (): BindingOptionsState => ({
-      targetOptions: [],
-      isTargetOptionsLoading: false,
-      targetOptionsError: null,
       peerCandidates: [],
       peerCandidatesSessionId: null,
       isPeerCandidatesLoading: false,
       peerCandidatesError: null,
       staleSelectionError: null,
     }),
-
-    getters: {
-      targetOptionsByType: (state) => {
-        return (targetType: ExternalChannelBindingTargetType) =>
-          state.targetOptions.filter((option) => option.targetType === targetType);
-      },
-    },
 
     actions: {
       clearStaleSelectionError() {
@@ -84,32 +64,6 @@ export const useMessagingChannelBindingOptionsStore = defineStore(
         this.peerCandidates = [];
         this.peerCandidatesSessionId = null;
         this.peerCandidatesError = null;
-      },
-
-      async loadTargetOptions(): Promise<ExternalChannelBindingTargetOption[]> {
-        this.isTargetOptionsLoading = true;
-        this.targetOptionsError = null;
-
-        try {
-          const client = getApolloClient();
-          const { data, errors } = await client.query({
-            query: EXTERNAL_CHANNEL_BINDING_TARGET_OPTIONS,
-            fetchPolicy: 'network-only',
-          });
-
-          if (errors && errors.length > 0) {
-            throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '));
-          }
-
-          this.targetOptions =
-            (data?.externalChannelBindingTargetOptions as ExternalChannelBindingTargetOption[]) || [];
-          return this.targetOptions;
-        } catch (error) {
-          this.targetOptionsError = normalizeErrorMessage(error);
-          throw error;
-        } finally {
-          this.isTargetOptionsLoading = false;
-        }
       },
 
     async loadPeerCandidates(
@@ -178,22 +132,6 @@ export const useMessagingChannelBindingOptionsStore = defineStore(
           }
         }
 
-        if (input.targetSelectionMode === 'dropdown') {
-          const selectedTargetRunId = input.selectedTargetRunId?.trim();
-          if (!selectedTargetRunId) {
-            this.staleSelectionError = STALE_SELECTION_MESSAGE;
-            throw new Error(STALE_SELECTION_MESSAGE);
-          }
-
-          const targetOption = this.targetOptions.find(
-            (option) =>
-              option.targetType === input.draft.targetType && option.targetRunId === selectedTargetRunId,
-          );
-          if (!targetOption || input.draft.targetRunId !== selectedTargetRunId) {
-            this.staleSelectionError = STALE_SELECTION_MESSAGE;
-            throw new Error(STALE_SELECTION_MESSAGE);
-          }
-        }
       },
     },
   },

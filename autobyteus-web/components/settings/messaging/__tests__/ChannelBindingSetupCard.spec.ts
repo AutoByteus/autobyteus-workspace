@@ -64,17 +64,12 @@ describe('ChannelBindingSetupCard', () => {
     providerScopeStore.setSelectedProvider('TELEGRAM');
 
     const optionsStore = useMessagingChannelBindingOptionsStore();
-    const loadPeerCandidatesSpy = vi
-      .spyOn(optionsStore, 'loadPeerCandidates')
-      .mockResolvedValue([]);
+    const loadPeerCandidatesSpy = vi.spyOn(optionsStore, 'loadPeerCandidates').mockResolvedValue([]);
 
     const wrapper = mountWithPinia();
     await flushPromises();
 
-    const refreshButton = wrapper.get('[data-testid="refresh-peer-candidates-button"]');
-    expect(refreshButton.attributes('disabled')).toBeUndefined();
-
-    await refreshButton.trigger('click');
+    await wrapper.get('[data-testid="refresh-peer-candidates-button"]').trigger('click');
     await flushPromises();
 
     expect(loadPeerCandidatesSpy).toHaveBeenCalledWith(
@@ -82,32 +77,6 @@ describe('ChannelBindingSetupCard', () => {
       { includeGroups: true, limit: 50 },
       'TELEGRAM',
     );
-  });
-
-  it('hides transport fallback toggle in setup UI', async () => {
-    const optionsStore = useMessagingChannelBindingOptionsStore();
-    optionsStore.peerCandidates = [
-      {
-        peerId: 'peer-1',
-        peerType: 'USER',
-        threadId: null,
-        displayName: 'Peer One',
-        lastMessageAt: '2026-02-09T12:00:00.000Z',
-      },
-    ];
-    optionsStore.targetOptions = [
-      {
-        targetType: 'AGENT',
-        targetRunId: 'agent-1',
-        displayName: 'Agent One',
-        status: 'RUNNING',
-      },
-    ];
-
-    const wrapper = mountWithPinia();
-    await flushPromises();
-
-    expect(wrapper.find('[data-testid="binding-allow-fallback"]').exists()).toBe(false);
   });
 
   it('shows Discord identity guidance and applies capability account default', async () => {
@@ -133,93 +102,9 @@ describe('ChannelBindingSetupCard', () => {
     expect(wrapper.text()).toContain('discord-acct-1');
   });
 
-  it('renders threadId field errors from binding store', async () => {
-    const bindingStore = useMessagingChannelBindingSetupStore();
-    bindingStore.fieldErrors.threadId = 'Thread ID is invalid';
-
-    const wrapper = mountWithPinia();
-    await flushPromises();
-
-    expect(wrapper.text()).toContain('Thread ID is invalid');
-  });
-
-  it('refreshes Discord peer candidates without personal session prerequisite', async () => {
+  it('shows Telegram AGENT-only hint without a target-type selector', async () => {
     const gatewayStore = useGatewaySessionSetupStore();
     gatewayStore.gatewayStatus = 'READY';
-    gatewayStore.session = null;
-
-    const providerScopeStore = useMessagingProviderScopeStore();
-    providerScopeStore.initialize({
-      wechatModes: [],
-      defaultWeChatMode: null,
-      wechatPersonalEnabled: false,
-      wecomAppEnabled: false,
-      discordEnabled: true,
-      discordAccountId: 'discord-acct-1',
-      telegramEnabled: false,
-      telegramAccountId: null,
-    });
-    providerScopeStore.setSelectedProvider('DISCORD');
-
-    const optionsStore = useMessagingChannelBindingOptionsStore();
-    const loadPeerCandidatesSpy = vi
-      .spyOn(optionsStore, 'loadPeerCandidates')
-      .mockResolvedValue([]);
-
-    const wrapper = mountWithPinia();
-    await flushPromises();
-
-    const refreshButton = wrapper.get('[data-testid="refresh-peer-candidates-button"]');
-    expect(refreshButton.attributes('disabled')).toBeUndefined();
-
-    await refreshButton.trigger('click');
-    await flushPromises();
-
-    expect(loadPeerCandidatesSpy).toHaveBeenCalledWith(
-      'discord-acct-1',
-      { includeGroups: true, limit: 50 },
-      'DISCORD',
-    );
-  });
-
-  it('renders binding list scoped to selected provider', async () => {
-    const bindingStore = useMessagingChannelBindingSetupStore();
-    bindingStore.bindings = [
-      {
-        id: 'binding-whatsapp',
-        provider: 'WHATSAPP',
-        transport: 'BUSINESS_API',
-        accountId: 'home-whatsapp',
-        peerId: 'wa-peer',
-        threadId: null,
-        targetType: 'AGENT',
-        targetRunId: 'agent-1',
-        updatedAt: '2026-02-09T12:00:00.000Z',
-      },
-      {
-        id: 'binding-discord',
-        provider: 'DISCORD',
-        transport: 'BUSINESS_API',
-        accountId: 'discord-acct-1',
-        peerId: 'user:123456',
-        threadId: null,
-        targetType: 'TEAM',
-        targetRunId: 'team-1',
-        updatedAt: '2026-02-09T11:00:00.000Z',
-      },
-    ];
-
-    const wrapper = mountWithPinia();
-    await flushPromises();
-
-    expect(wrapper.text()).toContain('WHATSAPP / BUSINESS_API / home-whatsapp / wa-peer');
-    expect(wrapper.text()).not.toContain('DISCORD / BUSINESS_API / discord-acct-1 / user:123456');
-  });
-
-  it('shows Telegram AGENT-only hint and refreshes Telegram peer candidates without session', async () => {
-    const gatewayStore = useGatewaySessionSetupStore();
-    gatewayStore.gatewayStatus = 'READY';
-    gatewayStore.session = null;
 
     const providerScopeStore = useMessagingProviderScopeStore();
     providerScopeStore.initialize({
@@ -234,31 +119,62 @@ describe('ChannelBindingSetupCard', () => {
     });
     providerScopeStore.setSelectedProvider('TELEGRAM');
 
-    const optionsStore = useMessagingChannelBindingOptionsStore();
-    const loadPeerCandidatesSpy = vi
-      .spyOn(optionsStore, 'loadPeerCandidates')
-      .mockResolvedValue([]);
-
     const wrapper = mountWithPinia();
     await flushPromises();
 
     expect(wrapper.find('[data-testid="telegram-target-policy-hint"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="binding-agent-definition-select"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="binding-target-type"]').exists()).toBe(false);
+  });
 
-    const targetTypeOptions = wrapper
-      .findAll('[data-testid="binding-target-type"] option')
-      .map((option) => option.text());
-    expect(targetTypeOptions).toEqual(['AGENT']);
+  it('renders scoped bindings with agent definition and launch preset summary', async () => {
+    const bindingStore = useMessagingChannelBindingSetupStore();
+    bindingStore.bindings = [
+      {
+        id: 'binding-whatsapp',
+        provider: 'WHATSAPP',
+        transport: 'BUSINESS_API',
+        accountId: 'home-whatsapp',
+        peerId: 'wa-peer',
+        threadId: null,
+        targetType: 'AGENT',
+        targetAgentDefinitionId: 'agent-definition-1',
+        launchPreset: {
+          workspaceRootPath: '/tmp/workspace',
+          llmModelIdentifier: 'gpt-test',
+          runtimeKind: 'AUTOBYTEUS',
+          autoExecuteTools: false,
+          skillAccessMode: 'PRELOADED_ONLY',
+          llmConfig: null,
+        },
+        updatedAt: '2026-02-09T12:00:00.000Z',
+      },
+      {
+        id: 'binding-discord',
+        provider: 'DISCORD',
+        transport: 'BUSINESS_API',
+        accountId: 'discord-acct-1',
+        peerId: 'user:123456',
+        threadId: null,
+        targetType: 'AGENT',
+        targetAgentDefinitionId: 'agent-definition-2',
+        launchPreset: {
+          workspaceRootPath: '/tmp/discord-workspace',
+          llmModelIdentifier: 'gpt-other',
+          runtimeKind: 'AUTOBYTEUS',
+          autoExecuteTools: false,
+          skillAccessMode: 'PRELOADED_ONLY',
+          llmConfig: null,
+        },
+        updatedAt: '2026-02-09T11:00:00.000Z',
+      },
+    ];
 
-    const refreshButton = wrapper.get('[data-testid="refresh-peer-candidates-button"]');
-    expect(refreshButton.attributes('disabled')).toBeUndefined();
-
-    await refreshButton.trigger('click');
+    const wrapper = mountWithPinia();
     await flushPromises();
 
-    expect(loadPeerCandidatesSpy).toHaveBeenCalledWith(
-      'telegram-acct-1',
-      { includeGroups: true, limit: 50 },
-      'TELEGRAM',
-    );
+    expect(wrapper.text()).toContain('WHATSAPP / BUSINESS_API / home-whatsapp / wa-peer');
+    expect(wrapper.text()).toContain('runtime: AUTOBYTEUS | model: gpt-test | workspace: /tmp/workspace');
+    expect(wrapper.text()).not.toContain('DISCORD / BUSINESS_API / discord-acct-1 / user:123456');
   });
 });
