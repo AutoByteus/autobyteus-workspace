@@ -80,16 +80,28 @@ pnpm android:server:stop
 
 ## Release workflow
 
-- Workflow file: `.github/workflows/release-desktop.yml`
+- Workflow files:
+  - `.github/workflows/release-desktop.yml`
+  - `.github/workflows/release-server-docker.yml`
 - Triggers:
   - push tag `v*` (for example: `v1.1.8`)
   - manual run via `workflow_dispatch`
 - Artifacts:
   - macOS ARM64 DMG + blockmap
   - Linux x64 AppImage + blockmap
+  - Docker Hub server image for `linux/amd64,linux/arm64`
 - Version/tag sync is mandatory:
   - `autobyteus-web/package.json` version must match release tag version (`vX.Y.Z`).
   - The release workflow enforces this and fails on mismatch.
+- Server Docker tags:
+  - stable release tags publish `autobyteus/autobyteus-server:X.Y.Z` and `autobyteus/autobyteus-server:latest`
+  - prerelease tags such as `v1.2.7-rc1` publish only `autobyteus/autobyteus-server:1.2.7-rc1`
+- Required GitHub repository secrets for Docker Hub publish:
+  - `DOCKERHUB_USERNAME`
+  - `DOCKERHUB_TOKEN`
+- Optional GitHub repository variable:
+  - `DOCKERHUB_IMAGE_NAME`
+  - use this if the image repo should not be `autobyteus/autobyteus-server`
 - No git submodules are required in this workspace.
 
 ### Consistent release commands
@@ -99,7 +111,7 @@ Use the release helper script from repo root:
 ```bash
 # Normal new personal release:
 # 1) Prepare the release (bump package version, commit, create tag, push branch+tag)
-#    This already starts the real release workflow because the pushed tag matches v*.
+#    This starts both release workflows because the pushed tag matches v*.
 pnpm release 1.2.7
 
 # Optional manual build-only validation (no GitHub release publish)
@@ -113,7 +125,7 @@ pnpm release:manual-dispatch v1.2.7 --ref personal
 Important:
 
 - Do not run `release:manual-dispatch` immediately after a fresh `release` for the same version.
-- `release` already pushes `vX.Y.Z`, and `.github/workflows/release-desktop.yml` publishes on tag push.
+- `release` already pushes `vX.Y.Z`, and the tag push starts both `.github/workflows/release-desktop.yml` and `.github/workflows/release-server-docker.yml`.
 - `release:manual-dispatch` is the manual recovery / re-publish path for an existing tag, not the normal second step of a new release.
 
 Script file:
