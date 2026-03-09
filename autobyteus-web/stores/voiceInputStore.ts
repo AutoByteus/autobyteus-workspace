@@ -43,7 +43,7 @@ export const useVoiceInputStore = defineStore('voiceInput', {
   getters: {
     isAvailable(): boolean {
       const extensionsStore = useExtensionsStore();
-      return extensionsStore.voiceInput?.status === 'installed';
+      return extensionsStore.voiceInput?.status === 'installed' && extensionsStore.voiceInput?.enabled === true;
     },
   },
 
@@ -63,7 +63,7 @@ export const useVoiceInputStore = defineStore('voiceInput', {
       await this.initialize();
 
       if (!this.isAvailable) {
-        this.error = 'Voice Input is not installed yet.';
+        this.error = 'Voice Input is not enabled yet.';
         return;
       }
 
@@ -102,7 +102,7 @@ export const useVoiceInputStore = defineStore('voiceInput', {
 
         this.isRecording = true;
       } catch (error) {
-        this.error = error instanceof Error ? error.message : 'Failed to access microphone'
+        this.error = error instanceof Error ? error.message : 'Failed to access microphone';
         useToasts().addToast(this.error, 'error');
         await this.cleanup();
       }
@@ -124,9 +124,14 @@ export const useVoiceInputStore = defineStore('voiceInput', {
 
         await this.cleanup();
 
-        const result = await window.electronAPI.transcribeVoiceInput(audioData, 'en');
+        const result = await window.electronAPI.transcribeVoiceInput({ audioData });
         if (!result.ok) {
           throw new Error(result.error || 'Failed to transcribe audio');
+        }
+
+        if (result.noSpeech || !result.text.trim()) {
+          useToasts().addToast('No speech detected.', 'info');
+          return;
         }
 
         const activeContextStore = useActiveContextStore();
@@ -134,7 +139,7 @@ export const useVoiceInputStore = defineStore('voiceInput', {
           mergeTranscriptWithDraft(activeContextStore.currentRequirement, result.text),
         );
       } catch (error) {
-        this.error = error instanceof Error ? error.message : 'Voice transcription failed'
+        this.error = error instanceof Error ? error.message : 'Voice transcription failed';
         useToasts().addToast(this.error, 'error');
       } finally {
         this.isTranscribing = false;

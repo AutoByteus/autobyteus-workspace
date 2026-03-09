@@ -11,7 +11,8 @@ The Settings page is implemented in \`pages/settings.vue\` and serves as a conta
 3.  **Nodes**
 4.  **Messaging**
 5.  **Server Settings**
-6.  **Updates**
+6.  **Extensions**
+7.  **Updates**
 
 ## Sections Detail
 
@@ -69,7 +70,22 @@ A flexible key-value store for backend configurations.
 - **Custom Settings:** Users can add new custom key-value pairs to configure plugins or experimental features.
 - **Custom Setting Cleanup:** Advanced table rows for custom keys include a remove action to delete obsolete entries.
 
-### 6. Updates
+### 6. Extensions
+
+**Component:** `components/settings/ExtensionsManager.vue`
+
+Managed optional capabilities that download their runtime assets on demand instead of shipping inside the base app bundle.
+
+- **Install / Reinstall / Remove:** Downloads or refreshes release-hosted runtime assets under `~/.autobyteus/extensions/<extension-id>`.
+- **Install / Reinstall / Remove:** Downloads or refreshes the lightweight runtime bundle under `~/.autobyteus/extensions/<extension-id>` and performs local backend/model bootstrap during install.
+- **Enable / Disable:** Separates installation from active usage so installed extensions can stay on disk while disabled.
+- **Open Folder:** Opens the managed install root for the selected extension.
+- **Voice Input:** The current managed extension ships a local bilingual dictation runtime.
+  - Language modes: `Auto`, `English`, `Chinese`
+  - Lifecycle states: not installed, installing, installed and disabled, installed and enabled, needs attention
+  - The shared composer microphone appears only when Voice Input is installed, enabled, and not in an error state.
+
+### 7. Updates
 
 **Component:** `components/settings/AboutSettingsManager.vue`
 
@@ -84,4 +100,4 @@ Canonical app metadata and manual update controls.
 ## Related Documentation
 
 - **[Agent Management](./agent_management.md)**: API keys configured in Settings are used by Agents.
-- **[Electron Packaging](./electron_packaging.md)**: The Server Status monitor interacts with the bundled Electron server.
+- **[Electron Packaging](./electron_packaging.md)**: The Server Status monitor and managed extensions both interact with Electron-owned runtime services.

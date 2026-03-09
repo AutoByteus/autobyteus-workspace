@@ -5,6 +5,8 @@ import type { NodeRegistryChange } from './nodeRegistryTypes'
 import type {
   ExtensionId,
   ManagedExtensionState,
+  UpdateVoiceInputSettingsPayload,
+  VoiceInputTranscriptionRequest,
   VoiceInputTranscriptionResult,
 } from './extensions/types'
 
@@ -90,12 +92,16 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   getExtensionsState: () => ipcRenderer.invoke('extensions:get-state') as Promise<ManagedExtensionState[]>,
   installExtension: (extensionId: ExtensionId) => ipcRenderer.invoke('extensions:install', extensionId) as Promise<ManagedExtensionState[]>,
+  enableExtension: (extensionId: ExtensionId) => ipcRenderer.invoke('extensions:enable', extensionId) as Promise<ManagedExtensionState[]>,
+  disableExtension: (extensionId: ExtensionId) => ipcRenderer.invoke('extensions:disable', extensionId) as Promise<ManagedExtensionState[]>,
+  updateVoiceInputSettings: (extensionId: ExtensionId, payload: UpdateVoiceInputSettingsPayload) =>
+    ipcRenderer.invoke('extensions:update-voice-input-settings', extensionId, payload) as Promise<ManagedExtensionState[]>,
   removeExtension: (extensionId: ExtensionId) => ipcRenderer.invoke('extensions:remove', extensionId) as Promise<ManagedExtensionState[]>,
   reinstallExtension: (extensionId: ExtensionId) => ipcRenderer.invoke('extensions:reinstall', extensionId) as Promise<ManagedExtensionState[]>,
   openExtensionFolder: (extensionId: ExtensionId) =>
     ipcRenderer.invoke('extensions:open-folder', extensionId) as Promise<{ success: boolean; error?: string }>,
-  transcribeVoiceInput: (audioData: ArrayBuffer, language?: string) =>
-    ipcRenderer.invoke('voice-input:transcribe', { audioData, language }) as Promise<VoiceInputTranscriptionResult>,
+  transcribeVoiceInput: (request: VoiceInputTranscriptionRequest) =>
+    ipcRenderer.invoke('voice-input:transcribe', request) as Promise<VoiceInputTranscriptionResult>,
 })
 
 // The previous global drop handler has been removed.

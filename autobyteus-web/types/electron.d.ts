@@ -6,6 +6,8 @@ import type {
 import type {
   ExtensionId,
   ManagedExtensionState,
+  UpdateVoiceInputSettingsPayload,
+  VoiceInputTranscriptionRequest,
   VoiceInputTranscriptionResult,
 } from '../electron/extensions/types';
 
@@ -93,10 +95,16 @@ declare global {
       getPathForFile: (file: File) => Promise<string | null>;
       getExtensionsState: () => Promise<ManagedExtensionState[]>;
       installExtension: (extensionId: ExtensionId) => Promise<ManagedExtensionState[]>;
+      enableExtension: (extensionId: ExtensionId) => Promise<ManagedExtensionState[]>;
+      disableExtension: (extensionId: ExtensionId) => Promise<ManagedExtensionState[]>;
+      updateVoiceInputSettings: (
+        extensionId: ExtensionId,
+        payload: UpdateVoiceInputSettingsPayload,
+      ) => Promise<ManagedExtensionState[]>;
       removeExtension: (extensionId: ExtensionId) => Promise<ManagedExtensionState[]>;
       reinstallExtension: (extensionId: ExtensionId) => Promise<ManagedExtensionState[]>;
       openExtensionFolder: (extensionId: ExtensionId) => Promise<{ success: boolean; error?: string }>;
-      transcribeVoiceInput: (audioData: ArrayBuffer, language?: string) => Promise<VoiceInputTranscriptionResult>;
+      transcribeVoiceInput: (request: VoiceInputTranscriptionRequest) => Promise<VoiceInputTranscriptionResult>;
     };
   }
 }

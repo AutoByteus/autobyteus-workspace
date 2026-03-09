@@ -15,6 +15,7 @@ const {
     initialize: vi.fn().mockResolvedValue(undefined),
     voiceInput: {
       status: 'installed',
+      enabled: true,
     },
   },
   addToastMock: vi.fn(),
@@ -44,11 +45,14 @@ describe('voiceInputStore', () => {
     activeContextStoreMock.send.mockReset()
     extensionsStoreMock.initialize.mockClear()
     extensionsStoreMock.voiceInput.status = 'installed'
+    extensionsStoreMock.voiceInput.enabled = true
     addToastMock.mockReset()
     ;(window as typeof window & { electronAPI?: any }).electronAPI = {
       transcribeVoiceInput: vi.fn().mockResolvedValue({
         ok: true,
         text: 'world',
+        detectedLanguage: 'en',
+        noSpeech: false,
         error: null,
       }),
     }
@@ -89,6 +93,8 @@ describe('voiceInputStore', () => {
     ;(window as typeof window & { electronAPI?: any }).electronAPI.transcribeVoiceInput.mockResolvedValue({
       ok: false,
       text: '',
+      detectedLanguage: null,
+      noSpeech: false,
       error: 'runtime failed',
     })
 
@@ -113,5 +119,40 @@ describe('voiceInputStore', () => {
 
     expect(activeContextStoreMock.updateRequirement).not.toHaveBeenCalled()
     expect(addToastMock).toHaveBeenCalledWith('runtime failed', 'error')
+  })
+
+  it('does not mutate the draft when no speech is detected', async () => {
+    const store = useVoiceInputStore()
+    const audioBuffer = new Uint8Array([1, 2, 3]).buffer
+
+    ;(window as typeof window & { electronAPI?: any }).electronAPI.transcribeVoiceInput.mockResolvedValue({
+      ok: true,
+      text: '',
+      detectedLanguage: null,
+      noSpeech: true,
+      error: null,
+    })
+
+    store.audioWorklet = {
+      port: {
+        postMessage: vi.fn(() => {
+          queueMicrotask(() => {
+            store.flushPromiseResolve?.(audioBuffer)
+          })
+        }),
+      },
+    } as any
+    store.stream = {
+      getTracks: () => [{ stop: vi.fn() }],
+    } as any
+    store.audioContext = {
+      close: vi.fn().mockResolvedValue(undefined),
+    } as any
+    store.isRecording = true
+
+    await store.stopRecording()
+
+    expect(activeContextStoreMock.updateRequirement).not.toHaveBeenCalled()
+    expect(addToastMock).toHaveBeenCalledWith('No speech detected.', 'info')
   })
 })

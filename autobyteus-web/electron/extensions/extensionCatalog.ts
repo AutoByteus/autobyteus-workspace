@@ -1,6 +1,6 @@
 import type { ExtensionDescriptor, ExtensionId, SupportedArch, SupportedPlatform } from './types'
 
-const DEFAULT_RUNTIME_VERSION = '0.1.1'
+const DEFAULT_RUNTIME_VERSION = '0.3.0'
 const DEFAULT_RUNTIME_RELEASE_TAG = `v${DEFAULT_RUNTIME_VERSION}`
 const DEFAULT_REPOSITORY = 'AutoByteus/autobyteus-voice-runtime'
 const DEFAULT_MANIFEST_ASSET_NAME = 'voice-input-runtime-manifest.json'
@@ -44,7 +44,7 @@ export function getExtensionCatalog(): ExtensionDescriptor[] {
     {
       id: 'voice-input',
       name: 'Voice Input',
-      description: 'Optional local dictation powered by a downloadable Whisper runtime.',
+      description: 'Optional local dictation powered by a downloadable bilingual speech runtime.',
       runtimeVersion: runtime.runtimeVersion,
       runtimeReleaseTag: runtime.runtimeReleaseTag,
       runtimeManifestUrl: runtime.runtimeManifestUrl,

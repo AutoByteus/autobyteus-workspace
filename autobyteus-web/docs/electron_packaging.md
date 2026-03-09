@@ -390,8 +390,10 @@ scripts/migrate-legacy-db.sh --from /path/to/production.db --to ~/.autobyteus/se
 
 | Directory                          | Purpose                                |
 | ---------------------------------- | -------------------------------------- |
-| `~/.autobyteus/`                      | Electron user data (logs, preferences) |
+| `~/.autobyteus/`                      | Canonical AutoByteus desktop data root |
 | `~/.autobyteus/server-data/`          | Server runtime data                    |
+| `~/.autobyteus/extensions/`           | Managed extension install root         |
+| `~/.autobyteus/extensions/voice-input/` | Voice Input runtime, model, temp, and download assets |
 | `~/.autobyteus/server-data/db/`       | SQLite databases                       |
 | `~/.autobyteus/server-data/logs/`     | Server logs                            |
 | `~/.autobyteus/server-data/download/` | Downloaded assets                      |
@@ -401,6 +403,26 @@ Where:
 - **Linux**: `~/.autobyteus/`
 - **macOS**: `~/.autobyteus/`
 - **Windows**: `%USERPROFILE%\\.autobyteus\\`
+
+### Managed Voice Input Extension
+
+- Voice Input is delivered as a managed extension instead of being bundled into the base desktop installer.
+- Release provenance is pinned to the dedicated runtime repository:
+  - `AutoByteus/autobyteus-voice-runtime`
+- The extension lifecycle is:
+  - `Install` downloads the platform runtime bundle into `~/.autobyteus/extensions/voice-input` and then performs local backend/model bootstrap for that machine
+  - `Enable` turns on the shared composer microphone without re-downloading
+  - `Disable` turns off dictation while keeping the installed assets on disk
+  - `Remove` deletes the managed extension assets and resets Voice Input-specific state
+- The published runtime release stays lightweight:
+  - release assets include platform runtime bundles plus `voice-input-runtime-manifest.json`
+  - bilingual model archives are not published as release assets
+- The installed runtime owns backend-specific local bootstrap:
+  - macOS arm64 downloads the MLX model locally during install
+  - macOS x64, Linux x64, and Windows x64 download the `faster-whisper` model locally during install
+- Backend policy:
+  - macOS arm64 uses the MLX worker bundle
+  - macOS x64, Linux x64, and Windows x64 use the `faster-whisper` worker bundle
 
 ## Related Documentation
 
