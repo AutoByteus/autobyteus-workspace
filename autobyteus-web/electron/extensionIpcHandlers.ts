@@ -1,6 +1,6 @@
 import { shell, type IpcMain } from 'electron'
 import { ManagedExtensionService } from './extensions/managedExtensionService'
-import type { ExtensionId, VoiceInputTranscriptionRequest } from './extensions/types'
+import type { ExtensionId, UpdateVoiceInputSettingsPayload, VoiceInputTranscriptionRequest } from './extensions/types'
 
 export function registerExtensionIpcHandlers(ipcMain: IpcMain, managedExtensionService: ManagedExtensionService): void {
   ipcMain.handle('extensions:get-state', async () => {
@@ -10,6 +10,21 @@ export function registerExtensionIpcHandlers(ipcMain: IpcMain, managedExtensionS
   ipcMain.handle('extensions:install', async (_event, extensionId: ExtensionId) => {
     return await managedExtensionService.install(extensionId)
   })
+
+  ipcMain.handle('extensions:enable', async (_event, extensionId: ExtensionId) => {
+    return await managedExtensionService.enable(extensionId)
+  })
+
+  ipcMain.handle('extensions:disable', async (_event, extensionId: ExtensionId) => {
+    return await managedExtensionService.disable(extensionId)
+  })
+
+  ipcMain.handle(
+    'extensions:update-voice-input-settings',
+    async (_event, extensionId: ExtensionId, payload: UpdateVoiceInputSettingsPayload) => {
+      return await managedExtensionService.updateVoiceInputSettings(extensionId, payload)
+    },
+  )
 
   ipcMain.handle('extensions:remove', async (_event, extensionId: ExtensionId) => {
     return await managedExtensionService.remove(extensionId)

@@ -373,3 +373,91 @@ The shared composer clearly communicates when dictation is recording or transcri
 ### Output
 
 - The composer makes recording/transcription activity visible without changing the underlying local-recording pipeline.
+
+---
+
+## UC-013: Install Phase Telemetry In Settings
+
+### Intent
+
+While Voice Input is installing, users should see real progress phases instead of a static indefinite message.
+
+### Call Stack
+
+`[ENTRY][UI] Settings -> Extensions -> Voice Input -> Install/Reinstall click`
+-> `[STORE] extensionsStore.installExtension()` / `reinstallExtension()`
+-> store starts temporary polling loop against `window.electronAPI.getExtensionsState()`
+-> `[IPC] window.electronAPI.installExtension('voice-input')`
+-> `[MAIN][SERVICE] managedExtensionService.installRecord()`
+-> `[MAIN][SERVICE] voiceInputRuntimeService.installRuntime()` emits progress callbacks:
+  -> manifest fetch
+  -> runtime download (percent only when available)
+  -> archive verify/extract
+  -> runtime bootstrap
+  -> model bootstrap/download
+  -> ready/error
+-> `[MAIN][SERVICE] managedExtensionService` writes intermediate status/message updates into registry
+-> polling loop observes updated extension state and refreshes renderer copy
+-> install completes and polling stops
+
+### Output
+
+- Settings shows real install progression without inventing unavailable percentages.
+
+---
+
+## UC-014: Settings-Level Voice Test
+
+### Intent
+
+Users should be able to validate microphone capture and transcription directly from the Voice Input settings card.
+
+### Call Stack
+
+`[ENTRY][UI] Settings -> Extensions -> Voice Input -> Test voice input`
+-> `[COMPONENT] VoiceInputExtensionCard` invokes a test action on `voiceInputStore`
+-> `[STORE] voiceInputStore.startRecording({ source: 'settings-test' })`
+-> request microphone access
+-> create audio graph + recorder worklet
+-> live capture diagnostics update in store
+-> user clicks stop
+-> `[STORE] voiceInputStore.stopRecording()`
+-> recorder flush returns WAV payload + capture metadata
+-> `[IPC] window.electronAPI.transcribeVoiceInput()`
+-> `[MAIN][SERVICE] managedExtensionService.transcribeVoiceInput()`
+-> `[MAIN][SERVICE] voiceInputRuntimeService.transcribe()`
+-> worker returns transcript/no-speech/error + detected language
+-> `[STORE] voiceInputStore` saves final diagnostics and transcript result
+-> `[UI] VoiceInputExtensionCard` renders the result summary and diagnostics
+
+### Output
+
+- Users can validate Voice Input without opening a composer.
+
+---
+
+## UC-015: Distinguish No-Speech From Empty Transcript
+
+### Intent
+
+The product should not present every failed dictation as `No speech detected.` when the underlying outcome is different.
+
+### Call Stack
+
+`[ENTRY][STORE] voiceInputStore.stopRecording()`
+-> recorder flush returns WAV payload + metadata
+-> Electron worker transcription executes
+-> worker responds with one of:
+  -> `noSpeech = true`
+  -> `ok = true` and `text = ''`
+  -> `ok = false` with error
+-> `[STORE] voiceInputStore` maps result into explicit diagnostic state:
+  -> `no-speech`
+  -> `empty-transcript`
+  -> `runtime-error`
+  -> `transcript-ready`
+-> `[UI] composer/settings test surface` shows source-specific copy for that outcome
+
+### Output
+
+- Users and developers can tell whether the microphone captured silence, transcription produced nothing, or the worker failed outright.

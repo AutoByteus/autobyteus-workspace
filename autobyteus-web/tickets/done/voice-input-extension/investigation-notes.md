@@ -218,6 +218,114 @@
      - companion libs only if a static build is not achievable on that target
 
 7. The app-consumption path should avoid ambiguous “latest release” discovery.
+
+## Packaged-App Validation Refresh (2026-03-09)
+
+1. The rebuilt macOS desktop app can now reach the settings-level Voice Input test flow, and capture diagnostics show real microphone data is arriving.
+   - Live user screenshot showed:
+     - input sample rate `48000 Hz`
+     - WAV sample rate `48000 Hz`
+     - duration `6.18s`
+     - non-zero RMS/peak
+   - Conclusion: the new settings-level test surface and recorder diagnostics are working, and the renderer capture path is not the failing component in this packaged-app attempt.
+
+2. The packaged-app failure is now a runtime launch-environment issue, not a missing system dependency.
+   - The settings card returned:
+     - `FileNotFoundError: [Errno 2] No such file or directory: 'ffmpeg'`
+   - Local shell verification on the same machine confirmed:
+     - `ffmpeg` exists at `/opt/homebrew/bin/ffmpeg`
+     - `ffmpeg -version` succeeds
+   - Conclusion: the packaged app is not inheriting the same `PATH` that the interactive shell sees.
+
+3. The existing Electron code already contains the right pattern for this problem.
+   - `electron/utils/shellEnv.ts` loads `PATH` from the user login shell.
+   - `electron/server/macOSServerManager.ts` injects that enriched `PATH` when spawning the embedded server.
+   - `electron/extensions/voice-input/voiceInputRuntimeService.ts` currently spawns the Voice Input runtime without any `env` override.
+   - Conclusion: the Voice Input runtime launcher is inconsistent with the server launcher, and that inconsistency explains why GUI-launched packaged apps cannot see Homebrew `ffmpeg`.
+
+4. The MLX runtime currently depends on `ffmpeg` when invoked with an audio file path.
+   - Installed runtime worker code imports `mlx_whisper.transcribe(audio_path, ...)`.
+   - Installed `mlx_whisper/audio.py` shells out to `ffmpeg` for audio loading/resampling whenever the input is a file path.
+   - Conclusion: until we eliminate that dependency in the runtime, the app must provide a usable `PATH` to the worker process.
+
+5. Classification for workflow re-entry.
+   - Trigger stage: `Stage 7`
+   - Classification: `Local Fix`
+   - Required return path: `6 -> 7`
+   - Rationale: requirements/design are still valid; the failure is a localized Electron runtime-launch environment mismatch in the packaged-app path.
+
+## Live Validation Refresh (2026-03-09)
+
+1. The installed Voice Input bundle is present and complete under the expected app-data root.
+   - Observed install root: `/Users/normy/.autobyteus/extensions/voice-input`
+   - Observed installed assets:
+     - `runtime/bin/voice-input-worker`
+     - `runtime/.venv/.bootstrap-complete`
+     - `models/whisper-small-mlx/weights.npz`
+     - `installation.json`
+   - `installation.json` records:
+     - `runtimeVersion = 0.3.0`
+     - `modelVersion = mlx-community/whisper-small-mlx`
+     - `backendKind = mlx`
+   - Conclusion: the local install/bootstrap path is succeeding on this machine.
+
+2. The installed worker and bilingual model are healthy when exercised directly outside the renderer path.
+   - Direct CLI validation:
+     - start `/Users/normy/.autobyteus/extensions/voice-input/runtime/bin/voice-input-worker serve --backend mlx --model-path /Users/normy/.autobyteus/extensions/voice-input/models/whisper-small-mlx`
+     - send one JSON `transcribe-file` request against a generated WAV sample
+   - Observed response:
+     - `ok = true`
+     - `text = "Hello, this is Avois Input Test."`
+     - `detectedLanguage = "en"`
+     - `noSpeech = false`
+   - Conclusion: the installed runtime, model bootstrap, and worker protocol are functioning. The live failure is not caused by missing runtime files or a broken model install.
+
+3. The current install UX still lacks real progress telemetry.
+   - Renderer-side optimistic state in `stores/extensionsStore.ts` immediately sets:
+     - `status = installing`
+     - `message = "Downloading runtime and model. This can take a minute on first install."`
+   - Electron-side install path in `electron/extensions/voice-input/voiceInputRuntimeService.ts` performs several opaque phases with no intermediate status emission:
+     - manifest fetch
+     - runtime archive download
+     - checksum verification
+     - archive extraction
+     - local dependency bootstrap
+     - model download/bootstrap
+   - Conclusion: the current UX can only show a static spinner/message. It cannot distinguish active download progress, warm-up/bootstrap progress, or a stalled/error phase.
+
+4. The current `No speech detected.` toast conflates multiple failure modes.
+   - Renderer store logic in `stores/voiceInputStore.ts` shows the same toast when:
+     - `result.noSpeech === true`
+     - or `result.text.trim()` is empty
+   - Runtime worker `voice_input_worker.py` can also classify no-speech before transcription using:
+     - `duration_seconds < 0.15`
+     - or `audioop.rms(payload, sample_width) < 120`
+   - Conclusion: the user cannot tell whether the microphone captured silence, captured low-level audio that the heuristic rejected, or captured audio that reached transcription but returned empty text.
+
+5. The current recorder path does not provide diagnostic visibility.
+   - `workers/voice-input-recorder.worklet.js` accumulates raw float samples and writes a WAV payload, but it does not expose:
+     - live input level
+     - captured duration
+     - sample-rate diagnostics
+     - any saved debug artifact when transcription fails
+   - `stores/voiceInputStore.ts` does not preserve the last capture summary or transcription metadata for inspection.
+   - Conclusion: when dictation fails in live use, neither the user nor the developer has enough signal to separate microphone capture, transport, heuristic no-speech rejection, and backend transcription failures.
+
+6. The settings surface currently lacks a direct runtime test path.
+   - `components/settings/VoiceInputExtensionCard.vue` exposes install/enable/language/folder lifecycle actions only.
+   - The only place a user can validate dictation is the shared composer, which couples Voice Input validation to unrelated messaging context.
+   - Conclusion: a settings-level test surface is warranted. It should let the user validate install, microphone access, live audio level, recording, and final transcript without needing to enter a conversation flow first.
+
+7. The most likely technical root-cause cluster is now narrowed to the renderer capture/classification boundary.
+   - Ruled out:
+     - missing runtime bundle
+     - broken MLX model bootstrap
+     - broken worker JSON protocol
+   - Still plausible:
+     - capture payload shape/sample-rate mismatch from the recorder path
+     - overly aggressive local no-speech heuristic for real microphone levels
+     - empty transcript results being collapsed into the same UX as true no-speech
+   - Conclusion: implementation should focus first on observability and diagnostics at the renderer/worker boundary, then tune the no-speech gate with real captured evidence.
    - The production issue confirms that relying on a repository-wide latest release is brittle when multiple product surfaces share one repo.
    - Initial recommendation:
      - the app pins the voice runtime version/tag in code or in a bundled extension catalog

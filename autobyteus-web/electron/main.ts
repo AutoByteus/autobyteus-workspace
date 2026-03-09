@@ -25,6 +25,7 @@ import { ServerStatusManager } from './server/serverStatusManager';
 import { AppUpdater } from './updater/appUpdater';
 import { registerExtensionIpcHandlers } from './extensionIpcHandlers';
 import { ManagedExtensionService } from './extensions/managedExtensionService';
+import { getCanonicalBaseDataPath } from './appDataPaths';
 
 const serverStatusManager = new ServerStatusManager(serverManager);
 const appUpdater = new AppUpdater();
@@ -524,7 +525,7 @@ async function bootstrap(): Promise<void> {
   saveNodeRegistrySnapshot(app.getPath('userData'), nodeRegistrySnapshot);
 
   await app.whenReady();
-  managedExtensionService = new ManagedExtensionService(app.getPath('userData'));
+  managedExtensionService = new ManagedExtensionService(getCanonicalBaseDataPath());
   appUpdater.initialize();
   installIpcHandlers();
   installServerStatusFanout();

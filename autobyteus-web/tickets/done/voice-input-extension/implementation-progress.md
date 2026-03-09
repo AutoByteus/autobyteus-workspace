@@ -23,6 +23,8 @@ This document tracks implementation execution, targeted verification, Stage 7 sc
 - 2026-03-08: Published standalone runtime release `v0.1.1` with manifest, model, and all four platform binaries in `AutoByteus/autobyteus-voice-runtime` via run `22818941304`.
 - 2026-03-08: Validated the published standalone release through the compiled Electron service: real install/download succeeded and real transcription returned `Hello world!` from a generated WAV sample.
 - 2026-03-08: Removed the now-redundant `!voice-runtime-v*` exclusion from the workspace desktop release workflow so `.github/workflows/release-desktop.yml` is restored to its original tag trigger shape.
+- 2026-03-09: Re-entered Stage 6 after live packaged-app validation of the new settings-level test surface failed with `FileNotFoundError: 'ffmpeg'` even though `ffmpeg` exists in Homebrew on the user machine.
+- 2026-03-09: Root cause isolated to Voice Input runtime spawn environment mismatch: the embedded server inherits login-shell PATH, but `VoiceInputRuntimeService` currently does not.
 
 ## File-Level Progress Table (Stage 6)
 
@@ -112,3 +114,55 @@ This document tracks implementation execution, targeted verification, Stage 7 sc
 - `pnpm -C autobyteus-web exec vitest --config vitest.config.mts run components/settings/__tests__/VoiceInputExtensionCard.spec.ts stores/__tests__/extensionsStore.spec.ts components/agentInput/__tests__/AgentUserInputTextArea.spec.ts tests/integration/voice-input-extension.integration.test.ts pages/__tests__/settings.spec.ts stores/__tests__/voiceInputStore.spec.ts`
 - `pnpm -C autobyteus-web exec vitest --config electron/vitest.config.ts run electron/extensions/__tests__/managedExtensionService.spec.ts`
 - `pnpm -C autobyteus-web transpile-electron`
+
+## Live Diagnostics Re-Entry (2026-03-09)
+
+### Implemented Changes
+
+| Change ID | Files | Status | Verification | Result | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `C-015` | `electron/extensions/types.ts`, `electron/extensions/voice-input/voiceInputRuntimeService.ts`, `electron/extensions/managedExtensionService.ts`, `stores/extensionsStore.ts` | Completed | `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/voice-input-bilingual-runtime/autobyteus-web exec tsc -p electron/tsconfig.json --noEmit`; `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/voice-input-bilingual-runtime/autobyteus-web exec vitest --config electron/vitest.config.ts run electron/extensions/__tests__/managedExtensionService.spec.ts` | Passed | Install flow now persists real manifest/download/extract/bootstrap phases and renderer polling reflects them during install/reinstall |
+| `C-016` | `workers/voice-input-recorder.worklet.js`, `stores/voiceInputStore.ts` | Completed | `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/voice-input-bilingual-runtime/autobyteus-web exec vitest --config vitest.config.mts run stores/__tests__/voiceInputStore.spec.ts components/agentInput/__tests__/AgentUserInputTextArea.spec.ts` | Passed | Recorder now emits actual capture metadata and the store separates `no-speech`, `empty-transcript`, and `error` outcomes |
+| `C-017` | `components/settings/VoiceInputExtensionCard.vue`, `components/settings/__tests__/VoiceInputExtensionCard.spec.ts` | Completed | `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/voice-input-bilingual-runtime/autobyteus-web exec vitest --config vitest.config.mts run components/settings/__tests__/VoiceInputExtensionCard.spec.ts` | Passed | Settings card now shows install-phase progress, a direct voice test workflow, live level feedback, and last-test diagnostics |
+| `C-018` | `tests/integration/voice-input-extension.integration.test.ts` | Completed | `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/voice-input-bilingual-runtime/autobyteus-web exec vitest --config vitest.config.mts run tests/integration/voice-input-extension.integration.test.ts` | Passed | App-level integration remains green after the richer capture payload and telemetry changes |
+| `C-019` | `electron/extensions/voice-input/voiceInputRuntimeService.ts` | Completed | `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/voice-input-bilingual-runtime/autobyteus-web exec tsc -p electron/tsconfig.json --noEmit`; `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/voice-input-bilingual-runtime/autobyteus-web exec vitest --config electron/vitest.config.ts run electron/extensions/__tests__/managedExtensionService.spec.ts electron/extensions/__tests__/voiceInputRuntimeService.spec.ts` | Passed | Worker bootstrap and serve spawn paths now inject login-shell PATH so packaged macOS apps can resolve Homebrew-installed `ffmpeg` |
+| `C-020` | `electron/extensions/__tests__/voiceInputRuntimeService.spec.ts` | Completed | `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/voice-input-bilingual-runtime/autobyteus-web exec vitest --config electron/vitest.config.ts run electron/extensions/__tests__/managedExtensionService.spec.ts electron/extensions/__tests__/voiceInputRuntimeService.spec.ts` | Passed | Regression coverage now asserts login-shell PATH override behavior for macOS/Linux and preserves default PATH on Windows |
+
+### Validation Commands Rerun
+
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/voice-input-bilingual-runtime/autobyteus-web exec tsc -p electron/tsconfig.json --noEmit`
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/voice-input-bilingual-runtime/autobyteus-web exec vitest --config vitest.config.mts run components/settings/__tests__/VoiceInputExtensionCard.spec.ts stores/__tests__/extensionsStore.spec.ts stores/__tests__/voiceInputStore.spec.ts tests/integration/voice-input-extension.integration.test.ts`
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/voice-input-bilingual-runtime/autobyteus-web exec vitest --config vitest.config.mts run components/agentInput/__tests__/AgentUserInputTextArea.spec.ts`
+- `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/voice-input-bilingual-runtime/autobyteus-web exec vitest --config electron/vitest.config.ts run electron/extensions/__tests__/managedExtensionService.spec.ts`
+
+### Residual Risk
+
+- The installed worker/model was validated directly and the targeted automated suites passed, but this turn did not include a fresh packaged-desktop microphone smoke after rebuilding the app. The remaining live risk is limited to real-device microphone behavior in the rebuilt desktop binary.
+
+## Packaged-App PATH Fix Re-Entry (2026-03-09)
+
+### Planned Changes
+
+| Change ID | Files | Planned Verification | Purpose |
+| --- | --- | --- | --- |
+| `C-019` | `electron/extensions/voice-input/voiceInputRuntimeService.ts` | Electron test coverage plus rebuilt packaged-app smoke | Ensure worker `prepare` and `serve` spawn paths inherit login-shell PATH the same way the embedded server does |
+| `C-020` | `electron/extensions/__tests__/managedExtensionService.spec.ts` or new runtime-service spec | `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/voice-input-bilingual-runtime/autobyteus-web exec vitest --config electron/vitest.config.ts run ...` | Prevent regression by proving the enriched PATH reaches runtime spawn options |
+
+### Current Re-Entry Status
+
+- Workflow re-entry classification: `Local Fix`
+- Trigger stage: `7`
+- Return path: `6 -> 7`
+- Code edits unlocked before implementation: `Yes`
+- Source implementation complete for the local fix: `Yes`
+- Rebuilt desktop artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/voice-input-bilingual-runtime/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.2.27.dmg`
+- Remaining Stage 7 work: `None`
+
+### Final Re-Entry Outcome
+
+- Live packaged-app validation after rebuild: `Passed`
+- User confirmation received: `Yes`
+- Outcome:
+  - The settings-level Voice Input test now works in the rebuilt packaged macOS app.
+  - The packaged app can resolve Homebrew `ffmpeg` through login-shell PATH inheritance.
+  - The local-fix re-entry is complete and no residual packaged-app blocker remains for this ticket.

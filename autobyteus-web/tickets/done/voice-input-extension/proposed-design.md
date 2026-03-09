@@ -424,3 +424,68 @@ Tighten the existing Electron-only voice-input UX so users see immediate install
 - No live audio spectrum rendering.
 - No background streaming or partial transcript UX.
 - No web-mode support outside Electron.
+
+## Live Diagnostics Addendum (2026-03-09)
+
+### Goal
+
+Close the remaining live-use gap by making Voice Input observable while it installs and debuggable after it installs. The product must no longer force users to guess whether install is progressing or why dictation returned `No speech detected.` when the local worker is actually healthy.
+
+### Design Decisions
+
+1. Real install phase telemetry
+   - `voiceInputRuntimeService.installRuntime()` will accept a progress callback and emit concrete phases:
+     - manifest fetch
+     - runtime download
+     - runtime verification/extraction
+     - local runtime bootstrap
+     - model bootstrap/download
+     - ready
+   - Byte percentages are shown only when the HTTP response exposes `content-length`; otherwise the UI shows phase copy with no fake percent.
+   - `managedExtensionService` persists those phase updates into the extension registry message/state during install.
+   - `extensionsStore` polls `getExtensionsState()` while install/reinstall is running so the existing renderer can reflect those intermediate updates without a new event bus.
+
+2. Settings-level Voice Input test surface
+   - `VoiceInputExtensionCard.vue` gains a compact test section visible for installed Voice Input.
+   - The test section reuses the same recorder/transcription path as the composer via `voiceInputStore`; it does not introduce a second speech pipeline.
+   - The settings test flow should expose:
+     - current language mode
+     - start/stop test recording
+     - live recording state
+     - final transcript / failure result
+     - key diagnostics for debugging
+
+3. Recorder metadata and diagnostics
+   - `voice-input-recorder.worklet.js` will stop writing a fake sample-rate header.
+   - The recorder output will carry capture metadata such as:
+     - actual input sample rate
+     - encoded WAV sample rate
+     - duration
+     - RMS / peak level
+   - The UI will persist the most recent transcription diagnostics in `voiceInputStore` so the settings page and composer can distinguish:
+     - true no-speech
+     - empty transcript
+     - runtime/transcription error
+
+4. No-speech UX separation
+   - `voiceInputStore` will stop flattening `noSpeech === true` and `text.trim() === ''` into the same toast/result.
+   - Empty transcript becomes its own visible diagnostic outcome with actionable copy.
+   - True no-speech remains a benign info state rather than a generic failure.
+
+### Primary File Delta
+
+| Change ID | File / Module | Design Delta |
+| --- | --- | --- |
+| `C-015` | `electron/extensions/types.ts` | Add install-phase telemetry fields and richer transcription diagnostics metadata. |
+| `C-016` | `electron/extensions/voice-input/voiceInputRuntimeService.ts` | Emit install progress phases and preserve richer worker responses. |
+| `C-017` | `electron/extensions/managedExtensionService.ts` | Persist in-flight install messages and expose them through normalized extension state. |
+| `C-018` | `stores/extensionsStore.ts` | Poll authoritative extension state while install/reinstall is running. |
+| `C-019` | `stores/voiceInputStore.ts` | Share capture/transcription flow across composer and settings test UI; persist latest diagnostics. |
+| `C-020` | `workers/voice-input-recorder.worklet.js` | Emit correct WAV metadata plus capture diagnostics. |
+| `C-021` | `components/settings/VoiceInputExtensionCard.vue` | Add settings-level test controls/results/diagnostics. |
+
+### Non-Goals For This Addendum
+
+- No cloud/server transcription fallback.
+- No waveform-heavy visualizer.
+- No separate background worker just for settings-page testing.

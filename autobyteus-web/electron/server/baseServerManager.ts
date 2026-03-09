@@ -1,10 +1,9 @@
 import { ChildProcess } from 'child_process'
 import * as net from 'net'
-import * as os from 'os'
-import * as path from 'path'
 import axios from 'axios'
 import { EventEmitter } from 'events'
 import { logger } from '../logger'
+import { getCanonicalBaseDataPath } from '../appDataPaths'
 import { AppDataService } from './services/AppDataService'
 
 // Fixed server port
@@ -38,11 +37,7 @@ export abstract class BaseServerManager extends EventEmitter {
   }
 
   private getBaseDataDir(): string {
-    const homeDir = os.homedir()
-    if (process.platform === 'win32') {
-      return path.join(homeDir, '.autobyteus')
-    }
-    return path.join(homeDir, '.autobyteus')
+    return getCanonicalBaseDataPath()
   }
 
   /**
