@@ -136,6 +136,47 @@
 | `UC-011` | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 | `UC-012` | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 
+## Review Round 7
+
+- **Status**: `Go Confirmed`
+- **Clean Streak**: `1`
+- **Missing Use Case Discovery**:
+  - Added `UC-013` install phase telemetry
+  - Added `UC-014` settings-level voice test
+  - Added `UC-015` explicit no-speech vs empty-transcript diagnostics
+- **Round Notes**:
+  - The new scope stays within existing boundaries: registry-backed install state in Electron, renderer polling for in-flight updates, and reuse of the same recorder/transcribe path for both settings and composer surfaces.
+  - No extra local server or duplicate speech pipeline is introduced.
+  - The recorder metadata correction is a local boundary fix, not an architectural change.
+- **Persisted Artifact Updates Required This Round**:
+  - `requirements.md`
+  - `proposed-design.md`
+  - `future-state-runtime-call-stack.md`
+  - `implementation-plan.md`
+
+| Use Case ID | Architecture Fit | Layering Fitness | Boundary Placement | Decoupling | Existing Bias | Anti-Hack | Local-Fix Degr. | Terminology | Naming | Drift | Future Align | SoC | Coverage | Traceability | Closure | Justification | Redundancy | Simplification | Cleanup | Legacy | Back-Compat | Verdict |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `UC-013` | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| `UC-014` | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| `UC-015` | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+
+## Review Round 8
+
+- **Status**: `Go Confirmed`
+- **Clean Streak**: `2`
+- **Missing Use Case Discovery**: None.
+- **Round Notes**:
+  - Rechecked the diagnostics/test-surface delta after the concrete implementation sketch was chosen.
+  - Polling install state is sufficient for this scope and avoids introducing a new extension event bus prematurely.
+  - The design remains cleanly local: fix recorder metadata, expose richer result state, and show it in settings/composer.
+- **Persisted Artifact Updates Required This Round**: None.
+
+| Use Case ID | Architecture Fit | Layering Fitness | Boundary Placement | Decoupling | Existing Bias | Anti-Hack | Local-Fix Degr. | Terminology | Naming | Drift | Future Align | SoC | Coverage | Traceability | Closure | Justification | Redundancy | Simplification | Cleanup | Legacy | Back-Compat | Verdict |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `UC-013` | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| `UC-014` | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| `UC-015` | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+
 ## Review Round 6
 
 - **Status**: `Go Confirmed`

@@ -63,12 +63,32 @@ Default target image is:
 
 ## GitHub Release Automation
 
-Workflow file: `.github/workflows/release-docker-image.yml`
+Workflow file: `.github/workflows/release-server-docker.yml`
 
 What it does:
 - Triggers on Git tags (e.g. `v1.2.3`).
 - Builds `docker/Dockerfile.monorepo` for `linux/amd64,linux/arm64`.
 - Pushes Docker tags to Docker Hub.
+- Stable releases publish both `<image>:<version>` and `<image>:latest`.
+- Prereleases such as `v1.2.3-rc1` publish only `<image>:1.2.3-rc1`.
+
+Required GitHub repository secrets:
+
+- `DOCKERHUB_USERNAME`
+- `DOCKERHUB_TOKEN`
+
+Optional GitHub repository variable:
+
+- `DOCKERHUB_IMAGE_NAME`
+
+Default image name:
+
+- `autobyteus/autobyteus-server`
+
+Manual republish:
+
+- Run the `Server Docker Release` workflow with `workflow_dispatch`.
+- Provide `release_tag` and optionally `image_name` if you want to override the default repository.
 
 ## Endpoints (Default)
 

@@ -3,5 +3,7 @@ node_modules/
 tmp/
 **/__pycache__/
 *.pyc
+.local/*
+!.local/*.example
 autobyteus-server-ts/agents/
 autobyteus-server-ts/agent-teams/

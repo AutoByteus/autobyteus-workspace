@@ -114,6 +114,34 @@ describe('TeamRunConfigForm', () => {
     expect(llmStore.fetchProvidersWithModels).toHaveBeenCalledWith('codex_app_server');
   });
 
+  it('uses model identifiers as labels for AutoByteus runtime selections', () => {
+    llmStore.providersWithModels = [
+      {
+        provider: 'AutoByteus',
+        models: [{ modelIdentifier: 'host-a/model-x', name: 'Model X' }],
+      },
+    ];
+
+    const { wrapper } = buildWrapper({ runtimeKind: 'autobyteus' });
+    const options = wrapper.findComponent({ name: 'SearchableGroupedSelect' }).props('options');
+
+    expect(options[0].items[0].name).toBe('host-a/model-x');
+  });
+
+  it('keeps provider model names for non-AutoByteus runtimes', () => {
+    llmStore.providersWithModels = [
+      {
+        provider: 'OpenAI',
+        models: [{ modelIdentifier: 'gpt-4', name: 'GPT-4' }],
+      },
+    ];
+
+    const { wrapper } = buildWrapper({ runtimeKind: 'codex_app_server' });
+    const options = wrapper.findComponent({ name: 'SearchableGroupedSelect' }).props('options');
+
+    expect(options[0].items[0].name).toBe('GPT-4');
+  });
+
   it('changes runtime kind and reloads runtime-scoped models', async () => {
     const { wrapper, config } = buildWrapper({
       runtimeKind: 'autobyteus',

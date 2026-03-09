@@ -114,3 +114,19 @@
 | `T-010` | Add `Open Folder` lifecycle action for installed voice input using Electron IPC | `electron/main.ts`, `electron/preload.ts`, `types/electron.d.ts`, `stores/extensionsStore.ts`, `components/settings/VoiceInputExtensionCard.vue`, `components/settings/ExtensionsManager.vue` |
 | `T-011` | Add visible recording/transcribing indicator in the shared composer without changing the underlying local-recording pipeline | `components/agentInput/AgentUserInputTextArea.vue`, `stores/voiceInputStore.ts` |
 | `T-012` | Extend targeted tests for install-progress UX, open-folder lifecycle action, and recording/transcribing indicator | `components/settings/__tests__/VoiceInputExtensionCard.spec.ts`, `stores/__tests__/extensionsStore.spec.ts`, `components/agentInput/__tests__/AgentUserInputTextArea.spec.ts`, `tests/integration/voice-input-extension.integration.test.ts` |
+
+## Live Diagnostics Tasks (2026-03-09 Re-Entry)
+
+| Task ID | Change | Files / Areas |
+| --- | --- | --- |
+| `T-013` | Add install-phase telemetry fields and progress callbacks so Electron can persist meaningful install state throughout runtime/model/bootstrap phases | `electron/extensions/types.ts`, `electron/extensions/voice-input/voiceInputRuntimeService.ts`, `electron/extensions/managedExtensionService.ts` |
+| `T-014` | Poll extension state during install/reinstall so the settings UI reflects live backend progress without introducing a new event bus | `stores/extensionsStore.ts`, `components/settings/VoiceInputExtensionCard.vue`, `components/settings/ExtensionsManager.vue`, related tests |
+| `T-015` | Fix recorder metadata/diagnostics and stop collapsing empty transcript into `No speech detected.` | `workers/voice-input-recorder.worklet.js`, `stores/voiceInputStore.ts`, `electron/extensions/types.ts`, related tests |
+| `T-016` | Add a settings-level voice test section that reuses the composer capture/transcribe path and shows transcript/diagnostics | `components/settings/VoiceInputExtensionCard.vue`, `stores/voiceInputStore.ts`, renderer integration tests |
+
+## Packaged-App PATH Fix Tasks (2026-03-09 Re-Entry)
+
+| Task ID | Change | Files / Areas |
+| --- | --- | --- |
+| `T-017` | Reuse login-shell PATH enrichment for Voice Input runtime `prepare` and long-lived worker spawn so GUI-launched packaged apps can resolve Homebrew-installed `ffmpeg` and similar tools | `electron/extensions/voice-input/voiceInputRuntimeService.ts`, `electron/utils/shellEnv.ts` |
+| `T-018` | Add a regression test that verifies runtime spawns receive the enriched PATH rather than raw packaged-app environment only | `electron/extensions/__tests__/managedExtensionService.spec.ts` or a new runtime-service spec under `electron/extensions/__tests__/` |

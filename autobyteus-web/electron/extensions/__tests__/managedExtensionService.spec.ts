@@ -2,11 +2,64 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import * as fs from 'fs/promises'
 import * as os from 'os'
 import * as path from 'path'
+import * as tar from 'tar'
+import { createHash } from 'crypto'
 import { createServer, type Server } from 'http'
 import { ManagedExtensionService } from '../managedExtensionService'
 
-function createFakeRuntimeScript(): Buffer {
-  return Buffer.from('#!/usr/bin/env bash\nprintf "fixture transcript\\n"\n', 'utf8')
+async function createWorkerArchive(targetPath: string): Promise<void> {
+  const stagingDir = await fs.mkdtemp(path.join(os.tmpdir(), 'voice-input-worker-'))
+  const binDir = path.join(stagingDir, 'bin')
+  await fs.mkdir(binDir, { recursive: true })
+
+  const workerScriptPath = path.join(stagingDir, 'worker.js')
+  const workerScript = [
+    '#!/usr/bin/env node',
+    "const fs = require('fs')",
+    "const path = require('path')",
+    "const readline = require('readline')",
+    'const args = process.argv.slice(2)',
+    'const command = args[0]',
+    'function readArg(name) {',
+    '  const index = args.indexOf(name)',
+    '  return index === -1 ? undefined : args[index + 1]',
+    '}',
+    "if (command === 'prepare') {",
+    "  const modelPath = readArg('--model-path')",
+    "  if (!modelPath) throw new Error('missing --model-path')",
+    "  fs.mkdirSync(modelPath, { recursive: true })",
+    "  fs.writeFileSync(path.join(modelPath, 'model.txt'), 'fixture-model', 'utf8')",
+    '  process.exit(0)',
+    '}',
+    "if (command !== 'serve') throw new Error(`unsupported command: ${command}`)",
+    "process.stdout.write(JSON.stringify({ type: 'ready', backendKind: 'faster-whisper' }) + '\\n')",
+    'const rl = readline.createInterface({ input: process.stdin })',
+    "rl.on('line', (line) => {",
+    '  const payload = JSON.parse(line)',
+    "  process.stdout.write(JSON.stringify({ requestId: payload.requestId, ok: true, text: payload.languageMode === 'zh' ? 'ni hao' : 'fixture transcript', detectedLanguage: payload.languageMode === 'zh' ? 'zh' : 'en', noSpeech: false, error: null }) + '\\n')",
+    '})',
+  ].join('\n')
+  await fs.writeFile(workerScriptPath, workerScript, 'utf8')
+
+  const workerPath = path.join(binDir, process.platform === 'win32' ? 'voice-input-worker.cmd' : 'voice-input-worker')
+  if (process.platform === 'win32') {
+    await fs.writeFile(workerPath, '@echo off\r\nnode "%~dp0\\..\\worker.js" %*\r\n', 'utf8')
+  } else {
+    await fs.writeFile(workerPath, '#!/usr/bin/env bash\nset -euo pipefail\nSCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"\nexec node "$SCRIPT_DIR/../worker.js" "$@"\n', 'utf8')
+    await fs.chmod(workerPath, 0o755)
+    await fs.chmod(workerScriptPath, 0o755)
+  }
+
+  await tar.c(
+    {
+      gzip: true,
+      cwd: stagingDir,
+      file: targetPath,
+    },
+    ['.'],
+  )
+
+  await fs.rm(stagingDir, { recursive: true, force: true })
 }
 
 describe('ManagedExtensionService', () => {
@@ -17,30 +70,35 @@ describe('ManagedExtensionService', () => {
   beforeEach(async () => {
     tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'voice-input-extension-'))
 
-    server = createServer((request, response) => {
+    server = createServer(async (request, response) => {
+      const runtimeArchivePath = path.join(tempDir, 'runtime.tar.gz')
+
+      await createWorkerArchive(runtimeArchivePath)
+
+      const runtimeSha = createHash('sha256').update(await fs.readFile(runtimeArchivePath)).digest('hex')
+
       const manifest = {
-        schemaVersion: 1,
+        schemaVersion: 2,
         runtimeId: 'voice-input',
-        runtimeVersion: '0.1.0',
+        runtimeVersion: '0.2.0',
         generatedAt: new Date().toISOString(),
         assets: [
           {
             platform: process.platform,
             arch: process.arch,
-            fileName: process.platform === 'win32' ? 'whisper-cli.exe' : 'whisper-cli',
+            fileName: 'voice-input-runtime.tar.gz',
             url: `${serverBaseUrl}/runtime`,
-            sha256: '',
-            entrypoint: process.platform === 'win32' ? 'whisper-cli.exe' : 'whisper-cli',
-            distributionType: 'file',
+            sha256: runtimeSha,
+            entrypoint: process.platform === 'win32' ? 'bin/voice-input-worker.cmd' : 'bin/voice-input-worker',
+            distributionType: 'archive',
+            backendKind: 'faster-whisper',
+            model: {
+              id: 'fixture-model',
+              sourceRepo: 'fixtures/faster-whisper-small',
+              version: 'fixture-model-v1',
+            },
           },
         ],
-        model: {
-          fileName: 'ggml-tiny.en-q5_1.bin',
-          url: `${serverBaseUrl}/model`,
-          sha256: '',
-          sizeBytes: 'fixture-model'.length,
-          version: 'tiny.en-q5_1',
-        },
       }
 
       if (request.url === '/manifest.json') {
@@ -50,13 +108,7 @@ describe('ManagedExtensionService', () => {
       }
 
       if (request.url === '/runtime') {
-        const runtime = createFakeRuntimeScript()
-        response.end(runtime)
-        return
-      }
-
-      if (request.url === '/model') {
-        response.end('fixture-model')
+        response.end(await fs.readFile(runtimeArchivePath))
         return
       }
 
@@ -73,57 +125,6 @@ describe('ManagedExtensionService', () => {
         serverBaseUrl = `http://127.0.0.1:${address.port}`
         resolve()
       })
-    })
-
-    const crypto = await import('crypto')
-    const runtimeSha = crypto.createHash('sha256').update(createFakeRuntimeScript()).digest('hex')
-    const modelSha = crypto.createHash('sha256').update('fixture-model').digest('hex')
-
-    server.removeAllListeners('request')
-    server.on('request', (request, response) => {
-      const manifest = {
-        schemaVersion: 1,
-        runtimeId: 'voice-input',
-        runtimeVersion: '0.1.0',
-        generatedAt: new Date().toISOString(),
-        assets: [
-          {
-            platform: process.platform,
-            arch: process.arch,
-            fileName: process.platform === 'win32' ? 'whisper-cli.exe' : 'whisper-cli',
-            url: `${serverBaseUrl}/runtime`,
-            sha256: runtimeSha,
-            entrypoint: process.platform === 'win32' ? 'whisper-cli.exe' : 'whisper-cli',
-            distributionType: 'file',
-          },
-        ],
-        model: {
-          fileName: 'ggml-tiny.en-q5_1.bin',
-          url: `${serverBaseUrl}/model`,
-          sha256: modelSha,
-          sizeBytes: 'fixture-model'.length,
-          version: 'tiny.en-q5_1',
-        },
-      }
-
-      if (request.url === '/manifest.json') {
-        response.setHeader('content-type', 'application/json')
-        response.end(JSON.stringify(manifest))
-        return
-      }
-
-      if (request.url === '/runtime') {
-        response.end(createFakeRuntimeScript())
-        return
-      }
-
-      if (request.url === '/model') {
-        response.end('fixture-model')
-        return
-      }
-
-      response.statusCode = 404
-      response.end('not found')
     })
 
     vi.stubEnv('AUTOBYTEUS_VOICE_INPUT_MANIFEST_URL', `${serverBaseUrl}/manifest.json`)
@@ -143,7 +144,7 @@ describe('ManagedExtensionService', () => {
     await fs.rm(tempDir, { recursive: true, force: true })
   })
 
-  it('installs, invokes, and removes voice input', async () => {
+  it('installs disabled by default, enables explicitly, and transcribes via the worker', async () => {
     const service = new ManagedExtensionService(tempDir)
 
     const installedState = await service.install('voice-input')
@@ -152,25 +153,48 @@ describe('ManagedExtensionService', () => {
     const registryPath = path.join(tempDir, 'extensions', 'registry.json')
 
     expect(voiceInput?.status).toBe('installed')
-    expect(await fs.readFile(registryPath, 'utf8')).toContain('"status": "installed"')
-    await expect(fs.access(path.join(extensionRoot, 'bin', process.platform === 'win32' ? 'whisper-cli.exe' : 'whisper-cli'))).resolves.toBeUndefined()
-    await expect(fs.access(path.join(extensionRoot, 'models', 'ggml-tiny.en-q5_1.bin'))).resolves.toBeUndefined()
-    await expect(service.getInstalledExtensionPath('voice-input')).resolves.toBe(extensionRoot)
+    expect(voiceInput?.enabled).toBe(false)
+    expect(await fs.readFile(registryPath, 'utf8')).toContain('"enabled": false')
+    await expect(fs.access(path.join(extensionRoot, 'runtime', 'bin', process.platform === 'win32' ? 'voice-input-worker.cmd' : 'voice-input-worker'))).resolves.toBeUndefined()
+    await expect(fs.access(path.join(extensionRoot, 'models', 'fixture-model', 'model.txt'))).resolves.toBeUndefined()
+
+    const disabledResult = await service.transcribeVoiceInput({
+      audioData: new Uint8Array([82, 73, 70, 70]).buffer,
+    })
+    expect(disabledResult.ok).toBe(false)
+    expect(disabledResult.error).toContain('disabled')
+
+    const enabledState = await service.enable('voice-input')
+    expect(enabledState.find((entry) => entry.id === 'voice-input')?.enabled).toBe(true)
 
     const result = await service.transcribeVoiceInput({
       audioData: new Uint8Array([82, 73, 70, 70]).buffer,
-      language: 'en',
+      languageMode: 'zh',
     })
 
     expect(result).toEqual({
       ok: true,
-      text: 'fixture transcript',
+      text: 'ni hao',
+      detectedLanguage: 'zh',
+      noSpeech: false,
       error: null,
     })
+  })
 
-    const removedState = await service.remove('voice-input')
-    expect(removedState.find((entry) => entry.id === 'voice-input')?.status).toBe('not-installed')
-    await expect(service.getInstalledExtensionPath('voice-input')).rejects.toThrow('Voice Input is not installed yet.')
+  it('preserves enabled state and language mode across reinstall', async () => {
+    const service = new ManagedExtensionService(tempDir)
+
+    await service.install('voice-input')
+    await service.updateVoiceInputSettings('voice-input', { languageMode: 'zh', audioInputDeviceId: 'virtual-source' })
+    await service.enable('voice-input')
+
+    const state = await service.reinstall('voice-input')
+    const voiceInput = state.find((entry) => entry.id === 'voice-input')
+
+    expect(voiceInput?.status).toBe('installed')
+    expect(voiceInput?.enabled).toBe(true)
+    expect(voiceInput?.settings.languageMode).toBe('zh')
+    expect(voiceInput?.settings.audioInputDeviceId).toBe('virtual-source')
   })
 
   it('marks a broken installation as requiring attention', async () => {
@@ -178,7 +202,7 @@ describe('ManagedExtensionService', () => {
     await service.install('voice-input')
 
     await fs.rm(
-      path.join(tempDir, 'extensions', 'voice-input', 'bin', process.platform === 'win32' ? 'whisper-cli.exe' : 'whisper-cli'),
+      path.join(tempDir, 'extensions', 'voice-input', 'runtime', 'bin', process.platform === 'win32' ? 'voice-input-worker.cmd' : 'voice-input-worker'),
       { force: true },
     )
 
@@ -186,6 +210,7 @@ describe('ManagedExtensionService', () => {
     const voiceInput = state.find((entry) => entry.id === 'voice-input')
 
     expect(voiceInput?.status).toBe('error')
+    expect(voiceInput?.enabled).toBe(false)
     expect(voiceInput?.lastError).toBeTruthy()
   })
 })

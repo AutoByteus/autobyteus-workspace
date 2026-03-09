@@ -1,7 +1,7 @@
 import * as fs from 'fs'
 import * as path from 'path'
-import * as os from 'os'
 import * as util from 'util'
+import { getCanonicalLogsPath } from './appDataPaths'
 
 class Logger {
   private logPath: string
@@ -9,7 +9,7 @@ class Logger {
 
   constructor() {
     // Ensure log directory exists
-    const logDir = path.join(os.homedir(), '.autobyteus', 'logs')
+    const logDir = getCanonicalLogsPath()
     if (!fs.existsSync(logDir)) {
       fs.mkdirSync(logDir, { recursive: true })
     }
