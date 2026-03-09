@@ -135,6 +135,7 @@ import {
 import WorkspaceSelector from './WorkspaceSelector.vue';
 import MemberOverrideItem from './MemberOverrideItem.vue';
 import SearchableGroupedSelect, { type GroupedOption } from '~/components/agentTeams/SearchableGroupedSelect.vue';
+import { getModelSelectionLabel } from '~/utils/modelSelectionLabel';
 
 interface WorkspaceLoadingState {
   isLoading: boolean;
@@ -302,7 +303,7 @@ const groupedModelOptions = computed<GroupedOption[]>(() => {
         label: provider.provider,
         items: provider.models.map(model => ({
             id: model.modelIdentifier,
-            name: model.name || model.modelIdentifier
+            name: getModelSelectionLabel(model, props.config.runtimeKind),
         }))
     }));
 });

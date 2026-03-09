@@ -126,7 +126,7 @@ describe('AgentRunConfigForm', () => {
 
     const wrapper = mount(AgentRunConfigForm, {
       props: {
-        config: mockConfig,
+        config: { ...mockConfig, runtimeKind: 'codex_app_server' },
         agentDefinition: mockAgentDef as any,
         workspaceLoadingState: { isLoading: false, error: null, loadedPath: null },
       },
@@ -139,6 +139,31 @@ describe('AgentRunConfigForm', () => {
     
     expect(options).toHaveLength(1);
     expect(options[0].items[0].name).toBe('GPT-4');
+  });
+
+  it('uses model identifiers as labels for AutoByteus runtime selections', async () => {
+    const store = useLLMProviderConfigStore();
+    store.providersWithModels = [
+      {
+        provider: 'LM Studio',
+        models: [
+          { modelIdentifier: 'openai/gpt-oss-20b', name: 'GPT OSS 20B', value: 'openai/gpt-oss-20b', canonicalName: 'gpt-oss-20b', provider: 'lmstudio', runtime: 'autobyteus' },
+        ]
+      }
+    ];
+
+    const wrapper = mount(AgentRunConfigForm, {
+      props: {
+        config: { ...mockConfig, runtimeKind: 'autobyteus' },
+        agentDefinition: mockAgentDef as any,
+        workspaceLoadingState: { isLoading: false, error: null, loadedPath: null },
+      },
+    });
+
+    await wrapper.vm.$nextTick();
+
+    const options = wrapper.findComponent({ name: 'SearchableGroupedSelect' }).props('options');
+    expect(options[0].items[0].name).toBe('openai/gpt-oss-20b');
   });
 
   it('disables fields when config is locked', () => {
