@@ -7,12 +7,12 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 ## Current Snapshot
 
 - Ticket: `telegram-managed-flow-hardening`
-- Current Stage: `10`
-- Next Stage: `User handoff and restart-based validation`
-- Code Edit Permission: `Locked`
-- Active Re-Entry: `No`
-- Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `Requirement Gap`
-- Last Transition ID: `T-019`
+- Current Stage: `6`
+- Next Stage: `Fix managed outbound reply callback fallback and revalidate Telegram reply delivery`
+- Code Edit Permission: `Unlocked`
+- Active Re-Entry: `Yes`
+- Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `Local Fix`
+- Last Transition ID: `T-020`
 - Last Updated: `2026-03-09`
 
 ## Stage Gates
@@ -25,11 +25,11 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | 3 Design Basis | Pass | Proposed design captures the polling-only managed path, scope synchronization, inferred provider activation, and reuse of the existing reliability model | `tickets/in-progress/telegram-managed-flow-hardening/proposed-design.md` |
 | 4 Runtime Modeling | Pass | Future-state runtime call stack covers provider save, inferred activation, restart restoration, verification, inbound/outbound delivery, and queue heartbeat behavior | `tickets/in-progress/telegram-managed-flow-hardening/future-state-runtime-call-stack.md` |
 | 5 Review Gate | Pass | Review re-entered on a requirement gap, then reached `Go Confirmed` again after two consecutive clean rounds with no blockers or persisted updates required | `tickets/in-progress/telegram-managed-flow-hardening/future-state-runtime-call-stack-review.md` |
-| 6 Source + Unit/Integration | Pass | Inferred provider activation for non-WeChat managed providers was implemented without reintroducing broken webhook or raw-gateway flows | `tickets/in-progress/telegram-managed-flow-hardening/implementation-progress.md` |
-| 7 API/E2E Gate | Pass | Focused server GraphQL E2E and normalization coverage passed for the inferred-activation behavior | `tickets/in-progress/telegram-managed-flow-hardening/implementation-progress.md`, `autobyteus-server-ts/tests/e2e/messaging/managed-messaging-gateway-graphql.e2e.test.ts`, `autobyteus-server-ts/tests/unit/managed-capabilities/messaging-gateway/provider-config-normalization.test.ts` |
-| 8 Code Review Gate | Pass | Re-review completed with no blockers after the inferred-provider-activation change set | `tickets/in-progress/telegram-managed-flow-hardening/code-review.md` |
-| 9 Docs Sync | Pass | Messaging docs were updated to explain save-driven provider activation and restart persistence | `tickets/in-progress/telegram-managed-flow-hardening/docs-sync.md`, `autobyteus-web/docs/messaging.md` |
-| 10 Final Handoff | In Progress | Re-implementation, validation, review, and docs sync are complete; awaiting user handoff and restart-based validation | `tickets/in-progress/telegram-managed-flow-hardening/implementation-progress.md`, `tickets/in-progress/telegram-managed-flow-hardening/workflow-state.md` |
+| 6 Source + Unit/Integration | In Progress | Live Telegram acceptance found a local outbound callback bug: inbound delivery reached the bound agent runtime, but outbound replies were not published back to the managed gateway without an explicit callback URL | `tickets/in-progress/telegram-managed-flow-hardening/investigation-notes.md`, `tickets/in-progress/telegram-managed-flow-hardening/implementation-plan.md`, `tickets/in-progress/telegram-managed-flow-hardening/workflow-state.md` |
+| 7 API/E2E Gate | Not Started | Focused validation pending the managed outbound callback fallback fix | `tickets/in-progress/telegram-managed-flow-hardening/implementation-progress.md` |
+| 8 Code Review Gate | Not Started | Re-review pending Stage 7 | `tickets/in-progress/telegram-managed-flow-hardening/code-review.md` |
+| 9 Docs Sync | Not Started | Docs decision pending Stage 8 | `tickets/in-progress/telegram-managed-flow-hardening/docs-sync.md` |
+| 10 Final Handoff | Not Started | Handoff resumes after the outbound reply bug is fixed and revalidated | `tickets/in-progress/telegram-managed-flow-hardening/workflow-state.md` |
 
 ## Transition Log (Append-Only)
 
@@ -55,6 +55,7 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | T-017 | 2026-03-09 | 7 | 8 | Focused GraphQL E2E and normalization tests passed, and the ticket advanced into re-review. | Requirement Gap | Locked | `tickets/in-progress/telegram-managed-flow-hardening/implementation-progress.md`, `tickets/in-progress/telegram-managed-flow-hardening/workflow-state.md` |
 | T-018 | 2026-03-09 | 8 | 9 | Re-review passed with no blockers after the inferred activation change set. | Requirement Gap | Locked | `tickets/in-progress/telegram-managed-flow-hardening/code-review.md`, `tickets/in-progress/telegram-managed-flow-hardening/workflow-state.md` |
 | T-019 | 2026-03-09 | 9 | 10 | Docs were synced for save-driven provider activation and the ticket returned to final handoff. | Requirement Gap | Locked | `tickets/in-progress/telegram-managed-flow-hardening/docs-sync.md`, `tickets/in-progress/telegram-managed-flow-hardening/workflow-state.md` |
+| T-020 | 2026-03-09 | 10 | 6 | Live Telegram acceptance confirmed a local outbound callback bug: inbound messages reached the bound agent, but outbound replies were not published back to the managed gateway without an explicit callback URL. | Local Fix | Unlocked | `tickets/in-progress/telegram-managed-flow-hardening/investigation-notes.md`, `tickets/in-progress/telegram-managed-flow-hardening/implementation-plan.md`, `tickets/in-progress/telegram-managed-flow-hardening/workflow-state.md` |
 
 ## Audible Notification Log (Optional Tracking)
 
@@ -66,6 +67,7 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | 2026-03-09 | Transition | Telegram managed flow hardening is now at Stage 10. Implementation, validation, review, and docs sync are complete, and manual Telegram acceptance is next. | Failed | `TTS unavailable because the local mlx-audio package is outdated; same status communicated in text.` |
 | 2026-03-09 | Re-entry | A requirement gap reopened the ticket from Stage 10 back to Stage 2, then forward to Stage 6 after design and review updates. Code edits are unlocked again for inferred provider activation. | Failed | `TTS unavailable because the local mlx-audio package is outdated; same status communicated in text.` |
 | 2026-03-09 | Transition | The inferred provider activation re-entry is back at Stage 10. Validation, re-review, and docs sync are complete, and restart-based user verification is next. | Failed | `TTS unavailable because the local mlx-audio package is outdated; same status communicated in text.` |
+| 2026-03-09 | Re-entry | Live Telegram acceptance reopened the ticket to Stage 6 for a local fix in the managed outbound callback path. Code edits are unlocked again and focused callback validation is next. | Failed | `TTS unavailable because the local mlx-audio package is outdated; same status communicated in text.` |
 
 ## Process Violation Log
 

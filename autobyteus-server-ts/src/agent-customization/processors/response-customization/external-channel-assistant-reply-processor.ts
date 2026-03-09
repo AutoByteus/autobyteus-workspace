@@ -4,9 +4,9 @@ import {
 } from "autobyteus-ts";
 import type { LLMCompleteResponseReceivedEvent } from "autobyteus-ts/agent/events/agent-events.js";
 import type { CompleteResponse } from "autobyteus-ts/llm/utils/response-types.js";
-import { appConfigProvider } from "../../../config/app-config-provider.js";
 import { getProviderProxySet } from "../../../external-channel/providers/provider-proxy-set.js";
 import { GatewayCallbackPublisher } from "../../../external-channel/runtime/gateway-callback-publisher.js";
+import { resolveGatewayCallbackPublisherOptions } from "../../../external-channel/runtime/gateway-callback-publisher-options-resolver.js";
 import { CallbackIdempotencyService } from "../../../external-channel/services/callback-idempotency-service.js";
 import { ChannelBindingService } from "../../../external-channel/services/channel-binding-service.js";
 import { ChannelMessageReceiptService } from "../../../external-channel/services/channel-message-receipt-service.js";
@@ -24,32 +24,51 @@ const logger = {
 export class ExternalChannelAssistantReplyProcessor extends BaseLLMResponseProcessor {
   private readonly formatter = new ExternalChannelReplyContentFormatter();
 
-  private readonly callbackService: ReplyCallbackService;
+  private readonly channelMessageReceiptService: ChannelMessageReceiptService;
+
+  private readonly callbackIdempotencyService: CallbackIdempotencyService;
+
+  private readonly deliveryEventService: DeliveryEventService;
+
+  private readonly bindingService: ChannelBindingService;
 
   constructor() {
     super();
 
-    const config = appConfigProvider.config;
-    const callbackBaseUrl = config.getChannelCallbackBaseUrl();
-    const callbackPublisher = callbackBaseUrl
-      ? new GatewayCallbackPublisher({
-          baseUrl: callbackBaseUrl,
-          sharedSecret: config.getChannelCallbackSharedSecret(),
-          timeoutMs: config.getChannelCallbackTimeoutMs(),
-        })
-      : undefined;
     const providerSet = getProviderProxySet();
 
-    this.callbackService = new ReplyCallbackService(
-      new ChannelMessageReceiptService(providerSet.messageReceiptProvider),
-      {
-        callbackIdempotencyService: new CallbackIdempotencyService(
-          providerSet.callbackIdempotencyProvider,
-        ),
-        deliveryEventService: new DeliveryEventService(providerSet.deliveryEventProvider),
-        bindingService: new ChannelBindingService(providerSet.bindingProvider),
-        callbackPublisher,
-      },
+    this.channelMessageReceiptService = new ChannelMessageReceiptService(
+      providerSet.messageReceiptProvider,
+    );
+    this.callbackIdempotencyService = new CallbackIdempotencyService(
+      providerSet.callbackIdempotencyProvider,
+    );
+    this.deliveryEventService = new DeliveryEventService(
+      providerSet.deliveryEventProvider,
+    );
+    this.bindingService = new ChannelBindingService(providerSet.bindingProvider);
+  }
+
+  private createCallbackService(): ReplyCallbackService {
+    const callbackPublisherOptions = resolveGatewayCallbackPublisherOptions();
+    const callbackPublisher = callbackPublisherOptions
+      ? new GatewayCallbackPublisher(callbackPublisherOptions)
+      : undefined;
+
+    return new ReplyCallbackService(this.channelMessageReceiptService, {
+      callbackIdempotencyService: this.callbackIdempotencyService,
+      deliveryEventService: this.deliveryEventService,
+      bindingService: this.bindingService,
+      callbackPublisher,
+    });
+  }
+
+  private logSkippedPublish(
+    agentRunId: string,
+    reason: PublishAssistantReplyReason,
+  ): void {
+    logger.info(
+      `Agent '${agentRunId}': outbound callback skipped (${reason}).`,
     );
   }
 
@@ -76,7 +95,8 @@ export class ExternalChannelAssistantReplyProcessor extends BaseLLMResponseProce
     const callbackIdempotencyKey = buildCallbackIdempotencyKey(agentRunId, turnId);
 
     try {
-      const result = await this.callbackService.publishAssistantReplyByTurn({
+      const callbackService = this.createCallbackService();
+      const result = await callbackService.publishAssistantReplyByTurn({
         agentRunId,
         turnId,
         replyText: formatted.text,
@@ -84,9 +104,7 @@ export class ExternalChannelAssistantReplyProcessor extends BaseLLMResponseProce
         metadata: formatted.metadata,
       });
       if (!result.published && shouldLogSkipReason(result.reason)) {
-        logger.info(
-          `Agent '${agentRunId}': outbound callback skipped (${result.reason}).`,
-        );
+        this.logSkippedPublish(agentRunId, result.reason);
       }
     } catch (error) {
       logger.error(
@@ -117,4 +135,4 @@ const buildCallbackIdempotencyKey = (
 };
 
 const shouldLogSkipReason = (reason: PublishAssistantReplyReason): boolean =>
-  reason !== "SOURCE_NOT_FOUND" && reason !== "CALLBACK_NOT_CONFIGURED";
+  reason !== "SOURCE_NOT_FOUND";

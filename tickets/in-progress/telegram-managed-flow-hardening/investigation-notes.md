@@ -232,3 +232,13 @@ No obvious module-placement rewrite is required for this round.
 - Synchronize Telegram account scope immediately after provider save.
 - Strengthen verification/readiness around provider-specific Telegram setup.
 - Preserve and possibly surface the existing reliability/dead-letter model rather than inventing a new heartbeat system.
+
+## Live Acceptance Re-entry: Outbound Reply Delivery
+
+- Live Telegram acceptance on 2026-03-09 showed that inbound messages reached the bound agent runtime successfully, but the agent's reply never arrived back in Telegram.
+- The bound agent UI updated with the incoming Telegram prompt, confirming the inbound bridge, binding, and runtime targeting were working end to end.
+- Gateway runtime reliability remained healthy and the managed runtime stayed `RUNNING`, which narrowed the failure to the server-to-gateway outbound callback leg.
+- The main server's outbound reply processor still builds `GatewayCallbackPublisher` only from `CHANNEL_CALLBACK_BASE_URL` during processor construction in `autobyteus-server-ts/src/agent-customization/processors/response-customization/external-channel-assistant-reply-processor.ts`.
+- When that env var is absent, `ReplyCallbackService` returns `CALLBACK_NOT_CONFIGURED`, and the processor intentionally suppresses logging for that skip reason.
+- In the managed product flow, the server already owns the gateway lifecycle and bind port, so this env-only behavior is a legacy seam from the earlier external-gateway model rather than a valid managed-mode requirement.
+- The local fix is to derive the callback destination from the managed gateway runtime snapshot when no explicit callback override is present, while preserving the explicit env override for operator-managed standalone deployments.

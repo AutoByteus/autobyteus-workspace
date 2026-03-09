@@ -92,6 +92,10 @@ export class ManagedMessagingGatewayService {
     };
   }
 
+  getRuntimeSnapshot() {
+    return this.deps.processSupervisor.getRuntimeSnapshot();
+  }
+
   async saveProviderConfig(rawConfig: unknown): Promise<ManagedMessagingStatus> {
     await this.storage.ensureRoots();
     const normalized = normalizeManagedMessagingProviderConfig(rawConfig);
