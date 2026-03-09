@@ -7,3 +7,4 @@ tmp/
 !.local/*.example
 autobyteus-server-ts/agents/
 autobyteus-server-ts/agent-teams/
+autobyteus-server-ts/extensions/

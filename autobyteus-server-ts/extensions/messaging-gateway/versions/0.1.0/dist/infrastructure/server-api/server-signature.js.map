@@ -1,1 +1,0 @@
-{"version":3,"file":"server-signature.js","sourceRoot":"","sources":["../../../src/infrastructure/server-api/server-signature.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,UAAU,EAAE,MAAM,aAAa,CAAC;AAEzC,MAAM,UAAU,qBAAqB,CAAC,IAAY,EAAE,SAAiB,EAAE,MAAc;IACnF,OAAO,UAAU,CAAC,QAAQ,EAAE,MAAM,CAAC,CAAC,MAAM,CAAC,GAAG,SAAS,IAAI,IAAI,EAAE,CAAC,CAAC,MAAM,CAAC,KAAK,CAAC,CAAC;AACnF,CAAC"}
