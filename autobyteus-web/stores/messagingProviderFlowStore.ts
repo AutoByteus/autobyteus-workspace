@@ -28,9 +28,9 @@ export const useMessagingProviderFlowStore = defineStore('messagingProviderFlowS
   actions: {
     providerStepOrder(provider: MessagingProvider): SetupStepState['key'][] {
       if (providerRequiresPersonalSession(provider)) {
-        return ['gateway', 'personal_session', 'binding', 'verification'];
+        return ['personal_session', 'binding', 'verification'];
       }
-      return ['gateway', 'binding', 'verification'];
+      return ['binding', 'verification'];
     },
 
     stepStatesForProvider(provider: MessagingProvider): SetupStepState[] {
@@ -54,17 +54,7 @@ export const useMessagingProviderFlowStore = defineStore('messagingProviderFlowS
         }),
       );
 
-      const gatewayStep: SetupStepState = {
-        key: 'gateway',
-        status: gatewaySnapshot.gatewayReady
-          ? 'READY'
-          : gatewaySnapshot.gatewayBlockedReason
-            ? 'BLOCKED'
-            : 'PENDING',
-        detail: gatewaySnapshot.gatewayBlockedReason || undefined,
-      };
-
-      const steps: SetupStepState[] = [gatewayStep];
+      const steps: SetupStepState[] = [];
 
       let personalSessionReady = true;
       if (requiresPersonalSession) {
@@ -76,7 +66,7 @@ export const useMessagingProviderFlowStore = defineStore('messagingProviderFlowS
           sessionStep = {
             key: 'personal_session',
             status: 'PENDING',
-            detail: 'Complete Gateway step first.',
+            detail: 'Start the gateway runtime above first.',
           };
           personalSessionReady = false;
         } else if (!sessionProviderMatches) {
@@ -117,7 +107,7 @@ export const useMessagingProviderFlowStore = defineStore('messagingProviderFlowS
         bindingStep = {
           key: 'binding',
           status: 'PENDING',
-          detail: 'Complete Gateway step first.',
+          detail: 'Start the gateway runtime above first.',
         };
       } else if (!personalSessionReady) {
         bindingStep = {

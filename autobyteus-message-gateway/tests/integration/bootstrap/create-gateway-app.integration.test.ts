@@ -1,3 +1,6 @@
+import fsp from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
 import { defaultRuntimeConfig } from "../../../src/config/runtime-config.js";
 import { createGatewayApp } from "../../../src/bootstrap/create-gateway-app.js";
@@ -124,6 +127,43 @@ describe("create-gateway-app integration", () => {
     await app.close().catch(() => undefined);
     acquireSpy.mockRestore();
     releaseSpy.mockRestore();
+  });
+
+  it("releases queue owner locks when the gateway app closes", async () => {
+    const runtimeDataRoot = await fsp.mkdtemp(
+      path.join(os.tmpdir(), "gateway-close-lock-release-"),
+    );
+
+    try {
+      const config = defaultRuntimeConfig();
+      config.runtimeDataRoot = runtimeDataRoot;
+      config.wecomAppEnabled = false;
+
+      const app = createGatewayApp(config);
+      await app.listen({ host: "127.0.0.1", port: 0 });
+
+      const lockRoot = path.join(
+        runtimeDataRoot,
+        "reliability-queue",
+        "locks",
+      );
+      const inboxLockPath = path.join(lockRoot, "inbox.lock.json");
+      const outboxLockPath = path.join(lockRoot, "outbox.lock.json");
+
+      await expect(fsp.access(inboxLockPath)).resolves.toBeUndefined();
+      await expect(fsp.access(outboxLockPath)).resolves.toBeUndefined();
+
+      await app.close();
+
+      await expect(fsp.access(inboxLockPath)).rejects.toMatchObject({
+        code: "ENOENT",
+      });
+      await expect(fsp.access(outboxLockPath)).rejects.toMatchObject({
+        code: "ENOENT",
+      });
+    } finally {
+      await fsp.rm(runtimeDataRoot, { recursive: true, force: true });
+    }
   });
 
   it("runs wechat restore only after queue lock acquisition during onReady", async () => {

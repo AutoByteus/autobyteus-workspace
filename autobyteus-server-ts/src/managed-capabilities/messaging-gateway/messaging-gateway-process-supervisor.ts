@@ -109,14 +109,16 @@ export class MessagingGatewayProcessSupervisor {
     }
 
     await new Promise<void>((resolve) => {
+      let closed = false;
       const cleanup = () => {
+        closed = true;
         current.removeListener("close", cleanup);
         resolve();
       };
       current.once("close", cleanup);
       current.kill("SIGTERM");
       setTimeout(() => {
-        if (!current.killed) {
+        if (!closed) {
           current.kill("SIGKILL");
         }
       }, 5_000).unref();

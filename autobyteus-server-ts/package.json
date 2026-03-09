@@ -8,8 +8,8 @@
   "scripts": {
     "prebuild": "pnpm -C .. -r --filter autobyteus-ts build && pnpm exec prisma generate --schema ./prisma/schema.prisma",
     "build": "pnpm run build:full",
-    "build:full": "tsc -p tsconfig.build.json",
-    "build:file": "tsc -p tsconfig.build.file.json",
+    "build:full": "tsc -p tsconfig.build.json && node ./scripts/copy-managed-messaging-assets.mjs",
+    "build:file": "tsc -p tsconfig.build.file.json && node ./scripts/copy-managed-messaging-assets.mjs",
     "package:file": "node ./scripts/build-file-package.mjs",
     "build:file:package": "pnpm run build:file && pnpm run package:file",
     "typecheck": "tsc -p tsconfig.json --noEmit",

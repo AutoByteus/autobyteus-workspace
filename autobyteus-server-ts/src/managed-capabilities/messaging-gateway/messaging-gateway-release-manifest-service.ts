@@ -1,4 +1,5 @@
-import fs from "node:fs/promises";
+import fs from "node:fs";
+import fsp from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import type {
@@ -8,6 +9,16 @@ import type {
 
 const manifestDir = path.dirname(fileURLToPath(import.meta.url));
 const defaultManifestPath = path.join(manifestDir, "release-manifest.json");
+const srcManifestPath = path.resolve(
+  manifestDir,
+  "..",
+  "..",
+  "..",
+  "src",
+  "managed-capabilities",
+  "messaging-gateway",
+  "release-manifest.json",
+);
 
 export class MessagingGatewayReleaseManifestService {
   constructor(
@@ -46,14 +57,14 @@ export class MessagingGatewayReleaseManifestService {
     const explicitPath = normalizeOptionalString(this.options.manifestPath);
     const filePath = explicitPath
       ? path.resolve(explicitPath)
-      : defaultManifestPath;
+      : resolveDefaultManifestPath();
     return this.loadManifestFromFile(filePath);
   }
 
   private async loadManifestFromFile(
     filePath: string,
   ): Promise<ManagedMessagingReleaseManifest> {
-    const raw = await fs.readFile(filePath, "utf8");
+    const raw = await fsp.readFile(filePath, "utf8");
     return parseManifest(raw, `file:${filePath}`);
   }
 
@@ -99,3 +110,14 @@ const normalizeOptionalString = (value: string | null | undefined): string | nul
   return normalized.length > 0 ? normalized : null;
 };
 
+const resolveDefaultManifestPath = (): string => {
+  if (fs.existsSync(defaultManifestPath)) {
+    return defaultManifestPath;
+  }
+
+  if (fs.existsSync(srcManifestPath)) {
+    return srcManifestPath;
+  }
+
+  return defaultManifestPath;
+};
