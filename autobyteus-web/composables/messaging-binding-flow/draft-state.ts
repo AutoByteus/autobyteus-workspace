@@ -29,7 +29,7 @@ export function useBindingDraftState(input: {
     peerId: '',
     threadId: null,
     targetType: 'AGENT',
-    targetId: '',
+    targetRunId: '',
   });
 
   const discordAccountHint = computed(() => providerScopeStore.discordAccountId || '');

@@ -157,7 +157,7 @@ Notes:
 
 - `GATEWAY_TELEGRAM_ENABLED=true`
 - `GATEWAY_TELEGRAM_BOT_TOKEN` (Telegram bot token from BotFather)
-- `GATEWAY_TELEGRAM_ACCOUNT_ID` (required stable account identifier used in channel bindings)
+- `GATEWAY_TELEGRAM_ACCOUNT_ID` (required stable internal account identifier used in channel bindings, for example `telegram-main`)
 - Polling vs webhook mode (exactly one must be true when Telegram is enabled):
   - `GATEWAY_TELEGRAM_POLLING_ENABLED` (default: `true`)
   - `GATEWAY_TELEGRAM_WEBHOOK_ENABLED` (default: `false`)
@@ -169,6 +169,7 @@ Notes:
   - Webhook mode: configure Telegram webhook endpoint to `POST /webhooks/telegram`.
   - When webhook secret token is configured, gateway verifies
     `x-telegram-bot-api-secret-token`.
+  - The standalone gateway supports both polling and webhook modes, but the managed AutoByteus node-owned product flow currently forces polling mode because the managed runtime binds to loopback and is not exposed as a public webhook ingress.
   - Channel-admin capabilities endpoint includes `telegramEnabled` and `telegramAccountId`:
     - `GET /api/channel-admin/v1/capabilities`
   - Telegram peer discovery endpoint:
@@ -248,7 +249,7 @@ curl -X DELETE http://localhost:8010/api/channel-admin/v1/whatsapp/personal/sess
 
 6. For UI-based setup, use `autobyteus-web`:
    - configure `MESSAGE_GATEWAY_BASE_URL` in `autobyteus-web/.env.local`
-   - open `Settings -> External Messaging`
+   - open `Settings -> Messaging`
    - run gateway validation + personal session setup + binding setup + verification
 
 7. Peer candidate discovery for binding setup:
@@ -365,6 +366,10 @@ curl "http://localhost:8010/api/channel-admin/v1/discord/peer-candidates?limit=5
 5. Send inbound Discord message to the bot (DM or configured channel) and verify it routes through gateway -> server.
 
 ## Telegram quick start (polling mode)
+
+For normal product usage through AutoByteus, prefer the managed setup flow in
+`../autobyteus-web/docs/messaging.md`. The quick start below is for direct gateway
+development or low-level operator testing.
 
 1. Start gateway with Telegram polling enabled:
 

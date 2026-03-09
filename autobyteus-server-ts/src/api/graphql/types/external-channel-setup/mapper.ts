@@ -17,7 +17,7 @@ export const toGraphqlBinding = (
   peerId: binding.peerId,
   threadId: binding.threadId,
   targetType: binding.targetType,
-  targetId: getTargetId(binding),
+  targetRunId: getTargetRunId(binding),
   updatedAt: binding.updatedAt,
 });
 
@@ -25,12 +25,12 @@ export const toGraphqlTargetOption = (
   option: ChannelBindingTargetOption,
 ): ExternalChannelBindingTargetOptionGql => ({
   targetType: option.targetType,
-  targetId: option.targetId,
+  targetRunId: option.targetRunId,
   displayName: option.displayName,
   status: option.status,
 });
 
-const getTargetId = (binding: ChannelBinding): string => {
+const getTargetRunId = (binding: ChannelBinding): string => {
   if (binding.targetType === "AGENT") {
     if (!binding.agentRunId) {
       throw new Error(`Binding ${binding.id} has targetType AGENT but agentRunId is null.`);

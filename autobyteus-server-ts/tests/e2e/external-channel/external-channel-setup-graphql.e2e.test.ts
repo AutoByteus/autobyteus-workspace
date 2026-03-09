@@ -14,7 +14,7 @@ describe("External channel setup GraphQL e2e", () => {
   let schema: GraphQLSchema;
   let graphql: typeof graphqlFn;
 
-  const activeAgentId = unique("active-agent");
+  const activeAgentRunId = unique("active-agent");
 
   beforeAll(async () => {
     schema = await buildGraphqlSchema();
@@ -25,13 +25,13 @@ describe("External channel setup GraphQL e2e", () => {
     graphql = graphqlModule.graphql as typeof graphqlFn;
 
     const agentManager = AgentRunManager.getInstance();
-    vi.spyOn(agentManager, "listActiveRuns").mockReturnValue([activeAgentId]);
+    vi.spyOn(agentManager, "listActiveRuns").mockReturnValue([activeAgentRunId]);
     vi.spyOn(agentManager, "getAgentRun").mockImplementation((id: string) => {
-      if (id !== activeAgentId) {
+      if (id !== activeAgentRunId) {
         return null;
       }
       return {
-        agentRunId: activeAgentId,
+        agentRunId: activeAgentRunId,
         context: {
           config: {
             name: "Setup Agent",
@@ -101,7 +101,7 @@ describe("External channel setup GraphQL e2e", () => {
       query TargetOptions {
         externalChannelBindingTargetOptions {
           targetType
-          targetId
+          targetRunId
           displayName
           status
         }
@@ -111,7 +111,7 @@ describe("External channel setup GraphQL e2e", () => {
     const data = await execGraphql<{
       externalChannelBindingTargetOptions: Array<{
         targetType: string;
-        targetId: string;
+        targetRunId: string;
         displayName: string;
         status: string;
       }>;
@@ -120,7 +120,7 @@ describe("External channel setup GraphQL e2e", () => {
     expect(data.externalChannelBindingTargetOptions).toEqual([
       {
         targetType: "AGENT",
-        targetId: activeAgentId,
+        targetRunId: activeAgentRunId,
         displayName: "Setup Agent",
         status: "IDLE",
       },
@@ -141,7 +141,7 @@ describe("External channel setup GraphQL e2e", () => {
           peerId
           threadId
           targetType
-          targetId
+          targetRunId
         }
       }
     `;
@@ -152,7 +152,7 @@ describe("External channel setup GraphQL e2e", () => {
         accountId: string;
         peerId: string;
         targetType: string;
-        targetId: string;
+        targetRunId: string;
       };
     }>(upsertMutation, {
       input: {
@@ -162,14 +162,14 @@ describe("External channel setup GraphQL e2e", () => {
         peerId,
         threadId: null,
         targetType: "AGENT",
-        targetId: activeAgentId,
+        targetRunId: activeAgentRunId,
       },
     });
 
     expect(upsertData.upsertExternalChannelBinding.accountId).toBe(accountId);
     expect(upsertData.upsertExternalChannelBinding.peerId).toBe(peerId);
     expect(upsertData.upsertExternalChannelBinding.targetType).toBe("AGENT");
-    expect(upsertData.upsertExternalChannelBinding.targetId).toBe(activeAgentId);
+    expect(upsertData.upsertExternalChannelBinding.targetRunId).toBe(activeAgentRunId);
 
     const bindingId = upsertData.upsertExternalChannelBinding.id;
 
@@ -180,7 +180,7 @@ describe("External channel setup GraphQL e2e", () => {
           accountId
           peerId
           targetType
-          targetId
+          targetRunId
         }
       }
     `;
@@ -191,7 +191,7 @@ describe("External channel setup GraphQL e2e", () => {
         accountId: string;
         peerId: string;
         targetType: string;
-        targetId: string;
+        targetRunId: string;
       }>;
     }>(listQuery);
 
@@ -200,7 +200,7 @@ describe("External channel setup GraphQL e2e", () => {
     expect(created?.accountId).toBe(accountId);
     expect(created?.peerId).toBe(peerId);
     expect(created?.targetType).toBe("AGENT");
-    expect(created?.targetId).toBe(activeAgentId);
+    expect(created?.targetRunId).toBe(activeAgentRunId);
 
     const deleteMutation = `
       mutation DeleteBinding($id: String!) {
@@ -224,7 +224,7 @@ describe("External channel setup GraphQL e2e", () => {
     ).toBe(false);
   });
 
-  it("rejects stale target ids during upsert", async () => {
+  it("rejects stale target run ids during upsert", async () => {
     const upsertMutation = `
       mutation Upsert($input: UpsertExternalChannelBindingInput!) {
         upsertExternalChannelBinding(input: $input) {
@@ -242,7 +242,7 @@ describe("External channel setup GraphQL e2e", () => {
           peerId: "peer-stale",
           threadId: null,
           targetType: "AGENT",
-          targetId: "non-existent-agent",
+          targetRunId: "non-existent-agent",
         },
       }),
     ).rejects.toThrow("TARGET_NOT_ACTIVE");
@@ -266,7 +266,7 @@ describe("External channel setup GraphQL e2e", () => {
           peerId: "peer-wechat",
           threadId: null,
           targetType: "AGENT",
-          targetId: activeAgentId,
+          targetRunId: activeAgentRunId,
         },
       }),
     ).rejects.toThrow("UNSUPPORTED_PROVIDER_TRANSPORT_COMBINATION");
@@ -279,7 +279,7 @@ describe("External channel setup GraphQL e2e", () => {
           provider
           transport
           targetType
-          targetId
+          targetRunId
         }
       }
     `;
@@ -289,7 +289,7 @@ describe("External channel setup GraphQL e2e", () => {
         provider: string;
         transport: string;
         targetType: string;
-        targetId: string;
+        targetRunId: string;
       };
     }>(upsertMutation, {
       input: {
@@ -299,7 +299,7 @@ describe("External channel setup GraphQL e2e", () => {
         peerId: "wechat-peer",
         threadId: null,
         targetType: "AGENT",
-        targetId: activeAgentId,
+        targetRunId: activeAgentRunId,
       },
     });
 
@@ -307,7 +307,7 @@ describe("External channel setup GraphQL e2e", () => {
       provider: "WECHAT",
       transport: "PERSONAL_SESSION",
       targetType: "AGENT",
-      targetId: activeAgentId,
+      targetRunId: activeAgentRunId,
     });
   });
 
@@ -321,7 +321,7 @@ describe("External channel setup GraphQL e2e", () => {
           peerId
           threadId
           targetType
-          targetId
+          targetRunId
         }
       }
     `;
@@ -334,7 +334,7 @@ describe("External channel setup GraphQL e2e", () => {
         peerId: string;
         threadId: string | null;
         targetType: string;
-        targetId: string;
+        targetRunId: string;
       };
     }>(upsertMutation, {
       input: {
@@ -344,7 +344,7 @@ describe("External channel setup GraphQL e2e", () => {
         peerId: "channel:111222333444",
         threadId: "777888999000",
         targetType: "AGENT",
-        targetId: activeAgentId,
+        targetRunId: activeAgentRunId,
       },
     });
 
@@ -355,7 +355,7 @@ describe("External channel setup GraphQL e2e", () => {
       peerId: "channel:111222333444",
       threadId: "777888999000",
       targetType: "AGENT",
-      targetId: activeAgentId,
+      targetRunId: activeAgentRunId,
     });
   });
 
@@ -369,7 +369,7 @@ describe("External channel setup GraphQL e2e", () => {
           peerId
           threadId
           targetType
-          targetId
+          targetRunId
         }
       }
     `;
@@ -382,7 +382,7 @@ describe("External channel setup GraphQL e2e", () => {
         peerId: string;
         threadId: string | null;
         targetType: string;
-        targetId: string;
+        targetRunId: string;
       };
     }>(upsertMutation, {
       input: {
@@ -392,7 +392,7 @@ describe("External channel setup GraphQL e2e", () => {
         peerId: "telegram-chat-123",
         threadId: "42",
         targetType: "AGENT",
-        targetId: activeAgentId,
+        targetRunId: activeAgentRunId,
       },
     });
 
@@ -403,7 +403,7 @@ describe("External channel setup GraphQL e2e", () => {
       peerId: "telegram-chat-123",
       threadId: "42",
       targetType: "AGENT",
-      targetId: activeAgentId,
+      targetRunId: activeAgentRunId,
     });
   });
 
@@ -427,7 +427,7 @@ describe("External channel setup GraphQL e2e", () => {
           peerId: "telegram-chat-123",
           threadId: null,
           targetType: "TEAM",
-          targetId: "team-1",
+          targetRunId: "team-1",
         },
       },
     });
@@ -463,7 +463,7 @@ describe("External channel setup GraphQL e2e", () => {
           peerId: "invalid-peer",
           threadId: null,
           targetType: "AGENT",
-          targetId: activeAgentId,
+          targetRunId: activeAgentRunId,
         },
       },
     });
@@ -499,7 +499,7 @@ describe("External channel setup GraphQL e2e", () => {
           peerId: "user:111222333444",
           threadId: "777888999000",
           targetType: "AGENT",
-          targetId: activeAgentId,
+          targetRunId: activeAgentRunId,
         },
       },
     });

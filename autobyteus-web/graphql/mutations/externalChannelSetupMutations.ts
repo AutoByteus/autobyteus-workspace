@@ -11,7 +11,7 @@ export const UPSERT_EXTERNAL_CHANNEL_BINDING = gql`
       peerId
       threadId
       targetType
-      targetId
+      targetRunId
       updatedAt
     }
   }

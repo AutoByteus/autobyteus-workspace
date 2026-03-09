@@ -1,5 +1,9 @@
 <template>
-  <section class="border border-gray-200 rounded-lg p-4 bg-white">
+  <section
+    id="managed-provider-config-section"
+    class="border border-gray-200 rounded-lg p-4 bg-white"
+    data-testid="managed-provider-config-section"
+  >
     <h3 class="text-sm font-semibold text-gray-900">{{ selectedProviderLabel }} Configuration</h3>
     <p class="mt-1 text-xs text-gray-500">
       Configure the selected provider on top of the managed gateway runtime.
@@ -17,17 +21,11 @@
 
     <div class="mt-4 space-y-4">
       <div v-if="selectedProvider === 'WHATSAPP'" class="rounded-md border border-gray-200 p-3">
-        <div class="flex items-center justify-between gap-2">
-          <div>
-            <h4 class="text-sm font-medium text-gray-900">WhatsApp Business</h4>
-            <p class="text-xs text-gray-500">Webhook secret only. Peer binding stays manual.</p>
-          </div>
-          <input
-            v-model="gatewayStore.providerConfig.whatsappBusinessEnabled"
-            type="checkbox"
-            class="h-4 w-4"
-            data-testid="provider-whatsapp-enabled"
-          />
+        <div>
+          <h4 class="text-sm font-medium text-gray-900">WhatsApp Business</h4>
+          <p class="text-xs text-gray-500">
+            Webhook secret only. Saving valid config makes WhatsApp Business active automatically.
+          </p>
         </div>
         <input
           v-model="gatewayStore.providerConfig.whatsappBusinessSecret"
@@ -40,17 +38,11 @@
       </div>
 
       <div v-else-if="selectedProvider === 'WECOM'" class="rounded-md border border-gray-200 p-3">
-        <div class="flex items-center justify-between gap-2">
-          <div>
-            <h4 class="text-sm font-medium text-gray-900">WeCom App</h4>
-            <p class="text-xs text-gray-500">Configure webhook token and one or more app accounts.</p>
-          </div>
-          <input
-            v-model="gatewayStore.providerConfig.wecomAppEnabled"
-            type="checkbox"
-            class="h-4 w-4"
-            data-testid="provider-wecom-enabled"
-          />
+        <div>
+          <h4 class="text-sm font-medium text-gray-900">WeCom App</h4>
+          <p class="text-xs text-gray-500">
+            Configure webhook token and one or more app accounts. Saving valid config makes WeCom active automatically.
+          </p>
         </div>
         <input
           v-model="gatewayStore.providerConfig.wecomWebhookToken"
@@ -69,17 +61,11 @@
       </div>
 
       <div v-else-if="selectedProvider === 'DISCORD'" class="rounded-md border border-gray-200 p-3">
-        <div class="flex items-center justify-between gap-2">
-          <div>
-            <h4 class="text-sm font-medium text-gray-900">Discord Bot</h4>
-            <p class="text-xs text-gray-500">Peer discovery is available after the runtime is enabled.</p>
-          </div>
-          <input
-            v-model="gatewayStore.providerConfig.discordEnabled"
-            type="checkbox"
-            class="h-4 w-4"
-            data-testid="provider-discord-enabled"
-          />
+        <div>
+          <h4 class="text-sm font-medium text-gray-900">Discord Bot</h4>
+          <p class="text-xs text-gray-500">
+            Peer discovery is available after the runtime is enabled. Saving valid config makes Discord active automatically.
+          </p>
         </div>
         <div class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
           <input
@@ -101,17 +87,12 @@
       </div>
 
       <div v-else-if="selectedProvider === 'TELEGRAM'" class="rounded-md border border-gray-200 p-3">
-        <div class="flex items-center justify-between gap-2">
-          <div>
-            <h4 class="text-sm font-medium text-gray-900">Telegram Bot</h4>
-            <p class="text-xs text-gray-500">Peer discovery is available after the runtime is enabled.</p>
-          </div>
-          <input
-            v-model="gatewayStore.providerConfig.telegramEnabled"
-            type="checkbox"
-            class="h-4 w-4"
-            data-testid="provider-telegram-enabled"
-          />
+        <div>
+          <h4 class="text-sm font-medium text-gray-900">Telegram Bot</h4>
+          <p class="text-xs text-gray-500">
+            Managed Telegram uses polling mode. Create the bot in BotFather, paste the token,
+            choose an internal account label, then send the bot a message before binding.
+          </p>
         </div>
         <div class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
           <input
@@ -124,28 +105,16 @@
           <input
             v-model="gatewayStore.providerConfig.telegramAccountId"
             type="text"
-            placeholder="Telegram account id"
+            placeholder="Telegram account label (for example telegram-main)"
             class="rounded-md border border-gray-300 px-3 py-2 text-sm"
             data-testid="provider-telegram-account-id"
           />
         </div>
-        <div class="mt-3 flex flex-wrap gap-4 text-sm">
-          <label class="inline-flex items-center gap-2">
-            <input v-model="gatewayStore.providerConfig.telegramPollingEnabled" type="checkbox" />
-            Polling Enabled
-          </label>
-          <label class="inline-flex items-center gap-2">
-            <input v-model="gatewayStore.providerConfig.telegramWebhookEnabled" type="checkbox" />
-            Webhook Enabled
-          </label>
-        </div>
-        <input
-          v-model="gatewayStore.providerConfig.telegramWebhookSecretToken"
-          type="password"
-          placeholder="Telegram webhook secret token"
-          class="mt-3 w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
-          data-testid="provider-telegram-webhook-secret"
-        />
+        <p class="mt-3 rounded-md border border-sky-100 bg-sky-50 px-3 py-2 text-xs text-sky-700">
+          AutoByteus manages Telegram in polling mode on the selected node. Use the account label
+          above as your internal binding scope. It does not need to match a Telegram numeric chat ID.
+          Saving valid config makes Telegram active automatically and it stays active after restart.
+        </p>
         <p class="mt-2 text-xs text-gray-600">{{ providerStatusText('TELEGRAM') }}</p>
       </div>
     </div>
@@ -220,13 +189,10 @@ function providerStatusText(provider: MessagingProvider): string {
     return 'Provider status unavailable.';
   }
   if (status.effectivelyEnabled) {
-    return `${provider} is configured and enabled.`;
+    return `${provider} is configured and becomes active automatically whenever the managed gateway is running.`;
   }
   if (status.blockedReason) {
     return status.blockedReason;
-  }
-  if (status.configured) {
-    return `${provider} is configured but currently disabled.`;
   }
   return `${provider} is not configured yet.`;
 }

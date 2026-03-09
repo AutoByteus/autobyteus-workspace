@@ -17,7 +17,7 @@ export interface AssertSelectionFreshInput {
   peerSelectionMode: BindingSelectionMode;
   targetSelectionMode: BindingSelectionMode;
   selectedPeerKey?: string | null;
-  selectedTargetId?: string | null;
+  selectedTargetRunId?: string | null;
 }
 
 interface BindingOptionsState {
@@ -179,17 +179,17 @@ export const useMessagingChannelBindingOptionsStore = defineStore(
         }
 
         if (input.targetSelectionMode === 'dropdown') {
-          const selectedTargetId = input.selectedTargetId?.trim();
-          if (!selectedTargetId) {
+          const selectedTargetRunId = input.selectedTargetRunId?.trim();
+          if (!selectedTargetRunId) {
             this.staleSelectionError = STALE_SELECTION_MESSAGE;
             throw new Error(STALE_SELECTION_MESSAGE);
           }
 
           const targetOption = this.targetOptions.find(
             (option) =>
-              option.targetType === input.draft.targetType && option.targetId === selectedTargetId,
+              option.targetType === input.draft.targetType && option.targetRunId === selectedTargetRunId,
           );
-          if (!targetOption || input.draft.targetId !== selectedTargetId) {
+          if (!targetOption || input.draft.targetRunId !== selectedTargetRunId) {
             this.staleSelectionError = STALE_SELECTION_MESSAGE;
             throw new Error(STALE_SELECTION_MESSAGE);
           }

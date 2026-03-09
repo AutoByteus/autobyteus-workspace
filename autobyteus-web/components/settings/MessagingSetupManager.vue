@@ -11,6 +11,7 @@
 
       <ManagedGatewayRuntimeCard />
       <ProviderSetupScopeCard />
+      <GatewayConnectionCard />
       <DiscordSetupFlow v-if="providerScopeStore.selectedProvider === 'DISCORD'" />
       <WeComSetupFlow v-else-if="providerScopeStore.selectedProvider === 'WECOM'" />
       <WeChatSetupFlow v-else-if="providerScopeStore.selectedProvider === 'WECHAT'" />
@@ -22,6 +23,7 @@
 <script setup lang="ts">
 import { useMessagingSetupBootstrap } from '~/composables/useMessagingSetupBootstrap';
 import ManagedGatewayRuntimeCard from '~/components/settings/messaging/ManagedGatewayRuntimeCard.vue';
+import GatewayConnectionCard from '~/components/settings/messaging/GatewayConnectionCard.vue';
 import ProviderSetupScopeCard from '~/components/settings/messaging/ProviderSetupScopeCard.vue';
 import DiscordSetupFlow from '~/components/settings/messaging/flows/DiscordSetupFlow.vue';
 import WeChatSetupFlow from '~/components/settings/messaging/flows/WeChatSetupFlow.vue';

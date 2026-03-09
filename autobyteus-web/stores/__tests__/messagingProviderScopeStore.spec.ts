@@ -125,4 +125,29 @@ describe('messagingProviderScopeStore', () => {
     expect(store.requiresPersonalSession).toBe(false);
     expect(store.resolvedTransport).toBe('BUSINESS_API');
   });
+
+  it('updates managed account hints without resetting provider selection', () => {
+    const store = useMessagingProviderScopeStore();
+
+    store.initialize({
+      wechatModes: [],
+      defaultWeChatMode: null,
+      wechatPersonalEnabled: false,
+      wecomAppEnabled: false,
+      discordEnabled: true,
+      discordAccountId: 'discord-acct-1',
+      telegramEnabled: true,
+      telegramAccountId: 'telegram-acct-1',
+    });
+    store.setSelectedProvider('TELEGRAM');
+
+    store.applyManagedAccountHints({
+      discordAccountId: 'discord-acct-2',
+      telegramAccountId: 'telegram-main',
+    });
+
+    expect(store.selectedProvider).toBe('TELEGRAM');
+    expect(store.discordAccountId).toBe('discord-acct-2');
+    expect(store.telegramAccountId).toBe('telegram-main');
+  });
 });

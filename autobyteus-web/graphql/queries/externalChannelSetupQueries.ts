@@ -22,7 +22,7 @@ export const EXTERNAL_CHANNEL_BINDINGS = gql`
       peerId
       threadId
       targetType
-      targetId
+      targetRunId
       updatedAt
     }
   }
@@ -33,7 +33,7 @@ export const EXTERNAL_CHANNEL_BINDING_TARGET_OPTIONS = gql`
     externalChannelBindingTargetOptions {
       __typename
       targetType
-      targetId
+      targetRunId
       displayName
       status
     }

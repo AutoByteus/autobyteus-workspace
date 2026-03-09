@@ -23,14 +23,21 @@ describe('ChannelBindingSetupCard', () => {
     vi.clearAllMocks();
   });
 
-  it('disables peer refresh until gateway connection and personal session are both ready', async () => {
+  it('disables peer refresh until the Discord gateway runtime is ready', async () => {
     const gatewayStore = useGatewaySessionSetupStore();
-    gatewayStore.gatewayStatus = 'READY';
-    gatewayStore.session = {
-      sessionId: 'session-1',
-      accountLabel: 'Home WhatsApp',
-      status: 'PENDING_QR',
-    };
+    const providerScopeStore = useMessagingProviderScopeStore();
+    gatewayStore.gatewayStatus = 'UNKNOWN';
+    providerScopeStore.initialize({
+      wechatModes: [],
+      defaultWeChatMode: null,
+      wechatPersonalEnabled: false,
+      wecomAppEnabled: false,
+      discordEnabled: true,
+      discordAccountId: 'discord-acct-1',
+      telegramEnabled: false,
+      telegramAccountId: null,
+    });
+    providerScopeStore.setSelectedProvider('DISCORD');
 
     const wrapper = mountWithPinia();
     await flushPromises();
@@ -39,14 +46,22 @@ describe('ChannelBindingSetupCard', () => {
     expect(refreshButton.attributes('disabled')).toBeDefined();
   });
 
-  it('refreshes peer candidates when readiness prerequisites are satisfied', async () => {
+  it('refreshes Telegram peer candidates when managed runtime prerequisites are satisfied', async () => {
     const gatewayStore = useGatewaySessionSetupStore();
+    const providerScopeStore = useMessagingProviderScopeStore();
     gatewayStore.gatewayStatus = 'READY';
-    gatewayStore.session = {
-      sessionId: 'session-2',
-      accountLabel: 'Home WhatsApp',
-      status: 'ACTIVE',
-    };
+    gatewayStore.session = null;
+    providerScopeStore.initialize({
+      wechatModes: [],
+      defaultWeChatMode: null,
+      wechatPersonalEnabled: false,
+      wecomAppEnabled: false,
+      discordEnabled: false,
+      discordAccountId: null,
+      telegramEnabled: true,
+      telegramAccountId: 'telegram-acct-1',
+    });
+    providerScopeStore.setSelectedProvider('TELEGRAM');
 
     const optionsStore = useMessagingChannelBindingOptionsStore();
     const loadPeerCandidatesSpy = vi
@@ -63,9 +78,9 @@ describe('ChannelBindingSetupCard', () => {
     await flushPromises();
 
     expect(loadPeerCandidatesSpy).toHaveBeenCalledWith(
-      'session-2',
+      'telegram-acct-1',
       { includeGroups: true, limit: 50 },
-      'WHATSAPP',
+      'TELEGRAM',
     );
   });
 
@@ -83,7 +98,7 @@ describe('ChannelBindingSetupCard', () => {
     optionsStore.targetOptions = [
       {
         targetType: 'AGENT',
-        targetId: 'agent-1',
+        targetRunId: 'agent-1',
         displayName: 'Agent One',
         status: 'RUNNING',
       },
@@ -173,12 +188,12 @@ describe('ChannelBindingSetupCard', () => {
       {
         id: 'binding-whatsapp',
         provider: 'WHATSAPP',
-        transport: 'PERSONAL_SESSION',
+        transport: 'BUSINESS_API',
         accountId: 'home-whatsapp',
         peerId: 'wa-peer',
         threadId: null,
         targetType: 'AGENT',
-        targetId: 'agent-1',
+        targetRunId: 'agent-1',
         updatedAt: '2026-02-09T12:00:00.000Z',
       },
       {
@@ -189,7 +204,7 @@ describe('ChannelBindingSetupCard', () => {
         peerId: 'user:123456',
         threadId: null,
         targetType: 'TEAM',
-        targetId: 'team-1',
+        targetRunId: 'team-1',
         updatedAt: '2026-02-09T11:00:00.000Z',
       },
     ];
@@ -197,7 +212,7 @@ describe('ChannelBindingSetupCard', () => {
     const wrapper = mountWithPinia();
     await flushPromises();
 
-    expect(wrapper.text()).toContain('WHATSAPP / PERSONAL_SESSION / home-whatsapp / wa-peer');
+    expect(wrapper.text()).toContain('WHATSAPP / BUSINESS_API / home-whatsapp / wa-peer');
     expect(wrapper.text()).not.toContain('DISCORD / BUSINESS_API / discord-acct-1 / user:123456');
   });
 

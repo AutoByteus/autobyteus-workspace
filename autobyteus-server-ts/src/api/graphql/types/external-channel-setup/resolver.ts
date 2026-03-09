@@ -61,7 +61,7 @@ export class ExternalChannelSetupResolver {
     const threadId = normalizeOptionalString(input.threadId ?? null);
 
     const targetType = parseTargetType(input.targetType);
-    const targetId = normalizeRequiredString(input.targetId, "targetId");
+    const targetRunId = normalizeRequiredString(input.targetRunId, "targetRunId");
 
     if (provider === ExternalChannelProvider.TELEGRAM && targetType === "TEAM") {
       throw new GraphQLError("Telegram bindings currently support AGENT targets only.", {
@@ -75,11 +75,11 @@ export class ExternalChannelSetupResolver {
 
     const isActiveTarget = await getTargetOptionsService().isActiveTarget(
       targetType,
-      targetId,
+      targetRunId,
     );
     if (!isActiveTarget) {
       throw new Error(
-        `TARGET_NOT_ACTIVE: selected ${targetType.toLowerCase()} target '${targetId}' is not active.`,
+        `TARGET_NOT_ACTIVE: selected ${targetType.toLowerCase()} target '${targetRunId}' is not active.`,
       );
     }
 
@@ -101,8 +101,8 @@ export class ExternalChannelSetupResolver {
       peerId,
       threadId,
       targetType,
-      agentRunId: targetType === "AGENT" ? targetId : null,
-      teamRunId: targetType === "TEAM" ? targetId : null,
+      agentRunId: targetType === "AGENT" ? targetRunId : null,
+      teamRunId: targetType === "TEAM" ? targetRunId : null,
     });
 
     return toGraphqlBinding(binding);

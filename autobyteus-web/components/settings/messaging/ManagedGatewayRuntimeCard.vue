@@ -1,5 +1,9 @@
 <template>
-  <section class="border border-gray-200 rounded-lg p-4 bg-white">
+  <section
+    id="managed-gateway-runtime-section"
+    class="border border-gray-200 rounded-lg p-4 bg-white"
+    data-testid="managed-gateway-runtime-section"
+  >
     <div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
       <div>
         <h3 class="text-sm font-semibold text-gray-900">Managed Messaging Gateway</h3>
@@ -95,6 +99,34 @@
       </div>
     </div>
 
+    <div
+      v-if="runtimeReliabilityStatus"
+      class="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2 text-sm"
+      data-testid="managed-gateway-reliability-summary"
+    >
+      <div class="rounded-md border border-gray-200 bg-white px-3 py-2">
+        <p class="text-xs uppercase tracking-wide text-gray-500">Reliability State</p>
+        <p class="mt-1 font-medium text-gray-800" data-testid="managed-gateway-reliability-state">
+          {{ runtimeReliabilityStatus.runtime.state }}
+        </p>
+        <p class="mt-1 text-xs text-gray-500">
+          Queue heartbeat: inbox {{ inboxHeartbeatLabel }}, outbox {{ outboxHeartbeatLabel }}.
+        </p>
+      </div>
+      <div class="rounded-md border border-gray-200 bg-white px-3 py-2">
+        <p class="text-xs uppercase tracking-wide text-gray-500">Delivery Queues</p>
+        <p class="mt-1 font-medium text-gray-800">
+          Inbound dead-letter {{ runtimeReliabilityStatus.queue.inboundDeadLetterCount }},
+          unbound {{ runtimeReliabilityStatus.queue.inboundCompletedUnboundCount }},
+          outbound dead-letter {{ runtimeReliabilityStatus.queue.outboundDeadLetterCount }}
+        </p>
+        <p class="mt-1 text-xs text-gray-500">
+          Workers: inbound {{ workerStateLabel(runtimeReliabilityStatus.runtime.workers.inboundForwarder.running) }},
+          outbound {{ workerStateLabel(runtimeReliabilityStatus.runtime.workers.outboundSender.running) }}.
+        </p>
+      </div>
+    </div>
+
     <p
       v-if="gatewayStore.managedStatus?.message"
       class="mt-3 rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-600"
@@ -111,6 +143,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useGatewaySessionSetupStore } from '~/stores/gatewaySessionSetupStore';
+import type { GatewayRuntimeReliabilityStatusModel } from '~/types/messaging';
 
 const gatewayStore = useGatewaySessionSetupStore();
 
@@ -158,6 +191,18 @@ const excludedProvidersLabel = computed(() => {
   return providers.length > 0 ? providers.join(', ') : 'None';
 });
 
+const runtimeReliabilityStatus = computed<GatewayRuntimeReliabilityStatusModel | null>(
+  () => gatewayStore.runtimeReliabilityStatus,
+);
+
+const inboxHeartbeatLabel = computed(() =>
+  runtimeReliabilityStatus.value?.runtime.locks.inbox.lastHeartbeatAt || 'missing',
+);
+
+const outboxHeartbeatLabel = computed(() =>
+  runtimeReliabilityStatus.value?.runtime.locks.outbox.lastHeartbeatAt || 'missing',
+);
+
 const primaryActionLabel = computed(() => {
   const status = gatewayStore.managedStatus;
   if (!status?.activeVersion) {
@@ -168,6 +213,10 @@ const primaryActionLabel = computed(() => {
   }
   return 'Restart Gateway';
 });
+
+function workerStateLabel(running: boolean): string {
+  return running ? 'running' : 'stopped';
+}
 
 async function onRefreshStatus(): Promise<void> {
   try {

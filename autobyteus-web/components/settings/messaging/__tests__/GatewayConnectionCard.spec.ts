@@ -88,6 +88,38 @@ describe('GatewayConnectionCard', () => {
     );
   });
 
+  it('renders Telegram as a managed polling-only configuration surface', () => {
+    const store = useGatewaySessionSetupStore();
+    const providerScopeStore = useMessagingProviderScopeStore();
+    providerScopeStore.selectedProvider = 'TELEGRAM';
+    store.providerStatusByProvider = {
+      TELEGRAM: {
+        provider: 'TELEGRAM',
+        supported: true,
+        selectedTransport: 'BUSINESS_API',
+        configured: true,
+        effectivelyEnabled: true,
+        blockedReason: null,
+        accountId: 'telegram-main',
+      },
+    };
+
+    const wrapper = mount(GatewayConnectionCard, {
+      global: {
+        plugins: [pinia],
+      },
+    });
+
+    expect(wrapper.text()).toContain('Managed Telegram uses polling mode.');
+    expect(wrapper.text()).toContain('Saving valid config makes Telegram active automatically');
+    expect(
+      wrapper.get('[data-testid="provider-telegram-account-id"]').attributes('placeholder'),
+    ).toContain('Telegram account label');
+    expect(wrapper.find('[data-testid="provider-telegram-webhook-secret"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="provider-telegram-enabled"]').exists()).toBe(false);
+    expect(wrapper.text()).not.toContain('Webhook Enabled');
+  });
+
   it('does not expose legacy raw gateway URL fields', () => {
     const providerScopeStore = useMessagingProviderScopeStore();
     const store = useGatewaySessionSetupStore();

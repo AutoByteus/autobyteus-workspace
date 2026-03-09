@@ -2,7 +2,7 @@
   <section class="border border-gray-200 rounded-lg p-4">
     <h3 class="text-sm font-semibold text-gray-900">Channel Binding Setup</h3>
     <p class="mt-1 text-xs text-gray-500">
-      Map incoming external identities to agent/team targets.
+      Map incoming external identities to active agent/team runtimes.
     </p>
 
     <div
@@ -148,33 +148,33 @@
           @click="onToggleTargetInputMode"
           data-testid="toggle-manual-target-input"
         >
-          {{ useManualTargetInput ? 'Use Target Dropdown' : 'Use Manual Target ID' }}
+          {{ useManualTargetInput ? 'Use Target Dropdown' : 'Use Manual Target Run ID' }}
         </button>
       </div>
 
       <select
         v-if="!useManualTargetInput"
-        v-model="selectedTargetId"
+        v-model="selectedTargetRunId"
         class="rounded-md border border-gray-300 px-3 py-2 text-sm md:col-span-3"
         data-testid="binding-target-select"
       >
         <option value="">Select target</option>
         <option
           v-for="option in filteredTargetOptions"
-          :key="`${option.targetType}:${option.targetId}`"
-          :value="option.targetId"
+          :key="`${option.targetType}:${option.targetRunId}`"
+          :value="option.targetRunId"
         >
-          {{ option.displayName }} ({{ option.targetId }})
+          {{ option.displayName }} ({{ option.targetRunId }})
         </option>
       </select>
 
       <input
         v-else
-        v-model="draft.targetId"
+        v-model="draft.targetRunId"
         type="text"
-        placeholder="targetId"
+        placeholder="Enter target run ID"
         class="rounded-md border border-gray-300 px-3 py-2 text-sm md:col-span-3"
-        data-testid="binding-target-id"
+        data-testid="binding-target-run-id"
       />
 
     </div>
@@ -237,8 +237,8 @@
     <p v-if="bindingStore.fieldErrors.threadId" class="mt-1 text-sm text-red-600">
       {{ bindingStore.fieldErrors.threadId }}
     </p>
-    <p v-if="bindingStore.fieldErrors.targetId" class="mt-1 text-sm text-red-600">
-      {{ bindingStore.fieldErrors.targetId }}
+    <p v-if="bindingStore.fieldErrors.targetRunId" class="mt-1 text-sm text-red-600">
+      {{ bindingStore.fieldErrors.targetRunId }}
     </p>
     <p v-if="bindingStore.fieldErrors.targetType" class="mt-1 text-sm text-red-600">
       {{ bindingStore.fieldErrors.targetType }}
@@ -269,7 +269,7 @@
             {{ binding.peerId }}
           </p>
           <p class="text-xs text-gray-500 mt-1">
-            target: {{ binding.targetType }} {{ binding.targetId }}
+            target runtime: {{ binding.targetType }} {{ binding.targetRunId }}
             <span v-if="binding.threadId"> | thread: {{ binding.threadId }}</span>
           </p>
         </div>
@@ -318,7 +318,7 @@ const {
   peerDiscoveryProviderLabel,
   scopedBindings,
   selectedPeerKey,
-  selectedTargetId,
+  selectedTargetRunId,
   showDiscordIdentityHint,
   showTelegramAgentOnlyHint,
   showPeerDiscoveryInstruction,

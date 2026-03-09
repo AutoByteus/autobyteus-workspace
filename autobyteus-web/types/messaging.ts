@@ -15,7 +15,7 @@ export type SetupStepKey = 'gateway' | 'personal_session' | 'binding' | 'verific
 
 export type SetupStepStateStatus = 'PENDING' | 'READY' | 'BLOCKED' | 'DONE';
 
-export type VerificationCheckKey = 'gateway' | 'session' | 'binding' | 'target_runtime';
+export type VerificationCheckKey = 'gateway' | 'provider' | 'session' | 'binding' | 'target_runtime';
 
 export type VerificationCheckStatus = 'PENDING' | 'RUNNING' | 'PASSED' | 'FAILED' | 'SKIPPED';
 
@@ -37,7 +37,7 @@ export type SetupBlockerActionType =
 export interface SetupBlockerAction {
   type: SetupBlockerActionType;
   label: string;
-  targetId?: string;
+  targetRunId?: string;
 }
 
 export interface ExternalChannelBindingModel {
@@ -48,7 +48,7 @@ export interface ExternalChannelBindingModel {
   peerId: string;
   threadId: string | null;
   targetType: ExternalChannelBindingTargetType;
-  targetId: string;
+  targetRunId: string;
   updatedAt: string;
 }
 
@@ -59,12 +59,12 @@ export interface ExternalChannelBindingDraft {
   peerId: string;
   threadId: string | null;
   targetType: ExternalChannelBindingTargetType;
-  targetId: string;
+  targetRunId: string;
 }
 
 export interface ExternalChannelBindingTargetOption {
   targetType: ExternalChannelBindingTargetType;
-  targetId: string;
+  targetRunId: string;
   displayName: string;
   status: string;
 }
@@ -255,6 +255,7 @@ export interface SetupBlocker {
   code:
     | 'GATEWAY_UNREACHABLE'
     | 'GATEWAY_RUNTIME_CRITICAL'
+    | 'PROVIDER_NOT_READY'
     | 'PERSONAL_MODE_DISABLED'
     | 'SESSION_NOT_READY'
     | 'SERVER_BINDING_API_UNAVAILABLE'

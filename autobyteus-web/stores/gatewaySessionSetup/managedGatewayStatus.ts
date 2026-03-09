@@ -17,17 +17,17 @@ export function normalizeManagedGatewayError(error: unknown): string {
 
 export function createDefaultManagedProviderConfig(): ManagedMessagingGatewayProviderConfigModel {
   return {
-    whatsappBusinessEnabled: false,
+    whatsappBusinessEnabled: true,
     whatsappBusinessSecret: '',
-    wecomAppEnabled: false,
+    wecomAppEnabled: true,
     wecomWebhookToken: '',
     wecomAppAccounts: [],
-    discordEnabled: false,
+    discordEnabled: true,
     discordBotToken: '',
     discordAccountId: '',
     discordDiscoveryMaxCandidates: 100,
     discordDiscoveryTtlSeconds: 300,
-    telegramEnabled: false,
+    telegramEnabled: true,
     telegramBotToken: '',
     telegramAccountId: '',
     telegramPollingEnabled: true,
@@ -59,12 +59,12 @@ export function normalizeProviderConfig(
     : [];
 
   return {
-    whatsappBusinessEnabled: config.whatsappBusinessEnabled === true,
+    whatsappBusinessEnabled: true,
     whatsappBusinessSecret: String(config.whatsappBusinessSecret ?? ''),
-    wecomAppEnabled: config.wecomAppEnabled === true,
+    wecomAppEnabled: true,
     wecomWebhookToken: String(config.wecomWebhookToken ?? ''),
     wecomAppAccounts: wecomAccounts,
-    discordEnabled: config.discordEnabled === true,
+    discordEnabled: true,
     discordBotToken: String(config.discordBotToken ?? ''),
     discordAccountId: String(config.discordAccountId ?? ''),
     discordDiscoveryMaxCandidates: normalizeNumber(
@@ -75,12 +75,12 @@ export function normalizeProviderConfig(
       config.discordDiscoveryTtlSeconds,
       300,
     ),
-    telegramEnabled: config.telegramEnabled === true,
+    telegramEnabled: true,
     telegramBotToken: String(config.telegramBotToken ?? ''),
     telegramAccountId: String(config.telegramAccountId ?? ''),
-    telegramPollingEnabled: config.telegramPollingEnabled !== false,
-    telegramWebhookEnabled: config.telegramWebhookEnabled === true,
-    telegramWebhookSecretToken: String(config.telegramWebhookSecretToken ?? ''),
+    telegramPollingEnabled: true,
+    telegramWebhookEnabled: false,
+    telegramWebhookSecretToken: '',
   };
 }
 

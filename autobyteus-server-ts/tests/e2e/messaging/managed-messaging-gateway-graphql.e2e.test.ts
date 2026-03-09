@@ -157,18 +157,14 @@ describe("Managed messaging gateway GraphQL e2e", () => {
       `,
       {
         input: {
-          wecomAppEnabled: true,
           wecomWebhookToken: "wecom-secret",
           wecomAppAccounts: [
             { accountId: "wecom-acct", label: "WeCom Main", mode: "APP" },
           ],
-          discordEnabled: true,
           discordBotToken: "discord-token",
           discordAccountId: "discord-acct",
-          telegramEnabled: true,
           telegramBotToken: "telegram-token",
           telegramAccountId: "telegram-acct",
-          whatsappBusinessEnabled: true,
           whatsappBusinessSecret: "wa-secret",
         },
       },
@@ -203,6 +199,7 @@ describe("Managed messaging gateway GraphQL e2e", () => {
         lifecycleState: string;
         activeVersion: string | null;
         bindPort: number | null;
+        providerConfig: Record<string, unknown>;
         installedVersions: string[];
         supportedProviders: string[];
         excludedProviders: string[];
@@ -217,6 +214,7 @@ describe("Managed messaging gateway GraphQL e2e", () => {
           lifecycleState
           activeVersion
           bindPort
+          providerConfig
           installedVersions
           supportedProviders
           excludedProviders
@@ -230,6 +228,12 @@ describe("Managed messaging gateway GraphQL e2e", () => {
     expect(status.managedMessagingGatewayStatus.enabled).toBe(true);
     expect(status.managedMessagingGatewayStatus.lifecycleState).toBe("RUNNING");
     expect(status.managedMessagingGatewayStatus.bindPort).toBeTypeOf("number");
+    expect(status.managedMessagingGatewayStatus.providerConfig.whatsappBusinessEnabled).toBe(true);
+    expect(status.managedMessagingGatewayStatus.providerConfig.wecomAppEnabled).toBe(true);
+    expect(status.managedMessagingGatewayStatus.providerConfig.discordEnabled).toBe(true);
+    expect(status.managedMessagingGatewayStatus.providerConfig.telegramEnabled).toBe(true);
+    expect(status.managedMessagingGatewayStatus.providerConfig.telegramPollingEnabled).toBe(true);
+    expect(status.managedMessagingGatewayStatus.providerConfig.telegramWebhookEnabled).toBe(false);
     expect(status.managedMessagingGatewayStatus.installedVersions).toContain("0.1.0");
     expect(status.managedMessagingGatewayStatus.supportedProviders).toEqual([
       "WHATSAPP",
@@ -247,6 +251,10 @@ describe("Managed messaging gateway GraphQL e2e", () => {
       status.managedMessagingGatewayStatus.providerStatusByProvider.DISCORD
         ?.accountId,
     ).toBe("discord-acct");
+    expect(
+      status.managedMessagingGatewayStatus.providerStatusByProvider.TELEGRAM
+        ?.effectivelyEnabled,
+    ).toBe(true);
 
     const archiveName = path.basename(healthyArchivePath);
     const cachedArchivePath = path.join(
@@ -267,6 +275,19 @@ describe("Managed messaging gateway GraphQL e2e", () => {
       "index.js",
     );
     expect(fs.existsSync(installEntrypoint)).toBe(true);
+
+    const runtimeEnv = await fsp.readFile(
+      path.join(
+        dataDir,
+        "extensions",
+        "messaging-gateway",
+        "config",
+        "gateway.env",
+      ),
+      "utf8",
+    );
+    expect(runtimeEnv).toContain("GATEWAY_TELEGRAM_POLLING_ENABLED=true");
+    expect(runtimeEnv).toContain("GATEWAY_TELEGRAM_WEBHOOK_ENABLED=false");
   }, 30_000);
 
   it("propagates managed gateway shared secrets into the runtime env", async () => {
@@ -317,12 +338,10 @@ describe("Managed messaging gateway GraphQL e2e", () => {
       `,
       {
         input: {
-          wecomAppEnabled: true,
           wecomWebhookToken: "wecom-secret",
           wecomAppAccounts: [
             { accountId: "wecom-acct", label: "WeCom Main", mode: "APP" },
           ],
-          discordEnabled: true,
           discordBotToken: "discord-token",
           discordAccountId: "discord-acct",
         },

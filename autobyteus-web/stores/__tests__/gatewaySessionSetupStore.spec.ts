@@ -212,6 +212,42 @@ describe('gatewaySessionSetupStore', () => {
     expect(store.providerConfig.discordAccountId).toBe('discord-updated');
   });
 
+  it('normalizes non-WeChat provider flags to active when saving config', async () => {
+    apolloMock.mutate.mockResolvedValue({
+      data: {
+        saveManagedMessagingGatewayProviderConfig: buildStatus({
+          providerConfig: {
+            ...buildStatus().providerConfig,
+            telegramEnabled: true,
+          },
+        }),
+      },
+      errors: [],
+    });
+
+    const store = useGatewaySessionSetupStore();
+
+    await store.saveManagedGatewayProviderConfig({
+      telegramEnabled: false,
+      telegramBotToken: 'telegram-token',
+      telegramAccountId: 'telegram-main',
+      discordEnabled: false,
+    });
+
+    expect(apolloMock.mutate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        variables: {
+          input: expect.objectContaining({
+            telegramEnabled: true,
+            telegramBotToken: 'telegram-token',
+            telegramAccountId: 'telegram-main',
+            discordEnabled: true,
+          }),
+        },
+      }),
+    );
+  });
+
   it('loads Discord peer candidates through GraphQL', async () => {
     apolloMock.query.mockResolvedValue({
       data: {

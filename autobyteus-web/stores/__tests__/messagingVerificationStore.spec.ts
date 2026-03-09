@@ -11,6 +11,13 @@ describe('messagingVerificationStore', () => {
     setActivePinia(createPinia());
   });
 
+  function stubGatewayHealthRefresh() {
+    const gatewayStore = useGatewaySessionSetupStore();
+    return vi
+      .spyOn(gatewayStore, 'refreshRuntimeReliabilityStatus')
+      .mockResolvedValue(gatewayStore.runtimeReliabilityStatus);
+  }
+
   it('runSetupVerification returns ready=true when all prerequisites pass', async () => {
     const gatewayStore = useGatewaySessionSetupStore();
     const optionsStore = useMessagingChannelBindingOptionsStore();
@@ -18,30 +25,36 @@ describe('messagingVerificationStore', () => {
     const verificationStore = useMessagingVerificationStore();
 
     gatewayStore.gatewayStatus = 'READY';
-    gatewayStore.setSessionProvider('WHATSAPP');
-    gatewayStore.session = {
-      sessionId: 'session-1',
-      accountLabel: 'Home',
-      status: 'ACTIVE',
+    gatewayStore.providerStatusByProvider = {
+      WHATSAPP: {
+        provider: 'WHATSAPP',
+        supported: true,
+        selectedTransport: 'BUSINESS_API',
+        configured: true,
+        effectivelyEnabled: true,
+        blockedReason: null,
+        accountId: null,
+      },
     };
+    stubGatewayHealthRefresh();
     bindingStore.capabilities.bindingCrudEnabled = true;
     bindingStore.bindings = [
       {
         id: 'binding-1',
         provider: 'WHATSAPP',
-        transport: 'PERSONAL_SESSION',
-        accountId: 'Home',
+        transport: 'BUSINESS_API',
+        accountId: 'whatsapp-business',
         peerId: 'peer-1',
         threadId: null,
         targetType: 'AGENT',
-        targetId: 'agent-1',
+        targetRunId: 'agent-1',
         updatedAt: '2026-02-09T12:00:00.000Z',
       },
     ];
     optionsStore.targetOptions = [
       {
         targetType: 'AGENT',
-        targetId: 'agent-1',
+        targetRunId: 'agent-1',
         displayName: 'Agent One',
         status: 'RUNNING',
       },
@@ -60,12 +73,18 @@ describe('messagingVerificationStore', () => {
     const verificationStore = useMessagingVerificationStore();
 
     gatewayStore.gatewayStatus = 'READY';
-    gatewayStore.setSessionProvider('WHATSAPP');
-    gatewayStore.session = {
-      sessionId: 'session-1',
-      accountLabel: 'Home',
-      status: 'ACTIVE',
+    gatewayStore.providerStatusByProvider = {
+      WHATSAPP: {
+        provider: 'WHATSAPP',
+        supported: true,
+        selectedTransport: 'BUSINESS_API',
+        configured: true,
+        effectivelyEnabled: true,
+        blockedReason: null,
+        accountId: null,
+      },
     };
+    stubGatewayHealthRefresh();
 
     bindingStore.capabilities.bindingCrudEnabled = false;
     bindingStore.capabilities.reason = 'Binding API unavailable';
@@ -76,25 +95,50 @@ describe('messagingVerificationStore', () => {
     expect(result.blockers.some((item) => item.code === 'SERVER_BINDING_API_UNAVAILABLE')).toBe(true);
   });
 
-  it('runSetupVerification reports session blocker when personal session not active', async () => {
+  it('runSetupVerification reports session blocker when WeChat session is not active', async () => {
     const gatewayStore = useGatewaySessionSetupStore();
     const bindingStore = useMessagingChannelBindingSetupStore();
+    const providerScopeStore = useMessagingProviderScopeStore();
     const verificationStore = useMessagingVerificationStore();
 
+    providerScopeStore.initialize({
+      wechatModes: ['DIRECT_PERSONAL_SESSION'],
+      defaultWeChatMode: 'DIRECT_PERSONAL_SESSION',
+      wechatPersonalEnabled: true,
+      wecomAppEnabled: true,
+      discordEnabled: false,
+      discordAccountId: null,
+      telegramEnabled: false,
+      telegramAccountId: null,
+    });
+    providerScopeStore.setSelectedProvider('WECHAT');
+
     gatewayStore.gatewayStatus = 'READY';
+    gatewayStore.providerStatusByProvider = {
+      WECHAT: {
+        provider: 'WECHAT',
+        supported: false,
+        selectedTransport: 'PERSONAL_SESSION',
+        configured: false,
+        effectivelyEnabled: false,
+        blockedReason: null,
+        accountId: null,
+      },
+    } as never;
+    stubGatewayHealthRefresh();
     gatewayStore.setSessionProvider('WHATSAPP');
     gatewayStore.session = null;
     bindingStore.capabilities.bindingCrudEnabled = true;
     bindingStore.bindings = [
       {
         id: 'binding-1',
-        provider: 'WHATSAPP',
+        provider: 'WECHAT',
         transport: 'PERSONAL_SESSION',
-        accountId: 'acc-1',
+        accountId: 'wechat-account',
         peerId: 'peer-1',
         threadId: null,
         targetType: 'AGENT',
-        targetId: 'agent-1',
+        targetRunId: 'agent-1',
         updatedAt: '2026-02-09T12:00:00.000Z',
       },
     ];
@@ -124,30 +168,45 @@ describe('messagingVerificationStore', () => {
     });
 
     gatewayStore.gatewayStatus = 'READY';
-    gatewayStore.setSessionProvider('WHATSAPP');
-    gatewayStore.session = {
-      sessionId: 'session-1',
-      accountLabel: 'Home',
-      status: 'ACTIVE',
+    gatewayStore.providerStatusByProvider = {
+      WHATSAPP: {
+        provider: 'WHATSAPP',
+        supported: true,
+        selectedTransport: 'BUSINESS_API',
+        configured: true,
+        effectivelyEnabled: true,
+        blockedReason: null,
+        accountId: null,
+      },
+      DISCORD: {
+        provider: 'DISCORD',
+        supported: true,
+        selectedTransport: 'BUSINESS_API',
+        configured: true,
+        effectivelyEnabled: true,
+        blockedReason: null,
+        accountId: 'discord-1',
+      },
     };
+    stubGatewayHealthRefresh();
     bindingStore.capabilities.bindingCrudEnabled = true;
     bindingStore.bindings = [
       {
         id: 'binding-whatsapp',
         provider: 'WHATSAPP',
-        transport: 'PERSONAL_SESSION',
-        accountId: 'Home',
+        transport: 'BUSINESS_API',
+        accountId: 'whatsapp-business',
         peerId: 'peer-1',
         threadId: null,
         targetType: 'AGENT',
-        targetId: 'agent-1',
+        targetRunId: 'agent-1',
         updatedAt: '2026-02-09T12:00:00.000Z',
       },
     ];
     optionsStore.targetOptions = [
       {
         targetType: 'AGENT',
-        targetId: 'agent-1',
+        targetRunId: 'agent-1',
         displayName: 'Agent One',
         status: 'RUNNING',
       },
@@ -172,30 +231,36 @@ describe('messagingVerificationStore', () => {
     const verificationStore = useMessagingVerificationStore();
 
     gatewayStore.gatewayStatus = 'READY';
-    gatewayStore.setSessionProvider('WHATSAPP');
-    gatewayStore.session = {
-      sessionId: 'session-1',
-      accountLabel: 'Home',
-      status: 'ACTIVE',
+    gatewayStore.providerStatusByProvider = {
+      WHATSAPP: {
+        provider: 'WHATSAPP',
+        supported: true,
+        selectedTransport: 'BUSINESS_API',
+        configured: true,
+        effectivelyEnabled: true,
+        blockedReason: null,
+        accountId: null,
+      },
     };
+    stubGatewayHealthRefresh();
     bindingStore.capabilities.bindingCrudEnabled = true;
     bindingStore.bindings = [
       {
         id: 'binding-1',
         provider: 'WHATSAPP',
-        transport: 'PERSONAL_SESSION',
-        accountId: 'Home',
+        transport: 'BUSINESS_API',
+        accountId: 'whatsapp-business',
         peerId: 'peer-1',
         threadId: null,
         targetType: 'AGENT',
-        targetId: 'agent-1',
+        targetRunId: 'agent-1',
         updatedAt: '2026-02-09T12:00:00.000Z',
       },
     ];
     optionsStore.targetOptions = [
       {
         targetType: 'AGENT',
-        targetId: 'agent-1',
+        targetRunId: 'agent-1',
         displayName: 'Agent One',
         status: 'STOPPED',
       },
@@ -219,6 +284,17 @@ describe('messagingVerificationStore', () => {
     const bindingStore = useMessagingChannelBindingSetupStore();
 
     gatewayStore.gatewayStatus = 'READY';
+    gatewayStore.providerStatusByProvider = {
+      WHATSAPP: {
+        provider: 'WHATSAPP',
+        supported: true,
+        selectedTransport: 'BUSINESS_API',
+        configured: true,
+        effectivelyEnabled: true,
+        blockedReason: null,
+        accountId: null,
+      },
+    };
     gatewayStore.runtimeReliabilityStatus = {
       runtime: {
         state: 'CRITICAL_LOCK_LOST',
@@ -251,9 +327,7 @@ describe('messagingVerificationStore', () => {
         outboundDeadLetterCount: 0,
       },
     };
-    vi.spyOn(gatewayStore, 'refreshRuntimeReliabilityStatus').mockResolvedValue(
-      gatewayStore.runtimeReliabilityStatus,
-    );
+    stubGatewayHealthRefresh();
 
     bindingStore.capabilities.bindingCrudEnabled = true;
 
@@ -262,5 +336,68 @@ describe('messagingVerificationStore', () => {
     expect(result.ready).toBe(false);
     expect(result.blockers.some((item) => item.code === 'GATEWAY_RUNTIME_CRITICAL')).toBe(true);
     expect(result.checks.find((check) => check.key === 'gateway')?.status).toBe('FAILED');
+  });
+
+  it('fails verification when Telegram provider configuration is not ready', async () => {
+    const gatewayStore = useGatewaySessionSetupStore();
+    const optionsStore = useMessagingChannelBindingOptionsStore();
+    const bindingStore = useMessagingChannelBindingSetupStore();
+    const providerScopeStore = useMessagingProviderScopeStore();
+    const verificationStore = useMessagingVerificationStore();
+
+    providerScopeStore.initialize({
+      wechatModes: ['WECOM_APP_BRIDGE'],
+      defaultWeChatMode: 'WECOM_APP_BRIDGE',
+      wechatPersonalEnabled: false,
+      wecomAppEnabled: true,
+      discordEnabled: false,
+      discordAccountId: null,
+      telegramEnabled: true,
+      telegramAccountId: 'telegram-main',
+    });
+    providerScopeStore.setSelectedProvider('TELEGRAM');
+
+    gatewayStore.gatewayStatus = 'READY';
+    gatewayStore.providerStatusByProvider = {
+      TELEGRAM: {
+        provider: 'TELEGRAM',
+        supported: true,
+        selectedTransport: 'BUSINESS_API',
+        configured: false,
+        effectivelyEnabled: false,
+        blockedReason: 'Telegram bot token and account id are required.',
+        accountId: null,
+      },
+    };
+    stubGatewayHealthRefresh();
+    bindingStore.capabilities.bindingCrudEnabled = true;
+    bindingStore.bindings = [
+      {
+        id: 'binding-telegram',
+        provider: 'TELEGRAM',
+        transport: 'BUSINESS_API',
+        accountId: 'telegram-main',
+        peerId: 'peer-1',
+        threadId: null,
+        targetType: 'AGENT',
+        targetRunId: 'agent-1',
+        updatedAt: '2026-02-09T12:00:00.000Z',
+      },
+    ];
+    optionsStore.targetOptions = [
+      {
+        targetType: 'AGENT',
+        targetRunId: 'agent-1',
+        displayName: 'Agent One',
+        status: 'RUNNING',
+      },
+    ];
+    vi.spyOn(optionsStore, 'loadTargetOptions').mockResolvedValue(optionsStore.targetOptions);
+
+    const result = await verificationStore.runSetupVerification();
+
+    expect(result.ready).toBe(false);
+    expect(result.blockers.some((item) => item.code === 'PROVIDER_NOT_READY')).toBe(true);
+    expect(result.checks.find((check) => check.key === 'provider')?.status).toBe('FAILED');
   });
 });

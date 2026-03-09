@@ -8,6 +8,7 @@ import {
 describe("runtime-config", () => {
   it("builds default runtime config", () => {
     expect(defaultRuntimeConfig()).toEqual({
+      runtimeDataRoot: path.resolve(process.cwd(), "memory"),
       serverBaseUrl: "http://localhost:8000",
       serverSharedSecret: null,
       serverCallbackSharedSecret: null,
@@ -91,6 +92,7 @@ describe("runtime-config", () => {
     });
 
     expect(config).toEqual({
+      runtimeDataRoot: path.resolve(process.cwd(), "memory"),
       serverBaseUrl: "https://server.example",
       serverSharedSecret: "gateway-secret",
       serverCallbackSharedSecret: "callback-secret",

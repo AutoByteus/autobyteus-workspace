@@ -31,13 +31,13 @@ ENABLE_APPLICATIONS=false
 
 > **Note for Electron App**: When running as an Electron application with the integrated backend server, these endpoint URLs are automatically configured with the dynamically allocated port.
 
-### External Messaging Setup
+### Messaging Setup
 
 The default messaging flow is now server-managed. `autobyteus-web` no longer needs
 `MESSAGE_GATEWAY_BASE_URL` or `MESSAGE_GATEWAY_ADMIN_TOKEN` in `.env.local` for the
 standard setup path.
 
-When a user enables messaging from `Settings -> External Messaging`, the selected node's
+When a user enables messaging from `Settings -> Messaging`, the selected node's
 server:
 
 1. resolves the compatible `autobyteus-message-gateway` artifact for that server version
@@ -47,6 +47,10 @@ server:
 5. reports lifecycle state, version, and diagnostics back to the frontend
 
 ## Managed Messaging Setup (WhatsApp Business, WeCom, Discord, Telegram)
+
+For a user-facing managed setup guide, including the recommended Telegram polling flow, see:
+
+- `docs/messaging.md`
 
 1. Start the target AutoByteus node.
    - For Electron, this is the bundled local server.
@@ -58,18 +62,19 @@ server:
 pnpm dev
 ```
 
-3. Open `Settings -> External Messaging`.
+3. Open `Settings -> Messaging`.
 
 4. In `Managed Messaging Gateway`:
-   - click `Enable Messaging`
+   - click `Install and Start Gateway` or `Start Gateway`
    - wait for the lifecycle state to move through `INSTALLING` and `STARTING`
    - confirm the card reports `RUNNING`
 
-5. Enter provider configuration in the same card and save it.
+5. Enter provider configuration in the provider card directly below the provider selector and save it.
    - WhatsApp uses the business secret flow.
    - WeCom requires a webhook token plus at least one app account.
    - Discord requires bot token plus account id.
-   - Telegram requires bot token plus account id.
+   - Telegram requires bot token plus a stable account label such as `telegram-main`.
+   - Managed Telegram is polling-only in the product flow.
 
 6. Use `Channel Binding Setup` to bind provider accounts or discovered peers to AutoByteus targets.
    - Discord and Telegram peer discovery are available through the managed server boundary.
@@ -78,6 +83,31 @@ pnpm dev
 7. If troubleshooting is needed, use the managed gateway diagnostics shown in the UI.
    - The port, bind address, active version, and lifecycle message are read-only diagnostics.
    - Users should not need to enter raw gateway connection details in the normal flow.
+
+## Telegram Setup Summary
+
+For most users, Telegram setup should stay close to a fully in-app flow:
+
+1. Create a bot in BotFather and copy the bot token.
+2. Open `Settings -> Messaging`.
+3. Start the managed gateway from the top runtime card.
+4. Select `Telegram Bot`.
+5. Enable Telegram, paste the bot token, and enter a stable account label.
+6. Save configuration, send a real Telegram message to the bot, then use `Refresh Peers`.
+8. Create a channel binding and run setup verification.
+
+The main thing users still do outside AutoByteus is the initial Telegram bot creation. The gateway install, runtime lifecycle, provider configuration, binding flow, and verification are handled from the app.
+
+## Delivery Reliability
+
+The managed runtime summary now shows delivery reliability information from the gateway:
+
+- queue heartbeat timestamps
+- inbound dead-letter count
+- inbound unbound count
+- outbound dead-letter count
+
+Under the hood, the gateway persists inbound and outbound queues, retries transient failures, and surfaces lock-loss as a critical runtime state.
 
 ## Unsupported Or Non-Default Messaging Flows
 

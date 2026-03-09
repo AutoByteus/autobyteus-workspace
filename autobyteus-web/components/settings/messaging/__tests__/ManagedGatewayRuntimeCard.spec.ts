@@ -65,4 +65,53 @@ describe('ManagedGatewayRuntimeCard', () => {
     );
     expect(wrapper.get('[data-testid="managed-gateway-port"]').text()).toBe('Not running');
   });
+
+  it('shows reliability heartbeat and queue summary when runtime reliability is available', () => {
+    const store = useGatewaySessionSetupStore();
+    store.runtimeReliabilityStatus = {
+      runtime: {
+        state: 'HEALTHY',
+        criticalCode: null,
+        updatedAt: '2026-03-09T10:00:00.000Z',
+        workers: {
+          inboundForwarder: { running: true, lastError: null, lastErrorAt: null },
+          outboundSender: { running: true, lastError: null, lastErrorAt: null },
+        },
+        locks: {
+          inbox: {
+            ownerId: 'inbox-owner',
+            held: true,
+            lost: false,
+            lastHeartbeatAt: '2026-03-09T10:00:00.000Z',
+            lastError: null,
+          },
+          outbox: {
+            ownerId: 'outbox-owner',
+            held: true,
+            lost: false,
+            lastHeartbeatAt: '2026-03-09T10:00:01.000Z',
+            lastError: null,
+          },
+        },
+      },
+      queue: {
+        inboundDeadLetterCount: 0,
+        inboundCompletedUnboundCount: 1,
+        outboundDeadLetterCount: 0,
+      },
+    };
+
+    const wrapper = mount(ManagedGatewayRuntimeCard, {
+      global: {
+        plugins: [pinia],
+      },
+    });
+
+    expect(wrapper.get('[data-testid="managed-gateway-reliability-summary"]').text()).toContain(
+      'Queue heartbeat',
+    );
+    expect(wrapper.get('[data-testid="managed-gateway-reliability-state"]').text()).toBe('HEALTHY');
+    expect(wrapper.text()).toContain('Inbound dead-letter 0');
+    expect(wrapper.text()).toContain('unbound 1');
+  });
 });

@@ -2,7 +2,7 @@
   <section class="border border-gray-200 rounded-lg p-4">
     <h3 class="text-sm font-semibold text-gray-900">Setup Verification</h3>
     <p class="mt-1 text-xs text-gray-500">
-      Run readiness verification across gateway, session, and binding setup.
+      Run readiness verification across gateway, provider, session, and binding setup.
     </p>
     <div
       v-if="runtimeReliabilityStatus"
@@ -57,7 +57,7 @@
             :data-testid="`verification-open-step-${check.key}`"
             @click="onOpenStepFromCheck(check.key)"
           >
-            Open Step
+            {{ openCheckActionLabel(check.key) }}
           </button>
         </div>
       </li>
@@ -111,6 +111,9 @@ import type {
   VerificationCheckKey,
   VerificationCheckStatus,
 } from '~/types/messaging';
+
+const GATEWAY_SECTION_ID = 'managed-gateway-runtime-section';
+const PROVIDER_SECTION_ID = 'managed-provider-config-section';
 
 const router = inject(routerKey, null);
 const optionsStore = useMessagingChannelBindingOptionsStore();
@@ -179,6 +182,9 @@ function resolveStepFromCheckKey(checkKey: VerificationCheckKey): SetupStepKey {
   if (checkKey === 'gateway') {
     return 'gateway';
   }
+  if (checkKey === 'provider') {
+    return 'gateway';
+  }
   if (checkKey === 'session') {
     return providerScopeStore.requiresPersonalSession
       ? 'personal_session'
@@ -190,11 +196,38 @@ function resolveStepFromCheckKey(checkKey: VerificationCheckKey): SetupStepKey {
   return 'verification';
 }
 
+function openCheckActionLabel(checkKey: VerificationCheckKey): string {
+  return checkKey === 'gateway' || checkKey === 'provider' ? 'Show Section' : 'Open Step';
+}
+
+function focusSection(sectionId: string): boolean {
+  if (typeof document === 'undefined') {
+    return false;
+  }
+  const element = document.getElementById(sectionId);
+  if (!element) {
+    return false;
+  }
+  if (typeof element.scrollIntoView === 'function') {
+    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  return true;
+}
+
 function onOpenStep(stepKey: SetupStepKey): void {
+  if (stepKey === 'gateway' && focusSection(GATEWAY_SECTION_ID)) {
+    return;
+  }
   emit('open-step', stepKey);
 }
 
 function onOpenStepFromCheck(checkKey: VerificationCheckKey): void {
+  if (checkKey === 'gateway' && focusSection(GATEWAY_SECTION_ID)) {
+    return;
+  }
+  if (checkKey === 'provider' && focusSection(PROVIDER_SECTION_ID)) {
+    return;
+  }
   onOpenStep(resolveStepFromCheckKey(checkKey));
 }
 

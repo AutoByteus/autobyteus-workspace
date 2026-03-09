@@ -36,6 +36,23 @@ export function useMessagingSetupBootstrap() {
   });
 
   watch(
+    () => gatewayStore.managedStatus?.providerStatusByProvider,
+    (providerStatusByProvider) => {
+      providerScopeStore.applyManagedAccountHints({
+        discordAccountId:
+          typeof providerStatusByProvider?.DISCORD?.accountId === 'string'
+            ? providerStatusByProvider.DISCORD.accountId
+            : null,
+        telegramAccountId:
+          typeof providerStatusByProvider?.TELEGRAM?.accountId === 'string'
+            ? providerStatusByProvider.TELEGRAM.accountId
+            : null,
+      });
+    },
+    { immediate: true, deep: true },
+  );
+
+  watch(
     () => providerScopeStore.selectedProvider,
     (provider) => {
       if (provider === 'WECHAT') {

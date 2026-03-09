@@ -18,6 +18,14 @@ interface MessagingProviderScopeState {
   initialized: boolean;
 }
 
+function normalizeOptionalAccountId(value: string | null | undefined): string | null {
+  if (typeof value !== 'string') {
+    return null;
+  }
+  const normalized = value.trim();
+  return normalized.length > 0 ? normalized : null;
+}
+
 const PROVIDER_OPTIONS: Record<MessagingProvider, ProviderScopeOption> = {
   WHATSAPP: {
     provider: 'WHATSAPP',
@@ -112,6 +120,14 @@ export const useMessagingProviderScopeStore = defineStore(
         }
 
         this.initialized = true;
+      },
+
+      applyManagedAccountHints(input: {
+        discordAccountId?: string | null;
+        telegramAccountId?: string | null;
+      }): void {
+        this.discordAccountId = normalizeOptionalAccountId(input.discordAccountId);
+        this.telegramAccountId = normalizeOptionalAccountId(input.telegramAccountId);
       },
 
       setSelectedProvider(provider: MessagingProvider): void {

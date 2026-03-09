@@ -43,19 +43,19 @@ export class ChannelBindingTargetOptionsService {
       if (byName !== 0) {
         return byName;
       }
-      return left.targetId.localeCompare(right.targetId);
+      return left.targetRunId.localeCompare(right.targetRunId);
     });
   }
 
   async isActiveTarget(
     targetType: ChannelBindingTargetType,
-    targetId: string,
+    targetRunId: string,
   ): Promise<boolean> {
-    const normalizedTargetId = normalizeRequiredString(targetId, "targetId");
+    const normalizedTargetRunId = normalizeRequiredString(targetRunId, "targetRunId");
     if (targetType === "AGENT") {
-      return this.isActiveAgent(normalizedTargetId);
+      return this.isActiveAgent(normalizedTargetRunId);
     }
-    return this.isActiveTeam(normalizedTargetId);
+    return this.isActiveTeam(normalizedTargetRunId);
   }
 
   private collectAgentOptions(): ChannelBindingTargetOption[] {
@@ -75,7 +75,7 @@ export class ChannelBindingTargetOptionsService {
 
       options.push({
         targetType: "AGENT",
-        targetId: agentRunId,
+        targetRunId: agentRunId,
         displayName:
           normalizeOptionalString(instance.context?.config?.name) ?? agentRunId,
         status: toStatusLabel(instance.currentStatus ?? instance.context?.currentStatus),
@@ -102,7 +102,7 @@ export class ChannelBindingTargetOptionsService {
 
       options.push({
         targetType: "TEAM",
-        targetId: teamRunId,
+        targetRunId: teamRunId,
         displayName: normalizeOptionalString(instance.name) ?? teamRunId,
         status: toStatusLabel(instance.currentStatus),
       });

@@ -42,19 +42,19 @@ describe("ChannelBindingTargetOptionsService", () => {
     expect(result).toEqual([
       {
         targetType: "AGENT",
-        targetId: "agent-1",
+        targetRunId: "agent-1",
         displayName: "Alpha Agent",
         status: "IDLE",
       },
       {
         targetType: "AGENT",
-        targetId: "agent-2",
+        targetRunId: "agent-2",
         displayName: "Beta Agent",
         status: "RUNNING",
       },
       {
         targetType: "TEAM",
-        targetId: "team-1",
+        targetRunId: "team-1",
         displayName: "Primary Team",
         status: "IDLE",
       },

@@ -14,7 +14,7 @@ import type {
 export function createBindingFlowActions(input: {
   draft: ExternalChannelBindingDraft;
   selectedPeerKey: Ref<string>;
-  selectedTargetId: Ref<string>;
+  selectedTargetRunId: Ref<string>;
   useManualPeerInput: Ref<boolean>;
   useManualTargetInput: Ref<boolean>;
   supportsPeerDiscovery: Ref<boolean>;
@@ -32,7 +32,7 @@ export function createBindingFlowActions(input: {
   const {
     draft,
     selectedPeerKey,
-    selectedTargetId,
+    selectedTargetRunId,
     useManualPeerInput,
     useManualTargetInput,
     supportsPeerDiscovery,
@@ -76,12 +76,12 @@ export function createBindingFlowActions(input: {
   function onToggleTargetInputMode(): void {
     useManualTargetInput.value = !useManualTargetInput.value;
     if (useManualTargetInput.value) {
-      selectedTargetId.value = '';
+      selectedTargetRunId.value = '';
       return;
     }
 
-    const existing = filteredTargetOptions.value.find((option) => option.targetId === draft.targetId);
-    selectedTargetId.value = existing ? existing.targetId : '';
+    const existing = filteredTargetOptions.value.find((option) => option.targetRunId === draft.targetRunId);
+    selectedTargetRunId.value = existing ? existing.targetRunId : '';
   }
 
   async function onRefreshPeerCandidates(): Promise<void> {
@@ -162,13 +162,13 @@ export function createBindingFlowActions(input: {
     try {
       await optionsStore.loadTargetOptions();
 
-      if (!useManualTargetInput.value && selectedTargetId.value) {
+      if (!useManualTargetInput.value && selectedTargetRunId.value) {
         const stillExists = filteredTargetOptions.value.some(
-          (option) => option.targetId === selectedTargetId.value,
+          (option) => option.targetRunId === selectedTargetRunId.value,
         );
         if (!stillExists) {
-          selectedTargetId.value = '';
-          draft.targetId = '';
+          selectedTargetRunId.value = '';
+          draft.targetRunId = '';
         }
       }
     } catch {
@@ -190,7 +190,7 @@ export function createBindingFlowActions(input: {
         peerSelectionMode: effectiveManualPeerInput.value ? 'manual' : 'dropdown',
         targetSelectionMode: useManualTargetInput.value ? 'manual' : 'dropdown',
         selectedPeerKey: selectedPeerKey.value,
-        selectedTargetId: selectedTargetId.value,
+        selectedTargetRunId: selectedTargetRunId.value,
       });
 
       await bindingStore.upsertBinding({

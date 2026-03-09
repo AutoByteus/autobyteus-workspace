@@ -123,7 +123,7 @@ function isBindingField(value: unknown): value is BindingField {
     value === 'peerId' ||
     value === 'threadId' ||
     value === 'targetType' ||
-    value === 'targetId'
+    value === 'targetRunId'
   );
 }
 
@@ -319,8 +319,8 @@ export const useMessagingChannelBindingSetupStore = defineStore(
       if (!draft.peerId.trim()) {
         errors.peerId = 'Peer ID is required';
       }
-      if (!draft.targetId.trim()) {
-        errors.targetId = 'Target ID is required';
+      if (!draft.targetRunId.trim()) {
+        errors.targetRunId = 'Target run ID is required';
       }
       if (!isProviderTransportSupported(draft, this.capabilities)) {
         errors.transport = `Transport ${draft.transport} is not supported for provider ${draft.provider}.`;
@@ -385,7 +385,7 @@ export const useMessagingChannelBindingSetupStore = defineStore(
               peerId: draft.peerId,
               threadId: draft.threadId,
               targetType: draft.targetType,
-              targetId: draft.targetId,
+              targetRunId: draft.targetRunId,
             },
           },
         });

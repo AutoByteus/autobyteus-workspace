@@ -36,7 +36,7 @@ export class ExternalChannelBindingGql {
   targetType!: string;
 
   @Field(() => String)
-  targetId!: string;
+  targetRunId!: string;
 
   @Field(() => Date)
   updatedAt!: Date;
@@ -48,7 +48,7 @@ export class ExternalChannelBindingTargetOptionGql {
   targetType!: string;
 
   @Field(() => String)
-  targetId!: string;
+  targetRunId!: string;
 
   @Field(() => String)
   displayName!: string;
@@ -78,5 +78,5 @@ export class UpsertExternalChannelBindingInput {
   targetType!: string;
 
   @Field(() => String)
-  targetId!: string;
+  targetRunId!: string;
 }

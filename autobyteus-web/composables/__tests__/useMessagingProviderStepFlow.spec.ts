@@ -31,23 +31,17 @@ describe('useMessagingProviderStepFlow', () => {
     const flow = useMessagingProviderStepFlow('WHATSAPP');
 
     gatewayStore.gatewayStatus = 'READY';
-    gatewayStore.setSessionProvider('WHATSAPP');
-    gatewayStore.session = {
-      sessionId: 'session-1',
-      accountLabel: 'Home',
-      status: 'ACTIVE',
-    };
     bindingStore.capabilities.bindingCrudEnabled = true;
     bindingStore.bindings = [
       {
         id: 'binding-1',
         provider: 'WHATSAPP',
-        transport: 'PERSONAL_SESSION',
-        accountId: 'Home',
+        transport: 'BUSINESS_API',
+        accountId: 'whatsapp-business',
         peerId: 'peer-1',
         threadId: null,
         targetType: 'AGENT',
-        targetId: 'agent-1',
+        targetRunId: 'agent-1',
         updatedAt: '2026-02-12T00:00:00.000Z',
       },
     ];
@@ -119,6 +113,6 @@ describe('useMessagingProviderStepFlow', () => {
     await nextTick();
 
     expect(navigationStore.selectedStepForProvider('DISCORD')).toBeNull();
-    expect(discordFlow.activeStepKey.value).toBe('gateway');
+    expect(discordFlow.activeStepKey.value).toBe('binding');
   });
 });

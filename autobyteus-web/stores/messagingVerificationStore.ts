@@ -42,6 +42,13 @@ function buildDefaultVerificationChecks(provider: MessagingProvider): SetupVerif
   return [
     { key: 'gateway', label: 'Gateway connectivity', status: 'PENDING' },
     {
+      key: 'provider',
+      label: requiresSession
+        ? 'Provider configuration (not required)'
+        : 'Provider configuration',
+      status: 'PENDING',
+    },
+    {
       key: 'session',
       label: requiresSession ? 'Session readiness' : 'Session readiness (not required)',
       status: 'PENDING',
@@ -87,13 +94,30 @@ function resolveInactiveBinding(
   for (const binding of bindings) {
     const matchedTarget = targetOptions.find(
       (option) =>
-        option.targetType === binding.targetType && option.targetId.trim() === binding.targetId.trim(),
+        option.targetType === binding.targetType && option.targetRunId.trim() === binding.targetRunId.trim(),
     );
     if (!matchedTarget || !isRuntimeStatusActive(matchedTarget.status)) {
       return binding;
     }
   }
   return null;
+}
+
+function providerVerificationLabel(provider: MessagingProvider): string {
+  switch (provider) {
+    case 'WHATSAPP':
+      return 'WhatsApp Business';
+    case 'WECOM':
+      return 'WeCom App';
+    case 'DISCORD':
+      return 'Discord Bot';
+    case 'TELEGRAM':
+      return 'Telegram Bot';
+    case 'WECHAT':
+      return 'WeChat Personal';
+    default:
+      return provider;
+  }
 }
 
 export const useMessagingVerificationStore = defineStore('messagingVerificationStore', {
@@ -219,6 +243,50 @@ export const useMessagingVerificationStore = defineStore('messagingVerificationS
           });
         }
 
+        this.setVerificationCheckStatusForProvider(providerKey, 'provider', 'RUNNING');
+        if (requiresPersonalSession) {
+          this.setVerificationCheckStatusForProvider(
+            providerKey,
+            'provider',
+            'SKIPPED',
+            'Provider configuration is handled through the personal session flow.',
+          );
+        } else {
+          const providerStatus = gatewayStore.providerStatusByProvider[providerKey];
+          const providerLabel = providerVerificationLabel(providerKey);
+          const accountId = providerStatus?.accountId?.trim();
+
+          if (providerStatus?.effectivelyEnabled) {
+            this.setVerificationCheckStatusForProvider(
+              providerKey,
+              'provider',
+              'PASSED',
+              accountId
+                ? `${providerLabel} is configured for account ${accountId}.`
+                : `${providerLabel} is configured and enabled.`,
+            );
+          } else {
+            const providerMessage =
+              providerStatus?.blockedReason ||
+              (providerStatus?.configured
+                ? `${providerLabel} is saved but still disabled.`
+                : `Save ${providerLabel} configuration above before verification.`);
+
+            this.setVerificationCheckStatusForProvider(
+              providerKey,
+              'provider',
+              'FAILED',
+              providerMessage,
+            );
+            blockers.push({
+              code: 'PROVIDER_NOT_READY',
+              step: 'gateway',
+              message: providerMessage,
+              actions: [{ type: 'RERUN_VERIFICATION', label: 'Re-run Verification' }],
+            });
+          }
+        }
+
         this.setVerificationCheckStatusForProvider(providerKey, 'session', 'RUNNING');
         if (!requiresPersonalSession) {
           this.setVerificationCheckStatusForProvider(
@@ -312,7 +380,7 @@ export const useMessagingVerificationStore = defineStore('messagingVerificationS
                 providerKey,
                 'target_runtime',
                 'FAILED',
-                `${inactiveBinding.targetType} target ${inactiveBinding.targetId} is not active.`,
+                `${inactiveBinding.targetType} runtime ${inactiveBinding.targetRunId} is not active.`,
               );
               const runtimeAction: SetupBlockerAction =
                 inactiveBinding.targetType === 'TEAM'
@@ -321,7 +389,7 @@ export const useMessagingVerificationStore = defineStore('messagingVerificationS
               blockers.push({
                 code: 'TARGET_RUNTIME_NOT_ACTIVE',
                 step: 'verification',
-                message: `Selected target ${inactiveBinding.targetType} ${inactiveBinding.targetId} is not active. Start runtime and re-run verification.`,
+                message: `Selected ${inactiveBinding.targetType} runtime ${inactiveBinding.targetRunId} is not active. Start the runtime and re-run verification.`,
                 actions: [
                   runtimeAction,
                   { type: 'RERUN_VERIFICATION', label: 'Re-run Verification' },

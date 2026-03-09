@@ -66,7 +66,7 @@ export type ChannelDispatchTarget = {
 
 export type ChannelBindingTargetOption = {
   targetType: ChannelBindingTargetType;
-  targetId: string;
+  targetRunId: string;
   displayName: string;
   status: string;
 };

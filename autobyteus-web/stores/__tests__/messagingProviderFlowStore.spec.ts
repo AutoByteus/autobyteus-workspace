@@ -10,49 +10,54 @@ describe('messagingProviderFlowStore', () => {
     setActivePinia(createPinia());
   });
 
-  it('stepStates returns READY states when WhatsApp prerequisites are ready', () => {
-    const gatewayStore = useGatewaySessionSetupStore();
+  it('stepStates returns READY binding state when WhatsApp business prerequisites are ready', () => {
     const bindingStore = useMessagingChannelBindingSetupStore();
     const providerFlowStore = useMessagingProviderFlowStore();
+    const gatewayStore = useGatewaySessionSetupStore();
 
     gatewayStore.gatewayStatus = 'READY';
-    gatewayStore.setSessionProvider('WHATSAPP');
-    gatewayStore.session = {
-      sessionId: 'session-1',
-      accountLabel: 'Home',
-      status: 'ACTIVE',
-    };
-
     bindingStore.capabilities.bindingCrudEnabled = true;
     bindingStore.bindings = [
       {
         id: 'binding-1',
         provider: 'WHATSAPP',
-        transport: 'PERSONAL_SESSION',
-        accountId: 'Home',
+        transport: 'BUSINESS_API',
+        accountId: 'whatsapp-business',
         peerId: 'peer-1',
         threadId: null,
         targetType: 'AGENT',
-        targetId: 'agent-1',
+        targetRunId: 'agent-1',
         updatedAt: '2026-02-09T12:00:00.000Z',
       },
     ];
 
     const steps = providerFlowStore.stepStates;
 
-    expect(steps.find((step) => step.key === 'gateway')?.status).toBe('READY');
-    expect(steps.find((step) => step.key === 'personal_session')?.status).toBe('READY');
+    expect(steps.map((step) => step.key)).toEqual(['binding', 'verification']);
     expect(steps.find((step) => step.key === 'binding')?.status).toBe('READY');
+    expect(steps.find((step) => step.key === 'verification')?.status).toBe('PENDING');
   });
 
-  it('stepStates keeps personal_session as PENDING before any session is started', () => {
+  it('stepStates keeps personal_session as PENDING before any WeChat session is started', () => {
     const gatewayStore = useGatewaySessionSetupStore();
     const bindingStore = useMessagingChannelBindingSetupStore();
     const providerFlowStore = useMessagingProviderFlowStore();
+    const providerScopeStore = useMessagingProviderScopeStore();
+
+    providerScopeStore.initialize({
+      wechatModes: ['DIRECT_PERSONAL_SESSION'],
+      defaultWeChatMode: 'DIRECT_PERSONAL_SESSION',
+      wechatPersonalEnabled: true,
+      wecomAppEnabled: true,
+      discordEnabled: false,
+      discordAccountId: null,
+      telegramEnabled: false,
+      telegramAccountId: null,
+    });
+    providerScopeStore.setSelectedProvider('WECHAT');
 
     gatewayStore.gatewayStatus = 'READY';
     gatewayStore.session = null;
-    gatewayStore.personalModeBlockedReason = null;
     bindingStore.capabilities.bindingCrudEnabled = true;
     bindingStore.bindings = [];
 
@@ -60,10 +65,10 @@ describe('messagingProviderFlowStore', () => {
     const personalStep = steps.find((step) => step.key === 'personal_session');
 
     expect(personalStep?.status).toBe('PENDING');
-    expect(personalStep?.detail).toBeUndefined();
+    expect(personalStep?.detail).toContain('WeChat');
   });
 
-  it('keeps binding step pending until gateway/session prerequisites are completed', () => {
+  it('keeps binding step pending until the managed gateway runtime is ready', () => {
     const providerScopeStore = useMessagingProviderScopeStore();
     const gatewayStore = useGatewaySessionSetupStore();
     const bindingStore = useMessagingChannelBindingSetupStore();
@@ -92,13 +97,13 @@ describe('messagingProviderFlowStore', () => {
         peerId: 'user:1',
         threadId: null,
         targetType: 'AGENT',
-        targetId: 'agent-1',
+        targetRunId: 'agent-1',
         updatedAt: '2026-02-09T12:00:00.000Z',
       },
     ];
 
     const steps = providerFlowStore.stepStates;
-    expect(steps.find((step) => step.key === 'gateway')?.status).toBe('PENDING');
+    expect(steps.map((step) => step.key)).toEqual(['binding', 'verification']);
     expect(steps.find((step) => step.key === 'binding')?.status).toBe('PENDING');
   });
 
@@ -132,12 +137,12 @@ describe('messagingProviderFlowStore', () => {
         peerId: 'peer-1',
         threadId: null,
         targetType: 'AGENT',
-        targetId: 'agent-1',
+        targetRunId: 'agent-1',
         updatedAt: '2026-02-09T12:00:00.000Z',
       },
     ];
 
     const steps = providerFlowStore.stepStates;
-    expect(steps.map((step) => step.key)).toEqual(['gateway', 'binding', 'verification']);
+    expect(steps.map((step) => step.key)).toEqual(['binding', 'verification']);
   });
 });

@@ -12,14 +12,8 @@ export const buildManagedMessagingProviderStatuses = (
     supported: true,
     selectedTransport: "BUSINESS_API",
     configured: Boolean(providerConfig.whatsappBusinessSecret),
-    effectivelyEnabled:
-      providerConfig.whatsappBusinessEnabled &&
-      Boolean(providerConfig.whatsappBusinessSecret),
-    blockedReason:
-      providerConfig.whatsappBusinessEnabled &&
-      !providerConfig.whatsappBusinessSecret
-        ? "WhatsApp Business secret is missing."
-        : null,
+    effectivelyEnabled: Boolean(providerConfig.whatsappBusinessSecret),
+    blockedReason: null,
     accountId: null,
   },
   {
@@ -30,11 +24,11 @@ export const buildManagedMessagingProviderStatuses = (
       Boolean(providerConfig.wecomWebhookToken) &&
       providerConfig.wecomAppAccounts.length > 0,
     effectivelyEnabled:
-      providerConfig.wecomAppEnabled &&
       Boolean(providerConfig.wecomWebhookToken) &&
       providerConfig.wecomAppAccounts.length > 0,
     blockedReason:
-      providerConfig.wecomAppEnabled &&
+      (Boolean(providerConfig.wecomWebhookToken) ||
+        providerConfig.wecomAppAccounts.length > 0) &&
       (!providerConfig.wecomWebhookToken ||
         providerConfig.wecomAppAccounts.length === 0)
         ? "WeCom webhook token and at least one app account are required."
@@ -49,11 +43,11 @@ export const buildManagedMessagingProviderStatuses = (
       Boolean(providerConfig.discordBotToken) &&
       Boolean(providerConfig.discordAccountId),
     effectivelyEnabled:
-      providerConfig.discordEnabled &&
       Boolean(providerConfig.discordBotToken) &&
       Boolean(providerConfig.discordAccountId),
     blockedReason:
-      providerConfig.discordEnabled &&
+      (Boolean(providerConfig.discordBotToken) ||
+        Boolean(providerConfig.discordAccountId)) &&
       (!providerConfig.discordBotToken || !providerConfig.discordAccountId)
         ? "Discord bot token and account id are required."
         : null,
@@ -67,11 +61,11 @@ export const buildManagedMessagingProviderStatuses = (
       Boolean(providerConfig.telegramBotToken) &&
       Boolean(providerConfig.telegramAccountId),
     effectivelyEnabled:
-      providerConfig.telegramEnabled &&
       Boolean(providerConfig.telegramBotToken) &&
       Boolean(providerConfig.telegramAccountId),
     blockedReason:
-      providerConfig.telegramEnabled &&
+      (Boolean(providerConfig.telegramBotToken) ||
+        Boolean(providerConfig.telegramAccountId)) &&
       (!providerConfig.telegramBotToken || !providerConfig.telegramAccountId)
         ? "Telegram bot token and account id are required."
         : null,
@@ -137,14 +131,9 @@ export const buildManagedMessagingGatewayRuntimeEnv = (input: {
     ),
     GATEWAY_TELEGRAM_BOT_TOKEN: input.providerConfig.telegramBotToken ?? "",
     GATEWAY_TELEGRAM_ACCOUNT_ID: input.providerConfig.telegramAccountId ?? "",
-    GATEWAY_TELEGRAM_POLLING_ENABLED: String(
-      input.providerConfig.telegramPollingEnabled,
-    ),
-    GATEWAY_TELEGRAM_WEBHOOK_ENABLED: String(
-      input.providerConfig.telegramWebhookEnabled,
-    ),
-    GATEWAY_TELEGRAM_WEBHOOK_SECRET_TOKEN:
-      input.providerConfig.telegramWebhookSecretToken ?? "",
+    GATEWAY_TELEGRAM_POLLING_ENABLED: "true",
+    GATEWAY_TELEGRAM_WEBHOOK_ENABLED: "false",
+    GATEWAY_TELEGRAM_WEBHOOK_SECRET_TOKEN: "",
     GATEWAY_OUTBOUND_MAX_ATTEMPTS: "3",
     GATEWAY_OUTBOUND_BASE_DELAY_MS: "100",
     GATEWAY_IDEMPOTENCY_TTL_SECONDS: "3600",

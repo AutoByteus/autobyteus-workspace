@@ -137,17 +137,17 @@ export type ManagedMessagingRuntimeLaunchConfig = {
 
 export const createDefaultManagedMessagingProviderConfig =
   (): ManagedMessagingProviderConfig => ({
-    whatsappBusinessEnabled: false,
+    whatsappBusinessEnabled: true,
     whatsappBusinessSecret: null,
-    wecomAppEnabled: false,
+    wecomAppEnabled: true,
     wecomWebhookToken: null,
     wecomAppAccounts: [],
-    discordEnabled: false,
+    discordEnabled: true,
     discordBotToken: null,
     discordAccountId: null,
     discordDiscoveryMaxCandidates: 200,
     discordDiscoveryTtlSeconds: 7 * 24 * 60 * 60,
-    telegramEnabled: false,
+    telegramEnabled: true,
     telegramBotToken: null,
     telegramAccountId: null,
     telegramPollingEnabled: true,
@@ -239,19 +239,19 @@ export const normalizeManagedMessagingProviderConfig = (
     })
     .filter((entry): entry is ManagedMessagingWeComAccount => entry !== null);
 
+  // Managed nodes run Telegram in polling mode only because the managed runtime is bound to loopback.
+  const inferredNonWechatEnabled = true;
+
   return {
-    whatsappBusinessEnabled: normalizeBoolean(
-      input.whatsappBusinessEnabled,
-      base.whatsappBusinessEnabled,
-    ),
+    whatsappBusinessEnabled: inferredNonWechatEnabled,
     whatsappBusinessSecret:
       normalizeOptionalString(input.whatsappBusinessSecret) ??
       base.whatsappBusinessSecret,
-    wecomAppEnabled: normalizeBoolean(input.wecomAppEnabled, base.wecomAppEnabled),
+    wecomAppEnabled: inferredNonWechatEnabled,
     wecomWebhookToken:
       normalizeOptionalString(input.wecomWebhookToken) ?? base.wecomWebhookToken,
     wecomAppAccounts,
-    discordEnabled: normalizeBoolean(input.discordEnabled, base.discordEnabled),
+    discordEnabled: inferredNonWechatEnabled,
     discordBotToken:
       normalizeOptionalString(input.discordBotToken) ?? base.discordBotToken,
     discordAccountId:
@@ -264,22 +264,14 @@ export const normalizeManagedMessagingProviderConfig = (
       input.discordDiscoveryTtlSeconds,
       base.discordDiscoveryTtlSeconds,
     ),
-    telegramEnabled: normalizeBoolean(input.telegramEnabled, base.telegramEnabled),
+    telegramEnabled: inferredNonWechatEnabled,
     telegramBotToken:
       normalizeOptionalString(input.telegramBotToken) ?? base.telegramBotToken,
     telegramAccountId:
       normalizeOptionalString(input.telegramAccountId) ?? base.telegramAccountId,
-    telegramPollingEnabled: normalizeBoolean(
-      input.telegramPollingEnabled,
-      base.telegramPollingEnabled,
-    ),
-    telegramWebhookEnabled: normalizeBoolean(
-      input.telegramWebhookEnabled,
-      base.telegramWebhookEnabled,
-    ),
-    telegramWebhookSecretToken:
-      normalizeOptionalString(input.telegramWebhookSecretToken) ??
-      base.telegramWebhookSecretToken,
+    telegramPollingEnabled: true,
+    telegramWebhookEnabled: false,
+    telegramWebhookSecretToken: null,
   };
 };
 
@@ -335,4 +327,3 @@ export const normalizeManagedMessagingPersistedState = (
       normalizeOptionalString(input.lastUpdatedAt) ?? base.lastUpdatedAt,
   };
 };
-

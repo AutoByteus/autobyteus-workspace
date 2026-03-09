@@ -24,7 +24,7 @@ describe('messagingChannelBindingOptionsStore', () => {
           externalChannelBindingTargetOptions: [
             {
               targetType: 'AGENT',
-              targetId: 'agent-1',
+              targetRunId: 'agent-1',
               displayName: 'Setup Agent',
               status: 'IDLE',
             },
@@ -84,7 +84,7 @@ describe('messagingChannelBindingOptionsStore', () => {
     store.targetOptions = [
       {
         targetType: 'AGENT',
-        targetId: 'agent-1',
+        targetRunId: 'agent-1',
         displayName: 'Setup Agent',
         status: 'IDLE',
       },
@@ -108,12 +108,12 @@ describe('messagingChannelBindingOptionsStore', () => {
           peerId: 'discord-peer-1',
           threadId: null,
           targetType: 'AGENT',
-          targetId: 'agent-1',
+          targetRunId: 'agent-1',
         },
         peerSelectionMode: 'dropdown',
         targetSelectionMode: 'dropdown',
         selectedPeerKey: buildPeerCandidateKey(store.peerCandidates[0]),
-        selectedTargetId: 'agent-1',
+        selectedTargetRunId: 'agent-1',
       }),
     ).not.toThrow();
   });

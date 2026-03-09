@@ -53,11 +53,17 @@ Manage local/remote node registrations and synchronization operations.
 
 **Component:** `components/settings/MessagingSetupManager.vue`
 
-Guided setup flows for messaging channels and provider bindings.
+Managed setup for external messaging providers on the selected node.
 
-- Provider setup scope selection.
-- Step-based setup/checklist progression.
-- Verification and channel binding workflows.
+- The `Managed Messaging Gateway` card at the top installs, starts, restarts, disables, and diagnoses the shared messaging runtime.
+- Provider selection and configuration sit below the runtime card.
+- Channel binding maps external identities to active agent/team runtimes.
+- Verification runs readiness checks across runtime, binding, and provider state.
+- Telegram is easiest in polling mode and is mostly configured from inside the app after bot creation.
+
+For the full managed flow, including Telegram setup and a live acceptance checklist, see:
+
+- **[Managed Messaging Setup](./messaging.md)**
 
 ### 5. Server Settings
 
@@ -85,3 +91,4 @@ Canonical app metadata and manual update controls.
 
 - **[Agent Management](./agent_management.md)**: API keys configured in Settings are used by Agents.
 - **[Electron Packaging](./electron_packaging.md)**: The Server Status monitor interacts with the bundled Electron server.
+- **[Managed Messaging Setup](./messaging.md)**: End-to-end gateway, provider, binding, and verification flow.

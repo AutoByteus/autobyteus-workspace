@@ -19,7 +19,7 @@ export function useMessagingChannelBindingSetupFlow() {
   const useManualPeerInput = ref(false);
   const useManualTargetInput = ref(false);
   const selectedPeerKey = ref('');
-  const selectedTargetId = ref('');
+  const selectedTargetRunId = ref('');
 
   const {
     draft,
@@ -67,7 +67,7 @@ export function useMessagingChannelBindingSetupFlow() {
   } = createBindingFlowActions({
     draft,
     selectedPeerKey,
-    selectedTargetId,
+    selectedTargetRunId,
     useManualPeerInput,
     useManualTargetInput,
     supportsPeerDiscovery,
@@ -166,13 +166,13 @@ export function useMessagingChannelBindingSetupFlow() {
   );
 
   watch(
-    () => selectedTargetId.value,
-    (targetId) => {
-      if (useManualTargetInput.value || !targetId) {
+    () => selectedTargetRunId.value,
+    (targetRunId) => {
+      if (useManualTargetInput.value || !targetRunId) {
         return;
       }
 
-      draft.targetId = targetId;
+      draft.targetRunId = targetRunId;
     },
   );
 
@@ -187,11 +187,11 @@ export function useMessagingChannelBindingSetupFlow() {
       }
 
       const selectedStillExists = filteredTargetOptions.value.some(
-        (option) => option.targetId === selectedTargetId.value,
+        (option) => option.targetRunId === selectedTargetRunId.value,
       );
       if (!selectedStillExists) {
-        selectedTargetId.value = '';
-        draft.targetId = '';
+        selectedTargetRunId.value = '';
+        draft.targetRunId = '';
       }
     },
   );
@@ -218,7 +218,7 @@ export function useMessagingChannelBindingSetupFlow() {
     peerDiscoveryProviderLabel,
     scopedBindings,
     selectedPeerKey,
-    selectedTargetId,
+    selectedTargetRunId,
     showTelegramAgentOnlyHint,
     allowedTargetTypes,
     showDiscordIdentityHint,

@@ -2,12 +2,20 @@
 
 ## Status
 
-- Current Status: `Draft`
-- Previous Status: `N/A`
+- Current Status: `Design-ready`
+- Previous Status: `Draft`
 
 ## Goal / Problem Statement
 
 Naming is still mixed between runtime IDs and definition IDs in `autobyteus-server-ts` and `autobyteus-web`.
+
+This round focuses specifically on the messaging / external-channel flows that were developed across the gateway, server, and frontend before the run-vs-definition naming model was fully stabilized.
+
+The user has confirmed the intended model:
+
+- There is no generic runtime `agentId` / `teamId` in server/web messaging flows anymore.
+- Runtime targets must be expressed as `agentRunId` and `teamRunId`.
+- Definition-owned references must be expressed as `agentDefinitionId`, `teamDefinitionId`, or `agentTeamDefinitionId` based on the owning entity.
 
 This ticket establishes a strict identity model:
 
@@ -22,34 +30,39 @@ Exception boundary:
 
 ## Scope Classification
 
-- Classification: `Large`
+- Classification: `Medium`
 - Rationale:
-  - Cross-layer refactor across API contracts, GraphQL schema/docs, services, stores, components, and tests in both server and web repos.
-  - Requires semantic audit to avoid mis-renaming true definition IDs vs runtime IDs.
+  - The active mismatch is cross-layer across the messaging binding control-plane (`server domain boundary -> GraphQL -> web`).
+  - The audited runtime/storage internals are already mostly correct on `agentRunId` / `teamRunId`.
+  - The required work is a naming-consistency refactor, not a broader architectural rewrite.
 
 ## In-Scope Use Cases
 
-- `UC-001`: Runtime execution APIs/events/state in server/web use `runId` semantics only.
-- `UC-002`: Definition selection/config APIs/events/state in server/web use `agentDefinitionId` semantics only.
-- `UC-003`: GraphQL operations/types/variables clearly distinguish run identity vs definition identity.
-- `UC-004`: Streaming/session/history/artifact/memory flows in server/web remove ambiguous `agentId` naming where values are runtime IDs.
-- `UC-005`: Core boundary mapping remains explicit where `autobyteus-ts` still emits `agentId`.
+- `UC-000`: Messaging/external-channel review identifies every remaining ambiguous runtime-vs-definition identifier in active server/web messaging flows before implementation begins.
+- `UC-001`: External-channel binding GraphQL queries/mutations/types expose `targetRunId` rather than `targetId`.
+- `UC-002`: Web messaging binding stores, composables, and components use `targetRunId` consistently for runtime target selection and verification.
+- `UC-003`: Server target-option contracts use `targetRunId` consistently for active agent/team runtime options.
+- `UC-004`: Server runtime execution internals continue using `agentRunId` / `teamRunId` without regression.
+- `UC-005`: Definition selection/config APIs outside the messaging runtime path keep valid `agentDefinitionId` / `teamDefinitionId` naming and are not falsely renamed.
+- `UC-006`: Core boundary mapping remains explicit where `autobyteus-ts` still emits `agentId`.
 
 ## Out Of Scope / Non-Goals
 
 - No rename of `autobyteus-ts` core public contracts in this ticket.
 - No runtime behavior changes beyond naming/contract clarity.
 - No physical DB column rename unless strictly required; prefer ORM field mapping where needed.
+- No broad repo-wide rename outside the messaging / external-channel active path in this round.
 
 ## Acceptance Criteria
 
-1. No ambiguous `agentId` identifiers remain in active `autobyteus-server-ts` and `autobyteus-web` code paths, except explicit core-boundary adapters.
-2. Runtime execution identity surfaces use `runId` / `teamRunId` naming end-to-end.
-3. Definition identity surfaces use `agentDefinitionId` / `teamDefinitionId` / `agentTeamDefinitionId` naming end-to-end.
-4. Remaining `agentId` references in server/web are documented and limited to `autobyteus-ts` compatibility boundaries with immediate normalization.
-5. GraphQL schema, resolvers, queries/mutations/subscriptions, generated typings, and store/component consumers are aligned to the new naming.
-6. Tests are updated and passing for impacted server/web modules.
-7. Validation includes scoped scan evidence proving no unauthorized `agentId` usage remains in server/web.
+1. Active messaging / external-channel GraphQL binding APIs no longer expose `targetId`; they expose `targetRunId`.
+2. Active messaging / external-channel web models, stores, composables, UI text, and tests no longer use `targetId`; they use `targetRunId`.
+3. Server-side active target-option contracts no longer use `targetId`; they use `targetRunId`.
+4. Server runtime execution/storage paths continue using `agentRunId` / `teamRunId` and are not regressed by the boundary rename.
+5. No valid definition-ID paths are incorrectly renamed during this round.
+6. Remaining `agentId` references in server/web messaging-adjacent active paths, if any, are documented and limited to explicit compatibility boundaries with immediate normalization.
+7. Focused server/web tests for the renamed messaging/external-channel path are updated and passing.
+8. Validation includes scoped scan evidence proving no `targetId` remains in active messaging/external-channel server/web code.
 
 ## Constraints / Dependencies
 
@@ -57,24 +70,27 @@ Exception boundary:
 - Repos in scope:
   - `autobyteus-server-ts`
   - `autobyteus-web`
+  - `autobyteus-message-gateway` compatibility surfaces where server/web naming is consumed or normalized
 - External dependency boundary:
   - `autobyteus-ts` (read-only compatibility boundary in this ticket)
 
 ## Assumptions
 
-- Current code already contains partial `runId` migration; this task is the completion and hardening pass.
-- User intent is strict naming clarity, not backward alias retention for ambiguous runtime `agentId` names in server/web.
+- The active messaging runtime/storage model is already correct on `agentRunId` / `teamRunId`.
+- The main remaining semantic blur is the generic binding/control-plane field name `targetId`.
+- User intent is strict naming clarity, not backward alias retention for ambiguous runtime naming in the messaging feature.
 
 ## Open Questions / Risks
 
 1. Should GraphQL compatibility aliases be explicitly rejected everywhere, or allowed temporarily in isolated adapter layers?
-2. Some `agentId` occurrences may represent true ownership/entity identity; these must be semantically verified before rename.
+2. Are there any non-web GraphQL consumers that still depend on `targetId`?
 3. Codegen/schema synchronization may temporarily fail if local/generated schema sources lag behind refactor changes.
 
 ## Requirement IDs
 
-- `R-001`: Server/web runtime identities use `runId` / `teamRunId` only.
-- `R-002`: Server/web definition identities use `agentDefinitionId` / `teamDefinitionId` / `agentTeamDefinitionId` only.
-- `R-003`: Ambiguous `agentId` usage is eliminated from server/web active paths.
+- `R-000`: Messaging/external-channel active paths are explicitly audited for runtime-vs-definition naming semantics before rename decisions are applied.
+- `R-001`: Messaging/external-channel binding control-plane APIs expose runtime target identity as `targetRunId`, not `targetId`.
+- `R-002`: Server runtime internals continue using `agentRunId` / `teamRunId` only.
+- `R-003`: Definition identities remain explicit and are not conflated with runtime target identities.
 - `R-004`: Any required `agentId` compatibility is confined to explicit core-boundary adapters with immediate local normalization.
 - `R-005`: Validation artifacts prove naming compliance and no regressions in impacted tests.

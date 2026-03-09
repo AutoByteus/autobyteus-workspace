@@ -27,7 +27,7 @@ describe('SetupVerificationCard', () => {
         key: 'target_runtime',
         label: 'Target runtime activity',
         status: 'FAILED',
-        detail: 'AGENT target is not active.',
+        detail: 'AGENT runtime agent-1 is not active.',
       },
     ];
     verificationStore.verificationByProvider.WHATSAPP.verificationResult = {
@@ -37,7 +37,7 @@ describe('SetupVerificationCard', () => {
         {
           code: 'TARGET_RUNTIME_NOT_ACTIVE',
           step: 'verification',
-          message: 'Selected target AGENT agent-1 is not active.',
+          message: 'Selected AGENT runtime agent-1 is not active.',
           actions: [
             { type: 'OPEN_AGENT_RUNTIME', label: 'Open Agent Runtime' },
             { type: 'RERUN_VERIFICATION', label: 'Re-run Verification' },
@@ -170,5 +170,36 @@ describe('SetupVerificationCard', () => {
     await wrapper.get('[data-testid="verification-open-step-blocker-BINDING_NOT_READY"]').trigger('click');
 
     expect(wrapper.emitted('open-step')).toEqual([['gateway'], ['binding']]);
+  });
+
+  it('does not emit open-step when provider section can be focused directly', async () => {
+    const verificationStore = useMessagingVerificationStore();
+    verificationStore.verificationByProvider.WHATSAPP.verificationChecks = [
+      {
+        key: 'provider',
+        label: 'Provider configuration',
+        status: 'FAILED',
+      },
+    ];
+
+    const scrollIntoView = vi.fn();
+    const element = document.createElement('div');
+    element.id = 'managed-provider-config-section';
+    element.scrollIntoView = scrollIntoView;
+    document.body.appendChild(element);
+
+    const wrapper = mount(SetupVerificationCard, {
+      global: {
+        plugins: [pinia],
+      },
+    });
+    await flushPromises();
+
+    await wrapper.get('[data-testid="verification-open-step-provider"]').trigger('click');
+
+    expect(scrollIntoView).toHaveBeenCalledTimes(1);
+    expect(wrapper.emitted('open-step')).toBeFalsy();
+
+    element.remove();
   });
 });

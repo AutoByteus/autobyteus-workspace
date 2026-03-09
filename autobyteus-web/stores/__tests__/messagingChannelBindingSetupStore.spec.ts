@@ -84,11 +84,12 @@ describe('messagingChannelBindingSetupStore', () => {
         peerId: '',
         threadId: null,
         targetType: 'AGENT',
-        targetId: '',
+        targetRunId: '',
       }),
     ).rejects.toThrow('Binding validation failed');
 
     expect(store.fieldErrors.accountId).toBe('Account ID is required');
+    expect(store.fieldErrors.targetRunId).toBe('Target run ID is required');
     expect(store.fieldErrors.transport).toContain('is not supported');
   });
 
@@ -107,7 +108,7 @@ describe('messagingChannelBindingSetupStore', () => {
       peerId: 'wechat-peer',
       threadId: null,
       targetType: 'AGENT',
-      targetId: 'agent-1',
+      targetRunId: 'agent-1',
     });
 
     expect(errors.transport).toBeUndefined();
@@ -128,7 +129,7 @@ describe('messagingChannelBindingSetupStore', () => {
       peerId: 'peer-1',
       threadId: null,
       targetType: 'AGENT',
-      targetId: 'agent-1',
+      targetRunId: 'agent-1',
     });
     const invalidWeChat = store.validateDraft({
       provider: 'WECHAT',
@@ -137,7 +138,7 @@ describe('messagingChannelBindingSetupStore', () => {
       peerId: 'peer-1',
       threadId: null,
       targetType: 'AGENT',
-      targetId: 'agent-1',
+      targetRunId: 'agent-1',
     });
     const invalidDiscord = store.validateDraft({
       provider: 'DISCORD',
@@ -146,7 +147,7 @@ describe('messagingChannelBindingSetupStore', () => {
       peerId: 'user:123456',
       threadId: null,
       targetType: 'AGENT',
-      targetId: 'agent-1',
+      targetRunId: 'agent-1',
     });
     const invalidDiscordBusinessApi = store.validateDraft({
       provider: 'DISCORD',
@@ -155,7 +156,7 @@ describe('messagingChannelBindingSetupStore', () => {
       peerId: 'user:123456',
       threadId: null,
       targetType: 'AGENT',
-      targetId: 'agent-1',
+      targetRunId: 'agent-1',
     });
 
     expect(invalidWeCom.transport).toContain('is not supported');
@@ -179,7 +180,7 @@ describe('messagingChannelBindingSetupStore', () => {
       peerId: 'user:123456',
       threadId: '999888777',
       targetType: 'AGENT',
-      targetId: 'agent-1',
+      targetRunId: 'agent-1',
     });
 
     expect(errors.threadId).toContain('can only be used with channel');
@@ -201,7 +202,7 @@ describe('messagingChannelBindingSetupStore', () => {
         peerId: '100200300',
         threadId: null,
         targetType: 'TEAM',
-        targetId: 'team-1',
+        targetRunId: 'team-1',
       }),
     ).rejects.toThrow('Binding validation failed');
 
@@ -222,7 +223,7 @@ describe('messagingChannelBindingSetupStore', () => {
           peerId: 'peer-1',
           threadId: null,
           targetType: 'AGENT',
-          targetId: 'agent-1',
+          targetRunId: 'agent-1',
           updatedAt: '2026-02-09T10:00:00.000Z',
         },
       },
@@ -244,7 +245,7 @@ describe('messagingChannelBindingSetupStore', () => {
       peerId: 'peer-1',
       threadId: null,
       targetType: 'AGENT',
-      targetId: 'agent-1',
+      targetRunId: 'agent-1',
     });
 
     expect(binding.id).toBe('binding-1');
@@ -273,7 +274,7 @@ describe('messagingChannelBindingSetupStore', () => {
           peerId: 'peer-1',
           threadId: null,
           targetType: 'AGENT',
-          targetId: 'agent-1',
+          targetRunId: 'agent-1',
           updatedAt: '2026-02-09T12:00:00.000Z',
         },
       },
@@ -292,7 +293,7 @@ describe('messagingChannelBindingSetupStore', () => {
       peerId: 'peer-1',
       threadId: null,
       targetType: 'AGENT',
-      targetId: 'agent-1',
+      targetRunId: 'agent-1',
     });
 
     expect(binding.id).toBe('binding-2');
@@ -326,7 +327,7 @@ describe('messagingChannelBindingSetupStore', () => {
         peerId: 'peer-1',
         threadId: null,
         targetType: 'AGENT',
-        targetId: 'agent-1',
+        targetRunId: 'agent-1',
       }),
     ).rejects.toThrow('Binding API rollout not enabled');
 
@@ -356,7 +357,7 @@ describe('messagingChannelBindingSetupStore', () => {
         peerId: 'peer-1',
         threadId: null,
         targetType: 'AGENT',
-        targetId: 'agent-1',
+        targetRunId: 'agent-1',
       }),
     ).rejects.toThrow('Cannot query field');
 
@@ -397,7 +398,7 @@ describe('messagingChannelBindingSetupStore', () => {
         peerId: 'channel:123456',
         threadId: '999888777',
         targetType: 'AGENT',
-        targetId: 'agent-1',
+        targetRunId: 'agent-1',
       }),
     ).rejects.toThrow('Discord threadId can only be used with channel:<snowflake> peerId targets.');
 
@@ -428,7 +429,7 @@ describe('messagingChannelBindingSetupStore', () => {
         peerId: 'peer-1',
         threadId: null,
         targetType: 'AGENT',
-        targetId: 'agent-1',
+        targetRunId: 'agent-1',
         updatedAt: '2026-02-09T11:00:00.000Z',
       },
     ];
