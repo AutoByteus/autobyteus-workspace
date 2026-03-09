@@ -71,6 +71,38 @@
               <option value="zh">Chinese</option>
             </select>
           </label>
+
+          <div class="space-y-2 text-sm text-gray-700">
+            <div class="flex items-center justify-between gap-3">
+              <span class="font-medium">Audio source</span>
+              <button
+                type="button"
+                class="text-xs font-medium text-blue-700 transition-colors hover:text-blue-800 disabled:cursor-not-allowed disabled:opacity-50"
+                :disabled="busy || voiceInputStore.isRecording || voiceInputStore.isTranscribing"
+                @click="refreshAudioInputs"
+              >
+                Refresh
+              </button>
+            </div>
+            <select
+              class="w-full max-w-sm rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900"
+              :disabled="busy || extension.status !== 'installed'"
+              :value="selectedAudioInputValue"
+              @change="handleAudioInputDeviceChange"
+            >
+              <option value="">System default</option>
+              <option
+                v-for="device in voiceInputStore.audioInputDevices"
+                :key="device.deviceId"
+                :value="device.deviceId"
+              >
+                {{ device.label }}
+              </option>
+            </select>
+            <p class="text-xs" :class="audioInputStatusClass">
+              {{ audioInputStatusMessage }}
+            </p>
+          </div>
         </div>
 
         <div v-if="extension.status === 'installed'" class="space-y-3 rounded-xl border border-gray-200 bg-gray-50 p-4">
@@ -85,7 +117,7 @@
               type="button"
               class="rounded-md px-3 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60"
               :class="isSettingsTestRecording ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-blue-600 text-white hover:bg-blue-700'"
-              :disabled="busy || !extension.enabled || voiceInputStore.isTranscribing"
+              :disabled="settingsTestButtonDisabled"
               @click="handleSettingsTestToggle"
             >
               {{ settingsTestButtonLabel }}
@@ -244,6 +276,7 @@ const emit = defineEmits<{
   reinstall: [];
   openFolder: [];
   updateLanguageMode: [value: string];
+  updateAudioInputDevice: [value: string | null];
 }>();
 
 const voiceInputStore = useVoiceInputStore();
@@ -251,6 +284,7 @@ const { latestResult } = storeToRefs(voiceInputStore);
 
 onMounted(async () => {
   await voiceInputStore.initialize();
+  await voiceInputStore.refreshAudioInputDevices();
 });
 
 const canOpenFolder = computed(() => props.extension.status === 'installed' || props.extension.status === 'error');
@@ -341,6 +375,53 @@ const settingsTestButtonLabel = computed(() => (
   isSettingsTestRecording.value ? 'Stop Test' : 'Start Test'
 ));
 
+const selectedAudioInputValue = computed(() => props.extension.settings.audioInputDeviceId ?? '');
+
+const audioInputStatusMessage = computed(() => {
+  if (voiceInputStore.microphonePermissionState === 'denied') {
+    return 'Microphone access is denied. Allow microphone access for AutoByteus, then refresh sources.';
+  }
+
+  if (voiceInputStore.selectedAudioInputUnavailable) {
+    return 'The saved audio source is unavailable. Choose another input or switch back to System default.';
+  }
+
+  if (voiceInputStore.audioInputDevices.length === 0) {
+    if (voiceInputStore.microphonePermissionState === 'prompt') {
+      return 'Microphone access has not been granted yet. Start a test to request access or refresh after allowing it.';
+    }
+
+    if (voiceInputStore.microphonePermissionState === 'unsupported') {
+      return 'Audio source discovery is not supported in this environment.';
+    }
+
+    return 'No audio input devices found. Connect a microphone or enable a virtual audio source.';
+  }
+
+  const count = voiceInputStore.audioInputDevices.length;
+  return `Selected source: ${voiceInputStore.selectedAudioInputLabel}. ${count} audio input source${count === 1 ? '' : 's'} available.`;
+});
+
+const audioInputStatusClass = computed(() => {
+  if (voiceInputStore.microphonePermissionState === 'denied') {
+    return 'text-red-700';
+  }
+
+  if (voiceInputStore.selectedAudioInputUnavailable || voiceInputStore.audioInputDevices.length === 0) {
+    return 'text-amber-700';
+  }
+
+  return 'text-gray-600';
+});
+
+const settingsTestButtonDisabled = computed(() => (
+  props.busy
+  || !props.extension.enabled
+  || voiceInputStore.isTranscribing
+  || voiceInputStore.microphonePermissionState === 'denied'
+  || voiceInputStore.selectedAudioInputUnavailable
+));
+
 const settingsTestOutcomeLabel = computed(() => {
   switch (settingsTestResult.value?.outcome) {
     case 'transcript-ready':
@@ -397,8 +478,20 @@ function handleLanguageModeChange(event: Event): void {
   emit('updateLanguageMode', target.value);
 }
 
+function handleAudioInputDeviceChange(event: Event): void {
+  const target = event.target as HTMLSelectElement | null;
+  if (!target) {
+    return;
+  }
+  emit('updateAudioInputDevice', target.value || null);
+}
+
 async function handleSettingsTestToggle(): Promise<void> {
   await voiceInputStore.toggleRecording('settings-test');
+}
+
+async function refreshAudioInputs(): Promise<void> {
+  await voiceInputStore.refreshAudioInputDevices();
 }
 
 function formatDuration(durationMs: number): string {

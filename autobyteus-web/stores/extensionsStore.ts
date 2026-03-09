@@ -3,6 +3,7 @@ import { useToasts } from '~/composables/useToasts';
 import type {
   ExtensionId,
   ManagedExtensionState,
+  UpdateVoiceInputSettingsPayload,
   VoiceInputLanguageMode,
 } from '~/electron/extensions/types';
 
@@ -202,7 +203,7 @@ export const useExtensionsStore = defineStore('extensions', {
       }
     },
 
-    async updateVoiceInputLanguageMode(languageMode: VoiceInputLanguageMode): Promise<void> {
+    async updateVoiceInputSettings(payload: UpdateVoiceInputSettingsPayload): Promise<void> {
       if (!window.electronAPI?.updateVoiceInputSettings) {
         return;
       }
@@ -210,7 +211,7 @@ export const useExtensionsStore = defineStore('extensions', {
       this.isBusy = true;
       this.pendingAction = 'update-settings';
       try {
-        const state = await window.electronAPI.updateVoiceInputSettings('voice-input', { languageMode });
+        const state = await window.electronAPI.updateVoiceInputSettings('voice-input', payload);
         this.applyRemoteState(state);
       } catch (error) {
         const message = error instanceof Error ? error.message : 'Failed to update Voice Input settings';
@@ -220,6 +221,14 @@ export const useExtensionsStore = defineStore('extensions', {
         this.isBusy = false;
         this.pendingAction = null;
       }
+    },
+
+    async updateVoiceInputLanguageMode(languageMode: VoiceInputLanguageMode): Promise<void> {
+      await this.updateVoiceInputSettings({ languageMode });
+    },
+
+    async updateVoiceInputAudioInputDevice(audioInputDeviceId: string | null): Promise<void> {
+      await this.updateVoiceInputSettings({ audioInputDeviceId });
     },
 
     async removeExtension(extensionId: ExtensionId): Promise<void> {

@@ -65,6 +65,7 @@ export interface ExtensionDescriptor {
 
 export interface VoiceInputSettings {
   languageMode: VoiceInputLanguageMode
+  audioInputDeviceId: string | null
 }
 
 export interface ManagedExtensionRecord {
@@ -100,7 +101,8 @@ export interface ManagedExtensionState {
 }
 
 export interface UpdateVoiceInputSettingsPayload {
-  languageMode: VoiceInputLanguageMode
+  languageMode?: VoiceInputLanguageMode
+  audioInputDeviceId?: string | null
 }
 
 export interface VoiceInputTranscriptionRequest {

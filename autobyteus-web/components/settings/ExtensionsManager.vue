@@ -28,6 +28,7 @@
       @reinstall="extensionsStore.reinstallExtension('voice-input')"
       @open-folder="extensionsStore.openExtensionFolder('voice-input')"
       @update-language-mode="extensionsStore.updateVoiceInputLanguageMode"
+      @update-audio-input-device="extensionsStore.updateVoiceInputAudioInputDevice"
     />
   </div>
 </template>

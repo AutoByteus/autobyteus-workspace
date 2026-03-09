@@ -22,6 +22,7 @@ type RegistryDocument = {
 const REGISTRY_FILE_NAME = 'registry.json'
 const DEFAULT_VOICE_INPUT_SETTINGS: VoiceInputSettings = {
   languageMode: 'auto',
+  audioInputDeviceId: null,
 }
 
 function createDefaultRecord(id: ExtensionId): ManagedExtensionRecord {
@@ -49,6 +50,15 @@ function normalizeLanguageMode(value: string | undefined | null): VoiceInputLang
   return DEFAULT_VOICE_INPUT_SETTINGS.languageMode
 }
 
+function normalizeAudioInputDeviceId(value: string | undefined | null): string | null {
+  if (typeof value !== 'string') {
+    return DEFAULT_VOICE_INPUT_SETTINGS.audioInputDeviceId
+  }
+
+  const trimmed = value.trim()
+  return trimmed ? trimmed : DEFAULT_VOICE_INPUT_SETTINGS.audioInputDeviceId
+}
+
 function normalizeRecord(id: ExtensionId, input?: Partial<ManagedExtensionRecord> | null): ManagedExtensionRecord {
   const fallback = createDefaultRecord(id)
   return {
@@ -58,6 +68,7 @@ function normalizeRecord(id: ExtensionId, input?: Partial<ManagedExtensionRecord
       ...fallback.settings,
       ...(input?.settings ?? {}),
       languageMode: normalizeLanguageMode(input?.settings?.languageMode),
+      audioInputDeviceId: normalizeAudioInputDeviceId(input?.settings?.audioInputDeviceId),
     },
     enabled: input?.enabled ?? fallback.enabled,
     backendKind: input?.backendKind ?? fallback.backendKind,
@@ -289,7 +300,12 @@ export class ManagedExtensionService {
     }
 
     record.settings = {
-      languageMode: normalizeLanguageMode(payload.languageMode),
+      languageMode: payload.languageMode === undefined
+        ? record.settings.languageMode
+        : normalizeLanguageMode(payload.languageMode),
+      audioInputDeviceId: payload.audioInputDeviceId === undefined
+        ? record.settings.audioInputDeviceId
+        : normalizeAudioInputDeviceId(payload.audioInputDeviceId),
     }
     registry.extensions[id] = record
     await this.writeRegistry(registry)
