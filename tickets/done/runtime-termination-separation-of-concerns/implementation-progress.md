@@ -2,7 +2,7 @@
 
 ## Status
 
-- User verified completion; ticket archived into `tickets/done`, and git finalization is back in progress after the latest `origin/personal` merge-forward was resolved and reverified meaningfully (Claude live reruns remain explicitly waived by the user)
+- User verified completion, the ticket was archived into `tickets/done`, merged into `personal`, and released as `v1.2.40` (Claude live reruns remained explicitly waived by the user)
 
 ## Kickoff Preconditions Checklist
 
@@ -47,10 +47,15 @@
 - 2026-03-10: Reran `pnpm build` successfully on the merged branch after tightening the helper return types to match the upstream service surfaces.
 - 2026-03-10: Reran the final backend-wide Vitest suite on the exact merged branch state; it passed cleanly with `258` passing files, `9` skipped files, `1179` passing tests, and `47` skipped tests.
 - 2026-03-10: Reran the user-requested live Codex verification on the merged branch. Ordered baseline/runtime plus configured-skill suites passed (`13/13`), and the live Codex team suite passed (`3/3`).
+- 2026-03-10: Merged `origin/codex/runtime-termination-separation-of-concerns` into `personal` and reran release-gate verification from the `personal` workspace.
+- 2026-03-10: `pnpm -C autobyteus-server-ts exec vitest run --no-watch` on `personal` completed with one unrelated environment-backed failure in `tests/e2e/run-history/team-run-history-graphql.e2e.test.ts` (`real LM Studio provider` continuation restore timed out after `90000ms`). The remainder of the suite passed (`257` files passed, `9` skipped; `1179` tests passed, `46` skipped). This was treated as a non-ticket release blocker because the failure is outside the merged runtime-skill / termination scope and is gated by live LM Studio availability.
+- 2026-03-10: `pnpm -C autobyteus-server-ts build` passed on `personal`.
+- 2026-03-10: Reran the live Codex release bar on `personal`; `codex-runtime-graphql.e2e.test.ts`, `codex-runtime-configured-skills-graphql.e2e.test.ts`, and `codex-team-inter-agent-roundtrip.e2e.test.ts` passed together (`16/16`).
+- 2026-03-10: Pushed merged `personal` to remote, then ran `pnpm release 1.2.40 -- --release-notes tickets/done/runtime-termination-separation-of-concerns/release-notes.md`. The helper synced curated release notes, bumped `autobyteus-web/package.json` to `1.2.40`, updated the managed messaging release manifest, created release commit `08fab01`, pushed `personal`, and pushed tag `v1.2.40`.
 
 ## Blockers
 
-- None. The merged-branch regressions introduced by `origin/personal` were resolved and reverified.
+- None. The merged-branch regressions introduced by `origin/personal` were resolved, the branch was integrated into `personal`, and release `v1.2.40` was published.
 
 ## Completion Summary
 

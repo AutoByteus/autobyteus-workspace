@@ -8,11 +8,11 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 
 - Ticket: `runtime-termination-separation-of-concerns`
 - Current Stage: `10`
-- Next Stage: `Complete`
+- Next Stage: `End`
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-026`
+- Last Transition ID: `T-027`
 - Last Updated: `2026-03-10`
 
 ## Stage Gates
@@ -29,7 +29,7 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | 7 API/E2E Testing | Pass | The merge-forward local-fix path closed cleanly after adapting to two upstream `origin/personal` contract shifts: `prompt-loader.ts` was deleted upstream, and fresh-definition lookups became more common than some merged mocks/runtime paths expected. Targeted regression reruns passed, the merged-branch backend-wide suite passed (`258` passed files / `9` skipped; `1179` passed tests / `47` skipped), `pnpm build` passed, and the live Codex ordered/runtime plus configured-skill (`13/13`) and team (`3/3`) suites passed again. Claude live reruns remained explicitly waived by the user due to quota. | `tickets/done/runtime-termination-separation-of-concerns/api-e2e-testing.md`, `tickets/done/runtime-termination-separation-of-concerns/implementation-progress.md`, `tickets/done/runtime-termination-separation-of-concerns/workflow-state.md` |
 | 8 Code Review | Pass | Review was refreshed after the Codex live E2E stabilization/helper extraction; no findings were introduced and all changed files are now within the hard limit. | `tickets/done/runtime-termination-separation-of-concerns/code-review.md`, `tickets/done/runtime-termination-separation-of-concerns/workflow-state.md` |
 | 9 Docs Sync | Pass | Documentation was refreshed to reflect the revised verification bar, the explicit Claude waiver, and the passing targeted Codex live suites. | `tickets/done/runtime-termination-separation-of-concerns/implementation-progress.md`, `tickets/done/runtime-termination-separation-of-concerns/api-e2e-testing.md`, `tickets/done/runtime-termination-separation-of-concerns/workflow-state.md` |
-| 10 Handoff / Ticket State | In Progress | The user verified completion and the ticket was archived. Git finalization reopened a Stage 6 local-fix path only long enough to merge the latest `origin/personal`, resolve the resulting contract-level regressions meaningfully, and rerun verification on the merged branch state. The branch is now back in finalization with the merged tree green. | `tickets/done/runtime-termination-separation-of-concerns/workflow-state.md`, `tickets/done/runtime-termination-separation-of-concerns/implementation-progress.md` |
+| 10 Handoff / Ticket State | Pass | Explicit user verification was received; the ticket branch was pushed, merged into `personal`, curated release notes were persisted, `personal` was pushed, and desktop release `v1.2.40` was published. | `tickets/done/runtime-termination-separation-of-concerns/workflow-state.md`, `tickets/done/runtime-termination-separation-of-concerns/implementation-progress.md`, `tickets/done/runtime-termination-separation-of-concerns/release-notes.md` |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -119,6 +119,7 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | T-024 | 2026-03-10 | 6 | 6 | The post-merge backend-wide verification run against the merged `origin/personal` tree failed (`9` failed files / `44` failed tests). Staying in Stage 6 on the local-fix path to resolve the merged-branch regressions before retrying Stage 7. | Local Fix | Unlocked | `api-e2e-testing.md`, `implementation-progress.md`, `workflow-state.md` |
 | T-025 | 2026-03-10 | 6 | 7 | The merged-branch local-fix work resolved the real upstream contract shifts instead of reverting them: `single-agent-runtime-context` now honors the upstream deletion of `prompt-loader.ts` by falling back to definition instructions/description, and team runtime definition resolution now prefers fresh definitions when available while remaining compatible with merged mocks and service surfaces that only expose the non-fresh methods. Targeted regression reruns, `pnpm build`, the merged-branch full backend suite, and live Codex reruns all passed. | N/A | Locked | `api-e2e-testing.md`, `implementation-progress.md`, `workflow-state.md` |
 | T-026 | 2026-03-10 | 7 | 10 | Stage 7 passed again on the merged `origin/personal` branch state, with documentation refreshed to capture the true root cause and verification evidence. The ticket returns to Stage 10 for final git commit/push work only. | N/A | Locked | `api-e2e-testing.md`, `implementation-progress.md`, `workflow-state.md` |
+| T-027 | 2026-03-10 | 10 | 10 | Stage 10 finalization completed. The ticket branch was pushed and merged into `personal`, `personal` was pushed, curated release notes were used for the desktop release helper, and release `v1.2.40` was published. | N/A | Locked | `workflow-state.md`, `implementation-progress.md`, `release-notes.md` |
 
 ## Audible Notification Log (Optional Tracking)
 
