@@ -1,4 +1,6 @@
-# Release Notes
+## Improvements
+- Managed messaging now uses the server's internal runtime URL for colocated gateway callbacks instead of reusing the public client URL.
+- Embedded server deployments now write the actual started callback port into the managed messaging runtime configuration.
 
-- Restored live frontend recovery for running agents and agent teams after the app is reopened or force reloaded while the backend is still running.
-- Fixed team event monitoring so reopened live team runs keep the middle event monitor and right-side activity view aligned to the same active member stream.
+## Fixes
+- Fixed Docker-backed remote nodes so Telegram-triggered managed messaging no longer tries to call the server through the host-mapped public URL from inside the container.
