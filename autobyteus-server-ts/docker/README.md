@@ -10,6 +10,11 @@ It automatically clones and builds the required workspace dependencies:
 - `autobyteus-server-ts`
 - `autobyteus-ts`
 
+The runtime image also ships with:
+
+- Codex CLI
+- Claude Code
+
 ## Quick Start
 
 The easiest way to start the server is using the `docker-start.sh` script. It automatically detects available ports to avoid collisions and supports multiple isolated instances.
@@ -32,6 +37,24 @@ cd autobyteus-server-ts/docker
 ```
 
 The script saves the assigned ports for each project in a hidden `.runtime/` folder, ensuring consistent mapping.
+
+## CLI Auth Model
+
+Codex CLI and Claude Code are preinstalled in the image. The intended auth flow is:
+
+1. start the container,
+2. open the container environment through terminal/noVNC,
+3. log in inside the container with:
+   - `codex login`
+   - `claude auth login`
+
+The container runs as `root`, and `/root` is persisted in a Docker-managed named volume per Compose project. That means:
+
+- auth state is isolated per project/instance,
+- auth state survives normal restart and recreate for the same project,
+- auth state is removed if you explicitly remove the project's volumes.
+
+Host credential folders are not mounted into the container by default.
 
 ## Management Commands
 
@@ -129,5 +152,12 @@ Manual republish:
 Named volumes (per project):
 - `<project>_autobyteus-server-workspace`: built artifacts
 - `<project>_autobyteus-server-data`: `.env`, SQLite DB, logs, media, memory
+- `<project>_autobyteus-server-root-home`: in-container root home, including Codex/Claude auth state
 
 Server data directory in container: `/home/autobyteus/data`
+
+To reset Codex/Claude login for an instance, remove the project volumes:
+
+```bash
+./docker-start.sh down --volumes
+```

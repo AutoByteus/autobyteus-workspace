@@ -38,8 +38,10 @@ services:
     volumes:
       - autobyteus-server-workspace:/app/autobyteus-server-ts/workspace
       - autobyteus-server-data:/home/autobyteus/data
+      - autobyteus-server-root-home:/root
     restart: unless-stopped
 
 volumes:
   autobyteus-server-workspace:
   autobyteus-server-data:
+  autobyteus-server-root-home:
