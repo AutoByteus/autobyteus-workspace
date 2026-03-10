@@ -10,7 +10,7 @@
 - Managed messaging runtime versioning is now synchronized with the workspace release version instead of relying on a separately remembered manual gateway bump.
 - `scripts/desktop-release.sh` now bumps both `autobyteus-web/package.json` and `autobyteus-message-gateway/package.json`, syncs the bundled managed-messaging manifest, stages the gateway package manifest, and commits with the workspace-wide release message.
 - `.github/workflows/release-desktop.yml` and `.github/workflows/release-messaging-gateway.yml` now reject release-tag drift across desktop version, gateway version, and bundled managed-messaging manifest state.
-- The current checked-in managed gateway metadata is corrected to the active workspace release state: `web=1.2.40`, `gateway=1.2.40`, `releaseTag=v1.2.40`, `artifactVersion=1.2.40`.
+- The current checked-in managed gateway metadata is corrected to the released workspace state: `web=1.2.41`, `gateway=1.2.41`, `releaseTag=v1.2.41`, `artifactVersion=1.2.41`.
 - `MessagingGatewayReleaseManifestService` now rejects semver `releaseTag` / `artifactVersion` drift so stale manifests fail loudly instead of silently reusing an old runtime install.
 - `README.md` release instructions now document the synchronized desktop + gateway versioning contract and manifest sync behavior.
 
