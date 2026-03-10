@@ -1,6 +1,6 @@
 ## Improvements
-- Managed messaging now uses the server's internal runtime URL for colocated gateway callbacks instead of reusing the public client URL.
-- Embedded server deployments now write the actual started callback port into the managed messaging runtime configuration.
+- Improved delivery of messaging replies by keeping server-to-gateway callbacks queued until the gateway can accept them.
+- Improved managed gateway reliability by automatically restarting the gateway after crashes, stale heartbeats, or lost worker ownership.
 
 ## Fixes
-- Fixed Docker-backed remote nodes so Telegram-triggered managed messaging no longer tries to call the server through the host-mapped public URL from inside the container.
+- Fixed cases where messaging replies could be missed when the gateway became stuck, unavailable, or restarted during delivery.
