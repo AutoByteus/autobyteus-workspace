@@ -7,12 +7,12 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 ## Current Snapshot
 
 - Ticket: `runtime-termination-separation-of-concerns`
-- Current Stage: `10`
-- Next Stage: `10`
-- Code Edit Permission: `Locked`
-- Active Re-Entry: `No`
-- Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-022`
+- Current Stage: `6`
+- Next Stage: `7`
+- Code Edit Permission: `Unlocked`
+- Active Re-Entry: `Yes`
+- Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `Local Fix`
+- Last Transition ID: `T-024`
 - Last Updated: `2026-03-10`
 
 ## Stage Gates
@@ -26,10 +26,10 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | 4 Runtime Modeling | Pass | Future-state call stacks now capture native-routing, non-native runtime-routing, shared cleanup, and not-found handling under the new coordinator boundary. | `tickets/done/runtime-termination-separation-of-concerns/future-state-runtime-call-stack.md` |
 | 5 Review Gate | Pass | Runtime review reached `Go Confirmed` after two consecutive clean rounds with no blockers, no artifact changes, and no newly discovered use cases. | `tickets/done/runtime-termination-separation-of-concerns/future-state-runtime-call-stack-review.md` |
 | 6 Implementation | Pass | The refactor implementation is complete, and the Stage 7 local-fix path only hardened the live Codex configured-skill E2E plus extracted shared helpers so the touched test file stays under the Stage 8 hard limit. | `tickets/done/runtime-termination-separation-of-concerns/implementation-plan.md`, `tickets/done/runtime-termination-separation-of-concerns/implementation-progress.md`, `tickets/done/runtime-termination-separation-of-concerns/workflow-state.md` |
-| 7 API/E2E Testing | Pass | The acceptance bar is now closed with the default full backend suite, ordered live Codex runtime + configured-skill proof, and live Codex team proof. Claude live reruns were explicitly waived by the user because of provider quota/process instability. | `tickets/done/runtime-termination-separation-of-concerns/api-e2e-testing.md`, `tickets/done/runtime-termination-separation-of-concerns/workflow-state.md` |
+| 7 API/E2E Testing | Fail | The pre-merge acceptance bar passed, but the post-merge backend-wide verification against `origin/personal` failed (`9` failed files / `44` failed tests). Confirmed failures include `runtime-client-index.test.ts`, `runtime-event-message-mapper.test.ts`, `runtime-command-ingress-service.test.ts`, `team-member-runtime-orchestrator.test.ts`, and `team-run-history-graphql.e2e.test.ts`. | `tickets/done/runtime-termination-separation-of-concerns/api-e2e-testing.md`, `tickets/done/runtime-termination-separation-of-concerns/implementation-progress.md`, `tickets/done/runtime-termination-separation-of-concerns/workflow-state.md` |
 | 8 Code Review | Pass | Review was refreshed after the Codex live E2E stabilization/helper extraction; no findings were introduced and all changed files are now within the hard limit. | `tickets/done/runtime-termination-separation-of-concerns/code-review.md`, `tickets/done/runtime-termination-separation-of-concerns/workflow-state.md` |
 | 9 Docs Sync | Pass | Documentation was refreshed to reflect the revised verification bar, the explicit Claude waiver, and the passing targeted Codex live suites. | `tickets/done/runtime-termination-separation-of-concerns/implementation-progress.md`, `tickets/done/runtime-termination-separation-of-concerns/api-e2e-testing.md`, `tickets/done/runtime-termination-separation-of-concerns/workflow-state.md` |
-| 10 Handoff / Ticket State | In Progress | The user verified completion, the ticket was moved to `tickets/done`, and git finalization is now in progress on the ticket branch. | `tickets/done/runtime-termination-separation-of-concerns/workflow-state.md` |
+| 10 Handoff / Ticket State | In Progress | The user verified completion and the ticket was archived, but git finalization reopened a Stage 6 local-fix path because merging `origin/personal` introduced a source conflict that must be resolved and reverified. | `tickets/done/runtime-termination-separation-of-concerns/workflow-state.md` |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -115,6 +115,8 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | T-020 | 2026-03-10 | 8 | 9 | Code review was refreshed after the Codex live-test helper extraction and remained clean. | N/A | Locked | `code-review.md`, `implementation-progress.md`, `workflow-state.md` |
 | T-021 | 2026-03-10 | 9 | 10 | Documentation sync was refreshed for the targeted Codex verification strategy and explicit Claude waiver. The ticket is back in final handoff awaiting explicit user verification. | N/A | Locked | `implementation-progress.md`, `api-e2e-testing.md`, `workflow-state.md` |
 | T-022 | 2026-03-10 | 10 | 10 | The user explicitly verified completion. The ticket was moved to `tickets/done/runtime-termination-separation-of-concerns/`, and git finalization on the ticket branch is now in progress. | N/A | Locked | `workflow-state.md`, `implementation-progress.md` |
+| T-023 | 2026-03-10 | 10 | 6 | Merging the latest `origin/personal` into the ticket branch produced a source conflict in `autobyteus-server-ts/src/runtime-execution/single-agent-runtime-metadata.ts`. Reopening Stage 6 on the local-fix path to resolve the merge conflict and rerun verification. | Local Fix | Unlocked | `workflow-state.md`, `implementation-progress.md` |
+| T-024 | 2026-03-10 | 6 | 6 | The post-merge backend-wide verification run against the merged `origin/personal` tree failed (`9` failed files / `44` failed tests). Staying in Stage 6 on the local-fix path to resolve the merged-branch regressions before retrying Stage 7. | Local Fix | Unlocked | `api-e2e-testing.md`, `implementation-progress.md`, `workflow-state.md` |
 
 ## Audible Notification Log (Optional Tracking)
 
@@ -139,6 +141,8 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | 2026-03-10 | Transition | Stage 7 passed with full backend regression confidence, passing targeted live Codex suites, and an explicit user waiver for Claude live reruns due quota instability. The next action is a final review/docs refresh before handoff. | Failed | Speak tool unavailable in this environment. |
 | 2026-03-10 | Transition | Review and docs sync are refreshed again. The ticket is back in Stage 10 awaiting explicit user verification. | Failed | Speak tool unavailable in this environment. |
 | 2026-03-10 | Transition | The user verified completion and the ticket was archived into `tickets/done`. The next action is git finalization on the ticket branch. | Failed | Speak tool unavailable in this environment. |
+| 2026-03-10 | Re-entry | Git finalization hit a merge conflict against `origin/personal`, so Stage 6 is reopened on the local-fix path. Code edits are unlocked only for merge-conflict resolution and follow-up verification. | Failed | Speak tool unavailable in this environment. |
+| 2026-03-10 | Re-entry | The merged `origin/personal` backend regression run failed, so the ticket remains in Stage 6 on the local-fix path. Code edits stay unlocked for merged-branch regression fixes and follow-up verification. | Failed | Speak tool unavailable in this environment. |
 
 ## Process Violation Log
 

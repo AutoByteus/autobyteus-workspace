@@ -38,10 +38,12 @@
 - 2026-03-10: Extracted reusable Codex live-test helpers into `tests/e2e/runtime/codex-live-test-helpers.ts` so the touched configured-skill test file stays under the Stage 8 `<=500` effective non-empty line gate.
 - 2026-03-10: Reran the default full backend suite successfully (`249` passed files, `9` skipped files; `1144` passed tests, `47` skipped tests), then reran targeted live Codex suites: baseline/runtime plus configured-skill passed together (`13/13`) and Codex team passed (`3/3`).
 - 2026-03-10: The user explicitly waived Claude live reruns because of quota/process instability after the combined provider-backed run showed Claude-side abort/exit failures.
+- 2026-03-10: After the user verified the ticket and it was archived into `tickets/done`, merging the latest `origin/personal` into the ticket branch produced a single source conflict in `autobyteus-server-ts/src/runtime-execution/single-agent-runtime-metadata.ts`. Stage 6 was reopened on the local-fix path to resolve the merge cleanly and rerun backend verification on the merged branch state.
+- 2026-03-10: The merged-branch backend-wide Vitest rerun failed after the `origin/personal` merge (`9` failed files / `44` failed tests). Confirmed failing files include `tests/unit/runtime-management/runtime-client/runtime-client-index.test.ts`, `tests/unit/services/agent-streaming/runtime-event-message-mapper.test.ts`, `tests/unit/runtime-execution/runtime-command-ingress-service.test.ts`, `tests/unit/agent-team-execution/team-member-runtime-orchestrator.test.ts`, and `tests/e2e/run-history/team-run-history-graphql.e2e.test.ts`. Stage 6 remains open on the local-fix path until the merged branch is green again.
 
 ## Blockers
 
-- None. The accepted verification bar is closed.
+- Post-merge regressions from the merged `origin/personal` branch are currently blocking git finalization and handoff.
 
 ## Completion Summary
 
