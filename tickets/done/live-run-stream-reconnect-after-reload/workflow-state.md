@@ -8,11 +8,11 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 
 - Ticket: `live-run-stream-reconnect-after-reload`
 - Current Stage: `10`
-- Next Stage: `Repository Finalization`
+- Next Stage: `End`
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-011`
+- Last Transition ID: `T-012`
 - Last Updated: `2026-03-10`
 
 ## Stage Gates
@@ -29,7 +29,7 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | 7 API/E2E Testing | Pass | Executable acceptance criteria are covered by focused frontend store/component regression suites and all mapped verification commands are green. | `tickets/done/live-run-stream-reconnect-after-reload/api-e2e-testing.md` |
 | 8 Code Review | Pass | Code review recorded `Pass`, delta-gate assessment exceeds `>220`, touched source files are `<=500` lines, and layering/decoupling/module placement checks are satisfied. | `tickets/done/live-run-stream-reconnect-after-reload/code-review.md` |
 | 9 Docs Sync | Pass | No docs changes are required for this frontend-only runtime recovery fix, and that rationale is persisted. | `tickets/done/live-run-stream-reconnect-after-reload/docs-sync.md` |
-| 10 Handoff / Ticket State | In Progress | Explicit user verification has been received, the ticket has been archived to `tickets/done/`, and repository finalization is now in progress. | `tickets/done/live-run-stream-reconnect-after-reload/handoff.md`, `tickets/done/live-run-stream-reconnect-after-reload/release-notes.md` |
+| 10 Handoff / Ticket State | Pass | Explicit user verification was received, the ticket branch was pushed and merged into `personal`, merged-state regression checks passed, and desktop release `v1.2.37` was published. | `tickets/done/live-run-stream-reconnect-after-reload/handoff.md`, `tickets/done/live-run-stream-reconnect-after-reload/implementation-progress.md`, `tickets/done/live-run-stream-reconnect-after-reload/release-notes.md`, `tickets/done/live-run-stream-reconnect-after-reload/workflow-state.md` |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -111,6 +111,7 @@ Note:
 | T-009 | 2026-03-10 | 8 | 9 | Code review passed with no findings, delta-gate evidence recorded, and code-edit permission is now locked for docs sync. | N/A | Locked | `tickets/done/live-run-stream-reconnect-after-reload/code-review.md`, `tickets/done/live-run-stream-reconnect-after-reload/workflow-state.md` |
 | T-010 | 2026-03-10 | 9 | 10 | Docs sync is complete and Stage 10 handoff is now open pending explicit user verification. | N/A | Locked | `tickets/done/live-run-stream-reconnect-after-reload/docs-sync.md`, `tickets/done/live-run-stream-reconnect-after-reload/handoff.md`, `tickets/done/live-run-stream-reconnect-after-reload/workflow-state.md` |
 | T-011 | 2026-03-10 | 10 | 10 | Explicit user verification was received, the ticket was archived to `tickets/done/`, and repository finalization has started. | N/A | Locked | `tickets/done/live-run-stream-reconnect-after-reload/workflow-state.md`, `tickets/done/live-run-stream-reconnect-after-reload/handoff.md`, `tickets/done/live-run-stream-reconnect-after-reload/release-notes.md` |
+| T-012 | 2026-03-10 | 10 | 10 | Repository finalization is complete: the ticket branch was pushed, merged into `personal`, merged-state regression verification passed, and desktop release `v1.2.37` was published. | N/A | Locked | `tickets/done/live-run-stream-reconnect-after-reload/workflow-state.md`, `tickets/done/live-run-stream-reconnect-after-reload/handoff.md`, `tickets/done/live-run-stream-reconnect-after-reload/implementation-progress.md` |
 
 ## Audible Notification Log (Optional Tracking)
 
@@ -122,6 +123,7 @@ Note:
 | 2026-03-10 | Transition | Stage five review is complete for the live run stream reconnect after reload ticket. Stage six implementation is now active, and code edits are unlocked. | Success | N/A |
 | 2026-03-10 | Transition | Stages six through nine are complete for the live run stream reconnect after reload ticket. Stage ten handoff is now active, and code edits are locked while waiting for user verification. | Success | N/A |
 | 2026-03-10 | Transition | User verification was received, the ticket was archived to done, and repository finalization is now in progress with code edits still locked. | Success | N/A |
+| 2026-03-10 | Transition | Stage 10 is complete. The ticket branch was pushed, merged into personal, and release v1.2.37 was published. | Success | N/A |
 
 ## Process Violation Log
 

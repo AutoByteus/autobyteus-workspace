@@ -2,7 +2,7 @@
 
 - Ticket: `live-run-stream-reconnect-after-reload`
 - Last Updated: `2026-03-10`
-- Status: `Verified; repository finalization in progress`
+- Status: `Verified and finalized`
 
 ## What Changed
 
@@ -16,6 +16,15 @@
 
 - `pnpm -C autobyteus-web test:nuxt stores/__tests__/runHistoryStore.spec.ts stores/__tests__/runHistoryStore.recovery.spec.ts stores/__tests__/agentTeamRunStore.spec.ts stores/__tests__/agentRunStore.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts components/progress/__tests__/ActivityFeed.spec.ts components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts components/workspace/team/__tests__/TeamWorkspaceView.spec.ts --run`
   - Result: `8` files passed, `56` tests passed.
+- The same targeted regression command was rerun on merged `personal` before release.
+  - Result: `8` files passed, `56` tests passed.
+
+## Finalization
+
+- Ticket branch commit: `76eeed2e473b` (`fix(web): recover live runs after reload`)
+- Merge commit on `personal`: `76eb122c425d`
+- Release commit on `personal`: `cd533801498b`
+- Published desktop tag: `v1.2.37`
 
 ## Residual Risk
 
@@ -24,4 +33,4 @@
 
 ## Release Notes
 
-- `release-notes.md` is prepared for the desktop release flow because explicit user verification has now been received and Stage 10 repository finalization is being executed.
+- `release-notes.md` was used to publish desktop release `v1.2.37`.

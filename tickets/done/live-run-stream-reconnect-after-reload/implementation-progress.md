@@ -26,3 +26,5 @@
 
 - Passed: `pnpm -C autobyteus-web test:nuxt stores/__tests__/runHistoryStore.spec.ts stores/__tests__/runHistoryStore.recovery.spec.ts stores/__tests__/agentTeamRunStore.spec.ts stores/__tests__/agentRunStore.spec.ts services/agentStreaming/__tests__/TeamStreamingService.spec.ts components/progress/__tests__/ActivityFeed.spec.ts components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts components/workspace/team/__tests__/TeamWorkspaceView.spec.ts --run`
   - Result: `8` files passed, `56` tests passed.
+- Passed again on merged `personal` before release with the same command.
+  - Result: `8` files passed, `56` tests passed.
