@@ -10,6 +10,10 @@ import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import {
+  AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR,
+  seedInternalServerBaseUrl,
+} from "../../../src/config/server-runtime-endpoints.js";
+import {
   __resetManagedMessagingGatewayServiceForTests,
 } from "../../../src/managed-capabilities/messaging-gateway/defaults.js";
 import {
@@ -47,7 +51,7 @@ describe("Managed messaging gateway update GraphQL e2e", () => {
     const envPath = path.join(dataDir, ".env");
     await fsp.writeFile(
       envPath,
-      "AUTOBYTEUS_SERVER_HOST=http://127.0.0.1:8899\n",
+      "AUTOBYTEUS_SERVER_HOST=http://localhost:60634\n",
       "utf8",
     );
 
@@ -119,11 +123,13 @@ describe("Managed messaging gateway update GraphQL e2e", () => {
       artifactVersion: "0.1.0",
       baseUrl: artifactBaseUrl,
     });
+    seedInternalServerBaseUrl({ host: "0.0.0.0", port: 8000 });
   });
 
   afterAll(async () => {
     delete process.env.MANAGED_MESSAGING_GATEWAY_HEALTH_STARTUP_TIMEOUT_MS;
     delete process.env.MANAGED_MESSAGING_GATEWAY_MANIFEST_PATH;
+    delete process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR];
     await __resetManagedMessagingGatewayServiceForTests();
     await new Promise<void>((resolve, reject) => {
       artifactServer.close((error) => {

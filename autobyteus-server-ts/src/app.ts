@@ -4,6 +4,10 @@ import cors from "@fastify/cors";
 import multipart from "@fastify/multipart";
 import websocket from "@fastify/websocket";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import {
+  AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR,
+  seedInternalServerBaseUrlFromListenAddress,
+} from "./config/server-runtime-endpoints.js";
 import { ensureServerHostEnvVar } from "./utils/env-utils.js";
 import { appConfigProvider } from "./config/app-config-provider.js";
 import { getLoggingConfigFromEnv, type LoggingConfig } from "./config/logging-config.js";
@@ -169,6 +173,19 @@ export async function startServer(): Promise<void> {
   registerShutdownHandlers(app);
   await app.listen({ host: options.host, port: options.port });
   logger.info(`Server listening on ${options.host}:${options.port}`);
+
+  try {
+    const internalBaseUrl = seedInternalServerBaseUrlFromListenAddress({
+      requestedHost: options.host,
+      listenAddress: app.server.address(),
+    });
+    logger.info(`Server internal base URL configured to: ${internalBaseUrl}`);
+  } catch (error) {
+    delete process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR];
+    logger.error(
+      `Failed to derive internal server base URL for managed messaging: ${String(error)}`,
+    );
+  }
 
   try {
     await getManagedMessagingGatewayService().restoreIfEnabled();
