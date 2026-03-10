@@ -64,5 +64,9 @@
   - any other direct file-read paths outside runtime bootstrap should still be reviewed separately if they assume only the primary app-data root
 
 ## Ticket State
-- Technical workflow is complete through Stage 10 handoff preparation, and final repository/release steps are now in progress.
+- Technical workflow is fully complete through Stage 10.
 - Ticket has been moved to `tickets/done/electron-agent-prompt-file-resolution`.
+- Ticket branch commit: `9762a12`
+- `personal` merge commit: `cf93d3c`
+- Release commit: `5f362cd`
+- Published release tag: `v1.2.35`
