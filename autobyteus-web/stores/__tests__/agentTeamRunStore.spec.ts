@@ -151,6 +151,32 @@ describe('agentTeamRunStore', () => {
     expect(mockMutate).toHaveBeenCalledTimes(1);
   });
 
+  it('discardDraftTeamRun removes a temporary team locally without backend termination', () => {
+    const unsubscribeSpy = vi.fn();
+    const teamContext = {
+      teamRunId: 'temp-team-1',
+      isSubscribed: true,
+      unsubscribe: unsubscribeSpy,
+      members: new Map([
+        ['member-a', { isSending: true, state: { runId: 'agent-a', currentStatus: AgentStatus.Idle } }],
+        ['member-b', { isSending: false, state: { runId: 'agent-b', currentStatus: AgentStatus.Idle } }],
+      ]),
+    };
+    teamContextsStoreMock.getTeamContextById.mockReturnValue(teamContext);
+
+    const store = useAgentTeamRunStore();
+    const result = store.discardDraftTeamRun('temp-team-1');
+
+    expect(result).toBe(true);
+    expect(unsubscribeSpy).toHaveBeenCalledTimes(1);
+    expect(teamContext.isSubscribed).toBe(false);
+    expect(teamContext.members.get('member-a')?.isSending).toBe(false);
+    expect(teamContextsStoreMock.removeTeamContext).toHaveBeenCalledWith('temp-team-1');
+    expect(mockClearActivities).toHaveBeenCalledWith('agent-a');
+    expect(mockClearActivities).toHaveBeenCalledWith('agent-b');
+    expect(mockMutate).not.toHaveBeenCalled();
+  });
+
   it('resubscribes and marks team active when sending to an offline persisted team', async () => {
     const focusedMember = {
       state: {

@@ -1,4 +1,4 @@
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import { normalizeRootPath } from '~/stores/runHistoryReadModel';
 import type { TeamTreeNode } from '~/stores/runHistoryTypes';
@@ -76,18 +76,30 @@ export const useWorkspaceHistoryTreeState = (params: {
   };
 
   const isTeamExpanded = (teamRunId: string): boolean => {
-    if (selectedTeamRunId.value === teamRunId) {
-      return true;
-    }
     return expandedTeams.value[teamRunId] ?? false;
   };
 
-  const toggleTeam = (teamRunId: string): void => {
+  const setTeamExpanded = (teamRunId: string, expanded: boolean): void => {
+    const normalizedTeamRunId = teamRunId.trim();
+    if (!normalizedTeamRunId) {
+      return;
+    }
+
     expandedTeams.value = {
       ...expandedTeams.value,
-      [teamRunId]: !isTeamExpanded(teamRunId),
+      [normalizedTeamRunId]: expanded,
     };
   };
+
+  const toggleTeam = (teamRunId: string): void => {
+    setTeamExpanded(teamRunId, !isTeamExpanded(teamRunId));
+  };
+
+  watch(selectedTeamRunId, (teamRunId) => {
+    if (teamRunId) {
+      setTeamExpanded(teamRunId, true);
+    }
+  }, { immediate: true });
 
   const teamStatusClass = (status: AgentTeamStatus): string => {
     switch (status) {
@@ -120,6 +132,7 @@ export const useWorkspaceHistoryTreeState = (params: {
     isAgentExpanded,
     toggleAgent,
     isTeamExpanded,
+    setTeamExpanded,
     toggleTeam,
     teamStatusClass,
     canTerminateTeam,
