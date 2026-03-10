@@ -7,7 +7,6 @@ import {
   serializeAgentMd,
 } from "../../../src/agent-definition/utils/agent-md-parser.js";
 import { FileAgentDefinitionProvider } from "../../../src/agent-definition/providers/file-agent-definition-provider.js";
-import { PromptLoader } from "../../../src/agent-definition/utils/prompt-loader.js";
 import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
 
 function uniqueId(prefix: string): string {
@@ -37,45 +36,6 @@ describe("md-centric provider integration", () => {
 
     const provider = new FileAgentDefinitionProvider();
     await expect(provider.getById(agentId)).rejects.toBeInstanceOf(AgentMdParseError);
-  });
-
-  it("loads system prompt from agent.md body via PromptLoader", async () => {
-    const dataDir = appConfigProvider.config.getAppDataDir();
-    const agentId = uniqueId("prompt_agent");
-    const agentDir = path.join(dataDir, "agents", agentId);
-    cleanupPaths.add(agentDir);
-
-    const expectedInstructions = "You are a prompt-loader integration test agent.";
-    const md = serializeAgentMd(
-      {
-        name: "Prompt Loader Agent",
-        description: "Prompt loader integration",
-        category: "integration",
-        role: "assistant",
-      },
-      expectedInstructions,
-    );
-
-    await fs.mkdir(agentDir, { recursive: true });
-    await fs.writeFile(path.join(agentDir, "agent.md"), md, "utf-8");
-    await fs.writeFile(
-      path.join(agentDir, "agent-config.json"),
-      JSON.stringify({
-        toolNames: [],
-        skillNames: [],
-        inputProcessorNames: [],
-        llmResponseProcessorNames: [],
-        systemPromptProcessorNames: [],
-        toolExecutionResultProcessorNames: [],
-        toolInvocationPreprocessorNames: [],
-        lifecycleProcessorNames: [],
-        avatarUrl: null,
-      }),
-      "utf-8",
-    );
-
-    const loader = new PromptLoader();
-    await expect(loader.getPromptTemplateForAgent(agentId)).resolves.toBe(expectedInstructions);
   });
 
   it("preserves unknown agent-config fields across update round-trips", async () => {

@@ -42,6 +42,8 @@ type AgentDefinitionProvider = {
   refresh?: () => Promise<void>;
 };
 
+type AgentDefinitionFreshProvider = Pick<AgentDefinitionPersistenceProvider, "getById">;
+
 const normalizeOptionalString = (value: unknown): string | null => {
   if (typeof value !== "string") {
     return null;
@@ -97,12 +99,14 @@ export class AgentDefinitionService {
   }
 
   readonly provider: AgentDefinitionProvider;
+  private readonly freshProvider: AgentDefinitionFreshProvider;
   private registries: ProcessorRegistries;
 
   constructor(options: AgentDefinitionServiceOptions = {}) {
     const persistenceProvider =
       options.persistenceProvider ?? new AgentDefinitionPersistenceProvider();
     this.provider = options.provider ?? new CachedAgentDefinitionProvider(persistenceProvider);
+    this.freshProvider = options.persistenceProvider ?? persistenceProvider;
     this.registries = {
       input: options.registries?.input ?? defaultInputProcessorRegistry,
       llmResponse: options.registries?.llmResponse ?? defaultLlmResponseProcessorRegistry,
@@ -198,6 +202,11 @@ export class AgentDefinitionService {
 
   async getAgentDefinitionById(definitionId: string): Promise<AgentDefinition | null> {
     const definition = await this.provider.getById(definitionId);
+    return this.stripMandatoryProcessors(definition);
+  }
+
+  async getFreshAgentDefinitionById(definitionId: string): Promise<AgentDefinition | null> {
+    const definition = await this.freshProvider.getById(definitionId);
     return this.stripMandatoryProcessors(definition);
   }
 

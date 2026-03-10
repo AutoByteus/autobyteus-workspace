@@ -21,10 +21,11 @@ import {
 import { waitForTeamToBeIdle } from "autobyteus-ts/agent-team/utils/wait-for-idle.js";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
 import { LLMConfig } from "autobyteus-ts/llm/utils/llm-config.js";
+import type { AgentDefinition } from "../../agent-definition/domain/models.js";
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import { mergeMandatoryAndOptional } from "../../agent-definition/utils/processor-defaults.js";
+import type { AgentTeamDefinition } from "../../agent-team-definition/domain/models.js";
 import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
-import { PromptLoader, promptLoader } from "../../agent-definition/utils/prompt-loader.js";
 import { normalizeMemberRouteKey } from "../../run-history/utils/team-member-run-id.js";
 import { SkillService } from "../../skills/services/skill-service.js";
 import { TempWorkspace } from "../../workspaces/temp-workspace.js";
@@ -86,10 +87,12 @@ type AgentTeamRunManagerOptions = {
   llmFactory?: LlmFactoryLike;
   workspaceManager?: WorkspaceManager;
   skillService?: SkillService;
-  promptLoader?: PromptLoader;
   registries?: Partial<ProcessorRegistries>;
   waitForIdle?: (team: TeamLike, timeout?: number) => Promise<void>;
 };
+
+const asTrimmedString = (value: unknown): string | null =>
+  typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
 
 export class AgentTeamRunManager {
   private static instance: AgentTeamRunManager | null = null;
@@ -99,7 +102,6 @@ export class AgentTeamRunManager {
   private llmFactory: LlmFactoryLike;
   private workspaceManager: WorkspaceManager;
   private skillService: SkillService;
-  private promptLoader: PromptLoader;
   private registries: ProcessorRegistries;
   private waitForIdle: (team: TeamLike, timeout?: number) => Promise<void>;
 
@@ -119,7 +121,6 @@ export class AgentTeamRunManager {
     this.llmFactory = options.llmFactory ?? LLMFactory;
     this.workspaceManager = options.workspaceManager ?? getWorkspaceManager();
     this.skillService = options.skillService ?? SkillService.getInstance();
-    this.promptLoader = options.promptLoader ?? promptLoader;
     this.registries = {
       input: options.registries?.input ?? defaultInputProcessorRegistry,
       llmResponse: options.registries?.llmResponse ?? defaultLlmResponseProcessorRegistry,
@@ -224,12 +225,20 @@ export class AgentTeamRunManager {
     agentDefinitionId: string,
     memberConfig: TeamMemberConfigInput,
   ): Promise<AgentConfig> {
-    const agentDef = await this.agentDefinitionService.getAgentDefinitionById(agentDefinitionId);
+    const getFreshAgentDefinitionById = (
+      this.agentDefinitionService as AgentDefinitionService & {
+        getFreshAgentDefinitionById?: (definitionId: string) => Promise<AgentDefinition | null>;
+      }
+    ).getFreshAgentDefinitionById;
+    const agentDef =
+      typeof getFreshAgentDefinitionById === "function"
+        ? await getFreshAgentDefinitionById.call(this.agentDefinitionService, agentDefinitionId)
+        : await this.agentDefinitionService.getAgentDefinitionById(agentDefinitionId);
     if (!agentDef) {
       throw new Error(`AgentDefinition with ID ${agentDefinitionId} not found.`);
     }
 
-    const systemPrompt = await this.promptLoader.getPromptTemplateForAgent(agentDefinitionId);
+    const systemPrompt = asTrimmedString(agentDef.instructions);
     const resolvedPrompt = systemPrompt ?? agentDef.description;
 
     const tools = [];
@@ -424,7 +433,15 @@ export class AgentTeamRunManager {
     }
     visited.add(teamDefinitionId);
 
-    const teamDef = await this.teamDefinitionService.getDefinitionById(teamDefinitionId);
+    const getFreshDefinitionById = (
+      this.teamDefinitionService as AgentTeamDefinitionService & {
+        getFreshDefinitionById?: (definitionId: string) => Promise<AgentTeamDefinition | null>;
+      }
+    ).getFreshDefinitionById;
+    const teamDef =
+      typeof getFreshDefinitionById === "function"
+        ? await getFreshDefinitionById.call(this.teamDefinitionService, teamDefinitionId)
+        : await this.teamDefinitionService.getDefinitionById(teamDefinitionId);
     if (!teamDef) {
       throw new Error(`AgentTeamDefinition with ID ${teamDefinitionId} not found.`);
     }

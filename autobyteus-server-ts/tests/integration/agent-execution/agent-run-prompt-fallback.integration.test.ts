@@ -4,11 +4,13 @@ import path from "node:path";
 import type { AgentConfig } from "autobyteus-ts/agent/context/agent-config.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
-import { FileAgentDefinitionProvider } from "../../../src/agent-definition/providers/file-agent-definition-provider.js";
-import { PromptLoader } from "../../../src/agent-definition/utils/prompt-loader.js";
+import {
+  parseAgentMd,
+  serializeAgentMd,
+} from "../../../src/agent-definition/utils/agent-md-parser.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 
-describe("AgentRunManager prompt loading integration (no mocks)", () => {
+describe("AgentRunManager fresh definition runtime integration", () => {
   const cleanupPaths = new Set<string>();
 
   afterEach(async () => {
@@ -18,38 +20,20 @@ describe("AgentRunManager prompt loading integration (no mocks)", () => {
     cleanupPaths.clear();
   });
 
-  it("uses instructions from agent.md as the system prompt", async () => {
-    const provider = new FileAgentDefinitionProvider();
-    const agentDefinitionService = new AgentDefinitionService({
-      provider,
-    });
-
-    const unique = `fallback_${Date.now()}_${Math.random().toString(16).slice(2, 8)}`;
-    const description = `Description fallback for ${unique}`;
-    const instructions = `Follow instructions for ${unique}`;
-    const created = await agentDefinitionService.createAgentDefinition({
-      name: `Fallback Agent ${unique}`,
-      role: "assistant",
-      description,
-      instructions,
-      toolNames: [],
-    });
-    expect(created.id).toBeTruthy();
-    const agentDir = path.join(appConfigProvider.config.getAppDataDir(), "agents", created.id as string);
-    cleanupPaths.add(agentDir);
-
-    let capturedConfig: AgentConfig | null = null;
-    const manager = new AgentRunManager({
+  const buildManager = (
+    agentDefinitionService: AgentDefinitionService,
+    onCreateAgent: (config: AgentConfig) => void,
+  ) =>
+    new AgentRunManager({
       agentDefinitionService,
-      promptLoader: new PromptLoader({ agentDefinitionService }),
       llmFactory: {
         createLLM: async () => ({}) as any,
       } as any,
       agentFactory: {
         createAgent: (config: AgentConfig) => {
-          capturedConfig = config;
+          onCreateAgent(config);
           return {
-            agentId: `run_${unique}`,
+            agentId: `run_${Date.now()}`,
             start: () => undefined,
           };
         },
@@ -57,9 +41,9 @@ describe("AgentRunManager prompt loading integration (no mocks)", () => {
       workspaceManager: {
         getWorkspaceById: () => null,
         getOrCreateTempWorkspace: async () => ({
-          workspaceId: `ws_${unique}`,
+          workspaceId: "ws_runtime_fresh_definition",
           getBasePath: () => appConfigProvider.config.getMemoryDir(),
-          getName: () => `ws_${unique}`,
+          getName: () => "ws_runtime_fresh_definition",
         }),
       } as any,
       skillService: {
@@ -94,14 +78,108 @@ describe("AgentRunManager prompt loading integration (no mocks)", () => {
       waitForIdle: async () => undefined,
     });
 
-    const runId = await manager.createAgentRun({
+  it("uses fresh definition instructions for the next run even when the cache is stale", async () => {
+    const agentDefinitionService = new AgentDefinitionService();
+    const unique = `fresh_${Date.now()}_${Math.random().toString(16).slice(2, 8)}`;
+    const initialInstructions = `Initial instructions for ${unique}`;
+    const updatedInstructions = `Updated instructions for ${unique}`;
+    const description = `Description fallback for ${unique}`;
+
+    const created = await agentDefinitionService.createAgentDefinition({
+      name: `Fresh Agent ${unique}`,
+      role: "assistant",
+      description,
+      instructions: initialInstructions,
+      toolNames: [],
+    });
+    expect(created.id).toBeTruthy();
+
+    const agentDir = path.join(appConfigProvider.config.getAppDataDir(), "agents", created.id as string);
+    cleanupPaths.add(agentDir);
+
+    const cachedBeforeEdit = await agentDefinitionService.getAgentDefinitionById(created.id as string);
+    expect(cachedBeforeEdit?.instructions).toBe(initialInstructions);
+
+    const agentMdPath = path.join(agentDir, "agent.md");
+    const parsedBeforeEdit = parseAgentMd(await fs.readFile(agentMdPath, "utf-8"), agentMdPath);
+    await fs.writeFile(
+      agentMdPath,
+      serializeAgentMd(
+        {
+          name: parsedBeforeEdit.name,
+          description: parsedBeforeEdit.description,
+          category: parsedBeforeEdit.category,
+          role: parsedBeforeEdit.role,
+        },
+        updatedInstructions,
+      ),
+      "utf-8",
+    );
+
+    const cachedAfterEdit = await agentDefinitionService.getAgentDefinitionById(created.id as string);
+    expect(cachedAfterEdit?.instructions).toBe(initialInstructions);
+
+    let capturedConfig: AgentConfig | null = null;
+    const manager = buildManager(agentDefinitionService, (config) => {
+      capturedConfig = config;
+    });
+
+    await manager.createAgentRun({
       agentDefinitionId: created.id as string,
       llmModelIdentifier: "dummy-model",
       autoExecuteTools: false,
     });
 
-    expect(runId).toBe(`run_${unique}`);
-    expect(capturedConfig).not.toBeNull();
-    expect(capturedConfig?.systemPrompt).toBe(instructions);
+    expect(capturedConfig?.systemPrompt).toBe(updatedInstructions);
+  });
+
+  it("falls back to description when fresh definition instructions are blank", async () => {
+    const agentDefinitionService = new AgentDefinitionService();
+    const unique = `blank_${Date.now()}_${Math.random().toString(16).slice(2, 8)}`;
+    const initialInstructions = `Initial instructions for ${unique}`;
+    const description = `Fallback description for ${unique}`;
+
+    const created = await agentDefinitionService.createAgentDefinition({
+      name: `Blank Instructions Agent ${unique}`,
+      role: "assistant",
+      description,
+      instructions: initialInstructions,
+      toolNames: [],
+    });
+    expect(created.id).toBeTruthy();
+
+    const agentDir = path.join(appConfigProvider.config.getAppDataDir(), "agents", created.id as string);
+    cleanupPaths.add(agentDir);
+
+    await agentDefinitionService.getAgentDefinitionById(created.id as string);
+
+    const agentMdPath = path.join(agentDir, "agent.md");
+    const parsed = parseAgentMd(await fs.readFile(agentMdPath, "utf-8"), agentMdPath);
+    await fs.writeFile(
+      agentMdPath,
+      serializeAgentMd(
+        {
+          name: parsed.name,
+          description,
+          category: parsed.category,
+          role: parsed.role,
+        },
+        "",
+      ),
+      "utf-8",
+    );
+
+    let capturedConfig: AgentConfig | null = null;
+    const manager = buildManager(agentDefinitionService, (config) => {
+      capturedConfig = config;
+    });
+
+    await manager.createAgentRun({
+      agentDefinitionId: created.id as string,
+      llmModelIdentifier: "dummy-model",
+      autoExecuteTools: false,
+    });
+
+    expect(capturedConfig?.systemPrompt).toBe(description);
   });
 });

@@ -24,7 +24,6 @@ import { LLMConfig } from "autobyteus-ts/llm/utils/llm-config.js";
 import { AgentDefinition } from "../../agent-definition/domain/models.js";
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import { mergeMandatoryAndOptional } from "../../agent-definition/utils/processor-defaults.js";
-import { PromptLoader, promptLoader } from "../../agent-definition/utils/prompt-loader.js";
 import { SkillService } from "../../skills/services/skill-service.js";
 import { TempWorkspace } from "../../workspaces/temp-workspace.js";
 import { WorkspaceManager, getWorkspaceManager } from "../../workspaces/workspace-manager.js";
@@ -76,10 +75,12 @@ type AgentRunManagerOptions = {
   llmFactory?: LlmFactoryLike;
   workspaceManager?: WorkspaceManager;
   skillService?: SkillService;
-  promptLoader?: PromptLoader;
   registries?: Partial<ProcessorRegistries>;
   waitForIdle?: (agent: Agent, timeout?: number) => Promise<void>;
 };
+
+const asTrimmedString = (value: unknown): string | null =>
+  typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
 
 type AgentRunConfigInput = {
   agentDefinitionId: string;
@@ -97,7 +98,6 @@ export class AgentRunManager {
   private llmFactory: LlmFactoryLike;
   private workspaceManager: WorkspaceManager;
   private skillService: SkillService;
-  private promptLoader: PromptLoader;
   private registries: ProcessorRegistries;
   private waitForIdle: (agent: Agent, timeout?: number) => Promise<void>;
 
@@ -115,7 +115,6 @@ export class AgentRunManager {
     this.llmFactory = options.llmFactory ?? LLMFactory;
     this.workspaceManager = options.workspaceManager ?? getWorkspaceManager();
     this.skillService = options.skillService ?? SkillService.getInstance();
-    this.promptLoader = options.promptLoader ?? promptLoader;
     this.registries = {
       input: options.registries?.input ?? defaultInputProcessorRegistry,
       llmResponse: options.registries?.llmResponse ?? defaultLlmResponseProcessorRegistry,
@@ -178,7 +177,15 @@ export class AgentRunManager {
 
     let agentDef: AgentDefinition | null = null;
     try {
-      agentDef = await this.agentDefinitionService.getAgentDefinitionById(agentDefinitionId);
+      const getFreshAgentDefinitionById = (
+        this.agentDefinitionService as AgentDefinitionService & {
+          getFreshAgentDefinitionById?: (definitionId: string) => Promise<AgentDefinition | null>;
+        }
+      ).getFreshAgentDefinitionById;
+      agentDef =
+        typeof getFreshAgentDefinitionById === "function"
+          ? await getFreshAgentDefinitionById.call(this.agentDefinitionService, agentDefinitionId)
+          : await this.agentDefinitionService.getAgentDefinitionById(agentDefinitionId);
     } catch (error) {
       logger.error(
         `Failed to fetch agent definition '${agentDefinitionId}': ${String(error)}`,
@@ -191,16 +198,15 @@ export class AgentRunManager {
       );
     }
 
-    const systemPrompt = await this.promptLoader.getPromptTemplateForAgent(agentDefinitionId);
-
+    const systemPrompt = asTrimmedString(agentDef.instructions);
     const resolvedPrompt = systemPrompt ?? agentDef.description;
     if (!systemPrompt) {
       logger.warn(
-        `No readable agent.md instructions found for AgentDefinition ${agentDefinitionId}. Using agent description as fallback.`,
+        `No non-blank definition instructions found for AgentDefinition ${agentDefinitionId}. Using agent description as fallback.`,
       );
     } else {
       logger.info(
-        `Resolved system prompt from agent.md for AgentDefinition ${agentDefinitionId}.`,
+        `Resolved system prompt from fresh definition instructions for AgentDefinition ${agentDefinitionId}.`,
       );
     }
 

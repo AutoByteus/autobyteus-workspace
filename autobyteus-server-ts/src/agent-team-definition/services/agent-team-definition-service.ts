@@ -17,6 +17,8 @@ type AgentTeamDefinitionProvider = {
   refresh?: () => Promise<void>;
 };
 
+type AgentTeamDefinitionFreshProvider = Pick<AgentTeamDefinitionPersistenceProvider, "getById">;
+
 type AgentTeamDefinitionServiceOptions = {
   provider?: AgentTeamDefinitionProvider;
   persistenceProvider?: AgentTeamDefinitionPersistenceProvider;
@@ -51,11 +53,13 @@ export class AgentTeamDefinitionService {
   }
 
   readonly provider: AgentTeamDefinitionProvider;
+  private readonly freshProvider: AgentTeamDefinitionFreshProvider;
 
   constructor(options: AgentTeamDefinitionServiceOptions = {}) {
     const persistenceProvider =
       options.persistenceProvider ?? new AgentTeamDefinitionPersistenceProvider();
     this.provider = options.provider ?? new CachedAgentTeamDefinitionProvider(persistenceProvider);
+    this.freshProvider = options.persistenceProvider ?? persistenceProvider;
   }
 
   async createDefinition(definition: AgentTeamDefinition): Promise<AgentTeamDefinition> {
@@ -72,6 +76,10 @@ export class AgentTeamDefinitionService {
 
   async getDefinitionById(definitionId: string): Promise<AgentTeamDefinition | null> {
     return this.provider.getById(definitionId);
+  }
+
+  async getFreshDefinitionById(definitionId: string): Promise<AgentTeamDefinition | null> {
+    return this.freshProvider.getById(definitionId);
   }
 
   async getAllDefinitions(): Promise<AgentTeamDefinition[]> {

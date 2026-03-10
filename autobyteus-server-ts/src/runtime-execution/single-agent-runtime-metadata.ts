@@ -1,7 +1,9 @@
 import { AgentDefinitionService } from "../agent-definition/services/agent-definition-service.js";
-import { PromptLoader, promptLoader } from "../agent-definition/utils/prompt-loader.js";
 
-type AgentDefinitionServiceLike = Pick<AgentDefinitionService, "getAgentDefinitionById">;
+type AgentDefinitionServiceLike = Pick<
+  AgentDefinitionService,
+  "getAgentDefinitionById" | "getFreshAgentDefinitionById"
+>;
 
 const asTrimmedString = (value: unknown): string | null =>
   typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
@@ -9,27 +11,33 @@ const asTrimmedString = (value: unknown): string | null =>
 export const resolveSingleAgentInstructionRuntimeMetadata = async (
   agentDefinitionId: string,
   options: {
-    promptLoader?: PromptLoader;
     agentDefinitionService?: AgentDefinitionServiceLike;
   } = {},
 ): Promise<Record<string, unknown>> => {
-  const loader = options.promptLoader ?? promptLoader;
   const agentDefinitionService =
     options.agentDefinitionService ?? AgentDefinitionService.getInstance();
 
-  const promptInstructions = asTrimmedString(
-    await loader.getPromptTemplateForAgent(agentDefinitionId),
-  );
-  if (promptInstructions) {
+  const getFreshAgentDefinitionById = (
+    agentDefinitionService as AgentDefinitionServiceLike & {
+      getFreshAgentDefinitionById?: (definitionId: string) => ReturnType<
+        AgentDefinitionService["getFreshAgentDefinitionById"]
+      >;
+    }
+  ).getFreshAgentDefinitionById;
+  const agentDefinition =
+    typeof getFreshAgentDefinitionById === "function"
+      ? await getFreshAgentDefinitionById.call(agentDefinitionService, agentDefinitionId)
+      : await agentDefinitionService.getAgentDefinitionById(agentDefinitionId);
+  const agentInstructions = asTrimmedString(agentDefinition?.instructions);
+  if (agentInstructions) {
     return {
-      agentInstructions: promptInstructions,
+      agentInstructions,
       memberInstructionSources: {
-        agentInstructions: promptInstructions,
+        agentInstructions,
       },
     };
   }
 
-  const agentDefinition = await agentDefinitionService.getAgentDefinitionById(agentDefinitionId);
   const fallbackInstructions = asTrimmedString(agentDefinition?.description);
   if (!fallbackInstructions) {
     return {};

@@ -212,7 +212,7 @@ export class TeamMemberRuntimeSessionLifecycleService {
     }
 
     try {
-      const definition = await this.agentDefinitionService.getAgentDefinitionById(
+      const definition = await this.agentDefinitionService.getFreshAgentDefinitionById(
         options.agentDefinitionId,
       );
       const toolNames = Array.isArray(definition?.toolNames)
@@ -244,7 +244,7 @@ export class TeamMemberRuntimeSessionLifecycleService {
         "agentDefinitionId",
       );
       try {
-        const definition = await this.agentDefinitionService.getAgentDefinitionById(
+        const definition = await this.agentDefinitionService.getFreshAgentDefinitionById(
           agentDefinitionId,
         );
         manifest.push({

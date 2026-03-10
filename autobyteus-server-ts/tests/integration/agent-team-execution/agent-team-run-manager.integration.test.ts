@@ -61,10 +61,12 @@ const createManager = (overrides: Partial<ConstructorParameters<typeof AgentTeam
 
   const teamDefinitionService = {
     getDefinitionById: vi.fn(),
+    getFreshDefinitionById: vi.fn((id: string) => teamDefinitionService.getDefinitionById(id)),
   };
 
   const agentDefinitionService = {
     getAgentDefinitionById: vi.fn(),
+    getFreshAgentDefinitionById: vi.fn((id: string) => agentDefinitionService.getAgentDefinitionById(id)),
   };
 
   const llmFactory = {
@@ -79,10 +81,6 @@ const createManager = (overrides: Partial<ConstructorParameters<typeof AgentTeam
     getSkill: vi.fn(),
   };
 
-  const promptLoader = {
-    getPromptTemplateForAgent: vi.fn().mockResolvedValue(null),
-  };
-
   const waitForIdle = vi.fn().mockResolvedValue(undefined);
 
   const registries = makeEmptyRegistries();
@@ -94,7 +92,6 @@ const createManager = (overrides: Partial<ConstructorParameters<typeof AgentTeam
     llmFactory: llmFactory as any,
     workspaceManager: workspaceManager as any,
     skillService: skillService as any,
-    promptLoader: promptLoader as any,
     registries,
     waitForIdle,
     ...overrides,
@@ -108,7 +105,6 @@ const createManager = (overrides: Partial<ConstructorParameters<typeof AgentTeam
     llmFactory,
     workspaceManager,
     skillService,
-    promptLoader,
     waitForIdle,
   };
 };
@@ -118,6 +114,80 @@ afterEach(() => {
 });
 
 describe("AgentTeamRunManager integration", () => {
+  it("uses fresh team and member definitions when building the next team run", async () => {
+    const { manager, teamDefinitionService, agentDefinitionService, teamFactory } = createManager();
+
+    const staleTeamDef = new AgentTeamDefinition({
+      id: "main1",
+      name: "StaleTeam",
+      description: "stale description",
+      instructions: "stale team instructions",
+      nodes: [
+        new TeamMember({
+          memberName: "TheCoordinator",
+          ref: "1",
+          refType: "agent",
+        }),
+      ],
+      coordinatorMemberName: "TheCoordinator",
+    });
+
+    const freshTeamDef = new AgentTeamDefinition({
+      id: "main1",
+      name: "FreshTeam",
+      description: "fresh description",
+      instructions: "fresh team instructions",
+      nodes: [
+        new TeamMember({
+          memberName: "TheCoordinator",
+          ref: "1",
+          refType: "agent",
+        }),
+      ],
+      coordinatorMemberName: "TheCoordinator",
+    });
+
+    teamDefinitionService.getDefinitionById.mockResolvedValue(staleTeamDef);
+    teamDefinitionService.getFreshDefinitionById.mockResolvedValue(freshTeamDef);
+
+    agentDefinitionService.getAgentDefinitionById.mockResolvedValue(
+      new AgentDefinition({
+        id: "1",
+        name: "StaleCoordinator",
+        role: "Coord",
+        description: "stale coordinator description",
+        instructions: "stale coordinator instructions",
+      }),
+    );
+    agentDefinitionService.getFreshAgentDefinitionById.mockResolvedValue(
+      new AgentDefinition({
+        id: "1",
+        name: "FreshCoordinator",
+        role: "Coord",
+        description: "fresh coordinator description",
+        instructions: "fresh coordinator instructions",
+      }),
+    );
+
+    await manager.createTeamRun("main1", [
+      {
+        memberName: "TheCoordinator",
+        agentDefinitionId: "1",
+        llmModelIdentifier: "gpt-4o",
+        autoExecuteTools: false,
+      },
+    ]);
+
+    expect(teamDefinitionService.getFreshDefinitionById).toHaveBeenCalledWith("main1");
+    expect(agentDefinitionService.getFreshAgentDefinitionById).toHaveBeenCalledWith("1");
+
+    const builtConfig = teamFactory.createTeam.mock.calls[0][0] as AgentTeamConfig;
+    expect(builtConfig.name).toBe("FreshTeam");
+    expect((builtConfig.coordinatorNode.nodeDefinition as AgentConfig).systemPrompt).toBe(
+      "fresh coordinator instructions",
+    );
+  });
+
   it("creates a team instance with member configs applied", async () => {
     const { manager, teamDefinitionService, agentDefinitionService, teamFactory, llmFactory } =
       createManager();
