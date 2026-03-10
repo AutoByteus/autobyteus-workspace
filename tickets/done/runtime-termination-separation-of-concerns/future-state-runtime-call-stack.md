@@ -6,8 +6,8 @@
 
 ## Inputs
 
-- Requirements: `tickets/in-progress/runtime-termination-separation-of-concerns/requirements.md` (status `Design-ready`)
-- Design basis: `tickets/in-progress/runtime-termination-separation-of-concerns/proposed-design.md`
+- Requirements: `tickets/done/runtime-termination-separation-of-concerns/requirements.md` (status `Design-ready`)
+- Design basis: `tickets/done/runtime-termination-separation-of-concerns/proposed-design.md`
 
 ## Runtime Call Stack Use Cases
 

@@ -4,7 +4,7 @@ import path from "node:path";
 import os from "node:os";
 import { spawnSync } from "node:child_process";
 import { randomUUID } from "node:crypto";
-import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
+import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import fastify from "fastify";
 import websocket from "@fastify/websocket";
 import WebSocket from "ws";
@@ -14,74 +14,23 @@ import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { getCodexAppServerProcessManager } from "../../../src/runtime-execution/codex-app-server/codex-app-server-process-manager.js";
+import {
+  asObject,
+  buildStableSkillResponse,
+  createConfiguredSkill,
+  isRetryableCodexBootstrapFailure,
+  removeDirWithRetry,
+  tokenizeLiveModelText,
+  wait,
+  waitForSocketOpen,
+  type WsTurnCapture,
+} from "./codex-live-test-helpers.js";
 
 const codexBinaryReady = spawnSync("codex", ["--version"], {
   stdio: "ignore",
 }).status === 0;
 const liveCodexTestsEnabled = process.env.RUN_CODEX_E2E === "1";
 const describeCodexRuntime = codexBinaryReady && liveCodexTestsEnabled ? describe : describe.skip;
-
-const waitForSocketOpen = (socket: WebSocket, timeoutMs = 10_000): Promise<void> =>
-  new Promise((resolve, reject) => {
-    const timer = setTimeout(() => reject(new Error("Timed out waiting for websocket open")), timeoutMs);
-    socket.once("open", () => {
-      clearTimeout(timer);
-      resolve();
-    });
-    socket.once("error", (error) => {
-      clearTimeout(timer);
-      reject(error);
-    });
-  });
-
-const wait = (ms: number): Promise<void> =>
-  new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
-
-const removeDirWithRetry = async (targetPath: string): Promise<void> => {
-  for (let attempt = 1; attempt <= 5; attempt += 1) {
-    try {
-      await rm(targetPath, { recursive: true, force: true });
-      return;
-    } catch (error) {
-      if (attempt >= 5) {
-        throw error;
-      }
-      await wait(250 * attempt);
-    }
-  }
-};
-
-const isRetryableCodexBootstrapFailure = (message: string | null | undefined): boolean => {
-  const normalized = (message ?? "").toLowerCase();
-  return (
-    normalized.includes("code_runtime_command_failed") ||
-    normalized.includes("codex_runtime_command_failed") ||
-    normalized.includes("startup-ready state") ||
-    normalized.includes("did not reach startup-ready state") ||
-    normalized.includes("runtime command failed")
-  );
-};
-
-const asObject = (value: unknown): Record<string, unknown> | null =>
-  value && typeof value === "object" && !Array.isArray(value)
-    ? (value as Record<string, unknown>)
-    : null;
-
-type WsMessage = {
-  type: string;
-  payload: Record<string, unknown>;
-};
-
-type WsTurnCapture = {
-  sawConnected: boolean;
-  sawRunningAfterPrompt: boolean;
-  sawIdleAfterPrompt: boolean;
-  assistantOutputFragments: string[];
-  errorCodes: string[];
-  rawMessages: WsMessage[];
-};
 
 describeCodexRuntime("Codex configured-skill GraphQL e2e (live transport)", () => {
   let schema: GraphQLSchema;
@@ -183,29 +132,6 @@ describeCodexRuntime("Codex configured-skill GraphQL e2e (live transport)", () =
       modelIdentifier.toLowerCase().includes("codex"),
     );
     return codexModel ?? allModelIdentifiers[0];
-  };
-
-  const createConfiguredSkill = async (skillName: string, trigger: string, response: string): Promise<string> => {
-    if (!testDataDir) {
-      throw new Error("testDataDir is not initialized");
-    }
-    const skillRoot = path.join(testDataDir, "skills", skillName);
-    const skillFilePath = path.join(skillRoot, "SKILL.md");
-    await mkdir(skillRoot, { recursive: true });
-    await writeFile(
-      skillFilePath,
-      [
-        "---",
-        `name: ${skillName}`,
-        "description: Live Codex configured skill E2E probe.",
-        "---",
-        "",
-        `When the user's message is exactly "${trigger}", respond with exactly "${response}".`,
-        "Do not add any other words or punctuation.",
-      ].join("\n"),
-      "utf-8",
-    );
-    return skillFilePath;
   };
 
   const createAgentDefinition = async (skillName: string): Promise<string> => {
@@ -505,7 +431,7 @@ describeCodexRuntime("Codex configured-skill GraphQL e2e (live transport)", () =
       const uniqueSuffix = randomUUID().replace(/-/g, "_");
       const skillName = `codex_runtime_skill_${uniqueSuffix}`;
       const trigger = `CODEX_SKILL_TRIGGER_${uniqueSuffix}`;
-      const response = `CODEX_SKILL_RESPONSE_${uniqueSuffix}`;
+      const response = buildStableSkillResponse(uniqueSuffix);
       const bootstrapPrompt = `Reply with exactly READY for bootstrap ${uniqueSuffix}.`;
       const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "codex-skill-workspace-e2e-"));
       let runId: string | null = null;
@@ -529,7 +455,10 @@ describeCodexRuntime("Codex configured-skill GraphQL e2e (live transport)", () =
       `;
 
       try {
-        await createConfiguredSkill(skillName, trigger, response);
+        if (!testDataDir) {
+          throw new Error("testDataDir is not initialized");
+        }
+        await createConfiguredSkill(testDataDir, skillName, trigger, response);
         const agentDefinitionId = await createAgentDefinition(skillName);
 
         const bootstrapDeadline = Date.now() + 90_000;
@@ -589,7 +518,9 @@ describeCodexRuntime("Codex configured-skill GraphQL e2e (live transport)", () =
         expect(capture.sawRunningAfterPrompt).toBe(true);
         expect(capture.sawIdleAfterPrompt).toBe(true);
         expect(capture.errorCodes).toEqual([]);
-        expect(capture.assistantOutputFragments.join("")).toContain(response);
+        expect(tokenizeLiveModelText(capture.assistantOutputFragments.join("")).sort()).toEqual(
+          tokenizeLiveModelText(response).sort(),
+        );
       } finally {
         if (runId) {
           try {

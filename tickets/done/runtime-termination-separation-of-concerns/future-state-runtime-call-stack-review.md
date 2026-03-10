@@ -7,10 +7,10 @@
 
 ## Review Inputs
 
-- Requirements: `tickets/in-progress/runtime-termination-separation-of-concerns/requirements.md` (status `Design-ready`)
-- Investigation: `tickets/in-progress/runtime-termination-separation-of-concerns/investigation-notes.md`
-- Design basis: `tickets/in-progress/runtime-termination-separation-of-concerns/proposed-design.md`
-- Runtime call stack document: `tickets/in-progress/runtime-termination-separation-of-concerns/future-state-runtime-call-stack.md`
+- Requirements: `tickets/done/runtime-termination-separation-of-concerns/requirements.md` (status `Design-ready`)
+- Investigation: `tickets/done/runtime-termination-separation-of-concerns/investigation-notes.md`
+- Design basis: `tickets/done/runtime-termination-separation-of-concerns/proposed-design.md`
+- Runtime call stack document: `tickets/done/runtime-termination-separation-of-concerns/future-state-runtime-call-stack.md`
 
 ## Review Method
 
