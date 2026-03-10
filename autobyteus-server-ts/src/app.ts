@@ -21,6 +21,10 @@ import { scheduleBackgroundTasks } from "./startup/background-runner.js";
 import { registerRestRoutes } from "./api/rest/index.js";
 import { registerGraphql } from "./api/graphql/index.js";
 import { registerWebsocketRoutes } from "./api/websocket/index.js";
+import {
+  startGatewayCallbackDeliveryRuntime,
+  stopGatewayCallbackDeliveryRuntime,
+} from "./external-channel/runtime/gateway-callback-delivery-runtime.js";
 import { getManagedMessagingGatewayService } from "./managed-capabilities/messaging-gateway/defaults.js";
 import { getWorkspaceManager } from "./workspaces/workspace-manager.js";
 
@@ -116,6 +120,7 @@ export async function buildApp(options?: BuildAppOptions): Promise<FastifyInstan
   await registerWebsocketRoutes(app);
   await registerGraphql(app);
   app.addHook("onClose", async () => {
+    await stopGatewayCallbackDeliveryRuntime();
     await getManagedMessagingGatewayService().close();
   });
 
@@ -173,6 +178,7 @@ export async function startServer(): Promise<void> {
   registerShutdownHandlers(app);
   await app.listen({ host: options.host, port: options.port });
   logger.info(`Server listening on ${options.host}:${options.port}`);
+  startGatewayCallbackDeliveryRuntime();
 
   try {
     const internalBaseUrl = seedInternalServerBaseUrlFromListenAddress({
