@@ -3,7 +3,7 @@
 - Ticket: `managed-gateway-runtime-versioning`
 - Last Updated: `2026-03-10`
 - Stage: `10`
-- Status: `Repository Finalization In Progress`
+- Status: `Complete`
 
 ## Delivered Change
 
@@ -29,10 +29,17 @@
   - rerun of `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/messaging/managed-messaging-gateway-update-graphql.e2e.test.ts`
 - Stage 8 review passed with no findings.
 
+## Finalization
+
+- Ticket branch pushed: `codex/managed-gateway-runtime-versioning` at `74fd8f6`
+- Merged into `personal`: `5f201b1`
+- Release published: `v1.2.41` from `db39d7d`
+- Archived ticket bookkeeping completed after release on `personal`
+
 ## Residual Risk / Follow-Up
 
 - The desktop and messaging-gateway workflows currently duplicate the version-validation shell logic. They are aligned in this ticket, but future edits should keep them in sync or extract a shared validator later.
 
 ## Release Notes Requirement
 
-- [`release-notes.md`](./release-notes.md) is now persisted for the pending release publication step.
+- [`release-notes.md`](./release-notes.md) was persisted and used for release `v1.2.41`.

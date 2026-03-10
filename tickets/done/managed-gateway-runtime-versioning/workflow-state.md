@@ -8,11 +8,11 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 
 - Ticket: `managed-gateway-runtime-versioning`
 - Current Stage: `10`
-- Next Stage: `Repository Finalization`
+- Next Stage: `End`
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-011`
+- Last Transition ID: `T-012`
 - Last Updated: `2026-03-10`
 
 ## Stage Gates
@@ -29,7 +29,7 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | 7 API/E2E Testing | Pass | API/E2E test implementation complete + AC scenario gate complete | [`api-e2e-testing.md`](./api-e2e-testing.md), [`workflow-state.md`](./workflow-state.md) |
 | 8 Code Review | Pass | Code review gate `Pass`/`Fail` recorded + all changed source files `<=500` effective non-empty lines + `>220` delta-gate assessments recorded + shared-principles/layering + decoupling + module/file placement + no-backward-compat/no-legacy checks satisfied for `Pass` | [`code-review.md`](./code-review.md), [`workflow-state.md`](./workflow-state.md) |
 | 9 Docs Sync | Pass | Docs updated or no-impact rationale recorded | [`README.md`](../../README.md), [`workflow-state.md`](./workflow-state.md) |
-| 10 Handoff / Ticket State | In Progress | Final handoff ready + explicit user verification received + ticket moved to `done` + git finalization/release complete when git repo + ticket state decision recorded | [`handoff-summary.md`](./handoff-summary.md), [`release-notes.md`](./release-notes.md), [`workflow-state.md`](./workflow-state.md) |
+| 10 Handoff / Ticket State | Pass | Final handoff ready + explicit user verification received + ticket moved to `done` + git finalization/release complete when git repo + ticket state decision recorded | [`handoff-summary.md`](./handoff-summary.md), [`release-notes.md`](./release-notes.md), [`workflow-state.md`](./workflow-state.md) |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -104,6 +104,7 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | T-009 | 2026-03-10 | 8 | 9 | Stage 8 code review passed with no findings; documentation synchronization is now active | N/A | Locked | [`code-review.md`](./code-review.md), [`workflow-state.md`](./workflow-state.md) |
 | T-010 | 2026-03-10 | 9 | 10 | Stage 9 docs sync passed and the handoff summary is ready; awaiting explicit user verification before final archive and release steps | N/A | Locked | [`handoff-summary.md`](./handoff-summary.md), [`workflow-state.md`](./workflow-state.md) |
 | T-011 | 2026-03-10 | 10 | 10 | Explicit user verification was received, the ticket was archived under `tickets/done`, release notes were persisted, and repository finalization has started | N/A | Locked | [`handoff-summary.md`](./handoff-summary.md), [`release-notes.md`](./release-notes.md), [`workflow-state.md`](./workflow-state.md) |
+| T-012 | 2026-03-10 | 10 | 10 | Ticket branch was pushed, merged into `personal`, release `v1.2.41` was published, and final archived-ticket bookkeeping completed Stage 10 | N/A | Locked | [`handoff-summary.md`](./handoff-summary.md), [`release-notes.md`](./release-notes.md), [`workflow-state.md`](./workflow-state.md) |
 
 ## Audible Notification Log (Optional Tracking)
 
@@ -120,6 +121,7 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | 2026-03-10 | Transition | Stage 7 passed. Stage 8 code review is active and code edits are locked. | Success | N/A |
 | 2026-03-10 | Transition | Stage 8 and Stage 9 passed. Stage 10 handoff is active and awaiting user verification; code edits remain locked. | Success | N/A |
 | 2026-03-10 | Transition | User verification was received. The ticket is archived under done, release notes are ready, and repository finalization is now active with code edits still locked. | Success | N/A |
+| 2026-03-10 | Transition | Stage 10 finalization completed. The ticket branch was pushed, merged into personal, release v1.2.41 was published, and code edits remain locked. | Success | N/A |
 
 ## Process Violation Log
 
