@@ -1,5 +1,4 @@
 # Release Notes
 
-- Fixed a macOS Voice Input regression where the settings-level microphone test could get stuck at `0%` input while appearing to record.
-- Added safer recorder startup handling so Voice Input does not enter a false recording state when the local audio engine is not actually running.
-- Added a frontend `Reset Test` recovery action so users can clear a wedged Voice Input test without reinstalling the extension or restarting the app.
+- Restored live frontend recovery for running agents and agent teams after the app is reopened or force reloaded while the backend is still running.
+- Fixed team event monitoring so reopened live team runs keep the middle event monitor and right-side activity view aligned to the same active member stream.
