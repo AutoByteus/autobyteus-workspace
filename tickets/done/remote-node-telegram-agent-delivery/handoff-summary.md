@@ -4,9 +4,8 @@
 
 - Ticket: `remote-node-telegram-agent-delivery`
 - Workflow stage at handoff: `10`
-- State: `In Progress`
-- Explicit user verification received.
-- Ticket archival and repository finalization are now in progress.
+- State: `Complete`
+- Explicit user verification received and Stage 10 repository finalization completed.
 
 ## Delivered Scope vs Planned Scope
 
@@ -56,10 +55,18 @@
 
 ## Remaining User Step
 
-- None. The remaining Stage 10 actions are repository finalization only:
-  - move ticket folder to `tickets/done/remote-node-telegram-agent-delivery/`
-  - commit/push/merge/release per workflow
+- None. Technical workflow is fully complete.
 
 ## Environment Notes
 
 - Temporary `node_modules` symlinks were created inside the worktree to reuse the main checkout's installed dependencies for verification. They are not part of the deliverable and should not be committed.
+- Temporary smoke-test Docker artifacts were cleaned up after verification, including the `autobyteus-server:remote-node-telegram-agent-delivery` image.
+
+## Ticket State
+
+- Technical workflow is fully complete through Stage 10.
+- Ticket has been moved to `tickets/done/remote-node-telegram-agent-delivery`.
+- Ticket branch commit: `ebbfbda`
+- `personal` merge commit: `fe6c391`
+- Release commit: `10cfebc`
+- Published release tag: `v1.2.38`
