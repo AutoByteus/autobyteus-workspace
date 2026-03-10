@@ -37,8 +37,6 @@ type ChannelMessageReceiptRow = {
   updatedAt: string;
 };
 
-const messageReceiptFilePath = resolvePersistencePath("external-channel", "message-receipts.json");
-
 const toThreadStorage = (threadId: string | null): string => normalizeNullableString(threadId) ?? "";
 const fromThreadStorage = (threadId: string): string | null => normalizeNullableString(threadId);
 
@@ -72,9 +70,16 @@ const toSourceContext = (row: ChannelMessageReceiptRow): ChannelSourceContext =>
 });
 
 export class FileChannelMessageReceiptProvider implements ChannelMessageReceiptProvider {
+  constructor(
+    private readonly filePath: string = resolvePersistencePath(
+      "external-channel",
+      "message-receipts.json",
+    ),
+  ) {}
+
   async recordIngressReceipt(input: ChannelIngressReceiptInput): Promise<void> {
     const now = new Date().toISOString();
-    await updateJsonArrayFile<ChannelMessageReceiptRow>(messageReceiptFilePath, (rows) => {
+    await updateJsonArrayFile<ChannelMessageReceiptRow>(this.filePath, (rows) => {
       const index = rows.findIndex(
         (row) =>
           row.provider === input.provider &&
@@ -118,7 +123,7 @@ export class FileChannelMessageReceiptProvider implements ChannelMessageReceiptP
 
   async bindTurnToReceipt(input: ChannelTurnReceiptBindingInput): Promise<void> {
     const now = new Date().toISOString();
-    await updateJsonArrayFile<ChannelMessageReceiptRow>(messageReceiptFilePath, (rows) => {
+    await updateJsonArrayFile<ChannelMessageReceiptRow>(this.filePath, (rows) => {
       const index = rows.findIndex(
         (row) =>
           row.provider === input.provider &&
@@ -163,7 +168,7 @@ export class FileChannelMessageReceiptProvider implements ChannelMessageReceiptP
 
   async getLatestSourceByAgentRunId(agentRunId: string): Promise<ChannelSourceContext | null> {
     const normalizedAgentRunId = normalizeRequiredString(agentRunId, "agentRunId");
-    const rows = await readJsonArrayFile<ChannelMessageReceiptRow>(messageReceiptFilePath);
+    const rows = await readJsonArrayFile<ChannelMessageReceiptRow>(this.filePath);
     const found = sortByReceivedThenUpdatedDesc(rows).find(
       (row) => row.agentRunId === normalizedAgentRunId,
     );
@@ -173,7 +178,7 @@ export class FileChannelMessageReceiptProvider implements ChannelMessageReceiptP
   async getLatestSourceByDispatchTarget(
     target: ChannelDispatchTarget,
   ): Promise<ChannelSourceContext | null> {
-    const rows = await readJsonArrayFile<ChannelMessageReceiptRow>(messageReceiptFilePath);
+    const rows = await readJsonArrayFile<ChannelMessageReceiptRow>(this.filePath);
     const sorted = sortByReceivedThenUpdatedDesc(rows);
 
     const agentRunId = normalizeNullableString(target.agentRunId);
@@ -199,7 +204,7 @@ export class FileChannelMessageReceiptProvider implements ChannelMessageReceiptP
   ): Promise<ChannelSourceContext | null> {
     const normalizedAgentRunId = normalizeRequiredString(agentRunId, "agentRunId");
     const normalizedTurnId = normalizeRequiredString(turnId, "turnId");
-    const rows = await readJsonArrayFile<ChannelMessageReceiptRow>(messageReceiptFilePath);
+    const rows = await readJsonArrayFile<ChannelMessageReceiptRow>(this.filePath);
     const found = sortByUpdatedThenReceivedDesc(rows).find(
       (row) => row.agentRunId === normalizedAgentRunId && row.turnId === normalizedTurnId,
     );

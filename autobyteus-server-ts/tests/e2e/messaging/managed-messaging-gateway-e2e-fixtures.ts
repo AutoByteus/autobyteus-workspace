@@ -4,7 +4,7 @@ import { spawn } from "node:child_process";
 
 type FakeGatewayArchiveOptions = {
   artifactVersion: string;
-  mode: "healthy" | "failing";
+  mode: "healthy" | "failing" | "stale_then_healthy";
 };
 
 export const createFakeGatewayArchive = async (
@@ -31,6 +31,8 @@ export const createFakeGatewayArchive = async (
   const indexContents =
     options.mode === "healthy"
       ? buildHealthyGatewayRuntimeSource()
+      : options.mode === "stale_then_healthy"
+        ? buildStaleThenHealthyGatewayRuntimeSource()
       : 'process.exit(1);\n';
   await fsp.writeFile(path.join(distDir, "index.js"), indexContents, "utf8");
 
@@ -210,6 +212,106 @@ const server = http.createServer((request, response) => {
         }
       ]
     }));
+    return;
+  }
+
+  response.statusCode = 404;
+  response.end("not found");
+});
+
+server.on("error", (error) => {
+  console.error(error);
+  process.exit(1);
+});
+
+server.listen(port, host);
+
+const shutdown = () => {
+  server.close(() => process.exit(0));
+};
+process.once("SIGTERM", shutdown);
+process.once("SIGINT", shutdown);
+`;
+
+const buildStaleThenHealthyGatewayRuntimeSource = (): string => `
+const fs = require("node:fs");
+const path = require("node:path");
+const http = require("node:http");
+
+const host = process.env.GATEWAY_HOST ?? "127.0.0.1";
+const port = Number(process.env.GATEWAY_PORT ?? 0);
+const adminToken = process.env.GATEWAY_ADMIN_TOKEN ?? "";
+const runtimeDataRoot = process.env.GATEWAY_RUNTIME_DATA_ROOT ?? process.cwd();
+const markerPath = path.join(runtimeDataRoot, "fake-gateway-stale-once.json");
+
+fs.mkdirSync(runtimeDataRoot, { recursive: true });
+const firstBoot = !fs.existsSync(markerPath);
+if (firstBoot) {
+  fs.writeFileSync(
+    markerPath,
+    JSON.stringify({ staleServed: true, writtenAt: new Date().toISOString() }),
+    "utf8",
+  );
+}
+
+const staleTimestamp = "2000-01-01T00:00:00.000Z";
+const currentTimestamp = () => new Date().toISOString();
+const heartbeatTimestamp = () => (firstBoot ? staleTimestamp : currentTimestamp());
+
+const unauthorized = (response) => {
+  response.statusCode = 401;
+  response.setHeader("content-type", "application/json");
+  response.end(JSON.stringify({ detail: "Missing or invalid admin token." }));
+};
+
+const server = http.createServer((request, response) => {
+  const url = new URL(request.url ?? "/", "http://127.0.0.1");
+  if (url.pathname === "/health") {
+    response.setHeader("content-type", "application/json");
+    response.end(JSON.stringify({
+      service: "autobyteus-message-gateway",
+      status: "ok",
+      timestamp: currentTimestamp(),
+    }));
+    return;
+  }
+
+  const authHeader = request.headers.authorization ?? "";
+  if (authHeader !== \`Bearer \${adminToken}\`) {
+    unauthorized(response);
+    return;
+  }
+
+  if (url.pathname === "/api/runtime-reliability/v1/status") {
+    response.setHeader("content-type", "application/json");
+    response.end(JSON.stringify({
+      runtime: {
+        state: "HEALTHY",
+        criticalCode: null,
+        updatedAt: heartbeatTimestamp(),
+        workers: {
+          inboundForwarder: { running: true, lastError: null, lastErrorAt: null },
+          outboundSender: { running: true, lastError: null, lastErrorAt: null }
+        },
+        locks: {
+          inbox: { ownerId: "fake-lock", held: true, lost: false, lastHeartbeatAt: heartbeatTimestamp(), lastError: null },
+          outbox: { ownerId: "fake-lock", held: true, lost: false, lastHeartbeatAt: heartbeatTimestamp(), lastError: null }
+        }
+      },
+      queue: {
+        inboundDeadLetterCount: 0,
+        inboundCompletedUnboundCount: 0,
+        outboundDeadLetterCount: 0
+      }
+    }));
+    return;
+  }
+
+  if (url.pathname === "/api/runtime-reliability/v1/shutdown" && request.method === "POST") {
+    response.statusCode = 202;
+    response.setHeader("content-type", "application/json");
+    response.end(JSON.stringify({ accepted: true }));
+    setTimeout(() => server.close(() => process.exit(0)), 0);
     return;
   }
 
