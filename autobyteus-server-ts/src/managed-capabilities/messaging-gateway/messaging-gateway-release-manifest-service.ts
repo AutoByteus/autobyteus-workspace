@@ -99,7 +99,32 @@ const parseManifest = (
       `Managed messaging manifest at '${sourceLabel}' is invalid.`,
     );
   }
+  validateReleaseDescriptors(parsed, sourceLabel);
   return parsed;
+};
+
+const RELEASE_TAG_VERSION_PATTERN = /^v(?<version>\d+\.\d+\.\d+(?:[-.][0-9A-Za-z.]+)?)$/;
+
+const validateReleaseDescriptors = (
+  manifest: ManagedMessagingReleaseManifest,
+  sourceLabel: string,
+): void => {
+  for (const release of manifest.releases) {
+    const expectedVersion = getReleaseTagVersion(release.releaseTag);
+    if (expectedVersion && release.artifactVersion !== expectedVersion) {
+      throw new Error(
+        `Managed messaging manifest at '${sourceLabel}' is invalid: release tag '${release.releaseTag}' expects artifact version '${expectedVersion}' but manifest declares '${release.artifactVersion}'.`,
+      );
+    }
+  }
+};
+
+const getReleaseTagVersion = (releaseTag: string): string | null => {
+  if (typeof releaseTag !== "string") {
+    return null;
+  }
+  const match = RELEASE_TAG_VERSION_PATTERN.exec(releaseTag.trim());
+  return match?.groups?.version ?? null;
 };
 
 const normalizeOptionalString = (value: string | null | undefined): string | null => {

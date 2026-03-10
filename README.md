@@ -117,8 +117,9 @@ pnpm android:server:stop
   - The release helper prepares that file from the ticket `release-notes.md`.
   - Historical tags that predate the curated file fall back to GitHub generated notes during manual republish.
 - Version/tag sync is mandatory:
-  - `autobyteus-web/package.json` version must match release tag version (`vX.Y.Z`).
-  - The release workflow enforces this and fails on mismatch.
+  - `autobyteus-web/package.json` and `autobyteus-message-gateway/package.json` versions must both match the release tag version (`vX.Y.Z`).
+  - The release helper synchronizes both package versions and the bundled managed messaging manifest before tagging.
+  - The desktop and messaging-gateway release workflows enforce those checks and fail on mismatch.
 - Server Docker tags:
   - stable release tags publish `autobyteus/autobyteus-server:X.Y.Z` and `autobyteus/autobyteus-server:latest`
   - prerelease tags such as `v1.2.7-rc1` publish only `autobyteus/autobyteus-server:1.2.7-rc1`
@@ -138,7 +139,7 @@ Use the release helper script from repo root:
 # Normal new personal release:
 # 1) Write short functional release notes in the ticket, for example:
 #    tickets/done/<ticket-name>/release-notes.md
-# 2) Prepare the release (bump package version, sync curated notes, commit, create tag, push branch+tag)
+# 2) Prepare the release (bump desktop + gateway package versions, sync curated notes and managed messaging manifest, commit, create tag, push branch+tag)
 #    This starts the desktop, messaging-gateway, and server Docker release workflows because the pushed tag matches v*.
 pnpm release 1.2.7 -- --release-notes tickets/done/<ticket-name>/release-notes.md
 
