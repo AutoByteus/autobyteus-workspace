@@ -155,7 +155,32 @@ jobs:
           ulimit -n 65536 || ulimit -n 10240 || true
           ulimit -Sn
           ulimit -Hn
-          pnpm build:electron:mac -- --arm64
+          max_attempts=3
+          attempt=1
+          while true; do
+            log_file="$(mktemp)"
+            set +e
+            pnpm build:electron:mac -- --arm64 2>&1 | tee "$log_file"
+            status="${PIPESTATUS[0]}"
+            set -e
+
+            if [[ "$status" -eq 0 ]]; then
+              rm -f "$log_file"
+              break
+            fi
+
+            if grep -Eq 'Failed to notarize via notarytool|The Internet connection appears to be offline|NSURLErrorDomain Code=-1009|No network route|timed out' "$log_file" && [[ "$attempt" -lt "$max_attempts" ]]; then
+              echo "Transient Apple notarization/network failure detected on attempt $attempt/$max_attempts. Retrying..."
+              rm -f "$log_file"
+              rm -rf electron-dist
+              sleep $((attempt * 30))
+              attempt=$((attempt + 1))
+              continue
+            fi
+
+            rm -f "$log_file"
+            exit "$status"
+          done
 
       - name: Verify bundled Prisma ARM64 engine target
         run: |
@@ -230,7 +255,32 @@ jobs:
           ulimit -n 65536 || ulimit -n 10240 || true
           ulimit -Sn
           ulimit -Hn
-          pnpm build:electron:mac -- --x64
+          max_attempts=3
+          attempt=1
+          while true; do
+            log_file="$(mktemp)"
+            set +e
+            pnpm build:electron:mac -- --x64 2>&1 | tee "$log_file"
+            status="${PIPESTATUS[0]}"
+            set -e
+
+            if [[ "$status" -eq 0 ]]; then
+              rm -f "$log_file"
+              break
+            fi
+
+            if grep -Eq 'Failed to notarize via notarytool|The Internet connection appears to be offline|NSURLErrorDomain Code=-1009|No network route|timed out' "$log_file" && [[ "$attempt" -lt "$max_attempts" ]]; then
+              echo "Transient Apple notarization/network failure detected on attempt $attempt/$max_attempts. Retrying..."
+              rm -f "$log_file"
+              rm -rf electron-dist
+              sleep $((attempt * 30))
+              attempt=$((attempt + 1))
+              continue
+            fi
+
+            rm -f "$log_file"
+            exit "$status"
+          done
 
       - name: Verify bundled Prisma x64 engine target
         run: |

@@ -6,6 +6,8 @@ import type { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 export const useWorkspaceHistoryMutations = (params: {
   terminateRun: (runId: string) => Promise<boolean>;
   terminateTeamRun: (teamRunId: string) => Promise<unknown>;
+  removeDraftRun: (runId: string) => Promise<boolean>;
+  removeDraftTeam: (teamRunId: string) => Promise<boolean>;
   deleteRun: (runId: string) => Promise<boolean>;
   deleteTeamRun: (teamRunId: string) => Promise<boolean>;
   addToast: (message: string, type: 'success' | 'error' | 'warning' | 'info') => void;
@@ -18,6 +20,62 @@ export const useWorkspaceHistoryMutations = (params: {
   const showDeleteConfirmation = ref(false);
   const pendingDeleteRunId = ref<string | null>(null);
   const pendingDeleteTeamRunId = ref<string | null>(null);
+
+  const removeDraftRun = async (runId: string): Promise<void> => {
+    const removeErrorMessage = 'Failed to remove draft run. Please try again.';
+    if (deletingRunIds.value[runId]) {
+      return;
+    }
+
+    deletingRunIds.value = {
+      ...deletingRunIds.value,
+      [runId]: true,
+    };
+
+    try {
+      const removed = await params.removeDraftRun(runId);
+      if (!removed) {
+        params.addToast(removeErrorMessage, 'error');
+        return;
+      }
+      params.addToast('Draft run removed.', 'success');
+    } catch (error) {
+      console.error('Failed to remove draft run:', error);
+      params.addToast(removeErrorMessage, 'error');
+    } finally {
+      const next = { ...deletingRunIds.value };
+      delete next[runId];
+      deletingRunIds.value = next;
+    }
+  };
+
+  const removeDraftTeam = async (teamRunId: string): Promise<void> => {
+    const removeErrorMessage = 'Failed to remove draft team. Please try again.';
+    if (deletingTeamIds.value[teamRunId]) {
+      return;
+    }
+
+    deletingTeamIds.value = {
+      ...deletingTeamIds.value,
+      [teamRunId]: true,
+    };
+
+    try {
+      const removed = await params.removeDraftTeam(teamRunId);
+      if (!removed) {
+        params.addToast(removeErrorMessage, 'error');
+        return;
+      }
+      params.addToast('Draft team removed.', 'success');
+    } catch (error) {
+      console.error('Failed to remove draft team:', error);
+      params.addToast(removeErrorMessage, 'error');
+    } finally {
+      const next = { ...deletingTeamIds.value };
+      delete next[teamRunId];
+      deletingTeamIds.value = next;
+    }
+  };
 
   const onTerminateTeam = async (teamRunId: string): Promise<void> => {
     const terminateErrorMessage = 'Failed to terminate team. Please try again.';
@@ -70,6 +128,11 @@ export const useWorkspaceHistoryMutations = (params: {
   };
 
   const onDeleteRun = (run: RunTreeRow): void => {
+    if (run.source === 'draft') {
+      void removeDraftRun(run.runId);
+      return;
+    }
+
     if (run.source !== 'history' || run.isActive) {
       return;
     }
@@ -85,6 +148,11 @@ export const useWorkspaceHistoryMutations = (params: {
   };
 
   const onDeleteTeam = (team: TeamTreeNode): void => {
+    if (team.teamRunId.trim().startsWith('temp-')) {
+      void removeDraftTeam(team.teamRunId.trim());
+      return;
+    }
+
     if (params.canTerminateTeam(team.currentStatus) || team.deleteLifecycle !== 'READY') {
       return;
     }

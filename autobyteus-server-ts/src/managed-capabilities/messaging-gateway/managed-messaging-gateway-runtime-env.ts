@@ -1,4 +1,5 @@
 import { appConfigProvider } from "../../config/app-config-provider.js";
+import { getInternalServerBaseUrlOrThrow } from "../../config/server-runtime-endpoints.js";
 import type {
   ManagedMessagingProviderConfig,
   ManagedMessagingProviderStatus,
@@ -101,7 +102,7 @@ export const buildManagedMessagingGatewayRuntimeEnv = (input: {
     GATEWAY_PORT: String(input.bindPort),
     GATEWAY_RUNTIME_DATA_ROOT: input.runtimeDataRoot,
     GATEWAY_ADMIN_TOKEN: input.adminToken,
-    GATEWAY_SERVER_BASE_URL: appConfigProvider.config.getBaseUrl(),
+    GATEWAY_SERVER_BASE_URL: getInternalServerBaseUrlOrThrow(),
     GATEWAY_SERVER_SHARED_SECRET: serverSharedSecret,
     GATEWAY_SERVER_CALLBACK_SHARED_SECRET: serverCallbackSharedSecret,
     GATEWAY_ALLOW_INSECURE_SERVER_CALLBACKS: String(

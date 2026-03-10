@@ -204,6 +204,11 @@ const {
 } = useWorkspaceHistoryMutations({
   terminateRun: (runId: string) => agentRunStore.terminateRun(runId),
   terminateTeamRun: (teamRunId: string) => teamRunStore.terminateTeamRun(teamRunId),
+  removeDraftRun: async (runId: string) => {
+    await agentRunStore.closeAgent(runId, { terminate: false });
+    return true;
+  },
+  removeDraftTeam: async (teamRunId: string) => teamRunStore.discardDraftTeamRun(teamRunId),
   deleteRun: (runId: string) => runHistoryStore.deleteRun(runId),
   deleteTeamRun: (teamRunId: string) => runHistoryStore.deleteTeamRun(teamRunId),
   addToast,
@@ -218,6 +223,7 @@ const {
 } = useWorkspaceHistorySelectionActions({
   runHistoryStore,
   selectionStore,
+  setTeamExpanded: treeState.setTeamExpanded,
   toggleTeam: treeState.toggleTeam,
   emitRunSelected: (payload) => emit('run-selected', payload),
   emitRunCreated: (payload) => emit('run-created', payload),

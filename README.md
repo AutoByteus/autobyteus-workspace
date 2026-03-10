@@ -60,6 +60,26 @@ RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts test -- --run
 pnpm -C autobyteus-web test
 ```
 
+## Runtime Sandbox Overrides
+
+If you want the native coding runtimes to run without sandbox restrictions, use these environment variables:
+
+- Codex runtime: `CODEX_APP_SERVER_SANDBOX=danger-full-access`
+  - Supported values: `read-only`, `workspace-write`, `danger-full-access`
+  - Default: `workspace-write`
+- Claude Agent SDK runtime: `CLAUDE_AGENT_SDK_PERMISSION_MODE=bypassPermissions`
+  - Supported values: `default`, `plan`, `acceptEdits`, `bypassPermissions`
+  - Default: `default`
+  - The parser also accepts `bypass-permissions` and `bypass_permissions`
+
+Example:
+
+```bash
+CODEX_APP_SERVER_SANDBOX=danger-full-access \
+CLAUDE_AGENT_SDK_PERMISSION_MODE=bypassPermissions \
+pnpm -C autobyteus-server-ts dev
+```
+
 ## Android (Termux) Quick Start
 
 Run inside Termux:

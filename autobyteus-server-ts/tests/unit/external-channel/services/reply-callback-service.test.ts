@@ -15,6 +15,79 @@ const createSource = (): ChannelSourceContext => ({
   turnId: "turn-1",
 });
 
+const createConfiguredService = (overrides?: {
+  getSourceByAgentRunTurn?: ReturnType<typeof vi.fn>;
+  reserveCallbackKey?: ReturnType<typeof vi.fn>;
+  recordPending?: ReturnType<typeof vi.fn>;
+  isRouteBoundToTarget?: ReturnType<typeof vi.fn>;
+  enqueueOrGet?: ReturnType<typeof vi.fn>;
+  resolveGatewayCallbackDispatchTarget?: ReturnType<typeof vi.fn>;
+}) => {
+  const getSourceByAgentRunTurn =
+    overrides?.getSourceByAgentRunTurn ??
+    vi.fn().mockResolvedValue(createSource());
+  const reserveCallbackKey =
+    overrides?.reserveCallbackKey ??
+    vi.fn().mockResolvedValue({
+      duplicate: false,
+      key: "cb-1",
+      firstSeenAt: new Date("2026-02-09T00:00:00.000Z"),
+      expiresAt: null,
+    });
+  const recordPending =
+    overrides?.recordPending ?? vi.fn().mockResolvedValue(undefined);
+  const isRouteBoundToTarget =
+    overrides?.isRouteBoundToTarget ?? vi.fn().mockResolvedValue(true);
+  const enqueueOrGet =
+    overrides?.enqueueOrGet ??
+    vi.fn().mockResolvedValue({
+      record: {
+        id: "outbox-1",
+        callbackIdempotencyKey: "cb-1",
+      },
+      duplicate: false,
+    });
+  const resolveGatewayCallbackDispatchTarget =
+    overrides?.resolveGatewayCallbackDispatchTarget ??
+    vi.fn().mockResolvedValue({
+      state: "AVAILABLE",
+      reason: null,
+    });
+
+  return {
+    service: new ReplyCallbackService(
+      {
+        getSourceByAgentRunTurn,
+      } as any,
+      {
+        callbackIdempotencyService: {
+          reserveCallbackKey,
+        },
+        deliveryEventService: {
+          recordPending,
+        },
+        bindingService: {
+          isRouteBoundToTarget,
+        },
+        callbackOutboxService: {
+          enqueueOrGet,
+        },
+        callbackTargetResolver: {
+          resolveGatewayCallbackDispatchTarget,
+        },
+      },
+    ),
+    deps: {
+      getSourceByAgentRunTurn,
+      reserveCallbackKey,
+      recordPending,
+      isRouteBoundToTarget,
+      enqueueOrGet,
+      resolveGatewayCallbackDispatchTarget,
+    },
+  };
+};
+
 describe("ReplyCallbackService", () => {
   it("skips when turnId is missing", async () => {
     const service = new ReplyCallbackService({
@@ -67,7 +140,7 @@ describe("ReplyCallbackService", () => {
     expect(result.reason).toBe("TEAM_TARGET_NOT_SUPPORTED");
   });
 
-  it("skips when callback runtime is not configured", async () => {
+  it("skips when callback runtime wiring is absent", async () => {
     const service = new ReplyCallbackService({
       getSourceByAgentRunTurn: vi.fn(),
     } as any);
@@ -82,33 +155,35 @@ describe("ReplyCallbackService", () => {
     expect(result.reason).toBe("CALLBACK_NOT_CONFIGURED");
   });
 
+  it("skips when callback delivery is disabled by the target resolver", async () => {
+    const { service, deps } = createConfiguredService({
+      resolveGatewayCallbackDispatchTarget: vi.fn().mockResolvedValue({
+        state: "DISABLED",
+        reason: "Channel callback delivery is not configured.",
+      }),
+    });
+
+    const result = await service.publishAssistantReplyByTurn({
+      agentRunId: "agent-1",
+      turnId: "turn-1",
+      replyText: "hello",
+      callbackIdempotencyKey: "cb-1",
+    });
+
+    expect(result.reason).toBe("CALLBACK_NOT_CONFIGURED");
+    expect(deps.reserveCallbackKey).not.toHaveBeenCalled();
+    expect(deps.enqueueOrGet).not.toHaveBeenCalled();
+  });
+
   it("short-circuits duplicate callback keys", async () => {
-    const service = new ReplyCallbackService(
-      {
-        getSourceByAgentRunTurn: vi.fn().mockResolvedValue(createSource()),
-      } as any,
-      {
-        callbackIdempotencyService: {
-          reserveCallbackKey: vi.fn().mockResolvedValue({
-            duplicate: true,
-            key: "cb-1",
-            firstSeenAt: new Date("2026-02-09T00:00:00.000Z"),
-            expiresAt: null,
-          }),
-        },
-        deliveryEventService: {
-          recordPending: vi.fn(),
-          recordSent: vi.fn(),
-          recordFailed: vi.fn(),
-        },
-        bindingService: {
-          isRouteBoundToTarget: vi.fn().mockResolvedValue(true),
-        },
-        callbackPublisher: {
-          publish: vi.fn(),
-        },
-      },
-    );
+    const { service, deps } = createConfiguredService({
+      reserveCallbackKey: vi.fn().mockResolvedValue({
+        duplicate: true,
+        key: "cb-1",
+        firstSeenAt: new Date("2026-02-09T00:00:00.000Z"),
+        expiresAt: null,
+      }),
+    });
 
     const result = await service.publishAssistantReplyByTurn({
       agentRunId: "agent-1",
@@ -123,33 +198,14 @@ describe("ReplyCallbackService", () => {
       reason: "DUPLICATE",
       envelope: null,
     });
+    expect(deps.recordPending).not.toHaveBeenCalled();
+    expect(deps.enqueueOrGet).not.toHaveBeenCalled();
   });
 
   it("returns SOURCE_NOT_FOUND when no turn-bound source exists", async () => {
-    const reserveCallbackKey = vi.fn().mockResolvedValue({
-      duplicate: false,
-      key: "cb-1",
-      firstSeenAt: new Date("2026-02-09T00:00:00.000Z"),
-      expiresAt: null,
+    const { service, deps } = createConfiguredService({
+      getSourceByAgentRunTurn: vi.fn().mockResolvedValue(null),
     });
-    const service = new ReplyCallbackService(
-      {
-        getSourceByAgentRunTurn: vi.fn().mockResolvedValue(null),
-      } as any,
-      {
-        callbackIdempotencyService: {
-          reserveCallbackKey,
-        },
-        deliveryEventService: {
-          recordPending: vi.fn(),
-          recordSent: vi.fn(),
-          recordFailed: vi.fn(),
-        },
-        callbackPublisher: {
-          publish: vi.fn(),
-        },
-      },
-    );
 
     const result = await service.publishAssistantReplyByTurn({
       agentRunId: "agent-1",
@@ -159,37 +215,13 @@ describe("ReplyCallbackService", () => {
     });
 
     expect(result.reason).toBe("SOURCE_NOT_FOUND");
-    expect(reserveCallbackKey).not.toHaveBeenCalled();
+    expect(deps.reserveCallbackKey).not.toHaveBeenCalled();
   });
 
   it("returns BINDING_NOT_FOUND when route is no longer bound to target", async () => {
-    const reserveCallbackKey = vi.fn().mockResolvedValue({
-      duplicate: false,
-      key: "cb-1",
-      firstSeenAt: new Date("2026-02-09T00:00:00.000Z"),
-      expiresAt: null,
+    const { service, deps } = createConfiguredService({
+      isRouteBoundToTarget: vi.fn().mockResolvedValue(false),
     });
-    const service = new ReplyCallbackService(
-      {
-        getSourceByAgentRunTurn: vi.fn().mockResolvedValue(createSource()),
-      } as any,
-      {
-        callbackIdempotencyService: {
-          reserveCallbackKey,
-        },
-        deliveryEventService: {
-          recordPending: vi.fn(),
-          recordSent: vi.fn(),
-          recordFailed: vi.fn(),
-        },
-        bindingService: {
-          isRouteBoundToTarget: vi.fn().mockResolvedValue(false),
-        },
-        callbackPublisher: {
-          publish: vi.fn(),
-        },
-      },
-    );
 
     const result = await service.publishAssistantReplyByTurn({
       agentRunId: "agent-1",
@@ -199,38 +231,16 @@ describe("ReplyCallbackService", () => {
     });
 
     expect(result.reason).toBe("BINDING_NOT_FOUND");
-    expect(reserveCallbackKey).not.toHaveBeenCalled();
+    expect(deps.reserveCallbackKey).not.toHaveBeenCalled();
   });
 
-  it("publishes callback and records pending->sent delivery events", async () => {
-    const callbackPublisher = {
-      publish: vi.fn().mockResolvedValue(undefined),
-    };
-    const deliveryEventService = {
-      recordPending: vi.fn().mockResolvedValue(undefined),
-      recordSent: vi.fn().mockResolvedValue(undefined),
-      recordFailed: vi.fn().mockResolvedValue(undefined),
-    };
-    const service = new ReplyCallbackService(
-      {
-        getSourceByAgentRunTurn: vi.fn().mockResolvedValue(createSource()),
-      } as any,
-      {
-        callbackIdempotencyService: {
-          reserveCallbackKey: vi.fn().mockResolvedValue({
-            duplicate: false,
-            key: "cb-1",
-            firstSeenAt: new Date("2026-02-09T00:00:00.000Z"),
-            expiresAt: null,
-          }),
-        },
-        deliveryEventService,
-        bindingService: {
-          isRouteBoundToTarget: vi.fn().mockResolvedValue(true),
-        },
-        callbackPublisher,
-      },
-    );
+  it("records pending delivery and enqueues durable work even when the gateway is temporarily unavailable", async () => {
+    const { service, deps } = createConfiguredService({
+      resolveGatewayCallbackDispatchTarget: vi.fn().mockResolvedValue({
+        state: "UNAVAILABLE",
+        reason: "Managed messaging gateway target is not currently available.",
+      }),
+    });
 
     const result = await service.publishAssistantReplyByTurn({
       agentRunId: "agent-1",
@@ -257,56 +267,14 @@ describe("ReplyCallbackService", () => {
         attempt: 1,
       },
     });
-    expect(callbackPublisher.publish).toHaveBeenCalledOnce();
-    expect(deliveryEventService.recordPending).toHaveBeenCalledOnce();
-    expect(deliveryEventService.recordSent).toHaveBeenCalledOnce();
-    expect(deliveryEventService.recordFailed).not.toHaveBeenCalled();
-  });
-
-  it("records failed delivery event when callback publish throws", async () => {
-    const deliveryEventService = {
-      recordPending: vi.fn().mockResolvedValue(undefined),
-      recordSent: vi.fn().mockResolvedValue(undefined),
-      recordFailed: vi.fn().mockResolvedValue(undefined),
-    };
-    const service = new ReplyCallbackService(
-      {
-        getSourceByAgentRunTurn: vi.fn().mockResolvedValue(createSource()),
-      } as any,
-      {
-        callbackIdempotencyService: {
-          reserveCallbackKey: vi.fn().mockResolvedValue({
-            duplicate: false,
-            key: "cb-1",
-            firstSeenAt: new Date("2026-02-09T00:00:00.000Z"),
-            expiresAt: null,
-          }),
-        },
-        deliveryEventService,
-        bindingService: {
-          isRouteBoundToTarget: vi.fn().mockResolvedValue(true),
-        },
-        callbackPublisher: {
-          publish: vi.fn().mockRejectedValue(new Error("gateway timeout")),
-        },
-      },
-    );
-
-    await expect(
-      service.publishAssistantReplyByTurn({
-        agentRunId: "agent-1",
-        turnId: "turn-1",
-        replyText: "assistant reply",
-        callbackIdempotencyKey: "cb-1",
-      }),
-    ).rejects.toThrow("gateway timeout");
-
-    expect(deliveryEventService.recordPending).toHaveBeenCalledOnce();
-    expect(deliveryEventService.recordSent).not.toHaveBeenCalled();
-    expect(deliveryEventService.recordFailed).toHaveBeenCalledWith(
+    expect(deps.recordPending).toHaveBeenCalledOnce();
+    expect(deps.enqueueOrGet).toHaveBeenCalledWith(
+      "cb-1",
       expect.objectContaining({
-        callbackIdempotencyKey: "cb-1",
-        errorMessage: "gateway timeout",
+        provider: ExternalChannelProvider.WHATSAPP,
+        transport: ExternalChannelTransport.PERSONAL_SESSION,
+        accountId: "acct-1",
+        peerId: "peer-1",
       }),
     );
   });

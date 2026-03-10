@@ -50,8 +50,15 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
 
       const existingService = teamStreamingServices.get(teamRunId);
       if (existingService) {
+        existingService.attachContext(teamContext);
+        teamContext.unsubscribe = () => {
+          existingService.disconnect();
+          teamStreamingServices.delete(teamRunId);
+        };
         if (existingService.connectionState === ConnectionState.DISCONNECTED) {
           existingService.connect(teamRunId, teamContext);
+          teamContext.isSubscribed = true;
+        } else {
           teamContext.isSubscribed = true;
         }
         return;
@@ -109,6 +116,34 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       if (activeTeam) {
         await this.terminateTeamRun(activeTeam.teamRunId);
       }
+    },
+
+    discardDraftTeamRun(teamRunId: string): boolean {
+      const normalizedTeamRunId = teamRunId.trim();
+      if (!normalizedTeamRunId || !normalizedTeamRunId.startsWith('temp-')) {
+        return false;
+      }
+
+      const teamContextsStore = useAgentTeamContextsStore();
+      const teamContext = teamContextsStore.getTeamContextById(normalizedTeamRunId);
+      if (!teamContext) {
+        return false;
+      }
+
+      if (teamContext.unsubscribe) {
+        teamContext.unsubscribe();
+        teamContext.unsubscribe = undefined;
+      }
+      teamStreamingServices.delete(normalizedTeamRunId);
+
+      teamContext.isSubscribed = false;
+      teamContext.members.forEach((member) => {
+        member.isSending = false;
+        useAgentActivityStore().clearActivities(member.state.runId);
+      });
+
+      teamContextsStore.removeTeamContext(normalizedTeamRunId);
+      return true;
     },
 
     async sendMessageToFocusedMember(text: string, contextPaths: { path: string; type: string }[]) {

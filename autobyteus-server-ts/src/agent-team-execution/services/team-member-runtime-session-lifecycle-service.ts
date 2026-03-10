@@ -1,3 +1,4 @@
+import type { AgentDefinition } from "../../agent-definition/domain/models.js";
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import type { RuntimeCompositionService } from "../../runtime-execution/runtime-composition-service.js";
@@ -38,6 +39,8 @@ type TeamManifestMetadataMember = {
   role: string | null;
   description: string | null;
 };
+
+type TeamRuntimeAgentDefinition = Pick<AgentDefinition, "toolNames" | "role" | "description">;
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
@@ -133,6 +136,22 @@ export class TeamMemberRuntimeSessionLifecycleService {
     return this.instructionSourceResolver;
   }
 
+  private async resolveAgentDefinition(
+    agentDefinitionId: string,
+  ): Promise<TeamRuntimeAgentDefinition | null> {
+    const getFreshAgentDefinitionById = (
+      this.agentDefinitionService as AgentDefinitionService & {
+        getFreshAgentDefinitionById?: (
+          definitionId: string,
+        ) => Promise<TeamRuntimeAgentDefinition | null>;
+      }
+    ).getFreshAgentDefinitionById;
+    if (typeof getFreshAgentDefinitionById === "function") {
+      return await getFreshAgentDefinitionById.call(this.agentDefinitionService, agentDefinitionId);
+    }
+    return await this.agentDefinitionService.getAgentDefinitionById(agentDefinitionId);
+  }
+
   private resolveTeamExecutionMode(runtimeKind: RuntimeKind): TeamRuntimeExecutionMode {
     const adapter = this.runtimeAdapterRegistry.resolveAdapter(runtimeKind);
     return adapter.teamExecutionMode ?? "member_runtime";
@@ -212,9 +231,7 @@ export class TeamMemberRuntimeSessionLifecycleService {
     }
 
     try {
-      const definition = await this.agentDefinitionService.getAgentDefinitionById(
-        options.agentDefinitionId,
-      );
+      const definition = await this.resolveAgentDefinition(options.agentDefinitionId);
       const toolNames = Array.isArray(definition?.toolNames)
         ? definition.toolNames.filter((toolName): toolName is string => typeof toolName === "string")
         : [];
@@ -244,9 +261,7 @@ export class TeamMemberRuntimeSessionLifecycleService {
         "agentDefinitionId",
       );
       try {
-        const definition = await this.agentDefinitionService.getAgentDefinitionById(
-          agentDefinitionId,
-        );
+        const definition = await this.resolveAgentDefinition(agentDefinitionId);
         manifest.push({
           memberName,
           role:

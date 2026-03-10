@@ -7,12 +7,12 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 ## Current Snapshot
 
 - Ticket: `runtime-termination-separation-of-concerns`
-- Current Stage: `6`
-- Next Stage: `7`
-- Code Edit Permission: `Unlocked`
-- Active Re-Entry: `Yes`
-- Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `Local Fix`
-- Last Transition ID: `T-024`
+- Current Stage: `10`
+- Next Stage: `Complete`
+- Code Edit Permission: `Locked`
+- Active Re-Entry: `No`
+- Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
+- Last Transition ID: `T-026`
 - Last Updated: `2026-03-10`
 
 ## Stage Gates
@@ -26,10 +26,10 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | 4 Runtime Modeling | Pass | Future-state call stacks now capture native-routing, non-native runtime-routing, shared cleanup, and not-found handling under the new coordinator boundary. | `tickets/done/runtime-termination-separation-of-concerns/future-state-runtime-call-stack.md` |
 | 5 Review Gate | Pass | Runtime review reached `Go Confirmed` after two consecutive clean rounds with no blockers, no artifact changes, and no newly discovered use cases. | `tickets/done/runtime-termination-separation-of-concerns/future-state-runtime-call-stack-review.md` |
 | 6 Implementation | Pass | The refactor implementation is complete, and the Stage 7 local-fix path only hardened the live Codex configured-skill E2E plus extracted shared helpers so the touched test file stays under the Stage 8 hard limit. | `tickets/done/runtime-termination-separation-of-concerns/implementation-plan.md`, `tickets/done/runtime-termination-separation-of-concerns/implementation-progress.md`, `tickets/done/runtime-termination-separation-of-concerns/workflow-state.md` |
-| 7 API/E2E Testing | Fail | The pre-merge acceptance bar passed, but the post-merge backend-wide verification against `origin/personal` failed (`9` failed files / `44` failed tests). Confirmed failures include `runtime-client-index.test.ts`, `runtime-event-message-mapper.test.ts`, `runtime-command-ingress-service.test.ts`, `team-member-runtime-orchestrator.test.ts`, and `team-run-history-graphql.e2e.test.ts`. | `tickets/done/runtime-termination-separation-of-concerns/api-e2e-testing.md`, `tickets/done/runtime-termination-separation-of-concerns/implementation-progress.md`, `tickets/done/runtime-termination-separation-of-concerns/workflow-state.md` |
+| 7 API/E2E Testing | Pass | The merge-forward local-fix path closed cleanly after adapting to two upstream `origin/personal` contract shifts: `prompt-loader.ts` was deleted upstream, and fresh-definition lookups became more common than some merged mocks/runtime paths expected. Targeted regression reruns passed, the merged-branch backend-wide suite passed (`258` passed files / `9` skipped; `1179` passed tests / `47` skipped), `pnpm build` passed, and the live Codex ordered/runtime plus configured-skill (`13/13`) and team (`3/3`) suites passed again. Claude live reruns remained explicitly waived by the user due to quota. | `tickets/done/runtime-termination-separation-of-concerns/api-e2e-testing.md`, `tickets/done/runtime-termination-separation-of-concerns/implementation-progress.md`, `tickets/done/runtime-termination-separation-of-concerns/workflow-state.md` |
 | 8 Code Review | Pass | Review was refreshed after the Codex live E2E stabilization/helper extraction; no findings were introduced and all changed files are now within the hard limit. | `tickets/done/runtime-termination-separation-of-concerns/code-review.md`, `tickets/done/runtime-termination-separation-of-concerns/workflow-state.md` |
 | 9 Docs Sync | Pass | Documentation was refreshed to reflect the revised verification bar, the explicit Claude waiver, and the passing targeted Codex live suites. | `tickets/done/runtime-termination-separation-of-concerns/implementation-progress.md`, `tickets/done/runtime-termination-separation-of-concerns/api-e2e-testing.md`, `tickets/done/runtime-termination-separation-of-concerns/workflow-state.md` |
-| 10 Handoff / Ticket State | In Progress | The user verified completion and the ticket was archived, but git finalization reopened a Stage 6 local-fix path because merging `origin/personal` introduced a source conflict that must be resolved and reverified. | `tickets/done/runtime-termination-separation-of-concerns/workflow-state.md` |
+| 10 Handoff / Ticket State | In Progress | The user verified completion and the ticket was archived. Git finalization reopened a Stage 6 local-fix path only long enough to merge the latest `origin/personal`, resolve the resulting contract-level regressions meaningfully, and rerun verification on the merged branch state. The branch is now back in finalization with the merged tree green. | `tickets/done/runtime-termination-separation-of-concerns/workflow-state.md`, `tickets/done/runtime-termination-separation-of-concerns/implementation-progress.md` |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -117,6 +117,8 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | T-022 | 2026-03-10 | 10 | 10 | The user explicitly verified completion. The ticket was moved to `tickets/done/runtime-termination-separation-of-concerns/`, and git finalization on the ticket branch is now in progress. | N/A | Locked | `workflow-state.md`, `implementation-progress.md` |
 | T-023 | 2026-03-10 | 10 | 6 | Merging the latest `origin/personal` into the ticket branch produced a source conflict in `autobyteus-server-ts/src/runtime-execution/single-agent-runtime-metadata.ts`. Reopening Stage 6 on the local-fix path to resolve the merge conflict and rerun verification. | Local Fix | Unlocked | `workflow-state.md`, `implementation-progress.md` |
 | T-024 | 2026-03-10 | 6 | 6 | The post-merge backend-wide verification run against the merged `origin/personal` tree failed (`9` failed files / `44` failed tests). Staying in Stage 6 on the local-fix path to resolve the merged-branch regressions before retrying Stage 7. | Local Fix | Unlocked | `api-e2e-testing.md`, `implementation-progress.md`, `workflow-state.md` |
+| T-025 | 2026-03-10 | 6 | 7 | The merged-branch local-fix work resolved the real upstream contract shifts instead of reverting them: `single-agent-runtime-context` now honors the upstream deletion of `prompt-loader.ts` by falling back to definition instructions/description, and team runtime definition resolution now prefers fresh definitions when available while remaining compatible with merged mocks and service surfaces that only expose the non-fresh methods. Targeted regression reruns, `pnpm build`, the merged-branch full backend suite, and live Codex reruns all passed. | N/A | Locked | `api-e2e-testing.md`, `implementation-progress.md`, `workflow-state.md` |
+| T-026 | 2026-03-10 | 7 | 10 | Stage 7 passed again on the merged `origin/personal` branch state, with documentation refreshed to capture the true root cause and verification evidence. The ticket returns to Stage 10 for final git commit/push work only. | N/A | Locked | `api-e2e-testing.md`, `implementation-progress.md`, `workflow-state.md` |
 
 ## Audible Notification Log (Optional Tracking)
 

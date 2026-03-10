@@ -54,8 +54,6 @@ type ChannelBindingLaunchPresetRecord = {
   llmConfig: Record<string, unknown> | null;
 };
 
-const bindingsFilePath = resolvePersistencePath("external-channel", "bindings.json");
-
 const toThreadStorage = (threadId: string | null): string => normalizeNullableString(threadId) ?? "";
 const fromThreadStorage = (threadId: string): string | null => normalizeNullableString(threadId);
 
@@ -173,8 +171,15 @@ const isJsonObject = (value: unknown): value is Record<string, unknown> => {
 };
 
 export class FileChannelBindingProvider implements ChannelBindingProvider {
+  constructor(
+    private readonly filePath: string = resolvePersistencePath(
+      "external-channel",
+      "bindings.json",
+    ),
+  ) {}
+
   async findBinding(input: ChannelBindingLookup): Promise<ChannelBinding | null> {
-    const rows = await readJsonArrayFile<ChannelBindingRecord>(bindingsFilePath);
+    const rows = await readJsonArrayFile<ChannelBindingRecord>(this.filePath);
     const found = rows.find(
       (row) =>
         row.provider === input.provider &&
@@ -189,7 +194,7 @@ export class FileChannelBindingProvider implements ChannelBindingProvider {
   async findProviderDefaultBinding(
     input: ChannelBindingProviderDefaultLookup,
   ): Promise<ChannelBinding | null> {
-    const rows = await readJsonArrayFile<ChannelBindingRecord>(bindingsFilePath);
+    const rows = await readJsonArrayFile<ChannelBindingRecord>(this.filePath);
     const found = sortByUpdatedAtDesc(rows).find(
       (row) =>
         row.provider === input.provider &&
@@ -204,7 +209,7 @@ export class FileChannelBindingProvider implements ChannelBindingProvider {
   async findBindingByDispatchTarget(
     target: ChannelDispatchTarget,
   ): Promise<ChannelBinding | null> {
-    const rows = await readJsonArrayFile<ChannelBindingRecord>(bindingsFilePath);
+    const rows = await readJsonArrayFile<ChannelBindingRecord>(this.filePath);
     const sorted = sortByUpdatedAtDesc(rows);
 
     const agentRunId = normalizeNullableString(target.agentRunId);
@@ -228,7 +233,7 @@ export class FileChannelBindingProvider implements ChannelBindingProvider {
     route: ChannelSourceRoute,
     target: ChannelDispatchTarget,
   ): Promise<boolean> {
-    const rows = await readJsonArrayFile<ChannelBindingRecord>(bindingsFilePath);
+    const rows = await readJsonArrayFile<ChannelBindingRecord>(this.filePath);
     const agentRunId = normalizeNullableString(target.agentRunId);
     const teamRunId = normalizeNullableString(target.teamRunId);
 
@@ -250,7 +255,7 @@ export class FileChannelBindingProvider implements ChannelBindingProvider {
   }
 
   async listBindings(): Promise<ChannelBinding[]> {
-    const rows = await readJsonArrayFile<ChannelBindingRecord>(bindingsFilePath);
+    const rows = await readJsonArrayFile<ChannelBindingRecord>(this.filePath);
     return sortByUpdatedAtDesc(rows).map((row) => toDomain(row));
   }
 
@@ -258,7 +263,7 @@ export class FileChannelBindingProvider implements ChannelBindingProvider {
     const now = new Date().toISOString();
     let saved: ChannelBindingRecord | null = null;
 
-    await updateJsonArrayFile<ChannelBindingRecord>(bindingsFilePath, (rows) => {
+    await updateJsonArrayFile<ChannelBindingRecord>(this.filePath, (rows) => {
       const index = rows.findIndex(
         (row) =>
           row.provider === input.provider &&
@@ -344,7 +349,7 @@ export class FileChannelBindingProvider implements ChannelBindingProvider {
     const now = new Date().toISOString();
     let saved: ChannelBindingRecord | null = null;
 
-    await updateJsonArrayFile<ChannelBindingRecord>(bindingsFilePath, (rows) => {
+    await updateJsonArrayFile<ChannelBindingRecord>(this.filePath, (rows) => {
       const index = rows.findIndex((row) => row.id === normalizedId);
       if (index < 0) {
         throw new Error("Binding not found");
@@ -372,7 +377,7 @@ export class FileChannelBindingProvider implements ChannelBindingProvider {
     const normalizedId = normalizeRequiredString(bindingId, "bindingId");
     let removed = false;
 
-    await updateJsonArrayFile<ChannelBindingRecord>(bindingsFilePath, (rows) => {
+    await updateJsonArrayFile<ChannelBindingRecord>(this.filePath, (rows) => {
       const next = rows.filter((row) => row.id !== normalizedId);
       removed = next.length !== rows.length;
       return next;

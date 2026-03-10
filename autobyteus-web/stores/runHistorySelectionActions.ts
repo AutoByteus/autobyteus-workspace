@@ -1,27 +1,14 @@
-import { getApolloClient } from '~/utils/apolloClient';
-import {
-  GetTeamMemberRunProjection,
-  GetTeamRunResumeConfig,
-} from '~/graphql/queries/runHistoryQueries';
-import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig';
-import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type {
-  GetTeamRunResumeConfigQueryData,
   TeamMemberTreeRow,
   TeamRunResumeConfigPayload,
 } from '~/stores/runHistoryTypes';
 import type { RunTreeRow } from '~/utils/runTreeProjection';
-import { parseTeamRunManifest, toTeamMemberKey } from '~/stores/runHistoryManifest';
-import {
-  buildTeamMemberContexts,
-  fetchTeamMemberProjections,
-} from '~/stores/runHistoryTeamHelpers';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
-import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
+import { openTeamRunWithCoordinator } from '~/services/runOpen/teamRunOpenCoordinator';
 
 interface RunHistorySelectionStoreLike {
   openingRun: boolean;
@@ -43,109 +30,16 @@ export const openTeamMemberRunFromHistory = async (
   store.openingRun = true;
   store.error = null;
   try {
-    const client = getApolloClient();
-    const { data, errors } = await client.query<GetTeamRunResumeConfigQueryData>({
-      query: GetTeamRunResumeConfig,
-      variables: { teamRunId },
-      fetchPolicy: 'network-only',
-    });
-
-    if (errors && errors.length > 0) {
-      throw new Error(errors.map((e: { message: string }) => e.message).join(', '));
-    }
-
-    const resumeConfig = data?.getTeamRunResumeConfig;
-    if (!resumeConfig) {
-      throw new Error(`Team resume config payload missing for '${teamRunId}'.`);
-    }
-    const manifest = parseTeamRunManifest(resumeConfig.manifest);
-    if (!manifest.teamRunId) {
-      throw new Error(`Team manifest is invalid for '${teamRunId}'.`);
-    }
-
-    store.teamResumeConfigByTeamRunId[teamRunId] = {
-      teamRunId: manifest.teamRunId,
-      isActive: resumeConfig.isActive,
-      manifest,
-    };
-
-    const teamContextsStore = useAgentTeamContextsStore();
-    const selectionStore = useAgentSelectionStore();
-    const projectionByMemberRouteKey = await fetchTeamMemberProjections({
-      client,
-      getTeamMemberRunProjectionQuery: GetTeamMemberRunProjection,
+    const result = await openTeamRunWithCoordinator({
       teamRunId,
-      manifest,
-      toTeamMemberKey,
-    });
-
-    const { members, firstWorkspaceId } = await buildTeamMemberContexts({
-      teamRunId,
-      manifest,
-      isActive: resumeConfig.isActive,
-      projectionByMemberRouteKey,
-      toTeamMemberKey,
+      memberRouteKey,
       ensureWorkspaceByRootPath: (path: string) => store.ensureWorkspaceByRootPath(path),
     });
 
-    const firstMemberKey = manifest.memberBindings
-      .map((member) => toTeamMemberKey(member).trim())
-      .find((memberKey) => memberKey.length > 0) || '';
-    const focusKey = members.has(memberRouteKey) ? memberRouteKey : firstMemberKey;
-    if (!focusKey) {
-      throw new Error(`Team '${teamRunId}' has no members in manifest.`);
-    }
-
-    const focusedBinding = manifest.memberBindings.find(
-      (member) => toTeamMemberKey(member).trim() === focusKey,
-    );
-
-    teamContextsStore.addTeamContext({
-      teamRunId: manifest.teamRunId,
-      config: {
-        teamDefinitionId: manifest.teamDefinitionId,
-        teamDefinitionName: manifest.teamDefinitionName,
-        runtimeKind: focusedBinding?.runtimeKind || DEFAULT_AGENT_RUNTIME_KIND,
-        workspaceId: firstWorkspaceId,
-        llmModelIdentifier: focusedBinding?.llmModelIdentifier || '',
-        autoExecuteTools: focusedBinding?.autoExecuteTools ?? false,
-        memberOverrides: Object.fromEntries(
-          manifest.memberBindings.map((member) => [
-            member.memberName,
-            {
-              agentDefinitionId: member.agentDefinitionId,
-              llmModelIdentifier: member.llmModelIdentifier,
-              autoExecuteTools: member.autoExecuteTools,
-              llmConfig: member.llmConfig ?? null,
-            },
-          ]),
-        ),
-        isLocked: resumeConfig.isActive,
-      },
-      members,
-      focusedMemberName: focusKey,
-      currentStatus: resumeConfig.isActive ? AgentTeamStatus.Uninitialized : AgentTeamStatus.Idle,
-      isSubscribed: false,
-      taskPlan: null,
-      taskStatuses: null,
-    });
-
-    selectionStore.selectRun(manifest.teamRunId, 'team');
-    store.selectedTeamRunId = manifest.teamRunId;
-    store.selectedTeamMemberRouteKey = focusKey;
+    store.teamResumeConfigByTeamRunId[result.resumeConfig.teamRunId] = result.resumeConfig;
+    store.selectedTeamRunId = result.teamRunId;
+    store.selectedTeamMemberRouteKey = result.focusedMemberRouteKey;
     store.selectedRunId = null;
-    useTeamRunConfigStore().clearConfig();
-    useAgentRunConfigStore().clearConfig();
-
-    if (resumeConfig.isActive) {
-      useAgentTeamRunStore().connectToTeamStream(manifest.teamRunId);
-    } else {
-      const activeTeam = teamContextsStore.getTeamContextById(manifest.teamRunId);
-      if (activeTeam?.unsubscribe) {
-        activeTeam.unsubscribe();
-        activeTeam.isSubscribed = false;
-      }
-    }
   } catch (error: any) {
     store.error = error?.message || `Failed to open team '${teamRunId}'.`;
     throw error;

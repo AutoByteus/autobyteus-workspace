@@ -2,7 +2,7 @@
 
 ## Status
 
-- User verified completion; ticket archived into `tickets/done`, and git finalization is in progress (Claude live reruns were explicitly waived by the user)
+- User verified completion; ticket archived into `tickets/done`, and git finalization is back in progress after the latest `origin/personal` merge-forward was resolved and reverified meaningfully (Claude live reruns remain explicitly waived by the user)
 
 ## Kickoff Preconditions Checklist
 
@@ -40,10 +40,17 @@
 - 2026-03-10: The user explicitly waived Claude live reruns because of quota/process instability after the combined provider-backed run showed Claude-side abort/exit failures.
 - 2026-03-10: After the user verified the ticket and it was archived into `tickets/done`, merging the latest `origin/personal` into the ticket branch produced a single source conflict in `autobyteus-server-ts/src/runtime-execution/single-agent-runtime-metadata.ts`. Stage 6 was reopened on the local-fix path to resolve the merge cleanly and rerun backend verification on the merged branch state.
 - 2026-03-10: The merged-branch backend-wide Vitest rerun failed after the `origin/personal` merge (`9` failed files / `44` failed tests). Confirmed failing files include `tests/unit/runtime-management/runtime-client/runtime-client-index.test.ts`, `tests/unit/services/agent-streaming/runtime-event-message-mapper.test.ts`, `tests/unit/runtime-execution/runtime-command-ingress-service.test.ts`, `tests/unit/agent-team-execution/team-member-runtime-orchestrator.test.ts`, and `tests/e2e/run-history/team-run-history-graphql.e2e.test.ts`. Stage 6 remains open on the local-fix path until the merged branch is green again.
+- 2026-03-10: Root-cause analysis showed the merge breakage was meaningful, not random. `origin/personal` deleted `autobyteus-server-ts/src/agent-definition/utils/prompt-loader.ts`, but `single-agent-runtime-context.ts` still imported it on this branch; upstream also leaned harder on fresh-definition service methods than some merged mocks/runtime paths exposed.
+- 2026-03-10: Adapted `single-agent-runtime-context.ts` to honor the upstream deletion by using an optional injected prompt loader only for tests, then falling back to `agentDefinition.instructions` and `agentDefinition.description` instead of restoring the deleted module.
+- 2026-03-10: Adapted `member-runtime-instruction-source-resolver.ts` and `team-member-runtime-session-lifecycle-service.ts` so they prefer fresh-definition service methods when available, but fall back to the non-fresh methods when the merged service surface or test doubles do not expose the fresh variants. This preserved the upstream direction while keeping merged tests and runtime paths compatible.
+- 2026-03-10: Reran the targeted merged-branch regression slice covering the failing runtime-client, runtime-event mapping, runtime-command-ingress, team-member runtime, run-history, and GraphQL cases; the slice passed (`9` files, `80` tests, `1` skipped).
+- 2026-03-10: Reran `pnpm build` successfully on the merged branch after tightening the helper return types to match the upstream service surfaces.
+- 2026-03-10: Reran the final backend-wide Vitest suite on the exact merged branch state; it passed cleanly with `258` passing files, `9` skipped files, `1179` passing tests, and `47` skipped tests.
+- 2026-03-10: Reran the user-requested live Codex verification on the merged branch. Ordered baseline/runtime plus configured-skill suites passed (`13/13`), and the live Codex team suite passed (`3/3`).
 
 ## Blockers
 
-- Post-merge regressions from the merged `origin/personal` branch are currently blocking git finalization and handoff.
+- None. The merged-branch regressions introduced by `origin/personal` were resolved and reverified.
 
 ## Completion Summary
 

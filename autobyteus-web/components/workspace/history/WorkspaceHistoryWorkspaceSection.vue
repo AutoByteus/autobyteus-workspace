@@ -102,7 +102,17 @@
                 <Icon icon="heroicons:stop-20-solid" class="h-3.5 w-3.5" />
               </button>
               <button
-                v-if="run.source === 'history' && !run.isActive"
+                v-else-if="run.source === 'draft'"
+                type="button"
+                class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 md:opacity-0 md:group-hover/run-row:opacity-100 md:group-focus-within/run-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
+                title="Remove draft run"
+                :disabled="state.isRunDeleting(run.runId)"
+                @click.stop="actions.onDeleteRun(run)"
+              >
+                <Icon icon="heroicons:trash-20-solid" class="h-3.5 w-3.5" />
+              </button>
+              <button
+                v-else-if="run.source === 'history' && !run.isActive"
                 type="button"
                 class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 md:opacity-0 md:group-hover/run-row:opacity-100 md:group-focus-within/run-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
                 title="Delete run permanently"
@@ -136,7 +146,7 @@
               type="button"
               class="flex min-w-0 flex-1 items-center text-left"
               :data-test="`workspace-team-row-${team.teamRunId}`"
-              @click="actions.onSelectTeam(team.teamRunId)"
+              @click="actions.onSelectTeam(team)"
             >
               <Icon
                 icon="heroicons:chevron-down-20-solid"
@@ -164,7 +174,17 @@
             </button>
 
             <button
-              v-if="state.canTerminateTeam(team.currentStatus)"
+              v-if="team.teamRunId.startsWith('temp-')"
+              type="button"
+              class="ml-2 inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
+              title="Remove draft team"
+              :disabled="state.isTeamDeleting(team.teamRunId)"
+              @click.stop="actions.onDeleteTeam(team)"
+            >
+              <Icon icon="heroicons:trash-20-solid" class="h-3.5 w-3.5" />
+            </button>
+            <button
+              v-else-if="state.canTerminateTeam(team.currentStatus)"
               type="button"
               class="ml-2 inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
               title="Terminate team"

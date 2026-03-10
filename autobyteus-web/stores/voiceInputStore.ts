@@ -7,6 +7,9 @@ export type VoiceInputRecordingSource = 'composer' | 'settings-test';
 export type VoiceInputResultOutcome = 'idle' | 'recording' | 'transcribing' | 'transcript-ready' | 'no-speech' | 'empty-transcript' | 'error';
 export type VoiceInputPermissionState = 'unknown' | 'prompt' | 'granted' | 'denied' | 'unsupported';
 
+const CAPTURE_START_TIMEOUT_MS = 2500;
+const NO_CAPTURE_FRAMES_ERROR = 'Voice Input did not receive any microphone frames. Reset the test and try again, or switch back to System default.';
+
 export interface VoiceInputAudioInputDevice {
   deviceId: string;
   label: string;
@@ -52,6 +55,8 @@ interface VoiceInputStoreState {
   audioInputDevices: VoiceInputAudioInputDevice[];
   microphonePermissionState: VoiceInputPermissionState;
   mediaDeviceListenerRegistered: boolean;
+  captureWatchdogTimer: ReturnType<typeof setTimeout> | null;
+  hasReceivedCaptureStats: boolean;
 }
 
 function mergeTranscriptWithDraft(currentDraft: string, transcript: string): string {
@@ -108,6 +113,24 @@ function buildMicrophoneAccessError(error: unknown, selectedDeviceId: string | n
   return error instanceof Error ? error.message : 'Failed to access microphone';
 }
 
+async function ensureAudioContextRunning(audioContext: AudioContext): Promise<void> {
+  const currentState = String(audioContext.state || 'unknown');
+  if (currentState === 'running') {
+    return;
+  }
+
+  if (typeof audioContext.resume === 'function') {
+    await audioContext.resume();
+  }
+
+  const resolvedState = String(audioContext.state || 'unknown');
+  if (resolvedState !== 'running') {
+    throw new Error(
+      `Voice Input recorder could not start because the audio engine stayed in "${resolvedState}" state.`,
+    );
+  }
+}
+
 export const useVoiceInputStore = defineStore('voiceInput', {
   state: (): VoiceInputStoreState => ({
     initialized: false,
@@ -125,6 +148,8 @@ export const useVoiceInputStore = defineStore('voiceInput', {
     audioInputDevices: [],
     microphonePermissionState: 'unknown',
     mediaDeviceListenerRegistered: false,
+    captureWatchdogTimer: null,
+    hasReceivedCaptureStats: false,
   }),
 
   getters: {
@@ -166,6 +191,42 @@ export const useVoiceInputStore = defineStore('voiceInput', {
 
     clearLatestResult(): void {
       this.latestResult = null;
+    },
+
+    clearCaptureWatchdog(): void {
+      if (this.captureWatchdogTimer) {
+        clearTimeout(this.captureWatchdogTimer);
+        this.captureWatchdogTimer = null;
+      }
+    },
+
+    armCaptureWatchdog(source: VoiceInputRecordingSource): void {
+      this.clearCaptureWatchdog();
+      this.hasReceivedCaptureStats = false;
+
+      this.captureWatchdogTimer = setTimeout(() => {
+        void this.handleCaptureStartupTimeout(source);
+      }, CAPTURE_START_TIMEOUT_MS);
+    },
+
+    async handleCaptureStartupTimeout(source: VoiceInputRecordingSource): Promise<void> {
+      this.captureWatchdogTimer = null;
+
+      if (!this.isRecording || this.recordingSource !== source || this.hasReceivedCaptureStats) {
+        return;
+      }
+
+      this.error = NO_CAPTURE_FRAMES_ERROR;
+      this.setLatestResult({
+        source,
+        outcome: 'error',
+        transcript: '',
+        detectedLanguage: null,
+        error: this.error,
+        diagnostics: null,
+      });
+      useToasts().addToast(this.error, 'error');
+      await this.cleanup();
     },
 
     async initialize(): Promise<void> {
@@ -236,6 +297,7 @@ export const useVoiceInputStore = defineStore('voiceInput', {
         this.error = null;
         this.recordingSource = source;
         this.liveInputLevel = 0;
+        this.hasReceivedCaptureStats = false;
 
         await this.refreshAudioInputDevices();
 
@@ -266,6 +328,7 @@ export const useVoiceInputStore = defineStore('voiceInput', {
         await this.refreshAudioInputDevices();
 
         this.audioContext = new AudioContext({ latencyHint: 'interactive' });
+        await ensureAudioContextRunning(this.audioContext);
 
         await this.audioContext.audioWorklet.addModule(new URL('@/workers/voice-input-recorder.worklet.js', import.meta.url));
 
@@ -276,6 +339,8 @@ export const useVoiceInputStore = defineStore('voiceInput', {
 
         this.audioWorklet.port.onmessage = (event) => {
           if (event.data?.type === 'capture-stats') {
+            this.hasReceivedCaptureStats = true;
+            this.clearCaptureWatchdog();
             this.liveInputLevel = typeof event.data.level === 'number'
               ? Math.max(0, Math.min(1, event.data.level))
               : 0;
@@ -302,6 +367,7 @@ export const useVoiceInputStore = defineStore('voiceInput', {
         this.audioWorklet.connect(this.audioContext.destination);
 
         this.isRecording = true;
+        this.armCaptureWatchdog(source);
         this.setLatestResult({
           source,
           outcome: 'recording',
@@ -440,7 +506,19 @@ export const useVoiceInputStore = defineStore('voiceInput', {
       await this.startRecording(source);
     },
 
+    async resetSettingsTestState(): Promise<void> {
+      await this.cleanup();
+      this.isTranscribing = false;
+      this.error = null;
+      if (this.latestResult?.source === 'settings-test') {
+        this.clearLatestResult();
+      }
+      await this.refreshAudioInputDevices();
+    },
+
     async cleanup(): Promise<void> {
+      this.clearCaptureWatchdog();
+
       if (this.stream) {
         for (const track of this.stream.getTracks()) {
           track.stop();
@@ -458,6 +536,7 @@ export const useVoiceInputStore = defineStore('voiceInput', {
       this.isRecording = false;
       this.recordingSource = null;
       this.liveInputLevel = 0;
+      this.hasReceivedCaptureStats = false;
     },
   },
 });

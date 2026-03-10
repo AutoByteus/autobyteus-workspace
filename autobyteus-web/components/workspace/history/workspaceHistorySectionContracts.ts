@@ -47,7 +47,7 @@ export interface WorkspaceHistorySectionActions {
   onSelectRun: (run: RunTreeRow) => Promise<void> | void;
   onTerminateRun: (runId: string) => Promise<void> | void;
   onDeleteRun: (run: RunTreeRow) => void;
-  onSelectTeam: (teamRunId: string) => void;
+  onSelectTeam: (team: TeamTreeNode) => Promise<void> | void;
   onTerminateTeam: (teamRunId: string) => Promise<void> | void;
   onDeleteTeam: (team: TeamTreeNode) => void;
   onSelectTeamMember: (member: TeamMemberTreeRow) => Promise<void> | void;

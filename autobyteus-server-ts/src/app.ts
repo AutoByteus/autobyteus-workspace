@@ -4,6 +4,10 @@ import cors from "@fastify/cors";
 import multipart from "@fastify/multipart";
 import websocket from "@fastify/websocket";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import {
+  AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR,
+  seedInternalServerBaseUrlFromListenAddress,
+} from "./config/server-runtime-endpoints.js";
 import { ensureServerHostEnvVar } from "./utils/env-utils.js";
 import { appConfigProvider } from "./config/app-config-provider.js";
 import { getLoggingConfigFromEnv, type LoggingConfig } from "./config/logging-config.js";
@@ -17,6 +21,10 @@ import { scheduleBackgroundTasks } from "./startup/background-runner.js";
 import { registerRestRoutes } from "./api/rest/index.js";
 import { registerGraphql } from "./api/graphql/index.js";
 import { registerWebsocketRoutes } from "./api/websocket/index.js";
+import {
+  startGatewayCallbackDeliveryRuntime,
+  stopGatewayCallbackDeliveryRuntime,
+} from "./external-channel/runtime/gateway-callback-delivery-runtime.js";
 import { getManagedMessagingGatewayService } from "./managed-capabilities/messaging-gateway/defaults.js";
 import { getWorkspaceManager } from "./workspaces/workspace-manager.js";
 
@@ -112,6 +120,7 @@ export async function buildApp(options?: BuildAppOptions): Promise<FastifyInstan
   await registerWebsocketRoutes(app);
   await registerGraphql(app);
   app.addHook("onClose", async () => {
+    await stopGatewayCallbackDeliveryRuntime();
     await getManagedMessagingGatewayService().close();
   });
 
@@ -169,6 +178,20 @@ export async function startServer(): Promise<void> {
   registerShutdownHandlers(app);
   await app.listen({ host: options.host, port: options.port });
   logger.info(`Server listening on ${options.host}:${options.port}`);
+  startGatewayCallbackDeliveryRuntime();
+
+  try {
+    const internalBaseUrl = seedInternalServerBaseUrlFromListenAddress({
+      requestedHost: options.host,
+      listenAddress: app.server.address(),
+    });
+    logger.info(`Server internal base URL configured to: ${internalBaseUrl}`);
+  } catch (error) {
+    delete process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR];
+    logger.error(
+      `Failed to derive internal server base URL for managed messaging: ${String(error)}`,
+    );
+  }
 
   try {
     await getManagedMessagingGatewayService().restoreIfEnabled();

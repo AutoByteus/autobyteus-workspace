@@ -8,6 +8,7 @@ import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 const {
   mockConnect,
   mockDisconnect,
+  mockAttachContext,
   mockConnectionState,
   mockStopGeneration,
   mockMutate,
@@ -18,6 +19,7 @@ const {
 } = vi.hoisted(() => ({
   mockConnect: vi.fn(),
   mockDisconnect: vi.fn(),
+  mockAttachContext: vi.fn(),
   mockConnectionState: { value: 'connected' as 'connected' | 'disconnected' | 'connecting' | 'reconnecting' },
   mockStopGeneration: vi.fn(),
   mockMutate: vi.fn(),
@@ -52,6 +54,7 @@ vi.mock('~/services/agentStreaming', () => ({
     },
     connect: mockConnect,
     disconnect: mockDisconnect,
+    attachContext: mockAttachContext,
     approveTool: vi.fn(),
     denyTool: vi.fn(),
     stopGeneration: mockStopGeneration,
@@ -95,6 +98,7 @@ describe('agentTeamRunStore', () => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
     mockConnectionState.value = 'connected';
+    mockAttachContext.mockReset();
     mockStopGeneration.mockReset();
     teamContextsStoreMock.activeTeamContext = null;
     teamContextsStoreMock.focusedMemberContext = null;
@@ -149,6 +153,32 @@ describe('agentTeamRunStore', () => {
     expect(mockClearActivities).toHaveBeenCalledWith('agent-b');
     expect(teamContextsStoreMock.removeTeamContext).not.toHaveBeenCalled();
     expect(mockMutate).toHaveBeenCalledTimes(1);
+  });
+
+  it('discardDraftTeamRun removes a temporary team locally without backend termination', () => {
+    const unsubscribeSpy = vi.fn();
+    const teamContext = {
+      teamRunId: 'temp-team-1',
+      isSubscribed: true,
+      unsubscribe: unsubscribeSpy,
+      members: new Map([
+        ['member-a', { isSending: true, state: { runId: 'agent-a', currentStatus: AgentStatus.Idle } }],
+        ['member-b', { isSending: false, state: { runId: 'agent-b', currentStatus: AgentStatus.Idle } }],
+      ]),
+    };
+    teamContextsStoreMock.getTeamContextById.mockReturnValue(teamContext);
+
+    const store = useAgentTeamRunStore();
+    const result = store.discardDraftTeamRun('temp-team-1');
+
+    expect(result).toBe(true);
+    expect(unsubscribeSpy).toHaveBeenCalledTimes(1);
+    expect(teamContext.isSubscribed).toBe(false);
+    expect(teamContext.members.get('member-a')?.isSending).toBe(false);
+    expect(teamContextsStoreMock.removeTeamContext).toHaveBeenCalledWith('temp-team-1');
+    expect(mockClearActivities).toHaveBeenCalledWith('agent-a');
+    expect(mockClearActivities).toHaveBeenCalledWith('agent-b');
+    expect(mockMutate).not.toHaveBeenCalled();
   });
 
   it('resubscribes and marks team active when sending to an offline persisted team', async () => {
@@ -268,6 +298,33 @@ describe('agentTeamRunStore', () => {
 
     expect(mockConnect).toHaveBeenCalledTimes(2);
     expect(mockConnect).toHaveBeenLastCalledWith(teamRunId, teamContext);
+  });
+
+  it('reattaches an existing team stream service to the latest team context', () => {
+    const teamRunId = `team-reattach-${Date.now()}`;
+    const initialTeamContext = {
+      teamRunId,
+      isSubscribed: false,
+      unsubscribe: undefined as undefined | (() => void),
+    };
+    const replacementTeamContext = {
+      teamRunId,
+      isSubscribed: false,
+      unsubscribe: undefined as undefined | (() => void),
+    };
+
+    teamContextsStoreMock.getTeamContextById
+      .mockReturnValueOnce(initialTeamContext)
+      .mockReturnValueOnce(replacementTeamContext);
+
+    const store = useAgentTeamRunStore();
+    store.connectToTeamStream(teamRunId);
+    store.connectToTeamStream(teamRunId);
+
+    expect(mockAttachContext).toHaveBeenCalledWith(replacementTeamContext);
+    expect(mockConnect).toHaveBeenCalledTimes(1);
+    expect(replacementTeamContext.isSubscribed).toBe(true);
+    expect(typeof replacementTeamContext.unsubscribe).toBe('function');
   });
 
   it('stopGeneration should send STOP_GENERATION to the active team stream', () => {

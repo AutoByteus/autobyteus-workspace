@@ -128,6 +128,7 @@ const createManager = (overrides: Partial<ConstructorParameters<typeof AgentRunM
 
   const agentDefinitionService = {
     getAgentDefinitionById: vi.fn(),
+    getFreshAgentDefinitionById: vi.fn((id: string) => agentDefinitionService.getAgentDefinitionById(id)),
   };
 
   const llmFactory = {
@@ -147,10 +148,6 @@ const createManager = (overrides: Partial<ConstructorParameters<typeof AgentRunM
     getSkill: vi.fn(),
   };
 
-  const promptLoader = {
-    getPromptTemplateForAgent: vi.fn().mockResolvedValue(null),
-  };
-
   const waitForIdle = vi.fn().mockResolvedValue(undefined);
 
   const registries = makeEmptyRegistries();
@@ -161,7 +158,6 @@ const createManager = (overrides: Partial<ConstructorParameters<typeof AgentRunM
     llmFactory: llmFactory as any,
     workspaceManager: workspaceManager as any,
     skillService: skillService as any,
-    promptLoader: promptLoader as any,
     registries,
     waitForIdle,
     ...overrides,
@@ -174,7 +170,6 @@ const createManager = (overrides: Partial<ConstructorParameters<typeof AgentRunM
     llmFactory,
     workspaceManager,
     skillService,
-    promptLoader,
     waitForIdle,
   };
 };

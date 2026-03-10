@@ -3,12 +3,14 @@ import {
   resolveSkillAccessMode,
 } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentDefinitionService } from "../agent-definition/services/agent-definition-service.js";
-import { PromptLoader, promptLoader } from "../agent-definition/utils/prompt-loader.js";
 import { SkillService } from "../skills/services/skill-service.js";
 import type { ResolvedRuntimeSkill } from "./configured-runtime-skills.js";
 
 type AgentDefinitionServiceLike = Pick<AgentDefinitionService, "getAgentDefinitionById">;
 type SkillServiceLike = Pick<SkillService, "getSkill">;
+type PromptLoaderLike = {
+  getPromptTemplateForAgent: (agentDefinitionId: string) => Promise<string | null>;
+};
 
 const asTrimmedString = (value: unknown): string | null =>
   typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
@@ -62,25 +64,25 @@ export type SingleAgentRuntimeContext = {
 export const resolveSingleAgentRuntimeContext = async (
   agentDefinitionId: string,
   options: {
-    promptLoader?: PromptLoader;
+    promptLoader?: PromptLoaderLike;
     agentDefinitionService?: AgentDefinitionServiceLike;
     skillService?: SkillServiceLike;
     skillAccessMode?: SkillAccessMode | null;
   } = {},
 ): Promise<SingleAgentRuntimeContext> => {
-  const loader = options.promptLoader ?? promptLoader;
   const agentDefinitionService =
     options.agentDefinitionService ?? AgentDefinitionService.getInstance();
   const skillService = options.skillService ?? SkillService.getInstance();
 
   const [rawPromptInstructions, agentDefinition] = await Promise.all([
-    loader.getPromptTemplateForAgent(agentDefinitionId),
+    options.promptLoader?.getPromptTemplateForAgent(agentDefinitionId) ?? Promise.resolve(null),
     agentDefinitionService.getAgentDefinitionById(agentDefinitionId),
   ]);
 
   const promptInstructions = asTrimmedString(rawPromptInstructions);
+  const definitionInstructions = asTrimmedString((agentDefinition as { instructions?: unknown } | null)?.instructions);
   const fallbackInstructions = asTrimmedString(agentDefinition?.description);
-  const agentInstructions = promptInstructions ?? fallbackInstructions;
+  const agentInstructions = promptInstructions ?? definitionInstructions ?? fallbackInstructions;
   const configuredSkills = await resolveConfiguredRuntimeSkills({
     skillNames: agentDefinition?.skillNames ?? [],
     skillService,

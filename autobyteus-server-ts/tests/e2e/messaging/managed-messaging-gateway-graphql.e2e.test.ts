@@ -10,6 +10,10 @@ import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import {
+  AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR,
+  seedInternalServerBaseUrl,
+} from "../../../src/config/server-runtime-endpoints.js";
+import {
   __resetManagedMessagingGatewayServiceForTests,
 } from "../../../src/managed-capabilities/messaging-gateway/defaults.js";
 import {
@@ -46,7 +50,7 @@ describe("Managed messaging gateway GraphQL e2e", () => {
     const envPath = path.join(dataDir, ".env");
     await fsp.writeFile(
       envPath,
-      "AUTOBYTEUS_SERVER_HOST=http://127.0.0.1:8899\n",
+      "AUTOBYTEUS_SERVER_HOST=http://localhost:60634\n",
       "utf8",
     );
 
@@ -109,11 +113,13 @@ describe("Managed messaging gateway GraphQL e2e", () => {
       artifactVersion: "0.1.0",
       baseUrl: artifactBaseUrl,
     });
+    seedInternalServerBaseUrl({ host: "0.0.0.0", port: 8000 });
   });
 
   afterAll(async () => {
     delete process.env.MANAGED_MESSAGING_GATEWAY_HEALTH_STARTUP_TIMEOUT_MS;
     delete process.env.MANAGED_MESSAGING_GATEWAY_MANIFEST_PATH;
+    delete process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR];
     await __resetManagedMessagingGatewayServiceForTests();
     await new Promise<void>((resolve, reject) => {
       artifactServer.close((error) => {
@@ -288,6 +294,9 @@ describe("Managed messaging gateway GraphQL e2e", () => {
     );
     expect(runtimeEnv).toContain("GATEWAY_TELEGRAM_POLLING_ENABLED=true");
     expect(runtimeEnv).toContain("GATEWAY_TELEGRAM_WEBHOOK_ENABLED=false");
+    expect(runtimeEnv).toContain("GATEWAY_SERVER_BASE_URL=http://127.0.0.1:8000");
+    expect(runtimeEnv).not.toContain("GATEWAY_SERVER_BASE_URL=http://localhost:60634");
+    expect(appConfigProvider.config.getBaseUrl()).toBe("http://localhost:60634");
   }, 30_000);
 
   it("propagates managed gateway shared secrets into the runtime env", async () => {
@@ -325,6 +334,47 @@ describe("Managed messaging gateway GraphQL e2e", () => {
       delete process.env.CHANNEL_GATEWAY_SHARED_SECRET;
       delete process.env.CHANNEL_CALLBACK_SHARED_SECRET;
     }
+  });
+
+  it("writes the seeded runtime-only port when it differs from the public URL port", async () => {
+    seedInternalServerBaseUrl({ host: "127.0.0.1", port: 29695 });
+
+    await execGraphql(`
+      mutation EnableManagedGateway {
+        enableManagedMessagingGateway {
+          lifecycleState
+        }
+      }
+    `);
+
+    const runtimeEnv = await fsp.readFile(
+      path.join(
+        dataDir,
+        "extensions",
+        "messaging-gateway",
+        "config",
+        "gateway.env",
+      ),
+      "utf8",
+    );
+
+    expect(runtimeEnv).toContain("GATEWAY_SERVER_BASE_URL=http://127.0.0.1:29695");
+    expect(runtimeEnv).not.toContain("GATEWAY_SERVER_BASE_URL=http://127.0.0.1:8000");
+    expect(appConfigProvider.config.getBaseUrl()).toBe("http://localhost:60634");
+  });
+
+  it("fails explicitly when the runtime-only internal server base url is not seeded", async () => {
+    delete process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR];
+
+    await expect(
+      execGraphql(`
+        mutation EnableManagedGateway {
+          enableManagedMessagingGateway {
+            lifecycleState
+          }
+        }
+      `),
+    ).rejects.toThrow(/AUTOBYTEUS_INTERNAL_SERVER_BASE_URL/);
   });
 
   it("proxies WeCom accounts and Discord peer candidates through the server-owned boundary", async () => {
@@ -436,5 +486,4 @@ describe("Managed messaging gateway GraphQL e2e", () => {
     expect(disabled.disableManagedMessagingGateway.lifecycleState).toBe("DISABLED");
     expect(disabled.disableManagedMessagingGateway.runtimeRunning).toBe(false);
   });
-
 });

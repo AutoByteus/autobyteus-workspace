@@ -101,4 +101,55 @@ describe('TeamStreamingService', () => {
     callbacks.get('onDisconnect')?.('closed');
     expect(teamContext.isSubscribed).toBe(false);
   });
+
+  it('reattaches lifecycle callbacks to the latest team context', () => {
+    const callbacks = new Map<string, (payload?: any) => void>();
+    const wsClient = {
+      state: 'connected',
+      connect: vi.fn(),
+      disconnect: vi.fn(),
+      send: vi.fn(),
+      on: vi.fn((event: string, cb: (payload?: any) => void) => {
+        callbacks.set(event, cb);
+      }),
+      off: vi.fn(),
+    } as any;
+
+    const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
+    const originalContext = {
+      isSubscribed: false,
+      focusedMemberName: 'worker-a',
+      members: new Map([
+        [
+          'worker-a',
+          {
+            state: { runId: 'agent-1' },
+            conversation: { messages: [], updatedAt: '' },
+          },
+        ],
+      ]),
+    } as any;
+    const replacementContext = {
+      isSubscribed: false,
+      focusedMemberName: 'worker-a',
+      members: new Map([
+        [
+          'worker-a',
+          {
+            state: { runId: 'agent-1' },
+            conversation: { messages: [], updatedAt: '' },
+          },
+        ],
+      ]),
+    } as any;
+
+    service.connect('team-1', originalContext);
+    service.attachContext(replacementContext);
+
+    callbacks.get('onConnect')?.();
+    callbacks.get('onDisconnect')?.('closed');
+
+    expect(originalContext.isSubscribed).toBe(false);
+    expect(replacementContext.isSubscribed).toBe(false);
+  });
 });

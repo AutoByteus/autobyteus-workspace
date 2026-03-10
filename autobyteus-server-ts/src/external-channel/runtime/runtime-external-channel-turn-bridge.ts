@@ -7,12 +7,8 @@ import {
 import { normalizeMethodRuntimeMethod } from "../../runtime-execution/method-runtime/runtime-method-normalizer.js";
 import type { ExternalMessageEnvelope } from "autobyteus-ts/external-channel/external-message-envelope.js";
 import { getProviderProxySet } from "../providers/provider-proxy-set.js";
-import { GatewayCallbackPublisher } from "./gateway-callback-publisher.js";
-import { resolveGatewayCallbackPublisherOptions } from "./gateway-callback-publisher-options-resolver.js";
-import { CallbackIdempotencyService } from "../services/callback-idempotency-service.js";
-import { ChannelBindingService } from "../services/channel-binding-service.js";
+import { buildDefaultReplyCallbackService } from "./gateway-callback-delivery-runtime.js";
 import { ChannelMessageReceiptService } from "../services/channel-message-receipt-service.js";
-import { DeliveryEventService } from "../services/delivery-event-service.js";
 import {
   ReplyCallbackService,
   type PublishAssistantReplyByTurnResult,
@@ -306,27 +302,7 @@ const buildCallbackIdempotencyKey = (runId: string, turnId: string): string =>
   `external-reply:${runId}:${turnId}`;
 
 const createReplyCallbackService = (): ReplyCallbackService => {
-  const providerSet = getProviderProxySet();
-  const messageReceiptService = new ChannelMessageReceiptService(
-    providerSet.messageReceiptProvider,
-  );
-  const callbackIdempotencyService = new CallbackIdempotencyService(
-    providerSet.callbackIdempotencyProvider,
-  );
-  const deliveryEventService = new DeliveryEventService(
-    providerSet.deliveryEventProvider,
-  );
-  const bindingService = new ChannelBindingService(providerSet.bindingProvider);
-  const callbackPublisherOptions = resolveGatewayCallbackPublisherOptions();
-  const callbackPublisher = callbackPublisherOptions
-    ? new GatewayCallbackPublisher(callbackPublisherOptions)
-    : undefined;
-  return new ReplyCallbackService(messageReceiptService, {
-    callbackIdempotencyService,
-    deliveryEventService,
-    bindingService,
-    callbackPublisher,
-  });
+  return buildDefaultReplyCallbackService();
 };
 
 const parseRuntimeEvent = (

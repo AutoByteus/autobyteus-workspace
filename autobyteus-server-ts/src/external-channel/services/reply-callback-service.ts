@@ -44,22 +44,32 @@ type ChannelSourceLookupPort = Pick<ChannelMessageReceiptService, "getSourceByAg
 
 type CallbackIdempotencyPort = Pick<CallbackIdempotencyService, "reserveCallbackKey">;
 
-type DeliveryEventPort = Pick<
-  DeliveryEventService,
-  "recordPending" | "recordSent" | "recordFailed"
->;
+type DeliveryEventPort = Pick<DeliveryEventService, "recordPending">;
 
 type ChannelBindingLookupPort = Pick<ChannelBindingService, "isRouteBoundToTarget">;
 
-export interface ChannelCallbackPublisher {
-  publish(envelope: ExternalOutboundEnvelope): Promise<void>;
-}
+type CallbackOutboxPort = {
+  enqueueOrGet(
+    callbackIdempotencyKey: string,
+    payload: ExternalOutboundEnvelope,
+  ): Promise<{
+    duplicate: boolean;
+  }>;
+};
+
+type CallbackTargetResolverPort = {
+  resolveGatewayCallbackDispatchTarget: () => Promise<{
+    state: "AVAILABLE" | "UNAVAILABLE" | "DISABLED";
+    reason: string | null;
+  }>;
+};
 
 export type ReplyCallbackServiceDependencies = {
   callbackIdempotencyService?: CallbackIdempotencyPort;
   deliveryEventService?: DeliveryEventPort;
   bindingService?: ChannelBindingLookupPort;
-  callbackPublisher?: ChannelCallbackPublisher;
+  callbackOutboxService?: CallbackOutboxPort;
+  callbackTargetResolver?: CallbackTargetResolverPort;
 };
 
 export type ReplyCallbackServiceOptions = {
@@ -73,7 +83,9 @@ export class ReplyCallbackService {
 
   private readonly bindingService?: ChannelBindingLookupPort;
 
-  private readonly callbackPublisher?: ChannelCallbackPublisher;
+  private readonly callbackOutboxService?: CallbackOutboxPort;
+
+  private readonly callbackTargetResolver?: CallbackTargetResolverPort;
 
   private readonly callbackIdempotencyTtlSeconds: number;
 
@@ -85,7 +97,8 @@ export class ReplyCallbackService {
     this.callbackIdempotencyService = deps.callbackIdempotencyService;
     this.deliveryEventService = deps.deliveryEventService;
     this.bindingService = deps.bindingService;
-    this.callbackPublisher = deps.callbackPublisher;
+    this.callbackOutboxService = deps.callbackOutboxService;
+    this.callbackTargetResolver = deps.callbackTargetResolver;
     this.callbackIdempotencyTtlSeconds = options.callbackIdempotencyTtlSeconds ?? 3600;
   }
 
@@ -109,8 +122,20 @@ export class ReplyCallbackService {
 
     const callbackIdempotencyService = this.callbackIdempotencyService;
     const deliveryEventService = this.deliveryEventService;
-    const callbackPublisher = this.callbackPublisher;
-    if (!callbackIdempotencyService || !deliveryEventService || !callbackPublisher) {
+    const callbackOutboxService = this.callbackOutboxService;
+    const callbackTargetResolver = this.callbackTargetResolver;
+    if (
+      !callbackIdempotencyService ||
+      !deliveryEventService ||
+      !callbackOutboxService ||
+      !callbackTargetResolver
+    ) {
+      return skip("CALLBACK_NOT_CONFIGURED");
+    }
+
+    const callbackTarget =
+      await callbackTargetResolver.resolveGatewayCallbackDispatchTarget();
+    if (callbackTarget.state === "DISABLED") {
       return skip("CALLBACK_NOT_CONFIGURED");
     }
 
@@ -180,16 +205,7 @@ export class ReplyCallbackService {
     };
     await deliveryEventService.recordPending(deliveryBaseInput);
 
-    try {
-      await callbackPublisher.publish(envelope);
-      await deliveryEventService.recordSent(deliveryBaseInput);
-    } catch (error) {
-      await deliveryEventService.recordFailed({
-        ...deliveryBaseInput,
-        errorMessage: toErrorMessage(error),
-      });
-      throw error;
-    }
+    await callbackOutboxService.enqueueOrGet(callbackIdempotencyKey, envelope);
 
     return {
       published: true,
@@ -260,11 +276,4 @@ const normalizeMetadata = (
     return {};
   }
   return metadata;
-};
-
-const toErrorMessage = (error: unknown): string => {
-  if (error instanceof Error) {
-    return error.message;
-  }
-  return "Unknown callback publication error.";
 };

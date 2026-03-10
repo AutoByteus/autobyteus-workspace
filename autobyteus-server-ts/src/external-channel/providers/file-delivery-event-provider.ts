@@ -38,8 +38,6 @@ type ChannelDeliveryEventRow = {
   updatedAt: string;
 };
 
-const deliveryFilePath = resolvePersistencePath("external-channel", "delivery-events.json");
-
 const toThreadStorage = (threadId: string | null): string => normalizeNullableString(threadId) ?? "";
 const fromThreadStorage = (threadId: string): string | null => normalizeNullableString(threadId);
 
@@ -67,6 +65,13 @@ const toDomain = (row: ChannelDeliveryEventRow): ChannelDeliveryEvent => ({
 });
 
 export class FileDeliveryEventProvider implements DeliveryEventProvider {
+  constructor(
+    private readonly filePath: string = resolvePersistencePath(
+      "external-channel",
+      "delivery-events.json",
+    ),
+  ) {}
+
   async upsertByCallbackKey(
     input: UpsertChannelDeliveryEventInput,
   ): Promise<ChannelDeliveryEvent> {
@@ -78,7 +83,7 @@ export class FileDeliveryEventProvider implements DeliveryEventProvider {
     const now = new Date().toISOString();
     let saved: ChannelDeliveryEventRow | null = null;
 
-    await updateJsonArrayFile<ChannelDeliveryEventRow>(deliveryFilePath, (rows) => {
+    await updateJsonArrayFile<ChannelDeliveryEventRow>(this.filePath, (rows) => {
       const index = rows.findIndex((row) => row.callbackIdempotencyKey === callbackIdempotencyKey);
       if (index >= 0) {
         const current = rows[index] as ChannelDeliveryEventRow;
@@ -128,7 +133,7 @@ export class FileDeliveryEventProvider implements DeliveryEventProvider {
 
   async findByCallbackKey(callbackIdempotencyKey: string): Promise<ChannelDeliveryEvent | null> {
     const key = normalizeRequiredString(callbackIdempotencyKey, "callbackIdempotencyKey");
-    const rows = await readJsonArrayFile<ChannelDeliveryEventRow>(deliveryFilePath);
+    const rows = await readJsonArrayFile<ChannelDeliveryEventRow>(this.filePath);
     const found = rows.find((row) => row.callbackIdempotencyKey === key);
     return found ? toDomain(found) : null;
   }
