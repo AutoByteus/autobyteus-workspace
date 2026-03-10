@@ -21,7 +21,7 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-if [[ -n "${VARIANT}" ]]; then
+if [[ -n "${VARIANT}" && "${VARIANT}" != "latest" ]]; then
   BUILD_ARGS+=("--build-arg" "BASE_IMAGE_TAG=${VARIANT}")
   if [[ "${TAG}" == "latest" ]]; then
     TAG="latest-${VARIANT}"

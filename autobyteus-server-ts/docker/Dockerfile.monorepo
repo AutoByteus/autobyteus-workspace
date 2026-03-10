@@ -49,10 +49,14 @@ COPY autobyteus-server-ts/docker/supervisor-autobyteus-server.conf /etc/supervis
 COPY autobyteus-server-ts/docker/bootstrap.sh /usr/local/bin/autobyteus-bootstrap.sh
 COPY autobyteus-server-ts/docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY autobyteus-server-ts/docker/open-vnc-browser-url.sh /usr/local/bin/open-vnc-browser-url.sh
+COPY autobyteus-server-ts/docker/xdg-open-root-bridge.sh /usr/local/bin/xdg-open
+COPY autobyteus-server-ts/docker/exo-open-root-bridge.sh /usr/local/bin/exo-open
 RUN chmod +x \
   /usr/local/bin/autobyteus-bootstrap.sh \
   /usr/local/bin/entrypoint.sh \
-  /usr/local/bin/open-vnc-browser-url.sh
+  /usr/local/bin/open-vnc-browser-url.sh \
+  /usr/local/bin/xdg-open \
+  /usr/local/bin/exo-open
 
 ENV NODE_ENV=production \
     BROWSER=/usr/local/bin/open-vnc-browser-url.sh \
