@@ -4,6 +4,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 WEB_PACKAGE_JSON="$REPO_ROOT/autobyteus-web/package.json"
+GATEWAY_PACKAGE_JSON="$REPO_ROOT/autobyteus-message-gateway/package.json"
 RELEASE_NOTES_OUTPUT_PATH="$REPO_ROOT/.github/release-notes/release-notes.md"
 RELEASE_NOTES_OUTPUT_REL=".github/release-notes/release-notes.md"
 DEFAULT_BRANCH="personal"
@@ -60,7 +61,8 @@ get_current_branch() {
 }
 
 get_package_version() {
-  node - "$WEB_PACKAGE_JSON" <<'NODE'
+  local file_path="$1"
+  node - "$file_path" <<'NODE'
 const fs = require('fs');
 const file = process.argv[2];
 const pkg = JSON.parse(fs.readFileSync(file, 'utf8'));
@@ -69,8 +71,9 @@ NODE
 }
 
 set_package_version() {
-  local version="$1"
-  node - "$WEB_PACKAGE_JSON" "$version" <<'NODE'
+  local file_path="$1"
+  local next_version="$2"
+  node - "$file_path" "$next_version" <<'NODE'
 const fs = require('fs');
 const file = process.argv[2];
 const nextVersion = process.argv[3];
@@ -163,15 +166,20 @@ run_release() {
   local tag="v$version"
   ensure_tag_absent "$tag"
 
-  local current_version
-  current_version="$(get_package_version)"
-  if [[ "$current_version" == "$version" ]]; then
+  local current_web_version
+  current_web_version="$(get_package_version "$WEB_PACKAGE_JSON")"
+  if [[ "$current_web_version" == "$version" ]]; then
     echo "Error: autobyteus-web/package.json is already version '$version'." >&2
     exit 1
   fi
 
-  echo "Updating autobyteus-web/package.json: $current_version -> $version"
-  set_package_version "$version"
+  local current_gateway_version
+  current_gateway_version="$(get_package_version "$GATEWAY_PACKAGE_JSON")"
+
+  echo "Updating autobyteus-web/package.json: $current_web_version -> $version"
+  set_package_version "$WEB_PACKAGE_JSON" "$version"
+  echo "Updating autobyteus-message-gateway/package.json: $current_gateway_version -> $version"
+  set_package_version "$GATEWAY_PACKAGE_JSON" "$version"
   sync_release_notes_file "$release_notes_file"
   echo "Syncing managed messaging release manifest to $tag"
   node "$REPO_ROOT/autobyteus-message-gateway/scripts/build-runtime-package.mjs" \
@@ -180,9 +188,10 @@ run_release() {
 
   git -C "$REPO_ROOT" add \
     .github/release-notes/release-notes.md \
+    autobyteus-message-gateway/package.json \
     autobyteus-web/package.json \
     autobyteus-server-ts/src/managed-capabilities/messaging-gateway/release-manifest.json
-  git -C "$REPO_ROOT" commit -m "chore(release): bump desktop app version to $version"
+  git -C "$REPO_ROOT" commit -m "chore(release): bump workspace release version to $version"
   git -C "$REPO_ROOT" tag -a "$tag" -m "Release $tag"
 
   if [[ "$push_enabled" == "true" ]]; then

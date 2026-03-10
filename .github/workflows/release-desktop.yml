@@ -79,16 +79,22 @@ jobs:
           fetch-depth: 0
           submodules: recursive
 
-      - name: Validate desktop package version matches release tag
+      - name: Validate workspace package versions match release tag
         if: ${{ steps.meta.outputs.enforce_version == 'true' }}
         run: |
           TAG_VERSION="${{ steps.meta.outputs.release_tag }}"
           TAG_VERSION="${TAG_VERSION#v}"
-          PACKAGE_VERSION="$(grep -m1 '"version"' autobyteus-web/package.json | sed -E 's/.*\"version\": \"([^\"]+)\".*/\1/')"
+          DESKTOP_VERSION="$(grep -m1 '"version"' autobyteus-web/package.json | sed -E 's/.*\"version\": \"([^\"]+)\".*/\1/')"
+          GATEWAY_VERSION="$(grep -m1 '"version"' autobyteus-message-gateway/package.json | sed -E 's/.*\"version\": \"([^\"]+)\".*/\1/')"
           echo "Release tag version: $TAG_VERSION"
-          echo "Desktop package version: $PACKAGE_VERSION"
-          if [[ "$PACKAGE_VERSION" != "$TAG_VERSION" ]]; then
-            echo "::error::autobyteus-web/package.json version ($PACKAGE_VERSION) must match release tag ($TAG_VERSION)."
+          echo "Desktop package version: $DESKTOP_VERSION"
+          echo "Gateway package version: $GATEWAY_VERSION"
+          if [[ "$DESKTOP_VERSION" != "$TAG_VERSION" ]]; then
+            echo "::error::autobyteus-web/package.json version ($DESKTOP_VERSION) must match release tag ($TAG_VERSION)."
+            exit 1
+          fi
+          if [[ "$GATEWAY_VERSION" != "$TAG_VERSION" ]]; then
+            echo "::error::autobyteus-message-gateway/package.json version ($GATEWAY_VERSION) must match release tag ($TAG_VERSION)."
             exit 1
           fi
 
