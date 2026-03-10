@@ -87,9 +87,6 @@ describe("AgentRunManager real memory layout integration", () => {
       skillService: {
         getSkill: () => null,
       } as any,
-      promptLoader: {
-        getPromptTemplateForAgent: async () => null,
-      } as any,
     });
   });
 

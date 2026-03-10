@@ -38,6 +38,7 @@ const createManager = (overrides = {}) => {
     };
     const agentDefinitionService = {
         getAgentDefinitionById: vi.fn(),
+        getFreshAgentDefinitionById: vi.fn((id) => agentDefinitionService.getAgentDefinitionById(id)),
     };
     const llmFactory = {
         createLLM: vi.fn().mockResolvedValue({}),
@@ -52,9 +53,6 @@ const createManager = (overrides = {}) => {
     const skillService = {
         getSkill: vi.fn(),
     };
-    const promptLoader = {
-        getPromptTemplateForAgent: vi.fn().mockResolvedValue(null),
-    };
     const waitForIdle = vi.fn().mockResolvedValue(undefined);
     const registries = makeEmptyRegistries();
     const manager = new AgentRunManager({
@@ -63,7 +61,6 @@ const createManager = (overrides = {}) => {
         llmFactory: llmFactory,
         workspaceManager: workspaceManager,
         skillService: skillService,
-        promptLoader: promptLoader,
         registries,
         waitForIdle,
         ...overrides,
@@ -75,7 +72,6 @@ const createManager = (overrides = {}) => {
         llmFactory,
         workspaceManager,
         skillService,
-        promptLoader,
         waitForIdle,
     };
 };

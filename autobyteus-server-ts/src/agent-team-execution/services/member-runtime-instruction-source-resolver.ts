@@ -43,7 +43,7 @@ export class MemberRuntimeInstructionSourceResolver {
 
   private async resolveTeamDefinition(teamDefinitionId: string) {
     try {
-      return await this.agentTeamDefinitionService.getDefinitionById(teamDefinitionId);
+      return await this.agentTeamDefinitionService.getFreshDefinitionById(teamDefinitionId);
     } catch (error) {
       logger.warn(
         `Failed resolving team instruction source for team definition '${teamDefinitionId}': ${String(error)}`,
@@ -54,7 +54,7 @@ export class MemberRuntimeInstructionSourceResolver {
 
   private async resolveAgentDefinition(agentDefinitionId: string) {
     try {
-      return await this.agentDefinitionService.getAgentDefinitionById(agentDefinitionId);
+      return await this.agentDefinitionService.getFreshAgentDefinitionById(agentDefinitionId);
     } catch (error) {
       logger.warn(
         `Failed resolving agent instruction source for agent definition '${agentDefinitionId}': ${String(error)}`,
