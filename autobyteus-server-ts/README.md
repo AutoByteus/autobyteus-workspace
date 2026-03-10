@@ -191,6 +191,26 @@ cp .env.example .env
 pnpm -C autobyteus-server-ts exec vitest
 ```
 
+## Runtime Sandbox Overrides
+
+The native coding runtimes use different override knobs for "skip sandbox" behavior:
+
+- Codex App Server runtime: set `CODEX_APP_SERVER_SANDBOX=danger-full-access`
+  - Supported values: `read-only`, `workspace-write`, `danger-full-access`
+  - Default: `workspace-write`
+- Claude Agent SDK runtime: set `CLAUDE_AGENT_SDK_PERMISSION_MODE=bypassPermissions`
+  - Supported values: `default`, `plan`, `acceptEdits`, `bypassPermissions`
+  - Default: `default`
+  - Accepted aliases: `bypass-permissions`, `bypass_permissions`
+
+Example:
+
+```bash
+CODEX_APP_SERVER_SANDBOX=danger-full-access \
+CLAUDE_AGENT_SDK_PERMISSION_MODE=bypassPermissions \
+pnpm dev
+```
+
 Notes:
 - Tests use `.env.test` and a temporary SQLite DB at `tests/.tmp/`.
 - Some integration tests are env-gated (e.g., `AUTOBYTEUS_DOWNLOAD_TEST_URL`).
