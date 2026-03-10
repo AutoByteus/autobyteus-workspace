@@ -1,4 +1,6 @@
 import { spawnSync } from "node:child_process";
+import type { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import type { ResolvedRuntimeSkill } from "../configured-runtime-skills.js";
 
 export const CLAUDE_AGENT_SDK_MODULE_NAME = "@anthropic-ai/claude-agent-sdk";
 export const MODEL_DISCOVERY_PROBE_PROMPT = "Enumerate supported models only.";
@@ -72,6 +74,8 @@ export interface ClaudeSessionRuntimeOptions {
   autoExecuteTools?: boolean;
   llmConfig?: Record<string, unknown> | null;
   runtimeMetadata?: Record<string, unknown> | null;
+  configuredSkills?: ResolvedRuntimeSkill[] | null;
+  skillAccessMode?: SkillAccessMode | null;
 }
 
 const CLAUDE_EXECUTABLE_METADATA_KEYS = [
@@ -132,6 +136,8 @@ export interface ClaudeRunSessionState {
   sendMessageToEnabled: boolean;
   teamManifestMembers: TeamManifestMetadataMember[];
   allowedRecipientNames: string[];
+  configuredSkills: ResolvedRuntimeSkill[];
+  skillAccessMode: SkillAccessMode | null;
   listeners: Set<(event: ClaudeRuntimeEvent) => void>;
   activeAbortController: AbortController | null;
   activeTurnId: string | null;

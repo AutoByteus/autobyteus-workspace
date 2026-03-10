@@ -1,4 +1,6 @@
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
+import type { AgentDefinition } from "../../agent-definition/domain/models.js";
+import type { AgentTeamDefinition } from "../../agent-team-definition/domain/models.js";
 import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 
 const logger = {
@@ -18,6 +20,9 @@ export type MemberRuntimeInstructionSources = {
   teamInstructions: string | null;
   agentInstructions: string | null;
 };
+
+type TeamInstructionDefinition = Pick<AgentTeamDefinition, "instructions">;
+type AgentInstructionDefinition = Pick<AgentDefinition, "instructions">;
 
 export class MemberRuntimeInstructionSourceResolver {
   constructor(
@@ -41,9 +46,21 @@ export class MemberRuntimeInstructionSourceResolver {
     };
   }
 
-  private async resolveTeamDefinition(teamDefinitionId: string) {
+  private async resolveTeamDefinition(
+    teamDefinitionId: string,
+  ): Promise<TeamInstructionDefinition | null> {
     try {
-      return await this.agentTeamDefinitionService.getFreshDefinitionById(teamDefinitionId);
+      const getFreshDefinitionById = (
+        this.agentTeamDefinitionService as AgentTeamDefinitionService & {
+          getFreshDefinitionById?: (
+            definitionId: string,
+          ) => Promise<TeamInstructionDefinition | null>;
+        }
+      ).getFreshDefinitionById;
+      if (typeof getFreshDefinitionById === "function") {
+        return await getFreshDefinitionById.call(this.agentTeamDefinitionService, teamDefinitionId);
+      }
+      return await this.agentTeamDefinitionService.getDefinitionById(teamDefinitionId);
     } catch (error) {
       logger.warn(
         `Failed resolving team instruction source for team definition '${teamDefinitionId}': ${String(error)}`,
@@ -52,9 +69,24 @@ export class MemberRuntimeInstructionSourceResolver {
     }
   }
 
-  private async resolveAgentDefinition(agentDefinitionId: string) {
+  private async resolveAgentDefinition(
+    agentDefinitionId: string,
+  ): Promise<AgentInstructionDefinition | null> {
     try {
-      return await this.agentDefinitionService.getFreshAgentDefinitionById(agentDefinitionId);
+      const getFreshAgentDefinitionById = (
+        this.agentDefinitionService as AgentDefinitionService & {
+          getFreshAgentDefinitionById?: (
+            definitionId: string,
+          ) => Promise<AgentInstructionDefinition | null>;
+        }
+      ).getFreshAgentDefinitionById;
+      if (typeof getFreshAgentDefinitionById === "function") {
+        return await getFreshAgentDefinitionById.call(
+          this.agentDefinitionService,
+          agentDefinitionId,
+        );
+      }
+      return await this.agentDefinitionService.getAgentDefinitionById(agentDefinitionId);
     } catch (error) {
       logger.warn(
         `Failed resolving agent instruction source for agent definition '${agentDefinitionId}': ${String(error)}`,

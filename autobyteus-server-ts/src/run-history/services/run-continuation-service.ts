@@ -93,6 +93,25 @@ const toRunRuntimeReference = (
   metadata: reference?.metadata ?? null,
 });
 
+const isSkillAccessMode = (value: unknown): value is SkillAccessMode =>
+  typeof value === "string" && Object.values(SkillAccessMode).includes(value as SkillAccessMode);
+
+const resolvePersistedSkillAccessMode = (
+  currentSkillAccessMode: SkillAccessMode | null | undefined,
+  runtimeReference:
+    | {
+        metadata?: Record<string, unknown> | null;
+      }
+    | null
+    | undefined,
+): SkillAccessMode | null => {
+  const metadataSkillAccessMode = runtimeReference?.metadata?.skillAccessMode;
+  if (isSkillAccessMode(metadataSkillAccessMode)) {
+    return metadataSkillAccessMode;
+  }
+  return currentSkillAccessMode ?? null;
+};
+
 const mergeUpdatedRuntimeReference = (
   manifest: RunManifest,
   runId: string,
@@ -110,6 +129,10 @@ const mergeUpdatedRuntimeReference = (
   runtimeReference
     ? {
         ...manifest,
+        skillAccessMode: resolvePersistedSkillAccessMode(
+          manifest.skillAccessMode,
+          runtimeReference,
+        ),
         runtimeReference: toRunRuntimeReference(runId, runtimeKind, runtimeReference),
       }
     : manifest;

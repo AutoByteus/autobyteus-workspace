@@ -2,12 +2,26 @@ import { describe, expect, it, vi } from "vitest";
 import type { CodexAppServerRuntimeService } from "../../../../src/runtime-execution/codex-app-server/codex-app-server-runtime-service.js";
 import { CodexAppServerRuntimeAdapter } from "../../../../src/runtime-execution/adapters/codex-app-server-runtime-adapter.js";
 
-vi.mock("../../../../src/runtime-execution/single-agent-runtime-metadata.js", () => ({
-  resolveSingleAgentInstructionRuntimeMetadata: vi.fn().mockResolvedValue({
-    agentInstructions: "Use tools when needed.",
-    memberInstructionSources: {
+vi.mock("../../../../src/runtime-execution/single-agent-runtime-context.js", () => ({
+  resolveSingleAgentRuntimeContext: vi.fn().mockResolvedValue({
+    runtimeMetadata: {
       agentInstructions: "Use tools when needed.",
+      memberInstructionSources: {
+        agentInstructions: "Use tools when needed.",
+      },
+      skillAccessMode: "PRELOADED_ONLY",
+      configuredSkillNames: ["code-review"],
     },
+    configuredSkills: [
+      {
+        name: "code-review",
+        description: "Review code carefully.",
+        content: "Always verify edge cases before approving changes.",
+        rootPath: "/skills/code-review",
+        skillFilePath: "/skills/code-review/SKILL.md",
+      },
+    ],
+    skillAccessMode: "PRELOADED_ONLY",
   }),
 }));
 
@@ -50,7 +64,16 @@ describe("CodexAppServerRuntimeAdapter", () => {
           memberInstructionSources: {
             agentInstructions: "Use tools when needed.",
           },
+          skillAccessMode: "PRELOADED_ONLY",
+          configuredSkillNames: ["code-review"],
         },
+        configuredSkills: [
+          expect.objectContaining({
+            name: "code-review",
+            rootPath: "/skills/code-review",
+          }),
+        ],
+        skillAccessMode: "PRELOADED_ONLY",
       }),
     );
   });
@@ -100,7 +123,16 @@ describe("CodexAppServerRuntimeAdapter", () => {
           memberInstructionSources: {
             agentInstructions: "Use tools when needed.",
           },
+          skillAccessMode: "PRELOADED_ONLY",
+          configuredSkillNames: ["code-review"],
         },
+        configuredSkills: [
+          expect.objectContaining({
+            name: "code-review",
+            rootPath: "/skills/code-review",
+          }),
+        ],
+        skillAccessMode: "PRELOADED_ONLY",
       }),
       expect.objectContaining({
         threadId: "thread-old",
@@ -110,6 +142,8 @@ describe("CodexAppServerRuntimeAdapter", () => {
           memberInstructionSources: {
             agentInstructions: "Use tools when needed.",
           },
+          skillAccessMode: "PRELOADED_ONLY",
+          configuredSkillNames: ["code-review"],
         },
       }),
     );

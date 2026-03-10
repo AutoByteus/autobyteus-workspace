@@ -31,7 +31,7 @@ const createMockClient = () => {
 };
 
 describe("CodexAppServerProcessManager", () => {
-  it("reuses one started client across calls", async () => {
+  it("reuses one started client for the same canonical cwd", async () => {
     const instances: ReturnType<typeof createMockClient>[] = [];
     const manager = new CodexAppServerProcessManager({
       createClient: () => {
@@ -42,7 +42,7 @@ describe("CodexAppServerProcessManager", () => {
     });
 
     const first = await manager.getClient("/tmp/a");
-    const second = await manager.getClient("/tmp/b");
+    const second = await manager.getClient("/tmp/a/../a");
 
     expect(first).toBe(second);
     expect(instances).toHaveLength(1);
@@ -56,7 +56,26 @@ describe("CodexAppServerProcessManager", () => {
     expect(instances[0]?.notify).toHaveBeenCalledWith("initialized", {});
   });
 
-  it("coalesces concurrent getClient requests into one client start", async () => {
+  it("starts separate clients for different cwd values", async () => {
+    const instances: ReturnType<typeof createMockClient>[] = [];
+    const manager = new CodexAppServerProcessManager({
+      createClient: () => {
+        const client = createMockClient();
+        instances.push(client);
+        return client as any;
+      },
+    });
+
+    const first = await manager.getClient("/tmp/a");
+    const second = await manager.getClient("/tmp/b");
+
+    expect(first).not.toBe(second);
+    expect(instances).toHaveLength(2);
+    expect(instances[0]?.start).toHaveBeenCalledTimes(1);
+    expect(instances[1]?.start).toHaveBeenCalledTimes(1);
+  });
+
+  it("coalesces concurrent acquireClient requests into one client start per cwd", async () => {
     const instances: ReturnType<typeof createMockClient>[] = [];
     const startGate = createDeferred<void>();
     const manager = new CodexAppServerProcessManager({
@@ -68,8 +87,8 @@ describe("CodexAppServerProcessManager", () => {
       },
     });
 
-    const firstPromise = manager.getClient("/tmp/a");
-    const secondPromise = manager.getClient("/tmp/b");
+    const firstPromise = manager.acquireClient("/tmp/a");
+    const secondPromise = manager.acquireClient("/tmp/a/../a");
 
     expect(instances).toHaveLength(1);
     expect(instances[0]?.start).toHaveBeenCalledTimes(1);
@@ -82,7 +101,32 @@ describe("CodexAppServerProcessManager", () => {
     expect(instances[0]?.notify).toHaveBeenCalledTimes(1);
   });
 
-  it("starts a new client after the previous one closes", async () => {
+  it("releases the last held client for a cwd and starts a new one on the next acquire", async () => {
+    const instances: ReturnType<typeof createMockClient>[] = [];
+    const manager = new CodexAppServerProcessManager({
+      createClient: () => {
+        const client = createMockClient();
+        instances.push(client);
+        return client as any;
+      },
+    });
+
+    const first = await manager.acquireClient("/tmp/a");
+    const second = await manager.acquireClient("/tmp/a");
+
+    expect(first).toBe(second);
+    await manager.releaseClient("/tmp/a");
+    expect(instances[0]?.close).not.toHaveBeenCalled();
+
+    await manager.releaseClient("/tmp/a");
+    expect(instances[0]?.close).toHaveBeenCalledTimes(1);
+
+    const third = await manager.acquireClient("/tmp/a");
+    expect(third).not.toBe(first);
+    expect(instances).toHaveLength(2);
+  });
+
+  it("starts a new client after the previous one closes unexpectedly", async () => {
     const instances: ReturnType<typeof createMockClient>[] = [];
     const manager = new CodexAppServerProcessManager({
       createClient: () => {
@@ -100,7 +144,7 @@ describe("CodexAppServerProcessManager", () => {
     instances[0]?.emitClose(new Error("process closed"));
     expect(onClose).toHaveBeenCalledTimes(1);
 
-    await manager.getClient("/tmp/b");
+    await manager.getClient("/tmp/a");
     expect(instances).toHaveLength(2);
     expect(instances[1]?.start).toHaveBeenCalledTimes(1);
   });

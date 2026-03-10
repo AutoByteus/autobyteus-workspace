@@ -17,7 +17,7 @@ import {
   ClaudeAgentSdkRuntimeService,
   getClaudeAgentSdkRuntimeService,
 } from "../claude-agent-sdk/claude-agent-sdk-runtime-service.js";
-import { resolveSingleAgentInstructionRuntimeMetadata } from "../single-agent-runtime-metadata.js";
+import { resolveSingleAgentRuntimeContext } from "../single-agent-runtime-context.js";
 
 const buildCommandFailure = (error: unknown): RuntimeCommandResult => ({
   accepted: false,
@@ -45,15 +45,17 @@ export class ClaudeAgentSdkRuntimeAdapter implements RuntimeAdapter {
   async createAgentRun(input: RuntimeCreateAgentRunInput): Promise<RuntimeCreateResult> {
     const runId = randomUUID();
     const workingDirectory = await this.runtimeService.resolveWorkingDirectory(input.workspaceId);
-    const runtimeMetadata = await resolveSingleAgentInstructionRuntimeMetadata(
-      input.agentDefinitionId,
-    );
+    const runtimeContext = await resolveSingleAgentRuntimeContext(input.agentDefinitionId, {
+      skillAccessMode: input.skillAccessMode ?? null,
+    });
     const session = await this.runtimeService.createRunSession(runId, {
       modelIdentifier: input.llmModelIdentifier,
       workingDirectory,
       autoExecuteTools: input.autoExecuteTools,
       llmConfig: input.llmConfig ?? null,
-      runtimeMetadata,
+      runtimeMetadata: runtimeContext.runtimeMetadata,
+      configuredSkills: runtimeContext.configuredSkills,
+      skillAccessMode: runtimeContext.skillAccessMode,
     });
 
     return {
@@ -63,7 +65,7 @@ export class ClaudeAgentSdkRuntimeAdapter implements RuntimeAdapter {
         sessionId: session.sessionId,
         threadId: session.sessionId,
         metadata: {
-          ...runtimeMetadata,
+          ...runtimeContext.runtimeMetadata,
           ...session.metadata,
         },
       },
@@ -72,9 +74,12 @@ export class ClaudeAgentSdkRuntimeAdapter implements RuntimeAdapter {
 
   async restoreAgentRun(input: RuntimeRestoreAgentRunInput): Promise<RuntimeCreateResult> {
     const workingDirectory = await this.runtimeService.resolveWorkingDirectory(input.workspaceId);
+    const runtimeContext = await resolveSingleAgentRuntimeContext(input.agentDefinitionId, {
+      skillAccessMode: input.skillAccessMode ?? null,
+    });
     const runtimeMetadata = {
       ...(input.runtimeReference?.metadata ?? {}),
-      ...(await resolveSingleAgentInstructionRuntimeMetadata(input.agentDefinitionId)),
+      ...runtimeContext.runtimeMetadata,
     };
     const session = await this.runtimeService.restoreRunSession(
       input.runId,
@@ -84,6 +89,8 @@ export class ClaudeAgentSdkRuntimeAdapter implements RuntimeAdapter {
         autoExecuteTools: input.autoExecuteTools,
         llmConfig: input.llmConfig ?? null,
         runtimeMetadata,
+        configuredSkills: runtimeContext.configuredSkills,
+        skillAccessMode: runtimeContext.skillAccessMode,
       },
       {
         sessionId: input.runtimeReference?.sessionId ?? input.runtimeReference?.threadId ?? input.runId,

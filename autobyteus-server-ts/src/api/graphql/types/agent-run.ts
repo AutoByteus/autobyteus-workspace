@@ -11,7 +11,7 @@ import {
 import { GraphQLJSON } from "graphql-scalars";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRunManager } from "../../../agent-execution/services/agent-run-manager.js";
-import { getRunHistoryService } from "../../../run-history/services/run-history-service.js";
+import { getAgentRunTerminationService } from "../../../agent-execution/services/agent-run-termination-service.js";
 import { getRuntimeCommandIngressService } from "../../../runtime-execution/runtime-command-ingress-service.js";
 import { getRuntimeCompositionService } from "../../../runtime-execution/runtime-composition-service.js";
 import { normalizeRuntimeKind } from "../../../runtime-management/runtime-kind.js";
@@ -131,7 +131,7 @@ export class ApproveToolInvocationResult {
 
 @Resolver()
 export class AgentRunResolver {
-  private runHistoryService = getRunHistoryService();
+  private agentRunTerminationService = getAgentRunTerminationService();
   private runtimeCompositionService = getRuntimeCompositionService();
   private runtimeCommandIngressService = getRuntimeCommandIngressService();
 
@@ -178,28 +178,7 @@ export class AgentRunResolver {
     @Arg("id", () => String) id: string,
   ): Promise<TerminateAgentRunResult> {
     try {
-      const localSuccess = await this.agentRunManager.terminateAgentRun(id);
-      let runtimeSuccess = false;
-      const runtimeSession = this.runtimeCompositionService.getRunSession(id);
-      if (runtimeSession) {
-        const result = await this.runtimeCommandIngressService.terminateRun({
-          runId: id,
-          mode: "agent",
-        });
-        runtimeSuccess = result.accepted;
-      }
-
-      const success = localSuccess || runtimeSuccess;
-      if (success) {
-        this.runtimeCompositionService.removeRunSession(id);
-        await this.runHistoryService.onRunTerminated(id);
-      }
-      return {
-        success,
-        message: success
-          ? "Agent run terminated successfully."
-          : "Agent run not found.",
-      };
+      return await this.agentRunTerminationService.terminateAgentRun(id);
     } catch (error) {
       logger.error(`Error terminating agent run with ID ${id}: ${String(error)}`);
       return {

@@ -53,9 +53,8 @@ export class CodexThreadHistoryReader {
       return null;
     }
 
-    const client = await this.processManager.getClient(cwd);
-
     try {
+      const client = await this.processManager.acquireClient(cwd);
       for (let attempt = 1; attempt <= THREAD_READ_MAX_ATTEMPTS; attempt += 1) {
         try {
           const response = await client.request<unknown>("thread/read", {
@@ -87,6 +86,8 @@ export class CodexThreadHistoryReader {
         `Failed to read Codex thread '${normalizedThreadId}': ${String(error)}`,
       );
       return null;
+    } finally {
+      await this.processManager.releaseClient(cwd);
     }
   }
 

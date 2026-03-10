@@ -7,33 +7,18 @@ import {
   getCodexAppServerProcessManager,
   type CodexAppServerProcessManager,
 } from "./codex-app-server-process-manager.js";
+import { startCodexRuntimeSession } from "./codex-runtime-session-bootstrap.js";
 import { toCodexUserInput } from "./codex-user-input-mapper.js";
+import {
+  getCodexWorkspaceSkillMaterializer,
+  type CodexWorkspaceSkillMaterializer,
+} from "./codex-workspace-skill-materializer.js";
 import { asString, type JsonObject } from "./codex-runtime-json.js";
-import {
-  resolveApprovalPolicyForAutoExecuteTools,
-  resolveDefaultModel,
-  resolveTurnId,
-} from "./codex-runtime-launch-config.js";
-import {
-  resolveAllowedRecipientNamesFromManifest,
-  resolveDynamicTools,
-  resolveMemberNameFromMetadata,
-  resolveSendMessageToEnabledFromMetadata,
-  resolveTeamManifestMembersFromMetadata,
-  resolveTeamRunIdFromMetadata,
-} from "./codex-send-message-tooling.js";
-import {
-  composeMemberRuntimeInstructions,
-  renderMarkdownInstructionSection,
-  renderMarkdownInstructionSections,
-  resolveMemberRuntimeInstructionSourcesFromMetadata,
-} from "../member-runtime/member-runtime-instruction-composer.js";
+import { resolveTurnId } from "./codex-runtime-launch-config.js";
 import {
   deleteApprovalRecord,
   findApprovalRecord,
-  handleRuntimeNotification,
   handleRuntimeServerRequest,
-  isRuntimeMessageForSession,
   tryHandleInterAgentRelayRequest,
 } from "./codex-runtime-event-router.js";
 import {
@@ -47,10 +32,6 @@ import {
   rebindDeferredRuntimeListeners,
   subscribeToRuntimeRunEvents,
 } from "../runtime-event-listener-hub.js";
-import {
-  resumeCodexThread,
-  startCodexThread,
-} from "./codex-runtime-thread-lifecycle.js";
 import type {
   CodexInterAgentEnvelope,
   CodexInterAgentRelayHandler,
@@ -58,7 +39,6 @@ import type {
   CodexRuntimeEvent,
   SessionRuntimeOptions,
 } from "./codex-runtime-shared.js";
-import { createCodexSessionStartupState } from "./codex-runtime-shared.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
@@ -75,12 +55,15 @@ export class CodexAppServerRuntimeService {
   >();
   private readonly workspaceManager = getWorkspaceManager();
   private readonly processManager: CodexAppServerProcessManager;
+  private readonly workspaceSkillMaterializer: CodexWorkspaceSkillMaterializer;
   private interAgentRelayHandler: CodexInterAgentRelayHandler | null = null;
 
   constructor(
     processManager: CodexAppServerProcessManager = getCodexAppServerProcessManager(),
+    workspaceSkillMaterializer: CodexWorkspaceSkillMaterializer = getCodexWorkspaceSkillMaterializer(),
   ) {
     this.processManager = processManager;
+    this.workspaceSkillMaterializer = workspaceSkillMaterializer;
   }
 
   setInterAgentRelayHandler(handler: CodexInterAgentRelayHandler | null): void {
@@ -102,9 +85,7 @@ export class CodexAppServerRuntimeService {
     return {
       threadId: state.threadId,
       metadata: {
-        model: state.model,
-        cwd: state.workingDirectory,
-        reasoning_effort: state.reasoningEffort,
+        ...state.runtimeMetadata,
       },
     };
   }
@@ -135,10 +116,7 @@ export class CodexAppServerRuntimeService {
     return {
       threadId: state.threadId,
       metadata: {
-        ...(runtimeReference?.metadata ?? {}),
-        model: state.model,
-        cwd: state.workingDirectory,
-        reasoning_effort: state.reasoningEffort,
+        ...state.runtimeMetadata,
       },
     };
   }
@@ -161,11 +139,9 @@ export class CodexAppServerRuntimeService {
     return {
       threadId: state.threadId,
       metadata: {
+        ...state.runtimeMetadata,
         ...(state.teamRunId ? { teamRunId: state.teamRunId } : {}),
         ...(state.memberName ? { memberName: state.memberName } : {}),
-        model: state.model,
-        cwd: state.workingDirectory,
-        reasoning_effort: state.reasoningEffort,
       },
     };
   }
@@ -324,30 +300,42 @@ export class CodexAppServerRuntimeService {
         // ignore
       }
     }
+    try {
+      await this.workspaceSkillMaterializer.cleanupMaterializedCodexWorkspaceSkills(
+        state.materializedConfiguredSkills,
+      );
+    } finally {
+      await this.processManager.releaseClient(state.workingDirectory);
+    }
   }
 
   async listModels(cwd?: string): Promise<ModelInfo[]> {
-    const client = await this.processManager.getClient(cwd ?? process.cwd());
+    const workingDirectory = cwd ?? process.cwd();
+    const client = await this.processManager.acquireClient(workingDirectory);
     const models: ModelInfo[] = [];
-    let cursor: string | null = null;
-    do {
-      const response = await client.request<unknown>("model/list", {
-        cursor,
-        includeHidden: false,
-      });
-      const data = (response && typeof response === "object" ? response : null) as
-        | Record<string, unknown>
-        | null;
-      const rows = Array.isArray(data?.data) ? data.data : [];
-      for (const row of rows) {
-        const mapped = mapCodexModelListRowToModelInfo(row);
-        if (mapped) {
-          models.push(mapped);
+    try {
+      let cursor: string | null = null;
+      do {
+        const response = await client.request<unknown>("model/list", {
+          cursor,
+          includeHidden: false,
+        });
+        const data = (response && typeof response === "object" ? response : null) as
+          | Record<string, unknown>
+          | null;
+        const rows = Array.isArray(data?.data) ? data.data : [];
+        for (const row of rows) {
+          const mapped = mapCodexModelListRowToModelInfo(row);
+          if (mapped) {
+            models.push(mapped);
+          }
         }
-      }
-      cursor = asString(data?.nextCursor);
-    } while (cursor);
-    return models;
+        cursor = asString(data?.nextCursor);
+      } while (cursor);
+      return models;
+    } finally {
+      await this.processManager.releaseClient(workingDirectory);
+    }
   }
 
   private async startSession(
@@ -355,168 +343,18 @@ export class CodexAppServerRuntimeService {
     options: SessionRuntimeOptions,
     resumeThreadId: string | null,
   ): Promise<CodexRunSessionState> {
-    const model = asString(options.modelIdentifier) ?? resolveDefaultModel();
-    const workingDirectory = options.workingDirectory || process.cwd();
-    const reasoningEffort = resolveCodexSessionReasoningEffort(
-      options.llmConfig,
-      options.runtimeMetadata,
-    );
-    const teamRunId = resolveTeamRunIdFromMetadata(options.runtimeMetadata);
-    const memberName = resolveMemberNameFromMetadata(options.runtimeMetadata);
-    const sendMessageToEnabled = resolveSendMessageToEnabledFromMetadata(options.runtimeMetadata);
-    const teamManifestMembers = resolveTeamManifestMembersFromMetadata(options.runtimeMetadata);
-    const allowedRecipientNames = resolveAllowedRecipientNamesFromManifest({
-      currentMemberName: memberName,
-      members: teamManifestMembers,
-    });
-    const instructionSources = resolveMemberRuntimeInstructionSourcesFromMetadata(
-      options.runtimeMetadata,
-    );
-    const instructionComposition = composeMemberRuntimeInstructions({
-      teamInstructions: instructionSources.teamInstructions,
-      agentInstructions: instructionSources.agentInstructions,
-      currentMemberName: memberName,
-      sendMessageToEnabled,
-      teammates: teamManifestMembers,
-    });
-    const baseInstructions = renderMarkdownInstructionSections([
-      {
-        title: "Team Instruction",
-        content: instructionComposition.teamInstruction,
-      },
-      {
-        title: "Agent Instruction",
-        content: instructionComposition.agentInstruction,
-      },
-    ]);
-    const developerInstructions = renderMarkdownInstructionSection(
-      "Runtime Instruction",
-      instructionComposition.runtimeInstruction,
-    );
-    const dynamicTools = resolveDynamicTools({
-      teamRunId,
-      interAgentRelayEnabled: Boolean(this.interAgentRelayHandler),
-      sendMessageToEnabled,
-      allowedRecipientNames,
-    });
-    const approvalPolicy = resolveApprovalPolicyForAutoExecuteTools(options.autoExecuteTools);
-    const client = await this.processManager.getClient(workingDirectory);
-
-    const threadId = resumeThreadId
-      ? await resumeCodexThread(
-          client,
-          resumeThreadId,
-          workingDirectory,
-          model,
-          approvalPolicy,
-          dynamicTools,
-          baseInstructions,
-          developerInstructions,
-        )
-      : await startCodexThread(
-          client,
-          workingDirectory,
-          model,
-          approvalPolicy,
-          dynamicTools,
-          baseInstructions,
-          developerInstructions,
-        );
-    if (!threadId) {
-      throw new Error("Codex thread id was not returned by app server.");
-    }
-
-    const state: CodexRunSessionState = {
+    return startCodexRuntimeSession({
       runId,
-      client,
-      threadId,
-      model,
-      workingDirectory,
-      reasoningEffort,
-      currentStatus: "IDLE",
-      activeTurnId: null,
-      startup: createCodexSessionStartupState(),
-      approvalRecords: new Map(),
-      listeners: new Set(),
-      unbindHandlers: [],
-      teamRunId,
-      memberName,
-      sendMessageToEnabled,
-    };
-
-    state.unbindHandlers.push(
-      client.onNotification((message) => {
-        const matchesSession = isRuntimeMessageForSession(
-          state,
-          message.method,
-          message.params,
-          this.sessions.size,
-        );
-        if (isRuntimeRawEventDebugEnabled) {
-          console.log("[CodexRuntimeNotification]", {
-            runId,
-            method: message.method,
-            matchesSession,
-            threadId: state.threadId,
-            activeTurnId: state.activeTurnId,
-            sessionCount: this.sessions.size,
-            paramKeys: Object.keys(message.params ?? {}),
-          });
-        }
-        if (!matchesSession) {
-          return;
-        }
-        handleRuntimeNotification(state, message.method, message.params, this.emitEvent.bind(this));
-      }),
-    );
-    state.unbindHandlers.push(
-      client.onServerRequest((message) => {
-        const matchesSession = isRuntimeMessageForSession(
-          state,
-          message.method,
-          message.params,
-          this.sessions.size,
-        );
-        if (isRuntimeRawEventDebugEnabled) {
-          console.log("[CodexRuntimeServerRequest]", {
-            runId,
-            id: message.id,
-            method: message.method,
-            matchesSession,
-            threadId: state.threadId,
-            activeTurnId: state.activeTurnId,
-            sessionCount: this.sessions.size,
-            paramKeys: Object.keys(message.params ?? {}),
-          });
-        }
-        if (!matchesSession) {
-          return;
-        }
-        this.handleServerRequest(state, message.id, message.method, message.params);
-      }),
-    );
-    state.unbindHandlers.push(
-      client.onClose((error) => {
-        this.sessions.delete(runId);
-        state.startup.rejectReady(
-          new Error(
-            error?.message
-              ? `Codex app server closed before startup completed: ${error.message}`
-              : "Codex app server closed before startup completed.",
-          ),
-        );
-        if (error) {
-          this.emitEvent(state, {
-            method: "error",
-            params: {
-              code: "CODEX_APP_SERVER_CLOSED",
-              message: error.message,
-            },
-          });
-        }
-      }),
-    );
-    return state;
+      options,
+      resumeThreadId,
+      processManager: this.processManager,
+      workspaceSkillMaterializer: this.workspaceSkillMaterializer,
+      interAgentRelayHandler: this.interAgentRelayHandler,
+      resolveSessionCount: () => this.sessions.size,
+      emitEvent: this.emitEvent.bind(this),
+      handleServerRequest: this.handleServerRequest.bind(this),
+      handleClientClose: this.handleSessionClientClose.bind(this),
+    });
   }
 
   private handleServerRequest(
@@ -585,6 +423,31 @@ export class CodexAppServerRuntimeService {
       throw new Error(`Codex runtime session '${runId}' is not available.`);
     }
     return session;
+  }
+
+  private handleSessionClientClose(state: CodexRunSessionState, error: unknown): void {
+    this.sessions.delete(state.runId);
+    const errorMessage =
+      error && typeof error === "object" && "message" in error
+        ? asString((error as { message?: unknown }).message)
+        : null;
+    state.startup.rejectReady(
+      new Error(
+        errorMessage
+          ? `Codex app server closed before startup completed: ${errorMessage}`
+          : "Codex app server closed before startup completed.",
+      ),
+    );
+    if (!errorMessage) {
+      return;
+    }
+    this.emitEvent(state, {
+      method: "error",
+      params: {
+        code: "CODEX_APP_SERVER_CLOSED",
+        message: errorMessage,
+      },
+    });
   }
 
   private async awaitStartupReady(state: CodexRunSessionState): Promise<void> {

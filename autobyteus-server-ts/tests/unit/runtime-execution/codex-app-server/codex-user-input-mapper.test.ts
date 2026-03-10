@@ -121,4 +121,21 @@ describe("toCodexUserInput image mapping", () => {
     const inputs = asImageInput("/rest/files/../../etc/passwd");
     expect(inputs).toEqual([]);
   });
+
+  it("keeps Codex text input plain after workspace skill discovery is established elsewhere", () => {
+    const items = toCodexUserInput(
+      {
+        content: "Review this change",
+        contextFiles: [],
+      } as any,
+    );
+
+    expect(items).toEqual([
+      {
+        type: "text",
+        text: "Review this change",
+        text_elements: [],
+      },
+    ]);
+  });
 });

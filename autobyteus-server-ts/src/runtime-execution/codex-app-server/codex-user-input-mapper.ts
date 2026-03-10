@@ -126,9 +126,11 @@ const toCodexImageInput = (rawUri: string): JsonObject | null => {
   return { type: "localImage", path: uri };
 };
 
-export const toCodexUserInput = (message: AgentInputUserMessage): Array<JsonObject> => {
+export const toCodexUserInput = (
+  message: AgentInputUserMessage,
+): Array<JsonObject> => {
   const baseText = message.content.trim();
-  const textLines = [baseText];
+  const textLines: string[] = [];
   const interAgentEnvelope = asObject(
     (message.metadata as Record<string, unknown> | undefined)?.inter_agent_envelope ??
       (message.metadata as Record<string, unknown> | undefined)?.interAgentEnvelope,
@@ -140,7 +142,10 @@ export const toCodexUserInput = (message: AgentInputUserMessage): Array<JsonObje
       "agent";
     const recipient = asString(interAgentEnvelope.recipientName) ?? "recipient";
     const messageType = asString(interAgentEnvelope.messageType) ?? "agent_message";
-    textLines.unshift(`[InterAgentMessage type=${messageType}] from ${sender} to ${recipient}`);
+    textLines.push(`[InterAgentMessage type=${messageType}] from ${sender} to ${recipient}`);
+  }
+  if (baseText) {
+    textLines.push(baseText);
   }
   const inputs: Array<JsonObject> = [];
 
