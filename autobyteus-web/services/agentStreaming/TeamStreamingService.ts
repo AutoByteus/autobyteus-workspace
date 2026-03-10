@@ -72,6 +72,10 @@ export class TeamStreamingService {
     return this.wsClient.state;
   }
 
+  attachContext(teamContext: AgentTeamContext): void {
+    this.teamContext = teamContext;
+  }
+
   /**
    * Connect to a team's WebSocket stream.
    */

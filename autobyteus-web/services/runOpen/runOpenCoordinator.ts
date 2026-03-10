@@ -79,6 +79,7 @@ interface OpenRunWithCoordinatorInput {
   runId: string;
   fallbackAgentName: string | null;
   ensureWorkspaceByRootPath: (rootPath: string) => Promise<string | null>;
+  selectRun?: boolean;
 }
 
 export interface OpenRunWithCoordinatorResult {
@@ -363,9 +364,11 @@ export const openRunWithCoordinator = async (
     });
   }
 
-  useAgentSelectionStore().selectRun(input.runId, 'agent');
-  useTeamRunConfigStore().clearConfig();
-  useAgentRunConfigStore().clearConfig();
+  if (input.selectRun !== false) {
+    useAgentSelectionStore().selectRun(input.runId, 'agent');
+    useTeamRunConfigStore().clearConfig();
+    useAgentRunConfigStore().clearConfig();
+  }
 
   if (resumeConfig.isActive) {
     const { useAgentRunStore } = await import('~/stores/agentRunStore');

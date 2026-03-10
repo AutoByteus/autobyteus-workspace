@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia';
 import { getApolloClient } from '~/utils/apolloClient';
-import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { useWorkspaceStore } from '~/stores/workspace';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
@@ -10,10 +9,6 @@ import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig';
-import {
-  ListRunHistory,
-  ListTeamRunHistory,
-} from '~/graphql/queries/runHistoryQueries';
 import { DeleteRunHistory, DeleteTeamRunHistory } from '~/graphql/mutations/runHistoryMutations';
 import {
   DEFAULT_AGENT_RUNTIME_KIND,
@@ -21,8 +16,6 @@ import {
 import type {
   DeleteRunHistoryMutationData,
   DeleteTeamRunHistoryMutationData,
-  ListRunHistoryQueryData,
-  ListTeamRunHistoryQueryData,
   RunEditableFieldFlags,
   RunHistoryWorkspaceGroup,
   RunResumeConfigPayload,
@@ -34,10 +27,8 @@ import {
   buildRunHistoryTreeNodes,
   findAgentNameByRunId as findAgentNameFromHistory,
   formatRunHistoryRelativeTime,
-  normalizeRootPath,
 } from '~/stores/runHistoryReadModel';
 import {
-  buildNextAgentAvatarIndex,
   removeRunFromWorkspaceGroups,
   removeTeamRunById,
 } from '~/stores/runHistoryStoreSupport';
@@ -51,8 +42,10 @@ import {
   resolveRunnableModelIdentifier,
 } from '~/utils/runLaunchPolicy';
 import {
-  openRunWithCoordinator,
-} from '~/services/runOpen/runOpenCoordinator';
+  ensureRunHistoryWorkspaceByRootPath,
+  fetchRunHistoryTree,
+  openHistoricalRun,
+} from '~/stores/runHistoryLoadActions';
 
 const FALSE_EDITABLE_FIELDS: RunEditableFieldFlags = {
   llmModelIdentifier: false,
@@ -111,77 +104,11 @@ export const useRunHistoryStore = defineStore('runHistory', {
 
   actions: {
     async fetchTree(limitPerAgent = 6, options: { quiet?: boolean } = {}): Promise<void> {
-      const quiet = options.quiet === true;
-      if (!quiet) {
-        this.loading = true;
-        this.error = null;
-      }
-
-      try {
-        const windowNodeContextStore = useWindowNodeContextStore();
-        const isReady = await windowNodeContextStore.waitForBoundBackendReady();
-        if (!isReady) {
-          throw new Error(windowNodeContextStore.lastReadyError || 'Bound backend is not ready');
-        }
-
-        const client = getApolloClient();
-        const [agentHistoryResult, teamHistoryResult] = await Promise.all([
-          client.query<ListRunHistoryQueryData>({
-            query: ListRunHistory,
-            variables: { limitPerAgent },
-            fetchPolicy: 'network-only',
-          }),
-          client.query<ListTeamRunHistoryQueryData>({
-            query: ListTeamRunHistory,
-            fetchPolicy: 'network-only',
-          }),
-        ]);
-
-        if (agentHistoryResult.errors && agentHistoryResult.errors.length > 0) {
-          throw new Error(agentHistoryResult.errors.map((e: { message: string }) => e.message).join(', '));
-        }
-        if (teamHistoryResult.errors && teamHistoryResult.errors.length > 0) {
-          throw new Error(teamHistoryResult.errors.map((e: { message: string }) => e.message).join(', '));
-        }
-
-        this.workspaceGroups = agentHistoryResult.data?.listRunHistory || [];
-        this.teamRuns = teamHistoryResult.data?.listTeamRunHistory || [];
-        this.agentAvatarByDefinitionId = await buildNextAgentAvatarIndex(
-          this.agentAvatarByDefinitionId,
-          { loadDefinitionsIfNeeded: true },
-        );
-      } catch (error: any) {
-        if (!quiet) {
-          this.error = error?.message || 'Failed to load run history.';
-        }
-      } finally {
-        if (!quiet) {
-          this.loading = false;
-        }
-      }
+      await fetchRunHistoryTree(this, limitPerAgent, options);
     },
 
     async openRun(runId: string): Promise<void> {
-      this.openingRun = true;
-      this.error = null;
-
-      try {
-        const result = await openRunWithCoordinator({
-          runId,
-          fallbackAgentName: this.findAgentNameByRunId(runId),
-          ensureWorkspaceByRootPath: (rootPath: string) => this.ensureWorkspaceByRootPath(rootPath),
-        });
-
-        this.resumeConfigByRunId[runId] = result.resumeConfig;
-        this.selectedRunId = result.runId;
-        this.selectedTeamRunId = null;
-        this.selectedTeamMemberRouteKey = null;
-      } catch (error: any) {
-        this.error = error?.message || `Failed to open run '${runId}'.`;
-        throw error;
-      } finally {
-        this.openingRun = false;
-      }
+      await openHistoricalRun(this, runId);
     },
 
     async createDraftRun(options: {
@@ -533,25 +460,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
     },
 
     async ensureWorkspaceByRootPath(rootPath: string): Promise<string | null> {
-      const workspaceStore = useWorkspaceStore();
-      if (!rootPath.trim()) {
-        return null;
-      }
-
-      if (!workspaceStore.workspacesFetched) {
-        try {
-          await workspaceStore.fetchAllWorkspaces();
-        } catch {
-          // Fallback to direct creation below.
-        }
-      }
-
-      try {
-        const normalizedRootPath = normalizeRootPath(rootPath) || rootPath.trim();
-        return await workspaceStore.createWorkspace({ root_path: normalizedRootPath });
-      } catch {
-        return null;
-      }
+      return await ensureRunHistoryWorkspaceByRootPath(rootPath);
     },
 
     findAgentNameByRunId(runId: string): string | null {

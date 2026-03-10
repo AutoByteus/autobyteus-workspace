@@ -50,8 +50,15 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
 
       const existingService = teamStreamingServices.get(teamRunId);
       if (existingService) {
+        existingService.attachContext(teamContext);
+        teamContext.unsubscribe = () => {
+          existingService.disconnect();
+          teamStreamingServices.delete(teamRunId);
+        };
         if (existingService.connectionState === ConnectionState.DISCONNECTED) {
           existingService.connect(teamRunId, teamContext);
+          teamContext.isSubscribed = true;
+        } else {
           teamContext.isSubscribed = true;
         }
         return;
