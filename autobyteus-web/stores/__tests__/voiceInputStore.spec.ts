@@ -49,6 +49,7 @@ import { useVoiceInputStore } from '../voiceInputStore'
 
 describe('voiceInputStore', () => {
   beforeEach(() => {
+    vi.useRealTimers()
     setActivePinia(createPinia())
     activeContextStoreMock.currentRequirement = 'hello'
     activeContextStoreMock.updateRequirement.mockReset()
@@ -282,7 +283,9 @@ describe('voiceInputStore', () => {
     const connectMock = vi.fn()
 
     vi.stubGlobal('AudioContext', class {
+      state = 'running'
       audioWorklet = { addModule: addModuleMock }
+      resume = vi.fn().mockResolvedValue(undefined)
       createMediaStreamSource() {
         return { connect: connectMock }
       }
@@ -308,6 +311,158 @@ describe('voiceInputStore', () => {
     expect(store.selectedAudioInputLabel).toBe('Virtual Source')
 
     vi.unstubAllGlobals()
+  })
+
+  it('resumes a suspended audio context before marking recording active', async () => {
+    const addModuleMock = vi.fn().mockResolvedValue(undefined)
+    const closeMock = vi.fn().mockResolvedValue(undefined)
+    const connectMock = vi.fn()
+    const resumeMock = vi.fn().mockImplementation(function(this: { state: string }) {
+      this.state = 'running'
+      return Promise.resolve()
+    })
+
+    vi.stubGlobal('AudioContext', class {
+      state = 'suspended'
+      audioWorklet = { addModule: addModuleMock }
+      resume = resumeMock
+      createMediaStreamSource() {
+        return { connect: connectMock }
+      }
+      close = closeMock
+    } as any)
+
+    vi.stubGlobal('AudioWorkletNode', class {
+      port = { onmessage: null }
+      connect = connectMock
+    } as any)
+
+    const store = useVoiceInputStore()
+
+    await store.startRecording('settings-test')
+
+    expect(resumeMock).toHaveBeenCalledOnce()
+    expect(store.isRecording).toBe(true)
+    expect(store.latestResult?.outcome).toBe('recording')
+
+    vi.unstubAllGlobals()
+  })
+
+  it('fails with an actionable error when the audio context never reaches running', async () => {
+    const addModuleMock = vi.fn().mockResolvedValue(undefined)
+    const closeMock = vi.fn().mockResolvedValue(undefined)
+    const connectMock = vi.fn()
+    const resumeMock = vi.fn().mockResolvedValue(undefined)
+
+    vi.stubGlobal('AudioContext', class {
+      state = 'suspended'
+      audioWorklet = { addModule: addModuleMock }
+      resume = resumeMock
+      createMediaStreamSource() {
+        return { connect: connectMock }
+      }
+      close = closeMock
+    } as any)
+
+    vi.stubGlobal('AudioWorkletNode', class {
+      port = { onmessage: null }
+      connect = connectMock
+    } as any)
+
+    const store = useVoiceInputStore()
+
+    await store.startRecording('settings-test')
+
+    expect(resumeMock).toHaveBeenCalledOnce()
+    expect(store.isRecording).toBe(false)
+    expect(store.latestResult?.outcome).toBe('error')
+    expect(store.latestResult?.error).toContain('audio engine stayed in "suspended" state')
+    expect(addToastMock).toHaveBeenCalledWith(
+      'Voice Input recorder could not start because the audio engine stayed in "suspended" state.',
+      'error',
+    )
+    expect(closeMock).toHaveBeenCalledOnce()
+    expect(addModuleMock).not.toHaveBeenCalled()
+
+    vi.unstubAllGlobals()
+  })
+
+  it('fails fast when recording starts but no capture frames ever arrive', async () => {
+    vi.useFakeTimers()
+
+    const addModuleMock = vi.fn().mockResolvedValue(undefined)
+    const closeMock = vi.fn().mockResolvedValue(undefined)
+    const connectMock = vi.fn()
+
+    vi.stubGlobal('AudioContext', class {
+      state = 'running'
+      audioWorklet = { addModule: addModuleMock }
+      resume = vi.fn().mockResolvedValue(undefined)
+      createMediaStreamSource() {
+        return { connect: connectMock }
+      }
+      close = closeMock
+    } as any)
+
+    vi.stubGlobal('AudioWorkletNode', class {
+      port = { onmessage: null }
+      connect = connectMock
+    } as any)
+
+    const store = useVoiceInputStore()
+
+    await store.startRecording('settings-test')
+    expect(store.isRecording).toBe(true)
+
+    await vi.advanceTimersByTimeAsync(2500)
+
+    expect(store.isRecording).toBe(false)
+    expect(store.latestResult?.outcome).toBe('error')
+    expect(store.latestResult?.error).toContain('did not receive any microphone frames')
+    expect(addToastMock).toHaveBeenCalledWith(
+      'Voice Input did not receive any microphone frames. Reset the test and try again, or switch back to System default.',
+      'error',
+    )
+    expect(closeMock).toHaveBeenCalledOnce()
+
+    vi.unstubAllGlobals()
+    vi.useRealTimers()
+  })
+
+  it('resets the settings-level test state without requiring app restart', async () => {
+    const stopMock = vi.fn()
+    const closeMock = vi.fn().mockResolvedValue(undefined)
+
+    const store = useVoiceInputStore()
+    store.stream = {
+      getTracks: () => [{ stop: stopMock }],
+    } as any
+    store.audioContext = {
+      close: closeMock,
+    } as any
+    store.audioWorklet = {
+      port: { onmessage: null },
+    } as any
+    store.isRecording = true
+    store.recordingSource = 'settings-test'
+    store.error = 'stuck'
+    store.setLatestResult({
+      source: 'settings-test',
+      outcome: 'error',
+      transcript: '',
+      detectedLanguage: null,
+      error: 'stuck',
+      diagnostics: null,
+    })
+
+    await store.resetSettingsTestState()
+
+    expect(store.isRecording).toBe(false)
+    expect(store.isTranscribing).toBe(false)
+    expect(store.error).toBe(null)
+    expect(store.latestResult).toBe(null)
+    expect(stopMock).toHaveBeenCalledOnce()
+    expect(closeMock).toHaveBeenCalledOnce()
   })
 
   it('fails early when no audio input devices are available', async () => {
