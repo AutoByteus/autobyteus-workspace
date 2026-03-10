@@ -12,16 +12,19 @@ It automatically clones and builds the required workspace dependencies:
 
 ## Quick Start
 
-The easiest way to build and start the server is using the `docker-start.sh` script. It automatically detects available ports to avoid collisions and supports multiple isolated instances.
+The easiest way to start the server is using the `docker-start.sh` script. It automatically detects available ports to avoid collisions and supports multiple isolated instances.
 
 ```bash
 cd autobyteus-server-ts/docker
 
-# Start default server (builds if needed)
+# Start default server (builds locally by default)
 ./docker-start.sh up
 
 # Start Chinese (zh) variant
 ./docker-start.sh up --variant zh
+
+# Start from the published remote release image instead of building locally
+./docker-start.sh up --pull-remote
 
 # Start multiple isolated instances
 ./docker-start.sh up --project instance-1
@@ -37,6 +40,28 @@ The script saves the assigned ports for each project in a hidden `.runtime/` fol
 - `./docker-start.sh ports`: Show mapped ports and URLs for an instance.
 - `./docker-start.sh down`: Stop an instance.
 - `./docker-start.sh down --delete-state`: Stop and remove saved port configuration.
+- `./docker-start.sh up --pull-remote`: Pull the published Docker Hub release image, refresh the local compose alias if the remote digest is newer, and recreate the container only when needed.
+- `./docker-start.sh up --build-local`: Explicit alias for the default local-build behavior.
+
+## Release Image Refresh
+
+The compose stack uses a local image name, `autobyteus-server:<tag>`, even when you want to consume the published Docker Hub release.
+
+For release consumption, prefer:
+
+```bash
+cd autobyteus-server-ts/docker
+./docker-start.sh up --pull-remote
+```
+
+That mode pulls `autobyteus/autobyteus-server:<tag>`, compares it against the local alias, retags the local compose image when the remote digest is newer, and force-recreates the container only when an update is actually needed.
+
+If you are developing locally and want source changes to drive the container, use:
+
+```bash
+cd autobyteus-server-ts/docker
+./docker-start.sh up
+```
 
 ## Manual Build (Advanced)
 
