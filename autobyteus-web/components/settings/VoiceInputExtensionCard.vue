@@ -124,6 +124,17 @@
             </button>
           </div>
 
+          <div v-if="showSettingsTestReset" class="flex justify-end">
+            <button
+              type="button"
+              class="rounded-md border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
+              :disabled="busy"
+              @click="handleSettingsTestReset"
+            >
+              Reset Test
+            </button>
+          </div>
+
           <p v-if="!extension.enabled" class="text-xs text-amber-700">
             Enable Voice Input to run a microphone test.
           </p>
@@ -375,6 +386,12 @@ const settingsTestButtonLabel = computed(() => (
   isSettingsTestRecording.value ? 'Stop Test' : 'Start Test'
 ));
 
+const showSettingsTestReset = computed(() => (
+  isSettingsTestRecording.value
+  || settingsTestResult.value?.outcome === 'error'
+  || settingsTestResult.value?.outcome === 'recording'
+));
+
 const selectedAudioInputValue = computed(() => props.extension.settings.audioInputDeviceId ?? '');
 
 const audioInputStatusMessage = computed(() => {
@@ -492,6 +509,10 @@ async function handleSettingsTestToggle(): Promise<void> {
 
 async function refreshAudioInputs(): Promise<void> {
   await voiceInputStore.refreshAudioInputDevices();
+}
+
+async function handleSettingsTestReset(): Promise<void> {
+  await voiceInputStore.resetSettingsTestState();
 }
 
 function formatDuration(durationMs: number): string {

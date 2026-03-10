@@ -17,5 +17,8 @@
     <!-- Network access for bundled server -->
     <key>com.apple.security.network.server</key>
     <true/>
+    <!-- Required for packaged macOS microphone capture -->
+    <key>com.apple.security.device.audio-input</key>
+    <true/>
 </dict>
 </plist>
