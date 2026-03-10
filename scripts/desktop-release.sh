@@ -4,17 +4,20 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 WEB_PACKAGE_JSON="$REPO_ROOT/autobyteus-web/package.json"
+RELEASE_NOTES_OUTPUT_PATH="$REPO_ROOT/.github/release-notes/release-notes.md"
+RELEASE_NOTES_OUTPUT_REL=".github/release-notes/release-notes.md"
 DEFAULT_BRANCH="personal"
 
 usage() {
   cat <<'USAGE'
 Usage:
-  scripts/desktop-release.sh release <version> [--branch <branch>] [--no-push]
+  scripts/desktop-release.sh release <version> --release-notes <file> [--branch <branch>] [--no-push]
   scripts/desktop-release.sh test [--ref <git-ref>]
   scripts/desktop-release.sh manual-dispatch <tag> [--ref <git-ref>] [--prerelease]
 
 Commands:
-  release   Bump autobyteus-web/package.json version, commit, and create matching tag.
+  release   Bump autobyteus-web/package.json version, sync curated release notes,
+            commit, and create matching tag.
             Defaults: --branch personal, push enabled. Pushing the tag starts the real release workflow.
   test      Trigger release-desktop workflow for build-only validation (no GitHub release publish).
   manual-dispatch
@@ -22,8 +25,8 @@ Commands:
             Use this for an existing tag or manual re-publish, not immediately after a fresh release.
 
 Examples:
-  scripts/desktop-release.sh release 1.2.7
-  scripts/desktop-release.sh release 1.2.7 --no-push
+  scripts/desktop-release.sh release 1.2.7 --release-notes tickets/done/my-ticket/release-notes.md
+  scripts/desktop-release.sh release 1.2.7 --release-notes tickets/done/my-ticket/release-notes.md --no-push
   scripts/desktop-release.sh test --ref personal
   scripts/desktop-release.sh manual-dispatch v1.2.7 --ref personal
 USAGE
@@ -89,11 +92,35 @@ ensure_tag_absent() {
   fi
 }
 
+validate_release_notes_file() {
+  local file="$1"
+  if [[ -z "$file" ]]; then
+    echo "Error: release requires --release-notes <file>." >&2
+    exit 1
+  fi
+  if [[ ! -f "$file" ]]; then
+    echo "Error: release notes file '$file' does not exist." >&2
+    exit 1
+  fi
+  if ! grep -Eq '\S' "$file"; then
+    echo "Error: release notes file '$file' is empty." >&2
+    exit 1
+  fi
+}
+
+sync_release_notes_file() {
+  local file="$1"
+  mkdir -p "$(dirname "$RELEASE_NOTES_OUTPUT_PATH")"
+  cp "$file" "$RELEASE_NOTES_OUTPUT_PATH"
+  echo "Synced curated release notes to $RELEASE_NOTES_OUTPUT_REL"
+}
+
 run_release() {
   local version="$1"
   shift
   local branch="$DEFAULT_BRANCH"
   local push_enabled="true"
+  local release_notes_file=""
 
   while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -102,6 +129,10 @@ run_release() {
         ;;
       --branch)
         branch="${2:-}"
+        shift 2
+        ;;
+      --release-notes)
+        release_notes_file="${2:-}"
         shift 2
         ;;
       --no-push)
@@ -119,6 +150,7 @@ run_release() {
   validate_version "$version"
   require_cmd git
   require_cmd node
+  validate_release_notes_file "$release_notes_file"
   ensure_clean_worktree
 
   local current_branch
@@ -140,12 +172,14 @@ run_release() {
 
   echo "Updating autobyteus-web/package.json: $current_version -> $version"
   set_package_version "$version"
+  sync_release_notes_file "$release_notes_file"
   echo "Syncing managed messaging release manifest to $tag"
   node "$REPO_ROOT/autobyteus-message-gateway/scripts/build-runtime-package.mjs" \
     --sync-manifest-only \
     --release-tag "$tag"
 
   git -C "$REPO_ROOT" add \
+    .github/release-notes/release-notes.md \
     autobyteus-web/package.json \
     autobyteus-server-ts/src/managed-capabilities/messaging-gateway/release-manifest.json
   git -C "$REPO_ROOT" commit -m "chore(release): bump desktop app version to $version"

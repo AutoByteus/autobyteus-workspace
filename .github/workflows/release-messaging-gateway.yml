@@ -158,12 +158,55 @@ jobs:
       - build-runtime-package
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout workspace
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare-release.outputs.release_ref }}
+          fetch-depth: 0
+
       - name: Download runtime package artifacts
         uses: actions/download-artifact@v4
         with:
           path: release-artifacts
 
-      - name: Publish release assets
+      - name: Resolve release notes mode
+        id: release_notes
+        run: |
+          CURATED_PATH=".github/release-notes/release-notes.md"
+          if [[ -f "$CURATED_PATH" ]] && grep -Eq '\S' "$CURATED_PATH"; then
+            echo "has_curated_notes=true" >> "$GITHUB_OUTPUT"
+            echo "release_notes_path=$CURATED_PATH" >> "$GITHUB_OUTPUT"
+            {
+              echo "### Release notes mode"
+              echo ""
+              echo "Using curated release notes from \`$CURATED_PATH\`."
+            } >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "has_curated_notes=false" >> "$GITHUB_OUTPUT"
+            {
+              echo "### Release notes mode"
+              echo ""
+              echo "Curated release notes file missing in the tagged revision; falling back to generated GitHub notes."
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Publish release assets with curated notes
+        if: ${{ steps.release_notes.outputs.has_curated_notes == 'true' }}
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.prepare-release.outputs.release_tag }}
+          target_commitish: ${{ needs.prepare-release.outputs.release_sha }}
+          draft: false
+          prerelease: ${{ needs.prepare-release.outputs.prerelease }}
+          body_path: ${{ steps.release_notes.outputs.release_notes_path }}
+          files: |
+            release-artifacts/**/*.tar.gz
+            release-artifacts/**/*.tar.gz.json
+            release-artifacts/**/*.tar.gz.sha256
+            release-artifacts/**/release-manifest.json
+
+      - name: Publish release assets with generated notes fallback
+        if: ${{ steps.release_notes.outputs.has_curated_notes != 'true' }}
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ needs.prepare-release.outputs.release_tag }}

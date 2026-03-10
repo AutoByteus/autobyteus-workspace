@@ -82,6 +82,7 @@ pnpm android:server:stop
 
 - Workflow files:
   - `.github/workflows/release-desktop.yml`
+  - `.github/workflows/release-messaging-gateway.yml`
   - `.github/workflows/release-server-docker.yml`
 - Triggers:
   - push tag `v*` (for example: `v1.1.8`)
@@ -89,7 +90,12 @@ pnpm android:server:stop
 - Artifacts:
   - macOS ARM64 DMG + blockmap
   - Linux x64 AppImage + blockmap
+  - managed messaging runtime package assets on the same GitHub Release
   - Docker Hub server image for `linux/amd64,linux/arm64`
+- Release notes:
+  - GitHub Releases use curated user-facing notes from `.github/release-notes/release-notes.md` when that file exists in the tagged revision.
+  - The release helper prepares that file from the ticket `release-notes.md`.
+  - Historical tags that predate the curated file fall back to GitHub generated notes during manual republish.
 - Version/tag sync is mandatory:
   - `autobyteus-web/package.json` version must match release tag version (`vX.Y.Z`).
   - The release workflow enforces this and fails on mismatch.
@@ -110,9 +116,11 @@ Use the release helper script from repo root:
 
 ```bash
 # Normal new personal release:
-# 1) Prepare the release (bump package version, commit, create tag, push branch+tag)
-#    This starts both release workflows because the pushed tag matches v*.
-pnpm release 1.2.7
+# 1) Write short functional release notes in the ticket, for example:
+#    tickets/done/<ticket-name>/release-notes.md
+# 2) Prepare the release (bump package version, sync curated notes, commit, create tag, push branch+tag)
+#    This starts the desktop, messaging-gateway, and server Docker release workflows because the pushed tag matches v*.
+pnpm release 1.2.7 -- --release-notes tickets/done/<ticket-name>/release-notes.md
 
 # Optional manual build-only validation (no GitHub release publish)
 pnpm release:test --ref personal
@@ -125,8 +133,9 @@ pnpm release:manual-dispatch v1.2.7 --ref personal
 Important:
 
 - Do not run `release:manual-dispatch` immediately after a fresh `release` for the same version.
-- `release` already pushes `vX.Y.Z`, and the tag push starts both `.github/workflows/release-desktop.yml` and `.github/workflows/release-server-docker.yml`.
+- `release` already pushes `vX.Y.Z`, and the tag push starts `.github/workflows/release-desktop.yml`, `.github/workflows/release-messaging-gateway.yml`, and `.github/workflows/release-server-docker.yml`.
 - `release:manual-dispatch` is the manual recovery / re-publish path for an existing tag, not the normal second step of a new release.
+- Curated release notes should stay user-facing and functional only; use `.github/release-notes/template.md` as the repo-level format reference.
 
 Script file:
 - `scripts/desktop-release.sh`
