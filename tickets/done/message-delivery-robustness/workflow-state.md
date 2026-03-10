@@ -8,11 +8,11 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 
 - Ticket: `message-delivery-robustness`
 - Current Stage: `10`
-- Next Stage: `10 (repository finalization in progress)`
+- Next Stage: `Completed`
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-037`
+- Last Transition ID: `T-038`
 - Last Updated: `2026-03-10`
 
 ## Stage Gates
@@ -29,7 +29,7 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | 7 API/E2E Testing | Pass | API/E2E test implementation complete + AC scenario gate complete | [`api-e2e-testing.md`](./api-e2e-testing.md), [`implementation-progress.md`](./implementation-progress.md), [`workflow-state.md`](./workflow-state.md) |
 | 8 Code Review | Pass | Code review gate `Pass`/`Fail` recorded + all changed source files `<=500` effective non-empty lines + `>220` delta-gate assessments recorded + shared-principles/layering + decoupling + module/file placement + no-backward-compat/no-legacy checks satisfied for `Pass` | [`code-review.md`](./code-review.md), [`implementation-progress.md`](./implementation-progress.md), [`workflow-state.md`](./workflow-state.md) |
 | 9 Docs Sync | Pass | Docs updated or no-impact rationale recorded | [`implementation-progress.md`](./implementation-progress.md), [`api-e2e-testing.md`](./api-e2e-testing.md), [`code-review.md`](./code-review.md), [`workflow-state.md`](./workflow-state.md) |
-| 10 Handoff / Ticket State | In Progress | Final handoff ready + explicit user verification received + ticket moved to `done` + git finalization/release complete when git repo + ticket state decision recorded | [`workflow-state.md`](./workflow-state.md), [`implementation-progress.md`](./implementation-progress.md), [`handoff-summary.md`](./handoff-summary.md), [`release-notes.md`](./release-notes.md) |
+| 10 Handoff / Ticket State | Pass | Explicit user verification received; ticket archived; ticket branch pushed; merged to `personal`; release completed and tagged | [`workflow-state.md`](./workflow-state.md), [`implementation-progress.md`](./implementation-progress.md), [`handoff-summary.md`](./handoff-summary.md), [`release-notes.md`](./release-notes.md) |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -130,6 +130,7 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | T-035 | 2026-03-10 | 8 | 9 | Stage 8 review remained passed after the post-merge test-only repair because no changed source-file sizing, placement, or layering outcome regressed | N/A | Locked | [`code-review.md`](./code-review.md), [`implementation-progress.md`](./implementation-progress.md), [`workflow-state.md`](./workflow-state.md) |
 | T-036 | 2026-03-10 | 9 | 10 | Docs sync and handoff evidence were refreshed with the post-merge validation reruns, so the ticket returned to Stage 10 awaiting explicit user verification | N/A | Locked | [`implementation-progress.md`](./implementation-progress.md), [`api-e2e-testing.md`](./api-e2e-testing.md), [`code-review.md`](./code-review.md), [`workflow-state.md`](./workflow-state.md) |
 | T-037 | 2026-03-10 | 10 | 10 | Explicit user verification was received, release notes and handoff summary were persisted, and Stage 10 repository finalization started | N/A | Locked | [`workflow-state.md`](./workflow-state.md), [`handoff-summary.md`](./handoff-summary.md), [`release-notes.md`](./release-notes.md) |
+| T-038 | 2026-03-10 | 10 | 10 | Ticket branch was pushed, merged into `personal`, the merged `personal` branch was pushed, and release `v1.2.39` was published, completing Stage 10 | N/A | Locked | [`workflow-state.md`](./workflow-state.md), [`handoff-summary.md`](./handoff-summary.md), [`release-notes.md`](./release-notes.md) |
 
 ## Audible Notification Log (Optional Tracking)
 
@@ -161,6 +162,7 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | 2026-03-10 | Re-entry | Stage 10 merge validation reran the Stage 7 acceptance slice and found a local managed gateway recovery e2e regression after `origin/personal` introduced the internal server base URL requirement. Returned to Stage 6 and reopened code edits for a scoped repair. | Pending | N/A |
 | 2026-03-10 | Transition | The post-merge local fix passed, the expanded validation slice and local Docker smoke both passed on the merged branch, and the ticket is back in Stage 10 awaiting explicit user verification. Code edits are locked again. | Success | N/A |
 | 2026-03-10 | Transition | Explicit user verification was received. Release notes and the handoff summary are persisted, and Stage 10 repository finalization is now in progress with code edits locked. | Success | N/A |
+| 2026-03-10 | Transition | Stage 10 is complete. The ticket branch was pushed, merged into personal, and release v1.2.39 was published. | Success | N/A |
 
 ## Process Violation Log
 

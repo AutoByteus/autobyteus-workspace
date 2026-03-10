@@ -53,5 +53,9 @@
 - The main workspace on `personal` stayed clean before repository finalization began.
 
 ## Ticket State
-- Technical workflow is complete through Stage 9.
-- Stage 10 repository finalization is in progress.
+- Technical workflow is fully complete through Stage 10.
+- Ticket has been moved to `tickets/done/message-delivery-robustness`.
+- Ticket branch commit: `a3da1a6`
+- `personal` merge commit: `7d8ecd8`
+- Release commit: `e13cb26`
+- Published release tag: `v1.2.39`
