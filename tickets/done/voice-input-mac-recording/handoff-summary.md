@@ -22,4 +22,5 @@
 
 ## Remaining Work
 
-- Repository finalization is the only remaining step.
+- None.
+- Repository finalization completed on `2026-03-10`: the ticket branch was pushed, merged into `personal`, and released as `v1.2.36`.

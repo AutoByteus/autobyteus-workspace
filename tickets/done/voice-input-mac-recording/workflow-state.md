@@ -8,11 +8,11 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 
 - Ticket: `voice-input-mac-recording`
 - Current Stage: `10`
-- Next Stage: `Commit the branch, merge into personal, and run the desktop release flow`
+- Next Stage: `None (ticket complete)`
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `Requirement Gap`
-- Last Transition ID: `T-018`
+- Last Transition ID: `T-020`
 - Last Updated: `2026-03-10`
 
 ## Stage Gates
@@ -29,7 +29,7 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | 7 API/E2E Testing | Pass | API/E2E test implementation complete + AC scenario gate complete | `tickets/done/voice-input-mac-recording/api-e2e-testing.md`, `tickets/done/voice-input-mac-recording/workflow-state.md` |
 | 8 Code Review | Pass | Code review gate `Pass`/`Fail` recorded + all changed source files `<=500` effective non-empty lines + `>220` delta-gate assessments recorded + shared-principles/layering + decoupling + module/file placement + no-backward-compat/no-legacy checks satisfied for `Pass` | `tickets/done/voice-input-mac-recording/code-review.md`, `tickets/done/voice-input-mac-recording/workflow-state.md` |
 | 9 Docs Sync | Pass | Docs updated or no-impact rationale recorded | `tickets/done/voice-input-mac-recording/docs-sync.md`, `tickets/done/voice-input-mac-recording/workflow-state.md` |
-| 10 Handoff / Ticket State | In Progress | Final handoff ready + explicit user verification received + ticket moved to `done` + git finalization/release complete when git repo + ticket state decision recorded | `tickets/done/voice-input-mac-recording/handoff-summary.md`, `tickets/done/voice-input-mac-recording/release-notes.md`, `tickets/done/voice-input-mac-recording/workflow-state.md` |
+| 10 Handoff / Ticket State | Pass | Final handoff ready + explicit user verification received + ticket moved to `done` + git finalization/release complete when git repo + ticket state decision recorded | `tickets/done/voice-input-mac-recording/handoff-summary.md`, `tickets/done/voice-input-mac-recording/release-notes.md`, `tickets/done/voice-input-mac-recording/workflow-state.md` |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -112,6 +112,7 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | T-017 | 2026-03-10 | 8 | 9 | Code review passed with no blocking findings after the recovery pass. The next step is docs sync. | Requirement Gap | Locked | `tickets/in-progress/voice-input-mac-recording/code-review.md`, `tickets/in-progress/voice-input-mac-recording/workflow-state.md` |
 | T-018 | 2026-03-10 | 9 | 10 | Docs sync is complete, release notes are written, and explicit user verification has been received. The next step is ticket archival and repository finalization. | Requirement Gap | Locked | `tickets/in-progress/voice-input-mac-recording/docs-sync.md`, `tickets/in-progress/voice-input-mac-recording/handoff-summary.md`, `tickets/in-progress/voice-input-mac-recording/release-notes.md`, `tickets/in-progress/voice-input-mac-recording/workflow-state.md` |
 | T-019 | 2026-03-10 | 10 | 10 | The user confirmed completion, so the ticket folder was moved from `tickets/in-progress` to `tickets/done` before repository finalization. | Requirement Gap | Locked | `tickets/done/voice-input-mac-recording/workflow-state.md` |
+| T-020 | 2026-03-10 | 10 | 10 | Repository finalization is complete. The ticket branch was pushed, merged into `personal`, and released as `v1.2.36`, so Stage 10 now passes. | Requirement Gap | Locked | `tickets/done/voice-input-mac-recording/handoff-summary.md`, `tickets/done/voice-input-mac-recording/release-notes.md`, `tickets/done/voice-input-mac-recording/workflow-state.md` |
 
 ## Audible Notification Log (Optional Tracking)
 
@@ -122,6 +123,7 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | 2026-03-10 | Transition | Stages three through five are complete for the voice input mac recording ticket. Stage six implementation is now active, code edits are unlocked, and the next step is the localized recorder-startup and macOS entitlement fix with targeted verification. | Success | N/A |
 | 2026-03-10 | Transition | Stage six implementation is complete for the voice input mac recording ticket. Stage seven is now blocked only on a fresh packaged macOS validation run on an affected machine, and no further code edits should happen until that verification result is known. | Success | N/A |
 | 2026-03-10 | Transition | The ticket has been reopened for a small robustness pass. Stage six is active again, code edits are unlocked, and the next step is to add a dead-recording watchdog plus a reset mechanism in the settings UI. | Success | N/A |
+| 2026-03-10 | Transition | Stage ten is complete for the voice input mac recording ticket. The branch has been merged into personal, release v1.2.36 is published, and the ticket is fully closed. | Success | N/A |
 
 ## Process Violation Log
 
