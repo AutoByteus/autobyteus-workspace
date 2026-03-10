@@ -3,12 +3,26 @@ import { describe, expect, it, vi } from "vitest";
 import { ClaudeAgentSdkRuntimeAdapter } from "../../../../src/runtime-execution/adapters/claude-agent-sdk-runtime-adapter.js";
 import type { ClaudeAgentSdkRuntimeService } from "../../../../src/runtime-execution/claude-agent-sdk/claude-agent-sdk-runtime-service.js";
 
-vi.mock("../../../../src/runtime-execution/single-agent-runtime-metadata.js", () => ({
-  resolveSingleAgentInstructionRuntimeMetadata: vi.fn().mockResolvedValue({
-    agentInstructions: "Use tools when useful.",
-    memberInstructionSources: {
+vi.mock("../../../../src/runtime-execution/single-agent-runtime-context.js", () => ({
+  resolveSingleAgentRuntimeContext: vi.fn().mockResolvedValue({
+    runtimeMetadata: {
       agentInstructions: "Use tools when useful.",
+      memberInstructionSources: {
+        agentInstructions: "Use tools when useful.",
+      },
+      skillAccessMode: "PRELOADED_ONLY",
+      configuredSkillNames: ["code-review"],
     },
+    configuredSkills: [
+      {
+        name: "code-review",
+        description: "Review code carefully.",
+        content: "Always verify edge cases before approving changes.",
+        rootPath: "/skills/code-review",
+        skillFilePath: "/skills/code-review/SKILL.md",
+      },
+    ],
+    skillAccessMode: "PRELOADED_ONLY",
   }),
 }));
 
@@ -58,6 +72,8 @@ describe("ClaudeAgentSdkRuntimeAdapter", () => {
         memberInstructionSources: {
           agentInstructions: "Use tools when useful.",
         },
+        skillAccessMode: "PRELOADED_ONLY",
+        configuredSkillNames: ["code-review"],
         model: "claude-sonnet-4-5",
       },
     });
@@ -70,7 +86,16 @@ describe("ClaudeAgentSdkRuntimeAdapter", () => {
         memberInstructionSources: {
           agentInstructions: "Use tools when useful.",
         },
+        skillAccessMode: "PRELOADED_ONLY",
+        configuredSkillNames: ["code-review"],
       },
+      configuredSkills: [
+        expect.objectContaining({
+          name: "code-review",
+          rootPath: "/skills/code-review",
+        }),
+      ],
+      skillAccessMode: "PRELOADED_ONLY",
     });
   });
 
@@ -107,6 +132,8 @@ describe("ClaudeAgentSdkRuntimeAdapter", () => {
           memberInstructionSources: {
             agentInstructions: "Use tools when useful.",
           },
+          skillAccessMode: "PRELOADED_ONLY",
+          configuredSkillNames: ["code-review"],
           restored: true,
         },
       },
@@ -119,6 +146,8 @@ describe("ClaudeAgentSdkRuntimeAdapter", () => {
         memberInstructionSources: {
           agentInstructions: "Use tools when useful.",
         },
+        skillAccessMode: "PRELOADED_ONLY",
+        configuredSkillNames: ["code-review"],
       },
     });
     expect((runtimeService.restoreRunSession as any).mock.calls[0][1]).toMatchObject({
@@ -129,7 +158,16 @@ describe("ClaudeAgentSdkRuntimeAdapter", () => {
         memberInstructionSources: {
           agentInstructions: "Use tools when useful.",
         },
+        skillAccessMode: "PRELOADED_ONLY",
+        configuredSkillNames: ["code-review"],
       },
+      configuredSkills: [
+        expect.objectContaining({
+          name: "code-review",
+          rootPath: "/skills/code-review",
+        }),
+      ],
+      skillAccessMode: "PRELOADED_ONLY",
     });
   });
 

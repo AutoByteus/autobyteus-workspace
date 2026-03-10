@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { buildClaudeTurnInput } from "../../../../src/runtime-execution/claude-agent-sdk/claude-runtime-turn-preamble.js";
 import type { ClaudeRunSessionState } from "../../../../src/runtime-execution/claude-agent-sdk/claude-runtime-shared.js";
 
@@ -18,6 +19,8 @@ const createState = (
   sendMessageToEnabled: false,
   teamManifestMembers: [],
   allowedRecipientNames: [],
+  configuredSkills: [],
+  skillAccessMode: null,
   listeners: new Set(),
   activeAbortController: null,
   activeTurnId: null,
@@ -70,5 +73,30 @@ describe("claude-runtime-turn-preamble", () => {
     expect(input).toContain("<user_message>");
     expect(input).toContain("please delegate this");
     expect(input).toContain("</user_message>");
+  });
+
+  it("renders configured skills in a dedicated section when selected skills are available", () => {
+    const input = buildClaudeTurnInput({
+      state: createState({
+        configuredSkills: [
+          {
+            name: "code-review",
+            description: "Review code carefully.",
+            content: "Always verify edge cases before approving changes.",
+            rootPath: "/skills/code-review",
+            skillFilePath: "/skills/code-review/SKILL.md",
+          },
+        ],
+        skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+      }),
+      content: "review this diff",
+      sendMessageToToolingEnabled: false,
+    });
+
+    expect(input).toContain("<configured_skills>");
+    expect(input).toContain("## Agent Configured Skills");
+    expect(input).toContain("Root Path: `/skills/code-review`");
+    expect(input).toContain("Always verify edge cases before approving changes.");
+    expect(input).toContain("</configured_skills>");
   });
 });

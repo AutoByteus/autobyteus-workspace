@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import {
   CodexAppServerRuntimeService,
   mapCodexModelListRowToModelInfo,
@@ -91,6 +92,17 @@ describe("CodexAppServerRuntimeService.sendTurn", () => {
       listeners: new Set(),
       unbindHandlers: [],
       sendMessageToEnabled: true,
+      configuredSkills: [
+        {
+          name: "code-review",
+          description: "Review code carefully.",
+          content: "Always verify edge cases before approving changes.",
+          rootPath: "/skills/code-review",
+          skillFilePath: "/skills/code-review/SKILL.md",
+        },
+      ],
+      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+      materializedConfiguredSkills: [],
     });
 
     await service.sendTurn("run-1", {
@@ -104,6 +116,13 @@ describe("CodexAppServerRuntimeService.sendTurn", () => {
         threadId: "thread-1",
         model: "gpt-5.3-codex",
         effort: "high",
+        input: [
+          {
+            type: "text",
+            text: "hello",
+            text_elements: [],
+          },
+        ],
       }),
     );
   });
@@ -168,6 +187,7 @@ describe("CodexAppServerRuntimeService.sendTurn", () => {
       listeners: new Set(),
       unbindHandlers: [],
       sendMessageToEnabled: true,
+      materializedConfiguredSkills: [],
     });
 
     const sendPromise = service.sendTurn("run-1", {
@@ -209,10 +229,118 @@ describe("CodexAppServerRuntimeService.sendTurn", () => {
       listeners: new Set(),
       unbindHandlers: [],
       sendMessageToEnabled: true,
+      materializedConfiguredSkills: [],
     });
 
     expect(service.getRunStatus("run-1")).toBe("RUNNING");
     expect(service.getRunStatus("missing")).toBeNull();
+  });
+
+  it("retains configured-skill metadata in runtime references after startup", () => {
+    const service = new CodexAppServerRuntimeService();
+
+    (service as unknown as { sessions: Map<string, unknown> }).sessions.set("run-1", {
+      runId: "run-1",
+      client: {
+        request: vi.fn(),
+        close: vi.fn().mockResolvedValue(undefined),
+      },
+      threadId: "thread-1",
+      model: "gpt-5.3-codex",
+      workingDirectory: "/tmp",
+      reasoningEffort: "medium",
+      runtimeMetadata: {
+        skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+        configuredSkillNames: ["code-review"],
+        agentInstructions: "Follow configured skills exactly.",
+      },
+      currentStatus: "IDLE",
+      activeTurnId: null,
+      startup: createReadyStartupState(),
+      approvalRecords: new Map(),
+      listeners: new Set(),
+      unbindHandlers: [],
+      sendMessageToEnabled: true,
+      configuredSkills: [
+        {
+          name: "code-review",
+          description: "Review code carefully.",
+          content: "Always verify edge cases before approving changes.",
+          rootPath: "/skills/code-review",
+          skillFilePath: "/skills/code-review/SKILL.md",
+        },
+      ],
+      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+      teamRunId: null,
+      memberName: null,
+      materializedConfiguredSkills: [],
+    });
+
+    expect(service.getRunRuntimeReference("run-1")).toEqual({
+      threadId: "thread-1",
+      metadata: expect.objectContaining({
+        skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+        configuredSkillNames: ["code-review"],
+        agentInstructions: "Follow configured skills exactly.",
+      }),
+    });
+  });
+
+  it("cleans up materialized workspace skills before releasing the Codex client", async () => {
+    const releaseClient = vi.fn().mockResolvedValue(undefined);
+    const cleanupMaterializedCodexWorkspaceSkills = vi.fn().mockResolvedValue(undefined);
+    const service = new CodexAppServerRuntimeService(
+      {
+        acquireClient: vi.fn(),
+        releaseClient,
+      } as any,
+      {
+        materializeConfiguredCodexWorkspaceSkills: vi.fn(),
+        cleanupMaterializedCodexWorkspaceSkills,
+      } as any,
+    );
+
+    (service as unknown as { sessions: Map<string, unknown> }).sessions.set("run-1", {
+      runId: "run-1",
+      client: {
+        request: vi.fn(),
+        close: vi.fn().mockResolvedValue(undefined),
+      },
+      threadId: "thread-1",
+      model: "gpt-5.3-codex",
+      workingDirectory: "/tmp/workspace",
+      reasoningEffort: "medium",
+      currentStatus: "IDLE",
+      activeTurnId: null,
+      startup: createReadyStartupState(),
+      approvalRecords: new Map(),
+      listeners: new Set(),
+      unbindHandlers: [],
+      sendMessageToEnabled: true,
+      configuredSkills: [],
+      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+      materializedConfiguredSkills: [
+        {
+          name: "code-review",
+          sourceRootPath: "/skills/code-review",
+          materializedRootPath: "/tmp/workspace/.codex/skills/autobyteus-code-review-123",
+          skillFilePath:
+            "/tmp/workspace/.codex/skills/autobyteus-code-review-123/SKILL.md",
+          registryKey: "/tmp/workspace::/skills/code-review",
+        },
+      ],
+      teamRunId: null,
+      memberName: null,
+    });
+
+    await service.closeRunSession("run-1");
+
+    expect(cleanupMaterializedCodexWorkspaceSkills).toHaveBeenCalledWith([
+      expect.objectContaining({
+        name: "code-review",
+      }),
+    ]);
+    expect(releaseClient).toHaveBeenCalledWith("/tmp/workspace");
   });
 
   it("emits synthetic sender tool-call events for intercepted send_message_to item/tool/call", async () => {
@@ -551,12 +679,13 @@ describe("CodexAppServerRuntimeService team-manifest instructions", () => {
   it("injects developer instructions and recipient hints at thread/start for codex team member sessions", async () => {
     const request = vi.fn().mockResolvedValue({ thread: { id: "thread-1" } });
     const processManager = {
-      getClient: vi.fn().mockResolvedValue({
+      acquireClient: vi.fn().mockResolvedValue({
         request,
         onNotification: vi.fn().mockReturnValue(() => {}),
         onServerRequest: vi.fn().mockReturnValue(() => {}),
         onClose: vi.fn().mockReturnValue(() => {}),
       }),
+      releaseClient: vi.fn().mockResolvedValue(undefined),
     } as any;
     const service = new CodexAppServerRuntimeService(processManager);
     service.setInterAgentRelayHandler(async () => ({ accepted: true }));
@@ -621,7 +750,7 @@ describe("CodexAppServerRuntimeService listener continuity", () => {
       return {};
     });
     const processManager = {
-      getClient: vi.fn().mockResolvedValue({
+      acquireClient: vi.fn().mockResolvedValue({
         request,
         onNotification: vi.fn().mockReturnValue(() => {}),
         onServerRequest: vi.fn().mockReturnValue(() => {}),
@@ -629,6 +758,7 @@ describe("CodexAppServerRuntimeService listener continuity", () => {
         respondSuccess: vi.fn(),
         respondError: vi.fn(),
       }),
+      releaseClient: vi.fn().mockResolvedValue(undefined),
     } as any;
     const service = new CodexAppServerRuntimeService(processManager);
     const listener = vi.fn();
@@ -658,6 +788,7 @@ describe("CodexAppServerRuntimeService listener continuity", () => {
     expect(listener).toHaveBeenCalledTimes(1);
 
     await service.closeRunSession("run-rebind");
+    expect(processManager.releaseClient).toHaveBeenCalledWith("/tmp/workspace");
 
     await service.restoreRunSession(
       "run-rebind",
@@ -691,12 +822,13 @@ describe("CodexAppServerRuntimeService approval policy mapping", () => {
   it("uses approvalPolicy=never when autoExecuteTools=true", async () => {
     const request = vi.fn().mockResolvedValue({ thread: { id: "thread-1" } });
     const processManager = {
-      getClient: vi.fn().mockResolvedValue({
+      acquireClient: vi.fn().mockResolvedValue({
         request,
         onNotification: vi.fn().mockReturnValue(() => {}),
         onServerRequest: vi.fn().mockReturnValue(() => {}),
         onClose: vi.fn().mockReturnValue(() => {}),
       }),
+      releaseClient: vi.fn().mockResolvedValue(undefined),
     } as any;
     const service = new CodexAppServerRuntimeService(processManager);
 
@@ -718,12 +850,13 @@ describe("CodexAppServerRuntimeService approval policy mapping", () => {
   it("uses approvalPolicy=on-request when autoExecuteTools=false", async () => {
     const request = vi.fn().mockResolvedValue({ thread: { id: "thread-2" } });
     const processManager = {
-      getClient: vi.fn().mockResolvedValue({
+      acquireClient: vi.fn().mockResolvedValue({
         request,
         onNotification: vi.fn().mockReturnValue(() => {}),
         onServerRequest: vi.fn().mockReturnValue(() => {}),
         onClose: vi.fn().mockReturnValue(() => {}),
       }),
+      releaseClient: vi.fn().mockResolvedValue(undefined),
     } as any;
     const service = new CodexAppServerRuntimeService(processManager);
 

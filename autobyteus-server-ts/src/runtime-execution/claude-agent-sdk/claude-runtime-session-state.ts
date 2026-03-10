@@ -19,6 +19,8 @@ export const createClaudeRunSessionState = (options: {
   permissionMode: ClaudeSdkPermissionMode;
   runtimeMetadata: Record<string, unknown>;
   hasCompletedTurn: boolean;
+  configuredSkills: ClaudeRunSessionState["configuredSkills"];
+  skillAccessMode: ClaudeRunSessionState["skillAccessMode"];
 }): ClaudeRunSessionState => {
   const teamManifestMembers = resolveTeamManifestMembersFromMetadata(options.runtimeMetadata);
   const memberName = resolveMemberNameFromMetadata(options.runtimeMetadata);
@@ -46,6 +48,8 @@ export const createClaudeRunSessionState = (options: {
       currentMemberName: memberName,
       members: teamManifestMembers,
     }),
+    configuredSkills: options.configuredSkills,
+    skillAccessMode: options.skillAccessMode,
     listeners: new Set(),
     activeAbortController: null,
     activeTurnId: null,

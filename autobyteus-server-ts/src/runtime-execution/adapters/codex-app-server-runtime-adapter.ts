@@ -19,7 +19,7 @@ import {
   getCodexAppServerRuntimeService,
 } from "../codex-app-server/codex-app-server-runtime-service.js";
 import { normalizeCodexRuntimeMethod } from "../codex-app-server/codex-runtime-method-normalizer.js";
-import { resolveSingleAgentInstructionRuntimeMetadata } from "../single-agent-runtime-metadata.js";
+import { resolveSingleAgentRuntimeContext } from "../single-agent-runtime-context.js";
 
 const buildCommandFailure = (error: unknown): RuntimeCommandResult => ({
   accepted: false,
@@ -47,15 +47,17 @@ export class CodexAppServerRuntimeAdapter implements RuntimeAdapter {
   async createAgentRun(input: RuntimeCreateAgentRunInput): Promise<RuntimeCreateResult> {
     const runId = randomUUID();
     const workingDirectory = await this.runtimeService.resolveWorkingDirectory(input.workspaceId);
-    const runtimeMetadata = await resolveSingleAgentInstructionRuntimeMetadata(
-      input.agentDefinitionId,
-    );
+    const runtimeContext = await resolveSingleAgentRuntimeContext(input.agentDefinitionId, {
+      skillAccessMode: input.skillAccessMode ?? null,
+    });
     const session = await this.runtimeService.createRunSession(runId, {
       modelIdentifier: input.llmModelIdentifier,
       workingDirectory,
       autoExecuteTools: input.autoExecuteTools,
       llmConfig: input.llmConfig ?? null,
-      runtimeMetadata,
+      runtimeMetadata: runtimeContext.runtimeMetadata,
+      configuredSkills: runtimeContext.configuredSkills,
+      skillAccessMode: runtimeContext.skillAccessMode,
     });
     return {
       runId,
@@ -64,7 +66,7 @@ export class CodexAppServerRuntimeAdapter implements RuntimeAdapter {
         sessionId: runId,
         threadId: session.threadId,
         metadata: {
-          ...runtimeMetadata,
+          ...runtimeContext.runtimeMetadata,
           ...session.metadata,
         },
       },
@@ -73,9 +75,12 @@ export class CodexAppServerRuntimeAdapter implements RuntimeAdapter {
 
   async restoreAgentRun(input: RuntimeRestoreAgentRunInput): Promise<RuntimeCreateResult> {
     const workingDirectory = await this.runtimeService.resolveWorkingDirectory(input.workspaceId);
+    const runtimeContext = await resolveSingleAgentRuntimeContext(input.agentDefinitionId, {
+      skillAccessMode: input.skillAccessMode ?? null,
+    });
     const runtimeMetadata = {
       ...(input.runtimeReference?.metadata ?? {}),
-      ...(await resolveSingleAgentInstructionRuntimeMetadata(input.agentDefinitionId)),
+      ...runtimeContext.runtimeMetadata,
     };
     const session = await this.runtimeService.restoreRunSession(
       input.runId,
@@ -85,6 +90,8 @@ export class CodexAppServerRuntimeAdapter implements RuntimeAdapter {
         autoExecuteTools: input.autoExecuteTools,
         llmConfig: input.llmConfig ?? null,
         runtimeMetadata,
+        configuredSkills: runtimeContext.configuredSkills,
+        skillAccessMode: runtimeContext.skillAccessMode,
       },
       {
         threadId: input.runtimeReference?.threadId ?? null,

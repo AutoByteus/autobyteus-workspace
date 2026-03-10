@@ -121,6 +121,8 @@ export const createClaudeRuntimeSessionRecord = async (input: {
     permissionMode,
     runtimeMetadata,
     hasCompletedTurn: false,
+    configuredSkills: input.options.configuredSkills ?? [],
+    skillAccessMode: input.options.skillAccessMode ?? null,
   });
   input.sessions.set(input.runId, state);
   rebindDeferredRuntimeListeners({
@@ -177,6 +179,8 @@ export const restoreClaudeRuntimeSessionRecord = async (input: {
     permissionMode,
     runtimeMetadata,
     hasCompletedTurn,
+    configuredSkills: input.options.configuredSkills ?? [],
+    skillAccessMode: input.options.skillAccessMode ?? null,
   });
   input.sessions.set(input.runId, state);
   rebindDeferredRuntimeListeners({

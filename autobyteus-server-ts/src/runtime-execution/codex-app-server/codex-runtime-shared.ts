@@ -1,5 +1,8 @@
 import type { CodexAppServerClient } from "./codex-app-server-client.js";
 import type { JsonObject } from "./codex-runtime-json.js";
+import type { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import type { ResolvedRuntimeSkill } from "../configured-runtime-skills.js";
+import type { MaterializedCodexWorkspaceSkill } from "./codex-workspace-skill-materializer.js";
 
 export type CodexRuntimeEvent = {
   method: string;
@@ -31,6 +34,7 @@ export type CodexRunSessionState = {
   model: string | null;
   workingDirectory: string;
   reasoningEffort: string | null;
+  runtimeMetadata: Record<string, unknown>;
   currentStatus: string | null;
   activeTurnId: string | null;
   startup: CodexSessionStartupState;
@@ -40,6 +44,9 @@ export type CodexRunSessionState = {
   teamRunId: string | null;
   memberName: string | null;
   sendMessageToEnabled: boolean;
+  configuredSkills: ResolvedRuntimeSkill[];
+  skillAccessMode: SkillAccessMode | null;
+  materializedConfiguredSkills: MaterializedCodexWorkspaceSkill[];
 };
 
 export const createCodexSessionStartupState = (): CodexSessionStartupState => {
@@ -106,4 +113,6 @@ export type SessionRuntimeOptions = {
   autoExecuteTools: boolean;
   llmConfig?: Record<string, unknown> | null;
   runtimeMetadata?: Record<string, unknown> | null;
+  configuredSkills?: ResolvedRuntimeSkill[] | null;
+  skillAccessMode?: SkillAccessMode | null;
 };
