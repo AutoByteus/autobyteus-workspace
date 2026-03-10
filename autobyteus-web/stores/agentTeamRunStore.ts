@@ -111,6 +111,34 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       }
     },
 
+    discardDraftTeamRun(teamRunId: string): boolean {
+      const normalizedTeamRunId = teamRunId.trim();
+      if (!normalizedTeamRunId || !normalizedTeamRunId.startsWith('temp-')) {
+        return false;
+      }
+
+      const teamContextsStore = useAgentTeamContextsStore();
+      const teamContext = teamContextsStore.getTeamContextById(normalizedTeamRunId);
+      if (!teamContext) {
+        return false;
+      }
+
+      if (teamContext.unsubscribe) {
+        teamContext.unsubscribe();
+        teamContext.unsubscribe = undefined;
+      }
+      teamStreamingServices.delete(normalizedTeamRunId);
+
+      teamContext.isSubscribed = false;
+      teamContext.members.forEach((member) => {
+        member.isSending = false;
+        useAgentActivityStore().clearActivities(member.state.runId);
+      });
+
+      teamContextsStore.removeTeamContext(normalizedTeamRunId);
+      return true;
+    },
+
     async sendMessageToFocusedMember(text: string, contextPaths: { path: string; type: string }[]) {
       const teamContextsStore = useAgentTeamContextsStore();
       const runHistoryStore = useRunHistoryStore();

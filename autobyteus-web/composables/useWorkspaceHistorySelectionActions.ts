@@ -1,4 +1,4 @@
-import type { TeamMemberTreeRow } from '~/stores/runHistoryTypes';
+import type { TeamMemberTreeRow, TeamTreeNode } from '~/stores/runHistoryTypes';
 import type { RunTreeRow } from '~/utils/runTreeProjection';
 
 interface RunHistorySelectionStoreLike {
@@ -10,16 +10,33 @@ interface RunHistorySelectionStoreLike {
 }
 
 interface SelectionStoreLike {
+  selectedType: 'agent' | 'team' | null;
+  selectedRunId: string | null;
   selectRun: (runId: string, type: 'agent' | 'team') => void;
 }
 
 export const useWorkspaceHistorySelectionActions = (params: {
   runHistoryStore: RunHistorySelectionStoreLike;
   selectionStore: SelectionStoreLike;
+  setTeamExpanded: (teamRunId: string, expanded: boolean) => void;
   toggleTeam: (teamRunId: string) => void;
   emitRunSelected: (payload: { type: 'agent' | 'team'; runId: string }) => void;
   emitRunCreated: (payload: { type: 'agent'; definitionId: string }) => void;
 }) => {
+  const resolveTeamTargetMember = (team: TeamTreeNode): TeamMemberTreeRow | null => {
+    const focusedMemberKey = team.focusedMemberName.trim();
+    if (focusedMemberKey) {
+      const focusedMember = team.members.find((member) =>
+        member.memberRouteKey === focusedMemberKey || member.memberName === focusedMemberKey,
+      );
+      if (focusedMember) {
+        return focusedMember;
+      }
+    }
+
+    return team.members[0] ?? null;
+  };
+
   const onSelectRun = async (run: RunTreeRow): Promise<void> => {
     try {
       await params.runHistoryStore.selectTreeRun(run);
@@ -29,14 +46,37 @@ export const useWorkspaceHistorySelectionActions = (params: {
     }
   };
 
-  const onSelectTeam = (teamRunId: string): void => {
-    params.toggleTeam(teamRunId);
-    params.selectionStore.selectRun(teamRunId, 'team');
-    params.emitRunSelected({ type: 'team', runId: teamRunId });
+  const onSelectTeam = async (team: TeamTreeNode): Promise<void> => {
+    const isAlreadySelectedTeam =
+      params.selectionStore.selectedType === 'team'
+      && params.selectionStore.selectedRunId === team.teamRunId;
+
+    if (isAlreadySelectedTeam) {
+      params.toggleTeam(team.teamRunId);
+      params.emitRunSelected({ type: 'team', runId: team.teamRunId });
+      return;
+    }
+
+    params.setTeamExpanded(team.teamRunId, true);
+    const targetMember = resolveTeamTargetMember(team);
+    if (!targetMember) {
+      params.selectionStore.selectRun(team.teamRunId, 'team');
+      params.emitRunSelected({ type: 'team', runId: team.teamRunId });
+      return;
+    }
+
+    try {
+      await params.runHistoryStore.selectTreeRun(targetMember);
+      params.selectionStore.selectRun(team.teamRunId, 'team');
+      params.emitRunSelected({ type: 'team', runId: team.teamRunId });
+    } catch (error) {
+      console.error('Failed to open team:', error);
+    }
   };
 
   const onSelectTeamMember = async (member: TeamMemberTreeRow): Promise<void> => {
     try {
+      params.setTeamExpanded(member.teamRunId, true);
       await params.runHistoryStore.selectTreeRun(member);
       params.emitRunSelected({ type: 'team', runId: member.teamRunId });
     } catch (error) {
