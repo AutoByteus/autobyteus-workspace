@@ -2,7 +2,7 @@
 
 - Ticket: `run-history-worktree-live-stream-loss`
 - Last Updated: `2026-03-10`
-- Status: `Ready for user verification`
+- Status: `Verified and finalized`
 
 ## What Changed
 
@@ -22,4 +22,5 @@
 
 ## Release Notes
 
-- Not required for this ticket at the current handoff stage.
+- Ticket branch `codex/run-history-worktree-live-stream-loss` was merged into `personal`.
+- Desktop release `v1.2.34` was created from `personal` using `tickets/done/run-history-worktree-live-stream-loss/release-notes.md`.

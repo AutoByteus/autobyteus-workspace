@@ -27,3 +27,10 @@
   - Result: `5` files passed, `67` tests passed.
 - Passed: `pnpm -C autobyteus-web test:nuxt components/workspace/team/__tests__/TeamWorkspaceView.spec.ts components/workspace/team/__tests__/AgentTeamEventMonitor.spec.ts components/progress/__tests__/ActivityFeed.spec.ts components/layout/__tests__/WorkspaceDesktopLayout.spec.ts --run`
   - Result: `4` files passed, `17` tests passed.
+
+## Finalization Log
+
+- User verification received on `2026-03-10`.
+- Ticket archive path finalized under `tickets/done/run-history-worktree-live-stream-loss`.
+- Ticket branch `codex/run-history-worktree-live-stream-loss` was pushed, merged into `personal`, and `personal` was pushed.
+- Desktop release `v1.2.34` was created from `personal`.
