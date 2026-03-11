@@ -258,6 +258,65 @@ Inference:
   - Evidence: `autobyteus-server-ts/src/runtime-execution/runtime-adapter-port.ts`
   - Evidence: `autobyteus-server-ts/src/runtime-execution/adapters/codex-app-server-runtime-adapter.ts`
   - Evidence: `autobyteus-server-ts/src/runtime-execution/adapters/claude-agent-sdk-runtime-adapter.ts`
+
+### 17. The active-runtime snapshot is still too thin, so the frontend is inventing live status instead of consuming authoritative backend state
+
+- The active-runtime GraphQL snapshot currently returns only `id` and `currentStatus` for active agent runs and active team runs.
+  - Evidence: `autobyteus-web/graphql/queries/activeRuntimeQueries.ts`
+  - Evidence: `autobyteus-server-ts/src/api/graphql/services/active-runtime-snapshot-service.ts`
+- The frontend active-runtime sync reduces that snapshot to two id sets and throws away the backend status payload.
+  - Evidence: `autobyteus-web/stores/activeRuntimeSyncStore.ts`
+- Existing active contexts are then forced back to heuristic placeholder states:
+  - standalone active runs are reset from `ShutdownComplete` to `Uninitialized`
+  - active team contexts are reset from `ShutdownComplete` to `Uninitialized`
+  - team members are also reset from `ShutdownComplete` to `Uninitialized`
+  - Evidence: `autobyteus-web/stores/activeRuntimeSyncStore.ts`
+- Focused web tests currently encode that heuristic behavior, which is why the UI can still show `Offline` or `Uninitialized` even when the backend already knows the run or team is live.
+  - Evidence: `autobyteus-web/stores/__tests__/activeRuntimeSyncStore.spec.ts`
+
+Inference:
+
+- Backend active-runtime state should become authoritative for live status.
+- The active-runtime snapshot needs to expose enough normalized status information for the frontend to stop inventing placeholder live status.
+- For teams, that means the snapshot should carry focused/member-visible status in addition to aggregate team liveness.
+
+### 18. Active-runtime sync still rehydrates live contexts through history-open coordinators, so status ownership and selection concerns remain mixed
+
+- `activeRuntimeSyncStore` still recovers missing active runs by calling `openRunWithCoordinator(...)`.
+  - Evidence: `autobyteus-web/stores/activeRuntimeSyncStore.ts`
+- It still recovers missing active team runs by calling `openTeamRunWithCoordinator(...)`.
+  - Evidence: `autobyteus-web/stores/activeRuntimeSyncStore.ts`
+- Those open coordinators are selection/history-opening flows:
+  - they fetch persisted projection and resume data
+  - they hydrate or replace contexts
+  - they optionally select the run/team
+  - they attach the websocket when `isActive`
+  - Evidence: `autobyteus-web/services/runOpen/runOpenCoordinator.ts`
+  - Evidence: `autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts`
+
+Inference:
+
+- The new active-runtime registry is still partially coupled to the old history-open path.
+- The architecture needs one explicit live-hydration path that:
+  - fetches the projection/resume payload needed to render a newly discovered active run,
+  - does not own selection,
+  - does not infer status heuristically,
+  - and leaves websocket ownership to the subscription manager.
+- The history-open coordinators should become thin orchestration layers over shared hydration helpers instead of being reused directly by active-runtime sync.
+
+### 19. Team-member ownership lookup still falls back to per-run filesystem scans, which is too expensive for a backend-owned active-runtime registry
+
+- `RunOwnershipResolutionService.resolveOwnership(...)` uses `TeamMemberRunManifestStore.findManifestByMemberRunId(...)` to decide whether an active agent run actually belongs to a team.
+  - Evidence: `autobyteus-server-ts/src/run-history/services/run-ownership-resolution-service.ts`
+- `findManifestByMemberRunId(...)` currently scans every team directory under `memory/agent_teams` and attempts to read one manifest path per team for every lookup miss.
+  - Evidence: `autobyteus-server-ts/src/run-history/store/team-member-run-manifest-store.ts`
+- `ActiveRuntimeSnapshotService.listActiveAgentRuns()` calls ownership resolution once per active agent run on every active-runtime snapshot query.
+  - Evidence: `autobyteus-server-ts/src/api/graphql/services/active-runtime-snapshot-service.ts`
+
+Inference:
+
+- The ownership lookup needs an indexed/cache-backed path before the active-runtime registry can become the single live-status source without unnecessary polling cost.
+- The correct boundary is still the ownership resolver, but the underlying member-manifest store should maintain a member-run index rather than re-scanning disk for every poll.
   - Evidence: `autobyteus-server-ts/src/agent-team-execution/services/team-member-runtime-relay-service.ts`
   - Evidence: `autobyteus-server-ts/src/agent-team-execution/services/team-runtime-inter-agent-message-relay.ts`
 

@@ -5,12 +5,20 @@ export const GetActiveRuntimeSnapshot = gql`
     agentRuns {
       __typename
       id
+      name
       currentStatus
     }
     agentTeamRuns {
       __typename
       id
+      name
       currentStatus
+      members {
+        memberRouteKey
+        memberName
+        memberRunId
+        currentStatus
+      }
     }
   }
 `;

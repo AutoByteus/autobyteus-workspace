@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { flushPromises, mount, shallowMount } from '@vue/test-utils';
+import { flushPromises, mount } from '@vue/test-utils';
 import AgentEventMonitor from '../AgentEventMonitor.vue';
 import type { Conversation } from '~/types/conversation';
 
@@ -29,7 +29,7 @@ const conversation: Conversation = {
 
 describe('AgentEventMonitor.vue', () => {
   it('passes avatar/name context into AIMessage and user label into UserMessage', () => {
-    const wrapper = shallowMount(AgentEventMonitor, {
+    const wrapper = mount(AgentEventMonitor, {
       props: {
         conversation,
         agentName: 'Slide Narrator',
@@ -70,7 +70,7 @@ describe('AgentEventMonitor.vue', () => {
   });
 
   it('shows aggregated token usage in the footer', () => {
-    const wrapper = shallowMount(AgentEventMonitor, {
+    const wrapper = mount(AgentEventMonitor, {
       props: {
         conversation,
       },

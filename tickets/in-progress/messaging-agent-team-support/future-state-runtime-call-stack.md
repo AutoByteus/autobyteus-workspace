@@ -21,7 +21,7 @@ Do not treat this document as an as-is trace of current code behavior.
 ## Design Basis
 
 - Scope Classification: `Medium`
-- Call Stack Version: `v6`
+- Call Stack Version: `v7`
 - Requirements: `tickets/in-progress/messaging-agent-team-support/requirements.md` (status `Refined`)
 - Source Artifact:
   - `Medium/Large`: `tickets/in-progress/messaging-agent-team-support/proposed-design.md`
@@ -48,6 +48,9 @@ Do not treat this document as an as-is trace of current code behavior.
 | UC-010 | Requirement | R-013 | N/A | Reconcile active agent and team subscriptions from a dedicated backend active-runtime source | Yes/Yes/Yes |
 | UC-011 | Requirement | R-015,R-016 | N/A | Resolve standalone historical run projection and resume metadata through a runtime-aware backend history source | Yes/Yes/Yes |
 | UC-012 | Requirement | R-015,R-016 | N/A | Resolve team-member historical projection through the same runtime-aware history source without probing standalone member ids | Yes/Yes/Yes |
+| UC-019 | Requirement | R-017 | N/A | Apply authoritative backend live status to already-hydrated active runs and teams without resetting them to placeholder frontend states | Yes/N/A/Yes |
+| UC-020 | Requirement | R-017,R-018 | N/A | Hydrate a newly discovered active run or team through a dedicated live-hydration path without reusing selection/history-open coordinators | Yes/Yes/Yes |
+| UC-021 | Requirement | R-019 | N/A | Resolve team-member ownership from an indexed backend lookup during active-runtime polling instead of scanning every team directory per lookup | Yes/N/A/Yes |
 
 ## Transition Notes
 
@@ -57,6 +60,7 @@ Do not treat this document as an as-is trace of current code behavior.
   - Existing history-poll-triggered active-run recovery is removed from the history fetch path and replaced by a separate active-runtime synchronization path.
 - Existing runtime-aware projection-provider logic is promoted into a broader history-source boundary so summary extraction and resume metadata resolve through the same runtime-aware contract instead of reintroducing local-storage assumptions higher in the stack.
 - Cached `TEAM` reuse is narrowed from resumable-or-active to current-process bot-owned active-only so it matches the intended messaging-binding lifecycle rule.
+- Active-runtime synchronization no longer reuses history-open coordinators; it uses dedicated live-hydration services that share lower-level projection/resume helpers without inheriting selection or websocket side effects.
 - Retirement plan for temporary logic:
   - None. The final design has one active TEAM setup model.
 
@@ -373,6 +377,112 @@ activeRuntimeRegistry.ts:refreshActiveRuntimeSet()
 - Fallback Path: `Planned`
 - Error Path: `Planned`
 
+## Use Case: UC-019 [Apply Authoritative Backend Live Status To Already-Hydrated Active Runs And Teams Without Resetting Them To Placeholder Frontend States]
+
+### Goal
+
+Use backend-normalized live status as the source of truth for already-hydrated active contexts.
+
+### Preconditions
+
+- An agent run or team run already exists in frontend context state.
+- Backend active-runtime snapshot query returns the run or team with current live status.
+
+### Expected Outcome
+
+- Existing live contexts keep their renderable conversation state.
+- Status is updated from the backend snapshot instead of being reset to `Uninitialized`.
+- Focused member status remains member-first for teams.
+
+### Primary Runtime Call Stack
+
+```text
+[ENTRY] autobyteus-web/stores/activeRuntimeSyncStore.ts:refresh()
+├── [IO] Apollo query -> autobyteus-server-ts/src/api/graphql/types/agent-run.ts:agentRuns()
+├── [IO] Apollo query -> autobyteus-server-ts/src/api/graphql/types/agent-team-run.ts:agentTeamRuns()
+├── autobyteus-web/stores/activeRuntimeSyncStore.ts:applyAgentStatuses(snapshot.agentRuns) [STATE]
+│   └── autobyteus-web/stores/agentContextsStore.ts:getRun(runId)
+│       └── update context.state.currentStatus from backend snapshot
+└── autobyteus-web/stores/activeRuntimeSyncStore.ts:applyTeamStatuses(snapshot.agentTeamRuns) [STATE]
+    ├── autobyteus-web/stores/agentTeamContextsStore.ts:getTeamContextById(teamRunId)
+    ├── update teamContext.currentStatus from backend snapshot
+    └── update memberContext.state.currentStatus from backend member-status snapshot using memberRouteKey
+```
+
+### Branching / Fallback Paths
+
+```text
+[FALLBACK] if a member status is missing from the active-team snapshot
+activeRuntimeSyncStore.ts:applyTeamStatuses(snapshot.agentTeamRuns)
+└── preserve the existing member runtime status instead of overwriting it with a placeholder
+```
+
+```text
+[ERROR] if a snapshot row references a missing local context
+activeRuntimeSyncStore.ts:refresh()
+└── route to the dedicated live-hydration path in UC-020
+```
+
+### Coverage Status
+
+- Primary Path: `Planned`
+- Fallback Path: `Planned`
+- Error Path: `Planned`
+
+## Use Case: UC-020 [Hydrate A Newly Discovered Active Run Or Team Through A Dedicated Live-Hydration Path Without Reusing Selection/History-Open Coordinators]
+
+### Goal
+
+Render newly discovered active runs and teams without reusing the history-open coordinators that also own selection and websocket side effects.
+
+### Preconditions
+
+- Backend active-runtime snapshot includes a run or team id that has no local context yet.
+- Projection and resume queries are available for that run or team.
+
+### Expected Outcome
+
+- Active-runtime sync fetches the needed projection/resume payload through a dedicated hydration service.
+- Context state is hydrated without selection changes.
+- Websocket ownership remains in the subscription manager rather than in the history-open path.
+
+### Primary Runtime Call Stack
+
+```text
+[ENTRY] autobyteus-web/stores/activeRuntimeSyncStore.ts:refresh()
+├── detect active run/team ids missing local context [STATE]
+├── [FALLBACK] missing agent run
+│   └── autobyteus-web/services/runHydration/runLiveHydrationService.ts:hydrateActiveRunContext(runId, snapshotStatus) [ASYNC]
+│       ├── [IO] Apollo query -> GetRunProjection
+│       ├── [IO] Apollo query -> GetRunResumeConfig
+│       └── autobyteus-web/stores/agentContextsStore.ts:upsertProjectionContext(...) [STATE]
+└── [FALLBACK] missing team run
+    └── autobyteus-web/services/runHydration/teamRunLiveHydrationService.ts:hydrateActiveTeamContext(teamRunId, snapshotStatus, memberStatuses) [ASYNC]
+        ├── [IO] Apollo query -> GetTeamRunResumeConfig
+        ├── [IO] Apollo query -> GetTeamMemberRunProjection(...) per member
+        └── autobyteus-web/stores/agentTeamContextsStore.ts:addTeamContext(...) or patch existing context [STATE]
+```
+
+### Branching / Fallback Paths
+
+```text
+[FALLBACK] if a live-hydration request finds an already-created context before completion
+runLiveHydrationService.ts:hydrateActiveRunContext(...)
+└── patch the existing context instead of replacing selection or reattaching stream ownership
+```
+
+```text
+[ERROR] if projection/resume queries fail during live hydration
+runLiveHydrationService.ts:hydrateActiveRunContext(...)
+└── record recoverable sync warning and keep the run in the desired active set for the next refresh
+```
+
+### Coverage Status
+
+- Primary Path: `Planned`
+- Fallback Path: `Planned`
+- Error Path: `Planned`
+
 ## Use Case: UC-011 [Resolve Standalone Historical Run Projection And Resume Metadata Through A Runtime-Aware Backend History Source]
 
 ### Goal
@@ -419,6 +529,54 @@ run-history-query-service.ts:getRunResumeConfig(runId)
 [ERROR] if no history source exists for manifest.runtimeKind
 run-history-source-registry.ts:getSource(runtimeKind)
 └── throw Error("UNSUPPORTED_HISTORY_SOURCE")
+```
+
+### Coverage Status
+
+- Primary Path: `Planned`
+- Fallback Path: `Planned`
+- Error Path: `Planned`
+
+## Use Case: UC-021 [Resolve Team-Member Ownership From An Indexed Backend Lookup During Active-Runtime Polling Instead Of Scanning Every Team Directory Per Lookup]
+
+### Goal
+
+Keep backend ownership resolution cheap enough for the active-runtime registry to poll regularly.
+
+### Preconditions
+
+- Team-member manifests have been written for at least one team run.
+- Active-runtime snapshot is evaluating active agent runs to decide whether they are standalone or team-member runs.
+
+### Expected Outcome
+
+- Ownership resolution checks an in-memory or lazily built member-run index first.
+- Disk scans are limited to index-build or repair moments instead of every lookup.
+- Active-runtime snapshot remains runtime-aware without repeated full team-directory scans.
+
+### Primary Runtime Call Stack
+
+```text
+[ENTRY] autobyteus-server-ts/src/api/graphql/services/active-runtime-snapshot-service.ts:listActiveAgentRuns()
+└── autobyteus-server-ts/src/run-history/services/run-ownership-resolution-service.ts:resolveOwnership(runId) [ASYNC]
+    └── autobyteus-server-ts/src/run-history/store/team-member-run-manifest-store.ts:findManifestByMemberRunId(runId) [ASYNC]
+        ├── [STATE] check indexed memberRunId -> manifest cache
+        ├── [FALLBACK] if cache is not initialized -> build index from disk once [IO]
+        └── return cached manifest or null
+```
+
+### Branching / Fallback Paths
+
+```text
+[FALLBACK] if the cache misses after a lazy index build
+team-member-run-manifest-store.ts:findManifestByMemberRunId(runId)
+└── return null without a second full-directory scan in the same lookup path
+```
+
+```text
+[ERROR] if the manifest root directory cannot be read during index build
+team-member-run-manifest-store.ts:rebuildMemberRunIndex()
+└── log once and return an empty index so ownership resolution degrades safely
 ```
 
 ### Coverage Status

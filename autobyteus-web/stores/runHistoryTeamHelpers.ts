@@ -6,7 +6,7 @@ import { AgentStatus } from '~/types/agent/AgentStatus';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import type { TeamTreeNode, TeamRunHistoryItem, TeamRunManifestPayload, TeamMemberRunProjectionPayload } from '~/stores/runHistoryTypes';
-import { buildConversationFromProjection } from '~/services/runOpen/runOpenCoordinator';
+import { buildConversationFromProjection } from '~/services/runHydration/runProjectionConversation';
 
 export const toHistoryTeamStatus = (
   team: Pick<TeamRunHistoryItem, 'isActive' | 'lastKnownStatus'>,

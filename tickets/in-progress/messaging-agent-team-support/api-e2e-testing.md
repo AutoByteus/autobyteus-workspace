@@ -14,6 +14,27 @@
 
 ## Latest Verification Addendum
 
+- Full live backend runtime verification is now green for both external-member runtimes:
+  - Codex live runtime GraphQL, configured-skills, and team roundtrip E2E all passed together
+  - Claude live runtime GraphQL, configured-skills, and team external-runtime E2E all passed together
+- The Claude configured-skills suite exposed one real E2E harness gap:
+  - websocket capture could attach before the configured-skill turn had fully displaced the bootstrap assistant projection
+  - the failing assertion observed replayed bootstrap fragments like `READYREADY` instead of the configured skill response token
+  - the fix was to wait for the bootstrap assistant projection to settle before starting the websocket capture, matching the already-stable Codex harness
+- With that harness fix in place, backend live verification now proves:
+  - Codex and Claude standalone runtime runs both pass the live GraphQL runtime suite
+  - Codex and Claude configured-skill runs both pass against the live runtime adapters
+  - Codex and Claude team runtime paths both pass live external-member team E2E coverage
+- Full frontend regression coverage is also green again:
+  - the stale `AgentEventMonitor` spec was aligned with the current `AgentConversationFeed` composition
+  - the isolated spec rerun passed
+  - the full frontend Vitest suite rerun passed with `816` passed and `1` skipped tests
+- The v7 active-runtime sync slice is now verified on the current tree, not only on the earlier backend slices:
+  - history refresh remains read-only while active-runtime sync owns live hydration separately
+  - the full frontend Vitest suite passed on the current worktree after the hydration split
+  - the focused rerun after the final type-only import fix passed for `runHistoryStore`, `activeRuntimeSyncStore`, and `WorkspaceAgentRunsTreePanel`
+- Frontend `nuxi typecheck` remains outside that green state and still fails on the broader repo baseline; this latest messaging-team slice did not make the whole frontend typecheck clean.
+
 - The latest live screenshots clarified one more UI ownership gap:
   - focused member status is the value users actually read in the team header and member rows
   - team liveness is still useful for deciding whether the team stays in the active/live-connected set
@@ -51,6 +72,10 @@
   - history polling is now read-only and no longer performs frontend live-run recovery
   - active agent/team liveness is synchronized through a dedicated frontend store that queries the existing backend active-run APIs
   - focused web verification proves active runs reconnect or hydrate only through that dedicated sync path, while inactive runs and teams are cleanly disconnected when they fall out of the active snapshot
+- The first v6 backend ownership slice is now in place:
+  - active-runtime snapshots no longer treat team-member runs as standalone active agents just because they are currently alive in the process
+  - standalone resume-config lookup is now runtime-aware and rejects team-member run ids with an ownership-specific error instead of pretending a standalone manifest is missing
+  - native-team websocket attach now emits initial member `AGENT_STATUS` snapshots alongside `TEAM_STATUS`, so focused member status is available immediately on first attach
 
 ## Commands Run
 
@@ -214,6 +239,88 @@
     - Coverage:
       - live `claude_agent_sdk` runtime create and terminate path through GraphQL
       - confirms the local environment can still exercise a real Claude runtime process after the messaging-binding changes
+
+17. `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-runtime-graphql.e2e.test.ts tests/e2e/runtime/codex-runtime-configured-skills-graphql.e2e.test.ts tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts`
+    - Result: `PASS`
+    - Coverage:
+      - full live `codex_app_server` backend runtime suite
+      - standalone runtime GraphQL flows
+      - configured-skill execution against the live Codex runtime adapter
+      - live two-member team runtime roundtrip behavior
+    - Totals:
+      - `3` test files
+      - `17` tests passed
+
+18. `RUN_CLAUDE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-runtime-graphql.e2e.test.ts tests/e2e/runtime/claude-runtime-configured-skills-graphql.e2e.test.ts tests/e2e/runtime/claude-team-external-runtime.e2e.test.ts`
+    - Result: `PASS`
+    - Coverage:
+      - full live `claude_agent_sdk` backend runtime suite
+      - standalone runtime GraphQL flows
+      - configured-skill execution against the live Claude runtime adapter
+      - live external-member team runtime behavior, including team history recovery
+    - Totals:
+      - `3` test files
+      - `23` tests passed
+
+19. `NUXT_TEST=true pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/messaging-agent-team-support/autobyteus-web exec vitest run`
+    - Result: `PASS`
+    - Coverage:
+      - full current-tree frontend regression suite after the v7 live-hydration separation
+      - settings flow, workspace history, active-runtime sync, shared streaming transport, and team streaming behavior on the same tree that contains the new hydration services
+    - Totals:
+      - `180` test files passed
+      - `1` test file skipped
+      - `816` tests passed
+
+20. `NUXT_TEST=true pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/messaging-agent-team-support/autobyteus-web exec vitest run stores/__tests__/runHistoryStore.spec.ts stores/__tests__/activeRuntimeSyncStore.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts`
+    - Result: `PASS`
+    - Coverage:
+      - focused rerun after the final v7 review fix
+      - run-history rendering remains read-only
+      - active-runtime sync hydrates live contexts without reusing history-open coordinators
+      - workspace polling continues to treat history refresh and active-runtime sync as separate concerns
+    - Totals:
+      - `3` test files
+      - `53` tests passed
+
+19. `RUN_CLAUDE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-runtime-configured-skills-graphql.e2e.test.ts`
+    - Result: `PASS`
+    - Coverage:
+      - confirms the configured-skill websocket harness fix by itself before rerunning the full Claude suite
+    - Totals:
+      - `1` test file
+      - `1` test passed
+
+20. `pnpm -C autobyteus-server-ts exec tsc -p tsconfig.build.json --pretty false --noEmit`
+    - Result: `PASS`
+    - Purpose:
+      - verify the backend test-harness fix compiles cleanly without introducing type regressions
+
+21. `NUXT_TEST=true pnpm -C autobyteus-web exec vitest run components/workspace/agent/__tests__/AgentEventMonitor.spec.ts`
+    - Result: `PASS`
+    - Coverage:
+      - verifies the refreshed `AgentEventMonitor` test matches the current `AgentConversationFeed` delegation path
+    - Totals:
+      - `1` test file
+      - `4` tests passed
+
+22. `NUXT_TEST=true pnpm -C autobyteus-web exec vitest run`
+    - Result: `PASS`
+    - Coverage:
+      - full frontend Vitest suite after the `AgentEventMonitor` spec refresh
+    - Totals:
+      - `180` test files passed
+      - `1` test file skipped
+      - `816` tests passed
+      - `1` test skipped
+
+23. `pnpm -C autobyteus-web exec nuxi typecheck`
+    - Result: `FAIL`
+    - Coverage:
+      - full frontend static typecheck
+    - Failure Summary:
+      - broad pre-existing repo baseline errors across unrelated app, build, store, and utility modules
+      - not limited to the messaging-team slice
     - Totals:
       - `1` targeted live E2E passed
 
@@ -241,6 +348,26 @@
    - Totals:
      - `3` test files
      - `33` tests passed
+20. `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/messaging-agent-team-support/autobyteus-server-ts exec vitest run tests/unit/api/graphql/services/active-runtime-snapshot-service.test.ts tests/unit/run-history/team-member-run-manifest-store.test.ts tests/unit/run-history/services/run-history-service.test.ts tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts`
+   - Result: `PASS`
+   - Coverage:
+     - active runtime snapshot filtering excludes team-member runs from the standalone `agentRuns()` view
+     - team-member manifests can be resolved by member run id across team directories
+     - standalone resume-config lookup now reports explicit team ownership for member runs instead of a misleading missing-manifest error
+     - native-team websocket attach sends initial member status snapshots in addition to team status
+   - Totals:
+     - `4` test files
+     - `16` tests passed
+
+21. `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/messaging-agent-team-support/autobyteus-server-ts exec tsc -p tsconfig.build.json --pretty false --noEmit`
+   - Result: `PASS`
+   - Purpose:
+     - confirm the backend ownership plus initial-status slice compiles cleanly after the new resolver boundary and team attach snapshot changes
+
+22. `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/messaging-agent-team-support/autobyteus-server-ts build`
+   - Result: `PASS`
+   - Purpose:
+     - confirm the full backend build path stays green after the ownership-resolution and native-team initial-status changes, so the worktree can be restarted directly for live verification
         - the test simulates team shutdown while leaving the cached `teamRunId` on the binding
         - second fake Telegram inbound message creates a fresh team run and routes there instead of reusing the inactive cached run
     - existing Telegram TEAM ingress regressions remain green alongside the new scenario

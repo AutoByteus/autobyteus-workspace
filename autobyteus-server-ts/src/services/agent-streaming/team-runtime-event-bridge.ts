@@ -39,6 +39,19 @@ const deriveTeamStatus = (memberStatuses: string[]): "IDLE" | "PROCESSING" | "ER
   return "IDLE";
 };
 
+export interface TeamRuntimeBridgeMemberStatusSnapshot {
+  memberRouteKey: string;
+  memberName: string;
+  memberRunId: string;
+  currentStatus: string;
+}
+
+export interface TeamRuntimeBridgeStatusSnapshot {
+  teamRunId: string;
+  currentStatus: "IDLE" | "PROCESSING" | "ERROR" | null;
+  members: TeamRuntimeBridgeMemberStatusSnapshot[];
+}
+
 export class TeamRuntimeEventBridge {
   private readonly bindingRegistry: TeamRuntimeBindingRegistry;
   private readonly runtimeAdapterRegistry: RuntimeAdapterRegistry;
@@ -75,9 +88,33 @@ export class TeamRuntimeEventBridge {
   }
 
   getInitialSnapshotMessages(teamRunId: string): ServerMessage[] {
+    const snapshot = this.getCurrentStatusSnapshot(teamRunId);
+    const memberStatusMessages = snapshot.members.map(
+      (member) =>
+        new ServerMessage(ServerMessageType.AGENT_STATUS, {
+          new_status: member.currentStatus,
+          old_status: null,
+          agent_name: member.memberName,
+          agent_id: member.memberRunId,
+        }),
+    );
+
+    if (!snapshot.currentStatus) {
+      return memberStatusMessages;
+    }
+
+    return [
+      new ServerMessage(ServerMessageType.TEAM_STATUS, {
+        new_status: snapshot.currentStatus,
+        old_status: null,
+      }),
+      ...memberStatusMessages,
+    ];
+  }
+
+  getCurrentStatusSnapshot(teamRunId: string): TeamRuntimeBridgeStatusSnapshot {
     const bindings = this.bindingRegistry.getTeamBindings(teamRunId);
-    const memberStatusMessages: ServerMessage[] = [];
-    const memberStatuses: string[] = [];
+    const members: TeamRuntimeBridgeMemberStatusSnapshot[] = [];
 
     for (const binding of bindings) {
       let adapter;
@@ -95,29 +132,19 @@ export class TeamRuntimeEventBridge {
         continue;
       }
 
-      memberStatuses.push(normalizedStatus);
-      memberStatusMessages.push(
-        new ServerMessage(ServerMessageType.AGENT_STATUS, {
-          new_status: normalizedStatus,
-          old_status: null,
-          agent_name: binding.memberName,
-          agent_id: binding.memberRunId,
-        }),
-      );
+      members.push({
+        memberRouteKey: binding.memberRouteKey,
+        memberName: binding.memberName,
+        memberRunId: binding.memberRunId,
+        currentStatus: normalizedStatus,
+      });
     }
 
-    const teamStatus = deriveTeamStatus(memberStatuses);
-    if (!teamStatus) {
-      return memberStatusMessages;
-    }
-
-    return [
-      new ServerMessage(ServerMessageType.TEAM_STATUS, {
-        new_status: teamStatus,
-        old_status: null,
-      }),
-      ...memberStatusMessages,
-    ];
+    return {
+      teamRunId,
+      currentStatus: deriveTeamStatus(members.map((member) => member.currentStatus)),
+      members,
+    };
   }
 
   private subscribeMember(

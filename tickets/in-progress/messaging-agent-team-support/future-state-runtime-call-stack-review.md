@@ -6,15 +6,15 @@ This review validates alignment with target (`to-be`) design behavior, not parit
 ## Review Meta
 
 - Scope Classification: `Medium`
-- Current Round: `9`
+- Current Round: `13`
 - Current Review Type: `Deep Review`
-- Clean-Review Streak Before This Round: `2`
-- Clean-Review Streak After This Round: `0`
-- Round State: `No-Go`
+- Clean-Review Streak Before This Round: `1`
+- Clean-Review Streak After This Round: `2`
+- Round State: `Go Confirmed`
 - Missing-Use-Case Discovery Sweep Completed This Round: `Yes`
-- New Use Cases Discovered This Round: `Yes`
-- This Round Classification (`Design Impact`/`Requirement Gap`/`Unclear`/`N/A`): `Design Impact`
-- Required Re-Entry Path Before Next Round: `1 -> 2 -> 3 -> 4 -> 5`
+- New Use Cases Discovered This Round: `No`
+- This Round Classification (`Design Impact`/`Requirement Gap`/`Unclear`/`N/A`): `N/A`
+- Required Re-Entry Path Before Next Round: `None`
 
 ## Review Basis
 
@@ -24,8 +24,8 @@ This review validates alignment with target (`to-be`) design behavior, not parit
   - `Medium/Large`: `tickets/in-progress/messaging-agent-team-support/proposed-design.md`
 - Artifact Versions In This Round:
   - Requirements Status: `Refined`
-  - Design Version: `v6`
-  - Call Stack Version: `v6`
+  - Design Version: `v7`
+  - Call Stack Version: `v7`
 - Required Persisted Artifact Updates Completed For This Round: `Yes`
 
 ## Review Intent (Mandatory)
@@ -54,6 +54,10 @@ This review validates alignment with target (`to-be`) design behavior, not parit
 | 7 | Refined | v4 | v4 | No | No | Yes | N/A | None | 2 | Go Confirmed | Go |
 | 8 | Refined | v5 | v5 | No | No | Yes | N/A | None | 3 | Go Confirmed | Go |
 | 9 | Refined | v6 | v6 | Yes | Yes (`UC-011`, `UC-012`) | Yes | Design Impact | `1 -> 2 -> 3 -> 4 -> 5` | 0 | No-Go | No-Go |
+| 10 | Refined | v6 | v6 | No | No | Yes | N/A | None | 1 | Candidate Go | Go |
+| 11 | Refined | v6 | v6 | No | No | Yes | N/A | None | 2 | Go Confirmed | Go |
+| 12 | Refined | v7 | v7 | No | No | Yes | N/A | None | 1 | Candidate Go | Go |
+| 13 | Refined | v7 | v7 | No | No | Yes | N/A | None | 2 | Go Confirmed | Go |
 
 ## Round Artifact Update Log (Mandatory)
 
@@ -68,6 +72,10 @@ This review validates alignment with target (`to-be`) design behavior, not parit
 | 7 | No | None | None | None | None |
 | 8 | No | `tickets/in-progress/messaging-agent-team-support/proposed-design.md`, `tickets/in-progress/messaging-agent-team-support/future-state-runtime-call-stack.md` | design `v4 -> v5`, call stack `v4 -> v5` | Side-effect-free history refresh, backend active-runtime source, explicit subscription reconciliation | None |
 | 9 | Yes | `tickets/in-progress/messaging-agent-team-support/investigation-notes.md`, `tickets/in-progress/messaging-agent-team-support/requirements.md`, `tickets/in-progress/messaging-agent-team-support/proposed-design.md`, `tickets/in-progress/messaging-agent-team-support/future-state-runtime-call-stack.md`, `tickets/in-progress/messaging-agent-team-support/future-state-runtime-call-stack-review.md` | design `v5 -> v6`, call stack `v5 -> v6` | Runtime-aware history-source boundary, standalone history metadata/resume normalization, team-member history-source routing | F-005 |
+| 10 | No | None | None | None | None |
+| 11 | No | None | None | None | None |
+| 12 | No | `tickets/in-progress/messaging-agent-team-support/investigation-notes.md`, `tickets/in-progress/messaging-agent-team-support/requirements.md`, `tickets/in-progress/messaging-agent-team-support/proposed-design.md`, `tickets/in-progress/messaging-agent-team-support/future-state-runtime-call-stack.md`, `tickets/in-progress/messaging-agent-team-support/future-state-runtime-call-stack-review.md` | design `v6 -> v7`, call stack `v6 -> v7` | Authoritative backend live status, dedicated live-hydration path, indexed team-member ownership lookup | None |
+| 13 | No | None | None | None | None |
 
 ## Missing-Use-Case Discovery Log (Mandatory Per Round)
 
@@ -82,6 +90,10 @@ This review validates alignment with target (`to-be`) design behavior, not parit
 | 7 | Requirement coverage / boundary crossing / fallback-error / design-risk | None | N/A | N/A | N/A | No |
 | 8 | Requirement coverage / boundary crossing / fallback-error / design-risk | None | N/A | N/A | N/A | No |
 | 9 | Requirement coverage / boundary crossing / fallback-error / design-risk | `UC-011`, `UC-012` | Requirement | The v5 model already made projection runtime-aware, but it still left shared run-history metadata and resume semantics above that boundary, allowing local manifest and standalone-member assumptions to leak into shared history services | Design Impact | Yes |
+| 10 | Requirement coverage / boundary crossing / fallback-error / design-risk | None | N/A | The latest live screenshots and backend logs mapped to already-modeled v6 ownership gaps around active-runtime snapshot normalization and runtime-aware history access; they did not require a new use case beyond `UC-015`, `UC-017`, and `UC-018` | N/A | No |
+| 11 | Requirement coverage / boundary crossing / fallback-error / design-risk | None | N/A | A second confirmation sweep across the same v6 active-runtime and history-source boundaries found no additional scenarios outside the existing use-case set | N/A | No |
+| 12 | Requirement coverage / boundary crossing / fallback-error / design-risk | `UC-019`, `UC-020`, `UC-021` | Requirement | Code review showed the active-runtime snapshot still throws away backend status, active sync still reuses history-open coordinators, and ownership lookup still scans team manifests on each poll, so the runtime model needed explicit use cases for authoritative live status, dedicated live hydration, and indexed ownership lookup | Design Impact | Yes |
+| 13 | Requirement coverage / boundary crossing / fallback-error / design-risk | None | N/A | A follow-up sweep over the v7 active-status and live-hydration model found no further runtime-specific scenarios beyond the new use-case set | N/A | No |
 
 ## Per-Use-Case Review
 
@@ -107,6 +119,7 @@ This review validates alignment with target (`to-be`) design behavior, not parit
 - [F-003] Requirement Gap: subscribed live team selection was not modeled. The previous call stack allowed every left-tree member click to reopen from persisted projection, which resets live team state instead of only retargeting focus within the active team context.
 - [F-004] Design Impact: history refresh still owned active-run recovery. That made a persisted-history poll reconnect live sockets and churn websocket attachments, so v5 separates history loading from active-runtime synchronization.
 - [F-005] Design Impact: runtime-aware logic stopped too low in the history stack. v5 normalized projection retrieval, but shared history metadata and resume semantics still leaked local manifest and standalone-member assumptions; v6 extends the boundary into a broader runtime-aware history-source layer and adds explicit standalone/team-member history use cases.
+- [F-006] Design Impact: backend live status ownership stopped too low in the active-runtime stack. v6 normalized active membership, but frontend sync still replaced authoritative backend status with placeholders and reused history-open coordinators for live hydration; v7 moves status authority and live hydration into explicit backend/ frontend boundaries and adds indexed ownership lookup.
 
 ## Blocking Findings Summary
 
@@ -115,8 +128,8 @@ This review validates alignment with target (`to-be`) design behavior, not parit
 
 ## Gate Decision
 
-- Implementation can start: `No`
-- Clean-review streak at end of this round: `0`
+- Implementation can start: `Yes`
+- Clean-review streak at end of this round: `2`
 - Gate rule checks (all must be `Yes` for `Implementation can start = Yes`):
   - Architecture fit is `Pass` for all in-scope use cases: `Yes`
   - Shared-principles alignment is `Pass` for all in-scope use cases: `Yes`
@@ -141,11 +154,11 @@ This review validates alignment with target (`to-be`) design behavior, not parit
   - No unresolved blocking findings: `Yes`
   - Required persisted artifact updates completed for this round: `Yes`
   - Missing-use-case discovery sweep completed for this round: `Yes`
-  - No newly discovered use cases in this round: `No`
+  - No newly discovered use cases in this round: `Yes`
   - Remove/decommission checks complete for scoped `Remove`/`Rename/Move`: `Yes`
   - Legacy retention removed for impacted old-behavior paths: `Yes`
   - No compatibility wrappers/dual paths retained for old behavior: `Yes`
-  - Two consecutive deep-review rounds have no blockers, no required persisted artifact updates, and no newly discovered use cases: `No`
+  - Two consecutive deep-review rounds have no blockers, no required persisted artifact updates, and no newly discovered use cases: `Yes`
 
 ## Speak Log (Optional Tracking)
 

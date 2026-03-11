@@ -1,6 +1,6 @@
 import type { AgentRuntimeKind, SkillAccessMode } from '~/types/agent/AgentRunConfig';
 import type { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
-import type { RunProjectionConversationEntry } from '~/services/runOpen/runOpenCoordinator';
+import type { RunProjectionConversationEntry } from '~/services/runHydration/runProjectionConversation';
 
 export type RunKnownStatus = 'ACTIVE' | 'IDLE' | 'ERROR';
 

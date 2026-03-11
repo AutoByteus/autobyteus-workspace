@@ -148,6 +148,9 @@ const validateManifest = (value: unknown): TeamMemberRunManifest | null => {
 
 export class TeamMemberRunManifestStore {
   private readonly layoutStore: TeamMemberMemoryLayoutStore;
+  private readonly manifestByMemberRunId = new Map<string, TeamMemberRunManifest>();
+  private indexLoaded = false;
+  private indexLoadPromise: Promise<void> | null = null;
 
   constructor(memoryDir: string) {
     this.layoutStore = new TeamMemberMemoryLayoutStore(memoryDir);
@@ -164,6 +167,7 @@ export class TeamMemberRunManifestStore {
     const tempPath = `${manifestPath}.${process.pid}.${Date.now()}.tmp`;
     await fs.writeFile(tempPath, JSON.stringify(normalized, null, 2), "utf-8");
     await fs.rename(tempPath, manifestPath);
+    this.manifestByMemberRunId.set(normalized.memberRunId, normalized);
   }
 
   async readManifest(teamRunId: string, memberRunId: string): Promise<TeamMemberRunManifest | null> {
@@ -177,7 +181,9 @@ export class TeamMemberRunManifestStore {
         );
         return null;
       }
-      return normalizeManifest(manifest);
+      const normalized = normalizeManifest(manifest);
+      this.manifestByMemberRunId.set(normalized.memberRunId, normalized);
+      return normalized;
     } catch (error) {
       const message = String(error);
       if (!message.includes("ENOENT")) {
@@ -186,6 +192,59 @@ export class TeamMemberRunManifestStore {
         );
       }
       return null;
+    }
+  }
+
+  async findManifestByMemberRunId(memberRunId: string): Promise<TeamMemberRunManifest | null> {
+    const normalizedMemberRunId = normalizeRequiredString(memberRunId, "memberRunId");
+    const cachedManifest = this.manifestByMemberRunId.get(normalizedMemberRunId);
+    if (cachedManifest) {
+      return cachedManifest;
+    }
+
+    await this.ensureIndexLoaded();
+    return this.manifestByMemberRunId.get(normalizedMemberRunId) ?? null;
+  }
+
+  private async ensureIndexLoaded(): Promise<void> {
+    if (this.indexLoaded) {
+      return;
+    }
+
+    if (!this.indexLoadPromise) {
+      this.indexLoadPromise = this.buildIndexFromDisk().finally(() => {
+        this.indexLoadPromise = null;
+      });
+    }
+
+    await this.indexLoadPromise;
+  }
+
+  private async buildIndexFromDisk(): Promise<void> {
+    const teamRootDir = this.layoutStore.getTeamRootDirPath();
+
+    try {
+      const teamEntries = await fs.readdir(teamRootDir, { withFileTypes: true });
+      for (const entry of teamEntries) {
+        if (!entry.isDirectory()) {
+          continue;
+        }
+
+        const teamDirPath = path.join(teamRootDir, entry.name);
+        const memberEntries = await fs.readdir(teamDirPath, { withFileTypes: true });
+        for (const memberEntry of memberEntries) {
+          if (!memberEntry.isDirectory()) {
+            continue;
+          }
+          await this.readManifest(entry.name, memberEntry.name);
+        }
+      }
+      this.indexLoaded = true;
+    } catch (error) {
+      const message = String(error);
+      if (!message.includes("ENOENT")) {
+        logger.warn(`Failed building team member run manifest index: ${message}`);
+      }
     }
   }
 }

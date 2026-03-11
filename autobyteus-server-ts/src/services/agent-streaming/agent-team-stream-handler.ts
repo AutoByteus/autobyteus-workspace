@@ -26,6 +26,10 @@ import {
   type TeamRuntimeEventBridge,
 } from "./team-runtime-event-bridge.js";
 import {
+  getTeamRuntimeStatusSnapshotService,
+  type TeamRuntimeStatusSnapshotService,
+} from "./team-runtime-status-snapshot-service.js";
+import {
   TeamStreamBroadcaster,
   getTeamStreamBroadcaster,
 } from "./team-stream-broadcaster.js";
@@ -70,6 +74,7 @@ export class AgentTeamStreamHandler {
   private commandIngressService: RuntimeCommandIngressService;
   private teamMemberRuntimeOrchestrator: TeamMemberRuntimeOrchestrator;
   private teamMemberRuntimeEventBridge: TeamRuntimeEventBridge;
+  private teamRuntimeStatusSnapshotService: TeamRuntimeStatusSnapshotService;
   private activeTasks = new Map<string, Promise<void>>();
   private eventStreams = new Map<string, AgentTeamEventStream>();
   private memberRuntimeBridgeUnsubscribers = new Map<string, () => Promise<void>>();
@@ -82,6 +87,7 @@ export class AgentTeamStreamHandler {
     commandIngressService: RuntimeCommandIngressService = getRuntimeCommandIngressService(),
     teamMemberRuntimeOrchestrator: TeamMemberRuntimeOrchestrator = getTeamMemberRuntimeOrchestrator(),
     teamMemberRuntimeEventBridge: TeamRuntimeEventBridge = getTeamRuntimeEventBridge(),
+    teamRuntimeStatusSnapshotService: TeamRuntimeStatusSnapshotService = getTeamRuntimeStatusSnapshotService(),
     broadcaster: TeamStreamBroadcaster = getTeamStreamBroadcaster(),
   ) {
     this.sessionManager = sessionManager;
@@ -89,6 +95,7 @@ export class AgentTeamStreamHandler {
     this.commandIngressService = commandIngressService;
     this.teamMemberRuntimeOrchestrator = teamMemberRuntimeOrchestrator;
     this.teamMemberRuntimeEventBridge = teamMemberRuntimeEventBridge;
+    this.teamRuntimeStatusSnapshotService = teamRuntimeStatusSnapshotService;
     this.broadcaster = broadcaster;
   }
 
@@ -253,27 +260,14 @@ export class AgentTeamStreamHandler {
     runtimeMode: "native_team" | "member_runtime",
     team: TeamLike | null,
   ): void {
-    if (runtimeMode === "member_runtime") {
-      const initialMessages =
-        this.teamMemberRuntimeEventBridge.getInitialSnapshotMessages?.(teamRunId) ?? [];
-      for (const message of initialMessages) {
-        connection.send(message.toJson());
-      }
-      return;
+    const initialMessages = this.teamRuntimeStatusSnapshotService.getInitialMessages({
+      teamRunId,
+      runtimeMode,
+      team,
+    });
+    for (const message of initialMessages) {
+      connection.send(message.toJson());
     }
-
-    const currentStatus =
-      typeof team?.currentStatus === "string" ? team.currentStatus : null;
-    if (!currentStatus) {
-      return;
-    }
-
-    connection.send(
-      new ServerMessage(ServerMessageType.TEAM_STATUS, {
-        new_status: currentStatus,
-        old_status: null,
-      }).toJson(),
-    );
   }
 
   private async handleSendMessage(

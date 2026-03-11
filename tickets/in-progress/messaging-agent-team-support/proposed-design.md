@@ -2,7 +2,7 @@
 
 ## Design Version
 
-- Current Version: `v6`
+- Current Version: `v7`
 
 ## Revision History
 
@@ -14,6 +14,7 @@
 | v4 | Manual workspace verification found live team selection regression | Preserve subscribed live team contexts on left-tree member selection instead of reopening them from persisted projection | Pending |
 | v5 | Repeated websocket attach churn exposed mixed state ownership | Separate persisted history from active-runtime liveness and move websocket subscription ownership behind a dedicated backend active-runtime source plus one frontend subscription manager | Pending |
 | v6 | Deeper architecture review found runtime-aware projection is still too low in the history stack | Extend runtime awareness from projection providers into a broader backend history-source boundary and keep member-visible status separate from team aggregate liveness | Pending |
+| v7 | Code review found backend status ownership and live hydration are still mixed on the frontend | Make backend live status authoritative, add a dedicated live-hydration path for newly discovered active runs, and index team-member ownership lookup for backend active-runtime polling | Pending |
 
 ## Artifact Basis
 
@@ -41,6 +42,9 @@ Replace the temporary run-bound team-binding model with a definition-bound team-
 - Active agent/team liveness is provided by a dedicated backend active-runtime source.
 - One frontend subscription manager owns websocket attachment for active runs and teams.
 - Backend run-history behavior becomes runtime-aware above the projection-provider layer through a broader history-source boundary that owns projection, summary extraction, and resume metadata per runtime.
+- Backend active-runtime snapshots become authoritative for live status and include enough normalized member-visible status data that the frontend no longer invents placeholder live states for active contexts.
+- Newly discovered active runs and teams are hydrated through dedicated live-hydration services rather than reusing history-open coordinators that also own selection and websocket side effects.
+- Team-member ownership resolution is index-backed so active-runtime polling does not re-scan every team manifest directory for each live member run.
 - Member-visible status remains member-first; team aggregate status is kept as a lower-level liveness and subscription signal.
 
 ## Goals
@@ -53,6 +57,9 @@ Replace the temporary run-bound team-binding model with a definition-bound team-
 - Make persisted-history loading side-effect free.
 - Make liveness ownership explicit so active/inactive state and websocket subscriptions follow one natural state machine.
 - Normalize runtime-aware history access so Codex, Claude, and AutoByteus runs do not leak storage-specific assumptions into shared history services.
+- Make backend live status the single source of truth for active contexts so the frontend stops resetting active runs or teams to `Uninitialized`/`Offline`.
+- Separate live hydration from history opening so selection, history rendering, and active-runtime sync do not share one orchestration path.
+- Remove per-poll full-directory ownership scans from backend active-runtime lookup.
 - Keep focused-member status as the primary visible team status while treating team aggregate status as infrastructure state for liveness and subscription ownership.
 
 ## Legacy Removal Policy (Mandatory)
@@ -81,6 +88,9 @@ Replace the temporary run-bound team-binding model with a definition-bound team-
 | R-014 | Make the backend active-runtime snapshot runtime-aware | AC-016, AC-017 | team-member runs are excluded from standalone active agents and member-runtime teams remain visible as active teams | UC-015, UC-016 |
 | R-015 | Make history projection and resume semantics runtime-aware above the projection-provider layer | AC-018, AC-019 | standalone and team-member history access resolve through a runtime-aware backend history-source boundary | UC-017, UC-018 |
 | R-016 | Keep frontend history loading runtime-agnostic | AC-018, AC-019 | web history rendering consumes normalized backend contracts only | UC-017, UC-018 |
+| R-017 | Make backend live status authoritative for active contexts | AC-020, AC-021 | active-runtime sync applies normalized backend status rather than frontend placeholders | UC-019, UC-020 |
+| R-018 | Separate live hydration from history-open orchestration | AC-020, AC-021 | active-runtime sync hydrates renderable live context without reusing selection/history open coordinators | UC-019, UC-020 |
+| R-019 | Index team-member ownership lookup for active-runtime polling | AC-022 | active snapshot ownership resolution avoids repeated full team-directory scans | UC-021 |
 
 ## Codebase Understanding Snapshot (Pre-Design Mandatory)
 
@@ -291,6 +301,7 @@ Replace the temporary run-bound team-binding model with a definition-bound team-
 | Backend active-runtime registry | Normalize live agent/team membership for consumers | active run ids, member live status snapshots, team aggregate liveness | persisted history projection or UI selection rules | Runtime-aware and safe for member-runtime teams |
 | Backend history-source boundary | Normalize runtime-aware history access | projection, summary extraction, resume metadata, storage expectations | websocket subscription policy or UI-facing selection rules | Extends the current projection-provider idea upward |
 | Backend run lifecycle service | Converge all run/team activation paths | create or continue run/team, dispatch initiation handoff | persisted history polling or frontend focus state | Same lifecycle model for frontend-started and backend-triggered flows |
+| Frontend live hydration service | Build renderable live contexts for newly discovered active runs/teams | projection fetch, resume fetch, context hydration, status application | selection side effects or websocket ownership | Shared by active-runtime sync and explicit open coordinators |
 | External-channel services/runtime | Binding semantics and ingress routing | AGENT lazy-start, TEAM lazy-start delegation, inbound dispatch | GraphQL mutation orchestration | Uses launcher + continuation services |
 | Team execution services | Team lazy-create and runtime-mode orchestration | preset expansion, member config generation, team creation, history manifest persistence | messaging UI concerns | Shared by GraphQL team-run mutations and external-channel runtime |
 | Team history/continuation | Active-or-resumable delivery into a known team run | native/member-runtime resume, metadata-preserving message dispatch | setup validation UX | Used after launch resolution |
@@ -313,7 +324,9 @@ Replace the temporary run-bound team-binding model with a definition-bound team-
 | `external-channel-setup/resolver.ts` | Modify | Server API | Setup mutation/query orchestration | `externalChannelTeamDefinitionOptions()`, `upsertExternalChannelBinding()` | GraphQL input -> binding service | team-definition option service, binding service |
 | `channel-binding-runtime-launcher.ts` | Modify | Server runtime | Resolve or start AGENT/TEAM runs for a binding | `resolveOrStartAgentRun()`, `resolveOrStartTeamRun()` | binding -> run id | binding service, team launch service, history service |
 | `default-channel-runtime-facade.ts` | Modify | Server runtime | External ingress routing | `dispatchToBinding()` | binding + envelope -> dispatch result | runtime launcher, continuation service |
+| `active-runtime-snapshot-service.ts` | Modify | Server API/service | Expose authoritative active status snapshots for agents and teams, including member-visible team status | `listActiveAgentRuns()`, `listActiveTeamRuns()` | none -> runtime snapshot DTOs | active managers, team runtime status bridge, ownership resolver |
 | `team-run-mutation-service.ts` | Modify | Server API/service | Team GraphQL operations | `createAgentTeamRun()`, `sendMessageToTeam()` | GraphQL input -> service calls | reusable team-launch service |
+| `runLiveHydrationService.ts` / `teamRunLiveHydrationService.ts` | Add | Web application/service | Hydrate active run/team contexts without selection side effects | `hydrateActiveRunContext(...)`, `hydrateActiveTeamContext(...)` | run/team ids + status snapshot -> hydrated context | Apollo, history queries, context stores |
 | `ChannelBindingSetupCard.vue` and setup stores | Modify | Web UI/store | Target-type-specific binding form | component bindings/events | store state -> DOM | GraphQL setup queries/mutations |
 | `WebSocketClient.ts` | Modify | Web infrastructure | Shared websocket reconnect policy | `connect()`, reconnect scheduling internals | close/error events -> retry scheduling | browser websocket API |
 

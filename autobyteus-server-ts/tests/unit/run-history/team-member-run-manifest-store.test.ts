@@ -50,4 +50,48 @@ describe("TeamMemberRunManifestStore", () => {
     const loaded = await store.readManifest("team_missing", "member_missing");
     expect(loaded).toBeNull();
   });
+
+  it("finds a team member manifest by member run id across team directories", async () => {
+    await store.writeManifest("team_a", {
+      version: 1,
+      teamRunId: "team_a",
+      runVersion: 1,
+      memberRouteKey: "professor",
+      memberName: "Professor",
+      memberRunId: "professor_abc123",
+      agentDefinitionId: "agent-professor",
+      llmModelIdentifier: "model-professor",
+      autoExecuteTools: false,
+      llmConfig: null,
+      workspaceRootPath: "/tmp/workspace",
+      lastKnownStatus: "ACTIVE",
+      createdAt: "2026-02-24T00:00:00.000Z",
+      updatedAt: "2026-02-24T00:00:00.000Z",
+    });
+
+    await store.writeManifest("team_b", {
+      version: 1,
+      teamRunId: "team_b",
+      runVersion: 1,
+      memberRouteKey: "student",
+      memberName: "Student",
+      memberRunId: "student_xyz789",
+      agentDefinitionId: "agent-student",
+      llmModelIdentifier: "model-student",
+      autoExecuteTools: false,
+      llmConfig: null,
+      workspaceRootPath: "/tmp/workspace",
+      lastKnownStatus: "ACTIVE",
+      createdAt: "2026-02-24T00:00:00.000Z",
+      updatedAt: "2026-02-24T00:00:00.000Z",
+    });
+
+    const loaded = await store.findManifestByMemberRunId("student_xyz789");
+
+    expect(loaded).toMatchObject({
+      teamRunId: "team_b",
+      memberRunId: "student_xyz789",
+      memberName: "Student",
+    });
+  });
 });

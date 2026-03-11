@@ -222,4 +222,77 @@ describe("AgentTeamStreamHandler", () => {
       },
     });
   });
+
+  it("sends initial native-team member status snapshot messages on connect", async () => {
+    const handler = new AgentTeamStreamHandler(
+      undefined,
+      {
+        getTeamRun: () => ({
+          teamRunId: "team-native-1",
+          currentStatus: "ACTIVE",
+          context: {
+            agents: [
+              {
+                agentId: "run-professor",
+                currentStatus: "ACTIVE",
+                context: { config: { name: "Professor" } },
+              },
+              {
+                agentId: "run-student",
+                currentStatus: "IDLE",
+                context: { config: { name: "Student" } },
+              },
+            ],
+          },
+        }),
+        getTeamEventStream: () => ({
+          allEvents: async function* () {},
+          close: vi.fn().mockResolvedValue(undefined),
+        }),
+      } as any,
+      {
+        sendTurn: vi.fn(),
+        approveTool: vi.fn(),
+        interruptRun: vi.fn(),
+      } as any,
+      {
+        getTeamRuntimeMode: () => "native_team",
+        sendToMember: vi.fn(),
+        approveForMember: vi.fn(),
+        getTeamBindings: vi.fn().mockReturnValue([]),
+      } as any,
+      {
+        subscribeTeam: vi.fn(),
+      } as any,
+    );
+
+    const connection = {
+      send: vi.fn(),
+      close: vi.fn(),
+    };
+
+    await handler.connect(connection, "team-native-1");
+
+    expect(connection.send).toHaveBeenCalledTimes(4);
+    expect(JSON.parse(connection.send.mock.calls[1][0])).toMatchObject({
+      type: ServerMessageType.TEAM_STATUS,
+      payload: { new_status: "ACTIVE" },
+    });
+    expect(JSON.parse(connection.send.mock.calls[2][0])).toMatchObject({
+      type: ServerMessageType.AGENT_STATUS,
+      payload: {
+        new_status: "ACTIVE",
+        agent_name: "Professor",
+        agent_id: "run-professor",
+      },
+    });
+    expect(JSON.parse(connection.send.mock.calls[3][0])).toMatchObject({
+      type: ServerMessageType.AGENT_STATUS,
+      payload: {
+        new_status: "IDLE",
+        agent_name: "Student",
+        agent_id: "run-student",
+      },
+    });
+  });
 });

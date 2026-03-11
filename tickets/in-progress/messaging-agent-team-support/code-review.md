@@ -258,6 +258,45 @@
 ## Round 14 Findings
 
 - No blocking findings.
+
+## Round 15
+
+- Scope reviewed:
+  - v7 frontend live-hydration separation in `activeRuntimeSyncStore`, `runContextHydrationService`, `teamRunContextHydrationService`, and `runtimeStatusNormalization`
+  - slimmed run-open coordinators after extraction of hydration responsibilities
+  - supporting backend status and ownership slice in `active-runtime-snapshot-service`, `run-ownership-resolution-service`, and `team-runtime-status-snapshot-service`
+  - full current-tree frontend verification evidence after the v7 refactor
+- Decision: `Pass`
+
+## Round 15 Findings
+
+- No blocking findings.
+
+## Round 15 Review Checks
+
+- Review slices:
+  - frontend active-runtime sync and hydration slice: `6 files`, `~506` changed lines including two new hydration services, reviewed as one architecture slice because the files implement one boundary split
+  - frontend run-open coordinator cleanup slice: `2 files`, `423` changed lines, `<=500` per-slice review limit satisfied
+  - backend status/ownership support slice: `7 files`, `~446` changed lines including two new service files, `<=500` per-slice review limit satisfied
+- `>220` changed-line delta gate:
+  - `runOpenCoordinator.ts` exceeded `220` changed lines and received explicit layering review because it now removes hydration logic rather than accumulating more orchestration
+  - the frontend hydration slice exceeded `220` changed lines and received explicit runtime-agnostic boundary review
+  - the backend status/ownership slice exceeded `220` changed lines and received explicit runtime-normalization/ownership review
+- Layering:
+  - history-open coordinators now own selection/open behavior only; hydration moved into dedicated services
+  - active-runtime sync consumes dedicated hydration services instead of re-entering open coordinators
+  - backend active-runtime snapshot remains the runtime-aware source of liveness while the frontend stays runtime-agnostic
+- Decoupling:
+  - history polling no longer drives live-recovery through the open coordinators
+  - live hydration and history opening now have separate entry points
+  - team-member ownership lookup is resolved behind a dedicated backend service instead of leaking standalone-manifest assumptions into the frontend
+- Module placement:
+  - hydration services live under `autobyteus-web/services/runHydration`
+  - active-runtime sync ownership remains in `autobyteus-web/stores/activeRuntimeSyncStore.ts`
+  - backend ownership and status normalization stay under run-history/graphql-streaming services instead of moving into web-facing contracts
+- Review note:
+  - one real issue was found during the pass: `runOpenCoordinator.ts` had an incorrect type-only import of `RunResumeConfigPayload` from the hydration service instead of the shared history types module
+  - that import was corrected immediately and the directly affected web slice was rerun before closing the gate
 - Non-blocking cleanup opportunity: the composite segment identity rule now exists, but only as hidden per-segment fields (`_segmentId`, `_segmentType`, `_segmentLookupKey`) and duplicated helper logic inside `segmentHandler.ts`. This is a reasonable target for a small typed helper refactor before handoff because it narrows the regression surface without changing the streaming contract.
 
 ## Round 15
@@ -466,3 +505,48 @@
 
 - No blocking findings.
 - Residual risk: the v5 slice still depends on the existing backend `agentRuns()` and `agentTeamRuns()` queries as the active-runtime source, so the liveness overlay remains poll-based rather than push-based. That is acceptable for now and consistent with the revised requirements.
+
+## Round 17
+
+- Scope reviewed:
+  - active-runtime synchronization and status ownership in `autobyteus-web/stores/activeRuntimeSyncStore.ts`
+  - team history-open orchestration in `autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts`
+  - standalone/team history-load separation in `autobyteus-web/stores/runHistoryLoadActions.ts`
+  - runtime-aware ownership lookup on the backend in `autobyteus-server-ts/src/run-history/services/run-ownership-resolution-service.ts`
+  - active-runtime snapshot filtering in `autobyteus-server-ts/src/api/graphql/services/active-runtime-snapshot-service.ts`
+  - team-member manifest lookup in `autobyteus-server-ts/src/run-history/store/team-member-run-manifest-store.ts`
+  - the new active-runtime sync tests plus the latest Claude/Codex/backend/frontend verification reruns
+- Decision: `Fail`
+
+## Round 17 Findings
+
+- `P1` Active-runtime sync discards backend `currentStatus` and replaces it with frontend heuristics, so already-live agent and team contexts can still show `Uninitialized`/`Offline` even though the backend snapshot already knows the real state. `GetActiveRuntimeSnapshot` fetches `currentStatus`, but `activeRuntimeSyncStore` reduces the snapshot to id sets and then forces active contexts back to `Uninitialized`; the new tests even assert that behavior. This keeps status ownership split across the backend snapshot, websocket events, and frontend fallbacks instead of establishing one authoritative source. A live run that does not emit another status delta immediately after attach can therefore remain visibly wrong. Evidence: `autobyteus-web/stores/activeRuntimeSyncStore.ts`, `autobyteus-web/stores/__tests__/activeRuntimeSyncStore.spec.ts`.
+- `P2` Active-runtime sync still recovers missing active runs by calling the history-open coordinators, so the new active-runtime registry is not actually the sole liveness/subscription owner. `activeRuntimeSyncStore` invokes `openRunWithCoordinator()` / `openTeamRunWithCoordinator()`, and those coordinators still perform history resume queries, projection hydration, context mutation, selection-oriented defaults, and websocket attach. That means the “live runtime recovery” path still depends on the “open historical run” path, which is exactly the layering problem the v5/v6 redesign was meant to remove. Evidence: `autobyteus-web/stores/activeRuntimeSyncStore.ts`, `autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts`, `autobyteus-web/stores/runHistoryLoadActions.ts`.
+- `P2` Team-member ownership lookup currently falls back to a full filesystem scan of all team directories per member run id, and the active-runtime snapshot path can trigger that lookup for every active agent on each poll. This keeps the correctness fix local, but it pushes an O(active-runs × team-directories) disk walk into the hot liveness path and makes the new registry more expensive exactly where it should be cheap and authoritative. The binding-registry and manifest checks are good fallback layers, but the current manifest scan should be indexed or cached before this architecture is considered clean. Evidence: `autobyteus-server-ts/src/run-history/store/team-member-run-manifest-store.ts`, `autobyteus-server-ts/src/api/graphql/services/active-runtime-snapshot-service.ts`.
+
+## Round 17 Review Checks
+
+- Review slices:
+  - frontend active-runtime sync/status slice: `1` new file plus `2` integration points, `~240` effective changed lines, `<=500` per-slice review limit satisfied
+  - frontend history-open/team-open orchestration slice: `2` files, `~120` effective changed lines, `<=500` per-slice review limit satisfied
+  - backend runtime-aware ownership/status slice: `4` production files plus `4` focused unit-test files, `~260` effective changed lines, `<=500` per-slice review limit satisfied
+  - broader verification slice: backend Codex live E2E, backend Claude live E2E, frontend full Vitest rerun, and backend compile
+- `>220` changed-line delta gate:
+  - triggered for the frontend active-runtime sync/status slice and the backend ownership/status slice; both received explicit layering, ownership-boundary, and performance review
+- Layering:
+  - improved: history polling no longer directly triggers recovery from `runHistoryLoadActions.ts`
+  - still mixed: `activeRuntimeSyncStore` reaches back into the history-open coordinators instead of using a narrower “hydrate live context” path
+  - still mixed: frontend status ownership is not fully delegated to the backend active snapshot because the snapshot’s `currentStatus` is discarded
+- Decoupling:
+  - improved: standalone active-agent snapshots are now runtime-aware and can filter team-member runs
+  - still weak: live recovery depends on resume/projection/orchestration code that was originally written for historical open flows
+  - still weak: team-member manifest fallback is correct but too expensive for a hot-path active snapshot if the binding registry misses
+- Module placement:
+  - `run-ownership-resolution-service.ts` is correctly placed under `run-history/services`
+  - `activeRuntimeSyncStore.ts` is the right store boundary for liveness sync, but it still owns too much recovery orchestration for the target architecture
+- Backward compatibility:
+  - the Codex and Claude backend live suites now pass, which is a good sign that the latest slice did not break the runtime adapters
+  - the frontend full Vitest suite also passes, but one of the new active-runtime sync assertions codifies the wrong `Uninitialized` fallback behavior, so green tests are not sufficient evidence that status ownership is correct
+- Residual risk:
+  - frontend `nuxi typecheck` remains red on broad pre-existing baseline issues outside this ticket
+  - live runtime/manual UX still has meaningful risk until the status-source and live-hydration layering issues above are addressed

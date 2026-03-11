@@ -22,7 +22,7 @@
 
 - Current Status: `Ready For Implementation`
 - Notes:
-  - Stage 5 review gate is `Go Confirmed` for design `v5`.
+  - Stage 5 review gate is `Go Confirmed` for design `v7`.
 
 ## Preconditions (Must Be True Before Finalizing This Plan)
 
@@ -47,10 +47,18 @@
   - Web setup uses target-type-specific subforms and validates team launch preset readiness.
   - Persisted history loading becomes read-only and no longer performs active-run recovery.
   - A dedicated frontend active-runtime sync path queries backend active agents and teams, then owns liveness reconciliation and websocket subscription reconciliation.
+  - Backend active-runtime snapshots become authoritative for live status and expose normalized member-visible team status.
+  - Newly discovered active runs and teams are hydrated through dedicated live-hydration services instead of reusing history-open coordinators.
+  - Backend active-runtime ownership and standalone resume lookup become runtime-aware enough that team-member runs do not leak into standalone agent recovery.
+  - Team-member ownership lookup is index-backed so the active-runtime snapshot can stay backend-owned without repeated full-directory scans.
+  - Shared history metadata/resume access starts converging on a runtime-aware history-source boundary instead of assuming local standalone manifests only.
 - New Layers/Modules/Boundary Interfaces To Introduce:
   - `ChannelBindingTeamDefinitionOptionsService`
   - `TeamRunLaunchService`
   - `ActiveRuntimeSyncStore`
+  - `runLiveHydrationService`
+  - `teamRunLiveHydrationService`
+  - runtime-aware run-ownership/history-source resolver (backend)
 - API/Behavior Delta:
   - replace `externalChannelTeamTargetOptions` with `externalChannelTeamDefinitionOptions`
   - replace `targetTeamRunId` setup input with `targetTeamDefinitionId`
@@ -61,12 +69,18 @@
   - left-tree selection of an already subscribed live team context changes focus only and does not reopen persisted history
   - history polling no longer reconnects active runs or teams
   - backend `agentRuns` and `agentTeamRuns` become the explicit live-runtime source for frontend active-state management
+  - active snapshot filtering excludes team-member runs from `agentRuns`, even when one live runtime path omits `member_route_key`
+  - active snapshot includes authoritative live status for already-running agents and teams instead of only ids
+  - active team snapshot includes normalized member-visible status for focused/member rows
+  - active-runtime sync no longer calls history-open coordinators directly
+  - standalone resume/history lookup can identify team-member ownership instead of failing as if every run id must have a local standalone manifest
 - Key Assumptions:
   - a shared/global team launch preset is sufficient for this round
   - coordinator/entry-node-only reply behavior remains unchanged
 - Known Risks:
   - nested team definitions require recursive leaf-agent expansion
   - Prisma schema/codegen regeneration may be needed for new binding fields
+  - existing live backend processes can still present stale behavior unless restarted after the runtime-aware history slice lands
 
 ## Runtime Call Stack Review Gate Summary
 
@@ -93,6 +107,9 @@
 - Mandatory modernization rule: remove the branch-local run-bound TEAM setup path instead of keeping both setup contracts.
 - Mandatory decoupling rule: external-channel runtime must not depend on GraphQL mutation services.
 - Mandatory module/file placement rule: keep setup-facing contracts under `external-channel`; keep reusable team launch logic under team execution services.
+- Mandatory runtime-normalization rule: frontend active-runtime sync must stay runtime-agnostic; backend must normalize team-member ownership and history-source resolution first.
+- Mandatory status-ownership rule: frontend must consume backend live status, not synthesize placeholder live status for active contexts.
+- Mandatory orchestration-separation rule: history-open coordinators must not be reused as live-hydration coordinators for background active-runtime sync.
 
 ## Dependency And Sequencing Map
 
@@ -184,11 +201,13 @@
 8. Fix shared websocket reconnect scheduling so restart-time failed reconnect closes continue retrying until the configured budget is exhausted.
 9. Regenerate GraphQL types, run targeted test suites, and sync docs.
 10. Make the backend active-runtime snapshot runtime-aware by filtering team-member runs out of the standalone active-agent query and by including member-runtime teams in the active-team query before the frontend sync loop consumes that snapshot.
-10. Restore live-team left-tree selection parity so subscribed team contexts are focused in place while non-live team contexts still reopen from persisted projection.
-11. Restore distinct reasoning-burst segment identity within one turn so post-tool thinking is rendered as a new think segment instead of being appended into the first burst.
-12. Formalize frontend streaming segment identity into a typed helper so composite segment matching does not rely on duplicated hidden-field writes across handlers.
-13. Propagate TEAM external callback context selectively across `send_message_to` hops by carrying sender turn identity through the inter-agent relay, preserving recipient turn ids from runtime injection, and rebinding only those recipient turns whose sender turn is already externally bound.
-14. Remove history-driven recovery from `runHistoryLoadActions.ts` and introduce a dedicated active-runtime sync loop that separately queries active agents/teams, reconciles persisted liveness, and connects/disconnects streams.
+11. Extend the backend active-runtime snapshot so it carries authoritative agent/team live status plus normalized member-visible team status.
+12. Introduce dedicated live-hydration services for newly discovered active runs and teams, and move active-runtime sync off the history-open coordinators.
+13. Restore live-team left-tree selection parity so subscribed team contexts are focused in place while non-live team contexts still reopen from persisted projection.
+14. Restore distinct reasoning-burst segment identity within one turn so post-tool thinking is rendered as a new think segment instead of being appended into the first burst.
+15. Formalize frontend streaming segment identity into a typed helper so composite segment matching does not rely on duplicated hidden-field writes across handlers.
+16. Propagate TEAM external callback context selectively across `send_message_to` hops by carrying sender turn identity through the inter-agent relay, preserving recipient turn ids from runtime injection, and rebinding only those recipient turns whose sender turn is already externally bound.
+17. Replace per-poll full team-directory ownership scans with an indexed team-member manifest lookup behind the ownership resolver.
 
 ## Backward-Compat And Decoupling Guardrails
 

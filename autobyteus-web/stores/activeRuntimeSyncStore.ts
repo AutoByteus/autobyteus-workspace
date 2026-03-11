@@ -7,32 +7,71 @@ import { useAgentRunStore } from '~/stores/agentRunStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { GetActiveRuntimeSnapshot } from '~/graphql/queries/activeRuntimeQueries';
-import { openRunWithCoordinator } from '~/services/runOpen/runOpenCoordinator';
-import { openTeamRunWithCoordinator } from '~/services/runOpen/teamRunOpenCoordinator';
+import { hydrateLiveRunContext } from '~/services/runHydration/runContextHydrationService';
+import {
+  hydrateLiveTeamRunContext,
+  type TeamMemberLiveSnapshot,
+} from '~/services/runHydration/teamRunContextHydrationService';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
+import {
+  normalizeAgentRuntimeStatus,
+  normalizeTeamRuntimeStatus,
+} from '~/services/runHydration/runtimeStatusNormalization';
 
 interface ActiveRuntimeSnapshotQueryData {
   agentRuns?: Array<{
     id: string;
+    name?: string | null;
     currentStatus: string;
   }>;
   agentTeamRuns?: Array<{
     id: string;
+    name?: string | null;
     currentStatus: string;
+    members?: TeamMemberLiveSnapshot[];
   }>;
 }
 
 const toIdSet = (ids: Array<string | null | undefined>): Set<string> =>
   new Set(ids.map((value) => (value || '').trim()).filter(Boolean));
 
-const syncAgentRuntimeState = async (activeRunIds: Set<string>): Promise<void> => {
+const applyTeamMemberStatuses = (
+  context: { members: Map<string, any> },
+  memberSnapshots: TeamMemberLiveSnapshot[],
+): void => {
+  const byRouteKey = new Map<string, TeamMemberLiveSnapshot>();
+  const byRunId = new Map<string, TeamMemberLiveSnapshot>();
+
+  memberSnapshots.forEach((snapshot) => {
+    const routeKey = snapshot.memberRouteKey?.trim() || '';
+    if (routeKey) {
+      byRouteKey.set(routeKey, snapshot);
+    }
+    const runId = snapshot.memberRunId?.trim() || '';
+    if (runId) {
+      byRunId.set(runId, snapshot);
+    }
+  });
+
+  context.members.forEach((memberContext, memberRouteKey) => {
+    memberContext.config.isLocked = true;
+    const snapshot = byRouteKey.get(memberRouteKey) || byRunId.get(memberContext.state.runId);
+    if (snapshot) {
+      memberContext.state.currentStatus = normalizeAgentRuntimeStatus(snapshot.currentStatus);
+    }
+  });
+};
+
+const syncAgentRuntimeState = async (
+  activeRunSnapshots: Map<string, NonNullable<ActiveRuntimeSnapshotQueryData['agentRuns']>[number]>,
+): Promise<void> => {
   const runHistoryStore = useRunHistoryStore();
   const agentContextsStore = useAgentContextsStore();
   const agentRunStore = useAgentRunStore();
 
   for (const [runId, context] of agentContextsStore.runs.entries()) {
-    if (runId.startsWith('temp-') || activeRunIds.has(runId)) {
+    if (runId.startsWith('temp-') || activeRunSnapshots.has(runId)) {
       continue;
     }
 
@@ -44,13 +83,11 @@ const syncAgentRuntimeState = async (activeRunIds: Set<string>): Promise<void> =
     }
   }
 
-  for (const runId of activeRunIds) {
+  for (const [runId, snapshot] of activeRunSnapshots.entries()) {
     const existingContext = agentContextsStore.getRun(runId);
     if (existingContext) {
       existingContext.config.isLocked = true;
-      if (existingContext.state.currentStatus === AgentStatus.ShutdownComplete) {
-        existingContext.state.currentStatus = AgentStatus.Uninitialized;
-      }
+      existingContext.state.currentStatus = normalizeAgentRuntimeStatus(snapshot.currentStatus);
       if (!existingContext.isSubscribed) {
         agentRunStore.connectToAgentStream(runId);
       }
@@ -58,25 +95,28 @@ const syncAgentRuntimeState = async (activeRunIds: Set<string>): Promise<void> =
     }
 
     try {
-      await openRunWithCoordinator({
+      await hydrateLiveRunContext({
         runId,
-        fallbackAgentName: runHistoryStore.findAgentNameByRunId(runId),
+        fallbackAgentName: snapshot.name || runHistoryStore.findAgentNameByRunId(runId),
         ensureWorkspaceByRootPath: (rootPath: string) => runHistoryStore.ensureWorkspaceByRootPath(rootPath),
-        selectRun: false,
+        currentStatus: snapshot.currentStatus,
       });
+      agentRunStore.connectToAgentStream(runId);
     } catch (error) {
       console.warn(`[activeRuntimeSync] Failed to recover active run '${runId}'.`, error);
     }
   }
 };
 
-const syncTeamRuntimeState = async (activeTeamRunIds: Set<string>): Promise<void> => {
+const syncTeamRuntimeState = async (
+  activeTeamRunSnapshots: Map<string, NonNullable<ActiveRuntimeSnapshotQueryData['agentTeamRuns']>[number]>,
+): Promise<void> => {
   const runHistoryStore = useRunHistoryStore();
   const teamContextsStore = useAgentTeamContextsStore();
   const agentTeamRunStore = useAgentTeamRunStore();
 
   for (const teamContext of teamContextsStore.allTeamRuns) {
-    if (teamContext.teamRunId.startsWith('temp-') || activeTeamRunIds.has(teamContext.teamRunId)) {
+    if (teamContext.teamRunId.startsWith('temp-') || activeTeamRunSnapshots.has(teamContext.teamRunId)) {
       continue;
     }
 
@@ -93,19 +133,15 @@ const syncTeamRuntimeState = async (activeTeamRunIds: Set<string>): Promise<void
     });
   }
 
-  for (const teamRunId of activeTeamRunIds) {
+  for (const [teamRunId, snapshot] of activeTeamRunSnapshots.entries()) {
     const existingContext = teamContextsStore.getTeamContextById(teamRunId);
     if (existingContext) {
       existingContext.config.isLocked = true;
-      if (existingContext.currentStatus === AgentTeamStatus.ShutdownComplete) {
-        existingContext.currentStatus = AgentTeamStatus.Uninitialized;
-      }
+      existingContext.currentStatus = normalizeTeamRuntimeStatus(snapshot.currentStatus);
       existingContext.members.forEach((memberContext) => {
         memberContext.config.isLocked = true;
-        if (memberContext.state.currentStatus === AgentStatus.ShutdownComplete) {
-          memberContext.state.currentStatus = AgentStatus.Uninitialized;
-        }
       });
+      applyTeamMemberStatuses(existingContext, snapshot.members || []);
       if (!existingContext.isSubscribed) {
         agentTeamRunStore.connectToTeamStream(teamRunId);
       }
@@ -113,12 +149,14 @@ const syncTeamRuntimeState = async (activeTeamRunIds: Set<string>): Promise<void
     }
 
     try {
-      await openTeamRunWithCoordinator({
+      await hydrateLiveTeamRunContext({
         teamRunId,
         memberRouteKey: null,
         ensureWorkspaceByRootPath: (rootPath: string) => runHistoryStore.ensureWorkspaceByRootPath(rootPath),
-        selectRun: false,
+        currentStatus: snapshot.currentStatus,
+        memberStatuses: snapshot.members || [],
       });
+      agentTeamRunStore.connectToTeamStream(teamRunId);
     } catch (error) {
       console.warn(`[activeRuntimeSync] Failed to recover active team run '${teamRunId}'.`, error);
     }
@@ -157,21 +195,26 @@ export const useActiveRuntimeSyncStore = defineStore('activeRuntimeSync', {
           throw new Error(errors.map((error: { message: string }) => error.message).join(', '));
         }
 
-        const activeRunIds = toIdSet(
-          (data?.agentRuns || []).map((run: NonNullable<ActiveRuntimeSnapshotQueryData['agentRuns']>[number]) => run.id),
-        );
-        const activeTeamRunIds = toIdSet(
-          (data?.agentTeamRuns || []).map(
-            (teamRun: NonNullable<ActiveRuntimeSnapshotQueryData['agentTeamRuns']>[number]) => teamRun.id,
+        const activeRunSnapshots = new Map(
+          (data?.agentRuns || []).map(
+            (run: NonNullable<ActiveRuntimeSnapshotQueryData['agentRuns']>[number]) => [run.id, run] as const,
           ),
         );
+        const activeTeamRunSnapshots = new Map(
+          (data?.agentTeamRuns || []).map(
+            (teamRun: NonNullable<ActiveRuntimeSnapshotQueryData['agentTeamRuns']>[number]) =>
+              [teamRun.id, teamRun] as const,
+          ),
+        );
+        const activeRunIds = toIdSet(Array.from(activeRunSnapshots.keys()));
+        const activeTeamRunIds = toIdSet(Array.from(activeTeamRunSnapshots.keys()));
 
         const runHistoryStore = useRunHistoryStore();
         runHistoryStore.reconcileActiveRunIds(activeRunIds);
         runHistoryStore.reconcileActiveTeamRunIds(activeTeamRunIds);
 
-        await syncAgentRuntimeState(activeRunIds);
-        await syncTeamRuntimeState(activeTeamRunIds);
+        await syncAgentRuntimeState(activeRunSnapshots);
+        await syncTeamRuntimeState(activeTeamRunSnapshots);
 
         this.lastSyncedAt = new Date().toISOString();
       } catch (error: any) {

@@ -33,6 +33,10 @@ import {
   extractSummaryFromRawTraces,
   parseStatus,
 } from "./run-history-service-helpers.js";
+import {
+  getRunOwnershipResolutionService,
+  RunOwnershipResolutionService,
+} from "./run-ownership-resolution-service.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
@@ -54,6 +58,7 @@ export class RunHistoryService {
   private definitionNameCache = new Map<string, string>();
   private runtimeSessionStore: RuntimeSessionStore;
   private runtimeAdapterRegistry: RuntimeAdapterRegistry;
+  private runOwnershipResolutionService: RunOwnershipResolutionService;
 
   constructor(memoryDir: string) {
     this.indexStore = new RunHistoryIndexStore(memoryDir);
@@ -63,6 +68,7 @@ export class RunHistoryService {
     this.definitionService = AgentDefinitionService.getInstance();
     this.runtimeSessionStore = getRuntimeSessionStore();
     this.runtimeAdapterRegistry = getRuntimeAdapterRegistry();
+    this.runOwnershipResolutionService = new RunOwnershipResolutionService(memoryDir);
   }
 
   async listRunHistory(limitPerAgent = 6): Promise<RunHistoryWorkspaceGroup[]> {
@@ -132,10 +138,17 @@ export class RunHistoryService {
   }
 
   async getRunResumeConfig(runId: string): Promise<RunResumeConfig> {
-    const manifest = await this.manifestStore.readManifest(runId);
-    if (!manifest) {
+    const ownership = await this.runOwnershipResolutionService.resolveOwnership(runId);
+    if (ownership.kind === "missing") {
       throw new Error(`Run manifest not found for '${runId}'.`);
     }
+    if (ownership.kind === "team_member") {
+      const teamRunLabel = ownership.teamRunId ? `team run '${ownership.teamRunId}'` : "a team run";
+      throw new Error(
+        `Run '${runId}' belongs to ${teamRunLabel} and cannot be resumed as a standalone agent run.`,
+      );
+    }
+    const manifest = ownership.manifest;
     const isActive = this.agentRunManager.getAgentRun(runId) !== null || this.isRuntimeSessionActive(runId);
     const editableFields: RunEditableFieldFlags = {
       llmModelIdentifier: !isActive,

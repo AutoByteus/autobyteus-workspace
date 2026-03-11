@@ -249,6 +249,49 @@ describeClaudeRuntime("Claude configured-skill GraphQL e2e (live transport)", ()
     );
   };
 
+  const waitForBootstrapAssistantProjection = async (runId: string): Promise<void> => {
+    const query = `
+      query Projection($runId: String!) {
+        getRunProjection(runId: $runId) {
+          conversation
+        }
+      }
+    `;
+
+    const deadline = Date.now() + 90_000;
+    let lastConversationLength = 0;
+    let lastAssistantCount = 0;
+
+    while (Date.now() < deadline) {
+      const result = await execGraphql<{
+        getRunProjection: {
+          conversation?: Array<Record<string, unknown>> | null;
+        };
+      }>(query, { runId });
+
+      const conversation = Array.isArray(result.getRunProjection?.conversation)
+        ? result.getRunProjection.conversation
+        : [];
+      lastConversationLength = conversation.length;
+      lastAssistantCount = conversation.filter((entry) => {
+        if (!entry || typeof entry !== "object") {
+          return false;
+        }
+        return (entry as Record<string, unknown>).role === "assistant";
+      }).length;
+
+      if (lastAssistantCount > 0) {
+        return;
+      }
+
+      await wait(1_500);
+    }
+
+    throw new Error(
+      `Timed out waiting for Claude bootstrap assistant projection. conversationLength=${String(lastConversationLength)} assistantCount=${String(lastAssistantCount)}`,
+    );
+  };
+
   const captureConfiguredSkillResponse = async (input: {
     runId: string;
     prompt: string;
@@ -473,6 +516,7 @@ describeClaudeRuntime("Claude configured-skill GraphQL e2e (live transport)", ()
           runId,
           skillName,
         });
+        await waitForBootstrapAssistantProjection(runId);
 
         const capture = await captureConfiguredSkillResponse({
           runId,

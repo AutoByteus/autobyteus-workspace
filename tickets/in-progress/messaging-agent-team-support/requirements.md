@@ -35,6 +35,9 @@ The initial user preference is to avoid chaotic external-channel fan-out and lik
 - Repeated live-state regressions also exposed a deeper architecture issue: persisted history loading is currently coupled to active-run recovery and websocket subscription ownership.
 - The redesign direction is to keep history loading read-only and move liveness plus websocket subscription ownership behind a dedicated backend active-runtime source and one explicit frontend subscription manager.
 - Run-history projection is already runtime-aware, but the broader history metadata and resume path is not cleanly runtime-aware enough; the next architecture should extend runtime awareness into a dedicated backend history-source boundary rather than relying on generic local-memory assumptions.
+- The next slice must also make backend live status authoritative: the active-runtime snapshot must carry enough normalized status data that the frontend no longer invents `Uninitialized` or `Offline` placeholders for already-live runs and team members.
+- Active-runtime synchronization must hydrate newly discovered live runs and teams through a dedicated live-hydration path rather than reusing history-open coordinators that also own selection and websocket side effects.
+- Team-member ownership resolution must remain backend-owned but move to an indexed lookup path so active-runtime polling does not rescan every team manifest on each refresh.
 
 ## Scope Classification
 
@@ -64,6 +67,9 @@ The initial user preference is to avoid chaotic external-channel fan-out and lik
 - `UC-016`: When product policy is "all active runs stay connected", websocket attachment and detachment are reconciled from one desired subscribed set so repeated history refreshes do not reattach already connected runs.
 - `UC-017`: Standalone run projection and resume metadata are resolved through a runtime-aware backend history-source boundary so Codex/Claude-backed runs do not leak native local-memory assumptions.
 - `UC-018`: Team-member projection is resolved through the same runtime-aware history boundary so team-member history does not probe standalone run-manifest or local-memory paths incorrectly.
+- `UC-019`: Active runtime synchronization consumes authoritative backend live statuses for active runs and active teams instead of rewriting those statuses to frontend placeholders.
+- `UC-020`: Newly discovered active runs and teams are hydrated through a live-hydration path that is separate from history-open/selection orchestration.
+- `UC-021`: Team-member ownership resolution is index-backed so active-runtime snapshots do not perform per-member full team-directory scans on every refresh.
 
 ## Out Of Scope / Non-Goals
 
@@ -126,6 +132,9 @@ The initial user preference is to avoid chaotic external-channel fan-out and lik
 - `AC-017`: `agentTeamRuns()` exposes member-runtime team runs as active teams, so Telegram-triggered or otherwise active member-runtime teams render with live status instead of falling back to `Offline`.
 - `AC-018`: Standalone history queries resolve projection and resume metadata through a runtime-aware backend history-source boundary, so Codex/Claude-backed runs do not emit misleading native local-manifest or local-memory errors during normal history access.
 - `AC-019`: Team-member history queries resolve through the member binding's runtime-aware history source and never probe standalone agent-history paths for team-member ids.
+- `AC-020`: Active-runtime synchronization consumes authoritative backend `currentStatus` values for active runs and teams instead of rewriting those contexts to frontend placeholder statuses such as `Uninitialized` or `Offline`.
+- `AC-021`: Newly discovered active runs and teams are hydrated through a dedicated live-hydration path that fetches renderable history state without reusing history-open coordinators that also own selection and websocket side effects.
+- `AC-022`: Team-member ownership resolution is backed by an index or cache so repeated active-runtime polling does not scan every team manifest directory for each active member-run lookup.
 
 ## Constraints / Dependencies
 
@@ -167,6 +176,9 @@ The initial user preference is to avoid chaotic external-channel fan-out and lik
 - `R-014`: The backend active-runtime source must be runtime-aware: it must exclude team-member agent runs from the standalone active-agent snapshot and include member-runtime teams in the active-team snapshot.
 - `R-015`: Run-history projection, summary, and resume metadata must be owned by a runtime-aware backend history-source boundary rather than by generic local-memory assumptions.
 - `R-016`: Frontend history loading and rendering must stay runtime-agnostic and consume only normalized run/team history contracts from the backend.
+- `R-017`: Backend active-runtime snapshots must be authoritative for live status and include enough normalized member-visible status data for active team runs so the frontend does not synthesize live placeholder statuses.
+- `R-018`: Frontend active-runtime synchronization must use a dedicated live-hydration path for newly discovered live runs and teams instead of reusing history-open coordinators that also own selection and websocket side effects.
+- `R-019`: Team-member ownership lookup must be indexed or cached so backend active-runtime snapshots can resolve ownership without repeated full team-directory scans.
 
 ## Requirement Coverage Map
 
@@ -189,6 +201,9 @@ The initial user preference is to avoid chaotic external-channel fan-out and lik
 | `R-014` | The backend active-runtime source must be runtime-aware so team-member runs are not surfaced as standalone agents and member-runtime teams are not hidden from the team snapshot. | `tickets/in-progress/messaging-agent-team-support/investigation-notes.md` |
 | `R-015` | Run-history projection and resume semantics should move behind a broader runtime-aware backend history-source boundary. | `tickets/in-progress/messaging-agent-team-support/investigation-notes.md` |
 | `R-016` | Frontend history loading should remain runtime-agnostic and consume only normalized backend contracts. | `tickets/in-progress/messaging-agent-team-support/investigation-notes.md` |
+| `R-017` | Backend active-runtime snapshots should carry authoritative live status, including member-visible team status, so the frontend does not reset active contexts to placeholder states. | `tickets/in-progress/messaging-agent-team-support/investigation-notes.md` |
+| `R-018` | Active-runtime sync should hydrate newly discovered live runs through a dedicated live-hydration path instead of reusing history-open coordinators. | `tickets/in-progress/messaging-agent-team-support/investigation-notes.md` |
+| `R-019` | Team-member ownership resolution should move to an indexed backend lookup path to avoid repeated full team-directory scans during active-runtime polling. | `tickets/in-progress/messaging-agent-team-support/investigation-notes.md` |
 
 ## Design-Ready Coverage Matrix
 
@@ -211,3 +226,6 @@ The initial user preference is to avoid chaotic external-channel fan-out and lik
 | `R-014` | `AC-016`, `AC-017` | `UC-015`, `UC-016` |
 | `R-015` | `AC-018`, `AC-019` | `UC-017`, `UC-018` |
 | `R-016` | `AC-018`, `AC-019` | `UC-017`, `UC-018` |
+| `R-017` | `AC-020`, `AC-021` | `UC-019`, `UC-020` |
+| `R-018` | `AC-020`, `AC-021` | `UC-019`, `UC-020` |
+| `R-019` | `AC-022` | `UC-021` |

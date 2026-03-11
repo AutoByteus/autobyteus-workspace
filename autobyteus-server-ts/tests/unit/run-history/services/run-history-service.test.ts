@@ -4,6 +4,7 @@ import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import type { RunKnownStatus, RunManifest } from "../../../../src/run-history/domain/models.js";
 import { RunHistoryService } from "../../../../src/run-history/services/run-history-service.js";
+import { TeamMemberRunManifestStore } from "../../../../src/run-history/store/team-member-run-manifest-store.js";
 
 const makeManifest = (): RunManifest => ({
   agentDefinitionId: "agent-def-1",
@@ -135,5 +136,54 @@ describe("RunHistoryService runtime-event status derivation", () => {
 
     expect(await readManifestSessionId("run-claude")).toBe("claude-session-final");
     expect(await readManifestThreadId("run-claude")).toBe("claude-session-final");
+  });
+});
+
+describe("RunHistoryService getRunResumeConfig", () => {
+  let tempDir = "";
+  let service: RunHistoryService;
+
+  beforeEach(async () => {
+    tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "run-history-service-resume-"));
+    service = new RunHistoryService(tempDir);
+  });
+
+  afterEach(async () => {
+    if (tempDir) {
+      await fs.rm(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  it("rejects team-member runs with an ownership-aware error", async () => {
+    const memberManifestStore = new TeamMemberRunManifestStore(tempDir);
+    await memberManifestStore.writeManifest("team_professor-student_1", {
+      version: 1,
+      teamRunId: "team_professor-student_1",
+      runVersion: 1,
+      memberRouteKey: "professor",
+      memberName: "Professor",
+      memberRunId: "professor_d1b2d7525aa08a86",
+      runtimeKind: "codex_app_server",
+      runtimeReference: {
+        runtimeKind: "codex_app_server",
+        sessionId: "session-1",
+        threadId: "thread-1",
+        metadata: null,
+      },
+      agentDefinitionId: "professor-agent",
+      llmModelIdentifier: "gpt-5.4",
+      autoExecuteTools: false,
+      llmConfig: null,
+      workspaceRootPath: "/tmp/workspace",
+      lastKnownStatus: "ACTIVE",
+      createdAt: "2026-03-10T00:00:00.000Z",
+      updatedAt: "2026-03-10T00:00:00.000Z",
+    });
+
+    await expect(
+      service.getRunResumeConfig("professor_d1b2d7525aa08a86"),
+    ).rejects.toThrow(
+      "Run 'professor_d1b2d7525aa08a86' belongs to team run 'team_professor-student_1' and cannot be resumed as a standalone agent run.",
+    );
   });
 });

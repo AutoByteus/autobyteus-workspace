@@ -10,6 +10,15 @@ import {
   getTeamRunHistoryService,
   type TeamRunHistoryService,
 } from "../../../run-history/services/team-run-history-service.js";
+import {
+  getRunOwnershipResolutionService,
+  type RunOwnershipResolutionService,
+} from "../../../run-history/services/run-ownership-resolution-service.js";
+import {
+  getTeamRuntimeStatusSnapshotService,
+  type TeamRuntimeMemberStatusSnapshot,
+  type TeamRuntimeStatusSnapshotService,
+} from "../../../services/agent-streaming/team-runtime-status-snapshot-service.js";
 
 type AgentLike = Parameters<typeof AgentRunConverter.toGraphql>[0];
 type TeamLike = Parameters<typeof AgentTeamRunConverter.toGraphql>[0];
@@ -28,22 +37,15 @@ export interface ActiveRuntimeTeamRunSnapshot {
   name: string;
   role?: string | null;
   currentStatus: string;
+  members: ActiveRuntimeTeamMemberSnapshot[];
 }
 
-const asNonEmptyString = (value: unknown): string | null =>
-  typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
-
-const isTeamMemberAgentRun = (domainAgent: AgentLike | null): boolean => {
-  if (!domainAgent) {
-    return false;
-  }
-
-  const customData = domainAgent.context?.customData ?? {};
-  return (
-    asNonEmptyString(customData.member_route_key) !== null ||
-    asNonEmptyString(customData.member_run_id) !== null
-  );
-};
+export interface ActiveRuntimeTeamMemberSnapshot {
+  memberRouteKey: string | null;
+  memberName: string;
+  memberRunId: string | null;
+  currentStatus: string;
+}
 
 export class ActiveRuntimeSnapshotService {
   constructor(
@@ -59,6 +61,14 @@ export class ActiveRuntimeSnapshotService {
       TeamRunHistoryService,
       "getTeamRunResumeConfig"
     > = getTeamRunHistoryService(),
+    private readonly runOwnershipResolutionService: Pick<
+      RunOwnershipResolutionService,
+      "resolveOwnership"
+    > = getRunOwnershipResolutionService(),
+    private readonly teamRuntimeStatusSnapshotService: Pick<
+      TeamRuntimeStatusSnapshotService,
+      "getSnapshot"
+    > = getTeamRuntimeStatusSnapshotService(),
   ) {}
 
   async listActiveAgentRuns(): Promise<ActiveRuntimeAgentRunSnapshot[]> {
@@ -66,7 +76,13 @@ export class ActiveRuntimeSnapshotService {
     const results = await Promise.all(
       runIds.map(async (runId) => {
         const domainAgent = this.agentRunManager.getAgentRun(runId) as AgentLike | null;
-        if (!domainAgent || isTeamMemberAgentRun(domainAgent)) {
+        if (!domainAgent) {
+          return null;
+        }
+        const ownership = await this.runOwnershipResolutionService.resolveOwnership(runId, {
+          domainAgent,
+        });
+        if (ownership.kind === "team_member") {
           return null;
         }
         return (await AgentRunConverter.toGraphql(
@@ -87,20 +103,47 @@ export class ActiveRuntimeSnapshotService {
       Array.from(activeTeamRunIds).map(async (teamRunId) => {
         const domainTeam = this.agentTeamRunManager.getTeamRun(teamRunId) as TeamLike | null;
         if (domainTeam) {
-          return AgentTeamRunConverter.toGraphql(domainTeam) as ActiveRuntimeTeamRunSnapshot;
+          const snapshot = this.teamRuntimeStatusSnapshotService.getSnapshot({
+            teamRunId,
+            runtimeMode: "native_team",
+            team: domainTeam,
+          });
+          const converted = AgentTeamRunConverter.toGraphql(domainTeam);
+          return {
+            ...converted,
+            currentStatus: snapshot.currentStatus ?? converted.currentStatus,
+            members: this.toActiveTeamMembers(snapshot.members),
+          } satisfies ActiveRuntimeTeamRunSnapshot;
         }
 
         const resumeConfig = await this.teamRunHistoryService.getTeamRunResumeConfig(teamRunId);
+        const snapshot = this.teamRuntimeStatusSnapshotService.getSnapshot({
+          teamRunId,
+          runtimeMode: "member_runtime",
+          team: null,
+        });
         return {
           id: teamRunId,
           name: resumeConfig.manifest.teamDefinitionName,
           role: null,
-          currentStatus: resumeConfig.isActive ? "ACTIVE" : "IDLE",
+          currentStatus: snapshot.currentStatus ?? (resumeConfig.isActive ? "PROCESSING" : "IDLE"),
+          members: this.toActiveTeamMembers(snapshot.members),
         } satisfies ActiveRuntimeTeamRunSnapshot;
       }),
     );
 
     return results;
+  }
+
+  private toActiveTeamMembers(
+    members: TeamRuntimeMemberStatusSnapshot[],
+  ): ActiveRuntimeTeamMemberSnapshot[] {
+    return members.map((member) => ({
+      memberRouteKey: member.memberRouteKey,
+      memberName: member.memberName,
+      memberRunId: member.memberRunId,
+      currentStatus: member.currentStatus,
+    }));
   }
 }
 

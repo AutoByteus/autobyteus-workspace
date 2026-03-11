@@ -30,6 +30,21 @@ const logger = {
 };
 
 @ObjectType()
+export class AgentTeamRunMemberStatus {
+  @Field(() => String, { nullable: true })
+  memberRouteKey?: string | null;
+
+  @Field(() => String)
+  memberName!: string;
+
+  @Field(() => String, { nullable: true })
+  memberRunId?: string | null;
+
+  @Field(() => String)
+  currentStatus!: string;
+}
+
+@ObjectType()
 export class AgentTeamRun {
   @Field(() => String)
   id!: string;
@@ -42,6 +57,9 @@ export class AgentTeamRun {
 
   @Field(() => String, { nullable: true })
   role?: string | null;
+
+  @Field(() => [AgentTeamRunMemberStatus])
+  members!: AgentTeamRunMemberStatus[];
 }
 
 @ObjectType()

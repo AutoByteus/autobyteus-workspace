@@ -30,6 +30,7 @@
 - The typed frontend segment-identity helper is an internal cleanup only and does not change the documented messaging/setup contract, so no further docs updates were required.
 - The selective TEAM callback-propagation fix only preserves coordinator reply continuity for already bot-origin conversations and does not change the documented coordinator-only outward reply contract, so no further docs updates were required.
 - The v5 active-runtime synchronization refactor changes internal workspace state ownership only; it does not change the documented user-facing messaging setup or reply contract, so no further docs updates were required.
+- The v7 live-hydration separation and runtime-aware active-status ownership slice is also internal-only: it changes how history, active-runtime sync, and initial team/member status hydration are orchestrated, but it does not change the documented user-facing messaging setup or reply contract.
 
 ## Notes
 

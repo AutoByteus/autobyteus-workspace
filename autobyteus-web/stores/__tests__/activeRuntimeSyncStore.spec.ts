@@ -10,11 +10,39 @@ const {
   agentRunStoreMock,
   teamContextsStoreMock,
   agentTeamRunStoreMock,
-  openRunWithCoordinatorMock,
-  openTeamRunWithCoordinatorMock,
+  hydrateLiveRunContextMock,
+  hydrateLiveTeamRunContextMock,
 } = vi.hoisted(() => {
   const runs = new Map<string, any>();
   const teams = new Map<string, any>();
+  const normalizeAgentStatus = (status?: string | null) => {
+    switch (String(status || '').toLowerCase()) {
+      case 'active':
+      case 'processing':
+      case 'running':
+        return 'processing_user_input';
+      case 'idle':
+        return 'idle';
+      case 'error':
+        return 'error';
+      default:
+        return 'uninitialized';
+    }
+  };
+  const normalizeTeamStatus = (status?: string | null) => {
+    switch (String(status || '').toLowerCase()) {
+      case 'active':
+      case 'processing':
+      case 'running':
+        return 'processing';
+      case 'idle':
+        return 'idle';
+      case 'error':
+        return 'error';
+      default:
+        return 'uninitialized';
+    }
+  };
 
   return {
     queryMock: vi.fn(),
@@ -47,8 +75,36 @@ const {
       connectToTeamStream: vi.fn(),
       disconnectTeamStream: vi.fn(),
     },
-    openRunWithCoordinatorMock: vi.fn().mockResolvedValue(undefined),
-    openTeamRunWithCoordinatorMock: vi.fn().mockResolvedValue(undefined),
+    hydrateLiveRunContextMock: vi.fn().mockImplementation(async (input: any) => {
+      runs.set(input.runId, {
+        config: { isLocked: true },
+        state: {
+          currentStatus: normalizeAgentStatus(input.currentStatus),
+          runId: input.runId,
+        },
+        isSubscribed: false,
+      });
+    }),
+    hydrateLiveTeamRunContextMock: vi.fn().mockImplementation(async (input: any) => {
+      teams.set(input.teamRunId, {
+        teamRunId: input.teamRunId,
+        config: { isLocked: true },
+        currentStatus: normalizeTeamStatus(input.currentStatus),
+        isSubscribed: false,
+        members: new Map(
+          (input.memberStatuses || []).map((member: any) => [
+            member.memberRouteKey || member.memberName,
+            {
+              config: { isLocked: true },
+              state: {
+                runId: member.memberRunId || member.memberRouteKey || member.memberName,
+                currentStatus: normalizeAgentStatus(member.currentStatus),
+              },
+            },
+          ]),
+        ),
+      });
+    }),
   };
 });
 
@@ -82,12 +138,12 @@ vi.mock('~/stores/agentTeamRunStore', () => ({
   useAgentTeamRunStore: () => agentTeamRunStoreMock,
 }));
 
-vi.mock('~/services/runOpen/runOpenCoordinator', () => ({
-  openRunWithCoordinator: openRunWithCoordinatorMock,
+vi.mock('~/services/runHydration/runContextHydrationService', () => ({
+  hydrateLiveRunContext: hydrateLiveRunContextMock,
 }));
 
-vi.mock('~/services/runOpen/teamRunOpenCoordinator', () => ({
-  openTeamRunWithCoordinator: openTeamRunWithCoordinatorMock,
+vi.mock('~/services/runHydration/teamRunContextHydrationService', () => ({
+  hydrateLiveTeamRunContext: hydrateLiveTeamRunContextMock,
 }));
 
 vi.mock('~/graphql/queries/activeRuntimeQueries', () => ({
@@ -107,8 +163,8 @@ describe('activeRuntimeSyncStore', () => {
 
     runHistoryStoreMock.ensureWorkspaceByRootPath.mockResolvedValue('ws-1');
     runHistoryStoreMock.findAgentNameByRunId.mockReturnValue('Professor');
-    openRunWithCoordinatorMock.mockResolvedValue(undefined);
-    openTeamRunWithCoordinatorMock.mockResolvedValue(undefined);
+    hydrateLiveRunContextMock.mockClear();
+    hydrateLiveTeamRunContextMock.mockClear();
   });
 
   it('reconnects existing active agent and team contexts without using history recovery', async () => {
@@ -138,8 +194,22 @@ describe('activeRuntimeSyncStore', () => {
 
     queryMock.mockResolvedValue({
       data: {
-        agentRuns: [{ id: 'run-live-1', currentStatus: 'ACTIVE' }],
-        agentTeamRuns: [{ id: 'team-live-1', currentStatus: 'ACTIVE' }],
+        agentRuns: [{ id: 'run-live-1', name: 'Professor', currentStatus: 'ACTIVE' }],
+        agentTeamRuns: [
+          {
+            id: 'team-live-1',
+            name: 'Professor Student Team',
+            currentStatus: 'ACTIVE',
+            members: [
+              {
+                memberRouteKey: 'professor',
+                memberName: 'Professor',
+                memberRunId: 'professor-live-1',
+                currentStatus: 'IDLE',
+              },
+            ],
+          },
+        ],
       },
       errors: [],
     });
@@ -152,21 +222,41 @@ describe('activeRuntimeSyncStore', () => {
     expect(agentRunStoreMock.connectToAgentStream).toHaveBeenCalledWith('run-live-1');
     expect(agentTeamRunStoreMock.connectToTeamStream).toHaveBeenCalledWith('team-live-1');
     expect(agentContextsStoreMock.runs.get('run-live-1')?.config.isLocked).toBe(true);
-    expect(agentContextsStoreMock.runs.get('run-live-1')?.state.currentStatus).toBe('uninitialized');
+    expect(agentContextsStoreMock.runs.get('run-live-1')?.state.currentStatus).toBe('processing_user_input');
     const teamContext = teamContextsStoreMock.teams.get('team-live-1');
     expect(teamContext?.config.isLocked).toBe(true);
-    expect(teamContext?.currentStatus).toBe('uninitialized');
+    expect(teamContext?.currentStatus).toBe('processing');
     expect(teamContext?.members.get('professor')?.config.isLocked).toBe(true);
-    expect(teamContext?.members.get('professor')?.state.currentStatus).toBe('uninitialized');
-    expect(openRunWithCoordinatorMock).not.toHaveBeenCalled();
-    expect(openTeamRunWithCoordinatorMock).not.toHaveBeenCalled();
+    expect(teamContext?.members.get('professor')?.state.currentStatus).toBe('idle');
+    expect(hydrateLiveRunContextMock).not.toHaveBeenCalled();
+    expect(hydrateLiveTeamRunContextMock).not.toHaveBeenCalled();
   });
 
   it('hydrates missing active runs and teams from the backend active snapshot', async () => {
     queryMock.mockResolvedValue({
       data: {
-        agentRuns: [{ id: 'run-missing-1', currentStatus: 'ACTIVE' }],
-        agentTeamRuns: [{ id: 'team-missing-1', currentStatus: 'ACTIVE' }],
+        agentRuns: [{ id: 'run-missing-1', name: 'Professor', currentStatus: 'ACTIVE' }],
+        agentTeamRuns: [
+          {
+            id: 'team-missing-1',
+            name: 'Professor Student Team',
+            currentStatus: 'ACTIVE',
+            members: [
+              {
+                memberRouteKey: 'professor',
+                memberName: 'Professor',
+                memberRunId: 'professor-team-missing-1',
+                currentStatus: 'IDLE',
+              },
+              {
+                memberRouteKey: 'student',
+                memberName: 'Student',
+                memberRunId: 'student-team-missing-1',
+                currentStatus: 'PROCESSING_USER_INPUT',
+              },
+            ],
+          },
+        ],
       },
       errors: [],
     });
@@ -174,18 +264,34 @@ describe('activeRuntimeSyncStore', () => {
     const store = useActiveRuntimeSyncStore();
     await store.refresh();
 
-    expect(openRunWithCoordinatorMock).toHaveBeenCalledWith({
+    expect(hydrateLiveRunContextMock).toHaveBeenCalledWith({
       runId: 'run-missing-1',
       fallbackAgentName: 'Professor',
       ensureWorkspaceByRootPath: expect.any(Function),
-      selectRun: false,
+      currentStatus: 'ACTIVE',
     });
-    expect(openTeamRunWithCoordinatorMock).toHaveBeenCalledWith({
+    expect(hydrateLiveTeamRunContextMock).toHaveBeenCalledWith({
       teamRunId: 'team-missing-1',
       memberRouteKey: null,
       ensureWorkspaceByRootPath: expect.any(Function),
-      selectRun: false,
+      currentStatus: 'ACTIVE',
+      memberStatuses: [
+        {
+          memberRouteKey: 'professor',
+          memberName: 'Professor',
+          memberRunId: 'professor-team-missing-1',
+          currentStatus: 'IDLE',
+        },
+        {
+          memberRouteKey: 'student',
+          memberName: 'Student',
+          memberRunId: 'student-team-missing-1',
+          currentStatus: 'PROCESSING_USER_INPUT',
+        },
+      ],
     });
+    expect(agentContextsStoreMock.runs.get('run-missing-1')?.state.currentStatus).toBe('processing_user_input');
+    expect(teamContextsStoreMock.teams.get('team-missing-1')?.currentStatus).toBe('processing');
   });
 
   it('disconnects contexts that are no longer active on the backend', async () => {
