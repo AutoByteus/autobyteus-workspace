@@ -8,3 +8,4 @@ tmp/
 autobyteus-server-ts/agents/
 autobyteus-server-ts/agent-teams/
 autobyteus-server-ts/extensions/
+autobyteus-server-ts/prisma/dev.db
