@@ -14,6 +14,17 @@
 
 ## Latest Verification Addendum
 
+- One more deep review round found a final frontend-only v7 correctness gap:
+  - opening an already-active run or team directly from history could still show placeholder `Uninitialized` state if the active-runtime poll had not populated the frontend cache yet
+  - the fix was to let active history-open resolve an authoritative active snapshot on demand through `activeRuntimeSyncStore.ensureActiveRunSnapshot(...)` and `ensureActiveTeamRunSnapshot(...)`
+- The post-fix focused web reruns are now green:
+  - `activeRuntimeSyncStore.spec.ts` and `runHistoryStore.spec.ts`: `30` tests passed
+  - `AgentStreamingService.spec.ts`, `TeamStreamingService.spec.ts`, `WebSocketClient.spec.ts`, and `WorkspaceAgentRunsTreePanel.spec.ts`: `36` tests passed
+- The full frontend Vitest suite was rerun again on the current tree after that fix and passed with:
+  - `180` files passed
+  - `1` skipped
+  - `819` tests passed
+
 - Full live backend runtime verification is now green for both external-member runtimes:
   - Codex live runtime GraphQL, configured-skills, and team roundtrip E2E all passed together
   - Claude live runtime GraphQL, configured-skills, and team external-runtime E2E all passed together

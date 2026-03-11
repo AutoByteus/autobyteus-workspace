@@ -4,6 +4,8 @@ import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import type { RunResumeConfigPayload } from '~/stores/runHistoryTypes';
 import { AgentStatus } from '~/types/agent/AgentStatus';
+import { useActiveRuntimeSyncStore } from '~/stores/activeRuntimeSyncStore';
+import { normalizeAgentRuntimeStatus } from '~/services/runHydration/runtimeStatusNormalization';
 import { decideRunOpenStrategy } from './runOpenStrategyPolicy';
 import { loadRunContextHydrationPayload } from '~/services/runHydration/runContextHydrationService';
 
@@ -26,11 +28,21 @@ export const openRunWithCoordinator = async (
 
   const agentContextsStore = useAgentContextsStore();
   const existingContext = agentContextsStore.getRun(input.runId);
+  const activeRuntimeSyncStore = useActiveRuntimeSyncStore();
   const strategy = decideRunOpenStrategy({
     isRunActive: resumeConfig.isActive,
     hasExistingContext: Boolean(existingContext),
     isExistingContextSubscribed: Boolean(existingContext?.isSubscribed),
   });
+  const activeRunSnapshot = resumeConfig.isActive
+    ? await activeRuntimeSyncStore.ensureActiveRunSnapshot(input.runId)
+    : null;
+  const liveStatus =
+    resumeConfig.isActive
+      ? normalizeAgentRuntimeStatus(
+          activeRunSnapshot?.currentStatus ?? AgentStatus.Uninitialized,
+        )
+      : AgentStatus.ShutdownComplete;
 
   if (strategy === 'KEEP_LIVE_CONTEXT') {
     agentContextsStore.patchConfigOnly(input.runId, {
@@ -42,7 +54,7 @@ export const openRunWithCoordinator = async (
       runId: input.runId,
       config,
       conversation,
-      status: resumeConfig.isActive ? AgentStatus.Uninitialized : AgentStatus.ShutdownComplete,
+      status: liveStatus,
     });
   }
 

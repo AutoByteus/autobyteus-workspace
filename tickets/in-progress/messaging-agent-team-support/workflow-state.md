@@ -8,11 +8,11 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 
 - Ticket: `messaging-agent-team-support`
 - Current Stage: `10`
-- Next Stage: `User verification / archive or follow-up`
+- Next Stage: `User Verification / Archive`
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
-- Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `Design Impact`
-- Last Transition ID: `T-127`
+- Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
+- Last Transition ID: `T-131`
 - Last Updated: `2026-03-11`
 
 ## Stage Gates
@@ -25,11 +25,11 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | 3 Design Basis | Pass | Proposed design v7 keeps the frontend runtime-agnostic while making backend live status authoritative and separating live hydration from history-open orchestration | `tickets/in-progress/messaging-agent-team-support/proposed-design.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
 | 4 Runtime Modeling | Pass | Future-state runtime call stacks v7 now model authoritative active-status application, dedicated live hydration for newly discovered active runs/teams, and indexed ownership lookup during active-runtime polling | `tickets/in-progress/messaging-agent-team-support/future-state-runtime-call-stack.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
 | 5 Review Gate | Pass | Runtime review rounds 12 and 13 stayed clean, so the v7 active-status/live-hydration design is now `Go Confirmed` for implementation | `tickets/in-progress/messaging-agent-team-support/future-state-runtime-call-stack-review.md`, `tickets/in-progress/messaging-agent-team-support/proposed-design.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
-| 6 Source + Unit/Integration | Pass | The v7 slice is implemented: active-runtime sync hydrates live runs/teams through dedicated services, backend active snapshots remain runtime-aware, and history-open coordinators no longer own background live hydration | `tickets/in-progress/messaging-agent-team-support/implementation-plan.md`, `tickets/in-progress/messaging-agent-team-support/implementation-progress.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
-| 7 API/E2E Gate | Pass | Verification passed on the current tree: full frontend Vitest is green, focused reruns after the final review fix are green, and the previously completed live backend Codex/Claude suites remain green for this worktree | `tickets/in-progress/messaging-agent-team-support/api-e2e-testing.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
-| 8 Code Review Gate | Pass | The v7 active-status/live-hydration slice passed architecture review after correcting one type-only import issue surfaced during the final pass | `tickets/in-progress/messaging-agent-team-support/code-review.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
+| 6 Source + Unit/Integration | Pass | The final v7 local-fix slice is implemented: active history-open now resolves an authoritative live snapshot on demand instead of depending on a previously warmed frontend cache | `tickets/in-progress/messaging-agent-team-support/implementation-progress.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
+| 7 API/E2E Gate | Pass | Focused reruns and a full frontend Vitest rerun are green on the current tree after the active-open status ownership fix | `tickets/in-progress/messaging-agent-team-support/api-e2e-testing.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
+| 8 Code Review Gate | Pass | One more deep review round passed after the active-open path was made self-sufficient and aligned with backend-authoritative status ownership | `tickets/in-progress/messaging-agent-team-support/code-review.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
 | 9 Docs Sync | Pass | Docs sync confirmed the v7 slice is internal-only and does not require additional user-facing documentation changes beyond the earlier messaging/settings updates | `tickets/in-progress/messaging-agent-team-support/docs-sync.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
-| 10 Final Handoff | In Progress | Implementation, verification, review, and docs sync are complete; final handoff is pending explicit user verification or follow-up direction | `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
+| 10 Final Handoff | In Progress | Implementation, verification, review, and docs sync are complete on the current tree; final handoff is pending explicit user verification or follow-up direction | `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
 
 ## Transition Log (Append-Only)
 
@@ -229,6 +229,10 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | T-125 | 2026-03-11 | 7 | 8 | Verification passed on the current tree: full frontend Vitest is green after the v7 refactor, focused reruns are green after the final review fix, and the live backend Codex/Claude runtime suites remain green for this worktree. | Design Impact | Locked | `tickets/in-progress/messaging-agent-team-support/api-e2e-testing.md`, `tickets/in-progress/messaging-agent-team-support/implementation-progress.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
 | T-126 | 2026-03-11 | 8 | 9 | Final architecture review passed for the v7 slice. One incorrect type-only import in `runOpenCoordinator.ts` was corrected during review and the affected web slice was rerun before closing the gate. | Design Impact | Locked | `tickets/in-progress/messaging-agent-team-support/code-review.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
 | T-127 | 2026-03-11 | 9 | 10 | Docs sync confirmed the v7 live-hydration and active-status ownership refactor is internal-only, so the ticket advanced to final handoff pending explicit user verification or follow-up direction. | Design Impact | Locked | `tickets/in-progress/messaging-agent-team-support/docs-sync.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
+| T-128 | 2026-03-11 | 10 | 6 | Another deep architecture review found one remaining local v7 correctness gap: when an already-active run or team is opened directly from history, the open coordinators still initialize live status from placeholder values instead of the authoritative active-runtime snapshot. The ticket re-entered Stage 6 for a focused local fix and targeted verification. | Local Fix | Unlocked | `tickets/in-progress/messaging-agent-team-support/code-review.md`, `tickets/in-progress/messaging-agent-team-support/implementation-progress.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
+| T-129 | 2026-03-11 | 6 | 7 | The local v7 status-ownership fix landed: active run/team open now resolves live snapshots through the active-runtime store, the affected web slice passed, and focused verification is complete. | Local Fix | Unlocked | `tickets/in-progress/messaging-agent-team-support/implementation-progress.md`, `tickets/in-progress/messaging-agent-team-support/api-e2e-testing.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
+| T-130 | 2026-03-11 | 7 | 8 | The full frontend Vitest rerun passed on the current tree, so the ticket advanced into one more deep review round on the final local-fix delta. | Local Fix | Locked | `tickets/in-progress/messaging-agent-team-support/api-e2e-testing.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
+| T-131 | 2026-03-11 | 8 | 10 | The final local-fix review passed and no additional docs changes were required, so the ticket returned to Stage 10 handoff on the current verified tree. | Local Fix | Locked | `tickets/in-progress/messaging-agent-team-support/code-review.md`, `tickets/in-progress/messaging-agent-team-support/implementation-progress.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
 
 ## Process Violation Log
 

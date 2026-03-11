@@ -550,3 +550,38 @@
 - Residual risk:
   - frontend `nuxi typecheck` remains red on broad pre-existing baseline issues outside this ticket
   - live runtime/manual UX still has meaningful risk until the status-source and live-hydration layering issues above are addressed
+
+## Round 18
+
+- Scope reviewed:
+  - on-demand active snapshot resolution in `autobyteus-web/stores/activeRuntimeSyncStore.ts`
+  - active run open path in `autobyteus-web/services/runOpen/runOpenCoordinator.ts`
+  - active team open path in `autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts`
+  - focused regressions in `autobyteus-web/stores/__tests__/runHistoryStore.spec.ts` and `autobyteus-web/stores/__tests__/activeRuntimeSyncStore.spec.ts`
+  - full frontend Vitest rerun on the current tree
+- Decision: `Pass`
+
+## Round 18 Findings
+
+- No blocking findings.
+- Residual risk: active history-open now resolves authoritative snapshots on demand, but it still does so by refreshing the whole active-runtime snapshot query when the local cache is cold. That is acceptable for the current small active-set policy and still keeps history loading itself side-effect free, but a future single-run/single-team lookup would be a cleaner optimization if the active set grows.
+
+## Round 18 Review Checks
+
+- Review slices:
+  - frontend active-open status ownership fix slice: `4` production files, `~95` effective changed lines, `<=500` per-slice review limit satisfied
+  - focused regression slice: `2` test files, `~150` effective changed lines, `<=500` per-slice review limit satisfied
+  - full frontend verification slice: `181` test files, `819` passed tests, `1` skipped
+- `>220` changed-line delta gate:
+  - not triggered for the local fix itself
+- Layering:
+  - active history-open no longer invents placeholder status when backend authoritative status is already available
+  - the active-runtime store remains the only owner of active snapshot lookup; the open coordinators consume it but do not rebuild status logic locally
+  - history loading remains read-only because the on-demand lookup is routed through the active-runtime source instead of the history read model
+- Decoupling:
+  - open coordinators now depend on a narrow active-snapshot API (`ensureActiveRunSnapshot(...)`, `ensureActiveTeamRunSnapshot(...)`) instead of assuming background polling already happened
+  - the fix avoids adding another direct GraphQL query path into the open coordinators
+- Module placement:
+  - snapshot resolution remains inside `autobyteus-web/stores/activeRuntimeSyncStore.ts`
+  - run/team open orchestration stays in the existing coordinators
+  - no new presentation-layer status logic was introduced

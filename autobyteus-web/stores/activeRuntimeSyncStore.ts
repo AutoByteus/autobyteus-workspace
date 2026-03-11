@@ -9,6 +9,7 @@ import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { GetActiveRuntimeSnapshot } from '~/graphql/queries/activeRuntimeQueries';
 import { hydrateLiveRunContext } from '~/services/runHydration/runContextHydrationService';
 import {
+  applyLiveTeamStatusSnapshot,
   hydrateLiveTeamRunContext,
   type TeamMemberLiveSnapshot,
 } from '~/services/runHydration/teamRunContextHydrationService';
@@ -19,52 +20,29 @@ import {
   normalizeTeamRuntimeStatus,
 } from '~/services/runHydration/runtimeStatusNormalization';
 
+export interface ActiveAgentRunSnapshot {
+  id: string;
+  name?: string | null;
+  currentStatus: string;
+}
+
+export interface ActiveTeamRunSnapshot {
+  id: string;
+  name?: string | null;
+  currentStatus: string;
+  members?: TeamMemberLiveSnapshot[];
+}
+
 interface ActiveRuntimeSnapshotQueryData {
-  agentRuns?: Array<{
-    id: string;
-    name?: string | null;
-    currentStatus: string;
-  }>;
-  agentTeamRuns?: Array<{
-    id: string;
-    name?: string | null;
-    currentStatus: string;
-    members?: TeamMemberLiveSnapshot[];
-  }>;
+  agentRuns?: ActiveAgentRunSnapshot[];
+  agentTeamRuns?: ActiveTeamRunSnapshot[];
 }
 
 const toIdSet = (ids: Array<string | null | undefined>): Set<string> =>
   new Set(ids.map((value) => (value || '').trim()).filter(Boolean));
 
-const applyTeamMemberStatuses = (
-  context: { members: Map<string, any> },
-  memberSnapshots: TeamMemberLiveSnapshot[],
-): void => {
-  const byRouteKey = new Map<string, TeamMemberLiveSnapshot>();
-  const byRunId = new Map<string, TeamMemberLiveSnapshot>();
-
-  memberSnapshots.forEach((snapshot) => {
-    const routeKey = snapshot.memberRouteKey?.trim() || '';
-    if (routeKey) {
-      byRouteKey.set(routeKey, snapshot);
-    }
-    const runId = snapshot.memberRunId?.trim() || '';
-    if (runId) {
-      byRunId.set(runId, snapshot);
-    }
-  });
-
-  context.members.forEach((memberContext, memberRouteKey) => {
-    memberContext.config.isLocked = true;
-    const snapshot = byRouteKey.get(memberRouteKey) || byRunId.get(memberContext.state.runId);
-    if (snapshot) {
-      memberContext.state.currentStatus = normalizeAgentRuntimeStatus(snapshot.currentStatus);
-    }
-  });
-};
-
 const syncAgentRuntimeState = async (
-  activeRunSnapshots: Map<string, NonNullable<ActiveRuntimeSnapshotQueryData['agentRuns']>[number]>,
+  activeRunSnapshots: Map<string, ActiveAgentRunSnapshot>,
 ): Promise<void> => {
   const runHistoryStore = useRunHistoryStore();
   const agentContextsStore = useAgentContextsStore();
@@ -109,7 +87,7 @@ const syncAgentRuntimeState = async (
 };
 
 const syncTeamRuntimeState = async (
-  activeTeamRunSnapshots: Map<string, NonNullable<ActiveRuntimeSnapshotQueryData['agentTeamRuns']>[number]>,
+  activeTeamRunSnapshots: Map<string, ActiveTeamRunSnapshot>,
 ): Promise<void> => {
   const runHistoryStore = useRunHistoryStore();
   const teamContextsStore = useAgentTeamContextsStore();
@@ -141,7 +119,10 @@ const syncTeamRuntimeState = async (
       existingContext.members.forEach((memberContext) => {
         memberContext.config.isLocked = true;
       });
-      applyTeamMemberStatuses(existingContext, snapshot.members || []);
+      applyLiveTeamStatusSnapshot(existingContext, {
+        currentStatus: snapshot.currentStatus,
+        memberStatuses: snapshot.members || [],
+      });
       if (!existingContext.isSubscribed) {
         agentTeamRunStore.connectToTeamStream(teamRunId);
       }
@@ -168,7 +149,17 @@ export const useActiveRuntimeSyncStore = defineStore('activeRuntimeSync', {
     loading: false,
     error: null as string | null,
     lastSyncedAt: null as string | null,
+    activeRunSnapshotsById: {} as Record<string, ActiveAgentRunSnapshot>,
+    activeTeamRunSnapshotsById: {} as Record<string, ActiveTeamRunSnapshot>,
   }),
+
+  getters: {
+    getActiveRunSnapshot: (state) => (runId: string): ActiveAgentRunSnapshot | null =>
+      state.activeRunSnapshotsById[runId] || null,
+
+    getActiveTeamRunSnapshot: (state) => (teamRunId: string): ActiveTeamRunSnapshot | null =>
+      state.activeTeamRunSnapshotsById[teamRunId] || null,
+  },
 
   actions: {
     async refresh(options: { quiet?: boolean } = {}): Promise<void> {
@@ -195,19 +186,17 @@ export const useActiveRuntimeSyncStore = defineStore('activeRuntimeSync', {
           throw new Error(errors.map((error: { message: string }) => error.message).join(', '));
         }
 
-        const activeRunSnapshots = new Map(
-          (data?.agentRuns || []).map(
-            (run: NonNullable<ActiveRuntimeSnapshotQueryData['agentRuns']>[number]) => [run.id, run] as const,
-          ),
+        const activeRunSnapshots = new Map<string, ActiveAgentRunSnapshot>(
+          (data?.agentRuns || []).map((run: ActiveAgentRunSnapshot) => [run.id, run] as const),
         );
-        const activeTeamRunSnapshots = new Map(
-          (data?.agentTeamRuns || []).map(
-            (teamRun: NonNullable<ActiveRuntimeSnapshotQueryData['agentTeamRuns']>[number]) =>
-              [teamRun.id, teamRun] as const,
-          ),
+        const activeTeamRunSnapshots = new Map<string, ActiveTeamRunSnapshot>(
+          (data?.agentTeamRuns || []).map((teamRun: ActiveTeamRunSnapshot) => [teamRun.id, teamRun] as const),
         );
         const activeRunIds = toIdSet(Array.from(activeRunSnapshots.keys()));
         const activeTeamRunIds = toIdSet(Array.from(activeTeamRunSnapshots.keys()));
+
+        this.activeRunSnapshotsById = Object.fromEntries(activeRunSnapshots.entries());
+        this.activeTeamRunSnapshotsById = Object.fromEntries(activeTeamRunSnapshots.entries());
 
         const runHistoryStore = useRunHistoryStore();
         runHistoryStore.reconcileActiveRunIds(activeRunIds);
@@ -230,6 +219,36 @@ export const useActiveRuntimeSyncStore = defineStore('activeRuntimeSync', {
 
     async refreshQuietly(): Promise<void> {
       await this.refresh({ quiet: true });
+    },
+
+    async ensureActiveRunSnapshot(runId: string): Promise<ActiveAgentRunSnapshot | null> {
+      const normalizedRunId = runId.trim();
+      if (!normalizedRunId) {
+        return null;
+      }
+
+      const existing = this.activeRunSnapshotsById[normalizedRunId];
+      if (existing) {
+        return existing;
+      }
+
+      await this.refreshQuietly();
+      return this.activeRunSnapshotsById[normalizedRunId] || null;
+    },
+
+    async ensureActiveTeamRunSnapshot(teamRunId: string): Promise<ActiveTeamRunSnapshot | null> {
+      const normalizedTeamRunId = teamRunId.trim();
+      if (!normalizedTeamRunId) {
+        return null;
+      }
+
+      const existing = this.activeTeamRunSnapshotsById[normalizedTeamRunId];
+      if (existing) {
+        return existing;
+      }
+
+      await this.refreshQuietly();
+      return this.activeTeamRunSnapshotsById[normalizedTeamRunId] || null;
     },
   },
 });

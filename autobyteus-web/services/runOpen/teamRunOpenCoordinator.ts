@@ -8,8 +8,12 @@ import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
+import { useActiveRuntimeSyncStore } from '~/stores/activeRuntimeSyncStore';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
-import { loadTeamRunContextHydrationPayload } from '~/services/runHydration/teamRunContextHydrationService';
+import {
+  applyLiveTeamStatusSnapshot,
+  loadTeamRunContextHydrationPayload,
+} from '~/services/runHydration/teamRunContextHydrationService';
 
 export interface OpenTeamRunWithCoordinatorInput {
   teamRunId: string;
@@ -39,6 +43,10 @@ export const openTeamRunWithCoordinator = async (
     const routeKey = member.memberRouteKey?.trim() || member.memberName.trim();
     return routeKey === focusedMemberRouteKey;
   });
+  const activeRuntimeSyncStore = useActiveRuntimeSyncStore();
+  const activeTeamSnapshot = resumeConfig.isActive
+    ? await activeRuntimeSyncStore.ensureActiveTeamRunSnapshot(manifest.teamRunId)
+    : null;
 
   const teamContextsStore = useAgentTeamContextsStore();
   const hydratedContext: AgentTeamContext = {
@@ -65,11 +73,18 @@ export const openTeamRunWithCoordinator = async (
     },
     members,
     focusedMemberName: focusedMemberRouteKey,
-    currentStatus: resumeConfig.isActive ? AgentTeamStatus.Uninitialized : AgentTeamStatus.Idle,
+    currentStatus:
+      resumeConfig.isActive && !activeTeamSnapshot ? AgentTeamStatus.Uninitialized : AgentTeamStatus.Idle,
     isSubscribed: false,
     taskPlan: null,
     taskStatuses: null,
   };
+  if (activeTeamSnapshot) {
+    applyLiveTeamStatusSnapshot(hydratedContext, {
+      currentStatus: activeTeamSnapshot.currentStatus,
+      memberStatuses: activeTeamSnapshot.members || [],
+    });
+  }
 
   const existingTeamContext = teamContextsStore.getTeamContextById(manifest.teamRunId);
   const shouldKeepLiveContext = resumeConfig.isActive && Boolean(existingTeamContext?.isSubscribed);
@@ -101,6 +116,12 @@ export const openTeamRunWithCoordinator = async (
       existingTeamContext.unsubscribe = undefined;
       existingTeamContext.taskPlan = null;
       existingTeamContext.taskStatuses = null;
+      if (activeTeamSnapshot) {
+        applyLiveTeamStatusSnapshot(existingTeamContext, {
+          currentStatus: activeTeamSnapshot.currentStatus,
+          memberStatuses: activeTeamSnapshot.members || [],
+        });
+      }
     }
   } else {
     teamContextsStore.addTeamContext(hydratedContext);

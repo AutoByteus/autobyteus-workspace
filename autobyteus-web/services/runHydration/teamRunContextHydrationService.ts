@@ -30,6 +30,11 @@ export interface TeamMemberLiveSnapshot {
   currentStatus: string;
 }
 
+export interface TeamLiveStatusSnapshot {
+  currentStatus?: string | null;
+  memberStatuses?: TeamMemberLiveSnapshot[];
+}
+
 export interface TeamRunContextHydrationPayload {
   teamRunId: string;
   focusedMemberRouteKey: string;
@@ -93,6 +98,14 @@ const applyMemberStatuses = (
   });
 };
 
+export const applyLiveTeamStatusSnapshot = (
+  context: AgentTeamContext,
+  snapshot: TeamLiveStatusSnapshot,
+): void => {
+  context.currentStatus = normalizeTeamRuntimeStatus(snapshot.currentStatus);
+  applyMemberStatuses(context.members, snapshot.memberStatuses || []);
+};
+
 const buildHydratedTeamContext = (params: {
   manifest: ReturnType<typeof parseTeamRunManifest>;
   resumeConfig: TeamRunResumeConfigPayload;
@@ -136,7 +149,10 @@ const buildHydratedTeamContext = (params: {
     taskStatuses: null,
   };
 
-  applyMemberStatuses(context.members, params.memberStatuses);
+  applyLiveTeamStatusSnapshot(context, {
+    currentStatus: params.currentStatus,
+    memberStatuses: params.memberStatuses,
+  });
   return context;
 };
 

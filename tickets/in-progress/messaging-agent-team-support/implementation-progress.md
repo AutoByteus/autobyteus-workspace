@@ -22,6 +22,11 @@ This document tracks implementation, verification, and gate evidence for the mes
 
 ## Progress Log
 
+- 2026-03-11: One more deep review round found that the v7 active-open path was still not fully self-sufficient: if a user opened an already-active run or team before the active-runtime poll had warmed the frontend cache, the open coordinators still fell back to placeholder `Uninitialized` state.
+- 2026-03-11: Closed that gap by extending `activeRuntimeSyncStore` with `ensureActiveRunSnapshot(...)` and `ensureActiveTeamRunSnapshot(...)`, so active history-open now performs an authoritative active-runtime lookup on demand instead of depending on prior background polling.
+- 2026-03-11: `runOpenCoordinator.ts` and `teamRunOpenCoordinator.ts` now consume those `ensure...Snapshot(...)` paths, which keeps the backend active-runtime snapshot authoritative even for the first active open after load.
+- 2026-03-11: Focused web reruns passed after the fix: `30` tests across `activeRuntimeSyncStore` and `runHistoryStore`, plus `36` tests across the broader streaming/tree slice.
+- 2026-03-11: Full frontend Vitest verification was rerun on the current tree after the fix and passed cleanly with `180` files passed, `1` skipped, `819` tests passed.
 - 2026-03-11: Completed the v7 frontend live-hydration separation slice by introducing dedicated run/team hydration services plus shared projection and runtime-status normalization helpers, so background active-runtime sync no longer reuses the history-open coordinators.
 - 2026-03-11: `activeRuntimeSyncStore` now hydrates missing live runs/teams directly from the new hydration services and applies backend-provided live status snapshots instead of synthesizing placeholder `Uninitialized` state for recovered active contexts.
 - 2026-03-11: The run/team open coordinators were slimmed back down to their intended responsibility: selection/open orchestration plus stream attach, with projection/resume loading extracted into the dedicated hydration layer.

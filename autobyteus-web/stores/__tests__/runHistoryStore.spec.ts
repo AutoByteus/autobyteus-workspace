@@ -16,6 +16,7 @@ const {
   agentRunStoreMock,
   agentTeamRunStoreMock,
   llmProviderConfigStoreMock,
+  activeRuntimeSyncStoreMock,
 } = vi.hoisted(() => {
   const selection = {
     selectedType: null as string | null,
@@ -135,6 +136,12 @@ const {
       models: ['model-default'],
       fetchProvidersWithModels: vi.fn().mockResolvedValue(undefined),
     },
+    activeRuntimeSyncStoreMock: {
+      getActiveRunSnapshot: vi.fn().mockReturnValue(null),
+      getActiveTeamRunSnapshot: vi.fn().mockReturnValue(null),
+      ensureActiveRunSnapshot: vi.fn().mockResolvedValue(null),
+      ensureActiveTeamRunSnapshot: vi.fn().mockResolvedValue(null),
+    },
   };
 });
 
@@ -198,6 +205,10 @@ vi.mock('~/stores/llmProviderConfig', () => ({
   useLLMProviderConfigStore: () => llmProviderConfigStoreMock,
 }));
 
+vi.mock('~/stores/activeRuntimeSyncStore', () => ({
+  useActiveRuntimeSyncStore: () => activeRuntimeSyncStoreMock,
+}));
+
 describe('runHistoryStore', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
@@ -230,6 +241,14 @@ describe('runHistoryStore', () => {
     selectionStoreMock.selectedRunId = null;
     llmProviderConfigStoreMock.models = ['model-default'];
     llmProviderConfigStoreMock.fetchProvidersWithModels.mockResolvedValue(undefined);
+    activeRuntimeSyncStoreMock.getActiveRunSnapshot.mockReset();
+    activeRuntimeSyncStoreMock.getActiveRunSnapshot.mockReturnValue(null);
+    activeRuntimeSyncStoreMock.getActiveTeamRunSnapshot.mockReset();
+    activeRuntimeSyncStoreMock.getActiveTeamRunSnapshot.mockReturnValue(null);
+    activeRuntimeSyncStoreMock.ensureActiveRunSnapshot.mockReset();
+    activeRuntimeSyncStoreMock.ensureActiveRunSnapshot.mockResolvedValue(null);
+    activeRuntimeSyncStoreMock.ensureActiveTeamRunSnapshot.mockReset();
+    activeRuntimeSyncStoreMock.ensureActiveTeamRunSnapshot.mockResolvedValue(null);
     mutateMock.mockReset();
   });
 
@@ -316,6 +335,12 @@ describe('runHistoryStore', () => {
   });
 
   it('opens a run, hydrates projection, selects runContext, and connects stream when active', async () => {
+    activeRuntimeSyncStoreMock.ensureActiveRunSnapshot.mockResolvedValue({
+      id: 'run-1',
+      name: 'SuperAgent',
+      currentStatus: 'PROCESSING_USER_INPUT',
+    });
+
     queryMock.mockImplementation(async ({ query }: { query: string }) => {
       if (query === 'GetRunProjection') {
         return {
@@ -406,8 +431,10 @@ describe('runHistoryStore', () => {
     expect(teamRunConfigStoreMock.clearConfig).toHaveBeenCalled();
     expect(agentRunStoreMock.connectToAgentStream).toHaveBeenCalledWith('run-1');
     expect(store.isRuntimeLockedForRun('run-1')).toBe(true);
+    expect(activeRuntimeSyncStoreMock.ensureActiveRunSnapshot).toHaveBeenCalledWith('run-1');
     expect(agentContextsStoreMock.upsertProjectionContext).toHaveBeenCalledWith(
       expect.objectContaining({
+        status: 'processing_user_input',
         config: expect.objectContaining({
           runtimeKind: 'codex_app_server',
         }),
@@ -1226,6 +1253,90 @@ describe('runHistoryStore', () => {
     expect(teamRunConfigStoreMock.clearConfig).toHaveBeenCalled();
     expect(agentRunConfigStoreMock.clearConfig).toHaveBeenCalled();
     expect(agentTeamRunStoreMock.connectToTeamStream).not.toHaveBeenCalled();
+  });
+
+  it('openTeamMemberRun applies active runtime snapshot status immediately for active teams', async () => {
+    activeRuntimeSyncStoreMock.ensureActiveTeamRunSnapshot.mockResolvedValue({
+      id: 'team-1',
+      name: 'Team Alpha',
+      currentStatus: 'ACTIVE',
+      members: [
+        {
+          memberRouteKey: 'super_agent',
+          memberName: 'Super Agent',
+          memberRunId: 'member-run-1',
+          currentStatus: 'PROCESSING_USER_INPUT',
+        },
+      ],
+    });
+
+    queryMock.mockImplementation(async ({ query, variables }: { query: string; variables?: Record<string, unknown> }) => {
+      if (query === 'GetTeamRunResumeConfig') {
+        return {
+          data: {
+            getTeamRunResumeConfig: {
+              teamRunId: 'team-1',
+              isActive: true,
+              manifest: {
+                teamRunId: 'team-1',
+                teamDefinitionId: 'team-def-1',
+                teamDefinitionName: 'Team Alpha',
+                coordinatorMemberRouteKey: 'super_agent',
+                runVersion: 1,
+                createdAt: '2026-01-01T00:00:00.000Z',
+                updatedAt: '2026-01-01T00:05:00.000Z',
+                memberBindings: [
+                  {
+                    memberRouteKey: 'super_agent',
+                    memberName: 'Super Agent',
+                    memberRunId: 'member-run-1',
+                    agentDefinitionId: 'agent-def-1',
+                    llmModelIdentifier: 'model-x',
+                    autoExecuteTools: false,
+                    llmConfig: null,
+                    workspaceRootPath: '/ws/a',
+                  },
+                ],
+              },
+            },
+          },
+          errors: [],
+        };
+      }
+      if (query === 'GetTeamMemberRunProjection') {
+        expect(variables).toEqual({
+          teamRunId: 'team-1',
+          memberRouteKey: 'super_agent',
+        });
+        return {
+          data: {
+            getTeamMemberRunProjection: {
+              agentRunId: 'member-run-1',
+              summary: 'Team member history',
+              lastActivityAt: '2026-01-01T00:05:00.000Z',
+              conversation: [
+                { kind: 'message', role: 'user', content: 'hello', ts: 1700000000 },
+                { kind: 'message', role: 'assistant', content: 'hi', ts: 1700000010 },
+              ],
+            },
+          },
+          errors: [],
+        };
+      }
+      throw new Error(`Unexpected query: ${String(query)}`);
+    });
+
+    workspaceStoreMock.createWorkspace.mockResolvedValue('ws-1');
+
+    const store = useRunHistoryStore();
+    await store.openTeamMemberRun('team-1', 'super_agent');
+
+    const hydratedTeam = teamContextsStoreMock.teams.get('team-1');
+    expect(hydratedTeam).toBeTruthy();
+    expect(activeRuntimeSyncStoreMock.ensureActiveTeamRunSnapshot).toHaveBeenCalledWith('team-1');
+    expect(hydratedTeam.currentStatus).toBe('processing');
+    expect(hydratedTeam.members.get('super_agent')?.state.currentStatus).toBe('processing_user_input');
+    expect(agentTeamRunStoreMock.connectToTeamStream).toHaveBeenCalledWith('team-1');
   });
 
   it('openTeamMemberRun refreshes an existing team context in place', async () => {

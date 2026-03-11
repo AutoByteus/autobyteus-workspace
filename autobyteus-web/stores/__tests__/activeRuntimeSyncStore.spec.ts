@@ -144,6 +144,42 @@ vi.mock('~/services/runHydration/runContextHydrationService', () => ({
 
 vi.mock('~/services/runHydration/teamRunContextHydrationService', () => ({
   hydrateLiveTeamRunContext: hydrateLiveTeamRunContextMock,
+  applyLiveTeamStatusSnapshot: (context: any, snapshot: any) => {
+    const normalizeStatus = (status?: string | null) => {
+      switch (String(status || '').toLowerCase()) {
+        case 'active':
+        case 'processing':
+        case 'running':
+        case 'processing_user_input':
+          return 'processing_user_input';
+        case 'idle':
+          return 'idle';
+        case 'error':
+          return 'error';
+        default:
+          return 'uninitialized';
+      }
+    };
+    context.currentStatus = String(snapshot?.currentStatus || '').toLowerCase() === 'active'
+      ? 'processing'
+      : String(snapshot?.currentStatus || '').toLowerCase() === 'idle'
+        ? 'idle'
+        : String(snapshot?.currentStatus || '').toLowerCase() === 'error'
+          ? 'error'
+          : 'uninitialized';
+    const byRouteKey = new Map(
+      (snapshot?.memberStatuses || []).map((member: any) => [member.memberRouteKey || member.memberName, member]),
+    );
+    const byRunId = new Map(
+      (snapshot?.memberStatuses || []).map((member: any) => [member.memberRunId, member]),
+    );
+    context.members.forEach((memberContext: any, memberRouteKey: string) => {
+      const matched = byRouteKey.get(memberRouteKey) || byRunId.get(memberContext.state?.runId);
+      if (matched) {
+        memberContext.state.currentStatus = normalizeStatus(matched.currentStatus);
+      }
+    });
+  },
 }));
 
 vi.mock('~/graphql/queries/activeRuntimeQueries', () => ({
@@ -292,6 +328,8 @@ describe('activeRuntimeSyncStore', () => {
     });
     expect(agentContextsStoreMock.runs.get('run-missing-1')?.state.currentStatus).toBe('processing_user_input');
     expect(teamContextsStoreMock.teams.get('team-missing-1')?.currentStatus).toBe('processing');
+    expect(store.getActiveRunSnapshot('run-missing-1')?.currentStatus).toBe('ACTIVE');
+    expect(store.getActiveTeamRunSnapshot('team-missing-1')?.members?.[1]?.memberRouteKey).toBe('student');
   });
 
   it('disconnects contexts that are no longer active on the backend', async () => {
@@ -336,5 +374,67 @@ describe('activeRuntimeSyncStore', () => {
     const teamContext = teamContextsStoreMock.teams.get('team-stale-1');
     expect(teamContext?.currentStatus).toBe('shutdown_complete');
     expect(teamContext?.members.get('student')?.state.currentStatus).toBe('shutdown_complete');
+  });
+
+  it('ensureActiveRunSnapshot refreshes once when the cache is empty', async () => {
+    queryMock.mockResolvedValue({
+      data: {
+        agentRuns: [{ id: 'run-live-2', name: 'Professor', currentStatus: 'ACTIVE' }],
+        agentTeamRuns: [],
+      },
+      errors: [],
+    });
+
+    const store = useActiveRuntimeSyncStore();
+    const snapshot = await store.ensureActiveRunSnapshot('run-live-2');
+
+    expect(snapshot).toEqual({
+      id: 'run-live-2',
+      name: 'Professor',
+      currentStatus: 'ACTIVE',
+    });
+    expect(queryMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('ensureActiveTeamRunSnapshot refreshes once when the cache is empty', async () => {
+    queryMock.mockResolvedValue({
+      data: {
+        agentRuns: [],
+        agentTeamRuns: [
+          {
+            id: 'team-live-2',
+            name: 'Professor Student Team',
+            currentStatus: 'ACTIVE',
+            members: [
+              {
+                memberRouteKey: 'professor',
+                memberName: 'Professor',
+                memberRunId: 'professor-team-live-2',
+                currentStatus: 'IDLE',
+              },
+            ],
+          },
+        ],
+      },
+      errors: [],
+    });
+
+    const store = useActiveRuntimeSyncStore();
+    const snapshot = await store.ensureActiveTeamRunSnapshot('team-live-2');
+
+    expect(snapshot).toEqual({
+      id: 'team-live-2',
+      name: 'Professor Student Team',
+      currentStatus: 'ACTIVE',
+      members: [
+        {
+          memberRouteKey: 'professor',
+          memberName: 'Professor',
+          memberRunId: 'professor-team-live-2',
+          currentStatus: 'IDLE',
+        },
+      ],
+    });
+    expect(queryMock).toHaveBeenCalledTimes(1);
   });
 });
