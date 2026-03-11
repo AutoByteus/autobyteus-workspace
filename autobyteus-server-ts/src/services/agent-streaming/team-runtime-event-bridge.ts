@@ -11,7 +11,33 @@ import {
   getRuntimeEventMessageMapper,
   type RuntimeEventMessageMapper,
 } from "./runtime-event-message-mapper.js";
-import { createErrorMessage, ServerMessage, type ServerMessageType } from "./models.js";
+import { createErrorMessage, ServerMessage, ServerMessageType } from "./models.js";
+
+const normalizeStatus = (value: unknown): string | null =>
+  typeof value === "string" && value.trim().length > 0 ? value.trim().toUpperCase() : null;
+
+const deriveTeamStatus = (memberStatuses: string[]): "IDLE" | "PROCESSING" | "ERROR" | null => {
+  if (memberStatuses.length === 0) {
+    return null;
+  }
+
+  if (memberStatuses.some((status) => status === "ERROR")) {
+    return "ERROR";
+  }
+
+  if (
+    memberStatuses.some(
+      (status) =>
+        status !== "IDLE" &&
+        status !== "UNINITIALIZED" &&
+        status !== "SHUTDOWN_COMPLETE",
+    )
+  ) {
+    return "PROCESSING";
+  }
+
+  return "IDLE";
+};
 
 export class TeamRuntimeEventBridge {
   private readonly bindingRegistry: TeamRuntimeBindingRegistry;
@@ -46,6 +72,52 @@ export class TeamRuntimeEventBridge {
         }
       }
     };
+  }
+
+  getInitialSnapshotMessages(teamRunId: string): ServerMessage[] {
+    const bindings = this.bindingRegistry.getTeamBindings(teamRunId);
+    const memberStatusMessages: ServerMessage[] = [];
+    const memberStatuses: string[] = [];
+
+    for (const binding of bindings) {
+      let adapter;
+      try {
+        adapter = this.runtimeAdapterRegistry.resolveAdapter(binding.runtimeKind);
+      } catch {
+        continue;
+      }
+
+      const normalizedStatus =
+        normalizeStatus(adapter.getRunStatus?.(binding.memberRunId)) ??
+        (adapter.isRunActive?.(binding.memberRunId) ? "IDLE" : null);
+
+      if (!normalizedStatus) {
+        continue;
+      }
+
+      memberStatuses.push(normalizedStatus);
+      memberStatusMessages.push(
+        new ServerMessage(ServerMessageType.AGENT_STATUS, {
+          new_status: normalizedStatus,
+          old_status: null,
+          agent_name: binding.memberName,
+          agent_id: binding.memberRunId,
+        }),
+      );
+    }
+
+    const teamStatus = deriveTeamStatus(memberStatuses);
+    if (!teamStatus) {
+      return memberStatusMessages;
+    }
+
+    return [
+      new ServerMessage(ServerMessageType.TEAM_STATUS, {
+        new_status: teamStatus,
+        old_status: null,
+      }),
+      ...memberStatusMessages,
+    ];
   }
 
   private subscribeMember(

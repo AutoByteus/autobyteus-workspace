@@ -29,6 +29,7 @@ import {
 import { getWorkspaceManager } from "../../../workspaces/workspace-manager.js";
 import { appConfigProvider } from "../../../config/app-config-provider.js";
 import { UserInputConverter } from "../converters/user-input-converter.js";
+import { getTeamRunLaunchService } from "../../../agent-team-execution/services/team-run-launch-service.js";
 import { resolveTeamRuntimeMode } from "./team-runtime-mode-policy.js";
 import type {
   CreateAgentTeamRunPayload,
@@ -58,6 +59,7 @@ export class TeamRunMutationService {
   private readonly teamRunHistoryService = getTeamRunHistoryService();
   private readonly teamRunContinuationService = getTeamRunContinuationService();
   private readonly teamMemberRuntimeOrchestrator = getTeamMemberRuntimeOrchestrator();
+  private readonly teamRunLaunchService = getTeamRunLaunchService();
   private readonly teamDefinitionService = AgentTeamDefinitionService.getInstance();
   private readonly workspaceManager = getWorkspaceManager();
   private readonly runtimeAdapterRegistry: RuntimeAdapterRegistry = getRuntimeAdapterRegistry();
@@ -338,58 +340,10 @@ export class TeamRunMutationService {
     teamDefinitionId: string;
     memberConfigs: TeamMemberConfigPayload[];
   }): Promise<{ teamRunId: string; runtimeMode: "native_team" | "member_runtime" }> {
-    const metadata = await this.resolveTeamDefinitionMetadata(options.teamDefinitionId);
-    const teamRunId = this.generateTeamRunId(
-      metadata.teamDefinitionName || options.teamDefinitionId,
-    );
-    const memberConfigs = await Promise.all(
-      options.memberConfigs.map(async (config) => ({
-        ...config,
-        workspaceId: await this.resolveWorkspaceId(config),
-        llmConfig: config.llmConfig ?? null,
-      })),
-    );
-    const resolvedMemberConfigs = this.resolveRuntimeMemberConfigs(teamRunId, memberConfigs);
-    const runtimeMode = resolveTeamRuntimeMode(resolvedMemberConfigs, this.runtimeAdapterRegistry);
-    let memberBindingsOverride: TeamRunMemberBinding[] | null = null;
-
-    if (runtimeMode === "member_runtime") {
-      memberBindingsOverride = await this.teamMemberRuntimeOrchestrator.createMemberRuntimeSessions(
-        teamRunId,
-        options.teamDefinitionId,
-        resolvedMemberConfigs,
-      );
-    } else {
-      this.teamMemberRuntimeOrchestrator.removeTeam(teamRunId);
-      await this.agentTeamRunManager.createTeamRunWithId(
-        teamRunId,
-        options.teamDefinitionId,
-        resolvedMemberConfigs,
-      );
-    }
-
-    try {
-      const manifest = this.buildTeamRunManifest({
-        teamRunId,
-        teamDefinitionId: options.teamDefinitionId,
-        teamDefinitionName: metadata.teamDefinitionName,
-        coordinatorMemberName: metadata.coordinatorMemberName,
-        memberConfigs: resolvedMemberConfigs,
-        memberBindingsOverride,
-      });
-      await this.teamRunHistoryService.upsertTeamRunHistoryRow({
-        teamRunId,
-        manifest,
-        summary: "",
-        lastKnownStatus: "IDLE",
-      });
-    } catch (historyError) {
-      logger.warn(
-        `Failed to upsert team run history for '${teamRunId}' during team create flow: ${String(historyError)}`,
-      );
-    }
-
-    return { teamRunId, runtimeMode };
+    return this.teamRunLaunchService.ensureTeamRun({
+      teamDefinitionId: options.teamDefinitionId,
+      memberConfigs: options.memberConfigs,
+    });
   }
 
   async createAgentTeamRun(

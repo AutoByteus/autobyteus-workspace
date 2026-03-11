@@ -14,7 +14,7 @@ describe('SetupVerificationCard', () => {
     vi.clearAllMocks();
   });
 
-  it('renders verification checks and rerun action for launch preset blockers', async () => {
+  it('renders verification checks and rerun action for target configuration blockers', async () => {
     const verificationStore = useMessagingVerificationStore();
     verificationStore.verificationByProvider.WHATSAPP.verificationChecks = [
       {
@@ -24,7 +24,7 @@ describe('SetupVerificationCard', () => {
       },
       {
         key: 'launch_preset',
-        label: 'Binding launch preset',
+        label: 'Binding target configuration',
         status: 'FAILED',
         detail: 'Binding for peer peer-1 is missing a complete launch preset.',
       },

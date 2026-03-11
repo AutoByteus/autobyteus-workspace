@@ -31,12 +31,20 @@ export function useBindingDraftState(input: {
     threadId: null,
     targetType: 'AGENT',
     targetAgentDefinitionId: '',
+    targetTeamDefinitionId: '',
     launchPreset: {
       workspaceRootPath: '',
       llmModelIdentifier: '',
       runtimeKind: DEFAULT_AGENT_RUNTIME_KIND,
       autoExecuteTools: false,
       skillAccessMode: 'PRELOADED_ONLY',
+      llmConfig: null,
+    },
+    teamLaunchPreset: {
+      workspaceRootPath: '',
+      llmModelIdentifier: '',
+      runtimeKind: DEFAULT_AGENT_RUNTIME_KIND,
+      autoExecuteTools: false,
       llmConfig: null,
     },
   });

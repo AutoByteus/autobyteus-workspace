@@ -56,7 +56,7 @@ export const selectTreeRunFromHistory = async (
     const teamContextsStore = useAgentTeamContextsStore();
     const selectionStore = useAgentSelectionStore();
     const localTeamContext = teamContextsStore.getTeamContextById(row.teamRunId);
-    if (localTeamContext) {
+    if (localTeamContext?.isSubscribed) {
       teamContextsStore.setFocusedMember?.(row.memberRouteKey);
       selectionStore.selectRun(row.teamRunId, 'team');
       store.selectedTeamRunId = row.teamRunId;

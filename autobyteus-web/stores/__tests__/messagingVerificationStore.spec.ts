@@ -22,6 +22,7 @@ function buildBinding() {
     threadId: null,
     targetType: 'AGENT' as const,
     targetAgentDefinitionId: 'agent-definition-1',
+    targetTeamDefinitionId: null,
     launchPreset: {
       workspaceRootPath: '/tmp/workspace',
       llmModelIdentifier: 'gpt-test',
@@ -30,6 +31,8 @@ function buildBinding() {
       skillAccessMode: 'PRELOADED_ONLY' as const,
       llmConfig: null,
     },
+    teamLaunchPreset: null,
+    teamRunId: null,
     updatedAt: '2026-02-09T12:00:00.000Z',
   };
 }
@@ -225,7 +228,9 @@ describe('messagingVerificationStore', () => {
     bindingStore.bindings = [
       createBinding({
         targetAgentDefinitionId: null,
+        targetTeamDefinitionId: null,
         launchPreset: null,
+        teamLaunchPreset: null,
       }),
     ];
 
@@ -234,6 +239,64 @@ describe('messagingVerificationStore', () => {
     expect(result.ready).toBe(false);
     expect(result.blockers.some((item) => item.code === 'LAUNCH_PRESET_NOT_READY')).toBe(true);
     expect(result.checks.find((check) => check.key === 'launch_preset')?.status).toBe('FAILED');
+  });
+
+  it('passes target configuration verification for TEAM bindings with a team launch preset', async () => {
+    const gatewayStore = useGatewaySessionSetupStore();
+    const bindingStore = useMessagingChannelBindingSetupStore();
+    const verificationStore = useMessagingVerificationStore();
+
+    gatewayStore.gatewayStatus = 'READY';
+    gatewayStore.providerStatusByProvider = {
+      TELEGRAM: {
+        provider: 'TELEGRAM',
+        supported: true,
+        selectedTransport: 'BUSINESS_API',
+        configured: true,
+        effectivelyEnabled: true,
+        blockedReason: null,
+        accountId: 'telegram-acct-1',
+      },
+    };
+    stubGatewayHealthRefresh();
+    bindingStore.capabilities.bindingCrudEnabled = true;
+    bindingStore.bindings = [
+      createBinding({
+        provider: 'TELEGRAM',
+        transport: 'BUSINESS_API',
+        accountId: 'telegram-acct-1',
+        targetType: 'TEAM',
+        targetAgentDefinitionId: null,
+        targetTeamDefinitionId: 'team-definition-1',
+        launchPreset: null,
+        teamLaunchPreset: {
+          workspaceRootPath: '/tmp/team-workspace',
+          llmModelIdentifier: 'gpt-team',
+          runtimeKind: 'AUTOBYTEUS',
+          autoExecuteTools: false,
+          llmConfig: null,
+        },
+        teamRunId: null,
+      }),
+    ];
+
+    const providerScopeStore = useMessagingProviderScopeStore();
+    providerScopeStore.initialize({
+      wechatModes: [],
+      defaultWeChatMode: null,
+      wechatPersonalEnabled: false,
+      wecomAppEnabled: false,
+      discordEnabled: false,
+      discordAccountId: null,
+      telegramEnabled: true,
+      telegramAccountId: 'telegram-acct-1',
+    });
+    providerScopeStore.setSelectedProvider('TELEGRAM');
+
+    const result = await verificationStore.runSetupVerification();
+
+    expect(result.ready).toBe(true);
+    expect(result.checks.find((check) => check.key === 'launch_preset')?.status).toBe('PASSED');
   });
 
   it('reports gateway runtime critical blocker when reliability state is CRITICAL_LOCK_LOST', async () => {

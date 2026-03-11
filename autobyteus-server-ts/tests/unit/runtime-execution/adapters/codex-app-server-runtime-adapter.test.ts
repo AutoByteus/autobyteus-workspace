@@ -264,4 +264,50 @@ describe("CodexAppServerRuntimeAdapter", () => {
       runtimeReference: null,
     });
   });
+
+  it("returns accepted turnId after successful inter-agent relay", async () => {
+    const runtimeService = {
+      resolveWorkingDirectory: vi.fn(),
+      createRunSession: vi.fn(),
+      restoreRunSession: vi.fn(),
+      sendTurn: vi.fn(),
+      injectInterAgentEnvelope: vi.fn().mockResolvedValue({ turnId: "turn-relay-7" }),
+      getRunRuntimeReference: vi.fn().mockReturnValue({
+        threadId: "thread-live",
+        metadata: { model: "gpt-5.3-codex" },
+      }),
+      approveTool: vi.fn(),
+      interruptRun: vi.fn(),
+      terminateRun: vi.fn(),
+    } as unknown as CodexAppServerRuntimeService;
+    const adapter = new CodexAppServerRuntimeAdapter(runtimeService);
+
+    const result = await adapter.relayInterAgentMessage({
+      runId: "run-1",
+      envelope: {
+        senderAgentRunId: "student-run-1",
+        recipientName: "Professor",
+        messageType: "agent_message",
+        content: "Here is my answer.",
+      },
+    });
+
+    expect(result).toEqual({
+      accepted: true,
+      turnId: "turn-relay-7",
+      runtimeReference: {
+        runtimeKind: "codex_app_server",
+        sessionId: "run-1",
+        threadId: "thread-live",
+        metadata: { model: "gpt-5.3-codex" },
+      },
+    });
+    expect((runtimeService.injectInterAgentEnvelope as any)).toHaveBeenCalledWith(
+      "run-1",
+      expect.objectContaining({
+        senderAgentRunId: "student-run-1",
+        recipientName: "Professor",
+      }),
+    );
+  });
 });

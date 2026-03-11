@@ -71,6 +71,7 @@ describe('messagingChannelBindingOptionsStore', () => {
           threadId: null,
           targetType: 'AGENT',
           targetAgentDefinitionId: 'agent-definition-1',
+          targetTeamDefinitionId: null,
           launchPreset: {
             workspaceRootPath: '/tmp/workspace',
             llmModelIdentifier: 'gpt-test',
@@ -79,6 +80,7 @@ describe('messagingChannelBindingOptionsStore', () => {
             skillAccessMode: 'PRELOADED_ONLY',
             llmConfig: null,
           },
+          teamLaunchPreset: null,
         },
         peerSelectionMode: 'dropdown',
         selectedPeerKey: buildPeerCandidateKey(store.peerCandidates[0]),
@@ -100,6 +102,7 @@ describe('messagingChannelBindingOptionsStore', () => {
           threadId: null,
           targetType: 'AGENT',
           targetAgentDefinitionId: 'agent-definition-1',
+          targetTeamDefinitionId: null,
           launchPreset: {
             workspaceRootPath: '/tmp/workspace',
             llmModelIdentifier: 'gpt-test',
@@ -108,6 +111,7 @@ describe('messagingChannelBindingOptionsStore', () => {
             skillAccessMode: 'PRELOADED_ONLY',
             llmConfig: null,
           },
+          teamLaunchPreset: null,
         },
         peerSelectionMode: 'dropdown',
         selectedPeerKey: 'discord-peer-1::',

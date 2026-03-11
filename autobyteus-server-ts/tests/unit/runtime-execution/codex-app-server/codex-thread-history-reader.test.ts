@@ -81,4 +81,37 @@ describe("CodexThreadHistoryReader", () => {
     ).toHaveLength(0);
     expect(processManager.releaseClient).toHaveBeenCalledWith("/tmp/workspace");
   });
+
+  it("returns null without warning when the thread remains unmaterialized", async () => {
+    vi.useFakeTimers();
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const request = vi.fn(async (method: string) => {
+      if (method === "thread/read") {
+        throw new Error(
+          "Codex app server RPC error -32600: thread 123 is not materialized yet; includeTurns is unavailable before first user message",
+        );
+      }
+      if (method === "thread/resume") {
+        return {};
+      }
+      throw new Error(`Unexpected method: ${method}`);
+    });
+    const processManager = {
+      getClient: vi.fn().mockResolvedValue({ request }),
+    };
+    const reader = new CodexThreadHistoryReader(processManager as never);
+
+    const promise = reader.readThread("thread-123", "/tmp/workspace");
+    await vi.runAllTimersAsync();
+
+    await expect(promise).resolves.toBeNull();
+    expect(
+      request.mock.calls.filter(([method]) => method === "thread/read"),
+    ).toHaveLength(4);
+    expect(
+      request.mock.calls.filter(([method]) => method === "thread/resume"),
+    ).toHaveLength(0);
+    expect(warnSpy).not.toHaveBeenCalled();
+    warnSpy.mockRestore();
+  });
 });

@@ -963,9 +963,179 @@ describe('runHistoryStore', () => {
     expect(teamNodes.map((team) => team.teamRunId)).toEqual(['team-older', 'team-newer']);
   });
 
+  it('uses live member status for team member rows when a team context is active', () => {
+    const store = useRunHistoryStore();
+    workspaceStoreMock.allWorkspaces = [
+      { workspaceId: 'ws-1', absolutePath: '/ws/a', name: 'Alpha' },
+    ];
+    workspaceStoreMock.workspaces = {
+      'ws-1': { workspaceId: 'ws-1', absolutePath: '/ws/a', name: 'Alpha', workspaceConfig: {} },
+    };
+
+    teamContextsStoreMock.teams.set('team-live-1', {
+      teamRunId: 'team-live-1',
+      config: {
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Team Alpha',
+        runtimeKind: 'codex_app_server',
+        workspaceId: 'ws-1',
+        llmModelIdentifier: 'model-x',
+        autoExecuteTools: false,
+        memberOverrides: {},
+        isLocked: true,
+      },
+      members: new Map([
+        ['professor', {
+          config: { workspaceId: 'ws-1', agentDefinitionName: 'Professor' },
+          state: {
+            runId: 'member-professor-1',
+            currentStatus: 'awaiting_llm_response',
+            conversation: {
+              id: 'member-professor-1',
+              messages: [],
+              createdAt: '2026-01-01T00:00:00.000Z',
+              updatedAt: '2026-01-01T00:01:00.000Z',
+            },
+          },
+        }],
+        ['student', {
+          config: { workspaceId: 'ws-1', agentDefinitionName: 'Student' },
+          state: {
+            runId: 'member-student-1',
+            currentStatus: 'shutdown_complete',
+            conversation: {
+              id: 'member-student-1',
+              messages: [],
+              createdAt: '2026-01-01T00:00:00.000Z',
+              updatedAt: '2026-01-01T00:00:30.000Z',
+            },
+          },
+        }],
+      ]),
+      focusedMemberName: 'professor',
+      currentStatus: 'processing',
+      isSubscribed: true,
+      taskPlan: null,
+      taskStatuses: null,
+    });
+
+    const teamNodes = store.getTeamNodes('/ws/a');
+    const teamNode = teamNodes.find((team) => team.teamRunId === 'team-live-1');
+    const professorRow = teamNode?.members.find((member) => member.memberRouteKey === 'professor');
+    const studentRow = teamNode?.members.find((member) => member.memberRouteKey === 'student');
+
+    expect(teamNode?.isActive).toBe(true);
+    expect(professorRow).toEqual(
+      expect.objectContaining({
+        isActive: true,
+        lastKnownStatus: 'ACTIVE',
+      }),
+    );
+    expect(studentRow).toEqual(
+      expect.objectContaining({
+        isActive: false,
+        lastKnownStatus: 'IDLE',
+      }),
+    );
+  });
+
   it('selectTreeRun opens persisted team member when local team context is absent', async () => {
     const store = useRunHistoryStore();
     const openTeamMemberRunSpy = vi.spyOn(store, 'openTeamMemberRun').mockResolvedValue(undefined);
+
+    await store.selectTreeRun({
+      teamRunId: 'team-1',
+      memberRouteKey: 'super_agent',
+      memberName: 'Super Agent',
+      memberRunId: 'member-run-1',
+      workspaceRootPath: '/ws/a',
+      summary: 'Persisted team task',
+      lastActivityAt: '2026-01-01T00:00:00.000Z',
+      lastKnownStatus: 'IDLE',
+      isActive: false,
+      deleteLifecycle: 'READY',
+    });
+
+    expect(openTeamMemberRunSpy).toHaveBeenCalledWith('team-1', 'super_agent');
+  });
+
+  it('selectTreeRun keeps a subscribed live team context and only changes focus', async () => {
+    const store = useRunHistoryStore();
+    const openTeamMemberRunSpy = vi.spyOn(store, 'openTeamMemberRun').mockResolvedValue(undefined);
+
+    teamContextsStoreMock.teams.set('team-1', {
+      teamRunId: 'team-1',
+      config: {
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Team Alpha',
+        runtimeKind: 'codex_app_server',
+        workspaceId: 'ws-1',
+        llmModelIdentifier: 'model-x',
+        autoExecuteTools: false,
+        memberOverrides: {},
+        isLocked: true,
+      },
+      members: new Map([
+        ['super_agent', {
+          config: { workspaceId: 'ws-1', agentDefinitionName: 'Super Agent' },
+          state: { runId: 'member-run-1', conversation: { messages: [] } },
+        }],
+      ]),
+      focusedMemberName: 'super_agent',
+      currentStatus: 'idle',
+      isSubscribed: true,
+      taskPlan: null,
+      taskStatuses: null,
+    });
+
+    await store.selectTreeRun({
+      teamRunId: 'team-1',
+      memberRouteKey: 'super_agent',
+      memberName: 'Super Agent',
+      memberRunId: 'member-run-1',
+      workspaceRootPath: '/ws/a',
+      summary: 'Persisted team task',
+      lastActivityAt: '2026-01-01T00:00:00.000Z',
+      lastKnownStatus: 'IDLE',
+      isActive: false,
+      deleteLifecycle: 'READY',
+    });
+
+    expect(openTeamMemberRunSpy).not.toHaveBeenCalled();
+    expect(teamContextsStoreMock.setFocusedMember).toHaveBeenCalledWith('super_agent');
+    expect(selectionStoreMock.selectRun).toHaveBeenCalledWith('team-1', 'team');
+    expect(store.selectedTeamRunId).toBe('team-1');
+    expect(store.selectedTeamMemberRouteKey).toBe('super_agent');
+  });
+
+  it('selectTreeRun still reopens persisted team history when the local team context is not subscribed', async () => {
+    const store = useRunHistoryStore();
+    const openTeamMemberRunSpy = vi.spyOn(store, 'openTeamMemberRun').mockResolvedValue(undefined);
+
+    teamContextsStoreMock.teams.set('team-1', {
+      teamRunId: 'team-1',
+      config: {
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Team Alpha',
+        runtimeKind: 'codex_app_server',
+        workspaceId: 'ws-1',
+        llmModelIdentifier: 'model-x',
+        autoExecuteTools: false,
+        memberOverrides: {},
+        isLocked: true,
+      },
+      members: new Map([
+        ['super_agent', {
+          config: { workspaceId: 'ws-1', agentDefinitionName: 'Super Agent' },
+          state: { runId: 'member-run-1', conversation: { messages: [] } },
+        }],
+      ]),
+      focusedMemberName: 'super_agent',
+      currentStatus: 'idle',
+      isSubscribed: false,
+      taskPlan: null,
+      taskStatuses: null,
+    });
 
     await store.selectTreeRun({
       teamRunId: 'team-1',
@@ -1056,6 +1226,120 @@ describe('runHistoryStore', () => {
     expect(teamRunConfigStoreMock.clearConfig).toHaveBeenCalled();
     expect(agentRunConfigStoreMock.clearConfig).toHaveBeenCalled();
     expect(agentTeamRunStoreMock.connectToTeamStream).not.toHaveBeenCalled();
+  });
+
+  it('openTeamMemberRun refreshes an existing team context in place', async () => {
+    queryMock.mockImplementation(async ({ query, variables }: { query: string; variables?: Record<string, unknown> }) => {
+      if (query === 'GetTeamRunResumeConfig') {
+        return {
+          data: {
+            getTeamRunResumeConfig: {
+              teamRunId: 'team-1',
+              isActive: false,
+              manifest: {
+                teamRunId: 'team-1',
+                teamDefinitionId: 'team-def-1',
+                teamDefinitionName: 'Team Alpha',
+                coordinatorMemberRouteKey: 'super_agent',
+                runVersion: 1,
+                createdAt: '2026-01-01T00:00:00.000Z',
+                updatedAt: '2026-01-01T00:05:00.000Z',
+                memberBindings: [
+                  {
+                    memberRouteKey: 'super_agent',
+                    memberName: 'Super Agent',
+                    memberRunId: 'member-run-1',
+                    agentDefinitionId: 'agent-def-1',
+                    llmModelIdentifier: 'model-x',
+                    autoExecuteTools: false,
+                    llmConfig: null,
+                    workspaceRootPath: '/ws/a',
+                  },
+                ],
+              },
+            },
+          },
+          errors: [],
+        };
+      }
+      if (query === 'GetTeamMemberRunProjection') {
+        expect(variables).toEqual({
+          teamRunId: 'team-1',
+          memberRouteKey: 'super_agent',
+        });
+        return {
+          data: {
+            getTeamMemberRunProjection: {
+              agentRunId: 'member-run-1',
+              summary: 'Refreshed history',
+              lastActivityAt: '2026-01-01T00:05:00.000Z',
+              conversation: [
+                { kind: 'message', role: 'user', content: 'hello again', ts: 1700000000 },
+                { kind: 'message', role: 'assistant', content: 'hi again', ts: 1700000010 },
+              ],
+            },
+          },
+          errors: [],
+        };
+      }
+      throw new Error(`Unexpected query: ${String(query)}`);
+    });
+
+    workspaceStoreMock.createWorkspace.mockResolvedValue('ws-1');
+
+    const existingTeamContextUnsubscribeSpy = vi.fn(function (this: any) {
+      this.isSubscribed = false;
+    });
+
+    const existingTeamContext = {
+      teamRunId: 'team-1',
+      config: {
+        teamDefinitionId: 'team-def-old',
+        teamDefinitionName: 'Team Old',
+        runtimeKind: 'codex_app_server',
+        workspaceId: 'ws-old',
+        llmModelIdentifier: 'old-model',
+        autoExecuteTools: true,
+        memberOverrides: {},
+        isLocked: true,
+      },
+      members: new Map([
+        ['super_agent', {
+          config: { workspaceId: 'ws-old', agentDefinitionName: 'Super Agent' },
+          state: {
+            runId: 'member-run-1',
+            conversation: {
+              id: 'member-run-1',
+              messages: [{ type: 'assistant', text: 'stale' }],
+              createdAt: '2026-01-01T00:00:00.000Z',
+              updatedAt: '2026-01-01T00:00:00.000Z',
+            },
+            currentStatus: 'idle',
+          },
+        }],
+      ]),
+      focusedMemberName: 'super_agent',
+      currentStatus: 'idle',
+      isSubscribed: true,
+      unsubscribe: existingTeamContextUnsubscribeSpy,
+      taskPlan: { steps: ['stale'] },
+      taskStatuses: { stale: 'done' },
+    };
+    teamContextsStoreMock.teams.set('team-1', existingTeamContext);
+
+    const store = useRunHistoryStore();
+    await store.openTeamMemberRun('team-1', 'super_agent');
+
+    expect(teamContextsStoreMock.teams.get('team-1')).toBe(existingTeamContext);
+    expect(teamContextsStoreMock.addTeamContext).not.toHaveBeenCalled();
+    expect(existingTeamContext.config.teamDefinitionId).toBe('team-def-1');
+    expect(existingTeamContext.members.get('super_agent')?.state.conversation.messages).toHaveLength(2);
+    expect(existingTeamContext.focusedMemberName).toBe('super_agent');
+    expect(existingTeamContext.taskPlan).toBeNull();
+    expect(existingTeamContext.taskStatuses).toBeNull();
+    expect(existingTeamContextUnsubscribeSpy).toHaveBeenCalledTimes(1);
+    expect(existingTeamContext.unsubscribe).toBeUndefined();
+    expect(existingTeamContext.isSubscribed).toBe(false);
   });
 
   it('deleteRun removes local state and refreshes tree when backend succeeds', async () => {

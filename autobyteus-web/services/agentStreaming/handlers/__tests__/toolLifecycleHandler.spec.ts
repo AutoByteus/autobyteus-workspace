@@ -81,7 +81,14 @@ const buildContextWithSegment = (segment: ToolCallSegment | TerminalCommandSegme
           text: '',
           timestamp: new Date(),
           isComplete: false,
-          segments: [Object.assign(segment, { _segmentId: segment.invocationId })],
+          segments: [
+            Object.assign(segment, {
+              _streamSegmentIdentity: {
+                id: segment.invocationId,
+                lookupKey: null,
+              },
+            }),
+          ],
         },
       ],
       updatedAt: '',

@@ -11,6 +11,7 @@ import {
 import type {
   ChannelBinding,
   ChannelBindingLaunchPreset,
+  ChannelBindingTeamLaunchPreset,
   ChannelBindingLookup,
   ChannelBindingProviderDefaultLookup,
   ChannelDispatchTarget,
@@ -155,7 +156,13 @@ export class SqlChannelBindingProvider implements ChannelBindingProvider {
       },
     });
     const resetCachedAgentRun = shouldResetCachedAgentRun(existing, input);
-    const createOrUpdateData = buildUpsertPayload(input, existing, resetCachedAgentRun);
+    const resetCachedTeamRun = shouldResetCachedTeamRun(existing, input);
+    const createOrUpdateData = buildUpsertPayload(
+      input,
+      existing,
+      resetCachedAgentRun,
+      resetCachedTeamRun,
+    );
     const createdOrUpdated = await this.repository.upsert({
       where: {
         provider_transport_accountId_peerId_threadId: {
@@ -186,6 +193,24 @@ export class SqlChannelBindingProvider implements ChannelBindingProvider {
       data: {
         agentRunId: normalizedAgentRunId,
         targetType: "AGENT",
+      },
+    });
+    return toDomain(updated);
+  }
+
+  async upsertBindingTeamRunId(
+    bindingId: string,
+    teamRunId: string,
+  ): Promise<ChannelBinding> {
+    const normalizedId = parseBindingId(bindingId);
+    const normalizedTeamRunId = normalizeRequiredString(teamRunId, "teamRunId");
+    const updated = await this.repository.update({
+      where: {
+        id: normalizedId,
+      },
+      data: {
+        teamRunId: normalizedTeamRunId,
+        targetType: "TEAM",
       },
     });
     return toDomain(updated);
@@ -299,11 +324,34 @@ const toDomainLaunchPreset = (value: {
   };
 };
 
+const toDomainTeamLaunchPreset = (value: {
+  workspaceRootPath: string | null;
+  llmModelIdentifier: string | null;
+  runtimeKind: string | null;
+  autoExecuteTools: boolean | null;
+  llmConfigJson: string | null;
+}): ChannelBindingTeamLaunchPreset | null => {
+  const workspaceRootPath = normalizeNullableString(value.workspaceRootPath);
+  const llmModelIdentifier = normalizeNullableString(value.llmModelIdentifier);
+  if (!workspaceRootPath || !llmModelIdentifier) {
+    return null;
+  }
+
+  return {
+    workspaceRootPath,
+    llmModelIdentifier,
+    runtimeKind: normalizeRuntimeKind(value.runtimeKind),
+    autoExecuteTools: value.autoExecuteTools ?? false,
+    llmConfig: parseNullableJsonObject(value.llmConfigJson),
+  };
+};
+
 const shouldResetCachedAgentRun = (
   current:
     | {
         targetType: string;
         agentDefinitionId: string | null;
+        teamDefinitionId: string | null;
         workspaceRootPath: string | null;
         llmModelIdentifier: string | null;
         runtimeKind: string | null;
@@ -327,7 +375,7 @@ const shouldResetCachedAgentRun = (
     return true;
   }
 
-  return serializeLaunchPreset(
+  return serializePreset(
     toDomainLaunchPreset({
       workspaceRootPath: current.workspaceRootPath,
       llmModelIdentifier: current.llmModelIdentifier,
@@ -336,11 +384,52 @@ const shouldResetCachedAgentRun = (
       skillAccessMode: current.skillAccessMode,
       llmConfigJson: current.llmConfigJson,
     }),
-  ) !== serializeLaunchPreset(input.launchPreset ?? null);
+  ) !== serializePreset(input.launchPreset ?? null);
 };
 
-const serializeLaunchPreset = (
-  value: ChannelBindingLaunchPreset | null | undefined,
+const shouldResetCachedTeamRun = (
+  current:
+    | {
+        targetType: string;
+        teamDefinitionId: string | null;
+        workspaceRootPath: string | null;
+        llmModelIdentifier: string | null;
+        runtimeKind: string | null;
+        autoExecuteTools: boolean | null;
+        llmConfigJson: string | null;
+      }
+    | null,
+  input: UpsertChannelBindingInput,
+): boolean => {
+  if (!current) {
+    return false;
+  }
+  if (current.targetType !== input.targetType) {
+    return true;
+  }
+  if (input.targetType !== "TEAM") {
+    return false;
+  }
+  if (
+    normalizeNullableString(current.teamDefinitionId) !==
+    normalizeNullableString(input.teamDefinitionId ?? null)
+  ) {
+    return true;
+  }
+
+  return serializePreset(
+    toDomainTeamLaunchPreset({
+      workspaceRootPath: current.workspaceRootPath,
+      llmModelIdentifier: current.llmModelIdentifier,
+      runtimeKind: current.runtimeKind,
+      autoExecuteTools: current.autoExecuteTools,
+      llmConfigJson: current.llmConfigJson,
+    }),
+  ) !== serializePreset(input.teamLaunchPreset ?? null);
+};
+
+const serializePreset = (
+  value: ChannelBindingLaunchPreset | ChannelBindingTeamLaunchPreset | null | undefined,
 ): string => JSON.stringify(value ?? null);
 
 const buildUpsertPayload = (
@@ -348,9 +437,11 @@ const buildUpsertPayload = (
   existing:
     | {
         agentRunId: string | null;
+        teamRunId: string | null;
       }
     | null,
   resetCachedAgentRun: boolean,
+  resetCachedTeamRun: boolean,
 ) => {
   const nextTargetType = input.targetType;
   return {
@@ -364,18 +455,34 @@ const buildUpsertPayload = (
       nextTargetType === "AGENT"
         ? normalizeNullableString(input.agentDefinitionId ?? null) ?? undefined
         : null,
+    teamDefinitionId:
+      nextTargetType === "TEAM"
+        ? normalizeNullableString(input.teamDefinitionId ?? null) ?? undefined
+        : null,
     workspaceRootPath:
       nextTargetType === "AGENT"
         ? normalizeNullableString(input.launchPreset?.workspaceRootPath ?? null) ?? undefined
-        : null,
+        : nextTargetType === "TEAM"
+          ? normalizeNullableString(input.teamLaunchPreset?.workspaceRootPath ?? null) ?? undefined
+          : null,
     llmModelIdentifier:
       nextTargetType === "AGENT"
         ? normalizeNullableString(input.launchPreset?.llmModelIdentifier ?? null) ?? undefined
-        : null,
+        : nextTargetType === "TEAM"
+          ? normalizeNullableString(input.teamLaunchPreset?.llmModelIdentifier ?? null) ?? undefined
+          : null,
     runtimeKind:
-      nextTargetType === "AGENT" ? normalizeRuntimeKind(input.launchPreset?.runtimeKind) : null,
+      nextTargetType === "AGENT"
+        ? normalizeRuntimeKind(input.launchPreset?.runtimeKind)
+        : nextTargetType === "TEAM"
+          ? normalizeRuntimeKind(input.teamLaunchPreset?.runtimeKind)
+          : null,
     autoExecuteTools:
-      nextTargetType === "AGENT" ? input.launchPreset?.autoExecuteTools ?? false : null,
+      nextTargetType === "AGENT"
+        ? input.launchPreset?.autoExecuteTools ?? false
+        : nextTargetType === "TEAM"
+          ? input.teamLaunchPreset?.autoExecuteTools ?? false
+          : null,
     skillAccessMode:
       nextTargetType === "AGENT"
         ? normalizeNullableString(input.launchPreset?.skillAccessMode ?? null) ?? null
@@ -383,7 +490,9 @@ const buildUpsertPayload = (
     llmConfigJson:
       nextTargetType === "AGENT"
         ? serializeNullableJsonObject(input.launchPreset?.llmConfig ?? null)
-        : null,
+        : nextTargetType === "TEAM"
+          ? serializeNullableJsonObject(input.teamLaunchPreset?.llmConfig ?? null)
+          : null,
     agentRunId:
       nextTargetType === "AGENT"
         ? resetCachedAgentRun
@@ -393,7 +502,10 @@ const buildUpsertPayload = (
         : null,
     teamRunId:
       nextTargetType === "TEAM"
-        ? normalizeNullableString(input.teamRunId ?? null)
+        ? resetCachedTeamRun
+          ? null
+          : normalizeNullableString(input.teamRunId ?? null) ??
+            normalizeNullableString(existing?.teamRunId ?? null)
         : null,
     targetNodeName: normalizeNullableString(input.targetNodeName ?? null),
     allowTransportFallback: input.allowTransportFallback ?? false,
@@ -409,6 +521,7 @@ const toDomain = (value: {
   threadId: string;
   targetType: string;
   agentDefinitionId: string | null;
+  teamDefinitionId: string | null;
   workspaceRootPath: string | null;
   llmModelIdentifier: string | null;
   runtimeKind: string | null;
@@ -430,8 +543,10 @@ const toDomain = (value: {
   threadId: fromThreadStorage(value.threadId),
   targetType: parseTargetType(value.targetType),
   agentDefinitionId: normalizeNullableString(value.agentDefinitionId),
-  launchPreset: toDomainLaunchPreset(value),
+  launchPreset: value.targetType === "AGENT" ? toDomainLaunchPreset(value) : null,
   agentRunId: value.agentRunId,
+  teamDefinitionId: normalizeNullableString(value.teamDefinitionId),
+  teamLaunchPreset: value.targetType === "TEAM" ? toDomainTeamLaunchPreset(value) : null,
   teamRunId: value.teamRunId,
   targetNodeName: value.targetNodeName,
   allowTransportFallback: value.allowTransportFallback,

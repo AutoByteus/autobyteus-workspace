@@ -14,6 +14,10 @@ import { AgentTeamRunManager } from "../../../agent-team-execution/services/agen
 import { TeamRunMutationService } from "../services/team-run-mutation-service.js";
 import { AgentTeamRunConverter } from "../converters/agent-team-run-converter.js";
 import { AgentUserInput } from "./agent-user-input.js";
+import {
+  ActiveRuntimeSnapshotService,
+  getActiveRuntimeSnapshotService,
+} from "../services/active-runtime-snapshot-service.js";
 
 registerEnumType(TaskNotificationMode, {
   name: "TaskNotificationModeEnum",
@@ -151,6 +155,8 @@ export class SendMessageToTeamResult {
 @Resolver()
 export class AgentTeamRunResolver {
   private readonly mutationService = new TeamRunMutationService();
+  private readonly activeRuntimeSnapshotService: ActiveRuntimeSnapshotService =
+    getActiveRuntimeSnapshotService();
 
   private get agentTeamRunManager(): AgentTeamRunManager {
     return AgentTeamRunManager.getInstance();
@@ -171,17 +177,9 @@ export class AgentTeamRunResolver {
   }
 
   @Query(() => [AgentTeamRun])
-  agentTeamRuns(): AgentTeamRun[] {
+  async agentTeamRuns(): Promise<AgentTeamRun[]> {
     try {
-      const runIds = this.agentTeamRunManager.listActiveRuns();
-      const results: AgentTeamRun[] = [];
-      for (const runId of runIds) {
-        const domainTeam = this.agentTeamRunManager.getTeamRun(runId);
-        if (domainTeam) {
-          results.push(AgentTeamRunConverter.toGraphql(domainTeam as any));
-        }
-      }
-      return results;
+      return (await this.activeRuntimeSnapshotService.listActiveTeamRuns()) as AgentTeamRun[];
     } catch (error) {
       logger.error(`Error fetching all agent team runs: ${String(error)}`);
       throw new Error("Unable to fetch agent team runs at this time.");

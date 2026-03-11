@@ -12,6 +12,7 @@ export const UPSERT_EXTERNAL_CHANNEL_BINDING = gql`
       threadId
       targetType
       targetAgentDefinitionId
+      targetTeamDefinitionId
       launchPreset {
         workspaceRootPath
         llmModelIdentifier
@@ -20,6 +21,14 @@ export const UPSERT_EXTERNAL_CHANNEL_BINDING = gql`
         skillAccessMode
         llmConfig
       }
+      teamLaunchPreset {
+        workspaceRootPath
+        llmModelIdentifier
+        runtimeKind
+        autoExecuteTools
+        llmConfig
+      }
+      teamRunId
       updatedAt
     }
   }

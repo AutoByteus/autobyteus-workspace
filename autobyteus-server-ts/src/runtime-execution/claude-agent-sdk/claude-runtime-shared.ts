@@ -49,6 +49,7 @@ export interface ClaudeInterAgentRelayRequest {
   senderRunId: string;
   senderMemberName?: string | null;
   senderTeamRunId?: string | null;
+  senderTurnId?: string | null;
   toolArguments: Record<string, unknown>;
 }
 

@@ -10,6 +10,7 @@ import type { AIMessage } from '~/types/conversation';
 import type { AIResponseSegment, ToolCallSegment, WriteFileSegment, TerminalCommandSegment, EditFileSegment, ThinkSegment, AIResponseTextSegment, ToolInvocationLifecycle } from '~/types/segments';
 import type { SegmentStartPayload, SegmentContentPayload, SegmentEndPayload } from '../protocol/messageTypes';
 import { createSegmentFromPayload } from '../protocol/segmentTypes';
+import { hasStreamSegmentId, matchesStreamSegmentIdentity, setStreamSegmentIdentity } from './segmentIdentity';
 
 import { useAgentArtifactsStore } from '~/stores/agentArtifactsStore';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
@@ -80,7 +81,7 @@ export function handleSegmentStart(
     console.warn('[SegmentHandler] Dropping SEGMENT_START with invalid id', payload);
     return;
   }
-  const existingSegment = findSegmentById(context, payload.id);
+  const existingSegment = findSegmentById(context, payload.id, payload.segment_type);
   if (existingSegment) {
     mergeSegmentStartMetadata(existingSegment, payload);
     if (
@@ -101,7 +102,7 @@ export function handleSegmentStart(
   const segment = createSegmentFromPayload(payload);
 
   // Store segment ID(s) for lookup during CONTENT and END events
-  (segment as any)._segmentId = payload.id;
+  setStreamSegmentIdentity(segment, payload.id, payload.segment_type);
   if (
     segment.type === 'terminal_command' &&
     typeof payload.metadata?.command === 'string' &&
@@ -276,7 +277,7 @@ export function handleSegmentContent(
   if (!delta) {
     return;
   }
-  let segment = findSegmentById(context, payload.id);
+  let segment = findSegmentById(context, payload.id, payload.segment_type);
   if (!segment) {
     segment = createFallbackSegment(payload.id, payload.segment_type ?? 'text', context);
   }
@@ -400,13 +401,15 @@ export function findOrCreateAIMessage(context: AgentContext): AIMessage {
  */
 export function findSegmentById(
   context: AgentContext,
-  segmentId: string
+  segmentId: string,
+  segmentType?: SegmentStartPayload['segment_type'] | SegmentContentPayload['segment_type'],
 ): AIResponseSegment | null {
   for (let i = context.conversation.messages.length - 1; i >= 0; i--) {
     const message = context.conversation.messages[i];
     if (message.type === 'ai') {
-      for (const segment of message.segments) {
-        if ((segment as any)._segmentId === segmentId) {
+      for (let j = message.segments.length - 1; j >= 0; j--) {
+        const segment = message.segments[j];
+        if (matchesStreamSegmentIdentity(segment, segmentId, segmentType)) {
           return segment;
         }
         // Also check invocationId for tool_call segments
@@ -465,7 +468,7 @@ function createFallbackSegment(
     id: segmentId,
     segment_type: segmentType,
   });
-  (segment as any)._segmentId = segmentId;
+  setStreamSegmentIdentity(segment, segmentId, segmentType);
   aiMessage.segments.push(segment);
   return segment;
 }
@@ -476,7 +479,7 @@ function removeSegmentById(context: AgentContext, segmentId: string): void {
     if (message.type !== 'ai') {
       continue;
     }
-    const segmentIndex = message.segments.findIndex((segment) => (segment as any)._segmentId === segmentId);
+    const segmentIndex = message.segments.findIndex((segment) => hasStreamSegmentId(segment, segmentId));
     if (segmentIndex >= 0) {
       message.segments.splice(segmentIndex, 1);
       return;

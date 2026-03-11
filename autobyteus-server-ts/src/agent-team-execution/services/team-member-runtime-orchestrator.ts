@@ -32,6 +32,7 @@ import {
 } from "./team-runtime-binding-registry.js";
 import type {
   RelayInterAgentMessageInput,
+  TeamMemberAcceptedTurn,
   TeamRuntimeMemberConfig,
 } from "./team-member-runtime-orchestrator.types.js";
 import {
@@ -40,6 +41,12 @@ import {
 } from "./team-member-runtime-errors.js";
 import { TeamMemberRuntimeRelayService } from "./team-member-runtime-relay-service.js";
 import { TeamMemberRuntimeSessionLifecycleService } from "./team-member-runtime-session-lifecycle-service.js";
+import { getProviderProxySet } from "../../external-channel/providers/provider-proxy-set.js";
+import { ChannelMessageReceiptService } from "../../external-channel/services/channel-message-receipt-service.js";
+import {
+  getRuntimeExternalChannelTurnBridge,
+  type RuntimeExternalChannelTurnBridge,
+} from "../../external-channel/runtime/runtime-external-channel-turn-bridge.js";
 export { TeamRuntimeRoutingError } from "./team-member-runtime-errors.js";
 
 const logger = {
@@ -61,6 +68,14 @@ export class TeamMemberRuntimeOrchestrator {
     workspaceManager?: WorkspaceManager;
     agentDefinitionService?: AgentDefinitionService;
     agentTeamDefinitionService?: AgentTeamDefinitionService;
+    channelMessageReceiptService?: Pick<
+      ChannelMessageReceiptService,
+      "getSourceByAgentRunTurn"
+    >;
+    externalTurnBridge?: Pick<
+      RuntimeExternalChannelTurnBridge,
+      "bindAcceptedTurnToSource"
+    >;
   } = {}) {
     this.runtimeCommandIngressService =
       options.runtimeCommandIngressService ?? getRuntimeCommandIngressService();
@@ -77,6 +92,12 @@ export class TeamMemberRuntimeOrchestrator {
       options.agentDefinitionService ?? AgentDefinitionService.getInstance();
     const agentTeamDefinitionService =
       options.agentTeamDefinitionService ?? AgentTeamDefinitionService.getInstance();
+    const providerSet = getProviderProxySet();
+    const channelMessageReceiptService =
+      options.channelMessageReceiptService ??
+      new ChannelMessageReceiptService(providerSet.messageReceiptProvider);
+    const externalTurnBridge =
+      options.externalTurnBridge ?? getRuntimeExternalChannelTurnBridge();
     this.sessionLifecycleService = new TeamMemberRuntimeSessionLifecycleService(
       runtimeCompositionService,
       runtimeAdapterRegistry,
@@ -88,6 +109,12 @@ export class TeamMemberRuntimeOrchestrator {
     this.relayService = new TeamMemberRuntimeRelayService(
       this.teamRuntimeBindingRegistry,
       teamRuntimeInterAgentMessageRelay,
+      {
+        getSourceByAgentRunTurn: (agentRunId: string, turnId: string) =>
+          channelMessageReceiptService.getSourceByAgentRunTurn(agentRunId, turnId),
+        bindAcceptedTurnToSource: (input) =>
+          externalTurnBridge.bindAcceptedTurnToSource(input),
+      },
     );
   }
 
@@ -146,6 +173,10 @@ export class TeamMemberRuntimeOrchestrator {
     return this.sessionLifecycleService.getTeamBindings(teamRunId);
   }
 
+  listActiveTeamRunIds(): string[] {
+    return this.sessionLifecycleService.listActiveTeamRunIds();
+  }
+
   async createMemberRuntimeSessions(
     teamRunId: string,
     teamDefinitionId: string,
@@ -167,7 +198,7 @@ export class TeamMemberRuntimeOrchestrator {
     targetMemberName: string | null | undefined,
     message: AgentInputUserMessage,
     options: { fallbackTargetMemberName?: string | null } = {},
-  ): Promise<void> {
+  ): Promise<TeamMemberAcceptedTurn> {
     const resolvedTarget =
       normalizeOptionalString(targetMemberName) ??
       normalizeOptionalString(options.fallbackTargetMemberName);
@@ -201,6 +232,14 @@ export class TeamMemberRuntimeOrchestrator {
       normalizeRuntimeKind(commandResult.runtimeKind ?? resolveResult.binding.runtimeKind),
       (commandResult.runtimeReference as TeamMemberRuntimeReference | null | undefined) ?? null,
     );
+    return {
+      memberName: resolveResult.binding.memberName,
+      memberRunId: resolveResult.binding.memberRunId,
+      runtimeKind: normalizeRuntimeKind(
+        commandResult.runtimeKind ?? resolveResult.binding.runtimeKind,
+      ),
+      turnId: commandResult.turnId ?? null,
+    };
   }
 
   async approveForMember(

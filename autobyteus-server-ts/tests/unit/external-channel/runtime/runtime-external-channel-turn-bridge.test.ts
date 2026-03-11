@@ -32,7 +32,7 @@ const flush = async () => {
 };
 
 describe("RuntimeExternalChannelTurnBridge", () => {
-  it("binds accepted Codex turns and publishes the provider callback on turn completion", async () => {
+  it("binds accepted Codex turns for TEAM-owned coordinator replies and publishes the provider callback on turn completion", async () => {
     const bindTurnToReceipt = vi.fn().mockResolvedValue(undefined);
     const publishAssistantReplyByTurn = vi.fn().mockResolvedValue({
       published: true,
@@ -72,6 +72,7 @@ describe("RuntimeExternalChannelTurnBridge", () => {
 
     await bridge.bindAcceptedExternalTurn({
       runId: "run-1",
+      teamRunId: "team-1",
       runtimeKind: "codex_app_server",
       turnId: "turn-1",
       envelope: createEnvelope(),
@@ -80,6 +81,7 @@ describe("RuntimeExternalChannelTurnBridge", () => {
     expect(bindTurnToReceipt).toHaveBeenCalledWith(
       expect.objectContaining({
         agentRunId: "run-1",
+        teamRunId: "team-1",
         turnId: "turn-1",
         externalMessageId: "update:1",
       }),
@@ -102,11 +104,85 @@ describe("RuntimeExternalChannelTurnBridge", () => {
 
     expect(publishAssistantReplyByTurn).toHaveBeenCalledWith({
       agentRunId: "run-1",
+      teamRunId: "team-1",
       turnId: "turn-1",
       replyText: "Hello back",
       callbackIdempotencyKey: "external-reply:run-1:turn-1",
     });
     expect(unsubscribe).toHaveBeenCalledOnce();
+  });
+
+  it("publishes provider callbacks for later source-linked turns without a fresh inbound envelope", async () => {
+    const bindTurnToReceipt = vi.fn().mockResolvedValue(undefined);
+    const publishAssistantReplyByTurn = vi.fn().mockResolvedValue({
+      published: true,
+      duplicate: false,
+      reason: null,
+      envelope: null,
+    });
+    let listener: ((event: unknown) => void) | null = null;
+    const bridge = new RuntimeExternalChannelTurnBridge({
+      messageReceiptService: { bindTurnToReceipt },
+      replyCallbackService: { publishAssistantReplyByTurn },
+      adapterRegistry: {
+        resolveAdapter: vi.fn().mockReturnValue({
+          subscribeToRunEvents: vi.fn((_runId: string, onEvent: (event: unknown) => void) => {
+            listener = onEvent;
+            return vi.fn();
+          }),
+        }),
+      },
+      runProjectionService: {
+        getProjection: vi.fn(),
+      },
+    });
+
+    await bridge.bindAcceptedTurnToSource({
+      runId: "run-follow-up",
+      teamRunId: "team-1",
+      runtimeKind: "codex_app_server",
+      turnId: "turn-follow-up",
+      source: {
+        provider: ExternalChannelProvider.TELEGRAM,
+        transport: ExternalChannelTransport.BUSINESS_API,
+        accountId: "autobyteus",
+        peerId: "8438880216",
+        threadId: null,
+        externalMessageId: "update:1",
+        receivedAt: new Date("2026-03-11T11:30:00.000Z"),
+      },
+    });
+
+    listener?.({
+      method: "item/output_text/completed",
+      params: {
+        turnId: "turn-follow-up",
+        text: "Follow-up reply to Telegram",
+      },
+    });
+    listener?.({
+      method: "turn.completed",
+      params: {
+        turnId: "turn-follow-up",
+      },
+    });
+    await flush();
+
+    expect(bindTurnToReceipt).toHaveBeenCalledWith(
+      expect.objectContaining({
+        agentRunId: "run-follow-up",
+        teamRunId: "team-1",
+        turnId: "turn-follow-up",
+        externalMessageId: "update:1",
+      }),
+    );
+    expect(publishAssistantReplyByTurn).toHaveBeenCalledWith({
+      agentRunId: "run-follow-up",
+      teamRunId: "team-1",
+      turnId: "turn-follow-up",
+      replyText: "Follow-up reply to Telegram",
+      callbackIdempotencyKey: "external-reply:run-follow-up:turn-follow-up",
+    });
   });
 
   it("falls back to the latest assistant projection when runtime text events do not include final text", async () => {
@@ -163,6 +239,7 @@ describe("RuntimeExternalChannelTurnBridge", () => {
 
     expect(publishAssistantReplyByTurn).toHaveBeenCalledWith({
       agentRunId: "run-2",
+      teamRunId: null,
       turnId: "turn-2",
       replyText: "Projection reply",
       callbackIdempotencyKey: "external-reply:run-2:turn-2",
@@ -228,6 +305,7 @@ describe("RuntimeExternalChannelTurnBridge", () => {
     expect(replyCallbackServiceFactory).toHaveBeenCalledOnce();
     expect(publishAssistantReplyByTurn).toHaveBeenCalledWith({
       agentRunId: "run-3",
+      teamRunId: null,
       turnId: "turn-3",
       replyText: "Hello after startup",
       callbackIdempotencyKey: "external-reply:run-3:turn-3",

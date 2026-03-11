@@ -13,10 +13,15 @@ export type FileInfo = {
 export class MemoryFileStore {
   private baseDir: string;
   private readonly runRootSubdir: string;
+  private readonly warnOnMissingFiles: boolean;
 
-  constructor(baseDir: string, options: { runRootSubdir?: string } = {}) {
+  constructor(
+    baseDir: string,
+    options: { runRootSubdir?: string; warnOnMissingFiles?: boolean } = {},
+  ) {
     this.baseDir = baseDir;
     this.runRootSubdir = options.runRootSubdir ?? "agents";
+    this.warnOnMissingFiles = options.warnOnMissingFiles ?? true;
   }
 
   private getRunRootDir(): string {
@@ -52,7 +57,9 @@ export class MemoryFileStore {
 
   readJson(filePath: string): Record<string, unknown> | null {
     if (!fs.existsSync(filePath)) {
-      logger.warn(`Memory file missing: ${filePath}`);
+      if (this.warnOnMissingFiles) {
+        logger.warn(`Memory file missing: ${filePath}`);
+      }
       return null;
     }
     try {
@@ -70,7 +77,9 @@ export class MemoryFileStore {
 
   readJsonl(filePath: string, limit?: number): Array<Record<string, unknown>> {
     if (!fs.existsSync(filePath)) {
-      logger.warn(`Memory file missing: ${filePath}`);
+      if (this.warnOnMissingFiles) {
+        logger.warn(`Memory file missing: ${filePath}`);
+      }
       return [];
     }
     const raw = fs.readFileSync(filePath, "utf-8");

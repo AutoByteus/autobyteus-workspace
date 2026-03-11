@@ -199,10 +199,14 @@ export class ClaudeAgentSdkRuntimeAdapter implements RuntimeAdapter {
     input: RuntimeRelayInterAgentMessageInput,
   ): Promise<RuntimeCommandResult> {
     try {
-      await this.runtimeService.injectInterAgentEnvelope(input.runId, input.envelope);
+      const result = await this.runtimeService.injectInterAgentEnvelope(
+        input.runId,
+        input.envelope,
+      );
       const runtimeReference = this.runtimeService.getRunRuntimeReference(input.runId);
       return {
         accepted: true,
+        turnId: result.turnId ?? null,
         runtimeReference: runtimeReference
           ? {
               runtimeKind: this.runtimeKind,

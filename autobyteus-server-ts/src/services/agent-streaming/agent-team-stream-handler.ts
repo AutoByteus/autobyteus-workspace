@@ -25,6 +25,10 @@ import {
   getTeamRuntimeEventBridge,
   type TeamRuntimeEventBridge,
 } from "./team-runtime-event-bridge.js";
+import {
+  TeamStreamBroadcaster,
+  getTeamStreamBroadcaster,
+} from "./team-stream-broadcaster.js";
 import { AgentSession } from "./agent-session.js";
 import { AgentSessionManager } from "./agent-session-manager.js";
 import { getAgentStreamHandler } from "./agent-stream-handler.js";
@@ -70,6 +74,7 @@ export class AgentTeamStreamHandler {
   private eventStreams = new Map<string, AgentTeamEventStream>();
   private memberRuntimeBridgeUnsubscribers = new Map<string, () => Promise<void>>();
   private sessionMode = new Map<string, "native_team" | "member_runtime">();
+  private broadcaster: TeamStreamBroadcaster;
 
   constructor(
     sessionManager: AgentSessionManager = new AgentSessionManager(AgentTeamSession),
@@ -77,16 +82,19 @@ export class AgentTeamStreamHandler {
     commandIngressService: RuntimeCommandIngressService = getRuntimeCommandIngressService(),
     teamMemberRuntimeOrchestrator: TeamMemberRuntimeOrchestrator = getTeamMemberRuntimeOrchestrator(),
     teamMemberRuntimeEventBridge: TeamRuntimeEventBridge = getTeamRuntimeEventBridge(),
+    broadcaster: TeamStreamBroadcaster = getTeamStreamBroadcaster(),
   ) {
     this.sessionManager = sessionManager;
     this.teamManager = teamManager;
     this.commandIngressService = commandIngressService;
     this.teamMemberRuntimeOrchestrator = teamMemberRuntimeOrchestrator;
     this.teamMemberRuntimeEventBridge = teamMemberRuntimeEventBridge;
+    this.broadcaster = broadcaster;
   }
 
   async connect(connection: WebSocketConnection, teamRunId: string): Promise<string | null> {
-    const runtimeMode = this.teamMemberRuntimeOrchestrator.getTeamRuntimeMode(teamRunId);
+    const runtimeMode =
+      this.teamMemberRuntimeOrchestrator.getTeamRuntimeMode(teamRunId) ?? "native_team";
     const team = this.teamManager.getTeamRun(teamRunId) as TeamLike | null;
     if (!team && runtimeMode !== "member_runtime") {
       const errorMsg = createErrorMessage("TEAM_NOT_FOUND", `Team run '${teamRunId}' not found`);
@@ -142,7 +150,9 @@ export class AgentTeamStreamHandler {
       team_id: teamRunId,
       session_id: sessionId,
     });
+    this.broadcaster.registerConnection(sessionId, teamRunId, connection);
     connection.send(connectedMsg.toJson());
+    this.sendInitialStatusSnapshot(connection, teamRunId, runtimeMode, team);
 
     logger.info(`Agent Team WebSocket connected: session=${sessionId}, run=${teamRunId}`);
     return sessionId;
@@ -179,6 +189,7 @@ export class AgentTeamStreamHandler {
   }
 
   async disconnect(sessionId: string): Promise<void> {
+    this.broadcaster.unregisterConnection(sessionId);
     const task = this.activeTasks.get(sessionId);
     this.activeTasks.delete(sessionId);
     this.sessionMode.delete(sessionId);
@@ -234,6 +245,35 @@ export class AgentTeamStreamHandler {
         this.eventStreams.delete(sessionId);
       }
     }
+  }
+
+  private sendInitialStatusSnapshot(
+    connection: WebSocketConnection,
+    teamRunId: string,
+    runtimeMode: "native_team" | "member_runtime",
+    team: TeamLike | null,
+  ): void {
+    if (runtimeMode === "member_runtime") {
+      const initialMessages =
+        this.teamMemberRuntimeEventBridge.getInitialSnapshotMessages?.(teamRunId) ?? [];
+      for (const message of initialMessages) {
+        connection.send(message.toJson());
+      }
+      return;
+    }
+
+    const currentStatus =
+      typeof team?.currentStatus === "string" ? team.currentStatus : null;
+    if (!currentStatus) {
+      return;
+    }
+
+    connection.send(
+      new ServerMessage(ServerMessageType.TEAM_STATUS, {
+        new_status: currentStatus,
+        old_status: null,
+      }).toJson(),
+    );
   }
 
   private async handleSendMessage(

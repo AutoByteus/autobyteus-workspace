@@ -2,7 +2,9 @@ import {
   getRuntimeCommandIngressService,
   type RuntimeCommandIngressService,
 } from "../../runtime-execution/runtime-command-ingress-service.js";
-import type { RuntimeCommandResult } from "../../runtime-execution/runtime-adapter-port.js";
+import type {
+  RuntimeIngressResult,
+} from "../../runtime-execution/runtime-command-ingress-service.js";
 
 export interface TeamRuntimeInterAgentRelayInput {
   teamRunId: string;
@@ -26,8 +28,8 @@ export class TeamRuntimeInterAgentMessageRelay {
 
   async deliverInterAgentMessage(
     input: TeamRuntimeInterAgentRelayInput,
-  ): Promise<RuntimeCommandResult> {
-    const result = await this.runtimeCommandIngressService.relayInterAgentMessage({
+  ): Promise<RuntimeIngressResult> {
+    return this.runtimeCommandIngressService.relayInterAgentMessage({
       runId: input.recipientMemberRunId,
       envelope: {
         senderAgentRunId: input.senderAgentRunId,
@@ -39,11 +41,6 @@ export class TeamRuntimeInterAgentMessageRelay {
         metadata: input.metadata ?? null,
       },
     });
-    return {
-      accepted: result.accepted,
-      code: result.code,
-      message: result.message,
-    };
   }
 }
 

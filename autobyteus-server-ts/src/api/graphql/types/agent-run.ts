@@ -19,6 +19,10 @@ import { UserInputConverter } from "../converters/user-input-converter.js";
 import { AgentRunConverter } from "../converters/agent-run-converter.js";
 import { AgentUserInput } from "./agent-user-input.js";
 import { WorkspaceInfo } from "./workspace.js";
+import {
+  ActiveRuntimeSnapshotService,
+  getActiveRuntimeSnapshotService,
+} from "../services/active-runtime-snapshot-service.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -134,6 +138,8 @@ export class AgentRunResolver {
   private agentRunTerminationService = getAgentRunTerminationService();
   private runtimeCompositionService = getRuntimeCompositionService();
   private runtimeCommandIngressService = getRuntimeCommandIngressService();
+  private activeRuntimeSnapshotService: ActiveRuntimeSnapshotService =
+    getActiveRuntimeSnapshotService();
 
   private get agentRunManager(): AgentRunManager {
     return AgentRunManager.getInstance();
@@ -156,17 +162,7 @@ export class AgentRunResolver {
   @Query(() => [AgentRun])
   async agentRuns(): Promise<AgentRun[]> {
     try {
-      const runIds = this.agentRunManager.listActiveRuns();
-      const results = await Promise.all(
-        runIds.map(async (runId) => {
-          const domainAgent = this.agentRunManager.getAgentRun(runId);
-          if (!domainAgent) {
-            return null;
-          }
-          return AgentRunConverter.toGraphql(domainAgent as any);
-        }),
-      );
-      return results.filter((item): item is AgentRun => item !== null);
+      return (await this.activeRuntimeSnapshotService.listActiveAgentRuns()) as AgentRun[];
     } catch (error) {
       logger.error(`Error fetching all agent runs: ${String(error)}`);
       throw new Error("Unable to fetch agent runs at this time.");

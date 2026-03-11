@@ -59,9 +59,12 @@ Outside AutoByteus, create a Telegram bot with BotFather and copy the bot token.
    - Saving valid config makes Telegram active automatically.
 8. Send a message to the bot from a real Telegram user/account.
 9. Move to `Channel Binding`.
-10. Click `Refresh Peers`, choose the discovered Telegram peer, then click `Refresh Targets`.
-11. Select the target runtime and save the binding.
-12. Open `Verify` and run setup verification.
+10. Click `Refresh Peers` and choose the discovered Telegram peer.
+11. In `Channel Binding`, choose `Agent Definition` or `Agent Team`.
+12. If you select `Agent Definition`, complete the launch preset and save the binding.
+13. If you select `Agent Team`, choose a team definition, complete the team launch preset, and save the binding.
+14. Team bindings send replies back through the coordinator or entry node only, not every member.
+15. Open `Verify` and run setup verification.
 
 ### What `Telegram account label` Means
 
@@ -89,8 +92,8 @@ The low-level standalone gateway still supports webhook mode for operator-manage
 ## Telegram Limitations And Notes
 
 - Telegram peer discovery becomes useful only after at least one real inbound message reaches the bot.
-- Telegram bindings currently support `AGENT` targets only.
-- If `Refresh Targets` shows nothing, start an agent runtime first and try again.
+- TEAM bindings target a team definition plus saved launch preset. The first inbound message creates the team run automatically, and later messages reuse the cached run only while that bot-owned run is still live in the current server session. After a restart or inactive cached run, the next inbound message starts a fresh team run for the binding.
+- TEAM replies are emitted through the coordinator or entry node only.
 - If `Refresh Peers` shows nothing, send another message to the bot and refresh again.
 
 ## Delivery Reliability And Heartbeat
@@ -120,9 +123,9 @@ Use this acceptance checklist:
 1. Gateway runtime is `Running`.
 2. Telegram provider configuration saves without an error.
 3. `Refresh Peers` returns at least one Telegram peer after a real inbound message.
-4. A binding can be created for that peer by selecting an agent definition plus launch preset in the app.
+4. A binding can be created for that peer by selecting either an agent definition plus launch preset or a team definition plus team launch preset.
 5. `Run Verification` reports the setup as ready or shows actionable blockers only.
-6. A follow-up Telegram message from the bound peer auto-starts or reuses the expected agent runtime.
+6. A follow-up Telegram message from the bound peer auto-starts or reuses the expected agent runtime while it stays live, or reuses the cached team run created from the selected team definition while that bot-owned run is still live in the current server session.
 
 If you need engineering-level Telegram runtime details, see the gateway README:
 

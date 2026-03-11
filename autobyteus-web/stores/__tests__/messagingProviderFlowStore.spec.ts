@@ -27,6 +27,7 @@ describe('messagingProviderFlowStore', () => {
         threadId: null,
         targetType: 'AGENT',
         targetAgentDefinitionId: 'agent-definition-1',
+        targetTeamDefinitionId: null,
         launchPreset: {
           workspaceRootPath: '/tmp/workspace',
           llmModelIdentifier: 'gpt-test',
@@ -35,6 +36,8 @@ describe('messagingProviderFlowStore', () => {
           skillAccessMode: 'PRELOADED_ONLY',
           llmConfig: null,
         },
+        teamLaunchPreset: null,
+        teamRunId: null,
         updatedAt: '2026-02-09T12:00:00.000Z',
       },
     ];
@@ -106,6 +109,7 @@ describe('messagingProviderFlowStore', () => {
         threadId: null,
         targetType: 'AGENT',
         targetAgentDefinitionId: 'agent-definition-1',
+        targetTeamDefinitionId: null,
         launchPreset: {
           workspaceRootPath: '/tmp/workspace',
           llmModelIdentifier: 'gpt-test',
@@ -114,6 +118,8 @@ describe('messagingProviderFlowStore', () => {
           skillAccessMode: 'PRELOADED_ONLY',
           llmConfig: null,
         },
+        teamLaunchPreset: null,
+        teamRunId: null,
         updatedAt: '2026-02-09T12:00:00.000Z',
       },
     ];
@@ -154,6 +160,7 @@ describe('messagingProviderFlowStore', () => {
         threadId: null,
         targetType: 'AGENT',
         targetAgentDefinitionId: 'agent-definition-1',
+        targetTeamDefinitionId: null,
         launchPreset: {
           workspaceRootPath: '/tmp/workspace',
           llmModelIdentifier: 'gpt-test',
@@ -162,6 +169,8 @@ describe('messagingProviderFlowStore', () => {
           skillAccessMode: 'PRELOADED_ONLY',
           llmConfig: null,
         },
+        teamLaunchPreset: null,
+        teamRunId: null,
         updatedAt: '2026-02-09T12:00:00.000Z',
       },
     ];

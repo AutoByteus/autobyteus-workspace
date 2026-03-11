@@ -33,7 +33,7 @@ const { mockFindOrCreateAIMessage, mockFindSegmentById } = vi.hoisted(() => ({
         continue;
       }
       for (const segment of message.segments) {
-        if ((segment as any)._segmentId === id || (segment as any).invocationId === id) {
+        if ((segment as any)._streamSegmentIdentity?.id === id || (segment as any).invocationId === id) {
           return segment;
         }
       }

@@ -42,6 +42,7 @@ describe('useMessagingProviderStepFlow', () => {
         threadId: null,
         targetType: 'AGENT',
         targetAgentDefinitionId: 'agent-definition-1',
+        targetTeamDefinitionId: null,
         launchPreset: {
           workspaceRootPath: '/tmp/workspace',
           llmModelIdentifier: 'gpt-test',
@@ -50,6 +51,8 @@ describe('useMessagingProviderStepFlow', () => {
           skillAccessMode: 'PRELOADED_ONLY',
           llmConfig: null,
         },
+        teamLaunchPreset: null,
+        teamRunId: null,
         updatedAt: '2026-02-12T00:00:00.000Z',
       },
     ];

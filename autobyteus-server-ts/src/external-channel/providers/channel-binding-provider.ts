@@ -20,5 +20,6 @@ export interface ChannelBindingProvider {
   listBindings(): Promise<ChannelBinding[]>;
   upsertBinding(input: UpsertChannelBindingInput): Promise<ChannelBinding>;
   upsertBindingAgentRunId(bindingId: string, agentRunId: string): Promise<ChannelBinding>;
+  upsertBindingTeamRunId(bindingId: string, teamRunId: string): Promise<ChannelBinding>;
   deleteBinding(bindingId: string): Promise<boolean>;
 }

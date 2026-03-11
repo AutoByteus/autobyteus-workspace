@@ -335,6 +335,7 @@ export const tryHandleInterAgentRelayRequest = ({
       senderRunId: state.runId,
       senderTeamRunId: state.teamRunId,
       senderMemberName: state.memberName,
+      senderTurnId: state.activeTurnId,
       toolArguments,
     })
       .then((result) => {
@@ -460,6 +461,7 @@ export const tryHandleInterAgentRelayRequest = ({
     senderRunId: state.runId,
     senderTeamRunId: state.teamRunId,
     senderMemberName: state.memberName,
+    senderTurnId: state.activeTurnId,
     toolArguments,
   })
     .then((result) => {

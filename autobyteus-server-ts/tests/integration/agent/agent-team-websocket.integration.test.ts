@@ -11,6 +11,7 @@ import {
 } from "autobyteus-ts";
 import { AgentTeamStreamHandler } from "../../../src/services/agent-streaming/agent-team-stream-handler.js";
 import { AgentSessionManager } from "../../../src/services/agent-streaming/agent-session-manager.js";
+import { TeamStreamBroadcaster } from "../../../src/services/agent-streaming/team-stream-broadcaster.js";
 import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
 import { RuntimeCommandIngressService } from "../../../src/runtime-execution/runtime-command-ingress-service.js";
 import { RuntimeAdapterRegistry } from "../../../src/runtime-execution/runtime-adapter-registry.js";
@@ -264,6 +265,110 @@ describe("Agent team websocket integration", () => {
     expect(agentMessage.payload.id).toBe("seg-alpha-1");
     expect(agentMessage.payload.agent_name).toBe("alpha");
     expect(agentMessage.payload.agent_id).toBe("agent-42");
+
+    socket.close();
+    await app.close();
+  });
+
+  it("forwards team-scoped live external user messages over the team websocket", async () => {
+    const team = new FakeTeam("team-live-1");
+    const stream = new FakeTeamStream();
+    const manager = new FakeTeamManager(team, stream);
+    const broadcaster = new TeamStreamBroadcaster();
+    const sessionStore = new RuntimeSessionStore();
+    sessionStore.upsertSession({
+      runId: team.teamRunId,
+      runtimeKind: "autobyteus",
+      mode: "team",
+      runtimeReference: {
+        runtimeKind: "autobyteus",
+        sessionId: team.teamRunId,
+        threadId: null,
+        metadata: null,
+      },
+    });
+    const ingress = new RuntimeCommandIngressService(
+      sessionStore,
+      new RuntimeAdapterRegistry([
+        new AutobyteusRuntimeAdapter(
+          { getAgentRun: () => null } as any,
+          manager as unknown as any,
+        ),
+      ]),
+    );
+    const handler = new AgentTeamStreamHandler(
+      new AgentSessionManager(),
+      manager as unknown as any,
+      ingress,
+      undefined,
+      undefined,
+      broadcaster,
+    );
+
+    const app = fastify();
+    await app.register(websocket);
+    await registerAgentWebsocket(
+      app,
+      {
+        connect: async () => null,
+        handleMessage: async () => {},
+        disconnect: async () => {},
+      } as unknown as Parameters<typeof registerAgentWebsocket>[1],
+      handler,
+    );
+
+    const address = await app.listen({ port: 0, host: "127.0.0.1" });
+    const url = new URL(address);
+    const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent-team/${team.teamRunId}`);
+    const connectedPromise = waitForMessage(socket);
+
+    await new Promise<void>((resolve, reject) => {
+      const timer = setTimeout(() => reject(new Error("Timed out waiting for websocket open")), 2000);
+      socket.once("open", () => {
+        clearTimeout(timer);
+        resolve();
+      });
+      socket.once("error", (error) => {
+        clearTimeout(timer);
+        reject(error);
+      });
+    });
+
+    await connectedPromise;
+
+    const externalMessagePromise = waitForMessage(socket);
+    broadcaster.publishToTeamRun(
+      team.teamRunId,
+      {
+        toJson: () =>
+          JSON.stringify({
+            type: "EXTERNAL_USER_MESSAGE",
+            payload: {
+              content: "hello from telegram",
+              agent_name: "Professor",
+              received_at: "2026-03-10T20:10:00.000Z",
+            },
+          }),
+      } as any,
+    );
+
+    const externalMessage = JSON.parse(await externalMessagePromise) as {
+      type: string;
+      payload: {
+        content?: string;
+        agent_name?: string;
+        received_at?: string;
+      };
+    };
+
+    expect(externalMessage).toMatchObject({
+      type: "EXTERNAL_USER_MESSAGE",
+      payload: {
+        content: "hello from telegram",
+        agent_name: "Professor",
+        received_at: "2026-03-10T20:10:00.000Z",
+      },
+    });
 
     socket.close();
     await app.close();

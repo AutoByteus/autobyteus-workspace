@@ -26,6 +26,8 @@ export class SqlChannelMessageReceiptProvider
   private readonly repository = new SqlChannelMessageReceiptRepository();
 
   async recordIngressReceipt(input: ChannelIngressReceiptInput): Promise<void> {
+    const normalizedAgentRunId = normalizeNullableString(input.agentRunId);
+    const normalizedTeamRunId = normalizeNullableString(input.teamRunId);
     await this.repository.upsert({
       where: {
         provider_transport_accountId_peerId_threadId_externalMessageId: {
@@ -45,13 +47,13 @@ export class SqlChannelMessageReceiptProvider
         threadId: toThreadStorage(input.threadId),
         externalMessageId: input.externalMessageId,
         turnId: normalizeNullableString(input.turnId ?? null) ?? undefined,
-        agentRunId: normalizeNullableString(input.agentRunId) ?? undefined,
-        teamRunId: normalizeNullableString(input.teamRunId) ?? undefined,
+        agentRunId: normalizedAgentRunId ?? undefined,
+        teamRunId: normalizedTeamRunId ?? undefined,
         receivedAt: input.receivedAt,
       },
       update: {
-        agentRunId: normalizeNullableString(input.agentRunId),
-        teamRunId: normalizeNullableString(input.teamRunId),
+        agentRunId: normalizedAgentRunId ?? undefined,
+        teamRunId: normalizedTeamRunId ?? undefined,
         receivedAt: input.receivedAt,
       },
     });

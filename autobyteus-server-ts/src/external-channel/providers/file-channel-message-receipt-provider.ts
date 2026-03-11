@@ -37,21 +37,29 @@ type ChannelMessageReceiptRow = {
   updatedAt: string;
 };
 
-const toThreadStorage = (threadId: string | null): string => normalizeNullableString(threadId) ?? "";
-const fromThreadStorage = (threadId: string): string | null => normalizeNullableString(threadId);
+const toThreadStorage = (threadId: string | null): string =>
+  normalizeNullableString(threadId) ?? "";
+const fromThreadStorage = (threadId: string): string | null =>
+  normalizeNullableString(threadId);
 
-const sortByReceivedThenUpdatedDesc = (rows: ChannelMessageReceiptRow[]): ChannelMessageReceiptRow[] =>
+const sortByReceivedThenUpdatedDesc = (
+  rows: ChannelMessageReceiptRow[],
+): ChannelMessageReceiptRow[] =>
   [...rows].sort((a, b) => {
-    const receivedDiff = parseDate(b.receivedAt).getTime() - parseDate(a.receivedAt).getTime();
+    const receivedDiff =
+      parseDate(b.receivedAt).getTime() - parseDate(a.receivedAt).getTime();
     if (receivedDiff !== 0) {
       return receivedDiff;
     }
     return parseDate(b.updatedAt).getTime() - parseDate(a.updatedAt).getTime();
   });
 
-const sortByUpdatedThenReceivedDesc = (rows: ChannelMessageReceiptRow[]): ChannelMessageReceiptRow[] =>
+const sortByUpdatedThenReceivedDesc = (
+  rows: ChannelMessageReceiptRow[],
+): ChannelMessageReceiptRow[] =>
   [...rows].sort((a, b) => {
-    const updatedDiff = parseDate(b.updatedAt).getTime() - parseDate(a.updatedAt).getTime();
+    const updatedDiff =
+      parseDate(b.updatedAt).getTime() - parseDate(a.updatedAt).getTime();
     if (updatedDiff !== 0) {
       return updatedDiff;
     }
@@ -69,7 +77,9 @@ const toSourceContext = (row: ChannelMessageReceiptRow): ChannelSourceContext =>
   turnId: normalizeNullableString(row.turnId),
 });
 
-export class FileChannelMessageReceiptProvider implements ChannelMessageReceiptProvider {
+export class FileChannelMessageReceiptProvider
+  implements ChannelMessageReceiptProvider
+{
   constructor(
     private readonly filePath: string = resolvePersistencePath(
       "external-channel",
@@ -79,6 +89,8 @@ export class FileChannelMessageReceiptProvider implements ChannelMessageReceiptP
 
   async recordIngressReceipt(input: ChannelIngressReceiptInput): Promise<void> {
     const now = new Date().toISOString();
+    const normalizedAgentRunId = normalizeNullableString(input.agentRunId);
+    const normalizedTeamRunId = normalizeNullableString(input.teamRunId);
     await updateJsonArrayFile<ChannelMessageReceiptRow>(this.filePath, (rows) => {
       const index = rows.findIndex(
         (row) =>
@@ -99,8 +111,8 @@ export class FileChannelMessageReceiptProvider implements ChannelMessageReceiptP
           threadId: toThreadStorage(input.threadId),
           externalMessageId: input.externalMessageId,
           turnId: normalizeNullableString(input.turnId ?? null),
-          agentRunId: normalizeNullableString(input.agentRunId),
-          teamRunId: normalizeNullableString(input.teamRunId),
+          agentRunId: normalizedAgentRunId,
+          teamRunId: normalizedTeamRunId,
           receivedAt: input.receivedAt.toISOString(),
           createdAt: now,
           updatedAt: now,
@@ -112,8 +124,8 @@ export class FileChannelMessageReceiptProvider implements ChannelMessageReceiptP
       const next = [...rows];
       next[index] = {
         ...current,
-        agentRunId: normalizeNullableString(input.agentRunId),
-        teamRunId: normalizeNullableString(input.teamRunId),
+        agentRunId: normalizedAgentRunId ?? current.agentRunId,
+        teamRunId: normalizedTeamRunId ?? current.teamRunId,
         receivedAt: input.receivedAt.toISOString(),
         updatedAt: now,
       };
@@ -166,7 +178,9 @@ export class FileChannelMessageReceiptProvider implements ChannelMessageReceiptP
     });
   }
 
-  async getLatestSourceByAgentRunId(agentRunId: string): Promise<ChannelSourceContext | null> {
+  async getLatestSourceByAgentRunId(
+    agentRunId: string,
+  ): Promise<ChannelSourceContext | null> {
     const normalizedAgentRunId = normalizeRequiredString(agentRunId, "agentRunId");
     const rows = await readJsonArrayFile<ChannelMessageReceiptRow>(this.filePath);
     const found = sortByReceivedThenUpdatedDesc(rows).find(

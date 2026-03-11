@@ -102,7 +102,7 @@ describe('ChannelBindingSetupCard', () => {
     expect(wrapper.text()).toContain('discord-acct-1');
   });
 
-  it('shows Telegram AGENT-only hint without a target-type selector', async () => {
+  it('shows TEAM target selection for Telegram and the single-reply policy hint', async () => {
     const gatewayStore = useGatewaySessionSetupStore();
     gatewayStore.gatewayStatus = 'READY';
 
@@ -119,12 +119,28 @@ describe('ChannelBindingSetupCard', () => {
     });
     providerScopeStore.setSelectedProvider('TELEGRAM');
 
+    const bindingStore = useMessagingChannelBindingSetupStore();
+    bindingStore.capabilities.bindingCrudEnabled = true;
+    bindingStore.teamDefinitionOptions = [
+      {
+        teamDefinitionId: 'team-definition-1',
+        teamDefinitionName: 'Software Team',
+        description: 'Release coordination',
+        coordinatorMemberName: 'lead',
+        memberCount: 4,
+      },
+    ];
+
     const wrapper = mountWithPinia();
     await flushPromises();
 
-    expect(wrapper.find('[data-testid="telegram-target-policy-hint"]').exists()).toBe(true);
-    expect(wrapper.find('[data-testid="binding-agent-definition-select"]').exists()).toBe(true);
-    expect(wrapper.find('[data-testid="binding-target-type"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="binding-target-type"]').exists()).toBe(true);
+    await wrapper.get('[data-testid="binding-target-type"]').setValue('TEAM');
+    await flushPromises();
+
+    expect(wrapper.find('[data-testid="team-response-policy-hint"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="binding-agent-definition-select"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="binding-team-definition-select"]').exists()).toBe(true);
   });
 
   it('renders scoped bindings with agent definition and launch preset summary', async () => {
@@ -139,6 +155,7 @@ describe('ChannelBindingSetupCard', () => {
         threadId: null,
         targetType: 'AGENT',
         targetAgentDefinitionId: 'agent-definition-1',
+        targetTeamDefinitionId: null,
         launchPreset: {
           workspaceRootPath: '/tmp/workspace',
           llmModelIdentifier: 'gpt-test',
@@ -147,6 +164,8 @@ describe('ChannelBindingSetupCard', () => {
           skillAccessMode: 'PRELOADED_ONLY',
           llmConfig: null,
         },
+        teamLaunchPreset: null,
+        teamRunId: null,
         updatedAt: '2026-02-09T12:00:00.000Z',
       },
       {
@@ -158,6 +177,7 @@ describe('ChannelBindingSetupCard', () => {
         threadId: null,
         targetType: 'AGENT',
         targetAgentDefinitionId: 'agent-definition-2',
+        targetTeamDefinitionId: null,
         launchPreset: {
           workspaceRootPath: '/tmp/discord-workspace',
           llmModelIdentifier: 'gpt-other',
@@ -166,6 +186,8 @@ describe('ChannelBindingSetupCard', () => {
           skillAccessMode: 'PRELOADED_ONLY',
           llmConfig: null,
         },
+        teamLaunchPreset: null,
+        teamRunId: null,
         updatedAt: '2026-02-09T11:00:00.000Z',
       },
     ];

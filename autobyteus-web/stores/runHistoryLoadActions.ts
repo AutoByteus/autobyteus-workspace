@@ -22,7 +22,6 @@ import {
 import {
   openRunWithCoordinator,
 } from '~/services/runOpen/runOpenCoordinator';
-import { recoverActiveRunsFromHistory } from '~/services/runRecovery/activeRunRecoveryCoordinator';
 
 interface RunHistoryFetchStoreLike {
   loading: boolean;
@@ -84,18 +83,6 @@ export const fetchRunHistoryTree = async (
       store.agentAvatarByDefinitionId,
       { loadDefinitionsIfNeeded: true },
     );
-    await recoverActiveRunsFromHistory({
-      workspaceGroups: store.workspaceGroups,
-      teamRuns: store.teamRuns,
-      ensureWorkspaceByRootPath: (rootPath: string) => store.ensureWorkspaceByRootPath(rootPath),
-      findAgentNameByRunId: (runId: string) => store.findAgentNameByRunId(runId),
-      setRunResumeConfig: (resumeConfig) => {
-        store.resumeConfigByRunId[resumeConfig.runId] = resumeConfig;
-      },
-      setTeamResumeConfig: (resumeConfig) => {
-        store.teamResumeConfigByTeamRunId[resumeConfig.teamRunId] = resumeConfig;
-      },
-    });
   } catch (error: any) {
     if (!quiet) {
       store.error = error?.message || 'Failed to load run history.';

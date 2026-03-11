@@ -14,6 +14,14 @@ export type ChannelBindingLaunchPreset = {
   llmConfig: Record<string, unknown> | null;
 };
 
+export type ChannelBindingTeamLaunchPreset = {
+  workspaceRootPath: string;
+  llmModelIdentifier: string;
+  runtimeKind: RuntimeKind;
+  autoExecuteTools: boolean;
+  llmConfig: Record<string, unknown> | null;
+};
+
 export type ChannelBinding = {
   id: string;
   provider: ExternalChannelProvider;
@@ -25,6 +33,8 @@ export type ChannelBinding = {
   agentDefinitionId: string | null;
   launchPreset: ChannelBindingLaunchPreset | null;
   agentRunId: string | null;
+  teamDefinitionId: string | null;
+  teamLaunchPreset: ChannelBindingTeamLaunchPreset | null;
   teamRunId: string | null;
   targetNodeName: string | null;
   allowTransportFallback: boolean;
@@ -57,6 +67,8 @@ export type UpsertChannelBindingInput = {
   agentDefinitionId?: string | null;
   launchPreset?: ChannelBindingLaunchPreset | null;
   agentRunId?: string | null;
+  teamDefinitionId?: string | null;
+  teamLaunchPreset?: ChannelBindingTeamLaunchPreset | null;
   teamRunId?: string | null;
   targetNodeName?: string | null;
   allowTransportFallback?: boolean;

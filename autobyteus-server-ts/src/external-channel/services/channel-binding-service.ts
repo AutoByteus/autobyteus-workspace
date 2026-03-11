@@ -63,6 +63,10 @@ export class ChannelBindingService {
     return this.provider.upsertBindingAgentRunId(bindingId, agentRunId);
   }
 
+  async upsertBindingTeamRunId(bindingId: string, teamRunId: string): Promise<ChannelBinding> {
+    return this.provider.upsertBindingTeamRunId(bindingId, teamRunId);
+  }
+
   async deleteBinding(bindingId: string): Promise<boolean> {
     return this.provider.deleteBinding(bindingId);
   }

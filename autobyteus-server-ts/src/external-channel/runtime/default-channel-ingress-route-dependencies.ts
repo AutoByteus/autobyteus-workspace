@@ -1,4 +1,3 @@
-import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import type { ChannelIngressRouteDependencies } from "../../api/rest/channel-ingress.js";
 import { getRuntimeCommandIngressService } from "../../runtime-execution/runtime-command-ingress-service.js";
 import { getProviderProxySet } from "../providers/provider-proxy-set.js";
@@ -11,6 +10,7 @@ import { DeliveryEventService } from "../services/delivery-event-service.js";
 import { ChannelBindingRuntimeLauncher } from "./channel-binding-runtime-launcher.js";
 import { DefaultChannelRuntimeFacade } from "./default-channel-runtime-facade.js";
 import { getAgentLiveMessagePublisher } from "../../services/agent-streaming/agent-live-message-publisher.js";
+import { getTeamLiveMessagePublisher } from "../../services/agent-streaming/team-live-message-publisher.js";
 import { getRuntimeExternalChannelTurnBridge } from "./runtime-external-channel-turn-bridge.js";
 
 let cachedDependencies: ChannelIngressRouteDependencies | null = null;
@@ -37,17 +37,9 @@ export const getDefaultChannelIngressRouteDependencies =
     const runtimeFacade = new DefaultChannelRuntimeFacade({
       runtimeLauncher,
       runtimeCommandIngressService,
-      liveMessagePublisher: getAgentLiveMessagePublisher(),
+      agentLiveMessagePublisher: getAgentLiveMessagePublisher(),
+      teamLiveMessagePublisher: getTeamLiveMessagePublisher(),
       externalTurnBridge: getRuntimeExternalChannelTurnBridge(),
-      agentTeamRunManager: {
-        getTeamRun: (teamRunId: string) =>
-          AgentTeamRunManager.getInstance().getTeamRun(teamRunId) as {
-            postMessage: (
-              message: import("autobyteus-ts").AgentInputUserMessage,
-              targetNodeName?: string | null,
-            ) => Promise<void>;
-          } | null,
-      },
     });
     const ingressService = new ChannelIngressService({
       idempotencyService,

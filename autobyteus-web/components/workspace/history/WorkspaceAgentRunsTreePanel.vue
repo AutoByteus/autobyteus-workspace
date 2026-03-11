@@ -118,6 +118,7 @@ import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
+import { useActiveRuntimeSyncStore } from '~/stores/activeRuntimeSyncStore';
 import { useToasts } from '~/composables/useToasts';
 import { pickFolderPath } from '~/composables/useNativeFolderDialog';
 import { useRunHistoryAvatarState } from '~/composables/useRunHistoryAvatarState';
@@ -142,6 +143,7 @@ const teamRunStore = useAgentTeamRunStore();
 const agentDefinitionStore = useAgentDefinitionStore();
 const agentTeamDefinitionStore = useAgentTeamDefinitionStore();
 const windowNodeContextStore = useWindowNodeContextStore();
+const activeRuntimeSyncStore = useActiveRuntimeSyncStore();
 const { isEmbeddedWindow } = storeToRefs(windowNodeContextStore);
 const { addToast } = useToasts();
 
@@ -279,12 +281,16 @@ let refreshTimerId: ReturnType<typeof setInterval> | null = null;
 onMounted(async () => {
   await Promise.all([
     workspaceStore.fetchAllWorkspaces().catch(() => undefined),
-    runHistoryStore.fetchTree(),
     agentDefinitionStore.fetchAllAgentDefinitions().catch(() => undefined),
     agentTeamDefinitionStore.fetchAllAgentTeamDefinitions().catch(() => undefined),
   ]);
+  await runHistoryStore.fetchTree();
+  await activeRuntimeSyncStore.refreshQuietly();
   refreshTimerId = setInterval(() => {
-    void runHistoryStore.refreshTreeQuietly();
+    void Promise.all([
+      runHistoryStore.refreshTreeQuietly(),
+      activeRuntimeSyncStore.refreshQuietly(),
+    ]);
   }, HISTORY_REFRESH_INTERVAL_MS);
 });
 

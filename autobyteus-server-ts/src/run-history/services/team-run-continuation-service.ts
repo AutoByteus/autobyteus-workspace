@@ -5,6 +5,7 @@ import {
   TeamRuntimeRoutingError,
   getTeamMemberRuntimeOrchestrator,
 } from "../../agent-team-execution/services/team-member-runtime-orchestrator.js";
+import type { TeamMemberAcceptedTurn } from "../../agent-team-execution/services/team-member-runtime-orchestrator.types.js";
 import { UserInputConverter } from "../../api/graphql/converters/user-input-converter.js";
 import type { AgentUserInput } from "../../api/graphql/types/agent-user-input.js";
 import { getWorkspaceManager, type WorkspaceManager } from "../../workspaces/workspace-manager.js";
@@ -34,9 +35,17 @@ export interface ContinueTeamRunInput {
   targetMemberRouteKey?: string | null;
 }
 
+export interface ContinueTeamRunWithMessageInput {
+  teamRunId: string;
+  message: AgentInputUserMessage;
+  targetMemberRouteKey?: string | null;
+}
+
 export interface ContinueTeamRunResult {
   teamRunId: string;
   restored: boolean;
+  targetMemberName: string | null;
+  dispatchedTurn: TeamMemberAcceptedTurn | null;
 }
 
 const normalizeRequiredString = (value: string, fieldName: string): string => {
@@ -110,15 +119,27 @@ export class TeamRunContinuationService {
   }
 
   async continueTeamRun(input: ContinueTeamRunInput): Promise<ContinueTeamRunResult> {
-    const teamRunId = normalizeRequiredString(input.teamRunId, "teamRunId");
     const content = normalizeRequiredString(input.userInput?.content ?? "", "userInput.content");
-    const resumeConfig = await this.teamRunHistoryService.getTeamRunResumeConfig(teamRunId);
-    const manifest = resumeConfig.manifest;
-
     const userMessage = UserInputConverter.toAgentInputUserMessage({
       ...input.userInput,
       content,
     });
+
+    return this.continueTeamRunWithMessage({
+      teamRunId: input.teamRunId,
+      message: userMessage,
+      targetMemberRouteKey: input.targetMemberRouteKey ?? null,
+    });
+  }
+
+  async continueTeamRunWithMessage(
+    input: ContinueTeamRunWithMessageInput,
+  ): Promise<ContinueTeamRunResult> {
+    const teamRunId = normalizeRequiredString(input.teamRunId, "teamRunId");
+    const content = normalizeRequiredString(input.message?.content ?? "", "message.content");
+    const resumeConfig = await this.teamRunHistoryService.getTeamRunResumeConfig(teamRunId);
+    const manifest = resumeConfig.manifest;
+    const userMessage = input.message;
 
     if (this.isMemberRuntimeManifest(manifest)) {
       return this.continueMemberRuntimeTeamRun({
@@ -151,6 +172,8 @@ export class TeamRunContinuationService {
       return {
         teamRunId,
         restored,
+        targetMemberName,
+        dispatchedTurn: null,
       };
     } catch (error) {
       if (restored) {
@@ -200,7 +223,7 @@ export class TeamRunContinuationService {
       );
       const fallbackTargetMemberName = this.resolveCoordinatorMemberName(effectiveManifest);
 
-      await this.teamMemberRuntimeOrchestrator.sendToMember(
+      const dispatchedTurn = await this.teamMemberRuntimeOrchestrator.sendToMember(
         input.teamRunId,
         targetMemberName,
         input.userMessage,
@@ -211,6 +234,8 @@ export class TeamRunContinuationService {
       return {
         teamRunId: input.teamRunId,
         restored,
+        targetMemberName: dispatchedTurn?.memberName ?? targetMemberName,
+        dispatchedTurn: dispatchedTurn ?? null,
       };
     } catch (error) {
       if (restored) {

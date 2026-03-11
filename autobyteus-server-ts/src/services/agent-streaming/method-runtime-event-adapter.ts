@@ -102,6 +102,7 @@ export class MethodRuntimeEventAdapter extends MethodRuntimeEventSegmentHelper {
       if (this.isUserMessageItem(itemType) || this.isReasoningItem(itemType)) {
         return this.toNoopMessage(method, payload);
       }
+      this.clearReasoningSegmentForTurn(payload);
       if (this.isWebSearchItem(itemType)) {
         return new ServerMessage(ServerMessageType.SEGMENT_START, {
           ...serializePayload(payload),
@@ -167,6 +168,7 @@ export class MethodRuntimeEventAdapter extends MethodRuntimeEventSegmentHelper {
     }
 
     if (method === "item/outputText/delta") {
+      this.clearReasoningSegmentForTurn(payload);
       return this.mapSegmentDelta(method, payload, "text");
     }
 
@@ -204,6 +206,7 @@ export class MethodRuntimeEventAdapter extends MethodRuntimeEventSegmentHelper {
     }
 
     if (method === "item/commandExecution/started") {
+      this.clearReasoningSegmentForTurn(payload);
       const invocationId = this.resolveInvocationId(payload);
       const toolName = normalizeToolNameForUi(this.resolveToolName(payload, "run_bash"));
       const commandValue = this.resolveCommandValue(payload);
@@ -308,6 +311,7 @@ export class MethodRuntimeEventAdapter extends MethodRuntimeEventSegmentHelper {
     }
 
     if (method === "item/fileChange/started") {
+      this.clearReasoningSegmentForTurn(payload);
       return new ServerMessage(ServerMessageType.SEGMENT_START, {
         ...serializePayload(payload),
         id: this.resolveSegmentId(payload, "file-change"),

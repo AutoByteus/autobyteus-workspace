@@ -1,3 +1,4 @@
+import type { RuntimeKind } from "../../runtime-management/runtime-kind.js";
 import type {
   RuntimeInterAgentRelayRequest,
   RuntimeInterAgentRelayResult,
@@ -5,15 +6,35 @@ import type {
 import type { TeamRuntimeInterAgentMessageRelay } from "./team-runtime-inter-agent-message-relay.js";
 import type { TeamRuntimeBindingRegistry } from "./team-runtime-binding-registry.js";
 import type { RelayInterAgentMessageInput } from "./team-member-runtime-orchestrator.types.js";
+import type { ChannelSourceContext } from "../../external-channel/domain/models.js";
 import {
   normalizeOptionalString,
   normalizeRequiredString,
 } from "./team-member-runtime-errors.js";
 
+type ExternalCallbackPropagationPort = {
+  getSourceByAgentRunTurn: (
+    agentRunId: string,
+    turnId: string,
+  ) => Promise<ChannelSourceContext | null>;
+  bindAcceptedTurnToSource: (input: {
+    runId: string;
+    runtimeKind: RuntimeKind;
+    turnId: string | null;
+    teamRunId?: string | null;
+    source: ChannelSourceContext;
+  }) => Promise<void>;
+};
+
+const logger = {
+  warn: (...args: unknown[]) => console.warn(...args),
+};
+
 export class TeamMemberRuntimeRelayService {
   constructor(
     private readonly teamRuntimeBindingRegistry: TeamRuntimeBindingRegistry,
     private readonly teamRuntimeInterAgentMessageRelay: TeamRuntimeInterAgentMessageRelay,
+    private readonly externalCallbackPropagation?: ExternalCallbackPropagationPort,
   ) {}
 
   async relayInterAgentMessage(
@@ -64,6 +85,15 @@ export class TeamMemberRuntimeRelayService {
       };
     }
 
+    await this.propagateExternalSourceIfPresent({
+      teamRunId: input.teamRunId,
+      senderMemberRunId: sender.binding.memberRunId,
+      senderTurnId: input.senderTurnId ?? null,
+      recipientMemberRunId: resolveResult.binding.memberRunId,
+      recipientRuntimeKind: resolveResult.binding.runtimeKind,
+      recipientTurnId: relayResult.turnId ?? null,
+    });
+
     return { accepted: true };
   }
 
@@ -108,10 +138,53 @@ export class TeamMemberRuntimeRelayService {
     return this.relayInterAgentMessage({
       teamRunId: resolvedTeamRunId,
       senderMemberRunId: request.senderRunId,
+      senderTurnId: request.senderTurnId ?? null,
       recipientName: recipientNameRaw,
       content: contentRaw,
       messageType: typeof messageTypeRaw === "string" ? messageTypeRaw : "agent_message",
       senderAgentName: request.senderMemberName,
     });
+  }
+
+  private async propagateExternalSourceIfPresent(input: {
+    teamRunId: string;
+    senderMemberRunId: string;
+    senderTurnId: string | null;
+    recipientMemberRunId: string;
+    recipientRuntimeKind: RuntimeKind;
+    recipientTurnId: string | null;
+  }): Promise<void> {
+    if (!this.externalCallbackPropagation) {
+      return;
+    }
+
+    const senderTurnId = normalizeOptionalString(input.senderTurnId);
+    const recipientTurnId = normalizeOptionalString(input.recipientTurnId);
+    if (!senderTurnId || !recipientTurnId) {
+      return;
+    }
+
+    try {
+      const source = await this.externalCallbackPropagation.getSourceByAgentRunTurn(
+        input.senderMemberRunId,
+        senderTurnId,
+      );
+      if (!source) {
+        return;
+      }
+
+      await this.externalCallbackPropagation.bindAcceptedTurnToSource({
+        runId: input.recipientMemberRunId,
+        runtimeKind: input.recipientRuntimeKind,
+        turnId: recipientTurnId,
+        teamRunId: input.teamRunId,
+        source,
+      });
+    } catch (error) {
+      logger.warn(
+        `Team '${input.teamRunId}': failed propagating external callback linkage across inter-agent relay from '${input.senderMemberRunId}' to '${input.recipientMemberRunId}'.`,
+        error,
+      );
+    }
   }
 }

@@ -56,6 +56,7 @@ export class TeamMemberMemoryProjectionReader {
 
     const store = new MemoryFileStore(this.layoutStore.getTeamDirPath(normalizedTeamRunId), {
       runRootSubdir: "",
+      warnOnMissingFiles: false,
     });
     const memoryViewService = new AgentMemoryViewService(store);
     const view = memoryViewService.getRunMemoryView(normalizedMemberRunId, {

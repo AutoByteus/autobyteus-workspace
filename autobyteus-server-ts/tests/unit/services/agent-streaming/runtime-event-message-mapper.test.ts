@@ -547,7 +547,7 @@ describe("RuntimeEventMessageMapper", () => {
     expect(second.payload.delta).toBe("part-2");
   });
 
-  it("coalesces reasoning chunks by turn id even when item ids differ", () => {
+  it("preserves distinct stable reasoning item ids even within the same turn", () => {
     const first = mapEvent({
       method: "item/reasoning/summaryPartAdded",
       params: {
@@ -570,8 +570,42 @@ describe("RuntimeEventMessageMapper", () => {
       },
     });
     expect(second.type).toBe(ServerMessageType.SEGMENT_CONTENT);
-    expect(second.payload.id).toBe("reason-item-1");
+    expect(second.payload.id).toBe("reason-item-2");
     expect(second.payload.delta).toBe("second");
+  });
+
+  it("starts a fresh fallback reasoning segment after command execution within the same turn", () => {
+    const first = mapEvent({
+      method: "item/reasoning/summaryPartAdded",
+      params: {
+        id: "event-a",
+        turnId: "turn-burst",
+        summary_part: "before tool",
+      },
+    });
+    expect(first.type).toBe(ServerMessageType.SEGMENT_CONTENT);
+    expect(first.payload.id).toBe("event-a");
+
+    const toolStarted = mapEvent({
+      method: "item/command_execution/started",
+      params: {
+        invocation_id: "inv-burst",
+        turnId: "turn-burst",
+      },
+    });
+    expect(toolStarted.type).toBe(ServerMessageType.TOOL_EXECUTION_STARTED);
+
+    const second = mapEvent({
+      method: "item/reasoning/summaryPartAdded",
+      params: {
+        id: "event-b",
+        turnId: "turn-burst",
+        summary_part: "after tool",
+      },
+    });
+    expect(second.type).toBe(ServerMessageType.SEGMENT_CONTENT);
+    expect(second.payload.id).toBe("event-b");
+    expect(second.payload.delta).toBe("after tool");
   });
 
   it("resets turn-level reasoning coalescing after turn completion", () => {

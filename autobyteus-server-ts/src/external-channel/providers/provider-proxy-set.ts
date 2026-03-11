@@ -150,6 +150,10 @@ class DeferredChannelBindingProvider implements ChannelBindingProvider {
     return (await getProviderSet()).bindingProvider.upsertBindingAgentRunId(bindingId, agentRunId);
   }
 
+  async upsertBindingTeamRunId(bindingId: string, teamRunId: string): Promise<ChannelBinding> {
+    return (await getProviderSet()).bindingProvider.upsertBindingTeamRunId(bindingId, teamRunId);
+  }
+
   async deleteBinding(bindingId: string): Promise<boolean> {
     return (await getProviderSet()).bindingProvider.deleteBinding(bindingId);
   }

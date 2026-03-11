@@ -44,6 +44,7 @@ model ChannelBinding {
   threadId               String   @default("") @map("thread_id")
   targetType             String   @map("target_type")
   agentDefinitionId      String?  @map("agent_definition_id")
+  teamDefinitionId       String?  @map("team_definition_id")
   workspaceRootPath      String?  @map("workspace_root_path")
   llmModelIdentifier     String?  @map("llm_model_identifier")
   runtimeKind            String?  @map("runtime_kind")
@@ -59,6 +60,7 @@ model ChannelBinding {
 
   @@unique([provider, transport, accountId, peerId, threadId], map: "uq_channel_binding_route")
   @@index([agentDefinitionId], map: "idx_channel_bindings_agent_definition_id")
+  @@index([teamDefinitionId], map: "idx_channel_bindings_team_definition_id")
   @@index([agentRunId], map: "idx_channel_bindings_agent_id")
   @@index([teamRunId], map: "idx_channel_bindings_team_id")
   @@map("channel_bindings")

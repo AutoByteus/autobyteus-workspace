@@ -95,15 +95,17 @@ describe("DefaultChannelRuntimeFacade", () => {
       turnId: "turn-1",
     });
     const publishExternalUserMessage = vi.fn();
+    const publishTeamExternalUserMessage = vi.fn();
     const bindAcceptedExternalTurn = vi.fn().mockResolvedValue(undefined);
     const facade = new DefaultChannelRuntimeFacade({
       runtimeLauncher: { resolveOrStartAgentRun },
       runtimeCommandIngressService: { sendTurn },
-      liveMessagePublisher: { publishExternalUserMessage },
-      externalTurnBridge: { bindAcceptedExternalTurn },
-      agentTeamRunManager: {
-        getTeamRun: vi.fn(),
+      teamRunContinuationService: {
+        continueTeamRunWithMessage: vi.fn(),
       },
+      agentLiveMessagePublisher: { publishExternalUserMessage },
+      teamLiveMessagePublisher: { publishExternalUserMessage: publishTeamExternalUserMessage },
+      externalTurnBridge: { bindAcceptedExternalTurn },
     });
 
     const result = await facade.dispatchToBinding(createAgentBinding(), createEnvelope());
@@ -123,6 +125,7 @@ describe("DefaultChannelRuntimeFacade", () => {
       runId: "agent-1",
       envelope: createEnvelope(),
     });
+    expect(publishTeamExternalUserMessage).not.toHaveBeenCalled();
     expect(sendTurn.mock.calls[0]?.[0]).toMatchObject({
       runId: "agent-1",
       mode: "agent",
@@ -130,24 +133,39 @@ describe("DefaultChannelRuntimeFacade", () => {
   });
 
   it("dispatches to team run and passes target node", async () => {
-    const postMessage = vi.fn().mockResolvedValue(undefined);
+    const resolveOrStartTeamRun = vi.fn().mockResolvedValue("team-1");
+    const continueTeamRunWithMessage = vi.fn().mockResolvedValue({
+      teamRunId: "team-1",
+      restored: false,
+      targetMemberName: "Coordinator",
+      dispatchedTurn: {
+        memberName: "Coordinator",
+        memberRunId: "member-run-1",
+        runtimeKind: "codex_app_server",
+        turnId: "turn-team-1",
+      },
+    });
+    const publishExternalUserMessage = vi.fn();
+    const bindAcceptedExternalTurn = vi.fn().mockResolvedValue(undefined);
     const facade = new DefaultChannelRuntimeFacade({
       runtimeLauncher: {
         resolveOrStartAgentRun: vi.fn(),
+        resolveOrStartTeamRun,
       },
       runtimeCommandIngressService: {
         sendTurn: vi.fn(),
       },
-      liveMessagePublisher: {
+      teamRunContinuationService: {
+        continueTeamRunWithMessage,
+      },
+      agentLiveMessagePublisher: {
         publishExternalUserMessage: vi.fn(),
       },
-      externalTurnBridge: {
-        bindAcceptedExternalTurn: vi.fn().mockResolvedValue(undefined),
+      teamLiveMessagePublisher: {
+        publishExternalUserMessage,
       },
-      agentTeamRunManager: {
-        getTeamRun: vi.fn().mockReturnValue({
-          postMessage,
-        }),
+      externalTurnBridge: {
+        bindAcceptedExternalTurn,
       },
     });
 
@@ -155,12 +173,75 @@ describe("DefaultChannelRuntimeFacade", () => {
 
     expect(result.agentRunId).toBeNull();
     expect(result.teamRunId).toBe("team-1");
-    expect(postMessage).toHaveBeenCalledWith(
-      expect.objectContaining({
-        content: "hello",
-      }),
-      "support-node",
-    );
+    expect(resolveOrStartTeamRun).toHaveBeenCalledWith(createTeamBinding(), {
+      initialSummary: "hello",
+    });
+    expect(continueTeamRunWithMessage).toHaveBeenCalledOnce();
+    const dispatched = continueTeamRunWithMessage.mock.calls[0]?.[0];
+    expect(dispatched).toMatchObject({
+      teamRunId: "team-1",
+      targetMemberRouteKey: "support-node",
+    });
+    expect(dispatched?.message.content).toBe("hello");
+    expect(dispatched?.message.metadata).toMatchObject({
+      source: "test",
+      externalSource: expect.any(Object),
+    });
+    expect(bindAcceptedExternalTurn).toHaveBeenCalledWith({
+      runId: "member-run-1",
+      teamRunId: "team-1",
+      runtimeKind: "codex_app_server",
+      turnId: "turn-team-1",
+      envelope: createEnvelope(),
+    });
+    expect(publishExternalUserMessage).toHaveBeenCalledWith({
+      teamRunId: "team-1",
+      envelope: createEnvelope(),
+      agentName: "Coordinator",
+      agentId: "member-run-1",
+    });
+  });
+
+  it("continues team dispatch when member-turn reply binding fails", async () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const facade = new DefaultChannelRuntimeFacade({
+      runtimeLauncher: {
+        resolveOrStartAgentRun: vi.fn(),
+        resolveOrStartTeamRun: vi.fn().mockResolvedValue("team-1"),
+      },
+      runtimeCommandIngressService: {
+        sendTurn: vi.fn(),
+      },
+      teamRunContinuationService: {
+        continueTeamRunWithMessage: vi.fn().mockResolvedValue({
+          teamRunId: "team-1",
+          restored: false,
+          targetMemberName: "Planner",
+          dispatchedTurn: {
+            memberName: "Planner",
+            memberRunId: "member-run-1",
+            runtimeKind: "claude_agent_sdk",
+            turnId: "turn-team-2",
+          },
+        }),
+      },
+      agentLiveMessagePublisher: {
+        publishExternalUserMessage: vi.fn(),
+      },
+      teamLiveMessagePublisher: {
+        publishExternalUserMessage: vi.fn(),
+      },
+      externalTurnBridge: {
+        bindAcceptedExternalTurn: vi.fn().mockRejectedValue(new Error("bind failed")),
+      },
+    });
+
+    const result = await facade.dispatchToBinding(createTeamBinding(), createEnvelope());
+
+    expect(result.teamRunId).toBe("team-1");
+    expect(warnSpy).toHaveBeenCalledTimes(1);
+
+    warnSpy.mockRestore();
   });
 
   it("maps inbound attachments to context files", async () => {
@@ -180,14 +261,17 @@ describe("DefaultChannelRuntimeFacade", () => {
       runtimeCommandIngressService: {
         sendTurn,
       },
-      liveMessagePublisher: {
+      teamRunContinuationService: {
+        continueTeamRunWithMessage: vi.fn(),
+      },
+      agentLiveMessagePublisher: {
         publishExternalUserMessage,
+      },
+      teamLiveMessagePublisher: {
+        publishExternalUserMessage: vi.fn(),
       },
       externalTurnBridge: {
         bindAcceptedExternalTurn,
-      },
-      agentTeamRunManager: {
-        getTeamRun: vi.fn(),
       },
     });
 
@@ -221,14 +305,17 @@ describe("DefaultChannelRuntimeFacade", () => {
           runtimeKind: "codex_app_server",
         }),
       },
-      liveMessagePublisher: {
+      teamRunContinuationService: {
+        continueTeamRunWithMessage: vi.fn(),
+      },
+      agentLiveMessagePublisher: {
         publishExternalUserMessage,
+      },
+      teamLiveMessagePublisher: {
+        publishExternalUserMessage: vi.fn(),
       },
       externalTurnBridge: {
         bindAcceptedExternalTurn: vi.fn().mockResolvedValue(undefined),
-      },
-      agentTeamRunManager: {
-        getTeamRun: vi.fn(),
       },
     });
 
@@ -258,14 +345,17 @@ describe("DefaultChannelRuntimeFacade", () => {
       runtimeCommandIngressService: {
         sendTurn,
       },
-      liveMessagePublisher: {
+      teamRunContinuationService: {
+        continueTeamRunWithMessage: vi.fn(),
+      },
+      agentLiveMessagePublisher: {
         publishExternalUserMessage,
+      },
+      teamLiveMessagePublisher: {
+        publishExternalUserMessage: vi.fn(),
       },
       externalTurnBridge: {
         bindAcceptedExternalTurn,
-      },
-      agentTeamRunManager: {
-        getTeamRun: vi.fn(),
       },
     });
 
@@ -300,14 +390,17 @@ describe("DefaultChannelRuntimeFacade", () => {
       runtimeCommandIngressService: {
         sendTurn,
       },
-      liveMessagePublisher: {
+      teamRunContinuationService: {
+        continueTeamRunWithMessage: vi.fn(),
+      },
+      agentLiveMessagePublisher: {
         publishExternalUserMessage,
+      },
+      teamLiveMessagePublisher: {
+        publishExternalUserMessage: vi.fn(),
       },
       externalTurnBridge: {
         bindAcceptedExternalTurn,
-      },
-      agentTeamRunManager: {
-        getTeamRun: vi.fn(),
       },
     });
 
@@ -315,6 +408,52 @@ describe("DefaultChannelRuntimeFacade", () => {
 
     expect(result.agentRunId).toBe("agent-1");
     expect(bindAcceptedExternalTurn).toHaveBeenCalledOnce();
+    expect(publishExternalUserMessage).toHaveBeenCalledOnce();
+    expect(warnSpy).toHaveBeenCalledTimes(1);
+
+    warnSpy.mockRestore();
+  });
+
+  it("continues team dispatch when live team external-user publish fails", async () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const publishExternalUserMessage = vi.fn(() => {
+      throw new Error("team socket write failed");
+    });
+    const facade = new DefaultChannelRuntimeFacade({
+      runtimeLauncher: {
+        resolveOrStartAgentRun: vi.fn(),
+        resolveOrStartTeamRun: vi.fn().mockResolvedValue("team-1"),
+      },
+      runtimeCommandIngressService: {
+        sendTurn: vi.fn(),
+      },
+      teamRunContinuationService: {
+        continueTeamRunWithMessage: vi.fn().mockResolvedValue({
+          teamRunId: "team-1",
+          restored: false,
+          targetMemberName: "Coordinator",
+          dispatchedTurn: {
+            memberName: "Coordinator",
+            memberRunId: "member-run-1",
+            runtimeKind: "codex_app_server",
+            turnId: "turn-team-3",
+          },
+        }),
+      },
+      agentLiveMessagePublisher: {
+        publishExternalUserMessage: vi.fn(),
+      },
+      teamLiveMessagePublisher: {
+        publishExternalUserMessage,
+      },
+      externalTurnBridge: {
+        bindAcceptedExternalTurn: vi.fn().mockResolvedValue(undefined),
+      },
+    });
+
+    const result = await facade.dispatchToBinding(createTeamBinding(), createEnvelope());
+
+    expect(result.teamRunId).toBe("team-1");
     expect(publishExternalUserMessage).toHaveBeenCalledOnce();
     expect(warnSpy).toHaveBeenCalledTimes(1);
 

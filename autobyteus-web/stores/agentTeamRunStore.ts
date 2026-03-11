@@ -79,15 +79,31 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       service.connect(teamRunId, teamContext);
     },
 
+    disconnectTeamStream(teamRunId: string): void {
+      const service = teamStreamingServices.get(teamRunId);
+      if (!service) {
+        return;
+      }
+
+      const teamContextsStore = useAgentTeamContextsStore();
+      const teamContext = teamContextsStore.getTeamContextById(teamRunId);
+
+      service.disconnect();
+      teamStreamingServices.delete(teamRunId);
+
+      if (teamContext) {
+        teamContext.isSubscribed = false;
+        teamContext.unsubscribe = undefined;
+      }
+    },
+
     async terminateTeamRun(teamRunId: string) {
       const teamContextsStore = useAgentTeamContextsStore();
       const teamContext = teamContextsStore.getTeamContextById(teamRunId);
 
-      if (teamContext?.unsubscribe) {
-        teamContext.unsubscribe();
-        teamContext.unsubscribe = undefined;
+      if (teamContext?.isSubscribed || teamStreamingServices.has(teamRunId)) {
+        this.disconnectTeamStream(teamRunId);
       }
-      teamStreamingServices.delete(teamRunId);
 
       if (teamContext) {
         teamContext.isSubscribed = false;
@@ -130,11 +146,9 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         return false;
       }
 
-      if (teamContext.unsubscribe) {
-        teamContext.unsubscribe();
-        teamContext.unsubscribe = undefined;
+      if (teamContext.isSubscribed || teamStreamingServices.has(normalizedTeamRunId)) {
+        this.disconnectTeamStream(normalizedTeamRunId);
       }
-      teamStreamingServices.delete(normalizedTeamRunId);
 
       teamContext.isSubscribed = false;
       teamContext.members.forEach((member) => {

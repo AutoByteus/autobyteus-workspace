@@ -120,6 +120,10 @@ export class TeamRuntimeBindingRegistry {
     return this.stateByTeamRunId.get(normalizedTeamRunId) ?? null;
   }
 
+  listTeamRunIds(): string[] {
+    return Array.from(this.stateByTeamRunId.keys());
+  }
+
   resolveMemberBinding(
     teamRunId: string,
     targetMember: string | null | undefined,

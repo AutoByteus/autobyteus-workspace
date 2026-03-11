@@ -51,7 +51,7 @@ function buildDefaultVerificationChecks(provider: MessagingProvider): SetupVerif
       status: 'PENDING',
     },
     { key: 'binding', label: 'Scoped channel binding', status: 'PENDING' },
-    { key: 'launch_preset', label: 'Binding launch preset', status: 'PENDING' },
+    { key: 'launch_preset', label: 'Binding target configuration', status: 'PENDING' },
   ];
 }
 
@@ -74,10 +74,24 @@ function createVerificationStateByProvider(): Record<MessagingProvider, Provider
   };
 }
 
-function resolveBindingWithInvalidLaunchPreset(
+function resolveBindingWithInvalidTargetConfiguration(
   bindings: ExternalChannelBindingModel[],
 ): ExternalChannelBindingModel | null {
   for (const binding of bindings) {
+    if (binding.targetType === 'TEAM') {
+      const preset = binding.teamLaunchPreset;
+      if (
+        !binding.targetTeamDefinitionId?.trim() ||
+        !preset ||
+        !preset.workspaceRootPath.trim() ||
+        !preset.llmModelIdentifier.trim() ||
+        !preset.runtimeKind.trim()
+      ) {
+        return binding;
+      }
+      continue;
+    }
+
     const preset = binding.launchPreset;
     if (
       !binding.targetAgentDefinitionId?.trim() ||
@@ -353,17 +367,19 @@ export const useMessagingVerificationStore = defineStore('messagingVerificationS
             'Launch preset check skipped because binding prerequisites are not ready.',
           );
         } else {
-          const invalidBinding = resolveBindingWithInvalidLaunchPreset(scopedBindings);
+          const invalidBinding = resolveBindingWithInvalidTargetConfiguration(scopedBindings);
           if (!invalidBinding) {
             this.setVerificationCheckStatusForProvider(
               providerKey,
               'launch_preset',
               'PASSED',
-              'Binding stores a complete launch preset. Runtime will auto-start on first inbound message.',
+              'Binding stores a complete target configuration.',
             );
           } else {
-            const agentDefinitionId = invalidBinding.targetAgentDefinitionId?.trim() || '(missing)';
-            const message = `Binding for peer ${invalidBinding.peerId} is missing a complete launch preset for agent definition ${agentDefinitionId}.`;
+            const message =
+              invalidBinding.targetType === 'TEAM'
+                ? `Binding for peer ${invalidBinding.peerId} is missing a selected team run target.`
+                : `Binding for peer ${invalidBinding.peerId} is missing a complete launch preset for agent definition ${invalidBinding.targetAgentDefinitionId?.trim() || '(missing)'}.`;
             this.setVerificationCheckStatusForProvider(
               providerKey,
               'launch_preset',

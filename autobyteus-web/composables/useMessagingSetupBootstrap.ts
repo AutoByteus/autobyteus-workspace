@@ -23,6 +23,7 @@ export function useMessagingSetupBootstrap() {
       await capabilityStore.loadWeComAccounts();
       await bindingStore.loadCapabilities();
       await bindingStore.loadBindingsIfEnabled();
+      await bindingStore.loadTeamDefinitionOptions();
     } catch (error) {
       bootstrapError.value = error instanceof Error ? error.message : 'Failed to bootstrap setup state';
     }

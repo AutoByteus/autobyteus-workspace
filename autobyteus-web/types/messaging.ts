@@ -46,8 +46,19 @@ export interface ExternalChannelBindingModel {
   threadId: string | null;
   targetType: ExternalChannelBindingTargetType;
   targetAgentDefinitionId: string | null;
+  targetTeamDefinitionId: string | null;
   launchPreset: ExternalChannelLaunchPresetModel | null;
+  teamLaunchPreset: ExternalChannelTeamLaunchPresetModel | null;
+  teamRunId: string | null;
   updatedAt: string;
+}
+
+export interface ExternalChannelTeamDefinitionOptionModel {
+  teamDefinitionId: string;
+  teamDefinitionName: string;
+  description: string;
+  coordinatorMemberName: string;
+  memberCount: number;
 }
 
 export interface ExternalChannelLaunchPresetModel {
@@ -59,6 +70,14 @@ export interface ExternalChannelLaunchPresetModel {
   llmConfig: Record<string, unknown> | null;
 }
 
+export interface ExternalChannelTeamLaunchPresetModel {
+  workspaceRootPath: string;
+  llmModelIdentifier: string;
+  runtimeKind: AgentRuntimeKind;
+  autoExecuteTools: boolean;
+  llmConfig: Record<string, unknown> | null;
+}
+
 export interface ExternalChannelBindingDraft {
   provider: MessagingProvider;
   transport: MessagingTransport;
@@ -67,7 +86,9 @@ export interface ExternalChannelBindingDraft {
   threadId: string | null;
   targetType: ExternalChannelBindingTargetType;
   targetAgentDefinitionId: string;
+  targetTeamDefinitionId: string;
   launchPreset: ExternalChannelLaunchPresetModel;
+  teamLaunchPreset: ExternalChannelTeamLaunchPresetModel;
 }
 
 export interface ExternalChannelCapabilityModel {

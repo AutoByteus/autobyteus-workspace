@@ -37,6 +37,7 @@ import {
   parseToolExecutionSucceededPayload,
   parseToolLogPayload,
 } from './toolLifecycleParsers';
+import { setStreamSegmentIdentity } from './segmentIdentity';
 import { isPlaceholderToolName } from '~/utils/toolNamePlaceholders';
 
 const buildInvocationAliases = (invocationId: string): string[] => {
@@ -154,13 +155,13 @@ const createSyntheticToolSegment = (
       error: null,
       rawContent: '',
     };
-    (fallback as any)._segmentId = invocationId;
+    setStreamSegmentIdentity(fallback, invocationId, 'tool_call');
     const aiMessage = findOrCreateAIMessage(context);
     aiMessage.segments.push(fallback);
     return fallback;
   }
 
-  (segment as any)._segmentId = invocationId;
+  setStreamSegmentIdentity(segment, invocationId, segmentType);
   segment.invocationId = invocationId;
   segment.toolName = toolName;
   segment.arguments = { ...segment.arguments, ...argumentsPayload };

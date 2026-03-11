@@ -26,6 +26,7 @@ export class WebSocketClient implements IWebSocketClient {
   private reconnectAttempts = 0;
   private reconnectTimeout: ReturnType<typeof setTimeout> | null = null;
   private options: Required<WebSocketClientOptions>;
+  private shouldReconnect = false;
 
   // Event handlers
   private handlers: {
@@ -55,12 +56,15 @@ export class WebSocketClient implements IWebSocketClient {
 
   connect(url: string): void {
     if (this._state === ConnectionState.CONNECTED || 
-        this._state === ConnectionState.CONNECTING) {
+        this._state === ConnectionState.CONNECTING ||
+        this._state === ConnectionState.RECONNECTING) {
       return;
     }
 
     this.url = url;
     this.reconnectAttempts = 0;
+    this.shouldReconnect = true;
+    this.clearReconnectTimeout();
     this.doConnect();
   }
 
@@ -81,28 +85,34 @@ export class WebSocketClient implements IWebSocketClient {
 
   private setupEventListeners(): void {
     if (!this.ws) return;
+    const socket = this.ws;
 
-    this.ws.onopen = () => {
+    socket.onopen = () => {
+      if (this.ws !== socket) return;
       this.reconnectAttempts = 0;
+      this.clearReconnectTimeout();
       this.setState(ConnectionState.CONNECTED);
       this.emit('onConnect');
     };
 
-    this.ws.onclose = (event) => {
-      const wasConnected = this._state === ConnectionState.CONNECTED;
+    socket.onclose = (event) => {
+      if (this.ws !== socket) return;
+      this.ws = null;
       this.setState(ConnectionState.DISCONNECTED);
       this.emit('onDisconnect', event.reason || undefined);
 
-      if (wasConnected && this.options.autoReconnect) {
+      if (this.shouldReconnect && this.options.autoReconnect) {
         this.scheduleReconnect();
       }
     };
 
-    this.ws.onmessage = (event) => {
+    socket.onmessage = (event) => {
+      if (this.ws !== socket) return;
       this.emit('onMessage', event.data);
     };
 
-    this.ws.onerror = () => {
+    socket.onerror = () => {
+      if (this.ws !== socket) return;
       this.handleError(new Error('WebSocket error'));
     };
   }
@@ -113,6 +123,7 @@ export class WebSocketClient implements IWebSocketClient {
 
   private scheduleReconnect(): void {
     if (this.reconnectAttempts >= this.options.maxReconnectAttempts) {
+      this.clearReconnectTimeout();
       this.emit('onError', new Error('Max reconnection attempts reached'));
       return;
     }
@@ -123,16 +134,24 @@ export class WebSocketClient implements IWebSocketClient {
     );
 
     this.reconnectAttempts++;
+    this.clearReconnectTimeout();
+    this.setState(ConnectionState.RECONNECTING);
     this.reconnectTimeout = setTimeout(() => {
+      this.reconnectTimeout = null;
       this.doConnect();
     }, delay);
   }
 
-  disconnect(): void {
+  private clearReconnectTimeout(): void {
     if (this.reconnectTimeout) {
       clearTimeout(this.reconnectTimeout);
       this.reconnectTimeout = null;
     }
+  }
+
+  disconnect(): void {
+    this.shouldReconnect = false;
+    this.clearReconnectTimeout();
 
     if (this.ws) {
       // Disable auto-reconnect for intentional disconnect

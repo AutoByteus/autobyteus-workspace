@@ -4,6 +4,7 @@ import { getApolloClient } from '~/utils/apolloClient';
 import {
   EXTERNAL_CHANNEL_CAPABILITIES,
   EXTERNAL_CHANNEL_BINDINGS,
+  EXTERNAL_CHANNEL_TEAM_DEFINITION_OPTIONS,
 } from '~/graphql/queries/externalChannelSetupQueries';
 import {
   DELETE_EXTERNAL_CHANNEL_BINDING,
@@ -15,6 +16,7 @@ import type {
   ExternalChannelBindingDraft,
   ExternalChannelBindingModel,
   ExternalChannelCapabilityModel,
+  ExternalChannelTeamDefinitionOptionModel,
 } from '~/types/messaging';
 import { useGatewayCapabilityStore } from '~/stores/gatewayCapabilityStore';
 
@@ -26,6 +28,9 @@ interface BindingSetupState {
   capabilityBlocked: boolean;
   rolloutGateError: string | null;
   bindings: ExternalChannelBindingModel[];
+  teamDefinitionOptions: ExternalChannelTeamDefinitionOptionModel[];
+  isTeamDefinitionOptionsLoading: boolean;
+  teamDefinitionOptionsError: string | null;
   isLoading: boolean;
   isMutating: boolean;
   error: string | null;
@@ -128,6 +133,7 @@ function isBindingField(value: unknown): value is BindingField {
     value === 'threadId' ||
     value === 'targetType' ||
     value === 'targetAgentDefinitionId' ||
+    value === 'targetTeamDefinitionId' ||
     value === 'workspaceRootPath' ||
     value === 'llmModelIdentifier' ||
     value === 'runtimeKind'
@@ -152,6 +158,9 @@ function issueCodeToField(code: string): BindingField | null {
   }
   if (code === 'TARGET_AGENT_DEFINITION_NOT_FOUND') {
     return 'targetAgentDefinitionId';
+  }
+  if (code === 'TARGET_TEAM_DEFINITION_NOT_FOUND') {
+    return 'targetTeamDefinitionId';
   }
   if (code === 'EXTERNAL_CHANNEL_TARGET_TYPE_NOT_SUPPORTED') {
     return 'targetType';
@@ -229,6 +238,9 @@ export const useMessagingChannelBindingSetupStore = defineStore(
     capabilityBlocked: false,
     rolloutGateError: null,
     bindings: [],
+    teamDefinitionOptions: [],
+    isTeamDefinitionOptionsLoading: false,
+    teamDefinitionOptionsError: null,
     isLoading: false,
     isMutating: false,
     error: null,
@@ -320,6 +332,48 @@ export const useMessagingChannelBindingSetupStore = defineStore(
       }
     },
 
+    async loadTeamDefinitionOptions() {
+      this.teamDefinitionOptionsError = null;
+
+      if (!this.capabilities.bindingCrudEnabled) {
+        this.teamDefinitionOptions = [];
+        return [];
+      }
+
+      this.isTeamDefinitionOptionsLoading = true;
+      try {
+        const client = getApolloClient();
+        const { data, errors } = await client.query({
+          query: EXTERNAL_CHANNEL_TEAM_DEFINITION_OPTIONS,
+          fetchPolicy: 'network-only',
+        });
+
+        if (errors && errors.length > 0) {
+          throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '));
+        }
+
+        const teamDefinitionOptions = (data?.externalChannelTeamDefinitionOptions ||
+          []) as ExternalChannelTeamDefinitionOptionModel[];
+        this.teamDefinitionOptions = [...teamDefinitionOptions];
+        return this.teamDefinitionOptions;
+      } catch (error) {
+        this.teamDefinitionOptionsError = normalizeErrorMessage(error);
+
+        if (hasSchemaFieldMissingError(error)) {
+          this.capabilityBlocked = true;
+          this.rolloutGateError = this.teamDefinitionOptionsError;
+          this.capabilities = {
+            bindingCrudEnabled: false,
+            reason: this.teamDefinitionOptionsError,
+          };
+        }
+
+        throw error;
+      } finally {
+        this.isTeamDefinitionOptionsLoading = false;
+      }
+    },
+
     validateDraft(
       draft: ExternalChannelBindingDraft,
     ): Partial<Record<BindingField, string>> {
@@ -332,24 +386,38 @@ export const useMessagingChannelBindingSetupStore = defineStore(
       if (!draft.peerId.trim()) {
         errors.peerId = 'Peer ID is required';
       }
-      if (!draft.targetAgentDefinitionId.trim()) {
-        errors.targetAgentDefinitionId = 'Agent definition is required';
-      }
-      if (!draft.launchPreset.workspaceRootPath.trim()) {
-        errors.workspaceRootPath = 'Workspace path is required';
-      }
-      if (!draft.launchPreset.llmModelIdentifier.trim()) {
-        errors.llmModelIdentifier = 'LLM model is required';
-      }
-      if (!draft.launchPreset.runtimeKind.trim()) {
-        errors.runtimeKind = 'Runtime is required';
-      }
       if (!isProviderTransportSupported(draft, this.capabilities)) {
         errors.transport = `Transport ${draft.transport} is not supported for provider ${draft.provider}.`;
       }
 
-      if (draft.targetType !== 'AGENT') {
-        errors.targetType = 'Messaging bindings currently support AGENT targets only.';
+      if (draft.targetType === 'TEAM') {
+        const teamLaunchPreset = draft.teamLaunchPreset;
+        if (!draft.targetTeamDefinitionId?.trim()) {
+          errors.targetTeamDefinitionId = 'Team definition is required';
+        }
+        if (!teamLaunchPreset?.workspaceRootPath?.trim()) {
+          errors.workspaceRootPath = 'Workspace path is required';
+        }
+        if (!teamLaunchPreset?.llmModelIdentifier?.trim()) {
+          errors.llmModelIdentifier = 'LLM model is required';
+        }
+        if (!teamLaunchPreset?.runtimeKind?.trim()) {
+          errors.runtimeKind = 'Runtime is required';
+        }
+      } else {
+        const launchPreset = draft.launchPreset;
+        if (!draft.targetAgentDefinitionId?.trim()) {
+          errors.targetAgentDefinitionId = 'Agent definition is required';
+        }
+        if (!launchPreset?.workspaceRootPath?.trim()) {
+          errors.workspaceRootPath = 'Workspace path is required';
+        }
+        if (!launchPreset?.llmModelIdentifier?.trim()) {
+          errors.llmModelIdentifier = 'LLM model is required';
+        }
+        if (!launchPreset?.runtimeKind?.trim()) {
+          errors.runtimeKind = 'Runtime is required';
+        }
       }
 
       if (draft.provider === 'DISCORD') {
@@ -407,15 +475,31 @@ export const useMessagingChannelBindingSetupStore = defineStore(
               peerId: draft.peerId,
               threadId: draft.threadId,
               targetType: draft.targetType,
-              targetAgentDefinitionId: draft.targetAgentDefinitionId,
-              launchPreset: {
-                workspaceRootPath: draft.launchPreset.workspaceRootPath,
-                llmModelIdentifier: draft.launchPreset.llmModelIdentifier,
-                runtimeKind: draft.launchPreset.runtimeKind,
-                autoExecuteTools: draft.launchPreset.autoExecuteTools,
-                skillAccessMode: draft.launchPreset.skillAccessMode,
-                llmConfig: draft.launchPreset.llmConfig,
-              },
+              targetAgentDefinitionId:
+                draft.targetType === 'AGENT' ? draft.targetAgentDefinitionId : null,
+              targetTeamDefinitionId:
+                draft.targetType === 'TEAM' ? draft.targetTeamDefinitionId : null,
+              launchPreset:
+                draft.targetType === 'AGENT'
+                  ? {
+                      workspaceRootPath: draft.launchPreset.workspaceRootPath,
+                      llmModelIdentifier: draft.launchPreset.llmModelIdentifier,
+                      runtimeKind: draft.launchPreset.runtimeKind,
+                      autoExecuteTools: draft.launchPreset.autoExecuteTools,
+                      skillAccessMode: draft.launchPreset.skillAccessMode,
+                      llmConfig: draft.launchPreset.llmConfig,
+                    }
+                  : null,
+              teamLaunchPreset:
+                draft.targetType === 'TEAM'
+                  ? {
+                      workspaceRootPath: draft.teamLaunchPreset.workspaceRootPath,
+                      llmModelIdentifier: draft.teamLaunchPreset.llmModelIdentifier,
+                      runtimeKind: draft.teamLaunchPreset.runtimeKind,
+                      autoExecuteTools: draft.teamLaunchPreset.autoExecuteTools,
+                      llmConfig: draft.teamLaunchPreset.llmConfig,
+                    }
+                  : null,
             },
           },
         });

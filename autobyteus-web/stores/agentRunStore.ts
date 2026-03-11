@@ -14,6 +14,7 @@ import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig';
 import { resolveRunnableModelIdentifier } from '~/utils/runLaunchPolicy';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig';
+import { ConnectionState } from '~/services/agentStreaming';
 
 interface ContinueRunMutationResultPayload {
   continueRun: {
@@ -186,14 +187,26 @@ export const useAgentRunStore = defineStore('agentRun', {
      * @description Establishes a WebSocket connection to receive real-time events for a specific run.
      */
     connectToAgentStream(runId: string) {
-      if (streamingServices.has(runId)) {
-        return;
-      }
-
       const agentContextsStore = useAgentContextsStore();
       const agent = agentContextsStore.getRun(runId);
 
       if (!agent) return;
+
+      const existingService = streamingServices.get(runId);
+      if (existingService) {
+        existingService.attachContext(agent);
+        agent.unsubscribe = () => {
+          existingService.disconnect();
+          streamingServices.delete(runId);
+        };
+        if (existingService.connectionState === ConnectionState.DISCONNECTED) {
+          existingService.connect(runId, agent);
+          agent.isSubscribed = true;
+        } else {
+          agent.isSubscribed = true;
+        }
+        return;
+      }
 
       const windowNodeContextStore = useWindowNodeContextStore();
       const wsEndpoint = windowNodeContextStore.getBoundEndpoints().agentWs;
@@ -209,6 +222,24 @@ export const useAgentRunStore = defineStore('agentRun', {
       };
 
       service.connect(runId, agent);
+    },
+
+    disconnectAgentStream(runId: string): void {
+      const service = streamingServices.get(runId);
+      if (!service) {
+        return;
+      }
+
+      const agentContextsStore = useAgentContextsStore();
+      const agent = agentContextsStore.getRun(runId);
+
+      service.disconnect();
+      streamingServices.delete(runId);
+
+      if (agent) {
+        agent.isSubscribed = false;
+        agent.unsubscribe = undefined;
+      }
     },
 
     /**
@@ -269,12 +300,9 @@ export const useAgentRunStore = defineStore('agentRun', {
       const context = agentContextsStore.getRun(runId);
 
       const teardownLocalRuntime = () => {
-        if (context?.unsubscribe) {
-          context.unsubscribe();
-          context.isSubscribed = false;
-          context.unsubscribe = undefined;
+        if (context?.isSubscribed || streamingServices.has(runId)) {
+          this.disconnectAgentStream(runId);
         }
-        streamingServices.delete(runId);
 
         if (context) {
           context.isSending = false;
@@ -330,12 +358,7 @@ export const useAgentRunStore = defineStore('agentRun', {
           return;
         }
       } else {
-        if (agentToClose.unsubscribe) {
-          agentToClose.unsubscribe();
-          agentToClose.isSubscribed = false;
-          agentToClose.unsubscribe = undefined;
-        }
-        streamingServices.delete(runIdToClose);
+        this.disconnectAgentStream(runIdToClose);
       }
 
       agentContextsStore.removeRun(runIdToClose);

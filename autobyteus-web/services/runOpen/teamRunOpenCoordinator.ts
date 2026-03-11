@@ -114,7 +114,7 @@ export const openTeamRunWithCoordinator = async (
   );
 
   const teamContextsStore = useAgentTeamContextsStore();
-  teamContextsStore.addTeamContext({
+  const hydratedContext = {
     teamRunId: manifest.teamRunId,
     config: {
       teamDefinitionId: manifest.teamDefinitionId,
@@ -142,7 +142,42 @@ export const openTeamRunWithCoordinator = async (
     isSubscribed: false,
     taskPlan: null,
     taskStatuses: null,
-  });
+  };
+
+  const existingTeamContext = teamContextsStore.getTeamContextById(manifest.teamRunId);
+  const shouldKeepLiveContext = resumeConfig.isActive && Boolean(existingTeamContext?.isSubscribed);
+
+  if (existingTeamContext) {
+    if (!shouldKeepLiveContext && existingTeamContext.unsubscribe) {
+      existingTeamContext.unsubscribe();
+    }
+
+    existingTeamContext.config = hydratedContext.config;
+    existingTeamContext.focusedMemberName = focusedMemberRouteKey;
+
+    if (shouldKeepLiveContext) {
+      const refreshedMembers = new Map();
+      for (const [memberRouteKey, memberContext] of members.entries()) {
+        const existingMemberContext = existingTeamContext.members.get(memberRouteKey);
+        if (existingMemberContext) {
+          existingMemberContext.config = memberContext.config;
+          refreshedMembers.set(memberRouteKey, existingMemberContext);
+        } else {
+          refreshedMembers.set(memberRouteKey, memberContext);
+        }
+      }
+      existingTeamContext.members = refreshedMembers;
+    } else {
+      existingTeamContext.members = members;
+      existingTeamContext.currentStatus = hydratedContext.currentStatus;
+      existingTeamContext.isSubscribed = false;
+      existingTeamContext.unsubscribe = undefined;
+      existingTeamContext.taskPlan = null;
+      existingTeamContext.taskStatuses = null;
+    }
+  } else {
+    teamContextsStore.addTeamContext(hydratedContext);
+  }
 
   if (input.selectRun !== false) {
     useAgentSelectionStore().selectRun(manifest.teamRunId, 'team');

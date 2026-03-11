@@ -132,4 +132,54 @@ describe("TeamRuntimeEventBridge", () => {
       }),
     );
   });
+
+  it("builds initial team and member status snapshot messages from runtime adapters", () => {
+    const bridge = new TeamRuntimeEventBridge(
+      {
+        getTeamBindings: vi.fn(() => [
+          { memberRunId: "run-codex", memberName: "Professor", runtimeKind: "codex_app_server" },
+          { memberRunId: "run-claude", memberName: "Student", runtimeKind: "claude_agent_sdk" },
+        ]),
+      } as any,
+      {
+        resolveAdapter: vi.fn((runtimeKind: string) =>
+          runtimeKind === "codex_app_server"
+            ? {
+                getRunStatus: vi.fn(() => "RUNNING"),
+                isRunActive: vi.fn(() => true),
+              }
+            : {
+                isRunActive: vi.fn(() => true),
+              },
+        ),
+      } as any,
+      { mapForRuntime: vi.fn() } as any,
+    );
+
+    const messages = bridge.getInitialSnapshotMessages("team-1");
+
+    expect(messages).toHaveLength(3);
+    expect(messages[0]).toMatchObject({
+      type: ServerMessageType.TEAM_STATUS,
+      payload: {
+        new_status: "PROCESSING",
+      },
+    });
+    expect(messages[1]).toMatchObject({
+      type: ServerMessageType.AGENT_STATUS,
+      payload: {
+        new_status: "RUNNING",
+        agent_name: "Professor",
+        agent_id: "run-codex",
+      },
+    });
+    expect(messages[2]).toMatchObject({
+      type: ServerMessageType.AGENT_STATUS,
+      payload: {
+        new_status: "IDLE",
+        agent_name: "Student",
+        agent_id: "run-claude",
+      },
+    });
+  });
 });

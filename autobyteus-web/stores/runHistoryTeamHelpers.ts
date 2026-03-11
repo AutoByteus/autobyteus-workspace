@@ -37,6 +37,24 @@ export const toTeamRunStatus = (
   return { isActive: true, lastKnownStatus: 'ACTIVE' };
 };
 
+const toTeamMemberRunStatus = (
+  status: AgentStatus,
+): Pick<TeamRunHistoryItem, 'isActive' | 'lastKnownStatus'> => {
+  if (status === AgentStatus.Error) {
+    return { isActive: false, lastKnownStatus: 'ERROR' };
+  }
+
+  if (
+    status === AgentStatus.Uninitialized ||
+    status === AgentStatus.ShutdownComplete ||
+    status === AgentStatus.ToolDenied
+  ) {
+    return { isActive: false, lastKnownStatus: 'IDLE' };
+  }
+
+  return { isActive: true, lastKnownStatus: 'ACTIVE' };
+};
+
 export const summarizeTeamDraft = (teamContext: AgentTeamContext, draftSummaryPrefix: string): string => {
   const focusedContext = teamContext.members.get(teamContext.focusedMemberName) ?? null;
   const candidateContexts = focusedContext
@@ -153,6 +171,7 @@ export const buildTeamNodes = (params: {
     const lastActivityAt = params.resolveTeamLastActivityAt(teamContext);
     const members = Array.from(teamContext.members.entries())
       .map(([memberRouteKey, memberContext]) => ({
+        ...toTeamMemberRunStatus(memberContext.state.currentStatus),
         teamRunId: teamContext.teamRunId,
         memberRouteKey,
         memberName: memberContext.config.agentDefinitionName || memberRouteKey,
@@ -163,8 +182,6 @@ export const buildTeamNodes = (params: {
           memberContext.state.conversation.updatedAt ||
           memberContext.state.conversation.createdAt ||
           lastActivityAt,
-        lastKnownStatus,
-        isActive,
         deleteLifecycle: 'READY' as const,
       }))
       .sort((a, b) => a.memberName.localeCompare(b.memberName));

@@ -2,8 +2,8 @@
   <section class="border border-gray-200 rounded-lg p-4">
     <h3 class="text-sm font-semibold text-gray-900">Channel Binding Setup</h3>
     <p class="mt-1 text-xs text-gray-500">
-      Bind the selected provider scope to one agent definition and saved launch preset. The runtime
-      will auto-start on the first inbound message when needed.
+      Bind the selected provider scope either to an agent definition with a saved launch preset or
+      to an agent team definition with a saved launch preset.
     </p>
 
     <div
@@ -151,22 +151,88 @@
         <span v-if="discordAccountHint"> Account ID should be <code>{{ discordAccountHint }}</code>.</span>
       </p>
       <p
-        v-if="showTelegramAgentOnlyHint"
+        v-if="showTeamResponsePolicyHint"
         class="mt-2 text-xs text-gray-600"
-        data-testid="telegram-target-policy-hint"
+        data-testid="team-response-policy-hint"
       >
-        Telegram setup currently supports AGENT targets only.
+        Only the team coordinator or entry node sends replies back to the messaging app.
       </p>
     </div>
 
     <div class="mt-4 rounded-md border border-gray-200 p-3">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-medium text-gray-600 mb-1">Target Type</label>
+          <select
+            v-model="draft.targetType"
+            class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+            data-testid="binding-target-type"
+          >
+            <option
+              v-for="targetType in allowedTargetTypes"
+              :key="targetType"
+              :value="targetType"
+            >
+              {{ targetType === 'AGENT' ? 'Agent Definition' : 'Agent Team' }}
+            </option>
+          </select>
+        </div>
+
+        <div v-if="draft.targetType === 'TEAM'">
+          <div class="flex items-center justify-between gap-2">
+            <label class="block text-xs font-medium text-gray-600">Team Definition</label>
+            <button
+              type="button"
+              class="rounded-md border border-gray-300 px-2 py-1 text-xs text-gray-700 disabled:opacity-50"
+              :disabled="bindingStore.isTeamDefinitionOptionsLoading"
+              data-testid="reload-team-definitions-button"
+              @click="reloadTeamDefinitionOptions"
+            >
+              {{ bindingStore.isTeamDefinitionOptionsLoading ? 'Refreshing...' : 'Refresh Team Definitions' }}
+            </button>
+          </div>
+          <select
+            v-model="draft.targetTeamDefinitionId"
+            class="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+            data-testid="binding-team-definition-select"
+          >
+            <option value="">Select team definition</option>
+            <option
+              v-for="option in teamDefinitionOptions"
+              :key="option.teamDefinitionId"
+              :value="option.teamDefinitionId"
+            >
+              {{ formatTeamDefinitionOptionLabel(option) }}
+            </option>
+          </select>
+          <p
+            v-if="bindingStore.teamDefinitionOptionsError"
+            class="mt-1 text-xs text-red-600"
+            data-testid="team-definition-options-error"
+          >
+            {{ bindingStore.teamDefinitionOptionsError }}
+          </p>
+          <p
+            v-else-if="teamDefinitionOptions.length === 0 && !bindingStore.isTeamDefinitionOptionsLoading"
+            class="mt-1 text-xs text-gray-500"
+            data-testid="team-definition-options-empty"
+          >
+            No team definitions are available yet. Create a team definition first, then return here to bind it.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-4 rounded-md border border-gray-200 p-3">
       <div class="flex items-center justify-between gap-2">
-        <p class="text-sm font-medium text-gray-800">Agent Launch Preset</p>
-        <p class="text-xs text-gray-500">Saved with the binding and reused for auto-start.</p>
+        <p class="text-sm font-medium text-gray-800">Launch Preset</p>
+        <p class="text-xs text-gray-500">
+          Saved with the binding and reused when the bound agent or team is started automatically.
+        </p>
       </div>
 
       <div class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
-        <div>
+        <div v-if="draft.targetType === 'AGENT'">
           <label class="block text-xs font-medium text-gray-600 mb-1">Agent Definition</label>
           <select
             v-model="draft.targetAgentDefinitionId"
@@ -187,7 +253,7 @@
         <div>
           <label class="block text-xs font-medium text-gray-600 mb-1">Runtime</label>
           <select
-            :value="draft.launchPreset.runtimeKind"
+            :value="selectedLaunchPreset.runtimeKind"
             class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
             data-testid="binding-runtime-kind-select"
             @change="updateRuntimeKind(($event.target as HTMLSelectElement).value)"
@@ -209,7 +275,7 @@
         <div class="md:col-span-2">
           <label class="block text-xs font-medium text-gray-600 mb-1">LLM Model</label>
           <SearchableGroupedSelect
-            :model-value="draft.launchPreset.llmModelIdentifier"
+            :model-value="selectedLaunchPreset.llmModelIdentifier"
             :options="groupedModelOptions"
             placeholder="Select a model..."
             search-placeholder="Search models..."
@@ -262,7 +328,7 @@
 
           <div v-else class="mt-2">
             <input
-              v-model="draft.launchPreset.workspaceRootPath"
+              v-model="selectedLaunchPreset.workspaceRootPath"
               type="text"
               placeholder="/absolute/path/to/workspace"
               class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
@@ -279,20 +345,20 @@
             id="binding-auto-execute"
             type="button"
             class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-            :class="draft.launchPreset.autoExecuteTools ? 'bg-blue-600' : 'bg-gray-200'"
+            :class="selectedLaunchPreset.autoExecuteTools ? 'bg-blue-600' : 'bg-gray-200'"
             data-testid="binding-auto-execute-toggle"
-            @click="updateAutoExecute(!draft.launchPreset.autoExecuteTools)"
+            @click="updateAutoExecute(!selectedLaunchPreset.autoExecuteTools)"
           >
             <span class="sr-only">Auto approve tools</span>
             <span
               aria-hidden="true"
               class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
-              :class="draft.launchPreset.autoExecuteTools ? 'translate-x-5' : 'translate-x-0'"
+              :class="selectedLaunchPreset.autoExecuteTools ? 'translate-x-5' : 'translate-x-0'"
             />
           </button>
         </div>
 
-        <div>
+        <div v-if="showSkillAccessControl">
           <label class="block text-xs font-medium text-gray-600 mb-1">Skill Access</label>
           <select
             :value="draft.launchPreset.skillAccessMode || 'PRELOADED_ONLY'"
@@ -309,8 +375,8 @@
         <div class="md:col-span-2">
           <ModelConfigSection
             :schema="modelConfigSchema"
-            :model-config="draft.launchPreset.llmConfig"
-            :disabled="!draft.launchPreset.llmModelIdentifier"
+            :model-config="selectedLaunchPreset.llmConfig"
+            :disabled="!selectedLaunchPreset.llmModelIdentifier"
             :apply-defaults="true"
             :clear-on-empty-schema="true"
             @update:config="updateModelConfig"
@@ -350,6 +416,9 @@
     <p v-if="bindingStore.fieldErrors.targetAgentDefinitionId" class="mt-1 text-sm text-red-600">
       {{ bindingStore.fieldErrors.targetAgentDefinitionId }}
     </p>
+    <p v-if="bindingStore.fieldErrors.targetTeamDefinitionId" class="mt-1 text-sm text-red-600">
+      {{ bindingStore.fieldErrors.targetTeamDefinitionId }}
+    </p>
     <p v-if="bindingStore.fieldErrors.workspaceRootPath" class="mt-1 text-sm text-red-600">
       {{ bindingStore.fieldErrors.workspaceRootPath }}
     </p>
@@ -381,12 +450,19 @@
             {{ binding.peerId }}
           </p>
           <p class="text-xs text-gray-600 mt-1">
-            target agent: {{ formatBindingTargetLabel(binding) }}
+            target {{ binding.targetType.toLowerCase() }}: {{ formatBindingTargetLabel(binding) }}
           </p>
-          <p v-if="binding.launchPreset" class="text-xs text-gray-500 mt-1">
+          <p v-if="binding.targetType === 'AGENT' && binding.launchPreset" class="text-xs text-gray-500 mt-1">
             runtime: {{ binding.launchPreset.runtimeKind }} | model:
             {{ binding.launchPreset.llmModelIdentifier }} | workspace:
             {{ binding.launchPreset.workspaceRootPath }}
+            <span v-if="binding.threadId"> | thread: {{ binding.threadId }}</span>
+          </p>
+          <p v-else-if="binding.targetType === 'TEAM' && binding.teamLaunchPreset" class="text-xs text-gray-500 mt-1">
+            runtime: {{ binding.teamLaunchPreset.runtimeKind }} | model:
+            {{ binding.teamLaunchPreset.llmModelIdentifier }} | workspace:
+            {{ binding.teamLaunchPreset.workspaceRootPath }} | cached team run:
+            {{ binding.teamRunId || 'not started yet' }}
             <span v-if="binding.threadId"> | thread: {{ binding.threadId }}</span>
           </p>
         </div>
@@ -417,6 +493,7 @@ import { useMessagingChannelBindingSetupFlow } from '~/composables/useMessagingC
 
 const {
   accountIdModel,
+  allowedTargetTypes,
   agentDefinitionOptions,
   bindingStore,
   buildPeerCandidateKey,
@@ -426,6 +503,7 @@ const {
   effectiveManualPeerInput,
   formatBindingTargetLabel,
   formatPeerCandidateLabel,
+  formatTeamDefinitionOptionLabel,
   groupedModelOptions,
   modelConfigSchema,
   onDeleteBinding,
@@ -435,15 +513,19 @@ const {
   onTogglePeerInputMode,
   optionsStore,
   peerDiscoveryProviderLabel,
+  reloadTeamDefinitionOptions,
   scopedBindings,
+  selectedLaunchPreset,
   selectedPeerKey,
   selectedRuntimeUnavailableReason,
   selectedWorkspaceId,
   setWorkspaceSelectionMode,
+  showSkillAccessControl,
   showDiscordIdentityHint,
   showPeerDiscoveryInstruction,
-  showTelegramAgentOnlyHint,
+  showTeamResponsePolicyHint,
   supportsPeerDiscovery,
+  teamDefinitionOptions,
   updateAutoExecute,
   updateModel,
   updateModelConfig,

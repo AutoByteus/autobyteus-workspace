@@ -17,6 +17,7 @@ import {
   getRunProjectionService,
   type RunProjectionService,
 } from "../../run-history/services/run-projection-service.js";
+import type { ChannelSourceContext } from "../domain/models.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -30,7 +31,16 @@ export type AcceptedExternalTurnInput = {
   runId: string;
   runtimeKind: RuntimeKind;
   turnId: string | null;
+  teamRunId?: string | null;
   envelope: ExternalMessageEnvelope;
+};
+
+export type AcceptedSourceLinkedTurnInput = {
+  runId: string;
+  runtimeKind: RuntimeKind;
+  turnId: string | null;
+  teamRunId?: string | null;
+  source: ChannelSourceContext;
 };
 
 type MessageReceiptBinder = Pick<ChannelMessageReceiptService, "bindTurnToReceipt">;
@@ -50,9 +60,9 @@ export type RuntimeExternalChannelTurnBridgeDependencies = {
 type PendingTurn = {
   key: string;
   runId: string;
+  teamRunId: string | null;
   runtimeKind: RuntimeKind;
   turnId: string;
-  envelope: ExternalMessageEnvelope;
   assistantText: string;
   finalText: string | null;
   settled: boolean;
@@ -86,6 +96,16 @@ export class RuntimeExternalChannelTurnBridge {
   }
 
   async bindAcceptedExternalTurn(input: AcceptedExternalTurnInput): Promise<void> {
+    return this.bindAcceptedTurnToSource({
+      runId: input.runId,
+      runtimeKind: input.runtimeKind,
+      turnId: input.turnId,
+      teamRunId: input.teamRunId,
+      source: toSourceContext(input.envelope),
+    });
+  }
+
+  async bindAcceptedTurnToSource(input: AcceptedSourceLinkedTurnInput): Promise<void> {
     const turnId = normalizeOptionalString(input.turnId);
     if (!turnId) {
       logger.info(
@@ -95,16 +115,16 @@ export class RuntimeExternalChannelTurnBridge {
     }
 
     await this.messageReceiptService.bindTurnToReceipt({
-      provider: input.envelope.provider,
-      transport: input.envelope.transport,
-      accountId: input.envelope.accountId,
-      peerId: input.envelope.peerId,
-      threadId: input.envelope.threadId,
-      externalMessageId: input.envelope.externalMessageId,
+      provider: input.source.provider,
+      transport: input.source.transport,
+      accountId: input.source.accountId,
+      peerId: input.source.peerId,
+      threadId: input.source.threadId,
+      externalMessageId: input.source.externalMessageId,
       turnId,
       agentRunId: input.runId,
-      teamRunId: null,
-      receivedAt: normalizeDateOrNow(input.envelope.receivedAt),
+      teamRunId: normalizeOptionalString(input.teamRunId ?? null),
+      receivedAt: input.source.receivedAt,
     });
 
     if (input.runtimeKind === DEFAULT_RUNTIME_KIND) {
@@ -134,9 +154,9 @@ export class RuntimeExternalChannelTurnBridge {
     const pending: PendingTurn = {
       key,
       runId: input.runId,
+      teamRunId: normalizeOptionalString(input.teamRunId ?? null),
       runtimeKind: input.runtimeKind,
       turnId,
-      envelope: input.envelope,
       assistantText: "",
       finalText: null,
       settled: false,
@@ -232,6 +252,7 @@ export class RuntimeExternalChannelTurnBridge {
 
       const result = await this.replyCallbackServiceFactory().publishAssistantReplyByTurn({
         agentRunId: pending.runId,
+        teamRunId: pending.teamRunId,
         turnId: pending.turnId,
         replyText,
         callbackIdempotencyKey: buildCallbackIdempotencyKey(
@@ -495,6 +516,17 @@ const normalizeDateOrNow = (value: string): Date => {
   }
   return parsed;
 };
+
+const toSourceContext = (envelope: ExternalMessageEnvelope): ChannelSourceContext => ({
+  provider: envelope.provider,
+  transport: envelope.transport,
+  accountId: envelope.accountId,
+  peerId: envelope.peerId,
+  threadId: envelope.threadId,
+  externalMessageId: envelope.externalMessageId,
+  receivedAt: normalizeDateOrNow(envelope.receivedAt),
+  turnId: null,
+});
 
 let cachedRuntimeExternalChannelTurnBridge: RuntimeExternalChannelTurnBridge | null = null;
 

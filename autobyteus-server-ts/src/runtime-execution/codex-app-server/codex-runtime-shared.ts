@@ -94,6 +94,7 @@ export interface CodexInterAgentRelayRequest {
   senderRunId: string;
   senderTeamRunId: string | null;
   senderMemberName: string | null;
+  senderTurnId?: string | null;
   toolArguments: Record<string, unknown>;
 }
 

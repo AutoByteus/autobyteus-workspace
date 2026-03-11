@@ -57,6 +57,16 @@ describe('AgentStreamingService', () => {
         expect(clientMock.connect).toHaveBeenCalledWith(expect.stringContaining(agentRunId));
     });
 
+    it('tracks subscription state on connect and disconnect', () => {
+        (service as any).attachContext(mockAgentContext);
+
+        (service as any).handleConnect();
+        expect(mockAgentContext.isSubscribed).toBe(true);
+
+        (service as any).handleDisconnect('bye');
+        expect(mockAgentContext.isSubscribed).toBe(false);
+    });
+
     it('mirrors external user messages into the open conversation', () => {
         (service as any).dispatchMessage(
             {

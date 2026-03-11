@@ -1,6 +1,10 @@
 import type { ChannelBinding } from "../domain/models.js";
 import type { ChannelBindingService } from "../services/channel-binding-service.js";
 import {
+  getTeamRunHistoryService,
+  type TeamRunHistoryService,
+} from "../../run-history/services/team-run-history-service.js";
+import {
   getRuntimeAdapterRegistry,
   type RuntimeAdapterRegistry,
 } from "../../runtime-execution/runtime-adapter-registry.js";
@@ -20,27 +24,78 @@ import {
   ChannelRunHistoryBootstrapper,
   type ChannelRunHistoryBootstrapperDependencies,
 } from "./channel-run-history-bootstrapper.js";
+import {
+  getTeamRunLaunchService,
+  type TeamRunLaunchService,
+} from "../../agent-team-execution/services/team-run-launch-service.js";
 
 export type ChannelBindingRuntimeLauncherDependencies = {
-  bindingService: Pick<ChannelBindingService, "upsertBindingAgentRunId">;
+  bindingService: Pick<
+    ChannelBindingService,
+    "upsertBindingAgentRunId" | "upsertBindingTeamRunId"
+  >;
+  bindingRunRegistry?: ChannelBindingLiveRunRegistry;
   runtimeCompositionService?: RuntimeCompositionService;
   runtimeCommandIngressService?: RuntimeCommandIngressService;
   runtimeAdapterRegistry?: RuntimeAdapterRegistry;
   workspaceManager?: WorkspaceManager;
+  teamRunHistoryService?: Pick<TeamRunHistoryService, "getTeamRunResumeConfig">;
+  teamRunLaunchService?: Pick<
+    TeamRunLaunchService,
+    "buildMemberConfigsFromLaunchPreset" | "ensureTeamRun"
+  >;
   runHistoryBootstrapper?: ChannelRunHistoryBootstrapper;
   runHistoryBootstrapperDeps?: ChannelRunHistoryBootstrapperDependencies;
 };
 
+export interface ChannelBindingLiveRunRegistry {
+  claimAgentRun(bindingId: string, agentRunId: string): void;
+  claimTeamRun(bindingId: string, teamRunId: string): void;
+  ownsAgentRun(bindingId: string, agentRunId: string): boolean;
+  ownsTeamRun(bindingId: string, teamRunId: string): boolean;
+}
+
+export class InMemoryChannelBindingLiveRunRegistry
+  implements ChannelBindingLiveRunRegistry
+{
+  private readonly ownedAgentRunsByBindingId = new Map<string, string>();
+  private readonly ownedTeamRunsByBindingId = new Map<string, string>();
+
+  claimAgentRun(bindingId: string, agentRunId: string): void {
+    this.ownedAgentRunsByBindingId.set(bindingId, agentRunId);
+  }
+
+  claimTeamRun(bindingId: string, teamRunId: string): void {
+    this.ownedTeamRunsByBindingId.set(bindingId, teamRunId);
+  }
+
+  ownsAgentRun(bindingId: string, agentRunId: string): boolean {
+    return this.ownedAgentRunsByBindingId.get(bindingId) === agentRunId;
+  }
+
+  ownsTeamRun(bindingId: string, teamRunId: string): boolean {
+    return this.ownedTeamRunsByBindingId.get(bindingId) === teamRunId;
+  }
+}
+
 export class ChannelBindingRuntimeLauncher {
+  private readonly bindingRunRegistry: ChannelBindingLiveRunRegistry;
   private readonly runtimeCompositionService: RuntimeCompositionService;
   private readonly runtimeCommandIngressService: RuntimeCommandIngressService;
   private readonly runtimeAdapterRegistry: RuntimeAdapterRegistry;
   private readonly workspaceManager: WorkspaceManager;
+  private readonly teamRunHistoryService: Pick<TeamRunHistoryService, "getTeamRunResumeConfig">;
+  private readonly teamRunLaunchService: Pick<
+    TeamRunLaunchService,
+    "buildMemberConfigsFromLaunchPreset" | "ensureTeamRun"
+  >;
   private readonly runHistoryBootstrapper: ChannelRunHistoryBootstrapper;
 
   constructor(
     private readonly deps: ChannelBindingRuntimeLauncherDependencies,
   ) {
+    this.bindingRunRegistry =
+      deps.bindingRunRegistry ?? new InMemoryChannelBindingLiveRunRegistry();
     this.runtimeCompositionService =
       deps.runtimeCompositionService ?? getRuntimeCompositionService();
     this.runtimeCommandIngressService =
@@ -48,6 +103,10 @@ export class ChannelBindingRuntimeLauncher {
     this.runtimeAdapterRegistry =
       deps.runtimeAdapterRegistry ?? getRuntimeAdapterRegistry();
     this.workspaceManager = deps.workspaceManager ?? getWorkspaceManager();
+    this.teamRunHistoryService =
+      deps.teamRunHistoryService ?? getTeamRunHistoryService();
+    this.teamRunLaunchService =
+      deps.teamRunLaunchService ?? getTeamRunLaunchService();
     this.runHistoryBootstrapper =
       deps.runHistoryBootstrapper ??
       new ChannelRunHistoryBootstrapper(deps.runHistoryBootstrapperDeps);
@@ -60,7 +119,11 @@ export class ChannelBindingRuntimeLauncher {
     const launchTarget = normalizeAgentLaunchTarget(binding);
     const cachedAgentRunId = normalizeNullableString(binding.agentRunId);
 
-    if (cachedAgentRunId && this.isRunActive(cachedAgentRunId)) {
+    if (
+      cachedAgentRunId &&
+      this.bindingRunRegistry.ownsAgentRun(binding.id, cachedAgentRunId) &&
+      this.isRunActive(cachedAgentRunId)
+    ) {
       return cachedAgentRunId;
     }
 
@@ -84,7 +147,43 @@ export class ChannelBindingRuntimeLauncher {
       initialSummary: options.initialSummary ?? null,
     });
     await this.deps.bindingService.upsertBindingAgentRunId(binding.id, session.runId);
+    this.bindingRunRegistry.claimAgentRun(binding.id, session.runId);
     return session.runId;
+  }
+
+  async resolveOrStartTeamRun(
+    binding: ChannelBinding,
+    options: { initialSummary?: string | null } = {},
+  ): Promise<string> {
+    const launchTarget = normalizeTeamLaunchTarget(binding);
+    const cachedTeamRunId = normalizeNullableString(binding.teamRunId);
+
+    if (
+      cachedTeamRunId &&
+      this.bindingRunRegistry.ownsTeamRun(binding.id, cachedTeamRunId)
+    ) {
+      try {
+        const resumeConfig = await this.teamRunHistoryService.getTeamRunResumeConfig(cachedTeamRunId);
+        if (resumeConfig.isActive) {
+          return cachedTeamRunId;
+        }
+      } catch {
+        // Fall through to lazy-create a fresh team run for this binding.
+      }
+    }
+
+    const memberConfigs = await this.teamRunLaunchService.buildMemberConfigsFromLaunchPreset({
+      teamDefinitionId: launchTarget.teamDefinitionId,
+      launchPreset: launchTarget.teamLaunchPreset,
+    });
+    const { teamRunId } = await this.teamRunLaunchService.ensureTeamRun({
+      teamDefinitionId: launchTarget.teamDefinitionId,
+      memberConfigs,
+      initialSummary: options.initialSummary ?? null,
+    });
+    await this.deps.bindingService.upsertBindingTeamRunId(binding.id, teamRunId);
+    this.bindingRunRegistry.claimTeamRun(binding.id, teamRunId);
+    return teamRunId;
   }
 
   private isRunActive(runId: string): boolean {
@@ -119,6 +218,27 @@ const normalizeAgentLaunchTarget = (binding: ChannelBinding) => {
   return {
     agentDefinitionId,
     launchPreset: binding.launchPreset,
+  };
+};
+
+const normalizeTeamLaunchTarget = (binding: ChannelBinding) => {
+  if (binding.targetType !== "TEAM") {
+    throw new Error(
+      `Only TEAM bindings can resolve or start team runs. Received targetType '${binding.targetType}'.`,
+    );
+  }
+
+  const teamDefinitionId = normalizeRequiredString(
+    binding.teamDefinitionId,
+    "binding.teamDefinitionId",
+  );
+  if (!binding.teamLaunchPreset) {
+    throw new Error(`Binding '${binding.id}' is missing teamLaunchPreset.`);
+  }
+
+  return {
+    teamDefinitionId,
+    teamLaunchPreset: binding.teamLaunchPreset,
   };
 };
 

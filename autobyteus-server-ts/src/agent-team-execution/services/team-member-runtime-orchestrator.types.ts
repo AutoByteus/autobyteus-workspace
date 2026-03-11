@@ -15,9 +15,17 @@ export interface TeamRuntimeMemberConfig {
   llmConfig?: Record<string, unknown> | null;
 }
 
+export interface TeamMemberAcceptedTurn {
+  memberName: string;
+  memberRunId: string;
+  runtimeKind: RuntimeKind;
+  turnId: string | null;
+}
+
 export interface RelayInterAgentMessageInput {
   teamRunId: string;
   senderMemberRunId: string;
+  senderTurnId?: string | null;
   recipientName: string;
   content: string;
   messageType?: string | null;

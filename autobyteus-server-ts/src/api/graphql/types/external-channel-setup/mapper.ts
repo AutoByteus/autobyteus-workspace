@@ -1,10 +1,12 @@
 import type {
   ChannelBinding,
   ChannelBindingLaunchPreset,
+  ChannelBindingTeamLaunchPreset,
 } from "../../../../external-channel/domain/models.js";
 import type {
   ExternalChannelBindingGql,
   ExternalChannelLaunchPresetGql,
+  ExternalChannelTeamLaunchPresetGql,
 } from "./types.js";
 
 export const toGraphqlBinding = (
@@ -18,7 +20,10 @@ export const toGraphqlBinding = (
   threadId: binding.threadId,
   targetType: binding.targetType,
   targetAgentDefinitionId: binding.agentDefinitionId,
+  targetTeamDefinitionId: binding.teamDefinitionId,
   launchPreset: toGraphqlLaunchPreset(binding.launchPreset),
+  teamLaunchPreset: toGraphqlTeamLaunchPreset(binding.teamLaunchPreset),
+  teamRunId: binding.teamRunId,
   updatedAt: binding.updatedAt,
 });
 
@@ -35,6 +40,22 @@ const toGraphqlLaunchPreset = (
     runtimeKind: preset.runtimeKind,
     autoExecuteTools: preset.autoExecuteTools,
     skillAccessMode: preset.skillAccessMode,
+    llmConfig: preset.llmConfig,
+  };
+};
+
+const toGraphqlTeamLaunchPreset = (
+  preset: ChannelBindingTeamLaunchPreset | null,
+): ExternalChannelTeamLaunchPresetGql | null => {
+  if (!preset) {
+    return null;
+  }
+
+  return {
+    workspaceRootPath: preset.workspaceRootPath,
+    llmModelIdentifier: preset.llmModelIdentifier,
+    runtimeKind: preset.runtimeKind,
+    autoExecuteTools: preset.autoExecuteTools,
     llmConfig: preset.llmConfig,
   };
 };

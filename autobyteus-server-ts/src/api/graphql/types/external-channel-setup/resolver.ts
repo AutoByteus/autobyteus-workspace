@@ -2,17 +2,22 @@ import { Arg, Mutation, Query, Resolver } from "type-graphql";
 import { GraphQLError } from "graphql";
 import { ExternalChannelProvider } from "autobyteus-ts/external-channel/provider.js";
 import { AgentDefinitionService } from "../../../../agent-definition/services/agent-definition-service.js";
-import type { ChannelBindingLaunchPreset } from "../../../../external-channel/domain/models.js";
+import type {
+  ChannelBindingLaunchPreset,
+  ChannelBindingTeamLaunchPreset,
+} from "../../../../external-channel/domain/models.js";
 import { normalizeRuntimeKind } from "../../../../runtime-management/runtime-kind.js";
 import {
   ExternalChannelCapabilities,
   ExternalChannelBindingGql,
+  ExternalChannelTeamDefinitionOptionGql,
   UpsertExternalChannelBindingInput,
 } from "./types.js";
 import {
   getBindingService,
   getConstraintService,
   getDiscordBindingIdentityValidator,
+  getTeamDefinitionOptionsService,
 } from "./services.js";
 import { toGraphqlBinding } from "./mapper.js";
 import {
@@ -43,6 +48,13 @@ export class ExternalChannelSetupResolver {
     return bindings.map((binding) => toGraphqlBinding(binding));
   }
 
+  @Query(() => [ExternalChannelTeamDefinitionOptionGql])
+  async externalChannelTeamDefinitionOptions(): Promise<
+    ExternalChannelTeamDefinitionOptionGql[]
+  > {
+    return getTeamDefinitionOptionsService().listTeamDefinitionOptions();
+  }
+
   @Mutation(() => ExternalChannelBindingGql)
   async upsertExternalChannelBinding(
     @Arg("input", () => UpsertExternalChannelBindingInput)
@@ -56,22 +68,46 @@ export class ExternalChannelSetupResolver {
     const threadId = normalizeOptionalString(input.threadId ?? null);
 
     const targetType = parseTargetType(input.targetType);
-    if (targetType !== "AGENT") {
-      throw new GraphQLError(
-        "Definition-bound messaging bindings currently support AGENT targets only.",
+
+    if (provider === ExternalChannelProvider.DISCORD) {
+      validateDiscordIdentityOrThrow(
         {
-          extensions: {
-            code: "EXTERNAL_CHANNEL_TARGET_TYPE_NOT_SUPPORTED",
-            field: "targetType",
-            detail:
-              "Definition-bound messaging bindings currently support AGENT targets only.",
-          },
+          accountId,
+          peerId,
+          threadId,
         },
+        getDiscordBindingIdentityValidator(),
       );
     }
 
+    if (targetType === "TEAM") {
+      const targetTeamDefinitionId = normalizeRequiredString(
+        input.targetTeamDefinitionId ?? "",
+        "targetTeamDefinitionId",
+      );
+      await getTeamDefinitionOptionsService().requireTeamDefinition(targetTeamDefinitionId);
+
+      const binding = await getBindingService().upsertBinding({
+        provider,
+        transport,
+        accountId,
+        peerId,
+        threadId,
+        targetType: "TEAM",
+        agentDefinitionId: null,
+        launchPreset: null,
+        agentRunId: null,
+        teamDefinitionId: targetTeamDefinitionId,
+        teamLaunchPreset: normalizeTeamLaunchPreset(input.teamLaunchPreset),
+        teamRunId: null,
+        targetNodeName: null,
+      });
+
+      return toGraphqlBinding(binding);
+    }
+
     const targetAgentDefinitionId = normalizeRequiredString(
-      input.targetAgentDefinitionId,
+      input.targetAgentDefinitionId ?? "",
       "targetAgentDefinitionId",
     );
     const agentDefinition = await this.agentDefinitionService.getAgentDefinitionById(
@@ -87,17 +123,6 @@ export class ExternalChannelSetupResolver {
       });
     }
 
-    if (provider === ExternalChannelProvider.DISCORD) {
-      validateDiscordIdentityOrThrow(
-        {
-          accountId,
-          peerId,
-          threadId,
-        },
-        getDiscordBindingIdentityValidator(),
-      );
-    }
-
     const binding = await getBindingService().upsertBinding({
       provider,
       transport,
@@ -108,6 +133,8 @@ export class ExternalChannelSetupResolver {
       agentDefinitionId: targetAgentDefinitionId,
       launchPreset: normalizeLaunchPreset(input.launchPreset),
       agentRunId: null,
+      teamDefinitionId: null,
+      teamLaunchPreset: null,
       teamRunId: null,
     });
 
@@ -125,6 +152,9 @@ export class ExternalChannelSetupResolver {
 const normalizeLaunchPreset = (
   input: UpsertExternalChannelBindingInput["launchPreset"],
 ): ChannelBindingLaunchPreset => {
+  if (!input) {
+    throw new Error("launchPreset is required for AGENT bindings.");
+  }
   return {
     workspaceRootPath: normalizeRequiredString(
       input.workspaceRootPath,
@@ -137,6 +167,27 @@ const normalizeLaunchPreset = (
     runtimeKind: normalizeRuntimeKind(input.runtimeKind),
     autoExecuteTools: input.autoExecuteTools ?? false,
     skillAccessMode: input.skillAccessMode ?? null,
+    llmConfig: input.llmConfig ?? null,
+  };
+};
+
+const normalizeTeamLaunchPreset = (
+  input: UpsertExternalChannelBindingInput["teamLaunchPreset"],
+): ChannelBindingTeamLaunchPreset => {
+  if (!input) {
+    throw new Error("teamLaunchPreset is required for TEAM bindings.");
+  }
+  return {
+    workspaceRootPath: normalizeRequiredString(
+      input.workspaceRootPath,
+      "teamLaunchPreset.workspaceRootPath",
+    ),
+    llmModelIdentifier: normalizeRequiredString(
+      input.llmModelIdentifier,
+      "teamLaunchPreset.llmModelIdentifier",
+    ),
+    runtimeKind: normalizeRuntimeKind(input.runtimeKind),
+    autoExecuteTools: input.autoExecuteTools ?? false,
     llmConfig: input.llmConfig ?? null,
   };
 };

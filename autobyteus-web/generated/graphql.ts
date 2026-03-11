@@ -318,7 +318,10 @@ export type ExternalChannelBindingGql = {
   peerId: Scalars['String']['output'];
   provider: Scalars['String']['output'];
   targetAgentDefinitionId?: Maybe<Scalars['String']['output']>;
+  targetTeamDefinitionId?: Maybe<Scalars['String']['output']>;
   targetType: Scalars['String']['output'];
+  teamLaunchPreset?: Maybe<ExternalChannelTeamLaunchPresetGql>;
+  teamRunId?: Maybe<Scalars['String']['output']>;
   threadId?: Maybe<Scalars['String']['output']>;
   transport: Scalars['String']['output'];
   updatedAt: Scalars['DateTime']['output'];
@@ -347,6 +350,32 @@ export type ExternalChannelLaunchPresetInput = {
   llmModelIdentifier: Scalars['String']['input'];
   runtimeKind?: InputMaybe<Scalars['String']['input']>;
   skillAccessMode?: InputMaybe<ExternalChannelSkillAccessModeEnum>;
+  workspaceRootPath: Scalars['String']['input'];
+};
+
+export type ExternalChannelTeamDefinitionOptionGql = {
+  __typename?: 'ExternalChannelTeamDefinitionOptionGql';
+  coordinatorMemberName: Scalars['String']['output'];
+  description: Scalars['String']['output'];
+  memberCount: Scalars['Int']['output'];
+  teamDefinitionId: Scalars['String']['output'];
+  teamDefinitionName: Scalars['String']['output'];
+};
+
+export type ExternalChannelTeamLaunchPresetGql = {
+  __typename?: 'ExternalChannelTeamLaunchPresetGql';
+  autoExecuteTools: Scalars['Boolean']['output'];
+  llmConfig?: Maybe<Scalars['JSONObject']['output']>;
+  llmModelIdentifier: Scalars['String']['output'];
+  runtimeKind: Scalars['String']['output'];
+  workspaceRootPath: Scalars['String']['output'];
+};
+
+export type ExternalChannelTeamLaunchPresetInput = {
+  autoExecuteTools?: InputMaybe<Scalars['Boolean']['input']>;
+  llmConfig?: InputMaybe<Scalars['JSONObject']['input']>;
+  llmModelIdentifier: Scalars['String']['input'];
+  runtimeKind?: InputMaybe<Scalars['String']['input']>;
   workspaceRootPath: Scalars['String']['input'];
 };
 
@@ -970,6 +999,7 @@ export type Query = {
   exportSyncBundle: ExportNodeSyncBundleResult;
   externalChannelBindings: Array<ExternalChannelBindingGql>;
   externalChannelCapabilities: ExternalChannelCapabilities;
+  externalChannelTeamDefinitionOptions: Array<ExternalChannelTeamDefinitionOptionGql>;
   fileContent: Scalars['String']['output'];
   folderChildren: Scalars['String']['output'];
   getGeminiSetupConfig: GeminiSetupConfig;
@@ -1653,11 +1683,13 @@ export type UpdateSkillInput = {
 
 export type UpsertExternalChannelBindingInput = {
   accountId: Scalars['String']['input'];
-  launchPreset: ExternalChannelLaunchPresetInput;
+  launchPreset?: InputMaybe<ExternalChannelLaunchPresetInput>;
   peerId: Scalars['String']['input'];
   provider: Scalars['String']['input'];
-  targetAgentDefinitionId: Scalars['String']['input'];
+  targetAgentDefinitionId?: InputMaybe<Scalars['String']['input']>;
+  targetTeamDefinitionId?: InputMaybe<Scalars['String']['input']>;
   targetType: Scalars['String']['input'];
+  teamLaunchPreset?: InputMaybe<ExternalChannelTeamLaunchPresetInput>;
   threadId?: InputMaybe<Scalars['String']['input']>;
   transport: Scalars['String']['input'];
 };
@@ -1805,7 +1837,7 @@ export type UpsertExternalChannelBindingMutationVariables = Exact<{
 }>;
 
 
-export type UpsertExternalChannelBindingMutation = { __typename?: 'Mutation', upsertExternalChannelBinding: { __typename: 'ExternalChannelBindingGql', id: string, provider: string, transport: string, accountId: string, peerId: string, threadId?: string | null, targetType: string, targetAgentDefinitionId?: string | null, updatedAt: any, launchPreset?: { __typename?: 'ExternalChannelLaunchPresetGql', workspaceRootPath: string, llmModelIdentifier: string, runtimeKind: string, autoExecuteTools: boolean, skillAccessMode?: ExternalChannelSkillAccessModeEnum | null, llmConfig?: any | null } | null } };
+export type UpsertExternalChannelBindingMutation = { __typename?: 'Mutation', upsertExternalChannelBinding: { __typename: 'ExternalChannelBindingGql', id: string, provider: string, transport: string, accountId: string, peerId: string, threadId?: string | null, targetType: string, targetAgentDefinitionId?: string | null, targetTeamDefinitionId?: string | null, teamRunId?: string | null, updatedAt: any, launchPreset?: { __typename?: 'ExternalChannelLaunchPresetGql', workspaceRootPath: string, llmModelIdentifier: string, runtimeKind: string, autoExecuteTools: boolean, skillAccessMode?: ExternalChannelSkillAccessModeEnum | null, llmConfig?: any | null } | null, teamLaunchPreset?: { __typename?: 'ExternalChannelTeamLaunchPresetGql', workspaceRootPath: string, llmModelIdentifier: string, runtimeKind: string, autoExecuteTools: boolean, llmConfig?: any | null } | null } };
 
 export type DeleteExternalChannelBindingMutationVariables = Exact<{
   id: Scalars['String']['input'];
@@ -2052,7 +2084,11 @@ export type ExternalChannelCapabilitiesQuery = { __typename?: 'Query', externalC
 export type ExternalChannelBindingsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ExternalChannelBindingsQuery = { __typename?: 'Query', externalChannelBindings: Array<{ __typename: 'ExternalChannelBindingGql', id: string, provider: string, transport: string, accountId: string, peerId: string, threadId?: string | null, targetType: string, targetAgentDefinitionId?: string | null, updatedAt: any, launchPreset?: { __typename?: 'ExternalChannelLaunchPresetGql', workspaceRootPath: string, llmModelIdentifier: string, runtimeKind: string, autoExecuteTools: boolean, skillAccessMode?: ExternalChannelSkillAccessModeEnum | null, llmConfig?: any | null } | null }> };
+export type ExternalChannelBindingsQuery = { __typename?: 'Query', externalChannelBindings: Array<{ __typename: 'ExternalChannelBindingGql', id: string, provider: string, transport: string, accountId: string, peerId: string, threadId?: string | null, targetType: string, targetAgentDefinitionId?: string | null, targetTeamDefinitionId?: string | null, teamRunId?: string | null, updatedAt: any, launchPreset?: { __typename?: 'ExternalChannelLaunchPresetGql', workspaceRootPath: string, llmModelIdentifier: string, runtimeKind: string, autoExecuteTools: boolean, skillAccessMode?: ExternalChannelSkillAccessModeEnum | null, llmConfig?: any | null } | null, teamLaunchPreset?: { __typename?: 'ExternalChannelTeamLaunchPresetGql', workspaceRootPath: string, llmModelIdentifier: string, runtimeKind: string, autoExecuteTools: boolean, llmConfig?: any | null } | null }> };
+
+export type ExternalChannelTeamDefinitionOptionsQueryVariables = Exact<{ [key: string]: never; }>;
+
+export type ExternalChannelTeamDefinitionOptionsQuery = { __typename?: 'Query', externalChannelTeamDefinitionOptions: Array<{ __typename: 'ExternalChannelTeamDefinitionOptionGql', teamDefinitionId: string, teamDefinitionName: string, description: string, coordinatorMemberName: string, memberCount: number }> };
 
 export type GetFileContentQueryVariables = Exact<{
   workspaceId: Scalars['String']['input'];
@@ -2966,6 +3002,7 @@ export const UpsertExternalChannelBindingDocument = gql`
     threadId
     targetType
     targetAgentDefinitionId
+    targetTeamDefinitionId
     launchPreset {
       workspaceRootPath
       llmModelIdentifier
@@ -2974,6 +3011,14 @@ export const UpsertExternalChannelBindingDocument = gql`
       skillAccessMode
       llmConfig
     }
+    teamLaunchPreset {
+      workspaceRootPath
+      llmModelIdentifier
+      runtimeKind
+      autoExecuteTools
+      llmConfig
+    }
+    teamRunId
     updatedAt
   }
 }
@@ -4182,6 +4227,7 @@ export const ExternalChannelBindingsDocument = gql`
     threadId
     targetType
     targetAgentDefinitionId
+    targetTeamDefinitionId
     launchPreset {
       workspaceRootPath
       llmModelIdentifier
@@ -4190,6 +4236,14 @@ export const ExternalChannelBindingsDocument = gql`
       skillAccessMode
       llmConfig
     }
+    teamLaunchPreset {
+      workspaceRootPath
+      llmModelIdentifier
+      runtimeKind
+      autoExecuteTools
+      llmConfig
+    }
+    teamRunId
     updatedAt
   }
 }
@@ -4214,6 +4268,38 @@ export function useExternalChannelBindingsLazyQuery(options: VueApolloComposable
   return VueApolloComposable.useLazyQuery<ExternalChannelBindingsQuery, ExternalChannelBindingsQueryVariables>(ExternalChannelBindingsDocument, {}, options);
 }
 export type ExternalChannelBindingsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<ExternalChannelBindingsQuery, ExternalChannelBindingsQueryVariables>;
+export const ExternalChannelTeamDefinitionOptionsDocument = gql`
+    query ExternalChannelTeamDefinitionOptions {
+  externalChannelTeamDefinitionOptions {
+    __typename
+    teamDefinitionId
+    teamDefinitionName
+    description
+    coordinatorMemberName
+    memberCount
+  }
+}
+    `;
+
+/**
+ * __useExternalChannelTeamDefinitionOptionsQuery__
+ *
+ * To run a query within a Vue component, call `useExternalChannelTeamDefinitionOptionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useExternalChannelTeamDefinitionOptionsQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useExternalChannelTeamDefinitionOptionsQuery();
+ */
+export function useExternalChannelTeamDefinitionOptionsQuery(options: VueApolloComposable.UseQueryOptions<ExternalChannelTeamDefinitionOptionsQuery, ExternalChannelTeamDefinitionOptionsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ExternalChannelTeamDefinitionOptionsQuery, ExternalChannelTeamDefinitionOptionsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ExternalChannelTeamDefinitionOptionsQuery, ExternalChannelTeamDefinitionOptionsQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<ExternalChannelTeamDefinitionOptionsQuery, ExternalChannelTeamDefinitionOptionsQueryVariables>(ExternalChannelTeamDefinitionOptionsDocument, {}, options);
+}
+export function useExternalChannelTeamDefinitionOptionsLazyQuery(options: VueApolloComposable.UseQueryOptions<ExternalChannelTeamDefinitionOptionsQuery, ExternalChannelTeamDefinitionOptionsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ExternalChannelTeamDefinitionOptionsQuery, ExternalChannelTeamDefinitionOptionsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ExternalChannelTeamDefinitionOptionsQuery, ExternalChannelTeamDefinitionOptionsQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<ExternalChannelTeamDefinitionOptionsQuery, ExternalChannelTeamDefinitionOptionsQueryVariables>(ExternalChannelTeamDefinitionOptionsDocument, {}, options);
+}
+export type ExternalChannelTeamDefinitionOptionsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<ExternalChannelTeamDefinitionOptionsQuery, ExternalChannelTeamDefinitionOptionsQueryVariables>;
 export const GetFileContentDocument = gql`
     query GetFileContent($workspaceId: String!, $filePath: String!) {
   fileContent(workspaceId: $workspaceId, filePath: $filePath)

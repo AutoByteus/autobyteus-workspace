@@ -20,7 +20,12 @@ import {
   type AgentRuntimeKind,
   type SkillAccessMode,
 } from '~/types/agent/AgentRunConfig';
-import type { ExternalChannelBindingModel } from '~/types/messaging';
+import type {
+  ExternalChannelBindingModel,
+  ExternalChannelLaunchPresetModel,
+  ExternalChannelTeamDefinitionOptionModel,
+  ExternalChannelTeamLaunchPresetModel,
+} from '~/types/messaging';
 
 type WorkspaceSelectionMode = 'existing' | 'path';
 
@@ -57,7 +62,7 @@ export function useMessagingChannelBindingSetupFlow() {
     peerDiscoveryProviderLabel,
     showPeerDiscoveryInstruction,
     showDiscordIdentityHint,
-    showTelegramAgentOnlyHint,
+    showTeamResponsePolicyHint,
     allowedTargetTypes,
     scopedBindings,
   } = useBindingFlowPolicyState({
@@ -99,6 +104,16 @@ export function useMessagingChannelBindingSetupFlow() {
   });
   void runtimeCapabilitiesStore.fetchRuntimeCapabilities();
 
+  type MutableLaunchPreset =
+    | ExternalChannelLaunchPresetModel
+    | ExternalChannelTeamLaunchPresetModel;
+
+  const getActiveLaunchPreset = (): MutableLaunchPreset =>
+    draft.targetType === 'TEAM' ? draft.teamLaunchPreset : draft.launchPreset;
+
+  const activeLaunchPreset = computed(() => getActiveLaunchPreset());
+  const showSkillAccessControl = computed(() => draft.targetType === 'AGENT');
+
   const normalizeRuntimeKind = (runtimeKind: unknown): AgentRuntimeKind => {
     if (typeof runtimeKind !== 'string') {
       return DEFAULT_AGENT_RUNTIME_KIND;
@@ -112,23 +127,25 @@ export function useMessagingChannelBindingSetupFlow() {
     validateSelectedModel = false,
   ) => {
     await llmStore.fetchProvidersWithModels(runtimeKind);
+    const preset = getActiveLaunchPreset();
     if (
       validateSelectedModel &&
-      draft.launchPreset.llmModelIdentifier &&
-      !llmStore.models.includes(draft.launchPreset.llmModelIdentifier)
+      preset.llmModelIdentifier &&
+      !llmStore.models.includes(preset.llmModelIdentifier)
     ) {
-      draft.launchPreset.llmModelIdentifier = '';
-      draft.launchPreset.llmConfig = null;
+      preset.llmModelIdentifier = '';
+      preset.llmConfig = null;
     }
   };
 
   watch(
-    () => draft.launchPreset.runtimeKind,
-    (runtimeKind, previousRuntimeKind) => {
+    () => [draft.targetType, activeLaunchPreset.value.runtimeKind] as const,
+    ([, runtimeKind], previousValue) => {
       const normalizedRuntime = normalizeRuntimeKind(runtimeKind);
+      const previousRuntimeKind = previousValue?.[1];
       const validateSelectedModel =
         typeof previousRuntimeKind === 'string' && previousRuntimeKind.trim().length > 0
-          ? previousRuntimeKind.trim() !== normalizedRuntime
+          ? normalizeRuntimeKind(previousRuntimeKind) !== normalizedRuntime
           : false;
       void ensureModelsForRuntime(normalizedRuntime, validateSelectedModel);
     },
@@ -136,8 +153,8 @@ export function useMessagingChannelBindingSetupFlow() {
   );
 
   watch(
-    () => [runtimeCapabilitiesStore.hasFetched, draft.launchPreset.runtimeKind] as const,
-    ([hasFetched, runtimeKind]) => {
+    () => [runtimeCapabilitiesStore.hasFetched, draft.targetType, activeLaunchPreset.value.runtimeKind] as const,
+    ([hasFetched, , runtimeKind]) => {
       if (!hasFetched) {
         return;
       }
@@ -147,9 +164,10 @@ export function useMessagingChannelBindingSetupFlow() {
         return;
       }
 
-      draft.launchPreset.runtimeKind = DEFAULT_AGENT_RUNTIME_KIND;
-      draft.launchPreset.llmModelIdentifier = '';
-      draft.launchPreset.llmConfig = null;
+      const preset = getActiveLaunchPreset();
+      preset.runtimeKind = DEFAULT_AGENT_RUNTIME_KIND;
+      preset.llmModelIdentifier = '';
+      preset.llmConfig = null;
       void ensureModelsForRuntime(DEFAULT_AGENT_RUNTIME_KIND, false);
     },
     { immediate: true },
@@ -171,6 +189,7 @@ export function useMessagingChannelBindingSetupFlow() {
       draft.provider = provider;
       draft.transport = providerScopeStore.resolvedTransport;
       draft.targetType = 'AGENT';
+      draft.targetTeamDefinitionId = '';
       optionsStore.resetPeerCandidates();
       optionsStore.clearStaleSelectionError();
       selectedPeerKey.value = '';
@@ -191,6 +210,16 @@ export function useMessagingChannelBindingSetupFlow() {
         if (provider === 'TELEGRAM' && providerScopeStore.telegramAccountId) {
           draft.accountId = providerScopeStore.telegramAccountId;
         }
+      }
+    },
+    { immediate: true },
+  );
+
+  watch(
+    () => draft.targetType,
+    (targetType) => {
+      if (targetType === 'TEAM' && bindingStore.teamDefinitionOptions.length === 0) {
+        void bindingStore.loadTeamDefinitionOptions().catch(() => undefined);
       }
     },
     { immediate: true },
@@ -256,7 +285,7 @@ export function useMessagingChannelBindingSetupFlow() {
         workspace?.workspaceConfig?.rootPath ||
         '';
       if (typeof workspaceRootPath === 'string' && workspaceRootPath.trim().length > 0) {
-        draft.launchPreset.workspaceRootPath = workspaceRootPath;
+        getActiveLaunchPreset().workspaceRootPath = workspaceRootPath;
       }
     },
   );
@@ -279,8 +308,8 @@ export function useMessagingChannelBindingSetupFlow() {
   );
 
   watch(
-    () => draft.launchPreset.workspaceRootPath,
-    (workspaceRootPath) => {
+    () => [draft.targetType, activeLaunchPreset.value.workspaceRootPath] as const,
+    ([, workspaceRootPath]) => {
       if (workspaceSelectionMode.value !== 'existing') {
         return;
       }
@@ -301,7 +330,7 @@ export function useMessagingChannelBindingSetupFlow() {
   const runtimeOptions = computed<
     Array<{ value: AgentRuntimeKind; label: string; enabled: boolean }>
   >(() => {
-    const selectedRuntimeKind = normalizeRuntimeKind(draft.launchPreset.runtimeKind);
+    const selectedRuntimeKind = normalizeRuntimeKind(activeLaunchPreset.value.runtimeKind);
     const optionByKind = new Map<
       AgentRuntimeKind,
       { value: AgentRuntimeKind; label: string; enabled: boolean }
@@ -347,15 +376,15 @@ export function useMessagingChannelBindingSetupFlow() {
   });
 
   const modelConfigSchema = computed(() => {
-    if (!draft.launchPreset.llmModelIdentifier) {
+    if (!activeLaunchPreset.value.llmModelIdentifier) {
       return null;
     }
-    return llmStore.modelConfigSchemaByIdentifier(draft.launchPreset.llmModelIdentifier);
+    return llmStore.modelConfigSchemaByIdentifier(activeLaunchPreset.value.llmModelIdentifier);
   });
 
   const selectedRuntimeUnavailableReason = computed(() => {
     return runtimeCapabilitiesStore.runtimeReason(
-      normalizeRuntimeKind(draft.launchPreset.runtimeKind),
+      normalizeRuntimeKind(activeLaunchPreset.value.runtimeKind),
     );
   });
 
@@ -367,7 +396,25 @@ export function useMessagingChannelBindingSetupFlow() {
     return map;
   });
 
+  const teamDefinitionOptions = computed(() => bindingStore.teamDefinitionOptions);
+
+  const teamDefinitionNameById = computed(() => {
+    const map = new Map<string, string>();
+    for (const option of bindingStore.teamDefinitionOptions) {
+      map.set(option.teamDefinitionId, option.teamDefinitionName);
+    }
+    return map;
+  });
+
   const formatBindingTargetLabel = (binding: ExternalChannelBindingModel): string => {
+    if (binding.targetType === 'TEAM') {
+      const teamDefinitionId = binding.targetTeamDefinitionId?.trim();
+      if (!teamDefinitionId) {
+        return 'Team definition missing';
+      }
+      return teamDefinitionNameById.value.get(teamDefinitionId) || teamDefinitionId;
+    }
+
     const agentDefinitionId = binding.targetAgentDefinitionId?.trim();
     if (!agentDefinitionId) {
       return 'Agent definition missing';
@@ -375,29 +422,47 @@ export function useMessagingChannelBindingSetupFlow() {
     return agentNameById.value.get(agentDefinitionId) || agentDefinitionId;
   };
 
+  const formatTeamDefinitionOptionLabel = (
+    option: ExternalChannelTeamDefinitionOptionModel,
+  ): string => {
+    const description = option.description?.trim();
+    const metadata = `${option.memberCount} members, coordinator ${option.coordinatorMemberName}`;
+    return description
+      ? `${option.teamDefinitionName} (${metadata}) - ${description}`
+      : `${option.teamDefinitionName} (${metadata})`;
+  };
+
+  const reloadTeamDefinitionOptions = async () => {
+    try {
+      await bindingStore.loadTeamDefinitionOptions();
+    } catch {
+      // Store exposes request errors.
+    }
+  };
+
   const updateRuntimeKind = (value: string) => {
     const runtimeKind = normalizeRuntimeKind(value);
     if (!runtimeCapabilitiesStore.isRuntimeEnabled(runtimeKind)) {
       return;
     }
-    if (draft.launchPreset.runtimeKind === runtimeKind) {
+    if (activeLaunchPreset.value.runtimeKind === runtimeKind) {
       return;
     }
-    draft.launchPreset.runtimeKind = runtimeKind;
-    draft.launchPreset.llmModelIdentifier = '';
-    draft.launchPreset.llmConfig = null;
+    activeLaunchPreset.value.runtimeKind = runtimeKind;
+    activeLaunchPreset.value.llmModelIdentifier = '';
+    activeLaunchPreset.value.llmConfig = null;
   };
 
   const updateModel = (value: string) => {
-    draft.launchPreset.llmModelIdentifier = value;
+    activeLaunchPreset.value.llmModelIdentifier = value;
   };
 
   const updateModelConfig = (config: Record<string, unknown> | null) => {
-    draft.launchPreset.llmConfig = config;
+    activeLaunchPreset.value.llmConfig = config;
   };
 
   const updateAutoExecute = (checked: boolean) => {
-    draft.launchPreset.autoExecuteTools = checked;
+    activeLaunchPreset.value.autoExecuteTools = checked;
   };
 
   const updateSkillAccessMode = (value: string) => {
@@ -408,7 +473,7 @@ export function useMessagingChannelBindingSetupFlow() {
     workspaceSelectionMode.value = mode;
     if (mode === 'existing') {
       const matchedWorkspace = workspaceOptions.value.find(
-        (workspace) => workspace.rootPath === draft.launchPreset.workspaceRootPath,
+        (workspace) => workspace.rootPath === activeLaunchPreset.value.workspaceRootPath,
       );
       selectedWorkspaceId.value = matchedWorkspace?.workspaceId ?? '';
       return;
@@ -428,6 +493,7 @@ export function useMessagingChannelBindingSetupFlow() {
     allowedTargetTypes,
     formatBindingTargetLabel,
     formatPeerCandidateLabel,
+    formatTeamDefinitionOptionLabel,
     groupedModelOptions,
     modelConfigSchema,
     onDeleteBinding,
@@ -437,15 +503,19 @@ export function useMessagingChannelBindingSetupFlow() {
     onTogglePeerInputMode,
     optionsStore,
     peerDiscoveryProviderLabel,
+    reloadTeamDefinitionOptions,
     scopedBindings,
+    selectedLaunchPreset: activeLaunchPreset,
     selectedPeerKey,
     selectedRuntimeUnavailableReason,
     selectedWorkspaceId,
     setWorkspaceSelectionMode,
+    showSkillAccessControl,
     showDiscordIdentityHint,
     showPeerDiscoveryInstruction,
-    showTelegramAgentOnlyHint,
+    showTeamResponsePolicyHint,
     supportsPeerDiscovery,
+    teamDefinitionOptions,
     updateAutoExecute,
     updateModel,
     updateModelConfig,

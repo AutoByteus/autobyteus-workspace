@@ -259,6 +259,41 @@ export const useRunHistoryStore = defineStore('runHistory', {
       }));
     },
 
+    reconcileActiveRunIds(activeRunIds: Iterable<string>): void {
+      const activeSet = new Set(
+        Array.from(activeRunIds).map((runId) => runId.trim()).filter(Boolean),
+      );
+
+      const nextResumeConfigs: Record<string, RunResumeConfigPayload> = {};
+      for (const [runId, resumeConfig] of Object.entries(this.resumeConfigByRunId)) {
+        nextResumeConfigs[runId] = {
+          ...resumeConfig,
+          isActive: activeSet.has(runId),
+        };
+      }
+      this.resumeConfigByRunId = nextResumeConfigs;
+
+      this.workspaceGroups = this.workspaceGroups.map((workspace) => ({
+        ...workspace,
+        agents: workspace.agents.map((agent) => ({
+          ...agent,
+          runs: agent.runs.map((run) => {
+            const isActive = activeSet.has(run.runId);
+            const lastKnownStatus = isActive
+              ? 'ACTIVE'
+              : run.lastKnownStatus === 'ERROR'
+                ? 'ERROR'
+                : 'IDLE';
+            return {
+              ...run,
+              isActive,
+              lastKnownStatus,
+            };
+          }),
+        })),
+      }));
+    },
+
     markTeamAsActive(teamRunId: string): void {
       const now = new Date().toISOString();
       this.teamRuns = this.teamRuns.map((team) => {
@@ -303,6 +338,35 @@ export const useRunHistoryStore = defineStore('runHistory', {
           isActive: false,
         };
       }
+    },
+
+    reconcileActiveTeamRunIds(activeTeamRunIds: Iterable<string>): void {
+      const activeSet = new Set(
+        Array.from(activeTeamRunIds).map((teamRunId) => teamRunId.trim()).filter(Boolean),
+      );
+
+      const nextTeamResumeConfigs: Record<string, TeamRunResumeConfigPayload> = {};
+      for (const [teamRunId, resumeConfig] of Object.entries(this.teamResumeConfigByTeamRunId)) {
+        nextTeamResumeConfigs[teamRunId] = {
+          ...resumeConfig,
+          isActive: activeSet.has(teamRunId),
+        };
+      }
+      this.teamResumeConfigByTeamRunId = nextTeamResumeConfigs;
+
+      this.teamRuns = this.teamRuns.map((team) => {
+        const isActive = activeSet.has(team.teamRunId);
+        const lastKnownStatus = isActive
+          ? 'ACTIVE'
+          : team.lastKnownStatus === 'ERROR'
+            ? 'ERROR'
+            : 'IDLE';
+        return {
+          ...team,
+          isActive,
+          lastKnownStatus,
+        };
+      });
     },
 
     markTeamDraftProjectionDirty(): void {

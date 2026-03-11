@@ -246,28 +246,24 @@ export class MethodRuntimeEventSegmentHelper extends MethodRuntimeEventToolHelpe
     const turnId = this.resolveTurnId(payload);
     const stableItemId = this.resolveStableReasoningItemId(payload);
 
+    if (stableItemId) {
+      if (turnId) {
+        this.rememberReasoningSegmentId(turnId, stableItemId);
+      }
+      this.logReasoningSegmentResolution("stable-item-id", payload, stableItemId, eventId, turnId);
+      return stableItemId;
+    }
+
     if (turnId) {
       const existing = this.reasoningSegmentIdByTurnId.get(turnId);
       if (existing) {
         this.logReasoningSegmentResolution("turn-cache-hit", payload, existing, eventId, turnId);
         return existing;
       }
-      const nextSegmentId = stableItemId ?? eventId ?? `reasoning:${turnId}`;
-      this.reasoningSegmentIdByTurnId.set(turnId, nextSegmentId);
-      while (this.reasoningSegmentIdByTurnId.size > this.maxReasoningTurnCacheSize) {
-        const oldest = this.reasoningSegmentIdByTurnId.keys().next().value;
-        if (!oldest) {
-          break;
-        }
-        this.reasoningSegmentIdByTurnId.delete(oldest);
-      }
+      const nextSegmentId = eventId ?? `reasoning:${turnId}`;
+      this.rememberReasoningSegmentId(turnId, nextSegmentId);
       this.logReasoningSegmentResolution("turn-cache-miss", payload, nextSegmentId, eventId, turnId);
       return nextSegmentId;
-    }
-
-    if (stableItemId) {
-      this.logReasoningSegmentResolution("stable-item-id", payload, stableItemId, eventId, turnId);
-      return stableItemId;
     }
 
     const fallbackId = eventId ?? this.resolveSegmentId(payload, "reasoning-segment");
@@ -430,6 +426,17 @@ export class MethodRuntimeEventSegmentHelper extends MethodRuntimeEventToolHelpe
       payload.itemId ??
       item.id;
     return asString(candidate);
+  }
+
+  private rememberReasoningSegmentId(turnId: string, segmentId: string): void {
+    this.reasoningSegmentIdByTurnId.set(turnId, segmentId);
+    while (this.reasoningSegmentIdByTurnId.size > this.maxReasoningTurnCacheSize) {
+      const oldest = this.reasoningSegmentIdByTurnId.keys().next().value;
+      if (!oldest) {
+        break;
+      }
+      this.reasoningSegmentIdByTurnId.delete(oldest);
+    }
   }
 
   private logReasoningSegmentResolution(

@@ -17,6 +17,15 @@ const createAgentDefinitionMutation = `
   }
 `;
 
+const createAgentTeamDefinitionMutation = `
+  mutation CreateAgentTeamDefinition($input: CreateAgentTeamDefinitionInput!) {
+    createAgentTeamDefinition(input: $input) {
+      id
+      name
+    }
+  }
+`;
+
 const launchPresetFixture = {
   workspaceRootPath: "/tmp/autobyteus-external-channel-workspace",
   llmModelIdentifier: "gpt-test",
@@ -24,6 +33,14 @@ const launchPresetFixture = {
   autoExecuteTools: false,
   skillAccessMode: "PRELOADED_ONLY",
   llmConfig: null,
+};
+
+const teamLaunchPresetFixture = {
+  workspaceRootPath: launchPresetFixture.workspaceRootPath,
+  llmModelIdentifier: launchPresetFixture.llmModelIdentifier,
+  runtimeKind: launchPresetFixture.runtimeKind,
+  autoExecuteTools: launchPresetFixture.autoExecuteTools,
+  llmConfig: launchPresetFixture.llmConfig,
 };
 
 describe("External channel setup GraphQL e2e", () => {
@@ -73,6 +90,35 @@ describe("External channel setup GraphQL e2e", () => {
       },
     });
     return data.createAgentDefinition.id;
+  };
+
+  const createTeamDefinition = async (): Promise<{
+    teamDefinitionId: string;
+    teamDefinitionName: string;
+  }> => {
+    const coordinatorAgentDefinitionId = await createAgentDefinition();
+    const teamDefinitionName = unique("Telegram Team");
+    const data = await execGraphql<{
+      createAgentTeamDefinition: { id: string; name: string };
+    }>(createAgentTeamDefinitionMutation, {
+      input: {
+        name: teamDefinitionName,
+        description: "Team definition for external channel setup e2e",
+        instructions: "Coordinate the team and deliver a single response.",
+        coordinatorMemberName: "coordinator",
+        nodes: [
+          {
+            memberName: "coordinator",
+            ref: coordinatorAgentDefinitionId,
+            refType: "AGENT",
+          },
+        ],
+      },
+    });
+    return {
+      teamDefinitionId: data.createAgentTeamDefinition.id,
+      teamDefinitionName: data.createAgentTeamDefinition.name,
+    };
   };
 
   it("exposes setup capability query", async () => {
@@ -399,7 +445,178 @@ describe("External channel setup GraphQL e2e", () => {
     });
   });
 
-  it("rejects non-AGENT bindings with the new policy error", async () => {
+  it("lists team definition options and supports TEAM binding lifecycle", async () => {
+    const team = await createTeamDefinition();
+    const accountId = unique("telegram-acct");
+    const peerId = unique("telegram-peer");
+
+    const optionsQuery = `
+      query TeamDefinitionOptions {
+        externalChannelTeamDefinitionOptions {
+          teamDefinitionId
+          teamDefinitionName
+          description
+          coordinatorMemberName
+          memberCount
+        }
+      }
+    `;
+
+    const options = await execGraphql<{
+      externalChannelTeamDefinitionOptions: Array<{
+        teamDefinitionId: string;
+        teamDefinitionName: string;
+        description: string;
+        coordinatorMemberName: string;
+        memberCount: number;
+      }>;
+    }>(optionsQuery);
+
+    const option = options.externalChannelTeamDefinitionOptions.find(
+      (entry) => entry.teamDefinitionId === team.teamDefinitionId,
+    );
+    expect(option).toMatchObject({
+      teamDefinitionId: team.teamDefinitionId,
+      teamDefinitionName: team.teamDefinitionName,
+      description: "Team definition for external channel setup e2e",
+      coordinatorMemberName: "coordinator",
+      memberCount: 1,
+    });
+
+    const upsertMutation = `
+      mutation Upsert($input: UpsertExternalChannelBindingInput!) {
+        upsertExternalChannelBinding(input: $input) {
+          id
+          provider
+          transport
+          accountId
+          peerId
+          threadId
+          targetType
+          targetAgentDefinitionId
+          targetTeamDefinitionId
+          launchPreset {
+            workspaceRootPath
+          }
+          teamLaunchPreset {
+            workspaceRootPath
+          }
+          teamRunId
+        }
+      }
+    `;
+
+    const upsertData = await execGraphql<{
+      upsertExternalChannelBinding: {
+        id: string;
+        provider: string;
+        transport: string;
+        accountId: string;
+        peerId: string;
+        threadId: string | null;
+        targetType: string;
+        targetAgentDefinitionId: string | null;
+        targetTeamDefinitionId: string | null;
+        launchPreset: { workspaceRootPath: string } | null;
+        teamLaunchPreset: { workspaceRootPath: string } | null;
+        teamRunId: string | null;
+      };
+    }>(upsertMutation, {
+      input: {
+        provider: "TELEGRAM",
+        transport: "BUSINESS_API",
+        accountId,
+        peerId,
+        threadId: null,
+        targetType: "TEAM",
+        targetAgentDefinitionId: null,
+        targetTeamDefinitionId: team.teamDefinitionId,
+        launchPreset: null,
+        teamLaunchPreset: teamLaunchPresetFixture,
+      },
+    });
+
+    expect(upsertData.upsertExternalChannelBinding).toMatchObject({
+      provider: "TELEGRAM",
+      transport: "BUSINESS_API",
+      accountId,
+      peerId,
+      threadId: null,
+      targetType: "TEAM",
+      targetAgentDefinitionId: null,
+      targetTeamDefinitionId: team.teamDefinitionId,
+      launchPreset: null,
+      teamLaunchPreset: {
+        workspaceRootPath: teamLaunchPresetFixture.workspaceRootPath,
+      },
+      teamRunId: null,
+    });
+
+    const bindingId = upsertData.upsertExternalChannelBinding.id;
+    const listQuery = `
+      query ListBindings {
+        externalChannelBindings {
+          id
+          accountId
+          peerId
+          targetType
+          targetAgentDefinitionId
+          targetTeamDefinitionId
+          launchPreset {
+            workspaceRootPath
+          }
+          teamLaunchPreset {
+            workspaceRootPath
+          }
+          teamRunId
+        }
+      }
+    `;
+
+    const listed = await execGraphql<{
+      externalChannelBindings: Array<{
+        id: string;
+        accountId: string;
+        peerId: string;
+        targetType: string;
+        targetAgentDefinitionId: string | null;
+        targetTeamDefinitionId: string | null;
+        launchPreset: { workspaceRootPath: string } | null;
+        teamLaunchPreset: { workspaceRootPath: string } | null;
+        teamRunId: string | null;
+      }>;
+    }>(listQuery);
+
+    const created = listed.externalChannelBindings.find((binding) => binding.id === bindingId);
+    expect(created).toMatchObject({
+      id: bindingId,
+      accountId,
+      peerId,
+      targetType: "TEAM",
+      targetAgentDefinitionId: null,
+      targetTeamDefinitionId: team.teamDefinitionId,
+      launchPreset: null,
+      teamLaunchPreset: {
+        workspaceRootPath: teamLaunchPresetFixture.workspaceRootPath,
+      },
+      teamRunId: null,
+    });
+
+    const deleteMutation = `
+      mutation DeleteBinding($id: String!) {
+        deleteExternalChannelBinding(id: $id)
+      }
+    `;
+
+    const deleted = await execGraphql<{ deleteExternalChannelBinding: boolean }>(
+      deleteMutation,
+      { id: bindingId },
+    );
+
+    expect(deleted.deleteExternalChannelBinding).toBe(true);
+  });
+
+  it("rejects missing team definitions during TEAM upsert", async () => {
     const upsertMutation = `
       mutation Upsert($input: UpsertExternalChannelBindingInput!) {
         upsertExternalChannelBinding(input: $input) {
@@ -419,19 +636,19 @@ describe("External channel setup GraphQL e2e", () => {
           peerId: "telegram-chat-123",
           threadId: null,
           targetType: "TEAM",
-          targetAgentDefinitionId: "team-definition-id",
-          launchPreset: launchPresetFixture,
+          targetAgentDefinitionId: null,
+          targetTeamDefinitionId: "missing-team-definition",
+          launchPreset: null,
+          teamLaunchPreset: teamLaunchPresetFixture,
         },
       },
     });
 
     expect(result.errors).toHaveLength(1);
-    expect(result.errors?.[0]?.message).toBe(
-      "Definition-bound messaging bindings currently support AGENT targets only.",
-    );
+    expect(result.errors?.[0]?.message).toBe("Selected team definition does not exist.");
     expect(result.errors?.[0]?.extensions).toMatchObject({
-      code: "EXTERNAL_CHANNEL_TARGET_TYPE_NOT_SUPPORTED",
-      field: "targetType",
+      code: "TARGET_TEAM_DEFINITION_NOT_FOUND",
+      field: "targetTeamDefinitionId",
     });
   });
 

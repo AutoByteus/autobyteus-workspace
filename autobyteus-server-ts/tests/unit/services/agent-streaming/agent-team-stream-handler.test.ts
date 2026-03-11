@@ -5,6 +5,7 @@ import {
   StreamEventType,
 } from "autobyteus-ts";
 import { AgentTeamStreamHandler } from "../../../../src/services/agent-streaming/agent-team-stream-handler.js";
+import { TeamStreamBroadcaster } from "../../../../src/services/agent-streaming/team-stream-broadcaster.js";
 import { ServerMessageType } from "../../../../src/services/agent-streaming/models.js";
 
 describe("AgentTeamStreamHandler", () => {
@@ -88,5 +89,137 @@ describe("AgentTeamStreamHandler", () => {
 
     await handler.disconnect(sessionId as string);
     expect(unsubscribe).toHaveBeenCalledTimes(1);
+  });
+
+  it("registers the websocket connection for team-scoped live message broadcasts", async () => {
+    const broadcaster = new TeamStreamBroadcaster();
+    const handler = new AgentTeamStreamHandler(
+      undefined,
+      {
+        getTeamRun: () => ({ teamRunId: "team-1" }),
+        getTeamEventStream: () => ({
+          allEvents: async function* () {},
+          close: vi.fn().mockResolvedValue(undefined),
+        }),
+      } as any,
+      {
+        sendTurn: vi.fn(),
+        approveTool: vi.fn(),
+        interruptRun: vi.fn(),
+      } as any,
+      {
+        getTeamRuntimeMode: () => "native_team",
+        sendToMember: vi.fn(),
+        approveForMember: vi.fn(),
+        getTeamBindings: vi.fn().mockReturnValue([]),
+      } as any,
+      {
+        subscribeTeam: vi.fn(),
+      } as any,
+      broadcaster,
+    );
+
+    const connection = {
+      send: vi.fn(),
+      close: vi.fn(),
+    };
+
+    const sessionId = await handler.connect(connection, "team-1");
+    expect(sessionId).toBeTruthy();
+
+    expect(
+      broadcaster.publishToTeamRun("team-1", {
+        toJson: () =>
+          JSON.stringify({
+            type: ServerMessageType.EXTERNAL_USER_MESSAGE,
+            payload: {
+              content: "hello from telegram",
+              agent_name: "Professor",
+            },
+          }),
+      } as any),
+    ).toBe(1);
+
+    expect(connection.send).toHaveBeenCalledTimes(2);
+    const payload = JSON.parse(connection.send.mock.calls[1][0]);
+    expect(payload).toMatchObject({
+      type: ServerMessageType.EXTERNAL_USER_MESSAGE,
+      payload: {
+        content: "hello from telegram",
+        agent_name: "Professor",
+      },
+    });
+
+    await handler.disconnect(sessionId as string);
+  });
+
+  it("sends initial member-runtime status snapshot messages on connect", async () => {
+    const getInitialSnapshotMessages = vi.fn(() => [
+      {
+        type: ServerMessageType.TEAM_STATUS,
+        toJson: () =>
+          JSON.stringify({
+            type: ServerMessageType.TEAM_STATUS,
+            payload: { new_status: "PROCESSING" },
+          }),
+      },
+      {
+        type: ServerMessageType.AGENT_STATUS,
+        toJson: () =>
+          JSON.stringify({
+            type: ServerMessageType.AGENT_STATUS,
+            payload: {
+              new_status: "RUNNING",
+              agent_name: "Professor",
+              agent_id: "run-professor",
+            },
+          }),
+      },
+    ]);
+
+    const handler = new AgentTeamStreamHandler(
+      undefined,
+      {
+        getTeamRun: () => null,
+        getTeamEventStream: () => null,
+      } as any,
+      {
+        sendTurn: vi.fn(),
+        approveTool: vi.fn(),
+        interruptRun: vi.fn(),
+      } as any,
+      {
+        getTeamRuntimeMode: () => "member_runtime",
+        sendToMember: vi.fn(),
+        approveForMember: vi.fn(),
+        getTeamBindings: vi.fn().mockReturnValue([]),
+      } as any,
+      {
+        subscribeTeam: vi.fn(() => vi.fn()),
+        getInitialSnapshotMessages,
+      } as any,
+    );
+
+    const connection = {
+      send: vi.fn(),
+      close: vi.fn(),
+    };
+
+    await handler.connect(connection, "team-live-1");
+
+    expect(getInitialSnapshotMessages).toHaveBeenCalledWith("team-live-1");
+    expect(connection.send).toHaveBeenCalledTimes(3);
+    expect(JSON.parse(connection.send.mock.calls[1][0])).toMatchObject({
+      type: ServerMessageType.TEAM_STATUS,
+      payload: { new_status: "PROCESSING" },
+    });
+    expect(JSON.parse(connection.send.mock.calls[2][0])).toMatchObject({
+      type: ServerMessageType.AGENT_STATUS,
+      payload: {
+        new_status: "RUNNING",
+        agent_name: "Professor",
+        agent_id: "run-professor",
+      },
+    });
   });
 });

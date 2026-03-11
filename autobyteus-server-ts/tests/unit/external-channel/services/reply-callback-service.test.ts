@@ -124,23 +124,7 @@ describe("ReplyCallbackService", () => {
     expect(result.reason).toBe("EMPTY_REPLY");
   });
 
-  it("skips when team target is requested in phase 1", async () => {
-    const service = new ReplyCallbackService({
-      getSourceByAgentRunTurn: vi.fn(),
-    } as any);
-
-    const result = await service.publishAssistantReplyByTurn({
-      agentRunId: "agent-1",
-      teamRunId: "team-1",
-      turnId: "turn-1",
-      replyText: "hello",
-      callbackIdempotencyKey: "cb-1",
-    });
-
-    expect(result.reason).toBe("TEAM_TARGET_NOT_SUPPORTED");
-  });
-
-  it("skips when callback runtime wiring is absent", async () => {
+  it("skips when callback runtime is not configured", async () => {
     const service = new ReplyCallbackService({
       getSourceByAgentRunTurn: vi.fn(),
     } as any);
@@ -275,6 +259,43 @@ describe("ReplyCallbackService", () => {
         transport: ExternalChannelTransport.PERSONAL_SESSION,
         accountId: "acct-1",
         peerId: "peer-1",
+      }),
+    );
+  });
+
+  it("accepts teamRunId as supplemental binding context for TEAM-owned coordinator replies", async () => {
+    const { service, deps } = createConfiguredService({
+      isRouteBoundToTarget: vi.fn().mockResolvedValue(true),
+    });
+
+    const result = await service.publishAssistantReplyByTurn({
+      agentRunId: "agent-member-1",
+      teamRunId: "team-1",
+      turnId: "turn-1",
+      replyText: "hello from coordinator",
+      callbackIdempotencyKey: "cb-team-1",
+    });
+
+    expect(result.published).toBe(true);
+    expect(deps.isRouteBoundToTarget).toHaveBeenCalledWith(
+      {
+        provider: ExternalChannelProvider.WHATSAPP,
+        transport: ExternalChannelTransport.PERSONAL_SESSION,
+        accountId: "acct-1",
+        peerId: "peer-1",
+        threadId: "thread-1",
+      },
+      {
+        agentRunId: "agent-member-1",
+        teamRunId: "team-1",
+      },
+    );
+    expect(deps.recordPending).toHaveBeenCalledOnce();
+    expect(deps.enqueueOrGet).toHaveBeenCalledWith(
+      "cb-team-1",
+      expect.objectContaining({
+        callbackIdempotencyKey: "cb-team-1",
+        replyText: "hello from coordinator",
       }),
     );
   });

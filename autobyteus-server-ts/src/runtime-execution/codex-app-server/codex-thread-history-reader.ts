@@ -82,6 +82,10 @@ export class CodexThreadHistoryReader {
 
       return null;
     } catch (error) {
+      const message = String(error);
+      if (isThreadNotMaterializedError(message)) {
+        return null;
+      }
       logger.warn(
         `Failed to read Codex thread '${normalizedThreadId}': ${String(error)}`,
       );

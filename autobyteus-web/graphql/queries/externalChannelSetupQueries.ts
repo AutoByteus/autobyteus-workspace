@@ -23,6 +23,7 @@ export const EXTERNAL_CHANNEL_BINDINGS = gql`
       threadId
       targetType
       targetAgentDefinitionId
+      targetTeamDefinitionId
       launchPreset {
         workspaceRootPath
         llmModelIdentifier
@@ -31,7 +32,28 @@ export const EXTERNAL_CHANNEL_BINDINGS = gql`
         skillAccessMode
         llmConfig
       }
+      teamLaunchPreset {
+        workspaceRootPath
+        llmModelIdentifier
+        runtimeKind
+        autoExecuteTools
+        llmConfig
+      }
+      teamRunId
       updatedAt
+    }
+  }
+`;
+
+export const EXTERNAL_CHANNEL_TEAM_DEFINITION_OPTIONS = gql`
+  query ExternalChannelTeamDefinitionOptions {
+    externalChannelTeamDefinitionOptions {
+      __typename
+      teamDefinitionId
+      teamDefinitionName
+      description
+      coordinatorMemberName
+      memberCount
     }
   }
 `;

@@ -1028,4 +1028,236 @@ Rules:
     },
     180_000,
   );
+
+  it(
+    "keeps untouched secondary member projection empty while coordinator projection remains queryable in codex team runtime",
+    async () => {
+      const unique = randomUUID();
+      const modelIdentifier = await fetchPreferredCodexToolModelIdentifier();
+      const workspaceRootPath = await mkdtemp(path.join(os.tmpdir(), "codex-team-projection-e2e-"));
+      createdWorkspaceRoots.add(workspaceRootPath);
+
+      const createAgentDefinitionMutation = `
+        mutation CreateAgentDefinition($input: CreateAgentDefinitionInput!) {
+          createAgentDefinition(input: $input) {
+            id
+          }
+        }
+      `;
+      const professorResult = await execGraphql<{ createAgentDefinition: { id: string } }>(
+        createAgentDefinitionMutation,
+        {
+          input: {
+            name: `codex-projection-professor-${unique}`,
+            role: "assistant",
+            description: "Coordinator member for Codex projection stability validation.",
+            instructions: "Reply with exactly ACK professor.",
+          },
+        },
+      );
+      const studentResult = await execGraphql<{ createAgentDefinition: { id: string } }>(
+        createAgentDefinitionMutation,
+        {
+          input: {
+            name: `codex-projection-student-${unique}`,
+            role: "assistant",
+            description: "Unused secondary member for Codex projection stability validation.",
+            instructions: "Stay idle unless directly addressed.",
+          },
+        },
+      );
+      const professorAgentDefinitionId = professorResult.createAgentDefinition.id;
+      const studentAgentDefinitionId = studentResult.createAgentDefinition.id;
+      createdAgentDefinitionIds.add(professorAgentDefinitionId);
+      createdAgentDefinitionIds.add(studentAgentDefinitionId);
+
+      const createTeamDefinitionMutation = `
+        mutation CreateAgentTeamDefinition($input: CreateAgentTeamDefinitionInput!) {
+          createAgentTeamDefinition(input: $input) {
+            id
+          }
+        }
+      `;
+      const teamDefinitionResult = await execGraphql<{ createAgentTeamDefinition: { id: string } }>(
+        createTeamDefinitionMutation,
+        {
+          input: {
+            name: `codex-projection-team-${unique}`,
+            description: "Codex team projection stability validation.",
+            instructions: "Route incoming user requests to the professor coordinator by default.",
+            coordinatorMemberName: "professor",
+            nodes: [
+              {
+                memberName: "professor",
+                ref: professorAgentDefinitionId,
+                refType: "AGENT",
+              },
+              {
+                memberName: "student",
+                ref: studentAgentDefinitionId,
+                refType: "AGENT",
+              },
+            ],
+          },
+        },
+      );
+      const teamDefinitionId = teamDefinitionResult.createAgentTeamDefinition.id;
+      createdTeamDefinitionIds.add(teamDefinitionId);
+
+      const createTeamRunMutation = `
+        mutation CreateAgentTeamRun($input: CreateAgentTeamRunInput!) {
+          createAgentTeamRun(input: $input) {
+            success
+            message
+            teamRunId
+          }
+        }
+      `;
+      const createTeamRunResult = await execGraphql<{
+        createAgentTeamRun: { success: boolean; message: string; teamRunId: string | null };
+      }>(createTeamRunMutation, {
+        input: {
+          teamDefinitionId,
+          memberConfigs: [
+            {
+              memberName: "professor",
+              agentDefinitionId: professorAgentDefinitionId,
+              llmModelIdentifier: modelIdentifier,
+              autoExecuteTools: true,
+              runtimeKind: "codex_app_server",
+              workspaceRootPath,
+            },
+            {
+              memberName: "student",
+              agentDefinitionId: studentAgentDefinitionId,
+              llmModelIdentifier: modelIdentifier,
+              autoExecuteTools: true,
+              runtimeKind: "codex_app_server",
+              workspaceRootPath,
+            },
+          ],
+        },
+      });
+
+      expect(createTeamRunResult.createAgentTeamRun.success).toBe(true);
+      expect(createTeamRunResult.createAgentTeamRun.teamRunId).toBeTruthy();
+      const teamRunId = createTeamRunResult.createAgentTeamRun.teamRunId as string;
+      createdTeamRunIds.add(teamRunId);
+
+      const sendMessageToTeamMutation = `
+        mutation SendMessageToTeam($input: SendMessageToTeamInput!) {
+          sendMessageToTeam(input: $input) {
+            success
+            message
+            teamRunId
+          }
+        }
+      `;
+      const sendResult = await execGraphql<{
+        sendMessageToTeam: { success: boolean; message: string; teamRunId: string | null };
+      }>(sendMessageToTeamMutation, {
+        input: {
+          teamRunId,
+          targetMemberName: "professor",
+          userInput: {
+            content: "Reply with exactly ACK professor.",
+            contextFiles: [],
+          },
+        },
+      });
+      expect(sendResult.sendMessageToTeam.success).toBe(true);
+      expect(sendResult.sendMessageToTeam.teamRunId).toBe(teamRunId);
+
+      const teamResumeQuery = `
+        query TeamResume($teamRunId: String!) {
+          getTeamRunResumeConfig(teamRunId: $teamRunId) {
+            manifest
+          }
+        }
+      `;
+      const projectionQuery = `
+        query TeamMemberProjection($teamRunId: String!, $memberRouteKey: String!) {
+          getTeamMemberRunProjection(teamRunId: $teamRunId, memberRouteKey: $memberRouteKey) {
+            agentRunId
+            summary
+            lastActivityAt
+            conversation
+          }
+        }
+      `;
+
+      const resumeResult = await execGraphql<{
+        getTeamRunResumeConfig: {
+          manifest: {
+            memberBindings: Array<{ memberName: string; memberRouteKey: string; memberRunId: string }>;
+          };
+        };
+      }>(teamResumeQuery, { teamRunId });
+      const professorRouteKey =
+        resumeResult.getTeamRunResumeConfig.manifest.memberBindings.find(
+          (binding) => binding.memberName === "professor",
+        )?.memberRouteKey ?? "professor";
+      const studentBinding =
+        resumeResult.getTeamRunResumeConfig.manifest.memberBindings.find(
+          (binding) => binding.memberName === "student",
+        ) ?? null;
+
+      expect(studentBinding).toBeTruthy();
+
+      let professorProjection:
+        | {
+            agentRunId: string;
+            conversation: Array<{ content?: string | null }>;
+          }
+        | null = null;
+      const deadline = Date.now() + 120_000;
+      while (Date.now() < deadline) {
+        const projectionResult = await execGraphql<{
+          getTeamMemberRunProjection: {
+            agentRunId: string;
+            conversation: Array<{ content?: string | null }>;
+          };
+        }>(projectionQuery, {
+          teamRunId,
+          memberRouteKey: professorRouteKey,
+        });
+        professorProjection = projectionResult.getTeamMemberRunProjection;
+        if (
+          professorProjection.conversation.some((entry) =>
+            String(entry.content ?? "").includes("ACK professor"),
+          )
+        ) {
+          break;
+        }
+        await wait(2_000);
+      }
+
+      expect(professorProjection).toBeTruthy();
+      expect(
+        professorProjection?.conversation.some((entry) =>
+          String(entry.content ?? "").includes("ACK professor"),
+        ),
+      ).toBe(true);
+
+      const studentProjectionResult = await execGraphql<{
+        getTeamMemberRunProjection: {
+          agentRunId: string;
+          summary: string | null;
+          lastActivityAt: string | null;
+          conversation: Array<Record<string, unknown>>;
+        };
+      }>(projectionQuery, {
+        teamRunId,
+        memberRouteKey: studentBinding?.memberRouteKey ?? "student",
+      });
+
+      expect(studentProjectionResult.getTeamMemberRunProjection.agentRunId).toBe(
+        studentBinding?.memberRunId,
+      );
+      expect(studentProjectionResult.getTeamMemberRunProjection.summary).toBeNull();
+      expect(studentProjectionResult.getTeamMemberRunProjection.lastActivityAt).toBeNull();
+      expect(studentProjectionResult.getTeamMemberRunProjection.conversation).toEqual([]);
+    },
+    180_000,
+  );
 });

@@ -4,7 +4,16 @@ import { useAgentRunStore } from '../agentRunStore';
 import { useAgentContextsStore } from '../agentContextsStore';
 import { AgentStreamingService } from '~/services/agentStreaming';
 
-const { mutateMock, llmProviderConfigStoreMock, runHistoryStoreMock, mockStopGeneration } = vi.hoisted(() => ({
+const {
+  mutateMock,
+  llmProviderConfigStoreMock,
+  runHistoryStoreMock,
+  mockStopGeneration,
+  mockConnect,
+  mockDisconnect,
+  mockAttachContext,
+  mockConnectionState,
+} = vi.hoisted(() => ({
   mutateMock: vi.fn().mockResolvedValue({
     data: {
       continueRun: {
@@ -27,6 +36,10 @@ const { mutateMock, llmProviderConfigStoreMock, runHistoryStoreMock, mockStopGen
     refreshTreeQuietly: vi.fn(),
   },
   mockStopGeneration: vi.fn(),
+  mockConnect: vi.fn(),
+  mockDisconnect: vi.fn(),
+  mockAttachContext: vi.fn(),
+  mockConnectionState: { value: 'connected' as 'connected' | 'disconnected' | 'connecting' | 'reconnecting' },
 }));
 
 // Mocks
@@ -37,9 +50,19 @@ vi.mock('~/utils/apolloClient', () => ({
 }));
 
 vi.mock('~/services/agentStreaming', () => ({
+  ConnectionState: {
+    DISCONNECTED: 'disconnected',
+    CONNECTING: 'connecting',
+    CONNECTED: 'connected',
+    RECONNECTING: 'reconnecting',
+  },
   AgentStreamingService: vi.fn().mockImplementation(() => ({
-    connect: vi.fn(),
-    disconnect: vi.fn(),
+    get connectionState() {
+      return mockConnectionState.value;
+    },
+    connect: mockConnect,
+    disconnect: mockDisconnect,
+    attachContext: mockAttachContext,
     approveTool: vi.fn(),
     denyTool: vi.fn(),
     stopGeneration: mockStopGeneration,
@@ -65,6 +88,7 @@ describe('agentRunStore', () => {
     beforeEach(() => {
         setActivePinia(createPinia());
         vi.clearAllMocks();
+        mockConnectionState.value = 'connected';
         mockStopGeneration.mockReset();
         llmProviderConfigStoreMock.models = ['gpt-4-fallback'];
         llmProviderConfigStoreMock.fetchProvidersWithModels.mockResolvedValue(undefined);
@@ -186,25 +210,35 @@ describe('agentRunStore', () => {
     
     it('closeAgent should disconnect and remove context', async () => {
         const store = useAgentRunStore();
-        const unsubscribeMock = vi.fn();
-        mockAgentContext.unsubscribe = unsubscribeMock;
         mockAgentContext.isSubscribed = true;
-        
-        // @ts-ignore
-        mockContextsStore.getRun = vi.fn(() => mockAgentContext);
+        mockAgentContext.state.runId = 'agent-1';
+        store.connectToAgentStream('agent-1');
         
         await store.closeAgent('agent-1', { terminate: false });
         
-        expect(unsubscribeMock).toHaveBeenCalled();
+        expect(mockDisconnect).toHaveBeenCalled();
         expect(mockAgentContext.isSubscribed).toBe(false);
         expect(mockContextsStore.removeRun).toHaveBeenCalledWith('agent-1');
     });
 
+    it('disconnectAgentStream tears down socket state without removing the context', () => {
+        const store = useAgentRunStore();
+        mockAgentContext.state.runId = 'agent-1';
+
+        store.connectToAgentStream('agent-1');
+        store.disconnectAgentStream('agent-1');
+
+        expect(mockDisconnect).toHaveBeenCalledTimes(1);
+        expect(mockAgentContext.isSubscribed).toBe(false);
+        expect(mockAgentContext.unsubscribe).toBeUndefined();
+        expect(mockContextsStore.removeRun).not.toHaveBeenCalled();
+    });
+
     it('terminateRun should not teardown local runtime when persisted termination fails', async () => {
         const store = useAgentRunStore();
-        const unsubscribeMock = vi.fn();
-        mockAgentContext.unsubscribe = unsubscribeMock;
         mockAgentContext.isSubscribed = true;
+        mockAgentContext.state.runId = 'run-1';
+        store.connectToAgentStream('run-1');
         mockAgentContext.state.currentStatus = 'processing_user_input';
         mutateMock.mockResolvedValueOnce({
             data: {
@@ -219,15 +253,15 @@ describe('agentRunStore', () => {
         const result = await store.terminateRun('run-1');
 
         expect(result).toBe(false);
-        expect(unsubscribeMock).not.toHaveBeenCalled();
+        expect(mockDisconnect).not.toHaveBeenCalled();
         expect(runHistoryStoreMock.markRunAsInactive).not.toHaveBeenCalled();
     });
 
     it('terminateRun should teardown local runtime and mark history inactive on success', async () => {
         const store = useAgentRunStore();
-        const unsubscribeMock = vi.fn();
-        mockAgentContext.unsubscribe = unsubscribeMock;
         mockAgentContext.isSubscribed = true;
+        mockAgentContext.state.runId = 'run-1';
+        store.connectToAgentStream('run-1');
         mutateMock.mockResolvedValueOnce({
             data: {
                 terminateAgentRun: {
@@ -241,21 +275,21 @@ describe('agentRunStore', () => {
         const result = await store.terminateRun('run-1');
 
         expect(result).toBe(true);
-        expect(unsubscribeMock).toHaveBeenCalled();
+        expect(mockDisconnect).toHaveBeenCalled();
         expect(runHistoryStoreMock.markRunAsInactive).toHaveBeenCalledWith('run-1');
         expect(runHistoryStoreMock.refreshTreeQuietly).toHaveBeenCalled();
     });
 
     it('terminateRun should teardown local runtime and skip backend for temp runs', async () => {
         const store = useAgentRunStore();
-        const unsubscribeMock = vi.fn();
-        mockAgentContext.unsubscribe = unsubscribeMock;
         mockAgentContext.isSubscribed = true;
+        mockAgentContext.state.runId = 'temp-42';
+        store.connectToAgentStream('temp-42');
 
         const result = await store.terminateRun('temp-42');
 
         expect(result).toBe(true);
-        expect(unsubscribeMock).toHaveBeenCalled();
+        expect(mockDisconnect).toHaveBeenCalled();
         expect(runHistoryStoreMock.markRunAsInactive).toHaveBeenCalledWith('temp-42');
         expect(mutateMock).not.toHaveBeenCalled();
     });

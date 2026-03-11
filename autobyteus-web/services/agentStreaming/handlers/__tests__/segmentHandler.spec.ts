@@ -170,7 +170,10 @@ describe('segmentHandler', () => {
             result: null,
             error: null,
             rawContent: '',
-            _segmentId: 'send-msg-1',
+            _streamSegmentIdentity: {
+              id: 'send-msg-1',
+              lookupKey: null,
+            },
           },
         ],
       } as any);
@@ -363,6 +366,70 @@ describe('segmentHandler', () => {
       expect(aiMessage.segments).toHaveLength(1);
       expect(aiMessage.segments[0].type).toBe('think');
       expect(aiMessage.segments[0].content).toBe('reasoning summary');
+    });
+
+    it('creates a second think segment when later reasoning arrives with a new segment id', () => {
+      handleSegmentContent(
+        {
+          id: 'seg-reasoning-1',
+          delta: 'first burst',
+          segment_type: 'reasoning',
+        },
+        mockContext,
+      );
+
+      handleSegmentStart(
+        {
+          id: 'seg-run-bash',
+          segment_type: 'run_bash',
+          metadata: { command: 'echo hello' },
+        },
+        mockContext,
+      );
+
+      handleSegmentContent(
+        {
+          id: 'seg-reasoning-2',
+          delta: 'second burst',
+          segment_type: 'reasoning',
+        },
+        mockContext,
+      );
+
+      const aiMessage = mockContext.conversation.messages[0] as any;
+      expect(aiMessage.segments).toHaveLength(3);
+      expect(aiMessage.segments[0].type).toBe('think');
+      expect(aiMessage.segments[0].content).toBe('first burst');
+      expect(aiMessage.segments[1].type).toBe('terminal_command');
+      expect(aiMessage.segments[2].type).toBe('think');
+      expect(aiMessage.segments[2].content).toBe('second burst');
+    });
+
+    it('treats segment id plus segment type as the preferred identity when ids are reused', () => {
+      handleSegmentContent(
+        {
+          id: 'seg-shared',
+          delta: 'reasoning burst',
+          segment_type: 'reasoning',
+        },
+        mockContext,
+      );
+
+      handleSegmentStart(
+        {
+          id: 'seg-shared',
+          segment_type: 'run_bash',
+          metadata: { command: 'echo shared' },
+        },
+        mockContext,
+      );
+
+      const aiMessage = mockContext.conversation.messages[0] as any;
+      expect(aiMessage.segments).toHaveLength(2);
+      expect(aiMessage.segments[0].type).toBe('think');
+      expect(aiMessage.segments[0].content).toBe('reasoning burst');
+      expect(aiMessage.segments[1].type).toBe('terminal_command');
+      expect(aiMessage.segments[1].command).toBe('echo shared');
     });
   });
 

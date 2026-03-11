@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { MemoryFileStore } from "../../../src/agent-memory-view/store/memory-file-store.js";
 
 const writeJson = (filePath: string, payload: unknown) => {
@@ -75,6 +75,18 @@ describe("MemoryFileStore", () => {
     tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "memory-store-"));
     const store = new MemoryFileStore(tempDir);
     expect(store.readJsonl(path.join(tempDir, "missing.jsonl"))).toEqual([]);
+  });
+
+  it("can suppress missing-file warnings for optional projection reads", () => {
+    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "memory-store-"));
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const store = new MemoryFileStore(tempDir, { warnOnMissingFiles: false });
+
+    expect(store.readJson(path.join(tempDir, "missing.json"))).toBeNull();
+    expect(store.readJsonl(path.join(tempDir, "missing.jsonl"))).toEqual([]);
+    expect(warnSpy).not.toHaveBeenCalled();
+
+    warnSpy.mockRestore();
   });
 
   it("supports explicit leaf run root for team-member directories", () => {

@@ -99,6 +99,8 @@ export interface ExternalUserMessagePayload {
   thread_id?: string | null;
   external_message_id?: string | null;
   context_file_paths?: ExternalUserMessageContextFilePathPayload[];
+  agent_name?: string;
+  agent_id?: string;
 }
 
 export interface TeamStatusPayload {

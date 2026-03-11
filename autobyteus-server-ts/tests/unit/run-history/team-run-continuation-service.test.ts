@@ -92,7 +92,12 @@ describe("TeamRunContinuationService", () => {
   it("persists refreshed member-runtime references after restore", async () => {
     const persistTeamRunManifest = vi.fn().mockResolvedValue(undefined);
     const onTeamEvent = vi.fn().mockResolvedValue(undefined);
-    const sendToMember = vi.fn().mockResolvedValue(undefined);
+    const sendToMember = vi.fn().mockResolvedValue({
+      memberName: "student",
+      memberRunId: "member-student",
+      runtimeKind: "codex_app_server",
+      turnId: "turn-student-1",
+    });
     const restoreMemberRuntimeSessions = vi.fn().mockResolvedValue([
       {
         memberName: "professor",
@@ -201,7 +206,7 @@ describe("TeamRunContinuationService", () => {
       } as any,
     });
 
-    await service.continueTeamRun({
+    const result = await service.continueTeamRun({
       teamRunId: "team-codex-1",
       userInput: { content: "hello codex team", contextFiles: [] } as any,
       targetMemberRouteKey: "student",
@@ -221,6 +226,17 @@ describe("TeamRunContinuationService", () => {
       expect.any(Object),
       { fallbackTargetMemberName: "professor" },
     );
+    expect(result).toMatchObject({
+      teamRunId: "team-codex-1",
+      restored: true,
+      targetMemberName: "student",
+      dispatchedTurn: {
+        memberName: "student",
+        memberRunId: "member-student",
+        runtimeKind: "codex_app_server",
+        turnId: "turn-student-1",
+      },
+    });
     expect(onTeamEvent).toHaveBeenCalledWith("team-codex-1", {
       status: "ACTIVE",
       summary: "hello codex team",

@@ -235,4 +235,53 @@ describe("TeamMemberRunProjectionService", () => {
     expect(result.summary).toBe("summary-from-codex");
     expect(result.conversation).toHaveLength(1);
   });
+
+  it("returns an empty projection when an untouched codex member has no local traces and no runtime turns yet", async () => {
+    const getTeamRunResumeConfig = vi.fn().mockResolvedValue({
+      teamRunId: "team-1",
+      manifest: {
+        workspaceRootPath: "/tmp/workspace",
+        memberBindings: [
+          {
+            memberRouteKey: "student",
+            memberName: "student",
+            memberRunId: "student-run",
+            runtimeKind: "codex_app_server",
+            runtimeReference: {
+              runtimeKind: "codex_app_server",
+              sessionId: "student-run",
+              threadId: "thread-student",
+              metadata: null,
+            },
+          },
+        ],
+      },
+    });
+    const getProjection = vi.fn().mockResolvedValue({
+      runId: "student-run",
+      summary: null,
+      lastActivityAt: null,
+      conversation: [],
+    });
+    const buildProjection = vi.fn().mockResolvedValue(null);
+    const resolveProvider = vi.fn().mockReturnValue({
+      runtimeKind: "codex_app_server",
+      buildProjection,
+    });
+
+    const service = new TeamMemberRunProjectionService({
+      teamRunHistoryService: { getTeamRunResumeConfig } as any,
+      projectionReader: { getProjection } as any,
+      projectionProviderRegistry: { resolveProvider } as any,
+    });
+
+    const result = await service.getProjection("team-1", "student");
+
+    expect(resolveProvider).toHaveBeenCalledWith("codex_app_server");
+    expect(buildProjection).toHaveBeenCalledTimes(1);
+    expect(result.agentRunId).toBe("student-run");
+    expect(result.summary).toBeNull();
+    expect(result.lastActivityAt).toBeNull();
+    expect(result.conversation).toEqual([]);
+  });
 });

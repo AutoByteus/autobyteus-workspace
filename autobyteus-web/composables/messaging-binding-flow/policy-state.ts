@@ -81,8 +81,8 @@ export function useBindingFlowPolicyState(input: {
   );
 
   const showDiscordIdentityHint = computed(() => draft.provider === 'DISCORD');
-  const showTelegramAgentOnlyHint = computed(() => draft.provider === 'TELEGRAM');
-  const allowedTargetTypes = computed<ExternalChannelBindingTargetType[]>(() => ['AGENT']);
+  const showTeamResponsePolicyHint = computed(() => draft.targetType === 'TEAM');
+  const allowedTargetTypes = computed<ExternalChannelBindingTargetType[]>(() => ['AGENT', 'TEAM']);
 
   const scopedBindings = computed(() =>
     bindingStore.bindingsForScope({
@@ -99,7 +99,7 @@ export function useBindingFlowPolicyState(input: {
     peerDiscoveryProviderLabel,
     showPeerDiscoveryInstruction,
     showDiscordIdentityHint,
-    showTelegramAgentOnlyHint,
+    showTeamResponsePolicyHint,
     allowedTargetTypes,
     scopedBindings,
   };

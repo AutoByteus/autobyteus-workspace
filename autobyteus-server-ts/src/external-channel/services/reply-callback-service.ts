@@ -22,7 +22,6 @@ export type PublishAssistantReplyReason =
   | "TURN_ID_MISSING"
   | "SOURCE_NOT_FOUND"
   | "BINDING_NOT_FOUND"
-  | "TEAM_TARGET_NOT_SUPPORTED"
   | "EMPTY_REPLY"
   | "CALLBACK_NOT_CONFIGURED";
 
@@ -115,11 +114,6 @@ export class ReplyCallbackService {
       return skip("EMPTY_REPLY");
     }
 
-    const teamRunId = normalizeOptionalString(input.teamRunId ?? null);
-    if (teamRunId) {
-      return skip("TEAM_TARGET_NOT_SUPPORTED");
-    }
-
     const callbackIdempotencyService = this.callbackIdempotencyService;
     const deliveryEventService = this.deliveryEventService;
     const callbackOutboxService = this.callbackOutboxService;
@@ -140,6 +134,7 @@ export class ReplyCallbackService {
     }
 
     const agentRunId = normalizeRequiredString(input.agentRunId, "agentRunId");
+    const teamRunId = normalizeOptionalString(input.teamRunId ?? null);
     const callbackIdempotencyKey = normalizeRequiredString(
       input.callbackIdempotencyKey,
       "callbackIdempotencyKey",
@@ -150,7 +145,7 @@ export class ReplyCallbackService {
       return skip("SOURCE_NOT_FOUND");
     }
 
-    const target: ChannelDispatchTarget = { agentRunId, teamRunId: null };
+    const target: ChannelDispatchTarget = { agentRunId, teamRunId };
     if (this.bindingService) {
       const stillBound = await this.bindingService.isRouteBoundToTarget(
         {

@@ -211,9 +211,13 @@ export class CodexAppServerRuntimeAdapter implements RuntimeAdapter {
     input: RuntimeRelayInterAgentMessageInput,
   ): Promise<RuntimeCommandResult> {
     try {
-      await this.runtimeService.injectInterAgentEnvelope(input.runId, input.envelope);
+      const result = await this.runtimeService.injectInterAgentEnvelope(
+        input.runId,
+        input.envelope,
+      );
       return {
         accepted: true,
+        turnId: result.turnId ?? null,
         runtimeReference: this.getRunRuntimeReference(input.runId),
       };
     } catch (error) {

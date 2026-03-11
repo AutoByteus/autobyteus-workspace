@@ -1,6 +1,6 @@
 import { GraphQLJSONObject } from "graphql-scalars";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
-import { Field, InputType, ObjectType, registerEnumType } from "type-graphql";
+import { Field, InputType, Int, ObjectType, registerEnumType } from "type-graphql";
 
 registerEnumType(SkillAccessMode, {
   name: "ExternalChannelSkillAccessModeEnum",
@@ -44,11 +44,38 @@ export class ExternalChannelBindingGql {
   @Field(() => String, { nullable: true })
   targetAgentDefinitionId?: string | null;
 
+  @Field(() => String, { nullable: true })
+  targetTeamDefinitionId?: string | null;
+
   @Field(() => ExternalChannelLaunchPresetGql, { nullable: true })
   launchPreset?: ExternalChannelLaunchPresetGql | null;
 
+  @Field(() => ExternalChannelTeamLaunchPresetGql, { nullable: true })
+  teamLaunchPreset?: ExternalChannelTeamLaunchPresetGql | null;
+
+  @Field(() => String, { nullable: true })
+  teamRunId?: string | null;
+
   @Field(() => Date)
   updatedAt!: Date;
+}
+
+@ObjectType()
+export class ExternalChannelTeamDefinitionOptionGql {
+  @Field(() => String)
+  teamDefinitionId!: string;
+
+  @Field(() => String)
+  teamDefinitionName!: string;
+
+  @Field(() => String)
+  description!: string;
+
+  @Field(() => String)
+  coordinatorMemberName!: string;
+
+  @Field(() => Int)
+  memberCount!: number;
 }
 
 @ObjectType()
@@ -93,6 +120,42 @@ export class ExternalChannelLaunchPresetInput {
   llmConfig?: Record<string, unknown> | null;
 }
 
+@ObjectType()
+export class ExternalChannelTeamLaunchPresetGql {
+  @Field(() => String)
+  workspaceRootPath!: string;
+
+  @Field(() => String)
+  llmModelIdentifier!: string;
+
+  @Field(() => String)
+  runtimeKind!: string;
+
+  @Field(() => Boolean)
+  autoExecuteTools!: boolean;
+
+  @Field(() => GraphQLJSONObject, { nullable: true })
+  llmConfig?: Record<string, unknown> | null;
+}
+
+@InputType()
+export class ExternalChannelTeamLaunchPresetInput {
+  @Field(() => String)
+  workspaceRootPath!: string;
+
+  @Field(() => String)
+  llmModelIdentifier!: string;
+
+  @Field(() => String, { nullable: true })
+  runtimeKind?: string | null;
+
+  @Field(() => Boolean, { nullable: true })
+  autoExecuteTools?: boolean | null;
+
+  @Field(() => GraphQLJSONObject, { nullable: true })
+  llmConfig?: Record<string, unknown> | null;
+}
+
 @InputType()
 export class UpsertExternalChannelBindingInput {
   @Field(() => String)
@@ -113,9 +176,15 @@ export class UpsertExternalChannelBindingInput {
   @Field(() => String)
   targetType!: string;
 
-  @Field(() => String)
-  targetAgentDefinitionId!: string;
+  @Field(() => String, { nullable: true })
+  targetAgentDefinitionId?: string | null;
 
-  @Field(() => ExternalChannelLaunchPresetInput)
-  launchPreset!: ExternalChannelLaunchPresetInput;
+  @Field(() => String, { nullable: true })
+  targetTeamDefinitionId?: string | null;
+
+  @Field(() => ExternalChannelLaunchPresetInput, { nullable: true })
+  launchPreset?: ExternalChannelLaunchPresetInput | null;
+
+  @Field(() => ExternalChannelTeamLaunchPresetInput, { nullable: true })
+  teamLaunchPreset?: ExternalChannelTeamLaunchPresetInput | null;
 }

@@ -103,6 +103,10 @@ export class TeamMemberRuntimeSessionLifecycleService {
     return this.teamRuntimeBindingRegistry.getTeamBindings(teamRunId);
   }
 
+  listActiveTeamRunIds(): string[] {
+    return this.teamRuntimeBindingRegistry.listTeamRunIds();
+  }
+
   getActiveMemberBindings(teamRunId: string): TeamRunMemberBinding[] {
     const state = this.teamRuntimeBindingRegistry.getTeamBindingState(teamRunId);
     if (!state || state.memberBindings.length === 0) {

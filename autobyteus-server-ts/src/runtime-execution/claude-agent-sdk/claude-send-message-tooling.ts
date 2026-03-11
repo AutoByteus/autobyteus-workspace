@@ -228,6 +228,7 @@ const handleSendMessageToToolInvocation = async (options: {
     senderRunId: options.state.runId,
     senderMemberName: options.state.memberName,
     senderTeamRunId: options.state.teamRunId,
+    senderTurnId: options.state.activeTurnId,
     toolArguments: {
       recipient_name: recipientName,
       content,

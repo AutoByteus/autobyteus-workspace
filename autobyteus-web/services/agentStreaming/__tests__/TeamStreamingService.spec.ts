@@ -152,4 +152,67 @@ describe('TeamStreamingService', () => {
     expect(originalContext.isSubscribed).toBe(false);
     expect(replacementContext.isSubscribed).toBe(false);
   });
+
+  it('mirrors external user messages into the targeted team member conversation', () => {
+    const callbacks = new Map<string, (payload?: any) => void>();
+    const wsClient = {
+      state: 'disconnected',
+      connect: vi.fn(),
+      disconnect: vi.fn(),
+      send: vi.fn(),
+      on: vi.fn((event: string, cb: (payload?: any) => void) => {
+        callbacks.set(event, cb);
+      }),
+      off: vi.fn(),
+    } as any;
+
+    const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
+    const professorConversation = { messages: [], updatedAt: '' };
+    const studentConversation = { messages: [], updatedAt: '' };
+    const teamContext = {
+      isSubscribed: false,
+      focusedMemberName: 'Student',
+      members: new Map([
+        [
+          'Professor',
+          {
+            state: { runId: 'prof-run-1' },
+            conversation: professorConversation,
+            isSending: false,
+          },
+        ],
+        [
+          'Student',
+          {
+            state: { runId: 'student-run-1' },
+            conversation: studentConversation,
+            isSending: false,
+          },
+        ],
+      ]),
+    } as any;
+
+    service.connect('team-1', teamContext);
+    callbacks.get('onMessage')?.(
+      JSON.stringify({
+        type: 'EXTERNAL_USER_MESSAGE',
+        payload: {
+          content: 'hello from telegram',
+          received_at: '2026-03-10T20:15:00.000Z',
+          agent_name: 'Professor',
+          agent_id: 'prof-run-2',
+        },
+      }),
+    );
+
+    expect(professorConversation.messages).toHaveLength(1);
+    expect(professorConversation.messages[0]).toMatchObject({
+      type: 'user',
+      text: 'hello from telegram',
+    });
+    expect(professorConversation.messages[0].timestamp.toISOString()).toBe('2026-03-10T20:15:00.000Z');
+    expect((teamContext.members.get('Professor') as any).state.runId).toBe('prof-run-2');
+    expect((teamContext.members.get('Professor') as any).isSending).toBe(true);
+    expect(studentConversation.messages).toHaveLength(0);
+  });
 });

@@ -70,6 +70,10 @@ export class AgentStreamingService {
     return this.wsClient.state;
   }
 
+  attachContext(context: AgentContext): void {
+    this.context = context;
+  }
+
   /**
    * Connect to an agent's WebSocket stream.
    */
@@ -163,10 +167,16 @@ export class AgentStreamingService {
 
   private handleConnect = (): void => {
     console.log('Agent WebSocket connected');
+    if (this.context) {
+      this.context.isSubscribed = true;
+    }
   };
 
   private handleDisconnect = (reason?: string): void => {
     console.log('Agent WebSocket disconnected:', reason);
+    if (this.context) {
+      this.context.isSubscribed = false;
+    }
   };
 
   private handleError = (error: Error): void => {

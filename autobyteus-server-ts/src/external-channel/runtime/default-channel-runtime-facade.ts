@@ -11,30 +11,37 @@ import {
   type AgentLiveMessagePublisher,
 } from "../../services/agent-streaming/agent-live-message-publisher.js";
 import {
+  getTeamLiveMessagePublisher,
+  type TeamLiveMessagePublisher,
+} from "../../services/agent-streaming/team-live-message-publisher.js";
+import {
   getRuntimeExternalChannelTurnBridge,
   type RuntimeExternalChannelTurnBridge,
 } from "./runtime-external-channel-turn-bridge.js";
+import {
+  getTeamRunContinuationService,
+  type TeamRunContinuationService,
+} from "../../run-history/services/team-run-continuation-service.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
 };
 
-type TeamLike = {
-  postMessage: (
-    message: AgentInputUserMessage,
-    targetNodeName?: string | null,
-  ) => Promise<void>;
-};
-
-export type AgentTeamRunManagerPort = {
-  getTeamRun(teamRunId: string): TeamLike | null;
-};
-
 export type DefaultChannelRuntimeFacadeDependencies = {
-  runtimeLauncher: Pick<ChannelBindingRuntimeLauncher, "resolveOrStartAgentRun">;
+  runtimeLauncher: Pick<
+    ChannelBindingRuntimeLauncher,
+    "resolveOrStartAgentRun" | "resolveOrStartTeamRun"
+  >;
   runtimeCommandIngressService: Pick<RuntimeCommandIngressService, "sendTurn">;
-  agentTeamRunManager: AgentTeamRunManagerPort;
-  liveMessagePublisher?: Pick<AgentLiveMessagePublisher, "publishExternalUserMessage">;
+  teamRunContinuationService?: Pick<
+    TeamRunContinuationService,
+    "continueTeamRunWithMessage"
+  >;
+  agentLiveMessagePublisher?: Pick<
+    AgentLiveMessagePublisher,
+    "publishExternalUserMessage"
+  >;
+  teamLiveMessagePublisher?: Pick<TeamLiveMessagePublisher, "publishExternalUserMessage">;
   externalTurnBridge?: Pick<
     RuntimeExternalChannelTurnBridge,
     "bindAcceptedExternalTurn"
@@ -42,8 +49,18 @@ export type DefaultChannelRuntimeFacadeDependencies = {
 };
 
 export class DefaultChannelRuntimeFacade implements ChannelRuntimeFacade {
-  private readonly liveMessagePublisher: Pick<
+  private readonly teamRunContinuationService: Pick<
+    TeamRunContinuationService,
+    "continueTeamRunWithMessage"
+  >;
+
+  private readonly agentLiveMessagePublisher: Pick<
     AgentLiveMessagePublisher,
+    "publishExternalUserMessage"
+  >;
+
+  private readonly teamLiveMessagePublisher: Pick<
+    TeamLiveMessagePublisher,
     "publishExternalUserMessage"
   >;
 
@@ -55,8 +72,12 @@ export class DefaultChannelRuntimeFacade implements ChannelRuntimeFacade {
   constructor(
     private readonly deps: DefaultChannelRuntimeFacadeDependencies,
   ) {
-    this.liveMessagePublisher =
-      deps.liveMessagePublisher ?? getAgentLiveMessagePublisher();
+    this.teamRunContinuationService =
+      deps.teamRunContinuationService ?? getTeamRunContinuationService();
+    this.agentLiveMessagePublisher =
+      deps.agentLiveMessagePublisher ?? getAgentLiveMessagePublisher();
+    this.teamLiveMessagePublisher =
+      deps.teamLiveMessagePublisher ?? getTeamLiveMessagePublisher();
     this.externalTurnBridge =
       deps.externalTurnBridge ?? getRuntimeExternalChannelTurnBridge();
   }
@@ -103,7 +124,7 @@ export class DefaultChannelRuntimeFacade implements ChannelRuntimeFacade {
       );
     }
     try {
-      this.liveMessagePublisher.publishExternalUserMessage({
+      this.agentLiveMessagePublisher.publishExternalUserMessage({
         runId: agentRunId,
         envelope,
       });
@@ -125,13 +146,43 @@ export class DefaultChannelRuntimeFacade implements ChannelRuntimeFacade {
     binding: ChannelBinding,
     envelope: ExternalMessageEnvelope,
   ): Promise<ChannelRuntimeDispatchResult> {
-    const teamRunId = normalizeRequiredString(binding.teamRunId, "binding.teamRunId");
-    const team = this.deps.agentTeamRunManager.getTeamRun(teamRunId);
-    if (!team?.postMessage) {
-      throw new Error(`Team run '${teamRunId}' not found for channel dispatch.`);
+    const teamRunId = await this.deps.runtimeLauncher.resolveOrStartTeamRun(binding, {
+      initialSummary: envelope.content,
+    });
+    const continuationResult = await this.teamRunContinuationService.continueTeamRunWithMessage({
+      teamRunId,
+      message: buildAgentInputMessage(envelope),
+      targetMemberRouteKey: binding.targetNodeName,
+    });
+    if (continuationResult.dispatchedTurn) {
+      try {
+        await this.externalTurnBridge.bindAcceptedExternalTurn({
+          runId: continuationResult.dispatchedTurn.memberRunId,
+          teamRunId,
+          runtimeKind: continuationResult.dispatchedTurn.runtimeKind,
+          turnId: continuationResult.dispatchedTurn.turnId,
+          envelope,
+        });
+      } catch (error) {
+        logger.warn(
+          `Team run '${teamRunId}': failed to bind the accepted coordinator/member external runtime turn for provider reply routing. Continuing because inbound dispatch already succeeded.`,
+          error,
+        );
+      }
     }
-
-    await team.postMessage(buildAgentInputMessage(envelope), binding.targetNodeName);
+    try {
+      this.teamLiveMessagePublisher.publishExternalUserMessage({
+        teamRunId,
+        envelope,
+        agentName: continuationResult.targetMemberName,
+        agentId: continuationResult.dispatchedTurn?.memberRunId ?? null,
+      });
+    } catch (error) {
+      logger.warn(
+        `Team run '${teamRunId}': failed to publish external user message to the live team frontend stream. Continuing because provider reply routing depends on ingress receipt persistence.`,
+        error,
+      );
+    }
 
     return {
       agentRunId: null,
@@ -199,18 +250,4 @@ const inferContextFileType = (attachment: ExternalAttachment): ContextFileType |
   }
 
   return null;
-};
-
-const normalizeRequiredString = (
-  value: string | null,
-  field: string,
-): string => {
-  if (value === null) {
-    throw new Error(`${field} must be a non-empty string.`);
-  }
-  const normalized = value.trim();
-  if (normalized.length === 0) {
-    throw new Error(`${field} must be a non-empty string.`);
-  }
-  return normalized;
 };

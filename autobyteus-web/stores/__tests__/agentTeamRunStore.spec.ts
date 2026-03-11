@@ -126,12 +126,11 @@ describe('agentTeamRunStore', () => {
   });
 
   it('marks team as shutdown but keeps context for history restore after terminate', async () => {
-    const unsubscribeSpy = vi.fn();
     const teamContext = {
       teamRunId: 'team-1',
       isSubscribed: true,
       currentStatus: AgentTeamStatus.Processing,
-      unsubscribe: unsubscribeSpy,
+      unsubscribe: undefined as undefined | (() => void),
       members: new Map([
         ['member-a', { state: { runId: 'agent-a', currentStatus: AgentStatus.ProcessingUserInput } }],
         ['member-b', { state: { runId: 'agent-b', currentStatus: AgentStatus.Idle } }],
@@ -141,9 +140,10 @@ describe('agentTeamRunStore', () => {
     mockMutate.mockResolvedValue({});
 
     const store = useAgentTeamRunStore();
+    store.connectToTeamStream('team-1');
     await store.terminateTeamRun('team-1');
 
-    expect(unsubscribeSpy).toHaveBeenCalledTimes(1);
+    expect(mockDisconnect).toHaveBeenCalledTimes(1);
     expect(teamContext.unsubscribe).toBeUndefined();
     expect(teamContext.isSubscribed).toBe(false);
     expect(teamContext.currentStatus).toBe(AgentTeamStatus.ShutdownComplete);
@@ -156,11 +156,10 @@ describe('agentTeamRunStore', () => {
   });
 
   it('discardDraftTeamRun removes a temporary team locally without backend termination', () => {
-    const unsubscribeSpy = vi.fn();
     const teamContext = {
       teamRunId: 'temp-team-1',
       isSubscribed: true,
-      unsubscribe: unsubscribeSpy,
+      unsubscribe: undefined as undefined | (() => void),
       members: new Map([
         ['member-a', { isSending: true, state: { runId: 'agent-a', currentStatus: AgentStatus.Idle } }],
         ['member-b', { isSending: false, state: { runId: 'agent-b', currentStatus: AgentStatus.Idle } }],
@@ -169,10 +168,11 @@ describe('agentTeamRunStore', () => {
     teamContextsStoreMock.getTeamContextById.mockReturnValue(teamContext);
 
     const store = useAgentTeamRunStore();
+    store.connectToTeamStream('temp-team-1');
     const result = store.discardDraftTeamRun('temp-team-1');
 
     expect(result).toBe(true);
-    expect(unsubscribeSpy).toHaveBeenCalledTimes(1);
+    expect(mockDisconnect).toHaveBeenCalledTimes(1);
     expect(teamContext.isSubscribed).toBe(false);
     expect(teamContext.members.get('member-a')?.isSending).toBe(false);
     expect(teamContextsStoreMock.removeTeamContext).toHaveBeenCalledWith('temp-team-1');

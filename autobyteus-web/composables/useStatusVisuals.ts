@@ -13,6 +13,10 @@ export function useStatusVisuals(status: Ref<string | undefined>) {
     const currentStatus = String(rawStatus).toLowerCase();
 
     switch (currentStatus) {
+      case 'running':
+      case 'processing':
+        return { text: 'Running', colorClass: 'bg-blue-500 animate-pulse', iconName: 'heroicons:arrow-path-solid' };
+
       // Explicitly handle uninitialized state
       case AgentStatus.Uninitialized:
         return { text: 'Uninitialized', colorClass: 'bg-gray-400', iconName: 'heroicons:cog-solid' };
