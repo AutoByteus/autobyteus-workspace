@@ -128,6 +128,7 @@ const {
     },
     agentRunStoreMock: {
       connectToAgentStream: vi.fn(),
+      disconnectAgentStream: vi.fn(),
     },
     agentTeamRunStoreMock: {
       connectToTeamStream: vi.fn(),
@@ -533,6 +534,76 @@ describe('runHistoryStore', () => {
     expect(store.selectedRunId).toBe('run-2');
   });
 
+  it('does not reconnect an agent stream when persisted history says active but no live snapshot exists', async () => {
+    queryMock.mockImplementation(async ({ query }: { query: string }) => {
+      if (query === 'GetRunProjection') {
+        return {
+          data: {
+            getRunProjection: {
+              runId: 'run-stale-1',
+              summary: 'Stale active run',
+              lastActivityAt: '2026-01-01T00:00:00.000Z',
+              conversation: [
+                { kind: 'message', role: 'user', content: 'hello', ts: 1700000000 },
+              ],
+            },
+          },
+          errors: [],
+        };
+      }
+      if (query === 'GetRunResumeConfig') {
+        return {
+          data: {
+            getRunResumeConfig: {
+              runId: 'run-stale-1',
+              isActive: true,
+              manifestConfig: {
+                agentDefinitionId: 'agent-def-1',
+                workspaceRootPath: '/ws/a',
+                llmModelIdentifier: 'model-x',
+                llmConfig: null,
+                autoExecuteTools: false,
+                skillAccessMode: 'PRELOADED_ONLY',
+                runtimeKind: 'codex_app_server',
+                runtimeReference: null,
+              },
+              editableFields: {
+                llmModelIdentifier: false,
+                llmConfig: false,
+                autoExecuteTools: false,
+                skillAccessMode: false,
+                workspaceRootPath: false,
+                runtimeKind: false,
+              },
+            },
+          },
+          errors: [],
+        };
+      }
+      throw new Error(`Unexpected query: ${String(query)}`);
+    });
+
+    workspaceStoreMock.workspacesFetched = true;
+    workspaceStoreMock.allWorkspaces = [
+      { workspaceId: 'ws-1', absolutePath: '/ws/a', name: 'a' },
+    ];
+
+    const store = useRunHistoryStore();
+    await store.openRun('run-stale-1');
+
+    expect(activeRuntimeSyncStoreMock.ensureActiveRunSnapshot).toHaveBeenCalledWith('run-stale-1');
+    expect(agentRunStoreMock.connectToAgentStream).not.toHaveBeenCalled();
+    expect(agentContextsStoreMock.upsertProjectionContext).toHaveBeenCalledWith(
+      expect.objectContaining({
+        runId: 'run-stale-1',
+        status: 'shutdown_complete',
+        config: expect.objectContaining({
+          isLocked: false,
+        }),
+      }),
+    );
+  });
+
   it('does not clobber live active context state when reopening an already subscribed run', async () => {
     queryMock.mockImplementation(async ({ query }: { query: string }) => {
       if (query === 'GetRunProjection') {
@@ -610,6 +681,11 @@ describe('runHistoryStore', () => {
           agentDefinitionId: 'agent-def-1',
         },
       },
+    });
+    activeRuntimeSyncStoreMock.ensureActiveRunSnapshot.mockResolvedValueOnce({
+      id: 'run-1',
+      name: 'SuperAgent',
+      currentStatus: 'IDLE',
     });
 
     const store = useRunHistoryStore();
@@ -1337,6 +1413,75 @@ describe('runHistoryStore', () => {
     expect(hydratedTeam.currentStatus).toBe('processing');
     expect(hydratedTeam.members.get('super_agent')?.state.currentStatus).toBe('processing_user_input');
     expect(agentTeamRunStoreMock.connectToTeamStream).toHaveBeenCalledWith('team-1');
+  });
+
+  it('openTeamMemberRun does not reconnect a team stream when no live snapshot exists', async () => {
+    queryMock.mockImplementation(async ({ query, variables }: { query: string; variables?: Record<string, unknown> }) => {
+      if (query === 'GetTeamRunResumeConfig') {
+        return {
+          data: {
+            getTeamRunResumeConfig: {
+              teamRunId: 'team-stale-1',
+              isActive: true,
+              manifest: {
+                teamRunId: 'team-stale-1',
+                teamDefinitionId: 'team-def-1',
+                teamDefinitionName: 'Team Alpha',
+                coordinatorMemberRouteKey: 'super_agent',
+                runVersion: 1,
+                createdAt: '2026-01-01T00:00:00.000Z',
+                updatedAt: '2026-01-01T00:05:00.000Z',
+                memberBindings: [
+                  {
+                    memberRouteKey: 'super_agent',
+                    memberName: 'Super Agent',
+                    memberRunId: 'member-run-1',
+                    agentDefinitionId: 'agent-def-1',
+                    llmModelIdentifier: 'model-x',
+                    autoExecuteTools: false,
+                    llmConfig: null,
+                    workspaceRootPath: '/ws/a',
+                  },
+                ],
+              },
+            },
+          },
+          errors: [],
+        };
+      }
+      if (query === 'GetTeamMemberRunProjection') {
+        expect(variables).toEqual({
+          teamRunId: 'team-stale-1',
+          memberRouteKey: 'super_agent',
+        });
+        return {
+          data: {
+            getTeamMemberRunProjection: {
+              agentRunId: 'member-run-1',
+              summary: 'Team member history',
+              lastActivityAt: '2026-01-01T00:05:00.000Z',
+              conversation: [
+                { kind: 'message', role: 'user', content: 'hello', ts: 1700000000 },
+              ],
+            },
+          },
+          errors: [],
+        };
+      }
+      throw new Error(`Unexpected query: ${String(query)}`);
+    });
+
+    workspaceStoreMock.createWorkspace.mockResolvedValue('ws-1');
+
+    const store = useRunHistoryStore();
+    await store.openTeamMemberRun('team-stale-1', 'super_agent');
+
+    const hydratedTeam = teamContextsStoreMock.teams.get('team-stale-1');
+    expect(hydratedTeam).toBeTruthy();
+    expect(activeRuntimeSyncStoreMock.ensureActiveTeamRunSnapshot).toHaveBeenCalledWith('team-stale-1');
+    expect(agentTeamRunStoreMock.connectToTeamStream).not.toHaveBeenCalled();
+    expect(hydratedTeam.currentStatus).toBe('shutdown_complete');
+    expect(hydratedTeam.config.isLocked).toBe(false);
   });
 
   it('openTeamMemberRun refreshes an existing team context in place', async () => {

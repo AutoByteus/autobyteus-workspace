@@ -2,6 +2,7 @@ import { useAgentContextsStore } from '~/stores/agentContextsStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
+import { useAgentRunStore } from '~/stores/agentRunStore';
 import type { RunResumeConfigPayload } from '~/stores/runHistoryTypes';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { useActiveRuntimeSyncStore } from '~/stores/activeRuntimeSyncStore';
@@ -29,16 +30,18 @@ export const openRunWithCoordinator = async (
   const agentContextsStore = useAgentContextsStore();
   const existingContext = agentContextsStore.getRun(input.runId);
   const activeRuntimeSyncStore = useActiveRuntimeSyncStore();
-  const strategy = decideRunOpenStrategy({
-    isRunActive: resumeConfig.isActive,
-    hasExistingContext: Boolean(existingContext),
-    isExistingContextSubscribed: Boolean(existingContext?.isSubscribed),
-  });
   const activeRunSnapshot = resumeConfig.isActive
     ? await activeRuntimeSyncStore.ensureActiveRunSnapshot(input.runId)
     : null;
+  const shouldTreatAsLive = Boolean(activeRunSnapshot);
+  const strategy = decideRunOpenStrategy({
+    isRunActive: shouldTreatAsLive,
+    hasExistingContext: Boolean(existingContext),
+    isExistingContextSubscribed: Boolean(existingContext?.isSubscribed),
+  });
+  config.isLocked = shouldTreatAsLive;
   const liveStatus =
-    resumeConfig.isActive
+    shouldTreatAsLive
       ? normalizeAgentRuntimeStatus(
           activeRunSnapshot?.currentStatus ?? AgentStatus.Uninitialized,
         )
@@ -64,9 +67,10 @@ export const openRunWithCoordinator = async (
     useAgentRunConfigStore().clearConfig();
   }
 
-  if (resumeConfig.isActive) {
-    const { useAgentRunStore } = await import('~/stores/agentRunStore');
+  if (shouldTreatAsLive) {
     useAgentRunStore().connectToAgentStream(input.runId);
+  } else if (existingContext?.isSubscribed) {
+    useAgentRunStore().disconnectAgentStream(input.runId);
   }
 
   return {

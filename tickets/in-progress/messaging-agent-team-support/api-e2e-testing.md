@@ -24,6 +24,14 @@
   - `team-member-runtime-relay-service.test.ts` + `channel-ingress.integration.test.ts`: `21` tests passed
   - backend `tsc --noEmit`: passed
 
+- The latest reconnect-flood local fix is frontend-only, so the verification target is the restart/open/websocket regression slice rather than backend API shape:
+  - reopened persisted runs/teams no longer auto-connect live streams when there is no authoritative active snapshot after backend restart
+  - websocket transport no longer retries backend `not found` closes (`4004`/`4005`) as transient reconnects
+  - focused reruns passed:
+    - `runHistoryStore.spec.ts` + `WebSocketClient.spec.ts`: `30` tests passed
+    - `runHistoryStore.spec.ts`, `agentTeamRunStore.spec.ts`, `agentRunStore.spec.ts`, `TeamStreamingService.spec.ts`, and `WebSocketClient.spec.ts`: `53` tests passed
+  - live restart smoke verification is still pending against the current committed tree
+
 - One more deep review round found a final local-fix gap in the targeted active lookup path:
   - `ensureActiveRunSnapshot(...)` and `ensureActiveTeamRunSnapshot(...)` bypassed the bound-backend readiness guard used by the full refresh path
   - that meant cold active-open could still fail during backend startup or restart

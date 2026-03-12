@@ -19,6 +19,8 @@ const DEFAULT_OPTIONS: Required<WebSocketClientOptions> = {
   maxReconnectDelay: 30000,
 };
 
+const NON_RETRYABLE_CLOSE_CODES = new Set([4004, 4005]);
+
 export class WebSocketClient implements IWebSocketClient {
   private ws: WebSocket | null = null;
   private url: string = '';
@@ -100,6 +102,12 @@ export class WebSocketClient implements IWebSocketClient {
       this.ws = null;
       this.setState(ConnectionState.DISCONNECTED);
       this.emit('onDisconnect', event.reason || undefined);
+
+      if (NON_RETRYABLE_CLOSE_CODES.has(event.code)) {
+        this.shouldReconnect = false;
+        this.clearReconnectTimeout();
+        return;
+      }
 
       if (this.shouldReconnect && this.options.autoReconnect) {
         this.scheduleReconnect();

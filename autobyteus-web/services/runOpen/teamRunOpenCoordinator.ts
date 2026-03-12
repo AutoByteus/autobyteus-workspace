@@ -47,6 +47,7 @@ export const openTeamRunWithCoordinator = async (
   const activeTeamSnapshot = resumeConfig.isActive
     ? await activeRuntimeSyncStore.ensureActiveTeamRunSnapshot(manifest.teamRunId)
     : null;
+  const shouldTreatAsLive = Boolean(activeTeamSnapshot);
 
   const teamContextsStore = useAgentTeamContextsStore();
   const hydratedContext: AgentTeamContext = {
@@ -69,12 +70,11 @@ export const openTeamRunWithCoordinator = async (
           },
         ]),
       ),
-      isLocked: resumeConfig.isActive,
+      isLocked: shouldTreatAsLive,
     },
     members,
     focusedMemberName: focusedMemberRouteKey,
-    currentStatus:
-      resumeConfig.isActive && !activeTeamSnapshot ? AgentTeamStatus.Uninitialized : AgentTeamStatus.Idle,
+    currentStatus: shouldTreatAsLive ? AgentTeamStatus.Idle : AgentTeamStatus.ShutdownComplete,
     isSubscribed: false,
     taskPlan: null,
     taskStatuses: null,
@@ -87,7 +87,7 @@ export const openTeamRunWithCoordinator = async (
   }
 
   const existingTeamContext = teamContextsStore.getTeamContextById(manifest.teamRunId);
-  const shouldKeepLiveContext = resumeConfig.isActive && Boolean(existingTeamContext?.isSubscribed);
+  const shouldKeepLiveContext = shouldTreatAsLive && Boolean(existingTeamContext?.isSubscribed);
 
   if (existingTeamContext) {
     if (!shouldKeepLiveContext && existingTeamContext.unsubscribe) {
@@ -133,7 +133,7 @@ export const openTeamRunWithCoordinator = async (
     useAgentRunConfigStore().clearConfig();
   }
 
-  if (resumeConfig.isActive) {
+  if (shouldTreatAsLive) {
     useAgentTeamRunStore().connectToTeamStream(manifest.teamRunId);
   } else {
     const hydratedTeam = teamContextsStore.getTeamContextById(manifest.teamRunId);

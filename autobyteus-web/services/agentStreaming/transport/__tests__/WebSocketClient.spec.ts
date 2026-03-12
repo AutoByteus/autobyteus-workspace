@@ -108,4 +108,22 @@ describe('WebSocketClient', () => {
     expect(sockets).toHaveLength(2);
     expect(client.state).toBe(ConnectionState.RECONNECTING);
   });
+
+  it('does not retry non-retryable not-found closes', () => {
+    const client = new WebSocketClient({
+      reconnectDelay: 10,
+      maxReconnectDelay: 10,
+      maxReconnectAttempts: 3,
+    });
+
+    client.connect('ws://localhost:8000/ws/agent/team-1');
+    sockets[0].simulateOpen();
+    expect(client.state).toBe(ConnectionState.CONNECTED);
+
+    sockets[0].simulateClose(4004, 'team not found');
+    expect(client.state).toBe(ConnectionState.DISCONNECTED);
+
+    vi.advanceTimersByTime(100);
+    expect(sockets).toHaveLength(1);
+  });
 });

@@ -258,6 +258,25 @@ Inference:
 
 ### 17. The most reasonable design is a stable filesystem workspace key plus ephemeral session ids
 
+### 18. The current websocket flooding is a scoped stale-live-open bug, not a new design-basis failure
+
+- `openTeamRunWithCoordinator(...)` still auto-connects the team websocket whenever persisted `resumeConfig.isActive` is true, even if the active-runtime lookup returns no live team snapshot after backend restart.
+  - Evidence: `autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts`
+- `openRunWithCoordinator(...)` has the same stale-live-open pattern for standalone agents.
+  - Evidence: `autobyteus-web/services/runOpen/runOpenCoordinator.ts`
+- The shared websocket transport retries every close while auto-reconnect is enabled; it does not treat missing-run closes (`4004`/`4005`) as terminal.
+  - Evidence: `autobyteus-web/services/agentStreaming/transport/WebSocketClient.ts`
+- Backend websocket handlers already use `4004` for missing agent/team runs, so a stale history-open after restart can loop forever through the shared transport.
+  - Evidence: `autobyteus-server-ts/src/services/agent-streaming/agent-stream-handler.ts`
+  - Evidence: `autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts`
+
+Inference:
+
+- The flood shown after a fresh backend/frontend restart is not another workspace-identity design change.
+- It is a local implementation gap inside the already-approved restart-safe model:
+  - history-open must only attach live streams when a live active snapshot actually exists,
+  - and the generic websocket transport must stop retrying missing-run closes.
+
 - The backend already guarantees one live workspace instance per `WorkspaceConfig`/`rootPath` within one process.
   - Evidence: `autobyteus-server-ts/src/workspaces/workspace-manager.ts:findWorkspaceByConfig`
 - There is therefore no strong need for a second random workspace-level identity for ordinary filesystem workspaces.
@@ -654,3 +673,58 @@ Design implication:
 6. Expand the existing run-projection-provider boundary into a broader runtime-aware history-source boundary for standalone runs and team members.
 7. Split backend lifecycle initiation from history opening so frontend-initiated create/continue and backend-initiated messaging ingress converge on the same lifecycle service.
 8. Keep member status as the primary visible UI status and reserve team aggregate status for liveness/subscription ownership only.
+
+### 23. Fresh restart logs show two distinct stale-live-state problems still surviving the v8 workspace identity change
+
+Evidence:
+
+- After a clean backend restart, the server repeatedly logs the same team websocket attach for the same active team run:
+  - `Agent team websocket attached for team run team_professor-student-team_8564dad1`
+  - repeated dozens of times in one fresh-start log capture on `2026-03-12`
+- The same fresh-start log also shows file-explorer reconnect attempts using an old UUID-like workspace id that the restarted backend cannot resolve:
+  - `File explorer WebSocket connection rejected: workspace 26ff356d-77c0-4ead-a4de-8e56dcec0c92 not found`
+- That rejected id is not a deterministic filesystem workspace id from the new `workspace-identity.ts` model, so it must be coming from stale frontend-held live state rather than the new backend identity path.
+  - Evidence: `autobyteus-server-ts/src/workspaces/workspace-identity.ts`
+- The workspace tree poll still refreshes both persisted history and active-runtime state every five seconds on mount and on interval.
+  - Evidence: `autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue`
+- Active team recovery is now owned by the dedicated active-runtime sync store, which will reconnect any active team context whose local subscription state appears falsey.
+  - Evidence: `autobyteus-web/stores/activeRuntimeSyncStore.ts`
+- Team websocket disconnects still mark `teamContext.isSubscribed = false`, so any rapid close/retry loop will be amplified by the poller repeatedly deciding the same active team needs another reconnect attempt.
+  - Evidence: `autobyteus-web/services/agentStreaming/TeamStreamingService.ts`
+  - Evidence: `autobyteus-web/stores/agentTeamRunStore.ts`
+
+Inference:
+
+- The workspace-identity correction was necessary, but it does not yet clear or rebind stale frontend live handles after backend restart on the same node.
+- Two different stale-live-state paths are involved:
+  - stale file-explorer/live workspace state is still attempting to reconnect with a pre-restart workspace id
+  - stale active-team subscription state is still deciding that an already-failed or already-closed team stream should be reattached again on every refresh cycle
+- This means the remaining noisy area is no longer primarily about durable workspace identity. It is about restart-time invalidation and rehydration of ephemeral live state on the frontend.
+
+### 24. The backend restart boundary is not explicit enough for same-node frontend recovery
+
+Evidence:
+
+- `windowNodeContextStore` now exposes `bindingRevision`, but that revision only changes when the selected backend node or base URL changes.
+  - Evidence: `autobyteus-web/stores/windowNodeContextStore.ts`
+- Restarting the backend on the same node and same base URL does not increment that revision, so restart recovery does not automatically invalidate all live workspace/file-explorer/team-stream state.
+  - Evidence: `autobyteus-web/stores/windowNodeContextStore.ts`
+- `workspace.ts` still reconnects filesystem change streaming for each fetched workspace, and live file-explorer sessions are keyed by `workspaceId`.
+  - Evidence: `autobyteus-web/stores/workspace.ts`
+- The workspace tree itself can remain mostly correct after restart because persisted history reloads from durable data, while live file-explorer and team-stream state drift because their stale handles are not being invalidated at the restart boundary.
+  - Evidence: live restart logs captured on `2026-03-12`
+
+Inference:
+
+- The current architecture still lacks a same-node backend-restart invalidation signal for ephemeral frontend live state.
+- The reasonable next fix is not another ad hoc reconnect tweak. It is to make backend restart detection explicit and use it to clear or re-resolve all ephemeral live state:
+  - file-explorer sessions
+  - workspace live handles
+  - active team stream subscription state
+- Durable state should survive:
+  - persisted history tree
+  - deterministic filesystem workspace identity
+- Ephemeral state should not survive:
+  - websocket-backed file-explorer sessions
+  - websocket-backed team stream subscriptions
+  - any cached runtime-local handle from before restart
