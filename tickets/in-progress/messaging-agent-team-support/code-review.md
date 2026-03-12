@@ -585,3 +585,39 @@
   - snapshot resolution remains inside `autobyteus-web/stores/activeRuntimeSyncStore.ts`
   - run/team open orchestration stays in the existing coordinators
   - no new presentation-layer status logic was introduced
+
+## Round 19
+
+- Scope reviewed:
+  - committed v7 status/liveness architecture across `active-runtime-snapshot-service.ts`, `team-runtime-status-snapshot-service.ts`, `activeRuntimeSyncStore.ts`, `runHistoryLoadActions.ts`, `runOpenCoordinator.ts`, `teamRunOpenCoordinator.ts`, and the dedicated hydration services
+  - final local-fix interaction with the read-only history model and the backend-authoritative active snapshot contract
+  - current verification baseline: full frontend Vitest plus live backend Codex/Claude suites
+- Decision: `Pass`
+
+## Round 19 Findings
+
+- No blocking findings.
+- Residual risk: active history-open now resolves authoritative snapshots on demand, but the on-demand path still refreshes the whole active-runtime snapshot when the local cache is cold. That is architecturally acceptable for the current small active-set policy and keeps the frontend runtime-agnostic, but it remains a performance optimization candidate rather than the final ideal shape if active-set size grows significantly.
+
+## Round 19 Review Checks
+
+- Review slices:
+  - backend status-normalization slice: `2` files, previously reviewed under the `>220` gate; rechecked here for ownership boundaries only
+  - frontend active-runtime sync/open/hydration slice: `5` files, previously reviewed under the `>220` gate; rechecked here for final architectural consistency
+  - verification slice: full frontend Vitest (`819` passed, `1` skipped) and previously green live backend Codex/Claude suites
+- `>220` changed-line delta gate:
+  - no new large delta in this round; this was a consistency re-review of the committed tree
+- Layering:
+  - persisted history remains read-only and no longer owns websocket recovery
+  - backend active-runtime snapshot remains the authoritative live-status source
+  - frontend open coordinators now consume active snapshots through a narrow store API instead of embedding their own live-status policy
+  - backend runtime-specific complexity remains behind the active snapshot and team status snapshot services rather than leaking into the frontend
+- Decoupling:
+  - the frontend stays runtime-agnostic for standalone runs versus native-team/member-runtime teams
+  - member-visible status remains separate from team aggregate liveness
+  - the last local-fix closed the remaining dependency on “poll must have already run” for correct active-open status
+- Module placement:
+  - backend live-status normalization stays in `autobyteus-server-ts/src/api/graphql/services` and `autobyteus-server-ts/src/services/agent-streaming`
+  - frontend liveness sync stays in `autobyteus-web/stores/activeRuntimeSyncStore.ts`
+  - history-open orchestration stays in the run-open coordinators
+  - hydration logic stays in the dedicated run/team hydration services
