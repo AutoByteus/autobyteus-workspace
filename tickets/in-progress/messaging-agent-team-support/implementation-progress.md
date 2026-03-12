@@ -1,6 +1,6 @@
 # Implementation Progress
 
-This document tracks implementation, verification, and gate evidence for the messaging TEAM support work, including the current v7 active-status ownership, live-hydration separation, and indexed ownership-lookup slice.
+This document tracks implementation, verification, and gate evidence for the messaging TEAM support work, including the current v8 deterministic ordinary-workspace identity and restart-safe workspace recovery slice.
 
 ## Kickoff Preconditions Checklist
 
@@ -22,6 +22,14 @@ This document tracks implementation, verification, and gate evidence for the mes
 
 ## Progress Log
 
+- 2026-03-12: Reopened the ticket on a v8 design-impact path after fresh restart verification showed that ordinary filesystem workspaces still use random per-process ids, causing stale file-explorer/live workspace reconnect failures after backend restart.
+- 2026-03-12: Investigation and design review converged on the stable model for this slice: ordinary filesystem workspace identity must be deterministic from normalized `workspaceRootPath`, while file-explorer/session ids remain ephemeral.
+- 2026-03-12: Implemented the first v8 workspace-identity slice by adding a deterministic filesystem-workspace identity helper, making ordinary `FileSystemWorkspace` ids derive from normalized root path by default, and teaching `WorkspaceManager.getOrCreateWorkspace(...)` to re-resolve ordinary filesystem workspaces from that deterministic id after backend restart.
+- 2026-03-12: Focused backend verification for the workspace-identity slice passed serially: `filesystem-workspace-id.test.ts`, `workspace-manager.test.ts`, `workspace-manager-skill-integration.test.ts`, `file-explorer-stream-handler.test.ts`, and `agent-run-converter.test.ts` (`26` tests total).
+- 2026-03-12: Backend build passed on the v8 workspace-identity slice.
+- 2026-03-12: Implementation also surfaced a second boundary gap: frontend workspace recovery referenced a `bindingRevision` guard in `workspace.ts`, but `windowNodeContextStore` did not actually expose that revision. That meant the guard was dead complexity rather than a real node-context invalidation boundary.
+- 2026-03-12: Closed that gap by making `bindingRevision` explicit in `windowNodeContextStore` and incrementing it only when the bound node id or node base URL changes. This keeps rebinding invalidation real without reintroducing per-process workspace identity as a restart boundary.
+- 2026-03-12: Focused web verification for the node-context revision fix passed: `windowNodeContextStore.spec.ts` and `workspaceStore.spec.ts` (`16` tests total).
 - 2026-03-12: Live Telegram verification exposed one more local TEAM callback gap: when the coordinator immediately replies after a delegated `send_message_to`, the workspace UI shows the reply but the gateway does not receive it.
 - 2026-03-12: Investigation on the running worktree server and live SQLite database showed that delegated student turns were overwriting the original Telegram source binding on the shared receipt row, so the coordinator's immediate reply no longer had an exact `(agentRunId, turnId)` callback source.
 - 2026-03-12: Fixed that by storing the coordinator member route key in the team runtime binding registry, preserving it through member-runtime session create/restore/refresh, and restricting callback propagation so only accepted coordinator turns inherit or recover the bot-origin source.

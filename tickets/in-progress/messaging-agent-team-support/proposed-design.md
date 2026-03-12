@@ -2,7 +2,7 @@
 
 ## Design Version
 
-- Current Version: `v7`
+- Current Version: `v8`
 
 ## Revision History
 
@@ -15,6 +15,7 @@
 | v5 | Repeated websocket attach churn exposed mixed state ownership | Separate persisted history from active-runtime liveness and move websocket subscription ownership behind a dedicated backend active-runtime source plus one frontend subscription manager | Pending |
 | v6 | Deeper architecture review found runtime-aware projection is still too low in the history stack | Extend runtime awareness from projection providers into a broader backend history-source boundary and keep member-visible status separate from team aggregate liveness | Pending |
 | v7 | Code review found backend status ownership and live hydration are still mixed on the frontend | Make backend live status authoritative, add a dedicated live-hydration path for newly discovered active runs, and index team-member ownership lookup for backend active-runtime polling | Pending |
+| v8 | Restart verification exposed stale filesystem workspace identity across backend restart | Make ordinary filesystem workspaces use deterministic path-derived identity, remove random per-process workspace ids from durable recovery paths, and treat file-explorer/session ids as the only ephemeral workspace-adjacent handles | Pending |
 
 ## Artifact Basis
 
@@ -46,6 +47,7 @@ Replace the temporary run-bound team-binding model with a definition-bound team-
 - Newly discovered active runs and teams are hydrated through dedicated live-hydration services rather than reusing history-open coordinators that also own selection and websocket side effects.
 - Team-member ownership resolution is index-backed so active-runtime polling does not re-scan every team manifest directory for each live member run.
 - Member-visible status remains member-first; team aggregate status is kept as a lower-level liveness and subscription signal.
+- Ordinary filesystem workspaces use a stable deterministic identity derived from normalized `rootPath`, so frontend restart recovery can reconnect the same workspace without depending on a stale runtime-local workspace id.
 
 ## Goals
 
@@ -61,6 +63,7 @@ Replace the temporary run-bound team-binding model with a definition-bound team-
 - Separate live hydration from history opening so selection, history rendering, and active-runtime sync do not share one orchestration path.
 - Remove per-poll full-directory ownership scans from backend active-runtime lookup.
 - Keep focused-member status as the primary visible team status while treating team aggregate status as infrastructure state for liveness and subscription ownership.
+- Make ordinary filesystem workspace identity restart-safe and deterministic while keeping file-explorer/session ids ephemeral.
 
 ## Legacy Removal Policy (Mandatory)
 
@@ -111,6 +114,7 @@ Replace the temporary run-bound team-binding model with a definition-bound team-
 - Frontend websocket reconnect attempts stop after the first failed reconnect close during backend restart because the reconnect scheduler only re-arms from the `CONNECTED` close path.
 - Workspace history refresh is currently coupled to `recoverActiveRunsFromHistory(...)`, so a persisted-history read path also owns live websocket recovery side effects.
 - The backend already has authoritative active-run managers and GraphQL queries for active agent runs and active team runs, but the frontend does not consume them as a dedicated live-registry concept.
+- Ordinary filesystem workspaces still default to a random per-process `workspaceId`, so backend restart invalidates file-explorer reconnect attempts even though the same `rootPath` still exists on disk.
 
 ## Target State (To-Be)
 
@@ -141,6 +145,10 @@ Replace the temporary run-bound team-binding model with a definition-bound team-
 - Backend exposes a dedicated active-runtime source for agents and teams:
   - initial snapshot query is acceptable
   - a lightweight push feed for active-set changes is preferred later
+- Backend workspace identity for ordinary filesystem workspaces is deterministic:
+  - the workspace identity is derived from normalized `rootPath`
+  - `WorkspaceManager.getOrCreateWorkspace(workspaceId)` can resolve or recreate ordinary filesystem workspaces from that deterministic id after restart
+  - file-explorer reconnects no longer depend on stale runtime-local workspace handles
 - Frontend owns one subscription manager:
   - desired subscribed set = active runs or teams under current product policy
   - actual subscribed set = currently live websocket-backed contexts
@@ -148,6 +156,13 @@ Replace the temporary run-bound team-binding model with a definition-bound team-
 - Selection and liveness are separate:
   - selecting a row changes focus
   - it does not itself decide whether a run is active or should be auto-recovered
+- Workspace identity and workspace sessions are separate:
+  - workspace identity survives backend restart
+  - file-explorer/session connections do not
+- Frontend node-context rebinding invalidation is explicit:
+  - rebinding to a different node or base URL increments a frontend `bindingRevision`
+  - that revision is only for request invalidation during node-context changes
+  - backend restart recovery for ordinary filesystem workspaces still depends on durable workspace identity, not on `bindingRevision`
 
 ## Shared Architecture Principles (Design + Review, Mandatory)
 
@@ -243,6 +258,15 @@ Replace the temporary run-bound team-binding model with a definition-bound team-
   - converge frontend-started runs, frontend-continued history runs, and backend-triggered external ingress into one lifecycle model
   - mark runs and teams live through one consistent backend path before dispatching message content
   - avoid letting history opening or UI selection drive runtime creation implicitly
+
+### 7. Workspace Identity Boundary
+
+- Owner:
+  - backend workspace manager plus a deterministic filesystem-workspace identity helper
+- Responsibility:
+  - assign stable deterministic identity to ordinary filesystem workspaces from normalized `rootPath`
+  - keep temp and skill workspaces on stable deterministic ids as they already do
+  - let frontend recovery resolve live workspace/file-explorer state from durable workspace identity instead of stale runtime-local handles
 
 ## Layering Emergence And Extraction Checks (Mandatory)
 

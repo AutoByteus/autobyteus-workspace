@@ -1,9 +1,12 @@
 import path from 'node:path';
-import { randomUUID } from 'node:crypto';
 import { WorkspaceConfig } from 'autobyteus-ts';
 import type { BaseFileExplorer } from '../file-explorer/base-file-explorer.js';
 import { FileNameIndexer } from '../file-explorer/file-name-indexer.js';
 import { LocalFileExplorer } from '../file-explorer/local-file-explorer.js';
+import {
+  buildFilesystemWorkspaceId,
+  canonicalizeWorkspaceRootPath,
+} from './workspace-identity.js';
 import {
   BaseFileSearchStrategy,
   CompositeSearchStrategy,
@@ -28,19 +31,19 @@ export class FileSystemWorkspace {
 
   constructor(config: WorkspaceConfig) {
     this.config = config;
-    const configuredId = this.config.get('workspaceId');
-    if (typeof configuredId === 'string' && configuredId.trim()) {
-      this.workspaceId = configuredId.trim();
-    } else {
-      this.workspaceId = randomUUID();
-    }
-
     const rootPathValue = config.get('rootPath');
     if (typeof rootPathValue !== 'string' || !rootPathValue.trim()) {
       throw new Error("FileSystemWorkspace requires a 'rootPath' in its config.");
     }
 
-    this.rootPath = rootPathValue;
+    this.rootPath = canonicalizeWorkspaceRootPath(rootPathValue);
+
+    const configuredId = this.config.get('workspaceId');
+    if (typeof configuredId === 'string' && configuredId.trim()) {
+      this.workspaceId = configuredId.trim();
+    } else {
+      this.workspaceId = buildFilesystemWorkspaceId(this.rootPath);
+    }
     this.fileExplorer = new LocalFileExplorer(this.rootPath);
 
     logger.info(`Initialized FileSystemWorkspace at ${this.rootPath}. Call initialize() to build file tree.`);

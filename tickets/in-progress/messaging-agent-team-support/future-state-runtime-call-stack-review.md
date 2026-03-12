@@ -6,9 +6,9 @@ This review validates alignment with target (`to-be`) design behavior, not parit
 ## Review Meta
 
 - Scope Classification: `Medium`
-- Current Round: `13`
+- Current Round: `14`
 - Current Review Type: `Deep Review`
-- Clean-Review Streak Before This Round: `1`
+- Clean-Review Streak Before This Round: `0`
 - Clean-Review Streak After This Round: `2`
 - Round State: `Go Confirmed`
 - Missing-Use-Case Discovery Sweep Completed This Round: `Yes`
@@ -24,8 +24,8 @@ This review validates alignment with target (`to-be`) design behavior, not parit
   - `Medium/Large`: `tickets/in-progress/messaging-agent-team-support/proposed-design.md`
 - Artifact Versions In This Round:
   - Requirements Status: `Refined`
-  - Design Version: `v7`
-  - Call Stack Version: `v7`
+  - Design Version: `v8`
+  - Call Stack Version: `v8`
 - Required Persisted Artifact Updates Completed For This Round: `Yes`
 
 ## Review Intent (Mandatory)
@@ -58,6 +58,7 @@ This review validates alignment with target (`to-be`) design behavior, not parit
 | 11 | Refined | v6 | v6 | No | No | Yes | N/A | None | 2 | Go Confirmed | Go |
 | 12 | Refined | v7 | v7 | No | No | Yes | N/A | None | 1 | Candidate Go | Go |
 | 13 | Refined | v7 | v7 | No | No | Yes | N/A | None | 2 | Go Confirmed | Go |
+| 14 | Refined | v8 | v8 | No | Yes (`UC-022`) | Yes | Design Impact | `1 -> 2 -> 3 -> 4 -> 5` | 2 | Go Confirmed | Go |
 
 ## Round Artifact Update Log (Mandatory)
 
@@ -75,6 +76,7 @@ This review validates alignment with target (`to-be`) design behavior, not parit
 | 10 | No | None | None | None | None |
 | 11 | No | None | None | None | None |
 | 12 | No | `tickets/in-progress/messaging-agent-team-support/investigation-notes.md`, `tickets/in-progress/messaging-agent-team-support/requirements.md`, `tickets/in-progress/messaging-agent-team-support/proposed-design.md`, `tickets/in-progress/messaging-agent-team-support/future-state-runtime-call-stack.md`, `tickets/in-progress/messaging-agent-team-support/future-state-runtime-call-stack-review.md` | design `v6 -> v7`, call stack `v6 -> v7` | Authoritative backend live status, dedicated live-hydration path, indexed team-member ownership lookup | None |
+| 14 | Yes | `tickets/in-progress/messaging-agent-team-support/investigation-notes.md`, `tickets/in-progress/messaging-agent-team-support/requirements.md`, `tickets/in-progress/messaging-agent-team-support/proposed-design.md`, `tickets/in-progress/messaging-agent-team-support/future-state-runtime-call-stack.md`, `tickets/in-progress/messaging-agent-team-support/future-state-runtime-call-stack-review.md` | design `v7 -> v8`, call stack `v7 -> v8` | Deterministic filesystem workspace identity, restart-safe workspace re-resolution, live file-explorer recovery boundary | F-007 |
 | 13 | No | None | None | None | None |
 
 ## Missing-Use-Case Discovery Log (Mandatory Per Round)
@@ -94,6 +96,7 @@ This review validates alignment with target (`to-be`) design behavior, not parit
 | 11 | Requirement coverage / boundary crossing / fallback-error / design-risk | None | N/A | A second confirmation sweep across the same v6 active-runtime and history-source boundaries found no additional scenarios outside the existing use-case set | N/A | No |
 | 12 | Requirement coverage / boundary crossing / fallback-error / design-risk | `UC-019`, `UC-020`, `UC-021` | Requirement | Code review showed the active-runtime snapshot still throws away backend status, active sync still reuses history-open coordinators, and ownership lookup still scans team manifests on each poll, so the runtime model needed explicit use cases for authoritative live status, dedicated live hydration, and indexed ownership lookup | Design Impact | Yes |
 | 13 | Requirement coverage / boundary crossing / fallback-error / design-risk | None | N/A | A follow-up sweep over the v7 active-status and live-hydration model found no further runtime-specific scenarios beyond the new use-case set | N/A | No |
+| 14 | Requirement coverage / boundary crossing / fallback-error / design-risk | `UC-022` | Requirement | Live restart verification showed that ordinary filesystem workspaces still use random per-process ids, so file-explorer reconnect and live workspace recovery were depending on stale runtime-local handles after backend restart | Design Impact | Yes |
 
 ## Per-Use-Case Review
 
@@ -111,6 +114,7 @@ This review validates alignment with target (`to-be`) design behavior, not parit
 | UC-010 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | N/A | Pass | Pass | Pass |
 | UC-011 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | N/A | Pass | Pass | Pass |
 | UC-012 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | N/A | Pass | Pass | Pass |
+| UC-022 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | N/A | Pass | Pass | Pass |
 
 ## Findings
 
@@ -120,6 +124,7 @@ This review validates alignment with target (`to-be`) design behavior, not parit
 - [F-004] Design Impact: history refresh still owned active-run recovery. That made a persisted-history poll reconnect live sockets and churn websocket attachments, so v5 separates history loading from active-runtime synchronization.
 - [F-005] Design Impact: runtime-aware logic stopped too low in the history stack. v5 normalized projection retrieval, but shared history metadata and resume semantics still leaked local manifest and standalone-member assumptions; v6 extends the boundary into a broader runtime-aware history-source layer and adds explicit standalone/team-member history use cases.
 - [F-006] Design Impact: backend live status ownership stopped too low in the active-runtime stack. v6 normalized active membership, but frontend sync still replaced authoritative backend status with placeholders and reused history-open coordinators for live hydration; v7 moves status authority and live hydration into explicit backend/ frontend boundaries and adds indexed ownership lookup.
+- [F-007] Design Impact: ordinary filesystem workspace identity was still process-local. Backend restart invalidated persisted frontend workspace handles even though the same `rootPath` still existed, so v8 makes ordinary filesystem workspace identity deterministic and restart-safe while keeping session ids ephemeral.
 
 ## Blocking Findings Summary
 

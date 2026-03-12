@@ -7,6 +7,7 @@ import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { FileSystemWorkspace } from "../../../src/workspaces/filesystem-workspace.js";
 import { TempWorkspace } from "../../../src/workspaces/temp-workspace.js";
 import { WorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
+import { buildFilesystemWorkspaceId } from "../../../src/workspaces/workspace-identity.js";
 
 vi.mock("../../../src/file-explorer/file-name-indexer.js", () => ({
   FileNameIndexer: class {
@@ -55,6 +56,17 @@ describe("WorkspaceManager", () => {
 
     const first = await manager.createWorkspace(config);
     const second = await manager.createWorkspace(config);
+
+    expect(second).toBe(first);
+    expect(manager.getAllWorkspaces()).toHaveLength(1);
+  });
+
+  it("reuses an existing workspace when equivalent root paths normalize to the same workspace ID", async () => {
+    const rootPath = createTempRoot();
+    const first = await manager.createWorkspace(new WorkspaceConfig({ rootPath }));
+    const second = await manager.createWorkspace(
+      new WorkspaceConfig({ rootPath: `${rootPath}/.` }),
+    );
 
     expect(second).toBe(first);
     expect(manager.getAllWorkspaces()).toHaveLength(1);
@@ -109,5 +121,37 @@ describe("WorkspaceManager", () => {
       .getAllWorkspaces()
       .filter((workspace) => workspace.workspaceId === TempWorkspace.TEMP_WORKSPACE_ID);
     expect(allTemp).toHaveLength(1);
+  });
+
+  it("recreates an ordinary filesystem workspace from its deterministic ID after restart", async () => {
+    const rootPath = createTempRoot();
+    const initial = await manager.createWorkspace(new WorkspaceConfig({ rootPath }));
+    const workspaceId = initial.workspaceId;
+
+    await initial.close();
+    (manager as unknown as { activeWorkspaces: Map<string, FileSystemWorkspace> }).activeWorkspaces.clear();
+
+    resetWorkspaceManager();
+    manager = WorkspaceManager.getInstance();
+
+    const recreated = await manager.getOrCreateWorkspace(workspaceId);
+
+    expect(recreated.workspaceId).toBe(buildFilesystemWorkspaceId(rootPath));
+    expect(recreated.getBasePath()).toBe(rootPath);
+    expect(manager.getWorkspaceById(workspaceId)).toBe(recreated);
+  });
+
+  it("recreates the temp workspace from its stable workspace ID", async () => {
+    const tempRoot = createTempRoot();
+    const mockConfig = {
+      getTempWorkspaceDir: () => tempRoot,
+    };
+
+    vi.spyOn(appConfigProvider, "config", "get").mockReturnValue(mockConfig as any);
+
+    const tempWorkspace = await manager.getOrCreateWorkspace(TempWorkspace.TEMP_WORKSPACE_ID);
+
+    expect(tempWorkspace).toBeInstanceOf(TempWorkspace);
+    expect(tempWorkspace.workspaceId).toBe(TempWorkspace.TEMP_WORKSPACE_ID);
   });
 });

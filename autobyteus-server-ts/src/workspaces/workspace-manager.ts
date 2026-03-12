@@ -4,6 +4,7 @@ import { appConfigProvider } from '../config/app-config-provider.js';
 import { FileSystemWorkspace } from './filesystem-workspace.js';
 import { SkillWorkspace } from './skill-workspace.js';
 import { TempWorkspace } from './temp-workspace.js';
+import { tryResolveFilesystemWorkspaceRootPathFromId } from './workspace-identity.js';
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -44,7 +45,12 @@ export class WorkspaceManager {
     logger.info(`Creating new workspace for rootPath: ${String(rootPathValue)}`);
     const workspace = new FileSystemWorkspace(config);
 
-    if (this.activeWorkspaces.has(workspace.workspaceId)) {
+    const existingById = this.activeWorkspaces.get(workspace.workspaceId);
+    if (existingById) {
+      if (existingById.getBasePath() === workspace.getBasePath()) {
+        logger.info(`Reusing existing workspace ID: ${existingById.workspaceId}`);
+        return existingById;
+      }
       const message = `Workspace ID collision: ${workspace.workspaceId}`;
       logger.error(message);
       throw new Error(message);
@@ -69,6 +75,10 @@ export class WorkspaceManager {
       return existing;
     }
 
+    if (workspaceId === TempWorkspace.TEMP_WORKSPACE_ID) {
+      return this.getOrCreateTempWorkspace();
+    }
+
     if (workspaceId.startsWith('skill_ws_')) {
       try {
         const skillName = workspaceId.replace('skill_ws_', '');
@@ -82,6 +92,11 @@ export class WorkspaceManager {
         logger.error(`Failed to create skill workspace ${workspaceId}: ${String(error)}`);
         throw new Error(`Failed to create skill workspace '${workspaceId}'`);
       }
+    }
+
+    const filesystemRootPath = tryResolveFilesystemWorkspaceRootPathFromId(workspaceId);
+    if (filesystemRootPath) {
+      return this.ensureWorkspaceByRootPath(filesystemRootPath);
     }
 
     throw new Error(`Workspace '${workspaceId}' not found`);

@@ -31,24 +31,40 @@ export const useWindowNodeContextStore = defineStore('windowNodeContext', () => 
   const windowId = ref<number | null>(null);
   const nodeId = ref<string>(EMBEDDED_NODE_ID);
   const nodeBaseUrl = ref<string>(resolveDefaultEmbeddedBaseUrl());
+  const bindingRevision = ref(0);
   const initialized = ref(false);
   const lastReadyError = ref<string | null>(null);
 
   const isEmbeddedWindow = computed(() => nodeId.value === EMBEDDED_NODE_ID);
   const boundEndpoints = computed<NodeEndpoints>(() => deriveNodeEndpoints(nodeBaseUrl.value));
 
-  function initializeFromWindowContext(context: WindowNodeContext, baseUrl?: string): void {
-    windowId.value = context.windowId;
-    nodeId.value = context.nodeId || EMBEDDED_NODE_ID;
-    if (baseUrl && baseUrl.trim()) {
-      nodeBaseUrl.value = baseUrl.trim();
-    } else if (nodeId.value === EMBEDDED_NODE_ID) {
-      nodeBaseUrl.value = resolveDefaultEmbeddedBaseUrl();
+  function bumpBindingRevisionIfChanged(nextNodeId: string, nextBaseUrl: string): void {
+    const normalizedBaseUrl = nextBaseUrl.trim();
+    if (nodeId.value === nextNodeId && nodeBaseUrl.value === normalizedBaseUrl) {
+      return;
     }
+    bindingRevision.value += 1;
+  }
+
+  function initializeFromWindowContext(context: WindowNodeContext, baseUrl?: string): void {
+    const resolvedNodeId = context.nodeId || EMBEDDED_NODE_ID;
+    const resolvedBaseUrl =
+      baseUrl && baseUrl.trim()
+        ? baseUrl.trim()
+        : resolvedNodeId === EMBEDDED_NODE_ID
+          ? resolveDefaultEmbeddedBaseUrl()
+          : nodeBaseUrl.value;
+
+    bumpBindingRevisionIfChanged(resolvedNodeId, resolvedBaseUrl);
+
+    windowId.value = context.windowId;
+    nodeId.value = resolvedNodeId;
+    nodeBaseUrl.value = resolvedBaseUrl;
     initialized.value = true;
   }
 
   function bindNodeContext(nextNodeId: string, nextBaseUrl: string): void {
+    bumpBindingRevisionIfChanged(nextNodeId, nextBaseUrl);
     nodeId.value = nextNodeId;
     nodeBaseUrl.value = nextBaseUrl.trim();
   }
@@ -96,6 +112,7 @@ export const useWindowNodeContextStore = defineStore('windowNodeContext', () => 
     windowId,
     nodeId,
     nodeBaseUrl,
+    bindingRevision,
     initialized,
     lastReadyError,
     isEmbeddedWindow,

@@ -22,7 +22,7 @@
 
 - Current Status: `Ready For Implementation`
 - Notes:
-  - Stage 5 review gate is `Go Confirmed` for design `v7`.
+  - Stage 5 review gate is `Go Confirmed` for design `v8`.
 
 ## Preconditions (Must Be True Before Finalizing This Plan)
 
@@ -52,6 +52,7 @@
   - Backend active-runtime ownership and standalone resume lookup become runtime-aware enough that team-member runs do not leak into standalone agent recovery.
   - Team-member ownership lookup is index-backed so the active-runtime snapshot can stay backend-owned without repeated full-directory scans.
   - Shared history metadata/resume access starts converging on a runtime-aware history-source boundary instead of assuming local standalone manifests only.
+  - Ordinary filesystem workspaces use deterministic root-path-derived identity so restart-time file-explorer/workspace recovery does not depend on stale runtime-local workspace ids.
 - New Layers/Modules/Boundary Interfaces To Introduce:
   - `ChannelBindingTeamDefinitionOptionsService`
   - `TeamRunLaunchService`
@@ -59,6 +60,7 @@
   - `runLiveHydrationService`
   - `teamRunLiveHydrationService`
   - runtime-aware run-ownership/history-source resolver (backend)
+  - deterministic filesystem workspace identity helper
 - API/Behavior Delta:
   - replace `externalChannelTeamTargetOptions` with `externalChannelTeamDefinitionOptions`
   - replace `targetTeamRunId` setup input with `targetTeamDefinitionId`
@@ -74,6 +76,9 @@
   - active team snapshot includes normalized member-visible status for focused/member rows
   - active-runtime sync no longer calls history-open coordinators directly
   - standalone resume/history lookup can identify team-member ownership instead of failing as if every run id must have a local standalone manifest
+  - ordinary filesystem workspaces no longer use random per-process ids as durable identity
+  - `WorkspaceManager.getOrCreateWorkspace(...)` can resolve deterministic ordinary filesystem workspace ids after backend restart
+  - `bindingRevision` is a real frontend node-context rebinding guard, not an implicit or undefined backend-restart identity
 - Key Assumptions:
   - a shared/global team launch preset is sufficient for this round
   - coordinator/entry-node-only reply behavior remains unchanged
@@ -208,6 +213,22 @@
 15. Formalize frontend streaming segment identity into a typed helper so composite segment matching does not rely on duplicated hidden-field writes across handlers.
 16. Propagate TEAM external callback context selectively across `send_message_to` hops by carrying sender turn identity through the inter-agent relay, preserving recipient turn ids from runtime injection, and rebinding only those recipient turns whose sender turn is already externally bound.
 17. Replace per-poll full team-directory ownership scans with an indexed team-member manifest lookup behind the ownership resolver.
+18. Replace random per-process ordinary filesystem workspace ids with deterministic normalized-root-path-derived ids.
+19. Let workspace resolution and file-explorer reconnect resolve deterministic ordinary filesystem workspace ids after backend restart instead of rejecting stale frontend-held workspace handles.
+20. Make `bindingRevision` an explicit node-context rebinding revision in `windowNodeContextStore` so request invalidation guards are real, while keeping backend restart recovery based on stable workspace identity instead of per-process handles.
+
+## v8 Design-Impact Addendum
+
+- Trigger:
+  - live restart verification exposed repeated file-explorer `workspace not found` errors and team websocket attach churn after backend restart
+- Design decision:
+  - ordinary filesystem workspace identity is durable and deterministic from normalized `workspaceRootPath`
+  - file-explorer/session ids remain ephemeral
+- Minimal implementation boundary:
+  - add a deterministic filesystem workspace identity helper
+  - update `FileSystemWorkspace` to use deterministic identity by default
+  - update `WorkspaceManager.getOrCreateWorkspace(...)` so deterministic ordinary filesystem ids can be re-resolved after restart
+  - add focused workspace/file-explorer restart tests
 
 ## Backward-Compat And Decoupling Guardrails
 

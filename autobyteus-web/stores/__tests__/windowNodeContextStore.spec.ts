@@ -12,6 +12,7 @@ describe('windowNodeContextStore', () => {
   it('defaults to embedded context', () => {
     const store = useWindowNodeContextStore();
     expect(store.nodeId).toBe(EMBEDDED_NODE_ID);
+    expect(store.bindingRevision).toBe(0);
     expect(store.isEmbeddedWindow).toBe(true);
     expect(store.boundEndpoints.rest).toMatch(/^https?:\/\/.+\/rest$/);
     expect(store.boundEndpoints.health).toMatch(/^https?:\/\/.+\/rest\/health$/);
@@ -30,9 +31,36 @@ describe('windowNodeContextStore', () => {
     expect(store.initialized).toBe(true);
     expect(store.windowId).toBe(42);
     expect(store.nodeId).toBe('remote-node-1');
+    expect(store.bindingRevision).toBe(1);
     expect(store.isEmbeddedWindow).toBe(false);
     expect(store.getBoundEndpoints().graphqlHttp).toBe('https://node.example.com/graphql');
     expect(store.getBoundEndpoints().teamWs).toBe('wss://node.example.com/ws/agent-team');
+  });
+
+  it('increments bindingRevision only when the bound node context actually changes', () => {
+    const store = useWindowNodeContextStore();
+    store.initializeFromWindowContext(
+      {
+        windowId: 1,
+        nodeId: 'remote-node-4',
+      },
+      'https://node-a.example.com',
+    );
+
+    expect(store.bindingRevision).toBe(1);
+
+    store.initializeFromWindowContext(
+      {
+        windowId: 1,
+        nodeId: 'remote-node-4',
+      },
+      'https://node-a.example.com',
+    );
+
+    expect(store.bindingRevision).toBe(1);
+
+    store.bindNodeContext('remote-node-5', 'https://node-b.example.com');
+    expect(store.bindingRevision).toBe(2);
   });
 
   it('waitForBoundBackendReady returns true when health endpoint is reachable', async () => {

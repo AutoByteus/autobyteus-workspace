@@ -21,11 +21,11 @@ Do not treat this document as an as-is trace of current code behavior.
 ## Design Basis
 
 - Scope Classification: `Medium`
-- Call Stack Version: `v7`
+- Call Stack Version: `v8`
 - Requirements: `tickets/in-progress/messaging-agent-team-support/requirements.md` (status `Refined`)
 - Source Artifact:
   - `Medium/Large`: `tickets/in-progress/messaging-agent-team-support/proposed-design.md`
-- Source Design Version: `v6`
+- Source Design Version: `v8`
 
 ## Future-State Modeling Rule (Mandatory)
 
@@ -51,6 +51,7 @@ Do not treat this document as an as-is trace of current code behavior.
 | UC-019 | Requirement | R-017 | N/A | Apply authoritative backend live status to already-hydrated active runs and teams without resetting them to placeholder frontend states | Yes/N/A/Yes |
 | UC-020 | Requirement | R-017,R-018 | N/A | Hydrate a newly discovered active run or team through a dedicated live-hydration path without reusing selection/history-open coordinators | Yes/Yes/Yes |
 | UC-021 | Requirement | R-019 | N/A | Resolve team-member ownership from an indexed backend lookup during active-runtime polling instead of scanning every team directory per lookup | Yes/N/A/Yes |
+| UC-022 | Requirement | R-020,R-021 | N/A | Re-resolve an ordinary filesystem workspace after backend restart from stable workspace identity instead of a stale runtime-local handle | Yes/N/A/Yes |
 
 ## Transition Notes
 
@@ -61,6 +62,7 @@ Do not treat this document as an as-is trace of current code behavior.
 - Existing runtime-aware projection-provider logic is promoted into a broader history-source boundary so summary extraction and resume metadata resolve through the same runtime-aware contract instead of reintroducing local-storage assumptions higher in the stack.
 - Cached `TEAM` reuse is narrowed from resumable-or-active to current-process bot-owned active-only so it matches the intended messaging-binding lifecycle rule.
 - Active-runtime synchronization no longer reuses history-open coordinators; it uses dedicated live-hydration services that share lower-level projection/resume helpers without inheriting selection or websocket side effects.
+- Ordinary filesystem workspaces stop using random per-process ids as durable identity; restart-time workspace recovery re-resolves them from deterministic identity derived from normalized `rootPath`.
 - Retirement plan for temporary logic:
   - None. The final design has one active TEAM setup model.
 
@@ -869,3 +871,57 @@ channel-binding-runtime-launcher.ts:normalizeTeamLaunchTarget(binding)
 - Primary Path: `Covered`
 - Fallback Path: `Covered`
 - Error Path: `Covered`
+
+## Use Case: UC-022 [Re-Resolve An Ordinary Filesystem Workspace After Backend Restart From Stable Workspace Identity Instead Of A Stale Runtime-Local Handle]
+
+### Goal
+
+Ensure backend restart does not break file-explorer or workspace-bound reconnect behavior for ordinary filesystem workspaces that still exist on disk.
+
+### Preconditions
+
+- Frontend persists or reuses a workspace identity for an ordinary filesystem workspace.
+- Backend process restarts.
+- The same workspace root path still exists.
+
+### Expected Outcome
+
+- The stored workspace identity remains valid after restart.
+- Backend resolves the workspace from its deterministic identity derived from normalized `rootPath`.
+- File-explorer reconnect succeeds without `workspace not found` rejection for ordinary filesystem workspaces.
+
+### Primary Runtime Call Stack
+
+```text
+[ENTRY] autobyteus-web/services/fileExplorerStreaming/FileExplorerStreamingService.ts:connect(workspaceId)
+└── [IO] websocket -> autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-stream-handler.ts:connect(connection, workspaceId)
+    └── autobyteus-server-ts/src/workspaces/workspace-manager.ts:getOrCreateWorkspace(workspaceId)
+        ├── [FALLBACK] if activeWorkspaces already has workspaceId -> return cached live workspace
+        └── [FALLBACK] if workspaceId is a deterministic filesystem workspace id
+            ├── autobyteus-server-ts/src/workspaces/workspace-identity.ts:decodeFilesystemWorkspaceRootPath(workspaceId) [STATE]
+            └── autobyteus-server-ts/src/workspaces/workspace-manager.ts:ensureWorkspaceByRootPath(rootPath)
+                ├── autobyteus-server-ts/src/workspaces/workspace-manager.ts:createWorkspace(config)
+                ├── autobyteus-server-ts/src/workspaces/filesystem-workspace.ts:constructor(config)
+                │   └── autobyteus-server-ts/src/workspaces/workspace-identity.ts:buildFilesystemWorkspaceId(rootPath) [STATE]
+                └── return re-resolved live workspace
+```
+
+### Branching / Fallback Paths
+
+```text
+[FALLBACK] if workspaceId belongs to a temp or skill workspace
+workspace-manager.ts:getOrCreateWorkspace(workspaceId)
+└── preserve existing stable synthetic-id handling
+```
+
+```text
+[ERROR] if workspaceId is not decodable and is not a supported synthetic workspace id
+workspace-manager.ts:getOrCreateWorkspace(workspaceId)
+└── throw deterministic "Workspace '<id>' not found" error
+```
+
+### Coverage Status
+
+- Primary Path: `Planned`
+- Fallback Path: `Planned`
+- Error Path: `Planned`

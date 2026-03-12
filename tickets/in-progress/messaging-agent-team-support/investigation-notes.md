@@ -2,9 +2,9 @@
 
 ## Status
 
-- Date: `2026-03-10`
+- Date: `2026-03-12`
 - Ticket: `messaging-agent-team-support`
-- Investigation Scope: current messaging setup target selection, runtime dispatch support for teams, and outbound Telegram reply behavior
+- Investigation Scope: current messaging setup target selection, runtime dispatch support for teams, outbound Telegram reply behavior, and restart-safe workspace identity for live frontend recovery
 
 ## Executive Summary
 
@@ -15,6 +15,9 @@ The current product limitation is real, but it is still not a deep runtime limit
 - A pure team-definition binding is feasible, but not with the current binding model alone because team runs need runtime/model/workspace launch configuration in addition to the definition id.
 - The clean phase-2 shape is to bind `TEAM` by `teamDefinitionId` plus a persisted team launch preset and let external ingress lazy-create/cache the concrete `teamRunId`.
 - For Telegram, the recommended external reply policy is coordinator-only by default. Internal member chatter should stay internal.
+- The repeated post-restart websocket flood now points to a second design problem: ordinary filesystem workspaces are currently identified by a process-local random `workspaceId`, but the frontend treats that id as durable across backend restart.
+- The most reasonable restart-safe model is to make ordinary filesystem workspace identity deterministic from normalized `rootPath`, keep websocket/file-explorer session ids ephemeral, and let the backend re-resolve workspaces from that stable identity after restart.
+- A related but separate gap exists at the frontend node-binding boundary: `workspace.ts` already tries to guard in-flight workspace fetches with `bindingRevision`, but `windowNodeContextStore` did not expose that revision at all. That makes rebinding invalidation dead code unless the revision is made real and scoped only to node-context changes.
 
 ## Findings
 
@@ -218,6 +221,54 @@ Inference:
 Inference:
 
 - This is a local web-selection regression introduced by this ticket branch, not a server/runtime ownership problem.
+
+### 15. Restart-time file-explorer failures are caused by stale process-local workspace ids
+
+- `FileSystemWorkspace` currently assigns a random UUID when no explicit `workspaceId` is configured.
+  - Evidence: `autobyteus-server-ts/src/workspaces/filesystem-workspace.ts`
+- `WorkspaceManager.ensureWorkspaceByRootPath(...)` reuses a workspace only while the current backend process is alive; after restart, a new live workspace instance is created and therefore gets a new random `workspaceId`.
+  - Evidence: `autobyteus-server-ts/src/workspaces/workspace-manager.ts`
+- The frontend stores and reconnects file-explorer state by `workspaceId`.
+  - Evidence: `autobyteus-web/stores/workspace.ts`
+  - Evidence: `autobyteus-web/services/fileExplorerStreaming/FileExplorerStreamingService.ts`
+- The file-explorer websocket handler resolves workspaces by `workspaceId`, and ordinary filesystem workspaces cannot be recreated from that id after restart.
+  - Evidence: `autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-stream-handler.ts`
+  - Evidence: `autobyteus-server-ts/src/workspaces/workspace-manager.ts:getOrCreateWorkspace`
+- This exactly matches the live restart logs:
+  - `File explorer WebSocket connection rejected: workspace ... not found`
+
+Inference:
+
+- The frontend is retaining a stale runtime-local workspace handle across backend restart.
+- The backend restart invalidates that handle, but the current design provides no deterministic re-resolution path for ordinary filesystem workspaces.
+
+### 16. Temp and skill workspaces prove the durable-identity model already exists conceptually
+
+- `TempWorkspace` extends `FileSystemWorkspace` but uses a fixed id (`temp_ws_default`).
+  - Evidence: `autobyteus-server-ts/src/workspaces/temp-workspace.ts`
+- `SkillWorkspace` also extends `FileSystemWorkspace` and uses deterministic synthetic ids (`skill_ws_*`).
+  - Evidence: `autobyteus-server-ts/src/workspaces/skill-workspace.ts`
+- So the inconsistent case is ordinary filesystem workspaces, which still default to random per-process ids.
+
+Inference:
+
+- The clean model is not "filesystem vs non-filesystem."
+- The clean model is "durable workspace identity vs ephemeral session identity."
+- Ordinary filesystem workspaces should follow the same deterministic-identity rule as temp/skill workspaces, but derive that identity from normalized `rootPath`.
+
+### 17. The most reasonable design is a stable filesystem workspace key plus ephemeral session ids
+
+- The backend already guarantees one live workspace instance per `WorkspaceConfig`/`rootPath` within one process.
+  - Evidence: `autobyteus-server-ts/src/workspaces/workspace-manager.ts:findWorkspaceByConfig`
+- There is therefore no strong need for a second random workspace-level identity for ordinary filesystem workspaces.
+- File-explorer sessions already have their own separate per-connection/session ids.
+  - Evidence: `autobyteus-server-ts/src/services/file-explorer-streaming/file-explorer-stream-handler.ts`
+
+Conclusion:
+
+- Ordinary filesystem workspaces should use one stable deterministic identity derived from normalized `rootPath`.
+- Workspace-level random per-process ids should be removed for ordinary filesystem workspaces.
+- Ephemeral identity belongs at the session/connection layer, not at the workspace identity layer.
 
 ### 15. Repeated reasoning bursts in a single turn are still being collapsed into one think segment
 

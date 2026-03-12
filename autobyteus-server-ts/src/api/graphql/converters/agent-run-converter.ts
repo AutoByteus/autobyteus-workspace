@@ -2,6 +2,7 @@ import type { Agent } from "autobyteus-ts/agent/agent.js";
 import { WorkspaceInfo } from "../types/workspace.js";
 import { AgentRun } from "../types/agent-run.js";
 import { TempWorkspace } from "../../../workspaces/temp-workspace.js";
+import { buildFilesystemWorkspaceId } from "../../../workspaces/workspace-identity.js";
 import {
   canonicalizeWorkspaceRootPath,
   workspaceDisplayNameFromRootPath,
@@ -41,7 +42,7 @@ const toWorkspaceInfo = (domainAgent: AgentLike): WorkspaceInfo | null => {
   }
 
   const workspaceId =
-    asNonEmptyString(customData.workspace_id) ?? `root:${normalizedRootPath}`;
+    asNonEmptyString(customData.workspace_id) ?? buildFilesystemWorkspaceId(normalizedRootPath);
   const workspaceName =
     asNonEmptyString(customData.workspace_name) ??
     workspaceDisplayNameFromRootPath(normalizedRootPath);

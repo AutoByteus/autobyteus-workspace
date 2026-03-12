@@ -38,6 +38,8 @@ The initial user preference is to avoid chaotic external-channel fan-out and lik
 - The next slice must also make backend live status authoritative: the active-runtime snapshot must carry enough normalized status data that the frontend no longer invents `Uninitialized` or `Offline` placeholders for already-live runs and team members.
 - Active-runtime synchronization must hydrate newly discovered live runs and teams through a dedicated live-hydration path rather than reusing history-open coordinators that also own selection and websocket side effects.
 - Team-member ownership resolution must remain backend-owned but move to an indexed lookup path so active-runtime polling does not rescan every team manifest on each refresh.
+- Ordinary filesystem workspaces must stop using random per-process ids as durable identity; restart-safe workspace recovery should resolve those workspaces by deterministic identity derived from normalized `workspaceRootPath`.
+- Workspace/file-explorer sessions remain ephemeral, but workspace identity itself must survive backend restart.
 
 ## Scope Classification
 
@@ -70,6 +72,7 @@ The initial user preference is to avoid chaotic external-channel fan-out and lik
 - `UC-019`: Active runtime synchronization consumes authoritative backend live statuses for active runs and active teams instead of rewriting those statuses to frontend placeholders.
 - `UC-020`: Newly discovered active runs and teams are hydrated through a live-hydration path that is separate from history-open/selection orchestration.
 - `UC-021`: Team-member ownership resolution is index-backed so active-runtime snapshots do not perform per-member full team-directory scans on every refresh.
+- `UC-022`: After backend restart, ordinary filesystem workspaces are re-resolved by a deterministic identity derived from normalized `workspaceRootPath`, so live file-explorer/workspace recovery does not fail with stale `workspaceId` rejections.
 
 ## Out Of Scope / Non-Goals
 
@@ -135,6 +138,8 @@ The initial user preference is to avoid chaotic external-channel fan-out and lik
 - `AC-020`: Active-runtime synchronization consumes authoritative backend `currentStatus` values for active runs and teams instead of rewriting those contexts to frontend placeholder statuses such as `Uninitialized` or `Offline`.
 - `AC-021`: Newly discovered active runs and teams are hydrated through a dedicated live-hydration path that fetches renderable history state without reusing history-open coordinators that also own selection and websocket side effects.
 - `AC-022`: Team-member ownership resolution is backed by an index or cache so repeated active-runtime polling does not scan every team manifest directory for each active member-run lookup.
+- `AC-023`: Ordinary filesystem workspaces use a stable deterministic workspace identity derived from normalized `workspaceRootPath` instead of a random per-process id.
+- `AC-024`: After backend restart, reconnecting a persisted ordinary filesystem workspace by its stored workspace identity succeeds without requiring a stale runtime-local workspace handle.
 
 ## Constraints / Dependencies
 
@@ -179,6 +184,8 @@ The initial user preference is to avoid chaotic external-channel fan-out and lik
 - `R-017`: Backend active-runtime snapshots must be authoritative for live status and include enough normalized member-visible status data for active team runs so the frontend does not synthesize live placeholder statuses.
 - `R-018`: Frontend active-runtime synchronization must use a dedicated live-hydration path for newly discovered live runs and teams instead of reusing history-open coordinators that also own selection and websocket side effects.
 - `R-019`: Team-member ownership lookup must be indexed or cached so backend active-runtime snapshots can resolve ownership without repeated full team-directory scans.
+- `R-020`: Ordinary filesystem workspaces must use a stable deterministic identity derived from normalized `workspaceRootPath`; random per-process workspace ids are not valid durable identity.
+- `R-021`: Backend restart recovery for live workspace-bound frontend features must resolve ordinary filesystem workspaces from that stable identity and must not require stale runtime-local workspace handles.
 
 ## Requirement Coverage Map
 
@@ -204,6 +211,8 @@ The initial user preference is to avoid chaotic external-channel fan-out and lik
 | `R-017` | Backend active-runtime snapshots should carry authoritative live status, including member-visible team status, so the frontend does not reset active contexts to placeholder states. | `tickets/in-progress/messaging-agent-team-support/investigation-notes.md` |
 | `R-018` | Active-runtime sync should hydrate newly discovered live runs through a dedicated live-hydration path instead of reusing history-open coordinators. | `tickets/in-progress/messaging-agent-team-support/investigation-notes.md` |
 | `R-019` | Team-member ownership resolution should move to an indexed backend lookup path to avoid repeated full team-directory scans during active-runtime polling. | `tickets/in-progress/messaging-agent-team-support/investigation-notes.md` |
+| `R-020` | Ordinary filesystem workspace identity should be deterministic from normalized `workspaceRootPath`, not random per-process state. | `tickets/in-progress/messaging-agent-team-support/investigation-notes.md` |
+| `R-021` | Restart-time live workspace recovery should re-resolve by durable workspace identity and never depend on stale runtime-local workspace handles. | `tickets/in-progress/messaging-agent-team-support/investigation-notes.md` |
 
 ## Design-Ready Coverage Matrix
 
@@ -229,3 +238,5 @@ The initial user preference is to avoid chaotic external-channel fan-out and lik
 | `R-017` | `AC-020`, `AC-021` | `UC-019`, `UC-020` |
 | `R-018` | `AC-020`, `AC-021` | `UC-019`, `UC-020` |
 | `R-019` | `AC-022` | `UC-021` |
+| `R-020` | `AC-023`, `AC-024` | `UC-022` |
+| `R-021` | `AC-023`, `AC-024` | `UC-022` |
