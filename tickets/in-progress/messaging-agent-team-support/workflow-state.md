@@ -12,7 +12,7 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-147`
+- Last Transition ID: `T-150`
 - Last Updated: `2026-03-12`
 
 ## Stage Gates
@@ -27,9 +27,9 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | 5 Review Gate | Pass | Runtime review rounds 12 and 13 stayed clean, so the v7 active-status/live-hydration design is now `Go Confirmed` for implementation | `tickets/in-progress/messaging-agent-team-support/future-state-runtime-call-stack-review.md`, `tickets/in-progress/messaging-agent-team-support/proposed-design.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
 | 6 Source + Unit/Integration | Pass | The local TEAM callback-ownership fix is in place: delegated non-coordinator turns no longer overwrite the original Telegram source binding, coordinator route ownership is tracked explicitly, and the implementation compiles cleanly. | `tickets/in-progress/messaging-agent-team-support/investigation-notes.md`, `tickets/in-progress/messaging-agent-team-support/implementation-progress.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
 | 7 API/E2E Gate | Pass | Focused relay plus fake-Telegram ingress reruns now prove both the immediate post-`send_message_to` coordinator reply and the later coordinator follow-up reply publish back to the gateway. | `tickets/in-progress/messaging-agent-team-support/api-e2e-testing.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
-| 8 Code Review Gate | Pass | Deep review round 23 passed after the coordinator callback-ownership fix; layering keeps coordinator ownership in the registry/session layer, relay semantics in the relay service, and gateway publication in the callback bridge with no new blocking findings. | `tickets/in-progress/messaging-agent-team-support/code-review.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
+| 8 Code Review Gate | Pass | Deep review round 24 passed on the current committed tree; runtime normalization, live-hydration ownership, and relay callback continuity boundaries remain clean with no new blocking architecture findings. | `tickets/in-progress/messaging-agent-team-support/code-review.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
 | 9 Docs Sync | Pass | Docs sync confirmed the coordinator callback-ownership fix is internal-only and does not require additional user-facing documentation changes beyond the existing coordinator-only reply guidance. | `tickets/in-progress/messaging-agent-team-support/docs-sync.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
-| 10 Final Handoff | In Progress | Final handoff is back open with the local fix implemented and verified; explicit live retest on the updated backend is still required before user verification can close the ticket. | `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
+| 10 Final Handoff | In Progress | Final handoff is back open with the local fix implemented, verified, and re-reviewed; explicit live retest on the updated backend is still required before user verification can close the ticket. | `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
 
 ## Transition Log (Append-Only)
 
@@ -249,6 +249,9 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | T-145 | 2026-03-12 | 7 | 8 | Focused API/E2E verification passed for the coordinator callback-ownership slice, so the ticket advanced into deep review on the current local-fix delta. | Local Fix | Locked | `tickets/in-progress/messaging-agent-team-support/api-e2e-testing.md`, `tickets/in-progress/messaging-agent-team-support/code-review.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
 | T-146 | 2026-03-12 | 8 | 9 | Deep review round 23 passed with no blocking findings, so docs sync became the next gate. | Local Fix | Locked | `tickets/in-progress/messaging-agent-team-support/code-review.md`, `tickets/in-progress/messaging-agent-team-support/docs-sync.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
 | T-147 | 2026-03-12 | 9 | 10 | Docs sync confirmed the coordinator callback-ownership fix is internal-only, so the ticket returned to Stage 10 handoff pending explicit live retest on the updated backend. | Local Fix | Locked | `tickets/in-progress/messaging-agent-team-support/docs-sync.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
+| T-148 | 2026-03-12 | 10 | 8 | User requested another very deep review round on the current committed tree, so the ticket re-entered the code-review gate before any further implementation or handoff. | Local Fix | Locked | `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
+| T-149 | 2026-03-12 | 8 | 9 | Deep review round 24 passed with no new blocking architecture findings, so docs sync became the next gate again. | Local Fix | Locked | `tickets/in-progress/messaging-agent-team-support/code-review.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
+| T-150 | 2026-03-12 | 9 | 10 | Docs sync remained unchanged because the deep review found no additional user-facing impact, so the ticket returned to Stage 10 handoff. | Local Fix | Locked | `tickets/in-progress/messaging-agent-team-support/docs-sync.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
 
 ## Process Violation Log
 

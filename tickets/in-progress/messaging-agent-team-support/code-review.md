@@ -751,3 +751,47 @@
 - Legacy cleanup:
   - removes the accidental legacy behavior where delegated recipient turns could overwrite the original external source binding
   - avoids adding any runtime-specific frontend behavior or new gateway-specific code paths outside the backend callback normalization boundary
+
+## Round 24
+
+- Scope reviewed:
+  - the current committed v7 architecture after the coordinator callback-ownership fix
+  - backend active-status and runtime-normalization boundaries in `active-runtime-snapshot-service.ts` and `team-runtime-status-snapshot-service.ts`
+  - frontend live-hydration/open boundaries in `activeRuntimeSyncStore.ts`, `runOpenCoordinator.ts`, and `teamRunOpenCoordinator.ts`
+  - the latest relay ownership path in `team-member-runtime-relay-service.ts` plus its registry/session-lifecycle dependencies
+- Decision: `Pass`
+
+## Round 24 Findings
+
+- No blocking findings.
+- Residual risk remains limited to live-provider/manual verification, not an architectural inconsistency in the reviewed path.
+
+## Round 24 Review Checks
+
+- Review slices:
+  - backend active-status normalization slice: `2` production files, `~380` effective changed lines, `<=500` per-slice review limit satisfied
+  - frontend live-hydration/open ownership slice: `4` production files, `~540` effective changed lines reviewed as two sub-slices under the same boundary
+  - TEAM relay callback-ownership slice: `5` production files, `~122` effective changed lines, `<=500` per-slice review limit satisfied
+- `>220` changed-line delta gate:
+  - backend active-status normalization exceeded `220` effective changed lines and received explicit review for source-of-truth ownership and runtime-aware normalization boundaries
+  - frontend live-hydration/open ownership exceeded `220` effective changed lines and received explicit review for history-vs-live separation, store ownership, and hydration orchestration
+- Layering:
+  - backend runtime-specific status derivation remains behind the GraphQL snapshot/service boundary
+  - frontend open coordinators still consume normalized store/service APIs instead of gaining runtime-specific logic
+  - relay callback ownership stays in backend runtime orchestration and does not leak gateway semantics into the frontend
+- Decoupling:
+  - history loading, active-runtime lookup, live hydration, and websocket subscription ownership remain separated in the intended v7 direction
+  - coordinator callback continuity is carried through a narrow callback-propagation interface rather than direct provider or DB coupling
+  - no new duplication of status policy or external-source ownership policy was introduced
+- Module placement:
+  - active snapshot query assembly remains in backend GraphQL services
+  - per-team status normalization remains in the streaming/status snapshot service
+  - frontend active-runtime synchronization remains in the dedicated store
+  - run-open coordinators remain orchestration consumers instead of becoming status-source owners
+- Backward compatibility:
+  - standalone agent behavior remains intact
+  - TEAM bindings remain definition-bound with coordinator-only outward reply semantics
+  - member-runtime teams continue to normalize into the same frontend-facing contract
+- Legacy cleanup:
+  - no new legacy retention paths were introduced in the reviewed slice
+  - the current shape is materially cleaner than the earlier history-driven recovery design and does not regress back toward that coupling
