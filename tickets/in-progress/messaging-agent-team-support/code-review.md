@@ -621,3 +621,39 @@
   - frontend liveness sync stays in `autobyteus-web/stores/activeRuntimeSyncStore.ts`
   - history-open orchestration stays in the run-open coordinators
   - hydration logic stays in the dedicated run/team hydration services
+
+## Round 20
+
+- Scope reviewed:
+  - targeted active snapshot lookup additions in `autobyteus-server-ts/src/api/graphql/services/active-runtime-snapshot-service.ts`
+  - GraphQL contract additions in `autobyteus-server-ts/src/api/graphql/types/agent-run.ts` and `autobyteus-server-ts/src/api/graphql/types/agent-team-run.ts`
+  - targeted frontend lookup path in `autobyteus-web/stores/activeRuntimeSyncStore.ts`
+  - focused regressions in `autobyteus-web/stores/__tests__/activeRuntimeSyncStore.spec.ts` and `autobyteus-server-ts/tests/unit/api/graphql/services/active-runtime-snapshot-service.test.ts`
+  - full current-tree verification baseline: frontend Vitest plus live Codex/Claude backend suites
+- Decision: `Pass`
+
+## Round 20 Findings
+
+- No blocking findings.
+- Residual risk: none beyond the already-known frontend `nuxi typecheck` repo-baseline failures outside this slice.
+
+## Round 20 Review Checks
+
+- Review slices:
+  - backend targeted active snapshot lookup slice: `4` production files, `~100` effective changed lines, `<=500` per-slice review limit satisfied
+  - frontend targeted active snapshot lookup slice: `2` production files, `~80` effective changed lines, `<=500` per-slice review limit satisfied
+  - focused regression slice: `2` test files, `~170` effective changed lines, `<=500` per-slice review limit satisfied
+  - full verification slice: frontend Vitest (`819` passed, `1` skipped), live Codex backend suite (`17/17`), live Claude backend suite (`23/23`)
+- `>220` changed-line delta gate:
+  - not triggered for this local fix slice
+- Layering:
+  - active-open no longer broadens a single-run status lookup into a whole active-set refresh
+  - the frontend still consumes active status only through the active-runtime store; open coordinators did not gain direct GraphQL responsibilities
+  - backend runtime-specific live-status logic remains behind the active snapshot services
+- Decoupling:
+  - the fix narrows active-open behavior without re-coupling history loading to runtime polling
+  - the frontend remains runtime-agnostic for standalone runs versus native-team/member-runtime teams
+- Module placement:
+  - targeted live lookup remains in the backend GraphQL active snapshot services/types
+  - targeted frontend lookup remains in `autobyteus-web/stores/activeRuntimeSyncStore.ts`
+  - no new presentation-layer or history-layer coupling was introduced

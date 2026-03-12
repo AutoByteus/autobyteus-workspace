@@ -8,12 +8,12 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 
 - Ticket: `messaging-agent-team-support`
 - Current Stage: `10`
-- Next Stage: `User Verification / Archive`
+- Next Stage: `N/A (User Verification / Archive)`
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
-- Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-133`
-- Last Updated: `2026-03-11`
+- Re-Entry Classification (`Local Fix`/`Design Impact`/`Requirement Gap`/`Unclear`): `Local Fix`
+- Last Transition ID: `T-137`
+- Last Updated: `2026-03-12`
 
 ## Stage Gates
 
@@ -25,10 +25,10 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | 3 Design Basis | Pass | Proposed design v7 keeps the frontend runtime-agnostic while making backend live status authoritative and separating live hydration from history-open orchestration | `tickets/in-progress/messaging-agent-team-support/proposed-design.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
 | 4 Runtime Modeling | Pass | Future-state runtime call stacks v7 now model authoritative active-status application, dedicated live hydration for newly discovered active runs/teams, and indexed ownership lookup during active-runtime polling | `tickets/in-progress/messaging-agent-team-support/future-state-runtime-call-stack.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
 | 5 Review Gate | Pass | Runtime review rounds 12 and 13 stayed clean, so the v7 active-status/live-hydration design is now `Go Confirmed` for implementation | `tickets/in-progress/messaging-agent-team-support/future-state-runtime-call-stack-review.md`, `tickets/in-progress/messaging-agent-team-support/proposed-design.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
-| 6 Source + Unit/Integration | Pass | The final v7 local-fix slice is implemented: active history-open now resolves an authoritative live snapshot on demand instead of depending on a previously warmed frontend cache | `tickets/in-progress/messaging-agent-team-support/implementation-progress.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
-| 7 API/E2E Gate | Pass | Focused reruns and a full frontend Vitest rerun are green on the current tree after the active-open status ownership fix | `tickets/in-progress/messaging-agent-team-support/api-e2e-testing.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
-| 8 Code Review Gate | Pass | One final deep review pass on the current committed tree found no new blocking issues in the v7 status/liveness architecture | `tickets/in-progress/messaging-agent-team-support/code-review.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
-| 9 Docs Sync | Pass | Docs sync confirmed the v7 slice is internal-only and does not require additional user-facing documentation changes beyond the earlier messaging/settings updates | `tickets/in-progress/messaging-agent-team-support/docs-sync.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
+| 6 Source + Unit/Integration | Pass | The targeted v7 cleanup slice landed: cold active-open now resolves single-run and single-team active snapshots instead of refreshing the whole active-runtime snapshot set, and the focused web/backend/build checks passed on the current tree | `tickets/in-progress/messaging-agent-team-support/implementation-progress.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
+| 7 API/E2E Gate | Pass | Focused frontend/backend reruns passed for the targeted active snapshot lookup slice, and the full current-tree verification baseline is green: frontend Vitest plus live backend Codex and Claude suites | `tickets/in-progress/messaging-agent-team-support/api-e2e-testing.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
+| 8 Code Review Gate | Pass | Incremental review passed for the targeted active snapshot lookup slice with no blocking findings; the frontend remains runtime-agnostic and the active-runtime store stays the single owner of active snapshot lookup policy | `tickets/in-progress/messaging-agent-team-support/code-review.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
+| 9 Docs Sync | Pass | Docs sync confirmed the targeted active-runtime lookup cleanup is internal-only and does not require additional user-facing documentation changes beyond the earlier messaging/settings updates | `tickets/in-progress/messaging-agent-team-support/docs-sync.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
 | 10 Final Handoff | In Progress | Implementation, verification, review, and docs sync are complete on the current tree; final handoff is pending explicit user verification or follow-up direction | `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
 
 ## Transition Log (Append-Only)
@@ -235,6 +235,10 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | T-131 | 2026-03-11 | 8 | 10 | The final local-fix review passed and no additional docs changes were required, so the ticket returned to Stage 10 handoff on the current verified tree. | Local Fix | Locked | `tickets/in-progress/messaging-agent-team-support/code-review.md`, `tickets/in-progress/messaging-agent-team-support/implementation-progress.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
 | T-132 | 2026-03-12 | 10 | 8 | User requested one last deep review round before final handoff, so the ticket re-entered the code-review gate on the current committed tree without reopening implementation. | Local Fix | Locked | `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
 | T-133 | 2026-03-12 | 8 | 10 | The final committed-tree deep review passed with no new blocking findings, so the ticket returned to Stage 10 handoff. | Local Fix | Locked | `tickets/in-progress/messaging-agent-team-support/code-review.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
+| T-134 | 2026-03-12 | 10 | 6 | User requested the remaining cold active-open whole-snapshot refresh be improved, so the ticket re-entered implementation as a local fix to add targeted active-runtime lookups without changing the approved v7 architecture. | Local Fix | Unlocked | `tickets/in-progress/messaging-agent-team-support/implementation-progress.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
+| T-135 | 2026-03-12 | 6 | 7 | The targeted active-runtime lookup slice landed: cold active-open now resolves single-run and single-team active snapshots without refreshing the whole active set, and the focused web/backend/build checks passed. | Local Fix | Unlocked | `tickets/in-progress/messaging-agent-team-support/implementation-progress.md`, `tickets/in-progress/messaging-agent-team-support/api-e2e-testing.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
+| T-136 | 2026-03-12 | 7 | 8 | Verification passed on the current tree: focused reruns are green for the targeted lookup slice, full frontend Vitest is green, and the live backend Codex and Claude suites both reran green on this worktree. | Local Fix | Locked | `tickets/in-progress/messaging-agent-team-support/api-e2e-testing.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
+| T-137 | 2026-03-12 | 8 | 10 | Incremental review passed for the targeted active-runtime lookup cleanup and docs sync reconfirmed the slice is internal-only, so the ticket returned to Stage 10 handoff on the current verified tree. | Local Fix | Locked | `tickets/in-progress/messaging-agent-team-support/code-review.md`, `tickets/in-progress/messaging-agent-team-support/docs-sync.md`, `tickets/in-progress/messaging-agent-team-support/workflow-state.md` |
 
 ## Process Violation Log
 

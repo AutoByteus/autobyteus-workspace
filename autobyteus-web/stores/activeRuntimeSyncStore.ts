@@ -6,7 +6,11 @@ import { useAgentContextsStore } from '~/stores/agentContextsStore';
 import { useAgentRunStore } from '~/stores/agentRunStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
-import { GetActiveRuntimeSnapshot } from '~/graphql/queries/activeRuntimeQueries';
+import {
+  GetActiveAgentRunSnapshot,
+  GetActiveAgentTeamRunSnapshot,
+  GetActiveRuntimeSnapshot,
+} from '~/graphql/queries/activeRuntimeQueries';
 import { hydrateLiveRunContext } from '~/services/runHydration/runContextHydrationService';
 import {
   applyLiveTeamStatusSnapshot,
@@ -36,6 +40,14 @@ export interface ActiveTeamRunSnapshot {
 interface ActiveRuntimeSnapshotQueryData {
   agentRuns?: ActiveAgentRunSnapshot[];
   agentTeamRuns?: ActiveTeamRunSnapshot[];
+}
+
+interface ActiveAgentRunSnapshotQueryData {
+  activeAgentRunSnapshot?: ActiveAgentRunSnapshot | null;
+}
+
+interface ActiveTeamRunSnapshotQueryData {
+  activeAgentTeamRunSnapshot?: ActiveTeamRunSnapshot | null;
 }
 
 const toIdSet = (ids: Array<string | null | undefined>): Set<string> =>
@@ -232,8 +244,25 @@ export const useActiveRuntimeSyncStore = defineStore('activeRuntimeSync', {
         return existing;
       }
 
-      await this.refreshQuietly();
-      return this.activeRunSnapshotsById[normalizedRunId] || null;
+      const client = getApolloClient();
+      const { data, errors } = await client.query<ActiveAgentRunSnapshotQueryData>({
+        query: GetActiveAgentRunSnapshot,
+        variables: { id: normalizedRunId },
+        fetchPolicy: 'network-only',
+      });
+
+      if (errors && errors.length > 0) {
+        throw new Error(errors.map((error: { message: string }) => error.message).join(', '));
+      }
+
+      const snapshot = data?.activeAgentRunSnapshot || null;
+      if (snapshot) {
+        this.activeRunSnapshotsById = {
+          ...this.activeRunSnapshotsById,
+          [normalizedRunId]: snapshot,
+        };
+      }
+      return snapshot;
     },
 
     async ensureActiveTeamRunSnapshot(teamRunId: string): Promise<ActiveTeamRunSnapshot | null> {
@@ -247,8 +276,25 @@ export const useActiveRuntimeSyncStore = defineStore('activeRuntimeSync', {
         return existing;
       }
 
-      await this.refreshQuietly();
-      return this.activeTeamRunSnapshotsById[normalizedTeamRunId] || null;
+      const client = getApolloClient();
+      const { data, errors } = await client.query<ActiveTeamRunSnapshotQueryData>({
+        query: GetActiveAgentTeamRunSnapshot,
+        variables: { id: normalizedTeamRunId },
+        fetchPolicy: 'network-only',
+      });
+
+      if (errors && errors.length > 0) {
+        throw new Error(errors.map((error: { message: string }) => error.message).join(', '));
+      }
+
+      const snapshot = data?.activeAgentTeamRunSnapshot || null;
+      if (snapshot) {
+        this.activeTeamRunSnapshotsById = {
+          ...this.activeTeamRunSnapshotsById,
+          [normalizedTeamRunId]: snapshot,
+        };
+      }
+      return snapshot;
     },
   },
 });

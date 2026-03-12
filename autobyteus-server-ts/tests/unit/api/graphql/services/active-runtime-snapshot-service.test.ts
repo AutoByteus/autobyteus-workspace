@@ -48,6 +48,68 @@ const createContextOnlyTeamMemberAgent = (id: string) => ({
 });
 
 describe("ActiveRuntimeSnapshotService", () => {
+  it("returns one targeted active standalone agent snapshot without listing all active runs", async () => {
+    const standaloneAgent = createStandaloneAgent("run-standalone-1");
+
+    const service = new ActiveRuntimeSnapshotService(
+      {
+        listActiveRuns: () => [standaloneAgent.agentId],
+        getAgentRun: (runId: string) => (runId === standaloneAgent.agentId ? standaloneAgent : null),
+      } as any,
+      {
+        listActiveRuns: () => [],
+        getTeamRun: () => null,
+      } as any,
+      {
+        listActiveTeamRunIds: () => [],
+      } as any,
+      {
+        getTeamRunResumeConfig: vi.fn(),
+      } as any,
+      {
+        resolveOwnership: vi.fn(async () => ({ kind: "missing", runId: standaloneAgent.agentId })),
+      } as any,
+    );
+
+    await expect(service.getActiveAgentRun("run-standalone-1")).resolves.toMatchObject({
+      id: "run-standalone-1",
+      name: "Professor Agent",
+      currentStatus: "ACTIVE",
+    });
+  });
+
+  it("returns null for targeted agent snapshot requests when the run belongs to a team member", async () => {
+    const teamMemberAgent = createTeamMemberAgent("professor_d1b2d7525aa08a86");
+
+    const service = new ActiveRuntimeSnapshotService(
+      {
+        listActiveRuns: () => [teamMemberAgent.agentId],
+        getAgentRun: () => teamMemberAgent,
+      } as any,
+      {
+        listActiveRuns: () => [],
+        getTeamRun: () => null,
+      } as any,
+      {
+        listActiveTeamRunIds: () => [],
+      } as any,
+      {
+        getTeamRunResumeConfig: vi.fn(),
+      } as any,
+      {
+        resolveOwnership: vi.fn(async () => ({
+          kind: "team_member",
+          runId: teamMemberAgent.agentId,
+          teamRunId: "team-1",
+          memberManifest: null,
+          source: "agent_context",
+        })),
+      } as any,
+    );
+
+    await expect(service.getActiveAgentRun(teamMemberAgent.agentId)).resolves.toBeNull();
+  });
+
   it("filters team-member agent runs out of the standalone active-agent snapshot", async () => {
     const standaloneAgent = createStandaloneAgent("run-standalone-1");
     const teamMemberAgent = createTeamMemberAgent("professor_d1b2d7525aa08a86");
@@ -158,6 +220,13 @@ describe("ActiveRuntimeSnapshotService", () => {
       {
         resolveOwnership: vi.fn().mockResolvedValue({ kind: "missing", runId: "unused" }),
       } as any,
+      {
+        getSnapshot: vi.fn((input: { teamRunId: string }) => ({
+          teamRunId: input.teamRunId,
+          currentStatus: "ACTIVE",
+          members: [],
+        })),
+      } as any,
     );
 
     const activeTeams = await service.listActiveTeamRuns();
@@ -168,14 +237,76 @@ describe("ActiveRuntimeSnapshotService", () => {
         name: "Professor Student Team",
         role: "coordinator",
         currentStatus: "ACTIVE",
+        members: [],
       },
       {
         id: "team-member-runtime-1",
         name: "Professor Student Team",
         role: null,
         currentStatus: "ACTIVE",
+        members: [],
       },
     ]);
+    expect(getTeamRunResumeConfig).toHaveBeenCalledWith("team-member-runtime-1");
+  });
+
+  it("returns one targeted active member-runtime team snapshot without listing all active teams", async () => {
+    const getTeamRunResumeConfig = vi.fn().mockResolvedValue({
+      teamRunId: "team-member-runtime-1",
+      isActive: true,
+      manifest: {
+        teamDefinitionName: "Professor Student Team",
+      },
+    });
+
+    const service = new ActiveRuntimeSnapshotService(
+      {
+        listActiveRuns: () => [],
+        getAgentRun: () => null,
+      } as any,
+      {
+        listActiveRuns: () => [],
+        getTeamRun: () => null,
+      } as any,
+      {
+        listActiveTeamRunIds: () => ["team-member-runtime-1"],
+      } as any,
+      {
+        getTeamRunResumeConfig,
+      } as any,
+      {
+        resolveOwnership: vi.fn().mockResolvedValue({ kind: "missing", runId: "unused" }),
+      } as any,
+      {
+        getSnapshot: vi.fn(() => ({
+          teamRunId: "team-member-runtime-1",
+          currentStatus: "ACTIVE",
+          members: [
+            {
+              memberRouteKey: "professor",
+              memberName: "Professor",
+              memberRunId: "professor-team-member-runtime-1",
+              currentStatus: "IDLE",
+            },
+          ],
+        })),
+      } as any,
+    );
+
+    await expect(service.getActiveTeamRun("team-member-runtime-1")).resolves.toEqual({
+      id: "team-member-runtime-1",
+      name: "Professor Student Team",
+      role: null,
+      currentStatus: "ACTIVE",
+      members: [
+        {
+          memberRouteKey: "professor",
+          memberName: "Professor",
+          memberRunId: "professor-team-member-runtime-1",
+          currentStatus: "IDLE",
+        },
+      ],
+    });
     expect(getTeamRunResumeConfig).toHaveBeenCalledWith("team-member-runtime-1");
   });
 });

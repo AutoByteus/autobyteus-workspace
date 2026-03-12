@@ -22,6 +22,12 @@ This document tracks implementation, verification, and gate evidence for the mes
 
 ## Progress Log
 
+- 2026-03-12: Closed the remaining local v7 optimization gap by replacing cold active-open full active-runtime refreshes with targeted active-runtime lookups. `activeRuntimeSyncStore` now resolves a single active run or single active team on demand instead of repolling the whole active set when the local cache is cold.
+- 2026-03-12: Added backend single-run active snapshot support in `active-runtime-snapshot-service.ts`, `agent-run.ts`, and `agent-team-run.ts`, then wired the frontend active-runtime query layer to consume those new targeted lookups.
+- 2026-03-12: Focused verification passed for the local fix: `activeRuntimeSyncStore.spec.ts` + `runHistoryStore.spec.ts` (`30` tests), `active-runtime-snapshot-service.test.ts` (`6` tests), and backend build.
+- 2026-03-12: Reran the full frontend Vitest suite on the current tree after the targeted lookup slice; it passed with `180` files passed, `1` skipped, `819` tests passed.
+- 2026-03-12: Reran the full live backend Codex suite on the current tree after the targeted lookup slice; it passed with `17/17` tests green.
+- 2026-03-12: Reran the full live backend Claude suite on the current tree after the targeted lookup slice; the second full rerun passed cleanly with `23/23` tests green, confirming the earlier manual-approval failure was a transient live-suite flake rather than a regression from this slice.
 - 2026-03-11: One more deep review round found that the v7 active-open path was still not fully self-sufficient: if a user opened an already-active run or team before the active-runtime poll had warmed the frontend cache, the open coordinators still fell back to placeholder `Uninitialized` state.
 - 2026-03-11: Closed that gap by extending `activeRuntimeSyncStore` with `ensureActiveRunSnapshot(...)` and `ensureActiveTeamRunSnapshot(...)`, so active history-open now performs an authoritative active-runtime lookup on demand instead of depending on prior background polling.
 - 2026-03-11: `runOpenCoordinator.ts` and `teamRunOpenCoordinator.ts` now consume those `ensure...Snapshot(...)` paths, which keeps the backend active-runtime snapshot authoritative even for the first active open after load.

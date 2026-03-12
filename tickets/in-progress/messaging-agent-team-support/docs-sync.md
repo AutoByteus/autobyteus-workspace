@@ -31,6 +31,7 @@
 - The selective TEAM callback-propagation fix only preserves coordinator reply continuity for already bot-origin conversations and does not change the documented coordinator-only outward reply contract, so no further docs updates were required.
 - The v5 active-runtime synchronization refactor changes internal workspace state ownership only; it does not change the documented user-facing messaging setup or reply contract, so no further docs updates were required.
 - The v7 live-hydration separation and runtime-aware active-status ownership slice is also internal-only: it changes how history, active-runtime sync, and initial team/member status hydration are orchestrated, but it does not change the documented user-facing messaging setup or reply contract.
+- The targeted active-runtime lookup cleanup is also internal-only: it narrows cold active-open status resolution from whole-set active snapshot refreshes to single-run or single-team lookups without changing any documented user-facing setup or reply behavior.
 
 ## Notes
 

@@ -20,6 +20,7 @@ export class AgentTeamRunConverter {
         name: domainTeam.name,
         role: domainTeam.role ?? null,
         currentStatus: typeof status === "string" ? status : String(status ?? "unknown"),
+        members: [],
       };
     } catch (error) {
       logger.error(

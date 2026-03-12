@@ -184,6 +184,8 @@ vi.mock('~/services/runHydration/teamRunContextHydrationService', () => ({
 
 vi.mock('~/graphql/queries/activeRuntimeQueries', () => ({
   GetActiveRuntimeSnapshot: 'GetActiveRuntimeSnapshot',
+  GetActiveAgentRunSnapshot: 'GetActiveAgentRunSnapshot',
+  GetActiveAgentTeamRunSnapshot: 'GetActiveAgentTeamRunSnapshot',
 }));
 
 describe('activeRuntimeSyncStore', () => {
@@ -376,11 +378,10 @@ describe('activeRuntimeSyncStore', () => {
     expect(teamContext?.members.get('student')?.state.currentStatus).toBe('shutdown_complete');
   });
 
-  it('ensureActiveRunSnapshot refreshes once when the cache is empty', async () => {
+  it('ensureActiveRunSnapshot uses the targeted active-run query when the cache is empty', async () => {
     queryMock.mockResolvedValue({
       data: {
-        agentRuns: [{ id: 'run-live-2', name: 'Professor', currentStatus: 'ACTIVE' }],
-        agentTeamRuns: [],
+        activeAgentRunSnapshot: { id: 'run-live-2', name: 'Professor', currentStatus: 'ACTIVE' },
       },
       errors: [],
     });
@@ -394,27 +395,29 @@ describe('activeRuntimeSyncStore', () => {
       currentStatus: 'ACTIVE',
     });
     expect(queryMock).toHaveBeenCalledTimes(1);
+    expect(queryMock).toHaveBeenCalledWith({
+      query: 'GetActiveAgentRunSnapshot',
+      variables: { id: 'run-live-2' },
+      fetchPolicy: 'network-only',
+    });
   });
 
-  it('ensureActiveTeamRunSnapshot refreshes once when the cache is empty', async () => {
+  it('ensureActiveTeamRunSnapshot uses the targeted active-team query when the cache is empty', async () => {
     queryMock.mockResolvedValue({
       data: {
-        agentRuns: [],
-        agentTeamRuns: [
-          {
-            id: 'team-live-2',
-            name: 'Professor Student Team',
-            currentStatus: 'ACTIVE',
-            members: [
-              {
-                memberRouteKey: 'professor',
-                memberName: 'Professor',
-                memberRunId: 'professor-team-live-2',
-                currentStatus: 'IDLE',
-              },
-            ],
-          },
-        ],
+        activeAgentTeamRunSnapshot: {
+          id: 'team-live-2',
+          name: 'Professor Student Team',
+          currentStatus: 'ACTIVE',
+          members: [
+            {
+              memberRouteKey: 'professor',
+              memberName: 'Professor',
+              memberRunId: 'professor-team-live-2',
+              currentStatus: 'IDLE',
+            },
+          ],
+        },
       },
       errors: [],
     });
@@ -436,5 +439,10 @@ describe('activeRuntimeSyncStore', () => {
       ],
     });
     expect(queryMock).toHaveBeenCalledTimes(1);
+    expect(queryMock).toHaveBeenCalledWith({
+      query: 'GetActiveAgentTeamRunSnapshot',
+      variables: { id: 'team-live-2' },
+      fetchPolicy: 'network-only',
+    });
   });
 });

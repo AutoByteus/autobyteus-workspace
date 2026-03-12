@@ -169,6 +169,18 @@ export class AgentRunResolver {
     }
   }
 
+  @Query(() => AgentRun, { nullable: true })
+  async activeAgentRunSnapshot(
+    @Arg("id", () => String) id: string,
+  ): Promise<AgentRun | null> {
+    try {
+      return (await this.activeRuntimeSnapshotService.getActiveAgentRun(id)) as AgentRun | null;
+    } catch (error) {
+      logger.error(`Error fetching active agent snapshot for ID ${id}: ${String(error)}`);
+      throw new Error("Unable to fetch active agent snapshot at this time.");
+    }
+  }
+
   @Mutation(() => TerminateAgentRunResult)
   async terminateAgentRun(
     @Arg("id", () => String) id: string,

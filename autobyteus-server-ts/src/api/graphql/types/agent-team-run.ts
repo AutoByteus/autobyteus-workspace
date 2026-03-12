@@ -204,6 +204,18 @@ export class AgentTeamRunResolver {
     }
   }
 
+  @Query(() => AgentTeamRun, { nullable: true })
+  async activeAgentTeamRunSnapshot(
+    @Arg("id", () => String) id: string,
+  ): Promise<AgentTeamRun | null> {
+    try {
+      return (await this.activeRuntimeSnapshotService.getActiveTeamRun(id)) as AgentTeamRun | null;
+    } catch (error) {
+      logger.error(`Error fetching active agent team snapshot for ID ${id}: ${String(error)}`);
+      throw new Error("Unable to fetch active agent team snapshot at this time.");
+    }
+  }
+
   @Mutation(() => CreateAgentTeamRunResult)
   async createAgentTeamRun(
     @Arg("input", () => CreateAgentTeamRunInput)

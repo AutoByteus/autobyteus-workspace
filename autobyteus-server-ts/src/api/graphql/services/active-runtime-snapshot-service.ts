@@ -93,6 +93,32 @@ export class ActiveRuntimeSnapshotService {
     return results.filter((item): item is ActiveRuntimeAgentRunSnapshot => item !== null);
   }
 
+  async getActiveAgentRun(runId: string): Promise<ActiveRuntimeAgentRunSnapshot | null> {
+    const normalizedRunId = runId.trim();
+    if (!normalizedRunId) {
+      return null;
+    }
+
+    const activeRunIds = new Set(this.agentRunManager.listActiveRuns());
+    if (!activeRunIds.has(normalizedRunId)) {
+      return null;
+    }
+
+    const domainAgent = this.agentRunManager.getAgentRun(normalizedRunId) as AgentLike | null;
+    if (!domainAgent) {
+      return null;
+    }
+
+    const ownership = await this.runOwnershipResolutionService.resolveOwnership(normalizedRunId, {
+      domainAgent,
+    });
+    if (ownership.kind === "team_member") {
+      return null;
+    }
+
+    return (await AgentRunConverter.toGraphql(domainAgent)) as ActiveRuntimeAgentRunSnapshot;
+  }
+
   async listActiveTeamRuns(): Promise<ActiveRuntimeTeamRunSnapshot[]> {
     const activeTeamRunIds = new Set<string>(this.agentTeamRunManager.listActiveRuns());
     for (const teamRunId of this.teamMemberRuntimeOrchestrator.listActiveTeamRunIds()) {
@@ -106,7 +132,7 @@ export class ActiveRuntimeSnapshotService {
           const snapshot = this.teamRuntimeStatusSnapshotService.getSnapshot({
             teamRunId,
             runtimeMode: "native_team",
-            team: domainTeam,
+            team: domainTeam as unknown as Record<string, unknown>,
           });
           const converted = AgentTeamRunConverter.toGraphql(domainTeam);
           return {
@@ -133,6 +159,54 @@ export class ActiveRuntimeSnapshotService {
     );
 
     return results;
+  }
+
+  async getActiveTeamRun(teamRunId: string): Promise<ActiveRuntimeTeamRunSnapshot | null> {
+    const normalizedTeamRunId = teamRunId.trim();
+    if (!normalizedTeamRunId) {
+      return null;
+    }
+
+    const nativeActiveTeamRunIds = new Set(this.agentTeamRunManager.listActiveRuns());
+    if (nativeActiveTeamRunIds.has(normalizedTeamRunId)) {
+      const domainTeam = this.agentTeamRunManager.getTeamRun(normalizedTeamRunId) as TeamLike | null;
+      if (!domainTeam) {
+        return null;
+      }
+
+      const snapshot = this.teamRuntimeStatusSnapshotService.getSnapshot({
+        teamRunId: normalizedTeamRunId,
+        runtimeMode: "native_team",
+        team: domainTeam as unknown as Record<string, unknown>,
+      });
+      const converted = AgentTeamRunConverter.toGraphql(domainTeam);
+      return {
+        ...converted,
+        currentStatus: snapshot.currentStatus ?? converted.currentStatus,
+        members: this.toActiveTeamMembers(snapshot.members),
+      } satisfies ActiveRuntimeTeamRunSnapshot;
+    }
+
+    const memberRuntimeActiveTeamRunIds = new Set(
+      this.teamMemberRuntimeOrchestrator.listActiveTeamRunIds(),
+    );
+    if (!memberRuntimeActiveTeamRunIds.has(normalizedTeamRunId)) {
+      return null;
+    }
+
+    const resumeConfig = await this.teamRunHistoryService.getTeamRunResumeConfig(normalizedTeamRunId);
+    const snapshot = this.teamRuntimeStatusSnapshotService.getSnapshot({
+      teamRunId: normalizedTeamRunId,
+      runtimeMode: "member_runtime",
+      team: null,
+    });
+    return {
+      id: normalizedTeamRunId,
+      name: resumeConfig.manifest.teamDefinitionName,
+      role: null,
+      currentStatus: snapshot.currentStatus ?? (resumeConfig.isActive ? "PROCESSING" : "IDLE"),
+      members: this.toActiveTeamMembers(snapshot.members),
+    } satisfies ActiveRuntimeTeamRunSnapshot;
   }
 
   private toActiveTeamMembers(

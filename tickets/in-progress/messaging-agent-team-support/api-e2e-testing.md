@@ -14,6 +14,20 @@
 
 ## Latest Verification Addendum
 
+- The final local v7 cleanup slice is now verified on the current tree:
+  - cold active-open no longer falls back to refreshing the whole active-runtime snapshot set
+  - `activeRuntimeSyncStore` now issues a targeted active-run or active-team lookup when its local cache is cold
+  - focused web + backend reruns passed after that change
+- Focused reruns for the targeted lookup slice:
+  - `activeRuntimeSyncStore.spec.ts` and `runHistoryStore.spec.ts`: `30` tests passed
+  - `active-runtime-snapshot-service.test.ts`: `6` tests passed
+  - backend build passed
+- The full current-tree verification baseline is green after the targeted lookup slice:
+  - frontend Vitest: `180` files passed, `1` skipped, `819` tests passed
+  - live Codex backend suite: `17/17` passed
+  - live Claude backend suite: `23/23` passed on the second full rerun
+- The earlier Claude live-suite failure in the manual approval test did not reproduce on the second full rerun, so it is recorded as a transient live-suite flake rather than an active regression from this slice.
+
 - One more deep review round found a final frontend-only v7 correctness gap:
   - opening an already-active run or team directly from history could still show placeholder `Uninitialized` state if the active-runtime poll had not populated the frontend cache yet
   - the fix was to let active history-open resolve an authoritative active snapshot on demand through `activeRuntimeSyncStore.ensureActiveRunSnapshot(...)` and `ensureActiveTeamRunSnapshot(...)`
