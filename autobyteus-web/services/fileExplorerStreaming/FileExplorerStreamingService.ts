@@ -89,7 +89,8 @@ export class FileExplorerStreamingService {
     }
 
     this._state = this.reconnectAttempts > 0 ? 'reconnecting' : 'connecting';
-    const url = `${this.wsEndpoint}/${this.workspaceId}`;
+    const encodedWorkspaceId = encodeURIComponent(this.workspaceId);
+    const url = `${this.wsEndpoint}/${encodedWorkspaceId}`;
 
     console.log(`[FileExplorerStreaming] Connecting to ${url}...`);
 

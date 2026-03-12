@@ -102,6 +102,16 @@ describe('FileExplorerStreamingService', () => {
       
       expect(mockWs.url).toBe('ws://custom:9000/ws/file-explorer/workspace-1');
     });
+
+    it('URL-encodes deterministic workspace ids when opening the websocket', () => {
+      const service = new FileExplorerStreamingService(WS_ENDPOINT);
+
+      service.connect('root:/tmp/my/workspace');
+
+      expect(mockWs.url).toBe(
+        'ws://localhost:8000/ws/file-explorer/root%3A%2Ftmp%2Fmy%2Fworkspace',
+      );
+    });
   });
 
   describe('connect', () => {

@@ -218,6 +218,117 @@ Inference:
   - the conversation view rehydrates from persisted projection and can show historical formatting such as `**[User Requirement]**`,
   - switching among team members behaves differently from single-agent runs.
 
+### 15. The cached Telegram team run is persisted in the channel binding row
+
+- The Telegram BUSINESS_API binding persists the cached team run in SQLite, so it survives backend restart and keeps appearing in Settings even when the process is stopped.
+- The persisted field is `channel_bindings.team_id`, exposed in the binding domain as `teamRunId`.
+  - Evidence: `autobyteus-server-ts/prisma/schema.prisma`
+  - Evidence: `autobyteus-server-ts/src/external-channel/providers/sql-channel-binding-provider.ts`
+- The currently affected binding row for the user's Telegram peer stores:
+  - `provider = TELEGRAM`
+  - `transport = BUSINESS_API`
+  - `peer_id = 8438880216`
+  - `target_type = TEAM`
+  - `team_definition_id = professor-student-team`
+  - `team_id = team_professor-student-team_8564dad1`
+  - `runtime_kind = codex_app_server`
+
+Implication:
+
+- The cached run surviving restart is expected database behavior.
+- That persistence alone does **not** explain the websocket flood; it only explains why the same team run keeps showing up as the binding's cached target.
+
+### 16. Only the cached Telegram team run floods because it is the only active reconnect target
+
+- The frontend does not directly read the binding row to decide websocket attachment.
+- It reconnects runs and teams from the backend active-runtime snapshot in `activeRuntimeSyncStore`.
+  - Evidence: `autobyteus-web/stores/activeRuntimeSyncStore.ts`
+- For team runs, the store reconnects when:
+  - the backend snapshot says the team run is active, and
+  - the local team context is missing or unsubscribed.
+- The Telegram-cached run is the one backend-reported active team run after the external message starts/reuses it, so it becomes the repeated reconnect target.
+- Other historical team runs do not reconnect because they are not reported active.
+
+Implication:
+
+- The flood is not "all teams reconnecting".
+- It is one active Telegram-bound team repeatedly becoming reconnect-worthy.
+
+### 17. Fresh restart logs show a second loop: repeated workspace recreation plus file-explorer websocket 404s
+
+- After a clean backend/frontend restart, the server logs repeatedly show:
+  - `GraphQL mutation to create workspace`
+
+### 18. `ensureWorkspaceByRootPath(...)` is not actually an ensure path; it always calls `createWorkspace(...)`
+
+- The frontend helper used by both historical open and active-runtime hydration is:
+  - `ensureRunHistoryWorkspaceByRootPath(...)`
+  - Evidence: `autobyteus-web/stores/runHistoryLoadActions.ts`
+- Even after optionally loading existing workspaces, that helper still always calls:
+  - `workspaceStore.createWorkspace({ root_path: normalizedRootPath })`
+  - Evidence: `autobyteus-web/stores/runHistoryLoadActions.ts`
+- `RunHistoryStore.ensureWorkspaceByRootPath(...)` is only a direct pass-through to that helper.
+  - Evidence: `autobyteus-web/stores/runHistoryStore.ts`
+- `WorkspaceResolver.createWorkspace(...)` on the backend is idempotent at the workspace-manager level, but every call still triggers the create/reuse mutation path and reconnects file-explorer streaming on the frontend.
+  - Evidence: `autobyteus-server-ts/src/api/graphql/types/workspace.ts`
+  - Evidence: `autobyteus-web/stores/workspace.ts`
+
+Implication:
+
+- The repeated `GraphQL mutation to create workspace` lines in the restart logs are explained by the current frontend implementation, not by the cached Telegram team run itself.
+- This path is called during team hydration/recovery, so repeated active-team recovery can repeatedly invoke workspace re-resolution and file-explorer reconnect.
+
+### 19. Deterministic filesystem workspace ids are currently incompatible with the file-explorer websocket URL path
+
+- The frontend file-explorer websocket client builds the websocket URL by interpolating the workspace id directly as a path suffix:
+  - ``${this.wsEndpoint}/${this.workspaceId}``
+  - Evidence: `autobyteus-web/services/fileExplorerStreaming/FileExplorerStreamingService.ts`
+- Ordinary filesystem workspace ids are now deterministic and contain the normalized root path, for example:
+  - `root:/Users/.../temp_workspace`
+  - Evidence: restart logs from `2026-03-12`
+- The backend file-explorer websocket route is still declared as:
+  - `/ws/file-explorer/:workspaceId`
+  - Evidence: `autobyteus-server-ts/src/api/websocket/file-explorer.ts`
+- Because the workspace id now contains `/`, the raw websocket URL path no longer matches the backend route cleanly, which explains the repeated:
+  - `GET /ws/file-explorer/root:/... -> 404`
+  - Evidence: restart logs from `2026-03-12`
+
+Implication:
+
+- The deterministic workspace-id model is still conceptually correct.
+- The current implementation is incomplete because one transport consumer still assumes workspace ids are path-safe opaque tokens.
+- This broken file-explorer websocket path likely destabilizes the page and contributes to the repeated active-team reconnect loop after restart.
+  - `Reusing existing workspace ID: root:/.../temp_workspace`
+  - `GET /ws/file-explorer/root:/.../temp_workspace -> 404`
+- This means the page is repeatedly re-resolving the workspace by root path and then failing to attach the file-explorer websocket for that deterministic workspace id.
+- The deterministic filesystem workspace id now contains `/`, but the frontend file-explorer websocket client currently interpolates it directly into the path without URL encoding.
+  - Evidence: `autobyteus-web/services/fileExplorerStreaming/FileExplorerStreamingService.ts`
+  - Evidence: `autobyteus-server-ts/src/api/websocket/file-explorer.ts`
+
+Implication:
+
+- The previous "team websocket retry" diagnosis was incomplete.
+- The page is simultaneously stuck in a workspace/file-explorer reconnect loop.
+- That loop may be destabilizing the live team context and indirectly causing repeated team websocket attaches.
+
+### 18. The current strongest root-cause hypothesis is a coupled restart loop, not just a websocket retry bug
+
+- The cached Telegram team run remains persisted and active, so it is the one team eligible for active reconnect.
+- At the same time, the frontend repeatedly issues `createWorkspace(rootPath)` and repeatedly fails `/ws/file-explorer/root:/...` websocket attachment.
+- The earlier WebSocketClient retry fix may still be correct per client, but the observed flood now points to a larger coupled restart loop:
+  1. backend restarts
+  2. page restarts live recovery
+  3. workspace/file-explorer rebinding fails for deterministic workspace websocket path
+  4. live team context ends up unsubscribed or rehydrated again
+  5. `activeRuntimeSyncStore` sees the Telegram team as active and reconnects it again
+
+Open question:
+
+- Prove exactly which path re-enters team hydration/reconnect after the file-explorer failure:
+  - direct selection/open logic,
+  - background active-runtime refresh,
+  - or broader workspace/node-context rebinding.
+
 Inference:
 
 - This is a local web-selection regression introduced by this ticket branch, not a server/runtime ownership problem.

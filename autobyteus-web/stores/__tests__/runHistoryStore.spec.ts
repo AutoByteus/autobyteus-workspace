@@ -709,7 +709,6 @@ describe('runHistoryStore', () => {
       { workspaceId: 'ws-1', absolutePath: '/ws/a', name: 'a' },
     ];
     workspaceStoreMock.workspacesFetched = true;
-    workspaceStoreMock.createWorkspace.mockResolvedValueOnce('ws-1');
 
     const store = useRunHistoryStore();
     await store.createDraftRun({
@@ -722,7 +721,7 @@ describe('runHistoryStore', () => {
       workspaceId: 'ws-1',
       llmModelIdentifier: 'model-default',
     });
-    expect(workspaceStoreMock.createWorkspace).toHaveBeenCalledWith({ root_path: '/ws/a' });
+    expect(workspaceStoreMock.createWorkspace).not.toHaveBeenCalled();
     expect(selectionStoreMock.clearSelection).toHaveBeenCalled();
     expect(agentContextsStoreMock.createRunFromTemplate).not.toHaveBeenCalled();
     expect(store.selectedRunId).toBeNull();
@@ -733,7 +732,6 @@ describe('runHistoryStore', () => {
       { workspaceId: 'ws-1', absolutePath: '/ws/a', name: 'a' },
     ];
     workspaceStoreMock.workspacesFetched = true;
-    workspaceStoreMock.createWorkspace.mockResolvedValueOnce('ws-1');
 
     agentContextsStoreMock.runs.set('run-previous', {
       config: {
@@ -765,22 +763,38 @@ describe('runHistoryStore', () => {
         isLocked: false,
       }),
     );
-    expect(workspaceStoreMock.createWorkspace).toHaveBeenCalledWith({ root_path: '/ws/a' });
+    expect(workspaceStoreMock.createWorkspace).not.toHaveBeenCalled();
     expect(agentContextsStoreMock.createRunFromTemplate).not.toHaveBeenCalled();
   });
 
-  it('revalidates workspace id via backend creation even when local cache has matching root path', async () => {
+  it('reuses an existing workspace id when local cache has matching root path', async () => {
     workspaceStoreMock.workspacesFetched = true;
     workspaceStoreMock.allWorkspaces = [
       { workspaceId: 'stale-ws-id', absolutePath: '/ws/a', name: 'a' },
     ];
-    workspaceStoreMock.createWorkspace.mockResolvedValueOnce('fresh-ws-id');
 
     const store = useRunHistoryStore();
     const workspaceId = await store.ensureWorkspaceByRootPath('/ws/a');
 
-    expect(workspaceId).toBe('fresh-ws-id');
-    expect(workspaceStoreMock.createWorkspace).toHaveBeenCalledWith({ root_path: '/ws/a' });
+    expect(workspaceId).toBe('stale-ws-id');
+    expect(workspaceStoreMock.createWorkspace).not.toHaveBeenCalled();
+  });
+
+  it('fetches workspaces before creating one when cache is not loaded yet', async () => {
+    workspaceStoreMock.workspacesFetched = false;
+    workspaceStoreMock.fetchAllWorkspaces.mockImplementation(async () => {
+      workspaceStoreMock.workspacesFetched = true;
+      workspaceStoreMock.allWorkspaces = [
+        { workspaceId: 'resolved-ws-id', absolutePath: '/ws/a', name: 'a' },
+      ];
+    });
+
+    const store = useRunHistoryStore();
+    const workspaceId = await store.ensureWorkspaceByRootPath('/ws/a');
+
+    expect(workspaceStoreMock.fetchAllWorkspaces).toHaveBeenCalledTimes(1);
+    expect(workspaceId).toBe('resolved-ws-id');
+    expect(workspaceStoreMock.createWorkspace).not.toHaveBeenCalled();
   });
 
   it('projects persisted history and temp drafts into workspace tree', () => {

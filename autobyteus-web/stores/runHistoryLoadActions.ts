@@ -128,6 +128,25 @@ export const ensureRunHistoryWorkspaceByRootPath = async (
     return null;
   }
 
+  const normalizedRootPath = normalizeRootPath(rootPath) || rootPath.trim();
+  const findWorkspaceIdByRootPath = (): string | null => {
+    const matchingWorkspace = workspaceStore.allWorkspaces.find((workspace) => {
+      const normalizedWorkspaceRoot = normalizeRootPath(
+        workspace.absolutePath
+          || workspace.workspaceConfig?.root_path
+          || workspace.workspaceConfig?.rootPath
+          || null,
+      );
+      return normalizedWorkspaceRoot === normalizedRootPath;
+    });
+    return matchingWorkspace?.workspaceId || null;
+  };
+
+  const cachedWorkspaceId = findWorkspaceIdByRootPath();
+  if (cachedWorkspaceId) {
+    return cachedWorkspaceId;
+  }
+
   if (!workspaceStore.workspacesFetched) {
     try {
       await workspaceStore.fetchAllWorkspaces();
@@ -137,7 +156,11 @@ export const ensureRunHistoryWorkspaceByRootPath = async (
   }
 
   try {
-    const normalizedRootPath = normalizeRootPath(rootPath) || rootPath.trim();
+    const fetchedWorkspaceId = findWorkspaceIdByRootPath();
+    if (fetchedWorkspaceId) {
+      return fetchedWorkspaceId;
+    }
+
     return await workspaceStore.createWorkspace({ root_path: normalizedRootPath });
   } catch {
     return null;
