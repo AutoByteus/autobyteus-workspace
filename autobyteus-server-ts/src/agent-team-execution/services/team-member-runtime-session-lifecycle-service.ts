@@ -338,6 +338,9 @@ export class TeamMemberRuntimeSessionLifecycleService {
     teamRunId: string,
     teamDefinitionId: string,
     memberConfigs: TeamRuntimeMemberConfig[],
+    options: {
+      coordinatorMemberName?: string | null;
+    } = {},
   ): Promise<TeamRunMemberBinding[]> {
     const normalizedTeamRunId = normalizeRequiredString(teamRunId, "teamRunId");
     const normalizedTeamDefinitionId = normalizeRequiredString(teamDefinitionId, "teamDefinitionId");
@@ -401,7 +404,12 @@ export class TeamMemberRuntimeSessionLifecycleService {
       });
     }
 
-    this.teamRuntimeBindingRegistry.upsertTeamBindings(normalizedTeamRunId, "member_runtime", bindings);
+    this.teamRuntimeBindingRegistry.upsertTeamBindings(
+      normalizedTeamRunId,
+      "member_runtime",
+      bindings,
+      this.resolveCoordinatorMemberRouteKey(bindings, options.coordinatorMemberName),
+    );
     return bindings;
   }
 
@@ -474,7 +482,12 @@ export class TeamMemberRuntimeSessionLifecycleService {
       });
     }
 
-    this.teamRuntimeBindingRegistry.upsertTeamBindings(normalizedTeamRunId, "member_runtime", bindings);
+    this.teamRuntimeBindingRegistry.upsertTeamBindings(
+      normalizedTeamRunId,
+      "member_runtime",
+      bindings,
+      manifest.coordinatorMemberRouteKey,
+    );
     return bindings;
   }
 
@@ -510,7 +523,43 @@ export class TeamMemberRuntimeSessionLifecycleService {
       };
     });
 
-    this.teamRuntimeBindingRegistry.upsertTeamBindings(teamRunId, state.mode, nextBindings);
+    this.teamRuntimeBindingRegistry.upsertTeamBindings(
+      teamRunId,
+      state.mode,
+      nextBindings,
+      state.coordinatorMemberRouteKey,
+    );
+  }
+
+  private resolveCoordinatorMemberRouteKey(
+    memberBindings: Array<{ memberName: string; memberRouteKey: string }>,
+    coordinatorMemberName?: string | null,
+  ): string | null {
+    const normalizedCoordinatorName = normalizeOptionalString(coordinatorMemberName);
+    if (normalizedCoordinatorName) {
+      const byName = memberBindings.find(
+        (binding) => binding.memberName === normalizedCoordinatorName,
+      );
+      if (byName) {
+        return normalizeMemberRouteKey(byName.memberRouteKey);
+      }
+
+      const normalizedCoordinatorRouteKey = normalizeMemberRouteKey(
+        normalizedCoordinatorName,
+      );
+      const byRouteKey = memberBindings.find(
+        (binding) =>
+          normalizeMemberRouteKey(binding.memberRouteKey) ===
+          normalizedCoordinatorRouteKey,
+      );
+      if (byRouteKey) {
+        return normalizeMemberRouteKey(byRouteKey.memberRouteKey);
+      }
+    }
+
+    return memberBindings[0]
+      ? normalizeMemberRouteKey(memberBindings[0].memberRouteKey)
+      : null;
   }
 
   private resolveLatestRuntimeReference(

@@ -70,7 +70,7 @@ export class TeamMemberRuntimeOrchestrator {
     agentTeamDefinitionService?: AgentTeamDefinitionService;
     channelMessageReceiptService?: Pick<
       ChannelMessageReceiptService,
-      "getSourceByAgentRunTurn"
+      "getLatestSourceByDispatchTarget" | "getSourceByAgentRunTurn"
     >;
     externalTurnBridge?: Pick<
       RuntimeExternalChannelTurnBridge,
@@ -110,6 +110,8 @@ export class TeamMemberRuntimeOrchestrator {
       this.teamRuntimeBindingRegistry,
       teamRuntimeInterAgentMessageRelay,
       {
+        getLatestSourceByDispatchTarget: (target) =>
+          channelMessageReceiptService.getLatestSourceByDispatchTarget(target),
         getSourceByAgentRunTurn: (agentRunId: string, turnId: string) =>
           channelMessageReceiptService.getSourceByAgentRunTurn(agentRunId, turnId),
         bindAcceptedTurnToSource: (input) =>
@@ -181,11 +183,15 @@ export class TeamMemberRuntimeOrchestrator {
     teamRunId: string,
     teamDefinitionId: string,
     memberConfigs: TeamRuntimeMemberConfig[],
+    options: {
+      coordinatorMemberName?: string | null;
+    } = {},
   ): Promise<TeamRunMemberBinding[]> {
     return this.sessionLifecycleService.createMemberRuntimeSessions(
       teamRunId,
       teamDefinitionId,
       memberConfigs,
+      options,
     );
   }
 

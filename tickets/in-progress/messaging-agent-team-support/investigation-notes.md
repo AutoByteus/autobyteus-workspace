@@ -238,6 +238,39 @@ Inference:
 - The current runtime behavior is too coarse: it models "one reasoning segment per turn" instead of "one visible reasoning burst per contiguous reasoning phase".
 - The fix should restore separate visible reasoning bursts inside one turn by preserving stable reasoning item ids when they differ and by resetting the turn-level fallback cache when tool or text boundaries interrupt reasoning.
 - The correct behavior is:
+
+### 16. TEAM callback linkage is currently being overwritten onto delegated member turns
+
+- Live database inspection on `2026-03-12` showed the Telegram TEAM binding persisted under `runtime_kind=codex_app_server` with `team_id=team_professor-student-team_30537ad0`.
+  - Evidence: `autobyteus-server-ts/db/production.db`, table `channel_bindings`
+- The newest inbound Telegram receipt for the reproduced message `update:109349124` is no longer bound to the professor/coordinator turn. It is stored against the delegated student member turn `019ce090-ba83-7203-816f-b6ae4355b90c` and `agent_id=student_50d53881bb8c67d4`.
+  - Evidence: `autobyteus-server-ts/db/production.db`, table `channel_message_receipts`
+- There is no matching `channel_delivery_events` row for that newer external message, while the immediately previous Telegram ingress `update:109349123` does have a successful callback event keyed to the professor turn.
+  - Evidence: `autobyteus-server-ts/db/production.db`, table `channel_delivery_events`
+- `ReplyCallbackService.publishAssistantReplyByTurn(...)` resolves callback sources strictly by `(agentRunId, turnId)`.
+  - Evidence: `autobyteus-server-ts/src/external-channel/services/reply-callback-service.ts`
+- `SqlChannelMessageReceiptProvider.bindTurnToReceipt(...)` upserts on `(provider, transport, accountId, peerId, threadId, externalMessageId)`, so rebinding the same external message to another member turn overwrites the earlier turn association.
+  - Evidence: `autobyteus-server-ts/src/external-channel/providers/sql-channel-message-receipt-provider.ts`
+- `TeamMemberRuntimeRelayService.propagateExternalSourceIfPresent(...)` currently propagates the same external source onto every accepted `send_message_to` recipient turn, regardless of whether that recipient is the externally addressable coordinator/entry member.
+  - Evidence: `autobyteus-server-ts/src/agent-team-execution/services/team-member-runtime-relay-service.ts`
+- The result is:
+  - inbound Telegram -> professor accepted turn is initially linked correctly
+  - professor delegates to student with `send_message_to`
+  - relay propagation overwrites the same Telegram receipt onto the student's accepted turn
+  - professor's immediate confirmation reply then cannot find a source by `(professorRunId, professorTurnId)` and callback enqueue is skipped
+- This skip is effectively silent in the current logs because `ExternalChannelAssistantReplyProcessor` intentionally suppresses `SOURCE_NOT_FOUND` skip logs.
+  - Evidence: `autobyteus-server-ts/src/agent-customization/processors/response-customization/external-channel-assistant-reply-processor.ts`
+- Historical delivery evidence also shows that this model can route a Telegram callback from a student member run (`external-reply:student_f4096a8b636d4397:...`), which is not the intended coordinator-only external behavior.
+  - Evidence: `autobyteus-server-ts/db/production.db`, table `channel_delivery_events`
+
+Inference:
+
+- This is a local callback-linkage bug within the already approved coordinator-only TEAM reply policy.
+- The correct propagation rule is narrower than the current implementation:
+  - keep the original inbound source bound to the coordinator/entry turn so the coordinator's immediate reply can publish
+  - only propagate the external source across later `send_message_to` hops when the accepted recipient turn is again the externally addressable coordinator/entry member
+  - do not bind the source onto delegated non-entry member turns such as `Student`
+- Existing TEAM callback tests cover initial coordinator replies and later coordinator follow-up replies, but they do not cover the failing intermediate case: coordinator delegates to student and also emits an immediate confirmation that must still publish to Telegram.
   - if a team context for that `teamRunId` already exists locally and is still subscribed/live, a left-tree member click should only switch selection/focus,
   - if no live local team context exists, or the existing context is not subscribed, then the history-open path should still reopen from persisted projection.
 - A focused regression test should cover both branches so the earlier stale-history fix is preserved for non-live contexts.

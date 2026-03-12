@@ -6,6 +6,7 @@ export type TeamRuntimeMode = "native_team" | "member_runtime";
 export interface TeamRuntimeBindingState {
   teamRunId: string;
   mode: TeamRuntimeMode;
+  coordinatorMemberRouteKey: string | null;
   memberBindings: TeamRunMemberBinding[];
 }
 
@@ -49,6 +50,7 @@ export class TeamRuntimeBindingRegistry {
     teamRunId: string,
     mode: TeamRuntimeMode,
     memberBindings: TeamRunMemberBinding[],
+    coordinatorMemberRouteKey?: string | null,
   ): void {
     const normalizedTeamRunId = normalizeRequiredString(teamRunId, "teamRunId");
     const normalizedBindings = memberBindings.map((binding) => ({
@@ -75,9 +77,24 @@ export class TeamRuntimeBindingRegistry {
       this.teamRunIdByMemberRunId.set(binding.memberRunId, normalizedTeamRunId);
     }
 
+    let normalizedCoordinatorMemberRouteKey = normalizeOptionalString(
+      coordinatorMemberRouteKey ?? null,
+    );
+    if (normalizedCoordinatorMemberRouteKey) {
+      normalizedCoordinatorMemberRouteKey = normalizeMemberRouteKey(
+        normalizedCoordinatorMemberRouteKey,
+      );
+    } else {
+      normalizedCoordinatorMemberRouteKey =
+        previous?.coordinatorMemberRouteKey ??
+        normalizedBindings[0]?.memberRouteKey ??
+        null;
+    }
+
     this.stateByTeamRunId.set(normalizedTeamRunId, {
       teamRunId: normalizedTeamRunId,
       mode,
+      coordinatorMemberRouteKey: normalizedCoordinatorMemberRouteKey,
       memberBindings: normalizedBindings,
     });
   }
@@ -238,6 +255,27 @@ export class TeamRuntimeBindingRegistry {
       return null;
     }
     return { teamRunId, binding };
+  }
+
+  isCoordinatorMemberRunId(
+    teamRunId: string | null | undefined,
+    memberRunId: string | null | undefined,
+  ): boolean {
+    const normalizedTeamRunId = normalizeOptionalString(teamRunId);
+    const normalizedMemberRunId = normalizeOptionalString(memberRunId);
+    if (!normalizedTeamRunId || !normalizedMemberRunId) {
+      return false;
+    }
+
+    const state = this.stateByTeamRunId.get(normalizedTeamRunId);
+    if (!state || !state.coordinatorMemberRouteKey) {
+      return false;
+    }
+
+    const coordinatorBinding = state.memberBindings.find(
+      (binding) => binding.memberRouteKey === state.coordinatorMemberRouteKey,
+    );
+    return coordinatorBinding?.memberRunId === normalizedMemberRunId;
   }
 }
 

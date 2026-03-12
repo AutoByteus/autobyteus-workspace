@@ -14,6 +14,16 @@
 
 ## Latest Verification Addendum
 
+- The latest fake-Telegram TEAM callback regression closes the remaining coordinator continuity gap:
+  - initial Telegram TEAM ingress binds the accepted coordinator turn to the gateway callback source
+  - a coordinator -> student delegated `send_message_to` turn no longer overwrites that callback ownership onto the student's accepted turn
+  - the coordinator's immediate post-`send_message_to` reply is callback-posted back to the fake Telegram gateway
+  - when the student later replies back to the coordinator, the accepted coordinator turn restores callback linkage from the latest team-bound Telegram source
+  - the coordinator's follow-up reply after the student answer is also callback-posted back to the fake Telegram gateway
+- Focused verification for that local-fix slice is now green:
+  - `team-member-runtime-relay-service.test.ts` + `channel-ingress.integration.test.ts`: `21` tests passed
+  - backend `tsc --noEmit`: passed
+
 - One more deep review round found a final local-fix gap in the targeted active lookup path:
   - `ensureActiveRunSnapshot(...)` and `ensureActiveTeamRunSnapshot(...)` bypassed the bound-backend readiness guard used by the full refresh path
   - that meant cold active-open could still fail during backend startup or restart
@@ -101,6 +111,9 @@
   - when `Student` sends a message back to the Telegram-bound `Professor`, the later Professor reply was visible in the workspace UI but did not publish back to Telegram
   - the root cause was not the callback service itself; the inter-agent relay path dropped the sender-turn and recipient-turn linkage needed to continue the external callback chain across `send_message_to` hops
   - the newest rerun now proves that later coordinator replies linked to the original Telegram source still publish back to Telegram, while unrelated UI-only turns remain internal
+- The newest callback-ownership addendum extends that guarantee to the first reply too:
+  - the coordinator's immediate reply right after delegating `send_message_to` is now also proven to publish back to Telegram
+  - delegated non-coordinator/student turns remain internal and do not steal the original Telegram callback binding
 - The latest design-impact refactor separates persisted history refresh from active-runtime synchronization:
   - history polling is now read-only and no longer performs frontend live-run recovery
   - active agent/team liveness is synchronized through a dedicated frontend store that queries the existing backend active-run APIs
@@ -564,6 +577,22 @@
    - Totals:
      - `5` test files
      - `41` tests passed
+
+27. `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/messaging-agent-team-support/autobyteus-server-ts exec vitest run tests/unit/agent-team-execution/team-member-runtime-relay-service.test.ts tests/integration/api/rest/channel-ingress.integration.test.ts`
+   - Result: `PASS`
+   - Coverage:
+     - coordinator callback ownership is preserved when the coordinator delegates to a student via `send_message_to`
+     - delegated non-coordinator turns do not steal the original Telegram callback binding
+     - later student -> coordinator relays restore the latest team-bound Telegram source so follow-up coordinator replies still publish back to the gateway
+     - fake Telegram TEAM ingress proves both the immediate post-`send_message_to` coordinator reply and the later coordinator follow-up reply are callback-posted
+   - Totals:
+     - `2` test files
+     - `21` tests passed
+
+28. `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/messaging-agent-team-support/autobyteus-server-ts exec tsc -p tsconfig.build.json --pretty false --noEmit`
+   - Result: `PASS`
+   - Coverage:
+     - the current TEAM callback-ownership local-fix slice compiles cleanly against the backend build config
 
 ## Gate Repair Logged During Testing
 

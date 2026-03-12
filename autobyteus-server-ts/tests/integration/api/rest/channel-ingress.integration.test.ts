@@ -17,6 +17,8 @@ import { GatewayCallbackDispatchWorker } from "../../../../src/external-channel/
 import { GatewayCallbackOutboxService } from "../../../../src/external-channel/runtime/gateway-callback-outbox-service.js";
 import { FileGatewayCallbackOutboxStore } from "../../../../src/external-channel/runtime/gateway-callback-outbox-store.js";
 import { RuntimeExternalChannelTurnBridge } from "../../../../src/external-channel/runtime/runtime-external-channel-turn-bridge.js";
+import { TeamMemberRuntimeRelayService } from "../../../../src/agent-team-execution/services/team-member-runtime-relay-service.js";
+import { TeamRuntimeBindingRegistry } from "../../../../src/agent-team-execution/services/team-runtime-binding-registry.js";
 import { SqlChannelBindingProvider } from "../../../../src/external-channel/providers/sql-channel-binding-provider.js";
 import { SqlChannelCallbackIdempotencyProvider } from "../../../../src/external-channel/providers/sql-channel-callback-idempotency-provider.js";
 import { SqlChannelIdempotencyProvider } from "../../../../src/external-channel/providers/sql-channel-idempotency-provider.js";
@@ -1388,6 +1390,284 @@ describe("REST channel-ingress routes", () => {
         correlationMessageId: externalMessageId,
         replyText: "Yes — I received the Student's answer, and it is correct.",
       });
+    } finally {
+      await app.close();
+      await callbackHarness.close();
+    }
+  });
+
+  it("keeps Telegram callback ownership on the coordinator across delegated team relays", async () => {
+    const accountId = unique("telegram-team-relay-acct");
+    const peerId = unique("telegram-team-relay-peer");
+    const teamDefinitionId = unique("team-definition");
+    const teamRunId = unique("team-relay-run");
+    const coordinatorRunId = unique("member-professor");
+    const studentRunId = unique("member-student");
+    const initialTurnId = unique("turn-coordinator");
+    const studentTurnId = unique("turn-student");
+    const followUpTurnId = unique("turn-coordinator-follow-up");
+    const externalMessageId = unique("telegram-team-relay-msg");
+
+    const bindingService = new ChannelBindingService(new SqlChannelBindingProvider());
+    await bindingService.upsertBinding({
+      provider: ExternalChannelProvider.TELEGRAM,
+      transport: ExternalChannelTransport.BUSINESS_API,
+      accountId,
+      peerId,
+      threadId: null,
+      targetType: "TEAM",
+      agentDefinitionId: null,
+      launchPreset: null,
+      agentRunId: null,
+      teamDefinitionId,
+      teamLaunchPreset: createTeamLaunchPreset(),
+      teamRunId: null,
+      targetNodeName: null,
+      allowTransportFallback: false,
+    });
+
+    const callbackHarness = await createDefinitionBoundTeamRuntimeFacadeWithCallbackHarness(
+      bindingService,
+      {
+        getTeamRunResumeConfig: vi.fn(async (requestedTeamRunId: string) => ({
+          teamRunId: requestedTeamRunId,
+          manifest: { teamRunId: requestedTeamRunId },
+          isActive: true,
+        })),
+        ensureTeamRunId: teamRunId,
+        dispatchedTurn: {
+          memberName: "Professor",
+          memberRunId: coordinatorRunId,
+          runtimeKind: "codex_app_server",
+          turnId: initialTurnId,
+        },
+      },
+    );
+
+    const ingressService = new ChannelIngressService({
+      idempotencyService: new ChannelIdempotencyService(
+        new SqlChannelIdempotencyProvider(),
+      ),
+      bindingService,
+      threadLockService: new ChannelThreadLockService(),
+      runtimeFacade: callbackHarness.runtimeFacade,
+      messageReceiptService: callbackHarness.messageReceiptService,
+    });
+
+    const teamRuntimeBindingRegistry = new TeamRuntimeBindingRegistry();
+    teamRuntimeBindingRegistry.upsertTeamBindings(
+      teamRunId,
+      "member_runtime",
+      [
+        {
+          memberRouteKey: "professor",
+          memberName: "Professor",
+          memberRunId: coordinatorRunId,
+          runtimeKind: "codex_app_server",
+          runtimeReference: null,
+          agentDefinitionId: unique("agent-definition-professor"),
+          llmModelIdentifier: "gpt-test",
+          autoExecuteTools: false,
+          llmConfig: null,
+          workspaceRootPath: null,
+        },
+        {
+          memberRouteKey: "student",
+          memberName: "Student",
+          memberRunId: studentRunId,
+          runtimeKind: "codex_app_server",
+          runtimeReference: null,
+          agentDefinitionId: unique("agent-definition-student"),
+          llmModelIdentifier: "gpt-test",
+          autoExecuteTools: false,
+          llmConfig: null,
+          workspaceRootPath: null,
+        },
+      ],
+      "professor",
+    );
+
+    const deliverInterAgentMessage = vi
+      .fn()
+      .mockResolvedValueOnce({
+        accepted: true,
+        runtimeKind: "codex_app_server",
+        turnId: studentTurnId,
+      })
+      .mockResolvedValueOnce({
+        accepted: true,
+        runtimeKind: "codex_app_server",
+        turnId: followUpTurnId,
+      });
+
+    const relayService = new TeamMemberRuntimeRelayService(
+      teamRuntimeBindingRegistry,
+      {
+        deliverInterAgentMessage,
+      } as any,
+      {
+        getLatestSourceByDispatchTarget: (target) =>
+          callbackHarness.messageReceiptService.getLatestSourceByDispatchTarget(target),
+        getSourceByAgentRunTurn: (agentRunId, turnId) =>
+          callbackHarness.messageReceiptService.getSourceByAgentRunTurn(agentRunId, turnId),
+        bindAcceptedTurnToSource: (input) =>
+          callbackHarness.bindAcceptedTurnToSource({
+            runId: input.runId,
+            runtimeKind: input.runtimeKind as "codex_app_server" | "claude_agent_sdk",
+            turnId: input.turnId ?? "",
+            teamRunId: input.teamRunId,
+            source: input.source,
+          }),
+      },
+    );
+
+    const app = fastify();
+    await registerChannelIngressRoutes(app, {
+      ingressService,
+      deliveryEventService: new DeliveryEventService(
+        new SqlDeliveryEventProvider(),
+      ),
+    });
+
+    try {
+      const response = await app.inject({
+        method: "POST",
+        url: "/api/channel-ingress/v1/messages",
+        payload: {
+          provider: ExternalChannelProvider.TELEGRAM,
+          transport: ExternalChannelTransport.BUSINESS_API,
+          accountId,
+          peerId,
+          peerType: ExternalPeerType.USER,
+          threadId: null,
+          externalMessageId,
+          content: "give the student a hard math problem and ask for the answer",
+          attachments: [],
+          receivedAt: "2026-03-12T05:34:00.000Z",
+          metadata: { source: "team-relay-callback-integration" },
+        },
+      });
+
+      expect(response.statusCode).toBe(202);
+      expect(response.json()).toMatchObject({
+        accepted: true,
+        duplicate: false,
+        disposition: "ROUTED",
+        bindingResolved: true,
+      });
+
+      const initialSource = await waitForValue(
+        () =>
+          callbackHarness.messageReceiptService.getSourceByAgentRunTurn(
+            coordinatorRunId,
+            initialTurnId,
+          ),
+        (value) => value !== null,
+      );
+      expect(initialSource?.externalMessageId).toBe(externalMessageId);
+
+      await relayService.relayInterAgentMessage({
+        teamRunId,
+        senderMemberRunId: coordinatorRunId,
+        senderTurnId: initialTurnId,
+        recipientName: "Student",
+        content: "Solve this and send me the final answer.",
+        messageType: "agent_message",
+      });
+
+      const studentSource =
+        await callbackHarness.messageReceiptService.getSourceByAgentRunTurn(
+          studentRunId,
+          studentTurnId,
+        );
+      expect(studentSource).toBeNull();
+
+      await callbackHarness.emitRuntimeReply(
+        "Sure — I gave the student the hard problem and asked for the final answer.",
+        initialTurnId,
+      );
+      const queuedInitialCallback = await waitForValue(
+        () => callbackHarness.listQueuedCallbacks(),
+        (rows) =>
+          rows.some(
+            (row) =>
+              row.callbackIdempotencyKey ===
+                `external-reply:${coordinatorRunId}:${initialTurnId}` &&
+              row.status === "PENDING",
+          ),
+      );
+      expect(queuedInitialCallback).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            callbackIdempotencyKey: `external-reply:${coordinatorRunId}:${initialTurnId}`,
+            status: "PENDING",
+          }),
+        ]),
+      );
+      await callbackHarness.dispatchQueuedCallbacks();
+
+      await waitForValue(
+        async () => callbackHarness.callbackRequests.length,
+        (count) => count === 1,
+      );
+      expect(callbackHarness.callbackRequests[0]).toMatchObject({
+        correlationMessageId: externalMessageId,
+        replyText:
+          "Sure — I gave the student the hard problem and asked for the final answer.",
+      });
+
+      await relayService.relayInterAgentMessage({
+        teamRunId,
+        senderMemberRunId: studentRunId,
+        senderTurnId: studentTurnId,
+        recipientName: "Professor",
+        content: "I solved it. Here is the final answer.",
+        messageType: "agent_message",
+      });
+
+      const followUpSource =
+        await callbackHarness.messageReceiptService.getSourceByAgentRunTurn(
+          coordinatorRunId,
+          followUpTurnId,
+        );
+      expect(followUpSource).toMatchObject({
+        externalMessageId,
+      });
+
+      await callbackHarness.emitRuntimeReply(
+        "I received the student's answer and will share the conclusion now.",
+        followUpTurnId,
+      );
+      const queuedFollowUpCallback = await waitForValue(
+        () => callbackHarness.listQueuedCallbacks(),
+        (rows) =>
+          rows.some(
+            (row) =>
+              row.callbackIdempotencyKey ===
+                `external-reply:${coordinatorRunId}:${followUpTurnId}` &&
+              row.status === "PENDING",
+          ),
+      );
+      expect(queuedFollowUpCallback).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            callbackIdempotencyKey: `external-reply:${coordinatorRunId}:${followUpTurnId}`,
+            status: "PENDING",
+          }),
+        ]),
+      );
+      await callbackHarness.dispatchQueuedCallbacks();
+
+      await waitForValue(
+        async () => callbackHarness.callbackRequests.length,
+        (count) => count === 2,
+      );
+      expect(callbackHarness.callbackRequests[1]).toMatchObject({
+        correlationMessageId: externalMessageId,
+        replyText:
+          "I received the student's answer and will share the conclusion now.",
+      });
+      expect(deliverInterAgentMessage).toHaveBeenCalledTimes(2);
     } finally {
       await app.close();
       await callbackHarness.close();

@@ -13,6 +13,10 @@ import {
 } from "./team-member-runtime-errors.js";
 
 type ExternalCallbackPropagationPort = {
+  getLatestSourceByDispatchTarget: (target: {
+    agentRunId: string | null;
+    teamRunId: string | null;
+  }) => Promise<ChannelSourceContext | null>;
   getSourceByAgentRunTurn: (
     agentRunId: string,
     turnId: string,
@@ -165,10 +169,24 @@ export class TeamMemberRuntimeRelayService {
     }
 
     try {
-      const source = await this.externalCallbackPropagation.getSourceByAgentRunTurn(
-        input.senderMemberRunId,
-        senderTurnId,
-      );
+      const recipientIsCoordinator =
+        this.teamRuntimeBindingRegistry.isCoordinatorMemberRunId(
+          input.teamRunId,
+          input.recipientMemberRunId,
+        );
+      if (!recipientIsCoordinator) {
+        return;
+      }
+
+      const source =
+        (await this.externalCallbackPropagation.getSourceByAgentRunTurn(
+          input.senderMemberRunId,
+          senderTurnId,
+        )) ??
+        (await this.externalCallbackPropagation.getLatestSourceByDispatchTarget({
+          agentRunId: null,
+          teamRunId: input.teamRunId,
+        }));
       if (!source) {
         return;
       }

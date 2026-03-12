@@ -711,3 +711,43 @@
 - Module placement:
   - the readiness helper remains in `autobyteus-web/stores/activeRuntimeSyncStore.ts`
   - no new history-layer or presentation-layer coupling was introduced
+
+## Round 23
+
+- Scope reviewed:
+  - coordinator callback-ownership tracking in `team-runtime-binding-registry.ts` and `team-member-runtime-session-lifecycle-service.ts`
+  - relay/orchestrator propagation in `team-member-runtime-relay-service.ts`, `team-member-runtime-orchestrator.ts`, and `team-run-launch-service.ts`
+  - focused fake-Telegram regression coverage in `channel-ingress.integration.test.ts` plus the relay-unit coverage in `team-member-runtime-relay-service.test.ts`
+- Decision: `Pass`
+
+## Round 23 Findings
+
+- No blocking findings.
+
+## Round 23 Review Checks
+
+- Review slices:
+  - production callback-ownership slice: `5` files, `~122` effective changed lines, `<=500` per-slice review limit satisfied
+  - focused integration regression slice: `1` file, `~280` effective changed lines, `<=500` per-slice review limit satisfied
+  - focused unit regression slice: `1` file, `~116` effective changed lines, `<=500` per-slice review limit satisfied
+- `>220` changed-line delta gate:
+  - the integration regression slice exceeded `220` effective changed lines and received explicit review for scenario realism, callback-boundary ownership, and asynchronous test leakage
+- Layering:
+  - coordinator identification stays in the binding registry and session-lifecycle layer instead of being recomputed ad hoc in relay code
+  - relay propagation remains in `team-member-runtime-relay-service.ts`
+  - callback publication still terminates at the external reply-bridge / receipt-provider boundary rather than leaking gateway logic into team runtime orchestration
+- Decoupling:
+  - the relay service depends only on a narrow callback-propagation port
+  - delegated non-coordinator turns are explicitly excluded from callback rebinding, so internal inter-agent traffic no longer mutates external-channel ownership state
+  - coordinator follow-up recovery uses the latest team-bound source through the same callback abstraction instead of reaching into SQL providers directly
+- Module placement:
+  - coordinator route-key persistence remains in the runtime-binding/session-lifecycle services
+  - relay semantics stay in the relay service
+  - the regression scenario stays in the channel-ingress integration suite, which already owns fake-gateway end-to-end callback behavior
+- Backward compatibility:
+  - the coordinator-only outward reply model is preserved
+  - direct coordinator replies and later coordinator follow-up replies now both honor the existing Telegram callback contract
+  - delegated student turns remain internal and do not create new outward callback behavior
+- Legacy cleanup:
+  - removes the accidental legacy behavior where delegated recipient turns could overwrite the original external source binding
+  - avoids adding any runtime-specific frontend behavior or new gateway-specific code paths outside the backend callback normalization boundary

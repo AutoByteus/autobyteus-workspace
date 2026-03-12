@@ -139,6 +139,9 @@ export class TeamRunLaunchService {
         teamRunId,
         teamDefinitionId,
         resolvedMemberConfigs,
+        {
+          coordinatorMemberName: metadata.coordinatorMemberName,
+        },
       );
     } else {
       this.teamMemberRuntimeOrchestrator.removeTeam(teamRunId);
