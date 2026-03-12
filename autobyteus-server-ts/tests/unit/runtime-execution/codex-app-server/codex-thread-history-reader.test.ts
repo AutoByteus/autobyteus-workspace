@@ -97,7 +97,8 @@ describe("CodexThreadHistoryReader", () => {
       throw new Error(`Unexpected method: ${method}`);
     });
     const processManager = {
-      getClient: vi.fn().mockResolvedValue({ request }),
+      acquireClient: vi.fn().mockResolvedValue({ request }),
+      releaseClient: vi.fn().mockResolvedValue(undefined),
     };
     const reader = new CodexThreadHistoryReader(processManager as never);
 
@@ -111,6 +112,7 @@ describe("CodexThreadHistoryReader", () => {
     expect(
       request.mock.calls.filter(([method]) => method === "thread/resume"),
     ).toHaveLength(0);
+    expect(processManager.releaseClient).toHaveBeenCalledWith("/tmp/workspace");
     expect(warnSpy).not.toHaveBeenCalled();
     warnSpy.mockRestore();
   });

@@ -282,6 +282,7 @@ describeCodexRuntime("Codex configured-skill GraphQL e2e (live transport)", () =
 
     const rawMessages: WsMessage[] = [];
     const assistantOutputFragments: string[] = [];
+    const finalizedAssistantOutputs: string[] = [];
     const errorCodes: string[] = [];
     let sawConnected = false;
     let sawRunningAfterPrompt = false;
@@ -325,7 +326,10 @@ describeCodexRuntime("Codex configured-skill GraphQL e2e (live transport)", () =
             sawConnected,
             sawRunningAfterPrompt,
             sawIdleAfterPrompt,
-            assistantOutputFragments,
+            assistantOutputFragments:
+              finalizedAssistantOutputs.length > 0
+                ? finalizedAssistantOutputs
+                : assistantOutputFragments,
             errorCodes,
             rawMessages,
           });
@@ -395,7 +399,7 @@ describeCodexRuntime("Codex configured-skill GraphQL e2e (live transport)", () =
             return;
           }
           if (payload.segment_type === "text" && typeof payload.text === "string" && payload.text.length > 0) {
-            assistantOutputFragments.push(payload.text);
+            finalizedAssistantOutputs.push(payload.text);
           }
           maybeResolve();
           return;

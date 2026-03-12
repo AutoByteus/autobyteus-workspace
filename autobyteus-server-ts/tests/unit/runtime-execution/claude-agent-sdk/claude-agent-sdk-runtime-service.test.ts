@@ -753,6 +753,7 @@ describe("ClaudeAgentSdkRuntimeService", () => {
     expect(setMcpServers).toHaveBeenCalledTimes(1);
     expect(relayHandler).toHaveBeenCalledWith({
       senderRunId: "run-team-member",
+      senderTurnId: expect.any(String),
       senderMemberName: "ping",
       senderTeamRunId: "team-1",
       toolArguments: {
@@ -870,6 +871,7 @@ describe("ClaudeAgentSdkRuntimeService", () => {
 
     expect(relayHandler).toHaveBeenCalledWith({
       senderRunId: "run-team-member-manual",
+      senderTurnId: expect.any(String),
       senderMemberName: "ping",
       senderTeamRunId: "team-1",
       toolArguments: {
