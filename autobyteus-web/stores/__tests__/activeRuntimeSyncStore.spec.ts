@@ -402,6 +402,16 @@ describe('activeRuntimeSyncStore', () => {
     });
   });
 
+  it('ensureActiveRunSnapshot waits for the bound backend before querying', async () => {
+    windowNodeContextStoreMock.waitForBoundBackendReady.mockResolvedValue(false);
+    windowNodeContextStoreMock.lastReadyError = 'backend restarting';
+
+    const store = useActiveRuntimeSyncStore();
+
+    await expect(store.ensureActiveRunSnapshot('run-live-2')).rejects.toThrow('backend restarting');
+    expect(queryMock).not.toHaveBeenCalled();
+  });
+
   it('ensureActiveTeamRunSnapshot uses the targeted active-team query when the cache is empty', async () => {
     queryMock.mockResolvedValue({
       data: {
@@ -444,5 +454,17 @@ describe('activeRuntimeSyncStore', () => {
       variables: { id: 'team-live-2' },
       fetchPolicy: 'network-only',
     });
+  });
+
+  it('ensureActiveTeamRunSnapshot waits for the bound backend before querying', async () => {
+    windowNodeContextStoreMock.waitForBoundBackendReady.mockResolvedValue(false);
+    windowNodeContextStoreMock.lastReadyError = 'backend restarting';
+
+    const store = useActiveRuntimeSyncStore();
+
+    await expect(store.ensureActiveTeamRunSnapshot('team-live-2')).rejects.toThrow(
+      'backend restarting',
+    );
+    expect(queryMock).not.toHaveBeenCalled();
   });
 });

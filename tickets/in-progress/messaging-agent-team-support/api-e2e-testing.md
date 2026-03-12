@@ -14,6 +14,14 @@
 
 ## Latest Verification Addendum
 
+- One more deep review round found a final local-fix gap in the targeted active lookup path:
+  - `ensureActiveRunSnapshot(...)` and `ensureActiveTeamRunSnapshot(...)` bypassed the bound-backend readiness guard used by the full refresh path
+  - that meant cold active-open could still fail during backend startup or restart
+- The follow-up local fix is now verified:
+  - `activeRuntimeSyncStore.spec.ts`: `7` tests passed
+  - `activeRuntimeSyncStore.spec.ts` + `runHistoryStore.spec.ts`: `32` tests passed
+  - targeted active lookup now waits for the bound backend before issuing the single-run or single-team GraphQL query
+
 - The final local v7 cleanup slice is now verified on the current tree:
   - cold active-open no longer falls back to refreshing the whole active-runtime snapshot set
   - `activeRuntimeSyncStore` now issues a targeted active-run or active-team lookup when its local cache is cold

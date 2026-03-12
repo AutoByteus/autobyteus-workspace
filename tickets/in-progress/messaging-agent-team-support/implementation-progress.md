@@ -22,6 +22,10 @@ This document tracks implementation, verification, and gate evidence for the mes
 
 ## Progress Log
 
+- 2026-03-12: Deep review round 21 found one real gap in the targeted active lookup slice: `ensureActiveRunSnapshot(...)` and `ensureActiveTeamRunSnapshot(...)` bypassed the bound-backend readiness guard that `refresh(...)` already enforced, so cold active-open could still fail during backend startup or restart.
+- 2026-03-12: Fixed that by extracting a shared `ensureBoundBackendReady()` helper inside `activeRuntimeSyncStore.ts` and routing both the full refresh path and the targeted lookup path through the same readiness precondition.
+- 2026-03-12: Added focused regressions proving targeted active run/team lookup now waits for the bound backend before issuing GraphQL queries.
+- 2026-03-12: Focused reruns passed after the fix: `activeRuntimeSyncStore.spec.ts` (`7` tests) and `activeRuntimeSyncStore.spec.ts` + `runHistoryStore.spec.ts` (`32` tests total).
 - 2026-03-12: Closed the remaining local v7 optimization gap by replacing cold active-open full active-runtime refreshes with targeted active-runtime lookups. `activeRuntimeSyncStore` now resolves a single active run or single active team on demand instead of repolling the whole active set when the local cache is cold.
 - 2026-03-12: Added backend single-run active snapshot support in `active-runtime-snapshot-service.ts`, `agent-run.ts`, and `agent-team-run.ts`, then wired the frontend active-runtime query layer to consume those new targeted lookups.
 - 2026-03-12: Focused verification passed for the local fix: `activeRuntimeSyncStore.spec.ts` + `runHistoryStore.spec.ts` (`30` tests), `active-runtime-snapshot-service.test.ts` (`6` tests), and backend build.

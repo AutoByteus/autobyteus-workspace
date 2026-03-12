@@ -53,6 +53,14 @@ interface ActiveTeamRunSnapshotQueryData {
 const toIdSet = (ids: Array<string | null | undefined>): Set<string> =>
   new Set(ids.map((value) => (value || '').trim()).filter(Boolean));
 
+const ensureBoundBackendReady = async (): Promise<void> => {
+  const windowNodeContextStore = useWindowNodeContextStore();
+  const isReady = await windowNodeContextStore.waitForBoundBackendReady();
+  if (!isReady) {
+    throw new Error(windowNodeContextStore.lastReadyError || 'Bound backend is not ready');
+  }
+};
+
 const syncAgentRuntimeState = async (
   activeRunSnapshots: Map<string, ActiveAgentRunSnapshot>,
 ): Promise<void> => {
@@ -182,11 +190,7 @@ export const useActiveRuntimeSyncStore = defineStore('activeRuntimeSync', {
       }
 
       try {
-        const windowNodeContextStore = useWindowNodeContextStore();
-        const isReady = await windowNodeContextStore.waitForBoundBackendReady();
-        if (!isReady) {
-          throw new Error(windowNodeContextStore.lastReadyError || 'Bound backend is not ready');
-        }
+        await ensureBoundBackendReady();
 
         const client = getApolloClient();
         const { data, errors } = await client.query<ActiveRuntimeSnapshotQueryData>({
@@ -244,6 +248,8 @@ export const useActiveRuntimeSyncStore = defineStore('activeRuntimeSync', {
         return existing;
       }
 
+      await ensureBoundBackendReady();
+
       const client = getApolloClient();
       const { data, errors } = await client.query<ActiveAgentRunSnapshotQueryData>({
         query: GetActiveAgentRunSnapshot,
@@ -275,6 +281,8 @@ export const useActiveRuntimeSyncStore = defineStore('activeRuntimeSync', {
       if (existing) {
         return existing;
       }
+
+      await ensureBoundBackendReady();
 
       const client = getApolloClient();
       const { data, errors } = await client.query<ActiveTeamRunSnapshotQueryData>({

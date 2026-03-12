@@ -657,3 +657,57 @@
   - targeted live lookup remains in the backend GraphQL active snapshot services/types
   - targeted frontend lookup remains in `autobyteus-web/stores/activeRuntimeSyncStore.ts`
   - no new presentation-layer or history-layer coupling was introduced
+
+## Round 21
+
+- Scope reviewed:
+  - targeted active lookup path in `autobyteus-web/stores/activeRuntimeSyncStore.ts`
+  - consumers in `autobyteus-web/services/runOpen/runOpenCoordinator.ts` and `autobyteus-web/services/runOpen/teamRunOpenCoordinator.ts`
+  - interaction with the existing full-refresh readiness guard in `activeRuntimeSyncStore.refresh(...)`
+- Decision: `Fail`
+
+## Round 21 Findings
+
+- Blocking: `ensureActiveRunSnapshot(...)` and `ensureActiveTeamRunSnapshot(...)` issue direct GraphQL requests without first waiting for `windowNodeContextStore.waitForBoundBackendReady()`, unlike the full refresh path. That means cold active-open can still fail during backend startup or restart even though the architectural goal is for active-open to be as robust as the poll-driven path.
+
+## Round 21 Review Checks
+
+- Review slices:
+  - frontend targeted active lookup readiness slice: `3` production files, `~40` effective changed lines, `<=500` per-slice review limit satisfied
+- `>220` changed-line delta gate:
+  - not triggered
+- Layering:
+  - the bug is not a layering failure; it is an inconsistency between two paths owned by the same store boundary
+- Decoupling:
+  - the open coordinators correctly depend on the store API, but the store API itself skipped a required readiness precondition that the existing refresh path already enforces
+- Module placement:
+  - the fix should stay in `autobyteus-web/stores/activeRuntimeSyncStore.ts`; it should not be pushed upward into the open coordinators
+
+## Round 22
+
+- Scope reviewed:
+  - the readiness-guard fix in `autobyteus-web/stores/activeRuntimeSyncStore.ts`
+  - focused regressions in `autobyteus-web/stores/__tests__/activeRuntimeSyncStore.spec.ts`
+  - adjacent rerun of `autobyteus-web/stores/__tests__/runHistoryStore.spec.ts`
+- Decision: `Pass`
+
+## Round 22 Findings
+
+- No blocking findings.
+- Residual risk: none beyond the previously recorded broader frontend `nuxi typecheck` baseline outside this ticket.
+
+## Round 22 Review Checks
+
+- Review slices:
+  - frontend active lookup readiness fix slice: `2` files, `~25` effective changed lines, `<=500` per-slice review limit satisfied
+  - focused regression slice: `2` test files, `32` passing tests in the affected area
+- `>220` changed-line delta gate:
+  - not triggered
+- Layering:
+  - readiness responsibility is now consistently centralized in the active-runtime store
+  - the open coordinators remain thin consumers and did not gain transport/backend lifecycle logic
+- Decoupling:
+  - targeted lookup now shares the same precondition as full refresh instead of silently inventing a second backend-availability policy
+- Module placement:
+  - the readiness helper remains in `autobyteus-web/stores/activeRuntimeSyncStore.ts`
+  - no new history-layer or presentation-layer coupling was introduced
