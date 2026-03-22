@@ -19,6 +19,7 @@ const runtimeDeps = new Set([
   ...Object.keys(packageJson.optionalDependencies || {}),
   ...Object.keys(packageJson.peerDependencies || {}),
 ]);
+const packagedEntries = (packageJson.files || []).map((entry) => entry.replace(/\\/g, "/").replace(/^\.\//, "").replace(/\/$/, ""));
 
 const builtins = new Set([...builtinModules, ...builtinModules.map((mod) => `node:${mod}`)]);
 const importPattern =
@@ -48,6 +49,26 @@ function getPackageName(specifier) {
   return specifier.split("/")[0] || specifier;
 }
 
+function isPackagedPath(relativePath) {
+  const normalizedPath = relativePath.replace(/\\/g, "/").replace(/^\.\//, "");
+  return packagedEntries.some((entry) => (
+    entry === normalizedPath || normalizedPath.startsWith(`${entry}/`)
+  ));
+}
+
+function collectLifecycleScriptPaths(scriptCommand) {
+  const paths = [];
+  const localScriptPathPattern =
+    /(?:^|[;&|]\s*)(?:node|bash|sh|python(?:3)?|tsx|ts-node)\s+((?:\.\/|\.\.\/)[^"'`\s&|;]+)/g;
+  let match;
+  while ((match = localScriptPathPattern.exec(scriptCommand)) !== null) {
+    const scriptPath = match[1];
+    if (!scriptPath) continue;
+    paths.push(scriptPath);
+  }
+  return paths;
+}
+
 const missing = new Map();
 
 for (const filePath of collectJsFiles(distDir)) {
@@ -72,6 +93,32 @@ for (const filePath of collectJsFiles(distDir)) {
   }
 }
 
+const lifecycleScriptNames = ["preinstall", "install", "postinstall"];
+const lifecycleScriptViolations = [];
+
+for (const scriptName of lifecycleScriptNames) {
+  const scriptCommand = packageJson.scripts?.[scriptName];
+  if (!scriptCommand) {
+    continue;
+  }
+
+  for (const scriptPath of collectLifecycleScriptPaths(scriptCommand)) {
+    const absoluteScriptPath = path.resolve(projectRoot, scriptPath);
+    const relativeScriptPath = path.relative(projectRoot, absoluteScriptPath).replace(/\\/g, "/");
+    if (!fs.existsSync(absoluteScriptPath)) {
+      lifecycleScriptViolations.push(
+        `${scriptName} references missing local script: ${relativeScriptPath}`
+      );
+      continue;
+    }
+    if (!isPackagedPath(relativeScriptPath)) {
+      lifecycleScriptViolations.push(
+        `${scriptName} references local script not included in package files: ${relativeScriptPath}`
+      );
+    }
+  }
+}
+
 if (missing.size > 0) {
   console.error("[verify:runtime-deps] Missing runtime dependencies in package.json:");
   for (const [packageName, offenders] of [...missing.entries()].sort(([a], [b]) => a.localeCompare(b))) {
@@ -79,6 +126,14 @@ if (missing.size > 0) {
     for (const offender of [...offenders].sort()) {
       console.error(`  - ${offender}`);
     }
+  }
+  process.exit(1);
+}
+
+if (lifecycleScriptViolations.length > 0) {
+  console.error("[verify:runtime-deps] Package manifest is inconsistent with lifecycle scripts:");
+  for (const violation of lifecycleScriptViolations) {
+    console.error(`- ${violation}`);
   }
   process.exit(1);
 }

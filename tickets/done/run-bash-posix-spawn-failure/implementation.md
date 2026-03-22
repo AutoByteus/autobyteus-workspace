@@ -23,7 +23,8 @@
 
 - Current Status: `In Execution`
 - Notes:
-  - Stage 6 source changes are complete.
+  - Stage 10 release finalization exposed a Windows packaging blocker, so Stage 6 reopened for a local fix.
+  - The reopened scope is limited to the packaged `autobyteus-ts` manifest contract and its validation guard.
   - This artifact also records the Stage 7 scenario inputs, Stage 8 review inputs, and Stage 9 docs-sync baseline.
 
 ## Plan Baseline (Freeze Until Replanning)
@@ -130,7 +131,8 @@
 | `C-003` | `DS-001` | `tools/terminal` | prefer PTY but repair/helper-fallback on startup | `autobyteus-ts/src/tools/terminal/pty-session.ts` | same | Modify | `C-001`, `C-002` | Completed | `tests/unit/tools/terminal/pty-session.test.ts` | Passed | `tests/integration/tools/terminal/pty-session.test.ts` | Passed | Planned | runtime repairs helper before `node-pty.spawn(...)` |
 | `C-004` | `DS-001`, `DS-002` | `tools/terminal` | manager wiring + fallback policy | `autobyteus-ts/src/tools/terminal/terminal-session-manager.ts`, `autobyteus-ts/src/tools/terminal/background-process-manager.ts`, `autobyteus-ts/src/tools/terminal/session-factory.ts` | same | Modify | `C-002` | Completed | `tests/unit/tools/terminal/session-factory.test.ts`, `tests/unit/tools/terminal/terminal-session-manager.test.ts`, `tests/unit/tools/terminal/background-process-manager.test.ts` | Passed | `tests/integration/tools/terminal/terminal-tools.test.ts`, `tests/integration/tools/terminal/direct-shell-session.test.ts` | Passed | Planned | fallback remains `DirectShellSession` only where applicable |
 | `C-005` | `DS-003` | `agent/streaming/adapters` | XML leaf-text decode once | `autobyteus-ts/src/agent/streaming/adapters/tool-call-parsing.ts`, `autobyteus-ts/src/agent/streaming/adapters/tool-syntax-registry.ts` | same | Modify | N/A | Completed | `tests/unit/agent/streaming/adapters/tool-call-parsing.test.ts`, `tests/unit/agent/streaming/parser/invocation-adapter.test.ts` | Passed | `N/A` | N/A | Planned | command text reaches `run_bash` decoded exactly once |
-| `C-006` | `DS-001` | `package bootstrap` | install-time repair | `autobyteus-ts/package.json` | same | Modify | `C-001` | Completed | `N/A` | N/A | `tests/integration/tools/terminal/terminal-tools.test.ts` | Passed | Planned | `postinstall` repairs `node-pty` helper for future installs |
+| `C-006` | `DS-001` | `package bootstrap` | install-time repair | `autobyteus-ts/package.json` | same | Modify | `C-001` | Completed | `tests/unit/package/package-manifest.test.ts` | Passed | `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/run-bash-posix-spawn-failure/autobyteus-ts pack --pack-destination <tmp> && npm install <tarball>` | Passed | Planned | `postinstall` repairs `node-pty` helper for future installs and the packed tarball now ships the referenced script |
+| `C-007` | `DS-001` | `package bootstrap` | packaged lifecycle-script manifest guard | `autobyteus-ts/scripts/verify-runtime-dependencies.mjs` | same | Modify | `C-006` | Completed | `tests/unit/package/package-manifest.test.ts` | Passed | `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/run-bash-posix-spawn-failure/autobyteus-ts build` | Passed | Planned | build now fails if install lifecycle scripts reference local files not included in the published package |
 
 ### Requirement, Acceptance, And Use-Case Traceability
 
