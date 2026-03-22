@@ -1,4 +1,7 @@
-# Release Notes
+## Improvements
+- Improved terminal command reliability on macOS when the interactive shell backend cannot start cleanly.
 
-- Managed messaging gateway runtime updates now track the same release version as the main app, so `Update Runtime` installs the latest compatible gateway without a separate manual version bump.
-- Desktop and messaging-gateway release workflows now block package-version or manifest drift before publishing a release.
+## Fixes
+- Fixed `run_bash` so failed terminal startup no longer leaves later commands stuck with `Session not started`.
+- Fixed background shell commands to recover under the same startup-failure conditions as foreground commands.
+- Fixed XML-formatted `run_bash` calls so encoded chained commands execute with the intended shell operators and quoting.
