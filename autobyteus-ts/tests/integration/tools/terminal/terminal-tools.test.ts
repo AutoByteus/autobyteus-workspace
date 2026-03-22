@@ -7,11 +7,7 @@ import { registerStartBackgroundProcessTool } from '../../../../src/tools/termin
 import { registerGetProcessOutputTool } from '../../../../src/tools/terminal/tools/get-process-output.js';
 import { registerStopBackgroundProcessTool } from '../../../../src/tools/terminal/tools/stop-background-process.js';
 import { TerminalResult } from '../../../../src/tools/terminal/types.js';
-import { detectNodePtyRuntimeAvailable } from './pty-runtime.js';
-
-const nodePtyAvailable = await detectNodePtyRuntimeAvailable();
-
-const runIntegration = nodePtyAvailable ? describe : describe.skip;
+const runIntegration = process.platform === 'win32' ? describe.skip : describe;
 const runBashTool = registerRunBashTool();
 const startBackgroundProcessTool = registerStartBackgroundProcessTool();
 const getProcessOutputTool = registerGetProcessOutputTool();

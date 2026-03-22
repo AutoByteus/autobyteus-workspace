@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs",
+    "postinstall": "node ./scripts/fix-node-pty-permissions.mjs",
     "verify:runtime-deps": "node ./scripts/verify-runtime-dependencies.mjs",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

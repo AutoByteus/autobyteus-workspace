@@ -52,6 +52,38 @@ class MockPtySession {
   }
 }
 
+class FailingStartupSession {
+  sessionId: string;
+
+  constructor(sessionId: string) {
+    this.sessionId = sessionId;
+  }
+
+  get isAlive(): boolean {
+    return false;
+  }
+
+  async start(): Promise<void> {
+    throw new Error('posix_spawnp failed.');
+  }
+
+  async write(): Promise<void> {
+    throw new Error('Session not started');
+  }
+
+  async read(): Promise<Buffer | null> {
+    throw new Error('Session not started');
+  }
+
+  resize(): void {
+    // no-op
+  }
+
+  async close(): Promise<void> {
+    // no-op
+  }
+}
+
 describe('TerminalSessionManager', () => {
   it('ensureStarted creates session', async () => {
     const manager = new TerminalSessionManager(MockPtySession);
@@ -105,5 +137,30 @@ describe('TerminalSessionManager', () => {
     await manager.close();
     expect(manager.isStarted).toBe(false);
     expect(manager.currentSession).toBeNull();
+  });
+
+  it('retries the same startup error on repeated calls when no fallback is available', async () => {
+    const manager = new TerminalSessionManager(FailingStartupSession);
+
+    await expect(manager.ensureStarted('/tmp')).rejects.toThrow('posix_spawnp failed.');
+    await expect(manager.ensureStarted('/tmp')).rejects.toThrow('posix_spawnp failed.');
+    expect(manager.currentSession).toBeNull();
+    expect(manager.isStarted).toBe(false);
+  });
+
+  it('falls back to provided session factory when primary startup fails', async () => {
+    const manager = new TerminalSessionManager(
+      FailingStartupSession,
+      undefined,
+      [MockPtySession],
+    );
+
+    await manager.ensureStarted('/tmp');
+    const result = await manager.executeCommand('echo hello');
+
+    expect(manager.currentSession).toBeInstanceOf(MockPtySession);
+    expect(result.stdout).toContain('hello');
+
+    await manager.close();
   });
 });

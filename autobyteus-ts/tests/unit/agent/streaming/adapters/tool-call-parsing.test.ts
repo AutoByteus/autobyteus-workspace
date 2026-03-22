@@ -12,6 +12,22 @@ describe('tool-call-parsing', () => {
     expect(parseXmlArguments(xml)).toEqual({ path: '/tmp/b.txt', content: 'hi' });
   });
 
+  it('decodes XML entities in realistic chained command values', () => {
+    const xml =
+      '<arguments><arg name="command">mkdir -p test_folder &amp;&amp; cd test_folder &amp;&amp; printf &quot;hello&quot; &gt; note.txt &amp;&amp; cat note.txt</arg></arguments>';
+    expect(parseXmlArguments(xml)).toEqual({
+      command: 'mkdir -p test_folder && cd test_folder && printf "hello" > note.txt && cat note.txt'
+    });
+  });
+
+  it('keeps plain chained commands unchanged', () => {
+    const xml =
+      '<arguments><arg name="command">mkdir -p project && cd project && pwd</arg></arguments>';
+    expect(parseXmlArguments(xml)).toEqual({
+      command: 'mkdir -p project && cd project && pwd'
+    });
+  });
+
   it('parses JSON tool call with arguments object or string', () => {
     const direct = parseJsonToolCall(JSON.stringify({ name: 'write_file', arguments: { path: 'a', content: 'b' } }));
     expect(direct).toEqual({ name: 'write_file', arguments: { path: 'a', content: 'b' } });

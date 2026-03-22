@@ -1,5 +1,8 @@
+import { ensureNodePtySpawnHelperExecutable } from '../../../../src/tools/terminal/node-pty-bootstrap.js';
+
 export async function detectNodePtyRuntimeAvailable(): Promise<boolean> {
   try {
+    await ensureNodePtySpawnHelperExecutable();
     const nodePty = await import('node-pty');
     const shell = process.platform === 'win32' ? 'cmd.exe' : 'sh';
     const pty = nodePty.spawn(shell, [], {

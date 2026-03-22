@@ -1,6 +1,7 @@
 import { describe, it, expect, afterEach } from 'vitest';
 import {
   getDefaultSessionFactory,
+  getFallbackSessionFactories,
   isWindows,
   isAndroid,
   setIsWindowsForTests,
@@ -35,6 +36,16 @@ describe('session_factory', () => {
 
     const factory = getDefaultSessionFactory();
     expect(factory.name).toBe('PtySession');
+  });
+
+  it('returns DirectShellSession as fallback for PtySession', () => {
+    setIsAndroidForTests(() => false);
+    setIsWindowsForTests(() => false);
+
+    const factory = getDefaultSessionFactory();
+    const fallbacks = getFallbackSessionFactories(factory);
+
+    expect(fallbacks.map((entry) => entry.name)).toEqual(['DirectShellSession']);
   });
 
   it('detects current platform', () => {

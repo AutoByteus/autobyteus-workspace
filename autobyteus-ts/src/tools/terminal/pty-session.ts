@@ -1,4 +1,5 @@
 import type { IPty } from 'node-pty';
+import { ensureNodePtySpawnHelperExecutable } from './node-pty-bootstrap.js';
 
 const DEFAULT_COLS = 80;
 const DEFAULT_ROWS = 24;
@@ -49,6 +50,7 @@ export class PtySession {
       PS1: '\\w $ '
     };
 
+    await ensureNodePtySpawnHelperExecutable();
     const { spawn } = await import('node-pty');
     this.pty = spawn('bash', ['--norc', '--noprofile', '-i'], {
       name: 'xterm-256color',

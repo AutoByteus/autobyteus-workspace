@@ -95,6 +95,8 @@ Concrete alignment points in code:
 
 - XML examples (`DefaultXmlExampleFormatter`) emit `<tool>`/`<write_file>`/`<run_bash>` shapes that
   the XML tag parser recognizes (`XmlTagInitializationState`, `WriteFileParsingState`, etc.).
+- XML leaf-text values are entity-decoded exactly once before tool arguments are emitted, so
+  encoded command text such as `&amp;&amp;` reaches `run_bash` as executable `&&`.
 - JSON examples are provider-specific (OpenAI/Gemini/default) and must match the JSON
   parsing strategies in `src/agent/streaming/parser/json-parsing-strategies/`.
 - The tool syntax registry (`src/agent/streaming/adapters/tool-syntax-registry.ts`)

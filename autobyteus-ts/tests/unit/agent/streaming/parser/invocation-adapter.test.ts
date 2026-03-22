@@ -67,14 +67,32 @@ describe('ToolInvocationAdapter basics', () => {
     const adapter = new ToolInvocationAdapter();
     const events = [
       SegmentEvent.start('seg_3', SegmentType.RUN_BASH),
-      SegmentEvent.content('seg_3', 'ls -la'),
+      SegmentEvent.content('seg_3', 'mkdir -p project && cd project && pwd'),
       SegmentEvent.end('seg_3')
     ];
 
     const invocations = adapter.processEvents(events);
     expect(invocations).toHaveLength(1);
     expect(invocations[0].name).toBe('run_bash');
-    expect(invocations[0].arguments).toEqual({ command: 'ls -la' });
+    expect(invocations[0].arguments).toEqual({ command: 'mkdir -p project && cd project && pwd' });
+  });
+
+  it('decodes XML entities in realistic chained run_bash segment content', () => {
+    const adapter = new ToolInvocationAdapter();
+    const events = [
+      SegmentEvent.start('seg_3_encoded', SegmentType.RUN_BASH),
+      SegmentEvent.content(
+        'seg_3_encoded',
+        'mkdir -p test_folder &amp;&amp; cd test_folder &amp;&amp; printf &quot;hello&quot; &gt; note.txt &amp;&amp; cat note.txt'
+      ),
+      SegmentEvent.end('seg_3_encoded')
+    ];
+
+    const invocations = adapter.processEvents(events);
+    expect(invocations).toHaveLength(1);
+    expect(invocations[0].arguments).toEqual({
+      command: 'mkdir -p test_folder && cd test_folder && printf "hello" > note.txt && cat note.txt'
+    });
   });
 
   it('creates run_bash invocation with background metadata', () => {

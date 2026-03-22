@@ -129,6 +129,43 @@ All done!
     expect(names).toContain('verify_result');
   });
 
+  it('decodes chained encoded XML run_bash commands through the full tool pipeline', () => {
+    const handler = new ParsingStreamingResponseHandler();
+    feedAndFinalize(handler, [
+      '<tool name="run_bash"><arguments>',
+      '<arg name="background">true</arg>',
+      '<arg name="timeout_seconds">30</arg>',
+      '<arg name="command">mkdir -p tmp_dir &amp;&amp; cd tmp_dir &amp;&amp; printf &quot;hello&quot; &gt; note.txt &amp;&amp; cat note.txt</arg>',
+      '</arguments></tool>'
+    ]);
+
+    const invocations = handler.getAllInvocations();
+    expect(invocations).toHaveLength(1);
+    expect(invocations[0].name).toBe('run_bash');
+    expect(invocations[0].arguments).toEqual({
+      command: 'mkdir -p tmp_dir && cd tmp_dir && printf "hello" > note.txt && cat note.txt',
+      background: true,
+      timeout_seconds: 30
+    });
+  });
+
+  it('preserves plain chained custom-tag run_bash commands through the full tool pipeline', () => {
+    const handler = new ParsingStreamingResponseHandler();
+    feedAndFinalize(handler, [
+      '<run_bash background="false">',
+      'mkdir -p project && cd project && pwd',
+      '</run_bash>'
+    ]);
+
+    const invocations = handler.getAllInvocations();
+    expect(invocations).toHaveLength(1);
+    expect(invocations[0].name).toBe('run_bash');
+    expect(invocations[0].arguments).toEqual({
+      command: 'mkdir -p project && cd project && pwd',
+      background: false
+    });
+  });
+
   it('preserves raw HTML in write_file shorthand', () => {
     const handler = new ParsingStreamingResponseHandler();
     handler.feed(asChunk(`<write_file path="/site/index.html">

@@ -8,7 +8,7 @@
 
 - Keep existing terminal tool contracts unchanged.
 - Support stateful shell execution on Android without PTY.
-- Keep non-Android PTY behavior unchanged.
+- Keep non-Android PTY preference unchanged while allowing shared startup recovery when PTY bootstrap fails.
 - Centralize backend selection policy in one place.
 
 ## Non-goals
@@ -27,7 +27,7 @@
 - Selection matrix:
   - Android -> `DirectShellSession`
   - Windows -> `WslTmuxSession`
-  - Other platforms -> `PtySession`
+  - Other platforms -> `PtySession` (preferred backend), with shared startup recovery allowed to use `DirectShellSession` if PTY startup fails
 
 This keeps Android behavior explicit and prevents PTY fallback on Android.
 
@@ -91,4 +91,3 @@ This preserves stateful behavior (`cd`, environment changes) across calls.
 - Official Android profile is `Termux + Node.js`.
 - Companion Android app `Termux:API` is required for hardware bridge commands.
 - For Android bootstrap, use workspace-scoped install flow (server/core/gateway) to avoid desktop-only package postinstall paths on Android.
-
