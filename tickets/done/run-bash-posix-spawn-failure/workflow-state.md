@@ -12,7 +12,7 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-015`
+- Last Transition ID: `T-020`
 - Last Updated: `2026-03-22`
 
 ## Stage 0 Bootstrap Record
@@ -43,11 +43,11 @@ Note:
 | 3 Design Basis | Pass | Design basis updated for scope (`implementation.md` solution sketch or `proposed-design.md`) | `tickets/done/run-bash-posix-spawn-failure/implementation-plan.md` |
 | 4 Future-State Runtime Call Stack | Pass | `future-state-runtime-call-stack.md` current | `tickets/done/run-bash-posix-spawn-failure/future-state-runtime-call-stack.md` |
 | 5 Future-State Runtime Call Stack Review | Pass | Future-state runtime call stack review `Go Confirmed` (two clean rounds, no blockers/persisted updates/new use cases) | `tickets/done/run-bash-posix-spawn-failure/future-state-runtime-call-stack-review.md` |
-| 6 Implementation | Pass | Plan/progress current + source + unit/integration verification complete + no backward-compat/legacy retention + dead/obsolete code cleanup complete in scope + ownership-driven dependencies preserved + touched-file placement preserved/corrected | `tickets/done/run-bash-posix-spawn-failure/implementation.md` |
+| 6 Implementation | Pass | Plan/progress current + source + unit/integration verification complete + no backward-compat/legacy retention + dead/obsolete code cleanup complete in scope + ownership-driven dependencies preserved + touched-file placement preserved/corrected | `tickets/done/run-bash-posix-spawn-failure/implementation.md`, `tickets/done/run-bash-posix-spawn-failure/workflow-state.md` |
 | 7 API/E2E Testing | Pass | API/E2E test implementation complete + acceptance-criteria and spine scenario gates complete | `tickets/done/run-bash-posix-spawn-failure/api-e2e-testing.md` |
 | 8 Code Review | Pass | Code review gate `Pass`/`Fail` recorded + all changed source files `<=500` effective non-empty lines + `>220` delta-gate assessments recorded + data-flow spine inventory/ownership/support-structure + existing-capability reuse + reusable-owned-structure extraction + shared-structure/data-model tightness + shared-base coherence + repeated-coordination ownership + empty-indirection + scope-appropriate separation of concerns + file placement within the correct subsystem and folder, with any optional module grouping justified + flat-vs-over-split layout judgment + interface/API/query/command/service-method boundary clarity + naming-to-responsibility alignment + no unjustified duplication of code/repeated structures in changed scope + patch-on-patch complexity control + dead/obsolete code cleanup completeness in changed scope + test quality + test maintainability + validation-evidence sufficiency + no-backward-compat/no-legacy checks satisfied for `Pass` | `tickets/done/run-bash-posix-spawn-failure/code-review.md` |
 | 9 Docs Sync | Pass | `docs-sync.md` current + docs updated or no-impact rationale recorded | `tickets/done/run-bash-posix-spawn-failure/docs-sync.md` |
-| 10 Handoff / Ticket State | In Progress | Final handoff ready + explicit user verification received + ticket moved to `done` + git finalization/release into resolved target branch complete when git repo + ticket state decision recorded | `tickets/done/run-bash-posix-spawn-failure/docs-sync.md`, `tickets/done/run-bash-posix-spawn-failure/release-notes.md`, `tickets/done/run-bash-posix-spawn-failure/workflow-state.md` |
+| 10 Handoff / Ticket State | In Progress | Final handoff ready + explicit user verification received + ticket moved to `done` + git finalization/release into resolved target branch complete when git repo + ticket state decision recorded | `tickets/done/run-bash-posix-spawn-failure/release-notes.md`, `tickets/done/run-bash-posix-spawn-failure/workflow-state.md` |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -97,11 +97,11 @@ Note:
 
 ## Pre-Edit Checklist (Stage 6 Source-Code Edits)
 
-- Current Stage is `6`: `Yes`
-- Code Edit Permission is `Unlocked`: `Yes`
+- Current Stage is `6`: `No`
+- Code Edit Permission is `Unlocked`: `No`
 - Stage 5 gate is `Go Confirmed`: `Yes`
 - Required upstream artifacts are current: `Yes`
-- Pre-Edit Checklist Result: `Pass`
+- Pre-Edit Checklist Result: `Fail`
 - If `Fail`, source code edits are prohibited.
 
 ## Re-Entry Declaration
@@ -137,6 +137,11 @@ Note:
 | T-013 | 2026-03-22 | 8 | 9 | Rerun code review passed after validation-gap closure; re-entering docs sync | N/A | Locked | `code-review.md`, `workflow-state.md` |
 | T-014 | 2026-03-22 | 9 | 10 | Rerun docs sync confirmed no further doc changes; handoff resumed pending explicit user verification | N/A | Locked | `docs-sync.md`, `workflow-state.md` |
 | T-015 | 2026-03-22 | 10 | 10 | User verification received, ticket archived to done, and release finalization started | N/A | Locked | `release-notes.md`, `workflow-state.md` |
+| T-016 | 2026-03-22 | 10 | 6 | Release finalization blocked when the Windows desktop build failed because the staged `autobyteus-ts` package tarball omitted the new `scripts/fix-node-pty-permissions.mjs` file required by `postinstall`; reopening a local fix before rerunning release validation | Local Fix | Unlocked | `workflow-state.md` |
+| T-017 | 2026-03-22 | 6 | 7 | Packaged install-path fix implemented and targeted implementation validation passed, including build-time manifest verification and a real tarball install | N/A | Unlocked | `implementation.md`, `workflow-state.md` |
+| T-018 | 2026-03-22 | 7 | 8 | Stage 7 rerun passed with packaged tarball validation added to the regression evidence | N/A | Locked | `api-e2e-testing.md`, `workflow-state.md` |
+| T-019 | 2026-03-22 | 8 | 9 | Code review rerun passed for the release-blocker packaging delta | N/A | Locked | `code-review.md`, `workflow-state.md` |
+| T-020 | 2026-03-22 | 9 | 10 | Docs sync rerun confirmed no additional long-lived doc changes and handoff resumed for git finalization and replacement release | N/A | Locked | `docs-sync.md`, `workflow-state.md` |
 
 ## Audible Notification Log (Optional Tracking)
 
@@ -155,6 +160,8 @@ Note:
 | 2026-03-22 | Transition | Rerun code review passed and Stage 9 docs sync restarted with code edits locked. | Success | N/A |
 | 2026-03-22 | Transition | Rerun docs sync passed and Stage 10 handoff resumed while waiting for explicit user verification. | Success | N/A |
 | 2026-03-22 | Transition | User verification received, the ticket was archived to done, and release finalization started. | Success | N/A |
+| 2026-03-22 | Re-entry | Release finalization was blocked by a Windows packaging failure, so the ticket reopened to Stage 6 with code edits unlocked for a local fix. | Success | N/A |
+| 2026-03-22 | Transition | The packaging fix passed Stage 6 validation and Stage 7, Stage 8, and Stage 9 were rerun successfully before Stage 10 handoff resumed. | Success | N/A |
 
 ## Process Violation Log
 

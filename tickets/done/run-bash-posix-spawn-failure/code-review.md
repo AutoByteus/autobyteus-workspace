@@ -3,8 +3,8 @@
 ## Review Meta
 
 - Ticket: `run-bash-posix-spawn-failure`
-- Review Round: `2`
-- Trigger Stage: `7`
+- Review Round: `3`
+- Trigger Stage: `6`
 - Workflow state source: `tickets/done/run-bash-posix-spawn-failure/workflow-state.md`
 - Earlier design artifact(s) reviewed as context:
   - `tickets/done/run-bash-posix-spawn-failure/requirements.md`
@@ -142,3 +142,6 @@ Measurement commands used:
   - No legacy code retention = `Pass`
 - Notes:
   - Round 2 resolved a `Validation Gap` only. No source implementation files changed after Round 1; the rerun added stronger parser-path tests for realistic chained XML `run_bash` commands and left the structural verdict unchanged.
+  - Round 3 reviewed the release-blocker delta only: `autobyteus-ts/package.json`, `autobyteus-ts/scripts/verify-runtime-dependencies.mjs`, and `autobyteus-ts/tests/unit/package/package-manifest.test.ts`.
+  - Round 3 source delta stayed well under the size gates (`verify-runtime-dependencies.mjs`: `123` effective non-empty lines, `+55/-0`; `package.json`: `+1/-0`) and produced no findings.
+  - The reopened validation evidence for Round 3 is targeted to the packaging contract: `autobyteus-ts build`, `tests/unit/package/package-manifest.test.ts`, a real packed-tarball file listing, and a real `npm install` of the packed tarball.

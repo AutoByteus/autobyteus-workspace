@@ -12,6 +12,7 @@
   },
   "files": [
     "dist",
+    "scripts/fix-node-pty-permissions.mjs",
     "README.md",
     "LICENSE"
   ],

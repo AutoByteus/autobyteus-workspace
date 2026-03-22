@@ -50,3 +50,4 @@
 - Result: `Updated`
 - Follow-up needed:
   - None for this ticket.
+  - Reopened Stage 6 packaging-guard work required no additional long-lived doc changes because it only makes the published package manifest consistent with the already-documented install-time repair behavior.
