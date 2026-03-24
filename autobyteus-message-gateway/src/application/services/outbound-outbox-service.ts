@@ -4,6 +4,7 @@ import type {
   OutboundOutboxRecord,
   OutboundOutboxStatus,
 } from "../../domain/models/outbox-store.js";
+import { replayRecordNotFound, replayStatusMismatch } from "./replay-error.js";
 
 export class OutboundOutboxService {
   constructor(private readonly store: OutboxStore) {}
@@ -79,7 +80,7 @@ export class OutboundOutboxService {
   ): Promise<OutboundOutboxRecord> {
     const current = await this.requireRecord(recordId);
     if (current.status !== expectedStatus) {
-      throw new Error(
+      throw replayStatusMismatch(
         `Outbound record ${recordId} status mismatch: expected ${expectedStatus}, got ${current.status}.`,
       );
     }
@@ -93,7 +94,7 @@ export class OutboundOutboxService {
   private async requireRecord(recordId: string): Promise<OutboundOutboxRecord> {
     const record = await this.store.getById(recordId);
     if (!record) {
-      throw new Error(`Outbound outbox record not found: ${recordId}`);
+      throw replayRecordNotFound(`Outbound outbox record not found: ${recordId}`);
     }
     return record;
   }

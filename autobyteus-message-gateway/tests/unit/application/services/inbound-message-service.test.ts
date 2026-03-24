@@ -44,8 +44,7 @@ describe("InboundMessageService", () => {
     expect(result).toEqual({
       accepted: true,
       duplicate: false,
-      blocked: false,
-      forwarded: false,
+      queued: true,
       envelopeCount: 1,
     });
     expect(enqueue).toHaveBeenCalledOnce();
@@ -99,10 +98,7 @@ describe("InboundMessageService", () => {
     const result = await service.handleNormalizedEnvelope(buildEnvelope("msg-1") as any);
     expect(result).toEqual({
       duplicate: true,
-      blocked: false,
-      forwarded: false,
       disposition: "DUPLICATE",
-      bindingResolved: false,
     });
   });
 });

@@ -1,5 +1,6 @@
 import fastify from "fastify";
 import { describe, expect, it, vi } from "vitest";
+import { replayRecordNotFound, replayStatusMismatch } from "../../../../src/application/services/replay-error.js";
 import { registerRuntimeReliabilityRoutes } from "../../../../src/http/routes/runtime-reliability-route.js";
 
 describe("runtime-reliability-route", () => {
@@ -149,7 +150,7 @@ describe("runtime-reliability-route", () => {
       inboundInboxService: {
         listByStatus: vi.fn(async () => []),
         replayFromStatus: vi.fn(async () => {
-          throw new Error(
+          throw replayStatusMismatch(
             "Inbound record in-1 status mismatch: expected COMPLETED_UNBOUND, got DEAD_LETTER.",
           );
         }),
@@ -193,6 +194,58 @@ describe("runtime-reliability-route", () => {
     });
     expect(response.statusCode).toBe(409);
     expect(response.json().code).toBe("REPLAY_STATUS_MISMATCH");
+
+    await app.close();
+  });
+
+  it("returns 404 on replay record-not-found", async () => {
+    const app = fastify();
+    registerRuntimeReliabilityRoutes(app, {
+      inboundInboxService: {
+        listByStatus: vi.fn(async () => []),
+        replayFromStatus: vi.fn(async () => {
+          throw replayRecordNotFound("Inbound inbox record not found: missing");
+        }),
+      } as any,
+      outboundOutboxService: {
+        listByStatus: vi.fn(async () => []),
+        replayFromStatus: vi.fn(),
+      } as any,
+      reliabilityStatusService: {
+        getSnapshot: vi.fn(() => ({
+          state: "HEALTHY",
+          criticalCode: null,
+          updatedAt: "2026-02-12T00:00:00.000Z",
+          workers: {
+            inboundForwarder: { running: true, lastError: null, lastErrorAt: null },
+            outboundSender: { running: true, lastError: null, lastErrorAt: null },
+          },
+          locks: {
+            inbox: {
+              ownerId: "owner-1",
+              held: true,
+              lost: false,
+              lastHeartbeatAt: "2026-02-12T00:00:00.000Z",
+              lastError: null,
+            },
+            outbox: {
+              ownerId: "owner-2",
+              held: true,
+              lost: false,
+              lastHeartbeatAt: "2026-02-12T00:00:00.000Z",
+              lastError: null,
+            },
+          },
+        })),
+      } as any,
+    });
+
+    const response = await app.inject({
+      method: "POST",
+      url: "/api/runtime-reliability/v1/inbound/dead-letters/missing/replay",
+    });
+    expect(response.statusCode).toBe(404);
+    expect(response.json().code).toBe("RECORD_NOT_FOUND");
 
     await app.close();
   });

@@ -35,6 +35,8 @@ export type GatewayRuntimeConfig = {
   telegramEnabled: boolean;
   telegramBotToken: string | null;
   telegramAccountId: string | null;
+  telegramDiscoveryMaxCandidates: number;
+  telegramDiscoveryTtlSeconds: number;
   telegramPollingEnabled: boolean;
   telegramWebhookEnabled: boolean;
   telegramWebhookSecretToken: string | null;
@@ -128,6 +130,16 @@ export function buildRuntimeConfig(env: GatewayEnv): GatewayRuntimeConfig {
     ),
     telegramBotToken: env.GATEWAY_TELEGRAM_BOT_TOKEN ?? null,
     telegramAccountId: env.GATEWAY_TELEGRAM_ACCOUNT_ID ?? null,
+    telegramDiscoveryMaxCandidates: parsePositiveInteger(
+      env.GATEWAY_TELEGRAM_DISCOVERY_MAX_CANDIDATES,
+      200,
+      "GATEWAY_TELEGRAM_DISCOVERY_MAX_CANDIDATES",
+    ),
+    telegramDiscoveryTtlSeconds: parsePositiveInteger(
+      env.GATEWAY_TELEGRAM_DISCOVERY_TTL_SECONDS,
+      7 * 24 * 60 * 60,
+      "GATEWAY_TELEGRAM_DISCOVERY_TTL_SECONDS",
+    ),
     telegramPollingEnabled: parseBoolean(
       env.GATEWAY_TELEGRAM_POLLING_ENABLED,
       true,

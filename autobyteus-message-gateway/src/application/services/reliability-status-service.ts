@@ -97,7 +97,11 @@ export class ReliabilityStatusService {
   }
 
   setLockReleased(lock: "inbox" | "outbox"): void {
+    this.snapshot.locks[lock].ownerId = null;
     this.snapshot.locks[lock].held = false;
+    this.snapshot.locks[lock].lost = false;
+    this.snapshot.locks[lock].lastHeartbeatAt = null;
+    this.snapshot.locks[lock].lastError = null;
     this.touch();
   }
 
