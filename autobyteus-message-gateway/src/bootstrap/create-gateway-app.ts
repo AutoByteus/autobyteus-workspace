@@ -39,10 +39,7 @@ import { SessionSupervisor } from "../infrastructure/adapters/session/session-su
 import { SessionSupervisorRegistry } from "../infrastructure/adapters/session/session-supervisor-registry.js";
 import { FileInboxStore } from "../infrastructure/inbox/file-inbox-store.js";
 import { FileOutboxStore } from "../infrastructure/outbox/file-outbox-store.js";
-import {
-  FileQueueOwnerLock,
-  QueueOwnerLockLostError,
-} from "../infrastructure/queue/file-queue-owner-lock.js";
+import { FileQueueOwnerLock } from "../infrastructure/queue/file-queue-owner-lock.js";
 import { registerRawBodyCaptureHook } from "../http/hooks/raw-body-capture.js";
 import { registerHealthRoutes } from "../http/routes/health-route.js";
 import { registerProviderWebhookRoutes } from "../http/routes/provider-webhook-route.js";
@@ -51,6 +48,7 @@ import { registerChannelAdminRoutes } from "../http/routes/channel-admin-route.j
 import { registerWechatSidecarEventRoutes } from "../http/routes/wechat-sidecar-event-route.js";
 import { registerWeComAppWebhookRoutes } from "../http/routes/wecom-app-webhook-route.js";
 import { registerRuntimeReliabilityRoutes } from "../http/routes/runtime-reliability-route.js";
+import { createGatewayRuntimeLifecycle } from "./gateway-runtime-lifecycle.js";
 
 export function createGatewayApp(config: GatewayRuntimeConfig): FastifyInstance {
   const app = Fastify({ logger: false });
@@ -78,7 +76,8 @@ export function createGatewayApp(config: GatewayRuntimeConfig): FastifyInstance 
   const wecomAdapter = new WeComAdapter({
     webhookToken: config.wecomWebhookToken,
   });
-  const wecomAccountRegistry = new WeComAccountRegistry(config.wecomAppAccounts);
+  const activeWecomAppAccounts = config.wecomAppEnabled ? config.wecomAppAccounts : [];
+  const wecomAccountRegistry = new WeComAccountRegistry(activeWecomAppAccounts);
   const wecomUnifiedAdapter = new WeComUnifiedAdapter({
     legacyAdapter: wecomAdapter,
     accountRegistry: wecomAccountRegistry,
@@ -122,8 +121,8 @@ export function createGatewayApp(config: GatewayRuntimeConfig): FastifyInstance 
   });
   const telegramPeerCandidateIndex = config.telegramEnabled
     ? new TelegramPeerCandidateIndex({
-        maxCandidatesPerAccount: 200,
-        candidateTtlSeconds: 7 * 24 * 60 * 60,
+        maxCandidatesPerAccount: config.telegramDiscoveryMaxCandidates,
+        candidateTtlSeconds: config.telegramDiscoveryTtlSeconds,
       })
     : null;
   const telegramAdapter = config.telegramEnabled
@@ -257,83 +256,39 @@ export function createGatewayApp(config: GatewayRuntimeConfig): FastifyInstance 
     rootDir: path.join(queueRootDir, "locks"),
     namespace: "outbox",
   });
-  const lockHeartbeatIntervalMs = 5_000;
-  let lockHeartbeatTimer: NodeJS.Timeout | null = null;
-
-  const acquireQueueLockPair = async (): Promise<void> => {
-    await inboxOwnerLock.acquire();
-    try {
-      await outboxOwnerLock.acquire();
-    } catch (error) {
-      await inboxOwnerLock.release().catch(() => undefined);
-      throw error;
-    }
-  };
+  const runtimeLifecycle = createGatewayRuntimeLifecycle({
+    inboxOwnerLock,
+    outboxOwnerLock,
+    inboundForwarderWorker,
+    outboundSenderWorker,
+    reliabilityStatusService,
+    sessionSupervisorRegistry,
+    startupRestoreTasks: [
+      ...(config.whatsappPersonalEnabled
+        ? [
+            {
+              restore: () => whatsappPersonalAdapter.restorePersistedSessions(),
+              onRestoreFailure: (error: unknown) => {
+                console.warn("[gateway] whatsapp session restore failed", { error });
+              },
+            },
+          ]
+        : []),
+      ...(config.wechatPersonalEnabled
+        ? [
+            {
+              restore: () => wechatPersonalAdapter.restorePersistedSessions(),
+              onRestoreFailure: (error: unknown) => {
+                console.warn("[gateway] wechat session restore scan failed", { error });
+              },
+            },
+          ]
+        : []),
+    ],
+  });
 
   app.addHook("onReady", async () => {
-    await acquireQueueLockPair();
-    reliabilityStatusService.setLockHeld("inbox", inboxOwnerLock.getOwnerId());
-    reliabilityStatusService.setLockHeld("outbox", outboxOwnerLock.getOwnerId());
-    if (config.whatsappPersonalEnabled) {
-      await whatsappPersonalAdapter.restorePersistedSessions().catch((error) => {
-        console.warn("[gateway] whatsapp session restore failed", { error });
-      });
-    }
-    if (config.wechatPersonalEnabled) {
-      await wechatPersonalAdapter.restorePersistedSessions().catch((error) => {
-        console.warn("[gateway] wechat session restore scan failed", { error });
-      });
-    }
-    inboundForwarderWorker.start();
-    outboundSenderWorker.start();
-    reliabilityStatusService.setWorkerRunning("inboundForwarder", true);
-    reliabilityStatusService.setWorkerRunning("outboundSender", true);
-    await sessionSupervisorRegistry.startAll();
-
-    lockHeartbeatTimer = setInterval(() => {
-      void inboxOwnerLock
-        .heartbeat()
-        .then(() => {
-          reliabilityStatusService.setLockHeartbeat("inbox");
-        })
-        .catch((error: unknown) => {
-          console.error("[gateway] inbox lock heartbeat failed", { error });
-          void inboundForwarderWorker.stop();
-          void outboundSenderWorker.stop();
-          reliabilityStatusService.setWorkerRunning("inboundForwarder", false);
-          reliabilityStatusService.setWorkerRunning("outboundSender", false);
-          if (error instanceof QueueOwnerLockLostError) {
-            console.error("[gateway] queue lock ownership lost; workers stopped");
-            reliabilityStatusService.markLockLost("inbox", error.message);
-            return;
-          }
-          reliabilityStatusService.setWorkerError(
-            "inboundForwarder",
-            error instanceof Error ? error.message : "Inbox heartbeat error.",
-          );
-        });
-      void outboxOwnerLock
-        .heartbeat()
-        .then(() => {
-          reliabilityStatusService.setLockHeartbeat("outbox");
-        })
-        .catch((error: unknown) => {
-          console.error("[gateway] outbox lock heartbeat failed", { error });
-          void inboundForwarderWorker.stop();
-          void outboundSenderWorker.stop();
-          reliabilityStatusService.setWorkerRunning("inboundForwarder", false);
-          reliabilityStatusService.setWorkerRunning("outboundSender", false);
-          if (error instanceof QueueOwnerLockLostError) {
-            console.error("[gateway] queue lock ownership lost; workers stopped");
-            reliabilityStatusService.markLockLost("outbox", error.message);
-            return;
-          }
-          reliabilityStatusService.setWorkerError(
-            "outboundSender",
-            error instanceof Error ? error.message : "Outbox heartbeat error.",
-          );
-        });
-    }, lockHeartbeatIntervalMs);
+    await runtimeLifecycle.start();
   });
 
   const sessionService = new WhatsAppPersonalSessionService(whatsappPersonalAdapter, {
@@ -389,11 +344,13 @@ export function createGatewayApp(config: GatewayRuntimeConfig): FastifyInstance 
     inboundMessageService,
     adaptersByProvider,
   });
-  registerWeComAppWebhookRoutes(app, {
-    inboundMessageService,
-    wecomAdapter: wecomUnifiedAdapter,
-    accountRegistry: wecomAccountRegistry,
-  });
+  if (config.wecomAppEnabled) {
+    registerWeComAppWebhookRoutes(app, {
+      inboundMessageService,
+      wecomAdapter: wecomUnifiedAdapter,
+      accountRegistry: wecomAccountRegistry,
+    });
+  }
   registerServerCallbackRoutes(app, {
     outboundOutboxService,
     serverCallbackSharedSecret: config.serverCallbackSharedSecret,
@@ -430,19 +387,7 @@ export function createGatewayApp(config: GatewayRuntimeConfig): FastifyInstance 
   });
 
   app.addHook("onClose", async () => {
-    if (lockHeartbeatTimer) {
-      clearInterval(lockHeartbeatTimer);
-      lockHeartbeatTimer = null;
-    }
-    await inboundForwarderWorker.stop();
-    await outboundSenderWorker.stop();
-    await sessionSupervisorRegistry.stopAll();
-    reliabilityStatusService.setWorkerRunning("inboundForwarder", false);
-    reliabilityStatusService.setWorkerRunning("outboundSender", false);
-    await inboxOwnerLock.release();
-    await outboxOwnerLock.release();
-    reliabilityStatusService.setLockReleased("inbox");
-    reliabilityStatusService.setLockReleased("outbox");
+    await runtimeLifecycle.stop();
   });
 
   return app;

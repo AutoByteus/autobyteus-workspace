@@ -11,8 +11,7 @@ describe("raw-body-capture hook", () => {
       handleInbound: vi.fn(async () => ({
         accepted: true,
         duplicate: false,
-        blocked: false,
-        forwarded: true,
+        queued: true,
         envelopeCount: 1,
       })),
     };

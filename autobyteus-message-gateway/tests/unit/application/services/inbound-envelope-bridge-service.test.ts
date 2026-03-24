@@ -5,10 +5,7 @@ describe("InboundEnvelopeBridgeService", () => {
   it("bridges session envelopes into inbound normalized handler", async () => {
     const handleNormalizedEnvelope = vi.fn(async () => ({
       duplicate: false,
-      blocked: false,
-      forwarded: false,
       disposition: "QUEUED",
-      bindingResolved: false,
     }));
 
     const service = new InboundEnvelopeBridgeService({
@@ -23,10 +20,7 @@ describe("InboundEnvelopeBridgeService", () => {
   it("reports duplicate envelopes as informational signal", async () => {
     const handleNormalizedEnvelope = vi.fn(async () => ({
       duplicate: true,
-      blocked: false,
-      forwarded: false,
       disposition: "DUPLICATE",
-      bindingResolved: false,
     }));
     const infoReporter = vi.fn();
 

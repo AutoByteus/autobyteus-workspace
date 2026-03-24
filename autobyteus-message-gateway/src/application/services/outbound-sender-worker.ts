@@ -1,5 +1,7 @@
 import type { OutboundProviderAdapter } from "../../domain/models/provider-adapter.js";
 import type { OutboundOutboxRecord } from "../../domain/models/outbox-store.js";
+import { nextDelayMs as nextRetryDelayMs } from "../../infrastructure/retry/exponential-backoff.js";
+import { isTerminalRetryFailure } from "../../infrastructure/retry/retry-decision.js";
 import type { OutboundOutboxService } from "./outbound-outbox-service.js";
 
 export type OutboundSenderWorkerConfig = {
@@ -102,12 +104,12 @@ export class OutboundSenderWorker {
   private async handleFailure(record: OutboundOutboxRecord, error: unknown): Promise<void> {
     const nextAttempt = record.attemptCount + 1;
     const message = toErrorMessage(error);
-    if (isTerminalFailure(error) || nextAttempt >= this.deps.config.maxAttempts) {
+    if (isTerminalRetryFailure(error) || nextAttempt >= this.deps.config.maxAttempts) {
       await this.deps.outboxService.markDeadLetter(record.id, message);
       return;
     }
 
-    const delayMs = nextDelayMs(nextAttempt, {
+    const delayMs = nextRetryDelayMs(nextAttempt, {
       baseDelayMs: this.deps.config.baseDelayMs,
       maxDelayMs: this.deps.config.maxDelayMs,
       factor: this.deps.config.backoffFactor,
@@ -127,29 +129,4 @@ const toErrorMessage = (error: unknown): string => {
     return error.message;
   }
   return "Unexpected outbound sending error.";
-};
-
-const isTerminalFailure = (error: unknown): boolean => {
-  if (typeof error !== "object" || error === null) {
-    return false;
-  }
-  if ((error as { retryable?: boolean }).retryable === true) {
-    return false;
-  }
-  if ((error as { retryable?: boolean }).retryable === false) {
-    return true;
-  }
-  if ("status" in error && typeof (error as { status?: unknown }).status === "number") {
-    const status = (error as { status: number }).status;
-    return status >= 400 && status < 500;
-  }
-  return false;
-};
-
-const nextDelayMs = (
-  attempt: number,
-  config: { baseDelayMs: number; maxDelayMs: number; factor: number },
-): number => {
-  const value = config.baseDelayMs * config.factor ** Math.max(0, attempt - 1);
-  return Math.max(0, Math.min(config.maxDelayMs, Math.round(value)));
 };

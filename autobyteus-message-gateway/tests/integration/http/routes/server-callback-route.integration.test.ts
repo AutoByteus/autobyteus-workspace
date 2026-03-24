@@ -130,7 +130,7 @@ describe("server-callback-route", () => {
     expect(response.json()).toEqual({
       accepted: true,
       duplicate: true,
-      queued: true,
+      queued: false,
     });
 
     await app.close();

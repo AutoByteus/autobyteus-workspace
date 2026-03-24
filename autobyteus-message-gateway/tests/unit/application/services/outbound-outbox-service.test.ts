@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { OutboundOutboxService } from "../../../../src/application/services/outbound-outbox-service.js";
+import { ReplayError } from "../../../../src/application/services/replay-error.js";
 import type {
   OutboxStore,
   OutboundOutboxCreateInput,
@@ -136,8 +137,16 @@ describe("OutboundOutboxService", () => {
     const replayed = await service.replayFromStatus(created.record.id, "DEAD_LETTER");
     expect(replayed.status).toBe("PENDING");
 
-    await expect(service.replayFromStatus(created.record.id, "SENT")).rejects.toThrow(
-      "status mismatch",
-    );
+    await expect(service.replayFromStatus(created.record.id, "SENT")).rejects.toMatchObject({
+      code: "REPLAY_STATUS_MISMATCH",
+    } satisfies Partial<ReplayError>);
+  });
+
+  it("raises a typed replay error when the record is missing", async () => {
+    const service = new OutboundOutboxService(new FakeOutboxStore());
+
+    await expect(service.replayFromStatus("missing", "DEAD_LETTER")).rejects.toMatchObject({
+      code: "RECORD_NOT_FOUND",
+    } satisfies Partial<ReplayError>);
   });
 });

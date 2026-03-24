@@ -74,6 +74,38 @@ describe("create-gateway-app integration", () => {
     stopSpy.mockRestore();
   });
 
+  it("does not expose WeCom app routes when app mode is disabled", async () => {
+    const config = defaultRuntimeConfig();
+    config.wecomAppEnabled = false;
+    config.wecomAppAccounts = [
+      {
+        accountId: "corp-main",
+        label: "Corporate Main",
+        mode: "APP",
+      },
+    ];
+
+    const app = createGatewayApp(config);
+    try {
+      const capabilityResponse = await app.inject({
+        method: "GET",
+        url: "/api/channel-admin/v1/capabilities",
+      });
+      expect(capabilityResponse.statusCode).toBe(200);
+      expect(capabilityResponse.json()).toMatchObject({
+        wecomAppEnabled: false,
+      });
+
+      const webhookResponse = await app.inject({
+        method: "GET",
+        url: "/webhooks/wecom-app/corp-main?timestamp=1&nonce=2&signature=3&echostr=hello",
+      });
+      expect(webhookResponse.statusCode).toBe(404);
+    } finally {
+      await app.close();
+    }
+  });
+
   it("wires Telegram capability payload and polling lifecycle hooks when enabled", async () => {
     const startSpy = vi
       .spyOn(TelegramBusinessAdapter.prototype, "start")
@@ -105,6 +137,100 @@ describe("create-gateway-app integration", () => {
 
     await app.close();
     expect(stopSpy).toHaveBeenCalledOnce();
+
+    startSpy.mockRestore();
+    stopSpy.mockRestore();
+  });
+
+  it("applies configured Telegram discovery limits inside the bootstrapped app", async () => {
+    const startSpy = vi
+      .spyOn(TelegramBusinessAdapter.prototype, "start")
+      .mockResolvedValue(undefined);
+    const stopSpy = vi
+      .spyOn(TelegramBusinessAdapter.prototype, "stop")
+      .mockResolvedValue(undefined);
+
+    const runtimeDataRoot = await fsp.mkdtemp(
+      path.join(os.tmpdir(), "gateway-telegram-discovery-limit-"),
+    );
+    const nowEpochSeconds = Math.floor(Date.now() / 1000);
+
+    try {
+      const config = defaultRuntimeConfig();
+      config.runtimeDataRoot = runtimeDataRoot;
+      config.telegramEnabled = true;
+      config.telegramBotToken = "telegram-bot-token";
+      config.telegramAccountId = "telegram-acct-1";
+      config.telegramPollingEnabled = false;
+      config.telegramWebhookEnabled = true;
+      config.telegramWebhookSecretToken = "telegram-webhook-secret";
+      config.telegramDiscoveryMaxCandidates = 1;
+
+      const app = createGatewayApp(config);
+      try {
+        const firstResponse = await app.inject({
+          method: "POST",
+          url: "/webhooks/telegram",
+          headers: {
+            "x-telegram-bot-api-secret-token": "telegram-webhook-secret",
+          },
+          payload: {
+            update_id: 5001,
+            message: {
+              message_id: 7001,
+              date: nowEpochSeconds,
+              text: "hello one",
+              chat: {
+                id: 100200300,
+                type: "private",
+              },
+            },
+          },
+        });
+        expect(firstResponse.statusCode).toBe(200);
+
+        const secondResponse = await app.inject({
+          method: "POST",
+          url: "/webhooks/telegram",
+          headers: {
+            "x-telegram-bot-api-secret-token": "telegram-webhook-secret",
+          },
+          payload: {
+            update_id: 5002,
+            message: {
+              message_id: 7002,
+              date: nowEpochSeconds + 1,
+              text: "hello two",
+              chat: {
+                id: 100200301,
+                type: "private",
+              },
+            },
+          },
+        });
+        expect(secondResponse.statusCode).toBe(200);
+
+        const discoveryResponse = await app.inject({
+          method: "GET",
+          url: "/api/channel-admin/v1/telegram/peer-candidates?includeGroups=false&limit=99",
+        });
+        expect(discoveryResponse.statusCode).toBe(200);
+        expect(discoveryResponse.json()).toMatchObject({
+          items: [
+            {
+              peerId: "100200301",
+            },
+          ],
+        });
+        expect(discoveryResponse.json().items).toHaveLength(1);
+        expect(startSpy).not.toHaveBeenCalled();
+      } finally {
+        await app.close();
+      }
+      expect(stopSpy).not.toHaveBeenCalled();
+    } finally {
+      await fsp.rm(runtimeDataRoot, { recursive: true, force: true });
+    }
 
     startSpy.mockRestore();
     stopSpy.mockRestore();

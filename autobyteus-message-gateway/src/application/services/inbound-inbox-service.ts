@@ -6,6 +6,7 @@ import {
   type InboundInboxStatus,
 } from "../../domain/models/inbox-store.js";
 import { buildInboundIdempotencyKey } from "./idempotency-service.js";
+import { replayRecordNotFound, replayStatusMismatch } from "./replay-error.js";
 
 export class InboundInboxService {
   constructor(private readonly store: InboxStore) {}
@@ -89,7 +90,7 @@ export class InboundInboxService {
   ): Promise<InboundInboxRecord> {
     const current = await this.requireRecord(recordId);
     if (current.status !== expectedStatus) {
-      throw new Error(
+      throw replayStatusMismatch(
         `Inbound record ${recordId} status mismatch: expected ${expectedStatus}, got ${current.status}.`,
       );
     }
@@ -103,7 +104,7 @@ export class InboundInboxService {
   private async requireRecord(recordId: string): Promise<InboundInboxRecord> {
     const record = await this.store.getById(recordId);
     if (!record) {
-      throw new Error(`Inbound inbox record not found: ${recordId}`);
+      throw replayRecordNotFound(`Inbound inbox record not found: ${recordId}`);
     }
     return record;
   }

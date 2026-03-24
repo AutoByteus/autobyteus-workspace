@@ -8,8 +8,7 @@ describe("provider-webhook-route", () => {
       handleInbound: vi.fn(async () => ({
         accepted: true,
         duplicate: false,
-        blocked: false,
-        forwarded: true,
+        queued: true,
         envelopeCount: 1,
       })),
     };
@@ -58,7 +57,7 @@ describe("provider-webhook-route", () => {
     expect(response.json()).toMatchObject({
       accepted: true,
       duplicate: false,
-      forwarded: true,
+      queued: true,
     });
     expect(inboundMessageService.handleInbound).toHaveBeenCalledOnce();
     const mappedRequest = (inboundMessageService.handleInbound as any).mock.calls[0][1];
@@ -80,8 +79,7 @@ describe("provider-webhook-route", () => {
       handleInbound: vi.fn(async () => ({
         accepted: true,
         duplicate: false,
-        blocked: false,
-        forwarded: true,
+        queued: true,
         envelopeCount: 1,
       })),
     };

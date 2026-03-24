@@ -79,7 +79,7 @@ describe("gateway inbound forwarding e2e", () => {
       expect(response.json()).toMatchObject({
         accepted: true,
         duplicate: false,
-        blocked: false,
+        queued: true,
         envelopeCount: 1,
       });
 

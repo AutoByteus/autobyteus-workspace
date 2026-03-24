@@ -7,17 +7,13 @@ import type { InboundInboxService } from "./inbound-inbox-service.js";
 export type InboundHandleResult = {
   accepted: boolean;
   duplicate: boolean;
-  blocked: boolean;
-  forwarded: boolean;
+  queued: boolean;
   envelopeCount: number;
 };
 
 export type InboundNormalizedResult = {
   duplicate: boolean;
-  blocked: boolean;
-  forwarded: boolean;
   disposition: "QUEUED" | "DUPLICATE";
-  bindingResolved: boolean;
 };
 
 export type InboundMessageServiceDeps = {
@@ -43,21 +39,18 @@ export class InboundMessageService {
 
     const envelopes = adapter.parseInbound(request);
     let duplicate = true;
-    let blocked = false;
-    let forwarded = false;
+    let queued = false;
 
     for (const envelope of envelopes) {
       const result = await this.handleNormalizedEnvelope(envelope);
       duplicate = duplicate && result.duplicate;
-      blocked = blocked || result.blocked;
-      forwarded = forwarded || result.forwarded;
+      queued = queued || result.disposition === "QUEUED";
     }
 
     return {
       accepted: true,
       duplicate,
-      blocked,
-      forwarded,
+      queued,
       envelopeCount: envelopes.length,
     };
   }
@@ -69,18 +62,12 @@ export class InboundMessageService {
     if (enqueueResult.duplicate) {
       return {
         duplicate: true,
-        blocked: false,
-        forwarded: false,
         disposition: "DUPLICATE",
-        bindingResolved: false,
       };
     }
     return {
       duplicate: false,
-      blocked: false,
-      forwarded: false,
       disposition: "QUEUED",
-      bindingResolved: false,
     };
   }
 }

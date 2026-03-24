@@ -31,6 +31,8 @@ describe("runtime-config", () => {
       telegramEnabled: false,
       telegramBotToken: null,
       telegramAccountId: null,
+      telegramDiscoveryMaxCandidates: 200,
+      telegramDiscoveryTtlSeconds: 604800,
       telegramPollingEnabled: true,
       telegramWebhookEnabled: false,
       telegramWebhookSecretToken: null,
@@ -74,6 +76,8 @@ describe("runtime-config", () => {
       GATEWAY_TELEGRAM_ENABLED: "true",
       GATEWAY_TELEGRAM_BOT_TOKEN: "telegram-bot-token",
       GATEWAY_TELEGRAM_ACCOUNT_ID: "telegram-acct-1",
+      GATEWAY_TELEGRAM_DISCOVERY_MAX_CANDIDATES: "25",
+      GATEWAY_TELEGRAM_DISCOVERY_TTL_SECONDS: "43200",
       GATEWAY_TELEGRAM_POLLING_ENABLED: "false",
       GATEWAY_TELEGRAM_WEBHOOK_ENABLED: "true",
       GATEWAY_TELEGRAM_WEBHOOK_SECRET_TOKEN: "telegram-webhook-secret",
@@ -121,6 +125,8 @@ describe("runtime-config", () => {
       telegramEnabled: true,
       telegramBotToken: "telegram-bot-token",
       telegramAccountId: "telegram-acct-1",
+      telegramDiscoveryMaxCandidates: 25,
+      telegramDiscoveryTtlSeconds: 43200,
       telegramPollingEnabled: false,
       telegramWebhookEnabled: true,
       telegramWebhookSecretToken: "telegram-webhook-secret",
@@ -183,6 +189,22 @@ describe("runtime-config", () => {
       }),
     ).toThrowError(
       "GATEWAY_WECHAT_PERSONAL_PEER_CANDIDATE_LIMIT must be a positive integer.",
+    );
+
+    expect(() =>
+      buildRuntimeConfig({
+        GATEWAY_TELEGRAM_DISCOVERY_MAX_CANDIDATES: "0",
+      }),
+    ).toThrowError(
+      "GATEWAY_TELEGRAM_DISCOVERY_MAX_CANDIDATES must be a positive integer.",
+    );
+
+    expect(() =>
+      buildRuntimeConfig({
+        GATEWAY_TELEGRAM_DISCOVERY_TTL_SECONDS: "0",
+      }),
+    ).toThrowError(
+      "GATEWAY_TELEGRAM_DISCOVERY_TTL_SECONDS must be a positive integer.",
     );
   });
 
