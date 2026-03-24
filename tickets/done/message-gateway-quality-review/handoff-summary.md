@@ -71,4 +71,5 @@
 ## Pending User Gate
 
 - User verification is complete.
-- Ticket is archived in `tickets/done/message-gateway-quality-review/` and is being finalized into the latest `personal` branch without a release step.
+- Ticket is archived in `tickets/done/message-gateway-quality-review/`.
+- The reviewed change set is merged into the latest `personal` branch without a release step.
