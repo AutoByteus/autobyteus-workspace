@@ -4,7 +4,7 @@
 
 - Ticket: `gateway-dead-code-investigation`
 - Date: `2026-03-27`
-- Current Status: `Verified`
+- Current Status: `Released`
 - Workflow State Source: `tickets/done/gateway-dead-code-investigation/workflow-state.md`
 
 ## Delivery Summary
@@ -79,7 +79,8 @@
 - Notes:
   - release requested explicitly in Stage 10
   - tag `v1.2.44` was pushed
-  - GitHub Desktop Release workflow is still running
+  - GitHub Desktop Release workflow run `23631979356` completed successfully
+  - published release URL: `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.2.44`
 
 ## User Verification Hold
 
@@ -88,7 +89,7 @@
   - yes, on `2026-03-27`
 - Notes:
   - ticket is archived under `tickets/done/gateway-dead-code-investigation/`
-  - Stage 10 finalization is waiting on the GitHub release workflow to finish
+  - Stage 10 finalization is complete
 
 ## Finalization Record
 
@@ -107,9 +108,10 @@
 - Merge status:
   - completed into `origin/personal`
 - Release status:
-  - tag pushed as `v1.2.44`; GitHub release workflow in progress
+  - completed and published as `v1.2.44`
 - Blockers / notes:
   - ticket branch pushed: `codex/gateway-dead-code-investigation`
   - target branch updated on `origin/personal`
   - release commit created by `scripts/desktop-release.sh release 1.2.44 ...`
-  - waiting on GitHub Actions run `23631979356`
+  - GitHub Actions run `23631979356` completed successfully
+  - published assets include the gateway tarball plus Linux, Windows, and macOS desktop artifacts
