@@ -78,7 +78,8 @@
 - Release notes artifact: `tickets/done/gateway-dead-code-investigation/release-notes.md`
 - Notes:
   - release requested explicitly in Stage 10
-  - released as `v1.2.44`
+  - tag `v1.2.44` was pushed
+  - GitHub Desktop Release workflow is still running
 
 ## User Verification Hold
 
@@ -87,7 +88,7 @@
   - yes, on `2026-03-27`
 - Notes:
   - ticket is archived under `tickets/done/gateway-dead-code-investigation/`
-  - Stage 10 finalization and release are complete
+  - Stage 10 finalization is waiting on the GitHub release workflow to finish
 
 ## Finalization Record
 
@@ -106,8 +107,9 @@
 - Merge status:
   - completed into `origin/personal`
 - Release status:
-  - completed as tag `v1.2.44`
+  - tag pushed as `v1.2.44`; GitHub release workflow in progress
 - Blockers / notes:
   - ticket branch pushed: `codex/gateway-dead-code-investigation`
   - target branch updated on `origin/personal`
   - release commit created by `scripts/desktop-release.sh release 1.2.44 ...`
+  - waiting on GitHub Actions run `23631979356`
