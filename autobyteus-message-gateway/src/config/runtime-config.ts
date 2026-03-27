@@ -18,8 +18,6 @@ export type GatewayRuntimeConfig = {
   serverCallbackSharedSecret: string | null;
   allowInsecureServerCallbacks: boolean;
   adminToken: string | null;
-  idempotencyTtlSeconds: number;
-  callbackIdempotencyTtlSeconds: number;
   outboundMaxAttempts: number;
   outboundBaseDelayMs: number;
   whatsappBusinessSecret: string | null;
@@ -77,16 +75,6 @@ export function buildRuntimeConfig(env: GatewayEnv): GatewayRuntimeConfig {
       "GATEWAY_ALLOW_INSECURE_SERVER_CALLBACKS",
     ),
     adminToken: env.GATEWAY_ADMIN_TOKEN ?? null,
-    idempotencyTtlSeconds: parsePositiveInteger(
-      env.GATEWAY_IDEMPOTENCY_TTL_SECONDS,
-      3600,
-      "GATEWAY_IDEMPOTENCY_TTL_SECONDS",
-    ),
-    callbackIdempotencyTtlSeconds: parsePositiveInteger(
-      env.GATEWAY_CALLBACK_IDEMPOTENCY_TTL_SECONDS,
-      3600,
-      "GATEWAY_CALLBACK_IDEMPOTENCY_TTL_SECONDS",
-    ),
     outboundMaxAttempts: parsePositiveInteger(
       env.GATEWAY_OUTBOUND_MAX_ATTEMPTS,
       3,
