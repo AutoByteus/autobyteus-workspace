@@ -78,7 +78,7 @@
 - Release notes artifact: `tickets/done/gateway-dead-code-investigation/release-notes.md`
 - Notes:
   - release requested explicitly in Stage 10
-  - planned release version: `1.2.44`
+  - released as `v1.2.44`
 
 ## User Verification Hold
 
@@ -87,7 +87,7 @@
   - yes, on `2026-03-27`
 - Notes:
   - ticket is archived under `tickets/done/gateway-dead-code-investigation/`
-  - Stage 10 finalization and release are in progress
+  - Stage 10 finalization and release are complete
 
 ## Finalization Record
 
@@ -100,12 +100,14 @@
 - Finalization target branch:
   - `personal`
 - Commit status:
-  - pending ticket-branch finalization commit
+  - completed
 - Push status:
-  - pending
+  - completed
 - Merge status:
-  - pending
+  - completed into `origin/personal`
 - Release status:
-  - pending `v1.2.44`
+  - completed as tag `v1.2.44`
 - Blockers / notes:
-  - none at archive time; proceeding with git finalization and release
+  - ticket branch pushed: `codex/gateway-dead-code-investigation`
+  - target branch updated on `origin/personal`
+  - release commit created by `scripts/desktop-release.sh release 1.2.44 ...`
