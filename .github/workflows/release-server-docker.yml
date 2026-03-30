@@ -10,6 +10,10 @@ on:
         description: "Release tag to publish (example: v1.2.7 or v1.2.7-rc1)"
         required: false
         type: string
+      release_ref:
+        description: "Git ref to build from during manual dispatch (branch, tag, or SHA). Defaults to release_tag when omitted."
+        required: false
+        type: string
       image_name:
         description: "Docker image name override (default: autobyteus/autobyteus-server)"
         required: false
@@ -40,6 +44,7 @@ jobs:
         id: meta
         env:
           INPUT_RELEASE_TAG: ${{ github.event.inputs.release_tag || '' }}
+          INPUT_RELEASE_REF: ${{ github.event.inputs.release_ref || '' }}
           INPUT_IMAGE_NAME: ${{ github.event.inputs.image_name || '' }}
         run: |
           set -euo pipefail
@@ -49,7 +54,11 @@ jobs:
             RELEASE_REF="${GITHUB_REF_NAME}"
           else
             RELEASE_TAG="${INPUT_RELEASE_TAG}"
-            RELEASE_REF="${INPUT_RELEASE_TAG}"
+            if [[ -n "${INPUT_RELEASE_REF}" ]]; then
+              RELEASE_REF="${INPUT_RELEASE_REF}"
+            else
+              RELEASE_REF="${INPUT_RELEASE_TAG}"
+            fi
           fi
 
           if [[ -z "${RELEASE_TAG}" ]]; then

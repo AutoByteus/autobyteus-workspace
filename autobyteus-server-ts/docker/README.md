@@ -136,7 +136,9 @@ Default image name:
 Manual republish:
 
 - Run the `Server Docker Release` workflow with `workflow_dispatch`.
-- Provide `release_tag` and optionally `image_name` if you want to override the default repository.
+- Provide `release_tag`.
+- Optionally provide `release_ref` if you need to rebuild an existing release tag from a different branch or SHA after a workflow-only fix.
+- Optionally provide `image_name` if you want to override the default repository.
 
 ## Endpoints (Default)
 
