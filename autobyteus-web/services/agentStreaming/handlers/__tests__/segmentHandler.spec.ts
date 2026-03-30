@@ -583,5 +583,47 @@ describe('segmentHandler', () => {
         },
       );
     });
+
+    it('does not downgrade an already-approved tool activity back to parsed on end', () => {
+      handleSegmentStart(
+        {
+          id: 'seg-tool-approved',
+          segment_type: 'tool_call',
+          metadata: {
+            tool_name: 'speak',
+            arguments: {
+              text: 'hello world',
+              play: true,
+            },
+          },
+        },
+        mockContext,
+      );
+
+      const segment = findSegmentById(mockContext, 'seg-tool-approved') as any;
+      expect(segment).toBeTruthy();
+      segment.status = 'approved';
+
+      handleSegmentEnd(
+        {
+          id: 'seg-tool-approved',
+          metadata: {
+            tool_name: 'speak',
+            arguments: {
+              text: 'hello world',
+              play: true,
+            },
+          },
+        },
+        mockContext,
+      );
+
+      expect(segment.status).toBe('approved');
+      expect(mockActivityStore.updateActivityStatus).not.toHaveBeenCalledWith(
+        'test-agent-id',
+        'seg-tool-approved',
+        'parsed',
+      );
+    });
   });
 });

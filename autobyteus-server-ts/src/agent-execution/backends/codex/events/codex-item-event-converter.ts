@@ -65,6 +65,39 @@ export type CodexItemEventConverterContext = {
 export const isCodexItemEventName = (codexEventName: string): boolean =>
   codexEventName.startsWith("item/");
 
+const createTerminalToolExecutionEvent = (
+  context: CodexItemEventConverterContext,
+  codexEventName: string,
+  payload: JsonObject,
+  fallbackToolName: "run_bash" | "edit_file" = "run_bash",
+): AgentRunEvent => {
+  const invocationId = context.resolveInvocationId(payload);
+  const toolName = normalizeToolNameForEvent(context.resolveToolName(payload, fallbackToolName));
+  const serializedPayload = serializePayload(payload);
+  const status = context.resolveExecutionStatus(payload)?.toLowerCase() ?? null;
+  if (status === "declined") {
+    const reason = context.resolveToolDecisionReason(payload) ?? "Tool execution denied.";
+    return context.createEvent(codexEventName, AgentRunEventType.TOOL_DENIED, {
+      ...serializedPayload,
+      ...(invocationId ? { invocation_id: invocationId } : {}),
+      ...(toolName ? { tool_name: toolName } : {}),
+      reason,
+      error: context.resolveToolError(payload),
+    });
+  }
+  const eventType = context.isExecutionFailure(payload)
+    ? AgentRunEventType.TOOL_EXECUTION_FAILED
+    : AgentRunEventType.TOOL_EXECUTION_SUCCEEDED;
+  return context.createEvent(codexEventName, eventType, {
+    ...serializedPayload,
+    ...(invocationId ? { invocation_id: invocationId } : {}),
+    ...(toolName ? { tool_name: toolName } : {}),
+    ...(context.isExecutionFailure(payload)
+      ? { error: context.resolveToolError(payload) }
+      : { result: context.resolveToolResult(payload) }),
+  });
+};
+
 export const convertCodexItemEvent = (
   context: CodexItemEventConverterContext,
   codexEventName: string,
@@ -153,35 +186,12 @@ export const convertCodexItemEvent = (
         );
       }
       if (itemType === "commandexecution") {
-        const invocationId = context.resolveInvocationId(payload);
         const toolName = normalizeToolNameForEvent(context.resolveToolName(payload, "run_bash"));
         const commandValue = context.resolveCommandValue(payload);
         if (isSendMessageToToolName(toolName) || isSendMessageToToolName(commandValue)) {
           return null;
         }
-        const serializedPayload = serializePayload(payload);
-        const status = context.resolveExecutionStatus(payload)?.toLowerCase() ?? null;
-        if (status === "declined") {
-          const reason = context.resolveToolDecisionReason(payload) ?? "Tool execution denied.";
-          return context.createEvent(codexEventName, AgentRunEventType.TOOL_DENIED, {
-            ...serializedPayload,
-            ...(invocationId ? { invocation_id: invocationId } : {}),
-            ...(toolName ? { tool_name: toolName } : {}),
-            reason,
-            error: context.resolveToolError(payload),
-          });
-        }
-        const eventType = context.isExecutionFailure(payload)
-          ? AgentRunEventType.TOOL_EXECUTION_FAILED
-          : AgentRunEventType.TOOL_EXECUTION_SUCCEEDED;
-        return context.createEvent(codexEventName, eventType, {
-          ...serializedPayload,
-          ...(invocationId ? { invocation_id: invocationId } : {}),
-          ...(toolName ? { tool_name: toolName } : {}),
-          ...(context.isExecutionFailure(payload)
-            ? { error: context.resolveToolError(payload) }
-            : { result: context.resolveToolResult(payload) }),
-        });
+        return createTerminalToolExecutionEvent(context, codexEventName, payload, "run_bash");
       }
       if (context.isWebSearchItem(itemType)) {
         return context.createEvent(
@@ -232,7 +242,8 @@ export const convertCodexItemEvent = (
         serializePayload(payload),
       );
     case CodexThreadEventName.ITEM_COMMAND_EXECUTION_REQUEST_APPROVAL:
-    case CodexThreadEventName.ITEM_FILE_CHANGE_REQUEST_APPROVAL: {
+    case CodexThreadEventName.ITEM_FILE_CHANGE_REQUEST_APPROVAL:
+    case CodexThreadEventName.LOCAL_TOOL_APPROVAL_REQUESTED: {
       const invocationId = context.resolveInvocationId(payload);
       const fallbackToolName =
         codexEventName === CodexThreadEventName.ITEM_FILE_CHANGE_REQUEST_APPROVAL
@@ -267,6 +278,8 @@ export const convertCodexItemEvent = (
         },
       );
     }
+    case CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED:
+      return createTerminalToolExecutionEvent(context, codexEventName, payload, "run_bash");
     case CodexThreadEventName.ITEM_FILE_CHANGE_STARTED:
       context.clearReasoningSegmentForTurn(payload);
       const fileChangeMetadata = context.resolveSegmentMetadata(payload) ?? {};

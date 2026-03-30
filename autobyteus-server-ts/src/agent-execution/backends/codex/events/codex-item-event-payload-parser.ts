@@ -34,7 +34,7 @@ const asSegmentType = (value: string | null): string => {
   if (token === "reasoning") {
     return "reasoning";
   }
-  if (token === "functioncall" || token === "dynamictoolcall") {
+  if (token === "functioncall" || token === "dynamictoolcall" || token === "mcptoolcall") {
     return "tool_call";
   }
   if (token === "runbash" || token === "commandexecution") {
@@ -84,17 +84,11 @@ export class CodexItemEventPayloadParser {
   }
 
   public resolveSegmentStartId(payload: Record<string, unknown>, segmentType: string): string {
-    if (
-      segmentType === "tool_call" ||
-      segmentType === "run_bash" ||
-      segmentType === "edit_file"
-    ) {
-      const invocationId = this.resolveInvocationId(payload);
-      if (invocationId) {
-        return invocationId;
-      }
-    }
-    return this.resolveSegmentId(payload);
+    const invocationAware =
+      segmentType === "tool_call" || segmentType === "run_bash" || segmentType === "edit_file";
+    return invocationAware
+      ? this.resolveInvocationId(payload) ?? this.resolveSegmentId(payload)
+      : this.resolveSegmentId(payload);
   }
 
   public resolveSegmentMetadata(
@@ -144,25 +138,15 @@ export class CodexItemEventPayloadParser {
 
   public resolveDelta(payload: Record<string, unknown>): string {
     const item = asObject(payload.item);
-    const candidate =
-      payload.delta ??
-      payload.content ??
-      payload.summary_part ??
-      item.content;
+    const candidate = payload.delta ?? payload.content ?? payload.summary_part ?? item.content;
     return typeof candidate === "string" ? candidate : "";
   }
 
   public resolveReasoningSnapshot(payload: Record<string, unknown>): string {
     const item = asObject(payload.item);
     const fromSummary = this.collectText(item.summary);
-    if (fromSummary) {
-      return fromSummary;
-    }
     const fromContent = this.collectText(item.content);
-    if (fromContent) {
-      return fromContent;
-    }
-    return (
+    return fromSummary || fromContent || (
       asString(payload.summary_part) ??
       asString(payload.summary) ??
       asString(item.text) ??
@@ -423,12 +407,7 @@ export class CodexItemEventPayloadParser {
 
   public resolveLogEntry(payload: Record<string, unknown>): string {
     const item = asObject(payload.item);
-    return (
-      asString(payload.delta) ??
-      asString(payload.output) ??
-      asString(item.output) ??
-      ""
-    );
+    return asString(payload.delta) ?? asString(payload.output) ?? asString(item.output) ?? "";
   }
 
   public resolveToolDecisionReason(payload: Record<string, unknown>): string | null {

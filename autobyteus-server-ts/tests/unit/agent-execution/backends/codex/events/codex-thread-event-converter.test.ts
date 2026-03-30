@@ -53,4 +53,105 @@ describe("CodexThreadEventConverter", () => {
       },
     });
   });
+
+  it("maps local MCP tool approval requests into TOOL_APPROVAL_REQUESTED", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.LOCAL_TOOL_APPROVAL_REQUESTED,
+      params: {
+        invocation_id: "call_speak_1",
+        tool_name: "speak",
+        arguments: {
+          text: "codex converter speak probe",
+          play: true,
+        },
+      },
+    });
+
+    expect(converted).toMatchObject({
+      eventType: AgentRunEventType.TOOL_APPROVAL_REQUESTED,
+      runId: "run-1",
+      payload: {
+        invocation_id: "call_speak_1",
+        tool_name: "speak",
+        arguments: {
+          text: "codex converter speak probe",
+          play: true,
+        },
+      },
+    });
+  });
+
+  it("normalizes mcpToolCall items into tool_call segments", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.ITEM_STARTED,
+      params: {
+        item: {
+          type: "mcpToolCall",
+          id: "call_speak_auto",
+          tool: "speak",
+          arguments: {
+            text: "codex converter auto speak probe",
+            play: true,
+          },
+        },
+      },
+    });
+
+    expect(converted).toMatchObject({
+      eventType: AgentRunEventType.SEGMENT_START,
+      runId: "run-1",
+      payload: {
+        id: "call_speak_auto",
+        segment_type: "tool_call",
+        metadata: {
+          tool_name: "speak",
+          arguments: {
+            text: "codex converter auto speak probe",
+            play: true,
+          },
+        },
+      },
+    });
+  });
+
+  it("maps local MCP completion events into TOOL_EXECUTION_SUCCEEDED", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
+      params: {
+        invocation_id: "call_speak_auto",
+        tool_name: "speak",
+        item: {
+          type: "mcpToolCall",
+          id: "call_speak_auto",
+          tool: "speak",
+          status: "completed",
+          result: {
+            structuredContent: {
+              ok: true,
+            },
+          },
+        },
+      },
+    });
+
+    expect(converted).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      runId: "run-1",
+      payload: {
+        invocation_id: "call_speak_auto",
+        tool_name: "speak",
+        result: {
+          structuredContent: {
+            ok: true,
+          },
+        },
+      },
+    });
+  });
 });

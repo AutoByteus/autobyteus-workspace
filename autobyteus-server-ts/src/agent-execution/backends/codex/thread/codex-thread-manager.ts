@@ -78,14 +78,15 @@ export class CodexThreadManager {
     this.runContexts.delete(runId);
     const thread = this.threads.get(runId) ?? null;
     this.threads.delete(runId);
-    if (thread) {
-      thread.rejectStartupReady(
-        new Error(`Codex thread '${runId}' was closed before startup completed.`),
-      );
-      thread.clearListeners();
-      thread.clearApprovalRecords();
-      thread.unbindAll();
-    }
+      if (thread) {
+        thread.rejectStartupReady(
+          new Error(`Codex thread '${runId}' was closed before startup completed.`),
+        );
+        thread.clearListeners();
+        thread.clearApprovalRecords();
+        thread.clearPendingMcpToolCalls();
+        thread.unbindAll();
+      }
     runContext.runtimeContext.activeTurnId = null;
     await this.threadCleanup.cleanupThreadResources(runContext.runtimeContext.toCleanupTarget());
   }
@@ -133,6 +134,7 @@ export class CodexThreadManager {
       );
       thread.clearListeners();
       thread.clearApprovalRecords();
+      thread.clearPendingMcpToolCalls();
       thread.unbindAll();
       await this.clientManager.releaseClient(config.workingDirectory).catch(() => {});
       throw error;
@@ -205,6 +207,7 @@ export class CodexThreadManager {
     }
     thread.clearListeners();
     thread.clearApprovalRecords();
+    thread.clearPendingMcpToolCalls();
     void this.threadCleanup
       .cleanupThreadResources(
         runContext?.runtimeContext.toCleanupTarget() ?? {

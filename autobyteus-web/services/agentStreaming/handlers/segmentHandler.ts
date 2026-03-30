@@ -1,10 +1,3 @@
-/**
- * Segment event handlers - Business logic for SEGMENT_* events.
- * 
- * Layer 3 of the agent streaming architecture - pure functions that
- * handle segment lifecycle events and update AgentContext state.
- */
-
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AIMessage } from '~/types/conversation';
 import type { AIResponseSegment, ToolCallSegment, WriteFileSegment, TerminalCommandSegment, EditFileSegment, ThinkSegment, AIResponseTextSegment, ToolInvocationLifecycle } from '~/types/segments';
@@ -16,9 +9,6 @@ import { useAgentArtifactsStore } from '~/stores/agentArtifactsStore';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { isPlaceholderToolName } from '~/utils/toolNamePlaceholders';
 
-/**
- * Extract context text for the activity store (e.g. filename, command, or partial tool name).
- */
 function extractContextText(payload: SegmentStartPayload): string {
   if (payload.segment_type === 'write_file') {
     return payload.metadata?.path || 'new file';
@@ -69,10 +59,6 @@ function extractToolCallArgumentsFromMetadata(metadata?: Record<string, any>): R
   return args;
 }
 
-/**
- * Handle SEGMENT_START event - creates a new segment and adds it to the current AI message.
- * Also initializes streaming artifacts for 'write_file' segments.
- */
 export function handleSegmentStart(
   payload: SegmentStartPayload,
   context: AgentContext
@@ -101,7 +87,6 @@ export function handleSegmentStart(
   const aiMessage = findOrCreateAIMessage(context);
   const segment = createSegmentFromPayload(payload);
 
-  // Store segment ID(s) for lookup during CONTENT and END events
   setStreamSegmentIdentity(segment, payload.id, payload.segment_type);
   if (
     segment.type === 'terminal_command' &&
@@ -113,13 +98,11 @@ export function handleSegmentStart(
 
   aiMessage.segments.push(segment);
 
-  // --- Live Artifact Streaming ---
   if (payload.segment_type === 'write_file' && payload.metadata?.path) {
     const store = useAgentArtifactsStore();
     store.createPendingArtifact(context.state.runId, payload.metadata.path, 'file');
   }
 
-  // --- Sidecar Activity Store ---
   if (
     ['tool_call', 'write_file', 'run_bash', 'edit_file'].includes(payload.segment_type)
   ) {
@@ -328,8 +311,10 @@ export function handleSegmentEnd(
   if (['tool_call', 'write_file', 'terminal_command', 'edit_file'].includes(segment.type)) {
     const activityStore = useAgentActivityStore();
     const toolSegment = segment as ToolInvocationLifecycle;
-    // Update status to 'parsed' (handlers will move it to executing/awaiting later)
-    activityStore.updateActivityStatus(context.state.runId, payload.id, 'parsed');
+    // Preserve stronger lifecycle states that may already have been applied by tool events.
+    if (toolSegment.status === 'parsed') {
+      activityStore.updateActivityStatus(context.state.runId, payload.id, 'parsed');
+    }
     if (!isPlaceholderToolName(toolSegment.toolName)) {
       activityStore.updateActivityToolName(context.state.runId, payload.id, toolSegment.toolName);
     }

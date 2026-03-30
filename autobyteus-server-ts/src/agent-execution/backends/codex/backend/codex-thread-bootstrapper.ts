@@ -53,12 +53,8 @@ const asTrimmedString = (value: unknown): string | null =>
 
 export const resolveApprovalPolicyForAutoExecuteTools = (
   autoExecuteTools: boolean,
-): CodexApprovalPolicy => {
-  if (autoExecuteTools) {
-    return CodexApprovalPolicy.NEVER;
-  }
-  return CodexApprovalPolicy.ON_REQUEST;
-};
+): CodexApprovalPolicy =>
+  autoExecuteTools ? CodexApprovalPolicy.NEVER : CodexApprovalPolicy.ON_REQUEST;
 
 export const normalizeSandboxMode = (): CodexSandboxMode => {
   const sandbox = process.env.CODEX_APP_SERVER_SANDBOX?.trim() ?? DEFAULT_SANDBOX_MODE;

@@ -37,6 +37,108 @@ const isApprovalRequestMethod = (eventMethod: string): boolean =>
   eventMethod === CodexThreadEventName.ITEM_COMMAND_EXECUTION_REQUEST_APPROVAL ||
   eventMethod === CodexThreadEventName.ITEM_FILE_CHANGE_REQUEST_APPROVAL;
 
+const isMcpServerElicitationRequestMethod = (eventMethod: string): boolean =>
+  eventMethod === "mcpServer/elicitation/request";
+
+const extractMcpToolNameFromMessage = (message: string | null): string | null => {
+  if (!message) {
+    return null;
+  }
+  const matched = message.match(/run tool "([^"]+)"/i);
+  return matched?.[1]?.trim() || null;
+};
+
+const isSimpleMcpToolApprovalRequest = (params: JsonObject): boolean => {
+  const mode = asString(params.mode);
+  const meta = asObject(params._meta);
+  const approvalKind = asString(meta?.codex_approval_kind);
+  const requestedSchema = asObject(params.requestedSchema);
+  const properties = asObject(requestedSchema?.properties);
+  return (
+    mode === "form" &&
+    approvalKind === "mcp_tool_call" &&
+    Object.keys(properties ?? {}).length === 0
+  );
+};
+
+const handleMcpToolApprovalRequest = ({
+  codexThread,
+  requestId,
+  params,
+  emitEvent,
+}: Pick<AppServerRequest, "codexThread" | "requestId" | "params" | "emitEvent">): void => {
+  if (!isSimpleMcpToolApprovalRequest(params)) {
+    codexThread.client.respondError(
+      requestId,
+      -32602,
+      "Unsupported MCP elicitation payload for tool approval bridge.",
+    );
+    return;
+  }
+
+  const meta = asObject(params._meta);
+  const toolArguments = asObject(meta?.tool_params) ?? {};
+  const toolName =
+    asString(meta?.tool_name) ??
+    extractMcpToolNameFromMessage(asString(params.message));
+  const pendingCall = codexThread.findPendingMcpToolCall({
+    turnId: asString(params.turnId),
+    serverName: asString(params.serverName),
+    toolName,
+  });
+
+  if (!pendingCall) {
+    codexThread.client.respondError(
+      requestId,
+      -32602,
+      "MCP tool approval request did not match a pending MCP tool call.",
+    );
+    return;
+  }
+
+  if (codexThread.runContext.config.autoExecuteTools) {
+    codexThread.client.respondSuccess(requestId, { action: "accept" });
+    emitEvent(codexThread, {
+      method: CodexThreadEventName.LOCAL_TOOL_APPROVED,
+      params: {
+        ...params,
+        invocation_id: pendingCall.invocationId,
+        itemId: pendingCall.invocationId,
+        requestId,
+        ...(pendingCall.toolName ?? toolName ? { tool_name: pendingCall.toolName ?? toolName } : {}),
+      },
+    });
+    return;
+  }
+
+  const resolvedToolName = pendingCall.toolName ?? toolName;
+  const record: CodexApprovalRecord = {
+    requestId,
+    method: "mcpServer/elicitation/request",
+    invocationId: pendingCall.invocationId,
+    itemId: pendingCall.invocationId,
+    approvalId: null,
+    responseMode: "mcp_server_elicitation",
+    toolName: resolvedToolName,
+  };
+  codexThread.recordApprovalRecord(record);
+
+  emitEvent(codexThread, {
+    method: CodexThreadEventName.LOCAL_TOOL_APPROVAL_REQUESTED,
+    params: {
+      ...params,
+      invocation_id: pendingCall.invocationId,
+      itemId: pendingCall.invocationId,
+      ...(resolvedToolName ? { tool_name: resolvedToolName } : {}),
+      arguments:
+        Object.keys(toolArguments).length > 0
+          ? toolArguments
+          : pendingCall.arguments,
+    },
+    request_id: requestId,
+  });
+};
+
 const respondDynamicToolResult = (
   codexThread: CodexThread,
   requestId: string | number,
@@ -118,6 +220,11 @@ export const handleAppServerRequest = async ({
       invocationId: invocation.primary,
       itemId: invocation.itemId,
       approvalId: invocation.approvalId,
+      responseMode: "decision",
+      toolName:
+        eventMethod === CodexThreadEventName.ITEM_FILE_CHANGE_REQUEST_APPROVAL
+          ? "edit_file"
+          : "run_bash",
     };
     codexThread.recordApprovalRecord(record, invocation.aliases);
 
@@ -125,6 +232,16 @@ export const handleAppServerRequest = async ({
       method: eventMethod,
       params,
       request_id: requestId,
+    });
+    return;
+  }
+
+  if (isMcpServerElicitationRequestMethod(eventMethod)) {
+    handleMcpToolApprovalRequest({
+      codexThread,
+      requestId,
+      params,
+      emitEvent,
     });
     return;
   }
