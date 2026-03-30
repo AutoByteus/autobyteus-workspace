@@ -121,25 +121,25 @@ The intended direction is:
 
 | Requirement ID | Direction | Evidence |
 | --- | --- | --- |
-| `R-000` | Static definitions stay separate from runtime subjects. | `tickets/in-progress/runtime-domain-subject-refactor/investigation-notes.md` |
-| `R-001` | A single execution needs one explicit `AgentRun` subject. | `tickets/in-progress/runtime-domain-subject-refactor/investigation-notes.md` |
-| `R-002` | A team execution needs one explicit `TeamRun` subject. | `tickets/in-progress/runtime-domain-subject-refactor/investigation-notes.md` |
-| `R-003` | `AgentRunManager` should become runtime-neutral. | `tickets/in-progress/runtime-domain-subject-refactor/investigation-notes.md` |
-| `R-004` | `AgentTeamRunManager` should become runtime-neutral. | `tickets/in-progress/runtime-domain-subject-refactor/investigation-notes.md` |
-| `R-005` | Native build/factory logic should move below the manager layer. | `tickets/in-progress/runtime-domain-subject-refactor/investigation-notes.md` |
-| `R-006` | AutoByteus, Codex, and Claude should sit behind backend implementations. | `tickets/in-progress/runtime-domain-subject-refactor/investigation-notes.md` |
-| `R-007` | Frontend and websocket paths remain unchanged in the first slice. | `tickets/in-progress/runtime-domain-subject-refactor/investigation-notes.md` |
-| `R-008` | One normalized event language remains the outward contract. | `tickets/in-progress/runtime-domain-subject-refactor/investigation-notes.md` |
-| `R-009` | Event adaptation moves below the run boundary. | `tickets/in-progress/runtime-domain-subject-refactor/investigation-notes.md` |
-| `R-010` | Status becomes owned by `AgentRun` / `TeamRun`. | `tickets/in-progress/runtime-domain-subject-refactor/investigation-notes.md` |
-| `R-011` | Team outward streaming remains team-scoped. | `tickets/in-progress/runtime-domain-subject-refactor/investigation-notes.md` |
-| `R-012` | Team-member runtime orchestration becomes internal to `TeamRun`. | `tickets/in-progress/runtime-domain-subject-refactor/investigation-notes.md` |
-| `R-013` | External-channel reply behavior attaches to run subjects. | `tickets/in-progress/runtime-domain-subject-refactor/investigation-notes.md` |
-| `R-014` | Active runtime snapshots should come from live run subjects. | `tickets/in-progress/runtime-domain-subject-refactor/investigation-notes.md` |
-| `R-015` | Persisted manifests/history remain separate from live run ownership. | `tickets/in-progress/runtime-domain-subject-refactor/investigation-notes.md` |
-| `R-016` | Continuation/resume should restore through run managers. | `tickets/in-progress/runtime-domain-subject-refactor/investigation-notes.md` |
-| `R-017` | Team-owned member runtimes should not surface as peer standalone active runs. | `tickets/in-progress/runtime-domain-subject-refactor/proposed-design.md` |
-| `R-018` | Projection providers stay in the persisted projection layer. | `tickets/in-progress/runtime-domain-subject-refactor/investigation-notes.md` |
+| `R-000` | Static definitions stay separate from runtime subjects. | `tickets/done/runtime-domain-subject-refactor/investigation-notes.md` |
+| `R-001` | A single execution needs one explicit `AgentRun` subject. | `tickets/done/runtime-domain-subject-refactor/investigation-notes.md` |
+| `R-002` | A team execution needs one explicit `TeamRun` subject. | `tickets/done/runtime-domain-subject-refactor/investigation-notes.md` |
+| `R-003` | `AgentRunManager` should become runtime-neutral. | `tickets/done/runtime-domain-subject-refactor/investigation-notes.md` |
+| `R-004` | `AgentTeamRunManager` should become runtime-neutral. | `tickets/done/runtime-domain-subject-refactor/investigation-notes.md` |
+| `R-005` | Native build/factory logic should move below the manager layer. | `tickets/done/runtime-domain-subject-refactor/investigation-notes.md` |
+| `R-006` | AutoByteus, Codex, and Claude should sit behind backend implementations. | `tickets/done/runtime-domain-subject-refactor/investigation-notes.md` |
+| `R-007` | Frontend and websocket paths remain unchanged in the first slice. | `tickets/done/runtime-domain-subject-refactor/investigation-notes.md` |
+| `R-008` | One normalized event language remains the outward contract. | `tickets/done/runtime-domain-subject-refactor/investigation-notes.md` |
+| `R-009` | Event adaptation moves below the run boundary. | `tickets/done/runtime-domain-subject-refactor/investigation-notes.md` |
+| `R-010` | Status becomes owned by `AgentRun` / `TeamRun`. | `tickets/done/runtime-domain-subject-refactor/investigation-notes.md` |
+| `R-011` | Team outward streaming remains team-scoped. | `tickets/done/runtime-domain-subject-refactor/investigation-notes.md` |
+| `R-012` | Team-member runtime orchestration becomes internal to `TeamRun`. | `tickets/done/runtime-domain-subject-refactor/investigation-notes.md` |
+| `R-013` | External-channel reply behavior attaches to run subjects. | `tickets/done/runtime-domain-subject-refactor/investigation-notes.md` |
+| `R-014` | Active runtime snapshots should come from live run subjects. | `tickets/done/runtime-domain-subject-refactor/investigation-notes.md` |
+| `R-015` | Persisted manifests/history remain separate from live run ownership. | `tickets/done/runtime-domain-subject-refactor/investigation-notes.md` |
+| `R-016` | Continuation/resume should restore through run managers. | `tickets/done/runtime-domain-subject-refactor/investigation-notes.md` |
+| `R-017` | Team-owned member runtimes should not surface as peer standalone active runs. | `tickets/done/runtime-domain-subject-refactor/proposed-design.md` |
+| `R-018` | Projection providers stay in the persisted projection layer. | `tickets/done/runtime-domain-subject-refactor/investigation-notes.md` |
 
 ## Open Questions / Risks
 

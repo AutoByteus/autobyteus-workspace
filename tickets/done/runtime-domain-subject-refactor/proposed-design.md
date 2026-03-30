@@ -14,8 +14,8 @@ This design keeps the frontend and websocket protocol stable in the first refact
 
 The first future-state team runtime call-stack slice is now recorded in:
 
-- `tickets/in-progress/runtime-domain-subject-refactor/future-state-runtime-call-stack.md`
-- `tickets/in-progress/runtime-domain-subject-refactor/future-state-runtime-call-stack-review.md`
+- `tickets/done/runtime-domain-subject-refactor/future-state-runtime-call-stack.md`
+- `tickets/done/runtime-domain-subject-refactor/future-state-runtime-call-stack-review.md`
 
 ## Design Goals
 

@@ -1,103 +1,100 @@
 # Codex Integration
 
-## Goal
+## Current State
 
-Enable a "Codex agent" in AutoByteus that can execute coding tasks through Codex, controllable from the existing AutoByteus Web agent UI.
+Codex App Server is now a first-class runtime in `autobyteus-server-ts`. Codex can still be used through MCP tools, but the primary integration path in this repo is the native runtime.
 
-## Recommendation
+Supported Codex paths:
 
-Use **Codex as an MCP server** first (fastest and lowest-risk path), then optionally add a native **Codex App Server** runtime later.
+- Native runtime: `runtimeKind = codex_app_server`
+- Optional tool-based mode: Codex exposed through MCP tools
 
-- Path A (recommended now): AutoByteus Agent -> MCP tools (`codex`, `codex-reply`) -> Codex CLI MCP server.
-- Path B (future): AutoByteus Agent runtime talks directly to Codex App Server protocol.
+## Native Runtime Architecture
 
-## Why Path A Fits Current Architecture
+Standalone runs:
 
-Current AutoByteus already supports MCP end-to-end:
+1. Frontend selects `codex_app_server`.
+2. GraphQL create/continue flows hand runtime selection to the server run services.
+3. `AgentRunManager` resolves the Codex backend factory.
+4. `codex-agent-run-backend-factory.ts` creates a Codex-backed `AgentRun`.
+5. `codex-thread-bootstrapper.ts` prepares the workspace, skills, approvals, and thread config.
+6. `CodexAppServerClient` / `CodexAppServerClientManager` speak to the Codex App Server process.
+7. Codex thread notifications are converted into normalized AutoByteus runtime events and streamed to the existing websocket/frontend pipeline.
 
-- MCP config + persistence + registration: `src/mcp-server-management/services/mcp-config-service.ts`
-- MCP server GraphQL API: `src/api/graphql/types/mcp-server.ts`
-- MCP tool registration in runtime registry: `src/tools/mcp/tool-registrar.ts` (from `autobyteus-ts`)
-- Per-agent MCP server lifecycle: `src/tools/mcp/server-instance-manager.ts` and `src/agent/bootstrap-steps/mcp-server-prewarming-step.ts` (from `autobyteus-ts`)
-- Frontend MCP management UI: `autobyteus-web/stores/toolManagementStore.ts`
+Team runs:
 
-Because this is already in place, Codex can be integrated without changing core agent execution flow.
+1. Team services create a team run with deterministic `memberRunId` values.
+2. `codex-team-run-backend-factory.ts` provisions team member runtime contexts.
+3. `codex-team-manager.ts` creates/restores one Codex member run per team member.
+4. Inter-agent messaging is carried through the Codex `send_message_to` tool contract.
+5. Team websocket streaming preserves the member domain identity while forwarding member runtime events.
 
-## OpenAI Capability References
+## Key Backend Components
 
-- Codex MCP integration guide: [https://developers.openai.com/codex/mcp](https://developers.openai.com/codex/mcp)
-- Codex as MCP server (tools: `codex`, `codex-reply`): [https://developers.openai.com/codex/mcp-server](https://developers.openai.com/codex/mcp-server)
-- Codex SDK / App Server protocol docs: [https://developers.openai.com/codex/sdk](https://developers.openai.com/codex/sdk), [https://developers.openai.com/codex/app-server](https://developers.openai.com/codex/app-server)
+Agent runtime:
 
-## Path A Implementation (Now)
+- `src/agent-execution/backends/codex/backend/codex-agent-run-backend-factory.ts`
+- `src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts`
+- `src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts`
 
-### 1. Configure Codex MCP server
+Thread/runtime bridge:
 
-Use Tools -> MCP Servers in AutoByteus Web, or bulk-import `docs/examples/codex_mcp_import.json`.
+- `src/agent-execution/backends/codex/thread/codex-thread.ts`
+- `src/agent-execution/backends/codex/thread/codex-client-thread-router.ts`
+- `src/runtime-management/codex/client/codex-app-server-client.ts`
+- `src/runtime-management/codex/client/codex-app-server-client-manager.ts`
 
-Recommended server settings:
+Event normalization:
 
-- `transport_type`: `stdio`
-- `command`: `npx`
-- `args`: `["-y","codex@latest","mcp-server","--model","codex-mini-latest","--approval-mode","full-auto","--sandbox","workspace-write"]`
-- `tool_name_prefix`: `codex`
-- `env.OPENAI_API_KEY`: your API key
+- `src/agent-execution/backends/codex/events/codex-thread-event-converter.ts`
+- `src/agent-execution/backends/codex/events/codex-item-event-converter.ts`
+- `src/agent-execution/backends/codex/events/codex-raw-response-event-converter.ts`
 
-### 2. Discover and register tools
+Team runtime:
 
-Run "Discover and Register MCP Server Tools" for the configured server.
+- `src/agent-team-execution/backends/codex/codex-team-run-backend-factory.ts`
+- `src/agent-team-execution/backends/codex/codex-team-run-backend.ts`
+- `src/agent-team-execution/backends/codex/codex-team-manager.ts`
 
-Expected tool names with prefix:
+## Skills
 
-- `codex_codex`
-- `codex_codex-reply`
+Configured runtime skills are materialized into the run workspace under:
 
-### 3. Create a Codex agent definition
+- `.codex/skills/<skill>/...`
 
-Create an agent definition (for example: `codex-agent`) with:
+Materializer:
 
-- Tool names: `["codex_codex","codex_codex-reply"]`
-- Prompt family: choose an existing coding prompt (for this repo DB, `software engineering` + `implementation` is available)
-- Keep optional tool list minimal; avoid giving this agent unrelated file/terminal tools at first
+- `src/agent-execution/backends/codex/codex-workspace-skill-materializer.ts`
 
-### 4. Run from frontend
+This keeps Codex skill loading aligned with the Codex filesystem contract instead of injecting skill content into prompts at the server boundary.
 
-When user sends input:
+## Projection / History
 
-1. Web calls `sendAgentUserInput` (`src/api/graphql/types/agent-run.ts`)
-2. Server builds agent with selected definition + model (`src/agent-execution/services/agent-run-manager.ts`)
-3. Agent invokes Codex MCP tools
-4. MCP proxy forwards to Codex CLI MCP server (`src/tools/mcp/server/proxy.ts` in `autobyteus-ts`)
+Codex run history and projection are reconstructed from persisted Codex thread history rather than from AutoByteus-native memory records.
 
-## Runtime Call Stack (Path A)
+Relevant components:
 
-Use case: user asks Codex agent to implement a feature.
+- `src/agent-execution/backends/codex/history/codex-thread-history-reader.ts`
+- `src/run-history/projection/providers/codex-run-view-projection-provider.ts`
+- `src/run-history/services/agent-run-view-projection-service.ts`
+- `src/run-history/services/team-member-run-view-projection-service.ts`
 
-1. `autobyteus-web` sends `sendAgentUserInput`.
-2. `src/api/graphql/types/agent-run.ts:sendAgentUserInput(...)`
-3. `src/agent-execution/services/agent-run-manager.ts:createAgentRun(...)`
-4. `autobyteus-ts/src/agent/handlers/tool-invocation-request-event-handler.ts` (tool call lifecycle)
-5. `autobyteus-ts/src/tools/mcp/tool.ts:GenericMcpTool._execute(...)`
-6. `autobyteus-ts/src/tools/mcp/server/proxy.ts:callTool(...)`
-7. `autobyteus-ts/src/tools/mcp/server-instance-manager.ts:getServerInstance(...)`
-8. `autobyteus-ts/src/tools/mcp/server/stdio-managed-mcp-server.ts:createClientSession(...)`
-9. Codex MCP server executes `codex` / `codex-reply` and returns output
-10. AutoByteus streams result back through existing agent stream pipeline
+The projection path uses:
 
-## Path B (Future): Native Codex Agent Runtime
+- domain run ids for AutoByteus-owned identity
+- Codex thread ids for Codex-native identity
 
-If you want Codex to be a first-class runtime (not a tool), build a new provider in `autobyteus-server-ts`:
+## Operational Notes
 
-- New service speaking Codex App Server protocol (session + turn lifecycle)
-- New resolver/service bridge similar to existing agent stream handlers
-- Add provider/model metadata into LLM management and frontend provider selection
-- Optional: dedicated "Codex Agent" launcher in UI
+- Approval requests, tool calls, file changes, and final-answer deltas are all normalized into the standard runtime event spine.
+- In practice, Codex may emit visible final-answer text only after reasoning finishes, which can make text streaming appear as a late burst even though lifecycle/tool events are still live.
+- Team member identity is deterministic and server-owned; Codex thread ids are stored separately as runtime-native references.
 
-This gives tighter control and richer Codex semantics, but is higher effort than MCP mode.
+## MCP Mode
 
-## Risks And Guardrails
+MCP-based Codex remains a valid optional path when you want Codex as a tool rather than a runtime:
 
-- Sandbox/approval must be intentional (`--sandbox`, `--approval-mode`).
-- Keep Codex agent toolset narrow to avoid tool recursion and noisy plans.
-- Ensure `OPENAI_API_KEY` is injected only into the Codex MCP server process env.
-- Monitor startup logs: MCP registration runs in background task `src/startup/mcp-loader.ts`.
+- use MCP mode when Codex should be one tool among others inside an AutoByteus-native agent
+- use `codex_app_server` when Codex itself should own the run/thread lifecycle
+
+The native runtime is the canonical integration path for run history, restore, projection, approvals, and team-member runtime orchestration.

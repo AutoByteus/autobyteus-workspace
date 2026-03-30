@@ -3,7 +3,7 @@ export type AgentRuntimeKind = string;
 export const DEFAULT_AGENT_RUNTIME_KIND: AgentRuntimeKind = 'autobyteus';
 
 const AGENT_RUNTIME_KIND_LABELS: Record<string, string> = {
-  autobyteus: 'AutoByteus Runtime',
+  autobyteus: 'AutoByteus',
   codex_app_server: 'Codex App Server',
   claude_agent_sdk: 'Claude Agent SDK',
 };

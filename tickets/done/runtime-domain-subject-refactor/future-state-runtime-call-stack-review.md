@@ -15,9 +15,9 @@
 
 ## Review Basis
 
-- Requirements: `tickets/in-progress/runtime-domain-subject-refactor/requirements.md` (`Design-ready`)
-- Runtime Call Stack Document: `tickets/in-progress/runtime-domain-subject-refactor/future-state-runtime-call-stack.md`
-- Source Design Basis: `tickets/in-progress/runtime-domain-subject-refactor/proposed-design.md`
+- Requirements: `tickets/done/runtime-domain-subject-refactor/requirements.md` (`Design-ready`)
+- Runtime Call Stack Document: `tickets/done/runtime-domain-subject-refactor/future-state-runtime-call-stack.md`
+- Source Design Basis: `tickets/done/runtime-domain-subject-refactor/proposed-design.md`
 - Artifact Versions In This Round:
   - Requirements Status: `Design-ready`
   - Design Version: `v10`

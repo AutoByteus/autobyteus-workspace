@@ -5,8 +5,8 @@
 - Scope Classification: `Large`
 - Focus Slice: `Team runtime core stack`
 - Call Stack Version: `v1`
-- Requirements: `tickets/in-progress/runtime-domain-subject-refactor/requirements.md` (`Design-ready`)
-- Source Artifact: `tickets/in-progress/runtime-domain-subject-refactor/proposed-design.md`
+- Requirements: `tickets/done/runtime-domain-subject-refactor/requirements.md` (`Design-ready`)
+- Source Artifact: `tickets/done/runtime-domain-subject-refactor/proposed-design.md`
 - Source Design Version: `v10`
 - Referenced Sections:
   - `TeamRun` responsibilities
