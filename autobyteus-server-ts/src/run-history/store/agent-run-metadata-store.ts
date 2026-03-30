@@ -3,6 +3,7 @@ import path from "node:path";
 import type { AgentRunMetadata } from "./agent-run-metadata-types.js";
 import { canonicalizeWorkspaceRootPath } from "../utils/workspace-path-normalizer.js";
 import type { AgentRunStatusRecord } from "./agent-run-history-index-record-types.js";
+import { AgentRunMemoryLayout } from "../../agent-memory/store/agent-run-memory-layout.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
@@ -22,12 +23,22 @@ const normalizeLastKnownStatus = (
   return "IDLE";
 };
 
+const normalizeMemoryDir = (
+  memoryDir: string | null | undefined,
+  fallbackMemoryDir: string,
+): string =>
+  typeof memoryDir === "string" && memoryDir.trim().length > 0
+    ? path.resolve(memoryDir.trim())
+    : path.resolve(fallbackMemoryDir);
+
 const normalizeMetadata = (
   metadata: AgentRunMetadata,
+  fallbackMemoryDir: string,
 ): AgentRunMetadata => ({
   runId: metadata.runId.trim(),
   agentDefinitionId: metadata.agentDefinitionId.trim(),
   workspaceRootPath: canonicalizeWorkspaceRootPath(metadata.workspaceRootPath),
+  memoryDir: normalizeMemoryDir(metadata.memoryDir, fallbackMemoryDir),
   llmModelIdentifier: metadata.llmModelIdentifier.trim(),
   llmConfig: metadata.llmConfig ?? null,
   autoExecuteTools: Boolean(metadata.autoExecuteTools),
@@ -42,9 +53,11 @@ const normalizeMetadata = (
 
 export class AgentRunMetadataStore {
   private baseDir: string;
+  private readonly layout: AgentRunMemoryLayout;
 
   constructor(memoryDir: string) {
-    this.baseDir = path.join(memoryDir, "agents");
+    this.layout = new AgentRunMemoryLayout(memoryDir);
+    this.baseDir = this.layout.getRunsRootDirPath();
   }
 
   getMetadataPath(runId: string): string {
@@ -60,7 +73,7 @@ export class AgentRunMetadataStore {
         logger.warn(`Invalid run metadata format: ${metadataPath}`);
         return null;
       }
-      return normalizeMetadata(parsed as AgentRunMetadata);
+      return normalizeMetadata(parsed as AgentRunMetadata, this.layout.getRunDirPath(runId));
     } catch (error) {
       const message = String(error);
       if (!message.includes("ENOENT")) {
@@ -74,7 +87,7 @@ export class AgentRunMetadataStore {
     const normalized = normalizeMetadata({
       ...metadata,
       runId,
-    });
+    }, this.layout.getRunDirPath(runId));
     const metadataPath = this.getMetadataPath(runId);
     await fs.mkdir(path.dirname(metadataPath), { recursive: true });
     await fs.writeFile(metadataPath, JSON.stringify(normalized, null, 2), "utf-8");

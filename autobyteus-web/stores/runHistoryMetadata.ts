@@ -13,58 +13,32 @@ const normalizeRuntimeKind = (value: unknown) => {
     return DEFAULT_AGENT_RUNTIME_KIND;
   }
   const normalized = value.trim();
-  return (normalized.length > 0 ? normalized : DEFAULT_AGENT_RUNTIME_KIND) as TeamRunMetadataPayload['memberBindings'][number]['runtimeKind'];
+  return (normalized.length > 0 ? normalized : DEFAULT_AGENT_RUNTIME_KIND) as TeamRunMetadataPayload['memberMetadata'][number]['runtimeKind'];
 };
 
 export const parseTeamRunMetadata = (value: unknown): TeamRunMetadataPayload => {
   const payload = asRecord(value);
-  const memberBindings = Array.isArray(payload.memberBindings)
-    ? payload.memberBindings.map((item) => {
-        const binding = asRecord(item);
+  const memberMetadata = Array.isArray(payload.memberMetadata)
+    ? payload.memberMetadata.map((item) => {
+        const member = asRecord(item);
         return {
-          memberRouteKey: String(binding.memberRouteKey || ''),
-          memberName: String(binding.memberName || ''),
-          memberRunId: String(binding.memberRunId ?? ''),
-          runtimeKind: normalizeRuntimeKind(binding.runtimeKind),
-          runtimeReference:
-            binding.runtimeReference &&
-            typeof binding.runtimeReference === 'object' &&
-            !Array.isArray(binding.runtimeReference)
-              ? {
-                  runtimeKind: normalizeRuntimeKind(
-                    (binding.runtimeReference as Record<string, unknown>).runtimeKind,
-                  ),
-                  sessionId:
-                    typeof (binding.runtimeReference as Record<string, unknown>).sessionId ===
-                    'string'
-                      ? ((binding.runtimeReference as Record<string, unknown>).sessionId as string)
-                      : null,
-                  threadId:
-                    typeof (binding.runtimeReference as Record<string, unknown>).threadId ===
-                    'string'
-                      ? ((binding.runtimeReference as Record<string, unknown>).threadId as string)
-                      : null,
-                  metadata:
-                    (binding.runtimeReference as Record<string, unknown>).metadata &&
-                    typeof (binding.runtimeReference as Record<string, unknown>).metadata ===
-                      'object' &&
-                    !Array.isArray((binding.runtimeReference as Record<string, unknown>).metadata)
-                      ? ((binding.runtimeReference as Record<string, unknown>).metadata as Record<
-                          string,
-                          unknown
-                        >)
-                      : null,
-                }
-              : null,
-          agentDefinitionId: String(binding.agentDefinitionId || ''),
-          llmModelIdentifier: String(binding.llmModelIdentifier || ''),
-          autoExecuteTools: Boolean(binding.autoExecuteTools),
+          memberRouteKey: String(member.memberRouteKey || ''),
+          memberName: String(member.memberName || ''),
+          memberRunId: String(member.memberRunId ?? ''),
+          runtimeKind: normalizeRuntimeKind(member.runtimeKind),
+          platformAgentRunId:
+            typeof member.platformAgentRunId === 'string' ? member.platformAgentRunId : null,
+          agentDefinitionId: String(member.agentDefinitionId || ''),
+          llmModelIdentifier: String(member.llmModelIdentifier || ''),
+          autoExecuteTools: Boolean(member.autoExecuteTools),
+          skillAccessMode:
+            typeof member.skillAccessMode === 'string' ? member.skillAccessMode : null,
           llmConfig:
-            binding.llmConfig && typeof binding.llmConfig === 'object' && !Array.isArray(binding.llmConfig)
-              ? (binding.llmConfig as Record<string, unknown>)
+            member.llmConfig && typeof member.llmConfig === 'object' && !Array.isArray(member.llmConfig)
+              ? (member.llmConfig as Record<string, unknown>)
               : null,
           workspaceRootPath:
-            typeof binding.workspaceRootPath === 'string' ? binding.workspaceRootPath : null,
+            typeof member.workspaceRootPath === 'string' ? member.workspaceRootPath : null,
         };
       })
     : [];
@@ -76,7 +50,7 @@ export const parseTeamRunMetadata = (value: unknown): TeamRunMetadataPayload => 
     runVersion: Number(payload.runVersion || 1),
     createdAt: String(payload.createdAt || new Date().toISOString()),
     updatedAt: String(payload.updatedAt || new Date().toISOString()),
-    memberBindings,
+    memberMetadata,
   };
 };
 

@@ -2,10 +2,17 @@ import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js"
 import type { MemoryConversationEntry } from "../../agent-memory/domain/models.js";
 import type { AgentRunMetadata } from "../store/agent-run-metadata-types.js";
 
-export interface RunProjectionProviderInput {
+export interface RunProjectionSourceDescriptor {
   runId: string;
   runtimeKind: RuntimeKind;
+  workspaceRootPath: string | null;
+  memoryDir: string | null;
+  platformRunId: string | null;
   metadata: AgentRunMetadata | null;
+}
+
+export interface RunProjectionProviderInput {
+  source: RunProjectionSourceDescriptor;
 }
 
 export interface RunProjectionProvider {

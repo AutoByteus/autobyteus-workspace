@@ -26,7 +26,7 @@ import { AgentDefinitionService } from "../../../agent-definition/services/agent
 import { mergeMandatoryAndOptional } from "../../../agent-definition/utils/processor-defaults.js";
 import type { AgentTeamDefinition } from "../../../agent-team-definition/domain/models.js";
 import { AgentTeamDefinitionService } from "../../../agent-team-definition/services/agent-team-definition-service.js";
-import { TeamRun } from "../../domain/team-run.js";
+import { appConfigProvider } from "../../../config/app-config-provider.js";
 import {
   TeamRunConfig,
   type TeamMemberRunConfig,
@@ -37,11 +37,16 @@ import {
   normalizeMemberRouteKey,
 } from "../../../run-history/utils/team-member-run-id.js";
 import { generateTeamRunId } from "../../../run-history/utils/team-run-id-utils.js";
+import { TeamMemberMemoryLayout } from "../../../agent-memory/store/team-member-memory-layout.js";
 import { SkillService } from "../../../skills/services/skill-service.js";
 import { TempWorkspace } from "../../../workspaces/temp-workspace.js";
 import { getWorkspaceManager, type WorkspaceManager } from "../../../workspaces/workspace-manager.js";
 import { AgentTeamCreationError } from "../../errors.js";
 import { AutoByteusTeamRunBackend } from "./autobyteus-team-run-backend.js";
+import {
+  AutoByteusTeamMemberContext,
+  AutoByteusTeamRunContext,
+} from "./autobyteus-team-run-context.js";
 import type { TeamRunBackendFactory } from "../team-run-backend-factory.js";
 import type { TeamRunBackend } from "../team-run-backend.js";
 
@@ -77,6 +82,16 @@ export type TeamProcessorRegistries = {
 
 export type AutoByteusTeamLike = {
   teamId: string;
+  context?: {
+    agents?: Array<{
+      agentId?: string | null;
+      context?: {
+        config?: {
+          name?: string | null;
+        } | null;
+      } | null;
+    }>;
+  } | null;
   notifier?: unknown;
   currentStatus?: string;
   start?: () => void;
@@ -101,6 +116,7 @@ export type AutoByteusTeamRunBackendFactoryOptions = {
   skillService?: SkillService;
   registries?: Partial<TeamProcessorRegistries>;
   waitForIdle?: (team: AutoByteusTeamLike, timeout?: number) => Promise<void>;
+  memoryDir?: string;
 };
 
 const asTrimmedString = (value: unknown): string | null =>
@@ -115,6 +131,7 @@ export class AutoByteusTeamRunBackendFactory implements TeamRunBackendFactory {
   private readonly skillService: SkillService;
   private readonly registries: TeamProcessorRegistries;
   private readonly waitForIdle: (team: AutoByteusTeamLike, timeout?: number) => Promise<void>;
+  private readonly memberLayout: TeamMemberMemoryLayout;
 
   constructor(options: AutoByteusTeamRunBackendFactoryOptions = {}) {
     this.teamFactory = options.teamFactory ?? defaultAgentTeamFactory;
@@ -140,6 +157,9 @@ export class AutoByteusTeamRunBackendFactory implements TeamRunBackendFactory {
     this.waitForIdle =
       options.waitForIdle ??
       (waitForTeamToBeIdle as (team: AutoByteusTeamLike, timeout?: number) => Promise<void>);
+    this.memberLayout = new TeamMemberMemoryLayout(
+      options.memoryDir ?? appConfigProvider.config.getMemoryDir(),
+    );
   }
 
   async createBackend(
@@ -160,36 +180,26 @@ export class AutoByteusTeamRunBackendFactory implements TeamRunBackendFactory {
     return this.createBackendFromTeam(team, context.config);
   }
 
-  async createTeamRun(
-    input: TeamRunConfig,
-    preferredTeamRunId: string | null = null,
-  ): Promise<TeamRun> {
-    const config = input;
-    const team = await this.createRuntimeTeam(config, preferredTeamRunId);
-    return this.materializeTeamRun(team.teamId, config) as TeamRun;
-  }
-
   private async createRuntimeTeam(
     config: TeamRunConfig,
     preferredTeamRunId: string | null,
   ): Promise<AutoByteusTeamLike> {
-    const memberConfigsMap: Record<string, TeamMemberConfigInput> = {};
-    for (const memberConfig of config.memberConfigs) {
-      memberConfigsMap[memberConfig.memberName] = memberConfig;
-      if (
-        typeof memberConfig.memberRouteKey === "string" &&
-        memberConfig.memberRouteKey.trim()
-      ) {
-        memberConfigsMap[normalizeMemberRouteKey(memberConfig.memberRouteKey)] = memberConfig;
-      }
-    }
-
-    const teamConfig = await this.buildTeamConfigFromDefinition(
+    const initialTeamConfig = await this.buildTeamConfigFromDefinition(
       config.teamDefinitionId,
-      memberConfigsMap,
+      this.buildMemberConfigsMap(config.memberConfigs),
       new Set(),
     );
-    const desiredTeamRunId = preferredTeamRunId ?? generateTeamRunId(teamConfig.name);
+    const desiredTeamRunId = preferredTeamRunId ?? generateTeamRunId(initialTeamConfig.name);
+    const runtimeReadyConfig = this.attachRuntimeMemberIdentity(config, desiredTeamRunId);
+    await this.memberLayout.ensureLocalMemberSubtrees(
+      desiredTeamRunId,
+      runtimeReadyConfig.memberConfigs.map((memberConfig) => memberConfig.memberRunId ?? ""),
+    );
+    const teamConfig = await this.buildTeamConfigFromDefinition(
+      runtimeReadyConfig.teamDefinitionId,
+      this.buildMemberConfigsMap(runtimeReadyConfig.memberConfigs),
+      new Set(),
+    );
 
     const createTeamWithId = (this.teamFactory as { createTeamWithId?: unknown }).createTeamWithId;
     const team =
@@ -213,23 +223,53 @@ export class AutoByteusTeamRunBackendFactory implements TeamRunBackendFactory {
     return team;
   }
 
-  getTeam(teamRunId: string): AutoByteusTeamLike | null {
-    return (this.teamFactory.getTeam(teamRunId) as AutoByteusTeamLike | undefined) ?? null;
+  private buildMemberConfigsMap(
+    memberConfigs: TeamMemberRunConfig[],
+  ): Record<string, TeamMemberConfigInput> {
+    const memberConfigsMap: Record<string, TeamMemberConfigInput> = {};
+    for (const memberConfig of memberConfigs) {
+      memberConfigsMap[memberConfig.memberName] = memberConfig;
+      if (
+        typeof memberConfig.memberRouteKey === "string" &&
+        memberConfig.memberRouteKey.trim()
+      ) {
+        memberConfigsMap[normalizeMemberRouteKey(memberConfig.memberRouteKey)] = memberConfig;
+      }
+    }
+    return memberConfigsMap;
   }
 
-  materializeTeamRun(teamRunId: string, config: TeamRunConfig | null): TeamRun | null {
-    const team = this.getTeam(teamRunId);
-    if (!team || !config) {
-      return null;
-    }
-
-    const backend = this.createBackendFromTeam(team, config);
-
-    return new TeamRun({
-      runId: teamRunId,
-      config,
-      backend,
+  private attachRuntimeMemberIdentity(
+    config: TeamRunConfig,
+    teamRunId: string,
+  ): TeamRunConfig {
+    return new TeamRunConfig({
+      teamDefinitionId: config.teamDefinitionId,
+      runtimeKind: config.runtimeKind,
+      memberConfigs: config.memberConfigs.map((memberConfig) => {
+        const memberRouteKey = normalizeMemberRouteKey(
+          memberConfig.memberRouteKey ?? memberConfig.memberName,
+        );
+        const memberRunId =
+          typeof memberConfig.memberRunId === "string" && memberConfig.memberRunId.trim().length > 0
+            ? memberConfig.memberRunId.trim()
+            : buildTeamMemberRunId(teamRunId, memberRouteKey);
+        const memoryDir =
+          typeof memberConfig.memoryDir === "string" && memberConfig.memoryDir.trim().length > 0
+            ? memberConfig.memoryDir.trim()
+            : this.memberLayout.getMemberDirPath(teamRunId, memberRunId);
+        return {
+          ...memberConfig,
+          memberRouteKey,
+          memberRunId,
+          memoryDir,
+        };
+      }),
     });
+  }
+
+  getTeam(teamRunId: string): AutoByteusTeamLike | null {
+    return (this.teamFactory.getTeam(teamRunId) as AutoByteusTeamLike | undefined) ?? null;
   }
 
   listTeamRunIds(): string[] {
@@ -244,21 +284,51 @@ export class AutoByteusTeamRunBackendFactory implements TeamRunBackendFactory {
     team: AutoByteusTeamLike,
     config: TeamRunConfig,
   ): AutoByteusTeamRunBackend {
+    const runtimeContext = this.buildRuntimeContext(team, config);
     const memberRunIdsByName = new Map(
-      config.memberConfigs.map((memberConfig) => [
-        memberConfig.memberName,
-        typeof memberConfig.memberRunId === "string" && memberConfig.memberRunId.trim().length > 0
-          ? memberConfig.memberRunId.trim()
-          : buildTeamMemberRunId(
-              team.teamId,
-              normalizeMemberRouteKey(memberConfig.memberRouteKey ?? memberConfig.memberName),
-            ),
+      runtimeContext.memberContexts.map((memberContext) => [
+        memberContext.memberName,
+        memberContext.memberRunId,
       ]),
     );
     return new AutoByteusTeamRunBackend(team, {
       isActive: () => this.getTeam(team.teamId) !== null,
       removeTeamRun: async (runId: string) => this.removeTeamRun(runId),
       memberRunIdsByName,
+      runtimeContext,
+    });
+  }
+
+  private buildRuntimeContext(
+    team: AutoByteusTeamLike,
+    config: TeamRunConfig,
+  ): AutoByteusTeamRunContext {
+    const liveAgents = Array.isArray(team.context?.agents) ? team.context?.agents ?? [] : [];
+    const memberContexts = config.memberConfigs.map((memberConfig) => {
+      const memberRouteKey = normalizeMemberRouteKey(
+        memberConfig.memberRouteKey ?? memberConfig.memberName,
+      );
+      const memberRunId =
+        typeof memberConfig.memberRunId === "string" && memberConfig.memberRunId.trim().length > 0
+          ? memberConfig.memberRunId.trim()
+          : buildTeamMemberRunId(team.teamId, memberRouteKey);
+      const nativeAgentId =
+        liveAgents.find(
+          (agent) => agent?.context?.config?.name?.trim() === memberConfig.memberName,
+        )?.agentId ?? null;
+      return new AutoByteusTeamMemberContext({
+        memberName: memberConfig.memberName,
+        memberRouteKey,
+        memberRunId,
+        nativeAgentId: typeof nativeAgentId === "string" && nativeAgentId.trim().length > 0
+          ? nativeAgentId.trim()
+          : null,
+      });
+    });
+
+    return new AutoByteusTeamRunContext({
+      coordinatorMemberRouteKey: null,
+      memberContexts,
     });
   }
 

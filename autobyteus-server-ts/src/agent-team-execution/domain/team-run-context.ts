@@ -1,5 +1,5 @@
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
-import type { AgentTeamContext } from "autobyteus-ts/agent-team/context/agent-team-context.js";
+import type { AutoByteusTeamRunContext } from "../backends/autobyteus/autobyteus-team-run-context.js";
 import type { ClaudeTeamRunContext } from "../backends/claude/claude-team-run-context.js";
 import type { CodexTeamRunContext } from "../backends/codex/codex-team-run-context.js";
 import type { TeamRunConfig } from "./team-run-config.js";
@@ -21,8 +21,6 @@ const hasMemberContexts = (value: unknown): value is TeamMemberContextCarrier =>
   typeof value === "object" &&
   "memberContexts" in value &&
   Array.isArray((value as { memberContexts?: unknown }).memberContexts);
-
-export type AutoByteusTeamRunContext = AgentTeamContext | { teamId: string | null };
 
 export type RuntimeTeamRunContext =
   | AutoByteusTeamRunContext

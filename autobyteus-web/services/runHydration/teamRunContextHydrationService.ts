@@ -115,7 +115,7 @@ const buildHydratedTeamContext = (params: {
   currentStatus: string | null | undefined;
   memberStatuses: TeamMemberLiveSnapshot[];
 }): AgentTeamContext => {
-  const focusedBinding = params.metadata.memberBindings.find(
+  const focusedBinding = params.metadata.memberMetadata.find(
     (member) => toTeamMemberKey(member).trim() === params.focusedMemberRouteKey,
   );
 
@@ -130,7 +130,7 @@ const buildHydratedTeamContext = (params: {
       autoExecuteTools: focusedBinding?.autoExecuteTools ?? false,
       skillAccessMode: 'PRELOADED_ONLY' as const,
       memberOverrides: Object.fromEntries(
-        params.metadata.memberBindings.map((member) => [
+        params.metadata.memberMetadata.map((member) => [
           member.memberName,
           {
             agentDefinitionId: member.agentDefinitionId,

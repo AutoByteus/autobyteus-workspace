@@ -13,6 +13,7 @@ import {
   TeamMemberMemoryProjectionReader,
   getTeamMemberMemoryProjectionReader,
 } from "../../agent-memory/services/team-member-memory-projection-reader.js";
+import { TeamMemberMemoryLayout } from "../../agent-memory/store/team-member-memory-layout.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import type { TeamRunMemberMetadata } from "../store/team-run-metadata-types.js";
 import type { AgentRunMetadata } from "../store/agent-run-metadata-types.js";
@@ -66,13 +67,17 @@ const resolveMemberWorkspaceRootPath = (
 ): string =>
   member.workspaceRootPath ?? teamWorkspaceRootPath ?? process.cwd();
 
+const teamMemberMemoryLayout = new TeamMemberMemoryLayout(appConfigProvider.config.getMemoryDir());
+
 const toMemberRunMetadata = (
+  teamRunId: string,
   member: TeamRunMemberMetadata,
   teamWorkspaceRootPath: string | null | undefined,
 ): AgentRunMetadata => ({
   runId: member.memberRunId,
   agentDefinitionId: member.agentDefinitionId,
   workspaceRootPath: resolveMemberWorkspaceRootPath(member, teamWorkspaceRootPath),
+  memoryDir: teamMemberMemoryLayout.getMemberDirPath(teamRunId, member.memberRunId),
   llmModelIdentifier: member.llmModelIdentifier,
   llmConfig: member.llmConfig ?? null,
   autoExecuteTools: member.autoExecuteTools,
@@ -149,6 +154,7 @@ export class TeamMemberRunViewProjectionService {
     projection = await this.agentRunViewProjectionService.getProjectionFromMetadata({
       runId: binding.memberRunId,
       metadata: toMemberRunMetadata(
+        normalizedTeamRunId,
         memberMetadataWithLivePlatformId,
         resumeConfig.metadata.memberMetadata.find((member) => member.workspaceRootPath)?.workspaceRootPath ?? null,
       ),

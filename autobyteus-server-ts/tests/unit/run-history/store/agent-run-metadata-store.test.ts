@@ -13,6 +13,7 @@ const buildMetadata = (
   runId: "run-1",
   agentDefinitionId: "agent-def-1",
   workspaceRootPath: "/tmp/workspace",
+  memoryDir: "/tmp/memory/agents/run-1",
   llmModelIdentifier: "model-1",
   llmConfig: null,
   autoExecuteTools: false,
@@ -38,6 +39,7 @@ describe("AgentRunMetadataStore", () => {
     const store = new AgentRunMetadataStore(memoryDir);
     await store.writeMetadata("run-1", buildMetadata({
       workspaceRootPath: "/tmp/workspace/",
+      memoryDir: path.join(memoryDir, "agents", "run-1"),
       platformAgentRunId: "  thread-1  ",
       lastKnownStatus: "TERMINATED",
     }));
@@ -46,6 +48,7 @@ describe("AgentRunMetadataStore", () => {
 
     expect(metadata).toEqual(buildMetadata({
       workspaceRootPath: "/tmp/workspace",
+      memoryDir: path.join(memoryDir, "agents", "run-1"),
       platformAgentRunId: "thread-1",
       lastKnownStatus: "TERMINATED",
     }));
@@ -73,6 +76,7 @@ describe("AgentRunMetadataStore", () => {
 
     const metadata = await store.readMetadata("run-legacy");
 
+    expect(metadata?.memoryDir).toBe(path.join(memoryDir, "agents", "run-legacy"));
     expect(metadata?.lastKnownStatus).toBe("IDLE");
   });
 });

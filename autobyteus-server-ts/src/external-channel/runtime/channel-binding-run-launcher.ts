@@ -27,6 +27,10 @@ import {
   getTeamRunService,
   type TeamRunService,
 } from "../../agent-team-execution/services/team-run-service.js";
+import { AgentRunMemoryLayout } from "../../agent-memory/store/agent-run-memory-layout.js";
+import { appConfigProvider } from "../../config/app-config-provider.js";
+
+const agentRunMemoryLayout = new AgentRunMemoryLayout(appConfigProvider.config.getMemoryDir());
 
 export interface ChannelBindingLiveRunRegistry {
   claimAgentRun(bindingId: string, agentRunId: string): void;
@@ -149,6 +153,7 @@ export class ChannelBindingRunLauncher {
         launchTarget.launchPreset.workspaceRootPath,
         "launchPreset.workspaceRootPath",
       ),
+      memoryDir: activeRun.config.memoryDir ?? agentRunMemoryLayout.getRunDirPath(runId),
       llmModelIdentifier: normalizeRequiredString(
         launchTarget.launchPreset.llmModelIdentifier,
         "launchPreset.llmModelIdentifier",

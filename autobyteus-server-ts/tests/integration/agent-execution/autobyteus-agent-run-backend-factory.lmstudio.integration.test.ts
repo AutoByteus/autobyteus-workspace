@@ -14,6 +14,7 @@ import {
   AgentRunEventType,
   type AgentRunEvent,
 } from "../../../src/agent-execution/domain/agent-run-event.js";
+import { generateStandaloneAgentRunId } from "../../../src/run-history/utils/agent-run-id-utils.js";
 
 const DEFAULT_LMSTUDIO_TEXT_MODEL = "qwen/qwen3-30b-a3b-2507";
 const LMSTUDIO_MODEL_ENV_VAR = "LMSTUDIO_MODEL_ID";
@@ -137,6 +138,18 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
   let agentFactory: AgentFactory;
   let backendFactory: AutoByteusAgentRunBackendFactory;
 
+  const createPreparedConfig = (
+    runId: string,
+    modelIdentifier: string,
+    autoExecuteTools: boolean,
+  ): AgentRunConfig =>
+    new AgentRunConfig({
+      agentDefinitionId: "def-live-autobyteus-backend",
+      llmModelIdentifier: modelIdentifier,
+      autoExecuteTools,
+      memoryDir: path.join(memoryDir, "agents", runId),
+    });
+
   beforeEach(async () => {
     previousMemoryDir = process.env.AUTOBYTEUS_MEMORY_DIR;
     previousParserEnv = process.env.AUTOBYTEUS_STREAM_PARSER;
@@ -208,13 +221,11 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
     async () => {
       const modelIdentifier = await resolveLmstudioModelIdentifier();
       expect(modelIdentifier).toBeTruthy();
+      const runId = generateStandaloneAgentRunId("LiveAutoByteusBackendAgent", "Tool User");
 
       const backend = await backendFactory.createBackend(
-        new AgentRunConfig({
-          agentDefinitionId: "def-live-autobyteus-backend",
-          llmModelIdentifier: modelIdentifier as string,
-          autoExecuteTools: false,
-        }),
+        createPreparedConfig(runId, modelIdentifier as string, false),
+        runId,
       );
 
       const events: AgentRunEvent[] = [];
@@ -298,13 +309,11 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
     async () => {
       const modelIdentifier = await resolveLmstudioModelIdentifier();
       expect(modelIdentifier).toBeTruthy();
+      const runId = generateStandaloneAgentRunId("LiveAutoByteusBackendAgent", "Tool User");
 
       const backend = await backendFactory.createBackend(
-        new AgentRunConfig({
-          agentDefinitionId: "def-live-autobyteus-backend",
-          llmModelIdentifier: modelIdentifier as string,
-          autoExecuteTools: false,
-        }),
+        createPreparedConfig(runId, modelIdentifier as string, false),
+        runId,
       );
 
       const events: AgentRunEvent[] = [];
@@ -362,13 +371,11 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
     async () => {
       const modelIdentifier = await resolveLmstudioModelIdentifier();
       expect(modelIdentifier).toBeTruthy();
+      const runId = generateStandaloneAgentRunId("LiveAutoByteusBackendAgent", "Tool User");
 
       const backend = await backendFactory.createBackend(
-        new AgentRunConfig({
-          agentDefinitionId: "def-live-autobyteus-backend",
-          llmModelIdentifier: modelIdentifier as string,
-          autoExecuteTools: true,
-        }),
+        createPreparedConfig(runId, modelIdentifier as string, true),
+        runId,
       );
 
       const events: AgentRunEvent[] = [];

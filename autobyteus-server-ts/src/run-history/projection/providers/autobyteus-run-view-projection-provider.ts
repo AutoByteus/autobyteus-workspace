@@ -1,6 +1,6 @@
 import { AgentMemoryService } from "../../../agent-memory/services/agent-memory-service.js";
 import { MemoryFileStore } from "../../../agent-memory/store/memory-file-store.js";
-import { appConfigProvider } from "../../../config/app-config-provider.js";
+import path from "node:path";
 import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 import type {
   RunProjectionProvider,
@@ -8,25 +8,32 @@ import type {
   RunProjection,
 } from "../run-projection-types.js";
 import { buildRunProjection } from "../run-projection-utils.js";
+import { appConfigProvider } from "../../../config/app-config-provider.js";
 
 const asString = (value: unknown): string | null =>
   typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
 
 export class AutoByteusRunViewProjectionProvider implements RunProjectionProvider {
   readonly runtimeKind = RuntimeKind.AUTOBYTEUS;
-  private readonly memoryService: AgentMemoryService;
+  private readonly defaultMemoryService: AgentMemoryService;
 
   constructor(
     memoryDir: string,
     memoryService?: AgentMemoryService,
   ) {
-    this.memoryService =
+    this.defaultMemoryService =
       memoryService ?? new AgentMemoryService(new MemoryFileStore(memoryDir));
   }
 
   async buildProjection(input: RunProjectionProviderInput): Promise<RunProjection> {
-    const runtimeRunId = asString(input.metadata?.platformAgentRunId) ?? input.runId;
-    const view = this.memoryService.getRunMemoryView(runtimeRunId, {
+    const runtimeRunId = asString(input.source.platformRunId) ?? input.source.runId;
+    const explicitMemoryDir = asString(input.source.memoryDir);
+    const memoryService = explicitMemoryDir
+      ? new AgentMemoryService(
+          new MemoryFileStore(path.dirname(explicitMemoryDir), { runRootSubdir: "" }),
+        )
+      : this.defaultMemoryService;
+    const view = memoryService.getRunMemoryView(runtimeRunId, {
       includeWorkingContext: false,
       includeEpisodic: false,
       includeSemantic: false,
@@ -34,7 +41,7 @@ export class AutoByteusRunViewProjectionProvider implements RunProjectionProvide
       includeRawTraces: false,
       includeArchive: true,
     });
-    return buildRunProjection(input.runId, view.conversation ?? []);
+    return buildRunProjection(input.source.runId, view.conversation ?? []);
   }
 }
 

@@ -13,6 +13,7 @@ import { AgentDefinition } from "../../../src/agent-definition/domain/models.js"
 import { AutoByteusAgentRunBackendFactory } from "../../../src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
+import { generateStandaloneAgentRunId } from "../../../src/run-history/utils/agent-run-id-utils.js";
 
 class DummyLLM extends BaseLLM {
   protected async _sendMessagesToLLM(_messages: Message[]): Promise<CompleteResponse> {
@@ -47,6 +48,14 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
   let previousMemoryDir: string | undefined;
   let agentFactory: AgentFactory;
   let backendFactory: AutoByteusAgentRunBackendFactory;
+
+  const createPreparedConfig = (runId: string): AgentRunConfig =>
+    new AgentRunConfig({
+      agentDefinitionId: "def-autobyteus-backend",
+      llmModelIdentifier: "dummy-model",
+      autoExecuteTools: false,
+      memoryDir: path.join(memoryDir, "agents", runId),
+    });
 
   beforeEach(async () => {
     previousMemoryDir = process.env.AUTOBYTEUS_MEMORY_DIR;
@@ -107,12 +116,10 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
   });
 
   it("creates a live backend that can process a turn and terminate cleanly", async () => {
+    const runId = generateStandaloneAgentRunId("AutoByteusBackendAgent", "Tester");
     const backend = await backendFactory.createBackend(
-      new AgentRunConfig({
-        agentDefinitionId: "def-autobyteus-backend",
-        llmModelIdentifier: "dummy-model",
-        autoExecuteTools: false,
-      }),
+      createPreparedConfig(runId),
+      runId,
     );
 
     expect(backend.isActive()).toBe(true);
@@ -131,16 +138,45 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
     expect(agentFactory.getAgent(backend.runId)).toBeUndefined();
   });
 
-  it("restores a terminated run with the same run id", async () => {
-    const created = await backendFactory.createBackend(
-      new AgentRunConfig({
-        agentDefinitionId: "def-autobyteus-backend",
-        llmModelIdentifier: "dummy-model",
-        autoExecuteTools: false,
-      }),
+  it("respects a preferred run id and provisions the standalone memory directory explicitly", async () => {
+    const preferredRunId = "preferred_autobyteus_run_4242";
+    const backend = await backendFactory.createBackend(
+      createPreparedConfig(preferredRunId),
+      preferredRunId,
     );
 
-    const runId = created.runId;
+    expect(backend.runId).toBe(preferredRunId);
+    expect(backend.getContext().config.memoryDir).toBe(
+      path.join(memoryDir, "agents", preferredRunId),
+    );
+    await expect(
+      fs.access(path.join(memoryDir, "agents", preferredRunId)),
+    ).resolves.toBeUndefined();
+
+    const commandResult = await backend.postUserMessage(
+      new AgentInputUserMessage("hello explicit memory"),
+    );
+    expect(commandResult.accepted).toBe(true);
+    await waitFor(() => (backend.getStatus() ?? "").toLowerCase() === "idle");
+
+    const rawTracesPath = path.join(memoryDir, "agents", preferredRunId, "raw_traces.jsonl");
+    await waitFor(async () => {
+      try {
+        const raw = await fs.readFile(rawTracesPath, "utf-8");
+        return raw.includes("hello explicit memory");
+      } catch {
+        return false;
+      }
+    });
+  });
+
+  it("restores a terminated run with the same run id", async () => {
+    const runId = generateStandaloneAgentRunId("AutoByteusBackendAgent", "Tester");
+    const created = await backendFactory.createBackend(
+      createPreparedConfig(runId),
+      runId,
+    );
+
     const firstResult = await created.postUserMessage(
       new AgentInputUserMessage("first restoreable turn"),
     );
@@ -157,6 +193,7 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
           agentDefinitionId: "def-autobyteus-backend",
           llmModelIdentifier: "dummy-model",
           autoExecuteTools: false,
+          memoryDir: path.join(memoryDir, "agents", runId),
         }),
         runtimeContext: null,
       }),
@@ -170,5 +207,17 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
     );
     expect(secondResult.accepted).toBe(true);
     await waitFor(() => (restored.getStatus() ?? "").toLowerCase() === "idle");
+  });
+
+  it("rejects fresh create when the standalone run is not fully prepared", async () => {
+    await expect(
+      backendFactory.createBackend(
+        new AgentRunConfig({
+          agentDefinitionId: "def-autobyteus-backend",
+          llmModelIdentifier: "dummy-model",
+          autoExecuteTools: false,
+        }),
+      ),
+    ).rejects.toThrow("requires a prepared preferredRunId");
   });
 });

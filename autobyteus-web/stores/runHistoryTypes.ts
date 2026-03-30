@@ -88,20 +88,16 @@ export interface TeamRunHistoryItem {
   members: TeamRunMemberHistoryItem[];
 }
 
-export interface TeamRunMetadataMemberBinding {
+export interface TeamRunMetadataMember {
   memberRouteKey: string;
   memberName: string;
   memberRunId: string;
   runtimeKind: AgentRuntimeKind;
-  runtimeReference?: {
-    runtimeKind: string;
-    sessionId?: string | null;
-    threadId?: string | null;
-    metadata?: Record<string, unknown> | null;
-  } | null;
+  platformAgentRunId?: string | null;
   agentDefinitionId: string;
   llmModelIdentifier: string;
   autoExecuteTools: boolean;
+  skillAccessMode?: SkillAccessMode | null;
   llmConfig: Record<string, unknown> | null;
   workspaceRootPath: string | null;
 }
@@ -114,7 +110,7 @@ export interface TeamRunMetadataPayload {
   runVersion: number;
   createdAt: string;
   updatedAt: string;
-  memberBindings: TeamRunMetadataMemberBinding[];
+  memberMetadata: TeamRunMetadataMember[];
 }
 
 export interface TeamRunResumeConfigPayload {

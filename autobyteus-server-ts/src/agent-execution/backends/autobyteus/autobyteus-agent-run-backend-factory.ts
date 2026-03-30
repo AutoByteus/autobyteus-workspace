@@ -1,3 +1,4 @@
+import fs from "node:fs/promises";
 import {
   AgentConfig,
   BaseAgentUserInputMessageProcessor,
@@ -122,16 +123,51 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
 
   async createBackend(
     config: AgentRunConfig,
-    _preferredRunId: string | null = null,
+    preferredRunId: string | null = null,
   ): Promise<AutoByteusAgentRunBackend> {
     const built = await this.buildAgentConfig(config);
-    const agent = this.agentFactory.createAgent(built.agentConfig) as AgentLike;
+    const runId = preferredRunId?.trim() || null;
+    if (!runId) {
+      throw new AgentCreationError(
+        "AutoByteus standalone backend creation requires a prepared preferredRunId.",
+      );
+    }
+    const memoryDir = built.resolvedRunConfig.memoryDir;
+    if (!memoryDir) {
+      throw new AgentCreationError(
+        `AutoByteus standalone backend creation for run '${runId}' requires an explicit memoryDir.`,
+      );
+    }
+    await fs.mkdir(memoryDir, { recursive: true });
+    built.agentConfig.memoryDir = memoryDir;
+    const resolvedRunConfig = new AgentRunConfig({
+      agentDefinitionId: built.resolvedRunConfig.agentDefinitionId,
+      llmModelIdentifier: built.resolvedRunConfig.llmModelIdentifier,
+      autoExecuteTools: built.resolvedRunConfig.autoExecuteTools,
+      workspaceId: built.resolvedRunConfig.workspaceId,
+      memoryDir,
+      llmConfig: built.resolvedRunConfig.llmConfig,
+      skillAccessMode: built.resolvedRunConfig.skillAccessMode,
+      runtimeKind: built.resolvedRunConfig.runtimeKind,
+      teamContext: built.resolvedRunConfig.teamContext,
+    });
+    const createAgentWithId = (
+      this.agentFactory as AgentFactoryLike & {
+        createAgentWithId?: (agentId: string, config: AgentConfig) => AgentLike;
+      }
+    ).createAgentWithId;
+    if (typeof createAgentWithId !== "function") {
+      throw new AgentCreationError(
+        "AutoByteus AgentFactory must support createAgentWithId(...) for explicit standalone run provisioning.",
+      );
+    }
+    const agent = createAgentWithId.call(this.agentFactory, runId, built.agentConfig) as AgentLike;
     agent.start?.();
     await this.waitForIdle(agent as Agent);
     return this.createBackendFromAgent(
       new AgentRunContext({
         runId: agent.agentId,
-        config,
+        config: resolvedRunConfig,
         runtimeContext: (agent as AutoByteusRuntimeAgentLike).context ?? null,
       }),
       agent as AutoByteusRuntimeAgentLike,
@@ -142,17 +178,35 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
     context: AgentRunContext<RuntimeAgentRunContext>,
   ): Promise<AutoByteusAgentRunBackend> {
     const built = await this.buildAgentConfig(context.config);
+    const memoryDir = context.config.memoryDir;
+    if (!memoryDir) {
+      throw new AgentCreationError(
+        `AutoByteus standalone restore for run '${context.runId}' requires an explicit memoryDir.`,
+      );
+    }
+    await fs.mkdir(memoryDir, { recursive: true });
+    built.agentConfig.memoryDir = memoryDir;
     const agent = this.agentFactory.restoreAgent(
       context.runId,
       built.agentConfig,
-      null,
+      memoryDir,
     ) as AgentLike;
     agent.start?.();
     await this.waitForIdle(agent as Agent);
     return this.createBackendFromAgent(
       new AgentRunContext({
         runId: agent.agentId,
-        config: context.config,
+        config: new AgentRunConfig({
+          agentDefinitionId: context.config.agentDefinitionId,
+          llmModelIdentifier: context.config.llmModelIdentifier,
+          autoExecuteTools: context.config.autoExecuteTools,
+          workspaceId: context.config.workspaceId,
+          memoryDir,
+          llmConfig: context.config.llmConfig,
+          skillAccessMode: context.config.skillAccessMode,
+          runtimeKind: context.config.runtimeKind,
+          teamContext: context.config.teamContext,
+        }),
         runtimeContext: (agent as AutoByteusRuntimeAgentLike).context ?? context.runtimeContext,
       }),
       agent as AutoByteusRuntimeAgentLike,
@@ -161,7 +215,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
 
   private async buildAgentConfig(
     options: AgentRunConfig,
-  ): Promise<{ agentConfig: AgentConfig; agentName: string; resolvedRunConfig: AgentRunConfig }> {
+  ): Promise<{ agentConfig: AgentConfig; resolvedRunConfig: AgentRunConfig }> {
     const {
       agentDefinitionId,
       llmModelIdentifier,
@@ -355,12 +409,12 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
     };
 
     return {
-      agentName: agentDef.name,
       resolvedRunConfig: new AgentRunConfig({
         agentDefinitionId,
         llmModelIdentifier,
         autoExecuteTools,
         workspaceId: workspaceInstance?.workspaceId ?? null,
+        memoryDir: options.memoryDir ?? null,
         llmConfig: llmConfig ?? null,
         skillAccessMode: skillAccessMode ?? SkillAccessMode.PRELOADED_ONLY,
         runtimeKind:
@@ -399,7 +453,6 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       removeAgent: async (runId: string) => this.agentFactory.removeAgent(runId),
     });
   }
-
   private resolveAutoByteusAgent(runId: string): AutoByteusRuntimeAgentLike | null {
     return (this.agentFactory.getAgent(runId) as AutoByteusRuntimeAgentLike | undefined) ?? null;
   }

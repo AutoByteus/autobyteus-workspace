@@ -5,6 +5,7 @@ import { MemoryFileStore } from "../../agent-memory/store/memory-file-store.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import {
   RunHistoryAgentGroup,
+  RunHistoryIndexRow,
   RunHistoryWorkspaceGroup,
   RunKnownStatus,
 } from "../domain/agent-run-history-index-types.js";

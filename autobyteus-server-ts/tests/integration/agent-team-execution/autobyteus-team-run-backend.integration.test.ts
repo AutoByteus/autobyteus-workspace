@@ -91,7 +91,7 @@ describe("AutoByteusTeamRunBackend integration", () => {
 
     expect(backend.runId).toBe("team-auto-1");
     expect(backend.runtimeKind).toBe(RuntimeKind.AUTOBYTEUS);
-    expect(backend.getRuntimeContext()).toEqual({ teamId: "team-auto-1" });
+    expect(backend.getRuntimeContext()).toBeNull();
     expect(backend.getStatus()).toBe("IDLE");
 
     const userMessage = new AgentInputUserMessage("hello team");

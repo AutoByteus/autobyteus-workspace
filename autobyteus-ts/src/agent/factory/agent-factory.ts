@@ -47,6 +47,7 @@ import { MemoryIngestToolResultProcessor } from '../tool-execution-result-proces
 import { AgentRuntime } from '../runtime/agent-runtime.js';
 import { registerTools } from '../../tools/register-tools.js';
 import { initializeLogging } from '../../utils/logger.js';
+import { generateReadableAgentId } from './agent-id.js';
 
 const normalizeExplicitMemoryDir = (value: string | null | undefined): string | null => {
   if (typeof value !== 'string') {
@@ -204,9 +205,23 @@ export class AgentFactory extends Singleton {
       throw new TypeError(`Expected AgentConfig instance, got ${String(config)}`);
     }
 
-    let agentId = `${config.name}_${config.role}_${Math.floor(Math.random() * 9000) + 1000}`;
+    let agentId = generateReadableAgentId(config.name, config.role);
     while (this.activeAgents.has(agentId)) {
-      agentId = `${config.name}_${config.role}_${Math.floor(Math.random() * 9000) + 1000}`;
+      agentId = generateReadableAgentId(config.name, config.role);
+    }
+
+    return this.createAgentWithId(agentId, config);
+  }
+
+  createAgentWithId(agentId: string, config: AgentConfig): Agent {
+    if (!(config instanceof AgentConfig)) {
+      throw new TypeError(`Expected AgentConfig instance, got ${String(config)}`);
+    }
+    if (!agentId || typeof agentId !== 'string') {
+      throw new Error('createAgentWithId requires a non-empty string agentId.');
+    }
+    if (this.activeAgents.has(agentId)) {
+      throw new Error(`Agent '${agentId}' is already active.`);
     }
 
     const runtime = this.createRuntimeWithId(agentId, config);

@@ -226,8 +226,8 @@ export const fetchTeamMemberProjections = async (params: {
 }): Promise<Map<string, TeamMemberRunProjectionPayload | null>> => {
   const projectionByMemberRouteKey = new Map<string, TeamMemberRunProjectionPayload | null>();
   await Promise.all(
-    params.metadata.memberBindings.map(async (binding) => {
-      const normalizedMemberRouteKey = params.toTeamMemberKey(binding).trim();
+    params.metadata.memberMetadata.map(async (member) => {
+      const normalizedMemberRouteKey = params.toTeamMemberKey(member).trim();
       if (!normalizedMemberRouteKey) {
         return;
       }
@@ -254,7 +254,7 @@ export const fetchTeamMemberProjections = async (params: {
         );
       } catch (projectionError) {
         console.warn(
-          `[runHistoryStore] Failed to fetch team-member projection for '${binding.memberRouteKey}'`,
+          `[runHistoryStore] Failed to fetch team-member projection for '${member.memberRouteKey}'`,
           projectionError,
         );
         projectionByMemberRouteKey.set(normalizedMemberRouteKey, null);
@@ -274,39 +274,39 @@ export const buildTeamMemberContexts = async (params: {
 }): Promise<{ members: Map<string, AgentContext>; firstWorkspaceId: string | null }> => {
   const members = new Map<string, AgentContext>();
   let firstWorkspaceId: string | null = null;
-  for (const binding of params.metadata.memberBindings) {
-    const normalizedMemberRouteKey = params.toTeamMemberKey(binding).trim();
+  for (const member of params.metadata.memberMetadata) {
+    const normalizedMemberRouteKey = params.toTeamMemberKey(member).trim();
     if (!normalizedMemberRouteKey) {
       continue;
     }
     let workspaceId: string | null = null;
-    if (binding.workspaceRootPath) {
-      workspaceId = await params.ensureWorkspaceByRootPath(binding.workspaceRootPath);
+    if (member.workspaceRootPath) {
+      workspaceId = await params.ensureWorkspaceByRootPath(member.workspaceRootPath);
       if (workspaceId && !firstWorkspaceId) {
         firstWorkspaceId = workspaceId;
       }
     }
     const memberConfig: AgentRunConfig = {
-      agentDefinitionId: binding.agentDefinitionId,
-      agentDefinitionName: binding.memberName,
-      llmModelIdentifier: binding.llmModelIdentifier,
-      runtimeKind: binding.runtimeKind || DEFAULT_AGENT_RUNTIME_KIND,
+      agentDefinitionId: member.agentDefinitionId,
+      agentDefinitionName: member.memberName,
+      llmModelIdentifier: member.llmModelIdentifier,
+      runtimeKind: member.runtimeKind || DEFAULT_AGENT_RUNTIME_KIND,
       workspaceId,
-      autoExecuteTools: binding.autoExecuteTools,
-      skillAccessMode: 'PRELOADED_ONLY',
-      llmConfig: binding.llmConfig ?? null,
+      autoExecuteTools: member.autoExecuteTools,
+      skillAccessMode: member.skillAccessMode ?? 'PRELOADED_ONLY',
+      llmConfig: member.llmConfig ?? null,
       isLocked: params.isActive,
     };
-    const memberRunId = binding.memberRunId || normalizedMemberRouteKey;
-    const projection = params.projectionByMemberRouteKey.get(params.toTeamMemberKey(binding)) || null;
+    const memberRunId = member.memberRunId || normalizedMemberRouteKey;
+    const projection = params.projectionByMemberRouteKey.get(params.toTeamMemberKey(member)) || null;
     const conversation = projection
       ? buildConversationFromProjection(
         memberRunId,
         projection.conversation || [],
         {
-          agentDefinitionId: binding.agentDefinitionId,
-          agentName: binding.memberName,
-          llmModelIdentifier: binding.llmModelIdentifier,
+          agentDefinitionId: member.agentDefinitionId,
+          agentName: member.memberName,
+          llmModelIdentifier: member.llmModelIdentifier,
         },
       )
       : {
@@ -314,9 +314,9 @@ export const buildTeamMemberContexts = async (params: {
         messages: [],
         createdAt: params.metadata.createdAt,
         updatedAt: params.metadata.updatedAt,
-        agentDefinitionId: binding.agentDefinitionId,
-        agentName: binding.memberName,
-        llmModelIdentifier: binding.llmModelIdentifier,
+        agentDefinitionId: member.agentDefinitionId,
+        agentName: member.memberName,
+        llmModelIdentifier: member.llmModelIdentifier,
       };
 
     conversation.id = `${params.teamRunId}::${normalizedMemberRouteKey}`;

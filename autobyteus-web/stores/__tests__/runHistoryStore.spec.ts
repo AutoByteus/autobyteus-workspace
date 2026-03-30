@@ -1357,7 +1357,7 @@ describe('runHistoryStore', () => {
                 runVersion: 1,
                 createdAt: '2026-01-01T00:00:00.000Z',
                 updatedAt: '2026-01-01T00:05:00.000Z',
-                memberBindings: [
+                memberMetadata: [
                   {
                     memberRouteKey: 'super_agent',
                     memberName: 'Super Agent',
@@ -1432,7 +1432,7 @@ describe('runHistoryStore', () => {
                 runVersion: 1,
                 createdAt: '2026-01-01T00:00:00.000Z',
                 updatedAt: '2026-01-01T00:05:00.000Z',
-                memberBindings: [
+                memberMetadata: [
                   {
                     memberRouteKey: 'super_agent',
                     memberName: 'Super Agent',
@@ -1501,7 +1501,7 @@ describe('runHistoryStore', () => {
                 runVersion: 1,
                 createdAt: '2026-01-01T00:00:00.000Z',
                 updatedAt: '2026-01-01T00:05:00.000Z',
-                memberBindings: [
+                memberMetadata: [
                   {
                     memberRouteKey: 'super_agent',
                     memberName: 'Super Agent',
@@ -1569,7 +1569,7 @@ describe('runHistoryStore', () => {
                 runVersion: 1,
                 createdAt: '2026-01-01T00:00:00.000Z',
                 updatedAt: '2026-01-01T00:05:00.000Z',
-                memberBindings: [
+                memberMetadata: [
                   {
                     memberRouteKey: 'super_agent',
                     memberName: 'Super Agent',

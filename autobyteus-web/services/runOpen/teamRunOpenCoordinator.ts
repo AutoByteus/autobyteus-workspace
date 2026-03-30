@@ -37,7 +37,7 @@ export const openTeamRun = async (
     focusedMemberRouteKey,
   } = await loadTeamRunContextHydrationPayload(input);
 
-  const focusedBinding = metadata.memberBindings.find((member) => {
+  const focusedBinding = metadata.memberMetadata.find((member) => {
     const routeKey = member.memberRouteKey?.trim() || member.memberName.trim();
     return routeKey === focusedMemberRouteKey;
   });
@@ -55,7 +55,7 @@ export const openTeamRun = async (
       autoExecuteTools: focusedBinding?.autoExecuteTools ?? false,
       skillAccessMode: 'PRELOADED_ONLY' as const,
       memberOverrides: Object.fromEntries(
-        metadata.memberBindings.map((member) => [
+        metadata.memberMetadata.map((member) => [
           member.memberName,
           {
             agentDefinitionId: member.agentDefinitionId,

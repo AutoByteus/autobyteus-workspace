@@ -10,6 +10,7 @@ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.j
 import { AgentTeamDefinition, TeamMember } from "../../../src/agent-team-definition/domain/models.js";
 import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
 import { AgentTeamCreationError } from "../../../src/agent-team-execution/errors.js";
+import { buildTeamMemberRunId } from "../../../src/run-history/utils/team-member-run-id.js";
 
 type ProcessorRegistry<T> = {
   getProcessor: (name: string) => T | undefined;
@@ -51,6 +52,16 @@ const makeEmptyRegistries = () => ({
 type FakeTeam = {
   teamId: string;
   currentStatus: string;
+  context: {
+    agents: Array<{
+      agentId: string;
+      context: {
+        config: {
+          name: string;
+        };
+      };
+    }>;
+  };
   start: ReturnType<typeof vi.fn>;
   postMessage: ReturnType<typeof vi.fn>;
   postToolExecutionApproval: ReturnType<typeof vi.fn>;
@@ -60,6 +71,18 @@ type FakeTeam = {
 const createFakeTeam = (teamId: string): FakeTeam => ({
   teamId,
   currentStatus: "IDLE",
+  context: {
+    agents: [
+      {
+        agentId: "Coordinator_Coordinator_1234",
+        context: {
+          config: {
+            name: "Coordinator",
+          },
+        },
+      },
+    ],
+  },
   start: vi.fn(),
   postMessage: vi.fn().mockResolvedValue(undefined),
   postToolExecutionApproval: vi.fn().mockResolvedValue(undefined),
@@ -163,6 +186,7 @@ const createSimpleConfig = (llmConfig: Record<string, unknown> | null = null) =>
     memberConfigs: [
       {
         memberName: "Coordinator",
+        memberRouteKey: "coordinator",
         agentDefinitionId: "agent-def-1",
         llmModelIdentifier: "qwen3.5",
         autoExecuteTools: false,
@@ -206,9 +230,17 @@ describe("AutoByteusTeamRunBackendFactory integration", () => {
     expect(builtConfig.name).toBe("ResearchTeam");
     expect(createdTeamId).toMatch(/^team_researchteam_[a-f0-9]{8}$/);
     expect(builtConfig.coordinatorNode.nodeDefinition).toBeInstanceOf(AgentConfig);
-    expect((builtConfig.coordinatorNode.nodeDefinition as AgentConfig).systemPrompt).toBe(
+    const coordinatorConfig = builtConfig.coordinatorNode.nodeDefinition as AgentConfig;
+    expect(coordinatorConfig.systemPrompt).toBe(
       "Think carefully and coordinate the team.",
     );
+    expect(coordinatorConfig.memoryDir).toEqual(
+      expect.stringContaining(`agent_teams/${createdTeamId}/`),
+    );
+    expect(coordinatorConfig.initialCustomData).toMatchObject({
+      member_route_key: "coordinator",
+      member_run_id: buildTeamMemberRunId(createdTeamId, "coordinator"),
+    });
 
     const createdTeam = teamFactory.createTeamWithId.mock.results[0]?.value as FakeTeam;
     expect(createdTeam.start).toHaveBeenCalledTimes(1);
@@ -217,7 +249,19 @@ describe("AutoByteusTeamRunBackendFactory integration", () => {
     expect(backend.runId).toBe(createdTeam.teamId);
     expect(backend.runtimeKind).toBe(RuntimeKind.AUTOBYTEUS);
     expect(backend.isActive()).toBe(true);
-    expect(backend.getRuntimeContext()).toEqual({ teamId: createdTeam.teamId });
+    expect(backend.getRuntimeContext()).toEqual(
+      expect.objectContaining({
+        coordinatorMemberRouteKey: null,
+        memberContexts: [
+          expect.objectContaining({
+            memberName: "Coordinator",
+            memberRouteKey: "coordinator",
+            memberRunId: buildTeamMemberRunId(createdTeamId, "coordinator"),
+            nativeAgentId: "Coordinator_Coordinator_1234",
+          }),
+        ],
+      }),
+    );
 
     await expect(
       backend.postMessage(new AgentInputUserMessage("hello"), "Coordinator"),
@@ -245,22 +289,45 @@ describe("AutoByteusTeamRunBackendFactory integration", () => {
       expect.any(AgentTeamConfig),
     );
     expect(backend.runId).toBe("team-restore-1");
-    expect(backend.getRuntimeContext()).toEqual({ teamId: "team-restore-1" });
+    expect(backend.getRuntimeContext()).toEqual(
+      expect.objectContaining({
+        coordinatorMemberRouteKey: null,
+        memberContexts: [
+          expect.objectContaining({
+            memberName: "Coordinator",
+            memberRouteKey: "coordinator",
+            memberRunId: buildTeamMemberRunId("team-restore-1", "coordinator"),
+            nativeAgentId: "Coordinator_Coordinator_1234",
+          }),
+        ],
+      }),
+    );
   });
 
-  it("creates a TeamRun and passes llmConfig through to the runtime llm factory", async () => {
+  it("creates a backend and passes llmConfig through to the runtime llm factory", async () => {
     const { factory, teamDefinitionService, agentDefinitionService, llmFactory } = createFactory();
 
     teamDefinitionService.getFreshDefinitionById.mockResolvedValue(createSimpleTeamDefinition());
     agentDefinitionService.getFreshAgentDefinitionById.mockResolvedValue(createSimpleAgentDefinition());
 
     const llmConfig = { temperature: 0.2, top_p: 0.95 };
-    const run = await factory.createTeamRun(createSimpleConfig(llmConfig));
+    const backend = await factory.createBackend(createSimpleConfig(llmConfig));
 
-    expect(run.runId).toMatch(/^team_researchteam_[a-f0-9]{8}$/);
-    expect(run.runtimeKind).toBe(RuntimeKind.AUTOBYTEUS);
-    expect(run.config?.teamDefinitionId).toBe("team-def-1");
-    expect(run.getRuntimeContext()).toEqual({ teamId: run.runId });
+    expect(backend.runId).toMatch(/^team_researchteam_[a-f0-9]{8}$/);
+    expect(backend.runtimeKind).toBe(RuntimeKind.AUTOBYTEUS);
+    expect(backend.getRuntimeContext()).toEqual(
+      expect.objectContaining({
+        coordinatorMemberRouteKey: null,
+        memberContexts: [
+          expect.objectContaining({
+            memberName: "Coordinator",
+            memberRouteKey: "coordinator",
+            memberRunId: buildTeamMemberRunId(backend.runId, "coordinator"),
+            nativeAgentId: "Coordinator_Coordinator_1234",
+          }),
+        ],
+      }),
+    );
 
     expect(llmFactory.createLLM).toHaveBeenCalledWith(
       "qwen3.5",

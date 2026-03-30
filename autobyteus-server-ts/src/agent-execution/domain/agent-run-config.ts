@@ -7,6 +7,7 @@ export class AgentRunConfig {
   readonly llmModelIdentifier: string;
   readonly autoExecuteTools: boolean;
   readonly workspaceId: string | null;
+  readonly memoryDir: string | null;
   readonly llmConfig: Record<string, unknown> | null;
   readonly skillAccessMode: SkillAccessMode;
   readonly runtimeKind: RuntimeKind;
@@ -17,6 +18,7 @@ export class AgentRunConfig {
     llmModelIdentifier: string;
     autoExecuteTools: boolean;
     workspaceId?: string | null;
+    memoryDir?: string | null;
     llmConfig?: Record<string, unknown> | null;
     skillAccessMode: SkillAccessMode;
     runtimeKind: RuntimeKind;
@@ -26,6 +28,7 @@ export class AgentRunConfig {
     this.llmModelIdentifier = input.llmModelIdentifier;
     this.autoExecuteTools = input.autoExecuteTools;
     this.workspaceId = input.workspaceId ?? null;
+    this.memoryDir = input.memoryDir ?? null;
     this.llmConfig = input.llmConfig ?? null;
     this.skillAccessMode = input.skillAccessMode;
     this.runtimeKind = input.runtimeKind;

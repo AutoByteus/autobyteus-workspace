@@ -6,6 +6,7 @@ export type AgentRunMetadata = {
   runId: string;
   agentDefinitionId: string;
   workspaceRootPath: string;
+  memoryDir: string;
   llmModelIdentifier: string;
   llmConfig: Record<string, unknown> | null;
   autoExecuteTools: boolean;

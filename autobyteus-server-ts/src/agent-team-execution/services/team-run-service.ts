@@ -29,6 +29,10 @@ import {
   SkillAccessMode,
 } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import {
+  AutoByteusTeamMemberContext,
+  AutoByteusTeamRunContext,
+} from "../backends/autobyteus/autobyteus-team-run-context.js";
+import {
   CodexTeamMemberContext,
   CodexTeamRunContext,
 } from "../backends/codex/codex-team-run-context.js";
@@ -389,7 +393,18 @@ export class TeamRunService {
       });
     }
 
-    return { teamId: metadata.teamRunId };
+    return new AutoByteusTeamRunContext({
+      coordinatorMemberRouteKey: metadata.coordinatorMemberRouteKey,
+      memberContexts: metadata.memberMetadata.map(
+        (member) =>
+          new AutoByteusTeamMemberContext({
+            memberName: member.memberName,
+            memberRouteKey: member.memberRouteKey,
+            memberRunId: member.memberRunId,
+            nativeAgentId: member.platformAgentRunId,
+          }),
+      ),
+    });
   }
 
   private async resolveMemberWorkspaceRootPath(

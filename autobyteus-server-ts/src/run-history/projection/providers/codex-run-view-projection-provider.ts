@@ -345,15 +345,15 @@ export class CodexRunViewProjectionProvider implements RunProjectionProvider {
   }
 
   async buildProjection(input: RunProjectionProviderInput): Promise<RunProjection | null> {
-    if (input.runtimeKind !== RuntimeKind.CODEX_APP_SERVER) {
+    if (input.source.runtimeKind !== RuntimeKind.CODEX_APP_SERVER) {
       return null;
     }
-    const threadId = asString(input.metadata?.platformAgentRunId);
+    const threadId = asString(input.source.platformRunId);
     if (!threadId) {
       return null;
     }
 
-    const workspaceRootPath = asString(input.metadata?.workspaceRootPath);
+    const workspaceRootPath = asString(input.source.workspaceRootPath);
     const cwd =
       workspaceRootPath && fs.existsSync(workspaceRootPath)
         ? workspaceRootPath
@@ -368,7 +368,7 @@ export class CodexRunViewProjectionProvider implements RunProjectionProvider {
     if (conversation.length === 0) {
       return null;
     }
-    return buildRunProjection(input.runId, conversation);
+    return buildRunProjection(input.source.runId, conversation);
   }
 }
 

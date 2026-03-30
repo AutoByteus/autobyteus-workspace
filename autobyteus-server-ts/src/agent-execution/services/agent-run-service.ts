@@ -1,3 +1,5 @@
+import fs from "node:fs/promises";
+import { randomUUID } from "node:crypto";
 import {
   SkillAccessMode,
   resolveSkillAccessMode,
@@ -23,6 +25,9 @@ import {
   AgentRunHistoryIndexService,
   getAgentRunHistoryIndexService,
 } from "../../run-history/services/agent-run-history-index-service.js";
+import { AgentRunMemoryLayout } from "../../agent-memory/store/agent-run-memory-layout.js";
+import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
+import { generateStandaloneAgentRunId } from "../../run-history/utils/agent-run-id-utils.js";
 
 export interface CreateAgentRunInput {
   agentDefinitionId: string;
@@ -61,6 +66,8 @@ export class AgentRunService {
   private metadataService: AgentRunMetadataService;
   private historyIndexService: AgentRunHistoryIndexService;
   private workspaceManager = getWorkspaceManager();
+  private readonly memoryLayout: AgentRunMemoryLayout;
+  private readonly agentDefinitionService: AgentDefinitionService;
 
   constructor(
     memoryDir: string,
@@ -69,14 +76,18 @@ export class AgentRunService {
       metadataService?: AgentRunMetadataService;
       historyIndexService?: AgentRunHistoryIndexService;
       workspaceManager?: ReturnType<typeof getWorkspaceManager>;
+      agentDefinitionService?: AgentDefinitionService;
     } = {},
   ) {
+    this.memoryLayout = new AgentRunMemoryLayout(memoryDir);
     this.agentRunManager = deps.agentRunManager ?? AgentRunManager.getInstance();
     this.metadataService =
       deps.metadataService ?? new AgentRunMetadataService(memoryDir);
     this.historyIndexService =
       deps.historyIndexService ?? getAgentRunHistoryIndexService();
     this.workspaceManager = deps.workspaceManager ?? getWorkspaceManager();
+    this.agentDefinitionService =
+      deps.agentDefinitionService ?? AgentDefinitionService.getInstance();
   }
 
   async terminateAgentRun(runId: string): Promise<AgentRunTerminationResult> {
@@ -133,16 +144,18 @@ export class AgentRunService {
       throw new Error(`runtimeKind '${input.runtimeKind}' is not supported.`);
     }
     const skillAccessMode = resolveSkillAccessMode(input.skillAccessMode, 0);
+    const preparedRun = await this.prepareFreshRun({
+      agentDefinitionId: input.agentDefinitionId.trim(),
+      runtimeKind,
+      workspaceId,
+      llmModelIdentifier: input.llmModelIdentifier.trim(),
+      autoExecuteTools: input.autoExecuteTools,
+      llmConfig: input.llmConfig ?? null,
+      skillAccessMode,
+    });
     const activeRun = await this.agentRunManager.createAgentRun(
-      new AgentRunConfig({
-        runtimeKind,
-        agentDefinitionId: input.agentDefinitionId.trim(),
-        llmModelIdentifier: input.llmModelIdentifier.trim(),
-        autoExecuteTools: input.autoExecuteTools,
-        workspaceId,
-        llmConfig: input.llmConfig ?? null,
-        skillAccessMode,
-      }),
+      preparedRun.config,
+      preparedRun.runId,
     );
     const runId = activeRun.runId;
 
@@ -151,10 +164,16 @@ export class AgentRunService {
       workspaceId,
     });
 
+    const preparedMemoryDir = preparedRun.config.memoryDir;
+    if (!preparedMemoryDir) {
+      throw new Error("Fresh run preparation must provide a memoryDir.");
+    }
+
     const metadata: AgentRunMetadata = {
       runId,
       agentDefinitionId: input.agentDefinitionId.trim(),
       workspaceRootPath: resolvedWorkspaceRootPath,
+      memoryDir: activeRun.config.memoryDir ?? preparedMemoryDir,
       llmModelIdentifier: input.llmModelIdentifier.trim(),
       llmConfig: input.llmConfig ?? null,
       autoExecuteTools: input.autoExecuteTools,
@@ -173,6 +192,83 @@ export class AgentRunService {
       lastActivityAt: new Date().toISOString(),
     });
     return { runId };
+  }
+
+  private async prepareFreshRun(input: {
+    agentDefinitionId: string;
+    runtimeKind: RuntimeKind;
+    workspaceId: string | null;
+    llmModelIdentifier: string;
+    autoExecuteTools: boolean;
+    llmConfig: Record<string, unknown> | null;
+    skillAccessMode: SkillAccessMode;
+  }): Promise<{ runId: string; config: AgentRunConfig }> {
+    const runId = await this.generateFreshRunId(input.runtimeKind, input.agentDefinitionId);
+    const memoryDir = this.memoryLayout.getRunDirPath(runId);
+    return {
+      runId,
+      config: new AgentRunConfig({
+        runtimeKind: input.runtimeKind,
+        agentDefinitionId: input.agentDefinitionId,
+        llmModelIdentifier: input.llmModelIdentifier,
+        autoExecuteTools: input.autoExecuteTools,
+        workspaceId: input.workspaceId,
+        memoryDir,
+        llmConfig: input.llmConfig,
+        skillAccessMode: input.skillAccessMode,
+      }),
+    };
+  }
+
+  private async generateFreshRunId(
+    runtimeKind: RuntimeKind,
+    agentDefinitionId: string,
+  ): Promise<string> {
+    if (runtimeKind !== RuntimeKind.AUTOBYTEUS) {
+      return this.generateUniqueRunId(() => randomUUID());
+    }
+
+    const definition = await this.agentDefinitionService.getFreshAgentDefinitionById(
+      agentDefinitionId,
+    );
+    if (!definition) {
+      throw new Error(
+        `AgentDefinition '${agentDefinitionId}' cannot be loaded for standalone AutoByteus run provisioning.`,
+      );
+    }
+
+    return this.generateUniqueRunId(() =>
+      generateStandaloneAgentRunId(definition.name, definition.role),
+    );
+  }
+
+  private async generateUniqueRunId(generator: () => string): Promise<string> {
+    for (let attempt = 0; attempt < 64; attempt += 1) {
+      const candidate = generator().trim();
+      if (!candidate) {
+        continue;
+      }
+      if (await this.runIdExists(candidate)) {
+        continue;
+      }
+      return candidate;
+    }
+    throw new Error("Unable to provision a unique run id.");
+  }
+
+  private async runIdExists(runId: string): Promise<boolean> {
+    if (this.agentRunManager.hasActiveRun(runId)) {
+      return true;
+    }
+    if (await this.metadataService.readMetadata(runId)) {
+      return true;
+    }
+    try {
+      await fs.access(this.memoryLayout.getRunDirPath(runId));
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   async restoreAgentRun(runId: string): Promise<RestoreAgentRunResult> {
@@ -203,6 +299,7 @@ export class AgentRunService {
           llmModelIdentifier: metadata.llmModelIdentifier,
           autoExecuteTools: metadata.autoExecuteTools,
           workspaceId: workspace.workspaceId,
+          memoryDir: metadata.memoryDir,
           llmConfig: metadata.llmConfig,
           skillAccessMode: metadata.skillAccessMode ?? SkillAccessMode.PRELOADED_ONLY,
         }),

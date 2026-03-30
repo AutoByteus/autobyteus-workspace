@@ -122,18 +122,18 @@ export class ClaudeRunViewProjectionProvider implements RunProjectionProvider {
   }
 
   async buildProjection(input: RunProjectionProviderInput): Promise<RunProjection | null> {
-    if (input.runtimeKind !== RuntimeKind.CLAUDE_AGENT_SDK) {
+    if (input.source.runtimeKind !== RuntimeKind.CLAUDE_AGENT_SDK) {
       return null;
     }
 
-    const sessionId = asString(input.metadata?.platformAgentRunId) ?? input.runId;
+    const sessionId = asString(input.source.platformRunId) ?? input.source.runId;
 
     const messages = await this.sessionManager.getSessionMessages(sessionId);
     const conversation = messages
       .map((message) => toConversationEntry(message))
       .filter((entry): entry is MemoryConversationEntry => entry !== null);
 
-    return buildRunProjection(input.runId, conversation);
+    return buildRunProjection(input.source.runId, conversation);
   }
 }
 

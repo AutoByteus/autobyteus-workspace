@@ -8,6 +8,7 @@ import type {
   RunProjectionProvider,
   RunProjectionProviderInput,
   RunProjection,
+  RunProjectionSourceDescriptor,
 } from "../projection/run-projection-types.js";
 import { buildRunProjection } from "../projection/run-projection-utils.js";
 import { AgentRunMetadataStore } from "../store/agent-run-metadata-store.js";
@@ -63,11 +64,15 @@ export class AgentRunViewProjectionService {
     const runtimeKind =
       runtimeKindFromString(metadata?.runtimeKind, RuntimeKind.AUTOBYTEUS) ??
       RuntimeKind.AUTOBYTEUS;
-    const providerInput: RunProjectionProviderInput = {
+    const source: RunProjectionSourceDescriptor = {
       runId,
       runtimeKind,
+      workspaceRootPath: metadata?.workspaceRootPath ?? null,
+      memoryDir: metadata?.memoryDir ?? null,
+      platformRunId: metadata?.platformAgentRunId ?? null,
       metadata,
     };
+    const providerInput: RunProjectionProviderInput = { source };
 
     const primaryProvider = this.providerRegistry.resolveProvider(runtimeKind);
     const fallbackProvider = this.providerRegistry.resolveFallbackProvider();
@@ -109,7 +114,7 @@ export class AgentRunViewProjectionService {
       return await provider.buildProjection(input);
     } catch (error) {
       logger.warn(
-        `[AgentRunViewProjectionService] ${mode} projection failed for run '${input.runId}' (${provider.runtimeKind ?? RuntimeKind.AUTOBYTEUS}): ${String(error)}`,
+        `[AgentRunViewProjectionService] ${mode} projection failed for run '${input.source.runId}' (${provider.runtimeKind ?? RuntimeKind.AUTOBYTEUS}): ${String(error)}`,
       );
       return null;
     }

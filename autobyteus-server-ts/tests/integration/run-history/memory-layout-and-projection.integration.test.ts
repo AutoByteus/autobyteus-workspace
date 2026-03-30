@@ -57,9 +57,13 @@ const createActiveRun = (input: {
   runId: string;
   runtimeKind: RuntimeKind;
   platformAgentRunId: string | null;
+  memoryDir?: string | null;
 }) => ({
   runId: input.runId,
   runtimeKind: input.runtimeKind,
+  config: {
+    memoryDir: input.memoryDir ?? null,
+  },
   getPlatformAgentRunId: vi.fn().mockReturnValue(input.platformAgentRunId),
   terminate: vi.fn().mockResolvedValue({ accepted: true }),
 });
@@ -156,10 +160,12 @@ describe("memory layout and projection integration", () => {
             runId,
             runtimeKind,
             platformAgentRunId,
+            memoryDir: path.join(memoryDir, "agents", runId),
           }),
         ),
         getActiveRun: vi.fn().mockReturnValue(null),
         restoreAgentRun: vi.fn(),
+        hasActiveRun: vi.fn().mockReturnValue(false),
       };
       const metadataService = new AgentRunMetadataService(memoryDir);
       const historyIndexService = new AgentRunHistoryIndexService(memoryDir, {
@@ -184,6 +190,12 @@ describe("memory layout and projection integration", () => {
             getBasePath: () => workspaceRootPath,
           }),
         } as never,
+        agentDefinitionService: {
+          getFreshAgentDefinitionById: vi.fn().mockResolvedValue({
+            name: "Projection Agent",
+            role: "Tester",
+          }),
+        } as never,
       });
 
       await service.createAgentRun({
@@ -206,6 +218,7 @@ describe("memory layout and projection integration", () => {
       ) as Record<string, unknown> | undefined;
 
       expect(metadata.runtimeKind).toBe(runtimeKind);
+      expect(metadata.memoryDir).toBe(path.join(memoryDir, "agents", runId));
       expect(metadata.platformAgentRunId).toBe(platformAgentRunId);
       expect(metadata.workspaceRootPath).toBe(workspaceRootPath);
       expect(row).toBeTruthy();
@@ -225,6 +238,7 @@ describe("memory layout and projection integration", () => {
         runId,
         agentDefinitionId: "agent-def-1",
         workspaceRootPath: "/tmp/agent-projection-workspace",
+        memoryDir: runDir,
         llmModelIdentifier: "model-1",
         llmConfig: null,
         autoExecuteTools: true,
