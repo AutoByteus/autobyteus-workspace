@@ -1,8 +1,3 @@
-import {
-  getTeamRuntimeEventBridge,
-  type TeamRuntimeBridgeStatusSnapshot,
-  type TeamRuntimeEventBridge,
-} from "./team-runtime-event-bridge.js";
 import { ServerMessage, ServerMessageType } from "./models.js";
 
 type TeamLike = Record<string, unknown>;
@@ -28,6 +23,24 @@ export interface TeamRuntimeStatusSnapshot {
   currentStatus: string | null;
   members: TeamRuntimeMemberStatusSnapshot[];
 }
+
+export interface TeamRuntimeBridgeStatusSnapshot {
+  teamRunId: string;
+  currentStatus: string | null;
+  members: TeamRuntimeMemberStatusSnapshot[];
+}
+
+export interface TeamRuntimeEventBridge {
+  getCurrentStatusSnapshot(teamRunId: string): TeamRuntimeBridgeStatusSnapshot;
+}
+
+const getNoopTeamRuntimeEventBridge = (): TeamRuntimeEventBridge => ({
+  getCurrentStatusSnapshot: (teamRunId) => ({
+    teamRunId,
+    currentStatus: null,
+    members: [],
+  }),
+});
 
 const asNonEmptyString = (value: unknown): string | null =>
   typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
@@ -100,10 +113,8 @@ const toInitialMessages = (snapshot: TeamRuntimeStatusSnapshot): ServerMessage[]
 
 export class TeamRuntimeStatusSnapshotService {
   constructor(
-    private readonly teamMemberRuntimeEventBridge: Pick<
-      TeamRuntimeEventBridge,
-      "getCurrentStatusSnapshot"
-    > = getTeamRuntimeEventBridge(),
+    private readonly teamMemberRuntimeEventBridge: TeamRuntimeEventBridge =
+      getNoopTeamRuntimeEventBridge(),
   ) {}
 
   getSnapshot(input: {

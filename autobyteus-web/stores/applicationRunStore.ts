@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { getApolloClient } from '~/utils/apolloClient'
 import { v4 as uuidv4 } from 'uuid';
 import { useApplicationContextStore } from './applicationContextStore';
-import { SendMessageToTeam, TerminateAgentTeamRun } from '~/graphql/mutations/agentTeamRunMutations';
+import { CreateAgentTeamRun, TerminateAgentTeamRun } from '~/graphql/mutations/agentTeamRunMutations';
 import type { ApplicationLaunchConfig, ApplicationRunContext } from '~/types/application/ApplicationRun';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import { AgentContext } from '~/types/agent/AgentContext';
@@ -11,19 +11,24 @@ import { DEFAULT_AGENT_RUNTIME_KIND, type AgentRunConfig } from '~/types/agent/A
 import type { Conversation } from '~/types/conversation';
 import type {
   TeamMemberConfigInput,
-  ContextFileType,
 } from '~/generated/graphql';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import { useApplicationLaunchProfileStore } from './applicationLaunchProfileStore';
 import type { ApplicationLaunchProfile } from '~/types/application/ApplicationLaunchProfile';
-import { TeamStreamingService } from '~/services/agentStreaming';
+import { ConnectionState, TeamStreamingService } from '~/services/agentStreaming';
 import type { TeamRunConfig, MemberConfigOverride } from '~/types/agent/TeamRunConfig';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
+import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
+import { normalizeMemberRouteKey, resolveLeafTeamMembers } from '~/utils/teamDefinitionMembers';
 
 
 function _resolveAgentLlmConfig(profile: ApplicationLaunchProfile): Record<string, string> {
   const finalConfig: Record<string, string> = {};
-  const agentMembers = profile.teamDefinition.nodes.filter(n => n.refType === 'AGENT');
+  const teamDefinitionStore = useAgentTeamDefinitionStore();
+  const agentMembers = resolveLeafTeamMembers(profile.teamDefinition, {
+    getTeamDefinitionById: (teamDefinitionId: string) =>
+      teamDefinitionStore.getAgentTeamDefinitionById(teamDefinitionId),
+  });
 
   for (const member of agentMembers) {
     finalConfig[member.memberName] = 
@@ -35,31 +40,35 @@ function _resolveAgentLlmConfig(profile: ApplicationLaunchProfile): Record<strin
 function _resolveApplicationMemberConfigs(
   profile: ApplicationLaunchProfile
 ): TeamMemberConfigInput[] {
+  const teamDefinitionStore = useAgentTeamDefinitionStore();
   const resolvedLlmConfig = _resolveAgentLlmConfig(profile);
+  const leafMembers = resolveLeafTeamMembers(profile.teamDefinition, {
+    getTeamDefinitionById: (teamDefinitionId: string) =>
+      teamDefinitionStore.getAgentTeamDefinitionById(teamDefinitionId),
+  });
   
-  return profile.teamDefinition.nodes
-    .filter(n => n.refType === 'AGENT')
-    .map(memberNode => ({
-      memberName: memberNode.memberName,
-      llmModelIdentifier: resolvedLlmConfig[memberNode.memberName],
+  return leafMembers
+    .map((member) => ({
+      memberName: member.memberName,
+      memberRouteKey: member.memberRouteKey,
+      agentDefinitionId: member.agentDefinitionId,
+      runtimeKind: DEFAULT_AGENT_RUNTIME_KIND,
+      llmModelIdentifier: resolvedLlmConfig[member.memberName],
       workspaceId: null,
       autoExecuteTools: true,
+      skillAccessMode: 'PRELOADED_ONLY' as const,
     }));
 }
 
 // Maintain a map of streaming services per application team
 const applicationStreamingServices = new Map<string, TeamStreamingService>();
 
-interface SendMessageToTeamMutationPayload {
-  sendMessageToTeam?: {
+interface CreateAgentTeamRunMutationPayload {
+  createAgentTeamRun?: {
     success?: boolean;
     message?: string;
     teamRunId?: string | null;
   } | null;
-}
-
-interface SendMessageToTeamMutationVariablesPayload {
-  input: Record<string, unknown>;
 }
 
 export const useApplicationRunStore = defineStore('applicationRun', {
@@ -99,16 +108,21 @@ export const useApplicationRunStore = defineStore('applicationRun', {
         if (!profile) {
           throw new Error(`Application launch profile with ID ${profileId} not found.`);
         }
+        const teamDefinitionStore = useAgentTeamDefinitionStore();
+        const leafMembers = resolveLeafTeamMembers(profile.teamDefinition, {
+          getTeamDefinitionById: (teamDefinitionId: string) =>
+            teamDefinitionStore.getAgentTeamDefinitionById(teamDefinitionId),
+        });
 
         const applicationRunId = uuidv4();
         const temporaryTeamRunId = `temp-app-team-${Date.now()}`;
 
         const memberOverrides: Record<string, MemberConfigOverride> = {};
         for (const [memberName, modelId] of Object.entries(profile.memberLlmConfigOverrides)) {
-          const node = profile.teamDefinition.nodes.find(n => n.memberName === memberName);
-          if (!node || node.refType !== 'AGENT') continue;
+          const node = leafMembers.find((member) => member.memberName === memberName);
+          if (!node) continue;
           memberOverrides[memberName] = {
-            agentDefinitionId: node.ref,
+            agentDefinitionId: node.agentDefinitionId,
             llmModelIdentifier: modelId,
           };
         }
@@ -120,24 +134,25 @@ export const useApplicationRunStore = defineStore('applicationRun', {
           workspaceId: null,
           llmModelIdentifier: profile.globalLlmModelIdentifier,
           autoExecuteTools: true,
+          skillAccessMode: 'PRELOADED_ONLY',
           memberOverrides,
           isLocked: false,
         };
 
         const resolvedLlmConfig = _resolveAgentLlmConfig(profile);
         const members = new Map<string, AgentContext>();
-        for (const agentNode of profile.teamDefinition.nodes.filter(n => n.refType === 'AGENT')) {
-          const memberName = agentNode.memberName;
+        for (const member of leafMembers) {
+          const memberName = member.memberName;
           const conversation: Conversation = {
-            id: `${temporaryTeamRunId}::${memberName}`,
+            id: `${temporaryTeamRunId}::${member.memberRouteKey}`,
             messages: [],
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
-            agentDefinitionId: agentNode.ref,
+            agentDefinitionId: member.agentDefinitionId,
           };
           const agentState = new AgentRunState(conversation.id, conversation);
           const agentConfig: AgentRunConfig = {
-            agentDefinitionId: agentNode.ref,
+            agentDefinitionId: member.agentDefinitionId,
             agentDefinitionName: memberName,
             workspaceId: null,
             llmModelIdentifier: resolvedLlmConfig[memberName],
@@ -146,14 +161,19 @@ export const useApplicationRunStore = defineStore('applicationRun', {
             skillAccessMode: 'PRELOADED_ONLY',
             isLocked: true,
           };
-          members.set(memberName, new AgentContext(agentConfig, agentState));
+          members.set(member.memberRouteKey, new AgentContext(agentConfig, agentState));
         }
+        const coordinatorMemberRouteKey = normalizeMemberRouteKey(
+          profile.teamDefinition.coordinatorMemberName,
+        );
         
         const teamContext: AgentTeamContext = {
           teamRunId: temporaryTeamRunId,
           config: teamRunConfig,
           members: members,
-          focusedMemberName: profile.teamDefinition.coordinatorMemberName,
+          focusedMemberName: members.has(coordinatorMemberRouteKey)
+            ? coordinatorMemberRouteKey
+            : (members.keys().next().value || ''),
           currentStatus: AgentTeamStatus.Uninitialized,
           isSubscribed: false,
           unsubscribe: undefined,
@@ -197,58 +217,70 @@ export const useApplicationRunStore = defineStore('applicationRun', {
       const isTemporary = teamContext.teamRunId.startsWith('temp-');
 
       try {
-        const client = getApolloClient()
         const appProfileStore = useApplicationLaunchProfileStore();
         const profile = appProfileStore.profiles[runContext.launchProfileId];
         if (!profile) throw new Error(`Launch profile ${runContext.launchProfileId} not found for sending message.`);
-        
-        const memberConfigsForApi = isTemporary 
-          ? _resolveApplicationMemberConfigs(profile) 
-          : undefined;
-
-        const variables: SendMessageToTeamMutationVariablesPayload = {
-          input: {
-            userInput: { content: text, contextFiles: contextPaths.map(cf => ({ path: cf.path, type: cf.type.toUpperCase() as ContextFileType })) },
-            teamRunId: isTemporary ? null : teamContext.teamRunId,
-            targetMemberName: teamContext.focusedMemberName,
-            teamDefinitionId: isTemporary ? profile.teamDefinition.id : undefined,
-            memberConfigs: memberConfigsForApi,
-          }
-        };
-
-        const { data, errors } = await client.mutate<
-          SendMessageToTeamMutationPayload,
-          SendMessageToTeamMutationVariablesPayload
-        >({
-          mutation: SendMessageToTeam,
-          variables,
-        });
-
-        if (errors && errors.length > 0) {
-          throw new Error(errors.map(e => e.message).join(', '));
-        }
-
-        const permanentTeamRunId = data?.sendMessageToTeam?.teamRunId;
-
-        if (!data?.sendMessageToTeam?.success || !permanentTeamRunId) {
-          throw new Error(data?.sendMessageToTeam?.message || 'Failed to send message.');
-        }
-
         if (isTemporary) {
-          appContextStore.promoteTemporaryTeamRunId(applicationRunId, permanentTeamRunId);
-          this.connectToApplicationStream(applicationRunId);
+          const client = getApolloClient()
+          const { data, errors } = await client.mutate<CreateAgentTeamRunMutationPayload>({
+            mutation: CreateAgentTeamRun,
+            variables: {
+              input: {
+                teamDefinitionId: profile.teamDefinition.id,
+                memberConfigs: _resolveApplicationMemberConfigs(profile),
+              },
+            },
+          });
+
+          if (errors && errors.length > 0) {
+            throw new Error(errors.map((e: { message: string }) => e.message).join(', '));
+          }
+
+          const result = data?.createAgentTeamRun;
+          if (!result) {
+            throw new Error('Failed to create team run: No response returned.');
+          }
+          if (!result.success || !result.teamRunId) {
+            throw new Error(result.message || 'Failed to create team run.');
+          }
+
+          appContextStore.promoteTemporaryTeamRunId(applicationRunId, result.teamRunId);
         }
+
+        const service = await this.ensureApplicationStreamConnected(applicationRunId);
+        const streamPayload = partitionContextPaths(contextPaths);
+        service.sendMessage(
+          text,
+          teamContext.focusedMemberName,
+          streamPayload.contextFilePaths,
+          streamPayload.imageUrls,
+        );
       } catch (error: any) {
         throw new Error(`Failed to send message: ${error.message}`);
       }
     },
 
-    connectToApplicationStream(applicationRunId: string) {
+    connectToApplicationStream(applicationRunId: string): TeamStreamingService | null {
       const appContextStore = useApplicationContextStore();
       const runContext = appContextStore.getRun(applicationRunId);
-      if (!runContext || runContext.teamContext.isSubscribed) return;
+      if (!runContext) return null;
 
       const { teamContext } = runContext;
+      const existingService = applicationStreamingServices.get(teamContext.teamRunId);
+      if (existingService) {
+        existingService.attachContext(teamContext);
+        teamContext.unsubscribe = () => {
+          existingService.disconnect();
+          applicationStreamingServices.delete(teamContext.teamRunId);
+        };
+        if (existingService.connectionState === ConnectionState.DISCONNECTED) {
+          existingService.connect(teamContext.teamRunId, teamContext);
+          teamContext.isSubscribed = true;
+        } else {
+          teamContext.isSubscribed = true;
+        }
+        return existingService;
+      }
 
       const windowNodeContextStore = useWindowNodeContextStore();
       const wsEndpoint = windowNodeContextStore.getBoundEndpoints().teamWs;
@@ -263,6 +295,28 @@ export const useApplicationRunStore = defineStore('applicationRun', {
       };
 
       service.connect(teamContext.teamRunId, teamContext);
+      return service;
+    },
+
+    async ensureApplicationStreamConnected(applicationRunId: string): Promise<TeamStreamingService> {
+      const service = this.connectToApplicationStream(applicationRunId);
+      if (!service) {
+        throw new Error(`Unable to connect application stream for run '${applicationRunId}'.`);
+      }
+      const isConnected = () => service.connectionState === ConnectionState.CONNECTED;
+      if (isConnected()) {
+        return service;
+      }
+
+      const timeoutAt = Date.now() + 10000;
+      while (Date.now() < timeoutAt) {
+        if (isConnected()) {
+          return service;
+        }
+        await new Promise((resolve) => setTimeout(resolve, 50));
+      }
+
+      throw new Error(`Timed out waiting for application team stream connection for run '${applicationRunId}'.`);
     },
 
     async terminateApplication(applicationRunId: string) {
@@ -291,3 +345,23 @@ export const useApplicationRunStore = defineStore('applicationRun', {
     }
   },
 });
+
+const partitionContextPaths = (
+  contextPaths: { path: string; type: string }[],
+): { contextFilePaths: string[]; imageUrls: string[] } => {
+  const contextFilePaths: string[] = [];
+  const imageUrls: string[] = [];
+
+  for (const contextPath of contextPaths) {
+    if (!contextPath.path) {
+      continue;
+    }
+    if (contextPath.type.toUpperCase() === 'IMAGE') {
+      imageUrls.push(contextPath.path);
+      continue;
+    }
+    contextFilePaths.push(contextPath.path);
+  }
+
+  return { contextFilePaths, imageUrls };
+};

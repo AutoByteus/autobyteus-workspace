@@ -92,8 +92,8 @@ export class ExternalChannelLaunchPresetGql {
   @Field(() => Boolean)
   autoExecuteTools!: boolean;
 
-  @Field(() => SkillAccessMode, { nullable: true })
-  skillAccessMode?: SkillAccessMode | null;
+  @Field(() => SkillAccessMode)
+  skillAccessMode!: SkillAccessMode;
 
   @Field(() => GraphQLJSONObject, { nullable: true })
   llmConfig?: Record<string, unknown> | null;
@@ -113,8 +113,8 @@ export class ExternalChannelLaunchPresetInput {
   @Field(() => Boolean, { nullable: true })
   autoExecuteTools?: boolean | null;
 
-  @Field(() => SkillAccessMode, { nullable: true })
-  skillAccessMode?: SkillAccessMode | null;
+  @Field(() => SkillAccessMode)
+  skillAccessMode!: SkillAccessMode;
 
   @Field(() => GraphQLJSONObject, { nullable: true })
   llmConfig?: Record<string, unknown> | null;
@@ -134,6 +134,9 @@ export class ExternalChannelTeamLaunchPresetGql {
   @Field(() => Boolean)
   autoExecuteTools!: boolean;
 
+  @Field(() => SkillAccessMode)
+  skillAccessMode!: SkillAccessMode;
+
   @Field(() => GraphQLJSONObject, { nullable: true })
   llmConfig?: Record<string, unknown> | null;
 }
@@ -151,6 +154,9 @@ export class ExternalChannelTeamLaunchPresetInput {
 
   @Field(() => Boolean, { nullable: true })
   autoExecuteTools?: boolean | null;
+
+  @Field(() => SkillAccessMode)
+  skillAccessMode!: SkillAccessMode;
 
   @Field(() => GraphQLJSONObject, { nullable: true })
   llmConfig?: Record<string, unknown> | null;

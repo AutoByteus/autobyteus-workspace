@@ -113,7 +113,6 @@ The runtime transport is concrete (`codex app-server` JSON-RPC client + per-run 
 | C-014 | Add/Modify | `src/services/agent-streaming/runtime-event-message-mapper.ts` | same | Generic stream-event mapper for core/autobyteus events plus Codex-adapter delegation. |
 | C-015 | Modify | `src/run-history/services/run-history-service.ts` | same | Runtime activity/status tracking and active-runtime detection. |
 | C-016 | Add | N/A | `src/run-history/services/runtime-manifest-migration-service.ts` | Manifest migration/validation for runtime fields. |
-| C-017 | Add | N/A | `src/run-history/services/active-run-override-policy.ts` | Active-run override decision policy. |
 | C-018 | Add | N/A | `src/runtime-execution/codex-app-server/codex-app-server-client.ts` | `codex app-server` JSON-RPC process client. |
 | C-019 | Add | N/A | `src/runtime-execution/codex-app-server/codex-app-server-runtime-service.ts` | Per-run Codex thread/session lifecycle + approval tracking + model/list integration. |
 | C-020 | Add | N/A | `src/runtime-management/model-catalog/runtime-model-catalog-service.ts` + providers | Runtime-scoped model listing/reload facade. |
@@ -318,7 +317,7 @@ The runtime transport is concrete (`codex app-server` JSON-RPC client + per-run 
 1. Runtime notification arrives with either canonical slash method or legacy alias method.
 2. `RunHistoryService.onRuntimeEvent(...)` resolves method through shared canonical normalizer.
 3. Lifecycle status derivation branches on canonical value (`turn/started`, `turn/completed`, `error`).
-4. `RunHistoryIndexStore` receives deterministic status transitions independent of method alias format.
+4. `AgentRunHistoryIndexStore` receives deterministic status transitions independent of method alias format.
 
 ## Use-Case Coverage Matrix
 

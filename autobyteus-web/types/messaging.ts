@@ -66,7 +66,7 @@ export interface ExternalChannelLaunchPresetModel {
   llmModelIdentifier: string;
   runtimeKind: AgentRuntimeKind;
   autoExecuteTools: boolean;
-  skillAccessMode: SkillAccessMode | null;
+  skillAccessMode: SkillAccessMode;
   llmConfig: Record<string, unknown> | null;
 }
 
@@ -75,6 +75,7 @@ export interface ExternalChannelTeamLaunchPresetModel {
   llmModelIdentifier: string;
   runtimeKind: AgentRuntimeKind;
   autoExecuteTools: boolean;
+  skillAccessMode: SkillAccessMode;
   llmConfig: Record<string, unknown> | null;
 }
 

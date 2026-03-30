@@ -5,7 +5,7 @@ import type { ModelInfo } from "autobyteus-ts/llm/models.js";
 import { LLMProvider } from "autobyteus-ts/llm/providers.js";
 import type { AudioModel } from "autobyteus-ts/multimedia/audio/audio-model.js";
 import type { ImageModel } from "autobyteus-ts/multimedia/image/image-model.js";
-import { getRuntimeModelCatalogService } from "../../../runtime-management/model-catalog/runtime-model-catalog-service.js";
+import { getModelCatalogService } from "../../../llm-management/services/model-catalog-service.js";
 
 const GEMINI_SETUP_MODES = {
   AI_STUDIO: "AI_STUDIO",
@@ -157,7 +157,7 @@ const clearGeminiModeFields = (mode: GeminiSetupMode): void => {
 @Resolver()
 export class LlmProviderResolver {
   private get runtimeModelCatalogService() {
-    return getRuntimeModelCatalogService();
+    return getModelCatalogService();
   }
 
   @Query(() => String, { nullable: true })

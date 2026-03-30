@@ -520,7 +520,7 @@ Inference:
 
 ### 19. Team-member ownership lookup still falls back to per-run filesystem scans, which is too expensive for a backend-owned active-runtime registry
 
-- `RunOwnershipResolutionService.resolveOwnership(...)` uses `TeamMemberRunManifestStore.findManifestByMemberRunId(...)` to decide whether an active agent run actually belongs to a team.
+- `RunOwnershipResolutionService.resolveOwnership(...)` uses `TeamMemberAgentRunManifestStore.findManifestByMemberRunId(...)` to decide whether an active agent run actually belongs to a team.
   - Evidence: `autobyteus-server-ts/src/run-history/services/run-ownership-resolution-service.ts`
 - `findManifestByMemberRunId(...)` currently scans every team directory under `memory/agent_teams` and attempts to read one manifest path per team for every lookup miss.
   - Evidence: `autobyteus-server-ts/src/run-history/store/team-member-run-manifest-store.ts`

@@ -56,6 +56,7 @@ const toGraphqlTeamLaunchPreset = (
     llmModelIdentifier: preset.llmModelIdentifier,
     runtimeKind: preset.runtimeKind,
     autoExecuteTools: preset.autoExecuteTools,
+    skillAccessMode: preset.skillAccessMode,
     llmConfig: preset.llmConfig,
   };
 };

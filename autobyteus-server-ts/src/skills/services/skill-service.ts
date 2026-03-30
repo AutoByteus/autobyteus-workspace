@@ -253,6 +253,30 @@ export class SkillService {
     return skill;
   }
 
+  getSkills(skillNames: string[]): Skill[] {
+    const skills: Skill[] = [];
+
+    for (const rawSkillName of skillNames) {
+      const skillName =
+        typeof rawSkillName === "string" && rawSkillName.trim().length > 0
+          ? rawSkillName.trim()
+          : null;
+      if (!skillName) {
+        continue;
+      }
+
+      const skill = this.getSkill(skillName);
+      if (!skill) {
+        logger.warn(`Skill '${skillName}' could not be resolved via SkillService. Skipping.`);
+        continue;
+      }
+
+      skills.push(skill);
+    }
+
+    return skills;
+  }
+
   createSkill(name: string, description: string, content: string): Skill {
     if (!name || !/^[A-Za-z0-9_-]+$/.test(name)) {
       throw new Error(`Invalid skill name: ${name}`);

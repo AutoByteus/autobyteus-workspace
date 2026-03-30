@@ -22,7 +22,7 @@ import { NodeSyncResolver } from "./types/node-sync.js";
 import { NodeSyncControlResolver } from "./types/node-sync-control.js";
 import { RunHistoryResolver } from "./types/run-history.js";
 import { TeamRunHistoryResolver } from "./types/team-run-history.js";
-import { RuntimeCapabilityResolver } from "./types/runtime-capability.js";
+import { RuntimeAvailabilityResolver } from "./types/runtime-availability.js";
 import { DefinitionSourceResolver } from "./types/definition-sources.js";
 import { ManagedMessagingGatewayResolver } from "./types/managed-messaging-gateway.js";
 import { DateTimeScalar } from "./scalars/date-time.js";
@@ -53,7 +53,7 @@ export async function buildGraphqlSchema() {
       NodeSyncControlResolver,
       RunHistoryResolver,
       TeamRunHistoryResolver,
-      RuntimeCapabilityResolver,
+      RuntimeAvailabilityResolver,
       DefinitionSourceResolver,
       ManagedMessagingGatewayResolver,
     ],

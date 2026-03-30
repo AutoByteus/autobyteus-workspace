@@ -10,13 +10,13 @@ describe("TeamRuntimeEventBridge", () => {
     ];
     const codexAdapter = {
       subscribeToRunEvents: vi.fn((_: string, onEvent: (event: unknown) => void) => {
-        onEvent({ method: "turn.started" });
+        onEvent({ method: "turn/started" });
         return () => {};
       }),
     };
     const claudeAdapter = {
       subscribeToRunEvents: vi.fn((_: string, onEvent: (event: unknown) => void) => {
-        onEvent({ method: "turn.completed" });
+        onEvent({ method: "turn/completed" });
         return () => {};
       }),
     };
@@ -48,11 +48,11 @@ describe("TeamRuntimeEventBridge", () => {
     expect(runtimeAdapterRegistry.resolveAdapter).toHaveBeenCalledWith("claude_agent_sdk");
     expect(runtimeEventMessageMapper.mapForRuntime).toHaveBeenCalledWith(
       "codex_app_server",
-      { method: "turn.started" },
+      { method: "turn/started" },
     );
     expect(runtimeEventMessageMapper.mapForRuntime).toHaveBeenCalledWith(
       "claude_agent_sdk",
-      { method: "turn.completed" },
+      { method: "turn/completed" },
     );
     expect(onMessage).toHaveBeenCalledTimes(2);
     expect(onMessage).toHaveBeenNthCalledWith(

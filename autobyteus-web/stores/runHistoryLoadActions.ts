@@ -1,33 +1,42 @@
 import { getApolloClient } from '~/utils/apolloClient';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { useWorkspaceStore } from '~/stores/workspace';
+import { useAgentContextsStore } from '~/stores/agentContextsStore';
+import { useAgentRunStore } from '~/stores/agentRunStore';
+import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
+import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import {
-  ListRunHistory,
-  ListTeamRunHistory,
+  ListWorkspaceRunHistory,
 } from '~/graphql/queries/runHistoryQueries';
 import type {
-  ListRunHistoryQueryData,
-  ListTeamRunHistoryQueryData,
+  ListWorkspaceRunHistoryQueryData,
   RunHistoryWorkspaceGroup,
   RunResumeConfigPayload,
-  TeamRunHistoryItem,
   TeamRunResumeConfigPayload,
 } from '~/stores/runHistoryTypes';
 import {
   buildNextAgentAvatarIndex,
 } from '~/stores/runHistoryStoreSupport';
 import {
+  findAgentNameByRunId,
   normalizeRootPath,
 } from '~/stores/runHistoryReadModel';
 import {
-  openRunWithCoordinator,
-} from '~/services/runOpen/runOpenCoordinator';
+  openAgentRun,
+} from '~/services/runOpen/agentRunOpenCoordinator';
+import { hydrateLiveRunContext } from '~/services/runHydration/runContextHydrationService';
+import { hydrateLiveTeamRunContext } from '~/services/runHydration/teamRunContextHydrationService';
+import { AgentStatus } from '~/types/agent/AgentStatus';
+import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
+import {
+  normalizeAgentRuntimeStatus,
+  normalizeTeamRuntimeStatus,
+} from '~/services/runHydration/runtimeStatusNormalization';
 
 interface RunHistoryFetchStoreLike {
   loading: boolean;
   error: string | null;
   workspaceGroups: RunHistoryWorkspaceGroup[];
-  teamRuns: TeamRunHistoryItem[];
   agentAvatarByDefinitionId: Record<string, string>;
   resumeConfigByRunId: Record<string, RunResumeConfigPayload>;
   teamResumeConfigByTeamRunId: Record<string, TeamRunResumeConfigPayload>;
@@ -58,31 +67,22 @@ export const fetchRunHistoryTree = async (
     }
 
     const client = getApolloClient();
-    const [agentHistoryResult, teamHistoryResult] = await Promise.all([
-      client.query<ListRunHistoryQueryData>({
-        query: ListRunHistory,
-        variables: { limitPerAgent },
-        fetchPolicy: 'network-only',
-      }),
-      client.query<ListTeamRunHistoryQueryData>({
-        query: ListTeamRunHistory,
-        fetchPolicy: 'network-only',
-      }),
-    ]);
+    const workspaceHistoryResult = await client.query<ListWorkspaceRunHistoryQueryData>({
+      query: ListWorkspaceRunHistory,
+      variables: { limitPerAgent },
+      fetchPolicy: 'network-only',
+    });
 
-    if (agentHistoryResult.errors && agentHistoryResult.errors.length > 0) {
-      throw new Error(agentHistoryResult.errors.map((error: { message: string }) => error.message).join(', '));
-    }
-    if (teamHistoryResult.errors && teamHistoryResult.errors.length > 0) {
-      throw new Error(teamHistoryResult.errors.map((error: { message: string }) => error.message).join(', '));
+    if (workspaceHistoryResult.errors && workspaceHistoryResult.errors.length > 0) {
+      throw new Error(workspaceHistoryResult.errors.map((error: { message: string }) => error.message).join(', '));
     }
 
-    store.workspaceGroups = agentHistoryResult.data?.listRunHistory || [];
-    store.teamRuns = teamHistoryResult.data?.listTeamRunHistory || [];
+    store.workspaceGroups = workspaceHistoryResult.data?.listWorkspaceRunHistory || [];
     store.agentAvatarByDefinitionId = await buildNextAgentAvatarIndex(
       store.agentAvatarByDefinitionId,
       { loadDefinitionsIfNeeded: true },
     );
+    await reconcileDiscoveredActiveRuns(store);
   } catch (error: any) {
     if (!quiet) {
       store.error = error?.message || 'Failed to load run history.';
@@ -90,6 +90,126 @@ export const fetchRunHistoryTree = async (
   } finally {
     if (!quiet) {
       store.loading = false;
+    }
+  }
+};
+
+const listActiveAgentRunIds = (
+  workspaceGroups: RunHistoryWorkspaceGroup[],
+): Set<string> =>
+  new Set(
+    workspaceGroups.flatMap((workspaceGroup) =>
+      workspaceGroup.agents.flatMap((agentGroup) =>
+        agentGroup.runs
+          .filter((run) => run.isActive)
+          .map((run) => run.runId.trim())
+          .filter(Boolean),
+      ),
+    ),
+  );
+
+const listActiveTeamRunIds = (
+  workspaceGroups: RunHistoryWorkspaceGroup[],
+): Set<string> =>
+  new Set(
+    workspaceGroups.flatMap((workspaceGroup) =>
+      workspaceGroup.teamRuns
+        .filter((teamRun) => teamRun.isActive)
+        .map((teamRun) => teamRun.teamRunId.trim())
+        .filter(Boolean),
+    ),
+  );
+
+const reconcileDiscoveredActiveRuns = async (
+  store: RunHistoryFetchStoreLike,
+): Promise<void> => {
+  const activeAgentRunIds = listActiveAgentRunIds(store.workspaceGroups);
+  const activeTeamRunIds = listActiveTeamRunIds(store.workspaceGroups);
+  const agentContextsStore = useAgentContextsStore();
+  const agentRunStore = useAgentRunStore();
+  const teamContextsStore = useAgentTeamContextsStore();
+  const agentTeamRunStore = useAgentTeamRunStore();
+
+  for (const [runId, context] of agentContextsStore.runs.entries()) {
+    if (runId.startsWith('temp-') || activeAgentRunIds.has(runId)) {
+      continue;
+    }
+
+    if (context.isSubscribed) {
+      agentRunStore.disconnectAgentStream(runId);
+    }
+    if (context.state.currentStatus !== AgentStatus.Error) {
+      context.state.currentStatus = AgentStatus.ShutdownComplete;
+    }
+  }
+
+  for (const runId of activeAgentRunIds) {
+    const existingContext = agentContextsStore.getRun(runId);
+    if (existingContext) {
+      existingContext.config.isLocked = true;
+      existingContext.state.currentStatus = normalizeAgentRuntimeStatus('ACTIVE');
+      if (!existingContext.isSubscribed) {
+        agentRunStore.connectToAgentStream(runId);
+      }
+      continue;
+    }
+
+    try {
+      await hydrateLiveRunContext({
+        runId,
+        fallbackAgentName: findAgentNameByRunId(store.workspaceGroups, runId),
+        ensureWorkspaceByRootPath: (rootPath: string) => store.ensureWorkspaceByRootPath(rootPath),
+        currentStatus: 'ACTIVE',
+      });
+      agentRunStore.connectToAgentStream(runId);
+    } catch (error) {
+      console.warn(`[runHistorySync] Failed to hydrate active run '${runId}'.`, error);
+    }
+  }
+
+  for (const teamContext of teamContextsStore.allTeamRuns) {
+    if (teamContext.teamRunId.startsWith('temp-') || activeTeamRunIds.has(teamContext.teamRunId)) {
+      continue;
+    }
+
+    if (teamContext.isSubscribed) {
+      agentTeamRunStore.disconnectTeamStream(teamContext.teamRunId);
+    }
+    if (teamContext.currentStatus !== AgentTeamStatus.Error) {
+      teamContext.currentStatus = AgentTeamStatus.ShutdownComplete;
+    }
+    teamContext.members.forEach((memberContext) => {
+      if (memberContext.state.currentStatus !== AgentStatus.Error) {
+        memberContext.state.currentStatus = AgentStatus.ShutdownComplete;
+      }
+    });
+  }
+
+  for (const teamRunId of activeTeamRunIds) {
+    const existingTeamContext = teamContextsStore.getTeamContextById(teamRunId);
+    if (existingTeamContext) {
+      existingTeamContext.config.isLocked = true;
+      existingTeamContext.currentStatus = normalizeTeamRuntimeStatus('ACTIVE');
+      existingTeamContext.members.forEach((memberContext) => {
+        memberContext.config.isLocked = true;
+      });
+      if (!existingTeamContext.isSubscribed) {
+        agentTeamRunStore.connectToTeamStream(teamRunId);
+      }
+      continue;
+    }
+
+    try {
+      await hydrateLiveTeamRunContext({
+        teamRunId,
+        memberRouteKey: null,
+        ensureWorkspaceByRootPath: (rootPath: string) => store.ensureWorkspaceByRootPath(rootPath),
+        currentStatus: 'ACTIVE',
+        memberStatuses: [],
+      });
+      agentTeamRunStore.connectToTeamStream(teamRunId);
+    } catch (error) {
+      console.warn(`[runHistorySync] Failed to hydrate active team run '${teamRunId}'.`, error);
     }
   }
 };
@@ -102,7 +222,7 @@ export const openHistoricalRun = async (
   store.error = null;
 
   try {
-    const result = await openRunWithCoordinator({
+    const result = await openAgentRun({
       runId,
       fallbackAgentName: store.findAgentNameByRunId(runId),
       ensureWorkspaceByRootPath: (rootPath: string) => store.ensureWorkspaceByRootPath(rootPath),

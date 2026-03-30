@@ -3,11 +3,13 @@ import { setActivePinia, createPinia } from 'pinia';
 import { useAgentRunStore } from '../agentRunStore';
 import { useAgentContextsStore } from '../agentContextsStore';
 import { AgentStreamingService } from '~/services/agentStreaming';
+import { RestoreAgentRun } from '~/graphql/mutations/agentMutations';
 
 const {
   mutateMock,
   llmProviderConfigStoreMock,
   runHistoryStoreMock,
+  mockSendMessage,
   mockStopGeneration,
   mockConnect,
   mockDisconnect,
@@ -16,11 +18,10 @@ const {
 } = vi.hoisted(() => ({
   mutateMock: vi.fn().mockResolvedValue({
     data: {
-      continueRun: {
+      createAgentRun: {
         success: true,
         runId: 'perm-agent-id',
         message: 'Success',
-        ignoredConfigFields: [],
       },
     },
     errors: [],
@@ -35,6 +36,7 @@ const {
     markRunAsInactive: vi.fn(),
     refreshTreeQuietly: vi.fn(),
   },
+  mockSendMessage: vi.fn(),
   mockStopGeneration: vi.fn(),
   mockConnect: vi.fn(),
   mockDisconnect: vi.fn(),
@@ -63,6 +65,7 @@ vi.mock('~/services/agentStreaming', () => ({
     connect: mockConnect,
     disconnect: mockDisconnect,
     attachContext: mockAttachContext,
+    sendMessage: mockSendMessage,
     approveTool: vi.fn(),
     denyTool: vi.fn(),
     stopGeneration: mockStopGeneration,
@@ -81,6 +84,16 @@ vi.mock('~/stores/runHistoryStore', () => ({
   useRunHistoryStore: () => runHistoryStoreMock,
 }));
 
+vi.mock('~/stores/workspace', () => ({
+  useWorkspaceStore: () => ({
+    workspaces: {
+      'ws-1': {
+        absolutePath: '/tmp/workspace-one',
+      },
+    },
+  }),
+}));
+
 describe('agentRunStore', () => {
     let mockAgentContext: any;
     let mockContextsStore: any;
@@ -89,16 +102,16 @@ describe('agentRunStore', () => {
         setActivePinia(createPinia());
         vi.clearAllMocks();
         mockConnectionState.value = 'connected';
+        mockSendMessage.mockReset();
         mockStopGeneration.mockReset();
         llmProviderConfigStoreMock.models = ['gpt-4-fallback'];
         llmProviderConfigStoreMock.fetchProvidersWithModels.mockResolvedValue(undefined);
         mutateMock.mockResolvedValue({
           data: {
-            continueRun: {
+            createAgentRun: {
               success: true,
               runId: 'perm-agent-id',
               message: 'Success',
-              ignoredConfigFields: [],
             },
           },
           errors: [],
@@ -174,9 +187,9 @@ describe('agentRunStore', () => {
         // 5. Should clear requirement
         expect(mockAgentContext.requirement).toBe('');
         
-        // 6. Should connect stream
-        // (AgentStreamingService constructor logic is hidden in mock, but we verify method call or side effect)
+        // 6. Should connect stream and send the first message over WebSocket
         expect(AgentStreamingService).toHaveBeenCalled(); 
+        expect(mockSendMessage).toHaveBeenCalledWith('do something', [], []);
     });
 
     it('sendUserInputAndSubscribe should apply fallback model for new agent when missing', async () => {
@@ -206,6 +219,40 @@ describe('agentRunStore', () => {
         const store = useAgentRunStore();
         
         await expect(store.sendUserInputAndSubscribe()).rejects.toThrowError("No active agent selected");
+    });
+
+    it('sendUserInputAndSubscribe should restore persisted inactive runs before sending', async () => {
+        mockAgentContext.state.runId = 'run-1';
+        runHistoryStoreMock.getResumeConfig.mockReturnValue({
+          isActive: false,
+          metadataConfig: {
+            workspaceRootPath: '/tmp/workspace-one',
+          },
+        });
+        mutateMock.mockResolvedValueOnce({
+          data: {
+            restoreAgentRun: {
+              success: true,
+              runId: 'run-1',
+              message: 'restored',
+            },
+          },
+          errors: [],
+        });
+
+        const store = useAgentRunStore();
+        await store.sendUserInputAndSubscribe();
+
+        expect(mutateMock).toHaveBeenCalledWith(
+          expect.objectContaining({
+            mutation: RestoreAgentRun,
+            variables: { agentRunId: 'run-1' },
+          }),
+        );
+        expect(mockContextsStore.promoteTemporaryId).not.toHaveBeenCalled();
+        expect(mockContextsStore.lockConfig).toHaveBeenCalledWith('run-1');
+        expect(runHistoryStoreMock.markRunAsActive).toHaveBeenCalledWith('run-1');
+        expect(mockSendMessage).toHaveBeenCalledWith('do something', [], []);
     });
     
     it('closeAgent should disconnect and remove context', async () => {

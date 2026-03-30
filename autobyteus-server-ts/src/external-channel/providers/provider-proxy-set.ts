@@ -33,17 +33,22 @@ let providerSetPromise: Promise<ChannelProviderSet> | null = null;
 const importChannelProviderModule = async <T>(moduleName: string): Promise<T> =>
   (await import(["./", moduleName].join(""))) as T;
 
+const loadBindingProvider = async (): Promise<ChannelBindingProvider> => {
+  const binding = await importChannelProviderModule<{
+    FileChannelBindingProvider: new () => ChannelBindingProvider;
+  }>("file-channel-binding-provider.js");
+  return new binding.FileChannelBindingProvider();
+};
+
 const loadSqlProviderSet = async (): Promise<ChannelProviderSet> => {
   const [
-    binding,
+    bindingProvider,
     idempotency,
     callbackIdempotency,
     receipt,
     delivery,
   ] = await Promise.all([
-    importChannelProviderModule<{
-      SqlChannelBindingProvider: new () => ChannelBindingProvider;
-    }>("sql-channel-binding-provider.js"),
+    loadBindingProvider(),
     importChannelProviderModule<{
       SqlChannelIdempotencyProvider: new () => ChannelIdempotencyProvider;
     }>("sql-channel-idempotency-provider.js"),
@@ -59,7 +64,7 @@ const loadSqlProviderSet = async (): Promise<ChannelProviderSet> => {
   ]);
 
   return {
-    bindingProvider: new binding.SqlChannelBindingProvider(),
+    bindingProvider,
     idempotencyProvider: new idempotency.SqlChannelIdempotencyProvider(),
     callbackIdempotencyProvider: new callbackIdempotency.SqlChannelCallbackIdempotencyProvider(),
     messageReceiptProvider: new receipt.SqlChannelMessageReceiptProvider(),
@@ -69,15 +74,13 @@ const loadSqlProviderSet = async (): Promise<ChannelProviderSet> => {
 
 const loadFileProviderSet = async (): Promise<ChannelProviderSet> => {
   const [
-    binding,
+    bindingProvider,
     idempotency,
     callbackIdempotency,
     receipt,
     delivery,
   ] = await Promise.all([
-    importChannelProviderModule<{
-      FileChannelBindingProvider: new () => ChannelBindingProvider;
-    }>("file-channel-binding-provider.js"),
+    loadBindingProvider(),
     importChannelProviderModule<{
       FileChannelIdempotencyProvider: new () => ChannelIdempotencyProvider;
     }>("file-channel-idempotency-provider.js"),
@@ -93,7 +96,7 @@ const loadFileProviderSet = async (): Promise<ChannelProviderSet> => {
   ]);
 
   return {
-    bindingProvider: new binding.FileChannelBindingProvider(),
+    bindingProvider,
     idempotencyProvider: new idempotency.FileChannelIdempotencyProvider(),
     callbackIdempotencyProvider: new callbackIdempotency.FileChannelCallbackIdempotencyProvider(),
     messageReceiptProvider: new receipt.FileChannelMessageReceiptProvider(),

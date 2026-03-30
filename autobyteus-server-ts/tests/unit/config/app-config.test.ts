@@ -11,6 +11,7 @@ const ENV_KEYS = [
   "DB_TYPE",
   "PERSISTENCE_PROVIDER",
   "DATABASE_URL",
+  "AUTOBYTEUS_MEMORY_DIR",
   "AUTOBYTEUS_SKILLS_PATHS",
   "AUTOBYTEUS_DEFINITION_SOURCE_PATHS",
   "AUTOBYTEUS_LOG_DIR",
@@ -99,6 +100,20 @@ describe("AppConfig", () => {
 
     expect(config.getAppDataDir()).toBe(configDir);
     expect(config.getConfigFilePath()).toBe(path.join(configDir, ".env"));
+
+    await fsPromises.rm(configDir, { recursive: true, force: true });
+  });
+
+  it("clears stale AUTOBYTEUS_MEMORY_DIR when switching to a custom app data dir", async () => {
+    const configDir = await createTempConfigDir("AUTOBYTEUS_SERVER_HOST=http://localhost:8000\n");
+    process.env.AUTOBYTEUS_MEMORY_DIR = "/tmp/old-memory-root";
+    const config = new AppConfig();
+
+    config.setCustomAppDataDir(configDir);
+    config.initialize();
+
+    expect(config.getMemoryDir()).toBe(path.join(configDir, "memory"));
+    expect(process.env.AUTOBYTEUS_MEMORY_DIR).toBe(path.join(configDir, "memory"));
 
     await fsPromises.rm(configDir, { recursive: true, force: true });
   });

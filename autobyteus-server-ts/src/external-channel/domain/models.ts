@@ -1,7 +1,7 @@
 import type { ExternalChannelProvider } from "autobyteus-ts/external-channel/provider.js";
 import type { ExternalChannelTransport } from "autobyteus-ts/external-channel/channel-transport.js";
 import type { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
-import type { RuntimeKind } from "../../runtime-management/runtime-kind.js";
+import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 
 export type ChannelBindingTargetType = "AGENT" | "TEAM";
 
@@ -10,7 +10,7 @@ export type ChannelBindingLaunchPreset = {
   llmModelIdentifier: string;
   runtimeKind: RuntimeKind;
   autoExecuteTools: boolean;
-  skillAccessMode: SkillAccessMode | null;
+  skillAccessMode: SkillAccessMode;
   llmConfig: Record<string, unknown> | null;
 };
 
@@ -19,6 +19,7 @@ export type ChannelBindingTeamLaunchPreset = {
   llmModelIdentifier: string;
   runtimeKind: RuntimeKind;
   autoExecuteTools: boolean;
+  skillAccessMode: SkillAccessMode;
   llmConfig: Record<string, unknown> | null;
 };
 

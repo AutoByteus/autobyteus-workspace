@@ -26,6 +26,7 @@ export const UPSERT_EXTERNAL_CHANNEL_BINDING = gql`
         llmModelIdentifier
         runtimeKind
         autoExecuteTools
+        skillAccessMode
         llmConfig
       }
       teamRunId

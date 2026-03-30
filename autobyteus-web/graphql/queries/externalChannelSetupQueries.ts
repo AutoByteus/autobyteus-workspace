@@ -37,6 +37,7 @@ export const EXTERNAL_CHANNEL_BINDINGS = gql`
         llmModelIdentifier
         runtimeKind
         autoExecuteTools
+        skillAccessMode
         llmConfig
       }
       teamRunId

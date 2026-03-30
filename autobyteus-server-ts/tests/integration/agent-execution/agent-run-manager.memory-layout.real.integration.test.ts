@@ -2,9 +2,10 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import os from "node:os";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
 import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
-import { AgentFactory, AgentInputUserMessage, waitForAgentToBeIdle } from "autobyteus-ts";
+import { AgentFactory, AgentInputUserMessage } from "autobyteus-ts";
 import { BaseLLM } from "autobyteus-ts/llm/base.js";
 import { LLMModel } from "autobyteus-ts/llm/models.js";
 import { LLMProvider } from "autobyteus-ts/llm/providers.js";
@@ -103,16 +104,21 @@ describe("AgentRunManager real memory layout integration", () => {
   });
 
   it("persists single-agent traces only under memory/agents/<runId> for create + restore", async () => {
-    const runId = await manager.createAgentRun({
+    const runId = await manager.createAgentRun(
+      new AgentRunConfig({
       agentDefinitionId: "def-real-memory-layout",
       llmModelIdentifier: "dummy-model",
       autoExecuteTools: false,
-    });
+      }),
+    );
 
-    const createdAgent = manager.getAgentRun(runId) as any;
-    expect(createdAgent).toBeTruthy();
-    await createdAgent.postUserMessage(new AgentInputUserMessage("first real turn"));
-    await waitForAgentToBeIdle(createdAgent, 10);
+    const createdRun = manager.getActiveRun(runId);
+    expect(createdRun).toBeTruthy();
+    const firstMessageResult = await createdRun?.postUserMessage(
+      new AgentInputUserMessage("first real turn"),
+    );
+    expect(firstMessageResult?.accepted).toBe(true);
+    await waitFor(() => createdRun?.getStatus() === "idle");
 
     const runRawTracePath = path.join(memoryDir, "agents", runId, "raw_traces.jsonl");
     const rootRawTracePath = path.join(memoryDir, "raw_traces.jsonl");
@@ -133,16 +139,21 @@ describe("AgentRunManager real memory layout integration", () => {
 
     const restoredRunId = await manager.restoreAgentRun({
       runId,
-      agentDefinitionId: "def-real-memory-layout",
-      llmModelIdentifier: "dummy-model",
-      autoExecuteTools: false,
+      config: new AgentRunConfig({
+        agentDefinitionId: "def-real-memory-layout",
+        llmModelIdentifier: "dummy-model",
+        autoExecuteTools: false,
+      }),
     });
     expect(restoredRunId).toBe(runId);
 
-    const restoredAgent = manager.getAgentRun(runId) as any;
-    expect(restoredAgent).toBeTruthy();
-    await restoredAgent.postUserMessage(new AgentInputUserMessage("second real turn"));
-    await waitForAgentToBeIdle(restoredAgent, 10);
+    const restoredRun = manager.getActiveRun(runId);
+    expect(restoredRun).toBeTruthy();
+    const secondMessageResult = await restoredRun?.postUserMessage(
+      new AgentInputUserMessage("second real turn"),
+    );
+    expect(secondMessageResult?.accepted).toBe(true);
+    await waitFor(() => restoredRun?.getStatus() === "idle");
 
     await waitFor(async () => {
       try {

@@ -6,6 +6,8 @@ import {
   parseExternalChannelTransport,
   type ExternalChannelTransport,
 } from "autobyteus-ts/external-channel/channel-transport.js";
+import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type {
   ChannelBinding,
   ChannelBindingLaunchPreset,
@@ -17,7 +19,7 @@ import type {
   UpsertChannelBindingInput,
 } from "../domain/models.js";
 import type { ChannelBindingProvider } from "./channel-binding-provider.js";
-import { normalizeRuntimeKind } from "../../runtime-management/runtime-kind.js";
+import { runtimeKindFromString } from "../../runtime-management/runtime-kind-enum.js";
 import {
   nextNumericStringId,
   normalizeNullableString,
@@ -82,11 +84,11 @@ const toDomainLaunchPreset = (
       value.llmModelIdentifier,
       "launchPreset.llmModelIdentifier",
     ),
-    runtimeKind: normalizeRuntimeKind(value.runtimeKind),
+    runtimeKind: runtimeKindFromString(value.runtimeKind, RuntimeKind.AUTOBYTEUS) ?? RuntimeKind.AUTOBYTEUS,
     autoExecuteTools: value.autoExecuteTools,
-    skillAccessMode: normalizeNullableString(value.skillAccessMode) as
-      | ChannelBindingLaunchPreset["skillAccessMode"]
-      | null,
+    skillAccessMode:
+      (normalizeNullableString(value.skillAccessMode) as ChannelBindingLaunchPreset["skillAccessMode"] | null) ??
+      SkillAccessMode.PRELOADED_ONLY,
     llmConfig: isJsonObject(value.llmConfig) ? value.llmConfig : null,
   };
 };
@@ -107,7 +109,7 @@ const toRecordLaunchPreset = (
       value.llmModelIdentifier,
       "launchPreset.llmModelIdentifier",
     ),
-    runtimeKind: normalizeRuntimeKind(value.runtimeKind),
+    runtimeKind: value.runtimeKind,
     autoExecuteTools: value.autoExecuteTools,
     skillAccessMode: normalizeNullableString(value.skillAccessMode),
     llmConfig: isJsonObject(value.llmConfig) ? value.llmConfig : null,
@@ -130,8 +132,11 @@ const toDomainTeamLaunchPreset = (
       value.llmModelIdentifier,
       "teamLaunchPreset.llmModelIdentifier",
     ),
-    runtimeKind: normalizeRuntimeKind(value.runtimeKind),
+    runtimeKind: runtimeKindFromString(value.runtimeKind, RuntimeKind.AUTOBYTEUS) ?? RuntimeKind.AUTOBYTEUS,
     autoExecuteTools: value.autoExecuteTools,
+    skillAccessMode:
+      (normalizeNullableString(value.skillAccessMode) as ChannelBindingTeamLaunchPreset["skillAccessMode"] | null) ??
+      SkillAccessMode.PRELOADED_ONLY,
     llmConfig: isJsonObject(value.llmConfig) ? value.llmConfig : null,
   };
 };
@@ -152,9 +157,9 @@ const toRecordTeamLaunchPreset = (
       value.llmModelIdentifier,
       "teamLaunchPreset.llmModelIdentifier",
     ),
-    runtimeKind: normalizeRuntimeKind(value.runtimeKind),
+    runtimeKind: value.runtimeKind,
     autoExecuteTools: value.autoExecuteTools,
-    skillAccessMode: null,
+    skillAccessMode: value.skillAccessMode,
     llmConfig: isJsonObject(value.llmConfig) ? value.llmConfig : null,
   };
 };

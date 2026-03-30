@@ -1,6 +1,10 @@
 import { describe, expect, it, vi } from "vitest";
-import { StreamEventType, type AgentEventStream, type StreamEvent } from "autobyteus-ts";
+import { type AgentEventStream } from "autobyteus-ts";
+import { AgentRunEventType } from "../../../../src/agent-execution/domain/agent-run-event.js";
 import { AgentStreamHandler } from "../../../../src/services/agent-streaming/agent-stream-handler.js";
+import {
+  getAgentRunEventMessageMapper,
+} from "../../../../src/services/agent-streaming/agent-run-event-message-mapper.js";
 import { AgentStreamBroadcaster } from "../../../../src/services/agent-streaming/agent-stream-broadcaster.js";
 import { AgentSessionManager } from "../../../../src/services/agent-streaming/agent-session-manager.js";
 import {
@@ -8,8 +12,6 @@ import {
   ServerMessage,
   ServerMessageType,
 } from "../../../../src/services/agent-streaming/models.js";
-import { RuntimeAdapterRegistry } from "../../../../src/runtime-execution/runtime-adapter-registry.js";
-import { getRuntimeEventMessageMapper } from "../../../../src/services/agent-streaming/runtime-event-message-mapper.js";
 
 const createStream = (events: StreamEvent[]): AgentEventStream => {
   const allEvents = async function* () {
@@ -25,11 +27,32 @@ const createStream = (events: StreamEvent[]): AgentEventStream => {
   } as unknown as AgentEventStream;
 };
 
+const flush = async () => {
+  await Promise.resolve();
+  await Promise.resolve();
+};
+
 describe("AgentStreamHandler", () => {
-  const createIngress = () => ({
-    sendTurn: vi.fn().mockResolvedValue({ accepted: true, runtimeKind: "autobyteus" }),
-    approveTool: vi.fn().mockResolvedValue({ accepted: true, runtimeKind: "autobyteus" }),
-    interruptRun: vi.fn().mockResolvedValue({ accepted: false, runtimeKind: "autobyteus" }),
+  const createActiveRun = (overrides: Record<string, unknown> = {}) => ({
+    runId: "agent-123",
+    runtimeKind: "autobyteus",
+    isActive: vi.fn().mockReturnValue(true),
+    getStatus: vi.fn().mockReturnValue("ACTIVE"),
+    subscribeToEvents: vi.fn((listener: (event: unknown) => void) => {
+      const stream = createStream([]);
+      void (async () => {
+        for await (const event of stream.allEvents()) {
+          listener(event);
+        }
+      })();
+      return () => {};
+    }),
+    postUserMessage: vi.fn().mockResolvedValue({ accepted: true, runtimeKind: "autobyteus" }),
+    approveToolInvocation: vi
+      .fn()
+      .mockResolvedValue({ accepted: true, runtimeKind: "autobyteus" }),
+    interrupt: vi.fn().mockResolvedValue({ accepted: false, runtimeKind: "autobyteus" }),
+    ...overrides,
   });
 
   it("parses valid messages", () => {
@@ -53,13 +76,11 @@ describe("AgentStreamHandler", () => {
 
   it("connects and sends CONNECTED message", async () => {
     const sessionManager = new AgentSessionManager();
+    const activeRun = createActiveRun();
     const agentManager = {
-      getAgentRun: vi.fn().mockReturnValue({ runId: "agent-123" }),
-      getAgentEventStream: vi.fn().mockReturnValue(createStream([])),
+      getActiveRun: vi.fn().mockReturnValue(activeRun),
     };
-    const ingress = createIngress();
-
-    const handler = new AgentStreamHandler(sessionManager, agentManager as any, ingress as any);
+    const handler = new AgentStreamHandler(sessionManager, agentManager as any);
     const connection = {
       send: vi.fn(),
       close: vi.fn(),
@@ -80,10 +101,8 @@ describe("AgentStreamHandler", () => {
     const handler = new AgentStreamHandler(
       new AgentSessionManager(),
       {
-        getAgentRun: vi.fn().mockReturnValue(null),
-        getAgentEventStream: vi.fn(),
+        getActiveRun: vi.fn().mockReturnValue(null),
       } as any,
-      createIngress() as any,
     );
 
     const connection = {
@@ -101,42 +120,19 @@ describe("AgentStreamHandler", () => {
     expect(payload.payload.code).toBe("AGENT_NOT_FOUND");
   });
 
-  it("connects to runtime event stream via adapter when agent instance is missing", async () => {
-    const subscribeToRunEvents = vi.fn().mockReturnValue(() => {});
-    const adapterRegistry = new RuntimeAdapterRegistry([
-      {
-        runtimeKind: "codex_app_server",
-        isRunActive: vi.fn().mockReturnValue(true),
-        subscribeToRunEvents,
-        sendTurn: vi.fn(),
-        approveTool: vi.fn(),
-        interruptRun: vi.fn(),
-      },
-    ] as any);
-    const runtimeCompositionService = {
-      getRunSession: vi.fn().mockReturnValue({
-        runId: "runtime-run-1",
-        runtimeKind: "codex_app_server",
-        mode: "agent",
-        runtimeReference: {
-          runtimeKind: "codex_app_server",
-          sessionId: "runtime-run-1",
-          threadId: "thread-1",
-          metadata: null,
-        },
-      }),
-    };
+  it("connects to run events through the AgentRun subject for runtime-managed runs", async () => {
+    const unsubscribe = vi.fn();
+    const activeRun = createActiveRun({
+      runtimeKind: "codex_app_server",
+      subscribeToEvents: vi.fn().mockReturnValue(unsubscribe),
+    });
 
     const handler = new AgentStreamHandler(
       new AgentSessionManager(),
       {
-        getAgentRun: vi.fn().mockReturnValue(null),
-        getAgentEventStream: vi.fn(),
+        getActiveRun: vi.fn().mockReturnValue(activeRun),
       } as any,
-      createIngress() as any,
-      adapterRegistry,
-      getRuntimeEventMessageMapper(),
-      runtimeCompositionService as any,
+      getAgentRunEventMessageMapper(),
     );
     const connection = {
       send: vi.fn(),
@@ -146,27 +142,67 @@ describe("AgentStreamHandler", () => {
     const sessionId = await handler.connect(connection, "runtime-run-1");
 
     expect(sessionId).toBeTruthy();
-    expect(subscribeToRunEvents).toHaveBeenCalledWith(
-      "runtime-run-1",
-      expect.any(Function),
-    );
+    expect(activeRun.subscribeToEvents).toHaveBeenCalledWith(expect.any(Function));
     expect(connection.close).not.toHaveBeenCalled();
+  });
+
+  it("maps Codex AgentRunEvents directly to websocket messages for single-agent runs", async () => {
+    const unsubscribe = vi.fn();
+    const activeRun = createActiveRun({
+      runtimeKind: "codex_app_server",
+      subscribeToEvents: vi.fn((listener: (event: unknown) => void) => {
+        listener({
+          runId: "runtime-run-2",
+          eventType: AgentRunEventType.SEGMENT_CONTENT,
+          payload: {
+            id: "item-1",
+            delta: "hello",
+            segment_type: "text",
+          },
+          statusHint: null,
+        });
+        return unsubscribe;
+      }),
+    });
+
+    const handler = new AgentStreamHandler(
+      new AgentSessionManager(),
+      {
+        getActiveRun: vi.fn().mockReturnValue(activeRun),
+      } as any,
+      getAgentRunEventMessageMapper(),
+    );
+    const connection = {
+      send: vi.fn(),
+      close: vi.fn(),
+    };
+
+    await handler.connect(connection, "runtime-run-2");
+    await flush();
+
+    expect(connection.send).toHaveBeenCalledTimes(3);
+    const payload = JSON.parse(connection.send.mock.calls[2][0]);
+    expect(payload).toMatchObject({
+      type: ServerMessageType.SEGMENT_CONTENT,
+      payload: {
+        id: "item-1",
+        delta: "hello",
+        segment_type: "text",
+      },
+    });
   });
 
   it("registers the websocket connection for run-scoped live message broadcasts", async () => {
     const sessionManager = new AgentSessionManager();
     const broadcaster = new AgentStreamBroadcaster();
+    const activeRun = createActiveRun();
     const agentManager = {
-      getAgentRun: vi.fn().mockReturnValue({ runId: "agent-123" }),
-      getAgentEventStream: vi.fn().mockReturnValue(createStream([])),
+      getActiveRun: vi.fn().mockReturnValue(activeRun),
     };
 
     const handler = new AgentStreamHandler(
       sessionManager,
       agentManager as any,
-      createIngress() as any,
-      undefined,
-      undefined,
       undefined,
       broadcaster,
     );
@@ -187,8 +223,8 @@ describe("AgentStreamHandler", () => {
       ),
     ).toBe(1);
 
-    expect(connection.send).toHaveBeenCalledTimes(2);
-    const payload = JSON.parse(connection.send.mock.calls[1][0]);
+    expect(connection.send).toHaveBeenCalledTimes(3);
+    const payload = JSON.parse(connection.send.mock.calls[2][0]);
     expect(payload).toMatchObject({
       type: ServerMessageType.EXTERNAL_USER_MESSAGE,
       payload: {
@@ -197,15 +233,14 @@ describe("AgentStreamHandler", () => {
     });
   });
 
-  it("handles SEND_MESSAGE and forwards to runtime ingress", async () => {
+  it("handles SEND_MESSAGE and forwards to the live AgentRun subject", async () => {
+    const activeRun = createActiveRun();
     const agentManager = {
-      getAgentRun: vi.fn().mockReturnValue({ runId: "agent-123" }),
-      getAgentEventStream: vi.fn().mockReturnValue(createStream([])),
+      getActiveRun: vi.fn().mockReturnValue(activeRun),
     };
-    const ingress = createIngress();
 
     const sessionManager = new AgentSessionManager();
-    const handler = new AgentStreamHandler(sessionManager, agentManager as any, ingress as any);
+    const handler = new AgentStreamHandler(sessionManager, agentManager as any);
 
     const connection = {
       send: vi.fn(),
@@ -226,20 +261,19 @@ describe("AgentStreamHandler", () => {
       }),
     );
 
-    expect(ingress.sendTurn).toHaveBeenCalledTimes(1);
-    const message = ingress.sendTurn.mock.calls[0][0].message;
+    expect(activeRun.postUserMessage).toHaveBeenCalledTimes(1);
+    const message = activeRun.postUserMessage.mock.calls[0][0];
     expect(message.content).toBe("Hello world");
   });
 
   it("handles tool approvals", async () => {
+    const activeRun = createActiveRun();
     const agentManager = {
-      getAgentRun: vi.fn().mockReturnValue({ runId: "agent-123" }),
-      getAgentEventStream: vi.fn().mockReturnValue(createStream([])),
+      getActiveRun: vi.fn().mockReturnValue(activeRun),
     };
-    const ingress = createIngress();
 
     const sessionManager = new AgentSessionManager();
-    const handler = new AgentStreamHandler(sessionManager, agentManager as any, ingress as any);
+    const handler = new AgentStreamHandler(sessionManager, agentManager as any);
 
     const connection = {
       send: vi.fn(),
@@ -256,54 +290,17 @@ describe("AgentStreamHandler", () => {
       }),
     );
 
-    expect(ingress.approveTool).toHaveBeenCalledWith({
-      runId: "agent-123",
-      mode: "agent",
-      invocationId: "inv-1",
-      approved: true,
-      reason: "ok",
-    });
+    expect(activeRun.approveToolInvocation).toHaveBeenCalledWith("inv-1", true, "ok");
   });
 
   it("ignores messages for unknown sessions", async () => {
     const handler = new AgentStreamHandler(
       new AgentSessionManager(),
       {
-        getAgentRun: vi.fn().mockReturnValue(null),
-        getAgentEventStream: vi.fn(),
+        getActiveRun: vi.fn().mockReturnValue(null),
       } as any,
-      createIngress() as any,
     );
 
     await handler.handleMessage("missing", JSON.stringify({ type: ClientMessageType.SEND_MESSAGE }));
-  });
-
-  it("maps explicit tool lifecycle stream events to websocket message types", () => {
-    const handler = new AgentStreamHandler(
-      new AgentSessionManager(),
-      {
-        getAgentRun: vi.fn(),
-        getAgentEventStream: vi.fn(),
-      } as any,
-      createIngress() as any,
-    );
-
-    const mappings: Array<[StreamEventType, ServerMessageType]> = [
-      [StreamEventType.TOOL_APPROVAL_REQUESTED, ServerMessageType.TOOL_APPROVAL_REQUESTED],
-      [StreamEventType.TOOL_APPROVED, ServerMessageType.TOOL_APPROVED],
-      [StreamEventType.TOOL_DENIED, ServerMessageType.TOOL_DENIED],
-      [StreamEventType.TOOL_EXECUTION_STARTED, ServerMessageType.TOOL_EXECUTION_STARTED],
-      [StreamEventType.TOOL_EXECUTION_SUCCEEDED, ServerMessageType.TOOL_EXECUTION_SUCCEEDED],
-      [StreamEventType.TOOL_EXECUTION_FAILED, ServerMessageType.TOOL_EXECUTION_FAILED],
-    ];
-
-    for (const [streamType, messageType] of mappings) {
-      const message = handler.convertStreamEvent({
-        event_type: streamType,
-        data: { invocation_id: "inv-1", tool_name: "read_file" },
-      } as StreamEvent);
-      expect(message.type).toBe(messageType);
-      expect(message.payload.invocation_id).toBe("inv-1");
-    }
   });
 });

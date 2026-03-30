@@ -208,9 +208,7 @@ export type CreateAgentTeamDefinitionInput = {
 
 export type CreateAgentTeamRunInput = {
   memberConfigs: Array<TeamMemberConfigInput>;
-  taskNotificationMode?: InputMaybe<TaskNotificationModeEnum>;
   teamDefinitionId: Scalars['String']['input'];
-  useXmlToolFormat?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type CreateAgentTeamRunResult = {
@@ -256,8 +254,8 @@ export type DeleteMcpServerResult = {
   success: Scalars['Boolean']['output'];
 };
 
-export type DeleteRunHistoryMutationResult = {
-  __typename?: 'DeleteRunHistoryMutationResult';
+export type DeleteStoredRunMutationResult = {
+  __typename?: 'DeleteStoredRunMutationResult';
   message: Scalars['String']['output'];
   success: Scalars['Boolean']['output'];
 };
@@ -268,8 +266,8 @@ export type DeleteSkillResult = {
   success: Scalars['Boolean']['output'];
 };
 
-export type DeleteTeamRunHistoryMutationResult = {
-  __typename?: 'DeleteTeamRunHistoryMutationResult';
+export type DeleteStoredTeamRunMutationResult = {
+  __typename?: 'DeleteStoredTeamRunMutationResult';
   message: Scalars['String']['output'];
   success: Scalars['Boolean']['output'];
 };
@@ -380,6 +378,12 @@ export type ExternalChannelTeamLaunchPresetInput = {
 };
 
 export enum ExternalChannelSkillAccessModeEnum {
+  GlobalDiscovery = 'GLOBAL_DISCOVERY',
+  None = 'NONE',
+  PreloadedOnly = 'PRELOADED_ONLY'
+}
+
+export enum SkillAccessModeEnum {
   GlobalDiscovery = 'GLOBAL_DISCOVERY',
   None = 'NONE',
   PreloadedOnly = 'PRELOADED_ONLY'
@@ -588,11 +592,11 @@ export type Mutation = {
   deleteExternalChannelBinding: Scalars['Boolean']['output'];
   deleteFileOrFolder: Scalars['String']['output'];
   deleteMcpServer: DeleteMcpServerResult;
-  deleteRunHistory: DeleteRunHistoryMutationResult;
+  deleteStoredRun: DeleteStoredRunMutationResult;
   deleteServerSetting: Scalars['String']['output'];
   deleteSkill: DeleteSkillResult;
   deleteSkillFile: Scalars['Boolean']['output'];
-  deleteTeamRunHistory: DeleteTeamRunHistoryMutationResult;
+  deleteStoredTeamRun: DeleteStoredTeamRunMutationResult;
   disableManagedMessagingGateway: ManagedMessagingGatewayStatusObject;
   disableSkill: Skill;
   discoverAndRegisterMcpServerTools: DiscoverAndRegisterMcpServerToolsResult;
@@ -718,7 +722,7 @@ export type MutationDeleteMcpServerArgs = {
 };
 
 
-export type MutationDeleteRunHistoryArgs = {
+export type MutationDeleteStoredRunArgs = {
   runId: Scalars['String']['input'];
 };
 
@@ -739,7 +743,7 @@ export type MutationDeleteSkillFileArgs = {
 };
 
 
-export type MutationDeleteTeamRunHistoryArgs = {
+export type MutationDeleteStoredTeamRunArgs = {
   teamRunId: Scalars['String']['input'];
 };
 
@@ -1014,9 +1018,8 @@ export type Query = {
   getTeamRunResumeConfig: TeamRunResumeConfigPayload;
   health: HealthStatus;
   listApplications: Array<ApplicationManifest>;
-  listRunHistory: Array<RunHistoryWorkspaceGroupObject>;
+  listWorkspaceRunHistory: Array<RunHistoryWorkspaceGroupObject>;
   listRunMemorySnapshots: MemorySnapshotPage;
-  listTeamRunHistory: Array<TeamRunHistoryItemObject>;
   listTeamRunMemorySnapshots: TeamRunMemorySnapshotPage;
   managedMessagingGatewayPeerCandidates: ManagedMessagingGatewayPeerCandidateListObject;
   managedMessagingGatewayStatus: ManagedMessagingGatewayStatusObject;
@@ -1273,12 +1276,13 @@ export type RunHistoryItemObject = {
 export type RunHistoryWorkspaceGroupObject = {
   __typename?: 'RunHistoryWorkspaceGroupObject';
   agents: Array<RunHistoryAgentGroupObject>;
+  teamRuns: Array<WorkspaceHistoryTeamRunItemObject>;
   workspaceName: Scalars['String']['output'];
   workspaceRootPath: Scalars['String']['output'];
 };
 
-export type RunManifestConfigObject = {
-  __typename?: 'RunManifestConfigObject';
+export type RunMetadataConfigObject = {
+  __typename?: 'RunMetadataConfigObject';
   agentDefinitionId: Scalars['String']['output'];
   autoExecuteTools: Scalars['Boolean']['output'];
   llmConfig?: Maybe<Scalars['JSON']['output']>;
@@ -1319,7 +1323,7 @@ export type RunResumeConfigPayload = {
   __typename?: 'RunResumeConfigPayload';
   editableFields: RunEditableFieldFlagsObject;
   isActive: Scalars['Boolean']['output'];
-  manifestConfig: RunManifestConfigObject;
+  metadataConfig: RunMetadataConfigObject;
   runId: Scalars['String']['output'];
 };
 
@@ -1357,7 +1361,6 @@ export type SendAgentUserInputInput = {
   llmModelIdentifier?: InputMaybe<Scalars['String']['input']>;
   runtimeKind?: InputMaybe<Scalars['String']['input']>;
   skillAccessMode?: InputMaybe<ExternalChannelSkillAccessModeEnum>;
-  useXmlToolFormat?: InputMaybe<Scalars['Boolean']['input']>;
   userInput: AgentUserInput;
   workspaceId?: InputMaybe<Scalars['String']['input']>;
 };
@@ -1373,10 +1376,8 @@ export type SendMessageToTeamInput = {
   memberConfigs?: InputMaybe<Array<TeamMemberConfigInput>>;
   targetMemberName?: InputMaybe<Scalars['String']['input']>;
   targetNodeName?: InputMaybe<Scalars['String']['input']>;
-  taskNotificationMode?: InputMaybe<TaskNotificationModeEnum>;
   teamDefinitionId?: InputMaybe<Scalars['String']['input']>;
   teamRunId?: InputMaybe<Scalars['String']['input']>;
-  useXmlToolFormat?: InputMaybe<Scalars['Boolean']['input']>;
   userInput: AgentUserInput;
 };
 
@@ -1503,6 +1504,7 @@ export type TeamMemberConfigInput = {
   memberName: Scalars['String']['input'];
   memberRouteKey?: InputMaybe<Scalars['String']['input']>;
   memberRunId?: InputMaybe<Scalars['String']['input']>;
+  skillAccessMode: SkillAccessModeEnum;
   runtimeKind?: InputMaybe<Scalars['String']['input']>;
   workspaceId?: InputMaybe<Scalars['String']['input']>;
   workspaceRootPath?: InputMaybe<Scalars['String']['input']>;
@@ -1540,13 +1542,13 @@ export enum TeamMemberType {
   AgentTeam = 'AGENT_TEAM'
 }
 
-export type TeamRunHistoryItemObject = {
-  __typename?: 'TeamRunHistoryItemObject';
+export type WorkspaceHistoryTeamRunItemObject = {
+  __typename?: 'WorkspaceHistoryTeamRunItemObject';
   deleteLifecycle: Scalars['String']['output'];
   isActive: Scalars['Boolean']['output'];
   lastActivityAt: Scalars['String']['output'];
   lastKnownStatus: Scalars['String']['output'];
-  members: Array<TeamRunMemberHistoryObject>;
+  members: Array<WorkspaceHistoryTeamRunMemberObject>;
   summary: Scalars['String']['output'];
   teamDefinitionId: Scalars['String']['output'];
   teamDefinitionName: Scalars['String']['output'];
@@ -1554,13 +1556,12 @@ export type TeamRunHistoryItemObject = {
   workspaceRootPath?: Maybe<Scalars['String']['output']>;
 };
 
-export type TeamRunMemberHistoryObject = {
-  __typename?: 'TeamRunMemberHistoryObject';
+export type WorkspaceHistoryTeamRunMemberObject = {
+  __typename?: 'WorkspaceHistoryTeamRunMemberObject';
   memberName: Scalars['String']['output'];
   memberRouteKey: Scalars['String']['output'];
   memberRunId: Scalars['String']['output'];
   runtimeKind: Scalars['String']['output'];
-  runtimeReference?: Maybe<Scalars['JSON']['output']>;
   workspaceRootPath?: Maybe<Scalars['String']['output']>;
 };
 
@@ -1585,7 +1586,7 @@ export type TeamRunMemorySnapshotSummary = {
 export type TeamRunResumeConfigPayload = {
   __typename?: 'TeamRunResumeConfigPayload';
   isActive: Scalars['Boolean']['output'];
-  manifest: Scalars['JSON']['output'];
+  metadata: Scalars['JSON']['output'];
   teamRunId: Scalars['String']['output'];
 };
 
@@ -1965,19 +1966,19 @@ export type ContinueRunMutationVariables = Exact<{
 
 export type ContinueRunMutation = { __typename?: 'Mutation', continueRun: { __typename?: 'ContinueRunMutationResult', success: boolean, message: string, runId?: string | null, ignoredConfigFields: Array<string> } };
 
-export type DeleteRunHistoryMutationVariables = Exact<{
+export type DeleteStoredRunMutationVariables = Exact<{
   runId: Scalars['String']['input'];
 }>;
 
 
-export type DeleteRunHistoryMutation = { __typename?: 'Mutation', deleteRunHistory: { __typename?: 'DeleteRunHistoryMutationResult', success: boolean, message: string } };
+export type DeleteStoredRunMutation = { __typename?: 'Mutation', deleteStoredRun: { __typename?: 'DeleteStoredRunMutationResult', success: boolean, message: string } };
 
-export type DeleteTeamRunHistoryMutationVariables = Exact<{
+export type DeleteStoredTeamRunMutationVariables = Exact<{
   teamRunId: Scalars['String']['input'];
 }>;
 
 
-export type DeleteTeamRunHistoryMutation = { __typename?: 'Mutation', deleteTeamRunHistory: { __typename?: 'DeleteTeamRunHistoryMutationResult', success: boolean, message: string } };
+export type DeleteStoredTeamRunMutation = { __typename?: 'Mutation', deleteStoredTeamRun: { __typename?: 'DeleteStoredTeamRunMutationResult', success: boolean, message: string } };
 
 export type UpdateServerSettingMutationVariables = Exact<{
   key: Scalars['String']['input'];
@@ -2164,17 +2165,12 @@ export type PreviewMcpServerToolsQueryVariables = Exact<{
 
 export type PreviewMcpServerToolsQuery = { __typename?: 'Query', previewMcpServerTools: Array<{ __typename: 'ToolDefinitionDetail', name: string, description: string }> };
 
-export type ListRunHistoryQueryVariables = Exact<{
+export type ListWorkspaceRunHistoryQueryVariables = Exact<{
   limitPerAgent?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
-export type ListRunHistoryQuery = { __typename?: 'Query', listRunHistory: Array<{ __typename?: 'RunHistoryWorkspaceGroupObject', workspaceRootPath: string, workspaceName: string, agents: Array<{ __typename?: 'RunHistoryAgentGroupObject', agentDefinitionId: string, agentName: string, runs: Array<{ __typename?: 'RunHistoryItemObject', runId: string, summary: string, lastActivityAt: string, lastKnownStatus: string, isActive: boolean }> }> }> };
-
-export type ListTeamRunHistoryQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type ListTeamRunHistoryQuery = { __typename?: 'Query', listTeamRunHistory: Array<{ __typename?: 'TeamRunHistoryItemObject', teamRunId: string, teamDefinitionId: string, teamDefinitionName: string, workspaceRootPath?: string | null, summary: string, lastActivityAt: string, lastKnownStatus: string, deleteLifecycle: string, isActive: boolean, members: Array<{ __typename?: 'TeamRunMemberHistoryObject', memberRouteKey: string, memberName: string, memberRunId: string, runtimeKind: string, runtimeReference?: any | null, workspaceRootPath?: string | null }> }> };
+export type ListWorkspaceRunHistoryQuery = { __typename?: 'Query', listWorkspaceRunHistory: Array<{ __typename?: 'RunHistoryWorkspaceGroupObject', workspaceRootPath: string, workspaceName: string, agents: Array<{ __typename?: 'RunHistoryAgentGroupObject', agentDefinitionId: string, agentName: string, runs: Array<{ __typename?: 'RunHistoryItemObject', runId: string, summary: string, lastActivityAt: string, lastKnownStatus: string, isActive: boolean }> }>, teamRuns: Array<{ __typename?: 'WorkspaceHistoryTeamRunItemObject', teamRunId: string, teamDefinitionId: string, teamDefinitionName: string, workspaceRootPath?: string | null, summary: string, lastActivityAt: string, lastKnownStatus: string, deleteLifecycle: string, isActive: boolean, members: Array<{ __typename?: 'WorkspaceHistoryTeamRunMemberObject', memberRouteKey: string, memberName: string, memberRunId: string, runtimeKind: string, workspaceRootPath?: string | null }> }> }> };
 
 export type GetRunProjectionQueryVariables = Exact<{
   runId: Scalars['String']['input'];
@@ -2188,7 +2184,7 @@ export type GetTeamRunResumeConfigQueryVariables = Exact<{
 }>;
 
 
-export type GetTeamRunResumeConfigQuery = { __typename?: 'Query', getTeamRunResumeConfig: { __typename?: 'TeamRunResumeConfigPayload', teamRunId: string, isActive: boolean, manifest: any } };
+export type GetTeamRunResumeConfigQuery = { __typename?: 'Query', getTeamRunResumeConfig: { __typename?: 'TeamRunResumeConfigPayload', teamRunId: string, isActive: boolean, metadata: any } };
 
 export type GetTeamMemberRunProjectionQueryVariables = Exact<{
   teamRunId: Scalars['String']['input'];
@@ -2203,7 +2199,7 @@ export type GetRunResumeConfigQueryVariables = Exact<{
 }>;
 
 
-export type GetRunResumeConfigQuery = { __typename?: 'Query', getRunResumeConfig: { __typename?: 'RunResumeConfigPayload', runId: string, isActive: boolean, manifestConfig: { __typename?: 'RunManifestConfigObject', agentDefinitionId: string, workspaceRootPath: string, llmModelIdentifier: string, llmConfig?: any | null, autoExecuteTools: boolean, skillAccessMode?: ExternalChannelSkillAccessModeEnum | null, runtimeKind: string, runtimeReference: { __typename?: 'RunRuntimeReferenceObject', runtimeKind: string, sessionId?: string | null, threadId?: string | null, metadata?: any | null } }, editableFields: { __typename?: 'RunEditableFieldFlagsObject', llmModelIdentifier: boolean, llmConfig: boolean, autoExecuteTools: boolean, skillAccessMode: boolean, workspaceRootPath: boolean, runtimeKind: boolean } } };
+export type GetRunResumeConfigQuery = { __typename?: 'Query', getRunResumeConfig: { __typename?: 'RunResumeConfigPayload', runId: string, isActive: boolean, metadataConfig: { __typename?: 'RunMetadataConfigObject', agentDefinitionId: string, workspaceRootPath: string, llmModelIdentifier: string, llmConfig?: any | null, autoExecuteTools: boolean, skillAccessMode?: ExternalChannelSkillAccessModeEnum | null, runtimeKind: string, runtimeReference: { __typename?: 'RunRuntimeReferenceObject', runtimeKind: string, sessionId?: string | null, threadId?: string | null, metadata?: any | null } }, editableFields: { __typename?: 'RunEditableFieldFlagsObject', llmModelIdentifier: boolean, llmConfig: boolean, autoExecuteTools: boolean, skillAccessMode: boolean, workspaceRootPath: boolean, runtimeKind: boolean } } };
 
 export type GetRuntimeCapabilitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3615,9 +3611,9 @@ export function useContinueRunMutation(options: VueApolloComposable.UseMutationO
   return VueApolloComposable.useMutation<ContinueRunMutation, ContinueRunMutationVariables>(ContinueRunDocument, options);
 }
 export type ContinueRunMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<ContinueRunMutation, ContinueRunMutationVariables>;
-export const DeleteRunHistoryDocument = gql`
-    mutation DeleteRunHistory($runId: String!) {
-  deleteRunHistory(runId: $runId) {
+export const DeleteStoredRunDocument = gql`
+    mutation DeleteStoredRun($runId: String!) {
+  deleteStoredRun(runId: $runId) {
     success
     message
   }
@@ -3625,29 +3621,29 @@ export const DeleteRunHistoryDocument = gql`
     `;
 
 /**
- * __useDeleteRunHistoryMutation__
+ * __useDeleteStoredRunMutation__
  *
- * To run a mutation, you first call `useDeleteRunHistoryMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useDeleteRunHistoryMutation` returns an object that includes:
+ * To run a mutation, you first call `useDeleteStoredRunMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteStoredRunMutation` returns an object that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
  *
  * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
  *
  * @example
- * const { mutate, loading, error, onDone } = useDeleteRunHistoryMutation({
+ * const { mutate, loading, error, onDone } = useDeleteStoredRunMutation({
  *   variables: {
  *     runId: // value for 'runId'
  *   },
  * });
  */
-export function useDeleteRunHistoryMutation(options: VueApolloComposable.UseMutationOptions<DeleteRunHistoryMutation, DeleteRunHistoryMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<DeleteRunHistoryMutation, DeleteRunHistoryMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<DeleteRunHistoryMutation, DeleteRunHistoryMutationVariables>(DeleteRunHistoryDocument, options);
+export function useDeleteStoredRunMutation(options: VueApolloComposable.UseMutationOptions<DeleteStoredRunMutation, DeleteStoredRunMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<DeleteStoredRunMutation, DeleteStoredRunMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<DeleteStoredRunMutation, DeleteStoredRunMutationVariables>(DeleteStoredRunDocument, options);
 }
-export type DeleteRunHistoryMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<DeleteRunHistoryMutation, DeleteRunHistoryMutationVariables>;
-export const DeleteTeamRunHistoryDocument = gql`
-    mutation DeleteTeamRunHistory($teamRunId: String!) {
-  deleteTeamRunHistory(teamRunId: $teamRunId) {
+export type DeleteStoredRunMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<DeleteStoredRunMutation, DeleteStoredRunMutationVariables>;
+export const DeleteStoredTeamRunDocument = gql`
+    mutation DeleteStoredTeamRun($teamRunId: String!) {
+  deleteStoredTeamRun(teamRunId: $teamRunId) {
     success
     message
   }
@@ -3655,26 +3651,26 @@ export const DeleteTeamRunHistoryDocument = gql`
     `;
 
 /**
- * __useDeleteTeamRunHistoryMutation__
+ * __useDeleteStoredTeamRunMutation__
  *
- * To run a mutation, you first call `useDeleteTeamRunHistoryMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useDeleteTeamRunHistoryMutation` returns an object that includes:
+ * To run a mutation, you first call `useDeleteStoredTeamRunMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteStoredTeamRunMutation` returns an object that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
  *
  * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
  *
  * @example
- * const { mutate, loading, error, onDone } = useDeleteTeamRunHistoryMutation({
+ * const { mutate, loading, error, onDone } = useDeleteStoredTeamRunMutation({
  *   variables: {
  *     teamRunId: // value for 'teamRunId'
  *   },
  * });
  */
-export function useDeleteTeamRunHistoryMutation(options: VueApolloComposable.UseMutationOptions<DeleteTeamRunHistoryMutation, DeleteTeamRunHistoryMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<DeleteTeamRunHistoryMutation, DeleteTeamRunHistoryMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<DeleteTeamRunHistoryMutation, DeleteTeamRunHistoryMutationVariables>(DeleteTeamRunHistoryDocument, options);
+export function useDeleteStoredTeamRunMutation(options: VueApolloComposable.UseMutationOptions<DeleteStoredTeamRunMutation, DeleteStoredTeamRunMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<DeleteStoredTeamRunMutation, DeleteStoredTeamRunMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<DeleteStoredTeamRunMutation, DeleteStoredTeamRunMutationVariables>(DeleteStoredTeamRunDocument, options);
 }
-export type DeleteTeamRunHistoryMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<DeleteTeamRunHistoryMutation, DeleteTeamRunHistoryMutationVariables>;
+export type DeleteStoredTeamRunMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<DeleteStoredTeamRunMutation, DeleteStoredTeamRunMutationVariables>;
 export const UpdateServerSettingDocument = gql`
     mutation UpdateServerSetting($key: String!, $value: String!) {
   updateServerSetting(key: $key, value: $value)
@@ -4716,9 +4712,9 @@ export function usePreviewMcpServerToolsLazyQuery(variables?: PreviewMcpServerTo
   return VueApolloComposable.useLazyQuery<PreviewMcpServerToolsQuery, PreviewMcpServerToolsQueryVariables>(PreviewMcpServerToolsDocument, variables, options);
 }
 export type PreviewMcpServerToolsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<PreviewMcpServerToolsQuery, PreviewMcpServerToolsQueryVariables>;
-export const ListRunHistoryDocument = gql`
-    query ListRunHistory($limitPerAgent: Int = 6) {
-  listRunHistory(limitPerAgent: $limitPerAgent) {
+export const ListWorkspaceRunHistoryDocument = gql`
+    query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {
+  listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {
     workspaceRootPath
     workspaceName
     agents {
@@ -4732,75 +4728,50 @@ export const ListRunHistoryDocument = gql`
         isActive
       }
     }
-  }
-}
-    `;
-
-/**
- * __useListRunHistoryQuery__
- *
- * To run a query within a Vue component, call `useListRunHistoryQuery` and pass it any options that fit your needs.
- * When your component renders, `useListRunHistoryQuery` returns an object from Apollo Client that contains result, loading and error properties
- * you can use to render your UI.
- *
- * @param variables that will be passed into the query
- * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
- *
- * @example
- * const { result, loading, error } = useListRunHistoryQuery({
- *   limitPerAgent: // value for 'limitPerAgent'
- * });
- */
-export function useListRunHistoryQuery(variables: ListRunHistoryQueryVariables | VueCompositionApi.Ref<ListRunHistoryQueryVariables> | ReactiveFunction<ListRunHistoryQueryVariables> = {}, options: VueApolloComposable.UseQueryOptions<ListRunHistoryQuery, ListRunHistoryQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ListRunHistoryQuery, ListRunHistoryQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ListRunHistoryQuery, ListRunHistoryQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<ListRunHistoryQuery, ListRunHistoryQueryVariables>(ListRunHistoryDocument, variables, options);
-}
-export function useListRunHistoryLazyQuery(variables: ListRunHistoryQueryVariables | VueCompositionApi.Ref<ListRunHistoryQueryVariables> | ReactiveFunction<ListRunHistoryQueryVariables> = {}, options: VueApolloComposable.UseQueryOptions<ListRunHistoryQuery, ListRunHistoryQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ListRunHistoryQuery, ListRunHistoryQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ListRunHistoryQuery, ListRunHistoryQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<ListRunHistoryQuery, ListRunHistoryQueryVariables>(ListRunHistoryDocument, variables, options);
-}
-export type ListRunHistoryQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<ListRunHistoryQuery, ListRunHistoryQueryVariables>;
-export const ListTeamRunHistoryDocument = gql`
-    query ListTeamRunHistory {
-  listTeamRunHistory {
-    teamRunId
-    teamDefinitionId
-    teamDefinitionName
-    workspaceRootPath
-    summary
-    lastActivityAt
-    lastKnownStatus
-    deleteLifecycle
-    isActive
-    members {
-      memberRouteKey
-      memberName
-      memberRunId
-      runtimeKind
-      runtimeReference
+    teamRuns {
+      teamRunId
+      teamDefinitionId
+      teamDefinitionName
       workspaceRootPath
+      summary
+      lastActivityAt
+      lastKnownStatus
+      deleteLifecycle
+      isActive
+      members {
+        memberRouteKey
+        memberName
+        memberRunId
+        runtimeKind
+        workspaceRootPath
+      }
     }
   }
 }
     `;
 
 /**
- * __useListTeamRunHistoryQuery__
+ * __useListWorkspaceRunHistoryQuery__
  *
- * To run a query within a Vue component, call `useListTeamRunHistoryQuery` and pass it any options that fit your needs.
- * When your component renders, `useListTeamRunHistoryQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * To run a query within a Vue component, call `useListWorkspaceRunHistoryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListWorkspaceRunHistoryQuery` returns an object from Apollo Client that contains result, loading and error properties
  * you can use to render your UI.
  *
+ * @param variables that will be passed into the query
  * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
  *
  * @example
- * const { result, loading, error } = useListTeamRunHistoryQuery();
+ * const { result, loading, error } = useListWorkspaceRunHistoryQuery({
+ *   limitPerAgent: // value for 'limitPerAgent'
+ * });
  */
-export function useListTeamRunHistoryQuery(options: VueApolloComposable.UseQueryOptions<ListTeamRunHistoryQuery, ListTeamRunHistoryQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ListTeamRunHistoryQuery, ListTeamRunHistoryQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ListTeamRunHistoryQuery, ListTeamRunHistoryQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<ListTeamRunHistoryQuery, ListTeamRunHistoryQueryVariables>(ListTeamRunHistoryDocument, {}, options);
+export function useListWorkspaceRunHistoryQuery(variables: ListWorkspaceRunHistoryQueryVariables | VueCompositionApi.Ref<ListWorkspaceRunHistoryQueryVariables> | ReactiveFunction<ListWorkspaceRunHistoryQueryVariables> = {}, options: VueApolloComposable.UseQueryOptions<ListWorkspaceRunHistoryQuery, ListWorkspaceRunHistoryQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ListWorkspaceRunHistoryQuery, ListWorkspaceRunHistoryQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ListWorkspaceRunHistoryQuery, ListWorkspaceRunHistoryQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<ListWorkspaceRunHistoryQuery, ListWorkspaceRunHistoryQueryVariables>(ListWorkspaceRunHistoryDocument, variables, options);
 }
-export function useListTeamRunHistoryLazyQuery(options: VueApolloComposable.UseQueryOptions<ListTeamRunHistoryQuery, ListTeamRunHistoryQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ListTeamRunHistoryQuery, ListTeamRunHistoryQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ListTeamRunHistoryQuery, ListTeamRunHistoryQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<ListTeamRunHistoryQuery, ListTeamRunHistoryQueryVariables>(ListTeamRunHistoryDocument, {}, options);
+export function useListWorkspaceRunHistoryLazyQuery(variables: ListWorkspaceRunHistoryQueryVariables | VueCompositionApi.Ref<ListWorkspaceRunHistoryQueryVariables> | ReactiveFunction<ListWorkspaceRunHistoryQueryVariables> = {}, options: VueApolloComposable.UseQueryOptions<ListWorkspaceRunHistoryQuery, ListWorkspaceRunHistoryQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ListWorkspaceRunHistoryQuery, ListWorkspaceRunHistoryQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ListWorkspaceRunHistoryQuery, ListWorkspaceRunHistoryQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<ListWorkspaceRunHistoryQuery, ListWorkspaceRunHistoryQueryVariables>(ListWorkspaceRunHistoryDocument, variables, options);
 }
-export type ListTeamRunHistoryQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<ListTeamRunHistoryQuery, ListTeamRunHistoryQueryVariables>;
+export type ListWorkspaceRunHistoryQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<ListWorkspaceRunHistoryQuery, ListWorkspaceRunHistoryQueryVariables>;
 export const GetRunProjectionDocument = gql`
     query GetRunProjection($runId: String!) {
   getRunProjection(runId: $runId) {
@@ -4839,7 +4810,7 @@ export const GetTeamRunResumeConfigDocument = gql`
   getTeamRunResumeConfig(teamRunId: $teamRunId) {
     teamRunId
     isActive
-    manifest
+    metadata
   }
 }
     `;
@@ -4908,7 +4879,7 @@ export const GetRunResumeConfigDocument = gql`
   getRunResumeConfig(runId: $runId) {
     runId
     isActive
-    manifestConfig {
+    metadataConfig {
       agentDefinitionId
       workspaceRootPath
       llmModelIdentifier

@@ -13,10 +13,6 @@ import { AgentTeamStreamHandler } from "../../../src/services/agent-streaming/ag
 import { AgentSessionManager } from "../../../src/services/agent-streaming/agent-session-manager.js";
 import { TeamStreamBroadcaster } from "../../../src/services/agent-streaming/team-stream-broadcaster.js";
 import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
-import { RuntimeCommandIngressService } from "../../../src/runtime-execution/runtime-command-ingress-service.js";
-import { RuntimeAdapterRegistry } from "../../../src/runtime-execution/runtime-adapter-registry.js";
-import { RuntimeSessionStore } from "../../../src/runtime-execution/runtime-session-store.js";
-import { AutobyteusRuntimeAdapter } from "../../../src/runtime-execution/adapters/autobyteus-runtime-adapter.js";
 
 class FakeTeamStream {
   private queue: Array<AgentTeamStreamEvent | null> = [];
@@ -101,16 +97,56 @@ class FakeTeam {
   }
 }
 
+class FakeTeamRun {
+  readonly runId: string;
+  readonly runtimeKind = "autobyteus";
+
+  constructor(private readonly team: FakeTeam) {
+    this.runId = team.teamRunId;
+  }
+
+  async postMessage(message: AgentInputUserMessage, targetMemberName?: string | null): Promise<{ accepted: true }> {
+    await this.team.postMessage(message, targetMemberName);
+    return { accepted: true };
+  }
+
+  async approveToolInvocation(
+    targetMemberName: string,
+    invocationId: string,
+    approved: boolean,
+    reason?: string | null,
+  ): Promise<{ accepted: true }> {
+    await this.team.postToolExecutionApproval(
+      targetMemberName,
+      invocationId,
+      approved,
+      reason,
+    );
+    return { accepted: true };
+  }
+
+  async interrupt(): Promise<{ accepted: true }> {
+    await this.team.stop();
+    return { accepted: true };
+  }
+}
+
 class FakeTeamManager {
   private team: FakeTeam;
+  private teamRun: FakeTeamRun;
   private stream: FakeTeamStream;
 
   constructor(team: FakeTeam, stream: FakeTeamStream) {
     this.team = team;
+    this.teamRun = new FakeTeamRun(team);
     this.stream = stream;
   }
 
-  getTeamRun(teamRunId: string): FakeTeam | null {
+  getTeamRun(teamRunId: string): FakeTeamRun | null {
+    return teamRunId === this.team.teamRunId ? this.teamRun : null;
+  }
+
+  getTeam(teamRunId: string): FakeTeam | null {
     return teamRunId === this.team.teamRunId ? this.team : null;
   }
 
@@ -144,31 +180,9 @@ describe("Agent team websocket integration", () => {
     const team = new FakeTeam("team-1");
     const stream = new FakeTeamStream();
     const manager = new FakeTeamManager(team, stream);
-    const sessionStore = new RuntimeSessionStore();
-    sessionStore.upsertSession({
-      runId: team.teamRunId,
-      runtimeKind: "autobyteus",
-      mode: "team",
-      runtimeReference: {
-        runtimeKind: "autobyteus",
-        sessionId: team.teamRunId,
-        threadId: null,
-        metadata: null,
-      },
-    });
-    const ingress = new RuntimeCommandIngressService(
-      sessionStore,
-      new RuntimeAdapterRegistry([
-        new AutobyteusRuntimeAdapter(
-          { getAgentRun: () => null } as any,
-          manager as unknown as any,
-        ),
-      ]),
-    );
     const handler = new AgentTeamStreamHandler(
       new AgentSessionManager(),
       manager as unknown as any,
-      ingress,
     );
 
     const dummyAgentHandler = {
@@ -275,31 +289,11 @@ describe("Agent team websocket integration", () => {
     const stream = new FakeTeamStream();
     const manager = new FakeTeamManager(team, stream);
     const broadcaster = new TeamStreamBroadcaster();
-    const sessionStore = new RuntimeSessionStore();
-    sessionStore.upsertSession({
-      runId: team.teamRunId,
-      runtimeKind: "autobyteus",
-      mode: "team",
-      runtimeReference: {
-        runtimeKind: "autobyteus",
-        sessionId: team.teamRunId,
-        threadId: null,
-        metadata: null,
-      },
-    });
-    const ingress = new RuntimeCommandIngressService(
-      sessionStore,
-      new RuntimeAdapterRegistry([
-        new AutobyteusRuntimeAdapter(
-          { getAgentRun: () => null } as any,
-          manager as unknown as any,
-        ),
-      ]),
-    );
     const handler = new AgentTeamStreamHandler(
       new AgentSessionManager(),
       manager as unknown as any,
-      ingress,
+      undefined,
+      undefined,
       undefined,
       undefined,
       broadcaster,
@@ -429,31 +423,9 @@ describe("Agent team websocket integration", () => {
     const team = new FakeTeam("team-approvals");
     const stream = new FakeTeamStream();
     const manager = new FakeTeamManager(team, stream);
-    const sessionStore = new RuntimeSessionStore();
-    sessionStore.upsertSession({
-      runId: team.teamRunId,
-      runtimeKind: "autobyteus",
-      mode: "team",
-      runtimeReference: {
-        runtimeKind: "autobyteus",
-        sessionId: team.teamRunId,
-        threadId: null,
-        metadata: null,
-      },
-    });
-    const ingress = new RuntimeCommandIngressService(
-      sessionStore,
-      new RuntimeAdapterRegistry([
-        new AutobyteusRuntimeAdapter(
-          { getAgentRun: () => null } as any,
-          manager as unknown as any,
-        ),
-      ]),
-    );
     const handler = new AgentTeamStreamHandler(
       new AgentSessionManager(),
       manager as unknown as any,
-      ingress,
     );
 
     const app = fastify();

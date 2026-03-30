@@ -4,6 +4,5 @@ export { AgentStreamHandler, getAgentStreamHandler } from "./agent-stream-handle
 export type { WebSocketConnection } from "./agent-stream-handler.js";
 export { AgentTeamStreamHandler, getAgentTeamStreamHandler } from "./agent-team-stream-handler.js";
 export type { WebSocketConnection as TeamWebSocketConnection } from "./agent-team-stream-handler.js";
-export { RuntimeEventMessageMapper, getRuntimeEventMessageMapper } from "./runtime-event-message-mapper.js";
-export { TeamRuntimeEventBridge, getTeamRuntimeEventBridge } from "./team-runtime-event-bridge.js";
+export { AgentRunEventMessageMapper, getAgentRunEventMessageMapper } from "./agent-run-event-message-mapper.js";
 export * from "./models.js";

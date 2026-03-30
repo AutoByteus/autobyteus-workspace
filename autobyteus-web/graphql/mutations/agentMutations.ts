@@ -1,8 +1,8 @@
 import { gql } from 'graphql-tag';
 
 export const TerminateAgentRun = gql`
-  mutation TerminateAgentRun($id: String!) {
-    terminateAgentRun(id: $id) {
+  mutation TerminateAgentRun($agentRunId: String!) {
+    terminateAgentRun(agentRunId: $agentRunId) {
       __typename
       success
       message
@@ -10,13 +10,23 @@ export const TerminateAgentRun = gql`
   }
 `;
 
-export const SendAgentUserInput = gql`
-  mutation SendAgentUserInput($input: SendAgentUserInputInput!) {
-    sendAgentUserInput(input: $input) {
+export const CreateAgentRun = gql`
+  mutation CreateAgentRun($input: CreateAgentRunInput!) {
+    createAgentRun(input: $input) {
+      success
+      message
+      runId
+    }
+  }
+`;
+
+export const RestoreAgentRun = gql`
+  mutation RestoreAgentRun($agentRunId: String!) {
+    restoreAgentRun(agentRunId: $agentRunId) {
       __typename
       success
       message
-      agentRunId
+      runId
     }
   }
 `;

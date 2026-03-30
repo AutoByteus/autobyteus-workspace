@@ -110,12 +110,12 @@
 [ENTRY] RunHistoryResolver.continueRun(runId=existing)
   -> RunContinuationService.continueExistingRun(...)
   -> active session check (runtime + legacy local)
-  -> read manifest: RunManifestStore.readManifest(...)
+  -> read manifest: AgentRunManifestStore.readManifest(...)
   -> validate/migrate manifest: RuntimeManifestMigrationService.migrateAndValidate(...)
   -> merge inactive overrides (runtime kind immutable)
   -> RuntimeCompositionService.restoreAgentRun(...)
   -> RuntimeCommandIngressService.bindRunSession(...)
-  -> RunManifestStore.writeManifest(...)
+  -> AgentRunManifestStore.writeManifest(...)
   -> RuntimeCommandIngressService.sendTurn(...)
 [EXIT] run restored and continued
 ```

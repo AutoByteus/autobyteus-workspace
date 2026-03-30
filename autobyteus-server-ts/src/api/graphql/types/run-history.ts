@@ -10,10 +10,10 @@ import {
 } from "type-graphql";
 import { GraphQLJSON } from "graphql-scalars";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
-import { AgentUserInput } from "./agent-user-input.js";
-import { getRunContinuationService } from "../../../run-history/services/run-continuation-service.js";
-import { getRunHistoryService } from "../../../run-history/services/run-history-service.js";
-import { getRunProjectionService } from "../../../run-history/services/run-projection-service.js";
+import { getAgentRunHistoryService } from "../../../run-history/services/agent-run-history-service.js";
+import { getAgentRunViewProjectionService } from "../../../run-history/services/agent-run-view-projection-service.js";
+import { getAgentRunResumeConfigService } from "../../../run-history/services/agent-run-resume-config-service.js";
+import { getWorkspaceRunHistoryService } from "../../../run-history/services/workspace-run-history-service.js";
 
 @ObjectType()
 class RunHistoryItemObject {
@@ -45,8 +45,59 @@ class RunHistoryAgentGroupObject {
   runs!: RunHistoryItemObject[];
 }
 
+@ObjectType("WorkspaceHistoryTeamRunMemberObject")
+class WorkspaceHistoryTeamRunMemberObject {
+  @Field(() => String)
+  memberRouteKey!: string;
+
+  @Field(() => String)
+  memberName!: string;
+
+  @Field(() => String)
+  memberRunId!: string;
+
+  @Field(() => String)
+  runtimeKind!: string;
+
+  @Field(() => String, { nullable: true })
+  workspaceRootPath?: string | null;
+}
+
+@ObjectType("WorkspaceHistoryTeamRunItemObject")
+class WorkspaceHistoryTeamRunItemObject {
+  @Field(() => String)
+  teamRunId!: string;
+
+  @Field(() => String)
+  teamDefinitionId!: string;
+
+  @Field(() => String)
+  teamDefinitionName!: string;
+
+  @Field(() => String, { nullable: true })
+  workspaceRootPath?: string | null;
+
+  @Field(() => String)
+  summary!: string;
+
+  @Field(() => String)
+  lastActivityAt!: string;
+
+  @Field(() => String)
+  lastKnownStatus!: string;
+
+  @Field(() => String)
+  deleteLifecycle!: string;
+
+  @Field(() => Boolean)
+  isActive!: boolean;
+
+  @Field(() => [WorkspaceHistoryTeamRunMemberObject])
+  members!: WorkspaceHistoryTeamRunMemberObject[];
+}
+
 @ObjectType()
-class RunHistoryWorkspaceGroupObject {
+class WorkspaceRunHistoryGroupObject {
   @Field(() => String)
   workspaceRootPath!: string;
 
@@ -55,6 +106,9 @@ class RunHistoryWorkspaceGroupObject {
 
   @Field(() => [RunHistoryAgentGroupObject])
   agents!: RunHistoryAgentGroupObject[];
+
+  @Field(() => [WorkspaceHistoryTeamRunItemObject])
+  teamRuns!: WorkspaceHistoryTeamRunItemObject[];
 }
 
 @ObjectType()
@@ -109,7 +163,7 @@ class RunRuntimeReferenceObject {
 }
 
 @ObjectType()
-class RunManifestConfigObject {
+class RunMetadataConfigObject {
   @Field(() => String)
   agentDefinitionId!: string;
 
@@ -143,63 +197,15 @@ class RunResumeConfigPayload {
   @Field(() => Boolean)
   isActive!: boolean;
 
-  @Field(() => RunManifestConfigObject)
-  manifestConfig!: RunManifestConfigObject;
+  @Field(() => RunMetadataConfigObject)
+  metadataConfig!: RunMetadataConfigObject;
 
   @Field(() => RunEditableFieldFlagsObject)
   editableFields!: RunEditableFieldFlagsObject;
 }
 
-@InputType()
-class ContinueRunInput {
-  @Field(() => AgentUserInput)
-  userInput!: AgentUserInput;
-
-  @Field(() => String, { nullable: true })
-  runId?: string | null;
-
-  @Field(() => String, { nullable: true })
-  agentDefinitionId?: string | null;
-
-  @Field(() => String, { nullable: true })
-  workspaceRootPath?: string | null;
-
-  @Field(() => String, { nullable: true })
-  workspaceId?: string | null;
-
-  @Field(() => String, { nullable: true })
-  llmModelIdentifier?: string | null;
-
-  @Field(() => Boolean, { nullable: true })
-  autoExecuteTools?: boolean | null;
-
-  @Field(() => GraphQLJSON, { nullable: true })
-  llmConfig?: Record<string, unknown> | null;
-
-  @Field(() => SkillAccessMode, { nullable: true })
-  skillAccessMode?: SkillAccessMode | null;
-
-  @Field(() => String, { nullable: true })
-  runtimeKind?: string | null;
-}
-
 @ObjectType()
-class ContinueRunMutationResult {
-  @Field(() => Boolean)
-  success!: boolean;
-
-  @Field(() => String)
-  message!: string;
-
-  @Field(() => String, { nullable: true })
-  runId?: string | null;
-
-  @Field(() => [String])
-  ignoredConfigFields!: string[];
-}
-
-@ObjectType()
-class DeleteRunHistoryMutationResult {
+class DeleteStoredRunMutationResult {
   @Field(() => Boolean)
   success!: boolean;
 
@@ -209,59 +215,38 @@ class DeleteRunHistoryMutationResult {
 
 @Resolver()
 export class RunHistoryResolver {
-  private runHistoryService = getRunHistoryService();
-  private runProjectionService = getRunProjectionService();
-  private runContinuationService = getRunContinuationService();
+  private agentRunHistoryService = getAgentRunHistoryService();
+  private workspaceRunHistoryService = getWorkspaceRunHistoryService();
+  private agentRunProjectionService = getAgentRunViewProjectionService();
+  private agentRunResumeConfigService = getAgentRunResumeConfigService();
 
-  @Query(() => [RunHistoryWorkspaceGroupObject])
-  async listRunHistory(
+  @Query(() => [WorkspaceRunHistoryGroupObject])
+  async listWorkspaceRunHistory(
     @Arg("limitPerAgent", () => Int, { defaultValue: 6 }) limitPerAgent = 6,
-  ): Promise<RunHistoryWorkspaceGroupObject[]> {
-    return this.runHistoryService.listRunHistory(limitPerAgent);
+  ): Promise<WorkspaceRunHistoryGroupObject[]> {
+    return this.workspaceRunHistoryService.listWorkspaceRunHistory(limitPerAgent);
   }
 
   @Query(() => RunProjectionPayload)
   async getRunProjection(
     @Arg("runId", () => String) runId: string,
   ): Promise<RunProjectionPayload> {
-    return this.runProjectionService.getProjection(runId);
+    return this.agentRunProjectionService.getProjection(runId);
   }
 
   @Query(() => RunResumeConfigPayload)
-  async getRunResumeConfig(
+  async getAgentRunResumeConfig(
     @Arg("runId", () => String) runId: string,
   ): Promise<RunResumeConfigPayload> {
-    return this.runHistoryService.getRunResumeConfig(runId);
+    return this.agentRunResumeConfigService.getAgentRunResumeConfig(runId);
   }
 
-  @Mutation(() => ContinueRunMutationResult)
-  async continueRun(
-    @Arg("input", () => ContinueRunInput) input: ContinueRunInput,
-  ): Promise<ContinueRunMutationResult> {
-    try {
-      const result = await this.runContinuationService.continueRun(input);
-      return {
-        success: true,
-        message: "Run continued successfully.",
-        runId: result.runId,
-        ignoredConfigFields: result.ignoredConfigFields,
-      };
-    } catch (error) {
-      return {
-        success: false,
-        message: String(error),
-        runId: input.runId ?? null,
-        ignoredConfigFields: [],
-      };
-    }
-  }
-
-  @Mutation(() => DeleteRunHistoryMutationResult)
-  async deleteRunHistory(
+  @Mutation(() => DeleteStoredRunMutationResult)
+  async deleteStoredRun(
     @Arg("runId", () => String) runId: string,
-  ): Promise<DeleteRunHistoryMutationResult> {
+  ): Promise<DeleteStoredRunMutationResult> {
     try {
-      return await this.runHistoryService.deleteRunHistory(runId);
+      return await this.agentRunHistoryService.deleteStoredRun(runId);
     } catch (error) {
       return {
         success: false,

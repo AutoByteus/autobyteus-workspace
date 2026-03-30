@@ -8,10 +8,8 @@ import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
-import { useActiveRuntimeSyncStore } from '~/stores/activeRuntimeSyncStore';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import {
-  applyLiveTeamStatusSnapshot,
   loadTeamRunContextHydrationPayload,
 } from '~/services/runHydration/teamRunContextHydrationService';
 
@@ -28,39 +26,36 @@ export interface OpenTeamRunWithCoordinatorResult {
   resumeConfig: TeamRunResumeConfigPayload;
 }
 
-export const openTeamRunWithCoordinator = async (
+export const openTeamRun = async (
   input: OpenTeamRunWithCoordinatorInput,
 ): Promise<OpenTeamRunWithCoordinatorResult> => {
   const {
     resumeConfig,
-    manifest,
+    metadata,
     members,
     firstWorkspaceId,
     focusedMemberRouteKey,
   } = await loadTeamRunContextHydrationPayload(input);
 
-  const focusedBinding = manifest.memberBindings.find((member) => {
+  const focusedBinding = metadata.memberBindings.find((member) => {
     const routeKey = member.memberRouteKey?.trim() || member.memberName.trim();
     return routeKey === focusedMemberRouteKey;
   });
-  const activeRuntimeSyncStore = useActiveRuntimeSyncStore();
-  const activeTeamSnapshot = resumeConfig.isActive
-    ? await activeRuntimeSyncStore.ensureActiveTeamRunSnapshot(manifest.teamRunId)
-    : null;
-  const shouldTreatAsLive = Boolean(activeTeamSnapshot);
+  const shouldTreatAsLive = resumeConfig.isActive;
 
   const teamContextsStore = useAgentTeamContextsStore();
   const hydratedContext: AgentTeamContext = {
-    teamRunId: manifest.teamRunId,
+    teamRunId: metadata.teamRunId,
     config: {
-      teamDefinitionId: manifest.teamDefinitionId,
-      teamDefinitionName: manifest.teamDefinitionName,
+      teamDefinitionId: metadata.teamDefinitionId,
+      teamDefinitionName: metadata.teamDefinitionName,
       runtimeKind: focusedBinding?.runtimeKind || DEFAULT_AGENT_RUNTIME_KIND,
       workspaceId: firstWorkspaceId,
       llmModelIdentifier: focusedBinding?.llmModelIdentifier || '',
       autoExecuteTools: focusedBinding?.autoExecuteTools ?? false,
+      skillAccessMode: 'PRELOADED_ONLY' as const,
       memberOverrides: Object.fromEntries(
-        manifest.memberBindings.map((member) => [
+        metadata.memberBindings.map((member) => [
           member.memberName,
           {
             agentDefinitionId: member.agentDefinitionId,
@@ -74,19 +69,15 @@ export const openTeamRunWithCoordinator = async (
     },
     members,
     focusedMemberName: focusedMemberRouteKey,
-    currentStatus: shouldTreatAsLive ? AgentTeamStatus.Idle : AgentTeamStatus.ShutdownComplete,
+    currentStatus: shouldTreatAsLive
+      ? AgentTeamStatus.Uninitialized
+      : AgentTeamStatus.ShutdownComplete,
     isSubscribed: false,
     taskPlan: null,
     taskStatuses: null,
   };
-  if (activeTeamSnapshot) {
-    applyLiveTeamStatusSnapshot(hydratedContext, {
-      currentStatus: activeTeamSnapshot.currentStatus,
-      memberStatuses: activeTeamSnapshot.members || [],
-    });
-  }
 
-  const existingTeamContext = teamContextsStore.getTeamContextById(manifest.teamRunId);
+  const existingTeamContext = teamContextsStore.getTeamContextById(metadata.teamRunId);
   const shouldKeepLiveContext = shouldTreatAsLive && Boolean(existingTeamContext?.isSubscribed);
 
   if (existingTeamContext) {
@@ -116,27 +107,21 @@ export const openTeamRunWithCoordinator = async (
       existingTeamContext.unsubscribe = undefined;
       existingTeamContext.taskPlan = null;
       existingTeamContext.taskStatuses = null;
-      if (activeTeamSnapshot) {
-        applyLiveTeamStatusSnapshot(existingTeamContext, {
-          currentStatus: activeTeamSnapshot.currentStatus,
-          memberStatuses: activeTeamSnapshot.members || [],
-        });
-      }
     }
   } else {
     teamContextsStore.addTeamContext(hydratedContext);
   }
 
   if (input.selectRun !== false) {
-    useAgentSelectionStore().selectRun(manifest.teamRunId, 'team');
+    useAgentSelectionStore().selectRun(metadata.teamRunId, 'team');
     useTeamRunConfigStore().clearConfig();
     useAgentRunConfigStore().clearConfig();
   }
 
   if (shouldTreatAsLive) {
-    useAgentTeamRunStore().connectToTeamStream(manifest.teamRunId);
+    useAgentTeamRunStore().connectToTeamStream(metadata.teamRunId);
   } else {
-    const hydratedTeam = teamContextsStore.getTeamContextById(manifest.teamRunId);
+    const hydratedTeam = teamContextsStore.getTeamContextById(metadata.teamRunId);
     if (hydratedTeam?.unsubscribe) {
       hydratedTeam.unsubscribe();
       hydratedTeam.isSubscribed = false;
@@ -144,7 +129,7 @@ export const openTeamRunWithCoordinator = async (
   }
 
   return {
-    teamRunId: manifest.teamRunId,
+    teamRunId: metadata.teamRunId,
     focusedMemberRouteKey,
     resumeConfig,
   };

@@ -1,531 +1,236 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { AgentConfig, AgentTeamConfig } from "autobyteus-ts";
-import { LLMConfig } from "autobyteus-ts/llm/utils/llm-config.js";
-import {
-  AgentTeamRunManager,
-  TeamMemberConfigInput,
-} from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
-import { AgentTeamDefinition, TeamMember } from "../../../src/agent-team-definition/domain/models.js";
-import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
+import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import type { TeamRunBackend } from "../../../src/agent-team-execution/backends/team-run-backend.js";
+import type { TeamRunBackendFactory } from "../../../src/agent-team-execution/backends/team-run-backend-factory.js";
+import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
+import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
+import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
 import { AgentTeamCreationError, AgentTeamTerminationError } from "../../../src/agent-team-execution/errors.js";
+import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 
-type ProcessorRegistry<T> = {
-  getProcessor: (name: string) => T | undefined;
-  getOrderedProcessorOptions: () => Array<{ name: string; isMandatory: boolean }>;
-};
-
-type PreprocessorRegistry<T> = {
-  getPreprocessor: (name: string) => T | undefined;
-  getOrderedProcessorOptions: () => Array<{ name: string; isMandatory: boolean }>;
-};
-
-const makeEmptyRegistries = () => ({
-  input: {
-    getProcessor: vi.fn(),
-    getOrderedProcessorOptions: () => [],
-  } as ProcessorRegistry<unknown>,
-  llmResponse: {
-    getProcessor: vi.fn(),
-    getOrderedProcessorOptions: () => [],
-  } as ProcessorRegistry<unknown>,
-  systemPrompt: {
-    getProcessor: vi.fn(),
-    getOrderedProcessorOptions: () => [],
-  } as ProcessorRegistry<unknown>,
-  toolExecutionResult: {
-    getProcessor: vi.fn(),
-    getOrderedProcessorOptions: () => [],
-  } as ProcessorRegistry<unknown>,
-  toolInvocationPreprocessor: {
-    getPreprocessor: vi.fn(),
-    getOrderedProcessorOptions: () => [],
-  } as PreprocessorRegistry<unknown>,
-  lifecycle: {
-    getProcessor: vi.fn(),
-    getOrderedProcessorOptions: () => [],
-  } as ProcessorRegistry<unknown>,
-});
-
-const createManager = (overrides: Partial<ConstructorParameters<typeof AgentTeamRunManager>[0]> = {}) => {
-  const fakeTeam = { teamId: "test_team_123", start: vi.fn() };
-  const teamFactory = {
-    createTeam: vi.fn().mockReturnValue(fakeTeam),
-    createTeamWithId: vi.fn().mockImplementation((teamId: string) => ({
-      teamId,
-      start: vi.fn(),
-    })),
-    removeTeam: vi.fn().mockResolvedValue(true),
-    getTeam: vi.fn().mockReturnValue(fakeTeam),
-    listActiveTeamIds: vi.fn().mockReturnValue(["test_team_123"]),
-  };
-
-  const teamDefinitionService = {
-    getDefinitionById: vi.fn(),
-    getFreshDefinitionById: vi.fn((id: string) => teamDefinitionService.getDefinitionById(id)),
-  };
-
-  const agentDefinitionService = {
-    getAgentDefinitionById: vi.fn(),
-    getFreshAgentDefinitionById: vi.fn((id: string) => agentDefinitionService.getAgentDefinitionById(id)),
-  };
-
-  const llmFactory = {
-    createLLM: vi.fn().mockResolvedValue({}),
-  };
-
-  const workspaceManager = {
-    getWorkspaceById: vi.fn().mockReturnValue(null),
-  };
-
-  const skillService = {
-    getSkill: vi.fn(),
-  };
-
-  const waitForIdle = vi.fn().mockResolvedValue(undefined);
-
-  const registries = makeEmptyRegistries();
-
-  const manager = new AgentTeamRunManager({
-    teamFactory,
-    teamDefinitionService: teamDefinitionService as any,
-    agentDefinitionService: agentDefinitionService as any,
-    llmFactory: llmFactory as any,
-    workspaceManager: workspaceManager as any,
-    skillService: skillService as any,
-    registries,
-    waitForIdle,
-    ...overrides,
+const createConfig = (runtimeKind: RuntimeKind): TeamRunConfig =>
+  new TeamRunConfig({
+    teamDefinitionId: `team-def-${runtimeKind}`,
+    runtimeKind,
+    memberConfigs: [
+      {
+        memberName: "Coordinator",
+        memberRouteKey: "coordinator",
+        agentDefinitionId: `agent-${runtimeKind}`,
+        llmModelIdentifier: `model-${runtimeKind}`,
+        autoExecuteTools: true,
+        skillAccessMode: SkillAccessMode.NONE,
+        runtimeKind,
+        workspaceId: `workspace-${runtimeKind}`,
+      },
+    ],
   });
 
+const createBackend = (input: {
+  runId: string;
+  runtimeKind: RuntimeKind;
+  active?: boolean;
+  status?: string | null;
+  runtimeContext?: unknown;
+}) => {
+  const state = {
+    active: input.active ?? true,
+    status: input.status ?? "IDLE",
+  };
+
+  const backend: TeamRunBackend = {
+    runId: input.runId,
+    runtimeKind: input.runtimeKind,
+    getRuntimeContext: () => (input.runtimeContext ?? null) as never,
+    isActive: () => state.active,
+    getStatus: () => state.status,
+    subscribeToEvents: vi.fn().mockImplementation(() => () => undefined),
+    postMessage: vi.fn().mockResolvedValue({ accepted: true }),
+    deliverInterAgentMessage: vi.fn().mockResolvedValue({ accepted: true }),
+    approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
+    interrupt: vi.fn().mockResolvedValue({ accepted: true }),
+    terminate: vi.fn().mockResolvedValue({ accepted: true }),
+  };
+
   return {
-    manager,
-    teamFactory,
-    teamDefinitionService,
-    agentDefinitionService,
-    llmFactory,
-    workspaceManager,
-    skillService,
-    waitForIdle,
+    backend,
+    state,
   };
 };
+
+const createFactory = (backend: TeamRunBackend): TeamRunBackendFactory => ({
+  createBackend: vi.fn().mockResolvedValue(backend),
+  restoreBackend: vi.fn().mockResolvedValue(backend),
+});
 
 afterEach(() => {
   vi.clearAllMocks();
 });
 
 describe("AgentTeamRunManager integration", () => {
-  it("uses fresh team and member definitions when building the next team run", async () => {
-    const { manager, teamDefinitionService, agentDefinitionService, teamFactory } = createManager();
-
-    const staleTeamDef = new AgentTeamDefinition({
-      id: "main1",
-      name: "StaleTeam",
-      description: "stale description",
-      instructions: "stale team instructions",
-      nodes: [
-        new TeamMember({
-          memberName: "TheCoordinator",
-          ref: "1",
-          refType: "agent",
-        }),
-      ],
-      coordinatorMemberName: "TheCoordinator",
+  it.each([
+    RuntimeKind.AUTOBYTEUS,
+    RuntimeKind.CODEX_APP_SERVER,
+    RuntimeKind.CLAUDE_AGENT_SDK,
+  ])("creates and registers a %s team run through the matching backend factory", async (runtimeKind) => {
+    const auto = createFactory(createBackend({ runId: "team-auto", runtimeKind: RuntimeKind.AUTOBYTEUS }).backend);
+    const codex = createFactory(createBackend({ runId: "team-codex", runtimeKind: RuntimeKind.CODEX_APP_SERVER }).backend);
+    const claude = createFactory(createBackend({ runId: "team-claude", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK }).backend);
+    const manager = new AgentTeamRunManager({
+      autoByteusTeamRunBackendFactory: auto as never,
+      codexTeamRunBackendFactory: codex as never,
+      claudeTeamRunBackendFactory: claude as never,
     });
 
-    const freshTeamDef = new AgentTeamDefinition({
-      id: "main1",
-      name: "FreshTeam",
-      description: "fresh description",
-      instructions: "fresh team instructions",
-      nodes: [
-        new TeamMember({
-          memberName: "TheCoordinator",
-          ref: "1",
-          refType: "agent",
-        }),
-      ],
-      coordinatorMemberName: "TheCoordinator",
-    });
+    const run = await manager.createTeamRun(createConfig(runtimeKind));
 
-    teamDefinitionService.getDefinitionById.mockResolvedValue(staleTeamDef);
-    teamDefinitionService.getFreshDefinitionById.mockResolvedValue(freshTeamDef);
-
-    agentDefinitionService.getAgentDefinitionById.mockResolvedValue(
-      new AgentDefinition({
-        id: "1",
-        name: "StaleCoordinator",
-        role: "Coord",
-        description: "stale coordinator description",
-        instructions: "stale coordinator instructions",
-      }),
-    );
-    agentDefinitionService.getFreshAgentDefinitionById.mockResolvedValue(
-      new AgentDefinition({
-        id: "1",
-        name: "FreshCoordinator",
-        role: "Coord",
-        description: "fresh coordinator description",
-        instructions: "fresh coordinator instructions",
-      }),
-    );
-
-    await manager.createTeamRun("main1", [
-      {
-        memberName: "TheCoordinator",
-        agentDefinitionId: "1",
-        llmModelIdentifier: "gpt-4o",
-        autoExecuteTools: false,
-      },
-    ]);
-
-    expect(teamDefinitionService.getFreshDefinitionById).toHaveBeenCalledWith("main1");
-    expect(agentDefinitionService.getFreshAgentDefinitionById).toHaveBeenCalledWith("1");
-
-    const builtConfig = teamFactory.createTeam.mock.calls[0][0] as AgentTeamConfig;
-    expect(builtConfig.name).toBe("FreshTeam");
-    expect((builtConfig.coordinatorNode.nodeDefinition as AgentConfig).systemPrompt).toBe(
-      "fresh coordinator instructions",
-    );
+    expect(run.runtimeKind).toBe(runtimeKind);
+    expect(manager.getActiveRun(run.runId)?.runId).toBe(run.runId);
+    expect(manager.listActiveRuns()).toContain(run.runId);
+    expect(auto.createBackend).toHaveBeenCalledTimes(runtimeKind === RuntimeKind.AUTOBYTEUS ? 1 : 0);
+    expect(codex.createBackend).toHaveBeenCalledTimes(runtimeKind === RuntimeKind.CODEX_APP_SERVER ? 1 : 0);
+    expect(claude.createBackend).toHaveBeenCalledTimes(runtimeKind === RuntimeKind.CLAUDE_AGENT_SDK ? 1 : 0);
   });
 
-  it("creates a team instance with member configs applied", async () => {
-    const { manager, teamDefinitionService, agentDefinitionService, teamFactory, llmFactory } =
-      createManager();
-
-    const coordAgentDef = new AgentDefinition({
-      id: "1",
-      name: "CoordinatorBlueprint",
-      role: "Coord",
-      description: "...",
-      instructions: "Coordinate work.",
+  it.each([
+    RuntimeKind.AUTOBYTEUS,
+    RuntimeKind.CODEX_APP_SERVER,
+    RuntimeKind.CLAUDE_AGENT_SDK,
+  ])("restores a %s team run through the matching backend factory", async (runtimeKind) => {
+    const context = new TeamRunContext({
+      runId: `team-restored-${runtimeKind}`,
+      runtimeKind,
+      coordinatorMemberName: "Coordinator",
+      config: createConfig(runtimeKind),
+      runtimeContext:
+        runtimeKind === RuntimeKind.AUTOBYTEUS
+          ? { teamId: "native-team-id" }
+          : { memberContexts: [] },
     });
-    const workerAgentDef = new AgentDefinition({
-      id: "2",
-      name: "WorkerBlueprint",
-      role: "Worker",
-      description: "...",
-      instructions: "Execute tasks.",
-    });
-
-    agentDefinitionService.getAgentDefinitionById.mockImplementation(async (id: string) => {
-      if (id === "1") return coordAgentDef;
-      if (id === "2") return workerAgentDef;
-      return null;
-    });
-
-    const teamDef = new AgentTeamDefinition({
-      id: "main1",
-      name: "MainTeam",
-      description: "...",
-      instructions: "Coordinate members.",
-      nodes: [
-        new TeamMember({
-          memberName: "TheCoordinator",
-          ref: "1",
-          refType: "agent",
-        }),
-        new TeamMember({
-          memberName: "TheWorker",
-          ref: "2",
-          refType: "agent",
-        }),
-      ],
-      coordinatorMemberName: "TheCoordinator",
+    const backend = createBackend({
+      runId: context.runId,
+      runtimeKind,
+      runtimeContext: context.runtimeContext,
+    }).backend;
+    const auto = createFactory(backend);
+    const codex = createFactory(backend);
+    const claude = createFactory(backend);
+    const manager = new AgentTeamRunManager({
+      autoByteusTeamRunBackendFactory: auto as never,
+      codexTeamRunBackendFactory: codex as never,
+      claudeTeamRunBackendFactory: claude as never,
     });
 
-    teamDefinitionService.getDefinitionById.mockResolvedValue(teamDef);
+    const run = await manager.restoreTeamRun(context);
 
-    const memberConfigs: TeamMemberConfigInput[] = [
-      {
-        memberName: "TheCoordinator",
-        agentDefinitionId: "1",
-        llmModelIdentifier: "gpt-4o",
-        autoExecuteTools: false,
-      },
-      {
-        memberName: "TheWorker",
-        agentDefinitionId: "2",
-        llmModelIdentifier: "claude-3",
-        autoExecuteTools: true,
-      },
-    ];
-
-    const teamId = await manager.createTeamRun("main1", memberConfigs);
-
-    expect(teamId).toBe("test_team_123");
-    expect(teamFactory.createTeam).toHaveBeenCalledTimes(1);
-    const models = llmFactory.createLLM.mock.calls.map((call) => call[0]);
-    expect(models).toContain("gpt-4o");
-    expect(models).toContain("claude-3");
-
-    const finalConfig = teamFactory.createTeam.mock.calls[0][0] as AgentTeamConfig;
-    const coordConfig = finalConfig.coordinatorNode.nodeDefinition;
-    const workerNode = finalConfig.nodes.find((node) => node.name === "TheWorker");
-    const workerConfig = workerNode?.nodeDefinition;
-
-    expect(coordConfig).toBeInstanceOf(AgentConfig);
-    expect((coordConfig as AgentConfig).name).toBe("TheCoordinator");
-    expect((coordConfig as AgentConfig).autoExecuteTools).toBe(false);
-    expect(workerConfig).toBeInstanceOf(AgentConfig);
-    expect((workerConfig as AgentConfig).name).toBe("TheWorker");
-    expect((workerConfig as AgentConfig).autoExecuteTools).toBe(true);
+    expect(run.runId).toBe(context.runId);
+    expect(run.context).toBe(context);
+    expect(auto.restoreBackend).toHaveBeenCalledTimes(runtimeKind === RuntimeKind.AUTOBYTEUS ? 1 : 0);
+    expect(codex.restoreBackend).toHaveBeenCalledTimes(runtimeKind === RuntimeKind.CODEX_APP_SERVER ? 1 : 0);
+    expect(claude.restoreBackend).toHaveBeenCalledTimes(runtimeKind === RuntimeKind.CLAUDE_AGENT_SDK ? 1 : 0);
   });
 
-  it("throws when member config is missing", async () => {
-    const { manager, teamDefinitionService, agentDefinitionService } = createManager();
-
-    const teamDef = new AgentTeamDefinition({
-      id: "main1",
-      name: "MainTeam",
-      description: "...",
-      instructions: "Coordinate members.",
-      nodes: [
-        new TeamMember({
-          memberName: "AgentOne",
-          ref: "1",
-          refType: "agent",
-        }),
-      ],
-      coordinatorMemberName: "AgentOne",
+  it("evicts inactive team runs when queried or listed", async () => {
+    const created = createBackend({
+      runId: "team-inactive",
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+    });
+    const manager = new AgentTeamRunManager({
+      autoByteusTeamRunBackendFactory: createFactory(createBackend({ runId: "unused-auto", runtimeKind: RuntimeKind.AUTOBYTEUS }).backend) as never,
+      codexTeamRunBackendFactory: createFactory(created.backend) as never,
+      claudeTeamRunBackendFactory: createFactory(createBackend({ runId: "unused-claude", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK }).backend) as never,
     });
 
-    teamDefinitionService.getDefinitionById.mockResolvedValue(teamDef);
-    agentDefinitionService.getAgentDefinitionById.mockResolvedValue(
-      new AgentDefinition({
-        id: "1",
-        name: "A",
-        role: "B",
-        description: "C",
-        instructions: "Do work.",
-      }),
-    );
+    const run = await manager.createTeamRun(createConfig(RuntimeKind.CODEX_APP_SERVER));
+    expect(manager.getActiveRun(run.runId)?.runId).toBe(run.runId);
 
-    await expect(manager.createTeamRun("main1", [])).rejects.toThrow(
-      AgentTeamCreationError,
-    );
+    created.state.active = false;
+    expect(manager.getTeamRun(run.runId)).toBeNull();
+    expect(manager.listActiveRuns()).toEqual([]);
   });
 
-  it("detects circular dependencies between team definitions", async () => {
-    const { manager, teamDefinitionService } = createManager();
-
-    const teamA = new AgentTeamDefinition({
-      id: "A",
-      name: "TeamA",
-      description: "...",
-      instructions: "Coordinate TeamA.",
-      nodes: [
-        new TeamMember({
-          memberName: "SubTeamB",
-          ref: "B",
-          refType: "agent_team",
-        }),
-      ],
-      coordinatorMemberName: "SubTeamB",
+  it("subscribes to active runs and returns null for missing runs", async () => {
+    const created = createBackend({
+      runId: "team-subscribe",
+      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+    });
+    const manager = new AgentTeamRunManager({
+      autoByteusTeamRunBackendFactory: createFactory(createBackend({ runId: "unused-auto", runtimeKind: RuntimeKind.AUTOBYTEUS }).backend) as never,
+      codexTeamRunBackendFactory: createFactory(createBackend({ runId: "unused-codex", runtimeKind: RuntimeKind.CODEX_APP_SERVER }).backend) as never,
+      claudeTeamRunBackendFactory: createFactory(created.backend) as never,
     });
 
-    const teamB = new AgentTeamDefinition({
-      id: "B",
-      name: "TeamB",
-      description: "...",
-      instructions: "Coordinate TeamB.",
-      nodes: [
-        new TeamMember({
-          memberName: "SubTeamA",
-          ref: "A",
-          refType: "agent_team",
-        }),
-      ],
-      coordinatorMemberName: "SubTeamA",
-    });
+    const run = await manager.createTeamRun(createConfig(RuntimeKind.CLAUDE_AGENT_SDK));
+    const unsubscribe = manager.subscribeToEvents(run.runId, vi.fn());
 
-    teamDefinitionService.getDefinitionById.mockImplementation(async (id: string) => {
-      if (id === "A") return teamA;
-      if (id === "B") return teamB;
-      return null;
-    });
-
-    await expect(manager.createTeamRun("A", [])).rejects.toThrow(
-      AgentTeamCreationError,
-    );
+    expect(typeof unsubscribe).toBe("function");
+    expect(created.backend.subscribeToEvents).toHaveBeenCalledTimes(1);
+    expect(manager.subscribeToEvents("missing-run", vi.fn())).toBeNull();
   });
 
-  it("throws if coordinator is a team instead of an agent", async () => {
-    const { manager, teamDefinitionService, agentDefinitionService } = createManager();
-
-    const subCoordAgentDef = new AgentDefinition({
-      id: "sub_agent_1",
-      name: "SubCoordinator",
-      role: "Sub",
-      description: "...",
-      instructions: "Coordinate sub team.",
+  it("terminates and unregisters active team runs, and wraps failures", async () => {
+    const created = createBackend({
+      runId: "team-terminate-ok",
+      runtimeKind: RuntimeKind.AUTOBYTEUS,
+    });
+    const manager = new AgentTeamRunManager({
+      autoByteusTeamRunBackendFactory: createFactory(created.backend) as never,
+      codexTeamRunBackendFactory: createFactory(createBackend({ runId: "unused-codex", runtimeKind: RuntimeKind.CODEX_APP_SERVER }).backend) as never,
+      claudeTeamRunBackendFactory: createFactory(createBackend({ runId: "unused-claude", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK }).backend) as never,
     });
 
-    const subTeamDef = new AgentTeamDefinition({
-      id: "sub1",
-      name: "SubTeam",
-      description: "...",
-      instructions: "Sub team instructions.",
-      nodes: [
-        new TeamMember({
-          memberName: "SubCoordinator",
-          ref: "sub_agent_1",
-          refType: "agent",
-        }),
-      ],
-      coordinatorMemberName: "SubCoordinator",
+    const run = await manager.createTeamRun(createConfig(RuntimeKind.AUTOBYTEUS));
+    await expect(manager.terminateTeamRun(run.runId)).resolves.toBe(true);
+    expect(manager.getActiveRun(run.runId)).toBeNull();
+
+    const failing = createBackend({
+      runId: "team-terminate-error",
+      runtimeKind: RuntimeKind.AUTOBYTEUS,
     });
-
-    const mainTeamDef = new AgentTeamDefinition({
-      id: "main1",
-      name: "MainTeam",
-      description: "...",
-      instructions: "Main team instructions.",
-      nodes: [
-        new TeamMember({
-          memberName: "MySubTeam",
-          ref: "sub1",
-          refType: "agent_team",
-        }),
-      ],
-      coordinatorMemberName: "MySubTeam",
+    failing.backend.terminate = vi.fn().mockRejectedValue(new Error("boom"));
+    const failingManager = new AgentTeamRunManager({
+      autoByteusTeamRunBackendFactory: createFactory(failing.backend) as never,
+      codexTeamRunBackendFactory: createFactory(createBackend({ runId: "unused-codex-2", runtimeKind: RuntimeKind.CODEX_APP_SERVER }).backend) as never,
+      claudeTeamRunBackendFactory: createFactory(createBackend({ runId: "unused-claude-2", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK }).backend) as never,
     });
-
-    teamDefinitionService.getDefinitionById.mockImplementation(async (id: string) => {
-      if (id === "main1") return mainTeamDef;
-      if (id === "sub1") return subTeamDef;
-      return null;
-    });
-    agentDefinitionService.getAgentDefinitionById.mockResolvedValue(subCoordAgentDef);
-
-    const memberConfigs: TeamMemberConfigInput[] = [
-      {
-        memberName: "SubCoordinator",
-        agentDefinitionId: "sub_agent_1",
-        llmModelIdentifier: "gpt-3.5",
-        autoExecuteTools: true,
-      },
-    ];
-
-    await expect(manager.createTeamRun("main1", memberConfigs)).rejects.toThrow(
-      AgentTeamCreationError,
-    );
-  });
-
-  it("terminates team instances and propagates failures", async () => {
-    const { manager, teamFactory } = createManager();
-
-    const success = await manager.terminateTeamRun("test_team_123");
-    expect(success).toBe(true);
-    expect(teamFactory.removeTeam).toHaveBeenCalledWith("test_team_123");
-
-    teamFactory.removeTeam.mockRejectedValueOnce(new Error("Factory failed"));
-    await expect(manager.terminateTeamRun("bad_id")).rejects.toThrow(
+    const failingRun = await failingManager.createTeamRun(createConfig(RuntimeKind.AUTOBYTEUS));
+    await expect(failingManager.terminateTeamRun(failingRun.runId)).rejects.toThrow(
       AgentTeamTerminationError,
     );
   });
 
-  it("retrieves team instance and lists active IDs", () => {
-    const { manager, teamFactory } = createManager();
+  it("proxies native-team lookup through the autobyteus backend factory", () => {
+    const autoFactory = {
+      ...createFactory(createBackend({ runId: "unused-auto", runtimeKind: RuntimeKind.AUTOBYTEUS }).backend),
+      getTeam: vi.fn().mockReturnValue({ teamId: "native-team-1" }),
+    };
+    const manager = new AgentTeamRunManager({
+      autoByteusTeamRunBackendFactory: autoFactory as never,
+      codexTeamRunBackendFactory: createFactory(createBackend({ runId: "unused-codex", runtimeKind: RuntimeKind.CODEX_APP_SERVER }).backend) as never,
+      claudeTeamRunBackendFactory: createFactory(createBackend({ runId: "unused-claude", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK }).backend) as never,
+    });
 
-    const team = manager.getTeamRun("test_team_123");
-    expect(teamFactory.getTeam).toHaveBeenCalledWith("test_team_123");
-    expect(team?.teamId).toBe("test_team_123");
-
-    const ids = manager.listActiveRuns();
-    expect(teamFactory.listActiveTeamIds).toHaveBeenCalledTimes(1);
-    expect(ids).toEqual(["test_team_123"]);
+    expect(manager.getTeam("native-team-1")?.teamId).toBe("native-team-1");
+    expect(autoFactory.getTeam).toHaveBeenCalledWith("native-team-1");
   });
 
-  it("creates a team instance with an explicit preferred team ID", async () => {
-    const { manager, teamDefinitionService, agentDefinitionService, teamFactory } = createManager();
-
-    const coordinator = new AgentDefinition({
-      id: "1",
-      name: "Coordinator",
-      role: "Coord",
-      description: "...",
-      instructions: "Coordinate team.",
+  it("rejects unsupported runtime kinds for create and restore", async () => {
+    const manager = new AgentTeamRunManager({
+      autoByteusTeamRunBackendFactory: createFactory(createBackend({ runId: "unused-auto", runtimeKind: RuntimeKind.AUTOBYTEUS }).backend) as never,
+      codexTeamRunBackendFactory: createFactory(createBackend({ runId: "unused-codex", runtimeKind: RuntimeKind.CODEX_APP_SERVER }).backend) as never,
+      claudeTeamRunBackendFactory: createFactory(createBackend({ runId: "unused-claude", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK }).backend) as never,
     });
-    agentDefinitionService.getAgentDefinitionById.mockResolvedValue(coordinator);
-
-    const teamDef = new AgentTeamDefinition({
-      id: "team_def",
-      name: "PreferredIdTeam",
-      description: "...",
-      instructions: "Preferred team instructions.",
-      nodes: [
-        new TeamMember({
-          memberName: "TheCoordinator",
-          ref: "1",
-          refType: "agent",
-        }),
-      ],
-      coordinatorMemberName: "TheCoordinator",
-    });
-    teamDefinitionService.getDefinitionById.mockResolvedValue(teamDef);
-
-    const teamId = await manager.createTeamRunWithId("team_preferred_1", "team_def", [
-      {
-        memberName: "TheCoordinator",
-        agentDefinitionId: "1",
-        llmModelIdentifier: "gpt-4o",
-        autoExecuteTools: false,
-      },
-    ]);
-
-    expect(teamId).toBe("team_preferred_1");
-    expect(teamFactory.createTeamWithId).toHaveBeenCalledTimes(1);
-    expect(teamFactory.createTeamWithId).toHaveBeenCalledWith(
-      "team_preferred_1",
-      expect.any(AgentTeamConfig),
-    );
-  });
-
-  it("passes llmConfig into createLLM for team members", async () => {
-    const { manager, teamDefinitionService, agentDefinitionService, llmFactory } = createManager();
-
-    agentDefinitionService.getAgentDefinitionById.mockResolvedValue(
-      new AgentDefinition({
-        id: "1",
-        name: "TestAgent",
-        role: "Worker",
-        description: "...",
-        instructions: "Handle tasks.",
-      }),
-    );
-
-    const teamDef = new AgentTeamDefinition({
-      id: "main1",
-      name: "MainTeam",
-      description: "...",
-      instructions: "Coordinate members.",
-      nodes: [
-        new TeamMember({
-          memberName: "TheAgent",
-          ref: "1",
-          refType: "agent",
-        }),
-      ],
-      coordinatorMemberName: "TheAgent",
+    const unsupportedKind = "unsupported_runtime" as RuntimeKind;
+    const config = createConfig(unsupportedKind);
+    const context = new TeamRunContext({
+      runId: "team-unsupported",
+      runtimeKind: unsupportedKind,
+      coordinatorMemberName: "Coordinator",
+      config,
+      runtimeContext: null,
     });
 
-    teamDefinitionService.getDefinitionById.mockResolvedValue(teamDef);
-
-    const memberConfigs: TeamMemberConfigInput[] = [
-      {
-        memberName: "TheAgent",
-        agentDefinitionId: "1",
-        llmModelIdentifier: "gemini-3-flash-preview",
-        autoExecuteTools: true,
-        llmConfig: { thinking_level: "high" },
-      },
-    ];
-
-    const teamId = await manager.createTeamRun("main1", memberConfigs);
-    expect(teamId).toBe("test_team_123");
-    expect(llmFactory.createLLM).toHaveBeenCalledTimes(1);
-    const [, passedConfig] = llmFactory.createLLM.mock.calls[0];
-    expect(passedConfig).toBeInstanceOf(LLMConfig);
-    expect((passedConfig as LLMConfig).extraParams).toEqual({ thinking_level: "high" });
+    await expect(manager.createTeamRun(config)).rejects.toThrow(AgentTeamCreationError);
+    await expect(manager.restoreTeamRun(context)).rejects.toThrow(AgentTeamCreationError);
   });
 });

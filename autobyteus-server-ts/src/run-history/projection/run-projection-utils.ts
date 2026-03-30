@@ -1,4 +1,4 @@
-import type { MemoryConversationEntry } from "../../agent-memory-view/domain/models.js";
+import type { MemoryConversationEntry } from "../../agent-memory/domain/models.js";
 import type { RunProjection } from "./run-projection-types.js";
 
 const MAX_SUMMARY_LENGTH = 100;

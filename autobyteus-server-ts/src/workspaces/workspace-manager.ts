@@ -1,10 +1,10 @@
-import { WorkspaceConfig } from 'autobyteus-ts';
 import path from 'node:path';
 import { appConfigProvider } from '../config/app-config-provider.js';
 import { FileSystemWorkspace } from './filesystem-workspace.js';
 import { SkillWorkspace } from './skill-workspace.js';
 import { TempWorkspace } from './temp-workspace.js';
-import { tryResolveFilesystemWorkspaceRootPathFromId } from './workspace-identity.js';
+import type { WorkspaceInput } from './workspace-input.js';
+import { WorkspaceIdMappingStore } from './workspace-id-mapping-store.js';
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -15,6 +15,7 @@ const logger = {
 export class WorkspaceManager {
   private static instance: WorkspaceManager | null = null;
   private activeWorkspaces: Map<string, FileSystemWorkspace> = new Map();
+  private readonly workspaceIdMappingStore: WorkspaceIdMappingStore;
 
   static getInstance(): WorkspaceManager {
     if (!WorkspaceManager.instance) {
@@ -23,25 +24,12 @@ export class WorkspaceManager {
     return WorkspaceManager.instance;
   }
 
-  private constructor() {}
-
-  private findWorkspaceByConfig(config: WorkspaceConfig): FileSystemWorkspace | null {
-    for (const workspace of this.activeWorkspaces.values()) {
-      if (workspace.config.equals(config)) {
-        return workspace;
-      }
-    }
-    return null;
+  private constructor() {
+    this.workspaceIdMappingStore = new WorkspaceIdMappingStore();
   }
 
-  async createWorkspace(config: WorkspaceConfig): Promise<FileSystemWorkspace> {
-    const existing = this.findWorkspaceByConfig(config);
-    if (existing) {
-      logger.info(`Reusing existing workspace ID: ${existing.workspaceId}`);
-      return existing;
-    }
-
-    const rootPathValue = config.get('rootPath');
+  async createWorkspace(config: WorkspaceInput): Promise<FileSystemWorkspace> {
+    const rootPathValue = config.rootPath;
     logger.info(`Creating new workspace for rootPath: ${String(rootPathValue)}`);
     const workspace = new FileSystemWorkspace(config);
 
@@ -58,6 +46,10 @@ export class WorkspaceManager {
 
     await workspace.initialize();
     this.activeWorkspaces.set(workspace.workspaceId, workspace);
+    await this.workspaceIdMappingStore.saveWorkspaceIdMapping(
+      workspace.workspaceId,
+      workspace.getBasePath(),
+    );
     logger.info(`Created and registered workspace ID: ${workspace.workspaceId}`);
 
     return workspace;
@@ -65,7 +57,7 @@ export class WorkspaceManager {
 
   async ensureWorkspaceByRootPath(rootPath: string): Promise<FileSystemWorkspace> {
     const normalizedRootPath = path.normalize(path.resolve(rootPath.trim()));
-    const config = new WorkspaceConfig({ rootPath: normalizedRootPath });
+    const config = { rootPath: normalizedRootPath };
     return this.createWorkspace(config);
   }
 
@@ -94,7 +86,9 @@ export class WorkspaceManager {
       }
     }
 
-    const filesystemRootPath = tryResolveFilesystemWorkspaceRootPathFromId(workspaceId);
+    const filesystemRootPath = await this.workspaceIdMappingStore.getRootPathByWorkspaceId(
+      workspaceId,
+    );
     if (filesystemRootPath) {
       return this.ensureWorkspaceByRootPath(filesystemRootPath);
     }

@@ -2,7 +2,6 @@ import { useAgentContextsStore } from '~/stores/agentContextsStore';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import type {
   RunHistoryWorkspaceGroup,
-  TeamRunHistoryItem,
 } from '~/stores/runHistoryTypes';
 
 export const removeRunFromWorkspaceGroups = (
@@ -12,6 +11,7 @@ export const removeRunFromWorkspaceGroups = (
   return groups
     .map((workspace) => ({
       ...workspace,
+      teamRuns: workspace.teamRuns ?? [],
       agents: workspace.agents
         .map((agent) => ({
           ...agent,
@@ -19,13 +19,19 @@ export const removeRunFromWorkspaceGroups = (
         }))
         .filter((agent) => agent.runs.length > 0),
     }))
-    .filter((workspace) => workspace.agents.length > 0);
+    .filter((workspace) => workspace.agents.length > 0 || workspace.teamRuns.length > 0);
 };
 
-export const removeTeamRunById = (
-  rows: TeamRunHistoryItem[],
+export const removeTeamRunFromWorkspaceGroups = (
+  groups: RunHistoryWorkspaceGroup[],
   teamRunId: string,
-): TeamRunHistoryItem[] => rows.filter((row) => row.teamRunId !== teamRunId);
+): RunHistoryWorkspaceGroup[] =>
+  groups
+    .map((workspace) => ({
+      ...workspace,
+      teamRuns: (workspace.teamRuns ?? []).filter((teamRun) => teamRun.teamRunId !== teamRunId),
+    }))
+    .filter((workspace) => workspace.agents.length > 0 || workspace.teamRuns.length > 0);
 
 export const buildNextAgentAvatarIndex = async (
   currentIndex: Record<string, string>,

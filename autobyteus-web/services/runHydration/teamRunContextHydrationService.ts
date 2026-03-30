@@ -8,7 +8,7 @@ import type {
   GetTeamRunResumeConfigQueryData,
   TeamRunResumeConfigPayload,
 } from '~/stores/runHistoryTypes';
-import { parseTeamRunManifest, toTeamMemberKey } from '~/stores/runHistoryManifest';
+import { parseTeamRunMetadata, toTeamMemberKey } from '~/stores/runHistoryMetadata';
 import {
   buildTeamMemberContexts,
   fetchTeamMemberProjections,
@@ -48,7 +48,7 @@ interface LoadedTeamRunContextHydrationPayload {
   resumeConfig: TeamRunResumeConfigPayload;
   members: Map<string, any>;
   firstWorkspaceId: string | null;
-  manifest: ReturnType<typeof parseTeamRunManifest>;
+  metadata: ReturnType<typeof parseTeamRunMetadata>;
 }
 
 const resolveFocusKey = (params: {
@@ -107,7 +107,7 @@ export const applyLiveTeamStatusSnapshot = (
 };
 
 const buildHydratedTeamContext = (params: {
-  manifest: ReturnType<typeof parseTeamRunManifest>;
+  metadata: ReturnType<typeof parseTeamRunMetadata>;
   resumeConfig: TeamRunResumeConfigPayload;
   members: Map<string, any>;
   focusedMemberRouteKey: string;
@@ -115,21 +115,22 @@ const buildHydratedTeamContext = (params: {
   currentStatus: string | null | undefined;
   memberStatuses: TeamMemberLiveSnapshot[];
 }): AgentTeamContext => {
-  const focusedBinding = params.manifest.memberBindings.find(
+  const focusedBinding = params.metadata.memberBindings.find(
     (member) => toTeamMemberKey(member).trim() === params.focusedMemberRouteKey,
   );
 
   const context = {
-    teamRunId: params.manifest.teamRunId,
+    teamRunId: params.metadata.teamRunId,
     config: {
-      teamDefinitionId: params.manifest.teamDefinitionId,
-      teamDefinitionName: params.manifest.teamDefinitionName,
+      teamDefinitionId: params.metadata.teamDefinitionId,
+      teamDefinitionName: params.metadata.teamDefinitionName,
       runtimeKind: focusedBinding?.runtimeKind || DEFAULT_AGENT_RUNTIME_KIND,
       workspaceId: params.firstWorkspaceId,
       llmModelIdentifier: focusedBinding?.llmModelIdentifier || '',
       autoExecuteTools: focusedBinding?.autoExecuteTools ?? false,
+      skillAccessMode: 'PRELOADED_ONLY' as const,
       memberOverrides: Object.fromEntries(
-        params.manifest.memberBindings.map((member) => [
+        params.metadata.memberBindings.map((member) => [
           member.memberName,
           {
             agentDefinitionId: member.agentDefinitionId,
@@ -175,28 +176,28 @@ export const loadTeamRunContextHydrationPayload = async (
     throw new Error(`Team resume config payload missing for '${input.teamRunId}'.`);
   }
 
-  const manifest = parseTeamRunManifest(resumeConfigPayload.manifest);
-  if (!manifest.teamRunId) {
-    throw new Error(`Team manifest is invalid for '${input.teamRunId}'.`);
+  const metadata = parseTeamRunMetadata(resumeConfigPayload.metadata);
+  if (!metadata.teamRunId) {
+    throw new Error(`Team metadata is invalid for '${input.teamRunId}'.`);
   }
 
   const resumeConfig: TeamRunResumeConfigPayload = {
-    teamRunId: manifest.teamRunId,
+    teamRunId: metadata.teamRunId,
     isActive: resumeConfigPayload.isActive,
-    manifest,
+    metadata,
   };
 
   const projectionByMemberRouteKey = await fetchTeamMemberProjections({
     client,
     getTeamMemberRunProjectionQuery: GetTeamMemberRunProjection,
-    teamRunId: manifest.teamRunId,
-    manifest,
+    teamRunId: metadata.teamRunId,
+    metadata,
     toTeamMemberKey,
   });
 
   const { members, firstWorkspaceId } = await buildTeamMemberContexts({
-    teamRunId: manifest.teamRunId,
-    manifest,
+    teamRunId: metadata.teamRunId,
+    metadata,
     isActive: resumeConfig.isActive,
     projectionByMemberRouteKey,
     toTeamMemberKey,
@@ -206,21 +207,21 @@ export const loadTeamRunContextHydrationPayload = async (
   const availableMemberRouteKeys = Array.from(members.keys());
   const focusedMemberRouteKey = resolveFocusKey({
     requestedMemberRouteKey: input.memberRouteKey,
-    coordinatorMemberRouteKey: manifest.coordinatorMemberRouteKey,
+    coordinatorMemberRouteKey: metadata.coordinatorMemberRouteKey,
     availableMemberRouteKeys,
   });
 
   if (!focusedMemberRouteKey) {
-    throw new Error(`Team '${manifest.teamRunId}' has no members in manifest.`);
+    throw new Error(`Team '${metadata.teamRunId}' has no members in metadata.`);
   }
 
   return {
-    teamRunId: manifest.teamRunId,
+    teamRunId: metadata.teamRunId,
     focusedMemberRouteKey,
     resumeConfig,
     members,
     firstWorkspaceId,
-    manifest,
+    metadata,
   };
 };
 
@@ -232,7 +233,7 @@ export const hydrateLiveTeamRunContext = async (
 ): Promise<TeamRunContextHydrationPayload> => {
   const payload = await loadTeamRunContextHydrationPayload(input);
   const hydratedContext = buildHydratedTeamContext({
-    manifest: payload.manifest,
+    metadata: payload.metadata,
     resumeConfig: payload.resumeConfig,
     members: payload.members,
     focusedMemberRouteKey: payload.focusedMemberRouteKey,

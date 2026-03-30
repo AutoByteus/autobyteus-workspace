@@ -6,10 +6,6 @@ import { AgentInputUserMessage, StreamEvent, StreamEventType } from "autobyteus-
 import { AgentStreamHandler } from "../../../src/services/agent-streaming/agent-stream-handler.js";
 import { AgentSessionManager } from "../../../src/services/agent-streaming/agent-session-manager.js";
 import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
-import { RuntimeCommandIngressService } from "../../../src/runtime-execution/runtime-command-ingress-service.js";
-import { RuntimeAdapterRegistry } from "../../../src/runtime-execution/runtime-adapter-registry.js";
-import { RuntimeSessionStore } from "../../../src/runtime-execution/runtime-session-store.js";
-import { AutobyteusRuntimeAdapter } from "../../../src/runtime-execution/adapters/autobyteus-runtime-adapter.js";
 
 class FakeEventStream {
   private queue: Array<StreamEvent | null> = [];
@@ -95,12 +91,42 @@ class FakeAgentManager {
     this.stream = stream;
   }
 
-  getAgentRun(agentRunId: string): FakeAgent | null {
-    return agentRunId === this.agent.agentRunId ? this.agent : null;
-  }
-
-  getAgentEventStream(agentRunId: string): FakeEventStream | null {
-    return agentRunId === this.agent.agentRunId ? this.stream : null;
+  getActiveRun(agentRunId: string) {
+    if (agentRunId !== this.agent.agentRunId) {
+      return null;
+    }
+    return {
+      runId: this.agent.agentRunId,
+      runtimeKind: "autobyteus",
+      getStatus: () => "ACTIVE",
+      isActive: () => true,
+      subscribeToEvents: (listener: (event: unknown) => void) => {
+        void (async () => {
+          for await (const event of this.stream.allEvents()) {
+            listener(event);
+          }
+        })();
+        return () => {
+          void this.stream.close();
+        };
+      },
+      postUserMessage: async (message: AgentInputUserMessage) => {
+        await this.agent.postUserMessage(message);
+        return { accepted: true, runtimeReference: null };
+      },
+      approveToolInvocation: async (
+        invocationId: string,
+        approved: boolean,
+        reason?: string | null,
+      ) => {
+        await this.agent.postToolExecutionApproval(invocationId, approved, reason ?? null);
+        return { accepted: true };
+      },
+      interrupt: async () => {
+        await this.agent.stop();
+        return { accepted: true };
+      },
+    };
   }
 }
 
@@ -129,31 +155,9 @@ describe("Agent websocket integration", () => {
     const agent = new FakeAgent("agent-1");
     const stream = new FakeEventStream();
     const manager = new FakeAgentManager(agent, stream);
-    const sessionStore = new RuntimeSessionStore();
-    sessionStore.upsertSession({
-      runId: agent.agentRunId,
-      runtimeKind: "autobyteus",
-      mode: "agent",
-      runtimeReference: {
-        runtimeKind: "autobyteus",
-        sessionId: agent.agentRunId,
-        threadId: null,
-        metadata: null,
-      },
-    });
-    const ingress = new RuntimeCommandIngressService(
-      sessionStore,
-      new RuntimeAdapterRegistry([
-        new AutobyteusRuntimeAdapter(
-          manager as unknown as any,
-          { getTeamRun: () => null } as any,
-        ),
-      ]),
-    );
     const handler = new AgentStreamHandler(
       new AgentSessionManager(),
       manager as unknown as any,
-      ingress,
     );
 
     const app = fastify();

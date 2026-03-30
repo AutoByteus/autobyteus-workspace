@@ -83,11 +83,17 @@ vi.mock('~/stores/teamRunConfigStore', () => ({
 }));
 
 vi.mock('~/services/agentStreaming', () => ({
+  ConnectionState: {
+    CONNECTED: 'connected',
+    DISCONNECTED: 'disconnected',
+  },
   AgentStreamingService: vi.fn().mockImplementation(() => ({
     connect: vi.fn(),
     disconnect: vi.fn(),
     approveTool: vi.fn(),
     denyTool: vi.fn(),
+    sendMessage: vi.fn(),
+    connectionState: 'connected',
   })),
 }));
 
@@ -98,18 +104,17 @@ describe('workspace history + draft send integration', () => {
 
     queryMock.mockResolvedValue({
       data: {
-        listRunHistory: [],
+        listWorkspaceRunHistory: [],
       },
       errors: [],
     });
 
     mutateMock.mockResolvedValue({
       data: {
-        continueRun: {
+        createAgentRun: {
           success: true,
           message: 'ok',
           runId: 'run-001',
-          ignoredConfigFields: [],
         },
       },
       errors: [],
@@ -141,8 +146,8 @@ describe('workspace history + draft send integration', () => {
     expect(promoted).toBeTruthy();
     expect(promoted?.state.conversation.messages[0]?.type).toBe('user');
 
-    const continueRunInput = mutateMock.mock.calls[0]?.[0]?.variables?.input;
-    expect(continueRunInput?.llmModelIdentifier).toBe('fallback-model-1');
-    expect(continueRunInput?.workspaceId).toBe('ws-1');
+    const createRunInput = mutateMock.mock.calls[0]?.[0]?.variables?.input;
+    expect(createRunInput?.llmModelIdentifier).toBe('fallback-model-1');
+    expect(createRunInput?.workspaceId).toBe('ws-1');
   });
 });

@@ -1,7 +1,7 @@
 import { getApolloClient } from '~/utils/apolloClient';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
-import { GetRunProjection, GetRunResumeConfig } from '~/graphql/queries/runHistoryQueries';
+import { GetAgentRunResumeConfig, GetRunProjection } from '~/graphql/queries/runHistoryQueries';
 import {
   DEFAULT_AGENT_RUNTIME_KIND,
   type AgentRunConfig,
@@ -23,8 +23,8 @@ interface GetRunProjectionQueryData {
   getRunProjection: RunProjectionPayload;
 }
 
-interface GetRunResumeConfigQueryData {
-  getRunResumeConfig: RunResumeConfigPayload;
+interface GetAgentRunResumeConfigQueryData {
+  getAgentRunResumeConfig: RunResumeConfigPayload;
 }
 
 export interface LoadRunContextHydrationInput {
@@ -50,8 +50,8 @@ export const loadRunContextHydrationPayload = async (
       variables: { runId: input.runId },
       fetchPolicy: 'network-only',
     }),
-    client.query<GetRunResumeConfigQueryData>({
-      query: GetRunResumeConfig,
+    client.query<GetAgentRunResumeConfigQueryData>({
+      query: GetAgentRunResumeConfig,
       variables: { runId: input.runId },
       fetchPolicy: 'network-only',
     }),
@@ -68,7 +68,7 @@ export const loadRunContextHydrationPayload = async (
   }
 
   const projection = projectionResponse.data?.getRunProjection;
-  const resumeConfig = resumeResponse.data?.getRunResumeConfig;
+  const resumeConfig = resumeResponse.data?.getAgentRunResumeConfig;
   if (!projection) {
     throw new Error('Run projection payload is missing.');
   }
@@ -77,10 +77,10 @@ export const loadRunContextHydrationPayload = async (
   }
 
   const workspaceId = await input.ensureWorkspaceByRootPath(
-    resumeConfig.manifestConfig.workspaceRootPath,
+    resumeConfig.metadataConfig.workspaceRootPath,
   );
   if (!workspaceId) {
-    throw new Error(`Workspace '${resumeConfig.manifestConfig.workspaceRootPath}' could not be resolved.`);
+    throw new Error(`Workspace '${resumeConfig.metadataConfig.workspaceRootPath}' could not be resolved.`);
   }
 
   const agentDefinitionStore = useAgentDefinitionStore();
@@ -89,7 +89,7 @@ export const loadRunContextHydrationPayload = async (
   }
 
   const agentDefinition = agentDefinitionStore.getAgentDefinitionById(
-    resumeConfig.manifestConfig.agentDefinitionId,
+    resumeConfig.metadataConfig.agentDefinitionId,
   );
   const resolvedAgentName =
     agentDefinition?.name ||
@@ -100,9 +100,9 @@ export const loadRunContextHydrationPayload = async (
     input.runId,
     projection.conversation || [],
     {
-      agentDefinitionId: resumeConfig.manifestConfig.agentDefinitionId,
+      agentDefinitionId: resumeConfig.metadataConfig.agentDefinitionId,
       agentName: resolvedAgentName,
-      llmModelIdentifier: resumeConfig.manifestConfig.llmModelIdentifier,
+      llmModelIdentifier: resumeConfig.metadataConfig.llmModelIdentifier,
     },
   );
   if (projection.lastActivityAt) {
@@ -110,17 +110,17 @@ export const loadRunContextHydrationPayload = async (
   }
 
   const config: AgentRunConfig = {
-    agentDefinitionId: resumeConfig.manifestConfig.agentDefinitionId,
+    agentDefinitionId: resumeConfig.metadataConfig.agentDefinitionId,
     agentDefinitionName: resolvedAgentName,
     agentAvatarUrl: agentDefinition?.avatarUrl || null,
-    llmModelIdentifier: resumeConfig.manifestConfig.llmModelIdentifier,
-    runtimeKind: resumeConfig.manifestConfig.runtimeKind ?? DEFAULT_AGENT_RUNTIME_KIND,
+    llmModelIdentifier: resumeConfig.metadataConfig.llmModelIdentifier,
+    runtimeKind: resumeConfig.metadataConfig.runtimeKind ?? DEFAULT_AGENT_RUNTIME_KIND,
     workspaceId,
-    autoExecuteTools: resumeConfig.manifestConfig.autoExecuteTools,
+    autoExecuteTools: resumeConfig.metadataConfig.autoExecuteTools,
     skillAccessMode:
-      (resumeConfig.manifestConfig.skillAccessMode as SkillAccessMode | null) ||
+      (resumeConfig.metadataConfig.skillAccessMode as SkillAccessMode | null) ||
       'PRELOADED_ONLY',
-    llmConfig: resumeConfig.manifestConfig.llmConfig ?? null,
+    llmConfig: resumeConfig.metadataConfig.llmConfig ?? null,
     isLocked: resumeConfig.isActive,
   };
 

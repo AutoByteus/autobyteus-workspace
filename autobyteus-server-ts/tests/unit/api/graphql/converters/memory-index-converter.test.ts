@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { MemoryIndexConverter } from "../../../../../src/api/graphql/converters/memory-index-converter.js";
-import type { MemorySnapshotPage } from "../../../../../src/agent-memory-view/domain/models.js";
+import type { MemorySnapshotPage } from "../../../../../src/agent-memory/domain/models.js";
 
 describe("MemoryIndexConverter", () => {
   it("maps domain page to graphql page", () => {

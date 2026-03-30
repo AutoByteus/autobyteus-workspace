@@ -117,7 +117,7 @@ Add explicit memory scope switching in `/memory` and provide first-class team-me
 | --- | --- | --- | --- | --- | --- | --- |
 | `memory-index.ts` | Modify | API boundary | add team memory index query | `listTeamRunMemorySnapshots` | args -> TeamMemorySnapshotPage | team-memory-index-service |
 | `memory-view.ts` | Modify | API boundary | add team member memory view query | `getTeamMemberRunMemoryView` | team/member args -> AgentMemoryView | MemoryFileStore + AgentMemoryViewService |
-| `team-memory-index-service.ts` | Add | backend service | build paged team/member memory summary | `listTeamSnapshots` | search/page inputs -> page payload | TeamRunManifestStore, MemoryFileStore |
+| `team-memory-index-service.ts` | Add | backend service | build paged team/member memory summary | `listTeamSnapshots` | search/page inputs -> page payload | TeamAgentRunManifestStore, MemoryFileStore |
 | `teamMemoryQueries.ts` | Add | frontend graphql | team memory queries | gql docs | vars -> response | apollo client |
 | `teamMemoryIndexStore.ts` | Add | frontend state | team index and expansion state | `fetchIndex`, `setSearch`, etc. | query result -> normalized state | teamMemoryQueries |
 | `teamMemoryViewStore.ts` | Add | frontend state | selected team/member and memory view fetch | `setSelectedMember`, `fetchMemoryView` | ids -> view payload | teamMemoryQueries |

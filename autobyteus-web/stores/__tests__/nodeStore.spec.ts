@@ -67,6 +67,13 @@ function clearLocalStorage(): void {
   }
 }
 
+async function resolveCurrentEmbeddedBaseUrl(): Promise<string> {
+  setActivePinia(createPinia());
+  const store = useNodeStore();
+  await store.initializeRegistry();
+  return store.getNodeById(EMBEDDED_NODE_ID)?.baseUrl || 'http://localhost:8000';
+}
+
 describe('nodeStore', () => {
   beforeEach(() => {
     Object.defineProperty(window, 'localStorage', {
@@ -91,13 +98,17 @@ describe('nodeStore', () => {
   });
 
   it('initializes from localStorage snapshot in browser fallback mode', async () => {
+    const currentEmbeddedBaseUrl = await resolveCurrentEmbeddedBaseUrl();
+    clearLocalStorage();
+    setActivePinia(createPinia());
+
     const snapshot: NodeRegistrySnapshot = {
       version: 3,
       nodes: [
         {
           id: EMBEDDED_NODE_ID,
           name: 'Embedded Node',
-          baseUrl: 'http://localhost:29695',
+          baseUrl: currentEmbeddedBaseUrl,
           nodeType: 'embedded',
           isSystem: true,
           createdAt: '2026-02-08T00:00:00.000Z',
@@ -126,6 +137,43 @@ describe('nodeStore', () => {
     expect(store.registryVersion).toBe(3);
     expect(store.nodes).toHaveLength(2);
     expect(store.getNodeById('remote-1')?.name).toBe('Remote One');
+  });
+
+  it('refreshes embedded node base URL from the current default when localStorage is stale', async () => {
+    const currentEmbeddedBaseUrl = await resolveCurrentEmbeddedBaseUrl();
+    clearLocalStorage();
+    setActivePinia(createPinia());
+
+    const staleBaseUrl =
+      currentEmbeddedBaseUrl === 'http://localhost:8000'
+        ? 'http://localhost:29695'
+        : 'http://localhost:8000';
+
+    const snapshot: NodeRegistrySnapshot = {
+      version: 2,
+      nodes: [
+        {
+          id: EMBEDDED_NODE_ID,
+          name: 'Embedded Node',
+          baseUrl: staleBaseUrl,
+          nodeType: 'embedded',
+          isSystem: true,
+          createdAt: '2026-02-08T00:00:00.000Z',
+          updatedAt: '2026-02-08T00:00:00.000Z',
+          capabilityProbeState: 'ready',
+          capabilities: { terminal: true, fileExplorerStreaming: true },
+        },
+      ],
+    };
+    window.localStorage.setItem(NODE_REGISTRY_STORAGE_KEY, JSON.stringify(snapshot));
+
+    const store = useNodeStore();
+    await store.initializeRegistry();
+
+    expect(store.getNodeById(EMBEDDED_NODE_ID)?.baseUrl).toBe(currentEmbeddedBaseUrl);
+    expect(store.registryVersion).toBe(3);
+    const persisted = JSON.parse(window.localStorage.getItem(NODE_REGISTRY_STORAGE_KEY) || '{}');
+    expect(persisted.nodes[0].baseUrl).toBe(currentEmbeddedBaseUrl);
   });
 
   it('applies only newer registry snapshots', async () => {

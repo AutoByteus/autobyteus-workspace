@@ -1,32 +1,16 @@
+import { AutoByteusAgentRunBackendFactory } from "../backends/autobyteus/autobyteus-agent-run-backend-factory.js";
+import type { AgentRunBackendFactory } from "../backends/agent-run-backend-factory.js";
+
+import { AgentRun } from "../domain/agent-run.js";
+import { AgentRunContext, type RuntimeAgentRunContext } from "../domain/agent-run-context.js";
+import { AgentRunConfig } from "../domain/agent-run-config.js";
 import {
-  AgentConfig,
-  AgentEventStream,
-  BaseAgentUserInputMessageProcessor,
-  BaseLLMResponseProcessor,
-  BaseLifecycleEventProcessor,
-  BaseSystemPromptProcessor,
-  BaseToolExecutionResultProcessor,
-  BaseToolInvocationPreprocessor,
-  SkillAccessMode,
-  defaultAgentFactory,
-  defaultInputProcessorRegistry,
-  defaultLlmResponseProcessorRegistry,
-  defaultLifecycleEventProcessorRegistry,
-  defaultSystemPromptProcessorRegistry,
-  defaultToolExecutionResultProcessorRegistry,
-  defaultToolInvocationPreprocessorRegistry,
-  LLMFactory,
-  waitForAgentToBeIdle,
-} from "autobyteus-ts";
-import type { Agent } from "autobyteus-ts/agent/agent.js";
-import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
-import { LLMConfig } from "autobyteus-ts/llm/utils/llm-config.js";
-import { AgentDefinition } from "../../agent-definition/domain/models.js";
-import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
-import { mergeMandatoryAndOptional } from "../../agent-definition/utils/processor-defaults.js";
-import { SkillService } from "../../skills/services/skill-service.js";
-import { TempWorkspace } from "../../workspaces/temp-workspace.js";
-import { WorkspaceManager, getWorkspaceManager } from "../../workspaces/workspace-manager.js";
+  getClaudeAgentRunBackendFactory,
+} from "../backends/claude/index.js";
+import {
+  getCodexAgentRunBackendFactory,
+} from "../backends/codex/index.js";
+import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import { AgentCreationError, AgentTerminationError } from "../errors.js";
 
 const logger = {
@@ -35,71 +19,18 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
-type AgentFactoryLike = typeof defaultAgentFactory;
-type LlmFactoryLike = typeof LLMFactory;
-
-type ProcessorOption = { name: string; isMandatory: boolean };
-
-type ProcessorRegistry<T> = {
-  getProcessor: (name: string) => T | undefined;
-  getOrderedProcessorOptions: () => ProcessorOption[];
-};
-
-type PreprocessorRegistry<T> = {
-  getPreprocessor: (name: string) => T | undefined;
-  getOrderedProcessorOptions: () => ProcessorOption[];
-};
-
-type ProcessorRegistries = {
-  input: ProcessorRegistry<BaseAgentUserInputMessageProcessor>;
-  llmResponse: ProcessorRegistry<BaseLLMResponseProcessor>;
-  systemPrompt: ProcessorRegistry<BaseSystemPromptProcessor>;
-  toolExecutionResult: ProcessorRegistry<BaseToolExecutionResultProcessor>;
-  toolInvocationPreprocessor: PreprocessorRegistry<BaseToolInvocationPreprocessor>;
-  lifecycle: ProcessorRegistry<BaseLifecycleEventProcessor>;
-};
-
-type AgentLike = {
-  // Core boundary: autobyteus-ts runtime still exposes run identity as `agentId`.
-  agentId: string;
-  context?: {
-    statusManager?: {
-      notifier?: unknown;
-    } | null;
-  };
-};
-
 type AgentRunManagerOptions = {
-  agentFactory?: AgentFactoryLike;
-  agentDefinitionService?: AgentDefinitionService;
-  llmFactory?: LlmFactoryLike;
-  workspaceManager?: WorkspaceManager;
-  skillService?: SkillService;
-  registries?: Partial<ProcessorRegistries>;
-  waitForIdle?: (agent: Agent, timeout?: number) => Promise<void>;
-};
-
-const asTrimmedString = (value: unknown): string | null =>
-  typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
-
-type AgentRunConfigInput = {
-  agentDefinitionId: string;
-  llmModelIdentifier: string;
-  autoExecuteTools: boolean;
-  workspaceId?: string | null;
-  llmConfig?: Record<string, unknown> | null;
-  skillAccessMode?: SkillAccessMode | null;
+  autoByteusBackendFactory?: AgentRunBackendFactory;
+  codexBackendFactory?: AgentRunBackendFactory;
+  claudeBackendFactory?: AgentRunBackendFactory;
 };
 
 export class AgentRunManager {
   private static instance: AgentRunManager | null = null;
-  private agentFactory: AgentFactoryLike;
-  private agentDefinitionService: AgentDefinitionService;
-  private llmFactory: LlmFactoryLike;
-  private workspaceManager: WorkspaceManager;
-  private skillService: SkillService;
-  private registries: ProcessorRegistries;
-  private waitForIdle: (agent: Agent, timeout?: number) => Promise<void>;
+  private readonly autoByteusBackendFactory: AgentRunBackendFactory;
+  private readonly codexBackendFactory: AgentRunBackendFactory;
+  private readonly claudeBackendFactory: AgentRunBackendFactory;
+  private activeRuns = new Map<string, AgentRun>();
 
   static getInstance(options: AgentRunManagerOptions = {}): AgentRunManager {
     if (!AgentRunManager.instance) {
@@ -109,305 +40,120 @@ export class AgentRunManager {
   }
 
   constructor(options: AgentRunManagerOptions = {}) {
-    this.agentFactory = options.agentFactory ?? defaultAgentFactory;
-    this.agentDefinitionService =
-      options.agentDefinitionService ?? AgentDefinitionService.getInstance();
-    this.llmFactory = options.llmFactory ?? LLMFactory;
-    this.workspaceManager = options.workspaceManager ?? getWorkspaceManager();
-    this.skillService = options.skillService ?? SkillService.getInstance();
-    this.registries = {
-      input: options.registries?.input ?? defaultInputProcessorRegistry,
-      llmResponse: options.registries?.llmResponse ?? defaultLlmResponseProcessorRegistry,
-      systemPrompt: options.registries?.systemPrompt ?? defaultSystemPromptProcessorRegistry,
-      toolExecutionResult:
-        options.registries?.toolExecutionResult ??
-        defaultToolExecutionResultProcessorRegistry,
-      toolInvocationPreprocessor:
-        options.registries?.toolInvocationPreprocessor ??
-        defaultToolInvocationPreprocessorRegistry,
-      lifecycle: options.registries?.lifecycle ?? defaultLifecycleEventProcessorRegistry,
-    };
-    this.waitForIdle = options.waitForIdle ?? waitForAgentToBeIdle;
+    this.autoByteusBackendFactory =
+      options.autoByteusBackendFactory ?? new AutoByteusAgentRunBackendFactory();
+    this.codexBackendFactory =
+      options.codexBackendFactory ?? getCodexAgentRunBackendFactory();
+    this.claudeBackendFactory =
+      options.claudeBackendFactory ?? getClaudeAgentRunBackendFactory();
     logger.info("AgentRunManager initialized.");
   }
 
-  async createAgentRun(options: AgentRunConfigInput): Promise<string> {
-    const built = await this.buildAgentConfig(options);
-    const agent = this.agentFactory.createAgent(built.agentConfig) as AgentLike & {
-      start?: () => void;
-    };
-    agent.start?.();
-    await this.waitForIdle(agent as Agent);
-    const agentRunId = agent.agentId;
-    logger.info(
-      `Successfully created and started agent run '${agentRunId}' from definition '${built.agentName}'.`,
-    );
-    return agentRunId;
+  async createAgentRun(config: AgentRunConfig, preferredRunId: string | null = null): Promise<AgentRun> {
+    const { runtimeKind } = config;
+    const backendFactory = this.resolveBackendFactory(runtimeKind);
+    if (!backendFactory) {
+      throw new AgentCreationError(
+        `Runtime kind '${runtimeKind}' is not yet supported by AgentRunManager.createAgentRun().`,
+      );
+    }
+    const backend = await backendFactory.createBackend(config, preferredRunId);
+    const activeRun = new AgentRun({
+      context: backend.getContext(),
+      backend,
+    });
+    this.registerActiveRun(activeRun);
+    logger.info(`Successfully created ${runtimeKind} agent run '${activeRun.runId}'.`);
+    return activeRun;
   }
 
   async restoreAgentRun(
-    options: AgentRunConfigInput & { runId: string },
-  ): Promise<string> {
-    const built = await this.buildAgentConfig(options);
-    const agent = this.agentFactory.restoreAgent(
-      options.runId,
-      built.agentConfig,
-      null,
-    ) as AgentLike & { start?: () => void };
-    agent.start?.();
-    await this.waitForIdle(agent as Agent);
-    const agentRunId = agent.agentId;
-    logger.info(
-      `Successfully restored and started agent run '${agentRunId}' from definition '${built.agentName}'.`,
-    );
-    return agentRunId;
-  }
-
-  private async buildAgentConfig(
-    options: AgentRunConfigInput,
-  ): Promise<{ agentConfig: AgentConfig; agentName: string }> {
-    const {
-      agentDefinitionId,
-      llmModelIdentifier,
-      autoExecuteTools,
-      workspaceId,
-      llmConfig,
-      skillAccessMode,
-    } = options;
-
-    let agentDef: AgentDefinition | null = null;
-    try {
-      const getFreshAgentDefinitionById = (
-        this.agentDefinitionService as AgentDefinitionService & {
-          getFreshAgentDefinitionById?: (definitionId: string) => Promise<AgentDefinition | null>;
-        }
-      ).getFreshAgentDefinitionById;
-      agentDef =
-        typeof getFreshAgentDefinitionById === "function"
-          ? await getFreshAgentDefinitionById.call(this.agentDefinitionService, agentDefinitionId)
-          : await this.agentDefinitionService.getAgentDefinitionById(agentDefinitionId);
-    } catch (error) {
-      logger.error(
-        `Failed to fetch agent definition '${agentDefinitionId}': ${String(error)}`,
-      );
-    }
-
-    if (!agentDef) {
+    context: AgentRunContext<RuntimeAgentRunContext>,
+  ): Promise<AgentRun> {
+    const { runId } = context;
+    const runtimeKind = context.config.runtimeKind;
+    const backendFactory = this.resolveBackendFactory(runtimeKind);
+    if (!backendFactory) {
       throw new AgentCreationError(
-        `AgentDefinition with ID ${agentDefinitionId} not found.`,
+        `Runtime kind '${runtimeKind}' is not yet supported by AgentRunManager.restoreAgentRun().`,
       );
     }
-
-    const systemPrompt = asTrimmedString(agentDef.instructions);
-    const resolvedPrompt = systemPrompt ?? agentDef.description;
-    if (!systemPrompt) {
-      logger.warn(
-        `No non-blank definition instructions found for AgentDefinition ${agentDefinitionId}. Using agent description as fallback.`,
-      );
-    } else {
-      logger.info(
-        `Resolved system prompt from fresh definition instructions for AgentDefinition ${agentDefinitionId}.`,
-      );
-    }
-
-    const tools = [];
-    if (agentDef.toolNames?.length) {
-      for (const name of agentDef.toolNames) {
-        if (!defaultToolRegistry.getToolDefinition(name)) {
-          logger.warn(
-            `Tool '${name}' defined in agent definition '${agentDef.name}' not found in registry. Skipping.`,
-          );
-          continue;
-        }
-        try {
-          tools.push(defaultToolRegistry.createTool(name));
-        } catch (error) {
-          logger.error(
-            `Failed to create tool instance for '${name}' from agent definition '${agentDef.name}': ${String(error)}`,
-          );
-        }
-      }
-    }
-
-    const inputProcessors: BaseAgentUserInputMessageProcessor[] = [];
-    for (const name of mergeMandatoryAndOptional(agentDef.inputProcessorNames, this.registries.input)) {
-      const processor = this.registries.input.getProcessor(name);
-      if (processor) {
-        inputProcessors.push(processor);
-      } else {
-        logger.warn(
-          `Input processor '${name}' defined in agent definition '${agentDef.name}' not found in registry. Skipping.`,
-        );
-      }
-    }
-
-    const llmResponseProcessors: BaseLLMResponseProcessor[] = [];
-    for (const name of mergeMandatoryAndOptional(
-      agentDef.llmResponseProcessorNames,
-      this.registries.llmResponse,
-    )) {
-      const processor = this.registries.llmResponse.getProcessor(name);
-      if (processor) {
-        llmResponseProcessors.push(processor);
-      } else {
-        logger.warn(
-          `LLM response processor '${name}' defined in agent definition '${agentDef.name}' not found in registry. Skipping.`,
-        );
-      }
-    }
-
-    const systemPromptProcessors: BaseSystemPromptProcessor[] = [];
-    for (const name of mergeMandatoryAndOptional(
-      agentDef.systemPromptProcessorNames,
-      this.registries.systemPrompt,
-    )) {
-      const processor = this.registries.systemPrompt.getProcessor(name);
-      if (processor) {
-        systemPromptProcessors.push(processor);
-      } else {
-        logger.warn(
-          `System prompt processor '${name}' defined in agent definition '${agentDef.name}' not found in registry. Skipping.`,
-        );
-      }
-    }
-
-    const toolExecutionResultProcessors: BaseToolExecutionResultProcessor[] = [];
-    for (const name of mergeMandatoryAndOptional(
-      agentDef.toolExecutionResultProcessorNames,
-      this.registries.toolExecutionResult,
-    )) {
-      const processor = this.registries.toolExecutionResult.getProcessor(name);
-      if (processor) {
-        toolExecutionResultProcessors.push(processor);
-      } else {
-        logger.warn(
-          `Tool result processor '${name}' defined in agent definition '${agentDef.name}' not found in registry. Skipping.`,
-        );
-      }
-    }
-
-    const toolInvocationPreprocessors: BaseToolInvocationPreprocessor[] = [];
-    for (const name of mergeMandatoryAndOptional(
-      agentDef.toolInvocationPreprocessorNames,
-      this.registries.toolInvocationPreprocessor,
-    )) {
-      const processor = this.registries.toolInvocationPreprocessor.getPreprocessor(name);
-      if (processor) {
-        toolInvocationPreprocessors.push(processor);
-      } else {
-        logger.warn(
-          `Tool invocation preprocessor '${name}' defined in agent definition '${agentDef.name}' not found in registry. Skipping.`,
-        );
-      }
-    }
-
-    const lifecycleProcessors: BaseLifecycleEventProcessor[] = [];
-    for (const name of mergeMandatoryAndOptional(
-      agentDef.lifecycleProcessorNames,
-      this.registries.lifecycle,
-    )) {
-      const processor = this.registries.lifecycle.getProcessor(name);
-      if (processor) {
-        lifecycleProcessors.push(processor);
-      } else {
-        logger.warn(
-          `Lifecycle processor '${name}' defined in agent definition '${agentDef.name}' not found in registry. Skipping.`,
-        );
-      }
-    }
-
-    const skillPaths: string[] = [];
-    if (agentDef.skillNames?.length) {
-      for (const skillName of agentDef.skillNames) {
-        const skill = this.skillService.getSkill(skillName);
-        if (skill) {
-          skillPaths.push(skill.rootPath);
-          logger.info(`Resolved skill '${skillName}' to path: ${skill.rootPath}`);
-        } else {
-          logger.warn(
-            `Skill '${skillName}' defined in agent definition '${agentDef.name}' not found via SkillService. Skipping.`,
-          );
-        }
-      }
-    }
-
-    const config = llmConfig ? new LLMConfig({ extraParams: llmConfig }) : undefined;
-    const llmInstance = await this.llmFactory.createLLM(llmModelIdentifier, config);
-
-    let workspaceInstance = workspaceId
-      ? this.workspaceManager.getWorkspaceById(workspaceId)
-      : undefined;
-    if (workspaceId && !workspaceInstance) {
-      logger.warn(
-        `Workspace with ID ${workspaceId} not found. Falling back to temp workspace.`,
-      );
-    }
-    if (!workspaceInstance) {
-      workspaceInstance = await this.workspaceManager.getOrCreateTempWorkspace();
-      logger.info(`Using temp workspace (ID: ${workspaceInstance.workspaceId}) for agent.`);
-    }
-    const workspaceRootPath = workspaceInstance?.getBasePath?.() ?? null;
-
-    const initialCustomData = {
-      agent_definition_id: agentDefinitionId,
-      is_first_user_turn: true,
-      workspace_id: workspaceInstance?.workspaceId ?? null,
-      workspace_root_path: workspaceRootPath,
-      workspace_name: workspaceInstance?.getName?.() ?? workspaceInstance?.workspaceId ?? null,
-      workspace_is_temp:
-        workspaceInstance?.workspaceId === TempWorkspace.TEMP_WORKSPACE_ID,
-    };
-
-    return {
-      agentName: agentDef.name,
-      agentConfig: new AgentConfig(
-        agentDef.name,
-        agentDef.role ?? "",
-        agentDef.description,
-        llmInstance,
-        resolvedPrompt,
-        tools,
-        autoExecuteTools,
-        inputProcessors,
-        llmResponseProcessors,
-        systemPromptProcessors,
-        toolExecutionResultProcessors,
-        toolInvocationPreprocessors,
-        workspaceRootPath,
-        lifecycleProcessors,
-        initialCustomData,
-        skillPaths,
-        null,
-        skillAccessMode ?? null,
-      ),
-    };
+    const backend = await backendFactory.restoreBackend(context);
+    const activeRun = new AgentRun({
+      context: backend.getContext(),
+      backend,
+    });
+    this.registerActiveRun(activeRun);
+    logger.info(
+      `Successfully restored ${runtimeKind} agent run '${runId}'.`,
+    );
+    return activeRun;
   }
 
-  getAgentRun(runId: string): AgentLike | null {
-    return (this.agentFactory.getAgent(runId) as AgentLike | undefined) ?? null;
+  hasActiveRun(runId: string): boolean {
+    return this.getActiveRun(runId) !== null;
+  }
+
+  getActiveRun(runId: string): AgentRun | null {
+    const activeRun = this.activeRuns.get(runId) ?? null;
+    if (!activeRun) {
+      return null;
+    }
+    if (!activeRun.isActive()) {
+      this.unregisterActiveRun(runId);
+      return null;
+    }
+    return activeRun;
   }
 
   listActiveRuns(): string[] {
-    return this.agentFactory.listActiveAgentIds();
+    const activeRunIds: string[] = [];
+    for (const runId of this.activeRuns.keys()) {
+      if (this.getActiveRun(runId)) {
+        activeRunIds.push(runId);
+      }
+    }
+    return activeRunIds;
   }
 
   async terminateAgentRun(runId: string): Promise<boolean> {
     try {
-      return await this.agentFactory.removeAgent(runId);
+      const activeRun = this.getActiveRun(runId);
+      if (activeRun) {
+        const result = await activeRun.terminate();
+        if (!result.accepted) {
+          return false;
+        }
+        this.unregisterActiveRun(runId);
+        return true;
+      }
+      return false;
     } catch (error) {
       logger.error(`Failed to terminate agent run '${runId}': ${String(error)}`);
       throw new AgentTerminationError(String(error));
     }
   }
 
-  getAgentEventStream(runId: string): AgentEventStream | null {
-    const agent = this.getAgentRun(runId);
-    if (!agent) {
-      logger.warn(
-        `AgentRunManager: Attempted to get event stream for non-existent agent run '${runId}'.`,
-      );
-      return null;
+  private resolveBackendFactory(
+    runtimeKind: RuntimeKind,
+  ): AgentRunBackendFactory | null {
+    if (runtimeKind === RuntimeKind.AUTOBYTEUS) {
+      return this.autoByteusBackendFactory;
     }
-    return new AgentEventStream(agent as any);
+    if (runtimeKind === RuntimeKind.CODEX_APP_SERVER) {
+      return this.codexBackendFactory;
+    }
+    if (runtimeKind === RuntimeKind.CLAUDE_AGENT_SDK) {
+      return this.claudeBackendFactory;
+    }
+    return null;
+  }
+
+  private registerActiveRun(activeRun: AgentRun): void {
+    this.activeRuns.set(activeRun.runId, activeRun);
+  }
+
+  private unregisterActiveRun(runId: string): void {
+    this.activeRuns.delete(runId);
   }
 }

@@ -40,6 +40,7 @@ const teamLaunchPresetFixture = {
   llmModelIdentifier: launchPresetFixture.llmModelIdentifier,
   runtimeKind: launchPresetFixture.runtimeKind,
   autoExecuteTools: launchPresetFixture.autoExecuteTools,
+  skillAccessMode: launchPresetFixture.skillAccessMode,
   llmConfig: launchPresetFixture.llmConfig,
 };
 
@@ -191,7 +192,7 @@ describe("External channel setup GraphQL e2e", () => {
           llmModelIdentifier: string;
           runtimeKind: string;
           autoExecuteTools: boolean;
-          skillAccessMode: string | null;
+          skillAccessMode: string;
         };
       };
     }>(upsertMutation, {
@@ -500,6 +501,7 @@ describe("External channel setup GraphQL e2e", () => {
           }
           teamLaunchPreset {
             workspaceRootPath
+            skillAccessMode
           }
           teamRunId
         }
@@ -518,7 +520,10 @@ describe("External channel setup GraphQL e2e", () => {
         targetAgentDefinitionId: string | null;
         targetTeamDefinitionId: string | null;
         launchPreset: { workspaceRootPath: string } | null;
-        teamLaunchPreset: { workspaceRootPath: string } | null;
+        teamLaunchPreset: {
+          workspaceRootPath: string;
+          skillAccessMode: string;
+        } | null;
         teamRunId: string | null;
       };
     }>(upsertMutation, {
@@ -548,6 +553,7 @@ describe("External channel setup GraphQL e2e", () => {
       launchPreset: null,
       teamLaunchPreset: {
         workspaceRootPath: teamLaunchPresetFixture.workspaceRootPath,
+        skillAccessMode: teamLaunchPresetFixture.skillAccessMode,
       },
       teamRunId: null,
     });
@@ -567,6 +573,7 @@ describe("External channel setup GraphQL e2e", () => {
           }
           teamLaunchPreset {
             workspaceRootPath
+            skillAccessMode
           }
           teamRunId
         }
@@ -582,7 +589,10 @@ describe("External channel setup GraphQL e2e", () => {
         targetAgentDefinitionId: string | null;
         targetTeamDefinitionId: string | null;
         launchPreset: { workspaceRootPath: string } | null;
-        teamLaunchPreset: { workspaceRootPath: string } | null;
+        teamLaunchPreset: {
+          workspaceRootPath: string;
+          skillAccessMode: string;
+        } | null;
         teamRunId: string | null;
       }>;
     }>(listQuery);
@@ -598,6 +608,7 @@ describe("External channel setup GraphQL e2e", () => {
       launchPreset: null,
       teamLaunchPreset: {
         workspaceRootPath: teamLaunchPresetFixture.workspaceRootPath,
+        skillAccessMode: teamLaunchPresetFixture.skillAccessMode,
       },
       teamRunId: null,
     });

@@ -1,7 +1,14 @@
-import type { RuntimeKind } from "../../runtime-management/runtime-kind.js";
-import { DEFAULT_RUNTIME_KIND, normalizeRuntimeKind } from "../../runtime-management/runtime-kind.js";
-import type { RunProjectionProvider } from "./run-projection-provider-port.js";
-import { resolveDefaultRunProjectionProviders } from "./run-projection-provider-registry-defaults.js";
+import { RuntimeKind, runtimeKindFromString } from "../../runtime-management/runtime-kind-enum.js";
+import type { RunProjectionProvider } from "./run-projection-types.js";
+import {
+  getAutoByteusRunViewProjectionProvider,
+} from "./providers/autobyteus-run-view-projection-provider.js";
+import {
+  getClaudeRunViewProjectionProvider,
+} from "./providers/claude-run-view-projection-provider.js";
+import {
+  getCodexRunViewProjectionProvider,
+} from "./providers/codex-run-view-projection-provider.js";
 
 export class RunProjectionProviderRegistry {
   private readonly providersByRuntime = new Map<RuntimeKind, RunProjectionProvider>();
@@ -12,7 +19,7 @@ export class RunProjectionProviderRegistry {
     runtimeProviders: RunProjectionProvider[] = [],
   ) {
     this.fallbackProvider = fallbackProvider;
-    this.providersByRuntime.set(DEFAULT_RUNTIME_KIND, fallbackProvider);
+    this.providersByRuntime.set(RuntimeKind.AUTOBYTEUS, fallbackProvider);
 
     for (const provider of runtimeProviders) {
       if (!provider.runtimeKind) {
@@ -23,7 +30,8 @@ export class RunProjectionProviderRegistry {
   }
 
   resolveProvider(runtimeKind: RuntimeKind | string | null | undefined): RunProjectionProvider {
-    const normalized = normalizeRuntimeKind(runtimeKind, DEFAULT_RUNTIME_KIND);
+    const normalized =
+      runtimeKindFromString(runtimeKind, RuntimeKind.AUTOBYTEUS) ?? RuntimeKind.AUTOBYTEUS;
     return this.providersByRuntime.get(normalized) ?? this.fallbackProvider;
   }
 
@@ -36,10 +44,13 @@ let cachedRunProjectionProviderRegistry: RunProjectionProviderRegistry | null = 
 
 export const getRunProjectionProviderRegistry = (): RunProjectionProviderRegistry => {
   if (!cachedRunProjectionProviderRegistry) {
-    const defaults = resolveDefaultRunProjectionProviders();
+    const fallbackProvider = getAutoByteusRunViewProjectionProvider();
     cachedRunProjectionProviderRegistry = new RunProjectionProviderRegistry(
-      defaults.fallbackProvider,
-      defaults.runtimeProviders,
+      fallbackProvider,
+      [
+        getCodexRunViewProjectionProvider(),
+        getClaudeRunViewProjectionProvider(),
+      ],
     );
   }
   return cachedRunProjectionProviderRegistry;

@@ -6,7 +6,7 @@ import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
 import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
-import { getTeamMemberRuntimeOrchestrator } from "../../../src/agent-team-execution/services/team-member-runtime-orchestrator.js";
+import { getTeamMemberManager } from "../../../src/agent-team-execution/services/team-member-manager.js";
 import { getTeamRunHistoryService } from "../../../src/run-history/services/team-run-history-service.js";
 
 describe("Active runtime snapshot GraphQL e2e", () => {
@@ -29,7 +29,7 @@ describe("Active runtime snapshot GraphQL e2e", () => {
   it("excludes team-member runs from agentRuns and includes member-runtime teams in agentTeamRuns", async () => {
     const agentRunManager = AgentRunManager.getInstance();
     const agentTeamRunManager = AgentTeamRunManager.getInstance();
-    const teamMemberRuntimeOrchestrator = getTeamMemberRuntimeOrchestrator();
+    const teamMemberManager = getTeamMemberManager();
     const teamRunHistoryService = getTeamRunHistoryService();
 
     const standaloneAgent = {
@@ -81,13 +81,13 @@ describe("Active runtime snapshot GraphQL e2e", () => {
       return null;
     });
 
-    vi.spyOn(teamMemberRuntimeOrchestrator, "listActiveTeamRunIds").mockReturnValue([
+    vi.spyOn(teamMemberManager, "listActiveTeamRunIds").mockReturnValue([
       "team-member-runtime-1",
     ]);
     vi.spyOn(teamRunHistoryService, "getTeamRunResumeConfig").mockResolvedValue({
       teamRunId: "team-member-runtime-1",
       isActive: true,
-      manifest: {
+      metadata: {
         teamDefinitionName: "Professor Student Team",
       },
     } as any);
@@ -125,7 +125,7 @@ describe("Active runtime snapshot GraphQL e2e", () => {
       {
         id: "team-member-runtime-1",
         name: "Professor Student Team",
-        currentStatus: "ACTIVE",
+        currentStatus: "PROCESSING",
       },
     ]);
   });

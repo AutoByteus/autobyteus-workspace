@@ -2,7 +2,7 @@ import type { AgentRuntimeKind, SkillAccessMode } from '~/types/agent/AgentRunCo
 import type { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { RunProjectionConversationEntry } from '~/services/runHydration/runProjectionConversation';
 
-export type RunKnownStatus = 'ACTIVE' | 'IDLE' | 'ERROR';
+export type RunKnownStatus = 'ACTIVE' | 'IDLE' | 'ERROR' | 'TERMINATED';
 
 export interface RunHistoryItem {
   runId: string;
@@ -23,6 +23,7 @@ export interface RunHistoryWorkspaceGroup {
   workspaceRootPath: string;
   workspaceName: string;
   agents: RunHistoryAgentGroup[];
+  teamRuns: TeamRunHistoryItem[];
 }
 
 export interface RunEditableFieldFlags {
@@ -34,7 +35,7 @@ export interface RunEditableFieldFlags {
   runtimeKind: boolean;
 }
 
-export interface RunManifestConfigPayload {
+export interface RunMetadataConfigPayload {
   agentDefinitionId: string;
   workspaceRootPath: string;
   llmModelIdentifier: string;
@@ -53,7 +54,7 @@ export interface RunManifestConfigPayload {
 export interface RunResumeConfigPayload {
   runId: string;
   isActive: boolean;
-  manifestConfig: RunManifestConfigPayload;
+  metadataConfig: RunMetadataConfigPayload;
   editableFields: RunEditableFieldFlags;
 }
 
@@ -87,7 +88,7 @@ export interface TeamRunHistoryItem {
   members: TeamRunMemberHistoryItem[];
 }
 
-export interface TeamRunManifestMemberBinding {
+export interface TeamRunMetadataMemberBinding {
   memberRouteKey: string;
   memberName: string;
   memberRunId: string;
@@ -105,7 +106,7 @@ export interface TeamRunManifestMemberBinding {
   workspaceRootPath: string | null;
 }
 
-export interface TeamRunManifestPayload {
+export interface TeamRunMetadataPayload {
   teamRunId: string;
   teamDefinitionId: string;
   teamDefinitionName: string;
@@ -113,13 +114,13 @@ export interface TeamRunManifestPayload {
   runVersion: number;
   createdAt: string;
   updatedAt: string;
-  memberBindings: TeamRunManifestMemberBinding[];
+  memberBindings: TeamRunMetadataMemberBinding[];
 }
 
 export interface TeamRunResumeConfigPayload {
   teamRunId: string;
   isActive: boolean;
-  manifest: TeamRunManifestPayload;
+  metadata: TeamRunMetadataPayload;
 }
 
 export interface TeamMemberTreeRow {
@@ -150,12 +151,8 @@ export interface TeamTreeNode {
   members: TeamMemberTreeRow[];
 }
 
-export interface ListRunHistoryQueryData {
-  listRunHistory: RunHistoryWorkspaceGroup[];
-}
-
-export interface ListTeamRunHistoryQueryData {
-  listTeamRunHistory: TeamRunHistoryItem[];
+export interface ListWorkspaceRunHistoryQueryData {
+  listWorkspaceRunHistory: RunHistoryWorkspaceGroup[];
 }
 
 export interface TeamMemberRunProjectionPayload {
@@ -173,19 +170,19 @@ export interface GetTeamRunResumeConfigQueryData {
   getTeamRunResumeConfig: {
     teamRunId: string;
     isActive: boolean;
-    manifest: unknown;
+    metadata: unknown;
   };
 }
 
-export interface DeleteRunHistoryMutationData {
-  deleteRunHistory: {
+export interface DeleteStoredRunMutationData {
+  deleteStoredRun: {
     success: boolean;
     message: string;
   };
 }
 
-export interface DeleteTeamRunHistoryMutationData {
-  deleteTeamRunHistory: {
+export interface DeleteStoredTeamRunMutationData {
+  deleteStoredTeamRun: {
     success: boolean;
     message: string;
   };

@@ -8,7 +8,7 @@ import { useAgentContextsStore } from '~/stores/agentContextsStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
-import { openTeamRunWithCoordinator } from '~/services/runOpen/teamRunOpenCoordinator';
+import { openTeamRun } from '~/services/runOpen/teamRunOpenCoordinator';
 
 interface RunHistorySelectionStoreLike {
   openingRun: boolean;
@@ -30,7 +30,7 @@ export const openTeamMemberRunFromHistory = async (
   store.openingRun = true;
   store.error = null;
   try {
-    const result = await openTeamRunWithCoordinator({
+    const result = await openTeamRun({
       teamRunId,
       memberRouteKey,
       ensureWorkspaceByRootPath: (path: string) => store.ensureWorkspaceByRootPath(path),

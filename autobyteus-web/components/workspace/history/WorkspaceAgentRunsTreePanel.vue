@@ -118,7 +118,6 @@ import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
-import { useActiveRuntimeSyncStore } from '~/stores/activeRuntimeSyncStore';
 import { useToasts } from '~/composables/useToasts';
 import { pickFolderPath } from '~/composables/useNativeFolderDialog';
 import { useRunHistoryAvatarState } from '~/composables/useRunHistoryAvatarState';
@@ -143,7 +142,6 @@ const teamRunStore = useAgentTeamRunStore();
 const agentDefinitionStore = useAgentDefinitionStore();
 const agentTeamDefinitionStore = useAgentTeamDefinitionStore();
 const windowNodeContextStore = useWindowNodeContextStore();
-const activeRuntimeSyncStore = useActiveRuntimeSyncStore();
 const { isEmbeddedWindow } = storeToRefs(windowNodeContextStore);
 const { addToast } = useToasts();
 
@@ -285,12 +283,8 @@ onMounted(async () => {
     agentTeamDefinitionStore.fetchAllAgentTeamDefinitions().catch(() => undefined),
   ]);
   await runHistoryStore.fetchTree();
-  await activeRuntimeSyncStore.refreshQuietly();
   refreshTimerId = setInterval(() => {
-    void Promise.all([
-      runHistoryStore.refreshTreeQuietly(),
-      activeRuntimeSyncStore.refreshQuietly(),
-    ]);
+    void runHistoryStore.refreshTreeQuietly();
   }, HISTORY_REFRESH_INTERVAL_MS);
 });
 

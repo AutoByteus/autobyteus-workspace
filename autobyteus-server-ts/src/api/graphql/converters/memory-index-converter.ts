@@ -1,4 +1,4 @@
-import type { MemorySnapshotPage as DomainMemorySnapshotPage } from "../../../agent-memory-view/domain/models.js";
+import type { MemorySnapshotPage as DomainMemorySnapshotPage } from "../../../agent-memory/domain/models.js";
 import type { MemorySnapshotPage as GraphqlMemorySnapshotPage } from "../types/memory-index.js";
 
 export class MemoryIndexConverter {

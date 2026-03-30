@@ -1,8 +1,8 @@
 import { gql } from 'graphql-tag';
 
-export const ListRunHistory = gql`
-  query ListRunHistory($limitPerAgent: Int = 6) {
-    listRunHistory(limitPerAgent: $limitPerAgent) {
+export const ListWorkspaceRunHistory = gql`
+  query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {
+    listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {
       workspaceRootPath
       workspaceName
       agents {
@@ -16,29 +16,23 @@ export const ListRunHistory = gql`
           isActive
         }
       }
-    }
-  }
-`;
-
-export const ListTeamRunHistory = gql`
-  query ListTeamRunHistory {
-    listTeamRunHistory {
-      teamRunId
-      teamDefinitionId
-      teamDefinitionName
-      workspaceRootPath
-      summary
-      lastActivityAt
-      lastKnownStatus
-      deleteLifecycle
-      isActive
-      members {
-        memberRouteKey
-        memberName
-        memberRunId
-        runtimeKind
-        runtimeReference
+      teamRuns {
+        teamRunId
+        teamDefinitionId
+        teamDefinitionName
         workspaceRootPath
+        summary
+        lastActivityAt
+        lastKnownStatus
+        deleteLifecycle
+        isActive
+        members {
+          memberRouteKey
+          memberName
+          memberRunId
+          runtimeKind
+          workspaceRootPath
+        }
       }
     }
   }
@@ -60,7 +54,7 @@ export const GetTeamRunResumeConfig = gql`
     getTeamRunResumeConfig(teamRunId: $teamRunId) {
       teamRunId
       isActive
-      manifest
+      metadata
     }
   }
 `;
@@ -76,12 +70,12 @@ export const GetTeamMemberRunProjection = gql`
   }
 `;
 
-export const GetRunResumeConfig = gql`
-  query GetRunResumeConfig($runId: String!) {
-    getRunResumeConfig(runId: $runId) {
+export const GetAgentRunResumeConfig = gql`
+  query GetAgentRunResumeConfig($runId: String!) {
+    getAgentRunResumeConfig(runId: $runId) {
       runId
       isActive
-      manifestConfig {
+      metadataConfig {
         agentDefinitionId
         workspaceRootPath
         llmModelIdentifier

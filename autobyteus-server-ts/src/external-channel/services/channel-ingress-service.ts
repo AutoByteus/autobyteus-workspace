@@ -1,50 +1,20 @@
 import type { ExternalMessageEnvelope } from "autobyteus-ts/external-channel/external-message-envelope.js";
-import type {
-  ChannelBinding,
-  ChannelIdempotencyDecision,
-  ResolvedBinding,
-} from "../domain/models.js";
-import type { ChannelRuntimeDispatchResult, ChannelRuntimeFacade } from "../runtime/channel-runtime-facade.js";
-import type { ChannelMessageReceiptService } from "./channel-message-receipt-service.js";
+import type { ChannelBinding } from "../domain/models.js";
+import type { ChannelRunDispatchResult } from "../runtime/channel-run-dispatch-result.js";
+import { ChannelRunFacade } from "../runtime/channel-run-facade.js";
+import { ChannelBindingService } from "./channel-binding-service.js";
+import { ChannelIdempotencyService } from "./channel-idempotency-service.js";
+import { ChannelMessageReceiptService } from "./channel-message-receipt-service.js";
+import { ChannelThreadLockService } from "./channel-thread-lock-service.js";
 
 export type ChannelIngressDisposition = "ROUTED" | "UNBOUND" | "DUPLICATE";
 
-type ChannelIdempotencyPort = {
-  ensureFirstSeen(
-    key: string,
-    ttlSeconds?: number,
-  ): Promise<ChannelIdempotencyDecision>;
-};
-
-type ChannelBindingPort = {
-  resolveBinding(input: {
-    provider: ExternalMessageEnvelope["provider"];
-    transport: ExternalMessageEnvelope["transport"];
-    accountId: string;
-    peerId: string;
-    threadId: string | null;
-  }): Promise<ResolvedBinding | null>;
-};
-
-type ChannelThreadLockPort = {
-  withThreadLock<T>(
-    key: string,
-    work: () => Promise<T>,
-    timeoutMs?: number,
-  ): Promise<T>;
-};
-
-type ChannelMessageReceiptPort = Pick<
-  ChannelMessageReceiptService,
-  "recordIngressReceipt"
->;
-
 export type ChannelIngressServiceDependencies = {
-  idempotencyService: ChannelIdempotencyPort;
-  bindingService: ChannelBindingPort;
-  threadLockService: ChannelThreadLockPort;
-  runtimeFacade: ChannelRuntimeFacade;
-  messageReceiptService: ChannelMessageReceiptPort;
+  idempotencyService?: ChannelIdempotencyService;
+  bindingService?: ChannelBindingService;
+  threadLockService?: ChannelThreadLockService;
+  runFacade?: ChannelRunFacade;
+  messageReceiptService?: ChannelMessageReceiptService;
 };
 
 export type ChannelIngressServiceOptions = {
@@ -58,26 +28,27 @@ export type ChannelIngressResult = {
   bindingResolved: boolean;
   binding: ChannelBinding | null;
   usedTransportFallback: boolean;
-  dispatch: ChannelRuntimeDispatchResult | null;
+  dispatch: ChannelRunDispatchResult | null;
 };
 
 export class ChannelIngressService {
   private readonly idempotencyTtlSeconds?: number;
-  private readonly idempotencyService: ChannelIdempotencyPort;
-  private readonly bindingService: ChannelBindingPort;
-  private readonly threadLockService: ChannelThreadLockPort;
-  private readonly runtimeFacade: ChannelRuntimeFacade;
-  private readonly messageReceiptService: ChannelMessageReceiptPort;
+  private readonly idempotencyService: ChannelIdempotencyService;
+  private readonly bindingService: ChannelBindingService;
+  private readonly threadLockService: ChannelThreadLockService;
+  private readonly runFacade: ChannelRunFacade;
+  private readonly messageReceiptService: ChannelMessageReceiptService;
 
   constructor(
-    deps: ChannelIngressServiceDependencies,
+    deps: ChannelIngressServiceDependencies = {},
     options: ChannelIngressServiceOptions = {},
   ) {
-    this.idempotencyService = deps.idempotencyService;
-    this.bindingService = deps.bindingService;
-    this.threadLockService = deps.threadLockService;
-    this.runtimeFacade = deps.runtimeFacade;
-    this.messageReceiptService = deps.messageReceiptService;
+    this.idempotencyService = deps.idempotencyService ?? new ChannelIdempotencyService();
+    this.bindingService = deps.bindingService ?? new ChannelBindingService();
+    this.threadLockService = deps.threadLockService ?? new ChannelThreadLockService();
+    this.runFacade = deps.runFacade ?? new ChannelRunFacade();
+    this.messageReceiptService =
+      deps.messageReceiptService ?? new ChannelMessageReceiptService();
     this.idempotencyTtlSeconds = options.idempotencyTtlSeconds;
   }
 
@@ -124,7 +95,7 @@ export class ChannelIngressService {
 
     const dispatch = await this.threadLockService.withThreadLock(
       envelope.routingKey,
-      () => this.runtimeFacade.dispatchToBinding(resolved.binding, envelope),
+      () => this.runFacade.dispatchToBinding(resolved.binding, envelope),
     );
     const normalizedDispatch = normalizeDispatchTarget(dispatch, resolved.binding);
     await this.messageReceiptService.recordIngressReceipt({
@@ -155,9 +126,9 @@ const createIdempotencyKey = (envelope: ExternalMessageEnvelope): string =>
   `${envelope.routingKey}::${envelope.externalMessageId}`;
 
 const normalizeDispatchTarget = (
-  dispatch: ChannelRuntimeDispatchResult,
+  dispatch: ChannelRunDispatchResult,
   binding: ChannelBinding,
-): ChannelRuntimeDispatchResult => {
+): ChannelRunDispatchResult => {
   const agentRunId = normalizeNullableString(dispatch.agentRunId) ?? binding.agentRunId;
   const teamRunId = normalizeNullableString(dispatch.teamRunId) ?? binding.teamRunId;
   if (!agentRunId && !teamRunId) {

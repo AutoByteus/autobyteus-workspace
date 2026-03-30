@@ -1,61 +1,7 @@
 import { Arg, Field, Mutation, ObjectType, Query, Resolver } from "type-graphql";
 import { GraphQLJSON } from "graphql-scalars";
 import { getTeamRunHistoryService } from "../../../run-history/services/team-run-history-service.js";
-import { getTeamMemberRunProjectionService } from "../../../run-history/services/team-member-run-projection-service.js";
-
-@ObjectType()
-class TeamRunMemberHistoryObject {
-  @Field(() => String)
-  memberRouteKey!: string;
-
-  @Field(() => String)
-  memberName!: string;
-
-  @Field(() => String)
-  memberRunId!: string;
-
-  @Field(() => String)
-  runtimeKind!: string;
-
-  @Field(() => GraphQLJSON, { nullable: true })
-  runtimeReference?: Record<string, unknown> | null;
-
-  @Field(() => String, { nullable: true })
-  workspaceRootPath?: string | null;
-}
-
-@ObjectType()
-class TeamRunHistoryItemObject {
-  @Field(() => String)
-  teamRunId!: string;
-
-  @Field(() => String)
-  teamDefinitionId!: string;
-
-  @Field(() => String)
-  teamDefinitionName!: string;
-
-  @Field(() => String, { nullable: true })
-  workspaceRootPath?: string | null;
-
-  @Field(() => String)
-  summary!: string;
-
-  @Field(() => String)
-  lastActivityAt!: string;
-
-  @Field(() => String)
-  lastKnownStatus!: string;
-
-  @Field(() => String)
-  deleteLifecycle!: string;
-
-  @Field(() => Boolean)
-  isActive!: boolean;
-
-  @Field(() => [TeamRunMemberHistoryObject])
-  members!: TeamRunMemberHistoryObject[];
-}
+import { getTeamMemberRunViewProjectionService } from "../../../run-history/services/team-member-run-view-projection-service.js";
 
 @ObjectType()
 class TeamRunResumeConfigPayload {
@@ -66,7 +12,7 @@ class TeamRunResumeConfigPayload {
   isActive!: boolean;
 
   @Field(() => GraphQLJSON)
-  manifest!: unknown;
+  metadata!: unknown;
 }
 
 @ObjectType()
@@ -85,7 +31,7 @@ class TeamMemberRunProjectionPayload {
 }
 
 @ObjectType()
-class DeleteTeamRunHistoryMutationResult {
+class DeleteStoredTeamRunMutationResult {
   @Field(() => Boolean)
   success!: boolean;
 
@@ -96,28 +42,7 @@ class DeleteTeamRunHistoryMutationResult {
 @Resolver()
 export class TeamRunHistoryResolver {
   private teamRunHistoryService = getTeamRunHistoryService();
-  private teamMemberRunProjectionService = getTeamMemberRunProjectionService();
-
-  @Query(() => [TeamRunHistoryItemObject])
-  async listTeamRunHistory(): Promise<TeamRunHistoryItemObject[]> {
-    const rows = await this.teamRunHistoryService.listTeamRunHistory();
-    return rows.map((row) => ({
-      teamRunId: row.teamRunId,
-      teamDefinitionId: row.teamDefinitionId,
-      teamDefinitionName: row.teamDefinitionName,
-      workspaceRootPath: row.workspaceRootPath,
-      summary: row.summary,
-      lastActivityAt: row.lastActivityAt,
-      lastKnownStatus: row.lastKnownStatus,
-      deleteLifecycle: row.deleteLifecycle,
-      isActive: row.isActive,
-      members: row.members.map((member) => ({
-        ...member,
-        runtimeReference:
-          (member.runtimeReference as unknown as Record<string, unknown> | null | undefined) ?? null,
-      })),
-    }));
-  }
+  private teamMemberRunProjectionService = getTeamMemberRunViewProjectionService();
 
   @Query(() => TeamRunResumeConfigPayload)
   async getTeamRunResumeConfig(
@@ -127,7 +52,7 @@ export class TeamRunHistoryResolver {
     return {
       teamRunId: config.teamRunId,
       isActive: config.isActive,
-      manifest: config.manifest,
+      metadata: config.metadata,
     };
   }
 
@@ -145,12 +70,12 @@ export class TeamRunHistoryResolver {
     };
   }
 
-  @Mutation(() => DeleteTeamRunHistoryMutationResult)
-  async deleteTeamRunHistory(
+  @Mutation(() => DeleteStoredTeamRunMutationResult)
+  async deleteStoredTeamRun(
     @Arg("teamRunId", () => String) teamRunId: string,
-  ): Promise<DeleteTeamRunHistoryMutationResult> {
+  ): Promise<DeleteStoredTeamRunMutationResult> {
     try {
-      return await this.teamRunHistoryService.deleteTeamRunHistory(teamRunId);
+      return await this.teamRunHistoryService.deleteStoredTeamRun(teamRunId);
     } catch (error) {
       return {
         success: false,

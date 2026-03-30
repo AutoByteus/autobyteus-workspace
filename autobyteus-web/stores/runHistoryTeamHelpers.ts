@@ -5,7 +5,7 @@ import { AgentRunState } from '~/types/agent/AgentRunState';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
-import type { TeamTreeNode, TeamRunHistoryItem, TeamRunManifestPayload, TeamMemberRunProjectionPayload } from '~/stores/runHistoryTypes';
+import type { TeamTreeNode, TeamRunHistoryItem, TeamRunMetadataPayload, TeamMemberRunProjectionPayload } from '~/stores/runHistoryTypes';
 import { buildConversationFromProjection } from '~/services/runHydration/runProjectionConversation';
 
 export const toHistoryTeamStatus = (
@@ -221,12 +221,12 @@ export const fetchTeamMemberProjections = async (params: {
   client: any;
   getTeamMemberRunProjectionQuery: any;
   teamRunId: string;
-  manifest: TeamRunManifestPayload;
+  metadata: TeamRunMetadataPayload;
   toTeamMemberKey: (member: { memberRouteKey: string; memberName: string }) => string;
 }): Promise<Map<string, TeamMemberRunProjectionPayload | null>> => {
   const projectionByMemberRouteKey = new Map<string, TeamMemberRunProjectionPayload | null>();
   await Promise.all(
-    params.manifest.memberBindings.map(async (binding) => {
+    params.metadata.memberBindings.map(async (binding) => {
       const normalizedMemberRouteKey = params.toTeamMemberKey(binding).trim();
       if (!normalizedMemberRouteKey) {
         return;
@@ -266,7 +266,7 @@ export const fetchTeamMemberProjections = async (params: {
 
 export const buildTeamMemberContexts = async (params: {
   teamRunId: string;
-  manifest: TeamRunManifestPayload;
+  metadata: TeamRunMetadataPayload;
   isActive: boolean;
   projectionByMemberRouteKey: Map<string, TeamMemberRunProjectionPayload | null>;
   toTeamMemberKey: (member: { memberRouteKey: string; memberName: string }) => string;
@@ -274,7 +274,7 @@ export const buildTeamMemberContexts = async (params: {
 }): Promise<{ members: Map<string, AgentContext>; firstWorkspaceId: string | null }> => {
   const members = new Map<string, AgentContext>();
   let firstWorkspaceId: string | null = null;
-  for (const binding of params.manifest.memberBindings) {
+  for (const binding of params.metadata.memberBindings) {
     const normalizedMemberRouteKey = params.toTeamMemberKey(binding).trim();
     if (!normalizedMemberRouteKey) {
       continue;
@@ -312,8 +312,8 @@ export const buildTeamMemberContexts = async (params: {
       : {
         id: `${params.teamRunId}::${normalizedMemberRouteKey}`,
         messages: [],
-        createdAt: params.manifest.createdAt,
-        updatedAt: params.manifest.updatedAt,
+        createdAt: params.metadata.createdAt,
+        updatedAt: params.metadata.updatedAt,
         agentDefinitionId: binding.agentDefinitionId,
         agentName: binding.memberName,
         llmModelIdentifier: binding.llmModelIdentifier,
@@ -321,8 +321,8 @@ export const buildTeamMemberContexts = async (params: {
 
     conversation.id = `${params.teamRunId}::${normalizedMemberRouteKey}`;
     if (conversation.messages.length === 0) {
-      conversation.createdAt = params.manifest.createdAt;
-      conversation.updatedAt = projection?.lastActivityAt || params.manifest.updatedAt;
+      conversation.createdAt = params.metadata.createdAt;
+      conversation.updatedAt = projection?.lastActivityAt || params.metadata.updatedAt;
     } else if (projection?.lastActivityAt) {
       conversation.updatedAt = projection.lastActivityAt;
     }

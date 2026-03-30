@@ -1,0 +1,16 @@
+export enum ClaudeSessionEventName {
+  TURN_STARTED = "turn/started",
+  TURN_COMPLETED = "turn/completed",
+  TURN_INTERRUPTED = "turn/interrupted",
+  SESSION_TERMINATED = "session/terminated",
+  ITEM_ADDED = "item/added",
+  ITEM_COMPLETED = "item/completed",
+  ITEM_OUTPUT_TEXT_DELTA = "item/outputText/delta",
+  ITEM_OUTPUT_TEXT_COMPLETED = "item/outputText/completed",
+  ITEM_COMMAND_EXECUTION_STARTED = "item/commandExecution/started",
+  ITEM_COMMAND_EXECUTION_REQUEST_APPROVAL = "item/commandExecution/requestApproval",
+  ITEM_COMMAND_EXECUTION_APPROVED = "item/commandExecution/approved",
+  ITEM_COMMAND_EXECUTION_DENIED = "item/commandExecution/denied",
+  ITEM_COMMAND_EXECUTION_COMPLETED = "item/commandExecution/completed",
+  ERROR = "error",
+}

@@ -7,6 +7,7 @@ import type {
   UpsertChannelBindingInput,
 } from "../domain/models.js";
 import type { ChannelBindingProvider } from "../providers/channel-binding-provider.js";
+import { getProviderProxySet } from "../providers/provider-proxy-set.js";
 
 export type ChannelBindingServiceOptions = {
   allowTransportFallback?: boolean;
@@ -16,7 +17,7 @@ export class ChannelBindingService {
   private readonly allowTransportFallback: boolean;
 
   constructor(
-    private readonly provider: ChannelBindingProvider,
+    private readonly provider: ChannelBindingProvider = getProviderProxySet().bindingProvider,
     options: ChannelBindingServiceOptions = {},
   ) {
     this.allowTransportFallback = options.allowTransportFallback ?? false;

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { MemoryViewConverter } from "../../../../../src/api/graphql/converters/memory-view-converter.js";
-import type { AgentMemoryView } from "../../../../../src/agent-memory-view/domain/models.js";
+import type { AgentMemoryView } from "../../../../../src/agent-memory/domain/models.js";
 
 describe("MemoryViewConverter", () => {
   it("maps domain view to graphql view", () => {

@@ -4,6 +4,7 @@ import type {
   UpsertChannelDeliveryEventInput,
 } from "../domain/models.js";
 import type { DeliveryEventProvider } from "../providers/delivery-event-provider.js";
+import { getProviderProxySet } from "../providers/provider-proxy-set.js";
 
 export type RecordChannelDeliveryEventInput = Omit<
   UpsertChannelDeliveryEventInput,
@@ -11,7 +12,9 @@ export type RecordChannelDeliveryEventInput = Omit<
 >;
 
 export class DeliveryEventService {
-  constructor(private readonly provider: DeliveryEventProvider) {}
+  constructor(
+    private readonly provider: DeliveryEventProvider = getProviderProxySet().deliveryEventProvider,
+  ) {}
 
   async recordPending(
     input: RecordChannelDeliveryEventInput,

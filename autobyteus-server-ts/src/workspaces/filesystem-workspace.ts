@@ -1,12 +1,12 @@
 import path from 'node:path';
-import { WorkspaceConfig } from 'autobyteus-ts';
 import type { BaseFileExplorer } from '../file-explorer/base-file-explorer.js';
 import { FileNameIndexer } from '../file-explorer/file-name-indexer.js';
 import { LocalFileExplorer } from '../file-explorer/local-file-explorer.js';
+import { buildFilesystemWorkspaceId } from './workspace-id-mapping-store.js';
+import type { WorkspaceInput } from './workspace-input.js';
 import {
-  buildFilesystemWorkspaceId,
   canonicalizeWorkspaceRootPath,
-} from './workspace-identity.js';
+} from './workspace-path-utils.js';
 import {
   BaseFileSearchStrategy,
   CompositeSearchStrategy,
@@ -22,23 +22,26 @@ const logger = {
 
 export class FileSystemWorkspace {
   readonly workspaceId: string;
-  readonly config: WorkspaceConfig;
+  readonly config: WorkspaceInput;
   readonly rootPath: string;
   private fileExplorer: BaseFileExplorer;
   private searchStrategy: BaseFileSearchStrategy | null = null;
   private fileNameIndexer: FileNameIndexer | null = null;
   private backgroundInitTask: Promise<void> | null = null;
 
-  constructor(config: WorkspaceConfig) {
-    this.config = config;
-    const rootPathValue = config.get('rootPath');
+  constructor(config: WorkspaceInput) {
+    this.config = {
+      rootPath: config.rootPath,
+      workspaceId: config.workspaceId ?? null,
+    };
+    const rootPathValue = config.rootPath;
     if (typeof rootPathValue !== 'string' || !rootPathValue.trim()) {
       throw new Error("FileSystemWorkspace requires a 'rootPath' in its config.");
     }
 
     this.rootPath = canonicalizeWorkspaceRootPath(rootPathValue);
 
-    const configuredId = this.config.get('workspaceId');
+    const configuredId = this.config.workspaceId;
     if (typeof configuredId === 'string' && configuredId.trim()) {
       this.workspaceId = configuredId.trim();
     } else {

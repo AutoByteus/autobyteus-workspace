@@ -3,7 +3,7 @@ import type {
   MemoryConversationEntry as DomainMemoryConversationEntry,
   MemoryMessage as DomainMemoryMessage,
   MemoryTraceEvent as DomainMemoryTraceEvent,
-} from "../../../agent-memory-view/domain/models.js";
+} from "../../../agent-memory/domain/models.js";
 import type {
   AgentMemoryView as GraphqlAgentMemoryView,
   MemoryConversationEntry as GraphqlMemoryConversationEntry,

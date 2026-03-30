@@ -1,52 +1,43 @@
 import { describe, expect, it, vi } from "vitest";
-import { AgentRunTerminationService } from "../../../src/agent-execution/services/agent-run-termination-service.js";
+import { AgentRunService } from "../../../src/agent-execution/services/agent-run-service.js";
 
-describe("AgentRunTerminationService", () => {
-  const createSubject = () => {
+describe("AgentRunService termination", () => {
+  const createSubject = (options: {
+    metadata?: Record<string, unknown> | null;
+  } = {}) => {
     const agentRunManager = {
-      getAgentRun: vi.fn(),
-      terminateAgentRun: vi.fn(),
+      getActiveRun: vi.fn(),
     } as any;
-    const runtimeCompositionService = {
-      getRunSession: vi.fn(),
-      removeRunSession: vi.fn(),
-    } as any;
-    const runtimeCommandIngressService = {
-      terminateRun: vi.fn(),
-    } as any;
-    const runHistoryService = {
-      onRunTerminated: vi.fn(),
+    const metadataService = {
+      readMetadata: vi.fn().mockResolvedValue(options.metadata ?? null),
+      writeMetadata: vi.fn().mockResolvedValue(undefined),
+    };
+    const historyIndexService = {
+      recordRunTerminated: vi.fn().mockResolvedValue(undefined),
     } as any;
 
-    const service = new AgentRunTerminationService(
+    const service = new AgentRunService("/tmp/agent-run-service-test", {
       agentRunManager,
-      runtimeCompositionService,
-      runtimeCommandIngressService,
-      runHistoryService,
-    );
+      metadataService,
+      historyIndexService,
+    });
 
     return {
       service,
       mocks: {
         agentRunManager,
-        runtimeCompositionService,
-        runtimeCommandIngressService,
-        runHistoryService,
+        metadataService,
+        historyIndexService,
       },
     };
   };
 
-  it("routes non-native runtime runs through runtime ingress and skips native termination", async () => {
+  it("routes non-native runtime runs through the live AgentRun subject", async () => {
     const { service, mocks } = createSubject();
-    mocks.runtimeCompositionService.getRunSession.mockReturnValue({
-      runId: "run-1",
+    mocks.agentRunManager.getActiveRun.mockReturnValue({
       runtimeKind: "codex_app_server",
-      mode: "agent",
-      runtimeReference: null,
-    });
-    mocks.runtimeCommandIngressService.terminateRun.mockResolvedValue({
-      accepted: true,
-      runtimeKind: "codex_app_server",
+      getPlatformAgentRunId: vi.fn().mockReturnValue(null),
+      terminate: vi.fn().mockResolvedValue({ accepted: true }),
     });
 
     const result = await service.terminateAgentRun("run-1");
@@ -57,26 +48,17 @@ describe("AgentRunTerminationService", () => {
       route: "runtime",
       runtimeKind: "codex_app_server",
     });
-    expect(mocks.runtimeCommandIngressService.terminateRun).toHaveBeenCalledWith({
-      runId: "run-1",
-      mode: "agent",
-    });
-    expect(mocks.agentRunManager.getAgentRun).not.toHaveBeenCalled();
-    expect(mocks.agentRunManager.terminateAgentRun).not.toHaveBeenCalled();
-    expect(mocks.runtimeCompositionService.removeRunSession).toHaveBeenCalledWith("run-1");
-    expect(mocks.runHistoryService.onRunTerminated).toHaveBeenCalledWith("run-1");
+    expect(mocks.agentRunManager.getActiveRun).toHaveBeenCalledWith("run-1");
+    expect(mocks.historyIndexService.recordRunTerminated).toHaveBeenCalledWith("run-1");
   });
 
-  it("routes autobyteus runtime runs through native termination and performs shared cleanup once", async () => {
+  it("routes autobyteus runtime runs through the live AgentRun subject and performs shared cleanup once", async () => {
     const { service, mocks } = createSubject();
-    mocks.runtimeCompositionService.getRunSession.mockReturnValue({
-      runId: "run-2",
+    mocks.agentRunManager.getActiveRun.mockReturnValue({
       runtimeKind: "autobyteus",
-      mode: "agent",
-      runtimeReference: null,
+      getPlatformAgentRunId: vi.fn().mockReturnValue(null),
+      terminate: vi.fn().mockResolvedValue({ accepted: true }),
     });
-    mocks.agentRunManager.getAgentRun.mockReturnValue({ id: "run-2" });
-    mocks.agentRunManager.terminateAgentRun.mockResolvedValue(true);
 
     const result = await service.terminateAgentRun("run-2");
 
@@ -86,17 +68,13 @@ describe("AgentRunTerminationService", () => {
       route: "native",
       runtimeKind: "autobyteus",
     });
-    expect(mocks.agentRunManager.getAgentRun).toHaveBeenCalledWith("run-2");
-    expect(mocks.agentRunManager.terminateAgentRun).toHaveBeenCalledWith("run-2");
-    expect(mocks.runtimeCommandIngressService.terminateRun).not.toHaveBeenCalled();
-    expect(mocks.runtimeCompositionService.removeRunSession).toHaveBeenCalledTimes(1);
-    expect(mocks.runHistoryService.onRunTerminated).toHaveBeenCalledTimes(1);
+    expect(mocks.agentRunManager.getActiveRun).toHaveBeenCalledWith("run-2");
+    expect(mocks.historyIndexService.recordRunTerminated).toHaveBeenCalledTimes(1);
   });
 
-  it("returns not found without attempting native termination when no runtime session or native agent exists", async () => {
+  it("returns not found when no active AgentRun exists", async () => {
     const { service, mocks } = createSubject();
-    mocks.runtimeCompositionService.getRunSession.mockReturnValue(null);
-    mocks.agentRunManager.getAgentRun.mockReturnValue(null);
+    mocks.agentRunManager.getActiveRun.mockReturnValue(null);
 
     const result = await service.terminateAgentRun("missing-run");
 
@@ -106,24 +84,18 @@ describe("AgentRunTerminationService", () => {
       route: "not_found",
       runtimeKind: null,
     });
-    expect(mocks.agentRunManager.terminateAgentRun).not.toHaveBeenCalled();
-    expect(mocks.runtimeCommandIngressService.terminateRun).not.toHaveBeenCalled();
-    expect(mocks.runtimeCompositionService.removeRunSession).not.toHaveBeenCalled();
-    expect(mocks.runHistoryService.onRunTerminated).not.toHaveBeenCalled();
+    expect(mocks.historyIndexService.recordRunTerminated).not.toHaveBeenCalled();
   });
 
-  it("skips shared cleanup when runtime termination is rejected", async () => {
+  it("skips shared cleanup when AgentRun termination is rejected", async () => {
     const { service, mocks } = createSubject();
-    mocks.runtimeCompositionService.getRunSession.mockReturnValue({
-      runId: "run-3",
+    mocks.agentRunManager.getActiveRun.mockReturnValue({
       runtimeKind: "claude_agent_sdk",
-      mode: "agent",
-      runtimeReference: null,
-    });
-    mocks.runtimeCommandIngressService.terminateRun.mockResolvedValue({
-      accepted: false,
-      code: "RUN_SESSION_NOT_FOUND",
-      runtimeKind: "claude_agent_sdk",
+      getPlatformAgentRunId: vi.fn().mockReturnValue(null),
+      terminate: vi.fn().mockResolvedValue({
+        accepted: false,
+        code: "RUN_SESSION_NOT_FOUND",
+      }),
     });
 
     const result = await service.terminateAgentRun("run-3");
@@ -134,26 +106,44 @@ describe("AgentRunTerminationService", () => {
       route: "not_found",
       runtimeKind: "claude_agent_sdk",
     });
-    expect(mocks.agentRunManager.terminateAgentRun).not.toHaveBeenCalled();
-    expect(mocks.runtimeCompositionService.removeRunSession).not.toHaveBeenCalled();
-    expect(mocks.runHistoryService.onRunTerminated).not.toHaveBeenCalled();
+    expect(mocks.historyIndexService.recordRunTerminated).not.toHaveBeenCalled();
   });
 
-  it("uses native termination when a native agent is active even if no runtime session is present", async () => {
-    const { service, mocks } = createSubject();
-    mocks.runtimeCompositionService.getRunSession.mockReturnValue(null);
-    mocks.agentRunManager.getAgentRun.mockReturnValue({ id: "run-4" });
-    mocks.agentRunManager.terminateAgentRun.mockResolvedValue(true);
-
-    const result = await service.terminateAgentRun("run-4");
-
-    expect(result).toEqual({
-      success: true,
-      message: "Agent run terminated successfully.",
-      route: "native",
-      runtimeKind: "autobyteus",
+  it("persists TERMINATED status when metadata exists", async () => {
+    const { service, mocks } = createSubject({
+      metadata: {
+        runId: "run-4",
+        agentDefinitionId: "agent-1",
+        workspaceRootPath: "/tmp/workspace",
+        llmModelIdentifier: "gpt-test",
+        llmConfig: null,
+        autoExecuteTools: false,
+        skillAccessMode: null,
+        runtimeKind: "codex_app_server",
+        platformAgentRunId: "thread-old",
+        lastKnownStatus: "ACTIVE",
+      },
     });
-    expect(mocks.agentRunManager.terminateAgentRun).toHaveBeenCalledWith("run-4");
-    expect(mocks.runtimeCommandIngressService.terminateRun).not.toHaveBeenCalled();
+    mocks.agentRunManager.getActiveRun.mockReturnValue({
+      runtimeKind: "codex_app_server",
+      getPlatformAgentRunId: vi.fn().mockReturnValue("thread-new"),
+      terminate: vi.fn().mockResolvedValue({ accepted: true }),
+    });
+
+    await service.terminateAgentRun("run-4");
+
+    expect(mocks.metadataService.writeMetadata).toHaveBeenCalledWith("run-4", {
+      runId: "run-4",
+      agentDefinitionId: "agent-1",
+      workspaceRootPath: "/tmp/workspace",
+      llmModelIdentifier: "gpt-test",
+      llmConfig: null,
+      autoExecuteTools: false,
+      skillAccessMode: null,
+      runtimeKind: "codex_app_server",
+      platformAgentRunId: "thread-new",
+      lastKnownStatus: "TERMINATED",
+    });
+    expect(mocks.historyIndexService.recordRunTerminated).toHaveBeenCalledWith("run-4");
   });
 });

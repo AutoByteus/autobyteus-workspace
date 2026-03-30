@@ -12,6 +12,7 @@ describe("AgentTeamStreamHandler", () => {
   it("rebroadcasts agent lifecycle events with member context", () => {
     const handler = new AgentTeamStreamHandler(undefined, {
       getTeamRun: () => null,
+      getTeam: () => null,
       getTeamEventStream: () => null,
     } as any);
 
@@ -44,21 +45,23 @@ describe("AgentTeamStreamHandler", () => {
       undefined,
       {
         getTeamRun: () => null,
+        getTeam: () => null,
+        getActiveRun: () => null,
         getTeamEventStream: () => null,
       } as any,
       {
-        sendTurn: vi.fn(),
-        approveTool: vi.fn(),
-        interruptRun: vi.fn(),
+        getTeamRuntimeMode: () => "member_runtime",
       } as any,
       {
-        getTeamRuntimeMode: () => "member_runtime",
         sendToMember,
         approveForMember: vi.fn(),
-        getTeamBindings: vi.fn().mockReturnValue([]),
+        interruptTeamRun: vi.fn(),
       } as any,
       {
         subscribeTeam,
+      } as any,
+      {
+        getInitialMessages: vi.fn(() => []),
       } as any,
     );
 
@@ -96,25 +99,27 @@ describe("AgentTeamStreamHandler", () => {
     const handler = new AgentTeamStreamHandler(
       undefined,
       {
-        getTeamRun: () => ({ teamRunId: "team-1" }),
+        getTeamRun: () => ({ runId: "team-1", runtimeKind: "autobyteus" }),
+        getTeam: () => null,
+        getActiveRun: () => null,
         getTeamEventStream: () => ({
           allEvents: async function* () {},
           close: vi.fn().mockResolvedValue(undefined),
         }),
       } as any,
       {
-        sendTurn: vi.fn(),
-        approveTool: vi.fn(),
-        interruptRun: vi.fn(),
+        getTeamRuntimeMode: () => "native_team",
       } as any,
       {
-        getTeamRuntimeMode: () => "native_team",
         sendToMember: vi.fn(),
         approveForMember: vi.fn(),
-        getTeamBindings: vi.fn().mockReturnValue([]),
+        interruptTeamRun: vi.fn(),
       } as any,
       {
         subscribeTeam: vi.fn(),
+      } as any,
+      {
+        getInitialMessages: vi.fn(() => []),
       } as any,
       broadcaster,
     );
@@ -181,22 +186,23 @@ describe("AgentTeamStreamHandler", () => {
       undefined,
       {
         getTeamRun: () => null,
+        getTeam: () => null,
+        getActiveRun: () => null,
         getTeamEventStream: () => null,
       } as any,
       {
-        sendTurn: vi.fn(),
-        approveTool: vi.fn(),
-        interruptRun: vi.fn(),
+        getTeamRuntimeMode: () => "member_runtime",
       } as any,
       {
-        getTeamRuntimeMode: () => "member_runtime",
         sendToMember: vi.fn(),
         approveForMember: vi.fn(),
-        getTeamBindings: vi.fn().mockReturnValue([]),
+        interruptTeamRun: vi.fn(),
       } as any,
       {
         subscribeTeam: vi.fn(() => vi.fn()),
-        getInitialSnapshotMessages,
+      } as any,
+      {
+        getInitialMessages: getInitialSnapshotMessages,
       } as any,
     );
 
@@ -207,7 +213,11 @@ describe("AgentTeamStreamHandler", () => {
 
     await handler.connect(connection, "team-live-1");
 
-    expect(getInitialSnapshotMessages).toHaveBeenCalledWith("team-live-1");
+    expect(getInitialSnapshotMessages).toHaveBeenCalledWith({
+      teamRunId: "team-live-1",
+      runtimeMode: "member_runtime",
+      team: null,
+    });
     expect(connection.send).toHaveBeenCalledTimes(3);
     expect(JSON.parse(connection.send.mock.calls[1][0])).toMatchObject({
       type: ServerMessageType.TEAM_STATUS,
@@ -228,7 +238,10 @@ describe("AgentTeamStreamHandler", () => {
       undefined,
       {
         getTeamRun: () => ({
-          teamRunId: "team-native-1",
+          runId: "team-native-1",
+          runtimeKind: "autobyteus",
+        }),
+        getTeam: () => ({
           currentStatus: "ACTIVE",
           context: {
             agents: [
@@ -245,25 +258,24 @@ describe("AgentTeamStreamHandler", () => {
             ],
           },
         }),
+        getActiveRun: () => null,
         getTeamEventStream: () => ({
           allEvents: async function* () {},
           close: vi.fn().mockResolvedValue(undefined),
         }),
       } as any,
       {
-        sendTurn: vi.fn(),
-        approveTool: vi.fn(),
-        interruptRun: vi.fn(),
+        getTeamRuntimeMode: () => "native_team",
       } as any,
       {
-        getTeamRuntimeMode: () => "native_team",
         sendToMember: vi.fn(),
         approveForMember: vi.fn(),
-        getTeamBindings: vi.fn().mockReturnValue([]),
+        interruptTeamRun: vi.fn(),
       } as any,
       {
         subscribeTeam: vi.fn(),
       } as any,
+      undefined,
     );
 
     const connection = {

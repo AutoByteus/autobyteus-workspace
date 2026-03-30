@@ -1,12 +1,16 @@
 import { Arg, Mutation, Query, Resolver } from "type-graphql";
 import { GraphQLError } from "graphql";
 import { ExternalChannelProvider } from "autobyteus-ts/external-channel/provider.js";
+import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentDefinitionService } from "../../../../agent-definition/services/agent-definition-service.js";
 import type {
   ChannelBindingLaunchPreset,
   ChannelBindingTeamLaunchPreset,
 } from "../../../../external-channel/domain/models.js";
-import { normalizeRuntimeKind } from "../../../../runtime-management/runtime-kind.js";
+import {
+  RuntimeKind,
+  runtimeKindFromString,
+} from "../../../../runtime-management/runtime-kind-enum.js";
 import {
   ExternalChannelCapabilities,
   ExternalChannelBindingGql,
@@ -164,9 +168,9 @@ const normalizeLaunchPreset = (
       input.llmModelIdentifier,
       "launchPreset.llmModelIdentifier",
     ),
-    runtimeKind: normalizeRuntimeKind(input.runtimeKind),
+    runtimeKind: runtimeKindFromString(input.runtimeKind, RuntimeKind.AUTOBYTEUS) ?? RuntimeKind.AUTOBYTEUS,
     autoExecuteTools: input.autoExecuteTools ?? false,
-    skillAccessMode: input.skillAccessMode ?? null,
+    skillAccessMode: input.skillAccessMode,
     llmConfig: input.llmConfig ?? null,
   };
 };
@@ -186,8 +190,9 @@ const normalizeTeamLaunchPreset = (
       input.llmModelIdentifier,
       "teamLaunchPreset.llmModelIdentifier",
     ),
-    runtimeKind: normalizeRuntimeKind(input.runtimeKind),
+    runtimeKind: runtimeKindFromString(input.runtimeKind, RuntimeKind.AUTOBYTEUS) ?? RuntimeKind.AUTOBYTEUS,
     autoExecuteTools: input.autoExecuteTools ?? false,
+    skillAccessMode: input.skillAccessMode ?? SkillAccessMode.PRELOADED_ONLY,
     llmConfig: input.llmConfig ?? null,
   };
 };

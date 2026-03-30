@@ -1130,7 +1130,7 @@
 3. A new teardown/lifecycle race signal appeared during the focused Claude subset.
    - `agent-stream-handler` logged:
      - `Error forwarding runtime event: Error: ENOENT: no such file or directory, rename ... run_history_index.json...tmp -> .../run_history_index.json`
-   - The write path is `RunHistoryIndexStore.writeIndexDirect()`.
+   - The write path is `AgentRunHistoryIndexStore.writeIndexDirect()`.
    - This indicates async runtime-event persistence can outlive temp app-data directory lifetime during test teardown.
    - The focused subset still passed, so this is not yet a proven acceptance blocker, but it is a plausible suite-contamination vector for the broader backend gate.
 

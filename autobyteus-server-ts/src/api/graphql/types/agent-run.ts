@@ -4,25 +4,13 @@ import {
   InputType,
   Mutation,
   ObjectType,
-  Query,
   registerEnumType,
   Resolver,
 } from "type-graphql";
 import { GraphQLJSON } from "graphql-scalars";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRunManager } from "../../../agent-execution/services/agent-run-manager.js";
-import { getAgentRunTerminationService } from "../../../agent-execution/services/agent-run-termination-service.js";
-import { getRuntimeCommandIngressService } from "../../../runtime-execution/runtime-command-ingress-service.js";
-import { getRuntimeCompositionService } from "../../../runtime-execution/runtime-composition-service.js";
-import { normalizeRuntimeKind } from "../../../runtime-management/runtime-kind.js";
-import { UserInputConverter } from "../converters/user-input-converter.js";
-import { AgentRunConverter } from "../converters/agent-run-converter.js";
-import { AgentUserInput } from "./agent-user-input.js";
-import { WorkspaceInfo } from "./workspace.js";
-import {
-  ActiveRuntimeSnapshotService,
-  getActiveRuntimeSnapshotService,
-} from "../services/active-runtime-snapshot-service.js";
+import { getAgentRunService } from "../../../agent-execution/services/agent-run-service.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -35,27 +23,6 @@ registerEnumType(SkillAccessMode, {
 });
 
 @ObjectType()
-export class AgentRun {
-  @Field(() => String)
-  id!: string;
-
-  @Field(() => String)
-  name!: string;
-
-  @Field(() => String)
-  role!: string;
-
-  @Field(() => String)
-  currentStatus!: string;
-
-  @Field(() => WorkspaceInfo, { nullable: true })
-  workspace?: WorkspaceInfo | null;
-
-  @Field(() => String, { nullable: true })
-  agentDefinitionId?: string | null;
-}
-
-@ObjectType()
 export class TerminateAgentRunResult {
   @Field(() => Boolean)
   success!: boolean;
@@ -65,40 +32,34 @@ export class TerminateAgentRunResult {
 }
 
 @InputType()
-export class SendAgentUserInputInput {
-  @Field(() => AgentUserInput)
-  userInput!: AgentUserInput;
+export class CreateAgentRunInput {
+  @Field(() => String)
+  agentDefinitionId!: string;
 
-  @Field(() => String, { nullable: true })
-  agentRunId?: string | null;
-
-  @Field(() => String, { nullable: true })
-  agentDefinitionId?: string | null;
-
-  @Field(() => String, { nullable: true })
-  llmModelIdentifier?: string | null;
-
-  @Field(() => Boolean, { nullable: true })
-  autoExecuteTools?: boolean | null;
+  @Field(() => String)
+  workspaceRootPath!: string;
 
   @Field(() => String, { nullable: true })
   workspaceId?: string | null;
 
-  @Field(() => Boolean, { nullable: true })
-  useXmlToolFormat?: boolean | null;
+  @Field(() => String)
+  llmModelIdentifier!: string;
+
+  @Field(() => Boolean)
+  autoExecuteTools!: boolean;
 
   @Field(() => GraphQLJSON, { nullable: true })
   llmConfig?: Record<string, unknown> | null;
 
-  @Field(() => SkillAccessMode, { nullable: true })
-  skillAccessMode?: SkillAccessMode | null;
+  @Field(() => SkillAccessMode)
+  skillAccessMode!: SkillAccessMode;
 
-  @Field(() => String, { nullable: true })
-  runtimeKind?: string | null;
+  @Field(() => String)
+  runtimeKind!: string;
 }
 
 @ObjectType()
-export class SendAgentUserInputResult {
+export class CreateAgentRunResult {
   @Field(() => Boolean)
   success!: boolean;
 
@@ -106,7 +67,19 @@ export class SendAgentUserInputResult {
   message!: string;
 
   @Field(() => String, { nullable: true })
-  agentRunId?: string | null;
+  runId?: string | null;
+}
+
+@ObjectType()
+export class RestoreAgentRunResult {
+  @Field(() => Boolean)
+  success!: boolean;
+
+  @Field(() => String)
+  message!: string;
+
+  @Field(() => String, { nullable: true })
+  runId?: string | null;
 }
 
 @InputType()
@@ -135,60 +108,19 @@ export class ApproveToolInvocationResult {
 
 @Resolver()
 export class AgentRunResolver {
-  private agentRunTerminationService = getAgentRunTerminationService();
-  private runtimeCompositionService = getRuntimeCompositionService();
-  private runtimeCommandIngressService = getRuntimeCommandIngressService();
-  private activeRuntimeSnapshotService: ActiveRuntimeSnapshotService =
-    getActiveRuntimeSnapshotService();
-
-  private get agentRunManager(): AgentRunManager {
+  private agentRunService = getAgentRunService();
+  private get agentRunManager() {
     return AgentRunManager.getInstance();
-  }
-
-  @Query(() => AgentRun, { nullable: true })
-  async agentRun(@Arg("id", () => String) id: string): Promise<AgentRun | null> {
-    try {
-      const domainAgent = this.agentRunManager.getAgentRun(id);
-      if (!domainAgent) {
-        return null;
-      }
-      return await AgentRunConverter.toGraphql(domainAgent as any);
-    } catch (error) {
-      logger.error(`Error fetching agent run by ID ${id}: ${String(error)}`);
-      throw new Error("Unable to fetch agent run at this time.");
-    }
-  }
-
-  @Query(() => [AgentRun])
-  async agentRuns(): Promise<AgentRun[]> {
-    try {
-      return (await this.activeRuntimeSnapshotService.listActiveAgentRuns()) as AgentRun[];
-    } catch (error) {
-      logger.error(`Error fetching all agent runs: ${String(error)}`);
-      throw new Error("Unable to fetch agent runs at this time.");
-    }
-  }
-
-  @Query(() => AgentRun, { nullable: true })
-  async activeAgentRunSnapshot(
-    @Arg("id", () => String) id: string,
-  ): Promise<AgentRun | null> {
-    try {
-      return (await this.activeRuntimeSnapshotService.getActiveAgentRun(id)) as AgentRun | null;
-    } catch (error) {
-      logger.error(`Error fetching active agent snapshot for ID ${id}: ${String(error)}`);
-      throw new Error("Unable to fetch active agent snapshot at this time.");
-    }
   }
 
   @Mutation(() => TerminateAgentRunResult)
   async terminateAgentRun(
-    @Arg("id", () => String) id: string,
+    @Arg("agentRunId", () => String) agentRunId: string,
   ): Promise<TerminateAgentRunResult> {
     try {
-      return await this.agentRunTerminationService.terminateAgentRun(id);
+      return await this.agentRunService.terminateAgentRun(agentRunId);
     } catch (error) {
-      logger.error(`Error terminating agent run with ID ${id}: ${String(error)}`);
+      logger.error(`Error terminating agent run with ID ${agentRunId}: ${String(error)}`);
       return {
         success: false,
         message: `Failed to terminate agent run: ${String(error)}`,
@@ -196,79 +128,54 @@ export class AgentRunResolver {
     }
   }
 
-  @Mutation(() => SendAgentUserInputResult)
-  async sendAgentUserInput(
-    @Arg("input", () => SendAgentUserInputInput) input: SendAgentUserInputInput,
-  ): Promise<SendAgentUserInputResult> {
+  @Mutation(() => CreateAgentRunResult)
+  async createAgentRun(
+    @Arg("input", () => CreateAgentRunInput) input: CreateAgentRunInput,
+  ): Promise<CreateAgentRunResult> {
     try {
-      let agentRunId = input.agentRunId ?? null;
-      const existingAgent = agentRunId ? this.agentRunManager.getAgentRun(agentRunId) : null;
-      const existingSession = agentRunId
-        ? this.runtimeCompositionService.getRunSession(agentRunId)
-        : null;
-
-      if (!agentRunId) {
-        if (!input.agentDefinitionId || !input.llmModelIdentifier) {
-          logger.warn(
-            "sendAgentUserInput: agentDefinitionId and llmModelIdentifier are required to create a new agent.",
-          );
-          return {
-            success: false,
-            message:
-              "agentDefinitionId and llmModelIdentifier are required when creating a new agent.",
-            agentRunId: null,
-          };
-        }
-
-        const session = await this.runtimeCompositionService.createAgentRun({
-          runtimeKind: normalizeRuntimeKind(input.runtimeKind),
-          agentDefinitionId: input.agentDefinitionId,
-          llmModelIdentifier: input.llmModelIdentifier,
-          autoExecuteTools: input.autoExecuteTools ?? false,
-          workspaceId: input.workspaceId ?? null,
-          llmConfig: input.llmConfig ?? null,
-          skillAccessMode: input.skillAccessMode ?? null,
-        });
-        this.runtimeCommandIngressService.bindRunSession(session);
-        agentRunId = session.runId;
-      } else if (!existingAgent && !existingSession) {
-        logger.warn(`sendAgentUserInput: Agent run with ID '${agentRunId}' not found.`);
-        return {
-          success: false,
-          message: `Agent run with ID '${agentRunId}' not found.`,
-          agentRunId: null,
-        };
-      }
-
-      const userMessage = UserInputConverter.toAgentInputUserMessage(input.userInput);
-      const result = await this.runtimeCommandIngressService.sendTurn({
-        runId: agentRunId,
-        mode: "agent",
-        message: userMessage,
+      const result = await this.agentRunService.createAgentRun({
+        agentDefinitionId: input.agentDefinitionId.trim(),
+        workspaceRootPath: input.workspaceRootPath.trim(),
+        workspaceId: input.workspaceId ?? null,
+        llmModelIdentifier: input.llmModelIdentifier.trim(),
+        autoExecuteTools: input.autoExecuteTools,
+        llmConfig: input.llmConfig ?? null,
+        skillAccessMode: input.skillAccessMode,
+        runtimeKind: input.runtimeKind.trim(),
       });
-      if (!result.accepted) {
-        logger.warn(
-          `sendAgentUserInput rejected for run '${agentRunId}': [${result.code ?? "UNKNOWN"}] ${result.message ?? "no message"}`,
-        );
-        return {
-          success: false,
-          message: result.message ?? "Runtime rejected user input.",
-          agentRunId,
-        };
-      }
 
-      logger.info(`Successfully posted user message to agent run '${agentRunId}'.`);
       return {
         success: true,
-        message: "User input successfully sent to agent.",
-        agentRunId,
+        message: "Agent run created successfully.",
+        runId: result.runId,
       };
     } catch (error) {
-      logger.error(`Error in sendAgentUserInput: ${String(error)}`);
+      logger.error(`Error in createAgentRun: ${String(error)}`);
       return {
         success: false,
-        message: `An unexpected error occurred: ${String(error)}`,
-        agentRunId: input.agentRunId ?? null,
+        message: String(error),
+        runId: null,
+      };
+    }
+  }
+
+  @Mutation(() => RestoreAgentRunResult)
+  async restoreAgentRun(
+    @Arg("agentRunId", () => String) agentRunId: string,
+  ): Promise<RestoreAgentRunResult> {
+    try {
+      const result = await this.agentRunService.restoreAgentRun(agentRunId);
+      return {
+        success: true,
+        message: "Agent run restored successfully.",
+        runId: result.run.runId,
+      };
+    } catch (error) {
+      logger.error(`Error restoring agent run with ID ${agentRunId}: ${String(error)}`);
+      return {
+        success: false,
+        message: String(error),
+        runId: null,
       };
     }
   }
@@ -282,9 +189,8 @@ export class AgentRunResolver {
         `Received tool invocation approval request for agent run '${input.agentRunId}', invocation '${input.invocationId}', approved: ${input.isApproved}`,
       );
 
-      const agent = this.agentRunManager.getAgentRun(input.agentRunId);
-      const session = this.runtimeCompositionService.getRunSession(input.agentRunId);
-      if (!agent && !session) {
+      const activeRun = this.agentRunManager.getActiveRun(input.agentRunId);
+      if (!activeRun) {
         logger.warn(`approveToolInvocation: Agent run with ID '${input.agentRunId}' not found.`);
         return {
           success: false,
@@ -292,13 +198,11 @@ export class AgentRunResolver {
         };
       }
 
-      const result = await this.runtimeCommandIngressService.approveTool({
-        runId: input.agentRunId,
-        mode: "agent",
-        invocationId: input.invocationId,
-        approved: input.isApproved,
-        reason: input.reason ?? null,
-      });
+      const result = await activeRun.approveToolInvocation(
+        input.invocationId,
+        input.isApproved,
+        input.reason ?? null,
+      );
       if (!result.accepted) {
         return {
           success: false,

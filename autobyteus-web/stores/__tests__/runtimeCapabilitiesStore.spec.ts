@@ -1,13 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
-import { useRuntimeCapabilitiesStore } from '~/stores/runtimeCapabilitiesStore';
+import { useRuntimeAvailabilityStore } from '~/stores/runtimeAvailabilityStore';
 import { getApolloClient } from '~/utils/apolloClient';
 
 vi.mock('~/utils/apolloClient', () => ({
   getApolloClient: vi.fn(),
 }));
 
-describe('runtimeCapabilitiesStore', () => {
+describe('runtimeAvailabilityStore', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
   });
@@ -16,7 +16,7 @@ describe('runtimeCapabilitiesStore', () => {
     (getApolloClient as any).mockReturnValue({
       query: vi.fn().mockResolvedValue({
         data: {
-          runtimeCapabilities: [
+          runtimeAvailabilities: [
             { runtimeKind: 'autobyteus', enabled: true, reason: null },
             { runtimeKind: 'codex_app_server', enabled: false, reason: 'Codex CLI is not available on PATH.' },
             { runtimeKind: 'claude_agent_sdk', enabled: true, reason: null },
@@ -25,8 +25,8 @@ describe('runtimeCapabilitiesStore', () => {
       }),
     });
 
-    const store = useRuntimeCapabilitiesStore();
-    await store.fetchRuntimeCapabilities();
+    const store = useRuntimeAvailabilityStore();
+    await store.fetchRuntimeAvailabilities();
 
     expect(store.isRuntimeEnabled('autobyteus')).toBe(true);
     expect(store.isRuntimeEnabled('codex_app_server')).toBe(false);

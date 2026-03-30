@@ -3,34 +3,27 @@ import {
   AgentInputUserMessage,
   ContextFile,
   ContextFileType,
-  StreamEvent,
-  AgentEventStream,
 } from "autobyteus-ts";
+import { isAgentRunEvent, type AgentRunEvent } from "../../agent-execution/domain/agent-run-event.js";
+import { AgentRun } from "../../agent-execution/domain/agent-run.js";
 import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
-import { getRunHistoryService } from "../../run-history/services/run-history-service.js";
 import {
-  getRuntimeCommandIngressService,
-  type RuntimeCommandIngressService,
-} from "../../runtime-execution/runtime-command-ingress-service.js";
+  AgentRunMetadataService,
+  getAgentRunMetadataService,
+} from "../../run-history/services/agent-run-metadata-service.js";
 import {
-  getRuntimeAdapterRegistry,
-  type RuntimeAdapterRegistry,
-} from "../../runtime-execution/runtime-adapter-registry.js";
-import type { RuntimeAdapter } from "../../runtime-execution/runtime-adapter-port.js";
-import {
-  getRuntimeCompositionService,
-  type RuntimeCompositionService,
-} from "../../runtime-execution/runtime-composition-service.js";
-import type { RuntimeKind } from "../../runtime-management/runtime-kind.js";
+  AgentRunHistoryIndexService,
+  getAgentRunHistoryIndexService,
+} from "../../run-history/services/agent-run-history-index-service.js";
 import { AgentSessionManager } from "./agent-session-manager.js";
 import {
   AgentStreamBroadcaster,
   getAgentStreamBroadcaster,
 } from "./agent-stream-broadcaster.js";
 import {
-  RuntimeEventMessageMapper,
-  getRuntimeEventMessageMapper,
-} from "./runtime-event-message-mapper.js";
+  AgentRunEventMessageMapper,
+  getAgentRunEventMessageMapper,
+} from "./agent-run-event-message-mapper.js";
 import {
   ClientMessageType,
   createConnectedMessage,
@@ -47,10 +40,6 @@ export type WebSocketConnection = {
 type ClientMessage = {
   type?: string;
   payload?: Record<string, unknown>;
-};
-
-type AgentLike = {
-  currentStatus?: unknown;
 };
 
 const logger = {
@@ -78,53 +67,37 @@ const stringifyForDebug = (value: unknown): string => {
 export class AgentStreamHandler {
   private sessionManager: AgentSessionManager;
   private agentManager: AgentRunManager;
-  private commandIngressService: RuntimeCommandIngressService;
-  private adapterRegistry: RuntimeAdapterRegistry;
-  private eventMessageMapper: RuntimeEventMessageMapper;
-  private activeTasks = new Map<string, Promise<void>>();
-  private activeStreams = new Map<string, AgentEventStream>();
-  private activeRuntimeUnsubscribers = new Map<string, () => void>();
-  private runHistoryService = getRunHistoryService();
-  private runtimeCompositionService: RuntimeCompositionService;
+  private eventMessageMapper: AgentRunEventMessageMapper;
+  private activeRunUnsubscribers = new Map<string, () => void>();
+  private sessionConnections = new Map<string, WebSocketConnection>();
+  private subscribedRunsBySessionId = new Map<
+    string,
+    AgentRun
+  >();
+  private metadataService: AgentRunMetadataService;
+  private historyIndexService: AgentRunHistoryIndexService;
   private runtimeEventSequence = 0;
   private broadcaster: AgentStreamBroadcaster;
 
   constructor(
     sessionManager: AgentSessionManager = new AgentSessionManager(),
     agentManager: AgentRunManager = AgentRunManager.getInstance(),
-    commandIngressService: RuntimeCommandIngressService = getRuntimeCommandIngressService(),
-    adapterRegistry: RuntimeAdapterRegistry = getRuntimeAdapterRegistry(),
-    eventMessageMapper: RuntimeEventMessageMapper = getRuntimeEventMessageMapper(),
-    runtimeCompositionService: RuntimeCompositionService = getRuntimeCompositionService(),
+    eventMessageMapper: AgentRunEventMessageMapper = getAgentRunEventMessageMapper(),
     broadcaster: AgentStreamBroadcaster = getAgentStreamBroadcaster(),
+    metadataService: AgentRunMetadataService = getAgentRunMetadataService(),
+    historyIndexService: AgentRunHistoryIndexService = getAgentRunHistoryIndexService(),
   ) {
     this.sessionManager = sessionManager;
     this.agentManager = agentManager;
-    this.commandIngressService = commandIngressService;
-    this.adapterRegistry = adapterRegistry;
     this.eventMessageMapper = eventMessageMapper;
-    this.runtimeCompositionService = runtimeCompositionService;
     this.broadcaster = broadcaster;
+    this.metadataService = metadataService;
+    this.historyIndexService = historyIndexService;
   }
 
   async connect(connection: WebSocketConnection, agentRunId: string): Promise<string | null> {
-    const agent = this.agentManager.getAgentRun(agentRunId) as AgentLike | null;
-    const runtimeSession = this.runtimeCompositionService.getRunSession(agentRunId);
-    let runtimeAdapter: RuntimeAdapter | null = null;
-    if (runtimeSession) {
-      try {
-        runtimeAdapter = this.adapterRegistry.resolveAdapter(runtimeSession.runtimeKind);
-      } catch (error) {
-        logger.warn(
-          `Runtime adapter resolution failed for '${runtimeSession.runtimeKind}' on run '${agentRunId}': ${String(error)}`,
-        );
-      }
-    }
-    const hasRuntimeEventStream =
-      !!runtimeAdapter?.subscribeToRunEvents &&
-      this.isRuntimeRunActive(runtimeAdapter, agentRunId);
-
-    if (!agent && !hasRuntimeEventStream) {
+    const activeRun = this.agentManager.getActiveRun(agentRunId);
+    if (!activeRun) {
       const errorMsg = createErrorMessage("AGENT_NOT_FOUND", `Agent run '${agentRunId}' not found`);
       connection.send(errorMsg.toJson());
       connection.close(4004);
@@ -145,23 +118,29 @@ export class AgentStreamHandler {
 
     const connectedMsg = createConnectedMessage(agentRunId, sessionId);
     this.broadcaster.registerConnection(sessionId, agentRunId, connection);
+    this.sessionConnections.set(sessionId, connection);
     connection.send(connectedMsg.toJson());
-    const currentStatus =
-      typeof agent?.currentStatus === "string" ? agent.currentStatus : null;
+    const currentStatus = activeRun.getStatus();
     if (currentStatus) {
       connection.send(
         new ServerMessage(ServerMessageType.AGENT_STATUS, {
-          new_status: currentStatus,
+          new_status: currentStatus.trim().toUpperCase(),
           old_status: null,
         }).toJson(),
       );
     }
 
-    if (agent) {
-      const task = this.streamLoop(connection, agentRunId, sessionId);
-      this.activeTasks.set(sessionId, task);
-    } else if (runtimeAdapter?.subscribeToRunEvents) {
-      this.startRuntimeStreamLoop(connection, agentRunId, sessionId, runtimeAdapter);
+    if (!this.bindSessionToRun(sessionId, agentRunId, connection)) {
+      this.sessionConnections.delete(sessionId);
+      this.broadcaster.unregisterConnection(sessionId);
+      this.sessionManager.closeSession(sessionId);
+      const errorMsg = createErrorMessage(
+        "AGENT_STREAM_UNAVAILABLE",
+        `Agent run '${agentRunId}' stream not available`,
+      );
+      connection.send(errorMsg.toJson());
+      connection.close(1011);
+      return null;
     }
 
     logger.info(`Agent WebSocket connected: session=${sessionId}, run=${agentRunId}`);
@@ -180,6 +159,12 @@ export class AgentStreamHandler {
       const msgType = data.type;
       const payload = data.payload ?? {};
       const agentRunId = session.runId;
+      if (!this.ensureSessionSubscription(sessionId, agentRunId)) {
+        logger.warn(
+          `Agent websocket session '${sessionId}' lost its run subscription for run '${agentRunId}'.`,
+        );
+        return;
+      }
 
       if (msgType === ClientMessageType.SEND_MESSAGE) {
         await this.handleSendMessage(agentRunId, payload);
@@ -200,148 +185,89 @@ export class AgentStreamHandler {
   async disconnect(sessionId: string): Promise<void> {
     this.broadcaster.unregisterConnection(sessionId);
 
-    const runtimeUnsubscribe = this.activeRuntimeUnsubscribers.get(sessionId);
-    if (runtimeUnsubscribe) {
-      this.activeRuntimeUnsubscribers.delete(sessionId);
-      runtimeUnsubscribe();
+    const runUnsubscribe = this.activeRunUnsubscribers.get(sessionId);
+    if (runUnsubscribe) {
+      this.activeRunUnsubscribers.delete(sessionId);
+      runUnsubscribe();
     }
-
-    const stream = this.activeStreams.get(sessionId);
-    if (stream) {
-      this.activeStreams.delete(sessionId);
-      await stream.close();
-    }
+    this.sessionConnections.delete(sessionId);
+    this.subscribedRunsBySessionId.delete(sessionId);
 
     this.sessionManager.closeSession(sessionId);
-
-    const task = this.activeTasks.get(sessionId);
-    this.activeTasks.delete(sessionId);
-    if (task) {
-      try {
-        await task;
-      } catch {
-        // ignore
-      }
-    }
 
     logger.info(`Agent WebSocket disconnected: ${sessionId}`);
   }
 
-  private async streamLoop(connection: WebSocketConnection, agentRunId: string, sessionId: string): Promise<void> {
-    try {
-      const stream = this.agentManager.getAgentEventStream(agentRunId);
-      if (!stream) {
-        logger.error(`No event stream for agent run ${agentRunId}`);
-        return;
-      }
-      this.activeStreams.set(sessionId, stream);
-
-      for await (const event of stream.allEvents()) {
-        try {
-          await this.runHistoryService.onAgentEvent(agentRunId, event);
-          const message = this.convertStreamEvent(event);
-          connection.send(message.toJson());
-        } catch (error) {
-          logger.error(`Error sending event to WebSocket: ${String(error)}`);
-        }
-      }
-    } catch (error) {
-      logger.error(`Error in stream loop for ${sessionId}: ${String(error)}`);
-    } finally {
-      const stream = this.activeStreams.get(sessionId);
-      if (stream) {
-        await stream.close();
-        this.activeStreams.delete(sessionId);
-      }
-    }
-  }
-
-  private isRuntimeRunActive(adapter: RuntimeAdapter, runId: string): boolean {
-    if (!adapter.isRunActive) {
-      return true;
-    }
-    try {
-      return adapter.isRunActive(runId);
-    } catch {
+  private ensureSessionSubscription(sessionId: string, runId: string): boolean {
+    const connection = this.sessionConnections.get(sessionId);
+    if (!connection) {
       return false;
     }
+    return this.bindSessionToRun(sessionId, runId, connection);
   }
 
-  private startRuntimeStreamLoop(
-    connection: WebSocketConnection,
-    runId: string,
+  private bindSessionToRun(
     sessionId: string,
-    adapter: RuntimeAdapter,
-  ): void {
-    const unsubscribe = adapter.subscribeToRunEvents!(
-      runId,
-      (event: unknown) => {
-        void this.forwardRuntimeEvent(connection, runId, adapter.runtimeKind, event);
-      },
-    );
-    this.activeRuntimeUnsubscribers.set(sessionId, unsubscribe);
+    runId: string,
+    connection: WebSocketConnection,
+  ): boolean {
+    const activeRun = this.agentManager.getActiveRun(runId);
+    if (!activeRun) {
+      return false;
+    }
+
+    const subscribedRun = this.subscribedRunsBySessionId.get(sessionId);
+    if (subscribedRun === activeRun) {
+      return true;
+    }
+
+    const existingUnsubscribe = this.activeRunUnsubscribers.get(sessionId);
+    existingUnsubscribe?.();
+    this.activeRunUnsubscribers.delete(sessionId);
+
+    this.startRunEventLoop(connection, activeRun, sessionId);
+    this.subscribedRunsBySessionId.set(sessionId, activeRun);
+    return true;
   }
 
-  private async forwardRuntimeEvent(
+  private startRunEventLoop(
+    connection: WebSocketConnection,
+    activeRun: AgentRun,
+    sessionId: string,
+  ): void {
+    const unsubscribe = activeRun.subscribeToEvents((event: unknown) => {
+      if (!isAgentRunEvent(event)) {
+        return;
+      }
+      void this.forwardRunEvent(connection, activeRun.runId, event);
+    });
+    this.activeRunUnsubscribers.set(sessionId, unsubscribe);
+  }
+
+  private async forwardRunEvent(
     connection: WebSocketConnection,
     runId: string,
-    runtimeKind: RuntimeKind,
-    event: unknown,
+    event: AgentRunEvent,
   ): Promise<void> {
     try {
       if (isRuntimeRawEventDebugEnabled) {
         this.runtimeEventSequence += 1;
-        const runtimePayload =
-          event && typeof event === "object" && !Array.isArray(event)
-            ? (event as Record<string, unknown>)
-            : {};
-        const params =
-          runtimePayload.params &&
-          typeof runtimePayload.params === "object" &&
-          !Array.isArray(runtimePayload.params)
-            ? (runtimePayload.params as Record<string, unknown>)
-            : {};
-        const turnPayload =
-          params.turn && typeof params.turn === "object" && !Array.isArray(params.turn)
-            ? (params.turn as Record<string, unknown>)
-            : null;
-        const rawMethod = typeof runtimePayload.method === "string" ? runtimePayload.method : null;
-        const normalizedMethod = rawMethod
-          ? this.eventMessageMapper.normalizeRuntimeEventMethodAlias(rawMethod, runtimeKind)
-          : null;
-        const eventId =
-          (typeof params.id === "string" && params.id) ||
-          (typeof params.itemId === "string" && params.itemId) ||
-          (typeof params.item_id === "string" && params.item_id) ||
-          null;
-        const turnId =
-          (typeof params.turnId === "string" && params.turnId) ||
-          (typeof params.turn_id === "string" && params.turn_id) ||
-          (typeof turnPayload?.id === "string" && turnPayload.id) ||
-          null;
-
-        console.log("[RuntimeRawEvent]", {
+        const payload = event.payload;
+        console.log("[RuntimeEvent]", {
           sequence: this.runtimeEventSequence,
           runId,
-          runtimeKind,
-          method: rawMethod,
-          normalizedMethod,
-          requestId:
-            typeof runtimePayload.request_id === "string" ? runtimePayload.request_id : null,
-          eventId,
-          turnId,
-          payloadKeys: Object.keys(params),
+          eventType: event.eventType,
+          statusHint: event.statusHint,
+          payloadKeys: Object.keys(payload),
           rawEventJson: truncateForDebug(stringifyForDebug(event)),
         });
       }
 
-      await this.runHistoryService.onRuntimeEvent(runId, event);
-      const message = this.eventMessageMapper.mapForRuntime(runtimeKind, event);
+      const message = this.eventMessageMapper.map(event);
       if (isRuntimeRawEventDebugEnabled) {
         console.log("[RuntimeMappedMessage]", {
           sequence: this.runtimeEventSequence,
           runId,
-          runtimeKind,
           messageType: message.type,
           payloadId:
             typeof message.payload?.id === "string" ? message.payload.id : null,
@@ -349,10 +275,7 @@ export class AgentStreamHandler {
             typeof message.payload?.segment_type === "string"
               ? message.payload.segment_type
               : null,
-          runtimeEventMethod:
-            typeof message.payload?.runtime_event_method === "string"
-              ? message.payload.runtime_event_method
-              : null,
+          eventType: event.eventType,
         });
       }
       connection.send(message.toJson());
@@ -385,24 +308,45 @@ export class AgentStreamHandler {
       context_files: contextPayload.length > 0 ? contextPayload : null,
     });
 
-    const result = await this.commandIngressService.sendTurn({
-      runId: agentRunId,
-      mode: "agent",
-      message: userMessage,
-    });
+    const activeRun = this.agentManager.getActiveRun(agentRunId);
+    if (!activeRun) {
+      logger.warn(`SEND_MESSAGE rejected for missing agent run ${agentRunId}.`);
+      return;
+    }
+    const result = await activeRun.postUserMessage(userMessage);
     if (!result.accepted) {
       logger.warn(
         `SEND_MESSAGE rejected for agent run ${agentRunId}: [${result.code ?? "UNKNOWN"}] ${result.message ?? "no message"}`,
       );
+      return;
     }
+    const metadata = await this.metadataService.readMetadata(agentRunId);
+    const updatedMetadata = metadata
+      ? {
+          ...metadata,
+          platformAgentRunId: activeRun.getPlatformAgentRunId() ?? metadata.platformAgentRunId,
+          lastKnownStatus: "ACTIVE" as const,
+        }
+      : null;
+    if (updatedMetadata) {
+      await this.metadataService.writeMetadata(agentRunId, updatedMetadata);
+    }
+    await this.historyIndexService.recordRunActivity({
+      runId: agentRunId,
+      metadata: updatedMetadata,
+      summary: content,
+      lastKnownStatus: "ACTIVE",
+      lastActivityAt: new Date().toISOString(),
+    });
   }
 
   private async handleStopGeneration(agentRunId: string): Promise<void> {
-    const result = await this.commandIngressService.interruptRun({
-      runId: agentRunId,
-      mode: "agent",
-      turnId: null,
-    });
+    const activeRun = this.agentManager.getActiveRun(agentRunId);
+    if (!activeRun) {
+      logger.warn(`STOP_GENERATION rejected for missing agent run ${agentRunId}.`);
+      return;
+    }
+    const result = await activeRun.interrupt(null);
     if (!result.accepted) {
       logger.warn(
         `STOP_GENERATION rejected for agent run ${agentRunId}: [${result.code ?? "UNKNOWN"}] ${result.message ?? "no message"}`,
@@ -422,24 +366,18 @@ export class AgentStreamHandler {
     }
 
     const reason = typeof payload.reason === "string" ? payload.reason : null;
-    const result = await this.commandIngressService.approveTool({
-      runId: agentRunId,
-      mode: "agent",
-      invocationId,
-      approved,
-      reason,
-    });
+    const activeRun = this.agentManager.getActiveRun(agentRunId);
+    if (!activeRun) {
+      logger.warn(`TOOL_APPROVAL rejected for missing agent run ${agentRunId}.`);
+      return;
+    }
+    const result = await activeRun.approveToolInvocation(invocationId, approved, reason);
     if (!result.accepted) {
       logger.warn(
         `TOOL_APPROVAL rejected for agent run ${agentRunId}: [${result.code ?? "UNKNOWN"}] ${result.message ?? "no message"}`,
       );
     }
   }
-
-  convertStreamEvent(event: StreamEvent): ServerMessage {
-    return this.eventMessageMapper.mapForRuntime("autobyteus", event);
-  }
-
   static parseMessage(raw: string): ClientMessage {
     let data: unknown;
     try {
@@ -463,9 +401,10 @@ export const getAgentStreamHandler = (): AgentStreamHandler => {
     cachedAgentStreamHandler = new AgentStreamHandler(
       new AgentSessionManager(),
       AgentRunManager.getInstance(),
-      getRuntimeCommandIngressService(),
-      getRuntimeAdapterRegistry(),
-      getRuntimeEventMessageMapper(),
+      getAgentRunEventMessageMapper(),
+      getAgentStreamBroadcaster(),
+      getAgentRunMetadataService(),
+      getAgentRunHistoryIndexService(),
     );
   }
   return cachedAgentStreamHandler;

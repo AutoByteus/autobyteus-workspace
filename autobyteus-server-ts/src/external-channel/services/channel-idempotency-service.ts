@@ -1,5 +1,6 @@
 import type { ChannelIdempotencyDecision } from "../domain/models.js";
 import type { ChannelIdempotencyProvider } from "../providers/channel-idempotency-provider.js";
+import { getProviderProxySet } from "../providers/provider-proxy-set.js";
 
 export type ChannelIdempotencyServiceOptions = {
   defaultTtlSeconds?: number;
@@ -9,7 +10,7 @@ export class ChannelIdempotencyService {
   private readonly defaultTtlSeconds: number;
 
   constructor(
-    private readonly provider: ChannelIdempotencyProvider,
+    private readonly provider: ChannelIdempotencyProvider = getProviderProxySet().idempotencyProvider,
     options: ChannelIdempotencyServiceOptions = {},
   ) {
     this.defaultTtlSeconds = options.defaultTtlSeconds ?? 3600;
@@ -34,4 +35,3 @@ export class ChannelIdempotencyService {
     };
   }
 }
-

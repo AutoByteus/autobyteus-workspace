@@ -5,9 +5,12 @@ import type {
   ChannelTurnReceiptBindingInput,
 } from "../domain/models.js";
 import type { ChannelMessageReceiptProvider } from "../providers/channel-message-receipt-provider.js";
+import { getProviderProxySet } from "../providers/provider-proxy-set.js";
 
 export class ChannelMessageReceiptService {
-  constructor(private readonly provider: ChannelMessageReceiptProvider) {}
+  constructor(
+    private readonly provider: ChannelMessageReceiptProvider = getProviderProxySet().messageReceiptProvider,
+  ) {}
 
   async recordIngressReceipt(input: ChannelIngressReceiptInput): Promise<void> {
     const normalized = this.normalizeReceiptInput(input);

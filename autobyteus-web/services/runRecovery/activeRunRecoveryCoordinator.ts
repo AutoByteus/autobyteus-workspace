@@ -3,19 +3,17 @@ import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type {
   RunHistoryWorkspaceGroup,
   RunResumeConfigPayload,
-  TeamRunHistoryItem,
   TeamRunResumeConfigPayload,
 } from '~/stores/runHistoryTypes';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
 import { useAgentRunStore } from '~/stores/agentRunStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
-import { openRunWithCoordinator } from '~/services/runOpen/runOpenCoordinator';
-import { openTeamRunWithCoordinator } from '~/services/runOpen/teamRunOpenCoordinator';
+import { openAgentRun } from '~/services/runOpen/agentRunOpenCoordinator';
+import { openTeamRun } from '~/services/runOpen/teamRunOpenCoordinator';
 
 export interface RecoverActiveRunsFromHistoryInput {
   workspaceGroups: RunHistoryWorkspaceGroup[];
-  teamRuns: TeamRunHistoryItem[];
   ensureWorkspaceByRootPath: (rootPath: string) => Promise<string | null>;
   findAgentNameByRunId: (runId: string) => string | null;
   setRunResumeConfig: (resumeConfig: RunResumeConfigPayload) => void;
@@ -31,8 +29,12 @@ const listActiveRunIds = (workspaceGroups: RunHistoryWorkspaceGroup[]): string[]
     ),
   );
 
-const listActiveTeamRunIds = (teamRuns: TeamRunHistoryItem[]): string[] =>
-  teamRuns.filter((teamRun) => teamRun.isActive).map((teamRun) => teamRun.teamRunId);
+const listActiveTeamRunIds = (workspaceGroups: RunHistoryWorkspaceGroup[]): string[] =>
+  workspaceGroups.flatMap((workspaceGroup) =>
+    workspaceGroup.teamRuns
+      .filter((teamRun) => teamRun.isActive)
+      .map((teamRun) => teamRun.teamRunId),
+  );
 
 export const recoverActiveRunsFromHistory = async (
   input: RecoverActiveRunsFromHistoryInput,
@@ -57,7 +59,7 @@ export const recoverActiveRunsFromHistory = async (
     }
 
     try {
-      const result = await openRunWithCoordinator({
+      const result = await openAgentRun({
         runId,
         fallbackAgentName: input.findAgentNameByRunId(runId),
         ensureWorkspaceByRootPath: input.ensureWorkspaceByRootPath,
@@ -69,7 +71,7 @@ export const recoverActiveRunsFromHistory = async (
     }
   }
 
-  for (const teamRunId of listActiveTeamRunIds(input.teamRuns)) {
+  for (const teamRunId of listActiveTeamRunIds(input.workspaceGroups)) {
     const existingTeamContext = teamContextsStore.getTeamContextById(teamRunId);
     if (existingTeamContext) {
       existingTeamContext.config.isLocked = true;
@@ -96,7 +98,7 @@ export const recoverActiveRunsFromHistory = async (
     }
 
     try {
-      const result = await openTeamRunWithCoordinator({
+      const result = await openTeamRun({
         teamRunId,
         memberRouteKey: null,
         ensureWorkspaceByRootPath: input.ensureWorkspaceByRootPath,

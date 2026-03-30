@@ -228,7 +228,7 @@ export const buildRunHistoryTreeNodes = (params: {
 };
 
 export const buildRunHistoryTeamNodes = (params: {
-  teamRuns: TeamRunHistoryItem[];
+  workspaceGroups: RunHistoryWorkspaceGroup[];
   teamContexts: AgentTeamContext[];
   workspacesById: Record<string, {
     absolutePath?: string | null;
@@ -239,8 +239,15 @@ export const buildRunHistoryTeamNodes = (params: {
   const resolveWorkspaceRootPathById = (workspaceId: string | null): string =>
     resolveWorkspaceRootPath(params.workspacesById, workspaceId);
 
+  const persistedTeamRuns = params.workspaceGroups.flatMap((workspace) =>
+    workspace.teamRuns.map((teamRun) => ({
+      ...teamRun,
+      workspaceRootPath: teamRun.workspaceRootPath ?? workspace.workspaceRootPath,
+    })),
+  );
+
   return buildTeamNodes({
-    teamRuns: params.teamRuns,
+    teamRuns: persistedTeamRuns,
     teamContexts: params.teamContexts,
     workspaceRootPath: params.workspaceRootPath,
     normalizeRootPath,

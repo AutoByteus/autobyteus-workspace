@@ -143,9 +143,29 @@ export const useNodeStore = defineStore('nodeStore', () => {
   }
 
   function ensureEmbeddedNodePresent(): void {
-    if (!nodes.value.some((node) => node.id === EMBEDDED_NODE_ID)) {
-      const embedded = createEmbeddedNode(resolveDefaultEmbeddedBaseUrl());
+    const desiredBaseUrl = resolveDefaultEmbeddedBaseUrl();
+    const existingEmbeddedIndex = nodes.value.findIndex((node) => node.id === EMBEDDED_NODE_ID);
+
+    if (existingEmbeddedIndex === -1) {
+      const embedded = createEmbeddedNode(desiredBaseUrl);
       nodes.value = [embedded, ...nodes.value];
+      registryVersion.value += 1;
+      if (!window.electronAPI?.getNodeRegistrySnapshot) {
+        persistCurrentSnapshotToLocalStorage();
+      }
+      return;
+    }
+
+    const existingEmbedded = nodes.value[existingEmbeddedIndex];
+    if (normalizeNodeBaseUrl(existingEmbedded.baseUrl) !== desiredBaseUrl) {
+      const updatedEmbedded: NodeProfile = {
+        ...existingEmbedded,
+        baseUrl: desiredBaseUrl,
+        updatedAt: nowIsoString(),
+      };
+      nodes.value = nodes.value.map((node, index) =>
+        index === existingEmbeddedIndex ? updatedEmbedded : node,
+      );
       registryVersion.value += 1;
       if (!window.electronAPI?.getNodeRegistrySnapshot) {
         persistCurrentSnapshotToLocalStorage();

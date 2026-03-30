@@ -1,8 +1,8 @@
 import { Arg, Field, Int, ObjectType, Query, Resolver } from "type-graphql";
 import { appConfigProvider } from "../../../config/app-config-provider.js";
-import { MemoryFileStore } from "../../../agent-memory-view/store/memory-file-store.js";
-import { AgentMemoryIndexService } from "../../../agent-memory-view/services/agent-memory-index-service.js";
-import { TeamMemoryIndexService } from "../../../agent-memory-view/services/team-memory-index-service.js";
+import { MemoryFileStore } from "../../../agent-memory/store/memory-file-store.js";
+import { AgentMemoryIndexService } from "../../../agent-memory/services/agent-memory-index-service.js";
+import { TeamMemoryIndexService } from "../../../agent-memory/services/team-memory-index-service.js";
 import { MemoryIndexConverter } from "../converters/memory-index-converter.js";
 
 @ObjectType()

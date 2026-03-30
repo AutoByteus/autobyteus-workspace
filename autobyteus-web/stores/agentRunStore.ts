@@ -1,10 +1,6 @@
 import { defineStore } from 'pinia';
 import { getApolloClient } from '~/utils/apolloClient'
-import { TerminateAgentRun } from '~/graphql/mutations/agentMutations';
-import { ContinueRun } from '~/graphql/mutations/runHistoryMutations';
-import type {
-  ContextFileType,
-} from '~/generated/graphql';
+import { CreateAgentRun, RestoreAgentRun, TerminateAgentRun } from '~/graphql/mutations/agentMutations';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
 import { AgentStreamingService } from '~/services/agentStreaming';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
@@ -16,12 +12,19 @@ import { AgentStatus } from '~/types/agent/AgentStatus';
 import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig';
 import { ConnectionState } from '~/services/agentStreaming';
 
-interface ContinueRunMutationResultPayload {
-  continueRun: {
+interface CreateAgentRunMutationResultPayload {
+  createAgentRun: {
     success: boolean;
     message: string;
     runId?: string | null;
-    ignoredConfigFields: string[];
+  };
+}
+
+interface RestoreAgentRunMutationResultPayload {
+  restoreAgentRun: {
+    success: boolean;
+    message: string;
+    runId?: string | null;
   };
 }
 
@@ -30,8 +33,8 @@ const streamingServices = new Map<string, AgentStreamingService>();
 
 /**
  * @store agentRun
- * @description This store is the "service" or "orchestration" layer for agent interactions.
- * It uses WebSocket streaming for real-time updates and GraphQL mutations for commands.
+ * @description This store orchestrates single-agent lifecycle and streaming.
+ * GraphQL creates new runs; WebSocket handles the first and subsequent messages.
  */
 export const useAgentRunStore = defineStore('agentRun', {
   state: () => ({}),
@@ -40,8 +43,8 @@ export const useAgentRunStore = defineStore('agentRun', {
   actions: {
     /**
      * @action sendUserInputAndSubscribe
-     * @description Sends the user's input to the backend to start or continue an agent run,
-     * then ensures a WebSocket connection is active to receive live updates.
+     * @description Creates a new agent run when needed, then sends the user's message over
+     * WebSocket and keeps the stream connected for live updates.
      */
     async sendUserInputAndSubscribe(): Promise<void> {
       const agentContextsStore = useAgentContextsStore();
@@ -65,7 +68,7 @@ export const useAgentRunStore = defineStore('agentRun', {
             || workspaceStore.workspaces[workspaceId]?.workspaceConfig?.rootPath
             || null
           )
-        : (resumeConfig?.manifestConfig.workspaceRootPath || null);
+        : (resumeConfig?.metadataConfig.workspaceRootPath || null);
 
       if (isNewAgent && !config.llmModelIdentifier) {
         const llmProviderConfigStore = useLLMProviderConfigStore();
@@ -83,68 +86,94 @@ export const useAgentRunStore = defineStore('agentRun', {
       if (isNewAgent && !config.llmModelIdentifier) {
         throw new Error("Please select a model for the first message.");
       }
+      if (isNewAgent && !workspaceRootPath) {
+        throw new Error("A workspace root path is required for the first message.");
+      }
+      if (isNewAgent && !config.skillAccessMode) {
+        throw new Error("A skill access mode is required for the first message.");
+      }
+      if (isNewAgent && !config.runtimeKind) {
+        throw new Error("A runtime kind is required for the first message.");
+      }
 
       if (isNewAgent) {
         state.conversation.llmModelIdentifier = config.llmModelIdentifier;
 
       }
+      const messageContent = currentAgent.requirement;
+      const messageContextPaths = [...currentAgent.contextFilePaths];
 
       // Add the user message to the conversation
       currentAgent.state.conversation.messages.push({
         type: 'user',
-        text: currentAgent.requirement,
+        text: messageContent,
         timestamp: new Date(),
-        contextFilePaths: currentAgent.contextFilePaths
+        contextFilePaths: messageContextPaths
       });
       currentAgent.state.conversation.updatedAt = new Date().toISOString();
 
       currentAgent.isSending = true;
 
       try {
-        const client = getApolloClient()
-        const { data, errors } = await client.mutate<ContinueRunMutationResultPayload>({
-          mutation: ContinueRun,
-          variables: {
-            input: {
-              userInput: {
-                content: currentAgent.requirement,
-                contextFiles: currentAgent.contextFilePaths.map(cf => ({ path: cf.path, type: cf.type.toUpperCase() as ContextFileType })),
-              },
-              runId: isNewAgent ? null : runId,
-              agentDefinitionId: isNewAgent ? state.conversation.agentDefinitionId : undefined,
-              workspaceId: isNewAgent ? workspaceId : undefined,
-              workspaceRootPath: workspaceRootPath || undefined,
-              llmModelIdentifier: config.llmModelIdentifier,
-              autoExecuteTools: config.autoExecuteTools,
-              llmConfig: config.llmConfig ?? null,
-              skillAccessMode: config.skillAccessMode,
-              runtimeKind: config.runtimeKind ?? DEFAULT_AGENT_RUNTIME_KIND,
-            }
-          }
-        });
-
-        if (errors && errors.length > 0) {
-          throw new Error(errors.map((e: { message: string }) => e.message).join(', '));
-        }
-
-        const result = data?.continueRun;
-        if (!result) {
-          throw new Error('Failed to continue run: No response returned.');
-        }
-
-        if (!result.success) {
-          throw new Error(result.message || 'Failed to continue run.');
-        }
-
-        const permanentRunId = result.runId;
-        if (!permanentRunId) {
-          throw new Error('Failed to continue run: No runId returned on success.');
-        }
-
         let finalRunId = runId;
         if (isNewAgent) {
+          const client = getApolloClient()
+          const { data, errors } = await client.mutate<CreateAgentRunMutationResultPayload>({
+            mutation: CreateAgentRun,
+            variables: {
+              input: {
+                agentDefinitionId: state.conversation.agentDefinitionId,
+                workspaceId: workspaceId ?? undefined,
+                workspaceRootPath,
+                llmModelIdentifier: config.llmModelIdentifier,
+                autoExecuteTools: config.autoExecuteTools,
+                llmConfig: config.llmConfig ?? null,
+                skillAccessMode: config.skillAccessMode,
+                runtimeKind: config.runtimeKind,
+              }
+            }
+          });
+
+          if (errors && errors.length > 0) {
+            throw new Error(errors.map((e: { message: string }) => e.message).join(', '));
+          }
+
+          const result = data?.createAgentRun;
+          if (!result) {
+            throw new Error('Failed to create agent run: No response returned.');
+          }
+
+          if (!result.success) {
+            throw new Error(result.message || 'Failed to create agent run.');
+          }
+
+          const permanentRunId = result.runId;
+          if (!permanentRunId) {
+            throw new Error('Failed to create agent run: No runId returned on success.');
+          }
+
           finalRunId = permanentRunId;
           agentContextsStore.promoteTemporaryId(runId, permanentRunId);
+        } else if (resumeConfig && !resumeConfig.isActive) {
+          const client = getApolloClient();
+          const { data, errors } = await client.mutate<RestoreAgentRunMutationResultPayload>({
+            mutation: RestoreAgentRun,
+            variables: { agentRunId: finalRunId },
+          });
+
+          if (errors && errors.length > 0) {
+            throw new Error(errors.map((e: { message: string }) => e.message).join(', '));
+          }
+
+          const result = data?.restoreAgentRun;
+          if (!result) {
+            throw new Error('Failed to restore agent run: No response returned.');
+          }
+          if (!result.success) {
+            throw new Error(result.message || 'Failed to restore agent run.');
+          }
+
+          finalRunId = result.runId || finalRunId;
         }
 
         agentContextsStore.lockConfig(finalRunId);
@@ -155,9 +184,9 @@ export const useAgentRunStore = defineStore('agentRun', {
         finalAgent.requirement = '';
         finalAgent.contextFilePaths = [];
 
-        if (!finalAgent.isSubscribed) {
-          this.connectToAgentStream(finalRunId);
-        }
+        const service = await this.ensureAgentStreamConnected(finalRunId);
+        const streamPayload = partitionContextPaths(messageContextPaths);
+        service.sendMessage(messageContent, streamPayload.contextFilePaths, streamPayload.imageUrls);
       } catch (error: any) {
         console.error('Error sending user input:', error);
         currentAgent.isSending = false;
@@ -186,11 +215,11 @@ export const useAgentRunStore = defineStore('agentRun', {
      * @action connectToAgentStream
      * @description Establishes a WebSocket connection to receive real-time events for a specific run.
      */
-    connectToAgentStream(runId: string) {
+    connectToAgentStream(runId: string): AgentStreamingService | null {
       const agentContextsStore = useAgentContextsStore();
       const agent = agentContextsStore.getRun(runId);
 
-      if (!agent) return;
+      if (!agent) return null;
 
       const existingService = streamingServices.get(runId);
       if (existingService) {
@@ -205,7 +234,7 @@ export const useAgentRunStore = defineStore('agentRun', {
         } else {
           agent.isSubscribed = true;
         }
-        return;
+        return existingService;
       }
 
       const windowNodeContextStore = useWindowNodeContextStore();
@@ -222,6 +251,28 @@ export const useAgentRunStore = defineStore('agentRun', {
       };
 
       service.connect(runId, agent);
+      return service;
+    },
+
+    async ensureAgentStreamConnected(runId: string): Promise<AgentStreamingService> {
+      const service = this.connectToAgentStream(runId);
+      if (!service) {
+        throw new Error(`Unable to connect agent stream for run '${runId}'.`);
+      }
+      const isConnected = () => service.connectionState === ConnectionState.CONNECTED;
+      if (isConnected()) {
+        return service;
+      }
+
+      const timeoutAt = Date.now() + 10000;
+      while (Date.now() < timeoutAt) {
+        if (isConnected()) {
+          return service;
+        }
+        await new Promise((resolve) => setTimeout(resolve, 50));
+      }
+
+      throw new Error(`Timed out waiting for agent stream connection for run '${runId}'.`);
     },
 
     disconnectAgentStream(runId: string): void {
@@ -320,7 +371,7 @@ export const useAgentRunStore = defineStore('agentRun', {
         const client = getApolloClient();
         const { data, errors } = await client.mutate({
           mutation: TerminateAgentRun,
-          variables: { id: runId },
+          variables: { agentRunId: runId },
         });
 
         if (errors && errors.length > 0) {
@@ -366,3 +417,23 @@ export const useAgentRunStore = defineStore('agentRun', {
 
   },
 });
+
+const partitionContextPaths = (
+  contextPaths: { path: string; type: string }[],
+): { contextFilePaths: string[]; imageUrls: string[] } => {
+  const contextFilePaths: string[] = [];
+  const imageUrls: string[] = [];
+
+  for (const contextPath of contextPaths) {
+    if (!contextPath.path) {
+      continue;
+    }
+    if (contextPath.type.toUpperCase() === 'IMAGE') {
+      imageUrls.push(contextPath.path);
+      continue;
+    }
+    contextFilePaths.push(contextPath.path);
+  }
+
+  return { contextFilePaths, imageUrls };
+};

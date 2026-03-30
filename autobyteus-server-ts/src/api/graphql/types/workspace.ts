@@ -1,6 +1,5 @@
 import { Arg, Field, InputType, Mutation, ObjectType, Query, Resolver } from "type-graphql";
 import { GraphQLJSON } from "graphql-scalars";
-import { WorkspaceConfig } from "autobyteus-ts";
 import { getWorkspaceManager } from "../../../workspaces/workspace-manager.js";
 import { WorkspaceConverter } from "../converters/workspace-converter.js";
 
@@ -64,8 +63,7 @@ export class WorkspaceResolver {
   ): Promise<WorkspaceInfo> {
     logger.info("GraphQL mutation to create workspace");
     try {
-      const workspaceConfig = new WorkspaceConfig({ rootPath: input.rootPath });
-      const workspace = await this.workspaceManager.createWorkspace(workspaceConfig);
+      const workspace = await this.workspaceManager.createWorkspace({ rootPath: input.rootPath });
       return WorkspaceConverter.toGraphql(workspace);
     } catch (error) {
       logger.error(`Unexpected error creating workspace: ${String(error)}`);

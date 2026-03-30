@@ -39,14 +39,6 @@ export type PublishAssistantReplyByTurnResult =
       envelope: null;
     };
 
-type ChannelSourceLookupPort = Pick<ChannelMessageReceiptService, "getSourceByAgentRunTurn">;
-
-type CallbackIdempotencyPort = Pick<CallbackIdempotencyService, "reserveCallbackKey">;
-
-type DeliveryEventPort = Pick<DeliveryEventService, "recordPending">;
-
-type ChannelBindingLookupPort = Pick<ChannelBindingService, "isRouteBoundToTarget">;
-
 type CallbackOutboxPort = {
   enqueueOrGet(
     callbackIdempotencyKey: string,
@@ -64,9 +56,9 @@ type CallbackTargetResolverPort = {
 };
 
 export type ReplyCallbackServiceDependencies = {
-  callbackIdempotencyService?: CallbackIdempotencyPort;
-  deliveryEventService?: DeliveryEventPort;
-  bindingService?: ChannelBindingLookupPort;
+  callbackIdempotencyService?: CallbackIdempotencyService;
+  deliveryEventService?: DeliveryEventService;
+  bindingService?: ChannelBindingService;
   callbackOutboxService?: CallbackOutboxPort;
   callbackTargetResolver?: CallbackTargetResolverPort;
 };
@@ -76,11 +68,11 @@ export type ReplyCallbackServiceOptions = {
 };
 
 export class ReplyCallbackService {
-  private readonly callbackIdempotencyService?: CallbackIdempotencyPort;
+  private readonly callbackIdempotencyService?: CallbackIdempotencyService;
 
-  private readonly deliveryEventService?: DeliveryEventPort;
+  private readonly deliveryEventService?: DeliveryEventService;
 
-  private readonly bindingService?: ChannelBindingLookupPort;
+  private readonly bindingService?: ChannelBindingService;
 
   private readonly callbackOutboxService?: CallbackOutboxPort;
 
@@ -89,7 +81,7 @@ export class ReplyCallbackService {
   private readonly callbackIdempotencyTtlSeconds: number;
 
   constructor(
-    private readonly messageReceiptService: ChannelSourceLookupPort,
+    private readonly messageReceiptService: ChannelMessageReceiptService,
     deps: ReplyCallbackServiceDependencies = {},
     options: ReplyCallbackServiceOptions = {},
   ) {

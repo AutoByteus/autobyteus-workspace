@@ -9,17 +9,16 @@ import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig';
-import { DeleteRunHistory, DeleteTeamRunHistory } from '~/graphql/mutations/runHistoryMutations';
+import { DeleteStoredRun, DeleteStoredTeamRun } from '~/graphql/mutations/runHistoryMutations';
 import {
   DEFAULT_AGENT_RUNTIME_KIND,
 } from '~/types/agent/AgentRunConfig';
 import type {
-  DeleteRunHistoryMutationData,
-  DeleteTeamRunHistoryMutationData,
+  DeleteStoredRunMutationData,
+  DeleteStoredTeamRunMutationData,
   RunEditableFieldFlags,
   RunHistoryWorkspaceGroup,
   RunResumeConfigPayload,
-  TeamRunHistoryItem,
   TeamRunResumeConfigPayload,
 } from '~/stores/runHistoryTypes';
 import {
@@ -30,7 +29,7 @@ import {
 } from '~/stores/runHistoryReadModel';
 import {
   removeRunFromWorkspaceGroups,
-  removeTeamRunById,
+  removeTeamRunFromWorkspaceGroups,
 } from '~/stores/runHistoryStoreSupport';
 import { openTeamMemberRunFromHistory, selectTreeRunFromHistory } from '~/stores/runHistorySelectionActions';
 import {
@@ -59,7 +58,6 @@ const FALSE_EDITABLE_FIELDS: RunEditableFieldFlags = {
 export const useRunHistoryStore = defineStore('runHistory', {
   state: () => ({
     workspaceGroups: [] as RunHistoryWorkspaceGroup[],
-    teamRuns: [] as TeamRunHistoryItem[],
     agentAvatarByDefinitionId: {} as Record<string, string>,
     resumeConfigByRunId: {} as Record<string, RunResumeConfigPayload>,
     teamResumeConfigByTeamRunId: {} as Record<string, TeamRunResumeConfigPayload>,
@@ -250,7 +248,10 @@ export const useRunHistoryStore = defineStore('runHistory', {
               ? {
                   ...run,
                   isActive: false,
-                  lastKnownStatus: run.lastKnownStatus === 'ERROR' ? 'ERROR' : 'IDLE',
+                  lastKnownStatus:
+                    run.lastKnownStatus === 'ERROR' || run.lastKnownStatus === 'TERMINATED'
+                      ? run.lastKnownStatus
+                      : 'IDLE',
                   lastActivityAt: now,
                 }
               : run,
@@ -281,8 +282,8 @@ export const useRunHistoryStore = defineStore('runHistory', {
             const isActive = activeSet.has(run.runId);
             const lastKnownStatus = isActive
               ? 'ACTIVE'
-              : run.lastKnownStatus === 'ERROR'
-                ? 'ERROR'
+              : run.lastKnownStatus === 'ERROR' || run.lastKnownStatus === 'TERMINATED'
+                ? run.lastKnownStatus
                 : 'IDLE';
             return {
               ...run,
@@ -296,17 +297,18 @@ export const useRunHistoryStore = defineStore('runHistory', {
 
     markTeamAsActive(teamRunId: string): void {
       const now = new Date().toISOString();
-      this.teamRuns = this.teamRuns.map((team) => {
-        if (team.teamRunId !== teamRunId) {
-          return team;
-        }
-        return {
-          ...team,
-          isActive: true,
-          lastKnownStatus: 'ACTIVE',
-          lastActivityAt: now,
-        };
-      });
+      this.workspaceGroups = this.workspaceGroups.map((workspace) => ({
+        ...workspace,
+        teamRuns: workspace.teamRuns.map((team) =>
+          team.teamRunId !== teamRunId
+            ? team
+            : {
+                ...team,
+                isActive: true,
+                lastKnownStatus: 'ACTIVE',
+                lastActivityAt: now,
+              }),
+      }));
 
       const existing = this.teamResumeConfigByTeamRunId[teamRunId];
       if (existing) {
@@ -319,17 +321,18 @@ export const useRunHistoryStore = defineStore('runHistory', {
 
     markTeamAsInactive(teamRunId: string): void {
       const now = new Date().toISOString();
-      this.teamRuns = this.teamRuns.map((team) => {
-        if (team.teamRunId !== teamRunId) {
-          return team;
-        }
-        return {
-          ...team,
-          isActive: false,
-          lastKnownStatus: team.lastKnownStatus === 'ERROR' ? 'ERROR' : 'IDLE',
-          lastActivityAt: now,
-        };
-      });
+      this.workspaceGroups = this.workspaceGroups.map((workspace) => ({
+        ...workspace,
+        teamRuns: workspace.teamRuns.map((team) =>
+          team.teamRunId !== teamRunId
+            ? team
+            : {
+                ...team,
+                isActive: false,
+                lastKnownStatus: team.lastKnownStatus === 'ERROR' ? 'ERROR' : 'IDLE',
+                lastActivityAt: now,
+              }),
+      }));
 
       const existing = this.teamResumeConfigByTeamRunId[teamRunId];
       if (existing) {
@@ -354,19 +357,22 @@ export const useRunHistoryStore = defineStore('runHistory', {
       }
       this.teamResumeConfigByTeamRunId = nextTeamResumeConfigs;
 
-      this.teamRuns = this.teamRuns.map((team) => {
-        const isActive = activeSet.has(team.teamRunId);
-        const lastKnownStatus = isActive
-          ? 'ACTIVE'
-          : team.lastKnownStatus === 'ERROR'
-            ? 'ERROR'
-            : 'IDLE';
-        return {
-          ...team,
-          isActive,
-          lastKnownStatus,
-        };
-      });
+      this.workspaceGroups = this.workspaceGroups.map((workspace) => ({
+        ...workspace,
+        teamRuns: workspace.teamRuns.map((team) => {
+          const isActive = activeSet.has(team.teamRunId);
+          const lastKnownStatus = isActive
+            ? 'ACTIVE'
+            : team.lastKnownStatus === 'ERROR'
+              ? 'ERROR'
+              : 'IDLE';
+          return {
+            ...team,
+            isActive,
+            lastKnownStatus,
+          };
+        }),
+      }));
     },
 
     markTeamDraftProjectionDirty(): void {
@@ -381,8 +387,8 @@ export const useRunHistoryStore = defineStore('runHistory', {
 
       try {
         const client = getApolloClient();
-        const { data, errors } = await client.mutate<DeleteRunHistoryMutationData>({
-          mutation: DeleteRunHistory,
+        const { data, errors } = await client.mutate<DeleteStoredRunMutationData>({
+          mutation: DeleteStoredRun,
           variables: { runId: normalizedRunId },
         });
 
@@ -390,7 +396,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
           throw new Error(errors.map((e: { message: string }) => e.message).join(', '));
         }
 
-        const result = data?.deleteRunHistory;
+        const result = data?.deleteStoredRun;
         if (!result?.success) {
           return false;
         }
@@ -434,8 +440,8 @@ export const useRunHistoryStore = defineStore('runHistory', {
 
       try {
         const client = getApolloClient();
-        const { data, errors } = await client.mutate<DeleteTeamRunHistoryMutationData>({
-          mutation: DeleteTeamRunHistory,
+        const { data, errors } = await client.mutate<DeleteStoredTeamRunMutationData>({
+          mutation: DeleteStoredTeamRun,
           variables: { teamRunId: normalizedTeamRunId },
         });
 
@@ -443,7 +449,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
           throw new Error(errors.map((e: { message: string }) => e.message).join(', '));
         }
 
-        const result = data?.deleteTeamRunHistory;
+        const result = data?.deleteStoredTeamRun;
         if (!result?.success) {
           return false;
         }
@@ -451,7 +457,10 @@ export const useRunHistoryStore = defineStore('runHistory', {
         const nextTeamResume = { ...this.teamResumeConfigByTeamRunId };
         delete nextTeamResume[normalizedTeamRunId];
         this.teamResumeConfigByTeamRunId = nextTeamResume;
-        this.teamRuns = removeTeamRunById(this.teamRuns, normalizedTeamRunId);
+        this.workspaceGroups = removeTeamRunFromWorkspaceGroups(
+          this.workspaceGroups,
+          normalizedTeamRunId,
+        );
 
         const teamContextsStore = useAgentTeamContextsStore();
         teamContextsStore.removeTeamContext(normalizedTeamRunId);
@@ -502,7 +511,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
       const workspaceStore = useWorkspaceStore();
       const teamContextsStore = useAgentTeamContextsStore();
       return buildRunHistoryTeamNodes({
-        teamRuns: this.teamRuns,
+        workspaceGroups: this.workspaceGroups,
         teamContexts: teamContextsStore.allTeamRuns ?? [],
         workspacesById: workspaceStore.workspaces,
         workspaceRootPath,

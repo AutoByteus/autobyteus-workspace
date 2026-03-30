@@ -13,7 +13,7 @@ import { createBindingFlowActions } from '~/composables/messaging-binding-flow/o
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useWorkspaceStore } from '~/stores/workspace';
 import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig';
-import { useRuntimeCapabilitiesStore } from '~/stores/runtimeCapabilitiesStore';
+import { useRuntimeAvailabilityStore } from '~/stores/runtimeAvailabilityStore';
 import {
   DEFAULT_AGENT_RUNTIME_KIND,
   runtimeKindToLabel,
@@ -37,7 +37,7 @@ export function useMessagingChannelBindingSetupFlow() {
   const agentDefinitionStore = useAgentDefinitionStore();
   const workspaceStore = useWorkspaceStore();
   const llmStore = useLLMProviderConfigStore();
-  const runtimeCapabilitiesStore = useRuntimeCapabilitiesStore();
+  const runtimeAvailabilityStore = useRuntimeAvailabilityStore();
 
   const useManualPeerInput = ref(false);
   const selectedPeerKey = ref('');
@@ -102,7 +102,7 @@ export function useMessagingChannelBindingSetupFlow() {
   void workspaceStore.fetchAllWorkspaces().catch((error) => {
     console.error('Failed to fetch workspaces for messaging binding setup:', error);
   });
-  void runtimeCapabilitiesStore.fetchRuntimeCapabilities();
+  void runtimeAvailabilityStore.fetchRuntimeAvailabilities();
 
   type MutableLaunchPreset =
     | ExternalChannelLaunchPresetModel
@@ -112,7 +112,7 @@ export function useMessagingChannelBindingSetupFlow() {
     draft.targetType === 'TEAM' ? draft.teamLaunchPreset : draft.launchPreset;
 
   const activeLaunchPreset = computed(() => getActiveLaunchPreset());
-  const showSkillAccessControl = computed(() => draft.targetType === 'AGENT');
+  const showSkillAccessControl = computed(() => true);
 
   const normalizeRuntimeKind = (runtimeKind: unknown): AgentRuntimeKind => {
     if (typeof runtimeKind !== 'string') {
@@ -153,14 +153,14 @@ export function useMessagingChannelBindingSetupFlow() {
   );
 
   watch(
-    () => [runtimeCapabilitiesStore.hasFetched, draft.targetType, activeLaunchPreset.value.runtimeKind] as const,
+    () => [runtimeAvailabilityStore.hasFetched, draft.targetType, activeLaunchPreset.value.runtimeKind] as const,
     ([hasFetched, , runtimeKind]) => {
       if (!hasFetched) {
         return;
       }
 
       const normalizedRuntime = normalizeRuntimeKind(runtimeKind);
-      if (runtimeCapabilitiesStore.isRuntimeEnabled(normalizedRuntime)) {
+      if (runtimeAvailabilityStore.isRuntimeEnabled(normalizedRuntime)) {
         return;
       }
 
@@ -336,11 +336,11 @@ export function useMessagingChannelBindingSetupFlow() {
       { value: AgentRuntimeKind; label: string; enabled: boolean }
     >();
 
-    for (const capability of runtimeCapabilitiesStore.capabilities) {
-      optionByKind.set(capability.runtimeKind, {
-        value: capability.runtimeKind,
-        label: runtimeKindToLabel(capability.runtimeKind),
-        enabled: capability.enabled,
+    for (const availability of runtimeAvailabilityStore.availabilities) {
+      optionByKind.set(availability.runtimeKind, {
+        value: availability.runtimeKind,
+        label: runtimeKindToLabel(availability.runtimeKind),
+        enabled: availability.enabled,
       });
     }
 
@@ -383,7 +383,7 @@ export function useMessagingChannelBindingSetupFlow() {
   });
 
   const selectedRuntimeUnavailableReason = computed(() => {
-    return runtimeCapabilitiesStore.runtimeReason(
+    return runtimeAvailabilityStore.runtimeReason(
       normalizeRuntimeKind(activeLaunchPreset.value.runtimeKind),
     );
   });
@@ -442,7 +442,7 @@ export function useMessagingChannelBindingSetupFlow() {
 
   const updateRuntimeKind = (value: string) => {
     const runtimeKind = normalizeRuntimeKind(value);
-    if (!runtimeCapabilitiesStore.isRuntimeEnabled(runtimeKind)) {
+    if (!runtimeAvailabilityStore.isRuntimeEnabled(runtimeKind)) {
       return;
     }
     if (activeLaunchPreset.value.runtimeKind === runtimeKind) {
@@ -466,7 +466,7 @@ export function useMessagingChannelBindingSetupFlow() {
   };
 
   const updateSkillAccessMode = (value: string) => {
-    draft.launchPreset.skillAccessMode = value as SkillAccessMode;
+    activeLaunchPreset.value.skillAccessMode = value as SkillAccessMode;
   };
 
   const setWorkspaceSelectionMode = (mode: WorkspaceSelectionMode) => {

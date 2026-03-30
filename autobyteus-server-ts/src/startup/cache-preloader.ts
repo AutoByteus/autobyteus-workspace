@@ -1,7 +1,7 @@
 import { AgentDefinitionService } from "../agent-definition/services/agent-definition-service.js";
 import { AgentTeamDefinitionService } from "../agent-team-definition/services/agent-team-definition-service.js";
 import { getMcpConfigService } from "../mcp-server-management/services/mcp-config-service.js";
-import { getRuntimeModelCatalogService } from "../runtime-management/model-catalog/runtime-model-catalog-service.js";
+import { getModelCatalogService } from "../llm-management/services/model-catalog-service.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -10,7 +10,7 @@ const logger = {
 
 export async function runCachePreloading(): Promise<void> {
   logger.info("Background cache pre-loading process has started.");
-  const runtimeModelCatalogService = getRuntimeModelCatalogService();
+  const runtimeModelCatalogService = getModelCatalogService();
 
   try {
     const agentDefService = AgentDefinitionService.getInstance();

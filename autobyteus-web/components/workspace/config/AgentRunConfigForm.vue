@@ -133,7 +133,7 @@
 <script setup lang="ts">
 import { computed, watch } from 'vue';
 import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig';
-import { useRuntimeCapabilitiesStore } from '~/stores/runtimeCapabilitiesStore';
+import { useRuntimeAvailabilityStore } from '~/stores/runtimeAvailabilityStore';
 import {
   DEFAULT_AGENT_RUNTIME_KIND,
   runtimeKindToLabel,
@@ -168,13 +168,13 @@ const emit = defineEmits<{
 }>();
 
 const llmStore = useLLMProviderConfigStore();
-const runtimeCapabilitiesStore = useRuntimeCapabilitiesStore();
+const runtimeAvailabilityStore = useRuntimeAvailabilityStore();
 const workspaceLocked = computed(() => props.workspaceLocked === true);
 const runtimeLocked = computed(() => props.runtimeLocked === true);
 const runtimeSelectionLocked = computed(() => props.config.isLocked || runtimeLocked.value);
 
-void runtimeCapabilitiesStore.fetchRuntimeCapabilities().catch((error) => {
-  console.error('Failed to fetch runtime capabilities:', error);
+void runtimeAvailabilityStore.fetchRuntimeAvailabilities().catch((error) => {
+  console.error('Failed to fetch runtime availabilities:', error);
 });
 
 const normalizeRuntimeKind = (runtimeKind: unknown): AgentRuntimeKind => {
@@ -205,11 +205,11 @@ const runtimeOptions = computed<Array<{
   const selectedRuntimeKind = normalizeRuntimeKind(props.config.runtimeKind);
   const optionByKind = new Map<AgentRuntimeKind, { value: AgentRuntimeKind; label: string; enabled: boolean }>();
 
-  for (const capability of runtimeCapabilitiesStore.capabilities) {
-    optionByKind.set(capability.runtimeKind, {
-      value: capability.runtimeKind,
-      label: runtimeKindToLabel(capability.runtimeKind),
-      enabled: capability.enabled,
+  for (const availability of runtimeAvailabilityStore.availabilities) {
+    optionByKind.set(availability.runtimeKind, {
+      value: availability.runtimeKind,
+      label: runtimeKindToLabel(availability.runtimeKind),
+      enabled: availability.enabled,
     });
   }
 
@@ -225,7 +225,7 @@ const runtimeOptions = computed<Array<{
     optionByKind.set(selectedRuntimeKind, {
       value: selectedRuntimeKind,
       label: runtimeKindToLabel(selectedRuntimeKind),
-      enabled: runtimeCapabilitiesStore.isRuntimeEnabled(selectedRuntimeKind),
+      enabled: runtimeAvailabilityStore.isRuntimeEnabled(selectedRuntimeKind),
     });
   }
 
@@ -236,16 +236,16 @@ const runtimeOptions = computed<Array<{
 
 const selectedRuntimeUnavailableReason = computed(() => {
   const runtimeKind = normalizeRuntimeKind(props.config.runtimeKind);
-  const capability = runtimeCapabilitiesStore.capabilityByKind(runtimeKind);
-  if (!capability) {
+  const availability = runtimeAvailabilityStore.availabilityByKind(runtimeKind);
+  if (!availability) {
     return runtimeKind === DEFAULT_AGENT_RUNTIME_KIND
       ? null
       : 'Runtime is not available in current capabilities.';
   }
-  if (capability.enabled) {
+  if (availability.enabled) {
     return null;
   }
-  return runtimeCapabilitiesStore.runtimeReason(runtimeKind);
+  return runtimeAvailabilityStore.runtimeReason(runtimeKind);
 });
 
 watch(
@@ -265,17 +265,17 @@ watch(
 );
 
 watch(
-  () => [runtimeCapabilitiesStore.hasFetched, props.config.runtimeKind, runtimeSelectionLocked.value],
+  () => [runtimeAvailabilityStore.hasFetched, props.config.runtimeKind, runtimeSelectionLocked.value],
   ([hasFetched, runtimeKind, runtimeIsLocked]) => {
     if (!hasFetched || runtimeIsLocked) {
       return;
     }
     const normalizedRuntime = normalizeRuntimeKind(runtimeKind);
-    const capability = runtimeCapabilitiesStore.capabilityByKind(normalizedRuntime);
-    if (!capability) {
+    const availability = runtimeAvailabilityStore.availabilityByKind(normalizedRuntime);
+    if (!availability) {
       return;
     }
-    if (capability.enabled) {
+    if (availability.enabled) {
       return;
     }
 
@@ -304,7 +304,7 @@ const modelConfigSchema = computed(() => {
 
 const updateRuntimeKind = (value: string) => {
     const runtimeKind = normalizeRuntimeKind(value);
-    if (!runtimeCapabilitiesStore.isRuntimeEnabled(runtimeKind)) {
+    if (!runtimeAvailabilityStore.isRuntimeEnabled(runtimeKind)) {
       return;
     }
     if (props.config.runtimeKind === runtimeKind) {

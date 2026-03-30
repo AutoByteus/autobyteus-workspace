@@ -12,8 +12,8 @@ export const CreateAgentTeamRun = gql`
 `
 
 export const TerminateAgentTeamRun = gql`
-  mutation TerminateAgentTeamRun($id: String!) {
-    terminateAgentTeamRun(id: $id) {
+  mutation TerminateAgentTeamRun($teamRunId: String!) {
+    terminateAgentTeamRun(teamRunId: $teamRunId) {
       __typename
       success
       message
@@ -21,9 +21,9 @@ export const TerminateAgentTeamRun = gql`
   }
 `
 
-export const SendMessageToTeam = gql`
-  mutation SendMessageToTeam($input: SendMessageToTeamInput!) {
-    sendMessageToTeam(input: $input) {
+export const RestoreAgentTeamRun = gql`
+  mutation RestoreAgentTeamRun($teamRunId: String!) {
+    restoreAgentTeamRun(teamRunId: $teamRunId) {
       __typename
       success
       message

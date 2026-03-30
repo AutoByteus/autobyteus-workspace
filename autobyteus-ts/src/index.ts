@@ -34,7 +34,6 @@ export * from './agent/system-prompt-processor/index.js';
 export * from './agent/tool-execution-result-processor/index.js';
 export * from './agent/tool-invocation-preprocessor/index.js';
 export * from './agent/utils/index.js';
-export * from './agent/workspace/index.js';
 export * from './agent-team/context/index.js';
 export * from './agent-team/factory/index.js';
 export * from './agent-team/runtime/index.js';

@@ -45,6 +45,7 @@ export function useBindingDraftState(input: {
       llmModelIdentifier: '',
       runtimeKind: DEFAULT_AGENT_RUNTIME_KIND,
       autoExecuteTools: false,
+      skillAccessMode: 'PRELOADED_ONLY',
       llmConfig: null,
     },
   });

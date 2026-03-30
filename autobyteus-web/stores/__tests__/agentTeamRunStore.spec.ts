@@ -4,12 +4,14 @@ import { useAgentTeamRunStore } from '../agentTeamRunStore';
 import { TeamStreamingService } from '~/services/agentStreaming';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
+import { RestoreAgentTeamRun } from '~/graphql/mutations/agentTeamRunMutations';
 
 const {
   mockConnect,
   mockDisconnect,
   mockAttachContext,
   mockConnectionState,
+  mockSendMessage,
   mockStopGeneration,
   mockMutate,
   mockClearActivities,
@@ -21,6 +23,7 @@ const {
   mockDisconnect: vi.fn(),
   mockAttachContext: vi.fn(),
   mockConnectionState: { value: 'connected' as 'connected' | 'disconnected' | 'connecting' | 'reconnecting' },
+  mockSendMessage: vi.fn(),
   mockStopGeneration: vi.fn(),
   mockMutate: vi.fn(),
   mockClearActivities: vi.fn(),
@@ -35,6 +38,7 @@ const {
   runHistoryStoreMock: {
     markTeamAsActive: vi.fn(),
     refreshTreeQuietly: vi.fn().mockResolvedValue(undefined),
+    teamResumeConfigByTeamRunId: {} as Record<string, { isActive: boolean }>,
   },
   teamDefinitionStoreMock: {
     getAgentTeamDefinitionById: vi.fn(),
@@ -55,6 +59,7 @@ vi.mock('~/services/agentStreaming', () => ({
     connect: mockConnect,
     disconnect: mockDisconnect,
     attachContext: mockAttachContext,
+    sendMessage: mockSendMessage,
     approveTool: vi.fn(),
     denyTool: vi.fn(),
     stopGeneration: mockStopGeneration,
@@ -98,11 +103,15 @@ describe('agentTeamRunStore', () => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
     mockConnectionState.value = 'connected';
+    mockConnect.mockReset();
+    mockDisconnect.mockReset();
     mockAttachContext.mockReset();
+    mockSendMessage.mockReset();
     mockStopGeneration.mockReset();
     teamContextsStoreMock.activeTeamContext = null;
     teamContextsStoreMock.focusedMemberContext = null;
     teamContextsStoreMock.getTeamContextById.mockReset();
+    runHistoryStoreMock.teamResumeConfigByTeamRunId = {};
   });
 
   it('connects team stream using bound node team WS endpoint', () => {
@@ -181,7 +190,7 @@ describe('agentTeamRunStore', () => {
     expect(mockMutate).not.toHaveBeenCalled();
   });
 
-  it('resubscribes and marks team active when sending to an offline persisted team', async () => {
+  it('reconnects and sends over WebSocket for a persisted team', async () => {
     const focusedMember = {
       state: {
         runId: 'member-1',
@@ -200,6 +209,7 @@ describe('agentTeamRunStore', () => {
         workspaceId: 'ws-1',
         llmModelIdentifier: 'model-x',
         autoExecuteTools: false,
+        skillAccessMode: 'PRELOADED_ONLY',
         memberOverrides: {},
       },
       members: new Map([['professor', focusedMember]]),
@@ -211,39 +221,75 @@ describe('agentTeamRunStore', () => {
       teamRunId === 'team-1' ? teamContext : null,
     );
 
-    mockMutate.mockResolvedValue({
+    const store = useAgentTeamRunStore();
+    await store.sendMessageToFocusedMember('hello from history', []);
+
+    expect(mockMutate).not.toHaveBeenCalled();
+    expect(runHistoryStoreMock.markTeamAsActive).toHaveBeenCalledWith('team-1');
+    expect(runHistoryStoreMock.refreshTreeQuietly).toHaveBeenCalledTimes(1);
+    expect(TeamStreamingService).toHaveBeenCalledWith('ws://node-a.example/ws/agent-team');
+    expect(mockConnect).toHaveBeenCalledWith('team-1', teamContext);
+    expect(mockSendMessage).toHaveBeenCalledWith('hello from history', 'professor', [], []);
+    expect(teamContext.isSubscribed).toBe(true);
+  });
+
+  it('restores persisted inactive team runs before sending', async () => {
+    const focusedMember = {
+      state: {
+        runId: 'member-1',
+        conversation: {
+          messages: [] as any[],
+          updatedAt: '2026-02-21T00:00:00.000Z',
+        },
+      },
+      isSending: false,
+    };
+    const teamContext = {
+      teamRunId: 'team-restore-1',
+      focusedMemberName: 'professor',
+      isSubscribed: false,
+      config: {
+        teamDefinitionId: 'team-def-1',
+        workspaceId: 'ws-1',
+        llmModelIdentifier: 'model-x',
+        autoExecuteTools: false,
+        skillAccessMode: 'PRELOADED_ONLY',
+        memberOverrides: {},
+      },
+      members: new Map([['professor', focusedMember]]),
+    };
+
+    teamContextsStoreMock.activeTeamContext = teamContext;
+    teamContextsStoreMock.focusedMemberContext = focusedMember;
+    teamContextsStoreMock.getTeamContextById.mockImplementation((teamRunId: string) =>
+      teamRunId === 'team-restore-1' ? teamContext : null,
+    );
+    runHistoryStoreMock.teamResumeConfigByTeamRunId = {
+      'team-restore-1': { isActive: false },
+    };
+    mockMutate.mockResolvedValueOnce({
       data: {
-        sendMessageToTeam: {
+        restoreAgentTeamRun: {
           success: true,
-          teamRunId: 'team-1',
-          message: 'ok',
+          teamRunId: 'team-restore-1',
+          message: 'restored',
         },
       },
       errors: [],
     });
 
     const store = useAgentTeamRunStore();
-    await store.sendMessageToFocusedMember('hello from history', []);
+    await store.sendMessageToFocusedMember('restore then send', []);
 
     expect(mockMutate).toHaveBeenCalledWith(
       expect.objectContaining({
-        variables: {
-          input: {
-            userInput: {
-              content: 'hello from history',
-              contextFiles: [],
-            },
-            teamRunId: 'team-1',
-            targetMemberName: 'professor',
-          },
-        },
+        mutation: RestoreAgentTeamRun,
+        variables: { teamRunId: 'team-restore-1' },
       }),
     );
-    expect(runHistoryStoreMock.markTeamAsActive).toHaveBeenCalledWith('team-1');
-    expect(runHistoryStoreMock.refreshTreeQuietly).toHaveBeenCalledTimes(1);
-    expect(TeamStreamingService).toHaveBeenCalledWith('ws://node-a.example/ws/agent-team');
-    expect(mockConnect).toHaveBeenCalledWith('team-1', teamContext);
-    expect(teamContext.isSubscribed).toBe(true);
+    expect(teamContextsStoreMock.lockConfig).toHaveBeenCalledWith('team-restore-1');
+    expect(runHistoryStoreMock.markTeamAsActive).toHaveBeenCalledWith('team-restore-1');
+    expect(mockSendMessage).toHaveBeenCalledWith('restore then send', 'professor', [], []);
   });
 
   it('reconnects stale disconnected team stream after successful send', async () => {
@@ -267,6 +313,7 @@ describe('agentTeamRunStore', () => {
         workspaceId: 'ws-1',
         llmModelIdentifier: 'model-x',
         autoExecuteTools: false,
+        skillAccessMode: 'PRELOADED_ONLY',
         memberOverrides: {},
       },
       members: new Map([['professor', focusedMember]]),
@@ -278,26 +325,19 @@ describe('agentTeamRunStore', () => {
       teamRunId === teamContext.teamRunId ? teamContext : null,
     );
 
-    mockMutate.mockResolvedValue({
-      data: {
-        sendMessageToTeam: {
-          success: true,
-          teamRunId,
-          message: 'ok',
-        },
-      },
-      errors: [],
-    });
-
     const store = useAgentTeamRunStore();
     store.connectToTeamStream(teamRunId);
     expect(mockConnect).toHaveBeenCalledTimes(1);
 
+    mockConnect.mockImplementation(() => {
+      mockConnectionState.value = 'connected';
+    });
     mockConnectionState.value = 'disconnected';
     await store.sendMessageToFocusedMember('hello after reconnect', []);
 
     expect(mockConnect).toHaveBeenCalledTimes(2);
     expect(mockConnect).toHaveBeenLastCalledWith(teamRunId, teamContext);
+    expect(mockSendMessage).toHaveBeenCalledWith('hello after reconnect', 'professor', [], []);
   });
 
   it('reattaches an existing team stream service to the latest team context', () => {
@@ -386,6 +426,7 @@ describe('agentTeamRunStore', () => {
         workspaceId: 'ws-1',
         llmModelIdentifier: 'gpt-5.3-codex',
         autoExecuteTools: false,
+        skillAccessMode: 'GLOBAL_DISCOVERY',
         memberOverrides: {
           professor: {
             agentDefinitionId: 'agent-a',
@@ -413,7 +454,7 @@ describe('agentTeamRunStore', () => {
 
     mockMutate.mockResolvedValue({
       data: {
-        sendMessageToTeam: {
+        createAgentTeamRun: {
           success: true,
           teamRunId: 'team-1',
           message: 'ok',
@@ -429,14 +470,131 @@ describe('agentTeamRunStore', () => {
       expect.objectContaining({
         variables: {
           input: expect.objectContaining({
-            teamRunId: null,
+            teamDefinitionId: 'team-def-1',
             memberConfigs: expect.arrayContaining([
-              expect.objectContaining({ memberName: 'professor', runtimeKind: 'codex_app_server' }),
-              expect.objectContaining({ memberName: 'student', runtimeKind: 'codex_app_server' }),
+              expect.objectContaining({
+                memberName: 'professor',
+                agentDefinitionId: 'agent-a',
+                runtimeKind: 'codex_app_server',
+                skillAccessMode: 'GLOBAL_DISCOVERY',
+              }),
+              expect.objectContaining({
+                memberName: 'student',
+                agentDefinitionId: 'agent-b',
+                runtimeKind: 'codex_app_server',
+                skillAccessMode: 'GLOBAL_DISCOVERY',
+              }),
             ]),
           }),
         },
       }),
     );
+    expect(teamContextsStoreMock.promoteTemporaryTeamRunId).toHaveBeenCalledWith(
+      'temp-team-123',
+      'team-1',
+    );
+    expect(teamContextsStoreMock.lockConfig).toHaveBeenCalledWith('team-1');
+    expect(mockSendMessage).toHaveBeenCalledWith('launch', 'professor', [], []);
+  });
+
+  it('flattens nested team definitions into leaf member configs when launching a temporary team', async () => {
+    const focusedMember = {
+      isSending: false,
+      state: {
+        runId: 'temp-team-123::Leaf A',
+        conversation: {
+          messages: [] as any[],
+          updatedAt: '2026-02-21T00:00:00.000Z',
+        },
+      },
+    };
+    const teamContext = {
+      teamRunId: 'temp-team-123',
+      focusedMemberName: 'Leaf A',
+      isSubscribed: false,
+      config: {
+        teamDefinitionId: 'team-def-nested',
+        runtimeKind: 'claude_agent_sdk',
+        workspaceId: 'ws-1',
+        llmModelIdentifier: 'claude-sonnet',
+        autoExecuteTools: true,
+        skillAccessMode: 'PRELOADED_ONLY',
+        memberOverrides: {
+          'Leaf B': {
+            agentDefinitionId: 'agent-leaf-b',
+            llmModelIdentifier: 'claude-opus',
+          },
+        },
+      },
+      members: new Map([['Leaf A', focusedMember]]),
+    };
+
+    teamDefinitionStoreMock.getAgentTeamDefinitionById.mockImplementation((id: string) => {
+      if (id === 'team-def-nested') {
+        return {
+          id: 'team-def-nested',
+          nodes: [
+            { memberName: 'Nested Group', refType: 'AGENT_TEAM', ref: 'sub-team-1' },
+          ],
+        };
+      }
+      if (id === 'sub-team-1') {
+        return {
+          id: 'sub-team-1',
+          nodes: [
+            { memberName: 'Leaf A', refType: 'AGENT', ref: 'agent-leaf-a' },
+            { memberName: 'Leaf B', refType: 'AGENT', ref: 'agent-leaf-b' },
+          ],
+        };
+      }
+      return null;
+    });
+
+    teamContextsStoreMock.activeTeamContext = teamContext;
+    teamContextsStoreMock.focusedMemberContext = focusedMember;
+    teamContextsStoreMock.getTeamContextById.mockImplementation((teamRunId: string) =>
+      teamRunId === 'team-nested-1' ? { ...teamContext, teamRunId: 'team-nested-1' } : null,
+    );
+
+    mockMutate.mockResolvedValue({
+      data: {
+        createAgentTeamRun: {
+          success: true,
+          teamRunId: 'team-nested-1',
+          message: 'ok',
+        },
+      },
+      errors: [],
+    });
+
+    const store = useAgentTeamRunStore();
+    await store.sendMessageToFocusedMember('launch nested', []);
+
+    expect(mockMutate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        variables: {
+          input: expect.objectContaining({
+            teamDefinitionId: 'team-def-nested',
+            memberConfigs: [
+              expect.objectContaining({
+                memberName: 'Leaf A',
+                memberRouteKey: 'Leaf A',
+                agentDefinitionId: 'agent-leaf-a',
+                runtimeKind: 'claude_agent_sdk',
+                llmModelIdentifier: 'claude-sonnet',
+              }),
+              expect.objectContaining({
+                memberName: 'Leaf B',
+                memberRouteKey: 'Leaf B',
+                agentDefinitionId: 'agent-leaf-b',
+                runtimeKind: 'claude_agent_sdk',
+                llmModelIdentifier: 'claude-opus',
+              }),
+            ],
+          }),
+        },
+      }),
+    );
+    expect(mockSendMessage).toHaveBeenCalledWith('launch nested', 'Leaf A', [], []);
   });
 });

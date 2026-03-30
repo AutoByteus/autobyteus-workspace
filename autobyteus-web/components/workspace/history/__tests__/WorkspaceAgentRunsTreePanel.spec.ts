@@ -12,7 +12,6 @@ const {
   runHistoryState,
   runHistoryStoreMock,
   workspaceStoreMock,
-  activeRuntimeSyncStoreMock,
   selectionStoreMock,
   agentRunStoreMock,
   teamRunStoreMock,
@@ -104,9 +103,6 @@ const {
       },
       fetchAllWorkspaces: vi.fn().mockResolvedValue(undefined),
     },
-    activeRuntimeSyncStoreMock: {
-      refreshQuietly: vi.fn().mockResolvedValue(undefined),
-    },
     selectionStoreMock: {
       selectedType: null as string | null,
       selectedRunId: null as string | null,
@@ -156,10 +152,6 @@ vi.mock('~/stores/runHistoryStore', () => ({
 
 vi.mock('~/stores/workspace', () => ({
   useWorkspaceStore: () => workspaceStoreMock,
-}));
-
-vi.mock('~/stores/activeRuntimeSyncStore', () => ({
-  useActiveRuntimeSyncStore: () => activeRuntimeSyncStoreMock,
 }));
 
 vi.mock('~/stores/agentSelectionStore', () => ({
@@ -227,7 +219,6 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     pickFolderPathMock.mockResolvedValue(null);
     workspaceCenterViewStoreMock.showChat.mockReset();
     workspaceCenterViewStoreMock.showConfig.mockReset();
-    activeRuntimeSyncStoreMock.refreshQuietly.mockResolvedValue(undefined);
     delete (window as any).electronAPI;
   });
 
@@ -266,7 +257,6 @@ describe('WorkspaceAgentRunsTreePanel', () => {
 
     expect(workspaceStoreMock.fetchAllWorkspaces).toHaveBeenCalledTimes(1);
     expect(runHistoryStoreMock.fetchTree).toHaveBeenCalledTimes(1);
-    expect(activeRuntimeSyncStoreMock.refreshQuietly).toHaveBeenCalledTimes(1);
   });
 
   it('refreshes run history quietly on the background interval while mounted', async () => {
@@ -277,11 +267,9 @@ describe('WorkspaceAgentRunsTreePanel', () => {
       await vi.advanceTimersByTimeAsync(0);
 
       expect(runHistoryStoreMock.refreshTreeQuietly).not.toHaveBeenCalled();
-      expect(activeRuntimeSyncStoreMock.refreshQuietly).toHaveBeenCalledTimes(1);
 
       await vi.advanceTimersByTimeAsync(5000);
       expect(runHistoryStoreMock.refreshTreeQuietly).toHaveBeenCalledTimes(1);
-      expect(activeRuntimeSyncStoreMock.refreshQuietly).toHaveBeenCalledTimes(2);
       wrapper.unmount();
     } finally {
       vi.useRealTimers();

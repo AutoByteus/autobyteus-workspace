@@ -9,7 +9,7 @@ import type {
   ChannelIdempotencyDecision,
   ResolvedBinding,
 } from "../../../../src/external-channel/domain/models.js";
-import type { ChannelRuntimeDispatchResult, ChannelRuntimeFacade } from "../../../../src/external-channel/runtime/channel-runtime-facade.js";
+import type { ChannelRunDispatchResult } from "../../../../src/external-channel/runtime/channel-run-dispatch-result.js";
 
 const createBinding = (): ChannelBinding => ({
   id: "binding-1",
@@ -77,7 +77,7 @@ describe("ChannelIngressService", () => {
     const threadLockService = {
       withThreadLock: vi.fn(),
     };
-    const runtimeFacade: ChannelRuntimeFacade = {
+    const runFacade = {
       dispatchToBinding: vi.fn(),
     };
     const messageReceiptService = {
@@ -87,7 +87,7 @@ describe("ChannelIngressService", () => {
       idempotencyService,
       bindingService,
       threadLockService,
-      runtimeFacade,
+      runFacade,
       messageReceiptService,
     });
 
@@ -109,7 +109,7 @@ describe("ChannelIngressService", () => {
     const threadLockService = {
       withThreadLock: vi.fn(),
     };
-    const runtimeFacade: ChannelRuntimeFacade = {
+    const runFacade = {
       dispatchToBinding: vi.fn(),
     };
     const messageReceiptService = {
@@ -119,7 +119,7 @@ describe("ChannelIngressService", () => {
       idempotencyService,
       bindingService,
       threadLockService,
-      runtimeFacade,
+      runFacade,
       messageReceiptService,
     });
 
@@ -133,7 +133,7 @@ describe("ChannelIngressService", () => {
       usedTransportFallback: false,
       dispatch: null,
     });
-    expect(runtimeFacade.dispatchToBinding).not.toHaveBeenCalled();
+    expect(runFacade.dispatchToBinding).not.toHaveBeenCalled();
     expect(messageReceiptService.recordIngressReceipt).not.toHaveBeenCalled();
   });
 
@@ -143,7 +143,7 @@ describe("ChannelIngressService", () => {
       binding,
       usedTransportFallback: false,
     };
-    const dispatchResult: ChannelRuntimeDispatchResult = {
+    const dispatchResult: ChannelRunDispatchResult = {
       agentRunId: "agent-1",
       teamRunId: null,
       dispatchedAt: new Date("2026-02-08T00:00:10.000Z"),
@@ -157,7 +157,7 @@ describe("ChannelIngressService", () => {
     const threadLockService = {
       withThreadLock: vi.fn(async (_key: string, work: () => Promise<unknown>) => work()),
     };
-    const runtimeFacade: ChannelRuntimeFacade = {
+    const runFacade = {
       dispatchToBinding: vi.fn().mockResolvedValue(dispatchResult),
     };
     const messageReceiptService = {
@@ -167,7 +167,7 @@ describe("ChannelIngressService", () => {
       idempotencyService,
       bindingService,
       threadLockService,
-      runtimeFacade,
+      runFacade,
       messageReceiptService,
     });
     const envelope = createEnvelope();
@@ -182,7 +182,7 @@ describe("ChannelIngressService", () => {
       envelope.routingKey,
       expect.any(Function),
     );
-    expect(runtimeFacade.dispatchToBinding).toHaveBeenCalledWith(binding, envelope);
+    expect(runFacade.dispatchToBinding).toHaveBeenCalledWith(binding, envelope);
     expect(messageReceiptService.recordIngressReceipt).toHaveBeenCalledWith({
       provider: ExternalChannelProvider.WHATSAPP,
       transport: ExternalChannelTransport.BUSINESS_API,
@@ -210,12 +210,12 @@ describe("ChannelIngressService", () => {
     const threadLockService = {
       withThreadLock: vi.fn(async (_key: string, work: () => Promise<unknown>) => work()),
     };
-    const runtimeFacade: ChannelRuntimeFacade = {
+    const runFacade = {
       dispatchToBinding: vi.fn().mockResolvedValue({
         agentRunId: null,
         teamRunId: null,
         dispatchedAt: new Date("2026-02-08T00:00:10.000Z"),
-      } satisfies ChannelRuntimeDispatchResult),
+      } satisfies ChannelRunDispatchResult),
     };
     const messageReceiptService = {
       recordIngressReceipt: vi.fn().mockResolvedValue(undefined),
@@ -224,7 +224,7 @@ describe("ChannelIngressService", () => {
       idempotencyService,
       bindingService,
       threadLockService,
-      runtimeFacade,
+      runFacade,
       messageReceiptService,
     });
 
@@ -253,12 +253,12 @@ describe("ChannelIngressService", () => {
     const threadLockService = {
       withThreadLock: vi.fn(async (_key: string, work: () => Promise<unknown>) => work()),
     };
-    const runtimeFacade: ChannelRuntimeFacade = {
+    const runFacade = {
       dispatchToBinding: vi.fn().mockResolvedValue({
         agentRunId: "agent-run-started-on-demand",
         teamRunId: null,
         dispatchedAt: new Date("2026-02-08T00:00:10.000Z"),
-      } satisfies ChannelRuntimeDispatchResult),
+      } satisfies ChannelRunDispatchResult),
     };
     const messageReceiptService = {
       recordIngressReceipt: vi.fn().mockResolvedValue(undefined),
@@ -267,7 +267,7 @@ describe("ChannelIngressService", () => {
       idempotencyService,
       bindingService,
       threadLockService,
-      runtimeFacade,
+      runFacade,
       messageReceiptService,
     });
 

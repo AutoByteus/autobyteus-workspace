@@ -3,39 +3,27 @@ import {
   AgentInputUserMessage,
   ContextFile,
   ContextFileType,
-  AgentTeamEventStream,
-  AgentTeamStreamEvent,
-  AgentEventRebroadcastPayload,
-  AgentTeamStatusUpdateData,
-  SubTeamEventRebroadcastPayload,
-  type TaskPlanEventPayload,
 } from "autobyteus-ts";
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
+import type { TeamRun } from "../../agent-team-execution/domain/team-run.js";
 import {
-  TeamRuntimeRoutingError,
-  getTeamMemberRuntimeOrchestrator,
-  type TeamMemberRuntimeOrchestrator,
-} from "../../agent-team-execution/services/team-member-runtime-orchestrator.js";
+  TeamRunService,
+  getTeamRunService,
+} from "../../agent-team-execution/services/team-run-service.js";
 import {
-  getRuntimeCommandIngressService,
-  type RuntimeCommandIngressService,
-} from "../../runtime-execution/runtime-command-ingress-service.js";
-import type { ApprovalTargetSource } from "../../runtime-execution/runtime-adapter-port.js";
-import {
-  getTeamRuntimeEventBridge,
-  type TeamRuntimeEventBridge,
-} from "./team-runtime-event-bridge.js";
-import {
-  getTeamRuntimeStatusSnapshotService,
-  type TeamRuntimeStatusSnapshotService,
-} from "./team-runtime-status-snapshot-service.js";
-import {
-  TeamStreamBroadcaster,
-  getTeamStreamBroadcaster,
-} from "./team-stream-broadcaster.js";
+  TeamRunEventSourceType,
+  type TeamRunEvent,
+  type TeamRunAgentEventPayload,
+  type TeamRunStatusUpdateData,
+  type TeamRunTaskPlanEventPayload,
+} from "../../agent-team-execution/domain/team-run-event.js";
+import { TeamStreamBroadcaster, getTeamStreamBroadcaster } from "./team-stream-broadcaster.js";
 import { AgentSession } from "./agent-session.js";
 import { AgentSessionManager } from "./agent-session-manager.js";
-import { getAgentStreamHandler } from "./agent-stream-handler.js";
+import {
+  AgentRunEventMessageMapper,
+  getAgentRunEventMessageMapper,
+} from "./agent-run-event-message-mapper.js";
 import {
   ClientMessageType,
   createErrorMessage,
@@ -54,8 +42,6 @@ type ClientMessage = {
   payload?: Record<string, unknown>;
 };
 
-type TeamLike = Record<string, unknown>;
-
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
   warn: (...args: unknown[]) => console.warn(...args),
@@ -69,41 +55,33 @@ class AgentTeamSession extends AgentSession {
 }
 
 export class AgentTeamStreamHandler {
-  private sessionManager: AgentSessionManager;
-  private teamManager: AgentTeamRunManager;
-  private commandIngressService: RuntimeCommandIngressService;
-  private teamMemberRuntimeOrchestrator: TeamMemberRuntimeOrchestrator;
-  private teamMemberRuntimeEventBridge: TeamRuntimeEventBridge;
-  private teamRuntimeStatusSnapshotService: TeamRuntimeStatusSnapshotService;
-  private activeTasks = new Map<string, Promise<void>>();
-  private eventStreams = new Map<string, AgentTeamEventStream>();
-  private memberRuntimeBridgeUnsubscribers = new Map<string, () => Promise<void>>();
-  private sessionMode = new Map<string, "native_team" | "member_runtime">();
-  private broadcaster: TeamStreamBroadcaster;
+  private readonly sessionManager: AgentSessionManager;
+  private readonly teamManager: AgentTeamRunManager;
+  private readonly broadcaster: TeamStreamBroadcaster;
+  private readonly agentRunEventMessageMapper: AgentRunEventMessageMapper;
+  private readonly teamRunService: TeamRunService;
+  private readonly activeTasks = new Map<string, Promise<void>>();
+  private readonly eventUnsubscribers = new Map<string, () => void>();
+  private readonly sessionConnections = new Map<string, WebSocketConnection>();
+  private readonly subscribedRunsBySessionId = new Map<string, TeamRun>();
 
   constructor(
     sessionManager: AgentSessionManager = new AgentSessionManager(AgentTeamSession),
     teamManager: AgentTeamRunManager = AgentTeamRunManager.getInstance(),
-    commandIngressService: RuntimeCommandIngressService = getRuntimeCommandIngressService(),
-    teamMemberRuntimeOrchestrator: TeamMemberRuntimeOrchestrator = getTeamMemberRuntimeOrchestrator(),
-    teamMemberRuntimeEventBridge: TeamRuntimeEventBridge = getTeamRuntimeEventBridge(),
-    teamRuntimeStatusSnapshotService: TeamRuntimeStatusSnapshotService = getTeamRuntimeStatusSnapshotService(),
     broadcaster: TeamStreamBroadcaster = getTeamStreamBroadcaster(),
+    agentRunEventMessageMapper: AgentRunEventMessageMapper = getAgentRunEventMessageMapper(),
+    teamRunService: TeamRunService = getTeamRunService(),
   ) {
     this.sessionManager = sessionManager;
     this.teamManager = teamManager;
-    this.commandIngressService = commandIngressService;
-    this.teamMemberRuntimeOrchestrator = teamMemberRuntimeOrchestrator;
-    this.teamMemberRuntimeEventBridge = teamMemberRuntimeEventBridge;
-    this.teamRuntimeStatusSnapshotService = teamRuntimeStatusSnapshotService;
     this.broadcaster = broadcaster;
+    this.agentRunEventMessageMapper = agentRunEventMessageMapper;
+    this.teamRunService = teamRunService;
   }
 
   async connect(connection: WebSocketConnection, teamRunId: string): Promise<string | null> {
-    const runtimeMode =
-      this.teamMemberRuntimeOrchestrator.getTeamRuntimeMode(teamRunId) ?? "native_team";
-    const team = this.teamManager.getTeamRun(teamRunId) as TeamLike | null;
-    if (!team && runtimeMode !== "member_runtime") {
+    const teamRun = this.teamManager.getTeamRun(teamRunId);
+    if (!teamRun) {
       const errorMsg = createErrorMessage("TEAM_NOT_FOUND", `Team run '${teamRunId}' not found`);
       connection.send(errorMsg.toJson());
       connection.close(4004);
@@ -122,36 +100,20 @@ export class AgentTeamStreamHandler {
       return null;
     }
 
-    if (runtimeMode === "member_runtime") {
-      const unsubscribe = this.teamMemberRuntimeEventBridge.subscribeTeam(
-        teamRunId,
-        (message) => {
-          try {
-            connection.send(message.toJson());
-          } catch (error) {
-            logger.error(`Error sending member-runtime team event to WebSocket: ${String(error)}`);
-          }
-        },
+    this.sessionConnections.set(sessionId, connection);
+    if (!this.bindSessionToTeamRun(sessionId, teamRunId, connection)) {
+      const errorMsg = createErrorMessage(
+        "TEAM_STREAM_UNAVAILABLE",
+        `Team run '${teamRunId}' stream not available`,
       );
-      this.memberRuntimeBridgeUnsubscribers.set(sessionId, unsubscribe);
-      this.sessionMode.set(sessionId, "member_runtime");
-    } else {
-      const eventStream = this.teamManager.getTeamEventStream(teamRunId);
-      if (!eventStream) {
-        const errorMsg = createErrorMessage(
-          "TEAM_STREAM_UNAVAILABLE",
-          `Team run '${teamRunId}' stream not available`,
-        );
-        connection.send(errorMsg.toJson());
-        connection.close(1011);
-        return null;
-      }
-      this.eventStreams.set(sessionId, eventStream);
-      this.sessionMode.set(sessionId, "native_team");
-
-      const task = this.streamLoop(connection, teamRunId, sessionId);
-      this.activeTasks.set(sessionId, task);
+      connection.send(errorMsg.toJson());
+      connection.close(1011);
+      this.sessionConnections.delete(sessionId);
+      this.sessionManager.closeSession(sessionId);
+      return null;
     }
+    const task = Promise.resolve();
+    this.activeTasks.set(sessionId, task);
 
     const connectedMsg = new ServerMessage(ServerMessageType.CONNECTED, {
       team_id: teamRunId,
@@ -159,7 +121,7 @@ export class AgentTeamStreamHandler {
     });
     this.broadcaster.registerConnection(sessionId, teamRunId, connection);
     connection.send(connectedMsg.toJson());
-    this.sendInitialStatusSnapshot(connection, teamRunId, runtimeMode, team);
+    this.sendInitialStatusSnapshot(connection, teamRun);
 
     logger.info(`Agent Team WebSocket connected: session=${sessionId}, run=${teamRunId}`);
     return sessionId;
@@ -177,16 +139,19 @@ export class AgentTeamStreamHandler {
       const msgType = data.type;
       const payload = data.payload ?? {};
       const teamRunId = session.runId;
-      const teamRuntimeMode = this.sessionMode.get(sessionId) ?? "native_team";
+      if (!this.ensureSessionSubscription(sessionId, teamRunId)) {
+        logger.warn(`Team websocket session '${sessionId}' lost its team subscription for run '${teamRunId}'.`);
+        return;
+      }
 
       if (msgType === ClientMessageType.SEND_MESSAGE) {
-        await this.handleSendMessage(teamRunId, payload, teamRuntimeMode);
+        await this.handleSendMessage(teamRunId, payload);
       } else if (msgType === ClientMessageType.STOP_GENERATION) {
-        await this.handleStopGeneration(teamRunId, teamRuntimeMode);
+        await this.handleStopGeneration(teamRunId);
       } else if (msgType === ClientMessageType.APPROVE_TOOL) {
-        await this.handleToolApproval(teamRunId, payload, true, teamRuntimeMode);
+        await this.handleToolApproval(teamRunId, payload, true);
       } else if (msgType === ClientMessageType.DENY_TOOL) {
-        await this.handleToolApproval(teamRunId, payload, false, teamRuntimeMode);
+        await this.handleToolApproval(teamRunId, payload, false);
       } else {
         logger.warn(`Unknown message type: ${String(msgType)}`);
       }
@@ -199,18 +164,13 @@ export class AgentTeamStreamHandler {
     this.broadcaster.unregisterConnection(sessionId);
     const task = this.activeTasks.get(sessionId);
     this.activeTasks.delete(sessionId);
-    this.sessionMode.delete(sessionId);
+    this.sessionConnections.delete(sessionId);
+    this.subscribedRunsBySessionId.delete(sessionId);
 
-    const stream = this.eventStreams.get(sessionId);
-    this.eventStreams.delete(sessionId);
-    if (stream) {
-      await stream.close();
-    }
-
-    const memberRuntimeUnsubscribe = this.memberRuntimeBridgeUnsubscribers.get(sessionId);
-    this.memberRuntimeBridgeUnsubscribers.delete(sessionId);
-    if (memberRuntimeUnsubscribe) {
-      await memberRuntimeUnsubscribe();
+    const unsubscribe = this.eventUnsubscribers.get(sessionId);
+    this.eventUnsubscribers.delete(sessionId);
+    if (unsubscribe) {
+      unsubscribe();
     }
 
     this.sessionManager.closeSession(sessionId);
@@ -226,54 +186,71 @@ export class AgentTeamStreamHandler {
     logger.info(`Agent Team WebSocket disconnected: ${sessionId}`);
   }
 
-  private async streamLoop(connection: WebSocketConnection, teamRunId: string, sessionId: string): Promise<void> {
-    void teamRunId;
-    try {
-      const eventStream = this.eventStreams.get(sessionId);
-      if (!eventStream) {
-        logger.error(`No event stream for team session ${sessionId}`);
-        return;
-      }
-
-      for await (const event of eventStream.allEvents()) {
-        try {
-          const wsMessage = this.convertTeamEvent(event);
-          connection.send(wsMessage.toJson());
-        } catch (error) {
-          logger.error(`Error sending team event to WebSocket: ${String(error)}`);
-        }
-      }
-    } catch (error) {
-      logger.error(`Error in team stream loop for ${sessionId}: ${String(error)}`);
-    } finally {
-      const stream = this.eventStreams.get(sessionId);
-      if (stream) {
-        await stream.close();
-        this.eventStreams.delete(sessionId);
-      }
-    }
-  }
-
   private sendInitialStatusSnapshot(
     connection: WebSocketConnection,
-    teamRunId: string,
-    runtimeMode: "native_team" | "member_runtime",
-    team: TeamLike | null,
+    teamRun: TeamRun,
   ): void {
-    const initialMessages = this.teamRuntimeStatusSnapshotService.getInitialMessages({
-      teamRunId,
-      runtimeMode,
-      team,
-    });
-    for (const message of initialMessages) {
-      connection.send(message.toJson());
+    const currentStatus = teamRun.getStatus();
+    if (typeof currentStatus !== "string" || currentStatus.trim().length === 0) {
+      return;
     }
+
+    connection.send(
+      new ServerMessage(ServerMessageType.TEAM_STATUS, {
+        new_status: currentStatus.trim().toUpperCase(),
+      }).toJson(),
+    );
+  }
+
+  private ensureSessionSubscription(sessionId: string, teamRunId: string): boolean {
+    const connection = this.sessionConnections.get(sessionId);
+    if (!connection) {
+      return false;
+    }
+    return this.bindSessionToTeamRun(sessionId, teamRunId, connection);
+  }
+
+  private bindSessionToTeamRun(
+    sessionId: string,
+    teamRunId: string,
+    connection: WebSocketConnection,
+  ): boolean {
+    const teamRun = this.teamManager.getTeamRun(teamRunId);
+    if (!teamRun) {
+      return false;
+    }
+
+    const subscribedRun = this.subscribedRunsBySessionId.get(sessionId);
+    if (subscribedRun === teamRun) {
+      return true;
+    }
+
+    const existingUnsubscribe = this.eventUnsubscribers.get(sessionId);
+    existingUnsubscribe?.();
+    this.eventUnsubscribers.delete(sessionId);
+
+    const unsubscribe = this.teamManager.subscribeToEvents(teamRunId, (event) => {
+      try {
+        connection.send(this.convertTeamEvent(event).toJson());
+      } catch (error) {
+        logger.error(`Error sending team event to WebSocket: ${String(error)}`);
+      }
+      void this.teamRunService.refreshRunMetadata(teamRun).catch((error) => {
+        logger.error(`Failed to refresh team run metadata for '${teamRunId}': ${String(error)}`);
+      });
+    });
+    if (!unsubscribe) {
+      return false;
+    }
+
+    this.eventUnsubscribers.set(sessionId, unsubscribe);
+    this.subscribedRunsBySessionId.set(sessionId, teamRun);
+    return true;
   }
 
   private async handleSendMessage(
     teamRunId: string,
     payload: Record<string, unknown>,
-    mode: "native_team" | "member_runtime",
   ): Promise<void> {
     const content = typeof payload.content === "string" ? payload.content : "";
     const targetMemberName =
@@ -303,60 +280,34 @@ export class AgentTeamStreamHandler {
       context_files: contextPayload.length > 0 ? contextPayload : null,
     });
 
-    if (mode === "member_runtime") {
-      try {
-        await this.teamMemberRuntimeOrchestrator.sendToMember(teamRunId, targetMemberName, userMessage);
-      } catch (error) {
-        if (error instanceof TeamRuntimeRoutingError) {
-          logger.warn(
-            `SEND_MESSAGE rejected for member-runtime team run ${teamRunId}: [${error.code}] ${error.message}`,
-          );
-          return;
-        }
-        throw error;
-      }
+    const activeRun = this.resolveCommandRun(teamRunId);
+    if (!activeRun) {
+      logger.warn(`SEND_MESSAGE rejected for team run ${teamRunId}: active run not found.`);
       return;
     }
 
-    const result = await this.commandIngressService.sendTurn({
-      runId: teamRunId,
-      mode: "team",
-      message: userMessage,
-      targetMemberName,
-    });
+    const result = await activeRun.postMessage(userMessage, targetMemberName);
     if (!result.accepted) {
       logger.warn(
         `SEND_MESSAGE rejected for team run ${teamRunId}: [${result.code ?? "UNKNOWN"}] ${result.message ?? "no message"}`,
       );
+      return;
     }
+    await this.teamRunService.recordRunActivity(activeRun, {
+      summary: content,
+      lastKnownStatus: "ACTIVE",
+      lastActivityAt: new Date().toISOString(),
+    });
   }
 
-  private async handleStopGeneration(
-    teamRunId: string,
-    mode: "native_team" | "member_runtime",
-  ): Promise<void> {
-    if (mode === "member_runtime") {
-      const bindings = this.teamMemberRuntimeOrchestrator.getTeamBindings(teamRunId);
-      for (const binding of bindings) {
-        const result = await this.commandIngressService.interruptRun({
-          runId: binding.memberRunId,
-          mode: "agent",
-          turnId: null,
-        });
-        if (!result.accepted) {
-          logger.warn(
-            `STOP_GENERATION rejected for member-runtime run ${binding.memberRunId}: [${result.code ?? "UNKNOWN"}] ${result.message ?? "no message"}`,
-          );
-        }
-      }
+  private async handleStopGeneration(teamRunId: string): Promise<void> {
+    const activeRun = this.resolveCommandRun(teamRunId);
+    if (!activeRun) {
+      logger.warn(`STOP_GENERATION rejected for team run ${teamRunId}: active run not found.`);
       return;
     }
 
-    const result = await this.commandIngressService.interruptRun({
-      runId: teamRunId,
-      mode: "team",
-      turnId: null,
-    });
+    const result = await activeRun.interrupt();
     if (!result.accepted) {
       logger.warn(
         `STOP_GENERATION rejected for team run ${teamRunId}: [${result.code ?? "UNKNOWN"}] ${result.message ?? "no message"}`,
@@ -368,7 +319,6 @@ export class AgentTeamStreamHandler {
     teamRunId: string,
     payload: Record<string, unknown>,
     approved: boolean,
-    mode: "native_team" | "member_runtime",
   ): Promise<void> {
     const invocationId = payload.invocation_id;
     if (typeof invocationId !== "string" || invocationId.length === 0) {
@@ -376,54 +326,35 @@ export class AgentTeamStreamHandler {
       return;
     }
 
-    const approvalTargetCandidate =
+    const explicitApprovalTarget =
       (typeof payload.agent_name === "string" && payload.agent_name) ||
       (typeof payload.target_member_name === "string" && payload.target_member_name) ||
-      (typeof payload.agent_id === "string" && payload.agent_id) ||
       null;
-    let approvalTargetSource: ApprovalTargetSource | null = null;
-    if (typeof payload.agent_name === "string" && payload.agent_name) {
-      approvalTargetSource = "agent_name";
-    } else if (
-      typeof payload.target_member_name === "string" &&
-      payload.target_member_name
-    ) {
-      approvalTargetSource = "target_member_name";
-    } else if (typeof payload.agent_id === "string" && payload.agent_id) {
-      approvalTargetSource = "agent_id";
-    }
-
+    const approvalTargetRunId =
+      typeof payload.agent_id === "string" && payload.agent_id ? payload.agent_id : null;
     const reason = typeof payload.reason === "string" ? payload.reason : null;
-    if (mode === "member_runtime") {
-      try {
-        await this.teamMemberRuntimeOrchestrator.approveForMember(
-          teamRunId,
-          approvalTargetCandidate,
-          invocationId,
-          approved,
-          reason,
-        );
-      } catch (error) {
-        if (error instanceof TeamRuntimeRoutingError) {
-          logger.warn(
-            `TOOL_APPROVAL rejected for member-runtime team run ${teamRunId}: [${error.code}] ${error.message}`,
-          );
-          return;
-        }
-        throw error;
-      }
+    const approvalTarget =
+      explicitApprovalTarget ??
+      this.resolveApprovalTargetName(teamRunId, approvalTargetRunId) ??
+      approvalTargetRunId;
+
+    if (typeof approvalTarget !== "string" || approvalTarget.trim().length === 0) {
+      logger.warn(`TOOL_APPROVAL rejected for team run ${teamRunId}: approval target missing.`);
       return;
     }
 
-    const result = await this.commandIngressService.approveTool({
-      runId: teamRunId,
-      mode: "team",
+    const activeRun = this.resolveCommandRun(teamRunId);
+    if (!activeRun) {
+      logger.warn(`TOOL_APPROVAL rejected for team run ${teamRunId}: active run not found.`);
+      return;
+    }
+
+    const result = await activeRun.approveToolInvocation(
+      approvalTarget,
       invocationId,
       approved,
       reason,
-      approvalTarget: approvalTargetCandidate,
-      approvalTargetSource,
-    });
+    );
     if (!result.accepted) {
       logger.warn(
         `TOOL_APPROVAL rejected for team run ${teamRunId}: [${result.code ?? "UNKNOWN"}] ${result.message ?? "no message"}`,
@@ -431,27 +362,66 @@ export class AgentTeamStreamHandler {
     }
   }
 
-  convertTeamEvent(event: AgentTeamStreamEvent): ServerMessage {
-    const sourceType = event.event_source_type;
+  private resolveApprovalTargetName(
+    teamRunId: string,
+    memberRunId: string | null,
+  ): string | null {
+    if (typeof memberRunId !== "string" || memberRunId.trim().length === 0) {
+      return null;
+    }
+    const team = this.teamManager.getTeam?.(teamRunId) as
+      | {
+          context?: {
+            agents?: Array<{
+              agentId?: string | null;
+              context?: {
+                config?: {
+                  name?: string | null;
+                } | null;
+              } | null;
+            }>;
+          } | null;
+        }
+      | null;
+    const agents = team?.context?.agents;
+    if (!Array.isArray(agents)) {
+      return null;
+    }
 
-    if (sourceType === "AGENT" && event.data instanceof AgentEventRebroadcastPayload) {
-      const agentEvent = event.data.agent_event;
-      const message = getAgentStreamHandler().convertStreamEvent(agentEvent);
+    const member = agents.find((candidate) => candidate?.agentId === memberRunId);
+    const name = member?.context?.config?.name;
+    return typeof name === "string" && name.trim().length > 0 ? name.trim() : null;
+  }
+
+  private resolveCommandRun(
+    teamRunId: string,
+  ): import("../../agent-team-execution/domain/team-run.js").TeamRun | null {
+    return this.teamManager.getActiveRun?.(teamRunId) ?? this.teamManager.getTeamRun?.(teamRunId) ?? null;
+  }
+
+  convertTeamEvent(event: TeamRunEvent): ServerMessage {
+    if (event.eventSourceType === TeamRunEventSourceType.AGENT) {
+      const payload = event.data as TeamRunAgentEventPayload;
+      const message = this.agentRunEventMessageMapper.map(payload.agentEvent);
       const basePayload =
         message.payload && typeof message.payload === "object" ? message.payload : {};
       return new ServerMessage(message.type, {
         ...basePayload,
-        agent_name: event.data.agent_name,
-        ...(agentEvent.agent_id ? { agent_id: agentEvent.agent_id } : {}),
+        agent_name: payload.memberName,
+        agent_id: payload.memberRunId,
+        ...(event.subTeamNodeName ? { sub_team_node_name: event.subTeamNodeName } : {}),
       });
     }
 
-    if (sourceType === "TEAM" && event.data instanceof AgentTeamStatusUpdateData) {
-      return new ServerMessage(ServerMessageType.TEAM_STATUS, serializePayload(event.data));
+    if (event.eventSourceType === TeamRunEventSourceType.TEAM) {
+      return new ServerMessage(
+        ServerMessageType.TEAM_STATUS,
+        serializePayload(event.data as TeamRunStatusUpdateData),
+      );
     }
 
-    if (sourceType === "TASK_PLAN") {
-      const payload = serializePayload(event.data as TaskPlanEventPayload);
+    if (event.eventSourceType === TeamRunEventSourceType.TASK_PLAN) {
+      const payload = serializePayload(event.data as TeamRunTaskPlanEventPayload);
       let eventType = "TASK_PLAN_EVENT";
       if (Array.isArray(payload.tasks)) {
         eventType = "TASKS_CREATED";
@@ -461,23 +431,11 @@ export class AgentTeamStreamHandler {
       return new ServerMessage(ServerMessageType.TASK_PLAN_EVENT, {
         event_type: eventType,
         ...payload,
+        ...(event.subTeamNodeName ? { sub_team_node_name: event.subTeamNodeName } : {}),
       });
     }
 
-    if (sourceType === "SUB_TEAM" && event.data instanceof SubTeamEventRebroadcastPayload) {
-      const subTeamEvent = event.data.sub_team_event;
-      if (subTeamEvent instanceof AgentTeamStreamEvent) {
-        const message = this.convertTeamEvent(subTeamEvent);
-        const basePayload =
-          message.payload && typeof message.payload === "object" ? message.payload : {};
-        return new ServerMessage(message.type, {
-          ...basePayload,
-          sub_team_node_name: event.data.sub_team_node_name,
-        });
-      }
-    }
-
-    return createErrorMessage("UNKNOWN_TEAM_EVENT", `Unmapped team event source: ${String(sourceType)}`);
+    return createErrorMessage("UNKNOWN_TEAM_EVENT", "Unmapped team event");
   }
 
   static parseMessage(raw: string): ClientMessage {
@@ -503,7 +461,6 @@ export const getAgentTeamStreamHandler = (): AgentTeamStreamHandler => {
     cachedAgentTeamStreamHandler = new AgentTeamStreamHandler(
       new AgentSessionManager(AgentTeamSession),
       AgentTeamRunManager.getInstance(),
-      getRuntimeCommandIngressService(),
     );
   }
   return cachedAgentTeamStreamHandler;

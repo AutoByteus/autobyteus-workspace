@@ -71,11 +71,37 @@ class FakeAgentManager {
         this.agent = agent;
         this.stream = stream;
     }
-    getAgentRun(agentId) {
-        return agentId === this.agent.agentId ? this.agent : null;
-    }
-    getAgentEventStream(agentId) {
-        return agentId === this.agent.agentId ? this.stream : null;
+    getActiveRun(agentId) {
+        if (agentId !== this.agent.agentId) {
+            return null;
+        }
+        return {
+            runId: this.agent.agentId,
+            runtimeKind: "autobyteus",
+            getStatus: () => "ACTIVE",
+            isActive: () => true,
+            subscribeToEvents: (listener) => {
+                void (async () => {
+                    for await (const event of this.stream.allEvents()) {
+                        listener(event);
+                    }
+                })();
+                return () => {
+                    void this.stream.close();
+                };
+            },
+            postUserMessage: async (message) => {
+                await this.agent.postUserMessage(message);
+                return { accepted: true, runtimeReference: null };
+            },
+            approveToolInvocation: async (invocationId, approved, reason) => {
+                await this.agent.postToolExecutionApproval(invocationId, approved, reason ?? null);
+                return { accepted: true };
+            },
+            interrupt: async () => {
+                return { accepted: true };
+            },
+        };
     }
 }
 const waitForMessage = (socket, timeoutMs = 2000) => new Promise((resolve, reject) => {

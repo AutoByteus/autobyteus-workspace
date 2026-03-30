@@ -107,6 +107,15 @@ describe("SkillService", () => {
     expect(service.getSkill("nonexistent")).toBeNull();
   });
 
+  it("returns resolved skills by configured names and skips unknown entries", () => {
+    service.createSkill("configured_skill", "Configured skill", "Configured content");
+
+    const resolved = service.getSkills(["configured_skill", "", "missing"]);
+
+    expect(resolved).toHaveLength(1);
+    expect(resolved[0]?.name).toBe("configured_skill");
+  });
+
   it("discovers bundled agent-local skills from definition source roots without adding a skill source", () => {
     const definitionRoot = path.join(tempRoot, "definition-package");
     const bundledDir = path.join(definitionRoot, "agents", "requirements-engineer");

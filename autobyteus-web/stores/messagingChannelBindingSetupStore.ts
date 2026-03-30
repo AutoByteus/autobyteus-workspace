@@ -497,6 +497,7 @@ export const useMessagingChannelBindingSetupStore = defineStore(
                       llmModelIdentifier: draft.teamLaunchPreset.llmModelIdentifier,
                       runtimeKind: draft.teamLaunchPreset.runtimeKind,
                       autoExecuteTools: draft.teamLaunchPreset.autoExecuteTools,
+                      skillAccessMode: draft.teamLaunchPreset.skillAccessMode,
                       llmConfig: draft.teamLaunchPreset.llmConfig,
                     }
                   : null,

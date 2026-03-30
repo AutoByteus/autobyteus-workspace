@@ -3,14 +3,19 @@ import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import TeamRunConfigForm from '../TeamRunConfigForm.vue';
 import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig';
-import { useRuntimeCapabilitiesStore } from '~/stores/runtimeCapabilitiesStore';
+import { useRuntimeAvailabilityStore } from '~/stores/runtimeAvailabilityStore';
+import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
 
 vi.mock('~/stores/llmProviderConfig', () => ({
   useLLMProviderConfigStore: vi.fn(),
 }));
 
-vi.mock('~/stores/runtimeCapabilitiesStore', () => ({
-  useRuntimeCapabilitiesStore: vi.fn(),
+vi.mock('~/stores/runtimeAvailabilityStore', () => ({
+  useRuntimeAvailabilityStore: vi.fn(),
+}));
+
+vi.mock('~/stores/agentTeamDefinitionStore', () => ({
+  useAgentTeamDefinitionStore: vi.fn(),
 }));
 
 const mockTeamDef = {
@@ -21,6 +26,15 @@ const mockTeamDef = {
     { memberName: 'Member B', refType: 'AGENT', ref: 'agent-b' },
   ],
   coordinatorMemberName: 'Member A',
+};
+
+const nestedTeamDef = {
+  id: 'team-nested',
+  name: 'Nested Team',
+  nodes: [
+    { memberName: 'Parent Team', refType: 'AGENT_TEAM', ref: 'sub-team-1' },
+  ],
+  coordinatorMemberName: 'Parent Team',
 };
 
 const mockConfig = {
@@ -35,6 +49,7 @@ const mockConfig = {
 describe('TeamRunConfigForm', () => {
   let llmStore: any;
   let runtimeStore: any;
+  let teamDefinitionStore: any;
 
   beforeEach(() => {
     setActivePinia(createPinia());
@@ -50,32 +65,53 @@ describe('TeamRunConfigForm', () => {
 
     runtimeStore = {
       hasFetched: true,
-      capabilities: [
+      availabilities: [
         { runtimeKind: 'autobyteus', enabled: true, reason: null },
         { runtimeKind: 'codex_app_server', enabled: true, reason: null },
       ],
-      fetchRuntimeCapabilities: vi.fn().mockResolvedValue([]),
-      capabilityByKind: vi.fn((runtimeKind: string) =>
-        runtimeStore.capabilities.find((capability: any) => capability.runtimeKind === runtimeKind) ?? null,
+      fetchRuntimeAvailabilities: vi.fn().mockResolvedValue([]),
+      availabilityByKind: vi.fn((runtimeKind: string) =>
+        runtimeStore.availabilities.find((availability: any) => availability.runtimeKind === runtimeKind) ?? null,
       ),
       isRuntimeEnabled: vi.fn((runtimeKind: string) =>
-        runtimeStore.capabilityByKind(runtimeKind)?.enabled ?? runtimeKind === 'autobyteus',
+        runtimeStore.availabilityByKind(runtimeKind)?.enabled ?? runtimeKind === 'autobyteus',
       ),
       runtimeReason: vi.fn((runtimeKind: string) =>
-        runtimeStore.capabilityByKind(runtimeKind)?.reason ?? null,
+        runtimeStore.availabilityByKind(runtimeKind)?.reason ?? null,
       ),
     };
 
+    teamDefinitionStore = {
+      getAgentTeamDefinitionById: vi.fn((id: string) => {
+        if (id === 'sub-team-1') {
+          return {
+            id: 'sub-team-1',
+            name: 'Sub Team',
+            coordinatorMemberName: 'Leaf A',
+            nodes: [
+              { memberName: 'Leaf A', refType: 'AGENT', ref: 'agent-leaf-a' },
+              { memberName: 'Leaf B', refType: 'AGENT', ref: 'agent-leaf-b' },
+            ],
+          };
+        }
+        return null;
+      }),
+    };
+
     (useLLMProviderConfigStore as any).mockReturnValue(llmStore);
-    (useRuntimeCapabilitiesStore as any).mockReturnValue(runtimeStore);
+    (useRuntimeAvailabilityStore as any).mockReturnValue(runtimeStore);
+    (useAgentTeamDefinitionStore as any).mockReturnValue(teamDefinitionStore);
   });
 
-  const buildWrapper = (configOverrides: Record<string, unknown> = {}) => {
+  const buildWrapper = (
+    configOverrides: Record<string, unknown> = {},
+    teamDefinition = mockTeamDef,
+  ) => {
     const config = { ...mockConfig, ...configOverrides };
     const wrapper = mount(TeamRunConfigForm, {
       props: {
         config,
-        teamDefinition: mockTeamDef as any,
+        teamDefinition: teamDefinition as any,
         workspaceLoadingState: { isLoading: false, error: null, loadedPath: null },
       },
       global: {
@@ -166,5 +202,15 @@ describe('TeamRunConfigForm', () => {
     const { wrapper, config } = buildWrapper();
     await wrapper.find('button#team-auto-execute').trigger('click');
     expect(config.autoExecuteTools).toBe(true);
+  });
+
+  it('renders override entries for nested leaf agents only', () => {
+    const { wrapper } = buildWrapper({}, nestedTeamDef);
+    const items = wrapper.findAllComponents({ name: 'MemberOverrideItem' });
+
+    expect(items).toHaveLength(2);
+    expect(items[0].props('memberName')).toBe('Leaf A');
+    expect(items[1].props('memberName')).toBe('Leaf B');
+    expect(wrapper.text()).toContain('Team Members Override (2)');
   });
 });

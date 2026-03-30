@@ -8,7 +8,7 @@ type FileExplorerLike = {
 type WorkspaceLike = {
   workspaceId: string;
   getName?: () => string;
-  config?: { toDict?: () => Record<string, unknown> };
+  config?: Record<string, unknown>;
   getBasePath?: () => string;
   getFileExplorer?: () => Promise<FileExplorerLike>;
 };
@@ -40,7 +40,7 @@ export class WorkspaceConverter {
       return {
         workspaceId: workspace.workspaceId,
         name: workspace.getName ? workspace.getName() : workspace.workspaceId,
-        config: workspace.config?.toDict ? workspace.config.toDict() : {},
+        config: workspace.config ?? {},
         fileExplorer: ensureJsonString(fileExplorerJson),
         absolutePath: workspace.getBasePath ? workspace.getBasePath() : null,
         isTemp: workspace.workspaceId === TempWorkspace.TEMP_WORKSPACE_ID,

@@ -1,9 +1,9 @@
 import { Arg, Field, Float, Int, ObjectType, Query, Resolver } from "type-graphql";
 import { GraphQLJSON } from "graphql-scalars";
 import { appConfigProvider } from "../../../config/app-config-provider.js";
-import { MemoryFileStore } from "../../../agent-memory-view/store/memory-file-store.js";
-import { AgentMemoryViewService } from "../../../agent-memory-view/services/agent-memory-view-service.js";
-import { TeamMemberMemoryLayoutStore } from "../../../run-history/store/team-member-memory-layout-store.js";
+import { MemoryFileStore } from "../../../agent-memory/store/memory-file-store.js";
+import { AgentMemoryService } from "../../../agent-memory/services/agent-memory-service.js";
+import { TeamMemberMemoryLayout } from "../../../agent-memory/store/team-member-memory-layout.js";
 import { MemoryViewConverter } from "../converters/memory-view-converter.js";
 
 @ObjectType()
@@ -125,7 +125,7 @@ export class MemoryViewResolver {
   ): Promise<AgentMemoryView> {
     const baseDir = appConfigProvider.config.getMemoryDir();
     const store = new MemoryFileStore(baseDir);
-    const service = new AgentMemoryViewService(store);
+    const service = new AgentMemoryService(store);
     const view = service.getRunMemoryView(runId, {
       includeWorkingContext,
       includeEpisodic,
@@ -154,10 +154,10 @@ export class MemoryViewResolver {
     @Arg("conversationLimit", () => Int, { nullable: true }) conversationLimit?: number | null,
   ): Promise<AgentMemoryView> {
     const baseDir = appConfigProvider.config.getMemoryDir();
-    const layoutStore = new TeamMemberMemoryLayoutStore(baseDir);
-    const teamDir = layoutStore.getTeamDirPath(teamRunId);
+    const layout = new TeamMemberMemoryLayout(baseDir);
+    const teamDir = layout.getTeamDirPath(teamRunId);
     const store = new MemoryFileStore(teamDir, { runRootSubdir: "" });
-    const service = new AgentMemoryViewService(store);
+    const service = new AgentMemoryService(store);
     const view = service.getRunMemoryView(memberRunId, {
       includeWorkingContext,
       includeEpisodic,

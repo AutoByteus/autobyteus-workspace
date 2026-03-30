@@ -2,12 +2,11 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { WorkspaceConfig } from "autobyteus-ts";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { FileSystemWorkspace } from "../../../src/workspaces/filesystem-workspace.js";
 import { TempWorkspace } from "../../../src/workspaces/temp-workspace.js";
 import { WorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
-import { buildFilesystemWorkspaceId } from "../../../src/workspaces/workspace-identity.js";
+import { buildFilesystemWorkspaceId } from "../../../src/workspaces/workspace-id-mapping-store.js";
 
 vi.mock("../../../src/file-explorer/file-name-indexer.js", () => ({
   FileNameIndexer: class {
@@ -24,8 +23,11 @@ const resetWorkspaceManager = () => {
 
 describe("WorkspaceManager", () => {
   let manager: WorkspaceManager;
+  let appDataDir: string;
 
   beforeEach(() => {
+    appDataDir = createTempRoot();
+    vi.spyOn(appConfigProvider.config, "getAppDataDir").mockReturnValue(appDataDir);
     resetWorkspaceManager();
     manager = WorkspaceManager.getInstance();
   });
@@ -41,7 +43,7 @@ describe("WorkspaceManager", () => {
 
   it("creates and registers a workspace", async () => {
     const rootPath = createTempRoot();
-    const config = new WorkspaceConfig({ rootPath: rootPath });
+    const config = { rootPath };
 
     const workspace = await manager.createWorkspace(config);
 
@@ -52,7 +54,7 @@ describe("WorkspaceManager", () => {
 
   it("reuses an existing workspace with the same config", async () => {
     const rootPath = createTempRoot();
-    const config = new WorkspaceConfig({ rootPath: rootPath });
+    const config = { rootPath };
 
     const first = await manager.createWorkspace(config);
     const second = await manager.createWorkspace(config);
@@ -63,9 +65,9 @@ describe("WorkspaceManager", () => {
 
   it("reuses an existing workspace when equivalent root paths normalize to the same workspace ID", async () => {
     const rootPath = createTempRoot();
-    const first = await manager.createWorkspace(new WorkspaceConfig({ rootPath }));
+    const first = await manager.createWorkspace({ rootPath });
     const second = await manager.createWorkspace(
-      new WorkspaceConfig({ rootPath: `${rootPath}/.` }),
+      { rootPath: `${rootPath}/.` },
     );
 
     expect(second).toBe(first);
@@ -80,8 +82,8 @@ describe("WorkspaceManager", () => {
     const rootA = createTempRoot();
     const rootB = createTempRoot();
 
-    const first = await manager.createWorkspace(new WorkspaceConfig({ rootPath: rootA }));
-    const second = await manager.createWorkspace(new WorkspaceConfig({ rootPath: rootB }));
+    const first = await manager.createWorkspace({ rootPath: rootA });
+    const second = await manager.createWorkspace({ rootPath: rootB });
 
     const all = manager.getAllWorkspaces();
     expect(all).toHaveLength(2);
@@ -125,7 +127,7 @@ describe("WorkspaceManager", () => {
 
   it("recreates an ordinary filesystem workspace from its deterministic ID after restart", async () => {
     const rootPath = createTempRoot();
-    const initial = await manager.createWorkspace(new WorkspaceConfig({ rootPath }));
+    const initial = await manager.createWorkspace({ rootPath });
     const workspaceId = initial.workspaceId;
 
     await initial.close();

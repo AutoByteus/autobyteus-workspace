@@ -20,6 +20,7 @@ describe('TeamRunConfig', () => {
         expect(config.workspaceId).toBeNull();
         expect(config.llmModelIdentifier).toBe('');
         expect(config.autoExecuteTools).toBe(false);
+        expect(config.skillAccessMode).toBe('PRELOADED_ONLY');
         expect(config.memberOverrides).toEqual({});
         expect(config.isLocked).toBe(false);
     });

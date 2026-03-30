@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import type { AgentConfig } from "autobyteus-ts/agent/context/agent-config.js";
+import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
 import {
@@ -124,11 +125,11 @@ describe("AgentRunManager fresh definition runtime integration", () => {
       capturedConfig = config;
     });
 
-    await manager.createAgentRun({
+    await manager.createAgentRun(new AgentRunConfig({
       agentDefinitionId: created.id as string,
       llmModelIdentifier: "dummy-model",
       autoExecuteTools: false,
-    });
+    }));
 
     expect(capturedConfig?.systemPrompt).toBe(updatedInstructions);
   });
@@ -174,11 +175,11 @@ describe("AgentRunManager fresh definition runtime integration", () => {
       capturedConfig = config;
     });
 
-    await manager.createAgentRun({
+    await manager.createAgentRun(new AgentRunConfig({
       agentDefinitionId: created.id as string,
       llmModelIdentifier: "dummy-model",
       autoExecuteTools: false,
-    });
+    }));
 
     expect(capturedConfig?.systemPrompt).toBe(description);
   });

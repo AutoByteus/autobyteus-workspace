@@ -1,5 +1,5 @@
-import { WorkspaceConfig } from 'autobyteus-ts';
 import { FileSystemWorkspace } from './filesystem-workspace.js';
+import type { WorkspaceInput } from './workspace-input.js';
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -8,7 +8,7 @@ const logger = {
 export class SkillWorkspace extends FileSystemWorkspace {
   readonly skillName: string;
 
-  private constructor(skillName: string, config: WorkspaceConfig) {
+  private constructor(skillName: string, config: WorkspaceInput) {
     super(config);
     this.skillName = skillName;
   }
@@ -27,10 +27,10 @@ export class SkillWorkspace extends FileSystemWorkspace {
       }
 
       const workspaceId = `skill_ws_${skillName}`;
-      const config = new WorkspaceConfig({
+      const config = {
         rootPath: skill.rootPath,
         workspaceId,
-      });
+      };
 
       const workspace = new SkillWorkspace(skillName, config);
       logger.info(`Initialized SkillWorkspace for skill '${skillName}' at ${skill.rootPath}`);

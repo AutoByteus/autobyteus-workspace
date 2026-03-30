@@ -361,7 +361,7 @@
         <div v-if="showSkillAccessControl">
           <label class="block text-xs font-medium text-gray-600 mb-1">Skill Access</label>
           <select
-            :value="draft.launchPreset.skillAccessMode || 'PRELOADED_ONLY'"
+            :value="selectedLaunchPreset.skillAccessMode"
             class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
             data-testid="binding-skill-access-select"
             @change="updateSkillAccessMode(($event.target as HTMLSelectElement).value)"

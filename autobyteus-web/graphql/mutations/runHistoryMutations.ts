@@ -1,28 +1,17 @@
 import { gql } from 'graphql-tag';
 
-export const ContinueRun = gql`
-  mutation ContinueRun($input: ContinueRunInput!) {
-    continueRun(input: $input) {
-      success
-      message
-      runId
-      ignoredConfigFields
-    }
-  }
-`;
-
-export const DeleteRunHistory = gql`
-  mutation DeleteRunHistory($runId: String!) {
-    deleteRunHistory(runId: $runId) {
+export const DeleteStoredRun = gql`
+  mutation DeleteStoredRun($runId: String!) {
+    deleteStoredRun(runId: $runId) {
       success
       message
     }
   }
 `;
 
-export const DeleteTeamRunHistory = gql`
-  mutation DeleteTeamRunHistory($teamRunId: String!) {
-    deleteTeamRunHistory(teamRunId: $teamRunId) {
+export const DeleteStoredTeamRun = gql`
+  mutation DeleteStoredTeamRun($teamRunId: String!) {
+    deleteStoredTeamRun(teamRunId: $teamRunId) {
       success
       message
     }

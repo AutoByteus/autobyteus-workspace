@@ -274,6 +274,7 @@ describe('messagingVerificationStore', () => {
           llmModelIdentifier: 'gpt-team',
           runtimeKind: 'AUTOBYTEUS',
           autoExecuteTools: false,
+          skillAccessMode: 'PRELOADED_ONLY',
           llmConfig: null,
         },
         teamRunId: null,

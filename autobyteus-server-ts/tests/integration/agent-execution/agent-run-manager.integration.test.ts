@@ -1,488 +1,227 @@
-import { afterEach, describe, expect, it, vi, beforeEach } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
+import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
+import type { AgentRunBackend } from "../../../src/agent-execution/backends/agent-run-backend.js";
+import type { AgentRunBackendFactory } from "../../../src/agent-execution/backends/agent-run-backend-factory.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
-import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
-import { LLMConfig } from "autobyteus-ts/llm/utils/llm-config.js";
-import {
-  defaultSystemPromptProcessorRegistry,
-  type SystemPromptProcessorDefinition,
-  ToolManifestInjectorProcessor,
-  AvailableSkillsProcessor,
-} from "autobyteus-ts";
-import { loadAgentCustomizations } from "../../../src/startup/agent-customization-loader.js";
-import { BaseLLM } from "autobyteus-ts/llm/base.js";
-import { LLMModel } from "autobyteus-ts/llm/models.js";
-import { LLMProvider } from "autobyteus-ts/llm/providers.js";
-import { LLMConfig as BaseLlmConfig } from "autobyteus-ts/llm/utils/llm-config.js";
-import { CompleteResponse, ChunkResponse } from "autobyteus-ts/llm/utils/response-types.js";
-import { SystemPromptProcessingStep } from "autobyteus-ts/agent/bootstrap-steps/system-prompt-processing-step.js";
-import { AgentRuntimeState } from "autobyteus-ts/agent/context/agent-runtime-state.js";
-import { AgentContext } from "autobyteus-ts/agent/context/agent-context.js";
-import { BaseTool } from "autobyteus-ts/tools/base-tool.js";
-import { ToolDefinition } from "autobyteus-ts/tools/registry/tool-definition.js";
-import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
-import { ToolOrigin } from "autobyteus-ts/tools/tool-origin.js";
-import { ParameterSchema, ParameterDefinition, ParameterType } from "autobyteus-ts/utils/parameter-schema.js";
+import { AgentCreationError, AgentTerminationError } from "../../../src/agent-execution/errors.js";
+import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 
-class DummyLLM extends BaseLLM {
-  protected async _sendMessagesToLLM(_messages: any[]): Promise<CompleteResponse> {
-    return new CompleteResponse({ content: "ok" });
-  }
-
-  protected async *_streamMessagesToLLM(_messages: any[]): AsyncGenerator<ChunkResponse, void, unknown> {
-    yield new ChunkResponse({ content: "ok", is_complete: true });
-  }
-}
-
-const makeDummyLLM = (provider: LLMProvider, systemMessage: string) => {
-  const model = new LLMModel({
-    name: "dummy",
-    value: "dummy",
-    canonicalName: "dummy",
-    provider,
+const createConfig = (runtimeKind: RuntimeKind): AgentRunConfig =>
+  new AgentRunConfig({
+    runtimeKind,
+    agentDefinitionId: `agent-${runtimeKind}`,
+    llmModelIdentifier: `model-${runtimeKind}`,
+    autoExecuteTools: true,
+    workspaceId: `workspace-${runtimeKind}`,
+    llmConfig: { mode: runtimeKind },
+    skillAccessMode: SkillAccessMode.NONE,
   });
-  return new DummyLLM(model, new BaseLlmConfig({ systemMessage }));
-};
 
-class DummyTool extends BaseTool {
-  static override getName(): string {
-    return "dummy_tool";
-  }
-
-  static override getDescription(): string {
-    return "Dummy tool for testing.";
-  }
-
-  static override getArgumentSchema(): ParameterSchema | null {
-    return new ParameterSchema([
-      new ParameterDefinition({
-        name: "value",
-        type: ParameterType.STRING,
-        description: "Test value",
-        required: false,
-      }),
-    ]);
-  }
-}
-
-type ProcessorRegistry<T> = {
-  getProcessor: (name: string) => T | undefined;
-  getOrderedProcessorOptions: () => Array<{ name: string; isMandatory: boolean }>;
-};
-
-type PreprocessorRegistry<T> = {
-  getPreprocessor: (name: string) => T | undefined;
-  getOrderedProcessorOptions: () => Array<{ name: string; isMandatory: boolean }>;
-};
-
-const makeEmptyRegistries = () => ({
-  input: {
-    getProcessor: vi.fn(),
-    getOrderedProcessorOptions: () => [],
-  } as ProcessorRegistry<unknown>,
-  llmResponse: {
-    getProcessor: vi.fn(),
-    getOrderedProcessorOptions: () => [],
-  } as ProcessorRegistry<unknown>,
-  systemPrompt: {
-    getProcessor: vi.fn(),
-    getOrderedProcessorOptions: () => [],
-  } as ProcessorRegistry<unknown>,
-  toolExecutionResult: {
-    getProcessor: vi.fn(),
-    getOrderedProcessorOptions: () => [],
-  } as ProcessorRegistry<unknown>,
-  toolInvocationPreprocessor: {
-    getPreprocessor: vi.fn(),
-    getOrderedProcessorOptions: () => [],
-  } as PreprocessorRegistry<unknown>,
-  lifecycle: {
-    getProcessor: vi.fn(),
-    getOrderedProcessorOptions: () => [],
-  } as ProcessorRegistry<unknown>,
-});
-
-const registerDummyTool = () => {
-  const definition = new ToolDefinition(
-    DummyTool.getName(),
-    DummyTool.getDescription(),
-    ToolOrigin.LOCAL,
-    "test",
-    () => DummyTool.getArgumentSchema(),
-    () => DummyTool.getConfigSchema(),
-    { toolClass: DummyTool },
-  );
-  defaultToolRegistry.registerTool(definition);
-  return definition.name;
-};
-
-const createManager = (overrides: Partial<ConstructorParameters<typeof AgentRunManager>[0]> = {}) => {
-  const fakeAgent = { agentId: "agent_123", start: vi.fn() };
-  const restoredAgent = { agentId: "restored_123", start: vi.fn() };
-  const agentFactory = {
-    createAgent: vi.fn().mockReturnValue(fakeAgent),
-    restoreAgent: vi.fn().mockReturnValue(restoredAgent),
-    getAgent: vi.fn().mockReturnValue(fakeAgent),
-    removeAgent: vi.fn().mockResolvedValue(true),
-    listActiveAgentIds: vi.fn().mockReturnValue(["agent_123"]),
+const createBackend = (input: {
+  runId: string;
+  runtimeKind: RuntimeKind;
+  active?: boolean;
+  platformAgentRunId?: string | null;
+  status?: string | null;
+  context?: AgentRunContext<unknown | null>;
+}) => {
+  const state = {
+    active: input.active ?? true,
+    platformAgentRunId: input.platformAgentRunId ?? null,
+    status: input.status ?? "IDLE",
   };
+  const context =
+    input.context ??
+    new AgentRunContext({
+      runId: input.runId,
+      config: createConfig(input.runtimeKind),
+      runtimeContext: null,
+    });
 
-  const agentDefinitionService = {
-    getAgentDefinitionById: vi.fn(),
-    getFreshAgentDefinitionById: vi.fn((id: string) => agentDefinitionService.getAgentDefinitionById(id)),
+  const backend: AgentRunBackend = {
+    runId: input.runId,
+    runtimeKind: input.runtimeKind,
+    getContext: () => context,
+    isActive: () => state.active,
+    getPlatformAgentRunId: () => state.platformAgentRunId,
+    getStatus: () => state.status,
+    subscribeToEvents: () => () => undefined,
+    postUserMessage: vi.fn().mockResolvedValue({ accepted: true }),
+    approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
+    interrupt: vi.fn().mockResolvedValue({ accepted: true }),
+    terminate: vi.fn().mockResolvedValue({ accepted: true }),
   };
-
-  const llmFactory = {
-    createLLM: vi.fn().mockResolvedValue({}),
-  };
-
-  const workspaceManager = {
-    getWorkspaceById: vi.fn().mockReturnValue(null),
-    getOrCreateTempWorkspace: vi.fn().mockResolvedValue({
-      workspaceId: "temp_ws",
-      getName: () => "Temp Workspace",
-      getBasePath: () => "/tmp/temp-workspace",
-    }),
-  };
-
-  const skillService = {
-    getSkill: vi.fn(),
-  };
-
-  const waitForIdle = vi.fn().mockResolvedValue(undefined);
-
-  const registries = makeEmptyRegistries();
-
-  const manager = new AgentRunManager({
-    agentFactory,
-    agentDefinitionService: agentDefinitionService as any,
-    llmFactory: llmFactory as any,
-    workspaceManager: workspaceManager as any,
-    skillService: skillService as any,
-    registries,
-    waitForIdle,
-    ...overrides,
-  });
 
   return {
-    manager,
-    agentFactory,
-    agentDefinitionService,
-    llmFactory,
-    workspaceManager,
-    skillService,
-    waitForIdle,
+    backend,
+    state,
   };
 };
+
+const createFactory = (backend: AgentRunBackend): AgentRunBackendFactory => ({
+  createBackend: vi.fn().mockResolvedValue(backend),
+  restoreBackend: vi.fn().mockResolvedValue(backend),
+});
 
 afterEach(() => {
   vi.clearAllMocks();
 });
 
 describe("AgentRunManager integration", () => {
-  describe("system prompt processors", () => {
-    let systemPromptSnapshot: Record<string, SystemPromptProcessorDefinition> | null = null;
-    let streamParserSnapshot: string | undefined;
-    let toolRegistrySnapshot: Map<string, ToolDefinition> | null = null;
-
-    beforeEach(() => {
-      streamParserSnapshot = process.env.AUTOBYTEUS_STREAM_PARSER;
-      systemPromptSnapshot = defaultSystemPromptProcessorRegistry.getAllDefinitions();
-      defaultSystemPromptProcessorRegistry.clear();
-      toolRegistrySnapshot = defaultToolRegistry.snapshot();
-      defaultToolRegistry.clear();
+  it.each([
+    RuntimeKind.AUTOBYTEUS,
+    RuntimeKind.CODEX_APP_SERVER,
+    RuntimeKind.CLAUDE_AGENT_SDK,
+  ])("creates and registers an active %s run through the matching backend factory", async (runtimeKind) => {
+    const auto = createFactory(createBackend({ runId: "run-auto", runtimeKind: RuntimeKind.AUTOBYTEUS }).backend);
+    const codex = createFactory(createBackend({ runId: "run-codex", runtimeKind: RuntimeKind.CODEX_APP_SERVER }).backend);
+    const claude = createFactory(createBackend({ runId: "run-claude", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK }).backend);
+    const manager = new AgentRunManager({
+      autoByteusBackendFactory: auto,
+      codexBackendFactory: codex,
+      claudeBackendFactory: claude,
     });
 
-    afterEach(() => {
-      if (systemPromptSnapshot) {
-        defaultSystemPromptProcessorRegistry.clear();
-        Object.values(systemPromptSnapshot).forEach((definition) => {
-          defaultSystemPromptProcessorRegistry.registerProcessor(definition);
-        });
-      }
-      if (toolRegistrySnapshot) {
-        defaultToolRegistry.restore(toolRegistrySnapshot);
-      }
-      if (streamParserSnapshot === undefined) {
-        delete process.env.AUTOBYTEUS_STREAM_PARSER;
-      } else {
-        process.env.AUTOBYTEUS_STREAM_PARSER = streamParserSnapshot;
-      }
-    });
+    const run = await manager.createAgentRun(createConfig(runtimeKind));
 
-    it("applies mandatory system prompt processors from the registry", async () => {
-      process.env.AUTOBYTEUS_STREAM_PARSER = "xml";
-      loadAgentCustomizations();
-
-      const registries = {
-        ...makeEmptyRegistries(),
-        systemPrompt: defaultSystemPromptProcessorRegistry,
-      };
-
-      const { manager, agentDefinitionService, agentFactory } = createManager({ registries });
-      const agentDef = new AgentDefinition({
-        id: "def_1",
-        name: "ProcessorAgent",
-        role: "Worker",
-        description: "Agent expecting mandatory processors",
-      });
-
-      agentDefinitionService.getAgentDefinitionById.mockResolvedValue(agentDef);
-
-      await manager.createAgentRun({
-        agentDefinitionId: "def_1",
-        llmModelIdentifier: "gpt-4",
-        autoExecuteTools: true,
-      });
-
-      const config = agentFactory.createAgent.mock.calls[0][0] as {
-        systemPromptProcessors: unknown[];
-      };
-
-      expect(
-        config.systemPromptProcessors.some((processor) => processor instanceof ToolManifestInjectorProcessor),
-      ).toBe(true);
-      expect(
-        config.systemPromptProcessors.some((processor) => processor instanceof AvailableSkillsProcessor),
-      ).toBe(true);
-    });
-
-    it("injects tool manifest in xml mode and skips it in api tool call mode", async () => {
-      loadAgentCustomizations();
-      const toolName = registerDummyTool();
-
-      const registries = {
-        ...makeEmptyRegistries(),
-        systemPrompt: defaultSystemPromptProcessorRegistry,
-      };
-
-      const llmFactory = {
-        createLLM: vi.fn().mockReturnValue(makeDummyLLM(LLMProvider.OPENAI, "Base prompt.")),
-      };
-
-      const { manager, agentDefinitionService, agentFactory } = createManager({
-        registries,
-        llmFactory: llmFactory as any,
-      });
-
-      const agentDef = new AgentDefinition({
-        id: "def_1",
-        name: "ToolManifestAgent",
-        role: "Worker",
-        description: "Base prompt.",
-        toolNames: [toolName],
-      });
-
-      agentDefinitionService.getAgentDefinitionById.mockResolvedValue(agentDef);
-
-      process.env.AUTOBYTEUS_STREAM_PARSER = "xml";
-      await manager.createAgentRun({
-        agentDefinitionId: "def_1",
-        llmModelIdentifier: "gpt-4",
-        autoExecuteTools: true,
-      });
-
-      const xmlConfig = agentFactory.createAgent.mock.calls[0][0] as {
-        tools: BaseTool[];
-        llmInstance: BaseLLM;
-      };
-      const xmlState = new AgentRuntimeState("agent-xml");
-      xmlState.toolInstances = Object.fromEntries(
-        xmlConfig.tools.map((tool) => [
-          tool.definition?.name ?? ((tool.constructor as typeof BaseTool).getName()),
-          tool,
-        ]),
-      );
-      xmlState.llmInstance = xmlConfig.llmInstance;
-      const xmlContext = new AgentContext("agent-xml", xmlConfig as any, xmlState);
-
-      const step = new SystemPromptProcessingStep();
-      await step.execute(xmlContext);
-      expect(xmlContext.processedSystemPrompt).toContain("## Accessible Tools");
-
-      process.env.AUTOBYTEUS_STREAM_PARSER = "api_tool_call";
-      await manager.createAgentRun({
-        agentDefinitionId: "def_1",
-        llmModelIdentifier: "gpt-4",
-        autoExecuteTools: true,
-      });
-
-      const apiConfig = agentFactory.createAgent.mock.calls[1][0] as {
-        tools: BaseTool[];
-        llmInstance: BaseLLM;
-      };
-      const apiState = new AgentRuntimeState("agent-api");
-      apiState.toolInstances = Object.fromEntries(
-        apiConfig.tools.map((tool) => [
-          tool.definition?.name ?? ((tool.constructor as typeof BaseTool).getName()),
-          tool,
-        ]),
-      );
-      apiState.llmInstance = apiConfig.llmInstance;
-      const apiContext = new AgentContext("agent-api", apiConfig as any, apiState);
-
-      await step.execute(apiContext);
-      expect(apiContext.processedSystemPrompt).not.toContain("## Accessible Tools");
-    });
+    expect(run.runtimeKind).toBe(runtimeKind);
+    expect(manager.getActiveRun(run.runId)?.runId).toBe(run.runId);
+    expect(manager.listActiveRuns()).toContain(run.runId);
+    expect(auto.createBackend).toHaveBeenCalledTimes(runtimeKind === RuntimeKind.AUTOBYTEUS ? 1 : 0);
+    expect(codex.createBackend).toHaveBeenCalledTimes(runtimeKind === RuntimeKind.CODEX_APP_SERVER ? 1 : 0);
+    expect(claude.createBackend).toHaveBeenCalledTimes(runtimeKind === RuntimeKind.CLAUDE_AGENT_SDK ? 1 : 0);
   });
 
-  it("resolves skill names to paths via SkillService", async () => {
-    const { manager, agentDefinitionService, skillService, agentFactory } = createManager();
-    const agentDef = new AgentDefinition({
-      id: "def_1",
-      name: "SkillfulAgent",
-      role: "Worker",
-      description: "A skilled worker",
-      skillNames: ["coding_skill", "testing_skill"],
+  it.each([
+    RuntimeKind.AUTOBYTEUS,
+    RuntimeKind.CODEX_APP_SERVER,
+    RuntimeKind.CLAUDE_AGENT_SDK,
+  ])("restores a %s run through the matching backend factory", async (runtimeKind) => {
+    const restoredContext = new AgentRunContext({
+      runId: `restored-${runtimeKind}`,
+      config: createConfig(runtimeKind),
+      runtimeContext:
+        runtimeKind === RuntimeKind.CODEX_APP_SERVER
+          ? { threadId: "thread-1", activeTurnId: null }
+          : runtimeKind === RuntimeKind.CLAUDE_AGENT_SDK
+            ? { sessionId: "session-1", hasCompletedTurn: true, activeTurnId: null }
+            : null,
+    });
+    const backend = createBackend({
+      runId: restoredContext.runId,
+      runtimeKind,
+      context: restoredContext,
+    }).backend;
+    const auto = createFactory(backend);
+    const codex = createFactory(backend);
+    const claude = createFactory(backend);
+    const manager = new AgentRunManager({
+      autoByteusBackendFactory: auto,
+      codexBackendFactory: codex,
+      claudeBackendFactory: claude,
     });
 
-    agentDefinitionService.getAgentDefinitionById.mockResolvedValue(agentDef);
-    skillService.getSkill.mockImplementation((name: string) => {
-      if (name === "coding_skill") {
-        return { rootPath: "/path/to/coding_skill" };
-      }
-      if (name === "testing_skill") {
-        return { rootPath: "/path/to/testing_skill" };
-      }
-      return null;
-    });
+    const run = await manager.restoreAgentRun(restoredContext);
 
-    const createdId = await manager.createAgentRun({
-      agentDefinitionId: "def_1",
-      llmModelIdentifier: "gpt-4",
-      autoExecuteTools: true,
-    });
-
-    expect(createdId).toBe("agent_123");
-    expect(agentFactory.createAgent).toHaveBeenCalledTimes(1);
-    const config = agentFactory.createAgent.mock.calls[0][0] as { skills: string[] };
-    expect(config.skills).toContain("/path/to/coding_skill");
-    expect(config.skills).toContain("/path/to/testing_skill");
-    expect(config.skills).toHaveLength(2);
+    expect(run.runId).toBe(restoredContext.runId);
+    expect(run.context).toBe(restoredContext);
+    expect(auto.restoreBackend).toHaveBeenCalledTimes(runtimeKind === RuntimeKind.AUTOBYTEUS ? 1 : 0);
+    expect(codex.restoreBackend).toHaveBeenCalledTimes(runtimeKind === RuntimeKind.CODEX_APP_SERVER ? 1 : 0);
+    expect(claude.restoreBackend).toHaveBeenCalledTimes(runtimeKind === RuntimeKind.CLAUDE_AGENT_SDK ? 1 : 0);
   });
 
-  it("falls back to temp workspace when none is provided", async () => {
-    const { manager, agentDefinitionService, workspaceManager, agentFactory } = createManager();
-    const agentDef = new AgentDefinition({
-      id: "def_1",
-      name: "TempWorkspaceAgent",
-      role: "Worker",
-      description: "An agent without explicit workspace",
+  it("evicts inactive runs when queried or listed", async () => {
+    const active = createBackend({ runId: "run-active", runtimeKind: RuntimeKind.AUTOBYTEUS });
+    const manager = new AgentRunManager({
+      autoByteusBackendFactory: createFactory(active.backend),
+      codexBackendFactory: createFactory(createBackend({ runId: "unused-codex", runtimeKind: RuntimeKind.CODEX_APP_SERVER }).backend),
+      claudeBackendFactory: createFactory(createBackend({ runId: "unused-claude", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK }).backend),
     });
 
-    agentDefinitionService.getAgentDefinitionById.mockResolvedValue(agentDef);
+    const run = await manager.createAgentRun(createConfig(RuntimeKind.AUTOBYTEUS));
+    expect(manager.getActiveRun(run.runId)?.runId).toBe(run.runId);
 
-    const createdId = await manager.createAgentRun({
-      agentDefinitionId: "def_1",
-      llmModelIdentifier: "gpt-4",
-      autoExecuteTools: true,
-      workspaceId: null,
-    });
-
-    expect(createdId).toBe("agent_123");
-    expect(workspaceManager.getOrCreateTempWorkspace).toHaveBeenCalledTimes(1);
-    const config = agentFactory.createAgent.mock.calls[0][0] as {
-      workspaceRootPath: string | null;
-      initialCustomData?: Record<string, unknown>;
-    };
-    expect(config.workspaceRootPath).toBe("/tmp/temp-workspace");
-    expect(config.initialCustomData?.workspace_id).toBe("temp_ws");
-    expect(config.initialCustomData?.workspace_name).toBe("Temp Workspace");
+    active.state.active = false;
+    expect(manager.getActiveRun(run.runId)).toBeNull();
+    expect(manager.listActiveRuns()).toEqual([]);
   });
 
-  it("passes llmConfig into createLLM when provided", async () => {
-    const { manager, agentDefinitionService, llmFactory } = createManager();
-    const agentDef = new AgentDefinition({
-      id: "def_1",
-      name: "ConfiguredAgent",
-      role: "Worker",
-      description: "An agent with LLM config",
+  it("terminates and unregisters active runs on accepted termination", async () => {
+    const created = createBackend({
+      runId: "run-terminate-ok",
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+    });
+    const manager = new AgentRunManager({
+      autoByteusBackendFactory: createFactory(createBackend({ runId: "unused-auto", runtimeKind: RuntimeKind.AUTOBYTEUS }).backend),
+      codexBackendFactory: createFactory(created.backend),
+      claudeBackendFactory: createFactory(createBackend({ runId: "unused-claude", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK }).backend),
     });
 
-    agentDefinitionService.getAgentDefinitionById.mockResolvedValue(agentDef);
+    const run = await manager.createAgentRun(createConfig(RuntimeKind.CODEX_APP_SERVER));
+    const success = await manager.terminateAgentRun(run.runId);
 
-    const createdId = await manager.createAgentRun({
-      agentDefinitionId: "def_1",
-      llmModelIdentifier: "gemini-3-flash-preview",
-      autoExecuteTools: true,
-      llmConfig: { thinking_level: "high" },
-    });
-
-    expect(createdId).toBe("agent_123");
-    expect(llmFactory.createLLM).toHaveBeenCalledTimes(1);
-    const [, passedConfig] = llmFactory.createLLM.mock.calls[0];
-    expect(passedConfig).toBeInstanceOf(LLMConfig);
-    expect((passedConfig as LLMConfig).extraParams).toEqual({ thinking_level: "high" });
+    expect(success).toBe(true);
+    expect(created.backend.terminate).toHaveBeenCalledTimes(1);
+    expect(manager.getActiveRun(run.runId)).toBeNull();
   });
 
-  it("calls createLLM with undefined config when llmConfig is not provided", async () => {
-    const { manager, agentDefinitionService, llmFactory } = createManager();
-    const agentDef = new AgentDefinition({
-      id: "def_1",
-      name: "DefaultAgent",
-      role: "Worker",
-      description: "An agent without LLM config",
+  it("returns false for missing runs and for unaccepted termination without unregistering", async () => {
+    const created = createBackend({
+      runId: "run-terminate-no",
+      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+    });
+    created.backend.terminate = vi.fn().mockResolvedValue({
+      accepted: false,
+      code: "DENIED",
+      message: "still active",
+    });
+    const manager = new AgentRunManager({
+      autoByteusBackendFactory: createFactory(createBackend({ runId: "unused-auto", runtimeKind: RuntimeKind.AUTOBYTEUS }).backend),
+      codexBackendFactory: createFactory(createBackend({ runId: "unused-codex", runtimeKind: RuntimeKind.CODEX_APP_SERVER }).backend),
+      claudeBackendFactory: createFactory(created.backend),
     });
 
-    agentDefinitionService.getAgentDefinitionById.mockResolvedValue(agentDef);
+    const run = await manager.createAgentRun(createConfig(RuntimeKind.CLAUDE_AGENT_SDK));
 
-    const createdId = await manager.createAgentRun({
-      agentDefinitionId: "def_1",
-      llmModelIdentifier: "gpt-4",
-      autoExecuteTools: true,
-    });
-
-    expect(createdId).toBe("agent_123");
-    expect(llmFactory.createLLM).toHaveBeenCalledWith("gpt-4", undefined);
+    await expect(manager.terminateAgentRun("missing-run")).resolves.toBe(false);
+    await expect(manager.terminateAgentRun(run.runId)).resolves.toBe(false);
+    expect(manager.getActiveRun(run.runId)?.runId).toBe(run.runId);
   });
 
-  it("does not force explicit memoryDir on newly created single-agent runs", async () => {
-    const { manager, agentDefinitionService, agentFactory } = createManager();
-    const agentDef = new AgentDefinition({
-      id: "def_1",
-      name: "MemoryScopedAgent",
-      role: "Worker",
-      description: "Checks memory layout wiring",
+  it("wraps termination failures in AgentTerminationError", async () => {
+    const created = createBackend({
+      runId: "run-terminate-error",
+      runtimeKind: RuntimeKind.AUTOBYTEUS,
+    });
+    created.backend.terminate = vi.fn().mockRejectedValue(new Error("boom"));
+    const manager = new AgentRunManager({
+      autoByteusBackendFactory: createFactory(created.backend),
+      codexBackendFactory: createFactory(createBackend({ runId: "unused-codex", runtimeKind: RuntimeKind.CODEX_APP_SERVER }).backend),
+      claudeBackendFactory: createFactory(createBackend({ runId: "unused-claude", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK }).backend),
     });
 
-    agentDefinitionService.getAgentDefinitionById.mockResolvedValue(agentDef);
+    const run = await manager.createAgentRun(createConfig(RuntimeKind.AUTOBYTEUS));
 
-    const createdId = await manager.createAgentRun({
-      agentDefinitionId: "def_1",
-      llmModelIdentifier: "gpt-4",
-      autoExecuteTools: true,
-    });
-
-    expect(createdId).toBe("agent_123");
-    const createdConfig = agentFactory.createAgent.mock.calls[0][0] as { memoryDir?: string | null };
-    expect(createdConfig.memoryDir).toBeUndefined();
+    await expect(manager.terminateAgentRun(run.runId)).rejects.toThrow(AgentTerminationError);
   });
 
-  it("restores single-agent runs without explicit memory root override", async () => {
-    const { manager, agentDefinitionService, agentFactory } = createManager();
-    const agentDef = new AgentDefinition({
-      id: "def_1",
-      name: "MemoryScopedAgent",
-      role: "Worker",
-      description: "Checks memory layout wiring",
+  it("rejects unsupported runtime kinds for create and restore", async () => {
+    const manager = new AgentRunManager({
+      autoByteusBackendFactory: createFactory(createBackend({ runId: "unused-auto", runtimeKind: RuntimeKind.AUTOBYTEUS }).backend),
+      codexBackendFactory: createFactory(createBackend({ runId: "unused-codex", runtimeKind: RuntimeKind.CODEX_APP_SERVER }).backend),
+      claudeBackendFactory: createFactory(createBackend({ runId: "unused-claude", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK }).backend),
+    });
+    const unsupportedKind = "unsupported_runtime" as RuntimeKind;
+    const config = createConfig(unsupportedKind);
+    const context = new AgentRunContext({
+      runId: "unsupported-run",
+      config,
+      runtimeContext: null,
     });
 
-    agentDefinitionService.getAgentDefinitionById.mockResolvedValue(agentDef);
-
-    const restoredRunId = await manager.restoreAgentRun({
-      runId: "run-restore-1",
-      agentDefinitionId: "def_1",
-      llmModelIdentifier: "gpt-4",
-      autoExecuteTools: true,
-    });
-
-    expect(restoredRunId).toBe("restored_123");
-    expect(agentFactory.restoreAgent).toHaveBeenCalledWith(
-      "run-restore-1",
-      expect.any(Object),
-      null,
-    );
-
-    const restoredConfig = agentFactory.restoreAgent.mock.calls[0][1] as { memoryDir?: string | null };
-    expect(restoredConfig.memoryDir).toBeUndefined();
+    await expect(manager.createAgentRun(config)).rejects.toThrow(AgentCreationError);
+    await expect(manager.restoreAgentRun(context)).rejects.toThrow(AgentCreationError);
   });
 });

@@ -1,5 +1,9 @@
 import type { AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore';
-import { DEFAULT_AGENT_RUNTIME_KIND, type AgentRuntimeKind } from '~/types/agent/AgentRunConfig';
+import {
+    DEFAULT_AGENT_RUNTIME_KIND,
+    type AgentRuntimeKind,
+    type SkillAccessMode,
+} from '~/types/agent/AgentRunConfig';
 
 export interface MemberConfigOverride {
     agentDefinitionId: string; // The ID of the agent definition for this member (for verification/display)
@@ -26,6 +30,9 @@ export interface TeamRunConfig {
     
     /** Whether to auto-execute tools globally */
     autoExecuteTools: boolean;
+
+    /** Which skills team members are allowed to use */
+    skillAccessMode: SkillAccessMode;
     
     /** 
      * Overrides for specific members.
@@ -49,6 +56,7 @@ export const createDefaultTeamRunConfig = (def: AgentTeamDefinition): TeamRunCon
         workspaceId: null,
         llmModelIdentifier: '',
         autoExecuteTools: false,
+        skillAccessMode: 'PRELOADED_ONLY',
         memberOverrides: {},
         isLocked: false,
     };

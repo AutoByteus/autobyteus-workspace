@@ -234,6 +234,7 @@ export interface TaskPlanEventPayload {
 
 export interface InterAgentMessagePayload {
   sender_agent_id: string;
+  sender_agent_name?: string | null;
   recipient_role_name: string;
   content: string;
   message_type: string;

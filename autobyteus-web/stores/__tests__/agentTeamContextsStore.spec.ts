@@ -18,6 +18,23 @@ vi.mock('~/stores/agentTeamDefinitionStore', () => ({
                     { memberName: 'agent-2', refType: 'AGENT', ref: 'def-2' }
                 ]
             };
+            if (id === 'team-def-nested') return {
+                id: 'team-def-nested',
+                name: 'Nested Team',
+                coordinatorMemberName: 'nested-group',
+                nodes: [
+                    { memberName: 'nested-group', refType: 'AGENT_TEAM', ref: 'sub-team-1' }
+                ]
+            };
+            if (id === 'sub-team-1') return {
+                id: 'sub-team-1',
+                name: 'Sub Team',
+                coordinatorMemberName: 'leaf-a',
+                nodes: [
+                    { memberName: 'leaf-a', refType: 'AGENT', ref: 'def-1' },
+                    { memberName: 'leaf-b', refType: 'AGENT', ref: 'def-2' }
+                ]
+            };
             return null;
         }
     })
@@ -79,6 +96,36 @@ describe('agentTeamContextsStore', () => {
              expect(selectionStore.selectedRunId).toBe(teamId);
              expect(selectionStore.selectedType).toBe('team');
         });
+
+        it('should flatten nested team definitions into leaf member contexts', async () => {
+             const store = useAgentTeamContextsStore();
+             const runConfigStore = useTeamRunConfigStore();
+
+             runConfigStore.setTemplate({
+                 id: 'team-def-nested',
+                 name: 'Nested Team',
+                 coordinatorMemberName: 'nested-group',
+                 nodes: [
+                     { memberName: 'nested-group', refType: 'AGENT_TEAM', ref: 'sub-team-1' }
+                 ]
+             } as any);
+
+             runConfigStore.updateConfig({
+                 workspaceId: 'ws-1',
+                 llmModelIdentifier: 'gpt-4',
+                 autoExecuteTools: false,
+                 memberOverrides: {},
+             });
+
+             await store.createRunFromTemplate();
+
+             const [teamId] = Array.from(store.teams.keys());
+             const team = store.teams.get(teamId!);
+             expect(team?.members.size).toBe(2);
+             expect(team?.members.has('leaf-a')).toBe(true);
+             expect(team?.members.has('leaf-b')).toBe(true);
+             expect(team?.focusedMemberName).toBe('leaf-a');
+         });
     });
 
     describe('activeTeamContext', () => {

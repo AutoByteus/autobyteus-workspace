@@ -1,0 +1,296 @@
+import {
+  SkillAccessMode,
+  resolveSkillAccessMode,
+} from "autobyteus-ts/agent/context/skill-access-mode.js";
+import { AgentRunConfig } from "../domain/agent-run-config.js";
+import { AgentRunContext, type RuntimeAgentRunContext } from "../domain/agent-run-context.js";
+import type { AgentRun } from "../domain/agent-run.js";
+import { AgentRunManager } from "./agent-run-manager.js";
+import { appConfigProvider } from "../../config/app-config-provider.js";
+import {
+  RuntimeKind,
+  runtimeKindFromString,
+} from "../../runtime-management/runtime-kind-enum.js";
+import { getWorkspaceManager } from "../../workspaces/workspace-manager.js";
+import {
+  type AgentRunMetadata,
+} from "../../run-history/store/agent-run-metadata-types.js";
+import { canonicalizeWorkspaceRootPath } from "../../run-history/utils/workspace-path-normalizer.js";
+import {
+  AgentRunMetadataService,
+} from "../../run-history/services/agent-run-metadata-service.js";
+import {
+  AgentRunHistoryIndexService,
+  getAgentRunHistoryIndexService,
+} from "../../run-history/services/agent-run-history-index-service.js";
+
+export interface CreateAgentRunInput {
+  agentDefinitionId: string;
+  workspaceRootPath: string;
+  workspaceId?: string | null;
+  llmModelIdentifier: string;
+  autoExecuteTools: boolean;
+  llmConfig?: Record<string, unknown> | null;
+  skillAccessMode: SkillAccessMode;
+  runtimeKind: string;
+}
+
+export interface CreateAgentRunResult {
+  runId: string;
+}
+
+export interface RestoreAgentRunResult {
+  run: AgentRun;
+  metadata: AgentRunMetadata;
+}
+
+export type AgentRunTerminationRoute = "native" | "runtime" | "not_found";
+
+export interface AgentRunTerminationResult {
+  success: boolean;
+  message: string;
+  route: AgentRunTerminationRoute;
+  runtimeKind: RuntimeKind | null;
+}
+
+const hasNonEmptyString = (value: string | null | undefined): value is string =>
+  typeof value === "string" && value.trim().length > 0;
+
+export class AgentRunService {
+  private agentRunManager: AgentRunManager;
+  private metadataService: AgentRunMetadataService;
+  private historyIndexService: AgentRunHistoryIndexService;
+  private workspaceManager = getWorkspaceManager();
+
+  constructor(
+    memoryDir: string,
+    deps: {
+      agentRunManager?: AgentRunManager;
+      metadataService?: AgentRunMetadataService;
+      historyIndexService?: AgentRunHistoryIndexService;
+      workspaceManager?: ReturnType<typeof getWorkspaceManager>;
+    } = {},
+  ) {
+    this.agentRunManager = deps.agentRunManager ?? AgentRunManager.getInstance();
+    this.metadataService =
+      deps.metadataService ?? new AgentRunMetadataService(memoryDir);
+    this.historyIndexService =
+      deps.historyIndexService ?? getAgentRunHistoryIndexService();
+    this.workspaceManager = deps.workspaceManager ?? getWorkspaceManager();
+  }
+
+  async terminateAgentRun(runId: string): Promise<AgentRunTerminationResult> {
+    const activeRun = this.agentRunManager.getActiveRun(runId);
+    if (!activeRun) {
+      return this.notFound(null);
+    }
+
+    const route: AgentRunTerminationRoute =
+      activeRun.runtimeKind === RuntimeKind.AUTOBYTEUS ? "native" : "runtime";
+    const result = await activeRun.terminate();
+    if (!result.accepted) {
+      return this.notFound(activeRun.runtimeKind);
+    }
+
+    const metadata = await this.metadataService.readMetadata(runId);
+    if (metadata) {
+      await this.metadataService.writeMetadata(runId, {
+        ...metadata,
+        platformAgentRunId: activeRun.getPlatformAgentRunId() ?? metadata.platformAgentRunId,
+        lastKnownStatus: "TERMINATED",
+      });
+    }
+    await this.historyIndexService.recordRunTerminated(runId);
+    return {
+      success: true,
+      message: "Agent run terminated successfully.",
+      route,
+      runtimeKind: activeRun.runtimeKind,
+    };
+  }
+
+  async createAgentRun(input: CreateAgentRunInput): Promise<CreateAgentRunResult> {
+    if (!hasNonEmptyString(input.agentDefinitionId)) {
+      throw new Error("agentDefinitionId is required when creating a new run.");
+    }
+    if (!hasNonEmptyString(input.workspaceRootPath)) {
+      throw new Error("workspaceRootPath is required when creating a new run.");
+    }
+    if (!hasNonEmptyString(input.llmModelIdentifier)) {
+      throw new Error("llmModelIdentifier is required when creating a new run.");
+    }
+    if (!hasNonEmptyString(input.runtimeKind)) {
+      throw new Error("runtimeKind is required when creating a new run.");
+    }
+
+    let workspaceId = input.workspaceId?.trim() || null;
+    const workspaceRootPath = canonicalizeWorkspaceRootPath(input.workspaceRootPath.trim());
+    const workspace = await this.workspaceManager.ensureWorkspaceByRootPath(workspaceRootPath);
+    workspaceId = workspace.workspaceId;
+
+    const runtimeKind = runtimeKindFromString(input.runtimeKind);
+    if (!runtimeKind) {
+      throw new Error(`runtimeKind '${input.runtimeKind}' is not supported.`);
+    }
+    const skillAccessMode = resolveSkillAccessMode(input.skillAccessMode, 0);
+    const activeRun = await this.agentRunManager.createAgentRun(
+      new AgentRunConfig({
+        runtimeKind,
+        agentDefinitionId: input.agentDefinitionId.trim(),
+        llmModelIdentifier: input.llmModelIdentifier.trim(),
+        autoExecuteTools: input.autoExecuteTools,
+        workspaceId,
+        llmConfig: input.llmConfig ?? null,
+        skillAccessMode,
+      }),
+    );
+    const runId = activeRun.runId;
+
+    const resolvedWorkspaceRootPath = this.resolveWorkspaceRootPath({
+      workspaceRootPath,
+      workspaceId,
+    });
+
+    const metadata: AgentRunMetadata = {
+      runId,
+      agentDefinitionId: input.agentDefinitionId.trim(),
+      workspaceRootPath: resolvedWorkspaceRootPath,
+      llmModelIdentifier: input.llmModelIdentifier.trim(),
+      llmConfig: input.llmConfig ?? null,
+      autoExecuteTools: input.autoExecuteTools,
+      skillAccessMode,
+      runtimeKind: activeRun.runtimeKind,
+      platformAgentRunId: activeRun.getPlatformAgentRunId(),
+      lastKnownStatus: "IDLE",
+    };
+
+    await this.metadataService.writeMetadata(runId, metadata);
+    await this.historyIndexService.recordRunCreated({
+      runId,
+      metadata,
+      summary: "",
+      lastKnownStatus: "IDLE",
+      lastActivityAt: new Date().toISOString(),
+    });
+    return { runId };
+  }
+
+  async restoreAgentRun(runId: string): Promise<RestoreAgentRunResult> {
+    const normalizedRunId = normalizeRequiredRunId(runId);
+    const activeRun = this.agentRunManager.getActiveRun(normalizedRunId);
+    if (activeRun) {
+      throw new Error(
+        `Run '${normalizedRunId}' is already active and does not need restore.`,
+      );
+    }
+
+    const metadata = await this.metadataService.readMetadata(normalizedRunId);
+    if (!metadata) {
+      throw new Error(
+        `Run '${normalizedRunId}' cannot be restored because metadata is missing.`,
+      );
+    }
+
+    const workspace = await this.workspaceManager.ensureWorkspaceByRootPath(
+      metadata.workspaceRootPath,
+    );
+    const restoredRun = await this.agentRunManager.restoreAgentRun(
+      new AgentRunContext({
+        runId: normalizedRunId,
+        config: new AgentRunConfig({
+          runtimeKind: metadata.runtimeKind,
+          agentDefinitionId: metadata.agentDefinitionId,
+          llmModelIdentifier: metadata.llmModelIdentifier,
+          autoExecuteTools: metadata.autoExecuteTools,
+          workspaceId: workspace.workspaceId,
+          llmConfig: metadata.llmConfig,
+          skillAccessMode: metadata.skillAccessMode ?? SkillAccessMode.PRELOADED_ONLY,
+        }),
+        runtimeContext: this.buildRestoreRuntimeContext(metadata),
+      }),
+    );
+
+    const persistedMetadata: AgentRunMetadata = {
+      ...metadata,
+      runId: normalizedRunId,
+      runtimeKind: restoredRun.runtimeKind,
+      platformAgentRunId:
+        restoredRun.getPlatformAgentRunId() ?? metadata.platformAgentRunId,
+      lastKnownStatus: "ACTIVE",
+    };
+    await this.metadataService.writeMetadata(normalizedRunId, persistedMetadata);
+    await this.historyIndexService.recordRunRestored({
+      runId: normalizedRunId,
+      metadata: persistedMetadata,
+      lastKnownStatus: "ACTIVE",
+      lastActivityAt: new Date().toISOString(),
+    });
+
+    return {
+      run: restoredRun,
+      metadata: persistedMetadata,
+    };
+  }
+
+  private resolveWorkspaceRootPath(options: {
+    workspaceRootPath: string | null;
+    workspaceId: string | null;
+  }): string {
+    if (options.workspaceRootPath) {
+      return canonicalizeWorkspaceRootPath(options.workspaceRootPath);
+    }
+    if (options.workspaceId) {
+      const workspace = this.workspaceManager.getWorkspaceById(options.workspaceId);
+      const basePath = workspace?.getBasePath();
+      if (basePath) {
+        return canonicalizeWorkspaceRootPath(basePath);
+      }
+    }
+    return canonicalizeWorkspaceRootPath(appConfigProvider.config.getTempWorkspaceDir());
+  }
+
+  private notFound(runtimeKind: RuntimeKind | null): AgentRunTerminationResult {
+    return {
+      success: false,
+      message: "Agent run not found.",
+      route: "not_found",
+      runtimeKind,
+    };
+  }
+
+  private buildRestoreRuntimeContext(metadata: AgentRunMetadata): RuntimeAgentRunContext {
+    if (metadata.runtimeKind === RuntimeKind.CODEX_APP_SERVER) {
+      return {
+        threadId: metadata.platformAgentRunId,
+        activeTurnId: null,
+      } as RuntimeAgentRunContext;
+    }
+    if (metadata.runtimeKind === RuntimeKind.CLAUDE_AGENT_SDK) {
+      return {
+        sessionId: metadata.platformAgentRunId,
+        hasCompletedTurn: false,
+        activeTurnId: null,
+      } as RuntimeAgentRunContext;
+    }
+    return null;
+  }
+}
+
+const normalizeRequiredRunId = (runId: string): string => {
+  const normalized = runId.trim();
+  if (!normalized) {
+    throw new Error("runId is required.");
+  }
+  return normalized;
+};
+
+let cachedAgentRunService: AgentRunService | null = null;
+
+export const getAgentRunService = (): AgentRunService => {
+  if (!cachedAgentRunService) {
+    cachedAgentRunService = new AgentRunService(
+      appConfigProvider.config.getMemoryDir(),
+    );
+  }
+  return cachedAgentRunService;
+};

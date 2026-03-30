@@ -103,12 +103,18 @@ export class TeamStreamingService {
     this.approvalTokenByInvocationId.clear();
   }
 
-  sendMessage(content: string, targetMemberName?: string, contextFilePaths?: string[]): void {
+  sendMessage(
+    content: string,
+    targetMemberName?: string,
+    contextFilePaths?: string[],
+    imageUrls?: string[],
+  ): void {
     const message: ClientMessage = {
       type: 'SEND_MESSAGE',
       payload: {
         content,
         context_file_paths: contextFilePaths,
+        image_urls: imageUrls,
         target_member_name: targetMemberName,
       },
     };

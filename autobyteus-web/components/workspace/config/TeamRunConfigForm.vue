@@ -60,7 +60,7 @@
 
 
     <!-- Team Members Override Section (Collapsible) -->
-    <div v-if="teamDefinition.nodes.length > 0" class="mt-4">
+    <div v-if="leafMembers.length > 0" class="mt-4">
         <button
             type="button"
             @click="overridesExpanded = !overridesExpanded"
@@ -73,19 +73,19 @@
             >
                 <span class="i-heroicons-chevron-right-20-solid w-4 h-4"></span>
             </span>
-            Team Members Override ({{ teamDefinition.nodes.length }})
+            Team Members Override ({{ leafMembers.length }})
         </button>
         
         <div v-show="overridesExpanded" class="mt-3 space-y-2">
             <MemberOverrideItem
-                v-for="node in teamDefinition.nodes"
-                :key="node.memberName"
-                :member-name="node.memberName"
-                :agent-definition-id="node.ref"
-                :override="config.memberOverrides[node.memberName]"
+                v-for="member in leafMembers"
+                :key="member.memberRouteKey"
+                :member-name="member.memberName"
+                :agent-definition-id="member.agentDefinitionId"
+                :override="config.memberOverrides[member.memberName]"
                 :global-llm-model="config.llmModelIdentifier"
                 :options="groupedModelOptions"
-                :is-coordinator="node.memberName === teamDefinition.coordinatorMemberName"
+                :is-coordinator="member.memberName === teamDefinition.coordinatorMemberName"
                 :disabled="config.isLocked"
                 @update:override="handleOverrideUpdate"
             />
@@ -114,6 +114,26 @@
         </button>
     </div>
 
+    <div>
+      <label for="team-skill-access-mode" class="block text-sm font-medium text-gray-700 mb-1">
+        Skill Access
+      </label>
+      <select
+        id="team-skill-access-mode"
+        :value="config.skillAccessMode"
+        :disabled="config.isLocked"
+        class="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
+        @change="updateSkillAccessMode(($event.target as HTMLSelectElement).value)"
+      >
+        <option value="PRELOADED_ONLY">Configured skills only (Recommended)</option>
+        <option value="GLOBAL_DISCOVERY">All installed skills</option>
+        <option value="NONE">No skills</option>
+      </select>
+      <p class="mt-1 text-xs text-gray-500">
+        Controls which skills team members are allowed to use.
+      </p>
+    </div>
+
     <div v-if="config.isLocked" class="flex items-center text-xs text-amber-600 bg-amber-50 p-2 rounded">
         <span class="i-heroicons-lock-closed-20-solid w-4 h-4 mr-1"></span>
         <span>Configuration locked because execution has started.</span>
@@ -124,18 +144,21 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig';
-import { useRuntimeCapabilitiesStore } from '~/stores/runtimeCapabilitiesStore';
+import { useRuntimeAvailabilityStore } from '~/stores/runtimeAvailabilityStore';
 import type { TeamRunConfig, MemberConfigOverride } from '~/types/agent/TeamRunConfig';
 import type { AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore';
 import {
   DEFAULT_AGENT_RUNTIME_KIND,
   runtimeKindToLabel,
   type AgentRuntimeKind,
+  type SkillAccessMode,
 } from '~/types/agent/AgentRunConfig';
 import WorkspaceSelector from './WorkspaceSelector.vue';
 import MemberOverrideItem from './MemberOverrideItem.vue';
 import SearchableGroupedSelect, { type GroupedOption } from '~/components/agentTeams/SearchableGroupedSelect.vue';
 import { getModelSelectionLabel } from '~/utils/modelSelectionLabel';
+import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
+import { resolveLeafTeamMembers } from '~/utils/teamDefinitionMembers';
 
 interface WorkspaceLoadingState {
   isLoading: boolean;
@@ -156,12 +179,19 @@ const emit = defineEmits<{
 }>();
 
 const llmStore = useLLMProviderConfigStore();
-const runtimeCapabilitiesStore = useRuntimeCapabilitiesStore();
+const runtimeAvailabilityStore = useRuntimeAvailabilityStore();
+const teamDefinitionStore = useAgentTeamDefinitionStore();
 const overridesExpanded = ref(true);
 const runtimeSelectionLocked = computed(() => props.config.isLocked);
+const leafMembers = computed(() =>
+  resolveLeafTeamMembers(props.teamDefinition, {
+    getTeamDefinitionById: (teamDefinitionId: string) =>
+      teamDefinitionStore.getAgentTeamDefinitionById(teamDefinitionId),
+  }),
+);
 
-void runtimeCapabilitiesStore.fetchRuntimeCapabilities().catch((error) => {
-  console.error('Failed to fetch runtime capabilities:', error);
+void runtimeAvailabilityStore.fetchRuntimeAvailabilities().catch((error) => {
+  console.error('Failed to fetch runtime availabilities:', error);
 });
 
 const normalizeRuntimeKind = (runtimeKind: unknown): AgentRuntimeKind => {
@@ -218,11 +248,11 @@ const runtimeOptions = computed<
   const selectedRuntimeKind = normalizeRuntimeKind(props.config.runtimeKind);
   const optionByKind = new Map<AgentRuntimeKind, { value: AgentRuntimeKind; label: string; enabled: boolean }>();
 
-  for (const capability of runtimeCapabilitiesStore.capabilities) {
-    optionByKind.set(capability.runtimeKind, {
-      value: capability.runtimeKind,
-      label: runtimeKindToLabel(capability.runtimeKind),
-      enabled: capability.enabled,
+  for (const availability of runtimeAvailabilityStore.availabilities) {
+    optionByKind.set(availability.runtimeKind, {
+      value: availability.runtimeKind,
+      label: runtimeKindToLabel(availability.runtimeKind),
+      enabled: availability.enabled,
     });
   }
 
@@ -238,7 +268,7 @@ const runtimeOptions = computed<
     optionByKind.set(selectedRuntimeKind, {
       value: selectedRuntimeKind,
       label: runtimeKindToLabel(selectedRuntimeKind),
-      enabled: runtimeCapabilitiesStore.isRuntimeEnabled(selectedRuntimeKind),
+      enabled: runtimeAvailabilityStore.isRuntimeEnabled(selectedRuntimeKind),
     });
   }
 
@@ -249,16 +279,16 @@ const runtimeOptions = computed<
 
 const selectedRuntimeUnavailableReason = computed(() => {
   const runtimeKind = normalizeRuntimeKind(props.config.runtimeKind);
-  const capability = runtimeCapabilitiesStore.capabilityByKind(runtimeKind);
-  if (!capability) {
+  const availability = runtimeAvailabilityStore.availabilityByKind(runtimeKind);
+  if (!availability) {
     return runtimeKind === DEFAULT_AGENT_RUNTIME_KIND
       ? null
       : 'Runtime is not available in current capabilities.';
   }
-  if (capability.enabled) {
+  if (availability.enabled) {
     return null;
   }
-  return runtimeCapabilitiesStore.runtimeReason(runtimeKind);
+  return runtimeAvailabilityStore.runtimeReason(runtimeKind);
 });
 
 watch(
@@ -277,17 +307,17 @@ watch(
 );
 
 watch(
-  () => [runtimeCapabilitiesStore.hasFetched, props.config.runtimeKind, runtimeSelectionLocked.value],
+  () => [runtimeAvailabilityStore.hasFetched, props.config.runtimeKind, runtimeSelectionLocked.value],
   ([hasFetched, runtimeKind, runtimeLocked]) => {
     if (!hasFetched || runtimeLocked) {
       return;
     }
     const normalizedRuntime = normalizeRuntimeKind(runtimeKind);
-    const capability = runtimeCapabilitiesStore.capabilityByKind(normalizedRuntime);
-    if (!capability) {
+    const availability = runtimeAvailabilityStore.availabilityByKind(normalizedRuntime);
+    if (!availability) {
       return;
     }
-    if (capability.enabled) {
+    if (availability.enabled) {
       return;
     }
 
@@ -310,7 +340,7 @@ const groupedModelOptions = computed<GroupedOption[]>(() => {
 
 const updateRuntimeKind = (value: string) => {
     const runtimeKind = normalizeRuntimeKind(value);
-    if (!runtimeCapabilitiesStore.isRuntimeEnabled(runtimeKind)) {
+    if (!runtimeAvailabilityStore.isRuntimeEnabled(runtimeKind)) {
       return;
     }
     if (props.config.runtimeKind === runtimeKind) {
@@ -326,6 +356,10 @@ const updateModel = (value: string) => {
 
 const updateAutoExecute = (checked: boolean) => {
     props.config.autoExecuteTools = checked;
+};
+
+const updateSkillAccessMode = (value: string) => {
+    props.config.skillAccessMode = value as SkillAccessMode;
 };
 
 const handleSelectExisting = (workspaceId: string) => {

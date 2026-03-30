@@ -448,6 +448,10 @@ export class AppConfig {
     }
 
     this.dataDir = customPath;
+    // Rebind the runtime memory root immediately so lower layers do not fall back to process.cwd()/memory.
+    const memoryDir = this.getMemoryDir();
+    this.configData.AUTOBYTEUS_MEMORY_DIR = memoryDir;
+    process.env.AUTOBYTEUS_MEMORY_DIR = memoryDir;
     console.info(`Custom app data directory set to: ${this.dataDir}`);
 
     try {

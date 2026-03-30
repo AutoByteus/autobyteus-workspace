@@ -19,12 +19,24 @@ const ensureClientPrecomputedFile = (serverDir: string): void => {
 
 // --- Server URL Configuration ---
 
-// For local and Docker development, the Vite proxy forwards API requests to the backend server.
-const backendProxyUrl = 'http://localhost:8000'
+function toWsBaseUrl(httpBaseUrl: string): string {
+  if (httpBaseUrl.startsWith('https://')) {
+    return `wss://${httpBaseUrl.slice('https://'.length)}`
+  }
+  if (httpBaseUrl.startsWith('http://')) {
+    return `ws://${httpBaseUrl.slice('http://'.length)}`
+  }
+  return httpBaseUrl
+}
+
+const defaultBackendNodeBaseUrl = 'http://localhost:8000'
 const backendNodeBaseUrlFromEnv =
   process.env.BACKEND_NODE_BASE_URL ||
   process.env.BACKEND_REST_BASE_URL?.replace(/\/rest\/?$/, '') ||
-  backendProxyUrl
+  defaultBackendNodeBaseUrl
+// For local and Docker development, the Vite proxy forwards API requests to the backend server.
+const backendProxyUrl = backendNodeBaseUrlFromEnv
+const backendWsBaseUrl = toWsBaseUrl(backendNodeBaseUrlFromEnv)
 
 let serverUrls = {
   graphqlBaseUrl: '',
@@ -56,12 +68,12 @@ if (isElectronBuild) {
   serverUrls = {
     graphqlBaseUrl: '/graphql',
     restBaseUrl: '/rest',
-    agentWsEndpoint: process.env.BACKEND_AGENT_WS_ENDPOINT || 'ws://localhost:8000/ws/agent',
-    teamWsEndpoint: process.env.BACKEND_TEAM_WS_ENDPOINT || 'ws://localhost:8000/ws/agent-team',
-    graphqlWsEndpoint: process.env.BACKEND_GRAPHQL_WS_ENDPOINT || 'ws://localhost:8000/graphql',
-    transcriptionWsEndpoint: process.env.BACKEND_TRANSCRIPTION_WS_ENDPOINT || 'ws://localhost:8000/ws/transcribe',
-    terminalWsEndpoint: process.env.BACKEND_TERMINAL_WS_ENDPOINT || 'ws://localhost:8000/ws/terminal',
-    fileExplorerWsEndpoint: process.env.BACKEND_FILE_EXPLORER_WS_ENDPOINT || 'ws://localhost:8000/ws/file-explorer'
+    agentWsEndpoint: process.env.BACKEND_AGENT_WS_ENDPOINT || `${backendWsBaseUrl}/ws/agent`,
+    teamWsEndpoint: process.env.BACKEND_TEAM_WS_ENDPOINT || `${backendWsBaseUrl}/ws/agent-team`,
+    graphqlWsEndpoint: process.env.BACKEND_GRAPHQL_WS_ENDPOINT || `${backendWsBaseUrl}/graphql`,
+    transcriptionWsEndpoint: process.env.BACKEND_TRANSCRIPTION_WS_ENDPOINT || `${backendWsBaseUrl}/ws/transcribe`,
+    terminalWsEndpoint: process.env.BACKEND_TERMINAL_WS_ENDPOINT || `${backendWsBaseUrl}/ws/terminal`,
+    fileExplorerWsEndpoint: process.env.BACKEND_FILE_EXPLORER_WS_ENDPOINT || `${backendWsBaseUrl}/ws/file-explorer`
   };
 } else {
   defaultNodeBaseUrl = backendNodeBaseUrlFromEnv;

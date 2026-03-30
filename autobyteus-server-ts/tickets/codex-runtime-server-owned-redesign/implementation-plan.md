@@ -62,7 +62,7 @@
 | 6 | `src/runtime-execution/runtime-adapter-registry.ts` | 1,2,4,5 | Runtime resolution boundary for composition/ingress. |
 | 7 | `src/runtime-execution/runtime-composition-service.ts` | 3,6 | Runtime create/restore centralization. |
 | 8 | `src/runtime-execution/runtime-command-ingress-service.ts` | 3,6 | Canonical send/interrupt/approval command path. |
-| 9 | `src/run-history/domain/models.ts` + `src/run-history/services/runtime-manifest-migration-service.ts` + `src/run-history/services/active-run-override-policy.ts` | 1 | Runtime metadata persistence + continuation policy. |
+| 9 | `src/run-history/domain/models.ts` + `src/run-history/services/runtime-manifest-migration-service.ts` | 1 | Runtime metadata persistence + continuation policy. |
 | 10 | `src/run-history/services/run-continuation-service.ts` | 7,8,9 | Continuation flow migration to runtime architecture. |
 | 11 | `src/services/agent-streaming/runtime-event-message-mapper.ts` | 1,2 | Event-method compatibility mapping contract. |
 | 12 | `src/services/agent-streaming/agent-stream-handler.ts` + `src/services/agent-streaming/agent-team-stream-handler.ts` + `src/api/websocket/agent.ts` | 8,11 | Runtime ingress + pre-connect policy + event mapping adoption. |

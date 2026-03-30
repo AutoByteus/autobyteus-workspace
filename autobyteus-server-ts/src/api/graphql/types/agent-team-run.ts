@@ -4,23 +4,15 @@ import {
   InputType,
   Mutation,
   ObjectType,
-  Query,
   Resolver,
   registerEnumType,
 } from "type-graphql";
 import { GraphQLJSON } from "graphql-scalars";
-import { TaskNotificationMode } from "autobyteus-ts/agent-team/task-notification/task-notification-mode.js";
-import { AgentTeamRunManager } from "../../../agent-team-execution/services/agent-team-run-manager.js";
-import { TeamRunMutationService } from "../services/team-run-mutation-service.js";
-import { AgentTeamRunConverter } from "../converters/agent-team-run-converter.js";
-import { AgentUserInput } from "./agent-user-input.js";
-import {
-  ActiveRuntimeSnapshotService,
-  getActiveRuntimeSnapshotService,
-} from "../services/active-runtime-snapshot-service.js";
+import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import { getTeamRunService } from "../../../agent-team-execution/services/team-run-service.js";
 
-registerEnumType(TaskNotificationMode, {
-  name: "TaskNotificationModeEnum",
+registerEnumType(SkillAccessMode, {
+  name: "SkillAccessModeEnum",
 });
 
 const logger = {
@@ -28,39 +20,6 @@ const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
   error: (...args: unknown[]) => console.error(...args),
 };
-
-@ObjectType()
-export class AgentTeamRunMemberStatus {
-  @Field(() => String, { nullable: true })
-  memberRouteKey?: string | null;
-
-  @Field(() => String)
-  memberName!: string;
-
-  @Field(() => String, { nullable: true })
-  memberRunId?: string | null;
-
-  @Field(() => String)
-  currentStatus!: string;
-}
-
-@ObjectType()
-export class AgentTeamRun {
-  @Field(() => String)
-  id!: string;
-
-  @Field(() => String)
-  name!: string;
-
-  @Field(() => String)
-  currentStatus!: string;
-
-  @Field(() => String, { nullable: true })
-  role?: string | null;
-
-  @Field(() => [AgentTeamRunMemberStatus])
-  members!: AgentTeamRunMemberStatus[];
-}
 
 @ObjectType()
 export class CreateAgentTeamRunResult {
@@ -83,6 +42,18 @@ export class TerminateAgentTeamRunResult {
   message!: string;
 }
 
+@ObjectType()
+export class RestoreAgentTeamRunResult {
+  @Field(() => Boolean)
+  success!: boolean;
+
+  @Field(() => String)
+  message!: string;
+
+  @Field(() => String, { nullable: true })
+  teamRunId?: string | null;
+}
+
 @InputType()
 export class TeamMemberConfigInput {
   @Field(() => String)
@@ -97,6 +68,9 @@ export class TeamMemberConfigInput {
   @Field(() => Boolean)
   autoExecuteTools!: boolean;
 
+  @Field(() => SkillAccessMode)
+  skillAccessMode!: SkillAccessMode;
+
   @Field(() => String, { nullable: true })
   workspaceId?: string | null;
 
@@ -110,9 +84,6 @@ export class TeamMemberConfigInput {
   memberRouteKey?: string | null;
 
   @Field(() => String, { nullable: true })
-  memberRunId?: string | null;
-
-  @Field(() => String, { nullable: true })
   runtimeKind?: string | null;
 }
 
@@ -123,118 +94,69 @@ export class CreateAgentTeamRunInput {
 
   @Field(() => [TeamMemberConfigInput])
   memberConfigs!: TeamMemberConfigInput[];
-
-  @Field(() => TaskNotificationMode, { nullable: true })
-  taskNotificationMode?: TaskNotificationMode | null;
-
-  @Field(() => Boolean, { nullable: true })
-  useXmlToolFormat?: boolean | null;
-}
-
-@InputType()
-export class SendMessageToTeamInput {
-  @Field(() => AgentUserInput)
-  userInput!: AgentUserInput;
-
-  @Field(() => String, { nullable: true })
-  teamRunId?: string | null;
-
-  @Field(() => String, { nullable: true })
-  targetNodeName?: string | null;
-
-  @Field(() => String, { nullable: true })
-  targetMemberName?: string | null;
-
-  @Field(() => String, { nullable: true })
-  teamDefinitionId?: string | null;
-
-  @Field(() => [TeamMemberConfigInput], { nullable: true })
-  memberConfigs?: TeamMemberConfigInput[] | null;
-
-  @Field(() => TaskNotificationMode, { nullable: true })
-  taskNotificationMode?: TaskNotificationMode | null;
-
-  @Field(() => Boolean, { nullable: true })
-  useXmlToolFormat?: boolean | null;
-}
-
-@ObjectType()
-export class SendMessageToTeamResult {
-  @Field(() => Boolean)
-  success!: boolean;
-
-  @Field(() => String)
-  message!: string;
-
-  @Field(() => String, { nullable: true })
-  teamRunId?: string | null;
 }
 
 @Resolver()
 export class AgentTeamRunResolver {
-  private readonly mutationService = new TeamRunMutationService();
-  private readonly activeRuntimeSnapshotService: ActiveRuntimeSnapshotService =
-    getActiveRuntimeSnapshotService();
-
-  private get agentTeamRunManager(): AgentTeamRunManager {
-    return AgentTeamRunManager.getInstance();
-  }
-
-  @Query(() => AgentTeamRun, { nullable: true })
-  agentTeamRun(@Arg("id", () => String) id: string): AgentTeamRun | null {
-    try {
-      const domainTeam = this.agentTeamRunManager.getTeamRun(id);
-      if (!domainTeam) {
-        return null;
-      }
-      return AgentTeamRunConverter.toGraphql(domainTeam as any);
-    } catch (error) {
-      logger.error(`Error fetching agent team run by ID ${id}: ${String(error)}`);
-      throw new Error("Unable to fetch agent team run at this time.");
-    }
-  }
-
-  @Query(() => [AgentTeamRun])
-  async agentTeamRuns(): Promise<AgentTeamRun[]> {
-    try {
-      return (await this.activeRuntimeSnapshotService.listActiveTeamRuns()) as AgentTeamRun[];
-    } catch (error) {
-      logger.error(`Error fetching all agent team runs: ${String(error)}`);
-      throw new Error("Unable to fetch agent team runs at this time.");
-    }
-  }
-
-  @Query(() => AgentTeamRun, { nullable: true })
-  async activeAgentTeamRunSnapshot(
-    @Arg("id", () => String) id: string,
-  ): Promise<AgentTeamRun | null> {
-    try {
-      return (await this.activeRuntimeSnapshotService.getActiveTeamRun(id)) as AgentTeamRun | null;
-    } catch (error) {
-      logger.error(`Error fetching active agent team snapshot for ID ${id}: ${String(error)}`);
-      throw new Error("Unable to fetch active agent team snapshot at this time.");
-    }
-  }
+  private readonly teamRunService = getTeamRunService();
 
   @Mutation(() => CreateAgentTeamRunResult)
   async createAgentTeamRun(
     @Arg("input", () => CreateAgentTeamRunInput)
     input: CreateAgentTeamRunInput,
   ): Promise<CreateAgentTeamRunResult> {
-    return this.mutationService.createAgentTeamRun(input);
+    try {
+      const run = await this.teamRunService.createTeamRun({
+        teamDefinitionId: input.teamDefinitionId,
+        memberConfigs: input.memberConfigs,
+      });
+      return {
+        success: true,
+        message: "Agent team run created successfully.",
+        teamRunId: run.runId,
+      };
+    } catch (error) {
+      logger.error(`Error creating agent team run: ${String(error)}`);
+      return { success: false, message: String(error) };
+    }
   }
 
   @Mutation(() => TerminateAgentTeamRunResult)
   async terminateAgentTeamRun(
-    @Arg("id", () => String) id: string,
+    @Arg("teamRunId", () => String) teamRunId: string,
   ): Promise<TerminateAgentTeamRunResult> {
-    return this.mutationService.terminateAgentTeamRun(id);
+    try {
+      const success = await this.teamRunService.terminateTeamRun(teamRunId);
+      return {
+        success,
+        message: success
+          ? "Agent team run terminated successfully."
+          : "Agent team run not found.",
+      };
+    } catch (error) {
+      logger.error(`Error terminating agent team run with ID ${teamRunId}: ${String(error)}`);
+      return { success: false, message: String(error) };
+    }
   }
 
-  @Mutation(() => SendMessageToTeamResult)
-  async sendMessageToTeam(
-    @Arg("input", () => SendMessageToTeamInput) input: SendMessageToTeamInput,
-  ): Promise<SendMessageToTeamResult> {
-    return this.mutationService.sendMessageToTeam(input);
+  @Mutation(() => RestoreAgentTeamRunResult)
+  async restoreAgentTeamRun(
+    @Arg("teamRunId", () => String) teamRunId: string,
+  ): Promise<RestoreAgentTeamRunResult> {
+    try {
+      const run = await this.teamRunService.restoreTeamRun(teamRunId);
+      return {
+        success: true,
+        message: "Agent team run restored successfully.",
+        teamRunId: run.runId,
+      };
+    } catch (error) {
+      logger.error(`Error restoring agent team run with ID ${teamRunId}: ${String(error)}`);
+      return {
+        success: false,
+        message: String(error),
+        teamRunId: null,
+      };
+    }
   }
 }

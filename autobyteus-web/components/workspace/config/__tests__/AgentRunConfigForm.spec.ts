@@ -4,7 +4,7 @@ import { createPinia, setActivePinia } from 'pinia';
 import { reactive } from 'vue';
 import AgentRunConfigForm from '../AgentRunConfigForm.vue';
 import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig';
-import { useRuntimeCapabilitiesStore } from '~/stores/runtimeCapabilitiesStore';
+import { useRuntimeAvailabilityStore } from '~/stores/runtimeAvailabilityStore';
 
 // Mock child components
 vi.mock('../WorkspaceSelector.vue', () => ({
@@ -29,12 +29,12 @@ vi.mock('~/stores/llmProviderConfig', () => ({
   useLLMProviderConfigStore: vi.fn()
 }));
 
-vi.mock('~/stores/runtimeCapabilitiesStore', () => ({
-  useRuntimeCapabilitiesStore: vi.fn()
+vi.mock('~/stores/runtimeAvailabilityStore', () => ({
+  useRuntimeAvailabilityStore: vi.fn()
 }));
 
 describe('AgentRunConfigForm', () => {
-  let runtimeCapabilityStore: any;
+  let runtimeAvailabilityStore: any;
 
   beforeEach(() => {
     setActivePinia(createPinia());
@@ -56,29 +56,29 @@ describe('AgentRunConfigForm', () => {
          return model?.configSchema || null;
     });
 
-    runtimeCapabilityStore = {
+    runtimeAvailabilityStore = {
       hasFetched: true,
-      capabilities: [
+      availabilities: [
         { runtimeKind: 'autobyteus', enabled: true, reason: null },
         { runtimeKind: 'codex_app_server', enabled: true, reason: null },
       ],
-      fetchRuntimeCapabilities: vi.fn().mockResolvedValue([
+      fetchRuntimeAvailabilities: vi.fn().mockResolvedValue([
         { runtimeKind: 'autobyteus', enabled: true, reason: null },
         { runtimeKind: 'codex_app_server', enabled: true, reason: null },
       ]),
-      capabilityByKind: vi.fn((runtimeKind: string) =>
-        runtimeCapabilityStore.capabilities.find((capability: any) => capability.runtimeKind === runtimeKind) ?? null,
+      availabilityByKind: vi.fn((runtimeKind: string) =>
+        runtimeAvailabilityStore.availabilities.find((availability: any) => availability.runtimeKind === runtimeKind) ?? null,
       ),
       isRuntimeEnabled: vi.fn((runtimeKind: string) =>
-        runtimeCapabilityStore.capabilityByKind(runtimeKind)?.enabled ?? runtimeKind === 'autobyteus',
+        runtimeAvailabilityStore.availabilityByKind(runtimeKind)?.enabled ?? runtimeKind === 'autobyteus',
       ),
       runtimeReason: vi.fn((runtimeKind: string) =>
-        runtimeCapabilityStore.capabilityByKind(runtimeKind)?.reason ?? null,
+        runtimeAvailabilityStore.availabilityByKind(runtimeKind)?.reason ?? null,
       ),
     };
 
     (useLLMProviderConfigStore as any).mockReturnValue(mockStore);
-    (useRuntimeCapabilitiesStore as any).mockReturnValue(runtimeCapabilityStore);
+    (useRuntimeAvailabilityStore as any).mockReturnValue(runtimeAvailabilityStore);
   });
 
   const mockConfig = {
@@ -202,7 +202,7 @@ describe('AgentRunConfigForm', () => {
   });
 
   it('filters unavailable runtime options from selector', async () => {
-    runtimeCapabilityStore.capabilities = [
+    runtimeAvailabilityStore.availabilities = [
       { runtimeKind: 'autobyteus', enabled: true, reason: null },
       { runtimeKind: 'codex_app_server', enabled: false, reason: 'Codex CLI is not available on PATH.' },
     ];
