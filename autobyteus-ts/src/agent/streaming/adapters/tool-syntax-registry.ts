@@ -1,4 +1,5 @@
 import { SegmentType } from '../segments/segment-events.js';
+import { decodeXmlEntitiesOnce } from './tool-call-parsing.js';
 
 export type ToolArgsBuilder = (metadata: Record<string, any>, content: string) => Record<string, any> | null;
 
@@ -21,7 +22,11 @@ const buildWriteFileArgs: ToolArgsBuilder = (metadata, content) => {
 };
 
 const buildRunBashArgs: ToolArgsBuilder = (metadata, content) => {
-  const command = content || metadata.command || metadata.cmd || '';
+  const commandSource =
+    content ||
+    (typeof metadata.command === 'string' ? metadata.command : '') ||
+    (typeof metadata.cmd === 'string' ? metadata.cmd : '');
+  const command = decodeXmlEntitiesOnce(commandSource);
   if (!command) {
     return null;
   }

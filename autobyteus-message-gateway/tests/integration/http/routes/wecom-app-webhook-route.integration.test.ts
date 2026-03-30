@@ -72,8 +72,7 @@ describe("wecom-app-webhook-route", () => {
     const handleInbound = vi.fn(async () => ({
       accepted: true,
       duplicate: false,
-      blocked: false,
-      forwarded: true,
+      queued: true,
       envelopeCount: 1,
     }));
 
@@ -120,7 +119,7 @@ describe("wecom-app-webhook-route", () => {
     expect(response.statusCode).toBe(200);
     expect(response.json()).toMatchObject({
       accepted: true,
-      forwarded: true,
+      queued: true,
     });
     expect(handleInbound).toHaveBeenCalledOnce();
 

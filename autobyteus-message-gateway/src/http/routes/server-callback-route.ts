@@ -42,7 +42,7 @@ export function registerServerCallbackRoutes(app: FastifyInstance, deps: ServerC
       return reply.code(202).send({
         accepted: true,
         duplicate: enqueueResult.duplicate,
-        queued: true,
+        queued: !enqueueResult.duplicate,
       });
     } catch (error) {
       if (error instanceof ExternalChannelParseError) {

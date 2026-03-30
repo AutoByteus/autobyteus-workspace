@@ -1,7 +1,8 @@
 import { randomBytes } from 'node:crypto';
 import { OutputBuffer } from './output-buffer.js';
 import { PromptDetector } from './prompt-detector.js';
-import { getDefaultSessionFactory } from './session-factory.js';
+import { getDefaultSessionFactory, getFallbackSessionFactories } from './session-factory.js';
+import { startTerminalSessionWithFallback } from './session-startup.js';
 import { TerminalResult } from './types.js';
 import { stripAnsiCodes } from './ansi-utils.js';
 import type { TerminalSession, TerminalSessionFactory } from './terminal-session.js';
@@ -14,6 +15,7 @@ function sleep(ms: number): Promise<void> {
 
 export class TerminalSessionManager {
   private sessionFactory: TerminalSessionFactory;
+  private fallbackSessionFactories: TerminalSessionFactory[];
   private promptDetector: PromptDetector;
   private session: TerminalSession | null = null;
   private outputBuffer: OutputBuffer = new OutputBuffer();
@@ -22,9 +24,12 @@ export class TerminalSessionManager {
 
   constructor(
     sessionFactory?: TerminalSessionFactory,
-    promptDetector?: PromptDetector
+    promptDetector?: PromptDetector,
+    fallbackSessionFactories?: TerminalSessionFactory[],
   ) {
     this.sessionFactory = sessionFactory ?? getDefaultSessionFactory();
+    this.fallbackSessionFactories =
+      fallbackSessionFactories ?? (sessionFactory ? [] : getFallbackSessionFactories(this.sessionFactory));
     this.promptDetector = promptDetector ?? new PromptDetector();
   }
 
@@ -43,16 +48,23 @@ export class TerminalSessionManager {
 
     if (this.session) {
       await this.session.close();
+      this.session = null;
+      this.started = false;
     }
 
     const sessionId = `term-${randomBytes(4).toString('hex')}`;
-    this.session = new this.sessionFactory(sessionId);
-    await this.session.start(cwd);
+    const { session, selectedFactory } = await startTerminalSessionWithFallback({
+      sessionId,
+      cwd,
+      primaryFactory: this.sessionFactory,
+      fallbackFactories: this.fallbackSessionFactories,
+    });
+    this.session = session;
     this.cwd = cwd;
     this.started = true;
 
-    const backendName = this.sessionFactory.name || 'UnknownSessionBackend';
-    const selectedShell = this.session.selectedShell;
+    const backendName = selectedFactory.name || 'UnknownSessionBackend';
+    const selectedShell = session.selectedShell;
     if (selectedShell) {
       console.info(`TerminalSessionManager started backend '${backendName}' with shell '${selectedShell}' in '${cwd}'.`);
     } else {

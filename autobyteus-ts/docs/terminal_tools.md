@@ -13,6 +13,7 @@ These tools replace the legacy `bash_executor` with backend-driven terminal sess
 
 - **State persists** — `cd` and environment variables persist across commands
 - **Background processes** — Start servers, check output, stop them
+- **Backend recovery is shared** — Unix runtimes still prefer PTY, but startup recovery is centralized so ordinary commands continue to work when PTY bootstrap is unavailable
 
 ## Tools
 
@@ -40,6 +41,7 @@ await runBash(context, "npm install", 120);
 - State persists between calls (`cd`, `export` work as expected)
 - Command is killed if timeout exceeded
 - Background mode returns a process handle for `get_process_output` and `stop_background_process`
+- On Linux/macOS, `PtySession` remains the preferred backend; if `node-pty` startup is broken because the bundled `spawn-helper` is not executable, the runtime repairs that helper when possible and still has a shared direct-shell recovery path for non-PTY execution
 
 ---
 
@@ -140,6 +142,8 @@ The Windows tests:
 - **Linux/macOS**: Full support out of the box.
 - **Windows**: Supported via **WSL (Windows Subsystem for Linux)**.
 - **Android**: Supported via **Termux + Node.js** using the direct-shell backend (no `node-pty` requirement on Android profile).
+
+For macOS specifically, the workspace install also repairs the `node-pty` `spawn-helper` execute bit during `postinstall` because `node-pty@1.1.0` can publish that file without executable permissions.
 
 ### Android (Termux) Setup Guide
 

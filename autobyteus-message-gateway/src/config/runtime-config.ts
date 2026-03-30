@@ -18,8 +18,6 @@ export type GatewayRuntimeConfig = {
   serverCallbackSharedSecret: string | null;
   allowInsecureServerCallbacks: boolean;
   adminToken: string | null;
-  idempotencyTtlSeconds: number;
-  callbackIdempotencyTtlSeconds: number;
   outboundMaxAttempts: number;
   outboundBaseDelayMs: number;
   whatsappBusinessSecret: string | null;
@@ -35,6 +33,8 @@ export type GatewayRuntimeConfig = {
   telegramEnabled: boolean;
   telegramBotToken: string | null;
   telegramAccountId: string | null;
+  telegramDiscoveryMaxCandidates: number;
+  telegramDiscoveryTtlSeconds: number;
   telegramPollingEnabled: boolean;
   telegramWebhookEnabled: boolean;
   telegramWebhookSecretToken: string | null;
@@ -75,16 +75,6 @@ export function buildRuntimeConfig(env: GatewayEnv): GatewayRuntimeConfig {
       "GATEWAY_ALLOW_INSECURE_SERVER_CALLBACKS",
     ),
     adminToken: env.GATEWAY_ADMIN_TOKEN ?? null,
-    idempotencyTtlSeconds: parsePositiveInteger(
-      env.GATEWAY_IDEMPOTENCY_TTL_SECONDS,
-      3600,
-      "GATEWAY_IDEMPOTENCY_TTL_SECONDS",
-    ),
-    callbackIdempotencyTtlSeconds: parsePositiveInteger(
-      env.GATEWAY_CALLBACK_IDEMPOTENCY_TTL_SECONDS,
-      3600,
-      "GATEWAY_CALLBACK_IDEMPOTENCY_TTL_SECONDS",
-    ),
     outboundMaxAttempts: parsePositiveInteger(
       env.GATEWAY_OUTBOUND_MAX_ATTEMPTS,
       3,
@@ -128,6 +118,16 @@ export function buildRuntimeConfig(env: GatewayEnv): GatewayRuntimeConfig {
     ),
     telegramBotToken: env.GATEWAY_TELEGRAM_BOT_TOKEN ?? null,
     telegramAccountId: env.GATEWAY_TELEGRAM_ACCOUNT_ID ?? null,
+    telegramDiscoveryMaxCandidates: parsePositiveInteger(
+      env.GATEWAY_TELEGRAM_DISCOVERY_MAX_CANDIDATES,
+      200,
+      "GATEWAY_TELEGRAM_DISCOVERY_MAX_CANDIDATES",
+    ),
+    telegramDiscoveryTtlSeconds: parsePositiveInteger(
+      env.GATEWAY_TELEGRAM_DISCOVERY_TTL_SECONDS,
+      7 * 24 * 60 * 60,
+      "GATEWAY_TELEGRAM_DISCOVERY_TTL_SECONDS",
+    ),
     telegramPollingEnabled: parseBoolean(
       env.GATEWAY_TELEGRAM_POLLING_ENABLED,
       true,

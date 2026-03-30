@@ -14,8 +14,6 @@ describe("runtime-config", () => {
       serverCallbackSharedSecret: null,
       allowInsecureServerCallbacks: false,
       adminToken: null,
-      idempotencyTtlSeconds: 3600,
-      callbackIdempotencyTtlSeconds: 3600,
       outboundMaxAttempts: 3,
       outboundBaseDelayMs: 100,
       whatsappBusinessSecret: null,
@@ -31,6 +29,8 @@ describe("runtime-config", () => {
       telegramEnabled: false,
       telegramBotToken: null,
       telegramAccountId: null,
+      telegramDiscoveryMaxCandidates: 200,
+      telegramDiscoveryTtlSeconds: 604800,
       telegramPollingEnabled: true,
       telegramWebhookEnabled: false,
       telegramWebhookSecretToken: null,
@@ -56,8 +56,6 @@ describe("runtime-config", () => {
       GATEWAY_SERVER_CALLBACK_SHARED_SECRET: "callback-secret",
       GATEWAY_ALLOW_INSECURE_SERVER_CALLBACKS: "true",
       GATEWAY_ADMIN_TOKEN: "gateway-admin-token",
-      GATEWAY_IDEMPOTENCY_TTL_SECONDS: "900",
-      GATEWAY_CALLBACK_IDEMPOTENCY_TTL_SECONDS: "1800",
       GATEWAY_OUTBOUND_MAX_ATTEMPTS: "7",
       GATEWAY_OUTBOUND_BASE_DELAY_MS: "250",
       GATEWAY_WHATSAPP_BUSINESS_SECRET: "wa-secret",
@@ -74,6 +72,8 @@ describe("runtime-config", () => {
       GATEWAY_TELEGRAM_ENABLED: "true",
       GATEWAY_TELEGRAM_BOT_TOKEN: "telegram-bot-token",
       GATEWAY_TELEGRAM_ACCOUNT_ID: "telegram-acct-1",
+      GATEWAY_TELEGRAM_DISCOVERY_MAX_CANDIDATES: "25",
+      GATEWAY_TELEGRAM_DISCOVERY_TTL_SECONDS: "43200",
       GATEWAY_TELEGRAM_POLLING_ENABLED: "false",
       GATEWAY_TELEGRAM_WEBHOOK_ENABLED: "true",
       GATEWAY_TELEGRAM_WEBHOOK_SECRET_TOKEN: "telegram-webhook-secret",
@@ -98,8 +98,6 @@ describe("runtime-config", () => {
       serverCallbackSharedSecret: "callback-secret",
       allowInsecureServerCallbacks: true,
       adminToken: "gateway-admin-token",
-      idempotencyTtlSeconds: 900,
-      callbackIdempotencyTtlSeconds: 1800,
       outboundMaxAttempts: 7,
       outboundBaseDelayMs: 250,
       whatsappBusinessSecret: "wa-secret",
@@ -121,6 +119,8 @@ describe("runtime-config", () => {
       telegramEnabled: true,
       telegramBotToken: "telegram-bot-token",
       telegramAccountId: "telegram-acct-1",
+      telegramDiscoveryMaxCandidates: 25,
+      telegramDiscoveryTtlSeconds: 43200,
       telegramPollingEnabled: false,
       telegramWebhookEnabled: true,
       telegramWebhookSecretToken: "telegram-webhook-secret",
@@ -183,6 +183,22 @@ describe("runtime-config", () => {
       }),
     ).toThrowError(
       "GATEWAY_WECHAT_PERSONAL_PEER_CANDIDATE_LIMIT must be a positive integer.",
+    );
+
+    expect(() =>
+      buildRuntimeConfig({
+        GATEWAY_TELEGRAM_DISCOVERY_MAX_CANDIDATES: "0",
+      }),
+    ).toThrowError(
+      "GATEWAY_TELEGRAM_DISCOVERY_MAX_CANDIDATES must be a positive integer.",
+    );
+
+    expect(() =>
+      buildRuntimeConfig({
+        GATEWAY_TELEGRAM_DISCOVERY_TTL_SECONDS: "0",
+      }),
+    ).toThrowError(
+      "GATEWAY_TELEGRAM_DISCOVERY_TTL_SECONDS must be a positive integer.",
     );
   });
 

@@ -4,6 +4,33 @@ export type JsonToolParsingStrategy = {
 
 const ARGS_OPEN = '<arguments>';
 const ARGS_CLOSE = '</arguments>';
+const XML_ENTITY_PATTERN = /&(#x[0-9a-fA-F]+|#\d+|amp|lt|gt|quot|apos);/g;
+const XML_NAMED_ENTITIES: Record<string, string> = {
+  amp: '&',
+  lt: '<',
+  gt: '>',
+  quot: '"',
+  apos: "'"
+};
+
+export const decodeXmlEntitiesOnce = (value: string): string =>
+  value.replace(XML_ENTITY_PATTERN, (fullMatch, entity) => {
+    if (entity in XML_NAMED_ENTITIES) {
+      return XML_NAMED_ENTITIES[entity];
+    }
+
+    if (entity.startsWith('#x')) {
+      const parsed = Number.parseInt(entity.slice(2), 16);
+      return Number.isFinite(parsed) ? String.fromCodePoint(parsed) : fullMatch;
+    }
+
+    if (entity.startsWith('#')) {
+      const parsed = Number.parseInt(entity.slice(1), 10);
+      return Number.isFinite(parsed) ? String.fromCodePoint(parsed) : fullMatch;
+    }
+
+    return fullMatch;
+  });
 
 export const parseXmlArguments = (content: string): Record<string, any> => {
   const match = new RegExp(`${ARGS_OPEN}([\\s\\S]*?)${ARGS_CLOSE}`, 'i').exec(content);
@@ -88,7 +115,7 @@ const parseXmlFragment = (fragment: string): Record<string, any> => {
     if (/<[A-Za-z0-9_]+/.test(trimmedInner)) {
       argumentsMap[name] = parseXmlFragment(trimmedInner);
     } else {
-      argumentsMap[name] = trimmedInner;
+      argumentsMap[name] = decodeXmlEntitiesOnce(trimmedInner);
     }
   }
   return argumentsMap;
@@ -100,7 +127,7 @@ const parseLegacyArguments = (argsContent: string): Record<string, any> => {
   let match: RegExpExecArray | null;
   while ((match = argPattern.exec(argsContent)) !== null) {
     const argName = match[1];
-    const argValue = (match[2] ?? '').trim();
+    const argValue = decodeXmlEntitiesOnce((match[2] ?? '').trim());
     argumentsMap[argName] = argValue;
   }
   return argumentsMap;

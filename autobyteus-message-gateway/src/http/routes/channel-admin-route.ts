@@ -27,6 +27,39 @@ import {
 } from "../../infrastructure/adapters/wechat-personal/wechat-personal-adapter.js";
 import { requireAdminToken } from "../middleware/require-admin-token.js";
 
+type AdminReplyLike = {
+  code: (statusCode: number) => {
+    send: (payload?: unknown) => unknown;
+  };
+};
+
+type ServiceUnavailableResponse = {
+  code: string;
+  detail: string;
+};
+
+type PeerDiscoveryRouteService = {
+  listPeerCandidates: (options: {
+    accountId?: string | null;
+    includeGroups?: boolean;
+    limit?: number;
+  }) => Promise<unknown>;
+};
+
+type PersonalSessionRouteService = {
+  startPersonalSession: (accountLabel: string) => Promise<{ sessionId: string }>;
+  getPersonalSessionQr: (sessionId: string) => Promise<unknown>;
+  getPersonalSessionStatus: (sessionId: string) => Promise<unknown>;
+  listPersonalSessionPeerCandidates: (
+    sessionId: string,
+    options: {
+      includeGroups?: boolean;
+      limit?: number;
+    },
+  ) => Promise<unknown>;
+  stopPersonalSession: (sessionId: string) => Promise<void>;
+};
+
 export type ChannelAdminDeps = {
   sessionService: WhatsAppPersonalSessionService;
   wechatSessionService?: WechatPersonalSessionService;
@@ -63,6 +96,14 @@ export function registerChannelAdminRoutes(app: FastifyInstance, deps: ChannelAd
     maxPeerCandidateLimit,
     "wechatMaxPeerCandidateLimit",
   );
+  const generalPeerCandidateLimits = {
+    defaultLimit: defaultPeerCandidateLimit,
+    maxLimit: maxPeerCandidateLimit,
+  };
+  const wechatPeerCandidateLimits = {
+    defaultLimit: wechatDefaultPeerCandidateLimit,
+    maxLimit: wechatMaxPeerCandidateLimit,
+  };
 
   app.get("/api/channel-admin/v1/capabilities", { preHandler: adminGuard }, async (_request, reply) => {
     if (!deps.capabilityService) {
@@ -80,286 +121,218 @@ export function registerChannelAdminRoutes(app: FastifyInstance, deps: ChannelAd
     return reply.code(200).send({ items });
   });
 
-  app.get(
-    "/api/channel-admin/v1/discord/peer-candidates",
-    { preHandler: adminGuard },
-    async (request, reply) => {
-      if (!deps.discordPeerDiscoveryService) {
-        return reply.code(503).send({
-          code: "DISCORD_DISCOVERY_NOT_ENABLED",
-          detail: "Discord peer discovery is not enabled.",
-        });
-      }
-
-      try {
-        const query = (request.query as Record<string, unknown>) ?? {};
-        const limit = parsePeerCandidateLimit(
-          query.limit,
-          defaultPeerCandidateLimit,
-          maxPeerCandidateLimit,
-        );
-        const includeGroups = parseBooleanQuery(query.includeGroups, true, "includeGroups");
-        const accountId =
-          typeof query.accountId === "string" && query.accountId.trim().length > 0
-            ? query.accountId.trim()
-            : null;
-        const result = await deps.discordPeerDiscoveryService.listPeerCandidates({
-          accountId,
-          includeGroups,
-          limit,
-        });
-        return reply.code(200).send(result);
-      } catch (error) {
-        return handleAdminError(reply, error);
-      }
+  registerPeerDiscoveryRoute(app, {
+    path: "/api/channel-admin/v1/discord/peer-candidates",
+    adminGuard,
+    service: deps.discordPeerDiscoveryService,
+    unavailableResponse: {
+      code: "DISCORD_DISCOVERY_NOT_ENABLED",
+      detail: "Discord peer discovery is not enabled.",
     },
-  );
-
-  app.get(
-    "/api/channel-admin/v1/telegram/peer-candidates",
-    { preHandler: adminGuard },
-    async (request, reply) => {
-      if (!deps.telegramPeerDiscoveryService) {
-        return reply.code(503).send({
-          code: "TELEGRAM_DISCOVERY_NOT_ENABLED",
-          detail: "Telegram peer discovery is not enabled.",
-        });
-      }
-
-      try {
-        const query = (request.query as Record<string, unknown>) ?? {};
-        const limit = parsePeerCandidateLimit(
-          query.limit,
-          wechatDefaultPeerCandidateLimit,
-          wechatMaxPeerCandidateLimit,
-        );
-        const includeGroups = parseBooleanQuery(query.includeGroups, true, "includeGroups");
-        const accountId =
-          typeof query.accountId === "string" && query.accountId.trim().length > 0
-            ? query.accountId.trim()
-            : null;
-        const result = await deps.telegramPeerDiscoveryService.listPeerCandidates({
-          accountId,
-          includeGroups,
-          limit,
-        });
-        return reply.code(200).send(result);
-      } catch (error) {
-        return handleAdminError(reply, error);
-      }
+    ...generalPeerCandidateLimits,
+  });
+  registerPeerDiscoveryRoute(app, {
+    path: "/api/channel-admin/v1/telegram/peer-candidates",
+    adminGuard,
+    service: deps.telegramPeerDiscoveryService,
+    unavailableResponse: {
+      code: "TELEGRAM_DISCOVERY_NOT_ENABLED",
+      detail: "Telegram peer discovery is not enabled.",
     },
-  );
+    ...generalPeerCandidateLimits,
+  });
 
-  app.post(
-    "/api/channel-admin/v1/whatsapp/personal/sessions",
-    { preHandler: adminGuard },
-    async (request, reply) => {
-      try {
-        const body = (request.body as Record<string, unknown>) ?? {};
-        const accountLabel =
-          typeof body.accountLabel === "string" && body.accountLabel.trim().length > 0
-            ? body.accountLabel
-            : "default";
-        const result = await deps.sessionService.startPersonalSession(accountLabel);
-        return reply.code(201).send(result);
-      } catch (error) {
-        return handleAdminError(reply, error);
-      }
+  registerPersonalSessionRoutes(app, {
+    providerPathPrefix: "/api/channel-admin/v1/whatsapp/personal",
+    adminGuard,
+    service: deps.sessionService,
+    ...generalPeerCandidateLimits,
+  });
+  registerPersonalSessionRoutes(app, {
+    providerPathPrefix: "/api/channel-admin/v1/wechat/personal",
+    adminGuard,
+    service: deps.wechatSessionService,
+    unavailableResponse: {
+      code: "WECHAT_SESSION_SERVICE_UNAVAILABLE",
+      detail: "WeChat session service is not configured.",
     },
-  );
-
-  app.get(
-    "/api/channel-admin/v1/whatsapp/personal/sessions/:sessionId/qr",
-    { preHandler: adminGuard },
-    async (request, reply) => {
-      try {
-        const sessionId = (request.params as { sessionId: string }).sessionId;
-        const result = await deps.sessionService.getPersonalSessionQr(sessionId);
-        return reply.code(200).send(result);
-      } catch (error) {
-        return handleAdminError(reply, error);
-      }
-    },
-  );
-
-  app.get(
-    "/api/channel-admin/v1/whatsapp/personal/sessions/:sessionId/status",
-    { preHandler: adminGuard },
-    async (request, reply) => {
-      try {
-        const sessionId = (request.params as { sessionId: string }).sessionId;
-        const status = await deps.sessionService.getPersonalSessionStatus(sessionId);
-        return reply.code(200).send(status);
-      } catch (error) {
-        return handleAdminError(reply, error);
-      }
-    },
-  );
-
-  app.get(
-    "/api/channel-admin/v1/whatsapp/personal/sessions/:sessionId/peer-candidates",
-    { preHandler: adminGuard },
-    async (request, reply) => {
-      try {
-        const sessionId = (request.params as { sessionId: string }).sessionId;
-        const query = (request.query as Record<string, unknown>) ?? {};
-        const limit = parsePeerCandidateLimit(
-          query.limit,
-          defaultPeerCandidateLimit,
-          maxPeerCandidateLimit,
-        );
-        const includeGroups = parseBooleanQuery(query.includeGroups, true, "includeGroups");
-
-        const result = await deps.sessionService.listPersonalSessionPeerCandidates(sessionId, {
-          limit,
-          includeGroups,
-        });
-        return reply.code(200).send(result);
-      } catch (error) {
-        return handleAdminError(reply, error);
-      }
-    },
-  );
-
-  app.delete(
-    "/api/channel-admin/v1/whatsapp/personal/sessions/:sessionId",
-    { preHandler: adminGuard },
-    async (request, reply) => {
-      try {
-        const sessionId = (request.params as { sessionId: string }).sessionId;
-        await deps.sessionService.stopPersonalSession(sessionId);
-        return reply.code(204).send();
-      } catch (error) {
-        return handleAdminError(reply, error);
-      }
-    },
-  );
-
-  app.post(
-    "/api/channel-admin/v1/wechat/personal/sessions",
-    { preHandler: adminGuard },
-    async (request, reply) => {
-      if (!deps.wechatSessionService) {
-        return reply.code(503).send({
-          code: "WECHAT_SESSION_SERVICE_UNAVAILABLE",
-          detail: "WeChat session service is not configured.",
-        });
-      }
-
-      try {
-        const body = (request.body as Record<string, unknown>) ?? {};
-        const accountLabel =
-          typeof body.accountLabel === "string" && body.accountLabel.trim().length > 0
-            ? body.accountLabel
-            : "default";
-        const result = await deps.wechatSessionService.startPersonalSession(accountLabel);
-        return reply.code(201).send(result);
-      } catch (error) {
-        return handleAdminError(reply, error);
-      }
-    },
-  );
-
-  app.get(
-    "/api/channel-admin/v1/wechat/personal/sessions/:sessionId/qr",
-    { preHandler: adminGuard },
-    async (request, reply) => {
-      if (!deps.wechatSessionService) {
-        return reply.code(503).send({
-          code: "WECHAT_SESSION_SERVICE_UNAVAILABLE",
-          detail: "WeChat session service is not configured.",
-        });
-      }
-      try {
-        const sessionId = (request.params as { sessionId: string }).sessionId;
-        const result = await deps.wechatSessionService.getPersonalSessionQr(sessionId);
-        return reply.code(200).send(result);
-      } catch (error) {
-        return handleAdminError(reply, error);
-      }
-    },
-  );
-
-  app.get(
-    "/api/channel-admin/v1/wechat/personal/sessions/:sessionId/status",
-    { preHandler: adminGuard },
-    async (request, reply) => {
-      if (!deps.wechatSessionService) {
-        return reply.code(503).send({
-          code: "WECHAT_SESSION_SERVICE_UNAVAILABLE",
-          detail: "WeChat session service is not configured.",
-        });
-      }
-      try {
-        const sessionId = (request.params as { sessionId: string }).sessionId;
-        const status = await deps.wechatSessionService.getPersonalSessionStatus(sessionId);
-        return reply.code(200).send(status);
-      } catch (error) {
-        return handleAdminError(reply, error);
-      }
-    },
-  );
-
-  app.get(
-    "/api/channel-admin/v1/wechat/personal/sessions/:sessionId/peer-candidates",
-    { preHandler: adminGuard },
-    async (request, reply) => {
-      if (!deps.wechatSessionService) {
-        return reply.code(503).send({
-          code: "WECHAT_SESSION_SERVICE_UNAVAILABLE",
-          detail: "WeChat session service is not configured.",
-        });
-      }
-      try {
-        const sessionId = (request.params as { sessionId: string }).sessionId;
-        const query = (request.query as Record<string, unknown>) ?? {};
-        const limit = parsePeerCandidateLimit(
-          query.limit,
-          wechatDefaultPeerCandidateLimit,
-          wechatMaxPeerCandidateLimit,
-        );
-        const includeGroups = parseBooleanQuery(query.includeGroups, true, "includeGroups");
-        const result = await deps.wechatSessionService.listPersonalSessionPeerCandidates(
-          sessionId,
-          {
-            limit,
-            includeGroups,
-          },
-        );
-        return reply.code(200).send(result);
-      } catch (error) {
-        return handleAdminError(reply, error);
-      }
-    },
-  );
-
-  app.delete(
-    "/api/channel-admin/v1/wechat/personal/sessions/:sessionId",
-    { preHandler: adminGuard },
-    async (request, reply) => {
-      if (!deps.wechatSessionService) {
-        return reply.code(503).send({
-          code: "WECHAT_SESSION_SERVICE_UNAVAILABLE",
-          detail: "WeChat session service is not configured.",
-        });
-      }
-      try {
-        const sessionId = (request.params as { sessionId: string }).sessionId;
-        await deps.wechatSessionService.stopPersonalSession(sessionId);
-        return reply.code(204).send();
-      } catch (error) {
-        return handleAdminError(reply, error);
-      }
-    },
-  );
+    ...wechatPeerCandidateLimits,
+  });
 }
 
+type PeerDiscoveryRouteOptions = {
+  path: string;
+  adminGuard: ReturnType<typeof requireAdminToken>;
+  service?: PeerDiscoveryRouteService;
+  unavailableResponse: ServiceUnavailableResponse;
+  defaultLimit: number;
+  maxLimit: number;
+};
+
+const registerPeerDiscoveryRoute = (
+  app: FastifyInstance,
+  options: PeerDiscoveryRouteOptions,
+): void => {
+  app.get(options.path, { preHandler: options.adminGuard }, async (request, reply) => {
+    if (!options.service) {
+      return reply.code(503).send(options.unavailableResponse);
+    }
+
+    try {
+      const query = (request.query as Record<string, unknown>) ?? {};
+      const limit = parsePeerCandidateLimit(
+        query.limit,
+        options.defaultLimit,
+        options.maxLimit,
+      );
+      const includeGroups = parseBooleanQuery(query.includeGroups, true, "includeGroups");
+      const accountId =
+        typeof query.accountId === "string" && query.accountId.trim().length > 0
+          ? query.accountId.trim()
+          : null;
+      const result = await options.service.listPeerCandidates({
+        accountId,
+        includeGroups,
+        limit,
+      });
+      return reply.code(200).send(result);
+    } catch (error) {
+      return handleAdminError(reply, error);
+    }
+  });
+};
+
+type PersonalSessionRouteOptions = {
+  providerPathPrefix: string;
+  adminGuard: ReturnType<typeof requireAdminToken>;
+  service?: PersonalSessionRouteService;
+  unavailableResponse?: ServiceUnavailableResponse;
+  defaultLimit: number;
+  maxLimit: number;
+};
+
+const registerPersonalSessionRoutes = (
+  app: FastifyInstance,
+  options: PersonalSessionRouteOptions,
+): void => {
+  const sessionCollectionPath = `${options.providerPathPrefix}/sessions`;
+  const sessionPath = `${sessionCollectionPath}/:sessionId`;
+
+  app.post(sessionCollectionPath, { preHandler: options.adminGuard }, async (request, reply) => {
+    const service = resolvePersonalSessionService(options.service, options.unavailableResponse, reply);
+    if (!service) {
+      return;
+    }
+
+    try {
+      const body = (request.body as Record<string, unknown>) ?? {};
+      const accountLabel =
+        typeof body.accountLabel === "string" && body.accountLabel.trim().length > 0
+          ? body.accountLabel
+          : "default";
+      const result = await service.startPersonalSession(accountLabel);
+      return reply.code(201).send(result);
+    } catch (error) {
+      return handleAdminError(reply, error);
+    }
+  });
+
+  app.get(`${sessionPath}/qr`, { preHandler: options.adminGuard }, async (request, reply) => {
+    const service = resolvePersonalSessionService(options.service, options.unavailableResponse, reply);
+    if (!service) {
+      return;
+    }
+
+    try {
+      const sessionId = (request.params as { sessionId: string }).sessionId;
+      const result = await service.getPersonalSessionQr(sessionId);
+      return reply.code(200).send(result);
+    } catch (error) {
+      return handleAdminError(reply, error);
+    }
+  });
+
+  app.get(`${sessionPath}/status`, { preHandler: options.adminGuard }, async (request, reply) => {
+    const service = resolvePersonalSessionService(options.service, options.unavailableResponse, reply);
+    if (!service) {
+      return;
+    }
+
+    try {
+      const sessionId = (request.params as { sessionId: string }).sessionId;
+      const status = await service.getPersonalSessionStatus(sessionId);
+      return reply.code(200).send(status);
+    } catch (error) {
+      return handleAdminError(reply, error);
+    }
+  });
+
+  app.get(
+    `${sessionPath}/peer-candidates`,
+    { preHandler: options.adminGuard },
+    async (request, reply) => {
+      const service = resolvePersonalSessionService(
+        options.service,
+        options.unavailableResponse,
+        reply,
+      );
+      if (!service) {
+        return;
+      }
+
+      try {
+        const sessionId = (request.params as { sessionId: string }).sessionId;
+        const query = (request.query as Record<string, unknown>) ?? {};
+        const limit = parsePeerCandidateLimit(
+          query.limit,
+          options.defaultLimit,
+          options.maxLimit,
+        );
+        const includeGroups = parseBooleanQuery(query.includeGroups, true, "includeGroups");
+        const result = await service.listPersonalSessionPeerCandidates(sessionId, {
+          limit,
+          includeGroups,
+        });
+        return reply.code(200).send(result);
+      } catch (error) {
+        return handleAdminError(reply, error);
+      }
+    },
+  );
+
+  app.delete(sessionPath, { preHandler: options.adminGuard }, async (request, reply) => {
+    const service = resolvePersonalSessionService(options.service, options.unavailableResponse, reply);
+    if (!service) {
+      return;
+    }
+
+    try {
+      const sessionId = (request.params as { sessionId: string }).sessionId;
+      await service.stopPersonalSession(sessionId);
+      return reply.code(204).send();
+    } catch (error) {
+      return handleAdminError(reply, error);
+    }
+  });
+};
+
+const resolvePersonalSessionService = (
+  service: PersonalSessionRouteService | undefined,
+  unavailableResponse: ServiceUnavailableResponse | undefined,
+  reply: AdminReplyLike,
+): PersonalSessionRouteService | null => {
+  if (service) {
+    return service;
+  }
+  if (unavailableResponse) {
+    reply.code(503).send(unavailableResponse);
+    return null;
+  }
+  throw new Error("Personal session service is not configured.");
+};
+
 const handleAdminError = (
-  reply: {
-    code: (statusCode: number) => {
-      send: (payload?: unknown) => unknown;
-    };
-  },
+  reply: AdminReplyLike,
   error: unknown,
 ): unknown => {
   if (

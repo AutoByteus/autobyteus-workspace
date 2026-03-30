@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { InboundInboxService } from "../../../../src/application/services/inbound-inbox-service.js";
+import { ReplayError } from "../../../../src/application/services/replay-error.js";
 import type {
   InboxStore,
   InboundInboxCreateInput,
@@ -141,6 +142,16 @@ describe("InboundInboxService", () => {
 
     await expect(
       service.replayFromStatus(created.record.id, "COMPLETED_UNBOUND"),
-    ).rejects.toThrow("status mismatch");
+    ).rejects.toMatchObject({
+      code: "REPLAY_STATUS_MISMATCH",
+    } satisfies Partial<ReplayError>);
+  });
+
+  it("raises a typed replay error when the record is missing", async () => {
+    const service = new InboundInboxService(new FakeInboxStore());
+
+    await expect(service.replayFromStatus("missing", "DEAD_LETTER")).rejects.toMatchObject({
+      code: "RECORD_NOT_FOUND",
+    } satisfies Partial<ReplayError>);
   });
 });

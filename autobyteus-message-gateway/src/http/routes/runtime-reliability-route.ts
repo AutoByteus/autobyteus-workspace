@@ -1,6 +1,7 @@
 import type { FastifyInstance } from "fastify";
 import type { InboundInboxService } from "../../application/services/inbound-inbox-service.js";
 import type { OutboundOutboxService } from "../../application/services/outbound-outbox-service.js";
+import { isReplayError } from "../../application/services/replay-error.js";
 import type { ReliabilityStatusService } from "../../application/services/reliability-status-service.js";
 import { requireAdminToken } from "../middleware/require-admin-token.js";
 
@@ -156,16 +157,9 @@ const handleReplayError = (
   },
   error: unknown,
 ): unknown => {
-  if (error instanceof Error && error.message.includes("status mismatch")) {
-    return reply.code(409).send({
-      code: "REPLAY_STATUS_MISMATCH",
-      detail: error.message,
-    });
-  }
-
-  if (error instanceof Error && error.message.includes("not found")) {
-    return reply.code(404).send({
-      code: "RECORD_NOT_FOUND",
+  if (isReplayError(error)) {
+    return reply.code(error.code === "REPLAY_STATUS_MISMATCH" ? 409 : 404).send({
+      code: error.code,
       detail: error.message,
     });
   }

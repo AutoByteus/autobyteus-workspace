@@ -37,3 +37,13 @@ export function getDefaultSessionFactory(): TerminalSessionFactory {
 
   return PtySession;
 }
+
+export function getFallbackSessionFactories(
+  primaryFactory: TerminalSessionFactory,
+): TerminalSessionFactory[] {
+  if (primaryFactory === PtySession) {
+    return [DirectShellSession];
+  }
+
+  return [];
+}

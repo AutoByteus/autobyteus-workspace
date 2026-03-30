@@ -611,6 +611,54 @@ describe("channel-admin-route", () => {
     await app.close();
   });
 
+  it("applies the general peer candidate limits to telegram discovery routes", async () => {
+    const app = fastify();
+    const service = new WhatsAppPersonalSessionService(new StubSessionAdapter(), {
+      enabled: true,
+      qrTtlSeconds: 120,
+    });
+    const index = new TelegramPeerCandidateIndex({
+      maxCandidatesPerAccount: 20,
+      candidateTtlSeconds: 86400,
+    });
+    index.recordObservation({
+      accountId: "telegram-acct-1",
+      peerId: "100200300",
+      peerType: "USER",
+      threadId: null,
+      displayName: "Alice",
+      lastMessageAt: new Date().toISOString(),
+    });
+    index.recordObservation({
+      accountId: "telegram-acct-1",
+      peerId: "-1001234567890",
+      peerType: "GROUP",
+      threadId: "77",
+      displayName: "Engineering",
+      lastMessageAt: new Date(Date.now() + 1).toISOString(),
+    });
+    registerChannelAdminRoutes(app, {
+      sessionService: service,
+      telegramPeerDiscoveryService: new TelegramPeerDiscoveryService(index, {
+        enabled: true,
+        accountId: "telegram-acct-1",
+      }),
+      defaultPeerCandidateLimit: 1,
+      maxPeerCandidateLimit: 1,
+      wechatDefaultPeerCandidateLimit: 2,
+      wechatMaxPeerCandidateLimit: 2,
+    });
+
+    const response = await app.inject({
+      method: "GET",
+      url: "/api/channel-admin/v1/telegram/peer-candidates?includeGroups=true&limit=99",
+    });
+    expect(response.statusCode).toBe(200);
+    expect((response.json() as { items: unknown[] }).items).toHaveLength(1);
+
+    await app.close();
+  });
+
   it("returns typed disabled error for telegram discovery when service is not configured", async () => {
     const app = fastify();
     const service = new WhatsAppPersonalSessionService(new StubSessionAdapter(), {

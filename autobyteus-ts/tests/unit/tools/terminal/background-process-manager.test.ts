@@ -34,8 +34,44 @@ class MockPtySession {
     return null;
   }
 
+  resize(): void {
+    // no-op
+  }
+
   async close(): Promise<void> {
     this.alive = false;
+  }
+}
+
+class FailingStartupSession {
+  sessionId: string;
+
+  constructor(sessionId: string) {
+    this.sessionId = sessionId;
+  }
+
+  get isAlive(): boolean {
+    return false;
+  }
+
+  async start(): Promise<void> {
+    throw new Error('posix_spawnp failed.');
+  }
+
+  async write(): Promise<void> {
+    throw new Error('Session not started');
+  }
+
+  async read(): Promise<Buffer | null> {
+    throw new Error('Session not started');
+  }
+
+  resize(): void {
+    // no-op
+  }
+
+  async close(): Promise<void> {
+    // no-op
   }
 }
 
@@ -120,6 +156,22 @@ describe('BackgroundProcessManager', () => {
     expect(Object.keys(processes).length).toBe(2);
     expect(processes[id1]).toBeInstanceOf(ProcessInfo);
     expect(processes[id2]).toBeInstanceOf(ProcessInfo);
+
+    await manager.stopAll();
+  });
+
+  it('falls back to provided session factory when primary startup fails', async () => {
+    const manager = new BackgroundProcessManager(
+      FailingStartupSession as any,
+      1_000_000,
+      [MockPtySession as any],
+    );
+
+    const processId = await manager.startProcess('echo hello', '/tmp');
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    const output = manager.getOutput(processId);
+
+    expect(output.output).toContain('Started: echo hello');
 
     await manager.stopAll();
   });

@@ -1,6 +1,7 @@
 import { randomBytes } from 'node:crypto';
 import { OutputBuffer } from './output-buffer.js';
-import { getDefaultSessionFactory } from './session-factory.js';
+import { getDefaultSessionFactory, getFallbackSessionFactories } from './session-factory.js';
+import { startTerminalSessionWithFallback } from './session-startup.js';
 import { BackgroundProcessOutput, ProcessInfo } from './types.js';
 import { stripAnsiCodes } from './ansi-utils.js';
 import type { TerminalSession, TerminalSessionFactory } from './terminal-session.js';
@@ -37,12 +38,19 @@ class BackgroundProcess {
 
 export class BackgroundProcessManager {
   private sessionFactory: TerminalSessionFactory;
+  private fallbackSessionFactories: TerminalSessionFactory[];
   private maxOutputBytes: number;
   private processes: Map<string, BackgroundProcess> = new Map();
   private counter = 0;
 
-  constructor(sessionFactory?: TerminalSessionFactory, maxOutputBytes: number = 1_000_000) {
+  constructor(
+    sessionFactory?: TerminalSessionFactory,
+    maxOutputBytes: number = 1_000_000,
+    fallbackSessionFactories?: TerminalSessionFactory[],
+  ) {
     this.sessionFactory = sessionFactory ?? getDefaultSessionFactory();
+    this.fallbackSessionFactories =
+      fallbackSessionFactories ?? (sessionFactory ? [] : getFallbackSessionFactories(this.sessionFactory));
     this.maxOutputBytes = maxOutputBytes;
   }
 
@@ -55,10 +63,13 @@ export class BackgroundProcessManager {
     const processId = this.generateId();
     const sessionId = `bg-${randomBytes(4).toString('hex')}`;
 
-    const session = new this.sessionFactory(sessionId);
+    const { session } = await startTerminalSessionWithFallback({
+      sessionId,
+      cwd,
+      primaryFactory: this.sessionFactory,
+      fallbackFactories: this.fallbackSessionFactories,
+    });
     const outputBuffer = new OutputBuffer(this.maxOutputBytes);
-
-    await session.start(cwd);
 
     const bgProcess = new BackgroundProcess(processId, command, session, outputBuffer);
 
