@@ -1,10 +1,8 @@
 ## What's New
-- Added stronger runtime restore and history support across AutoByteus, Codex, and Claude so existing runs can be reopened more reliably after reloads and restarts.
+- Added clearer Codex MCP tool activity so approved and auto-approved MCP tools now show complete lifecycle details in the desktop app.
 
 ## Improvements
-- Improved team-run history and projection handling so member conversations and team configuration rehydrate more consistently from stored runs.
-- Improved Codex and Claude configured-skill support so runtime skills are applied through the native runtime paths.
+- Improved Codex MCP runtime normalization so tool calls surface consistent visibility, approval, and completion events.
 
 ## Fixes
-- Fixed multiple history and projection issues that could leave stored runs or team members blank after restore or page reload.
-- Fixed frontend run-history contract drift so opening stored runs and teams uses the current metadata/projection schema.
+- Fixed a bug where auto-approved Codex MCP tools could finish without a green success state in Activity even when the tool itself succeeded.
