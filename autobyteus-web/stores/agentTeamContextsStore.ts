@@ -12,6 +12,7 @@ import { AgentRunState } from '~/types/agent/AgentRunState';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { Conversation } from '~/types/conversation';
 import { normalizeMemberRouteKey, resolveLeafTeamMembers } from '~/utils/teamDefinitionMembers';
+import { hasExplicitMemberLlmConfigOverride } from '~/utils/teamRunConfigUtils';
 
 interface AgentTeamContextsState {
   /** All active agent team runs, indexed by team run ID. */
@@ -103,6 +104,9 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
           workspaceId: template.workspaceId,
           autoExecuteTools: override?.autoExecuteTools ?? template.autoExecuteTools,
           skillAccessMode: template.skillAccessMode,
+          llmConfig: hasExplicitMemberLlmConfigOverride(override)
+            ? (override?.llmConfig ?? null)
+            : (template.llmConfig ?? null),
           isLocked: false,
         };
 

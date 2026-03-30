@@ -3,7 +3,6 @@ import {
   GetTeamMemberRunProjection,
   GetTeamRunResumeConfig,
 } from '~/graphql/queries/runHistoryQueries';
-import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig';
 import type {
   GetTeamRunResumeConfigQueryData,
   TeamRunResumeConfigPayload,
@@ -16,6 +15,7 @@ import {
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import { normalizeAgentRuntimeStatus, normalizeTeamRuntimeStatus } from './runtimeStatusNormalization';
+import { reconstructTeamRunConfigFromMetadata } from '~/utils/teamRunConfigUtils';
 
 export interface LoadTeamRunContextHydrationInput {
   teamRunId: string;
@@ -115,33 +115,13 @@ const buildHydratedTeamContext = (params: {
   currentStatus: string | null | undefined;
   memberStatuses: TeamMemberLiveSnapshot[];
 }): AgentTeamContext => {
-  const focusedBinding = params.metadata.memberMetadata.find(
-    (member) => toTeamMemberKey(member).trim() === params.focusedMemberRouteKey,
-  );
-
   const context = {
     teamRunId: params.metadata.teamRunId,
-    config: {
-      teamDefinitionId: params.metadata.teamDefinitionId,
-      teamDefinitionName: params.metadata.teamDefinitionName,
-      runtimeKind: focusedBinding?.runtimeKind || DEFAULT_AGENT_RUNTIME_KIND,
-      workspaceId: params.firstWorkspaceId,
-      llmModelIdentifier: focusedBinding?.llmModelIdentifier || '',
-      autoExecuteTools: focusedBinding?.autoExecuteTools ?? false,
-      skillAccessMode: 'PRELOADED_ONLY' as const,
-      memberOverrides: Object.fromEntries(
-        params.metadata.memberMetadata.map((member) => [
-          member.memberName,
-          {
-            agentDefinitionId: member.agentDefinitionId,
-            llmModelIdentifier: member.llmModelIdentifier,
-            autoExecuteTools: member.autoExecuteTools,
-            llmConfig: member.llmConfig ?? null,
-          },
-        ]),
-      ),
+    config: reconstructTeamRunConfigFromMetadata({
+      metadata: params.metadata,
+      firstWorkspaceId: params.firstWorkspaceId,
       isLocked: params.resumeConfig.isActive,
-    },
+    }),
     members: params.members,
     focusedMemberName: params.focusedMemberRouteKey,
     currentStatus: normalizeTeamRuntimeStatus(params.currentStatus),

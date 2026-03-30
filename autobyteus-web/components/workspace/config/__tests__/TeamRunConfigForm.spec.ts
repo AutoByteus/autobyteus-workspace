@@ -40,6 +40,7 @@ const nestedTeamDef = {
 const mockConfig = {
   runtimeKind: 'autobyteus',
   llmModelIdentifier: '',
+  llmConfig: null,
   autoExecuteTools: false,
   isLocked: false,
   workspaceId: null,
@@ -126,7 +127,7 @@ describe('TeamRunConfigForm', () => {
           MemberOverrideItem: {
             name: 'MemberOverrideItem',
             template: '<div class="member-override-item-stub"></div>',
-            props: ['memberName', 'override', 'isCoordinator', 'options', 'disabled', 'globalLlmModel'],
+            props: ['memberName', 'override', 'isCoordinator', 'options', 'disabled', 'globalLlmModel', 'globalLlmConfig'],
             emits: ['update:override'],
           },
         },
@@ -196,6 +197,25 @@ describe('TeamRunConfigForm', () => {
     const { wrapper } = buildWrapper({ llmModelIdentifier: 'gpt-4' });
     const items = wrapper.findAllComponents({ name: 'MemberOverrideItem' });
     expect(items[0].props('globalLlmModel')).toBe('gpt-4');
+  });
+
+  it('passes global llmConfig to member overrides', () => {
+    const { wrapper } = buildWrapper({ llmConfig: { reasoning_effort: 'high' } });
+    const items = wrapper.findAllComponents({ name: 'MemberOverrideItem' });
+    expect(items[0].props('globalLlmConfig')).toEqual({ reasoning_effort: 'high' });
+  });
+
+  it('renders global model config controls when selected model exposes schema', () => {
+    llmStore.modelConfigSchemaByIdentifier = vi.fn().mockReturnValue({
+      thinking_enabled: { type: 'boolean', title: 'Thinking Enabled', default: true },
+    });
+
+    const { wrapper } = buildWrapper({
+      llmModelIdentifier: 'gpt-4',
+      llmConfig: {},
+    });
+
+    expect(wrapper.text()).toContain('Thinking');
   });
 
   it('handles auto-execute toggle', async () => {

@@ -157,6 +157,7 @@ interface TeamRunConfig {
   // Global settings (applied to all members)
   workspaceId: string | null;
   llmModelIdentifier: string;
+  llmConfig?: Record<string, unknown> | null;
   autoExecuteTools: boolean;
 
   // Per-member overrides
@@ -324,6 +325,7 @@ The `TeamRunConfigForm.vue` provides configuration options:
 | Team Name          | Read-only, from definition       |
 | Members            | Read-only, shows member initials |
 | Default LLM Model  | Dropdown, applied to all members |
+| Global Model Config | Thinking/model params inherited by members |
 | Workspace Path     | Input with load button           |
 | Auto-execute Tools | Checkbox                         |
 
@@ -345,12 +347,14 @@ When running a team, configuration is resolved in this order:
 ```
 TeamRunConfig
 ├── llmModelIdentifier: "gpt-4o"        (Global)
+├── llmConfig: { reasoning_effort: "high" } (Global)
 ├── workspaceId: "ws-123"               (Shared)
 ├── autoExecuteTools: true              (Global)
 │
 └── memberOverrides:
     ├── "code_reviewer":
-    │   └── llmModelIdentifier: "claude-3.5"    (Override)
+    │   ├── llmModelIdentifier: "claude-3.5"    (Override)
+    │   └── llmConfig: null                     (Explicitly clear inherited config)
     └── "tester":
         └── autoExecuteTools: false             (Override)
 ```

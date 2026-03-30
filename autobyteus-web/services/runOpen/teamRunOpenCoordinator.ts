@@ -1,4 +1,3 @@
-import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type {
   TeamRunResumeConfigPayload,
@@ -12,6 +11,7 @@ import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import {
   loadTeamRunContextHydrationPayload,
 } from '~/services/runHydration/teamRunContextHydrationService';
+import { reconstructTeamRunConfigFromMetadata } from '~/utils/teamRunConfigUtils';
 
 export interface OpenTeamRunWithCoordinatorInput {
   teamRunId: string;
@@ -37,36 +37,16 @@ export const openTeamRun = async (
     focusedMemberRouteKey,
   } = await loadTeamRunContextHydrationPayload(input);
 
-  const focusedBinding = metadata.memberMetadata.find((member) => {
-    const routeKey = member.memberRouteKey?.trim() || member.memberName.trim();
-    return routeKey === focusedMemberRouteKey;
-  });
   const shouldTreatAsLive = resumeConfig.isActive;
 
   const teamContextsStore = useAgentTeamContextsStore();
   const hydratedContext: AgentTeamContext = {
     teamRunId: metadata.teamRunId,
-    config: {
-      teamDefinitionId: metadata.teamDefinitionId,
-      teamDefinitionName: metadata.teamDefinitionName,
-      runtimeKind: focusedBinding?.runtimeKind || DEFAULT_AGENT_RUNTIME_KIND,
-      workspaceId: firstWorkspaceId,
-      llmModelIdentifier: focusedBinding?.llmModelIdentifier || '',
-      autoExecuteTools: focusedBinding?.autoExecuteTools ?? false,
-      skillAccessMode: 'PRELOADED_ONLY' as const,
-      memberOverrides: Object.fromEntries(
-        metadata.memberMetadata.map((member) => [
-          member.memberName,
-          {
-            agentDefinitionId: member.agentDefinitionId,
-            llmModelIdentifier: member.llmModelIdentifier,
-            autoExecuteTools: member.autoExecuteTools,
-            llmConfig: member.llmConfig ?? null,
-          },
-        ]),
-      ),
+    config: reconstructTeamRunConfigFromMetadata({
+      metadata,
+      firstWorkspaceId,
       isLocked: shouldTreatAsLive,
-    },
+    }),
     members,
     focusedMemberName: focusedMemberRouteKey,
     currentStatus: shouldTreatAsLive

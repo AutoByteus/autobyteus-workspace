@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import MemberOverrideItem from '../MemberOverrideItem.vue';
+import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig';
 vi.mock('~/stores/llmProviderConfig', () => ({
   useLLMProviderConfigStore: vi.fn()
 }));
@@ -58,6 +59,7 @@ describe('MemberOverrideItem', () => {
     agentDefinitionId: 'def-1',
     override: undefined,
     globalLlmModel: 'gemini-1.5-pro',
+    globalLlmConfig: null,
     options: [],
     disabled: false,
     isCoordinator: false,
@@ -77,7 +79,8 @@ describe('MemberOverrideItem', () => {
       props: {
         ...defaultProps,
         override: undefined,
-        globalLlmModel: 'gemini-1.5-pro'
+        globalLlmModel: 'gemini-1.5-pro',
+        globalLlmConfig: { thinking_level: 5 },
       },
     });
 
@@ -88,7 +91,10 @@ describe('MemberOverrideItem', () => {
 
     // Check if dynamic form from global model is visible
     expect(wrapper.text()).toContain('Thinking Level');
-    expect(wrapper.text()).toContain('Thinking Level');
+    const label = wrapper.findAll('label').find(l => l.text().includes('Thinking Level'));
+    const inputId = label?.attributes('for');
+    const input = wrapper.find(`input[id="${inputId}"]`);
+    expect((input.element as HTMLInputElement).value).toBe('5');
   });
 
   it('uses overridden model schema when override is set', async () => {
@@ -148,5 +154,28 @@ describe('MemberOverrideItem', () => {
     
     const emittedOverride = eventArgs[1] as any;
     expect(emittedOverride.llmConfig.thinking_level).toBe(5);
+  });
+
+  it('preserves an explicit null override when global config exists', async () => {
+    const wrapper = mount(MemberOverrideItem, {
+      props: {
+        ...defaultProps,
+        override: {
+          agentDefinitionId: 'def-1',
+          llmConfig: null,
+        },
+        globalLlmConfig: { thinking_level: 5 },
+      },
+    });
+
+    await wrapper.vm.$nextTick();
+
+    const advancedToggle = wrapper.find('[data-testid="advanced-params-toggle"]');
+    await advancedToggle.trigger('click');
+
+    const label = wrapper.findAll('label').find(l => l.text().includes('Thinking Level'));
+    const inputId = label?.attributes('for');
+    const input = wrapper.find(`input[id="${inputId}"]`);
+    expect((input.element as HTMLInputElement).value).toBe('');
   });
 });

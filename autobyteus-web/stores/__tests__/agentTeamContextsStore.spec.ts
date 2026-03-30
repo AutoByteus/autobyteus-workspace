@@ -70,9 +70,14 @@ describe('agentTeamContextsStore', () => {
              runConfigStore.updateConfig({
                  workspaceId: 'ws-1',
                  llmModelIdentifier: 'gpt-4',
+                 llmConfig: { reasoning_effort: 'high' },
                  autoExecuteTools: false,
                  memberOverrides: {
-                     'agent-2': { agentDefinitionId: 'def-2', llmModelIdentifier: 'claude-3' }
+                     'agent-2': {
+                       agentDefinitionId: 'def-2',
+                       llmModelIdentifier: 'claude-3',
+                       llmConfig: { reasoning_effort: 'low' },
+                     }
                  }
              });
 
@@ -88,10 +93,12 @@ describe('agentTeamContextsStore', () => {
              const agent1 = team?.members.get('agent-1');
              expect(agent1?.config.agentDefinitionId).toBe('def-1');
              expect(agent1?.config.llmModelIdentifier).toBe('gpt-4'); // Inherited
+             expect(agent1?.config.llmConfig).toEqual({ reasoning_effort: 'high' });
              expect(agent1?.config.runtimeKind).toBe('autobyteus');
              
              const agent2 = team?.members.get('agent-2');
              expect(agent2?.config.llmModelIdentifier).toBe('claude-3'); // Override
+             expect(agent2?.config.llmConfig).toEqual({ reasoning_effort: 'low' });
 
              expect(selectionStore.selectedRunId).toBe(teamId);
              expect(selectionStore.selectedType).toBe('team');
@@ -113,6 +120,7 @@ describe('agentTeamContextsStore', () => {
              runConfigStore.updateConfig({
                  workspaceId: 'ws-1',
                  llmModelIdentifier: 'gpt-4',
+                 llmConfig: null,
                  autoExecuteTools: false,
                  memberOverrides: {},
              });
@@ -148,6 +156,7 @@ describe('agentTeamContextsStore', () => {
             runConfigStore.updateConfig({
                 workspaceId: 'ws-1',
                 llmModelIdentifier: 'gpt-4',
+                llmConfig: null,
                 autoExecuteTools: false,
                 memberOverrides: {},
             });

@@ -19,6 +19,7 @@ describe('TeamRunConfig', () => {
         expect(config.runtimeKind).toBe('autobyteus');
         expect(config.workspaceId).toBeNull();
         expect(config.llmModelIdentifier).toBe('');
+        expect(config.llmConfig).toBeNull();
         expect(config.autoExecuteTools).toBe(false);
         expect(config.skillAccessMode).toBe('PRELOADED_ONLY');
         expect(config.memberOverrides).toEqual({});

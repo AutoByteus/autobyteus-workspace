@@ -27,6 +27,9 @@ export interface TeamRunConfig {
     
     /** Default LLM model for the team (can be overridden per member) */
     llmModelIdentifier: string;
+
+    /** Global model-specific config for the team (can be overridden per member) */
+    llmConfig?: Record<string, unknown> | null;
     
     /** Whether to auto-execute tools globally */
     autoExecuteTools: boolean;
@@ -55,6 +58,7 @@ export const createDefaultTeamRunConfig = (def: AgentTeamDefinition): TeamRunCon
         runtimeKind: DEFAULT_AGENT_RUNTIME_KIND,
         workspaceId: null,
         llmModelIdentifier: '',
+        llmConfig: null,
         autoExecuteTools: false,
         skillAccessMode: 'PRELOADED_ONLY',
         memberOverrides: {},

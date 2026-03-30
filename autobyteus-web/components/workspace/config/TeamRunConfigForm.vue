@@ -46,6 +46,15 @@
         <p class="mt-1 text-xs text-gray-500">This model will be used by all members unless overridden.</p>
     </div>
 
+    <ModelConfigSection
+        :schema="modelConfigSchema"
+        :model-config="config.llmConfig"
+        :disabled="config.isLocked"
+        :apply-defaults="true"
+        :clear-on-empty-schema="true"
+        @update:config="updateModelConfig"
+    />
+
     <!-- Workspace Selector -->
     <div class="mt-8">
     <WorkspaceSelector
@@ -84,6 +93,7 @@
                 :agent-definition-id="member.agentDefinitionId"
                 :override="config.memberOverrides[member.memberName]"
                 :global-llm-model="config.llmModelIdentifier"
+                :global-llm-config="config.llmConfig"
                 :options="groupedModelOptions"
                 :is-coordinator="member.memberName === teamDefinition.coordinatorMemberName"
                 :disabled="config.isLocked"
@@ -156,9 +166,11 @@ import {
 import WorkspaceSelector from './WorkspaceSelector.vue';
 import MemberOverrideItem from './MemberOverrideItem.vue';
 import SearchableGroupedSelect, { type GroupedOption } from '~/components/agentTeams/SearchableGroupedSelect.vue';
+import ModelConfigSection from './ModelConfigSection.vue';
 import { getModelSelectionLabel } from '~/utils/modelSelectionLabel';
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
 import { resolveLeafTeamMembers } from '~/utils/teamDefinitionMembers';
+import { hasMeaningfulMemberOverride } from '~/utils/teamRunConfigUtils';
 
 interface WorkspaceLoadingState {
   isLoading: boolean;
@@ -214,15 +226,10 @@ const sanitizeMemberOverridesForRuntime = () => {
 
     if (override.llmModelIdentifier && !modelSet.has(override.llmModelIdentifier)) {
       override.llmModelIdentifier = undefined;
-      override.llmConfig = undefined;
+      delete override.llmConfig;
     }
 
-    const hasMeaningfulOverride =
-      Boolean(override.llmModelIdentifier) ||
-      override.autoExecuteTools !== undefined ||
-      Boolean(override.llmConfig && Object.keys(override.llmConfig).length > 0);
-
-    if (!hasMeaningfulOverride) {
+    if (!hasMeaningfulMemberOverride(override as MemberConfigOverride)) {
       delete overrides[memberName];
     }
   }
@@ -237,6 +244,7 @@ const ensureModelsForRuntime = async (runtimeKind: AgentRuntimeKind, validateSel
     !llmStore.models.includes(props.config.llmModelIdentifier)
   ) {
     props.config.llmModelIdentifier = '';
+    props.config.llmConfig = null;
   }
 
   sanitizeMemberOverridesForRuntime();
@@ -323,6 +331,7 @@ watch(
 
     props.config.runtimeKind = DEFAULT_AGENT_RUNTIME_KIND;
     props.config.llmModelIdentifier = '';
+    props.config.llmConfig = null;
     void ensureModelsForRuntime(DEFAULT_AGENT_RUNTIME_KIND, false);
   },
   { immediate: true },
@@ -338,6 +347,11 @@ const groupedModelOptions = computed<GroupedOption[]>(() => {
     }));
 });
 
+const modelConfigSchema = computed(() => {
+    if (!props.config.llmModelIdentifier) return null;
+    return llmStore.modelConfigSchemaByIdentifier(props.config.llmModelIdentifier);
+});
+
 const updateRuntimeKind = (value: string) => {
     const runtimeKind = normalizeRuntimeKind(value);
     if (!runtimeAvailabilityStore.isRuntimeEnabled(runtimeKind)) {
@@ -348,10 +362,15 @@ const updateRuntimeKind = (value: string) => {
     }
     props.config.runtimeKind = runtimeKind;
     props.config.llmModelIdentifier = '';
+    props.config.llmConfig = null;
 };
 
 const updateModel = (value: string) => {
     props.config.llmModelIdentifier = value;
+};
+
+const updateModelConfig = (config: Record<string, unknown> | null) => {
+    props.config.llmConfig = config;
 };
 
 const updateAutoExecute = (checked: boolean) => {

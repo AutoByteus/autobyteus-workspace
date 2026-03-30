@@ -18,6 +18,7 @@ import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import { resolveLeafTeamMembers } from '~/utils/teamDefinitionMembers';
+import { hasExplicitMemberLlmConfigOverride } from '~/utils/teamRunConfigUtils';
 
 // Maintain a map of streaming services per team run
 const teamStreamingServices = new Map<string, TeamStreamingService>();
@@ -238,7 +239,9 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
                 workspaceId: activeTeam.config.workspaceId,
                 autoExecuteTools: override?.autoExecuteTools ?? activeTeam.config.autoExecuteTools,
                 skillAccessMode: activeTeam.config.skillAccessMode,
-                llmConfig: override?.llmConfig ?? null,
+                llmConfig: hasExplicitMemberLlmConfigOverride(override)
+                  ? (override?.llmConfig ?? null)
+                  : (activeTeam.config.llmConfig ?? null),
               };
             });
 
