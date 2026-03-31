@@ -4,7 +4,7 @@
 
 - Ticket: `telegram-external-channel-outbound-reply`
 - Date: `2026-03-31`
-- Current Status: `Awaiting User Verification`
+- Current Status: `Complete`
 - Workflow State Source: `tickets/done/telegram-external-channel-outbound-reply/workflow-state.md`
 
 ## Delivery Summary
@@ -21,7 +21,7 @@
 - Planned scope reference:
   - `tickets/done/telegram-external-channel-outbound-reply/implementation.md`
 - Deferred / not delivered:
-  - No live desktop Telegram manual verification was performed from the production UI during this ticket.
+  - None.
 - Key architectural or ownership changes:
   - The durable reply-routing owner is now `AcceptedReceiptRecoveryRuntime`, not the agent/team facades.
   - The receipt ledger, not a facade-local watcher, is now the authority for whether an accepted inbound turn is still unfinished work.
@@ -53,7 +53,6 @@
 - Infeasible criteria / user waivers (if any):
   - None
 - Residual risk:
-  - A final manual Telegram round-trip in the desktop app is still useful to confirm the real gateway adapter delivers after the repaired server-side path.
   - `pnpm --dir autobyteus-server-ts typecheck` remains non-gating because the repo `tsconfig.json` includes `tests/**` while `rootDir` is `src`, causing broad `TS6059` failures unrelated to this ticket.
 
 ## Documentation Sync Summary
@@ -70,23 +69,25 @@
 ## Release Notes Status
 
 - Release notes required: `No`
+- Release notes required: `Yes`
 - Release notes artifact:
-  - `Not required`
+  - `tickets/done/telegram-external-channel-outbound-reply/release-notes.md`
 - Notes:
-  - This ticket is an internal bug fix / architecture repair and does not require a standalone release-note artifact.
+  - The release helper used the archived ticket release notes to publish desktop release `v1.2.47`.
 
 ## User Verification Hold
 
 - Waiting for explicit user verification: `Yes`
+- Waiting for explicit user verification: `No`
 - User verification received:
-  - `No`
+  - `Yes`
 - Notes:
-  - After your verification, Stage 10 still needs ticket archival plus repository finalization into `origin/personal`.
+  - The user confirmed live Telegram delivery was working, so Stage 10 repository finalization and release publication were completed.
 
 ## Finalization Record
 
 - Ticket archived to:
-  - `Pending user verification`
+  - `tickets/done/telegram-external-channel-outbound-reply`
 - Ticket worktree path:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/telegram-external-channel-outbound-reply`
 - Ticket branch:
@@ -96,16 +97,25 @@
 - Finalization target branch:
   - `personal`
 - Commit status:
-  - `Not started`
+  - `Completed`
 - Push status:
-  - `Not started`
+  - `Completed`
 - Merge status:
-  - `Not started`
+  - `Completed`
 - Release/publication/deployment status:
-  - `Not required yet`
+  - `Completed`
 - Worktree cleanup status:
-  - `Not started`
+  - `Completed`
 - Local branch cleanup status:
-  - `Not started`
+  - `Completed`
 - Blockers / notes:
-  - Explicit user verification is still required before any archival, commit, push, merge, or worktree cleanup steps.
+  - None.
+
+## Finalization Outcome
+
+- Ticket branch commit: `97e9aef`
+- `personal` merge commit: `4edad83`
+- Release commit: `ccb44ff`
+- Published release tag: `v1.2.47`
+- Dedicated ticket worktree cleanup: `Completed`
+- Local ticket branch cleanup: `Completed`
