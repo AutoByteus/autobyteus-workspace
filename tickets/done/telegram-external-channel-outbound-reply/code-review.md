@@ -7,13 +7,13 @@
 - Trigger Stage: `Stage 7 round 5 pass after the storage-surface refinement`
 - Prior Review Round Reviewed: `6`
 - Latest Authoritative Round: `7`
-- Workflow state source: `tickets/in-progress/telegram-external-channel-outbound-reply/workflow-state.md`
-- Investigation notes reviewed as context: `tickets/in-progress/telegram-external-channel-outbound-reply/investigation-notes.md`
+- Workflow state source: `tickets/done/telegram-external-channel-outbound-reply/workflow-state.md`
+- Investigation notes reviewed as context: `tickets/done/telegram-external-channel-outbound-reply/investigation-notes.md`
 - Design artifacts reviewed as context:
-  - `tickets/in-progress/telegram-external-channel-outbound-reply/proposed-design.md`
-  - `tickets/in-progress/telegram-external-channel-outbound-reply/future-state-runtime-call-stack.md`
-  - `tickets/in-progress/telegram-external-channel-outbound-reply/implementation.md`
-  - `tickets/in-progress/telegram-external-channel-outbound-reply/api-e2e-testing.md`
+  - `tickets/done/telegram-external-channel-outbound-reply/proposed-design.md`
+  - `tickets/done/telegram-external-channel-outbound-reply/future-state-runtime-call-stack.md`
+  - `tickets/done/telegram-external-channel-outbound-reply/implementation.md`
+  - `tickets/done/telegram-external-channel-outbound-reply/api-e2e-testing.md`
 
 ## Scope
 

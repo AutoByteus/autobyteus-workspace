@@ -4,9 +4,9 @@
 
 - Scope Classification: `Large`
 - Call Stack Version: `v5`
-- Requirements: `tickets/in-progress/telegram-external-channel-outbound-reply/requirements.md` (status `Design-ready`)
+- Requirements: `tickets/done/telegram-external-channel-outbound-reply/requirements.md` (status `Design-ready`)
 - Source Artifact:
-  - `tickets/in-progress/telegram-external-channel-outbound-reply/proposed-design.md`
+  - `tickets/done/telegram-external-channel-outbound-reply/proposed-design.md`
 - Source Design Version: `v5`
 - Referenced Sections:
   - Spine inventory sections: `DS-001` through `DS-007`

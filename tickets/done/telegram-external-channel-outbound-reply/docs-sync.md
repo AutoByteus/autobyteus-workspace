@@ -4,7 +4,7 @@
 
 - Ticket: `telegram-external-channel-outbound-reply`
 - Trigger Stage: `9`
-- Workflow state source: `tickets/in-progress/telegram-external-channel-outbound-reply/workflow-state.md`
+- Workflow state source: `tickets/done/telegram-external-channel-outbound-reply/workflow-state.md`
 
 ## Why Docs Were Updated
 

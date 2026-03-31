@@ -5,7 +5,7 @@
 - Ticket: `telegram-external-channel-outbound-reply`
 - Date: `2026-03-31`
 - Current Status: `Awaiting User Verification`
-- Workflow State Source: `tickets/in-progress/telegram-external-channel-outbound-reply/workflow-state.md`
+- Workflow State Source: `tickets/done/telegram-external-channel-outbound-reply/workflow-state.md`
 
 ## Delivery Summary
 
@@ -19,7 +19,7 @@
   - Source-context resolution on the active reply path is now turn-scoped only; dead latest-source lookup APIs and the empty source-context provider abstraction were removed.
   - Stale SQL binding/idempotency schema support, idempotency services/providers, and the old AutoByteus-only external-channel processors were removed.
 - Planned scope reference:
-  - `tickets/in-progress/telegram-external-channel-outbound-reply/implementation.md`
+  - `tickets/done/telegram-external-channel-outbound-reply/implementation.md`
 - Deferred / not delivered:
   - No live desktop Telegram manual verification was performed from the production UI during this ticket.
 - Key architectural or ownership changes:
@@ -59,7 +59,7 @@
 ## Documentation Sync Summary
 
 - Docs sync artifact:
-  - `tickets/in-progress/telegram-external-channel-outbound-reply/docs-sync.md`
+  - `tickets/done/telegram-external-channel-outbound-reply/docs-sync.md`
 - Docs result: `Updated`
 - Docs updated:
   - `autobyteus-server-ts/docs/ARCHITECTURE.md`

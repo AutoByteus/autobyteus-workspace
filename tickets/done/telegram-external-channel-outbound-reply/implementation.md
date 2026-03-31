@@ -9,12 +9,12 @@
 
 ## Upstream Artifacts
 
-- Workflow state: `tickets/in-progress/telegram-external-channel-outbound-reply/workflow-state.md`
-- Investigation notes: `tickets/in-progress/telegram-external-channel-outbound-reply/investigation-notes.md`
-- Requirements: `tickets/in-progress/telegram-external-channel-outbound-reply/requirements.md`
-- Proposed design: `tickets/in-progress/telegram-external-channel-outbound-reply/proposed-design.md`
-- Future-state runtime call stack: `tickets/in-progress/telegram-external-channel-outbound-reply/future-state-runtime-call-stack.md`
-- Future-state runtime call stack review: `tickets/in-progress/telegram-external-channel-outbound-reply/future-state-runtime-call-stack-review.md`
+- Workflow state: `tickets/done/telegram-external-channel-outbound-reply/workflow-state.md`
+- Investigation notes: `tickets/done/telegram-external-channel-outbound-reply/investigation-notes.md`
+- Requirements: `tickets/done/telegram-external-channel-outbound-reply/requirements.md`
+- Proposed design: `tickets/done/telegram-external-channel-outbound-reply/proposed-design.md`
+- Future-state runtime call stack: `tickets/done/telegram-external-channel-outbound-reply/future-state-runtime-call-stack.md`
+- Future-state runtime call stack review: `tickets/done/telegram-external-channel-outbound-reply/future-state-runtime-call-stack-review.md`
 
 ## Document Status
 
@@ -102,7 +102,7 @@
 
 | Stage | Canonical Artifact | Status | Notes |
 | --- | --- | --- | --- |
-| 7 API/E2E + Executable Validation | `tickets/in-progress/telegram-external-channel-outbound-reply/api-e2e-testing.md` | Pass | Stage 7 round 5 passed after the storage-surface refinement, clean server build, and updated Electron packaging path. |
-| 8 Code Review | `tickets/in-progress/telegram-external-channel-outbound-reply/code-review.md` | Pass | Review round 7 kept the architecture above the desired bar after the storage-surface cleanup and compile-clean fixes. |
-| 9 Docs Sync | `tickets/in-progress/telegram-external-channel-outbound-reply/docs-sync.md` | Pass | Docs now explicitly reflect the unified `server-data/external-channel/` ownership surface. |
-| 10 Handoff | `tickets/in-progress/telegram-external-channel-outbound-reply/handoff-summary.md` | In Progress | Back on the user-verification hold pending manual Telegram confirmation and finalization. |
+| 7 API/E2E + Executable Validation | `tickets/done/telegram-external-channel-outbound-reply/api-e2e-testing.md` | Pass | Stage 7 round 5 passed after the storage-surface refinement, clean server build, and updated Electron packaging path. |
+| 8 Code Review | `tickets/done/telegram-external-channel-outbound-reply/code-review.md` | Pass | Review round 7 kept the architecture above the desired bar after the storage-surface cleanup and compile-clean fixes. |
+| 9 Docs Sync | `tickets/done/telegram-external-channel-outbound-reply/docs-sync.md` | Pass | Docs now explicitly reflect the unified `server-data/external-channel/` ownership surface. |
+| 10 Handoff | `tickets/done/telegram-external-channel-outbound-reply/handoff-summary.md` | In Progress | Back on the user-verification hold pending manual Telegram confirmation and finalization. |

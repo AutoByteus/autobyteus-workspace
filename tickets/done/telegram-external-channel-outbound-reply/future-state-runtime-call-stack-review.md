@@ -15,10 +15,10 @@
 
 ## Review Basis
 
-- Requirements: `tickets/in-progress/telegram-external-channel-outbound-reply/requirements.md` (status `Design-ready`)
-- Runtime Call Stack Document: `tickets/in-progress/telegram-external-channel-outbound-reply/future-state-runtime-call-stack.md`
+- Requirements: `tickets/done/telegram-external-channel-outbound-reply/requirements.md` (status `Design-ready`)
+- Runtime Call Stack Document: `tickets/done/telegram-external-channel-outbound-reply/future-state-runtime-call-stack.md`
 - Source Design Basis:
-  - `tickets/in-progress/telegram-external-channel-outbound-reply/proposed-design.md`
+  - `tickets/done/telegram-external-channel-outbound-reply/proposed-design.md`
 - Shared Design Principles: `shared/design-principles.md`
 - Common Design Practices: `shared/common-design-practices.md`
 - Artifact Versions In This Round:

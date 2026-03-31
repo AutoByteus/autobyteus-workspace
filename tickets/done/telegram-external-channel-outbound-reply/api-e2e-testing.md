@@ -11,10 +11,10 @@
 
 - Ticket: `telegram-external-channel-outbound-reply`
 - Scope classification: `Large`
-- Workflow state source: `tickets/in-progress/telegram-external-channel-outbound-reply/workflow-state.md`
-- Requirements source: `tickets/in-progress/telegram-external-channel-outbound-reply/requirements.md`
-- Design source: `tickets/in-progress/telegram-external-channel-outbound-reply/proposed-design.md`
-- Runtime call stack source: `tickets/in-progress/telegram-external-channel-outbound-reply/future-state-runtime-call-stack.md`
+- Workflow state source: `tickets/done/telegram-external-channel-outbound-reply/workflow-state.md`
+- Requirements source: `tickets/done/telegram-external-channel-outbound-reply/requirements.md`
+- Design source: `tickets/done/telegram-external-channel-outbound-reply/proposed-design.md`
+- Runtime call stack source: `tickets/done/telegram-external-channel-outbound-reply/future-state-runtime-call-stack.md`
 - Platform/runtime target: `autobyteus-server-ts` local Vitest + Prisma + SQLite runtime
 - Lifecycle boundaries in scope: `Restart`, `Recovery`, `Migration`
 

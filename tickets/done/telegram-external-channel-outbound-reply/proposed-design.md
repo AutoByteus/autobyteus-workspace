@@ -16,8 +16,8 @@
 
 ## Artifact Basis
 
-- Investigation Notes: `tickets/in-progress/telegram-external-channel-outbound-reply/investigation-notes.md`
-- Requirements: `tickets/in-progress/telegram-external-channel-outbound-reply/requirements.md`
+- Investigation Notes: `tickets/done/telegram-external-channel-outbound-reply/investigation-notes.md`
+- Requirements: `tickets/done/telegram-external-channel-outbound-reply/requirements.md`
 - Requirements Status: `Design-ready`
 - Shared Design Principles: `shared/design-principles.md`
 - Common Design Practices: `shared/common-design-practices.md`
