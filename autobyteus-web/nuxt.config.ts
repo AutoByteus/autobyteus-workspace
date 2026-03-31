@@ -2,9 +2,11 @@ import { defineNuxtConfig } from 'nuxt/config'
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { applyElectronConfig } from './nuxt.electron.config'
-
-// Fixed server port for internal server
-const INTERNAL_SERVER_PORT = 29695
+import {
+  INTERNAL_SERVER_BASE_URL,
+  INTERNAL_SERVER_PORT,
+  INTERNAL_SERVER_WS_BASE_URL,
+} from './shared/embeddedServerConfig'
 const isDevelopment = process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test'
 const isElectronBuild = process.env.BUILD_TARGET === 'electron'
 const isTest = process.env.NODE_ENV === 'test' || process.env.NUXT_TEST === 'true' || process.env.VITEST === 'true'
@@ -52,16 +54,16 @@ let serverUrls = {
 let defaultNodeBaseUrl = '';
 
 if (isElectronBuild) {
-  defaultNodeBaseUrl = `http://localhost:${INTERNAL_SERVER_PORT}`;
+  defaultNodeBaseUrl = INTERNAL_SERVER_BASE_URL;
   serverUrls = {
-    graphqlBaseUrl: `http://localhost:${INTERNAL_SERVER_PORT}/graphql`,
-    restBaseUrl: `http://localhost:${INTERNAL_SERVER_PORT}/rest`,
-    agentWsEndpoint: `ws://localhost:${INTERNAL_SERVER_PORT}/ws/agent`,
-    teamWsEndpoint: `ws://localhost:${INTERNAL_SERVER_PORT}/ws/agent-team`,
-    graphqlWsEndpoint: `ws://localhost:${INTERNAL_SERVER_PORT}/graphql`,
-    transcriptionWsEndpoint: `ws://localhost:${INTERNAL_SERVER_PORT}/transcribe`,
-    terminalWsEndpoint: `ws://localhost:${INTERNAL_SERVER_PORT}/ws/terminal`,
-    fileExplorerWsEndpoint: `ws://localhost:${INTERNAL_SERVER_PORT}/ws/file-explorer`
+    graphqlBaseUrl: `${INTERNAL_SERVER_BASE_URL}/graphql`,
+    restBaseUrl: `${INTERNAL_SERVER_BASE_URL}/rest`,
+    agentWsEndpoint: `${INTERNAL_SERVER_WS_BASE_URL}/ws/agent`,
+    teamWsEndpoint: `${INTERNAL_SERVER_WS_BASE_URL}/ws/agent-team`,
+    graphqlWsEndpoint: `${INTERNAL_SERVER_WS_BASE_URL}/graphql`,
+    transcriptionWsEndpoint: `${INTERNAL_SERVER_WS_BASE_URL}/transcribe`,
+    terminalWsEndpoint: `${INTERNAL_SERVER_WS_BASE_URL}/ws/terminal`,
+    fileExplorerWsEndpoint: `${INTERNAL_SERVER_WS_BASE_URL}/ws/file-explorer`
   };
 } else if (isDevelopment) {
   defaultNodeBaseUrl = backendProxyUrl;

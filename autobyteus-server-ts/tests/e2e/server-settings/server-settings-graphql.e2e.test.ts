@@ -12,6 +12,7 @@ describe("Server settings GraphQL e2e", () => {
   let schema: GraphQLSchema;
   let graphql: typeof graphqlFn;
   let tempDir: string;
+  let originalServerHostEnv: string | undefined;
 
   beforeAll(async () => {
     schema = await buildGraphqlSchema();
@@ -23,16 +24,23 @@ describe("Server settings GraphQL e2e", () => {
   });
 
   beforeEach(() => {
+    originalServerHostEnv = process.env.AUTOBYTEUS_SERVER_HOST;
     tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "autobyteus-server-settings-graphql-"));
     fs.writeFileSync(
       path.join(tempDir, ".env"),
       "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n",
       "utf-8",
     );
+    process.env.AUTOBYTEUS_SERVER_HOST = "http://localhost:8000";
     appConfigProvider.config.setCustomAppDataDir(tempDir);
   });
 
   afterEach(() => {
+    if (originalServerHostEnv === undefined) {
+      delete process.env.AUTOBYTEUS_SERVER_HOST;
+    } else {
+      process.env.AUTOBYTEUS_SERVER_HOST = originalServerHostEnv;
+    }
     fs.rmSync(tempDir, { recursive: true, force: true });
   });
 
@@ -73,18 +81,39 @@ describe("Server settings GraphQL e2e", () => {
           key
           value
           description
+          isEditable
+          isDeletable
         }
       }
     `;
 
     const listed = await execGraphql<{
-      getServerSettings: Array<{ key: string; value: string; description: string }>;
+      getServerSettings: Array<{
+        key: string;
+        value: string;
+        description: string;
+        isEditable: boolean;
+        isDeletable: boolean;
+      }>;
     }>(listQuery);
 
     const created = listed.getServerSettings.find((entry) => entry.key === key);
     expect(created).toBeTruthy();
     expect(created?.value).toBe(value);
     expect(created?.description).toBe("Custom user-defined setting");
+    expect(created?.isEditable).toBe(true);
+    expect(created?.isDeletable).toBe(true);
+
+    const publicHost = listed.getServerSettings.find((entry) => entry.key === "AUTOBYTEUS_SERVER_HOST");
+    expect(publicHost).toBeTruthy();
+    expect(publicHost?.isEditable).toBe(false);
+    expect(publicHost?.isDeletable).toBe(false);
+
+    const protectedUpdate = await execGraphql<{ updateServerSetting: string }>(upsertMutation, {
+      key: "AUTOBYTEUS_SERVER_HOST",
+      value: "http://example.com:9000",
+    });
+    expect(protectedUpdate.updateServerSetting).toContain("cannot be updated");
 
     const deleteMutation = `
       mutation DeleteServerSetting($key: String!) {

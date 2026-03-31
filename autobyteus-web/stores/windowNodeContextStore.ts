@@ -1,27 +1,8 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
-import { INTERNAL_SERVER_PORT } from '~/utils/serverConfig';
 import { deriveNodeEndpoints } from '~/utils/nodeEndpoints';
+import { resolveDefaultEmbeddedBaseUrl } from '~/utils/embeddedNodeBaseUrl';
 import { EMBEDDED_NODE_ID, type NodeEndpoints, type WindowNodeContext } from '~/types/node';
-
-function resolveDefaultEmbeddedBaseUrl(): string {
-  const electronBaseUrl = `http://localhost:${INTERNAL_SERVER_PORT}`;
-  if (typeof window !== 'undefined' && window.electronAPI) {
-    return electronBaseUrl;
-  }
-
-  try {
-    const config = useRuntimeConfig();
-    const configuredBaseUrl = config.public.defaultNodeBaseUrl;
-    if (typeof configuredBaseUrl === 'string' && configuredBaseUrl.trim()) {
-      return configuredBaseUrl.trim();
-    }
-  } catch {
-    // Non-Nuxt contexts (unit tests) can fall back to the embedded default.
-  }
-
-  return electronBaseUrl;
-}
 
 function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));

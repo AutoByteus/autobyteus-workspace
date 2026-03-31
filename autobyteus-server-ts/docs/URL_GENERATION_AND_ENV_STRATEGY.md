@@ -34,7 +34,7 @@ The internal runtime URL is intentionally not persisted to `.env` and is not use
 
 The caller that launches the server must provide the correct host value:
 
-- Electron launcher sets host and port dynamically.
+- Electron launcher provides the stable embedded loopback public URL.
 - Local dev uses `.env` or CLI environment.
 - Containerized deployments set explicit value in runtime config.
 

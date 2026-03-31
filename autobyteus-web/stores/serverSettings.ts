@@ -11,6 +11,8 @@ export interface ServerSetting {
   key: string
   value: string
   description: string
+  isEditable: boolean
+  isDeletable: boolean
 }
 
 export type SearchProvider = 'serper' | 'serpapi' | 'google_cse' | 'vertex_ai_search'

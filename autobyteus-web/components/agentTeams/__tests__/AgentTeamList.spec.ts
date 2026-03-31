@@ -8,6 +8,8 @@ import { useNodeStore } from '~/stores/nodeStore';
 import { useNodeSyncStore } from '~/stores/nodeSyncStore';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 
+const EMBEDDED_SERVER_BASE_URL = 'http://127.0.0.1:29695';
+
 const AgentTeamCardStub = {
   name: 'AgentTeamCard',
   template: '<div class="agent-team-card"></div>',
@@ -76,7 +78,7 @@ describe('AgentTeamList', () => {
     {
       id: 'embedded-local',
       name: 'Embedded Node',
-      baseUrl: 'http://localhost:29695',
+      baseUrl: EMBEDDED_SERVER_BASE_URL,
       nodeType: 'embedded',
       isSystem: true,
       createdAt: '2026-02-11T00:00:00.000Z',

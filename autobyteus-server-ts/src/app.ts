@@ -8,7 +8,6 @@ import {
   AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR,
   seedInternalServerBaseUrlFromListenAddress,
 } from "./config/server-runtime-endpoints.js";
-import { ensureServerHostEnvVar } from "./utils/env-utils.js";
 import { appConfigProvider } from "./config/app-config-provider.js";
 import { getLoggingConfigFromEnv, type LoggingConfig } from "./config/logging-config.js";
 import { registerHttpAccessLogPolicy } from "./logging/http-access-log-policy.js";
@@ -152,8 +151,6 @@ function registerShutdownHandlers(app: FastifyInstance): void {
 
 export async function startServer(): Promise<void> {
   const options = parseArgs(process.argv);
-
-  ensureServerHostEnvVar(options.host, options.port);
   let loggingConfig: LoggingConfig = getLoggingConfigFromEnv(process.env);
 
   try {

@@ -3,6 +3,8 @@ import { createPinia, setActivePinia } from 'pinia';
 import { EMBEDDED_NODE_ID, NODE_REGISTRY_STORAGE_KEY, type NodeRegistrySnapshot } from '~/types/node';
 import { useNodeStore } from '../nodeStore';
 
+const EMBEDDED_SERVER_BASE_URL = 'http://127.0.0.1:29695';
+
 function setElectronApiMock(mock: Partial<Window['electronAPI']> | null): void {
   Object.defineProperty(window, 'electronAPI', {
     configurable: true,
@@ -146,7 +148,7 @@ describe('nodeStore', () => {
 
     const staleBaseUrl =
       currentEmbeddedBaseUrl === 'http://localhost:8000'
-        ? 'http://localhost:29695'
+        ? EMBEDDED_SERVER_BASE_URL
         : 'http://localhost:8000';
 
     const snapshot: NodeRegistrySnapshot = {
@@ -185,7 +187,7 @@ describe('nodeStore', () => {
         {
           id: EMBEDDED_NODE_ID,
           name: 'Embedded Node',
-          baseUrl: 'http://localhost:29695',
+          baseUrl: EMBEDDED_SERVER_BASE_URL,
           nodeType: 'embedded',
           isSystem: true,
           createdAt: '2026-02-08T00:00:00.000Z',
@@ -212,7 +214,7 @@ describe('nodeStore', () => {
           {
             id: EMBEDDED_NODE_ID,
             name: 'Embedded Node',
-            baseUrl: 'http://localhost:29695',
+            baseUrl: EMBEDDED_SERVER_BASE_URL,
             nodeType: 'embedded',
             isSystem: true,
             createdAt: '2026-02-08T00:00:00.000Z',
@@ -232,7 +234,7 @@ describe('nodeStore', () => {
           {
             id: EMBEDDED_NODE_ID,
             name: 'Embedded Node',
-            baseUrl: 'http://localhost:29695',
+            baseUrl: EMBEDDED_SERVER_BASE_URL,
             nodeType: 'embedded',
             isSystem: true,
             createdAt: '2026-02-08T00:00:00.000Z',
@@ -260,7 +262,7 @@ describe('nodeStore', () => {
           {
             id: EMBEDDED_NODE_ID,
             name: 'Embedded Node',
-            baseUrl: 'http://localhost:29695',
+            baseUrl: EMBEDDED_SERVER_BASE_URL,
             nodeType: 'embedded',
             isSystem: true,
             createdAt: '2026-02-08T00:00:00.000Z',
@@ -281,7 +283,7 @@ describe('nodeStore', () => {
           {
             id: EMBEDDED_NODE_ID,
             name: 'Embedded Node',
-            baseUrl: 'http://localhost:29695',
+            baseUrl: EMBEDDED_SERVER_BASE_URL,
             nodeType: 'embedded',
             isSystem: true,
             createdAt: '2026-02-08T00:00:00.000Z',
