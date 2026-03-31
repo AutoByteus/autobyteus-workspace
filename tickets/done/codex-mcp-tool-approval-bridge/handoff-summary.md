@@ -4,7 +4,7 @@
 
 - Ticket: `codex-mcp-tool-approval-bridge`
 - Date: `2026-03-30`
-- Current Status: `User Verified; Finalization Pending`
+- Current Status: `Verified`
 - Workflow State Source: `tickets/done/codex-mcp-tool-approval-bridge/workflow-state.md`
 
 ## Delivery Summary
@@ -78,9 +78,11 @@
 
 ## Release Notes Status
 
-- Release notes required: `No`
-- Release notes artifact: `N/A`
-- Notes: internal runtime behavior and validation update only; no release-note process triggered in this ticket
+- Release notes required: `Yes`
+- Release notes artifact:
+  - `tickets/done/codex-mcp-tool-approval-bridge/release-notes.md`
+- Notes:
+  - the archived release-notes artifact was used as the curated release body for the published `v1.2.46` GitHub release
 
 ## User Verification Hold
 
@@ -88,21 +90,23 @@
 - User verification received: `Yes`
 - Notes:
   - the user verified in the rebuilt Electron app that the auto-approved `speak` MCP tool now ends in green `success`
-  - ticket remains in `tickets/in-progress/` because archival / commit / push / merge were not requested in this turn
+  - finalization was then explicitly requested via release publication, so the archived ticket and release metadata were finalized in this same turn
 
 ## Finalization Record
 
-- Ticket archived to: `Not yet archived`
+- Ticket archived to: `tickets/done/codex-mcp-tool-approval-bridge`
 - Ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Ticket branch: `personal`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Commit status: `Not requested`
-- Push status: `Not requested`
-- Merge status: `N/A`
-- Release/publication/deployment status: `Not required`
+- Commit status: `Complete` (`c64dc5b fix(codex): normalize MCP tool completion lifecycle`, `848c53e chore(release): bump workspace release version to 1.2.46`, plus this final Stage 10 metadata update)
+- Push status: `Complete` (`origin/personal` updated; tag `v1.2.46` pushed)
+- Merge status: `Not required` (ticket branch already matched the finalization target branch `personal`)
+- Release/publication/deployment status: `Complete`
+  - GitHub release: `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.2.46`
+  - Desktop Release workflow: `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/23758252160` -> `success`
+  - Server Docker Release workflow: `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/23758252154` -> `success`
+  - Release Messaging Gateway workflow: `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/23758252167` -> `success`
 - Worktree cleanup status: `Not applicable`
 - Local branch cleanup status: `Not applicable`
-- Blockers / notes:
-  - user verification is complete
-  - archival / repository finalization actions were not requested in this turn
+- Blockers / notes: `None`
