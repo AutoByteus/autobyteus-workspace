@@ -19,6 +19,14 @@ import { CodexClientThreadRouter } from "../../../src/agent-execution/backends/c
 import { CodexThreadManager } from "../../../src/agent-execution/backends/codex/thread/codex-thread-manager.js";
 import { createCodexDynamicToolTextResult } from "../../../src/agent-execution/backends/codex/codex-dynamic-tool.js";
 import { CodexModelCatalog } from "../../../src/llm-management/services/codex-model-catalog.js";
+import {
+  PREVIEW_BRIDGE_BASE_URL_ENV,
+  PREVIEW_BRIDGE_TOKEN_ENV,
+} from "../../../src/agent-tools/preview/preview-tool-contract.js";
+import {
+  PreviewBridgeLiveTestServer,
+  buildOpenPreviewToolPrompt,
+} from "./preview-bridge-live-test-server.js";
 
 const codexBinaryReady = spawnSync("codex", ["--version"], {
   stdio: "ignore",
@@ -188,7 +196,10 @@ const createFactory = (input: {
 describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live transport)", () => {
   let clientManager: CodexAppServerClientManager | null = null;
   let threadManager: CodexThreadManager | null = null;
+  let previewBridgeServer: PreviewBridgeLiveTestServer | null = null;
   const createdRunIds = new Set<string>();
+  const originalPreviewBridgeBaseUrl = process.env[PREVIEW_BRIDGE_BASE_URL_ENV];
+  const originalPreviewBridgeToken = process.env[PREVIEW_BRIDGE_TOKEN_ENV];
 
   afterEach(async () => {
     if (threadManager) {
@@ -206,6 +217,20 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
       clientManager = null;
     }
     threadManager = null;
+    if (previewBridgeServer) {
+      await previewBridgeServer.stop();
+      previewBridgeServer = null;
+    }
+    if (typeof originalPreviewBridgeBaseUrl === "string") {
+      process.env[PREVIEW_BRIDGE_BASE_URL_ENV] = originalPreviewBridgeBaseUrl;
+    } else {
+      delete process.env[PREVIEW_BRIDGE_BASE_URL_ENV];
+    }
+    if (typeof originalPreviewBridgeToken === "string") {
+      process.env[PREVIEW_BRIDGE_TOKEN_ENV] = originalPreviewBridgeToken;
+    } else {
+      delete process.env[PREVIEW_BRIDGE_TOKEN_ENV];
+    }
   });
 
   it("converts status and assistant text segments for a normal Codex turn", async () => {
@@ -1054,6 +1079,117 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     } finally {
       unsubscribe();
       await writeBackendEventLog("codex-backend-edit-file", events);
+    }
+  }, FLOW_TEST_TIMEOUT_MS);
+
+  it("executes open_preview through the live Codex preview dynamic tool path", async () => {
+    const workspaceRoot = await createWorkspace("codex-backend-preview-tool");
+    previewBridgeServer = new PreviewBridgeLiveTestServer();
+    await previewBridgeServer.start();
+    Object.assign(process.env, previewBridgeServer.getRuntimeEnv());
+    clientManager = new CodexAppServerClientManager({
+      createClient: (cwd) =>
+        new CodexAppServerClient({
+          command: "codex",
+          args: ["app-server"],
+          cwd,
+          requestTimeoutMs: 45_000,
+        }),
+    });
+    threadManager = new CodexThreadManager(
+      clientManager,
+      undefined,
+      new CodexClientThreadRouter(),
+    );
+    const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
+    const runId = "run-codex-backend-preview-tool";
+    const factory = createFactory({
+      clientManager,
+      threadManager,
+      workspaceRoot,
+      runId,
+      defaultBootstrapStrategy: {
+        appliesTo: () => true,
+        prepare: ({ agentInstruction }) => ({
+          baseInstructions: agentInstruction ? `## Agent Instruction\n${agentInstruction}` : null,
+          developerInstructions:
+            "If the user explicitly instructs you to call open_preview with a JSON argument object, call open_preview exactly once with those exact arguments and do not call any other tool.",
+          dynamicToolRegistrations: null,
+        }),
+      },
+    });
+
+    const backend = await factory.createBackend(
+      new AgentRunConfig({
+        runtimeKind: "codex_app_server",
+        agentDefinitionId: "agent-def-codex-preview-live",
+        llmModelIdentifier: modelIdentifier,
+        autoExecuteTools: true,
+        workspaceId: "workspace-codex-preview-live",
+        llmConfig: { reasoning_effort: "medium" },
+      }),
+    );
+    createdRunIds.add(backend.runId);
+
+    const thread = threadManager.getThread(backend.runId);
+    expect(thread).toBeTruthy();
+    await waitForStartupReady(thread!.startup.waitForReady);
+
+    const previewUrl = `http://127.0.0.1:4173/preview-${randomUUID()}`;
+    const previewTitle = `Preview ${randomUUID()}`;
+    const events: AgentRunEvent[] = [];
+    const unsubscribe = backend.subscribeToEvents((event) => {
+      if (event && typeof event === "object") {
+        events.push(event as AgentRunEvent);
+      }
+    });
+
+    try {
+      const sendResult = await backend.postUserMessage(
+        new AgentInputUserMessage(
+          buildOpenPreviewToolPrompt({
+            url: previewUrl,
+            title: previewTitle,
+          }),
+        ),
+      );
+      expect(sendResult.accepted).toBe(true);
+
+      await waitForEvent(
+        events,
+        (event) =>
+          event.eventType === AgentRunEventType.TOOL_EXECUTION_STARTED &&
+          event.payload.tool_name === "open_preview",
+      );
+      await waitForEvent(
+        events,
+        (event) =>
+          event.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED &&
+          event.payload.tool_name === "open_preview",
+      );
+      await waitForEvent(
+        events,
+        (event) =>
+          event.eventType === AgentRunEventType.AGENT_STATUS &&
+          event.payload.new_status === "IDLE",
+      );
+
+      expect(
+        events.some((event) => event.eventType === AgentRunEventType.TOOL_APPROVAL_REQUESTED),
+      ).toBe(false);
+      expect(previewBridgeServer.requests).toHaveLength(1);
+      expect(previewBridgeServer.requests[0]).toMatchObject({
+        method: "POST",
+        path: "/preview/open",
+        body: {
+          url: previewUrl,
+          title: previewTitle,
+          wait_until: "load",
+        },
+      });
+    } finally {
+      unsubscribe();
+      await writeBackendEventLog("codex-backend-preview-tool", events);
     }
   }, FLOW_TEST_TIMEOUT_MS);
 });

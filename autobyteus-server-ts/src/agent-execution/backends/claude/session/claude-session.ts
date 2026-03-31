@@ -9,8 +9,8 @@ import { normalizeClaudeStreamChunk } from "../claude-runtime-message-normalizer
 import { ClaudeSessionEventName } from "../events/claude-session-event-name.js";
 import { logRawClaudeSessionChunkDetails } from "../events/claude-session-event-debug.js";
 import {
-  buildClaudeTeamMcpServers,
-} from "../../../../agent-team-execution/backends/claude/claude-team-mcp-server-builder.js";
+  buildClaudeRunMcpServers,
+} from "../preview/build-claude-run-mcp-servers.js";
 import {
   getRuntimeMemberContexts,
   resolveRuntimeMemberContext,
@@ -401,28 +401,21 @@ export class ClaudeSession {
   private async buildTeamMcpServers(
     sendMessageToToolingEnabled: boolean,
   ): Promise<Record<string, unknown> | null> {
-    if (!sendMessageToToolingEnabled) {
-      return null;
-    }
-
-    const mcpServers = await buildClaudeTeamMcpServers({
+    return buildClaudeRunMcpServers({
+      sendMessageToToolingEnabled,
       runContext: this.runContext,
       sdkClient: this.dependencies.sdkClient,
-      requestToolApproval: ({ invocationId, toolName, toolArguments }) =>
-        this.dependencies.toolingCoordinator.requestToolApprovalDecision({
-          runContext: this.runContext,
-          invocationId,
-          toolName,
-          toolInput: toolArguments,
-        }),
+      requestToolApproval: sendMessageToToolingEnabled
+        ? ({ invocationId, toolName, toolArguments }) =>
+            this.dependencies.toolingCoordinator.requestToolApprovalDecision({
+              runContext: this.runContext,
+              invocationId,
+              toolName,
+              toolInput: toolArguments,
+            })
+        : null,
       emitEvent: (_runContext, event) => this.emitRuntimeEvent(event),
     });
-    if (!mcpServers) {
-      throw new Error(
-        "CLAUDE_QUERY_MCP_UNAVAILABLE: Unable to build team MCP server configuration.",
-      );
-    }
-    return mcpServers;
   }
 
   private isSendMessageToToolingEnabled(): boolean {

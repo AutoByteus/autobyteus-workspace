@@ -26,10 +26,12 @@ import { AppUpdater } from './updater/appUpdater';
 import { registerExtensionIpcHandlers } from './extensionIpcHandlers';
 import { ManagedExtensionService } from './extensions/managedExtensionService';
 import { getCanonicalBaseDataPath } from './appDataPaths';
+import { PreviewRuntime, startPreviewRuntime } from './preview/preview-runtime';
 
 const serverStatusManager = new ServerStatusManager(serverManager);
 const appUpdater = new AppUpdater();
 let managedExtensionService: ManagedExtensionService | null = null;
+let previewRuntime: PreviewRuntime | null = null
 
 const INTERNAL_SERVER_PORT = 29695;
 const shutdownTimeoutMs = 8000;
@@ -495,6 +497,11 @@ function installAppLifecycleHandlers(): void {
       await serverManager.stopServer();
     } catch (error) {
       logger.error('Error during server shutdown:', error);
+    }
+    try {
+      await previewRuntime?.stop()
+    } catch (error) {
+      logger.error('Error during preview runtime shutdown:', error);
     } finally {
       logger.close();
     }
@@ -527,6 +534,14 @@ async function bootstrap(): Promise<void> {
   await app.whenReady();
   managedExtensionService = new ManagedExtensionService(getCanonicalBaseDataPath());
   appUpdater.initialize();
+  previewRuntime = await startPreviewRuntime({
+    iconPath: getWindowIcon(),
+    artifactsDir: path.join(getCanonicalBaseDataPath(), 'preview-artifacts'),
+    setRuntimeEnvOverrides: (overrides) => serverManager.setRuntimeEnvOverrides(overrides),
+    onStartError: (error) => {
+      logger.error('Failed to start preview subsystem. Preview tools will remain unavailable.', error)
+    },
+  });
   installIpcHandlers();
   installServerStatusFanout();
   installAppLifecycleHandlers();

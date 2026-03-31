@@ -17,6 +17,14 @@ import { ClaudeSessionBootstrapper } from "../../../src/agent-execution/backends
 import { ClaudeSessionManager } from "../../../src/agent-execution/backends/claude/session/claude-session-manager.js";
 import { ClaudeModelCatalog } from "../../../src/llm-management/services/claude-model-catalog.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import {
+  PREVIEW_BRIDGE_BASE_URL_ENV,
+  PREVIEW_BRIDGE_TOKEN_ENV,
+} from "../../../src/agent-tools/preview/preview-tool-contract.js";
+import {
+  PreviewBridgeLiveTestServer,
+  buildOpenPreviewToolPrompt,
+} from "./preview-bridge-live-test-server.js";
 
 const claudeBinaryReady = spawnSync("claude", ["--version"], {
   stdio: "ignore",
@@ -193,8 +201,11 @@ const writeBackendEventLog = async (testName: string, events: AgentRunEvent[]): 
 
 describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live transport)", () => {
   let sessionManager: ClaudeSessionManager | null = null;
+  let previewBridgeServer: PreviewBridgeLiveTestServer | null = null;
   const createdRunIds = new Set<string>();
   const createdWorkspaces = new Set<string>();
+  const originalPreviewBridgeBaseUrl = process.env[PREVIEW_BRIDGE_BASE_URL_ENV];
+  const originalPreviewBridgeToken = process.env[PREVIEW_BRIDGE_TOKEN_ENV];
 
   afterEach(async () => {
     if (sessionManager) {
@@ -208,6 +219,20 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
     }
     createdRunIds.clear();
     sessionManager = null;
+    if (previewBridgeServer) {
+      await previewBridgeServer.stop();
+      previewBridgeServer = null;
+    }
+    if (typeof originalPreviewBridgeBaseUrl === "string") {
+      process.env[PREVIEW_BRIDGE_BASE_URL_ENV] = originalPreviewBridgeBaseUrl;
+    } else {
+      delete process.env[PREVIEW_BRIDGE_BASE_URL_ENV];
+    }
+    if (typeof originalPreviewBridgeToken === "string") {
+      process.env[PREVIEW_BRIDGE_TOKEN_ENV] = originalPreviewBridgeToken;
+    } else {
+      delete process.env[PREVIEW_BRIDGE_TOKEN_ENV];
+    }
 
     await Promise.all(
       Array.from(createdWorkspaces).map((workspaceRoot) =>
@@ -725,6 +750,98 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
       } finally {
         unsubscribeOriginal();
         await writeBackendEventLog("claude-backend-restore-after-tool", originalEvents);
+      }
+    },
+    FLOW_TEST_TIMEOUT_MS,
+  );
+
+  it(
+    "executes open_preview through the live Claude preview MCP path",
+    async () => {
+      const modelIdentifier = await fetchClaudeModelIdentifier();
+      const workspaceRoot = await createWorkspace("claude-backend-preview-tool");
+      createdWorkspaces.add(workspaceRoot);
+      previewBridgeServer = new PreviewBridgeLiveTestServer();
+      await previewBridgeServer.start();
+      Object.assign(process.env, previewBridgeServer.getRuntimeEnv());
+      sessionManager = new ClaudeSessionManager();
+
+      const runId = `run-claude-backend-preview-${randomUUID()}`;
+      createdRunIds.add(runId);
+      const factory = createFactory({
+        sessionManager,
+        workspaceRoot,
+        runId,
+        instructions:
+          "If the user explicitly instructs you to call open_preview with a JSON argument object, call open_preview exactly once with those exact arguments and do not call any other tool.",
+      });
+
+      const backend = await factory.createBackend(
+        new AgentRunConfig({
+          runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+          agentDefinitionId: "agent-def-claude-preview-live",
+          llmModelIdentifier: modelIdentifier,
+          autoExecuteTools: true,
+          workspaceId: "workspace-claude-preview-live",
+          skillAccessMode: SkillAccessMode.NONE,
+        }),
+      );
+
+      const previewUrl = `http://127.0.0.1:4173/preview-${randomUUID()}`;
+      const previewTitle = `Preview ${randomUUID()}`;
+      const events: AgentRunEvent[] = [];
+      const unsubscribe = backend.subscribeToEvents((event) => {
+        if (event && typeof event === "object") {
+          events.push(event as AgentRunEvent);
+        }
+      });
+
+      try {
+        const sendResult = await backend.postUserMessage(
+          new AgentInputUserMessage(
+            buildOpenPreviewToolPrompt({
+              url: previewUrl,
+              title: previewTitle,
+            }),
+          ),
+        );
+        expect(sendResult).toEqual({ accepted: true });
+
+        await waitForEvent(
+          events,
+          (event) =>
+            event.eventType === AgentRunEventType.TOOL_EXECUTION_STARTED &&
+            event.payload.tool_name === "open_preview",
+        );
+        await waitForEvent(
+          events,
+          (event) =>
+            event.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED &&
+            event.payload.tool_name === "open_preview",
+        );
+        await waitForEvent(
+          events,
+          (event) =>
+            event.eventType === AgentRunEventType.AGENT_STATUS &&
+            event.payload.new_status === "IDLE",
+        );
+
+        expect(
+          events.some((event) => event.eventType === AgentRunEventType.TOOL_APPROVAL_REQUESTED),
+        ).toBe(false);
+        expect(previewBridgeServer.requests).toHaveLength(1);
+        expect(previewBridgeServer.requests[0]).toMatchObject({
+          method: "POST",
+          path: "/preview/open",
+          body: {
+            url: previewUrl,
+            title: previewTitle,
+            wait_until: "load",
+          },
+        });
+      } finally {
+        unsubscribe();
+        await writeBackendEventLog("claude-backend-preview-tool", events);
       }
     },
     FLOW_TEST_TIMEOUT_MS,

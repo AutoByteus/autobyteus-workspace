@@ -44,7 +44,7 @@ export class LinuxServerManager extends BaseServerManager {
       ELECTRON_RUN_AS_NODE: '1',
       PORT: this.serverPort.toString(),
       SERVER_PORT: this.serverPort.toString(),
-      ...buildServerRuntimeEnv(this.appDataDir, publicServerUrl, process.env)
+      ...buildServerRuntimeEnv(this.appDataDir, publicServerUrl, process.env, this.getRuntimeEnvOverrides())
     }
     const options = {
       cwd: this.serverDir,

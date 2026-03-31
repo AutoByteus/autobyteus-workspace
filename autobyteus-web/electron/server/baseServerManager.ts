@@ -27,6 +27,7 @@ export abstract class BaseServerManager extends EventEmitter {
   protected serverDir: string = ''
   protected gracefulShutdownTimeoutMs: number = 5000  // 5 seconds for graceful shutdown
   protected appDataService: AppDataService
+  protected runtimeEnvOverrides: Record<string, string> = {}
 
   constructor() {
     super()
@@ -256,6 +257,20 @@ export abstract class BaseServerManager extends EventEmitter {
    */
   public getAppDataDir(): string {
     return this.appDataService.getAppDataDir()
+  }
+
+  public setRuntimeEnvOverrides(overrides: Record<string, string | null | undefined>): void {
+    const next: Record<string, string> = {}
+    for (const [key, value] of Object.entries(overrides)) {
+      if (typeof value === 'string' && value.trim().length > 0) {
+        next[key] = value
+      }
+    }
+    this.runtimeEnvOverrides = next
+  }
+
+  protected getRuntimeEnvOverrides(): Record<string, string> {
+    return { ...this.runtimeEnvOverrides }
   }
 
   /**

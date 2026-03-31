@@ -1,0 +1,284 @@
+# Investigation Notes — Preview Session Multi-Runtime Design
+
+- **Ticket**: `preview-session-multi-runtime-design`
+- **Date**: `2026-03-31`
+- **Stage**: `1 Investigation + Triage`
+- **Scope Classification**: `Large`
+- **Status**: `Current`
+
+---
+
+## Investigation Goal
+
+Determine where a preview-session capability should live so it can be reused across the application's three supported runtime kinds without creating a messy Electron renderer/event model or duplicating runtime-specific logic.
+
+---
+
+## Current Architecture Findings
+
+### 1. The backend already dispatches three runtime kinds through one manager
+
+The server-side execution layer already resolves three distinct runtime kinds from one owner:
+
+- `autobyteus`
+- `claude_agent_sdk`
+- `codex_app_server`
+
+`AgentRunManager` selects a backend factory based on `RuntimeKind`, which means any preview design that only fits one runtime path would be structurally incomplete for the current product shape.
+
+### 2. The `autobyteus` runtime uses the shared local tool registry
+
+The native `autobyteus` runtime builds tool instances from the shared `defaultToolRegistry`. Agent definitions list tool names, and the backend factory instantiates them directly from the registry before the run starts.
+
+Implication:
+
+- A preview capability for `autobyteus` can be exposed as a normal local tool registration if the core capability is reachable from the backend process.
+- This path already fits a reusable internal service plus tool-wrapper model.
+
+### 3. The Codex runtime has an explicit dynamic-tool injection path
+
+The `codex_app_server` runtime has a dedicated dynamic-tool abstraction:
+
+- `CodexDynamicToolRegistration`
+- `buildCodexDynamicToolSpecs(...)`
+- `buildCodexDynamicToolHandlerMap(...)`
+
+The default Codex bootstrap strategy currently provides no dynamic tool registrations, but the team bootstrap path already injects a runtime-specific dynamic tool (`send_message_to`) through the same mechanism.
+
+Implication:
+
+- A preview tool surface can be added to Codex without changing the fundamental runtime model.
+- The right design is to reuse the existing dynamic-tool registration path, not to special-case preview logic directly inside Codex thread handling.
+
+### 4. The Claude runtime already has an SDK-local MCP bridge
+
+The `claude_agent_sdk` runtime exposes tool surfaces differently:
+
+- `ClaudeSdkClient.createToolDefinition(...)`
+- `ClaudeSdkClient.createMcpServer(...)`
+- `ClaudeSession.buildTeamMcpServers(...)`
+
+Current Claude team tooling is already assembled as an MCP server configuration passed into the SDK query turn.
+
+Implication:
+
+- Preview can fit Claude cleanly as an SDK-local MCP tool surface.
+- MCP is already a native adaptation mechanism for Claude, even if MCP is not the primary internal owner of preview sessions.
+
+### 5. Shared MCP infrastructure already exists outside the Claude-specific path
+
+The codebase already has a generic MCP tool stack:
+
+- server config/discovery in `autobyteus-server-ts`
+- shared tool registration and proxying in `autobyteus-ts`
+- frontend configuration/management UI in `autobyteus-web`
+
+Implication:
+
+- MCP is a viable adapter layer for preview tools.
+- MCP should not be the authoritative owner of preview sessions if Electron shell state and UI surfaces are involved.
+- A cleaner design is an internal preview core with MCP as one optional exposure layer.
+
+### 6. Electron main already owns application window lifecycle and typed IPC
+
+The Electron shell already concentrates native responsibilities in `autobyteus-web/electron/main.ts` and exposes them via `preload.ts`:
+
+- node-bound window open/focus/list
+- server status queries and push updates
+- node registry snapshot and update listeners
+- app update state and other shell services
+
+Implication:
+
+- Preview session lifecycle belongs closer to Electron main than to the renderer.
+- A preview owner in renderer state would fight Electron's actual ownership of windows/webContents lifecycle.
+
+### 7. Existing node-bound windows are not suitable as-is for browser preview
+
+Current node-bound windows:
+
+- always load the app shell start URL,
+- block navigation via `will-navigate`,
+- block popup creation via `setWindowOpenHandler`,
+- are keyed by `nodeId`.
+
+Implication:
+
+- Preview cannot just reuse the existing node-window helper unchanged.
+- A separate preview session manager is required even if it reuses some window-management patterns.
+
+### 8. The right-side tabs are static today
+
+The right panel currently uses a fixed tab union and fixed tab list:
+
+- `files`
+- `teamMembers`
+- `terminal`
+- `vnc`
+- `progress`
+- `artifacts`
+
+Implication:
+
+- Dynamic creation of many outer right-side tabs would push against the current shell design.
+- If preview is rendered inside the right panel later, the cleaner approach is one fixed `Preview` tab containing internal sessions, not one outer tab per preview.
+
+### 9. The agent tool lifecycle already carries arbitrary tool results
+
+The streaming protocol already supports:
+
+- tool execution started
+- tool execution succeeded with arbitrary `result`
+- tool execution failed
+- tool logs
+
+The renderer activity store already persists arbitrary result payloads and logs per invocation.
+
+Implication:
+
+- `open_preview` can return structured session metadata through the existing tool lifecycle.
+- The renderer does not need a brand-new agent-stream event family just to learn the preview session ID.
+
+### 10. No preview-session subsystem exists yet
+
+Searches across `autobyteus-web`, `autobyteus-server-ts`, and `autobyteus-ts` found no existing implementation for:
+
+- `open_preview`
+- `preview_session_id`
+- preview session tracking
+- screenshot/log capture over a preview session
+
+Implication:
+
+- This is a net-new capability area.
+- Clean ownership boundaries matter up front because there is no existing preview structure to preserve.
+
+---
+
+## Cross-Cutting Constraints Confirmed By Investigation
+
+### C-001. Three runtime kinds must be covered by the design
+
+The preview capability cannot be designed as a Codex-only or Claude-only convenience path if it is intended to become a product feature.
+
+### C-002. Session ownership and tool exposure are different concerns
+
+The same preview core may need to be exposed through:
+
+- shared local tools for `autobyteus`,
+- dynamic tools for `codex_app_server`,
+- SDK-local MCP for `claude_agent_sdk`,
+- potentially a generic MCP server later.
+
+That argues for a reusable internal preview capability with thin runtime-specific adapters.
+
+### C-003. Electron main is the most defensible lifecycle owner
+
+Because preview surfaces are native Electron entities, session lifecycle should be owned where windows/webContents are actually created, focused, observed, and destroyed.
+
+### C-004. Renderer integration should stay projection-oriented
+
+The renderer should project preview-session state and control requests, not own the real session truth. This keeps the frontend event model small and avoids runtime-specific UI logic.
+
+### C-005. MCP is appropriate as an adapter, not as the session source of truth
+
+MCP is useful for runtime/tool interoperability, but preview session state must stay aligned with Electron lifecycle. If an MCP server owned session state separately, shell/UI drift would be likely.
+
+---
+
+## Scope Triage
+
+### Classification: `Large`
+
+This work is classified as `Large` because a production implementation would touch multiple subsystems:
+
+- Electron main-process session ownership
+- Electron preload contract
+- renderer session projection/store and optional shell surface
+- `autobyteus` local tool registration
+- Codex dynamic-tool registration/bootstrap
+- Claude SDK-local MCP assembly
+- optional shared MCP adapter design
+- tool lifecycle/result handling expectations
+- validation strategy across multiple runtime kinds
+
+Even though the current ticket stops at design, the implementation surface is cross-cutting enough that the design must explicitly control ownership and API boundaries.
+
+---
+
+## Design Pressure / Risks Identified
+
+### RISK-001. Letting each runtime invent its own preview tool path will duplicate behavior
+
+If each runtime independently defines open/focus/screenshot/close semantics, the preview capability will drift and become hard to support.
+
+### RISK-002. Letting renderer own preview state would create lifecycle mismatch
+
+The renderer can disappear or rehydrate, but Electron main owns the actual native surfaces. Ownership split in the wrong direction would create stale sessions and messy reconciliation logic.
+
+### RISK-003. Dynamic outer tabs would make the shell messy
+
+The current right-side tab model is fixed. Forcing it into a one-tab-per-preview pattern would create avoidable UI and state complexity.
+
+### RISK-004. Reusing node-bound windows directly would overconstrain preview navigation
+
+Current node windows intentionally block navigation and popups for app-shell safety. Preview must be treated as a distinct surface type.
+
+### RISK-005. Using MCP as the only internal abstraction would hide important shell ownership
+
+MCP helps tool transport, but the preview owner still needs direct knowledge of Electron lifecycle, screenshots, logs, and cleanup behavior.
+
+---
+
+## Preliminary Direction Entering Design
+
+The investigation supports this direction for Stage 3 design:
+
+- create one reusable preview-session core/capability area,
+- make Electron main the authoritative preview session owner,
+- expose that core through runtime-specific adapters rather than runtime-specific implementations,
+- use an app-owned opaque `preview_session_id` as the stable external contract,
+- keep renderer integration minimal by reusing tool-result payloads plus a small preview-session snapshot/update channel,
+- recommend a bounded v1 tool surface rather than full browser automation.
+
+---
+
+## Evidence Log
+
+### Key files inspected
+
+- `autobyteus-server-ts/src/runtime-management/runtime-kind-enum.ts`
+- `autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts`
+- `autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts`
+- `autobyteus-ts/src/tools/register-tools.ts`
+- `autobyteus-ts/src/tools/registry/tool-registry.ts`
+- `autobyteus-server-ts/src/agent-execution/backends/codex/codex-dynamic-tool.ts`
+- `autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts`
+- `autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrap-strategy.ts`
+- `autobyteus-server-ts/src/agent-team-execution/backends/codex/codex-team-thread-bootstrap-strategy.ts`
+- `autobyteus-server-ts/src/agent-team-execution/backends/codex/codex-send-message-dynamic-tool-registration.ts`
+- `autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-client.ts`
+- `autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts`
+- `autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrap-strategy.ts`
+- `autobyteus-ts/src/tools/mcp/tool.ts`
+- `autobyteus-ts/src/tools/mcp/tool-registrar.ts`
+- `autobyteus-ts/src/tools/mcp/server/proxy.ts`
+- `autobyteus-web/docs/tools_and_mcp.md`
+- `autobyteus-web/electron/main.ts`
+- `autobyteus-web/electron/preload.ts`
+- `autobyteus-web/composables/useRightSideTabs.ts`
+- `autobyteus-web/components/layout/RightSideTabs.vue`
+- `autobyteus-web/services/agentStreaming/protocol/messageTypes.ts`
+- `autobyteus-web/stores/agentActivityStore.ts`
+
+### Representative commands run
+
+- `git fetch --prune origin`
+- `git remote show origin`
+- `git worktree add -b codex/preview-session-multi-runtime-design /Users/normy/autobyteus_org/autobyteus-worktrees/preview-session-multi-runtime-design origin/personal`
+- `rg -n "enum RuntimeKind|AUTOBYTEUS|CLAUDE_AGENT_SDK|CODEX_APP_SERVER" ...`
+- `rg -n "dynamicToolRegistrations|CodexDynamicToolRegistration|open_preview" ...`
+- `rg -n "createMcpServer|buildTeamMcpServers|buildClaudeTeamMcpServers" ...`
+- `rg -n "ipcMain.handle|contextBridge.exposeInMainWorld|BrowserWindow|preview" ...`
+- `rg -n "preview_session|open_preview|capture_preview|close_preview" autobyteus-web autobyteus-server-ts autobyteus-ts`
+

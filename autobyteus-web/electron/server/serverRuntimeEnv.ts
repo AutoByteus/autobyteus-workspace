@@ -8,7 +8,8 @@ function toPrismaSqliteUrl(filePath: string): string {
 export function buildServerRuntimeEnv(
   appDataDir: string,
   publicServerUrl: string,
-  baseEnv: NodeJS.ProcessEnv
+  baseEnv: NodeJS.ProcessEnv,
+  runtimeOverrides: Record<string, string> = {}
 ): Record<string, string> {
   const dbPath = path.join(appDataDir, 'db', 'production.db')
 
@@ -18,6 +19,7 @@ export function buildServerRuntimeEnv(
     PERSISTENCE_PROVIDER: baseEnv.PERSISTENCE_PROVIDER ?? 'sqlite',
     DB_TYPE: baseEnv.DB_TYPE ?? 'sqlite',
     AUTOBYTEUS_DATA_DIR: appDataDir,
-    AUTOBYTEUS_SERVER_HOST: publicServerUrl
+    AUTOBYTEUS_SERVER_HOST: publicServerUrl,
+    ...runtimeOverrides,
   }
 }

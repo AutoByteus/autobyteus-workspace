@@ -36,6 +36,7 @@ import {
 import {
   getTeamCodexThreadBootstrapStrategy,
 } from "../../../../agent-team-execution/backends/codex/codex-team-thread-bootstrap-strategy.js";
+import { buildPreviewDynamicToolRegistrations } from "../preview/build-preview-dynamic-tool-registrations.js";
 
 const DEFAULT_SANDBOX_MODE: CodexSandboxMode = "workspace-write";
 const VALID_SANDBOX_MODES = new Set<CodexSandboxMode>([
@@ -131,12 +132,16 @@ export class CodexThreadBootstrapper {
     );
     const agentInstruction = this.composeBootstrapAgentInstruction(agentDefinition);
     const threadConfigInput = await this.prepareThreadConfigInput(runContext, agentInstruction);
+    const dynamicToolRegistrations = mergeDynamicToolRegistrations(
+      threadConfigInput.dynamicToolRegistrations,
+      buildPreviewDynamicToolRegistrations(),
+    );
     const codexThreadConfig = this.buildThreadConfig({
       agentRunConfig: runContext.config,
       workingDirectory,
       baseInstructions: threadConfigInput.baseInstructions,
       developerInstructions: threadConfigInput.developerInstructions,
-      dynamicToolRegistrations: threadConfigInput.dynamicToolRegistrations,
+      dynamicToolRegistrations,
     });
     const materializedConfiguredSkills = await this.prepareWorkspaceSkills({
       workingDirectory,
@@ -151,7 +156,7 @@ export class CodexThreadBootstrapper {
         codexThreadConfig,
         materializedConfiguredSkills,
         dynamicToolHandlers: buildCodexDynamicToolHandlerMap(
-          threadConfigInput.dynamicToolRegistrations,
+          dynamicToolRegistrations,
         ),
         threadId: existingRuntimeContext?.threadId ?? null,
         activeTurnId: existingRuntimeContext?.activeTurnId ?? null,
@@ -216,6 +221,17 @@ export class CodexThreadBootstrapper {
     });
   }
 }
+
+const mergeDynamicToolRegistrations = (
+  primary: CodexDynamicToolRegistration[] | null,
+  secondary: CodexDynamicToolRegistration[] | null,
+): CodexDynamicToolRegistration[] | null => {
+  const merged = [
+    ...(Array.isArray(primary) ? primary : []),
+    ...(Array.isArray(secondary) ? secondary : []),
+  ];
+  return merged.length > 0 ? merged : null;
+};
 
 let cachedCodexThreadBootstrapper: CodexThreadBootstrapper | null = null;
 
