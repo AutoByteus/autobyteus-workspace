@@ -9,10 +9,6 @@ import {
   getTeamRunService,
   type TeamRunService,
 } from "../../agent-team-execution/services/team-run-service.js";
-import {
-  getChannelTeamRunReplyBridge,
-  type ChannelTeamRunReplyBridge,
-} from "./channel-team-run-reply-bridge.js";
 import { buildAgentInputMessage } from "./channel-agent-input-message-builder.js";
 
 const logger = {
@@ -22,14 +18,12 @@ const logger = {
 export type ChannelTeamRunFacadeDependencies = {
   runLauncher?: ChannelBindingRunLauncher;
   teamRunService?: TeamRunService;
-  externalTurnBridge?: ChannelTeamRunReplyBridge;
   teamLiveMessagePublisher?: TeamLiveMessagePublisher;
 };
 
 export class ChannelTeamRunFacade {
   private readonly runLauncher: ChannelBindingRunLauncher;
   private readonly teamRunService: TeamRunService;
-  private readonly externalTurnBridge: ChannelTeamRunReplyBridge;
   private readonly teamLiveMessagePublisher: TeamLiveMessagePublisher;
 
   constructor(
@@ -38,8 +32,6 @@ export class ChannelTeamRunFacade {
     this.runLauncher = deps.runLauncher ?? new ChannelBindingRunLauncher();
     this.teamRunService =
       deps.teamRunService ?? getTeamRunService();
-    this.externalTurnBridge =
-      deps.externalTurnBridge ?? getChannelTeamRunReplyBridge();
     this.teamLiveMessagePublisher =
       deps.teamLiveMessagePublisher ?? getTeamLiveMessagePublisher();
   }
@@ -62,21 +54,6 @@ export class ChannelTeamRunFacade {
       throw new Error(result.message ?? `Team run '${teamRunId}' rejected the message.`);
     }
     try {
-      await this.externalTurnBridge.bindAcceptedExternalTeamTurn({
-        run: teamRun,
-        teamRunId,
-        memberName: result.memberName ?? binding.targetNodeName ?? null,
-        memberRunId: result.memberRunId ?? null,
-        turnId: result.turnId ?? null,
-        envelope,
-      });
-    } catch (error) {
-      logger.warn(
-        `Team run '${teamRunId}': failed to bind the accepted external team turn for provider reply routing. Continuing because inbound dispatch already succeeded.`,
-        error,
-      );
-    }
-    try {
       this.teamLiveMessagePublisher.publishExternalUserMessage({
         teamRunId,
         envelope,
@@ -91,8 +68,11 @@ export class ChannelTeamRunFacade {
     }
 
     return {
-      agentRunId: null,
+      dispatchTargetType: "TEAM",
       teamRunId,
+      memberRunId: result.memberRunId ?? null,
+      turnId: result.turnId ?? null,
+      memberName: result.memberName ?? binding.targetNodeName ?? null,
       dispatchedAt: new Date(),
     };
   }

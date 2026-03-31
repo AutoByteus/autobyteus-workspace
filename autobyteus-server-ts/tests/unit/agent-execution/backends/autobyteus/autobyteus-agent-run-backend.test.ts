@@ -52,7 +52,7 @@ describe("AutoByteusAgentRunBackend", () => {
       expect.objectContaining({ content: "hello backend" }),
     );
     expect(agent.postToolExecutionApproval).toHaveBeenCalledWith("invoke-1", true, "approved");
-    expect(sendResult).toEqual({ accepted: true });
+    expect(sendResult).toEqual({ accepted: true, turnId: null });
     expect(approveResult).toEqual({ accepted: true });
     expect(backend.getStatus()).toBe("idle");
     expect(backend.getPlatformAgentRunId()).toBe("agent-1");

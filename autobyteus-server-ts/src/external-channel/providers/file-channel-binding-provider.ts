@@ -1,13 +1,7 @@
-import {
-  parseExternalChannelProvider,
-  type ExternalChannelProvider,
-} from "autobyteus-ts/external-channel/provider.js";
-import {
-  parseExternalChannelTransport,
-  type ExternalChannelTransport,
-} from "autobyteus-ts/external-channel/channel-transport.js";
+import { parseExternalChannelProvider, type ExternalChannelProvider } from "autobyteus-ts/external-channel/provider.js";
+import { parseExternalChannelTransport, type ExternalChannelTransport } from "autobyteus-ts/external-channel/channel-transport.js";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
-import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import { RuntimeKind, runtimeKindFromString } from "../../runtime-management/runtime-kind-enum.js";
 import type {
   ChannelBinding,
   ChannelBindingLaunchPreset,
@@ -19,16 +13,18 @@ import type {
   UpsertChannelBindingInput,
 } from "../domain/models.js";
 import type { ChannelBindingProvider } from "./channel-binding-provider.js";
-import { runtimeKindFromString } from "../../runtime-management/runtime-kind-enum.js";
 import {
   nextNumericStringId,
   normalizeNullableString,
   normalizeRequiredString,
   parseDate,
   readJsonArrayFile,
-  resolvePersistencePath,
   updateJsonArrayFile,
 } from "../../persistence/file/store-utils.js";
+import {
+  prepareExternalChannelStorage,
+  resolveExternalChannelStoragePath,
+} from "./external-channel-storage.js";
 
 type ChannelBindingRecord = {
   id: string;
@@ -250,14 +246,15 @@ const isJsonObject = (value: unknown): value is Record<string, unknown> => {
 };
 
 export class FileChannelBindingProvider implements ChannelBindingProvider {
-  constructor(
-    private readonly filePath: string = resolvePersistencePath(
-      "external-channel",
-      "bindings.json",
-    ),
-  ) {}
+  private readonly filePath: string;
+  private storageReadyPromise: Promise<void> | null = null;
+
+  constructor(filePath?: string) {
+    this.filePath = filePath ?? resolveExternalChannelStoragePath("bindings.json");
+  }
 
   async findBinding(input: ChannelBindingLookup): Promise<ChannelBinding | null> {
+    await this.ensureStorageReady();
     const rows = await readJsonArrayFile<ChannelBindingRecord>(this.filePath);
     const found = rows.find(
       (row) =>
@@ -273,6 +270,7 @@ export class FileChannelBindingProvider implements ChannelBindingProvider {
   async findProviderDefaultBinding(
     input: ChannelBindingProviderDefaultLookup,
   ): Promise<ChannelBinding | null> {
+    await this.ensureStorageReady();
     const rows = await readJsonArrayFile<ChannelBindingRecord>(this.filePath);
     const found = sortByUpdatedAtDesc(rows).find(
       (row) =>
@@ -288,6 +286,7 @@ export class FileChannelBindingProvider implements ChannelBindingProvider {
   async findBindingByDispatchTarget(
     target: ChannelDispatchTarget,
   ): Promise<ChannelBinding | null> {
+    await this.ensureStorageReady();
     const rows = await readJsonArrayFile<ChannelBindingRecord>(this.filePath);
     const sorted = sortByUpdatedAtDesc(rows);
 
@@ -312,6 +311,7 @@ export class FileChannelBindingProvider implements ChannelBindingProvider {
     route: ChannelSourceRoute,
     target: ChannelDispatchTarget,
   ): Promise<boolean> {
+    await this.ensureStorageReady();
     const rows = await readJsonArrayFile<ChannelBindingRecord>(this.filePath);
     const agentRunId = normalizeNullableString(target.agentRunId);
     const teamRunId = normalizeNullableString(target.teamRunId);
@@ -334,11 +334,13 @@ export class FileChannelBindingProvider implements ChannelBindingProvider {
   }
 
   async listBindings(): Promise<ChannelBinding[]> {
+    await this.ensureStorageReady();
     const rows = await readJsonArrayFile<ChannelBindingRecord>(this.filePath);
     return sortByUpdatedAtDesc(rows).map((row) => toDomain(row));
   }
 
   async upsertBinding(input: UpsertChannelBindingInput): Promise<ChannelBinding> {
+    await this.ensureStorageReady();
     const now = new Date().toISOString();
     let saved: ChannelBindingRecord | null = null;
 
@@ -442,6 +444,7 @@ export class FileChannelBindingProvider implements ChannelBindingProvider {
   }
 
   async upsertBindingAgentRunId(bindingId: string, agentRunId: string): Promise<ChannelBinding> {
+    await this.ensureStorageReady();
     const normalizedId = normalizeRequiredString(bindingId, "bindingId");
     const normalizedAgentRunId = normalizeRequiredString(agentRunId, "agentRunId");
     const now = new Date().toISOString();
@@ -472,6 +475,7 @@ export class FileChannelBindingProvider implements ChannelBindingProvider {
   }
 
   async upsertBindingTeamRunId(bindingId: string, teamRunId: string): Promise<ChannelBinding> {
+    await this.ensureStorageReady();
     const normalizedId = normalizeRequiredString(bindingId, "bindingId");
     const normalizedTeamRunId = normalizeRequiredString(teamRunId, "teamRunId");
     const now = new Date().toISOString();
@@ -502,6 +506,7 @@ export class FileChannelBindingProvider implements ChannelBindingProvider {
   }
 
   async deleteBinding(bindingId: string): Promise<boolean> {
+    await this.ensureStorageReady();
     const normalizedId = normalizeRequiredString(bindingId, "bindingId");
     let removed = false;
 
@@ -512,6 +517,17 @@ export class FileChannelBindingProvider implements ChannelBindingProvider {
     });
 
     return removed;
+  }
+
+  private async ensureStorageReady(): Promise<void> {
+    if (!this.storageReadyPromise) {
+      this.storageReadyPromise = this.prepareStorage();
+    }
+    await this.storageReadyPromise;
+  }
+
+  private async prepareStorage(): Promise<void> {
+    await prepareExternalChannelStorage(this.filePath);
   }
 }
 

@@ -28,43 +28,18 @@ const createEnvelope = () => ({
   }),
 });
 
-const flush = async () => {
-  await Promise.resolve();
-  await Promise.resolve();
-};
-
 describe("ChannelTeamRunReplyBridge", () => {
-  it("binds accepted team-member turns from multiplexed team events and publishes the provider callback on completion", async () => {
-    const bindTurnToReceipt = vi.fn().mockResolvedValue(undefined);
-    const publishAssistantReplyByTurn = vi.fn().mockResolvedValue({
-      published: true,
-      duplicate: false,
-      reason: null,
-      envelope: {
-        provider: ExternalChannelProvider.TELEGRAM,
-        transport: ExternalChannelTransport.BUSINESS_API,
-        accountId: "autobyteus",
-        peerId: "8438880216",
-        threadId: null,
-        correlationMessageId: "update:1",
-        callbackIdempotencyKey: "external-reply:member-1:turn-1",
-        replyText: "Hello back",
-        attachments: [],
-        chunks: [],
-        metadata: {},
-      },
-    });
+  it("resolves team-member correlation and final reply from multiplexed events", async () => {
     let listener: ((event: unknown) => void) | null = null;
     const unsubscribe = vi.fn();
+    const onCorrelationResolved = vi.fn().mockResolvedValue(undefined);
     const bridge = new ChannelTeamRunReplyBridge({
-      messageReceiptService: { bindTurnToReceipt },
-      replyCallbackService: { publishAssistantReplyByTurn },
-      runProjectionService: {
-        getProjection: vi.fn(),
+      turnReplyRecoveryService: {
+        resolveReplyText: vi.fn(),
       },
     });
 
-    await bridge.bindAcceptedExternalTeamTurn({
+    const observation = bridge.observeAcceptedExternalTeamTurn({
       run: {
         runId: "team-1",
         subscribeToEvents: (onEvent: (event: unknown) => void) => {
@@ -75,6 +50,7 @@ describe("ChannelTeamRunReplyBridge", () => {
       teamRunId: "team-1",
       memberName: "Coordinator",
       envelope: createEnvelope(),
+      onCorrelationResolved,
     });
 
     listener?.({
@@ -115,23 +91,23 @@ describe("ChannelTeamRunReplyBridge", () => {
         },
       },
     });
-    await flush();
 
-    expect(bindTurnToReceipt).toHaveBeenCalledWith(
+    await expect(observation).resolves.toEqual({
+      status: "REPLY_READY",
+      reply: expect.objectContaining({
+        agentRunId: "member-1",
+        teamRunId: "team-1",
+        turnId: "turn-1",
+        replyText: "Hello back",
+      }),
+    });
+    expect(onCorrelationResolved).toHaveBeenCalledWith(
       expect.objectContaining({
         agentRunId: "member-1",
         teamRunId: "team-1",
         turnId: "turn-1",
-        externalMessageId: "update:1",
       }),
     );
-    expect(publishAssistantReplyByTurn).toHaveBeenCalledWith({
-      agentRunId: "member-1",
-      teamRunId: "team-1",
-      turnId: "turn-1",
-      replyText: "Hello back",
-      callbackIdempotencyKey: "external-reply:member-1:turn-1",
-    });
     expect(unsubscribe).toHaveBeenCalledOnce();
   });
 });

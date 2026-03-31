@@ -16,10 +16,6 @@ import {
   getAgentRunHistoryIndexService,
 } from "../../run-history/services/agent-run-history-index-service.js";
 import {
-  getTeamRunHistoryService,
-  type TeamRunHistoryService,
-} from "../../run-history/services/team-run-history-service.js";
-import {
   getWorkspaceManager,
   type WorkspaceManager,
 } from "../../workspaces/workspace-manager.js";
@@ -70,7 +66,6 @@ export class ChannelBindingRunLauncher {
   private readonly agentRunMetadataService: AgentRunMetadataService;
   private readonly agentRunHistoryIndexService: AgentRunHistoryIndexService;
   private readonly workspaceManager: WorkspaceManager;
-  private readonly teamRunHistoryService: TeamRunHistoryService;
   private readonly teamRunService: TeamRunService;
 
   constructor(
@@ -82,7 +77,6 @@ export class ChannelBindingRunLauncher {
       agentRunHistoryIndexService?: AgentRunHistoryIndexService;
       bindingRunRegistry?: ChannelBindingLiveRunRegistry;
       workspaceManager?: WorkspaceManager;
-      teamRunHistoryService?: TeamRunHistoryService;
       teamRunService?: TeamRunService;
     } = {},
   ) {
@@ -97,8 +91,6 @@ export class ChannelBindingRunLauncher {
     this.agentRunHistoryIndexService =
       deps.agentRunHistoryIndexService ?? getAgentRunHistoryIndexService();
     this.workspaceManager = deps.workspaceManager ?? getWorkspaceManager();
-    this.teamRunHistoryService =
-      deps.teamRunHistoryService ?? getTeamRunHistoryService();
     this.teamRunService =
       deps.teamRunService ?? getTeamRunService();
   }
@@ -187,15 +179,20 @@ export class ChannelBindingRunLauncher {
 
     if (
       cachedTeamRunId &&
-      this.bindingRunRegistry.ownsTeamRun(binding.id, cachedTeamRunId)
+      this.bindingRunRegistry.ownsTeamRun(binding.id, cachedTeamRunId) &&
+      this.teamRunService.getTeamRun(cachedTeamRunId)
     ) {
+      return cachedTeamRunId;
+    }
+
+    if (cachedTeamRunId) {
       try {
-        const resumeConfig = await this.teamRunHistoryService.getTeamRunResumeConfig(cachedTeamRunId);
-        if (resumeConfig.isActive) {
-          return cachedTeamRunId;
-        }
+        const restoredRun = await this.teamRunService.restoreTeamRun(cachedTeamRunId);
+        await this.bindingService.upsertBindingTeamRunId(binding.id, restoredRun.runId);
+        this.bindingRunRegistry.claimTeamRun(binding.id, restoredRun.runId);
+        return restoredRun.runId;
       } catch {
-        // Fall through to lazy-create a fresh team run for this binding.
+        // Fall through to lazy-create a fresh run for this binding.
       }
     }
 

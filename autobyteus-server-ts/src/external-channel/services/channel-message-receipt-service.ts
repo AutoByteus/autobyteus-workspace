@@ -1,8 +1,14 @@
 import type {
-  ChannelDispatchTarget,
-  ChannelIngressReceiptInput,
+  ChannelAcceptedIngressReceiptInput,
+  ChannelAcceptedReceiptCorrelationInput,
+  ChannelClaimIngressDispatchInput,
+  ChannelIngressReceiptKey,
+  ChannelIngressReceiptState,
+  ChannelMessageReceipt,
+  ChannelPendingIngressReceiptInput,
+  ChannelReplyPublishedReceiptInput,
   ChannelSourceContext,
-  ChannelTurnReceiptBindingInput,
+  ChannelUnboundIngressReceiptInput,
 } from "../domain/models.js";
 import type { ChannelMessageReceiptProvider } from "../providers/channel-message-receipt-provider.js";
 import { getProviderProxySet } from "../providers/provider-proxy-set.js";
@@ -12,38 +18,59 @@ export class ChannelMessageReceiptService {
     private readonly provider: ChannelMessageReceiptProvider = getProviderProxySet().messageReceiptProvider,
   ) {}
 
-  async recordIngressReceipt(input: ChannelIngressReceiptInput): Promise<void> {
-    const normalized = this.normalizeReceiptInput(input);
-    await this.provider.recordIngressReceipt(normalized);
+  async getReceiptByExternalMessage(
+    input: ChannelIngressReceiptKey,
+  ): Promise<ChannelMessageReceipt | null> {
+    const normalized = this.normalizeReceiptKey(input);
+    return this.provider.getReceiptByExternalMessage(normalized);
   }
 
-  async bindTurnToReceipt(input: ChannelTurnReceiptBindingInput): Promise<void> {
-    const normalized = this.normalizeTurnBindingInput(input);
-    await this.provider.bindTurnToReceipt(normalized);
+  async createPendingIngressReceipt(
+    input: ChannelPendingIngressReceiptInput,
+  ): Promise<ChannelMessageReceipt> {
+    const normalized = this.normalizePendingReceiptInput(input);
+    return this.provider.createPendingIngressReceipt(normalized);
   }
 
-  async getLatestSourceByAgentRunId(
-    agentRunId: string,
-  ): Promise<ChannelSourceContext | null> {
-    const normalizedAgentRunId = normalizeRequiredString(agentRunId, "agentRunId");
-    return this.provider.getLatestSourceByAgentRunId(normalizedAgentRunId);
+  async claimIngressDispatch(
+    input: ChannelClaimIngressDispatchInput,
+  ): Promise<ChannelMessageReceipt> {
+    const normalized = this.normalizeClaimDispatchInput(input);
+    return this.provider.claimIngressDispatch(normalized);
   }
 
-  async getLatestSourceByDispatchTarget(
-    target: ChannelDispatchTarget,
-  ): Promise<ChannelSourceContext | null> {
-    const agentRunId = normalizeNullableString(target.agentRunId, "agentRunId");
-    const teamRunId = normalizeNullableString(target.teamRunId, "teamRunId");
-    if (!agentRunId && !teamRunId) {
-      throw new Error(
-        "Dispatch target lookup requires at least one of agentRunId or teamRunId.",
-      );
-    }
+  async recordAcceptedDispatch(
+    input: ChannelAcceptedIngressReceiptInput,
+  ): Promise<ChannelMessageReceipt> {
+    const normalized = this.normalizeAcceptedReceiptInput(input);
+    return this.provider.recordAcceptedDispatch(normalized);
+  }
 
-    return this.provider.getLatestSourceByDispatchTarget({
-      agentRunId,
-      teamRunId,
-    });
+  async markIngressUnbound(
+    input: ChannelUnboundIngressReceiptInput,
+  ): Promise<ChannelMessageReceipt> {
+    const normalized = this.normalizePendingReceiptInput(input);
+    return this.provider.markIngressUnbound(normalized);
+  }
+
+  async updateAcceptedReceiptCorrelation(
+    input: ChannelAcceptedReceiptCorrelationInput,
+  ): Promise<ChannelMessageReceipt> {
+    const normalized = this.normalizeAcceptedReceiptCorrelationInput(input);
+    return this.provider.updateAcceptedReceiptCorrelation(normalized);
+  }
+
+  async markReplyPublished(
+    input: ChannelReplyPublishedReceiptInput,
+  ): Promise<ChannelMessageReceipt> {
+    const normalized = this.normalizeReplyPublishedReceiptInput(input);
+    return this.provider.markReplyPublished(normalized);
+  }
+
+  async listReceiptsByIngressState(
+    state: ChannelIngressReceiptState,
+  ): Promise<ChannelMessageReceipt[]> {
+    return this.provider.listReceiptsByIngressState(state);
   }
 
   async getSourceByAgentRunTurn(
@@ -55,19 +82,21 @@ export class ChannelMessageReceiptService {
     return this.provider.getSourceByAgentRunTurn(normalizedAgentRunId, normalizedTurnId);
   }
 
-  private normalizeReceiptInput(
-    input: ChannelIngressReceiptInput,
-  ): ChannelIngressReceiptInput {
-    const agentRunId = normalizeNullableString(input.agentRunId, "agentRunId");
-    const teamRunId = normalizeNullableString(input.teamRunId, "teamRunId");
-    if (!agentRunId && !teamRunId) {
-      throw new Error(
-        "Ingress receipt requires at least one target reference (agentRunId or teamRunId).",
-      );
+  isDispatchLeaseExpired(
+    receipt: Pick<ChannelMessageReceipt, "dispatchLeaseExpiresAt">,
+    now: Date = new Date(),
+  ): boolean {
+    const normalizedNow = normalizeDate(now, "now");
+    const leaseExpiresAt = receipt.dispatchLeaseExpiresAt;
+    if (!leaseExpiresAt) {
+      return true;
     }
+    return leaseExpiresAt.getTime() <= normalizedNow.getTime();
+  }
 
-    const receivedAt = normalizeDate(input.receivedAt, "receivedAt");
-
+  private normalizeReceiptKey(
+    input: ChannelIngressReceiptKey,
+  ): ChannelIngressReceiptKey {
     return {
       ...input,
       accountId: normalizeRequiredString(input.accountId, "accountId"),
@@ -77,20 +106,63 @@ export class ChannelMessageReceiptService {
         input.externalMessageId,
         "externalMessageId",
       ),
-      agentRunId,
-      teamRunId,
-      receivedAt,
     };
   }
 
-  private normalizeTurnBindingInput(
-    input: ChannelTurnReceiptBindingInput,
-  ): ChannelTurnReceiptBindingInput {
+  private normalizePendingReceiptInput(
+    input: ChannelPendingIngressReceiptInput,
+  ): ChannelPendingIngressReceiptInput {
+    return {
+      ...this.normalizeReceiptKey(input),
+      receivedAt: normalizeDate(input.receivedAt, "receivedAt"),
+    };
+  }
+
+  private normalizeClaimDispatchInput(
+    input: ChannelClaimIngressDispatchInput,
+  ): ChannelClaimIngressDispatchInput {
+    const leaseDurationMs = normalizePositiveInteger(
+      input.leaseDurationMs,
+      "leaseDurationMs",
+    );
+    return {
+      ...this.normalizePendingReceiptInput(input),
+      claimedAt: normalizeDate(input.claimedAt, "claimedAt"),
+      leaseDurationMs,
+    };
+  }
+
+  private normalizeAcceptedReceiptInput(
+    input: ChannelAcceptedIngressReceiptInput,
+  ): ChannelAcceptedIngressReceiptInput {
     const agentRunId = normalizeNullableString(input.agentRunId, "agentRunId");
     const teamRunId = normalizeNullableString(input.teamRunId, "teamRunId");
     if (!agentRunId && !teamRunId) {
       throw new Error(
-        "Turn receipt binding requires at least one target reference (agentRunId or teamRunId).",
+        "Accepted ingress receipt requires at least one target reference (agentRunId or teamRunId).",
+      );
+    }
+
+    return {
+      ...this.normalizePendingReceiptInput(input),
+      agentRunId,
+      teamRunId,
+      turnId: normalizeNullableString(input.turnId ?? null, "turnId"),
+      dispatchLeaseToken: normalizeRequiredString(
+        input.dispatchLeaseToken,
+        "dispatchLeaseToken",
+      ),
+    };
+  }
+
+  private normalizeAcceptedReceiptCorrelationInput(
+    input: ChannelAcceptedReceiptCorrelationInput,
+  ): ChannelAcceptedReceiptCorrelationInput {
+    const agentRunId = normalizeNullableString(input.agentRunId, "agentRunId");
+    const teamRunId = normalizeNullableString(input.teamRunId, "teamRunId");
+    if (!agentRunId && !teamRunId) {
+      throw new Error(
+        "Accepted receipt correlation requires at least one target reference (agentRunId or teamRunId).",
       );
     }
 
@@ -107,6 +179,16 @@ export class ChannelMessageReceiptService {
       receivedAt: normalizeDate(input.receivedAt, "receivedAt"),
       agentRunId,
       teamRunId,
+    };
+  }
+
+  private normalizeReplyPublishedReceiptInput(
+    input: ChannelReplyPublishedReceiptInput,
+  ): ChannelReplyPublishedReceiptInput {
+    const normalized = this.normalizeAcceptedReceiptCorrelationInput(input);
+    return {
+      ...normalized,
+      turnId: normalized.turnId,
     };
   }
 }
@@ -136,6 +218,13 @@ const normalizeNullableString = (
 const normalizeDate = (value: Date, field: string): Date => {
   if (!(value instanceof Date) || Number.isNaN(value.getTime())) {
     throw new Error(`${field} must be a valid Date.`);
+  }
+  return value;
+};
+
+const normalizePositiveInteger = (value: number, field: string): number => {
+  if (!Number.isInteger(value) || value <= 0) {
+    throw new Error(`${field} must be a positive integer.`);
   }
   return value;
 };

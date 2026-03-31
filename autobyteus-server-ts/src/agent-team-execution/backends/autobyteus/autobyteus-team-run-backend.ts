@@ -33,6 +33,9 @@ type AutoByteusTeamLike = {
         config?: {
           name?: string | null;
         } | null;
+        state?: {
+          activeTurnId?: string | null;
+        } | null;
       } | null;
     }>;
   } | null;
@@ -73,22 +76,26 @@ const asRecord = (value: unknown): Record<string, unknown> =>
     : {};
 
 const extractMemberRunId = (
-  agentEvent: { agent_id?: unknown; data?: unknown },
-  memberName: string,
+  agentEvent: { agent_id?: unknown; data?: unknown } | null,
+  memberName: string | null,
   memberRunIdsByName: ReadonlyMap<string, string> | undefined,
-): string => {
-  const configuredMemberRunId = memberRunIdsByName?.get(memberName) ?? null;
+): string | null => {
+  const normalizedMemberName = normalizeOptionalString(memberName);
+  if (!normalizedMemberName) {
+    return null;
+  }
+  const configuredMemberRunId = memberRunIdsByName?.get(normalizedMemberName) ?? null;
   if (typeof configuredMemberRunId === "string" && configuredMemberRunId.trim().length > 0) {
     return configuredMemberRunId.trim();
   }
-  if (typeof agentEvent.agent_id === "string" && agentEvent.agent_id.trim().length > 0) {
+  if (agentEvent && typeof agentEvent.agent_id === "string" && agentEvent.agent_id.trim().length > 0) {
     return agentEvent.agent_id.trim();
   }
-  const agentEventPayload = asRecord(agentEvent.data);
+  const agentEventPayload = asRecord(agentEvent?.data);
   if (typeof agentEventPayload.agent_id === "string" && agentEventPayload.agent_id.trim().length > 0) {
     return agentEventPayload.agent_id.trim();
   }
-  return memberName;
+  return normalizedMemberName;
 };
 
 export class AutoByteusTeamRunBackend implements TeamRunBackend {
@@ -154,8 +161,16 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
     }
     try {
       await this.team.postMessage(message, targetMemberName);
+      const memberName = normalizeOptionalString(targetMemberName ?? null);
       return {
         accepted: true,
+        memberName,
+        memberRunId: extractMemberRunId(
+          null,
+          memberName,
+          this.options.memberRunIdsByName,
+        ),
+        turnId: resolveTargetMemberTurnId(this.team, memberName),
       };
     } catch (error) {
       return buildCommandFailure("post team message", error);
@@ -243,6 +258,10 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
         agentPayload.agent_name,
         this.options.memberRunIdsByName,
       );
+      const resolvedMemberRunId =
+        memberRunId ??
+        normalizeOptionalString(agentPayload.agent_name) ??
+        this.runId;
       const nativeAgentId =
         typeof agentPayload.agent_event.agent_id === "string" &&
         agentPayload.agent_event.agent_id.trim().length > 0
@@ -250,13 +269,13 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
           : null;
       const runtimeMemberContext = this.options.runtimeContext?.memberContexts.find(
         (memberContext) =>
-          memberContext.memberRunId === memberRunId ||
+          memberContext.memberRunId === resolvedMemberRunId ||
           memberContext.memberName === agentPayload.agent_name,
       );
       if (runtimeMemberContext && nativeAgentId) {
         runtimeMemberContext.nativeAgentId = nativeAgentId;
       }
-      const converter = new AutoByteusStreamEventConverter(memberRunId);
+      const converter = new AutoByteusStreamEventConverter(resolvedMemberRunId);
       const convertedEvent = converter.convert(agentPayload.agent_event);
       if (!convertedEvent) {
         return;
@@ -267,7 +286,7 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
         data: {
           runtimeKind: RuntimeKind.AUTOBYTEUS,
           memberName: agentPayload.agent_name,
-          memberRunId,
+          memberRunId: resolvedMemberRunId,
           agentEvent: convertedEvent,
         } satisfies TeamRunAgentEventPayload,
         subTeamNodeName,
@@ -311,3 +330,28 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
     }
   }
 }
+
+const normalizeOptionalString = (value: string | null): string | null => {
+  if (value === null) {
+    return null;
+  }
+  const normalized = value.trim();
+  return normalized.length > 0 ? normalized : null;
+};
+
+const resolveTargetMemberTurnId = (
+  team: AutoByteusTeamLike,
+  memberName: string | null,
+): string | null => {
+  const normalizedMemberName = normalizeOptionalString(memberName);
+  if (!normalizedMemberName) {
+    return null;
+  }
+
+  const agent = team.context?.agents?.find(
+    (candidate) =>
+      normalizeOptionalString(candidate.context?.config?.name ?? null) ===
+      normalizedMemberName,
+  );
+  return normalizeOptionalString(agent?.context?.state?.activeTurnId ?? null);
+};

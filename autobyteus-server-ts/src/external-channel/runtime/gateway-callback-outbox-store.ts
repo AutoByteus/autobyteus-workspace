@@ -2,9 +2,9 @@ import { randomUUID } from "node:crypto";
 import type { ExternalOutboundEnvelope } from "autobyteus-ts/external-channel/external-outbound-envelope.js";
 import {
   readJsonFile,
-  resolvePersistencePath,
   updateJsonFile,
 } from "../../persistence/file/store-utils.js";
+import { resolveExternalChannelStoragePath } from "../providers/external-channel-storage.js";
 
 export type GatewayCallbackOutboxStatus =
   | "PENDING"
@@ -44,8 +44,7 @@ const EMPTY_STATE: GatewayCallbackOutboxState = {
 
 export class FileGatewayCallbackOutboxStore {
   constructor(
-    private readonly filePath: string = resolvePersistencePath(
-      "external-channel",
+    private readonly filePath: string = resolveExternalChannelStoragePath(
       "gateway-callback-outbox.json",
     ),
   ) {}

@@ -75,23 +75,22 @@ describe("ChannelTeamRunFacade", () => {
     const getTeamRun = vi.fn().mockReturnValue(teamRun);
     const restoreTeamRun = vi.fn();
     const publishExternalUserMessage = vi.fn();
-    const bindAcceptedExternalTeamTurn = vi.fn().mockResolvedValue(undefined);
     const facade = new ChannelTeamRunFacade({
       runLauncher: { resolveOrStartTeamRun },
       teamRunService: {
         getTeamRun,
         restoreTeamRun,
       } as any,
-      externalTurnBridge: {
-        bindAcceptedExternalTeamTurn,
-      },
       teamLiveMessagePublisher: { publishExternalUserMessage },
     });
 
     const result = await facade.dispatchToTeamBinding(binding, envelope);
 
-    expect(result.agentRunId).toBeNull();
+    expect(result.dispatchTargetType).toBe("TEAM");
+    expect(result.memberRunId).toBe("member-1");
     expect(result.teamRunId).toBe("team-1");
+    expect(result.turnId).toBe("turn-1");
+    expect(result.memberName).toBe("support-node");
     expect(resolveOrStartTeamRun).toHaveBeenCalledWith(binding, {
       initialSummary: "hello",
     });
@@ -108,14 +107,6 @@ describe("ChannelTeamRunFacade", () => {
       }),
       "support-node",
     );
-    expect(bindAcceptedExternalTeamTurn).toHaveBeenCalledWith({
-      run: teamRun,
-      teamRunId: "team-1",
-      memberName: "support-node",
-      memberRunId: "member-1",
-      turnId: "turn-1",
-      envelope,
-    });
     expect(publishExternalUserMessage).toHaveBeenCalledWith({
       teamRunId: "team-1",
       envelope,
@@ -131,16 +122,12 @@ describe("ChannelTeamRunFacade", () => {
     const restoredRun = createTeamRun();
     const getTeamRun = vi.fn().mockReturnValue(null);
     const restoreTeamRun = vi.fn().mockResolvedValue(restoredRun);
-    const bindAcceptedExternalTeamTurn = vi.fn().mockResolvedValue(undefined);
     const facade = new ChannelTeamRunFacade({
       runLauncher: { resolveOrStartTeamRun },
       teamRunService: {
         getTeamRun,
         restoreTeamRun,
       } as any,
-      externalTurnBridge: {
-        bindAcceptedExternalTeamTurn,
-      },
       teamLiveMessagePublisher: {
         publishExternalUserMessage: vi.fn(),
       },
@@ -149,10 +136,10 @@ describe("ChannelTeamRunFacade", () => {
     const result = await facade.dispatchToTeamBinding(binding, envelope);
 
     expect(result.teamRunId).toBe("team-1");
+    expect(result.memberRunId).toBe("member-1");
     expect(getTeamRun).toHaveBeenCalledWith("team-1");
     expect(restoreTeamRun).toHaveBeenCalledWith("team-1");
     expect(restoredRun.postMessage).toHaveBeenCalledOnce();
-    expect(bindAcceptedExternalTeamTurn).toHaveBeenCalledOnce();
   });
 
   it("continues team dispatch when live team external-user publish fails", async () => {
@@ -169,9 +156,6 @@ describe("ChannelTeamRunFacade", () => {
         getTeamRun: vi.fn().mockReturnValue(teamRun),
         restoreTeamRun: vi.fn(),
       } as any,
-      externalTurnBridge: {
-        bindAcceptedExternalTeamTurn: vi.fn().mockResolvedValue(undefined),
-      },
       teamLiveMessagePublisher: {
         publishExternalUserMessage,
       },
@@ -179,6 +163,7 @@ describe("ChannelTeamRunFacade", () => {
 
     const result = await facade.dispatchToTeamBinding(createTeamBinding(), createEnvelope());
 
+    expect(result.dispatchTargetType).toBe("TEAM");
     expect(result.teamRunId).toBe("team-1");
     expect(publishExternalUserMessage).toHaveBeenCalledOnce();
     expect(warnSpy).toHaveBeenCalledTimes(1);
@@ -186,9 +171,17 @@ describe("ChannelTeamRunFacade", () => {
     warnSpy.mockRestore();
   });
 
-  it("continues team dispatch when accepted-turn binding fails", async () => {
-    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
-    const teamRun = createTeamRun();
+  it("falls back to the binding target when runtime member metadata is absent", async () => {
+    const teamRun = {
+      ...createTeamRun(),
+      postMessage: vi.fn().mockResolvedValue({
+        accepted: true,
+        message: null,
+        memberRunId: null,
+        memberName: null,
+        turnId: "turn-1",
+      }),
+    };
     const facade = new ChannelTeamRunFacade({
       runLauncher: {
         resolveOrStartTeamRun: vi.fn().mockResolvedValue("team-1"),
@@ -197,11 +190,6 @@ describe("ChannelTeamRunFacade", () => {
         getTeamRun: vi.fn().mockReturnValue(teamRun),
         restoreTeamRun: vi.fn(),
       } as any,
-      externalTurnBridge: {
-        bindAcceptedExternalTeamTurn: vi.fn(() => {
-          throw new Error("bridge failed");
-        }),
-      },
       teamLiveMessagePublisher: {
         publishExternalUserMessage: vi.fn(),
       },
@@ -209,9 +197,10 @@ describe("ChannelTeamRunFacade", () => {
 
     const result = await facade.dispatchToTeamBinding(createTeamBinding(), createEnvelope());
 
+    expect(result.dispatchTargetType).toBe("TEAM");
+    expect(result.memberRunId).toBeNull();
     expect(result.teamRunId).toBe("team-1");
-    expect(warnSpy).toHaveBeenCalledTimes(1);
-
-    warnSpy.mockRestore();
+    expect(result.turnId).toBe("turn-1");
+    expect(result.memberName).toBe("support-node");
   });
 });

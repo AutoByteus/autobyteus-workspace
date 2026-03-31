@@ -55,6 +55,9 @@ const createTeamBinding = (): ChannelBinding => ({
 const createActiveRun = (runId: string, runtimeKind = "AUTOBYTEUS") => ({
   runId,
   runtimeKind,
+  config: {
+    memoryDir: undefined,
+  },
   getPlatformAgentRunId: vi.fn().mockReturnValue(`session-${runId}`),
 });
 
@@ -66,7 +69,6 @@ const createLauncher = (overrides: {
   agentRunHistoryIndexService?: Record<string, unknown>;
   bindingRunRegistry?: InMemoryChannelBindingLiveRunRegistry;
   workspaceManager?: Record<string, unknown>;
-  teamRunHistoryService?: Record<string, unknown>;
   teamRunService?: Record<string, unknown>;
 } = {}) =>
   new ChannelBindingRunLauncher({
@@ -100,11 +102,9 @@ const createLauncher = (overrides: {
       }),
       ...overrides.workspaceManager,
     } as any,
-    teamRunHistoryService: {
-      getTeamRunResumeConfig: vi.fn(),
-      ...overrides.teamRunHistoryService,
-    } as any,
     teamRunService: {
+      getTeamRun: vi.fn().mockReturnValue(null),
+      restoreTeamRun: vi.fn(),
       buildMemberConfigsFromLaunchPreset: vi.fn(),
       createTeamRun: vi.fn(),
       ...overrides.teamRunService,
@@ -169,21 +169,9 @@ describe("ChannelBindingRunLauncher", () => {
       llmConfig: null,
       skillAccessMode: "PRELOADED_ONLY",
     });
-    expect(writeMetadata).toHaveBeenCalledWith("agent-run-fresh", {
-      runId: "agent-run-fresh",
-      agentDefinitionId: "agent-definition-1",
-      workspaceRootPath: "/tmp/workspace",
-      llmModelIdentifier: "gpt-test",
-      llmConfig: null,
-      autoExecuteTools: false,
-      skillAccessMode: "PRELOADED_ONLY",
-      runtimeKind: "AUTOBYTEUS",
-      platformAgentRunId: "session-agent-run-fresh",
-      lastKnownStatus: "ACTIVE",
-    });
-    expect(recordRunCreated).toHaveBeenCalledWith({
-      runId: "agent-run-fresh",
-      metadata: {
+    expect(writeMetadata).toHaveBeenCalledWith(
+      "agent-run-fresh",
+      expect.objectContaining({
         runId: "agent-run-fresh",
         agentDefinitionId: "agent-definition-1",
         workspaceRootPath: "/tmp/workspace",
@@ -194,11 +182,28 @@ describe("ChannelBindingRunLauncher", () => {
         runtimeKind: "AUTOBYTEUS",
         platformAgentRunId: "session-agent-run-fresh",
         lastKnownStatus: "ACTIVE",
-      },
-      summary: "First external message",
-      lastKnownStatus: "ACTIVE",
-      lastActivityAt: expect.any(String),
-    });
+      }),
+    );
+    expect(recordRunCreated).toHaveBeenCalledWith(
+      expect.objectContaining({
+        runId: "agent-run-fresh",
+        metadata: expect.objectContaining({
+          runId: "agent-run-fresh",
+          agentDefinitionId: "agent-definition-1",
+          workspaceRootPath: "/tmp/workspace",
+          llmModelIdentifier: "gpt-test",
+          llmConfig: null,
+          autoExecuteTools: false,
+          skillAccessMode: "PRELOADED_ONLY",
+          runtimeKind: "AUTOBYTEUS",
+          platformAgentRunId: "session-agent-run-fresh",
+          lastKnownStatus: "ACTIVE",
+        }),
+        summary: "First external message",
+        lastKnownStatus: "ACTIVE",
+        lastActivityAt: expect.any(String),
+      }),
+    );
     expect(upsertBindingAgentRunId).toHaveBeenCalledWith("binding-1", "agent-run-fresh");
   });
 
@@ -237,11 +242,10 @@ describe("ChannelBindingRunLauncher", () => {
     );
   });
 
-  it("reuses a cached team run only when the binding owns it and team history says it is active", async () => {
+  it("reuses a cached active team run only when the binding owns it in this process", async () => {
     const binding = createTeamBinding();
-    const getTeamRunResumeConfig = vi.fn().mockResolvedValue({
-      teamRunId: "team-run-1",
-      isActive: true,
+    const getTeamRun = vi.fn().mockReturnValue({
+      runId: "team-run-1",
     });
     const buildMemberConfigsFromLaunchPreset = vi.fn();
     const createTeamRun = vi.fn();
@@ -251,8 +255,8 @@ describe("ChannelBindingRunLauncher", () => {
     const launcher = createLauncher({
       bindingService: { upsertBindingTeamRunId },
       bindingRunRegistry,
-      teamRunHistoryService: { getTeamRunResumeConfig },
       teamRunService: {
+        getTeamRun,
         buildMemberConfigsFromLaunchPreset,
         createTeamRun,
       },
@@ -261,48 +265,37 @@ describe("ChannelBindingRunLauncher", () => {
     const teamRunId = await launcher.resolveOrStartTeamRun(binding);
 
     expect(teamRunId).toBe("team-run-1");
-    expect(getTeamRunResumeConfig).toHaveBeenCalledWith("team-run-1");
+    expect(getTeamRun).toHaveBeenCalledWith("team-run-1");
     expect(buildMemberConfigsFromLaunchPreset).not.toHaveBeenCalled();
     expect(createTeamRun).not.toHaveBeenCalled();
     expect(upsertBindingTeamRunId).not.toHaveBeenCalled();
   });
 
-  it("creates a fresh team run when the cached run is unowned or missing", async () => {
+  it("restores a cached team run from persisted binding state before creating a new one", async () => {
     const binding = createTeamBinding();
-    const buildMemberConfigsFromLaunchPreset = vi.fn().mockResolvedValue([
-      { memberName: "Coordinator" },
-    ]);
-    const createTeamRun = vi.fn().mockResolvedValue({
-      runId: "team-run-fresh",
+    const restoreTeamRun = vi.fn().mockResolvedValue({
+      runId: "team-run-1",
     });
     const upsertBindingTeamRunId = vi.fn();
     const launcher = createLauncher({
       bindingService: { upsertBindingTeamRunId },
       teamRunService: {
-        buildMemberConfigsFromLaunchPreset,
-        createTeamRun,
+        restoreTeamRun,
+        createTeamRun: vi.fn(),
+        buildMemberConfigsFromLaunchPreset: vi.fn(),
       },
     });
 
-    const teamRunId = await launcher.resolveOrStartTeamRun(binding, {
-      initialSummary: "fresh run after restart",
-    });
+    const teamRunId = await launcher.resolveOrStartTeamRun(binding);
 
-    expect(teamRunId).toBe("team-run-fresh");
-    expect(buildMemberConfigsFromLaunchPreset).toHaveBeenCalledWith({
-      teamDefinitionId: "team-definition-1",
-      launchPreset: binding.teamLaunchPreset,
-    });
-    expect(createTeamRun).toHaveBeenCalledWith({
-      teamDefinitionId: "team-definition-1",
-      memberConfigs: [{ memberName: "Coordinator" }],
-    });
-    expect(upsertBindingTeamRunId).toHaveBeenCalledWith("binding-1", "team-run-fresh");
+    expect(teamRunId).toBe("team-run-1");
+    expect(restoreTeamRun).toHaveBeenCalledWith("team-run-1");
+    expect(upsertBindingTeamRunId).toHaveBeenCalledWith("binding-1", "team-run-1");
   });
 
-  it("replaces a stale cached team run when team history is gone", async () => {
+  it("creates a fresh team run when cached restore fails", async () => {
     const binding = createTeamBinding();
-    const getTeamRunResumeConfig = vi.fn().mockRejectedValue(
+    const restoreTeamRun = vi.fn().mockRejectedValue(
       new Error("missing team run history"),
     );
     const buildMemberConfigsFromLaunchPreset = vi.fn().mockResolvedValue([
@@ -317,8 +310,8 @@ describe("ChannelBindingRunLauncher", () => {
     const launcher = createLauncher({
       bindingService: { upsertBindingTeamRunId },
       bindingRunRegistry,
-      teamRunHistoryService: { getTeamRunResumeConfig },
       teamRunService: {
+        restoreTeamRun,
         buildMemberConfigsFromLaunchPreset,
         createTeamRun,
       },
@@ -329,7 +322,7 @@ describe("ChannelBindingRunLauncher", () => {
     });
 
     expect(teamRunId).toBe("team-run-fresh");
-    expect(getTeamRunResumeConfig).toHaveBeenCalledWith("team-run-1");
+    expect(restoreTeamRun).toHaveBeenCalledWith("team-run-1");
     expect(createTeamRun).toHaveBeenCalledWith({
       teamDefinitionId: "team-definition-1",
       memberConfigs: [{ memberName: "Coordinator" }],

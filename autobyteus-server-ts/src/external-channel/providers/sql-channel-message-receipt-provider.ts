@@ -1,5 +1,6 @@
 import { Prisma } from "@prisma/client";
 import { BaseRepository } from "repository_prisma";
+import { randomUUID } from "node:crypto";
 import {
   parseExternalChannelProvider,
   type ExternalChannelProvider,
@@ -9,10 +10,16 @@ import {
   type ExternalChannelTransport,
 } from "autobyteus-ts/external-channel/channel-transport.js";
 import type {
-  ChannelDispatchTarget,
-  ChannelIngressReceiptInput,
+  ChannelAcceptedIngressReceiptInput,
+  ChannelAcceptedReceiptCorrelationInput,
+  ChannelClaimIngressDispatchInput,
+  ChannelIngressReceiptKey,
+  ChannelIngressReceiptState,
+  ChannelMessageReceipt,
+  ChannelPendingIngressReceiptInput,
+  ChannelReplyPublishedReceiptInput,
   ChannelSourceContext,
-  ChannelTurnReceiptBindingInput,
+  ChannelUnboundIngressReceiptInput,
 } from "../domain/models.js";
 import type { ChannelMessageReceiptProvider } from "./channel-message-receipt-provider.js";
 
@@ -24,11 +31,30 @@ export class SqlChannelMessageReceiptProvider
   implements ChannelMessageReceiptProvider
 {
   private readonly repository = new SqlChannelMessageReceiptRepository();
+  private readonly sourceLookupStates = ["ACCEPTED", "ROUTED"] as const;
 
-  async recordIngressReceipt(input: ChannelIngressReceiptInput): Promise<void> {
-    const normalizedAgentRunId = normalizeNullableString(input.agentRunId);
-    const normalizedTeamRunId = normalizeNullableString(input.teamRunId);
-    await this.repository.upsert({
+  async getReceiptByExternalMessage(
+    input: ChannelIngressReceiptKey,
+  ): Promise<ChannelMessageReceipt | null> {
+    const found = await this.repository.findUnique({
+      where: {
+        provider_transport_accountId_peerId_threadId_externalMessageId: {
+          provider: input.provider,
+          transport: input.transport,
+          accountId: input.accountId,
+          peerId: input.peerId,
+          threadId: toThreadStorage(input.threadId),
+          externalMessageId: input.externalMessageId,
+        },
+      },
+    });
+    return found ? toReceipt(found) : null;
+  }
+
+  async createPendingIngressReceipt(
+    input: ChannelPendingIngressReceiptInput,
+  ): Promise<ChannelMessageReceipt> {
+    const saved = await this.repository.upsert({
       where: {
         provider_transport_accountId_peerId_threadId_externalMessageId: {
           provider: input.provider,
@@ -46,21 +72,92 @@ export class SqlChannelMessageReceiptProvider
         peerId: input.peerId,
         threadId: toThreadStorage(input.threadId),
         externalMessageId: input.externalMessageId,
-        turnId: normalizeNullableString(input.turnId ?? null) ?? undefined,
-        agentRunId: normalizedAgentRunId ?? undefined,
-        teamRunId: normalizedTeamRunId ?? undefined,
+        ingressState: "PENDING",
         receivedAt: input.receivedAt,
       },
+      update: {},
+    });
+    return toReceipt(saved);
+  }
+
+  async claimIngressDispatch(
+    input: ChannelClaimIngressDispatchInput,
+  ): Promise<ChannelMessageReceipt> {
+    const dispatchLeaseToken = randomUUID();
+    const dispatchLeaseExpiresAt = new Date(
+      input.claimedAt.getTime() + input.leaseDurationMs,
+    );
+    const saved = await this.repository.upsert({
+      where: {
+        provider_transport_accountId_peerId_threadId_externalMessageId: {
+          provider: input.provider,
+          transport: input.transport,
+          accountId: input.accountId,
+          peerId: input.peerId,
+          threadId: toThreadStorage(input.threadId),
+          externalMessageId: input.externalMessageId,
+        },
+      },
+      create: {
+        provider: input.provider,
+        transport: input.transport,
+        accountId: input.accountId,
+        peerId: input.peerId,
+        threadId: toThreadStorage(input.threadId),
+        externalMessageId: input.externalMessageId,
+        ingressState: "DISPATCHING",
+        receivedAt: input.receivedAt,
+        dispatchLeaseToken,
+        dispatchLeaseExpiresAt,
+      },
       update: {
-        agentRunId: normalizedAgentRunId ?? undefined,
-        teamRunId: normalizedTeamRunId ?? undefined,
+        ingressState: "DISPATCHING",
+        receivedAt: input.receivedAt,
+        dispatchLeaseToken,
+        dispatchLeaseExpiresAt,
+      },
+    });
+    return toReceipt(saved);
+  }
+
+  async recordAcceptedDispatch(
+    input: ChannelAcceptedIngressReceiptInput,
+  ): Promise<ChannelMessageReceipt> {
+    const current = await this.requireReceipt(input);
+    if (normalizeNullableString(current.dispatchLeaseToken) !== input.dispatchLeaseToken) {
+      throw new Error(
+        `Ingress dispatch lease mismatch for '${input.externalMessageId}'.`,
+      );
+    }
+
+    const saved = await this.repository.update({
+      where: {
+        provider_transport_accountId_peerId_threadId_externalMessageId: {
+          provider: input.provider,
+          transport: input.transport,
+          accountId: input.accountId,
+          peerId: input.peerId,
+          threadId: toThreadStorage(input.threadId),
+          externalMessageId: input.externalMessageId,
+        },
+      },
+      data: {
+        ingressState: "ACCEPTED",
+        turnId: normalizeNullableString(input.turnId ?? null),
+        agentRunId: normalizeNullableString(input.agentRunId),
+        teamRunId: normalizeNullableString(input.teamRunId),
+        dispatchLeaseToken: null,
+        dispatchLeaseExpiresAt: null,
         receivedAt: input.receivedAt,
       },
     });
+    return toReceipt(saved);
   }
 
-  async bindTurnToReceipt(input: ChannelTurnReceiptBindingInput): Promise<void> {
-    await this.repository.upsert({
+  async markIngressUnbound(
+    input: ChannelUnboundIngressReceiptInput,
+  ): Promise<ChannelMessageReceipt> {
+    const saved = await this.repository.upsert({
       where: {
         provider_transport_accountId_peerId_threadId_externalMessageId: {
           provider: input.provider,
@@ -78,64 +175,87 @@ export class SqlChannelMessageReceiptProvider
         peerId: input.peerId,
         threadId: toThreadStorage(input.threadId),
         externalMessageId: input.externalMessageId,
-        turnId: normalizeRequiredString(input.turnId, "turnId"),
-        agentRunId: normalizeNullableString(input.agentRunId) ?? undefined,
-        teamRunId: normalizeNullableString(input.teamRunId) ?? undefined,
+        ingressState: "UNBOUND",
         receivedAt: input.receivedAt,
       },
       update: {
+        ingressState: "UNBOUND",
+        agentRunId: null,
+        teamRunId: null,
+        dispatchLeaseToken: null,
+        dispatchLeaseExpiresAt: null,
+        receivedAt: input.receivedAt,
+      },
+    });
+    return toReceipt(saved);
+  }
+
+  async updateAcceptedReceiptCorrelation(
+    input: ChannelAcceptedReceiptCorrelationInput,
+  ): Promise<ChannelMessageReceipt> {
+    const current = await this.requireReceipt(input);
+    if (current.ingressState !== "ACCEPTED") {
+      throw new Error(
+        `Cannot update accepted receipt correlation for '${input.externalMessageId}' because it is not in ACCEPTED state.`,
+      );
+    }
+
+    const saved = await this.repository.update({
+      where: {
+        provider_transport_accountId_peerId_threadId_externalMessageId: {
+          provider: input.provider,
+          transport: input.transport,
+          accountId: input.accountId,
+          peerId: input.peerId,
+          threadId: toThreadStorage(input.threadId),
+          externalMessageId: input.externalMessageId,
+        },
+      },
+      data: {
         turnId: normalizeRequiredString(input.turnId, "turnId"),
         agentRunId: normalizeNullableString(input.agentRunId),
         teamRunId: normalizeNullableString(input.teamRunId),
         receivedAt: input.receivedAt,
       },
     });
+    return toReceipt(saved);
   }
 
-  async getLatestSourceByAgentRunId(
-    agentRunId: string,
-  ): Promise<ChannelSourceContext | null> {
-    const normalizedAgentRunId = normalizeRequiredString(agentRunId, "agentRunId");
-    const latest = await this.repository.findFirst({
+  async markReplyPublished(
+    input: ChannelReplyPublishedReceiptInput,
+  ): Promise<ChannelMessageReceipt> {
+    const saved = await this.repository.update({
       where: {
-        agentRunId: normalizedAgentRunId,
-      },
-      orderBy: [{ receivedAt: "desc" }, { updatedAt: "desc" }],
-    });
-
-    return latest ? toSourceContext(latest) : null;
-  }
-
-  async getLatestSourceByDispatchTarget(
-    target: ChannelDispatchTarget,
-  ): Promise<ChannelSourceContext | null> {
-    const agentRunId = normalizeNullableString(target.agentRunId);
-    const teamRunId = normalizeNullableString(target.teamRunId);
-
-    if (agentRunId) {
-      const byAgent = await this.repository.findFirst({
-        where: {
-          agentRunId,
+        provider_transport_accountId_peerId_threadId_externalMessageId: {
+          provider: input.provider,
+          transport: input.transport,
+          accountId: input.accountId,
+          peerId: input.peerId,
+          threadId: toThreadStorage(input.threadId),
+          externalMessageId: input.externalMessageId,
         },
-        orderBy: [{ receivedAt: "desc" }, { updatedAt: "desc" }],
-      });
-      if (byAgent) {
-        return toSourceContext(byAgent);
-      }
-    }
-
-    if (!teamRunId) {
-      return null;
-    }
-
-    const byTeam = await this.repository.findFirst({
-      where: {
-        teamRunId,
       },
-      orderBy: [{ receivedAt: "desc" }, { updatedAt: "desc" }],
+      data: {
+        ingressState: "ROUTED",
+        turnId: normalizeRequiredString(input.turnId, "turnId"),
+        agentRunId: normalizeNullableString(input.agentRunId),
+        teamRunId: normalizeNullableString(input.teamRunId),
+        dispatchLeaseToken: null,
+        dispatchLeaseExpiresAt: null,
+        receivedAt: input.receivedAt,
+      },
     });
+    return toReceipt(saved);
+  }
 
-    return byTeam ? toSourceContext(byTeam) : null;
+  async listReceiptsByIngressState(
+    state: ChannelIngressReceiptState,
+  ): Promise<ChannelMessageReceipt[]> {
+    const rows = await this.repository.findMany({
+      where: { ingressState: state },
+      orderBy: [{ updatedAt: "desc" }, { receivedAt: "desc" }],
+    });
+    return rows.map((row) => toReceipt(row));
   }
 
   async getSourceByAgentRunTurn(
@@ -148,10 +268,50 @@ export class SqlChannelMessageReceiptProvider
       where: {
         agentRunId: normalizedAgentRunId,
         turnId: normalizedTurnId,
+        ingressState: { in: [...this.sourceLookupStates] },
       },
       orderBy: [{ updatedAt: "desc" }, { receivedAt: "desc" }],
     });
     return found ? toSourceContext(found) : null;
+  }
+
+  private async requireReceipt(
+    input: ChannelIngressReceiptKey,
+  ): Promise<{
+    provider: string;
+    transport: string;
+    accountId: string;
+    peerId: string;
+    threadId: string;
+    externalMessageId: string;
+    ingressState: string;
+    turnId: string | null;
+    agentRunId: string | null;
+    teamRunId: string | null;
+    dispatchLeaseToken: string | null;
+    dispatchLeaseExpiresAt: Date | null;
+    receivedAt: Date;
+    createdAt: Date;
+    updatedAt: Date;
+  }> {
+    const found = await this.repository.findUnique({
+      where: {
+        provider_transport_accountId_peerId_threadId_externalMessageId: {
+          provider: input.provider,
+          transport: input.transport,
+          accountId: input.accountId,
+          peerId: input.peerId,
+          threadId: toThreadStorage(input.threadId),
+          externalMessageId: input.externalMessageId,
+        },
+      },
+    });
+    if (!found) {
+      throw new Error(
+        `Cannot find ingress receipt for '${input.externalMessageId}'.`,
+      );
+    }
+    return found;
   }
 }
 
@@ -198,6 +358,48 @@ const toSourceContext = (value: {
   receivedAt: value.receivedAt,
   turnId: normalizeNullableString(value.turnId ?? null),
 });
+
+const toReceipt = (value: {
+  provider: string;
+  transport: string;
+  accountId: string;
+  peerId: string;
+  threadId: string;
+  externalMessageId: string;
+  ingressState: string;
+  turnId?: string | null;
+  agentRunId?: string | null;
+  teamRunId?: string | null;
+  dispatchLeaseToken?: string | null;
+  dispatchLeaseExpiresAt?: Date | null;
+  receivedAt: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}): ChannelMessageReceipt => ({
+  ...toSourceContext(value),
+  ingressState: parseIngressState(value.ingressState),
+  agentRunId: normalizeNullableString(value.agentRunId ?? null),
+  teamRunId: normalizeNullableString(value.teamRunId ?? null),
+  dispatchLeaseToken: normalizeNullableString(value.dispatchLeaseToken ?? null),
+  dispatchLeaseExpiresAt: value.dispatchLeaseExpiresAt ?? null,
+  createdAt: value.createdAt,
+  updatedAt: value.updatedAt,
+});
+
+const parseIngressState = (
+  value: string,
+): ChannelMessageReceipt["ingressState"] => {
+  switch (value) {
+    case "PENDING":
+    case "DISPATCHING":
+    case "ACCEPTED":
+    case "ROUTED":
+    case "UNBOUND":
+      return value;
+    default:
+      throw new Error(`Unknown ingress state '${value}'.`);
+  }
+};
 
 const parseProvider = (value: string): ExternalChannelProvider =>
   parseExternalChannelProvider(value);

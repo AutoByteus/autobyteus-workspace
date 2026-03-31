@@ -1,22 +1,21 @@
 import type { ExternalMessageEnvelope } from "autobyteus-ts/external-channel/external-message-envelope.js";
 import { AgentRunEventType } from "../../agent-execution/domain/agent-run-event.js";
 import type { TeamRun } from "../../agent-team-execution/domain/team-run.js";
-import type { AgentRunViewProjectionService } from "../../run-history/services/agent-run-view-projection-service.js";
-import type { ChannelMessageReceiptService } from "../services/channel-message-receipt-service.js";
-import type { ReplyCallbackService } from "../services/reply-callback-service.js";
+import type { ChannelSourceContext } from "../domain/models.js";
 import {
   PENDING_TURN_TTL_MS,
-  buildCallbackIdempotencyKey,
   buildPendingTurnKey,
   type ChannelReplyBridgeDependencies,
-  logSkippedPublish,
+  type ChannelReplyReadyObservation,
+  type ChannelTurnObservationClosedReason,
+  type ChannelTurnObservationResult,
   logger,
   mergeAssistantText,
   normalizeOptionalString,
   type ParsedTeamAgentRuntimeEvent,
   parseTeamAgentRunEvent,
   resolveChannelReplyBridgeDependencies,
-  resolveReplyTextFromProjection,
+  resolveReplyTextFromTurnRecovery,
   toSourceContext,
 } from "./channel-reply-bridge-support.js";
 
@@ -25,13 +24,28 @@ type TeamEventSource = {
   subscribeToEvents: TeamRun["subscribeToEvents"];
 };
 
-export type AcceptedExternalTeamTurnInput = {
+export type ObserveAcceptedExternalTeamTurnInput = {
   run: TeamEventSource;
   turnId?: string | null;
   teamRunId?: string | null;
   memberName?: string | null;
   memberRunId?: string | null;
   envelope: ExternalMessageEnvelope;
+  onCorrelationResolved?: (
+    correlation: {
+      agentRunId: string;
+      teamRunId: string | null;
+      turnId: string;
+      source: ChannelSourceContext;
+    },
+  ) => Promise<void> | void;
+};
+
+export type ObserveAcceptedSourceLinkedTeamTurnInput = Omit<
+  ObserveAcceptedExternalTeamTurnInput,
+  "envelope"
+> & {
+  source: ChannelSourceContext;
 };
 
 type PendingTurn = {
@@ -42,33 +56,42 @@ type PendingTurn = {
   turnId: string | null;
   expectedMemberName: string | null;
   expectedMemberRunId: string | null;
-  source: ReturnType<typeof toSourceContext>;
-  receiptBound: boolean;
+  source: ChannelSourceContext;
   assistantText: string;
   finalText: string | null;
   settled: boolean;
+  correlationResolved: boolean;
+  onCorrelationResolved:
+    | ObserveAcceptedExternalTeamTurnInput["onCorrelationResolved"]
+    | undefined;
   unsubscribe: (() => void) | null;
   timeout: ReturnType<typeof setTimeout>;
+  resolveObservation: (result: ChannelTurnObservationResult) => void;
+  observation: Promise<ChannelTurnObservationResult>;
 };
 
 export class ChannelTeamRunReplyBridge {
   private readonly pendingTurns = new Map<string, PendingTurn>();
   private nextPendingId = 1;
-
-  private readonly messageReceiptService: ChannelMessageReceiptService;
-  private readonly replyCallbackServiceFactory: () => ReplyCallbackService;
-  private readonly runProjectionService: AgentRunViewProjectionService;
+  private readonly turnReplyRecoveryService;
 
   constructor(deps: ChannelReplyBridgeDependencies = {}) {
-    const resolved = resolveChannelReplyBridgeDependencies(deps);
-    this.messageReceiptService = resolved.messageReceiptService;
-    this.replyCallbackServiceFactory = resolved.replyCallbackServiceFactory;
-    this.runProjectionService = resolved.runProjectionService;
+    this.turnReplyRecoveryService =
+      resolveChannelReplyBridgeDependencies(deps).turnReplyRecoveryService;
   }
 
-  async bindAcceptedExternalTeamTurn(
-    input: AcceptedExternalTeamTurnInput,
-  ): Promise<void> {
+  async observeAcceptedExternalTeamTurn(
+    input: ObserveAcceptedExternalTeamTurnInput,
+  ): Promise<ChannelTurnObservationResult> {
+    return this.observeAcceptedTeamTurnToSource({
+      ...input,
+      source: toSourceContext(input.envelope),
+    });
+  }
+
+  async observeAcceptedTeamTurnToSource(
+    input: ObserveAcceptedSourceLinkedTeamTurnInput,
+  ): Promise<ChannelTurnObservationResult> {
     const turnId = normalizeOptionalString(input.turnId ?? null);
     const memberRunId = normalizeOptionalString(input.memberRunId ?? null);
     const memberName = normalizeOptionalString(input.memberName ?? null);
@@ -78,12 +101,23 @@ export class ChannelTeamRunReplyBridge {
       memberRunId && turnId
         ? buildPendingTurnKey(memberRunId, turnId)
         : this.buildAnonymousPendingKey(input.run.runId, memberName, memberRunId);
-    if (this.pendingTurns.has(key)) {
-      return;
+
+    const existing = this.pendingTurns.get(key);
+    if (existing) {
+      return existing.observation;
+    }
+
+    let resolveObservation: ((result: ChannelTurnObservationResult) => void) | null =
+      null;
+    const observation = new Promise<ChannelTurnObservationResult>((resolve) => {
+      resolveObservation = resolve;
+    });
+    if (!resolveObservation) {
+      throw new Error("Failed to initialize team reply observation.");
     }
 
     const timeout = setTimeout(() => {
-      this.finishPendingTurn(key);
+      this.settleClosed(key, "TIMEOUT");
     }, PENDING_TURN_TTL_MS);
     if (typeof (timeout as { unref?: () => void }).unref === "function") {
       (timeout as { unref: () => void }).unref();
@@ -97,21 +131,24 @@ export class ChannelTeamRunReplyBridge {
       turnId,
       expectedMemberName: memberName,
       expectedMemberRunId: memberRunId,
-      source: toSourceContext(input.envelope),
-      receiptBound: false,
+      source: input.source,
       assistantText: "",
       finalText: null,
       settled: false,
+      correlationResolved: false,
+      onCorrelationResolved: input.onCorrelationResolved,
       unsubscribe: null,
       timeout,
+      resolveObservation,
+      observation,
     };
-
-    await this.bindTurnReceiptIfReady(pending);
 
     pending.unsubscribe = input.run.subscribeToEvents((event: unknown) => {
       void this.handleRuntimeEvent(pending, event);
     });
     this.pendingTurns.set(key, pending);
+    await this.notifyCorrelationResolved(pending);
+    return observation;
   }
 
   private async handleRuntimeEvent(
@@ -122,43 +159,53 @@ export class ChannelTeamRunReplyBridge {
       return;
     }
 
-    const parsed = parseTeamAgentRunEvent(event);
-    if (!parsed || !this.matchesPendingTurn(pending, parsed)) {
-      return;
-    }
+    try {
+      const parsed = parseTeamAgentRunEvent(event);
+      if (!parsed || !this.matchesPendingTurn(pending, parsed)) {
+        return;
+      }
 
-    if (!pending.agentRunId && parsed.memberRunId) {
-      pending.agentRunId = parsed.memberRunId;
-    }
-    if (!pending.expectedMemberRunId && parsed.memberRunId) {
-      pending.expectedMemberRunId = parsed.memberRunId;
-    }
-    if (!pending.turnId && parsed.turnId) {
-      pending.turnId = parsed.turnId;
-    }
-    await this.bindTurnReceiptIfReady(pending);
+      if (!pending.agentRunId && parsed.memberRunId) {
+        pending.agentRunId = parsed.memberRunId;
+      }
+      if (!pending.expectedMemberRunId && parsed.memberRunId) {
+        pending.expectedMemberRunId = parsed.memberRunId;
+      }
+      if (!pending.turnId && parsed.turnId) {
+        pending.turnId = parsed.turnId;
+      }
 
-    if (parsed.eventType === AgentRunEventType.SEGMENT_CONTENT && parsed.text) {
-      pending.assistantText = mergeAssistantText(pending.assistantText, parsed.text);
-      return;
-    }
+      if (parsed.eventType === AgentRunEventType.SEGMENT_CONTENT && parsed.text) {
+        pending.assistantText = mergeAssistantText(pending.assistantText, parsed.text);
+        await this.notifyCorrelationResolved(pending);
+        return;
+      }
 
-    if (parsed.eventType === AgentRunEventType.SEGMENT_END && parsed.text) {
-      pending.finalText = mergeAssistantText(pending.finalText ?? "", parsed.text);
-      return;
-    }
+      if (parsed.eventType === AgentRunEventType.SEGMENT_END && parsed.text) {
+        pending.finalText = mergeAssistantText(pending.finalText ?? "", parsed.text);
+        await this.notifyCorrelationResolved(pending);
+        return;
+      }
 
-    if (parsed.eventType === AgentRunEventType.ERROR) {
-      this.finishPendingTurn(pending.key);
-      return;
-    }
+      if (parsed.eventType === AgentRunEventType.ERROR) {
+        this.settleClosed(pending.key, "ERROR");
+        return;
+      }
 
-    if (
-      parsed.eventType === AgentRunEventType.ASSISTANT_COMPLETE ||
-      (parsed.eventType === AgentRunEventType.AGENT_STATUS &&
-        parsed.statusHint === "IDLE")
-    ) {
-      await this.publishPendingTurnReply(pending);
+      await this.notifyCorrelationResolved(pending);
+
+      if (
+        parsed.eventType === AgentRunEventType.ASSISTANT_COMPLETE ||
+        (parsed.eventType === AgentRunEventType.AGENT_STATUS &&
+          parsed.statusHint === "IDLE")
+      ) {
+        await this.publishPendingTurnReply(pending);
+      }
+    } catch (error) {
+      logger.error(
+        `Run '${pending.subscriptionRunId}': team reply observation failed: ${String(error)}`,
+      );
+      this.settleClosed(pending.key, "ERROR");
     }
   }
 
@@ -206,77 +253,97 @@ export class ChannelTeamRunReplyBridge {
     return count;
   }
 
-  private async publishPendingTurnReply(pending: PendingTurn): Promise<void> {
-    if (pending.settled) {
-      return;
-    }
-    pending.settled = true;
-
-    try {
-      const agentRunId =
-        normalizeOptionalString(pending.agentRunId ?? pending.expectedMemberRunId);
-      const turnId = normalizeOptionalString(pending.turnId);
-      if (!agentRunId || !turnId) {
-        logger.info(
-          `Run '${pending.subscriptionRunId}': skipping provider callback because accepted team turn metadata is incomplete.`,
-        );
-        return;
-      }
-
-      let replyText =
-        normalizeOptionalString(pending.finalText) ??
-        normalizeOptionalString(pending.assistantText);
-      if (!replyText) {
-        replyText = await resolveReplyTextFromProjection(
-          this.runProjectionService,
-          agentRunId,
-        );
-      }
-      if (!replyText) {
-        logger.info(
-          `Run '${pending.subscriptionRunId}': skipping provider callback because assistant output could not be resolved for turn '${turnId}'.`,
-        );
-        return;
-      }
-
-      const result = await this.replyCallbackServiceFactory().publishAssistantReplyByTurn({
-        agentRunId,
-        teamRunId: pending.teamRunId,
-        turnId,
-        replyText,
-        callbackIdempotencyKey: buildCallbackIdempotencyKey(agentRunId, turnId),
-      });
-      logSkippedPublish(pending.subscriptionRunId, result);
-    } catch (error) {
-      logger.error(
-        `Run '${pending.subscriptionRunId}': outbound provider callback failed: ${String(error)}`,
-      );
-    } finally {
-      this.finishPendingTurn(pending.key);
-    }
-  }
-
-  private async bindTurnReceiptIfReady(pending: PendingTurn): Promise<void> {
+  private async notifyCorrelationResolved(pending: PendingTurn): Promise<void> {
     const agentRunId =
       normalizeOptionalString(pending.agentRunId ?? pending.expectedMemberRunId);
     const turnId = normalizeOptionalString(pending.turnId);
-    if (!agentRunId || !turnId || pending.receiptBound) {
+    if (
+      pending.correlationResolved ||
+      !pending.onCorrelationResolved ||
+      !agentRunId ||
+      !turnId
+    ) {
       return;
     }
 
-    await this.messageReceiptService.bindTurnToReceipt({
-      provider: pending.source.provider,
-      transport: pending.source.transport,
-      accountId: pending.source.accountId,
-      peerId: pending.source.peerId,
-      threadId: pending.source.threadId,
-      externalMessageId: pending.source.externalMessageId,
-      turnId,
+    pending.correlationResolved = true;
+    await pending.onCorrelationResolved({
       agentRunId,
       teamRunId: pending.teamRunId,
-      receivedAt: pending.source.receivedAt,
+      turnId,
+      source: pending.source,
     });
-    pending.receiptBound = true;
+  }
+
+  private async publishPendingTurnReply(pending: PendingTurn): Promise<void> {
+    const agentRunId =
+      normalizeOptionalString(pending.agentRunId ?? pending.expectedMemberRunId);
+    const turnId = normalizeOptionalString(pending.turnId);
+    if (!agentRunId || !turnId) {
+      logger.info(
+        `Run '${pending.subscriptionRunId}': closing team reply observation because accepted team correlation is incomplete.`,
+      );
+      this.settleClosed(pending.key, "TURN_ID_MISSING");
+      return;
+    }
+
+    let replyText =
+      normalizeOptionalString(pending.finalText) ??
+      normalizeOptionalString(pending.assistantText);
+    if (!replyText) {
+      replyText = await resolveReplyTextFromTurnRecovery(
+        this.turnReplyRecoveryService,
+        {
+          agentRunId,
+          teamRunId: pending.teamRunId,
+          turnId,
+        },
+      );
+    }
+    if (!replyText) {
+      logger.info(
+        `Run '${pending.subscriptionRunId}': closing team reply observation because assistant output could not be resolved for turn '${turnId}'.`,
+      );
+      this.settleClosed(pending.key, "EMPTY_REPLY");
+      return;
+    }
+
+    this.settleReplyReady(pending.key, {
+      agentRunId,
+      teamRunId: pending.teamRunId,
+      turnId,
+      source: pending.source,
+      replyText,
+    });
+  }
+
+  private settleReplyReady(
+    key: string,
+    reply: ChannelReplyReadyObservation,
+  ): void {
+    const pending = this.pendingTurns.get(key);
+    if (!pending || pending.settled) {
+      return;
+    }
+    pending.settled = true;
+    pending.resolveObservation({
+      status: "REPLY_READY",
+      reply,
+    });
+    this.finishPendingTurn(key);
+  }
+
+  private settleClosed(
+    key: string,
+    reason: ChannelTurnObservationClosedReason,
+  ): void {
+    const pending = this.pendingTurns.get(key);
+    if (!pending || pending.settled) {
+      return;
+    }
+    pending.settled = true;
+    pending.resolveObservation({ status: "CLOSED", reason });
+    this.finishPendingTurn(key);
   }
 
   private finishPendingTurn(key: string): void {

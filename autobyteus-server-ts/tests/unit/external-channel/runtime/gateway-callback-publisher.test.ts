@@ -1,7 +1,10 @@
 import { describe, expect, it, vi } from "vitest";
 import { ExternalChannelProvider } from "autobyteus-ts/external-channel/provider.js";
 import { ExternalChannelTransport } from "autobyteus-ts/external-channel/channel-transport.js";
-import { GatewayCallbackPublisher } from "../../../../src/external-channel/runtime/gateway-callback-publisher.js";
+import {
+  GatewayCallbackPublishError,
+  GatewayCallbackPublisher,
+} from "../../../../src/external-channel/runtime/gateway-callback-publisher.js";
 
 const payload = {
   provider: ExternalChannelProvider.WHATSAPP,
@@ -41,7 +44,7 @@ describe("GatewayCallbackPublisher", () => {
     expect(headers.get("x-autobyteus-server-timestamp")).toBeTruthy();
   });
 
-  it("throws when gateway responds with non-2xx status", async () => {
+  it("marks 5xx gateway responses as retryable", async () => {
     const publisher = new GatewayCallbackPublisher({
       baseUrl: "http://localhost:8010",
       fetchFn: vi.fn().mockResolvedValue({
@@ -50,9 +53,25 @@ describe("GatewayCallbackPublisher", () => {
       }) as any,
     });
 
-    await expect(publisher.publish(payload)).rejects.toThrow(
-      "Gateway callback request failed with status 500.",
-    );
+    await expect(publisher.publish(payload)).rejects.toMatchObject({
+      message: "Gateway callback request failed with status 500.",
+      retryable: true,
+    } satisfies Partial<GatewayCallbackPublishError>);
+  });
+
+  it("marks terminal 4xx gateway responses as non-retryable", async () => {
+    const publisher = new GatewayCallbackPublisher({
+      baseUrl: "http://localhost:8010",
+      fetchFn: vi.fn().mockResolvedValue({
+        ok: false,
+        status: 404,
+      }) as any,
+    });
+
+    await expect(publisher.publish(payload)).rejects.toMatchObject({
+      message: "Gateway callback request failed with status 404.",
+      retryable: false,
+    } satisfies Partial<GatewayCallbackPublishError>);
   });
 
   it("throws timeout error when callback request exceeds timeout", async () => {
@@ -72,8 +91,9 @@ describe("GatewayCallbackPublisher", () => {
       fetchFn: fetchFn as any,
     });
 
-    await expect(publisher.publish(payload)).rejects.toThrow(
-      "Gateway callback request timed out after 5ms.",
-    );
+    await expect(publisher.publish(payload)).rejects.toMatchObject({
+      message: "Gateway callback request timed out after 5ms.",
+      retryable: true,
+    } satisfies Partial<GatewayCallbackPublishError>);
   });
 });

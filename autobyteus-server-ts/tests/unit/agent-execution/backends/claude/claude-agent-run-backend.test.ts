@@ -52,7 +52,11 @@ describe("ClaudeAgentRunBackend", () => {
     expect(session.approveTool).toHaveBeenCalledWith("invoke-1", true, null);
     expect(session.interrupt).toHaveBeenCalledTimes(1);
     expect(session.terminate).toHaveBeenCalledTimes(1);
-    expect(sendResult).toEqual({ accepted: true });
+    expect(sendResult).toEqual({
+      accepted: true,
+      turnId: "turn-1",
+      platformAgentRunId: "claude-session-1",
+    });
     expect(approveResult).toEqual({ accepted: true });
     expect(interruptResult).toEqual({ accepted: true });
     expect(terminateResult).toEqual({ accepted: true });
