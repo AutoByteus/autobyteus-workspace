@@ -19,6 +19,31 @@ function setRouterMock(): void {
   }));
 }
 
+const flushMeasurement = async (): Promise<void> => {
+  await Promise.resolve();
+  await Promise.resolve();
+};
+
+const setInstructionOverflow = async (
+  wrapper: ReturnType<typeof mount>,
+  scrollHeight: number,
+  width = 1024,
+): Promise<void> => {
+  Object.defineProperty(window, 'innerWidth', {
+    value: width,
+    configurable: true,
+  });
+
+  const viewport = wrapper.get('[data-test="instruction-viewport"]').element as HTMLElement;
+  Object.defineProperty(viewport, 'scrollHeight', {
+    value: scrollHeight,
+    configurable: true,
+  });
+
+  window.dispatchEvent(new Event('resize'));
+  await flushMeasurement();
+};
+
 async function mountComponent(options?: { memberAvatarUrl?: string | null }) {
   const pinia = createTestingPinia({
     createSpy: vi.fn,
@@ -112,5 +137,78 @@ describe('AgentTeamDetail', () => {
     const memberInitials = wrapper.find('article .h-9.w-9 span');
     expect(memberInitials.exists()).toBe(true);
     expect(memberInitials.text()).toBe('SU');
+  });
+
+  it('shows the chevron toggle when team instructions overflow', async () => {
+    const pinia = createTestingPinia({
+      createSpy: vi.fn,
+      stubActions: true,
+    });
+    setActivePinia(pinia);
+
+    const teamStore = useAgentTeamDefinitionStore();
+    teamStore.agentTeamDefinitions = [
+      {
+        id: 'team-1',
+        name: 'SuperTeam',
+        description: 'A team with one coordinator',
+        instructions: 'Coordinate tasks among members.\n'.repeat(60),
+        category: 'coordination',
+        avatarUrl: null,
+        coordinatorMemberName: 'superagent',
+        nodes: [
+          {
+            memberName: 'superagent',
+            ref: 'agent-1',
+            refType: 'AGENT',
+          },
+        ],
+      },
+    ] as any;
+
+    const agentStore = useAgentDefinitionStore();
+    agentStore.agentDefinitions = [
+      {
+        id: 'agent-1',
+        name: 'SuperAgent',
+        role: 'Coordinator',
+        description: 'Lead coordinator',
+        instructions: 'Lead and delegate work.',
+        category: 'coordination',
+        avatarUrl: null,
+        toolNames: [],
+        inputProcessorNames: [],
+        llmResponseProcessorNames: [],
+        systemPromptProcessorNames: [],
+        toolExecutionResultProcessorNames: [],
+        toolInvocationPreprocessorNames: [],
+        lifecycleProcessorNames: [],
+        skillNames: [],
+      },
+    ] as any;
+
+    const wrapper = mount(AgentTeamDetail, {
+      props: {
+        teamDefinitionId: 'team-1',
+      },
+      global: {
+        plugins: [pinia],
+        stubs: {
+          AgentDeleteConfirmDialog: AgentDeleteConfirmDialogStub,
+        },
+      },
+    });
+
+    await wrapper.vm.$nextTick();
+    await flushMeasurement();
+    await setInstructionOverflow(wrapper, 700);
+
+    const toggle = wrapper.get('[data-test="instruction-toggle"]');
+    expect(toggle.attributes('aria-expanded')).toBe('false');
+
+    await toggle.trigger('click');
+    await flushMeasurement();
+
+    expect(wrapper.get('[data-test="instruction-toggle"]').attributes('aria-expanded')).toBe('true');
   });
 });
