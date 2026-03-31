@@ -1,8 +1,7 @@
-## What's New
-- Added clearer Codex MCP tool activity so approved and auto-approved MCP tools now show complete lifecycle details in the desktop app.
-
 ## Improvements
-- Improved Codex MCP runtime normalization so tool calls surface consistent visibility, approval, and completion events.
+- External-channel bindings, file-backed receipts, delivery events, and callback outbox data now live under one top-level `server-data/external-channel/` folder.
+- Bound external-channel routes now preserve run continuity more reliably across restarts for supported runtime kinds.
 
 ## Fixes
-- Fixed a bug where auto-approved Codex MCP tools could finish without a green success state in Activity even when the tool itself succeeded.
+- Fixed Telegram-bound agent replies so messages sent through external-channel bindings are delivered back to Telegram.
+- Fixed accepted external replies so callback delivery can recover after restart instead of depending only on a live in-memory bridge.
