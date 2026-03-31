@@ -68,7 +68,13 @@ describe('serverSettings store search config', () => {
       .mockResolvedValueOnce({
         data: {
           getServerSettings: [
-            { key: 'DEFAULT_SEARCH_PROVIDER', value: 'serper', description: 'desc' },
+            {
+              key: 'DEFAULT_SEARCH_PROVIDER',
+              value: 'serper',
+              description: 'desc',
+              isEditable: true,
+              isDeletable: false,
+            },
           ],
         },
       })

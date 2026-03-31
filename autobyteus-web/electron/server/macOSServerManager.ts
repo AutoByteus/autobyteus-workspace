@@ -5,8 +5,8 @@ import isDev from 'electron-is-dev'
 import { StdioOptions } from 'child_process'
 import { BaseServerManager } from './baseServerManager'
 import { logger } from '../logger'
-import { getLocalIp } from '../utils/networkUtils'
 import { getLoginShellPath } from '../utils/shellEnv'
+import { INTERNAL_SERVER_BASE_URL } from '../../shared/embeddedServerConfig'
 import { buildServerRuntimeEnv } from './serverRuntimeEnv'
 
 export class MacOSServerManager extends BaseServerManager {
@@ -31,9 +31,7 @@ export class MacOSServerManager extends BaseServerManager {
       throw new Error(`Server entrypoint not found at: ${serverEntry}`)
     }
     
-    // Dynamically determine the host IP, falling back to localhost if needed.
-    const hostIp = getLocalIp() || 'localhost'
-    const publicServerUrl = `http://${hostIp}:${this.serverPort}`
+    const publicServerUrl = INTERNAL_SERVER_BASE_URL
 
     const loginShellPath = getLoginShellPath()
     if (loginShellPath) {

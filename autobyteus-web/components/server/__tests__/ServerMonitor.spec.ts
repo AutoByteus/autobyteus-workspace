@@ -13,7 +13,7 @@ const { serverStoreMock, windowNodeContextStoreMock } = vi.hoisted(() => ({
     isElectron: true,
     userFriendlyError: '',
     healthCheckStatus: '',
-    urls: { graphql: 'http://localhost:29695/graphql' },
+    urls: { graphql: 'http://127.0.0.1:29695/graphql' },
     checkServerHealth: vi.fn().mockResolvedValue({ status: 'ok' }),
     restartServer: vi.fn(),
   },

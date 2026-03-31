@@ -12,7 +12,7 @@ const {
     {
       id: 'embedded-local',
       name: 'Embedded Node',
-      baseUrl: 'http://localhost:29695',
+      baseUrl: 'http://127.0.0.1:29695',
       nodeType: 'embedded',
       isSystem: true,
       createdAt: '2026-02-08T00:00:00.000Z',

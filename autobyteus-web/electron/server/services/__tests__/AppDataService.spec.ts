@@ -3,6 +3,8 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { AppDataService } from '../AppDataService'
 
+const EMBEDDED_SERVER_BASE_URL = 'http://127.0.0.1:29695'
+
 // Mock the fs module
 vi.mock('fs', () => ({
   existsSync: vi.fn(),
@@ -164,7 +166,7 @@ describe('AppDataService', () => {
       expect(mockedFs.writeFileSync).toHaveBeenCalledTimes(1)
       expect(mockedFs.writeFileSync).toHaveBeenCalledWith(
         path.join(expectedAppDataDir, '.env'),
-        expect.stringContaining('AUTOBYTEUS_SERVER_HOST=http://localhost:29695'),
+        expect.stringContaining(`AUTOBYTEUS_SERVER_HOST=${EMBEDDED_SERVER_BASE_URL}`),
         'utf8'
       )
     })
@@ -187,7 +189,7 @@ describe('AppDataService', () => {
       expect(mockedFs.writeFileSync).toHaveBeenCalledTimes(1)
       expect(mockedFs.writeFileSync).toHaveBeenCalledWith(
         path.join(expectedAppDataDir, '.env'),
-        expect.stringContaining('AUTOBYTEUS_SERVER_HOST=http://localhost:29695'),
+        expect.stringContaining(`AUTOBYTEUS_SERVER_HOST=${EMBEDDED_SERVER_BASE_URL}`),
         'utf8'
       )
     })

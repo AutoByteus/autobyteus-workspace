@@ -39,16 +39,30 @@ const getMaybeRefValue = (target: any, key: string) => {
   return current
 }
 
+type TestServerSetting = {
+  key: string
+  value: string
+  description: string
+  isEditable?: boolean
+  isDeletable?: boolean
+}
+
 const mountComponent = async (
-  initialSettings: Array<{ key: string; value: string; description: string }> = [],
+  initialSettings: TestServerSetting[] = [],
   options: { sectionMode?: 'quick' | 'advanced' } = {},
 ) => {
+  const normalizedSettings = initialSettings.map((setting) => ({
+    isEditable: setting.isEditable ?? true,
+    isDeletable: setting.isDeletable ?? false,
+    ...setting,
+  }))
+
   const pinia = createTestingPinia({
     createSpy: vi.fn,
     stubActions: false,
     initialState: {
       serverSettings: {
-        settings: initialSettings,
+        settings: normalizedSettings,
         isLoading: false,
         error: null,
         isUpdating: false,
@@ -309,8 +323,20 @@ describe('ServerSettingsManager', () => {
 
   it('removes custom server settings from advanced table', async () => {
     const { wrapper, store } = await mountComponent([
-      { key: 'AUTOBYTEUS_LLM_SERVER_URL', value: 'https://legacy-host', description: 'Custom user-defined setting' },
-      { key: 'AUTOBYTEUS_SERVER_HOST', value: 'http://localhost:8000', description: 'Public URL of this server' },
+      {
+        key: 'AUTOBYTEUS_LLM_SERVER_URL',
+        value: 'https://legacy-host',
+        description: 'Custom user-defined setting',
+        isEditable: true,
+        isDeletable: true,
+      },
+      {
+        key: 'AUTOBYTEUS_SERVER_HOST',
+        value: 'http://localhost:8000',
+        description: 'Public URL of this server. Managed at startup by the launch environment and not editable here.',
+        isEditable: false,
+        isDeletable: false,
+      },
     ], { sectionMode: 'advanced' })
     const setupState = (wrapper.vm as any).$?.setupState
 
@@ -323,6 +349,28 @@ describe('ServerSettingsManager', () => {
     await flushPromises()
 
     expect(store.deleteServerSetting).toHaveBeenCalledWith('AUTOBYTEUS_LLM_SERVER_URL')
+    expect(wrapper.find('[data-testid="server-setting-remove-AUTOBYTEUS_SERVER_HOST"]').exists()).toBe(false)
+  })
+
+  it('renders system-managed settings as read-only without save/remove actions', async () => {
+    const { wrapper } = await mountComponent([
+      {
+        key: 'AUTOBYTEUS_SERVER_HOST',
+        value: 'http://127.0.0.1:29695',
+        description: 'Public URL of this server. Managed at startup by the launch environment and not editable here.',
+        isEditable: false,
+        isDeletable: false,
+      },
+    ], { sectionMode: 'advanced' })
+    const setupState = (wrapper.vm as any).$?.setupState
+
+    setMaybeRef(setupState, 'advancedPanel', 'raw-settings')
+    await wrapper.vm.$nextTick()
+    await flushPromises()
+
+    const valueInput = wrapper.get('[data-testid="server-setting-value-AUTOBYTEUS_SERVER_HOST"]')
+    expect(valueInput.attributes('readonly')).toBeDefined()
+    expect(wrapper.find('[data-testid="server-setting-save-AUTOBYTEUS_SERVER_HOST"]').exists()).toBe(false)
     expect(wrapper.find('[data-testid="server-setting-remove-AUTOBYTEUS_SERVER_HOST"]').exists()).toBe(false)
   })
 })

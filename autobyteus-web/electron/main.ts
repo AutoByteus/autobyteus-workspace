@@ -33,7 +33,6 @@ const appUpdater = new AppUpdater();
 let managedExtensionService: ManagedExtensionService | null = null;
 let previewRuntime: PreviewRuntime | null = null
 
-const INTERNAL_SERVER_PORT = 29695;
 const shutdownTimeoutMs = 8000;
 
 let isAppQuitting = false;
@@ -288,7 +287,7 @@ function applyNodeRegistryChange(change: NodeRegistryChange): NodeRegistrySnapsh
     nodes: ensureEmbeddedNode({
       version: nodeRegistrySnapshot.version,
       nodes: existingNodes,
-    }, INTERNAL_SERVER_PORT).nodes,
+    }).nodes,
   };
 }
 
@@ -528,7 +527,7 @@ function installProtocols(): void {
 }
 
 async function bootstrap(): Promise<void> {
-  nodeRegistrySnapshot = loadNodeRegistrySnapshot(app.getPath('userData'), INTERNAL_SERVER_PORT);
+  nodeRegistrySnapshot = loadNodeRegistrySnapshot(app.getPath('userData'));
   saveNodeRegistrySnapshot(app.getPath('userData'), nodeRegistrySnapshot);
 
   await app.whenReady();

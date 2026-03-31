@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const mockConfig = vi.hoisted(() => ({
   getConfigData: vi.fn(),
+  get: vi.fn(),
   set: vi.fn(),
   delete: vi.fn(),
 }));
@@ -19,8 +20,10 @@ import { ServerSettingsService } from "../../../src/services/server-settings-ser
 describe("ServerSettingsService", () => {
   beforeEach(() => {
     mockConfig.getConfigData.mockReset();
+    mockConfig.get.mockReset();
     mockConfig.set.mockReset();
     mockConfig.delete.mockReset();
+    mockConfig.get.mockImplementation((key: string) => mockConfig.getConfigData.mock.results.at(-1)?.value?.[key]);
   });
 
   it("lists available settings excluding API keys", () => {
@@ -38,6 +41,14 @@ describe("ServerSettingsService", () => {
     expect(settings.find((item) => item.key === "CUSTOM_SETTING")?.description).toBe(
       "Custom user-defined setting",
     );
+    expect(settings.find((item) => item.key === "CUSTOM_SETTING")).toMatchObject({
+      isEditable: true,
+      isDeletable: true,
+    });
+    expect(settings.find((item) => item.key === "AUTOBYTEUS_SERVER_HOST")).toMatchObject({
+      isEditable: false,
+      isDeletable: false,
+    });
   });
 
   it("sorts settings by key", () => {
@@ -50,6 +61,27 @@ describe("ServerSettingsService", () => {
     const settings = service.getAvailableSettings();
 
     expect(settings.map((item) => item.key)).toEqual(["ALPHA", "ZETA"]);
+  });
+
+  it("includes predefined settings from effective runtime values even when not persisted in config data", () => {
+    mockConfig.getConfigData.mockReturnValue({
+      CUSTOM_SETTING: "value",
+    });
+    mockConfig.get.mockImplementation((key: string) =>
+      ({
+        AUTOBYTEUS_SERVER_HOST: "http://127.0.0.1:29695",
+        CUSTOM_SETTING: "value",
+      })[key],
+    );
+
+    const service = new ServerSettingsService();
+    const settings = service.getAvailableSettings();
+
+    expect(settings.find((item) => item.key === "AUTOBYTEUS_SERVER_HOST")).toMatchObject({
+      value: "http://127.0.0.1:29695",
+      isEditable: false,
+      isDeletable: false,
+    });
   });
 
   it("updates settings successfully", () => {
@@ -73,6 +105,15 @@ describe("ServerSettingsService", () => {
 
     expect(ok).toBe(false);
     expect(message).toContain("boom");
+  });
+
+  it("rejects updating system-managed settings", () => {
+    const service = new ServerSettingsService();
+    const [ok, message] = service.updateSetting("AUTOBYTEUS_SERVER_HOST", "http://example.com:9000");
+
+    expect(ok).toBe(false);
+    expect(message).toContain("cannot be updated");
+    expect(mockConfig.set).not.toHaveBeenCalled();
   });
 
   it("accepts any setting key", () => {

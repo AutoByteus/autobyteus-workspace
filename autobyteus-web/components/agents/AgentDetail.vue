@@ -88,10 +88,10 @@
               </div>
             </div>
 
-            <div class="rounded-xl border border-gray-200 bg-white p-5">
-              <h2 class="text-lg font-semibold text-gray-800 mb-2">Instructions</h2>
-              <p class="text-gray-600 whitespace-pre-wrap font-mono text-sm">{{ agentDef.instructions }}</p>
-            </div>
+            <ExpandableInstructionCard
+              :content="agentDef.instructions"
+              variant="gray"
+            />
 
             <div class="rounded-xl border border-gray-200 bg-white p-5">
               <h2 class="text-lg font-semibold text-gray-800 mb-3">Skills</h2>
@@ -148,6 +148,7 @@ import { ref, computed, onMounted, toRefs, watch } from 'vue';
 import { useAgentDefinitionStore, type AgentDefinition } from '~/stores/agentDefinitionStore';
 import AgentDeleteConfirmDialog from '~/components/agents/AgentDeleteConfirmDialog.vue';
 import AgentDuplicateButton from '~/components/agents/AgentDuplicateButton.vue';
+import ExpandableInstructionCard from '~/components/common/ExpandableInstructionCard.vue';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 
