@@ -45,8 +45,8 @@ vi.mock('~/stores/workspace', () => ({
 }));
 
 vi.mock('~/utils/serverConfig', () => ({
-  getServerBaseUrl: () => 'http://localhost:29695',
-  getServerUrls: () => ({ rest: 'http://localhost:29695/rest' }),
+  getServerBaseUrl: () => 'http://127.0.0.1:29695',
+  getServerUrls: () => ({ rest: 'http://127.0.0.1:29695/rest' }),
 }));
 
 describe('ContextFilePathInputArea', () => {

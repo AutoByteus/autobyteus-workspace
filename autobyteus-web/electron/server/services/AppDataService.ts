@@ -1,6 +1,7 @@
 import * as path from 'path'
 import * as fs from 'fs'
 import { logger } from '../../logger'
+import { INTERNAL_SERVER_BASE_URL } from '../../../shared/embeddedServerConfig'
 
 /**
  * Service responsible for managing application data directories and initialization.
@@ -185,8 +186,7 @@ export class AppDataService {
   }
 
   private buildDefaultEnvFileContents(): string {
-    const configuredPort = process.env.SERVER_PORT ?? process.env.PORT ?? '29695'
-    const defaultHost = process.env.AUTOBYTEUS_SERVER_HOST ?? `http://localhost:${configuredPort}`
+    const defaultHost = process.env.AUTOBYTEUS_SERVER_HOST ?? INTERNAL_SERVER_BASE_URL
     const dbPath = path.join(this.appDataDir, 'db', 'production.db')
 
     const lines = [

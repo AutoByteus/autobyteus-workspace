@@ -3,6 +3,7 @@ import * as path from 'path'
 import type { NodeProfile, NodeRegistrySnapshot } from './nodeRegistryTypes'
 import { EMBEDDED_NODE_ID } from './nodeRegistryTypes'
 import { logger } from './logger'
+import { INTERNAL_SERVER_BASE_URL } from '../shared/embeddedServerConfig'
 
 const NODE_REGISTRY_FILE_NAME = 'node-registry.v1.json'
 
@@ -18,12 +19,12 @@ export function sanitizeBaseUrl(baseUrl: string): string {
   return baseUrl.trim().replace(/\/+$/, '')
 }
 
-function getEmbeddedNodeProfile(internalServerPort: number): NodeProfile {
+function getEmbeddedNodeProfile(): NodeProfile {
   const now = nowIsoString()
   return {
     id: EMBEDDED_NODE_ID,
     name: 'Embedded Node',
-    baseUrl: `http://localhost:${internalServerPort}`,
+    baseUrl: INTERNAL_SERVER_BASE_URL,
     nodeType: 'embedded',
     capabilities: {
       terminal: true,
@@ -38,16 +39,31 @@ function getEmbeddedNodeProfile(internalServerPort: number): NodeProfile {
 
 export function ensureEmbeddedNode(
   snapshot: NodeRegistrySnapshot,
-  internalServerPort: number,
 ): NodeRegistrySnapshot {
-  const existing = snapshot.nodes.find((node) => node.id === EMBEDDED_NODE_ID)
-  if (existing) {
+  const existingIndex = snapshot.nodes.findIndex((node) => node.id === EMBEDDED_NODE_ID)
+  if (existingIndex === -1) {
+    return {
+      version: snapshot.version + 1,
+      nodes: [getEmbeddedNodeProfile(), ...snapshot.nodes],
+    }
+  }
+
+  const existing = snapshot.nodes[existingIndex]
+  if (sanitizeBaseUrl(existing.baseUrl) === INTERNAL_SERVER_BASE_URL) {
     return snapshot
   }
 
   return {
     version: snapshot.version + 1,
-    nodes: [getEmbeddedNodeProfile(internalServerPort), ...snapshot.nodes],
+    nodes: snapshot.nodes.map((node, index) => (
+      index === existingIndex
+        ? {
+            ...node,
+            baseUrl: INTERNAL_SERVER_BASE_URL,
+            updatedAt: nowIsoString(),
+          }
+        : node
+    )),
   }
 }
 
@@ -114,14 +130,13 @@ function normalizeLoadedNode(rawNode: unknown): NodeProfile | null {
 
 export function loadNodeRegistrySnapshot(
   userDataPath: string,
-  internalServerPort: number,
 ): NodeRegistrySnapshot {
   const filePath = getRegistryFilePath(userDataPath)
   if (!fsSync.existsSync(filePath)) {
     return ensureEmbeddedNode({
       version: 0,
       nodes: [],
-    }, internalServerPort)
+    })
   }
 
   try {
@@ -132,7 +147,7 @@ export function loadNodeRegistrySnapshot(
       return ensureEmbeddedNode({
         version: 0,
         nodes: [],
-      }, internalServerPort)
+      })
     }
 
     const normalizedNodes = parsed.nodes
@@ -148,13 +163,13 @@ export function loadNodeRegistrySnapshot(
     return ensureEmbeddedNode({
       version: parsed.version,
       nodes: normalizedNodes,
-    }, internalServerPort)
+    })
   } catch (error) {
     logger.error('Failed to read node registry file:', error)
     return ensureEmbeddedNode({
       version: 0,
       nodes: [],
-    }, internalServerPort)
+    })
   }
 }
 

@@ -1,19 +1,23 @@
 /**
- * Server configuration utilities for AutoByteus
- * Dynamically detects and connects to available servers
+ * Server configuration utilities for AutoByteus.
+ * Electron uses the canonical embedded loopback URL; browser mode uses Nuxt runtime config.
  */
 
-// Fixed server port for internal server
-export const INTERNAL_SERVER_PORT = 29695;
+import {
+  INTERNAL_SERVER_BASE_URL,
+  INTERNAL_SERVER_PORT,
+  INTERNAL_SERVER_WS_BASE_URL,
+} from '~/shared/embeddedServerConfig';
+
+export { INTERNAL_SERVER_PORT };
 
 /**
- * Get the server base URL
- * Always uses the internal server port for Electron builds, otherwise falls back to external
+ * Get the active server base URL for the current runtime.
  */
 export function getServerBaseUrl(): string {
-  // In Electron context, we always use the internal port
+  // Electron always talks to the bundled server through the canonical loopback URL.
   if (typeof window !== 'undefined' && window.electronAPI) {
-    return `http://localhost:${INTERNAL_SERVER_PORT}`;
+    return INTERNAL_SERVER_BASE_URL;
   }
   
   // For browser builds, derive from runtime config.
@@ -29,30 +33,25 @@ export function isElectronEnvironment(): boolean {
 }
 
 /**
- * Get all server URLs as an object.
- * This function acts as a single source of truth for API endpoints at runtime.
+ * Get runtime API endpoints for the active node.
  */
 export function getServerUrls() {
-  // In Electron context, we have a special runtime environment and must use the internal port.
-  // This check MUST come first as it's a runtime detection.
+  // Electron keeps one stable embedded base URL regardless of host network changes.
   if (isElectronEnvironment()) {
-    const baseUrl = `http://localhost:${INTERNAL_SERVER_PORT}`;
     return {
-      graphql: `${baseUrl}/graphql`,
-      rest: `${baseUrl}/rest`,
-      graphqlWs: `ws://localhost:${INTERNAL_SERVER_PORT}/graphql`,
-      transcription: `ws://localhost:${INTERNAL_SERVER_PORT}/transcribe`,
-      terminalWs: `ws://localhost:${INTERNAL_SERVER_PORT}/ws/terminal`,
-      health: `${baseUrl}/rest/health`
+      graphql: `${INTERNAL_SERVER_BASE_URL}/graphql`,
+      rest: `${INTERNAL_SERVER_BASE_URL}/rest`,
+      graphqlWs: `${INTERNAL_SERVER_WS_BASE_URL}/graphql`,
+      transcription: `${INTERNAL_SERVER_WS_BASE_URL}/transcribe`,
+      terminalWs: `${INTERNAL_SERVER_WS_BASE_URL}/ws/terminal`,
+      health: `${INTERNAL_SERVER_BASE_URL}/rest/health`
     };
   }
   
-  // For all browser-based contexts (dev and prod), we now rely on the Nuxt runtimeConfig.
-  // The logic to decide between relative and absolute URLs is handled in nuxt.config.ts.
+  // Browser-based contexts rely on Nuxt runtime config.
   const config = useRuntimeConfig();
   const restUrl = config.public.restBaseUrl;
-  
-  // The health URL needs to be constructed correctly depending on whether the restUrl is relative or absolute.
+
   const healthUrl = restUrl.startsWith('/') ? `${restUrl}/health` : new URL('/health', restUrl).href;
 
   return {

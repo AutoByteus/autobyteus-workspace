@@ -9,12 +9,15 @@ export class ServerSettingDescription {
   constructor(
     public readonly key: string,
     public readonly description: string,
+    public readonly isEditable: boolean = true,
+    public readonly isDeletable: boolean = false,
   ) {}
 }
 
+const CUSTOM_SETTING_DESCRIPTION = "Custom user-defined setting";
+
 export class ServerSettingsService {
   private settingsInfo = new Map<string, ServerSettingDescription>();
-  private predefinedSettingKeys = new Set<string>();
 
   constructor() {
     this.initializeSettings();
@@ -28,7 +31,8 @@ export class ServerSettingsService {
 
     this.registerPredefinedSetting(
       "AUTOBYTEUS_SERVER_HOST",
-      "Public URL of this server (e.g., http://localhost:8000). This is mandatory and set at startup.",
+      "Public URL of this server. Managed at startup by the launch environment and not editable here.",
+      false,
     );
 
     this.registerPredefinedSetting(
@@ -51,43 +55,87 @@ export class ServerSettingsService {
     );
   }
 
-  private registerPredefinedSetting(key: string, description: string): void {
-    this.settingsInfo.set(key, new ServerSettingDescription(key, description));
-    this.predefinedSettingKeys.add(key);
+  private registerPredefinedSetting(key: string, description: string, isEditable = true): void {
+    this.settingsInfo.set(key, new ServerSettingDescription(key, description, isEditable, false));
   }
 
-  getAvailableSettings(): Array<{ key: string; value: string; description: string }> {
+  private getSettingDescription(key: string): ServerSettingDescription {
+    return (
+      this.settingsInfo.get(key) ??
+      new ServerSettingDescription(key, CUSTOM_SETTING_DESCRIPTION, true, true)
+    );
+  }
+
+  private getVisibleSettingKeys(configData: Record<string, string>): string[] {
     const config = appConfigProvider.config;
-    const allSettings = config.getConfigData();
+    const visibleKeys = new Set<string>();
 
-    const result: Array<{ key: string; value: string; description: string }> = [];
+    for (const key of Object.keys(configData)) {
+      if (!key.toUpperCase().endsWith("_API_KEY")) {
+        visibleKeys.add(key);
+      }
+    }
 
-    for (const [key, value] of Object.entries(allSettings)) {
-      if (key.toUpperCase().endsWith("_API_KEY")) {
+    for (const key of this.settingsInfo.keys()) {
+      const value = config.get(key);
+      if (typeof value === "string" && value.trim().length > 0) {
+        visibleKeys.add(key);
+      }
+    }
+
+    return Array.from(visibleKeys).sort((a, b) => a.localeCompare(b));
+  }
+
+  getAvailableSettings(): Array<{
+    key: string;
+    value: string;
+    description: string;
+    isEditable: boolean;
+    isDeletable: boolean;
+  }> {
+    const config = appConfigProvider.config;
+    const configData = config.getConfigData();
+
+    const result: Array<{
+      key: string;
+      value: string;
+      description: string;
+      isEditable: boolean;
+      isDeletable: boolean;
+    }> = [];
+
+    for (const key of this.getVisibleSettingKeys(configData)) {
+      const value = config.get(key) ?? configData[key];
+      if (value === undefined) {
         continue;
       }
-
-      const description = this.settingsInfo.get(key)?.description ?? "Custom user-defined setting";
+      const metadata = this.getSettingDescription(key);
       result.push({
         key,
         value: String(value),
-        description,
+        description: metadata.description,
+        isEditable: metadata.isEditable,
+        isDeletable: metadata.isDeletable,
       });
     }
 
-    result.sort((a, b) => a.key.localeCompare(b.key));
     return result;
   }
 
   updateSetting(key: string, value: string): [boolean, string] {
     try {
+      const metadata = this.settingsInfo.get(key);
+      if (metadata && !metadata.isEditable) {
+        return [false, `Server setting '${key}' is managed by the system and cannot be updated here.`];
+      }
+
       const config = appConfigProvider.config;
       config.set(key, value);
 
       if (!this.settingsInfo.has(key)) {
         this.settingsInfo.set(
           key,
-          new ServerSettingDescription(key, "Custom user-defined setting"),
+          new ServerSettingDescription(key, CUSTOM_SETTING_DESCRIPTION, true, true),
         );
         logger.info(`Added new custom server setting: ${key}`);
       }
@@ -102,7 +150,8 @@ export class ServerSettingsService {
 
   deleteSetting(key: string): [boolean, string] {
     try {
-      if (this.predefinedSettingKeys.has(key)) {
+      const metadata = this.getSettingDescription(key);
+      if (!metadata.isDeletable) {
         return [false, `Server setting '${key}' is managed by the system and cannot be removed.`];
       }
 

@@ -12,6 +12,12 @@ export class ServerSetting {
 
   @Field(() => String)
   description!: string;
+
+  @Field(() => Boolean)
+  isEditable!: boolean;
+
+  @Field(() => Boolean)
+  isDeletable!: boolean;
 }
 
 @ObjectType()
@@ -72,6 +78,8 @@ export class ServerSettingsResolver {
       key: setting.key,
       value: setting.value,
       description: setting.description,
+      isEditable: setting.isEditable,
+      isDeletable: setting.isDeletable,
     }));
   }
 
