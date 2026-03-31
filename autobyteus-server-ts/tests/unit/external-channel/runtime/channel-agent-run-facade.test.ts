@@ -118,27 +118,21 @@ describe("ChannelAgentRunFacade", () => {
       postUserMessage,
     });
     const publishExternalUserMessage = vi.fn();
-    const bindAcceptedExternalTurn = vi.fn().mockResolvedValue(undefined);
     const facade = new ChannelAgentRunFacade({
       runLauncher: { resolveOrStartAgentRun },
       agentRunManager: {
         getActiveRun: vi.fn().mockReturnValue(activeRun),
       },
       agentLiveMessagePublisher: { publishExternalUserMessage },
-      externalTurnBridge: { bindAcceptedExternalTurn },
     });
 
     const result = await facade.dispatchToAgentBinding(createAgentBinding(), createEnvelope());
 
+    expect(result.dispatchTargetType).toBe("AGENT");
     expect(result.agentRunId).toBe("agent-1");
-    expect(result.teamRunId).toBeNull();
+    expect(result.turnId).toBe("turn-1");
     expect(resolveOrStartAgentRun).toHaveBeenCalledOnce();
     expect(postUserMessage).toHaveBeenCalledOnce();
-    expect(bindAcceptedExternalTurn).toHaveBeenCalledWith({
-      run: activeRun,
-      turnId: "turn-1",
-      envelope: createEnvelope(),
-    });
     expect(publishExternalUserMessage).toHaveBeenCalledWith({
       runId: "agent-1",
       envelope: createEnvelope(),
@@ -161,7 +155,6 @@ describe("ChannelAgentRunFacade", () => {
       postUserMessage,
     });
     const publishExternalUserMessage = vi.fn();
-    const bindAcceptedExternalTurn = vi.fn().mockResolvedValue(undefined);
     const facade = new ChannelAgentRunFacade({
       runLauncher: {
         resolveOrStartAgentRun: vi.fn().mockResolvedValue("agent-1"),
@@ -172,12 +165,12 @@ describe("ChannelAgentRunFacade", () => {
       agentLiveMessagePublisher: {
         publishExternalUserMessage,
       },
-      externalTurnBridge: {
-        bindAcceptedExternalTurn,
-      },
     });
 
-    await facade.dispatchToAgentBinding(createAgentBinding(), createEnvelopeWithAttachments());
+    const result = await facade.dispatchToAgentBinding(
+      createAgentBinding(),
+      createEnvelopeWithAttachments(),
+    );
 
     const message = postUserMessage.mock.calls[0]?.[0];
     expect(message?.contextFiles).toHaveLength(2);
@@ -189,7 +182,8 @@ describe("ChannelAgentRunFacade", () => {
       file_type: "image",
       file_name: "image.jpg",
     });
-    expect(bindAcceptedExternalTurn).toHaveBeenCalledOnce();
+    expect(result.dispatchTargetType).toBe("AGENT");
+    expect(result.turnId).toBe("turn-attachment");
     expect(publishExternalUserMessage).toHaveBeenCalledOnce();
   });
 
@@ -213,9 +207,6 @@ describe("ChannelAgentRunFacade", () => {
       },
       agentLiveMessagePublisher: {
         publishExternalUserMessage,
-      },
-      externalTurnBridge: {
-        bindAcceptedExternalTurn: vi.fn().mockResolvedValue(undefined),
       },
     });
 
@@ -241,7 +232,6 @@ describe("ChannelAgentRunFacade", () => {
     const publishExternalUserMessage = vi.fn(() => {
       throw new Error("socket write failed");
     });
-    const bindAcceptedExternalTurn = vi.fn().mockResolvedValue(undefined);
     const facade = new ChannelAgentRunFacade({
       runLauncher: {
         resolveOrStartAgentRun: vi.fn().mockResolvedValue("agent-1"),
@@ -252,24 +242,20 @@ describe("ChannelAgentRunFacade", () => {
       agentLiveMessagePublisher: {
         publishExternalUserMessage,
       },
-      externalTurnBridge: {
-        bindAcceptedExternalTurn,
-      },
     });
 
     const result = await facade.dispatchToAgentBinding(createAgentBinding(), createEnvelope());
 
     expect(result.agentRunId).toBe("agent-1");
+    expect(result.turnId).toBe("turn-2");
     expect(postUserMessage).toHaveBeenCalledOnce();
-    expect(bindAcceptedExternalTurn).toHaveBeenCalledOnce();
     expect(publishExternalUserMessage).toHaveBeenCalledOnce();
     expect(warnSpy).toHaveBeenCalledTimes(1);
 
     warnSpy.mockRestore();
   });
 
-  it("continues agent dispatch when accepted-turn binding fails", async () => {
-    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+  it("returns a null turnId when the runtime accepts without exposing one", async () => {
     const activeRun = createActiveRun({
       runId: "agent-1",
       runtimeKind: "codex_app_server",
@@ -277,13 +263,10 @@ describe("ChannelAgentRunFacade", () => {
         accepted: true,
         code: null,
         message: null,
-        turnId: "turn-3",
+        turnId: null,
       }),
     });
     const publishExternalUserMessage = vi.fn();
-    const bindAcceptedExternalTurn = vi.fn().mockRejectedValue(
-      new Error("bind failed"),
-    );
     const facade = new ChannelAgentRunFacade({
       runLauncher: {
         resolveOrStartAgentRun: vi.fn().mockResolvedValue("agent-1"),
@@ -294,18 +277,12 @@ describe("ChannelAgentRunFacade", () => {
       agentLiveMessagePublisher: {
         publishExternalUserMessage,
       },
-      externalTurnBridge: {
-        bindAcceptedExternalTurn,
-      },
     });
 
     const result = await facade.dispatchToAgentBinding(createAgentBinding(), createEnvelope());
 
     expect(result.agentRunId).toBe("agent-1");
-    expect(bindAcceptedExternalTurn).toHaveBeenCalledOnce();
+    expect(result.turnId).toBeNull();
     expect(publishExternalUserMessage).toHaveBeenCalledOnce();
-    expect(warnSpy).toHaveBeenCalledTimes(1);
-
-    warnSpy.mockRestore();
   });
 });

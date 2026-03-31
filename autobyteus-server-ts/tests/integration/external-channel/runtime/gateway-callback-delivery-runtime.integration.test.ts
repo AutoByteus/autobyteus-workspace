@@ -426,7 +426,27 @@ const seedReplyContext = async (deps: {
     targetNodeName: null,
     allowTransportFallback: false,
   });
-  await deps.messageReceiptService.bindTurnToReceipt({
+  await deps.messageReceiptService.createPendingIngressReceipt({
+    provider: ExternalChannelProvider.WHATSAPP,
+    transport: ExternalChannelTransport.BUSINESS_API,
+    accountId: "acct-1",
+    peerId: "peer-1",
+    threadId: "thread-1",
+    externalMessageId: "ext-msg-1",
+    receivedAt: new Date("2026-03-10T12:00:00.000Z"),
+  });
+  const claimed = await deps.messageReceiptService.claimIngressDispatch({
+    provider: ExternalChannelProvider.WHATSAPP,
+    transport: ExternalChannelTransport.BUSINESS_API,
+    accountId: "acct-1",
+    peerId: "peer-1",
+    threadId: "thread-1",
+    externalMessageId: "ext-msg-1",
+    receivedAt: new Date("2026-03-10T12:00:00.000Z"),
+    claimedAt: new Date("2026-03-10T12:00:01.000Z"),
+    leaseDurationMs: 30_000,
+  });
+  await deps.messageReceiptService.recordAcceptedDispatch({
     provider: ExternalChannelProvider.WHATSAPP,
     transport: ExternalChannelTransport.BUSINESS_API,
     accountId: "acct-1",
@@ -437,18 +457,14 @@ const seedReplyContext = async (deps: {
     agentRunId: "agent-run-1",
     teamRunId: null,
     receivedAt: new Date("2026-03-10T12:00:00.000Z"),
+    dispatchLeaseToken: claimed.dispatchLeaseToken ?? "",
   });
 };
 
 const expectPersistenceArtifactsUnderAppDataDir = async (
   appDataDir: string,
 ): Promise<void> => {
-  const persistenceRoot = path.join(
-    appDataDir,
-    "memory",
-    "persistence",
-    "external-channel",
-  );
+  const persistenceRoot = path.join(appDataDir, "external-channel");
   await Promise.all([
     fs.access(path.join(persistenceRoot, "bindings.json")),
     fs.access(path.join(persistenceRoot, "message-receipts.json")),

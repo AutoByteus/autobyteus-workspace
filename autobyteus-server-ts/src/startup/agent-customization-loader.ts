@@ -14,7 +14,6 @@ import {
   defaultToolInvocationPreprocessorRegistry,
   registerSystemPromptProcessors,
 } from "autobyteus-ts";
-import { ExternalChannelTurnReceiptBindingProcessor } from "../agent-customization/processors/persistence/external-channel-turn-receipt-binding-processor.js";
 import { TokenUsagePersistenceProcessor } from "../agent-customization/processors/persistence/token-usage-persistence-processor.js";
 import { UserInputContextBuildingProcessor } from "../agent-customization/processors/prompt/user-input-context-building-processor.js";
 import { WorkspacePathSanitizationProcessor } from "../agent-customization/processors/security-processor/workspace-path-sanitization-processor.js";
@@ -22,7 +21,6 @@ import { MediaToolResultUrlTransformerProcessor } from "../agent-customization/p
 import { AgentArtifactPersistenceProcessor } from "../agent-customization/processors/tool-result/agent-artifact-persistence-processor.js";
 import { MediaInputPathNormalizationPreprocessor } from "../agent-customization/processors/tool-invocation/media-input-path-normalization-preprocessor.js";
 import { MediaUrlTransformerProcessor } from "../agent-customization/processors/response-customization/media-url-transformer-processor.js";
-import { ExternalChannelAssistantReplyProcessor } from "../agent-customization/processors/response-customization/external-channel-assistant-reply-processor.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -99,11 +97,9 @@ export function loadAgentCustomizations(): void {
 
   registerInputProcessor(WorkspacePathSanitizationProcessor);
   registerInputProcessor(UserInputContextBuildingProcessor);
-  registerInputProcessor(ExternalChannelTurnReceiptBindingProcessor);
 
   registerLlmResponseProcessor(TokenUsagePersistenceProcessor);
   registerLlmResponseProcessor(MediaUrlTransformerProcessor);
-  registerLlmResponseProcessor(ExternalChannelAssistantReplyProcessor);
 
   registerToolInvocationPreprocessor(MediaInputPathNormalizationPreprocessor);
   registerToolResultProcessor(MediaToolResultUrlTransformerProcessor);

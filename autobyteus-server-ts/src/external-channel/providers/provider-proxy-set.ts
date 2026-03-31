@@ -3,27 +3,28 @@ import type {
   ChannelBinding,
   ChannelBindingLookup,
   ChannelBindingProviderDefaultLookup,
+  ChannelAcceptedIngressReceiptInput,
+  ChannelAcceptedReceiptCorrelationInput,
+  ChannelClaimIngressDispatchInput,
   ChannelDeliveryEvent,
+  ChannelIngressReceiptKey,
+  ChannelIngressReceiptState,
+  ChannelMessageReceipt,
+  ChannelPendingIngressReceiptInput,
+  ChannelReplyPublishedReceiptInput,
   ChannelDispatchTarget,
-  ChannelIngressReceiptInput,
   ChannelSourceContext,
   ChannelSourceRoute,
-  ChannelTurnReceiptBindingInput,
+  ChannelUnboundIngressReceiptInput,
   UpsertChannelBindingInput,
   UpsertChannelDeliveryEventInput,
 } from "../domain/models.js";
 import type { ChannelBindingProvider } from "./channel-binding-provider.js";
-import type {
-  ChannelIdempotencyProvider,
-  ChannelIdempotencyReservationResult,
-} from "./channel-idempotency-provider.js";
 import type { ChannelMessageReceiptProvider } from "./channel-message-receipt-provider.js";
 import type { DeliveryEventProvider } from "./delivery-event-provider.js";
 
 type ChannelProviderSet = {
   bindingProvider: ChannelBindingProvider;
-  idempotencyProvider: ChannelIdempotencyProvider;
-  callbackIdempotencyProvider: ChannelIdempotencyProvider;
   messageReceiptProvider: ChannelMessageReceiptProvider;
   deliveryEventProvider: DeliveryEventProvider;
 };
@@ -41,20 +42,8 @@ const loadBindingProvider = async (): Promise<ChannelBindingProvider> => {
 };
 
 const loadSqlProviderSet = async (): Promise<ChannelProviderSet> => {
-  const [
-    bindingProvider,
-    idempotency,
-    callbackIdempotency,
-    receipt,
-    delivery,
-  ] = await Promise.all([
+  const [bindingProvider, receipt, delivery] = await Promise.all([
     loadBindingProvider(),
-    importChannelProviderModule<{
-      SqlChannelIdempotencyProvider: new () => ChannelIdempotencyProvider;
-    }>("sql-channel-idempotency-provider.js"),
-    importChannelProviderModule<{
-      SqlChannelCallbackIdempotencyProvider: new () => ChannelIdempotencyProvider;
-    }>("sql-channel-callback-idempotency-provider.js"),
     importChannelProviderModule<{
       SqlChannelMessageReceiptProvider: new () => ChannelMessageReceiptProvider;
     }>("sql-channel-message-receipt-provider.js"),
@@ -65,28 +54,14 @@ const loadSqlProviderSet = async (): Promise<ChannelProviderSet> => {
 
   return {
     bindingProvider,
-    idempotencyProvider: new idempotency.SqlChannelIdempotencyProvider(),
-    callbackIdempotencyProvider: new callbackIdempotency.SqlChannelCallbackIdempotencyProvider(),
     messageReceiptProvider: new receipt.SqlChannelMessageReceiptProvider(),
     deliveryEventProvider: new delivery.SqlDeliveryEventProvider(),
   };
 };
 
 const loadFileProviderSet = async (): Promise<ChannelProviderSet> => {
-  const [
-    bindingProvider,
-    idempotency,
-    callbackIdempotency,
-    receipt,
-    delivery,
-  ] = await Promise.all([
+  const [bindingProvider, receipt, delivery] = await Promise.all([
     loadBindingProvider(),
-    importChannelProviderModule<{
-      FileChannelIdempotencyProvider: new () => ChannelIdempotencyProvider;
-    }>("file-channel-idempotency-provider.js"),
-    importChannelProviderModule<{
-      FileChannelCallbackIdempotencyProvider: new () => ChannelIdempotencyProvider;
-    }>("file-channel-callback-idempotency-provider.js"),
     importChannelProviderModule<{
       FileChannelMessageReceiptProvider: new () => ChannelMessageReceiptProvider;
     }>("file-channel-message-receipt-provider.js"),
@@ -97,8 +72,6 @@ const loadFileProviderSet = async (): Promise<ChannelProviderSet> => {
 
   return {
     bindingProvider,
-    idempotencyProvider: new idempotency.FileChannelIdempotencyProvider(),
-    callbackIdempotencyProvider: new callbackIdempotency.FileChannelCallbackIdempotencyProvider(),
     messageReceiptProvider: new receipt.FileChannelMessageReceiptProvider(),
     deliveryEventProvider: new delivery.FileDeliveryEventProvider(),
   };
@@ -162,32 +135,53 @@ class DeferredChannelBindingProvider implements ChannelBindingProvider {
   }
 }
 
-class DeferredChannelIdempotencyProvider implements ChannelIdempotencyProvider {
-  constructor(private readonly key: "idempotencyProvider" | "callbackIdempotencyProvider") {}
-
-  async reserveKey(key: string, ttlSeconds: number): Promise<ChannelIdempotencyReservationResult> {
-    const providerSet = await getProviderSet();
-    return providerSet[this.key].reserveKey(key, ttlSeconds);
-  }
-}
-
 class DeferredChannelMessageReceiptProvider implements ChannelMessageReceiptProvider {
-  async recordIngressReceipt(input: ChannelIngressReceiptInput): Promise<void> {
-    return (await getProviderSet()).messageReceiptProvider.recordIngressReceipt(input);
+  async getReceiptByExternalMessage(
+    input: ChannelIngressReceiptKey,
+  ): Promise<ChannelMessageReceipt | null> {
+    return (await getProviderSet()).messageReceiptProvider.getReceiptByExternalMessage(input);
   }
 
-  async bindTurnToReceipt(input: ChannelTurnReceiptBindingInput): Promise<void> {
-    return (await getProviderSet()).messageReceiptProvider.bindTurnToReceipt(input);
+  async createPendingIngressReceipt(
+    input: ChannelPendingIngressReceiptInput,
+  ): Promise<ChannelMessageReceipt> {
+    return (await getProviderSet()).messageReceiptProvider.createPendingIngressReceipt(input);
   }
 
-  async getLatestSourceByAgentRunId(agentRunId: string): Promise<ChannelSourceContext | null> {
-    return (await getProviderSet()).messageReceiptProvider.getLatestSourceByAgentRunId(agentRunId);
+  async claimIngressDispatch(
+    input: ChannelClaimIngressDispatchInput,
+  ): Promise<ChannelMessageReceipt> {
+    return (await getProviderSet()).messageReceiptProvider.claimIngressDispatch(input);
   }
 
-  async getLatestSourceByDispatchTarget(
-    target: ChannelDispatchTarget,
-  ): Promise<ChannelSourceContext | null> {
-    return (await getProviderSet()).messageReceiptProvider.getLatestSourceByDispatchTarget(target);
+  async recordAcceptedDispatch(
+    input: ChannelAcceptedIngressReceiptInput,
+  ): Promise<ChannelMessageReceipt> {
+    return (await getProviderSet()).messageReceiptProvider.recordAcceptedDispatch(input);
+  }
+
+  async markIngressUnbound(
+    input: ChannelUnboundIngressReceiptInput,
+  ): Promise<ChannelMessageReceipt> {
+    return (await getProviderSet()).messageReceiptProvider.markIngressUnbound(input);
+  }
+
+  async updateAcceptedReceiptCorrelation(
+    input: ChannelAcceptedReceiptCorrelationInput,
+  ): Promise<ChannelMessageReceipt> {
+    return (await getProviderSet()).messageReceiptProvider.updateAcceptedReceiptCorrelation(input);
+  }
+
+  async markReplyPublished(
+    input: ChannelReplyPublishedReceiptInput,
+  ): Promise<ChannelMessageReceipt> {
+    return (await getProviderSet()).messageReceiptProvider.markReplyPublished(input);
+  }
+
+  async listReceiptsByIngressState(
+    state: ChannelIngressReceiptState,
+  ): Promise<ChannelMessageReceipt[]> {
+    return (await getProviderSet()).messageReceiptProvider.listReceiptsByIngressState(state);
   }
 
   async getSourceByAgentRunTurn(
@@ -215,8 +209,6 @@ class DeferredDeliveryEventProvider implements DeliveryEventProvider {
 let deferredProviders:
   | {
       bindingProvider: ChannelBindingProvider;
-      idempotencyProvider: ChannelIdempotencyProvider;
-      callbackIdempotencyProvider: ChannelIdempotencyProvider;
       messageReceiptProvider: ChannelMessageReceiptProvider;
       deliveryEventProvider: DeliveryEventProvider;
     }
@@ -226,8 +218,6 @@ export const getProviderProxySet = () => {
   if (!deferredProviders) {
     deferredProviders = {
       bindingProvider: new DeferredChannelBindingProvider(),
-      idempotencyProvider: new DeferredChannelIdempotencyProvider("idempotencyProvider"),
-      callbackIdempotencyProvider: new DeferredChannelIdempotencyProvider("callbackIdempotencyProvider"),
       messageReceiptProvider: new DeferredChannelMessageReceiptProvider(),
       deliveryEventProvider: new DeferredDeliveryEventProvider(),
     };

@@ -6,14 +6,38 @@ import { SqlChannelMessageReceiptProvider } from "../../../../src/external-chann
 
 const unique = (prefix: string): string => `${prefix}-${randomUUID()}`;
 
+const seedAcceptedReceipt = async (
+  provider: SqlChannelMessageReceiptProvider,
+  input: {
+    provider: ExternalChannelProvider;
+    transport: ExternalChannelTransport;
+    accountId: string;
+    peerId: string;
+    threadId: string | null;
+    externalMessageId: string;
+    agentRunId: string | null;
+    teamRunId: string | null;
+    receivedAt: Date;
+  },
+): Promise<void> => {
+  const claimed = await provider.claimIngressDispatch({
+    ...input,
+    claimedAt: new Date(input.receivedAt.getTime() + 1000),
+    leaseDurationMs: 30_000,
+  });
+  await provider.recordAcceptedDispatch({
+    ...input,
+    dispatchLeaseToken: claimed.dispatchLeaseToken ?? "",
+  });
+};
+
 describe("SqlChannelMessageReceiptProvider", () => {
-  it("records ingress receipt and returns latest source by agentRunId", async () => {
+  it("creates pending receipts and exposes their lifecycle state", async () => {
     const provider = new SqlChannelMessageReceiptProvider();
-    const agentRunId = unique("agent");
     const accountId = unique("acct");
     const peerId = unique("peer");
 
-    await provider.recordIngressReceipt({
+    const receipt = await provider.createPendingIngressReceipt({
       provider: ExternalChannelProvider.WHATSAPP,
       transport: ExternalChannelTransport.BUSINESS_API,
       accountId,
@@ -21,61 +45,26 @@ describe("SqlChannelMessageReceiptProvider", () => {
       threadId: null,
       externalMessageId: "ext-1",
       receivedAt: new Date("2026-02-08T00:00:00.000Z"),
-      agentRunId,
-      teamRunId: null,
     });
 
-    const source = await provider.getLatestSourceByAgentRunId(agentRunId);
-
-    expect(source).not.toBeNull();
-    expect(source?.provider).toBe(ExternalChannelProvider.WHATSAPP);
-    expect(source?.transport).toBe(ExternalChannelTransport.BUSINESS_API);
-    expect(source?.threadId).toBeNull();
-    expect(source?.externalMessageId).toBe("ext-1");
-  });
-
-  it("returns the most recent source context by receivedAt", async () => {
-    const provider = new SqlChannelMessageReceiptProvider();
-    const agentRunId = unique("agent");
-    const accountId = unique("acct");
-    const peerId = unique("peer");
-
-    await provider.recordIngressReceipt({
+    expect(receipt.ingressState).toBe("PENDING");
+    const fetched = await provider.getReceiptByExternalMessage({
       provider: ExternalChannelProvider.WHATSAPP,
       transport: ExternalChannelTransport.BUSINESS_API,
       accountId,
       peerId,
-      threadId: "thread-1",
-      externalMessageId: "ext-old",
-      receivedAt: new Date("2026-02-08T00:00:00.000Z"),
-      agentRunId,
-      teamRunId: null,
+      threadId: null,
+      externalMessageId: "ext-1",
     });
-    await provider.recordIngressReceipt({
-      provider: ExternalChannelProvider.WHATSAPP,
-      transport: ExternalChannelTransport.BUSINESS_API,
-      accountId,
-      peerId,
-      threadId: "thread-1",
-      externalMessageId: "ext-new",
-      receivedAt: new Date("2026-02-08T00:01:00.000Z"),
-      agentRunId,
-      teamRunId: null,
-    });
-
-    const source = await provider.getLatestSourceByAgentRunId(agentRunId);
-
-    expect(source?.externalMessageId).toBe("ext-new");
-    expect(source?.threadId).toBe("thread-1");
+    expect(fetched?.ingressState).toBe("PENDING");
   });
 
-  it("upserts duplicate route+message receipt key instead of creating duplicates", async () => {
+  it("reclaims dispatching receipts with a fresh lease token", async () => {
     const provider = new SqlChannelMessageReceiptProvider();
-    const agentRunId = unique("agent");
     const accountId = unique("acct");
     const peerId = unique("peer");
 
-    await provider.recordIngressReceipt({
+    const firstClaim = await provider.claimIngressDispatch({
       provider: ExternalChannelProvider.WHATSAPP,
       transport: ExternalChannelTransport.PERSONAL_SESSION,
       accountId,
@@ -83,10 +72,10 @@ describe("SqlChannelMessageReceiptProvider", () => {
       threadId: null,
       externalMessageId: "ext-dup",
       receivedAt: new Date("2026-02-08T00:00:00.000Z"),
-      agentRunId,
-      teamRunId: null,
+      claimedAt: new Date("2026-02-08T00:00:01.000Z"),
+      leaseDurationMs: 30_000,
     });
-    await provider.recordIngressReceipt({
+    const secondClaim = await provider.claimIngressDispatch({
       provider: ExternalChannelProvider.WHATSAPP,
       transport: ExternalChannelTransport.PERSONAL_SESSION,
       accountId,
@@ -94,76 +83,34 @@ describe("SqlChannelMessageReceiptProvider", () => {
       threadId: null,
       externalMessageId: "ext-dup",
       receivedAt: new Date("2026-02-08T00:05:00.000Z"),
-      agentRunId,
-      teamRunId: null,
+      claimedAt: new Date("2026-02-08T00:05:01.000Z"),
+      leaseDurationMs: 30_000,
     });
 
-    const source = await provider.getLatestSourceByAgentRunId(agentRunId);
-    expect(source?.externalMessageId).toBe("ext-dup");
-    expect(source?.receivedAt.toISOString()).toBe("2026-02-08T00:05:00.000Z");
+    expect(firstClaim.dispatchLeaseToken).not.toBe(secondClaim.dispatchLeaseToken);
+    expect(secondClaim.ingressState).toBe("DISPATCHING");
+    expect(secondClaim.receivedAt.toISOString()).toBe("2026-02-08T00:05:00.000Z");
   });
 
-  it("returns null for unknown agent and rejects blank lookup keys", async () => {
-    const provider = new SqlChannelMessageReceiptProvider();
-    const missing = await provider.getLatestSourceByAgentRunId(unique("missing-agent"));
-    expect(missing).toBeNull();
-
-    await expect(provider.getLatestSourceByAgentRunId("   ")).rejects.toThrow(
-      "agentRunId must be a non-empty string.",
-    );
-  });
-
-  it("resolves latest source by dispatch target (agent first, then team)", async () => {
-    const provider = new SqlChannelMessageReceiptProvider();
-    const accountId = unique("acct");
-    const peerId = unique("peer");
-    const teamRunId = unique("team");
-    const agentRunId = unique("agent");
-
-    await provider.recordIngressReceipt({
-      provider: ExternalChannelProvider.WHATSAPP,
-      transport: ExternalChannelTransport.PERSONAL_SESSION,
-      accountId,
-      peerId,
-      threadId: null,
-      externalMessageId: "team-msg",
-      receivedAt: new Date("2026-02-08T00:00:00.000Z"),
-      agentRunId: null,
-      teamRunId,
-    });
-
-    const teamSource = await provider.getLatestSourceByDispatchTarget({
-      agentRunId: null,
-      teamRunId,
-    });
-    expect(teamSource?.externalMessageId).toBe("team-msg");
-
-    await provider.recordIngressReceipt({
-      provider: ExternalChannelProvider.WHATSAPP,
-      transport: ExternalChannelTransport.PERSONAL_SESSION,
-      accountId,
-      peerId,
-      threadId: null,
-      externalMessageId: "agent-msg",
-      receivedAt: new Date("2026-02-08T00:01:00.000Z"),
-      agentRunId,
-      teamRunId,
-    });
-
-    const preferred = await provider.getLatestSourceByDispatchTarget({
-      agentRunId,
-      teamRunId,
-    });
-    expect(preferred?.externalMessageId).toBe("agent-msg");
-  });
-
-  it("binds turn to receipt and resolves source by (agentRunId, turnId)", async () => {
+  it("records accepted-turn correlation and resolves source by (agentRunId, turnId)", async () => {
     const provider = new SqlChannelMessageReceiptProvider();
     const agentRunId = unique("agent");
     const accountId = unique("acct");
     const peerId = unique("peer");
 
-    await provider.bindTurnToReceipt({
+    const claimed = await provider.claimIngressDispatch({
+      provider: ExternalChannelProvider.WHATSAPP,
+      transport: ExternalChannelTransport.PERSONAL_SESSION,
+      accountId,
+      peerId,
+      threadId: null,
+      externalMessageId: "ext-turn-1",
+      receivedAt: new Date("2026-02-09T00:00:00.000Z"),
+      claimedAt: new Date("2026-02-09T00:00:01.000Z"),
+      leaseDurationMs: 30_000,
+    });
+
+    await provider.recordAcceptedDispatch({
       provider: ExternalChannelProvider.WHATSAPP,
       transport: ExternalChannelTransport.PERSONAL_SESSION,
       accountId,
@@ -174,6 +121,7 @@ describe("SqlChannelMessageReceiptProvider", () => {
       agentRunId,
       teamRunId: null,
       receivedAt: new Date("2026-02-09T00:00:00.000Z"),
+      dispatchLeaseToken: claimed.dispatchLeaseToken ?? "",
     });
 
     const source = await provider.getSourceByAgentRunTurn(agentRunId, "turn-1");

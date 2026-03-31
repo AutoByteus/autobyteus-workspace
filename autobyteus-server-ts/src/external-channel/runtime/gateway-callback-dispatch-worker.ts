@@ -1,4 +1,7 @@
-import { GatewayCallbackPublisher } from "./gateway-callback-publisher.js";
+import {
+  GatewayCallbackPublishError,
+  GatewayCallbackPublisher,
+} from "./gateway-callback-publisher.js";
 import type { DeliveryEventService } from "../services/delivery-event-service.js";
 import type { GatewayCallbackDispatchTarget } from "./gateway-callback-dispatch-target-resolver.js";
 import type { GatewayCallbackOutboxRecord } from "./gateway-callback-outbox-store.js";
@@ -189,7 +192,7 @@ const normalizeFailure = (
 const isGatewayCallbackError = (
   error: unknown,
 ): error is Error & { retryable?: boolean } =>
-  error instanceof Error;
+  error instanceof GatewayCallbackPublishError;
 
 const nextDelayMs = (
   attempt: number,

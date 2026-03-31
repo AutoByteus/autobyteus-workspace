@@ -8,13 +8,13 @@ import { ExternalPeerType } from "autobyteus-ts/external-channel/peer-type.js";
 import { createChannelRoutingKey } from "autobyteus-ts/external-channel/channel-routing-key.js";
 import { registerChannelIngressRoutes } from "../../../../src/api/rest/channel-ingress.js";
 import { FileChannelBindingProvider } from "../../../../src/external-channel/providers/file-channel-binding-provider.js";
-import { FileChannelIdempotencyProvider } from "../../../../src/external-channel/providers/file-channel-idempotency-provider.js";
 import { FileChannelMessageReceiptProvider } from "../../../../src/external-channel/providers/file-channel-message-receipt-provider.js";
 import { ChannelBindingService } from "../../../../src/external-channel/services/channel-binding-service.js";
-import { ChannelIdempotencyService } from "../../../../src/external-channel/services/channel-idempotency-service.js";
 import { ChannelIngressService } from "../../../../src/external-channel/services/channel-ingress-service.js";
 import { ChannelMessageReceiptService } from "../../../../src/external-channel/services/channel-message-receipt-service.js";
 import { ChannelThreadLockService } from "../../../../src/external-channel/services/channel-thread-lock-service.js";
+import type { ChannelBinding } from "../../../../src/external-channel/domain/models.js";
+import type { ChannelRunDispatchResult } from "../../../../src/external-channel/runtime/channel-run-dispatch-result.js";
 
 const tempPaths = new Set<string>();
 
@@ -92,33 +92,36 @@ const createTeamBindingInput = () => ({
 
 const createIngressHarness = async (options: {
   allowTransportFallback?: boolean;
-  dispatchToBinding?: (binding: { id: string }) => Promise<{
-    agentRunId: string | null;
-    teamRunId: string | null;
-    dispatchedAt: Date;
-  }>;
+  dispatchToBinding?: (binding: ChannelBinding) => Promise<ChannelRunDispatchResult>;
 } = {}) => {
   const bindingService = new ChannelBindingService(
     new FileChannelBindingProvider(createTempFilePath("channel-bindings")),
     { allowTransportFallback: options.allowTransportFallback ?? false },
-  );
-  const idempotencyService = new ChannelIdempotencyService(
-    new FileChannelIdempotencyProvider(createTempFilePath("channel-idempotency")),
   );
   const messageReceiptService = new ChannelMessageReceiptService(
     new FileChannelMessageReceiptProvider(createTempFilePath("channel-receipts")),
   );
   const dispatchToBinding =
     options.dispatchToBinding ??
-    (async (binding: { id: string }) => ({
-      agentRunId: binding.id === "agent-binding" ? "agent-run-1" : null,
-      teamRunId: binding.id === "team-binding" ? "team-run-1" : null,
-      dispatchedAt: new Date("2026-03-27T07:00:01.000Z"),
-    }));
+    (async (binding: ChannelBinding) =>
+      binding.targetType === "TEAM"
+        ? {
+            dispatchTargetType: "TEAM" as const,
+            teamRunId: binding.teamRunId ?? "team-run-1",
+            memberRunId: null,
+            memberName: binding.targetNodeName ?? null,
+            turnId: null,
+            dispatchedAt: new Date("2026-03-27T07:00:01.000Z"),
+          }
+        : {
+            dispatchTargetType: "AGENT" as const,
+            agentRunId: binding.agentRunId ?? "agent-run-1",
+            turnId: "turn-1",
+            dispatchedAt: new Date("2026-03-27T07:00:01.000Z"),
+          });
   const dispatchSpy = vi.fn(dispatchToBinding);
 
   const ingressService = new ChannelIngressService({
-    idempotencyService,
     bindingService,
     threadLockService: new ChannelThreadLockService(),
     runFacade: {
@@ -163,13 +166,16 @@ describe("channel-ingress route", () => {
     expect(response.json()).toMatchObject({
       accepted: true,
       duplicate: false,
-      disposition: "ROUTED",
+      disposition: "ACCEPTED",
       bindingResolved: true,
       usedTransportFallback: false,
     });
     expect(harness.dispatchSpy).toHaveBeenCalledOnce();
 
-    const source = await harness.messageReceiptService.getLatestSourceByAgentRunId("agent-run-1");
+    const source = await harness.messageReceiptService.getSourceByAgentRunTurn(
+      "agent-run-1",
+      "turn-1",
+    );
     expect(source).toMatchObject({
       provider: ExternalChannelProvider.WHATSAPP,
       transport: ExternalChannelTransport.BUSINESS_API,
@@ -185,8 +191,11 @@ describe("channel-ingress route", () => {
   it("routes a team binding and persists the team-target receipt", async () => {
     const harness = await createIngressHarness({
       dispatchToBinding: async () => ({
-        agentRunId: null,
+        dispatchTargetType: "TEAM",
         teamRunId: "team-run-1",
+        memberRunId: "member-run-1",
+        memberName: "Coordinator",
+        turnId: "turn-team-1",
         dispatchedAt: new Date("2026-03-27T07:00:01.000Z"),
       }),
     });
@@ -205,15 +214,15 @@ describe("channel-ingress route", () => {
     expect(response.json()).toMatchObject({
       accepted: true,
       duplicate: false,
-      disposition: "ROUTED",
+      disposition: "ACCEPTED",
       bindingResolved: true,
     });
     expect(harness.dispatchSpy).toHaveBeenCalledOnce();
 
-    const source = await harness.messageReceiptService.getLatestSourceByDispatchTarget({
-      agentRunId: null,
-      teamRunId: "team-run-1",
-    });
+    const source = await harness.messageReceiptService.getSourceByAgentRunTurn(
+      "member-run-1",
+      "turn-team-1",
+    );
     expect(source).toMatchObject({
       provider: ExternalChannelProvider.WHATSAPP,
       transport: ExternalChannelTransport.BUSINESS_API,
@@ -223,7 +232,7 @@ describe("channel-ingress route", () => {
     await harness.app.close();
   });
 
-  it("returns DUPLICATE and skips dispatch on repeated externalMessageId", async () => {
+  it("returns ACCEPTED duplicate and reuses the unfinished accepted receipt on repeated externalMessageId", async () => {
     const harness = await createIngressHarness();
     await harness.bindingService.upsertBinding({
       ...createAgentBindingInput(),
@@ -247,7 +256,7 @@ describe("channel-ingress route", () => {
     expect(second.json()).toMatchObject({
       accepted: true,
       duplicate: true,
-      disposition: "DUPLICATE",
+      disposition: "ACCEPTED",
       bindingResolved: false,
     });
     expect(harness.dispatchSpy).toHaveBeenCalledTimes(1);
@@ -299,7 +308,7 @@ describe("channel-ingress route", () => {
     expect(response.json()).toMatchObject({
       accepted: true,
       duplicate: false,
-      disposition: "ROUTED",
+      disposition: "ACCEPTED",
       bindingResolved: true,
       usedTransportFallback: true,
     });

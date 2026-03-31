@@ -35,76 +35,28 @@ model AgentArtifact {
   @@map("agent_artifacts")
 }
 
-model ChannelBinding {
-  id                     Int      @id @default(autoincrement())
-  provider               String
-  transport              String
-  accountId              String   @map("account_id")
-  peerId                 String   @map("peer_id")
-  threadId               String   @default("") @map("thread_id")
-  targetType             String   @map("target_type")
-  agentDefinitionId      String?  @map("agent_definition_id")
-  teamDefinitionId       String?  @map("team_definition_id")
-  workspaceRootPath      String?  @map("workspace_root_path")
-  llmModelIdentifier     String?  @map("llm_model_identifier")
-  runtimeKind            String?  @map("runtime_kind")
-  autoExecuteTools       Boolean? @map("auto_execute_tools")
-  skillAccessMode        String?  @map("skill_access_mode")
-  llmConfigJson          String?  @map("llm_config")
-  agentRunId             String?  @map("agent_id")
-  teamRunId              String?  @map("team_id")
-  targetNodeName         String?  @map("target_node_name")
-  allowTransportFallback Boolean  @default(false) @map("allow_transport_fallback")
-  createdAt              DateTime @default(now()) @map("created_at")
-  updatedAt              DateTime @updatedAt @map("updated_at")
-
-  @@unique([provider, transport, accountId, peerId, threadId], map: "uq_channel_binding_route")
-  @@index([agentDefinitionId], map: "idx_channel_bindings_agent_definition_id")
-  @@index([teamDefinitionId], map: "idx_channel_bindings_team_definition_id")
-  @@index([agentRunId], map: "idx_channel_bindings_agent_id")
-  @@index([teamRunId], map: "idx_channel_bindings_team_id")
-  @@map("channel_bindings")
-}
-
-model ChannelIngressIdempotencyKey {
-  id          Int      @id @default(autoincrement())
-  key         String   @unique
-  firstSeenAt DateTime @default(now()) @map("first_seen_at")
-  expiresAt   DateTime? @map("expires_at")
-  createdAt   DateTime @default(now()) @map("created_at")
-
-  @@map("channel_ingress_idempotency_keys")
-}
-
-model ChannelCallbackIdempotencyKey {
-  id          Int      @id @default(autoincrement())
-  key         String   @unique
-  firstSeenAt DateTime @default(now()) @map("first_seen_at")
-  expiresAt   DateTime? @map("expires_at")
-  createdAt   DateTime @default(now()) @map("created_at")
-
-  @@map("channel_callback_idempotency_keys")
-}
-
 model ChannelMessageReceipt {
-  id                Int      @id @default(autoincrement())
-  provider          String
-  transport         String
-  accountId         String   @map("account_id")
-  peerId            String   @map("peer_id")
-  threadId          String   @default("") @map("thread_id")
-  externalMessageId String   @map("external_message_id")
-  turnId            String?  @map("turn_id")
-  agentRunId        String?  @map("agent_id")
-  teamRunId         String?  @map("team_id")
-  receivedAt        DateTime @map("received_at")
-  createdAt         DateTime @default(now()) @map("created_at")
-  updatedAt         DateTime @updatedAt @map("updated_at")
+  id                   Int      @id @default(autoincrement())
+  provider             String
+  transport            String
+  accountId            String   @map("account_id")
+  peerId               String   @map("peer_id")
+  threadId             String   @default("") @map("thread_id")
+  externalMessageId    String   @map("external_message_id")
+  ingressState         String   @default("PENDING") @map("ingress_state")
+  turnId               String?  @map("turn_id")
+  agentRunId           String?  @map("agent_id")
+  teamRunId            String?  @map("team_id")
+  dispatchLeaseToken   String?  @map("dispatch_lease_token")
+  dispatchLeaseExpiresAt DateTime? @map("dispatch_lease_expires_at")
+  receivedAt           DateTime @map("received_at")
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
 
   @@unique([provider, transport, accountId, peerId, threadId, externalMessageId], map: "uq_channel_message_receipt_dedupe")
-  @@index([agentRunId, receivedAt], map: "idx_channel_message_receipts_agent_received_at")
-  @@index([agentRunId, turnId], map: "idx_channel_message_receipts_agent_turn_id")
-  @@index([teamRunId, receivedAt], map: "idx_channel_message_receipts_team_received_at")
+  @@index([ingressState, agentRunId, receivedAt], map: "idx_channel_message_receipts_state_agent_received_at")
+  @@index([ingressState, agentRunId, turnId], map: "idx_channel_message_receipts_state_agent_turn_id")
+  @@index([ingressState, teamRunId, receivedAt], map: "idx_channel_message_receipts_state_team_received_at")
   @@map("channel_message_receipts")
 }
 

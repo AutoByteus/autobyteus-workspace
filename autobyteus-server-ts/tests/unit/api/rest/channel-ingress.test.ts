@@ -32,7 +32,7 @@ const buildInboundPayload = () => ({
 const buildIngressResult = (): ChannelIngressResult => ({
   duplicate: false,
   idempotencyKey: "key-1",
-  disposition: "ROUTED",
+  disposition: "ACCEPTED",
   bindingResolved: true,
   binding: {
     id: "binding-1",
@@ -51,9 +51,10 @@ const buildIngressResult = (): ChannelIngressResult => ({
   },
   usedTransportFallback: false,
   dispatch: {
+    dispatchTargetType: "AGENT",
     agentRunId: "agent-1",
-    teamRunId: null,
     dispatchedAt: new Date("2026-02-08T00:00:01.000Z"),
+    turnId: "turn-1",
   },
 });
 
@@ -83,7 +84,7 @@ describe("registerChannelIngressRoutes", () => {
     expect(response.json()).toEqual({
       accepted: true,
       duplicate: false,
-      disposition: "ROUTED",
+      disposition: "ACCEPTED",
       bindingResolved: true,
       idempotencyKey: "key-1",
       bindingId: "binding-1",

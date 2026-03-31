@@ -6,10 +6,6 @@ import {
   getAgentLiveMessagePublisher,
   type AgentLiveMessagePublisher,
 } from "../../services/agent-streaming/agent-live-message-publisher.js";
-import {
-  getChannelAgentRunReplyBridge,
-  type ChannelAgentRunReplyBridge,
-} from "./channel-agent-run-reply-bridge.js";
 import { buildAgentInputMessage } from "./channel-agent-input-message-builder.js";
 
 const logger = {
@@ -20,14 +16,12 @@ export type ChannelAgentRunFacadeDependencies = {
   runLauncher?: ChannelBindingRunLauncher;
   agentRunManager?: AgentRunManager;
   agentLiveMessagePublisher?: AgentLiveMessagePublisher;
-  externalTurnBridge?: ChannelAgentRunReplyBridge;
 };
 
 export class ChannelAgentRunFacade {
   private readonly runLauncher: ChannelBindingRunLauncher;
   private readonly agentRunManager: AgentRunManager;
   private readonly agentLiveMessagePublisher: AgentLiveMessagePublisher;
-  private readonly externalTurnBridge: ChannelAgentRunReplyBridge;
 
   constructor(
     deps: ChannelAgentRunFacadeDependencies = {},
@@ -36,8 +30,6 @@ export class ChannelAgentRunFacade {
     this.agentRunManager = deps.agentRunManager ?? AgentRunManager.getInstance();
     this.agentLiveMessagePublisher =
       deps.agentLiveMessagePublisher ?? getAgentLiveMessagePublisher();
-    this.externalTurnBridge =
-      deps.externalTurnBridge ?? getChannelAgentRunReplyBridge();
   }
 
   async dispatchToAgentBinding(
@@ -59,18 +51,6 @@ export class ChannelAgentRunFacade {
       );
     }
     try {
-      await this.externalTurnBridge.bindAcceptedExternalTurn({
-        run: activeRun,
-        turnId: result.turnId ?? null,
-        envelope,
-      });
-    } catch (error) {
-      logger.warn(
-        `Agent run '${agentRunId}': failed to bind the accepted external runtime turn for provider reply routing. Continuing because inbound dispatch already succeeded.`,
-        error,
-      );
-    }
-    try {
       this.agentLiveMessagePublisher.publishExternalUserMessage({
         runId: agentRunId,
         envelope,
@@ -83,8 +63,9 @@ export class ChannelAgentRunFacade {
     }
 
     return {
+      dispatchTargetType: "AGENT",
       agentRunId,
-      teamRunId: null,
+      turnId: result.turnId ?? null,
       dispatchedAt: new Date(),
     };
   }

@@ -1,6 +1,5 @@
 import { getProviderProxySet } from "../providers/provider-proxy-set.js";
 import { ChannelBindingService } from "../services/channel-binding-service.js";
-import { CallbackIdempotencyService } from "../services/callback-idempotency-service.js";
 import { ChannelMessageReceiptService } from "../services/channel-message-receipt-service.js";
 import { DeliveryEventService } from "../services/delivery-event-service.js";
 import { ReplyCallbackService } from "../services/reply-callback-service.js";
@@ -58,9 +57,6 @@ export class GatewayCallbackDeliveryRuntime {
     return new ReplyCallbackService(
       new ChannelMessageReceiptService(providerSet.messageReceiptProvider),
       {
-        callbackIdempotencyService: new CallbackIdempotencyService(
-          providerSet.callbackIdempotencyProvider,
-        ),
         deliveryEventService: this.deliveryEventService,
         bindingService: new ChannelBindingService(providerSet.bindingProvider),
         callbackOutboxService: this.outboxService,

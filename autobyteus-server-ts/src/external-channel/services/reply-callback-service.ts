@@ -1,12 +1,26 @@
 import type { ExternalAttachment } from "autobyteus-ts/external-channel/external-attachment.js";
 import type { ExternalOutboundEnvelope } from "autobyteus-ts/external-channel/external-outbound-envelope.js";
-import type { ChannelDispatchTarget } from "../domain/models.js";
+import type {
+  ChannelDispatchTarget,
+  ChannelSourceContext,
+} from "../domain/models.js";
 import type { ChannelMessageReceiptService } from "./channel-message-receipt-service.js";
-import type { CallbackIdempotencyService } from "./callback-idempotency-service.js";
 import type { DeliveryEventService } from "./delivery-event-service.js";
 import type { ChannelBindingService } from "./channel-binding-service.js";
 
 export type PublishAssistantReplyByTurnInput = {
+  agentRunId: string;
+  turnId: string | null;
+  replyText: string | null;
+  callbackIdempotencyKey: string;
+  teamRunId?: string | null;
+  correlationMessageId?: string | null;
+  attachments?: ExternalAttachment[];
+  metadata?: Record<string, unknown>;
+};
+
+export type PublishAssistantReplyToSourceInput = {
+  source: ChannelSourceContext;
   agentRunId: string;
   turnId: string | null;
   replyText: string | null;
@@ -56,20 +70,13 @@ type CallbackTargetResolverPort = {
 };
 
 export type ReplyCallbackServiceDependencies = {
-  callbackIdempotencyService?: CallbackIdempotencyService;
   deliveryEventService?: DeliveryEventService;
   bindingService?: ChannelBindingService;
   callbackOutboxService?: CallbackOutboxPort;
   callbackTargetResolver?: CallbackTargetResolverPort;
 };
 
-export type ReplyCallbackServiceOptions = {
-  callbackIdempotencyTtlSeconds?: number;
-};
-
 export class ReplyCallbackService {
-  private readonly callbackIdempotencyService?: CallbackIdempotencyService;
-
   private readonly deliveryEventService?: DeliveryEventService;
 
   private readonly bindingService?: ChannelBindingService;
@@ -78,19 +85,14 @@ export class ReplyCallbackService {
 
   private readonly callbackTargetResolver?: CallbackTargetResolverPort;
 
-  private readonly callbackIdempotencyTtlSeconds: number;
-
   constructor(
     private readonly messageReceiptService: ChannelMessageReceiptService,
     deps: ReplyCallbackServiceDependencies = {},
-    options: ReplyCallbackServiceOptions = {},
   ) {
-    this.callbackIdempotencyService = deps.callbackIdempotencyService;
     this.deliveryEventService = deps.deliveryEventService;
     this.bindingService = deps.bindingService;
     this.callbackOutboxService = deps.callbackOutboxService;
     this.callbackTargetResolver = deps.callbackTargetResolver;
-    this.callbackIdempotencyTtlSeconds = options.callbackIdempotencyTtlSeconds ?? 3600;
   }
 
   async publishAssistantReplyByTurn(
@@ -106,12 +108,10 @@ export class ReplyCallbackService {
       return skip("EMPTY_REPLY");
     }
 
-    const callbackIdempotencyService = this.callbackIdempotencyService;
     const deliveryEventService = this.deliveryEventService;
     const callbackOutboxService = this.callbackOutboxService;
     const callbackTargetResolver = this.callbackTargetResolver;
     if (
-      !callbackIdempotencyService ||
       !deliveryEventService ||
       !callbackOutboxService ||
       !callbackTargetResolver
@@ -137,15 +137,65 @@ export class ReplyCallbackService {
       return skip("SOURCE_NOT_FOUND");
     }
 
+    return this.publishAssistantReplyToSource({
+      source,
+      agentRunId,
+      teamRunId,
+      turnId,
+      replyText,
+      callbackIdempotencyKey,
+      correlationMessageId: input.correlationMessageId,
+      attachments: input.attachments,
+      metadata: input.metadata,
+    });
+  }
+
+  async publishAssistantReplyToSource(
+    input: PublishAssistantReplyToSourceInput,
+  ): Promise<PublishAssistantReplyByTurnResult> {
+    const turnId = normalizeOptionalString(input.turnId);
+    if (!turnId) {
+      return skip("TURN_ID_MISSING");
+    }
+
+    const replyText = normalizeOptionalString(input.replyText);
+    if (!replyText) {
+      return skip("EMPTY_REPLY");
+    }
+
+    const deliveryEventService = this.deliveryEventService;
+    const callbackOutboxService = this.callbackOutboxService;
+    const callbackTargetResolver = this.callbackTargetResolver;
+    if (
+      !deliveryEventService ||
+      !callbackOutboxService ||
+      !callbackTargetResolver
+    ) {
+      return skip("CALLBACK_NOT_CONFIGURED");
+    }
+
+    const callbackTarget =
+      await callbackTargetResolver.resolveGatewayCallbackDispatchTarget();
+    if (callbackTarget.state === "DISABLED") {
+      return skip("CALLBACK_NOT_CONFIGURED");
+    }
+
+    const agentRunId = normalizeRequiredString(input.agentRunId, "agentRunId");
+    const teamRunId = normalizeOptionalString(input.teamRunId ?? null);
+    const callbackIdempotencyKey = normalizeRequiredString(
+      input.callbackIdempotencyKey,
+      "callbackIdempotencyKey",
+    );
+
     const target: ChannelDispatchTarget = { agentRunId, teamRunId };
     if (this.bindingService) {
       const stillBound = await this.bindingService.isRouteBoundToTarget(
         {
-          provider: source.provider,
-          transport: source.transport,
-          accountId: source.accountId,
-          peerId: source.peerId,
-          threadId: source.threadId,
+          provider: input.source.provider,
+          transport: input.source.transport,
+          accountId: input.source.accountId,
+          peerId: input.source.peerId,
+          threadId: input.source.threadId,
         },
         target,
       );
@@ -154,11 +204,25 @@ export class ReplyCallbackService {
       }
     }
 
-    const idempotency = await callbackIdempotencyService.reserveCallbackKey(
+    const envelope = this.buildEnvelope({
+      source: input.source,
       callbackIdempotencyKey,
-      this.callbackIdempotencyTtlSeconds,
+      replyText,
+      correlationMessageId:
+        normalizeOptionalString(input.correlationMessageId) ??
+        input.source.externalMessageId,
+      attachments: input.attachments ?? [],
+      metadata: {
+        turnId,
+        ...normalizeMetadata(input.metadata),
+      },
+    });
+
+    const enqueueResult = await callbackOutboxService.enqueueOrGet(
+      callbackIdempotencyKey,
+      envelope,
     );
-    if (idempotency.duplicate) {
+    if (enqueueResult.duplicate) {
       return {
         published: false,
         duplicate: true,
@@ -166,19 +230,6 @@ export class ReplyCallbackService {
         envelope: null,
       };
     }
-
-    const envelope = this.buildEnvelope({
-      source,
-      callbackIdempotencyKey,
-      replyText,
-      correlationMessageId:
-        normalizeOptionalString(input.correlationMessageId) ?? source.externalMessageId,
-      attachments: input.attachments ?? [],
-      metadata: {
-        turnId,
-        ...normalizeMetadata(input.metadata),
-      },
-    });
 
     const deliveryBaseInput = {
       provider: envelope.provider,
@@ -190,9 +241,14 @@ export class ReplyCallbackService {
       callbackIdempotencyKey: envelope.callbackIdempotencyKey,
       metadata: envelope.metadata,
     };
-    await deliveryEventService.recordPending(deliveryBaseInput);
-
-    await callbackOutboxService.enqueueOrGet(callbackIdempotencyKey, envelope);
+    try {
+      await deliveryEventService.recordPending(deliveryBaseInput);
+    } catch (error) {
+      console.warn(
+        "Failed to record pending external-channel delivery event after outbox enqueue.",
+        error,
+      );
+    }
 
     return {
       published: true,

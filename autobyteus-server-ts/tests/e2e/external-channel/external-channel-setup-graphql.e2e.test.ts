@@ -1,10 +1,12 @@
 import "reflect-metadata";
 import { randomUUID } from "node:crypto";
+import { rm } from "node:fs/promises";
 import path from "node:path";
 import { createRequire } from "node:module";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
+import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 
 const unique = (prefix: string): string => `${prefix}-${randomUUID()}`;
 
@@ -47,6 +49,11 @@ const teamLaunchPresetFixture = {
 describe("External channel setup GraphQL e2e", () => {
   let schema: GraphQLSchema;
   let graphql: typeof graphqlFn;
+  const generatedBindingFilePath = path.join(
+    process.cwd(),
+    "external-channel",
+    "bindings.json",
+  );
 
   beforeAll(async () => {
     schema = await buildGraphqlSchema();
@@ -57,8 +64,9 @@ describe("External channel setup GraphQL e2e", () => {
     graphql = graphqlModule.graphql as typeof graphqlFn;
   });
 
-  afterAll(() => {
+  afterAll(async () => {
     vi.restoreAllMocks();
+    await rm(generatedBindingFilePath, { force: true });
   });
 
   const execGraphql = async <T>(
@@ -215,7 +223,7 @@ describe("External channel setup GraphQL e2e", () => {
     expect(upsertData.upsertExternalChannelBinding.launchPreset).toMatchObject({
       workspaceRootPath: launchPresetFixture.workspaceRootPath,
       llmModelIdentifier: launchPresetFixture.llmModelIdentifier,
-      runtimeKind: launchPresetFixture.runtimeKind,
+      runtimeKind: RuntimeKind.AUTOBYTEUS,
       autoExecuteTools: launchPresetFixture.autoExecuteTools,
       skillAccessMode: launchPresetFixture.skillAccessMode,
     });
@@ -263,7 +271,7 @@ describe("External channel setup GraphQL e2e", () => {
     expect(created?.launchPreset).toMatchObject({
       workspaceRootPath: launchPresetFixture.workspaceRootPath,
       llmModelIdentifier: launchPresetFixture.llmModelIdentifier,
-      runtimeKind: launchPresetFixture.runtimeKind,
+      runtimeKind: RuntimeKind.AUTOBYTEUS,
     });
 
     const deleteMutation = `
@@ -409,7 +417,7 @@ describe("External channel setup GraphQL e2e", () => {
     expect(discordResult.upsertExternalChannelBinding.launchPreset).toMatchObject({
       workspaceRootPath: launchPresetFixture.workspaceRootPath,
       llmModelIdentifier: launchPresetFixture.llmModelIdentifier,
-      runtimeKind: launchPresetFixture.runtimeKind,
+      runtimeKind: RuntimeKind.AUTOBYTEUS,
     });
 
     const telegramResult = await execGraphql<{
