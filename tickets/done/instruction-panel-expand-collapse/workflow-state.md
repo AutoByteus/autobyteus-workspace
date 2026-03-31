@@ -8,12 +8,12 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 
 - Ticket: `instruction-panel-expand-collapse`
 - Current Stage: `10`
-- Next Stage: `Archive ticket to done, commit ticket branch, push, merge into origin/personal from a clean temporary worktree, and clean up local worktrees/branches`
+- Next Stage: `Completed`
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-025`
-- Last Updated: `2026-03-31 08:48 CEST`
+- Last Transition ID: `T-026`
+- Last Updated: `2026-03-31 08:57 CEST`
 
 ## Stage 0 Bootstrap Record
 
@@ -47,7 +47,7 @@ Note:
 | 7 API/E2E + Executable Validation | Pass | Stage 7 executable validation reran cleanly after the stronger toggle-affordance refinement | `api-e2e-testing.md` |
 | 8 Code Review | Pass | Stage 8 review reran and recorded `Pass` with no blocking findings after the stronger toggle-affordance patch | `code-review.md` |
 | 9 Docs Sync | Pass | Docs-sync reran and remained `No impact` after the stronger toggle-affordance patch | `docs-sync.md` |
-| 10 Handoff / Ticket State | In Progress | Explicit user verification was received; archival, repository finalization, and cleanup are now in progress | `handoff-summary.md`, `workflow-state.md` |
+| 10 Handoff / Ticket State | Pass | Explicit user verification was received, the ticket was archived, repository finalization completed into `origin/personal`, release/publication was not required, and required local cleanup completed | `handoff-summary.md`, `workflow-state.md` |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -148,6 +148,7 @@ Note:
 | T-023 | 2026-03-31 | 8 | 9 | Stage 8 code review reran and passed with no blocking findings after the stronger toggle-affordance patch | Local Fix | Locked | `code-review.md`, `workflow-state.md` |
 | T-024 | 2026-03-31 | 9 | 10 | Stage 9 docs sync reran and remained no-impact; returning to handoff pending explicit user verification after the stronger toggle-affordance patch | Local Fix | Locked | `docs-sync.md`, `handoff-summary.md`, `workflow-state.md` |
 | T-025 | 2026-03-31 | 10 | 10 | Explicit user verification received; Stage 10 archival, repository finalization, and cleanup authorized to start | N/A | Locked | `handoff-summary.md`, `workflow-state.md` |
+| T-026 | 2026-03-31 | 10 | 10 | Ticket archived to done, ticket branch committed and pushed, changes merged and pushed to `origin/personal`, release/publication marked not required, and required local cleanup completed | N/A | Locked | `handoff-summary.md`, `workflow-state.md` |
 
 ## Audible Notification Log (Optional Tracking)
 
@@ -161,7 +162,8 @@ Note:
 | 2026-03-31 | Transition | The local instruction-card refinement passed Stage six, Stage seven executable validation, Stage eight code review, and Stage nine docs sync. Stage ten handoff is active again and waiting for user retest. | Success | N/A |
 | 2026-03-31 | Re-entry | User verification reopened the ticket again for a local fix. Stage six is active, and code edits are now unlocked for a stronger instruction-toggle affordance. | Success | N/A |
 | 2026-03-31 | Transition | The stronger circular instruction-toggle refinement passed Stage six, Stage seven executable validation, Stage eight code review, and Stage nine docs sync. Stage ten handoff is active again and waiting for user retest. | Success | N/A |
-| 2026-03-31 | Transition | User verification was received. Stage ten finalization is now in progress, with no release-version step required. | Pending | N/A |
+| 2026-03-31 | Transition | User verification was received. Stage ten finalization is now in progress, with no release-version step required. | Success | N/A |
+| 2026-03-31 | Transition | Stage ten finalization completed. The ticket is archived, merged into origin slash personal, and local cleanup is complete. | Success | N/A |
 
 ## Process Violation Log
 

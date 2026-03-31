@@ -4,7 +4,7 @@
 
 - Ticket: `instruction-panel-expand-collapse`
 - Date: `2026-03-31`
-- Current Status: `Finalization In Progress`
+- Current Status: `Finalized`
 - Workflow State Source: `tickets/done/instruction-panel-expand-collapse/workflow-state.md`
 
 ## Delivery Summary
@@ -54,7 +54,7 @@
 
 ## User Verification Hold
 
-- Waiting for explicit user verification: `Yes`
+- Waiting for explicit user verification: `No`
 - User verification received:
   - `Yes`
 - Notes:
@@ -63,26 +63,26 @@
 ## Finalization Record
 
 - Ticket archived to:
-  - `In progress`
+  - `tickets/done/instruction-panel-expand-collapse`
 - Ticket worktree path:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/instruction-panel-expand-collapse`
+  - `Removed after finalization`
 - Ticket branch:
-  - `codex/instruction-panel-expand-collapse`
+  - `codex/instruction-panel-expand-collapse` (remote retained, local branch deleted)
 - Finalization target remote:
   - `origin`
 - Finalization target branch:
   - `personal`
 - Commit status:
-  - `Not started`
+  - `Completed on ticket branch: 5272a77`
 - Push status:
-  - `Not started`
+  - `Completed: origin/codex/instruction-panel-expand-collapse and origin/personal`
 - Merge status:
-  - `Not started`
+  - `Completed locally in clean finalization worktree and pushed to origin/personal`
 - Release/publication/deployment status:
   - `Not required`
 - Worktree cleanup status:
-  - `Not started`
+  - `Completed`
 - Local branch cleanup status:
-  - `Not started`
+  - `Completed`
 - Blockers / notes:
-  - none; proceeding with repository finalization and cleanup on user confirmation
+  - none
