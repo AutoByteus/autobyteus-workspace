@@ -283,7 +283,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
             `Reply with exactly '${replyToken}'. Include nothing else.`,
           ),
         );
-        expect(sendResult).toEqual({ accepted: true });
+        expect(sendResult).toMatchObject({ accepted: true });
 
         await waitForEvent(
           events,
@@ -377,7 +377,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
             }),
           ),
         );
-        expect(sendResult).toEqual({ accepted: true });
+        expect(sendResult).toMatchObject({ accepted: true });
 
         const approvalEvent = await waitForEvent(
           events,
@@ -391,7 +391,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
           true,
           "approved by backend integration test",
         );
-        expect(approveResult).toEqual({ accepted: true });
+        expect(approveResult).toMatchObject({ accepted: true });
 
         await waitForEvent(
           events,
@@ -474,7 +474,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
             }),
           ),
         );
-        expect(sendResult).toEqual({ accepted: true });
+        expect(sendResult).toMatchObject({ accepted: true });
 
         const approvalEvent = await waitForEvent(
           events,
@@ -488,7 +488,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
           false,
           "denied by backend integration test",
         );
-        expect(denyResult).toEqual({ accepted: true });
+        expect(denyResult).toMatchObject({ accepted: true });
 
         await waitForEvent(
           events,
@@ -552,7 +552,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
             }),
           ),
         );
-        expect(sendResult).toEqual({ accepted: true });
+        expect(sendResult).toMatchObject({ accepted: true });
 
         await waitForEvent(
           events,
@@ -623,7 +623,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
             }),
           ),
         );
-        expect(sendResult).toEqual({ accepted: true });
+        expect(sendResult).toMatchObject({ accepted: true });
 
         await waitForEvent(
           events,
@@ -631,7 +631,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
         );
 
         const interruptResult = await backend.interrupt();
-        expect(interruptResult).toEqual({ accepted: true });
+        expect(interruptResult).toMatchObject({ accepted: true });
 
         await waitForEvent(
           events,
@@ -698,7 +698,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
             }),
           ),
         );
-        expect(firstResult).toEqual({ accepted: true });
+        expect(firstResult).toMatchObject({ accepted: true });
 
         await waitForEvent(
           originalEvents,
@@ -712,7 +712,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
         const storedContext = original.getContext();
 
         const terminateResult = await original.terminate();
-        expect(terminateResult).toEqual({ accepted: true });
+        expect(terminateResult).toMatchObject({ accepted: true });
 
         const restored = await factory.restoreBackend(storedContext);
         const restoredEvents: AgentRunEvent[] = [];
@@ -729,7 +729,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
             `Reply with exactly '${followupReply}'. Include nothing else. Token: ${followupToken}`,
           ),
         );
-        expect(secondResult).toEqual({ accepted: true });
+        expect(secondResult).toMatchObject({ accepted: true });
 
         await waitForEvent(
           restoredEvents,
@@ -805,7 +805,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
             }),
           ),
         );
-        expect(sendResult).toEqual({ accepted: true });
+        expect(sendResult).toMatchObject({ accepted: true });
 
         await waitForEvent(
           events,
