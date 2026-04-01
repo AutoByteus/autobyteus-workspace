@@ -56,6 +56,7 @@ AUTOBYTEUS_SERVER_HOST=http://localhost:8000
 PERSISTENCE_PROVIDER=sqlite
 DB_TYPE=sqlite
 LOG_LEVEL=INFO
+PRISMA_LOG_QUERIES=0
 DISABLE_HTTP_REQUEST_LOGS=true
 ```
 
@@ -65,6 +66,7 @@ Notes:
 - SQLite DB defaults to `db/production.db` (or `db/test.db` when `APP_ENV=test`).
 - `DATABASE_URL` is optional for SQLite; when missing, it is derived from the runtime SQLite DB path.
 - Fastify request/response access logs are disabled by default to reduce noise. Set `DISABLE_HTTP_REQUEST_LOGS=false` to enable them again.
+- Prisma SQL query logs are disabled by default to reduce noise. Set `PRISMA_LOG_QUERIES=1` only when you explicitly need raw SQL visibility for troubleshooting.
 - The app will create `db/`, `logs/`, `download/`, `media/`, `skills/`, `temp_workspace/` as needed under the app data dir.
 
 ## Build and run

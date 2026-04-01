@@ -3,7 +3,6 @@ import { LLMModel } from './models.js';
 import { LLMProvider } from './providers.js';
 import { LLMRuntime } from './runtimes.js';
 import { LLMConfig, TokenPricingConfig } from './utils/llm-config.js';
-import { OllamaProviderResolver } from './ollama-provider-resolver.js';
 import { OllamaLLM } from './api/ollama-llm.js';
 
 export class OllamaModelProvider {
@@ -54,11 +53,10 @@ export class OllamaModelProvider {
         if (!modelName) continue;
 
         try {
-          const provider = OllamaProviderResolver.resolve(modelName);
           const llmModel = new LLMModel({
             name: modelName,
             value: modelName,
-            provider,
+            provider: LLMProvider.OLLAMA,
             llmClass: OllamaLLM,
             canonicalName: modelName,
             runtime: LLMRuntime.OLLAMA,

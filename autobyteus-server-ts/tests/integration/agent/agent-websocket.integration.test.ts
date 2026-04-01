@@ -2,17 +2,18 @@ import fastify from "fastify";
 import websocket from "@fastify/websocket";
 import { describe, expect, it } from "vitest";
 import WebSocket from "ws";
-import { AgentInputUserMessage, StreamEvent, StreamEventType } from "autobyteus-ts";
+import { AgentInputUserMessage } from "autobyteus-ts";
+import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { AgentStreamHandler } from "../../../src/services/agent-streaming/agent-stream-handler.js";
 import { AgentSessionManager } from "../../../src/services/agent-streaming/agent-session-manager.js";
 import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
 
 class FakeEventStream {
-  private queue: Array<StreamEvent | null> = [];
-  private waiters: Array<(value: StreamEvent | null) => void> = [];
+  private queue: Array<AgentRunEvent | null> = [];
+  private waiters: Array<(value: AgentRunEvent | null) => void> = [];
   private closed = false;
 
-  push(event: StreamEvent): void {
+  push(event: AgentRunEvent): void {
     if (this.closed) {
       return;
     }
@@ -37,14 +38,14 @@ class FakeEventStream {
     }
   }
 
-  private async next(): Promise<StreamEvent | null> {
+  private async next(): Promise<AgentRunEvent | null> {
     if (this.queue.length > 0) {
       return this.queue.shift() ?? null;
     }
     return new Promise((resolve) => this.waiters.push(resolve));
   }
 
-  async *allEvents(): AsyncGenerator<StreamEvent, void, unknown> {
+  async *allEvents(): AsyncGenerator<AgentRunEvent, void, unknown> {
     while (true) {
       const event = await this.next();
       if (!event) {
@@ -85,17 +86,25 @@ class FakeAgent {
 class FakeAgentManager {
   private agent: FakeAgent;
   private stream: FakeEventStream;
+  private readonly activeRun: {
+    runId: string;
+    runtimeKind: string;
+    getStatus: () => string;
+    isActive: () => boolean;
+    subscribeToEvents: (listener: (event: unknown) => void) => () => void;
+    postUserMessage: (message: AgentInputUserMessage) => Promise<{ accepted: true; runtimeReference: null }>;
+    approveToolInvocation: (
+      invocationId: string,
+      approved: boolean,
+      reason?: string | null,
+    ) => Promise<{ accepted: true }>;
+    interrupt: () => Promise<{ accepted: true }>;
+  };
 
   constructor(agent: FakeAgent, stream: FakeEventStream) {
     this.agent = agent;
     this.stream = stream;
-  }
-
-  getActiveRun(agentRunId: string) {
-    if (agentRunId !== this.agent.agentRunId) {
-      return null;
-    }
-    return {
+    this.activeRun = {
       runId: this.agent.agentRunId,
       runtimeKind: "autobyteus",
       getStatus: () => "ACTIVE",
@@ -128,6 +137,13 @@ class FakeAgentManager {
       },
     };
   }
+
+  getActiveRun(agentRunId: string) {
+    if (agentRunId !== this.agent.agentRunId) {
+      return null;
+    }
+    return this.activeRun;
+  }
 }
 
 const waitForMessage = (socket: WebSocket, timeoutMs: number = 2000): Promise<string> =>
@@ -155,9 +171,13 @@ describe("Agent websocket integration", () => {
     const agent = new FakeAgent("agent-1");
     const stream = new FakeEventStream();
     const manager = new FakeAgentManager(agent, stream);
+    const agentRunService = {
+      getAgentRun: (runId: string) => manager.getActiveRun(runId),
+      recordRunActivity: async () => {},
+    };
     const handler = new AgentStreamHandler(
       new AgentSessionManager(),
-      manager as unknown as any,
+      agentRunService as unknown as any,
     );
 
     const app = fastify();
@@ -227,16 +247,16 @@ describe("Agent websocket integration", () => {
     expect(agent.stopCalls).toBe(1);
 
     const segmentPromise = waitForMessage(socket);
-    const event = new StreamEvent({
-      event_type: StreamEventType.SEGMENT_EVENT,
-      data: {
-        event_type: "SEGMENT_START",
-        segment_id: "seg-1",
+    const event: AgentRunEvent = {
+      runId: agent.agentRunId,
+      eventType: AgentRunEventType.SEGMENT_START,
+      payload: {
+        id: "seg-1",
         segment_type: "text",
-        payload: { metadata: { foo: "bar" } },
+        metadata: { foo: "bar" },
       },
-      agent_id: agent.agentRunId,
-    });
+      statusHint: null,
+    };
     stream.push(event);
 
     const segmentMessage = JSON.parse(await segmentPromise) as {

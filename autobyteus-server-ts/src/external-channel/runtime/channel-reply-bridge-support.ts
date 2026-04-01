@@ -7,18 +7,11 @@ import {
   TeamRunEventSourceType,
   type TeamRunEvent,
 } from "../../agent-team-execution/domain/team-run-event.js";
-import {
-  getAgentRunViewProjectionService,
-  type AgentRunViewProjectionService,
-} from "../../run-history/services/agent-run-view-projection-service.js";
 import type { ChannelSourceContext } from "../domain/models.js";
-import { getProviderProxySet } from "../providers/provider-proxy-set.js";
-import { ChannelMessageReceiptService } from "../services/channel-message-receipt-service.js";
 import {
-  ReplyCallbackService,
-  type PublishAssistantReplyByTurnResult,
-} from "../services/reply-callback-service.js";
-import { buildDefaultReplyCallbackService } from "./gateway-callback-delivery-runtime.js";
+  ChannelTurnReplyRecoveryService,
+  getChannelTurnReplyRecoveryService,
+} from "../services/channel-turn-reply-recovery-service.js";
 
 export const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -29,31 +22,41 @@ export const logger = {
 export const PENDING_TURN_TTL_MS = 10 * 60 * 1000;
 
 export type ChannelReplyBridgeDependencies = {
-  messageReceiptService?: ChannelMessageReceiptService;
-  replyCallbackService?: ReplyCallbackService;
-  replyCallbackServiceFactory?: () => ReplyCallbackService;
-  runProjectionService?: AgentRunViewProjectionService;
+  turnReplyRecoveryService?: ChannelTurnReplyRecoveryService;
 };
 
 export const resolveChannelReplyBridgeDependencies = (
   deps: ChannelReplyBridgeDependencies,
 ): {
-  messageReceiptService: ChannelMessageReceiptService;
-  replyCallbackServiceFactory: () => ReplyCallbackService;
-  runProjectionService: AgentRunViewProjectionService;
-} => {
-  const providerSet = getProviderProxySet();
-  return {
-    messageReceiptService:
-      deps.messageReceiptService ??
-      new ChannelMessageReceiptService(providerSet.messageReceiptProvider),
-    replyCallbackServiceFactory:
-      deps.replyCallbackServiceFactory ??
-      (() => deps.replyCallbackService ?? buildDefaultReplyCallbackService()),
-    runProjectionService:
-      deps.runProjectionService ?? getAgentRunViewProjectionService(),
-  };
+  turnReplyRecoveryService: ChannelTurnReplyRecoveryService;
+} => ({
+  turnReplyRecoveryService:
+    deps.turnReplyRecoveryService ?? getChannelTurnReplyRecoveryService(),
+});
+
+export type ChannelTurnObservationClosedReason =
+  | "TURN_ID_MISSING"
+  | "EMPTY_REPLY"
+  | "ERROR"
+  | "TIMEOUT";
+
+export type ChannelReplyReadyObservation = {
+  agentRunId: string;
+  teamRunId: string | null;
+  turnId: string;
+  source: ChannelSourceContext;
+  replyText: string;
 };
+
+export type ChannelTurnObservationResult =
+  | {
+      status: "REPLY_READY";
+      reply: ChannelReplyReadyObservation;
+    }
+  | {
+      status: "CLOSED";
+      reason: ChannelTurnObservationClosedReason;
+    };
 
 export type ParsedAgentRuntimeEvent = {
   eventType: AgentRunEventType;
@@ -147,37 +150,19 @@ export const toSourceContext = (
   turnId: null,
 });
 
-export const resolveReplyTextFromProjection = async (
-  runProjectionService: AgentRunViewProjectionService,
-  runId: string,
-): Promise<string | null> => {
-  const projection = await runProjectionService.getProjection(runId);
-  for (let index = projection.conversation.length - 1; index >= 0; index -= 1) {
-    const entry = projection.conversation[index];
-    if (entry?.kind !== "message" || entry.role !== "assistant") {
-      continue;
-    }
-    const content = normalizeOptionalString(entry.content);
-    if (!content) {
-      continue;
-    }
-    const withoutReasoning = stripReasoningSection(content);
-    return normalizeOptionalString(withoutReasoning) ?? content;
-  }
-  return null;
-};
-
-export const logSkippedPublish = (
-  runId: string,
-  result: PublishAssistantReplyByTurnResult,
-): void => {
-  if (result.published || !result.reason || result.reason === "SOURCE_NOT_FOUND") {
-    return;
-  }
-  logger.info(
-    `Run '${runId}': runtime-native outbound callback skipped (${result.reason}).`,
-  );
-};
+export const resolveReplyTextFromTurnRecovery = async (
+  turnReplyRecoveryService: ChannelTurnReplyRecoveryService,
+  input: {
+    agentRunId: string;
+    turnId: string;
+    teamRunId?: string | null;
+  },
+): Promise<string | null> =>
+  turnReplyRecoveryService.resolveReplyText({
+    agentRunId: input.agentRunId,
+    turnId: input.turnId,
+    teamRunId: input.teamRunId ?? null,
+  });
 
 const isTeamAgentEvent = (
   event: unknown,
@@ -293,15 +278,6 @@ const collectTextFragments = (value: unknown, depth = 0): string[] => {
     objectValue.delta,
     objectValue.summary,
   ].flatMap((entry) => collectTextFragments(entry, depth + 1));
-};
-
-const stripReasoningSection = (content: string): string => {
-  const marker = "\n\n[reasoning]\n";
-  const index = content.indexOf(marker);
-  if (index < 0) {
-    return content;
-  }
-  return content.slice(0, index).trim();
 };
 
 const asObject = (value: unknown): Record<string, unknown> | null =>

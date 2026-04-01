@@ -25,6 +25,7 @@ Major domains under `src/`:
 
 - Agent definition and execution
 - Agent team definition and execution
+- External-channel messaging ingress, bindings, and reply routing
 - Prompt engineering
 - Skills and skill versioning
 - MCP server management

@@ -17,7 +17,6 @@ const createSource = (): ChannelSourceContext => ({
 
 const createConfiguredService = (overrides?: {
   getSourceByAgentRunTurn?: ReturnType<typeof vi.fn>;
-  reserveCallbackKey?: ReturnType<typeof vi.fn>;
   recordPending?: ReturnType<typeof vi.fn>;
   isRouteBoundToTarget?: ReturnType<typeof vi.fn>;
   enqueueOrGet?: ReturnType<typeof vi.fn>;
@@ -26,14 +25,6 @@ const createConfiguredService = (overrides?: {
   const getSourceByAgentRunTurn =
     overrides?.getSourceByAgentRunTurn ??
     vi.fn().mockResolvedValue(createSource());
-  const reserveCallbackKey =
-    overrides?.reserveCallbackKey ??
-    vi.fn().mockResolvedValue({
-      duplicate: false,
-      key: "cb-1",
-      firstSeenAt: new Date("2026-02-09T00:00:00.000Z"),
-      expiresAt: null,
-    });
   const recordPending =
     overrides?.recordPending ?? vi.fn().mockResolvedValue(undefined);
   const isRouteBoundToTarget =
@@ -60,9 +51,6 @@ const createConfiguredService = (overrides?: {
         getSourceByAgentRunTurn,
       } as any,
       {
-        callbackIdempotencyService: {
-          reserveCallbackKey,
-        },
         deliveryEventService: {
           recordPending,
         },
@@ -79,7 +67,6 @@ const createConfiguredService = (overrides?: {
     ),
     deps: {
       getSourceByAgentRunTurn,
-      reserveCallbackKey,
       recordPending,
       isRouteBoundToTarget,
       enqueueOrGet,
@@ -155,17 +142,17 @@ describe("ReplyCallbackService", () => {
     });
 
     expect(result.reason).toBe("CALLBACK_NOT_CONFIGURED");
-    expect(deps.reserveCallbackKey).not.toHaveBeenCalled();
     expect(deps.enqueueOrGet).not.toHaveBeenCalled();
   });
 
   it("short-circuits duplicate callback keys", async () => {
     const { service, deps } = createConfiguredService({
-      reserveCallbackKey: vi.fn().mockResolvedValue({
+      enqueueOrGet: vi.fn().mockResolvedValue({
+        record: {
+          id: "outbox-1",
+          callbackIdempotencyKey: "cb-1",
+        },
         duplicate: true,
-        key: "cb-1",
-        firstSeenAt: new Date("2026-02-09T00:00:00.000Z"),
-        expiresAt: null,
       }),
     });
 
@@ -183,7 +170,7 @@ describe("ReplyCallbackService", () => {
       envelope: null,
     });
     expect(deps.recordPending).not.toHaveBeenCalled();
-    expect(deps.enqueueOrGet).not.toHaveBeenCalled();
+    expect(deps.enqueueOrGet).toHaveBeenCalledOnce();
   });
 
   it("returns SOURCE_NOT_FOUND when no turn-bound source exists", async () => {
@@ -199,7 +186,7 @@ describe("ReplyCallbackService", () => {
     });
 
     expect(result.reason).toBe("SOURCE_NOT_FOUND");
-    expect(deps.reserveCallbackKey).not.toHaveBeenCalled();
+    expect(deps.enqueueOrGet).not.toHaveBeenCalled();
   });
 
   it("returns BINDING_NOT_FOUND when route is no longer bound to target", async () => {
@@ -215,7 +202,7 @@ describe("ReplyCallbackService", () => {
     });
 
     expect(result.reason).toBe("BINDING_NOT_FOUND");
-    expect(deps.reserveCallbackKey).not.toHaveBeenCalled();
+    expect(deps.enqueueOrGet).not.toHaveBeenCalled();
   });
 
   it("records pending delivery and enqueues durable work even when the gateway is temporarily unavailable", async () => {
@@ -298,5 +285,22 @@ describe("ReplyCallbackService", () => {
         replyText: "hello from coordinator",
       }),
     );
+  });
+
+  it("keeps publish success when delivery-event recording fails after enqueue", async () => {
+    const { service, deps } = createConfiguredService({
+      recordPending: vi.fn().mockRejectedValue(new Error("delivery event write failed")),
+    });
+
+    const result = await service.publishAssistantReplyByTurn({
+      agentRunId: "agent-1",
+      turnId: "turn-1",
+      replyText: "assistant reply",
+      callbackIdempotencyKey: "cb-1",
+    });
+
+    expect(result.published).toBe(true);
+    expect(deps.enqueueOrGet).toHaveBeenCalledOnce();
+    expect(deps.recordPending).toHaveBeenCalledOnce();
   });
 });

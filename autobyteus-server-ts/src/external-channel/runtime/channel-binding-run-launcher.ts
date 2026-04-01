@@ -1,36 +1,13 @@
 import type { ChannelBinding } from "../domain/models.js";
 import { ChannelBindingService } from "../services/channel-binding-service.js";
-import { AgentRunConfig } from "../../agent-execution/domain/agent-run-config.js";
-import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import {
   AgentRunService,
   getAgentRunService,
 } from "../../agent-execution/services/agent-run-service.js";
-import type { AgentRunMetadata } from "../../run-history/store/agent-run-metadata-types.js";
-import {
-  AgentRunMetadataService,
-  getAgentRunMetadataService,
-} from "../../run-history/services/agent-run-metadata-service.js";
-import {
-  AgentRunHistoryIndexService,
-  getAgentRunHistoryIndexService,
-} from "../../run-history/services/agent-run-history-index-service.js";
-import {
-  getTeamRunHistoryService,
-  type TeamRunHistoryService,
-} from "../../run-history/services/team-run-history-service.js";
-import {
-  getWorkspaceManager,
-  type WorkspaceManager,
-} from "../../workspaces/workspace-manager.js";
 import {
   getTeamRunService,
   type TeamRunService,
 } from "../../agent-team-execution/services/team-run-service.js";
-import { AgentRunMemoryLayout } from "../../agent-memory/store/agent-run-memory-layout.js";
-import { appConfigProvider } from "../../config/app-config-provider.js";
-
-const agentRunMemoryLayout = new AgentRunMemoryLayout(appConfigProvider.config.getMemoryDir());
 
 export interface ChannelBindingLiveRunRegistry {
   claimAgentRun(bindingId: string, agentRunId: string): void;
@@ -65,47 +42,28 @@ export class InMemoryChannelBindingLiveRunRegistry
 export class ChannelBindingRunLauncher {
   private readonly bindingService: ChannelBindingService;
   private readonly bindingRunRegistry: ChannelBindingLiveRunRegistry;
-  private readonly agentRunManager: AgentRunManager;
   private readonly agentRunService: AgentRunService;
-  private readonly agentRunMetadataService: AgentRunMetadataService;
-  private readonly agentRunHistoryIndexService: AgentRunHistoryIndexService;
-  private readonly workspaceManager: WorkspaceManager;
-  private readonly teamRunHistoryService: TeamRunHistoryService;
   private readonly teamRunService: TeamRunService;
 
   constructor(
     deps: {
       bindingService?: ChannelBindingService;
-      agentRunManager?: AgentRunManager;
       agentRunService?: AgentRunService;
-      agentRunMetadataService?: AgentRunMetadataService;
-      agentRunHistoryIndexService?: AgentRunHistoryIndexService;
       bindingRunRegistry?: ChannelBindingLiveRunRegistry;
-      workspaceManager?: WorkspaceManager;
-      teamRunHistoryService?: TeamRunHistoryService;
       teamRunService?: TeamRunService;
     } = {},
   ) {
     this.bindingService = deps.bindingService ?? new ChannelBindingService();
     this.bindingRunRegistry =
       deps.bindingRunRegistry ?? new InMemoryChannelBindingLiveRunRegistry();
-    this.agentRunManager = deps.agentRunManager ?? AgentRunManager.getInstance();
     this.agentRunService =
       deps.agentRunService ?? getAgentRunService();
-    this.agentRunMetadataService =
-      deps.agentRunMetadataService ?? getAgentRunMetadataService();
-    this.agentRunHistoryIndexService =
-      deps.agentRunHistoryIndexService ?? getAgentRunHistoryIndexService();
-    this.workspaceManager = deps.workspaceManager ?? getWorkspaceManager();
-    this.teamRunHistoryService =
-      deps.teamRunHistoryService ?? getTeamRunHistoryService();
     this.teamRunService =
       deps.teamRunService ?? getTeamRunService();
   }
 
   async resolveOrStartAgentRun(
     binding: ChannelBinding,
-    options: { initialSummary?: string | null } = {},
   ): Promise<string> {
     const launchTarget = normalizeAgentLaunchTarget(binding);
     const cachedAgentRunId = normalizeNullableString(binding.agentRunId);
@@ -113,7 +71,7 @@ export class ChannelBindingRunLauncher {
     if (
       cachedAgentRunId &&
       this.bindingRunRegistry.ownsAgentRun(binding.id, cachedAgentRunId) &&
-      this.isRunActive(cachedAgentRunId)
+      this.agentRunService.getAgentRun(cachedAgentRunId)
     ) {
       return cachedAgentRunId;
     }
@@ -131,47 +89,14 @@ export class ChannelBindingRunLauncher {
       }
     }
 
-    const workspace = await this.workspaceManager.ensureWorkspaceByRootPath(
-      launchTarget.launchPreset.workspaceRootPath,
-    );
-    const activeRun = await this.agentRunManager.createAgentRun(
-      new AgentRunConfig({
-        runtimeKind: launchTarget.launchPreset.runtimeKind,
-        agentDefinitionId: launchTarget.agentDefinitionId,
-        llmModelIdentifier: launchTarget.launchPreset.llmModelIdentifier,
-        autoExecuteTools: launchTarget.launchPreset.autoExecuteTools,
-        workspaceId: workspace.workspaceId,
-        llmConfig: launchTarget.launchPreset.llmConfig,
-        skillAccessMode: launchTarget.launchPreset.skillAccessMode,
-      }),
-    );
-    const runId = activeRun.runId;
-    const metadata: AgentRunMetadata = {
-      runId,
+    const { runId } = await this.agentRunService.createAgentRun({
+      runtimeKind: launchTarget.launchPreset.runtimeKind,
       agentDefinitionId: launchTarget.agentDefinitionId,
-      workspaceRootPath: normalizeRequiredString(
-        launchTarget.launchPreset.workspaceRootPath,
-        "launchPreset.workspaceRootPath",
-      ),
-      memoryDir: activeRun.config.memoryDir ?? agentRunMemoryLayout.getRunDirPath(runId),
-      llmModelIdentifier: normalizeRequiredString(
-        launchTarget.launchPreset.llmModelIdentifier,
-        "launchPreset.llmModelIdentifier",
-      ),
-      llmConfig: launchTarget.launchPreset.llmConfig ?? null,
-      autoExecuteTools: Boolean(launchTarget.launchPreset.autoExecuteTools),
+      workspaceRootPath: launchTarget.launchPreset.workspaceRootPath,
+      llmModelIdentifier: launchTarget.launchPreset.llmModelIdentifier,
+      autoExecuteTools: launchTarget.launchPreset.autoExecuteTools,
+      llmConfig: launchTarget.launchPreset.llmConfig,
       skillAccessMode: launchTarget.launchPreset.skillAccessMode,
-      runtimeKind: activeRun.runtimeKind,
-      platformAgentRunId: activeRun.getPlatformAgentRunId(),
-      lastKnownStatus: "ACTIVE",
-    };
-    await this.agentRunMetadataService.writeMetadata(runId, metadata);
-    await this.agentRunHistoryIndexService.recordRunCreated({
-      runId,
-      metadata,
-      summary: options.initialSummary ?? "",
-      lastKnownStatus: "ACTIVE",
-      lastActivityAt: new Date().toISOString(),
     });
     await this.bindingService.upsertBindingAgentRunId(binding.id, runId);
     this.bindingRunRegistry.claimAgentRun(binding.id, runId);
@@ -180,22 +105,26 @@ export class ChannelBindingRunLauncher {
 
   async resolveOrStartTeamRun(
     binding: ChannelBinding,
-    options: { initialSummary?: string | null } = {},
   ): Promise<string> {
     const launchTarget = normalizeTeamLaunchTarget(binding);
     const cachedTeamRunId = normalizeNullableString(binding.teamRunId);
 
     if (
       cachedTeamRunId &&
-      this.bindingRunRegistry.ownsTeamRun(binding.id, cachedTeamRunId)
+      this.bindingRunRegistry.ownsTeamRun(binding.id, cachedTeamRunId) &&
+      this.teamRunService.getTeamRun(cachedTeamRunId)
     ) {
+      return cachedTeamRunId;
+    }
+
+    if (cachedTeamRunId) {
       try {
-        const resumeConfig = await this.teamRunHistoryService.getTeamRunResumeConfig(cachedTeamRunId);
-        if (resumeConfig.isActive) {
-          return cachedTeamRunId;
-        }
+        const restoredRun = await this.teamRunService.restoreTeamRun(cachedTeamRunId);
+        await this.bindingService.upsertBindingTeamRunId(binding.id, restoredRun.runId);
+        this.bindingRunRegistry.claimTeamRun(binding.id, restoredRun.runId);
+        return restoredRun.runId;
       } catch {
-        // Fall through to lazy-create a fresh team run for this binding.
+        // Fall through to lazy-create a fresh run for this binding.
       }
     }
 
@@ -211,10 +140,6 @@ export class ChannelBindingRunLauncher {
     await this.bindingService.upsertBindingTeamRunId(binding.id, teamRunId);
     this.bindingRunRegistry.claimTeamRun(binding.id, teamRunId);
     return teamRunId;
-  }
-
-  private isRunActive(runId: string): boolean {
-    return this.agentRunManager.getActiveRun(runId) !== null;
   }
 }
 

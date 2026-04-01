@@ -6,7 +6,7 @@ import { ExternalPeerType } from "autobyteus-ts/external-channel/peer-type.js";
 import { ChannelIngressService } from "../../../../src/external-channel/services/channel-ingress-service.js";
 import type {
   ChannelBinding,
-  ChannelIdempotencyDecision,
+  ChannelMessageReceipt,
   ResolvedBinding,
 } from "../../../../src/external-channel/domain/models.js";
 import type { ChannelRunDispatchResult } from "../../../../src/external-channel/runtime/channel-run-dispatch-result.js";
@@ -57,34 +57,48 @@ const createEnvelope = () => ({
   }),
 });
 
-const createIdempotencyDecision = (
-  duplicate: boolean,
-): ChannelIdempotencyDecision => ({
-  duplicate,
-  key: "ignored",
-  firstSeenAt: duplicate ? new Date("2026-02-08T00:00:00.000Z") : null,
-  expiresAt: null,
+const createReceipt = (
+  overrides: Partial<ChannelMessageReceipt> = {},
+): ChannelMessageReceipt => ({
+  provider: ExternalChannelProvider.WHATSAPP,
+  transport: ExternalChannelTransport.BUSINESS_API,
+  accountId: "acct-1",
+  peerId: "peer-1",
+  threadId: null,
+  externalMessageId: "msg-1",
+  receivedAt: new Date("2026-02-08T00:00:00.000Z"),
+  ingressState: "ROUTED",
+  turnId: null,
+  agentRunId: "agent-1",
+  teamRunId: null,
+  dispatchLeaseToken: null,
+  dispatchLeaseExpiresAt: null,
+  createdAt: new Date("2026-02-08T00:00:00.000Z"),
+  updatedAt: new Date("2026-02-08T00:00:00.000Z"),
+  ...overrides,
 });
 
 describe("ChannelIngressService", () => {
   it("short-circuits duplicate ingress events", async () => {
-    const idempotencyService = {
-      ensureFirstSeen: vi.fn().mockResolvedValue(createIdempotencyDecision(true)),
-    };
     const bindingService = {
       resolveBinding: vi.fn(),
     };
     const threadLockService = {
-      withThreadLock: vi.fn(),
+      withThreadLock: vi.fn(async (_key: string, work: () => Promise<unknown>) => work()),
     };
     const runFacade = {
       dispatchToBinding: vi.fn(),
     };
     const messageReceiptService = {
-      recordIngressReceipt: vi.fn(),
+      getReceiptByExternalMessage: vi
+        .fn()
+        .mockResolvedValue(createReceipt({ ingressState: "ROUTED" })),
+      createPendingIngressReceipt: vi.fn(),
+      claimIngressDispatch: vi.fn(),
+      recordAcceptedDispatch: vi.fn(),
+      markIngressUnbound: vi.fn(),
     };
     const service = new ChannelIngressService({
-      idempotencyService,
       bindingService,
       threadLockService,
       runFacade,
@@ -95,28 +109,83 @@ describe("ChannelIngressService", () => {
 
     expect(result.duplicate).toBe(true);
     expect(bindingService.resolveBinding).not.toHaveBeenCalled();
-    expect(threadLockService.withThreadLock).not.toHaveBeenCalled();
-    expect(messageReceiptService.recordIngressReceipt).not.toHaveBeenCalled();
+    expect(runFacade.dispatchToBinding).not.toHaveBeenCalled();
+    expect(messageReceiptService.createPendingIngressReceipt).not.toHaveBeenCalled();
   });
 
-  it("returns UNBOUND disposition when no binding can be resolved", async () => {
-    const idempotencyService = {
-      ensureFirstSeen: vi.fn().mockResolvedValue(createIdempotencyDecision(false)),
-    };
+  it("re-registers unfinished ACCEPTED receipts with the recovery runtime", async () => {
+    const existingAccepted = createReceipt({
+      ingressState: "ACCEPTED",
+      turnId: "turn-accepted",
+    });
     const bindingService = {
-      resolveBinding: vi.fn().mockResolvedValue(null),
+      resolveBinding: vi.fn(),
     };
     const threadLockService = {
-      withThreadLock: vi.fn(),
+      withThreadLock: vi.fn(async (_key: string, work: () => Promise<unknown>) => work()),
     };
     const runFacade = {
       dispatchToBinding: vi.fn(),
     };
     const messageReceiptService = {
-      recordIngressReceipt: vi.fn(),
+      getReceiptByExternalMessage: vi.fn().mockResolvedValue(existingAccepted),
+      createPendingIngressReceipt: vi.fn(),
+      claimIngressDispatch: vi.fn(),
+      recordAcceptedDispatch: vi.fn(),
+      markIngressUnbound: vi.fn(),
+      isDispatchLeaseExpired: vi.fn(),
+    };
+    const acceptedReceiptRecoveryRuntime = {
+      registerAcceptedReceipt: vi.fn().mockResolvedValue(undefined),
     };
     const service = new ChannelIngressService({
-      idempotencyService,
+      bindingService,
+      threadLockService,
+      runFacade,
+      messageReceiptService,
+      acceptedReceiptRecoveryRuntime,
+    });
+
+    const result = await service.handleInboundMessage(createEnvelope());
+
+    expect(result).toMatchObject({
+      duplicate: true,
+      disposition: "ACCEPTED",
+      bindingResolved: false,
+      binding: null,
+      dispatch: null,
+    });
+    expect(acceptedReceiptRecoveryRuntime.registerAcceptedReceipt).toHaveBeenCalledWith(
+      existingAccepted,
+    );
+    expect(bindingService.resolveBinding).not.toHaveBeenCalled();
+    expect(runFacade.dispatchToBinding).not.toHaveBeenCalled();
+  });
+
+  it("returns UNBOUND disposition when no binding can be resolved", async () => {
+    const bindingService = {
+      resolveBinding: vi.fn().mockResolvedValue(null),
+    };
+    const threadLockService = {
+      withThreadLock: vi.fn(async (_key: string, work: () => Promise<unknown>) => work()),
+    };
+    const runFacade = {
+      dispatchToBinding: vi.fn(),
+    };
+    const messageReceiptService = {
+      getReceiptByExternalMessage: vi.fn().mockResolvedValue(null),
+      createPendingIngressReceipt: vi.fn().mockResolvedValue(createReceipt({
+        ingressState: "PENDING",
+        agentRunId: null,
+      })),
+      claimIngressDispatch: vi.fn(),
+      recordAcceptedDispatch: vi.fn(),
+      markIngressUnbound: vi.fn().mockResolvedValue(createReceipt({
+        ingressState: "UNBOUND",
+        agentRunId: null,
+      })),
+    };
+    const service = new ChannelIngressService({
       bindingService,
       threadLockService,
       runFacade,
@@ -134,7 +203,8 @@ describe("ChannelIngressService", () => {
       dispatch: null,
     });
     expect(runFacade.dispatchToBinding).not.toHaveBeenCalled();
-    expect(messageReceiptService.recordIngressReceipt).not.toHaveBeenCalled();
+    expect(messageReceiptService.createPendingIngressReceipt).toHaveBeenCalledOnce();
+    expect(messageReceiptService.markIngressUnbound).toHaveBeenCalledOnce();
   });
 
   it("dispatches and records source context for non-duplicate inbound messages", async () => {
@@ -144,12 +214,10 @@ describe("ChannelIngressService", () => {
       usedTransportFallback: false,
     };
     const dispatchResult: ChannelRunDispatchResult = {
+      dispatchTargetType: "AGENT",
       agentRunId: "agent-1",
-      teamRunId: null,
+      turnId: "turn-1",
       dispatchedAt: new Date("2026-02-08T00:00:10.000Z"),
-    };
-    const idempotencyService = {
-      ensureFirstSeen: vi.fn().mockResolvedValue(createIdempotencyDecision(false)),
     };
     const bindingService = {
       resolveBinding: vi.fn().mockResolvedValue(resolvedBinding),
@@ -161,21 +229,38 @@ describe("ChannelIngressService", () => {
       dispatchToBinding: vi.fn().mockResolvedValue(dispatchResult),
     };
     const messageReceiptService = {
-      recordIngressReceipt: vi.fn().mockResolvedValue(undefined),
+      getReceiptByExternalMessage: vi.fn().mockResolvedValue(null),
+      createPendingIngressReceipt: vi.fn().mockResolvedValue(createReceipt({
+        ingressState: "PENDING",
+        agentRunId: null,
+      })),
+      claimIngressDispatch: vi.fn().mockResolvedValue(createReceipt({
+        ingressState: "DISPATCHING",
+        agentRunId: null,
+        dispatchLeaseToken: "lease-1",
+        dispatchLeaseExpiresAt: new Date("2026-02-08T00:00:30.000Z"),
+      })),
+      recordAcceptedDispatch: vi.fn().mockResolvedValue(
+        createReceipt({ ingressState: "ACCEPTED", turnId: "turn-1" }),
+      ),
+      markIngressUnbound: vi.fn(),
+    };
+    const acceptedReceiptRecoveryRuntime = {
+      registerAcceptedReceipt: vi.fn().mockResolvedValue(undefined),
     };
     const service = new ChannelIngressService({
-      idempotencyService,
       bindingService,
       threadLockService,
       runFacade,
       messageReceiptService,
+      acceptedReceiptRecoveryRuntime,
     });
     const envelope = createEnvelope();
 
     const result = await service.handleInboundMessage(envelope);
 
     expect(result.duplicate).toBe(false);
-    expect(result.disposition).toBe("ROUTED");
+    expect(result.disposition).toBe("ACCEPTED");
     expect(result.bindingResolved).toBe(true);
     expect(result.binding?.id).toBe("binding-1");
     expect(threadLockService.withThreadLock).toHaveBeenCalledWith(
@@ -183,7 +268,7 @@ describe("ChannelIngressService", () => {
       expect.any(Function),
     );
     expect(runFacade.dispatchToBinding).toHaveBeenCalledWith(binding, envelope);
-    expect(messageReceiptService.recordIngressReceipt).toHaveBeenCalledWith({
+    expect(messageReceiptService.recordAcceptedDispatch).toHaveBeenCalledWith({
       provider: ExternalChannelProvider.WHATSAPP,
       transport: ExternalChannelTransport.BUSINESS_API,
       accountId: "acct-1",
@@ -191,59 +276,17 @@ describe("ChannelIngressService", () => {
       threadId: null,
       externalMessageId: "msg-1",
       receivedAt: new Date("2026-02-08T00:00:00.000Z"),
+      dispatchLeaseToken: "lease-1",
       agentRunId: "agent-1",
       teamRunId: null,
+      turnId: "turn-1",
     });
-  });
-
-  it("falls back to binding target when runtime dispatch omits target ids", async () => {
-    const binding = createBinding();
-    const idempotencyService = {
-      ensureFirstSeen: vi.fn().mockResolvedValue(createIdempotencyDecision(false)),
-    };
-    const bindingService = {
-      resolveBinding: vi.fn().mockResolvedValue({
-        binding,
-        usedTransportFallback: false,
-      } satisfies ResolvedBinding),
-    };
-    const threadLockService = {
-      withThreadLock: vi.fn(async (_key: string, work: () => Promise<unknown>) => work()),
-    };
-    const runFacade = {
-      dispatchToBinding: vi.fn().mockResolvedValue({
-        agentRunId: null,
-        teamRunId: null,
-        dispatchedAt: new Date("2026-02-08T00:00:10.000Z"),
-      } satisfies ChannelRunDispatchResult),
-    };
-    const messageReceiptService = {
-      recordIngressReceipt: vi.fn().mockResolvedValue(undefined),
-    };
-    const service = new ChannelIngressService({
-      idempotencyService,
-      bindingService,
-      threadLockService,
-      runFacade,
-      messageReceiptService,
-    });
-
-    await service.handleInboundMessage(createEnvelope());
-
-    expect(messageReceiptService.recordIngressReceipt).toHaveBeenCalledWith(
-      expect.objectContaining({
-        agentRunId: "agent-1",
-        teamRunId: null,
-      }),
-    );
+    expect(acceptedReceiptRecoveryRuntime.registerAcceptedReceipt).toHaveBeenCalledOnce();
   });
 
   it("records the newly started agent run when definition-bound dispatch starts one on demand", async () => {
     const binding = createBinding();
     binding.agentRunId = null;
-    const idempotencyService = {
-      ensureFirstSeen: vi.fn().mockResolvedValue(createIdempotencyDecision(false)),
-    };
     const bindingService = {
       resolveBinding: vi.fn().mockResolvedValue({
         binding,
@@ -255,28 +298,49 @@ describe("ChannelIngressService", () => {
     };
     const runFacade = {
       dispatchToBinding: vi.fn().mockResolvedValue({
+        dispatchTargetType: "AGENT",
         agentRunId: "agent-run-started-on-demand",
-        teamRunId: null,
+        turnId: "turn-started-on-demand",
         dispatchedAt: new Date("2026-02-08T00:00:10.000Z"),
       } satisfies ChannelRunDispatchResult),
     };
     const messageReceiptService = {
-      recordIngressReceipt: vi.fn().mockResolvedValue(undefined),
+      getReceiptByExternalMessage: vi.fn().mockResolvedValue(null),
+      createPendingIngressReceipt: vi.fn().mockResolvedValue(createReceipt({
+        ingressState: "PENDING",
+        agentRunId: null,
+      })),
+      claimIngressDispatch: vi.fn().mockResolvedValue(createReceipt({
+        ingressState: "DISPATCHING",
+        agentRunId: null,
+        dispatchLeaseToken: "lease-1",
+        dispatchLeaseExpiresAt: new Date("2026-02-08T00:00:30.000Z"),
+      })),
+      recordAcceptedDispatch: vi.fn().mockResolvedValue(createReceipt({
+        ingressState: "ACCEPTED",
+        agentRunId: "agent-run-started-on-demand",
+        turnId: "turn-started-on-demand",
+      })),
+      markIngressUnbound: vi.fn(),
+    };
+    const acceptedReceiptRecoveryRuntime = {
+      registerAcceptedReceipt: vi.fn().mockResolvedValue(undefined),
     };
     const service = new ChannelIngressService({
-      idempotencyService,
       bindingService,
       threadLockService,
       runFacade,
       messageReceiptService,
+      acceptedReceiptRecoveryRuntime,
     });
 
     await service.handleInboundMessage(createEnvelope());
 
-    expect(messageReceiptService.recordIngressReceipt).toHaveBeenCalledWith(
+    expect(messageReceiptService.recordAcceptedDispatch).toHaveBeenCalledWith(
       expect.objectContaining({
         agentRunId: "agent-run-started-on-demand",
         teamRunId: null,
+        turnId: "turn-started-on-demand",
       }),
     );
   });

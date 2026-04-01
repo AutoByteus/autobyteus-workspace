@@ -82,9 +82,11 @@ export class CodexAgentRunBackend implements AgentRunBackend {
 
   async postUserMessage(message: AgentInputUserMessage): Promise<AgentOperationResult> {
     try {
-      await this.sendTurn(message);
+      const result = await this.sendTurn(message);
       return {
         accepted: true,
+        turnId: result.turnId,
+        platformAgentRunId: result.platformAgentRunId,
       };
     } catch (error) {
       return buildCommandFailure("send user input", error);

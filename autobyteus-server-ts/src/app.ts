@@ -21,6 +21,10 @@ import { registerRestRoutes } from "./api/rest/index.js";
 import { registerGraphql } from "./api/graphql/index.js";
 import { registerWebsocketRoutes } from "./api/websocket/index.js";
 import {
+  startAcceptedReceiptRecoveryRuntime,
+  stopAcceptedReceiptRecoveryRuntime,
+} from "./external-channel/runtime/accepted-receipt-recovery-runtime.js";
+import {
   startGatewayCallbackDeliveryRuntime,
   stopGatewayCallbackDeliveryRuntime,
 } from "./external-channel/runtime/gateway-callback-delivery-runtime.js";
@@ -119,6 +123,7 @@ export async function buildApp(options?: BuildAppOptions): Promise<FastifyInstan
   await registerWebsocketRoutes(app);
   await registerGraphql(app);
   app.addHook("onClose", async () => {
+    await stopAcceptedReceiptRecoveryRuntime();
     await stopGatewayCallbackDeliveryRuntime();
     await getManagedMessagingGatewayService().close();
   });
@@ -175,6 +180,7 @@ export async function startServer(): Promise<void> {
   registerShutdownHandlers(app);
   await app.listen({ host: options.host, port: options.port });
   logger.info(`Server listening on ${options.host}:${options.port}`);
+  startAcceptedReceiptRecoveryRuntime();
   startGatewayCallbackDeliveryRuntime();
 
   try {

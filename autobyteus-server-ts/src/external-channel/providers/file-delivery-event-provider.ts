@@ -18,9 +18,9 @@ import {
   normalizeRequiredString,
   parseDate,
   readJsonArrayFile,
-  resolvePersistencePath,
   updateJsonArrayFile,
 } from "../../persistence/file/store-utils.js";
+import { resolveExternalChannelStoragePath } from "./external-channel-storage.js";
 
 type ChannelDeliveryEventRow = {
   id: string;
@@ -66,8 +66,7 @@ const toDomain = (row: ChannelDeliveryEventRow): ChannelDeliveryEvent => ({
 
 export class FileDeliveryEventProvider implements DeliveryEventProvider {
   constructor(
-    private readonly filePath: string = resolvePersistencePath(
-      "external-channel",
+    private readonly filePath: string = resolveExternalChannelStoragePath(
       "delivery-events.json",
     ),
   ) {}
