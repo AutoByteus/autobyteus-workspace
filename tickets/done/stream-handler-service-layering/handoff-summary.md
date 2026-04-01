@@ -4,7 +4,7 @@
 
 - Ticket: `stream-handler-service-layering`
 - Date: `2026-04-01`
-- Current Status: `Verified / Finalization In Progress`
+- Current Status: `Verified / Finalized / Released`
 - Workflow State Source: `tickets/done/stream-handler-service-layering/workflow-state.md`
 
 ## Delivery Summary
@@ -48,7 +48,7 @@
 
 - Release notes required: `Yes`
 - Release notes artifact: `tickets/done/stream-handler-service-layering/release-notes.md`
-- Notes: `Release requested by the user; notes stay limited to functional behavior and local build/runtime fixes included on top of personal.`
+- Notes: `Release requested by the user; notes stayed limited to functional behavior and local build/runtime fixes included on top of personal.`
 
 ## User Verification Hold
 
@@ -63,10 +63,10 @@
 - Ticket branch: `codex/stream-handler-service-layering`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Commit status: `Pending final ticket commit`
-- Push status: `Pending`
-- Merge status: `Pending`
-- Release/publication/deployment status: `Pending release helper execution on personal`
-- Worktree cleanup status: `Not started`
-- Local branch cleanup status: `Not started`
-- Blockers / notes: `None. Ticket archival is complete; repository finalization and release are the remaining Stage 10 steps.`
+- Commit status: `Completed`
+- Push status: `Completed`
+- Merge status: `Completed into the resolved target branch`
+- Release/publication/deployment status: `Completed via tag v1.2.50 on commit acfb6fa`
+- Worktree cleanup status: `Completed`
+- Local branch cleanup status: `Completed`
+- Blockers / notes: `None`
