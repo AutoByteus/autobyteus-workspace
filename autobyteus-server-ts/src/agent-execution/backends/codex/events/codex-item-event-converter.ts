@@ -1,5 +1,6 @@
 import type { AgentRunEvent } from "../../../domain/agent-run-event.js";
 import { AgentRunEventType } from "../../../domain/agent-run-event.js";
+import { isPreviewToolName } from "../../../../agent-tools/preview/preview-tool-contract.js";
 import { serializePayload } from "../../../../services/agent-streaming/payload-serialization.js";
 import type { JsonObject } from "../codex-app-server-json.js";
 import { CodexThreadEventName } from "./codex-thread-event-name.js";
@@ -19,6 +20,18 @@ const normalizeToolNameForEvent = (value: string | null): string | null => {
     return "send_message_to";
   }
   return value;
+};
+
+const isPreviewToolExecutionPayload = (
+  context: CodexItemEventConverterContext,
+  payload: JsonObject,
+): boolean => {
+  const segmentType = context.resolveSegmentType(payload);
+  if (segmentType !== "tool_call") {
+    return false;
+  }
+  const toolName = normalizeToolNameForEvent(context.resolveToolName(payload));
+  return isPreviewToolName(toolName);
 };
 
 export type CodexItemEventConverterContext = {
@@ -203,6 +216,9 @@ export const convertCodexItemEvent = (
             metadata: context.resolveWebSearchMetadata(payload),
           },
         );
+      }
+      if (isPreviewToolExecutionPayload(context, payload)) {
+        return createTerminalToolExecutionEvent(context, codexEventName, payload, "run_bash");
       }
       return context.createEvent(
         codexEventName,

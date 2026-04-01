@@ -154,4 +154,37 @@ describe("CodexThreadEventConverter", () => {
       },
     });
   });
+
+  it("maps preview dynamic tool completions into TOOL_EXECUTION_SUCCEEDED", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.ITEM_COMPLETED,
+      params: {
+        item: {
+          type: "dynamicToolCall",
+          id: "call_preview_open",
+          name: "open_preview",
+          status: "completed",
+          result: {
+            preview_session_id: "preview-1",
+            status: "opened",
+          },
+        },
+      },
+    });
+
+    expect(converted).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      runId: "run-1",
+      payload: {
+        invocation_id: "call_preview_open",
+        tool_name: "open_preview",
+        result: {
+          preview_session_id: "preview-1",
+          status: "opened",
+        },
+      },
+    });
+  });
 });

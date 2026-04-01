@@ -3,6 +3,7 @@ import type {
   NodeRegistrySnapshot,
   WindowNodeContext,
 } from './nodeRegistryTypes';
+import type { PreviewHostBounds, PreviewShellSnapshot } from '../types/previewShell';
 
 type Cleanup = () => void;
 
@@ -46,6 +47,12 @@ interface Window {
     upsertNodeRegistry: (change: NodeRegistryChange) => Promise<NodeRegistrySnapshot>;
     getNodeRegistrySnapshot: () => Promise<NodeRegistrySnapshot>;
     onNodeRegistryUpdated: (callback: (snapshot: NodeRegistrySnapshot) => void) => Cleanup;
+    getPreviewShellSnapshot: () => Promise<PreviewShellSnapshot>;
+    focusPreviewSession: (previewSessionId: string) => Promise<PreviewShellSnapshot>;
+    setActivePreviewSession: (previewSessionId: string) => Promise<PreviewShellSnapshot>;
+    updatePreviewHostBounds: (bounds: PreviewHostBounds | null) => Promise<PreviewShellSnapshot>;
+    closePreviewShellSession: (previewSessionId: string) => Promise<PreviewShellSnapshot>;
+    onPreviewShellSnapshotUpdated: (callback: (snapshot: PreviewShellSnapshot) => void) => Cleanup;
     getAppUpdateState: () => Promise<AppUpdateState>;
     checkForAppUpdates: () => Promise<AppUpdateState>;
     downloadAppUpdate: () => Promise<AppUpdateState>;

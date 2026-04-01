@@ -6,7 +6,7 @@ This review validates alignment with target (`to-be`) design behavior, not parit
 ## Review Meta
 
 - Scope Classification: `Large`
-- Current Round: `15`
+- Current Round: `18`
 - Current Review Type: `Deep Review`
 - Clean-Review Streak Before This Round: `1`
 - Clean-Review Streak After This Round: `2`
@@ -26,8 +26,8 @@ This review validates alignment with target (`to-be`) design behavior, not parit
 - Common Design Practices: `shared/common-design-practices.md`
 - Artifact Versions In This Round:
   - Requirements Status: `Refined`
-  - Design Version: `v6`
-  - Call Stack Version: `v6`
+  - Design Version: `v8`
+  - Call Stack Version: `v8`
 - Required Persisted Artifact Updates Completed For This Round: `N/A`
 
 ## Review Intent (Mandatory)
@@ -56,6 +56,9 @@ This review validates alignment with target (`to-be`) design behavior, not parit
 | 13 | Refined | v5 | v5 | Yes | No | Yes | Design Impact | `3 -> 4 -> 5` | 0 | Reset | No-Go |
 | 14 | Refined | v6 | v6 | No | No | N/A | N/A | N/A | 1 | Candidate Go | No-Go |
 | 15 | Refined | v6 | v6 | No | No | N/A | N/A | N/A | 2 | Go Confirmed | Go |
+| 16 | Refined | v7 | v7 | Yes | Yes | Yes | Design Impact | `3 -> 4 -> 5` | 0 | Reset | No-Go |
+| 17 | Refined | v8 | v8 | No | No | N/A | N/A | N/A | 1 | Candidate Go | No-Go |
+| 18 | Refined | v8 | v8 | No | No | N/A | N/A | N/A | 2 | Go Confirmed | Go |
 
 ## Round Artifact Update Log (Mandatory)
 
@@ -76,6 +79,9 @@ This review validates alignment with target (`to-be`) design behavior, not parit
 | 13 | Yes | `proposed-design.md`, `future-state-runtime-call-stack.md`, `future-state-runtime-call-stack-review.md`, `workflow-state.md` | design `v5 -> v6`; call stack `v5 -> v6` | moved preview-specific contract, shared server-side coordination, and bridge client into `agent-tools/preview`; removed the generic backend shell boundary from the design basis; regenerated call stacks and restored the review history after re-entry | `F-008` |
 | 14 | No | N/A | N/A | N/A | N/A |
 | 15 | No | N/A | N/A | N/A | N/A |
+| 16 | Yes | `proposed-design.md`, `future-state-runtime-call-stack.md`, `future-state-runtime-call-stack-review.md`, `workflow-state.md` | design `v7 -> v8`; call stack `v7 -> v8` | made the shell controller the only authority for preview-shell state, changed shell projection identity from renderer identity to main-process shell-host identity, and added shell bootstrap/reconnect recovery flow plus authoritative snapshot-driven renderer projection | `F-009`, `F-010` |
+| 17 | No | N/A | N/A | N/A | N/A |
+| 18 | No | N/A | N/A | N/A | N/A |
 
 ## Missing-Use-Case Discovery Log (Mandatory Per Round)
 
@@ -96,18 +102,25 @@ This review validates alignment with target (`to-be`) design behavior, not parit
 | 13 | Requirement coverage / boundary crossing / fallback-error / design-risk | None | N/A | review found file-placement and capability-area ownership drift in existing use cases rather than a missing use case | Design Impact | Yes |
 | 14 | Requirement coverage / boundary crossing / fallback-error / design-risk | None | N/A | corrected v6 design and call stacks closed the prior file-placement and ownership drift without exposing a new use case | N/A | No |
 | 15 | Requirement coverage / boundary crossing / fallback-error / design-risk | None | N/A | second clean verification of the corrected v6 basis did not surface any new use case | N/A | No |
+| 16 | Requirement coverage / boundary crossing / fallback-error / design-risk | UC-011 | Design-Risk | the v7 design allowed sessions to remain valid while unattached and shifted shell truth into Electron main, but it never modeled shell bootstrap/reconnect recovery or a single authoritative snapshot path | Design Impact | Yes |
+| 17 | Requirement coverage / boundary crossing / fallback-error / design-risk | None | N/A | corrected v8 design and call stacks closed the prior shell-authority/reconnect gap without exposing a new use case | N/A | No |
+| 18 | Requirement coverage / boundary crossing / fallback-error / design-risk | None | N/A | second clean verification of the corrected v8 basis did not surface any new use case | N/A | No |
 
 ## Per-Use-Case Review
 
 | Use Case | Spine ID(s) | Architecture Fit (`Pass`/`Fail`) | Data-Flow Spine Clarity (`Pass`/`Fail`) | Spine Inventory Completeness (`Pass`/`Fail`) | Ownership Clarity (`Pass`/`Fail`) | Support Structure Clarity (`Pass`/`Fail`) | Existing Capability/Subsystem Reuse (`Pass`/`Fail`/`N/A`) | Ownership-Driven Dependency Check (`Pass`/`Fail`) | File Placement Alignment (`Pass`/`Fail`) | Flat-Vs-Over-Split Layout Judgment (`Pass`/`Fail`) | Interface/API/Method Boundary Clarity (`Pass`/`Fail`) | Existing-Structure Bias Check (`Pass`/`Fail`) | Anti-Hack Check (`Pass`/`Fail`) | Local-Fix Degradation Check (`Pass`/`Fail`) | Example-Based Clarity (`Pass`/`Fail`/`N/A`) | Terminology & Concept Naturalness (`Pass`/`Fail`) | File And API Naming Clarity (`Pass`/`Fail`) | Name-to-Responsibility Alignment Under Scope Drift (`Pass`/`Fail`) | Future-State Alignment With Design Basis (`Pass`/`Fail`) | Use-Case Coverage Completeness (`Pass`/`Fail`) | Use-Case Source Traceability (`Pass`/`Fail`) | Design-Risk Justification Quality (`Pass`/`Fail`/`N/A`) | Business Flow Completeness (`Pass`/`Fail`) | Scope-Appropriate SoC Check (`Pass`/`Fail`) | Dependency Flow Smells | Redundancy/Duplication Check (`Pass`/`Fail`) | Simplification Opportunity Check (`Pass`/`Fail`) | Remove/Decommission Completeness (`Pass`/`Fail`/`N/A`) | Legacy Retention Removed (`Pass`/`Fail`) | No Compatibility Wrappers/Dual Paths (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| UC-001 | DS-001 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | Pass | Pass | Pass | Pass |
+| UC-001 | DS-001 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | N/A | Pass | Pass | Pass |
 | UC-002 | DS-002 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | N/A | Pass | Pass | Pass |
 | UC-003 | DS-002 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | N/A | Pass | Pass | Pass |
 | UC-004 | DS-002 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | N/A | Pass | Pass | Pass |
-| UC-005 | DS-003 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | N/A | Pass | Pass | Pass |
-| UC-006 | DS-004 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | Pass | Pass | Pass | Pass |
-| UC-007 | DS-005 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | None | Pass | Pass | N/A | Pass | Pass | Pass |
+| UC-005 | DS-004 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | N/A | Pass | Pass | Pass |
+| UC-006 | DS-003 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | N/A | Pass | Pass | Pass |
+| UC-007 | DS-005 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | N/A | Pass | Pass | Pass |
+| UC-008 | DS-006 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | Pass | Pass | Pass | Pass |
+| UC-009 | DS-007 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | None | Pass | Pass | N/A | Pass | Pass | Pass |
+| UC-010 | DS-008 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | None | Pass | Pass | N/A | Pass | Pass | Pass |
+| UC-011 | DS-005 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | None | Pass | Pass | N/A | Pass | Pass | Pass |
 
 ## Findings
 
@@ -129,6 +142,10 @@ This review validates alignment with target (`to-be`) design behavior, not parit
 - `[F-008] Use case: design basis / UC-001 / UC-002 / UC-003 / UC-004 / UC-005 | Type: File Placement / Existing-Structure Reuse | Severity: Blocker | Confidence: High | Evidence: the v5 design still places preview-specific contract code in `autobyteus-ts/src/preview` and shared server-side preview coordination in a new `autobyteus-server-ts/src/desktop-shell/preview` capability area. The clarified ownership is narrower: preview exists only when the Electron shell is present, and all runtime adapters that need the preview contract already live in `autobyteus-server-ts`. Keeping preview-specific semantics in the common library and inventing a generic backend shell boundary weakens existing-structure reuse and file-placement truthfulness. | Required update: move the preview-specific contract, shared server-side preview coordination, bridge client, and native-runtime preview tool files under `autobyteus-server-ts/src/agent-tools/preview`, regenerate the subsystem/file mappings, and rerun the call-stack artifact against that placement. | Classification: Design Impact`
 - Round 14 findings: `None`
 - Round 15 findings: `None`
+- `[F-009] Use case: UC-005 / UC-007 / UC-010 | Type: Encapsulation / Ownership | Severity: Blocker | Confidence: High | Evidence: the v7 shell-tab design let `toolLifecycleHandler -> previewShellStore` mark the outer Preview tab visible and derive internal preview state directly from tool results, while `PreviewShellController` was also supposed to own shell projection and snapshots. That created parallel preview-shell truth and violated the boundary-encapsulation rule for the shell projection owner. | Required update: make `PreviewShellController` the sole authority for preview-shell state, keep tool results as bounded focus triggers only, and regenerate the design/call-stack basis around snapshot-driven renderer projection. | Classification: Design Impact`
+- `[F-010] Use case: UC-005 / UC-007 / UC-010 / new UC-011 | Type: InterfaceBoundary / MissingUseCase | Severity: Blocker | Confidence: High | Evidence: the v7 call stack modeled shell projection around `shellRendererId` and tool-result-triggered claiming, even though the design already allowed preview sessions to remain valid while unattached. That left shell identity tied to renderer lifetime and omitted the required shell bootstrap/reconnect recovery path. | Required update: move shell projection identity to a main-process-owned shell window/host identity, add an explicit shell bootstrap/reconnect recovery use case, and regenerate the call stacks around that identity model. | Classification: Design Impact`
+- Round 17 findings: `None`
+- Round 18 findings: `None`
 
 ## Blocking Findings Summary
 

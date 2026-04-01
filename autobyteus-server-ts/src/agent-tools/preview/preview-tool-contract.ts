@@ -12,7 +12,21 @@ export const OPEN_PREVIEW_TOOL_NAME = "open_preview";
 export const NAVIGATE_PREVIEW_TOOL_NAME = "navigate_preview";
 export const CAPTURE_PREVIEW_SCREENSHOT_TOOL_NAME = "capture_preview_screenshot";
 export const GET_PREVIEW_CONSOLE_LOGS_TOOL_NAME = "get_preview_console_logs";
+export const EXECUTE_PREVIEW_JAVASCRIPT_TOOL_NAME = "execute_preview_javascript";
+export const OPEN_PREVIEW_DEVTOOLS_TOOL_NAME = "open_preview_devtools";
 export const CLOSE_PREVIEW_TOOL_NAME = "close_preview";
+export const PREVIEW_TOOL_NAMES = new Set<string>([
+  OPEN_PREVIEW_TOOL_NAME,
+  NAVIGATE_PREVIEW_TOOL_NAME,
+  CAPTURE_PREVIEW_SCREENSHOT_TOOL_NAME,
+  GET_PREVIEW_CONSOLE_LOGS_TOOL_NAME,
+  EXECUTE_PREVIEW_JAVASCRIPT_TOOL_NAME,
+  OPEN_PREVIEW_DEVTOOLS_TOOL_NAME,
+  CLOSE_PREVIEW_TOOL_NAME,
+]);
+
+export const isPreviewToolName = (value: string | null | undefined): boolean =>
+  typeof value === "string" && PREVIEW_TOOL_NAMES.has(value.trim());
 
 export const PREVIEW_WAIT_UNTIL_VALUES = ["domcontentloaded", "load"] as const;
 
@@ -73,6 +87,26 @@ export type GetPreviewConsoleLogsResult = {
   next_sequence: number;
 };
 
+export type ExecutePreviewJavascriptInput = {
+  preview_session_id: string;
+  javascript: string;
+};
+
+export type ExecutePreviewJavascriptResult = {
+  preview_session_id: string;
+  result_json: string;
+};
+
+export type OpenPreviewDevToolsInput = {
+  preview_session_id: string;
+  mode?: "detach";
+};
+
+export type OpenPreviewDevToolsResult = {
+  preview_session_id: string;
+  status: "opened";
+};
+
 export type ClosePreviewInput = {
   preview_session_id: string;
 };
@@ -87,6 +121,7 @@ export type PreviewErrorCode =
   | "preview_session_closed"
   | "preview_session_not_found"
   | "preview_navigation_failed"
+  | "preview_javascript_execution_failed"
   | "preview_bridge_unavailable";
 
 export type PreviewErrorPayload = {
@@ -248,6 +283,26 @@ export const parseClosePreviewInput = (
     "",
 });
 
+export const parseExecutePreviewJavascriptInput = (
+  rawArguments: Record<string, unknown>,
+): ExecutePreviewJavascriptInput => ({
+  preview_session_id:
+    asTrimmedString(rawArguments.preview_session_id) ??
+    asTrimmedString(rawArguments.previewSessionId) ??
+    "",
+  javascript: asString(rawArguments.javascript) ?? "",
+});
+
+export const parseOpenPreviewDevToolsInput = (
+  rawArguments: Record<string, unknown>,
+): OpenPreviewDevToolsInput => ({
+  preview_session_id:
+    asTrimmedString(rawArguments.preview_session_id) ??
+    asTrimmedString(rawArguments.previewSessionId) ??
+    "",
+  mode: asTrimmedString(rawArguments.mode) === "detach" ? "detach" : "detach",
+});
+
 export const assertOpenPreviewSemantics = (input: OpenPreviewInput): void => {
   assertUrl(OPEN_PREVIEW_TOOL_NAME, asTrimmedString(input.url));
 };
@@ -293,6 +348,36 @@ export const assertClosePreviewSemantics = (input: ClosePreviewInput): void => {
     CLOSE_PREVIEW_TOOL_NAME,
     asTrimmedString(input.preview_session_id),
   );
+};
+
+export const assertExecutePreviewJavascriptSemantics = (
+  input: ExecutePreviewJavascriptInput,
+): void => {
+  assertPreviewSessionId(
+    EXECUTE_PREVIEW_JAVASCRIPT_TOOL_NAME,
+    asTrimmedString(input.preview_session_id),
+  );
+  if (!asTrimmedString(input.javascript)) {
+    throw new PreviewToolError(
+      "preview_javascript_execution_failed",
+      `${EXECUTE_PREVIEW_JAVASCRIPT_TOOL_NAME} requires a non-empty javascript string.`,
+    );
+  }
+};
+
+export const assertOpenPreviewDevToolsSemantics = (
+  input: OpenPreviewDevToolsInput,
+): void => {
+  assertPreviewSessionId(
+    OPEN_PREVIEW_DEVTOOLS_TOOL_NAME,
+    asTrimmedString(input.preview_session_id),
+  );
+  if (input.mode && input.mode !== "detach") {
+    throw new PreviewToolError(
+      "preview_navigation_failed",
+      `${OPEN_PREVIEW_DEVTOOLS_TOOL_NAME} only supports mode='detach'.`,
+    );
+  }
 };
 
 const buildWaitUntilParameter = () =>
@@ -372,6 +457,30 @@ export const buildGetPreviewConsoleLogsParameterSchema = (): ParameterSchema =>
       description:
         "Optional exclusive lower bound for log entry sequence numbers.",
       required: false,
+    }),
+  ]);
+
+export const buildExecutePreviewJavascriptParameterSchema = (): ParameterSchema =>
+  new ParameterSchema([
+    buildPreviewSessionIdParameter(),
+    new ParameterDefinition({
+      name: "javascript",
+      type: ParameterType.STRING,
+      description: "JavaScript source code to evaluate inside the preview session.",
+      required: true,
+    }),
+  ]);
+
+export const buildOpenPreviewDevToolsParameterSchema = (): ParameterSchema =>
+  new ParameterSchema([
+    buildPreviewSessionIdParameter(),
+    new ParameterDefinition({
+      name: "mode",
+      type: ParameterType.ENUM,
+      description: "DevTools opening mode. Only detach is supported in the shell-tab preview.",
+      required: false,
+      enumValues: ["detach"],
+      defaultValue: "detach",
     }),
   ]);
 

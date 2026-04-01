@@ -7,6 +7,7 @@ import {
 
 class FakeWebContents extends EventEmitter {
   private title = "";
+  private destroyed = false;
   private readonly pendingLoads = new Map<string, { resolve: () => void; reject: (error: Error) => void }>();
 
   async loadURL(url: string): Promise<void> {
@@ -44,62 +45,35 @@ class FakeWebContents extends EventEmitter {
   async executeJavaScript() {
     return { width: 1200, height: 800 };
   }
-}
 
-class FakeBrowserWindow extends EventEmitter {
-  readonly webContents = new FakeWebContents();
-  private destroyed = false;
-  private minimized = false;
+  close(): void {
+    this.destroyed = true;
+    this.emit("destroyed");
+  }
 
   isDestroyed(): boolean {
     return this.destroyed;
   }
+}
 
-  isMinimized(): boolean {
-    return this.minimized;
-  }
+class FakeWebContentsView {
+  readonly webContents = new FakeWebContents();
+  bounds = { x: 0, y: 0, width: 0, height: 0 };
 
-  restore(): void {
-    this.minimized = false;
-  }
-
-  show(): void {}
-
-  focus(): void {}
-
-  setTitle(title: string): void {
-    this.webContents.setTitle(title);
-  }
-
-  async loadURL(url: string): Promise<void> {
-    return this.webContents.loadURL(url);
-  }
-
-  getContentBounds() {
-    return { width: 1200, height: 800, x: 0, y: 0 };
-  }
-
-  setContentSize(): void {}
-
-  close(): void {
-    this.destroyed = true;
-    this.emit("closed");
-  }
-
-  destroy(): void {
-    this.close();
+  setBounds(bounds: { x: number; y: number; width: number; height: number }): void {
+    this.bounds = { ...bounds };
   }
 }
 
 describe("PreviewSessionManager", () => {
   it("waits for an opening session before reusing it", async () => {
-    const windows: FakeBrowserWindow[] = [];
+    const views: FakeWebContentsView[] = [];
     const manager = new PreviewSessionManager({
-      windowFactory: {
-        createPreviewWindow: () => {
-          const window = new FakeBrowserWindow();
-          windows.push(window);
-          return window as any;
+      viewFactory: {
+        createPreviewView: () => {
+          const view = new FakeWebContentsView();
+          views.push(view);
+          return view as any;
         },
       } as any,
       screenshotWriter: {
@@ -121,9 +95,9 @@ describe("PreviewSessionManager", () => {
 
     await Promise.resolve();
     expect(secondResolved).toBe(false);
-    expect(windows).toHaveLength(1);
+    expect(views).toHaveLength(1);
 
-    windows[0]!.webContents.finishLoad(new URL(url).toString());
+    views[0]!.webContents.finishLoad(new URL(url).toString());
 
     const [firstResult, secondResult] = await Promise.all([firstOpenPromise, secondOpenPromise]);
     expect(firstResult.status).toBe("opened");
@@ -133,16 +107,16 @@ describe("PreviewSessionManager", () => {
 
   it("evicts the oldest closed-session tombstones once the retention cap is exceeded", async () => {
     const manager = new PreviewSessionManager({
-      windowFactory: {
-        createPreviewWindow: () => {
-          const window = new FakeBrowserWindow();
-          const originalLoadURL = window.loadURL.bind(window);
-          window.loadURL = async (url: string) => {
+      viewFactory: {
+        createPreviewView: () => {
+          const view = new FakeWebContentsView();
+          const originalLoadURL = view.webContents.loadURL.bind(view.webContents);
+          view.webContents.loadURL = async (url: string) => {
             const loadPromise = originalLoadURL(url);
-            window.webContents.finishLoad(url);
+            view.webContents.finishLoad(url);
             return loadPromise;
           };
-          return window as any;
+          return view as any;
         },
       } as any,
       screenshotWriter: {

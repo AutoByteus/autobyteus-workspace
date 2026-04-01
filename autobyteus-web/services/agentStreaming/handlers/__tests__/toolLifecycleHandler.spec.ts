@@ -26,8 +26,24 @@ import type {
   ToolLogPayload,
 } from '../../protocol/messageTypes';
 
+const previewShellStoreMock = {
+  focusSession: vi.fn().mockResolvedValue(undefined),
+};
+
+const rightSideTabsMock = {
+  setActiveTab: vi.fn(),
+};
+
 vi.mock('~/stores/agentActivityStore', () => ({
   useAgentActivityStore: vi.fn(),
+}));
+
+vi.mock('~/stores/previewShellStore', () => ({
+  usePreviewShellStore: () => previewShellStoreMock,
+}));
+
+vi.mock('~/composables/useRightSideTabs', () => ({
+  useRightSideTabs: () => rightSideTabsMock,
 }));
 
 const runId = 'test-agent-id';
@@ -117,6 +133,8 @@ describe('toolLifecycleHandler', () => {
 
   beforeEach(() => {
     setActivePinia(createPinia());
+    previewShellStoreMock.focusSession.mockClear();
+    rightSideTabsMock.setActiveTab.mockClear();
     const activities: any[] = [];
     mockActivityStore = {
       getActivities: vi.fn(() => activities),
@@ -280,6 +298,29 @@ describe('toolLifecycleHandler', () => {
     expect(segment.status).toBe('success');
     expect(segment.result).toEqual({ content: 'ok' });
     expect(mockActivityStore.updateActivityStatus).toHaveBeenCalledWith(runId, invocationId, 'success');
+  });
+
+  it('focuses the preview shell when open_preview succeeds', async () => {
+    const invocationId = 'tool-open-preview';
+    const segment = buildToolCallSegment(invocationId);
+    const context = buildContextWithSegment(segment);
+
+    const succeededPayload: ToolExecutionSucceededPayload = {
+      invocation_id: invocationId,
+      tool_name: 'open_preview',
+      result: {
+        preview_session_id: 'preview-session-1',
+        status: 'opened',
+        url: 'http://localhost:3000/demo',
+        title: 'Demo',
+      },
+    };
+
+    handleToolExecutionSucceeded(succeededPayload, context);
+    await Promise.resolve();
+
+    expect(previewShellStoreMock.focusSession).toHaveBeenCalledWith('preview-session-1');
+    expect(rightSideTabsMock.setActiveTab).toHaveBeenCalledWith('preview');
   });
 
   it('applies failed terminal state and updates activity result', () => {

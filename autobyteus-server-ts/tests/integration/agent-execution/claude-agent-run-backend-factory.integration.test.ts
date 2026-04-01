@@ -810,12 +810,6 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
         await waitForEvent(
           events,
           (event) =>
-            event.eventType === AgentRunEventType.TOOL_EXECUTION_STARTED &&
-            event.payload.tool_name === "open_preview",
-        );
-        await waitForEvent(
-          events,
-          (event) =>
             event.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED &&
             event.payload.tool_name === "open_preview",
         );

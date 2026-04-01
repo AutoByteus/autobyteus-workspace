@@ -2,9 +2,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   CAPTURE_PREVIEW_SCREENSHOT_TOOL_NAME,
   CLOSE_PREVIEW_TOOL_NAME,
+  EXECUTE_PREVIEW_JAVASCRIPT_TOOL_NAME,
   GET_PREVIEW_CONSOLE_LOGS_TOOL_NAME,
   NAVIGATE_PREVIEW_TOOL_NAME,
   OPEN_PREVIEW_TOOL_NAME,
+  OPEN_PREVIEW_DEVTOOLS_TOOL_NAME,
   PREVIEW_BRIDGE_BASE_URL_ENV,
   PREVIEW_BRIDGE_TOKEN_ENV,
 } from "../../../../../../src/agent-tools/preview/preview-tool-contract.js";
@@ -91,6 +93,28 @@ describe("buildClaudePreviewMcpServers", () => {
           }),
         };
       }
+      if (url.endsWith("/preview/javascript")) {
+        return {
+          json: async () => ({
+            ok: true,
+            result: {
+              preview_session_id: "preview-session-1",
+              result_json: "{\"ready\":true}",
+            },
+          }),
+        };
+      }
+      if (url.endsWith("/preview/devtools")) {
+        return {
+          json: async () => ({
+            ok: true,
+            result: {
+              preview_session_id: "preview-session-1",
+              status: "opened",
+            },
+          }),
+        };
+      }
       if (url.endsWith("/preview/close")) {
         return {
           json: async () => ({
@@ -118,12 +142,12 @@ describe("buildClaudePreviewMcpServers", () => {
 
     const servers = await buildClaudePreviewMcpServers({ sdkClient });
 
-    expect(createToolDefinition).toHaveBeenCalledTimes(5);
+    expect(createToolDefinition).toHaveBeenCalledTimes(7);
     expect(createMcpServer).toHaveBeenCalledTimes(1);
     expect(servers).toMatchObject({
       autobyteus_preview: {
         name: "autobyteus_preview",
-        toolCount: 5,
+        toolCount: 7,
       },
     });
 
@@ -156,6 +180,8 @@ describe("buildClaudePreviewMcpServers", () => {
     const navigatePreviewTool = tools.find((tool) => tool.name === NAVIGATE_PREVIEW_TOOL_NAME);
     const screenshotTool = tools.find((tool) => tool.name === CAPTURE_PREVIEW_SCREENSHOT_TOOL_NAME);
     const consoleLogsTool = tools.find((tool) => tool.name === GET_PREVIEW_CONSOLE_LOGS_TOOL_NAME);
+    const executeJavascriptTool = tools.find((tool) => tool.name === EXECUTE_PREVIEW_JAVASCRIPT_TOOL_NAME);
+    const openDevToolsTool = tools.find((tool) => tool.name === OPEN_PREVIEW_DEVTOOLS_TOOL_NAME);
     const closePreviewTool = tools.find((tool) => tool.name === CLOSE_PREVIEW_TOOL_NAME);
 
     await expect(
@@ -221,6 +247,47 @@ describe("buildClaudePreviewMcpServers", () => {
                 },
               ],
               next_sequence: 2,
+            },
+            null,
+            2,
+          ),
+        },
+      ],
+    });
+
+    await expect(
+      (executeJavascriptTool!.handler as (input: unknown) => Promise<Record<string, unknown>>)({
+        preview_session_id: "preview-session-1",
+        javascript: "JSON.stringify({ ready: true })",
+      }),
+    ).resolves.toEqual({
+      content: [
+        {
+          type: "text",
+          text: JSON.stringify(
+            {
+              preview_session_id: "preview-session-1",
+              result_json: "{\"ready\":true}",
+            },
+            null,
+            2,
+          ),
+        },
+      ],
+    });
+
+    await expect(
+      (openDevToolsTool!.handler as (input: unknown) => Promise<Record<string, unknown>>)({
+        preview_session_id: "preview-session-1",
+      }),
+    ).resolves.toEqual({
+      content: [
+        {
+          type: "text",
+          text: JSON.stringify(
+            {
+              preview_session_id: "preview-session-1",
+              status: "opened",
             },
             null,
             2,

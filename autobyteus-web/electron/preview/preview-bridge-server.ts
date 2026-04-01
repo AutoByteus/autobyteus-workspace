@@ -4,8 +4,10 @@ import type { AddressInfo } from 'net'
 import {
   CapturePreviewScreenshotRequest,
   ClosePreviewRequest,
+  ExecutePreviewJavascriptRequest,
   GetPreviewConsoleLogsRequest,
   NavigatePreviewRequest,
+  OpenPreviewDevToolsRequest,
   OpenPreviewRequest,
   PreviewSessionError,
   PreviewSessionManager,
@@ -146,6 +148,20 @@ export class PreviewBridgeServer {
           this.writeJson(response, 200, {
             ok: true,
             result: this.previewSessionManager.getConsoleLogs(body as GetPreviewConsoleLogsRequest),
+          })
+          return
+        case '/preview/javascript':
+          this.writeJson(response, 200, {
+            ok: true,
+            result: await this.previewSessionManager.executeJavascript(
+              body as ExecutePreviewJavascriptRequest,
+            ),
+          })
+          return
+        case '/preview/devtools':
+          this.writeJson(response, 200, {
+            ok: true,
+            result: this.previewSessionManager.openDevTools(body as OpenPreviewDevToolsRequest),
           })
           return
         case '/preview/close':

@@ -2,9 +2,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   CAPTURE_PREVIEW_SCREENSHOT_TOOL_NAME,
   CLOSE_PREVIEW_TOOL_NAME,
+  EXECUTE_PREVIEW_JAVASCRIPT_TOOL_NAME,
   GET_PREVIEW_CONSOLE_LOGS_TOOL_NAME,
   NAVIGATE_PREVIEW_TOOL_NAME,
   OPEN_PREVIEW_TOOL_NAME,
+  OPEN_PREVIEW_DEVTOOLS_TOOL_NAME,
   PREVIEW_BRIDGE_BASE_URL_ENV,
   PREVIEW_BRIDGE_TOKEN_ENV,
 } from "../../../../../../src/agent-tools/preview/preview-tool-contract.js";
@@ -82,6 +84,28 @@ describe("buildPreviewDynamicToolRegistrations", () => {
           }),
         };
       }
+      if (url.endsWith("/preview/javascript")) {
+        return {
+          json: async () => ({
+            ok: true,
+            result: {
+              preview_session_id: "preview-session-1",
+              result_json: "{\"ready\":true}",
+            },
+          }),
+        };
+      }
+      if (url.endsWith("/preview/devtools")) {
+        return {
+          json: async () => ({
+            ok: true,
+            result: {
+              preview_session_id: "preview-session-1",
+              status: "opened",
+            },
+          }),
+        };
+      }
       if (url.endsWith("/preview/close")) {
         return {
           json: async () => ({
@@ -98,7 +122,7 @@ describe("buildPreviewDynamicToolRegistrations", () => {
 
     const registrations = buildPreviewDynamicToolRegistrations();
     expect(registrations).not.toBeNull();
-    expect(registrations).toHaveLength(5);
+    expect(registrations).toHaveLength(7);
 
     const openPreviewRegistration = registrations!.find(
       (registration) => registration.spec.name === OPEN_PREVIEW_TOOL_NAME,
@@ -133,6 +157,12 @@ describe("buildPreviewDynamicToolRegistrations", () => {
     );
     const consoleLogsRegistration = registrations!.find(
       (registration) => registration.spec.name === GET_PREVIEW_CONSOLE_LOGS_TOOL_NAME,
+    );
+    const executeJavascriptRegistration = registrations!.find(
+      (registration) => registration.spec.name === EXECUTE_PREVIEW_JAVASCRIPT_TOOL_NAME,
+    );
+    const openDevToolsRegistration = registrations!.find(
+      (registration) => registration.spec.name === OPEN_PREVIEW_DEVTOOLS_TOOL_NAME,
     );
     const closePreviewRegistration = registrations!.find(
       (registration) => registration.spec.name === CLOSE_PREVIEW_TOOL_NAME,
@@ -187,11 +217,42 @@ describe("buildPreviewDynamicToolRegistrations", () => {
       next_sequence: 2,
     });
 
-    const closeResult = await closePreviewRegistration!.handler({
+    const executeJavascriptResult = await executeJavascriptRegistration!.handler({
       runId: "run-1",
       threadId: "thread-1",
       turnId: null,
       callId: "call-5",
+      toolName: EXECUTE_PREVIEW_JAVASCRIPT_TOOL_NAME,
+      arguments: {
+        preview_session_id: "preview-session-1",
+        javascript: "JSON.stringify({ ready: true })",
+      },
+    });
+    expect(JSON.parse(executeJavascriptResult.contentItems[0]!.text)).toEqual({
+      preview_session_id: "preview-session-1",
+      result_json: "{\"ready\":true}",
+    });
+
+    const openDevToolsResult = await openDevToolsRegistration!.handler({
+      runId: "run-1",
+      threadId: "thread-1",
+      turnId: null,
+      callId: "call-6",
+      toolName: OPEN_PREVIEW_DEVTOOLS_TOOL_NAME,
+      arguments: {
+        preview_session_id: "preview-session-1",
+      },
+    });
+    expect(JSON.parse(openDevToolsResult.contentItems[0]!.text)).toEqual({
+      preview_session_id: "preview-session-1",
+      status: "opened",
+    });
+
+    const closeResult = await closePreviewRegistration!.handler({
+      runId: "run-1",
+      threadId: "thread-1",
+      turnId: null,
+      callId: "call-7",
       toolName: CLOSE_PREVIEW_TOOL_NAME,
       arguments: {
         preview_session_id: "preview-session-1",

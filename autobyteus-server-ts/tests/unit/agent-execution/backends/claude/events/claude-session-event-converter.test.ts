@@ -118,4 +118,31 @@ describe("ClaudeSessionEventConverter", () => {
     expect(segmentEnd?.eventType).toBe(AgentRunEventType.SEGMENT_END);
     expect(segmentEnd?.payload.segment_type).toBe("tool_call");
   });
+
+  it("normalizes preview MCP tool names to canonical preview tool names", () => {
+    const converter = new ClaudeSessionEventConverter("run-claude-converter");
+
+    const completed = converter.convert({
+      method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_COMPLETED,
+      params: {
+        invocation_id: "invoke-preview",
+        tool_name: "mcp__autobyteus_preview__open_preview",
+        result: {
+          preview_session_id: "preview-1",
+          status: "opened",
+        },
+      },
+    });
+
+    expect(completed).not.toBeNull();
+    expect(completed?.eventType).toBe(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED);
+    expect(completed?.payload).toMatchObject({
+      invocation_id: "invoke-preview",
+      tool_name: "open_preview",
+      result: {
+        preview_session_id: "preview-1",
+        status: "opened",
+      },
+    });
+  });
 });

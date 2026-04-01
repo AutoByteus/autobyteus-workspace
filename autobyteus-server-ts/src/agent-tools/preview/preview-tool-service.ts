@@ -3,17 +3,23 @@ import {
   CapturePreviewScreenshotResult,
   ClosePreviewInput,
   ClosePreviewResult,
+  ExecutePreviewJavascriptInput,
+  ExecutePreviewJavascriptResult,
   GetPreviewConsoleLogsInput,
   GetPreviewConsoleLogsResult,
   NavigatePreviewInput,
   NavigatePreviewResult,
   OpenPreviewInput,
+  OpenPreviewDevToolsInput,
+  OpenPreviewDevToolsResult,
   OpenPreviewResult,
   assertCapturePreviewScreenshotSemantics,
   assertClosePreviewSemantics,
+  assertExecutePreviewJavascriptSemantics,
   assertGetPreviewConsoleLogsSemantics,
   assertNavigatePreviewSemantics,
   assertOpenPreviewSemantics,
+  assertOpenPreviewDevToolsSemantics,
   PreviewToolError,
 } from "./preview-tool-contract.js";
 import { PreviewBridgeClient } from "./preview-bridge-client.js";
@@ -49,6 +55,22 @@ export class PreviewToolService {
     this.assertPreviewSupported();
     assertGetPreviewConsoleLogsSemantics(input);
     return this.getBridgeClient().getPreviewConsoleLogs(input);
+  }
+
+  async executePreviewJavascript(
+    input: ExecutePreviewJavascriptInput,
+  ): Promise<ExecutePreviewJavascriptResult> {
+    this.assertPreviewSupported();
+    assertExecutePreviewJavascriptSemantics(input);
+    return this.getBridgeClient().executePreviewJavascript(input);
+  }
+
+  async openPreviewDevTools(
+    input: OpenPreviewDevToolsInput,
+  ): Promise<OpenPreviewDevToolsResult> {
+    this.assertPreviewSupported();
+    assertOpenPreviewDevToolsSemantics(input);
+    return this.getBridgeClient().openPreviewDevTools(input);
   }
 
   async closePreview(input: ClosePreviewInput): Promise<ClosePreviewResult> {

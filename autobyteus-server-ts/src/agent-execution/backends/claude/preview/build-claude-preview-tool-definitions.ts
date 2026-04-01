@@ -3,15 +3,19 @@ import type { ClaudeSdkClient } from "../../../../runtime-management/claude/clie
 import {
   CAPTURE_PREVIEW_SCREENSHOT_TOOL_NAME,
   CLOSE_PREVIEW_TOOL_NAME,
+  EXECUTE_PREVIEW_JAVASCRIPT_TOOL_NAME,
   GET_PREVIEW_CONSOLE_LOGS_TOOL_NAME,
   NAVIGATE_PREVIEW_TOOL_NAME,
   OPEN_PREVIEW_TOOL_NAME,
+  OPEN_PREVIEW_DEVTOOLS_TOOL_NAME,
   PREVIEW_WAIT_UNTIL_VALUES,
   parseCapturePreviewScreenshotInput,
   parseClosePreviewInput,
+  parseExecutePreviewJavascriptInput,
   parseGetPreviewConsoleLogsInput,
   parseNavigatePreviewInput,
   parseOpenPreviewInput,
+  parseOpenPreviewDevToolsInput,
   toPreviewErrorPayload,
   toPreviewJsonString,
 } from "../../../../agent-tools/preview/preview-tool-contract.js";
@@ -163,11 +167,62 @@ export const buildClaudePreviewToolDefinitions = async (options: {
     },
   });
 
+  const executePreviewJavascriptTool = await options.sdkClient.createToolDefinition({
+    name: EXECUTE_PREVIEW_JAVASCRIPT_TOOL_NAME,
+    description:
+      "Execute JavaScript inside an existing preview session and return the JSON-serialized result.",
+    inputSchema: {
+      preview_session_id: z.string().min(1, "preview_session_id is required").describe(
+        "Opaque preview session identifier returned by open_preview.",
+      ),
+      javascript: z.string().min(1, "javascript is required").describe(
+        "JavaScript source code to evaluate inside the preview session.",
+      ),
+    },
+    handler: async (rawArguments) => {
+      try {
+        return createClaudePreviewToolResult(
+          await previewToolService.executePreviewJavascript(
+            parseExecutePreviewJavascriptInput((rawArguments as Record<string, unknown>) ?? {}),
+          ),
+        );
+      } catch (error) {
+        return createClaudePreviewToolErrorResult(error);
+      }
+    },
+  });
+
+  const openPreviewDevToolsTool = await options.sdkClient.createToolDefinition({
+    name: OPEN_PREVIEW_DEVTOOLS_TOOL_NAME,
+    description: "Open detached DevTools for an existing preview session.",
+    inputSchema: {
+      preview_session_id: z.string().min(1, "preview_session_id is required").describe(
+        "Opaque preview session identifier returned by open_preview.",
+      ),
+      mode: z.literal("detach").optional().describe(
+        "DevTools opening mode. Only detach is supported.",
+      ),
+    },
+    handler: async (rawArguments) => {
+      try {
+        return createClaudePreviewToolResult(
+          await previewToolService.openPreviewDevTools(
+            parseOpenPreviewDevToolsInput((rawArguments as Record<string, unknown>) ?? {}),
+          ),
+        );
+      } catch (error) {
+        return createClaudePreviewToolErrorResult(error);
+      }
+    },
+  });
+
   return [
     openPreviewTool,
     navigatePreviewTool,
     capturePreviewScreenshotTool,
     getPreviewConsoleLogsTool,
+    executePreviewJavascriptTool,
+    openPreviewDevToolsTool,
     closePreviewTool,
   ];
 };

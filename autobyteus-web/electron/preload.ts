@@ -2,6 +2,7 @@
 
 import { contextBridge, ipcRenderer, webUtils } from 'electron'
 import type { NodeRegistryChange } from './nodeRegistryTypes'
+import type { PreviewHostBounds, PreviewShellSnapshot } from '../types/previewShell'
 import type {
   ExtensionId,
   ManagedExtensionState,
@@ -41,6 +42,20 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getNodeRegistrySnapshot: () => ipcRenderer.invoke('get-node-registry-snapshot'),
   onNodeRegistryUpdated: (callback: (snapshot: any) => void) => {
     return registerIpcListener('node-registry-updated', callback)
+  },
+
+  getPreviewShellSnapshot: () =>
+    ipcRenderer.invoke('preview-shell:get-snapshot') as Promise<PreviewShellSnapshot>,
+  focusPreviewSession: (previewSessionId: string) =>
+    ipcRenderer.invoke('preview-shell:focus-session', previewSessionId) as Promise<PreviewShellSnapshot>,
+  setActivePreviewSession: (previewSessionId: string) =>
+    ipcRenderer.invoke('preview-shell:set-active-session', previewSessionId) as Promise<PreviewShellSnapshot>,
+  updatePreviewHostBounds: (bounds: PreviewHostBounds | null) =>
+    ipcRenderer.invoke('preview-shell:update-host-bounds', bounds) as Promise<PreviewShellSnapshot>,
+  closePreviewShellSession: (previewSessionId: string) =>
+    ipcRenderer.invoke('preview-shell:close-session', previewSessionId) as Promise<PreviewShellSnapshot>,
+  onPreviewShellSnapshotUpdated: (callback: (snapshot: PreviewShellSnapshot) => void) => {
+    return registerIpcListener('preview-shell:snapshot-updated', callback)
   },
 
   getAppUpdateState: () => ipcRenderer.invoke('app-update:get-state'),

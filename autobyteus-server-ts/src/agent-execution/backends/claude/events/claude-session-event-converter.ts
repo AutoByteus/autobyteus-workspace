@@ -2,10 +2,13 @@ import {
   AgentRunEventType,
   type AgentRunEvent,
 } from "../../../domain/agent-run-event.js";
+import { isPreviewToolName } from "../../../../agent-tools/preview/preview-tool-contract.js";
 import { serializePayload } from "../../../../services/agent-streaming/payload-serialization.js";
 import { asObject, asString, type ClaudeSessionEvent } from "../claude-runtime-shared.js";
 import { isClaudeSendMessageToolName } from "../claude-send-message-tool-name.js";
 import { ClaudeSessionEventName } from "./claude-session-event-name.js";
+
+const CLAUDE_PREVIEW_MCP_TOOL_PREFIX = "mcp__autobyteus_preview__";
 
 const resolveSegmentId = (payload: Record<string, unknown>): string | null =>
   asString(payload.id);
@@ -13,8 +16,20 @@ const resolveSegmentId = (payload: Record<string, unknown>): string | null =>
 const resolveInvocationId = (payload: Record<string, unknown>): string | null =>
   asString(payload.invocation_id);
 
+const normalizeToolNameForEvent = (value: string | null): string | null => {
+  if (!value) {
+    return null;
+  }
+  const trimmed = value.trim();
+  if (!trimmed.startsWith(CLAUDE_PREVIEW_MCP_TOOL_PREFIX)) {
+    return trimmed;
+  }
+  const candidate = trimmed.slice(CLAUDE_PREVIEW_MCP_TOOL_PREFIX.length);
+  return isPreviewToolName(candidate) ? candidate : trimmed;
+};
+
 const resolveToolName = (payload: Record<string, unknown>): string | null =>
-  asString(payload.tool_name);
+  normalizeToolNameForEvent(asString(payload.tool_name));
 
 const resolveToolArguments = (payload: Record<string, unknown>): Record<string, unknown> => {
   const argumentsPayload = asObject(payload.arguments);

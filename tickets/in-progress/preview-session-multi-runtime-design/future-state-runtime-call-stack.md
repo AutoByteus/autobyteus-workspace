@@ -17,11 +17,11 @@ It models the intended target behavior, not current-code parity.
 ## Design Basis
 
 - Scope Classification: `Large`
-- Call Stack Version: `v6`
+- Call Stack Version: `v8`
 - Requirements: `tickets/in-progress/preview-session-multi-runtime-design/requirements.md` (status `Refined`)
 - Source Artifact:
   - `tickets/in-progress/preview-session-multi-runtime-design/proposed-design.md`
-- Source Design Version: `v6`
+- Source Design Version: `v8`
 - Referenced Sections:
   - Spine inventory sections: `Data-Flow Spine Inventory`, `Primary Execution / Data-Flow Spine(s)`, `Return / Event Spine(s)`, `Bounded Local / Internal Spines`
   - Ownership sections: `Ownership Map`, `Subsystem / Capability-Area Allocation`, `Ownership-Driven Dependency Rules`
@@ -30,28 +30,28 @@ It models the intended target behavior, not current-code parity.
 
 - Model target design behavior even when current code diverges.
 - Every use case declares which spine(s) it exercises from the approved design basis.
-- The bounded local preview-session-owner spine is modeled explicitly where it materially affects behavior.
+- The bounded local session-owner and shell-attachment spines are modeled explicitly where they materially affect correctness.
 
 ## Use Case Index (Stable IDs)
 
 | use_case_id | Spine ID(s) | Spine Scope (`Primary End-to-End`/`Return-Event`/`Bounded Local`) | Governing Owner | Source Type (`Requirement`/`Design-Risk`) | Requirement ID(s) | Design-Risk Objective (if source=`Design-Risk`) | Use Case Name | Coverage Target (Primary/Fallback/Error) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| UC-001 | DS-001 | Primary End-to-End | `PreviewToolService` | Requirement | R-002, R-005, R-006 | N/A | local packaged app startup exposes preview capability only where supported | Yes/Yes/Yes |
-| UC-002 | DS-002 | Primary End-to-End | `PreviewSessionManager` | Requirement | R-001, R-002, R-006, R-008, R-009 | N/A | `autobyteus` runtime opens a preview session | Yes/Yes/Yes |
-| UC-003 | DS-002 | Primary End-to-End | `PreviewSessionManager` | Requirement | R-002, R-006, R-009 | N/A | `codex_app_server` opens a preview session through a dynamic tool | Yes/Yes/Yes |
-| UC-004 | DS-002 | Primary End-to-End | `PreviewSessionManager` | Requirement | R-002, R-006, R-009 | N/A | `claude_agent_sdk` opens a preview session through run-level MCP tools | Yes/Yes/Yes |
-| UC-005 | DS-003 | Primary End-to-End | `PreviewSessionManager` | Requirement | R-001, R-007, R-008, R-009 | N/A | agent captures a screenshot from an existing preview session | Yes/Yes/Yes |
-| UC-006 | DS-004 | Return-Event | `PreviewSessionManager` | Requirement | R-003, R-004, R-005, R-007 | N/A | native preview close invalidates the session without renderer-specific projection | Yes/Yes/Yes |
-| UC-007 | DS-005 | Bounded Local | `PreviewSessionManager` | Design-Risk | R-003, R-007 | session registry invariants and result/error discipline must survive mixed bridge/native inputs | preview session owner internal lifecycle remains coherent across open, reuse, close, and native-close | Yes/N/A/Yes |
-
-Rules:
-- Every in-scope requirement maps to at least one use case in this index.
-- Every use case maps to at least one spine from the approved spine inventory.
+| UC-001 | DS-001 | Primary End-to-End | `PreviewToolService` | Requirement | R-005, R-010 | N/A | local packaged app startup exposes preview capability only where supported | Yes/Yes/Yes |
+| UC-002 | DS-002 | Primary End-to-End | `PreviewSessionManager` | Requirement | R-001, R-004, R-005, R-008, R-010 | N/A | `autobyteus` runtime opens a preview session | Yes/Yes/Yes |
+| UC-003 | DS-002 | Primary End-to-End | `PreviewSessionManager` | Requirement | R-001, R-005, R-010 | N/A | `codex_app_server` opens a preview session through a dynamic tool | Yes/Yes/Yes |
+| UC-004 | DS-002 | Primary End-to-End | `PreviewSessionManager` | Requirement | R-001, R-005, R-010 | N/A | `claude_agent_sdk` opens a preview session through run-level MCP tools | Yes/Yes/Yes |
+| UC-005 | DS-004 | Primary End-to-End | `PreviewShellController` | Requirement | R-002, R-003, R-006, R-007 | N/A | tool success focuses the preview session in the current shell and reveals the outer `Preview` tab from controller state | Yes/Yes/Yes |
+| UC-006 | DS-003 | Primary End-to-End | `PreviewSessionManager` | Requirement | R-001, R-004, R-008, R-009 | N/A | agent uses screenshot, console, JavaScript, or DevTools on an existing preview session | Yes/Yes/Yes |
+| UC-007 | DS-005 | Return-Event | `PreviewShellController` | Requirement | R-003, R-006, R-007 | N/A | user switches internal preview tabs or resizes/hides the right panel | Yes/Yes/Yes |
+| UC-008 | DS-006 | Return-Event | `PreviewSessionManager` | Requirement | R-003, R-009, R-011 | N/A | closing preview sessions invalidates them and hides the outer `Preview` tab when the last session closes | Yes/Yes/Yes |
+| UC-009 | DS-007 | Bounded Local | `PreviewSessionManager` | Design-Risk | R-001, R-004, R-009 | session registry and per-session browser-control invariants must survive create/reuse/close/close-after-close paths | preview session owner lifecycle remains coherent | Yes/N/A/Yes |
+| UC-010 | DS-008 | Bounded Local | `PreviewShellController` | Design-Risk | R-002, R-003, R-006, R-007 | host bounds and active-session attachment must stay coherent across tab switches, resize, and hidden-state transitions | shell attachment lifecycle remains coherent | Yes/N/A/Yes |
+| UC-011 | DS-005 | Return-Event | `PreviewShellController` | Design-Risk | R-002, R-003, R-006, R-007 | shell reload/reconnect must recover the current preview projection without relying on tool-result replay or renderer-owned shadow state | shell renderer bootstrap/reconnect recovers authoritative preview-shell state | Yes/N/A/Yes |
 
 ## Transition Notes
 
-- No temporary compatibility behavior is part of the target design.
-- Remote-node preview is intentionally out of scope for v1; unsupported environments do not get a hidden fallback path.
+- The target state removes dedicated preview-window behavior. No compatibility branch for popup-window preview remains.
+- Reaching the target state may require extracting shell-window composition out of `electron/main.ts` into a shell-window owner, but the call stack below models only the target shape.
 
 ## Use Case: UC-001 local packaged app startup exposes preview capability only where supported
 
@@ -61,11 +61,11 @@ Rules:
 - Spine Scope: `Primary End-to-End`
 - Governing Owner: `PreviewToolService`
 - Why This Use Case Matters To This Spine:
-  - preview exposure must be gated by real shell availability, not assumed by each runtime independently.
+  - preview tools must still be gated by real shell availability before any runtime adapter exposes them.
 
 ### Goal
 
-Expose preview tools only when the packaged local shell owner is available to serve them.
+Expose preview tools only when the packaged shell has a working preview bridge and shell-preview subsystem.
 
 ### Preconditions
 
@@ -74,26 +74,26 @@ Expose preview tools only when the packaged local shell owner is available to se
 
 ### Expected Outcome
 
-- Electron main starts the preview bridge server and injects bridge configuration into the packaged internal server environment.
+- Electron main starts the preview subsystem and seeds preview bridge env into the packaged server.
 - Backend-side `PreviewToolService` can answer whether preview is supported.
 - Runtime adapters expose preview tools only when support is available.
 
 ### Primary Runtime Call Stack
 
 ```text
-[ENTRY] autobyteus-web/electron/main.ts:app.whenReady() [ASYNC]
-├── autobyteus-web/electron/preview/preview-bridge-server.ts:start() [ASYNC][IO]
-├── autobyteus-web/electron/main.ts:buildInternalServerRuntimeEnv() [STATE]
-│   └── inject preview bridge base URL + auth token into packaged server env [STATE]
+[ENTRY] autobyteus-web/electron/main.ts:bootstrap() [ASYNC]
+├── autobyteus-web/electron/preview/preview-runtime.ts:startPreviewRuntime(...) [ASYNC]
+│   ├── autobyteus-web/electron/preview/preview-session-manager.ts:constructor(...) [STATE]
+│   ├── autobyteus-web/electron/preview/preview-shell-controller.ts:constructor(...) [STATE]
+│   └── autobyteus-web/electron/preview/preview-bridge-server.ts:start() [ASYNC][IO]
+├── autobyteus-web/electron/main.ts:setRuntimeEnvOverrides(...) [STATE]
 └── autobyteus-web/electron/server/baseServerManager.ts:startServer() [ASYNC][IO]
 
 [ENTRY] runtime bootstrap path [ASYNC]
 ├── autobyteus-server-ts/src/agent-tools/preview/preview-tool-service.ts:isPreviewSupported() [STATE]
-│   ├── read preview bridge env [STATE]
-│   └── return support decision to runtime bootstraps [STATE]
-├── `autobyteus` local tool registration includes preview tools when supported [STATE]
+├── native runtime tool registration includes preview tools when supported [STATE]
 ├── Codex bootstrap includes preview dynamic tool registrations when supported [STATE]
-└── Claude session build includes preview MCP tools when supported [STATE]
+└── Claude run-level MCP build includes preview tools when supported [STATE]
 ```
 
 ### Branching / Fallback Paths
@@ -105,32 +105,10 @@ preview-tool-service.ts:isPreviewSupported()
 ```
 
 ```text
-[ERROR] if preview bridge server fails to start
-autobyteus-web/electron/preview/preview-bridge-server.ts:start()
-└── Electron startup logs failure and `PreviewToolService` resolves unsupported [STATE]
+[ERROR] if preview runtime fails to start
+preview-runtime.ts:startPreviewRuntime(...)
+└── Electron logs the failure and preview support resolves unsupported [STATE]
 ```
-
-### State And Data Transformations
-
-- bridge startup result -> preview capability env payload
-- env payload -> backend capability decision
-- capability decision -> runtime-specific exposure registration
-
-### Observability And Debug Points
-
-- preview bridge startup logs
-- internal server env injection logs
-- runtime bootstrap logs for preview exposure enable/disable
-
-### Design Smells / Gaps
-
-- Any legacy/backward-compatibility branch present? `No`
-- Any tight coupling or cyclic cross-subsystem dependency introduced? `No`
-- Any naming-to-responsibility drift detected? `No`
-
-### Open Questions
-
-- None.
 
 ### Coverage Status
 
@@ -145,85 +123,51 @@ autobyteus-web/electron/preview/preview-bridge-server.ts:start()
 - Spine ID(s): `DS-002`
 - Spine Scope: `Primary End-to-End`
 - Governing Owner: `PreviewSessionManager`
-- Why This Use Case Matters To This Spine:
-  - it is the canonical open-preview flow and the baseline semantic contract for every adapter.
 
 ### Goal
 
-Allow a native `autobyteus` run to open a preview window and receive a stable `preview_session_id`.
+Allow a native run to create or reuse a preview session backed by one independent `WebContentsView`.
 
 ### Preconditions
 
 - Runtime kind is `autobyteus`.
 - Preview capability is supported.
-- `open_preview` is registered in the shared tool registry.
-
-### Expected Outcome
-
-- Preview session is created or reused.
-- Tool result returns normalized `OpenPreviewResult`.
+- `open_preview` is registered.
 
 ### Primary Runtime Call Stack
 
 ```text
 [ENTRY] autobyteus-ts/src/agent/handlers/tool-invocation-execution-event-handler.ts:handle(event, context) [ASYNC]
-├── autobyteus-ts/src/agent/context/agent-context.ts:getTool('open_preview') [STATE]
 └── autobyteus-server-ts/src/agent-tools/preview/open-preview.ts:execute(context, kwargs) [ASYNC]
     ├── autobyteus-server-ts/src/agent-tools/preview/preview-tool-contract.ts:parseOpenPreviewInput(kwargs) [STATE]
     └── autobyteus-server-ts/src/agent-tools/preview/preview-tool-service.ts:openPreview(input) [ASYNC]
-        ├── autobyteus-server-ts/src/agent-tools/preview/preview-tool-service.ts:assertPreviewSupported() [STATE]
-        ├── autobyteus-server-ts/src/agent-tools/preview/preview-tool-service.ts:assertOpenPreviewSemantics(input) [STATE]
-        ├── autobyteus-server-ts/src/agent-tools/preview/preview-bridge-client.ts:openPreview(input) [ASYNC][IO]
-        │   └── autobyteus-web/electron/preview/preview-bridge-server.ts:handleOpenPreview(request) [ASYNC][IO]
-        │       └── autobyteus-web/electron/preview/preview-session-manager.ts:openSession(input) [ASYNC][STATE]
-        │           ├── autobyteus-web/electron/preview/preview-session-manager.ts:findReusableSession(input) [STATE]
-        │           ├── autobyteus-web/electron/preview/preview-session-manager.ts:createSessionRecord(input) [STATE]
-        │           ├── autobyteus-web/electron/preview/preview-window-factory.ts:createPreviewWindow(session) [ASYNC][IO]
-        │           ├── electron:BrowserWindow.webContents.loadURL(url) [IO]
-        │           ├── autobyteus-web/electron/preview/preview-session-manager.ts:attachSessionObservers(session, webContents) [STATE]
-        │           ├── autobyteus-web/electron/preview/preview-session-manager.ts:waitForRequestedReadyState(session, input.wait_until ?? 'load') [ASYNC][IO]
-        │           │   ├── if `wait_until='domcontentloaded'` -> await electron:webContents:'dom-ready'
-        │           │   └── if `wait_until='load'` -> await electron:webContents:'did-finish-load'
-        │           └── autobyteus-web/electron/preview/preview-session-manager.ts:buildOpenPreviewResult(session) [STATE]
-        └── autobyteus-server-ts/src/agent-tools/preview/preview-tool-service.ts:normalizeOpenPreviewResult(bridgeResult) [STATE]
+        ├── preview-tool-service.ts:assertPreviewSupported() [STATE]
+        ├── preview-tool-service.ts:assertOpenPreviewSemantics(input) [STATE]
+        └── autobyteus-server-ts/src/agent-tools/preview/preview-bridge-client.ts:openPreview(input) [ASYNC][IO]
+            └── autobyteus-web/electron/preview/preview-bridge-server.ts:handleOpenPreview(request) [ASYNC][IO]
+                └── autobyteus-web/electron/preview/preview-session-manager.ts:openSession(input) [ASYNC][STATE]
+                    ├── preview-session-manager.ts:findReusableSession(normalizedUrl) [STATE]
+                    ├── preview-session-manager.ts:createSessionRecord(normalizedUrl, title) [STATE]
+                    ├── preview-session-manager.ts:createSessionView(session) [STATE]
+                    ├── electron:WebContentsView.webContents.loadURL(url) [IO]
+                    ├── preview-session-manager.ts:attachSessionObservers(session) [STATE]
+                    ├── preview-session-manager.ts:waitForRequestedReadyState(session, input.wait_until ?? 'load') [ASYNC][IO]
+                    └── preview-session-manager.ts:buildOpenPreviewResult(session) [STATE]
 ```
 
 ### Branching / Fallback Paths
 
 ```text
-[FALLBACK] if reuse_existing=true and a matching ready session already exists
-preview-session-manager.ts:findReusableSession(input)
+[FALLBACK] if reuse_existing=true and a matching ready session exists
+preview-session-manager.ts:findReusableSession(normalizedUrl)
 └── return existing session with status='reused' [STATE]
 ```
 
 ```text
 [ERROR] if preview support is unavailable
 preview-tool-service.ts:assertPreviewSupported()
-└── throw or return normalized error `preview_unsupported_in_current_environment` [STATE]
+└── throw normalized `preview_unsupported_in_current_environment` [STATE]
 ```
-
-### State And Data Transformations
-
-- tool args -> canonical `OpenPreviewInput`
-- bridge request -> session record
-- canonical wait mode -> Electron `dom-ready` or `did-finish-load` wait path
-- session record -> bridge result -> normalized `OpenPreviewResult`
-
-### Observability And Debug Points
-
-- tool lifecycle started/succeeded events
-- bridge request logs
-- preview session creation logs
-
-### Design Smells / Gaps
-
-- Any legacy/backward-compatibility branch present? `No`
-- Any tight coupling or cyclic cross-subsystem dependency introduced? `No`
-- Any naming-to-responsibility drift detected? `No`
-
-### Open Questions
-
-- None.
 
 ### Coverage Status
 
@@ -238,82 +182,32 @@ preview-tool-service.ts:assertPreviewSupported()
 - Spine ID(s): `DS-002`
 - Spine Scope: `Primary End-to-End`
 - Governing Owner: `PreviewSessionManager`
-- Why This Use Case Matters To This Spine:
-  - Codex uses a different tool transport, so the design must show adapter parity without changing semantics.
 
 ### Goal
 
-Expose the same preview-open behavior to Codex through the existing dynamic-tool mechanism.
-
-### Preconditions
-
-- Runtime kind is `codex_app_server`.
-- Preview support is available during Codex bootstrap.
-- Preview dynamic tools are registered.
-
-### Expected Outcome
-
-- Dynamic tool call reaches the shared preview service and bridge boundary.
-- Result returns canonical JSON text representing the shared `OpenPreviewResult`.
+Keep the Codex path semantically identical to the native runtime path.
 
 ### Primary Runtime Call Stack
 
 ```text
-[ENTRY] autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts:bootstrapInternal(...) [ASYNC]
-└── autobyteus-server-ts/src/agent-execution/backends/codex/preview/build-preview-dynamic-tool-registrations.ts:buildPreviewDynamicToolRegistrations(runContext) [STATE]
-    └── autobyteus-server-ts/src/agent-tools/preview/preview-tool-service.ts:isPreviewSupported() [STATE]
-
-[ENTRY] autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-server-request-handler.ts:handleDynamicToolCallRequest(...) [ASYNC]
-└── autobyteus-server-ts/src/agent-execution/backends/codex/preview/open-preview-dynamic-tool-handler.ts:handle(callInput) [ASYNC]
-    ├── autobyteus-server-ts/src/agent-tools/preview/preview-tool-contract.ts:parseOpenPreviewInput(callInput.arguments) [STATE]
-    ├── autobyteus-server-ts/src/agent-tools/preview/preview-tool-service.ts:openPreview(input) [ASYNC]
-    │   ├── autobyteus-server-ts/src/agent-tools/preview/preview-bridge-client.ts:openPreview(input) [ASYNC][IO]
-    │   │   └── autobyteus-web/electron/preview/preview-bridge-server.ts:handleOpenPreview(request) [ASYNC][IO]
-    │   │       └── autobyteus-web/electron/preview/preview-session-manager.ts:openSession(input) [ASYNC][STATE]
-    │   └── autobyteus-server-ts/src/agent-tools/preview/preview-tool-service.ts:normalizeOpenPreviewResult(bridgeResult) [STATE]
-    └── autobyteus-server-ts/src/agent-execution/backends/codex/codex-dynamic-tool.ts:createCodexDynamicToolTextResult(serializedResultJson, true) [STATE]
+[ENTRY] autobyteus-server-ts/src/agent-execution/backends/codex/preview/build-preview-dynamic-tool-registrations.ts:handler(rawInput) [ASYNC]
+├── preview-tool-contract.ts:parseOpenPreviewInput(rawInput) [STATE]
+└── preview-tool-service.ts:openPreview(input) [ASYNC]
+    └── same bridge + session-owner flow as UC-002 [ASYNC][IO][STATE]
 ```
 
 ### Branching / Fallback Paths
 
 ```text
-[FALLBACK] if preview tools were not injected during bootstrap
-codex-thread-server-request-handler.ts:handleDynamicToolCallRequest(...)
-└── return "Dynamic tool 'open_preview' is unavailable." [STATE]
+[ERROR] if preview is unsupported for the run environment
+build-preview-dynamic-tool-registrations.ts:buildPreviewDynamicToolRegistrations(...)
+└── do not register preview dynamic tools [STATE]
 ```
-
-```text
-[ERROR] if bridge request fails
-open-preview-dynamic-tool-handler.ts:handle(...)
-└── return error JSON text via createCodexDynamicToolTextResult(..., false) [STATE]
-```
-
-### State And Data Transformations
-
-- Codex tool call args -> canonical `OpenPreviewInput`
-- normalized `OpenPreviewResult` -> canonical JSON text
-- JSON text -> Codex dynamic tool text content item
-
-### Observability And Debug Points
-
-- Codex bootstrap registration logs
-- Codex dynamic tool call logs
-- preview bridge logs
-
-### Design Smells / Gaps
-
-- Any legacy/backward-compatibility branch present? `No`
-- Any tight coupling or cyclic cross-subsystem dependency introduced? `No`
-- Any naming-to-responsibility drift detected? `No`
-
-### Open Questions
-
-- None.
 
 ### Coverage Status
 
 - Primary Path: `Covered`
-- Fallback Path: `Covered`
+- Fallback Path: `N/A`
 - Error Path: `Covered`
 
 ## Use Case: UC-004 `claude_agent_sdk` opens a preview session through run-level MCP tools
@@ -323,81 +217,81 @@ open-preview-dynamic-tool-handler.ts:handle(...)
 - Spine ID(s): `DS-002`
 - Spine Scope: `Primary End-to-End`
 - Governing Owner: `PreviewSessionManager`
-- Why This Use Case Matters To This Spine:
-  - Claude already uses SDK-local MCP, so the design must show how preview joins that runtime without piggybacking incorrectly on team-only tooling.
 
 ### Goal
 
-Expose preview-open behavior to Claude by merging a run-level preview MCP server map into the session's overall MCP configuration.
-
-### Preconditions
-
-- Runtime kind is `claude_agent_sdk`.
-- Preview capability is supported.
-- Claude runtime is building its run-level MCP server map.
-
-### Expected Outcome
-
-- Claude session receives preview MCP tools regardless of whether team send-message tooling is enabled.
-- Preview MCP tool returns structured `OpenPreviewResult`.
+Keep the Claude MCP path semantically identical to the native runtime path.
 
 ### Primary Runtime Call Stack
 
 ```text
-[ENTRY] autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:executeTurn(options) [ASYNC]
-└── autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:buildRuntimeMcpServers() [ASYNC]
-    ├── autobyteus-server-ts/src/agent-execution/backends/claude/preview/build-claude-preview-mcp-server.ts:buildClaudePreviewMcpServer(runContext, sdkClient) [ASYNC]
-    │   ├── autobyteus-server-ts/src/agent-tools/preview/preview-tool-service.ts:isPreviewSupported() [STATE]
-    │   ├── autobyteus-server-ts/src/agent-execution/backends/claude/preview/build-claude-preview-tool-definitions.ts:buildClaudePreviewToolDefinitions(...) [ASYNC]
-    │   └── autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-client.ts:createMcpServer({ name, tools }) [ASYNC]
-    ├── autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:buildTeamMcpServers(sendMessageToToolingEnabled) [ASYNC]
-    └── autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:mergeMcpServerMaps(previewMcpServers, teamMcpServers) [STATE]
+[ENTRY] autobyteus-server-ts/src/agent-execution/backends/claude/preview/build-claude-preview-tool-definitions.ts:toolHandler(args) [ASYNC]
+├── preview-tool-contract.ts:parseOpenPreviewInput(args) [STATE]
+└── preview-tool-service.ts:openPreview(input) [ASYNC]
+    └── same bridge + session-owner flow as UC-002 [ASYNC][IO][STATE]
+```
 
-[ENTRY] autobyteus-server-ts/src/agent-execution/backends/claude/preview/open-preview-claude-tool-handler.ts:handle(rawArguments) [ASYNC]
-├── autobyteus-server-ts/src/agent-tools/preview/preview-tool-contract.ts:parseOpenPreviewInput(rawArguments) [STATE]
-├── autobyteus-server-ts/src/agent-tools/preview/preview-tool-service.ts:openPreview(input) [ASYNC]
-│   ├── autobyteus-server-ts/src/agent-tools/preview/preview-bridge-client.ts:openPreview(input) [ASYNC][IO]
-│   │   └── autobyteus-web/electron/preview/preview-bridge-server.ts:handleOpenPreview(request) [ASYNC][IO]
-│   │       └── autobyteus-web/electron/preview/preview-session-manager.ts:openSession(input) [ASYNC][STATE]
-│   └── autobyteus-server-ts/src/agent-tools/preview/preview-tool-service.ts:normalizeOpenPreviewResult(bridgeResult) [STATE]
-└── return structured `OpenPreviewResult` [STATE]
+### Coverage Status
+
+- Primary Path: `Covered`
+- Fallback Path: `N/A`
+- Error Path: `Covered`
+
+## Use Case: UC-005 tool success requests focus for the preview session in the current shell and reveals the outer `Preview` tab from controller state
+
+### Spine Context
+
+- Spine ID(s): `DS-004`
+- Spine Scope: `Primary End-to-End`
+- Governing Owner: `PreviewShellController`
+
+### Goal
+
+After the backend successfully opens a preview session, the renderer window displaying the run requests focus for that session in its shell, and `PreviewShellController` makes the shell snapshot authoritative.
+
+### Preconditions
+
+- A preview session already exists in `PreviewSessionManager`.
+- The renderer is displaying the run that produced the successful tool result.
+
+### Primary Runtime Call Stack
+
+```text
+[ENTRY] autobyteus-web/services/agentStreaming/handlers/toolLifecycleHandler.ts:handleSucceededTool(activity) [STATE]
+└── autobyteus-web/stores/previewShellStore.ts:requestFocusFromOpenPreviewResult(activity) [ASYNC][STATE]
+    └── autobyteus-web/electron/preload.ts:electronAPI.preview.focusSession(preview_session_id) [ASYNC][IO]
+        └── autobyteus-web/electron/preview/preview-shell-controller.ts:focusSessionForCurrentShell(previewSessionId) [STATE]
+            ├── preview-shell-controller.ts:resolveCurrentShellWindowId(eventSender) [STATE]
+            ├── preview-shell-controller.ts:setActiveSession(shellWindowId, previewSessionId) [STATE]
+            ├── preview-shell-controller.ts:reconcile(shellWindowId) [STATE]
+            └── preview-shell-controller.ts:broadcastShellSnapshot(shellWindowId) [STATE]
+
+[ENTRY] autobyteus-web/stores/previewShellStore.ts:handleShellSnapshot(snapshot) [STATE]
+├── derive outer Preview tab visibility from snapshot.sessions.length [STATE]
+├── derive internal preview tabs from snapshot.sessions [STATE]
+└── derive active preview tab from snapshot.activePreviewSessionId [STATE]
+
+[ENTRY] autobyteus-web/components/workspace/tools/PreviewPanel.vue:reportHostRect(...) [ASYNC][STATE]
+└── autobyteus-web/electron/preload.ts:electronAPI.preview.updateHostRect(rect) [ASYNC][IO]
+    └── autobyteus-web/electron/preview/preview-shell-controller.ts:updateHostRectForCurrentShell(rect) [STATE]
+        ├── preview-shell-controller.ts:resolveCurrentShellWindowId(eventSender) [STATE]
+        ├── preview-shell-controller.ts:reconcile(shellWindowId) [STATE]
+        └── preview-shell-controller.ts:broadcastShellSnapshot(shellWindowId) [STATE]
 ```
 
 ### Branching / Fallback Paths
 
 ```text
-[FALLBACK] if preview support is unavailable
-build-claude-preview-mcp-server.ts:buildClaudePreviewMcpServer(...)
-└── return null so preview tools are omitted from run-level MCP map [STATE]
+[FALLBACK] if host rect is not yet available
+preview-shell-controller.ts:updateHostRectForCurrentShell(null)
+└── keep the session visible in the shell snapshot but unattached until the renderer reports a visible host rect [STATE]
 ```
 
 ```text
-[ERROR] if bridge request fails during tool execution
-open-preview-claude-tool-handler.ts:handle(...)
-└── throw or return normalized preview error object [STATE]
+[ERROR] if the session closes before the focus request is processed
+preview-shell-controller.ts:focusSessionForCurrentShell(previewSessionId)
+└── reject the focus request and keep the prior shell snapshot unchanged [STATE]
 ```
-
-### State And Data Transformations
-
-- preview tool contract -> Claude tool definition schema
-- raw Claude tool args -> canonical `OpenPreviewInput`
-- bridge response -> normalized `OpenPreviewResult`
-
-### Observability And Debug Points
-
-- Claude MCP assembly logs
-- preview bridge logs
-- preview session creation logs
-
-### Design Smells / Gaps
-
-- Any legacy/backward-compatibility branch present? `No`
-- Any tight coupling or cyclic cross-subsystem dependency introduced? `No`
-- Any naming-to-responsibility drift detected? `No`
-
-### Open Questions
-
-- None.
 
 ### Coverage Status
 
@@ -405,247 +299,262 @@ open-preview-claude-tool-handler.ts:handle(...)
 - Fallback Path: `Covered`
 - Error Path: `Covered`
 
-## Use Case: UC-005 agent captures a screenshot from an existing preview session
+## Use Case: UC-006 agent uses screenshot, console, JavaScript, or DevTools on an existing preview session
 
 ### Spine Context
 
 - Spine ID(s): `DS-003`
 - Spine Scope: `Primary End-to-End`
 - Governing Owner: `PreviewSessionManager`
-- Why This Use Case Matters To This Spine:
-  - follow-up operations are the proof that `preview_session_id` is a real shared contract rather than a one-shot open response.
 
 ### Goal
 
-Operate on an existing preview session using only `preview_session_id`.
-
-### Preconditions
-
-- A preview session already exists and is tracked by the owner.
-- Agent/runtime has the `preview_session_id`.
-
-### Expected Outcome
-
-- Screenshot is captured from the correct session.
-- Result returns a managed path tied to the same `preview_session_id`.
+Preserve browser-control capabilities per session after moving preview into the shell.
 
 ### Primary Runtime Call Stack
 
 ```text
-[ENTRY] runtime-specific preview tool handler:capturePreviewScreenshot(input) [ASYNC]
-├── autobyteus-server-ts/src/agent-tools/preview/preview-tool-contract.ts:parseCapturePreviewScreenshotInput(input) [STATE]
-└── autobyteus-server-ts/src/agent-tools/preview/preview-tool-service.ts:capturePreviewScreenshot(canonicalInput) [ASYNC]
-    ├── autobyteus-server-ts/src/agent-tools/preview/preview-tool-service.ts:assertPreviewSupported() [STATE]
-    ├── autobyteus-server-ts/src/agent-tools/preview/preview-tool-service.ts:assertScreenshotSemantics(canonicalInput) [STATE]
-    ├── autobyteus-server-ts/src/agent-tools/preview/preview-bridge-client.ts:capturePreviewScreenshot(canonicalInput) [ASYNC][IO]
-    │   └── autobyteus-web/electron/preview/preview-bridge-server.ts:handleCapturePreviewScreenshot(request) [ASYNC][IO]
-    │       └── autobyteus-web/electron/preview/preview-session-manager.ts:captureScreenshot(previewSessionId) [ASYNC][STATE]
-    │           ├── autobyteus-web/electron/preview/preview-session-manager.ts:getSessionOrThrow(previewSessionId) [STATE]
-    │           ├── electron:webContents.capturePage() [ASYNC][IO]
-    │           ├── autobyteus-web/electron/preview/preview-screenshot-artifact-writer.ts:write(buffer, previewSessionId) [ASYNC][IO]
-    │           └── return `CapturePreviewScreenshotResult` [STATE]
-    └── autobyteus-server-ts/src/agent-tools/preview/preview-tool-service.ts:normalizeCapturePreviewScreenshotResult(bridgeResult) [STATE]
+[ENTRY] runtime-specific preview tool handler [ASYNC]
+├── preview-tool-contract.ts:parseFollowUpInput(...) [STATE]
+└── preview-tool-service.ts:<action>(input) [ASYNC]
+    └── preview-bridge-client.ts:post(...) [ASYNC][IO]
+        └── preview-bridge-server.ts:handle<Action>(request) [ASYNC][IO]
+            └── preview-session-manager.ts:<action>(preview_session_id, ...) [ASYNC][STATE]
+                ├── preview-session-manager.ts:getOpenSessionOrThrow(preview_session_id) [STATE]
+                ├── if screenshot -> session.view.webContents.capturePage(...) [IO]
+                ├── if console -> session.logBuffer.list(...) [STATE]
+                ├── if javascript -> session.view.webContents.executeJavaScript(code) [ASYNC][IO]
+                ├── if devtools -> session.view.webContents.openDevTools({ mode: 'detach' }) [STATE]
+                └── normalize result [STATE]
 ```
 
 ### Branching / Fallback Paths
 
 ```text
-[FALLBACK] if session exists but needs focus/restore before capture
-preview-session-manager.ts:captureScreenshot(previewSessionId)
-└── restore/focus preview window before native capture [IO]
+[ERROR] if preview_session_id was already closed
+preview-session-manager.ts:getOpenSessionOrThrow(preview_session_id)
+└── throw normalized `preview_session_closed` [STATE]
 ```
-
-```text
-[ERROR] if session was previously issued and later closed
-preview-session-manager.ts:getSessionOrThrow(previewSessionId)
-└── throw `preview_session_closed`
-```
-
-```text
-[ERROR] if session ID was never issued or is malformed
-preview-session-manager.ts:getSessionOrThrow(previewSessionId)
-└── throw `preview_session_not_found`
-```
-
-### State And Data Transformations
-
-- runtime tool args -> canonical `CapturePreviewScreenshotInput`
-- `preview_session_id` -> session record lookup
-- native page capture buffer -> artifact path
-- artifact path -> normalized screenshot result
-
-### Observability And Debug Points
-
-- bridge screenshot request logs
-- preview owner capture logs
-- artifact writer output path logs
-
-### Design Smells / Gaps
-
-- Any legacy/backward-compatibility branch present? `No`
-- Any tight coupling or cyclic cross-subsystem dependency introduced? `No`
-- Any naming-to-responsibility drift detected? `No`
-
-### Open Questions
-
-- None.
-
-### Coverage Status
-
-- Primary Path: `Covered`
-- Fallback Path: `Covered`
-- Error Path: `Covered`
-
-## Use Case: UC-006 native preview close invalidates the session without renderer-specific projection
-
-### Spine Context
-
-- Spine ID(s): `DS-004`
-- Spine Scope: `Return-Event`
-- Governing Owner: `PreviewSessionManager`
-- Why This Use Case Matters To This Spine:
-  - async native close is the main proof that Electron main, not renderer or the backend, owns session truth.
-
-### Goal
-
-Ensure native preview close updates authoritative session state without requiring a preview-specific renderer projection path, and makes later session lookups fail predictably.
-
-### Preconditions
-
-- A preview session is open.
-
-### Expected Outcome
-
-- Session is marked closed and invalidated immediately on native close.
-- No preview-specific renderer IPC/store update is required in v1.
-- Later preview tool lookups fail predictably.
-
-### Primary Runtime Call Stack
-
-```text
-[ENTRY] electron:BrowserWindow:'closed' event [IO]
-└── autobyteus-web/electron/preview/preview-session-manager.ts:handleWindowClosed(previewSessionId) [STATE]
-    ├── autobyteus-web/electron/preview/preview-session-manager.ts:markSessionClosed(previewSessionId) [STATE]
-    ├── autobyteus-web/electron/preview/preview-session-manager.ts:releaseNativeBindings(previewSessionId) [STATE]
-    └── autobyteus-web/electron/preview/preview-session-manager.ts:finalizeClosedSession(previewSessionId) [STATE]
-```
-
-### Branching / Fallback Paths
-
-```text
-[FALLBACK] if an explicit close already invalidated the session before the native close callback lands
-preview-session-manager.ts:handleWindowClosed(previewSessionId)
-└── finalize idempotently and keep owner state authoritative [STATE]
-```
-
-```text
-[ERROR] later preview tool call after native close
-preview-session-manager.ts:getSessionOrThrow(previewSessionId)
-└── throw `preview_session_closed` because the owner retains a closed-session tombstone [STATE]
-```
-
-### State And Data Transformations
-
-- native close event -> session invalidation
-- stale session lookup -> normalized error
-
-### Observability And Debug Points
-
-- native close logs
-- preview owner invalidation logs
-
-### Design Smells / Gaps
-
-- Any legacy/backward-compatibility branch present? `No`
-- Any tight coupling or cyclic cross-subsystem dependency introduced? `No`
-- Any naming-to-responsibility drift detected? `No`
-
-### Open Questions
-
-- None.
-
-### Coverage Status
-
-- Primary Path: `Covered`
-- Fallback Path: `Covered`
-- Error Path: `Covered`
-
-## Use Case: UC-007 preview session owner internal lifecycle remains coherent across open, reuse, close, and native-close
-
-### Spine Context
-
-- Spine ID(s): `DS-005`
-- Spine Scope: `Bounded Local`
-- Governing Owner: `PreviewSessionManager`
-- Why This Use Case Matters To This Spine:
-  - the session owner contains the real state machine; if it is implicit, the design is ownerless and fragile.
-
-### Goal
-
-Keep session-owner invariants coherent when bridge commands and native callbacks interleave.
-
-### Preconditions
-
-- Preview owner receives mixed inputs:
-  - open/reuse requests
-  - follow-up operation requests
-  - native close events
-
-### Expected Outcome
-
-- One session ID maps to one authoritative record.
-- Closed sessions cannot be reused accidentally.
-- Closed sessions remain tombstoned so later lookups stay deterministic.
-- Results and errors are emitted only after state truth is settled.
-
-### Primary Runtime Call Stack
-
-```text
-[ENTRY] autobyteus-web/electron/preview/preview-session-manager.ts:handleCommandOrEvent(input) [ASYNC][STATE]
-├── normalize input kind (open / operation / native close) [STATE]
-├── resolve session record or create candidate [STATE]
-├── enforce invariants:
-│   ├── one active native binding per open session [STATE]
-│   ├── closed sessions cannot satisfy fresh open-reuse unless explicitly eligible [STATE]
-│   ├── closed-session tombstones preserve deterministic `preview_session_closed` results [STATE]
-│   └── malformed or never-issued IDs fail with `preview_session_not_found` before native action [STATE]
-├── apply native action or invalidation [ASYNC][IO]
-├── update final session state [STATE]
-└── emit result or error only after final state is durable in memory [STATE]
-```
-
-### Branching / Fallback Paths
-
-```text
-[ERROR] if native callback arrives for unknown or already-released session binding
-preview-session-manager.ts:handleCommandOrEvent(input)
-└── log and ignore stale native callback after invariant check [STATE]
-```
-
-### State And Data Transformations
-
-- mixed command/event input -> normalized owner action
-- owner action -> session state transition
-- final session state -> result or error decision
-
-### Observability And Debug Points
-
-- owner transition logs
-- session lookup miss logs
-- invalidation/idempotency logs when native callbacks arrive after state is already closed
-
-### Design Smells / Gaps
-
-- Any legacy/backward-compatibility branch present? `No`
-- Any tight coupling or cyclic cross-subsystem dependency introduced? `No`
-- Any naming-to-responsibility drift detected? `No`
-
-### Open Questions
-
-- None.
 
 ### Coverage Status
 
 - Primary Path: `Covered`
 - Fallback Path: `N/A`
+- Error Path: `Covered`
+
+## Use Case: UC-007 user switches internal preview tabs or resizes/hides the right panel
+
+### Spine Context
+
+- Spine ID(s): `DS-005`
+- Spine Scope: `Return-Event`
+- Governing Owner: `PreviewShellController`
+
+### Goal
+
+Keep the active native preview attachment aligned with renderer shell state.
+
+### Primary Runtime Call Stack
+
+```text
+[ENTRY] autobyteus-web/components/workspace/tools/PreviewPanel.vue:onSessionSelected(preview_session_id) [ASYNC][STATE]
+└── autobyteus-web/electron/preload.ts:electronAPI.preview.setActiveSession(preview_session_id) [ASYNC][IO]
+    └── autobyteus-web/electron/preview/preview-shell-controller.ts:setActiveSessionForCurrentShell(previewSessionId) [STATE]
+        ├── detach previous active session view [STATE]
+        ├── attach selected session view to shell host [STATE]
+        └── broadcastShellSnapshot(shellWindowId) [STATE]
+
+[ENTRY] PreviewPanel.vue:resizeObserverCallback(rect) [ASYNC][STATE]
+└── electronAPI.preview.updateHostRect(rect) [ASYNC][IO]
+    └── preview-shell-controller.ts:updateHostRectForCurrentShell(rect) [STATE]
+
+[ENTRY] PreviewPanel.vue:onHidden() [ASYNC][STATE]
+└── electronAPI.preview.updateHostRect(null) [ASYNC][IO]
+    └── preview-shell-controller.ts:detachForHiddenHostForCurrentShell() [STATE]
+```
+
+### Branching / Fallback Paths
+
+```text
+[ERROR] if the requested session is not owned by this shell projection
+preview-shell-controller.ts:setActiveSessionForCurrentShell(previewSessionId)
+└── reject request and keep prior active attachment [STATE]
+```
+
+### Coverage Status
+
+- Primary Path: `Covered`
+- Fallback Path: `N/A`
+- Error Path: `Covered`
+
+## Use Case: UC-008 closing preview sessions invalidates them and hides the outer `Preview` tab when the last session closes
+
+### Spine Context
+
+- Spine ID(s): `DS-006`
+- Spine Scope: `Return-Event`
+- Governing Owner: `PreviewSessionManager`
+
+### Goal
+
+Keep session invalidation and shell cleanup deterministic across both tool-driven and user-driven closes.
+
+### Primary Runtime Call Stack
+
+```text
+[ENTRY] runtime preview close tool OR renderer close action [ASYNC]
+└── autobyteus-web/electron/preview/preview-session-manager.ts:closeSession(preview_session_id) [ASYNC][STATE]
+    ├── remove session from registry [STATE]
+    ├── remember closed-session tombstone [STATE]
+    ├── autobyteus-web/electron/preview/preview-shell-controller.ts:handleSessionClosed(preview_session_id) [STATE]
+    │   ├── detach the active session view if attached [STATE]
+    │   ├── select the next remaining session or none [STATE]
+    │   └── broadcast shell snapshot to renderer [STATE]
+    └── return normalized `closed` result [STATE]
+
+[ENTRY] autobyteus-web/stores/previewShellStore.ts:handleShellSnapshot(snapshot) [STATE]
+└── if no sessions remain -> outer Preview tab becomes hidden [STATE]
+```
+
+### Branching / Fallback Paths
+
+```text
+[ERROR] if a later tool call reuses the closed session id
+preview-session-manager.ts:getOpenSessionOrThrow(preview_session_id)
+└── throw normalized `preview_session_closed` [STATE]
+```
+
+### Coverage Status
+
+- Primary Path: `Covered`
+- Fallback Path: `N/A`
+- Error Path: `Covered`
+
+## Use Case: UC-009 preview session owner lifecycle remains coherent
+
+### Spine Context
+
+- Spine ID(s): `DS-007`
+- Spine Scope: `Bounded Local`
+- Governing Owner: `PreviewSessionManager`
+
+### Goal
+
+Keep session creation, reuse, and close invariants authoritative.
+
+### Primary Runtime Call Stack
+
+```text
+[ENTRY] preview-session-manager.ts:openSession(...) [ASYNC][STATE]
+├── normalize url + reuse decision [STATE]
+├── create session record with one WebContentsView [STATE]
+├── attach observers + load content [ASYNC][IO]
+├── settle opening state -> open [STATE]
+└── return result [STATE]
+
+[ENTRY] preview-session-manager.ts:closeSession(...) [ASYNC][STATE]
+├── invalidate registry entry [STATE]
+├── remember tombstone [STATE]
+└── notify shell controller [STATE]
+```
+
+### Branching / Fallback Paths
+
+```text
+[ERROR] if opening fails after session allocation
+preview-session-manager.ts:openSession(...)
+└── destroy the allocated session view, remove registry entry, and return normalized error [STATE]
+```
+
+### Coverage Status
+
+- Primary Path: `Covered`
+- Fallback Path: `N/A`
+- Error Path: `Covered`
+
+## Use Case: UC-010 shell attachment lifecycle remains coherent
+
+### Spine Context
+
+- Spine ID(s): `DS-008`
+- Spine Scope: `Bounded Local`
+- Governing Owner: `PreviewShellController`
+
+### Goal
+
+Ensure the shell host always shows the correct active preview view and never shows more than one attached active view in the same host.
+
+### Primary Runtime Call Stack
+
+```text
+[ENTRY] preview-shell-controller.ts:reconcile(shellWindowId) [STATE]
+├── resolve shellWindowId + shell host registration + host rect [STATE]
+├── resolve claimed sessions for the shell window [STATE]
+├── resolve active preview session [STATE]
+├── detach no-longer-active view if present [STATE]
+├── attach active session view if host is visible [STATE]
+└── emit snapshot [STATE]
+```
+
+### Branching / Fallback Paths
+
+```text
+[ERROR] if the shell host is destroyed while a preview view is attached
+preview-shell-controller.ts:onShellDestroyed(shellWindowId)
+└── detach the view and leave the session unattached but valid [STATE]
+```
+
+### Coverage Status
+
+- Primary Path: `Covered`
+- Fallback Path: `N/A`
+- Error Path: `Covered`
+
+## Use Case: UC-011 shell renderer bootstrap/reconnect recovers authoritative preview-shell state
+
+### Spine Context
+
+- Spine ID(s): `DS-005`
+- Spine Scope: `Return-Event`
+- Governing Owner: `PreviewShellController`
+
+### Goal
+
+Ensure that a shell renderer mount, reload, or reconnect can recover the current preview-shell state without relying on replayed tool results or renderer-owned shadow state.
+
+### Primary Runtime Call Stack
+
+```text
+[ENTRY] autobyteus-web/components/workspace/tools/PreviewPanel.vue:onMounted() [ASYNC][STATE]
+└── autobyteus-web/electron/preload.ts:electronAPI.preview.registerHost() [ASYNC][IO]
+    └── autobyteus-web/electron/preview/preview-shell-controller.ts:registerHostForCurrentShell() [STATE]
+        ├── preview-shell-controller.ts:resolveCurrentShellWindowId(eventSender) [STATE]
+        ├── preview-shell-controller.ts:ensureShellState(shellWindowId) [STATE]
+        ├── preview-shell-controller.ts:reconcile(shellWindowId) [STATE]
+        └── preview-shell-controller.ts:broadcastShellSnapshot(shellWindowId) [STATE]
+
+[ENTRY] autobyteus-web/stores/previewShellStore.ts:handleShellSnapshot(snapshot) [STATE]
+├── rebuild visible preview-tab list from snapshot.sessions [STATE]
+├── restore active preview tab from snapshot.activePreviewSessionId [STATE]
+└── show or hide the outer Preview tab from the authoritative snapshot [STATE]
+```
+
+### Branching / Fallback Paths
+
+```text
+[FALLBACK] if the shell reconnects before the preview host reports bounds
+preview-shell-controller.ts:registerHostForCurrentShell()
+└── publish the current shell snapshot immediately, then attach the active session only after updateHostRect reports a visible host rect [STATE]
+```
+
+```text
+[ERROR] if the shell window no longer owns any claimed preview session
+preview-shell-controller.ts:reconcile(shellWindowId)
+└── publish an empty snapshot and keep the outer Preview tab hidden [STATE]
+```
+
+### Coverage Status
+
+- Primary Path: `Covered`
+- Fallback Path: `Covered`
 - Error Path: `Covered`

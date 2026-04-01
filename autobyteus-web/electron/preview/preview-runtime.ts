@@ -1,7 +1,9 @@
 import { PreviewBridgeServer } from './preview-bridge-server'
+import { PreviewShellController } from './preview-shell-controller'
 import { PreviewScreenshotArtifactWriter } from './preview-screenshot-artifact-writer'
 import { PreviewSessionManager } from './preview-session-manager'
-import { PreviewWindowFactory } from './preview-window-factory'
+import { PreviewViewFactory } from './preview-view-factory'
+import type { WorkspaceShellWindow } from '../shell/workspace-shell-window'
 
 type PreviewRuntimeOptions = {
   iconPath: string
@@ -16,20 +18,35 @@ type StartPreviewRuntimeOptions = PreviewRuntimeOptions & {
 export class PreviewRuntime {
   private previewSessionManager: PreviewSessionManager | null = null
   private previewBridgeServer: PreviewBridgeServer | null = null
+  private previewShellController: PreviewShellController | null = null
 
   constructor(private readonly options: PreviewRuntimeOptions) {}
 
   async start(): Promise<void> {
     this.previewSessionManager = new PreviewSessionManager({
-      windowFactory: new PreviewWindowFactory({
-        iconPath: this.options.iconPath,
-      }),
+      viewFactory: new PreviewViewFactory(),
       screenshotWriter: new PreviewScreenshotArtifactWriter(this.options.artifactsDir),
     })
+    this.previewShellController = new PreviewShellController(this.previewSessionManager)
 
     this.previewBridgeServer = new PreviewBridgeServer(this.previewSessionManager)
     const previewRuntimeEnv = await this.previewBridgeServer.start()
     this.options.setRuntimeEnvOverrides(previewRuntimeEnv)
+  }
+
+  registerShell(shell: WorkspaceShellWindow): void {
+    this.previewShellController?.registerShell(shell)
+  }
+
+  unregisterShell(shellId: number): void {
+    this.previewShellController?.unregisterShell(shellId)
+  }
+
+  getShellController(): PreviewShellController {
+    if (!this.previewShellController) {
+      throw new Error('Preview shell controller is not started.')
+    }
+    return this.previewShellController
   }
 
   async stop(): Promise<void> {
@@ -37,6 +54,13 @@ export class PreviewRuntime {
       await this.previewBridgeServer?.stop()
     } finally {
       this.previewBridgeServer = null
+    }
+
+    try {
+      this.previewShellController?.dispose()
+      this.previewShellController = null
+    } finally {
+      // no-op
     }
 
     try {

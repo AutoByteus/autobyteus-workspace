@@ -7,15 +7,19 @@ import type { JsonObject } from "../codex-app-server-json.js";
 import {
   CAPTURE_PREVIEW_SCREENSHOT_TOOL_NAME,
   CLOSE_PREVIEW_TOOL_NAME,
+  EXECUTE_PREVIEW_JAVASCRIPT_TOOL_NAME,
   GET_PREVIEW_CONSOLE_LOGS_TOOL_NAME,
   NAVIGATE_PREVIEW_TOOL_NAME,
   OPEN_PREVIEW_TOOL_NAME,
+  OPEN_PREVIEW_DEVTOOLS_TOOL_NAME,
   PREVIEW_WAIT_UNTIL_VALUES,
   parseCapturePreviewScreenshotInput,
   parseClosePreviewInput,
+  parseExecutePreviewJavascriptInput,
   parseGetPreviewConsoleLogsInput,
   parseNavigatePreviewInput,
   parseOpenPreviewInput,
+  parseOpenPreviewDevToolsInput,
   toPreviewErrorPayload,
   toPreviewJsonString,
 } from "../../../../agent-tools/preview/preview-tool-contract.js";
@@ -136,6 +140,48 @@ const buildClosePreviewToolSpec = (): JsonObject => ({
   },
 });
 
+const buildExecutePreviewJavascriptToolSpec = (): JsonObject => ({
+  name: EXECUTE_PREVIEW_JAVASCRIPT_TOOL_NAME,
+  description:
+    "Execute JavaScript inside an existing preview session and return the JSON-serialized result.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      preview_session_id: {
+        type: "string",
+        description: "Opaque preview session identifier returned by open_preview.",
+      },
+      javascript: {
+        type: "string",
+        description: "JavaScript source code to evaluate in the preview session.",
+      },
+    },
+    required: ["preview_session_id", "javascript"],
+    additionalProperties: false,
+  },
+});
+
+const buildOpenPreviewDevToolsToolSpec = (): JsonObject => ({
+  name: OPEN_PREVIEW_DEVTOOLS_TOOL_NAME,
+  description: "Open detached DevTools for an existing preview session.",
+  inputSchema: {
+    type: "object",
+    properties: {
+      preview_session_id: {
+        type: "string",
+        description: "Opaque preview session identifier returned by open_preview.",
+      },
+      mode: {
+        type: "string",
+        enum: ["detach"],
+        description: "DevTools opening mode. Only detach is supported.",
+      },
+    },
+    required: ["preview_session_id"],
+    additionalProperties: false,
+  },
+});
+
 const runPreviewOperation = async <T>(operation: () => Promise<T>): Promise<CodexDynamicToolCallResult> => {
   try {
     const result = await operation();
@@ -184,6 +230,24 @@ export const buildPreviewDynamicToolRegistrations = (): CodexDynamicToolRegistra
         runPreviewOperation(async () =>
           previewToolService.getPreviewConsoleLogs(
             parseGetPreviewConsoleLogsInput(toolArguments),
+          ),
+        ),
+    },
+    {
+      spec: buildExecutePreviewJavascriptToolSpec(),
+      handler: async ({ arguments: toolArguments }) =>
+        runPreviewOperation(async () =>
+          previewToolService.executePreviewJavascript(
+            parseExecutePreviewJavascriptInput(toolArguments),
+          ),
+        ),
+    },
+    {
+      spec: buildOpenPreviewDevToolsToolSpec(),
+      handler: async ({ arguments: toolArguments }) =>
+        runPreviewOperation(async () =>
+          previewToolService.openPreviewDevTools(
+            parseOpenPreviewDevToolsInput(toolArguments),
           ),
         ),
     },

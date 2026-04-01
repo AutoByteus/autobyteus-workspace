@@ -37,6 +37,9 @@
       <div v-if="activeTab === 'artifacts'" class="h-full min-h-0">
         <ArtifactsTab />
       </div>
+      <div v-if="activeTab === 'preview'" class="h-full min-h-0">
+        <PreviewPanel />
+      </div>
       <div v-if="activeTab === 'progress'" class="h-full min-h-0">
         <ProgressPanel />
       </div>
@@ -61,6 +64,7 @@ import VncViewer from '~/components/workspace/tools/VncViewer.vue';
 import FileExplorerLayout from '~/components/fileExplorer/FileExplorerLayout.vue';
 import ArtifactsTab from '~/components/workspace/agent/ArtifactsTab.vue';
 import ProgressPanel from '~/components/progress/ProgressPanel.vue';
+import PreviewPanel from '~/components/workspace/tools/PreviewPanel.vue';
 import { useWorkspaceStore } from '~/stores/workspace';
 
 const selectionStore = useAgentSelectionStore();

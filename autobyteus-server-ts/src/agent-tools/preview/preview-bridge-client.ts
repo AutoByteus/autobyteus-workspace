@@ -3,11 +3,15 @@ import {
   CapturePreviewScreenshotResult,
   ClosePreviewInput,
   ClosePreviewResult,
+  ExecutePreviewJavascriptInput,
+  ExecutePreviewJavascriptResult,
   GetPreviewConsoleLogsInput,
   GetPreviewConsoleLogsResult,
   NavigatePreviewInput,
   NavigatePreviewResult,
   OpenPreviewInput,
+  OpenPreviewDevToolsInput,
+  OpenPreviewDevToolsResult,
   OpenPreviewResult,
   PREVIEW_BRIDGE_BASE_URL_ENV,
   PREVIEW_BRIDGE_TOKEN_ENV,
@@ -38,6 +42,7 @@ const CANONICAL_PREVIEW_ERROR_CODES = new Set<PreviewErrorCode>([
   "preview_session_closed",
   "preview_session_not_found",
   "preview_navigation_failed",
+  "preview_javascript_execution_failed",
   "preview_bridge_unavailable",
 ]);
 
@@ -82,6 +87,18 @@ export class PreviewBridgeClient {
     input: GetPreviewConsoleLogsInput,
   ): Promise<GetPreviewConsoleLogsResult> {
     return this.post<GetPreviewConsoleLogsResult>("/preview/console-logs", input);
+  }
+
+  async executePreviewJavascript(
+    input: ExecutePreviewJavascriptInput,
+  ): Promise<ExecutePreviewJavascriptResult> {
+    return this.post<ExecutePreviewJavascriptResult>("/preview/javascript", input);
+  }
+
+  async openPreviewDevTools(
+    input: OpenPreviewDevToolsInput,
+  ): Promise<OpenPreviewDevToolsResult> {
+    return this.post<OpenPreviewDevToolsResult>("/preview/devtools", input);
   }
 
   async closePreview(input: ClosePreviewInput): Promise<ClosePreviewResult> {

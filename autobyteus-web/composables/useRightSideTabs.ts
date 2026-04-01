@@ -1,14 +1,16 @@
 
 import { ref, computed } from 'vue';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
+import { usePreviewShellStore } from '~/stores/previewShellStore';
 
-export type TabName = 'files' | 'teamMembers' | 'terminal' | 'vnc' | 'progress' | 'artifacts';
+export type TabName = 'files' | 'teamMembers' | 'terminal' | 'vnc' | 'progress' | 'artifacts' | 'preview';
 
 // Global state
 const activeTab = ref<TabName>('terminal');
 
 export function useRightSideTabs() {
   const selectionStore = useAgentSelectionStore();
+  const previewShellStore = usePreviewShellStore();
 
   const allTabs = [
     { name: 'files' as TabName, label: 'Files', requires: 'any' },
@@ -16,11 +18,13 @@ export function useRightSideTabs() {
     { name: 'terminal' as TabName, label: 'Terminal', requires: 'any' },
     { name: 'progress' as TabName, label: 'Activity', requires: 'any' },
     { name: 'artifacts' as TabName, label: 'Artifacts', requires: 'any' },
+    { name: 'preview' as TabName, label: 'Preview', requires: 'any' },
     { name: 'vnc' as TabName, label: 'VNC Viewer', requires: 'any' },
   ];
 
   const visibleTabs = computed(() => {
     return allTabs.filter(tab => {
+      if (tab.name === 'preview' && !previewShellStore.previewVisible) return false;
       if (tab.requires === 'any') return true;
       return tab.requires === selectionStore.selectedType;
     });
