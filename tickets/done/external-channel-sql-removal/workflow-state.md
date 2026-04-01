@@ -4,11 +4,11 @@
 
 - Ticket: `external-channel-sql-removal`
 - Current Stage: `10`
-- Next Stage: `User Verification / Finalization`
+- Next Stage: `Completed`
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-025`
+- Last Transition ID: `T-026`
 - Last Updated: `2026-04-01`
 
 ## Stage 0 Bootstrap Record
@@ -38,7 +38,7 @@
 | 7 API/E2E + Executable Validation | Pass | executable validation implementation complete + acceptance-criteria and spine scenario gates complete | `tickets/done/external-channel-sql-removal/api-e2e-testing.md` |
 | 8 Code Review | Pass | Code review gate `Pass`/`Fail` recorded | `tickets/done/external-channel-sql-removal/code-review.md` |
 | 9 Docs Sync | Pass | `docs-sync.md` current + docs updated or no-impact rationale recorded | `tickets/done/external-channel-sql-removal/docs-sync.md` |
-| 10 Handoff / Ticket State | In Progress | `handoff-summary.md` current + explicit user verification received before finalization | `tickets/done/external-channel-sql-removal/handoff-summary.md` |
+| 10 Handoff / Ticket State | Pass | Explicit user verification received; ticket archived; ticket branch pushed; merged to `personal`; release completed and tagged; dedicated ticket worktree removed | `tickets/done/external-channel-sql-removal/workflow-state.md`, `tickets/done/external-channel-sql-removal/handoff-summary.md`, `tickets/done/external-channel-sql-removal/release-notes.md` |
 
 ## Pre-Edit Checklist (Stage 6 Source-Code Edits)
 
@@ -85,6 +85,7 @@
 | T-023 | 2026-04-01 | 8 | 9 | Code review passed for the shared Prisma logging patch, focused tests, and operator docs | N/A | Locked | `code-review.md`, `workflow-state.md` |
 | T-024 | 2026-04-01 | 9 | 10 | Docs sync completed and handoff updated; ticket returned to user verification hold | N/A | Locked | `docs-sync.md`, `handoff-summary.md`, `workflow-state.md` |
 | T-025 | 2026-04-01 | 10 | 10 | Explicit user verification was received, release notes were added, and Stage 10 repository finalization started | N/A | Locked | `release-notes.md`, `handoff-summary.md`, `workflow-state.md` |
+| T-026 | 2026-04-01 | 10 | 10 | Ticket branch was pushed, merged into `personal`, release `v1.2.49` was published, and the dedicated ticket worktree plus local ticket branch were cleaned up, completing Stage 10 | N/A | Locked | `workflow-state.md`, `handoff-summary.md`, `release-notes.md` |
 
 ## Audible Notification Log (Optional Tracking)
 
@@ -94,6 +95,7 @@
 | 2026-04-01 | Transition | Stages one through five are complete for external channel SQL removal. The design and review gates passed, Stage six is now active, and code edits are unlocked. | Success | N/A |
 | 2026-04-01 | Transition | Workflow state updated: stages seven through ten are complete for the Prisma logging requirement. Query logging is now opt in, code edits are locked again, and the ticket is back at stage ten waiting for user verification. | Success | N/A |
 | 2026-04-01 | Transition | Explicit user verification was received. Release notes are now recorded, Stage 10 finalization has started, and code edits remain locked. | Success | N/A |
+| 2026-04-01 | Transition | Stage 10 is complete. The ticket branch was pushed, merged into personal, release v1.2.49 was published, and the dedicated ticket worktree was cleaned up. | Success | N/A |
 
 ## Process Violation Log
 

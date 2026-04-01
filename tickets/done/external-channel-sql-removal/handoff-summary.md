@@ -4,7 +4,7 @@
 
 - Ticket: `external-channel-sql-removal`
 - Date: `2026-04-01`
-- Current Status: `Awaiting User Verification`
+- Current Status: `Completed`
 - Workflow State Source: `tickets/done/external-channel-sql-removal/workflow-state.md`
 
 ## Delivery Summary
@@ -65,8 +65,21 @@
 - Release notes artifact: `tickets/done/external-channel-sql-removal/release-notes.md`
 - Notes: The repo has a documented release helper that consumes ticket-local curated notes for a new tagged release.
 
+## Release / Finalization Summary
+
+- Repository finalization:
+  - Ticket branch commit: `63ab9bf`
+  - `personal` merge commit: `d237044`
+  - Release commit: `92a0610`
+  - Published release tag: `v1.2.49`
+- Cleanup completed:
+  - dedicated ticket worktree removed: `/Users/normy/autobyteus_org/worktrees/external-channel-sql-removal`
+  - local ticket branch deleted: `codex/external-channel-sql-removal`
+- Finalization path note:
+  - The main `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo` checkout on `personal` was left untouched because it contains unrelated staged and untracked changes, so merge and release were executed from a clean temporary finalization worktree instead.
+
 ## User Verification Hold
 
-- Waiting for explicit user verification: `Yes`
-- User verification received: `No`
-- Notes: Ticket remains in `tickets/in-progress/` and no finalization/commit/push has been performed.
+- Waiting for explicit user verification: `No`
+- User verification received: `Yes`
+- Notes: Ticket is archived, merged to `origin/personal`, released as `v1.2.49`, and fully finalized.
