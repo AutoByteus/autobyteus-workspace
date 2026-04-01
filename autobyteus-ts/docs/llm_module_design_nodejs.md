@@ -41,8 +41,12 @@ Cloud providers (SDK-backed):
 
 Local runtimes:
 - **LM Studio**: `LMStudioLLM`, `LMStudioModelProvider`
-- **Ollama**: `OllamaLLM`, `OllamaModelProvider`, `OllamaProviderResolver`
+- **Ollama**: `OllamaLLM`, `OllamaModelProvider`
 - **Autobyteus**: `AutobyteusLLM`, `AutobyteusModelProvider`
+
+For local-runtime grouping, Ollama-discovered models stay under the `OLLAMA`
+provider bucket while keeping `runtime = ollama` and a host-qualified
+identifier such as `model:ollama@host:port`.
 
 ## 5. Model Identifiers
 
