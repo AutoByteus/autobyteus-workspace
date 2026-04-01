@@ -3,7 +3,6 @@ import type {
   ChannelMessageReceipt,
   ChannelSourceContext,
 } from "../domain/models.js";
-import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import {
   AgentRunService,
   getAgentRunService,
@@ -39,7 +38,6 @@ const RETRY_DELAY_MS = 5_000;
 export type AcceptedReceiptRecoveryRuntimeDependencies = {
   bindingService?: ChannelBindingService;
   messageReceiptService?: ChannelMessageReceiptService;
-  agentRunManager?: AgentRunManager;
   agentRunService?: AgentRunService;
   teamRunService?: TeamRunService;
   agentReplyBridge?: ChannelAgentRunReplyBridge;
@@ -51,7 +49,6 @@ export type AcceptedReceiptRecoveryRuntimeDependencies = {
 export class AcceptedReceiptRecoveryRuntime {
   private readonly bindingService: ChannelBindingService;
   private readonly messageReceiptService: ChannelMessageReceiptService;
-  private readonly agentRunManager: AgentRunManager;
   private readonly agentRunService: AgentRunService;
   private readonly teamRunService: TeamRunService;
   private readonly agentReplyBridge: ChannelAgentRunReplyBridge;
@@ -66,7 +63,6 @@ export class AcceptedReceiptRecoveryRuntime {
     this.bindingService = deps.bindingService ?? new ChannelBindingService();
     this.messageReceiptService =
       deps.messageReceiptService ?? new ChannelMessageReceiptService();
-    this.agentRunManager = deps.agentRunManager ?? AgentRunManager.getInstance();
     this.agentRunService = deps.agentRunService ?? getAgentRunService();
     this.teamRunService = deps.teamRunService ?? getTeamRunService();
     this.agentReplyBridge = deps.agentReplyBridge ?? getChannelAgentRunReplyBridge();
@@ -335,28 +331,11 @@ export class AcceptedReceiptRecoveryRuntime {
   }
 
   private async resolveAgentRun(agentRunId: string) {
-    const activeRun = this.agentRunManager.getActiveRun(agentRunId);
-    if (activeRun) {
-      return activeRun;
-    }
-    try {
-      const restored = await this.agentRunService.restoreAgentRun(agentRunId);
-      return restored.run;
-    } catch {
-      return null;
-    }
+    return this.agentRunService.resolveAgentRun(agentRunId);
   }
 
   private async resolveTeamRun(teamRunId: string) {
-    const activeRun = this.teamRunService.getTeamRun(teamRunId);
-    if (activeRun) {
-      return activeRun;
-    }
-    try {
-      return await this.teamRunService.restoreTeamRun(teamRunId);
-    } catch {
-      return null;
-    }
+    return this.teamRunService.resolveTeamRun(teamRunId);
   }
 }
 

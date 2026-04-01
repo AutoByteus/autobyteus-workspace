@@ -25,6 +25,7 @@ import {
   AgentRunHistoryIndexService,
   getAgentRunHistoryIndexService,
 } from "../../run-history/services/agent-run-history-index-service.js";
+import type { RunKnownStatus } from "../../run-history/domain/agent-run-history-index-types.js";
 import { AgentRunMemoryLayout } from "../../agent-memory/store/agent-run-memory-layout.js";
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import { generateStandaloneAgentRunId } from "../../run-history/utils/agent-run-id-utils.js";
@@ -120,7 +121,27 @@ export class AgentRunService {
     };
   }
 
-  async createAgentRun(input: CreateAgentRunInput): Promise<CreateAgentRunResult> {
+  getAgentRun(runId: string): AgentRun | null {
+    return this.agentRunManager.getActiveRun(normalizeRequiredRunId(runId));
+  }
+
+  async resolveAgentRun(runId: string): Promise<AgentRun | null> {
+    const normalizedRunId = normalizeRequiredRunId(runId);
+    const activeRun = this.getAgentRun(normalizedRunId);
+    if (activeRun) {
+      return activeRun;
+    }
+    try {
+      const restored = await this.restoreAgentRun(normalizedRunId);
+      return restored.run;
+    } catch {
+      return null;
+    }
+  }
+
+  async createAgentRun(
+    input: CreateAgentRunInput,
+  ): Promise<CreateAgentRunResult> {
     if (!hasNonEmptyString(input.agentDefinitionId)) {
       throw new Error("agentDefinitionId is required when creating a new run.");
     }
@@ -192,6 +213,34 @@ export class AgentRunService {
       lastActivityAt: new Date().toISOString(),
     });
     return { runId };
+  }
+
+  async recordRunActivity(
+    run: AgentRun,
+    input: {
+      summary?: string | null;
+      lastKnownStatus?: RunKnownStatus;
+      lastActivityAt?: string;
+    } = {},
+  ): Promise<void> {
+    const metadata = await this.metadataService.readMetadata(run.runId);
+    const updatedMetadata = metadata
+      ? {
+          ...metadata,
+          platformAgentRunId: run.getPlatformAgentRunId() ?? metadata.platformAgentRunId,
+          lastKnownStatus: input.lastKnownStatus ?? "ACTIVE",
+        }
+      : null;
+    if (updatedMetadata) {
+      await this.metadataService.writeMetadata(run.runId, updatedMetadata);
+    }
+    await this.historyIndexService.recordRunActivity({
+      runId: run.runId,
+      metadata: updatedMetadata,
+      summary: input.summary ?? "",
+      lastKnownStatus: input.lastKnownStatus ?? "ACTIVE",
+      lastActivityAt: input.lastActivityAt ?? new Date().toISOString(),
+    });
   }
 
   private async prepareFreshRun(input: {

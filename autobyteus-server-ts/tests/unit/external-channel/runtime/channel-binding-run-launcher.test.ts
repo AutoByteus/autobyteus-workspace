@@ -1,5 +1,4 @@
 import { describe, expect, it, vi } from "vitest";
-import { AgentRunConfig } from "../../../../src/agent-execution/domain/agent-run-config.js";
 import type { ChannelBinding } from "../../../../src/external-channel/domain/models.js";
 import {
   ChannelBindingRunLauncher,
@@ -63,12 +62,8 @@ const createActiveRun = (runId: string, runtimeKind = "AUTOBYTEUS") => ({
 
 const createLauncher = (overrides: {
   bindingService?: Record<string, unknown>;
-  agentRunManager?: Record<string, unknown>;
   agentRunService?: Record<string, unknown>;
-  agentRunMetadataService?: Record<string, unknown>;
-  agentRunHistoryIndexService?: Record<string, unknown>;
   bindingRunRegistry?: InMemoryChannelBindingLiveRunRegistry;
-  workspaceManager?: Record<string, unknown>;
   teamRunService?: Record<string, unknown>;
 } = {}) =>
   new ChannelBindingRunLauncher({
@@ -77,31 +72,14 @@ const createLauncher = (overrides: {
       upsertBindingTeamRunId: vi.fn(),
       ...overrides.bindingService,
     } as any,
-    agentRunManager: {
-      createAgentRun: vi.fn(),
-      getActiveRun: vi.fn().mockReturnValue(null),
-      ...overrides.agentRunManager,
-    } as any,
     agentRunService: {
+      getAgentRun: vi.fn().mockReturnValue(null),
       restoreAgentRun: vi.fn(),
+      createAgentRun: vi.fn(),
       ...overrides.agentRunService,
-    } as any,
-    agentRunMetadataService: {
-      writeMetadata: vi.fn(),
-      ...overrides.agentRunMetadataService,
-    } as any,
-    agentRunHistoryIndexService: {
-      recordRunCreated: vi.fn(),
-      ...overrides.agentRunHistoryIndexService,
     } as any,
     bindingRunRegistry:
       overrides.bindingRunRegistry ?? new InMemoryChannelBindingLiveRunRegistry(),
-    workspaceManager: {
-      ensureWorkspaceByRootPath: vi.fn().mockResolvedValue({
-        workspaceId: "workspace-1",
-      }),
-      ...overrides.workspaceManager,
-    } as any,
     teamRunService: {
       getTeamRun: vi.fn().mockReturnValue(null),
       restoreTeamRun: vi.fn(),
@@ -114,95 +92,44 @@ const createLauncher = (overrides: {
 describe("ChannelBindingRunLauncher", () => {
   it("reuses a cached active agent run only when the binding owns it in this process", async () => {
     const binding = createBinding();
-    const getActiveRun = vi.fn().mockReturnValue(createActiveRun("agent-run-1"));
-    const writeMetadata = vi.fn();
+    const getAgentRun = vi.fn().mockReturnValue(createActiveRun("agent-run-1"));
     const bindingRunRegistry = new InMemoryChannelBindingLiveRunRegistry();
     bindingRunRegistry.claimAgentRun(binding.id, "agent-run-1");
     const launcher = createLauncher({
       bindingRunRegistry,
-      agentRunManager: { getActiveRun },
-      agentRunMetadataService: { writeMetadata },
+      agentRunService: { getAgentRun },
     });
 
     const runId = await launcher.resolveOrStartAgentRun(binding);
 
     expect(runId).toBe("agent-run-1");
-    expect(getActiveRun).toHaveBeenCalledWith("agent-run-1");
-    expect(writeMetadata).not.toHaveBeenCalled();
+    expect(getAgentRun).toHaveBeenCalledWith("agent-run-1");
   });
 
-  it("creates a fresh agent run through AgentRunManager and records metadata plus history index", async () => {
+  it("creates a fresh agent run through AgentRunService and persists the binding run id", async () => {
     const binding = createBinding();
     const upsertBindingAgentRunId = vi.fn();
-    const activeRun = createActiveRun("agent-run-fresh");
-    const createAgentRun = vi.fn().mockResolvedValue(activeRun);
-    const getActiveRun = vi.fn().mockImplementation((runId: string) =>
-      runId === "agent-run-fresh" ? activeRun : null,
-    );
-    const writeMetadata = vi.fn().mockResolvedValue(undefined);
-    const recordRunCreated = vi.fn().mockResolvedValue(undefined);
-    const ensureWorkspaceByRootPath = vi.fn().mockResolvedValue({
-      workspaceId: "workspace-1",
+    const createAgentRun = vi.fn().mockResolvedValue({
+      runId: "agent-run-fresh",
     });
     const launcher = createLauncher({
       bindingService: { upsertBindingAgentRunId },
-      agentRunManager: { createAgentRun, getActiveRun },
-      agentRunMetadataService: { writeMetadata },
-      agentRunHistoryIndexService: { recordRunCreated },
-      workspaceManager: { ensureWorkspaceByRootPath },
+      agentRunService: { createAgentRun },
     });
 
-    const runId = await launcher.resolveOrStartAgentRun(binding, {
-      initialSummary: "First external message",
-    });
+    const runId = await launcher.resolveOrStartAgentRun(binding);
 
     expect(runId).toBe("agent-run-fresh");
-    expect(ensureWorkspaceByRootPath).toHaveBeenCalledWith("/tmp/workspace");
-    const createInput = createAgentRun.mock.calls[0]?.[0];
-    expect(createInput).toBeInstanceOf(AgentRunConfig);
-    expect(createInput).toMatchObject({
-      runtimeKind: "AUTOBYTEUS",
-      agentDefinitionId: "agent-definition-1",
-      llmModelIdentifier: "gpt-test",
-      autoExecuteTools: false,
-      workspaceId: "workspace-1",
-      llmConfig: null,
-      skillAccessMode: "PRELOADED_ONLY",
-    });
-    expect(writeMetadata).toHaveBeenCalledWith(
-      "agent-run-fresh",
-      expect.objectContaining({
-        runId: "agent-run-fresh",
+    expect(createAgentRun).toHaveBeenCalledWith(
+      {
+        runtimeKind: "AUTOBYTEUS",
         agentDefinitionId: "agent-definition-1",
         workspaceRootPath: "/tmp/workspace",
         llmModelIdentifier: "gpt-test",
-        llmConfig: null,
         autoExecuteTools: false,
+        llmConfig: null,
         skillAccessMode: "PRELOADED_ONLY",
-        runtimeKind: "AUTOBYTEUS",
-        platformAgentRunId: "session-agent-run-fresh",
-        lastKnownStatus: "ACTIVE",
-      }),
-    );
-    expect(recordRunCreated).toHaveBeenCalledWith(
-      expect.objectContaining({
-        runId: "agent-run-fresh",
-        metadata: expect.objectContaining({
-          runId: "agent-run-fresh",
-          agentDefinitionId: "agent-definition-1",
-          workspaceRootPath: "/tmp/workspace",
-          llmModelIdentifier: "gpt-test",
-          llmConfig: null,
-          autoExecuteTools: false,
-          skillAccessMode: "PRELOADED_ONLY",
-          runtimeKind: "AUTOBYTEUS",
-          platformAgentRunId: "session-agent-run-fresh",
-          lastKnownStatus: "ACTIVE",
-        }),
-        summary: "First external message",
-        lastKnownStatus: "ACTIVE",
-        lastActivityAt: expect.any(String),
-      }),
+      },
     );
     expect(upsertBindingAgentRunId).toHaveBeenCalledWith("binding-1", "agent-run-fresh");
   });
@@ -215,12 +142,9 @@ describe("ChannelBindingRunLauncher", () => {
       metadata: {},
     });
     const createAgentRun = vi.fn();
-    const writeMetadata = vi.fn();
     const launcher = createLauncher({
       bindingService: { upsertBindingAgentRunId },
-      agentRunManager: { createAgentRun },
-      agentRunService: { restoreAgentRun },
-      agentRunMetadataService: { writeMetadata },
+      agentRunService: { restoreAgentRun, createAgentRun },
     });
 
     const runId = await launcher.resolveOrStartAgentRun(binding);
@@ -228,7 +152,6 @@ describe("ChannelBindingRunLauncher", () => {
     expect(runId).toBe("agent-run-1");
     expect(restoreAgentRun).toHaveBeenCalledWith("agent-run-1");
     expect(createAgentRun).not.toHaveBeenCalled();
-    expect(writeMetadata).not.toHaveBeenCalled();
     expect(upsertBindingAgentRunId).toHaveBeenCalledWith("binding-1", "agent-run-1");
   });
 
@@ -317,9 +240,7 @@ describe("ChannelBindingRunLauncher", () => {
       },
     });
 
-    const teamRunId = await launcher.resolveOrStartTeamRun(binding, {
-      initialSummary: "Recover after stale team run",
-    });
+    const teamRunId = await launcher.resolveOrStartTeamRun(binding);
 
     expect(teamRunId).toBe("team-run-fresh");
     expect(restoreTeamRun).toHaveBeenCalledWith("team-run-1");

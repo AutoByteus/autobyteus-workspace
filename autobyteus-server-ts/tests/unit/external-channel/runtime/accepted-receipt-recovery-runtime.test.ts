@@ -55,15 +55,11 @@ describe("AcceptedReceiptRecoveryRuntime", () => {
       bindingService: {
         findBindingByDispatchTarget: vi.fn(),
       } as any,
-      agentRunManager: {
-        getActiveRun: vi.fn(),
-      } as any,
       agentRunService: {
-        restoreAgentRun: vi.fn(),
+        resolveAgentRun: vi.fn().mockResolvedValue(null),
       } as any,
       teamRunService: {
-        getTeamRun: vi.fn(),
-        restoreTeamRun: vi.fn(),
+        resolveTeamRun: vi.fn().mockResolvedValue(null),
       } as any,
       agentReplyBridge: {
         observeAcceptedTurnToSource: vi.fn(),
@@ -127,15 +123,11 @@ describe("AcceptedReceiptRecoveryRuntime", () => {
       bindingService: {
         findBindingByDispatchTarget: vi.fn(),
       } as any,
-      agentRunManager: {
-        getActiveRun: vi.fn(),
-      } as any,
       agentRunService: {
-        restoreAgentRun: vi.fn(),
+        resolveAgentRun: vi.fn().mockResolvedValue(null),
       } as any,
       teamRunService: {
-        getTeamRun: vi.fn(),
-        restoreTeamRun: vi.fn(),
+        resolveTeamRun: vi.fn().mockResolvedValue(null),
       } as any,
       agentReplyBridge: {
         observeAcceptedTurnToSource: vi.fn(),
@@ -222,15 +214,11 @@ describe("AcceptedReceiptRecoveryRuntime", () => {
       bindingService: {
         findBindingByDispatchTarget: vi.fn(),
       } as any,
-      agentRunManager: {
-        getActiveRun: vi.fn().mockReturnValue(activeRun),
-      } as any,
       agentRunService: {
-        restoreAgentRun: vi.fn(),
+        resolveAgentRun: vi.fn().mockResolvedValue(activeRun),
       } as any,
       teamRunService: {
-        getTeamRun: vi.fn(),
-        restoreTeamRun: vi.fn(),
+        resolveTeamRun: vi.fn().mockResolvedValue(null),
       } as any,
       agentReplyBridge: agentReplyBridge as any,
       teamReplyBridge: {
@@ -292,15 +280,11 @@ describe("AcceptedReceiptRecoveryRuntime", () => {
       bindingService: {
         findBindingByDispatchTarget: vi.fn(),
       } as any,
-      agentRunManager: {
-        getActiveRun: vi.fn(),
-      } as any,
       agentRunService: {
-        restoreAgentRun: vi.fn(),
+        resolveAgentRun: vi.fn().mockResolvedValue(null),
       } as any,
       teamRunService: {
-        getTeamRun: vi.fn(),
-        restoreTeamRun: vi.fn(),
+        resolveTeamRun: vi.fn().mockResolvedValue(null),
       } as any,
       agentReplyBridge: {
         observeAcceptedTurnToSource: vi.fn(),

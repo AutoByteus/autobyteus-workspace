@@ -40,12 +40,11 @@ export class ChannelTeamRunFacade {
     binding: ChannelBinding,
     envelope: import("autobyteus-ts/external-channel/external-message-envelope.js").ExternalMessageEnvelope,
   ): Promise<ChannelRunDispatchResult> {
-    const teamRunId = await this.runLauncher.resolveOrStartTeamRun(binding, {
-      initialSummary: envelope.content,
-    });
-    const teamRun =
-      this.teamRunService.getTeamRun(teamRunId) ??
-      await this.teamRunService.restoreTeamRun(teamRunId);
+    const teamRunId = await this.runLauncher.resolveOrStartTeamRun(binding);
+    const teamRun = await this.teamRunService.resolveTeamRun(teamRunId);
+    if (!teamRun) {
+      throw new Error(`Team run '${teamRunId}' is not active.`);
+    }
     const result = await teamRun.postMessage(
       buildAgentInputMessage(envelope),
       binding.targetNodeName ?? null,
@@ -53,6 +52,11 @@ export class ChannelTeamRunFacade {
     if (!result.accepted) {
       throw new Error(result.message ?? `Team run '${teamRunId}' rejected the message.`);
     }
+    await this.teamRunService.recordRunActivity(teamRun, {
+      summary: envelope.content,
+      lastKnownStatus: "ACTIVE",
+      lastActivityAt: new Date().toISOString(),
+    });
     try {
       this.teamLiveMessagePublisher.publishExternalUserMessage({
         teamRunId,
