@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  repository_prisma@1.0.6:
+    hash: dd8b9b022894f130251095e90d42726a10c9426566af7d4c07230985cdffc5d9
+    path: patches/repository_prisma@1.0.6.patch
+
 importers:
 
   .: {}
@@ -85,7 +90,7 @@ importers:
         version: 0.2.2
       repository_prisma:
         specifier: ^1.0.6
-        version: 1.0.6(@prisma/client@5.22.0(prisma@5.22.0))
+        version: 1.0.6(patch_hash=dd8b9b022894f130251095e90d42726a10c9426566af7d4c07230985cdffc5d9)(@prisma/client@5.22.0(prisma@5.22.0))
       type-graphql:
         specifier: ^2.0.0-rc.2
         version: 2.0.0-rc.3(graphql-scalars@1.25.0(graphql@16.12.0))(graphql@16.12.0)
@@ -16587,7 +16592,7 @@ snapshots:
 
   remove-trailing-spaces@1.0.9: {}
 
-  repository_prisma@1.0.6(@prisma/client@5.22.0(prisma@5.22.0)):
+  repository_prisma@1.0.6(patch_hash=dd8b9b022894f130251095e90d42726a10c9426566af7d4c07230985cdffc5d9)(@prisma/client@5.22.0(prisma@5.22.0)):
     dependencies:
       '@prisma/client': 5.22.0(prisma@5.22.0)
       dotenv: 17.3.1

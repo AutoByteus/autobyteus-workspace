@@ -73,8 +73,7 @@ External-channel persistence has one deliberate exception:
 - file-backed external-channel artifacts live under `<appDataDir>/external-channel/`
 - channel route bindings are always file-backed and stored at `<appDataDir>/external-channel/bindings.json`
 - the callback outbox is stored at `<appDataDir>/external-channel/gateway-callback-outbox.json`
-- when the persistence profile is `file`, external-channel receipts and delivery events also live in that same folder
-- when the persistence profile is `sql`, receipts and delivery events stay on the configured SQL persistence surface
+- external-channel receipts and delivery events are file-backed and live in that same folder regardless of the global persistence profile
 - accepted receipts remain unfinished durable work until callback publication completes or the route resolves terminally
 - startup restores unfinished accepted receipts through the accepted-receipt recovery runtime after the server begins listening
 - runtime reply routing depends on accepted runtime `turnId` values being bound to those persisted receipts before outbound delivery work can be published
