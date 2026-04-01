@@ -1,0 +1,70 @@
+diff --git a/dist/index.js b/dist/index.js
+index 3ed6862c2a86a443715d5a9cabaa767a61db94d1..31dbceae62c7a13b466bc77a99b3ec0f0626b649 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -46,8 +46,29 @@ var import_async_hooks = require("async_hooks");
+ // src/lib/client.ts
+ var import_client = require("@prisma/client");
+ var import_config = require("dotenv/config");
++var isTruthyEnvFlag = (value) => {
++  if (typeof value !== "string") {
++    return false;
++  }
++  switch (value.trim().toLowerCase()) {
++    case "1":
++    case "true":
++    case "yes":
++    case "on":
++      return true;
++    default:
++      return false;
++  }
++};
++var resolvePrismaLogLevels = () => {
++  const logLevels = ["info", "warn", "error"];
++  if (isTruthyEnvFlag(process.env.PRISMA_LOG_QUERIES)) {
++    logLevels.unshift("query");
++  }
++  return logLevels;
++};
+ var rootPrismaClient = new import_client.PrismaClient({
+-  log: ["query", "info", "warn", "error"]
++  log: resolvePrismaLogLevels()
+ });
+ var initializePrisma = async (options = {}) => {
+   const { enableWAL = false } = options;
+diff --git a/dist/index.mjs b/dist/index.mjs
+index 6f3fa19a7422ae072df9035cbeb7e289f3adfcab..43e2d1b5bdcdb78896eca2b85187a4f45df97cbb 100644
+--- a/dist/index.mjs
++++ b/dist/index.mjs
+@@ -4,8 +4,29 @@ import { AsyncLocalStorage } from "async_hooks";
+ // src/lib/client.ts
+ import { PrismaClient } from "@prisma/client";
+ import "dotenv/config";
++var isTruthyEnvFlag = (value) => {
++  if (typeof value !== "string") {
++    return false;
++  }
++  switch (value.trim().toLowerCase()) {
++    case "1":
++    case "true":
++    case "yes":
++    case "on":
++      return true;
++    default:
++      return false;
++  }
++};
++var resolvePrismaLogLevels = () => {
++  const logLevels = ["info", "warn", "error"];
++  if (isTruthyEnvFlag(process.env.PRISMA_LOG_QUERIES)) {
++    logLevels.unshift("query");
++  }
++  return logLevels;
++};
+ var rootPrismaClient = new PrismaClient({
+-  log: ["query", "info", "warn", "error"]
++  log: resolvePrismaLogLevels()
+ });
+ var initializePrisma = async (options = {}) => {
+   const { enableWAL = false } = options;

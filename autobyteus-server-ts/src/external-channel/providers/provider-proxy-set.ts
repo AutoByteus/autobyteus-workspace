@@ -1,4 +1,3 @@
-import { getPersistenceProfile } from "../../persistence/profile.js";
 import type {
   ChannelBinding,
   ChannelBindingLookup,
@@ -41,24 +40,6 @@ const loadBindingProvider = async (): Promise<ChannelBindingProvider> => {
   return new binding.FileChannelBindingProvider();
 };
 
-const loadSqlProviderSet = async (): Promise<ChannelProviderSet> => {
-  const [bindingProvider, receipt, delivery] = await Promise.all([
-    loadBindingProvider(),
-    importChannelProviderModule<{
-      SqlChannelMessageReceiptProvider: new () => ChannelMessageReceiptProvider;
-    }>("sql-channel-message-receipt-provider.js"),
-    importChannelProviderModule<{
-      SqlDeliveryEventProvider: new () => DeliveryEventProvider;
-    }>("sql-delivery-event-provider.js"),
-  ]);
-
-  return {
-    bindingProvider,
-    messageReceiptProvider: new receipt.SqlChannelMessageReceiptProvider(),
-    deliveryEventProvider: new delivery.SqlDeliveryEventProvider(),
-  };
-};
-
 const loadFileProviderSet = async (): Promise<ChannelProviderSet> => {
   const [bindingProvider, receipt, delivery] = await Promise.all([
     loadBindingProvider(),
@@ -77,13 +58,7 @@ const loadFileProviderSet = async (): Promise<ChannelProviderSet> => {
   };
 };
 
-const resolveProviderSet = async (): Promise<ChannelProviderSet> => {
-  const profile = getPersistenceProfile();
-  if (profile === "file") {
-    return loadFileProviderSet();
-  }
-  return loadSqlProviderSet();
-};
+const resolveProviderSet = async (): Promise<ChannelProviderSet> => loadFileProviderSet();
 
 const getProviderSet = async (): Promise<ChannelProviderSet> => {
   if (!providerSetPromise) {

@@ -1,39 +1,30 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 import { randomUUID } from "node:crypto";
+import { rm } from "node:fs/promises";
 import { ExternalChannelProvider } from "autobyteus-ts/external-channel/provider.js";
 import { ExternalChannelTransport } from "autobyteus-ts/external-channel/channel-transport.js";
-import { SqlChannelMessageReceiptProvider } from "../../../../src/external-channel/providers/sql-channel-message-receipt-provider.js";
+import { FileChannelMessageReceiptProvider } from "../../../../src/external-channel/providers/file-channel-message-receipt-provider.js";
 
 const unique = (prefix: string): string => `${prefix}-${randomUUID()}`;
 
-const seedAcceptedReceipt = async (
-  provider: SqlChannelMessageReceiptProvider,
-  input: {
-    provider: ExternalChannelProvider;
-    transport: ExternalChannelTransport;
-    accountId: string;
-    peerId: string;
-    threadId: string | null;
-    externalMessageId: string;
-    agentRunId: string | null;
-    teamRunId: string | null;
-    receivedAt: Date;
-  },
-): Promise<void> => {
-  const claimed = await provider.claimIngressDispatch({
-    ...input,
-    claimedAt: new Date(input.receivedAt.getTime() + 1000),
-    leaseDurationMs: 30_000,
-  });
-  await provider.recordAcceptedDispatch({
-    ...input,
-    dispatchLeaseToken: claimed.dispatchLeaseToken ?? "",
-  });
+const receiptFilePaths = new Set<string>();
+
+const createProvider = (): FileChannelMessageReceiptProvider => {
+  const filePath = `/tmp/channel-message-receipts-${randomUUID()}.json`;
+  receiptFilePaths.add(filePath);
+  return new FileChannelMessageReceiptProvider(filePath);
 };
 
-describe("SqlChannelMessageReceiptProvider", () => {
+afterEach(async () => {
+  await Promise.all(
+    [...receiptFilePaths].map((filePath) => rm(filePath, { force: true })),
+  );
+  receiptFilePaths.clear();
+});
+
+describe("FileChannelMessageReceiptProvider", () => {
   it("creates pending receipts and exposes their lifecycle state", async () => {
-    const provider = new SqlChannelMessageReceiptProvider();
+    const provider = createProvider();
     const accountId = unique("acct");
     const peerId = unique("peer");
 
@@ -60,7 +51,7 @@ describe("SqlChannelMessageReceiptProvider", () => {
   });
 
   it("reclaims dispatching receipts with a fresh lease token", async () => {
-    const provider = new SqlChannelMessageReceiptProvider();
+    const provider = createProvider();
     const accountId = unique("acct");
     const peerId = unique("peer");
 
@@ -93,7 +84,7 @@ describe("SqlChannelMessageReceiptProvider", () => {
   });
 
   it("records accepted-turn correlation and resolves source by (agentRunId, turnId)", async () => {
-    const provider = new SqlChannelMessageReceiptProvider();
+    const provider = createProvider();
     const agentRunId = unique("agent");
     const accountId = unique("acct");
     const peerId = unique("peer");

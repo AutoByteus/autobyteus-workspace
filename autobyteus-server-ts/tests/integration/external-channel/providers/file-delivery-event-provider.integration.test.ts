@@ -1,14 +1,30 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 import { randomUUID } from "node:crypto";
+import { rm } from "node:fs/promises";
 import { ExternalChannelProvider } from "autobyteus-ts/external-channel/provider.js";
 import { ExternalChannelTransport } from "autobyteus-ts/external-channel/channel-transport.js";
-import { SqlDeliveryEventProvider } from "../../../../src/external-channel/providers/sql-delivery-event-provider.js";
+import { FileDeliveryEventProvider } from "../../../../src/external-channel/providers/file-delivery-event-provider.js";
 
 const unique = (prefix: string): string => `${prefix}-${randomUUID()}`;
 
-describe("SqlDeliveryEventProvider", () => {
+const deliveryEventFilePaths = new Set<string>();
+
+const createProvider = (): FileDeliveryEventProvider => {
+  const filePath = `/tmp/channel-delivery-events-${randomUUID()}.json`;
+  deliveryEventFilePaths.add(filePath);
+  return new FileDeliveryEventProvider(filePath);
+};
+
+afterEach(async () => {
+  await Promise.all(
+    [...deliveryEventFilePaths].map((filePath) => rm(filePath, { force: true })),
+  );
+  deliveryEventFilePaths.clear();
+});
+
+describe("FileDeliveryEventProvider", () => {
   it("upserts and retrieves callback delivery events", async () => {
-    const provider = new SqlDeliveryEventProvider();
+    const provider = createProvider();
     const callbackKey = unique("callback");
 
     const saved = await provider.upsertByCallbackKey({
@@ -32,7 +48,7 @@ describe("SqlDeliveryEventProvider", () => {
   });
 
   it("updates existing callback event when key already exists", async () => {
-    const provider = new SqlDeliveryEventProvider();
+    const provider = createProvider();
     const callbackKey = unique("callback");
     const accountId = unique("acct");
     const peerId = unique("peer");
@@ -68,10 +84,9 @@ describe("SqlDeliveryEventProvider", () => {
   });
 
   it("rejects blank callback keys", async () => {
-    const provider = new SqlDeliveryEventProvider();
+    const provider = createProvider();
     await expect(provider.findByCallbackKey("   ")).rejects.toThrow(
       "callbackIdempotencyKey must be a non-empty string.",
     );
   });
 });
-
