@@ -56,10 +56,10 @@
 - Ticket branch: `codex/run-service-layering-refactor`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Commit status: `Pending`
-- Push status: `Pending`
-- Merge status: `Pending`
+- Commit status: `Completed`
+- Push status: `Completed`
+- Merge status: `Completed into the resolved target branch`
 - Release/publication/deployment status: `Not required`
-- Worktree cleanup status: `Pending`
-- Local branch cleanup status: `Pending`
-- Blockers / notes: finalization will run through a separate clean merge worktree because the primary `personal` workspace contains unrelated user changes
+- Worktree cleanup status: `Completed`
+- Local branch cleanup status: `Completed`
+- Blockers / notes: repository finalization used a separate clean helper worktree because the primary `personal` workspace contains unrelated user changes; residual package-wide `typecheck` risk remains the pre-existing `TS6059` `tsconfig.json` issue already captured above

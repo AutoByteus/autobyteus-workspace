@@ -201,4 +201,4 @@
 | 7 API/E2E + Executable Validation | `tickets/done/run-service-layering-refactor/api-e2e-testing.md` | `Pass` | `2026-04-01` | Focused executable validation passed; full-package typecheck remains blocked by pre-existing `TS6059` |
 | 8 Code Review | `tickets/done/run-service-layering-refactor/code-review.md` | `Pass` | `2026-04-01` | No findings; touched source files remain within size/delta gates |
 | 9 Docs Sync | `tickets/done/run-service-layering-refactor/docs-sync.md` | `Pass` | `2026-04-01` | No external docs impact; ticket artifacts updated |
-| 10 Handoff / Ticket State | `tickets/done/run-service-layering-refactor/handoff-summary.md` | `In Progress` | `2026-04-01` | User verification received; repository finalization and cleanup pending |
+| 10 Handoff / Ticket State | `tickets/done/run-service-layering-refactor/handoff-summary.md` | `Pass` | `2026-04-01` | User verification, repository finalization into `personal`, and ticket cleanup are complete; no release/version step was required |
