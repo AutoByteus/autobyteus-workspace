@@ -383,8 +383,7 @@ export const getAgentStreamHandler = (): AgentStreamHandler => {
       AgentRunManager.getInstance(),
       getAgentRunEventMessageMapper(),
       getAgentStreamBroadcaster(),
-      getAgentRunMetadataService(),
-      getAgentRunHistoryIndexService(),
+      getAgentRunService(),
     );
   }
   return cachedAgentStreamHandler;
