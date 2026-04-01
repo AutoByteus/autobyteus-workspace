@@ -1,7 +1,8 @@
+## What's New
+- Ollama local models now appear under the `OLLAMA` provider card after reload in API Key Management.
+
 ## Improvements
-- External-channel bindings, file-backed receipts, delivery events, and callback outbox data now live under one top-level `server-data/external-channel/` folder.
-- Bound external-channel routes now preserve run continuity more reliably across restarts for supported runtime kinds.
+- Local model discovery now keeps Ollama-hosted models grouped consistently with their runtime, matching the existing LM Studio behavior.
 
 ## Fixes
-- Fixed Telegram-bound agent replies so messages sent through external-channel bindings are delivered back to Telegram.
-- Fixed accepted external replies so callback delivery can recover after restart instead of depending only on a live in-memory bridge.
+- Fixed a bug where Ollama-hosted models such as Qwen were grouped under vendor buckets like `QWEN` instead of `OLLAMA`, causing `No Models Found` under the Ollama card.
