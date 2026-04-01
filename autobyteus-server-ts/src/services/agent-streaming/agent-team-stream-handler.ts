@@ -4,8 +4,8 @@ import {
   ContextFile,
   ContextFileType,
 } from "autobyteus-ts";
-import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import type { TeamRun } from "../../agent-team-execution/domain/team-run.js";
+import { resolveRuntimeMemberContext } from "../../agent-team-execution/domain/team-run-context.js";
 import {
   TeamRunService,
   getTeamRunService,
@@ -56,7 +56,6 @@ class AgentTeamSession extends AgentSession {
 
 export class AgentTeamStreamHandler {
   private readonly sessionManager: AgentSessionManager;
-  private readonly teamManager: AgentTeamRunManager;
   private readonly broadcaster: TeamStreamBroadcaster;
   private readonly agentRunEventMessageMapper: AgentRunEventMessageMapper;
   private readonly teamRunService: TeamRunService;
@@ -67,20 +66,18 @@ export class AgentTeamStreamHandler {
 
   constructor(
     sessionManager: AgentSessionManager = new AgentSessionManager(AgentTeamSession),
-    teamManager: AgentTeamRunManager = AgentTeamRunManager.getInstance(),
+    teamRunService: TeamRunService = getTeamRunService(),
     broadcaster: TeamStreamBroadcaster = getTeamStreamBroadcaster(),
     agentRunEventMessageMapper: AgentRunEventMessageMapper = getAgentRunEventMessageMapper(),
-    teamRunService: TeamRunService = getTeamRunService(),
   ) {
     this.sessionManager = sessionManager;
-    this.teamManager = teamManager;
+    this.teamRunService = teamRunService;
     this.broadcaster = broadcaster;
     this.agentRunEventMessageMapper = agentRunEventMessageMapper;
-    this.teamRunService = teamRunService;
   }
 
   async connect(connection: WebSocketConnection, teamRunId: string): Promise<string | null> {
-    const teamRun = this.teamManager.getTeamRun(teamRunId);
+    const teamRun = this.getTeamRun(teamRunId);
     if (!teamRun) {
       const errorMsg = createErrorMessage("TEAM_NOT_FOUND", `Team run '${teamRunId}' not found`);
       connection.send(errorMsg.toJson());
@@ -215,7 +212,7 @@ export class AgentTeamStreamHandler {
     teamRunId: string,
     connection: WebSocketConnection,
   ): boolean {
-    const teamRun = this.teamManager.getTeamRun(teamRunId);
+    const teamRun = this.getTeamRun(teamRunId);
     if (!teamRun) {
       return false;
     }
@@ -229,7 +226,7 @@ export class AgentTeamStreamHandler {
     existingUnsubscribe?.();
     this.eventUnsubscribers.delete(sessionId);
 
-    const unsubscribe = this.teamManager.subscribeToEvents(teamRunId, (event) => {
+    const unsubscribe = teamRun.subscribeToEvents((event) => {
       try {
         connection.send(this.convertTeamEvent(event).toJson());
       } catch (error) {
@@ -326,6 +323,12 @@ export class AgentTeamStreamHandler {
       return;
     }
 
+    const activeRun = this.resolveCommandRun(teamRunId);
+    if (!activeRun) {
+      logger.warn(`TOOL_APPROVAL rejected for team run ${teamRunId}: active run not found.`);
+      return;
+    }
+
     const explicitApprovalTarget =
       (typeof payload.agent_name === "string" && payload.agent_name) ||
       (typeof payload.target_member_name === "string" && payload.target_member_name) ||
@@ -335,17 +338,11 @@ export class AgentTeamStreamHandler {
     const reason = typeof payload.reason === "string" ? payload.reason : null;
     const approvalTarget =
       explicitApprovalTarget ??
-      this.resolveApprovalTargetName(teamRunId, approvalTargetRunId) ??
+      this.resolveApprovalTargetName(activeRun, approvalTargetRunId) ??
       approvalTargetRunId;
 
     if (typeof approvalTarget !== "string" || approvalTarget.trim().length === 0) {
       logger.warn(`TOOL_APPROVAL rejected for team run ${teamRunId}: approval target missing.`);
-      return;
-    }
-
-    const activeRun = this.resolveCommandRun(teamRunId);
-    if (!activeRun) {
-      logger.warn(`TOOL_APPROVAL rejected for team run ${teamRunId}: active run not found.`);
       return;
     }
 
@@ -363,40 +360,35 @@ export class AgentTeamStreamHandler {
   }
 
   private resolveApprovalTargetName(
-    teamRunId: string,
+    teamRun: TeamRun,
     memberRunId: string | null,
   ): string | null {
     if (typeof memberRunId !== "string" || memberRunId.trim().length === 0) {
       return null;
     }
-    const team = this.teamManager.getTeam?.(teamRunId) as
-      | {
-          context?: {
-            agents?: Array<{
-              agentId?: string | null;
-              context?: {
-                config?: {
-                  name?: string | null;
-                } | null;
-              } | null;
-            }>;
-          } | null;
-        }
-      | null;
-    const agents = team?.context?.agents;
-    if (!Array.isArray(agents)) {
-      return null;
+    const runtimeMember = resolveRuntimeMemberContext(teamRun.context, memberRunId);
+    const runtimeName = runtimeMember?.memberName;
+    if (typeof runtimeName === "string" && runtimeName.trim().length > 0) {
+      return runtimeName.trim();
     }
 
-    const member = agents.find((candidate) => candidate?.agentId === memberRunId);
-    const name = member?.context?.config?.name;
-    return typeof name === "string" && name.trim().length > 0 ? name.trim() : null;
+    const configuredMember = teamRun.config?.memberConfigs.find(
+      (candidate) => candidate.memberRunId === memberRunId,
+    );
+    const configuredName = configuredMember?.memberName;
+    return typeof configuredName === "string" && configuredName.trim().length > 0
+      ? configuredName.trim()
+      : null;
   }
 
   private resolveCommandRun(
     teamRunId: string,
   ): import("../../agent-team-execution/domain/team-run.js").TeamRun | null {
-    return this.teamManager.getActiveRun?.(teamRunId) ?? this.teamManager.getTeamRun?.(teamRunId) ?? null;
+    return this.getTeamRun(teamRunId);
+  }
+
+  private getTeamRun(teamRunId: string): TeamRun | null {
+    return this.teamRunService.getTeamRun(teamRunId);
   }
 
   convertTeamEvent(event: TeamRunEvent): ServerMessage {
@@ -460,7 +452,7 @@ export const getAgentTeamStreamHandler = (): AgentTeamStreamHandler => {
   if (!cachedAgentTeamStreamHandler) {
     cachedAgentTeamStreamHandler = new AgentTeamStreamHandler(
       new AgentSessionManager(AgentTeamSession),
-      AgentTeamRunManager.getInstance(),
+      getTeamRunService(),
     );
   }
   return cachedAgentTeamStreamHandler;

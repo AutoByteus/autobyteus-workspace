@@ -6,7 +6,6 @@ import {
 } from "autobyteus-ts";
 import { isAgentRunEvent, type AgentRunEvent } from "../../agent-execution/domain/agent-run-event.js";
 import { AgentRun } from "../../agent-execution/domain/agent-run.js";
-import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import {
   AgentRunService,
   getAgentRunService,
@@ -62,7 +61,6 @@ const stringifyForDebug = (value: unknown): string => {
 
 export class AgentStreamHandler {
   private sessionManager: AgentSessionManager;
-  private agentManager: AgentRunManager;
   private eventMessageMapper: AgentRunEventMessageMapper;
   private activeRunUnsubscribers = new Map<string, () => void>();
   private sessionConnections = new Map<string, WebSocketConnection>();
@@ -76,20 +74,18 @@ export class AgentStreamHandler {
 
   constructor(
     sessionManager: AgentSessionManager = new AgentSessionManager(),
-    agentManager: AgentRunManager = AgentRunManager.getInstance(),
+    agentRunService: AgentRunService = getAgentRunService(),
     eventMessageMapper: AgentRunEventMessageMapper = getAgentRunEventMessageMapper(),
     broadcaster: AgentStreamBroadcaster = getAgentStreamBroadcaster(),
-    agentRunService: AgentRunService = getAgentRunService(),
   ) {
     this.sessionManager = sessionManager;
-    this.agentManager = agentManager;
+    this.agentRunService = agentRunService;
     this.eventMessageMapper = eventMessageMapper;
     this.broadcaster = broadcaster;
-    this.agentRunService = agentRunService;
   }
 
   async connect(connection: WebSocketConnection, agentRunId: string): Promise<string | null> {
-    const activeRun = this.agentManager.getActiveRun(agentRunId);
+    const activeRun = this.getActiveRun(agentRunId);
     if (!activeRun) {
       const errorMsg = createErrorMessage("AGENT_NOT_FOUND", `Agent run '${agentRunId}' not found`);
       connection.send(errorMsg.toJson());
@@ -204,7 +200,7 @@ export class AgentStreamHandler {
     runId: string,
     connection: WebSocketConnection,
   ): boolean {
-    const activeRun = this.agentManager.getActiveRun(runId);
+    const activeRun = this.getActiveRun(runId);
     if (!activeRun) {
       return false;
     }
@@ -301,7 +297,7 @@ export class AgentStreamHandler {
       context_files: contextPayload.length > 0 ? contextPayload : null,
     });
 
-    const activeRun = this.agentManager.getActiveRun(agentRunId);
+    const activeRun = this.getActiveRun(agentRunId);
     if (!activeRun) {
       logger.warn(`SEND_MESSAGE rejected for missing agent run ${agentRunId}.`);
       return;
@@ -321,7 +317,7 @@ export class AgentStreamHandler {
   }
 
   private async handleStopGeneration(agentRunId: string): Promise<void> {
-    const activeRun = this.agentManager.getActiveRun(agentRunId);
+    const activeRun = this.getActiveRun(agentRunId);
     if (!activeRun) {
       logger.warn(`STOP_GENERATION rejected for missing agent run ${agentRunId}.`);
       return;
@@ -346,7 +342,7 @@ export class AgentStreamHandler {
     }
 
     const reason = typeof payload.reason === "string" ? payload.reason : null;
-    const activeRun = this.agentManager.getActiveRun(agentRunId);
+    const activeRun = this.getActiveRun(agentRunId);
     if (!activeRun) {
       logger.warn(`TOOL_APPROVAL rejected for missing agent run ${agentRunId}.`);
       return;
@@ -358,6 +354,11 @@ export class AgentStreamHandler {
       );
     }
   }
+
+  private getActiveRun(runId: string): AgentRun | null {
+    return this.agentRunService.getAgentRun(runId);
+  }
+
   static parseMessage(raw: string): ClientMessage {
     let data: unknown;
     try {
@@ -380,10 +381,9 @@ export const getAgentStreamHandler = (): AgentStreamHandler => {
   if (!cachedAgentStreamHandler) {
     cachedAgentStreamHandler = new AgentStreamHandler(
       new AgentSessionManager(),
-      AgentRunManager.getInstance(),
+      getAgentRunService(),
       getAgentRunEventMessageMapper(),
       getAgentStreamBroadcaster(),
-      getAgentRunService(),
     );
   }
   return cachedAgentStreamHandler;
