@@ -1,9 +1,9 @@
-# Release Notes
+## What's New
+- Team run approval routing now resolves the correct member identity from the active team run, keeping approval actions aligned with the visible team member name in live sessions.
 
 ## Improvements
-- Improved external-channel reliability by keeping bindings, receipts, delivery events, and callback state under one consistent file-backed runtime store.
-- Improved normal server logging by disabling Prisma SQL query output unless it is explicitly enabled for troubleshooting.
+- Agent and team live stream handlers now resolve active runs through the owning run services, which keeps websocket session handling aligned with the same service boundary used by the rest of the runtime.
 
 ## Fixes
-- Fixed external-channel ingress handling so bound agent and team routes persist the correct run artifacts without relying on removed SQL receipt tables.
-- Fixed external-channel callback state handling so delivery-event persistence stays aligned with the file-backed runtime path across restarts.
+- Fixed local monorepo server Docker builds so patched workspace dependencies are included again during image creation.
+- Fixed the local Docker start helper so `ps` and `logs` work correctly even when no extra arguments are passed.
