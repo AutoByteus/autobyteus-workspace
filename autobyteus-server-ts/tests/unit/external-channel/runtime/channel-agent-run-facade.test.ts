@@ -118,10 +118,12 @@ describe("ChannelAgentRunFacade", () => {
       postUserMessage,
     });
     const publishExternalUserMessage = vi.fn();
+    const recordRunActivity = vi.fn().mockResolvedValue(undefined);
     const facade = new ChannelAgentRunFacade({
       runLauncher: { resolveOrStartAgentRun },
-      agentRunManager: {
-        getActiveRun: vi.fn().mockReturnValue(activeRun),
+      agentRunService: {
+        getAgentRun: vi.fn().mockReturnValue(activeRun),
+        recordRunActivity,
       },
       agentLiveMessagePublisher: { publishExternalUserMessage },
     });
@@ -131,8 +133,15 @@ describe("ChannelAgentRunFacade", () => {
     expect(result.dispatchTargetType).toBe("AGENT");
     expect(result.agentRunId).toBe("agent-1");
     expect(result.turnId).toBe("turn-1");
-    expect(resolveOrStartAgentRun).toHaveBeenCalledOnce();
+    expect(resolveOrStartAgentRun).toHaveBeenCalledWith(createAgentBinding());
     expect(postUserMessage).toHaveBeenCalledOnce();
+    expect(recordRunActivity).toHaveBeenCalledWith(
+      activeRun,
+      expect.objectContaining({
+        summary: "hello",
+        lastKnownStatus: "ACTIVE",
+      }),
+    );
     expect(publishExternalUserMessage).toHaveBeenCalledWith({
       runId: "agent-1",
       envelope: createEnvelope(),
@@ -155,12 +164,14 @@ describe("ChannelAgentRunFacade", () => {
       postUserMessage,
     });
     const publishExternalUserMessage = vi.fn();
+    const recordRunActivity = vi.fn().mockResolvedValue(undefined);
     const facade = new ChannelAgentRunFacade({
       runLauncher: {
         resolveOrStartAgentRun: vi.fn().mockResolvedValue("agent-1"),
       },
-      agentRunManager: {
-        getActiveRun: vi.fn().mockReturnValue(activeRun),
+      agentRunService: {
+        getAgentRun: vi.fn().mockReturnValue(activeRun),
+        recordRunActivity,
       },
       agentLiveMessagePublisher: {
         publishExternalUserMessage,
@@ -184,6 +195,7 @@ describe("ChannelAgentRunFacade", () => {
     });
     expect(result.dispatchTargetType).toBe("AGENT");
     expect(result.turnId).toBe("turn-attachment");
+    expect(recordRunActivity).toHaveBeenCalledOnce();
     expect(publishExternalUserMessage).toHaveBeenCalledOnce();
   });
 
@@ -202,8 +214,9 @@ describe("ChannelAgentRunFacade", () => {
       runLauncher: {
         resolveOrStartAgentRun: vi.fn().mockResolvedValue("agent-1"),
       },
-      agentRunManager: {
-        getActiveRun: vi.fn().mockReturnValue(activeRun),
+      agentRunService: {
+        getAgentRun: vi.fn().mockReturnValue(activeRun),
+        recordRunActivity: vi.fn(),
       },
       agentLiveMessagePublisher: {
         publishExternalUserMessage,
@@ -236,8 +249,9 @@ describe("ChannelAgentRunFacade", () => {
       runLauncher: {
         resolveOrStartAgentRun: vi.fn().mockResolvedValue("agent-1"),
       },
-      agentRunManager: {
-        getActiveRun: vi.fn().mockReturnValue(activeRun),
+      agentRunService: {
+        getAgentRun: vi.fn().mockReturnValue(activeRun),
+        recordRunActivity: vi.fn().mockResolvedValue(undefined),
       },
       agentLiveMessagePublisher: {
         publishExternalUserMessage,
@@ -271,8 +285,9 @@ describe("ChannelAgentRunFacade", () => {
       runLauncher: {
         resolveOrStartAgentRun: vi.fn().mockResolvedValue("agent-1"),
       },
-      agentRunManager: {
-        getActiveRun: vi.fn().mockReturnValue(activeRun),
+      agentRunService: {
+        getAgentRun: vi.fn().mockReturnValue(activeRun),
+        recordRunActivity: vi.fn().mockResolvedValue(undefined),
       },
       agentLiveMessagePublisher: {
         publishExternalUserMessage,

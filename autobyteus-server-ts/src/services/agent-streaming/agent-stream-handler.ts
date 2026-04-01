@@ -8,13 +8,9 @@ import { isAgentRunEvent, type AgentRunEvent } from "../../agent-execution/domai
 import { AgentRun } from "../../agent-execution/domain/agent-run.js";
 import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import {
-  AgentRunMetadataService,
-  getAgentRunMetadataService,
-} from "../../run-history/services/agent-run-metadata-service.js";
-import {
-  AgentRunHistoryIndexService,
-  getAgentRunHistoryIndexService,
-} from "../../run-history/services/agent-run-history-index-service.js";
+  AgentRunService,
+  getAgentRunService,
+} from "../../agent-execution/services/agent-run-service.js";
 import { AgentSessionManager } from "./agent-session-manager.js";
 import {
   AgentStreamBroadcaster,
@@ -74,8 +70,7 @@ export class AgentStreamHandler {
     string,
     AgentRun
   >();
-  private metadataService: AgentRunMetadataService;
-  private historyIndexService: AgentRunHistoryIndexService;
+  private agentRunService: AgentRunService;
   private runtimeEventSequence = 0;
   private broadcaster: AgentStreamBroadcaster;
 
@@ -84,15 +79,13 @@ export class AgentStreamHandler {
     agentManager: AgentRunManager = AgentRunManager.getInstance(),
     eventMessageMapper: AgentRunEventMessageMapper = getAgentRunEventMessageMapper(),
     broadcaster: AgentStreamBroadcaster = getAgentStreamBroadcaster(),
-    metadataService: AgentRunMetadataService = getAgentRunMetadataService(),
-    historyIndexService: AgentRunHistoryIndexService = getAgentRunHistoryIndexService(),
+    agentRunService: AgentRunService = getAgentRunService(),
   ) {
     this.sessionManager = sessionManager;
     this.agentManager = agentManager;
     this.eventMessageMapper = eventMessageMapper;
     this.broadcaster = broadcaster;
-    this.metadataService = metadataService;
-    this.historyIndexService = historyIndexService;
+    this.agentRunService = agentRunService;
   }
 
   async connect(connection: WebSocketConnection, agentRunId: string): Promise<string | null> {
@@ -320,20 +313,7 @@ export class AgentStreamHandler {
       );
       return;
     }
-    const metadata = await this.metadataService.readMetadata(agentRunId);
-    const updatedMetadata = metadata
-      ? {
-          ...metadata,
-          platformAgentRunId: activeRun.getPlatformAgentRunId() ?? metadata.platformAgentRunId,
-          lastKnownStatus: "ACTIVE" as const,
-        }
-      : null;
-    if (updatedMetadata) {
-      await this.metadataService.writeMetadata(agentRunId, updatedMetadata);
-    }
-    await this.historyIndexService.recordRunActivity({
-      runId: agentRunId,
-      metadata: updatedMetadata,
+    await this.agentRunService.recordRunActivity(activeRun, {
       summary: content,
       lastKnownStatus: "ACTIVE",
       lastActivityAt: new Date().toISOString(),

@@ -72,14 +72,14 @@ describe("ChannelTeamRunFacade", () => {
     const envelope = createEnvelope();
     const resolveOrStartTeamRun = vi.fn().mockResolvedValue("team-1");
     const teamRun = createTeamRun();
-    const getTeamRun = vi.fn().mockReturnValue(teamRun);
-    const restoreTeamRun = vi.fn();
+    const resolveTeamRun = vi.fn().mockResolvedValue(teamRun);
+    const recordRunActivity = vi.fn().mockResolvedValue(undefined);
     const publishExternalUserMessage = vi.fn();
     const facade = new ChannelTeamRunFacade({
       runLauncher: { resolveOrStartTeamRun },
       teamRunService: {
-        getTeamRun,
-        restoreTeamRun,
+        resolveTeamRun,
+        recordRunActivity,
       } as any,
       teamLiveMessagePublisher: { publishExternalUserMessage },
     });
@@ -91,12 +91,16 @@ describe("ChannelTeamRunFacade", () => {
     expect(result.teamRunId).toBe("team-1");
     expect(result.turnId).toBe("turn-1");
     expect(result.memberName).toBe("support-node");
-    expect(resolveOrStartTeamRun).toHaveBeenCalledWith(binding, {
-      initialSummary: "hello",
-    });
-    expect(getTeamRun).toHaveBeenCalledWith("team-1");
-    expect(restoreTeamRun).not.toHaveBeenCalled();
+    expect(resolveOrStartTeamRun).toHaveBeenCalledWith(binding);
+    expect(resolveTeamRun).toHaveBeenCalledWith("team-1");
     expect(teamRun.postMessage).toHaveBeenCalledOnce();
+    expect(recordRunActivity).toHaveBeenCalledWith(
+      teamRun,
+      expect.objectContaining({
+        summary: "hello",
+        lastKnownStatus: "ACTIVE",
+      }),
+    );
     expect(teamRun.postMessage).toHaveBeenCalledWith(
       expect.objectContaining({
         content: "hello",
@@ -115,18 +119,18 @@ describe("ChannelTeamRunFacade", () => {
     });
   });
 
-  it("restores the team run when it is not active in memory", async () => {
+  it("resolves the team run through TeamRunService", async () => {
     const binding = createTeamBinding();
     const envelope = createEnvelope();
     const resolveOrStartTeamRun = vi.fn().mockResolvedValue("team-1");
     const restoredRun = createTeamRun();
-    const getTeamRun = vi.fn().mockReturnValue(null);
-    const restoreTeamRun = vi.fn().mockResolvedValue(restoredRun);
+    const resolveTeamRun = vi.fn().mockResolvedValue(restoredRun);
+    const recordRunActivity = vi.fn().mockResolvedValue(undefined);
     const facade = new ChannelTeamRunFacade({
       runLauncher: { resolveOrStartTeamRun },
       teamRunService: {
-        getTeamRun,
-        restoreTeamRun,
+        resolveTeamRun,
+        recordRunActivity,
       } as any,
       teamLiveMessagePublisher: {
         publishExternalUserMessage: vi.fn(),
@@ -137,8 +141,8 @@ describe("ChannelTeamRunFacade", () => {
 
     expect(result.teamRunId).toBe("team-1");
     expect(result.memberRunId).toBe("member-1");
-    expect(getTeamRun).toHaveBeenCalledWith("team-1");
-    expect(restoreTeamRun).toHaveBeenCalledWith("team-1");
+    expect(resolveTeamRun).toHaveBeenCalledWith("team-1");
+    expect(recordRunActivity).toHaveBeenCalledOnce();
     expect(restoredRun.postMessage).toHaveBeenCalledOnce();
   });
 
@@ -153,8 +157,8 @@ describe("ChannelTeamRunFacade", () => {
         resolveOrStartTeamRun: vi.fn().mockResolvedValue("team-1"),
       },
       teamRunService: {
-        getTeamRun: vi.fn().mockReturnValue(teamRun),
-        restoreTeamRun: vi.fn(),
+        resolveTeamRun: vi.fn().mockResolvedValue(teamRun),
+        recordRunActivity: vi.fn().mockResolvedValue(undefined),
       } as any,
       teamLiveMessagePublisher: {
         publishExternalUserMessage,
@@ -187,8 +191,8 @@ describe("ChannelTeamRunFacade", () => {
         resolveOrStartTeamRun: vi.fn().mockResolvedValue("team-1"),
       },
       teamRunService: {
-        getTeamRun: vi.fn().mockReturnValue(teamRun),
-        restoreTeamRun: vi.fn(),
+        resolveTeamRun: vi.fn().mockResolvedValue(teamRun),
+        recordRunActivity: vi.fn().mockResolvedValue(undefined),
       } as any,
       teamLiveMessagePublisher: {
         publishExternalUserMessage: vi.fn(),
@@ -202,5 +206,24 @@ describe("ChannelTeamRunFacade", () => {
     expect(result.teamRunId).toBe("team-1");
     expect(result.turnId).toBe("turn-1");
     expect(result.memberName).toBe("support-node");
+  });
+
+  it("throws when TeamRunService cannot resolve the team run", async () => {
+    const facade = new ChannelTeamRunFacade({
+      runLauncher: {
+        resolveOrStartTeamRun: vi.fn().mockResolvedValue("team-1"),
+      },
+      teamRunService: {
+        resolveTeamRun: vi.fn().mockResolvedValue(null),
+        recordRunActivity: vi.fn(),
+      } as any,
+      teamLiveMessagePublisher: {
+        publishExternalUserMessage: vi.fn(),
+      },
+    });
+
+    await expect(
+      facade.dispatchToTeamBinding(createTeamBinding(), createEnvelope()),
+    ).rejects.toThrow("Team run 'team-1' is not active.");
   });
 });
