@@ -4,7 +4,9 @@ import { AgentDefinition } from "../../../src/agent-definition/domain/models.js"
 
 describe("CachedAgentDefinitionProvider", () => {
   let persistenceProvider: {
+    getById: ReturnType<typeof vi.fn>;
     getAll: ReturnType<typeof vi.fn>;
+    getAllVisible: ReturnType<typeof vi.fn>;
     create: ReturnType<typeof vi.fn>;
     update: ReturnType<typeof vi.fn>;
     delete: ReturnType<typeof vi.fn>;
@@ -17,7 +19,9 @@ describe("CachedAgentDefinitionProvider", () => {
 
   beforeEach(() => {
     persistenceProvider = {
+      getById: vi.fn(async (id: string) => sampleDefs.find((definition) => definition.id === id) ?? null),
       getAll: vi.fn(async () => sampleDefs),
+      getAllVisible: vi.fn(async () => sampleDefs),
       create: vi.fn(async (def: AgentDefinition) => def),
       update: vi.fn(async (def: AgentDefinition) => def),
       delete: vi.fn(async () => true),
@@ -106,5 +110,24 @@ describe("CachedAgentDefinitionProvider", () => {
 
     const missing = await provider.getById("1");
     expect(missing).toBeNull();
+  });
+
+  it("bypasses the shared cache for team-local ids", async () => {
+    const provider = new CachedAgentDefinitionProvider(persistenceProvider as never);
+    const localDefinition = new AgentDefinition({
+      id: "team-local:team-a:local-agent",
+      name: "Local Agent",
+      description: "Local Desc",
+      ownershipScope: "team_local",
+      ownerTeamId: "team-a",
+      ownerTeamName: "Team A",
+    });
+    persistenceProvider.getById.mockResolvedValue(localDefinition);
+
+    const result = await provider.getById("team-local:team-a:local-agent");
+
+    expect(result).toEqual(localDefinition);
+    expect(persistenceProvider.getById).toHaveBeenCalledWith("team-local:team-a:local-agent");
+    expect(persistenceProvider.getAll).not.toHaveBeenCalled();
   });
 });

@@ -11,6 +11,8 @@ import {
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 
 // This interface should match the GraphQL AgentDefinition type
+export type AgentDefinitionOwnershipScope = 'SHARED' | 'TEAM_LOCAL';
+
 export interface AgentDefinition {
   __typename?: 'AgentDefinition';
   id: string;
@@ -29,6 +31,9 @@ export interface AgentDefinition {
   toolInvocationPreprocessorNames: string[];
   lifecycleProcessorNames: string[];
   skillNames: string[];
+  ownershipScope?: AgentDefinitionOwnershipScope | null;
+  ownerTeamId?: string | null;
+  ownerTeamName?: string | null;
 }
 
 // Interfaces for mutation inputs
@@ -283,11 +288,17 @@ export const useAgentDefinitionStore = defineStore('agentDefinition', () => {
   const getAgentDefinitionById = computed(() => {
     return (id: string) => agentDefinitions.value.find(def => def.id === id);
   });
+  const sharedAgentDefinitions = computed(() =>
+    agentDefinitions.value.filter(
+      (definition) => (definition.ownershipScope ?? 'SHARED') === 'SHARED',
+    ),
+  );
   const getDeleteResult = computed(() => deleteResult.value);
 
   return {
     // State
     agentDefinitions,
+    sharedAgentDefinitions,
     loading,
     error,
     deleteResult,

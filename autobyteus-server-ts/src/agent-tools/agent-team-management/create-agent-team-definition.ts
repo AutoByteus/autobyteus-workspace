@@ -1,6 +1,6 @@
 import { tool, ParameterSchema, ParameterDefinition, ParameterType, BaseTool } from "autobyteus-ts";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
-import { AgentTeamDefinition, TeamMember } from "../../agent-team-definition/domain/models.js";
+import { AgentTeamDefinition, TeamMember, type TeamMemberRefScope } from "../../agent-team-definition/domain/models.js";
 import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 
 const DESCRIPTION =
@@ -93,6 +93,20 @@ const toRefType = (value: unknown): "agent" | "agent_team" | null => {
   return null;
 };
 
+const toRefScope = (value: unknown): TeamMemberRefScope | null => {
+  if (typeof value !== "string") {
+    return null;
+  }
+  const normalized = value.trim().toLowerCase();
+  if (normalized === "shared") {
+    return "shared";
+  }
+  if (normalized === "team_local" || normalized === "team-local") {
+    return "team_local";
+  }
+  return null;
+};
+
 const parseTeamMembers = (nodes: string): TeamMember[] => {
   const parsed = JSON.parse(nodes) as Array<Record<string, unknown>>;
   if (!Array.isArray(parsed)) {
@@ -103,6 +117,7 @@ const parseTeamMembers = (nodes: string): TeamMember[] => {
     const memberName = node.member_name as string | undefined;
     const ref = node.ref as string | undefined;
     const refTypeRaw = node.ref_type as string | undefined;
+    const refScopeRaw = node.ref_scope as string | undefined;
 
     if (!memberName || !ref || !refTypeRaw) {
       throw new Error("Each node must include member_name, ref, and ref_type.");
@@ -112,11 +127,19 @@ const parseTeamMembers = (nodes: string): TeamMember[] => {
     if (!refType) {
       throw new Error("ref_type must be 'agent' or 'agent_team'.");
     }
+    const refScope = toRefType(refTypeRaw) === "agent" ? toRefScope(refScopeRaw) : null;
+    if (refType === "agent" && !refScope) {
+      throw new Error("Agent nodes must include ref_scope 'shared' or 'team_local'.");
+    }
+    if (refType === "agent_team" && refScopeRaw !== undefined) {
+      throw new Error("Nested team nodes must not include ref_scope.");
+    }
 
     return new TeamMember({
       memberName,
       ref,
       refType,
+      refScope,
     });
   });
 };

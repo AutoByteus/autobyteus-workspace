@@ -19,6 +19,9 @@ export const CreateAgentDefinition = gql`
       toolInvocationPreprocessorNames
       lifecycleProcessorNames
       skillNames
+      ownershipScope
+      ownerTeamId
+      ownerTeamName
     }
   }
 `
@@ -42,6 +45,9 @@ export const UpdateAgentDefinition = gql`
       toolInvocationPreprocessorNames
       lifecycleProcessorNames
       skillNames
+      ownershipScope
+      ownerTeamId
+      ownerTeamName
     }
   }
 `
@@ -75,6 +81,9 @@ export const DuplicateAgentDefinition = gql`
       toolInvocationPreprocessorNames
       lifecycleProcessorNames
       skillNames
+      ownershipScope
+      ownerTeamId
+      ownerTeamName
     }
   }
 `

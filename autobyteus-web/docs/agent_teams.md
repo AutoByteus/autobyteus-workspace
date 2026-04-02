@@ -27,6 +27,10 @@ autobyteus-web/
 │   ├── AgentTeamEdit.vue               # Edit team wrapper
 │   ├── AgentTeamDetail.vue             # Team view with details
 │   ├── AgentTeamDefinitionForm.vue     # Shared form for create/edit
+│   └── form/
+│       ├── AgentTeamLibraryPanel.vue   # Shared agent/team library panel
+│       ├── AgentTeamMemberDetailsPanel.vue # Selected member details panel
+│       └── useAgentTeamDefinitionFormState.ts # Builder state ownership
 │   └── SearchableGroupedSelect.vue     # Agent/team selector
 ├── components/workspace/
 │   ├── running/
@@ -108,14 +112,25 @@ Each team consists of **nodes** (members) that can be:
 
 - **Agents**: Individual agent definitions
 - **Nested Teams**: Other team definitions (composable)
+- **Agent ownership scopes**:
+  - shared standalone agents live under top-level `agents/<agent-id>/`
+  - team-local agents live under `agent-teams/<team-id>/agents/<agent-id>/`
+  - nested teams continue to reference other team definitions by id
 
 ```typescript
 interface TeamMember {
   memberName: string; // Unique identifier within team
   ref: string; // ID of agent or team
   refType: "AGENT" | "AGENT_TEAM";
+  refScope?: "SHARED" | "TEAM_LOCAL" | null; // Required for AGENT, omitted for AGENT_TEAM
 }
 ```
+
+Important authoring note:
+
+- In the current UI slice, the drag/drop library only lists shared standalone agents and teams.
+- Team-local agents are still file-authored in their owning team folder, but the form preserves and submits them correctly when an existing team definition includes them.
+- The generic `Agents` page is broader than the team-authoring library: it lists both shared standalone agents and team-local agents, and team-local cards/details show one extra ownership line such as `Team: Software Engineering Team`.
 
 ### Coordinator
 
@@ -141,6 +156,7 @@ interface AgentTeamDefinition {
     memberName: string;
     ref: string;
     refType: "AGENT" | "AGENT_TEAM";
+    refScope?: "SHARED" | "TEAM_LOCAL" | null;
   }[];
 }
 ```

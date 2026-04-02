@@ -6,6 +6,7 @@ import {
 import { TeamRunContext } from "../domain/team-run-context.js";
 import { AgentTeamRunManager } from "./agent-team-run-manager.js";
 import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
+import { buildTeamLocalAgentDefinitionId } from "autobyteus-ts/agent-team/utils/team-local-agent-definition-id.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import {
   RuntimeKind,
@@ -393,10 +394,13 @@ export class TeamRunService {
 
     for (const node of teamDefinition.nodes) {
       if (node.refType === "agent") {
+        const agentDefinitionId = node.refScope === "team_local"
+          ? buildTeamLocalAgentDefinitionId(normalizedTeamDefinitionId, node.ref)
+          : normalizeRequiredString(node.ref, "agentDefinitionId");
         members.push({
           memberName: node.memberName.trim(),
           memberRouteKey: normalizeMemberRouteKey(node.memberName),
-          agentDefinitionId: normalizeRequiredString(node.ref, "agentDefinitionId"),
+          agentDefinitionId,
         });
         continue;
       }

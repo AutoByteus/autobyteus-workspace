@@ -67,7 +67,8 @@ const resolveMemberWorkspaceRootPath = (
 ): string =>
   member.workspaceRootPath ?? teamWorkspaceRootPath ?? process.cwd();
 
-const teamMemberMemoryLayout = new TeamMemberMemoryLayout(appConfigProvider.config.getMemoryDir());
+const resolveTeamMemberMemoryLayout = (): TeamMemberMemoryLayout =>
+  new TeamMemberMemoryLayout(appConfigProvider.config.getMemoryDir());
 
 const toMemberRunMetadata = (
   teamRunId: string,
@@ -77,7 +78,7 @@ const toMemberRunMetadata = (
   runId: member.memberRunId,
   agentDefinitionId: member.agentDefinitionId,
   workspaceRootPath: resolveMemberWorkspaceRootPath(member, teamWorkspaceRootPath),
-  memoryDir: teamMemberMemoryLayout.getMemberDirPath(teamRunId, member.memberRunId),
+  memoryDir: resolveTeamMemberMemoryLayout().getMemberDirPath(teamRunId, member.memberRunId),
   llmModelIdentifier: member.llmModelIdentifier,
   llmConfig: member.llmConfig ?? null,
   autoExecuteTools: member.autoExecuteTools,

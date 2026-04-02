@@ -5,6 +5,7 @@
         <div class="mb-8">
           <h1 class="text-3xl font-bold text-gray-900">Edit Agent Definition</h1>
           <p class="text-lg text-gray-500 mt-2">Update the details for "{{ agentDef.name }}".</p>
+          <p v-if="teamLabel" class="text-sm text-gray-500 mt-1">Team: {{ teamLabel }}</p>
         </div>
 
         <AgentDefinitionForm
@@ -48,6 +49,13 @@ const emit = defineEmits(['navigate']);
 
 const agentDefinitionStore = useAgentDefinitionStore();
 const agentDef = computed(() => agentDefinitionStore.getAgentDefinitionById(agentDefinitionId.value));
+const teamLabel = computed(() => {
+  const definition = agentDef.value;
+  if ((definition?.ownershipScope ?? 'SHARED') !== 'TEAM_LOCAL') {
+    return '';
+  }
+  return definition?.ownerTeamName?.trim() || definition?.ownerTeamId?.trim() || '';
+});
 const loading = ref(false);
 const isSubmitting = ref(false);
 const notification = ref<{ type: 'success' | 'error'; message: string } | null>(null);

@@ -72,6 +72,7 @@ describe("Agent team definitions GraphQL e2e", () => {
             memberName
             ref
             refType
+            refScope
           }
         }
       }
@@ -90,6 +91,7 @@ describe("Agent team definitions GraphQL e2e", () => {
           memberName: string;
           ref: string;
           refType: "AGENT" | "AGENT_TEAM";
+          refScope?: "SHARED" | "TEAM_LOCAL" | null;
         }>;
       };
     }>(createMutation, {
@@ -105,6 +107,7 @@ describe("Agent team definitions GraphQL e2e", () => {
             memberName: "leader",
             ref: "agent-1",
             refType: "AGENT",
+            refScope: "SHARED",
           },
           {
             memberName: "helper",
@@ -134,7 +137,7 @@ describe("Agent team definitions GraphQL e2e", () => {
     expect(JSON.parse(teamConfigRaw)).toMatchObject({
       coordinatorMemberName: "leader",
       members: [
-        { memberName: "leader", ref: "agent-1", refType: "agent" },
+        { memberName: "leader", ref: "agent-1", refType: "agent", refScope: "shared" },
         { memberName: "helper", ref: "team-2", refType: "agent_team" },
       ],
     });
@@ -152,6 +155,7 @@ describe("Agent team definitions GraphQL e2e", () => {
             memberName
             ref
             refType
+            refScope
           }
         }
       }
@@ -164,7 +168,12 @@ describe("Agent team definitions GraphQL e2e", () => {
         instructions: string;
         avatarUrl: string | null;
         coordinatorMemberName: string;
-        nodes: Array<{ memberName: string; ref: string; refType: "AGENT" | "AGENT_TEAM" }>;
+        nodes: Array<{
+          memberName: string;
+          ref: string;
+          refType: "AGENT" | "AGENT_TEAM";
+          refScope?: "SHARED" | "TEAM_LOCAL" | null;
+        }>;
       };
     }>(updateMutation, {
       input: {
@@ -179,6 +188,7 @@ describe("Agent team definitions GraphQL e2e", () => {
             memberName: "helper",
             ref: "agent-2",
             refType: "AGENT",
+            refScope: "SHARED",
           },
           {
             memberName: "subteam",
@@ -217,7 +227,9 @@ describe("Agent team definitions GraphQL e2e", () => {
       JSON.stringify(
         {
           coordinatorMemberName: "lead",
-          members: [{ memberName: "lead", ref: "template-agent", refType: "agent" }],
+          members: [
+            { memberName: "lead", ref: "template-agent", refType: "agent", refScope: "shared" },
+          ],
           avatarUrl: null,
         },
         null,
@@ -284,6 +296,223 @@ describe("Agent team definitions GraphQL e2e", () => {
       agentTeamDefinition: { id: string } | null;
     }>(query, { id: created.createAgentTeamDefinition.id });
     expect(afterDelete.agentTeamDefinition).toBeNull();
+  });
+
+  it("round-trips TEAM_LOCAL members through create, read, and update GraphQL flows", async () => {
+    const unique = uniqueId("team_local_graphql");
+    const dataDir = appConfigProvider.config.getAppDataDir();
+
+    const createMutation = `
+      mutation CreateTeam($input: CreateAgentTeamDefinitionInput!) {
+        createAgentTeamDefinition(input: $input) {
+          id
+          name
+          coordinatorMemberName
+          nodes {
+            memberName
+            ref
+            refType
+            refScope
+          }
+        }
+      }
+    `;
+
+    const created = await execGraphql<{
+      createAgentTeamDefinition: {
+        id: string;
+        name: string;
+        coordinatorMemberName: string;
+        nodes: Array<{
+          memberName: string;
+          ref: string;
+          refType: "AGENT" | "AGENT_TEAM";
+          refScope?: "SHARED" | "TEAM_LOCAL" | null;
+        }>;
+      };
+    }>(createMutation, {
+      input: {
+        name: `team_local_${unique}`,
+        description: "team-local persistence",
+        instructions: "Use the team-local reviewer when coordinating work.",
+        coordinatorMemberName: "local_reviewer",
+        nodes: [
+          {
+            memberName: "local_reviewer",
+            ref: "reviewer",
+            refType: "AGENT",
+            refScope: "TEAM_LOCAL",
+          },
+        ],
+      },
+    });
+
+    const teamId = created.createAgentTeamDefinition.id;
+    const teamDir = path.join(dataDir, "agent-teams", teamId);
+    cleanupPaths.add(teamDir);
+
+    expect(created.createAgentTeamDefinition.nodes).toEqual([
+      {
+        memberName: "local_reviewer",
+        ref: "reviewer",
+        refType: "AGENT",
+        refScope: "TEAM_LOCAL",
+      },
+    ]);
+
+    const createdConfig = JSON.parse(
+      await fs.readFile(path.join(teamDir, "team-config.json"), "utf-8"),
+    ) as {
+      coordinatorMemberName: string;
+      members: Array<{
+        memberName: string;
+        ref: string;
+        refType: "agent" | "agent_team";
+        refScope?: "shared" | "team_local";
+      }>;
+    };
+
+    expect(createdConfig).toMatchObject({
+      coordinatorMemberName: "local_reviewer",
+      members: [
+        {
+          memberName: "local_reviewer",
+          ref: "reviewer",
+          refType: "agent",
+          refScope: "team_local",
+        },
+      ],
+    });
+
+    const getQuery = `
+      query TeamById($id: String!) {
+        agentTeamDefinition(id: $id) {
+          id
+          coordinatorMemberName
+          nodes {
+            memberName
+            ref
+            refType
+            refScope
+          }
+        }
+      }
+    `;
+
+    const fetched = await execGraphql<{
+      agentTeamDefinition: {
+        id: string;
+        coordinatorMemberName: string;
+        nodes: Array<{
+          memberName: string;
+          ref: string;
+          refType: "AGENT" | "AGENT_TEAM";
+          refScope?: "SHARED" | "TEAM_LOCAL" | null;
+        }>;
+      } | null;
+    }>(getQuery, { id: teamId });
+
+    expect(fetched.agentTeamDefinition?.nodes).toEqual([
+      {
+        memberName: "local_reviewer",
+        ref: "reviewer",
+        refType: "AGENT",
+        refScope: "TEAM_LOCAL",
+      },
+    ]);
+
+    const updateMutation = `
+      mutation UpdateTeam($input: UpdateAgentTeamDefinitionInput!) {
+        updateAgentTeamDefinition(input: $input) {
+          id
+          coordinatorMemberName
+          nodes {
+            memberName
+            ref
+            refType
+            refScope
+          }
+        }
+      }
+    `;
+
+    const updated = await execGraphql<{
+      updateAgentTeamDefinition: {
+        id: string;
+        coordinatorMemberName: string;
+        nodes: Array<{
+          memberName: string;
+          ref: string;
+          refType: "AGENT" | "AGENT_TEAM";
+          refScope?: "SHARED" | "TEAM_LOCAL" | null;
+        }>;
+      };
+    }>(updateMutation, {
+      input: {
+        id: teamId,
+        coordinatorMemberName: "shared_lead",
+        nodes: [
+          {
+            memberName: "shared_lead",
+            ref: "agent-1",
+            refType: "AGENT",
+            refScope: "SHARED",
+          },
+          {
+            memberName: "local_reviewer",
+            ref: "reviewer_v2",
+            refType: "AGENT",
+            refScope: "TEAM_LOCAL",
+          },
+        ],
+      },
+    });
+
+    expect(updated.updateAgentTeamDefinition.coordinatorMemberName).toBe("shared_lead");
+    expect(updated.updateAgentTeamDefinition.nodes).toEqual([
+      {
+        memberName: "shared_lead",
+        ref: "agent-1",
+        refType: "AGENT",
+        refScope: "SHARED",
+      },
+      {
+        memberName: "local_reviewer",
+        ref: "reviewer_v2",
+        refType: "AGENT",
+        refScope: "TEAM_LOCAL",
+      },
+    ]);
+
+    const updatedConfig = JSON.parse(
+      await fs.readFile(path.join(teamDir, "team-config.json"), "utf-8"),
+    ) as {
+      coordinatorMemberName: string;
+      members: Array<{
+        memberName: string;
+        ref: string;
+        refType: "agent" | "agent_team";
+        refScope?: "shared" | "team_local";
+      }>;
+    };
+
+    expect(updatedConfig).toMatchObject({
+      coordinatorMemberName: "shared_lead",
+      members: [
+        {
+          memberName: "shared_lead",
+          ref: "agent-1",
+          refType: "agent",
+          refScope: "shared",
+        },
+        {
+          memberName: "local_reviewer",
+          ref: "reviewer_v2",
+          refType: "agent",
+          refScope: "team_local",
+        },
+      ],
+    });
   });
 
   it("exposes md-centric team GraphQL output contract", async () => {
@@ -359,6 +588,7 @@ describe("Agent team definitions GraphQL e2e", () => {
             memberName: "helper",
             ref: "agent-1",
             refType: "AGENT",
+            refScope: "SHARED",
           },
         ],
       },

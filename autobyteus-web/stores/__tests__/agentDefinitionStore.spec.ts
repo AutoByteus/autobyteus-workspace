@@ -55,6 +55,9 @@ describe('agentDefinitionStore', () => {
             toolInvocationPreprocessorNames: [],
             lifecycleProcessorNames: [],
             skillNames: [],
+            ownershipScope: 'SHARED',
+            ownerTeamId: null,
+            ownerTeamName: null,
           },
         ],
       },
@@ -70,5 +73,58 @@ describe('agentDefinitionStore', () => {
     expect(store.agentDefinitions[0].id).toBe('agent-1');
     expect(store.agentDefinitions[0].instructions).toBe('Plan and execute tasks.');
     expect((store.agentDefinitions[0] as any).activePromptVersion).toBeUndefined();
+    expect(store.sharedAgentDefinitions).toHaveLength(1);
+  });
+
+  it('derives shared-only agent definitions from the visible list', async () => {
+    mockWaitForBoundBackendReady.mockResolvedValue(true);
+    mockQuery.mockResolvedValue({
+      data: {
+        agentDefinitions: [
+          {
+            id: 'shared-agent',
+            name: 'Shared Agent',
+            description: 'Shared',
+            instructions: 'Shared instructions',
+            toolNames: [],
+            inputProcessorNames: [],
+            llmResponseProcessorNames: [],
+            systemPromptProcessorNames: [],
+            toolExecutionResultProcessorNames: [],
+            toolInvocationPreprocessorNames: [],
+            lifecycleProcessorNames: [],
+            skillNames: [],
+            ownershipScope: 'SHARED',
+            ownerTeamId: null,
+            ownerTeamName: null,
+          },
+          {
+            id: 'team-local:team-a:local-agent',
+            name: 'Local Agent',
+            description: 'Local',
+            instructions: 'Local instructions',
+            toolNames: [],
+            inputProcessorNames: [],
+            llmResponseProcessorNames: [],
+            systemPromptProcessorNames: [],
+            toolExecutionResultProcessorNames: [],
+            toolInvocationPreprocessorNames: [],
+            lifecycleProcessorNames: [],
+            skillNames: [],
+            ownershipScope: 'TEAM_LOCAL',
+            ownerTeamId: 'team-a',
+            ownerTeamName: 'Team A',
+          },
+        ],
+      },
+      errors: [],
+    });
+
+    const store = useAgentDefinitionStore();
+    await store.fetchAllAgentDefinitions();
+
+    expect(store.agentDefinitions).toHaveLength(2);
+    expect(store.sharedAgentDefinitions).toHaveLength(1);
+    expect(store.sharedAgentDefinitions[0].id).toBe('shared-agent');
   });
 });

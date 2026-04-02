@@ -43,6 +43,22 @@ const writeBundledSkill = async (
   );
 };
 
+const writeTeamLocalAgentDefinition = async (
+  rootPath: string,
+  teamId: string,
+  agentId: string,
+  payload: { name: string; description: string; instructions: string },
+): Promise<void> => {
+  const dirPath = path.join(rootPath, "agent-teams", teamId, "agents", agentId);
+  await fs.mkdir(dirPath, { recursive: true });
+  await fs.writeFile(
+    path.join(dirPath, "agent.md"),
+    createAgentMd(payload.name, payload.description, payload.instructions),
+    "utf-8",
+  );
+  await fs.writeFile(path.join(dirPath, "agent-config.json"), JSON.stringify({}, null, 2), "utf-8");
+};
+
 const writeTeamDefinition = async (
   rootPath: string,
   teamId: string,
@@ -52,6 +68,7 @@ const writeTeamDefinition = async (
     instructions: string;
     coordinator: string;
     memberRef: string;
+    memberRefScope?: "shared" | "team_local";
   },
 ): Promise<void> => {
   const dirPath = path.join(rootPath, "agent-teams", teamId);
@@ -71,6 +88,7 @@ const writeTeamDefinition = async (
             memberName: payload.coordinator,
             ref: payload.memberRef,
             refType: "agent",
+            refScope: payload.memberRefScope ?? "shared",
           },
         ],
       },
@@ -81,7 +99,7 @@ const writeTeamDefinition = async (
   );
 };
 
-describe("Definition source GraphQL e2e", () => {
+describe("Agent package root GraphQL e2e", () => {
   let schema: GraphQLSchema;
   let graphql: typeof graphqlFn;
   const cleanupPaths = new Set<string>();
@@ -101,7 +119,7 @@ describe("Definition source GraphQL e2e", () => {
     }
     cleanupPaths.clear();
 
-    process.env.AUTOBYTEUS_DEFINITION_SOURCE_PATHS = "";
+    process.env.AUTOBYTEUS_AGENT_PACKAGE_ROOTS = "";
   });
 
   const execGraphql = async <T>(
@@ -126,7 +144,7 @@ describe("Definition source GraphQL e2e", () => {
       variableValues: variables,
     });
 
-  it("adds and removes definition sources and aggregates agent/team reads with precedence", async () => {
+  it("adds and removes agent package roots and aggregates agent/team reads with precedence", async () => {
     const unique = `${Date.now()}_${Math.random().toString(16).slice(2)}`;
     const defaultRoot = appConfigProvider.config.getAppDataDir();
     const externalRoot = await fs.mkdtemp(path.join(os.tmpdir(), `definition-source-${unique}-`));
@@ -187,6 +205,11 @@ describe("Definition source GraphQL e2e", () => {
       coordinator: "coordinator",
       memberRef: externalAgentId,
     });
+    await writeTeamLocalAgentDefinition(externalRoot, externalTeamId, `local-agent-${unique}`, {
+      name: "External Local Agent",
+      description: "Team-local agent",
+      instructions: "team-local instructions",
+    });
     await writeTeamDefinition(externalRoot, duplicateTeamId, {
       name: "External Duplicate Team",
       description: "External duplicate team",
@@ -196,18 +219,20 @@ describe("Definition source GraphQL e2e", () => {
     });
 
     const addResult = await execGraphql<{
-      addDefinitionSource: Array<{
+      addAgentPackageRoot: Array<{
         path: string;
-        agentCount: number;
+        sharedAgentCount: number;
+        teamLocalAgentCount: number;
         agentTeamCount: number;
         isDefault: boolean;
       }>;
     }>(
       `
-        mutation AddDefinitionSource($path: String!) {
-          addDefinitionSource(path: $path) {
+        mutation AddAgentPackageRoot($path: String!) {
+          addAgentPackageRoot(path: $path) {
             path
-            agentCount
+            sharedAgentCount
+            teamLocalAgentCount
             agentTeamCount
             isDefault
           }
@@ -216,9 +241,10 @@ describe("Definition source GraphQL e2e", () => {
       { path: externalRoot },
     );
 
-    const addedExternal = addResult.addDefinitionSource.find((entry) => entry.path === externalRoot);
+    const addedExternal = addResult.addAgentPackageRoot.find((entry) => entry.path === externalRoot);
     expect(addedExternal).toBeDefined();
-    expect(addedExternal?.agentCount).toBe(2);
+    expect(addedExternal?.sharedAgentCount).toBe(2);
+    expect(addedExternal?.teamLocalAgentCount).toBe(1);
     expect(addedExternal?.agentTeamCount).toBe(2);
     expect(addedExternal?.isDefault).toBe(false);
 
@@ -233,7 +259,7 @@ describe("Definition source GraphQL e2e", () => {
       duplicateAgent: { id: string; name: string } | null;
       duplicateTeam: { id: string; name: string } | null;
     }>(`
-      query DefinitionReads {
+      query PackageRootReads {
         agents: agentDefinitions { id name }
         teams: agentTeamDefinitions { id name }
         duplicateAgent: agentDefinition(id: "${duplicateAgentId}") { id name }
@@ -337,11 +363,11 @@ describe("Definition source GraphQL e2e", () => {
     ).rejects.toBeDefined();
 
     const removeResult = await execGraphql<{
-      removeDefinitionSource: Array<{ path: string }>;
+      removeAgentPackageRoot: Array<{ path: string }>;
     }>(
       `
-        mutation RemoveDefinitionSource($path: String!) {
-          removeDefinitionSource(path: $path) {
+        mutation RemoveAgentPackageRoot($path: String!) {
+          removeAgentPackageRoot(path: $path) {
             path
           }
         }
@@ -349,7 +375,7 @@ describe("Definition source GraphQL e2e", () => {
       { path: externalRoot },
     );
 
-    expect(removeResult.removeDefinitionSource.some((entry) => entry.path === externalRoot)).toBe(false);
+    expect(removeResult.removeAgentPackageRoot.some((entry) => entry.path === externalRoot)).toBe(false);
 
     const postRemoveList = await execGraphql<{
       agents: Array<{ id: string }>;
@@ -365,14 +391,14 @@ describe("Definition source GraphQL e2e", () => {
     expect(postRemoveList.teams.some((entry) => entry.id === externalTeamId)).toBe(false);
   });
 
-  it("rejects invalid definition source paths and unsupported url-like inputs", async () => {
-    const emptyRoot = await fs.mkdtemp(path.join(os.tmpdir(), "definition-source-empty-"));
+  it("rejects invalid agent package root paths and unsupported url-like inputs", async () => {
+    const emptyRoot = await fs.mkdtemp(path.join(os.tmpdir(), "agent-package-root-empty-"));
     cleanupPaths.add(emptyRoot);
 
     const invalidUrl = await runGraphql(
       `
-        mutation AddDefinitionSource($path: String!) {
-          addDefinitionSource(path: $path) { path }
+        mutation AddAgentPackageRoot($path: String!) {
+          addAgentPackageRoot(path: $path) { path }
         }
       `,
       { path: "https://github.com/example/definitions" },
@@ -382,8 +408,8 @@ describe("Definition source GraphQL e2e", () => {
 
     const emptyRootResult = await runGraphql(
       `
-        mutation AddDefinitionSource($path: String!) {
-          addDefinitionSource(path: $path) { path }
+        mutation AddAgentPackageRoot($path: String!) {
+          addAgentPackageRoot(path: $path) { path }
         }
       `,
       { path: emptyRoot },
@@ -393,11 +419,11 @@ describe("Definition source GraphQL e2e", () => {
 
     const notFoundResult = await runGraphql(
       `
-        mutation AddDefinitionSource($path: String!) {
-          addDefinitionSource(path: $path) { path }
+        mutation AddAgentPackageRoot($path: String!) {
+          addAgentPackageRoot(path: $path) { path }
         }
       `,
-      { path: path.join(os.tmpdir(), "definition-source-does-not-exist") },
+      { path: path.join(os.tmpdir(), "agent-package-root-does-not-exist") },
     );
     expect(notFoundResult.errors?.length ?? 0).toBeGreaterThan(0);
     expect(notFoundResult.errors?.[0]?.message).toContain("not found");

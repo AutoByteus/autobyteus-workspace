@@ -16,6 +16,7 @@ export const GetAgentTeamDefinitions = gql`
         memberName
         ref
         refType
+        refScope
       }
     }
   }
