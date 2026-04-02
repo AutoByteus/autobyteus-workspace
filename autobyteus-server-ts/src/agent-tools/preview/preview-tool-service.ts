@@ -26,7 +26,7 @@ import {
   assertOpenPreviewSemantics,
   assertPreviewDomSnapshotSemantics,
   assertReadPreviewPageSemantics,
-} from "./preview-tool-input-normalizers.js";
+} from "./preview-tool-semantic-validators.js";
 import { PreviewBridgeClient } from "./preview-bridge-client.js";
 
 export class PreviewToolService {

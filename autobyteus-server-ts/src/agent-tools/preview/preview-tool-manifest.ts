@@ -31,7 +31,7 @@ import {
   parseOpenPreviewInput,
   parsePreviewDomSnapshotInput,
   parseReadPreviewPageInput,
-} from "./preview-tool-input-normalizers.js";
+} from "./preview-tool-input-parsers.js";
 import type { PreviewToolService } from "./preview-tool-service.js";
 
 export type PreviewToolManifestEntry<TInput = unknown, TResult = unknown> = {

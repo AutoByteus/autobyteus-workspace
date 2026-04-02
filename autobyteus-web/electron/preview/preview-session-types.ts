@@ -124,6 +124,7 @@ export type PreviewSessionRecord = {
   url: string
   title: string | null
   customTitle: string | null
+  leasedShellId: number | null
   state: 'opening' | 'open'
   openPromise: Promise<void> | null
   view: WebContentsView

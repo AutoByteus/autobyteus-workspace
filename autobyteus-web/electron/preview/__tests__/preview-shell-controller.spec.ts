@@ -191,6 +191,91 @@ describe("PreviewShellController", () => {
     expect(() => controller.getSnapshot(101)).toThrow("Preview shell '101' is not registered.");
   });
 
+  it("does not let one shell steal another shell's preview session", async () => {
+    const views: FakeWebContentsView[] = [];
+    const manager = new PreviewSessionManager({
+      viewFactory: {
+        createPreviewView: () => {
+          const view = new FakeWebContentsView();
+          views.push(view);
+          return view as any;
+        },
+      } as any,
+      screenshotWriter: {
+        write: async () => "/tmp/preview.png",
+      } as any,
+    });
+    const controller = new PreviewShellController(manager);
+    const firstShell = new FakeShellWindow(103);
+    const secondShell = new FakeShellWindow(104);
+    controller.registerShell(firstShell as any);
+    controller.registerShell(secondShell as any);
+
+    const openPromise = manager.openSession({ url: "http://localhost:3000/demo", wait_until: "load" });
+    await Promise.resolve();
+    views[0]!.webContents.finishLoad("http://localhost:3000/demo");
+    const opened = await openPromise;
+
+    controller.focusSession(firstShell.shellId, opened.preview_session_id);
+
+    expect(() => controller.focusSession(secondShell.shellId, opened.preview_session_id)).toThrow(
+      /already attached to shell '103'/,
+    );
+    expect(controller.getSnapshot(firstShell.shellId)).toEqual({
+      previewVisible: true,
+      activePreviewSessionId: opened.preview_session_id,
+      sessions: [
+        {
+          preview_session_id: opened.preview_session_id,
+          title: "Preview",
+          url: "http://localhost:3000/demo",
+        },
+      ],
+    });
+    expect(controller.getSnapshot(secondShell.shellId)).toEqual({
+      previewVisible: false,
+      activePreviewSessionId: null,
+      sessions: [],
+    });
+  });
+
+  it("releases a shell lease when the owning shell closes", async () => {
+    const views: FakeWebContentsView[] = [];
+    const manager = new PreviewSessionManager({
+      viewFactory: {
+        createPreviewView: () => {
+          const view = new FakeWebContentsView();
+          views.push(view);
+          return view as any;
+        },
+      } as any,
+      screenshotWriter: {
+        write: async () => "/tmp/preview.png",
+      } as any,
+    });
+    const controller = new PreviewShellController(manager);
+    const firstShell = new FakeShellWindow(105);
+    const secondShell = new FakeShellWindow(106);
+    controller.registerShell(firstShell as any);
+    controller.registerShell(secondShell as any);
+
+    const openPromise = manager.openSession({ url: "http://localhost:3000/demo", wait_until: "load" });
+    await Promise.resolve();
+    views[0]!.webContents.finishLoad("http://localhost:3000/demo");
+    const opened = await openPromise;
+
+    controller.focusSession(firstShell.shellId, opened.preview_session_id);
+    firstShell.throwOnShellIdRead = true;
+
+    expect(() => firstShell.browserWindow.emit("closed")).not.toThrow();
+    expect(() =>
+      controller.focusSession(secondShell.shellId, opened.preview_session_id),
+    ).not.toThrow();
+    expect(controller.getSnapshot(secondShell.shellId).activePreviewSessionId).toBe(
+      opened.preview_session_id,
+    );
+  });
+
   it("skips redundant host-bounds projection work when bounds are unchanged", async () => {
     const views: FakeWebContentsView[] = [];
     const manager = new PreviewSessionManager({

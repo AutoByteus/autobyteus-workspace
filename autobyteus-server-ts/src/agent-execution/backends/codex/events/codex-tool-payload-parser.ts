@@ -48,7 +48,7 @@ export class CodexToolPayloadParser {
 
   public resolveToolName(
     payload: Record<string, unknown>,
-    fallback: "run_bash" | "edit_file" = "run_bash",
+    fallback?: "run_bash" | "edit_file",
   ): string | null {
     const item = asObject(payload.item);
     return (
@@ -58,7 +58,8 @@ export class CodexToolPayloadParser {
       asString(item.tool_name) ??
       asString(item.tool) ??
       asString(item.name) ??
-      fallback
+      fallback ??
+      null
     );
   }
 

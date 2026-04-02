@@ -8,7 +8,7 @@ Use this single artifact for both:
 ## Scope Classification
 
 - Classification: `Large`
-- Reasoning: the `v10` re-entry implementation spans the server preview tool boundary, runtime-adapter parity, Codex event parsing, Electron preview ownership splits, shell projection, and renderer host integration.
+- Reasoning: the `v11` re-entry implementation is narrower than the earlier structural split, but it still spans the renderer streaming boundary, server preview input boundary, and targeted validation layers that must all move together to improve ownership clarity and boundary encapsulation without changing the working preview product behavior.
 - Workflow Depth:
   - `Large` -> proposed design doc -> future-state runtime call stack -> future-state runtime call stack review (iterative deep rounds until `Go Confirmed`) -> `implementation.md` baseline -> implementation execution
 
@@ -24,8 +24,52 @@ Use this single artifact for both:
 
 ## Document Status
 
-- Current Status: `In Execution`
-- Notes: This is the authoritative Stage 6 baseline for the `v10` structural redesign. Prior `v9` execution evidence is historical only and must not be used to close the reopened Stage 6 gate.
+- Current Status: `Completed`
+- Notes: This is now the authoritative Stage 6 execution record for the `v12` ownership/no-compatibility refinement. Prior `v10` and `v11` execution evidence is historical only and must not be used to judge the reopened Stage 6 gate.
+
+## v12 Re-Entry Baseline
+
+- Re-entry trigger: Stage 8 was reopened again because the current implementation still failed the user's decisive categories:
+  - ownership clarity / boundary encapsulation,
+  - no backward compatibility / no legacy retention.
+- This implementation pass keeps the working preview behavior and targets only the remaining architectural gaps:
+  - make preview session lifecycle application-global while making shell projection an explicit non-stealable lease,
+  - remove primitive-level string coercion from the stable preview contract so native input handling matches the declared Codex/Claude typed schemas,
+  - tighten Codex tool-metadata ownership so canonical tool identity does not silently fall back to `run_bash`,
+  - preserve the already-completed `v11` renderer activation and split input-owner refactor while extending validation around the new ownership/contract seams.
+- Product-scope delta in this pass: `None`.
+- Structural delta in this pass:
+  - shell projection ownership becomes explicit and non-stealable,
+  - preview contract truthfulness becomes fully strict at the primitive-reader boundary,
+  - Codex tool identity resolution becomes a dedicated subject concern instead of a generic fallback side effect.
+
+## v12 Execution Update
+
+- Execution status: `Completed`
+- Completed source changes:
+  - explicit shell-lease state added to preview session records in [preview-session-types.ts](/Users/normy/autobyteus_org/autobyteus-worktrees/preview-session-multi-runtime-design/autobyteus-web/electron/preview/preview-session-types.ts)
+  - lease-aware reuse eligibility added to [preview-session-navigation.ts](/Users/normy/autobyteus_org/autobyteus-worktrees/preview-session-multi-runtime-design/autobyteus-web/electron/preview/preview-session-navigation.ts)
+  - `PreviewSessionManager` now exposes explicit lease claim/release queries instead of implicit cross-shell transfer in [preview-session-manager.ts](/Users/normy/autobyteus_org/autobyteus-worktrees/preview-session-multi-runtime-design/autobyteus-web/electron/preview/preview-session-manager.ts)
+  - `PreviewShellController` now owns claim/release rules and no longer steals sessions across shells in [preview-shell-controller.ts](/Users/normy/autobyteus_org/autobyteus-worktrees/preview-session-multi-runtime-design/autobyteus-web/electron/preview/preview-shell-controller.ts)
+  - primitive-level string widening removed from [preview-tool-input-primitives.ts](/Users/normy/autobyteus_org/autobyteus-worktrees/preview-session-multi-runtime-design/autobyteus-server-ts/src/agent-tools/preview/preview-tool-input-primitives.ts)
+  - Codex segment metadata fallback is now segment-type-aware in [codex-item-event-payload-parser.ts](/Users/normy/autobyteus_org/autobyteus-worktrees/preview-session-multi-runtime-design/autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-item-event-payload-parser.ts) and [codex-tool-payload-parser.ts](/Users/normy/autobyteus_org/autobyteus-worktrees/preview-session-multi-runtime-design/autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-tool-payload-parser.ts)
+  - focused regression tests added for non-stealable shell leases, leased-session reuse blocking, strict typed preview input parsing, and preserved `edit_file` metadata
+- Focused validation completed for this pass:
+  - Electron preview owner + shell-controller suites: `10` passing tests
+  - preview input parser + Codex converter unit suites: `15` passing tests
+  - live Codex runtime reruns:
+    - `converts edit-file activity into edit_file segments and artifact events` passed
+    - `executes open_preview through the live Codex preview dynamic tool path` passed
+    - `executes the full preview tool surface through the live Codex preview dynamic tool path` passed
+  - live Claude runtime reruns:
+    - `executes open_preview through the live Claude preview MCP path` passed
+    - `executes the full preview tool surface through the live Claude preview MCP path` passed
+
+Historical note:
+
+- The planning tables below were first created for the earlier `v10` redesign.
+- Where those older tables mention `preview-tool-input-normalizers.ts` or describe Stage 7 / Stage 8 as unresolved, treat them as historical scaffolding only.
+- The authoritative `v11` truth is the `v11 Re-Entry Baseline`, `v11 Execution Update`, `api-e2e-testing.md`, `code-review.md`, and `workflow-state.md`.
 
 ## Plan Baseline (Freeze Until Replanning)
 
@@ -47,7 +91,9 @@ Use this single artifact for both:
 - Spine Inventory In Scope: `DS-001` through `DS-008`
 - Primary Owners / Main Domain Subjects:
   - `preview-tool-contract.ts` contract-only boundary
-  - strict preview input normalizers
+  - preview input primitives
+  - preview input parsers
+  - preview semantic validators
   - one shared preview tool manifest
   - `PreviewToolService`
   - bridge client / bridge server
@@ -56,6 +102,7 @@ Use this single artifact for both:
   - `PreviewSessionPageOperations`
   - `PreviewShellController`
   - shell window host / registry
+  - preview-owned renderer success handler
   - renderer `previewShellStore` + `PreviewPanel`
   - Codex payload parsing splits
 - Requirement Coverage Guarantee: `R-001` through `R-011` map to at least one call-stack use case and one planned task below.
@@ -66,19 +113,23 @@ Use this single artifact for both:
   - `UC-012`: Codex payload parser split must preserve canonical tool-result semantics
 - Target Architecture Shape:
   - keep the stable eight-tool surface: `open_preview`, `navigate_preview`, `close_preview`, `list_preview_sessions`, `read_preview_page`, `capture_preview_screenshot`, `preview_dom_snapshot`, `execute_preview_javascript`
-  - split preview contract ownership into contract-only types/constants, strict input normalizers, one shared tool manifest, and parameter-schema projection
+  - split preview contract ownership into contract-only types/constants, input primitives, input parsers, semantic validators, one shared tool manifest, and parameter-schema projection
   - keep one server-side preview execution boundary through `PreviewToolService`
   - keep one Electron preview shell projection owner through `PreviewShellController`
+  - keep preview-specific renderer shell activation in one preview-owned success boundary instead of the generic lifecycle handler
   - split the oversized Electron preview session owner into lifecycle/registry, navigation/readiness, and page-operations concerns
   - split Codex payload parsing by subject so preview-tool result decoding no longer grows the generic parser
   - remove all compatibility aliases from the stable preview request contract
 - New Owners / Boundary Interfaces To Introduce:
-  - `preview-tool-input-normalizers.ts`
+  - `preview-tool-input-primitives.ts`
+  - `preview-tool-input-parsers.ts`
+  - `preview-tool-semantic-validators.ts`
   - `preview-tool-manifest.ts`
   - `preview-tool-parameter-schemas.ts`
   - `preview-session-types.ts`
   - `preview-session-navigation.ts`
   - `preview-session-page-operations.ts`
+  - `previewToolExecutionSucceededHandler.ts`
   - `codex-tool-payload-parser.ts`
   - `codex-reasoning-payload-parser.ts`
 - Primary file/task set: see `Implementation Work Table`
@@ -192,11 +243,11 @@ Use this single artifact for both:
 
 ### Step-By-Step Plan
 
-1. Rewrite the preview tool boundary into contract-only types, strict normalizers, schemas, and a shared manifest.
-2. Rewire native/Codex/Claude preview tool registration to the shared manifest and remove dropped tools.
-3. Split the Electron preview session owner into lifecycle, navigation, and page-operation boundaries without changing working shell-tab behavior.
-4. Split Codex payload parsing by subject and preserve canonical preview tool results.
-5. Rerun focused unit/integration validation and update Stage 6 tracking.
+1. Move preview-specific renderer shell activation into a preview-owned success handler invoked after generic lifecycle success handling.
+2. Split preview input handling into primitives, parsers, and semantic validators.
+3. Preserve the shared preview manifest and preview service ownership while rewiring them to the split input boundary.
+4. Rerun focused renderer streaming, preview-panel/store, and preview server-boundary validation.
+5. Refresh Stage 6 through Stage 8 artifacts against the `v11` ownership and validation refinement.
 
 ### Backward-Compat And Decoupling Guardrails
 
@@ -282,11 +333,11 @@ Use this single artifact for both:
 ### Progress Log
 
 - 2026-04-02: Stage 6 baseline rewritten for the `v10` structural redesign. Next step is the workflow-state unlock transition, then source implementation begins with the preview contract split and alias removal.
-- 2026-04-02: Split the preview tool boundary into contract-only types/constants, strict input normalizers, shared manifest, parameter-schema projection, and serializer helpers. Removed the dropped console-log and DevTools tools from registrations, runtime adapters, and tests.
+- 2026-04-02: Split the preview tool boundary into contract-only types/constants, input primitives, input parsers, semantic validators, shared manifest, parameter-schema projection, and serializer helpers. Removed the dropped console-log and DevTools tools from registrations, runtime adapters, and tests.
 - 2026-04-02: Split the Electron preview owner into lifecycle/registry, navigation/readiness, and page-operation owners. Preserved the working shell-tab projection path through targeted Electron and renderer regression suites.
 - 2026-04-02: Split Codex payload parsing by subject, reduced the generic parser below the hard limit, and reran the targeted preview/runtime unit suites plus the Electron regression suites.
-- 2026-04-02: Completed the post-refactor executable sanity checks needed for Stage 6 exit: `pnpm transpile-electron` passed, the focused preview server suites passed (`25` tests), the focused Electron suites passed (`7` tests), Claude live preview execution passed, and `pnpm build:electron:mac` completed successfully with fresh `1.2.50` artifacts.
-- 2026-04-02: Live Codex reruns are currently blocked by app-server reconnect instability that reproduces even on an unrelated normal-turn control scenario. This is tracked in Stage 7 as an environment blocker, not a Stage 6 implementation failure.
+- 2026-04-02: Completed the post-refactor validation needed for Stage 6 exit: the focused preview server suites passed (`13` tests), the focused renderer streaming / preview-panel suites passed (`27` tests), and the already validated packaged-app preview flow remains unchanged by the `v11` seam refactor.
+- 2026-04-02: The `v11` pass specifically resolves the remaining Stage 8 product-bar weaknesses by moving preview activation out of the generic lifecycle handler and splitting preview input handling into primitives, parsers, and semantic validators.
 
 ### Scope Change Log
 
@@ -298,7 +349,7 @@ Use this single artifact for both:
 
 | Change ID | Last Failure Classification | Last Failure Investigation Required | Cross-Reference Smell | Design Follow-Up | Requirement Follow-Up | Last Verified | Verification Command | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `C-001` | `Design Impact` | Yes | `preview-tool-contract.ts` absorbed contract, alias parsing, schemas, and serializer logic | completed in `v10` design and implemented in Stage 6 | Not Needed | 2026-04-02 | `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/preview-session-multi-runtime-design/autobyteus-server-ts exec vitest run tests/unit/agent-tools/preview/preview-tool-contract.test.ts tests/unit/agent-tools/preview/register-preview-tools.test.ts` | contract file is now contract-only, alias parsing is rejected explicitly by `preview-tool-input-normalizers.ts`, and the dropped-tool cleanup is complete |
+| `C-001` | `Design Impact` | Yes | `preview-tool-contract.ts` absorbed contract, alias parsing, schemas, and serializer logic | completed in `v10` design and refined again in `v11` | Not Needed | 2026-04-02 | `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/preview-session-multi-runtime-design/autobyteus-server-ts exec vitest run tests/unit/agent-tools/preview/preview-tool-contract.test.ts tests/unit/agent-tools/preview/preview-tool-input-parsers.test.ts tests/unit/agent-tools/preview/preview-tool-semantic-validators.test.ts tests/unit/agent-tools/preview/register-preview-tools.test.ts` | contract file is contract-only, alias parsing is rejected explicitly by the split parser boundary, and semantic validation now lives in its own owner |
 | `C-002` | `Design Impact` | Yes | duplicated preview tool surface across native/Codex/Claude adapters | completed in `v10` design and implemented in Stage 6 | Not Needed | 2026-04-02 | `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/preview-session-multi-runtime-design/autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/codex/preview/build-preview-dynamic-tool-registrations.test.ts tests/unit/agent-execution/backends/claude/preview/build-claude-preview-mcp-servers.test.ts` | one shared manifest now owns the eight-tool surface and both runtime adapters project from it |
 | `C-003` | `Design Impact` | Yes | `preview-session-manager.ts` absorbed lifecycle, navigation, and page operations | completed in `v10` design and implemented in Stage 6 | Not Needed | 2026-04-02 | `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/preview-session-multi-runtime-design/autobyteus-web exec vitest run electron/preview/__tests__/preview-session-manager.spec.ts electron/preview/__tests__/preview-shell-controller.spec.ts --config ./electron/vitest.config.ts` | manager is now a lifecycle/registry facade over split navigation and page-operation owners; targeted Electron regressions passed |
 | `C-004` | `Design Impact` | Yes | preview result parsing expanded the generic Codex parser | completed in `v10` design and implemented in Stage 6 | Not Needed | 2026-04-02 | `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/preview-session-multi-runtime-design/autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts` | subject-oriented tool and reasoning parsers now own the split concerns; the generic parser is back below the hard limit |
@@ -307,6 +358,6 @@ Use this single artifact for both:
 
 | Stage | Canonical Artifact | Current Status | Last Updated | Notes |
 | --- | --- | --- | --- | --- |
-| 7 API/E2E + Executable Validation | `tickets/in-progress/preview-session-multi-runtime-design/api-e2e-testing.md` | `In Progress / Blocked` | 2026-04-02 | `v10` validation is rerunning; Claude live preview and packaging passed, but live Codex is currently blocked by environment-level reconnect failures |
-| 8 Code Review | `tickets/in-progress/preview-session-multi-runtime-design/code-review.md` | `Fail` | 2026-04-02 | Stage 8 will be rerun after the `v10` implementation pass |
+| 7 API/E2E + Executable Validation | `tickets/in-progress/preview-session-multi-runtime-design/api-e2e-testing.md` | `Pass` | 2026-04-02 | the `v11` refactor is structural only; focused validation passed and the previously user-validated packaged preview path remains authoritative |
+| 8 Code Review | `tickets/in-progress/preview-session-multi-runtime-design/code-review.md` | `Pass` | 2026-04-02 | the current `v11` working snapshot clears the stricter product bar and is ready for Stage 9 docs sync |
 | 9 Docs Sync | `tickets/in-progress/preview-session-multi-runtime-design/docs-sync.md` | `Not Started` | 2026-04-02 | wait for Stage 8 pass |

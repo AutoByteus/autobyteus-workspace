@@ -40,11 +40,12 @@ export class PreviewSessionNavigation {
   async findReusableSession(
     sessions: Map<string, PreviewSessionRecord>,
     normalizedUrl: string,
+    canReuse: (session: PreviewSessionRecord) => boolean = () => true,
   ): Promise<PreviewSessionRecord | null> {
     let openingSession: PreviewSessionRecord | null = null
 
     for (const session of sessions.values()) {
-      if (session.url !== normalizedUrl) {
+      if (session.url !== normalizedUrl || !canReuse(session)) {
         continue
       }
 

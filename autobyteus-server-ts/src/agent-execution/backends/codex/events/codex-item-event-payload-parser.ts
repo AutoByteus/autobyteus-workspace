@@ -82,12 +82,19 @@ export class CodexItemEventPayloadParser {
   public resolveSegmentMetadata(
     payload: Record<string, unknown>,
   ): Record<string, unknown> | undefined {
+    const segmentType = this.resolveSegmentType(payload);
     const metadata = asObject(payload.metadata);
     const item = asObject(payload.item);
     const fileChangePath = this.fileChangePayloadHelper.resolvePath(payload);
     const fileChangePatch = this.fileChangePayloadHelper.resolvePatch(payload);
     const commandValue = this.toolPayloadParser.resolveCommandValue(payload);
-    const toolName = this.toolPayloadParser.resolveToolName(payload, "run_bash");
+    const fallbackToolName =
+      segmentType === "edit_file"
+        ? "edit_file"
+        : segmentType === "run_bash"
+          ? "run_bash"
+          : undefined;
+    const toolName = this.toolPayloadParser.resolveToolName(payload, fallbackToolName);
     const pathValue = asString(payload.path) ?? asString(item.path) ?? fileChangePath;
     const patchValue =
       asString(payload.patch) ??
@@ -109,7 +116,7 @@ export class CodexItemEventPayloadParser {
     if (commandValue) {
       next.command = commandValue;
     }
-    if (this.resolveSegmentType(payload) === "tool_call") {
+    if (segmentType === "tool_call") {
       const toolArguments = this.toolPayloadParser.resolveToolCallMetadataArguments(payload);
       if (Object.keys(toolArguments).length > 0) {
         next.arguments = toolArguments;
@@ -200,7 +207,7 @@ export class CodexItemEventPayloadParser {
 
   public resolveToolName(
     payload: Record<string, unknown>,
-    fallback: "run_bash" | "edit_file" = "run_bash",
+    fallback?: "run_bash" | "edit_file",
   ): string | null {
     return this.toolPayloadParser.resolveToolName(payload, fallback);
   }

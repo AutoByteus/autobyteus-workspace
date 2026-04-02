@@ -39,10 +39,6 @@ import {
 } from './toolLifecycleParsers';
 import { setStreamSegmentIdentity } from './segmentIdentity';
 import { isPlaceholderToolName } from '~/utils/toolNamePlaceholders';
-import { usePreviewShellStore } from '~/stores/previewShellStore';
-import { useRightSideTabs } from '~/composables/useRightSideTabs';
-
-const OPEN_PREVIEW_TOOL_NAME = 'open_preview';
 
 const buildInvocationAliases = (invocationId: string): string[] => {
   const trimmed = invocationId.trim();
@@ -313,27 +309,6 @@ const addActivityLog = (context: AgentContext, invocationId: string, logEntry: s
   });
 };
 
-const extractPreviewSessionIdFromResult = (result: unknown): string | null => {
-  if (result && typeof result === 'object' && !Array.isArray(result)) {
-    const value = (result as { preview_session_id?: unknown }).preview_session_id;
-    return typeof value === 'string' && value.trim().length > 0 ? value.trim() : null;
-  }
-
-  if (typeof result === 'string') {
-    try {
-      const parsed = JSON.parse(result) as { preview_session_id?: unknown };
-      const previewSessionId = parsed?.preview_session_id;
-      return typeof previewSessionId === 'string' && previewSessionId.trim().length > 0
-        ? previewSessionId.trim()
-        : null;
-    } catch {
-      return null;
-    }
-  }
-
-  return null;
-};
-
 const mergeArguments = (
   segment: ToolCallSegment | WriteFileSegment | TerminalCommandSegment | EditFileSegment,
   argumentsPayload: Record<string, any>,
@@ -488,18 +463,6 @@ export function handleToolExecutionSucceeded(
   if (transitioned) {
     updateActivityStatus(context, parsed.invocationId, 'success');
     setActivityResult(context, parsed.invocationId, segment.result, null);
-    if (parsed.toolName === OPEN_PREVIEW_TOOL_NAME) {
-      const previewSessionId = extractPreviewSessionIdFromResult(parsed.result);
-      if (previewSessionId) {
-        const previewShellStore = usePreviewShellStore();
-        const { setActiveTab } = useRightSideTabs();
-        void previewShellStore.focusSession(previewSessionId).then(() => {
-          setActiveTab('preview');
-        }).catch((error) => {
-          console.warn('[toolLifecycleHandler] Failed to focus preview session after open_preview.', error);
-        });
-      }
-    }
   }
 }
 

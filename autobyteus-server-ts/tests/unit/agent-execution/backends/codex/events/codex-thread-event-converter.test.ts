@@ -229,4 +229,33 @@ describe("CodexThreadEventConverter", () => {
       },
     });
   });
+
+  it("preserves edit_file metadata when converting file-change segments", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.ITEM_STARTED,
+      params: {
+        item: {
+          type: "editFile",
+          id: "edit-file-1",
+          path: "demo.py",
+          patch: "@@ -0,0 +1 @@\n+print('demo')",
+        },
+      },
+    });
+
+    expect(converted).toMatchObject({
+      eventType: AgentRunEventType.SEGMENT_START,
+      runId: "run-1",
+      payload: {
+        id: "edit-file-1",
+        segment_type: "edit_file",
+        metadata: {
+          tool_name: "edit_file",
+          path: "demo.py",
+        },
+      },
+    });
+  });
 });

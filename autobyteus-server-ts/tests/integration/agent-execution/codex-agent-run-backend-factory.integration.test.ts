@@ -26,6 +26,7 @@ import {
 import {
   PreviewBridgeLiveTestServer,
   buildOpenPreviewToolPrompt,
+  buildPreviewToolSurfacePrompt,
 } from "./preview-bridge-live-test-server.js";
 
 const codexBinaryReady = spawnSync("codex", ["--version"], {
@@ -165,6 +166,7 @@ const createFactory = (input: {
   threadManager: CodexThreadManager;
   workspaceRoot: string;
   runId: string;
+  instructions?: string;
   defaultBootstrapStrategy?: CodexThreadBootstrapStrategy;
 }) => {
   const threadBootstrapper = new CodexThreadBootstrapper(
@@ -174,7 +176,7 @@ const createFactory = (input: {
     } as any,
     {
       getAgentDefinitionById: async () => ({
-        instructions: "Reply briefly.",
+        instructions: input.instructions ?? "Reply briefly.",
         description: "Fallback description.",
         skillNames: [],
       }),
@@ -1193,6 +1195,133 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     } finally {
       unsubscribe();
       await writeBackendEventLog("codex-backend-preview-tool", events);
+    }
+  }, FLOW_TEST_TIMEOUT_MS);
+
+  it("executes the full preview tool surface through the live Codex preview dynamic tool path", async () => {
+    clientManager = new CodexAppServerClientManager(
+      (cwd) => new CodexAppServerClient({ cwd }),
+    );
+    threadManager = new CodexThreadManager(
+      clientManager,
+      undefined,
+      new CodexClientThreadRouter(),
+    );
+    const modelIdentifier = await fetchCodexModelIdentifier(
+      clientManager,
+      process.cwd(),
+    );
+    const workspaceRoot = await createWorkspace("codex-backend-preview-surface");
+    previewBridgeServer = new PreviewBridgeLiveTestServer();
+    await previewBridgeServer.start();
+    Object.assign(process.env, previewBridgeServer.getRuntimeEnv());
+
+    const factory = createFactory({
+      clientManager,
+      threadManager,
+      workspaceRoot,
+      runId: `run-codex-preview-surface-${randomUUID()}`,
+      instructions:
+        "If the user explicitly instructs you to call preview tools with exact JSON arguments in an exact order, call exactly those preview tools in that order and do not call any other tool.",
+    });
+
+    const backend = await factory.createBackend(
+      new AgentRunConfig({
+        runtimeKind: "codex_app_server",
+        agentDefinitionId: "agent-def-codex-preview-surface-live",
+        llmModelIdentifier: modelIdentifier,
+        autoExecuteTools: true,
+        workspaceId: "workspace-codex-preview-surface-live",
+        llmConfig: { reasoning_effort: "medium" },
+      }),
+    );
+    createdRunIds.add(backend.runId);
+
+    const thread = threadManager.getThread(backend.runId);
+    expect(thread).toBeTruthy();
+    await waitForStartupReady(thread!.startup.waitForReady);
+
+    const openUrl = `http://127.0.0.1:4173/preview-open-${randomUUID()}`;
+    const navigateUrl = `http://127.0.0.1:4173/preview-navigate-${randomUUID()}`;
+    const previewTitle = `Preview ${randomUUID()}`;
+    const events: AgentRunEvent[] = [];
+    const unsubscribe = backend.subscribeToEvents((event) => {
+      if (event && typeof event === "object") {
+        events.push(event as AgentRunEvent);
+      }
+    });
+
+    try {
+      const sendResult = await backend.postUserMessage(
+        new AgentInputUserMessage(
+          buildPreviewToolSurfacePrompt({
+            openUrl,
+            navigateUrl,
+            title: previewTitle,
+          }),
+        ),
+      );
+      expect(sendResult.accepted).toBe(true);
+
+      await waitForEvent(
+        events,
+        (event) =>
+          event.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED &&
+          event.payload.tool_name === "close_preview",
+      );
+      await waitForEvent(
+        events,
+        (event) =>
+          event.eventType === AgentRunEventType.AGENT_STATUS &&
+          event.payload.new_status === "IDLE",
+      );
+
+      const succeededToolNames = events
+        .filter((event) => event.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED)
+        .map((event) => event.payload.tool_name)
+        .filter((value): value is string => typeof value === "string");
+      expect(succeededToolNames).toEqual(
+        expect.arrayContaining([
+          "open_preview",
+          "navigate_preview",
+          "list_preview_sessions",
+          "read_preview_page",
+          "capture_preview_screenshot",
+          "preview_dom_snapshot",
+          "execute_preview_javascript",
+          "close_preview",
+        ]),
+      );
+      expect(
+        events.some((event) => event.eventType === AgentRunEventType.TOOL_APPROVAL_REQUESTED),
+      ).toBe(false);
+      expect(previewBridgeServer.requests.map((request) => request.path)).toEqual([
+        "/preview/open",
+        "/preview/navigate",
+        "/preview/list",
+        "/preview/read-page",
+        "/preview/screenshot",
+        "/preview/dom-snapshot",
+        "/preview/javascript",
+        "/preview/close",
+      ]);
+      expect(previewBridgeServer.requests[0]).toMatchObject({
+        body: {
+          url: openUrl,
+          title: previewTitle,
+          wait_until: "load",
+        },
+      });
+      expect(previewBridgeServer.requests[1]).toMatchObject({
+        body: {
+          preview_session_id: "preview-session-1",
+          url: navigateUrl,
+          wait_until: "load",
+        },
+      });
+    } finally {
+      unsubscribe();
+      await writeBackendEventLog("codex-backend-preview-tool-surface", events);
     }
   }, FLOW_TEST_TIMEOUT_MS);
 });

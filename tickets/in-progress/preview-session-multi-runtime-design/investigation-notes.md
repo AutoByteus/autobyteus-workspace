@@ -1,16 +1,93 @@
 # Investigation Notes — Preview Session Multi-Runtime Design
 
 - **Ticket**: `preview-session-multi-runtime-design`
-- **Date**: `2026-03-31`
+- **Date**: `2026-04-02`
 - **Stage**: `1 Investigation + Triage`
 - **Scope Classification**: `Large`
-- **Status**: `Current`
+- **Status**: `Complete For v12 Design Re-Entry`
 
 ---
 
 ## Investigation Goal
 
-Determine where a preview-session capability should live so it can be reused across the application's three supported runtime kinds without creating a messy Electron renderer/event model or duplicating runtime-specific logic.
+Stage 8 is reopened again under the stricter product-quality bar. The current user-visible preview behavior is accepted, but the implementation still fails the two categories the user marked as decisive:
+
+- ownership clarity and boundary encapsulation,
+- no backward-compatibility / no legacy retention.
+
+This re-entry is therefore a structural redesign pass, not a product-scope change. The next design basis must keep the working preview-tab behavior while fixing the remaining hidden ownership and contract drift.
+
+The current accepted product behavior remains:
+
+- right-side `Preview` tab,
+- multiple internal preview sessions,
+- eight browser-style preview tools,
+- working packaged-app validation for the main preview path.
+
+---
+
+## Stage 8 Re-Entry Findings
+
+### 1. Preview sessions are still effectively app-global instead of explicitly shell-owned
+
+The remaining ownership problem is no longer in the renderer streaming boundary. It is in the shell-local preview ownership model:
+
+- `autobyteus-web/electron/preview/preview-shell-controller.ts`
+- `autobyteus-web/electron/preview/preview-session-navigation.ts`
+
+Observed behavior:
+
+- `focusSession()` removes a session from every registered shell before attaching it to the current shell,
+- `findReusableSession()` still scans the app-global preview session registry by URL,
+- session records and open requests do not carry shell ownership or explicit transfer semantics.
+
+That means preview sessions are currently transferable by side effect rather than by an owned policy. One shell can silently steal another shell’s preview session. This is the clearest remaining ownership / boundary failure in the feature.
+
+### 2. The stable preview contract still keeps hidden compatibility behavior
+
+Alias keys were removed in the `v10` refactor, but the native contract is still not fully strict:
+
+- `autobyteus-server-ts/src/agent-tools/preview/preview-tool-input-primitives.ts`
+
+The parser still accepts:
+
+- string booleans such as `"true"` / `"false"`,
+- numeric strings such as `"200"`.
+
+That is now a no-backward-compatibility failure, because the declared Codex and Claude schemas already require actual booleans and integers. The native path should not quietly widen the stable contract beyond those declared types.
+
+### 3. The touched Codex runtime parser still owns an unsafe metadata fallback
+
+The stricter review also surfaced a concrete runtime regression in a touched parser owner:
+
+- `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-item-event-payload-parser.ts`
+
+The live Codex backend suite now reproduces that:
+
+- the preview scenario passes,
+- but an existing `edit_file` scenario regresses because metadata reports `tool_name = run_bash`.
+
+That means tool identity fallback policy is still owned too implicitly inside the generic segment metadata parser. Even though this is not the main product behavior the user cares about, it is additional evidence that ownership inside the runtime parser boundary is still too blurred.
+
+### 4. Validation evidence is thinner than the public eight-tool surface implies
+
+This is not the main re-entry driver for this round, but it remains a supporting signal:
+
+- `tickets/in-progress/preview-session-multi-runtime-design/api-e2e-testing.md`
+
+Only `open_preview` is currently exercised through the real Codex and Claude runtime adapter paths. The rest of the eight-tool public surface is still proven mainly by unit or Electron-local tests. That would be less concerning if the touched runtime parser boundary were fully green, but it currently is not.
+
+---
+
+## Investigation Outcome For The Next Design Pass
+
+The investigation supports these redesign targets for Stage 3:
+
+- keep preview-session lifecycle application-global, but encode shell projection through one explicit non-stealable lease owner instead of implicit transfer by side effect,
+- carry lease claimability in session records and reuse decisions,
+- remove stringly boolean and integer coercion from the stable preview contract so the native path matches the declared Codex and Claude schemas exactly,
+- tighten Codex tool-metadata ownership so canonical tool identity is resolved from the right owner instead of falling back generically to `run_bash`,
+- then strengthen live runtime validation after the structural redesign is complete.
 
 ---
 

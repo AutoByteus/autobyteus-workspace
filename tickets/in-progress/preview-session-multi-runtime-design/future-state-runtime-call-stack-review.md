@@ -6,7 +6,7 @@ This review validates alignment with target (`to-be`) design behavior, not parit
 ## Review Meta
 
 - Scope Classification: `Large`
-- Current Round: `22`
+- Current Round: `26`
 - Current Review Type: `Deep Review`
 - Clean-Review Streak Before This Round: `1`
 - Clean-Review Streak After This Round: `2`
@@ -26,8 +26,8 @@ This review validates alignment with target (`to-be`) design behavior, not parit
 - Common Design Practices: `shared/common-design-practices.md`
 - Artifact Versions In This Round:
   - Requirements Status: `Refined`
-  - Design Version: `v10`
-  - Call Stack Version: `v10`
+  - Design Version: `v12`
+  - Call Stack Version: `v12`
 - Required Persisted Artifact Updates Completed For This Round: `N/A`
 
 ## Review Intent (Mandatory)
@@ -63,6 +63,10 @@ This review validates alignment with target (`to-be`) design behavior, not parit
 | 20 | Refined | v9 | v9 | No | No | N/A | N/A | N/A | 2 | Go Confirmed | Go |
 | 21 | Refined | v10 | v10 | No | No | Yes | N/A | N/A | 1 | Candidate Go | No-Go |
 | 22 | Refined | v10 | v10 | No | No | N/A | N/A | N/A | 2 | Go Confirmed | Go |
+| 23 | Refined | v11 | v11 | No | No | Yes | N/A | N/A | 1 | Candidate Go | No-Go |
+| 24 | Refined | v11 | v11 | No | No | N/A | N/A | N/A | 2 | Go Confirmed | Go |
+| 25 | Refined | v12 | v12 | No | No | Yes | N/A | N/A | 1 | Candidate Go | No-Go |
+| 26 | Refined | v12 | v12 | No | No | N/A | N/A | N/A | 2 | Go Confirmed | Go |
 
 ## Round Artifact Update Log (Mandatory)
 
@@ -90,6 +94,10 @@ This review validates alignment with target (`to-be`) design behavior, not parit
 | 20 | No | N/A | N/A | N/A | N/A |
 | 21 | No | `proposed-design.md`, `future-state-runtime-call-stack.md`, `future-state-runtime-call-stack-review.md`, `workflow-state.md` | design `v9 -> v10`; call stack `v9 -> v10` | split preview tool boundary into contract/normalizer/manifest/schema owners, split preview session boundary into lifecycle/navigation/page-operation owners, removed compatibility aliases from the target contract, and split Codex parsing by subject in the design basis | `CR-001`, `CR-002`, `CR-003`, `CR-004`, `CR-005` |
 | 22 | No | N/A | N/A | N/A | N/A |
+| 23 | No | `proposed-design.md`, `future-state-runtime-call-stack.md`, `future-state-runtime-call-stack-review.md`, `workflow-state.md` | design `v10 -> v11`; call stack `v10 -> v11` | moved preview-specific renderer activation out of the generic tool lifecycle boundary in the design basis, split preview input ownership into primitives/parsers/semantic validators, and tightened the Stage 8 validation seam around a preview-owned renderer boundary | `CR-006`, `CR-007` |
+| 24 | No | N/A | N/A | N/A | N/A |
+| 25 | Yes | `proposed-design.md`, `future-state-runtime-call-stack.md`, `future-state-runtime-call-stack-review.md`, `workflow-state.md` | design `v11 -> v12`; call stack `v11 -> v12` | made shell projection an explicit non-stealable lease while keeping session lifecycle app-global, removed primitive-level string coercion from the target preview contract, tightened Codex tool-metadata ownership, and added the shell-lease bounded local use case | `CR-008`, `CR-009`, `CR-010` |
+| 26 | No | N/A | N/A | N/A | N/A |
 
 ## Missing-Use-Case Discovery Log (Mandatory Per Round)
 
@@ -117,6 +125,10 @@ This review validates alignment with target (`to-be`) design behavior, not parit
 | 20 | Requirement coverage / boundary crossing / fallback-error / design-risk | None | N/A | second clean verification of the v9 eight-tool preview basis did not surface any new use case | N/A | No |
 | 21 | Requirement coverage / boundary crossing / fallback-error / design-risk | None | N/A | the v10 structural split resolves Stage 8 ownership and size issues without adding product-scope use cases beyond the existing preview shell and preview tool flows | N/A | No |
 | 22 | Requirement coverage / boundary crossing / fallback-error / design-risk | None | N/A | second clean verification of the v10 structural redesign did not surface any new use case | N/A | No |
+| 23 | Requirement coverage / boundary crossing / fallback-error / design-risk | None | N/A | the v11 renderer-boundary and input-boundary refinement tightens ownership and validation seams without changing the approved preview product scope | N/A | No |
+| 24 | Requirement coverage / boundary crossing / fallback-error / design-risk | None | N/A | second clean verification of the v11 refinement did not surface any new use case | N/A | No |
+| 25 | Requirement coverage / boundary crossing / fallback-error / design-risk | None | N/A | the v12 lease-ownership and strict-contract refinement closes the remaining Stage 8 ownership/no-compatibility gap without changing the approved preview product scope | N/A | No |
+| 26 | Requirement coverage / boundary crossing / fallback-error / design-risk | None | N/A | second clean verification of the v12 refinement did not surface any new use case | N/A | No |
 
 ## Per-Use-Case Review
 
@@ -134,6 +146,7 @@ This review validates alignment with target (`to-be`) design behavior, not parit
 | UC-010 | DS-008 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | None | Pass | Pass | Pass | Pass | Pass | Pass |
 | UC-011 | DS-009 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | None | Pass | Pass | Pass | Pass | Pass | Pass |
 | UC-012 | DS-010 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | None | Pass | Pass | Pass | Pass | Pass | Pass |
+| UC-013 | DS-011 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | None | Pass | Pass | Pass | Pass | Pass | Pass |
 
 ## Findings
 
@@ -185,8 +198,8 @@ None.
   - Two consecutive deep-review rounds have no blockers, no required persisted artifact updates, and no newly discovered use cases: `Yes`
   - Findings trend quality is acceptable across rounds: `Yes`
 - Notes:
-  - The v10 design basis resolves the Stage 8 structural issues without reopening product scope.
-  - The key review decision in rounds 21 and 22 is that the bounded local preview session spine, the shared preview tool surface, the contract boundary, and the Codex parsing subject split are now explicit and properly owned in the target design.
+  - The v12 design basis resolves the remaining stricter Stage 8 ownership and no-backward-compatibility concerns without reopening product scope.
+  - The key review decision in rounds 25 and 26 is that preview session lifecycle remains app-global while shell projection is governed by one explicit, non-stealable lease owner, and the strict preview contract no longer depends on primitive-level widening behavior.
 
 ## Speak Log (Optional Tracking)
 

@@ -17,11 +17,11 @@ It models the intended target behavior, not current-code parity.
 ## Design Basis
 
 - Scope Classification: `Large`
-- Call Stack Version: `v10`
+- Call Stack Version: `v12`
 - Requirements: `tickets/in-progress/preview-session-multi-runtime-design/requirements.md` (status `Refined`)
 - Source Artifact:
   - `tickets/in-progress/preview-session-multi-runtime-design/proposed-design.md`
-- Source Design Version: `v10`
+- Source Design Version: `v12`
 - Referenced Sections:
   - Spine inventory sections: `Data-Flow Spine Inventory`, `Primary Execution / Data-Flow Spine(s)`, `Return / Event Spine(s)`, `Bounded Local / Internal Spines`
   - Ownership sections: `Ownership Map`, `Subsystem / Capability-Area Allocation`, `Ownership-Driven Dependency Rules`
@@ -48,15 +48,16 @@ It models the intended target behavior, not current-code parity.
 | UC-010 | DS-008 | Bounded Local | `PreviewSessionNavigation` | Design-Risk | R-001, R-008 | open/navigate readiness sequencing must stay explicit and separate from registry ownership | navigation and ready-state settlement remain coherent | Yes/N/A/Yes |
 | UC-011 | DS-009 | Bounded Local | `PreviewSessionPageOperations` | Design-Risk | R-008 | page-read, DOM snapshot, screenshot, and JavaScript execution must stay grouped around one browser-operation owner | preview page-operation boundary remains coherent | Yes/N/A/Yes |
 | UC-012 | DS-010 | Bounded Local | `CodexToolPayloadParser` | Design-Risk | R-005, R-010 | preview tool payload parsing must leave the all-purpose Codex item parser and keep one subject owner | Codex preview payload parsing remains coherent | Yes/N/A/Yes |
+| UC-013 | DS-011 | Bounded Local | `PreviewShellController` | Design-Risk | R-006, R-009 | shell projection lease must be explicit and non-stealable even though session lifecycle remains global | preview shell lease remains coherent | Yes/N/A/Yes |
 
 ## Transition Notes
 
 - This re-entry does not change user-visible behavior from v9.
 - The migration is structural:
-  - split preview tool contract concerns,
-  - replace duplicated adapter-local preview tool surfaces with one shared manifest,
-  - split preview session lifecycle/navigation/page operations,
-  - split Codex payload parsing by subject.
+  - keep the v10/v11 contract/manifest/session splits,
+  - make shell projection lease explicit and non-stealable,
+  - remove primitive-level string coercion from the strict preview contract,
+  - tighten Codex tool-metadata ownership inside the subject parser.
 - Temporary compatibility parsing is not allowed in the target state.
 
 ## Use Case: UC-001 packaged startup exposes preview capability from one shared tool manifest only when supported
@@ -127,21 +128,22 @@ preview-runtime.ts:startPreviewRuntime(...)
 
 ### Goal
 
-Allow the native runtime to open or reuse a preview session backed by one independent `WebContentsView`.
+Allow the native runtime to open or reuse a preview session backed by one independent `WebContentsView`, while keeping session lifecycle global and making shell projection lease-aware.
 
 ### Primary Runtime Call Stack
 
 ```text
 [ENTRY] autobyteus-ts/src/agent/handlers/tool-invocation-execution-event-handler.ts:handle(event, context) [ASYNC]
 └── autobyteus-server-ts/src/agent-tools/preview/open-preview.ts:execute(context, kwargs) [ASYNC]
-    ├── autobyteus-server-ts/src/agent-tools/preview/preview-tool-input-normalizers.ts:parseOpenPreviewInput(kwargs) [STATE]
+    ├── autobyteus-server-ts/src/agent-tools/preview/preview-tool-input-parsers.ts:parseOpenPreviewInput(kwargs) [STATE]
     └── autobyteus-server-ts/src/agent-tools/preview/preview-tool-service.ts:openPreview(input) [ASYNC]
         ├── preview-tool-service.ts:assertPreviewSupported() [STATE]
-        ├── preview-tool-service.ts:assertOpenPreviewSemantics(input) [STATE]
+        ├── autobyteus-server-ts/src/agent-tools/preview/preview-tool-semantic-validators.ts:assertOpenPreviewSemantics(input) [STATE]
         └── autobyteus-server-ts/src/agent-tools/preview/preview-bridge-client.ts:openPreview(input) [ASYNC][IO]
             └── autobyteus-web/electron/preview/preview-bridge-server.ts:handleOpenPreview(request) [ASYNC][IO]
                 └── autobyteus-web/electron/preview/preview-session-manager.ts:openSession(input) [ASYNC][STATE]
                     ├── preview-session-manager.ts:findReusableSession(...) [STATE]
+                    │   └── reuse only opening or unclaimed matching sessions [STATE]
                     ├── preview-session-manager.ts:createSessionRecord(...) [STATE]
                     ├── autobyteus-web/electron/preview/preview-session-navigation.ts:openSessionView(session, input) [ASYNC][IO]
                     └── preview-session-manager.ts:buildOpenPreviewResult(session, status) [STATE]
@@ -152,7 +154,7 @@ Allow the native runtime to open or reuse a preview session backed by one indepe
 ```text
 [FALLBACK] if reuse_existing=true and a matching ready session exists
 preview-session-manager.ts:findReusableSession(...)
-└── return existing session with status='reused' [STATE]
+└── return existing session with status='reused' only when the session is not already claimed by another shell [STATE]
 ```
 
 ```text
@@ -183,7 +185,7 @@ Keep the Codex open-preview path semantically identical to the native path while
 
 ```text
 [ENTRY] autobyteus-server-ts/src/agent-execution/backends/codex/preview/build-preview-dynamic-tool-registrations.ts:handler(rawInput) [ASYNC]
-├── autobyteus-server-ts/src/agent-tools/preview/preview-tool-input-normalizers.ts:parseOpenPreviewInput(rawInput) [STATE]
+├── autobyteus-server-ts/src/agent-tools/preview/preview-tool-input-parsers.ts:parseOpenPreviewInput(rawInput) [STATE]
 └── autobyteus-server-ts/src/agent-tools/preview/preview-tool-service.ts:openPreview(input) [ASYNC]
     └── same bridge + session-owner flow as UC-002 [ASYNC][IO][STATE]
 ```
@@ -218,7 +220,7 @@ Keep the Claude MCP path semantically identical to the native path while derivin
 
 ```text
 [ENTRY] autobyteus-server-ts/src/agent-execution/backends/claude/preview/build-claude-preview-tool-definitions.ts:toolHandler(args) [ASYNC]
-├── autobyteus-server-ts/src/agent-tools/preview/preview-tool-input-normalizers.ts:parseOpenPreviewInput(args) [STATE]
+├── autobyteus-server-ts/src/agent-tools/preview/preview-tool-input-parsers.ts:parseOpenPreviewInput(args) [STATE]
 └── autobyteus-server-ts/src/agent-tools/preview/preview-tool-service.ts:openPreview(input) [ASYNC]
     └── same bridge + session-owner flow as UC-002 [ASYNC][IO][STATE]
 ```
@@ -239,15 +241,17 @@ Keep the Claude MCP path semantically identical to the native path while derivin
 
 ### Goal
 
-After `open_preview` succeeds, the renderer requests focus for the session in the current shell and the authoritative shell snapshot reveals the Preview tab.
+After `open_preview` succeeds, a preview-owned renderer boundary requests focus for the session in the current shell, the shell controller claims the session lease if it is available, and the authoritative shell snapshot reveals the Preview tab.
 
 ### Primary Runtime Call Stack
 
 ```text
-[ENTRY] autobyteus-web/services/agentStreaming/handlers/toolLifecycleHandler.ts:handleSucceededTool(activity) [STATE]
-├── autobyteus-web/stores/previewShellStore.ts:focusSessionFromToolResult(result) [STATE]
+[ENTRY] autobyteus-web/services/agentStreaming/preview/previewToolExecutionSucceededHandler.ts:handlePreviewToolExecutionSucceeded(payload) [ASYNC][STATE]
+├── autobyteus-web/stores/previewShellStore.ts:focusSession(previewSessionId) [ASYNC][STATE]
+├── autobyteus-web/composables/useRightSideTabs.ts:setActiveTab('preview') [STATE]
 ├── autobyteus-web/electron/preload.ts:electronAPI.preview.focusSession(...) [ASYNC]
 └── autobyteus-web/electron/preview/preview-shell-controller.ts:focusSession(shellId, previewSessionId) [ASYNC][STATE]
+    ├── preview-shell-controller.ts:claimSessionLease(shellId, previewSessionId) [STATE]
     ├── preview-shell-controller.ts:setActiveSession(...) [STATE]
     ├── preview-shell-controller.ts:attachActiveSessionView(...) [ASYNC][STATE]
     └── preview-shell-controller.ts:publishSnapshot(shellId) [STATE]
@@ -265,6 +269,12 @@ preview-shell-controller.ts:publishSnapshot(shellId)
 [ERROR] if the requested preview session is already closed
 preview-shell-controller.ts:focusSession(shellId, previewSessionId)
 └── resolve canonical not-found/closed semantics from the session owner [STATE]
+```
+
+```text
+[ERROR] if another shell already owns the session lease
+preview-shell-controller.ts:claimSessionLease(shellId, previewSessionId)
+└── keep the current owner attached; do not silently detach from another shell [STATE]
 ```
 
 ### Coverage Status
@@ -289,8 +299,9 @@ Keep list/read-page/DOM-snapshot/screenshot/JavaScript/close operations session-
 
 ```text
 [ENTRY] preview tool entrypoint [ASYNC]
-├── preview-tool-input-normalizers.ts:parse<Operation>Input(...) [STATE]
+├── preview-tool-input-parsers.ts:parse<Operation>Input(...) [STATE]
 ├── preview-tool-service.ts:<operation>(input) [ASYNC]
+├── preview-tool-semantic-validators.ts:assert<Operation>Semantics(input) [STATE]
 ├── preview-bridge-client.ts:<operation>(input) [ASYNC][IO]
 ├── preview-bridge-server.ts:handle<Operation>(request) [ASYNC][IO]
 └── Electron preview boundary dispatches by subject [ASYNC][STATE]
@@ -534,7 +545,7 @@ preview-session-page-operations.ts:previewDomSnapshot(...) / executePreviewJavas
 
 ### Goal
 
-Keep preview tool argument/result parsing in one subject owner so preview payload growth does not re-bloat the generic Codex item parser.
+Keep preview tool argument/result parsing in one subject owner so preview payload growth does not re-bloat the generic Codex item parser and canonical tool identity does not silently fall back to `run_bash`.
 
 ### Primary Runtime Call Stack
 
@@ -558,4 +569,48 @@ codex-tool-payload-parser.ts:parseToolPayload(item)
 
 - Primary Path: `Covered`
 - Fallback Path: `N/A`
+- Error Path: `Covered`
+
+## Use Case: UC-013 preview shell lease remains coherent
+
+### Spine Context
+
+- Spine ID(s): `DS-011`
+- Spine Scope: `Bounded Local`
+- Governing Owner: `PreviewShellController`
+
+### Goal
+
+Keep session lifecycle application-global while making shell projection an explicit, non-stealable lease so one shell cannot silently pull another shell's active preview away.
+
+### Primary Runtime Call Stack
+
+```text
+[ENTRY] preview-shell-controller.ts:focusSession(shellId, previewSessionId) / handleHostLost(shellId) / onSessionClosed(previewSessionId) [ASYNC][STATE]
+├── preview-shell-controller.ts:getShellState(shellId) [STATE]
+├── preview-shell-controller.ts:getLeaseState(previewSessionId) [STATE]
+├── preview-shell-controller.ts:claimSessionLease(shellId, previewSessionId) / releaseSessionLease(shellId, previewSessionId) [STATE]
+├── preview-shell-controller.ts:setActiveSession(shellId, previewSessionId | null) [STATE]
+├── preview-shell-controller.ts:attachActiveSessionView(shellId) / detachActiveSessionView(shellId) [ASYNC][STATE]
+└── preview-shell-controller.ts:publishSnapshot(shellId) [STATE]
+```
+
+### Branching / Fallback Paths
+
+```text
+[FALLBACK] if the requested session is unclaimed
+preview-shell-controller.ts:claimSessionLease(shellId, previewSessionId)
+└── claim the lease, attach the active view, and publish the updated snapshot [STATE]
+```
+
+```text
+[ERROR] if another shell already owns the session lease
+preview-shell-controller.ts:claimSessionLease(shellId, previewSessionId)
+└── reject the claim, leave the current owner unchanged, and surface a bounded ownership error path rather than silently transferring the session [STATE]
+```
+
+### Coverage Status
+
+- Primary Path: `Covered`
+- Fallback Path: `Covered`
 - Error Path: `Covered`

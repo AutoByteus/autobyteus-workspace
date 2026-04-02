@@ -2,7 +2,7 @@
 
 ## Design Version
 
-- Current Version: `v10`
+- Current Version: `v12`
 
 ## Revision History
 
@@ -18,6 +18,8 @@
 | v8 | Stage 5 `Design Impact` re-entry during right-side-tab review | Made `PreviewShellController` the sole authority for preview-shell projection state, moved shell-host identity from renderer identity to a main-process-owned shell window/host identity, and added explicit shell reload/reconnect recovery flow so preview tabs do not depend on tool-result replay | Round 16 |
 | v9 | Stage 7 `Requirement Gap` re-entry after packaged validation success | Narrowed the stable tool surface to the eight browser-style preview tools, removed console-log and DevTools tools from the contract, and added session listing, page read, and DOM snapshot semantics to the preview owner boundary | Round 19 |
 | v10 | Stage 8 `Design Impact` re-entry | Keeps the working shell-tab UX and eight-tool surface, but structurally splits the preview tool boundary, introduces one owned preview tool manifest, removes alias-based compatibility parsing, splits the Electron preview session owner into lifecycle/navigation/page-operation owners, and decomposes Codex payload parsing by subject so the bounded local spines stay readable and Stage 8 file limits remain enforceable | Round 20 |
+| v11 | Stage 8 `Design Impact` re-entry under stricter product quality bar | Keeps the working shell-tab UX and eight-tool surface, but removes preview-specific shell activation from the generic streaming lifecycle handler, introduces one preview-owned renderer tool-success boundary, and splits preview input ownership into primitives, parsers, and semantic validators so ownership clarity, boundary encapsulation, and validation seams all tighten together | Round 23 |
+| v12 | Stage 8 `Design Impact` re-entry after deeper ownership and no-compatibility review | Keeps the working shell-tab UX and eight-tool surface, but makes preview session lifecycle explicitly app-global while making shell projection an explicit non-stealable lease, removes primitive-level string coercion from the stable contract, and tightens Codex tool-metadata ownership so canonical tool identity cannot silently fall back to `run_bash` | Round 25 |
 
 ## Artifact Basis
 
@@ -53,46 +55,49 @@ Read and write this design from abstract to concrete:
 
 ## Summary
 
-Keep the working shell-embedded preview behavior and the eight-tool preview surface, but redesign the implementation around tighter owned boundaries so the working feature also satisfies the Stage 8 data-spine, ownership, and size-gate rules.
+Keep the working shell-embedded preview behavior and the eight-tool preview surface, but redesign the implementation around tighter owned boundaries so the working feature also satisfies the stricter Stage 8 ownership, boundary, and no-backward-compatibility bar.
 
-The v10 target shape is:
+The v12 target shape is:
 
 - one outer right-side `Preview` tab that appears only when preview sessions exist,
 - multiple internal preview session tabs inside that panel,
 - one independent `WebContentsView` per preview session,
 - one canonical snake_case preview tool contract with no alias-based compatibility parsing,
+- one canonical typed preview tool contract with no alias keys and no stringly boolean/integer coercion,
 - one owned preview tool manifest that defines the eight-tool surface once and drives native, Codex, and Claude exposure,
 - one `PreviewSessionManager` that owns only session registry/lifecycle/reuse/close and delegates navigation/readiness plus page operations to clear internal owned files,
-- one `PreviewShellController` that remains the sole owner of shell projection state,
-- one decomposed Codex event-parsing structure so preview tool result parsing no longer grows an all-purpose payload blob.
+- one `PreviewShellController` that remains the sole owner of shell projection state and explicit preview-session lease/claim rules,
+- one preview-owned renderer boundary that interprets successful preview tool results and drives shell activation instead of embedding preview behavior in the generic tool lifecycle handler,
+- one split preview input boundary made of primitives, parsers, and semantic validators instead of one broad normalizer file,
+- one decomposed Codex event-parsing structure so preview tool result parsing no longer grows an all-purpose payload blob and tool metadata ownership no longer falls back implicitly to `run_bash`.
 
 User-visible behavior does not change from v9. This re-entry is structural: it repairs the bounded local spines and ownership boundaries so the current feature can be accepted.
 
 ## Goal / Intended Change
 
-The preview tab implementation now works functionally, but the current source shape failed Stage 8 because several ownership boundaries became mixed-concern blobs:
+The preview tab implementation now works functionally, but the current source shape still fails the stricter Stage 8 bar because two important architectural areas are still too soft:
 
-- `preview-tool-contract.ts` is no longer only a contract boundary,
-- `preview-session-manager.ts` is no longer only the preview-session lifecycle owner,
-- the preview tool surface is duplicated across runtime adapters,
-- Codex payload parsing remained an overgrown mixed parser.
+- preview session lifecycle is app-global while shell projection ownership is still implicit and transferable by side effect,
+- the stable preview contract is declared strict, but primitive-level parsing still accepts hidden string coercion for booleans and integers.
 
 The intended change is to keep the approved product behavior while redesigning the implementation basis so:
 
 - the primary preview spines are still the same,
 - the bounded local spines are explicit and readable,
-- contract, manifest, parsing, navigation, and page-operation concerns each have one clear owner,
-- no compatibility aliases or duplicated runtime tool surfaces remain in the target design.
+- contract, manifest, renderer activation, parsing, semantic validation, navigation, page-operation, and shell projection lease concerns each have one clear owner,
+- no compatibility aliases, hidden primitive-level type coercion, or duplicated runtime tool surfaces remain in the target design.
 
 ## Legacy Removal Policy (Mandatory)
 
 - Policy: `No backward compatibility; remove legacy code paths.`
 - Required removals in this re-entry:
   - compatibility aliases for preview tool inputs,
+  - primitive-level string coercion that widens typed preview booleans or integers,
   - duplicated preview tool-surface definitions across Codex and Claude adapters,
   - mixed contract/normalizer/schema/error ownership inside `preview-tool-contract.ts`,
   - mixed lifecycle/navigation/page-operation ownership inside `preview-session-manager.ts`,
-  - preview-specific growth inside the monolithic Codex payload parser.
+  - preview-specific growth inside the monolithic Codex payload parser,
+  - implicit cross-shell session stealing in `PreviewShellController`.
 - Previously removed behaviors remain removed:
   - no separate preview `BrowserWindow` path,
   - no preview console-log tool,
@@ -118,11 +123,11 @@ The intended change is to keep the approved product behavior while redesigning t
 
 | Area | Findings | Evidence (files/functions) | Open Unknowns |
 | --- | --- | --- | --- |
-| Entrypoints / Current Spine Or Fragmented Flow | The end-to-end feature path works: runtime preview tool -> server preview tool/service -> preview bridge -> Electron preview owner -> shell projection. The problem is structural ownership inside the implementation, not the high-level spine choice. | `autobyteus-server-ts/src/agent-tools/preview/*`, `autobyteus-web/electron/preview/*`, `autobyteus-web/services/agentStreaming/handlers/toolLifecycleHandler.ts` | none material |
-| Current Ownership Boundaries | `PreviewShellController` is already the sole shell projection owner, but `preview-tool-contract.ts` and `preview-session-manager.ts` have absorbed neighboring concerns until their names no longer match their responsibility. | `preview-tool-contract.ts`, `preview-session-manager.ts`, `preview-shell-controller.ts` | exact split surfaces for navigation/page ops |
-| Current Coupling / Fragmentation Problems | Codex and Claude preview tool-definition builders duplicate the eight-tool surface. Codex preview result parsing was added into an already-large payload parser instead of splitting by subject. | `build-preview-dynamic-tool-registrations.ts`, `build-claude-preview-tool-definitions.ts`, `codex-item-event-payload-parser.ts` | minimal Codex split that keeps adapters readable |
-| Existing Constraints / Compatibility Facts | The stable product surface is eight snake_case preview tools. Current input normalizers still accept alias spellings, which conflicts with the no-backward-compat rule. | `requirements.md`; `preview-tool-contract.ts` parsing helpers | none material |
-| Relevant Files / Components | Preview tool layer, runtime adapter builders, Codex event parsing, Electron preview owner/controller, renderer preview panel/store, and shell host remain the key design edges. | preview files above plus `PreviewPanel.vue`, `previewShellStore.ts`, `workspace-shell-window.ts` | none material |
+| Entrypoints / Current Spine Or Fragmented Flow | The end-to-end feature path still works: runtime preview tool -> server preview tool/service -> preview bridge -> Electron preview lifecycle owner -> shell projection. The problem is now localized to the contract and projection ownership edges, not the main spine choice. | `autobyteus-server-ts/src/agent-tools/preview/*`, `autobyteus-web/electron/preview/*`, `autobyteus-web/services/agentStreaming/preview/previewToolExecutionSucceededHandler.ts` | whether session creation needs shell identity, or whether explicit post-open lease claiming is sufficient |
+| Current Ownership Boundaries | `PreviewShellController` is already the sole shell projection owner, but it still makes implicit transfer decisions by stripping sessions from every shell during focus. `PreviewSessionManager` remains a clean lifecycle owner, yet its reuse semantics are still effectively app-global because no explicit lease rule participates in reuse. | `preview-shell-controller.ts`, `preview-session-manager.ts`, `preview-session-navigation.ts` | final lease source of truth between session manager and shell controller |
+| Current Coupling / Fragmentation Problems | The structural splits from v10/v11 remain good, but the contract is still wider than declared because primitive parsing accepts string booleans/integers, and Codex segment metadata still lets tool identity fall back generically to `run_bash`. | `preview-tool-input-primitives.ts`, `codex-item-event-payload-parser.ts` | narrowest owner for canonical tool metadata fallback |
+| Existing Constraints / Compatibility Facts | The stable product surface remains eight snake_case preview tools. The remaining compatibility issue is no longer alternate key names; it is hidden primitive-level type coercion in the native path that Claude/Codex typed schemas do not share. | `requirements.md`; `preview-tool-input-primitives.ts`; runtime adapter schemas | whether any typed coercion can remain for internal bridge-only inputs |
+| Relevant Files / Components | Preview tool layer, runtime adapter builders, Codex event parsing, Electron preview lifecycle and shell controller, renderer preview panel/store, shell host, and agent stream session plumbing remain the key design edges. | preview files above plus `PreviewPanel.vue`, `previewShellStore.ts`, `workspace-shell-window.ts`, `agent-stream-handler.ts`, `messageTypes.ts` | whether stream `session_id` should stay only auxiliary or become part of future ownership wiring |
 
 ## Current State (As-Is)
 
@@ -136,11 +141,10 @@ The intended change is to keep the approved product behavior while redesigning t
   - `capture_preview_screenshot`
   - `preview_dom_snapshot`
   - `execute_preview_javascript`
-- The implementation currently passes behavior validation but fails structural review because:
-  - contract parsing/validation/schema-building are mixed,
-  - session lifecycle/navigation/page operations are mixed,
-  - runtime tool-surface definitions are duplicated,
-  - Codex payload parsing remains overgrown.
+- The implementation currently passes the main user-visible behavior but still fails structural review because:
+  - preview session lifecycle is global while shell projection ownership is still implicit and detachable by side effect,
+  - primitive-level preview input parsing still widens typed booleans and integers through string coercion,
+  - Codex tool metadata fallback still lives in a too-generic owner and can regress canonical tool identity.
 
 ## Data-Flow Spine Inventory
 
@@ -149,19 +153,20 @@ The intended change is to keep the approved product behavior while redesigning t
 | DS-001 | Primary End-to-End | packaged app startup | runtime-specific preview tool exposure decision | `PreviewToolService` | preview tools must appear only when the local preview owner is actually available |
 | DS-002 | Primary End-to-End | agent `open_preview` request | tool result containing `preview_session_id` and session metadata | `PreviewSessionManager` | session creation and contract truth remain the primary business spine |
 | DS-003 | Primary End-to-End | agent follow-up preview tool call | normalized result for navigation/list/read-page/DOM-snapshot/screenshot/JS/close | `PreviewSessionManager` | per-session browser-control behavior must remain stable after the structural split |
-| DS-004 | Primary End-to-End | renderer focus request for a preview session | authoritative shell snapshot makes the outer `Preview` tab visible and attaches the active `WebContentsView` | `PreviewShellController` | preview projection stays authoritative in Electron main instead of drifting into the renderer |
+| DS-004 | Primary End-to-End | successful preview tool result enters the preview renderer boundary | authoritative shell snapshot makes the outer `Preview` tab visible and attaches the active `WebContentsView` | `PreviewShellController` | preview projection stays authoritative in Electron main while preview-specific result interpretation stays out of the generic lifecycle handler |
 | DS-005 | Return-Event | shell host registers/reloads/resizes/hides/selects/closes | active native attachment and shell snapshot remain correct | `PreviewShellController` | shell lifecycle changes must not create a second owner of preview state |
 | DS-006 | Return-Event | tool-driven or user-driven session close | authoritative invalidation plus outer-tab disappearance when last session closes | `PreviewSessionManager` | cleanup semantics must stay deterministic |
 | DS-007 | Bounded Local | canonical preview request enters session owner | registry/lifecycle invariants settle and a session record is opened/reused/closed/listed | `PreviewSessionManager` | the bounded local session spine must become readable again after the split |
 | DS-008 | Bounded Local | open/navigate request enters navigation owner | URL load, ready-state waiting, title settlement, and navigation errors are normalized | `PreviewSessionNavigation` | readiness and navigation sequencing are important enough to be explicit instead of hidden inside the session owner blob |
 | DS-009 | Bounded Local | read/snapshot/screenshot/JS request enters page-operations owner | page content artifact/result is produced against one existing session view | `PreviewSessionPageOperations` | page/browser operations are a distinct concern around the session owner and were a main source of size drift |
 | DS-010 | Bounded Local | raw preview tool result item enters Codex payload parsing | canonical preview result payload is extracted without growing one all-purpose parser | `CodexToolPayloadParser` | preview parsing must be explicit and owned, not embedded in a monolithic parser |
+| DS-011 | Bounded Local | shell focus or shell lifecycle change enters projection owner | explicit preview-session lease and attachment state settle without silent cross-shell transfer | `PreviewShellController` | the lease rule is now the key bounded local ownership spine for the preview shell architecture |
 
 ## Primary Execution / Data-Flow Spine(s)
 
 - `Electron startup -> preview runtime -> bridge env injection -> PreviewToolService support decision -> runtime adapter exposure from one preview tool manifest`
-- `Agent runtime preview tool call -> runtime adapter -> preview input normalizer -> PreviewToolService -> preview bridge client -> preview bridge server -> PreviewSessionManager -> PreviewSessionNavigation / PreviewSessionPageOperations -> normalized result`
-- `Tool success in activity stream -> renderer focus request -> PreviewShellController -> authoritative shell snapshot -> renderer preview store/panel -> active session view attachment`
+- `Agent runtime preview tool call -> runtime adapter -> preview input parsers -> PreviewToolService -> preview semantic validators -> preview bridge client -> preview bridge server -> PreviewSessionManager -> PreviewSessionNavigation / PreviewSessionPageOperations -> normalized result`
+- `Tool success in activity stream -> preview renderer activation boundary -> renderer focus request -> PreviewShellController lease claim/focus -> authoritative shell snapshot -> renderer preview store/panel -> active session view attachment`
 
 ## Spine Actors / Main-Line Nodes
 
@@ -174,7 +179,8 @@ The intended change is to keep the approved product behavior while redesigning t
 | `PreviewSessionManager` | session lifecycle owner | preview session identity, registry invariants, reuse/list/close semantics |
 | `PreviewSessionNavigation` | navigation/readiness owner | URL normalization, load/wait semantics, title settlement |
 | `PreviewSessionPageOperations` | page/browser-operation owner | read-page, DOM snapshot, screenshot, JavaScript execution |
-| `PreviewShellController` | shell projection owner | shell host association, active session selection, view attach/detach, snapshot broadcasting |
+| `PreviewShellController` | shell projection lease owner | shell host association, explicit lease claim/release, active session selection, view attach/detach, snapshot broadcasting |
+| preview renderer activation boundary | preview tool-success projection owner | preview tool-result interpretation plus shell activation request |
 | Renderer preview store/panel | shell UI projection | snapshot-driven outer Preview tab, internal tabs, bounds reporting |
 | `CodexToolPayloadParser` | bounded Codex parsing owner | preview tool argument/result parsing under the Codex adapter path |
 
@@ -183,31 +189,35 @@ The intended change is to keep the approved product behavior while redesigning t
 | Spine ID | Short Narrative | Main Domain Subject Nodes | Governing Owner | Key Off-Spine Concerns |
 | --- | --- | --- | --- | --- |
 | DS-001 | At startup, Electron main starts preview runtime support and seeds the packaged server environment. `PreviewToolService` decides whether preview is supported, and runtime adapters build their exposure from one preview tool manifest instead of duplicating the tool surface. | Electron main, preview runtime, `PreviewToolService`, preview tool manifest, runtime adapters | `PreviewToolService` | env injection, runtime-specific schema rendering |
-| DS-002 | An agent calls `open_preview`. The runtime adapter uses the canonical input normalizer, `PreviewToolService` delegates through the bridge, `PreviewSessionManager` creates or reuses a session record, and `PreviewSessionNavigation` settles the ready state before the result returns. | runtime adapter, input normalizer, `PreviewToolService`, bridge, `PreviewSessionManager`, `PreviewSessionNavigation` | `PreviewSessionManager` | view factory, error mapping |
+| DS-002 | An agent calls `open_preview`. The runtime adapter uses the canonical preview input parsers, `PreviewToolService` performs semantic validation and delegates through the bridge, `PreviewSessionManager` creates or reuses a session record, and `PreviewSessionNavigation` settles the ready state before the result returns. Reuse is lease-aware: silently reusing a session already claimed by another shell is not part of the target flow. | runtime adapter, input parsers, semantic validators, `PreviewToolService`, bridge, `PreviewSessionManager`, `PreviewSessionNavigation` | `PreviewSessionManager` | view factory, error mapping |
 | DS-003 | Follow-up preview tools still flow through the same contract, but once they reach Electron they are delegated to the right owner: lifecycle/list/close stay with `PreviewSessionManager`, navigation stays with `PreviewSessionNavigation`, and read/snapshot/screenshot/JS stay with `PreviewSessionPageOperations`. | runtime adapter, `PreviewToolService`, bridge, session/navigation/page-operation owners | `PreviewSessionManager` | page cleaner, DOM snapshot script, screenshot artifact writer |
-| DS-004 | After a successful `open_preview`, the renderer sends a bounded focus request. `PreviewShellController` updates shell projection state, emits the authoritative shell snapshot, and attaches the active native view into the shell host area. | tool lifecycle handler, renderer store/panel, preload bridge, `PreviewShellController` | `PreviewShellController` | host rect measurement, shell-window registry |
-| DS-005 | Shell mount/reload, resize, visibility changes, and manual internal-tab selection all flow through the shell projection owner. The renderer stays projection-only and never becomes a second source of preview state. | renderer panel/store, preload bridge, `PreviewShellController` | `PreviewShellController` | hidden-state detach, reconnect bootstrap |
+| DS-004 | After a successful `open_preview`, a preview-owned renderer activation boundary interprets the result and sends a bounded focus request. `PreviewShellController` claims the session lease for the current shell if it is claimable, emits the authoritative shell snapshot, and attaches the active native view into the shell host area. | preview renderer activation boundary, renderer store/panel, preload bridge, `PreviewShellController` | `PreviewShellController` | host rect measurement, shell-window registry |
+| DS-005 | Shell mount/reload, resize, visibility changes, and manual internal-tab selection all flow through the shell projection owner. The renderer stays projection-only and never becomes a second source of preview state, while session lease state remains explicit rather than inferred from array membership. | renderer panel/store, preload bridge, `PreviewShellController` | `PreviewShellController` | hidden-state detach, reconnect bootstrap |
 | DS-006 | Tool-driven or user-driven close invalidates the session in `PreviewSessionManager`, updates shell snapshots, and removes the outer Preview tab when the last session disappears. | `PreviewSessionManager`, `PreviewShellController`, renderer store | `PreviewSessionManager` | snapshot fanout, active-session fallback |
 | DS-007 | Inside the session owner, one bounded local flow arbitrates registry invariants: create/reuse/list/close and session lookup stay centralized and small. | `PreviewSessionManager` | `PreviewSessionManager` | session types, tombstone retention |
 | DS-008 | Inside the navigation owner, open/navigate requests normalize URL and wait semantics so ready-state behavior is explicit rather than hidden in the lifecycle owner. | `PreviewSessionNavigation` | `PreviewSessionNavigation` | load observers, title settlement |
 | DS-009 | Inside the page-operations owner, page-reading and inspection requests share one owned browser-operation boundary around a session view. | `PreviewSessionPageOperations` | `PreviewSessionPageOperations` | cleaner, snapshot script, screenshot writer |
 | DS-010 | Inside the Codex adapter path, raw tool payloads are parsed by a subject-owned preview/tool payload parser rather than extending the all-purpose item parser. | Codex item converter, `CodexToolPayloadParser` | `CodexToolPayloadParser` | high-level item dispatcher remains separate |
+| DS-011 | Inside the shell projection owner, focus and shell-lifecycle events settle one explicit lease rule: a session may be unclaimed or claimed by one shell, but it is not silently transferred by generic focus logic. | `PreviewShellController`, renderer panel/store | `PreviewShellController` | lease state, attach/detach, active-session fallback |
 
 ## Ownership Map
 
 | Node / Owner | Owns | Must Not Own | Notes |
 | --- | --- | --- | --- |
 | `preview-tool-contract.ts` | canonical tool names, DTOs, error-code vocabulary, env key constants | parsing, semantic validation, schema building, bridge error mapping | contract-only boundary |
-| `preview-tool-input-normalizers.ts` | strict snake_case request normalization into canonical DTOs | alias fallback compatibility, runtime-specific tool definitions | clean-cut contract entrypoint |
+| `preview-tool-input-primitives.ts` | strictly typed primitive readers plus shared field readers and alias rejection policy | tool-specific parsing, semantic validation, runtime-specific tool definitions, stringly boolean/integer coercion | shared low-level preview input boundary |
+| `preview-tool-input-parsers.ts` | strict snake_case request normalization into canonical DTOs | semantic validation, runtime-specific tool definitions | clean-cut parse boundary |
+| `preview-tool-semantic-validators.ts` | semantic rules over canonical preview DTOs | raw argument coercion, runtime-specific tool definitions | clean-cut validation boundary |
 | `preview-tool-manifest.ts` | one authoritative eight-tool surface: names, descriptions, operation selectors, normalizer bindings | runtime-specific definition duplication, service execution logic | reusable owned structure for adapters |
 | `preview-tool-parameter-schemas.ts` | native parameter schema builders derived from the manifest/DTOs | DTO ownership, runtime execution | off-spine schema projection concern |
 | `PreviewToolService` | support checks, semantic validation, bridge delegation, shared operation dispatch | shell UI state, native lifecycle, runtime-specific metadata duplication | authoritative server boundary |
 | Runtime adapters | native/dynamic/MCP exposure translation | canonical contract ownership, bridge policy, duplicated tool-surface literals | translation only |
-| `PreviewSessionManager` | session registry, reuse/list/close, session lookup, session/view identity invariants | navigation/readiness sequencing, page reading, DOM snapshot, screenshots, JS execution | lifecycle owner only |
+| `PreviewSessionManager` | session registry, reuse/list/close, session lookup, session/view identity invariants, lease-aware reuse eligibility | navigation/readiness sequencing, shell transfer policy, page reading, DOM snapshot, screenshots, JS execution | lifecycle owner only |
 | `PreviewSessionNavigation` | URL normalization, open/navigate load sequencing, ready-state waiting, title settlement | session registry ownership, shell projection | internal owned sub-layer of preview session boundary |
 | `PreviewSessionPageOperations` | read-page, DOM snapshot, screenshot, JS execution against an existing session view | session creation/reuse/close, shell projection | internal owned sub-layer of preview session boundary |
-| `PreviewShellController` | shell host identity, active session per shell, attach/detach, bounds sync, shell snapshots | session registry truth, runtime exposure, tool parsing | authoritative shell projection owner |
-| `CodexToolPayloadParser` | preview/tool payload parsing for the Codex adapter path | general item classification, shell behavior, preview service policy | subject-oriented adapter concern |
+| `PreviewShellController` | shell host identity, explicit session-lease claim/release rules, active session per shell, attach/detach, bounds sync, shell snapshots | session lifecycle truth, runtime exposure, tool parsing, implicit global transfer | authoritative shell projection owner |
+| preview renderer activation boundary | successful preview tool-result interpretation and shell activation request | generic tool lifecycle mutation, shell projection ownership | preview-owned renderer concern, not a generic handler concern |
+| `CodexToolPayloadParser` | preview/tool payload parsing and canonical tool-metadata ownership for the Codex adapter path | general item classification, shell behavior, preview service policy, generic `run_bash` fallback for non-shell tool identities | subject-oriented adapter concern |
 
 ## Canonical Preview Contract (Concrete Example)
 
@@ -227,7 +237,11 @@ The stable preview surface remains eight snake_case tools:
 - `preview_session_id` is an opaque application-owned identifier.
 - Follow-up operations use only `preview_session_id`.
 - Raw Electron identifiers must never cross the tool boundary.
-- Tool input normalization is strict snake_case only in v10. No camelCase or alternate-key fallback is part of the target contract.
+- Tool input normalization is strict snake_case only in v12.
+- The stable contract is typed strictly in v12:
+  - booleans are booleans,
+  - integers are integers,
+  - no stringly coercion is part of the target contract.
 
 ### Canonical Input / Output Shapes
 
@@ -308,6 +322,14 @@ type PreviewErrorCode =
 - `preview_session_closed` means the ID was previously issued by the owner and later closed.
 - `preview_session_not_found` means malformed, never-issued, or already-evicted identity.
 - A session can exist before it is projected into a shell host.
+- Preview session lifecycle is application-owned, but shell projection is governed by an explicit lease:
+  - a session is either `unclaimed`, or
+  - claimed by exactly one shell host at a time.
+- `PreviewShellController` is the only owner allowed to claim or release that lease.
+- Silent cross-shell transfer is not part of the target behavior.
+- `reuse_existing` is lease-aware:
+  - opening or still-unclaimed matching sessions may be reused,
+  - a session already claimed by another shell is not silently reused into the current shell.
 - Tool success may trigger a shell focus request, but tool results are not shell-truth themselves.
 - The renderer derives visible preview sessions and active preview selection from `PreviewShellController` snapshots only.
 
@@ -351,18 +373,18 @@ type PreviewErrorCode =
 - Parent owner: `PreviewShellController`
 - Start / end: shell host event or focus request enters -> attached native preview view matches shell state
 - Flow:
-  - `resolve shell window -> resolve active session -> attach/detach active view -> apply bounds -> emit snapshot`
+  - `resolve shell window -> resolve lease claimability -> claim/release active session lease -> attach/detach active view -> apply bounds -> emit snapshot`
 - Why explicit:
-  - native attachment remains a separate correctness center.
+  - native attachment and shell lease ownership are now a separate correctness center.
 
 ### BL-005 — Codex Tool Payload Parsing
 
 - Parent owner: `CodexToolPayloadParser`
 - Start / end: raw preview/tool payload item enters -> canonical preview/tool payload leaves the adapter layer
 - Flow:
-  - `inspect item type -> parse tool args/result subject -> normalize JSON payload -> return canonical parsed structure`
+  - `inspect item type -> resolve canonical tool identity -> parse tool args/result subject -> normalize JSON payload -> return canonical parsed structure`
 - Why explicit:
-  - Stage 8 found that preview parsing had become hidden inside a mixed parser instead of one clear bounded owner.
+  - Stage 8 found that preview parsing had become hidden inside a mixed parser instead of one clear bounded owner, and that generic metadata fallback could corrupt canonical tool identity.
 
 ## Off-Spine Concerns Around The Spine
 
@@ -415,9 +437,11 @@ type PreviewErrorCode =
 - Forbidden shortcuts:
   - no runtime adapter may hardcode a preview tool surface that diverges from the manifest.
   - no preview tool parser may accept compatibility aliases outside the canonical snake_case contract.
+  - no preview primitive reader may widen typed booleans or integers through string coercion.
   - no caller above the session owner may call both `PreviewSessionManager` and one of its internal owners.
   - renderer must not own or instantiate `WebContentsView`.
   - Codex preview result parsing must not live inside a generic all-purpose payload blob.
+  - `PreviewShellController` must not transfer a claimed session from one shell to another as a side effect of focus.
 - Boundary bypasses that are not allowed:
   - no separate preview `BrowserWindow` path,
   - no `<webview>` renderer embed,
@@ -426,7 +450,7 @@ type PreviewErrorCode =
 ## Architecture Direction Decision (Mandatory)
 
 - Chosen direction:
-  - keep the v9 shell-tab preview architecture, but structurally split the mixed owners so the implementation matches the spine and ownership model.
+  - keep the v9 shell-tab preview architecture and the v10/v11 structural splits, but explicitly separate global session lifecycle from shell projection lease ownership and remove the remaining hidden contract widening.
 - Rationale (`complexity`, `testability`, `operability`, `evolution cost`):
   - complexity: lower long-term than continuing to patch the current oversized owners.
   - testability: each owner gets smaller, sharper responsibilities and clearer regression surfaces.
@@ -444,38 +468,39 @@ type PreviewErrorCode =
 
 | Option | Summary | Pros | Cons | Decision (`Chosen`/`Rejected`) | Rationale |
 | --- | --- | --- | --- | --- | --- |
-| A | Keep the current working code and apply only local line-count trims | smallest short-term delta | keeps mixed owners, duplicated tool surfaces, and alias compatibility behavior | Rejected | functional success alone is not enough after the Stage 8 fail |
+| A | Keep the current working code and apply only local line-count trims | smallest short-term delta | keeps implicit shell transfer, hidden type widening, and the current Codex metadata fallback | Rejected | functional success alone is not enough after the Stage 8 fail |
 | B | Deep rewrite to a brand-new preview subsystem with different public APIs | could maximize greenfield purity | unnecessary churn; no user-visible problem requires a new public model | Rejected | over-scoped for the re-entry |
-| C | Preserve the approved v9 behavior but split the oversized owners and remove compatibility/duplication debt | repairs the Stage 8 failures with minimal product churn | still requires coordinated multi-file refactor | Chosen | best fit for the re-entry classification |
+| C | Preserve the approved v9 behavior while making session projection lease explicit, removing hidden type widening, and tightening Codex metadata ownership | repairs the remaining Stage 8 failures with minimal product churn | still requires coordinated multi-file refactor | Chosen | best fit for the re-entry classification |
 
 ## Common Design Practices Applied (If Any)
 
 | Practice / Pattern | Where Used | Why It Helps Here | Owner / Off-Spine Concern | Notes |
 | --- | --- | --- | --- | --- |
 | repeated-structure extraction | preview tool surface | eliminates duplicated Codex/Claude tool definitions | preview tool manifest | one owned surface |
-| contract/input split | preview server boundary | keeps canonical contract clean while still giving one parser owner | preview contract + input normalizers | removes alias fallback |
+| contract/input split | preview server boundary | keeps canonical contract clean while still giving one parser owner | preview contract + input normalizers | removes alias fallback and hidden type widening |
 | bounded local spine extraction | Electron preview owners | keeps lifecycle, navigation, and page operations readable | session/navigation/page-operation owners | addresses Stage 8 spine failure |
 | subject-oriented parser split | Codex events | stops preview tool parsing from bloating a generic parser | `CodexToolPayloadParser` | adapter concern only |
+| explicit lease ownership | shell projection boundary | turns implicit transfer side effects into one governed claim/release policy | `PreviewShellController` | addresses remaining ownership failure |
 
 ## Ownership And Structure Checks (Mandatory)
 
 | Check | Result (`Yes`/`No`) | Evidence | Decision |
 | --- | --- | --- | --- |
-| Repeated coordination policy across callers exists and needs a clearer owner | Yes | runtime exposure currently duplicates the same tool surface | Extract clear owner |
-| Responsibility overload exists in one file or one optional module grouping | Yes | current contract, session manager, and Codex parser are overloaded | Split |
+| Repeated coordination policy across callers exists and needs a clearer owner | Yes | session lease/claim policy is still implicit between shell focus, shell close, and session reuse | Extract clear owner |
+| Responsibility overload exists in one file or one optional module grouping | Yes | current shell controller and Codex metadata fallback still own mixed policy implicitly | Split / tighten |
 | Proposed indirection owns real policy, translation, or boundary concern | Yes | manifest, normalizers, navigation, page operations each own a real concern | Keep |
 | Every off-spine concern has a clear owner on the spine | Yes | manifest/normalizers/schema builders/cleaners/scripts all serve named owners | Keep |
 | Authoritative public boundaries stay authoritative; callers do not depend on both an outer owner and one of its internal owned mechanisms | Yes | session manager stays the public Electron preview boundary; service stays the public server preview boundary | Keep |
 | Existing capability area/subsystem was reused or extended where it naturally fits | Yes | all new structure stays under existing preview/Codex/shell ownership | Reuse/Extend |
 | Repeated structures were extracted into reusable owned files where needed | Yes | preview tool surface becomes one manifest | Extract |
-| Current structure can remain unchanged without spine/ownership degradation | No | Stage 8 already proved the current shape degrades the bounded local spine and naming alignment | Change |
+| Current structure can remain unchanged without spine/ownership degradation | No | Stage 8 still proves the current shape degrades explicit shell ownership and strict contract truthfulness | Change |
 
 ## Change Inventory (Delta)
 
 | Change ID | Change Type (`Add`/`Modify`/`Rename/Move`/`Remove`) | Current Path | Target Path | Rationale | Impacted Areas | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
 | C-001 | Modify | `autobyteus-server-ts/src/agent-tools/preview/preview-tool-contract.ts` | same path | reduce to contract-only ownership: canonical names, DTOs, error codes, env keys | server preview boundary | no parsing or schemas remain here |
-| C-002 | Add | N/A | `autobyteus-server-ts/src/agent-tools/preview/preview-tool-input-normalizers.ts` | strict snake_case input normalization for all eight tools | server preview boundary | no compatibility aliases |
+| C-002 | Add | N/A | `autobyteus-server-ts/src/agent-tools/preview/preview-tool-input-primitives.ts`, `preview-tool-input-parsers.ts`, `preview-tool-semantic-validators.ts` | strict snake_case input handling for all eight tools, split by concern | server preview boundary | no compatibility aliases |
 | C-003 | Add | N/A | `autobyteus-server-ts/src/agent-tools/preview/preview-tool-manifest.ts` | one owned eight-tool surface reused by native/Codex/Claude | server preview boundary | resolves adapter duplication |
 | C-004 | Add | N/A | `autobyteus-server-ts/src/agent-tools/preview/preview-tool-parameter-schemas.ts` | native parameter schema projection separate from DTO ownership | server preview boundary | off-spine concern |
 | C-005 | Modify | runtime preview adapter builders | same paths | render runtime-specific definitions from the shared preview tool manifest | Codex/Claude preview adapters | remove duplicated literals and dispatch tables |
@@ -487,29 +512,38 @@ type PreviewErrorCode =
 | C-011 | Add | N/A | `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-tool-payload-parser.ts` | tool argument/result parsing for Codex, including preview tool result decoding | Codex events | explicit preview/tool parsing owner |
 | C-012 | Add | N/A | `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-reasoning-payload-parser.ts` | reasoning/web-search subject parsing split out of the generic parser | Codex events | keeps coordinator small enough |
 | C-013 | Remove | compatibility alias parsing branches | N/A | no-backward-compat rule for the stable preview contract | server preview boundary | clean-cut target |
+| C-014 | Modify | `autobyteus-web/electron/preview/preview-session-types.ts` | same path | add explicit projection-lease state to the session record shape | Electron preview boundary | no shell transfer by array side effect |
+| C-015 | Modify | `autobyteus-web/electron/preview/preview-shell-controller.ts` | same path | make claim/release rules explicit and non-stealable | Electron preview boundary | projection lease owner only |
+| C-016 | Modify | `autobyteus-server-ts/src/agent-tools/preview/preview-tool-input-primitives.ts` | same path | remove string boolean/integer coercion from the stable contract | server preview boundary | strict typed contract |
+| C-017 | Modify | `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-tool-payload-parser.ts` | same path | own canonical tool-name resolution for tool payloads | Codex events | avoid generic `run_bash` fallback drift |
 
 ## Removal / Decommission Plan (Mandatory)
 
 | Item To Remove / Decommission | Why It Becomes Unnecessary | Replaced By Which Owner / File / Structure | Scope (`In This Change`/`Follow-up`) | Notes |
 | --- | --- | --- | --- | --- |
-| alias-based preview input parsing | stable snake_case preview contract is already approved | `preview-tool-input-normalizers.ts` strict parsing | In This Change | remove camelCase and alternate keys |
+| alias-based preview input parsing | stable snake_case preview contract is already approved | split strict parsing + validation files | In This Change | remove camelCase and alternate keys |
 | duplicated runtime preview tool definitions | one shared preview tool manifest now owns the surface | `preview-tool-manifest.ts` | In This Change | Codex and Claude render from it |
 | parsing/schema/error logic inside `preview-tool-contract.ts` | contract-only boundary is clearer and smaller | input normalizers / parameter schemas / bridge client error mapping | In This Change | contract file becomes semantically honest |
 | page/browser operations inside `preview-session-manager.ts` | lifecycle owner should not absorb browser operations | `preview-session-page-operations.ts` | In This Change | restores bounded local session spine clarity |
 | navigation/readiness sequencing inside `preview-session-manager.ts` | load/wait sequencing is a distinct concern | `preview-session-navigation.ts` | In This Change | separates BL-007 and BL-008 concerns |
 | preview/tool parsing inside the monolithic Codex payload parser | subject parsing needs a clear owner | `codex-tool-payload-parser.ts` | In This Change | explicit Stage 8 response |
+| primitive-level string coercion for typed preview inputs | stable contract should not widen typed values quietly | strict primitive readers only | In This Change | remove hidden compatibility behavior |
+| implicit cross-shell transfer during focus | shell projection lease must be explicit | `PreviewShellController` lease rules + session lease state | In This Change | no silent stealing |
 
 ## Draft File Responsibility Mapping
 
 | Candidate File | Owning Subsystem / Capability Area | Owner / Boundary | Concrete Concern | Why This Is One File | Reuses Shared Structure? |
 | --- | --- | --- | --- | --- | --- |
 | `preview-tool-contract.ts` | server preview boundary | contract boundary | canonical names, DTOs, error vocabulary | one contract source | Yes |
-| `preview-tool-input-normalizers.ts` | server preview boundary | normalizer boundary | strict request normalization | one normalization owner | Yes |
+| `preview-tool-input-primitives.ts` | server preview boundary | input primitive boundary | strict primitive readers + alias rejection + shared field readers | one low-level input owner | Yes |
+| `preview-tool-input-parsers.ts` | server preview boundary | parse boundary | strict request normalization | one parse owner | Yes |
+| `preview-tool-semantic-validators.ts` | server preview boundary | semantic validation boundary | semantic rules over canonical DTOs | one validation owner | Yes |
 | `preview-tool-manifest.ts` | server preview boundary | tool-surface owner | eight-tool catalog and dispatch metadata | one reusable structure | Yes |
 | `preview-tool-parameter-schemas.ts` | server preview boundary | schema projection concern | `ParameterSchema` building | one schema concern | Yes |
 | `preview-session-manager.ts` | Electron preview boundary | lifecycle owner | session registry/lifecycle only | one lifecycle owner | Yes |
 | `preview-session-navigation.ts` | Electron preview boundary | navigation owner | open/navigate load sequencing | one navigation concern | Yes |
 | `preview-session-page-operations.ts` | Electron preview boundary | page-operations owner | read/snapshot/screenshot/JS | one browser-operation concern | Yes |
+| `preview-shell-controller.ts` | Electron preview boundary | lease owner | explicit shell claim/release and projection attachment | one shell projection owner | Yes |
 | `codex-tool-payload-parser.ts` | Codex events | subject parser | tool/result parsing | one subject parser | No |
 | `codex-reasoning-payload-parser.ts` | Codex events | subject parser | reasoning/web-search parsing | one subject parser | No |
 
@@ -527,14 +561,16 @@ type PreviewErrorCode =
 | --- | --- | --- | --- | --- | --- |
 | preview contract DTOs | Yes | Yes | Low | Yes | keep contract file DTO-only |
 | preview tool manifest entries | Yes | Yes | Low | Yes | keep runtime-specific rendering outside the manifest |
-| preview session record / types | Yes | Yes | Medium | Yes | keep view/browser-operation outputs outside the session record |
+| preview session record / types | Yes | Yes | Medium | Yes | keep lifecycle/lease fields explicit and keep browser-operation outputs outside the session record |
 
 ## Final File Responsibility Mapping
 
 | File | Owning Subsystem / Capability Area | Owner / Boundary | Concrete Concern | Why This Is One File | Reuses Shared Structure? |
 | --- | --- | --- | --- | --- | --- |
 | `autobyteus-server-ts/src/agent-tools/preview/preview-tool-contract.ts` | server preview boundary | contract boundary | canonical tool names, DTOs, error codes, env keys | one clean contract source | Yes |
-| `autobyteus-server-ts/src/agent-tools/preview/preview-tool-input-normalizers.ts` | server preview boundary | input boundary | strict snake_case parsing for all eight tools | one parsing owner | Yes |
+| `autobyteus-server-ts/src/agent-tools/preview/preview-tool-input-primitives.ts` | server preview boundary | input primitives | strict primitive readers, alias rejection, and shared field readers | one low-level input owner | Yes |
+| `autobyteus-server-ts/src/agent-tools/preview/preview-tool-input-parsers.ts` | server preview boundary | parse boundary | strict snake_case parsing for all eight tools | one parsing owner | Yes |
+| `autobyteus-server-ts/src/agent-tools/preview/preview-tool-semantic-validators.ts` | server preview boundary | validation boundary | semantic validation for canonical preview DTOs | one validation owner | Yes |
 | `autobyteus-server-ts/src/agent-tools/preview/preview-tool-manifest.ts` | server preview boundary | shared surface owner | one eight-tool manifest reused by native/Codex/Claude | one reusable structure | Yes |
 | `autobyteus-server-ts/src/agent-tools/preview/preview-tool-parameter-schemas.ts` | server preview boundary | schema concern | native parameter schemas | one projection concern | Yes |
 | `autobyteus-server-ts/src/agent-tools/preview/preview-tool-service.ts` | server preview boundary | service boundary | capability gating, semantic validation, bridge delegation | one authoritative service | Yes |
@@ -545,7 +581,7 @@ type PreviewErrorCode =
 | `autobyteus-web/electron/preview/preview-session-manager.ts` | Electron preview boundary | lifecycle owner | session registry/lifecycle/reuse/list/close/view lookup | one lifecycle owner | Yes |
 | `autobyteus-web/electron/preview/preview-session-navigation.ts` | Electron preview boundary | navigation owner | load and ready-state sequencing | one navigation concern | Yes |
 | `autobyteus-web/electron/preview/preview-session-page-operations.ts` | Electron preview boundary | page-operations owner | read page, DOM snapshot, screenshot, JS execution | one browser-operation concern | Yes |
-| `autobyteus-web/electron/preview/preview-shell-controller.ts` | Electron preview boundary | shell projection owner | active preview attachment and shell snapshots | one projection owner | Yes |
+| `autobyteus-web/electron/preview/preview-shell-controller.ts` | Electron preview boundary | shell projection lease owner | explicit claim/release rules, active preview attachment, and shell snapshots | one projection owner | Yes |
 | `autobyteus-web/components/workspace/tools/PreviewPanel.vue` | renderer shell UI | panel boundary | internal preview tabs and native-host rect measurement | one panel | Yes |
 | `autobyteus-web/stores/previewShellStore.ts` | renderer shell UI | projection store | preview shell snapshots and user focus/close requests | one store | Yes |
 
@@ -554,14 +590,18 @@ type PreviewErrorCode =
 | Target File | Change Type | Mapped Spine ID | Owner / Off-Spine Concern | Responsibility | Key APIs / Interfaces | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
 | `preview-tool-contract.ts` | Modify | DS-001, DS-002, DS-003 | contract boundary | canonical preview names and DTOs only | DTOs, error codes, env keys | strip mixed concerns |
-| `preview-tool-input-normalizers.ts` | Add | DS-002, DS-003 | off-spine input concern | strict DTO parsing | `parseOpenPreviewInput`, etc. | no aliases |
+| `preview-tool-input-primitives.ts` | Add | DS-002, DS-003 | off-spine input concern | strict primitive readers, alias rejection, shared field readers | `asTrimmedString`, typed readers, `assertNoAliasKeys` | no aliases or string coercion |
+| `preview-tool-input-parsers.ts` | Add | DS-002, DS-003 | off-spine input concern | strict DTO parsing | `parseOpenPreviewInput`, etc. | no aliases |
+| `preview-tool-semantic-validators.ts` | Add | DS-002, DS-003 | off-spine validation concern | semantic validation over canonical DTOs | `assertOpenPreviewSemantics`, etc. | no raw coercion |
+| `previewToolExecutionSucceededHandler.ts` | Add | DS-004 | preview renderer activation boundary | interpret successful preview tool results and request shell activation | `handlePreviewToolExecutionSucceeded` | keeps preview logic out of the generic lifecycle handler |
 | `preview-tool-manifest.ts` | Add | DS-001, DS-002, DS-003 | off-spine reusable structure | one eight-tool surface | manifest entries keyed by tool name | removes duplication |
 | runtime adapter builder files | Modify | DS-001, DS-002, DS-003 | runtime adapters | render runtime-specific definitions from the manifest | native/dynamic/MCP builders | no hardcoded duplicate surface |
 | `preview-session-manager.ts` | Modify | DS-002, DS-003, DS-006, DS-007 | lifecycle owner | registry/lifecycle only | open/list/close/reuse/session lookup | delegates navigation/page ops |
 | `preview-session-navigation.ts` | Add | DS-002, DS-008 | internal owner | load/wait/title sequencing | `openSessionView`, `navigateSession` | explicit bounded local spine |
 | `preview-session-page-operations.ts` | Add | DS-003, DS-009 | internal owner | read/snapshot/screenshot/JS | `readPage`, `captureDomSnapshot`, `captureScreenshot`, `executeJavascript` | explicit bounded local spine |
+| `preview-shell-controller.ts` | Modify | DS-004, DS-005, DS-011 | shell lease owner | explicit claim/release and non-stealable focus rules | `claimSession`, `releaseLease`, `focusSession` | no silent transfer |
 | `codex-item-event-payload-parser.ts` | Modify | DS-010 | coordinator | route raw payloads to subject parsers | item classification | shrink below hard limit |
-| `codex-tool-payload-parser.ts` | Add | DS-010 | subject parser | tool args/results including preview result payloads | `parseToolResultPayload` | explicit preview parse owner |
+| `codex-tool-payload-parser.ts` | Add | DS-010 | subject parser | canonical tool-name resolution plus tool args/results including preview result payloads | `resolveToolName`, `parseToolResultPayload` | explicit preview/tool metadata owner |
 | `codex-reasoning-payload-parser.ts` | Add | DS-010 | subject parser | reasoning/web-search parsing | reasoning parse helpers | keeps coordinator small |
 
 ## File Placement And Ownership Check (Mandatory)
@@ -578,4 +618,5 @@ Rules:
 - The design is invalid if `preview-tool-contract.ts` again becomes a mixed contract/normalizer/schema/error file.
 - The design is invalid if callers above `PreviewSessionManager` depend directly on `PreviewSessionNavigation` or `PreviewSessionPageOperations`.
 - The design is invalid if runtime adapters keep their own copied preview tool surface instead of rendering from the shared manifest.
-- The design is invalid if preview input parsing keeps alias compatibility behavior after the v10 clean-cut contract change.
+- The design is invalid if preview input parsing keeps alias compatibility behavior or primitive-level string coercion after the v12 strict contract change.
+- The design is invalid if `PreviewShellController` can still move a claimed session from one shell to another as an incidental side effect of focus.

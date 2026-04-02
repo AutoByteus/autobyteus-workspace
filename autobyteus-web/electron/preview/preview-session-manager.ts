@@ -73,6 +73,7 @@ export class PreviewSessionManager extends EventEmitter {
       const reusableSession = await this.navigation.findReusableSession(
         this.sessions,
         normalizedUrl,
+        (candidate) => candidate.leasedShellId === null,
       )
       if (reusableSession) {
         this.updateSessionTitle(reusableSession, input.title ?? reusableSession.customTitle)
@@ -88,6 +89,7 @@ export class PreviewSessionManager extends EventEmitter {
       url: normalizedUrl,
       title: input.title?.trim() || null,
       customTitle: input.title?.trim() || null,
+      leasedShellId: null,
       state: 'opening',
       openPromise: null,
       view,
@@ -187,6 +189,28 @@ export class PreviewSessionManager extends EventEmitter {
 
   getSessionView(previewSessionId: string): WebContentsView {
     return this.getOpenSessionOrThrow(previewSessionId).view
+  }
+
+  getSessionLeaseOwner(previewSessionId: string): number | null {
+    return this.getOpenSessionOrThrow(previewSessionId).leasedShellId
+  }
+
+  claimSessionLease(previewSessionId: string, shellId: number): void {
+    const session = this.getOpenSessionOrThrow(previewSessionId)
+    if (session.leasedShellId !== null && session.leasedShellId !== shellId) {
+      throw new Error(
+        `Preview session '${previewSessionId}' is already attached to shell '${session.leasedShellId}'.`,
+      )
+    }
+    session.leasedShellId = shellId
+  }
+
+  releaseSessionLease(previewSessionId: string, shellId: number): void {
+    const session = this.sessions.get(previewSessionId)
+    if (!session || session.leasedShellId !== shellId) {
+      return
+    }
+    session.leasedShellId = null
   }
 
   updateSessionViewportBounds(previewSessionId: string, bounds: Rectangle): void {

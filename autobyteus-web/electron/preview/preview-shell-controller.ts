@@ -100,6 +100,7 @@ export class PreviewShellController {
       return;
     }
 
+    this.releaseShellLeases(shellId, state);
     state.shell.attachPreviewView(null);
     this.shellStates.delete(shellId);
   }
@@ -111,33 +112,20 @@ export class PreviewShellController {
   focusSession(shellId: number, previewSessionId: string): PreviewShellSnapshot {
     const state = this.getStateOrThrow(shellId);
     this.previewSessionManager.getSessionSummaryOrThrow(previewSessionId);
-
-    const affectedShellIds = new Set<number>();
-    for (const [candidateShellId, candidateState] of this.shellStates.entries()) {
-      const index = candidateState.sessionIds.indexOf(previewSessionId);
-      if (index === -1) {
-        continue;
-      }
-      candidateState.sessionIds.splice(index, 1);
-      if (candidateState.activeSessionId === previewSessionId) {
-        candidateState.activeSessionId =
-          candidateState.sessionIds[candidateState.sessionIds.length - 1] ?? null;
-      }
-      this.applyShellProjection(candidateState);
-      affectedShellIds.add(candidateShellId);
+    const leaseOwner = this.previewSessionManager.getSessionLeaseOwner(previewSessionId);
+    if (leaseOwner !== null && leaseOwner !== shellId) {
+      throw new Error(
+        `Preview session '${previewSessionId}' is already attached to shell '${leaseOwner}'.`,
+      );
     }
 
     if (!state.sessionIds.includes(previewSessionId)) {
       state.sessionIds.push(previewSessionId);
     }
+    this.previewSessionManager.claimSessionLease(previewSessionId, shellId);
     state.activeSessionId = previewSessionId;
     this.applyShellProjection(state);
-    affectedShellIds.add(shellId);
-
-    for (const affectedShellId of affectedShellIds) {
-      this.publishSnapshot(affectedShellId);
-    }
-
+    this.publishSnapshot(shellId);
     return this.buildSnapshot(state);
   }
 
@@ -147,6 +135,7 @@ export class PreviewShellController {
       throw new Error(`Preview session '${previewSessionId}' is not attached to shell '${shellId}'.`);
     }
 
+    this.previewSessionManager.claimSessionLease(previewSessionId, shellId);
     state.activeSessionId = previewSessionId;
     this.applyShellProjection(state);
     this.publishSnapshot(shellId);
@@ -196,6 +185,12 @@ export class PreviewShellController {
       }
       this.applyShellProjection(state);
       this.publishSnapshot(shellId);
+    }
+  }
+
+  private releaseShellLeases(shellId: number, state: PreviewShellState): void {
+    for (const sessionId of state.sessionIds) {
+      this.previewSessionManager.releaseSessionLease(sessionId, shellId);
     }
   }
 

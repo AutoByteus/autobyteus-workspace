@@ -24,6 +24,7 @@ import {
 import {
   PreviewBridgeLiveTestServer,
   buildOpenPreviewToolPrompt,
+  buildPreviewToolSurfacePrompt,
 } from "./preview-bridge-live-test-server.js";
 
 const claudeBinaryReady = spawnSync("claude", ["--version"], {
@@ -836,6 +837,110 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
       } finally {
         unsubscribe();
         await writeBackendEventLog("claude-backend-preview-tool", events);
+      }
+    },
+    FLOW_TEST_TIMEOUT_MS,
+  );
+
+  it(
+    "executes the full preview tool surface through the live Claude preview MCP path",
+    async () => {
+      const modelIdentifier = await fetchClaudeModelIdentifier();
+      const workspaceRoot = await createWorkspace("claude-backend-preview-surface");
+      createdWorkspaces.add(workspaceRoot);
+      previewBridgeServer = new PreviewBridgeLiveTestServer();
+      await previewBridgeServer.start();
+      Object.assign(process.env, previewBridgeServer.getRuntimeEnv());
+      sessionManager = new ClaudeSessionManager();
+
+      const runId = `run-claude-backend-preview-surface-${randomUUID()}`;
+      createdRunIds.add(runId);
+      const factory = createFactory({
+        sessionManager,
+        workspaceRoot,
+        runId,
+        instructions:
+          "If the user explicitly instructs you to call preview tools with exact JSON arguments in an exact order, call exactly those preview tools in that order and do not call any other tool.",
+      });
+
+      const backend = await factory.createBackend(
+        new AgentRunConfig({
+          runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+          agentDefinitionId: "agent-def-claude-preview-surface-live",
+          llmModelIdentifier: modelIdentifier,
+          autoExecuteTools: true,
+          workspaceId: "workspace-claude-preview-surface-live",
+          skillAccessMode: SkillAccessMode.NONE,
+        }),
+      );
+
+      const openUrl = `http://127.0.0.1:4173/preview-open-${randomUUID()}`;
+      const navigateUrl = `http://127.0.0.1:4173/preview-navigate-${randomUUID()}`;
+      const previewTitle = `Preview ${randomUUID()}`;
+      const events: AgentRunEvent[] = [];
+      const unsubscribe = backend.subscribeToEvents((event) => {
+        if (event && typeof event === "object") {
+          events.push(event as AgentRunEvent);
+        }
+      });
+
+      try {
+        const sendResult = await backend.postUserMessage(
+          new AgentInputUserMessage(
+            buildPreviewToolSurfacePrompt({
+              openUrl,
+              navigateUrl,
+              title: previewTitle,
+            }),
+          ),
+        );
+        expect(sendResult).toMatchObject({ accepted: true });
+
+        await waitForEvent(
+          events,
+          (event) =>
+            event.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED &&
+            event.payload.tool_name === "close_preview",
+        );
+        await waitForEvent(
+          events,
+          (event) =>
+            event.eventType === AgentRunEventType.AGENT_STATUS &&
+            event.payload.new_status === "IDLE",
+        );
+
+        const succeededToolNames = events
+          .filter((event) => event.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED)
+          .map((event) => event.payload.tool_name)
+          .filter((value): value is string => typeof value === "string");
+        expect(succeededToolNames).toEqual(
+          expect.arrayContaining([
+            "open_preview",
+            "navigate_preview",
+            "list_preview_sessions",
+            "read_preview_page",
+            "capture_preview_screenshot",
+            "preview_dom_snapshot",
+            "execute_preview_javascript",
+            "close_preview",
+          ]),
+        );
+        expect(
+          events.some((event) => event.eventType === AgentRunEventType.TOOL_APPROVAL_REQUESTED),
+        ).toBe(false);
+        expect(previewBridgeServer.requests.map((request) => request.path)).toEqual([
+          "/preview/open",
+          "/preview/navigate",
+          "/preview/list",
+          "/preview/read-page",
+          "/preview/screenshot",
+          "/preview/dom-snapshot",
+          "/preview/javascript",
+          "/preview/close",
+        ]);
+      } finally {
+        unsubscribe();
+        await writeBackendEventLog("claude-backend-preview-tool-surface", events);
       }
     },
     FLOW_TEST_TIMEOUT_MS,

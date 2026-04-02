@@ -179,6 +179,45 @@ describe("PreviewSessionManager", () => {
     throw new Error("Expected the most recently closed preview session to retain closed-session semantics.");
   });
 
+  it("does not reuse a session that is already leased to a shell", async () => {
+    const views: FakeWebContentsView[] = [];
+    const manager = new PreviewSessionManager({
+      viewFactory: {
+        createPreviewView: () => {
+          const view = new FakeWebContentsView();
+          views.push(view);
+          return view as any;
+        },
+      } as any,
+      screenshotWriter: {
+        write: async () => "/tmp/preview.png",
+      } as any,
+    });
+
+    const url = "http://localhost:3000/leased";
+    const normalizedUrl = new URL(url).toString();
+    const firstOpenPromise = manager.openSession({ url, wait_until: "load" });
+    await Promise.resolve();
+    views[0]!.webContents.finishLoad(normalizedUrl);
+    const firstResult = await firstOpenPromise;
+
+    manager.claimSessionLease(firstResult.preview_session_id, 11);
+
+    const secondOpenPromise = manager.openSession({
+      url,
+      reuse_existing: true,
+      wait_until: "load",
+    });
+    await Promise.resolve();
+
+    expect(views).toHaveLength(2);
+    views[1]!.webContents.finishLoad(normalizedUrl);
+    const secondResult = await secondOpenPromise;
+
+    expect(secondResult.status).toBe("opened");
+    expect(secondResult.preview_session_id).not.toBe(firstResult.preview_session_id);
+  });
+
   it("lists sessions and supports read-page plus dom-snapshot actions", async () => {
     const view = new FakeWebContentsView();
     const manager = new PreviewSessionManager({
