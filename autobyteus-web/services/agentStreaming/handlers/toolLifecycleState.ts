@@ -5,6 +5,10 @@ import type {
   ToolInvocationStatus,
   WriteFileSegment,
 } from '~/types/segments';
+import {
+  canTransitionToolInvocationStatus,
+  isTerminalToolInvocationStatus,
+} from '~/utils/toolInvocationStatus';
 
 export type ToolLifecycleSegment =
   | ToolCallSegment
@@ -12,28 +16,14 @@ export type ToolLifecycleSegment =
   | TerminalCommandSegment
   | EditFileSegment;
 
-const NON_TERMINAL_RANK: Record<ToolInvocationStatus, number> = {
-  parsing: 0,
-  parsed: 0,
-  'awaiting-approval': 1,
-  approved: 2,
-  executing: 3,
-  success: 99,
-  error: 99,
-  denied: 99,
-};
-
 export const isTerminalStatus = (status: ToolInvocationStatus): boolean =>
-  status === 'success' || status === 'error' || status === 'denied';
+  isTerminalToolInvocationStatus(status);
 
 const canTransitionToNonTerminal = (
   currentStatus: ToolInvocationStatus,
   nextStatus: Exclude<ToolInvocationStatus, 'success' | 'error' | 'denied'>,
 ): boolean => {
-  if (isTerminalStatus(currentStatus)) {
-    return false;
-  }
-  return NON_TERMINAL_RANK[nextStatus] >= NON_TERMINAL_RANK[currentStatus];
+  return canTransitionToolInvocationStatus(currentStatus, nextStatus);
 };
 
 const applyNonTerminalStatus = (

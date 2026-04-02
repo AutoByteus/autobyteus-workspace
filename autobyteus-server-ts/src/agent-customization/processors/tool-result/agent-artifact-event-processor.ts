@@ -3,7 +3,6 @@ import {
   type AgentContext,
 } from "autobyteus-ts";
 import type { ToolResultEvent } from "autobyteus-ts/agent/events/agent-events.js";
-import { ArtifactService } from "../../../agent-artifacts/services/artifact-service.js";
 import { extractCandidateOutputPath, inferArtifactType } from "../../../utils/artifact-utils.js";
 import { resolveAgentRunIdFromRuntimeContext } from "../../utils/core-boundary-id-normalizer.js";
 
@@ -13,26 +12,9 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
-type ArtifactServiceLike = {
-  createArtifact: (options: {
-    runId: string;
-    path: string;
-    type: string;
-    url?: string | null;
-    workspaceRoot?: string | null;
-  }) => Promise<{ id?: string | null; runId: string; path: string; type: string; workspaceRoot?: string | null }>;
-};
-
-export class AgentArtifactPersistenceProcessor extends BaseToolExecutionResultProcessor {
-  private artifactService: ArtifactServiceLike;
-
-  constructor(artifactService?: ArtifactServiceLike) {
-    super();
-    this.artifactService = artifactService ?? ArtifactService.getInstance();
-  }
-
+export class AgentArtifactEventProcessor extends BaseToolExecutionResultProcessor {
   static override getName(): string {
-    return "AgentArtifactPersistenceProcessor";
+    return "AgentArtifactEventProcessor";
   }
 
   static override getOrder(): number {
@@ -47,21 +29,30 @@ export class AgentArtifactPersistenceProcessor extends BaseToolExecutionResultPr
     const runId = resolveAgentRunIdFromRuntimeContext(context);
     const workspaceRoot = context.workspaceRootPath ?? null;
     logger.debug(
-      `AgentArtifactPersistenceProcessor: Processing tool '${event.toolName}' for run '${runId}'`,
+      `AgentArtifactEventProcessor: Processing tool '${event.toolName}' for run '${runId}'`,
     );
 
     try {
+      if (event.isDenied || (typeof event.error === "string" && event.error.trim().length > 0)) {
+        logger.debug(
+          `AgentArtifactEventProcessor: Skipping artifact projection for non-successful tool '${event.toolName}' on run '${runId}'`,
+        );
+        return event;
+      }
+
       if (event.toolName === "write_file") {
         const pathValue = event.toolArgs?.path;
         if (typeof pathValue === "string") {
-          const artifact = await this.artifactService.createArtifact({
-            runId,
-            path: pathValue,
-            type: "file",
-            url: null,
-            workspaceRoot,
-          });
-          this.notifyPersistence(context, artifact, null);
+          this.notifyPersistence(
+            context,
+            {
+              runId,
+              path: pathValue,
+              type: "file",
+              workspaceRoot,
+            },
+            null,
+          );
         }
         return event;
       }
@@ -81,33 +72,37 @@ export class AgentArtifactPersistenceProcessor extends BaseToolExecutionResultPr
       }
 
       const outputPath = extractCandidateOutputPath(event.toolArgs, event.result);
-      if (outputPath) {
-        let url: string | null = null;
-        if (event.result && typeof event.result === "object" && !Array.isArray(event.result)) {
-          const payload = event.result as Record<string, unknown>;
-          const outputUrl = payload.output_file_url;
-          if (typeof outputUrl === "string") {
-            url = outputUrl;
-          }
-        }
+      if (!outputPath) {
+        return event;
+      }
 
-        const artifactType = inferArtifactType(outputPath);
-        if (artifactType) {
-          const artifact = await this.artifactService.createArtifact({
-            runId,
-            path: outputPath,
-            type: artifactType,
-            url,
-            workspaceRoot,
-          });
-          this.notifyPersistence(context, artifact, url);
-          logger.info(
-            `Persisted generic ${artifactType} artifact for run ${runId} at ${outputPath}`,
-          );
+      let url: string | null = null;
+      if (event.result && typeof event.result === "object" && !Array.isArray(event.result)) {
+        const payload = event.result as Record<string, unknown>;
+        const outputUrl = payload.output_file_url;
+        if (typeof outputUrl === "string") {
+          url = outputUrl;
         }
       }
+
+      const artifactType = inferArtifactType(outputPath);
+      if (!artifactType) {
+        return event;
+      }
+
+      this.notifyPersistence(
+        context,
+        {
+          runId,
+          path: outputPath,
+          type: artifactType,
+          workspaceRoot,
+        },
+        url,
+      );
+      logger.info(`Emitted ${artifactType} artifact event for run ${runId} at ${outputPath}`);
     } catch (error) {
-      logger.error(`Error in AgentArtifactPersistenceProcessor: ${String(error)}`);
+      logger.error(`Error in AgentArtifactEventProcessor: ${String(error)}`);
     }
 
     return event;
@@ -115,11 +110,10 @@ export class AgentArtifactPersistenceProcessor extends BaseToolExecutionResultPr
 
   private notifyPersistence(
     context: AgentContext,
-    artifact: { id?: string | null; runId: string; path: string; type: string; workspaceRoot?: string | null },
+    artifact: { runId: string; path: string; type: string; workspaceRoot?: string | null },
     url: string | null,
   ): void {
     const payload: Record<string, unknown> = {
-      artifact_id: artifact.id,
       path: artifact.path,
       agent_id: artifact.runId,
       type: artifact.type,

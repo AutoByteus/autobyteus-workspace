@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import type { ToolInvocationStatus } from '~/types/segments';
 import { isPlaceholderToolName } from '~/utils/toolNamePlaceholders';
+import { canTransitionToolInvocationStatus } from '~/utils/toolInvocationStatus';
 
 export interface ToolActivity {
   invocationId: string;
@@ -84,6 +85,9 @@ export const useAgentActivityStore = defineStore('agentActivity', {
       const state = this._ensureRunState(runId);
       const activity = state.activities.find((a) => a.invocationId === invocationId);
       if (activity) {
+        if (!canTransitionToolInvocationStatus(activity.status, status)) {
+          return;
+        }
         activity.status = status;
         this._updateAwaitingFlag(state);
       }

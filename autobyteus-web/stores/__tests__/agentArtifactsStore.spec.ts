@@ -1,139 +1,240 @@
-import { setActivePinia, createPinia } from 'pinia';
+import { createPinia, setActivePinia } from 'pinia';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useAgentArtifactsStore } from '~/stores/agentArtifactsStore';
-import { describe, it, expect, beforeEach } from 'vitest';
 
 describe('AgentArtifactsStore', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
+    vi.useRealTimers();
   });
 
-  it('should create a pending artifact and set it as active', () => {
-    const store = useAgentArtifactsStore();
-    const runId = 'agent-1';
-    
-    store.createPendingArtifact(runId, 'test.py', 'file');
-
-    const active = store.getActiveStreamingArtifactForRun(runId);
-    expect(active).toBeTruthy();
-    expect(active?.path).toBe('test.py');
-    expect(active?.status).toBe('streaming');
-    expect(active?.content).toBe('');
-
-    const all = store.getArtifactsForRun(runId);
-    expect(all).toHaveLength(1);
-    expect(all[0]).toBe(active);
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
-  it('should append content to the active artifact', async () => {
+  it('creates a write_file touched entry with stable identity and latest-visible announcement', () => {
     const store = useAgentArtifactsStore();
     const runId = 'agent-1';
-    store.createPendingArtifact(runId, 'test.py');
-    
-    // Check that updatedAt is recent (not the original createdAt)
-    // Wait to ensure timestamp difference
-    await new Promise(resolve => setTimeout(resolve, 2));
+
+    const artifact = store.upsertTouchedEntryFromSegmentStart(runId, {
+      invocationId: 'write-1',
+      path: 'src/test.py',
+      sourceTool: 'write_file',
+    });
+
+    expect(artifact).toBeTruthy();
+    expect(artifact?.id).toBe('agent-1:src/test.py');
+    expect(artifact?.status).toBe('streaming');
+    expect(artifact?.sourceTool).toBe('write_file');
+    expect(artifact?.sourceInvocationId).toBe('write-1');
+    expect(artifact?.content).toBe('');
+    expect(store.getActiveStreamingArtifactForRun(runId)?.id).toBe('agent-1:src/test.py');
+    expect(store.getLatestVisibleArtifactIdForRun(runId)).toBe('agent-1:src/test.py');
+    expect(store.getLatestVisibleArtifactVersionForRun(runId)).toBe(1);
+  });
+
+  it('creates an edit_file touched entry without an active stream and re-announces the same row on re-touch', () => {
+    const store = useAgentArtifactsStore();
+    const runId = 'agent-1';
+
+    const first = store.upsertTouchedEntryFromSegmentStart(runId, {
+      invocationId: 'edit-1',
+      path: 'src/app.ts',
+      sourceTool: 'edit_file',
+    });
+
+    expect(first?.id).toBe('agent-1:src/app.ts');
+    expect(first?.status).toBe('pending');
+    expect(first?.sourceTool).toBe('edit_file');
+    expect(store.getActiveStreamingArtifactForRun(runId)).toBeNull();
+    expect(store.getLatestVisibleArtifactVersionForRun(runId)).toBe(1);
+
+    const second = store.upsertTouchedEntryFromSegmentStart(runId, {
+      invocationId: 'edit-2',
+      path: 'src/app.ts',
+      sourceTool: 'edit_file',
+    });
+
+    expect(second?.id).toBe(first?.id);
+    expect(store.getArtifactsForRun(runId)).toHaveLength(1);
+    expect(second?.sourceInvocationId).toBe('edit-2');
+    expect(store.getLatestVisibleArtifactVersionForRun(runId)).toBe(2);
+  });
+
+  it('appends content to the active streaming write_file entry', async () => {
+    const store = useAgentArtifactsStore();
+    const runId = 'agent-1';
+
+    store.upsertTouchedEntryFromSegmentStart(runId, {
+      invocationId: 'write-1',
+      path: 'src/test.py',
+      sourceTool: 'write_file',
+    });
+
+    await new Promise((resolve) => setTimeout(resolve, 2));
 
     store.appendArtifactContent(runId, 'print(');
     store.appendArtifactContent(runId, '"hello")');
-    
-    // Wait for timestamp update
+
     const active = store.getActiveStreamingArtifactForRun(runId);
     expect(active?.content).toBe('print("hello")');
-    expect(active?.updatedAt).toBeDefined();
-    // Check that updatedAt is recent (not the original createdAt)
     expect(active?.updatedAt).not.toBe(active?.createdAt);
   });
 
-  it('should finalize artifact stream and clear active state', () => {
+  it('transitions write_file entries by invocation and accepts lifecycle alias ids', () => {
     const store = useAgentArtifactsStore();
     const runId = 'agent-1';
-    store.createPendingArtifact(runId, 'test.py');
-    store.appendArtifactContent(runId, 'code');
-    
-    store.finalizeArtifactStream(runId);
 
-    const active = store.getActiveStreamingArtifactForRun(runId);
-    expect(active).toBeNull(); // Should be cleared
+    store.upsertTouchedEntryFromSegmentStart(runId, {
+      invocationId: 'write-1',
+      path: 'src/test.py',
+      sourceTool: 'write_file',
+    });
 
-    const all = store.getArtifactsForRun(runId);
-    expect(all[0].status).toBe('pending_approval');
-    expect(all[0].content).toBe('code');
+    store.markTouchedEntryPending(runId, 'write-1:0');
+    let artifact = store.getArtifactsForRun(runId)[0];
+    expect(artifact.status).toBe('pending');
+    expect(store.getActiveStreamingArtifactForRun(runId)).toBeNull();
+
+    store.markTouchedEntryAvailableByInvocation(runId, 'write-1', {
+      workspaceRoot: '/workspace',
+      backendArtifactId: 'artifact-123',
+    });
+    artifact = store.getArtifactsForRun(runId)[0];
+    expect(artifact.status).toBe('available');
+    expect(artifact.workspaceRoot).toBe('/workspace');
+    expect(artifact.backendArtifactId).toBe('artifact-123');
   });
 
-  it('should mark artifact as persisted', () => {
+  it('marks touched entries as failed by invocation', () => {
     const store = useAgentArtifactsStore();
     const runId = 'agent-1';
-    store.createPendingArtifact(runId, 'test.py');
-    store.finalizeArtifactStream(runId);
-    
-    store.markArtifactPersisted(runId, 'test.py');
-    
-    const all = store.getArtifactsForRun(runId);
-    expect(all[0].status).toBe('persisted');
+
+    store.upsertTouchedEntryFromSegmentStart(runId, {
+      invocationId: 'edit-1',
+      path: 'src/app.ts',
+      sourceTool: 'edit_file',
+    });
+
+    store.markTouchedEntryFailedByInvocation(runId, 'edit-1');
+
+    const artifact = store.getArtifactsForRun(runId)[0];
+    expect(artifact.status).toBe('failed');
+    expect(artifact.sourceTool).toBe('edit_file');
   });
 
-  it('should update existing artifact instead of creating duplicate when same path is used', () => {
+  it('deduplicates repeated writes to the same path and resets streaming content', () => {
     const store = useAgentArtifactsStore();
     const runId = 'agent-1';
 
-    // First write to fibonacci.py
-    store.createPendingArtifact(runId, 'fibonacci.py');
+    store.upsertTouchedEntryFromSegmentStart(runId, {
+      invocationId: 'write-1',
+      path: 'fibonacci.py',
+      sourceTool: 'write_file',
+    });
     store.appendArtifactContent(runId, 'version 1');
-    store.finalizeArtifactStream(runId);
-    store.markArtifactPersisted(runId, 'fibonacci.py');
+    store.markTouchedEntryPending(runId, 'write-1');
+    store.markTouchedEntryAvailableByInvocation(runId, 'write-1');
 
-    // Second write to same file
-    store.createPendingArtifact(runId, 'fibonacci.py');
+    store.upsertTouchedEntryFromSegmentStart(runId, {
+      invocationId: 'write-2',
+      path: 'fibonacci.py',
+      sourceTool: 'write_file',
+    });
     store.appendArtifactContent(runId, 'version 2');
-    store.finalizeArtifactStream(runId);
 
-    // Should still only have ONE artifact
-    const all = store.getArtifactsForRun(runId);
-    expect(all).toHaveLength(1);
-    expect(all[0].content).toBe('version 2');
-    expect(all[0].status).toBe('pending_approval');
+    const artifacts = store.getArtifactsForRun(runId);
+    expect(artifacts).toHaveLength(1);
+    expect(artifacts[0].id).toBe('agent-1:fibonacci.py');
+    expect(artifacts[0].status).toBe('streaming');
+    expect(artifacts[0].content).toBe('version 2');
+    expect(artifacts[0].sourceInvocationId).toBe('write-2');
   });
 
-  it('should create a media artifact directly with persisted status and url', () => {
+  it('creates generated outputs from persisted artifact events and announces them as latest visible', () => {
     const store = useAgentArtifactsStore();
     const runId = 'agent-1';
-    const path = 'images/output.png';
-    const url = 'http://localhost:8000/rest/files/images/output.png';
-    
-    store.createMediaArtifact({
-      id: 'media-1',
-      runId,
-      path,
+
+    const artifact = store.markTouchedEntryAvailableFromArtifactPersisted(runId, {
+      artifactId: 'artifact-456',
+      path: 'images/generated.png',
       type: 'image',
-      url
+      url: 'http://localhost:8000/rest/files/images/generated.png',
+      workspaceRoot: '/workspace',
+      sourceTool: 'generated_output',
     });
-    
-    const all = store.getArtifactsForRun(runId);
-    expect(all).toHaveLength(1);
-    expect(all[0].path).toBe(path);
-    expect(all[0].type).toBe('image');
-    expect(all[0].status).toBe('persisted');
-    expect(all[0].url).toBe(url);
+
+    expect(artifact?.id).toBe('agent-1:images/generated.png');
+    expect(artifact?.type).toBe('image');
+    expect(artifact?.status).toBe('available');
+    expect(artifact?.sourceTool).toBe('generated_output');
+    expect(artifact?.url).toBe('http://localhost:8000/rest/files/images/generated.png');
+    expect(store.getLatestVisibleArtifactIdForRun(runId)).toBe('agent-1:images/generated.png');
+    expect(store.getLatestVisibleArtifactVersionForRun(runId)).toBe(1);
   });
 
-  it('should create an audio artifact directly', () => {
+  it('refreshes an existing touched entry from artifact updates without re-announcing discoverability', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2024-01-01T00:00:00Z'));
+
     const store = useAgentArtifactsStore();
     const runId = 'agent-1';
-    const path = 'audio/speech.mp3';
-    const url = 'http://localhost:8000/rest/files/audio/speech.mp3';
-    
-    store.createMediaArtifact({
-      id: 'media-2',
-      runId,
-      path,
-      type: 'audio',
-      url
+    store.upsertTouchedEntryFromSegmentStart(runId, {
+      invocationId: 'edit-1',
+      path: 'src/app.py',
+      sourceTool: 'edit_file',
     });
-    
-    const all = store.getArtifactsForRun(runId);
-    expect(all).toHaveLength(1);
-    expect(all[0].type).toBe('audio');
-    expect(all[0].status).toBe('persisted');
-    expect(all[0].url).toBe(url);
+    const before = store.getArtifactsForRun(runId)[0].updatedAt;
+    const beforeVersion = store.getLatestVisibleArtifactVersionForRun(runId);
+
+    vi.setSystemTime(new Date('2024-01-01T00:00:01Z'));
+    store.refreshTouchedEntryFromArtifactUpdate(runId, {
+      artifactId: 'artifact-789',
+      path: 'src/app.py',
+      type: 'file',
+      workspaceRoot: '/workspace',
+    });
+
+    const artifacts = store.getArtifactsForRun(runId);
+    expect(artifacts).toHaveLength(1);
+    expect(artifacts[0].status).toBe('pending');
+    expect(artifacts[0].backendArtifactId).toBe('artifact-789');
+    expect(artifacts[0].workspaceRoot).toBe('/workspace');
+    expect(artifacts[0].updatedAt).not.toBe(before);
+    expect(store.getLatestVisibleArtifactVersionForRun(runId)).toBe(beforeVersion);
+
+    vi.useRealTimers();
+  });
+
+  it('creates pending runtime file-change entries from update-only artifact updates and announces first visibility', () => {
+    const store = useAgentArtifactsStore();
+    const runId = 'agent-1';
+
+    const artifact = store.refreshTouchedEntryFromArtifactUpdate(runId, {
+      path: 'src/new_file.py',
+      type: 'file',
+    });
+
+    expect(artifact?.status).toBe('pending');
+    expect(artifact?.sourceTool).toBe('runtime_file_change');
+    expect(store.getLatestVisibleArtifactIdForRun(runId)).toBe('agent-1:src/new_file.py');
+    expect(store.getLatestVisibleArtifactVersionForRun(runId)).toBe(1);
+  });
+
+  it('creates lifecycle fallback rows with explicit terminal state when invocation lookup misses', () => {
+    const store = useAgentArtifactsStore();
+    const runId = 'agent-1';
+
+    const artifact = store.ensureTouchedEntryTerminalStateFromLifecycle(runId, {
+      path: 'src/missed.py',
+      type: 'file',
+      sourceTool: 'edit_file',
+      status: 'failed',
+    });
+
+    expect(artifact?.status).toBe('failed');
+    expect(artifact?.sourceTool).toBe('edit_file');
+    expect(store.getLatestVisibleArtifactIdForRun(runId)).toBe('agent-1:src/missed.py');
+    expect(store.getLatestVisibleArtifactVersionForRun(runId)).toBe(1);
   });
 });

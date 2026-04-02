@@ -108,6 +108,9 @@ const workspaceStore = useWorkspaceStore();
 const windowNodeContextStore = useWindowNodeContextStore();
 
 const isLoading = computed(() => isDeterminingType.value || isFetchingContent.value);
+const usesBufferedWriteContent = computed(() => {
+  return props.artifact?.sourceTool === 'write_file' && props.artifact?.status !== 'available';
+});
 
 const artifactUrl = computed(() => {
   if (!props.artifact) return null;
@@ -154,17 +157,14 @@ const artifactUrl = computed(() => {
 
 const displayContent = computed(() => {
   if (!props.artifact) return null;
-  if (props.artifact.status === 'persisted') {
-    return fetchedContent.value ?? props.artifact.content ?? '';
+  if (usesBufferedWriteContent.value) {
+    return props.artifact.content ?? '';
   }
-  return props.artifact.content ?? '';
+  return fetchedContent.value ?? props.artifact.content ?? '';
 });
 const displayUrl = computed(() => {
   if (!props.artifact) return null;
-  if (props.artifact.status === 'persisted') {
-    return resolvedUrl.value ?? props.artifact.url ?? null;
-  }
-  return props.artifact.url ?? null;
+  return resolvedUrl.value ?? props.artifact.url ?? artifactUrl.value ?? null;
 });
 
 const supportsPreview = computed(() => {
@@ -188,13 +188,19 @@ const updateFileType = async () => {
     }
 };
 
-const refreshPersistedContent = async () => {
+const refreshResolvedContent = async () => {
   const artifact = props.artifact;
   resolvedUrl.value = null;
   errorMessage.value = null;
   isDeleted.value = false;
 
-  if (!artifact || artifact.status !== 'persisted') {
+  if (!artifact) {
+    fetchedContent.value = null;
+    isFetchingContent.value = false;
+    return;
+  }
+
+  if (usesBufferedWriteContent.value) {
     fetchedContent.value = null;
     isFetchingContent.value = false;
     return;
@@ -247,17 +253,17 @@ watch(() => props.artifact, async () => {
   await updateFileType();
   
   // Default to preview mode for supported types ONLY when the artifact is persisted
-  if (supportsPreview.value && props.artifact?.status === 'persisted') {
+  if (supportsPreview.value && !usesBufferedWriteContent.value) {
       viewMode.value = 'preview';
   } else {
       viewMode.value = 'edit';
   }
   
-  await refreshPersistedContent();
+  await refreshResolvedContent();
 }, { immediate: true });
 
 watch(() => [props.artifact?.updatedAt, artifactUrl.value, fileType.value], () => {
-  refreshPersistedContent();
+  refreshResolvedContent();
 });
 
 </script>

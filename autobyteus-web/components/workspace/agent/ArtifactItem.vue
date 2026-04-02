@@ -11,8 +11,8 @@
         <!-- Status: Failed -->
         <Icon v-else-if="artifact.status === 'failed'" icon="heroicons:exclamation-circle-solid" class="w-5 h-5 text-red-500" />
         
-        <!-- Status: Pending Approval -->
-        <Icon v-else-if="artifact.status === 'pending_approval'" icon="heroicons:hand-raised-solid" class="w-5 h-5 text-amber-500" />
+        <!-- Status: Pending -->
+        <Icon v-else-if="artifact.status === 'pending'" icon="heroicons:clock-solid" class="w-5 h-5 text-amber-500" />
         
         <!-- Status: Persisted (Success) - Show File Type Icon -->
         <template v-else>
@@ -44,8 +44,8 @@
         </span>
     </div>
 
-    <!-- Success Checkmark (only if persisted) -->
-     <div v-if="artifact.status === 'persisted'" class="flex-shrink-0">
+    <!-- Success Checkmark (only if available) -->
+     <div v-if="artifact.status === 'available'" class="flex-shrink-0">
         <Icon icon="heroicons:check-circle-solid" class="w-4 h-4 text-green-500 opacity-0 group-hover:opacity-100 transition-opacity" :class="{ 'opacity-100': isSelected }" />
      </div>
   </div>

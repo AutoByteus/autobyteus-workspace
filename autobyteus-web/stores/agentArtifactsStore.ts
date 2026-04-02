@@ -1,244 +1,405 @@
 import { defineStore } from 'pinia';
-import { getApolloClient } from '~/utils/apolloClient';
-import { GetAgentArtifacts } from '~/graphql/queries/agentArtifactQueries';
 
-export type ArtifactStatus = 'streaming' | 'pending_approval' | 'persisted' | 'failed';
+export type ArtifactStatus = 'streaming' | 'pending' | 'available' | 'failed';
+export type ArtifactSourceTool = 'write_file' | 'edit_file' | 'generated_output' | 'runtime_file_change';
+export type ArtifactType = 'file' | 'image' | 'audio' | 'video' | 'pdf' | 'csv' | 'excel' | 'other';
+
+type ArtifactAvailability = Exclude<ArtifactStatus, 'streaming'>;
 
 export interface AgentArtifact {
-  id: string; // Unique ID (UUID or Path for streaming)
+  id: string; // Stable ID derived from runId:path
   runId: string;
-  path: string; // Relative path (e.g., "src/hello.py")
-  type: 'file' | 'image' | 'audio' | 'video' | 'pdf' | 'csv' | 'excel' | 'other';
+  path: string;
+  type: ArtifactType;
   status: ArtifactStatus;
-  content?: string; // Content buffer for text files
-  url?: string; // URL for media files
+  sourceTool: ArtifactSourceTool;
+  sourceInvocationId?: string | null;
+  backendArtifactId?: string | null;
+  content?: string;
+  url?: string | null;
   workspaceRoot?: string | null;
   createdAt: string;
   updatedAt: string;
 }
 
 interface AgentArtifactsState {
-  // Map of RunID -> Artifact[]
   artifactsByRun: Map<string, AgentArtifact[]>;
-  // Map of RunID -> Pending Artifact (Only one active at a time usually)
   activeStreamingArtifactByRun: Map<string, AgentArtifact | null>;
+  latestVisibleArtifactIdByRun: Map<string, string | null>;
+  latestVisibleArtifactVersionByRun: Map<string, number>;
 }
 
-type AgentArtifactsQueryResult = {
-  agentArtifacts: Array<{
-    id: string;
-    runId: string;
-    path: string;
-    type: string;
+type SegmentStartArtifactInput = {
+  invocationId: string;
+  path: string;
+  type?: ArtifactType;
+  sourceTool: Extract<ArtifactSourceTool, 'write_file' | 'edit_file'>;
+};
+
+type ArtifactProjectionInput = {
+  path: string;
+  type?: ArtifactType | string;
+  artifactId?: string | null;
+  workspaceRoot?: string | null;
+  url?: string | null;
+  sourceTool?: ArtifactSourceTool;
+};
+
+type LifecycleFallbackInput = {
+  path: string;
+  type?: ArtifactType | string;
+  sourceTool: Extract<ArtifactSourceTool, 'write_file' | 'edit_file'>;
+  status: ArtifactAvailability;
+};
+
+const ARTIFACT_TYPES = new Set<ArtifactType>([
+  'file',
+  'image',
+  'audio',
+  'video',
+  'pdf',
+  'csv',
+  'excel',
+  'other',
+]);
+
+const nowIso = (): string => new Date().toISOString();
+
+const normalizePath = (path: string): string => path.replace(/\\/g, '/').trim();
+
+const buildArtifactId = (runId: string, path: string): string => `${runId}:${normalizePath(path)}`;
+
+const buildInvocationAliases = (invocationId: string): string[] => {
+  const trimmed = invocationId.trim();
+  if (!trimmed) {
+    return [];
+  }
+
+  const aliases = [trimmed];
+  if (trimmed.includes(':')) {
+    const base = trimmed.split(':')[0]?.trim();
+    if (base && !aliases.includes(base)) {
+      aliases.push(base);
+    }
+  }
+
+  return aliases;
+};
+
+const invocationIdsMatch = (left?: string | null, right?: string | null): boolean => {
+  if (!left || !right) {
+    return false;
+  }
+
+  const leftAliases = buildInvocationAliases(left);
+  const rightAliases = buildInvocationAliases(right);
+  return leftAliases.some((alias) => rightAliases.includes(alias));
+};
+
+const normalizeArtifactType = (
+  value?: ArtifactType | string | null,
+  fallback: ArtifactType = 'file',
+): ArtifactType => {
+  if (!value) {
+    return fallback;
+  }
+
+  return ARTIFACT_TYPES.has(value as ArtifactType) ? (value as ArtifactType) : fallback;
+};
+
+const getInitialStatusForSegment = (
+  sourceTool: SegmentStartArtifactInput['sourceTool'],
+): ArtifactStatus => (sourceTool === 'write_file' ? 'streaming' : 'pending');
+
+type ProjectionUpsertPolicy = {
+  statusOnCreate: ArtifactAvailability;
+  statusOnExisting: (artifact: AgentArtifact) => ArtifactAvailability;
+  sourceToolOnCreate: ArtifactSourceTool;
+  sourceToolOnExisting?: (artifact: AgentArtifact) => ArtifactSourceTool;
+  announceOnCreate: boolean;
+};
+
+const ensureArtifacts = (state: AgentArtifactsState, runId: string): AgentArtifact[] => {
+  if (!state.artifactsByRun.has(runId)) {
+    state.artifactsByRun.set(runId, []);
+  }
+  return state.artifactsByRun.get(runId)!;
+};
+
+const findArtifactById = (artifacts: AgentArtifact[], artifactId: string): AgentArtifact | null =>
+  artifacts.find((artifact) => artifact.id === artifactId) || null;
+
+const findArtifactByInvocationId = (
+  artifacts: AgentArtifact[],
+  invocationId: string,
+): AgentArtifact | null =>
+  artifacts.find((artifact) => invocationIdsMatch(artifact.sourceInvocationId, invocationId)) || null;
+
+const announceLatestVisibleArtifact = (
+  state: AgentArtifactsState,
+  runId: string,
+  artifactId: string,
+): void => {
+  state.latestVisibleArtifactIdByRun.set(runId, artifactId);
+  const currentVersion = state.latestVisibleArtifactVersionByRun.get(runId) || 0;
+  state.latestVisibleArtifactVersionByRun.set(runId, currentVersion + 1);
+};
+
+const updateArtifactLifecycleByInvocation = (
+  state: AgentArtifactsState,
+  runId: string,
+  invocationId: string,
+  updates: {
+    status: ArtifactAvailability;
+    type?: ArtifactType | string;
     workspaceRoot?: string | null;
-    createdAt: string;
-    updatedAt: string;
-  }>;
+    url?: string | null;
+    backendArtifactId?: string | null;
+    sourceTool?: ArtifactSourceTool;
+  },
+): AgentArtifact | null => {
+  const artifacts = state.artifactsByRun.get(runId) || [];
+  const artifact = findArtifactByInvocationId(artifacts, invocationId);
+  if (!artifact) {
+    return null;
+  }
+
+  artifact.status = updates.status;
+  artifact.type = normalizeArtifactType(updates.type, artifact.type);
+  artifact.workspaceRoot = updates.workspaceRoot !== undefined ? updates.workspaceRoot : artifact.workspaceRoot;
+  artifact.url = updates.url !== undefined ? updates.url : artifact.url;
+  artifact.backendArtifactId = updates.backendArtifactId ?? artifact.backendArtifactId ?? null;
+  artifact.sourceTool = updates.sourceTool ?? artifact.sourceTool;
+  artifact.updatedAt = nowIso();
+
+  if (state.activeStreamingArtifactByRun.get(runId)?.id === artifact.id) {
+    state.activeStreamingArtifactByRun.set(runId, null);
+  }
+
+  return artifact;
+};
+
+const upsertTouchedEntryProjection = (
+  state: AgentArtifactsState,
+  runId: string,
+  input: ArtifactProjectionInput,
+  policy: ProjectionUpsertPolicy,
+): AgentArtifact | null => {
+  const normalizedPath = normalizePath(input.path);
+  if (!normalizedPath) {
+    return null;
+  }
+
+  const artifactId = buildArtifactId(runId, normalizedPath);
+  const artifacts = ensureArtifacts(state, runId);
+  const artifact = findArtifactById(artifacts, artifactId);
+  const timestamp = nowIso();
+
+  if (artifact) {
+    const nextStatus = policy.statusOnExisting(artifact);
+    artifact.path = normalizedPath;
+    artifact.type = normalizeArtifactType(input.type, artifact.type);
+    artifact.status = nextStatus;
+    artifact.sourceTool = policy.sourceToolOnExisting?.(artifact) ?? artifact.sourceTool;
+    artifact.backendArtifactId = input.artifactId ?? artifact.backendArtifactId ?? null;
+    artifact.workspaceRoot = input.workspaceRoot !== undefined ? input.workspaceRoot : artifact.workspaceRoot;
+    artifact.url = input.url !== undefined ? input.url : artifact.url;
+    artifact.updatedAt = timestamp;
+
+    if (state.activeStreamingArtifactByRun.get(runId)?.id === artifact.id && nextStatus !== 'streaming') {
+      state.activeStreamingArtifactByRun.set(runId, null);
+    }
+
+    return artifact;
+  }
+
+  const newArtifact: AgentArtifact = {
+    id: artifactId,
+    runId,
+    path: normalizedPath,
+    type: normalizeArtifactType(input.type),
+    status: policy.statusOnCreate,
+    sourceTool: policy.sourceToolOnCreate,
+    sourceInvocationId: null,
+    backendArtifactId: input.artifactId ?? null,
+    content: undefined,
+    url: input.url ?? null,
+    workspaceRoot: input.workspaceRoot ?? null,
+    createdAt: timestamp,
+    updatedAt: timestamp,
+  };
+
+  artifacts.push(newArtifact);
+  if (policy.announceOnCreate) {
+    announceLatestVisibleArtifact(state, runId, newArtifact.id);
+  }
+  return newArtifact;
 };
 
 export const useAgentArtifactsStore = defineStore('agentArtifacts', {
   state: (): AgentArtifactsState => ({
     artifactsByRun: new Map(),
     activeStreamingArtifactByRun: new Map(),
+    latestVisibleArtifactIdByRun: new Map(),
+    latestVisibleArtifactVersionByRun: new Map(),
   }),
 
   getters: {
-    getArtifactsForRun: (state) => (runId: string) => {
-      return state.artifactsByRun.get(runId) || [];
-    },
-    getActiveStreamingArtifactForRun: (state) => (runId: string) => {
-      return state.activeStreamingArtifactByRun.get(runId) || null;
+    getArtifactsForRun: (state) => (runId: string) => state.artifactsByRun.get(runId) || [],
+    getActiveStreamingArtifactForRun: (state) => (runId: string) => state.activeStreamingArtifactByRun.get(runId) || null,
+    getLatestVisibleArtifactIdForRun: (state) => (runId: string) => state.latestVisibleArtifactIdByRun.get(runId) || null,
+    getLatestVisibleArtifactVersionForRun: (state) => (runId: string) => state.latestVisibleArtifactVersionByRun.get(runId) || 0,
+    getLatestVisibleArtifactSignalForRun: (state) => (runId: string) => {
+      const artifactId = state.latestVisibleArtifactIdByRun.get(runId) || null;
+      if (!artifactId) {
+        return null;
+      }
+
+      const version = state.latestVisibleArtifactVersionByRun.get(runId) || 0;
+      return `${artifactId}:${version}`;
     },
   },
 
   actions: {
-    /**
-     * Start streaming a new artifact (e.g. write_file start)
-     * If an artifact with the same path already exists for this run,
-     * it will be updated (reset to streaming) instead of creating a duplicate.
-     */
-    createPendingArtifact(runId: string, path: string, type: 'file' | 'image' = 'file') {
-      // Check if an artifact with the same path already exists
-      const existingArtifacts = this.artifactsByRun.get(runId) || [];
-      const existingArtifact = existingArtifacts.find(a => a.path === path);
-
-      if (existingArtifact) {
-        // Update existing artifact - reset for new streaming session
-        existingArtifact.status = 'streaming';
-        existingArtifact.content = '';
-        const now = new Date().toISOString();
-        existingArtifact.createdAt = now;
-        existingArtifact.updatedAt = now;
-        this.activeStreamingArtifactByRun.set(runId, existingArtifact);
-        return;
+    upsertTouchedEntryFromSegmentStart(runId: string, input: SegmentStartArtifactInput) {
+      const normalizedPath = normalizePath(input.path);
+      if (!normalizedPath) {
+        return null;
       }
 
-      // Create new artifact
-      const artifact: AgentArtifact = {
-        id: `pending-${Date.now()}`, // Temp ID
-        runId,
-        path,
-        type,
-        status: 'streaming',
-        content: '',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
+      const artifactId = buildArtifactId(runId, normalizedPath);
+      const artifacts = ensureArtifacts(this, runId);
+      const artifact = findArtifactById(artifacts, artifactId);
+      const timestamp = nowIso();
+      const nextStatus = getInitialStatusForSegment(input.sourceTool);
 
-      // Set as active streaming
-      this.activeStreamingArtifactByRun.set(runId, artifact);
-      
-      // Add to list immediately so it shows up
-      if (!this.artifactsByRun.has(runId)) {
-        this.artifactsByRun.set(runId, []);
-      }
-      this.artifactsByRun.get(runId)?.push(artifact);
-      
-      // OPTIONAL: Trigger side-effect to switch tabs (handled by component or handler)
-    },
-
-    /**
-     * Append content to the current streaming artifact
-     */
-    appendArtifactContent(runId: string, delta: string) {
-      const artifact = this.activeStreamingArtifactByRun.get(runId);
-      if (artifact && artifact.status === 'streaming') {
-        artifact.content = (artifact.content || '') + delta;
-        artifact.updatedAt = new Date().toISOString();
-      }
-    },
-
-    /**
-     * Mark the artifact as fully streamed and waiting for approval
-     */
-    finalizeArtifactStream(runId: string) {
-      const artifact = this.activeStreamingArtifactByRun.get(runId);
       if (artifact) {
-        artifact.status = 'pending_approval';
-        artifact.updatedAt = new Date().toISOString();
-        // Clear active streamer so we don't accidentally append to it later
-        this.activeStreamingArtifactByRun.set(runId, null);
-      }
-    },
+        artifact.path = normalizedPath;
+        artifact.type = input.type ?? artifact.type;
+        artifact.status = nextStatus;
+        artifact.sourceTool = input.sourceTool;
+        artifact.sourceInvocationId = input.invocationId;
+        artifact.updatedAt = timestamp;
 
-    /**
-     * Mark artifact as persisted (Tool was approved and executed)
-     * This might be called by a separate event or optimistic update
-     */
-    markArtifactPersisted(runId: string, path: string, workspaceRoot?: string | null) {
-        const artifacts = this.artifactsByRun.get(runId) || [];
-        // Find the pending one matching path
-        const artifact = artifacts.find(a => a.path === path && a.status === 'pending_approval');
-        if (artifact) {
-            artifact.status = 'persisted';
-            artifact.updatedAt = new Date().toISOString();
-            if (workspaceRoot !== undefined) {
-              artifact.workspaceRoot = workspaceRoot;
-            }
+        if (input.sourceTool === 'write_file') {
+          artifact.content = '';
+          this.activeStreamingArtifactByRun.set(runId, artifact);
+        } else if (this.activeStreamingArtifactByRun.get(runId)?.id === artifact.id) {
+          this.activeStreamingArtifactByRun.set(runId, null);
         }
-    },
 
-    /**
-     * Create a media artifact directly (for image/audio files that don't stream).
-     * These are created as 'persisted' immediately since the file already exists.
-     */
-    createMediaArtifact(artifact: Omit<AgentArtifact, 'status' | 'createdAt' | 'updatedAt'> & { timestamp?: string }) {
-      const timestamp = artifact.timestamp || new Date().toISOString();
+        announceLatestVisibleArtifact(this, runId, artifact.id);
+        return artifact;
+      }
+
       const newArtifact: AgentArtifact = {
-        ...artifact,
+        id: artifactId,
+        runId,
+        path: normalizedPath,
+        type: input.type ?? 'file',
+        status: nextStatus,
+        sourceTool: input.sourceTool,
+        sourceInvocationId: input.invocationId,
+        backendArtifactId: null,
+        content: input.sourceTool === 'write_file' ? '' : undefined,
+        url: null,
+        workspaceRoot: null,
         createdAt: timestamp,
         updatedAt: timestamp,
-        status: 'persisted',
       };
 
-      if (!this.artifactsByRun.has(artifact.runId)) {
-        this.artifactsByRun.set(artifact.runId, []);
+      artifacts.push(newArtifact);
+      if (input.sourceTool === 'write_file') {
+        this.activeStreamingArtifactByRun.set(runId, newArtifact);
       }
-      this.artifactsByRun.get(artifact.runId)?.push(newArtifact);
-    },
-    
-    /**
-     * Mark artifact as failed/cancelled
-     */
-    markArtifactFailed(runId: string, path: string) {
-        const artifacts = this.artifactsByRun.get(runId) || [];
-        const artifact = artifacts.find(a => a.path === path && a.status === 'pending_approval');
-        if (artifact) {
-            artifact.status = 'failed';
-            artifact.updatedAt = new Date().toISOString();
-        }
+      announceLatestVisibleArtifact(this, runId, newArtifact.id);
+      return newArtifact;
     },
 
-    /**
-     * Touch an existing artifact to trigger refreshes (e.g., edit_file updates).
-     * Creates a persisted artifact if none exists yet.
-     */
-    touchArtifact(
-      runId: string,
-      path: string,
-      type: AgentArtifact['type'] = 'file',
-      artifactId?: string,
-      workspaceRoot?: string | null
-    ) {
-      const artifacts = this.artifactsByRun.get(runId) || [];
-      const artifact = artifacts.find(a => a.path === path || (artifactId && a.id === artifactId));
-      const now = new Date().toISOString();
-
-      if (artifact) {
-        artifact.updatedAt = now;
-        if (workspaceRoot !== undefined) {
-          artifact.workspaceRoot = workspaceRoot;
-        }
+    appendArtifactContent(runId: string, delta: string) {
+      const artifact = this.activeStreamingArtifactByRun.get(runId);
+      if (!artifact || artifact.status !== 'streaming') {
         return;
       }
 
-      const newArtifact: AgentArtifact = {
-        id: artifactId || `artifact-${Date.now()}`,
-        runId,
-        path,
-        type,
-        status: 'persisted',
-        workspaceRoot: workspaceRoot ?? null,
-        createdAt: now,
-        updatedAt: now,
-      };
-
-      if (!this.artifactsByRun.has(runId)) {
-        this.artifactsByRun.set(runId, []);
-      }
-      this.artifactsByRun.get(runId)?.push(newArtifact);
+      artifact.content = (artifact.content || '') + delta;
+      artifact.updatedAt = nowIso();
     },
 
-    /**
-     * Fetch persisted artifacts from the backend for a run.
-     * Use this when loading a previous session or restoring state after page refresh.
-     * Not actively used yet - ready for future session restoration feature.
-     */
-    async fetchArtifactsForRun(runId: string) {
-      try {
-        const apolloClient = getApolloClient();
-        const { data } = await apolloClient.query<AgentArtifactsQueryResult>({
-          query: GetAgentArtifacts,
-          variables: { runId },
-          fetchPolicy: 'network-only',
-        });
+    markTouchedEntryPending(runId: string, invocationId: string) {
+      return updateArtifactLifecycleByInvocation(this, runId, invocationId, {
+        status: 'pending',
+      });
+    },
 
-        if (data?.agentArtifacts) {
-          const artifacts: AgentArtifact[] = data.agentArtifacts.map((a) => ({
-            id: a.id,
-            runId: a.runId,
-            path: a.path,
-            type: a.type as 'file' | 'image' | 'audio' | 'video' | 'pdf' | 'csv' | 'excel' | 'other',
-            status: 'persisted' as ArtifactStatus, // Backend only stores persisted artifacts
-            createdAt: a.createdAt,
-            updatedAt: a.updatedAt,
-            workspaceRoot: a.workspaceRoot ?? null,
-          }));
-          this.artifactsByRun.set(runId, artifacts);
-        }
-      } catch (error) {
-        console.error('Failed to fetch artifacts for run:', runId, error);
-      }
+    markTouchedEntryAvailableByInvocation(
+      runId: string,
+      invocationId: string,
+      updates: {
+        type?: ArtifactType | string;
+        workspaceRoot?: string | null;
+        url?: string | null;
+        backendArtifactId?: string | null;
+        sourceTool?: ArtifactSourceTool;
+      } = {},
+    ) {
+      return updateArtifactLifecycleByInvocation(this, runId, invocationId, {
+        status: 'available',
+        type: updates.type,
+        workspaceRoot: updates.workspaceRoot,
+        url: updates.url,
+        backendArtifactId: updates.backendArtifactId,
+        sourceTool: updates.sourceTool,
+      });
+    },
+
+    markTouchedEntryFailedByInvocation(runId: string, invocationId: string) {
+      return updateArtifactLifecycleByInvocation(this, runId, invocationId, {
+        status: 'failed',
+      });
+    },
+
+    refreshTouchedEntryFromArtifactUpdate(runId: string, input: ArtifactProjectionInput) {
+      return upsertTouchedEntryProjection(this, runId, input, {
+        statusOnCreate: 'pending',
+        statusOnExisting: (artifact) =>
+          artifact.status === 'streaming' ? 'streaming' : (artifact.status as ArtifactAvailability),
+        sourceToolOnCreate: input.sourceTool ?? 'runtime_file_change',
+        sourceToolOnExisting: (artifact) => input.sourceTool ?? artifact.sourceTool,
+        announceOnCreate: true,
+      });
+    },
+
+    markTouchedEntryAvailableFromArtifactPersisted(runId: string, input: ArtifactProjectionInput) {
+      return upsertTouchedEntryProjection(this, runId, input, {
+        statusOnCreate: 'available',
+        statusOnExisting: () => 'available',
+        sourceToolOnCreate: input.sourceTool ?? 'runtime_file_change',
+        sourceToolOnExisting: (artifact) => input.sourceTool ?? artifact.sourceTool,
+        announceOnCreate: true,
+      });
+    },
+
+    ensureTouchedEntryTerminalStateFromLifecycle(
+      runId: string,
+      input: LifecycleFallbackInput,
+    ) {
+      return upsertTouchedEntryProjection(this, runId, input, {
+        statusOnCreate: input.status,
+        statusOnExisting: () => input.status,
+        sourceToolOnCreate: input.sourceTool,
+        sourceToolOnExisting: () => input.sourceTool,
+        announceOnCreate: true,
+      });
+    },
+
+    getArtifactById(runId: string, artifactId: string) {
+      const artifacts = this.artifactsByRun.get(runId) || [];
+      return findArtifactById(artifacts, artifactId);
+    },
+
+    clearLatestVisibleArtifact(runId: string) {
+      this.latestVisibleArtifactIdByRun.set(runId, null);
     },
   },
 });

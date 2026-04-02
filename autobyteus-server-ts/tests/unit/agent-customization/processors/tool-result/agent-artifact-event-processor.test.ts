@@ -1,16 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { ToolResultEvent } from "autobyteus-ts/agent/events/agent-events.js";
 import type { AgentContext } from "autobyteus-ts";
-import { AgentArtifactPersistenceProcessor } from "../../../../../src/agent-customization/processors/tool-result/agent-artifact-persistence-processor.js";
-
-type MockArtifact = {
-  id: string;
-  runId: string;
-  path: string;
-  type: string;
-  workspaceRoot?: string | null;
-  url?: string | null;
-};
+import { AgentArtifactEventProcessor } from "../../../../../src/agent-customization/processors/tool-result/agent-artifact-event-processor.js";
 
 const buildContext = (notifier?: {
   notifyAgentArtifactPersisted?: (payload: Record<string, unknown>) => void;
@@ -22,28 +13,12 @@ const buildContext = (notifier?: {
     statusManager: { notifier: notifier ?? null },
   } as AgentContext);
 
-const createMockService = (artifact?: Partial<MockArtifact>) => {
-  const defaultArtifact: MockArtifact = {
-    id: "artifact-123",
-    runId: "agent-1",
-    path: "test.py",
-    type: "file",
-    workspaceRoot: null,
-    url: null,
-  };
-
-  return {
-    createArtifact: vi.fn().mockResolvedValue({ ...defaultArtifact, ...artifact }),
-  };
-};
-
-describe("AgentArtifactPersistenceProcessor", () => {
-  it("persists write_file artifacts", async () => {
-    const artifactService = createMockService();
+describe("AgentArtifactEventProcessor", () => {
+  it("emits write_file artifact events", async () => {
     const notifier = { notifyAgentArtifactPersisted: vi.fn(), notifyAgentArtifactUpdated: vi.fn() };
     const context = buildContext(notifier);
 
-    const processor = new AgentArtifactPersistenceProcessor(artifactService);
+    const processor = new AgentArtifactEventProcessor();
     const event = new ToolResultEvent("write_file", null, undefined, undefined, {
       path: "src/app.py",
       content: "print('hello')",
@@ -51,25 +26,20 @@ describe("AgentArtifactPersistenceProcessor", () => {
 
     await processor.process(event, context);
 
-    expect(artifactService.createArtifact).toHaveBeenCalledWith({
-      runId: "agent-1",
-      path: "src/app.py",
-      type: "file",
-      url: null,
-      workspaceRoot: null,
-    });
     expect(notifier.notifyAgentArtifactPersisted).toHaveBeenCalledOnce();
     const payload = (notifier.notifyAgentArtifactPersisted as any).mock.calls[0][0];
+    expect(payload.path).toBe("src/app.py");
+    expect(payload.agent_id).toBe("agent-1");
     expect(payload.type).toBe("file");
+    expect("artifact_id" in payload).toBe(false);
     expect("url" in payload).toBe(false);
   });
 
-  it("persists generate_image artifacts with URL", async () => {
-    const artifactService = createMockService({ type: "image", path: "images/output.png" });
+  it("emits generate_image artifact events with URL", async () => {
     const notifier = { notifyAgentArtifactPersisted: vi.fn(), notifyAgentArtifactUpdated: vi.fn() };
     const context = buildContext(notifier);
 
-    const processor = new AgentArtifactPersistenceProcessor(artifactService);
+    const processor = new AgentArtifactEventProcessor();
     const event = new ToolResultEvent("generate_image", {
       output_file_url: "http://localhost:8000/rest/files/images/output.png",
       local_file_path: "/workspace/images/output.png",
@@ -77,28 +47,17 @@ describe("AgentArtifactPersistenceProcessor", () => {
 
     await processor.process(event, context);
 
-    expect(artifactService.createArtifact).toHaveBeenCalledWith({
-      runId: "agent-1",
-      path: "/workspace/images/output.png",
-      type: "image",
-      url: "http://localhost:8000/rest/files/images/output.png",
-      workspaceRoot: null,
-    });
     const payload = (notifier.notifyAgentArtifactPersisted as any).mock.calls[0][0];
+    expect(payload.path).toBe("/workspace/images/output.png");
     expect(payload.type).toBe("image");
     expect(payload.url).toBe("http://localhost:8000/rest/files/images/output.png");
   });
 
-  it("persists generate_speech artifacts with URL", async () => {
-    const artifactService = createMockService({
-      type: "audio",
-      path: "audio/speech.mp3",
-      url: "http://localhost:8000/rest/files/audio/speech.mp3",
-    });
+  it("emits generate_speech artifact events with URL", async () => {
     const notifier = { notifyAgentArtifactPersisted: vi.fn(), notifyAgentArtifactUpdated: vi.fn() };
     const context = buildContext(notifier);
 
-    const processor = new AgentArtifactPersistenceProcessor(artifactService);
+    const processor = new AgentArtifactEventProcessor();
     const event = new ToolResultEvent("generate_speech", {
       output_file_url: "http://localhost:8000/rest/files/audio/speech.mp3",
       local_file_path: "/workspace/audio/speech.mp3",
@@ -106,52 +65,42 @@ describe("AgentArtifactPersistenceProcessor", () => {
 
     await processor.process(event, context);
 
-    expect(artifactService.createArtifact).toHaveBeenCalledWith({
-      runId: "agent-1",
-      path: "/workspace/audio/speech.mp3",
-      type: "audio",
-      url: "http://localhost:8000/rest/files/audio/speech.mp3",
-      workspaceRoot: null,
-    });
     const payload = (notifier.notifyAgentArtifactPersisted as any).mock.calls[0][0];
+    expect(payload.path).toBe("/workspace/audio/speech.mp3");
     expect(payload.type).toBe("audio");
     expect(payload.url).toBe("http://localhost:8000/rest/files/audio/speech.mp3");
   });
 
   it("skips non-artifact tools", async () => {
-    const artifactService = createMockService();
     const notifier = { notifyAgentArtifactPersisted: vi.fn(), notifyAgentArtifactUpdated: vi.fn() };
     const context = buildContext(notifier);
 
-    const processor = new AgentArtifactPersistenceProcessor(artifactService);
+    const processor = new AgentArtifactEventProcessor();
     const event = new ToolResultEvent("read_file", "file contents");
 
     await processor.process(event, context);
 
-    expect(artifactService.createArtifact).not.toHaveBeenCalled();
     expect(notifier.notifyAgentArtifactPersisted).not.toHaveBeenCalled();
+    expect(notifier.notifyAgentArtifactUpdated).not.toHaveBeenCalled();
   });
 
   it("handles missing tool args for write_file", async () => {
-    const artifactService = createMockService();
     const notifier = { notifyAgentArtifactPersisted: vi.fn(), notifyAgentArtifactUpdated: vi.fn() };
     const context = buildContext(notifier);
 
-    const processor = new AgentArtifactPersistenceProcessor(artifactService);
+    const processor = new AgentArtifactEventProcessor();
     const event = new ToolResultEvent("write_file", null);
 
     await processor.process(event, context);
 
-    expect(artifactService.createArtifact).not.toHaveBeenCalled();
     expect(notifier.notifyAgentArtifactPersisted).not.toHaveBeenCalled();
   });
 
-  it("notifies edit_file artifact updates", async () => {
-    const artifactService = createMockService();
+  it("emits edit_file artifact updates", async () => {
     const notifier = { notifyAgentArtifactPersisted: vi.fn(), notifyAgentArtifactUpdated: vi.fn() };
     const context = buildContext(notifier);
 
-    const processor = new AgentArtifactPersistenceProcessor(artifactService);
+    const processor = new AgentArtifactEventProcessor();
     const event = new ToolResultEvent("edit_file", null, undefined, undefined, {
       path: "src/app.py",
       patch: "@@ -1 +1 @@",
@@ -159,7 +108,7 @@ describe("AgentArtifactPersistenceProcessor", () => {
 
     await processor.process(event, context);
 
-    expect(artifactService.createArtifact).not.toHaveBeenCalled();
+    expect(notifier.notifyAgentArtifactPersisted).not.toHaveBeenCalled();
     expect(notifier.notifyAgentArtifactUpdated).toHaveBeenCalledOnce();
     const payload = (notifier.notifyAgentArtifactUpdated as any).mock.calls[0][0];
     expect(payload.path).toBe("src/app.py");
@@ -167,49 +116,75 @@ describe("AgentArtifactPersistenceProcessor", () => {
     expect(payload.type).toBe("file");
   });
 
-  it("persists generic tool artifacts", async () => {
-    const artifactService = createMockService({ type: "video", path: "videos/demo.mp4" });
+  it("skips artifact events when the tool result failed", async () => {
     const notifier = { notifyAgentArtifactPersisted: vi.fn(), notifyAgentArtifactUpdated: vi.fn() };
     const context = buildContext(notifier);
 
-    const processor = new AgentArtifactPersistenceProcessor(artifactService);
+    const processor = new AgentArtifactEventProcessor();
+    const event = new ToolResultEvent(
+      "generate_image",
+      null,
+      "tool-1",
+      "Generation failed",
+      { output_file_path: "images/output.png" },
+    );
+
+    await processor.process(event, context);
+
+    expect(notifier.notifyAgentArtifactPersisted).not.toHaveBeenCalled();
+    expect(notifier.notifyAgentArtifactUpdated).not.toHaveBeenCalled();
+  });
+
+  it("skips artifact events when the tool result was denied", async () => {
+    const notifier = { notifyAgentArtifactPersisted: vi.fn(), notifyAgentArtifactUpdated: vi.fn() };
+    const context = buildContext(notifier);
+
+    const processor = new AgentArtifactEventProcessor();
+    const event = new ToolResultEvent(
+      "write_file",
+      null,
+      "tool-2",
+      "User denied",
+      { path: "src/app.py" },
+      undefined,
+      true,
+    );
+
+    await processor.process(event, context);
+
+    expect(notifier.notifyAgentArtifactPersisted).not.toHaveBeenCalled();
+    expect(notifier.notifyAgentArtifactUpdated).not.toHaveBeenCalled();
+  });
+
+  it("emits generic output artifact events", async () => {
+    const notifier = { notifyAgentArtifactPersisted: vi.fn(), notifyAgentArtifactUpdated: vi.fn() };
+    const context = buildContext(notifier);
+
+    const processor = new AgentArtifactEventProcessor();
     const event = new ToolResultEvent("create_video", { status: "success" }, undefined, undefined, {
       output_video_path: "videos/demo.mp4",
     });
 
     await processor.process(event, context);
 
-    expect(artifactService.createArtifact).toHaveBeenCalledWith({
-      runId: "agent-1",
-      path: "videos/demo.mp4",
-      type: "video",
-      url: null,
-      workspaceRoot: null,
-    });
-    expect(notifier.notifyAgentArtifactPersisted).toHaveBeenCalledOnce();
     const payload = (notifier.notifyAgentArtifactPersisted as any).mock.calls[0][0];
+    expect(payload.path).toBe("videos/demo.mp4");
     expect(payload.type).toBe("video");
   });
 
-  it("persists generic tool destination args", async () => {
-    const artifactService = createMockService({ type: "pdf", path: "docs/report.pdf" });
+  it("emits generic destination-file artifact events", async () => {
     const notifier = { notifyAgentArtifactPersisted: vi.fn(), notifyAgentArtifactUpdated: vi.fn() };
     const context = buildContext(notifier);
 
-    const processor = new AgentArtifactPersistenceProcessor(artifactService);
+    const processor = new AgentArtifactEventProcessor();
     const event = new ToolResultEvent("export_pdf", { status: "done" }, undefined, undefined, {
       destination_file: "docs/report.pdf",
     });
 
     await processor.process(event, context);
 
-    expect(artifactService.createArtifact).toHaveBeenCalledWith({
-      runId: "agent-1",
-      path: "docs/report.pdf",
-      type: "pdf",
-      url: null,
-      workspaceRoot: null,
-    });
-    expect(notifier.notifyAgentArtifactPersisted).toHaveBeenCalledOnce();
+    const payload = (notifier.notifyAgentArtifactPersisted as any).mock.calls[0][0];
+    expect(payload.path).toBe("docs/report.pdf");
+    expect(payload.type).toBe("pdf");
   });
 });

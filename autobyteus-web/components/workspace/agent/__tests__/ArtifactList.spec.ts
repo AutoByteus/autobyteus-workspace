@@ -5,17 +5,17 @@ import type { AgentArtifact } from '~/stores/agentArtifactsStore';
 
 describe('ArtifactList.vue', () => {
     const mockArtifacts: AgentArtifact[] = [
-        { id: '1', runId: 'a1', path: 'test.txt', type: 'file', status: 'persisted', createdAt: '', updatedAt: '' },
-        { id: '2', runId: 'a1', path: 'image.png', type: 'file', status: 'persisted', createdAt: '', updatedAt: '' },
-        { id: '3', runId: 'a1', path: 'script.py', type: 'file', status: 'streaming', createdAt: '', updatedAt: '' },
-        { id: '4', runId: 'a1', path: 'video.mp4', type: 'file', status: 'pending_approval', createdAt: '', updatedAt: '' },
+        { id: '1', runId: 'a1', path: 'test.txt', type: 'file', status: 'available', sourceTool: 'edit_file', createdAt: '', updatedAt: '' },
+        { id: '2', runId: 'a1', path: 'image.png', type: 'file', status: 'available', sourceTool: 'generated_output', createdAt: '', updatedAt: '' },
+        { id: '3', runId: 'a1', path: 'script.py', type: 'file', status: 'streaming', sourceTool: 'write_file', createdAt: '', updatedAt: '' },
+        { id: '4', runId: 'a1', path: 'video.mp4', type: 'file', status: 'pending', sourceTool: 'generated_output', createdAt: '', updatedAt: '' },
     ];
 
     it('renders empty state when no artifacts', () => {
         const wrapper = mount(ArtifactList, {
             props: { artifacts: [] }
         });
-        expect(wrapper.text()).toContain('No artifacts created yet');
+        expect(wrapper.text()).toContain('No touched files yet');
     });
 
     it('categorizes artifacts correctly into Files and Media', () => {
