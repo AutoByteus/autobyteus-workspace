@@ -3,10 +3,10 @@
 ## Review Meta
 
 - Ticket: `preview-session-multi-runtime-design`
-- Review Round: `1`
-- Trigger Stage: `7`
-- Prior Review Round Reviewed: `None`
-- Latest Authoritative Round: `1`
+- Review Round: `2`
+- Trigger Stage: `Re-entry`
+- Prior Review Round Reviewed: `1`
+- Latest Authoritative Round: `2`
 - Workflow state source: `tickets/in-progress/preview-session-multi-runtime-design/workflow-state.md`
 - Investigation notes reviewed as context: `tickets/in-progress/preview-session-multi-runtime-design/investigation-notes.md`
 - Earlier design artifact(s) reviewed as context: `tickets/in-progress/preview-session-multi-runtime-design/requirements.md`, `tickets/in-progress/preview-session-multi-runtime-design/proposed-design.md`
@@ -14,54 +14,67 @@
 - Shared Design Principles: `shared/design-principles.md`
 - Common Design Practices: `shared/common-design-practices.md`
 - Code Review Principles: `stages/08-code-review/code-review-principles.md`
-- Review snapshot note: This round reviews the current worktree snapshot, not only clean `HEAD`, because Stage 8 was entered with additional current source changes still present in the ticket worktree. Untracked current source files are treated as full additions in the audit.
+- Review snapshot note: Round `2` reviews committed snapshot `7b283a69ae783f867985d66eb9dcc2b99266140f` after the `v10` structural redesign and the user-validated packaged-app Stage 7 pass.
 
 ## Scope
 
 - Files reviewed (source + tests):
-  - Source: preview tool contract/service/bridge files, runtime preview adapter files for Codex and Claude, Electron preview owner/controller/bridge files, preview shell renderer/store integration, tool lifecycle preview activation path, and all changed source implementation files in the current worktree snapshot.
-  - Tests: changed preview unit tests, runtime adapter tests, live Codex/Claude preview integration tests, and renderer/Electron regression tests recorded in Stage 7.
+  - Source: the preview tool boundary under `autobyteus-server-ts/src/agent-tools/preview`, Codex and Claude preview runtime adapters, Codex event parsing split files, Electron preview owner/runtime/shell projection files, renderer preview store/panel activation path, and all changed source implementation files in the committed diff from base `ecd466ff87bb2b8c71b02ab25a7b5433f7bbb686`.
+  - Tests: changed preview unit tests, Electron regression suites, renderer/store tests, and live Codex/Claude preview integration tests recorded in Stage 7.
 - Why these files:
-  - They own or materially affect the preview data spine:
-    - server tool boundary,
-    - runtime adapter exposure,
-    - Electron preview-session owner,
-    - shell projection owner,
-    - renderer event spine that activates the Preview tab after `open_preview`.
-  - They also contain the largest changed source files and the files that crossed the hard size gate or diff-size gate.
+  - They own the preview data spine end to end:
+    - runtime tool exposure,
+    - preview tool contract/normalization/serialization,
+    - backend bridge boundary,
+    - Electron session owner and shell projection owners,
+    - renderer return-event activation of the Preview tab.
+  - They also include every changed source implementation file that must satisfy the Stage 8 file-size and structural rules.
 
 ## Prior Findings Resolution Check (Mandatory On Round >1)
 
-N/A on round `1`.
+| Prior Round | Finding ID | Previous Severity | Current Resolution (`Resolved`/`Partially Resolved`/`Still Failing`/`Not Applicable After Rework`) | Evidence | Notes |
+| --- | --- | --- | --- | --- | --- |
+| 1 | CR-001 | Blocker | Resolved | `autobyteus-web/electron/preview/preview-session-manager.ts`; `autobyteus-web/electron/preview/preview-session-navigation.ts`; `autobyteus-web/electron/preview/preview-session-page-operations.ts`; `autobyteus-web/electron/preview/preview-session-types.ts` | The oversized preview session owner was split into lifecycle, navigation, page-operations, and type owners. No changed source file remains over the `>500` hard limit. |
+| 1 | CR-002 | Blocker | Resolved | `autobyteus-server-ts/src/agent-tools/preview/preview-tool-contract.ts`; `autobyteus-server-ts/src/agent-tools/preview/preview-tool-input-normalizers.ts`; `autobyteus-server-ts/src/agent-tools/preview/preview-tool-parameter-schemas.ts`; `autobyteus-server-ts/src/agent-tools/preview/preview-tool-serialization.ts` | The preview tool contract is now contract-only, while parsing/semantic assertions, schema projection, and serialization live in separate owned files. |
+| 1 | CR-003 | Blocker | Resolved | `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-item-event-payload-parser.ts`; `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-tool-payload-parser.ts`; `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-reasoning-payload-parser.ts` | The Codex payload parser is now split by subject; the parent parser dropped below the hard limit and now delegates to tool/reasoning owners. |
+| 1 | CR-004 | Major | Resolved | `autobyteus-server-ts/src/agent-tools/preview/preview-tool-manifest.ts`; `autobyteus-server-ts/src/agent-execution/backends/codex/preview/build-preview-dynamic-tool-registrations.ts`; `autobyteus-server-ts/src/agent-execution/backends/claude/preview/build-claude-preview-tool-definitions.ts` | The preview tool surface is now owned once in a shared manifest and projected into Codex/Claude runtime-specific shapes instead of duplicated. |
+| 1 | CR-005 | Major | Resolved | `autobyteus-server-ts/src/agent-tools/preview/preview-tool-input-normalizers.ts`; `autobyteus-server-ts/tests/unit/agent-tools/preview/preview-tool-contract.test.ts` | Compatibility aliases are no longer accepted. The normalizers reject old spellings explicitly, and unit tests cover the rejection path. |
 
 ## Source File Size And Structure Audit (Mandatory)
 
 Measurement note:
-- Effective non-empty line count was measured on current source files with `rg -n "\\S" <file> | wc -l`.
-- Changed-line delta was measured against base ref `ecd466ff87bb2b8c71b02ab25a7b5433f7bbb686` using current worktree diff. Current untracked source files were treated as full additions for this round because the reviewed snapshot is not a clean `HEAD`.
+- Effective non-empty line count was measured with `rg -n "\\S" <file> | wc -l`.
+- Changed-line delta was measured against base ref `ecd466ff87bb2b8c71b02ab25a7b5433f7bbb686` using `git diff --numstat <base>..HEAD -- <file>`.
+- The files with deltas above `220` were individually rechecked for ownership and SoC: `codex-item-event-payload-parser.ts`, `codex-tool-payload-parser.ts`, `preview-tool-input-normalizers.ts`, `preview-tool-manifest.ts`, `preview-bridge-server.ts`, `preview-session-manager.ts`, `preview-session-page-operations.ts`, and `preview-shell-controller.ts`. In each case the large delta is attributable to a new or freshly split owner with one coherent subject, not to renewed structural drift.
 
 | Source File | Effective Non-Empty Line Count | Adds/Expands Functionality (`Yes`/`No`) | `>500` Hard-Limit Check | `>220` Changed-Line Delta Gate | Scope-Appropriate SoC Check (`Pass`/`Fail`) | File Placement Check (`Pass`/`Fail`) | Preliminary Classification (`N/A`/`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`) | Required Action (`Keep`/`Split`/`Move`/`Refactor`) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `autobyteus-server-ts/src/agent-execution/backends/claude/events/claude-session-event-converter.ts` | 238 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
 | `autobyteus-server-ts/src/agent-execution/backends/claude/preview/build-claude-preview-mcp-servers.ts` | 22 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
-| `autobyteus-server-ts/src/agent-execution/backends/claude/preview/build-claude-preview-tool-definitions.ts` | 241 | Yes | Pass | Fail | Fail | Pass | Design Impact | Refactor |
+| `autobyteus-server-ts/src/agent-execution/backends/claude/preview/build-claude-preview-tool-definitions.ts` | 94 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
 | `autobyteus-server-ts/src/agent-execution/backends/claude/preview/build-claude-run-mcp-servers.ts` | 43 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
 | `autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts` | 428 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
 | `autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts` | 224 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
 | `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-item-event-converter.ts` | 329 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
-| `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-item-event-payload-parser.ts` | 514 | Yes | Fail | Pass | Fail | Pass | Design Impact | Split |
-| `autobyteus-server-ts/src/agent-execution/backends/codex/preview/build-preview-dynamic-tool-registrations.ts` | 282 | Yes | Pass | Fail | Fail | Pass | Design Impact | Refactor |
-| `autobyteus-server-ts/src/agent-tools/preview/capture-preview-screenshot.ts` | 57 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
-| `autobyteus-server-ts/src/agent-tools/preview/close-preview.ts` | 53 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
-| `autobyteus-server-ts/src/agent-tools/preview/execute-preview-javascript.ts` | 57 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
-| `autobyteus-server-ts/src/agent-tools/preview/list-preview-sessions.ts` | 52 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
-| `autobyteus-server-ts/src/agent-tools/preview/navigate-preview.ts` | 58 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
-| `autobyteus-server-ts/src/agent-tools/preview/open-preview.ts` | 60 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
+| `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-item-event-payload-parser.ts` | 223 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
+| `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-reasoning-payload-parser.ts` | 60 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
+| `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-tool-payload-parser.ts` | 328 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
+| `autobyteus-server-ts/src/agent-execution/backends/codex/preview/build-preview-dynamic-tool-registrations.ts` | 97 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
+| `autobyteus-server-ts/src/agent-tools/preview/capture-preview-screenshot.ts` | 58 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
+| `autobyteus-server-ts/src/agent-tools/preview/close-preview.ts` | 52 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
+| `autobyteus-server-ts/src/agent-tools/preview/execute-preview-javascript.ts` | 58 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
+| `autobyteus-server-ts/src/agent-tools/preview/list-preview-sessions.ts` | 53 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
+| `autobyteus-server-ts/src/agent-tools/preview/navigate-preview.ts` | 57 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
+| `autobyteus-server-ts/src/agent-tools/preview/open-preview.ts` | 59 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
 | `autobyteus-server-ts/src/agent-tools/preview/preview-bridge-client.ts` | 142 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
-| `autobyteus-server-ts/src/agent-tools/preview/preview-dom-snapshot.ts` | 61 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
-| `autobyteus-server-ts/src/agent-tools/preview/preview-tool-contract.ts` | 535 | Yes | Fail | Fail | Fail | Pass | Design Impact | Split |
-| `autobyteus-server-ts/src/agent-tools/preview/preview-tool-service.ts` | 108 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
-| `autobyteus-server-ts/src/agent-tools/preview/read-preview-page.ts` | 58 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
+| `autobyteus-server-ts/src/agent-tools/preview/preview-dom-snapshot.ts` | 60 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
+| `autobyteus-server-ts/src/agent-tools/preview/preview-tool-contract.ts` | 161 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
+| `autobyteus-server-ts/src/agent-tools/preview/preview-tool-input-normalizers.ts` | 381 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
+| `autobyteus-server-ts/src/agent-tools/preview/preview-tool-manifest.ts` | 225 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
+| `autobyteus-server-ts/src/agent-tools/preview/preview-tool-parameter-schemas.ts` | 63 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
+| `autobyteus-server-ts/src/agent-tools/preview/preview-tool-serialization.ts` | 23 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
+| `autobyteus-server-ts/src/agent-tools/preview/preview-tool-service.ts` | 110 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
+| `autobyteus-server-ts/src/agent-tools/preview/read-preview-page.ts` | 57 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
 | `autobyteus-server-ts/src/agent-tools/preview/register-preview-tools.ts` | 22 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
 | `autobyteus-server-ts/src/startup/agent-tool-loader.ts` | 57 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
 | `autobyteus-web/components/layout/RightSideTabs.vue` | 149 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
@@ -69,13 +82,16 @@ Measurement note:
 | `autobyteus-web/composables/useRightSideTabs.ts` | 35 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
 | `autobyteus-web/electron/main.ts` | 482 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
 | `autobyteus-web/electron/preload.ts` | 104 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
-| `autobyteus-web/electron/preview/preview-bridge-server.ts` | 225 | Yes | Pass | Fail | Pass | Pass | N/A | Keep |
+| `autobyteus-web/electron/preview/preview-bridge-server.ts` | 225 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
 | `autobyteus-web/electron/preview/preview-dom-snapshot-script.ts` | 156 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
 | `autobyteus-web/electron/preview/preview-page-cleaner.ts` | 25 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
 | `autobyteus-web/electron/preview/preview-runtime.ts` | 78 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
 | `autobyteus-web/electron/preview/preview-screenshot-artifact-writer.ts` | 11 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
-| `autobyteus-web/electron/preview/preview-session-manager.ts` | 613 | Yes | Fail | Fail | Fail | Pass | Design Impact | Split |
-| `autobyteus-web/electron/preview/preview-shell-controller.ts` | 216 | Yes | Pass | Fail | Pass | Pass | N/A | Keep |
+| `autobyteus-web/electron/preview/preview-session-manager.ts` | 289 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
+| `autobyteus-web/electron/preview/preview-session-navigation.ts` | 117 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
+| `autobyteus-web/electron/preview/preview-session-page-operations.ts` | 206 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
+| `autobyteus-web/electron/preview/preview-session-types.ts` | 114 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
+| `autobyteus-web/electron/preview/preview-shell-controller.ts` | 216 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
 | `autobyteus-web/electron/preview/preview-view-factory.ts` | 25 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
 | `autobyteus-web/electron/server/baseServerManager.ts` | 341 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
 | `autobyteus-web/electron/server/linuxServerManager.ts` | 61 | Yes | Pass | Pass | Pass | Pass | N/A | Keep |
@@ -94,88 +110,104 @@ Measurement note:
 
 | Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Data-flow spine inventory clarity and preservation under shared principles | Fail | The broad end-to-end preview spine is still traceable (`open_preview` tool wrappers -> `PreviewToolService` -> `PreviewBridgeClient` -> `PreviewBridgeServer` -> `PreviewSessionManager`; renderer return/event spine in `toolLifecycleHandler.ts:470-503` -> `PreviewShellStore` -> `PreviewShellController`). However, the bounded local preview-session owner spine is no longer clear in code because `preview-session-manager.ts:176-707` mixes session open/reuse/load/close sequencing with page read, DOM snapshot, JS execution, full-page screenshot resizing, viewport mutation, tombstone retention, and view accessors in one over-limit file. | Re-split the Electron preview owner so the bounded local session spine is readable again and its support mechanisms are placed around it instead of inside one oversized file. |
-| Ownership boundary preservation and clarity | Fail | `preview-tool-contract.ts:11-602` and `preview-session-manager.ts:20-707` each absorb multiple owners. The first is no longer only a contract boundary; the second is no longer only session lifecycle ownership. | Split both files into tighter owner files and keep each owner responsible for one coherent subject. |
-| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Fail | Parsing/coercion/schema-building/error-serialization are collapsed into `preview-tool-contract.ts`, and runtime-specific tool metadata is duplicated in adapter files instead of living in one owned off-spine structure under preview tool ownership. | Move parsing/schema concerns and runtime tool manifests into distinct owned files that serve the preview tool boundary instead of competing with it. |
-| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | The implementation still routes through existing capability areas rather than creating new cross-cutting helpers: server tool layer, runtime adapters, Electron preview owner, renderer streaming handler, and shell window infrastructure are all reused. | Keep. |
-| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Fail | `build-preview-dynamic-tool-registrations.ts:31-292` and `build-claude-preview-tool-definitions.ts:44-252` duplicate the same eight-tool surface, descriptions, parameter semantics, parse calls, and service dispatch. | Introduce one owned preview tool manifest/catalog and render Codex/Claude adapter definitions from that shared owned structure. |
-| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | The result/request DTO shapes themselves are mostly tight. The main weakness is file ownership, not one overly optional shared DTO. | Keep DTO shapes tight during the split. |
-| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | Capability gating and semantic validation still have one clear server-side owner in `preview-tool-service.ts:30-112`; shell projection ownership stays in `preview-shell-controller.ts:54-254`. | Keep. |
-| Empty indirection check (no pass-through-only boundary) | Pass | `PreviewToolService` still owns environment gating plus semantic validation, so it is not pure pass-through indirection. | Keep. |
-| Scope-appropriate separation of concerns and file responsibility clarity | Fail | The Stage 8 hard-limit failures are accompanied by mixed-concern files: `preview-tool-contract.ts`, `preview-session-manager.ts`, and `codex-item-event-payload-parser.ts`. | Split or refactor the oversized mixed-concern files before returning to Stage 6. |
-| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | The current flow still respects the intended direction: runtime adapter -> preview tool layer -> preview bridge client -> Electron bridge server -> preview session owner; renderer preview activation remains a focus request rather than a second session owner. | Keep. |
-| Boundary encapsulation check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | Callers above the preview tool layer do not bypass `PreviewToolService`; renderer uses preload IPC and preview shell snapshot APIs rather than reaching into Electron internals directly. | Keep. |
-| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | Paths mostly reflect ownership: server preview tools under `agent-tools/preview`, Electron preview owner under `electron/preview`, renderer shell projection under renderer/store/component paths. | Keep. |
-| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | Folder layout is reasonable for the capability area. The problem is oversized files inside the layout, not overall over-fragmentation. | Keep layout, split files. |
-| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Fail | `preview-tool-contract.ts:288-371` accepts multiple alias spellings (`window_title`, `waitUntil`, `previewSessionId`, `cleaningMode`, `fullPage`, `includeNonInteractive`, `includeBoundingBoxes`, `maxElements`) even though the reviewed stable tool surface is snake_case. That weakens the canonical interface boundary. | Remove the compatibility aliases and keep one canonical preview request shape. |
-| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Fail | `preview-tool-contract.ts` is materially more than a contract file; `preview-session-manager.ts` materially owns more than session management. The names no longer match their real responsibility. | Rename/split so file names match what they actually own. |
-| No unjustified duplication of code / repeated structures in changed scope | Fail | The Codex and Claude preview adapter files duplicate the preview tool surface. | Extract one owned preview tool manifest and remove the duplicated adapter definitions. |
-| Patch-on-patch complexity control | Fail | The current preview implementation has accumulated repeated local-fix layering inside already-large owners (`preview-session-manager.ts`, `preview-tool-contract.ts`) instead of being re-split when the shape exceeded the guardrails. | Rework the affected files structurally instead of continuing local patches in place. |
-| Dead/obsolete code cleanup completeness in changed scope | Pass | The dropped console-log and DevTools preview tools were actually removed from current source scope; deleted files are no longer referenced in current source. | Keep. |
-| Test quality is acceptable for the changed behavior | Pass | Current Stage 7 evidence includes renderer/Electron regressions plus live Codex and Claude preview reruns. That is adequate for behavior proof even though the code structure failed Stage 8. | Keep. |
-| Test maintainability is acceptable for the changed behavior | Pass | The current focused tests are direct and scoped to preview behavior instead of duplicating the whole subsystem. | Keep. |
-| Validation evidence sufficiency for the changed flow | Pass | Stage 7 evidence is sufficient for the implemented flow; the rejection here is structural, not evidentiary. | Keep. |
-| No backward-compatibility mechanisms (no compatibility wrappers/dual-path behavior) | Fail | `preview-tool-contract.ts:288-371` still preserves alternative argument spellings instead of enforcing the reviewed stable tool contract directly. | Remove the compatibility aliases. |
-| No legacy code retention for old behavior | Pass | No current old preview-window path or dropped console/devtools tool code remains in current source scope. | Keep. |
+| Data-flow spine inventory clarity and preservation under shared principles | Pass | The main preview spine is now traceable as `runtime adapter -> preview manifest/normalizer -> PreviewToolService -> PreviewBridgeClient -> PreviewBridgeServer -> PreviewSessionManager/PreviewSessionNavigation/PreviewSessionPageOperations`, with the shell return spine `toolLifecycleHandler -> PreviewShellStore -> PreviewShellController -> WorkspaceShellWindow`. The bounded local session owner spine is readable again because lifecycle, navigation, and page operations are no longer collapsed into one file. | Keep |
+| Ownership boundary preservation and clarity | Pass | Each major responsibility now has a concrete owner: contract/types, input normalization, tool manifest, schema projection, serialization, runtime-specific adapter projection, bridge transport, session lifecycle, navigation, page operations, shell projection, and renderer projection. | Keep |
+| Off-spine concern clarity (off-spine concerns serve clear owners and stay off the main line) | Pass | Screenshot writing, DOM snapshot script generation, HTML cleaning, and shell snapshot publishing remain support mechanisms around clear owners instead of orchestration blobs. | Keep |
+| Existing capability/subsystem reuse check (no fresh helper where an existing subsystem should own it) | Pass | The redesign reuses the existing preview subsystem boundary and the existing runtime adapter areas instead of inventing parallel side utilities outside those owners. | Keep |
+| Reusable owned structures check (repeated structures extracted into the right owned file instead of copied across files) | Pass | `PREVIEW_TOOL_MANIFEST` now owns the eight-tool surface once, and Codex/Claude/native projections all render from it. | Keep |
+| Shared-structure/data-model tightness check (no kitchen-sink base, no overlapping parallel shapes, specialization/composition used meaningfully) | Pass | The preview tool contract holds only canonical shared shapes, and session/runtime shapes are specialized in the Electron-side `preview-session-types.ts`. The prior kitchen-sink contract blob is gone. | Keep |
+| Repeated coordination ownership check (shared policy has a clear owner instead of being repeated across callers) | Pass | Input alias rejection, semantic assertions, parameter definitions, and serialization each have one owner, rather than being repeated across handlers or runtime adapters. | Keep |
+| Empty indirection check (no pass-through-only boundary) | Pass | The new files are not empty pass-through wrappers. Each one owns a concrete concern: normalization, manifest definition, parameter schema projection, serialization, navigation, page operations, or tool payload parsing. | Keep |
+| Scope-appropriate separation of concerns and file responsibility clarity | Pass | The Stage 8 re-entry split restored scope-appropriate files. The largest remaining files stay within the hard limit and each still owns one coherent concern. | Keep |
+| Ownership-driven dependency check (no forbidden shortcuts or unjustified cycles) | Pass | Runtime adapters depend on the preview tool boundary, the bridge server depends on the session owner, and renderer projection depends on preload/electron APIs. No caller now depends on both an outer owner and an internal subordinate of that owner. | Keep |
+| Boundary encapsulation check (callers do not depend on both an outer owner and that owner's internal manager/repository/helper/lower-level concern) | Pass | Callers use `PreviewToolService`, `PreviewShellController`, or `PreviewSessionManager` directly at the appropriate layer. The v10 split did not leak internal page-operation or navigation owners across boundaries. | Keep |
+| File placement check (file/folder path matches owning concern or explicitly justified shared boundary) | Pass | Preview-specific server code stays under `agent-tools/preview`, runtime-specific projections stay under their runtime adapters, and Electron preview ownership stays under `autobyteus-web/electron/preview`. | Keep |
+| Flat-vs-over-split layout judgment (layout is readable for the scope and not artificially fragmented) | Pass | The subsystem is split enough to restore ownership clarity without becoming an over-fragmented forest of tiny wrappers. | Keep |
+| Interface/API/query/command/service-method boundary clarity (one subject, one responsibility, explicit identity shape) | Pass | The eight preview tools expose one canonical snake_case contract, and the shell IPC surface is explicit about snapshot, focus, set-active, host-bounds, and close operations. | Keep |
+| Naming quality and naming-to-responsibility alignment check (files, folders, APIs, types, functions, parameters, variables) | Pass | File names now match real ownership (`preview-tool-input-normalizers`, `preview-tool-manifest`, `preview-session-navigation`, `preview-session-page-operations`, `codex-tool-payload-parser`). The prior naming drift is resolved. | Keep |
+| No unjustified duplication of code / repeated structures in changed scope | Pass | The earlier duplicated runtime tool surface is gone. Remaining runtime-specific projection code is truly runtime-specific. | Keep |
+| Patch-on-patch complexity control | Pass | The redesign removed the accumulated patch-on-patch local fixes by re-splitting the owners rather than layering more behavior into the old oversized files. | Keep |
+| Dead/obsolete code cleanup completeness in changed scope | Pass | `get_preview_console_logs`, `open_preview_devtools`, and the preview console log buffer were removed cleanly from current source scope. | Keep |
+| Test quality is acceptable for the changed behavior | Pass | Unit, renderer, Electron, and live runtime validation cover the contract split, manifest projection, renderer activation path, and packaged-app behavior. | Keep |
+| Test maintainability is acceptable for the changed behavior | Pass | The tests are focused by concern and follow the same split ownership shape as the code instead of depending on one all-purpose mega test. | Keep |
+| Validation evidence sufficiency for the changed flow | Pass | Stage 7 now includes focused automated evidence plus real packaged-app user validation of the Codex preview path. | Keep |
+| No backward-compatibility mechanisms (no compatibility wrappers/dual-path behavior) | Pass | The old alias spellings are rejected, not accepted. The stable preview surface is now one canonical snake_case contract. | Keep |
+| No legacy code retention for old behavior | Pass | The old window-oriented preview behavior and removed console/devtools tools are not retained in current source. | Keep |
+
+## Review Scorecard (Mandatory)
+
+- Overall score (`/10`): `8.8`
+- Overall score (`/100`): `88`
+- Score calculation note: equal-weight average across the ten categories below; round `/10` to one decimal place and `/100` to the nearest whole number.
+
+| Category | Score (`1.0-10.0`) | Why This Score | What Is Weak / Holding It Down | What Should Improve |
+| --- | --- | --- | --- | --- |
+| Spine clarity and traceability | 9.0 | The end-to-end preview flow is easy to trace again, and the bounded local session spine is materially cleaner after the v10 split. | The return-event activation still relies on a preview-specific branch inside the generic tool lifecycle handler, which adds some local tracing overhead. | If preview UI behavior expands further, extract the preview activation hook from the generic handler into a preview-owned renderer boundary. |
+| Ownership clarity and boundary encapsulation | 8.5 | The major owners are now explicit and concrete, and internal support files no longer masquerade as primary owners. | The renderer activation path still couples generic tool-success handling to preview focus behavior, so the ownership line there is not as crisp as the core server/Electron split. | Keep feature-specific projection behavior out of generic lifecycle code as the preview subsystem grows. |
+| Separation of concerns and file placement | 9.0 | File placement matches responsibility across server runtime adapters, shared preview server boundary, and Electron preview ownership. | A few new owners are still fairly large because the feature surface itself is broad. | Split by subject again before adding more browser-style tools into the same files. |
+| API/interface/query/command clarity | 9.0 | The stable preview contract is now canonical, snake_case, and session-oriented, with clear separation between tool contract and shell IPC contract. | The subsystem now exposes a broad eight-tool surface, so future additions could blur command/query distinctions if they are not kept disciplined. | Preserve the query/command split and keep every future tool subject-specific. |
+| Shared-structure/data-model tightness and reusable owned structures | 9.0 | The manifest, normalizers, schemas, and serialization boundaries are tight, and runtime adapters project from a single owned structure. | The normalizer file is still a large concentration point because it owns eight-tool parsing and semantic assertion. | Split by subject only if that file stops feeling like one coherent owner; do not let it become the next kitchen-sink. |
+| Dependency quality and shortcut avoidance | 8.5 | Dependencies now follow the preview ownership model cleanly, especially on the server side and inside Electron. | The renderer activation path still reaches both preview store and right-side tab selection from generic tool lifecycle handling. | Keep dependency direction explicit if preview UI behavior expands. |
+| Naming quality and local readability | 8.5 | File and type names are concrete and much more responsibility-aligned than the failing round. | Some files remain dense enough that local readability still depends on careful scanning rather than immediate visual simplicity. | Continue keeping names concrete and split further before density starts hiding intent again. |
+| Validation strength | 8.5 | Validation is materially stronger now: focused unit suites, Electron regressions, renderer tests, Claude live validation, and real packaged-app user validation. | The standalone live Codex harness remains environmentally unstable, so not every automated runtime probe is equally strong. | If Codex transport instability matters beyond this ticket, isolate it in a separate runtime-validation ticket instead of folding it back into preview. |
+| Runtime correctness under edge cases | 8.5 | The code now covers previously failing packaged-app edge cases: result normalization, renderer mount, shutdown cleanup, and projection boundedness. | The preview subsystem is stateful and multi-boundary, so edge-case confidence still depends on continued discipline around shell/session interactions. | Add targeted regression tests as new preview behaviors are introduced, especially around multi-shell or session-transfer edge cases. |
+| Modernization / cleanup / no legacy | 9.0 | The redesign removed the obsolete tools, rejected compatibility aliases, and replaced the earlier patch-on-patch structure with cleaner owners. | There is still some size pressure in the biggest new owners, so modernization must continue if scope expands. | Treat further preview growth as a structural change first, not as another local patch series. |
 
 ## Findings
 
-- `[CR-001] File: autobyteus-web/electron/preview/preview-session-manager.ts | Type: FileSize/SoC/Spine | Severity: Blocker | Evidence: 613 effective non-empty lines. Lines 20-147 define request/result/error shapes, 176-372 own the public preview-session API, and 374-707 also own observer wiring, reuse selection, tombstones, URL normalization, ready-state waiting, title updates, full-page screenshot resizing, view accessors, and viewport mutation. The bounded local preview-session spine is buried inside one oversized file. | Required update: split the Electron preview owner into tighter files so the session lifecycle spine is readable and stays under the hard limit; keep page-read/DOM snapshot/JS/screenshot/view-bounds support in clear supporting files around that owner.`"
-- `[CR-002] File: autobyteus-server-ts/src/agent-tools/preview/preview-tool-contract.ts | Type: FileSize/SoC/Naming | Severity: Blocker | Evidence: 535 effective non-empty lines. The file named “contract” also owns tool names, env names, DTO types, coercion helpers, input parsers, semantic assertions, `ParameterSchema` builders, and error serialization (`preview-tool-contract.ts:11-602`). That is not one responsibility and it breaches the hard-limit rule. | Required update: split canonical contract constants/types away from parsing/validation/schema-building/error-serialization concerns and rename the resulting files so their names match their actual owners.`"
-- `[CR-003] File: autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-item-event-payload-parser.ts | Type: FileSize/SoC | Severity: Blocker | Evidence: 514 effective non-empty lines after additional preview-related changes. The parser already owned segment typing, metadata extraction, reasoning parsing, web-search argument extraction, tool-argument parsing, and tool-result decoding, and the preview result parsing was added in `codex-item-event-payload-parser.ts:20-29` and `codex-item-event-payload-parser.ts:428-447`. | Required update: split the parser by subject so preview/tool-result decoding is not added into an already over-limit all-purpose payload parser.`"
-- `[CR-004] File: autobyteus-server-ts/src/agent-execution/backends/codex/preview/build-preview-dynamic-tool-registrations.ts` and `autobyteus-server-ts/src/agent-execution/backends/claude/preview/build-claude-preview-tool-definitions.ts` | Type: ReusableOwnedStructures/Duplication | Severity: Major | Evidence: both files repeat the same eight-tool surface, descriptions, parameter semantics, parse calls, and service dispatch (`build-preview-dynamic-tool-registrations.ts:31-292`; `build-claude-preview-tool-definitions.ts:44-252`). The shared preview tool boundary does not own one reusable tool manifest, so runtime adapters duplicate it. | Required update: extract one owned preview tool manifest/catalog under `agent-tools/preview` and let Codex/Claude adapters render runtime-specific definitions from that structure instead of copying the surface twice.`"
-- `[CR-005] File: autobyteus-server-ts/src/agent-tools/preview/preview-tool-contract.ts | Type: BackwardCompat/InterfaceBoundary | Severity: Major | Evidence: `parseOpenPreviewInput`, `parseNavigatePreviewInput`, `parseReadPreviewPageInput`, `parseCapturePreviewScreenshotInput`, `parsePreviewDomSnapshotInput`, and `parseExecutePreviewJavascriptInput` all preserve alternate compatibility spellings (`window_title`, camelCase `waitUntil`, `previewSessionId`, `cleaningMode`, `fullPage`, `includeNonInteractive`, `includeBoundingBoxes`, `maxElements`) at `preview-tool-contract.ts:288-371`, even though the reviewed stable preview tool surface is snake_case. | Required update: remove the compatibility aliases and enforce one canonical preview request shape at the contract boundary.`"
+None.
 
 ## Round History
 
 | Round | Trigger | Prior Unresolved Findings Rechecked (`Yes`/`No`/`N/A`) | New Findings Found (`Yes`/`No`) | Gate Decision (`Pass`/`Fail`) | Latest Authoritative (`Yes`/`No`) | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 | Stage 7 pass | N/A | Yes | Fail | Yes | Independent review of the current worktree snapshot failed on the hard-limit rule and related structural checks. |
+| 1 | Stage 7 pass | N/A | Yes | Fail | No | Independent review of the earlier snapshot failed on hard-limit violations, duplicated runtime tool surfaces, compatibility alias acceptance, and bounded-local-spine degradation. |
+| 2 | Re-entry | Yes | No | Pass | Yes | The `v10` redesign resolved all prior findings. The committed snapshot satisfies the Stage 8 hard-limit and structural review gates. |
 
 ## Re-Entry Declaration (Mandatory On `Fail`)
 
-- Trigger Stage: `8`
-- Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `Design Impact`
+- Trigger Stage: `N/A`
+- Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
 - Required Return Path:
-  - `Design Impact` -> `Stage 1 -> Stage 3 -> Stage 4 -> Stage 5 -> Stage 6 -> Stage 7 -> Stage 8`
+  - `N/A`
 - Upstream artifacts required before code edits:
-  - `investigation-notes.md` updated (if required): `Yes`
-  - `requirements.md` updated (if required): `No current requirement ambiguity found.`
-  - earlier design artifacts updated (if required): `Yes`
-  - runtime call stacks + review updated (if required): `Yes`
+  - `investigation-notes.md` updated (if required): `N/A`
+  - `requirements.md` updated (if required): `N/A`
+  - earlier design artifacts updated (if required): `N/A`
+  - runtime call stacks + review updated (if required): `N/A`
 
 ## Gate Decision
 
-- Latest authoritative review round: `1`
-- Decision: `Fail`
-- Implementation can proceed to `Stage 9`: `No`
+- Latest authoritative review round: `2`
+- Decision: `Pass`
+- Implementation can proceed to `Stage 9`: `Yes`
 - Mandatory pass checks:
-  - All changed source files have effective non-empty line count `<=500`: `Fail`
+  - Review scorecard is recorded with rationale, weakness, and required-improvement notes for all ten categories: `Pass`
+  - All changed source files have effective non-empty line count `<=500`: `Pass`
   - Required `>220` changed-line delta-gate assessments are recorded for all applicable changed source files: `Pass`
-  - Data-flow spine inventory clarity and preservation under shared principles = `Fail`
-  - Ownership boundary preservation = `Fail`
-  - Support structure clarity = `Fail`
+  - Data-flow spine inventory clarity and preservation under shared principles = `Pass`
+  - Ownership boundary preservation = `Pass`
+  - Support structure clarity = `Pass`
   - Existing capability/subsystem reuse check = `Pass`
-  - Reusable owned structures check = `Fail`
+  - Reusable owned structures check = `Pass`
   - Shared-structure/data-model tightness check = `Pass`
   - Repeated coordination ownership check = `Pass`
   - Empty indirection check = `Pass`
-  - Scope-appropriate separation of concerns and file responsibility clarity = `Fail`
+  - Scope-appropriate separation of concerns and file responsibility clarity = `Pass`
   - Ownership-driven dependency check = `Pass`
   - Boundary encapsulation check = `Pass`
   - File placement check = `Pass`
   - Flat-vs-over-split layout judgment = `Pass`
-  - Interface/API/query/command/service-method boundary clarity = `Fail`
-  - Naming quality and naming-to-responsibility alignment check = `Fail`
-  - No unjustified duplication of code / repeated structures in changed scope = `Fail`
-  - Patch-on-patch complexity control = `Fail`
+  - Interface/API/query/command/service-method boundary clarity = `Pass`
+  - Naming quality and naming-to-responsibility alignment check = `Pass`
+  - No unjustified duplication of code / repeated structures in changed scope = `Pass`
+  - Patch-on-patch complexity control = `Pass`
   - Dead/obsolete code cleanup completeness in changed scope = `Pass`
   - Test quality is acceptable for the changed behavior = `Pass`
   - Test maintainability is acceptable for the changed behavior = `Pass`
   - Validation evidence sufficiency = `Pass`
-  - No backward-compatibility mechanisms = `Fail`
+  - No backward-compatibility mechanisms = `Pass`
   - No legacy code retention = `Pass`
 - Notes:
-  - The reviewed implementation still works functionally, but Stage 8 is an independent structural gate. The failure is not about Stage 7 proof; it is about the code no longer satisfying the shared design principles and Stage 8 hard review rules.
-  - Because the main rejection includes hard-limit violations in changed source files and repeated surface duplication across runtime adapters, this round is classified as `Design Impact`, not `Local Fix`.
-
+  - The independent Stage 8 gate passes on the current committed snapshot. The earlier failing round is preserved as history, but it is no longer authoritative after the v10 redesign.
+  - The remaining drag is normal size pressure in a few still-broad owners, not a current structural violation.

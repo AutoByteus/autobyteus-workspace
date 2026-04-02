@@ -8,10 +8,10 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 
 - Ticket: `preview-session-multi-runtime-design`
 - Current Stage: `8`
-- Next Stage: `8`
+- Next Stage: `9`
 - Code Edit Permission: `Locked`
-- Active Re-Entry: `Yes`
-- Re-Entry Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `Design Impact`
+- Active Re-Entry: `No`
+- Re-Entry Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
 - Last Transition ID: `T-058`
 - Last Updated: `2026-04-02`
 
@@ -45,7 +45,7 @@ Note:
 | 5 Future-State Runtime Call Stack Review | Pass | Future-state runtime call stack review `Go Confirmed` is restored for the `v10` structural redesign after two clean deep-review rounds (`21` and `22`) with no new blockers or use cases. | `tickets/in-progress/preview-session-multi-runtime-design/proposed-design.md`; `tickets/in-progress/preview-session-multi-runtime-design/future-state-runtime-call-stack.md`; `tickets/in-progress/preview-session-multi-runtime-design/future-state-runtime-call-stack-review.md`; `tickets/in-progress/preview-session-multi-runtime-design/workflow-state.md` |
 | 6 Implementation | Pass | The `v10` implementation pass is complete: the preview tool boundary is split into contract-only ownership plus strict normalizers/manifest/schema projection, the Electron preview owner is split into lifecycle/navigation/page-operations owners, the dropped tools are removed, and the Codex payload parser is split by subject. Focused unit suites and Electron regression suites passed, and the Electron production compile and mac packaging path completed successfully. | `tickets/in-progress/preview-session-multi-runtime-design/implementation.md`; `autobyteus-server-ts/tests/unit/agent-tools/preview/preview-tool-contract.test.ts`; `autobyteus-server-ts/tests/unit/agent-tools/preview/preview-bridge-client.test.ts`; `autobyteus-server-ts/tests/unit/agent-tools/preview/register-preview-tools.test.ts`; `autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts`; `autobyteus-server-ts/tests/unit/agent-execution/backends/codex/preview/build-preview-dynamic-tool-registrations.test.ts`; `autobyteus-server-ts/tests/unit/agent-execution/backends/claude/preview/build-claude-preview-mcp-servers.test.ts`; `autobyteus-web/electron/preview/__tests__/preview-session-manager.spec.ts`; `autobyteus-web/electron/preview/__tests__/preview-shell-controller.spec.ts`; `autobyteus-web/components/workspace/tools/__tests__/PreviewPanel.spec.ts`; `autobyteus-web/stores/__tests__/previewShellStore.spec.ts`; `autobyteus-web/components/layout/__tests__/RightSideTabs.spec.ts`; `autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.2.50.dmg`; `tickets/in-progress/preview-session-multi-runtime-design/workflow-state.md` |
 | 7 API/E2E + Executable Validation | Pass | Stage 7 is complete for the `v10` refactor. Focused server and Electron validation passed, Claude live preview execution passed, the packaged mac build completed successfully, and user-executed packaged-app Codex validation confirmed that the right-side Preview tab opens and renders correctly from the real app flow. | `tickets/in-progress/preview-session-multi-runtime-design/api-e2e-testing.md`; `tickets/in-progress/preview-session-multi-runtime-design/workflow-state.md`; `autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.50.dmg` |
-| 8 Code Review | In Progress | Stage 8 independent review is active for the `v10` preview implementation after Stage 7 passed with packaged-app user validation. Source edits are locked while the strict review gate is rerun. | `tickets/in-progress/preview-session-multi-runtime-design/code-review.md`; `tickets/in-progress/preview-session-multi-runtime-design/workflow-state.md` |
+| 8 Code Review | Pass | Independent Stage 8 review passes for the committed `v10` preview implementation. The prior failing findings are resolved: the oversized owners are split, the preview tool surface is manifest-owned, the stable contract rejects compatibility aliases, and no changed source file exceeds the hard limit. | `tickets/in-progress/preview-session-multi-runtime-design/code-review.md`; `tickets/in-progress/preview-session-multi-runtime-design/workflow-state.md` |
 | 9 Docs Sync | Not Started | `docs-sync.md` current + docs updated or no-impact rationale recorded |  |
 | 10 Handoff / Ticket State | Not Started | `handoff-summary.md` current + explicit user verification received + ticket moved to `done` + repository finalization into resolved target branch complete when git repo + any applicable release/publication/deployment step completed or explicitly recorded as not required + required post-finalization worktree/branch cleanup complete when applicable + ticket state decision recorded |  |
 
@@ -233,6 +233,7 @@ Note:
 | 2026-04-02 | Transition | Stage six implementation is complete for the v10 structural redesign. Moving to stage seven executable validation with refreshed unit and Electron evidence, a successful Claude live preview run, and a fresh packaged mac build while Codex live transport stability is still being rechecked. | Success | T-057 |
 | 2026-04-02 | Gate | Stage seven executable validation is complete for the v10 refactor. Focused automated validation passed, Claude live preview passed, and packaged-app user validation confirmed the real Codex preview path and shell-visible Preview tab behavior. | Success | T-058 |
 | 2026-04-02 | Transition | Stage seven is closed and the preview session multi runtime design ticket moves to stage eight independent code review. Code edit permission is now locked while the strict review gate runs. | Success | T-058 |
+| 2026-04-02 | Gate | Stage eight independent code review passes for the v10 redesign. The prior failing structural findings are resolved, the committed snapshot now satisfies the hard source-file limits and structural integrity checks, and the ticket is ready to move to stage nine docs sync. | Success | T-058 |
 
 ## Process Violation Log
 
