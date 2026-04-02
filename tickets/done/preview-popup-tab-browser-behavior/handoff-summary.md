@@ -4,7 +4,7 @@
 
 - Ticket: `preview-popup-tab-browser-behavior`
 - Date: `2026-04-02`
-- Current Status: `User Verified - Finalization In Progress`
+- Current Status: `Finalized And Released`
 - Workflow State Source: [workflow-state.md](/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/preview-popup-tab-browser-behavior/workflow-state.md)
 
 ## Delivery Summary
@@ -59,7 +59,7 @@
 - Release notes artifact:
   - [release-notes.md](/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/preview-popup-tab-browser-behavior/release-notes.md)
 - Notes:
-  - release helper will use this archived ticket note in the same turn
+  - used by the repo-root release helper for `v1.2.54`
 
 ## User Verification Hold
 
@@ -84,14 +84,15 @@
 - Commit status:
   - `Feature merge into personal completed`
 - Push status:
-  - `Pending release helper`
+  - `Completed`
 - Merge status:
   - `Merged into personal`
 - Release/publication/deployment status:
-  - `Pending repo-root release helper in this turn`
+  - `Completed via repo-root release helper`
 - Worktree cleanup status:
-  - `Pending after release`
+  - `Completed`
 - Local branch cleanup status:
-  - `Pending after release`
+  - `Completed`
 - Blockers / notes:
-  - none
+  - release commit: `c8ad6e8`
+  - release tag: `v1.2.54`

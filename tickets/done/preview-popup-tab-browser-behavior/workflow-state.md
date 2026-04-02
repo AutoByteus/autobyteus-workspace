@@ -8,11 +8,11 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 
 - Ticket: `preview-popup-tab-browser-behavior`
 - Current Stage: `10`
-- Next Stage: `Repository Finalization`
+- Next Stage: `Completed`
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-023`
+- Last Transition ID: `T-024`
 - Last Updated: `2026-04-02`
 
 ## Stage 0 Bootstrap Record
@@ -47,7 +47,7 @@ Note:
 | 7 API/E2E + Executable Validation | Pass | executable validation implementation complete + acceptance-criteria and spine scenario gates complete | `api-e2e-testing.md` round `3` recorded the packaged-user-verification local-fix rerun and remains authoritative |
 | 8 Code Review | Pass | Code review gate `Pass`/`Fail` recorded + priority-ordered detailed review scorecard recorded (`Overall /10`, `Overall /100`, all ten category rows in canonical order with score + why + weakness + improvement, and no category below `9.0` for `Pass`) + all changed source files `<=500` effective non-empty lines + `>220` delta-gate assessments recorded + data-flow spine inventory/ownership/off-spine concern checks + existing-capability reuse + reusable-owned-structure extraction + shared-structure/data-model tightness + shared-base coherence + repeated-coordination ownership + empty-indirection + scope-appropriate separation of concerns + file placement within the correct subsystem and folder, with any optional module grouping justified + flat-vs-over-split layout judgment + interface/API/query/command/service-method boundary clarity + naming quality across files/folders/APIs/types/functions/parameters/variables + naming-to-responsibility alignment + no unjustified duplication of code/repeated structures in changed scope + patch-on-patch complexity control + dead/obsolete code cleanup completeness in changed scope + test quality + test maintainability + validation-evidence sufficiency + no-backward-compat/no-legacy checks satisfied for `Pass` | `code-review.md` round `3` is authoritative and passed after the popup guest-webContents local fix |
 | 9 Docs Sync | Pass | `docs-sync.md` current + docs updated or no-impact rationale recorded | `docs-sync.md` recorded the durable Preview docs update and `preview_sessions.md` was refreshed with popup-tab behavior and OAuth limits |
-| 10 Handoff / Ticket State | In Progress | `handoff-summary.md` current + explicit user verification received + ticket moved to `done` + repository finalization into resolved target branch complete when git repo + any applicable release/publication/deployment step completed or explicitly recorded as not required + required post-finalization worktree/branch cleanup complete when applicable + ticket state decision recorded | User verified the packaged fix; ticket archived to `tickets/done`; repository finalization and release are being completed in this turn |
+| 10 Handoff / Ticket State | Pass | `handoff-summary.md` current + explicit user verification received + ticket moved to `done` + repository finalization into resolved target branch complete when git repo + any applicable release/publication/deployment step completed or explicitly recorded as not required + required post-finalization worktree/branch cleanup complete when applicable + ticket state decision recorded | User verified the packaged fix; ticket archived to `tickets/done`; release `v1.2.54` completed; worktree and local branch cleanup completed |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -101,6 +101,7 @@ Note:
 | T-021 | 2026-04-02 | 6 | 7 | Popup guest-webContents adoption fix implemented; rerunning executable validation | Local Fix | Unlocked | workflow-state.md, implementation.md, api-e2e-testing.md |
 | T-022 | 2026-04-02 | 7 | 8 | Stage 7 rerun passed after popup contract fix; returning to code review | Local Fix | Locked | workflow-state.md, api-e2e-testing.md, code-review.md |
 | T-023 | 2026-04-02 | 8 | 10 | Stage 8 rerun passed, docs remained truthful, and the user explicitly verified the packaged fix; moving to repository finalization | N/A | Locked | workflow-state.md, code-review.md, handoff-summary.md |
+| T-024 | 2026-04-02 | 10 | 10 | Repository finalization, release `v1.2.54`, and post-finalization cleanup completed | N/A | Locked | workflow-state.md, handoff-summary.md |
 
 ## Audible Notification Log (Optional Tracking)
 
