@@ -12,8 +12,10 @@ type McpConfigFile = {
   mcpServers: Record<string, McpConfigEntry>;
 };
 
-const filePath = path.join(appConfigProvider.config.getAppDataDir(), "mcps.json");
 const EMPTY_FILE: McpConfigFile = { mcpServers: {} };
+
+const resolveFilePath = (): string =>
+  path.join(appConfigProvider.config.getAppDataDir(), "mcps.json");
 
 const asString = (value: unknown): string =>
   typeof value === "string" ? value : "";
@@ -62,7 +64,7 @@ const toStandardEntry = (config: BaseMcpConfig): McpConfigEntry => {
 };
 
 const normalizeFile = async (): Promise<McpConfigFile> => {
-  const raw = await readJsonFile<McpConfigFile>(filePath, EMPTY_FILE);
+  const raw = await readJsonFile<McpConfigFile>(resolveFilePath(), EMPTY_FILE);
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
     return { mcpServers: {} };
   }
@@ -114,7 +116,7 @@ export class FileMcpServerConfigProvider {
 
   async deleteByServerId(serverId: string): Promise<boolean> {
     let deleted = false;
-    await updateJsonFile<McpConfigFile>(filePath, EMPTY_FILE, (existing) => {
+    await updateJsonFile<McpConfigFile>(resolveFilePath(), EMPTY_FILE, (existing) => {
       const next: McpConfigFile = {
         mcpServers: { ...(existing.mcpServers ?? {}) },
       };
@@ -129,7 +131,7 @@ export class FileMcpServerConfigProvider {
 
   async create(domainObj: BaseMcpConfig): Promise<BaseMcpConfig> {
     const entry = toStandardEntry(domainObj);
-    await updateJsonFile<McpConfigFile>(filePath, EMPTY_FILE, (existing) => {
+    await updateJsonFile<McpConfigFile>(resolveFilePath(), EMPTY_FILE, (existing) => {
       const next: McpConfigFile = {
         mcpServers: { ...(existing.mcpServers ?? {}) },
       };
@@ -144,7 +146,7 @@ export class FileMcpServerConfigProvider {
 
   async update(domainObj: BaseMcpConfig): Promise<BaseMcpConfig> {
     const entry = toStandardEntry(domainObj);
-    await updateJsonFile<McpConfigFile>(filePath, EMPTY_FILE, (existing) => {
+    await updateJsonFile<McpConfigFile>(resolveFilePath(), EMPTY_FILE, (existing) => {
       const next: McpConfigFile = {
         mcpServers: { ...(existing.mcpServers ?? {}) },
       };

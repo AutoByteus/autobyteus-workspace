@@ -1,0 +1,153 @@
+import fastify, { type FastifyInstance } from "fastify";
+import cors from "@fastify/cors";
+import multipart from "@fastify/multipart";
+import websocket from "@fastify/websocket";
+import {
+  AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR,
+  seedInternalServerBaseUrlFromListenAddress,
+} from "./config/server-runtime-endpoints.js";
+import { appConfigProvider } from "./config/app-config-provider.js";
+import { getLoggingConfigFromEnv, type LoggingConfig } from "./config/logging-config.js";
+import { registerHttpAccessLogPolicy } from "./logging/http-access-log-policy.js";
+import {
+  getFastifyLoggerOptions,
+  initializeRuntimeLoggerBootstrap,
+} from "./logging/runtime-logger-bootstrap.js";
+import { runMigrations } from "./startup/migrations.js";
+import { scheduleBackgroundTasks } from "./startup/background-runner.js";
+import { registerRestRoutes } from "./api/rest/index.js";
+import { registerGraphql } from "./api/graphql/index.js";
+import { registerWebsocketRoutes } from "./api/websocket/index.js";
+import {
+  startAcceptedReceiptRecoveryRuntime,
+  stopAcceptedReceiptRecoveryRuntime,
+} from "./external-channel/runtime/accepted-receipt-recovery-runtime.js";
+import {
+  startGatewayCallbackDeliveryRuntime,
+  stopGatewayCallbackDeliveryRuntime,
+} from "./external-channel/runtime/gateway-callback-delivery-runtime.js";
+import { getManagedMessagingGatewayService } from "./managed-capabilities/messaging-gateway/defaults.js";
+import { getWorkspaceManager } from "./workspaces/workspace-manager.js";
+import type { ServerOptions } from "./app.js";
+
+const logger = {
+  info: (...args: unknown[]) => console.info(...args),
+  error: (...args: unknown[]) => console.error(...args),
+};
+
+export type BuildAppOptions = {
+  loggingConfig?: LoggingConfig;
+};
+
+export async function buildApp(options?: BuildAppOptions): Promise<FastifyInstance> {
+  const loggingConfig = options?.loggingConfig ?? getLoggingConfigFromEnv(process.env);
+  const app = fastify({
+    logger: getFastifyLoggerOptions(loggingConfig),
+    disableRequestLogging: true,
+  });
+  registerHttpAccessLogPolicy(app, {
+    mode: loggingConfig.httpAccessLogMode,
+    includeNoisyRoutes: loggingConfig.includeNoisyHttpAccessRoutes,
+  });
+  const maxUploadFileSizeBytes = 25 * 1024 * 1024;
+
+  await app.register(cors, {
+    origin: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  });
+  await app.register(multipart, {
+    limits: {
+      fileSize: maxUploadFileSizeBytes,
+    },
+  });
+  await app.register(websocket);
+
+  await app.register(registerRestRoutes, { prefix: "/rest" });
+  await registerWebsocketRoutes(app);
+  await registerGraphql(app);
+  app.addHook("onClose", async () => {
+    await stopAcceptedReceiptRecoveryRuntime();
+    await stopGatewayCallbackDeliveryRuntime();
+    await getManagedMessagingGatewayService().close();
+  });
+
+  return app;
+}
+
+function registerShutdownHandlers(app: FastifyInstance): void {
+  let shuttingDown = false;
+
+  const shutdown = async (signal: string) => {
+    if (shuttingDown) {
+      return;
+    }
+    shuttingDown = true;
+    logger.info(`Received ${signal}. Shutting down server...`);
+    try {
+      await app.close();
+      logger.info("Server closed cleanly.");
+      process.exit(0);
+    } catch (error) {
+      logger.error(`Error during shutdown: ${String(error)}`);
+      process.exit(1);
+    }
+  };
+
+  process.once("SIGINT", () => void shutdown("SIGINT"));
+  process.once("SIGTERM", () => void shutdown("SIGTERM"));
+}
+
+export async function startConfiguredServer(options: ServerOptions): Promise<void> {
+  let loggingConfig: LoggingConfig = getLoggingConfigFromEnv(process.env);
+
+  try {
+    loggingConfig = getLoggingConfigFromEnv(process.env);
+    initializeRuntimeLoggerBootstrap({
+      logsDir: appConfigProvider.config.getLogsDir(),
+    });
+  } catch (error) {
+    logger.error(`Failed to initialize runtime logging: ${String(error)}`);
+    process.exit(1);
+  }
+
+  try {
+    runMigrations();
+  } catch (error) {
+    logger.error(`Failed to run database migrations: ${String(error)}`);
+    process.exit(1);
+  }
+
+  const app = await buildApp({ loggingConfig });
+  registerShutdownHandlers(app);
+  await app.listen({ host: options.host, port: options.port });
+  logger.info(`Server listening on ${options.host}:${options.port}`);
+  startAcceptedReceiptRecoveryRuntime();
+  startGatewayCallbackDeliveryRuntime();
+
+  try {
+    const internalBaseUrl = seedInternalServerBaseUrlFromListenAddress({
+      requestedHost: options.host,
+      listenAddress: app.server.address(),
+    });
+    logger.info(`Server internal base URL configured to: ${internalBaseUrl}`);
+  } catch (error) {
+    delete process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR];
+    logger.error(
+      `Failed to derive internal server base URL for managed messaging: ${String(error)}`,
+    );
+  }
+
+  try {
+    await getManagedMessagingGatewayService().restoreIfEnabled();
+  } catch (error) {
+    logger.error(`Failed to restore managed messaging gateway: ${String(error)}`);
+  }
+
+  try {
+    await getWorkspaceManager().getOrCreateTempWorkspace();
+  } catch (error) {
+    logger.error(`Failed to create temp workspace: ${String(error)}`);
+    process.exit(1);
+  }
+  await scheduleBackgroundTasks();
+}
