@@ -1,9 +1,10 @@
 ## What's New
-- Added a shell-embedded Preview tab that opens web pages inside the app instead of separate popup windows.
-- Added browser-style preview actions for reading pages, capturing screenshots, inspecting the DOM, and running JavaScript in a preview session.
+- Added support for team-local agents stored inside each team folder and referenced explicitly from team definitions.
+- Added team-owned agents to the main Agents page so they can be viewed and edited from the same surface as shared agents.
 
 ## Improvements
-- Improved preview session ownership so shell projection is stable and no longer transfers implicitly across app windows.
+- Improved team configuration with explicit shared versus team-local agent member scope.
+- Renamed the old Definition Sources surface to Agent Package Roots across settings and import management.
 
 ## Fixes
-- Fixed packaged-app issues that previously blocked Preview tab rendering, app shutdown after preview use, and Codex preview result projection.
+- Fixed sync export to reject broken team-local agent references before a bundle is created.
