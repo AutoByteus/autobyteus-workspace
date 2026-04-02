@@ -2,7 +2,10 @@ import type { Rectangle, WebContentsView } from 'electron'
 import type { PreviewReadPageCleaningMode } from './preview-page-cleaner'
 import type { PreviewDomSnapshotElement } from './preview-dom-snapshot-script'
 import type { PreviewScreenshotArtifactWriter } from './preview-screenshot-artifact-writer'
-import type { PreviewViewFactory } from './preview-view-factory'
+import type {
+  PreviewViewCreationOptions,
+  PreviewViewFactory,
+} from './preview-view-factory'
 
 export type PreviewReadyState = 'domcontentloaded' | 'load'
 
@@ -47,6 +50,13 @@ export type PreviewSessionSummary = {
   preview_session_id: string
   title: string | null
   url: string
+}
+
+export type PreviewPopupOpenedEvent = {
+  opener_preview_session_id: string
+  preview_session_id: string
+  url: string
+  title: string | null
 }
 
 export type ListPreviewSessionsResult = {
@@ -124,6 +134,7 @@ export type PreviewSessionRecord = {
   url: string
   title: string | null
   customTitle: string | null
+  openerSessionId: string | null
   leasedShellId: number | null
   state: 'opening' | 'open'
   openPromise: Promise<void> | null
@@ -135,3 +146,5 @@ export type PreviewSessionManagerOptions = {
   viewFactory: PreviewViewFactory
   screenshotWriter: PreviewScreenshotArtifactWriter
 }
+
+export type { PreviewViewCreationOptions }

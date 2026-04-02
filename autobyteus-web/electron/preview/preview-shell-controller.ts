@@ -1,7 +1,11 @@
 import type { Rectangle } from 'electron';
 import type { PreviewHostBounds, PreviewShellSnapshot, PreviewShellSessionSummary } from '../../types/previewShell';
 import type { WorkspaceShellWindow } from '../shell/workspace-shell-window';
-import { PreviewSessionManager, type PreviewSessionSummary } from './preview-session-manager';
+import {
+  PreviewSessionManager,
+  type PreviewPopupOpenedEvent,
+  type PreviewSessionSummary,
+} from './preview-session-manager';
 
 export const PREVIEW_SHELL_SNAPSHOT_UPDATED_CHANNEL = 'preview-shell:snapshot-updated';
 
@@ -55,6 +59,7 @@ export class PreviewShellController {
   private readonly shellStates = new Map<number, PreviewShellState>();
   private readonly removeSessionUpsertListener: () => void;
   private readonly removeSessionClosedListener: () => void;
+  private readonly removePopupOpenedListener: () => void;
 
   constructor(private readonly previewSessionManager: PreviewSessionManager) {
     this.removeSessionUpsertListener = this.previewSessionManager.onSessionUpserted((summary) => {
@@ -63,11 +68,15 @@ export class PreviewShellController {
     this.removeSessionClosedListener = this.previewSessionManager.onSessionClosed((sessionId) => {
       this.handleSessionClosed(sessionId);
     });
+    this.removePopupOpenedListener = this.previewSessionManager.onPopupOpened((event) => {
+      this.handlePopupOpened(event);
+    });
   }
 
   dispose(): void {
     this.removeSessionUpsertListener();
     this.removeSessionClosedListener();
+    this.removePopupOpenedListener();
     for (const state of this.shellStates.values()) {
       state.shell.attachPreviewView(null);
     }
@@ -186,6 +195,28 @@ export class PreviewShellController {
       this.applyShellProjection(state);
       this.publishSnapshot(shellId);
     }
+  }
+
+  private handlePopupOpened(event: PreviewPopupOpenedEvent): void {
+    const leaseOwner = this.previewSessionManager.getSessionLeaseOwner(
+      event.opener_preview_session_id,
+    );
+    if (leaseOwner === null) {
+      return;
+    }
+
+    const state = this.shellStates.get(leaseOwner);
+    if (!state) {
+      return;
+    }
+
+    if (!state.sessionIds.includes(event.preview_session_id)) {
+      state.sessionIds.push(event.preview_session_id);
+    }
+    this.previewSessionManager.claimSessionLease(event.preview_session_id, leaseOwner);
+    state.activeSessionId = event.preview_session_id;
+    this.applyShellProjection(state);
+    this.publishSnapshot(leaseOwner);
   }
 
   private releaseShellLeases(shellId: number, state: PreviewShellState): void {

@@ -1,9 +1,15 @@
 import { randomUUID } from 'crypto'
 import { EventEmitter } from 'events'
-import type { Rectangle, WebContentsView } from 'electron'
+import type {
+  BrowserWindowConstructorOptions,
+  Rectangle,
+  WebContents,
+  WebContentsView,
+} from 'electron'
 import { DEFAULT_PREVIEW_VIEW_BOUNDS } from './preview-view-factory'
 import { PreviewSessionNavigation } from './preview-session-navigation'
 import { PreviewSessionPageOperations } from './preview-session-page-operations'
+import { logger } from '../logger'
 import type {
   CapturePreviewScreenshotRequest,
   CapturePreviewScreenshotResult,
@@ -18,9 +24,11 @@ import type {
   OpenPreviewResult,
   PreviewDomSnapshotRequest,
   PreviewDomSnapshotResult,
+  PreviewPopupOpenedEvent,
   PreviewSessionManagerOptions,
   PreviewSessionRecord,
   PreviewSessionSummary,
+  PreviewViewCreationOptions,
   ReadPreviewPageRequest,
   ReadPreviewPageResult,
 } from './preview-session-types'
@@ -43,6 +51,7 @@ export type {
   OpenPreviewResult,
   PreviewDomSnapshotRequest,
   PreviewDomSnapshotResult,
+  PreviewPopupOpenedEvent,
   PreviewReadyState,
   PreviewSessionErrorCode,
   PreviewSessionManagerOptions,
@@ -54,6 +63,13 @@ export { PreviewSessionError } from './preview-session-types'
 
 const PREVIEW_SESSION_ID_LENGTH = 6
 const MAX_CLOSED_SESSION_TOMBSTONES = 256
+const MAX_POPUP_CHILD_SESSIONS_PER_OPENER = 8
+type PreviewWindowOpenHandler = Parameters<WebContents['setWindowOpenHandler']>[0]
+type PreviewWindowOpenDetails = Parameters<PreviewWindowOpenHandler>[0]
+type PreviewWindowOpenResponse = ReturnType<PreviewWindowOpenHandler>
+type PreviewWindowCreateOptions = BrowserWindowConstructorOptions & {
+  webContents?: WebContents | null
+}
 
 export class PreviewSessionManager extends EventEmitter {
   private readonly sessions = new Map<string, PreviewSessionRecord>()
@@ -82,21 +98,15 @@ export class PreviewSessionManager extends EventEmitter {
       }
     }
 
-    const sessionId = this.generateSessionId()
-    const view = this.options.viewFactory.createPreviewView()
-    const session: PreviewSessionRecord = {
-      id: sessionId,
+    const session = this.createSessionRecord({
+      id: this.generateSessionId(),
       url: normalizedUrl,
-      title: input.title?.trim() || null,
-      customTitle: input.title?.trim() || null,
-      leasedShellId: null,
+      customTitle: input.title ?? null,
+      openerSessionId: null,
       state: 'opening',
-      openPromise: null,
-      view,
-      viewportBounds: { ...DEFAULT_PREVIEW_VIEW_BOUNDS },
-    }
+    })
 
-    this.sessions.set(sessionId, session)
+    this.sessions.set(session.id, session)
     this.attachSessionObservers(session)
     session.view.setBounds(session.viewportBounds)
     session.openPromise = this.navigation
@@ -111,7 +121,7 @@ export class PreviewSessionManager extends EventEmitter {
       await session.openPromise
       return this.buildOpenPreviewResult(session, 'opened')
     } catch (error) {
-      this.sessions.delete(sessionId)
+      this.sessions.delete(session.id)
       this.destroySessionView(session.view)
       throw error
     }
@@ -228,7 +238,16 @@ export class PreviewSessionManager extends EventEmitter {
     return () => this.off('session-closed', listener)
   }
 
+  onPopupOpened(listener: (event: PreviewPopupOpenedEvent) => void): () => void {
+    this.on('popup-opened', listener)
+    return () => this.off('popup-opened', listener)
+  }
+
   private attachSessionObservers(session: PreviewSessionRecord): void {
+    session.view.webContents.setWindowOpenHandler((details) =>
+      this.handlePopupRequest(session, details),
+    )
+
     session.view.webContents.on('page-title-updated', (_event, title) => {
       if (session.customTitle) {
         return
@@ -237,9 +256,57 @@ export class PreviewSessionManager extends EventEmitter {
       this.emitSessionUpserted(session)
     })
 
+    session.view.webContents.on('did-navigate', (_event, url) => {
+      session.url = url
+      if (!session.customTitle) {
+        session.title = session.view.webContents.getTitle()?.trim() || url
+      }
+      this.emitSessionUpserted(session)
+    })
+
+    session.view.webContents.on('did-navigate-in-page', (_event, url) => {
+      session.url = url
+      this.emitSessionUpserted(session)
+    })
+
     session.view.webContents.on('destroyed', () => {
       this.handleWindowClosed(session.id)
     })
+  }
+
+  private handlePopupRequest(
+    openerSession: PreviewSessionRecord,
+    details: PreviewWindowOpenDetails,
+  ): PreviewWindowOpenResponse {
+    try {
+      if (openerSession.leasedShellId === null) {
+        throw new Error(
+          `Popup requests require the opener session '${openerSession.id}' to be attached to a shell.`,
+        )
+      }
+
+      if (
+        this.countActivePopupChildren(openerSession.id) >=
+        MAX_POPUP_CHILD_SESSIONS_PER_OPENER
+      ) {
+        throw new Error(
+          `Popup request limit reached for opener session '${openerSession.id}'.`,
+        )
+      }
+
+      const normalizedUrl = this.navigation.normalizePopupUrl(details.url)
+      return {
+        action: 'allow',
+        createWindow: (options: PreviewWindowCreateOptions) =>
+          this.createPopupChildWindow(openerSession, normalizedUrl, options),
+      }
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : String(error)
+      logger.warn(
+        `Blocked preview popup request from '${openerSession.id}' to '${details.url}': ${reason}`,
+      )
+      return { action: 'deny' }
+    }
   }
 
   private handleWindowClosed(previewSessionId: string): void {
@@ -312,6 +379,88 @@ export class PreviewSessionManager extends EventEmitter {
       session.customTitle ||
       session.view.webContents.getTitle()?.trim() ||
       session.url
+  }
+
+  private createSessionRecord(input: {
+    id: string
+    url: string
+    customTitle: string | null
+    openerSessionId: string | null
+    state: PreviewSessionRecord['state']
+    viewOptions?: PreviewViewCreationOptions
+  }): PreviewSessionRecord {
+    const view = this.options.viewFactory.createPreviewView(input.viewOptions)
+    const customTitle = input.customTitle?.trim() || null
+    return {
+      id: input.id,
+      url: input.url,
+      title: customTitle || input.url,
+      customTitle,
+      openerSessionId: input.openerSessionId,
+      leasedShellId: null,
+      state: input.state,
+      openPromise: null,
+      view,
+      viewportBounds: { ...DEFAULT_PREVIEW_VIEW_BOUNDS },
+    }
+  }
+
+  private createPopupChildWindow(
+    openerSession: PreviewSessionRecord,
+    normalizedUrl: string,
+    options: PreviewWindowCreateOptions,
+  ): WebContents {
+    const childSession = this.createSessionRecord({
+      id: this.generateSessionId(),
+      url: normalizedUrl,
+      customTitle: null,
+      openerSessionId: openerSession.id,
+      state: options.webContents ? 'open' : 'opening',
+      viewOptions: {
+        webContents: options.webContents ?? null,
+      },
+    })
+
+    this.sessions.set(childSession.id, childSession)
+    this.attachSessionObservers(childSession)
+    childSession.view.setBounds(childSession.viewportBounds)
+
+    if (!options.webContents) {
+      childSession.openPromise = this.navigation
+        .loadUrl(childSession, normalizedUrl, 'load')
+        .then(() => {
+          childSession.state = 'open'
+          this.updateSessionTitle(childSession, childSession.customTitle)
+          this.emitSessionUpserted(childSession)
+        })
+        .catch((error) => {
+          this.sessions.delete(childSession.id)
+          this.destroySessionView(childSession.view)
+          logger.warn(
+            `Popup preview child session '${childSession.id}' failed to load '${normalizedUrl}': ${String(error)}`,
+          )
+        })
+    }
+
+    this.emitSessionUpserted(childSession)
+    this.emit('popup-opened', {
+      opener_preview_session_id: openerSession.id,
+      preview_session_id: childSession.id,
+      url: childSession.url,
+      title: childSession.title,
+    } satisfies PreviewPopupOpenedEvent)
+
+    return childSession.view.webContents
+  }
+
+  private countActivePopupChildren(openerSessionId: string): number {
+    let total = 0
+    for (const session of this.sessions.values()) {
+      if (session.openerSessionId === openerSessionId) {
+        total += 1
+      }
+    }
+    return total
   }
 
   private destroySession(session: PreviewSessionRecord): void {

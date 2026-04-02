@@ -1,5 +1,5 @@
+import type { WebContents } from 'electron';
 import { WebContentsView } from 'electron';
-import { logger } from '../logger';
 
 export const DEFAULT_PREVIEW_VIEW_BOUNDS = {
   x: 0,
@@ -8,9 +8,14 @@ export const DEFAULT_PREVIEW_VIEW_BOUNDS = {
   height: 900,
 };
 
+export type PreviewViewCreationOptions = {
+  webContents?: WebContents | null;
+};
+
 export class PreviewViewFactory {
-  createPreviewView(): WebContentsView {
+  createPreviewView(options: PreviewViewCreationOptions = {}): WebContentsView {
     const view = new WebContentsView({
+      ...(options.webContents ? { webContents: options.webContents } : {}),
       webPreferences: {
         nodeIntegration: false,
         contextIsolation: true,
@@ -19,12 +24,6 @@ export class PreviewViewFactory {
     });
 
     view.setBounds(DEFAULT_PREVIEW_VIEW_BOUNDS);
-    view.webContents.setWindowOpenHandler(({ url }) => {
-      logger.warn(`Blocked preview popup request: ${url}`);
-      return { action: 'deny' };
-    });
-
     return view;
   }
 }
-
