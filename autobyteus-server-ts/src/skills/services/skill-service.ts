@@ -9,6 +9,14 @@ import { DisabledSkillsStore } from "../disabled-skills-store.js";
 import { SkillLoader } from "../loader.js";
 import { SkillVersioningService } from "./skill-versioning-service.js";
 import type { SkillVersion } from "../domain/skill-version.js";
+import {
+  getAllDefinitionRoots,
+  getAllSkillDirectories,
+  scanBundledSkillsFromDefinitionRoot,
+  scanSkillDirectory,
+  searchBundledSkillDirectory,
+  searchDirectoryRecursive,
+} from "./skill-discovery.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -19,7 +27,7 @@ const logger = {
 type AppConfigLike = {
   getSkillsDir(): string;
   getAdditionalSkillsDirs(): string[];
-  getAdditionalDefinitionSourceRoots(): string[];
+  getAdditionalAgentPackageRoots(): string[];
   getAppDataDir(): string;
   get(key: string, defaultValue?: string): string | undefined;
 };
@@ -62,131 +70,19 @@ export class SkillService {
   }
 
   private findSkillLocation(name: string): string | null {
-    for (const directory of this.getAllSkillDirectories()) {
-      const match = this.searchDirectoryRecursive(directory, name);
+    for (const directory of getAllSkillDirectories(this.config)) {
+      const match = searchDirectoryRecursive(directory, name);
       if (match) {
         return match;
       }
     }
-    for (const definitionRoot of this.getAllDefinitionRoots()) {
-      const bundledMatch = this.searchBundledSkillDirectory(definitionRoot, name);
+    for (const definitionRoot of getAllDefinitionRoots(this.config)) {
+      const bundledMatch = searchBundledSkillDirectory(definitionRoot, name);
       if (bundledMatch) {
         return bundledMatch;
       }
     }
     return null;
-  }
-
-  private isSkillDirectory(directory: string): boolean {
-    return fs.existsSync(path.join(directory, "SKILL.md"));
-  }
-
-  private searchDirectoryRecursive(directory: string, name: string): string | null {
-    if (!fs.existsSync(directory)) {
-      return null;
-    }
-
-    const candidate = path.join(directory, name);
-    if (fs.existsSync(candidate) && this.isSkillDirectory(candidate)) {
-      return candidate;
-    }
-
-    const bundledCandidate = this.searchBundledSkillDirectory(directory, name);
-    if (bundledCandidate) {
-      return bundledCandidate;
-    }
-
-    const nestedSkills = path.join(directory, "skills");
-    if (fs.existsSync(nestedSkills) && fs.statSync(nestedSkills).isDirectory()) {
-      return this.searchDirectoryRecursive(nestedSkills, name);
-    }
-
-    return null;
-  }
-
-  private searchBundledSkillDirectory(definitionRoot: string, name: string): string | null {
-    const candidate = path.join(definitionRoot, "agents", name);
-    if (fs.existsSync(candidate) && this.isSkillDirectory(candidate)) {
-      return candidate;
-    }
-    return null;
-  }
-
-  private scanBundledSkillsFromDefinitionRoot(definitionRoot: string): Skill[] {
-    const skills: Skill[] = [];
-    const agentsDir = path.join(definitionRoot, "agents");
-    if (!fs.existsSync(agentsDir) || !fs.statSync(agentsDir).isDirectory()) {
-      return skills;
-    }
-
-    const entries = fs.readdirSync(agentsDir, { withFileTypes: true });
-    for (const entry of entries) {
-      if (!entry.isDirectory()) {
-        continue;
-      }
-      const skillDir = path.join(agentsDir, entry.name);
-      if (!this.isSkillDirectory(skillDir)) {
-        continue;
-      }
-      try {
-        skills.push(this.loader.loadSkill(skillDir, this.isReadonlyPath(skillDir)));
-      } catch (error) {
-        logger.warn(`Error loading bundled skill ${entry.name}: ${String(error)}`);
-      }
-    }
-
-    return skills;
-  }
-
-  private getAllDefinitionRoots(): string[] {
-    const roots = [this.config.getAppDataDir(), ...this.config.getAdditionalDefinitionSourceRoots()];
-    const seen = new Set<string>();
-    return roots.filter((root) => {
-      const resolved = path.resolve(root);
-      if (seen.has(resolved)) {
-        return false;
-      }
-      seen.add(resolved);
-      return true;
-    });
-  }
-
-  private scanDirectory(directory: string): Skill[] {
-    const skills: Skill[] = [];
-    if (!fs.existsSync(directory)) {
-      return skills;
-    }
-
-    const entries = fs.readdirSync(directory, { withFileTypes: true });
-    for (const entry of entries) {
-      if (!entry.isDirectory()) {
-        continue;
-      }
-      const itemPath = path.join(directory, entry.name);
-      if (!this.isSkillDirectory(itemPath)) {
-        continue;
-      }
-      try {
-        const skill = this.loader.loadSkill(
-          itemPath,
-          this.isReadonlyPath(itemPath),
-        );
-        skills.push(skill);
-      } catch (error) {
-        logger.warn(`Error loading skill ${entry.name}: ${String(error)}`);
-      }
-    }
-
-    const nestedSkillsDir = path.join(directory, "skills");
-    if (fs.existsSync(nestedSkillsDir) && fs.statSync(nestedSkillsDir).isDirectory()) {
-      const nestedSkills = this.scanDirectory(nestedSkillsDir);
-      skills.push(...nestedSkills);
-    }
-
-    const bundledSkills = this.scanBundledSkillsFromDefinitionRoot(directory);
-    skills.push(...bundledSkills);
-
-    return skills;
   }
 
   private isReadonlyPath(skillPath: string): boolean {
@@ -208,18 +104,12 @@ export class SkillService {
     return false;
   }
 
-  private getAllSkillDirectories(): string[] {
-    const dirs = [this.skillsDir];
-    dirs.push(...this.config.getAdditionalSkillsDirs());
-    return dirs;
-  }
-
   listSkills(): Skill[] {
     const skills: Skill[] = [];
     const seen = new Set<string>();
 
-    for (const directory of this.getAllSkillDirectories()) {
-      for (const skill of this.scanDirectory(directory)) {
+    for (const directory of getAllSkillDirectories(this.config)) {
+      for (const skill of scanSkillDirectory(directory, this.getDiscoveryDependencies())) {
         if (seen.has(skill.name)) {
           continue;
         }
@@ -229,8 +119,11 @@ export class SkillService {
       }
     }
 
-    for (const definitionRoot of this.getAllDefinitionRoots()) {
-      for (const skill of this.scanBundledSkillsFromDefinitionRoot(definitionRoot)) {
+    for (const definitionRoot of getAllDefinitionRoots(this.config)) {
+      for (const skill of scanBundledSkillsFromDefinitionRoot(
+        definitionRoot,
+        this.getDiscoveryDependencies(),
+      )) {
         if (seen.has(skill.name)) {
           continue;
         }
@@ -445,7 +338,10 @@ export class SkillService {
     let defaultCount = 0;
     if (fs.existsSync(this.skillsDir)) {
       try {
-        defaultCount = this.scanDirectory(this.skillsDir).length;
+        defaultCount = scanSkillDirectory(
+          this.skillsDir,
+          this.getDiscoveryDependencies(),
+        ).length;
       } catch {
         defaultCount = 0;
       }
@@ -464,7 +360,7 @@ export class SkillService {
       let count = 0;
       if (fs.existsSync(directory)) {
         try {
-          count = this.scanDirectory(directory).length;
+          count = scanSkillDirectory(directory, this.getDiscoveryDependencies()).length;
         } catch {
           count = 0;
         }
@@ -546,5 +442,13 @@ export class SkillService {
     }
 
     return this.getSkillSources();
+  }
+
+  private getDiscoveryDependencies() {
+    return {
+      loader: this.loader,
+      isReadonlyPath: this.isReadonlyPath.bind(this),
+      logger,
+    };
   }
 }

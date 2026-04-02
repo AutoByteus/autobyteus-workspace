@@ -35,6 +35,7 @@ type AgentDefinitionProvider = {
   create: (definition: AgentDefinition) => Promise<AgentDefinition>;
   getById: (id: string) => Promise<AgentDefinition | null>;
   getAll: () => Promise<AgentDefinition[]>;
+  getAllVisible: () => Promise<AgentDefinition[]>;
   getTemplates: () => Promise<AgentDefinition[]>;
   update: (definition: AgentDefinition) => Promise<AgentDefinition>;
   delete: (id: string) => Promise<boolean>;
@@ -217,6 +218,13 @@ export class AgentDefinitionService {
       .filter((item): item is AgentDefinition => item !== null);
   }
 
+  async getVisibleAgentDefinitions(): Promise<AgentDefinition[]> {
+    const definitions = await this.provider.getAllVisible();
+    return definitions
+      .map((definition) => this.stripMandatoryProcessors(definition))
+      .filter((item): item is AgentDefinition => item !== null);
+  }
+
   async getAgentTemplates(): Promise<AgentDefinition[]> {
     const definitions = await this.provider.getTemplates();
     return definitions
@@ -288,6 +296,9 @@ export class AgentDefinitionService {
     if (!existing) {
       throw new Error(`Agent Definition with ID ${definitionId} not found.`);
     }
+    if (existing.ownershipScope === "team_local") {
+      throw new Error("Deleting team-owned agent definitions is not supported.");
+    }
     const success = await this.provider.delete(definitionId);
     if (success) {
       logger.info(`Agent Definition with ID ${definitionId} deleted successfully.`);
@@ -301,6 +312,9 @@ export class AgentDefinitionService {
     const source = await this.provider.getById(sourceId);
     if (!source) {
       throw new Error(`Agent Definition with ID ${sourceId} not found.`);
+    }
+    if (source.ownershipScope === "team_local") {
+      throw new Error("Duplicating team-owned agent definitions is not supported.");
     }
     const newId = this.nextAgentId(newName);
     const duplicated = await this.provider.duplicate(sourceId, newId, newName);

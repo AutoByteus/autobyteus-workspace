@@ -21,7 +21,7 @@ describe("md-centric provider integration", () => {
       await fs.rm(filePath, { recursive: true, force: true }).catch(() => undefined);
     }
     cleanupPaths.clear();
-    process.env.AUTOBYTEUS_DEFINITION_SOURCE_PATHS = "";
+    process.env.AUTOBYTEUS_AGENT_PACKAGE_ROOTS = "";
   });
 
   it("throws AgentMdParseError when agent.md is malformed", async () => {
@@ -88,7 +88,7 @@ describe("md-centric provider integration", () => {
       uniqueId("external_definition_source"),
     );
     cleanupPaths.add(externalRoot);
-    process.env.AUTOBYTEUS_DEFINITION_SOURCE_PATHS = externalRoot;
+    process.env.AUTOBYTEUS_AGENT_PACKAGE_ROOTS = externalRoot;
 
     const agentId = uniqueId("imported_agent");
     const agentDir = path.join(externalRoot, "agents", agentId);
@@ -147,7 +147,7 @@ describe("md-centric provider integration", () => {
       uniqueId("external_definition_source_explicit_skills"),
     );
     cleanupPaths.add(externalRoot);
-    process.env.AUTOBYTEUS_DEFINITION_SOURCE_PATHS = externalRoot;
+    process.env.AUTOBYTEUS_AGENT_PACKAGE_ROOTS = externalRoot;
 
     const agentId = uniqueId("explicit_skill_agent");
     const agentDir = path.join(externalRoot, "agents", agentId);

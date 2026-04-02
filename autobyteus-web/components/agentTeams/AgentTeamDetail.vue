@@ -264,6 +264,9 @@ const getMemberAvatarErrorKey = (node: TeamMemberNode): string =>
 
 const getMemberAvatarUrl = (node: TeamMemberNode): string => {
   if (node.refType === 'AGENT') {
+    if (node.refScope === 'TEAM_LOCAL') {
+      return ''
+    }
     return (agentDefStore.getAgentDefinitionById(node.ref)?.avatarUrl || '').trim();
   }
   return (teamStore.getAgentTeamDefinitionById(node.ref)?.avatarUrl || '').trim();
@@ -286,6 +289,12 @@ const handleMemberAvatarError = (node: TeamMemberNode): void => {
 
 const getBlueprintName = (type: 'AGENT' | 'AGENT_TEAM', id: string): string => {
   if (type === 'AGENT') {
+    const localNode = teamDef.value?.nodes.find(
+      (entry) => entry.refType === 'AGENT' && entry.ref === id && entry.refScope === 'TEAM_LOCAL',
+    );
+    if (localNode) {
+      return `Local Agent (${id})`;
+    }
     return agentDefStore.getAgentDefinitionById(id)?.name || `Unknown Agent (${id})`;
   }
   return teamStore.getAgentTeamDefinitionById(id)?.name || `Unknown Team (${id})`;

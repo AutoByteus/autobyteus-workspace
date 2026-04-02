@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   NodeSyncSelectionService,
 } from '../../../src/sync/services/node-sync-selection-service.js';
+import { buildTeamLocalAgentDefinitionId } from 'autobyteus-ts/agent-team/utils/team-local-agent-definition-id.js';
 
 function toSortedArray(values: Set<string>): string[] {
   return Array.from(values).sort((a, b) => a.localeCompare(b));
@@ -10,6 +11,7 @@ function toSortedArray(values: Set<string>): string[] {
 describe('NodeSyncSelectionService', () => {
   let agentDefinitionService: {
     getAllAgentDefinitions: ReturnType<typeof vi.fn>;
+    getFreshAgentDefinitionById: ReturnType<typeof vi.fn>;
   };
   let agentTeamDefinitionService: {
     getAllDefinitions: ReturnType<typeof vi.fn>;
@@ -31,6 +33,7 @@ describe('NodeSyncSelectionService', () => {
           name: 'Agent Three',
         },
       ]),
+      getFreshAgentDefinitionById: vi.fn(async () => null),
     };
     agentTeamDefinitionService = {
       getAllDefinitions: vi.fn(async () => [
@@ -128,5 +131,34 @@ describe('NodeSyncSelectionService', () => {
     })).resolves.toMatchObject({
       includeDeletes: false,
     });
+  });
+
+  it('rejects selected teams that reference missing team-local agents', async () => {
+    agentTeamDefinitionService.getAllDefinitions.mockResolvedValue([
+      {
+        id: 'team-1',
+        name: 'Team One',
+        nodes: [
+          {
+            memberName: 'member-a',
+            ref: 'reviewer',
+            refType: 'agent',
+            refScope: 'team_local',
+          },
+        ],
+      },
+    ]);
+
+    const service = buildService();
+    await expect(service.resolveSelection({
+      agentTeamDefinitionIds: ['team-1'],
+      includeDependencies: false,
+    })).rejects.toMatchObject({
+      name: 'NodeSyncSelectionValidationError',
+      code: 'team-local-member-missing',
+    });
+    expect(agentDefinitionService.getFreshAgentDefinitionById).toHaveBeenCalledWith(
+      buildTeamLocalAgentDefinitionId('team-1', 'reviewer'),
+    );
   });
 });

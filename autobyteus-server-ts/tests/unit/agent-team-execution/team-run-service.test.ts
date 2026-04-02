@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { buildTeamLocalAgentDefinitionId } from "autobyteus-ts/agent-team/utils/team-local-agent-definition-id.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { TeamRunService } from "../../../src/agent-team-execution/services/team-run-service.js";
 import type { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
@@ -159,5 +160,64 @@ describe("TeamRunService", () => {
         lastKnownStatus: "ACTIVE",
       }),
     );
+  });
+
+  it("builds launch member configs with shared and team-local agent ids", async () => {
+    const { service } = createSubject();
+    const teamDefinitions = new Map([
+      [
+        "root-team",
+        {
+          name: "Root Team",
+          coordinatorMemberName: "sharedLead",
+          nodes: [
+            { memberName: "sharedLead", refType: "agent", refScope: "shared", ref: "shared-reviewer" },
+            { memberName: "localLead", refType: "agent", refScope: "team_local", ref: "reviewer" },
+            { memberName: "subTeam", refType: "agent_team", ref: "sub-team" },
+          ],
+        },
+      ],
+      [
+        "sub-team",
+        {
+          name: "Sub Team",
+          coordinatorMemberName: "subReviewer",
+          nodes: [
+            { memberName: "subReviewer", refType: "agent", refScope: "team_local", ref: "reviewer" },
+          ],
+        },
+      ],
+    ]);
+
+    (service as unknown as { teamDefinitionService: { getDefinitionById: (id: string) => Promise<unknown> } }).teamDefinitionService = {
+      getDefinitionById: vi.fn(async (id: string) => teamDefinitions.get(id) ?? null),
+    } as any;
+
+    const configs = await service.buildMemberConfigsFromLaunchPreset({
+      teamDefinitionId: "root-team",
+      launchPreset: {
+        workspaceRootPath: "/tmp/workspace",
+        llmModelIdentifier: "gpt-test",
+        autoExecuteTools: false,
+        skillAccessMode: "PRELOADED_ONLY" as any,
+        runtimeKind: RuntimeKind.AUTOBYTEUS,
+        llmConfig: { temperature: 0.1 },
+      },
+    });
+
+    expect(configs).toEqual([
+      expect.objectContaining({
+        memberName: "sharedLead",
+        agentDefinitionId: "shared-reviewer",
+      }),
+      expect.objectContaining({
+        memberName: "localLead",
+        agentDefinitionId: buildTeamLocalAgentDefinitionId("root-team", "reviewer"),
+      }),
+      expect.objectContaining({
+        memberName: "subReviewer",
+        agentDefinitionId: buildTeamLocalAgentDefinitionId("sub-team", "reviewer"),
+      }),
+    ]);
   });
 });

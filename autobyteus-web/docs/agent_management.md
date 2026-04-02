@@ -170,7 +170,15 @@ Manages agent definition CRUD operations:
 | `reloadAllAgentDefinitions()`  | Force network reload               |
 | `createAgentDefinition(input)` | Create new agent                   |
 | `updateAgentDefinition(input)` | Update existing agent              |
-| `deleteAgentDefinition(id)`    | Delete agent definition            |
+| `deleteAgentDefinition(id)`    | Delete shared standalone agent definition; team-local delete is intentionally rejected until a dedicated ownership-aware workflow exists |
+
+Ownership note:
+
+- The generic `Agents` page now lists both shared standalone agents and team-local agents.
+- Team-local agents remain visually clean in that list and detail flow: they differ only by one extra line such as `Team: Software Engineering Team`.
+- Shared-only actions are gated accordingly:
+  - edit and get work for both shared and team-local agents
+  - sync, duplicate, and delete remain shared-only in the generic agent-management surface
 
 ### agentRunConfigStore.ts
 

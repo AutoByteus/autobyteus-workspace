@@ -1,3 +1,5 @@
+export type AgentDefinitionOwnershipScope = "shared" | "team_local";
+
 export class AgentDefinition {
   id?: string | null;
   name: string;
@@ -14,6 +16,9 @@ export class AgentDefinition {
   toolInvocationPreprocessorNames: string[];
   lifecycleProcessorNames: string[];
   skillNames: string[];
+  ownershipScope: AgentDefinitionOwnershipScope;
+  ownerTeamId?: string | null;
+  ownerTeamName?: string | null;
 
   constructor(options: {
     name: string;
@@ -31,6 +36,9 @@ export class AgentDefinition {
     toolInvocationPreprocessorNames?: string[];
     lifecycleProcessorNames?: string[];
     skillNames?: string[];
+    ownershipScope?: AgentDefinitionOwnershipScope;
+    ownerTeamId?: string | null;
+    ownerTeamName?: string | null;
   }) {
     this.name = options.name;
     this.role = options.role;
@@ -47,6 +55,9 @@ export class AgentDefinition {
     this.toolInvocationPreprocessorNames = options.toolInvocationPreprocessorNames ?? [];
     this.lifecycleProcessorNames = options.lifecycleProcessorNames ?? [];
     this.skillNames = options.skillNames ?? [];
+    this.ownershipScope = options.ownershipScope ?? "shared";
+    this.ownerTeamId = options.ownerTeamId ?? null;
+    this.ownerTeamName = options.ownerTeamName ?? null;
   }
 }
 

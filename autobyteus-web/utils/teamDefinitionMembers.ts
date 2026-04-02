@@ -1,6 +1,7 @@
 import type {
   AgentTeamDefinition,
 } from '~/stores/agentTeamDefinitionStore';
+import { buildTeamLocalAgentDefinitionId } from '~/utils/teamLocalAgentDefinitionId';
 
 export interface TeamDefinitionLeafMember {
   memberName: string;
@@ -51,7 +52,9 @@ export const resolveLeafTeamMembers = (
         members.push({
           memberName: node.memberName.trim(),
           memberRouteKey: normalizeMemberRouteKey(node.memberName),
-          agentDefinitionId: node.ref.trim(),
+          agentDefinitionId: node.refScope === 'TEAM_LOCAL'
+            ? buildTeamLocalAgentDefinitionId(normalizedDefinitionId, node.ref)
+            : node.ref.trim(),
         });
         continue;
       }

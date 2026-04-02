@@ -279,6 +279,143 @@ describe("Agent definitions GraphQL e2e", () => {
     expect(result.errors?.[0]?.message).toContain('Cannot query field "prompts"');
   });
 
+  it("lists and updates team-local agent definitions with ownership metadata", async () => {
+    const unique = uniqueId("team_local_agent");
+    const dataDir = appConfigProvider.config.getAppDataDir();
+    const teamId = `team_${unique}`;
+    const agentId = `agent_${unique}`;
+    const resolvedAgentId = `team-local:${teamId}:${agentId}`;
+    const teamDir = path.join(dataDir, "agent-teams", teamId);
+    const localAgentDir = path.join(teamDir, "agents", agentId);
+    cleanupPaths.add(teamDir);
+
+    await fs.mkdir(localAgentDir, { recursive: true });
+    await fs.writeFile(
+      path.join(teamDir, "team.md"),
+      [
+        "---",
+        `name: Team ${unique}`,
+        "description: Team-local ownership test",
+        "---",
+        "",
+        "Coordinate the local team members.",
+      ].join("\n"),
+      "utf-8",
+    );
+    await fs.writeFile(
+      path.join(localAgentDir, "agent.md"),
+      [
+        "---",
+        `name: Local Agent ${unique}`,
+        "description: Local agent description",
+        "category: test-local",
+        "---",
+        "",
+        "Original local instructions",
+      ].join("\n"),
+      "utf-8",
+    );
+    await fs.writeFile(
+      path.join(localAgentDir, "agent-config.json"),
+      JSON.stringify({ toolNames: ["team_tool"], skillNames: [] }, null, 2),
+      "utf-8",
+    );
+
+    const listed = await execGraphql<{
+      agentDefinitions: Array<{
+        id: string;
+        name: string;
+        ownershipScope: "SHARED" | "TEAM_LOCAL";
+        ownerTeamId: string | null;
+        ownerTeamName: string | null;
+      }>;
+    }>(`
+      query TeamLocalAgentDefinitions {
+        agentDefinitions {
+          id
+          name
+          ownershipScope
+          ownerTeamId
+          ownerTeamName
+        }
+      }
+    `);
+
+    const localAgent = listed.agentDefinitions.find((entry) => entry.id === resolvedAgentId);
+    expect(localAgent).toBeDefined();
+    expect(localAgent).toMatchObject({
+      id: resolvedAgentId,
+      name: `Local Agent ${unique}`,
+      ownershipScope: "TEAM_LOCAL",
+      ownerTeamId: teamId,
+      ownerTeamName: `Team ${unique}`,
+    });
+
+    const updated = await execGraphql<{
+      updateAgentDefinition: {
+        id: string;
+        description: string;
+        instructions: string;
+        ownershipScope: "SHARED" | "TEAM_LOCAL";
+        ownerTeamId: string | null;
+        ownerTeamName: string | null;
+      };
+    }>(`
+      mutation UpdateTeamLocalAgentDefinition($input: UpdateAgentDefinitionInput!) {
+        updateAgentDefinition(input: $input) {
+          id
+          description
+          instructions
+          ownershipScope
+          ownerTeamId
+          ownerTeamName
+        }
+      }
+    `, {
+      input: {
+        id: resolvedAgentId,
+        description: "Updated local description",
+        instructions: "Updated local instructions",
+      },
+    });
+
+    expect(updated.updateAgentDefinition).toMatchObject({
+      id: resolvedAgentId,
+      description: "Updated local description",
+      instructions: "Updated local instructions",
+      ownershipScope: "TEAM_LOCAL",
+      ownerTeamId: teamId,
+      ownerTeamName: `Team ${unique}`,
+    });
+
+    const updatedMd = await fs.readFile(path.join(localAgentDir, "agent.md"), "utf-8");
+    expect(updatedMd).toContain("description: Updated local description");
+    expect(updatedMd).toContain("Updated local instructions");
+
+    const deleteResult = await execGraphql<{
+      deleteAgentDefinition: {
+        success: boolean;
+        message: string;
+      };
+    }>(
+      `
+        mutation DeleteTeamLocalAgentDefinition($id: String!) {
+          deleteAgentDefinition(id: $id) {
+            success
+            message
+          }
+        }
+      `,
+      { id: resolvedAgentId },
+    );
+
+    expect(deleteResult.deleteAgentDefinition.success).toBe(false);
+    expect(deleteResult.deleteAgentDefinition.message).toContain(
+      "Deleting team-owned agent definitions is not supported.",
+    );
+    await expect(fs.access(localAgentDir)).resolves.toBeUndefined();
+  });
+
   it("exposes md-centric agent GraphQL/output and input contracts", async () => {
     const introspection = await execGraphql<{
       agentType: {
@@ -362,6 +499,9 @@ describe("Agent definitions GraphQL e2e", () => {
     const instructionsOutput = outputFields.find((field) => field.name === "instructions");
     const categoryOutput = outputFields.find((field) => field.name === "category");
     const roleOutput = outputFields.find((field) => field.name === "role");
+    const ownershipScopeOutput = outputFields.find((field) => field.name === "ownershipScope");
+    const ownerTeamIdOutput = outputFields.find((field) => field.name === "ownerTeamId");
+    const ownerTeamNameOutput = outputFields.find((field) => field.name === "ownerTeamName");
 
     expect(instructionsOutput?.type.kind).toBe("NON_NULL");
     expect(instructionsOutput?.type.ofType?.name).toBe("String");
@@ -369,6 +509,12 @@ describe("Agent definitions GraphQL e2e", () => {
     expect(categoryOutput?.type.name).toBe("String");
     expect(roleOutput?.type.kind).toBe("SCALAR");
     expect(roleOutput?.type.name).toBe("String");
+    expect(ownershipScopeOutput?.type.kind).toBe("NON_NULL");
+    expect(ownershipScopeOutput?.type.ofType?.name).toBe("AgentDefinitionOwnershipScope");
+    expect(ownerTeamIdOutput?.type.kind).toBe("SCALAR");
+    expect(ownerTeamIdOutput?.type.name).toBe("String");
+    expect(ownerTeamNameOutput?.type.kind).toBe("SCALAR");
+    expect(ownerTeamNameOutput?.type.name).toBe("String");
     expect(outputFields.some((field) => field.name === "activePromptVersion")).toBe(false);
 
     const createInstructions = createFields.find((field) => field.name === "instructions");

@@ -211,6 +211,7 @@ describe("JSON file persistence contract e2e (md-centric, no mocks)", () => {
             memberName
             ref
             refType
+            refScope
           }
         }
       }
@@ -223,7 +224,12 @@ describe("JSON file persistence contract e2e (md-centric, no mocks)", () => {
         category: string | null;
         instructions: string;
         coordinatorMemberName: string;
-        nodes: Array<{ memberName: string; ref: string; refType: "AGENT" | "AGENT_TEAM" }>;
+        nodes: Array<{
+          memberName: string;
+          ref: string;
+          refType: "AGENT" | "AGENT_TEAM";
+          refScope?: "SHARED" | "TEAM_LOCAL" | null;
+        }>;
       };
     }>(createTeamMutation, {
       input: {
@@ -237,6 +243,7 @@ describe("JSON file persistence contract e2e (md-centric, no mocks)", () => {
             memberName: "leader",
             ref: createdAgent.createAgentDefinition.id,
             refType: "AGENT",
+            refScope: "SHARED",
           },
         ],
       },
@@ -260,7 +267,9 @@ describe("JSON file persistence contract e2e (md-centric, no mocks)", () => {
     const teamConfig = JSON.parse(teamConfigRaw) as Record<string, unknown>;
     expect(teamConfig).toMatchObject({
       coordinatorMemberName: "leader",
-      members: [{ memberName: "leader", ref: expectedAgentId, refType: "agent" }],
+      members: [
+        { memberName: "leader", ref: expectedAgentId, refType: "agent", refScope: "shared" },
+      ],
       avatarUrl: null,
     });
     expect(teamFiles.some((name) => name.endsWith(".yaml") || name.endsWith(".yml"))).toBe(false);
@@ -371,6 +380,7 @@ describe("JSON file persistence contract e2e (md-centric, no mocks)", () => {
             memberName: "lead",
             ref: createdAgent.createAgentDefinition.id,
             refType: "AGENT",
+            refScope: "SHARED",
           },
         ],
       },
@@ -432,7 +442,7 @@ describe("JSON file persistence contract e2e (md-centric, no mocks)", () => {
     const importedTeamConfig = JSON.stringify(
       {
         coordinatorMemberName: "lead",
-        members: [{ memberName: "lead", ref: agentId, refType: "agent" }],
+        members: [{ memberName: "lead", ref: agentId, refType: "agent", refScope: "shared" }],
         avatarUrl: null,
       },
       null,

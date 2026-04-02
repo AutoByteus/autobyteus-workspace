@@ -1,16 +1,21 @@
+export type TeamMemberRefScope = "shared" | "team_local";
+
 export class TeamMember {
   memberName: string;
   ref: string;
   refType: "agent" | "agent_team";
+  refScope?: TeamMemberRefScope | null;
 
   constructor(options: {
     memberName: string;
     ref: string;
     refType: "agent" | "agent_team";
+    refScope?: TeamMemberRefScope | null;
   }) {
     this.memberName = options.memberName;
     this.ref = options.ref;
     this.refType = options.refType;
+    this.refScope = options.refType === "agent" ? options.refScope ?? null : null;
   }
 }
 

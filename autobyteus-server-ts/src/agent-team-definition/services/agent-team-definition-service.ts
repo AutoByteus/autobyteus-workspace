@@ -1,4 +1,4 @@
-import { AgentTeamDefinition, AgentTeamDefinitionUpdate } from "../domain/models.js";
+import { AgentTeamDefinition, AgentTeamDefinitionUpdate, type TeamMemberRefScope } from "../domain/models.js";
 import { AgentTeamDefinitionPersistenceProvider } from "../providers/agent-team-definition-persistence-provider.js";
 import { CachedAgentTeamDefinitionProvider } from "../providers/cached-agent-team-definition-provider.js";
 
@@ -42,6 +42,19 @@ const assertValidCoordinatorMember = (
   }
 };
 
+const assertValidTeamMembers = (
+  nodes: Array<{ refType: "agent" | "agent_team"; refScope?: TeamMemberRefScope | null }>,
+): void => {
+  for (const node of nodes) {
+    if (node.refType === "agent" && !node.refScope) {
+      throw new Error("Agent members must include refScope 'shared' or 'team_local'.");
+    }
+    if (node.refType === "agent_team" && node.refScope) {
+      throw new Error("Nested team members must not include refScope.");
+    }
+  }
+};
+
 export class AgentTeamDefinitionService {
   private static instance: AgentTeamDefinitionService | null = null;
 
@@ -67,6 +80,7 @@ export class AgentTeamDefinitionService {
       throw new Error("Cannot create a definition that already has an ID.");
     }
 
+    assertValidTeamMembers(definition.nodes);
     assertValidCoordinatorMember(definition.coordinatorMemberName, definition.nodes);
     definition.avatarUrl = normalizeOptionalString(definition.avatarUrl);
     const created = await this.provider.create(definition);
@@ -124,6 +138,7 @@ export class AgentTeamDefinitionService {
       existing.avatarUrl = normalizeOptionalString(updateData.avatarUrl);
     }
 
+    assertValidTeamMembers(existing.nodes);
     assertValidCoordinatorMember(existing.coordinatorMemberName, existing.nodes);
 
     const updated = await this.provider.update(existing);

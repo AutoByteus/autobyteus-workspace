@@ -4,7 +4,7 @@ import type { Dirent } from "node:fs";
 import path from "node:path";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { readJsonFile, writeJsonFile, writeRawFile } from "../../persistence/file/store-utils.js";
-import { AgentTeamDefinition, TeamMember } from "../domain/models.js";
+import { AgentTeamDefinition, TeamMember, type TeamMemberRefScope } from "../domain/models.js";
 import { TeamMdParseError, parseTeamMd, serializeTeamMd } from "../utils/team-md-parser.js";
 
 const logger = {
@@ -15,6 +15,7 @@ type TeamConfigMember = {
   memberName: string;
   ref: string;
   refType: "agent" | "agent_team";
+  refScope?: TeamMemberRefScope;
 };
 
 type TeamConfigRecord = {
@@ -22,6 +23,13 @@ type TeamConfigRecord = {
   members?: TeamConfigMember[];
   avatarUrl?: string | null;
 };
+
+export class TeamConfigParseError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "TeamConfigParseError";
+  }
+}
 
 const slugify = (value: string): string => {
   const normalized = value
@@ -34,24 +42,49 @@ const slugify = (value: string): string => {
   return normalized || "team";
 };
 
+const normalizeRefScope = (value: unknown): TeamMemberRefScope | null => {
+  if (value === "shared" || value === "team_local") {
+    return value;
+  }
+  return null;
+};
+
 const normalizeMembers = (value: unknown): TeamConfigMember[] => {
   if (!Array.isArray(value)) {
     return [];
   }
   const members: TeamConfigMember[] = [];
-  for (const entry of value) {
+  value.forEach((entry, index) => {
     if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
-      continue;
+      throw new TeamConfigParseError(`members[${index}] must be an object.`);
     }
     const candidate = entry as Record<string, unknown>;
     const memberName = typeof candidate.memberName === "string" ? candidate.memberName : "";
     const ref = typeof candidate.ref === "string" ? candidate.ref : "";
     const refType = candidate.refType === "agent_team" ? "agent_team" : candidate.refType === "agent" ? "agent" : null;
+    const refScope = normalizeRefScope(candidate.refScope);
     if (!memberName || !ref || !refType) {
-      continue;
+      throw new TeamConfigParseError(
+        `members[${index}] must include non-empty memberName, ref, and refType.`,
+      );
     }
-    members.push({ memberName, ref, refType });
-  }
+    if (refType === "agent" && !refScope) {
+      throw new TeamConfigParseError(
+        `members[${index}] with refType 'agent' must include refScope 'shared' or 'team_local'.`,
+      );
+    }
+    if (refType === "agent_team" && candidate.refScope !== undefined && candidate.refScope !== null) {
+      throw new TeamConfigParseError(
+        `members[${index}] with refType 'agent_team' must not include refScope.`,
+      );
+    }
+    members.push({
+      memberName,
+      ref,
+      refType,
+      ...(refType === "agent" ? { refScope: refScope ?? undefined } : {}),
+    });
+  });
   return members;
 };
 
@@ -74,7 +107,7 @@ export class FileAgentTeamDefinitionProvider {
 
   private getReadTeamRoots(): string[] {
     const roots = [this.getTeamsDir()];
-    for (const sourceRoot of appConfigProvider.config.getAdditionalDefinitionSourceRoots()) {
+    for (const sourceRoot of appConfigProvider.config.getAdditionalAgentPackageRoots()) {
       roots.push(path.join(sourceRoot, "agent-teams"));
     }
     return roots;
@@ -105,11 +138,12 @@ export class FileAgentTeamDefinitionProvider {
               memberName: member.memberName,
               ref: member.ref,
               refType: member.refType,
+              refScope: member.refScope ?? null,
             }),
         ),
       });
     } catch (error) {
-      if (error instanceof TeamMdParseError) {
+      if (error instanceof TeamMdParseError || error instanceof TeamConfigParseError) {
         throw error;
       }
       if ((error as NodeJS.ErrnoException).code === "ENOENT") {
@@ -214,6 +248,7 @@ export class FileAgentTeamDefinitionProvider {
         memberName: member.memberName,
         ref: member.ref,
         refType: member.refType,
+        ...(member.refType === "agent" ? { refScope: member.refScope ?? "shared" } : {}),
       })),
     };
     await writeJsonFile(appConfigProvider.config.getTeamConfigPath(teamId), configRecord);
@@ -268,7 +303,7 @@ export class FileAgentTeamDefinitionProvider {
             seenIds.add(teamId);
           }
         } catch (error) {
-          if (error instanceof TeamMdParseError) {
+          if (error instanceof TeamMdParseError || error instanceof TeamConfigParseError) {
             logger.warn(`Skipping team '${teamId}' due to parse error: ${error.message}`);
             continue;
           }
@@ -310,7 +345,7 @@ export class FileAgentTeamDefinitionProvider {
             seenIds.add(teamId);
           }
         } catch (error) {
-          if (error instanceof TeamMdParseError) {
+          if (error instanceof TeamMdParseError || error instanceof TeamConfigParseError) {
             logger.warn(`Skipping template team '${teamId}' due to parse error: ${error.message}`);
             continue;
           }
@@ -351,6 +386,7 @@ export class FileAgentTeamDefinitionProvider {
         memberName: member.memberName,
         ref: member.ref,
         refType: member.refType,
+        ...(member.refType === "agent" ? { refScope: member.refScope ?? "shared" } : {}),
       })),
     };
     await writeJsonFile(sourcePaths.configPath, configRecord);

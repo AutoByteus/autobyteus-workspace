@@ -330,6 +330,7 @@ describe("Node sync GraphQL endpoint e2e", () => {
               memberName: "leader",
               ref: agentA.createAgentDefinition.id,
               refType: "AGENT",
+              refScope: "SHARED",
             },
           ],
         },
@@ -414,6 +415,7 @@ describe("Node sync GraphQL endpoint e2e", () => {
             memberName: "leader",
             ref: createdAgent.createAgentDefinition.id,
             refType: "AGENT",
+            refScope: "SHARED",
           },
         ],
       },
@@ -598,6 +600,106 @@ describe("Node sync GraphQL endpoint e2e", () => {
     expect(result.errors?.length ?? 0).toBeGreaterThan(0);
     expect(result.errors?.[0]?.message).toContain(
       "Selected agent definition ID was not found on source node",
+    );
+  });
+
+  it("fails selective team export when a selected team references a missing local agent", async () => {
+    const unique = uniqueId("missing_local_sync");
+    const teamId = `team_${unique}`;
+    const missingLocalAgentId = `reviewer_${unique}`;
+
+    const importMutation = `
+      mutation ImportSyncBundle($input: ImportNodeSyncBundleInput!) {
+        importSyncBundle(input: $input) {
+          success
+          summary {
+            processed
+            created
+            updated
+            deleted
+            skipped
+          }
+          failures {
+            entityType
+            key
+            message
+          }
+        }
+      }
+    `;
+
+    const importResult = await execGraphql<{
+      importSyncBundle: {
+        success: boolean;
+        summary: { processed: number; created: number };
+        failures: Array<{ key: string; message: string }>;
+      };
+    }>(importMutation, {
+      input: {
+        scope: ["AGENT_TEAM_DEFINITION"],
+        conflictPolicy: "SOURCE_WINS",
+        tombstonePolicy: "SOURCE_DELETE_WINS",
+        bundle: {
+          watermark: new Date().toISOString(),
+          entities: {
+            agent_team_definition: [
+              {
+                teamId,
+                files: {
+                  teamMd: buildTeamMd({
+                    name: `Broken Team ${unique}`,
+                    description: "team with missing local agent",
+                    category: "sync",
+                    instructions: "broken local team instructions",
+                  }),
+                  teamConfigJson: JSON.stringify({
+                    coordinatorMemberName: "leader",
+                    members: [
+                      {
+                        memberName: "leader",
+                        ref: missingLocalAgentId,
+                        refType: "agent",
+                        refScope: "team_local",
+                      },
+                    ],
+                    avatarUrl: null,
+                  }),
+                },
+                localAgents: [],
+              },
+            ],
+          },
+          tombstones: {},
+        },
+      },
+    });
+
+    expect(importResult.importSyncBundle.success).toBe(true);
+    expect(importResult.importSyncBundle.summary.processed).toBe(1);
+    expect(importResult.importSyncBundle.summary.created).toBe(1);
+    expect(importResult.importSyncBundle.failures).toHaveLength(0);
+
+    const exportQuery = `
+      query ExportSyncBundle($input: ExportNodeSyncBundleInput!) {
+        exportSyncBundle(input: $input) {
+          watermark
+        }
+      }
+    `;
+
+    const result = await runGraphql(exportQuery, {
+      input: {
+        scope: ["AGENT_TEAM_DEFINITION"],
+        selection: {
+          agentTeamDefinitionIds: [teamId],
+          includeDependencies: false,
+        },
+      },
+    });
+
+    expect(result.errors?.length ?? 0).toBeGreaterThan(0);
+    expect(result.errors?.[0]?.message).toContain(
+      `Team 'Broken Team ${unique}' references missing local agent '${missingLocalAgentId}'.`,
     );
   });
 
@@ -824,7 +926,9 @@ describe("Node sync GraphQL endpoint e2e", () => {
                   }),
                   teamConfigJson: JSON.stringify({
                     coordinatorMemberName: "leader",
-                    members: [{ memberName: "leader", ref: agentId, refType: "agent" }],
+                    members: [
+                      { memberName: "leader", ref: agentId, refType: "agent", refScope: "shared" },
+                    ],
                     avatarUrl: null,
                   }),
                 },

@@ -2,8 +2,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createTestingPinia } from '@pinia/testing'
 import { setActivePinia } from 'pinia'
-import DefinitionSourcesManager from '../DefinitionSourcesManager.vue'
-import { useDefinitionSourcesStore } from '~/stores/definitionSourcesStore'
+import AgentPackageRootsManager from '../AgentPackageRootsManager.vue'
+import { useAgentPackageRootsStore } from '~/stores/agentPackageRootsStore'
 
 const flushPromises = async () => {
   await Promise.resolve()
@@ -15,17 +15,19 @@ const mountComponent = async () => {
     createSpy: vi.fn,
     stubActions: true,
     initialState: {
-      definitionSources: {
-        definitionSources: [
+      agentPackageRoots: {
+        agentPackageRoots: [
           {
             path: '/default/root',
-            agentCount: 2,
+            sharedAgentCount: 2,
+            teamLocalAgentCount: 1,
             agentTeamCount: 1,
             isDefault: true,
           },
           {
             path: '/custom/root',
-            agentCount: 3,
+            sharedAgentCount: 3,
+            teamLocalAgentCount: 2,
             agentTeamCount: 2,
             isDefault: false,
           },
@@ -37,13 +39,13 @@ const mountComponent = async () => {
   })
   setActivePinia(pinia)
 
-  const store = useDefinitionSourcesStore()
-  store.fetchDefinitionSources = vi.fn().mockResolvedValue(undefined)
-  store.addDefinitionSource = vi.fn().mockResolvedValue(undefined)
-  store.removeDefinitionSource = vi.fn().mockResolvedValue(undefined)
+  const store = useAgentPackageRootsStore()
+  store.fetchAgentPackageRoots = vi.fn().mockResolvedValue(undefined)
+  store.addAgentPackageRoot = vi.fn().mockResolvedValue(undefined)
+  store.removeAgentPackageRoot = vi.fn().mockResolvedValue(undefined)
   store.clearError = vi.fn()
 
-  const wrapper = mount(DefinitionSourcesManager, {
+  const wrapper = mount(AgentPackageRootsManager, {
     global: {
       plugins: [pinia],
     },
@@ -52,25 +54,25 @@ const mountComponent = async () => {
   return { wrapper, store }
 }
 
-describe('DefinitionSourcesManager', () => {
+describe('AgentPackageRootsManager', () => {
   beforeEach(() => {
     vi.clearAllMocks()
   })
 
   it('loads sources on mount', async () => {
     const { store } = await mountComponent()
-    expect(store.fetchDefinitionSources).toHaveBeenCalledTimes(1)
+    expect(store.fetchAgentPackageRoots).toHaveBeenCalledTimes(1)
   })
 
   it('adds a source path and shows success feedback', async () => {
     const { wrapper, store } = await mountComponent()
 
-    await wrapper.get('[data-testid="definition-source-input"]').setValue('/new/source/root')
-    await wrapper.get('[data-testid="definition-source-add-button"]').trigger('click')
+    await wrapper.get('[data-testid="agent-package-root-input"]').setValue('/new/source/root')
+    await wrapper.get('[data-testid="agent-package-root-add-button"]').trigger('click')
     await flushPromises()
 
-    expect(store.addDefinitionSource).toHaveBeenCalledWith('/new/source/root')
-    expect(wrapper.text()).toContain('Import path added.')
+    expect(store.addAgentPackageRoot).toHaveBeenCalledWith('/new/source/root')
+    expect(wrapper.text()).toContain('Agent package root added.')
   })
 
   it('removes a custom source path', async () => {
@@ -81,7 +83,7 @@ describe('DefinitionSourcesManager', () => {
     await removeButtons[0].trigger('click')
     await flushPromises()
 
-    expect(store.removeDefinitionSource).toHaveBeenCalledWith('/custom/root')
-    expect(wrapper.text()).toContain('Import path removed.')
+    expect(store.removeAgentPackageRoot).toHaveBeenCalledWith('/custom/root')
+    expect(wrapper.text()).toContain('Agent package root removed.')
   })
 })

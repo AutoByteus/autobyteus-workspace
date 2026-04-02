@@ -159,11 +159,13 @@ const filteredAgentDefinitions = computed(() => {
   return agentDefinitions.value.filter((agent) => {
     const name = agent.name?.toLowerCase() ?? '';
     const description = agent.description?.toLowerCase() ?? '';
+    const ownerTeamName = agent.ownerTeamName?.toLowerCase() ?? '';
     const tools = (agent.toolNames ?? []).join(' ').toLowerCase();
     const skills = (agent.skillNames ?? []).join(' ').toLowerCase();
     return (
       name.includes(lowerCaseQuery)
       || description.includes(lowerCaseQuery)
+      || ownerTeamName.includes(lowerCaseQuery)
       || tools.includes(lowerCaseQuery)
       || skills.includes(lowerCaseQuery)
     );
@@ -209,6 +211,11 @@ const syncAgent = async (agentDef: AgentDefinition): Promise<void> => {
   syncInfo.value = null;
   syncError.value = null;
   lastAgentSyncReport.value = null;
+
+  if ((agentDef.ownershipScope ?? 'SHARED') !== 'SHARED') {
+    syncError.value = 'Team-owned agents must be synced as part of their team.';
+    return;
+  }
 
   const targetNodes = nodeStore.nodes.filter((node) => node.id !== sourceNodeId.value);
   if (targetNodes.length === 0) {

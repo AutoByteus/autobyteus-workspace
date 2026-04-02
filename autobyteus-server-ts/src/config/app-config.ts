@@ -340,6 +340,18 @@ export class AppConfig {
     return path.join(this.getAgentTeamsDir(), teamId, "team-config.json");
   }
 
+  getTeamLocalAgentsDir(teamId: string): string {
+    return path.join(this.getAgentTeamsDir(), teamId, "agents");
+  }
+
+  getTeamLocalAgentMdPath(teamId: string, agentId: string): string {
+    return path.join(this.getTeamLocalAgentsDir(teamId), agentId, "agent.md");
+  }
+
+  getTeamLocalAgentConfigPath(teamId: string, agentId: string): string {
+    return path.join(this.getTeamLocalAgentsDir(teamId), agentId, "agent-config.json");
+  }
+
   getAdditionalSkillsDirs(): string[] {
     const raw = this.get("AUTOBYTEUS_SKILLS_PATHS", "");
     if (!raw || !raw.trim()) {
@@ -362,8 +374,8 @@ export class AppConfig {
     return paths;
   }
 
-  getAdditionalDefinitionSourceRoots(): string[] {
-    const raw = this.get("AUTOBYTEUS_DEFINITION_SOURCE_PATHS", "");
+  getAdditionalAgentPackageRoots(): string[] {
+    const raw = this.get("AUTOBYTEUS_AGENT_PACKAGE_ROOTS", "");
     if (!raw || !raw.trim()) {
       return [];
     }
@@ -376,7 +388,7 @@ export class AppConfig {
         continue;
       }
       if (!path.isAbsolute(trimmed)) {
-        logger.warn(`Definition source path must be absolute and will be ignored: ${trimmed}`);
+        logger.warn(`Agent package root path must be absolute and will be ignored: ${trimmed}`);
         continue;
       }
       const resolved = path.resolve(trimmed);
@@ -384,7 +396,7 @@ export class AppConfig {
         continue;
       }
       if (!fs.existsSync(resolved) || !fs.statSync(resolved).isDirectory()) {
-        logger.warn(`Definition source path does not exist or is not a directory: ${resolved}`);
+        logger.warn(`Agent package root path does not exist or is not a directory: ${resolved}`);
         continue;
       }
       seen.add(resolved);

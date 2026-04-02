@@ -13,7 +13,7 @@ const ENV_KEYS = [
   "DATABASE_URL",
   "AUTOBYTEUS_MEMORY_DIR",
   "AUTOBYTEUS_SKILLS_PATHS",
-  "AUTOBYTEUS_DEFINITION_SOURCE_PATHS",
+  "AUTOBYTEUS_AGENT_PACKAGE_ROOTS",
   "AUTOBYTEUS_LOG_DIR",
   "AUTOBYTEUS_TEMP_WORKSPACE_DIR",
   "LOG_LEVEL",
@@ -152,17 +152,17 @@ describe("AppConfig", () => {
     await fsPromises.rm(configDir, { recursive: true, force: true });
   });
 
-  it("returns additional definition source roots that are absolute and exist", async () => {
+  it("returns additional agent package roots that are absolute and exist", async () => {
     const configDir = await createTempConfigDir("AUTOBYTEUS_SERVER_HOST=http://localhost:8000\n");
     const sourceA = path.join(configDir, "source-a");
     const sourceB = path.join(configDir, "source-b");
     await fsPromises.mkdir(sourceA, { recursive: true });
     await fsPromises.mkdir(sourceB, { recursive: true });
 
-    process.env.AUTOBYTEUS_DEFINITION_SOURCE_PATHS = `${sourceA},relative-source,${sourceB},/nope,${sourceA}`;
+    process.env.AUTOBYTEUS_AGENT_PACKAGE_ROOTS = `${sourceA},relative-source,${sourceB},/nope,${sourceA}`;
     const config = new AppConfig();
 
-    expect(config.getAdditionalDefinitionSourceRoots()).toEqual([sourceA, sourceB]);
+    expect(config.getAdditionalAgentPackageRoots()).toEqual([sourceA, sourceB]);
 
     await fsPromises.rm(configDir, { recursive: true, force: true });
   });
@@ -180,6 +180,12 @@ describe("AppConfig", () => {
     expect(config.getTeamMdPath("team-x")).toBe(path.join(configDir, "agent-teams", "team-x", "team.md"));
     expect(config.getTeamConfigPath("team-x")).toBe(
       path.join(configDir, "agent-teams", "team-x", "team-config.json"),
+    );
+    expect(config.getTeamLocalAgentMdPath("team-x", "agent-y")).toBe(
+      path.join(configDir, "agent-teams", "team-x", "agents", "agent-y", "agent.md"),
+    );
+    expect(config.getTeamLocalAgentConfigPath("team-x", "agent-y")).toBe(
+      path.join(configDir, "agent-teams", "team-x", "agents", "agent-y", "agent-config.json"),
     );
 
     await fsPromises.rm(configDir, { recursive: true, force: true });

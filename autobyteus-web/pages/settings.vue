@@ -91,15 +91,15 @@
             </li>
             <li class="w-full">
               <button
-                @click="activeSection = 'definition-sources'"
-                data-testid="settings-nav-definition-sources"
+                @click="activeSection = 'agent-package-roots'"
+                data-testid="settings-nav-agent-package-roots"
                 class="flex w-full items-center justify-start px-4 py-2 rounded-md transition-colors duration-200 text-gray-700 hover:bg-gray-100 hover:text-gray-900 group"
-                :class="{ 'bg-gray-100 text-gray-900': activeSection === 'definition-sources' }"
+                :class="{ 'bg-gray-100 text-gray-900': activeSection === 'agent-package-roots' }"
               >
                 <div class="flex items-center min-w-[20px] mr-3">
                   <span class="i-heroicons-folder-open-20-solid w-5 h-5"></span>
                 </div>
-                <span class="text-left">Import</span>
+                <span class="text-left">Agent Package Roots</span>
               </button>
             </li>
             <li class="w-full">
@@ -183,7 +183,7 @@
           v-if="activeSection === 'mcp-servers'"
           initial-root-section="mcp-servers"
         />
-        <DefinitionSourcesManager v-if="activeSection === 'definition-sources'" />
+        <AgentPackageRootsManager v-if="activeSection === 'agent-package-roots'" />
         <ServerSettingsManager
           v-if="activeSection === 'server-settings'"
           :section-mode="serverSettingsMode"
@@ -211,7 +211,7 @@ import ServerSettingsManager from '~/components/settings/ServerSettingsManager.v
 import MessagingSetupManager from '~/components/settings/MessagingSetupManager.vue';
 import ExtensionsManager from '~/components/settings/ExtensionsManager.vue';
 import AboutSettingsManager from '~/components/settings/AboutSettingsManager.vue';
-import DefinitionSourcesManager from '~/components/settings/DefinitionSourcesManager.vue';
+import AgentPackageRootsManager from '~/components/settings/AgentPackageRootsManager.vue';
 import ToolsManagementWorkspace from '~/components/tools/ToolsManagementWorkspace.vue';
 
 definePageMeta({
@@ -227,7 +227,7 @@ type SettingsSection =
   | 'updates'
   | 'local-tools'
   | 'mcp-servers'
-  | 'definition-sources'
+  | 'agent-package-roots'
   | 'server-settings';
 type ServerSettingsMode = 'quick' | 'advanced';
 
@@ -247,7 +247,7 @@ const validSections = new Set<SettingsSection>([
   'updates',
   'local-tools',
   'mcp-servers',
-  'definition-sources',
+  'agent-package-roots',
   'server-settings',
 ]);
 
