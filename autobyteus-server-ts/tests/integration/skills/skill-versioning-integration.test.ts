@@ -30,7 +30,7 @@ describeGit("Skill versioning integration", () => {
     const config = {
       getSkillsDir: () => skillsDir,
       getAdditionalSkillsDirs: () => [],
-      getAdditionalDefinitionSourceRoots: () => [],
+      getAdditionalAgentPackageRoots: () => [],
       getAppDataDir: () => tempDir,
       get: (_key: string, defaultValue?: string) => defaultValue,
     };

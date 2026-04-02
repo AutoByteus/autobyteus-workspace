@@ -7,6 +7,7 @@ describe("AgentDefinitionService skill names", () => {
     create: ReturnType<typeof vi.fn>;
     getById: ReturnType<typeof vi.fn>;
     getAll: ReturnType<typeof vi.fn>;
+    getAllVisible: ReturnType<typeof vi.fn>;
     update: ReturnType<typeof vi.fn>;
     delete: ReturnType<typeof vi.fn>;
   };
@@ -25,6 +26,7 @@ describe("AgentDefinitionService skill names", () => {
       }),
       getById: vi.fn(async () => null),
       getAll: vi.fn(async () => []),
+      getAllVisible: vi.fn(async () => []),
       update: vi.fn(async (definition: AgentDefinition) => definition),
       delete: vi.fn(async () => true),
     };

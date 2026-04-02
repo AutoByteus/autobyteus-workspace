@@ -16,6 +16,7 @@ export const CreateAgentTeamDefinition = gql`
         memberName
         ref
         refType
+        refScope
       }
     }
   }
@@ -37,6 +38,7 @@ export const UpdateAgentTeamDefinition = gql`
         memberName
         ref
         refType
+        refScope
       }
     }
   }

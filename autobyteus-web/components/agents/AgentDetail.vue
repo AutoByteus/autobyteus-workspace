@@ -44,6 +44,7 @@
             <div class="text-center">
               <h1 class="text-2xl font-bold text-gray-900">{{ agentDef.name }}</h1>
               <p v-if="agentDef.role" class="text-sm text-indigo-700 font-medium mt-1">{{ agentDef.role }}</p>
+              <p v-if="teamLabel" class="text-sm text-gray-500 mt-1">Team: {{ teamLabel }}</p>
             </div>
 
             <div class="grid grid-cols-2 gap-2 text-center">
@@ -67,11 +68,12 @@
                 Edit
               </button>
               <AgentDuplicateButton
+                v-if="!isTeamLocal"
                 :agent-id="agentDef.id"
                 :default-name="agentDef.name"
                 @duplicated="handleDuplicated"
               />
-              <button @click="handleDelete(agentDef.id)" class="w-full px-4 py-2 bg-red-50 text-red-700 font-semibold rounded-md hover:bg-red-100 transition-colors flex items-center justify-center">
+              <button v-if="!isTeamLocal" @click="handleDelete(agentDef.id)" class="w-full px-4 py-2 bg-red-50 text-red-700 font-semibold rounded-md hover:bg-red-100 transition-colors flex items-center justify-center">
                 <span class="block i-heroicons-trash-20-solid w-5 h-5 mr-2"></span>
                 Delete
               </button>
@@ -193,6 +195,15 @@ const optionalProcessorLists = computed(() => {
 
 const avatarUrl = computed(() => agentDef.value?.avatarUrl || '');
 const showAvatarImage = computed(() => Boolean(avatarUrl.value) && !avatarLoadError.value);
+const isTeamLocal = computed(() => (agentDef.value?.ownershipScope ?? 'SHARED') === 'TEAM_LOCAL');
+const teamLabel = computed(() => {
+  if (!isTeamLocal.value) {
+    return '';
+  }
+  return agentDef.value?.ownerTeamName?.trim()
+    || agentDef.value?.ownerTeamId?.trim()
+    || '';
+});
 const avatarInitials = computed(() => {
   const raw = agentDef.value?.name?.trim() || '';
   if (!raw) {

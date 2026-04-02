@@ -1,5 +1,3 @@
-import { promises as fs } from "node:fs";
-import path from "node:path";
 import {
   StdioMcpServerConfig,
   StreamableHttpMcpServerConfig,
@@ -19,6 +17,14 @@ import type {
   NodeSyncSelectionSpec,
   ResolvedNodeSyncSelection,
 } from "./node-sync-selection-service.js";
+import {
+  readAgentDefinitionPayload,
+  readAgentTeamDefinitionPayload,
+  type SyncAgentDefinition,
+  type SyncAgentTeamDefinition,
+  writeAgentDefinitionPayload,
+  writeAgentTeamDefinitionPayload,
+} from "./node-sync-file-layout.js";
 
 export type SyncEntityType =
   | "agent_definition"
@@ -59,22 +65,6 @@ export interface NodeSyncImportResult {
   failures: Array<{ entityType: SyncEntityType; key: string; message: string }>;
   appliedWatermark: string | null;
 }
-
-type SyncAgentDefinition = {
-  agentId: string;
-  files: {
-    agentMd: string;
-    agentConfigJson: string;
-  };
-};
-
-type SyncAgentTeamDefinition = {
-  teamId: string;
-  files: {
-    teamMd: string;
-    teamConfigJson: string;
-  };
-};
 
 type SyncMcpServerConfiguration =
   | {
@@ -147,24 +137,6 @@ type NodeSyncServiceOptions = {
   selectionService?: NodeSyncSelectionService;
 };
 
-const getDataDir = (): string => appConfigProvider.config.getAppDataDir();
-const getAgentDir = (agentId: string): string => path.join(getDataDir(), "agents", agentId);
-const getTeamDir = (teamId: string): string => path.join(getDataDir(), "agent-teams", teamId);
-
-const getAgentMdPath = (agentId: string): string => appConfigProvider.config.getAgentMdPath(agentId);
-const getAgentConfigPath = (agentId: string): string =>
-  appConfigProvider.config.getAgentConfigPath(agentId);
-const getTeamMdPath = (teamId: string): string => appConfigProvider.config.getTeamMdPath(teamId);
-const getTeamConfigPath = (teamId: string): string => appConfigProvider.config.getTeamConfigPath(teamId);
-
-async function readTextFile(filePath: string, fallback: string): Promise<string> {
-  try {
-    return await fs.readFile(filePath, "utf-8");
-  } catch {
-    return fallback;
-  }
-}
-
 export class NodeSyncService {
   private static instance: NodeSyncService | null = null;
 
@@ -206,13 +178,7 @@ export class NodeSyncService {
         if (!definition.id) {
           continue;
         }
-        payloads.push({
-          agentId: definition.id,
-          files: {
-            agentMd: await readTextFile(getAgentMdPath(definition.id), ""),
-            agentConfigJson: await readTextFile(getAgentConfigPath(definition.id), "{}\n"),
-          },
-        });
+        payloads.push(await readAgentDefinitionPayload(definition.id));
       }
       entities.agent_definition = payloads;
     }
@@ -225,13 +191,7 @@ export class NodeSyncService {
         if (!team.id) {
           continue;
         }
-        payloads.push({
-          teamId: team.id,
-          files: {
-            teamMd: await readTextFile(getTeamMdPath(team.id), ""),
-            teamConfigJson: await readTextFile(getTeamConfigPath(team.id), "{}\n"),
-          },
-        });
+        payloads.push(await readAgentTeamDefinitionPayload(team.id));
       }
       entities.agent_team_definition = payloads;
     }
@@ -369,7 +329,7 @@ export class NodeSyncService {
           continue;
         }
 
-        await this.writeAgentFolder(payload.agentId, payload);
+        await writeAgentDefinitionPayload(payload);
 
         if (exists) {
           summary.updated += 1;
@@ -414,7 +374,7 @@ export class NodeSyncService {
           continue;
         }
 
-        await this.writeTeamFolder(payload.teamId, payload);
+        await writeAgentTeamDefinitionPayload(payload);
 
         if (exists) {
           summary.updated += 1;
@@ -490,19 +450,5 @@ export class NodeSyncService {
         });
       }
     }
-  }
-
-  private async writeAgentFolder(agentId: string, payload: SyncAgentDefinition): Promise<void> {
-    const agentDir = getAgentDir(agentId);
-    await fs.mkdir(agentDir, { recursive: true });
-    await fs.writeFile(getAgentMdPath(agentId), payload.files.agentMd ?? "", "utf-8");
-    await fs.writeFile(getAgentConfigPath(agentId), payload.files.agentConfigJson ?? "{}\n", "utf-8");
-  }
-
-  private async writeTeamFolder(teamId: string, payload: SyncAgentTeamDefinition): Promise<void> {
-    const teamDir = getTeamDir(teamId);
-    await fs.mkdir(teamDir, { recursive: true });
-    await fs.writeFile(getTeamMdPath(teamId), payload.files.teamMd ?? "", "utf-8");
-    await fs.writeFile(getTeamConfigPath(teamId), payload.files.teamConfigJson ?? "{}\n", "utf-8");
   }
 }

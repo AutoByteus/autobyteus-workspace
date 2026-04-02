@@ -44,7 +44,7 @@ describe("SkillService skill source management", () => {
     const config = {
       getSkillsDir: () => defaultDir,
       getAdditionalSkillsDirs: () => additionalDirs,
-      getAdditionalDefinitionSourceRoots: () => [],
+      getAdditionalAgentPackageRoots: () => [],
       getAppDataDir: () => tempRoot,
       get: (_key: string, defaultValue = "") => defaultValue,
     };

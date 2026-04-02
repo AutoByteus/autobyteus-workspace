@@ -1,12 +1,6 @@
 import {
   AgentConfig,
   AgentTeamConfig,
-  BaseAgentUserInputMessageProcessor,
-  BaseLLMResponseProcessor,
-  BaseLifecycleEventProcessor,
-  BaseSystemPromptProcessor,
-  BaseToolExecutionResultProcessor,
-  BaseToolInvocationPreprocessor,
   TeamNodeConfig,
   defaultAgentTeamFactory,
   defaultInputProcessorRegistry,
@@ -18,12 +12,9 @@ import {
   LLMFactory,
 } from "autobyteus-ts";
 import { waitForTeamToBeIdle } from "autobyteus-ts/agent-team/utils/wait-for-idle.js";
-import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
-import { LLMConfig } from "autobyteus-ts/llm/utils/llm-config.js";
+import { buildTeamLocalAgentDefinitionId } from "autobyteus-ts/agent-team/utils/team-local-agent-definition-id.js";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
-import type { AgentDefinition } from "../../../agent-definition/domain/models.js";
 import { AgentDefinitionService } from "../../../agent-definition/services/agent-definition-service.js";
-import { mergeMandatoryAndOptional } from "../../../agent-definition/utils/processor-defaults.js";
 import type { AgentTeamDefinition } from "../../../agent-team-definition/domain/models.js";
 import { AgentTeamDefinitionService } from "../../../agent-team-definition/services/agent-team-definition-service.js";
 import { appConfigProvider } from "../../../config/app-config-provider.js";
@@ -39,7 +30,6 @@ import {
 import { generateTeamRunId } from "../../../run-history/utils/team-run-id-utils.js";
 import { TeamMemberMemoryLayout } from "../../../agent-memory/store/team-member-memory-layout.js";
 import { SkillService } from "../../../skills/services/skill-service.js";
-import { TempWorkspace } from "../../../workspaces/temp-workspace.js";
 import { getWorkspaceManager, type WorkspaceManager } from "../../../workspaces/workspace-manager.js";
 import { AgentTeamCreationError } from "../../errors.js";
 import { AutoByteusTeamRunBackend } from "./autobyteus-team-run-backend.js";
@@ -49,6 +39,8 @@ import {
 } from "./autobyteus-team-run-context.js";
 import type { TeamRunBackendFactory } from "../team-run-backend-factory.js";
 import type { TeamRunBackend } from "../team-run-backend.js";
+import { AutoByteusAgentConfigBuilder } from "./autobyteus-agent-config-builder.js";
+import type { TeamProcessorRegistries } from "./team-processor-registries.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -58,27 +50,6 @@ const logger = {
 
 type TeamFactoryLike = typeof defaultAgentTeamFactory;
 type LlmFactoryLike = typeof LLMFactory;
-
-type ProcessorOption = { name: string; isMandatory: boolean };
-
-type ProcessorRegistry<T> = {
-  getProcessor: (name: string) => T | undefined;
-  getOrderedProcessorOptions: () => ProcessorOption[];
-};
-
-type PreprocessorRegistry<T> = {
-  getPreprocessor: (name: string) => T | undefined;
-  getOrderedProcessorOptions: () => ProcessorOption[];
-};
-
-export type TeamProcessorRegistries = {
-  input: ProcessorRegistry<BaseAgentUserInputMessageProcessor>;
-  llmResponse: ProcessorRegistry<BaseLLMResponseProcessor>;
-  systemPrompt: ProcessorRegistry<BaseSystemPromptProcessor>;
-  toolExecutionResult: ProcessorRegistry<BaseToolExecutionResultProcessor>;
-  toolInvocationPreprocessor: PreprocessorRegistry<BaseToolInvocationPreprocessor>;
-  lifecycle: ProcessorRegistry<BaseLifecycleEventProcessor>;
-};
 
 export type AutoByteusTeamLike = {
   teamId: string;
@@ -105,8 +76,6 @@ export type AutoByteusTeamLike = {
   stop?: (timeout?: number) => Promise<void> | void;
 };
 
-export type TeamMemberConfigInput = TeamMemberRunConfig;
-
 export type AutoByteusTeamRunBackendFactoryOptions = {
   teamFactory?: TeamFactoryLike;
   teamDefinitionService?: AgentTeamDefinitionService;
@@ -119,9 +88,6 @@ export type AutoByteusTeamRunBackendFactoryOptions = {
   memoryDir?: string;
 };
 
-const asTrimmedString = (value: unknown): string | null =>
-  typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
-
 export class AutoByteusTeamRunBackendFactory implements TeamRunBackendFactory {
   private readonly teamFactory: TeamFactoryLike;
   private readonly teamDefinitionService: AgentTeamDefinitionService;
@@ -132,6 +98,7 @@ export class AutoByteusTeamRunBackendFactory implements TeamRunBackendFactory {
   private readonly registries: TeamProcessorRegistries;
   private readonly waitForIdle: (team: AutoByteusTeamLike, timeout?: number) => Promise<void>;
   private readonly memberLayout: TeamMemberMemoryLayout;
+  private readonly agentConfigBuilder: AutoByteusAgentConfigBuilder;
 
   constructor(options: AutoByteusTeamRunBackendFactoryOptions = {}) {
     this.teamFactory = options.teamFactory ?? defaultAgentTeamFactory;
@@ -160,6 +127,13 @@ export class AutoByteusTeamRunBackendFactory implements TeamRunBackendFactory {
     this.memberLayout = new TeamMemberMemoryLayout(
       options.memoryDir ?? appConfigProvider.config.getMemoryDir(),
     );
+    this.agentConfigBuilder = new AutoByteusAgentConfigBuilder({
+      agentDefinitionService: this.agentDefinitionService,
+      llmFactory: this.llmFactory,
+      workspaceManager: this.workspaceManager,
+      skillService: this.skillService,
+      registries: this.registries,
+    });
   }
 
   async createBackend(
@@ -225,8 +199,8 @@ export class AutoByteusTeamRunBackendFactory implements TeamRunBackendFactory {
 
   private buildMemberConfigsMap(
     memberConfigs: TeamMemberRunConfig[],
-  ): Record<string, TeamMemberConfigInput> {
-    const memberConfigsMap: Record<string, TeamMemberConfigInput> = {};
+  ): Record<string, TeamMemberRunConfig> {
+    const memberConfigsMap: Record<string, TeamMemberRunConfig> = {};
     for (const memberConfig of memberConfigs) {
       memberConfigsMap[memberConfig.memberName] = memberConfig;
       if (
@@ -332,209 +306,9 @@ export class AutoByteusTeamRunBackendFactory implements TeamRunBackendFactory {
     });
   }
 
-  private async buildAgentConfigFromDefinition(
-    memberName: string,
-    agentDefinitionId: string,
-    memberConfig: TeamMemberConfigInput,
-  ): Promise<AgentConfig> {
-    const getFreshAgentDefinitionById = (
-      this.agentDefinitionService as AgentDefinitionService & {
-        getFreshAgentDefinitionById?: (definitionId: string) => Promise<AgentDefinition | null>;
-      }
-    ).getFreshAgentDefinitionById;
-    const agentDef =
-      typeof getFreshAgentDefinitionById === "function"
-        ? await getFreshAgentDefinitionById.call(this.agentDefinitionService, agentDefinitionId)
-        : await this.agentDefinitionService.getAgentDefinitionById(agentDefinitionId);
-    if (!agentDef) {
-      throw new Error(`AgentDefinition with ID ${agentDefinitionId} not found.`);
-    }
-
-    const systemPrompt = asTrimmedString(agentDef.instructions);
-    const resolvedPrompt = systemPrompt ?? agentDef.description;
-
-    const tools = [];
-    if (agentDef.toolNames?.length) {
-      for (const name of agentDef.toolNames) {
-        if (!defaultToolRegistry.getToolDefinition(name)) {
-          logger.warn(
-            `Tool '${name}' defined in agent definition '${agentDef.name}' not found in registry. Skipping.`,
-          );
-          continue;
-        }
-        try {
-          tools.push(defaultToolRegistry.createTool(name));
-        } catch (error) {
-          logger.error(
-            `Failed to create tool instance for '${name}' from agent definition '${agentDef.name}': ${String(error)}`,
-          );
-        }
-      }
-    }
-
-    const inputProcessors: BaseAgentUserInputMessageProcessor[] = [];
-    for (const name of mergeMandatoryAndOptional(agentDef.inputProcessorNames, this.registries.input)) {
-      const processor = this.registries.input.getProcessor(name);
-      if (processor) {
-        inputProcessors.push(processor);
-      } else {
-        logger.warn(
-          `Input processor '${name}' defined in agent definition '${agentDef.name}' not found in registry. Skipping.`,
-        );
-      }
-    }
-
-    const llmResponseProcessors: BaseLLMResponseProcessor[] = [];
-    for (const name of mergeMandatoryAndOptional(
-      agentDef.llmResponseProcessorNames,
-      this.registries.llmResponse,
-    )) {
-      const processor = this.registries.llmResponse.getProcessor(name);
-      if (processor) {
-        llmResponseProcessors.push(processor);
-      } else {
-        logger.warn(
-          `LLM response processor '${name}' defined in agent definition '${agentDef.name}' not found in registry. Skipping.`,
-        );
-      }
-    }
-
-    const systemPromptProcessors: BaseSystemPromptProcessor[] = [];
-    for (const name of mergeMandatoryAndOptional(
-      agentDef.systemPromptProcessorNames,
-      this.registries.systemPrompt,
-    )) {
-      const processor = this.registries.systemPrompt.getProcessor(name);
-      if (processor) {
-        systemPromptProcessors.push(processor);
-      } else {
-        logger.warn(
-          `System prompt processor '${name}' defined in agent definition '${agentDef.name}' not found in registry. Skipping.`,
-        );
-      }
-    }
-
-    const toolExecutionResultProcessors: BaseToolExecutionResultProcessor[] = [];
-    for (const name of mergeMandatoryAndOptional(
-      agentDef.toolExecutionResultProcessorNames,
-      this.registries.toolExecutionResult,
-    )) {
-      const processor = this.registries.toolExecutionResult.getProcessor(name);
-      if (processor) {
-        toolExecutionResultProcessors.push(processor);
-      } else {
-        logger.warn(
-          `Tool result processor '${name}' defined in agent definition '${agentDef.name}' not found in registry. Skipping.`,
-        );
-      }
-    }
-
-    const toolInvocationPreprocessors: BaseToolInvocationPreprocessor[] = [];
-    for (const name of mergeMandatoryAndOptional(
-      agentDef.toolInvocationPreprocessorNames,
-      this.registries.toolInvocationPreprocessor,
-    )) {
-      const processor = this.registries.toolInvocationPreprocessor.getPreprocessor(name);
-      if (processor) {
-        toolInvocationPreprocessors.push(processor);
-      } else {
-        logger.warn(
-          `Tool invocation preprocessor '${name}' defined in agent definition '${agentDef.name}' not found in registry. Skipping.`,
-        );
-      }
-    }
-
-    const lifecycleProcessors: BaseLifecycleEventProcessor[] = [];
-    for (const name of mergeMandatoryAndOptional(
-      agentDef.lifecycleProcessorNames,
-      this.registries.lifecycle,
-    )) {
-      const processor = this.registries.lifecycle.getProcessor(name);
-      if (processor) {
-        lifecycleProcessors.push(processor);
-      } else {
-        logger.warn(
-          `Lifecycle processor '${name}' defined in agent definition '${agentDef.name}' not found in registry. Skipping.`,
-        );
-      }
-    }
-
-    let workspaceInstance = memberConfig.workspaceId
-      ? this.workspaceManager.getWorkspaceById(memberConfig.workspaceId)
-      : undefined;
-    if (!workspaceInstance && memberConfig.workspaceRootPath?.trim()) {
-      workspaceInstance = await this.workspaceManager.ensureWorkspaceByRootPath(
-        memberConfig.workspaceRootPath.trim(),
-      );
-    }
-    const workspaceRootPath = workspaceInstance?.getBasePath?.() ?? null;
-
-    const skillPaths: string[] = [];
-    if (agentDef.skillNames?.length) {
-      for (const skillName of agentDef.skillNames) {
-        const skill = this.skillService.getSkill(skillName);
-        if (skill) {
-          skillPaths.push(skill.rootPath);
-          logger.info(
-            `Resolved skill '${skillName}' to path: ${skill.rootPath} for team member '${memberName}'`,
-          );
-        } else {
-          logger.warn(
-            `Skill '${skillName}' defined in agent definition '${agentDef.name}' not found via SkillService. Skipping.`,
-          );
-        }
-      }
-    }
-
-    const config = memberConfig.llmConfig ? new LLMConfig({ extraParams: memberConfig.llmConfig }) : undefined;
-    const llmInstance = await this.llmFactory.createLLM(memberConfig.llmModelIdentifier, config);
-
-    const initialCustomData = {
-      agent_definition_id: agentDefinitionId,
-      member_route_key:
-        typeof memberConfig.memberRouteKey === "string" && memberConfig.memberRouteKey.trim().length > 0
-          ? normalizeMemberRouteKey(memberConfig.memberRouteKey)
-          : normalizeMemberRouteKey(memberName),
-      member_run_id:
-        typeof memberConfig.memberRunId === "string" && memberConfig.memberRunId.trim().length > 0
-          ? memberConfig.memberRunId.trim()
-          : null,
-      is_first_user_turn: true,
-      workspace_id: workspaceInstance?.workspaceId ?? null,
-      workspace_root_path: workspaceRootPath,
-      workspace_name: workspaceInstance?.getName?.() ?? workspaceInstance?.workspaceId ?? null,
-      workspace_is_temp: workspaceInstance?.workspaceId === TempWorkspace.TEMP_WORKSPACE_ID,
-    };
-
-    const memoryDir =
-      typeof memberConfig.memoryDir === "string" && memberConfig.memoryDir.trim().length > 0
-        ? memberConfig.memoryDir.trim()
-        : null;
-
-    return new AgentConfig(
-      memberName,
-      agentDef.role ?? "",
-      agentDef.description,
-      llmInstance,
-      resolvedPrompt,
-      tools,
-      memberConfig.autoExecuteTools,
-      inputProcessors,
-      llmResponseProcessors,
-      systemPromptProcessors,
-      toolExecutionResultProcessors,
-      toolInvocationPreprocessors,
-      workspaceRootPath,
-      lifecycleProcessors,
-      initialCustomData,
-      skillPaths,
-      memoryDir,
-    );
-  }
-
   private async buildTeamConfigFromDefinition(
     teamDefinitionId: string,
-    memberConfigsMap: Record<string, TeamMemberConfigInput>,
+    memberConfigsMap: Record<string, TeamMemberRunConfig>,
     visited: Set<string>,
   ): Promise<AgentTeamConfig> {
     if (visited.has(teamDefinitionId)) {
@@ -568,9 +342,12 @@ export class AutoByteusTeamRunBackendFactory implements TeamRunBackendFactory {
             `Configuration for team member '${member.memberName}' was not provided.`,
           );
         }
-        hydratedConfigs[member.memberName] = await this.buildAgentConfigFromDefinition(
+        const resolvedAgentDefinitionId = member.refScope === "team_local"
+          ? buildTeamLocalAgentDefinitionId(teamDefinitionId, member.ref)
+          : member.ref;
+        hydratedConfigs[member.memberName] = await this.agentConfigBuilder.build(
           member.memberName,
-          member.ref,
+          resolvedAgentDefinitionId,
           memberConfig,
         );
       } else if (member.refType === "agent_team") {

@@ -1,6 +1,22 @@
-import { Arg, Field, InputType, Mutation, ObjectType, Query, Resolver } from "type-graphql";
+import {
+  Arg,
+  Field,
+  InputType,
+  Mutation,
+  ObjectType,
+  Query,
+  Resolver,
+  registerEnumType,
+} from "type-graphql";
 import { AgentDefinitionService } from "../../../agent-definition/services/agent-definition-service.js";
 import { AgentDefinitionConverter } from "../converters/agent-definition-converter.js";
+
+export enum AgentDefinitionOwnershipScope {
+  SHARED = "SHARED",
+  TEAM_LOCAL = "TEAM_LOCAL",
+}
+
+registerEnumType(AgentDefinitionOwnershipScope, { name: "AgentDefinitionOwnershipScope" });
 
 const logger = {
   error: (...args: unknown[]) => console.error(...args),
@@ -52,6 +68,15 @@ export class AgentDefinition {
 
   @Field(() => [String])
   skillNames!: string[];
+
+  @Field(() => AgentDefinitionOwnershipScope)
+  ownershipScope!: AgentDefinitionOwnershipScope;
+
+  @Field(() => String, { nullable: true })
+  ownerTeamId?: string | null;
+
+  @Field(() => String, { nullable: true })
+  ownerTeamName?: string | null;
 }
 
 @InputType()
@@ -186,7 +211,7 @@ export class AgentDefinitionResolver {
   async agentDefinitions(): Promise<AgentDefinition[]> {
     try {
       const service = AgentDefinitionService.getInstance();
-      const definitions = await service.getAllAgentDefinitions();
+      const definitions = await service.getVisibleAgentDefinitions();
       return await Promise.all(
         definitions.map(async (definition) => AgentDefinitionConverter.toGraphql(definition)),
       );

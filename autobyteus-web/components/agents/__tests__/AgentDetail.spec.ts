@@ -74,6 +74,9 @@ describe('AgentDetail', () => {
       toolInvocationPreprocessorNames: [],
       lifecycleProcessorNames: [],
       skillNames: ['planning'],
+      ownershipScope: 'SHARED',
+      ownerTeamId: null,
+      ownerTeamName: null,
     }
 
     mockAgentDefinitionStore.agentDefinitions = [agent]
@@ -167,5 +170,49 @@ describe('AgentDetail', () => {
     await wrapper.get('[data-test="duplicate"]').trigger('click')
 
     expect(wrapper.emitted('navigate')).toEqual([[{ view: 'edit', id: 'agent-copy-1' }]])
+  })
+
+  it('shows team ownership and hides shared-only actions for team-local agents', async () => {
+    const localAgent = {
+      id: 'team-local:software-engineering:planner',
+      name: 'Planner',
+      role: 'assistant',
+      description: 'Plans work',
+      category: 'software-engineering',
+      instructions: 'Always create a concrete execution plan before coding.',
+      avatarUrl: null,
+      toolNames: ['run_bash'],
+      inputProcessorNames: [],
+      llmResponseProcessorNames: [],
+      systemPromptProcessorNames: [],
+      toolExecutionResultProcessorNames: [],
+      toolInvocationPreprocessorNames: [],
+      lifecycleProcessorNames: [],
+      skillNames: ['planning'],
+      ownershipScope: 'TEAM_LOCAL',
+      ownerTeamId: 'software-engineering',
+      ownerTeamName: 'Software Engineering Team',
+    }
+
+    mockAgentDefinitionStore.agentDefinitions = [localAgent]
+    mockAgentDefinitionStore.getAgentDefinitionById.mockImplementation((id: string) =>
+      id === localAgent.id ? localAgent : undefined,
+    )
+
+    const wrapper = mount(AgentDetail, {
+      props: {
+        agentDefinitionId: localAgent.id,
+      },
+      global: {
+        stubs: {
+          AgentDeleteConfirmDialog: true,
+          AgentDuplicateButton: true,
+        },
+      },
+    })
+
+    expect(wrapper.text()).toContain('Team: Software Engineering Team')
+    expect(wrapper.text()).not.toContain('Duplicate')
+    expect(wrapper.text()).not.toContain('Delete')
   })
 })

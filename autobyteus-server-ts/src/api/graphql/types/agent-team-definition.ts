@@ -8,7 +8,7 @@ import {
   Resolver,
   registerEnumType,
 } from "type-graphql";
-import { NodeType } from "../../../agent-team-definition/domain/enums.js";
+import { AgentMemberRefScope, NodeType } from "../../../agent-team-definition/domain/enums.js";
 import {
   AgentTeamDefinition as DomainAgentTeamDefinition,
   AgentTeamDefinitionUpdate,
@@ -18,6 +18,7 @@ import { AgentTeamDefinitionService } from "../../../agent-team-definition/servi
 import { AgentTeamDefinitionConverter } from "../converters/agent-team-definition-converter.js";
 
 registerEnumType(NodeType, { name: "TeamMemberType" });
+registerEnumType(AgentMemberRefScope, { name: "AgentMemberRefScope" });
 
 const logger = {
   error: (...args: unknown[]) => console.error(...args),
@@ -25,6 +26,15 @@ const logger = {
 
 const toDomainRefType = (value: NodeType): "agent" | "agent_team" =>
   value === NodeType.AGENT ? "agent" : "agent_team";
+
+const toDomainRefScope = (
+  value: AgentMemberRefScope | null | undefined,
+): "shared" | "team_local" | null =>
+  value === AgentMemberRefScope.TEAM_LOCAL
+    ? "team_local"
+    : value === AgentMemberRefScope.SHARED
+      ? "shared"
+      : null;
 
 @ObjectType()
 export class TeamMember {
@@ -36,6 +46,9 @@ export class TeamMember {
 
   @Field(() => NodeType)
   refType!: NodeType;
+
+  @Field(() => AgentMemberRefScope, { nullable: true })
+  refScope?: AgentMemberRefScope | null;
 }
 
 @ObjectType()
@@ -75,6 +88,9 @@ export class TeamMemberInput {
 
   @Field(() => NodeType)
   refType!: NodeType;
+
+  @Field(() => AgentMemberRefScope, { nullable: true })
+  refScope?: AgentMemberRefScope | null;
 }
 
 @InputType()
@@ -192,6 +208,7 @@ export class AgentTeamDefinitionResolver {
             memberName: node.memberName,
             ref: node.ref,
             refType: toDomainRefType(node.refType),
+            refScope: toDomainRefScope(node.refScope),
           }),
       );
 
@@ -228,6 +245,7 @@ export class AgentTeamDefinitionResolver {
                   memberName: node.memberName,
                   ref: node.ref,
                   refType: toDomainRefType(node.refType),
+                  refScope: toDomainRefScope(node.refScope),
                 }),
             );
 

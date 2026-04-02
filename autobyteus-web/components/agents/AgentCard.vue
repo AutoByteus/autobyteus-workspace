@@ -15,6 +15,9 @@
       <div class="min-w-0">
         <h3 class="truncate text-2xl font-semibold text-slate-900">{{ agentDef.name }}</h3>
         <p class="mt-1 text-sm text-slate-600">{{ descriptionText }}</p>
+        <p v-if="teamLabel" class="mt-1 text-sm text-slate-500">
+          Team: {{ teamLabel }}
+        </p>
 
         <div class="mt-3 space-y-2">
           <div class="flex items-start gap-2">
@@ -55,6 +58,7 @@
 
       <div class="flex w-full flex-row gap-3 sm:w-auto sm:flex-col sm:items-end">
         <button
+          v-if="canSync"
           @click.stop="$emit('sync-agent', agentDef)"
           class="inline-flex min-w-[84px] justify-center rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
         >
@@ -112,6 +116,13 @@ watch(() => agentDef.value.avatarUrl, () => {
 const showAvatarImage = computed(() => Boolean(agentDef.value.avatarUrl) && !avatarLoadError.value);
 const avatarUrl = computed(() => agentDef.value.avatarUrl || '');
 const descriptionText = computed(() => agentDef.value.description?.trim() || 'No description provided.');
+const isTeamLocal = computed(() => (agentDef.value.ownershipScope ?? 'SHARED') === 'TEAM_LOCAL');
+const teamLabel = computed(() =>
+  isTeamLocal.value
+    ? agentDef.value.ownerTeamName?.trim() || agentDef.value.ownerTeamId?.trim() || ''
+    : '',
+);
+const canSync = computed(() => !isTeamLocal.value);
 
 const avatarInitials = computed(() => {
   const raw = agentDef.value.name?.trim() ?? '';

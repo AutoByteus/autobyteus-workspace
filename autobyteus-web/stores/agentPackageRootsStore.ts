@@ -2,31 +2,32 @@ import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import { getApolloClient } from '~/utils/apolloClient'
 import {
-  ADD_DEFINITION_SOURCE,
-  GET_DEFINITION_SOURCES,
-  REMOVE_DEFINITION_SOURCE,
-} from '~/graphql/definitionSources'
+  ADD_AGENT_PACKAGE_ROOT,
+  GET_AGENT_PACKAGE_ROOTS,
+  REMOVE_AGENT_PACKAGE_ROOT,
+} from '~/graphql/agentPackageRoots'
 
-export interface DefinitionSource {
+export interface AgentPackageRoot {
   path: string
-  agentCount: number
+  sharedAgentCount: number
+  teamLocalAgentCount: number
   agentTeamCount: number
   isDefault: boolean
 }
 
-export const useDefinitionSourcesStore = defineStore('definitionSources', () => {
-  const definitionSources = ref<DefinitionSource[]>([])
+export const useAgentPackageRootsStore = defineStore('agentPackageRoots', () => {
+  const agentPackageRoots = ref<AgentPackageRoot[]>([])
   const loading = ref(false)
   const error = ref('')
 
-  async function fetchDefinitionSources(): Promise<void> {
+  async function fetchAgentPackageRoots(): Promise<void> {
     loading.value = true
     error.value = ''
 
     try {
       const client = getApolloClient()
       const { data, errors } = await client.query({
-        query: GET_DEFINITION_SOURCES,
+        query: GET_AGENT_PACKAGE_ROOTS,
         fetchPolicy: 'network-only',
       })
 
@@ -34,8 +35,8 @@ export const useDefinitionSourcesStore = defineStore('definitionSources', () => 
         throw new Error(errors.map((entry) => entry.message).join(', '))
       }
 
-      if (data?.definitionSources) {
-        definitionSources.value = data.definitionSources
+      if (data?.agentPackageRoots) {
+        agentPackageRoots.value = data.agentPackageRoots
       }
     } catch (err: any) {
       error.value = err.message
@@ -45,14 +46,14 @@ export const useDefinitionSourcesStore = defineStore('definitionSources', () => 
     }
   }
 
-  async function addDefinitionSource(pathValue: string): Promise<void> {
+  async function addAgentPackageRoot(pathValue: string): Promise<void> {
     loading.value = true
     error.value = ''
 
     try {
       const client = getApolloClient()
       const { data, errors } = await client.mutate({
-        mutation: ADD_DEFINITION_SOURCE,
+        mutation: ADD_AGENT_PACKAGE_ROOT,
         variables: { path: pathValue },
       })
 
@@ -60,8 +61,8 @@ export const useDefinitionSourcesStore = defineStore('definitionSources', () => 
         throw new Error(errors.map((entry) => entry.message).join(', '))
       }
 
-      if (data?.addDefinitionSource) {
-        definitionSources.value = data.addDefinitionSource
+      if (data?.addAgentPackageRoot) {
+        agentPackageRoots.value = data.addAgentPackageRoot
       }
     } catch (err: any) {
       error.value = err.message
@@ -71,14 +72,14 @@ export const useDefinitionSourcesStore = defineStore('definitionSources', () => 
     }
   }
 
-  async function removeDefinitionSource(pathValue: string): Promise<void> {
+  async function removeAgentPackageRoot(pathValue: string): Promise<void> {
     loading.value = true
     error.value = ''
 
     try {
       const client = getApolloClient()
       const { data, errors } = await client.mutate({
-        mutation: REMOVE_DEFINITION_SOURCE,
+        mutation: REMOVE_AGENT_PACKAGE_ROOT,
         variables: { path: pathValue },
       })
 
@@ -86,8 +87,8 @@ export const useDefinitionSourcesStore = defineStore('definitionSources', () => 
         throw new Error(errors.map((entry) => entry.message).join(', '))
       }
 
-      if (data?.removeDefinitionSource) {
-        definitionSources.value = data.removeDefinitionSource
+      if (data?.removeAgentPackageRoot) {
+        agentPackageRoots.value = data.removeAgentPackageRoot
       }
     } catch (err: any) {
       error.value = err.message
@@ -101,19 +102,19 @@ export const useDefinitionSourcesStore = defineStore('definitionSources', () => 
     error.value = ''
   }
 
-  const getDefinitionSources = computed(() => definitionSources.value)
+  const getAgentPackageRoots = computed(() => agentPackageRoots.value)
   const getLoading = computed(() => loading.value)
   const getError = computed(() => error.value)
 
   return {
-    definitionSources,
+    agentPackageRoots,
     loading,
     error,
-    fetchDefinitionSources,
-    addDefinitionSource,
-    removeDefinitionSource,
+    fetchAgentPackageRoots,
+    addAgentPackageRoot,
+    removeAgentPackageRoot,
     clearError,
-    getDefinitionSources,
+    getAgentPackageRoots,
     getLoading,
     getError,
   }
