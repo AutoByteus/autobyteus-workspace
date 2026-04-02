@@ -2,7 +2,7 @@
 
 ## Status
 
-- Current Status: `In Progress`
+- Current Status: `Complete`
 - Stage: `10`
 - Awaiting Explicit User Verification: `No`
 - Date: `2026-04-02`
@@ -44,23 +44,20 @@
 ## Finalization Status
 
 - Explicit user verification: `Received` on `2026-04-02`
-- Release-note status: `Prepared` in `tickets/done/agent-team-local-member-import-analysis/release-notes.md`
-- Repository finalization status: `In Progress`
-- Cleanup status: `Pending Stage 10 completion`
+- Release-note status: `Published` in release `v1.2.53`
+- Repository finalization status: `Complete`
+- Release status: `Complete` using `pnpm release 1.2.53 -- --release-notes tickets/done/agent-team-local-member-import-analysis/release-notes.md`
+- Cleanup status: `Complete`
 
 ## Residual Notes
 
 - Sync e2e runs still emit a stale invalid-fixture warning for `team_sync_team_1775124295976_58cc0016a7cc1` missing `refScope`; this is pre-existing fixture noise, not a failing assertion from this ticket.
 - Repo-wide server `tsc --noEmit` baseline issues and older failing integration suites on main were not part of this ticket’s acceptance gate and were not reopened here.
-- The ticket was reopened multiple times from Stage 10 for independent review and manual-verification follow-up, including the later requirement-gap slice for the generic Agents page plus the final delete-boundary local fix. Explicit user verification has now been received and Stage 10 finalization is in progress.
-- No repository finalization has been performed yet:
-  - ticket is still under `tickets/done/agent-team-local-member-import-analysis/`
-  - no stage/archive move has been done
-  - no commit, push, merge, or worktree cleanup has been done
+- The ticket was reopened multiple times from Stage 10 for independent review and manual-verification follow-up, including the later requirement-gap slice for the generic Agents page plus the final delete-boundary local fix. Explicit user verification was received, the ticket was finalized onto `origin/personal`, release `v1.2.53` was published, and the dedicated worktree was cleaned up.
 
-## Remaining Stage 10 Work
+## Completed Stage 10 Work
 
-- Move the ticket to `tickets/done/`
-- Finalize repository state against `origin/personal`
-- Run the documented release flow with the archived release notes
-- Clean up the dedicated ticket worktree after finalization
+- Moved the ticket to `tickets/done/`
+- Finalized repository state against `origin/personal`
+- Ran the documented release flow with the archived release notes
+- Cleaned up the dedicated ticket worktree after finalization
