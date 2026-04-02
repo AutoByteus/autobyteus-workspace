@@ -73,7 +73,7 @@ That means tool identity fallback policy is still owned too implicitly inside th
 
 This is not the main re-entry driver for this round, but it remains a supporting signal:
 
-- `tickets/in-progress/preview-session-multi-runtime-design/api-e2e-testing.md`
+- `tickets/done/preview-session-multi-runtime-design/api-e2e-testing.md`
 
 Only `open_preview` is currently exercised through the real Codex and Claude runtime adapter paths. The rest of the eight-tool public surface is still proven mainly by unit or Electron-local tests. That would be less concerning if the touched runtime parser boundary were fully green, but it currently is not.
 

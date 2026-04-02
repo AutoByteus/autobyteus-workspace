@@ -6,7 +6,7 @@
 - Trigger Stage: `Re-entry`
 - Prior Round Reviewed: `10`
 - Latest Authoritative Round: `11`
-- Canonical stage-control source: `tickets/in-progress/preview-session-multi-runtime-design/workflow-state.md`
+- Canonical stage-control source: `tickets/done/preview-session-multi-runtime-design/workflow-state.md`
 
 ## Authoritative State
 

@@ -22,9 +22,9 @@ vi.mock(
   }),
 );
 
-import { buildClaudeRunMcpServers } from "../../../../../../src/agent-execution/backends/claude/preview/build-claude-run-mcp-servers.js";
+import { buildClaudeSessionMcpServers } from "../../../../../../src/agent-execution/backends/claude/session/build-claude-session-mcp-servers.js";
 
-describe("buildClaudeRunMcpServers", () => {
+describe("buildClaudeSessionMcpServers", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -34,7 +34,7 @@ describe("buildClaudeRunMcpServers", () => {
       autobyteus_preview: { name: "preview" },
     });
 
-    const result = await buildClaudeRunMcpServers({
+    const result = await buildClaudeSessionMcpServers({
       sendMessageToToolingEnabled: false,
       runContext: {} as any,
       sdkClient: {} as any,
@@ -56,7 +56,7 @@ describe("buildClaudeRunMcpServers", () => {
       autobyteus_preview: { name: "preview" },
     });
 
-    const result = await buildClaudeRunMcpServers({
+    const result = await buildClaudeSessionMcpServers({
       sendMessageToToolingEnabled: true,
       runContext: { runId: "run-1" } as any,
       sdkClient: { sdk: true } as any,
@@ -79,7 +79,7 @@ describe("buildClaudeRunMcpServers", () => {
     });
 
     await expect(
-      buildClaudeRunMcpServers({
+      buildClaudeSessionMcpServers({
         sendMessageToToolingEnabled: true,
         runContext: {} as any,
         sdkClient: {} as any,

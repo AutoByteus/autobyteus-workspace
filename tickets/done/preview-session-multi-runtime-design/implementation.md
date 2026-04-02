@@ -14,13 +14,13 @@ Use this single artifact for both:
 
 ## Upstream Artifacts (Required)
 
-- Workflow state: `tickets/in-progress/preview-session-multi-runtime-design/workflow-state.md`
-- Investigation notes: `tickets/in-progress/preview-session-multi-runtime-design/investigation-notes.md`
-- Requirements: `tickets/in-progress/preview-session-multi-runtime-design/requirements.md`
+- Workflow state: `tickets/done/preview-session-multi-runtime-design/workflow-state.md`
+- Investigation notes: `tickets/done/preview-session-multi-runtime-design/investigation-notes.md`
+- Requirements: `tickets/done/preview-session-multi-runtime-design/requirements.md`
   - Current Status: `Refined`
-- Runtime call stacks: `tickets/in-progress/preview-session-multi-runtime-design/future-state-runtime-call-stack.md`
-- Future-state runtime call stack review: `tickets/in-progress/preview-session-multi-runtime-design/future-state-runtime-call-stack-review.md`
-- Proposed design: `tickets/in-progress/preview-session-multi-runtime-design/proposed-design.md`
+- Runtime call stacks: `tickets/done/preview-session-multi-runtime-design/future-state-runtime-call-stack.md`
+- Future-state runtime call stack review: `tickets/done/preview-session-multi-runtime-design/future-state-runtime-call-stack-review.md`
+- Proposed design: `tickets/done/preview-session-multi-runtime-design/proposed-design.md`
 
 ## Document Status
 
@@ -262,7 +262,7 @@ Historical note:
 
 ### Code Review Gate Plan (Stage 8)
 
-- Gate artifact path: `tickets/in-progress/preview-session-multi-runtime-design/code-review.md`
+- Gate artifact path: `tickets/done/preview-session-multi-runtime-design/code-review.md`
 - Scope (source + tests): preview tool boundary, runtime adapter surface generation, Electron preview owners, Codex payload parsing, and direct dependent tests
 - line-count measurement command (`effective non-empty`):
   - effective non-empty line count: `rg -n "\\S" <file-path> | wc -l`
@@ -292,13 +292,13 @@ Historical note:
   - live Claude preview tool execution still streams canonical `preview_session_id`
 - Stage 6 boundary: file and service-level verification only (unit + integration)
 - Stage 7 handoff notes for API/E2E and executable validation:
-  - canonical artifact path: `tickets/in-progress/preview-session-multi-runtime-design/api-e2e-testing.md`
+  - canonical artifact path: `tickets/done/preview-session-multi-runtime-design/api-e2e-testing.md`
   - expected acceptance criteria count: `11`
   - critical flows to validate: runtime tool exposure parity, preview open/navigate/list/read/screenshot/dom-snapshot/js, packaged preview render/responsiveness/shutdown
   - expected scenario count: `5+`
   - known environment constraints: live Codex/Claude tests require authenticated local runtime environments; packaged app retest remains manual
 - Stage 8 handoff notes for code review:
-  - canonical artifact path: `tickets/in-progress/preview-session-multi-runtime-design/code-review.md`
+  - canonical artifact path: `tickets/done/preview-session-multi-runtime-design/code-review.md`
   - predicted design-impact hotspots: preview tool boundary split, Electron owner split, Codex parser split
   - predicted file-placement hotspots: preview helpers leaking out of `agent-tools/preview`, Codex subject parsers placed outside the events boundary
   - predicted interface/API/query/command/service-method boundary hotspots: manifest-to-runtime projection, preview-tool service dispatch, page-operations boundary surface
@@ -321,10 +321,10 @@ Historical note:
 
 ### Kickoff Preconditions Checklist
 
-- Workflow state is current (`tickets/in-progress/preview-session-multi-runtime-design/workflow-state.md`): `Yes`
+- Workflow state is current (`tickets/done/preview-session-multi-runtime-design/workflow-state.md`): `Yes`
 - `workflow-state.md` shows `Current Stage = 6` and `Code Edit Permission = Unlocked` before source edits: `Yes`
 - Scope classification confirmed (`Small`/`Medium`/`Large`): `Yes`
-- Investigation notes are current (`tickets/in-progress/preview-session-multi-runtime-design/investigation-notes.md`): `Yes`
+- Investigation notes are current (`tickets/done/preview-session-multi-runtime-design/investigation-notes.md`): `Yes`
 - Requirements status is `Design-ready` or `Refined`: `Yes`
 - Future-state runtime call stack review final gate is `Implementation can start: Yes`: `Yes`
 - Future-state runtime call stack review reached `Go Confirmed` with two consecutive clean deep-review rounds (no blockers, no required persisted artifact updates, no newly discovered use cases): `Yes`
@@ -358,6 +358,6 @@ Historical note:
 
 | Stage | Canonical Artifact | Current Status | Last Updated | Notes |
 | --- | --- | --- | --- | --- |
-| 7 API/E2E + Executable Validation | `tickets/in-progress/preview-session-multi-runtime-design/api-e2e-testing.md` | `Pass` | 2026-04-02 | the `v11` refactor is structural only; focused validation passed and the previously user-validated packaged preview path remains authoritative |
-| 8 Code Review | `tickets/in-progress/preview-session-multi-runtime-design/code-review.md` | `Pass` | 2026-04-02 | the current `v11` working snapshot clears the stricter product bar and is ready for Stage 9 docs sync |
-| 9 Docs Sync | `tickets/in-progress/preview-session-multi-runtime-design/docs-sync.md` | `Not Started` | 2026-04-02 | wait for Stage 8 pass |
+| 7 API/E2E + Executable Validation | `tickets/done/preview-session-multi-runtime-design/api-e2e-testing.md` | `Pass` | 2026-04-02 | the `v11` refactor is structural only; focused validation passed and the previously user-validated packaged preview path remains authoritative |
+| 8 Code Review | `tickets/done/preview-session-multi-runtime-design/code-review.md` | `Pass` | 2026-04-02 | the current `v11` working snapshot clears the stricter product bar and is ready for Stage 9 docs sync |
+| 9 Docs Sync | `tickets/done/preview-session-multi-runtime-design/docs-sync.md` | `Not Started` | 2026-04-02 | wait for Stage 8 pass |

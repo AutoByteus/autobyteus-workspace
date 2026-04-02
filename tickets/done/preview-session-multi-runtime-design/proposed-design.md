@@ -23,8 +23,8 @@
 
 ## Artifact Basis
 
-- Investigation Notes: `tickets/in-progress/preview-session-multi-runtime-design/investigation-notes.md`
-- Requirements: `tickets/in-progress/preview-session-multi-runtime-design/requirements.md`
+- Investigation Notes: `tickets/done/preview-session-multi-runtime-design/investigation-notes.md`
+- Requirements: `tickets/done/preview-session-multi-runtime-design/requirements.md`
 - Requirements Status: `Refined`
 - Shared Design Principles: `shared/design-principles.md`
 - Common Design Practices: `shared/common-design-practices.md`

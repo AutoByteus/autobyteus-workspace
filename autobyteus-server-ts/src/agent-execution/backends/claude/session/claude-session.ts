@@ -9,8 +9,8 @@ import { normalizeClaudeStreamChunk } from "../claude-runtime-message-normalizer
 import { ClaudeSessionEventName } from "../events/claude-session-event-name.js";
 import { logRawClaudeSessionChunkDetails } from "../events/claude-session-event-debug.js";
 import {
-  buildClaudeRunMcpServers,
-} from "../preview/build-claude-run-mcp-servers.js";
+  buildClaudeSessionMcpServers,
+} from "./build-claude-session-mcp-servers.js";
 import {
   getRuntimeMemberContexts,
   resolveRuntimeMemberContext,
@@ -401,7 +401,7 @@ export class ClaudeSession {
   private async buildTeamMcpServers(
     sendMessageToToolingEnabled: boolean,
   ): Promise<Record<string, unknown> | null> {
-    return buildClaudeRunMcpServers({
+    return buildClaudeSessionMcpServers({
       sendMessageToToolingEnabled,
       runContext: this.runContext,
       sdkClient: this.dependencies.sdkClient,

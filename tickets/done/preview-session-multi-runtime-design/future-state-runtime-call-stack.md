@@ -18,9 +18,9 @@ It models the intended target behavior, not current-code parity.
 
 - Scope Classification: `Large`
 - Call Stack Version: `v12`
-- Requirements: `tickets/in-progress/preview-session-multi-runtime-design/requirements.md` (status `Refined`)
+- Requirements: `tickets/done/preview-session-multi-runtime-design/requirements.md` (status `Refined`)
 - Source Artifact:
-  - `tickets/in-progress/preview-session-multi-runtime-design/proposed-design.md`
+  - `tickets/done/preview-session-multi-runtime-design/proposed-design.md`
 - Source Design Version: `v12`
 - Referenced Sections:
   - Spine inventory sections: `Data-Flow Spine Inventory`, `Primary Execution / Data-Flow Spine(s)`, `Return / Event Spine(s)`, `Bounded Local / Internal Spines`

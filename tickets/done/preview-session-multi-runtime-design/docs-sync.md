@@ -4,7 +4,7 @@
 
 - Ticket: `preview-session-multi-runtime-design`
 - Trigger Stage: `9`
-- Workflow state source: `tickets/in-progress/preview-session-multi-runtime-design/workflow-state.md`
+- Workflow state source: `tickets/done/preview-session-multi-runtime-design/workflow-state.md`
 
 ## Why Docs Were Updated
 

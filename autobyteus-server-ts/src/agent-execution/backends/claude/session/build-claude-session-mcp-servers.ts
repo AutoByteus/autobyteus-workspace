@@ -1,9 +1,9 @@
 import { buildClaudeTeamMcpServers } from "../../../../agent-team-execution/backends/claude/claude-team-mcp-server-builder.js";
-import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
 import type { ClaudeSdkClient } from "../../../../runtime-management/claude/client/claude-sdk-client.js";
 import type { ClaudeSessionEvent } from "../claude-runtime-shared.js";
 import type { ClaudeSendMessageToolApprovalHandler } from "../../../../agent-team-execution/backends/claude/claude-send-message-tool-call-handler.js";
-import { buildClaudePreviewMcpServers } from "./build-claude-preview-mcp-servers.js";
+import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
+import { buildClaudePreviewMcpServers } from "../preview/build-claude-preview-mcp-servers.js";
 
 const mergeMcpServerMaps = (
   ...maps: Array<Record<string, unknown> | null>
@@ -18,7 +18,7 @@ const mergeMcpServerMaps = (
   return Object.keys(merged).length > 0 ? merged : null;
 };
 
-export const buildClaudeRunMcpServers = async (options: {
+export const buildClaudeSessionMcpServers = async (options: {
   sendMessageToToolingEnabled: boolean;
   runContext: ClaudeRunContext;
   sdkClient: ClaudeSdkClient;

@@ -18,10 +18,10 @@ This review validates alignment with target (`to-be`) design behavior, not parit
 
 ## Review Basis
 
-- Requirements: `tickets/in-progress/preview-session-multi-runtime-design/requirements.md` (status `Refined`)
-- Runtime Call Stack Document: `tickets/in-progress/preview-session-multi-runtime-design/future-state-runtime-call-stack.md`
+- Requirements: `tickets/done/preview-session-multi-runtime-design/requirements.md` (status `Refined`)
+- Runtime Call Stack Document: `tickets/done/preview-session-multi-runtime-design/future-state-runtime-call-stack.md`
 - Source Design Basis:
-  - `tickets/in-progress/preview-session-multi-runtime-design/proposed-design.md`
+  - `tickets/done/preview-session-multi-runtime-design/proposed-design.md`
 - Shared Design Principles: `shared/design-principles.md`
 - Common Design Practices: `shared/common-design-practices.md`
 - Artifact Versions In This Round:

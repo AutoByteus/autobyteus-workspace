@@ -7,12 +7,12 @@
 - Trigger Stage: `Re-entry`
 - Prior Review Round Reviewed: `5`
 - Latest Authoritative Round: `6`
-- Workflow state source: `tickets/in-progress/preview-session-multi-runtime-design/workflow-state.md`
-- Investigation notes reviewed as context: `tickets/in-progress/preview-session-multi-runtime-design/investigation-notes.md`
+- Workflow state source: `tickets/done/preview-session-multi-runtime-design/workflow-state.md`
+- Investigation notes reviewed as context: `tickets/done/preview-session-multi-runtime-design/investigation-notes.md`
 - Earlier design artifact(s) reviewed as context:
-  - `tickets/in-progress/preview-session-multi-runtime-design/requirements.md`
-  - `tickets/in-progress/preview-session-multi-runtime-design/proposed-design.md`
-- Runtime call stack artifact: `tickets/in-progress/preview-session-multi-runtime-design/future-state-runtime-call-stack.md`
+  - `tickets/done/preview-session-multi-runtime-design/requirements.md`
+  - `tickets/done/preview-session-multi-runtime-design/proposed-design.md`
+- Runtime call stack artifact: `tickets/done/preview-session-multi-runtime-design/future-state-runtime-call-stack.md`
 - Shared Design Principles: `shared/design-principles.md`
 - Common Design Practices: `shared/common-design-practices.md`
 - Code Review Principles: `stages/08-code-review/code-review-principles.md`
@@ -26,7 +26,7 @@
   - preview contract and manifest boundaries under `autobyteus-server-ts/src/agent-tools/preview`
   - touched Codex runtime parsing under `autobyteus-server-ts/src/agent-execution/backends/codex/events`
   - live runtime validation harness and scenarios under `autobyteus-server-ts/tests/integration/agent-execution`
-  - Stage 7 validation artifact `tickets/in-progress/preview-session-multi-runtime-design/api-e2e-testing.md`
+  - Stage 7 validation artifact `tickets/done/preview-session-multi-runtime-design/api-e2e-testing.md`
 - Why these files:
   - They are the current authoritative owners for the categories that previously failed:
     - ownership clarity / boundary encapsulation
@@ -40,7 +40,7 @@
 | 5 | CR-008 | Blocker | Resolved | [codex-item-event-payload-parser.ts](/Users/normy/autobyteus_org/autobyteus-worktrees/preview-session-multi-runtime-design/autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-item-event-payload-parser.ts), [codex-tool-payload-parser.ts](/Users/normy/autobyteus_org/autobyteus-worktrees/preview-session-multi-runtime-design/autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-tool-payload-parser.ts), live Codex `edit_file` scenario pass | Segment metadata fallback is now segment-type-aware, and the live Codex `edit_file` regression control passed. |
 | 5 | CR-009 | Major | Resolved | [preview-session-types.ts](/Users/normy/autobyteus_org/autobyteus-worktrees/preview-session-multi-runtime-design/autobyteus-web/electron/preview/preview-session-types.ts), [preview-session-manager.ts](/Users/normy/autobyteus_org/autobyteus-worktrees/preview-session-multi-runtime-design/autobyteus-web/electron/preview/preview-session-manager.ts), [preview-session-navigation.ts](/Users/normy/autobyteus_org/autobyteus-worktrees/preview-session-multi-runtime-design/autobyteus-web/electron/preview/preview-session-navigation.ts), [preview-shell-controller.ts](/Users/normy/autobyteus_org/autobyteus-worktrees/preview-session-multi-runtime-design/autobyteus-web/electron/preview/preview-shell-controller.ts), Electron lease tests | Session lifecycle remains app-global, but shell projection is now an explicit non-stealable lease owned by `PreviewShellController`. |
 | 5 | CR-010 | Major | Resolved | [preview-tool-input-primitives.ts](/Users/normy/autobyteus_org/autobyteus-worktrees/preview-session-multi-runtime-design/autobyteus-server-ts/src/agent-tools/preview/preview-tool-input-primitives.ts), [preview-tool-input-parsers.test.ts](/Users/normy/autobyteus_org/autobyteus-worktrees/preview-session-multi-runtime-design/autobyteus-server-ts/tests/unit/agent-tools/preview/preview-tool-input-parsers.test.ts) | String boolean/integer widening is removed from the native path, so the stable preview contract now matches the declared typed surface. |
-| 5 | CR-011 | Major | Resolved | [api-e2e-testing.md](/Users/normy/autobyteus_org/autobyteus-worktrees/preview-session-multi-runtime-design/tickets/in-progress/preview-session-multi-runtime-design/api-e2e-testing.md), live Codex/Claude full-surface scenarios | Stage 7 now proves more than `open_preview`; both real runtimes exercised the broader preview surface and the touched Codex parser boundary. |
+| 5 | CR-011 | Major | Resolved | [api-e2e-testing.md](/Users/normy/autobyteus_org/autobyteus-worktrees/preview-session-multi-runtime-design/tickets/done/preview-session-multi-runtime-design/api-e2e-testing.md), live Codex/Claude full-surface scenarios | Stage 7 now proves more than `open_preview`; both real runtimes exercised the broader preview surface and the touched Codex parser boundary. |
 
 ## Source File Size And Structure Audit (Mandatory)
 
