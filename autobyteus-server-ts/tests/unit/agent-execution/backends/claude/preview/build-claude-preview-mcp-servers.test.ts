@@ -3,12 +3,13 @@ import {
   CAPTURE_PREVIEW_SCREENSHOT_TOOL_NAME,
   CLOSE_PREVIEW_TOOL_NAME,
   EXECUTE_PREVIEW_JAVASCRIPT_TOOL_NAME,
-  GET_PREVIEW_CONSOLE_LOGS_TOOL_NAME,
+  LIST_PREVIEW_SESSIONS_TOOL_NAME,
   NAVIGATE_PREVIEW_TOOL_NAME,
   OPEN_PREVIEW_TOOL_NAME,
-  OPEN_PREVIEW_DEVTOOLS_TOOL_NAME,
   PREVIEW_BRIDGE_BASE_URL_ENV,
   PREVIEW_BRIDGE_TOKEN_ENV,
+  PREVIEW_DOM_SNAPSHOT_TOOL_NAME,
+  READ_PREVIEW_PAGE_TOOL_NAME,
 } from "../../../../../../src/agent-tools/preview/preview-tool-contract.js";
 import { buildClaudePreviewMcpServers } from "../../../../../../src/agent-execution/backends/claude/preview/build-claude-preview-mcp-servers.js";
 
@@ -81,14 +82,31 @@ describe("buildClaudePreviewMcpServers", () => {
           }),
         };
       }
-      if (url.endsWith("/preview/console-logs")) {
+      if (url.endsWith("/preview/list")) {
+        return {
+          json: async () => ({
+            ok: true,
+            result: {
+              sessions: [
+                {
+                  preview_session_id: "preview-session-1",
+                  title: "Demo",
+                  url: "http://localhost:3000/demo",
+                },
+              ],
+            },
+          }),
+        };
+      }
+      if (url.endsWith("/preview/read-page")) {
         return {
           json: async () => ({
             ok: true,
             result: {
               preview_session_id: "preview-session-1",
-              entries: [{ sequence: 1, level: "log", message: "ready", timestamp_iso: "2026-01-01T00:00:00.000Z" }],
-              next_sequence: 2,
+              url: "http://localhost:3000/demo",
+              cleaning_mode: "thorough",
+              content: "<main>Demo</main>",
             },
           }),
         };
@@ -104,13 +122,31 @@ describe("buildClaudePreviewMcpServers", () => {
           }),
         };
       }
-      if (url.endsWith("/preview/devtools")) {
+      if (url.endsWith("/preview/dom-snapshot")) {
         return {
           json: async () => ({
             ok: true,
             result: {
               preview_session_id: "preview-session-1",
-              status: "opened",
+              url: "http://localhost:3000/demo",
+              schema_version: "autobyteus-preview-dom-snapshot-v1",
+              total_candidates: 1,
+              returned_elements: 1,
+              truncated: false,
+              elements: [
+                {
+                  element_id: "e1",
+                  tag_name: "button",
+                  dom_id: null,
+                  css_selector: "button:nth-of-type(1)",
+                  role: null,
+                  name: null,
+                  text: "Run",
+                  href: null,
+                  value: null,
+                  bounding_box: { x: 10, y: 20, width: 100, height: 30 },
+                },
+              ],
             },
           }),
         };
@@ -142,12 +178,12 @@ describe("buildClaudePreviewMcpServers", () => {
 
     const servers = await buildClaudePreviewMcpServers({ sdkClient });
 
-    expect(createToolDefinition).toHaveBeenCalledTimes(7);
+    expect(createToolDefinition).toHaveBeenCalledTimes(8);
     expect(createMcpServer).toHaveBeenCalledTimes(1);
     expect(servers).toMatchObject({
       autobyteus_preview: {
         name: "autobyteus_preview",
-        toolCount: 7,
+        toolCount: 8,
       },
     });
 
@@ -179,9 +215,10 @@ describe("buildClaudePreviewMcpServers", () => {
 
     const navigatePreviewTool = tools.find((tool) => tool.name === NAVIGATE_PREVIEW_TOOL_NAME);
     const screenshotTool = tools.find((tool) => tool.name === CAPTURE_PREVIEW_SCREENSHOT_TOOL_NAME);
-    const consoleLogsTool = tools.find((tool) => tool.name === GET_PREVIEW_CONSOLE_LOGS_TOOL_NAME);
+    const listSessionsTool = tools.find((tool) => tool.name === LIST_PREVIEW_SESSIONS_TOOL_NAME);
+    const readPreviewPageTool = tools.find((tool) => tool.name === READ_PREVIEW_PAGE_TOOL_NAME);
     const executeJavascriptTool = tools.find((tool) => tool.name === EXECUTE_PREVIEW_JAVASCRIPT_TOOL_NAME);
-    const openDevToolsTool = tools.find((tool) => tool.name === OPEN_PREVIEW_DEVTOOLS_TOOL_NAME);
+    const previewDomSnapshotTool = tools.find((tool) => tool.name === PREVIEW_DOM_SNAPSHOT_TOOL_NAME);
     const closePreviewTool = tools.find((tool) => tool.name === CLOSE_PREVIEW_TOOL_NAME);
 
     await expect(
@@ -228,7 +265,30 @@ describe("buildClaudePreviewMcpServers", () => {
     });
 
     await expect(
-      (consoleLogsTool!.handler as (input: unknown) => Promise<Record<string, unknown>>)({
+      (listSessionsTool!.handler as (input: unknown) => Promise<Record<string, unknown>>)({}),
+    ).resolves.toEqual({
+      content: [
+        {
+          type: "text",
+          text: JSON.stringify(
+            {
+              sessions: [
+                {
+                  preview_session_id: "preview-session-1",
+                  title: "Demo",
+                  url: "http://localhost:3000/demo",
+                },
+              ],
+            },
+            null,
+            2,
+          ),
+        },
+      ],
+    });
+
+    await expect(
+      (readPreviewPageTool!.handler as (input: unknown) => Promise<Record<string, unknown>>)({
         preview_session_id: "preview-session-1",
       }),
     ).resolves.toEqual({
@@ -238,15 +298,47 @@ describe("buildClaudePreviewMcpServers", () => {
           text: JSON.stringify(
             {
               preview_session_id: "preview-session-1",
-              entries: [
+              url: "http://localhost:3000/demo",
+              cleaning_mode: "thorough",
+              content: "<main>Demo</main>",
+            },
+            null,
+            2,
+          ),
+        },
+      ],
+    });
+
+    await expect(
+      (previewDomSnapshotTool!.handler as (input: unknown) => Promise<Record<string, unknown>>)({
+        preview_session_id: "preview-session-1",
+      }),
+    ).resolves.toEqual({
+      content: [
+        {
+          type: "text",
+          text: JSON.stringify(
+            {
+              preview_session_id: "preview-session-1",
+              url: "http://localhost:3000/demo",
+              schema_version: "autobyteus-preview-dom-snapshot-v1",
+              total_candidates: 1,
+              returned_elements: 1,
+              truncated: false,
+              elements: [
                 {
-                  sequence: 1,
-                  level: "log",
-                  message: "ready",
-                  timestamp_iso: "2026-01-01T00:00:00.000Z",
+                  element_id: "e1",
+                  tag_name: "button",
+                  dom_id: null,
+                  css_selector: "button:nth-of-type(1)",
+                  role: null,
+                  name: null,
+                  text: "Run",
+                  href: null,
+                  value: null,
+                  bounding_box: { x: 10, y: 20, width: 100, height: 30 },
                 },
               ],
-              next_sequence: 2,
             },
             null,
             2,
@@ -268,26 +360,6 @@ describe("buildClaudePreviewMcpServers", () => {
             {
               preview_session_id: "preview-session-1",
               result_json: "{\"ready\":true}",
-            },
-            null,
-            2,
-          ),
-        },
-      ],
-    });
-
-    await expect(
-      (openDevToolsTool!.handler as (input: unknown) => Promise<Record<string, unknown>>)({
-        preview_session_id: "preview-session-1",
-      }),
-    ).resolves.toEqual({
-      content: [
-        {
-          type: "text",
-          text: JSON.stringify(
-            {
-              preview_session_id: "preview-session-1",
-              status: "opened",
             },
             null,
             2,

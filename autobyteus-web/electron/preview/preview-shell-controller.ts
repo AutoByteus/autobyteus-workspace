@@ -9,6 +9,7 @@ type PreviewShellState = {
   shell: WorkspaceShellWindow;
   sessionIds: string[];
   activeSessionId: string | null;
+  attachedSessionId: string | null;
   hostBounds: Rectangle | null;
 };
 
@@ -37,6 +38,19 @@ const cloneSummary = (summary: PreviewSessionSummary): PreviewShellSessionSummar
   url: summary.url,
 });
 
+const rectanglesEqual = (left: Rectangle | null, right: Rectangle | null): boolean => {
+  if (!left || !right) {
+    return left === right;
+  }
+
+  return (
+    left.x === right.x &&
+    left.y === right.y &&
+    left.width === right.width &&
+    left.height === right.height
+  );
+};
+
 export class PreviewShellController {
   private readonly shellStates = new Map<number, PreviewShellState>();
   private readonly removeSessionUpsertListener: () => void;
@@ -61,19 +75,22 @@ export class PreviewShellController {
   }
 
   registerShell(shell: WorkspaceShellWindow): void {
-    if (this.shellStates.has(shell.shellId)) {
+    const shellId = shell.shellId;
+
+    if (this.shellStates.has(shellId)) {
       return;
     }
 
-    this.shellStates.set(shell.shellId, {
+    this.shellStates.set(shellId, {
       shell,
       sessionIds: [],
       activeSessionId: null,
+      attachedSessionId: null,
       hostBounds: null,
     });
 
     shell.browserWindow.on('closed', () => {
-      this.unregisterShell(shell.shellId);
+      this.unregisterShell(shellId);
     });
   }
 
@@ -138,7 +155,12 @@ export class PreviewShellController {
 
   updateHostBounds(shellId: number, bounds: PreviewHostBounds | null): PreviewShellSnapshot {
     const state = this.getStateOrThrow(shellId);
-    state.hostBounds = toRectangle(bounds);
+    const nextBounds = toRectangle(bounds);
+    if (rectanglesEqual(state.hostBounds, nextBounds)) {
+      return this.buildSnapshot(state);
+    }
+
+    state.hostBounds = nextBounds;
     this.applyShellProjection(state);
     this.publishSnapshot(shellId);
     return this.buildSnapshot(state);
@@ -181,14 +203,19 @@ export class PreviewShellController {
     const activeSessionId = state.activeSessionId;
     if (!activeSessionId || !state.hostBounds) {
       state.shell.attachPreviewView(null);
+      state.attachedSessionId = null;
       return;
     }
 
     const view = this.previewSessionManager.getSessionView(activeSessionId);
+    const shouldFocus = state.attachedSessionId !== activeSessionId;
     this.previewSessionManager.updateSessionViewportBounds(activeSessionId, state.hostBounds);
     state.shell.updatePreviewHostBounds(state.hostBounds);
     state.shell.attachPreviewView(view);
-    void view.webContents.focus();
+    state.attachedSessionId = activeSessionId;
+    if (shouldFocus) {
+      void view.webContents.focus();
+    }
   }
 
   private buildSnapshot(state: PreviewShellState): PreviewShellSnapshot {

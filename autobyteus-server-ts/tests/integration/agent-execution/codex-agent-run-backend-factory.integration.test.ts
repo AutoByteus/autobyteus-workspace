@@ -1155,12 +1155,21 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
       );
       expect(sendResult.accepted).toBe(true);
 
-      await waitForEvent(
+      const previewSuccessEvent = await waitForEvent(
         events,
         (event) =>
           event.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED &&
           event.payload.tool_name === "open_preview",
       );
+      const previewResult =
+        previewSuccessEvent.payload.result &&
+        typeof previewSuccessEvent.payload.result === "object"
+          ? (previewSuccessEvent.payload.result as Record<string, unknown>)
+          : null;
+      expect(previewResult?.preview_session_id).toEqual("preview-session-1");
+      expect(previewResult?.status).toEqual("opened");
+      expect(previewResult?.url).toEqual(previewUrl);
+      expect(previewResult?.title).toEqual(previewTitle);
       await waitForEvent(
         events,
         (event) =>

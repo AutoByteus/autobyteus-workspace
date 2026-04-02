@@ -17,7 +17,7 @@ The target behavior is:
 - the shell shows one outer `Preview` tab on the right side only when preview content exists,
 - inside that shell surface, each preview session appears as its own preview tab,
 - each preview tab is backed by its own independent Electron `webContents` / `WebContentsView`,
-- preview sessions still behave like browser controls with per-session screenshots, console logs, JavaScript execution, and DevTools access,
+- preview sessions still behave like browser controls with session listing plus per-session page reading, DOM snapshots, screenshots, and JavaScript execution,
 - the existing session-oriented tool contract remains stable across runtimes,
 - the old separate-window preview path is removed rather than kept as a compatibility branch.
 
@@ -29,9 +29,9 @@ The target behavior is:
 
 An agent calls `open_preview`. The app creates or reuses a preview session, makes the right-side `Preview` outer tab visible, and activates the corresponding internal preview tab.
 
-### UC-002 — Agent performs follow-up actions against an existing preview session
+### UC-002 — Agent performs follow-up actions against preview sessions
 
-After the preview session exists, follow-up tools such as navigation, screenshot capture, console-log retrieval, JavaScript execution, DevTools open/focus, and close operate on the same `preview_session_id`.
+After preview sessions exist, follow-up tools such as session listing, navigation, page reading, DOM snapshot capture, screenshot capture, JavaScript execution, and close operate on the same `preview_session_id` model.
 
 ### UC-003 — Multiple preview sessions coexist inside the shell
 
@@ -55,14 +55,15 @@ through one shared preview-session abstraction rather than runtime-specific shel
 
 Electron main owns the `WebContentsView` lifecycle, session-to-native-view binding, and layout attachment. The renderer owns the right-side tab UI state, selection affordances, and bounds reporting for the native preview host surface.
 
-### UC-007 — Preview diagnostics remain per-session
+### UC-007 — Preview inspection remains per-session
 
-Each preview session keeps browser-like diagnostics and control independently, including:
+Each preview session keeps browser-like inspection and control independently, including:
 
-- console logs,
+- page reading,
+- DOM snapshots,
 - screenshots,
 - JavaScript execution,
-- DevTools access.
+- close semantics.
 
 ### UC-008 — Legacy separate preview windows are removed
 
@@ -112,9 +113,9 @@ The solution MUST clearly separate ownership for:
 
 The renderer integration MUST stay bounded. It should use a small, purposeful shell state bridge for preview session snapshots, active-session selection, and layout bounds rather than a large set of preview-specific events.
 
-### R-008 — Per-Session Diagnostics And Control Parity
+### R-008 — Per-Session Inspection And Control Parity
 
-The shell-tab preview surface MUST preserve the browser-control capabilities that matter for agents, including per-session screenshot capture, console retrieval, JavaScript execution, and DevTools access.
+The shell-tab preview surface MUST preserve the browser-control capabilities that matter for agents, including session listing, per-session page reading, DOM snapshot capture, screenshot capture, JavaScript execution, and close.
 
 ### R-009 — Session Cleanup Semantics
 
@@ -146,7 +147,7 @@ The design and implementation define one independent preview tab per `preview_se
 
 ### AC-004 — Per-session browser-control capabilities are preserved
 
-Screenshot capture, console-log retrieval, JavaScript execution, and DevTools access remain available per preview session after the move from separate windows to shell tabs.
+Session listing, page reading, DOM snapshot capture, screenshot capture, JavaScript execution, and close remain available through the preview-session model after the move from separate windows to shell tabs.
 
 ### AC-005 — Runtime reuse remains consistent
 
@@ -174,6 +175,15 @@ The target design removes the dedicated preview `BrowserWindow` path from normal
 - The solution must avoid `<webview>` and use Electron-native `WebContentsView` / `webContents` ownership for preview content.
 - The solution must not keep separate-window preview as a backward-compatibility path.
 - The solution must respect the existing agent tool lifecycle and runtime abstractions already present in the codebase.
+- The stable preview tool surface for this ticket is:
+  - `open_preview`
+  - `navigate_preview`
+  - `close_preview`
+  - `list_preview_sessions`
+  - `read_preview_page`
+  - `capture_preview_screenshot`
+  - `preview_dom_snapshot`
+  - `execute_preview_javascript`
 
 ---
 
@@ -181,7 +191,6 @@ The target design removes the dedicated preview `BrowserWindow` path from normal
 
 - Electron main can host one or more preview `WebContentsView` instances in the shell layout when given renderer-reported bounds for the right-side preview host area.
 - A single outer `Preview` tab with internal preview-session tabs is acceptable UX for the product.
-- DevTools access may remain detached/native rather than embedded inside the narrow right panel.
 - Session-oriented preview tools are still preferred over one-shot preview commands.
 
 ---
@@ -191,7 +200,7 @@ The target design removes the dedicated preview `BrowserWindow` path from normal
 - What is the cleanest shell host model for attaching a main-process `WebContentsView` into the current BrowserWindow-backed shell?
 - Should inactive preview sessions keep their native view alive offscreen, or should the shell remount only the active session view?
 - What is the minimum renderer-to-main state bridge needed for selection, close, and bounds sync without creating event sprawl?
-- Should `execute_javascript` be added to the v1 tool set immediately, or remain staged behind the existing screenshot/log/navigation primitives?
+- What page-read cleaning level should the preview tool return by default so agents get useful structure without excessive HTML noise?
 
 ---
 

@@ -2,15 +2,14 @@ import { tool, BaseTool } from "autobyteus-ts";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
 import {
   OPEN_PREVIEW_TOOL_NAME,
-  buildOpenPreviewParameterSchema,
-  toPreviewErrorPayload,
-  toPreviewJsonString,
   type PreviewReadyState,
 } from "./preview-tool-contract.js";
+import { getPreviewToolManifestEntry } from "./preview-tool-manifest.js";
+import { buildOpenPreviewParameterSchema } from "./preview-tool-parameter-schemas.js";
+import { toPreviewErrorPayload, toPreviewJsonString } from "./preview-tool-serialization.js";
 import { getPreviewToolService } from "./preview-tool-service.js";
 
-const DESCRIPTION =
-  "Open a frontend preview window and return a stable preview_session_id for follow-up operations.";
+const DESCRIPTION = getPreviewToolManifestEntry(OPEN_PREVIEW_TOOL_NAME).description;
 const TOOL_CATEGORY = "Preview";
 const argumentSchema = buildOpenPreviewParameterSchema();
 

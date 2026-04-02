@@ -1,20 +1,25 @@
 import { describe, expect, it } from "vitest";
 import {
+  PreviewReadPageCleaningMode,
   PreviewToolError,
-  assertGetPreviewConsoleLogsSemantics,
-  assertOpenPreviewSemantics,
-  parseGetPreviewConsoleLogsInput,
-  parseOpenPreviewInput,
-  toPreviewErrorPayload,
 } from "../../../../src/agent-tools/preview/preview-tool-contract.js";
+import {
+  assertOpenPreviewSemantics,
+  assertPreviewDomSnapshotSemantics,
+  parseOpenPreviewInput,
+  parseReadPreviewPageInput,
+} from "../../../../src/agent-tools/preview/preview-tool-input-normalizers.js";
+import {
+  toPreviewErrorPayload,
+} from "../../../../src/agent-tools/preview/preview-tool-serialization.js";
 
 describe("preview-tool-contract", () => {
-  it("parses open_preview inputs with aliases and defaults", () => {
+  it("parses open_preview inputs with canonical snake_case fields only", () => {
     const parsed = parseOpenPreviewInput({
       url: "http://localhost:3000/demo ",
-      window_title: " Demo ",
-      reuseExisting: "true",
-      waitUntil: "domcontentloaded",
+      title: " Demo ",
+      reuse_existing: "true",
+      wait_until: "domcontentloaded",
     });
 
     expect(parsed).toEqual({
@@ -23,6 +28,15 @@ describe("preview-tool-contract", () => {
       reuse_existing: true,
       wait_until: "domcontentloaded",
     });
+  });
+
+  it("rejects open_preview compatibility aliases", () => {
+    expect(() =>
+      parseOpenPreviewInput({
+        url: "http://localhost:3000/demo",
+        window_title: "Demo",
+      }),
+    ).toThrowError(/does not accept 'window_title'/);
   });
 
   it("rejects invalid preview URLs", () => {
@@ -41,16 +55,34 @@ describe("preview-tool-contract", () => {
     ).toThrowError(/does not support/);
   });
 
-  it("rejects negative console-log sequence cursors", () => {
-    const parsed = parseGetPreviewConsoleLogsInput({
+  it("parses read_preview_page inputs with canonical snake_case fields only", () => {
+    const parsed = parseReadPreviewPageInput({
       preview_session_id: "preview-session-1",
-      sinceSequence: "-1",
+      cleaning_mode: "light",
     });
 
-    expect(parsed.since_sequence).toBe(-1);
-    expect(() => assertGetPreviewConsoleLogsSemantics(parsed)).toThrowError(
-      /since_sequence to be zero or greater/,
-    );
+    expect(parsed).toEqual({
+      preview_session_id: "preview-session-1",
+      cleaning_mode: "light" satisfies PreviewReadPageCleaningMode,
+    });
+  });
+
+  it("rejects read_preview_page compatibility aliases", () => {
+    expect(() =>
+      parseReadPreviewPageInput({
+        preview_session_id: "preview-session-1",
+        cleaningMode: "light",
+      }),
+    ).toThrowError(/does not accept 'cleaningMode'/);
+  });
+
+  it("rejects invalid dom snapshot max_elements values", () => {
+    expect(() =>
+      assertPreviewDomSnapshotSemantics({
+        preview_session_id: "preview-session-1",
+        max_elements: 0,
+      }),
+    ).toThrowError(/max_elements to be between 1 and 2000/);
   });
 
   it("normalizes preview errors into the canonical payload", () => {

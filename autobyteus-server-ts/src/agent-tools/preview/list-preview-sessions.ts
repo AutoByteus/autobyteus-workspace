@@ -1,16 +1,18 @@
 import { tool, BaseTool } from "autobyteus-ts";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
 import {
-  CLOSE_PREVIEW_TOOL_NAME,
+  LIST_PREVIEW_SESSIONS_TOOL_NAME,
 } from "./preview-tool-contract.js";
 import { getPreviewToolManifestEntry } from "./preview-tool-manifest.js";
-import { buildClosePreviewParameterSchema } from "./preview-tool-parameter-schemas.js";
+import { buildListPreviewSessionsParameterSchema } from "./preview-tool-parameter-schemas.js";
 import { toPreviewErrorPayload, toPreviewJsonString } from "./preview-tool-serialization.js";
 import { getPreviewToolService } from "./preview-tool-service.js";
 
-const DESCRIPTION = getPreviewToolManifestEntry(CLOSE_PREVIEW_TOOL_NAME).description;
+const DESCRIPTION = getPreviewToolManifestEntry(
+  LIST_PREVIEW_SESSIONS_TOOL_NAME,
+).description;
 const TOOL_CATEGORY = "Preview";
-const argumentSchema = buildClosePreviewParameterSchema();
+const argumentSchema = buildListPreviewSessionsParameterSchema();
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -21,40 +23,39 @@ type AgentContextLike = {
   agentId?: string;
 };
 
-export async function closePreview(
+export async function listPreviewSessions(
   context: AgentContextLike,
-  preview_session_id: string,
 ): Promise<string> {
   const agentRunId = context?.agentId ?? "unknown";
-  logger.info(`close_preview tool invoked by agent run ${agentRunId}.`);
+  logger.info(`list_preview_sessions tool invoked by agent run ${agentRunId}.`);
 
   try {
-    const result = await getPreviewToolService().closePreview({
-      preview_session_id,
-    });
+    const result = await getPreviewToolService().listPreviewSessions();
     return toPreviewJsonString(result);
   } catch (error) {
     const payload = toPreviewErrorPayload(error);
-    logger.error(`close_preview failed for agent run ${agentRunId}: ${payload.error.message}`);
+    logger.error(
+      `list_preview_sessions failed for agent run ${agentRunId}: ${payload.error.message}`,
+    );
     throw new Error(toPreviewJsonString(payload));
   }
 }
 
 let cachedTool: BaseTool | null = null;
 
-export function registerClosePreviewTool(): BaseTool {
-  if (!defaultToolRegistry.getToolDefinition(CLOSE_PREVIEW_TOOL_NAME)) {
+export function registerListPreviewSessionsTool(): BaseTool {
+  if (!defaultToolRegistry.getToolDefinition(LIST_PREVIEW_SESSIONS_TOOL_NAME)) {
     cachedTool = tool({
-      name: CLOSE_PREVIEW_TOOL_NAME,
+      name: LIST_PREVIEW_SESSIONS_TOOL_NAME,
       description: DESCRIPTION,
       argumentSchema,
       category: TOOL_CATEGORY,
-    })(closePreview) as BaseTool;
+    })(listPreviewSessions) as BaseTool;
     return cachedTool;
   }
 
   if (!cachedTool) {
-    cachedTool = defaultToolRegistry.createTool(CLOSE_PREVIEW_TOOL_NAME) as BaseTool;
+    cachedTool = defaultToolRegistry.createTool(LIST_PREVIEW_SESSIONS_TOOL_NAME) as BaseTool;
   }
 
   return cachedTool;

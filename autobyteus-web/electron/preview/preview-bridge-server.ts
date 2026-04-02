@@ -5,12 +5,12 @@ import {
   CapturePreviewScreenshotRequest,
   ClosePreviewRequest,
   ExecutePreviewJavascriptRequest,
-  GetPreviewConsoleLogsRequest,
   NavigatePreviewRequest,
-  OpenPreviewDevToolsRequest,
   OpenPreviewRequest,
+  PreviewDomSnapshotRequest,
   PreviewSessionError,
   PreviewSessionManager,
+  ReadPreviewPageRequest,
 } from './preview-session-manager'
 import { logger } from '../logger'
 
@@ -144,10 +144,16 @@ export class PreviewBridgeServer {
             ),
           })
           return
-        case '/preview/console-logs':
+        case '/preview/list':
           this.writeJson(response, 200, {
             ok: true,
-            result: this.previewSessionManager.getConsoleLogs(body as GetPreviewConsoleLogsRequest),
+            result: this.previewSessionManager.listSessions(),
+          })
+          return
+        case '/preview/read-page':
+          this.writeJson(response, 200, {
+            ok: true,
+            result: await this.previewSessionManager.readPage(body as ReadPreviewPageRequest),
           })
           return
         case '/preview/javascript':
@@ -158,10 +164,12 @@ export class PreviewBridgeServer {
             ),
           })
           return
-        case '/preview/devtools':
+        case '/preview/dom-snapshot':
           this.writeJson(response, 200, {
             ok: true,
-            result: this.previewSessionManager.openDevTools(body as OpenPreviewDevToolsRequest),
+            result: await this.previewSessionManager.domSnapshot(
+              body as PreviewDomSnapshotRequest,
+            ),
           })
           return
         case '/preview/close':

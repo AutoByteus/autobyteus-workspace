@@ -2,7 +2,7 @@
 
 ## Design Version
 
-- Current Version: `v8`
+- Current Version: `v10`
 
 ## Revision History
 
@@ -16,6 +16,8 @@
 | v6 | Stage 5 `Design Impact` re-entry after file-placement review | Moved preview-specific contract and shared server-side coordination into `autobyteus-server-ts/src/agent-tools/preview` and removed the generic backend `desktop-shell` boundary | Round 13 |
 | v7 | Stage 6 `Requirement Gap` re-entry | Replaced dedicated preview windows with a right-side shell `Preview` surface backed by per-session `WebContentsView` instances, reintroduced a bounded renderer/main shell bridge, and removed the separate preview-window path from the target architecture | Round 15 |
 | v8 | Stage 5 `Design Impact` re-entry during right-side-tab review | Made `PreviewShellController` the sole authority for preview-shell projection state, moved shell-host identity from renderer identity to a main-process-owned shell window/host identity, and added explicit shell reload/reconnect recovery flow so preview tabs do not depend on tool-result replay | Round 16 |
+| v9 | Stage 7 `Requirement Gap` re-entry after packaged validation success | Narrowed the stable tool surface to the eight browser-style preview tools, removed console-log and DevTools tools from the contract, and added session listing, page read, and DOM snapshot semantics to the preview owner boundary | Round 19 |
+| v10 | Stage 8 `Design Impact` re-entry | Keeps the working shell-tab UX and eight-tool surface, but structurally splits the preview tool boundary, introduces one owned preview tool manifest, removes alias-based compatibility parsing, splits the Electron preview session owner into lifecycle/navigation/page-operation owners, and decomposes Codex payload parsing by subject so the bounded local spines stay readable and Stage 8 file limits remain enforceable | Round 20 |
 
 ## Artifact Basis
 
@@ -51,40 +53,50 @@ Read and write this design from abstract to concrete:
 
 ## Summary
 
-Keep the existing preview-session backend contract and multi-runtime adapter model, but replace the user-visible preview surface with a shell-embedded `Preview` area on the right side of the Electron workspace.
+Keep the working shell-embedded preview behavior and the eight-tool preview surface, but redesign the implementation around tighter owned boundaries so the working feature also satisfies the Stage 8 data-spine, ownership, and size-gate rules.
 
-The new target shape is:
+The v10 target shape is:
 
 - one outer right-side `Preview` tab that appears only when preview sessions exist,
 - multiple internal preview session tabs inside that panel,
 - one independent `WebContentsView` per preview session,
-- Electron main owns preview sessions, `WebContentsView` lifecycle, active-view attachment, console capture, screenshot capture, JavaScript execution, and DevTools access,
-- the renderer owns only snapshot-driven shell tab UI, focus/close requests, and preview-host bounds reporting,
-- tool results are only triggers for preview-shell focus requests and are not a second source of preview-shell truth,
-- the separate preview `BrowserWindow` path is removed from the target architecture.
+- one canonical snake_case preview tool contract with no alias-based compatibility parsing,
+- one owned preview tool manifest that defines the eight-tool surface once and drives native, Codex, and Claude exposure,
+- one `PreviewSessionManager` that owns only session registry/lifecycle/reuse/close and delegates navigation/readiness plus page operations to clear internal owned files,
+- one `PreviewShellController` that remains the sole owner of shell projection state,
+- one decomposed Codex event-parsing structure so preview tool result parsing no longer grows an all-purpose payload blob.
 
-The contract remains session-oriented around one opaque `preview_session_id`. The backend still reaches Electron main through the existing local authenticated preview bridge, but shell projection is no longer out of scope: it becomes a required bounded bridge between the renderer shell and the main-process preview owner.
+User-visible behavior does not change from v9. This re-entry is structural: it repairs the bounded local spines and ownership boundaries so the current feature can be accepted.
 
 ## Goal / Intended Change
 
-The earlier preview implementation proved the backend tool flow, but opening a new native window for every preview session is poor workspace UX. The intended change is to keep preview inside the existing Electron shell so it behaves like an integrated browser workspace while preserving the agent-facing capabilities that matter:
+The preview tab implementation now works functionally, but the current source shape failed Stage 8 because several ownership boundaries became mixed-concern blobs:
 
-- stable preview sessions,
-- screenshots,
-- console logs,
-- JavaScript execution,
-- DevTools access,
-- consistent runtime exposure across `autobyteus`, `codex_app_server`, and `claude_agent_sdk`.
+- `preview-tool-contract.ts` is no longer only a contract boundary,
+- `preview-session-manager.ts` is no longer only the preview-session lifecycle owner,
+- the preview tool surface is duplicated across runtime adapters,
+- Codex payload parsing remained an overgrown mixed parser.
+
+The intended change is to keep the approved product behavior while redesigning the implementation basis so:
+
+- the primary preview spines are still the same,
+- the bounded local spines are explicit and readable,
+- contract, manifest, parsing, navigation, and page-operation concerns each have one clear owner,
+- no compatibility aliases or duplicated runtime tool surfaces remain in the target design.
 
 ## Legacy Removal Policy (Mandatory)
 
 - Policy: `No backward compatibility; remove legacy code paths.`
-- The separate preview-window behavior is now legacy for this ticket.
-- The target implementation must not keep both:
-  - dedicated preview `BrowserWindow` sessions, and
-  - shell-tab-backed preview sessions.
-- The current `PreviewWindowFactory` path becomes obsolete in scope and must be removed or decommissioned.
-- Existing node-bound shell windows remain valid as user-facing shells, but their construction path must evolve so the shell can host preview `WebContentsView` instances without a dual-path window model.
+- Required removals in this re-entry:
+  - compatibility aliases for preview tool inputs,
+  - duplicated preview tool-surface definitions across Codex and Claude adapters,
+  - mixed contract/normalizer/schema/error ownership inside `preview-tool-contract.ts`,
+  - mixed lifecycle/navigation/page-operation ownership inside `preview-session-manager.ts`,
+  - preview-specific growth inside the monolithic Codex payload parser.
+- Previously removed behaviors remain removed:
+  - no separate preview `BrowserWindow` path,
+  - no preview console-log tool,
+  - no preview DevTools tool.
 
 ## Requirements And Use Cases
 
@@ -97,7 +109,7 @@ The earlier preview implementation proved the backend tool flow, but opening a n
 | R-005 | Shared multi-runtime abstraction remains intact | AC-005 | same preview-session semantics across three runtimes | UC-001, UC-002, UC-003 |
 | R-006 | Ownership boundaries are explicit | AC-001, AC-006 | main-process preview owner and renderer shell ownership stay distinct | UC-005, UC-006 |
 | R-007 | Event / IPC surface stays bounded | AC-006 | renderer/main shell bridge is small and purposeful | UC-005, UC-006 |
-| R-008 | Per-session diagnostics/control parity is preserved | AC-004 | screenshots, console, JS, DevTools stay per-session | UC-002, UC-007 |
+| R-008 | Per-session inspection/control parity is preserved | AC-004 | list, read page, DOM snapshot, screenshot, JS, and close stay session-oriented | UC-002, UC-007 |
 | R-009 | Cleanup semantics are deterministic | AC-007 | close invalidation and shell-hide behavior are authoritative | UC-004, UC-008 |
 | R-010 | Adapter contract parity remains intact | AC-005 | runtime adapters preserve one shared preview contract | UC-001, UC-002, UC-003 |
 | R-011 | Separate preview-window path is removed | AC-008 | no dual path or compatibility wrapper remains | UC-008 |
@@ -106,91 +118,116 @@ The earlier preview implementation proved the backend tool flow, but opening a n
 
 | Area | Findings | Evidence (files/functions) | Open Unknowns |
 | --- | --- | --- | --- |
-| Entrypoints / Current Spine Or Fragmented Flow | Preview tool execution already exists end-to-end through a bridge into Electron main, but the shell UI is not part of the preview spine today | `autobyteus-server-ts/src/agent-tools/preview/*`, `autobyteus-web/electron/preview/preview-bridge-server.ts`, `autobyteus-web/electron/preview/preview-session-manager.ts` | none material |
-| Current Ownership Boundaries | Electron main owns native windows and tool bridge lifecycle; renderer right-side tabs are pure Vue state; preview currently bypasses the renderer entirely by opening a `BrowserWindow` | `autobyteus-web/electron/main.ts`, `autobyteus-web/electron/preview/preview-runtime.ts`, `autobyteus-web/composables/useRightSideTabs.ts`, `autobyteus-web/components/layout/RightSideTabs.vue` | cleanest shell-host attachment path |
-| Current Coupling / Fragmentation Problems | Right-side tabs are static renderer tabs; `WebContentsView` is main-process-owned and not part of the DOM, so a tab-backed preview needs a deliberate shell bridge and cannot be implemented as a normal Vue component only | current right-panel files plus Electron `WebContentsView` model | shell window composition strategy |
-| Existing Constraints / Compatibility Facts | Electron’s native composition primitive is `WebContentsView`; `<webview>` is not the desired path; current shell windows are created as `BrowserWindow` instances and current broadcast helpers assume `BrowserWindow.getAllWindows()` | Electron docs + `electron/main.ts` + current preview code | whether to move shell windows to `BaseWindow` in scope |
-| Relevant Files / Components | main shell window bootstrap, right-panel width/visibility state, right-side tab list, preview session manager/runtime, preload bridge, and shared preview tool service are the key design edges | `electron/main.ts`, `components/layout/WorkspaceDesktopLayout.vue`, `composables/useRightPanel.ts`, `composables/useRightSideTabs.ts`, `electron/preload.ts`, `agent-tools/preview/*` | none material |
+| Entrypoints / Current Spine Or Fragmented Flow | The end-to-end feature path works: runtime preview tool -> server preview tool/service -> preview bridge -> Electron preview owner -> shell projection. The problem is structural ownership inside the implementation, not the high-level spine choice. | `autobyteus-server-ts/src/agent-tools/preview/*`, `autobyteus-web/electron/preview/*`, `autobyteus-web/services/agentStreaming/handlers/toolLifecycleHandler.ts` | none material |
+| Current Ownership Boundaries | `PreviewShellController` is already the sole shell projection owner, but `preview-tool-contract.ts` and `preview-session-manager.ts` have absorbed neighboring concerns until their names no longer match their responsibility. | `preview-tool-contract.ts`, `preview-session-manager.ts`, `preview-shell-controller.ts` | exact split surfaces for navigation/page ops |
+| Current Coupling / Fragmentation Problems | Codex and Claude preview tool-definition builders duplicate the eight-tool surface. Codex preview result parsing was added into an already-large payload parser instead of splitting by subject. | `build-preview-dynamic-tool-registrations.ts`, `build-claude-preview-tool-definitions.ts`, `codex-item-event-payload-parser.ts` | minimal Codex split that keeps adapters readable |
+| Existing Constraints / Compatibility Facts | The stable product surface is eight snake_case preview tools. Current input normalizers still accept alias spellings, which conflicts with the no-backward-compat rule. | `requirements.md`; `preview-tool-contract.ts` parsing helpers | none material |
+| Relevant Files / Components | Preview tool layer, runtime adapter builders, Codex event parsing, Electron preview owner/controller, renderer preview panel/store, and shell host remain the key design edges. | preview files above plus `PreviewPanel.vue`, `previewShellStore.ts`, `workspace-shell-window.ts` | none material |
 
 ## Current State (As-Is)
 
-- `open_preview` and follow-up preview tools already work across runtimes.
-- Electron main currently creates a dedicated `BrowserWindow` for each preview session.
-- Preview tools currently operate on `preview_session_id`, but that identity is not connected to any shell-tab projection state.
-- The right-side shell tabs are static and renderer-owned.
-- The shell window itself is built as a `BrowserWindow`, while Electron’s official composition model for many independent web views is `BaseWindow` + `WebContentsView`.
+- The shell-tab preview UX is the correct product direction and remains the target.
+- The stable tool surface for this ticket is:
+  - `open_preview`
+  - `navigate_preview`
+  - `close_preview`
+  - `list_preview_sessions`
+  - `read_preview_page`
+  - `capture_preview_screenshot`
+  - `preview_dom_snapshot`
+  - `execute_preview_javascript`
+- The implementation currently passes behavior validation but fails structural review because:
+  - contract parsing/validation/schema-building are mixed,
+  - session lifecycle/navigation/page operations are mixed,
+  - runtime tool-surface definitions are duplicated,
+  - Codex payload parsing remains overgrown.
 
 ## Data-Flow Spine Inventory
 
 | Spine ID | Scope (`Primary End-to-End`/`Return-Event`/`Bounded Local`) | Start | End | Owning Node / Governing Owner | Why It Matters |
 | --- | --- | --- | --- | --- | --- |
-| DS-001 | Primary End-to-End | packaged app startup | runtime-specific preview tool exposure decision | `PreviewToolService` | preview tools must still appear only when the local shell owner is actually available |
-| DS-002 | Primary End-to-End | agent preview open request | tool result containing `preview_session_id` and session metadata | `PreviewSessionManager` | session creation and contract truth remain the main value spine |
-| DS-003 | Primary End-to-End | agent follow-up preview tool call | normalized result for screenshot/logs/navigation/JS/devtools/close | `PreviewSessionManager` | per-session browser-control behavior must survive the move into shell tabs |
-| DS-004 | Primary End-to-End | renderer requests focus for a preview session in the current shell | authoritative shell snapshot makes the outer `Preview` tab visible and attaches the active `WebContentsView` to the right-side host area | `PreviewShellController` | the preview surface is now a core product requirement, and it needs one authoritative shell projection owner |
-| DS-005 | Return-Event | shell host registers, reloads, changes selection, resizes, hides/shows, or manually closes a preview tab | active native preview attachment and authoritative shell snapshot remain correct | `PreviewShellController` | shell layout changes and shell reload/reconnect must not make the renderer the owner of native preview lifecycle |
-| DS-006 | Return-Event | tool-driven or native session close | authoritative invalidation plus shell-tab disappearance when last session is gone | `PreviewSessionManager` | close semantics must stay deterministic across tool and shell actions |
-| DS-007 | Bounded Local | bridge command enters session owner | session registry invariants, per-session `WebContentsView`, and result/error semantics settle | `PreviewSessionManager` | correctness still depends on one authoritative session owner |
-| DS-008 | Bounded Local | shell host rect or active-session request enters shell projection owner | exactly one active preview view is attached to a given shell host and its bounds match the renderer-reported host area | `PreviewShellController` | native view attachment and shell layout are a second correctness center that cannot remain implicit |
-
-Rule:
-- The shell projection owner now needs its own bounded local spine because native view attachment, detachment, and bounds sync materially affect correctness.
+| DS-001 | Primary End-to-End | packaged app startup | runtime-specific preview tool exposure decision | `PreviewToolService` | preview tools must appear only when the local preview owner is actually available |
+| DS-002 | Primary End-to-End | agent `open_preview` request | tool result containing `preview_session_id` and session metadata | `PreviewSessionManager` | session creation and contract truth remain the primary business spine |
+| DS-003 | Primary End-to-End | agent follow-up preview tool call | normalized result for navigation/list/read-page/DOM-snapshot/screenshot/JS/close | `PreviewSessionManager` | per-session browser-control behavior must remain stable after the structural split |
+| DS-004 | Primary End-to-End | renderer focus request for a preview session | authoritative shell snapshot makes the outer `Preview` tab visible and attaches the active `WebContentsView` | `PreviewShellController` | preview projection stays authoritative in Electron main instead of drifting into the renderer |
+| DS-005 | Return-Event | shell host registers/reloads/resizes/hides/selects/closes | active native attachment and shell snapshot remain correct | `PreviewShellController` | shell lifecycle changes must not create a second owner of preview state |
+| DS-006 | Return-Event | tool-driven or user-driven session close | authoritative invalidation plus outer-tab disappearance when last session closes | `PreviewSessionManager` | cleanup semantics must stay deterministic |
+| DS-007 | Bounded Local | canonical preview request enters session owner | registry/lifecycle invariants settle and a session record is opened/reused/closed/listed | `PreviewSessionManager` | the bounded local session spine must become readable again after the split |
+| DS-008 | Bounded Local | open/navigate request enters navigation owner | URL load, ready-state waiting, title settlement, and navigation errors are normalized | `PreviewSessionNavigation` | readiness and navigation sequencing are important enough to be explicit instead of hidden inside the session owner blob |
+| DS-009 | Bounded Local | read/snapshot/screenshot/JS request enters page-operations owner | page content artifact/result is produced against one existing session view | `PreviewSessionPageOperations` | page/browser operations are a distinct concern around the session owner and were a main source of size drift |
+| DS-010 | Bounded Local | raw preview tool result item enters Codex payload parsing | canonical preview result payload is extracted without growing one all-purpose parser | `CodexToolPayloadParser` | preview parsing must be explicit and owned, not embedded in a monolithic parser |
 
 ## Primary Execution / Data-Flow Spine(s)
 
-- `Electron startup -> preview bridge startup -> bridge env injection -> PreviewToolService capability decision -> runtime tool exposure`
-- `Agent runtime tool call -> runtime adapter -> PreviewToolService -> preview bridge client -> preview bridge server -> PreviewSessionManager -> session/webContentsView creation -> tool result`
-- `Tool result/activity stream -> renderer focus request -> PreviewShellController -> authoritative shell snapshot -> renderer preview store -> active session view attachment`
-- `Agent follow-up preview tool call -> runtime adapter -> PreviewToolService -> PreviewSessionManager -> per-session webContents action -> normalized result`
+- `Electron startup -> preview runtime -> bridge env injection -> PreviewToolService support decision -> runtime adapter exposure from one preview tool manifest`
+- `Agent runtime preview tool call -> runtime adapter -> preview input normalizer -> PreviewToolService -> preview bridge client -> preview bridge server -> PreviewSessionManager -> PreviewSessionNavigation / PreviewSessionPageOperations -> normalized result`
+- `Tool success in activity stream -> renderer focus request -> PreviewShellController -> authoritative shell snapshot -> renderer preview store/panel -> active session view attachment`
 
 ## Spine Actors / Main-Line Nodes
 
 | Node | Role In Spine | What It Advances |
 | --- | --- | --- |
-| `PreviewToolService` | shared backend coordination owner | support checks, semantic validation, shared bridge delegation |
-| Runtime adapters | runtime-native exposure boundary | translate registry/dynamic/MCP calls into canonical preview shapes |
+| `PreviewToolService` | shared backend coordination owner | preview support checks, canonical semantic validation, bridge delegation |
+| Preview tool manifest | shared tool-surface owner | one authoritative eight-tool definition used by native, Codex, and Claude exposure |
+| Runtime adapters | runtime-native exposure boundary | translate the shared preview tool manifest into native/dynamic/MCP definitions |
 | Preview bridge server/client | backend-to-shell boundary | authenticated local transport into Electron main |
-| `PreviewSessionManager` | governing preview session owner | session IDs, per-session `WebContentsView`, logs, screenshots, JS, DevTools, close semantics |
-| `PreviewShellController` | governing shell projection owner | host window association, active session selection, view attach/detach, bounds sync, shell snapshot broadcasting |
-| Renderer preview shell store/panel | shell UI projection | snapshot-driven outer Preview tab, internal preview tabs, focus/close UX, host rect reporting |
-| Shell window host | main-process shell surface owner | renderer view plus preview host composition inside one app window |
+| `PreviewSessionManager` | session lifecycle owner | preview session identity, registry invariants, reuse/list/close semantics |
+| `PreviewSessionNavigation` | navigation/readiness owner | URL normalization, load/wait semantics, title settlement |
+| `PreviewSessionPageOperations` | page/browser-operation owner | read-page, DOM snapshot, screenshot, JavaScript execution |
+| `PreviewShellController` | shell projection owner | shell host association, active session selection, view attach/detach, snapshot broadcasting |
+| Renderer preview store/panel | shell UI projection | snapshot-driven outer Preview tab, internal tabs, bounds reporting |
+| `CodexToolPayloadParser` | bounded Codex parsing owner | preview tool argument/result parsing under the Codex adapter path |
 
 ## Spine Narratives (Mandatory)
 
 | Spine ID | Short Narrative | Main Domain Subject Nodes | Governing Owner | Key Off-Spine Concerns |
 | --- | --- | --- | --- | --- |
-| DS-001 | At app startup, Electron main starts the preview bridge and injects its env into the packaged server. `PreviewToolService` reads that support context, and runtime bootstraps expose preview tools only when the shell owner is actually available. | Electron main, preview bridge, `PreviewToolService`, runtime adapters | `PreviewToolService` | server env injection, runtime exposure translation |
-| DS-002 | An agent asks to open a preview. The runtime adapter translates input into the canonical contract and calls `PreviewToolService`, which delegates through the bridge into `PreviewSessionManager`. The owner creates or reuses a preview session backed by one `WebContentsView`, waits for the requested ready state, and returns one stable `preview_session_id`. | runtime adapter, `PreviewToolService`, bridge, `PreviewSessionManager` | `PreviewSessionManager` | view factory, console capture, screenshot path policy |
-| DS-003 | Later preview tools still flow through the same contract and reach the same session owner. The owner performs navigation, screenshot capture, console retrieval, JS execution, DevTools open, or close against the existing session’s `webContents`. | runtime adapter, `PreviewToolService`, bridge, `PreviewSessionManager` | `PreviewSessionManager` | result normalization, error mapping |
-| DS-004 | Once a renderer window displaying the run receives the successful tool result, it sends a bounded focus request for the preview session. `PreviewShellController` resolves the main-process shell host identity, updates shell projection state, and emits the authoritative shell snapshot. The renderer then renders the outer `Preview` tab from that snapshot and reports the preview host bounds. | renderer store/panel, preload bridge, `PreviewShellController`, shell window host | `PreviewShellController` | host rect measurement, active-session routing, host-window association |
-| DS-005 | When the shell renderer mounts/reloads, the user switches preview tabs, resizes the right panel, collapses it, or closes a preview tab manually, the renderer sends bounded shell events. `PreviewShellController` updates attachment state and bounds, emits the authoritative snapshot, and `PreviewSessionManager` remains authoritative for session validity. | renderer store/panel, preload bridge, `PreviewShellController`, `PreviewSessionManager` | `PreviewShellController` | shell bootstrap/reconnect, resize throttling, detach when hidden, manual close path |
-| DS-006 | A close from the tool layer, user shell action, or native lifecycle event flows back into `PreviewSessionManager`, which invalidates the session, updates shell snapshots, and removes the outer `Preview` tab when the last session is gone. | `PreviewSessionManager`, `PreviewShellController`, renderer store | `PreviewSessionManager` | snapshot fanout, active-session fallback selection |
-| DS-007 | Inside the session owner, one bounded local flow arbitrates creation, reuse, mutation, invalidation, and result/error settlement for session records and their `WebContentsView` instances. | `PreviewSessionManager` | `PreviewSessionManager` | registry invariants, title updates, closed tombstones |
-| DS-008 | Inside the shell projection owner, a second bounded local flow arbitrates host bounds, active session, host visibility, and attached native view so exactly one session view is attached to one shell host at a time. | `PreviewShellController` | `PreviewShellController` | attach/detach ordering, hidden-state handling, host loss cleanup |
+| DS-001 | At startup, Electron main starts preview runtime support and seeds the packaged server environment. `PreviewToolService` decides whether preview is supported, and runtime adapters build their exposure from one preview tool manifest instead of duplicating the tool surface. | Electron main, preview runtime, `PreviewToolService`, preview tool manifest, runtime adapters | `PreviewToolService` | env injection, runtime-specific schema rendering |
+| DS-002 | An agent calls `open_preview`. The runtime adapter uses the canonical input normalizer, `PreviewToolService` delegates through the bridge, `PreviewSessionManager` creates or reuses a session record, and `PreviewSessionNavigation` settles the ready state before the result returns. | runtime adapter, input normalizer, `PreviewToolService`, bridge, `PreviewSessionManager`, `PreviewSessionNavigation` | `PreviewSessionManager` | view factory, error mapping |
+| DS-003 | Follow-up preview tools still flow through the same contract, but once they reach Electron they are delegated to the right owner: lifecycle/list/close stay with `PreviewSessionManager`, navigation stays with `PreviewSessionNavigation`, and read/snapshot/screenshot/JS stay with `PreviewSessionPageOperations`. | runtime adapter, `PreviewToolService`, bridge, session/navigation/page-operation owners | `PreviewSessionManager` | page cleaner, DOM snapshot script, screenshot artifact writer |
+| DS-004 | After a successful `open_preview`, the renderer sends a bounded focus request. `PreviewShellController` updates shell projection state, emits the authoritative shell snapshot, and attaches the active native view into the shell host area. | tool lifecycle handler, renderer store/panel, preload bridge, `PreviewShellController` | `PreviewShellController` | host rect measurement, shell-window registry |
+| DS-005 | Shell mount/reload, resize, visibility changes, and manual internal-tab selection all flow through the shell projection owner. The renderer stays projection-only and never becomes a second source of preview state. | renderer panel/store, preload bridge, `PreviewShellController` | `PreviewShellController` | hidden-state detach, reconnect bootstrap |
+| DS-006 | Tool-driven or user-driven close invalidates the session in `PreviewSessionManager`, updates shell snapshots, and removes the outer Preview tab when the last session disappears. | `PreviewSessionManager`, `PreviewShellController`, renderer store | `PreviewSessionManager` | snapshot fanout, active-session fallback |
+| DS-007 | Inside the session owner, one bounded local flow arbitrates registry invariants: create/reuse/list/close and session lookup stay centralized and small. | `PreviewSessionManager` | `PreviewSessionManager` | session types, tombstone retention |
+| DS-008 | Inside the navigation owner, open/navigate requests normalize URL and wait semantics so ready-state behavior is explicit rather than hidden in the lifecycle owner. | `PreviewSessionNavigation` | `PreviewSessionNavigation` | load observers, title settlement |
+| DS-009 | Inside the page-operations owner, page-reading and inspection requests share one owned browser-operation boundary around a session view. | `PreviewSessionPageOperations` | `PreviewSessionPageOperations` | cleaner, snapshot script, screenshot writer |
+| DS-010 | Inside the Codex adapter path, raw tool payloads are parsed by a subject-owned preview/tool payload parser rather than extending the all-purpose item parser. | Codex item converter, `CodexToolPayloadParser` | `CodexToolPayloadParser` | high-level item dispatcher remains separate |
 
 ## Ownership Map
 
 | Node / Owner | Owns | Must Not Own | Notes |
 | --- | --- | --- | --- |
-| `PreviewSessionManager` | session registry, `preview_session_id`, per-session `WebContentsView`, console buffers, screenshots, JS execution, DevTools open, close semantics | renderer tab UI state, host bounds, runtime-specific tool exposure | authoritative preview-session owner |
-| `PreviewShellController` | shell-window association, active preview session per shell window, host bounds, attach/detach, shell snapshot broadcasting | session contract semantics, runtime tool parsing, backend bridge policy | authoritative shell projection owner |
-| Renderer preview store/panel | snapshot-driven outer Preview tab visibility in UI, internal tab strip UI, focus/close requests, bounds measurement | native view lifecycle, session truth, bridge policy | projection only |
-| Shell window host | main shell window composition and renderer host view | preview-session semantics, runtime adapters | composition owner |
-| `PreviewToolService` | support checks, semantic validation on canonical inputs, bridge delegation, shared result/error normalization | shell-tab UI state, native session lifecycle, runtime-specific payload parsing | backend coordination owner |
-| Runtime adapters | runtime-native exposure/translation | preview lifecycle, shell UI state, divergent semantics | one adapter per runtime path |
-| Preview bridge server/client | authenticated local transport | product policy beyond boundary validation/translation | boundary only |
+| `preview-tool-contract.ts` | canonical tool names, DTOs, error-code vocabulary, env key constants | parsing, semantic validation, schema building, bridge error mapping | contract-only boundary |
+| `preview-tool-input-normalizers.ts` | strict snake_case request normalization into canonical DTOs | alias fallback compatibility, runtime-specific tool definitions | clean-cut contract entrypoint |
+| `preview-tool-manifest.ts` | one authoritative eight-tool surface: names, descriptions, operation selectors, normalizer bindings | runtime-specific definition duplication, service execution logic | reusable owned structure for adapters |
+| `preview-tool-parameter-schemas.ts` | native parameter schema builders derived from the manifest/DTOs | DTO ownership, runtime execution | off-spine schema projection concern |
+| `PreviewToolService` | support checks, semantic validation, bridge delegation, shared operation dispatch | shell UI state, native lifecycle, runtime-specific metadata duplication | authoritative server boundary |
+| Runtime adapters | native/dynamic/MCP exposure translation | canonical contract ownership, bridge policy, duplicated tool-surface literals | translation only |
+| `PreviewSessionManager` | session registry, reuse/list/close, session lookup, session/view identity invariants | navigation/readiness sequencing, page reading, DOM snapshot, screenshots, JS execution | lifecycle owner only |
+| `PreviewSessionNavigation` | URL normalization, open/navigate load sequencing, ready-state waiting, title settlement | session registry ownership, shell projection | internal owned sub-layer of preview session boundary |
+| `PreviewSessionPageOperations` | read-page, DOM snapshot, screenshot, JS execution against an existing session view | session creation/reuse/close, shell projection | internal owned sub-layer of preview session boundary |
+| `PreviewShellController` | shell host identity, active session per shell, attach/detach, bounds sync, shell snapshots | session registry truth, runtime exposure, tool parsing | authoritative shell projection owner |
+| `CodexToolPayloadParser` | preview/tool payload parsing for the Codex adapter path | general item classification, shell behavior, preview service policy | subject-oriented adapter concern |
 
 ## Canonical Preview Contract (Concrete Example)
 
-The session-oriented contract remains app-owned and canonical across all runtimes. The move from separate windows to shell tabs does not change the session identity model.
+The stable preview surface remains eight snake_case tools:
+
+- `open_preview`
+- `navigate_preview`
+- `close_preview`
+- `list_preview_sessions`
+- `read_preview_page`
+- `capture_preview_screenshot`
+- `preview_dom_snapshot`
+- `execute_preview_javascript`
 
 ### Identity Rule
 
 - `preview_session_id` is an opaque application-owned identifier.
 - Follow-up operations use only `preview_session_id`.
-- Raw Electron `webContents.id`, `View`, or window identifiers must never cross the tool boundary.
-- A preview session may be projected into at most one shell host at a time.
-- Shell projection identity is main-process-owned (`shell_window_id` / registered host identity), not renderer-process-owned.
+- Raw Electron identifiers must never cross the tool boundary.
+- Tool input normalization is strict snake_case only in v10. No camelCase or alternate-key fallback is part of the target contract.
 
 ### Canonical Input / Output Shapes
 
@@ -215,34 +252,34 @@ type NavigatePreviewInput = {
   wait_until?: 'domcontentloaded' | 'load';
 };
 
+type ListPreviewSessionsResult = {
+  sessions: Array<{
+    preview_session_id: string;
+    title: string | null;
+    url: string;
+  }>;
+};
+
+type ReadPreviewPageInput = {
+  preview_session_id: string;
+  cleaning_mode?: 'none' | 'light' | 'thorough';
+};
+
 type CapturePreviewScreenshotInput = {
   preview_session_id: string;
   full_page?: boolean;
 };
 
-type GetPreviewConsoleLogsInput = {
+type PreviewDomSnapshotInput = {
   preview_session_id: string;
-  since_sequence?: number | null;
+  include_non_interactive?: boolean;
+  include_bounding_boxes?: boolean;
+  max_elements?: number;
 };
 
 type ExecutePreviewJavascriptInput = {
   preview_session_id: string;
   javascript: string;
-};
-
-type ExecutePreviewJavascriptResult = {
-  preview_session_id: string;
-  result_json: string;
-};
-
-type OpenPreviewDevToolsInput = {
-  preview_session_id: string;
-  mode?: 'detach';
-};
-
-type OpenPreviewDevToolsResult = {
-  preview_session_id: string;
-  status: 'opened';
 };
 
 type ClosePreviewInput = {
@@ -258,6 +295,8 @@ type PreviewErrorCode =
   | 'preview_session_closed'
   | 'preview_session_not_found'
   | 'preview_navigation_failed'
+  | 'preview_page_read_failed'
+  | 'preview_dom_snapshot_failed'
   | 'preview_javascript_execution_failed'
   | 'preview_bridge_unavailable';
 ```
@@ -268,213 +307,275 @@ type PreviewErrorCode =
 - When the last preview session closes, the outer `Preview` tab disappears.
 - `preview_session_closed` means the ID was previously issued by the owner and later closed.
 - `preview_session_not_found` means malformed, never-issued, or already-evicted identity.
-- A session can exist before it is attached to a shell host; attachment is driven by renderer shell projection after the tool result arrives.
-- A successful tool result may trigger a shell focus request, but it does not directly create renderer preview-shell truth.
-- The renderer derives visible preview sessions, active preview selection, and outer-tab visibility from the authoritative shell snapshot published by `PreviewShellController`.
-- Shell association and recovery are keyed by the owning shell window / host identity, not by renderer process identity.
+- A session can exist before it is projected into a shell host.
+- Tool success may trigger a shell focus request, but tool results are not shell-truth themselves.
+- The renderer derives visible preview sessions and active preview selection from `PreviewShellController` snapshots only.
 
 ## Return / Event Spine(s) (If Applicable)
 
-- `tool result -> renderer focus request -> electronAPI.preview.focusSession -> PreviewShellController snapshot update -> renderer preview store updates from snapshot`
+- `tool result -> renderer focus request -> electronAPI.preview.focusSession -> PreviewShellController snapshot update -> renderer preview store update`
 - `renderer mount/reload + bounds/visibility -> electronAPI.preview.registerHost/updateHostRect -> PreviewShellController attach/detach + snapshot update`
 - `session close -> PreviewSessionManager invalidation -> PreviewShellController snapshot update -> renderer hides Preview tab when empty`
 
 ## Bounded Local / Internal Spines (If Applicable)
 
-### BL-001 — Preview Session Lifecycle
+### BL-001 — Preview Session Registry Lifecycle
 
 - Parent owner: `PreviewSessionManager`
-- Start / end: bridge command or shell close request enters -> authoritative session state/result/error is settled
+- Start / end: canonical session operation enters -> registry invariant and session result/error are settled
 - Flow:
-  - `lookup/reuse/create session -> own one WebContentsView -> attach observers -> settle ready state -> update metadata -> return result or normalized error`
+  - `lookup session -> reuse or create record -> mutate registry/tombstones -> return canonical result or canonical error`
 - Why explicit:
-  - session existence, close semantics, and per-session browser-control behavior remain the contract center.
+  - this is the bounded local spine that was obscured by the oversized `preview-session-manager.ts` file and must become readable again.
 
-### BL-002 — Preview Shell Attachment Lifecycle
+### BL-002 — Preview Navigation / Ready-State Settlement
+
+- Parent owner: `PreviewSessionNavigation`
+- Start / end: open/navigate request enters -> load/ready/title state settles
+- Flow:
+  - `normalize URL -> invoke webContents load -> wait for requested ready state -> settle title and navigation result`
+- Why explicit:
+  - navigation sequencing is a real local spine and should not be hidden inside the session registry owner.
+
+### BL-003 — Preview Page Operation Execution
+
+- Parent owner: `PreviewSessionPageOperations`
+- Start / end: read/snapshot/screenshot/JS request enters -> browser-operation result artifact/result_json/content settles
+- Flow:
+  - `resolve session view -> run cleaner/snapshot/script/capture path -> normalize response -> map domain errors`
+- Why explicit:
+  - page/browser operations are a coherent off-spine owner around the session owner and were a main source of responsibility overload.
+
+### BL-004 — Shell Attachment Lifecycle
 
 - Parent owner: `PreviewShellController`
-- Start / end: shell host registration, shell host rect, or active-session change enters -> attached native preview view matches the active shell state for that shell window
+- Start / end: shell host event or focus request enters -> attached native preview view matches shell state
 - Flow:
-  - `resolve shell window / host identity -> resolve active session -> detach previous active view -> attach new view to host -> apply bounds -> detach when hidden/host missing -> emit snapshot`
+  - `resolve shell window -> resolve active session -> attach/detach active view -> apply bounds -> emit snapshot`
 - Why explicit:
-  - native view attachment is now separate from session creation and must remain coherent under resize, tab change, and close events.
+  - native attachment remains a separate correctness center.
+
+### BL-005 — Codex Tool Payload Parsing
+
+- Parent owner: `CodexToolPayloadParser`
+- Start / end: raw preview/tool payload item enters -> canonical preview/tool payload leaves the adapter layer
+- Flow:
+  - `inspect item type -> parse tool args/result subject -> normalize JSON payload -> return canonical parsed structure`
+- Why explicit:
+  - Stage 8 found that preview parsing had become hidden inside a mixed parser instead of one clear bounded owner.
 
 ## Off-Spine Concerns Around The Spine
 
 | Off-Spine Concern | Serves Which Owner | Responsibility | Must Stay Off Main Line? (`Yes`/`No`) |
 | --- | --- | --- | --- |
-| Preview bridge server/client | `PreviewToolService`, `PreviewSessionManager` | authenticated transport between backend and shell owner | Yes |
-| Renderer preview store | `PreviewShellController` | authoritative snapshot-driven shell UI state plus user focus/close requests | Yes |
-| Preload preview IPC | renderer + `PreviewShellController` | typed bounded bridge for shell projection requests, host registration, and snapshots | Yes |
-| Screenshot artifact writer | `PreviewSessionManager` | write screenshot artifacts to disk | Yes |
-| Console log buffer | `PreviewSessionManager` | per-session console accumulation | Yes |
-| Shell window registry | `PreviewShellController` | locate the correct shell host and renderer view for IPC/snapshot fanout | Yes |
+| Preview tool manifest | `PreviewToolService`, runtime adapters | one shared eight-tool surface definition | Yes |
+| Preview input normalizers | tool entrypoints and runtime adapters | strict DTO normalization at the contract boundary | Yes |
+| Preview parameter schema builders | native tool registration path | render parameter schemas from canonical DTO/manifest ownership | Yes |
+| Preview bridge server/client | `PreviewToolService`, preview session boundary | authenticated local transport between backend and shell | Yes |
+| Preview DOM snapshot script | `PreviewSessionPageOperations` | DOM candidate extraction inside preview pages | Yes |
+| Preview page cleaner | `PreviewSessionPageOperations` | cleaned page-read output | Yes |
+| Screenshot artifact writer | `PreviewSessionPageOperations` | persisted screenshot output | Yes |
+| Shell window registry | `PreviewShellController` | resolve the correct shell host and renderer sink | Yes |
 
 ## Existing Capability / Subsystem Reuse Check
 
 | Need / Concern | Existing Capability Area / Subsystem | Decision (`Reuse`/`Extend`/`Create New`) | Why | If New, Why Existing Areas Are Not Right |
 | --- | --- | --- | --- | --- |
-| Backend preview contract and shared coordination | `autobyteus-server-ts/src/agent-tools/preview` | Reuse | already owns preview tool contract and bridge client | N/A |
-| Runtime-specific exposure | existing runtime backend folders | Reuse | still the correct adapter boundaries | N/A |
-| Renderer shell tab selection | existing right-side tab composable/components | Extend | preview becomes one more shell tab plus internal preview-tab panel | N/A |
-| Main-process preview session owner | existing `electron/preview` capability area | Extend | preview-specific native lifecycle still belongs here | N/A |
-| Shell window composition / host registration | current `electron/main.ts` inline window helpers | Create New | current inline BrowserWindow helpers are too monolithic for a tab-backed native-view host model | existing inline helpers do not own reusable shell composition concerns cleanly |
+| Preview tool boundary and shared server coordination | `autobyteus-server-ts/src/agent-tools/preview` | Reuse/Extend | it already owns the preview tool surface and should also own the manifest/normalizer/schema split | N/A |
+| Runtime-specific exposure | existing Codex/Claude backend folders | Reuse | still the correct adapter boundaries | N/A |
+| Codex event parsing subject split | existing Codex events subsystem | Extend | the parser split belongs in the Codex event layer, not in preview or generic utilities | N/A |
+| Main-process preview lifecycle and browser operations | `autobyteus-web/electron/preview` | Reuse/Extend | preview-native behavior still belongs here; it just needs clearer internal owners | N/A |
+| Shell host composition | existing `autobyteus-web/electron/shell` | Reuse | shell host/registry ownership already exists and remains the right boundary | N/A |
+| Renderer preview panel/store | existing renderer right-panel capability | Reuse | projection-only UI still belongs here | N/A |
 
 ## Subsystem / Capability-Area Allocation
 
 | Subsystem / Capability Area | Owns Which Concerns | Related Spine ID(s) | Governing Owner(s) Served | Decision (`Reuse`/`Extend`/`Create New`) | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/src/agent-tools/preview` | canonical contract, service, bridge client, native runtime tools | DS-001, DS-002, DS-003 | `PreviewToolService` | Reuse/Extend | add JS/devtools contract extensions if accepted |
-| runtime backend folders | Codex and Claude exposure adapters | DS-001, DS-002, DS-003 | runtime adapters | Reuse | translation only |
-| `autobyteus-web/electron/preview` | preview session owner, shell projection owner, bridge server, screenshot/log concerns | DS-002, DS-003, DS-004, DS-005, DS-006, DS-007, DS-008 | `PreviewSessionManager`, `PreviewShellController` | Extend | preview-native core |
-| `autobyteus-web/electron/shell` | composable shell window creation, shell host registration, renderer host lookup | DS-004, DS-005 | shell window host | Create New | extracted from monolithic `main.ts` |
-| `autobyteus-web/electron/preload.ts` + typed declarations | renderer/main preview IPC bridge | DS-004, DS-005 | renderer preview store | Extend | typed preview shell bridge |
-| renderer stores/components for right panel | Preview tab visibility, internal preview tab strip, host bounds reporting | DS-004, DS-005, DS-006 | renderer preview store/panel | Extend/Create New | one new preview panel plus small store |
+| `autobyteus-server-ts/src/agent-tools/preview` | canonical preview contract, strict normalizers, tool manifest, parameter schemas, preview tool service, bridge client, per-tool entrypoints | DS-001, DS-002, DS-003 | `PreviewToolService` | Reuse/Extend | becomes the single preview tool-boundary home |
+| `autobyteus-server-ts/src/agent-execution/backends/codex/events` | high-level item parsing plus subject-owned tool payload parsing | DS-010 | `CodexToolPayloadParser` | Extend | split within existing Codex events ownership |
+| runtime backend preview folders | runtime-specific exposure builders | DS-001, DS-002, DS-003 | runtime adapters | Reuse | should render from one shared manifest |
+| `autobyteus-web/electron/preview` | preview session manager, navigation, page operations, shell controller, bridge server, helper scripts/writers | DS-002, DS-003, DS-004, DS-005, DS-006, DS-007, DS-008, DS-009 | preview owners | Reuse/Extend | clear internal owner files replace oversized blobs |
+| `autobyteus-web/electron/shell` | shell-window host and registry | DS-004, DS-005 | shell host | Reuse | no architecture change here |
+| renderer preview panel/store | preview tab visibility, internal preview tabs, bounds reporting | DS-004, DS-005, DS-006 | renderer projection boundary | Reuse | projection only |
 
 ## Ownership-Driven Dependency Rules
 
 - Allowed dependency directions:
-  - runtime adapter -> `PreviewToolService` -> preview bridge client -> preview bridge server -> `PreviewSessionManager`
+  - runtime adapter -> preview tool manifest / input normalizers / `PreviewToolService`
+  - preview tool entrypoint -> input normalizer -> `PreviewToolService`
+  - `PreviewToolService` -> preview bridge client -> preview bridge server -> `PreviewSessionManager`
+  - `PreviewSessionManager` -> `PreviewSessionNavigation` / `PreviewSessionPageOperations`
   - renderer preview store/panel -> preload preview IPC -> `PreviewShellController` -> `PreviewSessionManager`
-  - shell window host -> renderer host webContents + preview shell controller registration
+  - Codex item event converter -> high-level item payload parser -> `CodexToolPayloadParser`
 - Authoritative public entrypoints versus internal owned sub-layers:
-  - backend callers use `PreviewToolService`, not the bridge client directly
-  - renderer callers use preload preview IPC, not `ipcRenderer` ad hoc
-  - renderer preview UI uses `PreviewShellController` snapshots for preview-shell truth and does not infer that truth from tool result payloads
-  - shell projection uses `PreviewShellController`, not `PreviewSessionManager` internals directly from renderer
+  - callers above the server preview boundary use `PreviewToolService`; they do not talk to the bridge client directly.
+  - callers above the Electron preview boundary use `PreviewSessionManager`; they do not talk to navigation/page-operation owners directly.
+  - runtime exposure builders use the shared preview tool manifest; they do not own local copied tool metadata.
 - Forbidden shortcuts:
-  - renderer must not own or instantiate `WebContentsView`
-  - renderer must not treat tool-result payloads as a second authoritative source of preview-shell state
-  - runtime adapters must not parse raw bridge results themselves
-  - backend must not target a shell window directly
-  - shell projection must not infer session truth without the session owner
+  - no runtime adapter may hardcode a preview tool surface that diverges from the manifest.
+  - no preview tool parser may accept compatibility aliases outside the canonical snake_case contract.
+  - no caller above the session owner may call both `PreviewSessionManager` and one of its internal owners.
+  - renderer must not own or instantiate `WebContentsView`.
+  - Codex preview result parsing must not live inside a generic all-purpose payload blob.
 - Boundary bypasses that are not allowed:
-  - no separate preview `BrowserWindow` fallback path
-  - no `<webview>` renderer embed
-  - no direct DOM ownership of preview content
+  - no separate preview `BrowserWindow` path,
+  - no `<webview>` renderer embed,
+  - no direct shell-truth reconstruction from tool-result payloads.
 
 ## Architecture Direction Decision (Mandatory)
 
 - Chosen direction:
-  - shell-embedded preview via renderer-visible `Preview` tab plus main-process-owned `WebContentsView` sessions and one bounded shell IPC bridge
+  - keep the v9 shell-tab preview architecture, but structurally split the mixed owners so the implementation matches the spine and ownership model.
 - Rationale (`complexity`, `testability`, `operability`, `evolution cost`):
-  - complexity: higher than popup windows, but aligned with the actual UX requirement
-  - testability: session contract stays stable; shell projection can be tested separately from backend bridge
-  - operability: preview remains a local desktop capability and becomes easier for users to manage in one workspace
-  - evolution cost: this creates a clean future path for more browser-like preview tooling without adding more popup windows
+  - complexity: lower long-term than continuing to patch the current oversized owners.
+  - testability: each owner gets smaller, sharper responsibilities and clearer regression surfaces.
+  - operability: no user-visible behavior change is required; the change is structural and internal.
+  - evolution cost: one manifest and one clean contract boundary reduce future preview-tool drift.
 - Data-flow spine clarity assessment: `Yes`
 - Spine inventory completeness assessment: `Yes`
 - Ownership clarity assessment: `Yes`
 - Off-spine concern clarity assessment: `Yes`
 - Boundary encapsulation assessment: `Yes`
 - File placement within the owning subsystem assessment: `Yes`
-- Outcome (`Keep`/`Add`/`Split`/`Merge`/`Move`/`Remove`): `Split`, `Move`, `Remove`
+- Outcome (`Keep`/`Add`/`Split`/`Merge`/`Move`/`Remove`): `Split`, `Remove`
 
 ### Optional Alternatives
 
 | Option | Summary | Pros | Cons | Decision (`Chosen`/`Rejected`) | Rationale |
 | --- | --- | --- | --- | --- | --- |
-| A | Keep dedicated preview `BrowserWindow` sessions | smallest delta from current implementation | bad UX, popup proliferation, fails updated requirement | Rejected | user requirement changed |
-| B | Embed preview as a normal renderer DOM tab (`iframe`/`webview`) | simpler visual integration | wrong ownership model, weaker browser control, `<webview>` not desired | Rejected | does not preserve native preview control cleanly |
-| C | Shell-embedded preview with one `WebContentsView` per session and bounded renderer/main bridge | preserves browser-control capabilities and matches desired UX | requires shell composition work and a new shell projection owner | Chosen | best fit for product requirement and Electron native primitives |
+| A | Keep the current working code and apply only local line-count trims | smallest short-term delta | keeps mixed owners, duplicated tool surfaces, and alias compatibility behavior | Rejected | functional success alone is not enough after the Stage 8 fail |
+| B | Deep rewrite to a brand-new preview subsystem with different public APIs | could maximize greenfield purity | unnecessary churn; no user-visible problem requires a new public model | Rejected | over-scoped for the re-entry |
+| C | Preserve the approved v9 behavior but split the oversized owners and remove compatibility/duplication debt | repairs the Stage 8 failures with minimal product churn | still requires coordinated multi-file refactor | Chosen | best fit for the re-entry classification |
 
 ## Common Design Practices Applied (If Any)
 
 | Practice / Pattern | Where Used | Why It Helps Here | Owner / Off-Spine Concern | Notes |
 | --- | --- | --- | --- | --- |
-| authoritative owner for repeated coordination | `PreviewToolService`, `PreviewSessionManager`, `PreviewShellController` | keeps runtime adapters and renderer thin | spine owners | repeated coordination is not duplicated across callers |
-| snapshot-only renderer projection state | preview store/panel | renderer stays UI-only, not native-view owner or shell-truth owner | renderer off-spine concern | preserves main/preload boundary |
-| one identity, many surfaces | `preview_session_id` contract | backend tool contract survives surface refactor | shared contract | decouples API from window/tab choice |
+| repeated-structure extraction | preview tool surface | eliminates duplicated Codex/Claude tool definitions | preview tool manifest | one owned surface |
+| contract/input split | preview server boundary | keeps canonical contract clean while still giving one parser owner | preview contract + input normalizers | removes alias fallback |
+| bounded local spine extraction | Electron preview owners | keeps lifecycle, navigation, and page operations readable | session/navigation/page-operation owners | addresses Stage 8 spine failure |
+| subject-oriented parser split | Codex events | stops preview tool parsing from bloating a generic parser | `CodexToolPayloadParser` | adapter concern only |
 
 ## Ownership And Structure Checks (Mandatory)
 
 | Check | Result (`Yes`/`No`) | Evidence | Decision |
 | --- | --- | --- | --- |
-| Repeated coordination policy across callers exists and needs a clearer owner | Yes | shell attach/detach, runtime capability gating, adapter parity | keep clear owners (`PreviewToolService`, `PreviewShellController`) |
-| Responsibility overload exists in one file or one optional module grouping | Yes | current `electron/main.ts` inline window logic is already overloaded | Split |
-| Proposed indirection owns real policy, translation, or boundary concern | Yes | preload preview IPC and `PreviewShellController` own real shell projection concerns | Keep |
-| Every off-spine concern has a clear owner on the spine | Yes | bridge, store, screenshot writer, shell registry all map cleanly | Keep |
-| Existing capability area/subsystem was reused or extended where it naturally fits | Yes | server preview subsystem and runtime adapters stay reused | Reuse/Extend |
-| Current structure can remain unchanged without spine/ownership degradation | No | popup-window design and inline main-window helpers no longer fit target behavior | Change |
+| Repeated coordination policy across callers exists and needs a clearer owner | Yes | runtime exposure currently duplicates the same tool surface | Extract clear owner |
+| Responsibility overload exists in one file or one optional module grouping | Yes | current contract, session manager, and Codex parser are overloaded | Split |
+| Proposed indirection owns real policy, translation, or boundary concern | Yes | manifest, normalizers, navigation, page operations each own a real concern | Keep |
+| Every off-spine concern has a clear owner on the spine | Yes | manifest/normalizers/schema builders/cleaners/scripts all serve named owners | Keep |
+| Authoritative public boundaries stay authoritative; callers do not depend on both an outer owner and one of its internal owned mechanisms | Yes | session manager stays the public Electron preview boundary; service stays the public server preview boundary | Keep |
+| Existing capability area/subsystem was reused or extended where it naturally fits | Yes | all new structure stays under existing preview/Codex/shell ownership | Reuse/Extend |
+| Repeated structures were extracted into reusable owned files where needed | Yes | preview tool surface becomes one manifest | Extract |
+| Current structure can remain unchanged without spine/ownership degradation | No | Stage 8 already proved the current shape degrades the bounded local spine and naming alignment | Change |
 
 ## Change Inventory (Delta)
 
 | Change ID | Change Type (`Add`/`Modify`/`Rename/Move`/`Remove`) | Current Path | Target Path | Rationale | Impacted Areas | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| C-001 | Modify | `autobyteus-web/electron/preview/preview-session-manager.ts` | same path | replace `BrowserWindow` ownership with per-session `WebContentsView` ownership and expanded per-session actions | Electron preview subsystem | authoritative owner remains |
-| C-002 | Remove | `autobyteus-web/electron/preview/preview-window-factory.ts` | N/A | separate preview windows are legacy in scope | Electron preview subsystem | replace with view-oriented concern |
-| C-003 | Add | N/A | `autobyteus-web/electron/preview/preview-shell-controller.ts` | explicit owner for shell projection, active session, bounds, attach/detach | Electron preview subsystem | new owner required |
-| C-004 | Add | N/A | `autobyteus-web/electron/shell/*` | extract composable shell window host/registry from monolithic `main.ts` | Electron shell subsystem | supports preview host composition |
-| C-005 | Modify | `autobyteus-web/electron/preload.ts`, typed declarations | same paths | expose bounded preview shell IPC to renderer | preload/types | typed bridge |
-| C-006 | Add | N/A | renderer preview store + `PreviewPanel.vue` | outer Preview tab and internal preview tabs | renderer shell UI | projection only |
-| C-007 | Modify | `autobyteus-web/composables/useRightSideTabs.ts`, `RightSideTabs.vue` | same paths | add lazy outer Preview tab | renderer shell UI | dynamic visible tab |
-| C-008 | Modify | server preview tool contract/service/bridge/adapters | same subsystem | add JS/devtools support if kept in v1 and preserve contract parity | backend preview subsystem | no runtime drift |
+| C-001 | Modify | `autobyteus-server-ts/src/agent-tools/preview/preview-tool-contract.ts` | same path | reduce to contract-only ownership: canonical names, DTOs, error codes, env keys | server preview boundary | no parsing or schemas remain here |
+| C-002 | Add | N/A | `autobyteus-server-ts/src/agent-tools/preview/preview-tool-input-normalizers.ts` | strict snake_case input normalization for all eight tools | server preview boundary | no compatibility aliases |
+| C-003 | Add | N/A | `autobyteus-server-ts/src/agent-tools/preview/preview-tool-manifest.ts` | one owned eight-tool surface reused by native/Codex/Claude | server preview boundary | resolves adapter duplication |
+| C-004 | Add | N/A | `autobyteus-server-ts/src/agent-tools/preview/preview-tool-parameter-schemas.ts` | native parameter schema projection separate from DTO ownership | server preview boundary | off-spine concern |
+| C-005 | Modify | runtime preview adapter builders | same paths | render runtime-specific definitions from the shared preview tool manifest | Codex/Claude preview adapters | remove duplicated literals and dispatch tables |
+| C-006 | Add | N/A | `autobyteus-web/electron/preview/preview-session-types.ts` | preview session record/types/selectors in one owned file | Electron preview boundary | tight shared structure |
+| C-007 | Modify | `autobyteus-web/electron/preview/preview-session-manager.ts` | same path | narrow to registry/lifecycle/reuse/list/close/view lookup only | Electron preview boundary | stay under hard limit |
+| C-008 | Add | N/A | `autobyteus-web/electron/preview/preview-session-navigation.ts` | open/navigate load sequencing, ready-state wait, title settlement | Electron preview boundary | bounded local spine owner |
+| C-009 | Add | N/A | `autobyteus-web/electron/preview/preview-session-page-operations.ts` | read page, DOM snapshot, screenshot, and JS execution | Electron preview boundary | bounded local spine owner |
+| C-010 | Modify | `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-item-event-payload-parser.ts` | same path | shrink to high-level item coordination | Codex events | delegates subject parsing |
+| C-011 | Add | N/A | `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-tool-payload-parser.ts` | tool argument/result parsing for Codex, including preview tool result decoding | Codex events | explicit preview/tool parsing owner |
+| C-012 | Add | N/A | `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-reasoning-payload-parser.ts` | reasoning/web-search subject parsing split out of the generic parser | Codex events | keeps coordinator small enough |
+| C-013 | Remove | compatibility alias parsing branches | N/A | no-backward-compat rule for the stable preview contract | server preview boundary | clean-cut target |
 
 ## Removal / Decommission Plan (Mandatory)
 
 | Item To Remove / Decommission | Why It Becomes Unnecessary | Replaced By Which Owner / File / Structure | Scope (`In This Change`/`Follow-up`) | Notes |
 | --- | --- | --- | --- | --- |
-| dedicated preview `BrowserWindow` creation path | shell-embedded preview replaces popup-window UX | `PreviewSessionManager` + `PreviewShellController` + shell preview panel | In This Change | remove dual path |
-| `PreviewWindowFactory` | session owner no longer creates separate windows | `WebContentsView` creation inside preview session owner / view factory concern | In This Change | remove obsolete file |
-| v6 assumption that renderer stays off the main preview line | shell embedding requires a bounded renderer projection spine | renderer preview store/panel + preload preview IPC | In This Change | keep renderer projection minimal, not absent |
+| alias-based preview input parsing | stable snake_case preview contract is already approved | `preview-tool-input-normalizers.ts` strict parsing | In This Change | remove camelCase and alternate keys |
+| duplicated runtime preview tool definitions | one shared preview tool manifest now owns the surface | `preview-tool-manifest.ts` | In This Change | Codex and Claude render from it |
+| parsing/schema/error logic inside `preview-tool-contract.ts` | contract-only boundary is clearer and smaller | input normalizers / parameter schemas / bridge client error mapping | In This Change | contract file becomes semantically honest |
+| page/browser operations inside `preview-session-manager.ts` | lifecycle owner should not absorb browser operations | `preview-session-page-operations.ts` | In This Change | restores bounded local session spine clarity |
+| navigation/readiness sequencing inside `preview-session-manager.ts` | load/wait sequencing is a distinct concern | `preview-session-navigation.ts` | In This Change | separates BL-007 and BL-008 concerns |
+| preview/tool parsing inside the monolithic Codex payload parser | subject parsing needs a clear owner | `codex-tool-payload-parser.ts` | In This Change | explicit Stage 8 response |
 
 ## Draft File Responsibility Mapping
 
 | Candidate File | Owning Subsystem / Capability Area | Owner / Boundary | Concrete Concern | Why This Is One File | Reuses Shared Structure? |
 | --- | --- | --- | --- | --- | --- |
-| `electron/preview/preview-session-manager.ts` | Electron preview subsystem | `PreviewSessionManager` | session registry, per-session `WebContentsView`, per-session actions | one authoritative session owner | Yes |
-| `electron/preview/preview-shell-controller.ts` | Electron preview subsystem | `PreviewShellController` | active shell projection, attach/detach, shell snapshots | one authoritative shell projection owner | Yes |
-| `electron/shell/workspace-shell-window.ts` | Electron shell subsystem | shell window host | one composable shell window with renderer host + preview host registration | one shell host boundary | No |
-| `components/workspace/tools/PreviewPanel.vue` | renderer shell UI | renderer panel boundary | internal preview tabs + host div + session actions | one visible shell panel | Yes |
-| `stores/previewShellStore.ts` | renderer shell UI | renderer projection owner | preview shell snapshot + selection state | one projection store | Yes |
+| `preview-tool-contract.ts` | server preview boundary | contract boundary | canonical names, DTOs, error vocabulary | one contract source | Yes |
+| `preview-tool-input-normalizers.ts` | server preview boundary | normalizer boundary | strict request normalization | one normalization owner | Yes |
+| `preview-tool-manifest.ts` | server preview boundary | tool-surface owner | eight-tool catalog and dispatch metadata | one reusable structure | Yes |
+| `preview-tool-parameter-schemas.ts` | server preview boundary | schema projection concern | `ParameterSchema` building | one schema concern | Yes |
+| `preview-session-manager.ts` | Electron preview boundary | lifecycle owner | session registry/lifecycle only | one lifecycle owner | Yes |
+| `preview-session-navigation.ts` | Electron preview boundary | navigation owner | open/navigate load sequencing | one navigation concern | Yes |
+| `preview-session-page-operations.ts` | Electron preview boundary | page-operations owner | read/snapshot/screenshot/JS | one browser-operation concern | Yes |
+| `codex-tool-payload-parser.ts` | Codex events | subject parser | tool/result parsing | one subject parser | No |
+| `codex-reasoning-payload-parser.ts` | Codex events | subject parser | reasoning/web-search parsing | one subject parser | No |
 
 ## Reusable Owned Structures Check (If Needed)
 
 | Repeated Structure / Logic | Candidate Shared File | Owning Subsystem | Why Shared | Redundant Attributes Removed? (`Yes`/`No`) | Overlapping Representations Removed? (`Yes`/`No`) | Must Not Become |
 | --- | --- | --- | --- | --- | --- | --- |
-| preview snapshot payload | `electron/preview/preview-shell-contract.ts` or existing preview contract file | Electron preview subsystem | shared between main IPC, preload types, and renderer store | Yes | Yes | a second source of session truth |
-| shell window registration / lookup | `electron/shell/workspace-shell-registry.ts` | Electron shell subsystem | preview shell controller and app lifecycle both need it | Yes | Yes | generic catch-all global manager |
+| preview tool names/descriptions/operation selectors | `preview-tool-manifest.ts` | server preview boundary | used by native tool registration plus Codex and Claude exposure | Yes | Yes | a new runtime-specific abstraction blob |
+| preview session record shape and selectors | `preview-session-types.ts` | Electron preview boundary | used by lifecycle/navigation/page-operation owners | Yes | Yes | a kitchen-sink utility file |
+| preview DOM snapshot/page cleaning helpers | existing helper files | Electron preview boundary | already distinct and specific | Yes | Yes | a generic helper bucket |
 
 ## Shared Structure / Data Model Tightness Check
 
 | Shared Structure / Type / Schema | One Clear Meaning Per Field? (`Yes`/`No`) | Redundant Attributes Removed? (`Yes`/`No`) | Parallel / Overlapping Representation Risk (`Low`/`Medium`/`High`) | Shared Core Vs Specialized Variant Decision Is Sound? (`Yes`/`No`/`N/A`) | Corrective Action |
 | --- | --- | --- | --- | --- | --- |
-| preview shell snapshot | Yes | Yes | Medium | Yes | keep shell projection metadata separate from canonical backend tool contract |
-| canonical preview tool contract | Yes | Yes | Low | Yes | preserve as server-side source of truth for runtime adapters |
+| preview contract DTOs | Yes | Yes | Low | Yes | keep contract file DTO-only |
+| preview tool manifest entries | Yes | Yes | Low | Yes | keep runtime-specific rendering outside the manifest |
+| preview session record / types | Yes | Yes | Medium | Yes | keep view/browser-operation outputs outside the session record |
 
 ## Final File Responsibility Mapping
 
 | File | Owning Subsystem / Capability Area | Owner / Boundary | Concrete Concern | Why This Is One File | Reuses Shared Structure? |
 | --- | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/src/agent-tools/preview/preview-tool-contract.ts` | backend preview subsystem | contract boundary | canonical tool schemas, validators, error vocabulary | one tool contract source | Yes |
-| `autobyteus-server-ts/src/agent-tools/preview/preview-tool-service.ts` | backend preview subsystem | `PreviewToolService` | support checks, semantic validation, bridge delegation, result normalization | one backend coordination owner | Yes |
-| `autobyteus-web/electron/preview/preview-session-manager.ts` | Electron preview subsystem | `PreviewSessionManager` | authoritative preview sessions and per-session browser-control actions | one session owner | Yes |
-| `autobyteus-web/electron/preview/preview-shell-controller.ts` | Electron preview subsystem | `PreviewShellController` | shell host association, active-session selection, attach/detach, snapshot updates | one shell projection owner | Yes |
-| `autobyteus-web/electron/shell/workspace-shell-window.ts` | Electron shell subsystem | shell window host | composable shell window creation and renderer host ownership | one shell host boundary | Yes |
-| `autobyteus-web/electron/preload.ts` | preload bridge | typed boundary | preview shell IPC API exposure to renderer | one typed renderer bridge | Yes |
-| `autobyteus-web/stores/previewShellStore.ts` | renderer shell UI | renderer projection store | preview shell snapshots and user selection state | one renderer projection store | Yes |
-| `autobyteus-web/components/workspace/tools/PreviewPanel.vue` | renderer shell UI | renderer panel boundary | internal preview tabs and native-host rect measurement | one visible preview panel | Yes |
+| `autobyteus-server-ts/src/agent-tools/preview/preview-tool-contract.ts` | server preview boundary | contract boundary | canonical tool names, DTOs, error codes, env keys | one clean contract source | Yes |
+| `autobyteus-server-ts/src/agent-tools/preview/preview-tool-input-normalizers.ts` | server preview boundary | input boundary | strict snake_case parsing for all eight tools | one parsing owner | Yes |
+| `autobyteus-server-ts/src/agent-tools/preview/preview-tool-manifest.ts` | server preview boundary | shared surface owner | one eight-tool manifest reused by native/Codex/Claude | one reusable structure | Yes |
+| `autobyteus-server-ts/src/agent-tools/preview/preview-tool-parameter-schemas.ts` | server preview boundary | schema concern | native parameter schemas | one projection concern | Yes |
+| `autobyteus-server-ts/src/agent-tools/preview/preview-tool-service.ts` | server preview boundary | service boundary | capability gating, semantic validation, bridge delegation | one authoritative service | Yes |
+| `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-item-event-payload-parser.ts` | Codex events | coordinator | high-level item payload coordination only | one coordinator | No |
+| `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-tool-payload-parser.ts` | Codex events | subject parser | tool argument/result parsing | one subject parser | No |
+| `autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-reasoning-payload-parser.ts` | Codex events | subject parser | reasoning/web-search parsing | one subject parser | No |
+| `autobyteus-web/electron/preview/preview-session-types.ts` | Electron preview boundary | shared types owner | session record and selectors | one tight shared structure | Yes |
+| `autobyteus-web/electron/preview/preview-session-manager.ts` | Electron preview boundary | lifecycle owner | session registry/lifecycle/reuse/list/close/view lookup | one lifecycle owner | Yes |
+| `autobyteus-web/electron/preview/preview-session-navigation.ts` | Electron preview boundary | navigation owner | load and ready-state sequencing | one navigation concern | Yes |
+| `autobyteus-web/electron/preview/preview-session-page-operations.ts` | Electron preview boundary | page-operations owner | read page, DOM snapshot, screenshot, JS execution | one browser-operation concern | Yes |
+| `autobyteus-web/electron/preview/preview-shell-controller.ts` | Electron preview boundary | shell projection owner | active preview attachment and shell snapshots | one projection owner | Yes |
+| `autobyteus-web/components/workspace/tools/PreviewPanel.vue` | renderer shell UI | panel boundary | internal preview tabs and native-host rect measurement | one panel | Yes |
+| `autobyteus-web/stores/previewShellStore.ts` | renderer shell UI | projection store | preview shell snapshots and user focus/close requests | one store | Yes |
 
 ## Derived Implementation Mapping (Secondary)
 
 | Target File | Change Type | Mapped Spine ID | Owner / Off-Spine Concern | Responsibility | Key APIs / Interfaces | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| `electron/preview/preview-session-manager.ts` | Modify | DS-002, DS-003, DS-006, DS-007 | `PreviewSessionManager` | refactor to per-session `WebContentsView` + JS/devtools | `view.webContents`, `capturePage`, `executeJavaScript`, `openDevTools` | remove window path |
-| `electron/preview/preview-shell-controller.ts` | Add | DS-004, DS-005, DS-008 | `PreviewShellController` | attach/detach active session view based on shell state | shell snapshot contract, host rect API | new owner |
-| `electron/shell/workspace-shell-window.ts` | Add | DS-004, DS-005 | shell window host | composable shell window + preview host registration | `BaseWindow`, renderer `WebContentsView` | chosen direction |
-| `electron/preload.ts` + typings | Modify | DS-004, DS-005 | preload bridge | preview shell snapshot / selection / bounds IPC | `electronAPI.preview.*` | typed |
-| `stores/previewShellStore.ts` + `PreviewPanel.vue` | Add | DS-004, DS-005, DS-006 | renderer projection | outer Preview tab visibility + internal preview tabs | `ResizeObserver`, preview IPC | bounded UI state |
+| `preview-tool-contract.ts` | Modify | DS-001, DS-002, DS-003 | contract boundary | canonical preview names and DTOs only | DTOs, error codes, env keys | strip mixed concerns |
+| `preview-tool-input-normalizers.ts` | Add | DS-002, DS-003 | off-spine input concern | strict DTO parsing | `parseOpenPreviewInput`, etc. | no aliases |
+| `preview-tool-manifest.ts` | Add | DS-001, DS-002, DS-003 | off-spine reusable structure | one eight-tool surface | manifest entries keyed by tool name | removes duplication |
+| runtime adapter builder files | Modify | DS-001, DS-002, DS-003 | runtime adapters | render runtime-specific definitions from the manifest | native/dynamic/MCP builders | no hardcoded duplicate surface |
+| `preview-session-manager.ts` | Modify | DS-002, DS-003, DS-006, DS-007 | lifecycle owner | registry/lifecycle only | open/list/close/reuse/session lookup | delegates navigation/page ops |
+| `preview-session-navigation.ts` | Add | DS-002, DS-008 | internal owner | load/wait/title sequencing | `openSessionView`, `navigateSession` | explicit bounded local spine |
+| `preview-session-page-operations.ts` | Add | DS-003, DS-009 | internal owner | read/snapshot/screenshot/JS | `readPage`, `captureDomSnapshot`, `captureScreenshot`, `executeJavascript` | explicit bounded local spine |
+| `codex-item-event-payload-parser.ts` | Modify | DS-010 | coordinator | route raw payloads to subject parsers | item classification | shrink below hard limit |
+| `codex-tool-payload-parser.ts` | Add | DS-010 | subject parser | tool args/results including preview result payloads | `parseToolResultPayload` | explicit preview parse owner |
+| `codex-reasoning-payload-parser.ts` | Add | DS-010 | subject parser | reasoning/web-search parsing | reasoning parse helpers | keeps coordinator small |
 
 ## File Placement And Ownership Check (Mandatory)
 
 | File | Current Path | Target Path | Owning Concern / Platform | Path Matches Concern? (`Yes`/`No`) | Flat-Or-Over-Split Risk (`Low`/`Medium`/`High`) | Action (`Keep`/`Move`/`Split`/`Promote Shared`) | Rationale |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| preview tool contract/service | backend preview subsystem | same subsystem | backend preview coordination | Yes | Low | Keep/Extend | still the correct server owner |
-| separate preview window factory | `electron/preview/preview-window-factory.ts` | N/A | obsolete popup-window concern | No | Low | Remove | legacy after requirement change |
-| shell window composition logic | `electron/main.ts` inline helpers | `electron/shell/*` | shell window host concern | Yes | Medium | Split | reduce main-file overload and create clean composition owner |
-| renderer preview shell UI | none | `stores/previewShellStore.ts`, `components/workspace/tools/PreviewPanel.vue` | renderer projection concern | Yes | Low | Add | necessary but bounded |
+| preview contract file | `agent-tools/preview/preview-tool-contract.ts` | same path | preview tool contract boundary | Yes | Low | Split | keep path, narrow concern |
+| preview tool definitions duplicated in runtime adapters | runtime-specific builder files | same files + shared manifest | runtime translation around one preview surface | Yes | Low | Promote Shared | manifest belongs in `agent-tools/preview` |
+| session owner blob | `electron/preview/preview-session-manager.ts` | same path + new sibling files | Electron preview lifecycle boundary | Yes | Low | Split | keep subsystem placement, repair ownership |
+| Codex payload parser blob | `codex/events/codex-item-event-payload-parser.ts` | same path + new sibling subject parsers | Codex event parsing | Yes | Low | Split | subject split belongs in same subsystem |
+| renderer preview panel/store | same paths | same paths | renderer projection | Yes | Low | Keep | not the Stage 8 problem |
 
 Rules:
-- The design is invalid if a renderer store becomes the owner of native preview lifecycle.
-- The design is invalid if both separate preview windows and shell preview tabs remain live target behavior.
-- The design is invalid if shell composition concerns stay as ad hoc logic inside `main.ts` without a clear owner once `WebContentsView` embedding is introduced.
+- The design is invalid if `preview-tool-contract.ts` again becomes a mixed contract/normalizer/schema/error file.
+- The design is invalid if callers above `PreviewSessionManager` depend directly on `PreviewSessionNavigation` or `PreviewSessionPageOperations`.
+- The design is invalid if runtime adapters keep their own copied preview tool surface instead of rendering from the shared manifest.
+- The design is invalid if preview input parsing keeps alias compatibility behavior after the v10 clean-cut contract change.

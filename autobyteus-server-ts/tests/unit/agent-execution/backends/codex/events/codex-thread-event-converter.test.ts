@@ -187,4 +187,46 @@ describe("CodexThreadEventConverter", () => {
       },
     });
   });
+
+  it("parses preview dynamic tool JSON text results from contentItems", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.ITEM_COMPLETED,
+      params: {
+        item: {
+          type: "dynamicToolCall",
+          id: "call_preview_open_text",
+          name: "open_preview",
+          status: "completed",
+          contentItems: [
+            {
+              type: "inputText",
+              text: JSON.stringify({
+                preview_session_id: "preview-text-1",
+                status: "opened",
+                url: "https://example.com",
+                title: "Example",
+              }),
+            },
+          ],
+        },
+      },
+    });
+
+    expect(converted).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      runId: "run-1",
+      payload: {
+        invocation_id: "call_preview_open_text",
+        tool_name: "open_preview",
+        result: {
+          preview_session_id: "preview-text-1",
+          status: "opened",
+          url: "https://example.com",
+          title: "Example",
+        },
+      },
+    });
+  });
 });

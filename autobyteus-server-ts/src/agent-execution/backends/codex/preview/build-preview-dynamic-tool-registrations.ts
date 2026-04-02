@@ -4,185 +4,78 @@ import {
   type CodexDynamicToolRegistration,
 } from "../codex-dynamic-tool.js";
 import type { JsonObject } from "../codex-app-server-json.js";
+import type { PreviewToolParameterSpec } from "../../../../agent-tools/preview/preview-tool-contract.js";
+import { PREVIEW_TOOL_MANIFEST } from "../../../../agent-tools/preview/preview-tool-manifest.js";
 import {
-  CAPTURE_PREVIEW_SCREENSHOT_TOOL_NAME,
-  CLOSE_PREVIEW_TOOL_NAME,
-  EXECUTE_PREVIEW_JAVASCRIPT_TOOL_NAME,
-  GET_PREVIEW_CONSOLE_LOGS_TOOL_NAME,
-  NAVIGATE_PREVIEW_TOOL_NAME,
-  OPEN_PREVIEW_TOOL_NAME,
-  OPEN_PREVIEW_DEVTOOLS_TOOL_NAME,
-  PREVIEW_WAIT_UNTIL_VALUES,
-  parseCapturePreviewScreenshotInput,
-  parseClosePreviewInput,
-  parseExecutePreviewJavascriptInput,
-  parseGetPreviewConsoleLogsInput,
-  parseNavigatePreviewInput,
-  parseOpenPreviewInput,
-  parseOpenPreviewDevToolsInput,
   toPreviewErrorPayload,
   toPreviewJsonString,
-} from "../../../../agent-tools/preview/preview-tool-contract.js";
+} from "../../../../agent-tools/preview/preview-tool-serialization.js";
 import { getPreviewToolService } from "../../../../agent-tools/preview/preview-tool-service.js";
 
-const buildOpenPreviewToolSpec = (): JsonObject => ({
-  name: OPEN_PREVIEW_TOOL_NAME,
-  description:
-    "Open a frontend preview window and return a stable preview_session_id for follow-up operations.",
-  inputSchema: {
-    type: "object",
-    properties: {
-      url: {
-        type: "string",
-        description: "Absolute http, https, or file URL to open in the preview window.",
-      },
-      title: {
-        type: "string",
-        description: "Optional preview window title override.",
-      },
-      reuse_existing: {
-        type: "boolean",
-        description: "Reuse an existing preview session whose normalized URL matches.",
-      },
-      wait_until: {
-        type: "string",
-        enum: [...PREVIEW_WAIT_UNTIL_VALUES],
-        description: "Ready state to wait for before returning.",
-      },
-    },
-    required: ["url"],
-    additionalProperties: false,
-  },
-});
+const asRawArguments = (value: unknown): Record<string, unknown> =>
+  value && typeof value === "object" && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : {};
 
-const buildNavigatePreviewToolSpec = (): JsonObject => ({
-  name: NAVIGATE_PREVIEW_TOOL_NAME,
-  description:
-    "Navigate an existing preview_session_id to a new URL and wait for the requested ready state.",
-  inputSchema: {
-    type: "object",
-    properties: {
-      preview_session_id: {
-        type: "string",
-        description: "Opaque preview session identifier returned by open_preview.",
-      },
-      url: {
-        type: "string",
-        description: "Absolute http, https, or file URL to navigate the preview session to.",
-      },
-      wait_until: {
-        type: "string",
-        enum: [...PREVIEW_WAIT_UNTIL_VALUES],
-        description: "Ready state to wait for before returning.",
-      },
-    },
-    required: ["preview_session_id", "url"],
-    additionalProperties: false,
-  },
-});
+const buildCodexSchemaProperty = (parameter: PreviewToolParameterSpec): JsonObject => {
+  const property: JsonObject = {
+    description: parameter.description,
+  };
 
-const buildCapturePreviewScreenshotToolSpec = (): JsonObject => ({
-  name: CAPTURE_PREVIEW_SCREENSHOT_TOOL_NAME,
-  description:
-    "Capture a screenshot from an existing preview session and return the artifact path.",
-  inputSchema: {
-    type: "object",
-    properties: {
-      preview_session_id: {
-        type: "string",
-        description: "Opaque preview session identifier returned by open_preview.",
-      },
-      full_page: {
-        type: "boolean",
-        description: "When true, attempt a full-page screenshot capture.",
-      },
-    },
-    required: ["preview_session_id"],
-    additionalProperties: false,
-  },
-});
+  switch (parameter.type) {
+    case "string":
+      property.type = "string";
+      break;
+    case "boolean":
+      property.type = "boolean";
+      break;
+    case "integer":
+      property.type = "integer";
+      if (parameter.minimum !== undefined) {
+        property.minimum = parameter.minimum;
+      }
+      if (parameter.maximum !== undefined) {
+        property.maximum = parameter.maximum;
+      }
+      break;
+    case "enum":
+      property.type = "string";
+      property.enum = parameter.enum_values ? [...parameter.enum_values] : [];
+      break;
+  }
 
-const buildGetPreviewConsoleLogsToolSpec = (): JsonObject => ({
-  name: GET_PREVIEW_CONSOLE_LOGS_TOOL_NAME,
-  description:
-    "Read console log entries from an existing preview session, optionally after a given sequence number.",
-  inputSchema: {
-    type: "object",
-    properties: {
-      preview_session_id: {
-        type: "string",
-        description: "Opaque preview session identifier returned by open_preview.",
-      },
-      since_sequence: {
-        type: "integer",
-        description: "Optional exclusive lower bound for log entry sequence numbers.",
-      },
-    },
-    required: ["preview_session_id"],
-    additionalProperties: false,
-  },
-});
+  return property;
+};
 
-const buildClosePreviewToolSpec = (): JsonObject => ({
-  name: CLOSE_PREVIEW_TOOL_NAME,
-  description:
-    "Close an existing preview session and invalidate its preview_session_id for future use.",
-  inputSchema: {
-    type: "object",
-    properties: {
-      preview_session_id: {
-        type: "string",
-        description: "Opaque preview session identifier returned by open_preview.",
-      },
-    },
-    required: ["preview_session_id"],
-    additionalProperties: false,
-  },
-});
+const buildCodexInputSchema = (
+  parameters: PreviewToolParameterSpec[],
+): JsonObject => {
+  const properties: JsonObject = {};
+  const required: string[] = [];
 
-const buildExecutePreviewJavascriptToolSpec = (): JsonObject => ({
-  name: EXECUTE_PREVIEW_JAVASCRIPT_TOOL_NAME,
-  description:
-    "Execute JavaScript inside an existing preview session and return the JSON-serialized result.",
-  inputSchema: {
-    type: "object",
-    properties: {
-      preview_session_id: {
-        type: "string",
-        description: "Opaque preview session identifier returned by open_preview.",
-      },
-      javascript: {
-        type: "string",
-        description: "JavaScript source code to evaluate in the preview session.",
-      },
-    },
-    required: ["preview_session_id", "javascript"],
-    additionalProperties: false,
-  },
-});
+  for (const parameter of parameters) {
+    properties[parameter.name] = buildCodexSchemaProperty(parameter);
+    if (parameter.required) {
+      required.push(parameter.name);
+    }
+  }
 
-const buildOpenPreviewDevToolsToolSpec = (): JsonObject => ({
-  name: OPEN_PREVIEW_DEVTOOLS_TOOL_NAME,
-  description: "Open detached DevTools for an existing preview session.",
-  inputSchema: {
+  const inputSchema: JsonObject = {
     type: "object",
-    properties: {
-      preview_session_id: {
-        type: "string",
-        description: "Opaque preview session identifier returned by open_preview.",
-      },
-      mode: {
-        type: "string",
-        enum: ["detach"],
-        description: "DevTools opening mode. Only detach is supported.",
-      },
-    },
-    required: ["preview_session_id"],
+    properties,
     additionalProperties: false,
-  },
-});
+  };
 
-const runPreviewOperation = async <T>(operation: () => Promise<T>): Promise<CodexDynamicToolCallResult> => {
+  if (required.length > 0) {
+    inputSchema.required = required;
+  }
+
+  return inputSchema;
+};
+
+const runPreviewOperation = async (
+  operation: () => Promise<unknown>,
+): Promise<CodexDynamicToolCallResult> => {
   try {
     const result = await operation();
     return createCodexDynamicToolTextResult(toPreviewJsonString(result), true);
@@ -194,69 +87,23 @@ const runPreviewOperation = async <T>(operation: () => Promise<T>): Promise<Code
   }
 };
 
-export const buildPreviewDynamicToolRegistrations = (): CodexDynamicToolRegistration[] | null => {
+export const buildPreviewDynamicToolRegistrations = ():
+  | CodexDynamicToolRegistration[]
+  | null => {
   const previewToolService = getPreviewToolService();
   if (!previewToolService.isPreviewSupported()) {
     return null;
   }
 
-  return [
-    {
-      spec: buildOpenPreviewToolSpec(),
-      handler: async ({ arguments: toolArguments }) =>
-        runPreviewOperation(async () =>
-          previewToolService.openPreview(parseOpenPreviewInput(toolArguments)),
-        ),
+  return PREVIEW_TOOL_MANIFEST.map((entry) => ({
+    spec: {
+      name: entry.name,
+      description: entry.description,
+      inputSchema: buildCodexInputSchema(entry.parameters),
     },
-    {
-      spec: buildNavigatePreviewToolSpec(),
-      handler: async ({ arguments: toolArguments }) =>
-        runPreviewOperation(async () =>
-          previewToolService.navigatePreview(parseNavigatePreviewInput(toolArguments)),
-        ),
-    },
-    {
-      spec: buildCapturePreviewScreenshotToolSpec(),
-      handler: async ({ arguments: toolArguments }) =>
-        runPreviewOperation(async () =>
-          previewToolService.capturePreviewScreenshot(
-            parseCapturePreviewScreenshotInput(toolArguments),
-          ),
-        ),
-    },
-    {
-      spec: buildGetPreviewConsoleLogsToolSpec(),
-      handler: async ({ arguments: toolArguments }) =>
-        runPreviewOperation(async () =>
-          previewToolService.getPreviewConsoleLogs(
-            parseGetPreviewConsoleLogsInput(toolArguments),
-          ),
-        ),
-    },
-    {
-      spec: buildExecutePreviewJavascriptToolSpec(),
-      handler: async ({ arguments: toolArguments }) =>
-        runPreviewOperation(async () =>
-          previewToolService.executePreviewJavascript(
-            parseExecutePreviewJavascriptInput(toolArguments),
-          ),
-        ),
-    },
-    {
-      spec: buildOpenPreviewDevToolsToolSpec(),
-      handler: async ({ arguments: toolArguments }) =>
-        runPreviewOperation(async () =>
-          previewToolService.openPreviewDevTools(
-            parseOpenPreviewDevToolsInput(toolArguments),
-          ),
-        ),
-    },
-    {
-      spec: buildClosePreviewToolSpec(),
-      handler: async ({ arguments: toolArguments }) =>
-        runPreviewOperation(async () =>
-          previewToolService.closePreview(parseClosePreviewInput(toolArguments)),
-        ),
-    },
-  ];
+    handler: async ({ arguments: toolArguments }) =>
+      runPreviewOperation(async () =>
+        entry.execute(previewToolService, entry.parseInput(asRawArguments(toolArguments))),
+      ),
+  }));
 };

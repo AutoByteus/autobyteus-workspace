@@ -2,15 +2,14 @@ import { tool, BaseTool } from "autobyteus-ts";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
 import {
   NAVIGATE_PREVIEW_TOOL_NAME,
-  buildNavigatePreviewParameterSchema,
-  toPreviewErrorPayload,
-  toPreviewJsonString,
   type PreviewReadyState,
 } from "./preview-tool-contract.js";
+import { getPreviewToolManifestEntry } from "./preview-tool-manifest.js";
+import { buildNavigatePreviewParameterSchema } from "./preview-tool-parameter-schemas.js";
+import { toPreviewErrorPayload, toPreviewJsonString } from "./preview-tool-serialization.js";
 import { getPreviewToolService } from "./preview-tool-service.js";
 
-const DESCRIPTION =
-  "Navigate an existing preview_session_id to a new URL and wait for the requested ready state.";
+const DESCRIPTION = getPreviewToolManifestEntry(NAVIGATE_PREVIEW_TOOL_NAME).description;
 const TOOL_CATEGORY = "Preview";
 const argumentSchema = buildNavigatePreviewParameterSchema();
 

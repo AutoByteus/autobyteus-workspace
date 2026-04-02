@@ -10,10 +10,44 @@ export const usePreviewShellStore = defineStore('previewShell', () => {
   const lastError = ref<string | null>(null);
   let snapshotCleanup: (() => void) | null = null;
 
+  const areSessionsEqual = (
+    left: PreviewShellSessionSummary[],
+    right: PreviewShellSessionSummary[],
+  ): boolean => {
+    if (left.length !== right.length) {
+      return false;
+    }
+
+    return left.every((session, index) => {
+      const candidate = right[index];
+      return (
+        candidate?.preview_session_id === session.preview_session_id &&
+        candidate?.title === session.title &&
+        candidate?.url === session.url
+      );
+    });
+  };
+
   const applySnapshot = (snapshot: PreviewShellSnapshot): void => {
-    previewVisible.value = snapshot.previewVisible;
-    activePreviewSessionId.value = snapshot.activePreviewSessionId;
-    sessions.value = [...snapshot.sessions];
+    const nextPreviewVisible = Boolean(snapshot.previewVisible);
+    const nextActivePreviewSessionId =
+      typeof snapshot.activePreviewSessionId === 'string' && snapshot.activePreviewSessionId.trim().length > 0
+        ? snapshot.activePreviewSessionId
+        : null;
+    const nextSessions = Array.isArray(snapshot.sessions) ? [...snapshot.sessions] : [];
+
+    if (
+      previewVisible.value === nextPreviewVisible &&
+      activePreviewSessionId.value === nextActivePreviewSessionId &&
+      areSessionsEqual(sessions.value, nextSessions)
+    ) {
+      lastError.value = null;
+      return;
+    }
+
+    previewVisible.value = nextPreviewVisible;
+    activePreviewSessionId.value = nextActivePreviewSessionId;
+    sessions.value = nextSessions;
     lastError.value = null;
   };
 
@@ -108,4 +142,3 @@ export const usePreviewShellStore = defineStore('previewShell', () => {
     closeSession,
   };
 });
-

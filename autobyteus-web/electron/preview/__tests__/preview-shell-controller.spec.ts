@@ -5,6 +5,7 @@ import { PreviewShellController } from "../preview-shell-controller";
 
 class FakeWebContents extends EventEmitter {
   private readonly pendingLoads = new Map<string, { resolve: () => void; reject: (error: Error) => void }>();
+  focusCount = 0;
 
   async loadURL(url: string): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -40,7 +41,9 @@ class FakeWebContents extends EventEmitter {
     return false;
   }
 
-  focus(): void {}
+  focus(): void {
+    this.focusCount += 1;
+  }
 }
 
 class FakeWebContentsView {
@@ -55,10 +58,25 @@ class FakeWebContentsView {
 class FakeShellWindow {
   readonly browserWindow = new EventEmitter();
   readonly nodeId = "embedded-local";
-  constructor(readonly shellId: number) {}
+  private readonly stableShellId: number;
+  throwOnShellIdRead = false;
+
+  constructor(shellId: number) {
+    this.stableShellId = shellId;
+  }
+
+  get shellId(): number {
+    if (this.throwOnShellIdRead) {
+      throw new Error("shellId read after teardown");
+    }
+
+    return this.stableShellId;
+  }
+
   attachedView: FakeWebContentsView | null = null;
   lastBounds: { x: number; y: number; width: number; height: number } | null = null;
   lastSnapshot: unknown = null;
+  sendCount = 0;
 
   attachPreviewView(view: FakeWebContentsView | null): void {
     this.attachedView = view;
@@ -69,6 +87,7 @@ class FakeShellWindow {
   }
 
   send(_channel: string, payload: unknown): void {
+    this.sendCount += 1;
     this.lastSnapshot = payload;
   }
 }
@@ -138,5 +157,72 @@ describe("PreviewShellController", () => {
       activePreviewSessionId: null,
       sessions: [],
     });
+  });
+
+  it("unregisters a closed shell without rereading shell identity after teardown", async () => {
+    const views: FakeWebContentsView[] = [];
+    const manager = new PreviewSessionManager({
+      viewFactory: {
+        createPreviewView: () => {
+          const view = new FakeWebContentsView();
+          views.push(view);
+          return view as any;
+        },
+      } as any,
+      screenshotWriter: {
+        write: async () => "/tmp/preview.png",
+      } as any,
+    });
+    const controller = new PreviewShellController(manager);
+    const shell = new FakeShellWindow(101);
+    controller.registerShell(shell as any);
+
+    const openPromise = manager.openSession({ url: "http://localhost:3000/demo", wait_until: "load" });
+    await Promise.resolve();
+    views[0]!.webContents.finishLoad("http://localhost:3000/demo");
+    const opened = await openPromise;
+
+    controller.focusSession(shell.shellId, opened.preview_session_id);
+    controller.updateHostBounds(shell.shellId, { x: 0, y: 0, width: 300, height: 400 });
+    shell.throwOnShellIdRead = true;
+
+    expect(() => shell.browserWindow.emit("closed")).not.toThrow();
+    expect(shell.attachedView).toBeNull();
+    expect(() => controller.getSnapshot(101)).toThrow("Preview shell '101' is not registered.");
+  });
+
+  it("skips redundant host-bounds projection work when bounds are unchanged", async () => {
+    const views: FakeWebContentsView[] = [];
+    const manager = new PreviewSessionManager({
+      viewFactory: {
+        createPreviewView: () => {
+          const view = new FakeWebContentsView();
+          views.push(view);
+          return view as any;
+        },
+      } as any,
+      screenshotWriter: {
+        write: async () => "/tmp/preview.png",
+      } as any,
+    });
+    const controller = new PreviewShellController(manager);
+    const shell = new FakeShellWindow(102);
+    controller.registerShell(shell as any);
+
+    const openPromise = manager.openSession({ url: "http://localhost:3000/demo", wait_until: "load" });
+    await Promise.resolve();
+    views[0]!.webContents.finishLoad("http://localhost:3000/demo");
+    const opened = await openPromise;
+
+    controller.focusSession(shell.shellId, opened.preview_session_id);
+    const firstSnapshot = controller.updateHostBounds(shell.shellId, { x: 5, y: 10, width: 320, height: 480 });
+    const sendCountAfterFirstBounds = shell.sendCount;
+    const focusCountAfterFirstBounds = views[0]!.webContents.focusCount;
+
+    const secondSnapshot = controller.updateHostBounds(shell.shellId, { x: 5, y: 10, width: 320, height: 480 });
+
+    expect(secondSnapshot).toEqual(firstSnapshot);
+    expect(shell.sendCount).toBe(sendCountAfterFirstBounds);
+    expect(views[0]!.webContents.focusCount).toBe(focusCountAfterFirstBounds);
   });
 });

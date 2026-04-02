@@ -28,6 +28,7 @@ const normalizeBounds = (bounds: Rectangle | null): Rectangle | null => {
 
 export class WorkspaceShellWindow {
   readonly browserWindow: BrowserWindow;
+  readonly shellId: number;
   readonly nodeId: string;
   private desiredPreviewView: WebContentsView | null = null;
   private attachedPreviewView: WebContentsView | null = null;
@@ -51,6 +52,7 @@ export class WorkspaceShellWindow {
     this.browserWindow.webContents.on('will-navigate', (event) => {
       event.preventDefault();
     });
+    this.shellId = this.browserWindow.webContents.id;
 
     this.browserWindow.webContents.setWindowOpenHandler(() => {
       return { action: 'deny' };
@@ -63,10 +65,6 @@ export class WorkspaceShellWindow {
       this.desiredPreviewView = null;
       this.previewBounds = null;
     });
-  }
-
-  get shellId(): number {
-    return this.browserWindow.webContents.id;
   }
 
   isDestroyed(): boolean {
@@ -139,4 +137,3 @@ export class WorkspaceShellWindow {
     this.attachedPreviewView = null;
   }
 }
-

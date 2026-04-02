@@ -43,34 +43,63 @@
 </template>
 
 <script setup lang="ts">
+import { storeToRefs } from 'pinia';
+import type { PreviewHostBounds } from '~/types/previewShell';
 import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { usePreviewShellStore } from '~/stores/previewShellStore';
 import { useRightPanel } from '~/composables/useRightPanel';
 
 const previewShellStore = usePreviewShellStore();
 const { isRightPanelVisible, rightPanelWidth } = useRightPanel();
+const { sessions, activePreviewSessionId } = storeToRefs(previewShellStore);
 
 const hostRef = ref<HTMLElement | null>(null);
 let resizeObserver: ResizeObserver | null = null;
+let lastSentBoundsKey: string | null = null;
 
-const sessions = previewShellStore.sessions;
-const activePreviewSessionId = previewShellStore.activePreviewSessionId;
-
-const syncHostBounds = async (): Promise<void> => {
-  await previewShellStore.initialize();
-
+const normalizeHostBounds = (): PreviewHostBounds | null => {
   if (!hostRef.value || !isRightPanelVisible.value) {
-    await previewShellStore.updateHostBounds(null);
-    return;
+    return null;
   }
 
   const rect = hostRef.value.getBoundingClientRect();
-  await previewShellStore.updateHostBounds({
-    x: rect.left,
-    y: rect.top,
-    width: rect.width,
-    height: rect.height,
-  });
+  const width = Math.max(0, Math.round(rect.width));
+  const height = Math.max(0, Math.round(rect.height));
+  if (width === 0 || height === 0) {
+    return null;
+  }
+
+  return {
+    x: Math.round(rect.left),
+    y: Math.round(rect.top),
+    width,
+    height,
+  };
+};
+
+const serializeBounds = (bounds: PreviewHostBounds | null): string => {
+  if (!bounds) {
+    return 'null';
+  }
+
+  return `${bounds.x}:${bounds.y}:${bounds.width}:${bounds.height}`;
+};
+
+const syncHostBounds = async (): Promise<void> => {
+  await previewShellStore.initialize();
+  const nextBounds = normalizeHostBounds();
+  const nextBoundsKey = serializeBounds(nextBounds);
+  if (nextBoundsKey === lastSentBoundsKey) {
+    return;
+  }
+
+  lastSentBoundsKey = nextBoundsKey;
+  try {
+    await previewShellStore.updateHostBounds(nextBounds);
+  } catch (error) {
+    lastSentBoundsKey = null;
+    throw error;
+  }
 };
 
 const handleSessionSelect = async (previewSessionId: string): Promise<void> => {
@@ -104,6 +133,7 @@ onBeforeUnmount(() => {
   resizeObserver?.disconnect();
   resizeObserver = null;
   window.removeEventListener('resize', syncHostBounds);
+  lastSentBoundsKey = null;
   void previewShellStore.updateHostBounds(null);
 });
 
@@ -120,4 +150,3 @@ watch(
   },
 );
 </script>
-

@@ -1,150 +1,79 @@
-import { EventEmitter } from 'events'
-import { WebContentsView, type Event as ElectronEvent, type Rectangle } from 'electron'
 import { randomUUID } from 'crypto'
-import { PreviewConsoleLogBuffer } from './preview-console-log-buffer'
-import { PreviewScreenshotArtifactWriter } from './preview-screenshot-artifact-writer'
-import { DEFAULT_PREVIEW_VIEW_BOUNDS, PreviewViewFactory } from './preview-view-factory'
+import { EventEmitter } from 'events'
+import type { Rectangle, WebContentsView } from 'electron'
+import { DEFAULT_PREVIEW_VIEW_BOUNDS } from './preview-view-factory'
+import { PreviewSessionNavigation } from './preview-session-navigation'
+import { PreviewSessionPageOperations } from './preview-session-page-operations'
+import type {
+  CapturePreviewScreenshotRequest,
+  CapturePreviewScreenshotResult,
+  ClosePreviewRequest,
+  ClosePreviewResult,
+  ExecutePreviewJavascriptRequest,
+  ExecutePreviewJavascriptResult,
+  ListPreviewSessionsResult,
+  NavigatePreviewRequest,
+  NavigatePreviewResult,
+  OpenPreviewRequest,
+  OpenPreviewResult,
+  PreviewDomSnapshotRequest,
+  PreviewDomSnapshotResult,
+  PreviewSessionManagerOptions,
+  PreviewSessionRecord,
+  PreviewSessionSummary,
+  ReadPreviewPageRequest,
+  ReadPreviewPageResult,
+} from './preview-session-types'
+import {
+  PreviewSessionError,
+  type PreviewReadyState,
+} from './preview-session-types'
 
-export type PreviewReadyState = 'domcontentloaded' | 'load'
+export type {
+  CapturePreviewScreenshotRequest,
+  CapturePreviewScreenshotResult,
+  ClosePreviewRequest,
+  ClosePreviewResult,
+  ExecutePreviewJavascriptRequest,
+  ExecutePreviewJavascriptResult,
+  ListPreviewSessionsResult,
+  NavigatePreviewRequest,
+  NavigatePreviewResult,
+  OpenPreviewRequest,
+  OpenPreviewResult,
+  PreviewDomSnapshotRequest,
+  PreviewDomSnapshotResult,
+  PreviewReadyState,
+  PreviewSessionErrorCode,
+  PreviewSessionManagerOptions,
+  PreviewSessionSummary,
+  ReadPreviewPageRequest,
+  ReadPreviewPageResult,
+} from './preview-session-types'
+export { PreviewSessionError } from './preview-session-types'
 
-export type OpenPreviewRequest = {
-  url: string
-  title?: string | null
-  reuse_existing?: boolean
-  wait_until?: PreviewReadyState
-}
-
-export type OpenPreviewResult = {
-  preview_session_id: string
-  status: 'opened' | 'reused'
-  url: string
-  title: string | null
-}
-
-export type NavigatePreviewRequest = {
-  preview_session_id: string
-  url: string
-  wait_until?: PreviewReadyState
-}
-
-export type NavigatePreviewResult = {
-  preview_session_id: string
-  status: 'navigated'
-  url: string
-}
-
-export type CapturePreviewScreenshotRequest = {
-  preview_session_id: string
-  full_page?: boolean
-}
-
-export type CapturePreviewScreenshotResult = {
-  preview_session_id: string
-  artifact_path: string
-  mime_type: 'image/png'
-}
-
-export type GetPreviewConsoleLogsRequest = {
-  preview_session_id: string
-  since_sequence?: number | null
-}
-
-export type GetPreviewConsoleLogsResult = {
-  preview_session_id: string
-  entries: ReturnType<PreviewConsoleLogBuffer['list']>['entries']
-  next_sequence: number
-}
-
-export type ExecutePreviewJavascriptRequest = {
-  preview_session_id: string
-  javascript: string
-}
-
-export type ExecutePreviewJavascriptResult = {
-  preview_session_id: string
-  result_json: string
-}
-
-export type OpenPreviewDevToolsRequest = {
-  preview_session_id: string
-  mode?: 'detach'
-}
-
-export type OpenPreviewDevToolsResult = {
-  preview_session_id: string
-  status: 'opened'
-}
-
-export type ClosePreviewRequest = {
-  preview_session_id: string
-}
-
-export type ClosePreviewResult = {
-  preview_session_id: string
-  status: 'closed'
-}
-
-export type PreviewSessionErrorCode =
-  | 'preview_session_closed'
-  | 'preview_session_not_found'
-  | 'preview_navigation_failed'
-  | 'preview_javascript_execution_failed'
-
-export class PreviewSessionError extends Error {
-  readonly code: PreviewSessionErrorCode
-
-  constructor(code: PreviewSessionErrorCode, message: string) {
-    super(message)
-    this.name = 'PreviewSessionError'
-    this.code = code
-  }
-}
-
-export type PreviewSessionSummary = {
-  preview_session_id: string
-  title: string | null
-  url: string
-}
-
-type PreviewSessionRecord = {
-  id: string
-  url: string
-  title: string | null
-  customTitle: string | null
-  state: 'opening' | 'open'
-  openPromise: Promise<void> | null
-  view: WebContentsView
-  logBuffer: PreviewConsoleLogBuffer
-  viewportBounds: Rectangle
-}
-
-type PreviewSessionManagerOptions = {
-  viewFactory: PreviewViewFactory
-  screenshotWriter: PreviewScreenshotArtifactWriter
-}
-
-const MAX_FULL_PAGE_DIMENSION = 4000
-const FULL_PAGE_CAPTURE_SETTLE_MS = 60
+const PREVIEW_SESSION_ID_LENGTH = 6
 const MAX_CLOSED_SESSION_TOMBSTONES = 256
-const ALLOWED_PROTOCOLS = new Set(['http:', 'https:', 'file:'])
-
-const sleep = async (ms: number): Promise<void> => {
-  await new Promise((resolve) => setTimeout(resolve, ms))
-}
 
 export class PreviewSessionManager extends EventEmitter {
   private readonly sessions = new Map<string, PreviewSessionRecord>()
   private readonly closedSessionIds = new Set<string>()
+  private readonly navigation = new PreviewSessionNavigation()
+  private readonly pageOperations: PreviewSessionPageOperations
 
   constructor(private readonly options: PreviewSessionManagerOptions) {
     super()
+    this.pageOperations = new PreviewSessionPageOperations(options.screenshotWriter)
   }
 
   async openSession(input: OpenPreviewRequest): Promise<OpenPreviewResult> {
-    const normalizedUrl = this.normalizeUrl(input.url)
+    const normalizedUrl = this.navigation.normalizeUrl(input.url)
 
     if (input.reuse_existing) {
-      const reusableSession = await this.findReusableSession(normalizedUrl)
+      const reusableSession = await this.navigation.findReusableSession(
+        this.sessions,
+        normalizedUrl,
+      )
       if (reusableSession) {
         this.updateSessionTitle(reusableSession, input.title ?? reusableSession.customTitle)
         this.emitSessionUpserted(reusableSession)
@@ -152,7 +81,7 @@ export class PreviewSessionManager extends EventEmitter {
       }
     }
 
-    const sessionId = randomUUID()
+    const sessionId = this.generateSessionId()
     const view = this.options.viewFactory.createPreviewView()
     const session: PreviewSessionRecord = {
       id: sessionId,
@@ -162,18 +91,19 @@ export class PreviewSessionManager extends EventEmitter {
       state: 'opening',
       openPromise: null,
       view,
-      logBuffer: new PreviewConsoleLogBuffer(),
       viewportBounds: { ...DEFAULT_PREVIEW_VIEW_BOUNDS },
     }
 
     this.sessions.set(sessionId, session)
     this.attachSessionObservers(session)
     session.view.setBounds(session.viewportBounds)
-    session.openPromise = this.loadUrl(session, normalizedUrl, input.wait_until ?? 'load').then(() => {
-      session.state = 'open'
-      this.updateSessionTitle(session, input.title ?? null)
-      this.emitSessionUpserted(session)
-    })
+    session.openPromise = this.navigation
+      .loadUrl(session, normalizedUrl, input.wait_until ?? 'load')
+      .then(() => {
+        session.state = 'open'
+        this.updateSessionTitle(session, input.title ?? null)
+        this.emitSessionUpserted(session)
+      })
 
     try {
       await session.openPromise
@@ -187,9 +117,8 @@ export class PreviewSessionManager extends EventEmitter {
 
   async navigateSession(input: NavigatePreviewRequest): Promise<NavigatePreviewResult> {
     const session = this.getOpenSessionOrThrow(input.preview_session_id)
-    const normalizedUrl = this.normalizeUrl(input.url)
-    await this.loadUrl(session, normalizedUrl, input.wait_until ?? 'load')
-    session.url = normalizedUrl
+    const normalizedUrl = this.navigation.normalizeUrl(input.url)
+    await this.navigation.loadUrl(session, normalizedUrl, input.wait_until ?? 'load')
     this.updateSessionTitle(session, session.customTitle)
     this.emitSessionUpserted(session)
 
@@ -204,62 +133,32 @@ export class PreviewSessionManager extends EventEmitter {
     input: CapturePreviewScreenshotRequest,
   ): Promise<CapturePreviewScreenshotResult> {
     const session = this.getOpenSessionOrThrow(input.preview_session_id)
-    const image = await this.captureSessionPage(session, input.full_page ?? false)
-    const artifactPath = await this.options.screenshotWriter.write(image.toPNG(), session.id)
+    return this.pageOperations.captureScreenshot(session, input.full_page ?? false)
+  }
 
+  listSessions(): ListPreviewSessionsResult {
     return {
-      preview_session_id: session.id,
-      artifact_path: artifactPath,
-      mime_type: 'image/png',
+      sessions: Array.from(this.sessions.values(), (session) => this.toSessionSummary(session)),
     }
   }
 
-  getConsoleLogs(input: GetPreviewConsoleLogsRequest): GetPreviewConsoleLogsResult {
+  async readPage(input: ReadPreviewPageRequest): Promise<ReadPreviewPageResult> {
     const session = this.getOpenSessionOrThrow(input.preview_session_id)
-    const result = session.logBuffer.list(input.since_sequence)
+    return this.pageOperations.readPage(session, input.cleaning_mode ?? 'thorough')
+  }
 
-    return {
-      preview_session_id: session.id,
-      entries: result.entries,
-      next_sequence: result.nextSequence,
-    }
+  async domSnapshot(
+    input: PreviewDomSnapshotRequest,
+  ): Promise<PreviewDomSnapshotResult> {
+    const session = this.getOpenSessionOrThrow(input.preview_session_id)
+    return this.pageOperations.domSnapshot(session, input)
   }
 
   async executeJavascript(
     input: ExecutePreviewJavascriptRequest,
   ): Promise<ExecutePreviewJavascriptResult> {
     const session = this.getOpenSessionOrThrow(input.preview_session_id)
-    const javascript = typeof input.javascript === 'string' ? input.javascript.trim() : ''
-    if (!javascript) {
-      throw new PreviewSessionError(
-        'preview_javascript_execution_failed',
-        'javascript is required.',
-      )
-    }
-
-    try {
-      const result = await session.view.webContents.executeJavaScript(javascript, true)
-      return {
-        preview_session_id: session.id,
-        result_json: JSON.stringify(result ?? null),
-      }
-    } catch (error) {
-      throw new PreviewSessionError(
-        'preview_javascript_execution_failed',
-        error instanceof Error ? error.message : String(error),
-      )
-    }
-  }
-
-  openDevTools(input: OpenPreviewDevToolsRequest): OpenPreviewDevToolsResult {
-    const session = this.getOpenSessionOrThrow(input.preview_session_id)
-    session.view.webContents.openDevTools({
-      mode: input.mode ?? 'detach',
-    })
-    return {
-      preview_session_id: session.id,
-      status: 'opened',
-    }
+    return this.pageOperations.executeJavascript(session, input.javascript)
   }
 
   async closeSession(input: ClosePreviewRequest): Promise<ClosePreviewResult> {
@@ -272,17 +171,40 @@ export class PreviewSessionManager extends EventEmitter {
   }
 
   async closeAllSessions(): Promise<void> {
-    const sessions = Array.from(this.sessions.values())
-    for (const session of sessions) {
+    for (const session of Array.from(this.sessions.values())) {
       this.destroySession(session)
     }
   }
 
-  private attachSessionObservers(session: PreviewSessionRecord): void {
-    session.view.webContents.on('console-message', (_event, level, message) => {
-      session.logBuffer.append(level, message)
-    })
+  getSessionSummary(previewSessionId: string): PreviewSessionSummary | null {
+    const session = this.sessions.get(previewSessionId)
+    return session ? this.toSessionSummary(session) : null
+  }
 
+  getSessionSummaryOrThrow(previewSessionId: string): PreviewSessionSummary {
+    return this.toSessionSummary(this.getOpenSessionOrThrow(previewSessionId))
+  }
+
+  getSessionView(previewSessionId: string): WebContentsView {
+    return this.getOpenSessionOrThrow(previewSessionId).view
+  }
+
+  updateSessionViewportBounds(previewSessionId: string, bounds: Rectangle): void {
+    const session = this.getOpenSessionOrThrow(previewSessionId)
+    this.pageOperations.updateViewportBounds(session, bounds)
+  }
+
+  onSessionUpserted(listener: (summary: PreviewSessionSummary) => void): () => void {
+    this.on('session-upserted', listener)
+    return () => this.off('session-upserted', listener)
+  }
+
+  onSessionClosed(listener: (previewSessionId: string) => void): () => void {
+    this.on('session-closed', listener)
+    return () => this.off('session-closed', listener)
+  }
+
+  private attachSessionObservers(session: PreviewSessionRecord): void {
     session.view.webContents.on('page-title-updated', (_event, title) => {
       if (session.customTitle) {
         return
@@ -334,36 +256,6 @@ export class PreviewSessionManager extends EventEmitter {
     )
   }
 
-  private async findReusableSession(normalizedUrl: string): Promise<PreviewSessionRecord | null> {
-    let openingSession: PreviewSessionRecord | null = null
-
-    for (const session of this.sessions.values()) {
-      if (session.url !== normalizedUrl) {
-        continue
-      }
-
-      if (session.state === 'open') {
-        return session
-      }
-
-      if (!openingSession) {
-        openingSession = session
-      }
-    }
-
-    if (!openingSession?.openPromise) {
-      return null
-    }
-
-    await openingSession.openPromise
-    const openedSession = this.sessions.get(openingSession.id)
-    if (openedSession?.state === 'open') {
-      return openedSession
-    }
-
-    return null
-  }
-
   private rememberClosedSessionId(previewSessionId: string): void {
     this.closedSessionIds.add(previewSessionId)
     while (this.closedSessionIds.size > MAX_CLOSED_SESSION_TOMBSTONES) {
@@ -387,155 +279,15 @@ export class PreviewSessionManager extends EventEmitter {
     }
   }
 
-  private normalizeUrl(value: string): string {
-    const normalizedValue = typeof value === 'string' ? value.trim() : ''
-    if (!normalizedValue) {
-      throw new PreviewSessionError(
-        'preview_navigation_failed',
-        'Preview URL is required.',
-      )
-    }
-
-    let parsed: URL
-    try {
-      parsed = new URL(normalizedValue)
-    } catch {
-      throw new PreviewSessionError(
-        'preview_navigation_failed',
-        `Invalid preview URL '${normalizedValue}'.`,
-      )
-    }
-
-    if (!ALLOWED_PROTOCOLS.has(parsed.protocol)) {
-      throw new PreviewSessionError(
-        'preview_navigation_failed',
-        `Unsupported preview URL protocol '${parsed.protocol}'.`,
-      )
-    }
-
-    return parsed.toString()
-  }
-
-  private async loadUrl(
+  private updateSessionTitle(
     session: PreviewSessionRecord,
-    url: string,
-    waitUntil: PreviewReadyState,
-  ): Promise<void> {
-    const waitPromise = this.waitForRequestedReadyState(session.view, waitUntil)
-    const loadPromise = session.view.webContents.loadURL(url)
-    void loadPromise.catch(() => undefined)
-    await waitPromise
-    session.url = url
-  }
-
-  private waitForRequestedReadyState(
-    view: WebContentsView,
-    waitUntil: PreviewReadyState,
-  ): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const isDomReadyWait = waitUntil === 'domcontentloaded'
-
-      const cleanup = () => {
-        if (isDomReadyWait) {
-          view.webContents.removeListener('dom-ready', handleReady)
-        } else {
-          view.webContents.removeListener('did-finish-load', handleReady)
-        }
-        view.webContents.removeListener('did-fail-load', handleFail)
-      }
-
-      const handleReady = () => {
-        cleanup()
-        resolve()
-      }
-
-      const handleFail = (
-        _event: ElectronEvent,
-        errorCode: number,
-        errorDescription: string,
-        validatedURL: string,
-        isMainFrame: boolean,
-        _frameProcessId: number,
-        _frameRoutingId: number,
-      ) => {
-        if (!isMainFrame) {
-          return
-        }
-        cleanup()
-        reject(
-          new PreviewSessionError(
-            'preview_navigation_failed',
-            `Failed to load '${validatedURL}' (${errorCode}): ${errorDescription}`,
-          ),
-        )
-      }
-
-      if (isDomReadyWait) {
-        view.webContents.once('dom-ready', handleReady)
-      } else {
-        view.webContents.once('did-finish-load', handleReady)
-      }
-      view.webContents.on('did-fail-load', handleFail)
-    })
-  }
-
-  private updateSessionTitle(session: PreviewSessionRecord, customTitle: string | null | undefined): void {
+    customTitle: string | null | undefined,
+  ): void {
     session.customTitle = customTitle?.trim() || null
     session.title =
       session.customTitle ||
       session.view.webContents.getTitle()?.trim() ||
       session.url
-  }
-
-  private async captureSessionPage(session: PreviewSessionRecord, fullPage: boolean) {
-    if (!fullPage) {
-      return session.view.webContents.capturePage()
-    }
-
-    const originalBounds = { ...session.viewportBounds }
-    const documentBounds = await session.view.webContents.executeJavaScript(
-      `(() => ({
-        width: Math.ceil(Math.max(
-          document.documentElement.scrollWidth,
-          document.body?.scrollWidth ?? 0,
-          window.innerWidth
-        )),
-        height: Math.ceil(Math.max(
-          document.documentElement.scrollHeight,
-          document.body?.scrollHeight ?? 0,
-          window.innerHeight
-        ))
-      }))()`,
-      true,
-    ) as { width?: number; height?: number } | null
-
-    const nextWidth = Math.max(
-      originalBounds.width,
-      Math.min(documentBounds?.width ?? originalBounds.width, MAX_FULL_PAGE_DIMENSION),
-    )
-    const nextHeight = Math.max(
-      originalBounds.height,
-      Math.min(documentBounds?.height ?? originalBounds.height, MAX_FULL_PAGE_DIMENSION),
-    )
-
-    if (nextWidth !== originalBounds.width || nextHeight !== originalBounds.height) {
-      session.viewportBounds = {
-        ...originalBounds,
-        width: nextWidth,
-        height: nextHeight,
-      }
-      session.view.setBounds(session.viewportBounds)
-      await sleep(FULL_PAGE_CAPTURE_SETTLE_MS)
-    }
-
-    try {
-      return await session.view.webContents.capturePage()
-    } finally {
-      if (nextWidth !== originalBounds.width || nextHeight !== originalBounds.height) {
-        session.viewportBounds = originalBounds
-        session.view.setBounds(originalBounds)
-      }
-    }
   }
 
   private destroySession(session: PreviewSessionRecord): void {
@@ -556,6 +308,14 @@ export class PreviewSessionManager extends EventEmitter {
     view.webContents.close()
   }
 
+  private generateSessionId(): string {
+    let candidate = ''
+    do {
+      candidate = randomUUID().replace(/-/g, '').slice(0, PREVIEW_SESSION_ID_LENGTH)
+    } while (this.sessions.has(candidate) || this.closedSessionIds.has(candidate))
+    return candidate
+  }
+
   private emitSessionUpserted(session: PreviewSessionRecord): void {
     this.emit('session-upserted', this.toSessionSummary(session))
   }
@@ -566,39 +326,5 @@ export class PreviewSessionManager extends EventEmitter {
       title: session.title,
       url: session.url,
     }
-  }
-
-  onSessionUpserted(listener: (summary: PreviewSessionSummary) => void): () => void {
-    this.on('session-upserted', listener)
-    return () => this.off('session-upserted', listener)
-  }
-
-  onSessionClosed(listener: (previewSessionId: string) => void): () => void {
-    this.on('session-closed', listener)
-    return () => this.off('session-closed', listener)
-  }
-
-  getSessionSummary(previewSessionId: string): PreviewSessionSummary | null {
-    const session = this.sessions.get(previewSessionId)
-    return session ? this.toSessionSummary(session) : null
-  }
-
-  getSessionSummaryOrThrow(previewSessionId: string): PreviewSessionSummary {
-    return this.toSessionSummary(this.getOpenSessionOrThrow(previewSessionId))
-  }
-
-  getSessionView(previewSessionId: string): WebContentsView {
-    return this.getOpenSessionOrThrow(previewSessionId).view
-  }
-
-  updateSessionViewportBounds(previewSessionId: string, bounds: Rectangle): void {
-    const session = this.getOpenSessionOrThrow(previewSessionId)
-    session.viewportBounds = {
-      x: Math.round(bounds.x),
-      y: Math.round(bounds.y),
-      width: Math.max(1, Math.round(bounds.width)),
-      height: Math.max(1, Math.round(bounds.height)),
-    }
-    session.view.setBounds(session.viewportBounds)
   }
 }

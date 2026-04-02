@@ -75,5 +75,56 @@ describe('previewShellStore', () => {
     expect(store.activePreviewSessionId).toBe('preview-session-2');
     expect(store.sessions[0]?.title).toBe('Other');
   });
-});
 
+  it('ignores identical snapshot updates from Electron', async () => {
+    let snapshotListener: ((snapshot: {
+      previewVisible: boolean;
+      activePreviewSessionId: string | null;
+      sessions: Array<{ preview_session_id: string; title: string | null; url: string }>;
+    }) => void) | null = null;
+
+    const initialSnapshot = {
+      previewVisible: true,
+      activePreviewSessionId: 'preview-session-1',
+      sessions: [
+        {
+          preview_session_id: 'preview-session-1',
+          title: 'Demo',
+          url: 'http://localhost:3000/demo',
+        },
+      ],
+    };
+
+    Object.defineProperty(window, 'electronAPI', {
+      configurable: true,
+      value: {
+        getPreviewShellSnapshot: vi.fn().mockResolvedValue(initialSnapshot),
+        onPreviewShellSnapshotUpdated: vi.fn((callback) => {
+          snapshotListener = callback;
+          return vi.fn();
+        }),
+      },
+      writable: true,
+    });
+
+    const store = usePreviewShellStore();
+    await store.initialize();
+    const initialSessionsRef = store.sessions;
+
+    snapshotListener?.({
+      previewVisible: true,
+      activePreviewSessionId: 'preview-session-1',
+      sessions: [
+        {
+          preview_session_id: 'preview-session-1',
+          title: 'Demo',
+          url: 'http://localhost:3000/demo',
+        },
+      ],
+    });
+
+    expect(store.sessions).toBe(initialSessionsRef);
+    expect(store.activePreviewSessionId).toBe('preview-session-1');
+    expect(store.previewVisible).toBe(true);
+  });
+});

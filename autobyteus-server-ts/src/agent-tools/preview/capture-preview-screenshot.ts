@@ -2,14 +2,15 @@ import { tool, BaseTool } from "autobyteus-ts";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
 import {
   CAPTURE_PREVIEW_SCREENSHOT_TOOL_NAME,
-  buildCapturePreviewScreenshotParameterSchema,
-  toPreviewErrorPayload,
-  toPreviewJsonString,
 } from "./preview-tool-contract.js";
+import { getPreviewToolManifestEntry } from "./preview-tool-manifest.js";
+import { buildCapturePreviewScreenshotParameterSchema } from "./preview-tool-parameter-schemas.js";
+import { toPreviewErrorPayload, toPreviewJsonString } from "./preview-tool-serialization.js";
 import { getPreviewToolService } from "./preview-tool-service.js";
 
-const DESCRIPTION =
-  "Capture a screenshot from an existing preview session and return the artifact path.";
+const DESCRIPTION = getPreviewToolManifestEntry(
+  CAPTURE_PREVIEW_SCREENSHOT_TOOL_NAME,
+).description;
 const TOOL_CATEGORY = "Preview";
 const argumentSchema = buildCapturePreviewScreenshotParameterSchema();
 

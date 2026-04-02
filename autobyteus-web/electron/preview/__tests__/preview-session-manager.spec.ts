@@ -9,6 +9,7 @@ class FakeWebContents extends EventEmitter {
   private title = "";
   private destroyed = false;
   private readonly pendingLoads = new Map<string, { resolve: () => void; reject: (error: Error) => void }>();
+  private readonly html = "<html><body><main>Demo</main><button>Run</button></body></html>";
 
   async loadURL(url: string): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -42,7 +43,32 @@ class FakeWebContents extends EventEmitter {
     };
   }
 
-  async executeJavaScript() {
+  async executeJavaScript(script: string) {
+    if (script.includes("document.documentElement?.outerHTML")) {
+      return this.html;
+    }
+    if (script.includes("autobyteus-preview-dom-snapshot-v1")) {
+      return {
+        schema_version: "autobyteus-preview-dom-snapshot-v1",
+        total_candidates: 1,
+        returned_elements: 1,
+        truncated: false,
+        elements: [
+          {
+            element_id: "e1",
+            tag_name: "button",
+            dom_id: null,
+            css_selector: "button:nth-of-type(1)",
+            role: null,
+            name: null,
+            text: "Run",
+            href: null,
+            value: null,
+            bounding_box: { x: 10, y: 20, width: 100, height: 30 },
+          },
+        ],
+      };
+    }
     return { width: 1200, height: 800 };
   }
 
@@ -101,6 +127,7 @@ describe("PreviewSessionManager", () => {
 
     const [firstResult, secondResult] = await Promise.all([firstOpenPromise, secondOpenPromise]);
     expect(firstResult.status).toBe("opened");
+    expect(firstResult.preview_session_id).toHaveLength(6);
     expect(secondResult.status).toBe("reused");
     expect(secondResult.preview_session_id).toBe(firstResult.preview_session_id);
   });
@@ -134,14 +161,14 @@ describe("PreviewSessionManager", () => {
       await manager.closeSession({ preview_session_id: opened.preview_session_id });
     }
 
-    expect(() =>
-      manager.getConsoleLogs({ preview_session_id: closedSessionIds[0]!, since_sequence: null }),
-    ).toThrowError(/was not found/);
+    await expect(
+      manager.readPage({ preview_session_id: closedSessionIds[0]!, cleaning_mode: "thorough" }),
+    ).rejects.toThrowError(/was not found/);
 
     try {
-      manager.getConsoleLogs({
+      await manager.readPage({
         preview_session_id: closedSessionIds[closedSessionIds.length - 1]!,
-        since_sequence: null,
+        cleaning_mode: "thorough",
       });
     } catch (error) {
       expect(error).toBeInstanceOf(PreviewSessionError);
@@ -150,5 +177,61 @@ describe("PreviewSessionManager", () => {
     }
 
     throw new Error("Expected the most recently closed preview session to retain closed-session semantics.");
+  });
+
+  it("lists sessions and supports read-page plus dom-snapshot actions", async () => {
+    const view = new FakeWebContentsView();
+    const manager = new PreviewSessionManager({
+      viewFactory: {
+        createPreviewView: () => {
+          const originalLoadURL = view.webContents.loadURL.bind(view.webContents);
+          view.webContents.loadURL = async (url: string) => {
+            const loadPromise = originalLoadURL(url);
+            view.webContents.finishLoad(url);
+            return loadPromise;
+          };
+          return view as any;
+        },
+      } as any,
+      screenshotWriter: {
+        write: async () => "/tmp/preview.png",
+      } as any,
+    });
+
+    const opened = await manager.openSession({
+      url: "http://localhost:3000/demo",
+      wait_until: "load",
+    });
+
+    expect(manager.listSessions()).toEqual({
+      sessions: [
+        {
+          preview_session_id: opened.preview_session_id,
+          title: "http://localhost:3000/demo",
+          url: "http://localhost:3000/demo",
+        },
+      ],
+    });
+
+    await expect(
+      manager.readPage({
+        preview_session_id: opened.preview_session_id,
+        cleaning_mode: "thorough",
+      }),
+    ).resolves.toMatchObject({
+      preview_session_id: opened.preview_session_id,
+      url: "http://localhost:3000/demo",
+      cleaning_mode: "thorough",
+    });
+
+    await expect(
+      manager.domSnapshot({
+        preview_session_id: opened.preview_session_id,
+      }),
+    ).resolves.toMatchObject({
+      preview_session_id: opened.preview_session_id,
+      schema_version: "autobyteus-preview-dom-snapshot-v1",
+      returned_elements: 1,
+    });
   });
 });

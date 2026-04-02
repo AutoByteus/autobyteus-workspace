@@ -3,12 +3,13 @@ import {
   CAPTURE_PREVIEW_SCREENSHOT_TOOL_NAME,
   CLOSE_PREVIEW_TOOL_NAME,
   EXECUTE_PREVIEW_JAVASCRIPT_TOOL_NAME,
-  GET_PREVIEW_CONSOLE_LOGS_TOOL_NAME,
+  LIST_PREVIEW_SESSIONS_TOOL_NAME,
   NAVIGATE_PREVIEW_TOOL_NAME,
   OPEN_PREVIEW_TOOL_NAME,
-  OPEN_PREVIEW_DEVTOOLS_TOOL_NAME,
   PREVIEW_BRIDGE_BASE_URL_ENV,
   PREVIEW_BRIDGE_TOKEN_ENV,
+  PREVIEW_DOM_SNAPSHOT_TOOL_NAME,
+  READ_PREVIEW_PAGE_TOOL_NAME,
 } from "../../../../../../src/agent-tools/preview/preview-tool-contract.js";
 import { buildPreviewDynamicToolRegistrations } from "../../../../../../src/agent-execution/backends/codex/preview/build-preview-dynamic-tool-registrations.js";
 
@@ -72,14 +73,31 @@ describe("buildPreviewDynamicToolRegistrations", () => {
           }),
         };
       }
-      if (url.endsWith("/preview/console-logs")) {
+      if (url.endsWith("/preview/list")) {
+        return {
+          json: async () => ({
+            ok: true,
+            result: {
+              sessions: [
+                {
+                  preview_session_id: "preview-session-1",
+                  title: "Demo",
+                  url: "http://localhost:3000/demo",
+                },
+              ],
+            },
+          }),
+        };
+      }
+      if (url.endsWith("/preview/read-page")) {
         return {
           json: async () => ({
             ok: true,
             result: {
               preview_session_id: "preview-session-1",
-              entries: [{ sequence: 1, level: "log", message: "ready", timestamp_iso: "2026-01-01T00:00:00.000Z" }],
-              next_sequence: 2,
+              url: "http://localhost:3000/demo",
+              cleaning_mode: "thorough",
+              content: "<main>Demo</main>",
             },
           }),
         };
@@ -95,13 +113,31 @@ describe("buildPreviewDynamicToolRegistrations", () => {
           }),
         };
       }
-      if (url.endsWith("/preview/devtools")) {
+      if (url.endsWith("/preview/dom-snapshot")) {
         return {
           json: async () => ({
             ok: true,
             result: {
               preview_session_id: "preview-session-1",
-              status: "opened",
+              url: "http://localhost:3000/demo",
+              schema_version: "autobyteus-preview-dom-snapshot-v1",
+              total_candidates: 1,
+              returned_elements: 1,
+              truncated: false,
+              elements: [
+                {
+                  element_id: "e1",
+                  tag_name: "button",
+                  dom_id: null,
+                  css_selector: "button:nth-of-type(1)",
+                  role: null,
+                  name: null,
+                  text: "Run",
+                  href: null,
+                  value: null,
+                  bounding_box: { x: 10, y: 20, width: 100, height: 30 },
+                },
+              ],
             },
           }),
         };
@@ -122,7 +158,7 @@ describe("buildPreviewDynamicToolRegistrations", () => {
 
     const registrations = buildPreviewDynamicToolRegistrations();
     expect(registrations).not.toBeNull();
-    expect(registrations).toHaveLength(7);
+    expect(registrations).toHaveLength(8);
 
     const openPreviewRegistration = registrations!.find(
       (registration) => registration.spec.name === OPEN_PREVIEW_TOOL_NAME,
@@ -155,14 +191,17 @@ describe("buildPreviewDynamicToolRegistrations", () => {
     const screenshotRegistration = registrations!.find(
       (registration) => registration.spec.name === CAPTURE_PREVIEW_SCREENSHOT_TOOL_NAME,
     );
-    const consoleLogsRegistration = registrations!.find(
-      (registration) => registration.spec.name === GET_PREVIEW_CONSOLE_LOGS_TOOL_NAME,
+    const listSessionsRegistration = registrations!.find(
+      (registration) => registration.spec.name === LIST_PREVIEW_SESSIONS_TOOL_NAME,
+    );
+    const readPageRegistration = registrations!.find(
+      (registration) => registration.spec.name === READ_PREVIEW_PAGE_TOOL_NAME,
     );
     const executeJavascriptRegistration = registrations!.find(
       (registration) => registration.spec.name === EXECUTE_PREVIEW_JAVASCRIPT_TOOL_NAME,
     );
-    const openDevToolsRegistration = registrations!.find(
-      (registration) => registration.spec.name === OPEN_PREVIEW_DEVTOOLS_TOOL_NAME,
+    const domSnapshotRegistration = registrations!.find(
+      (registration) => registration.spec.name === PREVIEW_DOM_SNAPSHOT_TOOL_NAME,
     );
     const closePreviewRegistration = registrations!.find(
       (registration) => registration.spec.name === CLOSE_PREVIEW_TOOL_NAME,
@@ -201,27 +240,79 @@ describe("buildPreviewDynamicToolRegistrations", () => {
       mime_type: "image/png",
     });
 
-    const consoleLogsResult = await consoleLogsRegistration!.handler({
+    const listSessionsResult = await listSessionsRegistration!.handler({
       runId: "run-1",
       threadId: "thread-1",
       turnId: null,
       callId: "call-4",
-      toolName: GET_PREVIEW_CONSOLE_LOGS_TOOL_NAME,
+      toolName: LIST_PREVIEW_SESSIONS_TOOL_NAME,
+      arguments: {},
+    });
+    expect(JSON.parse(listSessionsResult.contentItems[0]!.text)).toEqual({
+      sessions: [
+        {
+          preview_session_id: "preview-session-1",
+          title: "Demo",
+          url: "http://localhost:3000/demo",
+        },
+      ],
+    });
+
+    const readPageResult = await readPageRegistration!.handler({
+      runId: "run-1",
+      threadId: "thread-1",
+      turnId: null,
+      callId: "call-5",
+      toolName: READ_PREVIEW_PAGE_TOOL_NAME,
       arguments: {
         preview_session_id: "preview-session-1",
       },
     });
-    expect(JSON.parse(consoleLogsResult.contentItems[0]!.text)).toEqual({
+    expect(JSON.parse(readPageResult.contentItems[0]!.text)).toEqual({
       preview_session_id: "preview-session-1",
-      entries: [{ sequence: 1, level: "log", message: "ready", timestamp_iso: "2026-01-01T00:00:00.000Z" }],
-      next_sequence: 2,
+      url: "http://localhost:3000/demo",
+      cleaning_mode: "thorough",
+      content: "<main>Demo</main>",
+    });
+
+    const domSnapshotResult = await domSnapshotRegistration!.handler({
+      runId: "run-1",
+      threadId: "thread-1",
+      turnId: null,
+      callId: "call-6",
+      toolName: PREVIEW_DOM_SNAPSHOT_TOOL_NAME,
+      arguments: {
+        preview_session_id: "preview-session-1",
+      },
+    });
+    expect(JSON.parse(domSnapshotResult.contentItems[0]!.text)).toEqual({
+      preview_session_id: "preview-session-1",
+      url: "http://localhost:3000/demo",
+      schema_version: "autobyteus-preview-dom-snapshot-v1",
+      total_candidates: 1,
+      returned_elements: 1,
+      truncated: false,
+      elements: [
+        {
+          element_id: "e1",
+          tag_name: "button",
+          dom_id: null,
+          css_selector: "button:nth-of-type(1)",
+          role: null,
+          name: null,
+          text: "Run",
+          href: null,
+          value: null,
+          bounding_box: { x: 10, y: 20, width: 100, height: 30 },
+        },
+      ],
     });
 
     const executeJavascriptResult = await executeJavascriptRegistration!.handler({
       runId: "run-1",
       threadId: "thread-1",
       turnId: null,
-      callId: "call-5",
+      callId: "call-7",
       toolName: EXECUTE_PREVIEW_JAVASCRIPT_TOOL_NAME,
       arguments: {
         preview_session_id: "preview-session-1",
@@ -233,26 +324,11 @@ describe("buildPreviewDynamicToolRegistrations", () => {
       result_json: "{\"ready\":true}",
     });
 
-    const openDevToolsResult = await openDevToolsRegistration!.handler({
-      runId: "run-1",
-      threadId: "thread-1",
-      turnId: null,
-      callId: "call-6",
-      toolName: OPEN_PREVIEW_DEVTOOLS_TOOL_NAME,
-      arguments: {
-        preview_session_id: "preview-session-1",
-      },
-    });
-    expect(JSON.parse(openDevToolsResult.contentItems[0]!.text)).toEqual({
-      preview_session_id: "preview-session-1",
-      status: "opened",
-    });
-
     const closeResult = await closePreviewRegistration!.handler({
       runId: "run-1",
       threadId: "thread-1",
       turnId: null,
-      callId: "call-7",
+      callId: "call-8",
       toolName: CLOSE_PREVIEW_TOOL_NAME,
       arguments: {
         preview_session_id: "preview-session-1",

@@ -2,14 +2,15 @@ import { tool, BaseTool } from "autobyteus-ts";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
 import {
   EXECUTE_PREVIEW_JAVASCRIPT_TOOL_NAME,
-  buildExecutePreviewJavascriptParameterSchema,
-  toPreviewErrorPayload,
-  toPreviewJsonString,
 } from "./preview-tool-contract.js";
+import { getPreviewToolManifestEntry } from "./preview-tool-manifest.js";
+import { buildExecutePreviewJavascriptParameterSchema } from "./preview-tool-parameter-schemas.js";
+import { toPreviewErrorPayload, toPreviewJsonString } from "./preview-tool-serialization.js";
 import { getPreviewToolService } from "./preview-tool-service.js";
 
-const DESCRIPTION =
-  "Execute JavaScript inside an existing preview session and return the JSON-serialized result.";
+const DESCRIPTION = getPreviewToolManifestEntry(
+  EXECUTE_PREVIEW_JAVASCRIPT_TOOL_NAME,
+).description;
 const TOOL_CATEGORY = "Preview";
 const argumentSchema = buildExecutePreviewJavascriptParameterSchema();
 
@@ -64,4 +65,3 @@ export function registerExecutePreviewJavascriptTool(): BaseTool {
 
   return cachedTool;
 }
-

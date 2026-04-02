@@ -6,7 +6,7 @@ This review validates alignment with target (`to-be`) design behavior, not parit
 ## Review Meta
 
 - Scope Classification: `Large`
-- Current Round: `18`
+- Current Round: `22`
 - Current Review Type: `Deep Review`
 - Clean-Review Streak Before This Round: `1`
 - Clean-Review Streak After This Round: `2`
@@ -26,8 +26,8 @@ This review validates alignment with target (`to-be`) design behavior, not parit
 - Common Design Practices: `shared/common-design-practices.md`
 - Artifact Versions In This Round:
   - Requirements Status: `Refined`
-  - Design Version: `v8`
-  - Call Stack Version: `v8`
+  - Design Version: `v10`
+  - Call Stack Version: `v10`
 - Required Persisted Artifact Updates Completed For This Round: `N/A`
 
 ## Review Intent (Mandatory)
@@ -59,6 +59,10 @@ This review validates alignment with target (`to-be`) design behavior, not parit
 | 16 | Refined | v7 | v7 | Yes | Yes | Yes | Design Impact | `3 -> 4 -> 5` | 0 | Reset | No-Go |
 | 17 | Refined | v8 | v8 | No | No | N/A | N/A | N/A | 1 | Candidate Go | No-Go |
 | 18 | Refined | v8 | v8 | No | No | N/A | N/A | N/A | 2 | Go Confirmed | Go |
+| 19 | Refined | v9 | v9 | No | No | N/A | N/A | N/A | 1 | Candidate Go | No-Go |
+| 20 | Refined | v9 | v9 | No | No | N/A | N/A | N/A | 2 | Go Confirmed | Go |
+| 21 | Refined | v10 | v10 | No | No | Yes | N/A | N/A | 1 | Candidate Go | No-Go |
+| 22 | Refined | v10 | v10 | No | No | N/A | N/A | N/A | 2 | Go Confirmed | Go |
 
 ## Round Artifact Update Log (Mandatory)
 
@@ -82,6 +86,10 @@ This review validates alignment with target (`to-be`) design behavior, not parit
 | 16 | Yes | `proposed-design.md`, `future-state-runtime-call-stack.md`, `future-state-runtime-call-stack-review.md`, `workflow-state.md` | design `v7 -> v8`; call stack `v7 -> v8` | made the shell controller the only authority for preview-shell state, changed shell projection identity from renderer identity to main-process shell-host identity, and added shell bootstrap/reconnect recovery flow plus authoritative snapshot-driven renderer projection | `F-009`, `F-010` |
 | 17 | No | N/A | N/A | N/A | N/A |
 | 18 | No | N/A | N/A | N/A | N/A |
+| 19 | No | N/A | N/A | N/A | N/A |
+| 20 | No | N/A | N/A | N/A | N/A |
+| 21 | No | `proposed-design.md`, `future-state-runtime-call-stack.md`, `future-state-runtime-call-stack-review.md`, `workflow-state.md` | design `v9 -> v10`; call stack `v9 -> v10` | split preview tool boundary into contract/normalizer/manifest/schema owners, split preview session boundary into lifecycle/navigation/page-operation owners, removed compatibility aliases from the target contract, and split Codex parsing by subject in the design basis | `CR-001`, `CR-002`, `CR-003`, `CR-004`, `CR-005` |
+| 22 | No | N/A | N/A | N/A | N/A |
 
 ## Missing-Use-Case Discovery Log (Mandatory Per Round)
 
@@ -105,47 +113,31 @@ This review validates alignment with target (`to-be`) design behavior, not parit
 | 16 | Requirement coverage / boundary crossing / fallback-error / design-risk | UC-011 | Design-Risk | the v7 design allowed sessions to remain valid while unattached and shifted shell truth into Electron main, but it never modeled shell bootstrap/reconnect recovery or a single authoritative snapshot path | Design Impact | Yes |
 | 17 | Requirement coverage / boundary crossing / fallback-error / design-risk | None | N/A | corrected v8 design and call stacks closed the prior shell-authority/reconnect gap without exposing a new use case | N/A | No |
 | 18 | Requirement coverage / boundary crossing / fallback-error / design-risk | None | N/A | second clean verification of the corrected v8 basis did not surface any new use case | N/A | No |
+| 19 | Requirement coverage / boundary crossing / fallback-error / design-risk | None | N/A | the v9 eight-tool contract refinement removed console-log and DevTools scope cleanly and did not expose a new use case beyond the existing follow-up preview-action spine | N/A | No |
+| 20 | Requirement coverage / boundary crossing / fallback-error / design-risk | None | N/A | second clean verification of the v9 eight-tool preview basis did not surface any new use case | N/A | No |
+| 21 | Requirement coverage / boundary crossing / fallback-error / design-risk | None | N/A | the v10 structural split resolves Stage 8 ownership and size issues without adding product-scope use cases beyond the existing preview shell and preview tool flows | N/A | No |
+| 22 | Requirement coverage / boundary crossing / fallback-error / design-risk | None | N/A | second clean verification of the v10 structural redesign did not surface any new use case | N/A | No |
 
 ## Per-Use-Case Review
 
 | Use Case | Spine ID(s) | Architecture Fit (`Pass`/`Fail`) | Data-Flow Spine Clarity (`Pass`/`Fail`) | Spine Inventory Completeness (`Pass`/`Fail`) | Ownership Clarity (`Pass`/`Fail`) | Support Structure Clarity (`Pass`/`Fail`) | Existing Capability/Subsystem Reuse (`Pass`/`Fail`/`N/A`) | Ownership-Driven Dependency Check (`Pass`/`Fail`) | File Placement Alignment (`Pass`/`Fail`) | Flat-Vs-Over-Split Layout Judgment (`Pass`/`Fail`) | Interface/API/Method Boundary Clarity (`Pass`/`Fail`) | Existing-Structure Bias Check (`Pass`/`Fail`) | Anti-Hack Check (`Pass`/`Fail`) | Local-Fix Degradation Check (`Pass`/`Fail`) | Example-Based Clarity (`Pass`/`Fail`/`N/A`) | Terminology & Concept Naturalness (`Pass`/`Fail`) | File And API Naming Clarity (`Pass`/`Fail`) | Name-to-Responsibility Alignment Under Scope Drift (`Pass`/`Fail`) | Future-State Alignment With Design Basis (`Pass`/`Fail`) | Use-Case Coverage Completeness (`Pass`/`Fail`) | Use-Case Source Traceability (`Pass`/`Fail`) | Design-Risk Justification Quality (`Pass`/`Fail`/`N/A`) | Business Flow Completeness (`Pass`/`Fail`) | Scope-Appropriate SoC Check (`Pass`/`Fail`) | Dependency Flow Smells | Redundancy/Duplication Check (`Pass`/`Fail`) | Simplification Opportunity Check (`Pass`/`Fail`) | Remove/Decommission Completeness (`Pass`/`Fail`/`N/A`) | Legacy Retention Removed (`Pass`/`Fail`) | No Compatibility Wrappers/Dual Paths (`Pass`/`Fail`) | Verdict (`Pass`/`Fail`) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| UC-001 | DS-001 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | N/A | Pass | Pass | Pass |
-| UC-002 | DS-002 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | N/A | Pass | Pass | Pass |
-| UC-003 | DS-002 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | N/A | Pass | Pass | Pass |
-| UC-004 | DS-002 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | N/A | Pass | Pass | Pass |
-| UC-005 | DS-004 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | N/A | Pass | Pass | Pass |
-| UC-006 | DS-003 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | N/A | Pass | Pass | Pass |
-| UC-007 | DS-005 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | N/A | Pass | Pass | Pass |
+| UC-001 | DS-001 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | Pass | Pass | Pass | Pass |
+| UC-002 | DS-002 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | Pass | Pass | Pass | Pass |
+| UC-003 | DS-002 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | Pass | Pass | Pass | Pass |
+| UC-004 | DS-002 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | Pass | Pass | Pass | Pass |
+| UC-005 | DS-004 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | Pass | Pass | Pass | Pass |
+| UC-006 | DS-003 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | Pass | Pass | Pass | Pass |
+| UC-007 | DS-005 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | Pass | Pass | Pass | Pass |
 | UC-008 | DS-006 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | None | Pass | Pass | Pass | Pass | Pass | Pass |
-| UC-009 | DS-007 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | None | Pass | Pass | N/A | Pass | Pass | Pass |
-| UC-010 | DS-008 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | None | Pass | Pass | N/A | Pass | Pass | Pass |
-| UC-011 | DS-005 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | None | Pass | Pass | N/A | Pass | Pass | Pass |
+| UC-009 | DS-007 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | None | Pass | Pass | Pass | Pass | Pass | Pass |
+| UC-010 | DS-008 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | None | Pass | Pass | Pass | Pass | Pass | Pass |
+| UC-011 | DS-009 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | None | Pass | Pass | Pass | Pass | Pass | Pass |
+| UC-012 | DS-010 | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | N/A | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | None | Pass | Pass | Pass | Pass | Pass | Pass |
 
 ## Findings
 
-- `[F-001] Use case: design basis / all use cases | Type: Spine | Severity: Blocker | Confidence: High | Evidence: previous v1 artifacts modeled the flows but did not explicitly include the required data-flow spine inventory, spine-first organization, or use-case-to-spine mapping mandated by the workflow templates | Required update: rewrite proposed design and future-state runtime call stack to be spine-first and template-complete, then rerun review | Classification: Design Impact`
-- Round 2 findings: `None`
-- Round 3 findings: `None`
-- `[F-002] Use case: UC-006 / DS-004 | Type: Simplification / Scope | Severity: Blocker | Confidence: High | Evidence: the approved MVP chooses dedicated preview windows, but the current design still adds `preload.ts` preview APIs, `previewSessionStore.ts`, and renderer snapshot/update flow as in-scope architecture. That creates avoidable UI/event surface area without serving the core preview-session contract. | Required update: narrow v1 so native close only updates authoritative owner state and later lookup semantics; move renderer preview projection out of v1 scope and remove it from the main spine inventory, file mapping, and call stacks. | Classification: Design Impact`
-- `[F-003] Use case: UC-001, UC-002, UC-003, UC-004, UC-005 | Type: Ownership / Repeated Coordination | Severity: Blocker | Confidence: High | Evidence: capability gating and shared preview command semantics are still spread across runtime adapters plus the bridge client. The design lacks one backend-owned policy boundary for repeated preview coordination, which conflicts with the repeated-coordination trigger in the common practices. | Required update: introduce one backend `PreviewToolService` that owns capability checks, semantic normalization, and shared bridge delegation so runtime adapters remain translation-only. Regenerate the design basis and call stacks around that owner. | Classification: Design Impact`
-- Round 5 findings: `None`
-- Round 6 findings: `None`
-- `[F-004] Use case: design basis / UC-002 / UC-003 / UC-004 / UC-005 | Type: Interface / Example Clarity | Severity: Blocker | Confidence: High | Evidence: the v3 design names `OpenPreviewInput`, `OpenPreviewResult`, and shared contract ownership, but it never actually shows the canonical field shapes for create/open, follow-up operations, or normalized errors. That leaves AC-002 under-specified and weakens adapter-parity and API-boundary clarity. | Required update: add an explicit canonical preview contract section with concrete request/response/error shapes, identity semantics for `preview_session_id`, and a short good-shape example. | Classification: Design Impact`
-- `[F-005] Use case: UC-002 / UC-003 / UC-004 / UC-005 | Type: Boundary / Ownership | Severity: Blocker | Confidence: High | Evidence: the ownership map says runtime adapters own translation, but the future-state call stacks still pass `rawInput` into `PreviewToolService`, which then builds `OpenPreviewInput` and `CapturePreviewScreenshotInput` itself. The v3 text also overstates reuse of an existing backend `desktop-shell` boundary that does not currently exist in the codebase. This blurs the adapter/service boundary and weakens file-placement truthfulness. | Required update: make adapters or shared-contract parsers produce canonical input shapes before `PreviewToolService` is called, narrow `PreviewToolService` to support checks plus semantic/result normalization and bridge delegation, and correct the backend capability-area rationale to `Create New` with explicit justification. | Classification: Design Impact`
-- Round 8 findings: `None`
-- Round 9 findings: `None`
-- `[F-006] Use case: UC-002 / UC-003 / UC-004 | Type: Contract / Implementability | Severity: Blocker | Confidence: High | Evidence: the canonical contract currently allows `wait_until='networkidle'`, but the v1 preview surface is modeled on Electron `webContents` loading events and `BrowserWindow.webContents.loadURL(...)`; the official Electron API documents load completion/failure events, not a native `networkidle` wait mode. That makes the public contract broader than the chosen owner/boundary can truthfully guarantee in v1. | Required update: narrow the canonical wait semantics to Electron-grounded modes for v1 and update the design/call-stack narratives accordingly. | Classification: Design Impact`
-- `[F-007] Use case: UC-005 / UC-006 / UC-007 | Type: Contract / Error Semantics | Severity: Blocker | Confidence: High | Evidence: the design and call stack still say later lookups may throw either `preview_session_closed` or `preview_session_not_found`, but they never define when each one applies. Because both errors are part of the public session contract, the owner must specify the identity/lifecycle rule rather than leaving tests and adapters to infer it. | Required update: define explicit closed-vs-not-found semantics in the canonical contract and bounded local spine, then regenerate the affected call stacks to use the concrete rule instead of an ambiguous either-or branch. | Classification: Design Impact`
-- Round 11 findings: `None`
-- Round 12 findings: `None`
-- `[F-008] Use case: design basis / UC-001 / UC-002 / UC-003 / UC-004 / UC-005 | Type: File Placement / Existing-Structure Reuse | Severity: Blocker | Confidence: High | Evidence: the v5 design still places preview-specific contract code in `autobyteus-ts/src/preview` and shared server-side preview coordination in a new `autobyteus-server-ts/src/desktop-shell/preview` capability area. The clarified ownership is narrower: preview exists only when the Electron shell is present, and all runtime adapters that need the preview contract already live in `autobyteus-server-ts`. Keeping preview-specific semantics in the common library and inventing a generic backend shell boundary weakens existing-structure reuse and file-placement truthfulness. | Required update: move the preview-specific contract, shared server-side preview coordination, bridge client, and native-runtime preview tool files under `autobyteus-server-ts/src/agent-tools/preview`, regenerate the subsystem/file mappings, and rerun the call-stack artifact against that placement. | Classification: Design Impact`
-- Round 14 findings: `None`
-- Round 15 findings: `None`
-- `[F-009] Use case: UC-005 / UC-007 / UC-010 | Type: Encapsulation / Ownership | Severity: Blocker | Confidence: High | Evidence: the v7 shell-tab design let `toolLifecycleHandler -> previewShellStore` mark the outer Preview tab visible and derive internal preview state directly from tool results, while `PreviewShellController` was also supposed to own shell projection and snapshots. That created parallel preview-shell truth and violated the boundary-encapsulation rule for the shell projection owner. | Required update: make `PreviewShellController` the sole authority for preview-shell state, keep tool results as bounded focus triggers only, and regenerate the design/call-stack basis around snapshot-driven renderer projection. | Classification: Design Impact`
-- `[F-010] Use case: UC-005 / UC-007 / UC-010 / new UC-011 | Type: InterfaceBoundary / MissingUseCase | Severity: Blocker | Confidence: High | Evidence: the v7 call stack modeled shell projection around `shellRendererId` and tool-result-triggered claiming, even though the design already allowed preview sessions to remain valid while unattached. That left shell identity tied to renderer lifetime and omitted the required shell bootstrap/reconnect recovery path. | Required update: move shell projection identity to a main-process-owned shell window/host identity, add an explicit shell bootstrap/reconnect recovery use case, and regenerate the call stacks around that identity model. | Classification: Design Impact`
-- Round 17 findings: `None`
-- Round 18 findings: `None`
+None.
 
 ## Blocking Findings Summary
 
@@ -192,6 +184,9 @@ This review validates alignment with target (`to-be`) design behavior, not parit
   - No compatibility wrappers/dual paths retained for old behavior: `Yes`
   - Two consecutive deep-review rounds have no blockers, no required persisted artifact updates, and no newly discovered use cases: `Yes`
   - Findings trend quality is acceptable across rounds: `Yes`
+- Notes:
+  - The v10 design basis resolves the Stage 8 structural issues without reopening product scope.
+  - The key review decision in rounds 21 and 22 is that the bounded local preview session spine, the shared preview tool surface, the contract boundary, and the Codex parsing subject split are now explicit and properly owned in the target design.
 
 ## Speak Log (Optional Tracking)
 

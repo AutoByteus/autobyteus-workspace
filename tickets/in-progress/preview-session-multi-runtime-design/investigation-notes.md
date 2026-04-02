@@ -282,3 +282,166 @@ The investigation supports this direction for Stage 3 design:
 - `rg -n "ipcMain.handle|contextBridge.exposeInMainWorld|BrowserWindow|preview" ...`
 - `rg -n "preview_session|open_preview|capture_preview|close_preview" autobyteus-web autobyteus-server-ts autobyteus-ts`
 
+---
+
+## Stage 8 Re-Entry Investigation Addendum
+
+Stage 8 independent code review failed with `Design Impact`. The current implementation is functionally working, but the code no longer satisfies the workflow’s shared design principles and hard Stage 8 structural rules.
+
+### Re-entry findings that must reshape the next design pass
+
+#### RI-001. The bounded local preview-session spine is obscured inside one oversized Electron owner
+
+`autobyteus-web/electron/preview/preview-session-manager.ts` is now `613` effective non-empty lines and mixes:
+
+- session lifecycle and reuse,
+- ready-state waiting,
+- page read and cleaning,
+- DOM snapshot execution,
+- JavaScript execution,
+- full-page screenshot resizing,
+- view accessors and viewport mutation,
+- tombstone retention and close cleanup.
+
+This makes the bounded local preview-session spine hard to trace and violates the Stage 8 hard-limit rule.
+
+#### RI-002. The preview tool boundary does not have a tight owned contract file
+
+`autobyteus-server-ts/src/agent-tools/preview/preview-tool-contract.ts` is now `535` effective non-empty lines and owns:
+
+- canonical tool names and DTOs,
+- environment constants,
+- coercion helpers,
+- input parsers,
+- semantic assertions,
+- native `ParameterSchema` builders,
+- preview error serialization.
+
+That boundary is no longer “contract only”; it is a mixed concern blob and must be split before the next implementation pass.
+
+#### RI-003. Runtime adapter surfaces still duplicate the preview tool manifest
+
+The eight-tool preview surface is repeated in:
+
+- `autobyteus-server-ts/src/agent-execution/backends/codex/preview/build-preview-dynamic-tool-registrations.ts`
+- `autobyteus-server-ts/src/agent-execution/backends/claude/preview/build-claude-preview-tool-definitions.ts`
+
+Both files restate the tool names, descriptions, parameter semantics, parse calls, and service dispatch. The next design pass must give that repeated structure one owner.
+
+#### RI-004. The stable preview tool contract still preserves compatibility aliases
+
+The current preview input parsing still accepts alternate spellings such as:
+
+- `window_title`
+- camelCase `waitUntil`
+- camelCase `previewSessionId`
+- camelCase `cleaningMode`
+- camelCase `fullPage`
+- camelCase `includeNonInteractive`
+- camelCase `includeBoundingBoxes`
+- camelCase `maxElements`
+
+That violates the workflow’s no-backward-compatibility rule for the in-scope stable preview surface.
+
+#### RI-005. Preview-related result parsing was added into an already-over-limit Codex payload parser
+
+`autobyteus-server-ts/src/agent-execution/backends/codex/events/codex-item-event-payload-parser.ts` is now `514` effective non-empty lines and continues to accumulate unrelated runtime parsing responsibilities. The next design pass must decide how preview/tool-result parsing should be split out or otherwise stop growing this boundary.
+
+### Investigation direction reopened by Stage 8
+
+The next investigation/design chain must answer:
+
+- what the tight owned split is for the Electron preview-session owner,
+- what the tight owned split is for the preview tool contract boundary,
+- which single owned structure should define the preview tool manifest across runtime adapters,
+- where canonical preview request normalization belongs once compatibility aliases are removed,
+- whether the Codex payload parser should split by subject or move preview/tool-result parsing into a tighter owned parser boundary.
+
+### Current-state split targets identified during re-entry investigation
+
+#### ST-001. Preview tool boundary split target
+
+The next design pass should stop treating `preview-tool-contract.ts` as the universal file.
+The current state supports a tighter split:
+
+- keep one canonical contract file for:
+  - stable tool names,
+  - canonical request/result DTOs,
+  - canonical error vocabulary,
+- move request coercion / parsing into a separate input-normalization owner,
+- move semantic validation into a separate validation owner or keep it only where it still fits tightly,
+- move native `ParameterSchema` builders out of the contract file,
+- introduce one owned preview tool manifest/catalog file that defines:
+  - canonical tool descriptions,
+  - canonical tool ordering,
+  - canonical per-tool parameter intent,
+  - canonical dispatch target / parser pairing used by runtime adapters.
+
+The key rule is that the runtime adapters should no longer re-state the preview tool surface independently.
+
+#### ST-002. Electron preview owner split target
+
+The next design pass should preserve `PreviewSessionManager` as the authoritative session owner, but move non-lifecycle support concerns around it instead of leaving everything in one file.
+
+Current-state facts suggest this split:
+
+- one session contract/types file for request/result/error/record/summary shapes,
+- one session-lifecycle owner file for:
+  - open / reuse / navigate / close,
+  - session registry invariants,
+  - tombstones,
+  - session identity generation,
+  - view lookup / summary lookup,
+- one navigation / ready-state concern for:
+  - URL normalization,
+  - ready-state wait,
+  - page-title settlement,
+- one page-operations concern for:
+  - read page,
+  - DOM snapshot,
+  - JavaScript execution,
+  - screenshot capture / full-page resize handling.
+
+This keeps the bounded local preview-session spine visible while still allowing page-level behavior to remain under the preview subsystem rather than leaking outward.
+
+#### ST-003. Runtime tool-surface reuse target
+
+The repeated eight-tool surface in Codex and Claude should be owned once under `agent-tools/preview`, then projected outward.
+
+The next design pass should evaluate one manifest/catalog shape that can drive:
+
+- native preview tool registration,
+- Codex dynamic tool registrations,
+- Claude MCP tool definitions.
+
+The adapter files should stay translation-only:
+
+- Codex owns JSON-schema projection and dynamic-tool wrapper behavior.
+- Claude owns Zod/MCP projection and MCP wrapper behavior.
+- Neither runtime adapter should own the preview tool surface definition itself.
+
+#### ST-004. Codex parser split target
+
+The next design pass should treat `codex-item-event-payload-parser.ts` as an overgrown mixed parser and split it by subject.
+
+The current-state candidate split is:
+
+- core segment / invocation identity parsing,
+- tool-invocation argument + tool-result parsing,
+- web-search-specific parsing,
+- reasoning/text collection helpers.
+
+The preview work specifically increased the pressure on the tool-result part, so the redesign should make that a distinct owned parser concern instead of adding more result decoding into the top-level item parser.
+
+### Investigation conclusion for re-entry
+
+Stage 1 is now specific enough to reopen design:
+
+- the re-entry is not a requirement problem,
+- the re-entry is not mainly a validation problem,
+- the re-entry is a structural ownership / bounded-local-spine problem,
+- the redesign should focus on:
+  - splitting oversized owners,
+  - introducing one owned preview tool manifest,
+  - removing compatibility aliases from the stable preview contract,
+  - splitting the Codex payload parser by subject before more preview behavior lands there.
