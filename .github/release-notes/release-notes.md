@@ -1,10 +1,10 @@
 ## What's New
-- Added support for team-local agents stored inside each team folder and referenced explicitly from team definitions.
-- Added team-owned agents to the main Agents page so they can be viewed and edited from the same surface as shared agents.
+- Preview now opens popup and new-window requests as additional in-app Preview tabs instead of blocking them outright.
 
 ## Improvements
-- Improved team configuration with explicit shared versus team-local agent member scope.
-- Renamed the old Definition Sources surface to Agent Package Roots across settings and import management.
+- Popup-created Preview tabs stay attached to the same shell and continue to use the existing Preview session model.
+- Preview popup handling now adopts Electron-provided guest webContents correctly, keeping the popup flow closer to normal browser behavior.
 
 ## Fixes
-- Fixed sync export to reject broken team-local agent references before a bundle is created.
+- Fixed a main-process crash when Google-login popups were opened from sites such as X and LinkedIn inside Preview.
+- Fixed the packaged popup flow so the Google Accounts tab can open without the previous `Invalid webContents` error.
