@@ -19,9 +19,10 @@ The goal is to keep architecture and module docs close to the actual Node.js/Typ
 Initialization order is critical in the TS server:
 
 1. Parse CLI args.
-2. Set custom app data directory (`--data-dir`) if provided.
+2. Initialize `appConfigProvider` with the effective app data directory (`--data-dir`) if provided.
 3. Initialize `AppConfig`.
-4. Run migrations and start transport layers.
+4. Import `src/server-runtime.ts` after bootstrap completes.
+5. Run migrations and start transport layers.
 
 This ordering exists because configuration and database clients depend on environment and path state that must be finalized before services are instantiated.
 

@@ -21,6 +21,10 @@ const logger = {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+export type AppConfigOptions = {
+  appDataDir?: string | null;
+};
+
 export class AppConfig {
   private isWindows: boolean;
   private appRootDir: string;
@@ -30,15 +34,19 @@ export class AppConfig {
   private initialized = false;
   private baseUrl: string | null = null;
 
-  constructor() {
+  constructor(options: AppConfigOptions = {}) {
     this.isWindows = process.platform === "win32";
     console.info(`Platform detection: Windows=${this.isWindows}`);
 
     this.appRootDir = this.getAppRootDirInternal();
     console.info(`App root directory: ${this.appRootDir}`);
 
-    this.dataDir = this.appRootDir;
-    console.info(`Data directory: ${this.dataDir}`);
+    const configuredAppDataDir =
+      typeof options.appDataDir === "string" && options.appDataDir.trim().length > 0
+        ? path.resolve(options.appDataDir.trim())
+        : null;
+    this.dataDir = configuredAppDataDir ?? this.appRootDir;
+    console.info(`App data directory: ${this.dataDir}`);
 
     logger.debug("AppConfig instance created.");
   }

@@ -104,6 +104,16 @@ describe("AppConfig", () => {
     await fsPromises.rm(configDir, { recursive: true, force: true });
   });
 
+  it("accepts an initial app data dir in the constructor", async () => {
+    const configDir = await createTempConfigDir("AUTOBYTEUS_SERVER_HOST=http://localhost:8000\n");
+    const config = new AppConfig({ appDataDir: configDir });
+
+    expect(config.getAppDataDir()).toBe(configDir);
+    expect(config.getConfigFilePath()).toBe(path.join(configDir, ".env"));
+
+    await fsPromises.rm(configDir, { recursive: true, force: true });
+  });
+
   it("clears stale AUTOBYTEUS_MEMORY_DIR when switching to a custom app data dir", async () => {
     const configDir = await createTempConfigDir("AUTOBYTEUS_SERVER_HOST=http://localhost:8000\n");
     process.env.AUTOBYTEUS_MEMORY_DIR = "/tmp/old-memory-root";
