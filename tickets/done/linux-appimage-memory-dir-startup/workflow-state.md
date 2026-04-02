@@ -8,11 +8,11 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 
 - Ticket: `linux-appimage-memory-dir-startup`
 - Current Stage: `10`
-- Next Stage: `User verification / finalize`
+- Next Stage: `Completed`
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-027`
+- Last Transition ID: `T-028`
 - Last Updated: `2026-04-02`
 
 ## Stage 0 Bootstrap Record
@@ -32,17 +32,17 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 
 | Stage | Gate Status (`Not Started`/`In Progress`/`Pass`/`Fail`/`Blocked`) | Gate Rule Summary | Evidence |
 | --- | --- | --- | --- |
-| 0 Bootstrap + Draft Requirement | Pass | Ticket bootstrap complete + if git repo: base branch resolved, remote freshness handled, dedicated ticket worktree/branch created + `requirements.md` Draft captured | `tickets/in-progress/linux-appimage-memory-dir-startup/requirements.md`, `tickets/in-progress/linux-appimage-memory-dir-startup/workflow-state.md` |
-| 1 Investigation + Triage | Pass | `investigation-notes.md` current + scope triage recorded | `tickets/in-progress/linux-appimage-memory-dir-startup/investigation-notes.md` |
-| 2 Requirements | Pass | `requirements.md` is `Design-ready`/`Refined` | `tickets/in-progress/linux-appimage-memory-dir-startup/requirements.md` |
-| 3 Design Basis | Pass | Design basis updated for scope (`implementation.md` solution sketch or `proposed-design.md`) | `tickets/in-progress/linux-appimage-memory-dir-startup/proposed-design.md` |
-| 4 Future-State Runtime Call Stack | Pass | `future-state-runtime-call-stack.md` current | `tickets/in-progress/linux-appimage-memory-dir-startup/future-state-runtime-call-stack.md` |
-| 5 Future-State Runtime Call Stack Review | Pass | Future-state runtime call stack review `Go Confirmed` | `tickets/in-progress/linux-appimage-memory-dir-startup/future-state-runtime-call-stack-review.md` |
-| 6 Implementation | Pass | Local-fix cleanup completed; bootstrap proxy export removed and public surface tightened | `tickets/in-progress/linux-appimage-memory-dir-startup/implementation-progress.md`, `tickets/in-progress/linux-appimage-memory-dir-startup/workflow-state.md` |
-| 7 API/E2E + Executable Validation | Pass | Focused regression suite and server build rerun successfully after the cleanup | `tickets/in-progress/linux-appimage-memory-dir-startup/api-e2e-testing.md`, `tickets/in-progress/linux-appimage-memory-dir-startup/workflow-state.md` |
-| 8 Code Review | Pass | User-requested additional deep review round completed with no new findings | `tickets/in-progress/linux-appimage-memory-dir-startup/code-review.md`, `tickets/in-progress/linux-appimage-memory-dir-startup/workflow-state.md` |
-| 9 Docs Sync | Pass | Repeat deep review caused no further docs changes | `tickets/in-progress/linux-appimage-memory-dir-startup/docs-sync.md`, `tickets/in-progress/linux-appimage-memory-dir-startup/workflow-state.md` |
-| 10 Handoff / Ticket State | Pass | Handoff updated to reflect the repeat deep review result | `tickets/in-progress/linux-appimage-memory-dir-startup/handoff-summary.md`, `tickets/in-progress/linux-appimage-memory-dir-startup/workflow-state.md` |
+| 0 Bootstrap + Draft Requirement | Pass | Ticket bootstrap complete + if git repo: base branch resolved, remote freshness handled, dedicated ticket worktree/branch created + `requirements.md` Draft captured | `tickets/done/linux-appimage-memory-dir-startup/requirements.md`, `tickets/done/linux-appimage-memory-dir-startup/workflow-state.md` |
+| 1 Investigation + Triage | Pass | `investigation-notes.md` current + scope triage recorded | `tickets/done/linux-appimage-memory-dir-startup/investigation-notes.md` |
+| 2 Requirements | Pass | `requirements.md` is `Design-ready`/`Refined` | `tickets/done/linux-appimage-memory-dir-startup/requirements.md` |
+| 3 Design Basis | Pass | Design basis updated for scope (`implementation.md` solution sketch or `proposed-design.md`) | `tickets/done/linux-appimage-memory-dir-startup/proposed-design.md` |
+| 4 Future-State Runtime Call Stack | Pass | `future-state-runtime-call-stack.md` current | `tickets/done/linux-appimage-memory-dir-startup/future-state-runtime-call-stack.md` |
+| 5 Future-State Runtime Call Stack Review | Pass | Future-state runtime call stack review `Go Confirmed` | `tickets/done/linux-appimage-memory-dir-startup/future-state-runtime-call-stack-review.md` |
+| 6 Implementation | Pass | Local-fix cleanup completed; bootstrap proxy export removed and public surface tightened | `tickets/done/linux-appimage-memory-dir-startup/implementation-progress.md`, `tickets/done/linux-appimage-memory-dir-startup/workflow-state.md` |
+| 7 API/E2E + Executable Validation | Pass | Focused regression suite and server build rerun successfully after the cleanup | `tickets/done/linux-appimage-memory-dir-startup/api-e2e-testing.md`, `tickets/done/linux-appimage-memory-dir-startup/workflow-state.md` |
+| 8 Code Review | Pass | User-requested additional deep review round completed with no new findings | `tickets/done/linux-appimage-memory-dir-startup/code-review.md`, `tickets/done/linux-appimage-memory-dir-startup/workflow-state.md` |
+| 9 Docs Sync | Pass | Repeat deep review caused no further docs changes | `tickets/done/linux-appimage-memory-dir-startup/docs-sync.md`, `tickets/done/linux-appimage-memory-dir-startup/workflow-state.md` |
+| 10 Handoff / Ticket State | Pass | Ticket archived, target branch finalized into `origin/personal`, release not required, and required local cleanup completed | `tickets/done/linux-appimage-memory-dir-startup/handoff-summary.md`, `tickets/done/linux-appimage-memory-dir-startup/workflow-state.md` |
 
 ## Pre-Edit Checklist (Stage 6 Source-Code Edits)
 
@@ -93,6 +93,7 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | T-025 | 2026-04-02 | 10 | 8 | User requested another deep review round before finalizing | N/A | Locked | `workflow-state.md` |
 | T-026 | 2026-04-02 | 8 | 9 | Repeat deep review completed with no new findings; docs-sync rechecked | N/A | Locked | `code-review.md`, `docs-sync.md`, `workflow-state.md` |
 | T-027 | 2026-04-02 | 9 | 10 | Handoff refreshed after repeat deep review round | N/A | Locked | `handoff-summary.md`, `workflow-state.md` |
+| T-028 | 2026-04-02 | 10 | 10 | User verification received; ticket archived, ticket branch pushed, `personal` updated and pushed, release skipped, and local cleanup completed | N/A | Locked | `handoff-summary.md`, `workflow-state.md` |
 
 ## Audible Notification Log (Optional Tracking)
 
