@@ -6,6 +6,7 @@ import {
 } from './preview-session-types'
 
 const ALLOWED_PROTOCOLS = new Set(['http:', 'https:', 'file:'])
+const POPUP_ALLOWED_PROTOCOLS = new Set(['http:', 'https:', 'file:', 'about:'])
 
 export class PreviewSessionNavigation {
   normalizeUrl(value: string): string {
@@ -31,6 +32,39 @@ export class PreviewSessionNavigation {
       throw new PreviewSessionError(
         'preview_navigation_failed',
         `Unsupported preview URL protocol '${parsed.protocol}'.`,
+      )
+    }
+
+    return parsed.toString()
+  }
+
+  normalizePopupUrl(value: string): string {
+    const normalizedValue = typeof value === 'string' ? value.trim() : ''
+    if (!normalizedValue) {
+      return 'about:blank'
+    }
+
+    let parsed: URL
+    try {
+      parsed = new URL(normalizedValue)
+    } catch {
+      throw new PreviewSessionError(
+        'preview_navigation_failed',
+        `Invalid preview popup URL '${normalizedValue}'.`,
+      )
+    }
+
+    if (!POPUP_ALLOWED_PROTOCOLS.has(parsed.protocol)) {
+      throw new PreviewSessionError(
+        'preview_navigation_failed',
+        `Unsupported preview popup URL protocol '${parsed.protocol}'.`,
+      )
+    }
+
+    if (parsed.protocol === 'about:' && parsed.toString() !== 'about:blank') {
+      throw new PreviewSessionError(
+        'preview_navigation_failed',
+        `Unsupported preview popup URL '${parsed.toString()}'.`,
       )
     }
 

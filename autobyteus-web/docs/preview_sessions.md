@@ -101,6 +101,20 @@ This keeps session lifecycle and shell projection separate:
 - session truth stays app-global
 - shell ownership stays explicit and bounded
 
+## Popup And New-Tab Behavior
+
+Preview now supports browser-like popup/new-window behavior inside the app.
+
+Rules:
+
+- `window.open()` from a previewed page becomes another in-app Preview tab/session instead of a separate OS window
+- popup-created sessions share the same default Electron browser profile as other Preview tabs
+- popup requests are accepted only when the opener session is currently leased into a shell
+- popup fan-out is bounded per opener session, so one page cannot create unlimited child tabs
+- unsupported protocols are still denied; `about:blank` is allowed because some popup flows bootstrap from it
+
+This keeps Preview browser-like without turning the shell into an uncontrolled multi-window surface.
+
 ## Runtime Flow
 
 ### Open preview
@@ -131,6 +145,16 @@ Examples:
 These operations go through the server preview boundary to Electron main.
 They do not depend on renderer DOM ownership.
 
+### Popup-created tabs
+
+Popup-created tabs are first-class preview sessions.
+
+That means:
+
+- they receive their own `preview_session_id`
+- they can be focused and closed through the same Preview shell
+- follow-up tools such as `read_preview_page`, `capture_preview_screenshot`, `preview_dom_snapshot`, and `execute_preview_javascript` work on them the same way they work on tabs opened through `open_preview`
+
 ## Renderer Projection
 
 The renderer does not render web content directly.
@@ -154,6 +178,18 @@ Runtime-specific raw result shapes are normalized into canonical preview tool ev
 
 Claude preview tools are exposed through MCP projection.
 MCP-prefixed raw tool names are normalized into canonical preview tool names at the Claude event-converter boundary.
+
+## OAuth / Social Login Limits
+
+Popup support removes the old in-app popup block, which is why popup-driven login flows such as X -> Google can now progress inside Preview tabs.
+
+However, Preview is still an embedded Electron browser surface.
+Some providers may reject embedded OAuth/user-agent flows for policy reasons even when popup handling is correct.
+
+Treat social/OAuth behavior as best-effort:
+
+- popup/login flows should no longer fail because Preview denied the popup
+- provider-side embedded-login rejection may still happen and is not treated as a Preview-shell regression
 
 ## Validation Expectations
 

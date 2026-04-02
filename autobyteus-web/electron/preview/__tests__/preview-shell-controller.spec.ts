@@ -5,6 +5,7 @@ import { PreviewShellController } from "../preview-shell-controller";
 
 class FakeWebContents extends EventEmitter {
   private readonly pendingLoads = new Map<string, { resolve: () => void; reject: (error: Error) => void }>();
+  private windowOpenHandler: ((details: any) => any) | null = null;
   focusCount = 0;
 
   async loadURL(url: string): Promise<void> {
@@ -33,6 +34,42 @@ class FakeWebContents extends EventEmitter {
     return { width: 1200, height: 800 };
   }
 
+  setWindowOpenHandler(handler: (details: any) => any): void {
+    this.windowOpenHandler = handler;
+  }
+
+  openWindow(url: string): any {
+    if (!this.windowOpenHandler) {
+      throw new Error("window open handler is not installed");
+    }
+
+    const response = this.windowOpenHandler({
+      url,
+      frameName: "",
+      features: "",
+      disposition: "new-window",
+      referrer: { url: "", policy: "strict-origin-when-cross-origin" },
+      postBody: null,
+    });
+
+    if (response.action !== "allow" || typeof response.createWindow !== "function") {
+      return response;
+    }
+
+    const popupWebContents = new FakeWebContents();
+    const createdWebContents = response.createWindow({ webContents: popupWebContents });
+    if (createdWebContents !== popupWebContents) {
+      throw new Error(
+        "Invalid webContents. Created window should be connected to webContents passed with options object.",
+      );
+    }
+
+    return {
+      ...response,
+      createdWebContents,
+    };
+  }
+
   close(): void {
     this.emit("destroyed");
   }
@@ -47,8 +84,12 @@ class FakeWebContents extends EventEmitter {
 }
 
 class FakeWebContentsView {
-  readonly webContents = new FakeWebContents();
+  readonly webContents: FakeWebContents;
   bounds = { x: 0, y: 0, width: 0, height: 0 };
+
+  constructor(webContents?: FakeWebContents) {
+    this.webContents = webContents ?? new FakeWebContents();
+  }
 
   setBounds(bounds: { x: number; y: number; width: number; height: number }): void {
     this.bounds = { ...bounds };
@@ -97,8 +138,8 @@ describe("PreviewShellController", () => {
     const views: FakeWebContentsView[] = [];
     const manager = new PreviewSessionManager({
       viewFactory: {
-        createPreviewView: () => {
-          const view = new FakeWebContentsView();
+        createPreviewView: (options?: { webContents?: FakeWebContents | null }) => {
+          const view = new FakeWebContentsView(options?.webContents ?? undefined);
           views.push(view);
           return view as any;
         },
@@ -129,8 +170,8 @@ describe("PreviewShellController", () => {
     const views: FakeWebContentsView[] = [];
     const manager = new PreviewSessionManager({
       viewFactory: {
-        createPreviewView: () => {
-          const view = new FakeWebContentsView();
+        createPreviewView: (options?: { webContents?: FakeWebContents | null }) => {
+          const view = new FakeWebContentsView(options?.webContents ?? undefined);
           views.push(view);
           return view as any;
         },
@@ -163,8 +204,8 @@ describe("PreviewShellController", () => {
     const views: FakeWebContentsView[] = [];
     const manager = new PreviewSessionManager({
       viewFactory: {
-        createPreviewView: () => {
-          const view = new FakeWebContentsView();
+        createPreviewView: (options?: { webContents?: FakeWebContents | null }) => {
+          const view = new FakeWebContentsView(options?.webContents ?? undefined);
           views.push(view);
           return view as any;
         },
@@ -195,8 +236,8 @@ describe("PreviewShellController", () => {
     const views: FakeWebContentsView[] = [];
     const manager = new PreviewSessionManager({
       viewFactory: {
-        createPreviewView: () => {
-          const view = new FakeWebContentsView();
+        createPreviewView: (options?: { webContents?: FakeWebContents | null }) => {
+          const view = new FakeWebContentsView(options?.webContents ?? undefined);
           views.push(view);
           return view as any;
         },
@@ -243,8 +284,8 @@ describe("PreviewShellController", () => {
     const views: FakeWebContentsView[] = [];
     const manager = new PreviewSessionManager({
       viewFactory: {
-        createPreviewView: () => {
-          const view = new FakeWebContentsView();
+        createPreviewView: (options?: { webContents?: FakeWebContents | null }) => {
+          const view = new FakeWebContentsView(options?.webContents ?? undefined);
           views.push(view);
           return view as any;
         },
@@ -280,8 +321,8 @@ describe("PreviewShellController", () => {
     const views: FakeWebContentsView[] = [];
     const manager = new PreviewSessionManager({
       viewFactory: {
-        createPreviewView: () => {
-          const view = new FakeWebContentsView();
+        createPreviewView: (options?: { webContents?: FakeWebContents | null }) => {
+          const view = new FakeWebContentsView(options?.webContents ?? undefined);
           views.push(view);
           return view as any;
         },
@@ -309,5 +350,62 @@ describe("PreviewShellController", () => {
     expect(secondSnapshot).toEqual(firstSnapshot);
     expect(shell.sendCount).toBe(sendCountAfterFirstBounds);
     expect(views[0]!.webContents.focusCount).toBe(focusCountAfterFirstBounds);
+  });
+
+  it("activates popup-created sessions in the same shell as the opener and allows closing them", async () => {
+    const views: FakeWebContentsView[] = [];
+    const manager = new PreviewSessionManager({
+      viewFactory: {
+        createPreviewView: (options?: { webContents?: FakeWebContents | null }) => {
+          const view = new FakeWebContentsView(options?.webContents ?? undefined);
+          views.push(view);
+          return view as any;
+        },
+      } as any,
+      screenshotWriter: {
+        write: async () => "/tmp/preview.png",
+      } as any,
+    });
+    const controller = new PreviewShellController(manager);
+    const shell = new FakeShellWindow(107);
+    controller.registerShell(shell as any);
+
+    const openPromise = manager.openSession({ url: "https://x.com", wait_until: "load" });
+    await Promise.resolve();
+    views[0]!.webContents.finishLoad("https://x.com/");
+    const opener = await openPromise;
+
+    controller.focusSession(shell.shellId, opener.preview_session_id);
+    controller.updateHostBounds(shell.shellId, { x: 0, y: 0, width: 300, height: 400 });
+
+    const popupResponse = views[0]!.webContents.openWindow(
+      "https://accounts.google.com/o/oauth2/v2/auth",
+    );
+
+    expect(popupResponse.action).toBe("allow");
+    expect(views).toHaveLength(2);
+    expect(shell.attachedView).toBe(views[1]);
+    expect(views[1]!.webContents.focusCount).toBe(1);
+
+    const snapshot = controller.getSnapshot(shell.shellId);
+    expect(snapshot.sessions).toHaveLength(2);
+    expect(snapshot.activePreviewSessionId).not.toBe(opener.preview_session_id);
+    expect(manager.getSessionLeaseOwner(snapshot.activePreviewSessionId!)).toBe(shell.shellId);
+
+    const closedSnapshot = await controller.closeSession(
+      shell.shellId,
+      snapshot.activePreviewSessionId!,
+    );
+    expect(closedSnapshot).toEqual({
+      previewVisible: true,
+      activePreviewSessionId: opener.preview_session_id,
+      sessions: [
+        {
+          preview_session_id: opener.preview_session_id,
+          title: "Preview",
+          url: "https://x.com/",
+        },
+      ],
+    });
   });
 });
