@@ -2,10 +2,10 @@
 
 ## Validation Round Meta
 
-- Current Validation Round: `2`
+- Current Validation Round: `3`
 - Trigger Stage: `Re-entry`
 - Prior Round Reviewed: `1`
-- Latest Authoritative Round: `2`
+- Latest Authoritative Round: `3`
 
 ## Testing Scope
 
@@ -33,7 +33,8 @@
 | Round | Trigger | Prior Unresolved Failures Rechecked (`Yes`/`No`/`N/A`) | New Failures Found (`Yes`/`No`) | Gate Result (`Pass`/`Fail`/`Blocked`) | Latest Authoritative (`Yes`/`No`) | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | Stage 6 exit | N/A | No | Pass | No | Popup/browser behavior is proven through durable Electron validation; embedded provider acceptance remains documented as best-effort, not guaranteed |
-| 2 | Re-entry | Yes | No | Pass | Yes | bounded-popup policy was added and proven after Stage 8 local-fix review feedback |
+| 2 | Re-entry | Yes | No | Pass | No | bounded-popup policy was added and proven after Stage 8 local-fix review feedback |
+| 3 | Re-entry | Yes | No | Pass | Yes | packaged-user verification exposed the Electron popup `createWindow(options)` contract bug; the local fix adopted Electron-provided popup `webContents`, reran the preview Electron suite, and the user verified the packaged fix |
 
 ## Acceptance Criteria Coverage Matrix (Mandatory)
 
@@ -109,7 +110,7 @@
 
 ## Stage 7 Gate Decision
 
-- Latest authoritative round: `2`
+- Latest authoritative round: `3`
 - Latest authoritative result (`Pass`/`Fail`/`Blocked`): `Pass`
 - Stage 7 complete: `Yes`
 - Durable executable validation that should live in the repository was implemented or updated: `Yes`
@@ -123,4 +124,4 @@
 - Temporary validation-only scaffolding cleaned up or intentionally retained with rationale: `Yes`
 - Unresolved escalation items: `No`
 - Ready to enter Stage 8 code review: `Yes`
-- Notes: `This round proves the popup/browser boundary inside Preview is fixed. Provider-side embedded OAuth acceptance remains a documented best-effort limitation rather than a hidden product guarantee.`
+- Notes: `This round proves the popup/browser boundary inside Preview is fixed, including the packaged-app popup guest-webContents adoption bug discovered during user verification. Provider-side embedded OAuth acceptance remains a documented best-effort limitation rather than a hidden product guarantee.`

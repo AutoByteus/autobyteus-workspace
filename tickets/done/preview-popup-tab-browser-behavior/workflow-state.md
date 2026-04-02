@@ -7,12 +7,12 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 ## Current Snapshot
 
 - Ticket: `preview-popup-tab-browser-behavior`
-- Current Stage: `6`
-- Next Stage: `7`
-- Code Edit Permission: `Unlocked`
-- Active Re-Entry: `Yes`
-- Re-Entry Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `Local Fix`
-- Last Transition ID: `T-019`
+- Current Stage: `10`
+- Next Stage: `Repository Finalization`
+- Code Edit Permission: `Locked`
+- Active Re-Entry: `No`
+- Re-Entry Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
+- Last Transition ID: `T-023`
 - Last Updated: `2026-04-02`
 
 ## Stage 0 Bootstrap Record
@@ -43,11 +43,11 @@ Note:
 | 3 Design Basis | Pass | Design basis updated for scope (`implementation.md` solution sketch or `proposed-design.md`) | `proposed-design.md` updated to v2 with Electron `createWindow(...)` popup ownership model |
 | 4 Future-State Runtime Call Stack | Pass | `future-state-runtime-call-stack.md` current | `future-state-runtime-call-stack.md` updated to v2 with real popup creation flow |
 | 5 Future-State Runtime Call Stack Review | Pass | Future-state runtime call stack review `Go Confirmed` (two clean rounds, no blockers/persisted updates/new use cases) | `future-state-runtime-call-stack-review.md` recorded design-impact reset plus two consecutive clean rounds |
-| 6 Implementation | Pass | Plan/progress current + source + unit/integration verification complete + shared design/common-practice rules reapplied during implementation + no backward-compat/legacy retention + dead/obsolete code cleanup complete in scope + ownership-driven dependencies preserved + touched-file placement preserved/corrected + proactive Stage 8 source-file size/delta-pressure handling complete for changed source implementation files | Local-fix re-entry completed with bounded popup policy, `pnpm transpile-electron`, and preview Electron test suite (`4` files / `16` tests) |
-| 7 API/E2E + Executable Validation | Pass | executable validation implementation complete + acceptance-criteria and spine scenario gates complete | `api-e2e-testing.md` round `2` recorded bounded-popup evidence and remains authoritative |
-| 8 Code Review | Pass | Code review gate `Pass`/`Fail` recorded + priority-ordered detailed review scorecard recorded (`Overall /10`, `Overall /100`, all ten category rows in canonical order with score + why + weakness + improvement, and no category below `9.0` for `Pass`) + all changed source files `<=500` effective non-empty lines + `>220` delta-gate assessments recorded + data-flow spine inventory/ownership/off-spine concern checks + existing-capability reuse + reusable-owned-structure extraction + shared-structure/data-model tightness + shared-base coherence + repeated-coordination ownership + empty-indirection + scope-appropriate separation of concerns + file placement within the correct subsystem and folder, with any optional module grouping justified + flat-vs-over-split layout judgment + interface/API/query/command/service-method boundary clarity + naming quality across files/folders/APIs/types/functions/parameters/variables + naming-to-responsibility alignment + no unjustified duplication of code/repeated structures in changed scope + patch-on-patch complexity control + dead/obsolete code cleanup completeness in changed scope + test quality + test maintainability + validation-evidence sufficiency + no-backward-compat/no-legacy checks satisfied for `Pass` | `code-review.md` round `2` is authoritative and passed after the bounded-popup local fix |
+| 6 Implementation | Pass | Plan/progress current + source + unit/integration verification complete + shared design/common-practice rules reapplied during implementation + no backward-compat/legacy retention + dead/obsolete code cleanup complete in scope + ownership-driven dependencies preserved + touched-file placement preserved/corrected + proactive Stage 8 source-file size/delta-pressure handling complete for changed source implementation files | Popup guest-webContents adoption fix implemented; `pnpm transpile-electron` passed; preview Electron suite passed (`4` files / `17` tests) |
+| 7 API/E2E + Executable Validation | Pass | executable validation implementation complete + acceptance-criteria and spine scenario gates complete | `api-e2e-testing.md` round `3` recorded the packaged-user-verification local-fix rerun and remains authoritative |
+| 8 Code Review | Pass | Code review gate `Pass`/`Fail` recorded + priority-ordered detailed review scorecard recorded (`Overall /10`, `Overall /100`, all ten category rows in canonical order with score + why + weakness + improvement, and no category below `9.0` for `Pass`) + all changed source files `<=500` effective non-empty lines + `>220` delta-gate assessments recorded + data-flow spine inventory/ownership/off-spine concern checks + existing-capability reuse + reusable-owned-structure extraction + shared-structure/data-model tightness + shared-base coherence + repeated-coordination ownership + empty-indirection + scope-appropriate separation of concerns + file placement within the correct subsystem and folder, with any optional module grouping justified + flat-vs-over-split layout judgment + interface/API/query/command/service-method boundary clarity + naming quality across files/folders/APIs/types/functions/parameters/variables + naming-to-responsibility alignment + no unjustified duplication of code/repeated structures in changed scope + patch-on-patch complexity control + dead/obsolete code cleanup completeness in changed scope + test quality + test maintainability + validation-evidence sufficiency + no-backward-compat/no-legacy checks satisfied for `Pass` | `code-review.md` round `3` is authoritative and passed after the popup guest-webContents local fix |
 | 9 Docs Sync | Pass | `docs-sync.md` current + docs updated or no-impact rationale recorded | `docs-sync.md` recorded the durable Preview docs update and `preview_sessions.md` was refreshed with popup-tab behavior and OAuth limits |
-| 10 Handoff / Ticket State | Blocked | `handoff-summary.md` current + explicit user verification received + ticket moved to `done` + repository finalization into resolved target branch complete when git repo + any applicable release/publication/deployment step completed or explicitly recorded as not required + required post-finalization worktree/branch cleanup complete when applicable + ticket state decision recorded | Packaged-user verification found a main-process popup crash (`Invalid webContents`) during X and LinkedIn Google-login flows; local-fix re-entry opened |
+| 10 Handoff / Ticket State | In Progress | `handoff-summary.md` current + explicit user verification received + ticket moved to `done` + repository finalization into resolved target branch complete when git repo + any applicable release/publication/deployment step completed or explicitly recorded as not required + required post-finalization worktree/branch cleanup complete when applicable + ticket state decision recorded | User verified the packaged fix; ticket archived to `tickets/done`; repository finalization and release are being completed in this turn |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -67,11 +67,11 @@ Note:
 
 ## Re-Entry Declaration
 
-- Trigger Stage (`5`/`6`/`7`/`8`): `10`
-- Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `Local Fix`
-- Required Return Path: `6 -> 7 -> 8 -> 9 -> 10`
-- Required Upstream Artifacts To Update Before Code Edits: `workflow-state.md`, `investigation-notes.md`, `implementation.md`
-- Resume Condition: `Popup-created preview tabs adopt Electron-provided popup webContents, the packaged login flow no longer throws, and downstream Stage 7/8/9 reruns are recorded.`
+- Trigger Stage (`5`/`6`/`7`/`8`): `N/A`
+- Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
+- Required Return Path: `N/A`
+- Required Upstream Artifacts To Update Before Code Edits: `N/A`
+- Resume Condition: `N/A`
 
 ## Transition Log (Append-Only)
 
@@ -98,6 +98,9 @@ Note:
 | T-018 | 2026-04-02 | 9 | 10 | Docs sync completed; handoff prepared and waiting for user verification | N/A | Locked | workflow-state.md, docs-sync.md, handoff-summary.md |
 | T-019 | 2026-04-02 | 10 | 1 | Packaged-user verification found a main-process popup crash during Google-login flows; reopening as a local-fix re-entry | Local Fix | Locked | workflow-state.md, investigation-notes.md, implementation.md |
 | T-020 | 2026-04-02 | 1 | 6 | Local-fix investigation confirmed an Electron popup `createWindow(options)` contract bug and refreshed the implementation baseline; source edits reopened | Local Fix | Unlocked | workflow-state.md, investigation-notes.md, implementation.md |
+| T-021 | 2026-04-02 | 6 | 7 | Popup guest-webContents adoption fix implemented; rerunning executable validation | Local Fix | Unlocked | workflow-state.md, implementation.md, api-e2e-testing.md |
+| T-022 | 2026-04-02 | 7 | 8 | Stage 7 rerun passed after popup contract fix; returning to code review | Local Fix | Locked | workflow-state.md, api-e2e-testing.md, code-review.md |
+| T-023 | 2026-04-02 | 8 | 10 | Stage 8 rerun passed, docs remained truthful, and the user explicitly verified the packaged fix; moving to repository finalization | N/A | Locked | workflow-state.md, code-review.md, handoff-summary.md |
 
 ## Audible Notification Log (Optional Tracking)
 

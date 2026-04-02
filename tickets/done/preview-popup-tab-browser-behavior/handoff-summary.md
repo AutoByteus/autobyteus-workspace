@@ -4,8 +4,8 @@
 
 - Ticket: `preview-popup-tab-browser-behavior`
 - Date: `2026-04-02`
-- Current Status: `Awaiting User Verification`
-- Workflow State Source: [workflow-state.md](/Users/normy/autobyteus_org/autobyteus-worktrees/preview-popup-tab-browser-behavior/tickets/in-progress/preview-popup-tab-browser-behavior/workflow-state.md)
+- Current Status: `User Verified - Finalization In Progress`
+- Workflow State Source: [workflow-state.md](/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/preview-popup-tab-browser-behavior/workflow-state.md)
 
 ## Delivery Summary
 
@@ -16,8 +16,8 @@
   - popup behavior is now bounded: popups are denied for unleased opener sessions and popup fan-out is capped per opener
   - durable Preview architecture docs were updated to describe popup-tab behavior and remaining OAuth limits
 - Planned scope reference:
-  - [requirements.md](/Users/normy/autobyteus_org/autobyteus-worktrees/preview-popup-tab-browser-behavior/tickets/in-progress/preview-popup-tab-browser-behavior/requirements.md)
-  - [proposed-design.md](/Users/normy/autobyteus_org/autobyteus-worktrees/preview-popup-tab-browser-behavior/tickets/in-progress/preview-popup-tab-browser-behavior/proposed-design.md)
+  - [requirements.md](/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/preview-popup-tab-browser-behavior/requirements.md)
+  - [proposed-design.md](/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/preview-popup-tab-browser-behavior/proposed-design.md)
 - Deferred / not delivered:
   - guaranteed compatibility with every embedded OAuth/social-login provider
   - naming/contract rename from `preview_*` to browser-style tool names
@@ -33,9 +33,9 @@
 - Unit / integration verification:
   - `pnpm transpile-electron`
   - `pnpm vitest run electron/preview/__tests__/preview-*.spec.ts --config ./electron/vitest.config.ts`
-  - result: `4` files passed, `16` tests passed
+  - result: `4` files passed, `17` tests passed
 - API / E2E verification:
-  - [api-e2e-testing.md](/Users/normy/autobyteus_org/autobyteus-worktrees/preview-popup-tab-browser-behavior/tickets/in-progress/preview-popup-tab-browser-behavior/api-e2e-testing.md) round `2` passed
+  - [api-e2e-testing.md](/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/preview-popup-tab-browser-behavior/api-e2e-testing.md) round `3` passed
 - Acceptance-criteria closure summary:
   - in-app popup tab creation, shell activation/close, default Electron session-profile use, popup-child follow-up tools, lease preservation, and bounded popup policy are all covered by durable Electron validation
 - Infeasible criteria / user waivers (if any):
@@ -46,33 +46,33 @@
 ## Documentation Sync Summary
 
 - Docs sync artifact:
-  - [docs-sync.md](/Users/normy/autobyteus_org/autobyteus-worktrees/preview-popup-tab-browser-behavior/tickets/in-progress/preview-popup-tab-browser-behavior/docs-sync.md)
+  - [docs-sync.md](/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/preview-popup-tab-browser-behavior/docs-sync.md)
 - Docs result: `Updated`
 - Docs updated:
-  - [preview_sessions.md](/Users/normy/autobyteus_org/autobyteus-worktrees/preview-popup-tab-browser-behavior/autobyteus-web/docs/preview_sessions.md)
+  - [preview_sessions.md](/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/preview_sessions.md)
 - Notes:
   - the durable doc now explains popup/new-tab behavior, bounded popup policy, and best-effort OAuth limits
 
 ## Release Notes Status
 
-- Release notes required: `No`
+- Release notes required: `Yes`
 - Release notes artifact:
-  - `N/A`
+  - [release-notes.md](/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/preview-popup-tab-browser-behavior/release-notes.md)
 - Notes:
-  - this ticket is not finalized yet
+  - release helper will use this archived ticket note in the same turn
 
 ## User Verification Hold
 
 - Waiting for explicit user verification: `Yes`
 - User verification received:
-  - `No`
+  - `Yes`
 - Notes:
-  - recommended manual verification is to open X in Preview, trigger Google sign-in, and confirm the popup flow opens as another Preview tab rather than failing because Preview blocked the popup
+  - user verified that the packaged fix works and approved finalization plus a new release
 
 ## Finalization Record
 
 - Ticket archived to:
-  - `N/A`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/preview-popup-tab-browser-behavior`
 - Ticket worktree path:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/preview-popup-tab-browser-behavior`
 - Ticket branch:
@@ -82,16 +82,16 @@
 - Finalization target branch:
   - `personal`
 - Commit status:
-  - `Not done in this turn`
+  - `Feature merge into personal completed`
 - Push status:
-  - `Not done in this turn`
+  - `Pending release helper`
 - Merge status:
-  - `Not done in this turn`
+  - `Merged into personal`
 - Release/publication/deployment status:
-  - `Not required before user verification`
+  - `Pending repo-root release helper in this turn`
 - Worktree cleanup status:
-  - `Not started`
+  - `Pending after release`
 - Local branch cleanup status:
-  - `Not started`
+  - `Pending after release`
 - Blockers / notes:
-  - explicit user verification is still required before archival/finalization
+  - none

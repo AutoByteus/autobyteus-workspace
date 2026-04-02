@@ -3,10 +3,10 @@
 ## Review Meta
 
 - Ticket: `preview-popup-tab-browser-behavior`
-- Review Round: `2`
+- Review Round: `3`
 - Trigger Stage: `Re-entry`
 - Prior Review Round Reviewed: `1`
-- Latest Authoritative Round: `2`
+- Latest Authoritative Round: `3`
 - Workflow state source: [workflow-state.md](/Users/normy/autobyteus_org/autobyteus-worktrees/preview-popup-tab-browser-behavior/tickets/in-progress/preview-popup-tab-browser-behavior/workflow-state.md)
 - Investigation notes reviewed as context: [investigation-notes.md](/Users/normy/autobyteus_org/autobyteus-worktrees/preview-popup-tab-browser-behavior/tickets/in-progress/preview-popup-tab-browser-behavior/investigation-notes.md)
 - Earlier design artifact(s) reviewed as context: [proposed-design.md](/Users/normy/autobyteus_org/autobyteus-worktrees/preview-popup-tab-browser-behavior/tickets/in-progress/preview-popup-tab-browser-behavior/proposed-design.md)
@@ -101,7 +101,8 @@
 | Round | Trigger | Prior Unresolved Findings Rechecked (`Yes`/`No`/`N/A`) | New Findings Found (`Yes`/`No`) | Gate Decision (`Pass`/`Fail`) | Latest Authoritative (`Yes`/`No`) | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
 | 1 | Stage 7 pass | N/A | Yes | Fail | No | missing bounded popup policy required a local-fix re-entry |
-| 2 | Re-entry | Yes | No | Pass | Yes | bounded popup policy is now implemented and validated |
+| 2 | Re-entry | Yes | No | Pass | No | bounded popup policy is now implemented and validated |
+| 3 | Re-entry | Yes | No | Pass | Yes | popup child sessions now adopt Electron-provided guest `webContents`, closing the packaged-app crash without widening ownership boundaries |
 
 ## Re-Entry Declaration (Mandatory On `Fail`)
 
@@ -116,7 +117,7 @@
 
 ## Gate Decision
 
-- Latest authoritative review round: `2`
+- Latest authoritative review round: `3`
 - Decision: `Pass`
 - Implementation can proceed to `Stage 9`: `Yes`
 - Mandatory pass checks:
