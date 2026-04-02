@@ -73,9 +73,9 @@
 ## Finalization Record
 
 - Ticket archived to:
-  - `Not yet archived`
+  - `tickets/done/preview-session-multi-runtime-design/`
 - Ticket worktree path:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/preview-session-multi-runtime-design`
+  - `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Ticket branch:
   - `codex/preview-session-multi-runtime-design`
 - Finalization target remote:
@@ -83,17 +83,18 @@
 - Finalization target branch:
   - `personal`
 - Commit status:
-  - `In progress during Stage 10`
+  - `Complete`
 - Push status:
-  - `Not yet performed`
+  - `Complete`
 - Merge status:
-  - `Not yet performed`
+  - `Complete`
 - Release/publication/deployment status:
-  - `Local packaged release build complete`
+  - `Completed via packaged personal desktop artifact build`
 - Worktree cleanup status:
-  - `Not yet performed`
+  - `Complete`
 - Local branch cleanup status:
-  - `Not yet performed`
+  - `Complete`
 - Blockers / notes:
-  - `None currently; origin/personal is already fully merged into the ticket branch (`8` ahead, `0` behind) as of the Stage 10 fetch.`
-  - `Personal mac artifacts built from this finalization snapshot: AutoByteus_personal_macos-arm64-1.2.51.dmg and AutoByteus_personal_macos-arm64-1.2.51.zip.`
+  - `No blockers remain.`
+  - ``origin/personal` was up to date at finalization start, the ticket branch was pushed, fast-forward merged into local \`personal\`, and \`personal\` was pushed to origin.`
+  - `Personal mac artifacts built from the finalized release snapshot: AutoByteus_personal_macos-arm64-1.2.51.dmg and AutoByteus_personal_macos-arm64-1.2.51.zip.`

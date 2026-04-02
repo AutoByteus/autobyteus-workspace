@@ -352,7 +352,7 @@ The investigation supports this direction for Stage 3 design:
 
 - `git fetch --prune origin`
 - `git remote show origin`
-- `git worktree add -b codex/preview-session-multi-runtime-design /Users/normy/autobyteus_org/autobyteus-worktrees/preview-session-multi-runtime-design origin/personal`
+- `git worktree add -b codex/preview-session-multi-runtime-design /Users/normy/autobyteus_org/autobyteus-workspace-superrepo origin/personal`
 - `rg -n "enum RuntimeKind|AUTOBYTEUS|CLAUDE_AGENT_SDK|CODEX_APP_SERVER" ...`
 - `rg -n "dynamicToolRegistrations|CodexDynamicToolRegistration|open_preview" ...`
 - `rg -n "createMcpServer|buildTeamMcpServers|buildClaudeTeamMcpServers" ...`

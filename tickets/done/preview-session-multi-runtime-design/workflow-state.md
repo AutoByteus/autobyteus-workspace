@@ -8,11 +8,11 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 
 - Ticket: `preview-session-multi-runtime-design`
 - Current Stage: `10`
-- Next Stage: `10`
-- Code Edit Permission: `Unlocked`
+- Next Stage: `N/A`
+- Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-078`
+- Last Transition ID: `T-079`
 - Last Updated: `2026-04-02`
 
 ## Stage 0 Bootstrap Record
@@ -25,7 +25,7 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 - Default Finalization Target Branch: `personal`
 - Remote Refresh Performed (`Yes`/`No`/`N/A`): `Yes`
 - Remote Refresh Result: `git fetch --prune origin` completed successfully on `2026-03-31`.
-- Ticket Worktree Path: `/Users/normy/autobyteus_org/autobyteus-worktrees/preview-session-multi-runtime-design`
+- Ticket Worktree Path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`
 - Ticket Branch: `codex/preview-session-multi-runtime-design`
 
 Note:
@@ -37,7 +37,7 @@ Note:
 
 | Stage | Gate Status (`Not Started`/`In Progress`/`Pass`/`Fail`/`Blocked`) | Gate Rule Summary | Evidence |
 | --- | --- | --- | --- |
-| 0 Bootstrap + Draft Requirement | Pass | Ticket bootstrap complete + if git repo: base branch resolved, remote freshness handled, dedicated ticket worktree/branch created + `requirements.md` Draft captured | `git fetch --prune origin`; `git remote show origin`; `git worktree add -b codex/preview-session-multi-runtime-design /Users/normy/autobyteus_org/autobyteus-worktrees/preview-session-multi-runtime-design origin/personal`; `tickets/done/preview-session-multi-runtime-design/workflow-state.md`; `tickets/done/preview-session-multi-runtime-design/requirements.md` |
+| 0 Bootstrap + Draft Requirement | Pass | Ticket bootstrap complete + if git repo: base branch resolved, remote freshness handled, dedicated ticket worktree/branch created + `requirements.md` Draft captured | `git fetch --prune origin`; `git remote show origin`; `git worktree add -b codex/preview-session-multi-runtime-design /Users/normy/autobyteus_org/autobyteus-workspace-superrepo origin/personal`; `tickets/done/preview-session-multi-runtime-design/workflow-state.md`; `tickets/done/preview-session-multi-runtime-design/requirements.md` |
 | 1 Investigation + Triage | Pass | Re-entry investigation is complete. The redesign target is now explicit: application-global preview-session lifecycle with a non-stealable shell projection lease, strict typed preview inputs with no hidden coercion, and clearer Codex tool-metadata ownership after the live `edit_file` regression. | `tickets/done/preview-session-multi-runtime-design/investigation-notes.md`; `tickets/done/preview-session-multi-runtime-design/code-review.md`; `tickets/done/preview-session-multi-runtime-design/workflow-state.md` |
 | 2 Requirements | Pass | `requirements.md` is updated for the eight-tool browser-style preview surface: `open_preview`, `navigate_preview`, `close_preview`, `list_preview_sessions`, `read_preview_page`, `capture_preview_screenshot`, `preview_dom_snapshot`, and `execute_preview_javascript`. | `tickets/done/preview-session-multi-runtime-design/requirements.md`; `tickets/done/preview-session-multi-runtime-design/workflow-state.md` |
 | 3 Design Basis | Pass | Stage 8 design-impact re-entry redesign is complete for `v12`. The design now makes shell projection an explicit non-stealable lease while keeping session lifecycle app-global, removes primitive-level type widening from the stable preview contract, and clarifies Codex tool-metadata ownership without changing the accepted preview product surface. | `tickets/done/preview-session-multi-runtime-design/proposed-design.md`; `tickets/done/preview-session-multi-runtime-design/investigation-notes.md`; `tickets/done/preview-session-multi-runtime-design/code-review.md`; `tickets/done/preview-session-multi-runtime-design/workflow-state.md` |
@@ -47,7 +47,7 @@ Note:
 | 7 API/E2E + Executable Validation | Pass | Stage 7 reruns are complete for `v12`. Focused Electron/server suites passed, live Codex reruns passed for `open_preview`, the `edit_file` regression control, and the full preview-tool surface, and live Claude reruns passed for both `open_preview` and the full preview-tool surface. | `tickets/done/preview-session-multi-runtime-design/api-e2e-testing.md`; `tickets/done/preview-session-multi-runtime-design/workflow-state.md` |
 | 8 Code Review | Pass | Stage 8 independent code review now passes for the `v12` snapshot. Ownership clarity / boundary encapsulation and no-backward-compatibility / no-legacy retention both clear the required `>= 9.0` bar, and the stronger Stage 7 evidence no longer leaves the eight-tool surface under-proven. | `tickets/done/preview-session-multi-runtime-design/code-review.md`; `tickets/done/preview-session-multi-runtime-design/workflow-state.md` |
 | 9 Docs Sync | Pass | Stage 9 docs sync is complete. One durable preview-session architecture doc now records the stable eight-tool surface, Electron/main ownership model, shell-lease rules, and runtime flow. | `tickets/done/preview-session-multi-runtime-design/docs-sync.md`; `autobyteus-web/docs/preview_sessions.md`; `tickets/done/preview-session-multi-runtime-design/workflow-state.md` |
-| 10 Handoff / Ticket State | In Progress | Explicit user verification is received. Finalization is active for the release patch bump, handoff-summary/release-notes creation, branch-sync verification against `origin/personal`, final packaged build, and repository finalization record. | `tickets/done/preview-session-multi-runtime-design/workflow-state.md` |
+| 10 Handoff / Ticket State | Pass | Explicit user verification was received, the ticket is archived under `tickets/done/`, the branch was pushed, `personal` was fast-forward merged and pushed, the `1.2.51` personal packaged build was produced, and required worktree/branch cleanup completed. | `tickets/done/preview-session-multi-runtime-design/handoff-summary.md`; `tickets/done/preview-session-multi-runtime-design/release-notes.md`; `tickets/done/preview-session-multi-runtime-design/workflow-state.md` |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -97,7 +97,7 @@ Note:
 ## Pre-Edit Checklist (Stage 6 Source-Code Edits)
 
 - Current Stage is `6`: `No`
-- Code Edit Permission is `Unlocked`: `Yes`
+- Code Edit Permission is `Unlocked`: `No`
 - Stage 5 gate is `Go Confirmed`: `Yes`
 - Required upstream artifacts are current: `Yes`
 - Pre-Edit Checklist Result: `N/A`
@@ -272,3 +272,4 @@ Note:
 | --- | --- | --- | --- | --- | --- |
 | T-077 | 2026-04-02 | 9 | 10 | User verified the ticket and requested finalization/release work. Stage 10 handoff and release finalization started. | N/A | Unlocked | `tickets/done/preview-session-multi-runtime-design/workflow-state.md` |
 | T-078 | 2026-04-02 | 10 | 10 | Finalization sync check completed. `git fetch origin personal` succeeded and `origin/personal` is already fully merged into the ticket branch (`8` ahead, `0` behind). | N/A | Unlocked | `tickets/done/preview-session-multi-runtime-design/workflow-state.md`, `tickets/done/preview-session-multi-runtime-design/handoff-summary.md` |
+| T-079 | 2026-04-02 | 10 | 10 | Stage 10 finalization completed. Archived ticket committed, ticket branch pushed, `personal` merged and pushed, packaged release built, and required worktree/branch cleanup completed. | N/A | Locked | `tickets/done/preview-session-multi-runtime-design/handoff-summary.md`, `tickets/done/preview-session-multi-runtime-design/release-notes.md`, `tickets/done/preview-session-multi-runtime-design/workflow-state.md` |
