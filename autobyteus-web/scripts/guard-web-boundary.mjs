@@ -58,6 +58,7 @@ const includeDirs = [
 ];
 
 const fileExtensions = new Set(['.ts', '.tsx', '.js', '.mjs', '.cjs', '.vue']);
+const scriptExtensions = new Set(['.ts', '.tsx', '.js', '.mjs', '.cjs', '.sh']);
 const importPatterns = [
   /from\s+['"]autobyteus-ts(?:\/[^'"]*)?['"]/,
   /require\(\s*['"]autobyteus-ts(?:\/[^'"]*)?['"]\s*\)/,
@@ -65,23 +66,24 @@ const importPatterns = [
   /require\(\s*['"](?:\.\.\/)+autobyteus-ts\/[^'"]+['"]\s*\)/,
 ];
 
-function walkDir(dirPath, collector) {
+function walkDir(dirPath, collector, extensions = fileExtensions) {
   if (!fs.existsSync(dirPath)) {
     return;
   }
   for (const entry of fs.readdirSync(dirPath, { withFileTypes: true })) {
     const fullPath = path.join(dirPath, entry.name);
     if (entry.isDirectory()) {
-      walkDir(fullPath, collector);
+      walkDir(fullPath, collector, extensions);
       continue;
     }
-    if (entry.isFile() && fileExtensions.has(path.extname(entry.name))) {
+    if (entry.isFile() && extensions.has(path.extname(entry.name))) {
       collector(fullPath);
     }
   }
 }
 
 const violations = [];
+const guardScriptRelativePath = path.join('scripts', 'guard-web-boundary.mjs');
 
 for (const dir of includeDirs) {
   walkDir(path.join(appRoot, dir), (filePath) => {
@@ -96,9 +98,29 @@ for (const dir of includeDirs) {
   });
 }
 
+walkDir(path.join(appRoot, 'scripts'), (filePath) => {
+  const relativePath = path.relative(appRoot, filePath);
+  if (relativePath === guardScriptRelativePath) {
+    return;
+  }
+
+  if (!scriptExtensions.has(path.extname(filePath))) {
+    return;
+  }
+
+  const content = fs.readFileSync(filePath, 'utf8');
+  const lines = content.split('\n');
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index];
+    if (line.includes('autobyteus-ts')) {
+      violations.push(`${relativePath}:${index + 1}: ${line.trim()}`);
+    }
+  }
+}, scriptExtensions);
+
 if (violations.length > 0) {
   fail(
-    'Cross-workspace imports into autobyteus-ts are not allowed in autobyteus-web:\n' +
+    'Direct autobyteus-ts dependencies are not allowed in active autobyteus-web code:\n' +
       violations.join('\n'),
   );
 }

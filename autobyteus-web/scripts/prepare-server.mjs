@@ -110,18 +110,6 @@ async function copyIfExists(sourcePath, targetPath) {
 async function buildWorkspaceArtifacts() {
   warn('\nBuilding server source artifacts...')
 
-  const workspaceManifest = path.join(workspaceRoot, 'pnpm-workspace.yaml')
-  if (await exists(workspaceManifest)) {
-    await runCommand('pnpm', ['-C', workspaceRoot, '-r', '--filter', 'autobyteus-ts', 'build'])
-  } else {
-    const localTsPath = path.join(workspaceRoot, 'autobyteus-ts')
-    if (!(await exists(localTsPath))) {
-      throw new Error(`autobyteus-ts not found: ${localTsPath}`)
-    }
-    await runCommand('pnpm', ['-C', localTsPath, 'install', '--no-frozen-lockfile'])
-    await runCommand('pnpm', ['-C', localTsPath, 'build'])
-  }
-
   const serverLockfile = path.join(serverSourceRoot, 'pnpm-lock.yaml')
   if (await exists(serverLockfile)) {
     await runCommand('pnpm', ['-C', serverSourceRoot, 'install', '--frozen-lockfile'])
@@ -304,8 +292,12 @@ async function validateCriticalImports() {
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
 
-await import('autobyteus-ts/task-management/task.js')
 await import('type-graphql')
+
+const serverEntryFile = pathToFileURL(
+  path.join(process.cwd(), 'dist', 'index.js')
+).href
+await import(serverEntryFile)
 
 const parserFile = pathToFileURL(
   path.join(process.cwd(), 'node_modules', 'htmlparser2', 'dist', 'esm', 'Parser.js')

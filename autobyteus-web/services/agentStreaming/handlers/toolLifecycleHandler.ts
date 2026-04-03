@@ -40,21 +40,7 @@ import {
 import { setStreamSegmentIdentity } from './segmentIdentity';
 import { isPlaceholderToolName } from '~/utils/toolNamePlaceholders';
 import { useAgentArtifactsStore } from '~/stores/agentArtifactsStore';
-
-const buildInvocationAliases = (invocationId: string): string[] => {
-  const trimmed = invocationId.trim();
-  if (!trimmed) {
-    return [];
-  }
-  const aliases = [trimmed];
-  if (trimmed.includes(':')) {
-    const base = trimmed.split(':')[0]?.trim();
-    if (base && !aliases.includes(base)) {
-      aliases.push(base);
-    }
-  }
-  return aliases;
-};
+import { buildInvocationAliases } from '~/utils/invocationAliases';
 
 const isToolLifecycleSegment = (segment: unknown): segment is ToolLifecycleSegment => {
   if (!segment || typeof segment !== 'object') {

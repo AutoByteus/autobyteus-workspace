@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { buildInvocationAliases, invocationIdsMatch } from '~/utils/invocationAliases';
 
 export type ArtifactStatus = 'streaming' | 'pending' | 'available' | 'failed';
 export type ArtifactSourceTool = 'write_file' | 'edit_file' | 'generated_output' | 'runtime_file_change';
@@ -68,33 +69,6 @@ const nowIso = (): string => new Date().toISOString();
 const normalizePath = (path: string): string => path.replace(/\\/g, '/').trim();
 
 const buildArtifactId = (runId: string, path: string): string => `${runId}:${normalizePath(path)}`;
-
-const buildInvocationAliases = (invocationId: string): string[] => {
-  const trimmed = invocationId.trim();
-  if (!trimmed) {
-    return [];
-  }
-
-  const aliases = [trimmed];
-  if (trimmed.includes(':')) {
-    const base = trimmed.split(':')[0]?.trim();
-    if (base && !aliases.includes(base)) {
-      aliases.push(base);
-    }
-  }
-
-  return aliases;
-};
-
-const invocationIdsMatch = (left?: string | null, right?: string | null): boolean => {
-  if (!left || !right) {
-    return false;
-  }
-
-  const leftAliases = buildInvocationAliases(left);
-  const rightAliases = buildInvocationAliases(right);
-  return leftAliases.some((alias) => rightAliases.includes(alias));
-};
 
 const normalizeArtifactType = (
   value?: ArtifactType | string | null,
@@ -396,10 +370,6 @@ export const useAgentArtifactsStore = defineStore('agentArtifacts', {
     getArtifactById(runId: string, artifactId: string) {
       const artifacts = this.artifactsByRun.get(runId) || [];
       return findArtifactById(artifacts, artifactId);
-    },
-
-    clearLatestVisibleArtifact(runId: string) {
-      this.latestVisibleArtifactIdByRun.set(runId, null);
     },
   },
 });

@@ -231,8 +231,8 @@ The Electron application includes the AutoByteus backend server, which is automa
 Before building the Electron application with the integrated server:
 
 1. Ensure `autobyteus-server-ts` is available at `../autobyteus-server-ts` (relative to this project)
-2. Ensure `autobyteus-ts` is available at `../autobyteus-ts` (workspace dependency)
-3. `repository_prisma` is installed from npm via `autobyteus-server-ts` and does not need a local sibling clone
+2. `repository_prisma` is installed from npm via `autobyteus-server-ts` and does not need a local sibling clone
+3. The server project owns any additional shared build prerequisites; the web project should only call the server packaging boundary.
 4. Run the prepare-server script to copy the server files:
 
 ```bash
