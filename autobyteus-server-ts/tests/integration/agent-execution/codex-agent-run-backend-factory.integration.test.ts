@@ -20,14 +20,14 @@ import { CodexThreadManager } from "../../../src/agent-execution/backends/codex/
 import { createCodexDynamicToolTextResult } from "../../../src/agent-execution/backends/codex/codex-dynamic-tool.js";
 import { CodexModelCatalog } from "../../../src/llm-management/services/codex-model-catalog.js";
 import {
-  PREVIEW_BRIDGE_BASE_URL_ENV,
-  PREVIEW_BRIDGE_TOKEN_ENV,
-} from "../../../src/agent-tools/preview/preview-tool-contract.js";
+  BROWSER_BRIDGE_BASE_URL_ENV,
+  BROWSER_BRIDGE_TOKEN_ENV,
+} from "../../../src/agent-tools/browser/browser-tool-contract.js";
 import {
-  PreviewBridgeLiveTestServer,
-  buildOpenPreviewToolPrompt,
-  buildPreviewToolSurfacePrompt,
-} from "./preview-bridge-live-test-server.js";
+  BrowserBridgeLiveTestServer,
+  buildOpenBrowserToolPrompt,
+  buildBrowserToolSurfacePrompt,
+} from "./browser-bridge-live-test-server.js";
 
 const codexBinaryReady = spawnSync("codex", ["--version"], {
   stdio: "ignore",
@@ -167,6 +167,7 @@ const createFactory = (input: {
   workspaceRoot: string;
   runId: string;
   instructions?: string;
+  toolNames?: string[];
   defaultBootstrapStrategy?: CodexThreadBootstrapStrategy;
 }) => {
   const threadBootstrapper = new CodexThreadBootstrapper(
@@ -179,6 +180,7 @@ const createFactory = (input: {
         instructions: input.instructions ?? "Reply briefly.",
         description: "Fallback description.",
         skillNames: [],
+        toolNames: input.toolNames ?? [],
       }),
     } as any,
     {
@@ -198,10 +200,10 @@ const createFactory = (input: {
 describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live transport)", () => {
   let clientManager: CodexAppServerClientManager | null = null;
   let threadManager: CodexThreadManager | null = null;
-  let previewBridgeServer: PreviewBridgeLiveTestServer | null = null;
+  let browserBridgeServer: BrowserBridgeLiveTestServer | null = null;
   const createdRunIds = new Set<string>();
-  const originalPreviewBridgeBaseUrl = process.env[PREVIEW_BRIDGE_BASE_URL_ENV];
-  const originalPreviewBridgeToken = process.env[PREVIEW_BRIDGE_TOKEN_ENV];
+  const originalBrowserBridgeBaseUrl = process.env[BROWSER_BRIDGE_BASE_URL_ENV];
+  const originalBrowserBridgeToken = process.env[BROWSER_BRIDGE_TOKEN_ENV];
 
   afterEach(async () => {
     if (threadManager) {
@@ -219,19 +221,19 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
       clientManager = null;
     }
     threadManager = null;
-    if (previewBridgeServer) {
-      await previewBridgeServer.stop();
-      previewBridgeServer = null;
+    if (browserBridgeServer) {
+      await browserBridgeServer.stop();
+      browserBridgeServer = null;
     }
-    if (typeof originalPreviewBridgeBaseUrl === "string") {
-      process.env[PREVIEW_BRIDGE_BASE_URL_ENV] = originalPreviewBridgeBaseUrl;
+    if (typeof originalBrowserBridgeBaseUrl === "string") {
+      process.env[BROWSER_BRIDGE_BASE_URL_ENV] = originalBrowserBridgeBaseUrl;
     } else {
-      delete process.env[PREVIEW_BRIDGE_BASE_URL_ENV];
+      delete process.env[BROWSER_BRIDGE_BASE_URL_ENV];
     }
-    if (typeof originalPreviewBridgeToken === "string") {
-      process.env[PREVIEW_BRIDGE_TOKEN_ENV] = originalPreviewBridgeToken;
+    if (typeof originalBrowserBridgeToken === "string") {
+      process.env[BROWSER_BRIDGE_TOKEN_ENV] = originalBrowserBridgeToken;
     } else {
-      delete process.env[PREVIEW_BRIDGE_TOKEN_ENV];
+      delete process.env[BROWSER_BRIDGE_TOKEN_ENV];
     }
   });
 
@@ -742,6 +744,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
       threadManager,
       workspaceRoot,
       runId,
+      toolNames: ["open_tab"],
       defaultBootstrapStrategy: {
         appliesTo: () => true,
         prepare: ({ agentInstruction }) => ({
@@ -1084,11 +1087,11 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     }
   }, FLOW_TEST_TIMEOUT_MS);
 
-  it("executes open_preview through the live Codex preview dynamic tool path", async () => {
-    const workspaceRoot = await createWorkspace("codex-backend-preview-tool");
-    previewBridgeServer = new PreviewBridgeLiveTestServer();
-    await previewBridgeServer.start();
-    Object.assign(process.env, previewBridgeServer.getRuntimeEnv());
+  it("executes open_tab through the live Codex browser dynamic tool path", async () => {
+    const workspaceRoot = await createWorkspace("codex-backend-browser-tool");
+    browserBridgeServer = new BrowserBridgeLiveTestServer();
+    await browserBridgeServer.start();
+    Object.assign(process.env, browserBridgeServer.getRuntimeEnv());
     clientManager = new CodexAppServerClientManager({
       createClient: (cwd) =>
         new CodexAppServerClient({
@@ -1104,30 +1107,24 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
       new CodexClientThreadRouter(),
     );
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
-    const runId = "run-codex-backend-preview-tool";
+    const runId = "run-codex-backend-browser-tool";
     const factory = createFactory({
       clientManager,
       threadManager,
       workspaceRoot,
       runId,
-      defaultBootstrapStrategy: {
-        appliesTo: () => true,
-        prepare: ({ agentInstruction }) => ({
-          baseInstructions: agentInstruction ? `## Agent Instruction\n${agentInstruction}` : null,
-          developerInstructions:
-            "If the user explicitly instructs you to call open_preview with a JSON argument object, call open_preview exactly once with those exact arguments and do not call any other tool.",
-          dynamicToolRegistrations: null,
-        }),
-      },
+      toolNames: ["open_tab"],
+      instructions:
+        "If the user explicitly instructs you to call open_tab with a JSON argument object, call open_tab exactly once with those exact arguments and do not call any other tool.",
     });
 
     const backend = await factory.createBackend(
       new AgentRunConfig({
         runtimeKind: "codex_app_server",
-        agentDefinitionId: "agent-def-codex-preview-live",
+        agentDefinitionId: "agent-def-codex-browser-live",
         llmModelIdentifier: modelIdentifier,
         autoExecuteTools: true,
-        workspaceId: "workspace-codex-preview-live",
+        workspaceId: "workspace-codex-browser-live",
         llmConfig: { reasoning_effort: "medium" },
       }),
     );
@@ -1137,8 +1134,8 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     expect(thread).toBeTruthy();
     await waitForStartupReady(thread!.startup.waitForReady);
 
-    const previewUrl = `http://127.0.0.1:4173/preview-${randomUUID()}`;
-    const previewTitle = `Preview ${randomUUID()}`;
+    const browserUrl = `http://127.0.0.1:4173/browser-${randomUUID()}`;
+    const browserTitle = `Browser ${randomUUID()}`;
     const events: AgentRunEvent[] = [];
     const unsubscribe = backend.subscribeToEvents((event) => {
       if (event && typeof event === "object") {
@@ -1149,29 +1146,29 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     try {
       const sendResult = await backend.postUserMessage(
         new AgentInputUserMessage(
-          buildOpenPreviewToolPrompt({
-            url: previewUrl,
-            title: previewTitle,
+          buildOpenBrowserToolPrompt({
+            url: browserUrl,
+            title: browserTitle,
           }),
         ),
       );
       expect(sendResult.accepted).toBe(true);
 
-      const previewSuccessEvent = await waitForEvent(
+      const browserSuccessEvent = await waitForEvent(
         events,
         (event) =>
           event.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED &&
-          event.payload.tool_name === "open_preview",
+          event.payload.tool_name === "open_tab",
       );
-      const previewResult =
-        previewSuccessEvent.payload.result &&
-        typeof previewSuccessEvent.payload.result === "object"
-          ? (previewSuccessEvent.payload.result as Record<string, unknown>)
+      const browserResult =
+        browserSuccessEvent.payload.result &&
+        typeof browserSuccessEvent.payload.result === "object"
+          ? (browserSuccessEvent.payload.result as Record<string, unknown>)
           : null;
-      expect(previewResult?.preview_session_id).toEqual("preview-session-1");
-      expect(previewResult?.status).toEqual("opened");
-      expect(previewResult?.url).toEqual(previewUrl);
-      expect(previewResult?.title).toEqual(previewTitle);
+      expect(browserResult?.tab_id).toEqual("browser-session-1");
+      expect(browserResult?.status).toEqual("opened");
+      expect(browserResult?.url).toEqual(browserUrl);
+      expect(browserResult?.title).toEqual(browserTitle);
       await waitForEvent(
         events,
         (event) =>
@@ -1182,23 +1179,23 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
       expect(
         events.some((event) => event.eventType === AgentRunEventType.TOOL_APPROVAL_REQUESTED),
       ).toBe(false);
-      expect(previewBridgeServer.requests).toHaveLength(1);
-      expect(previewBridgeServer.requests[0]).toMatchObject({
+      expect(browserBridgeServer.requests).toHaveLength(1);
+      expect(browserBridgeServer.requests[0]).toMatchObject({
         method: "POST",
-        path: "/preview/open",
+        path: "/browser/open",
         body: {
-          url: previewUrl,
-          title: previewTitle,
+          url: browserUrl,
+          title: browserTitle,
           wait_until: "load",
         },
       });
     } finally {
       unsubscribe();
-      await writeBackendEventLog("codex-backend-preview-tool", events);
+      await writeBackendEventLog("codex-backend-browser-tool", events);
     }
   }, FLOW_TEST_TIMEOUT_MS);
 
-  it("executes the full preview tool surface through the live Codex preview dynamic tool path", async () => {
+  it("executes the full browser tool surface through the live Codex browser dynamic tool path", async () => {
     clientManager = new CodexAppServerClientManager(
       (cwd) => new CodexAppServerClient({ cwd }),
     );
@@ -1211,27 +1208,37 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
       clientManager,
       process.cwd(),
     );
-    const workspaceRoot = await createWorkspace("codex-backend-preview-surface");
-    previewBridgeServer = new PreviewBridgeLiveTestServer();
-    await previewBridgeServer.start();
-    Object.assign(process.env, previewBridgeServer.getRuntimeEnv());
+    const workspaceRoot = await createWorkspace("codex-backend-browser-surface");
+    browserBridgeServer = new BrowserBridgeLiveTestServer();
+    await browserBridgeServer.start();
+    Object.assign(process.env, browserBridgeServer.getRuntimeEnv());
 
     const factory = createFactory({
       clientManager,
       threadManager,
       workspaceRoot,
-      runId: `run-codex-preview-surface-${randomUUID()}`,
+      runId: `run-codex-browser-surface-${randomUUID()}`,
+      toolNames: [
+        "open_tab",
+        "navigate_to",
+        "list_tabs",
+        "read_page",
+        "screenshot",
+        "dom_snapshot",
+        "run_script",
+        "close_tab",
+      ],
       instructions:
-        "If the user explicitly instructs you to call preview tools with exact JSON arguments in an exact order, call exactly those preview tools in that order and do not call any other tool.",
+        "If the user explicitly instructs you to call browser tools with exact JSON arguments in an exact order, call exactly those browser tools in that order and do not call any other tool.",
     });
 
     const backend = await factory.createBackend(
       new AgentRunConfig({
         runtimeKind: "codex_app_server",
-        agentDefinitionId: "agent-def-codex-preview-surface-live",
+        agentDefinitionId: "agent-def-codex-browser-surface-live",
         llmModelIdentifier: modelIdentifier,
         autoExecuteTools: true,
-        workspaceId: "workspace-codex-preview-surface-live",
+        workspaceId: "workspace-codex-browser-surface-live",
         llmConfig: { reasoning_effort: "medium" },
       }),
     );
@@ -1241,9 +1248,9 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     expect(thread).toBeTruthy();
     await waitForStartupReady(thread!.startup.waitForReady);
 
-    const openUrl = `http://127.0.0.1:4173/preview-open-${randomUUID()}`;
-    const navigateUrl = `http://127.0.0.1:4173/preview-navigate-${randomUUID()}`;
-    const previewTitle = `Preview ${randomUUID()}`;
+    const openUrl = `http://127.0.0.1:4173/browser-open-${randomUUID()}`;
+    const navigateUrl = `http://127.0.0.1:4173/browser-navigate-${randomUUID()}`;
+    const browserTitle = `Browser ${randomUUID()}`;
     const events: AgentRunEvent[] = [];
     const unsubscribe = backend.subscribeToEvents((event) => {
       if (event && typeof event === "object") {
@@ -1254,10 +1261,10 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     try {
       const sendResult = await backend.postUserMessage(
         new AgentInputUserMessage(
-          buildPreviewToolSurfacePrompt({
+          buildBrowserToolSurfacePrompt({
             openUrl,
             navigateUrl,
-            title: previewTitle,
+            title: browserTitle,
           }),
         ),
       );
@@ -1267,7 +1274,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         events,
         (event) =>
           event.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED &&
-          event.payload.tool_name === "close_preview",
+          event.payload.tool_name === "close_tab",
       );
       await waitForEvent(
         events,
@@ -1282,46 +1289,46 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         .filter((value): value is string => typeof value === "string");
       expect(succeededToolNames).toEqual(
         expect.arrayContaining([
-          "open_preview",
-          "navigate_preview",
-          "list_preview_sessions",
-          "read_preview_page",
-          "capture_preview_screenshot",
-          "preview_dom_snapshot",
-          "execute_preview_javascript",
-          "close_preview",
+          "open_tab",
+          "navigate_to",
+          "list_tabs",
+          "read_page",
+          "screenshot",
+          "dom_snapshot",
+          "run_script",
+          "close_tab",
         ]),
       );
       expect(
         events.some((event) => event.eventType === AgentRunEventType.TOOL_APPROVAL_REQUESTED),
       ).toBe(false);
-      expect(previewBridgeServer.requests.map((request) => request.path)).toEqual([
-        "/preview/open",
-        "/preview/navigate",
-        "/preview/list",
-        "/preview/read-page",
-        "/preview/screenshot",
-        "/preview/dom-snapshot",
-        "/preview/javascript",
-        "/preview/close",
+      expect(browserBridgeServer.requests.map((request) => request.path)).toEqual([
+        "/browser/open",
+        "/browser/navigate",
+        "/browser/list",
+        "/browser/read-page",
+        "/browser/screenshot",
+        "/browser/dom-snapshot",
+        "/browser/javascript",
+        "/browser/close",
       ]);
-      expect(previewBridgeServer.requests[0]).toMatchObject({
+      expect(browserBridgeServer.requests[0]).toMatchObject({
         body: {
           url: openUrl,
-          title: previewTitle,
+          title: browserTitle,
           wait_until: "load",
         },
       });
-      expect(previewBridgeServer.requests[1]).toMatchObject({
+      expect(browserBridgeServer.requests[1]).toMatchObject({
         body: {
-          preview_session_id: "preview-session-1",
+          tab_id: "browser-session-1",
           url: navigateUrl,
           wait_until: "load",
         },
       });
     } finally {
       unsubscribe();
-      await writeBackendEventLog("codex-backend-preview-tool-surface", events);
+      await writeBackendEventLog("codex-backend-browser-tool-surface", events);
     }
   }, FLOW_TEST_TIMEOUT_MS);
 });

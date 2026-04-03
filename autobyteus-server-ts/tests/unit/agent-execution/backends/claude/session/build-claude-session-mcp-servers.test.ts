@@ -2,10 +2,10 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const {
   buildClaudeTeamMcpServersMock,
-  buildClaudePreviewMcpServersMock,
+  buildClaudeBrowserMcpServersMock,
 } = vi.hoisted(() => ({
   buildClaudeTeamMcpServersMock: vi.fn(),
-  buildClaudePreviewMcpServersMock: vi.fn(),
+  buildClaudeBrowserMcpServersMock: vi.fn(),
 }));
 
 vi.mock(
@@ -16,9 +16,9 @@ vi.mock(
 );
 
 vi.mock(
-  "../../../../../../src/agent-execution/backends/claude/preview/build-claude-preview-mcp-servers.js",
+  "../../../../../../src/agent-execution/backends/claude/browser/build-claude-browser-mcp-servers.js",
   () => ({
-    buildClaudePreviewMcpServers: buildClaudePreviewMcpServersMock,
+    buildClaudeBrowserMcpServers: buildClaudeBrowserMcpServersMock,
   }),
 );
 
@@ -29,9 +29,9 @@ describe("buildClaudeSessionMcpServers", () => {
     vi.clearAllMocks();
   });
 
-  it("returns preview MCP servers when send-message tooling is disabled", async () => {
-    buildClaudePreviewMcpServersMock.mockResolvedValue({
-      autobyteus_preview: { name: "preview" },
+  it("returns browser MCP servers when send-message tooling is disabled", async () => {
+    buildClaudeBrowserMcpServersMock.mockResolvedValue({
+      autobyteus_browser: { name: "browser" },
     });
 
     const result = await buildClaudeSessionMcpServers({
@@ -44,16 +44,16 @@ describe("buildClaudeSessionMcpServers", () => {
 
     expect(buildClaudeTeamMcpServersMock).not.toHaveBeenCalled();
     expect(result).toEqual({
-      autobyteus_preview: { name: "preview" },
+      autobyteus_browser: { name: "browser" },
     });
   });
 
-  it("merges team and preview MCP servers when send-message tooling is enabled", async () => {
+  it("merges team and browser MCP servers when send-message tooling is enabled", async () => {
     buildClaudeTeamMcpServersMock.mockResolvedValue({
       autobyteus_team: { name: "team" },
     });
-    buildClaudePreviewMcpServersMock.mockResolvedValue({
-      autobyteus_preview: { name: "preview" },
+    buildClaudeBrowserMcpServersMock.mockResolvedValue({
+      autobyteus_browser: { name: "browser" },
     });
 
     const result = await buildClaudeSessionMcpServers({
@@ -65,17 +65,17 @@ describe("buildClaudeSessionMcpServers", () => {
     });
 
     expect(buildClaudeTeamMcpServersMock).toHaveBeenCalledTimes(1);
-    expect(buildClaudePreviewMcpServersMock).toHaveBeenCalledTimes(1);
+    expect(buildClaudeBrowserMcpServersMock).toHaveBeenCalledTimes(1);
     expect(result).toEqual({
       autobyteus_team: { name: "team" },
-      autobyteus_preview: { name: "preview" },
+      autobyteus_browser: { name: "browser" },
     });
   });
 
   it("throws when team MCP configuration is required but unavailable", async () => {
     buildClaudeTeamMcpServersMock.mockResolvedValue(null);
-    buildClaudePreviewMcpServersMock.mockResolvedValue({
-      autobyteus_preview: { name: "preview" },
+    buildClaudeBrowserMcpServersMock.mockResolvedValue({
+      autobyteus_browser: { name: "browser" },
     });
 
     await expect(

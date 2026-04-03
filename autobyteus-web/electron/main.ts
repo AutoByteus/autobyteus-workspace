@@ -26,15 +26,15 @@ import { AppUpdater } from './updater/appUpdater';
 import { registerExtensionIpcHandlers } from './extensionIpcHandlers';
 import { ManagedExtensionService } from './extensions/managedExtensionService';
 import { getCanonicalBaseDataPath } from './appDataPaths';
-import { PreviewRuntime, startPreviewRuntime } from './preview/preview-runtime';
-import type { PreviewHostBounds, PreviewShellSnapshot } from '../types/previewShell';
+import { BrowserRuntime, startBrowserRuntime } from './browser/browser-runtime';
+import { registerBrowserShellIpcHandlers } from './browser/register-browser-shell-ipc-handlers';
 import { WorkspaceShellWindow } from './shell/workspace-shell-window';
 import { WorkspaceShellWindowRegistry } from './shell/workspace-shell-window-registry';
 
 const serverStatusManager = new ServerStatusManager(serverManager);
 const appUpdater = new AppUpdater();
 let managedExtensionService: ManagedExtensionService | null = null;
-let previewRuntime: PreviewRuntime | null = null
+let browserRuntime: BrowserRuntime | null = null
 const shellWindowRegistry = new WorkspaceShellWindowRegistry();
 
 const shutdownTimeoutMs = 8000;
@@ -109,7 +109,7 @@ function createNodeBoundWindow(nodeId: string): WorkspaceShellWindow {
     iconPath: getWindowIcon(),
   });
   shellWindowRegistry.register(window);
-  previewRuntime?.registerShell(window);
+  browserRuntime?.registerShell(window);
 
   logger.info(`Creating node-bound window for nodeId=${nodeId}; url=${startURL}`);
   window.browserWindow.webContents.on('did-finish-load', () => {
@@ -128,7 +128,7 @@ function createNodeBoundWindow(nodeId: string): WorkspaceShellWindow {
   });
 
   window.browserWindow.on('closed', () => {
-    previewRuntime?.unregisterShell(window.shellId);
+    browserRuntime?.unregisterShell(window.shellId);
     shellWindowRegistry.unregister(window.shellId);
   });
 
@@ -238,14 +238,6 @@ function applyNodeRegistryChange(change: NodeRegistryChange): NodeRegistrySnapsh
   };
 }
 
-function buildEmptyPreviewShellSnapshot(): PreviewShellSnapshot {
-  return {
-    previewVisible: false,
-    activePreviewSessionId: null,
-    sessions: [],
-  };
-}
-
 function installServerStatusFanout(): void {
   serverStatusManager.on('status-change', (status) => {
     shellWindowRegistry.broadcast('server-status', status);
@@ -296,41 +288,7 @@ function installIpcHandlers(): void {
   });
 
   ipcMain.handle('get-node-registry-snapshot', async () => nodeRegistrySnapshot);
-
-  ipcMain.handle('preview-shell:get-snapshot', async (event): Promise<PreviewShellSnapshot> => {
-    if (!previewRuntime) {
-      return buildEmptyPreviewShellSnapshot();
-    }
-    return previewRuntime.getShellController().getSnapshot(event.sender.id);
-  });
-
-  ipcMain.handle('preview-shell:focus-session', async (event, previewSessionId: string): Promise<PreviewShellSnapshot> => {
-    if (!previewRuntime) {
-      return buildEmptyPreviewShellSnapshot();
-    }
-    return previewRuntime.getShellController().focusSession(event.sender.id, previewSessionId);
-  });
-
-  ipcMain.handle('preview-shell:set-active-session', async (event, previewSessionId: string): Promise<PreviewShellSnapshot> => {
-    if (!previewRuntime) {
-      return buildEmptyPreviewShellSnapshot();
-    }
-    return previewRuntime.getShellController().setActiveSession(event.sender.id, previewSessionId);
-  });
-
-  ipcMain.handle('preview-shell:update-host-bounds', async (event, bounds: PreviewHostBounds | null): Promise<PreviewShellSnapshot> => {
-    if (!previewRuntime) {
-      return buildEmptyPreviewShellSnapshot();
-    }
-    return previewRuntime.getShellController().updateHostBounds(event.sender.id, bounds);
-  });
-
-  ipcMain.handle('preview-shell:close-session', async (event, previewSessionId: string): Promise<PreviewShellSnapshot> => {
-    if (!previewRuntime) {
-      return buildEmptyPreviewShellSnapshot();
-    }
-    return previewRuntime.getShellController().closeSession(event.sender.id, previewSessionId);
-  });
+  registerBrowserShellIpcHandlers(ipcMain, () => browserRuntime);
 
   ipcMain.handle('get-server-status', () => {
     return serverStatusManager.getStatus();
@@ -484,9 +442,9 @@ function installAppLifecycleHandlers(): void {
       logger.error('Error during server shutdown:', error);
     }
     try {
-      await previewRuntime?.stop()
+      await browserRuntime?.stop()
     } catch (error) {
-      logger.error('Error during preview runtime shutdown:', error);
+      logger.error('Error during browser runtime shutdown:', error);
     } finally {
       logger.close();
     }
@@ -519,12 +477,12 @@ async function bootstrap(): Promise<void> {
   await app.whenReady();
   managedExtensionService = new ManagedExtensionService(getCanonicalBaseDataPath());
   appUpdater.initialize();
-  previewRuntime = await startPreviewRuntime({
+  browserRuntime = await startBrowserRuntime({
     iconPath: getWindowIcon(),
-    artifactsDir: path.join(getCanonicalBaseDataPath(), 'preview-artifacts'),
+    artifactsDir: path.join(getCanonicalBaseDataPath(), 'browser-artifacts'),
     setRuntimeEnvOverrides: (overrides) => serverManager.setRuntimeEnvOverrides(overrides),
     onStartError: (error) => {
-      logger.error('Failed to start preview subsystem. Preview tools will remain unavailable.', error)
+      logger.error('Failed to start browser subsystem. Browser tools will remain unavailable.', error)
     },
   });
   installIpcHandlers();

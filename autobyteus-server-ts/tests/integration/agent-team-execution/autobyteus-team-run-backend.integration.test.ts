@@ -95,7 +95,9 @@ describe("AutoByteusTeamRunBackend integration", () => {
     expect(backend.getStatus()).toBe("IDLE");
 
     const userMessage = new AgentInputUserMessage("hello team");
-    await expect(backend.postMessage(userMessage, "WorkerA")).resolves.toEqual({ accepted: true });
+    await expect(backend.postMessage(userMessage, "WorkerA")).resolves.toMatchObject({
+      accepted: true,
+    });
     expect(team.postMessage).toHaveBeenCalledWith(userMessage, "WorkerA");
 
     await expect(
@@ -107,7 +109,7 @@ describe("AutoByteusTeamRunBackend integration", () => {
         content: "Please investigate.",
         messageType: "agent_message",
       }),
-    ).resolves.toEqual({ accepted: true });
+    ).resolves.toMatchObject({ accepted: true });
 
     const deliveredMessage = team.postMessage.mock.calls[1]?.[0] as AgentInputUserMessage;
     expect(deliveredMessage).toBeInstanceOf(AgentInputUserMessage);

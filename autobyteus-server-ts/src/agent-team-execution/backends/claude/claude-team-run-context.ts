@@ -1,4 +1,5 @@
 import type { AgentRunConfig } from "../../../agent-execution/domain/agent-run-config.js";
+import type { ConfiguredAgentToolExposure } from "../../../agent-execution/shared/configured-agent-tool-exposure.js";
 import type { TeamMemberRuntimeContext, TeamRunContext } from "../../domain/team-run-context.js";
 
 export type ClaudeTeamMemberContextInput = {
@@ -7,6 +8,7 @@ export type ClaudeTeamMemberContextInput = {
   memberRunId: string;
   agentRunConfig: AgentRunConfig;
   sessionId: string | null;
+  configuredToolExposure?: ConfiguredAgentToolExposure | null;
 };
 
 export class ClaudeTeamMemberContext implements TeamMemberRuntimeContext {
@@ -14,6 +16,7 @@ export class ClaudeTeamMemberContext implements TeamMemberRuntimeContext {
   readonly memberRouteKey: string;
   readonly memberRunId: string;
   readonly agentRunConfig: AgentRunConfig;
+  readonly configuredToolExposure: ConfiguredAgentToolExposure | null;
   sessionId: string | null;
 
   constructor(input: ClaudeTeamMemberContextInput) {
@@ -21,6 +24,7 @@ export class ClaudeTeamMemberContext implements TeamMemberRuntimeContext {
     this.memberRouteKey = input.memberRouteKey;
     this.memberRunId = input.memberRunId;
     this.agentRunConfig = input.agentRunConfig;
+    this.configuredToolExposure = input.configuredToolExposure ?? null;
     this.sessionId = input.sessionId;
   }
 

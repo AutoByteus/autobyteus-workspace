@@ -4,6 +4,7 @@ import { AgentDefinition } from "../../../src/agent-definition/domain/models.js"
 import { AgentTeamDefinition, TeamMember } from "../../../src/agent-team-definition/domain/models.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import type { TeamRunBackend } from "../../../src/agent-team-execution/backends/team-run-backend.js";
+import { AutoByteusTeamRunContext } from "../../../src/agent-team-execution/backends/autobyteus/autobyteus-team-run-context.js";
 import { ClaudeTeamMemberContext, ClaudeTeamRunContext } from "../../../src/agent-team-execution/backends/claude/claude-team-run-context.js";
 import { CodexTeamMemberContext, CodexTeamRunContext } from "../../../src/agent-team-execution/backends/codex/codex-team-run-context.js";
 import { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
@@ -515,7 +516,10 @@ describe("TeamRunService integration", () => {
       const restoredContext = agentTeamRunManager.restoreTeamRun.mock.calls[0]?.[0] as TeamRunContext;
       expect(restoredContext.config?.memberConfigs[0]?.workspaceId).toBe("workspace-restored");
       if (runtimeKind === RuntimeKind.AUTOBYTEUS) {
-        expect(restoredContext.runtimeContext).toEqual({ teamId: metadata.teamRunId });
+        expect(restoredContext.runtimeContext).toBeInstanceOf(AutoByteusTeamRunContext);
+        expect(
+          (restoredContext.runtimeContext as AutoByteusTeamRunContext).memberContexts[0]?.nativeAgentId,
+        ).toBe(platformAgentRunId);
       } else if (runtimeKind === RuntimeKind.CODEX_APP_SERVER) {
         expect(restoredContext.runtimeContext).toBeInstanceOf(CodexTeamRunContext);
         expect((restoredContext.runtimeContext as CodexTeamRunContext).memberContexts[0]?.threadId).toBe(
@@ -532,8 +536,7 @@ describe("TeamRunService integration", () => {
         expect.objectContaining({
           memberMetadata: [
             expect.objectContaining({
-              platformAgentRunId:
-                runtimeKind === RuntimeKind.AUTOBYTEUS ? null : platformAgentRunId,
+              platformAgentRunId,
             }),
           ],
         }),

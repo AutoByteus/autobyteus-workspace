@@ -2,13 +2,13 @@ import {
   AgentRunEventType,
   type AgentRunEvent,
 } from "../../../domain/agent-run-event.js";
-import { isPreviewToolName } from "../../../../agent-tools/preview/preview-tool-contract.js";
+import { isBrowserToolName } from "../../../../agent-tools/browser/browser-tool-contract.js";
 import { serializePayload } from "../../../../services/agent-streaming/payload-serialization.js";
 import { asObject, asString, type ClaudeSessionEvent } from "../claude-runtime-shared.js";
 import { isClaudeSendMessageToolName } from "../claude-send-message-tool-name.js";
 import { ClaudeSessionEventName } from "./claude-session-event-name.js";
 
-const CLAUDE_PREVIEW_MCP_TOOL_PREFIX = "mcp__autobyteus_preview__";
+const CLAUDE_BROWSER_MCP_TOOL_PREFIX = "mcp__autobyteus_browser__";
 
 const resolveSegmentId = (payload: Record<string, unknown>): string | null =>
   asString(payload.id);
@@ -21,11 +21,11 @@ const normalizeToolNameForEvent = (value: string | null): string | null => {
     return null;
   }
   const trimmed = value.trim();
-  if (!trimmed.startsWith(CLAUDE_PREVIEW_MCP_TOOL_PREFIX)) {
+  if (!trimmed.startsWith(CLAUDE_BROWSER_MCP_TOOL_PREFIX)) {
     return trimmed;
   }
-  const candidate = trimmed.slice(CLAUDE_PREVIEW_MCP_TOOL_PREFIX.length);
-  return isPreviewToolName(candidate) ? candidate : trimmed;
+  const candidate = trimmed.slice(CLAUDE_BROWSER_MCP_TOOL_PREFIX.length);
+  return isBrowserToolName(candidate) ? candidate : trimmed;
 };
 
 const resolveToolName = (payload: Record<string, unknown>): string | null =>

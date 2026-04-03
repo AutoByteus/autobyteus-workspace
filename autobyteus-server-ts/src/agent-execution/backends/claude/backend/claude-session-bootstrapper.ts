@@ -25,6 +25,7 @@ import {
 import {
   getTeamClaudeSessionBootstrapStrategy,
 } from "../../../../agent-team-execution/backends/claude/claude-team-session-bootstrap-strategy.js";
+import { resolveConfiguredAgentToolExposure } from "../../../shared/configured-agent-tool-exposure.js";
 
 const asTrimmedString = (value: unknown): string | null =>
   typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
@@ -76,6 +77,7 @@ export class ClaudeSessionBootstrapper {
       runContext.config.agentDefinitionId,
     );
     const configuredSkills = this.skillService.getSkills(agentDefinition?.skillNames ?? []);
+    const configuredToolExposure = resolveConfiguredAgentToolExposure(agentDefinition);
     const skillAccessMode = resolveSkillAccessMode(
       runContext.config.skillAccessMode ?? null,
       configuredSkills.length,
@@ -104,6 +106,7 @@ export class ClaudeSessionBootstrapper {
       runtimeContext: new ClaudeAgentRunContext({
         sessionConfig,
         agentInstruction,
+        configuredToolExposure,
         configuredSkills: exposedConfiguredSkills,
         materializedConfiguredSkills,
         skillAccessMode,

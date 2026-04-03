@@ -5,7 +5,6 @@ import path from "node:path";
 import { createRequire } from "node:module";
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
-import { WorkspaceConfig } from "autobyteus-ts";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
 const workspaceManager = getWorkspaceManager();
@@ -76,7 +75,7 @@ describe("File explorer GraphQL e2e", () => {
     fs.writeFileSync(path.join(tempRoot, "root_file.txt"), "root content");
 
     const workspace = await workspaceManager.createWorkspace(
-      new WorkspaceConfig({ rootPath: tempRoot }),
+      { rootPath: tempRoot },
     );
     const fileExplorer = await workspace.getFileExplorer();
     await fileExplorer.buildWorkspaceDirectoryTree();

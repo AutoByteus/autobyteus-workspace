@@ -23,7 +23,7 @@ describe("Runtime capability GraphQL e2e", () => {
       schema,
       source: `
         query RuntimeCapabilities {
-          runtimeCapabilities {
+          runtimeAvailabilities {
             runtimeKind
             enabled
             reason
@@ -36,7 +36,7 @@ describe("Runtime capability GraphQL e2e", () => {
       throw result.errors[0];
     }
 
-    const capabilities = (result.data as any)?.runtimeCapabilities as Array<{
+    const capabilities = (result.data as any)?.runtimeAvailabilities as Array<{
       runtimeKind: string;
       enabled: boolean;
       reason: string | null;

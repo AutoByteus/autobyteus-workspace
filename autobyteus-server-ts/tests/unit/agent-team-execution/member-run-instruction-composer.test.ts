@@ -38,6 +38,24 @@ describe("member-run-instruction-composer", () => {
 
     expect(composition.teamInstruction).toBeNull();
     expect(composition.agentInstruction).toBe("Only the agent instruction is available.");
-    expect(composition.runtimeInstruction).toContain("Do not attempt `send_message_to`");
+    expect(composition.runtimeInstruction).toContain("Current team member: Professor");
+    expect(composition.runtimeInstruction).not.toContain("Do not attempt `send_message_to`");
+  });
+
+  it("warns about send_message_to only when teammates exist but the tool is not exposed", () => {
+    const composition = composeMemberRunInstructions({
+      teamInstruction: null,
+      agentInstruction: null,
+      currentMemberName: "Professor",
+      sendMessageToEnabled: false,
+      teammates: [
+        { memberName: "Professor", role: "coordinator", description: "Leads delegation" },
+        { memberName: "Student", role: "implementer", description: "Executes tasks" },
+      ],
+    });
+
+    expect(composition.runtimeInstruction).toContain(
+      "Do not attempt `send_message_to`; it is not exposed for this run even though teammates exist.",
+    );
   });
 });

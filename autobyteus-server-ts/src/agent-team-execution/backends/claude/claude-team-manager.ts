@@ -33,6 +33,11 @@ import {
   buildInterAgentDeliveryInputMessage,
   buildInterAgentMessageAgentRunEvent,
 } from "../../services/inter-agent-message-runtime-builders.js";
+import { AgentDefinitionService } from "../../../agent-definition/services/agent-definition-service.js";
+import {
+  resolveConfiguredAgentToolExposure,
+  type ConfiguredAgentToolExposure,
+} from "../../../agent-execution/shared/configured-agent-tool-exposure.js";
 
 const buildRunNotFoundResult = (teamRunId: string): AgentOperationResult => ({
   accepted: false,
@@ -55,6 +60,7 @@ const buildPlaceholderSessionConfig = (memberContext: ClaudeTeamMemberContext) =
 
 export class ClaudeTeamManager implements TeamManager {
   private readonly agentRunManager: AgentRunManager;
+  private readonly agentDefinitionService: AgentDefinitionService;
   private teamContext: TeamRunContext<ClaudeTeamRunContext> | null;
   private readonly memberRuns = new Map<string, AgentRun>();
   private readonly memberRunUnsubscribers = new Map<string, () => void>();
@@ -64,6 +70,7 @@ export class ClaudeTeamManager implements TeamManager {
   constructor(context: TeamRunContext<ClaudeTeamRunContext>) {
     this.teamContext = context;
     this.agentRunManager = AgentRunManager.getInstance();
+    this.agentDefinitionService = AgentDefinitionService.getInstance();
   }
 
   hasActiveMembers(): boolean {
@@ -200,6 +207,8 @@ export class ClaudeTeamManager implements TeamManager {
               config: memberRunConfig,
               runtimeContext: new ClaudeAgentRunContext({
                 sessionConfig: buildPlaceholderSessionConfig(memberContext),
+                configuredToolExposure:
+                  await this.resolveConfiguredToolExposure(memberContext),
                 skillAccessMode: memberRunConfig.skillAccessMode,
                 teamContext: null,
                 sessionId: memberContext.sessionId,
@@ -283,6 +292,19 @@ export class ClaudeTeamManager implements TeamManager {
       runtimeKind: memberContext.agentRunConfig.runtimeKind,
       teamContext: this.teamContext,
     });
+  }
+
+  private async resolveConfiguredToolExposure(
+    memberContext: ClaudeTeamMemberContext,
+  ): Promise<ConfiguredAgentToolExposure> {
+    if (memberContext.configuredToolExposure) {
+      return memberContext.configuredToolExposure;
+    }
+
+    const agentDefinition = await this.agentDefinitionService.getAgentDefinitionById(
+      memberContext.agentRunConfig.agentDefinitionId,
+    );
+    return resolveConfiguredAgentToolExposure(agentDefinition);
   }
 
   private bindMemberRunEvents(

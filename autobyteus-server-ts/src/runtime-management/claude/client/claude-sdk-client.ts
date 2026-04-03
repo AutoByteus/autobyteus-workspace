@@ -7,10 +7,6 @@ import {
   MODEL_DISCOVERY_PROBE_PROMPT,
   type ClaudeSdkPermissionMode,
 } from "../../../agent-execution/backends/claude/claude-runtime-shared.js";
-import {
-  CLAUDE_SEND_MESSAGE_MCP_TOOL_NAME,
-  CLAUDE_SEND_MESSAGE_TOOL_NAME,
-} from "../../../agent-execution/backends/claude/claude-send-message-tool-name.js";
 import { buildClaudeSdkSpawnEnvironment } from "./claude-sdk-auth-environment.js";
 import { resolveClaudeCodeExecutablePath } from "./claude-sdk-executable-path.js";
 import {
@@ -18,11 +14,6 @@ import {
   toModelInfo,
   type NormalizedModelDescriptor,
 } from "./claude-sdk-model-normalizer.js";
-
-const SEND_MESSAGE_TO_ALLOWED_TOOLS = [
-  CLAUDE_SEND_MESSAGE_TOOL_NAME,
-  CLAUDE_SEND_MESSAGE_MCP_TOOL_NAME,
-] as const;
 
 type ClaudePermissionDecision = { behavior: "allow" };
 
@@ -218,7 +209,7 @@ export class ClaudeSdkClient {
     workingDirectory: string | null;
     env?: Record<string, string | undefined>;
     mcpServers?: Record<string, unknown> | null;
-    enableSendMessageToTooling: boolean;
+    allowedTools?: Iterable<string> | null;
     enableProjectSkillSettings?: boolean;
     permissionMode?: ClaudeSdkPermissionMode;
     autoExecuteTools?: boolean;
@@ -356,7 +347,7 @@ export class ClaudeSdkClient {
     workingDirectory: string | null;
     env?: Record<string, string | undefined>;
     mcpServers?: Record<string, unknown> | null;
-    enableSendMessageToTooling: boolean;
+    allowedTools?: Iterable<string> | null;
     enableProjectSkillSettings?: boolean;
     permissionMode?: ClaudeSdkPermissionMode;
     autoExecuteTools?: boolean;
@@ -365,13 +356,12 @@ export class ClaudeSdkClient {
     const pathToClaudeCodeExecutable = resolveClaudeCodeExecutablePath();
     const sdkSpawnEnvironment = options.env ?? buildClaudeSdkSpawnEnvironment();
     const allowedTools = new Set<string>();
-    if (options.enableSendMessageToTooling) {
-      for (const toolName of SEND_MESSAGE_TO_ALLOWED_TOOLS) {
-        allowedTools.add(toolName);
+    for (const toolName of options.allowedTools ?? []) {
+      const normalizedToolName = asString(toolName)?.trim();
+      if (!normalizedToolName) {
+        continue;
       }
-    }
-    if (options.enableProjectSkillSettings) {
-      allowedTools.add("Skill");
+      allowedTools.add(normalizedToolName);
     }
     return {
       model: options.model,

@@ -29,6 +29,7 @@ describe("createAgentTeamDefinitionTool", () => {
         member_name: "coder",
         ref: "1",
         ref_type: "agent",
+        ref_scope: "shared",
       },
     ]);
 
@@ -51,6 +52,7 @@ describe("createAgentTeamDefinitionTool", () => {
     expect(createdDef.nodes).toHaveLength(1);
     expect(createdDef.nodes[0].memberName).toBe("coder");
     expect(createdDef.nodes[0].refType).toBe("agent");
+    expect(createdDef.nodes[0].refScope).toBe("shared");
     expect(result).toContain("created successfully");
     expect(result).toContain("456");
   });

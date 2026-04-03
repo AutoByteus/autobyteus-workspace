@@ -30,6 +30,7 @@ export class TeamCodexThreadBootstrapStrategy implements CodexThreadBootstrapStr
   prepare(input: {
     runContext: AgentRunContext<CodexAgentRunContext | null>;
     agentInstruction: string | null;
+    configuredToolExposure: import("../../../agent-execution/shared/configured-agent-tool-exposure.js").ConfiguredAgentToolExposure;
   }): CodexThreadBootstrapPreparation {
     const teamContext = input.runContext.config.teamContext;
     const currentMemberContext = resolveRuntimeMemberContext(teamContext, input.runContext.runId);
@@ -48,10 +49,15 @@ export class TeamCodexThreadBootstrapStrategy implements CodexThreadBootstrapStr
       teamContext?.runId ?? null,
       AgentTeamRunManager.getInstance(),
     );
+    const sendMessageToEnabled =
+      input.configuredToolExposure.sendMessageToConfigured &&
+      allowedRecipientNames.length > 0 &&
+      Boolean(deliveryHandler);
     const instructionComposition = composeMemberRunInstructions({
       teamInstruction: null,
       agentInstruction: input.agentInstruction,
       currentMemberName,
+      sendMessageToEnabled,
       teammates,
     });
 
@@ -68,7 +74,7 @@ export class TeamCodexThreadBootstrapStrategy implements CodexThreadBootstrapStr
       ]),
       developerInstructions: instructionComposition.runtimeInstruction,
       dynamicToolRegistrations:
-        allowedRecipientNames.length > 0 && deliveryHandler
+        sendMessageToEnabled && deliveryHandler
           ? buildSendMessageToDynamicToolRegistrations({
               allowedRecipientNames,
               deliverInterAgentMessage: deliveryHandler,

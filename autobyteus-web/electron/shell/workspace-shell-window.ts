@@ -30,9 +30,9 @@ export class WorkspaceShellWindow {
   readonly browserWindow: BrowserWindow;
   readonly shellId: number;
   readonly nodeId: string;
-  private desiredPreviewView: WebContentsView | null = null;
-  private attachedPreviewView: WebContentsView | null = null;
-  private previewBounds: Rectangle | null = null;
+  private desiredBrowserView: WebContentsView | null = null;
+  private attachedBrowserView: WebContentsView | null = null;
+  private browserBounds: Rectangle | null = null;
 
   constructor(options: WorkspaceShellWindowOptions) {
     this.nodeId = options.nodeId;
@@ -61,9 +61,9 @@ export class WorkspaceShellWindow {
     void this.browserWindow.loadURL(options.startUrl);
 
     this.browserWindow.on('closed', () => {
-      this.detachAttachedPreviewView();
-      this.desiredPreviewView = null;
-      this.previewBounds = null;
+      this.detachAttachedBrowserView();
+      this.desiredBrowserView = null;
+      this.browserBounds = null;
     });
   }
 
@@ -95,45 +95,45 @@ export class WorkspaceShellWindow {
     this.browserWindow.close();
   }
 
-  attachPreviewView(view: WebContentsView | null): void {
-    this.desiredPreviewView = view;
-    this.applyPreviewProjection();
+  attachBrowserView(view: WebContentsView | null): void {
+    this.desiredBrowserView = view;
+    this.applyBrowserProjection();
   }
 
-  updatePreviewHostBounds(bounds: Rectangle | null): void {
-    this.previewBounds = normalizeBounds(bounds);
-    this.applyPreviewProjection();
+  updateBrowserHostBounds(bounds: Rectangle | null): void {
+    this.browserBounds = normalizeBounds(bounds);
+    this.applyBrowserProjection();
   }
 
-  private applyPreviewProjection(): void {
+  private applyBrowserProjection(): void {
     if (this.isDestroyed()) {
       return;
     }
 
-    const nextView = this.desiredPreviewView;
-    const nextBounds = this.previewBounds;
+    const nextView = this.desiredBrowserView;
+    const nextBounds = this.browserBounds;
 
     if (!nextView || !nextBounds) {
-      this.detachAttachedPreviewView();
+      this.detachAttachedBrowserView();
       return;
     }
 
-    if (this.attachedPreviewView !== nextView) {
-      this.detachAttachedPreviewView();
+    if (this.attachedBrowserView !== nextView) {
+      this.detachAttachedBrowserView();
       this.browserWindow.contentView.addChildView(nextView);
-      this.attachedPreviewView = nextView;
+      this.attachedBrowserView = nextView;
     }
 
     nextView.setBounds(nextBounds);
   }
 
-  private detachAttachedPreviewView(): void {
-    if (!this.attachedPreviewView || this.isDestroyed()) {
-      this.attachedPreviewView = null;
+  private detachAttachedBrowserView(): void {
+    if (!this.attachedBrowserView || this.isDestroyed()) {
+      this.attachedBrowserView = null;
       return;
     }
 
-    this.browserWindow.contentView.removeChildView(this.attachedPreviewView);
-    this.attachedPreviewView = null;
+    this.browserWindow.contentView.removeChildView(this.attachedBrowserView);
+    this.attachedBrowserView = null;
   }
 }

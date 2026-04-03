@@ -43,7 +43,7 @@ describe("TempWorkspace", () => {
     const rootPath = createTempDir();
     const tempWorkspace = new TempWorkspace(rootPath);
 
-    expect(tempWorkspace.config.get("rootPath")).toBe(rootPath);
+    expect(tempWorkspace.config.rootPath).toBe(rootPath);
   });
 
   it("initializes and provides a file explorer", async () => {

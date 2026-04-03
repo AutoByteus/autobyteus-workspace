@@ -22,9 +22,9 @@ const loaderSpecs: LoaderSpec[] = [
     exportName: "registerSkillsTools",
   },
   {
-    name: "Preview Tools",
-    modulePath: "../agent-tools/preview/register-preview-tools.js",
-    exportName: "registerPreviewTools",
+    name: "Browser Tools",
+    modulePath: "../agent-tools/browser/register-browser-tools.js",
+    exportName: "registerBrowserTools",
   },
   {
     name: "Application Tools",

@@ -3,7 +3,13 @@ import type {
   NodeRegistrySnapshot,
   WindowNodeContext,
 } from './nodeRegistryTypes';
-import type { PreviewHostBounds, PreviewShellSnapshot } from '../types/previewShell';
+import type {
+  BrowserHostBounds,
+  BrowserShellNavigateTabRequest,
+  BrowserShellOpenTabRequest,
+  BrowserShellReloadTabRequest,
+  BrowserShellSnapshot,
+} from '../types/browserShell';
 
 type Cleanup = () => void;
 
@@ -47,12 +53,15 @@ interface Window {
     upsertNodeRegistry: (change: NodeRegistryChange) => Promise<NodeRegistrySnapshot>;
     getNodeRegistrySnapshot: () => Promise<NodeRegistrySnapshot>;
     onNodeRegistryUpdated: (callback: (snapshot: NodeRegistrySnapshot) => void) => Cleanup;
-    getPreviewShellSnapshot: () => Promise<PreviewShellSnapshot>;
-    focusPreviewSession: (previewSessionId: string) => Promise<PreviewShellSnapshot>;
-    setActivePreviewSession: (previewSessionId: string) => Promise<PreviewShellSnapshot>;
-    updatePreviewHostBounds: (bounds: PreviewHostBounds | null) => Promise<PreviewShellSnapshot>;
-    closePreviewShellSession: (previewSessionId: string) => Promise<PreviewShellSnapshot>;
-    onPreviewShellSnapshotUpdated: (callback: (snapshot: PreviewShellSnapshot) => void) => Cleanup;
+    getBrowserShellSnapshot: () => Promise<BrowserShellSnapshot>;
+    openBrowserTab: (request: BrowserShellOpenTabRequest) => Promise<BrowserShellSnapshot>;
+    navigateBrowserTab: (request: BrowserShellNavigateTabRequest) => Promise<BrowserShellSnapshot>;
+    reloadBrowserTab: (request: BrowserShellReloadTabRequest) => Promise<BrowserShellSnapshot>;
+    focusBrowserTab: (browserSessionId: string) => Promise<BrowserShellSnapshot>;
+    setActiveBrowserTab: (browserSessionId: string) => Promise<BrowserShellSnapshot>;
+    updateBrowserHostBounds: (bounds: BrowserHostBounds | null) => Promise<BrowserShellSnapshot>;
+    closeBrowserShellSession: (browserSessionId: string) => Promise<BrowserShellSnapshot>;
+    onBrowserShellSnapshotUpdated: (callback: (snapshot: BrowserShellSnapshot) => void) => Cleanup;
     getAppUpdateState: () => Promise<AppUpdateState>;
     checkForAppUpdates: () => Promise<AppUpdateState>;
     downloadAppUpdate: () => Promise<AppUpdateState>;

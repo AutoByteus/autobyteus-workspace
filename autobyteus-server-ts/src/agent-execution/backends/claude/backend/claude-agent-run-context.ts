@@ -5,10 +5,12 @@ import type { TeamRunContext } from "../../../../agent-team-execution/domain/tea
 import type { ClaudeTeamRunContext } from "../../../../agent-team-execution/backends/claude/claude-team-run-context.js";
 import type { AgentRunContext as SharedAgentRunContext } from "../../../domain/agent-run-context.js";
 import type { MaterializedClaudeWorkspaceSkill } from "../claude-workspace-skill-materializer.js";
+import type { ConfiguredAgentToolExposure } from "../../../shared/configured-agent-tool-exposure.js";
 
 export class ClaudeAgentRunContext {
   readonly sessionConfig: ClaudeSessionConfig;
   readonly agentInstruction: string | null;
+  readonly configuredToolExposure: ConfiguredAgentToolExposure;
   readonly configuredSkills: Skill[];
   readonly materializedConfiguredSkills: MaterializedClaudeWorkspaceSkill[];
   readonly skillAccessMode: SkillAccessMode | null;
@@ -20,6 +22,7 @@ export class ClaudeAgentRunContext {
   constructor(input: {
     sessionConfig: ClaudeSessionConfig;
     agentInstruction?: string | null;
+    configuredToolExposure: ConfiguredAgentToolExposure;
     configuredSkills?: Skill[] | null;
     materializedConfiguredSkills?: MaterializedClaudeWorkspaceSkill[] | null;
     skillAccessMode?: SkillAccessMode | null;
@@ -30,6 +33,7 @@ export class ClaudeAgentRunContext {
   }) {
     this.sessionConfig = input.sessionConfig;
     this.agentInstruction = input.agentInstruction ?? null;
+    this.configuredToolExposure = input.configuredToolExposure;
     this.configuredSkills = input.configuredSkills ?? [];
     this.materializedConfiguredSkills = input.materializedConfiguredSkills ?? [];
     this.skillAccessMode = input.skillAccessMode ?? null;

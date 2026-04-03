@@ -18,14 +18,14 @@ import { ClaudeSessionManager } from "../../../src/agent-execution/backends/clau
 import { ClaudeModelCatalog } from "../../../src/llm-management/services/claude-model-catalog.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import {
-  PREVIEW_BRIDGE_BASE_URL_ENV,
-  PREVIEW_BRIDGE_TOKEN_ENV,
-} from "../../../src/agent-tools/preview/preview-tool-contract.js";
+  BROWSER_BRIDGE_BASE_URL_ENV,
+  BROWSER_BRIDGE_TOKEN_ENV,
+} from "../../../src/agent-tools/browser/browser-tool-contract.js";
 import {
-  PreviewBridgeLiveTestServer,
-  buildOpenPreviewToolPrompt,
-  buildPreviewToolSurfacePrompt,
-} from "./preview-bridge-live-test-server.js";
+  BrowserBridgeLiveTestServer,
+  buildOpenBrowserToolPrompt,
+  buildBrowserToolSurfacePrompt,
+} from "./browser-bridge-live-test-server.js";
 
 const claudeBinaryReady = spawnSync("claude", ["--version"], {
   stdio: "ignore",
@@ -155,7 +155,11 @@ const buildExactWriteToolPrompt = (input: {
     "After the file is created, reply with DONE.",
   ].join("\n");
 
-const buildBootstrapper = (workspaceRoot: string, instructions = "Reply briefly.") =>
+const buildBootstrapper = (
+  workspaceRoot: string,
+  instructions = "Reply briefly.",
+  toolNames: string[] = [],
+) =>
   new ClaudeSessionBootstrapper(
     {
       resolveWorkingDirectory: async () => workspaceRoot,
@@ -168,6 +172,7 @@ const buildBootstrapper = (workspaceRoot: string, instructions = "Reply briefly.
         instructions,
         description: "Fallback Claude backend integration instructions.",
         skillNames: [],
+        toolNames,
       }),
     } as any,
     {
@@ -180,10 +185,15 @@ const createFactory = (input: {
   workspaceRoot: string;
   runId: string;
   instructions?: string;
+  toolNames?: string[];
 }) =>
   new ClaudeAgentRunBackendFactory(
     input.sessionManager,
-    buildBootstrapper(input.workspaceRoot, input.instructions),
+    buildBootstrapper(
+      input.workspaceRoot,
+      input.instructions,
+      input.toolNames ?? [],
+    ),
     () => input.runId,
   );
 
@@ -202,11 +212,11 @@ const writeBackendEventLog = async (testName: string, events: AgentRunEvent[]): 
 
 describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live transport)", () => {
   let sessionManager: ClaudeSessionManager | null = null;
-  let previewBridgeServer: PreviewBridgeLiveTestServer | null = null;
+  let browserBridgeServer: BrowserBridgeLiveTestServer | null = null;
   const createdRunIds = new Set<string>();
   const createdWorkspaces = new Set<string>();
-  const originalPreviewBridgeBaseUrl = process.env[PREVIEW_BRIDGE_BASE_URL_ENV];
-  const originalPreviewBridgeToken = process.env[PREVIEW_BRIDGE_TOKEN_ENV];
+  const originalBrowserBridgeBaseUrl = process.env[BROWSER_BRIDGE_BASE_URL_ENV];
+  const originalBrowserBridgeToken = process.env[BROWSER_BRIDGE_TOKEN_ENV];
 
   afterEach(async () => {
     if (sessionManager) {
@@ -220,19 +230,19 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
     }
     createdRunIds.clear();
     sessionManager = null;
-    if (previewBridgeServer) {
-      await previewBridgeServer.stop();
-      previewBridgeServer = null;
+    if (browserBridgeServer) {
+      await browserBridgeServer.stop();
+      browserBridgeServer = null;
     }
-    if (typeof originalPreviewBridgeBaseUrl === "string") {
-      process.env[PREVIEW_BRIDGE_BASE_URL_ENV] = originalPreviewBridgeBaseUrl;
+    if (typeof originalBrowserBridgeBaseUrl === "string") {
+      process.env[BROWSER_BRIDGE_BASE_URL_ENV] = originalBrowserBridgeBaseUrl;
     } else {
-      delete process.env[PREVIEW_BRIDGE_BASE_URL_ENV];
+      delete process.env[BROWSER_BRIDGE_BASE_URL_ENV];
     }
-    if (typeof originalPreviewBridgeToken === "string") {
-      process.env[PREVIEW_BRIDGE_TOKEN_ENV] = originalPreviewBridgeToken;
+    if (typeof originalBrowserBridgeToken === "string") {
+      process.env[BROWSER_BRIDGE_TOKEN_ENV] = originalBrowserBridgeToken;
     } else {
-      delete process.env[PREVIEW_BRIDGE_TOKEN_ENV];
+      delete process.env[BROWSER_BRIDGE_TOKEN_ENV];
     }
 
     await Promise.all(
@@ -757,39 +767,40 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
   );
 
   it(
-    "executes open_preview through the live Claude preview MCP path",
+    "executes open_tab through the live Claude browser MCP path",
     async () => {
       const modelIdentifier = await fetchClaudeModelIdentifier();
-      const workspaceRoot = await createWorkspace("claude-backend-preview-tool");
+      const workspaceRoot = await createWorkspace("claude-backend-browser-tool");
       createdWorkspaces.add(workspaceRoot);
-      previewBridgeServer = new PreviewBridgeLiveTestServer();
-      await previewBridgeServer.start();
-      Object.assign(process.env, previewBridgeServer.getRuntimeEnv());
+      browserBridgeServer = new BrowserBridgeLiveTestServer();
+      await browserBridgeServer.start();
+      Object.assign(process.env, browserBridgeServer.getRuntimeEnv());
       sessionManager = new ClaudeSessionManager();
 
-      const runId = `run-claude-backend-preview-${randomUUID()}`;
+      const runId = `run-claude-backend-browser-${randomUUID()}`;
       createdRunIds.add(runId);
       const factory = createFactory({
         sessionManager,
         workspaceRoot,
         runId,
+        toolNames: ["open_tab"],
         instructions:
-          "If the user explicitly instructs you to call open_preview with a JSON argument object, call open_preview exactly once with those exact arguments and do not call any other tool.",
+          "If the user explicitly instructs you to call open_tab with a JSON argument object, call open_tab exactly once with those exact arguments and do not call any other tool.",
       });
 
       const backend = await factory.createBackend(
         new AgentRunConfig({
           runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-          agentDefinitionId: "agent-def-claude-preview-live",
+          agentDefinitionId: "agent-def-claude-browser-live",
           llmModelIdentifier: modelIdentifier,
           autoExecuteTools: true,
-          workspaceId: "workspace-claude-preview-live",
+          workspaceId: "workspace-claude-browser-live",
           skillAccessMode: SkillAccessMode.NONE,
         }),
       );
 
-      const previewUrl = `http://127.0.0.1:4173/preview-${randomUUID()}`;
-      const previewTitle = `Preview ${randomUUID()}`;
+      const browserUrl = `http://127.0.0.1:4173/browser-${randomUUID()}`;
+      const browserTitle = `Browser ${randomUUID()}`;
       const events: AgentRunEvent[] = [];
       const unsubscribe = backend.subscribeToEvents((event) => {
         if (event && typeof event === "object") {
@@ -800,9 +811,9 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
       try {
         const sendResult = await backend.postUserMessage(
           new AgentInputUserMessage(
-            buildOpenPreviewToolPrompt({
-              url: previewUrl,
-              title: previewTitle,
+            buildOpenBrowserToolPrompt({
+              url: browserUrl,
+              title: browserTitle,
             }),
           ),
         );
@@ -812,7 +823,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
           events,
           (event) =>
             event.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED &&
-            event.payload.tool_name === "open_preview",
+            event.payload.tool_name === "open_tab",
         );
         await waitForEvent(
           events,
@@ -824,59 +835,69 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
         expect(
           events.some((event) => event.eventType === AgentRunEventType.TOOL_APPROVAL_REQUESTED),
         ).toBe(false);
-        expect(previewBridgeServer.requests).toHaveLength(1);
-        expect(previewBridgeServer.requests[0]).toMatchObject({
+        expect(browserBridgeServer.requests).toHaveLength(1);
+        expect(browserBridgeServer.requests[0]).toMatchObject({
           method: "POST",
-          path: "/preview/open",
+          path: "/browser/open",
           body: {
-            url: previewUrl,
-            title: previewTitle,
+            url: browserUrl,
+            title: browserTitle,
             wait_until: "load",
           },
         });
       } finally {
         unsubscribe();
-        await writeBackendEventLog("claude-backend-preview-tool", events);
+        await writeBackendEventLog("claude-backend-browser-tool", events);
       }
     },
     FLOW_TEST_TIMEOUT_MS,
   );
 
   it(
-    "executes the full preview tool surface through the live Claude preview MCP path",
+    "executes the full browser tool surface through the live Claude browser MCP path",
     async () => {
       const modelIdentifier = await fetchClaudeModelIdentifier();
-      const workspaceRoot = await createWorkspace("claude-backend-preview-surface");
+      const workspaceRoot = await createWorkspace("claude-backend-browser-surface");
       createdWorkspaces.add(workspaceRoot);
-      previewBridgeServer = new PreviewBridgeLiveTestServer();
-      await previewBridgeServer.start();
-      Object.assign(process.env, previewBridgeServer.getRuntimeEnv());
+      browserBridgeServer = new BrowserBridgeLiveTestServer();
+      await browserBridgeServer.start();
+      Object.assign(process.env, browserBridgeServer.getRuntimeEnv());
       sessionManager = new ClaudeSessionManager();
 
-      const runId = `run-claude-backend-preview-surface-${randomUUID()}`;
+      const runId = `run-claude-backend-browser-surface-${randomUUID()}`;
       createdRunIds.add(runId);
       const factory = createFactory({
         sessionManager,
         workspaceRoot,
         runId,
+        toolNames: [
+          "open_tab",
+          "navigate_to",
+          "list_tabs",
+          "read_page",
+          "screenshot",
+          "dom_snapshot",
+          "run_script",
+          "close_tab",
+        ],
         instructions:
-          "If the user explicitly instructs you to call preview tools with exact JSON arguments in an exact order, call exactly those preview tools in that order and do not call any other tool.",
+          "If the user explicitly instructs you to call browser tools with exact JSON arguments in an exact order, call exactly those browser tools in that order and do not call any other tool.",
       });
 
       const backend = await factory.createBackend(
         new AgentRunConfig({
           runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-          agentDefinitionId: "agent-def-claude-preview-surface-live",
+          agentDefinitionId: "agent-def-claude-browser-surface-live",
           llmModelIdentifier: modelIdentifier,
           autoExecuteTools: true,
-          workspaceId: "workspace-claude-preview-surface-live",
+          workspaceId: "workspace-claude-browser-surface-live",
           skillAccessMode: SkillAccessMode.NONE,
         }),
       );
 
-      const openUrl = `http://127.0.0.1:4173/preview-open-${randomUUID()}`;
-      const navigateUrl = `http://127.0.0.1:4173/preview-navigate-${randomUUID()}`;
-      const previewTitle = `Preview ${randomUUID()}`;
+      const openUrl = `http://127.0.0.1:4173/browser-open-${randomUUID()}`;
+      const navigateUrl = `http://127.0.0.1:4173/browser-navigate-${randomUUID()}`;
+      const browserTitle = `Browser ${randomUUID()}`;
       const events: AgentRunEvent[] = [];
       const unsubscribe = backend.subscribeToEvents((event) => {
         if (event && typeof event === "object") {
@@ -887,10 +908,10 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
       try {
         const sendResult = await backend.postUserMessage(
           new AgentInputUserMessage(
-            buildPreviewToolSurfacePrompt({
+            buildBrowserToolSurfacePrompt({
               openUrl,
               navigateUrl,
-              title: previewTitle,
+              title: browserTitle,
             }),
           ),
         );
@@ -900,7 +921,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
           events,
           (event) =>
             event.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED &&
-            event.payload.tool_name === "close_preview",
+            event.payload.tool_name === "close_tab",
         );
         await waitForEvent(
           events,
@@ -915,32 +936,32 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
           .filter((value): value is string => typeof value === "string");
         expect(succeededToolNames).toEqual(
           expect.arrayContaining([
-            "open_preview",
-            "navigate_preview",
-            "list_preview_sessions",
-            "read_preview_page",
-            "capture_preview_screenshot",
-            "preview_dom_snapshot",
-            "execute_preview_javascript",
-            "close_preview",
+            "open_tab",
+            "navigate_to",
+            "list_tabs",
+            "read_page",
+            "screenshot",
+            "dom_snapshot",
+            "run_script",
+            "close_tab",
           ]),
         );
         expect(
           events.some((event) => event.eventType === AgentRunEventType.TOOL_APPROVAL_REQUESTED),
         ).toBe(false);
-        expect(previewBridgeServer.requests.map((request) => request.path)).toEqual([
-          "/preview/open",
-          "/preview/navigate",
-          "/preview/list",
-          "/preview/read-page",
-          "/preview/screenshot",
-          "/preview/dom-snapshot",
-          "/preview/javascript",
-          "/preview/close",
+        expect(browserBridgeServer.requests.map((request) => request.path)).toEqual([
+          "/browser/open",
+          "/browser/navigate",
+          "/browser/list",
+          "/browser/read-page",
+          "/browser/screenshot",
+          "/browser/dom-snapshot",
+          "/browser/javascript",
+          "/browser/close",
         ]);
       } finally {
         unsubscribe();
-        await writeBackendEventLog("claude-backend-preview-tool-surface", events);
+        await writeBackendEventLog("claude-backend-browser-tool-surface", events);
       }
     },
     FLOW_TEST_TIMEOUT_MS,

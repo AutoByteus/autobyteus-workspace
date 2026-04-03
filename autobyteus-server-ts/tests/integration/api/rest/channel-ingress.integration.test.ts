@@ -34,6 +34,7 @@ import type { ChannelBinding } from "../../../../src/external-channel/domain/mod
 import type { ChannelRunDispatchResult } from "../../../../src/external-channel/runtime/channel-run-dispatch-result.js";
 import { AgentRunHistoryIndexService } from "../../../../src/run-history/services/agent-run-history-index-service.js";
 import { AgentRunMetadataService } from "../../../../src/run-history/services/agent-run-metadata-service.js";
+import { AgentRunService } from "../../../../src/agent-execution/services/agent-run-service.js";
 import { TeamRunHistoryIndexService } from "../../../../src/run-history/services/team-run-history-index-service.js";
 import { TeamRunMetadataService } from "../../../../src/run-history/services/team-run-metadata-service.js";
 import {
@@ -418,20 +419,38 @@ const createAgentEndToEndIngressHarness = async () => {
     } as never,
     agentRunManager,
   });
+  const agentRunService = new AgentRunService(memoryDir, {
+    agentRunManager,
+    metadataService: agentRunMetadataService,
+    historyIndexService: agentRunHistoryIndexService,
+    workspaceManager: workspaceManager as never,
+    agentDefinitionService: {
+      getAgentDefinitionById: vi.fn().mockResolvedValue({
+        id: "agent-def-1",
+        name: "External Channel Agent",
+        role: "assistant",
+        description: "External channel agent",
+        instructions: "Handle inbound messages.",
+        toolNames: [],
+      }),
+      getFreshAgentDefinitionById: vi.fn().mockResolvedValue({
+        id: "agent-def-1",
+        name: "External Channel Agent",
+        role: "assistant",
+        description: "External channel agent",
+        instructions: "Handle inbound messages.",
+        toolNames: [],
+      }),
+    } as never,
+  });
   const runLauncher = new ChannelBindingRunLauncher({
     bindingService,
-    agentRunManager,
-    agentRunService: {
-      restoreAgentRun: vi.fn(),
-    } as never,
-    agentRunMetadataService,
-    agentRunHistoryIndexService,
-    workspaceManager: workspaceManager as never,
+    agentRunService,
     teamRunService: createUnusedTeamRunService(),
   });
   const agentRunFacade = new ChannelAgentRunFacade({
     runLauncher,
-    agentRunManager,
+    agentRunService,
     agentLiveMessagePublisher: {
       publishExternalUserMessage: vi.fn(),
     } as never,
@@ -519,6 +538,7 @@ const createTeamEndToEndIngressHarness = async () => {
         memberName: "Coordinator",
         ref: "agent-def-1",
         refType: "agent",
+        refScope: "shared",
       }),
     ],
   });
@@ -534,9 +554,7 @@ const createTeamEndToEndIngressHarness = async () => {
   });
   const runLauncher = new ChannelBindingRunLauncher({
     bindingService,
-    workspaceManager: workspaceManager as never,
     teamRunService,
-    ...createUnusedAgentDeps(),
   });
   const teamRunFacade = new ChannelTeamRunFacade({
     runLauncher,
@@ -612,9 +630,21 @@ describe("channel-ingress route", () => {
         content: "hello",
       });
 
+      const receipts = await readJson<
+        Array<Record<string, unknown>>
+      >(harness.receiptsFilePath);
+      const acceptedReceipt = receipts.find(
+        (receipt) => receipt.externalMessageId === "msg-1" && receipt.ingressState === "ACCEPTED",
+      );
+      expect(acceptedReceipt).toBeDefined();
+      const agentRunId = String(acceptedReceipt?.agentRunId ?? "");
+      const turnId = String(acceptedReceipt?.turnId ?? "");
+      expect(agentRunId.length).toBeGreaterThan(0);
+      expect(turnId.length).toBeGreaterThan(0);
+
       const source = await harness.messageReceiptService.getSourceByAgentRunTurn(
-        harness.expectedRunId,
-        harness.expectedTurnId,
+        agentRunId,
+        turnId,
       );
       expect(source).toMatchObject({
         provider: ExternalChannelProvider.WHATSAPP,
@@ -622,23 +652,10 @@ describe("channel-ingress route", () => {
         externalMessageId: "msg-1",
       });
 
-      const receipts = await readJson<
-        Array<Record<string, unknown>>
-      >(harness.receiptsFilePath);
-      expect(receipts).toContainEqual(
-        expect.objectContaining({
-          externalMessageId: "msg-1",
-          ingressState: "ACCEPTED",
-          agentRunId: harness.expectedRunId,
-          teamRunId: null,
-          turnId: harness.expectedTurnId,
-        }),
-      );
-
       const metadataPath = path.join(
         harness.memoryDir,
         "agents",
-        harness.expectedRunId,
+        agentRunId,
         "run_metadata.json",
       );
       const indexPath = path.join(harness.memoryDir, "run_history_index.json");
@@ -647,18 +664,18 @@ describe("channel-ingress route", () => {
         indexPath,
       );
       const historyRow = historyIndex.rows?.find(
-        (row) => row.runId === harness.expectedRunId,
+        (row) => row.runId === agentRunId,
       );
 
       expect(metadata).toMatchObject({
-        runId: harness.expectedRunId,
+        runId: agentRunId,
         agentDefinitionId: "agent-def-1",
         workspaceRootPath: harness.workspaceRootPath,
-        memoryDir: path.join(harness.memoryDir, "agents", harness.expectedRunId),
+        memoryDir: path.join(harness.memoryDir, "agents", agentRunId),
         runtimeKind: RuntimeKind.AUTOBYTEUS,
       });
       expect(historyRow).toMatchObject({
-        runId: harness.expectedRunId,
+        runId: agentRunId,
         agentDefinitionId: "agent-def-1",
         agentName: "External Channel Agent",
         workspaceRootPath: harness.workspaceRootPath,
@@ -760,7 +777,7 @@ describe("channel-ingress route", () => {
         teamDefinitionId: "team-def-1",
         teamDefinitionName: "External Channel Team",
         workspaceRootPath: harness.workspaceRootPath,
-        lastKnownStatus: "IDLE",
+        lastKnownStatus: "ACTIVE",
       });
     } finally {
       await harness.app.close();
