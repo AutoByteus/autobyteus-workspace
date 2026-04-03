@@ -23,7 +23,7 @@ Changed tests/docs reviewed as support evidence:
 - `autobyteus-web/utils/__tests__/invocationAliases.spec.ts`
 - `autobyteus-web/README.md`
 - `autobyteus-web/docs/electron_packaging.md`
-- `tickets/in-progress/frontend-boundary-cleanup/api-e2e-testing.md`
+- `tickets/done/frontend-boundary-cleanup/api-e2e-testing.md`
 
 ## Source File Size And Structure Audit
 

@@ -4,8 +4,8 @@
 
 - Ticket: `codex-filechange-event-fix`
 - Date: `2026-04-02`
-- Current Status: `Awaiting User Verification`
-- Workflow State Source: `tickets/in-progress/codex-filechange-event-fix/workflow-state.md`
+- Current Status: `Completed and Released`
+- Workflow State Source: `tickets/done/codex-filechange-event-fix/workflow-state.md`
 
 ## Delivery Summary
 
@@ -17,8 +17,8 @@
   - Repaired the stale run-history projection unit suite that surfaced during the broader Codex validation sweep.
   - Added durable docs for the Codex raw-event audit table and keep/ignore decisions.
 - Planned scope reference:
-  - `tickets/in-progress/codex-filechange-event-fix/requirements.md`
-  - `tickets/in-progress/codex-filechange-event-fix/implementation.md`
+  - `tickets/done/codex-filechange-event-fix/requirements.md`
+  - `tickets/done/codex-filechange-event-fix/implementation.md`
 - Deferred / not delivered:
   - No broader streaming-layer redesign was attempted here; this ticket remained a bounded Codex adapter fix.
 
@@ -32,16 +32,16 @@
   - Full Codex suite rerun passed on the current working tree:
     - `16` test files passed
     - `52` tests passed
-    - command recorded in `tickets/in-progress/codex-filechange-event-fix/api-e2e-testing.md`
+    - command recorded in `tickets/done/codex-filechange-event-fix/api-e2e-testing.md`
   - Isolated reruns of `tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts` passed (`1` targeted test and then `5` full-file tests), indicating the earlier broad-sweep failure was flakiness rather than a deterministic regression from this ticket.
 - Code review result:
-  - `tickets/in-progress/codex-filechange-event-fix/code-review.md` round `1` -> `Pass`, overall `9.2 / 10` (`92 / 100`)
+  - `tickets/done/codex-filechange-event-fix/code-review.md` round `1` -> `Pass`, overall `9.2 / 10` (`92 / 100`)
 - Documentation sync result:
-  - `tickets/in-progress/codex-filechange-event-fix/docs-sync.md` -> `Updated`
+  - `tickets/done/codex-filechange-event-fix/docs-sync.md` -> `Updated`
 
 ## User Verification Hold
 
-- Waiting for explicit user verification: `Yes`
-- User verification received: `No`
+- Waiting for explicit user verification: `No`
+- User verification received: `Yes`
 - Notes:
-  - The bounded Codex fix is implemented, reviewed, validated, and documented. Final archival/commit decisions remain pending your explicit verification.
+  - The bounded Codex fix is implemented, reviewed, validated, and documented. The ticket was archived as part of the verified artifact redesign chain, merged to `origin/personal`, and released in `v1.2.57`.

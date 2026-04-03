@@ -19,10 +19,10 @@ Keep one canonical `future-state-runtime-call-stack-review.md` path for the tick
 
 ## Review Basis
 
-- Requirements: `tickets/in-progress/artifact-touched-files-redesign/requirements.md` (status `Design-ready`)
-- Runtime Call Stack Document: `tickets/in-progress/artifact-touched-files-redesign/future-state-runtime-call-stack.md`
+- Requirements: `tickets/done/artifact-touched-files-redesign/requirements.md` (status `Design-ready`)
+- Runtime Call Stack Document: `tickets/done/artifact-touched-files-redesign/future-state-runtime-call-stack.md`
 - Source Design Basis:
-  - `Medium/Large`: `tickets/in-progress/artifact-touched-files-redesign/proposed-design.md`
+  - `Medium/Large`: `tickets/done/artifact-touched-files-redesign/proposed-design.md`
 - Shared Design Principles: `shared/design-principles.md`
 - Common Design Practices: `shared/common-design-practices.md`
 - Artifact Versions In This Round:
@@ -69,13 +69,13 @@ Notes:
 
 | Round | Findings Requiring Updates (`Yes`/`No`) | Updated Files | Version Changes | Changed Sections | Resolved Finding IDs |
 | --- | --- | --- | --- | --- | --- |
-| 1 | No | `tickets/in-progress/artifact-touched-files-redesign/future-state-runtime-call-stack-review.md` | `review doc created (round 1 baseline)` | `Review Meta`, `Round History`, `Per-Use-Case Review`, `Gate Decision` | `None` |
-| 2 | No | `tickets/in-progress/artifact-touched-files-redesign/future-state-runtime-call-stack-review.md` | `round 1 -> round 2 gate update` | `Review Meta`, `Round History`, `Round Artifact Update Log`, `Missing-Use-Case Discovery Log`, `Gate Decision` | `None` |
-| 3 | No | `tickets/in-progress/artifact-touched-files-redesign/future-state-runtime-call-stack-review.md` | `round 3 baseline for redesign v2` | `Review Meta`, `Review Basis`, `Round History`, `Round Artifact Update Log`, `Missing-Use-Case Discovery Log`, `Per-Use-Case Review`, `Gate Decision` | `None` |
-| 4 | No | `tickets/in-progress/artifact-touched-files-redesign/future-state-runtime-call-stack-review.md` | `round 4 gate confirmation on redesign v2` | `Review Meta`, `Round History`, `Round Artifact Update Log`, `Per-Use-Case Review`, `Gate Decision`, `Speak Log` | `None` |
-| 5 | No | `tickets/in-progress/artifact-touched-files-redesign/future-state-runtime-call-stack-review.md` | `round 5 baseline for redesign v3` | `Review Meta`, `Review Basis`, `Round History`, `Round Artifact Update Log`, `Missing-Use-Case Discovery Log`, `Per-Use-Case Review`, `Gate Decision` | `None` |
-| 6 | No | `tickets/in-progress/artifact-touched-files-redesign/future-state-runtime-call-stack-review.md` | `round 6 gate confirmation on redesign v3` | `Review Meta`, `Round History`, `Round Artifact Update Log`, `Per-Use-Case Review`, `Gate Decision`, `Speak Log` | `None` |
-| 7 | No | `tickets/in-progress/artifact-touched-files-redesign/future-state-runtime-call-stack-review.md`, `tickets/in-progress/artifact-touched-files-redesign/proposed-design.md`, `tickets/in-progress/artifact-touched-files-redesign/future-state-runtime-call-stack.md` | `design/call stack v3 -> v4` | `Review Meta`, `Review Basis`, `Round History`, `Round Artifact Update Log`, `Missing-Use-Case Discovery Log`, `Per-Use-Case Review`, `Gate Decision` | `None` |
+| 1 | No | `tickets/done/artifact-touched-files-redesign/future-state-runtime-call-stack-review.md` | `review doc created (round 1 baseline)` | `Review Meta`, `Round History`, `Per-Use-Case Review`, `Gate Decision` | `None` |
+| 2 | No | `tickets/done/artifact-touched-files-redesign/future-state-runtime-call-stack-review.md` | `round 1 -> round 2 gate update` | `Review Meta`, `Round History`, `Round Artifact Update Log`, `Missing-Use-Case Discovery Log`, `Gate Decision` | `None` |
+| 3 | No | `tickets/done/artifact-touched-files-redesign/future-state-runtime-call-stack-review.md` | `round 3 baseline for redesign v2` | `Review Meta`, `Review Basis`, `Round History`, `Round Artifact Update Log`, `Missing-Use-Case Discovery Log`, `Per-Use-Case Review`, `Gate Decision` | `None` |
+| 4 | No | `tickets/done/artifact-touched-files-redesign/future-state-runtime-call-stack-review.md` | `round 4 gate confirmation on redesign v2` | `Review Meta`, `Round History`, `Round Artifact Update Log`, `Per-Use-Case Review`, `Gate Decision`, `Speak Log` | `None` |
+| 5 | No | `tickets/done/artifact-touched-files-redesign/future-state-runtime-call-stack-review.md` | `round 5 baseline for redesign v3` | `Review Meta`, `Review Basis`, `Round History`, `Round Artifact Update Log`, `Missing-Use-Case Discovery Log`, `Per-Use-Case Review`, `Gate Decision` | `None` |
+| 6 | No | `tickets/done/artifact-touched-files-redesign/future-state-runtime-call-stack-review.md` | `round 6 gate confirmation on redesign v3` | `Review Meta`, `Round History`, `Round Artifact Update Log`, `Per-Use-Case Review`, `Gate Decision`, `Speak Log` | `None` |
+| 7 | No | `tickets/done/artifact-touched-files-redesign/future-state-runtime-call-stack-review.md`, `tickets/done/artifact-touched-files-redesign/proposed-design.md`, `tickets/done/artifact-touched-files-redesign/future-state-runtime-call-stack.md` | `design/call stack v3 -> v4` | `Review Meta`, `Review Basis`, `Round History`, `Round Artifact Update Log`, `Missing-Use-Case Discovery Log`, `Per-Use-Case Review`, `Gate Decision` | `None` |
 | N |  |  |  |  |  |
 
 Rule:

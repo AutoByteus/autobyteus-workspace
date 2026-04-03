@@ -15,8 +15,8 @@
 
 ## Artifact Basis
 
-- Investigation Notes: `tickets/in-progress/artifact-touched-files-redesign/investigation-notes.md`
-- Requirements: `tickets/in-progress/artifact-touched-files-redesign/requirements.md`
+- Investigation Notes: `tickets/done/artifact-touched-files-redesign/investigation-notes.md`
+- Requirements: `tickets/done/artifact-touched-files-redesign/requirements.md`
 - Requirements Status: `Design-ready`
 - Shared Design Principles: `shared/design-principles.md`
 - Common Design Practices: `shared/common-design-practices.md`

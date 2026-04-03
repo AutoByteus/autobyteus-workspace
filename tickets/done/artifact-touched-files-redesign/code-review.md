@@ -11,10 +11,10 @@ Keep one canonical `code-review.md` file for the ticket. Record later review rou
 - Trigger Stage: `Post-milestone architecture continuation after a new shared-design-principles finding exposed a streaming-layer boundary-encapsulation defect`
 - Prior Review Round Reviewed: `8`
 - Latest Authoritative Round: `9`
-- Workflow state source: `tickets/in-progress/artifact-touched-files-redesign/workflow-state.md`
-- Investigation notes reviewed as context: `tickets/in-progress/artifact-touched-files-redesign/investigation-notes.md`
-- Earlier design artifact(s) reviewed as context: `tickets/in-progress/artifact-touched-files-redesign/proposed-design.md`, `tickets/in-progress/artifact-touched-files-redesign/implementation.md`, `tickets/in-progress/artifact-touched-files-redesign/api-e2e-testing.md`, `tickets/in-progress/artifact-touched-files-redesign/docs-sync.md`
-- Runtime call stack artifact: `tickets/in-progress/artifact-touched-files-redesign/future-state-runtime-call-stack.md`
+- Workflow state source: `tickets/done/artifact-touched-files-redesign/workflow-state.md`
+- Investigation notes reviewed as context: `tickets/done/artifact-touched-files-redesign/investigation-notes.md`
+- Earlier design artifact(s) reviewed as context: `tickets/done/artifact-touched-files-redesign/proposed-design.md`, `tickets/done/artifact-touched-files-redesign/implementation.md`, `tickets/done/artifact-touched-files-redesign/api-e2e-testing.md`, `tickets/done/artifact-touched-files-redesign/docs-sync.md`
+- Runtime call stack artifact: `tickets/done/artifact-touched-files-redesign/future-state-runtime-call-stack.md`
 - Shared Design Principles: `shared/design-principles.md`
 - Common Design Practices: `shared/common-design-practices.md`
 - Code Review Principles: `stages/08-code-review/code-review-principles.md`
@@ -29,7 +29,7 @@ Round rules:
 
 - Files reviewed (source + tests):
   - Changed source: `autobyteus-web/stores/agentArtifactsStore.ts`, `autobyteus-web/stores/agentActivityStore.ts`, `autobyteus-web/utils/toolInvocationStatus.ts`, `autobyteus-web/services/agentStreaming/handlers/segmentHandler.ts`, `autobyteus-web/services/agentStreaming/handlers/artifactHandler.ts`, `autobyteus-web/services/agentStreaming/handlers/toolLifecycleHandler.ts`, `autobyteus-web/services/agentStreaming/handlers/toolLifecycleState.ts`, `autobyteus-web/components/workspace/agent/ArtifactsTab.vue`, `autobyteus-web/components/workspace/agent/ArtifactContentViewer.vue`, `autobyteus-web/components/workspace/agent/ArtifactItem.vue`, `autobyteus-web/components/workspace/agent/ArtifactList.vue`, `autobyteus-web/components/layout/RightSideTabs.vue`, `autobyteus-server-ts/src/agent-customization/processors/tool-result/agent-artifact-event-processor.ts`, `autobyteus-server-ts/src/startup/agent-customization-loader.ts`, `autobyteus-server-ts/src/api/graphql/schema.ts`
-  - Changed tests and validation artifacts: touched-files frontend specs, backend processor/loader specs, `tickets/in-progress/artifact-touched-files-redesign/api-e2e-testing.md`
+  - Changed tests and validation artifacts: touched-files frontend specs, backend processor/loader specs, `tickets/done/artifact-touched-files-redesign/api-e2e-testing.md`
   - Cleanup scope rechecked: removed web GraphQL artifact query path, removed backend artifact persistence/query subsystem, deleted persistence-only tests
   - Additional architecture-context files reviewed: `autobyteus-web/services/agentStreaming/handlers/agentStatusHandler.ts`, `autobyteus-web/services/agentStreaming/handlers/teamHandler.ts`
 - Why these files:
@@ -39,10 +39,10 @@ Round rules:
 
 | Prior Round | Finding ID | Previous Severity | Current Resolution (`Resolved`/`Partially Resolved`/`Still Failing`/`Not Applicable After Rework`) | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- |
-| 1 | `CR-001` | `Blocker` | `Resolved` | `autobyteus-web/components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts`, `tickets/in-progress/artifact-touched-files-redesign/api-e2e-testing.md` (`Rounds 3-6`) | The viewer resolved-content validation gap remains closed. |
-| 3 | `CR-002` | `Blocker` | `Resolved` | `autobyteus-web/utils/toolInvocationStatus.ts`, `autobyteus-web/stores/__tests__/agentActivityStore.spec.ts`, `autobyteus-web/services/agentStreaming/handlers/__tests__/toolLifecycleOrdering.spec.ts`, `tickets/in-progress/artifact-touched-files-redesign/api-e2e-testing.md` (`Rounds 4-6`) | Shared monotonic status ownership still protects the activity sidecar from late `SEGMENT_END` regressions. |
-| 5 | `CR-003` | `Blocker` | `Resolved` | `autobyteus-web/stores/agentArtifactsStore.ts`, `autobyteus-web/services/agentStreaming/handlers/__tests__/artifactHandler.spec.ts`, `tickets/in-progress/artifact-touched-files-redesign/api-e2e-testing.md` (`Rounds 5-6`) | Refresh-only artifact updates still preserve discoverability state for already-visible rows. |
-| 5 | `CR-004` | `Blocker` | `Resolved` | `autobyteus-server-ts/src/agent-customization/processors/tool-result/agent-artifact-event-processor.ts`, `autobyteus-server-ts/tests/unit/agent-customization/processors/tool-result/agent-artifact-event-processor.test.ts`, `tickets/in-progress/artifact-touched-files-redesign/api-e2e-testing.md` (`Rounds 5-6`) | Backend artifact projection still short-circuits denied/failed tool results before any availability event can escape. |
+| 1 | `CR-001` | `Blocker` | `Resolved` | `autobyteus-web/components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts`, `tickets/done/artifact-touched-files-redesign/api-e2e-testing.md` (`Rounds 3-6`) | The viewer resolved-content validation gap remains closed. |
+| 3 | `CR-002` | `Blocker` | `Resolved` | `autobyteus-web/utils/toolInvocationStatus.ts`, `autobyteus-web/stores/__tests__/agentActivityStore.spec.ts`, `autobyteus-web/services/agentStreaming/handlers/__tests__/toolLifecycleOrdering.spec.ts`, `tickets/done/artifact-touched-files-redesign/api-e2e-testing.md` (`Rounds 4-6`) | Shared monotonic status ownership still protects the activity sidecar from late `SEGMENT_END` regressions. |
+| 5 | `CR-003` | `Blocker` | `Resolved` | `autobyteus-web/stores/agentArtifactsStore.ts`, `autobyteus-web/services/agentStreaming/handlers/__tests__/artifactHandler.spec.ts`, `tickets/done/artifact-touched-files-redesign/api-e2e-testing.md` (`Rounds 5-6`) | Refresh-only artifact updates still preserve discoverability state for already-visible rows. |
+| 5 | `CR-004` | `Blocker` | `Resolved` | `autobyteus-server-ts/src/agent-customization/processors/tool-result/agent-artifact-event-processor.ts`, `autobyteus-server-ts/tests/unit/agent-customization/processors/tool-result/agent-artifact-event-processor.test.ts`, `tickets/done/artifact-touched-files-redesign/api-e2e-testing.md` (`Rounds 5-6`) | Backend artifact projection still short-circuits denied/failed tool results before any availability event can escape. |
 
 ## Source File Size And Structure Audit (Mandatory)
 

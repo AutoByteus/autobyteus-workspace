@@ -4,8 +4,8 @@
 
 - Ticket: `artifact-touched-files-redesign`
 - Date: `2026-04-02`
-- Current Status: `Paused for Design-Impact Re-Entry`
-- Workflow State Source: `tickets/in-progress/artifact-touched-files-redesign/workflow-state.md`
+- Current Status: `Completed and Released`
+- Workflow State Source: `tickets/done/artifact-touched-files-redesign/workflow-state.md`
 
 ## Delivery Summary
 
@@ -21,9 +21,9 @@
   - Hardened the activity sidecar so late `SEGMENT_END` delivery can no longer regress stronger lifecycle states back to `parsed`.
   - Synced durable docs to the new frontend and backend runtime model.
 - Planned scope reference:
-  - `tickets/in-progress/artifact-touched-files-redesign/requirements.md`
-  - `tickets/in-progress/artifact-touched-files-redesign/proposed-design.md`
-  - `tickets/in-progress/artifact-touched-files-redesign/implementation.md`
+  - `tickets/done/artifact-touched-files-redesign/requirements.md`
+  - `tickets/done/artifact-touched-files-redesign/proposed-design.md`
+  - `tickets/done/artifact-touched-files-redesign/implementation.md`
 - Deferred / not delivered:
   - History-based artifact reconstruction from raw runtime traces remains future work and was intentionally not implemented in this ticket.
 - Key architectural or ownership changes:
@@ -47,7 +47,7 @@
   - Frontend focused acceptance rerun passed: `pnpm exec vitest run stores/__tests__/agentArtifactsStore.spec.ts services/agentStreaming/handlers/__tests__/artifactHandler.spec.ts services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts services/agentStreaming/handlers/__tests__/toolLifecycleOrdering.spec.ts components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts` (`6` files / `52` tests).
   - Backend targeted validation passed: `pnpm exec vitest run tests/unit/agent-customization/processors/tool-result/agent-artifact-event-processor.test.ts tests/unit/startup/agent-customization-loader.test.ts` (`2` files / `12` tests).
 - API / E2E verification:
-  - Stage 7 authoritative result is `Pass` in `tickets/in-progress/artifact-touched-files-redesign/api-e2e-testing.md` round `6`.
+  - Stage 7 authoritative result is `Pass` in `tickets/done/artifact-touched-files-redesign/api-e2e-testing.md` round `6`.
   - Active-code scans confirmed no live frontend `agentArtifacts(...)` query path and no live backend artifact persistence/query path remain in active code.
 - Acceptance-criteria closure summary:
   - All in-scope acceptance criteria `AC-001` through `AC-012` are marked `Passed` in the Stage 7 artifact.
@@ -59,7 +59,7 @@
 
 ## Documentation Sync Summary
 
-- Docs sync artifact: `tickets/in-progress/artifact-touched-files-redesign/docs-sync.md`
+- Docs sync artifact: `tickets/done/artifact-touched-files-redesign/docs-sync.md`
 - Docs result: `No change`
 - Docs updated:
   - `None in the latest rerun`
@@ -68,30 +68,30 @@
 
 ## Release Notes Status
 
-- Release notes required: `No`
-- Release notes artifact: `N/A`
+- Release notes required: `Yes`
+- Release notes artifact: `tickets/done/artifact-touched-files-redesign/release-notes.md`
 - Notes:
-  - This ticket does not currently require a user-facing release-notes artifact before verification/finalization.
+  - This ticket shipped in release `v1.2.57` using the archived release-notes artifact.
 
 ## User Verification Hold
 
-- Waiting for explicit user verification: `Yes`
-- User verification received: `No`
+- Waiting for explicit user verification: `No`
+- User verification received: `Yes`
 - Notes:
-  - Final user verification is now paused because the workflow reopened on a design-impact path after `CR-005` was identified in the shared streaming conversation-projection boundary.
+  - User verification was received after manual desktop testing, including live artifact-tab validation and Electron packaging verification.
 
 ## Finalization Record
 
-- Ticket archived to: `Not started (awaiting user verification)`
+- Ticket archived to: `tickets/done/artifact-touched-files-redesign`
 - Ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/artifact-touched-files-redesign`
 - Ticket branch: `codex/artifact-touched-files-redesign`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Commit status: `Milestone commit created on the ticket branch: a17526a (Refactor artifacts into touched-files projection)`
-- Push status: `Not started (awaiting user verification)`
-- Merge status: `Not started (awaiting user verification)`
-- Release/publication/deployment status: `Not required unless user later requests a release action`
-- Worktree cleanup status: `Not started (awaiting user verification and finalization)`
-- Local branch cleanup status: `Not started (awaiting user verification and finalization)`
+- Commit status: `Ticket-branch milestones were finalized through 95f6f9d and merged into personal as 089f259; release bump commit f7b0f77 published v1.2.57.`
+- Push status: `Completed`
+- Merge status: `Completed into origin/personal`
+- Release/publication/deployment status: `Completed via documented helper: v1.2.57`
+- Worktree cleanup status: `Completed`
+- Local branch cleanup status: `Completed (local branch removed after merge)`
 - Blockers / notes:
-  - Milestone commit `a17526a` was created on the ticket branch. Final archival/push/merge remain paused while the workflow completes the design-impact re-entry for `CR-005`.
+  - No remaining blockers in the verified scope. The earlier `CR-005` concern was handled as out-of-scope for this ticket and did not block finalization of the released artifact redesign chain.

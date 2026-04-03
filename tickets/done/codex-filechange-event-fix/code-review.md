@@ -7,10 +7,10 @@
 - Trigger Stage: `Stage 7 pass after the bounded Codex fileChange conversion fix and stale-unit-suite repair`
 - Prior Review Round Reviewed: `N/A`
 - Latest Authoritative Round: `1`
-- Workflow state source: `tickets/in-progress/codex-filechange-event-fix/workflow-state.md`
-- Investigation notes reviewed as context: `tickets/in-progress/codex-filechange-event-fix/investigation-notes.md`
-- Earlier design artifact(s) reviewed as context: `tickets/in-progress/codex-filechange-event-fix/requirements.md`, `tickets/in-progress/codex-filechange-event-fix/implementation.md`, `tickets/in-progress/codex-filechange-event-fix/api-e2e-testing.md`
-- Runtime call stack artifact: `tickets/in-progress/codex-filechange-event-fix/future-state-runtime-call-stack.md`
+- Workflow state source: `tickets/done/codex-filechange-event-fix/workflow-state.md`
+- Investigation notes reviewed as context: `tickets/done/codex-filechange-event-fix/investigation-notes.md`
+- Earlier design artifact(s) reviewed as context: `tickets/done/codex-filechange-event-fix/requirements.md`, `tickets/done/codex-filechange-event-fix/implementation.md`, `tickets/done/codex-filechange-event-fix/api-e2e-testing.md`
+- Runtime call stack artifact: `tickets/done/codex-filechange-event-fix/future-state-runtime-call-stack.md`
 - Shared Design Principles: `shared/design-principles.md`
 - Common Design Practices: `shared/common-design-practices.md`
 - Code Review Principles: `stages/08-code-review/code-review-principles.md`

@@ -3,13 +3,13 @@
 ## Current Snapshot
 
 - Ticket: `artifact-touched-files-redesign`
-- Current Stage: `5`
-- Next Stage: `5`
+- Current Stage: `10`
+- Next Stage: `Completed`
 - Code Edit Permission: `Locked`
-- Active Re-Entry: `Yes`
-- Re-Entry Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `Design Impact`
-- Last Transition ID: `T-054`
-- Last Updated: `2026-04-02`
+- Active Re-Entry: `No`
+- Re-Entry Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
+- Last Transition ID: `T-056`
+- Last Updated: `2026-04-03`
 
 ## Stage 0 Bootstrap Record
 
@@ -28,18 +28,18 @@
 
 | Stage | Gate Status (`Not Started`/`In Progress`/`Pass`/`Fail`/`Blocked`) | Gate Rule Summary | Evidence |
 | --- | --- | --- | --- |
-| 0 Bootstrap + Draft Requirement | Pass | Ticket bootstrap complete + if git repo: base branch resolved, remote freshness handled for new bootstrap, dedicated ticket worktree/branch created or reused + `requirements.md` Draft captured | `tickets/in-progress/artifact-touched-files-redesign/requirements.md`, `tickets/in-progress/artifact-touched-files-redesign/workflow-state.md` |
-| 1 Investigation + Triage | Pass | Investigation refresh recorded `CR-005`: the shared streaming conversation-projection boundary is split across `segmentHandler.ts` exports and lower-level projection internals, so one explicit projection owner is now required. | `tickets/in-progress/artifact-touched-files-redesign/investigation-notes.md` |
-| 2 Requirements | Pass | No product-behavior requirement delta is needed for this architecture iteration; the work is raising ownership and boundary clarity inside the existing streaming subsystem while keeping the same touched-files requirements. | `tickets/in-progress/artifact-touched-files-redesign/requirements.md` |
-| 2 Requirements | Pass | `requirements.md` remains `Design-ready`/`Refined` for the v4 architecture iteration. | `tickets/in-progress/artifact-touched-files-redesign/requirements.md` |
-| 3 Design Basis | Pass | Design v4 introduces one authoritative streaming conversation-projection boundary so handlers no longer mix `segmentHandler.ts` exports with lower-level segment-construction and identity internals. | `tickets/in-progress/artifact-touched-files-redesign/proposed-design.md` (`v4`) |
-| 4 Future-State Runtime Call Stack | Pass | Runtime call stack v4 routes shared conversation message/segment lookup and synthetic segment creation through the new projection boundary rather than directly from multiple handlers. | `tickets/in-progress/artifact-touched-files-redesign/future-state-runtime-call-stack.md` (`v4`) |
-| 5 Future-State Runtime Call Stack Review | In Progress | Stage 5 round 7 is `Candidate Go` on design/runtime-call-stack v4. One more clean deep-review round is required before Stage 6 can reopen. | `tickets/in-progress/artifact-touched-files-redesign/future-state-runtime-call-stack-review.md` (`round 7`) |
-| 6 Implementation | Not Started | Code edits remain locked until Stage 5 reaches `Go Confirmed` on the v4 streaming-boundary redesign. | `tickets/in-progress/artifact-touched-files-redesign/implementation.md`, `tickets/in-progress/artifact-touched-files-redesign/workflow-state.md` |
-| 7 API/E2E Testing | Not Started | Validation rerun is deferred until the v4 refactor is implemented. | `tickets/in-progress/artifact-touched-files-redesign/api-e2e-testing.md`, `tickets/in-progress/artifact-touched-files-redesign/workflow-state.md` |
-| 8 Code Review | Fail | Stage 8 round 9 found blocker `CR-005`: the shared streaming conversation-projection boundary is not authoritative, so the workflow has reopened on a design-impact path. | `tickets/in-progress/artifact-touched-files-redesign/code-review.md` (`round 9`) |
-| 9 Docs Sync | Not Started | Docs sync will rerun after the v4 implementation and review chain completes. | `tickets/in-progress/artifact-touched-files-redesign/docs-sync.md`, `tickets/in-progress/artifact-touched-files-redesign/workflow-state.md` |
-| 10 Handoff / Ticket State | Blocked | Stage 10 handoff is paused after the milestone commit because the user requested immediate architecture iteration on `CR-005` before final verification. | `tickets/in-progress/artifact-touched-files-redesign/handoff-summary.md`, `tickets/in-progress/artifact-touched-files-redesign/workflow-state.md` |
+| 0 Bootstrap + Draft Requirement | Pass | Ticket bootstrap complete + if git repo: base branch resolved, remote freshness handled for new bootstrap, dedicated ticket worktree/branch created or reused + `requirements.md` Draft captured | `tickets/done/artifact-touched-files-redesign/requirements.md`, `tickets/done/artifact-touched-files-redesign/workflow-state.md` |
+| 1 Investigation + Triage | Pass | Investigation refresh recorded `CR-005`: the shared streaming conversation-projection boundary is split across `segmentHandler.ts` exports and lower-level projection internals, so one explicit projection owner is now required. | `tickets/done/artifact-touched-files-redesign/investigation-notes.md` |
+| 2 Requirements | Pass | No product-behavior requirement delta is needed for this architecture iteration; the work is raising ownership and boundary clarity inside the existing streaming subsystem while keeping the same touched-files requirements. | `tickets/done/artifact-touched-files-redesign/requirements.md` |
+| 2 Requirements | Pass | `requirements.md` remains `Design-ready`/`Refined` for the v4 architecture iteration. | `tickets/done/artifact-touched-files-redesign/requirements.md` |
+| 3 Design Basis | Pass | Design v4 introduces one authoritative streaming conversation-projection boundary so handlers no longer mix `segmentHandler.ts` exports with lower-level segment-construction and identity internals. | `tickets/done/artifact-touched-files-redesign/proposed-design.md` (`v4`) |
+| 4 Future-State Runtime Call Stack | Pass | Runtime call stack v4 routes shared conversation message/segment lookup and synthetic segment creation through the new projection boundary rather than directly from multiple handlers. | `tickets/done/artifact-touched-files-redesign/future-state-runtime-call-stack.md` (`v4`) |
+| 5 Future-State Runtime Call Stack Review | Pass | The later `CR-005` streaming-boundary concern was explicitly treated as out-of-scope for this ticket, and the ticket retained its earlier clean `Go Confirmed` architecture gate for the touched-files redesign. | `tickets/done/artifact-touched-files-redesign/future-state-runtime-call-stack-review.md`, `tickets/done/frontend-boundary-cleanup/workflow-state.md` |
+| 6 Implementation | Pass | The touched-files projection, workspace-backed viewer flow, discoverability fixes, lifecycle monotonicity fix, Codex fileChange normalization, and the final artifact viewer polish were all implemented in the verified branch. | `tickets/done/artifact-touched-files-redesign/implementation.md`, `tickets/done/codex-filechange-event-fix/implementation.md`, `tickets/done/frontend-boundary-cleanup/implementation.md` |
+| 7 API/E2E Testing | Pass | Focused frontend/backend validation, fresh frontend/backend startup, Electron packaging, and Codex adapter regression coverage all passed across the verified ticket chain. | `tickets/done/artifact-touched-files-redesign/api-e2e-testing.md`, `tickets/done/codex-filechange-event-fix/api-e2e-testing.md`, `tickets/done/frontend-boundary-cleanup/api-e2e-testing.md` |
+| 8 Code Review | Pass | The touched-files redesign itself passed Stage 8 at `9.1 / 10`, and the later Codex/boundary follow-up tickets also passed their independent Stage 8 reviews before finalization. | `tickets/done/artifact-touched-files-redesign/code-review.md`, `tickets/done/codex-filechange-event-fix/code-review.md`, `tickets/done/frontend-boundary-cleanup/code-review.md` |
+| 9 Docs Sync | Pass | Durable docs for artifacts, Codex raw-event mapping, and the frontend/server packaging boundary were updated and remained current through final verification. | `tickets/done/artifact-touched-files-redesign/docs-sync.md`, `tickets/done/codex-filechange-event-fix/docs-sync.md`, `tickets/done/frontend-boundary-cleanup/docs-sync.md` |
+| 10 Handoff / Ticket State | Pass | Explicit user verification was received, the verified ticket chain was archived, merged into `origin/personal`, released as `v1.2.57`, and the dedicated ticket worktree/branch cleanup completed. | `tickets/done/artifact-touched-files-redesign/handoff-summary.md`, `tickets/done/artifact-touched-files-redesign/release-notes.md`, `tickets/done/artifact-touched-files-redesign/workflow-state.md` |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -59,11 +59,11 @@
 
 ## Re-Entry Declaration
 
-- Trigger Stage (`5`/`6`/`7`/`8`): `8`
-- Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `Design Impact`
-- Required Return Path: `Stage 1 -> Stage 3 -> Stage 4 -> Stage 5 -> Stage 6 -> Stage 7 -> Stage 8`
-- Required Upstream Artifacts To Update Before Code Edits: `investigation-notes.md`, `proposed-design.md`, `future-state-runtime-call-stack.md`, `future-state-runtime-call-stack-review.md`, `code-review.md`
-- Resume Condition: `Opened on 2026-04-02 after Stage 8 round 9 found CR-005 (shared streaming conversation-projection boundary bypass). Code edits remain locked until the v4 design reaches Stage 5 Go Confirmed.`
+- Trigger Stage (`5`/`6`/`7`/`8`): `N/A`
+- Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
+- Required Return Path: `N/A`
+- Required Upstream Artifacts To Update Before Code Edits: `N/A`
+- Resume Condition: `N/A`
 
 ## Transition Log (Append-Only)
 
@@ -163,3 +163,6 @@
 ## Process Violation Log
 
 | Date | Violation ID | Violation | Detected At Stage | Action Taken | Cleared |
+
+| T-055 | 2026-04-03 | 5 | 10 | The later `CR-005` streaming-boundary concern was explicitly treated as out-of-scope for this ticket, the related practical fixes were completed in bounded follow-up tickets, and the verified artifact redesign chain resumed finalization. | N/A | Locked | `tickets/done/artifact-touched-files-redesign/code-review.md`, `tickets/done/codex-filechange-event-fix/workflow-state.md`, `tickets/done/frontend-boundary-cleanup/workflow-state.md`, `tickets/done/artifact-touched-files-redesign/workflow-state.md` |
+| T-056 | 2026-04-03 | 10 | 10 | Explicit user verification was received, the archived ticket chain was merged into `origin/personal`, release `v1.2.57` was published, and the dedicated ticket worktree/branch cleanup completed. | N/A | Locked | `tickets/done/artifact-touched-files-redesign/handoff-summary.md`, `tickets/done/artifact-touched-files-redesign/release-notes.md`, `tickets/done/artifact-touched-files-redesign/workflow-state.md` |

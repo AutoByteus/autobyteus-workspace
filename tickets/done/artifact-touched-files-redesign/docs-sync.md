@@ -7,7 +7,7 @@ Use this as the canonical Stage 9 artifact.
 - Ticket: `artifact-touched-files-redesign`
 - Trigger Stage: `9`
 - Review Date: `2026-04-02`
-- Workflow state source: `tickets/in-progress/artifact-touched-files-redesign/workflow-state.md`
+- Workflow state source: `tickets/done/artifact-touched-files-redesign/workflow-state.md`
 - Re-entry note: `Re-reviewed after the Stage 8 round 8 deep rerun passed at 9.1 / 10. This Stage 9 pass rechecked the durable docs against the current code and latest review conclusions to confirm whether any further sync was required.`
 
 ## Why Docs Were Rechecked

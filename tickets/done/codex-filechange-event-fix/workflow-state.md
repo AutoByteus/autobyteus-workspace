@@ -4,11 +4,11 @@
 
 - Ticket: `codex-filechange-event-fix`
 - Current Stage: `10`
-- Next Stage: `10`
+- Next Stage: `Completed`
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
-- Last Transition ID: `T-014`
-- Last Updated: `2026-04-02`
+- Last Transition ID: `T-015`
+- Last Updated: `2026-04-03`
 
 ## Active Re-Entry Record
 
@@ -32,17 +32,17 @@
 
 | Stage | Gate Status | Summary | Evidence |
 | --- | --- | --- | --- |
-| 0 | Pass | Ticket folder, workflow state, and draft requirement captured. | `tickets/in-progress/codex-filechange-event-fix/requirements.md`, `tickets/in-progress/codex-filechange-event-fix/workflow-state.md` |
-| 1 | Pass | Raw Codex debug evidence and root cause captured. | `tickets/in-progress/codex-filechange-event-fix/investigation-notes.md` |
-| 2 | Pass | Requirements refined around the real raw `fileChange` spine. | `tickets/in-progress/codex-filechange-event-fix/requirements.md` |
-| 3 | Pass | Small-scope solution sketch persisted in `implementation.md`. | `tickets/in-progress/codex-filechange-event-fix/implementation.md` |
-| 4 | Pass | Future-state runtime call stack persisted. | `tickets/in-progress/codex-filechange-event-fix/future-state-runtime-call-stack.md` |
-| 5 | Pass | Two consecutive clean review rounds reached `Go Confirmed`. | `tickets/in-progress/codex-filechange-event-fix/future-state-runtime-call-stack-review.md` |
-| 6 | Pass | Bounded implementation completed inside the Codex adapter boundary; the stale run-history projection unit suite was also repaired without changing production projection code. | `tickets/in-progress/codex-filechange-event-fix/implementation.md`, `autobyteus-server-ts/tests/unit/run-history/projection/codex-run-view-projection-provider.test.ts` |
-| 7 | Pass | Focused unit coverage, live Codex integration coverage, and isolated team-roundtrip reruns passed. | `tickets/in-progress/codex-filechange-event-fix/api-e2e-testing.md` |
-| 8 | Pass | Independent review passed with no active findings and a `9.2 / 10` score. | `tickets/in-progress/codex-filechange-event-fix/code-review.md` |
-| 9 | Pass | Durable Codex raw-event mapping docs were promoted into long-lived project docs. | `tickets/in-progress/codex-filechange-event-fix/docs-sync.md`, `autobyteus-server-ts/docs/design/codex_raw_event_mapping.md`, `autobyteus-server-ts/docs/modules/codex_integration.md` |
-| 10 | In Progress | Handoff summary is prepared and awaiting user verification. | `tickets/in-progress/codex-filechange-event-fix/handoff-summary.md` |
+| 0 | Pass | Ticket folder, workflow state, and draft requirement captured. | `tickets/done/codex-filechange-event-fix/requirements.md`, `tickets/done/codex-filechange-event-fix/workflow-state.md` |
+| 1 | Pass | Raw Codex debug evidence and root cause captured. | `tickets/done/codex-filechange-event-fix/investigation-notes.md` |
+| 2 | Pass | Requirements refined around the real raw `fileChange` spine. | `tickets/done/codex-filechange-event-fix/requirements.md` |
+| 3 | Pass | Small-scope solution sketch persisted in `implementation.md`. | `tickets/done/codex-filechange-event-fix/implementation.md` |
+| 4 | Pass | Future-state runtime call stack persisted. | `tickets/done/codex-filechange-event-fix/future-state-runtime-call-stack.md` |
+| 5 | Pass | Two consecutive clean review rounds reached `Go Confirmed`. | `tickets/done/codex-filechange-event-fix/future-state-runtime-call-stack-review.md` |
+| 6 | Pass | Bounded implementation completed inside the Codex adapter boundary; the stale run-history projection unit suite was also repaired without changing production projection code. | `tickets/done/codex-filechange-event-fix/implementation.md`, `autobyteus-server-ts/tests/unit/run-history/projection/codex-run-view-projection-provider.test.ts` |
+| 7 | Pass | Focused unit coverage, live Codex integration coverage, and isolated team-roundtrip reruns passed. | `tickets/done/codex-filechange-event-fix/api-e2e-testing.md` |
+| 8 | Pass | Independent review passed with no active findings and a `9.2 / 10` score. | `tickets/done/codex-filechange-event-fix/code-review.md` |
+| 9 | Pass | Durable Codex raw-event mapping docs were promoted into long-lived project docs. | `tickets/done/codex-filechange-event-fix/docs-sync.md`, `autobyteus-server-ts/docs/design/codex_raw_event_mapping.md`, `autobyteus-server-ts/docs/modules/codex_integration.md` |
+| 10 | Pass | Explicit user verification was received, the archived ticket chain was merged to `origin/personal`, and the work shipped in release `v1.2.57`. | `tickets/done/codex-filechange-event-fix/handoff-summary.md`, `tickets/done/codex-filechange-event-fix/workflow-state.md` |
 
 ## Transition Log
 

@@ -4,7 +4,7 @@
 
 - Ticket: `codex-filechange-event-fix`
 - Trigger Stage: `9`
-- Workflow state source: `tickets/in-progress/codex-filechange-event-fix/workflow-state.md`
+- Workflow state source: `tickets/done/codex-filechange-event-fix/workflow-state.md`
 
 ## Why Docs Were Updated
 
@@ -31,9 +31,9 @@
 
 | Topic | What Future Readers Need To Understand | Source Ticket Artifact(s) | Target Long-Lived Doc |
 | --- | --- | --- | --- |
-| Codex `apply_patch` / `edit_file` raw spine | The authoritative lifecycle for `edit_file` comes from raw `fileChange` item events, not from custom tool completion or turn-diff sidecars. | `tickets/in-progress/codex-filechange-event-fix/investigation-notes.md`, `tickets/in-progress/codex-filechange-event-fix/future-state-runtime-call-stack.md` | `autobyteus-server-ts/docs/design/codex_raw_event_mapping.md` |
-| Keep vs ignore protocol decisions | `turn/diff/updated` is intentionally ignored for normalized state, and `item/tool/call` stays outside the `AgentRunEvent` spine. | `tickets/in-progress/codex-filechange-event-fix/implementation.md` | `autobyteus-server-ts/docs/design/codex_raw_event_mapping.md` |
-| Debug workflow | Raw-event logging should be enabled with `CODEX_THREAD_RAW_EVENT_LOG_DIR` before changing Codex mappings. | `tickets/in-progress/codex-filechange-event-fix/investigation-notes.md` | `autobyteus-server-ts/docs/design/codex_raw_event_mapping.md`, `autobyteus-server-ts/docs/modules/codex_integration.md` |
+| Codex `apply_patch` / `edit_file` raw spine | The authoritative lifecycle for `edit_file` comes from raw `fileChange` item events, not from custom tool completion or turn-diff sidecars. | `tickets/done/codex-filechange-event-fix/investigation-notes.md`, `tickets/done/codex-filechange-event-fix/future-state-runtime-call-stack.md` | `autobyteus-server-ts/docs/design/codex_raw_event_mapping.md` |
+| Keep vs ignore protocol decisions | `turn/diff/updated` is intentionally ignored for normalized state, and `item/tool/call` stays outside the `AgentRunEvent` spine. | `tickets/done/codex-filechange-event-fix/implementation.md` | `autobyteus-server-ts/docs/design/codex_raw_event_mapping.md` |
+| Debug workflow | Raw-event logging should be enabled with `CODEX_THREAD_RAW_EVENT_LOG_DIR` before changing Codex mappings. | `tickets/done/codex-filechange-event-fix/investigation-notes.md` | `autobyteus-server-ts/docs/design/codex_raw_event_mapping.md`, `autobyteus-server-ts/docs/modules/codex_integration.md` |
 
 ## Removed / Replaced Components Recorded
 

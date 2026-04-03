@@ -16,13 +16,13 @@ Use this single artifact for both:
 
 ## Upstream Artifacts (Required)
 
-- Workflow state: `tickets/in-progress/artifact-touched-files-redesign/workflow-state.md`
-- Investigation notes: `tickets/in-progress/artifact-touched-files-redesign/investigation-notes.md`
-- Requirements: `tickets/in-progress/artifact-touched-files-redesign/requirements.md`
+- Workflow state: `tickets/done/artifact-touched-files-redesign/workflow-state.md`
+- Investigation notes: `tickets/done/artifact-touched-files-redesign/investigation-notes.md`
+- Requirements: `tickets/done/artifact-touched-files-redesign/requirements.md`
   - Current Status: `Design-ready`
-- Runtime call stacks: `tickets/in-progress/artifact-touched-files-redesign/future-state-runtime-call-stack.md`
-- Future-state runtime call stack review: `tickets/in-progress/artifact-touched-files-redesign/future-state-runtime-call-stack-review.md`
-- Proposed design (required for `Medium/Large`): `tickets/in-progress/artifact-touched-files-redesign/proposed-design.md`
+- Runtime call stacks: `tickets/done/artifact-touched-files-redesign/future-state-runtime-call-stack.md`
+- Future-state runtime call stack review: `tickets/done/artifact-touched-files-redesign/future-state-runtime-call-stack-review.md`
+- Proposed design (required for `Medium/Large`): `tickets/done/artifact-touched-files-redesign/proposed-design.md`
 
 ## Document Status
 
@@ -175,10 +175,10 @@ Use this single artifact for both:
 | T-010 | DS-002 | backend verification | Update processor/loader tests and remove persistence-only tests | existing backend spec files under `autobyteus-server-ts/tests/**` | same / removed | Modify/Remove | T-007, T-008 | Completed | `autobyteus-server-ts/tests/unit/agent-customization/processors/tool-result/agent-artifact-event-processor.test.ts`, `autobyteus-server-ts/tests/unit/startup/agent-customization-loader.test.ts` | Passed | N/A | N/A | Passed | Completed with targeted backend unit coverage (`10` tests passed) and persistence-only suites removed; `pnpm typecheck` remains blocked by a pre-existing `TS6059` rootDir/test-include configuration issue unrelated to this ticket |
 | T-011 | DS-002, DS-005 | `agentArtifactsStore.ts`, `artifactHandler.ts`, `ArtifactsTab.vue`, `RightSideTabs.vue` | Enforce first-visibility-only discoverability so refresh-only artifact updates cannot retrigger focus/selection | `autobyteus-web/stores/agentArtifactsStore.ts`, `autobyteus-web/services/agentStreaming/handlers/artifactHandler.ts`, `autobyteus-web/components/workspace/agent/ArtifactsTab.vue`, `autobyteus-web/components/layout/RightSideTabs.vue` | same | Modify | T-001, T-003, T-004 | Completed | `autobyteus-web/stores/__tests__/agentArtifactsStore.spec.ts`, `autobyteus-web/services/agentStreaming/handlers/__tests__/artifactHandler.spec.ts` | Passed | N/A | N/A | Pending | Completed by making artifact-event upserts preserve existing discoverability state unless explicit create/retouch semantics apply; `ARTIFACT_UPDATED` now refreshes metadata/status without bumping the latest-visible signal, and the focused frontend rerun stayed green (`52` tests passed across the touched-files acceptance sweep). |
 | T-012 | DS-002 | `agent-artifact-event-processor.ts` | Gate backend artifact-event emission on successful tool results only | `autobyteus-server-ts/src/agent-customization/processors/tool-result/agent-artifact-event-processor.ts` | same | Modify | T-007 | Completed | `autobyteus-server-ts/tests/unit/agent-customization/processors/tool-result/agent-artifact-event-processor.test.ts` | Passed | N/A | N/A | Pending | Completed by short-circuiting denied/failed `ToolResultEvent`s before any artifact projection. Added negative backend coverage for failed generated-output tools and denied file-touch tools; targeted backend rerun passed (`12` tests across processor + loader). |
-| T-013 | DS-002, DS-005 | frontend/backend verification | Add regression coverage and refresh Stage 7 evidence for the discoverability and success-gating invariants | existing frontend/backend spec files, `tickets/in-progress/artifact-touched-files-redesign/api-e2e-testing.md` | same | Modify | T-011, T-012 | Completed | existing regression spec files + new negative cases as needed | Passed | N/A | N/A | Pending | Completed with new regression assertions for refresh-only artifact updates, persisted existing-row non-reannouncement, update-before-segment pending semantics, and backend denied/failed negative cases. Validation commands rerun clean and the active-code removal scans remain green. |
+| T-013 | DS-002, DS-005 | frontend/backend verification | Add regression coverage and refresh Stage 7 evidence for the discoverability and success-gating invariants | existing frontend/backend spec files, `tickets/done/artifact-touched-files-redesign/api-e2e-testing.md` | same | Modify | T-011, T-012 | Completed | existing regression spec files + new negative cases as needed | Passed | N/A | N/A | Pending | Completed with new regression assertions for refresh-only artifact updates, persisted existing-row non-reannouncement, update-before-segment pending semantics, and backend denied/failed negative cases. Validation commands rerun clean and the active-code removal scans remain green. |
 | T-014 | DS-002, DS-003, DS-005 | `agentArtifactsStore.ts` | Replace the generic public artifact-event upsert boundary with explicit domain operations for refresh, persisted availability, and lifecycle fallback terminal state | `autobyteus-web/stores/agentArtifactsStore.ts` | same | Modify | T-001, T-011, T-013 | Completed | `autobyteus-web/stores/__tests__/agentArtifactsStore.spec.ts` | Passed | N/A | N/A | Pending | Completed by splitting the caller-facing API into `refreshTouchedEntryFromArtifactUpdate`, `markTouchedEntryAvailableFromArtifactPersisted`, and `ensureTouchedEntryTerminalStateFromLifecycle`, while moving the generic merge/upsert logic into private file-local helpers. |
 | T-015 | DS-002, DS-003 | `artifactHandler.ts`, `toolLifecycleHandler.ts` | Align handler-to-store calls with the explicit store boundary (`refresh`, `persisted availability`, `lifecycle fallback`) | `autobyteus-web/services/agentStreaming/handlers/artifactHandler.ts`, `autobyteus-web/services/agentStreaming/handlers/toolLifecycleHandler.ts` | same | Modify | T-014 | Completed | `autobyteus-web/services/agentStreaming/handlers/__tests__/artifactHandler.spec.ts`, `autobyteus-web/services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts` | Passed | N/A | N/A | Pending | Completed by routing runtime artifact events and lifecycle fallback through subject-specific store methods only; handlers no longer depend on the generic event-shaped store mutator. |
-| T-016 | DS-002, DS-003, DS-005 | frontend validation | Refresh regression coverage and Stage 7 evidence for the explicit store-boundary shape | existing frontend spec files, `tickets/in-progress/artifact-touched-files-redesign/api-e2e-testing.md` | same | Modify | T-014, T-015 | Completed | existing regression spec files + boundary-shape expectations as needed | Passed | N/A | N/A | Pending | Completed with a focused frontend rerun (`29` tests passed) plus new lifecycle-fallback coverage proving the boundary split preserved behavior and clarified the spine owners. |
+| T-016 | DS-002, DS-003, DS-005 | frontend validation | Refresh regression coverage and Stage 7 evidence for the explicit store-boundary shape | existing frontend spec files, `tickets/done/artifact-touched-files-redesign/api-e2e-testing.md` | same | Modify | T-014, T-015 | Completed | existing regression spec files + boundary-shape expectations as needed | Passed | N/A | N/A | Pending | Completed with a focused frontend rerun (`29` tests passed) plus new lifecycle-fallback coverage proving the boundary split preserved behavior and clarified the spine owners. |
 
 ### Requirement, Spine, And Design Traceability
 
@@ -310,7 +310,7 @@ Use this single artifact for both:
 
 ### Code Review Gate Plan (Stage 8)
 
-- Gate artifact path: `tickets/in-progress/artifact-touched-files-redesign/code-review.md`
+- Gate artifact path: `tickets/done/artifact-touched-files-redesign/code-review.md`
 - Scope (source + tests): frontend touched-entry projection, related UI components, backend event processor rename/removal cleanup, and targeted tests
 - line-count measurement command (`effective non-empty`):
   - effective non-empty line count: `rg -n "\\S" <file-path> | wc -l`
@@ -342,13 +342,13 @@ Use this single artifact for both:
   - Removed backend persistence integration/e2e tests must be deleted or replaced only if a live event boundary genuinely needs integration verification.
 - Stage 6 boundary: file and service-level verification only (unit + selective integration).
 - Stage 7 handoff notes for API/E2E testing:
-  - canonical artifact path: `tickets/in-progress/artifact-touched-files-redesign/api-e2e-testing.md`
+  - canonical artifact path: `tickets/done/artifact-touched-files-redesign/api-e2e-testing.md`
   - expected acceptance criteria count: `12`
   - critical flows to validate (API/E2E): `write_file`, `edit_file`, generated output, viewer refresh, failure visibility, no GraphQL dependency`
   - expected scenario count: `6`
   - known environment constraints: `websocket + workspace-backed file access required`
 - Stage 8 handoff notes for code review:
-  - canonical artifact path: `tickets/in-progress/artifact-touched-files-redesign/code-review.md`
+  - canonical artifact path: `tickets/done/artifact-touched-files-redesign/code-review.md`
   - predicted design-impact hotspots: `segmentHandler.ts`, `toolLifecycleHandler.ts`, backend deletion completeness`
   - predicted file-placement hotspots: `do not create stray touched-file helpers outside store/streaming owners`
   - predicted interface/API/query/command/service-method boundary hotspots: `store action surface`, `backend processor rename`, `schema cleanup`
@@ -370,10 +370,10 @@ Use this single artifact for both:
 
 ### Kickoff Preconditions Checklist
 
-- Workflow state is current (`tickets/in-progress/artifact-touched-files-redesign/workflow-state.md`): `Yes`
+- Workflow state is current (`tickets/done/artifact-touched-files-redesign/workflow-state.md`): `Yes`
 - `workflow-state.md` shows `Current Stage = 6` and `Code Edit Permission = Unlocked` before source edits: `Yes`
 - Scope classification confirmed (`Small`/`Medium`/`Large`): `Yes`
-- Investigation notes are current (`tickets/in-progress/artifact-touched-files-redesign/investigation-notes.md`): `Yes`
+- Investigation notes are current (`tickets/done/artifact-touched-files-redesign/investigation-notes.md`): `Yes`
 - Requirements status is `Design-ready` or `Refined`: `Yes`
 - Future-state runtime call stack review final gate is `Implementation can start: Yes`: `Yes`
 - Future-state runtime call stack review reached `Go Confirmed` with two consecutive clean deep-review rounds (no blockers, no required persisted artifact updates, no newly discovered use cases): `Yes`
@@ -423,6 +423,6 @@ Use this single artifact for both:
 
 | Stage | Canonical Artifact | Current Status | Last Updated | Notes |
 | --- | --- | --- | --- | --- |
-| 7 API/E2E | `tickets/in-progress/artifact-touched-files-redesign/api-e2e-testing.md` | `Passed` | `2026-04-02` | Round 6 refreshed the frontend acceptance evidence for the explicit store-boundary split and carried forward the earlier backend/removal evidence because that code remained unchanged |
-| 8 Code Review | `tickets/in-progress/artifact-touched-files-redesign/code-review.md` | `Passed` | `2026-04-02` | Round 7 reran the shared-principles review and raised the architecture score to the desired bar after the explicit store-boundary split |
-| 9 Docs Sync | `tickets/in-progress/artifact-touched-files-redesign/docs-sync.md` | `Passed` | `2026-04-02` | Durable docs were refreshed again so the runtime call story now names the explicit store boundaries instead of the removed generic event-shaped API |
+| 7 API/E2E | `tickets/done/artifact-touched-files-redesign/api-e2e-testing.md` | `Passed` | `2026-04-02` | Round 6 refreshed the frontend acceptance evidence for the explicit store-boundary split and carried forward the earlier backend/removal evidence because that code remained unchanged |
+| 8 Code Review | `tickets/done/artifact-touched-files-redesign/code-review.md` | `Passed` | `2026-04-02` | Round 7 reran the shared-principles review and raised the architecture score to the desired bar after the explicit store-boundary split |
+| 9 Docs Sync | `tickets/done/artifact-touched-files-redesign/docs-sync.md` | `Passed` | `2026-04-02` | Durable docs were refreshed again so the runtime call story now names the explicit store boundaries instead of the removed generic event-shaped API |

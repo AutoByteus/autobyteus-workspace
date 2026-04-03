@@ -11,10 +11,10 @@
 
 - Ticket: `artifact-touched-files-redesign`
 - Scope classification: `Medium`
-- Workflow state source: `tickets/in-progress/artifact-touched-files-redesign/workflow-state.md`
-- Requirements source: `tickets/in-progress/artifact-touched-files-redesign/requirements.md`
-- Call stack source: `tickets/in-progress/artifact-touched-files-redesign/future-state-runtime-call-stack.md`
-- Design source (`Medium/Large`): `tickets/in-progress/artifact-touched-files-redesign/proposed-design.md`
+- Workflow state source: `tickets/done/artifact-touched-files-redesign/workflow-state.md`
+- Requirements source: `tickets/done/artifact-touched-files-redesign/requirements.md`
+- Call stack source: `tickets/done/artifact-touched-files-redesign/future-state-runtime-call-stack.md`
+- Design source (`Medium/Large`): `tickets/done/artifact-touched-files-redesign/proposed-design.md`
 
 ## Coverage Rules
 

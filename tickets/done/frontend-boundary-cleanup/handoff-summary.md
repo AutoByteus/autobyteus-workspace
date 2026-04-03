@@ -2,7 +2,7 @@
 
 - Ticket: `frontend-boundary-cleanup`
 - Date: `2026-04-03`
-- Status: `Awaiting User Verification`
+- Status: `Completed and Released`
 
 ## Delivered
 
@@ -30,4 +30,4 @@
 
 ## Release Notes
 
-- `release-notes not required` for this bounded architecture cleanup round
+- Included in release `v1.2.57`; no dedicated release-notes artifact was required for this bounded cleanup round

@@ -22,9 +22,9 @@ Do not treat this document as an as-is trace of current code behavior.
 
 - Scope Classification: `Medium`
 - Call Stack Version: `v4`
-- Requirements: `tickets/in-progress/artifact-touched-files-redesign/requirements.md` (status `Design-ready`)
+- Requirements: `tickets/done/artifact-touched-files-redesign/requirements.md` (status `Design-ready`)
 - Source Artifact:
-  - `Medium/Large`: `tickets/in-progress/artifact-touched-files-redesign/proposed-design.md`
+  - `Medium/Large`: `tickets/done/artifact-touched-files-redesign/proposed-design.md`
 - Source Design Version: `v4`
 - Referenced Sections:
   - Spine inventory sections: `DS-001`, `DS-002`, `DS-003`, `DS-004`, `DS-005`, `DS-006`
