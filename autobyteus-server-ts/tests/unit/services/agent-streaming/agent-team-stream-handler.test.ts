@@ -1,33 +1,78 @@
 import { describe, expect, it, vi } from "vitest";
-import {
-  AgentEventRebroadcastPayload,
-  AgentTeamStreamEvent,
-  StreamEventType,
-} from "autobyteus-ts";
+import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
+import { AgentRunEventType } from "../../../../src/agent-execution/domain/agent-run-event.js";
+import { TeamRunEventSourceType } from "../../../../src/agent-team-execution/domain/team-run-event.js";
 import { AgentTeamStreamHandler } from "../../../../src/services/agent-streaming/agent-team-stream-handler.js";
 import { TeamStreamBroadcaster } from "../../../../src/services/agent-streaming/team-stream-broadcaster.js";
-import { ServerMessageType } from "../../../../src/services/agent-streaming/models.js";
+import { AgentSessionManager } from "../../../../src/services/agent-streaming/agent-session-manager.js";
+import {
+  ClientMessageType,
+  ServerMessageType,
+} from "../../../../src/services/agent-streaming/models.js";
 
 describe("AgentTeamStreamHandler", () => {
-  it("rebroadcasts agent lifecycle events with member context", () => {
-    const handler = new AgentTeamStreamHandler(undefined, {
-      getTeamRun: () => null,
-      getTeam: () => null,
-      getTeamEventStream: () => null,
-    } as any);
-
-    const teamEvent = new AgentTeamStreamEvent({
-      team_id: "team-1",
-      event_source_type: "AGENT",
-      data: new AgentEventRebroadcastPayload({
-        agent_name: "worker-a",
-        agent_event: {
-          event_type: StreamEventType.TOOL_EXECUTION_SUCCEEDED,
-          data: { invocation_id: "inv-1", tool_name: "read_file", result: { ok: true } },
-          agent_id: "agent-xyz",
+  const createTeamRun = (overrides: Record<string, unknown> = {}) => ({
+    runId: "team-1",
+    runtimeKind: "autobyteus",
+    getStatus: vi.fn().mockReturnValue("ACTIVE"),
+    subscribeToEvents: vi.fn().mockReturnValue(() => {}),
+    postMessage: vi.fn().mockResolvedValue({ accepted: true }),
+    approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
+    interrupt: vi.fn().mockResolvedValue({ accepted: true }),
+    context: {
+      runtimeContext: {
+        memberContexts: [
+          {
+            memberName: "worker-a",
+            memberRouteKey: "worker-a",
+            memberRunId: "member-42",
+            getPlatformAgentRunId: () => null,
+          },
+        ],
+      },
+    },
+    config: {
+      memberConfigs: [
+        {
+          memberName: "worker-a",
+          memberRunId: "member-42",
         },
-      }),
-    });
+      ],
+    },
+    ...overrides,
+  });
+
+  const createTeamRunService = (teamRun: ReturnType<typeof createTeamRun> | null) => ({
+    getTeamRun: vi.fn().mockReturnValue(teamRun),
+    recordRunActivity: vi.fn().mockResolvedValue(undefined),
+    refreshRunMetadata: vi.fn().mockResolvedValue(undefined),
+  });
+
+  it("rebroadcasts agent lifecycle events with member context", () => {
+    const handler = new AgentTeamStreamHandler(
+      undefined,
+      createTeamRunService(null) as any,
+    );
+
+    const teamEvent = {
+      eventSourceType: TeamRunEventSourceType.AGENT,
+      teamRunId: "team-1",
+      data: {
+        runtimeKind: RuntimeKind.AUTOBYTEUS,
+        memberName: "worker-a",
+        memberRunId: "agent-xyz",
+        agentEvent: {
+          runId: "agent-xyz",
+          eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+          payload: {
+            invocation_id: "inv-1",
+            tool_name: "read_file",
+            result: { ok: true },
+          },
+          statusHint: null,
+        },
+      },
+    };
 
     const message = handler.convertTeamEvent(teamEvent);
     expect(message.type).toBe(ServerMessageType.TOOL_EXECUTION_SUCCEEDED);
@@ -36,274 +81,167 @@ describe("AgentTeamStreamHandler", () => {
     expect(message.payload.agent_id).toBe("agent-xyz");
   });
 
-  it("routes SEND_MESSAGE over codex member runtime mode without requiring team manager run object", async () => {
-    const sendToMember = vi.fn().mockResolvedValue(undefined);
-    const unsubscribe = vi.fn().mockResolvedValue(undefined);
-    const subscribeTeam = vi.fn().mockReturnValue(unsubscribe);
-
+  it("connects through TeamRunService and sends CONNECTED plus initial status", async () => {
+    const teamRun = createTeamRun();
+    const teamRunService = createTeamRunService(teamRun);
     const handler = new AgentTeamStreamHandler(
-      undefined,
-      {
-        getTeamRun: () => null,
-        getTeam: () => null,
-        getActiveRun: () => null,
-        getTeamEventStream: () => null,
-      } as any,
-      {
-        getTeamRuntimeMode: () => "member_runtime",
-      } as any,
-      {
-        sendToMember,
-        approveForMember: vi.fn(),
-        interruptTeamRun: vi.fn(),
-      } as any,
-      {
-        subscribeTeam,
-      } as any,
-      {
-        getInitialMessages: vi.fn(() => []),
-      } as any,
+      new AgentSessionManager(),
+      teamRunService as any,
     );
-
-    const connection = {
-      send: vi.fn(),
-      close: vi.fn(),
-    };
-
-    const sessionId = await handler.connect(connection, "team-codex-1");
-    expect(sessionId).toBeTruthy();
-    expect(connection.close).not.toHaveBeenCalled();
-    expect(subscribeTeam).toHaveBeenCalledTimes(1);
-
-    await handler.handleMessage(
-      sessionId as string,
-      JSON.stringify({
-        type: "SEND_MESSAGE",
-        payload: {
-          content: "hello codex member",
-          target_member_name: "member-b",
-        },
-      }),
-    );
-
-    expect(sendToMember).toHaveBeenCalledTimes(1);
-    expect(sendToMember.mock.calls[0]?.[0]).toBe("team-codex-1");
-    expect(sendToMember.mock.calls[0]?.[1]).toBe("member-b");
-
-    await handler.disconnect(sessionId as string);
-    expect(unsubscribe).toHaveBeenCalledTimes(1);
-  });
-
-  it("registers the websocket connection for team-scoped live message broadcasts", async () => {
-    const broadcaster = new TeamStreamBroadcaster();
-    const handler = new AgentTeamStreamHandler(
-      undefined,
-      {
-        getTeamRun: () => ({ runId: "team-1", runtimeKind: "autobyteus" }),
-        getTeam: () => null,
-        getActiveRun: () => null,
-        getTeamEventStream: () => ({
-          allEvents: async function* () {},
-          close: vi.fn().mockResolvedValue(undefined),
-        }),
-      } as any,
-      {
-        getTeamRuntimeMode: () => "native_team",
-      } as any,
-      {
-        sendToMember: vi.fn(),
-        approveForMember: vi.fn(),
-        interruptTeamRun: vi.fn(),
-      } as any,
-      {
-        subscribeTeam: vi.fn(),
-      } as any,
-      {
-        getInitialMessages: vi.fn(() => []),
-      } as any,
-      broadcaster,
-    );
-
     const connection = {
       send: vi.fn(),
       close: vi.fn(),
     };
 
     const sessionId = await handler.connect(connection, "team-1");
-    expect(sessionId).toBeTruthy();
 
+    expect(sessionId).toBeTruthy();
+    expect(teamRunService.getTeamRun).toHaveBeenCalledWith("team-1");
+    expect(teamRun.subscribeToEvents).toHaveBeenCalledWith(expect.any(Function));
+    expect(JSON.parse(connection.send.mock.calls[0][0])).toMatchObject({
+      type: ServerMessageType.CONNECTED,
+      payload: {
+        team_id: "team-1",
+        session_id: sessionId,
+      },
+    });
+    expect(JSON.parse(connection.send.mock.calls[1][0])).toMatchObject({
+      type: ServerMessageType.TEAM_STATUS,
+      payload: {
+        new_status: "ACTIVE",
+      },
+    });
+  });
+
+  it("closes with 4004 when the team run is missing", async () => {
+    const handler = new AgentTeamStreamHandler(
+      new AgentSessionManager(),
+      createTeamRunService(null) as any,
+    );
+    const connection = {
+      send: vi.fn(),
+      close: vi.fn(),
+    };
+
+    const sessionId = await handler.connect(connection, "missing-team");
+
+    expect(sessionId).toBeNull();
+    expect(connection.close).toHaveBeenCalledWith(4004);
+    expect(JSON.parse(connection.send.mock.calls[0][0])).toMatchObject({
+      type: ServerMessageType.ERROR,
+      payload: {
+        code: "TEAM_NOT_FOUND",
+      },
+    });
+  });
+
+  it("handles SEND_MESSAGE via the service-resolved TeamRun subject", async () => {
+    const teamRun = createTeamRun();
+    const teamRunService = createTeamRunService(teamRun);
+    const handler = new AgentTeamStreamHandler(
+      new AgentSessionManager(),
+      teamRunService as any,
+    );
+    const connection = {
+      send: vi.fn(),
+      close: vi.fn(),
+    };
+
+    const sessionId = await handler.connect(connection, "team-1");
+
+    await handler.handleMessage(
+      sessionId as string,
+      JSON.stringify({
+        type: ClientMessageType.SEND_MESSAGE,
+        payload: {
+          content: "hello team",
+          target_member_name: "worker-a",
+          context_file_paths: ["/tmp/info.txt"],
+        },
+      }),
+    );
+
+    expect(teamRun.postMessage).toHaveBeenCalledTimes(1);
+    expect(teamRun.postMessage.mock.calls[0]?.[1]).toBe("worker-a");
+    expect(teamRunService.recordRunActivity).toHaveBeenCalledWith(
+      teamRun,
+      expect.objectContaining({
+        summary: "hello team",
+        lastKnownStatus: "ACTIVE",
+      }),
+    );
+  });
+
+  it("resolves approval target names from TeamRun member context instead of manager state", async () => {
+    const teamRun = createTeamRun();
+    const teamRunService = createTeamRunService(teamRun);
+    const handler = new AgentTeamStreamHandler(
+      new AgentSessionManager(),
+      teamRunService as any,
+    );
+    const connection = {
+      send: vi.fn(),
+      close: vi.fn(),
+    };
+
+    const sessionId = await handler.connect(connection, "team-1");
+
+    await handler.handleMessage(
+      sessionId as string,
+      JSON.stringify({
+        type: ClientMessageType.APPROVE_TOOL,
+        payload: {
+          invocation_id: "inv-1",
+          agent_id: "member-42",
+        },
+      }),
+    );
+
+    expect(teamRun.approveToolInvocation).toHaveBeenCalledWith(
+      "worker-a",
+      "inv-1",
+      true,
+      null,
+    );
+  });
+
+  it("registers the websocket connection for team-scoped live message broadcasts", async () => {
+    const teamRun = createTeamRun();
+    const broadcaster = new TeamStreamBroadcaster();
+    const handler = new AgentTeamStreamHandler(
+      new AgentSessionManager(),
+      createTeamRunService(teamRun) as any,
+      broadcaster,
+    );
+    const connection = {
+      send: vi.fn(),
+      close: vi.fn(),
+    };
+
+    const sessionId = await handler.connect(connection, "team-1");
+
+    expect(sessionId).toBeTruthy();
     expect(
-      broadcaster.publishToTeamRun("team-1", {
-        toJson: () =>
-          JSON.stringify({
-            type: ServerMessageType.EXTERNAL_USER_MESSAGE,
-            payload: {
-              content: "hello from telegram",
-              agent_name: "Professor",
-            },
-          }),
-      } as any),
+      broadcaster.publishToTeamRun(
+        "team-1",
+        {
+          toJson: () =>
+            JSON.stringify({
+              type: ServerMessageType.EXTERNAL_USER_MESSAGE,
+              payload: {
+                content: "hello from telegram",
+                agent_name: "Professor",
+              },
+            }),
+        } as any,
+      ),
     ).toBe(1);
 
-    expect(connection.send).toHaveBeenCalledTimes(2);
-    const payload = JSON.parse(connection.send.mock.calls[1][0]);
-    expect(payload).toMatchObject({
+    expect(JSON.parse(connection.send.mock.calls[2][0])).toMatchObject({
       type: ServerMessageType.EXTERNAL_USER_MESSAGE,
       payload: {
         content: "hello from telegram",
         agent_name: "Professor",
-      },
-    });
-
-    await handler.disconnect(sessionId as string);
-  });
-
-  it("sends initial member-runtime status snapshot messages on connect", async () => {
-    const getInitialSnapshotMessages = vi.fn(() => [
-      {
-        type: ServerMessageType.TEAM_STATUS,
-        toJson: () =>
-          JSON.stringify({
-            type: ServerMessageType.TEAM_STATUS,
-            payload: { new_status: "PROCESSING" },
-          }),
-      },
-      {
-        type: ServerMessageType.AGENT_STATUS,
-        toJson: () =>
-          JSON.stringify({
-            type: ServerMessageType.AGENT_STATUS,
-            payload: {
-              new_status: "RUNNING",
-              agent_name: "Professor",
-              agent_id: "run-professor",
-            },
-          }),
-      },
-    ]);
-
-    const handler = new AgentTeamStreamHandler(
-      undefined,
-      {
-        getTeamRun: () => null,
-        getTeam: () => null,
-        getActiveRun: () => null,
-        getTeamEventStream: () => null,
-      } as any,
-      {
-        getTeamRuntimeMode: () => "member_runtime",
-      } as any,
-      {
-        sendToMember: vi.fn(),
-        approveForMember: vi.fn(),
-        interruptTeamRun: vi.fn(),
-      } as any,
-      {
-        subscribeTeam: vi.fn(() => vi.fn()),
-      } as any,
-      {
-        getInitialMessages: getInitialSnapshotMessages,
-      } as any,
-    );
-
-    const connection = {
-      send: vi.fn(),
-      close: vi.fn(),
-    };
-
-    await handler.connect(connection, "team-live-1");
-
-    expect(getInitialSnapshotMessages).toHaveBeenCalledWith({
-      teamRunId: "team-live-1",
-      runtimeMode: "member_runtime",
-      team: null,
-    });
-    expect(connection.send).toHaveBeenCalledTimes(3);
-    expect(JSON.parse(connection.send.mock.calls[1][0])).toMatchObject({
-      type: ServerMessageType.TEAM_STATUS,
-      payload: { new_status: "PROCESSING" },
-    });
-    expect(JSON.parse(connection.send.mock.calls[2][0])).toMatchObject({
-      type: ServerMessageType.AGENT_STATUS,
-      payload: {
-        new_status: "RUNNING",
-        agent_name: "Professor",
-        agent_id: "run-professor",
-      },
-    });
-  });
-
-  it("sends initial native-team member status snapshot messages on connect", async () => {
-    const handler = new AgentTeamStreamHandler(
-      undefined,
-      {
-        getTeamRun: () => ({
-          runId: "team-native-1",
-          runtimeKind: "autobyteus",
-        }),
-        getTeam: () => ({
-          currentStatus: "ACTIVE",
-          context: {
-            agents: [
-              {
-                agentId: "run-professor",
-                currentStatus: "ACTIVE",
-                context: { config: { name: "Professor" } },
-              },
-              {
-                agentId: "run-student",
-                currentStatus: "IDLE",
-                context: { config: { name: "Student" } },
-              },
-            ],
-          },
-        }),
-        getActiveRun: () => null,
-        getTeamEventStream: () => ({
-          allEvents: async function* () {},
-          close: vi.fn().mockResolvedValue(undefined),
-        }),
-      } as any,
-      {
-        getTeamRuntimeMode: () => "native_team",
-      } as any,
-      {
-        sendToMember: vi.fn(),
-        approveForMember: vi.fn(),
-        interruptTeamRun: vi.fn(),
-      } as any,
-      {
-        subscribeTeam: vi.fn(),
-      } as any,
-      undefined,
-    );
-
-    const connection = {
-      send: vi.fn(),
-      close: vi.fn(),
-    };
-
-    await handler.connect(connection, "team-native-1");
-
-    expect(connection.send).toHaveBeenCalledTimes(4);
-    expect(JSON.parse(connection.send.mock.calls[1][0])).toMatchObject({
-      type: ServerMessageType.TEAM_STATUS,
-      payload: { new_status: "ACTIVE" },
-    });
-    expect(JSON.parse(connection.send.mock.calls[2][0])).toMatchObject({
-      type: ServerMessageType.AGENT_STATUS,
-      payload: {
-        new_status: "ACTIVE",
-        agent_name: "Professor",
-        agent_id: "run-professor",
-      },
-    });
-    expect(JSON.parse(connection.send.mock.calls[3][0])).toMatchObject({
-      type: ServerMessageType.AGENT_STATUS,
-      payload: {
-        new_status: "IDLE",
-        agent_name: "Student",
-        agent_id: "run-student",
       },
     });
   });

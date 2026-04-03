@@ -8,10 +8,15 @@ const mockConfig = vi.hoisted(() => ({
   setLlmApiKey: vi.fn<(provider: string, apiKey: string) => void>(),
 }));
 
-const mockLlmModelService = vi.hoisted(() => ({
-  getAvailableModels: vi.fn(),
+const mockModelCatalogService = vi.hoisted(() => ({
+  listLlmModels: vi.fn(),
   reloadModels: vi.fn(),
-  reloadModelsForProvider: vi.fn(),
+  reloadLlmModels: vi.fn(),
+  reloadLlmModelsForProvider: vi.fn(),
+  listAudioModels: vi.fn(),
+  reloadAudioModels: vi.fn(),
+  listImageModels: vi.fn(),
+  reloadImageModels: vi.fn(),
 }));
 
 const mockAudioModelService = vi.hoisted(() => ({
@@ -32,8 +37,8 @@ vi.mock("../../../../../src/config/app-config-provider.js", () => ({
   },
 }));
 
-vi.mock("../../../../../src/llm-management/services/llm-model-service.js", () => ({
-  getLlmModelService: () => mockLlmModelService,
+vi.mock("../../../../../src/llm-management/services/model-catalog-service.js", () => ({
+  getModelCatalogService: () => mockModelCatalogService,
 }));
 
 vi.mock("../../../../../src/multimedia-management/services/audio-model-service.js", () => ({
@@ -52,7 +57,17 @@ describe("LlmProviderResolver Gemini setup", () => {
     mockConfig.set.mockReset();
     mockConfig.getLlmApiKey.mockReset();
     mockConfig.setLlmApiKey.mockReset();
+    mockModelCatalogService.listLlmModels.mockReset();
+    mockModelCatalogService.reloadLlmModels.mockReset();
+    mockModelCatalogService.reloadLlmModelsForProvider.mockReset();
+    mockModelCatalogService.listAudioModels.mockReset();
+    mockModelCatalogService.reloadAudioModels.mockReset();
+    mockModelCatalogService.listImageModels.mockReset();
+    mockModelCatalogService.reloadImageModels.mockReset();
     mockConfig.get.mockImplementation(() => "");
+    mockModelCatalogService.listLlmModels.mockResolvedValue([]);
+    mockModelCatalogService.listAudioModels.mockResolvedValue([]);
+    mockModelCatalogService.listImageModels.mockResolvedValue([]);
   });
 
   it("infers AI_STUDIO when only Gemini API key is present", () => {
@@ -142,5 +157,30 @@ describe("LlmProviderResolver Gemini setup", () => {
 
     expect(result).toContain("Error saving Gemini setup");
     expect(result).toContain("Both VERTEX_AI_PROJECT and VERTEX_AI_LOCATION are required");
+  });
+
+  it("groups Ollama local-runtime models under the OLLAMA provider", async () => {
+    mockModelCatalogService.listLlmModels.mockResolvedValue([
+      {
+        model_identifier: "qwen3.5:35b-a3b-coding-nvfp4:ollama@localhost:11434",
+        display_name: "qwen3.5:35b-a3b-coding-nvfp4",
+        value: "qwen3.5:35b-a3b-coding-nvfp4",
+        canonical_name: "qwen3.5:35b-a3b-coding-nvfp4",
+        provider: "OLLAMA",
+        runtime: "ollama",
+        host_url: "http://localhost:11434",
+      },
+    ]);
+
+    const resolver = new LlmProviderResolver();
+    const result = await resolver.availableLlmProvidersWithModels("autobyteus");
+
+    const ollamaGroup = result.find((provider) => provider.provider === "OLLAMA");
+    expect(ollamaGroup?.models.map((model) => model.modelIdentifier)).toContain(
+      "qwen3.5:35b-a3b-coding-nvfp4:ollama@localhost:11434",
+    );
+
+    const qwenGroup = result.find((provider) => provider.provider === "QWEN");
+    expect(qwenGroup?.models ?? []).toHaveLength(0);
   });
 });

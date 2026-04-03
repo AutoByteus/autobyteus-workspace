@@ -18,7 +18,7 @@ describe("SkillService integration", () => {
     const config = {
       getSkillsDir: () => path.join(tempDir, "skills"),
       getAdditionalSkillsDirs: () => [mockRepoPath],
-      getAdditionalDefinitionSourceRoots: () => [],
+      getAdditionalAgentPackageRoots: () => [],
       getAppDataDir: () => tempDir,
       get: (_key: string, defaultValue?: string) => defaultValue,
     };

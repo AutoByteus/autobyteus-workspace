@@ -11,6 +11,7 @@ export interface TeamMemberInput {
   memberName: string;
   ref: string;
   refType: 'AGENT' | 'AGENT_TEAM';
+  refScope?: 'SHARED' | 'TEAM_LOCAL' | null;
 }
 
 export interface AgentTeamDefinition {

@@ -15,6 +15,12 @@ const { mockFileUploadStore, mockAgentDefinitionStore, mockAgentTeamDefinitionSt
         name: 'Agent One',
       },
     ],
+    sharedAgentDefinitions: [
+      {
+        id: 'agent-1',
+        name: 'Agent One',
+      },
+    ],
     fetchAllAgentDefinitions: vi.fn().mockResolvedValue(undefined),
     getAgentDefinitionById: vi.fn((id: string) => (id === 'agent-1' ? { id: 'agent-1', name: 'Agent One' } : null)),
   },
@@ -85,5 +91,50 @@ describe('AgentTeamDefinitionForm', () => {
       refType: 'AGENT',
       ref: 'agent-1',
     })
+  })
+
+  it('preserves TEAM_LOCAL members when editing an existing file-authored team', async () => {
+    const wrapper = mount(AgentTeamDefinitionForm, {
+      props: {
+        isSubmitting: false,
+        submitButtonText: 'Save Team',
+        initialData: {
+          id: 'team-local-1',
+          name: 'Local Review Team',
+          description: 'Uses a file-authored local reviewer',
+          instructions: 'Coordinate local review tasks.',
+          coordinatorMemberName: 'local_reviewer',
+          nodes: [
+            {
+              memberName: 'local_reviewer',
+              refType: 'AGENT',
+              ref: 'reviewer',
+              refScope: 'TEAM_LOCAL',
+            },
+          ],
+        },
+      },
+    })
+
+    expect(wrapper.text()).toContain('Local Agent (reviewer)')
+    expect(wrapper.text()).toContain('TEAM_LOCAL')
+
+    await wrapper.get('input#team-name').setValue('Local Review Team Updated')
+    await wrapper.get('form').trigger('submit.prevent')
+
+    const submitEvents = wrapper.emitted('submit') || []
+    expect(submitEvents.length).toBe(1)
+
+    const payload = submitEvents[0]?.[0] as any
+    expect(payload.name).toBe('Local Review Team Updated')
+    expect(payload.coordinatorMemberName).toBe('local_reviewer')
+    expect(payload.nodes).toEqual([
+      {
+        memberName: 'local_reviewer',
+        refType: 'AGENT',
+        ref: 'reviewer',
+        refScope: 'TEAM_LOCAL',
+      },
+    ])
   })
 })

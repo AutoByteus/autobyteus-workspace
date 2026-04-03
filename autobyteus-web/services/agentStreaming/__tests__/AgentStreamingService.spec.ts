@@ -2,6 +2,10 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { AgentStreamingService } from '../AgentStreamingService';
 // import { AgentContext } from '~/types/agent/AgentContext'; // We can just mock the context interface for testing
 
+const { handleBrowserToolExecutionSucceededMock } = vi.hoisted(() => ({
+    handleBrowserToolExecutionSucceededMock: vi.fn(),
+}));
+
 // Mock WebSocketClient
 vi.mock('../transport', () => {
     return {
@@ -22,12 +26,17 @@ vi.mock('../transport', () => {
     };
 });
 
+vi.mock('../browser/browserToolExecutionSucceededHandler', () => ({
+    handleBrowserToolExecutionSucceeded: handleBrowserToolExecutionSucceededMock,
+}));
+
 describe('AgentStreamingService', () => {
     let service: AgentStreamingService;
     let mockAgentContext: any;
     let mockConversation: any;
 
     beforeEach(() => {
+        handleBrowserToolExecutionSucceededMock.mockReset();
         service = new AgentStreamingService('ws://localhost:8000/ws/agent');
         mockConversation = {
             messages: [],
@@ -99,5 +108,28 @@ describe('AgentStreamingService', () => {
         expect(mockConversation.messages[0].timestamp.toISOString()).toBe('2026-03-09T11:22:33.000Z');
         expect(mockConversation.updatedAt).toBeTruthy();
         expect(mockAgentContext.isSending).toBe(true);
+    });
+
+    it('routes successful tool execution through the browser-owned post-success handler', () => {
+        const payload = {
+            invocation_id: 'call-1',
+            tool_name: 'open_tab',
+            result: {
+                tab_id: 'browser-session-1',
+                status: 'opened',
+                url: 'https://example.com',
+                title: 'Example',
+            },
+        };
+
+        (service as any).dispatchMessage(
+            {
+                type: 'TOOL_EXECUTION_SUCCEEDED',
+                payload,
+            },
+            mockAgentContext,
+        );
+
+        expect(handleBrowserToolExecutionSucceededMock).toHaveBeenCalledWith(payload);
     });
 });

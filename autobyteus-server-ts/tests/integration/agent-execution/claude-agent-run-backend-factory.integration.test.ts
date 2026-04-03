@@ -17,6 +17,15 @@ import { ClaudeSessionBootstrapper } from "../../../src/agent-execution/backends
 import { ClaudeSessionManager } from "../../../src/agent-execution/backends/claude/session/claude-session-manager.js";
 import { ClaudeModelCatalog } from "../../../src/llm-management/services/claude-model-catalog.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import {
+  BROWSER_BRIDGE_BASE_URL_ENV,
+  BROWSER_BRIDGE_TOKEN_ENV,
+} from "../../../src/agent-tools/browser/browser-tool-contract.js";
+import {
+  BrowserBridgeLiveTestServer,
+  buildOpenBrowserToolPrompt,
+  buildBrowserToolSurfacePrompt,
+} from "./browser-bridge-live-test-server.js";
 
 const claudeBinaryReady = spawnSync("claude", ["--version"], {
   stdio: "ignore",
@@ -146,7 +155,11 @@ const buildExactWriteToolPrompt = (input: {
     "After the file is created, reply with DONE.",
   ].join("\n");
 
-const buildBootstrapper = (workspaceRoot: string, instructions = "Reply briefly.") =>
+const buildBootstrapper = (
+  workspaceRoot: string,
+  instructions = "Reply briefly.",
+  toolNames: string[] = [],
+) =>
   new ClaudeSessionBootstrapper(
     {
       resolveWorkingDirectory: async () => workspaceRoot,
@@ -159,6 +172,7 @@ const buildBootstrapper = (workspaceRoot: string, instructions = "Reply briefly.
         instructions,
         description: "Fallback Claude backend integration instructions.",
         skillNames: [],
+        toolNames,
       }),
     } as any,
     {
@@ -171,10 +185,15 @@ const createFactory = (input: {
   workspaceRoot: string;
   runId: string;
   instructions?: string;
+  toolNames?: string[];
 }) =>
   new ClaudeAgentRunBackendFactory(
     input.sessionManager,
-    buildBootstrapper(input.workspaceRoot, input.instructions),
+    buildBootstrapper(
+      input.workspaceRoot,
+      input.instructions,
+      input.toolNames ?? [],
+    ),
     () => input.runId,
   );
 
@@ -193,8 +212,11 @@ const writeBackendEventLog = async (testName: string, events: AgentRunEvent[]): 
 
 describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live transport)", () => {
   let sessionManager: ClaudeSessionManager | null = null;
+  let browserBridgeServer: BrowserBridgeLiveTestServer | null = null;
   const createdRunIds = new Set<string>();
   const createdWorkspaces = new Set<string>();
+  const originalBrowserBridgeBaseUrl = process.env[BROWSER_BRIDGE_BASE_URL_ENV];
+  const originalBrowserBridgeToken = process.env[BROWSER_BRIDGE_TOKEN_ENV];
 
   afterEach(async () => {
     if (sessionManager) {
@@ -208,6 +230,20 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
     }
     createdRunIds.clear();
     sessionManager = null;
+    if (browserBridgeServer) {
+      await browserBridgeServer.stop();
+      browserBridgeServer = null;
+    }
+    if (typeof originalBrowserBridgeBaseUrl === "string") {
+      process.env[BROWSER_BRIDGE_BASE_URL_ENV] = originalBrowserBridgeBaseUrl;
+    } else {
+      delete process.env[BROWSER_BRIDGE_BASE_URL_ENV];
+    }
+    if (typeof originalBrowserBridgeToken === "string") {
+      process.env[BROWSER_BRIDGE_TOKEN_ENV] = originalBrowserBridgeToken;
+    } else {
+      delete process.env[BROWSER_BRIDGE_TOKEN_ENV];
+    }
 
     await Promise.all(
       Array.from(createdWorkspaces).map((workspaceRoot) =>
@@ -258,7 +294,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
             `Reply with exactly '${replyToken}'. Include nothing else.`,
           ),
         );
-        expect(sendResult).toEqual({ accepted: true });
+        expect(sendResult).toMatchObject({ accepted: true });
 
         await waitForEvent(
           events,
@@ -352,7 +388,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
             }),
           ),
         );
-        expect(sendResult).toEqual({ accepted: true });
+        expect(sendResult).toMatchObject({ accepted: true });
 
         const approvalEvent = await waitForEvent(
           events,
@@ -366,7 +402,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
           true,
           "approved by backend integration test",
         );
-        expect(approveResult).toEqual({ accepted: true });
+        expect(approveResult).toMatchObject({ accepted: true });
 
         await waitForEvent(
           events,
@@ -449,7 +485,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
             }),
           ),
         );
-        expect(sendResult).toEqual({ accepted: true });
+        expect(sendResult).toMatchObject({ accepted: true });
 
         const approvalEvent = await waitForEvent(
           events,
@@ -463,7 +499,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
           false,
           "denied by backend integration test",
         );
-        expect(denyResult).toEqual({ accepted: true });
+        expect(denyResult).toMatchObject({ accepted: true });
 
         await waitForEvent(
           events,
@@ -527,7 +563,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
             }),
           ),
         );
-        expect(sendResult).toEqual({ accepted: true });
+        expect(sendResult).toMatchObject({ accepted: true });
 
         await waitForEvent(
           events,
@@ -598,7 +634,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
             }),
           ),
         );
-        expect(sendResult).toEqual({ accepted: true });
+        expect(sendResult).toMatchObject({ accepted: true });
 
         await waitForEvent(
           events,
@@ -606,7 +642,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
         );
 
         const interruptResult = await backend.interrupt();
-        expect(interruptResult).toEqual({ accepted: true });
+        expect(interruptResult).toMatchObject({ accepted: true });
 
         await waitForEvent(
           events,
@@ -673,7 +709,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
             }),
           ),
         );
-        expect(firstResult).toEqual({ accepted: true });
+        expect(firstResult).toMatchObject({ accepted: true });
 
         await waitForEvent(
           originalEvents,
@@ -687,7 +723,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
         const storedContext = original.getContext();
 
         const terminateResult = await original.terminate();
-        expect(terminateResult).toEqual({ accepted: true });
+        expect(terminateResult).toMatchObject({ accepted: true });
 
         const restored = await factory.restoreBackend(storedContext);
         const restoredEvents: AgentRunEvent[] = [];
@@ -704,7 +740,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
             `Reply with exactly '${followupReply}'. Include nothing else. Token: ${followupToken}`,
           ),
         );
-        expect(secondResult).toEqual({ accepted: true });
+        expect(secondResult).toMatchObject({ accepted: true });
 
         await waitForEvent(
           restoredEvents,
@@ -725,6 +761,207 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
       } finally {
         unsubscribeOriginal();
         await writeBackendEventLog("claude-backend-restore-after-tool", originalEvents);
+      }
+    },
+    FLOW_TEST_TIMEOUT_MS,
+  );
+
+  it(
+    "executes open_tab through the live Claude browser MCP path",
+    async () => {
+      const modelIdentifier = await fetchClaudeModelIdentifier();
+      const workspaceRoot = await createWorkspace("claude-backend-browser-tool");
+      createdWorkspaces.add(workspaceRoot);
+      browserBridgeServer = new BrowserBridgeLiveTestServer();
+      await browserBridgeServer.start();
+      Object.assign(process.env, browserBridgeServer.getRuntimeEnv());
+      sessionManager = new ClaudeSessionManager();
+
+      const runId = `run-claude-backend-browser-${randomUUID()}`;
+      createdRunIds.add(runId);
+      const factory = createFactory({
+        sessionManager,
+        workspaceRoot,
+        runId,
+        toolNames: ["open_tab"],
+        instructions:
+          "If the user explicitly instructs you to call open_tab with a JSON argument object, call open_tab exactly once with those exact arguments and do not call any other tool.",
+      });
+
+      const backend = await factory.createBackend(
+        new AgentRunConfig({
+          runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+          agentDefinitionId: "agent-def-claude-browser-live",
+          llmModelIdentifier: modelIdentifier,
+          autoExecuteTools: true,
+          workspaceId: "workspace-claude-browser-live",
+          skillAccessMode: SkillAccessMode.NONE,
+        }),
+      );
+
+      const browserUrl = `http://127.0.0.1:4173/browser-${randomUUID()}`;
+      const browserTitle = `Browser ${randomUUID()}`;
+      const events: AgentRunEvent[] = [];
+      const unsubscribe = backend.subscribeToEvents((event) => {
+        if (event && typeof event === "object") {
+          events.push(event as AgentRunEvent);
+        }
+      });
+
+      try {
+        const sendResult = await backend.postUserMessage(
+          new AgentInputUserMessage(
+            buildOpenBrowserToolPrompt({
+              url: browserUrl,
+              title: browserTitle,
+            }),
+          ),
+        );
+        expect(sendResult).toMatchObject({ accepted: true });
+
+        await waitForEvent(
+          events,
+          (event) =>
+            event.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED &&
+            event.payload.tool_name === "open_tab",
+        );
+        await waitForEvent(
+          events,
+          (event) =>
+            event.eventType === AgentRunEventType.AGENT_STATUS &&
+            event.payload.new_status === "IDLE",
+        );
+
+        expect(
+          events.some((event) => event.eventType === AgentRunEventType.TOOL_APPROVAL_REQUESTED),
+        ).toBe(false);
+        expect(browserBridgeServer.requests).toHaveLength(1);
+        expect(browserBridgeServer.requests[0]).toMatchObject({
+          method: "POST",
+          path: "/browser/open",
+          body: {
+            url: browserUrl,
+            title: browserTitle,
+            wait_until: "load",
+          },
+        });
+      } finally {
+        unsubscribe();
+        await writeBackendEventLog("claude-backend-browser-tool", events);
+      }
+    },
+    FLOW_TEST_TIMEOUT_MS,
+  );
+
+  it(
+    "executes the full browser tool surface through the live Claude browser MCP path",
+    async () => {
+      const modelIdentifier = await fetchClaudeModelIdentifier();
+      const workspaceRoot = await createWorkspace("claude-backend-browser-surface");
+      createdWorkspaces.add(workspaceRoot);
+      browserBridgeServer = new BrowserBridgeLiveTestServer();
+      await browserBridgeServer.start();
+      Object.assign(process.env, browserBridgeServer.getRuntimeEnv());
+      sessionManager = new ClaudeSessionManager();
+
+      const runId = `run-claude-backend-browser-surface-${randomUUID()}`;
+      createdRunIds.add(runId);
+      const factory = createFactory({
+        sessionManager,
+        workspaceRoot,
+        runId,
+        toolNames: [
+          "open_tab",
+          "navigate_to",
+          "list_tabs",
+          "read_page",
+          "screenshot",
+          "dom_snapshot",
+          "run_script",
+          "close_tab",
+        ],
+        instructions:
+          "If the user explicitly instructs you to call browser tools with exact JSON arguments in an exact order, call exactly those browser tools in that order and do not call any other tool.",
+      });
+
+      const backend = await factory.createBackend(
+        new AgentRunConfig({
+          runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
+          agentDefinitionId: "agent-def-claude-browser-surface-live",
+          llmModelIdentifier: modelIdentifier,
+          autoExecuteTools: true,
+          workspaceId: "workspace-claude-browser-surface-live",
+          skillAccessMode: SkillAccessMode.NONE,
+        }),
+      );
+
+      const openUrl = `http://127.0.0.1:4173/browser-open-${randomUUID()}`;
+      const navigateUrl = `http://127.0.0.1:4173/browser-navigate-${randomUUID()}`;
+      const browserTitle = `Browser ${randomUUID()}`;
+      const events: AgentRunEvent[] = [];
+      const unsubscribe = backend.subscribeToEvents((event) => {
+        if (event && typeof event === "object") {
+          events.push(event as AgentRunEvent);
+        }
+      });
+
+      try {
+        const sendResult = await backend.postUserMessage(
+          new AgentInputUserMessage(
+            buildBrowserToolSurfacePrompt({
+              openUrl,
+              navigateUrl,
+              title: browserTitle,
+            }),
+          ),
+        );
+        expect(sendResult).toMatchObject({ accepted: true });
+
+        await waitForEvent(
+          events,
+          (event) =>
+            event.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED &&
+            event.payload.tool_name === "close_tab",
+        );
+        await waitForEvent(
+          events,
+          (event) =>
+            event.eventType === AgentRunEventType.AGENT_STATUS &&
+            event.payload.new_status === "IDLE",
+        );
+
+        const succeededToolNames = events
+          .filter((event) => event.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED)
+          .map((event) => event.payload.tool_name)
+          .filter((value): value is string => typeof value === "string");
+        expect(succeededToolNames).toEqual(
+          expect.arrayContaining([
+            "open_tab",
+            "navigate_to",
+            "list_tabs",
+            "read_page",
+            "screenshot",
+            "dom_snapshot",
+            "run_script",
+            "close_tab",
+          ]),
+        );
+        expect(
+          events.some((event) => event.eventType === AgentRunEventType.TOOL_APPROVAL_REQUESTED),
+        ).toBe(false);
+        expect(browserBridgeServer.requests.map((request) => request.path)).toEqual([
+          "/browser/open",
+          "/browser/navigate",
+          "/browser/list",
+          "/browser/read-page",
+          "/browser/screenshot",
+          "/browser/dom-snapshot",
+          "/browser/javascript",
+          "/browser/close",
+        ]);
+      } finally {
+        unsubscribe();
+        await writeBackendEventLog("claude-backend-browser-tool-surface", events);
       }
     },
     FLOW_TEST_TIMEOUT_MS,

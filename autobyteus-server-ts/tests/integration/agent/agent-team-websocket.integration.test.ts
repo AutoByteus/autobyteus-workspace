@@ -4,22 +4,21 @@ import { describe, expect, it } from "vitest";
 import WebSocket from "ws";
 import {
   AgentInputUserMessage,
-  AgentEventRebroadcastPayload,
-  AgentTeamStreamEvent,
-  StreamEvent,
-  StreamEventType,
 } from "autobyteus-ts";
+import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
+import { TeamRunEventSourceType, type TeamRunEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
 import { AgentTeamStreamHandler } from "../../../src/services/agent-streaming/agent-team-stream-handler.js";
 import { AgentSessionManager } from "../../../src/services/agent-streaming/agent-session-manager.js";
 import { TeamStreamBroadcaster } from "../../../src/services/agent-streaming/team-stream-broadcaster.js";
 import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
 
 class FakeTeamStream {
-  private queue: Array<AgentTeamStreamEvent | null> = [];
-  private waiters: Array<(value: AgentTeamStreamEvent | null) => void> = [];
+  private queue: Array<TeamRunEvent | null> = [];
+  private waiters: Array<(value: TeamRunEvent | null) => void> = [];
   private closed = false;
 
-  push(event: AgentTeamStreamEvent): void {
+  push(event: TeamRunEvent): void {
     if (this.closed) {
       return;
     }
@@ -44,14 +43,14 @@ class FakeTeamStream {
     }
   }
 
-  private async next(): Promise<AgentTeamStreamEvent | null> {
+  private async next(): Promise<TeamRunEvent | null> {
     if (this.queue.length > 0) {
       return this.queue.shift() ?? null;
     }
     return new Promise((resolve) => this.waiters.push(resolve));
   }
 
-  async *allEvents(): AsyncGenerator<AgentTeamStreamEvent, void, unknown> {
+  async *allEvents(): AsyncGenerator<TeamRunEvent, void, unknown> {
     while (true) {
       const event = await this.next();
       if (!event) {
@@ -100,9 +99,47 @@ class FakeTeam {
 class FakeTeamRun {
   readonly runId: string;
   readonly runtimeKind = "autobyteus";
+  readonly context = {
+    runtimeContext: {
+      memberContexts: [
+        {
+          memberName: "alpha",
+          memberRouteKey: "alpha",
+          memberRunId: "member-42",
+          getPlatformAgentRunId: () => null,
+        },
+      ],
+    },
+  };
+  readonly config = {
+    memberConfigs: [
+      {
+        memberName: "alpha",
+        memberRunId: "member-42",
+      },
+    ],
+  };
 
-  constructor(private readonly team: FakeTeam) {
+  constructor(
+    private readonly team: FakeTeam,
+    private readonly stream: FakeTeamStream,
+  ) {
     this.runId = team.teamRunId;
+  }
+
+  getStatus(): string {
+    return "ACTIVE";
+  }
+
+  subscribeToEvents(listener: (event: AgentTeamStreamEvent) => void): () => void {
+    void (async () => {
+      for await (const event of this.stream.allEvents()) {
+        listener(event);
+      }
+    })();
+    return () => {
+      void this.stream.close();
+    };
   }
 
   async postMessage(message: AgentInputUserMessage, targetMemberName?: string | null): Promise<{ accepted: true }> {
@@ -131,27 +168,25 @@ class FakeTeamRun {
   }
 }
 
-class FakeTeamManager {
+class FakeTeamRunService {
   private team: FakeTeam;
   private teamRun: FakeTeamRun;
-  private stream: FakeTeamStream;
 
   constructor(team: FakeTeam, stream: FakeTeamStream) {
     this.team = team;
-    this.teamRun = new FakeTeamRun(team);
-    this.stream = stream;
+    this.teamRun = new FakeTeamRun(team, stream);
   }
 
   getTeamRun(teamRunId: string): FakeTeamRun | null {
     return teamRunId === this.team.teamRunId ? this.teamRun : null;
   }
 
-  getTeam(teamRunId: string): FakeTeam | null {
-    return teamRunId === this.team.teamRunId ? this.team : null;
+  async recordRunActivity(): Promise<void> {
+    return;
   }
 
-  getTeamEventStream(teamRunId: string): FakeTeamStream | null {
-    return teamRunId === this.team.teamRunId ? this.stream : null;
+  async refreshRunMetadata(): Promise<void> {
+    return;
   }
 }
 
@@ -179,10 +214,10 @@ describe("Agent team websocket integration", () => {
   it("streams team events and routes client messages", async () => {
     const team = new FakeTeam("team-1");
     const stream = new FakeTeamStream();
-    const manager = new FakeTeamManager(team, stream);
+    const teamRunService = new FakeTeamRunService(team, stream);
     const handler = new AgentTeamStreamHandler(
       new AgentSessionManager(),
-      manager as unknown as any,
+      teamRunService as unknown as any,
     );
 
     const dummyAgentHandler = {
@@ -245,21 +280,26 @@ describe("Agent team websocket integration", () => {
     expect(team.stopCalls).toBe(1);
 
     const agentMessagePromise = waitForMessage(socket);
-    const agentEvent = new StreamEvent({
-      event_type: StreamEventType.SEGMENT_EVENT,
-      data: {
-        event_type: "SEGMENT_CONTENT",
-        segment_id: "seg-alpha-1",
+    const agentEvent: AgentRunEvent = {
+      runId: "agent-42",
+      eventType: AgentRunEventType.SEGMENT_CONTENT,
+      payload: {
+        id: "seg-alpha-1",
         segment_type: "text",
-        payload: { delta: "hi" },
+        delta: "hi",
       },
-      agent_id: "agent-42",
-    });
-    const teamEvent = new AgentTeamStreamEvent({
-      team_id: team.teamRunId,
-      event_source_type: "AGENT",
-      data: new AgentEventRebroadcastPayload({ agent_name: "alpha", agent_event: agentEvent }),
-    });
+      statusHint: null,
+    };
+    const teamEvent: TeamRunEvent = {
+      teamRunId: team.teamRunId,
+      eventSourceType: TeamRunEventSourceType.AGENT,
+      data: {
+        runtimeKind: RuntimeKind.AUTOBYTEUS,
+        memberName: "alpha",
+        memberRunId: "agent-42",
+        agentEvent,
+      },
+    };
     stream.push(teamEvent);
 
     const agentMessage = JSON.parse(await agentMessagePromise) as {
@@ -287,15 +327,11 @@ describe("Agent team websocket integration", () => {
   it("forwards team-scoped live external user messages over the team websocket", async () => {
     const team = new FakeTeam("team-live-1");
     const stream = new FakeTeamStream();
-    const manager = new FakeTeamManager(team, stream);
+    const teamRunService = new FakeTeamRunService(team, stream);
     const broadcaster = new TeamStreamBroadcaster();
     const handler = new AgentTeamStreamHandler(
       new AgentSessionManager(),
-      manager as unknown as any,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
+      teamRunService as unknown as any,
       broadcaster,
     );
 
@@ -422,10 +458,10 @@ describe("Agent team websocket integration", () => {
   it("routes approval commands with all personal target identity fields", async () => {
     const team = new FakeTeam("team-approvals");
     const stream = new FakeTeamStream();
-    const manager = new FakeTeamManager(team, stream);
+    const teamRunService = new FakeTeamRunService(team, stream);
     const handler = new AgentTeamStreamHandler(
       new AgentSessionManager(),
-      manager as unknown as any,
+      teamRunService as unknown as any,
     );
 
     const app = fastify();
@@ -499,7 +535,7 @@ describe("Agent team websocket integration", () => {
     );
     await waitForCondition(() => team.approvals.length === 3);
     expect(team.approvals[2]).toEqual({
-      agentName: "member-42",
+      agentName: "alpha",
       invocationId: "inv-3",
       approved: true,
       reason: null,

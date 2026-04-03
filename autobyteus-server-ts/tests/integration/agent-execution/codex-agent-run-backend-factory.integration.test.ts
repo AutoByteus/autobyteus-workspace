@@ -19,6 +19,15 @@ import { CodexClientThreadRouter } from "../../../src/agent-execution/backends/c
 import { CodexThreadManager } from "../../../src/agent-execution/backends/codex/thread/codex-thread-manager.js";
 import { createCodexDynamicToolTextResult } from "../../../src/agent-execution/backends/codex/codex-dynamic-tool.js";
 import { CodexModelCatalog } from "../../../src/llm-management/services/codex-model-catalog.js";
+import {
+  BROWSER_BRIDGE_BASE_URL_ENV,
+  BROWSER_BRIDGE_TOKEN_ENV,
+} from "../../../src/agent-tools/browser/browser-tool-contract.js";
+import {
+  BrowserBridgeLiveTestServer,
+  buildOpenBrowserToolPrompt,
+  buildBrowserToolSurfacePrompt,
+} from "./browser-bridge-live-test-server.js";
 
 const codexBinaryReady = spawnSync("codex", ["--version"], {
   stdio: "ignore",
@@ -157,6 +166,8 @@ const createFactory = (input: {
   threadManager: CodexThreadManager;
   workspaceRoot: string;
   runId: string;
+  instructions?: string;
+  toolNames?: string[];
   defaultBootstrapStrategy?: CodexThreadBootstrapStrategy;
 }) => {
   const threadBootstrapper = new CodexThreadBootstrapper(
@@ -166,9 +177,10 @@ const createFactory = (input: {
     } as any,
     {
       getAgentDefinitionById: async () => ({
-        instructions: "Reply briefly.",
+        instructions: input.instructions ?? "Reply briefly.",
         description: "Fallback description.",
         skillNames: [],
+        toolNames: input.toolNames ?? [],
       }),
     } as any,
     {
@@ -188,7 +200,10 @@ const createFactory = (input: {
 describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live transport)", () => {
   let clientManager: CodexAppServerClientManager | null = null;
   let threadManager: CodexThreadManager | null = null;
+  let browserBridgeServer: BrowserBridgeLiveTestServer | null = null;
   const createdRunIds = new Set<string>();
+  const originalBrowserBridgeBaseUrl = process.env[BROWSER_BRIDGE_BASE_URL_ENV];
+  const originalBrowserBridgeToken = process.env[BROWSER_BRIDGE_TOKEN_ENV];
 
   afterEach(async () => {
     if (threadManager) {
@@ -206,6 +221,20 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
       clientManager = null;
     }
     threadManager = null;
+    if (browserBridgeServer) {
+      await browserBridgeServer.stop();
+      browserBridgeServer = null;
+    }
+    if (typeof originalBrowserBridgeBaseUrl === "string") {
+      process.env[BROWSER_BRIDGE_BASE_URL_ENV] = originalBrowserBridgeBaseUrl;
+    } else {
+      delete process.env[BROWSER_BRIDGE_BASE_URL_ENV];
+    }
+    if (typeof originalBrowserBridgeToken === "string") {
+      process.env[BROWSER_BRIDGE_TOKEN_ENV] = originalBrowserBridgeToken;
+    } else {
+      delete process.env[BROWSER_BRIDGE_TOKEN_ENV];
+    }
   });
 
   it("converts status and assistant text segments for a normal Codex turn", async () => {
@@ -715,6 +744,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
       threadManager,
       workspaceRoot,
       runId,
+      toolNames: ["open_tab"],
       defaultBootstrapStrategy: {
         appliesTo: () => true,
         prepare: ({ agentInstruction }) => ({
@@ -1091,6 +1121,251 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     } finally {
       unsubscribe();
       await writeBackendEventLog("codex-backend-edit-file", events);
+    }
+  }, FLOW_TEST_TIMEOUT_MS);
+
+  it("executes open_tab through the live Codex browser dynamic tool path", async () => {
+    const workspaceRoot = await createWorkspace("codex-backend-browser-tool");
+    browserBridgeServer = new BrowserBridgeLiveTestServer();
+    await browserBridgeServer.start();
+    Object.assign(process.env, browserBridgeServer.getRuntimeEnv());
+    clientManager = new CodexAppServerClientManager({
+      createClient: (cwd) =>
+        new CodexAppServerClient({
+          command: "codex",
+          args: ["app-server"],
+          cwd,
+          requestTimeoutMs: 45_000,
+        }),
+    });
+    threadManager = new CodexThreadManager(
+      clientManager,
+      undefined,
+      new CodexClientThreadRouter(),
+    );
+    const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
+    const runId = "run-codex-backend-browser-tool";
+    const factory = createFactory({
+      clientManager,
+      threadManager,
+      workspaceRoot,
+      runId,
+      toolNames: ["open_tab"],
+      instructions:
+        "If the user explicitly instructs you to call open_tab with a JSON argument object, call open_tab exactly once with those exact arguments and do not call any other tool.",
+    });
+
+    const backend = await factory.createBackend(
+      new AgentRunConfig({
+        runtimeKind: "codex_app_server",
+        agentDefinitionId: "agent-def-codex-browser-live",
+        llmModelIdentifier: modelIdentifier,
+        autoExecuteTools: true,
+        workspaceId: "workspace-codex-browser-live",
+        llmConfig: { reasoning_effort: "medium" },
+      }),
+    );
+    createdRunIds.add(backend.runId);
+
+    const thread = threadManager.getThread(backend.runId);
+    expect(thread).toBeTruthy();
+    await waitForStartupReady(thread!.startup.waitForReady);
+
+    const browserUrl = `http://127.0.0.1:4173/browser-${randomUUID()}`;
+    const browserTitle = `Browser ${randomUUID()}`;
+    const events: AgentRunEvent[] = [];
+    const unsubscribe = backend.subscribeToEvents((event) => {
+      if (event && typeof event === "object") {
+        events.push(event as AgentRunEvent);
+      }
+    });
+
+    try {
+      const sendResult = await backend.postUserMessage(
+        new AgentInputUserMessage(
+          buildOpenBrowserToolPrompt({
+            url: browserUrl,
+            title: browserTitle,
+          }),
+        ),
+      );
+      expect(sendResult.accepted).toBe(true);
+
+      const browserSuccessEvent = await waitForEvent(
+        events,
+        (event) =>
+          event.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED &&
+          event.payload.tool_name === "open_tab",
+      );
+      const browserResult =
+        browserSuccessEvent.payload.result &&
+        typeof browserSuccessEvent.payload.result === "object"
+          ? (browserSuccessEvent.payload.result as Record<string, unknown>)
+          : null;
+      expect(browserResult?.tab_id).toEqual("browser-session-1");
+      expect(browserResult?.status).toEqual("opened");
+      expect(browserResult?.url).toEqual(browserUrl);
+      expect(browserResult?.title).toEqual(browserTitle);
+      await waitForEvent(
+        events,
+        (event) =>
+          event.eventType === AgentRunEventType.AGENT_STATUS &&
+          event.payload.new_status === "IDLE",
+      );
+
+      expect(
+        events.some((event) => event.eventType === AgentRunEventType.TOOL_APPROVAL_REQUESTED),
+      ).toBe(false);
+      expect(browserBridgeServer.requests).toHaveLength(1);
+      expect(browserBridgeServer.requests[0]).toMatchObject({
+        method: "POST",
+        path: "/browser/open",
+        body: {
+          url: browserUrl,
+          title: browserTitle,
+          wait_until: "load",
+        },
+      });
+    } finally {
+      unsubscribe();
+      await writeBackendEventLog("codex-backend-browser-tool", events);
+    }
+  }, FLOW_TEST_TIMEOUT_MS);
+
+  it("executes the full browser tool surface through the live Codex browser dynamic tool path", async () => {
+    clientManager = new CodexAppServerClientManager(
+      (cwd) => new CodexAppServerClient({ cwd }),
+    );
+    threadManager = new CodexThreadManager(
+      clientManager,
+      undefined,
+      new CodexClientThreadRouter(),
+    );
+    const modelIdentifier = await fetchCodexModelIdentifier(
+      clientManager,
+      process.cwd(),
+    );
+    const workspaceRoot = await createWorkspace("codex-backend-browser-surface");
+    browserBridgeServer = new BrowserBridgeLiveTestServer();
+    await browserBridgeServer.start();
+    Object.assign(process.env, browserBridgeServer.getRuntimeEnv());
+
+    const factory = createFactory({
+      clientManager,
+      threadManager,
+      workspaceRoot,
+      runId: `run-codex-browser-surface-${randomUUID()}`,
+      toolNames: [
+        "open_tab",
+        "navigate_to",
+        "list_tabs",
+        "read_page",
+        "screenshot",
+        "dom_snapshot",
+        "run_script",
+        "close_tab",
+      ],
+      instructions:
+        "If the user explicitly instructs you to call browser tools with exact JSON arguments in an exact order, call exactly those browser tools in that order and do not call any other tool.",
+    });
+
+    const backend = await factory.createBackend(
+      new AgentRunConfig({
+        runtimeKind: "codex_app_server",
+        agentDefinitionId: "agent-def-codex-browser-surface-live",
+        llmModelIdentifier: modelIdentifier,
+        autoExecuteTools: true,
+        workspaceId: "workspace-codex-browser-surface-live",
+        llmConfig: { reasoning_effort: "medium" },
+      }),
+    );
+    createdRunIds.add(backend.runId);
+
+    const thread = threadManager.getThread(backend.runId);
+    expect(thread).toBeTruthy();
+    await waitForStartupReady(thread!.startup.waitForReady);
+
+    const openUrl = `http://127.0.0.1:4173/browser-open-${randomUUID()}`;
+    const navigateUrl = `http://127.0.0.1:4173/browser-navigate-${randomUUID()}`;
+    const browserTitle = `Browser ${randomUUID()}`;
+    const events: AgentRunEvent[] = [];
+    const unsubscribe = backend.subscribeToEvents((event) => {
+      if (event && typeof event === "object") {
+        events.push(event as AgentRunEvent);
+      }
+    });
+
+    try {
+      const sendResult = await backend.postUserMessage(
+        new AgentInputUserMessage(
+          buildBrowserToolSurfacePrompt({
+            openUrl,
+            navigateUrl,
+            title: browserTitle,
+          }),
+        ),
+      );
+      expect(sendResult.accepted).toBe(true);
+
+      await waitForEvent(
+        events,
+        (event) =>
+          event.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED &&
+          event.payload.tool_name === "close_tab",
+      );
+      await waitForEvent(
+        events,
+        (event) =>
+          event.eventType === AgentRunEventType.AGENT_STATUS &&
+          event.payload.new_status === "IDLE",
+      );
+
+      const succeededToolNames = events
+        .filter((event) => event.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED)
+        .map((event) => event.payload.tool_name)
+        .filter((value): value is string => typeof value === "string");
+      expect(succeededToolNames).toEqual(
+        expect.arrayContaining([
+          "open_tab",
+          "navigate_to",
+          "list_tabs",
+          "read_page",
+          "screenshot",
+          "dom_snapshot",
+          "run_script",
+          "close_tab",
+        ]),
+      );
+      expect(
+        events.some((event) => event.eventType === AgentRunEventType.TOOL_APPROVAL_REQUESTED),
+      ).toBe(false);
+      expect(browserBridgeServer.requests.map((request) => request.path)).toEqual([
+        "/browser/open",
+        "/browser/navigate",
+        "/browser/list",
+        "/browser/read-page",
+        "/browser/screenshot",
+        "/browser/dom-snapshot",
+        "/browser/javascript",
+        "/browser/close",
+      ]);
+      expect(browserBridgeServer.requests[0]).toMatchObject({
+        body: {
+          url: openUrl,
+          title: browserTitle,
+          wait_until: "load",
+        },
+      });
+      expect(browserBridgeServer.requests[1]).toMatchObject({
+        body: {
+          tab_id: "browser-session-1",
+          url: navigateUrl,
+          wait_until: "load",
+        },
+      });
+    } finally {
+      unsubscribe();
+      await writeBackendEventLog("codex-backend-browser-tool-surface", events);
     }
   }, FLOW_TEST_TIMEOUT_MS);
 });

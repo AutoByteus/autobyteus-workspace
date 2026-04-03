@@ -75,6 +75,7 @@ describe('RightSideTabs', () => {
           VncViewer: { template: '<div class="vnc-stub" />' },
           FileExplorerLayout: { template: '<div class="file-layout-stub" />' },
           ArtifactsTab: { template: '<div class="artifacts-stub" />' },
+          BrowserPanel: { template: '<div class="browser-panel-stub" />' },
           ProgressPanel: { template: '<div class="progress-stub" />' },
         },
       },

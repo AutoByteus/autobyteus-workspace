@@ -55,6 +55,8 @@ autobyteus-web/
 │   ├── preload.ts              # Secure API bridge to renderer
 │   ├── logger.ts               # File and console logging
 │   ├── types.d.ts              # TypeScript definitions
+│   ├── shared/
+│   │   └── embeddedServerConfig.ts  # Stable embedded server URL/port defaults
 │   ├── server/
 │   │   ├── baseServerManager.ts      # Abstract base class
 │   │   ├── linuxServerManager.ts     # Linux implementation
@@ -69,7 +71,6 @@ autobyteus-web/
 │   │   │   └── index.ts              # Service exports
 │   │   └── __tests__/                # Server tests
 │   └── utils/
-│       ├── networkUtils.ts     # Local IP detection
 │       ├── shellEnv.ts         # PATH from login shell
 │       └── __tests__/          # Utils tests
 ├── build/
@@ -367,10 +368,10 @@ scripts/migrate-legacy-db.sh --from /path/to/production.db --to ~/.autobyteus/se
 
 ## Utilities
 
-### Network Utils (`networkUtils.ts`)
+### Embedded Server Config (`shared/embeddedServerConfig.ts`)
 
-- `getLocalIp()` - Finds LAN IP for Docker/network access
-- Prioritizes common interfaces: `eth0`, `en0`, `wlan0`, `Wi-Fi`
+- Defines the stable embedded server loopback host and port
+- Provides shared HTTP/WS base URLs for Electron runtime defaults
 
 ### Shell Environment (`shellEnv.ts`)
 

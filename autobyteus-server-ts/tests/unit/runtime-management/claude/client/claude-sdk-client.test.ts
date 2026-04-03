@@ -29,7 +29,15 @@ describe("ClaudeSdkClient", () => {
       model: "haiku",
       workingDirectory: "/tmp/claude-client-query-options",
       mcpServers: { demo: mcpServer },
-      enableSendMessageToTooling: true,
+      allowedTools: [
+        "Skill",
+        "send_message_to",
+        "mcp__autobyteus_team__send_message_to",
+        "open_tab",
+        "read_page",
+        "mcp__autobyteus_browser__open_tab",
+        "mcp__autobyteus_browser__read_page",
+      ],
       enableProjectSkillSettings: true,
       permissionMode: "default",
       autoExecuteTools: false,
@@ -46,7 +54,15 @@ describe("ClaudeSdkClient", () => {
         mcpServers: { demo: mcpServer },
         permissionMode: "default",
         settingSources: ["project"],
-        allowedTools: expect.arrayContaining(["Skill", "send_message_to", "mcp__autobyteus_team__send_message_to"]),
+        allowedTools: expect.arrayContaining([
+          "Skill",
+          "send_message_to",
+          "mcp__autobyteus_team__send_message_to",
+          "open_tab",
+          "read_page",
+          "mcp__autobyteus_browser__open_tab",
+          "mcp__autobyteus_browser__read_page",
+        ]),
       }),
     });
   });
@@ -70,7 +86,6 @@ describe("ClaudeSdkClient", () => {
       prompt: "explicit approval callback",
       model: "haiku",
       workingDirectory: "/tmp/claude-client-explicit-can-use-tool",
-      enableSendMessageToTooling: false,
       autoExecuteTools: true,
       canUseTool: explicitCanUseTool,
     });
@@ -79,7 +94,6 @@ describe("ClaudeSdkClient", () => {
       prompt: "auto exec callback",
       model: "haiku",
       workingDirectory: "/tmp/claude-client-auto-exec",
-      enableSendMessageToTooling: false,
       autoExecuteTools: true,
     });
 

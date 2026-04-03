@@ -80,13 +80,6 @@ export type ResolvedBinding = {
   usedTransportFallback: boolean;
 };
 
-export type ChannelIdempotencyDecision = {
-  duplicate: boolean;
-  key: string;
-  firstSeenAt: Date | null;
-  expiresAt: Date | null;
-};
-
 export type ChannelDispatchTarget = {
   agentRunId: string | null;
   teamRunId: string | null;
@@ -103,9 +96,6 @@ export type ChannelSourceContext = {
   turnId?: string | null;
 };
 
-export type ChannelIngressReceiptInput = ChannelSourceContext &
-  ChannelDispatchTarget;
-
 export type ChannelSourceRoute = {
   provider: ExternalChannelProvider;
   transport: ExternalChannelTransport;
@@ -114,7 +104,55 @@ export type ChannelSourceRoute = {
   threadId: string | null;
 };
 
-export type ChannelTurnReceiptBindingInput = ChannelSourceRoute &
+export type ChannelIngressReceiptState =
+  | "PENDING"
+  | "DISPATCHING"
+  | "ACCEPTED"
+  | "ROUTED"
+  | "UNBOUND";
+
+export type ChannelIngressReceiptKey = ChannelSourceRoute & {
+  externalMessageId: string;
+};
+
+export type ChannelMessageReceipt = ChannelSourceContext &
+  ChannelDispatchTarget & {
+    ingressState: ChannelIngressReceiptState;
+    dispatchLeaseToken: string | null;
+    dispatchLeaseExpiresAt: Date | null;
+    createdAt: Date;
+    updatedAt: Date;
+  };
+
+export type ChannelPendingIngressReceiptInput = ChannelIngressReceiptKey & {
+  receivedAt: Date;
+};
+
+export type ChannelClaimIngressDispatchInput = ChannelIngressReceiptKey & {
+  receivedAt: Date;
+  claimedAt: Date;
+  leaseDurationMs: number;
+};
+
+export type ChannelAcceptedIngressReceiptInput = ChannelIngressReceiptKey &
+  ChannelDispatchTarget & {
+    receivedAt: Date;
+    dispatchLeaseToken: string;
+    turnId?: string | null;
+  };
+
+export type ChannelUnboundIngressReceiptInput = ChannelIngressReceiptKey & {
+  receivedAt: Date;
+};
+
+export type ChannelAcceptedReceiptCorrelationInput = ChannelSourceRoute &
+  ChannelDispatchTarget & {
+    externalMessageId: string;
+    turnId: string;
+    receivedAt: Date;
+  };
+
+export type ChannelReplyPublishedReceiptInput = ChannelSourceRoute &
   ChannelDispatchTarget & {
     externalMessageId: string;
     turnId: string;

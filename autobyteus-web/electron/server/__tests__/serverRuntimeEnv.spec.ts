@@ -34,4 +34,19 @@ describe('buildServerRuntimeEnv', () => {
     expect(env.PERSISTENCE_PROVIDER).toBe('file')
     expect(env.DB_TYPE).toBe('sqlite')
   })
+
+  it('merges runtime override values after the default runtime env is built', () => {
+    const env = buildServerRuntimeEnv(
+      '/tmp/server-data',
+      'http://localhost:29695',
+      {},
+      {
+        AUTOBYTEUS_BROWSER_BRIDGE_BASE_URL: 'http://127.0.0.1:41234',
+        AUTOBYTEUS_BROWSER_BRIDGE_TOKEN: 'browser-token'
+      }
+    )
+
+    expect(env.AUTOBYTEUS_BROWSER_BRIDGE_BASE_URL).toBe('http://127.0.0.1:41234')
+    expect(env.AUTOBYTEUS_BROWSER_BRIDGE_TOKEN).toBe('browser-token')
+  })
 })

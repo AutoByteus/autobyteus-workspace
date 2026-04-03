@@ -7,30 +7,11 @@ import {
   type NodeRegistryChange,
   type NodeRegistrySnapshot,
 } from '~/types/node';
-import { INTERNAL_SERVER_PORT } from '~/utils/serverConfig';
+import { resolveDefaultEmbeddedBaseUrl } from '~/utils/embeddedNodeBaseUrl';
 import { normalizeNodeBaseUrl } from '~/utils/nodeEndpoints';
 
 function nowIsoString(): string {
   return new Date().toISOString();
-}
-
-function resolveDefaultEmbeddedBaseUrl(): string {
-  const electronBaseUrl = `http://localhost:${INTERNAL_SERVER_PORT}`;
-  if (typeof window !== 'undefined' && window.electronAPI) {
-    return electronBaseUrl;
-  }
-
-  try {
-    const config = useRuntimeConfig();
-    const configuredBaseUrl = config.public.defaultNodeBaseUrl;
-    if (typeof configuredBaseUrl === 'string' && configuredBaseUrl.trim()) {
-      return normalizeNodeBaseUrl(configuredBaseUrl);
-    }
-  } catch {
-    // Non-Nuxt contexts (unit tests) can fall back to the embedded default.
-  }
-
-  return electronBaseUrl;
 }
 
 function createEmbeddedNode(baseUrl: string): NodeProfile {

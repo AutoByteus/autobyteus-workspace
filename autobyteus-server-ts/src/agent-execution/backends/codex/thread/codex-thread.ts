@@ -21,12 +21,24 @@ const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
 };
 
+type CodexPendingMcpToolCall = {
+  invocationId: string;
+  turnId: string | null;
+  serverName: string | null;
+  toolName: string | null;
+  arguments: JsonObject;
+};
+
+const normalizeLookupToken = (value: string | null): string | null =>
+  value ? value.trim().toLowerCase() : null;
+
 export class CodexThread {
   readonly runContext: CodexRunContext;
   readonly client: CodexAppServerClient;
   currentStatus: string | null;
   readonly startup: CodexThreadStartupGate;
   readonly approvalRecords: Map<string, CodexApprovalRecord>;
+  readonly pendingMcpToolCalls: Map<string, CodexPendingMcpToolCall>;
   readonly listeners: Set<(message: CodexAppServerMessage) => void>;
   readonly unbindHandlers: Array<() => void>;
 
@@ -36,6 +48,7 @@ export class CodexThread {
     currentStatus?: string | null;
     startup: CodexThreadStartupGate;
     approvalRecords?: Map<string, CodexApprovalRecord>;
+    pendingMcpToolCalls?: Map<string, CodexPendingMcpToolCall>;
     listeners?: Set<(message: CodexAppServerMessage) => void>;
     unbindHandlers?: Array<() => void>;
   }) {
@@ -44,6 +57,7 @@ export class CodexThread {
     this.currentStatus = input.currentStatus ?? "IDLE";
     this.startup = input.startup;
     this.approvalRecords = input.approvalRecords ?? new Map();
+    this.pendingMcpToolCalls = input.pendingMcpToolCalls ?? new Map();
     this.listeners = input.listeners ?? new Set();
     this.unbindHandlers = input.unbindHandlers ?? [];
   }
@@ -107,6 +121,7 @@ export class CodexThread {
   markTurnCompleted(): void {
     this.currentStatus = "IDLE";
     this.runContext.runtimeContext.activeTurnId = null;
+    this.pendingMcpToolCalls.clear();
   }
 
   setCurrentStatus(status: string | null): void {
@@ -176,7 +191,11 @@ export class CodexThread {
     }
 
     const decision = approved ? "accept" : "decline";
-    this.client.respondSuccess(approval.requestId, { decision });
+    if (approval.responseMode === "mcp_server_elicitation") {
+      this.client.respondSuccess(approval.requestId, { action: decision });
+    } else {
+      this.client.respondSuccess(approval.requestId, { decision });
+    }
     if (approved) {
       this.emitThreadAppServerMessage({
         method: CodexThreadEventName.LOCAL_TOOL_APPROVED,
@@ -185,6 +204,7 @@ export class CodexThread {
           itemId: approval.itemId,
           approvalId: approval.approvalId,
           requestId: approval.requestId,
+          ...(approval.toolName ? { tool_name: approval.toolName } : {}),
         },
       });
     }
@@ -273,6 +293,40 @@ export class CodexThread {
     }
   }
 
+  trackPendingMcpToolCall(call: CodexPendingMcpToolCall): void {
+    this.pendingMcpToolCalls.set(call.invocationId, call);
+  }
+
+  completePendingMcpToolCall(invocationId: string | null): void {
+    if (!invocationId) {
+      return;
+    }
+    this.pendingMcpToolCalls.delete(invocationId);
+  }
+
+  findPendingMcpToolCall(input: {
+    turnId: string | null;
+    serverName: string | null;
+    toolName: string | null;
+  }): CodexPendingMcpToolCall | null {
+    const turnId = normalizeLookupToken(input.turnId);
+    const serverName = normalizeLookupToken(input.serverName);
+    const toolName = normalizeLookupToken(input.toolName);
+    const candidates = Array.from(this.pendingMcpToolCalls.values()).filter((call) => {
+      if (turnId && normalizeLookupToken(call.turnId) !== turnId) {
+        return false;
+      }
+      if (serverName && normalizeLookupToken(call.serverName) !== serverName) {
+        return false;
+      }
+      if (toolName && normalizeLookupToken(call.toolName) !== toolName) {
+        return false;
+      }
+      return true;
+    });
+    return candidates.at(-1) ?? null;
+  }
+
   findApprovalRecord(invocationId: string): CodexApprovalRecord | null {
     const direct = this.approvalRecords.get(invocationId);
     if (direct) {
@@ -296,6 +350,10 @@ export class CodexThread {
 
   clearApprovalRecords(): void {
     this.approvalRecords.clear();
+  }
+
+  clearPendingMcpToolCalls(): void {
+    this.pendingMcpToolCalls.clear();
   }
 
   private async awaitStartupReady(): Promise<void> {

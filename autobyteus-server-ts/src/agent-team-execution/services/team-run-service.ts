@@ -3,10 +3,10 @@ import {
   TeamRunConfig,
   type TeamMemberRunConfig,
 } from "../domain/team-run-config.js";
-import { TeamRunContext, type TeamMemberRuntimeContext } from "../domain/team-run-context.js";
+import { TeamRunContext } from "../domain/team-run-context.js";
 import { AgentTeamRunManager } from "./agent-team-run-manager.js";
 import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
-import { AgentRunConfig } from "../../agent-execution/domain/agent-run-config.js";
+import { buildTeamLocalAgentDefinitionId } from "autobyteus-ts/agent-team/utils/team-local-agent-definition-id.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import {
   RuntimeKind,
@@ -29,17 +29,9 @@ import {
   SkillAccessMode,
 } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import {
-  AutoByteusTeamMemberContext,
-  AutoByteusTeamRunContext,
-} from "../backends/autobyteus/autobyteus-team-run-context.js";
-import {
-  CodexTeamMemberContext,
-  CodexTeamRunContext,
-} from "../backends/codex/codex-team-run-context.js";
-import {
-  ClaudeTeamMemberContext,
-  ClaudeTeamRunContext,
-} from "../backends/claude/claude-team-run-context.js";
+  buildRestoreTeamRunRuntimeContext,
+  getRuntimeMemberContexts,
+} from "./team-run-runtime-context-support.js";
 
 export interface TeamRunPresetInput {
   workspaceRootPath: string;
@@ -199,6 +191,19 @@ export class TeamRunService {
     return this.agentTeamRunManager.getTeamRun(normalizedTeamRunId);
   }
 
+  async resolveTeamRun(teamRunId: string): Promise<TeamRun | null> {
+    const normalizedTeamRunId = normalizeRequiredString(teamRunId, "teamRunId");
+    const activeRun = this.getTeamRun(normalizedTeamRunId);
+    if (activeRun) {
+      return activeRun;
+    }
+    try {
+      return await this.restoreTeamRun(normalizedTeamRunId);
+    } catch {
+      return null;
+    }
+  }
+
   async recordRunActivity(
     run: TeamRun,
     input: {
@@ -275,7 +280,7 @@ export class TeamRunService {
         runtimeKind,
         memberConfigs,
       }),
-      runtimeContext: this.buildRestoreRuntimeContext(metadata, runtimeKind),
+      runtimeContext: buildRestoreTeamRunRuntimeContext(metadata, runtimeKind),
     });
   }
 
@@ -291,7 +296,7 @@ export class TeamRunService {
     const timestamp = new Date().toISOString();
     const runtimeContext = run.getRuntimeContext();
     const runtimeMemberContextByRunId = new Map<string, { platformAgentRunId: string | null }>();
-    const runtimeMemberContexts = this.getRuntimeMemberContexts(runtimeContext);
+    const runtimeMemberContexts = getRuntimeMemberContexts(runtimeContext);
     for (const memberContext of runtimeMemberContexts) {
       runtimeMemberContextByRunId.set(memberContext.memberRunId, {
         platformAgentRunId: memberContext.getPlatformAgentRunId(),
@@ -341,72 +346,6 @@ export class TeamRunService {
     };
   }
 
-  private buildRestoreRuntimeContext(
-    metadata: TeamRunMetadata,
-    runtimeKind: RuntimeKind,
-  ) {
-    if (runtimeKind === RuntimeKind.CODEX_APP_SERVER) {
-      return new CodexTeamRunContext({
-        coordinatorMemberRouteKey: metadata.coordinatorMemberRouteKey,
-        memberContexts: metadata.memberMetadata.map(
-          (member) =>
-            new CodexTeamMemberContext({
-              memberName: member.memberName,
-              memberRouteKey: member.memberRouteKey,
-              memberRunId: member.memberRunId,
-              agentRunConfig: new AgentRunConfig({
-                runtimeKind,
-                agentDefinitionId: member.agentDefinitionId,
-                llmModelIdentifier: member.llmModelIdentifier,
-                autoExecuteTools: member.autoExecuteTools,
-                workspaceId: null,
-                llmConfig: member.llmConfig ?? null,
-                skillAccessMode: member.skillAccessMode,
-              }),
-              threadId: member.platformAgentRunId,
-            }),
-        ),
-      });
-    }
-
-    if (runtimeKind === RuntimeKind.CLAUDE_AGENT_SDK) {
-      return new ClaudeTeamRunContext({
-        coordinatorMemberRouteKey: metadata.coordinatorMemberRouteKey,
-        memberContexts: metadata.memberMetadata.map(
-          (member) =>
-            new ClaudeTeamMemberContext({
-              memberName: member.memberName,
-              memberRouteKey: member.memberRouteKey,
-              memberRunId: member.memberRunId,
-              agentRunConfig: new AgentRunConfig({
-                runtimeKind,
-                agentDefinitionId: member.agentDefinitionId,
-                llmModelIdentifier: member.llmModelIdentifier,
-                autoExecuteTools: member.autoExecuteTools,
-                workspaceId: null,
-                llmConfig: member.llmConfig ?? null,
-                skillAccessMode: member.skillAccessMode,
-              }),
-              sessionId: member.platformAgentRunId,
-            }),
-        ),
-      });
-    }
-
-    return new AutoByteusTeamRunContext({
-      coordinatorMemberRouteKey: metadata.coordinatorMemberRouteKey,
-      memberContexts: metadata.memberMetadata.map(
-        (member) =>
-          new AutoByteusTeamMemberContext({
-            memberName: member.memberName,
-            memberRouteKey: member.memberRouteKey,
-            memberRunId: member.memberRunId,
-            nativeAgentId: member.platformAgentRunId,
-          }),
-      ),
-    });
-  }
-
   private async resolveMemberWorkspaceRootPath(
     memberConfig: TeamMemberRunConfig,
   ): Promise<string | null> {
@@ -419,22 +358,6 @@ export class TeamRunService {
       return typeof basePath === "string" && basePath.trim().length > 0 ? basePath.trim() : null;
     }
     return null;
-  }
-
-  private getRuntimeMemberContexts(
-    runtimeContext: unknown,
-  ): TeamMemberRuntimeContext[] {
-    if (!runtimeContext || typeof runtimeContext !== "object") {
-      return [];
-    }
-    if (!("memberContexts" in runtimeContext)) {
-      return [];
-    }
-    const memberContexts = (runtimeContext as { memberContexts?: unknown[] }).memberContexts;
-    if (!Array.isArray(memberContexts)) {
-      return [];
-    }
-    return memberContexts.filter(isTeamMemberRuntimeContext);
   }
 
   private async safeTerminate(teamRunId: string): Promise<void> {
@@ -471,10 +394,13 @@ export class TeamRunService {
 
     for (const node of teamDefinition.nodes) {
       if (node.refType === "agent") {
+        const agentDefinitionId = node.refScope === "team_local"
+          ? buildTeamLocalAgentDefinitionId(normalizedTeamDefinitionId, node.ref)
+          : normalizeRequiredString(node.ref, "agentDefinitionId");
         members.push({
           memberName: node.memberName.trim(),
           memberRouteKey: normalizeMemberRouteKey(node.memberName),
-          agentDefinitionId: normalizeRequiredString(node.ref, "agentDefinitionId"),
+          agentDefinitionId,
         });
         continue;
       }
@@ -550,17 +476,4 @@ const resolveRuntimeKind = (
     throw new Error(`[INVALID_RUNTIME_KIND] Unsupported team runtime kind '${value}'.`);
   }
   return runtimeKind;
-};
-
-const isTeamMemberRuntimeContext = (
-  value: unknown,
-): value is TeamMemberRuntimeContext => {
-  return (
-    !!value &&
-    typeof value === "object" &&
-    typeof (value as { memberName?: unknown }).memberName === "string" &&
-    typeof (value as { memberRouteKey?: unknown }).memberRouteKey === "string" &&
-    typeof (value as { memberRunId?: unknown }).memberRunId === "string" &&
-    typeof (value as { getPlatformAgentRunId?: unknown }).getPlatformAgentRunId === "function"
-  );
 };

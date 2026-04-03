@@ -140,22 +140,22 @@ describe("McpConfigService integration", () => {
     expect(retrieved?.server_id).toBe(serverId);
   });
 
-  itSqlite("previews tools without persisting config", async () => {
+  itSqlite("browsers tools without persisting config", async () => {
     const env = sqliteEnv!;
 
     const service = McpConfigService.getInstance();
-    const serverId = "preview-sqlite-mcp-server";
+    const serverId = "browser-sqlite-mcp-server";
     const config = new StdioMcpServerConfig({
       server_id: serverId,
       command: "node",
       args: [env.scriptPath, env.dbPath],
       enabled: true,
-      tool_name_prefix: "preview",
+      tool_name_prefix: "browser",
     });
 
-    const previewTools = await service.previewMcpServerTools(config);
-    expect(previewTools.length).toBeGreaterThan(0);
-    expect(previewTools.every((tool) => tool.name.startsWith("preview_"))).toBe(true);
+    const browserTools = await service.browserMcpServerTools(config);
+    expect(browserTools.length).toBeGreaterThan(0);
+    expect(browserTools.every((tool) => tool.name.startsWith("browser_"))).toBe(true);
 
     const provider = new McpServerPersistenceProvider();
     const retrieved = await provider.getByServerId(serverId);

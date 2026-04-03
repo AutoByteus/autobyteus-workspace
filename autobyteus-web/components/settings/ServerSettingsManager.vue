@@ -324,8 +324,9 @@
                       <input
                         v-model="editedSettings[setting.key]"
                         type="text"
+                        :readonly="!isEditableSetting(setting)"
                         :data-testid="`server-setting-value-${setting.key}`"
-                        class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 hover:bg-white transition-colors duration-150 text-gray-900 placeholder-gray-500"
+                        :class="getSettingValueInputClass(setting)"
                         placeholder="Enter value"
                       >
                     </td>
@@ -347,6 +348,7 @@
                           <Icon v-else icon="heroicons:trash" class="w-4 h-4" />
                         </button>
                         <button
+                          v-if="isEditableSetting(setting)"
                           @click="saveIndividualSetting(setting.key)"
                           :disabled="!isSettingChanged(setting.key) || store.isUpdating"
                           :data-testid="`server-setting-save-${setting.key}`"
@@ -418,7 +420,7 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { Icon } from '@iconify/vue'
-import { useServerSettingsStore, type SearchProvider } from '~/stores/serverSettings'
+import { useServerSettingsStore, type SearchProvider, type ServerSetting as ServerSettingRecord } from '~/stores/serverSettings'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import ServerMonitor from '~/components/server/ServerMonitor.vue'
 
@@ -718,11 +720,17 @@ const isNewSettingValid = computed(() => {
   return true
 })
 
-const CUSTOM_SETTING_DESCRIPTION = 'Custom user-defined setting'
 const isSettingChanged = (key: string) => editedSettings[key] !== originalSettings[key]
 const isQuickSettingChanged = (key: string) => quickEditedSettings[key] !== quickOriginalSettings[key]
 const isQuickSettingUpdating = (key: string) => quickIsUpdating[key] === true
-const isDeletableSetting = (setting: { description: string }) => setting.description === CUSTOM_SETTING_DESCRIPTION
+const isDeletableSetting = (setting: ServerSettingRecord) => setting.isDeletable
+const isEditableSetting = (setting: ServerSettingRecord) => setting.isEditable
+
+const getSettingValueInputClass = (setting: ServerSettingRecord) => (
+  setting.isEditable
+    ? 'w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 hover:bg-white transition-colors duration-150 text-gray-900 placeholder-gray-500'
+    : 'w-full p-2 border border-slate-200 rounded-lg bg-slate-100 text-slate-500 cursor-default select-text'
+)
 
 const isQuickSettingSaveBlocked = (key: string) =>
   !isQuickSettingChanged(key) || isQuickSettingUpdating(key) || hasQuickSettingValidationErrors(key)

@@ -265,7 +265,7 @@ describe("AutoByteusTeamRunBackendFactory integration", () => {
 
     await expect(
       backend.postMessage(new AgentInputUserMessage("hello"), "Coordinator"),
-    ).resolves.toEqual({ accepted: true });
+    ).resolves.toMatchObject({ accepted: true });
     expect(createdTeam.postMessage).toHaveBeenCalledTimes(1);
   });
 

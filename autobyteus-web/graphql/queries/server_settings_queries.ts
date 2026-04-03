@@ -7,6 +7,8 @@ export const GET_SERVER_SETTINGS = gql`
       key
       value
       description
+      isEditable
+      isDeletable
     }
   }
 `

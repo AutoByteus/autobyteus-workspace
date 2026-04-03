@@ -36,6 +36,14 @@ import {
 import {
   getTeamCodexThreadBootstrapStrategy,
 } from "../../../../agent-team-execution/backends/codex/codex-team-thread-bootstrap-strategy.js";
+import { buildBrowserDynamicToolRegistrationsForEnabledToolNames } from "../browser/build-browser-dynamic-tool-registrations.js";
+import {
+  filterDynamicToolRegistrationsByToolNames,
+} from "./codex-configured-tool-gating.js";
+import {
+  resolveConfiguredAgentToolExposure,
+  toConfiguredAgentToolNameSet,
+} from "../../../shared/configured-agent-tool-exposure.js";
 
 const DEFAULT_SANDBOX_MODE: CodexSandboxMode = "workspace-write";
 const VALID_SANDBOX_MODES = new Set<CodexSandboxMode>([
@@ -53,12 +61,8 @@ const asTrimmedString = (value: unknown): string | null =>
 
 export const resolveApprovalPolicyForAutoExecuteTools = (
   autoExecuteTools: boolean,
-): CodexApprovalPolicy => {
-  if (autoExecuteTools) {
-    return CodexApprovalPolicy.NEVER;
-  }
-  return CodexApprovalPolicy.ON_REQUEST;
-};
+): CodexApprovalPolicy =>
+  autoExecuteTools ? CodexApprovalPolicy.NEVER : CodexApprovalPolicy.ON_REQUEST;
 
 export const normalizeSandboxMode = (): CodexSandboxMode => {
   const sandbox = process.env.CODEX_APP_SERVER_SANDBOX?.trim() ?? DEFAULT_SANDBOX_MODE;
@@ -129,18 +133,32 @@ export class CodexThreadBootstrapper {
     const configuredSkills = await this.skillService.getSkills(
       agentDefinition?.skillNames ?? [],
     );
+    const configuredToolExposure = resolveConfiguredAgentToolExposure(agentDefinition);
     const skillAccessMode = resolveSkillAccessMode(
       runContext.config.skillAccessMode ?? null,
       configuredSkills.length,
     );
     const agentInstruction = this.composeBootstrapAgentInstruction(agentDefinition);
-    const threadConfigInput = await this.prepareThreadConfigInput(runContext, agentInstruction);
+    const threadConfigInput = await this.prepareThreadConfigInput(
+      runContext,
+      agentInstruction,
+      configuredToolExposure,
+    );
+    const dynamicToolRegistrations = mergeDynamicToolRegistrations(
+      filterDynamicToolRegistrationsByToolNames(
+        threadConfigInput.dynamicToolRegistrations,
+        toConfiguredAgentToolNameSet(configuredToolExposure),
+      ),
+      buildBrowserDynamicToolRegistrationsForEnabledToolNames(
+        configuredToolExposure.enabledBrowserToolNames,
+      ),
+    );
     const codexThreadConfig = this.buildThreadConfig({
       agentRunConfig: runContext.config,
       workingDirectory,
       baseInstructions: threadConfigInput.baseInstructions,
       developerInstructions: threadConfigInput.developerInstructions,
-      dynamicToolRegistrations: threadConfigInput.dynamicToolRegistrations,
+      dynamicToolRegistrations,
     });
     const materializedConfiguredSkills = await this.prepareWorkspaceSkills({
       workingDirectory,
@@ -155,7 +173,7 @@ export class CodexThreadBootstrapper {
         codexThreadConfig,
         materializedConfiguredSkills,
         dynamicToolHandlers: buildCodexDynamicToolHandlerMap(
-          threadConfigInput.dynamicToolRegistrations,
+          dynamicToolRegistrations,
         ),
         threadId: existingRuntimeContext?.threadId ?? null,
         activeTurnId: existingRuntimeContext?.activeTurnId ?? null,
@@ -198,14 +216,16 @@ export class CodexThreadBootstrapper {
   private async prepareThreadConfigInput(
     runContext: AgentRunContext<CodexAgentRunContext | null>,
     agentInstruction: string | null,
+    configuredToolExposure: import("../../../shared/configured-agent-tool-exposure.js").ConfiguredAgentToolExposure,
   ) {
     const strategy = this.teamBootstrapStrategy.appliesTo(runContext)
       ? this.teamBootstrapStrategy
       : this.defaultBootstrapStrategy;
-    return strategy.prepare({
-      runContext,
-      agentInstruction,
-    });
+      return strategy.prepare({
+        runContext,
+        agentInstruction,
+        configuredToolExposure,
+      });
   }
 
   private async prepareWorkspaceSkills(input: {
@@ -220,6 +240,17 @@ export class CodexThreadBootstrapper {
     });
   }
 }
+
+const mergeDynamicToolRegistrations = (
+  primary: CodexDynamicToolRegistration[] | null,
+  secondary: CodexDynamicToolRegistration[] | null,
+): CodexDynamicToolRegistration[] | null => {
+  const merged = [
+    ...(Array.isArray(primary) ? primary : []),
+    ...(Array.isArray(secondary) ? secondary : []),
+  ];
+  return merged.length > 0 ? merged : null;
+};
 
 let cachedCodexThreadBootstrapper: CodexThreadBootstrapper | null = null;
 

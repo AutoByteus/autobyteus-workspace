@@ -219,6 +219,45 @@ const matchesInvocationId = (
   return resolved === null || resolved === invocationId;
 };
 
+const getMessageItem = (message: WsMessage): Record<string, unknown> | null =>
+  message.payload.item && typeof message.payload.item === "object"
+    ? (message.payload.item as Record<string, unknown>)
+    : null;
+
+const isMcpToolCallSegment = (input: {
+  message: WsMessage;
+  type: "SEGMENT_START" | "SEGMENT_END";
+  toolName: string;
+  expectedText?: string;
+  expectedStatus?: string;
+}): boolean => {
+  if (input.message.type !== input.type) {
+    return false;
+  }
+  if (
+    input.type === "SEGMENT_START" &&
+    input.message.payload.segment_type !== "tool_call"
+  ) {
+    return false;
+  }
+  const item = getMessageItem(input.message);
+  if (item?.type !== "mcpToolCall" || item.tool !== input.toolName) {
+    return false;
+  }
+  if (
+    input.expectedText &&
+    (!item.arguments ||
+      typeof item.arguments !== "object" ||
+      (item.arguments as Record<string, unknown>).text !== input.expectedText)
+  ) {
+    return false;
+  }
+  if (input.expectedStatus && item.status !== input.expectedStatus) {
+    return false;
+  }
+  return true;
+};
+
 const chooseAutoByteusModelIdentifier = (modelIdentifiers: string[]): string => {
   const exactOverride = process.env.LMSTUDIO_MODEL_ID?.trim();
   if (exactOverride && modelIdentifiers.includes(exactOverride)) {
@@ -943,6 +982,328 @@ const defineRuntimeSuite = (input: {
         await terminateAgentRun(runId).catch(() => undefined);
       }
     }, 180_000);
+
+    if (input.runtimeKind === "codex_app_server") {
+      it("auto-executes Codex tool calls over websocket without approval requests", async () => {
+        const workspaceRootPath = await mkdtemp(
+          path.join(os.tmpdir(), `${input.runtimeKind}-runtime-autoexec-workspace-`),
+        );
+        createdWorkspaceRoots.add(workspaceRootPath);
+        const llmModelIdentifier = await fetchModelIdentifier();
+        const agentDefinitionId = await createAgentDefinition([
+          "read_file",
+          "write_file",
+          "edit_file",
+          "run_bash",
+        ]);
+        const runId = await createAgentRun({
+          agentDefinitionId,
+          llmModelIdentifier,
+          workspaceRootPath,
+          autoExecuteTools: true,
+        });
+
+        const { app, socket, messages } = await openAgentSocket(runId);
+        const targetAbsolutePath = path.join(
+          workspaceRootPath,
+          `api-autoexec-${randomUUID().replace(/-/g, "_")}.txt`,
+        );
+        const expectedContent = `AUTOEXEC_OK_${randomUUID().replace(/-/g, "_")}`;
+        const toolRequestContent =
+          `Use the terminal tool to execute this command exactly once:\n` +
+          `printf '${escapeForSingleQuotedShell(expectedContent)}\\n' > '${escapeForSingleQuotedShell(targetAbsolutePath)}'\n` +
+          "Do not ask for approval. Do not simulate execution.";
+
+        try {
+          const startIndex = messages.length;
+          socket.send(
+            JSON.stringify({
+              type: "SEND_MESSAGE",
+              payload: {
+                content: toolRequestContent,
+              },
+            }),
+          );
+
+          const startedMessage = await waitForMessageAfter(
+            messages,
+            startIndex,
+            (message) => message.type === "TOOL_EXECUTION_STARTED",
+            "TOOL_EXECUTION_STARTED",
+          );
+          expect(startedMessage.payload.tool_name).toBe("run_bash");
+
+          const startedInvocationId = resolveInvocationId(startedMessage.payload);
+          await waitForMessageAfter(
+            messages,
+            startIndex,
+            (message) =>
+              message.type === "TOOL_EXECUTION_SUCCEEDED" &&
+              matchesInvocationId(message.payload, startedInvocationId),
+            "TOOL_EXECUTION_SUCCEEDED",
+          );
+          await waitForMessageAfter(
+            messages,
+            startIndex,
+            (message) =>
+              message.type === "AGENT_STATUS" && message.payload.new_status === "IDLE",
+            "AGENT_STATUS IDLE after auto-executed tool",
+          );
+          await waitForMessageAfter(
+            messages,
+            startIndex,
+            (message) => isFinalAssistantMessage(message),
+            "final assistant message",
+          );
+
+          expect(
+            messages
+              .slice(startIndex)
+              .some((message) => message.type === "TOOL_APPROVAL_REQUESTED"),
+          ).toBe(false);
+          expect(await readFile(targetAbsolutePath, "utf-8")).toContain(expectedContent);
+        } finally {
+          socket.close();
+          await app.close();
+          await terminateAgentRun(runId).catch(() => undefined);
+        }
+      }, 180_000);
+
+      it("routes Codex MCP tool approval over websocket for the speak tool", async () => {
+        const workspaceRootPath = await mkdtemp(
+          path.join(os.tmpdir(), `${input.runtimeKind}-runtime-mcp-approval-workspace-`),
+        );
+        createdWorkspaceRoots.add(workspaceRootPath);
+        const llmModelIdentifier = await fetchModelIdentifier();
+        const agentDefinitionId = await createAgentDefinition([]);
+        const runId = await createAgentRun({
+          agentDefinitionId,
+          llmModelIdentifier,
+          workspaceRootPath,
+          autoExecuteTools: false,
+        });
+
+        const { app, socket, messages } = await openAgentSocket(runId);
+        const expectedText = `codex manual speak ${randomUUID().replace(/-/g, " ")}`;
+
+        try {
+          const startIndex = messages.length;
+          socket.send(
+            JSON.stringify({
+              type: "SEND_MESSAGE",
+              payload: {
+                content:
+                  `Please call the speak tool exactly once right now. ` +
+                  `Use the TTS/speak MCP tool, not the terminal tool. ` +
+                  `Speak the exact text: ${expectedText}. ` +
+                  "Do not simulate execution.",
+              },
+            }),
+          );
+
+          const approvalRequested = await waitForMessageAfter(
+            messages,
+            startIndex,
+            (message) => message.type === "TOOL_APPROVAL_REQUESTED",
+            "TOOL_APPROVAL_REQUESTED for speak",
+          );
+          expect(approvalRequested.payload.tool_name).toBe("speak");
+          expect(approvalRequested.payload.arguments).toMatchObject({
+            text: expectedText,
+          });
+
+          const invocationId = resolveInvocationId(approvalRequested.payload);
+          expect(invocationId).toBeTruthy();
+
+          socket.send(
+            JSON.stringify({
+              type: "APPROVE_TOOL",
+              payload: {
+                invocation_id: invocationId,
+                reason: "approved by Codex MCP speak e2e",
+              },
+            }),
+          );
+
+          await waitForMessageAfter(
+            messages,
+            startIndex,
+            (message) =>
+              message.type === "TOOL_APPROVED" &&
+              matchesInvocationId(message.payload, invocationId),
+            "TOOL_APPROVED for speak",
+          );
+          const succeeded = await waitForMessageAfter(
+            messages,
+            startIndex,
+            (message) =>
+              message.type === "TOOL_EXECUTION_SUCCEEDED" &&
+              matchesInvocationId(message.payload, invocationId),
+            "TOOL_EXECUTION_SUCCEEDED for speak",
+          );
+          expect(succeeded.payload.tool_name).toBe("speak");
+          expect(succeeded.payload.result).toMatchObject({
+            structuredContent: {
+              ok: true,
+            },
+          });
+          await waitForMessageAfter(
+            messages,
+            startIndex,
+            (message) =>
+              isMcpToolCallSegment({
+                message,
+                type: "SEGMENT_END",
+                toolName: "speak",
+                expectedStatus: "completed",
+              }) && matchesInvocationId(message.payload, invocationId),
+            "SEGMENT_END for successful speak tool call",
+          );
+          await waitForMessageAfter(
+            messages,
+            startIndex,
+            (message) =>
+              message.type === "TOOL_LOG" &&
+              matchesInvocationId(message.payload, invocationId) &&
+              message.payload.log_entry === "{\"ok\":true}",
+            "TOOL_LOG success for speak",
+          );
+          await waitForMessageAfter(
+            messages,
+            startIndex,
+            (message) =>
+              message.type === "AGENT_STATUS" && message.payload.new_status === "IDLE",
+            "AGENT_STATUS IDLE after approved speak tool",
+          );
+          await waitForMessageAfter(
+            messages,
+            startIndex,
+            (message) => isFinalAssistantMessage(message),
+            "final assistant message after approved speak tool",
+          );
+        } finally {
+          socket.close();
+          await app.close();
+          await terminateAgentRun(runId).catch(() => undefined);
+        }
+      }, 180_000);
+
+      it("auto-executes the Codex speak MCP tool without approval requests", async () => {
+        const workspaceRootPath = await mkdtemp(
+          path.join(os.tmpdir(), `${input.runtimeKind}-runtime-mcp-autoexec-workspace-`),
+        );
+        createdWorkspaceRoots.add(workspaceRootPath);
+        const llmModelIdentifier = await fetchModelIdentifier();
+        const agentDefinitionId = await createAgentDefinition([]);
+        const runId = await createAgentRun({
+          agentDefinitionId,
+          llmModelIdentifier,
+          workspaceRootPath,
+          autoExecuteTools: true,
+        });
+
+        const { app, socket, messages } = await openAgentSocket(runId);
+        const expectedText = `codex auto speak ${randomUUID().replace(/-/g, " ")}`;
+
+        try {
+          const startIndex = messages.length;
+          socket.send(
+            JSON.stringify({
+              type: "SEND_MESSAGE",
+              payload: {
+                content:
+                  `Please call the speak tool exactly once right now. ` +
+                  `Use the TTS/speak MCP tool, not the terminal tool. ` +
+                  `Speak the exact text: ${expectedText}. ` +
+                  "Do not simulate execution and do not ask for approval.",
+              },
+            }),
+          );
+
+          const startedMessage = await waitForMessageAfter(
+            messages,
+            startIndex,
+            (message) =>
+              isMcpToolCallSegment({
+                message,
+                type: "SEGMENT_START",
+                toolName: "speak",
+                expectedText,
+              }),
+            "SEGMENT_START for auto-executed speak tool call",
+          );
+          const invocationId = resolveInvocationId(startedMessage.payload);
+
+          await waitForMessageAfter(
+            messages,
+            startIndex,
+            (message) =>
+              message.type === "TOOL_APPROVED" &&
+              matchesInvocationId(message.payload, invocationId),
+            "TOOL_APPROVED for auto-executed speak",
+          );
+          const succeeded = await waitForMessageAfter(
+            messages,
+            startIndex,
+            (message) =>
+              message.type === "TOOL_EXECUTION_SUCCEEDED" &&
+              matchesInvocationId(message.payload, invocationId),
+            "TOOL_EXECUTION_SUCCEEDED for auto-executed speak",
+          );
+          expect(succeeded.payload.tool_name).toBe("speak");
+          expect(succeeded.payload.result).toMatchObject({
+            structuredContent: {
+              ok: true,
+            },
+          });
+
+          await waitForMessageAfter(
+            messages,
+            startIndex,
+            (message) =>
+              isMcpToolCallSegment({
+                message,
+                type: "SEGMENT_END",
+                toolName: "speak",
+                expectedStatus: "completed",
+              }) && matchesInvocationId(message.payload, invocationId),
+            "SEGMENT_END for auto-executed speak tool call",
+          );
+          await waitForMessageAfter(
+            messages,
+            startIndex,
+            (message) =>
+              message.type === "TOOL_LOG" &&
+              matchesInvocationId(message.payload, invocationId) &&
+              message.payload.log_entry === "{\"ok\":true}",
+            "TOOL_LOG success for auto-executed speak",
+          );
+          await waitForMessageAfter(
+            messages,
+            startIndex,
+            (message) =>
+              message.type === "AGENT_STATUS" && message.payload.new_status === "IDLE",
+            "AGENT_STATUS IDLE after auto-executed speak tool",
+          );
+          await waitForMessageAfter(
+            messages,
+            startIndex,
+            (message) => isFinalAssistantMessage(message),
+            "final assistant message after auto-executed speak tool",
+          );
+
+          expect(
+            messages
+              .slice(startIndex)
+              .some((message) => message.type === "TOOL_APPROVAL_REQUESTED"),
+          ).toBe(false);
+        } finally {
+          socket.close();
+          await app.close();
+          await terminateAgentRun(runId).catch(() => undefined);
+        }
+      }, 180_000);
+    }
 
     if (input.runtimeKind === "claude_agent_sdk" || input.runtimeKind === "codex_app_server") {
       it("applies configured runtime skills over the current websocket API contract", async () => {

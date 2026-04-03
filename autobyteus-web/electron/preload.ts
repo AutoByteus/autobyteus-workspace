@@ -3,6 +3,13 @@
 import { contextBridge, ipcRenderer, webUtils } from 'electron'
 import type { NodeRegistryChange } from './nodeRegistryTypes'
 import type {
+  BrowserHostBounds,
+  BrowserShellNavigateTabRequest,
+  BrowserShellOpenTabRequest,
+  BrowserShellReloadTabRequest,
+  BrowserShellSnapshot,
+} from '../types/browserShell'
+import type {
   ExtensionId,
   ManagedExtensionState,
   UpdateVoiceInputSettingsPayload,
@@ -41,6 +48,26 @@ contextBridge.exposeInMainWorld('electronAPI', {
   getNodeRegistrySnapshot: () => ipcRenderer.invoke('get-node-registry-snapshot'),
   onNodeRegistryUpdated: (callback: (snapshot: any) => void) => {
     return registerIpcListener('node-registry-updated', callback)
+  },
+
+  getBrowserShellSnapshot: () =>
+    ipcRenderer.invoke('browser-shell:get-snapshot') as Promise<BrowserShellSnapshot>,
+  openBrowserTab: (request: BrowserShellOpenTabRequest) =>
+    ipcRenderer.invoke('browser-shell:open-tab', request) as Promise<BrowserShellSnapshot>,
+  navigateBrowserTab: (request: BrowserShellNavigateTabRequest) =>
+    ipcRenderer.invoke('browser-shell:navigate-tab', request) as Promise<BrowserShellSnapshot>,
+  reloadBrowserTab: (request: BrowserShellReloadTabRequest) =>
+    ipcRenderer.invoke('browser-shell:reload-tab', request) as Promise<BrowserShellSnapshot>,
+  focusBrowserTab: (browserSessionId: string) =>
+    ipcRenderer.invoke('browser-shell:focus-session', browserSessionId) as Promise<BrowserShellSnapshot>,
+  setActiveBrowserTab: (browserSessionId: string) =>
+    ipcRenderer.invoke('browser-shell:set-active-session', browserSessionId) as Promise<BrowserShellSnapshot>,
+  updateBrowserHostBounds: (bounds: BrowserHostBounds | null) =>
+    ipcRenderer.invoke('browser-shell:update-host-bounds', bounds) as Promise<BrowserShellSnapshot>,
+  closeBrowserShellSession: (browserSessionId: string) =>
+    ipcRenderer.invoke('browser-shell:close-session', browserSessionId) as Promise<BrowserShellSnapshot>,
+  onBrowserShellSnapshotUpdated: (callback: (snapshot: BrowserShellSnapshot) => void) => {
+    return registerIpcListener('browser-shell:snapshot-updated', callback)
   },
 
   getAppUpdateState: () => ipcRenderer.invoke('app-update:get-state'),

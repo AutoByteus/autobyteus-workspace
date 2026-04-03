@@ -1,7 +1,19 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { TeamStreamingService } from '../TeamStreamingService';
 
+const { handleBrowserToolExecutionSucceededMock } = vi.hoisted(() => ({
+  handleBrowserToolExecutionSucceededMock: vi.fn(),
+}));
+
+vi.mock('../browser/browserToolExecutionSucceededHandler', () => ({
+  handleBrowserToolExecutionSucceeded: handleBrowserToolExecutionSucceededMock,
+}));
+
 describe('TeamStreamingService', () => {
+  beforeEach(() => {
+    handleBrowserToolExecutionSucceededMock.mockReset();
+  });
+
   it('echoes captured approval token when approving tool invocation', () => {
     const callbacks = new Map<string, (payload?: any) => void>();
     const wsClient = {
@@ -214,5 +226,63 @@ describe('TeamStreamingService', () => {
     expect((teamContext.members.get('Professor') as any).state.runId).toBe('prof-run-2');
     expect((teamContext.members.get('Professor') as any).isSending).toBe(true);
     expect(studentConversation.messages).toHaveLength(0);
+  });
+
+  it('routes successful tool execution through the browser-owned post-success handler', () => {
+    const callbacks = new Map<string, (payload?: any) => void>();
+    const wsClient = {
+      state: 'disconnected',
+      connect: vi.fn(),
+      disconnect: vi.fn(),
+      send: vi.fn(),
+      on: vi.fn((event: string, cb: (payload?: any) => void) => {
+        callbacks.set(event, cb);
+      }),
+      off: vi.fn(),
+    } as any;
+
+    const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
+    const teamContext = {
+      focusedMemberName: 'worker-a',
+      members: new Map([
+        [
+          'worker-a',
+          {
+            state: { runId: 'agent-1' },
+            conversation: { messages: [], updatedAt: '' },
+          },
+        ],
+      ]),
+    } as any;
+
+    service.connect('team-1', teamContext);
+    callbacks.get('onMessage')?.(
+      JSON.stringify({
+        type: 'TOOL_EXECUTION_SUCCEEDED',
+        payload: {
+          invocation_id: 'call-1',
+          tool_name: 'open_tab',
+          result: {
+            tab_id: 'browser-session-1',
+            status: 'opened',
+            url: 'https://example.com',
+            title: 'Example',
+          },
+          agent_name: 'worker-a',
+        },
+      }),
+    );
+
+    expect(handleBrowserToolExecutionSucceededMock).toHaveBeenCalledWith({
+      invocation_id: 'call-1',
+      tool_name: 'open_tab',
+      result: {
+        tab_id: 'browser-session-1',
+        status: 'opened',
+        url: 'https://example.com',
+        title: 'Example',
+      },
+      agent_name: 'worker-a',
+    });
   });
 });

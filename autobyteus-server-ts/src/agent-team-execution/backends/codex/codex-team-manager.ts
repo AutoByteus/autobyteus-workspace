@@ -11,8 +11,8 @@ import { AgentRunContext } from "../../../agent-execution/domain/agent-run-conte
 import { CodexAgentRunContext } from "../../../agent-execution/backends/codex/backend/codex-agent-run-context.js";
 import {
   buildCodexThreadConfig,
-  CodexApprovalPolicy,
 } from "../../../agent-execution/backends/codex/thread/codex-thread-config.js";
+import { resolveApprovalPolicyForAutoExecuteTools } from "../../../agent-execution/backends/codex/backend/codex-thread-bootstrapper.js";
 import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 import {
   TeamRunContext,
@@ -47,15 +47,14 @@ const buildTargetMemberNotFoundResult = (targetMemberName: string): AgentOperati
   message: `Team member '${targetMemberName}' was not found.`,
 });
 
-const buildApprovalPolicy = (autoExecuteTools: boolean): CodexApprovalPolicy =>
-  autoExecuteTools ? CodexApprovalPolicy.NEVER : CodexApprovalPolicy.ON_REQUEST;
-
 const buildPlaceholderThreadConfig = (memberContext: CodexTeamMemberContext) =>
   buildCodexThreadConfig({
     model: memberContext.agentRunConfig.llmModelIdentifier,
     workingDirectory: ".",
     reasoningEffort: null,
-    approvalPolicy: buildApprovalPolicy(memberContext.agentRunConfig.autoExecuteTools),
+    approvalPolicy: resolveApprovalPolicyForAutoExecuteTools(
+      memberContext.agentRunConfig.autoExecuteTools,
+    ),
     sandbox: "workspace-write",
     dynamicTools: null,
   });

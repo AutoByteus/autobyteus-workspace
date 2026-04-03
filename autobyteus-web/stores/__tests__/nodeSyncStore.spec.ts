@@ -3,6 +3,8 @@ import { createPinia, setActivePinia } from 'pinia';
 import { useNodeStore } from '../nodeStore';
 import { useNodeSyncStore } from '../nodeSyncStore';
 
+const EMBEDDED_SERVER_BASE_URL = 'http://127.0.0.1:29695';
+
 const apolloClientMock = {
   mutate: vi.fn(),
 };
@@ -28,7 +30,7 @@ describe('nodeSyncStore', () => {
       {
         id: 'embedded-local',
         name: 'Embedded Node',
-        baseUrl: 'http://localhost:29695',
+        baseUrl: EMBEDDED_SERVER_BASE_URL,
         nodeType: 'embedded',
         isSystem: true,
         createdAt: '2026-02-11T00:00:00.000Z',
@@ -149,7 +151,7 @@ describe('nodeSyncStore', () => {
       expect.objectContaining({
         variables: {
           input: {
-            source: { nodeId: 'embedded-local', baseUrl: 'http://localhost:29695' },
+            source: { nodeId: 'embedded-local', baseUrl: EMBEDDED_SERVER_BASE_URL },
             targets: [{ nodeId: 'remote-1', baseUrl: 'http://localhost:8001' }],
             scope: ['AGENT_DEFINITION'],
             selection: {

@@ -29,7 +29,7 @@ NUXT_PUBLIC_WS_BASE_URL=ws://localhost:8000/graphql
 ENABLE_APPLICATIONS=false
 ```
 
-> **Note for Electron App**: When running as an Electron application with the integrated backend server, these endpoint URLs are automatically configured with the dynamically allocated port.
+> **Note for Electron App**: When running as an Electron application with the integrated backend server, these endpoint URLs are automatically configured to the bundled loopback server at `http://127.0.0.1:29695`.
 
 ### Messaging Setup
 
@@ -146,11 +146,9 @@ These directories contain:
 
 No additional configuration is needed for internal server mode. The application automatically:
 
-- Finds an available port
-- Starts the server
-- Configures the frontend to connect to it
-
-You can force the application to use external server mode by setting `USE_INTERNAL_SERVER=false` in your environment.
+- Starts the bundled server
+- Uses the canonical embedded base URL `http://127.0.0.1:29695`
+- Configures the frontend to connect to that embedded node automatically
 
 ### External Server
 
@@ -256,16 +254,16 @@ pnpm build:electron:windows
 pnpm build:electron:mac
 ```
 
-#### Dynamic Port Allocation
+#### Embedded Runtime Contract
 
 When the Electron application starts, it:
 
-1. Finds an available port on the system
-2. Starts the backend server on that port
-3. Automatically configures the frontend to connect to the server on the allocated port
+1. Starts the bundled backend server on the embedded port `29695`
+2. Treats the embedded node as `http://127.0.0.1:29695`
+3. Automatically configures the frontend to connect to that stable loopback URL
 4. Shows a loading screen until the server is ready
 
-This ensures the application works even if the default port (8000) is already in use on the system.
+The embedded server still binds broadly by default, but the frontend and generated local server URLs use the stable loopback address so Wi-Fi or LAN-IP changes do not make the embedded node URL stale.
 
 ## Testing
 
@@ -366,10 +364,11 @@ pnpm codegen
 - `electron/`: Electron-specific code
   - `main.ts`: Main Electron process
   - `preload.ts`: Preload script for renderer process
-  - `serverManager.ts`: Backend server lifecycle management
-  - `portFinder.ts`: Utility for finding available ports
+  - `nodeRegistryStore.ts`: Embedded/remote node registry persistence for Electron
+  - `server/`: Backend server lifecycle management
+- `shared/`: Shared Electron/Nuxt runtime constants such as the embedded server URL contract
 - `resources/`: External resources
   - `server/`: Backend server files (populated by prepare-server script)
-- `test/`: Test files
+- `tests/`: Additional test files
 - `composables/`: Vue composables
   - `useServerConfig.ts`: Server configuration management

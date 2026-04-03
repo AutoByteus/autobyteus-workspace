@@ -35,6 +35,7 @@ const serializeDefinition = (definition: AgentTeamDefinition): Record<string, un
     member_name: node.memberName,
     ref: node.ref,
     ref_type: node.refType,
+    ref_scope: node.refScope ?? null,
   })),
   coordinator_member_name: definition.coordinatorMemberName,
 });

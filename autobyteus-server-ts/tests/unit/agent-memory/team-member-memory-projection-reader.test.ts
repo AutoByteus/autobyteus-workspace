@@ -51,7 +51,12 @@ describe("TeamMemberMemoryProjectionReader", () => {
     expect(projection.lastActivityAt).toBeTruthy();
   });
 
-  it("throws when the canonical member subtree is missing", async () => {
-    await expect(reader.getProjection("team-1", "missing-member")).rejects.toThrow();
+  it("returns an empty projection when the canonical member subtree is missing", async () => {
+    await expect(reader.getProjection("team-1", "missing-member")).resolves.toEqual({
+      runId: "missing-member",
+      conversation: [],
+      summary: null,
+      lastActivityAt: null,
+    });
   });
 });

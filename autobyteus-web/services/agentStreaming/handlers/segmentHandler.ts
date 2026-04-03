@@ -324,7 +324,9 @@ export function handleSegmentEnd(
   if (['tool_call', 'write_file', 'terminal_command', 'edit_file'].includes(segment.type)) {
     const activityStore = useAgentActivityStore();
     const toolSegment = segment as ToolInvocationLifecycle;
-    activityStore.updateActivityStatus(context.state.runId, payload.id, 'parsed');
+    if (toolSegment.status === 'parsed') {
+      activityStore.updateActivityStatus(context.state.runId, payload.id, 'parsed');
+    }
     if (!isPlaceholderToolName(toolSegment.toolName)) {
       activityStore.updateActivityToolName(context.state.runId, payload.id, toolSegment.toolName);
     }

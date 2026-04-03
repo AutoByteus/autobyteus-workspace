@@ -55,6 +55,11 @@ describe("AgentStreamHandler", () => {
     ...overrides,
   });
 
+  const createAgentRunService = (activeRun: ReturnType<typeof createActiveRun> | null) => ({
+    getAgentRun: vi.fn().mockReturnValue(activeRun),
+    recordRunActivity: vi.fn().mockResolvedValue(undefined),
+  });
+
   it("parses valid messages", () => {
     const parsed = AgentStreamHandler.parseMessage(
       JSON.stringify({ type: ClientMessageType.SEND_MESSAGE, payload: { content: "Hello" } }),
@@ -77,10 +82,8 @@ describe("AgentStreamHandler", () => {
   it("connects and sends CONNECTED message", async () => {
     const sessionManager = new AgentSessionManager();
     const activeRun = createActiveRun();
-    const agentManager = {
-      getActiveRun: vi.fn().mockReturnValue(activeRun),
-    };
-    const handler = new AgentStreamHandler(sessionManager, agentManager as any);
+    const agentRunService = createAgentRunService(activeRun);
+    const handler = new AgentStreamHandler(sessionManager, agentRunService as any);
     const connection = {
       send: vi.fn(),
       close: vi.fn(),
@@ -98,11 +101,10 @@ describe("AgentStreamHandler", () => {
   });
 
   it("closes with 4004 when agent is missing", async () => {
+    const agentRunService = createAgentRunService(null);
     const handler = new AgentStreamHandler(
       new AgentSessionManager(),
-      {
-        getActiveRun: vi.fn().mockReturnValue(null),
-      } as any,
+      agentRunService as any,
     );
 
     const connection = {
@@ -126,12 +128,11 @@ describe("AgentStreamHandler", () => {
       runtimeKind: "codex_app_server",
       subscribeToEvents: vi.fn().mockReturnValue(unsubscribe),
     });
+    const agentRunService = createAgentRunService(activeRun);
 
     const handler = new AgentStreamHandler(
       new AgentSessionManager(),
-      {
-        getActiveRun: vi.fn().mockReturnValue(activeRun),
-      } as any,
+      agentRunService as any,
       getAgentRunEventMessageMapper(),
     );
     const connection = {
@@ -164,12 +165,11 @@ describe("AgentStreamHandler", () => {
         return unsubscribe;
       }),
     });
+    const agentRunService = createAgentRunService(activeRun);
 
     const handler = new AgentStreamHandler(
       new AgentSessionManager(),
-      {
-        getActiveRun: vi.fn().mockReturnValue(activeRun),
-      } as any,
+      agentRunService as any,
       getAgentRunEventMessageMapper(),
     );
     const connection = {
@@ -196,13 +196,11 @@ describe("AgentStreamHandler", () => {
     const sessionManager = new AgentSessionManager();
     const broadcaster = new AgentStreamBroadcaster();
     const activeRun = createActiveRun();
-    const agentManager = {
-      getActiveRun: vi.fn().mockReturnValue(activeRun),
-    };
+    const agentRunService = createAgentRunService(activeRun);
 
     const handler = new AgentStreamHandler(
       sessionManager,
-      agentManager as any,
+      agentRunService as any,
       undefined,
       broadcaster,
     );
@@ -235,12 +233,10 @@ describe("AgentStreamHandler", () => {
 
   it("handles SEND_MESSAGE and forwards to the live AgentRun subject", async () => {
     const activeRun = createActiveRun();
-    const agentManager = {
-      getActiveRun: vi.fn().mockReturnValue(activeRun),
-    };
+    const agentRunService = createAgentRunService(activeRun);
 
     const sessionManager = new AgentSessionManager();
-    const handler = new AgentStreamHandler(sessionManager, agentManager as any);
+    const handler = new AgentStreamHandler(sessionManager, agentRunService as any);
 
     const connection = {
       send: vi.fn(),
@@ -264,16 +260,21 @@ describe("AgentStreamHandler", () => {
     expect(activeRun.postUserMessage).toHaveBeenCalledTimes(1);
     const message = activeRun.postUserMessage.mock.calls[0][0];
     expect(message.content).toBe("Hello world");
+    expect(agentRunService.recordRunActivity).toHaveBeenCalledWith(
+      activeRun,
+      expect.objectContaining({
+        summary: "Hello world",
+        lastKnownStatus: "ACTIVE",
+      }),
+    );
   });
 
   it("handles tool approvals", async () => {
     const activeRun = createActiveRun();
-    const agentManager = {
-      getActiveRun: vi.fn().mockReturnValue(activeRun),
-    };
+    const agentRunService = createAgentRunService(activeRun);
 
     const sessionManager = new AgentSessionManager();
-    const handler = new AgentStreamHandler(sessionManager, agentManager as any);
+    const handler = new AgentStreamHandler(sessionManager, agentRunService as any);
 
     const connection = {
       send: vi.fn(),
@@ -294,11 +295,10 @@ describe("AgentStreamHandler", () => {
   });
 
   it("ignores messages for unknown sessions", async () => {
+    const agentRunService = createAgentRunService(null);
     const handler = new AgentStreamHandler(
       new AgentSessionManager(),
-      {
-        getActiveRun: vi.fn().mockReturnValue(null),
-      } as any,
+      agentRunService as any,
     );
 
     await handler.handleMessage("missing", JSON.stringify({ type: ClientMessageType.SEND_MESSAGE }));

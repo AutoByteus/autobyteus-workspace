@@ -106,10 +106,10 @@
           </div>
         </section>
 
-        <section class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-          <h2 class="text-lg font-semibold text-slate-900">Instructions</h2>
-          <p class="mt-2 whitespace-pre-wrap font-mono text-sm text-slate-700">{{ teamDef.instructions }}</p>
-        </section>
+        <ExpandableInstructionCard
+          :content="teamDef.instructions"
+          variant="slate"
+        />
 
         <section class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
           <h2 class="text-xl font-semibold text-slate-900">Members ({{ teamDef.nodes.length }})</h2>
@@ -187,6 +187,7 @@ import { useAgentTeamDefinitionStore, type AgentTeamDefinition } from '~/stores/
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useRunActions } from '~/composables/useRunActions';
 import AgentDeleteConfirmDialog from '~/components/agents/AgentDeleteConfirmDialog.vue';
+import ExpandableInstructionCard from '~/components/common/ExpandableInstructionCard.vue';
 
 const props = defineProps<{ teamDefinitionId: string }>();
 const { teamDefinitionId } = toRefs(props);
@@ -263,6 +264,9 @@ const getMemberAvatarErrorKey = (node: TeamMemberNode): string =>
 
 const getMemberAvatarUrl = (node: TeamMemberNode): string => {
   if (node.refType === 'AGENT') {
+    if (node.refScope === 'TEAM_LOCAL') {
+      return ''
+    }
     return (agentDefStore.getAgentDefinitionById(node.ref)?.avatarUrl || '').trim();
   }
   return (teamStore.getAgentTeamDefinitionById(node.ref)?.avatarUrl || '').trim();
@@ -285,6 +289,12 @@ const handleMemberAvatarError = (node: TeamMemberNode): void => {
 
 const getBlueprintName = (type: 'AGENT' | 'AGENT_TEAM', id: string): string => {
   if (type === 'AGENT') {
+    const localNode = teamDef.value?.nodes.find(
+      (entry) => entry.refType === 'AGENT' && entry.ref === id && entry.refScope === 'TEAM_LOCAL',
+    );
+    if (localNode) {
+      return `Local Agent (${id})`;
+    }
     return agentDefStore.getAgentDefinitionById(id)?.name || `Unknown Agent (${id})`;
   }
   return teamStore.getAgentTeamDefinitionById(id)?.name || `Unknown Team (${id})`;

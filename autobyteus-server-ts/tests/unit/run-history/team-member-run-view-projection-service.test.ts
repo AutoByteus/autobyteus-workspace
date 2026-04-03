@@ -1,4 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
+import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { TeamMemberMemoryLayout } from "../../../src/agent-memory/store/team-member-memory-layout.js";
 import { TeamMemberRunViewProjectionService } from "../../../src/run-history/services/team-member-run-view-projection-service.js";
 
 vi.mock("../../../src/run-history/services/team-run-history-service.js", () => ({
@@ -18,6 +20,11 @@ describe("TeamMemberRunViewProjectionService", () => {
   const createAgentRunViewProjectionService = (result: unknown) => ({
     getProjectionFromMetadata: vi.fn().mockResolvedValue(result),
   });
+  const getExpectedMemberMemoryDir = (teamRunId: string, memberRunId: string): string =>
+    new TeamMemberMemoryLayout(appConfigProvider.config.getMemoryDir()).getMemberDirPath(
+      teamRunId,
+      memberRunId,
+    );
 
   it("resolves by memberRouteKey and reads canonical projection", async () => {
     const getTeamRunResumeConfig = vi.fn().mockResolvedValue({
@@ -161,6 +168,7 @@ describe("TeamMemberRunViewProjectionService", () => {
         runId: "member-1",
         agentDefinitionId: "agent-1",
         workspaceRootPath: "/tmp/workspace",
+        memoryDir: getExpectedMemberMemoryDir("team-1", "member-1"),
         llmModelIdentifier: "model-1",
         llmConfig: { temperature: 0.2 },
         autoExecuteTools: true,

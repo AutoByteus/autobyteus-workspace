@@ -1,5 +1,8 @@
 import type { AgentDefinition as DomainAgentDefinition } from "../../../agent-definition/domain/models.js";
-import { AgentDefinition as GraphqlAgentDefinition } from "../types/agent-definition.js";
+import {
+  AgentDefinition as GraphqlAgentDefinition,
+  AgentDefinitionOwnershipScope,
+} from "../types/agent-definition.js";
 
 const logger = {
   error: (...args: unknown[]) => console.error(...args),
@@ -26,6 +29,12 @@ export class AgentDefinitionConverter {
         toolInvocationPreprocessorNames: domainDefinition.toolInvocationPreprocessorNames,
         lifecycleProcessorNames: domainDefinition.lifecycleProcessorNames,
         skillNames: domainDefinition.skillNames,
+        ownershipScope:
+          domainDefinition.ownershipScope === "team_local"
+            ? AgentDefinitionOwnershipScope.TEAM_LOCAL
+            : AgentDefinitionOwnershipScope.SHARED,
+        ownerTeamId: domainDefinition.ownerTeamId ?? null,
+        ownerTeamName: domainDefinition.ownerTeamName ?? null,
       };
     } catch (error) {
       logger.error(

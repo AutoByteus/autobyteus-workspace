@@ -118,4 +118,31 @@ describe("ClaudeSessionEventConverter", () => {
     expect(segmentEnd?.eventType).toBe(AgentRunEventType.SEGMENT_END);
     expect(segmentEnd?.payload.segment_type).toBe("tool_call");
   });
+
+  it("normalizes browser MCP tool names to canonical browser tool names", () => {
+    const converter = new ClaudeSessionEventConverter("run-claude-converter");
+
+    const completed = converter.convert({
+      method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_COMPLETED,
+      params: {
+        invocation_id: "invoke-browser",
+        tool_name: "mcp__autobyteus_browser__open_tab",
+        result: {
+          tab_id: "browser-1",
+          status: "opened",
+        },
+      },
+    });
+
+    expect(completed).not.toBeNull();
+    expect(completed?.eventType).toBe(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED);
+    expect(completed?.payload).toMatchObject({
+      invocation_id: "invoke-browser",
+      tool_name: "open_tab",
+      result: {
+        tab_id: "browser-1",
+        status: "opened",
+      },
+    });
+  });
 });

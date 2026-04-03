@@ -4,10 +4,11 @@ import axios from 'axios'
 import { EventEmitter } from 'events'
 import { logger } from '../logger'
 import { getCanonicalBaseDataPath } from '../appDataPaths'
+import { INTERNAL_SERVER_BASE_URL, INTERNAL_SERVER_PORT } from '../../shared/embeddedServerConfig'
 import { AppDataService } from './services/AppDataService'
 
 // Fixed server port
-export const FIXED_SERVER_PORT = 29695
+export const FIXED_SERVER_PORT = INTERNAL_SERVER_PORT
 
 /**
  * Base server manager with platform-agnostic functionality.
@@ -18,7 +19,7 @@ export abstract class BaseServerManager extends EventEmitter {
   protected serverProcess: ChildProcess | null = null
   protected isServerRunning: boolean = false
   protected serverPort: number = FIXED_SERVER_PORT
-  protected serverUrl: string = `http://localhost:${FIXED_SERVER_PORT}`
+  protected serverUrl: string = INTERNAL_SERVER_BASE_URL
   protected ready: boolean = false
   protected serverStartTime: number = 0
   protected maxStartupTime: number = 100000 // 100 seconds timeout
@@ -27,6 +28,7 @@ export abstract class BaseServerManager extends EventEmitter {
   protected serverDir: string = ''
   protected gracefulShutdownTimeoutMs: number = 5000  // 5 seconds for graceful shutdown
   protected appDataService: AppDataService
+  protected runtimeEnvOverrides: Record<string, string> = {}
 
   constructor() {
     super()
@@ -84,7 +86,7 @@ export abstract class BaseServerManager extends EventEmitter {
     }
 
     try {
-      this.serverUrl = `http://localhost:${this.serverPort}`
+      this.serverUrl = INTERNAL_SERVER_BASE_URL
       const serverRoot = this.getServerRoot()
       this.serverDir = serverRoot
       
@@ -256,6 +258,20 @@ export abstract class BaseServerManager extends EventEmitter {
    */
   public getAppDataDir(): string {
     return this.appDataService.getAppDataDir()
+  }
+
+  public setRuntimeEnvOverrides(overrides: Record<string, string | null | undefined>): void {
+    const next: Record<string, string> = {}
+    for (const [key, value] of Object.entries(overrides)) {
+      if (typeof value === 'string' && value.trim().length > 0) {
+        next[key] = value
+      }
+    }
+    this.runtimeEnvOverrides = next
+  }
+
+  protected getRuntimeEnvOverrides(): Record<string, string> {
+    return { ...this.runtimeEnvOverrides }
   }
 
   /**

@@ -8,6 +8,21 @@ export type GatewayCallbackPublisherOptions = {
   fetchFn?: typeof fetch;
 };
 
+export class GatewayCallbackPublishError extends Error {
+  readonly retryable: boolean;
+  readonly statusCode: number | null;
+
+  constructor(
+    message: string,
+    options: { retryable: boolean; statusCode?: number | null },
+  ) {
+    super(message);
+    this.name = "GatewayCallbackPublishError";
+    this.retryable = options.retryable;
+    this.statusCode = options.statusCode ?? null;
+  }
+}
+
 export class GatewayCallbackPublisher {
   private readonly baseUrl: string;
 
@@ -57,17 +72,37 @@ export class GatewayCallbackPublisher {
         },
       );
       if (!response.ok) {
-        throw new Error(
+        throw new GatewayCallbackPublishError(
           `Gateway callback request failed with status ${response.status}.`,
+          {
+            retryable: isRetryableHttpStatus(response.status),
+            statusCode: response.status,
+          },
         );
       }
     } catch (error) {
+      if (error instanceof GatewayCallbackPublishError) {
+        throw error;
+      }
       if (isAbortError(error)) {
-        throw new Error(
+        throw new GatewayCallbackPublishError(
           `Gateway callback request timed out after ${this.timeoutMs}ms.`,
+          {
+            retryable: true,
+          },
         );
       }
-      throw error;
+      if (error instanceof Error) {
+        throw new GatewayCallbackPublishError(error.message, {
+          retryable: true,
+        });
+      }
+      throw new GatewayCallbackPublishError(
+        "Gateway callback request failed for an unknown reason.",
+        {
+          retryable: true,
+        },
+      );
     } finally {
       clearTimeout(timeoutHandle);
     }
@@ -99,3 +134,6 @@ const normalizeOptionalString = (value: string | null): string | null => {
 
 const isAbortError = (error: unknown): boolean =>
   error instanceof Error && error.name === "AbortError";
+
+const isRetryableHttpStatus = (status: number): boolean =>
+  status === 408 || status === 429 || status >= 500;

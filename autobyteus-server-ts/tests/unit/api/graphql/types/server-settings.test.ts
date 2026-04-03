@@ -38,14 +38,26 @@ describe("ServerSettingsResolver search config", () => {
 
   it("maps available server settings from service", () => {
     mockServerSettingsService.getAvailableSettings.mockReturnValue([
-      { key: "AUTOBYTEUS_VNC_SERVER_HOSTS", value: "localhost:6080", description: "desc" },
+      {
+        key: "AUTOBYTEUS_VNC_SERVER_HOSTS",
+        value: "localhost:6080",
+        description: "desc",
+        isEditable: true,
+        isDeletable: false,
+      },
     ]);
 
     const resolver = new ServerSettingsResolver();
     const result = resolver.getServerSettings();
 
     expect(result).toEqual([
-      { key: "AUTOBYTEUS_VNC_SERVER_HOSTS", value: "localhost:6080", description: "desc" },
+      {
+        key: "AUTOBYTEUS_VNC_SERVER_HOSTS",
+        value: "localhost:6080",
+        description: "desc",
+        isEditable: true,
+        isDeletable: false,
+      },
     ]);
   });
 

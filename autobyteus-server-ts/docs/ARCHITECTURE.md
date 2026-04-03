@@ -14,6 +14,7 @@ The TypeScript server follows a layered domain architecture:
 ## Runtime Topology
 
 - Entry point: `src/app.ts`
+- Bootstrap-complete runtime graph: `src/server-runtime.ts`
 - REST routes: `src/api/rest`
 - GraphQL schema/types: `src/api/graphql`
 - WebSocket routes: `src/api/websocket`
@@ -21,12 +22,12 @@ The TypeScript server follows a layered domain architecture:
 
 ## Startup Sequence
 
-`src/app.ts` enforces startup ordering:
+`src/app.ts` is a bootstrap boundary and enforces startup ordering:
 
 1. Parse CLI args (`--host`, `--port`, `--data-dir`).
-2. Set `AUTOBYTEUS_SERVER_HOST` fallback if needed.
-3. Apply custom app data directory to `AppConfig`.
-4. Initialize `AppConfig` (loads `.env`, resolves paths, sets DB URL for SQLite).
+2. Initialize `appConfigProvider` with the effective app data directory.
+3. Initialize `AppConfig` (loads `.env`, resolves paths, sets DB URL for SQLite).
+4. Dynamically import `src/server-runtime.ts` only after config bootstrap completes.
 5. Resolve persistence profile and run startup migration gate:
    - `PERSISTENCE_PROVIDER=file`: skip Prisma migrations.
    - `PERSISTENCE_PROVIDER=sqlite|postgresql`: run Prisma migrations.
@@ -67,6 +68,16 @@ Persistence is profile-driven and selected via `PERSISTENCE_PROVIDER`.
   - Domain persistence resolves through the same registry + proxy layers to SQL providers.
   - SQL providers use Prisma repositories via `repository_prisma`.
   - Startup runs Prisma migration execution.
+
+External-channel persistence has one deliberate exception:
+
+- file-backed external-channel artifacts live under `<appDataDir>/external-channel/`
+- channel route bindings are always file-backed and stored at `<appDataDir>/external-channel/bindings.json`
+- the callback outbox is stored at `<appDataDir>/external-channel/gateway-callback-outbox.json`
+- external-channel receipts and delivery events are file-backed and live in that same folder regardless of the global persistence profile
+- accepted receipts remain unfinished durable work until callback publication completes or the route resolves terminally
+- startup restores unfinished accepted receipts through the accepted-receipt recovery runtime after the server begins listening
+- runtime reply routing depends on accepted runtime `turnId` values being bound to those persisted receipts before outbound delivery work can be published
 
 Build/package notes:
 

@@ -3,7 +3,10 @@ import { constants as fsConstants } from "node:fs";
 import type { Dirent } from "node:fs";
 import path from "node:path";
 import { appConfigProvider } from "../../config/app-config-provider.js";
-import { AgentDefinition } from "../domain/models.js";
+import {
+  AgentDefinition,
+  type AgentDefinitionOwnershipScope,
+} from "../domain/models.js";
 import {
   writeRawFile,
   writeJsonFile,
@@ -14,6 +17,15 @@ import {
   serializeAgentMd,
   AgentMdParseError,
 } from "../utils/agent-md-parser.js";
+import {
+  parseTeamLocalAgentDefinitionId,
+} from "autobyteus-ts/agent-team/utils/team-local-agent-definition-id.js";
+import {
+  listTeamLocalAgentDefinitions,
+  readTeamLocalAgentFromRoot,
+  readTeamLocalAgentFromRoots,
+  readTeamOwnership,
+} from "./team-local-agent-discovery.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
@@ -45,6 +57,16 @@ type AgentConfigRecord = {
   avatarUrl?: string | null;
 };
 
+type AgentSourcePaths = {
+  agentDir: string;
+  mdPath: string;
+  configPath: string;
+  rootPath: string;
+  ownershipScope: AgentDefinitionOwnershipScope;
+  ownerTeamId?: string | null;
+  ownerTeamName?: string | null;
+};
+
 function defaultAgentConfig(): AgentConfigRecord {
   return {
     toolNames: [],
@@ -70,15 +92,30 @@ export class FileAgentDefinitionProvider {
 
   private getReadAgentRoots(): string[] {
     const roots = [this.getAgentsDir()];
-    for (const sourceRoot of appConfigProvider.config.getAdditionalDefinitionSourceRoots()) {
+    for (const sourceRoot of appConfigProvider.config.getAdditionalAgentPackageRoots()) {
       roots.push(path.join(sourceRoot, "agents"));
     }
     return roots;
   }
 
-  private async readAgentFromRoot(agentRoot: string, agentId: string): Promise<AgentDefinition | null> {
-    const mdPath = path.join(agentRoot, agentId, "agent.md");
-    const configPath = path.join(agentRoot, agentId, "agent-config.json");
+  private getReadTeamRoots(): string[] {
+    const roots = [appConfigProvider.config.getAgentTeamsDir()];
+    for (const sourceRoot of appConfigProvider.config.getAdditionalAgentPackageRoots()) {
+      roots.push(path.join(sourceRoot, "agent-teams"));
+    }
+    return roots;
+  }
+
+  private async readAgentFromPaths(
+    mdPath: string,
+    configPath: string,
+    resolvedAgentDefinitionId: string,
+    ownership: {
+      ownershipScope: AgentDefinitionOwnershipScope;
+      ownerTeamId?: string | null;
+      ownerTeamName?: string | null;
+    },
+  ): Promise<AgentDefinition | null> {
 
     try {
       const mdContent = await fs.readFile(mdPath, "utf-8");
@@ -86,7 +123,7 @@ export class FileAgentDefinitionProvider {
       const config = await readJsonFile<AgentConfigRecord>(configPath, defaultAgentConfig());
 
       return new AgentDefinition({
-        id: agentId,
+        id: resolvedAgentDefinitionId,
         name: parsed.name,
         description: parsed.description,
         instructions: parsed.instructions,
@@ -101,6 +138,9 @@ export class FileAgentDefinitionProvider {
         toolExecutionResultProcessorNames: normalizeStringArray(config.toolExecutionResultProcessorNames),
         toolInvocationPreprocessorNames: normalizeStringArray(config.toolInvocationPreprocessorNames),
         lifecycleProcessorNames: normalizeStringArray(config.lifecycleProcessorNames),
+        ownershipScope: ownership.ownershipScope,
+        ownerTeamId: ownership.ownerTeamId ?? null,
+        ownerTeamName: ownership.ownerTeamName ?? null,
       });
     } catch (error) {
       if (error instanceof AgentMdParseError) {
@@ -113,24 +153,92 @@ export class FileAgentDefinitionProvider {
     }
   }
 
-  private async findAgentSourcePaths(agentId: string): Promise<{
-    agentDir: string;
-    mdPath: string;
-    configPath: string;
-    rootPath: string;
-  } | null> {
+  private async readSharedAgentFromRoot(
+    agentRoot: string,
+    agentId: string,
+  ): Promise<AgentDefinition | null> {
+    return this.readAgentFromPaths(
+      path.join(agentRoot, agentId, "agent.md"),
+      path.join(agentRoot, agentId, "agent-config.json"),
+      agentId,
+      {
+        ownershipScope: "shared",
+      },
+    );
+  }
+
+  private async readTeamLocalAgent(
+    teamId: string,
+    agentId: string,
+    resolvedAgentDefinitionId: string,
+  ): Promise<AgentDefinition | null> {
+    return readTeamLocalAgentFromRoots({
+      teamRoots: this.getReadTeamRoots(),
+      teamId,
+      agentId,
+      resolvedAgentDefinitionId,
+      readAgentFromPaths: this.readAgentFromPaths.bind(this),
+      warn: logger.warn,
+    });
+  }
+
+  private async findSharedAgentSourcePaths(agentId: string): Promise<AgentSourcePaths | null> {
     for (const rootPath of this.getReadAgentRoots()) {
       const agentDir = path.join(rootPath, agentId);
       const mdPath = path.join(rootPath, agentId, "agent.md");
       const configPath = path.join(rootPath, agentId, "agent-config.json");
       try {
         await fs.access(mdPath);
-        return { agentDir, mdPath, configPath, rootPath };
+        return {
+          agentDir,
+          mdPath,
+          configPath,
+          rootPath,
+          ownershipScope: "shared",
+          ownerTeamId: null,
+          ownerTeamName: null,
+        };
       } catch {
         continue;
       }
     }
     return null;
+  }
+
+  private async findTeamLocalAgentSourcePaths(
+    teamId: string,
+    agentId: string,
+  ): Promise<AgentSourcePaths | null> {
+    for (const teamRoot of this.getReadTeamRoots()) {
+      const agentDir = path.join(teamRoot, teamId, "agents", agentId);
+      const mdPath = path.join(agentDir, "agent.md");
+      const configPath = path.join(agentDir, "agent-config.json");
+      try {
+        await fs.access(mdPath);
+      } catch {
+        continue;
+      }
+
+      const ownership = await readTeamOwnership(teamRoot, teamId, logger.warn);
+      return {
+        agentDir,
+        mdPath,
+        configPath,
+        rootPath: path.join(teamRoot, teamId),
+        ownershipScope: "team_local",
+        ownerTeamId: ownership.ownerTeamId,
+        ownerTeamName: ownership.ownerTeamName,
+      };
+    }
+    return null;
+  }
+
+  private async findAgentSourcePaths(agentId: string): Promise<AgentSourcePaths | null> {
+    const parsedTeamLocalId = parseTeamLocalAgentDefinitionId(agentId);
+    if (parsedTeamLocalId) {
+      return this.findTeamLocalAgentSourcePaths(parsedTeamLocalId.teamId, parsedTeamLocalId.agentId);
+    }
+    return this.findSharedAgentSourcePaths(agentId);
   }
 
   private async isWritable(filePath: string): Promise<boolean> {
@@ -143,7 +251,7 @@ export class FileAgentDefinitionProvider {
   }
 
   private async ensureWritableSourcePaths(
-    sourcePaths: { agentDir: string; mdPath: string; configPath: string; rootPath: string },
+    sourcePaths: AgentSourcePaths,
     agentId: string,
   ): Promise<void> {
     if (!(await this.isWritable(sourcePaths.agentDir))) {
@@ -227,8 +335,12 @@ export class FileAgentDefinitionProvider {
     if (id.startsWith("_")) {
       return null;
     }
+    const parsedTeamLocalId = parseTeamLocalAgentDefinitionId(id);
+    if (parsedTeamLocalId) {
+      return this.readTeamLocalAgent(parsedTeamLocalId.teamId, parsedTeamLocalId.agentId, id);
+    }
     for (const rootPath of this.getReadAgentRoots()) {
-      const definition = await this.readAgentFromRoot(rootPath, id);
+      const definition = await this.readSharedAgentFromRoot(rootPath, id);
       if (definition) {
         return definition;
       }
@@ -260,7 +372,7 @@ export class FileAgentDefinitionProvider {
           continue;
         }
         try {
-          const definition = await this.readAgentFromRoot(rootPath, agentId);
+          const definition = await this.readSharedAgentFromRoot(rootPath, agentId);
           if (definition) {
             definitions.push(definition);
             seenIds.add(agentId);
@@ -276,6 +388,15 @@ export class FileAgentDefinitionProvider {
     }
 
     return definitions;
+  }
+
+  async getAllVisible(): Promise<AgentDefinition[]> {
+    return listTeamLocalAgentDefinitions({
+      teamRoots: this.getReadTeamRoots(),
+      existingDefinitions: await this.getAll(),
+      readAgentFromPaths: this.readAgentFromPaths.bind(this),
+      warn: logger.warn,
+    });
   }
 
   async getTemplates(): Promise<AgentDefinition[]> {
@@ -302,7 +423,7 @@ export class FileAgentDefinitionProvider {
           continue;
         }
         try {
-          const definition = await this.readAgentFromRoot(rootPath, agentId);
+          const definition = await this.readSharedAgentFromRoot(rootPath, agentId);
           if (definition) {
             definitions.push(definition);
             seenIds.add(agentId);
@@ -413,6 +534,7 @@ export class FileAgentDefinitionProvider {
   }
 
   async agentExists(id: string): Promise<boolean> {
-    return this.exists(this.getAgentDir(id));
+    const sourcePaths = await this.findAgentSourcePaths(id);
+    return sourcePaths !== null;
   }
 }

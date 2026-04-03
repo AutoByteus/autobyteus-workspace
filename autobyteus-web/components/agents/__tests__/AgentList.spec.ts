@@ -8,6 +8,8 @@ import { useNodeStore } from '~/stores/nodeStore';
 import { useNodeSyncStore } from '~/stores/nodeSyncStore';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 
+const EMBEDDED_SERVER_BASE_URL = 'http://127.0.0.1:29695';
+
 const { addToastMock } = vi.hoisted(() => ({
   addToastMock: vi.fn(),
 }));
@@ -64,15 +66,15 @@ function readSetupRef<T>(wrapper: ReturnType<typeof mount>, key: string): T | un
 
 describe('AgentList', () => {
   const mockAgentDefs = [
-    { id: '1', name: 'Agent Alpha', description: 'Alpha Desc' },
-    { id: '2', name: 'Agent Beta', description: 'Beta Desc' },
+    { id: '1', name: 'Agent Alpha', description: 'Alpha Desc', ownershipScope: 'SHARED' },
+    { id: '2', name: 'Agent Beta', description: 'Beta Desc', ownershipScope: 'SHARED' },
   ];
 
   const defaultNodes = [
     {
       id: 'embedded-local',
       name: 'Embedded Node',
-      baseUrl: 'http://localhost:29695',
+      baseUrl: EMBEDDED_SERVER_BASE_URL,
       nodeType: 'embedded',
       isSystem: true,
       createdAt: '2026-02-11T00:00:00.000Z',
@@ -159,6 +161,22 @@ describe('AgentList', () => {
     await wrapper.vm.$nextTick();
 
     expect(readSetupRef<string | null>(wrapper, 'syncError')).toBe('No target nodes available for sync.');
+  });
+
+  it('rejects syncing a team-owned local agent from the agent list', async () => {
+    const wrapper = await mountComponent();
+    const setupState = (wrapper.vm as any).$?.setupState;
+
+    await setupState.syncAgent({
+      id: 'team-local:software-engineering:architect-designer',
+      name: 'Architect Designer',
+      description: 'Team-owned architect.',
+      ownershipScope: 'TEAM_LOCAL',
+    });
+
+    expect(readSetupRef<string | null>(wrapper, 'syncError')).toBe(
+      'Team-owned agents must be synced as part of their team.',
+    );
   });
 
   it('reloads agent definitions when reload is clicked', async () => {

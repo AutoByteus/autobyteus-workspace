@@ -23,6 +23,7 @@ describe("AgentTeamDefinitionService", () => {
           memberName: "coord1",
           ref: "agent1",
           refType: "agent",
+          refScope: "shared",
         }),
         new TeamMember({
           memberName: "subteam2",

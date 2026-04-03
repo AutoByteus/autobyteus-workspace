@@ -296,7 +296,11 @@ EOF
 
   ps|logs)
     [[ -f "${env_file}" ]] || fail "Project ${project} not found"
-    docker compose -p "${project}" -f "${COMPOSE_FILE}" --env-file "${env_file}" "${cmd}" "${extra_args[@]}"
+    args=("-p" "${project}" "-f" "${COMPOSE_FILE}" "--env-file" "${env_file}" "${cmd}")
+    if ((${#extra_args[@]} > 0)); then
+      args+=("${extra_args[@]}")
+    fi
+    docker compose "${args[@]}"
     ;;
 
   ports)

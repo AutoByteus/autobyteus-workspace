@@ -21,6 +21,10 @@ const logger = {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+export type AppConfigOptions = {
+  appDataDir?: string | null;
+};
+
 export class AppConfig {
   private isWindows: boolean;
   private appRootDir: string;
@@ -30,15 +34,19 @@ export class AppConfig {
   private initialized = false;
   private baseUrl: string | null = null;
 
-  constructor() {
+  constructor(options: AppConfigOptions = {}) {
     this.isWindows = process.platform === "win32";
     console.info(`Platform detection: Windows=${this.isWindows}`);
 
     this.appRootDir = this.getAppRootDirInternal();
     console.info(`App root directory: ${this.appRootDir}`);
 
-    this.dataDir = this.appRootDir;
-    console.info(`Data directory: ${this.dataDir}`);
+    const configuredAppDataDir =
+      typeof options.appDataDir === "string" && options.appDataDir.trim().length > 0
+        ? path.resolve(options.appDataDir.trim())
+        : null;
+    this.dataDir = configuredAppDataDir ?? this.appRootDir;
+    console.info(`App data directory: ${this.dataDir}`);
 
     logger.debug("AppConfig instance created.");
   }
@@ -340,6 +348,18 @@ export class AppConfig {
     return path.join(this.getAgentTeamsDir(), teamId, "team-config.json");
   }
 
+  getTeamLocalAgentsDir(teamId: string): string {
+    return path.join(this.getAgentTeamsDir(), teamId, "agents");
+  }
+
+  getTeamLocalAgentMdPath(teamId: string, agentId: string): string {
+    return path.join(this.getTeamLocalAgentsDir(teamId), agentId, "agent.md");
+  }
+
+  getTeamLocalAgentConfigPath(teamId: string, agentId: string): string {
+    return path.join(this.getTeamLocalAgentsDir(teamId), agentId, "agent-config.json");
+  }
+
   getAdditionalSkillsDirs(): string[] {
     const raw = this.get("AUTOBYTEUS_SKILLS_PATHS", "");
     if (!raw || !raw.trim()) {
@@ -362,8 +382,8 @@ export class AppConfig {
     return paths;
   }
 
-  getAdditionalDefinitionSourceRoots(): string[] {
-    const raw = this.get("AUTOBYTEUS_DEFINITION_SOURCE_PATHS", "");
+  getAdditionalAgentPackageRoots(): string[] {
+    const raw = this.get("AUTOBYTEUS_AGENT_PACKAGE_ROOTS", "");
     if (!raw || !raw.trim()) {
       return [];
     }
@@ -376,7 +396,7 @@ export class AppConfig {
         continue;
       }
       if (!path.isAbsolute(trimmed)) {
-        logger.warn(`Definition source path must be absolute and will be ignored: ${trimmed}`);
+        logger.warn(`Agent package root path must be absolute and will be ignored: ${trimmed}`);
         continue;
       }
       const resolved = path.resolve(trimmed);
@@ -384,7 +404,7 @@ export class AppConfig {
         continue;
       }
       if (!fs.existsSync(resolved) || !fs.statSync(resolved).isDirectory()) {
-        logger.warn(`Definition source path does not exist or is not a directory: ${resolved}`);
+        logger.warn(`Agent package root path does not exist or is not a directory: ${resolved}`);
         continue;
       }
       seen.add(resolved);

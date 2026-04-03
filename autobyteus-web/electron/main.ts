@@ -26,20 +26,23 @@ import { AppUpdater } from './updater/appUpdater';
 import { registerExtensionIpcHandlers } from './extensionIpcHandlers';
 import { ManagedExtensionService } from './extensions/managedExtensionService';
 import { getCanonicalBaseDataPath } from './appDataPaths';
+import { BrowserRuntime, startBrowserRuntime } from './browser/browser-runtime';
+import { registerBrowserShellIpcHandlers } from './browser/register-browser-shell-ipc-handlers';
+import { WorkspaceShellWindow } from './shell/workspace-shell-window';
+import { WorkspaceShellWindowRegistry } from './shell/workspace-shell-window-registry';
 
 const serverStatusManager = new ServerStatusManager(serverManager);
 const appUpdater = new AppUpdater();
 let managedExtensionService: ManagedExtensionService | null = null;
+let browserRuntime: BrowserRuntime | null = null
+const shellWindowRegistry = new WorkspaceShellWindowRegistry();
 
-const INTERNAL_SERVER_PORT = 29695;
 const shutdownTimeoutMs = 8000;
 
 let isAppQuitting = false;
 let hasShutdownRun = false;
 let shutdownTimer: NodeJS.Timeout | null = null;
 
-const nodeIdByWindowId = new Map<number, string>();
-const windowIdByNodeId = new Map<string, number>();
 let nodeRegistrySnapshot: NodeRegistrySnapshot = {
   version: 0,
   nodes: [],
@@ -82,84 +85,39 @@ function getStartUrl(): string {
 }
 
 function broadcastNodeRegistrySnapshot(): void {
-  for (const window of BrowserWindow.getAllWindows()) {
-    window.webContents.send('node-registry-updated', nodeRegistrySnapshot);
-  }
+  shellWindowRegistry.broadcast('node-registry-updated', nodeRegistrySnapshot);
 }
 
 function getWindowContextByWebContentsId(webContentsId: number): WindowNodeContext {
-  const nodeId = nodeIdByWindowId.get(webContentsId) || EMBEDDED_NODE_ID;
+  const nodeId = shellWindowRegistry.getNodeIdForShell(webContentsId) || EMBEDDED_NODE_ID;
   return {
     windowId: webContentsId,
     nodeId,
   };
 }
 
-function mapWindowNodeBinding(window: BrowserWindow, nodeId: string): void {
-  const webContentsId = window.webContents.id;
-  nodeIdByWindowId.set(webContentsId, nodeId);
-  windowIdByNodeId.set(nodeId, webContentsId);
-}
-
-function clearWindowNodeBindingByWebContentsId(webContentsId: number): void {
-  const nodeId = nodeIdByWindowId.get(webContentsId);
-  if (nodeId) {
-    windowIdByNodeId.delete(nodeId);
-  }
-  nodeIdByWindowId.delete(webContentsId);
-}
-
 function focusWindowById(windowId: number): boolean {
-  const window = BrowserWindow.fromId(windowId);
-  if (!window || window.isDestroyed()) {
-    return false;
-  }
-  if (window.isMinimized()) {
-    window.restore();
-  }
-  window.focus();
-  return true;
+  return shellWindowRegistry.focusShell(windowId);
 }
 
-function createNodeBoundWindow(nodeId: string): BrowserWindow {
-  const window = new BrowserWindow({
-    width: 1200,
-    height: 800,
-    icon: getWindowIcon(),
-    webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
-      nodeIntegration: false,
-      contextIsolation: true,
-      sandbox: true,
-    },
-    show: true,
-  });
-
-  const webContentsId = window.webContents.id;
-  mapWindowNodeBinding(window, nodeId);
-
-  window.webContents.on('will-navigate', (event) => {
-    logger.warn(`Blocked navigation attempt to: ${event.url}`);
-    event.preventDefault();
-  });
-
-  window.webContents.setWindowOpenHandler(() => {
-    logger.warn('Blocked attempt to open a new window.');
-    return { action: 'deny' };
-  });
-
+function createNodeBoundWindow(nodeId: string): WorkspaceShellWindow {
   const startURL = getStartUrl();
+  const window = new WorkspaceShellWindow({
+    nodeId,
+    startUrl: startURL,
+    preloadPath: path.join(__dirname, 'preload.js'),
+    iconPath: getWindowIcon(),
+  });
+  shellWindowRegistry.register(window);
+  browserRuntime?.registerShell(window);
+
   logger.info(`Creating node-bound window for nodeId=${nodeId}; url=${startURL}`);
-  window.loadURL(startURL).catch((error) => {
-    logger.error(`Failed to load URL (${startURL}) for node window ${nodeId}:`, error);
+  window.browserWindow.webContents.on('did-finish-load', () => {
+    window.send('server-status', serverStatusManager.getStatus());
+    window.send('node-registry-updated', nodeRegistrySnapshot);
   });
 
-  window.webContents.on('did-finish-load', () => {
-    window.webContents.send('server-status', serverStatusManager.getStatus());
-    window.webContents.send('node-registry-updated', nodeRegistrySnapshot);
-  });
-
-  window.webContents.on('did-fail-load', (event, errorCode, errorDescription, validatedURL) => {
+  window.browserWindow.webContents.on('did-fail-load', (event, errorCode, errorDescription, validatedURL) => {
     logger.error('Page failed to load:', {
       nodeId,
       errorCode,
@@ -169,49 +127,39 @@ function createNodeBoundWindow(nodeId: string): BrowserWindow {
     });
   });
 
-  window.on('closed', () => {
-    clearWindowNodeBindingByWebContentsId(webContentsId);
+  window.browserWindow.on('closed', () => {
+    browserRuntime?.unregisterShell(window.shellId);
+    shellWindowRegistry.unregister(window.shellId);
   });
 
   return window;
 }
 
 function openNodeWindow(nodeId: string): { windowId: number; created: boolean } {
-  const existingWindowId = windowIdByNodeId.get(nodeId);
-  if (typeof existingWindowId === 'number') {
-    const focused = focusWindowById(existingWindowId);
+  const existingWindow = shellWindowRegistry.getByNodeId(nodeId);
+  if (existingWindow && !existingWindow.isDestroyed()) {
+    const focused = focusWindowById(existingWindow.shellId);
     if (focused) {
       return {
-        windowId: existingWindowId,
+        windowId: existingWindow.shellId,
         created: false,
       };
     }
-    windowIdByNodeId.delete(nodeId);
   }
 
   const createdWindow = createNodeBoundWindow(nodeId);
   return {
-    windowId: createdWindow.webContents.id,
+    windowId: createdWindow.shellId,
     created: true,
   };
 }
 
 function closeNodeWindowIfOpen(nodeId: string): void {
-  const windowId = windowIdByNodeId.get(nodeId);
-  if (typeof windowId !== 'number') {
-    return;
-  }
-  const window = BrowserWindow.fromId(windowId);
-  if (window && !window.isDestroyed()) {
-    window.close();
-  }
+  shellWindowRegistry.closeNodeWindow(nodeId);
 }
 
 function listNodeWindows(): Array<{ windowId: number; nodeId: string }> {
-  return Array.from(nodeIdByWindowId.entries()).map(([windowId, nodeId]) => ({
-    windowId,
-    nodeId,
-  }));
+  return shellWindowRegistry.list();
 }
 
 function ensureNodeExists(nodeId: string): void {
@@ -286,15 +234,13 @@ function applyNodeRegistryChange(change: NodeRegistryChange): NodeRegistrySnapsh
     nodes: ensureEmbeddedNode({
       version: nodeRegistrySnapshot.version,
       nodes: existingNodes,
-    }, INTERNAL_SERVER_PORT).nodes,
+    }).nodes,
   };
 }
 
 function installServerStatusFanout(): void {
   serverStatusManager.on('status-change', (status) => {
-    for (const window of BrowserWindow.getAllWindows()) {
-      window.webContents.send('server-status', status);
-    }
+    shellWindowRegistry.broadcast('server-status', status);
   });
 }
 
@@ -320,11 +266,11 @@ function installIpcHandlers(): void {
 
   ipcMain.handle('focus-node-window', async (_event, nodeId: string) => {
     ensureNodeExists(nodeId);
-    const existingWindowId = windowIdByNodeId.get(nodeId);
-    if (typeof existingWindowId !== 'number') {
+    const existingWindow = shellWindowRegistry.getByNodeId(nodeId);
+    if (!existingWindow) {
       return { focused: false, reason: 'not-found' };
     }
-    const focused = focusWindowById(existingWindowId);
+    const focused = focusWindowById(existingWindow.shellId);
     return { focused };
   });
 
@@ -342,6 +288,7 @@ function installIpcHandlers(): void {
   });
 
   ipcMain.handle('get-node-registry-snapshot', async () => nodeRegistrySnapshot);
+  registerBrowserShellIpcHandlers(ipcMain, () => browserRuntime);
 
   ipcMain.handle('get-server-status', () => {
     return serverStatusManager.getStatus();
@@ -467,9 +414,7 @@ function installIpcHandlers(): void {
 function installAppLifecycleHandlers(): void {
   app.on('before-quit', () => {
     isAppQuitting = true;
-    for (const window of BrowserWindow.getAllWindows()) {
-      window.webContents.send('app-quitting');
-    }
+    shellWindowRegistry.broadcast('app-quitting', undefined);
     shutdownTimer = setTimeout(() => {
       logger.warn('Renderer did not acknowledge shutdown in time. Forcing quit.');
       app.quit();
@@ -495,6 +440,11 @@ function installAppLifecycleHandlers(): void {
       await serverManager.stopServer();
     } catch (error) {
       logger.error('Error during server shutdown:', error);
+    }
+    try {
+      await browserRuntime?.stop()
+    } catch (error) {
+      logger.error('Error during browser runtime shutdown:', error);
     } finally {
       logger.close();
     }
@@ -521,12 +471,20 @@ function installProtocols(): void {
 }
 
 async function bootstrap(): Promise<void> {
-  nodeRegistrySnapshot = loadNodeRegistrySnapshot(app.getPath('userData'), INTERNAL_SERVER_PORT);
+  nodeRegistrySnapshot = loadNodeRegistrySnapshot(app.getPath('userData'));
   saveNodeRegistrySnapshot(app.getPath('userData'), nodeRegistrySnapshot);
 
   await app.whenReady();
   managedExtensionService = new ManagedExtensionService(getCanonicalBaseDataPath());
   appUpdater.initialize();
+  browserRuntime = await startBrowserRuntime({
+    iconPath: getWindowIcon(),
+    artifactsDir: path.join(getCanonicalBaseDataPath(), 'browser-artifacts'),
+    setRuntimeEnvOverrides: (overrides) => serverManager.setRuntimeEnvOverrides(overrides),
+    onStartError: (error) => {
+      logger.error('Failed to start browser subsystem. Browser tools will remain unavailable.', error)
+    },
+  });
   installIpcHandlers();
   installServerStatusFanout();
   installAppLifecycleHandlers();

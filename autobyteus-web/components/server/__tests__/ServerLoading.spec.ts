@@ -9,7 +9,7 @@ const { serverStoreMock, windowNodeContextStoreMock } = vi.hoisted(() => ({
     connectionAttempts: 0,
     maxConnectionAttempts: 5,
     isInitialStartup: false,
-    urls: { graphql: 'http://localhost:29695/graphql' },
+    urls: { graphql: 'http://127.0.0.1:29695/graphql' },
     healthCheckStatus: '',
     errorMessage: '',
     userFriendlyError: 'Server failed',

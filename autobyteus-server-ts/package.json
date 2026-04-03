@@ -6,13 +6,16 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "prebuild": "pnpm -C .. -r --filter autobyteus-ts build && pnpm exec prisma generate --schema ./prisma/schema.prisma",
+    "prepare:shared": "pnpm -C ../autobyteus-ts build",
+    "prebuild": "pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma",
     "build": "pnpm run build:full",
     "build:full": "tsc -p tsconfig.build.json && node ./scripts/copy-managed-messaging-assets.mjs",
     "build:file": "tsc -p tsconfig.build.file.json && node ./scripts/copy-managed-messaging-assets.mjs",
     "package:file": "node ./scripts/build-file-package.mjs",
     "build:file:package": "pnpm run build:file && pnpm run package:file",
+    "pretypecheck": "pnpm prepare:shared",
     "typecheck": "tsc -p tsconfig.json --noEmit",
+    "pretest": "pnpm prepare:shared",
     "test": "vitest",
     "cleanup:codex-e2e-history": "node ./scripts/cleanup-codex-e2e-run-history.mjs"
   },

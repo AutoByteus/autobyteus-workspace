@@ -3,12 +3,14 @@ import { ExternalChannelProvider } from "autobyteus-ts/external-channel/provider
 import { ExternalChannelTransport } from "autobyteus-ts/external-channel/channel-transport.js";
 import { ChannelMessageReceiptService } from "../../../../src/external-channel/services/channel-message-receipt-service.js";
 import type {
-  ChannelIngressReceiptInput,
+  ChannelClaimIngressDispatchInput,
+  ChannelMessageReceipt,
+  ChannelPendingIngressReceiptInput,
   ChannelSourceContext,
 } from "../../../../src/external-channel/domain/models.js";
 import type { ChannelMessageReceiptProvider } from "../../../../src/external-channel/providers/channel-message-receipt-provider.js";
 
-const createReceiptInput = (): ChannelIngressReceiptInput => ({
+const createPendingInput = (): ChannelPendingIngressReceiptInput => ({
   provider: ExternalChannelProvider.WHATSAPP,
   transport: ExternalChannelTransport.BUSINESS_API,
   accountId: " account-1 ",
@@ -16,8 +18,6 @@ const createReceiptInput = (): ChannelIngressReceiptInput => ({
   threadId: " thread-1 ",
   externalMessageId: " msg-1 ",
   receivedAt: new Date("2026-02-08T00:00:00.000Z"),
-  agentRunId: " agent-1 ",
-  teamRunId: null,
 });
 
 const createSourceContext = (): ChannelSourceContext => ({
@@ -30,20 +30,38 @@ const createSourceContext = (): ChannelSourceContext => ({
   receivedAt: new Date("2026-02-08T00:00:00.000Z"),
 });
 
+const createReceipt = (): ChannelMessageReceipt => ({
+  ...createSourceContext(),
+  ingressState: "ROUTED",
+  agentRunId: "agent-1",
+  teamRunId: null,
+  dispatchLeaseToken: null,
+  dispatchLeaseExpiresAt: null,
+  createdAt: new Date("2026-02-08T00:00:00.000Z"),
+  updatedAt: new Date("2026-02-08T00:00:00.000Z"),
+});
+
+const createProvider = (): ChannelMessageReceiptProvider => ({
+  getReceiptByExternalMessage: vi.fn(),
+  createPendingIngressReceipt: vi.fn(),
+  claimIngressDispatch: vi.fn(),
+  recordAcceptedDispatch: vi.fn(),
+  updateAcceptedReceiptCorrelation: vi.fn(),
+  markReplyPublished: vi.fn(),
+  markIngressUnbound: vi.fn(),
+  listReceiptsByIngressState: vi.fn(),
+  getSourceByAgentRunTurn: vi.fn(),
+});
+
 describe("ChannelMessageReceiptService", () => {
-  it("normalizes values and delegates receipt writes", async () => {
-    const provider: ChannelMessageReceiptProvider = {
-      recordIngressReceipt: vi.fn().mockResolvedValue(undefined),
-      bindTurnToReceipt: vi.fn().mockResolvedValue(undefined),
-      getLatestSourceByAgentRunId: vi.fn(),
-      getLatestSourceByDispatchTarget: vi.fn(),
-      getSourceByAgentRunTurn: vi.fn(),
-    };
+  it("normalizes pending ingress receipt creation", async () => {
+    const provider = createProvider();
+    provider.createPendingIngressReceipt = vi.fn().mockResolvedValue(createReceipt());
     const service = new ChannelMessageReceiptService(provider);
 
-    await service.recordIngressReceipt(createReceiptInput());
+    await service.createPendingIngressReceipt(createPendingInput());
 
-    expect(provider.recordIngressReceipt).toHaveBeenCalledWith({
+    expect(provider.createPendingIngressReceipt).toHaveBeenCalledWith({
       provider: ExternalChannelProvider.WHATSAPP,
       transport: ExternalChannelTransport.BUSINESS_API,
       accountId: "account-1",
@@ -51,117 +69,49 @@ describe("ChannelMessageReceiptService", () => {
       threadId: "thread-1",
       externalMessageId: "msg-1",
       receivedAt: new Date("2026-02-08T00:00:00.000Z"),
-      agentRunId: "agent-1",
-      teamRunId: null,
     });
   });
 
-  it("throws when both agentRunId and teamRunId are absent", async () => {
-    const provider: ChannelMessageReceiptProvider = {
-      recordIngressReceipt: vi.fn(),
-      bindTurnToReceipt: vi.fn(),
-      getLatestSourceByAgentRunId: vi.fn(),
-      getLatestSourceByDispatchTarget: vi.fn(),
-      getSourceByAgentRunTurn: vi.fn(),
-    };
-    const service = new ChannelMessageReceiptService(provider);
-    const input = createReceiptInput();
-    input.agentRunId = null;
-
-    await expect(service.recordIngressReceipt(input)).rejects.toThrow(
-      "Ingress receipt requires at least one target reference (agentRunId or teamRunId).",
-    );
-    expect(provider.recordIngressReceipt).not.toHaveBeenCalled();
-  });
-
-  it("validates and delegates source lookups", async () => {
-    const context = createSourceContext();
-    const provider: ChannelMessageReceiptProvider = {
-      recordIngressReceipt: vi.fn(),
-      bindTurnToReceipt: vi.fn(),
-      getLatestSourceByAgentRunId: vi.fn().mockResolvedValue(context),
-      getLatestSourceByDispatchTarget: vi.fn().mockResolvedValue(context),
-      getSourceByAgentRunTurn: vi.fn().mockResolvedValue(context),
-    };
-    const service = new ChannelMessageReceiptService(provider);
-
-    const result = await service.getLatestSourceByAgentRunId(" agent-1 ");
-
-    expect(result).toEqual(context);
-    expect(provider.getLatestSourceByAgentRunId).toHaveBeenCalledWith("agent-1");
-  });
-
-  it("throws on blank lookup agentRunId", async () => {
-    const provider: ChannelMessageReceiptProvider = {
-      recordIngressReceipt: vi.fn(),
-      bindTurnToReceipt: vi.fn(),
-      getLatestSourceByAgentRunId: vi.fn(),
-      getLatestSourceByDispatchTarget: vi.fn(),
-      getSourceByAgentRunTurn: vi.fn(),
-    };
-    const service = new ChannelMessageReceiptService(provider);
-
-    await expect(service.getLatestSourceByAgentRunId("   ")).rejects.toThrow(
-      "agentRunId must be a non-empty string.",
-    );
-    expect(provider.getLatestSourceByAgentRunId).not.toHaveBeenCalled();
-  });
-
-  it("normalizes and delegates dispatch-target source lookups", async () => {
-    const context = createSourceContext();
-    const provider: ChannelMessageReceiptProvider = {
-      recordIngressReceipt: vi.fn(),
-      bindTurnToReceipt: vi.fn(),
-      getLatestSourceByAgentRunId: vi.fn(),
-      getLatestSourceByDispatchTarget: vi.fn().mockResolvedValue(context),
-      getSourceByAgentRunTurn: vi.fn().mockResolvedValue(context),
-    };
-    const service = new ChannelMessageReceiptService(provider);
-
-    const result = await service.getLatestSourceByDispatchTarget({
-      agentRunId: " agent-1 ",
-      teamRunId: " ",
-    });
-
-    expect(result).toEqual(context);
-    expect(provider.getLatestSourceByDispatchTarget).toHaveBeenCalledWith({
-      agentRunId: "agent-1",
-      teamRunId: null,
-    });
-  });
-
-  it("rejects dispatch-target lookup with no identifiers", async () => {
-    const provider: ChannelMessageReceiptProvider = {
-      recordIngressReceipt: vi.fn(),
-      bindTurnToReceipt: vi.fn(),
-      getLatestSourceByAgentRunId: vi.fn(),
-      getLatestSourceByDispatchTarget: vi.fn(),
-      getSourceByAgentRunTurn: vi.fn(),
-    };
-    const service = new ChannelMessageReceiptService(provider);
-
-    await expect(
-      service.getLatestSourceByDispatchTarget({
-        agentRunId: " ",
-        teamRunId: null,
+  it("normalizes claim-ingress-dispatch inputs", async () => {
+    const provider = createProvider();
+    provider.claimIngressDispatch = vi.fn().mockResolvedValue(
+      createReceipt({
+        ...createReceipt(),
+        ingressState: "DISPATCHING",
+        dispatchLeaseToken: "lease-1",
+        dispatchLeaseExpiresAt: new Date("2026-02-08T00:00:30.000Z"),
       }),
-    ).rejects.toThrow(
-      "Dispatch target lookup requires at least one of agentRunId or teamRunId.",
     );
-    expect(provider.getLatestSourceByDispatchTarget).not.toHaveBeenCalled();
+    const service = new ChannelMessageReceiptService(provider);
+    const input: ChannelClaimIngressDispatchInput = {
+      ...createPendingInput(),
+      claimedAt: new Date("2026-02-08T00:00:01.000Z"),
+      leaseDurationMs: 30000,
+    };
+
+    await service.claimIngressDispatch(input);
+
+    expect(provider.claimIngressDispatch).toHaveBeenCalledWith({
+      provider: ExternalChannelProvider.WHATSAPP,
+      transport: ExternalChannelTransport.BUSINESS_API,
+      accountId: "account-1",
+      peerId: "peer-1",
+      threadId: "thread-1",
+      externalMessageId: "msg-1",
+      receivedAt: new Date("2026-02-08T00:00:00.000Z"),
+      claimedAt: new Date("2026-02-08T00:00:01.000Z"),
+      leaseDurationMs: 30000,
+    });
   });
 
-  it("normalizes and delegates turn binding", async () => {
-    const provider: ChannelMessageReceiptProvider = {
-      recordIngressReceipt: vi.fn(),
-      bindTurnToReceipt: vi.fn().mockResolvedValue(undefined),
-      getLatestSourceByAgentRunId: vi.fn(),
-      getLatestSourceByDispatchTarget: vi.fn(),
-      getSourceByAgentRunTurn: vi.fn(),
-    };
+  it("normalizes and delegates accepted-dispatch correlation updates", async () => {
+    const provider = createProvider();
+    provider.updateAcceptedReceiptCorrelation = vi
+      .fn()
+      .mockResolvedValue(createReceipt());
     const service = new ChannelMessageReceiptService(provider);
 
-    await service.bindTurnToReceipt({
+    await service.updateAcceptedReceiptCorrelation({
       provider: ExternalChannelProvider.WHATSAPP,
       transport: ExternalChannelTransport.PERSONAL_SESSION,
       accountId: " acct-1 ",
@@ -174,7 +124,7 @@ describe("ChannelMessageReceiptService", () => {
       receivedAt: new Date("2026-02-09T00:00:00.000Z"),
     });
 
-    expect(provider.bindTurnToReceipt).toHaveBeenCalledWith({
+    expect(provider.updateAcceptedReceiptCorrelation).toHaveBeenCalledWith({
       provider: ExternalChannelProvider.WHATSAPP,
       transport: ExternalChannelTransport.PERSONAL_SESSION,
       accountId: "acct-1",
@@ -190,18 +140,39 @@ describe("ChannelMessageReceiptService", () => {
 
   it("delegates source lookup by agent turn", async () => {
     const context = createSourceContext();
-    const provider: ChannelMessageReceiptProvider = {
-      recordIngressReceipt: vi.fn(),
-      bindTurnToReceipt: vi.fn(),
-      getLatestSourceByAgentRunId: vi.fn(),
-      getLatestSourceByDispatchTarget: vi.fn(),
-      getSourceByAgentRunTurn: vi.fn().mockResolvedValue(context),
-    };
+    const provider = createProvider();
+    provider.getSourceByAgentRunTurn = vi.fn().mockResolvedValue(context);
     const service = new ChannelMessageReceiptService(provider);
 
     const result = await service.getSourceByAgentRunTurn(" agent-1 ", " turn-1 ");
 
     expect(result).toEqual(context);
     expect(provider.getSourceByAgentRunTurn).toHaveBeenCalledWith("agent-1", "turn-1");
+  });
+
+  it("treats missing or expired dispatch leases as expired", () => {
+    const service = new ChannelMessageReceiptService(createProvider());
+
+    expect(
+      service.isDispatchLeaseExpired({
+        dispatchLeaseExpiresAt: null,
+      }),
+    ).toBe(true);
+    expect(
+      service.isDispatchLeaseExpired(
+        {
+          dispatchLeaseExpiresAt: new Date("2026-02-08T00:00:30.000Z"),
+        },
+        new Date("2026-02-08T00:00:31.000Z"),
+      ),
+    ).toBe(true);
+    expect(
+      service.isDispatchLeaseExpired(
+        {
+          dispatchLeaseExpiresAt: new Date("2026-02-08T00:00:30.000Z"),
+        },
+        new Date("2026-02-08T00:00:29.000Z"),
+      ),
+    ).toBe(false);
   });
 });

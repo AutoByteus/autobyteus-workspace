@@ -22,6 +22,11 @@ const loaderSpecs: LoaderSpec[] = [
     exportName: "registerSkillsTools",
   },
   {
+    name: "Browser Tools",
+    modulePath: "../agent-tools/browser/register-browser-tools.js",
+    exportName: "registerBrowserTools",
+  },
+  {
     name: "Application Tools",
     modulePath: "../applications/socratic-math-teacher/tools/frontend-builder-tool.js",
     exportName: "registerFrontendBuilderTool",

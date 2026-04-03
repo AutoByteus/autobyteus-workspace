@@ -102,72 +102,14 @@
       </section>
 
       <section class="grid grid-cols-1 gap-4 xl:grid-cols-[18rem_minmax(0,1fr)_16rem]">
-        <aside class="rounded-lg border border-slate-200 bg-white p-3">
-          <h3 class="text-sm font-semibold text-slate-900">Agent & Team Library</h3>
-          <div class="relative mt-2">
-            <input
-              v-model="librarySearch"
-              type="text"
-              class="block w-full rounded-md border border-slate-300 bg-white py-2 pl-8 pr-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-              placeholder="Search agents and teams..."
-            />
-            <svg class="pointer-events-none absolute left-2 top-2.5 h-4 w-4 text-slate-400" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M9 3a6 6 0 104.472 10.001l2.763 2.764a1 1 0 001.414-1.414l-2.764-2.763A6 6 0 009 3zm-4 6a4 4 0 118 0 4 4 0 01-8 0z" clip-rule="evenodd" />
-            </svg>
-          </div>
-
-          <div class="mt-3 max-h-[26rem] space-y-4 overflow-y-auto pr-1">
-            <div>
-              <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">My Agents</p>
-              <div class="mt-2 space-y-2">
-                <div
-                  v-for="item in filteredAgentItems"
-                  :key="`AGENT-${item.id}`"
-                  draggable="true"
-                  class="flex items-center justify-between gap-2 rounded-md border border-slate-200 bg-white px-2 py-2 text-sm text-slate-800"
-                  @dragstart="onLibraryDragStart($event, item)"
-                >
-                  <button
-                    type="button"
-                    class="flex min-w-0 items-center gap-2 text-left"
-                    @click="addNodeFromLibrary(item)"
-                  >
-                    <span class="text-slate-400">⋮⋮</span>
-                    <span class="truncate font-medium">{{ item.name }}</span>
-                  </button>
-                  <span class="rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-semibold text-blue-700">AGENT</span>
-                </div>
-                <p v-if="filteredAgentItems.length === 0" class="text-xs text-slate-400">No agents found.</p>
-              </div>
-            </div>
-
-            <div>
-              <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">My Teams</p>
-              <div class="mt-2 space-y-2">
-                <div
-                  v-for="item in filteredTeamItems"
-                  :key="`TEAM-${item.id}`"
-                  draggable="true"
-                  class="flex items-center justify-between gap-2 rounded-md border border-slate-200 bg-white px-2 py-2 text-sm text-slate-800"
-                  @dragstart="onLibraryDragStart($event, item)"
-                >
-                  <button
-                    type="button"
-                    class="flex min-w-0 items-center gap-2 text-left"
-                    @click="addNodeFromLibrary(item)"
-                  >
-                    <span class="text-slate-400">⋮⋮</span>
-                    <span class="truncate font-medium">{{ item.name }}</span>
-                  </button>
-                  <span class="rounded-full bg-violet-50 px-2 py-0.5 text-[10px] font-semibold text-violet-700">TEAM</span>
-                </div>
-                <p v-if="filteredTeamItems.length === 0" class="text-xs text-slate-400">No teams found.</p>
-              </div>
-            </div>
-          </div>
-
-          <p class="mt-3 text-xs text-slate-500">Drag items from this library into Team Canvas</p>
-        </aside>
+        <AgentTeamLibraryPanel
+          :search="librarySearch"
+          :agent-items="filteredAgentItems"
+          :team-items="filteredTeamItems"
+          @update:search="updateLibrarySearch"
+          @add="addNodeFromLibrary"
+          @dragstart-item="handleLibraryDragStart"
+        />
 
         <section
           class="rounded-lg border border-slate-200 bg-white p-3"
@@ -259,60 +201,14 @@
           <p v-if="formErrors.nodes" class="mt-2 text-xs text-red-600">{{ formErrors.nodes }}</p>
         </section>
 
-        <aside class="rounded-lg border border-slate-200 bg-white p-3">
-          <h3 class="text-sm font-semibold text-slate-900">Member Details</h3>
-          <template v-if="selectedNode">
-            <div class="mt-3 space-y-3">
-              <p class="text-xs text-slate-500">Member names auto-fill from dragged item name.</p>
-
-              <div>
-                <label class="block text-xs font-medium text-slate-600">Member Name</label>
-                <input
-                  :value="selectedNode.memberName"
-                  type="text"
-                  class="mt-1 block w-full rounded-md border border-slate-300 px-2 py-1.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-                  @input="updateSelectedMemberName(($event.target as HTMLInputElement).value)"
-                />
-              </div>
-
-              <div>
-                <p class="text-xs font-medium text-slate-600">Type</p>
-                <p class="mt-1 text-sm text-slate-900">{{ selectedNode.refType }}</p>
-              </div>
-
-              <div>
-                <p class="text-xs font-medium text-slate-600">Source</p>
-                <p class="mt-1 text-sm text-slate-900">{{ getReferenceName(selectedNode) }}</p>
-              </div>
-
-              <div>
-                <p class="text-xs font-medium text-slate-600">Coordinator</p>
-                <div class="mt-1 inline-flex items-center gap-2 text-sm text-slate-800" v-if="selectedNode.refType === 'AGENT'">
-                  <span>{{ isCoordinator(selectedNode) ? 'Enabled' : 'Disabled' }}</span>
-                  <button
-                    type="button"
-                    role="switch"
-                    :aria-checked="isCoordinator(selectedNode)"
-                    class="relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1"
-                    :class="isCoordinator(selectedNode) ? 'bg-blue-600' : 'bg-slate-300'"
-                    @click="toggleCoordinator(selectedNode)"
-                  >
-                    <span class="sr-only">Toggle coordinator</span>
-                    <span
-                      aria-hidden="true"
-                      class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"
-                      :class="isCoordinator(selectedNode) ? 'translate-x-4' : 'translate-x-0.5'"
-                    />
-                  </button>
-                </div>
-                <p v-else class="mt-1 text-sm text-slate-500">Only AGENT members can be coordinator.</p>
-              </div>
-            </div>
-          </template>
-          <p v-else class="mt-3 text-sm text-slate-500">Select a member in Team Canvas to edit details.</p>
-
-          <p v-if="formErrors.coordinatorMemberName" class="mt-2 text-xs text-red-600">{{ formErrors.coordinatorMemberName }}</p>
-        </aside>
+        <AgentTeamMemberDetailsPanel
+          :selected-node="selectedNode"
+          :reference-name="selectedReferenceName"
+          :coordinator-enabled="selectedNodeIsCoordinator"
+          :coordinator-error="formErrors.coordinatorMemberName"
+          @update-member-name="updateSelectedMemberName"
+          @toggle-coordinator="toggleSelectedCoordinator"
+        />
       </section>
     </div>
 
@@ -348,17 +244,18 @@
 
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref, toRefs, watch } from 'vue';
+import AgentTeamLibraryPanel from './form/AgentTeamLibraryPanel.vue';
+import AgentTeamMemberDetailsPanel from './form/AgentTeamMemberDetailsPanel.vue';
+import {
+  buildSubmitNodes,
+  createInitialFormData,
+  type LibraryItem,
+  mapInitialTeamNodes,
+  useAgentTeamDefinitionFormState,
+} from './form/useAgentTeamDefinitionFormState';
 import { useFileUploadStore } from '~/stores/fileUploadStore';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
-import { useAgentTeamDefinitionStore, type TeamMemberInput } from '~/stores/agentTeamDefinitionStore';
-
-type ReferenceType = 'AGENT' | 'AGENT_TEAM';
-
-interface LibraryItem {
-  id: string;
-  name: string;
-  refType: ReferenceType;
-}
+import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
 
 const props = defineProps<{
   initialData?: any;
@@ -377,27 +274,8 @@ const avatarFileInputRef = ref<HTMLInputElement | null>(null);
 const avatarUploadError = ref<string | null>(null);
 const avatarPreviewBroken = ref(false);
 
-const librarySearch = ref('');
-const selectedNodeIndex = ref<number | null>(null);
-const isCanvasDragOver = ref(false);
-
 const formErrors = reactive<Record<string, string>>({});
-
-const getInitialFormData = () => ({
-  name: '',
-  category: '',
-  description: '',
-  instructions: '',
-  avatarUrl: '',
-  coordinatorMemberName: '',
-  nodes: [] as TeamMemberInput[],
-});
-
-const formData = reactive(getInitialFormData());
-
-const clearErrors = () => {
-  Object.keys(formErrors).forEach((key) => delete formErrors[key]);
-};
+const formData = reactive(createInitialFormData());
 
 const avatarInitials = computed(() => {
   const raw = (formData.name || '').trim();
@@ -412,47 +290,8 @@ const avatarInitials = computed(() => {
 });
 
 const currentTeamDefinitionId = computed(() => initialData.value?.id ?? null);
-
-const agentLibraryItems = computed<LibraryItem[]>(() =>
-  (agentDefStore.agentDefinitions || []).map((agent) => ({
-    id: agent.id,
-    name: agent.name,
-    refType: 'AGENT',
-  })),
-);
-
-const teamLibraryItems = computed<LibraryItem[]>(() =>
-  (agentTeamDefStore.agentTeamDefinitions || [])
-    .filter((team) => team.id !== currentTeamDefinitionId.value)
-    .map((team) => ({
-      id: team.id,
-      name: team.name,
-      refType: 'AGENT_TEAM',
-    })),
-);
-
-const filteredAgentItems = computed(() => {
-  const query = librarySearch.value.trim().toLowerCase();
-  if (!query) {
-    return agentLibraryItems.value;
-  }
-  return agentLibraryItems.value.filter((item) => item.name.toLowerCase().includes(query));
-});
-
-const filteredTeamItems = computed(() => {
-  const query = librarySearch.value.trim().toLowerCase();
-  if (!query) {
-    return teamLibraryItems.value;
-  }
-  return teamLibraryItems.value.filter((item) => item.name.toLowerCase().includes(query));
-});
-
-const selectedNode = computed(() => {
-  if (selectedNodeIndex.value === null) {
-    return null;
-  }
-  return formData.nodes[selectedNodeIndex.value] || null;
-});
+const agentDefinitions = computed(() => agentDefStore.sharedAgentDefinitions || []);
+const teamDefinitions = computed(() => agentTeamDefStore.agentTeamDefinitions || []);
 
 const nameValid = computed(() => Boolean(formData.name.trim()));
 const descriptionValid = computed(() => Boolean(formData.description.trim()));
@@ -474,190 +313,55 @@ const canSubmit = computed(() => (
   && membersValid.value
   && coordinatorValid.value
 ));
+const {
+  addNodeFromLibrary,
+  clearErrors,
+  filteredAgentItems,
+  filteredTeamItems,
+  getReferenceName,
+  handleCanvasDrop,
+  isCoordinator,
+  isCanvasDragOver,
+  librarySearch,
+  onLibraryDragStart,
+  removeNode,
+  selectNode,
+  selectedNode,
+  selectedNodeIndex,
+  toggleCoordinator,
+  updateSelectedMemberName,
+  validateForm,
+} = useAgentTeamDefinitionFormState({
+  formData,
+  formErrors,
+  currentTeamDefinitionId,
+  agentDefinitions,
+  teamDefinitions,
+  getAgentDefinitionById: agentDefStore.getAgentDefinitionById,
+  getAgentTeamDefinitionById: agentTeamDefStore.getAgentTeamDefinitionById,
+});
 
-const getReferenceName = (node: TeamMemberInput): string => {
-  if (node.refType === 'AGENT') {
-    return agentDefStore.getAgentDefinitionById(node.ref)?.name || node.ref;
-  }
-  return agentTeamDefStore.getAgentTeamDefinitionById(node.ref)?.name || node.ref;
+const updateLibrarySearch = (value: string) => {
+  librarySearch.value = value;
 };
 
-const buildMemberBaseName = (rawName: string): string => {
-  const normalized = rawName
-    .trim()
-    .replace(/\s+/g, '_')
-    .replace(/[^a-zA-Z0-9_]/g, '_')
-    .replace(/_+/g, '_')
-    .replace(/^_+|_+$/g, '')
-    .toLowerCase();
-
-  return normalized || 'member';
+const handleLibraryDragStart = ({ event, item }: { event: DragEvent; item: LibraryItem }) => {
+  onLibraryDragStart(event, item);
 };
 
-const buildUniqueMemberName = (rawName: string): string => {
-  const baseName = buildMemberBaseName(rawName);
-  const used = new Set(formData.nodes.map((node) => node.memberName));
-  if (!used.has(baseName)) {
-    return baseName;
-  }
+const selectedReferenceName = computed(() => (
+  selectedNode.value ? getReferenceName(selectedNode.value) : ''
+));
 
-  let counter = 2;
-  while (used.has(`${baseName}_${counter}`)) {
-    counter += 1;
-  }
-  return `${baseName}_${counter}`;
-};
+const selectedNodeIsCoordinator = computed(() => (
+  selectedNode.value ? isCoordinator(selectedNode.value) : false
+));
 
-const addNodeFromLibrary = (item: LibraryItem) => {
-  const newNode: TeamMemberInput = {
-    memberName: buildUniqueMemberName(item.name),
-    refType: item.refType,
-    ref: item.id,
-  };
-
-  formData.nodes.push(newNode);
-  selectedNodeIndex.value = formData.nodes.length - 1;
-
-  if (!formData.coordinatorMemberName && newNode.refType === 'AGENT') {
-    formData.coordinatorMemberName = newNode.memberName;
-  }
-};
-
-const onLibraryDragStart = (event: DragEvent, item: LibraryItem) => {
-  if (!event.dataTransfer) {
-    return;
-  }
-  event.dataTransfer.effectAllowed = 'copy';
-  event.dataTransfer.setData('application/json', JSON.stringify(item));
-};
-
-const handleCanvasDrop = (event: DragEvent) => {
-  isCanvasDragOver.value = false;
-  const payload = event.dataTransfer?.getData('application/json');
-  if (!payload) {
-    return;
-  }
-
-  try {
-    const item = JSON.parse(payload) as LibraryItem;
-    if (!item?.id || !item?.name || !item?.refType) {
-      return;
-    }
-    addNodeFromLibrary(item);
-  } catch (error) {
-    console.error('Failed to parse dropped team member payload:', error);
-  }
-};
-
-const selectNode = (index: number) => {
-  selectedNodeIndex.value = index;
-};
-
-const removeNode = (index: number) => {
-  const removedNodeName = formData.nodes[index]?.memberName;
-  formData.nodes.splice(index, 1);
-
-  if (formData.coordinatorMemberName === removedNodeName) {
-    formData.coordinatorMemberName = '';
-  }
-
-  if (selectedNodeIndex.value === null) {
-    return;
-  }
-  if (formData.nodes.length === 0) {
-    selectedNodeIndex.value = null;
-  } else if (selectedNodeIndex.value >= formData.nodes.length) {
-    selectedNodeIndex.value = formData.nodes.length - 1;
-  } else if (selectedNodeIndex.value === index) {
-    selectedNodeIndex.value = Math.max(0, index - 1);
-  }
-};
-
-const isCoordinator = (node: TeamMemberInput) => formData.coordinatorMemberName === node.memberName;
-
-const toggleCoordinator = (node: TeamMemberInput) => {
-  if (node.refType !== 'AGENT') {
-    return;
-  }
-  formData.coordinatorMemberName = isCoordinator(node) ? '' : node.memberName;
-};
-
-const updateSelectedMemberName = (nextNameRaw: string) => {
+const toggleSelectedCoordinator = () => {
   if (!selectedNode.value) {
     return;
   }
-  const nextName = nextNameRaw.trim();
-  const oldName = selectedNode.value.memberName;
-  selectedNode.value.memberName = nextName;
-
-  if (formData.coordinatorMemberName === oldName) {
-    formData.coordinatorMemberName = nextName;
-  }
-};
-
-const validateForm = () => {
-  clearErrors();
-  let valid = true;
-
-  if (!formData.name.trim()) {
-    formErrors.name = 'Team name is required.';
-    valid = false;
-  }
-
-  if (!formData.description.trim()) {
-    formErrors.description = 'Team description is required.';
-    valid = false;
-  }
-
-  if (formData.nodes.length === 0) {
-    formErrors.nodes = 'Add at least one member.';
-    valid = false;
-  }
-
-  const memberNames = new Set<string>();
-  for (const node of formData.nodes) {
-    if (!node.memberName.trim()) {
-      formErrors.nodes = 'Each member needs a name.';
-      valid = false;
-      break;
-    }
-    if (!node.ref) {
-      formErrors.nodes = 'Each member needs a source reference.';
-      valid = false;
-      break;
-    }
-    if (memberNames.has(node.memberName)) {
-      formErrors.nodes = 'Member names must be unique.';
-      valid = false;
-      break;
-    }
-    memberNames.add(node.memberName);
-
-    if (
-      currentTeamDefinitionId.value &&
-      node.refType === 'AGENT_TEAM' &&
-      node.ref === currentTeamDefinitionId.value
-    ) {
-      formErrors.nodes = 'A team cannot include itself as a nested team member.';
-      valid = false;
-      break;
-    }
-  }
-
-  if (!formData.coordinatorMemberName) {
-    formErrors.coordinatorMemberName = 'Coordinator is required.';
-    valid = false;
-  } else {
-    const coordinatorExists = formData.nodes.some(
-      (node) => node.refType === 'AGENT' && node.memberName === formData.coordinatorMemberName,
-    );
-    if (!coordinatorExists) {
-      formErrors.coordinatorMemberName = 'Coordinator must be one of the AGENT members.';
-      valid = false;
-    }
-  }
-
-  return valid;
+  toggleCoordinator(selectedNode.value);
 };
 
 const triggerAvatarPicker = () => {
@@ -698,11 +402,7 @@ const handleSubmit = () => {
     description: formData.description.trim(),
     instructions: formData.instructions.trim(),
     coordinatorMemberName: formData.coordinatorMemberName,
-    nodes: formData.nodes.map((node) => ({
-      memberName: node.memberName.trim(),
-      refType: node.refType,
-      ref: node.ref,
-    })),
+    nodes: buildSubmitNodes(formData.nodes),
     avatarUrl: formData.avatarUrl,
   };
 
@@ -713,7 +413,7 @@ watch(
   initialData,
   (newData) => {
     clearErrors();
-    Object.assign(formData, getInitialFormData());
+    Object.assign(formData, createInitialFormData());
 
     if (newData) {
       formData.name = newData.name || '';
@@ -722,11 +422,7 @@ watch(
       formData.instructions = newData.instructions || '';
       formData.coordinatorMemberName = newData.coordinatorMemberName || '';
       formData.avatarUrl = newData.avatarUrl || newData.avatar_url || '';
-      formData.nodes = (newData.nodes || []).map((node: any) => ({
-        memberName: node.memberName,
-        refType: node.refType,
-        ref: node.ref,
-      }));
+      formData.nodes = mapInitialTeamNodes(newData.nodes || []);
       selectedNodeIndex.value = formData.nodes.length > 0 ? 0 : null;
     } else {
       selectedNodeIndex.value = null;

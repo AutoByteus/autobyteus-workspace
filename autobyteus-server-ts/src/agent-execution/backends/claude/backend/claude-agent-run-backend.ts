@@ -63,9 +63,11 @@ export class ClaudeAgentRunBackend implements AgentRunBackend {
 
   async postUserMessage(message: AgentInputUserMessage): Promise<AgentOperationResult> {
     try {
-      await this.session.sendTurn(message);
+      const result = await this.session.sendTurn(message);
       return {
         accepted: true,
+        turnId: result.turnId ?? null,
+        platformAgentRunId: this.getPlatformAgentRunId(),
       };
     } catch (error) {
       return {

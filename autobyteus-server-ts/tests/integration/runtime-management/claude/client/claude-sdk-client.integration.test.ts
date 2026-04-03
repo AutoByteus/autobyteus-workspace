@@ -101,7 +101,6 @@ describeClaudeSdkClientIntegration("ClaudeSdkClient integration (live transport)
         model: modelIdentifier,
         workingDirectory: workspaceRoot,
         permissionMode: "plan",
-        enableSendMessageToTooling: false,
         autoExecuteTools: false,
       });
 
@@ -164,7 +163,6 @@ describeClaudeSdkClientIntegration("ClaudeSdkClient integration (live transport)
         model: modelIdentifier,
         workingDirectory: workspaceRoot,
         permissionMode: "default",
-        enableSendMessageToTooling: false,
         enableProjectSkillSettings: true,
         autoExecuteTools: true,
       });
@@ -199,7 +197,6 @@ describeClaudeSdkClientIntegration("ClaudeSdkClient integration (live transport)
         model: modelIdentifier,
         workingDirectory: workspaceRoot,
         permissionMode: "plan",
-        enableSendMessageToTooling: false,
         autoExecuteTools: false,
       });
       try {
@@ -221,7 +218,6 @@ describeClaudeSdkClientIntegration("ClaudeSdkClient integration (live transport)
         model: modelIdentifier,
         workingDirectory: workspaceRoot,
         permissionMode: "plan",
-        enableSendMessageToTooling: false,
         autoExecuteTools: false,
       });
 
@@ -301,7 +297,6 @@ describeClaudeSdkClientIntegration("ClaudeSdkClient integration (live transport)
           integration_echo: mcpServer!,
         },
         permissionMode: "default",
-        enableSendMessageToTooling: false,
         autoExecuteTools: true,
       });
 

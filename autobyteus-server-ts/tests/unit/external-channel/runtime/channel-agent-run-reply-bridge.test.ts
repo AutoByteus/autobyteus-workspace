@@ -27,30 +27,16 @@ const createEnvelope = () => ({
   }),
 });
 
-const flush = async () => {
-  await Promise.resolve();
-  await Promise.resolve();
-};
-
 describe("ChannelAgentRunReplyBridge", () => {
-  it("publishes provider callbacks for unified agent events", async () => {
-    const bindTurnToReceipt = vi.fn().mockResolvedValue(undefined);
-    const publishAssistantReplyByTurn = vi.fn().mockResolvedValue({
-      published: true,
-      duplicate: false,
-      reason: null,
-      envelope: null,
-    });
+  it("resolves a streamed agent reply for the accepted turn", async () => {
     let listener: ((event: unknown) => void) | null = null;
     const bridge = new ChannelAgentRunReplyBridge({
-      messageReceiptService: { bindTurnToReceipt },
-      replyCallbackService: { publishAssistantReplyByTurn },
-      runProjectionService: {
-        getProjection: vi.fn(),
+      turnReplyRecoveryService: {
+        resolveReplyText: vi.fn(),
       },
     });
 
-    await bridge.bindAcceptedExternalTurn({
+    const observation = bridge.observeAcceptedExternalTurn({
       run: {
         runId: "run-autobyteus",
         subscribeToEvents: (onEvent: (event: unknown) => void) => {
@@ -81,35 +67,27 @@ describe("ChannelAgentRunReplyBridge", () => {
       },
       statusHint: "IDLE",
     });
-    await flush();
 
-    expect(publishAssistantReplyByTurn).toHaveBeenCalledWith({
-      agentRunId: "run-autobyteus",
-      teamRunId: null,
-      turnId: "turn-auto-1",
-      replyText: "AutoByteus reply",
-      callbackIdempotencyKey: "external-reply:run-autobyteus:turn-auto-1",
+    await expect(observation).resolves.toEqual({
+      status: "REPLY_READY",
+      reply: expect.objectContaining({
+        agentRunId: "run-autobyteus",
+        teamRunId: null,
+        turnId: "turn-auto-1",
+        replyText: "AutoByteus reply",
+      }),
     });
   });
 
-  it("publishes provider callbacks for later source-linked turns without a fresh inbound envelope", async () => {
-    const bindTurnToReceipt = vi.fn().mockResolvedValue(undefined);
-    const publishAssistantReplyByTurn = vi.fn().mockResolvedValue({
-      published: true,
-      duplicate: false,
-      reason: null,
-      envelope: null,
-    });
+  it("keeps a linked source context for follow-up turns", async () => {
     let listener: ((event: unknown) => void) | null = null;
     const bridge = new ChannelAgentRunReplyBridge({
-      messageReceiptService: { bindTurnToReceipt },
-      replyCallbackService: { publishAssistantReplyByTurn },
-      runProjectionService: {
-        getProjection: vi.fn(),
+      turnReplyRecoveryService: {
+        resolveReplyText: vi.fn(),
       },
     });
 
-    await bridge.bindAcceptedTurnToSource({
+    const observation = bridge.observeAcceptedTurnToSource({
       run: {
         runId: "run-follow-up",
         subscribeToEvents: (onEvent: (event: unknown) => void) => {
@@ -149,55 +127,31 @@ describe("ChannelAgentRunReplyBridge", () => {
       },
       statusHint: "IDLE",
     });
-    await flush();
 
-    expect(bindTurnToReceipt).toHaveBeenCalledWith(
-      expect.objectContaining({
+    await expect(observation).resolves.toEqual({
+      status: "REPLY_READY",
+      reply: expect.objectContaining({
         agentRunId: "run-follow-up",
         teamRunId: "team-1",
         turnId: "turn-follow-up",
-        externalMessageId: "update:1",
+        replyText: "Follow-up reply to Telegram",
+        source: expect.objectContaining({
+          externalMessageId: "update:1",
+        }),
       }),
-    );
-    expect(publishAssistantReplyByTurn).toHaveBeenCalledWith({
-      agentRunId: "run-follow-up",
-      teamRunId: "team-1",
-      turnId: "turn-follow-up",
-      replyText: "Follow-up reply to Telegram",
-      callbackIdempotencyKey: "external-reply:run-follow-up:turn-follow-up",
     });
   });
 
-  it("falls back to the latest assistant projection when runtime text events do not include final text", async () => {
-    const bindTurnToReceipt = vi.fn().mockResolvedValue(undefined);
-    const publishAssistantReplyByTurn = vi.fn().mockResolvedValue({
-      published: true,
-      duplicate: false,
-      reason: null,
-      envelope: null,
-    });
+  it("falls back to persisted turn recovery when runtime events do not include text", async () => {
     let listener: ((event: unknown) => void) | null = null;
+    const resolveReplyText = vi.fn().mockResolvedValue("Recovered reply");
     const bridge = new ChannelAgentRunReplyBridge({
-      messageReceiptService: { bindTurnToReceipt },
-      replyCallbackService: { publishAssistantReplyByTurn },
-      runProjectionService: {
-        getProjection: vi.fn().mockResolvedValue({
-          runId: "run-2",
-          summary: null,
-          lastActivityAt: null,
-          conversation: [
-            { kind: "message", role: "user", content: "hello" },
-            {
-              kind: "message",
-              role: "assistant",
-              content: "Projection reply\n\n[reasoning]\ninternal",
-            },
-          ],
-        }),
+      turnReplyRecoveryService: {
+        resolveReplyText,
       },
     });
 
-    await bridge.bindAcceptedExternalTurn({
+    const observation = bridge.observeAcceptedExternalTurn({
       run: {
         runId: "run-2",
         subscribeToEvents: (onEvent: (event: unknown) => void) => {
@@ -219,81 +173,42 @@ describe("ChannelAgentRunReplyBridge", () => {
       },
       statusHint: "IDLE",
     });
-    await flush();
 
-    expect(publishAssistantReplyByTurn).toHaveBeenCalledWith({
+    await expect(observation).resolves.toEqual({
+      status: "REPLY_READY",
+      reply: expect.objectContaining({
+        agentRunId: "run-2",
+        teamRunId: null,
+        turnId: "turn-2",
+        replyText: "Recovered reply",
+      }),
+    });
+    expect(resolveReplyText).toHaveBeenCalledWith({
       agentRunId: "run-2",
       teamRunId: null,
       turnId: "turn-2",
-      replyText: "Projection reply",
-      callbackIdempotencyKey: "external-reply:run-2:turn-2",
     });
   });
 
-  it("resolves the reply callback service lazily when the runtime reply is ready", async () => {
-    const bindTurnToReceipt = vi.fn().mockResolvedValue(undefined);
-    const publishAssistantReplyByTurn = vi.fn().mockResolvedValue({
-      published: true,
-      duplicate: false,
-      reason: null,
-      envelope: null,
-    });
-    const replyCallbackServiceFactory = vi.fn(() => ({
-      publishAssistantReplyByTurn,
-    }));
-    let listener: ((event: unknown) => void) | null = null;
+  it("closes immediately when the accepted turnId is missing", async () => {
     const bridge = new ChannelAgentRunReplyBridge({
-      messageReceiptService: { bindTurnToReceipt },
-      replyCallbackServiceFactory,
-      runProjectionService: {
-        getProjection: vi.fn().mockResolvedValue({
-          runId: "run-3",
-          summary: null,
-          lastActivityAt: null,
-          conversation: [
-            {
-              kind: "message",
-              role: "assistant",
-              content: "Hello after startup",
-            },
-          ],
-        }),
+      turnReplyRecoveryService: {
+        resolveReplyText: vi.fn(),
       },
     });
 
-    await bridge.bindAcceptedExternalTurn({
-      run: {
-        runId: "run-3",
-        subscribeToEvents: (onEvent: (event: unknown) => void) => {
-          listener = onEvent;
-          return vi.fn();
+    await expect(
+      bridge.observeAcceptedExternalTurn({
+        run: {
+          runId: "run-missing",
+          subscribeToEvents: () => vi.fn(),
         },
-      },
-      turnId: "turn-3",
-      envelope: createEnvelope(),
-    });
-
-    expect(replyCallbackServiceFactory).not.toHaveBeenCalled();
-
-    listener?.({
-      runId: "run-3",
-      eventType: AgentRunEventType.AGENT_STATUS,
-      payload: {
-        new_status: "IDLE",
-        old_status: "RUNNING",
-        turnId: "turn-3",
-      },
-      statusHint: "IDLE",
-    });
-    await flush();
-
-    expect(replyCallbackServiceFactory).toHaveBeenCalledOnce();
-    expect(publishAssistantReplyByTurn).toHaveBeenCalledWith({
-      agentRunId: "run-3",
-      teamRunId: null,
-      turnId: "turn-3",
-      replyText: "Hello after startup",
-      callbackIdempotencyKey: "external-reply:run-3:turn-3",
+        turnId: null,
+        envelope: createEnvelope(),
+      }),
+    ).resolves.toEqual({
+      status: "CLOSED",
+      reason: "TURN_ID_MISSING",
     });
   });
 });

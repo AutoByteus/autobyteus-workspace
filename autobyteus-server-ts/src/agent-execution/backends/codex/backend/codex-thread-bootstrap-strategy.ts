@@ -1,6 +1,7 @@
 import type { AgentRunContext } from "../../../domain/agent-run-context.js";
 import type { CodexAgentRunContext } from "./codex-agent-run-context.js";
 import type { CodexDynamicToolRegistration } from "../codex-dynamic-tool.js";
+import type { ConfiguredAgentToolExposure } from "../../../shared/configured-agent-tool-exposure.js";
 
 const renderMarkdownInstructionSection = (
   title: string,
@@ -35,6 +36,7 @@ export interface CodexThreadBootstrapStrategy {
   prepare(input: {
     runContext: AgentRunContext<CodexAgentRunContext | null>;
     agentInstruction: string | null;
+    configuredToolExposure: ConfiguredAgentToolExposure;
   }): Promise<CodexThreadBootstrapPreparation> | CodexThreadBootstrapPreparation;
 }
 
@@ -45,6 +47,7 @@ export class DefaultCodexThreadBootstrapStrategy implements CodexThreadBootstrap
 
   prepare(input: {
     agentInstruction: string | null;
+    configuredToolExposure: ConfiguredAgentToolExposure;
   }): CodexThreadBootstrapPreparation {
     return {
       baseInstructions: renderMarkdownInstructionSections([

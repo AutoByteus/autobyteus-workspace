@@ -4,7 +4,7 @@ import * as fs from 'fs'
 import isDev from 'electron-is-dev'
 import { BaseServerManager } from './baseServerManager'
 import { logger } from '../logger'
-import { getLocalIp } from '../utils/networkUtils'
+import { INTERNAL_SERVER_BASE_URL } from '../../shared/embeddedServerConfig'
 import { buildServerRuntimeEnv } from './serverRuntimeEnv'
 
 export class WindowsServerManager extends BaseServerManager {
@@ -49,16 +49,14 @@ export class WindowsServerManager extends BaseServerManager {
       throw new Error(`Server entrypoint not found at: ${serverEntry}`)
     }
     
-    // Dynamically determine the host IP, falling back to localhost if needed.
-    const hostIp = getLocalIp() || 'localhost'
-    const publicServerUrl = `http://${hostIp}:${this.serverPort}`
+    const publicServerUrl = INTERNAL_SERVER_BASE_URL
 
     const env = {
       ...process.env,
       ELECTRON_RUN_AS_NODE: '1',
       PORT: this.serverPort.toString(),
       SERVER_PORT: this.serverPort.toString(),
-      ...buildServerRuntimeEnv(this.appDataDir, publicServerUrl, process.env)
+      ...buildServerRuntimeEnv(this.appDataDir, publicServerUrl, process.env, this.getRuntimeEnvOverrides())
     }
 
     const options = {

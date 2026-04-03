@@ -1,5 +1,5 @@
 import type { AgentTeamDefinition as DomainAgentTeamDefinition } from "../../../agent-team-definition/domain/models.js";
-import { NodeType } from "../../../agent-team-definition/domain/enums.js";
+import { AgentMemberRefScope, NodeType } from "../../../agent-team-definition/domain/enums.js";
 import {
   AgentTeamDefinition as GraphqlAgentTeamDefinition,
   TeamMember as GraphqlTeamMember,
@@ -12,6 +12,15 @@ const logger = {
 const toGraphqlRefType = (value: "agent" | "agent_team"): NodeType =>
   value === "agent" ? NodeType.AGENT : NodeType.AGENT_TEAM;
 
+const toGraphqlRefScope = (
+  value: "shared" | "team_local" | null | undefined,
+): AgentMemberRefScope | null =>
+  value === "team_local"
+    ? AgentMemberRefScope.TEAM_LOCAL
+    : value === "shared"
+      ? AgentMemberRefScope.SHARED
+      : null;
+
 export class AgentTeamDefinitionConverter {
   static toGraphql(domainDefinition: DomainAgentTeamDefinition): GraphqlAgentTeamDefinition {
     try {
@@ -19,6 +28,7 @@ export class AgentTeamDefinitionConverter {
         memberName: member.memberName,
         ref: member.ref,
         refType: toGraphqlRefType(member.refType),
+        refScope: toGraphqlRefScope(member.refScope),
       }));
 
       return {

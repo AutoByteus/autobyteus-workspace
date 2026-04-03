@@ -156,7 +156,9 @@ export class CodexThreadEventConverter {
       return converted ? [converted] : [];
     }
     if (
+      codexEventName === CodexThreadEventName.LOCAL_TOOL_APPROVAL_REQUESTED ||
       codexEventName === CodexThreadEventName.LOCAL_TOOL_APPROVED ||
+      codexEventName === CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED ||
       isCodexItemEventName(codexEventName)
     ) {
       return convertCodexItemEvent(this.itemEventConverterContext, codexEventName, payload);

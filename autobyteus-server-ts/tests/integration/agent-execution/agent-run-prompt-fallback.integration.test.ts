@@ -2,8 +2,10 @@ import { afterEach, describe, expect, it } from "vitest";
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import type { AgentConfig } from "autobyteus-ts/agent/context/agent-config.js";
-import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
+import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import { AutoByteusAgentRunBackendFactory } from "../../../src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
+import { AgentRunService } from "../../../src/agent-execution/services/agent-run-service.js";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
 import {
   parseAgentMd,
@@ -11,7 +13,7 @@ import {
 } from "../../../src/agent-definition/utils/agent-md-parser.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 
-describe("AgentRunManager fresh definition runtime integration", () => {
+describe("AgentRunService fresh definition runtime integration", () => {
   const cleanupPaths = new Set<string>();
 
   afterEach(async () => {
@@ -21,32 +23,66 @@ describe("AgentRunManager fresh definition runtime integration", () => {
     cleanupPaths.clear();
   });
 
-  const buildManager = (
+  const buildRunService = (
     agentDefinitionService: AgentDefinitionService,
     onCreateAgent: (config: AgentConfig) => void,
-  ) =>
-    new AgentRunManager({
+  ) => {
+    const workspaceById = new Map<string, { workspaceId: string; getBasePath: () => string }>();
+    const workspaceManager = {
+      ensureWorkspaceByRootPath: async (workspaceRootPath: string) => {
+        const workspace = {
+          workspaceId: "ws_runtime_fresh_definition",
+          getBasePath: () => workspaceRootPath,
+          getName: () => "ws_runtime_fresh_definition",
+        };
+        workspaceById.set(workspace.workspaceId, workspace);
+        return workspace;
+      },
+      getWorkspaceById: (workspaceId: string) => workspaceById.get(workspaceId) ?? null,
+      getOrCreateTempWorkspace: async () => ({
+        workspaceId: "ws_runtime_fresh_definition",
+        getBasePath: () => appConfigProvider.config.getMemoryDir(),
+        getName: () => "ws_runtime_fresh_definition",
+      }),
+    };
+    const autoByteusBackendFactory = new AutoByteusAgentRunBackendFactory({
       agentDefinitionService,
       llmFactory: {
         createLLM: async () => ({}) as any,
       } as any,
       agentFactory: {
-        createAgent: (config: AgentConfig) => {
+        createAgentWithId: (agentId: string, config: AgentConfig) => {
           onCreateAgent(config);
           return {
-            agentId: `run_${Date.now()}`,
+            agentId,
+            currentStatus: "IDLE",
+            context: {
+              config,
+              state: { activeTurnId: null },
+            },
             start: () => undefined,
+            postUserMessage: async () => undefined,
+            postToolExecutionApproval: async () => undefined,
+            stop: async () => undefined,
           };
         },
-      } as any,
-      workspaceManager: {
-        getWorkspaceById: () => null,
-        getOrCreateTempWorkspace: async () => ({
-          workspaceId: "ws_runtime_fresh_definition",
-          getBasePath: () => appConfigProvider.config.getMemoryDir(),
-          getName: () => "ws_runtime_fresh_definition",
+        restoreAgent: (agentId: string, config: AgentConfig) => ({
+          agentId,
+          currentStatus: "IDLE",
+          context: {
+            config,
+            state: { activeTurnId: null },
+          },
+          start: () => undefined,
+          postUserMessage: async () => undefined,
+          postToolExecutionApproval: async () => undefined,
+          stop: async () => undefined,
         }),
+        getAgent: () => null,
+        listActiveAgentIds: () => [],
+        removeAgent: async () => true,
       } as any,
+      workspaceManager: workspaceManager as any,
       skillService: {
         getSkill: () => null,
       } as any,
@@ -78,6 +114,16 @@ describe("AgentRunManager fresh definition runtime integration", () => {
       },
       waitForIdle: async () => undefined,
     });
+
+    const manager = new AgentRunManager({
+      autoByteusBackendFactory,
+    });
+    return new AgentRunService(appConfigProvider.config.getMemoryDir(), {
+      agentRunManager: manager,
+      workspaceManager: workspaceManager as never,
+      agentDefinitionService,
+    });
+  };
 
   it("uses fresh definition instructions for the next run even when the cache is stale", async () => {
     const agentDefinitionService = new AgentDefinitionService();
@@ -121,15 +167,19 @@ describe("AgentRunManager fresh definition runtime integration", () => {
     expect(cachedAfterEdit?.instructions).toBe(initialInstructions);
 
     let capturedConfig: AgentConfig | null = null;
-    const manager = buildManager(agentDefinitionService, (config) => {
+    const runService = buildRunService(agentDefinitionService, (config) => {
       capturedConfig = config;
     });
 
-    await manager.createAgentRun(new AgentRunConfig({
+    await runService.createAgentRun({
       agentDefinitionId: created.id as string,
+      workspaceRootPath: appConfigProvider.config.getMemoryDir(),
       llmModelIdentifier: "dummy-model",
       autoExecuteTools: false,
-    }));
+      runtimeKind: "autobyteus",
+      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+      llmConfig: null,
+    });
 
     expect(capturedConfig?.systemPrompt).toBe(updatedInstructions);
   });
@@ -171,15 +221,19 @@ describe("AgentRunManager fresh definition runtime integration", () => {
     );
 
     let capturedConfig: AgentConfig | null = null;
-    const manager = buildManager(agentDefinitionService, (config) => {
+    const runService = buildRunService(agentDefinitionService, (config) => {
       capturedConfig = config;
     });
 
-    await manager.createAgentRun(new AgentRunConfig({
+    await runService.createAgentRun({
       agentDefinitionId: created.id as string,
+      workspaceRootPath: appConfigProvider.config.getMemoryDir(),
       llmModelIdentifier: "dummy-model",
       autoExecuteTools: false,
-    }));
+      runtimeKind: "autobyteus",
+      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+      llmConfig: null,
+    });
 
     expect(capturedConfig?.systemPrompt).toBe(description);
   });

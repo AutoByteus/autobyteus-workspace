@@ -11,6 +11,8 @@ export const handleAppServerNotification = (
   emitEvent: (codexThread: CodexThread, event: CodexAppServerMessage) => void,
 ): void => {
   const eventMethod = method.trim();
+  const item = asObject(params.item);
+  const itemType = asString(item?.type)?.replace(/[_-]/g, "").toLowerCase();
   if (eventMethod === CodexThreadEventName.TURN_STARTED) {
     const turn = asObject(params.turn);
     codexThread.markTurnStarted(asString(turn?.id));
@@ -40,6 +42,32 @@ export const handleAppServerNotification = (
     const nextThreadId = resolveThreadIdFromAppServerMessage(params);
     if (nextThreadId) {
       codexThread.setThreadId(nextThreadId);
+    }
+  }
+
+  if (itemType === "mcptoolcall") {
+    const invocationId = asString(item?.id);
+    if (eventMethod === CodexThreadEventName.ITEM_STARTED && invocationId) {
+      codexThread.trackPendingMcpToolCall({
+        invocationId,
+        turnId: asString(params.turnId),
+        serverName: asString(item?.server),
+        toolName: asString(item?.tool),
+        arguments: asObject(item?.arguments) ?? {},
+      });
+    }
+    if (eventMethod === CodexThreadEventName.ITEM_COMPLETED) {
+      if (invocationId) {
+        emitEvent(codexThread, {
+          method: CodexThreadEventName.LOCAL_MCP_TOOL_EXECUTION_COMPLETED,
+          params: {
+            ...params,
+            invocation_id: invocationId,
+            ...(asString(item?.tool) ? { tool_name: asString(item?.tool) } : {}),
+          },
+        });
+      }
+      codexThread.completePendingMcpToolCall(invocationId);
     }
   }
 
