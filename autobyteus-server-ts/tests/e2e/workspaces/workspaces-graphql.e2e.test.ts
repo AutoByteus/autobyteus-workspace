@@ -148,7 +148,7 @@ describe("Workspaces GraphQL e2e", () => {
     ).toBe(true);
   });
 
-  it("lists the temp workspace with the backend-selected app-data-relative path", async () => {
+  it("creates and lists the temp workspace with the backend-selected app-data-relative path", async () => {
     const appDataDir = path.join(tempRoot, "server-data");
     const expectedTempRoot = path.join(appDataDir, "temp_workspace");
     fs.mkdirSync(appDataDir, { recursive: true });
@@ -157,8 +157,6 @@ describe("Workspaces GraphQL e2e", () => {
     vi.spyOn(appConfigProvider, "config", "get").mockReturnValue({
       getTempWorkspaceDir: () => expectedTempRoot,
     } as any);
-
-    await workspaceManager.getOrCreateTempWorkspace();
 
     const listQuery = `
       query GetWorkspaces {
@@ -184,7 +182,7 @@ describe("Workspaces GraphQL e2e", () => {
     expect(found?.isTemp).toBe(true);
   });
 
-  it("lists the temp workspace using the configured relative override under app data dir", async () => {
+  it("creates and lists the temp workspace using the configured relative override under app data dir", async () => {
     const appDataDir = path.join(tempRoot, "server-data");
     const expectedTempRoot = path.join(appDataDir, "isolated-temp-workspace");
     fs.mkdirSync(appDataDir, { recursive: true });
@@ -194,8 +192,6 @@ describe("Workspaces GraphQL e2e", () => {
     config.setCustomAppDataDir(appDataDir);
 
     vi.spyOn(appConfigProvider, "config", "get").mockReturnValue(config);
-
-    await workspaceManager.getOrCreateTempWorkspace();
 
     const listQuery = `
       query GetWorkspaces {
