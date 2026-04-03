@@ -1,0 +1,2 @@
+- Agent and team run configuration now shows the backend-managed Temp Workspace by default instead of opening with an empty existing-workspace selection.
+- Personal fixture seeding now works again with the current agent-team GraphQL contract, so seeded Professor/Student demo data can be created successfully.

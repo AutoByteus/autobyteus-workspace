@@ -44,6 +44,7 @@ export class WorkspaceResolver {
   @Query(() => [WorkspaceInfo])
   async workspaces(): Promise<WorkspaceInfo[]> {
     try {
+      await this.workspaceManager.getOrCreateTempWorkspace();
       const domainWorkspaces = this.workspaceManager.getAllWorkspaces();
       const graphqlWorkspaces: WorkspaceInfo[] = [];
       for (const workspace of domainWorkspaces) {

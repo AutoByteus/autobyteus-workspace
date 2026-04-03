@@ -208,6 +208,7 @@ def ensure_team(client: GraphqlClient, professor_agent_id: str, student_agent_id
               memberName
               ref
               refType
+              refScope
             }
           }
         }
@@ -220,11 +221,13 @@ def ensure_team(client: GraphqlClient, professor_agent_id: str, student_agent_id
             "memberName": "Professor",
             "ref": professor_agent_id,
             "refType": "AGENT",
+            "refScope": "SHARED",
         },
         {
             "memberName": "Student",
             "ref": student_agent_id,
             "refType": "AGENT",
+            "refScope": "SHARED",
         },
     ]
     expected_description = "Fixture team for Professor/Student communication tests."
@@ -259,12 +262,13 @@ def ensure_team(client: GraphqlClient, professor_agent_id: str, student_agent_id
                 node.get("memberName"),
                 node.get("ref"),
                 node.get("refType"),
+                node.get("refScope"),
             )
             for node in (current.get("nodes") or [])
         ]
     )
     expected_nodes_normalized = sorted(
-        [(node["memberName"], node["ref"], node["refType"]) for node in expected_nodes]
+        [(node["memberName"], node["ref"], node["refType"], node["refScope"]) for node in expected_nodes]
     )
 
     update_needed = (
