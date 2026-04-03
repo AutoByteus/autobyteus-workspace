@@ -135,6 +135,23 @@ describe('ArtifactContentViewer', () => {
     expect((wrapper.vm as any).viewMode).toBe('preview');
   });
 
+  it('does not prepend an extra slash for absolute artifact paths in the header', async () => {
+    const wrapper = mountComponent({
+      ...defaultArtifact,
+      path: '/workspace/src/test.md',
+      status: 'available',
+      sourceTool: 'edit_file',
+      workspaceRoot: '/workspace',
+    });
+
+    await flushPromises();
+
+    const headerPath = wrapper.get('[data-testid="artifact-path-display"]').text();
+    expect(headerPath).toBe('/workspace/src/test.md');
+    expect(headerPath.startsWith('//')).toBe(false);
+    expect(wrapper.text()).not.toContain('//workspace/src/test.md');
+  });
+
   it('shows deleted state when workspace content returns 404', async () => {
     const fetchMock = vi.mocked(global.fetch);
     fetchMock.mockResolvedValue({

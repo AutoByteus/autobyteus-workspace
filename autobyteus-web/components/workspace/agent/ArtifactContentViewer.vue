@@ -3,13 +3,9 @@
     <!-- Header / Meta Info -->
     <div v-if="artifact" class="flex items-center gap-2 px-4 py-3 border-b border-gray-200 bg-white flex-shrink-0 min-h-[45px]">
          <!-- Breadcrumb style path display -->
-         <div class="flex items-center text-sm text-gray-600 space-x-1 flex-1 min-w-0">
-             <!-- Root/Workspace Icon -->
-             <Icon icon="heroicons:folder-open" class="w-4 h-4 text-gray-400" />
-             <!-- Separator -->
-             <span class="text-gray-300">/</span>
+         <div class="flex items-center text-sm text-gray-600 flex-1 min-w-0">
              <!-- Path -->
-             <span class="font-medium text-gray-800 truncate">{{ artifact.path }}</span>
+             <span data-testid="artifact-path-display" class="font-medium text-gray-800 truncate">{{ displayPath }}</span>
          </div>
 
          <!-- Edit/Preview Toggle -->
@@ -111,6 +107,8 @@ const isLoading = computed(() => isDeterminingType.value || isFetchingContent.va
 const usesBufferedWriteContent = computed(() => {
   return props.artifact?.sourceTool === 'write_file' && props.artifact?.status !== 'available';
 });
+const normalizedArtifactPath = computed(() => props.artifact?.path?.replace(/\\/g, '/') ?? '');
+const displayPath = computed(() => normalizedArtifactPath.value || props.artifact?.path || '');
 
 const artifactUrl = computed(() => {
   if (!props.artifact) return null;
