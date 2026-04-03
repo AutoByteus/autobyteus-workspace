@@ -36,7 +36,14 @@ import {
 import {
   getTeamCodexThreadBootstrapStrategy,
 } from "../../../../agent-team-execution/backends/codex/codex-team-thread-bootstrap-strategy.js";
-import { buildPreviewDynamicToolRegistrations } from "../preview/build-preview-dynamic-tool-registrations.js";
+import { buildBrowserDynamicToolRegistrationsForEnabledToolNames } from "../browser/build-browser-dynamic-tool-registrations.js";
+import {
+  filterDynamicToolRegistrationsByToolNames,
+} from "./codex-configured-tool-gating.js";
+import {
+  resolveConfiguredAgentToolExposure,
+  toConfiguredAgentToolNameSet,
+} from "../../../shared/configured-agent-tool-exposure.js";
 
 const DEFAULT_SANDBOX_MODE: CodexSandboxMode = "workspace-write";
 const VALID_SANDBOX_MODES = new Set<CodexSandboxMode>([
@@ -126,15 +133,25 @@ export class CodexThreadBootstrapper {
     const configuredSkills = await this.skillService.getSkills(
       agentDefinition?.skillNames ?? [],
     );
+    const configuredToolExposure = resolveConfiguredAgentToolExposure(agentDefinition);
     const skillAccessMode = resolveSkillAccessMode(
       runContext.config.skillAccessMode ?? null,
       configuredSkills.length,
     );
     const agentInstruction = this.composeBootstrapAgentInstruction(agentDefinition);
-    const threadConfigInput = await this.prepareThreadConfigInput(runContext, agentInstruction);
+    const threadConfigInput = await this.prepareThreadConfigInput(
+      runContext,
+      agentInstruction,
+      configuredToolExposure,
+    );
     const dynamicToolRegistrations = mergeDynamicToolRegistrations(
-      threadConfigInput.dynamicToolRegistrations,
-      buildPreviewDynamicToolRegistrations(),
+      filterDynamicToolRegistrationsByToolNames(
+        threadConfigInput.dynamicToolRegistrations,
+        toConfiguredAgentToolNameSet(configuredToolExposure),
+      ),
+      buildBrowserDynamicToolRegistrationsForEnabledToolNames(
+        configuredToolExposure.enabledBrowserToolNames,
+      ),
     );
     const codexThreadConfig = this.buildThreadConfig({
       agentRunConfig: runContext.config,
@@ -199,14 +216,16 @@ export class CodexThreadBootstrapper {
   private async prepareThreadConfigInput(
     runContext: AgentRunContext<CodexAgentRunContext | null>,
     agentInstruction: string | null,
+    configuredToolExposure: import("../../../shared/configured-agent-tool-exposure.js").ConfiguredAgentToolExposure,
   ) {
     const strategy = this.teamBootstrapStrategy.appliesTo(runContext)
       ? this.teamBootstrapStrategy
       : this.defaultBootstrapStrategy;
-    return strategy.prepare({
-      runContext,
-      agentInstruction,
-    });
+      return strategy.prepare({
+        runContext,
+        agentInstruction,
+        configuredToolExposure,
+      });
   }
 
   private async prepareWorkspaceSkills(input: {

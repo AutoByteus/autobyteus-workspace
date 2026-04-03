@@ -32,9 +32,14 @@ describe("AutoByteusRunViewProjectionProvider", () => {
     } as never);
 
     const projection = await provider.buildProjection({
-      runId: "server-run-1",
-      runtimeKind: RuntimeKind.AUTOBYTEUS,
-      metadata: createMetadata({ platformAgentRunId: "native-agent-abc" }),
+      source: {
+        runId: "server-run-1",
+        runtimeKind: RuntimeKind.AUTOBYTEUS,
+        workspaceRootPath: "/tmp/workspace",
+        memoryDir: null,
+        platformRunId: "native-agent-abc",
+        metadata: createMetadata({ platformAgentRunId: "native-agent-abc" }),
+      },
     });
 
     expect(getRunMemoryView).toHaveBeenCalledWith("native-agent-abc", {
@@ -58,9 +63,14 @@ describe("AutoByteusRunViewProjectionProvider", () => {
     } as never);
 
     await provider.buildProjection({
-      runId: "server-run-2",
-      runtimeKind: RuntimeKind.AUTOBYTEUS,
-      metadata: createMetadata({ platformAgentRunId: null }),
+      source: {
+        runId: "server-run-2",
+        runtimeKind: RuntimeKind.AUTOBYTEUS,
+        workspaceRootPath: "/tmp/workspace",
+        memoryDir: null,
+        platformRunId: null,
+        metadata: createMetadata({ platformAgentRunId: null }),
+      },
     });
 
     expect(getRunMemoryView).toHaveBeenCalledWith("server-run-2", {

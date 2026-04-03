@@ -27,6 +27,9 @@ import type {
 } from "../../../../runtime-management/claude/client/claude-sdk-client.js";
 import type { ClaudeTeamRunContext } from "../../../../agent-team-execution/backends/claude/claude-team-run-context.js";
 import { dispatchRuntimeEvent } from "../../shared/runtime-event-dispatch.js";
+import { CLAUDE_SEND_MESSAGE_MCP_TOOL_NAME, CLAUDE_SEND_MESSAGE_TOOL_NAME } from "../claude-send-message-tool-name.js";
+
+const CLAUDE_BROWSER_MCP_TOOL_PREFIX = "mcp__autobyteus_browser__";
 
 const formatClaudeRuntimeError = (error: unknown): string =>
   error instanceof Error ? error.stack ?? error.message : String(error);
@@ -277,19 +280,29 @@ export class ClaudeSession {
   }
 
   private async executeTurn(options: ClaudeSessionTurnExecutionInput): Promise<void> {
-    const sendMessageToToolingEnabled = this.isSendMessageToToolingEnabled();
+    const sendMessageToToolingEnabled =
+      this.isSendMessageToToolingEnabled();
+    const enabledBrowserToolNames = this.resolveEnabledBrowserToolNames();
+    const allowedTools = this.resolveAllowedToolNames({
+      sendMessageToToolingEnabled,
+      enabledBrowserToolNames,
+    });
     const turnInput = buildClaudeTurnInput({
       runContext: this.runContext,
       content: options.content,
+      sendMessageToEnabled: sendMessageToToolingEnabled,
     });
-    const mcpServers = await this.buildTeamMcpServers(sendMessageToToolingEnabled);
+    const mcpServers = await this.buildSessionMcpServers({
+      sendMessageToToolingEnabled,
+      enabledBrowserToolNames,
+    });
     const query = await this.dependencies.sdkClient.startQueryTurn({
       prompt: turnInput,
       sessionId: this.hasCompletedTurn ? this.sessionId : null,
       model: this.model,
       workingDirectory: this.workingDirectory,
       mcpServers,
-      enableSendMessageToTooling: sendMessageToToolingEnabled,
+      allowedTools,
       enableProjectSkillSettings: this.isProjectSkillSettingsEnabled(),
       permissionMode: this.permissionMode,
       ...(this.permissionMode !== "bypassPermissions"
@@ -398,14 +411,17 @@ export class ClaudeSession {
     return this.runContext.runtimeContext.materializedConfiguredSkills.length > 0;
   }
 
-  private async buildTeamMcpServers(
-    sendMessageToToolingEnabled: boolean,
+  private async buildSessionMcpServers(input: {
+    sendMessageToToolingEnabled: boolean;
+    enabledBrowserToolNames: string[];
+  },
   ): Promise<Record<string, unknown> | null> {
     return buildClaudeSessionMcpServers({
-      sendMessageToToolingEnabled,
+      sendMessageToToolingEnabled: input.sendMessageToToolingEnabled,
+      enabledBrowserToolNames: input.enabledBrowserToolNames,
       runContext: this.runContext,
       sdkClient: this.dependencies.sdkClient,
-      requestToolApproval: sendMessageToToolingEnabled
+      requestToolApproval: input.sendMessageToToolingEnabled
         ? ({ invocationId, toolName, toolArguments }) =>
             this.dependencies.toolingCoordinator.requestToolApprovalDecision({
               runContext: this.runContext,
@@ -421,10 +437,34 @@ export class ClaudeSession {
   private isSendMessageToToolingEnabled(): boolean {
     const allowedRecipientNames = this.resolveAllowedRecipientNames();
     return (
+      this.runContext.runtimeContext.configuredToolExposure.sendMessageToConfigured &&
       Boolean(this.teamContext) &&
       Boolean(this.teamContext?.runId) &&
       allowedRecipientNames.length > 0
     );
+  }
+
+  private resolveEnabledBrowserToolNames(): string[] {
+    return [...this.runContext.runtimeContext.configuredToolExposure.enabledBrowserToolNames];
+  }
+
+  private resolveAllowedToolNames(input: {
+    sendMessageToToolingEnabled: boolean;
+    enabledBrowserToolNames: string[];
+  }): string[] {
+    const allowedTools = new Set<string>();
+    if (input.sendMessageToToolingEnabled) {
+      allowedTools.add(CLAUDE_SEND_MESSAGE_TOOL_NAME);
+      allowedTools.add(CLAUDE_SEND_MESSAGE_MCP_TOOL_NAME);
+    }
+    if (this.isProjectSkillSettingsEnabled()) {
+      allowedTools.add("Skill");
+    }
+    for (const toolName of input.enabledBrowserToolNames) {
+      allowedTools.add(toolName);
+      allowedTools.add(`${CLAUDE_BROWSER_MCP_TOOL_PREFIX}${toolName}`);
+    }
+    return [...allowedTools];
   }
 
   private resolveCurrentMemberContext() {

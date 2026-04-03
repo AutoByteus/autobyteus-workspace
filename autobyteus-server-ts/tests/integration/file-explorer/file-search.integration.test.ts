@@ -2,7 +2,6 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import fs from "node:fs/promises";
 import path from "node:path";
 import os from "node:os";
-import { WorkspaceConfig } from "autobyteus-ts";
 import { FileSystemWorkspace } from "../../../src/workspaces/filesystem-workspace.js";
 
 const sleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
@@ -34,10 +33,10 @@ describe("FileSystemWorkspace searchFiles integration", () => {
     await fs.mkdir(path.join(tempDir, "docs"));
     await fs.writeFile(path.join(tempDir, "docs", "readme.md"), "readme", "utf-8");
 
-    const config = new WorkspaceConfig({
+    const config = {
       workspaceId: "search-test-workspace",
       rootPath: tempDir,
-    });
+    };
     workspace = new FileSystemWorkspace(config);
     await workspace.initialize();
   });

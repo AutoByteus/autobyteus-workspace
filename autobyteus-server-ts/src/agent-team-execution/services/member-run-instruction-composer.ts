@@ -8,6 +8,7 @@ type MemberRunInstructionComposerInput = {
   teamInstruction: string | null;
   agentInstruction: string | null;
   currentMemberName: string | null;
+  sendMessageToEnabled: boolean;
   teammates: MemberRunTeammate[];
 };
 
@@ -45,7 +46,7 @@ export const composeMemberRunInstructions = (
     }
     return toLowerTrimmed(memberName) !== toLowerTrimmed(input.currentMemberName);
   });
-  const sendMessageToAvailable = teammates.length > 0;
+  const sendMessageToAvailable = input.sendMessageToEnabled && teammates.length > 0;
 
   const runtimeLines: string[] = [];
   if (input.currentMemberName) {
@@ -62,6 +63,10 @@ export const composeMemberRunInstructions = (
     runtimeLines.push("Do not claim teammate delivery unless the tool call succeeds.");
     runtimeLines.push("Teammates:");
     runtimeLines.push(...teammates.map((member) => formatTeammate(member)));
+  } else if (input.teammates.length > 0) {
+    runtimeLines.push(
+      "Do not attempt `send_message_to`; it is not exposed for this run even though teammates exist.",
+    );
   }
 
   return {

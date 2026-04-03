@@ -41,12 +41,12 @@ describe('buildServerRuntimeEnv', () => {
       'http://localhost:29695',
       {},
       {
-        AUTOBYTEUS_PREVIEW_BRIDGE_BASE_URL: 'http://127.0.0.1:41234',
-        AUTOBYTEUS_PREVIEW_BRIDGE_TOKEN: 'preview-token'
+        AUTOBYTEUS_BROWSER_BRIDGE_BASE_URL: 'http://127.0.0.1:41234',
+        AUTOBYTEUS_BROWSER_BRIDGE_TOKEN: 'browser-token'
       }
     )
 
-    expect(env.AUTOBYTEUS_PREVIEW_BRIDGE_BASE_URL).toBe('http://127.0.0.1:41234')
-    expect(env.AUTOBYTEUS_PREVIEW_BRIDGE_TOKEN).toBe('preview-token')
+    expect(env.AUTOBYTEUS_BROWSER_BRIDGE_BASE_URL).toBe('http://127.0.0.1:41234')
+    expect(env.AUTOBYTEUS_BROWSER_BRIDGE_TOKEN).toBe('browser-token')
   })
 })

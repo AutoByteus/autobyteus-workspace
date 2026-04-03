@@ -1,6 +1,6 @@
 import type { AgentRunEvent } from "../../../domain/agent-run-event.js";
 import { AgentRunEventType } from "../../../domain/agent-run-event.js";
-import { isPreviewToolName } from "../../../../agent-tools/preview/preview-tool-contract.js";
+import { isBrowserToolName } from "../../../../agent-tools/browser/browser-tool-contract.js";
 import { serializePayload } from "../../../../services/agent-streaming/payload-serialization.js";
 import type { JsonObject } from "../codex-app-server-json.js";
 import { CodexThreadEventName } from "./codex-thread-event-name.js";
@@ -22,7 +22,7 @@ const normalizeToolNameForEvent = (value: string | null): string | null => {
   return value;
 };
 
-const isPreviewToolExecutionPayload = (
+const isBrowserToolExecutionPayload = (
   context: CodexItemEventConverterContext,
   payload: JsonObject,
 ): boolean => {
@@ -31,7 +31,7 @@ const isPreviewToolExecutionPayload = (
     return false;
   }
   const toolName = normalizeToolNameForEvent(context.resolveToolName(payload));
-  return isPreviewToolName(toolName);
+  return isBrowserToolName(toolName);
 };
 
 export type CodexItemEventConverterContext = {
@@ -217,7 +217,7 @@ export const convertCodexItemEvent = (
           },
         );
       }
-      if (isPreviewToolExecutionPayload(context, payload)) {
+      if (isBrowserToolExecutionPayload(context, payload)) {
         return createTerminalToolExecutionEvent(context, codexEventName, payload, "run_bash");
       }
       return context.createEvent(

@@ -2,8 +2,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { AgentStreamingService } from '../AgentStreamingService';
 // import { AgentContext } from '~/types/agent/AgentContext'; // We can just mock the context interface for testing
 
-const { handlePreviewToolExecutionSucceededMock } = vi.hoisted(() => ({
-    handlePreviewToolExecutionSucceededMock: vi.fn(),
+const { handleBrowserToolExecutionSucceededMock } = vi.hoisted(() => ({
+    handleBrowserToolExecutionSucceededMock: vi.fn(),
 }));
 
 // Mock WebSocketClient
@@ -26,8 +26,8 @@ vi.mock('../transport', () => {
     };
 });
 
-vi.mock('../preview/previewToolExecutionSucceededHandler', () => ({
-    handlePreviewToolExecutionSucceeded: handlePreviewToolExecutionSucceededMock,
+vi.mock('../browser/browserToolExecutionSucceededHandler', () => ({
+    handleBrowserToolExecutionSucceeded: handleBrowserToolExecutionSucceededMock,
 }));
 
 describe('AgentStreamingService', () => {
@@ -36,7 +36,7 @@ describe('AgentStreamingService', () => {
     let mockConversation: any;
 
     beforeEach(() => {
-        handlePreviewToolExecutionSucceededMock.mockReset();
+        handleBrowserToolExecutionSucceededMock.mockReset();
         service = new AgentStreamingService('ws://localhost:8000/ws/agent');
         mockConversation = {
             messages: [],
@@ -110,12 +110,12 @@ describe('AgentStreamingService', () => {
         expect(mockAgentContext.isSending).toBe(true);
     });
 
-    it('routes successful tool execution through the preview-owned post-success handler', () => {
+    it('routes successful tool execution through the browser-owned post-success handler', () => {
         const payload = {
             invocation_id: 'call-1',
-            tool_name: 'open_preview',
+            tool_name: 'open_tab',
             result: {
-                preview_session_id: 'preview-session-1',
+                tab_id: 'browser-session-1',
                 status: 'opened',
                 url: 'https://example.com',
                 title: 'Example',
@@ -130,6 +130,6 @@ describe('AgentStreamingService', () => {
             mockAgentContext,
         );
 
-        expect(handlePreviewToolExecutionSucceededMock).toHaveBeenCalledWith(payload);
+        expect(handleBrowserToolExecutionSucceededMock).toHaveBeenCalledWith(payload);
     });
 });

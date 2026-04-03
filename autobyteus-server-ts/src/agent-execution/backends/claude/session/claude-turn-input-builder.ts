@@ -10,6 +10,7 @@ import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
 export const buildClaudeTurnInput = (options: {
   runContext: ClaudeRunContext;
   content: string;
+  sendMessageToEnabled: boolean;
 }): string => {
   const currentMemberContext = resolveRuntimeMemberContext(
     options.runContext.runtimeContext.teamContext,
@@ -26,6 +27,7 @@ export const buildClaudeTurnInput = (options: {
     teamInstruction: null,
     agentInstruction: options.runContext.runtimeContext.agentInstruction,
     currentMemberName: currentMemberContext?.memberName ?? null,
+    sendMessageToEnabled: options.sendMessageToEnabled,
     teammates,
   });
   if (

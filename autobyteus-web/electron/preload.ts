@@ -2,7 +2,13 @@
 
 import { contextBridge, ipcRenderer, webUtils } from 'electron'
 import type { NodeRegistryChange } from './nodeRegistryTypes'
-import type { PreviewHostBounds, PreviewShellSnapshot } from '../types/previewShell'
+import type {
+  BrowserHostBounds,
+  BrowserShellNavigateTabRequest,
+  BrowserShellOpenTabRequest,
+  BrowserShellReloadTabRequest,
+  BrowserShellSnapshot,
+} from '../types/browserShell'
 import type {
   ExtensionId,
   ManagedExtensionState,
@@ -44,18 +50,24 @@ contextBridge.exposeInMainWorld('electronAPI', {
     return registerIpcListener('node-registry-updated', callback)
   },
 
-  getPreviewShellSnapshot: () =>
-    ipcRenderer.invoke('preview-shell:get-snapshot') as Promise<PreviewShellSnapshot>,
-  focusPreviewSession: (previewSessionId: string) =>
-    ipcRenderer.invoke('preview-shell:focus-session', previewSessionId) as Promise<PreviewShellSnapshot>,
-  setActivePreviewSession: (previewSessionId: string) =>
-    ipcRenderer.invoke('preview-shell:set-active-session', previewSessionId) as Promise<PreviewShellSnapshot>,
-  updatePreviewHostBounds: (bounds: PreviewHostBounds | null) =>
-    ipcRenderer.invoke('preview-shell:update-host-bounds', bounds) as Promise<PreviewShellSnapshot>,
-  closePreviewShellSession: (previewSessionId: string) =>
-    ipcRenderer.invoke('preview-shell:close-session', previewSessionId) as Promise<PreviewShellSnapshot>,
-  onPreviewShellSnapshotUpdated: (callback: (snapshot: PreviewShellSnapshot) => void) => {
-    return registerIpcListener('preview-shell:snapshot-updated', callback)
+  getBrowserShellSnapshot: () =>
+    ipcRenderer.invoke('browser-shell:get-snapshot') as Promise<BrowserShellSnapshot>,
+  openBrowserTab: (request: BrowserShellOpenTabRequest) =>
+    ipcRenderer.invoke('browser-shell:open-tab', request) as Promise<BrowserShellSnapshot>,
+  navigateBrowserTab: (request: BrowserShellNavigateTabRequest) =>
+    ipcRenderer.invoke('browser-shell:navigate-tab', request) as Promise<BrowserShellSnapshot>,
+  reloadBrowserTab: (request: BrowserShellReloadTabRequest) =>
+    ipcRenderer.invoke('browser-shell:reload-tab', request) as Promise<BrowserShellSnapshot>,
+  focusBrowserTab: (browserSessionId: string) =>
+    ipcRenderer.invoke('browser-shell:focus-session', browserSessionId) as Promise<BrowserShellSnapshot>,
+  setActiveBrowserTab: (browserSessionId: string) =>
+    ipcRenderer.invoke('browser-shell:set-active-session', browserSessionId) as Promise<BrowserShellSnapshot>,
+  updateBrowserHostBounds: (bounds: BrowserHostBounds | null) =>
+    ipcRenderer.invoke('browser-shell:update-host-bounds', bounds) as Promise<BrowserShellSnapshot>,
+  closeBrowserShellSession: (browserSessionId: string) =>
+    ipcRenderer.invoke('browser-shell:close-session', browserSessionId) as Promise<BrowserShellSnapshot>,
+  onBrowserShellSnapshotUpdated: (callback: (snapshot: BrowserShellSnapshot) => void) => {
+    return registerIpcListener('browser-shell:snapshot-updated', callback)
   },
 
   getAppUpdateState: () => ipcRenderer.invoke('app-update:get-state'),

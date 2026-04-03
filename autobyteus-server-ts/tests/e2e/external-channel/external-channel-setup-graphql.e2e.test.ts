@@ -120,6 +120,7 @@ describe("External channel setup GraphQL e2e", () => {
             memberName: "coordinator",
             ref: coordinatorAgentDefinitionId,
             refType: "AGENT",
+            refScope: "SHARED",
           },
         ],
       },

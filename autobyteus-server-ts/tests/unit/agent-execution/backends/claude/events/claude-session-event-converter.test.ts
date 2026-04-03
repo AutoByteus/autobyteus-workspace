@@ -119,16 +119,16 @@ describe("ClaudeSessionEventConverter", () => {
     expect(segmentEnd?.payload.segment_type).toBe("tool_call");
   });
 
-  it("normalizes preview MCP tool names to canonical preview tool names", () => {
+  it("normalizes browser MCP tool names to canonical browser tool names", () => {
     const converter = new ClaudeSessionEventConverter("run-claude-converter");
 
     const completed = converter.convert({
       method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_COMPLETED,
       params: {
-        invocation_id: "invoke-preview",
-        tool_name: "mcp__autobyteus_preview__open_preview",
+        invocation_id: "invoke-browser",
+        tool_name: "mcp__autobyteus_browser__open_tab",
         result: {
-          preview_session_id: "preview-1",
+          tab_id: "browser-1",
           status: "opened",
         },
       },
@@ -137,10 +137,10 @@ describe("ClaudeSessionEventConverter", () => {
     expect(completed).not.toBeNull();
     expect(completed?.eventType).toBe(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED);
     expect(completed?.payload).toMatchObject({
-      invocation_id: "invoke-preview",
-      tool_name: "open_preview",
+      invocation_id: "invoke-browser",
+      tool_name: "open_tab",
       result: {
-        preview_session_id: "preview-1",
+        tab_id: "browser-1",
         status: "opened",
       },
     });

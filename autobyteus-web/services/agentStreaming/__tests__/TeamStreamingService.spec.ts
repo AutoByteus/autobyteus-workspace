@@ -1,17 +1,17 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { TeamStreamingService } from '../TeamStreamingService';
 
-const { handlePreviewToolExecutionSucceededMock } = vi.hoisted(() => ({
-  handlePreviewToolExecutionSucceededMock: vi.fn(),
+const { handleBrowserToolExecutionSucceededMock } = vi.hoisted(() => ({
+  handleBrowserToolExecutionSucceededMock: vi.fn(),
 }));
 
-vi.mock('../preview/previewToolExecutionSucceededHandler', () => ({
-  handlePreviewToolExecutionSucceeded: handlePreviewToolExecutionSucceededMock,
+vi.mock('../browser/browserToolExecutionSucceededHandler', () => ({
+  handleBrowserToolExecutionSucceeded: handleBrowserToolExecutionSucceededMock,
 }));
 
 describe('TeamStreamingService', () => {
   beforeEach(() => {
-    handlePreviewToolExecutionSucceededMock.mockReset();
+    handleBrowserToolExecutionSucceededMock.mockReset();
   });
 
   it('echoes captured approval token when approving tool invocation', () => {
@@ -228,7 +228,7 @@ describe('TeamStreamingService', () => {
     expect(studentConversation.messages).toHaveLength(0);
   });
 
-  it('routes successful tool execution through the preview-owned post-success handler', () => {
+  it('routes successful tool execution through the browser-owned post-success handler', () => {
     const callbacks = new Map<string, (payload?: any) => void>();
     const wsClient = {
       state: 'disconnected',
@@ -261,9 +261,9 @@ describe('TeamStreamingService', () => {
         type: 'TOOL_EXECUTION_SUCCEEDED',
         payload: {
           invocation_id: 'call-1',
-          tool_name: 'open_preview',
+          tool_name: 'open_tab',
           result: {
-            preview_session_id: 'preview-session-1',
+            tab_id: 'browser-session-1',
             status: 'opened',
             url: 'https://example.com',
             title: 'Example',
@@ -273,11 +273,11 @@ describe('TeamStreamingService', () => {
       }),
     );
 
-    expect(handlePreviewToolExecutionSucceededMock).toHaveBeenCalledWith({
+    expect(handleBrowserToolExecutionSucceededMock).toHaveBeenCalledWith({
       invocation_id: 'call-1',
-      tool_name: 'open_preview',
+      tool_name: 'open_tab',
       result: {
-        preview_session_id: 'preview-session-1',
+        tab_id: 'browser-session-1',
         status: 'opened',
         url: 'https://example.com',
         title: 'Example',

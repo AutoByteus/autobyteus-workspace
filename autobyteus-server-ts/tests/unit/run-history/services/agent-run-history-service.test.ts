@@ -25,6 +25,9 @@ vi.mock("../../../../src/agent-definition/services/agent-definition-service.js",
 
 describe("AgentRunHistoryService", () => {
   let memoryDir: string;
+  const createMetadataStore = (runIds: string[]) => ({
+    readMetadata: vi.fn(async (runId: string) => (runIds.includes(runId) ? { runId } : null)),
+  });
 
   beforeEach(async () => {
     memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "agent-run-history-service-"));
@@ -81,6 +84,7 @@ describe("AgentRunHistoryService", () => {
         rebuildIndexFromDisk: vi.fn().mockResolvedValue([]),
         removeRow: vi.fn(),
       },
+      metadataStore: createMetadataStore(rows.map((row) => row.runId)) as any,
     });
 
     const result = await service.listRunHistory(1);
@@ -150,7 +154,10 @@ describe("AgentRunHistoryService", () => {
       removeRow: vi.fn(),
     };
 
-    const service = new AgentRunHistoryService(memoryDir, { indexService });
+    const service = new AgentRunHistoryService(memoryDir, {
+      indexService,
+      metadataStore: createMetadataStore(rebuildRows.map((row) => row.runId)) as any,
+    });
     const result = await service.listRunHistory();
 
     expect(indexService.rebuildIndexFromDisk).toHaveBeenCalledTimes(1);

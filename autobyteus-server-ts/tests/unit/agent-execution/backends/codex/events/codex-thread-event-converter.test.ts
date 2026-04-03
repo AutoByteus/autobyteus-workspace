@@ -155,7 +155,7 @@ describe("CodexThreadEventConverter", () => {
     });
   });
 
-  it("maps preview dynamic tool completions into TOOL_EXECUTION_SUCCEEDED", () => {
+  it("maps browser dynamic tool completions into TOOL_EXECUTION_SUCCEEDED", () => {
     const converter = new CodexThreadEventConverter("run-1");
 
     const converted = converter.convert({
@@ -163,11 +163,11 @@ describe("CodexThreadEventConverter", () => {
       params: {
         item: {
           type: "dynamicToolCall",
-          id: "call_preview_open",
-          name: "open_preview",
+          id: "call_browser_open",
+          name: "open_tab",
           status: "completed",
           result: {
-            preview_session_id: "preview-1",
+            tab_id: "browser-1",
             status: "opened",
           },
         },
@@ -178,17 +178,17 @@ describe("CodexThreadEventConverter", () => {
       eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
       runId: "run-1",
       payload: {
-        invocation_id: "call_preview_open",
-        tool_name: "open_preview",
+        invocation_id: "call_browser_open",
+        tool_name: "open_tab",
         result: {
-          preview_session_id: "preview-1",
+          tab_id: "browser-1",
           status: "opened",
         },
       },
     });
   });
 
-  it("parses preview dynamic tool JSON text results from contentItems", () => {
+  it("parses browser dynamic tool JSON text results from contentItems", () => {
     const converter = new CodexThreadEventConverter("run-1");
 
     const converted = converter.convert({
@@ -196,14 +196,14 @@ describe("CodexThreadEventConverter", () => {
       params: {
         item: {
           type: "dynamicToolCall",
-          id: "call_preview_open_text",
-          name: "open_preview",
+          id: "call_browser_open_text",
+          name: "open_tab",
           status: "completed",
           contentItems: [
             {
               type: "inputText",
               text: JSON.stringify({
-                preview_session_id: "preview-text-1",
+                tab_id: "browser-text-1",
                 status: "opened",
                 url: "https://example.com",
                 title: "Example",
@@ -218,10 +218,10 @@ describe("CodexThreadEventConverter", () => {
       eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
       runId: "run-1",
       payload: {
-        invocation_id: "call_preview_open_text",
-        tool_name: "open_preview",
+        invocation_id: "call_browser_open_text",
+        tool_name: "open_tab",
         result: {
-          preview_session_id: "preview-text-1",
+          tab_id: "browser-text-1",
           status: "opened",
           url: "https://example.com",
           title: "Example",

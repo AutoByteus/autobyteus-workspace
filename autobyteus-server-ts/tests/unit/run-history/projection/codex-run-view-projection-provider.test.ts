@@ -43,9 +43,14 @@ describe("CodexRunViewProjectionProvider", () => {
     const provider = new CodexRunViewProjectionProvider(reader);
 
     const projection = await provider.buildProjection({
-      runId: "run-1",
-      runtimeKind: "codex_app_server",
-      metadata: createMetadata({ platformAgentRunId: null }),
+      source: {
+        runId: "run-1",
+        runtimeKind: "codex_app_server",
+        workspaceRootPath: "/tmp/workspace",
+        memoryDir: null,
+        platformRunId: null,
+        metadata: createMetadata({ platformAgentRunId: null }),
+      },
     });
 
     expect(projection).toBeNull();
@@ -93,14 +98,19 @@ describe("CodexRunViewProjectionProvider", () => {
     const provider = new CodexRunViewProjectionProvider(reader);
     try {
       const projection = await provider.buildProjection({
-        runId: "run-codex-1",
-        runtimeKind: "codex_app_server",
-        metadata: createMetadata({
+        source: {
           runId: "run-codex-1",
+          runtimeKind: "codex_app_server",
           workspaceRootPath,
-          llmModelIdentifier: "gpt-5.2-codex",
-          platformAgentRunId: "thread-1",
-        }),
+          memoryDir: null,
+          platformRunId: "thread-1",
+          metadata: createMetadata({
+            runId: "run-codex-1",
+            workspaceRootPath,
+            llmModelIdentifier: "gpt-5.2-codex",
+            platformAgentRunId: "thread-1",
+          }),
+        },
       });
 
       expect(reader.readThread).toHaveBeenCalledWith("thread-1", workspaceRootPath);
@@ -159,14 +169,19 @@ describe("CodexRunViewProjectionProvider", () => {
     const provider = new CodexRunViewProjectionProvider(reader);
     try {
       const projection = await provider.buildProjection({
-        runId: "run-codex-2",
-        runtimeKind: "codex_app_server",
-        metadata: createMetadata({
+        source: {
           runId: "run-codex-2",
-          agentDefinitionId: "agent-2",
+          runtimeKind: "codex_app_server",
           workspaceRootPath,
-          platformAgentRunId: "thread-2",
-        }),
+          memoryDir: null,
+          platformRunId: "thread-2",
+          metadata: createMetadata({
+            runId: "run-codex-2",
+            agentDefinitionId: "agent-2",
+            workspaceRootPath,
+            platformAgentRunId: "thread-2",
+          }),
+        },
       });
 
       expect(reader.readThread).toHaveBeenCalledWith("thread-2", workspaceRootPath);
@@ -237,13 +252,18 @@ describe("CodexRunViewProjectionProvider", () => {
     const provider = new CodexRunViewProjectionProvider(reader);
     try {
       const projection = await provider.buildProjection({
-        runId: "run-codex-4",
-        runtimeKind: "codex_app_server",
-        metadata: createMetadata({
+        source: {
           runId: "run-codex-4",
+          runtimeKind: "codex_app_server",
           workspaceRootPath,
-          platformAgentRunId: "thread-4",
-        }),
+          memoryDir: null,
+          platformRunId: "thread-4",
+          metadata: createMetadata({
+            runId: "run-codex-4",
+            workspaceRootPath,
+            platformAgentRunId: "thread-4",
+          }),
+        },
       });
 
       expect(projection).not.toBeNull();
@@ -297,14 +317,19 @@ describe("CodexRunViewProjectionProvider", () => {
     const missingWorkspacePath = `/tmp/non-existent-codex-workspace-${Date.now()}-${Math.random().toString(16).slice(2)}`;
 
     const projection = await provider.buildProjection({
-      runId: "run-codex-3",
-      runtimeKind: "codex_app_server",
-      metadata: createMetadata({
+      source: {
         runId: "run-codex-3",
-        agentDefinitionId: "agent-3",
+        runtimeKind: "codex_app_server",
         workspaceRootPath: missingWorkspacePath,
-        platformAgentRunId: "thread-3",
-      }),
+        memoryDir: null,
+        platformRunId: "thread-3",
+        metadata: createMetadata({
+          runId: "run-codex-3",
+          agentDefinitionId: "agent-3",
+          workspaceRootPath: missingWorkspacePath,
+          platformAgentRunId: "thread-3",
+        }),
+      },
     });
 
     expect(reader.readThread).toHaveBeenCalledWith("thread-3", process.cwd());

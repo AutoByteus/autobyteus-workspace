@@ -5,7 +5,6 @@ import fastify, { type FastifyInstance } from "fastify";
 import websocket from "@fastify/websocket";
 import { describe, expect, it, beforeEach, afterEach } from "vitest";
 import WebSocket from "ws";
-import { WorkspaceConfig } from "autobyteus-ts";
 import {
   PtySessionManager,
   TerminalHandler,
@@ -136,7 +135,7 @@ describe("Terminal websocket integration", () => {
   beforeEach(async () => {
     workspaceRoot = await createTempWorkspace();
     const workspace = await workspaceManager.createWorkspace(
-      new WorkspaceConfig({ rootPath: workspaceRoot }),
+      { rootPath: workspaceRoot },
     );
     workspaceId = workspace.workspaceId;
 

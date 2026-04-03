@@ -30,7 +30,7 @@ import {
   handleTeamStatus,
   handleTaskPlanEvent,
 } from './handlers';
-import { handlePreviewToolExecutionSucceeded } from './preview/previewToolExecutionSucceededHandler';
+import { handleBrowserToolExecutionSucceeded } from './browser/browserToolExecutionSucceededHandler';
 
 const shouldLogStreaming = (): boolean => {
   if (typeof window === 'undefined') return false;
@@ -291,7 +291,7 @@ export class TeamStreamingService {
 
       case 'TOOL_EXECUTION_SUCCEEDED':
         handleToolExecutionSucceeded(message.payload, memberContext);
-        void handlePreviewToolExecutionSucceeded(message.payload);
+        void handleBrowserToolExecutionSucceeded(message.payload);
         break;
 
       case 'TOOL_EXECUTION_FAILED':
