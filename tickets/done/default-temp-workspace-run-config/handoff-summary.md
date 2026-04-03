@@ -30,4 +30,5 @@
 
 - User verification received on `2026-04-03`.
 - Ticket archived to `tickets/done/default-temp-workspace-run-config/`.
-- Repository finalization and release preparation are in progress.
+- Repository finalization completed on merge commit `a33f389`.
+- Release `v1.2.56` completed on release commit `cbfbc83`.
