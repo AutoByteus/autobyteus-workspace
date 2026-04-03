@@ -26,4 +26,3 @@
 
 - Docs sync complete: `Yes`
 - Additional docs follow-up required: `No`
-

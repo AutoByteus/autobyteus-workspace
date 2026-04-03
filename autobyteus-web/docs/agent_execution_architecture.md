@@ -83,7 +83,8 @@ Incoming events are routed based on their `type`:
 | `TOOL_EXECUTION_SUCCEEDED`| `toolLifecycleHandler.handleToolExecutionSucceeded`| Sets terminal `success` + stores result payload.               |
 | `TOOL_EXECUTION_FAILED`   | `toolLifecycleHandler.handleToolExecutionFailed`   | Sets terminal `error` + stores failure details.                |
 | `TOOL_LOG`                | `toolLifecycleHandler.handleToolLog`               | Appends diagnostic execution logs only.                         |
-| `ARTIFACT_PERSISTED`      | `artifactHandler.handleArtifactPersisted`          | Updates the `AgentArtifactsStore` with a saved file.            |
+| `ARTIFACT_PERSISTED`      | `artifactHandler.handleArtifactPersisted`          | Marks touched files/outputs available after success and carries generated-output metadata. |
+| `ARTIFACT_UPDATED`        | `artifactHandler.handleArtifactUpdated`            | Refreshes edited/runtime-updated touched rows without implying new discoverability for already-visible rows. |
 | `TODO_LIST_UPDATE`        | `todoHandler.handleTodoListUpdate`                 | Syncs the agent's internal todo list with the UI.               |
 
 ---
@@ -98,7 +99,7 @@ These handlers are pure functions that take a payload and an `AgentContext`, and
 
 #### `segmentHandler.ts`
 
-- **`handleSegmentStart`**: Finds the current AI message (or creates one) and pushes a new Segment object (e.g., `ToolCallSegment`, `WriteFileSegment`). It also initializes "Sidecar" entries (see below) for things like live file artifacts.
+- **`handleSegmentStart`**: Finds the current AI message (or creates one) and pushes a new Segment object (e.g., `ToolCallSegment`, `WriteFileSegment`). It also initializes touched-file sidecar entries for `write_file` and `edit_file` as soon as the path is known.
 - **`handleSegmentContent`**: Finds the segment by ID and appends string deltas. This powers the "typewriter" effect.
 - **`handleSegmentEnd`**: Performs cleanup, sets the final tool name if it was streamed lazily, and marks the segment as "parsed" (ready for execution state changes).
 
@@ -114,9 +115,10 @@ These handlers are pure functions that take a payload and an `AgentContext`, and
 A key architectural pattern is the **Sidecar Store Pattern** for runtime data. Instead of keeping all state in a monolithic `AgentContext` (which is optimized for Chat UI), distinct data streams are routed to dedicated stores:
 
 1.  **Artifacts (`AgentArtifactsStore`)**:
-    - Listens to `write_file` segment events.
-    - Builds a real-time, read-only preview of files being written _before_ they are saved to disk.
-    - When `ARTIFACT_PERSISTED` arrives, it marks the file as saved.
+    - Listens to `write_file` and `edit_file` segment events plus `ARTIFACT_UPDATED` / `ARTIFACT_PERSISTED`.
+    - Builds a live touched-files / outputs projection for the current run.
+    - Owns one-shot discoverability: first visibility or explicit segment re-touch announces the row; refresh-only artifact events do not.
+    - Buffers `write_file` content for immediate preview, then lets the viewer resolve current workspace content or media URLs once entries become available.
 2.  **Activity (`AgentActivityStore`)**:
     - Tracks every tool call, file write, and terminal command as a linear history of "Activities".
     - Used for the "Activity Feed" UI in the backend/sidebar.

@@ -45,7 +45,7 @@ vi.mock('~/stores/agentSelectionStore', () => ({
 
 vi.mock('~/stores/agentArtifactsStore', () => ({
   useAgentArtifactsStore: () => ({
-    getActiveStreamingArtifactForRun: () => null,
+    getLatestVisibleArtifactSignalForRun: () => null,
   }),
 }));
 

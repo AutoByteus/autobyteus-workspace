@@ -5,6 +5,7 @@ import { describe, expect, it, vi } from "vitest";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 import type { AgentRunMetadata } from "../../../../src/run-history/store/agent-run-metadata-types.js";
+import type { RunProjectionProviderInput } from "../../../../src/run-history/projection/run-projection-types.js";
 
 vi.mock(
   "../../../../src/agent-execution/backends/codex/history/codex-thread-history-reader.js",
@@ -35,6 +36,22 @@ const createMetadata = (
   ...overrides,
 });
 
+const createProjectionInput = (
+  overrides: Partial<AgentRunMetadata> = {},
+): RunProjectionProviderInput => {
+  const metadata = createMetadata(overrides);
+  return {
+    source: {
+      runId: metadata.runId,
+      runtimeKind: metadata.runtimeKind,
+      workspaceRootPath: metadata.workspaceRootPath,
+      memoryDir: null,
+      platformRunId: metadata.platformAgentRunId,
+      metadata,
+    },
+  };
+};
+
 describe("CodexRunViewProjectionProvider", () => {
   it("returns null when thread id is missing", async () => {
     const reader: CodexThreadHistoryReader = {
@@ -42,16 +59,9 @@ describe("CodexRunViewProjectionProvider", () => {
     } as unknown as CodexThreadHistoryReader;
     const provider = new CodexRunViewProjectionProvider(reader);
 
-    const projection = await provider.buildProjection({
-      source: {
-        runId: "run-1",
-        runtimeKind: "codex_app_server",
-        workspaceRootPath: "/tmp/workspace",
-        memoryDir: null,
-        platformRunId: null,
-        metadata: createMetadata({ platformAgentRunId: null }),
-      },
-    });
+    const projection = await provider.buildProjection(
+      createProjectionInput({ platformAgentRunId: null }),
+    );
 
     expect(projection).toBeNull();
     expect(reader.readThread).not.toHaveBeenCalled();
@@ -97,21 +107,14 @@ describe("CodexRunViewProjectionProvider", () => {
     } as unknown as CodexThreadHistoryReader;
     const provider = new CodexRunViewProjectionProvider(reader);
     try {
-      const projection = await provider.buildProjection({
-        source: {
+      const projection = await provider.buildProjection(
+        createProjectionInput({
           runId: "run-codex-1",
-          runtimeKind: "codex_app_server",
           workspaceRootPath,
-          memoryDir: null,
-          platformRunId: "thread-1",
-          metadata: createMetadata({
-            runId: "run-codex-1",
-            workspaceRootPath,
-            llmModelIdentifier: "gpt-5.2-codex",
-            platformAgentRunId: "thread-1",
-          }),
-        },
-      });
+          llmModelIdentifier: "gpt-5.2-codex",
+          platformAgentRunId: "thread-1",
+        }),
+      );
 
       expect(reader.readThread).toHaveBeenCalledWith("thread-1", workspaceRootPath);
       expect(projection).not.toBeNull();
@@ -168,21 +171,14 @@ describe("CodexRunViewProjectionProvider", () => {
     } as unknown as CodexThreadHistoryReader;
     const provider = new CodexRunViewProjectionProvider(reader);
     try {
-      const projection = await provider.buildProjection({
-        source: {
+      const projection = await provider.buildProjection(
+        createProjectionInput({
           runId: "run-codex-2",
-          runtimeKind: "codex_app_server",
+          agentDefinitionId: "agent-2",
           workspaceRootPath,
-          memoryDir: null,
-          platformRunId: "thread-2",
-          metadata: createMetadata({
-            runId: "run-codex-2",
-            agentDefinitionId: "agent-2",
-            workspaceRootPath,
-            platformAgentRunId: "thread-2",
-          }),
-        },
-      });
+          platformAgentRunId: "thread-2",
+        }),
+      );
 
       expect(reader.readThread).toHaveBeenCalledWith("thread-2", workspaceRootPath);
       expect(projection).not.toBeNull();
@@ -251,20 +247,13 @@ describe("CodexRunViewProjectionProvider", () => {
     } as unknown as CodexThreadHistoryReader;
     const provider = new CodexRunViewProjectionProvider(reader);
     try {
-      const projection = await provider.buildProjection({
-        source: {
+      const projection = await provider.buildProjection(
+        createProjectionInput({
           runId: "run-codex-4",
-          runtimeKind: "codex_app_server",
           workspaceRootPath,
-          memoryDir: null,
-          platformRunId: "thread-4",
-          metadata: createMetadata({
-            runId: "run-codex-4",
-            workspaceRootPath,
-            platformAgentRunId: "thread-4",
-          }),
-        },
-      });
+          platformAgentRunId: "thread-4",
+        }),
+      );
 
       expect(projection).not.toBeNull();
       expect(
@@ -316,21 +305,14 @@ describe("CodexRunViewProjectionProvider", () => {
     const provider = new CodexRunViewProjectionProvider(reader);
     const missingWorkspacePath = `/tmp/non-existent-codex-workspace-${Date.now()}-${Math.random().toString(16).slice(2)}`;
 
-    const projection = await provider.buildProjection({
-      source: {
+    const projection = await provider.buildProjection(
+      createProjectionInput({
         runId: "run-codex-3",
-        runtimeKind: "codex_app_server",
+        agentDefinitionId: "agent-3",
         workspaceRootPath: missingWorkspacePath,
-        memoryDir: null,
-        platformRunId: "thread-3",
-        metadata: createMetadata({
-          runId: "run-codex-3",
-          agentDefinitionId: "agent-3",
-          workspaceRootPath: missingWorkspacePath,
-          platformAgentRunId: "thread-3",
-        }),
-      },
-    });
+        platformAgentRunId: "thread-3",
+      }),
+    );
 
     expect(reader.readThread).toHaveBeenCalledWith("thread-3", process.cwd());
     expect(projection).not.toBeNull();

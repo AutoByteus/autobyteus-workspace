@@ -34,11 +34,7 @@ export const convertCodexTurnEvent = (
         old_status: "RUNNING",
       });
     case CodexThreadEventName.TURN_DIFF_UPDATED:
-      return context.createEvent(
-        codexEventName,
-        AgentRunEventType.ARTIFACT_UPDATED,
-        serializePayload(payload),
-      );
+      return null;
     case CodexThreadEventName.TURN_TASK_PROGRESS_UPDATED:
       return context.createEvent(
         codexEventName,

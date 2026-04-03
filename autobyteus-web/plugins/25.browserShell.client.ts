@@ -18,4 +18,3 @@ export default defineNuxtPlugin(async () => {
   tagged[INITIALIZED_MARKER] = true;
   await browserShellStore.initialize();
 });
-

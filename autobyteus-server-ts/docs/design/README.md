@@ -9,3 +9,4 @@ This directory contains focused architecture/design decisions for `autobyteus-se
 - `mandatory-processor-defaults.md`
 - `streaming_parsing_architecture.md`
 - `terminal_service_unification.md`
+- `codex_raw_event_mapping.md`

@@ -68,4 +68,3 @@ export class WorkspaceShellWindowRegistry {
     return Array.from(this.shellsById.values());
   }
 }
-

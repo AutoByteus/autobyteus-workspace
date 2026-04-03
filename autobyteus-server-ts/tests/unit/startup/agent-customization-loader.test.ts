@@ -20,7 +20,7 @@ import { TokenUsagePersistenceProcessor } from "../../../src/agent-customization
 import { MediaUrlTransformerProcessor } from "../../../src/agent-customization/processors/response-customization/media-url-transformer-processor.js";
 import { MediaInputPathNormalizationPreprocessor } from "../../../src/agent-customization/processors/tool-invocation/media-input-path-normalization-preprocessor.js";
 import { MediaToolResultUrlTransformerProcessor } from "../../../src/agent-customization/processors/tool-result/media-tool-result-url-transformer-processor.js";
-import { AgentArtifactPersistenceProcessor } from "../../../src/agent-customization/processors/tool-result/agent-artifact-persistence-processor.js";
+import { AgentArtifactEventProcessor } from "../../../src/agent-customization/processors/tool-result/agent-artifact-event-processor.js";
 
 describe("loadAgentCustomizations", () => {
   let systemPromptSnapshot: Record<string, SystemPromptProcessorDefinition>;
@@ -104,7 +104,7 @@ describe("loadAgentCustomizations", () => {
       defaultToolExecutionResultProcessorRegistry.contains(MediaToolResultUrlTransformerProcessor.getName()),
     ).toBe(true);
     expect(
-      defaultToolExecutionResultProcessorRegistry.contains(AgentArtifactPersistenceProcessor.getName()),
+      defaultToolExecutionResultProcessorRegistry.contains(AgentArtifactEventProcessor.getName()),
     ).toBe(true);
   });
 });

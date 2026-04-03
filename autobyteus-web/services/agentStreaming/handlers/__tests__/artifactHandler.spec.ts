@@ -1,48 +1,58 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { setActivePinia, createPinia } from 'pinia';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { createPinia, setActivePinia } from 'pinia';
 import { handleArtifactPersisted, handleArtifactUpdated } from '../artifactHandler';
 import { useAgentArtifactsStore } from '~/stores/agentArtifactsStore';
-import type { ArtifactPersistedPayload, ArtifactUpdatedPayload } from '../../protocol/messageTypes';
 import type { AgentContext } from '~/types/agent/AgentContext';
+import type { ArtifactPersistedPayload, ArtifactUpdatedPayload } from '../../protocol/messageTypes';
 
 describe('artifactHandler', () => {
   let mockContext: AgentContext;
 
   beforeEach(() => {
     setActivePinia(createPinia());
-    mockContext = {} as AgentContext; // Handler doesn't use context currently
+    mockContext = {} as AgentContext;
   });
 
   describe('handleArtifactPersisted', () => {
-    it('should mark file artifact as persisted when type is file', () => {
+    it('marks an existing file touched entry as available without re-announcing discoverability', () => {
       const store = useAgentArtifactsStore();
       const runId = 'agent-1';
       const path = 'src/app.py';
-      
-      // First create a pending artifact (simulating streaming flow)
-      store.createPendingArtifact(runId, path, 'file');
-      store.finalizeArtifactStream(runId);
-      
+
+      store.upsertTouchedEntryFromSegmentStart(runId, {
+        invocationId: 'write-1',
+        path,
+        sourceTool: 'write_file',
+      });
+      store.markTouchedEntryPending(runId, 'write-1');
+      const beforeVersion = store.getLatestVisibleArtifactVersionForRun(runId);
+
       const payload: ArtifactPersistedPayload = {
         artifact_id: 'artifact-123',
         status: 'persisted',
         path,
         agent_id: runId,
         type: 'file',
+        workspace_root: '/workspace',
       };
-      
+
       handleArtifactPersisted(payload, mockContext);
-      
+
       const artifacts = store.getArtifactsForRun(runId);
-      expect(artifacts[0].status).toBe('persisted');
+      expect(artifacts).toHaveLength(1);
+      expect(artifacts[0].status).toBe('available');
+      expect(artifacts[0].backendArtifactId).toBe('artifact-123');
+      expect(artifacts[0].workspaceRoot).toBe('/workspace');
+      expect(artifacts[0].sourceTool).toBe('write_file');
+      expect(store.getLatestVisibleArtifactVersionForRun(runId)).toBe(beforeVersion);
     });
 
-    it('should create image artifact directly when type is image', () => {
+    it('creates generated output entries directly for persisted media artifacts', () => {
       const store = useAgentArtifactsStore();
       const runId = 'agent-1';
       const path = 'images/generated.png';
       const url = 'http://localhost:8000/rest/files/images/generated.png';
-      
+
       const payload: ArtifactPersistedPayload = {
         artifact_id: 'artifact-456',
         status: 'persisted',
@@ -51,69 +61,57 @@ describe('artifactHandler', () => {
         type: 'image',
         url,
       };
-      
+
       handleArtifactPersisted(payload, mockContext);
-      
+
       const artifacts = store.getArtifactsForRun(runId);
       expect(artifacts).toHaveLength(1);
       expect(artifacts[0].type).toBe('image');
-      expect(artifacts[0].status).toBe('persisted');
-      expect(artifacts[0].url).toBe(url);
-    });
-
-    it('should create audio artifact directly when type is audio', () => {
-      const store = useAgentArtifactsStore();
-      const runId = 'agent-1';
-      const path = 'audio/speech.mp3';
-      const url = 'http://localhost:8000/rest/files/audio/speech.mp3';
-      
-      const payload: ArtifactPersistedPayload = {
-        artifact_id: 'artifact-789',
-        status: 'persisted',
-        path,
-        agent_id: runId,
-        type: 'audio',
-        url,
-      };
-      
-      handleArtifactPersisted(payload, mockContext);
-      
-      const artifacts = store.getArtifactsForRun(runId);
-      expect(artifacts).toHaveLength(1);
-      expect(artifacts[0].type).toBe('audio');
-      expect(artifacts[0].status).toBe('persisted');
+      expect(artifacts[0].status).toBe('available');
+      expect(artifacts[0].sourceTool).toBe('generated_output');
       expect(artifacts[0].url).toBe(url);
     });
   });
 
   describe('handleArtifactUpdated', () => {
-    it('should touch existing artifact by path', () => {
+    it('refreshes an existing touched entry by path', () => {
       vi.useFakeTimers();
       vi.setSystemTime(new Date('2024-01-01T00:00:00Z'));
+
       const store = useAgentArtifactsStore();
       const runId = 'agent-1';
       const path = 'src/app.py';
 
-      store.createPendingArtifact(runId, path, 'file');
-      store.finalizeArtifactStream(runId);
-      store.markArtifactPersisted(runId, path);
+      store.upsertTouchedEntryFromSegmentStart(runId, {
+        invocationId: 'edit-1',
+        path,
+        sourceTool: 'edit_file',
+      });
       const before = store.getArtifactsForRun(runId)[0].updatedAt;
+      const beforeVersion = store.getLatestVisibleArtifactVersionForRun(runId);
 
       const payload: ArtifactUpdatedPayload = {
+        artifact_id: 'artifact-789',
         path,
         agent_id: runId,
         type: 'file',
+        workspace_root: '/workspace',
       };
-      
+
       vi.setSystemTime(new Date('2024-01-01T00:00:01Z'));
       handleArtifactUpdated(payload, mockContext);
-      const after = store.getArtifactsForRun(runId)[0].updatedAt;
 
-      expect(after).not.toBe(before);
+      const artifact = store.getArtifactsForRun(runId)[0];
+      expect(artifact.status).toBe('pending');
+      expect(artifact.backendArtifactId).toBe('artifact-789');
+      expect(artifact.workspaceRoot).toBe('/workspace');
+      expect(artifact.updatedAt).not.toBe(before);
+      expect(store.getLatestVisibleArtifactVersionForRun(runId)).toBe(beforeVersion);
+
       vi.useRealTimers();
     });
 
-    it('should create a persisted artifact when missing', () => {
+    it('creates a pending touched entry when update arrives before segment registration', () => {
       const store = useAgentArtifactsStore();
       const runId = 'agent-1';
       const path = 'src/new_file.py';
@@ -129,7 +127,8 @@ describe('artifactHandler', () => {
       const artifacts = store.getArtifactsForRun(runId);
       expect(artifacts).toHaveLength(1);
       expect(artifacts[0].path).toBe(path);
-      expect(artifacts[0].status).toBe('persisted');
+      expect(artifacts[0].status).toBe('pending');
+      expect(artifacts[0].sourceTool).toBe('runtime_file_change');
     });
   });
 });

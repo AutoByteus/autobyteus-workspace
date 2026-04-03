@@ -1,3 +1,10 @@
+/**
+ * Segment event handlers - Business logic for SEGMENT_* events.
+ * 
+ * Layer 3 of the agent streaming architecture - pure functions that
+ * handle segment lifecycle events and update AgentContext state.
+ */
+
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AIMessage } from '~/types/conversation';
 import type { AIResponseSegment, ToolCallSegment, WriteFileSegment, TerminalCommandSegment, EditFileSegment, ThinkSegment, AIResponseTextSegment, ToolInvocationLifecycle } from '~/types/segments';
@@ -9,6 +16,9 @@ import { useAgentArtifactsStore } from '~/stores/agentArtifactsStore';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { isPlaceholderToolName } from '~/utils/toolNamePlaceholders';
 
+/**
+ * Extract context text for the activity store (e.g. filename, command, or partial tool name).
+ */
 function extractContextText(payload: SegmentStartPayload): string {
   if (payload.segment_type === 'write_file') {
     return payload.metadata?.path || 'new file';
@@ -59,6 +69,10 @@ function extractToolCallArgumentsFromMetadata(metadata?: Record<string, any>): R
   return args;
 }
 
+/**
+ * Handle SEGMENT_START event - creates a new segment and adds it to the current AI message.
+ * Also initializes streaming artifacts for 'write_file' segments.
+ */
 export function handleSegmentStart(
   payload: SegmentStartPayload,
   context: AgentContext
@@ -98,9 +112,18 @@ export function handleSegmentStart(
 
   aiMessage.segments.push(segment);
 
-  if (payload.segment_type === 'write_file' && payload.metadata?.path) {
+  if (
+    (payload.segment_type === 'write_file' || payload.segment_type === 'edit_file') &&
+    typeof payload.metadata?.path === 'string' &&
+    payload.metadata.path.trim().length > 0
+  ) {
     const store = useAgentArtifactsStore();
-    store.createPendingArtifact(context.state.runId, payload.metadata.path, 'file');
+    store.upsertTouchedEntryFromSegmentStart(context.state.runId, {
+      invocationId: payload.id,
+      path: payload.metadata.path,
+      type: 'file',
+      sourceTool: payload.segment_type,
+    });
   }
 
   if (
@@ -108,23 +131,16 @@ export function handleSegmentStart(
   ) {
     const activityStore = useAgentActivityStore();
     const contextText = extractContextText(payload);
-    
-    // Map backend type to frontend store type
     let storeType: 'tool_call' | 'write_file' | 'terminal_command' | 'edit_file' = 'tool_call';
-    let toolName: string = payload.segment_type; // Default generic name
+    let toolName: string = payload.segment_type;
 
     if (payload.segment_type === 'write_file') {
       storeType = 'write_file';
-      // toolName remains 'write_file'
     } else if (payload.segment_type === 'run_bash') {
       storeType = 'terminal_command';
-      // toolName remains 'run_bash' (default from payload.segment_type)
     } else if (payload.segment_type === 'edit_file') {
       storeType = 'edit_file';
-      // toolName remains 'edit_file'
     } else if (payload.segment_type === 'tool_call') {
-      // For generic tool calls, we STRICTLY require the tool name from metadata.
-      // If it's missing, it's a backend bug.
       if (payload.metadata?.tool_name) {
         toolName = payload.metadata.tool_name;
       } else {
@@ -267,7 +283,6 @@ export function handleSegmentContent(
 
   appendContentToSegment(segment, delta);
 
-  // --- Live Artifact Streaming ---
   if (segment.type === 'write_file') {
     const store = useAgentArtifactsStore();
     store.appendArtifactContent(context.state.runId, payload.delta);
@@ -301,28 +316,20 @@ export function handleSegmentEnd(
 
   finalizeSegment(segment, payload.metadata);
 
-  // --- Live Artifact Streaming ---
   if (segment.type === 'write_file') {
      const store = useAgentArtifactsStore();
-     store.finalizeArtifactStream(context.state.runId);
+     store.markTouchedEntryPending(context.state.runId, payload.id);
   }
 
-  // --- Sidecar Activity Store ---
   if (['tool_call', 'write_file', 'terminal_command', 'edit_file'].includes(segment.type)) {
     const activityStore = useAgentActivityStore();
     const toolSegment = segment as ToolInvocationLifecycle;
-    // Preserve stronger lifecycle states that may already have been applied by tool events.
     if (toolSegment.status === 'parsed') {
       activityStore.updateActivityStatus(context.state.runId, payload.id, 'parsed');
     }
     if (!isPlaceholderToolName(toolSegment.toolName)) {
       activityStore.updateActivityToolName(context.state.runId, payload.id, toolSegment.toolName);
     }
-    
-    // Potentially update context text if it was empty (e.g. terminal command)
-    // For now, we rely on the initial extraction or specific handlers.
-
-    // Update Arguments in Sidecar (e.g. command content or file content)
     if (segment.type === 'write_file') {
       const wfSegment = segment as WriteFileSegment;
       activityStore.updateActivityArguments(context.state.runId, payload.id, { 
@@ -352,10 +359,6 @@ export function handleSegmentEnd(
   }
 }
 
-// ============================================================================
-// Helper Functions
-// ============================================================================
-
 /**
  * Find or create the current AI message for streaming content.
  */
@@ -366,7 +369,6 @@ export function findOrCreateAIMessage(context: AgentContext): AIMessage {
     return lastMessage;
   }
 
-  // Create new AI message
   const newMessage: AIMessage = {
     type: 'ai',
     text: '',
@@ -397,7 +399,6 @@ export function findSegmentById(
         if (matchesStreamSegmentIdentity(segment, segmentId, segmentType)) {
           return segment;
         }
-        // Also check invocationId for tool_call segments
         if (segment.type === 'tool_call' && segment.invocationId === segmentId) {
           return segment;
         }
@@ -421,7 +422,6 @@ function appendContentToSegment(segment: AIResponseSegment, delta: string): void
       break;
 
     case 'tool_call':
-      // Accumulate raw content for display during streaming
       const toolSegment = segment as ToolCallSegment;
       toolSegment.rawContent = (toolSegment.rawContent || '') + delta;
       break;
@@ -529,7 +529,6 @@ function finalizeSegment(
       }
     }
 
-    // Transition from 'parsing' to 'parsed' when segment ends
     if (toolSegment.status === 'parsing') {
       toolSegment.status = 'parsed';
     }

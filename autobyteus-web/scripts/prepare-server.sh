@@ -36,18 +36,6 @@ mkdir -p "$TARGET_DIR"
 echo -e "${GREEN}✓${NC} Created target directory: $TARGET_DIR"
 
 echo -e "\n${YELLOW}Building server and dependencies...${NC}"
-if [ -f "${WORKSPACE_ROOT}/pnpm-workspace.yaml" ]; then
-  pnpm -C "$WORKSPACE_ROOT" -r --filter autobyteus-ts build
-else
-  if [ -d "${WORKSPACE_ROOT}/autobyteus-ts" ]; then
-    pnpm -C "${WORKSPACE_ROOT}/autobyteus-ts" install --no-frozen-lockfile
-    pnpm -C "${WORKSPACE_ROOT}/autobyteus-ts" build
-  else
-    echo -e "${RED}Error: autobyteus-ts not found at ${WORKSPACE_ROOT}/autobyteus-ts${NC}"
-    exit 1
-  fi
-fi
-
 if [ -f "${SERVER_REPO_DIR}/pnpm-lock.yaml" ]; then
   pnpm -C "$SERVER_REPO_DIR" install --frozen-lockfile
 else

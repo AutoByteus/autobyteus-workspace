@@ -79,6 +79,9 @@ const { activeTab, visibleTabs, setActiveTab } = useRightSideTabs();
 const { toggleRightPanel } = useRightPanel();
 
 const currentAgentRunId = computed(() => activeContextStore.activeAgentContext?.state.runId ?? '');
+const latestVisibleArtifactSignal = computed(() =>
+  artifactsStore.getLatestVisibleArtifactSignalForRun(currentAgentRunId.value),
+);
 
 const handleTabSelect = (tabName: string) => {
   setActiveTab(tabName as any);
@@ -121,9 +124,9 @@ watch(() => {
   }
 }, { deep: true });
 
-// Auto-switch to Artifacts tab when a new artifact starts streaming
-watch(() => artifactsStore.getActiveStreamingArtifactForRun(currentAgentRunId.value), (newArtifact) => {
-  if (newArtifact && activeTab.value !== 'artifacts') {
+// Auto-switch to Artifacts tab when a touched file becomes newly visible
+watch(latestVisibleArtifactSignal, (newSignal) => {
+  if (newSignal && activeTab.value !== 'artifacts') {
     setActiveTab('artifacts');
   }
 });

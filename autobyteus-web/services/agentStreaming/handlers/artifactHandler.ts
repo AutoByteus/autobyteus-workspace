@@ -1,4 +1,4 @@
-import { useAgentArtifactsStore, type AgentArtifact } from '~/stores/agentArtifactsStore';
+import { useAgentArtifactsStore } from '~/stores/agentArtifactsStore';
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { ArtifactPersistedPayload, ArtifactUpdatedPayload } from '../protocol/messageTypes';
 
@@ -11,21 +11,15 @@ export const handleArtifactPersisted = (
   const store = useAgentArtifactsStore();
   
   const MEDIA_AND_DOC_TYPES = ['image', 'audio', 'video', 'pdf', 'csv', 'excel'];
-  
-  if (MEDIA_AND_DOC_TYPES.includes(type)) {
-    // Media artifacts are created here (no streaming phase)
-    store.createMediaArtifact({
-        id: payload.artifact_id,
-        runId,
-        path,
-        type: type as any,
-        url: url || '',
-        workspaceRoot: workspace_root ?? null
-    });
-  } else {
-    // File artifacts were already created during streaming
-    store.markArtifactPersisted(runId, path, workspace_root ?? null);
-  }
+
+  store.markTouchedEntryAvailableFromArtifactPersisted(runId, {
+    artifactId: payload.artifact_id,
+    path,
+    type,
+    url: url ?? null,
+    workspaceRoot: workspace_root ?? null,
+    sourceTool: MEDIA_AND_DOC_TYPES.includes(type) ? 'generated_output' : undefined,
+  });
 };
 
 export const handleArtifactUpdated = (
@@ -34,11 +28,10 @@ export const handleArtifactUpdated = (
 ): void => {
   const store = useAgentArtifactsStore();
   const runId = payload.agent_id;
-  store.touchArtifact(
-    runId,
-    payload.path,
-    payload.type as AgentArtifact['type'],
-    payload.artifact_id,
-    payload.workspace_root ?? null
-  );
+  store.refreshTouchedEntryFromArtifactUpdate(runId, {
+    artifactId: payload.artifact_id ?? null,
+    path: payload.path,
+    type: payload.type,
+    workspaceRoot: payload.workspace_root ?? null,
+  });
 };

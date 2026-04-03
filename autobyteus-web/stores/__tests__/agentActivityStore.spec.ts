@@ -53,6 +53,53 @@ describe('agentActivityStore', () => {
     expect(store.hasAwaitingApproval(agentId)).toBe(false);
   });
 
+  it('does not regress stronger lifecycle states back to parsed', () => {
+    const store = useAgentActivityStore();
+    const agentId = 'test-agent';
+
+    store.addActivity(agentId, {
+      invocationId: '1',
+      toolName: 'tool',
+      type: 'tool_call',
+      status: 'parsing',
+      contextText: '',
+      arguments: {},
+      logs: [],
+      result: null,
+      error: null,
+      timestamp: new Date(),
+    });
+
+    store.updateActivityStatus(agentId, '1', 'awaiting-approval');
+    store.updateActivityStatus(agentId, '1', 'parsed');
+
+    expect(store.getActivities(agentId)[0]?.status).toBe('awaiting-approval');
+    expect(store.hasAwaitingApproval(agentId)).toBe(true);
+  });
+
+  it('does not regress terminal states when late parsed reconciliation arrives', () => {
+    const store = useAgentActivityStore();
+    const agentId = 'test-agent';
+
+    store.addActivity(agentId, {
+      invocationId: '1',
+      toolName: 'tool',
+      type: 'tool_call',
+      status: 'parsing',
+      contextText: '',
+      arguments: {},
+      logs: [],
+      result: null,
+      error: null,
+      timestamp: new Date(),
+    });
+
+    store.updateActivityStatus(agentId, '1', 'success');
+    store.updateActivityStatus(agentId, '1', 'parsed');
+
+    expect(store.getActivities(agentId)[0]?.status).toBe('success');
+  });
+
   it('appends logs', () => {
     const store = useAgentActivityStore();
     const agentId = 'test-agent';

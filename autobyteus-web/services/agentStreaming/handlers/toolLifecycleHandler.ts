@@ -39,21 +39,8 @@ import {
 } from './toolLifecycleParsers';
 import { setStreamSegmentIdentity } from './segmentIdentity';
 import { isPlaceholderToolName } from '~/utils/toolNamePlaceholders';
-
-const buildInvocationAliases = (invocationId: string): string[] => {
-  const trimmed = invocationId.trim();
-  if (!trimmed) {
-    return [];
-  }
-  const aliases = [trimmed];
-  if (trimmed.includes(':')) {
-    const base = trimmed.split(':')[0]?.trim();
-    if (base && !aliases.includes(base)) {
-      aliases.push(base);
-    }
-  }
-  return aliases;
-};
+import { useAgentArtifactsStore } from '~/stores/agentArtifactsStore';
+import { buildInvocationAliases } from '~/utils/invocationAliases';
 
 const isToolLifecycleSegment = (segment: unknown): segment is ToolLifecycleSegment => {
   if (!segment || typeof segment !== 'object') {
@@ -332,6 +319,39 @@ const mergeArguments = (
   }
 };
 
+const syncTouchedEntryTerminalStatus = (
+  context: AgentContext,
+  invocationId: string,
+  segment: ToolLifecycleSegment,
+  status: 'available' | 'failed',
+): void => {
+  if (
+    (segment.type !== 'write_file' && segment.type !== 'edit_file') ||
+    typeof segment.path !== 'string' ||
+    segment.path.trim().length === 0
+  ) {
+    return;
+  }
+
+  const store = useAgentArtifactsStore();
+  const runId = context.state.runId;
+  const didUpdate =
+    status === 'available'
+      ? store.markTouchedEntryAvailableByInvocation(runId, invocationId)
+      : store.markTouchedEntryFailedByInvocation(runId, invocationId);
+
+  if (didUpdate) {
+    return;
+  }
+
+  store.ensureTouchedEntryTerminalStateFromLifecycle(runId, {
+    path: segment.path,
+    type: 'file',
+    sourceTool: segment.type,
+    status,
+  });
+};
+
 export function handleToolApprovalRequested(
   payload: ToolApprovalRequestedPayload,
   context: AgentContext,
@@ -402,6 +422,7 @@ export function handleToolDenied(payload: ToolDeniedPayload, context: AgentConte
 
   const transitioned = applyDeniedState(segment, parsed.reason, parsed.error);
   if (transitioned) {
+    syncTouchedEntryTerminalStatus(context, parsed.invocationId, segment, 'failed');
     updateActivityStatus(context, parsed.invocationId, 'denied');
     setActivityResult(context, parsed.invocationId, null, segment.error);
   }
@@ -461,6 +482,7 @@ export function handleToolExecutionSucceeded(
 
   const transitioned = applyExecutionSucceededState(segment, parsed.result);
   if (transitioned) {
+    syncTouchedEntryTerminalStatus(context, parsed.invocationId, segment, 'available');
     updateActivityStatus(context, parsed.invocationId, 'success');
     setActivityResult(context, parsed.invocationId, segment.result, null);
   }
@@ -485,6 +507,7 @@ export function handleToolExecutionFailed(
 
   const transitioned = applyExecutionFailedState(segment, parsed.error);
   if (transitioned) {
+    syncTouchedEntryTerminalStatus(context, parsed.invocationId, segment, 'failed');
     updateActivityStatus(context, parsed.invocationId, 'error');
     setActivityResult(context, parsed.invocationId, null, segment.error);
   }

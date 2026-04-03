@@ -18,7 +18,7 @@ import { TokenUsagePersistenceProcessor } from "../agent-customization/processor
 import { UserInputContextBuildingProcessor } from "../agent-customization/processors/prompt/user-input-context-building-processor.js";
 import { WorkspacePathSanitizationProcessor } from "../agent-customization/processors/security-processor/workspace-path-sanitization-processor.js";
 import { MediaToolResultUrlTransformerProcessor } from "../agent-customization/processors/tool-result/media-tool-result-url-transformer-processor.js";
-import { AgentArtifactPersistenceProcessor } from "../agent-customization/processors/tool-result/agent-artifact-persistence-processor.js";
+import { AgentArtifactEventProcessor } from "../agent-customization/processors/tool-result/agent-artifact-event-processor.js";
 import { MediaInputPathNormalizationPreprocessor } from "../agent-customization/processors/tool-invocation/media-input-path-normalization-preprocessor.js";
 import { MediaUrlTransformerProcessor } from "../agent-customization/processors/response-customization/media-url-transformer-processor.js";
 
@@ -103,7 +103,7 @@ export function loadAgentCustomizations(): void {
 
   registerToolInvocationPreprocessor(MediaInputPathNormalizationPreprocessor);
   registerToolResultProcessor(MediaToolResultUrlTransformerProcessor);
-  registerToolResultProcessor(AgentArtifactPersistenceProcessor);
+  registerToolResultProcessor(AgentArtifactEventProcessor);
 
   logger.info("Agent customization processor registration complete.");
 }

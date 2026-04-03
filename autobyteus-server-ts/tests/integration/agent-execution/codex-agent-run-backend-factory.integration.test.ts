@@ -992,7 +992,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     }
   }, FLOW_TEST_TIMEOUT_MS);
 
-  it("converts edit-file activity into edit_file segments and artifact events", async () => {
+  it("converts raw Codex fileChange activity into segment, lifecycle, and artifact events", async () => {
     const workspaceRoot = await createWorkspace("codex-backend-edit-file");
     clientManager = new CodexAppServerClientManager({
       createClient: (cwd) =>
@@ -1065,6 +1065,43 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
       expect(metadata.tool_name).toBe("edit_file");
       expect(typeof metadata.path).toBe("string");
       expect(String(metadata.path).trim().length).toBeGreaterThan(0);
+      const invocationId = resolveInvocationId(editSegmentStart.payload);
+      expect(invocationId).toBeTruthy();
+      await waitForEvent(
+        events,
+        (event) =>
+          event.eventType === AgentRunEventType.TOOL_EXECUTION_STARTED &&
+          resolveInvocationId(event.payload) === invocationId &&
+          event.payload.tool_name === "edit_file",
+      );
+      await waitForEvent(
+        events,
+        (event) =>
+          event.eventType === AgentRunEventType.ARTIFACT_UPDATED &&
+          event.payload.path === metadata.path &&
+          event.payload.type === "file",
+      );
+      await waitForEvent(
+        events,
+        (event) =>
+          event.eventType === AgentRunEventType.TOOL_LOG &&
+          resolveInvocationId(event.payload) === invocationId &&
+          event.payload.tool_name === "edit_file",
+      );
+      await waitForEvent(
+        events,
+        (event) =>
+          event.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED &&
+          resolveInvocationId(event.payload) === invocationId &&
+          event.payload.tool_name === "edit_file",
+      );
+      await waitForEvent(
+        events,
+        (event) =>
+          event.eventType === AgentRunEventType.ARTIFACT_PERSISTED &&
+          event.payload.path === metadata.path &&
+          event.payload.type === "file",
+      );
       await waitForEvent(
         events,
         (event) =>

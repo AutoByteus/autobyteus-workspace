@@ -40,29 +40,52 @@ const artifactsStore = useAgentArtifactsStore();
 const activeContextStore = useActiveContextStore();
 
 const currentAgentRunId = computed(() => activeContextStore.activeAgentContext?.state.runId || '');
-// Use store getter to get artifacts
-const artifacts = computed(() => artifactsStore.getArtifactsForRun(currentAgentRunId.value));
-const activeStream = computed(() => artifactsStore.getActiveStreamingArtifactForRun(currentAgentRunId.value));
+const artifacts = computed(() => {
+  return [...artifactsStore.getArtifactsForRun(currentAgentRunId.value)].sort((left, right) =>
+    right.updatedAt.localeCompare(left.updatedAt),
+  );
+});
+const latestVisibleArtifactSignal = computed(() =>
+  artifactsStore.getLatestVisibleArtifactSignalForRun(currentAgentRunId.value),
+);
 
-const selectedArtifact = ref<AgentArtifact | null>(null);
-const selectedArtifactId = computed(() => selectedArtifact.value?.id);
-
-// Auto-select streaming artifact
-watch(activeStream, (newArtifact) => {
-  if (newArtifact) {
-    selectedArtifact.value = newArtifact;
+const selectedArtifactId = ref<string | null>(null);
+const selectedArtifact = computed<AgentArtifact | null>(() => {
+  if (!selectedArtifactId.value) {
+    return null;
   }
-}, { immediate: true });
+  return artifacts.value.find((artifact) => artifact.id === selectedArtifactId.value) || null;
+});
 
-// Auto-select first artifact if none selected and list is not empty
-watch(artifacts, (newArtifacts) => {
-    if (!selectedArtifact.value && newArtifacts.length > 0) {
-        selectedArtifact.value = newArtifacts[0];
+watch(
+  latestVisibleArtifactSignal,
+  () => {
+    const latestArtifactId = artifactsStore.getLatestVisibleArtifactIdForRun(currentAgentRunId.value);
+    if (latestArtifactId) {
+      selectedArtifactId.value = latestArtifactId;
     }
-}, { immediate: true });
+  },
+  { immediate: true },
+);
+
+watch(
+  artifacts,
+  (newArtifacts) => {
+    if (newArtifacts.length === 0) {
+      selectedArtifactId.value = null;
+      return;
+    }
+
+    const hasCurrentSelection = newArtifacts.some((artifact) => artifact.id === selectedArtifactId.value);
+    if (!hasCurrentSelection) {
+      selectedArtifactId.value = newArtifacts[0].id;
+    }
+  },
+  { immediate: true },
+);
 
 const selectArtifact = (artifact: AgentArtifact) => {
-  selectedArtifact.value = artifact;
+  selectedArtifactId.value = artifact.id;
 };
 
 // --- Resizing Logic (Mirrored from FileExplorerLayout) ---

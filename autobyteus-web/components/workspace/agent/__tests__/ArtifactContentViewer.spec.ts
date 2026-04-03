@@ -1,27 +1,58 @@
-import { describe, it, expect, vi } from 'vitest';
-import { mount } from '@vue/test-utils';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { flushPromises, mount } from '@vue/test-utils';
 import ArtifactContentViewer from '../ArtifactContentViewer.vue';
-import { createTestingPinia } from '@pinia/testing';
-import { useWorkspaceStore } from '~/stores/workspace';
-import { useAgentContextsStore } from '~/stores/agentContextsStore';
 
-// Mock child components to avoid rendering complexity
-vi.mock('~/components/fileExplorer/FileViewer.vue', () => ({
-  default: { template: '<div data-testid="file-viewer"></div>' }
+const {
+  determineFileTypeMock,
+  mockGetRun,
+  mockWorkspaceStore,
+  mockWindowNodeContextStore,
+} = vi.hoisted(() => ({
+  determineFileTypeMock: vi.fn(),
+  mockGetRun: vi.fn(),
+  mockWorkspaceStore: {
+    workspaces: {} as Record<string, any>,
+  },
+  mockWindowNodeContextStore: {
+    getBoundEndpoints: vi.fn(() => ({ rest: 'http://localhost:3000/rest' })),
+  },
 }));
 
-// Mock utils
+vi.mock('~/components/fileExplorer/FileViewer.vue', () => ({
+  default: {
+    name: 'FileViewer',
+    props: ['file', 'mode', 'readOnly', 'error'],
+    template:
+      '<div data-testid="file-viewer">{{ (file.content || file.url || "") + "||" + (error || "") }}</div>',
+  },
+}));
+
 vi.mock('~/utils/fileExplorer/fileUtils', () => ({
-  determineFileType: vi.fn().mockResolvedValue('Text')
+  determineFileType: determineFileTypeMock,
+}));
+
+vi.mock('~/stores/agentContextsStore', () => ({
+  useAgentContextsStore: () => ({
+    getRun: mockGetRun,
+  }),
+}));
+
+vi.mock('~/stores/workspace', () => ({
+  useWorkspaceStore: () => mockWorkspaceStore,
+}));
+
+vi.mock('~/stores/windowNodeContextStore', () => ({
+  useWindowNodeContextStore: () => mockWindowNodeContextStore,
 }));
 
 describe('ArtifactContentViewer', () => {
   const defaultArtifact = {
-    id: 'test-id',
+    id: 'agent-1:src/test.md',
     runId: 'agent-1',
-    path: 'test.md',
+    path: 'src/test.md',
     type: 'file',
     status: 'streaming',
+    sourceTool: 'write_file',
     content: '# Hello',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -29,63 +60,137 @@ describe('ArtifactContentViewer', () => {
 
   const mountComponent = (artifact: any) => {
     return mount(ArtifactContentViewer, {
-      props: {
-        artifact
-      },
+      props: { artifact },
       global: {
-        plugins: [createTestingPinia({
-          createSpy: vi.fn,
-          initialState: {
-            workspace: { workspaces: {} },
-            agentContexts: { activeContext: null }
-          }
-        })],
         stubs: {
-          Icon: true
-        }
-      }
+          Icon: true,
+        },
+      },
     });
   };
 
+  beforeEach(() => {
+    determineFileTypeMock.mockReset();
+    determineFileTypeMock.mockResolvedValue('Text');
+    mockGetRun.mockReset();
+    mockGetRun.mockReturnValue({ config: { workspaceId: 'ws-1' } });
+    mockWorkspaceStore.workspaces = {
+      'ws-1': {
+        workspaceId: 'ws-1',
+        absolutePath: '/workspace',
+      },
+    };
+    mockWindowNodeContextStore.getBoundEndpoints.mockReset();
+    mockWindowNodeContextStore.getBoundEndpoints.mockReturnValue({ rest: 'http://localhost:3000/rest' });
+    vi.stubGlobal('fetch', vi.fn());
+  });
+
   it('defaults to edit mode when artifact is streaming', async () => {
     const wrapper = mountComponent({ ...defaultArtifact, status: 'streaming' });
-    await wrapper.vm.$nextTick();
+    await flushPromises();
 
-    const fileViewer = wrapper.findComponent({ name: 'FileViewer' }); // or find by stub
-    // Since we didn't give the mock a name, we can find by the data-testid we put in the template or just findComponent
-    // Using the mocked component definition might be tricky if not exported.
-    // Easier: find by data-testid if we had one on the component ROOT, but FileViewer is a child.
-    // Actually, findComponent(FileViewer) works if we import it.
-    
-    // We already imported: vi.mock... but we need the actual import symbol to pass to findComponent if we want type safety,
-    // but here we can just use the stub. Use find('[data-testid="file-viewer"]') if the stub renders that.
-    // The stub template is '<div data-testid="file-viewer"></div>'.
-    // HOWEVER, Vue Test Utils findComponent works with the 'name' or the component object.
-    
-    // Let's rely on the props passed to the stub.
-    // We can access vm.viewMode if we expose it or just check the child.
-    
     expect((wrapper.vm as any).viewMode).toBe('edit');
   });
 
-  it('defaults to edit mode when artifact is pending_approval', async () => {
-    const wrapper = mountComponent({ ...defaultArtifact, status: 'pending_approval' });
-    await wrapper.vm.$nextTick();
+  it('uses buffered write_file content and skips workspace fetch before availability', async () => {
+    const fetchMock = vi.mocked(global.fetch);
+    const wrapper = mountComponent({
+      ...defaultArtifact,
+      status: 'pending',
+      sourceTool: 'write_file',
+      content: 'buffered draft',
+    });
+
+    await flushPromises();
+
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(wrapper.find('[data-testid="file-viewer"]').text()).toContain('buffered draft');
     expect((wrapper.vm as any).viewMode).toBe('edit');
   });
 
-  it('defaults to preview mode when artifact is persisted and supports preview', async () => {
-    const wrapper = mountComponent({ ...defaultArtifact, status: 'persisted' });
-    // Need to wait for async operations (updateFileType, etc.)
-    await wrapper.vm.$nextTick();
-    await new Promise(resolve => setTimeout(resolve, 10)); 
+  it('fetches current workspace content for available text artifacts', async () => {
+    const fetchMock = vi.mocked(global.fetch);
+    fetchMock.mockResolvedValue({
+      ok: true,
+      status: 200,
+      text: async () => 'updated workspace content',
+    } as Response);
+
+    const wrapper = mountComponent({
+      ...defaultArtifact,
+      path: '/workspace/src/test.md',
+      status: 'available',
+      sourceTool: 'edit_file',
+      workspaceRoot: '/workspace',
+      content: 'stale local copy',
+    });
+
+    await flushPromises();
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      'http://localhost:3000/rest/workspaces/ws-1/content?path=src%2Ftest.md',
+      { cache: 'no-store' },
+    );
+    expect(wrapper.find('[data-testid="file-viewer"]').text()).toContain('updated workspace content');
     expect((wrapper.vm as any).viewMode).toBe('preview');
   });
 
-  it('defaults to edit mode when artifact is persisted but does not support preview', async () => {
-    const wrapper = mountComponent({ ...defaultArtifact, path: 'test.ts', status: 'persisted' });
-    await wrapper.vm.$nextTick();
-    await new Promise(resolve => setTimeout(resolve, 10));
-    expect((wrapper.vm as any).viewMode).toBe('edit');
+  it('does not prepend an extra slash for absolute artifact paths in the header', async () => {
+    const wrapper = mountComponent({
+      ...defaultArtifact,
+      path: '/workspace/src/test.md',
+      status: 'available',
+      sourceTool: 'edit_file',
+      workspaceRoot: '/workspace',
+    });
+
+    await flushPromises();
+
+    const headerPath = wrapper.get('[data-testid="artifact-path-display"]').text();
+    expect(headerPath).toBe('/workspace/src/test.md');
+    expect(headerPath.startsWith('//')).toBe(false);
+    expect(wrapper.text()).not.toContain('//workspace/src/test.md');
+  });
+
+  it('shows deleted state when workspace content returns 404', async () => {
+    const fetchMock = vi.mocked(global.fetch);
+    fetchMock.mockResolvedValue({
+      ok: false,
+      status: 404,
+      text: async () => '',
+    } as Response);
+
+    const wrapper = mountComponent({
+      ...defaultArtifact,
+      path: '/workspace/src/missing.md',
+      status: 'available',
+      sourceTool: 'edit_file',
+      workspaceRoot: '/workspace',
+    });
+
+    await flushPromises();
+
+    expect(wrapper.text()).toContain('File not found');
+  });
+
+  it('surfaces fetch errors for non-404 failures', async () => {
+    const fetchMock = vi.mocked(global.fetch);
+    fetchMock.mockResolvedValue({
+      ok: false,
+      status: 500,
+      text: async () => '',
+    } as Response);
+
+    const wrapper = mountComponent({
+      ...defaultArtifact,
+      path: '/workspace/src/test.md',
+      status: 'available',
+      sourceTool: 'edit_file',
+      workspaceRoot: '/workspace',
+    });
+
+    await flushPromises();
+
+    expect(wrapper.find('[data-testid="file-viewer"]').text()).toContain('Failed to fetch content (500)');
   });
 });

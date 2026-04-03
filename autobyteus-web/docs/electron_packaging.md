@@ -294,6 +294,7 @@ npx ts-node build/scripts/build.ts
 ```
 
 `scripts/prepare-server.sh` now builds the Node server, deploys it into `resources/server`, and rebuilds native modules (e.g., `node-pty`) for the Electron runtime.
+The web project only calls the server packaging boundary; any shared server-side prerequisites remain owned by `autobyteus-server-ts` rather than being prepared directly from `autobyteus-web`.
 
 On Linux packaging, the script also forces Prisma engine bundling for both OpenSSL targets (`debian-openssl-1.1.x` and `debian-openssl-3.0.x`) and fails the build if either target is missing from:
 

@@ -49,6 +49,8 @@ Event normalization:
 - `src/agent-execution/backends/codex/events/codex-thread-event-converter.ts`
 - `src/agent-execution/backends/codex/events/codex-item-event-converter.ts`
 - `src/agent-execution/backends/codex/events/codex-raw-response-event-converter.ts`
+- `src/agent-execution/backends/codex/events/codex-thread-lifecycle-event-converter.ts`
+- Detailed raw-event audit table: `docs/design/codex_raw_event_mapping.md`
 
 Team runtime:
 
@@ -84,11 +86,20 @@ The projection path uses:
 - domain run ids for AutoByteus-owned identity
 - Codex thread ids for Codex-native identity
 
+## Event-Normalization Rules
+
+- Raw Codex event interpretation stays inside `src/agent-execution/backends/codex/events/`.
+- `item/started` / `item/completed` with `item.type = fileChange` are the authoritative raw owners for Codex `edit_file` lifecycle and artifact availability.
+- `turn/diff/updated` is treated as supplemental diff information and is intentionally not promoted into lifecycle or artifact ownership.
+- `rawResponseItem/completed` for custom tool completions is not the authoritative owner of `apply_patch` file mutation state.
+- The durable raw-event mapping table lives in `docs/design/codex_raw_event_mapping.md` and should be updated before adding new Codex raw-event handling.
+
 ## Operational Notes
 
 - Approval requests, tool calls, file changes, and final-answer deltas are all normalized into the standard runtime event spine.
 - In practice, Codex may emit visible final-answer text only after reasoning finishes, which can make text streaming appear as a late burst even though lifecycle/tool events are still live.
 - Team member identity is deterministic and server-owned; Codex thread ids are stored separately as runtime-native references.
+- Raw Codex debug capture is available through `CODEX_THREAD_RAW_EVENT_LOG_DIR`; see `docs/design/codex_raw_event_mapping.md` for the audit workflow and file format.
 
 ## MCP Mode
 

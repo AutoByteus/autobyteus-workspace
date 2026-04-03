@@ -136,20 +136,24 @@ export class CodexThreadEventConverter {
     resolveLogEntry: (payload) => this.itemEventPayloadParser.resolveLogEntry(payload),
   };
 
-  constructor(private readonly runId: string) {
+  constructor(
+    private readonly runId: string,
+    private readonly workspaceRoot: string | null = null,
+  ) {
   }
 
-  public convert(event: CodexAppServerMessage): AgentRunEvent | null {
+  public convert(event: CodexAppServerMessage): AgentRunEvent[] {
     const codexEventName = event.method.trim();
     const payload = event.params;
     this.rawCodexEventSequence += 1;
     logRawCodexThreadEventDetails(this.runId, this.rawCodexEventSequence, event);
 
     if (codexEventName.startsWith("codex/event/")) {
-      return null;
+      return [];
     }
     if (isCodexTurnEventName(codexEventName)) {
-      return convertCodexTurnEvent(this.turnEventConverterContext, codexEventName, payload);
+      const converted = convertCodexTurnEvent(this.turnEventConverterContext, codexEventName, payload);
+      return converted ? [converted] : [];
     }
     if (
       codexEventName === CodexThreadEventName.LOCAL_TOOL_APPROVAL_REQUESTED ||
@@ -160,20 +164,22 @@ export class CodexThreadEventConverter {
       return convertCodexItemEvent(this.itemEventConverterContext, codexEventName, payload);
     }
     if (isCodexRawResponseEventName(codexEventName)) {
-      return convertCodexRawResponseEvent(
+      const converted = convertCodexRawResponseEvent(
         this.rawResponseEventConverterContext,
         codexEventName,
         payload,
       );
+      return converted ? [converted] : [];
     }
     if (isCodexThreadLifecycleEventName(codexEventName)) {
-      return convertCodexThreadLifecycleEvent(
+      const converted = convertCodexThreadLifecycleEvent(
         this.threadLifecycleEventConverterContext,
         codexEventName,
         payload,
       );
+      return converted ? [converted] : [];
     }
-    return null;
+    return [];
   }
 
   private createSegmentContentEvent(
@@ -208,10 +214,19 @@ export class CodexThreadEventConverter {
     eventType: AgentRunEventType,
     payload: Record<string, unknown>,
   ): AgentRunEvent {
+    const normalizedPayload =
+      eventType === AgentRunEventType.ARTIFACT_PERSISTED ||
+      eventType === AgentRunEventType.ARTIFACT_UPDATED
+        ? {
+            agent_id: this.runId,
+            ...(this.workspaceRoot ? { workspace_root: this.workspaceRoot } : {}),
+            ...payload,
+          }
+        : payload;
     return {
       eventType,
       runId: this.runId,
-      payload,
+      payload: normalizedPayload,
       statusHint: deriveCodexAgentRunStatusHint(codexEventName),
     };
   }

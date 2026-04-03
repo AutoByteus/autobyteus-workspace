@@ -2038,13 +2038,6 @@ export type CreateWorkspaceMutationVariables = Exact<{
 
 export type CreateWorkspaceMutation = { __typename?: 'Mutation', createWorkspace: { __typename: 'WorkspaceInfo', workspaceId: string, name: string, fileExplorer?: string | null, absolutePath?: string | null } };
 
-export type GetAgentArtifactsQueryVariables = Exact<{
-  runId: Scalars['String']['input'];
-}>;
-
-
-export type GetAgentArtifactsQuery = { __typename?: 'Query', agentArtifacts: Array<{ __typename?: 'AgentArtifact', id: string, runId: string, path: string, type: string, workspaceRoot?: string | null, createdAt: string, updatedAt: string }> };
-
 export type GetAgentCustomizationOptionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -3879,42 +3872,6 @@ export function useCreateWorkspaceMutation(options: VueApolloComposable.UseMutat
   return VueApolloComposable.useMutation<CreateWorkspaceMutation, CreateWorkspaceMutationVariables>(CreateWorkspaceDocument, options);
 }
 export type CreateWorkspaceMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<CreateWorkspaceMutation, CreateWorkspaceMutationVariables>;
-export const GetAgentArtifactsDocument = gql`
-    query GetAgentArtifacts($runId: String!) {
-  agentArtifacts(runId: $runId) {
-    id
-    runId
-    path
-    type
-    workspaceRoot
-    createdAt
-    updatedAt
-  }
-}
-    `;
-
-/**
- * __useGetAgentArtifactsQuery__
- *
- * To run a query within a Vue component, call `useGetAgentArtifactsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetAgentArtifactsQuery` returns an object from Apollo Client that contains result, loading and error properties
- * you can use to render your UI.
- *
- * @param variables that will be passed into the query
- * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
- *
- * @example
- * const { result, loading, error } = useGetAgentArtifactsQuery({
- *   runId: // value for 'runId'
- * });
- */
-export function useGetAgentArtifactsQuery(variables: GetAgentArtifactsQueryVariables | VueCompositionApi.Ref<GetAgentArtifactsQueryVariables> | ReactiveFunction<GetAgentArtifactsQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentArtifactsQuery, GetAgentArtifactsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentArtifactsQuery, GetAgentArtifactsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentArtifactsQuery, GetAgentArtifactsQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<GetAgentArtifactsQuery, GetAgentArtifactsQueryVariables>(GetAgentArtifactsDocument, variables, options);
-}
-export function useGetAgentArtifactsLazyQuery(variables?: GetAgentArtifactsQueryVariables | VueCompositionApi.Ref<GetAgentArtifactsQueryVariables> | ReactiveFunction<GetAgentArtifactsQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentArtifactsQuery, GetAgentArtifactsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentArtifactsQuery, GetAgentArtifactsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentArtifactsQuery, GetAgentArtifactsQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<GetAgentArtifactsQuery, GetAgentArtifactsQueryVariables>(GetAgentArtifactsDocument, variables, options);
-}
-export type GetAgentArtifactsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentArtifactsQuery, GetAgentArtifactsQueryVariables>;
 export const GetAgentCustomizationOptionsDocument = gql`
     query GetAgentCustomizationOptions {
   availableToolNames
