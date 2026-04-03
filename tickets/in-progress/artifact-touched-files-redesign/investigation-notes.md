@@ -228,3 +228,30 @@
   - keep any generic merge/upsert helper internal to the store, not as the caller-facing API
   - align handler calls so each handler depends on the one store boundary that matches its domain subject
   - rerun runtime-call-stack review against this stricter boundary shape before any further code edits
+
+
+### 2026-04-02 — Streaming-layer encapsulation investigation refresh after the post-milestone architecture finding
+
+- Finding summary:
+  - The touched-files spine is now strong, but the shared streaming conversation-projection boundary is still not authoritative.
+  - `autobyteus-web/services/agentStreaming/handlers/toolLifecycleHandler.ts` depends on exported projection helpers from `segmentHandler.ts` (`findOrCreateAIMessage`, `findSegmentById`) while also depending on lower-level projection internals (`createSegmentFromPayload`, `setStreamSegmentIdentity`, direct `aiMessage.segments.push(...)`).
+  - `autobyteus-web/services/agentStreaming/handlers/agentStatusHandler.ts` and `autobyteus-web/services/agentStreaming/handlers/teamHandler.ts` also depend on `segmentHandler.ts` helper exports for message creation/lookup.
+- Why this matters under the shared design principles:
+  - This violates the explicit boundary-encapsulation rule: callers above the owning boundary are depending on both the outer boundary and its internals at the same time.
+  - It also leaves one relevant spine under-modeled: the shared streaming conversation projection spine (`handler -> conversation projection boundary -> conversation messages/segments`) is real and materially shapes behavior, but the owner is currently blurred.
+  - `segmentHandler.ts` is acting as both a concrete `SEGMENT_*` handler and a repository-like shared projection boundary, which weakens ownership clarity and file responsibility.
+- Scope judgment:
+  - This issue predates the touched-files ticket, but it is still a `Design Impact` issue for the current workflow because the current ticket changed the same streaming subsystem and the stricter design-principles review now makes the ownership gap explicit.
+  - The correct fix is not an ad hoc local patch; it requires an updated design basis and runtime-call-stack model before any more code edits.
+- Immediate redesign target:
+  - Introduce one explicit authoritative boundary in `autobyteus-web/services/agentStreaming/` for streaming conversation projection.
+  - That boundary should own message/segment lookup, active AI-message creation, synthetic segment creation, segment identity wiring, append/remove mutation, and any small internal helpers needed to do those operations.
+  - `segmentHandler.ts`, `toolLifecycleHandler.ts`, `agentStatusHandler.ts`, and `teamHandler.ts` should all depend on that boundary rather than mixing `segmentHandler` exports with lower-level internals.
+- Candidate file-scope implications:
+  - Add: `autobyteus-web/services/agentStreaming/streamConversationProjection.ts` (name provisional)
+  - Modify: `segmentHandler.ts`, `toolLifecycleHandler.ts`, `agentStatusHandler.ts`, `teamHandler.ts`
+  - Move or internalize: `segmentIdentity.ts` functionality under the projection owner if that better matches final ownership
+- Follow-up design questions for Stage 3 / Stage 4:
+  - What is the cleanest public API for the new projection boundary so handlers can express their domain intent without reaching into lower-level mechanics?
+  - Which helpers remain internal to that owner, and which callers are allowed to depend on the public boundary only?
+  - Should invocation-alias normalization remain duplicated, or is it now a reusable owned structure worth extracting while the streaming boundary is being reshaped?

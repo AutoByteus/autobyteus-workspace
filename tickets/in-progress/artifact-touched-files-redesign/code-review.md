@@ -7,10 +7,10 @@ Keep one canonical `code-review.md` file for the ticket. Record later review rou
 ## Review Meta
 
 - Ticket: `artifact-touched-files-redesign`
-- Review Round: `8`
-- Trigger Stage: `User-requested complete deep rerun from Stage 10 after reloading shared design principles, common design practices, and Stage 8 review criteria`
-- Prior Review Round Reviewed: `7`
-- Latest Authoritative Round: `8`
+- Review Round: `9`
+- Trigger Stage: `Post-milestone architecture continuation after a new shared-design-principles finding exposed a streaming-layer boundary-encapsulation defect`
+- Prior Review Round Reviewed: `8`
+- Latest Authoritative Round: `9`
 - Workflow state source: `tickets/in-progress/artifact-touched-files-redesign/workflow-state.md`
 - Investigation notes reviewed as context: `tickets/in-progress/artifact-touched-files-redesign/investigation-notes.md`
 - Earlier design artifact(s) reviewed as context: `tickets/in-progress/artifact-touched-files-redesign/proposed-design.md`, `tickets/in-progress/artifact-touched-files-redesign/implementation.md`, `tickets/in-progress/artifact-touched-files-redesign/api-e2e-testing.md`, `tickets/in-progress/artifact-touched-files-redesign/docs-sync.md`
@@ -31,8 +31,9 @@ Round rules:
   - Changed source: `autobyteus-web/stores/agentArtifactsStore.ts`, `autobyteus-web/stores/agentActivityStore.ts`, `autobyteus-web/utils/toolInvocationStatus.ts`, `autobyteus-web/services/agentStreaming/handlers/segmentHandler.ts`, `autobyteus-web/services/agentStreaming/handlers/artifactHandler.ts`, `autobyteus-web/services/agentStreaming/handlers/toolLifecycleHandler.ts`, `autobyteus-web/services/agentStreaming/handlers/toolLifecycleState.ts`, `autobyteus-web/components/workspace/agent/ArtifactsTab.vue`, `autobyteus-web/components/workspace/agent/ArtifactContentViewer.vue`, `autobyteus-web/components/workspace/agent/ArtifactItem.vue`, `autobyteus-web/components/workspace/agent/ArtifactList.vue`, `autobyteus-web/components/layout/RightSideTabs.vue`, `autobyteus-server-ts/src/agent-customization/processors/tool-result/agent-artifact-event-processor.ts`, `autobyteus-server-ts/src/startup/agent-customization-loader.ts`, `autobyteus-server-ts/src/api/graphql/schema.ts`
   - Changed tests and validation artifacts: touched-files frontend specs, backend processor/loader specs, `tickets/in-progress/artifact-touched-files-redesign/api-e2e-testing.md`
   - Cleanup scope rechecked: removed web GraphQL artifact query path, removed backend artifact persistence/query subsystem, deleted persistence-only tests
+  - Additional architecture-context files reviewed: `autobyteus-web/services/agentStreaming/handlers/agentStatusHandler.ts`, `autobyteus-web/services/agentStreaming/handlers/teamHandler.ts`
 - Why these files:
-  - This round is a complete deep rerun of the touched-files redesign. The review rechecked the full end-to-end spine, the major bounded local spines, the backend artifact projection boundary, the viewer/content path, and the docs-sync implications after the v3 store-boundary refactor.
+  - This round rechecked the touched-files redesign again after the milestone commit, but the new focus was the shared streaming conversation-projection spine. The review inspected the changed touched-files files plus the neighboring handlers that still share the conversation/segment projection boundary.
 
 ## Prior Findings Resolution Check (Mandatory On Round >1)
 
@@ -71,20 +72,38 @@ Use investigation notes and earlier design artifacts as context only. If they co
 
 | Check | Result (`Pass`/`Fail`) | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Data-flow spine inventory clarity and preservation under shared principles | `Pass` | The full touched-files spine is easy to trace end to end: segment start -> touched-entry projection -> artifact/lifecycle reconciliation -> latest-visible selection -> viewer content resolution, with the backend `AgentArtifactEventProcessor` still owning success-gated runtime artifact emission. The bounded local spines are also explicit: discoverability in `agentArtifactsStore.ts`, activity-status monotonicity in `toolInvocationStatus.ts` / `agentActivityStore.ts`, and content resolution in `ArtifactContentViewer.vue`. | `None` |
-| Ownership boundary preservation and clarity | `Pass` | `agentArtifactsStore.ts` is the authoritative touched-entry owner, `artifactHandler.ts` stays the artifact-event ingress owner, `toolLifecycleHandler.ts` stays the lifecycle closure owner, and the backend processor stays the success gate for artifact projection. No caller depends on both the outer touched-entry boundary and one of its internals at the same time. | `None` |
-| API / interface / query / command clarity | `Pass` | The v3 boundary split is correct: `refreshTouchedEntryFromArtifactUpdate`, `markTouchedEntryAvailableFromArtifactPersisted`, and `ensureTouchedEntryTerminalStateFromLifecycle` map directly to the actual domain subjects. A small unused public action (`clearLatestVisibleArtifact`) remains in the store, but it does not blur the main runtime boundary enough to fail the category. | `None` |
-| Separation of concerns and file placement | `Pass` | Files remain in the correct owners: store for projection/discoverability, handlers for ingress/reconciliation, components for UI reaction/content, backend processor for runtime event emission, and schema for removal cleanup only. The layout stays readable without artificial fragmentation. | `None` |
-| Shared-structure / data-model tightness and reusable owned structures | `Pass` | `AgentArtifact` stays tight and singular. The shared path-based projection merge lives in one store-local helper. The only remaining minor pressure is duplicated invocation-alias normalization between the store and lifecycle handler, but it is bounded and does not create divergent runtime behavior in the current scope. | `None` |
-| Naming quality and local readability | `Pass` | Names are now concrete and responsibility-aligned across the main boundary methods, store types, and handler calls. There are no misleading generic mutator names left on the main spine. | `None` |
-| Validation strength | `Pass` | Stage 7 round 6 directly validates the v3 boundary split and lifecycle fallback behavior, and earlier round-5 backend/removal evidence remains authoritative because those code paths were unchanged in this rerun. The owner-targeted tests remain durable and maintainable. | `None` |
-| Runtime correctness under edge cases | `Pass` | Refresh-only updates, update-before-segment cases, persisted availability, lifecycle fallback creation, failed/denied tool-result suppression, and late `SEGMENT_END` ordering all remain covered and structurally correct. | `None` |
-| No backward-compatibility / no legacy retention | `Pass` | The implementation still avoids compatibility shims and dual-path behavior. The old GraphQL/persistence runtime path and the old generic caller-facing store mutator remain removed rather than preserved. | `None` |
-| Cleanup completeness | `Pass` | The meaningful legacy runtime surfaces are removed. The only remaining minor cleanup observation in changed scope is the unused `clearLatestVisibleArtifact` action on the store, which is small and isolated enough not to fail the round but keeps the category at the pass floor instead of a higher score. | `None` |
+| Data-flow spine inventory clarity and preservation under shared principles | `Fail` | The touched-files spine itself is clear, but the shared streaming conversation-projection spine is still blurred. `toolLifecycleHandler.ts` uses `findOrCreateAIMessage` / `findSegmentById` from `segmentHandler.ts` while also calling lower-level projection mechanics (`createSegmentFromPayload`, `setStreamSegmentIdentity`, direct `aiMessage.segments.push(...)`). `agentStatusHandler.ts` and `teamHandler.ts` also depend on `segmentHandler.ts` helper exports. That means one relevant spine still lacks a single explicit owner. | `Design Impact re-entry; model and introduce one authoritative streaming conversation-projection boundary before more code edits.` |
+| Ownership boundary preservation and clarity | `Fail` | `segmentHandler.ts` is still both a concrete `SEGMENT_*` handler and the de facto shared projection boundary for other handlers. This violates the shared rule that callers above an authoritative boundary should not also depend on its internals. | `Design Impact re-entry; restore one outer boundary for message/segment projection.` |
+| API / interface / query / command clarity | `Fail` | The handler-facing API for shared conversation projection is not explicit. Other handlers currently depend on exported utilities from `segmentHandler.ts` instead of a purpose-named projection boundary, then bypass that partial boundary with lower-level mechanics. | `Design Impact re-entry; define a purpose-named projection boundary whose public API matches the shared subject directly.` |
+| Separation of concerns and file placement | `Fail` | `segmentHandler.ts` now carries both its handler responsibility and a shared repository-like projection role. That file-responsibility blur is the main architecture defect in round 9. | `Design Impact re-entry; split shared projection ownership into its own file under the streaming subsystem.` |
+| Shared-structure / data-model tightness and reusable owned structures | `Pass` | The touched-entry row model remains tight. The remaining shared-structure pressure is now in streaming projection helpers and invocation-alias normalization, not in the touched-files data model itself. | `None for this gate; consider follow-up extraction during the v4 refactor if it materially improves the new boundary.` |
+| Naming quality and local readability | `Pass` | Names inside the touched-files boundary remain clear. The naming issue is structural rather than lexical: `segmentHandler.ts` sounds like a handler because it is a handler, but other handlers still treat it partly like a projection service. | `None` |
+| Validation strength | `Pass` | Existing tests still cover the touched-files behavior and earlier blockers, but they do not change the round-9 architecture finding because the issue is ownership shape, not a failing runtime edge case. | `None` |
+| Runtime correctness under edge cases | `Pass` | The branch still behaves correctly for the touched-files scenarios already validated. The round-9 blocker is architecture quality, not a newly proven runtime regression. | `None` |
+| No backward-compatibility / no legacy retention | `Pass` | The branch still cleanly removes the old artifact persistence/query path. The new issue is unrelated to legacy retention. | `None` |
+| Cleanup completeness | `Pass` | The artifact cleanup remains strong. The current blocker is the older shared streaming-boundary design that was never explicitly cleaned up. | `None` |
 
 ## Findings
 
-No blocking or advisory findings in round `8`.
+### `CR-005` — shared streaming conversation projection boundary is not authoritative
+
+- Severity: `Blocker`
+- Classification: `Design Impact`
+- Evidence:
+  - `autobyteus-web/services/agentStreaming/handlers/toolLifecycleHandler.ts:17-18, 40, 141-191`
+  - `autobyteus-web/services/agentStreaming/handlers/segmentHandler.ts:363-407, 444-456`
+  - `autobyteus-web/services/agentStreaming/handlers/agentStatusHandler.ts:15, 68-77, 102-120`
+  - `autobyteus-web/services/agentStreaming/handlers/teamHandler.ts:18, 25-52`
+- Problem:
+  - `toolLifecycleHandler.ts` depends on exported projection helpers from `segmentHandler.ts`, but it also depends on lower-level projection mechanics directly.
+  - `agentStatusHandler.ts` and `teamHandler.ts` also use `segmentHandler.ts` as the shared projection entrypoint.
+  - This violates the shared design-principles encapsulation rule: higher-level callers are depending on both an outer boundary and its internals at the same time.
+- Why this is a blocker:
+  - The touched-files work now passes its own boundary checks, but the shared streaming subsystem still has an unresolved authoritative-boundary defect in changed scope.
+  - Continuing code edits without redesign would normalize the bypass instead of repairing it.
+- Required fix direction:
+  - Introduce one explicit streaming conversation-projection boundary (for example `autobyteus-web/services/agentStreaming/streamConversationProjection.ts`) and route all handler-level message/segment lookup and mutation through it.
+  - `segmentHandler.ts` should stop acting as the shared projection API, and lower-level segment construction/identity mechanisms should live beneath the new outer boundary instead of being imported directly by other handlers.
 
 ## Review Score
 
@@ -92,20 +111,20 @@ This score is advisory, not a replacement for the gate decision.
 
 | Priority | Category | Score (10 max) | Notes |
 | --- | --- | --- | --- |
-| `1` | `Data-Flow Spine Inventory and Clarity` | `9.5` | The primary and bounded-local spines are all easy to name and trace in the current implementation. |
-| `2` | `Ownership Clarity and Boundary Encapsulation` | `9.0` | Ownership is clear again end to end; the v3 boundary split removed the last caller-facing ambiguity. |
-| `3` | `API / Interface / Query / Command Clarity` | `9.0` | Main APIs are explicit and subject-owned; the unused `clearLatestVisibleArtifact` action is the only minor reason this stays at the pass floor instead of higher. |
-| `4` | `Separation of Concerns and File Placement` | `9.0` | Responsibilities and placement remain coherent across store, handlers, UI, and backend projection. |
-| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | `9.0` | The row model is tight and the projection merge is centralized; duplicated invocation-alias normalization remains a minor polish item. |
-| `6` | `Naming Quality and Local Readability` | `9.0` | The main boundary names are concrete, unsurprising, and aligned with real responsibility. |
-| `7` | `Validation Strength` | `9.0` | Validation is owner-targeted, durable, and sufficient for the changed spine and edge cases. |
-| `8` | `Runtime Correctness Under Edge Cases` | `9.0` | The critical unhappy paths and cross-boundary transitions remain explicitly protected. |
-| `9` | `No Backward-Compatibility / No Legacy Retention` | `9.5` | The redesign remains a clean-cut replacement with no compatibility fallback or retained old runtime path. |
-| `10` | `Cleanup Completeness` | `9.0` | Legacy runtime cleanup is strong; one small unused store action keeps this at the floor instead of higher. |
+| `1` | `Data-Flow Spine Inventory and Clarity` | `8.5` | The touched-files spine is strong, but one adjacent shared streaming spine is still not inventoried cleanly enough in code ownership. |
+| `2` | `Ownership Clarity and Boundary Encapsulation` | `7.5` | Round 9 fails here: handlers still depend on both a shared outer boundary and lower-level projection internals. |
+| `3` | `API / Interface / Query / Command Clarity` | `7.8` | The touched-entry store API is clear, but the shared handler-facing conversation-projection API is still implicit and split. |
+| `4` | `Separation of Concerns and File Placement` | `7.8` | `segmentHandler.ts` still owns both concrete handler logic and shared projection behavior. |
+| `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | `8.8` | Data-model quality is still good; the next extraction target is the shared streaming projection boundary. |
+| `6` | `Naming Quality and Local Readability` | `8.8` | Local names are readable, but the structural ownership behind them is still mixed. |
+| `7` | `Validation Strength` | `8.8` | Validation remains strong for touched-files behavior, but this round is failing on architecture shape rather than missing tests. |
+| `8` | `Runtime Correctness Under Edge Cases` | `9.0` | The reviewed runtime behaviors remain correct. |
+| `9` | `No Backward-Compatibility / No Legacy Retention` | `9.5` | Legacy cleanup remains strong. |
+| `10` | `Cleanup Completeness` | `9.0` | Artifact cleanup is still good; the streaming-boundary cleanup is the remaining gap. |
 
-- Overall: `9.1 / 10`
-- `91 / 100`
-- Score interpretation: `This deep rerun clears the strict Stage 8 bar. The touched-files redesign now has a clean end-to-end spine, clear authoritative boundaries, and no blocker-level architectural gap under the shared design principles.`
+- Overall: `8.5 / 10`
+- `85 / 100`
+- Score interpretation: `The touched-files redesign remains strong, but the shared streaming conversation-projection boundary still violates the explicit encapsulation rule from the design principles. This is a real design-impact blocker for a strict architecture pass.`
 
 ## Round History
 
@@ -118,29 +137,30 @@ This score is advisory, not a replacement for the gate decision.
 | 5 | User-requested deep rerun from Stage 10 with strict design-principles pass | Yes | Yes | Fail | No | Round 5 found a discoverability-signal invariant break (`CR-003`) and failure-gating defect in backend artifact-event emission (`CR-004`); the user requested an upstream redesign pass, so re-entry was handled as `Design Impact`. |
 | 6 | Re-entry after design-impact remediation | Yes | No | Pass | No | Round 6 rechecked the full touched-files spine, confirmed the one-shot discoverability and success-gating fixes, and found no remaining Stage 8 blockers. |
 | 7 | Re-entry after the v3 explicit store-boundary refactor | Yes | No | Pass | No | Round 7 confirmed that the public touched-entry store boundary now matches the runtime spine subjects directly and raised the architecture score to the desired bar. |
-| 8 | User-requested complete deep rerun from Stage 10 with reloaded shared review references | Yes | No | Pass | Yes | Round 8 rechecked the complete touched-files architecture under the strict current criteria and found no new blocker-level gap. |
+| 8 | User-requested complete deep rerun from Stage 10 with reloaded shared review references | Yes | No | Pass | No | Round 8 rechecked the complete touched-files architecture under the strict current criteria and found no new blocker-level gap. |
+| 9 | Post-milestone architecture continuation from Stage 10 | Yes | Yes | Fail | Yes | Round 9 found `CR-005`: the shared streaming conversation-projection boundary is still split across `segmentHandler.ts` exports and lower-level projection internals, so the workflow returns to a `Design Impact` path. |
 
 ## Gate Decision
 
-- Latest authoritative review round: `8`
-- Decision: `Pass`
-- Classification: `N/A`
-- Required return path: `N/A`
-- Implementation can proceed to `Stage 9`: `Yes`
+- Latest authoritative review round: `9`
+- Decision: `Fail`
+- Classification: `Design Impact`
+- Required return path: `Stage 1 -> Stage 3 -> Stage 4 -> Stage 5 -> Stage 6 -> Stage 7 -> Stage 8`
+- Implementation can proceed to `Stage 9`: `No`
 - Mandatory pass checks:
   - All changed source files have effective non-empty line count `<=500`: `Yes`
   - Required `>220` changed-line delta-gate assessments are recorded for all applicable changed source files: `Yes`
-  - Data-flow spine inventory clarity and preservation under shared principles = `Pass`
-  - Ownership boundary preservation = `Pass`
-  - API / interface / query / command clarity = `Pass`
-  - Separation of concerns and file responsibility clarity = `Pass`
-  - Shared-structure / data-model tightness = `Pass`
-  - Naming quality and naming-to-responsibility alignment = `Pass`
-  - Validation strength = `Pass`
-  - Runtime correctness under edge cases = `Pass`
-  - No backward-compatibility / no legacy retention = `Pass`
-  - Cleanup completeness = `Pass`
-- Notes: `Round 8 confirms that the current touched-files implementation satisfies the shared design principles and the stricter current Stage 8 review criteria. No new blocker or re-entry condition was found.`
+  - Data-flow spine inventory clarity and preservation under shared principles = `No`
+  - Ownership boundary preservation = `No`
+  - API / interface / query / command clarity = `No`
+  - Separation of concerns and file responsibility clarity = `No`
+  - Shared-structure / data-model tightness = `Yes`
+  - Naming quality and naming-to-responsibility alignment = `Yes`
+  - Validation strength = `Yes`
+  - Runtime correctness under edge cases = `Yes`
+  - No backward-compatibility / no legacy retention = `Yes`
+  - Cleanup completeness = `Yes`
+- Notes: `The touched-files branch is no longer blocked on its artifact-store architecture. The new blocker is the shared streaming conversation-projection boundary, which still violates the authoritative-boundary rule from the shared design principles. Re-entry must repair that boundary before code review can pass again.`
 
 Authority rule:
 - The latest review round recorded above is the active Stage 8 truth for transition and re-entry decisions.

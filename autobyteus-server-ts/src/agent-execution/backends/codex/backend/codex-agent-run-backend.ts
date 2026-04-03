@@ -32,16 +32,18 @@ export class CodexAgentRunBackend implements AgentRunBackend {
     this.runContext = runContext;
     this.codexThread = codexThread;
     this.threadManager = threadManager;
-    this.eventConverter = new CodexThreadEventConverter(this.runId);
+    this.eventConverter = new CodexThreadEventConverter(this.runId, this.codexThread.workingDirectory);
     this.unsubscribeFromThread = this.codexThread.subscribeAppServerMessages((event) => {
-      const convertedEvent = this.eventConverter.convert(event);
-      if (!convertedEvent) {
+      const convertedEvents = this.eventConverter.convert(event);
+      if (convertedEvents.length === 0) {
         return;
       }
-      dispatchRuntimeEvent({
-        listeners: this.listeners,
-        event: convertedEvent,
-      });
+      for (const convertedEvent of convertedEvents) {
+        dispatchRuntimeEvent({
+          listeners: this.listeners,
+          event: convertedEvent,
+        });
+      }
     });
   }
 

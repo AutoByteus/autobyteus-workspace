@@ -2,7 +2,7 @@
 
 ## Design Version
 
-- Current Version: `v3`
+- Current Version: `v4`
 
 ## Revision History
 
@@ -11,6 +11,7 @@
 | v1 | Initial draft | Defined artifact-area redesign as a live touched-files projection, preserved runtime artifact events while removing backend artifact persistence/query storage, and specified frontend ownership for early file visibility, content resolution, and failure-state handling. | 1 |
 | v2 | Stage 8 round 5 design-impact re-entry | Tightened two missing owner invariants: discoverability is now first-visibility-or-explicit-retouch only, and artifact availability is now success-authorized rather than inferred from any refresh/update event. Runtime `ARTIFACT_UPDATED` is treated as metadata freshness only; generated outputs appear only after confirmed successful persisted events. | 5 |
 | v3 | Post-pass architecture iteration | Tightened the touched-entry store boundary so refresh, persisted availability, and lifecycle fallback are explicit public operations instead of one generic event-shaped upsert API. | 6 |
+| v4 | Post-milestone architecture re-entry | Added an explicit streaming conversation-projection boundary to remove mixed-level handler dependencies and restore authoritative ownership for message/segment lookup and synthetic segment creation. | 9 |
 
 ## Artifact Basis
 
@@ -56,6 +57,8 @@ The v3 refinement is about public boundary clarity, not product behavior. The st
 - lifecycle fallback availability/failure
 
 Any generic merge/upsert helper remains internal to the store.
+
+The v4 refinement extends the same design-principles rule into the shared streaming conversation projection. The touched-files branch no longer has a blocker on the artifact store boundary itself; the next remaining architecture issue is that the shared conversation/segment projection boundary is still split between `segmentHandler.ts` exports and lower-level projection internals that other handlers import directly. The target design therefore introduces one explicit handler-facing projection boundary in `autobyteus-web/services/agentStreaming/` so all streaming handlers depend on the same authoritative owner for message lookup, segment lookup, synthetic segment creation, and append/remove mutation.
 
 The source of truth for text/code content is the current workspace file whenever the file can be resolved. The only exception is an actively streaming `write_file`, which keeps its in-memory streamed preview until the file becomes available. Failed or denied `write_file` / `edit_file` operations remain visible in the list with explicit failed state because those rows were intentionally created from segment start. Failed generated-output tools do not create touched rows unless a future design adds an explicit failed-output projection. Backend artifact metadata persistence, GraphQL querying, and related storage/domain code remain removed because current live UX does not consume them.
 
@@ -508,3 +511,71 @@ Rules:
   - `ARTIFACT_UPDATED` = runtime file/output freshness metadata, no success claim by itself.
   - `ARTIFACT_PERSISTED` = success-authorized output availability.
 - Do not keep any database write/read path behind those names.
+
+
+## Architecture-Quality Re-Entry Addendum (v4)
+
+### New Architecture Finding Driving This Iteration
+
+The touched-files projection itself is no longer the weak point. The new architecture finding is in the shared streaming conversation-segment projection spine:
+
+- `segmentHandler.ts` exports shared projection utilities (`findOrCreateAIMessage`, `findSegmentById`)
+- other handlers depend on those exports
+- but `toolLifecycleHandler.ts` also depends on lower-level projection internals (`createSegmentFromPayload`, `setStreamSegmentIdentity`, direct segment-array mutation)
+
+That is exactly the boundary-bypass shape forbidden by the shared design principles. The higher-level handlers are depending on both an outer boundary and its internals at the same time.
+
+### DS-006 Shared Streaming Conversation Projection Spine
+
+| Spine ID | Scope (`Primary End-to-End`/`Return-Event`/`Bounded Local`) | Start | End | Owning Node / Governing Owner | Why It Matters |
+| --- | --- | --- | --- | --- | --- |
+| DS-006 | Primary End-to-End | Any streaming handler needs to look up, create, append, or remove a conversation segment/message | `AgentContext.conversation.messages` is mutated through one authoritative boundary | `autobyteus-web/services/agentStreaming/streamConversationProjection.ts` (new authoritative boundary) | This restores boundary encapsulation for the shared conversation/segment projection subject and removes mixed-level handler dependencies. |
+
+### DS-006 Narrative
+
+- Main line: `AgentStreamingService -> specific handler -> streamConversationProjection -> AgentContext conversation/messages`
+- Public boundary responsibility:
+  - locate the active AI message
+  - find a projected segment by stream identity or invocation alias
+  - append/remove projected segments
+  - create synthetic tool lifecycle segments when a lifecycle event arrives before a matching `SEGMENT_START`
+- Internal owned mechanisms beneath that boundary:
+  - `createSegmentFromPayload(...)`
+  - segment-identity assignment
+  - direct `aiMessage.segments.push(...)`
+  - any small local helper needed for projection lookup or append/remove
+
+### Ownership Decision
+
+| Owner | Owns | Must Not Own | Notes |
+| --- | --- | --- | --- |
+| `streamConversationProjection.ts` (new) | Conversation message/segment lookup, active AI-message creation, synthetic segment creation, append/remove mutation, projection identity wiring | Artifact/touched-entry projection, tool lifecycle state machine, viewer behavior | This is the authoritative outer boundary for the shared projection subject. |
+| `segmentHandler.ts` | `SEGMENT_START` / `SEGMENT_CONTENT` / `SEGMENT_END` domain behavior | Shared repository-like conversation projection API | It becomes a pure event handler again. |
+| `toolLifecycleHandler.ts` | Tool lifecycle transitions and activity/touched-entry reconciliation | Direct segment construction or direct access to lower-level projection internals | It should depend on the new projection boundary only. |
+| `agentStatusHandler.ts` / `teamHandler.ts` | Status/error/team event behavior | Direct AI-message creation or segment-array mutation | They should append message segments through the same projection boundary. |
+
+### Forbidden Shortcuts (v4)
+
+- `toolLifecycleHandler.ts` must not import both a shared projection helper from `segmentHandler.ts` and lower-level projection internals such as `createSegmentFromPayload(...)` or direct array mutation.
+- `agentStatusHandler.ts` and `teamHandler.ts` must not treat `segmentHandler.ts` as the shared projection boundary.
+- `segmentHandler.ts` must not remain both a concrete `SEGMENT_*` handler and the de facto reusable projection API for the subsystem.
+
+### Derived File Mapping (v4)
+
+| Change Type | Target | Reason |
+| --- | --- | --- |
+| `Add` | `autobyteus-web/services/agentStreaming/streamConversationProjection.ts` | New authoritative shared boundary for conversation/segment projection in the streaming subsystem. |
+| `Modify` | `autobyteus-web/services/agentStreaming/handlers/segmentHandler.ts` | Remove shared projection-owner exports and call the new boundary instead. |
+| `Modify` | `autobyteus-web/services/agentStreaming/handlers/toolLifecycleHandler.ts` | Route synthetic segment creation and segment lookup through the new boundary only. |
+| `Modify` | `autobyteus-web/services/agentStreaming/handlers/agentStatusHandler.ts` | Append error/status-related segments through the new boundary. |
+| `Modify` | `autobyteus-web/services/agentStreaming/handlers/teamHandler.ts` | Append team/system segments through the new boundary. |
+| `Move` or `Internalize` | `segmentIdentity.ts` functionality as appropriate | Segment identity belongs under the projection owner, not as a handler-level peer concern. |
+
+### Architecture Direction Decision For v4
+
+- Chosen direction: keep the touched-files design and backend cleanup exactly as delivered in the milestone commit, but reopen the shared streaming subsystem so conversation projection has one explicit owner.
+- Why this is the correct direction under the design principles:
+  - the data-flow spine becomes explicit again,
+  - ownership and boundary encapsulation become testable,
+  - `segmentHandler.ts` returns to one concrete responsibility,
+  - future changes in streaming handlers can reuse one projection boundary instead of repeating direct mutation patterns.

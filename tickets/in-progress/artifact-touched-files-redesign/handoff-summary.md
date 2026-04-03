@@ -4,7 +4,7 @@
 
 - Ticket: `artifact-touched-files-redesign`
 - Date: `2026-04-02`
-- Current Status: `Awaiting User Verification`
+- Current Status: `Paused for Design-Impact Re-Entry`
 - Workflow State Source: `tickets/in-progress/artifact-touched-files-redesign/workflow-state.md`
 
 ## Delivery Summary
@@ -78,7 +78,7 @@
 - Waiting for explicit user verification: `Yes`
 - User verification received: `No`
 - Notes:
-  - Per Stage 10 workflow rules, the ticket will not be archived, committed, pushed, merged, released, or cleaned up until you explicitly confirm completion/verification.
+  - Final user verification is now paused because the workflow reopened on a design-impact path after `CR-005` was identified in the shared streaming conversation-projection boundary.
 
 ## Finalization Record
 
@@ -87,11 +87,11 @@
 - Ticket branch: `codex/artifact-touched-files-redesign`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Commit status: `Milestone commit created on the ticket branch: 3f344a0 (Refactor artifacts into touched-files projection)`
+- Commit status: `Milestone commit created on the ticket branch: a17526a (Refactor artifacts into touched-files projection)`
 - Push status: `Not started (awaiting user verification)`
 - Merge status: `Not started (awaiting user verification)`
 - Release/publication/deployment status: `Not required unless user later requests a release action`
 - Worktree cleanup status: `Not started (awaiting user verification and finalization)`
 - Local branch cleanup status: `Not started (awaiting user verification and finalization)`
 - Blockers / notes:
-  - A user-requested milestone commit was created on the ticket branch before the follow-up streaming-layer refactor. Final archival/push/merge still remain blocked on explicit final verification.
+  - Milestone commit `a17526a` was created on the ticket branch. Final archival/push/merge remain paused while the workflow completes the design-impact re-entry for `CR-005`.

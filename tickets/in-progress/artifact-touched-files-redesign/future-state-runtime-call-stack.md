@@ -21,14 +21,14 @@ Do not treat this document as an as-is trace of current code behavior.
 ## Design Basis
 
 - Scope Classification: `Medium`
-- Call Stack Version: `v3`
+- Call Stack Version: `v4`
 - Requirements: `tickets/in-progress/artifact-touched-files-redesign/requirements.md` (status `Design-ready`)
 - Source Artifact:
   - `Medium/Large`: `tickets/in-progress/artifact-touched-files-redesign/proposed-design.md`
-- Source Design Version: `v3`
+- Source Design Version: `v4`
 - Referenced Sections:
-  - Spine inventory sections: `DS-001`, `DS-002`, `DS-003`, `DS-004`, `DS-005`
-  - Ownership sections: `Ownership Map`, `Derived Implementation Mapping`, `Concrete Target Behavior Notes`, `Architecture-Quality Re-Entry Addendum (v3)`
+  - Spine inventory sections: `DS-001`, `DS-002`, `DS-003`, `DS-004`, `DS-005`, `DS-006`
+  - Ownership sections: `Ownership Map`, `Derived Implementation Mapping`, `Concrete Target Behavior Notes`, `Architecture-Quality Re-Entry Addendum (v4)`
 
 ## Future-State Modeling Rule (Mandatory)
 
@@ -49,6 +49,7 @@ Do not treat this document as an as-is trace of current code behavior.
 | UC-006 | DS-001, DS-002, DS-005 | Primary End-to-End | Frontend touched-entry projection | Design-Risk | R-009, R-010 | Prove live artifact UX mounts and updates with no GraphQL/persisted-artifact dependency | Live artifact UX mounts and updates with no GraphQL/persisted-artifact dependency | Yes/Yes/N/A |
 | UC-007 | DS-002, DS-005 | Bounded Local | Discoverability owner in `agentArtifactsStore.ts` | Design-Risk | R-012 | Prove refresh-only artifact updates do not retrigger discoverability for an existing row | Refresh-only artifact updates do not steal focus or reselect | Yes/Yes/N/A |
 | UC-008 | DS-002 | Return-Event | Success-authorized backend output projection | Design-Risk | R-004 | Prove denied/failed output-tool results cannot emit availability-shaped artifact events | Failed generated-output tool results do not create touched rows | Yes/Yes/N/A |
+| UC-009 | DS-006 | Primary End-to-End | Shared streaming conversation projection boundary | Design-Risk | R-001 | Prove all streaming handlers use one authoritative conversation/segment projection boundary instead of mixing handler exports with lower-level projection internals | Shared handlers mutate conversation state through one authoritative projection boundary | Yes/Yes/N/A |
 
 ## Transition Notes
 
@@ -58,6 +59,7 @@ Do not treat this document as an as-is trace of current code behavior.
     - `ARTIFACT_UPDATED` = freshness/metadata only; it must not claim success by itself.
     - `ARTIFACT_PERSISTED` = success-authorized availability for a file/output path.
   - Tighten the caller-facing store boundary so handlers call explicit domain operations (`refresh...`, `markAvailable...`, `ensureTerminalStateFromLifecycle...`) instead of one generic artifact-event upsert API.
+  - Introduce one explicit streaming conversation projection boundary so handlers never mix `segmentHandler.ts` exports with lower-level segment-construction/identity internals.
   - Rename the backend processor from `AgentArtifactPersistenceProcessor` to `AgentArtifactEventProcessor` while preserving its registration position in the tool-result processor chain.
 - Retirement plan for temporary logic (if any):
   - No DB-backed artifact read/write logic remains after this ticket.
@@ -768,3 +770,100 @@ autobyteus-web/services/agentStreaming/handlers/toolLifecycleHandler.ts:handleTo
 - Primary Path: `Covered`
 - Fallback Path: `Covered`
 - Error Path: `N/A`
+
+
+## Use Case: UC-009 Shared streaming handlers use one authoritative conversation projection boundary
+
+### Spine Context
+
+- Spine ID(s): `DS-006`
+- Spine Scope: `Primary End-to-End`
+- Governing Owner: `autobyteus-web/services/agentStreaming/streamConversationProjection.ts`
+- Why This Use Case Matters To This Spine:
+  - This is the architecture-quality follow-up discovered after the milestone commit. The shared streaming subsystem needs one explicit owner for conversation message/segment projection so handlers stop mixing `segmentHandler.ts` exports with lower-level projection internals.
+
+### Goal
+
+Any streaming handler that needs to read or mutate `AgentContext.conversation.messages` should do so through one authoritative boundary. Synthetic tool lifecycle segment creation, active AI-message creation, segment lookup, append/remove mutation, and segment identity wiring must be encapsulated beneath that owner.
+
+### Preconditions
+
+- A websocket event arrives that requires segment/message projection work.
+- The handler knows its domain intent (for example: ensure a tool lifecycle segment exists, append an error segment, or append a team/system notification segment).
+- The new `streamConversationProjection.ts` boundary exists and is the only handler-facing API for shared conversation projection.
+
+### Expected Outcome
+
+- `segmentHandler.ts` remains a concrete `SEGMENT_*` handler and no longer exports the shared projection owner.
+- `toolLifecycleHandler.ts` ensures or looks up segments only through `streamConversationProjection.ts` and does not directly call `createSegmentFromPayload(...)`, `setStreamSegmentIdentity(...)`, or direct `aiMessage.segments.push(...)`.
+- `agentStatusHandler.ts` and `teamHandler.ts` append message segments through the same projection boundary.
+- Internal projection mechanics can change without changing the higher-level handlers.
+
+### Primary Runtime Call Stack
+
+```text
+[ENTRY] autobyteus-web/services/agentStreaming/AgentStreamingService.ts:dispatchMessage(message, context)
+└── autobyteus-web/services/agentStreaming/handlers/toolLifecycleHandler.ts:handleToolApprovalRequested(payload, context)
+    └── autobyteus-web/services/agentStreaming/streamConversationProjection.ts:ensureToolLifecycleSegment(context, { invocationId, toolName, argumentsPayload }) [STATE]
+        ├── autobyteus-web/services/agentStreaming/streamConversationProjection.ts:findProjectedSegmentByInvocationAlias(context, invocationId) [STATE]
+        ├── autobyteus-web/services/agentStreaming/streamConversationProjection.ts:getOrCreateActiveAIMessage(context) [STATE]
+        ├── autobyteus-web/services/agentStreaming/protocol/segmentTypes.ts:createSegmentFromPayload(payload) [STATE]  # internal to the projection owner
+        ├── autobyteus-web/services/agentStreaming/streamConversationProjection.ts:assignProjectionIdentity(segment, invocationId, segmentType) [STATE]
+        └── autobyteus-web/services/agentStreaming/streamConversationProjection.ts:appendProjectedSegment(aiMessage, segment) [STATE]
+```
+
+```text
+[ENTRY] autobyteus-web/services/agentStreaming/AgentStreamingService.ts:dispatchMessage(message, context)
+└── autobyteus-web/services/agentStreaming/handlers/teamHandler.ts:handleInterAgentMessage(payload, context)
+    └── autobyteus-web/services/agentStreaming/streamConversationProjection.ts:appendMessageSegment(context, interAgentMessageSegment) [STATE]
+```
+
+### Branching / Fallback Paths
+
+```text
+[FALLBACK] matching tool lifecycle segment already exists
+autobyteus-web/services/agentStreaming/streamConversationProjection.ts:ensureToolLifecycleSegment(context, request)
+└── autobyteus-web/services/agentStreaming/streamConversationProjection.ts:returnExistingProjectedSegment(segment) [STATE]
+```
+
+```text
+[ERROR] malformed event payload means no projection work should occur
+relevant-handler.ts:handle*(payload, context)
+└── relevant-handler.ts:warnInvalidPayload(...) [STATE]
+```
+
+### State And Data Transformations
+
+- handler-local intent -> projection-boundary request shape
+- invocation id / segment type -> projected segment identity
+- direct array mutation -> projection-owner internal mechanism
+- shared context conversation state -> one authoritative mutation boundary
+
+### Observability And Debug Points
+
+- Logs emitted at:
+  - existing handler warning paths for malformed payloads
+  - optional projection-boundary debug logging if later introduced
+- Metrics/counters updated at:
+  - none currently modeled in scope
+- Tracing spans (if any):
+  - none currently modeled in scope
+
+### Design Smells / Gaps
+
+- Any legacy/backward-compatibility branch present? (`Yes/No`)
+  - `No`
+- Any tight coupling or cyclic cross-subsystem dependency introduced? (`Yes/No`)
+  - `No`
+- Any naming-to-responsibility drift detected? (`Yes/No`)
+  - `No` once the projection boundary is explicit and `segmentHandler.ts` stops acting as a shared projection API.
+
+### Open Questions
+
+- Whether invocation-alias normalization should be extracted into its own reusable owned file during the same refactor or left as a follow-up after the boundary split.
+
+### Coverage Status
+
+- Primary Path: `Covered`
+- Fallback Path: `Covered`
+- Error Path: `Covered`

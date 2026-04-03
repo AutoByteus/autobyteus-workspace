@@ -7,15 +7,15 @@ Keep one canonical `future-state-runtime-call-stack-review.md` path for the tick
 ## Review Meta
 
 - Scope Classification: `Medium`
-- Current Round: `6`
+- Current Round: `7`
 - Current Review Type: `Deep Review`
-- Clean-Review Streak Before This Round: `1`
-- Clean-Review Streak After This Round: `2`
-- Round State: `Go Confirmed`
+- Clean-Review Streak Before This Round: `0`
+- Clean-Review Streak After This Round: `1`
+- Round State: `Candidate Go`
 - Missing-Use-Case Discovery Sweep Completed This Round: `Yes`
 - New Use Cases Discovered This Round: `No`
 - This Round Classification (`Design Impact`/`Requirement Gap`/`Unclear`/`N/A`): `N/A`
-- Required Re-Entry Path Before Next Round: `N/A`
+- Required Re-Entry Path Before Next Round: `Stage 5 round 8 with the same v4 artifact set unless a new blocker is discovered`
 
 ## Review Basis
 
@@ -27,8 +27,8 @@ Keep one canonical `future-state-runtime-call-stack-review.md` path for the tick
 - Common Design Practices: `shared/common-design-practices.md`
 - Artifact Versions In This Round:
   - Requirements Status: `Design-ready`
-  - Design Version: `v3`
-  - Call Stack Version: `v3`
+  - Design Version: `v4`
+  - Call Stack Version: `v4`
 - Required Persisted Artifact Updates Completed For This Round: `N/A`
 
 ## Review Intent (Mandatory)
@@ -58,6 +58,7 @@ Keep one canonical `future-state-runtime-call-stack-review.md` path for the tick
 | 4 | `Design-ready` | `v2` | `v2` | No | No | N/A | `N/A` | `N/A` | `2` | `Go Confirmed` | `Go` |
 | 5 | `Design-ready` | `v3` | `v3` | No | No | N/A | `N/A` | `Stage 5 round 6 with the same v3 artifact set unless a new blocker is discovered` | `1` | `Candidate Go` | `No-Go` |
 | 6 | `Design-ready` | `v3` | `v3` | No | No | N/A | `N/A` | `N/A` | `2` | `Go Confirmed` | `Go` |
+| 7 | `Design-ready` | `v4` | `v4` | No | No | N/A | `N/A` | `Stage 5 round 8 with the same v4 artifact set unless a new blocker is discovered` | `1` | `Candidate Go` | `No-Go` |
 | N |  |  |  |  |  |  |  |  |  |  |  |
 
 Notes:
@@ -74,10 +75,11 @@ Notes:
 | 4 | No | `tickets/in-progress/artifact-touched-files-redesign/future-state-runtime-call-stack-review.md` | `round 4 gate confirmation on redesign v2` | `Review Meta`, `Round History`, `Round Artifact Update Log`, `Per-Use-Case Review`, `Gate Decision`, `Speak Log` | `None` |
 | 5 | No | `tickets/in-progress/artifact-touched-files-redesign/future-state-runtime-call-stack-review.md` | `round 5 baseline for redesign v3` | `Review Meta`, `Review Basis`, `Round History`, `Round Artifact Update Log`, `Missing-Use-Case Discovery Log`, `Per-Use-Case Review`, `Gate Decision` | `None` |
 | 6 | No | `tickets/in-progress/artifact-touched-files-redesign/future-state-runtime-call-stack-review.md` | `round 6 gate confirmation on redesign v3` | `Review Meta`, `Round History`, `Round Artifact Update Log`, `Per-Use-Case Review`, `Gate Decision`, `Speak Log` | `None` |
+| 7 | No | `tickets/in-progress/artifact-touched-files-redesign/future-state-runtime-call-stack-review.md`, `tickets/in-progress/artifact-touched-files-redesign/proposed-design.md`, `tickets/in-progress/artifact-touched-files-redesign/future-state-runtime-call-stack.md` | `design/call stack v3 -> v4` | `Review Meta`, `Review Basis`, `Round History`, `Round Artifact Update Log`, `Missing-Use-Case Discovery Log`, `Per-Use-Case Review`, `Gate Decision` | `None` |
 | N |  |  |  |  |  |
 
 Rule:
-- No upstream design or call-stack write-back was required in either clean round.
+- Round 7 is the first clean review on the v4 streaming-boundary redesign, so it is `Candidate Go` only.
 
 ## Missing-Use-Case Discovery Log (Mandatory Per Round)
 
@@ -89,6 +91,7 @@ Rule:
 | 4 | Requirement coverage / boundary crossing / fallback-error / design-risk | `None` | `N/A` | `N/A` | `N/A` | `No` |
 | 5 | Requirement coverage / boundary crossing / fallback-error / design-risk | `None` | `N/A` | `N/A` | `N/A` | `No` |
 | 6 | Requirement coverage / boundary crossing / fallback-error / design-risk | `None` | `N/A` | `N/A` | `N/A` | `No` |
+| 7 | Requirement coverage / boundary crossing / fallback-error / design-risk | `None` | `N/A` | `UC-009` was already promoted into the v4 call stack before the round began, so no new missing use case was discovered during the round itself. | `N/A` | `No` |
 | N | Requirement coverage / boundary crossing / fallback-error / design-risk |  |  |  |  |  |
 
 ## Per-Use-Case Review
@@ -103,7 +106,7 @@ Rule:
 | UC-006 | `DS-001`, `DS-002`, `DS-005` | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | None | Pass | Pass | Pass | Pass | Pass | Pass |
 | UC-007 | `DS-002`, `DS-005` | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | None | Pass | Pass | Pass | Pass | Pass | Pass |
 | UC-008 | `DS-002` | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | None | Pass | Pass | Pass | Pass | Pass | Pass |
-
+| UC-009 | `DS-006` | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | Pass | None | Pass | Pass | Pass | Pass | Pass | Pass |
 
 ## Findings
 
@@ -116,8 +119,8 @@ Rule:
 
 ## Gate Decision
 
-- Implementation can start: `Yes`
-- Clean-review streak at end of this round: `2`
+- Implementation can start: `No`
+- Clean-review streak at end of this round: `1`
 - Gate rule checks (all must be `Yes` for `Implementation can start = Yes`):
   - Architecture fit is `Pass` for all in-scope use cases: `Yes`
   - Data-flow spine clarity is `Pass` for all in-scope use cases: `Yes`
@@ -153,11 +156,10 @@ Rule:
   - Remove/decommission checks complete for scoped `Remove`/`Rename/Move` changes: `Yes`
   - Legacy retention removed for impacted old-behavior paths: `Yes`
   - No compatibility wrappers/dual paths retained for old behavior: `Yes`
-  - Two consecutive deep-review rounds have no blockers, no required persisted artifact updates, and no newly discovered use cases: `Yes`
+  - Two consecutive deep-review rounds have no blockers, no required persisted artifact updates, and no newly discovered use cases: `No`
   - Findings trend quality is acceptable across rounds (issues declined in count/severity or became more localized), or explicit design decomposition update is recorded: `Yes`
 - If `No`, required refinement actions:
-  - `N/A`
-
+  - `Run Stage 5 round 8 against the same v4 artifact set. If that round is also clean, Stage 5 can return to Go Confirmed and Stage 6 may reopen.`
 
 ## Speak Log (Optional Tracking)
 
