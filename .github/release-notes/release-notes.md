@@ -1,10 +1,8 @@
-## What's New
-- Preview now opens popup and new-window requests as additional in-app Preview tabs instead of blocking them outright.
+Browser and shell improvements in this release:
 
-## Improvements
-- Popup-created Preview tabs stay attached to the same shell and continue to use the existing Preview session model.
-- Preview popup handling now adopts Electron-provided guest webContents correctly, keeping the popup flow closer to normal browser behavior.
-
-## Fixes
-- Fixed a main-process crash when Google-login popups were opened from sites such as X and LinkedIn inside Preview.
-- Fixed the packaged popup flow so the Google Accounts tab can open without the previous `Invalid webContents` error.
+- Renamed the old Preview capability into Browser/tab tools across the touched scope.
+- Browser and `send_message_to` tool exposure now strictly follows `AgentDefinition.toolNames`.
+- Browser is now a permanent right-side tab with manual open, navigate, refresh, close, and full-view controls.
+- Browser popups now open as in-app Browser tabs instead of failing immediately.
+- Browser address entry now accepts shorthand inputs like `google.com` and `www.google.com`.
+- Browser full-view now uses a tighter top chrome layout so page content gets more vertical space.
