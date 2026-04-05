@@ -2,7 +2,7 @@ import { AgentInputEventQueueManager } from '../events/agent-input-event-queue-m
 import { AgentEventStore } from '../events/event-store.js';
 import { AgentStatus } from '../status/status-enum.js';
 import { ToolInvocation } from '../tool-invocation.js';
-import { ToolInvocationTurn } from '../tool-invocation-turn.js';
+import { AgentTurn } from '../agent-turn.js';
 import { RecentSettledInvocationCache } from './recent-settled-invocation-cache.js';
 import { ToDoList } from '../../task-management/todo-list.js';
 import { BaseLLM } from '../../llm/base.js';
@@ -26,12 +26,10 @@ export class AgentRuntimeState {
   workspaceRootPath: string | null;
   pendingToolApprovals: Record<string, ToolInvocation>;
   customData: Record<string, any>;
-  activeToolInvocationTurn: ToolInvocationTurn | null = null;
+  activeTurn: AgentTurn | null = null;
   recentSettledInvocationIds: RecentSettledInvocationCache;
   todoList: ToDoList | null = null;
   memoryManager: MemoryManager | null = null;
-  // Conversation/memory turn id shared across all traces for one user-originated turn.
-  activeTurnId: string | null = null;
   restoreOptions: WorkingContextSnapshotBootstrapOptions | null = null;
   processedSystemPrompt: string | null = null;
   statusManagerRef: AgentStatusManager | null = null;
@@ -95,14 +93,14 @@ export class AgentRuntimeState {
     const llmStatus = this.llmInstance ? 'Initialized' : 'Not Initialized';
     const toolsStatus = this.toolInstances ? `${Object.keys(this.toolInstances).length} Initialized` : 'Not Initialized';
     const inputQueuesStatus = this.inputEventQueues ? 'Initialized' : 'Not Initialized';
-    const activeTurnStatus = this.activeToolInvocationTurn ? 'Active' : 'Inactive';
+    const activeTurnStatus = this.activeTurn ? 'Active' : 'Inactive';
 
     return (
       `AgentRuntimeState(agentId='${this.agentId}', currentStatus='${this.currentStatus}', ` +
       `llmStatus='${llmStatus}', toolsStatus='${toolsStatus}', ` +
       `inputQueuesStatus='${inputQueuesStatus}', ` +
       `pendingApprovals=${Object.keys(this.pendingToolApprovals).length}, ` +
-      `toolInvocationTurn='${activeTurnStatus}')`
+      `agentTurn='${activeTurnStatus}')`
     );
   }
 }

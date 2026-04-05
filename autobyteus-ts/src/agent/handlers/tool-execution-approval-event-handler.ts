@@ -71,7 +71,7 @@ export class ToolExecutionApprovalEventHandler extends AgentEventHandler {
       retrievedInvocation.id,
       denialReason,
       retrievedInvocation.arguments,
-      retrievedInvocation.turnId ?? context.state.activeTurnId ?? undefined,
+      retrievedInvocation.turnId ?? context.state.activeTurn?.turnId ?? undefined,
       true
     );
     await context.inputEventQueues.enqueueToolResult(resultEvent);

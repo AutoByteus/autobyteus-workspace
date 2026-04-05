@@ -45,6 +45,7 @@ describe('segmentHandler', () => {
     it('should correctly set toolName from metadata for tool_call segments', () => {
       const payload: SegmentStartPayload = {
         id: 'test-id',
+        turn_id: 'turn-1',
         segment_type: 'tool_call',
         metadata: {
           tool_name: 'read_file',
@@ -65,6 +66,7 @@ describe('segmentHandler', () => {
     it('hydrates tool_call arguments from metadata.arguments/query fields', () => {
       const payload: SegmentStartPayload = {
         id: 'search-call-1',
+        turn_id: 'turn-1',
         segment_type: 'tool_call',
         metadata: {
           tool_name: 'search_web',
@@ -100,6 +102,7 @@ describe('segmentHandler', () => {
     it('hydrates tool_call arguments when metadata.arguments is serialized JSON', () => {
       const payload: SegmentStartPayload = {
         id: 'image-call-1',
+        turn_id: 'turn-1',
         segment_type: 'tool_call',
         metadata: {
           tool_name: 'generate_image',
@@ -135,6 +138,7 @@ describe('segmentHandler', () => {
     it('should log error and use placeholder when tool_name is missing in metadata for tool_call', () => {
       const payload: SegmentStartPayload = {
         id: 'test-id-missing',
+        turn_id: 'turn-1',
         segment_type: 'tool_call',
         metadata: {}, 
       };
@@ -182,6 +186,7 @@ describe('segmentHandler', () => {
       handleSegmentStart(
         {
           id: 'send-msg-1',
+          turn_id: 'turn-1',
           segment_type: 'tool_call',
           metadata: {
             tool_name: 'send_message_to',
@@ -210,6 +215,7 @@ describe('segmentHandler', () => {
     it('should NOT log error for other segment types (e.g. write_file)', () => {
        const payload: SegmentStartPayload = {
         id: 'test-id-kf',
+        turn_id: 'turn-1',
         segment_type: 'write_file',
         metadata: { path: '/tmp/foo.txt' }, 
       };
@@ -237,6 +243,7 @@ describe('segmentHandler', () => {
     it('should correctly handle edit_file segments', () => {
       const payload: SegmentStartPayload = {
         id: 'test-id-pf',
+        turn_id: 'turn-1',
         segment_type: 'edit_file',
         metadata: { path: '/tmp/bar.txt' },
       };
@@ -264,6 +271,7 @@ describe('segmentHandler', () => {
     it('hydrates run_bash command from start metadata', () => {
       const payload: SegmentStartPayload = {
         id: 'test-id-bash',
+        turn_id: 'turn-1',
         segment_type: 'run_bash',
         metadata: { command: "python fibonacci.py" },
       };
@@ -289,6 +297,7 @@ describe('segmentHandler', () => {
     it('deduplicates repeated SEGMENT_START with same id', () => {
       const payload: SegmentStartPayload = {
         id: 'dup-send-message',
+        turn_id: 'turn-1',
         segment_type: 'tool_call',
         metadata: {
           tool_name: 'send_message_to',
@@ -317,6 +326,7 @@ describe('segmentHandler', () => {
       handleSegmentStart(
         {
           id: 'dup-cross-type',
+          turn_id: 'turn-1',
           segment_type: 'tool_call',
           metadata: {
             tool_name: 'send_message_to',
@@ -329,6 +339,7 @@ describe('segmentHandler', () => {
       handleSegmentStart(
         {
           id: 'dup-cross-type',
+          turn_id: 'turn-1',
           segment_type: 'run_bash',
           metadata: {
             tool_name: 'send_message_to',
@@ -351,6 +362,7 @@ describe('segmentHandler', () => {
       handleSegmentStart(
         {
           id: 'seg-write',
+          turn_id: 'turn-1',
           segment_type: 'write_file',
           metadata: { path: '/tmp/generated.txt' },
         },
@@ -360,6 +372,7 @@ describe('segmentHandler', () => {
       handleSegmentContent(
         {
           id: 'seg-write',
+          turn_id: 'turn-1',
           delta: 'hello',
           segment_type: 'write_file',
         },
@@ -372,10 +385,11 @@ describe('segmentHandler', () => {
       expect(artifact.status).toBe('streaming');
     });
 
-    it('creates fallback text segment when content arrives before segment start', () => {
+    it('creates a synthetic text segment when content arrives before segment start', () => {
       handleSegmentContent(
         {
           id: 'seg-fallback',
+          turn_id: 'turn-1',
           delta: 'hello from fallback',
         },
         mockContext,
@@ -389,10 +403,11 @@ describe('segmentHandler', () => {
       expect(aiMessage.segments[0].content).toBe('hello from fallback');
     });
 
-    it('creates fallback think segment when reasoning content arrives before segment start', () => {
+    it('creates a synthetic think segment when reasoning content arrives before segment start', () => {
       handleSegmentContent(
         {
           id: 'seg-reasoning',
+          turn_id: 'turn-1',
           delta: 'reasoning summary',
           segment_type: 'reasoning',
         },
@@ -410,6 +425,7 @@ describe('segmentHandler', () => {
       handleSegmentContent(
         {
           id: 'seg-reasoning-1',
+          turn_id: 'turn-1',
           delta: 'first burst',
           segment_type: 'reasoning',
         },
@@ -419,6 +435,7 @@ describe('segmentHandler', () => {
       handleSegmentStart(
         {
           id: 'seg-run-bash',
+          turn_id: 'turn-1',
           segment_type: 'run_bash',
           metadata: { command: 'echo hello' },
         },
@@ -428,6 +445,7 @@ describe('segmentHandler', () => {
       handleSegmentContent(
         {
           id: 'seg-reasoning-2',
+          turn_id: 'turn-1',
           delta: 'second burst',
           segment_type: 'reasoning',
         },
@@ -447,6 +465,7 @@ describe('segmentHandler', () => {
       handleSegmentContent(
         {
           id: 'seg-shared',
+          turn_id: 'turn-1',
           delta: 'reasoning burst',
           segment_type: 'reasoning',
         },
@@ -456,6 +475,7 @@ describe('segmentHandler', () => {
       handleSegmentStart(
         {
           id: 'seg-shared',
+          turn_id: 'turn-1',
           segment_type: 'run_bash',
           metadata: { command: 'echo shared' },
         },
@@ -476,6 +496,7 @@ describe('segmentHandler', () => {
       handleSegmentStart(
         {
           id: 'seg-write-end',
+          turn_id: 'turn-1',
           segment_type: 'write_file',
           metadata: { path: '/tmp/result.txt' },
         },
@@ -485,6 +506,7 @@ describe('segmentHandler', () => {
       handleSegmentContent(
         {
           id: 'seg-write-end',
+          turn_id: 'turn-1',
           delta: 'done',
           segment_type: 'write_file',
         },
@@ -494,6 +516,7 @@ describe('segmentHandler', () => {
       handleSegmentEnd(
         {
           id: 'seg-write-end',
+          turn_id: 'turn-1',
         },
         mockContext,
       );
@@ -509,6 +532,7 @@ describe('segmentHandler', () => {
       handleSegmentStart(
         {
           id: 'seg-think-empty',
+          turn_id: 'turn-1',
           segment_type: 'reasoning',
         },
         mockContext,
@@ -521,6 +545,7 @@ describe('segmentHandler', () => {
       handleSegmentEnd(
         {
           id: 'seg-think-empty',
+          turn_id: 'turn-1',
         },
         mockContext,
       );
@@ -533,6 +558,7 @@ describe('segmentHandler', () => {
       handleSegmentStart(
         {
           id: 'seg-edit-meta',
+          turn_id: 'turn-1',
           segment_type: 'edit_file',
         },
         mockContext,
@@ -541,6 +567,7 @@ describe('segmentHandler', () => {
       handleSegmentEnd(
         {
           id: 'seg-edit-meta',
+          turn_id: 'turn-1',
           metadata: {
             tool_name: 'edit_file',
             path: '/tmp/fibonacci.py',
@@ -578,6 +605,7 @@ describe('segmentHandler', () => {
       handleSegmentStart(
         {
           id: 'seg-bash-meta',
+          turn_id: 'turn-1',
           segment_type: 'run_bash',
         },
         mockContext,
@@ -586,6 +614,7 @@ describe('segmentHandler', () => {
       handleSegmentEnd(
         {
           id: 'seg-bash-meta',
+          turn_id: 'turn-1',
           metadata: {
             tool_name: 'run_bash',
             command: "/bin/bash -lc 'python fibonacci.py'",
@@ -614,6 +643,7 @@ describe('segmentHandler', () => {
       handleSegmentStart(
         {
           id: 'seg-tool-meta',
+          turn_id: 'turn-1',
           segment_type: 'tool_call',
           metadata: {
             tool_name: 'search_web',
@@ -625,6 +655,7 @@ describe('segmentHandler', () => {
       handleSegmentEnd(
         {
           id: 'seg-tool-meta',
+          turn_id: 'turn-1',
           metadata: {
             tool_name: 'search_web',
             arguments: {
@@ -659,6 +690,7 @@ describe('segmentHandler', () => {
       handleSegmentStart(
         {
           id: 'seg-tool-approved',
+          turn_id: 'turn-1',
           segment_type: 'tool_call',
           metadata: {
             tool_name: 'speak',
@@ -678,6 +710,7 @@ describe('segmentHandler', () => {
       handleSegmentEnd(
         {
           id: 'seg-tool-approved',
+          turn_id: 'turn-1',
           metadata: {
             tool_name: 'speak',
             arguments: {

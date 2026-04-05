@@ -52,6 +52,7 @@ export interface ConnectedPayload {
 
 export interface SegmentStartPayload {
   id: string;
+  turn_id: string | null;
   segment_type: SegmentType;
   agent_id?: string;
   agent_name?: string;
@@ -60,6 +61,7 @@ export interface SegmentStartPayload {
 
 export interface SegmentContentPayload {
   id: string;
+  turn_id: string | null;
   delta: string;
   segment_type?: SegmentType;
   agent_id?: string;
@@ -68,6 +70,7 @@ export interface SegmentContentPayload {
 
 export interface SegmentEndPayload {
   id: string;
+  turn_id: string | null;
   agent_id?: string;
   agent_name?: string;
   metadata?: Record<string, any>;
@@ -113,7 +116,7 @@ export interface TeamStatusPayload {
 export interface ToolApprovalRequestedPayload {
   invocation_id: string;
   tool_name: string;
-  turn_id?: string | null;
+  turn_id: string | null;
   arguments: Record<string, any>;
   approval_token?: ToolApprovalTokenPayload;
   agent_name?: string;
@@ -123,7 +126,7 @@ export interface ToolApprovalRequestedPayload {
 export interface ToolApprovedPayload {
   invocation_id: string;
   tool_name: string;
-  turn_id?: string | null;
+  turn_id: string | null;
   reason?: string | null;
   agent_name?: string;
   agent_id?: string;
@@ -132,7 +135,7 @@ export interface ToolApprovedPayload {
 export interface ToolDeniedPayload {
   invocation_id: string;
   tool_name: string;
-  turn_id?: string | null;
+  turn_id: string | null;
   reason?: string | null;
   error?: string | null;
   agent_name?: string;
@@ -150,7 +153,7 @@ export interface ToolApprovalTokenPayload {
 export interface ToolExecutionStartedPayload {
   invocation_id: string;
   tool_name: string;
-  turn_id?: string | null;
+  turn_id: string | null;
   arguments?: Record<string, any>;
   agent_name?: string;
   agent_id?: string;
@@ -159,7 +162,7 @@ export interface ToolExecutionStartedPayload {
 export interface ToolExecutionSucceededPayload {
   invocation_id: string;
   tool_name: string;
-  turn_id?: string | null;
+  turn_id: string | null;
   result?: any;
   agent_name?: string;
   agent_id?: string;
@@ -168,7 +171,7 @@ export interface ToolExecutionSucceededPayload {
 export interface ToolExecutionFailedPayload {
   invocation_id: string;
   tool_name: string;
-  turn_id?: string | null;
+  turn_id: string | null;
   error: string;
   agent_name?: string;
   agent_id?: string;
@@ -178,6 +181,7 @@ export interface ToolLogPayload {
   log_entry: string;
   tool_invocation_id: string;
   tool_name: string;
+  turn_id: string | null;
   agent_name?: string;
   agent_id?: string;
 }

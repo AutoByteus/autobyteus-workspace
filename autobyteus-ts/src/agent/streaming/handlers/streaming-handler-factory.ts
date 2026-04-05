@@ -25,6 +25,7 @@ export class StreamingResponseHandlerFactory {
   static create(options: {
     toolNames: string[];
     provider?: LLMProvider | null;
+    turnId: string;
     segmentIdPrefix?: string | null;
     onSegmentEvent?: (event: SegmentEvent) => void;
     onToolInvocation?: (invocation: ToolInvocation) => void;
@@ -43,6 +44,7 @@ export class StreamingResponseHandlerFactory {
         new PassThroughStreamingResponseHandler({
           onSegmentEvent: options.onSegmentEvent,
           onToolInvocation: options.onToolInvocation,
+          turnId: options.turnId,
           segmentIdPrefix: segmentIdPrefix
         }),
         null
@@ -58,6 +60,7 @@ export class StreamingResponseHandlerFactory {
         new ApiToolCallStreamingResponseHandler({
           onSegmentEvent: options.onSegmentEvent,
           onToolInvocation: options.onToolInvocation,
+          turnId: options.turnId,
           segmentIdPrefix: segmentIdPrefix
         }),
         toolSchemas
@@ -74,6 +77,7 @@ export class StreamingResponseHandlerFactory {
       parseToolCalls: parseToolCalls,
       jsonToolPatterns: jsonProfile.signaturePatterns,
       jsonToolParser: jsonProfile.parser,
+      turnId: options.turnId,
       segmentIdPrefix: segmentIdPrefix
     });
 

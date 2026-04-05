@@ -66,6 +66,7 @@ describe("AutoByteusStreamEventConverter", () => {
           event_type: "start",
           segment_id: "seg-1",
           segment_type: "assistant_text",
+          turn_id: "turn-1",
           payload: { content: "hello" },
         },
       } as any),
@@ -74,6 +75,7 @@ describe("AutoByteusStreamEventConverter", () => {
       runId: "run-1",
       payload: {
         id: "seg-1",
+        turnId: "turn-1",
         segment_type: "assistant_text",
         content: "hello",
       },
@@ -86,6 +88,7 @@ describe("AutoByteusStreamEventConverter", () => {
         data: {
           event_type: "content",
           segment_id: "seg-2",
+          turn_id: "turn-2",
           payload: { text: "chunk" },
         },
       } as any),
@@ -93,6 +96,7 @@ describe("AutoByteusStreamEventConverter", () => {
       eventType: AgentRunEventType.SEGMENT_CONTENT,
       payload: {
         id: "seg-2",
+        turnId: "turn-2",
         text: "chunk",
       },
     });
@@ -103,12 +107,14 @@ describe("AutoByteusStreamEventConverter", () => {
         data: {
           event_type: "end",
           segment_id: "seg-3",
+          turn_id: "turn-3",
         },
       } as any),
     )?.toMatchObject({
       eventType: AgentRunEventType.SEGMENT_END,
       payload: {
         id: "seg-3",
+        turnId: "turn-3",
       },
     });
   });
@@ -124,7 +130,14 @@ describe("AutoByteusStreamEventConverter", () => {
     expect(
       converter.convert({
         event_type: StreamEventType.SEGMENT_EVENT,
-        data: { event_type: "mystery", segment_id: "seg-4" },
+        data: { event_type: "mystery", segment_id: "seg-4", turn_id: "turn-4" },
+      } as any),
+    ).toBeNull();
+
+    expect(
+      converter.convert({
+        event_type: StreamEventType.SEGMENT_EVENT,
+        data: { event_type: "start", segment_id: "seg-5" },
       } as any),
     ).toBeNull();
   });

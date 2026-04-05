@@ -126,14 +126,20 @@ export class MediaUrlTransformerProcessor extends BaseLLMResponseProcessor {
       return;
     }
 
+    const turnId = context.state?.activeTurn?.turnId;
+    if (!turnId) {
+      logger.debug('MediaUrlTransformerProcessor: active turn not available for media segments.');
+      return;
+    }
+
     const segmentId = `media_${randomUUID()}`;
-    const startEvent = SegmentEvent.start(segmentId, SegmentType.MEDIA, {
+    const startEvent = SegmentEvent.start(turnId, segmentId, SegmentType.MEDIA, {
       media_type: mediaType,
       urls: cleanUrls,
     });
     notifier.notifyAgentSegmentEvent(startEvent.toDict());
 
-    const endEvent = SegmentEvent.end(segmentId);
+    const endEvent = SegmentEvent.end(turnId, segmentId);
     notifier.notifyAgentSegmentEvent(endEvent.toDict());
   }
 }

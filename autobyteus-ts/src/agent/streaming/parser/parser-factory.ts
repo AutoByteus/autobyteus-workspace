@@ -24,12 +24,13 @@ function cloneConfig(
     segmentIdPrefix?: string;
   }
 ): ParserConfig {
-  const base = config ?? new ParserConfig();
+  const base = config ?? new ParserConfig({ turnId: (() => { throw new Error('createStreamingParser requires turnId when config is omitted.'); })() });
   return new ParserConfig({
     parseToolCalls: options.parseToolCalls ?? base.parseToolCalls,
     jsonToolPatterns: options.jsonToolPatterns ?? [...base.jsonToolPatterns],
     jsonToolParser: options.jsonToolParser ?? base.jsonToolParser,
     strategyOrder: options.strategyOrder ?? [...base.strategyOrder],
+    turnId: base.turnId,
     segmentIdPrefix: options.segmentIdPrefix ?? base.segmentIdPrefix
   });
 }
@@ -69,11 +70,15 @@ export function resolveParserName(explicitName?: string): string {
 export function createStreamingParser(options?: {
   config?: ParserConfig;
   parserName?: string;
+  turnId?: string;
 }): StreamingParserProtocol {
   const name = resolveParserName(options?.parserName);
   const builder = PARSER_REGISTRY[name];
   if (!builder) {
     throw new Error(`Unknown parser strategy '${name}'. Supported: ${Object.keys(PARSER_REGISTRY).sort().join(', ')}.`);
   }
-  return builder(options?.config);
+  const config = options?.config ?? new ParserConfig({
+    turnId: options?.turnId ?? (() => { throw new Error('createStreamingParser requires turnId when config is omitted.'); })()
+  });
+  return builder(config);
 }

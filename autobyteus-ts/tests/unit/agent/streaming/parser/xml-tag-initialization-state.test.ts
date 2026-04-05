@@ -9,9 +9,13 @@ import { XmlWriteFileToolParsingState } from '../../../../../src/agent/streaming
 import { XmlRunBashToolParsingState } from '../../../../../src/agent/streaming/parser/states/xml-run-bash-tool-parsing-state.js';
 import { SegmentEventType } from '../../../../../src/agent/streaming/parser/events.js';
 
+const TURN_ID = 'turn_test';
+const createConfig = (options: Record<string, any> = {}) => new ParserConfig({ turnId: TURN_ID, ...options });
+const createContext = (options: Record<string, any> = {}) => new ParserContext(createConfig(options));
+
 describe('XmlTagInitializationState constructor', () => {
   it("consumes '<' character", () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.append('<tag>');
     expect(ctx.getPosition()).toBe(0);
 
@@ -23,7 +27,7 @@ describe('XmlTagInitializationState constructor', () => {
 
 describe('XmlTagInitializationState write_file detection', () => {
   it('transitions to CustomXmlTagWriteFileParsingState', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.append('<write_file path="/test.py">');
 
     const state = new XmlTagInitializationState(ctx);
@@ -34,7 +38,7 @@ describe('XmlTagInitializationState write_file detection', () => {
   });
 
   it('is case-insensitive for write_file', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.append('<WRITE_FILE path="/test.py">');
 
     const state = new XmlTagInitializationState(ctx);
@@ -47,7 +51,7 @@ describe('XmlTagInitializationState write_file detection', () => {
 
 describe('XmlTagInitializationState run_bash detection', () => {
   it('transitions to CustomXmlTagRunBashParsingState', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.append('<run_bash>command</run_bash>');
 
     const state = new XmlTagInitializationState(ctx);
@@ -58,7 +62,7 @@ describe('XmlTagInitializationState run_bash detection', () => {
   });
 
   it('supports run_bash tag with attributes', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.append("<run_bash description='test'>");
 
     const state = new XmlTagInitializationState(ctx);
@@ -71,7 +75,7 @@ describe('XmlTagInitializationState run_bash detection', () => {
 
 describe('XmlTagInitializationState tool detection', () => {
   it('transitions to XmlToolParsingState when parsing enabled', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.append("<tool name='test'>");
 
     const state = new XmlTagInitializationState(ctx);
@@ -82,7 +86,7 @@ describe('XmlTagInitializationState tool detection', () => {
   });
 
   it('treats tool tag as text when parseToolCalls is false', () => {
-    const config = new ParserConfig({ parseToolCalls: false });
+    const config = createConfig({ parseToolCalls: false });
     const ctx = new ParserContext(config);
     ctx.append("<tool name='test'>more text");
 
@@ -100,7 +104,7 @@ describe('XmlTagInitializationState tool detection', () => {
 
 describe('XmlTagInitializationState unknown tags', () => {
   it('emits unknown tag as text', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.append('<div>content');
 
     const state = new XmlTagInitializationState(ctx);
@@ -115,7 +119,7 @@ describe('XmlTagInitializationState unknown tags', () => {
   });
 
   it('malformed start reverts to text', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.append('<xyz>');
 
     const state = new XmlTagInitializationState(ctx);
@@ -128,7 +132,7 @@ describe('XmlTagInitializationState unknown tags', () => {
 
 describe('XmlTagInitializationState partial buffers', () => {
   it('waits for more characters on partial write_file', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.append('<write_fil');
 
     const state = new XmlTagInitializationState(ctx);
@@ -142,7 +146,7 @@ describe('XmlTagInitializationState partial buffers', () => {
 
 describe('XmlTagInitializationState finalize', () => {
   it('emits buffered content as text on finalize', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.append('<tool');
 
     const state = new XmlTagInitializationState(ctx);
@@ -157,7 +161,7 @@ describe('XmlTagInitializationState finalize', () => {
   });
 
   it('detects write_file tool name', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.append('<tool name="write_file">');
 
     const state = new XmlTagInitializationState(ctx);
@@ -168,7 +172,7 @@ describe('XmlTagInitializationState finalize', () => {
   });
 
   it('detects write_file tool name case-insensitively', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.append('<tool name="WRITE_FILE">');
 
     const state = new XmlTagInitializationState(ctx);
@@ -179,7 +183,7 @@ describe('XmlTagInitializationState finalize', () => {
   });
 
   it('dispatches other tool names to generic XmlToolParsingState', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.append('<tool name="other">');
 
     const state = new XmlTagInitializationState(ctx);
@@ -190,7 +194,7 @@ describe('XmlTagInitializationState finalize', () => {
   });
 
   it('detects run_bash tool name', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.append('<tool name="run_bash">');
 
     const state = new XmlTagInitializationState(ctx);
@@ -201,7 +205,7 @@ describe('XmlTagInitializationState finalize', () => {
   });
 
   it('detects run_bash tool name case-insensitively', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.append('<tool name="RUN_BASH">');
 
     const state = new XmlTagInitializationState(ctx);

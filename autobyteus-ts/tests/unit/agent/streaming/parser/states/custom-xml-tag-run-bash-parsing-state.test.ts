@@ -1,12 +1,16 @@
 import { describe, it, expect } from 'vitest';
-import { ParserContext } from '../../../../../../src/agent/streaming/parser/parser-context.js';
+import { ParserContext, ParserConfig } from '../../../../../../src/agent/streaming/parser/parser-context.js';
 import { SegmentEventType, SegmentType } from '../../../../../../src/agent/streaming/parser/events.js';
+
+const TURN_ID = 'turn_test';
+const createConfig = (options: Record<string, any> = {}) => new ParserConfig({ turnId: TURN_ID, ...options });
+const createContext = () => new ParserContext(createConfig());
 import { CustomXmlTagRunBashParsingState } from '../../../../../../src/agent/streaming/parser/states/custom-xml-tag-run-bash-parsing-state.js';
 import { TextState } from '../../../../../../src/agent/streaming/parser/states/text-state.js';
 
 describe('CustomXmlTagRunBashParsingState basics', () => {
   it('parses simple command', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.append('ls -la</run_bash>');
 
     const state = new CustomXmlTagRunBashParsingState(ctx, '<run_bash>');
@@ -26,7 +30,7 @@ describe('CustomXmlTagRunBashParsingState basics', () => {
   });
 
   it('extracts supported tag attributes into metadata', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.append('ls -la</run_bash>');
 
     const state = new CustomXmlTagRunBashParsingState(
@@ -43,7 +47,7 @@ describe('CustomXmlTagRunBashParsingState basics', () => {
   });
 
   it('normalizes timeoutSeconds attribute alias to timeout_seconds metadata', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.append('echo alias</run_bash>');
 
     const state = new CustomXmlTagRunBashParsingState(
@@ -60,7 +64,7 @@ describe('CustomXmlTagRunBashParsingState basics', () => {
   });
 
   it('ignores invalid background and timeout attribute values', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.append('echo invalid</run_bash>');
 
     const state = new CustomXmlTagRunBashParsingState(
@@ -77,7 +81,7 @@ describe('CustomXmlTagRunBashParsingState basics', () => {
   });
 
   it('accepts yes/no background aliases', () => {
-    const yesCtx = new ParserContext();
+    const yesCtx = createContext();
     yesCtx.append('echo yes</run_bash>');
     const yesState = new CustomXmlTagRunBashParsingState(yesCtx, "<run_bash background='yes'>");
     yesCtx.currentState = yesState;
@@ -86,7 +90,7 @@ describe('CustomXmlTagRunBashParsingState basics', () => {
     const yesStart = yesEvents.find((e) => e.event_type === SegmentEventType.START);
     expect(yesStart?.payload.metadata).toEqual({ background: true });
 
-    const noCtx = new ParserContext();
+    const noCtx = createContext();
     noCtx.append('echo no</run_bash>');
     const noState = new CustomXmlTagRunBashParsingState(noCtx, "<run_bash background='no'>");
     noCtx.currentState = noState;
@@ -97,7 +101,7 @@ describe('CustomXmlTagRunBashParsingState basics', () => {
   });
 
   it('preserves comments in content', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.append('# Install deps\nnpm install</run_bash>');
 
     const state = new CustomXmlTagRunBashParsingState(ctx, '<run_bash>');
@@ -114,7 +118,7 @@ describe('CustomXmlTagRunBashParsingState basics', () => {
 
 describe('CustomXmlTagRunBashParsingState streaming', () => {
   it('holds back partial closing tags', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.append('echo hello world command</run');
 
     const state = new CustomXmlTagRunBashParsingState(ctx, '<run_bash>');
@@ -131,7 +135,7 @@ describe('CustomXmlTagRunBashParsingState streaming', () => {
 
 describe('CustomXmlTagRunBashParsingState finalize', () => {
   it('finalize closes incomplete command', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.append('partial command');
 
     const state = new CustomXmlTagRunBashParsingState(ctx, '<run_bash>');

@@ -189,22 +189,23 @@ export class AgentStreamingService {
 
     switch (message.type) {
       case 'SEGMENT_START': {
-        const { id, segment_type, metadata } = message.payload;
-        console.log('[stream][segment:start]', { id, segment_type, metadata });
+        const { id, turn_id, segment_type, metadata } = message.payload;
+        console.log('[stream][segment:start]', { id, turn_id, segment_type, metadata });
         break;
       }
       case 'SEGMENT_CONTENT': {
-        const { id, delta } = message.payload;
+        const { id, turn_id, delta } = message.payload;
         console.log('[stream][segment:content]', {
           id,
+          turn_id,
           deltaLen: delta?.length ?? 0,
           deltaSample: summarizeDelta(delta || ''),
         });
         break;
       }
       case 'SEGMENT_END': {
-        const { id, metadata } = message.payload;
-        console.log('[stream][segment:end]', { id, metadata });
+        const { id, turn_id, metadata } = message.payload;
+        console.log('[stream][segment:end]', { id, turn_id, metadata });
         break;
       }
       default:

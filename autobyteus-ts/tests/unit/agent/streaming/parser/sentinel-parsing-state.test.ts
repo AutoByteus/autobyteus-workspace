@@ -2,9 +2,12 @@ import { describe, it, expect } from 'vitest';
 import { ParserConfig } from '../../../../../src/agent/streaming/parser/parser-context.js';
 import { StreamingParser, extractSegments } from '../../../../../src/agent/streaming/parser/streaming-parser.js';
 
+const TURN_ID = 'turn_test';
+const createConfig = (options: Record<string, any> = {}) => new ParserConfig({ turnId: TURN_ID, ...options });
+
 describe('Sentinel parsing', () => {
   it('parses sentinel write_file segment', () => {
-    const config = new ParserConfig({ strategyOrder: ['sentinel'] });
+    const config = createConfig({ strategyOrder: ['sentinel'] });
     const parser = new StreamingParser(config);
 
     const text =
@@ -22,7 +25,7 @@ describe('Sentinel parsing', () => {
   });
 
   it('handles header split across chunks', () => {
-    const config = new ParserConfig({ strategyOrder: ['sentinel'] });
+    const config = createConfig({ strategyOrder: ['sentinel'] });
     const parser = new StreamingParser(config);
 
     const chunks = ['[[SEG_START {"type":"run_terminal_cmd","path":"/x"', '}]]echo hi[[SEG_END]]'];
@@ -39,7 +42,7 @@ describe('Sentinel parsing', () => {
   });
 
   it('falls back to text on invalid header', () => {
-    const config = new ParserConfig({ strategyOrder: ['sentinel'] });
+    const config = createConfig({ strategyOrder: ['sentinel'] });
     const parser = new StreamingParser(config);
 
     const text = '[[SEG_START not-json]]oops[[SEG_END]]';

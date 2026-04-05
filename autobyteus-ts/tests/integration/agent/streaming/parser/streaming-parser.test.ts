@@ -4,7 +4,10 @@ import { StreamingParser, extractSegments } from '../../../../../src/agent/strea
 import { SegmentType } from '../../../../../src/agent/streaming/segments/segment-events.js';
 import { SegmentEventType } from '../../../../../src/agent/streaming/parser/events.js';
 
-const collectEvents = (chunks: string[], config?: ParserConfig) => {
+const TURN_ID = 'turn_test';
+const createConfig = (options: Record<string, any> = {}) => new ParserConfig({ turnId: TURN_ID, ...options });
+
+const collectEvents = (chunks: string[], config: ParserConfig = createConfig()) => {
   const parser = new StreamingParser(config);
   const events = [] as ReturnType<typeof parser.feed>;
   for (const chunk of chunks) {
@@ -14,7 +17,7 @@ const collectEvents = (chunks: string[], config?: ParserConfig) => {
   return events;
 };
 
-const collectSegments = (chunks: string[], config?: ParserConfig) => {
+const collectSegments = (chunks: string[], config: ParserConfig = createConfig()) => {
   return extractSegments(collectEvents(chunks, config));
 };
 
@@ -72,7 +75,7 @@ describe('StreamingParser (integration)', () => {
   });
 
   it('parses run_bash metadata from tool arguments', () => {
-    const config = new ParserConfig({ parseToolCalls: true, strategyOrder: ['xml_tag'] });
+    const config = createConfig({ parseToolCalls: true, strategyOrder: ['xml_tag'] });
     const events = collectEvents([
       "<tool name='run_bash'><arguments><arg name='background'>true</arg><arg name='timeoutSeconds'>11</arg><arg name='command'>echo hi</arg></arguments></tool>"
     ], config);
@@ -92,14 +95,14 @@ describe('StreamingParser (integration)', () => {
   });
 
   it('parses a tool tag when tool parsing is enabled', () => {
-    const config = new ParserConfig({ parseToolCalls: true, strategyOrder: ['xml_tag'] });
+    const config = createConfig({ parseToolCalls: true, strategyOrder: ['xml_tag'] });
     const segments = collectSegments(["Let me check:<tool name='weather'>city=NYC</tool>"] , config);
     const toolSegments = segments.filter((segment) => segment.type === SegmentType.TOOL_CALL);
     expect(toolSegments.length).toBeGreaterThanOrEqual(1);
   });
 
   it('treats tool tags as text when parsing is disabled', () => {
-    const config = new ParserConfig({ parseToolCalls: false });
+    const config = createConfig({ parseToolCalls: false });
     const segments = collectSegments(["Here:<tool name='test'>args</tool>Done"], config);
     const toolSegments = segments.filter((segment) => segment.type === SegmentType.TOOL_CALL);
     expect(toolSegments.length).toBe(0);

@@ -13,6 +13,8 @@ import { OpenAiJsonSchemaFormatter } from '../../../../src/tools/usage/formatter
 const apiKey = process.env.OPENAI_API_KEY;
 const runIntegration = apiKey ? describe : describe.skip;
 
+const TURN_ID = 'turn_test';
+
 const resetRegistry = () => {
   defaultToolRegistry.clear();
   registerWriteFileTool();
@@ -36,6 +38,7 @@ runIntegration('ApiToolCallStreamingResponseHandler (OpenAI live)', () => {
 
     const events: any[] = [];
     const handler = new ApiToolCallStreamingResponseHandler({
+      turnId: TURN_ID,
       onSegmentEvent: (event) => events.push(event)
     });
 

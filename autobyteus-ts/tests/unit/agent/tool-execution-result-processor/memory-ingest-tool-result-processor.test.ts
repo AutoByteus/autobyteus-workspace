@@ -70,7 +70,7 @@ describe('MemoryIngestToolResultProcessor', () => {
       ingestToolResult: vi.fn()
     };
     context.state.memoryManager = memoryManager as any;
-    context.state.activeTurnId = null;
+    context.state.activeTurn = null;
 
     const event = new ToolResultEvent('tool', 'ok', 'call_1');
     const result = await processor.process(event, context);
@@ -79,14 +79,14 @@ describe('MemoryIngestToolResultProcessor', () => {
     expect(memoryManager.ingestToolResult).not.toHaveBeenCalled();
   });
 
-  it('falls back to active turn id when event turn id missing', async () => {
+  it('falls back to active agent turn id when event turn id missing', async () => {
     const context = makeContext();
     const processor = new MemoryIngestToolResultProcessor();
     const memoryManager = {
       ingestToolResult: vi.fn()
     };
     context.state.memoryManager = memoryManager as any;
-    context.state.activeTurnId = 'turn_active';
+    context.state.activeTurn = { turnId: 'turn_active' } as any;
 
     const event = new ToolResultEvent('tool', 'ok', 'call_1');
     const result = await processor.process(event, context);

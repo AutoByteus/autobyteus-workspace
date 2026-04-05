@@ -79,6 +79,57 @@ describe("ChannelAgentRunReplyBridge", () => {
     });
   });
 
+  it("resolves a streamed agent reply when segment events expose turn_id", async () => {
+    let listener: ((event: unknown) => void) | null = null;
+    const bridge = new ChannelAgentRunReplyBridge({
+      turnReplyRecoveryService: {
+        resolveReplyText: vi.fn(),
+      },
+    });
+
+    const observation = bridge.observeAcceptedExternalTurn({
+      run: {
+        runId: "run-autobyteus-agent-turn",
+        subscribeToEvents: (onEvent: (event: unknown) => void) => {
+          listener = onEvent;
+          return vi.fn();
+        },
+      },
+      turnId: "turn-1",
+      envelope: createEnvelope(),
+    });
+
+    listener?.({
+      runId: "run-autobyteus-agent-turn",
+      eventType: AgentRunEventType.SEGMENT_END,
+      payload: {
+        turn_id: "turn-1",
+        text: "Agent turn reply",
+        segment_type: "text",
+      },
+      statusHint: null,
+    });
+    listener?.({
+      runId: "run-autobyteus-agent-turn",
+      eventType: AgentRunEventType.AGENT_STATUS,
+      payload: {
+        new_status: "IDLE",
+        old_status: "RUNNING",
+      },
+      statusHint: "IDLE",
+    });
+
+    await expect(observation).resolves.toEqual({
+      status: "REPLY_READY",
+      reply: expect.objectContaining({
+        agentRunId: "run-autobyteus-agent-turn",
+        teamRunId: null,
+        turnId: "turn-1",
+        replyText: "Agent turn reply",
+      }),
+    });
+  });
+
   it("keeps a linked source context for follow-up turns", async () => {
     let listener: ((event: unknown) => void) | null = null;
     const bridge = new ChannelAgentRunReplyBridge({

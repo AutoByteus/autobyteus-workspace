@@ -6,6 +6,7 @@ import { ChunkResponse } from '../../../llm/utils/response-types.js';
 
 export class PassThroughStreamingResponseHandler extends StreamingResponseHandler {
   private onSegmentEvent?: (event: SegmentEvent) => void;
+  private turnId: string;
   private segmentIdPrefix: string;
   private segmentId: string;
   private isActive = false;
@@ -15,10 +16,12 @@ export class PassThroughStreamingResponseHandler extends StreamingResponseHandle
   constructor(options?: {
     onSegmentEvent?: (event: SegmentEvent) => void;
     onToolInvocation?: (invocation: ToolInvocation) => void;
+    turnId: string;
     segmentIdPrefix?: string;
   }) {
     super();
     this.onSegmentEvent = options?.onSegmentEvent;
+    this.turnId = options?.turnId ?? (() => { throw new Error('PassThroughStreamingResponseHandler requires turnId.'); })();
     this.segmentIdPrefix = options?.segmentIdPrefix ?? `pt_${randomUUID().replace(/-/g, '')}:`;
     this.segmentId = `${this.segmentIdPrefix}text_0`;
   }
@@ -36,10 +39,10 @@ export class PassThroughStreamingResponseHandler extends StreamingResponseHandle
     const events: SegmentEvent[] = [];
     if (!this.isActive) {
       this.isActive = true;
-      events.push(SegmentEvent.start(this.segmentId, SegmentType.TEXT));
+      events.push(SegmentEvent.start(this.turnId, this.segmentId, SegmentType.TEXT));
     }
 
-    events.push(SegmentEvent.content(this.segmentId, textContent));
+    events.push(SegmentEvent.content(this.turnId, this.segmentId, textContent));
     this.processEvents(events);
     return events;
   }
@@ -51,7 +54,7 @@ export class PassThroughStreamingResponseHandler extends StreamingResponseHandle
     this.isFinalized = true;
     const events: SegmentEvent[] = [];
     if (this.isActive) {
-      events.push(SegmentEvent.end(this.segmentId));
+      events.push(SegmentEvent.end(this.turnId, this.segmentId));
       this.isActive = false;
     }
     this.processEvents(events);

@@ -30,6 +30,7 @@ describe('tool lifecycle ordering regression', () => {
     handleSegmentStart(
       {
         id: 'edit-1',
+        turn_id: 'turn-1',
         segment_type: 'edit_file',
         metadata: {
           path: '/tmp/example.py',
@@ -42,6 +43,7 @@ describe('tool lifecycle ordering regression', () => {
       {
         invocation_id: 'edit-1',
         tool_name: 'edit_file',
+        turn_id: 'turn-1',
         arguments: {
           path: '/tmp/example.py',
           patch: '@@ -1 +1 @@\n-print("old")\n+print("new")\n',
@@ -53,6 +55,7 @@ describe('tool lifecycle ordering regression', () => {
     handleSegmentEnd(
       {
         id: 'edit-1',
+        turn_id: 'turn-1',
         metadata: {
           tool_name: 'edit_file',
           path: '/tmp/example.py',
@@ -72,6 +75,7 @@ describe('tool lifecycle ordering regression', () => {
     handleSegmentStart(
       {
         id: 'edit-2',
+        turn_id: 'turn-1',
         segment_type: 'edit_file',
         metadata: {
           path: '/tmp/example.py',
@@ -84,6 +88,7 @@ describe('tool lifecycle ordering regression', () => {
       {
         invocation_id: 'edit-2',
         tool_name: 'edit_file',
+        turn_id: 'turn-1',
         result: {
           ok: true,
         },
@@ -94,6 +99,7 @@ describe('tool lifecycle ordering regression', () => {
     handleSegmentEnd(
       {
         id: 'edit-2',
+        turn_id: 'turn-1',
         metadata: {
           tool_name: 'edit_file',
           path: '/tmp/example.py',

@@ -97,7 +97,7 @@ export class MemoryManager {
     let effectiveTurnId: string | null = null;
 
     for (const invocation of toolInvocations) {
-      const invocationTurnId = (invocation as { turnId?: string }).turnId ?? turnId;
+      const invocationTurnId = invocation.turnId ?? turnId;
       if (!invocationTurnId) {
         throw new Error('turnId is required to ingest tool intent');
       }
@@ -133,7 +133,7 @@ export class MemoryManager {
   }
 
   ingestToolResult(event: ToolResultEvent, turnId?: string): void {
-    const effectiveTurnId = (event as { turnId?: string }).turnId ?? turnId;
+    const effectiveTurnId = event.turnId ?? turnId;
     if (!effectiveTurnId) {
       throw new Error('turnId is required to ingest tool result');
     }

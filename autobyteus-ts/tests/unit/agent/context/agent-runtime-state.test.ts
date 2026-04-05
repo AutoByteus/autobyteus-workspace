@@ -28,10 +28,9 @@ describe('AgentRuntimeState', () => {
     expect(state.pendingToolApprovals).toEqual({});
     expect(state.customData).toEqual({});
     expect(state.workspaceRootPath).toBeNull();
-    expect(state.activeToolInvocationTurn).toBeNull();
+    expect(state.activeTurn).toBeNull();
     expect(state.todoList).toBeNull();
     expect(state.memoryManager).toBeNull();
-    expect(state.activeTurnId).toBeNull();
   });
 
   it('accepts a workspace root path string', () => {

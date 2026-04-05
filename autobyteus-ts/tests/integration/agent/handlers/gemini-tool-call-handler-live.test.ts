@@ -15,6 +15,8 @@ const hasVertex = hasVertexApiKey || Boolean(process.env.VERTEX_AI_PROJECT && pr
 const hasApiKey = Boolean(process.env.GEMINI_API_KEY);
 const runIntegration = hasVertex || hasApiKey ? describe : describe.skip;
 
+const TURN_ID = 'turn_test';
+
 const buildGeminiModel = () =>
   new LLMModel({
     name: 'gemini-3-flash-preview',
@@ -40,6 +42,7 @@ runIntegration('ApiToolCallStreamingResponseHandler (Gemini live)', () => {
     const llm = new GeminiLLM(buildGeminiModel());
     const events: any[] = [];
     const handler = new ApiToolCallStreamingResponseHandler({
+      turnId: TURN_ID,
       onSegmentEvent: (event) => events.push(event)
     });
 

@@ -103,7 +103,7 @@ export class LLMCompleteResponseReceivedEvent extends AgentOperationalEvent {
   constructor(
     completeResponse: CompleteResponse,
     isError: boolean = false,
-    turnId: string | null = null,
+    turnId: string | null = null
   ) {
     super();
     this.completeResponse = completeResponse;
@@ -146,7 +146,7 @@ export class ToolResultEvent extends AgentOperationalEvent {
     this.error = error;
     this.toolArgs = toolArgs;
     this.turnId = turnId;
-    this.isDenied = isDenied;
+  this.isDenied = isDenied;
   }
 }
 

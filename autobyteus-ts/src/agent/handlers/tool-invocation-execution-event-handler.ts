@@ -42,7 +42,7 @@ export class ToolInvocationExecutionEventHandler extends AgentEventHandler {
     let toolName = toolInvocation.name;
     let arguments_ = toolInvocation.arguments;
     let invocationId = toolInvocation.id;
-    const activeTurnId = toolInvocation.turnId ?? context.state.activeTurnId ?? undefined;
+    const activeTurnId = toolInvocation.turnId ?? context.state.activeTurn?.turnId ?? undefined;
     const agentId = context.agentId;
     const notifier = context.statusManager?.notifier;
 
@@ -98,7 +98,8 @@ export class ToolInvocationExecutionEventHandler extends AgentEventHandler {
         notifier.notifyAgentDataToolLog({
           log_entry: `[TOOL_CALL] Agent_ID: ${agentId}, Tool: ${toolName}, Invocation_ID: ${invocationId}, Arguments: ${argsStr}`,
           tool_invocation_id: invocationId,
-          tool_name: toolName
+          tool_name: toolName,
+          turn_id: activeTurnId ?? null
         });
       } catch (error) {
         console.error(`Agent '${agentId}': Error notifying tool call log: ${error}`);
@@ -120,17 +121,18 @@ export class ToolInvocationExecutionEventHandler extends AgentEventHandler {
         activeTurnId,
         false
       );
-      if (notifier?.notifyAgentDataToolLog) {
-        try {
-          notifier.notifyAgentDataToolLog({
-            log_entry: `[TOOL_ERROR] ${errorMessage}`,
-            tool_invocation_id: invocationId,
-            tool_name: toolName
-          });
-          notifier.notifyAgentErrorOutputGeneration?.(
-            `ToolExecution.ToolNotFound.${toolName}`,
-            errorMessage
-          );
+        if (notifier?.notifyAgentDataToolLog) {
+          try {
+            notifier.notifyAgentDataToolLog({
+              log_entry: `[TOOL_ERROR] ${errorMessage}`,
+              tool_invocation_id: invocationId,
+              tool_name: toolName,
+              turn_id: activeTurnId ?? null
+            });
+            notifier.notifyAgentErrorOutputGeneration?.(
+              `ToolExecution.ToolNotFound.${toolName}`,
+              errorMessage
+            );
         } catch (error) {
           console.error(
             `Agent '${agentId}': Error notifying tool error log/output error: ${error}`
@@ -162,7 +164,8 @@ export class ToolInvocationExecutionEventHandler extends AgentEventHandler {
             notifier.notifyAgentDataToolLog({
               log_entry: `[TOOL_RESULT] ${resultJsonForLog}`,
               tool_invocation_id: invocationId,
-              tool_name: toolName
+              tool_name: toolName,
+              turn_id: activeTurnId ?? null
             });
           } catch (error) {
             console.error(`Agent '${agentId}': Error notifying tool result log: ${error}`);
@@ -186,7 +189,8 @@ export class ToolInvocationExecutionEventHandler extends AgentEventHandler {
             notifier.notifyAgentDataToolLog({
               log_entry: `[TOOL_EXCEPTION] ${errorMessage}\nDetails:\n${errorDetails}`,
               tool_invocation_id: invocationId,
-              tool_name: toolName
+              tool_name: toolName,
+              turn_id: activeTurnId ?? null
             });
             notifier.notifyAgentErrorOutputGeneration?.(
               `ToolExecution.Exception.${toolName}`,

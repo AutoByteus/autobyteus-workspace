@@ -1,12 +1,16 @@
 import { describe, it, expect } from 'vitest';
-import { ParserContext } from '../../../../../../src/agent/streaming/parser/parser-context.js';
+import { ParserContext, ParserConfig } from '../../../../../../src/agent/streaming/parser/parser-context.js';
 import { XmlToolParsingState } from '../../../../../../src/agent/streaming/parser/states/xml-tool-parsing-state.js';
 import { TextState } from '../../../../../../src/agent/streaming/parser/states/text-state.js';
 import { SegmentEventType, SegmentType } from '../../../../../../src/agent/streaming/parser/events.js';
 
+const TURN_ID = 'turn_test';
+const createConfig = (options: Record<string, any> = {}) => new ParserConfig({ turnId: TURN_ID, ...options });
+const createContext = () => new ParserContext(createConfig());
+
 describe('XmlToolParsingState basics', () => {
   it('parses a simple tool call', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     const signature = "<tool name='weather'>";
     ctx.append(signature + '<arguments><city>NYC</city></arguments></tool>after');
 
@@ -24,7 +28,7 @@ describe('XmlToolParsingState basics', () => {
   });
 
   it('extracts tool name with double quotes', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     const signature = '<tool name="get_weather">';
     ctx.append(signature + '<arguments><location>Paris</location></arguments></tool>');
 
@@ -38,7 +42,7 @@ describe('XmlToolParsingState basics', () => {
   });
 
   it('treats tool without name as text', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     const signature = '<tool>';
     ctx.append(signature + 'content</tool>');
 
@@ -54,7 +58,7 @@ describe('XmlToolParsingState basics', () => {
 
 describe('XmlToolParsingState streaming', () => {
   it('completes tool content in one pass', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     const signature = "<tool name='slow_api'>";
     ctx.append(signature + '<arguments><query>testing</query></arguments></tool>done');
 
@@ -69,7 +73,7 @@ describe('XmlToolParsingState streaming', () => {
   });
 
   it('streams raw XML content', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     const signature = "<tool name='create_tasks'>";
     const content =
       '<arguments>' +
@@ -99,7 +103,7 @@ describe('XmlToolParsingState streaming', () => {
 
 describe('XmlToolParsingState finalize', () => {
   it('finalize closes incomplete tool', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     const signature = "<tool name='test'>";
     ctx.append(signature + '<arguments><arg>val');
 

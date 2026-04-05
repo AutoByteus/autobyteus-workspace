@@ -88,6 +88,13 @@ export class AutoByteusStreamEventConverter {
       if (!eventType) {
         return null;
       }
+      const turnId =
+        typeof payload.turn_id === "string" && payload.turn_id.length > 0
+          ? payload.turn_id
+          : null;
+      if (!turnId) {
+        return null;
+      }
       return {
         eventType,
         runId: this.runId,
@@ -96,6 +103,7 @@ export class AutoByteusStreamEventConverter {
             typeof payload.segment_id === "string" && payload.segment_id.length > 0
               ? payload.segment_id
               : "",
+          turnId,
           ...(payload.segment_type !== undefined ? { segment_type: payload.segment_type } : {}),
           ...((payload.payload &&
           typeof payload.payload === "object" &&

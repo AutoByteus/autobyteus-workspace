@@ -42,6 +42,7 @@ export interface ParsedToolExecutionFailedPayload extends ParsedToolLifecycleBas
 export interface ParsedToolLogPayload {
   invocationId: string;
   toolName: string;
+  turnId: string | null;
   logEntry: string;
 }
 
@@ -202,6 +203,7 @@ export const parseToolLogPayload = (payload: ToolLogPayload): ParsedToolLogPaylo
   return {
     invocationId,
     toolName,
+    turnId: normalizeOptionalString(payload.turn_id),
     logEntry,
   };
 };

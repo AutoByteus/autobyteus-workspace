@@ -19,6 +19,7 @@ export class ParserConfig {
   jsonToolPatterns: string[];
   jsonToolParser?: any;
   strategyOrder: string[];
+  turnId: string;
   segmentIdPrefix?: string;
 
   constructor(options?: {
@@ -26,6 +27,7 @@ export class ParserConfig {
     jsonToolPatterns?: string[];
     jsonToolParser?: any;
     strategyOrder?: string[];
+    turnId: string;
     segmentIdPrefix?: string;
   }) {
     this.parseToolCalls = options?.parseToolCalls ?? true;
@@ -34,6 +36,7 @@ export class ParserConfig {
       : [...ParserConfig.DEFAULT_JSON_PATTERNS];
     this.jsonToolParser = options?.jsonToolParser;
     this.strategyOrder = options?.strategyOrder ? [...options.strategyOrder] : ['xml_tag'];
+    this.turnId = options?.turnId ?? (() => { throw new Error('ParserConfig requires turnId.'); })();
     this.segmentIdPrefix = options?.segmentIdPrefix;
   }
 }
@@ -46,9 +49,9 @@ export class ParserContext {
   private strategies: DetectionStrategy[];
 
   constructor(config?: ParserConfig) {
-    this.configInstance = config ?? new ParserConfig();
+    this.configInstance = config ?? (() => { throw new Error('ParserContext requires ParserConfig with turnId.'); })();
     this.scanner = new StreamScanner();
-    this.emitter = new EventEmitter(this.configInstance.segmentIdPrefix);
+    this.emitter = new EventEmitter(this.configInstance.turnId, this.configInstance.segmentIdPrefix);
     this.currentStateRef = null;
     this.strategies = createDetectionStrategies(this.configInstance.strategyOrder);
   }
@@ -67,6 +70,10 @@ export class ParserContext {
 
   get jsonToolParser(): any {
     return this.configInstance.jsonToolParser;
+  }
+
+  get turnId(): string {
+    return this.configInstance.turnId;
   }
 
   get detectionStrategies(): DetectionStrategy[] {

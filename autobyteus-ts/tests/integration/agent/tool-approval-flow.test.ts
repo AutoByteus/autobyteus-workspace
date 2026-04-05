@@ -4,6 +4,7 @@ import path from 'node:path';
 import os from 'node:os';
 import { AgentFactory } from '../../../src/agent/factory/agent-factory.js';
 import { AgentConfig } from '../../../src/agent/context/agent-config.js';
+import { AgentTurn } from '../../../src/agent/agent-turn.js';
 import { PendingToolInvocationEvent, ToolResultEvent } from '../../../src/agent/events/agent-events.js';
 import { ToolInvocation } from '../../../src/agent/tool-invocation.js';
 import { waitForAgentToBeIdle } from '../../../src/agent/utils/wait-for-idle.js';
@@ -108,7 +109,7 @@ const createAgentFixture = async (tools: any[]): Promise<AgentFixture> => {
 const assignActiveTurn = (fixture: AgentFixture): string => {
   const memoryManager = fixture.agent.context.state.memoryManager;
   const turnId = memoryManager?.startTurn() ?? `turn_${Date.now()}`;
-  fixture.agent.context.state.activeTurnId = turnId;
+  fixture.agent.context.state.activeTurn = new AgentTurn(turnId);
   return turnId;
 };
 

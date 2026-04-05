@@ -159,6 +159,7 @@ describe('toolLifecycleHandler', () => {
       {
         invocation_id: invocationId,
         tool_name: 'run_bash',
+        turn_id: 'turn-1',
         arguments: { command: 'ls -la' },
       },
       context,
@@ -183,6 +184,7 @@ describe('toolLifecycleHandler', () => {
     const payload: ToolApprovalRequestedPayload = {
       invocation_id: invocationId,
       tool_name: 'edit_file',
+      turn_id: 'turn-1',
       arguments: {
         path: '/tmp/example.txt',
         patch: '--- a\n+++ b\n@@\n+line\n',
@@ -207,11 +209,13 @@ describe('toolLifecycleHandler', () => {
     const approvedPayload: ToolApprovedPayload = {
       invocation_id: invocationId,
       tool_name: 'run_bash',
+      turn_id: 'turn-1',
       reason: 'approved',
     };
     const startedPayload: ToolExecutionStartedPayload = {
       invocation_id: invocationId,
       tool_name: 'run_bash',
+      turn_id: 'turn-1',
       arguments: { command: 'npm run dev', background: true },
     };
 
@@ -236,6 +240,7 @@ describe('toolLifecycleHandler', () => {
       {
         invocation_id: invocationId,
         tool_name: 'send_message_to',
+        turn_id: 'turn-1',
         arguments: {
           recipient_name: 'Student',
           content: 'Hard question',
@@ -261,11 +266,13 @@ describe('toolLifecycleHandler', () => {
     const startedPayload: ToolExecutionStartedPayload = {
       invocation_id: invocationId,
       tool_name: 'run_bash',
+      turn_id: 'turn-1',
       arguments: { command: 'python server.py' },
     };
     const approvedPayload: ToolApprovedPayload = {
       invocation_id: invocationId,
       tool_name: 'run_bash',
+      turn_id: 'turn-1',
       reason: 'late',
     };
 
@@ -283,11 +290,13 @@ describe('toolLifecycleHandler', () => {
     const startedPayload: ToolExecutionStartedPayload = {
       invocation_id: invocationId,
       tool_name: 'read_file',
+      turn_id: 'turn-1',
       arguments: { path: '/tmp/a.txt' },
     };
     const succeededPayload: ToolExecutionSucceededPayload = {
       invocation_id: invocationId,
       tool_name: 'read_file',
+      turn_id: 'turn-1',
       result: { content: 'ok' },
     };
 
@@ -308,6 +317,7 @@ describe('toolLifecycleHandler', () => {
     const payload: ToolExecutionFailedPayload = {
       invocation_id: invocationId,
       tool_name: 'read_file',
+      turn_id: 'turn-1',
       error: 'file not found',
     };
 
@@ -335,6 +345,7 @@ describe('toolLifecycleHandler', () => {
       {
         invocation_id: invocationId,
         tool_name: 'write_file',
+        turn_id: 'turn-1',
         result: { ok: true },
       },
       context,
@@ -362,6 +373,7 @@ describe('toolLifecycleHandler', () => {
       {
         invocation_id: invocationId,
         tool_name: 'edit_file',
+        turn_id: 'turn-1',
         reason: 'Denied by user',
       },
       context,
@@ -383,6 +395,7 @@ describe('toolLifecycleHandler', () => {
       {
         invocation_id: invocationId,
         tool_name: 'edit_file',
+        turn_id: 'turn-1',
         reason: 'Denied by user',
       },
       context,
@@ -402,6 +415,7 @@ describe('toolLifecycleHandler', () => {
     const payload: ToolDeniedPayload = {
       invocation_id: invocationId,
       tool_name: 'delete_file',
+      turn_id: 'turn-1',
       reason: 'Denied by user',
     };
 
@@ -439,6 +453,7 @@ describe('toolLifecycleHandler', () => {
     const payload: ToolLogPayload = {
       tool_invocation_id: invocationId,
       tool_name: 'read_file',
+      turn_id: 'turn-1',
       log_entry: '[TOOL_RESULT_DIRECT] {"ok":true}',
     };
 

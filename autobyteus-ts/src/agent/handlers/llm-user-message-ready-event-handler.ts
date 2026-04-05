@@ -10,7 +10,7 @@ import { ChunkResponse, CompleteResponse } from '../../llm/utils/response-types.
 import { BaseLLM } from '../../llm/base.js';
 import { StreamingResponseHandlerFactory } from '../streaming/handlers/streaming-handler-factory.js';
 import { SegmentEvent, SegmentType } from '../streaming/segments/segment-events.js';
-import { ToolInvocationTurn } from '../tool-invocation-turn.js';
+import { AgentTurn } from '../agent-turn.js';
 import { OpenAIChatRenderer } from '../../llm/prompt-renderers/openai-chat-renderer.js';
 import { LLMRequestAssembler } from '../llm-request-assembler.js';
 import { applyCompactionPolicy, resolveTokenBudget } from '../token-budget.js';
@@ -54,11 +54,12 @@ export class LLMUserMessageReadyEventHandler extends AgentEventHandler {
       throw new Error(`Agent '${agentId}' requires a memory manager to assemble LLM requests.`);
     }
 
-    let activeTurnId = context.state.activeTurnId ?? null;
-    if (!activeTurnId) {
-      activeTurnId = memoryManager.startTurn();
-      context.state.activeTurnId = activeTurnId;
+    let activeTurn = context.state.activeTurn;
+    if (!activeTurn) {
+      activeTurn = new AgentTurn(memoryManager.startTurn());
+      context.state.activeTurn = activeTurn;
     }
+    const activeTurnId = activeTurn.turnId;
 
     let completeResponseText = '';
     let completeReasoningText = '';
@@ -110,6 +111,7 @@ export class LLMUserMessageReadyEventHandler extends AgentEventHandler {
       toolNames,
       provider,
       onSegmentEvent: emitSegmentEvent,
+      turnId: activeTurnId,
       agentId
     });
     const streamingHandler = handlerResult.handler;
@@ -126,7 +128,7 @@ export class LLMUserMessageReadyEventHandler extends AgentEventHandler {
       );
     }
 
-    const segmentIdPrefix = `turn_${randomUUID().replace(/-/g, '')}:`;
+    const segmentIdPrefix = `segment_${randomUUID().replace(/-/g, '')}:`;
     let currentReasoningPartId: string | null = null;
 
     const renderer = (llmInstance as any)._renderer ?? new OpenAIChatRenderer();
@@ -166,9 +168,9 @@ export class LLMUserMessageReadyEventHandler extends AgentEventHandler {
         if (chunkResponse.reasoning) {
           if (!currentReasoningPartId) {
             currentReasoningPartId = `${segmentIdPrefix}reasoning_${randomUUID().replace(/-/g, '')}`;
-            emitSegmentEvent(SegmentEvent.start(currentReasoningPartId, SegmentType.REASONING));
+            emitSegmentEvent(SegmentEvent.start(activeTurnId, currentReasoningPartId, SegmentType.REASONING));
           }
-          emitSegmentEvent(SegmentEvent.content(currentReasoningPartId, chunkResponse.reasoning));
+          emitSegmentEvent(SegmentEvent.content(activeTurnId, currentReasoningPartId, chunkResponse.reasoning));
         }
 
         streamingHandler.feed(chunkResponse);
@@ -180,17 +182,12 @@ export class LLMUserMessageReadyEventHandler extends AgentEventHandler {
         const toolInvocations = streamingHandler.getAllInvocations();
         if (toolInvocations.length) {
           parsedToolInvocationCount = toolInvocations.length;
-          context.state.activeToolInvocationTurn = new ToolInvocationTurn(activeTurnId, toolInvocations);
+          activeTurn.startToolInvocationBatch(toolInvocations);
           console.info(
             `Agent '${agentId}': Parsed ${toolInvocations.length} tool invocations from streaming parser.`
           );
-          if (memoryManager) {
-            memoryManager.ingestToolIntents(toolInvocations, activeTurnId ?? undefined);
-          }
+          memoryManager.ingestToolIntents(toolInvocations, activeTurnId);
           for (const invocation of toolInvocations) {
-            if (activeTurnId && !invocation.turnId) {
-              invocation.turnId = activeTurnId;
-            }
             await context.inputEventQueues.enqueueToolInvocationRequest(
               new PendingToolInvocationEvent(invocation)
             );
@@ -199,7 +196,7 @@ export class LLMUserMessageReadyEventHandler extends AgentEventHandler {
       }
 
       if (currentReasoningPartId) {
-        emitSegmentEvent(SegmentEvent.end(currentReasoningPartId));
+        emitSegmentEvent(SegmentEvent.end(activeTurnId, currentReasoningPartId));
       }
     } catch (error) {
       console.error(`Agent '${agentId}' error during LLM stream: ${error}`);
@@ -236,7 +233,7 @@ export class LLMUserMessageReadyEventHandler extends AgentEventHandler {
       video_urls: completeVideoUrls
     });
 
-    if (memoryManager && activeTurnId) {
+    if (memoryManager) {
       memoryManager.ingestAssistantResponse(
         completeResponse,
         activeTurnId,

@@ -2,6 +2,7 @@ import { BaseAgentUserInputMessageProcessor } from './base-user-input-processor.
 import type { AgentInputUserMessage } from '../message/agent-input-user-message.js';
 import type { AgentContext } from '../context/agent-context.js';
 import type { UserMessageReceivedEvent } from '../events/agent-events.js';
+import { AgentTurn } from '../agent-turn.js';
 import { buildLLMUserMessage } from '../message/multimodal-message-builder.js';
 import { SenderType } from '../sender-type.js';
 
@@ -25,7 +26,7 @@ export class MemoryIngestInputProcessor extends BaseAgentUserInputMessageProcess
     }
 
     const turnId = memoryManager.startTurn();
-    context.state.activeTurnId = turnId;
+    context.state.activeTurn = new AgentTurn(turnId);
 
     const llmUserMessage = buildLLMUserMessage(message);
     memoryManager.ingestUserMessage(llmUserMessage, turnId, 'LLMUserMessageReadyEvent');

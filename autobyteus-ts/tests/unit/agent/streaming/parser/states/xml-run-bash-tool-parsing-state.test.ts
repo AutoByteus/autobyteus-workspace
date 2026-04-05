@@ -1,11 +1,15 @@
 import { describe, it, expect } from 'vitest';
-import { ParserContext } from '../../../../../../src/agent/streaming/parser/parser-context.js';
+import { ParserContext, ParserConfig } from '../../../../../../src/agent/streaming/parser/parser-context.js';
 import { XmlRunBashToolParsingState } from '../../../../../../src/agent/streaming/parser/states/xml-run-bash-tool-parsing-state.js';
 import { SegmentEventType, SegmentType } from '../../../../../../src/agent/streaming/parser/events.js';
 
+const TURN_ID = 'turn_test';
+const createConfig = (options: Record<string, any> = {}) => new ParserConfig({ turnId: TURN_ID, ...options });
+const createContext = () => new ParserContext(createConfig());
+
 describe('XmlRunBashToolParsingState', () => {
   it('parses run_bash tool', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     const signature = '<tool name="run_bash">';
     const content = "<arguments><arg name='command'>ls -la</arg></arguments></tool>";
     ctx.append(signature + content);
@@ -29,14 +33,14 @@ describe('XmlRunBashToolParsingState', () => {
   });
 
   it('exposes run_bash segment type', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     const signature = '<tool name="run_bash">';
     const state = new XmlRunBashToolParsingState(ctx, signature);
     expect((state.constructor as typeof XmlRunBashToolParsingState).SEGMENT_TYPE).toBe(SegmentType.RUN_BASH);
   });
 
   it('handles fragmented streaming', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     const signature = '<tool name="run_bash">';
     const chunks = [
       '<arguments><arg ',
@@ -66,7 +70,7 @@ describe('XmlRunBashToolParsingState', () => {
   });
 
   it('swallows closing tags and preserves following text', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     const signature = '<tool name="run_bash">';
     const fullText =
       "<arguments><arg name='command'>echo test</arg></arguments></tool>" + 'Post command text';
@@ -90,7 +94,7 @@ describe('XmlRunBashToolParsingState', () => {
   });
 
   it('captures background and timeout_seconds from arguments metadata', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     const signature = '<tool name="run_bash">';
     const content =
       "<arguments><arg name='background'>true</arg><arg name='timeout_seconds'>90</arg><arg name='command'>echo test</arg></arguments></tool>";
@@ -110,7 +114,7 @@ describe('XmlRunBashToolParsingState', () => {
   });
 
   it('captures background and timeout metadata from opening attributes', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     const signature = "<tool name=\"run_bash\" background=\"true\" timeout_seconds=\"33\">";
     const content = "<arguments><arg name='command'>echo attrs</arg></arguments></tool>";
 
@@ -137,7 +141,7 @@ describe('XmlRunBashToolParsingState', () => {
   });
 
   it('captures timeoutSeconds alias and normalizes it to timeout_seconds', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     const signature = '<tool name="run_bash">';
     const content =
       "<arguments><arg name='timeoutSeconds'>75</arg><arg name='command'>echo test</arg></arguments></tool>";
@@ -156,7 +160,7 @@ describe('XmlRunBashToolParsingState', () => {
   });
 
   it('ignores invalid metadata values from arguments', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     const signature = '<tool name="run_bash">';
     const content =
       "<arguments><arg name='background'>maybe</arg><arg name='timeout_seconds'>abc</arg><arg name='command'>echo invalid</arg></arguments></tool>";
@@ -177,7 +181,7 @@ describe('XmlRunBashToolParsingState', () => {
   });
 
   it('keeps attribute metadata when conflicting argument metadata appears later', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     const signature = "<tool name='run_bash' background='false' timeout_seconds='10'>";
     const content =
       "<arguments><arg name='background'>true</arg><arg name='timeout_seconds'>99</arg><arg name='command'>echo precedence</arg></arguments></tool>";
@@ -198,7 +202,7 @@ describe('XmlRunBashToolParsingState', () => {
   });
 
   it('extracts metadata when metadata args arrive in fragmented chunks', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     const signature = '<tool name="run_bash">';
     const chunks = [
       "<arguments><arg name='back",
