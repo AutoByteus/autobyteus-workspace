@@ -1,5 +1,6 @@
 ## Improvements
-- Improved Ollama API-call mode so tool-enabled agent flows now work consistently alongside LM Studio for supported local models.
+- LM Studio reasoning-capable models now stream their reasoning into Autobyteus, so the UI can show the model's thinking while the response is being generated.
+- LM Studio reasoning support now has durable live integration coverage against a real LM Studio server, reducing the chance of future regressions.
 
 ## Fixes
-- Fixed a bug where Ollama API-call responses could miss tool-call data even when the model selected a tool.
+- Fixed the OpenAI-compatible LM Studio adapter dropping streamed `reasoning_content` / `reasoning` fields before they reached the frontend reasoning pipeline.
