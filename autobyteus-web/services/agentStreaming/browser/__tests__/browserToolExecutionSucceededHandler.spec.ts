@@ -27,6 +27,7 @@ describe('handleBrowserToolExecutionSucceeded', () => {
     await handleBrowserToolExecutionSucceeded({
       invocation_id: 'call-1',
       tool_name: 'open_tab',
+      turn_id: 'turn-1',
       result: {
         tab_id: 'browser-session-1',
         status: 'opened',
@@ -43,6 +44,7 @@ describe('handleBrowserToolExecutionSucceeded', () => {
     await handleBrowserToolExecutionSucceeded({
       invocation_id: 'call-2',
       tool_name: 'read_file',
+      turn_id: 'turn-2',
       result: { content: 'ok' },
     });
 
@@ -54,6 +56,7 @@ describe('handleBrowserToolExecutionSucceeded', () => {
     await handleBrowserToolExecutionSucceeded({
       invocation_id: 'call-3',
       tool_name: 'open_tab',
+      turn_id: 'turn-3',
       result: { success: true },
     });
 

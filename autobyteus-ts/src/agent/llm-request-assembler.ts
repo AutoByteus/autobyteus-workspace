@@ -33,7 +33,7 @@ export class LLMRequestAssembler {
 
   async prepareRequest(
     processedUserInput: string | LLMUserMessage,
-    currentTurnId?: string | null,
+    turnId?: string | null,
     systemPrompt?: string | null
   ): Promise<RequestPackage> {
     const userMessage = this.buildUserMessage(processedUserInput);
@@ -48,7 +48,7 @@ export class LLMRequestAssembler {
       if (turnIds.length) {
         compactor.compact(turnIds);
         const bundle = this.memoryManager.retriever.retrieve(this.maxEpisodic, this.maxSemantic);
-        const rawTail = this.memoryManager.getRawTail(policy.rawTailTurns, currentTurnId ?? undefined);
+        const rawTail = this.memoryManager.getRawTail(policy.rawTailTurns, turnId ?? undefined);
         const snapshotMessages = this.compactionSnapshotBuilder.build(
           systemPrompt ?? '',
           bundle,

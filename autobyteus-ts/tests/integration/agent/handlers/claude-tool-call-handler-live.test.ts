@@ -12,6 +12,8 @@ import { AnthropicJsonSchemaFormatter } from '../../../../src/tools/usage/format
 const apiKey = process.env.ANTHROPIC_API_KEY;
 const runIntegration = apiKey ? describe : describe.skip;
 
+const TURN_ID = 'turn_test';
+
 const resetRegistry = () => {
   defaultToolRegistry.clear();
   registerWriteFileTool();
@@ -33,7 +35,7 @@ runIntegration('ApiToolCallStreamingResponseHandler (Claude live)', () => {
       provider: LLMProvider.ANTHROPIC
     }));
 
-    const handler = new ApiToolCallStreamingResponseHandler();
+    const handler = new ApiToolCallStreamingResponseHandler({ turnId: TURN_ID });
 
     const userMessage = new LLMUserMessage({
       content: "Write a python file named anthropic_test.py with content 'print(1)'"

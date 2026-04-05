@@ -3,17 +3,19 @@ import { ParsingStreamingResponseHandler } from '../../../../../src/agent/stream
 import { SegmentEvent, SegmentEventType, SegmentType } from '../../../../../src/agent/streaming/segments/segment-events.js';
 import { ChunkResponse } from '../../../../../src/llm/utils/response-types.js';
 
+const TURN_ID = 'turn_test';
+
 const chunk = (content: string): ChunkResponse => new ChunkResponse({ content });
 
 describe('ParsingStreamingResponseHandler basics', () => {
   it('feed emits segment events', () => {
-    const handler = new ParsingStreamingResponseHandler();
+    const handler = new ParsingStreamingResponseHandler({ turnId: TURN_ID });
     const events = handler.feed(chunk('Hello world'));
     expect(events.length).toBeGreaterThan(0);
   });
 
   it('feed and finalize collects events', () => {
-    const handler = new ParsingStreamingResponseHandler();
+    const handler = new ParsingStreamingResponseHandler({ turnId: TURN_ID });
     handler.feed(chunk('Test message'));
     handler.finalize();
 
@@ -22,7 +24,7 @@ describe('ParsingStreamingResponseHandler basics', () => {
   });
 
   it('double finalize returns empty list', () => {
-    const handler = new ParsingStreamingResponseHandler();
+    const handler = new ParsingStreamingResponseHandler({ turnId: TURN_ID });
     handler.feed(chunk('test'));
     handler.finalize();
     const events = handler.finalize();
@@ -30,7 +32,7 @@ describe('ParsingStreamingResponseHandler basics', () => {
   });
 
   it('feed after finalize throws', () => {
-    const handler = new ParsingStreamingResponseHandler();
+    const handler = new ParsingStreamingResponseHandler({ turnId: TURN_ID });
     handler.finalize();
     expect(() => handler.feed(chunk('more data'))).toThrow();
   });
@@ -40,6 +42,7 @@ describe('ParsingStreamingResponseHandler callbacks', () => {
   it('onSegmentEvent is invoked for each event', () => {
     const received: SegmentEvent[] = [];
     const handler = new ParsingStreamingResponseHandler({
+      turnId: TURN_ID,
       onSegmentEvent: (event) => received.push(event)
     });
 
@@ -53,6 +56,7 @@ describe('ParsingStreamingResponseHandler callbacks', () => {
   it('onToolInvocation is invoked for tool segments', () => {
     const invocations: any[] = [];
     const handler = new ParsingStreamingResponseHandler({
+      turnId: TURN_ID,
       onToolInvocation: (inv) => invocations.push(inv)
     });
 
@@ -65,6 +69,7 @@ describe('ParsingStreamingResponseHandler callbacks', () => {
 
   it('callback errors do not crash handler', () => {
     const handler = new ParsingStreamingResponseHandler({
+      turnId: TURN_ID,
       onSegmentEvent: () => {
         throw new Error('Callback error!');
       }
@@ -79,7 +84,7 @@ describe('ParsingStreamingResponseHandler callbacks', () => {
 
 describe('ParsingStreamingResponseHandler tool integration', () => {
   it('tool segment creates invocation with correct arguments', () => {
-    const handler = new ParsingStreamingResponseHandler();
+    const handler = new ParsingStreamingResponseHandler({ turnId: TURN_ID });
     handler.feed(chunk('<tool name="read_file"><path>/test.py</path></tool>'));
     handler.finalize();
 
@@ -90,7 +95,7 @@ describe('ParsingStreamingResponseHandler tool integration', () => {
   });
 
   it('multiple tool segments create multiple invocations', () => {
-    const handler = new ParsingStreamingResponseHandler();
+    const handler = new ParsingStreamingResponseHandler({ turnId: TURN_ID });
     handler.feed(chunk('Some text <tool name="tool_a"><a>1</a></tool>'));
     handler.feed(chunk(' more text <tool name="tool_b"><b>2</b></tool>'));
     handler.finalize();
@@ -100,7 +105,7 @@ describe('ParsingStreamingResponseHandler tool integration', () => {
   });
 
   it('segment_id matches invocation id', () => {
-    const handler = new ParsingStreamingResponseHandler();
+    const handler = new ParsingStreamingResponseHandler({ turnId: TURN_ID });
     handler.feed(chunk('<tool name="test"></tool>'));
     handler.finalize();
 
@@ -117,7 +122,7 @@ describe('ParsingStreamingResponseHandler tool integration', () => {
 
 describe('ParsingStreamingResponseHandler reset', () => {
   it('reset clears state and allows reuse', () => {
-    const handler = new ParsingStreamingResponseHandler();
+    const handler = new ParsingStreamingResponseHandler({ turnId: TURN_ID });
     handler.feed(chunk('test data'));
     handler.finalize();
 

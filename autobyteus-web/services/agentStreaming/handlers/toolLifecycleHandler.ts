@@ -115,6 +115,7 @@ const getContextText = (
 const createSyntheticToolSegment = (
   context: AgentContext,
   invocationId: string,
+  turnId: string | null,
   toolName: string,
   argumentsPayload: Record<string, any>,
 ): ToolLifecycleSegment => {
@@ -126,6 +127,7 @@ const createSyntheticToolSegment = (
 
   const segment = createSegmentFromPayload({
     id: invocationId,
+    turn_id: turnId,
     segment_type: segmentType,
     metadata,
   });
@@ -211,6 +213,7 @@ const ensureActivityForSegment = (
 const ensureToolLifecycleSegment = (
   context: AgentContext,
   invocationId: string,
+  turnId: string | null,
   toolName: string,
   argumentsPayload: Record<string, any>,
 ): ToolLifecycleSegment => {
@@ -220,7 +223,7 @@ const ensureToolLifecycleSegment = (
     return existing;
   }
 
-  const synthetic = createSyntheticToolSegment(context, invocationId, toolName, argumentsPayload);
+  const synthetic = createSyntheticToolSegment(context, invocationId, turnId, toolName, argumentsPayload);
   ensureActivityForSegment(context, invocationId, toolName, synthetic, argumentsPayload);
   return synthetic;
 };
@@ -365,6 +368,7 @@ export function handleToolApprovalRequested(
   const segment = ensureToolLifecycleSegment(
     context,
     parsed.invocationId,
+    parsed.turnId,
     parsed.toolName,
     parsed.arguments,
   );
@@ -392,7 +396,7 @@ export function handleToolApproved(payload: ToolApprovedPayload, context: AgentC
     return;
   }
 
-  const segment = ensureToolLifecycleSegment(context, parsed.invocationId, parsed.toolName, {});
+  const segment = ensureToolLifecycleSegment(context, parsed.invocationId, parsed.turnId, parsed.toolName, {});
 
   if (isPlaceholderToolName(segment.toolName)) {
     segment.toolName = parsed.toolName;
@@ -413,7 +417,7 @@ export function handleToolDenied(payload: ToolDeniedPayload, context: AgentConte
     return;
   }
 
-  const segment = ensureToolLifecycleSegment(context, parsed.invocationId, parsed.toolName, {});
+  const segment = ensureToolLifecycleSegment(context, parsed.invocationId, parsed.turnId, parsed.toolName, {});
 
   if (isPlaceholderToolName(segment.toolName)) {
     segment.toolName = parsed.toolName;
@@ -441,6 +445,7 @@ export function handleToolExecutionStarted(
   const segment = ensureToolLifecycleSegment(
     context,
     parsed.invocationId,
+    parsed.turnId,
     parsed.toolName,
     parsed.arguments,
   );
@@ -473,7 +478,7 @@ export function handleToolExecutionSucceeded(
     return;
   }
 
-  const segment = ensureToolLifecycleSegment(context, parsed.invocationId, parsed.toolName, {});
+  const segment = ensureToolLifecycleSegment(context, parsed.invocationId, parsed.turnId, parsed.toolName, {});
 
   if (isPlaceholderToolName(segment.toolName)) {
     segment.toolName = parsed.toolName;
@@ -498,7 +503,7 @@ export function handleToolExecutionFailed(
     return;
   }
 
-  const segment = ensureToolLifecycleSegment(context, parsed.invocationId, parsed.toolName, {});
+  const segment = ensureToolLifecycleSegment(context, parsed.invocationId, parsed.turnId, parsed.toolName, {});
 
   if (isPlaceholderToolName(segment.toolName)) {
     segment.toolName = parsed.toolName;
@@ -520,7 +525,7 @@ export function handleToolLog(payload: ToolLogPayload, context: AgentContext): v
     return;
   }
 
-  const segment = ensureToolLifecycleSegment(context, parsed.invocationId, parsed.toolName, {});
+  const segment = ensureToolLifecycleSegment(context, parsed.invocationId, parsed.turnId, parsed.toolName, {});
 
   appendLog(segment, parsed.logEntry);
   syncActivityToolName(context, parsed.invocationId, parsed.toolName);

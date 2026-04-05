@@ -20,22 +20,26 @@ export class SegmentEvent {
   public event_type: SegmentEventType;
   public segment_id: string;
   public segment_type?: SegmentType;
+  public turn_id: string;
   public payload: SegmentEventPayload;
 
   constructor({
     event_type,
     segment_id,
     segment_type,
+    turn_id,
     payload = {}
   }: {
     event_type: SegmentEventType;
     segment_id: string;
     segment_type?: SegmentType;
+    turn_id: string;
     payload?: SegmentEventPayload;
   }) {
     this.event_type = event_type;
     this.segment_id = segment_id;
     this.segment_type = segment_type;
+    this.turn_id = turn_id;
     this.payload = payload;
   }
 
@@ -43,6 +47,7 @@ export class SegmentEvent {
     const result: Record<string, any> = {
       type: this.event_type,
       segment_id: this.segment_id,
+      turn_id: this.turn_id,
       payload: this.payload
     };
     if (this.segment_type !== undefined) {
@@ -51,27 +56,36 @@ export class SegmentEvent {
     return result;
   }
 
-  static start(segment_id: string, segment_type: SegmentType, metadata: Record<string, any> = {}): SegmentEvent {
+  static start(
+    turn_id: string,
+    segment_id: string,
+    segment_type: SegmentType,
+    metadata: Record<string, any> = {}
+  ): SegmentEvent {
     return new SegmentEvent({
       event_type: SegmentEventType.START,
       segment_id,
       segment_type,
+      turn_id,
       payload: Object.keys(metadata).length ? { metadata } : {}
     });
   }
 
-  static content(segment_id: string, delta: any): SegmentEvent {
+  static content(turn_id: string, segment_id: string, delta: any): SegmentEvent {
     return new SegmentEvent({
       event_type: SegmentEventType.CONTENT,
       segment_id,
+      turn_id,
       payload: { delta }
     });
   }
 
-  static end(segment_id: string): SegmentEvent {
+  static end(turn_id: string, segment_id: string, payload: SegmentEventPayload = {}): SegmentEvent {
     return new SegmentEvent({
       event_type: SegmentEventType.END,
-      segment_id
+      segment_id,
+      turn_id,
+      payload
     });
   }
 }

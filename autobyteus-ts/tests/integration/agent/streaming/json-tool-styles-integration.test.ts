@@ -5,6 +5,8 @@ import { getJsonToolParsingProfile } from '../../../../src/agent/streaming/parse
 import { LLMProvider } from '../../../../src/llm/providers.js';
 import { ChunkResponse } from '../../../../src/llm/utils/response-types.js';
 
+const TURN_ID = 'turn_test';
+
 const chunkText = (text: string, chunkSize = 7): string[] => {
   const chunks: string[] = [];
   for (let i = 0; i < text.length; i += chunkSize) {
@@ -41,6 +43,7 @@ describe('JSON tool styles (integration)', () => {
     it(`parses JSON tool style for ${provider}`, () => {
       const profile = getJsonToolParsingProfile(provider);
       const config = new ParserConfig({
+        turnId: TURN_ID,
         parseToolCalls: true,
         jsonToolPatterns: profile.signaturePatterns,
         jsonToolParser: profile.parser,

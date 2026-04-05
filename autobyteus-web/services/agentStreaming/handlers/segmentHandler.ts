@@ -278,7 +278,7 @@ export function handleSegmentContent(
   }
   let segment = findSegmentById(context, payload.id, payload.segment_type);
   if (!segment) {
-    segment = createFallbackSegment(payload.id, payload.segment_type ?? 'text', context);
+    segment = createSyntheticSegmentFromContent(payload.id, payload.turn_id, payload.segment_type ?? 'text', context);
   }
 
   appendContentToSegment(segment, delta);
@@ -443,14 +443,16 @@ function appendContentToSegment(segment: AIResponseSegment, delta: string): void
   }
 }
 
-function createFallbackSegment(
+function createSyntheticSegmentFromContent(
   segmentId: string,
+  turnId: string | null,
   segmentType: SegmentStartPayload['segment_type'],
   context: AgentContext,
 ): AIResponseSegment {
   const aiMessage = findOrCreateAIMessage(context);
   const segment = createSegmentFromPayload({
     id: segmentId,
+    turn_id: turnId,
     segment_type: segmentType,
   });
   setStreamSegmentIdentity(segment, segmentId, segmentType);

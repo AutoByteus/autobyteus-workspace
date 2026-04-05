@@ -1,12 +1,16 @@
 import { describe, it, expect } from 'vitest';
-import { ParserContext } from '../../../../../../src/agent/streaming/parser/parser-context.js';
+import { ParserContext, ParserConfig } from '../../../../../../src/agent/streaming/parser/parser-context.js';
 import { CustomXmlTagWriteFileParsingState } from '../../../../../../src/agent/streaming/parser/states/custom-xml-tag-write-file-parsing-state.js';
 import { TextState } from '../../../../../../src/agent/streaming/parser/states/text-state.js';
 import { SegmentEventType, SegmentType } from '../../../../../../src/agent/streaming/parser/events.js';
 
+const TURN_ID = 'turn_test';
+const createConfig = (options: Record<string, any> = {}) => new ParserConfig({ turnId: TURN_ID, ...options });
+const createContext = () => new ParserContext(createConfig());
+
 describe('CustomXmlTagWriteFileParsingState basics', () => {
   it('parses file content with path attribute', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.append("print('hello')</write_file>");
 
     const state = new CustomXmlTagWriteFileParsingState(ctx, "<write_file path='/test.py'>");
@@ -27,7 +31,7 @@ describe('CustomXmlTagWriteFileParsingState basics', () => {
   });
 
   it('treats missing path as text', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.append('content</write_file>');
 
     const state = new CustomXmlTagWriteFileParsingState(ctx, '<write_file>');
@@ -43,7 +47,7 @@ describe('CustomXmlTagWriteFileParsingState basics', () => {
 
 describe('CustomXmlTagWriteFileParsingState streaming', () => {
   it('holds back partial closing tags', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.append('hello world content</wri');
 
     const state = new CustomXmlTagWriteFileParsingState(ctx, "<write_file path='/a.py'>");
@@ -60,7 +64,7 @@ describe('CustomXmlTagWriteFileParsingState streaming', () => {
 
 describe('CustomXmlTagWriteFileParsingState finalize', () => {
   it('finalize emits remaining content', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.append('partial content');
 
     const state = new CustomXmlTagWriteFileParsingState(ctx, "<write_file path='/a.py'>");

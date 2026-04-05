@@ -3,9 +3,13 @@ import { StreamingParser, parseCompleteResponse, extractSegments } from '../../.
 import { ParserConfig } from '../../../../../src/agent/streaming/parser/parser-context.js';
 import { SegmentEventType, SegmentType } from '../../../../../src/agent/streaming/parser/events.js';
 
+const TURN_ID = 'turn_test';
+const createConfig = (options: Record<string, any> = {}) => new ParserConfig({ turnId: TURN_ID, ...options });
+const createParser = (options: Record<string, any> = {}) => new StreamingParser(createConfig(options));
+
 describe('StreamingParser basics', () => {
   it('parses simple text response', () => {
-    const parser = new StreamingParser();
+    const parser = createParser();
     const events = parser.feed('Hello, I can help you with that!');
     events.push(...parser.finalize());
 
@@ -15,14 +19,14 @@ describe('StreamingParser basics', () => {
   });
 
   it('empty input produces no events', () => {
-    const parser = new StreamingParser();
+    const parser = createParser();
     const events = parser.feed('');
     events.push(...parser.finalize());
     expect(events).toHaveLength(0);
   });
 
   it('handles multiple chunks', () => {
-    const parser = new StreamingParser();
+    const parser = createParser();
     const events1 = parser.feed('Hello, ');
     const events2 = parser.feed('World!');
     const events3 = parser.finalize();
@@ -34,7 +38,7 @@ describe('StreamingParser basics', () => {
 
 describe('StreamingParser file parsing', () => {
   it('parses complete write_file tag', () => {
-    const parser = new StreamingParser();
+    const parser = createParser();
     const events = parser.feedAndFinalize(
       "Here is the code:<write_file path='/test.py'>print('hello')</write_file>Done!"
     );
@@ -48,7 +52,7 @@ describe('StreamingParser file parsing', () => {
 
 describe('StreamingParser tool parsing', () => {
   it('parses tool call when enabled', () => {
-    const config = new ParserConfig({ parseToolCalls: true, strategyOrder: ['xml_tag'] });
+    const config = createConfig({ parseToolCalls: true, strategyOrder: ['xml_tag'] });
     const parser = new StreamingParser(config);
 
     const events = parser.feedAndFinalize(
@@ -61,7 +65,7 @@ describe('StreamingParser tool parsing', () => {
   });
 
   it('run_bash followed by tool in same chunk', () => {
-    const config = new ParserConfig({ parseToolCalls: true, strategyOrder: ['xml_tag'] });
+    const config = createConfig({ parseToolCalls: true, strategyOrder: ['xml_tag'] });
     const parser = new StreamingParser(config);
 
     const text =
@@ -81,7 +85,7 @@ describe('StreamingParser tool parsing', () => {
   });
 
   it('treats tool tags as text when parsing disabled', () => {
-    const config = new ParserConfig({ parseToolCalls: false });
+    const config = createConfig({ parseToolCalls: false });
     const parser = new StreamingParser(config);
 
     const events = parser.feedAndFinalize("<tool name='test'>args</tool>");
@@ -91,7 +95,7 @@ describe('StreamingParser tool parsing', () => {
   });
 
   it('parses JSON tool call split across chunks', () => {
-    const config = new ParserConfig({ parseToolCalls: true, strategyOrder: ['json_tool'] });
+    const config = createConfig({ parseToolCalls: true, strategyOrder: ['json_tool'] });
     const parser = new StreamingParser(config);
 
     const chunks = ['{"name": "do_something", "arguments": {"x": ', '1, "y": "ok"}} trailing'];
@@ -117,7 +121,7 @@ describe('StreamingParser tool parsing', () => {
 
 describe('StreamingParser mixed content', () => {
   it('parses text and write_file', () => {
-    const parser = new StreamingParser();
+    const parser = createParser();
     const events = parser.feedAndFinalize(
       "Here is the solution:\n<write_file path='/main.py'>print('done')</write_file>\nLet me know!"
     );
@@ -129,7 +133,7 @@ describe('StreamingParser mixed content', () => {
   });
 
   it('parses multiple write_file blocks', () => {
-    const parser = new StreamingParser();
+    const parser = createParser();
     const events = parser.feedAndFinalize(
       "<write_file path='/a.py'>a</write_file><write_file path='/b.py'>b</write_file>"
     );
@@ -142,7 +146,7 @@ describe('StreamingParser mixed content', () => {
 
 describe('StreamingParser state management', () => {
   it('cannot feed after finalize', () => {
-    const parser = new StreamingParser();
+    const parser = createParser();
     parser.feed('test');
     parser.finalize();
 
@@ -150,14 +154,14 @@ describe('StreamingParser state management', () => {
   });
 
   it('cannot finalize twice', () => {
-    const parser = new StreamingParser();
+    const parser = createParser();
     parser.finalize();
 
     expect(() => parser.finalize()).toThrow(/already been called/);
   });
 
   it('isFinalized property works', () => {
-    const parser = new StreamingParser();
+    const parser = createParser();
     expect(parser.isFinalized).toBe(false);
 
     parser.finalize();
@@ -167,14 +171,14 @@ describe('StreamingParser state management', () => {
 
 describe('StreamingParser convenience functions', () => {
   it('parseCompleteResponse works', () => {
-    const events = parseCompleteResponse('Hello World!');
+    const events = parseCompleteResponse('Hello World!', createConfig());
     expect(events.length).toBeGreaterThan(0);
     const segments = extractSegments(events);
     expect(segments.length).toBeGreaterThanOrEqual(1);
   });
 
   it('extractSegments builds segment list', () => {
-    const parser = new StreamingParser();
+    const parser = createParser();
     const events = parser.feedAndFinalize('Plain text here');
 
     const segments = extractSegments(events);
@@ -186,7 +190,7 @@ describe('StreamingParser convenience functions', () => {
 
 describe('StreamingParser streaming scenarios', () => {
   it('handles chunk-by-chunk streaming', () => {
-    const parser = new StreamingParser();
+    const parser = createParser();
     const allEvents: any[] = [];
 
     const chunks = ['He', 'llo, ', 'I can ', 'help you!'];
@@ -201,7 +205,7 @@ describe('StreamingParser streaming scenarios', () => {
   });
 
   it('handles write_file split across chunks', () => {
-    const parser = new StreamingParser();
+    const parser = createParser();
     const allEvents: any[] = [];
 
     const chunks = ["<wri", "te_file path='/test.py'>print", "('hello')</write_file>"];

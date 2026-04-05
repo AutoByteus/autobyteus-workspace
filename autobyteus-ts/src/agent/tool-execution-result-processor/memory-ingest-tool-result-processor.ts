@@ -13,7 +13,7 @@ export class MemoryIngestToolResultProcessor extends BaseToolExecutionResultProc
       return event;
     }
 
-    const turnId = (event as { turnId?: string }).turnId ?? context.state.activeTurnId;
+    const turnId = event.turnId ?? context.state.activeTurn?.turnId;
     if (turnId) {
       memoryManager.ingestToolResult(event, turnId);
       console.debug(`MemoryIngestToolResultProcessor stored tool result for turnId ${turnId}`);

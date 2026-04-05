@@ -11,7 +11,9 @@ import {
   AgentStatusUpdateData,
   createAgentStatusUpdateData,
   ErrorEventData,
-  createErrorEventData
+  createErrorEventData,
+  SegmentEventData,
+  ToolExecutionStartedData
 } from '../../../../../src/agent/streaming/events/stream-event-payloads.js';
 import { AgentStatus } from '../../../../../src/agent/status/status-enum.js';
 
@@ -125,5 +127,27 @@ describe('Stream payload factories', () => {
     expect(payload).toBeInstanceOf(ErrorEventData);
     expect(payload.source).toBe('test');
     expect(payload.message).toBe('error msg');
+  });
+
+  it('parses segment event payloads with agent turn id', () => {
+    const payload = new SegmentEventData({
+      type: 'SEGMENT_START',
+      segment_id: 'seg_1',
+      segment_type: 'text',
+      turn_id: 'turn_123',
+      payload: {}
+    });
+    expect(payload.turn_id).toBe('turn_123');
+    expect(payload.segment_id).toBe('seg_1');
+  });
+
+  it('parses tool lifecycle payloads with agent turn id', () => {
+    const payload = new ToolExecutionStartedData({
+      invocation_id: 'call_1',
+      tool_name: 'write_file',
+      turn_id: 'turn_123',
+      arguments: { path: 'x' }
+    });
+    expect(payload.turn_id).toBe('turn_123');
   });
 });

@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { SegmentEvent, SegmentEventType, SegmentType } from '../../../../../src/agent/streaming/parser/events.js';
 
+const TURN_ID = 'turn_test';
+
 describe('SegmentType', () => {
   it('exposes expected values', () => {
     expect(SegmentType.TEXT).toBe('text');
@@ -23,7 +25,7 @@ describe('SegmentEventType', () => {
 
 describe('SegmentEvent', () => {
   it('creates start events with metadata', () => {
-    const event = SegmentEvent.start('seg_001', SegmentType.TOOL_CALL, { tool_name: 'weather_api' });
+    const event = SegmentEvent.start(TURN_ID, 'seg_001', SegmentType.TOOL_CALL, { tool_name: 'weather_api' });
 
     expect(event.event_type).toBe(SegmentEventType.START);
     expect(event.segment_id).toBe('seg_001');
@@ -32,7 +34,7 @@ describe('SegmentEvent', () => {
   });
 
   it('creates start events without metadata', () => {
-    const event = SegmentEvent.start('seg_002', SegmentType.TEXT);
+    const event = SegmentEvent.start(TURN_ID, 'seg_002', SegmentType.TEXT);
 
     expect(event.event_type).toBe(SegmentEventType.START);
     expect(event.segment_id).toBe('seg_002');
@@ -41,7 +43,7 @@ describe('SegmentEvent', () => {
   });
 
   it('creates content events', () => {
-    const event = SegmentEvent.content('seg_001', 'Hello world');
+    const event = SegmentEvent.content(TURN_ID, 'seg_001', 'Hello world');
 
     expect(event.event_type).toBe(SegmentEventType.CONTENT);
     expect(event.segment_id).toBe('seg_001');
@@ -50,7 +52,7 @@ describe('SegmentEvent', () => {
   });
 
   it('creates end events', () => {
-    const event = SegmentEvent.end('seg_001');
+    const event = SegmentEvent.end(TURN_ID, 'seg_001');
 
     expect(event.event_type).toBe(SegmentEventType.END);
     expect(event.segment_id).toBe('seg_001');
@@ -59,34 +61,37 @@ describe('SegmentEvent', () => {
   });
 
   it('serializes start events with segment type', () => {
-    const event = SegmentEvent.start('seg_001', SegmentType.WRITE_FILE, { path: '/tmp/test.py' });
+    const event = SegmentEvent.start(TURN_ID, 'seg_001', SegmentType.WRITE_FILE, { path: '/tmp/test.py' });
 
     expect(event.toDict()).toEqual({
       type: 'SEGMENT_START',
       segment_id: 'seg_001',
+      turn_id: TURN_ID,
       segment_type: 'write_file',
       payload: { metadata: { path: '/tmp/test.py' } }
     });
   });
 
   it('serializes content events without segment type', () => {
-    const event = SegmentEvent.content('seg_001', 'code here');
+    const event = SegmentEvent.content(TURN_ID, 'seg_001', 'code here');
 
     const result = event.toDict();
     expect(result).toEqual({
       type: 'SEGMENT_CONTENT',
       segment_id: 'seg_001',
+      turn_id: TURN_ID,
       payload: { delta: 'code here' }
     });
     expect(result).not.toHaveProperty('segment_type');
   });
 
   it('serializes end events', () => {
-    const event = SegmentEvent.end('seg_001');
+    const event = SegmentEvent.end(TURN_ID, 'seg_001');
 
     expect(event.toDict()).toEqual({
       type: 'SEGMENT_END',
       segment_id: 'seg_001',
+      turn_id: TURN_ID,
       payload: {}
     });
   });

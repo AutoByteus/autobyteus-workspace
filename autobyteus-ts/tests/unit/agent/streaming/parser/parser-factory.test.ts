@@ -3,6 +3,8 @@ import { ENV_PARSER_NAME, createStreamingParser, resolveParserName } from '../..
 import { ParserConfig } from '../../../../../src/agent/streaming/parser/parser-context.js';
 import { StreamingParser } from '../../../../../src/agent/streaming/parser/streaming-parser.js';
 
+const TURN_ID = 'turn_test';
+
 describe('parser-factory', () => {
   it('defaults to xml when env is unset', () => {
     const prev = process.env[ENV_PARSER_NAME];
@@ -25,26 +27,26 @@ describe('parser-factory', () => {
   });
 
   it('creates xml parser', () => {
-    const parser = createStreamingParser({ parserName: 'xml' });
+    const parser = createStreamingParser({ parserName: 'xml', turnId: TURN_ID });
     expect(parser).toBeInstanceOf(StreamingParser);
   });
 
   it('api_tool_call parser disables tool parsing', () => {
-    const config = new ParserConfig({ parseToolCalls: true, strategyOrder: ['xml_tag'] });
+    const config = new ParserConfig({ turnId: TURN_ID, parseToolCalls: true, strategyOrder: ['xml_tag'] });
     const parser = createStreamingParser({ config, parserName: 'api_tool_call' });
     expect(parser.config.parseToolCalls).toBe(false);
   });
 
   it('native parser removed raises', () => {
-    expect(() => createStreamingParser({ parserName: 'native' })).toThrowError(/Unknown parser strategy/i);
+    expect(() => createStreamingParser({ parserName: 'native', turnId: TURN_ID })).toThrowError(/Unknown parser strategy/i);
   });
 
   it('creates sentinel parser', () => {
-    const parser = createStreamingParser({ parserName: 'sentinel' });
+    const parser = createStreamingParser({ parserName: 'sentinel', turnId: TURN_ID });
     expect(parser).toBeInstanceOf(StreamingParser);
   });
 
   it('unknown parser raises', () => {
-    expect(() => createStreamingParser({ parserName: 'unknown' })).toThrowError(/Unknown parser strategy/i);
+    expect(() => createStreamingParser({ parserName: 'unknown', turnId: TURN_ID })).toThrowError(/Unknown parser strategy/i);
   });
 });

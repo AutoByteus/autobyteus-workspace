@@ -3,9 +3,11 @@ import { ApiToolCallStreamingResponseHandler } from '../../../../../src/agent/st
 import { SegmentEvent, SegmentEventType, SegmentType } from '../../../../../src/agent/streaming/segments/segment-events.js';
 import { ChunkResponse } from '../../../../../src/llm/utils/response-types.js';
 
+const TURN_ID = 'turn_test';
+
 describe('ApiToolCallStreamingResponseHandler basics', () => {
   it('emits text segments for content', () => {
-    const handler = new ApiToolCallStreamingResponseHandler();
+    const handler = new ApiToolCallStreamingResponseHandler({ turnId: TURN_ID });
     const events = handler.feed(new ChunkResponse({ content: 'Hello world' }));
 
     expect(events).toHaveLength(2);
@@ -16,7 +18,7 @@ describe('ApiToolCallStreamingResponseHandler basics', () => {
   });
 
   it('emits write_file segments from tool calls', () => {
-    const handler = new ApiToolCallStreamingResponseHandler();
+    const handler = new ApiToolCallStreamingResponseHandler({ turnId: TURN_ID });
 
     const events1 = handler.feed(
       new ChunkResponse({
@@ -56,7 +58,7 @@ describe('ApiToolCallStreamingResponseHandler basics', () => {
   });
 
   it('finalize creates invocations from accumulated args', () => {
-    const handler = new ApiToolCallStreamingResponseHandler();
+    const handler = new ApiToolCallStreamingResponseHandler({ turnId: TURN_ID });
 
     handler.feed(
       new ChunkResponse({
@@ -84,7 +86,7 @@ describe('ApiToolCallStreamingResponseHandler basics', () => {
 
 describe('ApiToolCallStreamingResponseHandler parallel tool calls', () => {
   it('tracks multiple tool calls by index', () => {
-    const handler = new ApiToolCallStreamingResponseHandler();
+    const handler = new ApiToolCallStreamingResponseHandler({ turnId: TURN_ID });
 
     handler.feed(
       new ChunkResponse({
@@ -126,7 +128,7 @@ describe('ApiToolCallStreamingResponseHandler parallel tool calls', () => {
 
 describe('ApiToolCallStreamingResponseHandler file streaming', () => {
   it('emits edit_file segments', () => {
-    const handler = new ApiToolCallStreamingResponseHandler();
+    const handler = new ApiToolCallStreamingResponseHandler({ turnId: TURN_ID });
 
     const events1 = handler.feed(
       new ChunkResponse({
@@ -158,7 +160,7 @@ describe('ApiToolCallStreamingResponseHandler file streaming', () => {
   });
 
   it('defers write_file start until path available', () => {
-    const handler = new ApiToolCallStreamingResponseHandler();
+    const handler = new ApiToolCallStreamingResponseHandler({ turnId: TURN_ID });
 
     const events1 = handler.feed(
       new ChunkResponse({
@@ -193,7 +195,7 @@ describe('ApiToolCallStreamingResponseHandler file streaming', () => {
   });
 
   it('decodes escaped content', () => {
-    const handler = new ApiToolCallStreamingResponseHandler();
+    const handler = new ApiToolCallStreamingResponseHandler({ turnId: TURN_ID });
 
     handler.feed(
       new ChunkResponse({
@@ -227,6 +229,7 @@ describe('ApiToolCallStreamingResponseHandler callbacks', () => {
   it('invokes onSegmentEvent callback', () => {
     const received: SegmentEvent[] = [];
     const handler = new ApiToolCallStreamingResponseHandler({
+      turnId: TURN_ID,
       onSegmentEvent: (event) => received.push(event)
     });
     handler.feed(new ChunkResponse({ content: 'Hello' }));
@@ -238,6 +241,7 @@ describe('ApiToolCallStreamingResponseHandler callbacks', () => {
   it('invokes onToolInvocation callback', () => {
     const invocations: any[] = [];
     const handler = new ApiToolCallStreamingResponseHandler({
+      turnId: TURN_ID,
       onToolInvocation: (invocation) => invocations.push(invocation)
     });
 
@@ -262,7 +266,7 @@ describe('ApiToolCallStreamingResponseHandler callbacks', () => {
 
 describe('ApiToolCallStreamingResponseHandler reset', () => {
   it('reset clears state', () => {
-    const handler = new ApiToolCallStreamingResponseHandler();
+    const handler = new ApiToolCallStreamingResponseHandler({ turnId: TURN_ID });
     handler.feed(new ChunkResponse({ content: 'test' }));
     handler.finalize();
 
@@ -278,7 +282,7 @@ describe('ApiToolCallStreamingResponseHandler reset', () => {
   });
 
   it('feed after finalize throws', () => {
-    const handler = new ApiToolCallStreamingResponseHandler();
+    const handler = new ApiToolCallStreamingResponseHandler({ turnId: TURN_ID });
     handler.finalize();
 
     expect(() => handler.feed(new ChunkResponse({ content: 'data' }))).toThrow();

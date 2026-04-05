@@ -319,11 +319,11 @@ class ApiToolCallStreamingResponseHandler extends StreamingResponseHandler {
     if (chunk.content) {
       if (!this.textSegmentId) {
         this.textSegmentId = this.generateId();
-        const start = SegmentEvent.start(this.textSegmentId, SegmentType.TEXT);
+        const start = SegmentEvent.start(this.turnId, this.textSegmentId, SegmentType.TEXT);
         this.emit(start);
         events.push(start);
       }
-      const content = SegmentEvent.content(this.textSegmentId, chunk.content);
+      const content = SegmentEvent.content(this.turnId, this.textSegmentId, chunk.content);
       this.emit(content);
       events.push(content);
     }
@@ -338,7 +338,7 @@ class ApiToolCallStreamingResponseHandler extends StreamingResponseHandler {
             name: delta.name ?? '',
             accumulatedArgs: ''
           });
-          const start = SegmentEvent.start(segId, SegmentType.TOOL_CALL, { tool_name: delta.name });
+          const start = SegmentEvent.start(this.turnId, segId, SegmentType.TOOL_CALL, { tool_name: delta.name });
           this.emit(start);
           events.push(start);
         }
@@ -346,7 +346,7 @@ class ApiToolCallStreamingResponseHandler extends StreamingResponseHandler {
         const state = this.activeTools.get(delta.index)!;
         if (delta.arguments_delta) {
           state.accumulatedArgs += delta.arguments_delta;
-          const content = SegmentEvent.content(state.segmentId, delta.arguments_delta);
+          const content = SegmentEvent.content(this.turnId, state.segmentId, delta.arguments_delta);
           this.emit(content);
           events.push(content);
         }
@@ -364,7 +364,7 @@ class ApiToolCallStreamingResponseHandler extends StreamingResponseHandler {
     const events: SegmentEvent[] = [];
 
     if (this.textSegmentId) {
-      const end = SegmentEvent.end(this.textSegmentId);
+      const end = SegmentEvent.end(this.turnId, this.textSegmentId);
       this.emit(end);
       events.push(end);
     }
@@ -374,6 +374,7 @@ class ApiToolCallStreamingResponseHandler extends StreamingResponseHandler {
       const end = new SegmentEvent({
         event_type: SegmentEventType.END,
         segment_id: state.segmentId,
+        turn_id: this.turnId,
         payload: { metadata: { tool_name: state.name, arguments: parsedArgs } }
       });
       this.emit(end);

@@ -6,6 +6,7 @@ describe('createSegmentFromPayload (media)', () => {
   it('creates a media segment from metadata', () => {
     const payload: SegmentStartPayload = {
       id: 'seg-1',
+      turn_id: 'turn-1',
       segment_type: 'media',
       metadata: {
         media_type: 'image',
@@ -24,6 +25,7 @@ describe('createSegmentFromPayload (media)', () => {
   it('defaults to image when media_type is invalid', () => {
     const payload: SegmentStartPayload = {
       id: 'seg-2',
+      turn_id: 'turn-1',
       segment_type: 'media',
       metadata: {
         media_type: 'unknown',
@@ -44,6 +46,7 @@ describe('createSegmentFromPayload (tool_call arguments)', () => {
   it('parses tool_call metadata.arguments when it is serialized JSON', () => {
     const payload: SegmentStartPayload = {
       id: 'tool-1',
+      turn_id: 'turn-1',
       segment_type: 'tool_call',
       metadata: {
         tool_name: 'generate_image',

@@ -153,8 +153,8 @@ export class ToolResultEventHandler extends AgentEventHandler {
       return;
     }
 
-    if (!event.turnId && context.state.activeTurnId) {
-      event.turnId = context.state.activeTurnId;
+    if (!event.turnId && context.state.activeTurn) {
+      event.turnId = context.state.activeTurn.turnId;
     }
 
     const agentId = context.agentId;
@@ -180,6 +180,7 @@ export class ToolResultEventHandler extends AgentEventHandler {
 
     const toolInvocationId = processedEvent.toolInvocationId ?? 'N/A';
     if (notifier) {
+      const logTurnId = processedEvent.turnId ?? context.state.activeTurn?.turnId ?? null;
       let logMessage = '';
       if (processedEvent.isDenied) {
         logMessage = `[TOOL_RESULT_DENIED] Agent_ID: ${agentId}, Tool: ${processedEvent.toolName}, Invocation_ID: ${toolInvocationId}, Reason: ${processedEvent.error ?? 'Denied'}`;
@@ -193,17 +194,19 @@ export class ToolResultEventHandler extends AgentEventHandler {
         notifier.notifyAgentDataToolLog({
           log_entry: logMessage,
           tool_invocation_id: toolInvocationId,
-          tool_name: processedEvent.toolName
+          tool_name: processedEvent.toolName,
+          turn_id: logTurnId
         });
       } catch (error) {
         console.error(`Agent '${agentId}': Error notifying tool result log: ${error}`);
       }
     }
 
-    const activeTurn = context.state.activeToolInvocationTurn;
+    const activeTurn = context.state.activeTurn;
+    const activeBatch = activeTurn?.activeToolInvocationBatch ?? null;
     const invocationId = processedEvent.toolInvocationId;
 
-    if (!activeTurn) {
+    if (!activeBatch) {
       if (invocationId && context.state.recentSettledInvocationIds.has(invocationId)) {
         console.warn(
           `Agent '${agentId}': Dropping late duplicate tool result for invocation '${invocationId}' after turn cleanup.`
@@ -228,26 +231,26 @@ export class ToolResultEventHandler extends AgentEventHandler {
       return;
     }
 
-    if (!activeTurn.expectsInvocation(invocationId)) {
+    if (!activeBatch.expectsInvocation(invocationId)) {
       console.warn(
-        `Agent '${agentId}': Ignoring unknown invocation '${invocationId}' for active turn settlement.`
+        `Agent '${agentId}': Ignoring unknown invocation '${invocationId}' for active batch settlement.`
       );
       return;
     }
 
     if (
       processedEvent.turnId &&
-      activeTurn.turnId &&
-      processedEvent.turnId !== activeTurn.turnId
+      activeBatch.turnId &&
+      processedEvent.turnId !== activeBatch.turnId
     ) {
       console.warn(
         `Agent '${agentId}': Ignoring turn-mismatched result for invocation '${invocationId}'. ` +
-          `Expected turn '${activeTurn.turnId}', got '${processedEvent.turnId}'.`
+          `Expected turn '${activeBatch.turnId}', got '${processedEvent.turnId}'.`
       );
       return;
     }
 
-    const isNewSettlement = activeTurn.settleResult(processedEvent);
+    const isNewSettlement = activeBatch.settleResult(processedEvent);
     if (!isNewSettlement) {
       console.warn(
         `Agent '${agentId}': Duplicate in-turn result for invocation '${invocationId}' received; replacing without progressing completion.`
@@ -257,13 +260,13 @@ export class ToolResultEventHandler extends AgentEventHandler {
 
     this.emitTerminalLifecycle(processedEvent, context);
 
-    if (!activeTurn.isComplete()) {
+    if (!activeBatch.isComplete()) {
       return;
     }
 
-    const sortedResults = activeTurn.getOrderedSettledResults();
+    const sortedResults = activeBatch.getOrderedSettledResults();
     await this.dispatchResultsToInputPipeline(sortedResults, context);
-    context.state.recentSettledInvocationIds.addMany(activeTurn.getSettledInvocationIds());
-    context.state.activeToolInvocationTurn = null;
+    context.state.recentSettledInvocationIds.addMany(activeBatch.getSettledInvocationIds());
+    activeTurn?.clearActiveToolInvocationBatch(activeBatch);
   }
 }

@@ -21,6 +21,7 @@ type ToolCallState = {
 export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandler {
   private onSegmentEvent?: (event: SegmentEvent) => void;
   private onToolInvocation?: (invocation: ToolInvocation) => void;
+  private turnId: string;
   private segmentIdPrefix: string;
   private adapter: ToolInvocationAdapter;
   private textSegmentId: string | null = null;
@@ -32,11 +33,13 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
   constructor(options?: {
     onSegmentEvent?: (event: SegmentEvent) => void;
     onToolInvocation?: (invocation: ToolInvocation) => void;
+    turnId: string;
     segmentIdPrefix?: string;
   }) {
     super();
     this.onSegmentEvent = options?.onSegmentEvent;
     this.onToolInvocation = options?.onToolInvocation;
+    this.turnId = options?.turnId ?? (() => { throw new Error('ApiToolCallStreamingResponseHandler requires turnId.'); })();
     this.segmentIdPrefix = options?.segmentIdPrefix ?? '';
     this.adapter = new ToolInvocationAdapter();
   }
@@ -88,12 +91,12 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
     if (chunk.content) {
       if (!this.textSegmentId) {
         this.textSegmentId = this.generateId();
-        const startEvent = SegmentEvent.start(this.textSegmentId, SegmentType.TEXT);
+        const startEvent = SegmentEvent.start(this.turnId, this.textSegmentId, SegmentType.TEXT);
         this.emit(startEvent);
         events.push(startEvent);
       }
 
-      const contentEvent = SegmentEvent.content(this.textSegmentId, chunk.content);
+      const contentEvent = SegmentEvent.content(this.turnId, this.textSegmentId, chunk.content);
       this.emit(contentEvent);
       events.push(contentEvent);
     }
@@ -115,7 +118,7 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
           });
 
           if (resolved.segmentType === SegmentType.TOOL_CALL && toolName) {
-            const startEvent = SegmentEvent.start(segId, resolved.segmentType, { tool_name: toolName });
+            const startEvent = SegmentEvent.start(this.turnId, segId, resolved.segmentType, { tool_name: toolName });
             const state = this.activeTools.get(delta.index);
             if (state) {
               state.segmentStarted = true;
@@ -136,18 +139,18 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
                 state.pendingContent += delta.arguments_delta;
                 continue;
               }
-              const startEvent = SegmentEvent.start(state.segmentId, state.segmentType, { tool_name: state.name });
+              const startEvent = SegmentEvent.start(this.turnId, state.segmentId, state.segmentType, { tool_name: state.name });
               state.segmentStarted = true;
               this.emit(startEvent);
               events.push(startEvent);
               if (state.pendingContent) {
-                const pendingEvent = SegmentEvent.content(state.segmentId, state.pendingContent);
+                const pendingEvent = SegmentEvent.content(this.turnId, state.segmentId, state.pendingContent);
                 this.emit(pendingEvent);
                 events.push(pendingEvent);
                 state.pendingContent = '';
               }
             }
-            const contentEvent = SegmentEvent.content(state.segmentId, delta.arguments_delta);
+            const contentEvent = SegmentEvent.content(this.turnId, state.segmentId, delta.arguments_delta);
             this.emit(contentEvent);
             events.push(contentEvent);
           } else if (state.streamer) {
@@ -157,7 +160,7 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
             }
 
             if (!state.segmentStarted && state.path) {
-              const startEvent = SegmentEvent.start(state.segmentId, state.segmentType, {
+              const startEvent = SegmentEvent.start(this.turnId, state.segmentId, state.segmentType, {
                 tool_name: state.name,
                 path: state.path
               });
@@ -165,7 +168,7 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
               this.emit(startEvent);
               events.push(startEvent);
               if (state.pendingContent) {
-                const pendingEvent = SegmentEvent.content(state.segmentId, state.pendingContent);
+                const pendingEvent = SegmentEvent.content(this.turnId, state.segmentId, state.pendingContent);
                 this.emit(pendingEvent);
                 events.push(pendingEvent);
                 state.pendingContent = '';
@@ -174,7 +177,7 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
 
             if (update.contentDelta) {
               if (state.segmentStarted) {
-                const contentEvent = SegmentEvent.content(state.segmentId, update.contentDelta);
+                const contentEvent = SegmentEvent.content(this.turnId, state.segmentId, update.contentDelta);
                 this.emit(contentEvent);
                 events.push(contentEvent);
               } else {
@@ -187,12 +190,12 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
         if (delta.name && !state.name) {
           state.name = delta.name;
           if (state.segmentType === SegmentType.TOOL_CALL && !state.segmentStarted) {
-            const startEvent = SegmentEvent.start(state.segmentId, state.segmentType, { tool_name: state.name });
+            const startEvent = SegmentEvent.start(this.turnId, state.segmentId, state.segmentType, { tool_name: state.name });
             state.segmentStarted = true;
             this.emit(startEvent);
             events.push(startEvent);
             if (state.pendingContent) {
-              const pendingEvent = SegmentEvent.content(state.segmentId, state.pendingContent);
+              const pendingEvent = SegmentEvent.content(this.turnId, state.segmentId, state.pendingContent);
               this.emit(pendingEvent);
               events.push(pendingEvent);
               state.pendingContent = '';
@@ -213,10 +216,7 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
     const events: SegmentEvent[] = [];
 
     if (this.textSegmentId) {
-      const endEvent = new SegmentEvent({
-        event_type: SegmentEventType.END,
-        segment_id: this.textSegmentId
-      });
+      const endEvent = SegmentEvent.end(this.turnId, this.textSegmentId);
       this.emit(endEvent);
       events.push(endEvent);
     }
@@ -228,12 +228,12 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
           if (state.path) {
             metadata.path = state.path;
           }
-          const startEvent = SegmentEvent.start(state.segmentId, state.segmentType, metadata);
+          const startEvent = SegmentEvent.start(this.turnId, state.segmentId, state.segmentType, metadata);
           state.segmentStarted = true;
           this.emit(startEvent);
           events.push(startEvent);
           if (state.pendingContent) {
-            const pendingEvent = SegmentEvent.content(state.segmentId, state.pendingContent);
+            const pendingEvent = SegmentEvent.content(this.turnId, state.segmentId, state.pendingContent);
             this.emit(pendingEvent);
             events.push(pendingEvent);
             state.pendingContent = '';
@@ -241,12 +241,12 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
         }
       }
       if (state.segmentType === SegmentType.TOOL_CALL && !state.segmentStarted && state.name) {
-        const startEvent = SegmentEvent.start(state.segmentId, state.segmentType, { tool_name: state.name });
+        const startEvent = SegmentEvent.start(this.turnId, state.segmentId, state.segmentType, { tool_name: state.name });
         state.segmentStarted = true;
         this.emit(startEvent);
         events.push(startEvent);
         if (state.pendingContent) {
-          const pendingEvent = SegmentEvent.content(state.segmentId, state.pendingContent);
+          const pendingEvent = SegmentEvent.content(this.turnId, state.segmentId, state.pendingContent);
           this.emit(pendingEvent);
           events.push(pendingEvent);
           state.pendingContent = '';
@@ -267,6 +267,7 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
         endEvent = new SegmentEvent({
           event_type: SegmentEventType.END,
           segment_id: state.segmentId,
+          turn_id: this.turnId,
           payload: {
             metadata: {
               tool_name: state.name,
@@ -279,11 +280,11 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
         if (state.path) {
           metadata.path = state.path;
         }
-        endEvent = new SegmentEvent({
-          event_type: SegmentEventType.END,
-          segment_id: state.segmentId,
-          payload: Object.keys(metadata).length ? { metadata } : {}
-        });
+        endEvent = SegmentEvent.end(
+          this.turnId,
+          state.segmentId,
+          Object.keys(metadata).length ? { metadata } : {}
+        );
       }
       this.emit(endEvent);
       events.push(endEvent);

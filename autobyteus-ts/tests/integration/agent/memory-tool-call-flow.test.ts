@@ -18,6 +18,8 @@ import { createLmstudioLLM, hasLmstudioConfig } from '../helpers/lmstudio-llm-he
 
 const runIntegration = hasLmstudioConfig() ? describe : describe.skip;
 
+const TURN_ID = 'turn_test';
+
 runIntegration('Memory tool call flow (LM Studio)', () => {
   it('ingests tool calls/results and follow-up responses', async () => {
     const llm = await createLmstudioLLM();
@@ -45,7 +47,7 @@ runIntegration('Memory tool call flow (LM Studio)', () => {
       const assembler = new LLMRequestAssembler(memoryManager, new OpenAIChatRenderer());
       const request = await assembler.prepareRequest(userMessage, turnId, llm.config.systemMessage);
 
-      const handler = new ApiToolCallStreamingResponseHandler();
+      const handler = new ApiToolCallStreamingResponseHandler({ turnId: TURN_ID });
       try {
         for await (const chunk of llm.streamMessages(request.messages, request.renderedPayload, {
           tools: [toolSchema],

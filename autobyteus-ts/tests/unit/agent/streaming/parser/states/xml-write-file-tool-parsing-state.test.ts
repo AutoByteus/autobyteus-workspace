@@ -1,11 +1,15 @@
 import { describe, it, expect } from 'vitest';
-import { ParserContext } from '../../../../../../src/agent/streaming/parser/parser-context.js';
+import { ParserContext, ParserConfig } from '../../../../../../src/agent/streaming/parser/parser-context.js';
 import { XmlWriteFileToolParsingState } from '../../../../../../src/agent/streaming/parser/states/xml-write-file-tool-parsing-state.js';
 import { SegmentEventType, SegmentType } from '../../../../../../src/agent/streaming/parser/events.js';
 
+const TURN_ID = 'turn_test';
+const createConfig = (options: Record<string, any> = {}) => new ParserConfig({ turnId: TURN_ID, ...options });
+const createContext = () => new ParserContext(createConfig());
+
 describe('XmlWriteFileToolParsingState', () => {
   it('parses write_file tool', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     const signature = '<tool name="write_file">';
     const content =
       "<arguments>" +
@@ -35,14 +39,14 @@ describe('XmlWriteFileToolParsingState', () => {
   });
 
   it('uses WRITE_FILE segment type', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     const signature = '<tool name="write_file">';
     const state = new XmlWriteFileToolParsingState(ctx, signature);
     expect((state.constructor as typeof XmlWriteFileToolParsingState).SEGMENT_TYPE).toBe(SegmentType.WRITE_FILE);
   });
 
   it('handles fragmented streaming', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     const signature = '<tool name="write_file">';
 
     const chunks = [
@@ -76,7 +80,7 @@ describe('XmlWriteFileToolParsingState', () => {
   });
 
   it('defers start event until path is available', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     const signature = '<tool name="write_file">';
     const state = new XmlWriteFileToolParsingState(ctx, signature);
     ctx.currentState = state;
@@ -103,7 +107,7 @@ describe('XmlWriteFileToolParsingState', () => {
   });
 
   it('swallows closing tags and preserves following text', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     const signature = '<tool name="write_file">';
     const state = new XmlWriteFileToolParsingState(ctx, signature);
     ctx.currentState = state;
@@ -132,7 +136,7 @@ describe('XmlWriteFileToolParsingState', () => {
   });
 
   it('streams raw content between markers', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     const signature = '<tool name="write_file">';
     const content =
       "<arguments>" +
@@ -165,7 +169,7 @@ describe('XmlWriteFileToolParsingState', () => {
   });
 
   it('handles markers split across chunks', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     const signature = '<tool name="write_file">';
     const chunks = [
       "<arguments><arg name='path'>/tmp/chunk.py</arg><arg name='content'>__STAR",
@@ -195,7 +199,7 @@ describe('XmlWriteFileToolParsingState', () => {
   });
 
   it('keeps nested end marker not followed by arg close', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     const signature = '<tool name="write_file">';
     const content =
       "<arguments>" +
@@ -230,7 +234,7 @@ describe('XmlWriteFileToolParsingState', () => {
   });
 
   it('accepts whitespace before arg close after end marker', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     const signature = '<tool name="write_file">';
     const content =
       "<arguments>" +
@@ -263,7 +267,7 @@ describe('XmlWriteFileToolParsingState', () => {
   });
 
   it('handles nested end marker with fragmented streaming', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     const signature = '<tool name="write_file">';
     const chunks = [
       "<arguments><arg name='path'>/tmp/frag.py</arg><arg name='content'>",
@@ -300,7 +304,7 @@ describe('XmlWriteFileToolParsingState', () => {
   });
 
   it('handles multiple false end markers before real one', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     const signature = '<tool name="write_file">';
     const content =
       "<arguments>" +

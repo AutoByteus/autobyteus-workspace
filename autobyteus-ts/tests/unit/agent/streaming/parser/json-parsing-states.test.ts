@@ -8,6 +8,10 @@ import {
 import { JsonToolParsingState } from '../../../../../src/agent/streaming/parser/states/json-tool-parsing-state.js';
 import { SegmentEventType, SegmentType } from '../../../../../src/agent/streaming/parser/events.js';
 
+const TURN_ID = 'turn_test';
+const createConfig = (options: Record<string, any> = {}) => new ParserConfig({ turnId: TURN_ID, ...options });
+const createContext = (options: Record<string, any> = {}) => new ParserContext(createConfig(options));
+
 describe('JsonToolSignatureChecker', () => {
   it('matches name pattern', () => {
     const checker = new JsonToolSignatureChecker();
@@ -58,7 +62,7 @@ describe('JsonToolSignatureChecker', () => {
 
 describe('JsonInitializationState', () => {
   it('transitions on tool signature', () => {
-    const config = new ParserConfig({ parseToolCalls: true, strategyOrder: ['json_tool'] });
+    const config = createConfig({ parseToolCalls: true, strategyOrder: ['json_tool'] });
     const ctx = new ParserContext(config);
     ctx.append('{"name": "test", "arguments": {}}more');
     const state = new JsonInitializationState(ctx);
@@ -68,7 +72,7 @@ describe('JsonInitializationState', () => {
   });
 
   it('non-tool JSON becomes text', () => {
-    const config = new ParserConfig({ parseToolCalls: true, strategyOrder: ['json_tool'] });
+    const config = createConfig({ parseToolCalls: true, strategyOrder: ['json_tool'] });
     const ctx = new ParserContext(config);
     ctx.append('{"data": [1,2,3]}more');
     const state = new JsonInitializationState(ctx);
@@ -81,7 +85,7 @@ describe('JsonInitializationState', () => {
   });
 
   it('tool parsing disabled emits text', () => {
-    const config = new ParserConfig({ parseToolCalls: false, strategyOrder: ['json_tool'] });
+    const config = createConfig({ parseToolCalls: false, strategyOrder: ['json_tool'] });
     const ctx = new ParserContext(config);
     ctx.append('{"name": "test"}more');
     const state = new JsonInitializationState(ctx);
@@ -91,7 +95,7 @@ describe('JsonInitializationState', () => {
   });
 
   it('finalize emits buffered content as text', () => {
-    const config = new ParserConfig({ parseToolCalls: true, strategyOrder: ['json_tool'] });
+    const config = createConfig({ parseToolCalls: true, strategyOrder: ['json_tool'] });
     const ctx = new ParserContext(config);
     ctx.append('{"na');
     const state = new JsonInitializationState(ctx);
@@ -106,7 +110,7 @@ describe('JsonInitializationState', () => {
 
 describe('JsonToolParsingState', () => {
   it('parses simple tool call', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     const signature = '{"name"';
     ctx.append('{"name": "weather", "arguments": {"city": "NYC"}}after');
     const state = new JsonToolParsingState(ctx, signature);
@@ -119,7 +123,7 @@ describe('JsonToolParsingState', () => {
   });
 
   it('handles nested JSON', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     const signature = '{"name"';
     ctx.append('{"name": "api", "arguments": {"data": {"nested": true}}}after');
     const state = new JsonToolParsingState(ctx, signature);
@@ -131,7 +135,7 @@ describe('JsonToolParsingState', () => {
   });
 
   it('handles array format', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     const signature = '[{"name"';
     ctx.append('[{"name": "tool1", "arguments": {}}]after');
     const state = new JsonToolParsingState(ctx, signature);
@@ -143,7 +147,7 @@ describe('JsonToolParsingState', () => {
   });
 
   it('handles braces inside strings', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     const signature = '{"name"';
     ctx.append('{"name": "test", "arguments": {"code": "if (a) { b }"}}after');
     const state = new JsonToolParsingState(ctx, signature);
@@ -156,7 +160,7 @@ describe('JsonToolParsingState', () => {
   });
 
   it('finalize handles incomplete JSON', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     const signature = '{"name"';
     ctx.append('{"name": "test", "arguments": {');
     const state = new JsonToolParsingState(ctx, signature);
@@ -169,7 +173,7 @@ describe('JsonToolParsingState', () => {
   });
 
   it('streams raw JSON content without arguments metadata', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     const signature = '{"name"';
     ctx.append('{"name": "search", "args": {"query": "autobyteus"}}after');
     const state = new JsonToolParsingState(ctx, signature);

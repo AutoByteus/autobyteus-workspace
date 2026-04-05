@@ -34,7 +34,9 @@ type AutoByteusTeamLike = {
           name?: string | null;
         } | null;
         state?: {
-          activeTurnId?: string | null;
+          activeTurn?: {
+            turnId?: string | null;
+          } | null;
         } | null;
       } | null;
     }>;
@@ -353,5 +355,5 @@ const resolveTargetMemberTurnId = (
       normalizeOptionalString(candidate.context?.config?.name ?? null) ===
       normalizedMemberName,
   );
-  return normalizeOptionalString(agent?.context?.state?.activeTurnId ?? null);
+  return normalizeOptionalString(agent?.context?.state?.activeTurn?.turnId ?? null);
 };

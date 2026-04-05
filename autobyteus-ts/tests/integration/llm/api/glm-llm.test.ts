@@ -10,6 +10,8 @@ import { Message, MessageRole, ToolCallPayload, ToolResultPayload } from '../../
 const apiKey = process.env.GLM_API_KEY;
 const runIntegration = apiKey ? describe : describe.skip;
 
+const TURN_ID = 'turn_test';
+
 const isUnauthorizedGlmError = (error: unknown): boolean => {
   const message = String(error ?? '');
   return message.includes('401') || message.includes('身份验证失败');
@@ -45,7 +47,7 @@ const runToolCallContinuation = async (llm: GlmLLM): Promise<void> => {
       content: 'Call echo_number with number 42, then wait for tool results.'
     })
   ];
-  const parser = new ApiToolCallStreamingResponseHandler();
+  const parser = new ApiToolCallStreamingResponseHandler({ turnId: TURN_ID });
   for await (const chunk of llm.streamMessages(toolPromptMessages, null, {
     tools: [TOOL_SCHEMA],
     tool_choice: 'required'

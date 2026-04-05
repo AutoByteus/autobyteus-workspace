@@ -9,6 +9,7 @@ import { ChunkResponse } from '../../../llm/utils/response-types.js';
 export class ParsingStreamingResponseHandler extends StreamingResponseHandler {
   private parserNameValue: string;
   private parserConfig?: ParserConfig;
+  private turnIdValue: string;
   private parser: StreamingParserProtocol;
   private adapter: ToolInvocationAdapter;
   private onSegmentEvent?: (event: SegmentEvent) => void;
@@ -23,12 +24,14 @@ export class ParsingStreamingResponseHandler extends StreamingResponseHandler {
     onToolInvocation?: (invocation: ToolInvocation) => void;
     config?: ParserConfig;
     parserName?: string;
+    turnId?: string;
   }) {
     super();
     const parserName = resolveParserName(options?.parserName);
     this.parserNameValue = parserName;
     this.parserConfig = options?.config;
-    this.parser = createStreamingParser({ config: options?.config, parserName: parserName });
+    this.turnIdValue = options?.config?.turnId ?? options?.turnId ?? (() => { throw new Error('ParsingStreamingResponseHandler requires turnId.'); })();
+    this.parser = createStreamingParser({ config: options?.config, parserName: parserName, turnId: this.turnIdValue });
     this.adapter = new ToolInvocationAdapter(this.parser.config.jsonToolParser);
     this.onSegmentEvent = options?.onSegmentEvent;
     this.onToolInvocation = options?.onToolInvocation;
@@ -71,7 +74,7 @@ export class ParsingStreamingResponseHandler extends StreamingResponseHandler {
   }
 
   reset(): void {
-    this.parser = createStreamingParser({ config: this.parserConfig, parserName: this.parserNameValue });
+    this.parser = createStreamingParser({ config: this.parserConfig, parserName: this.parserNameValue, turnId: this.turnIdValue });
     this.adapter = new ToolInvocationAdapter(this.parser.config.jsonToolParser);
     this.allEvents = [];
     this.allInvocations = [];

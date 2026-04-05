@@ -1,13 +1,16 @@
 import type { ToolResultEvent } from './events/agent-events.js';
 import type { ToolInvocation } from './tool-invocation.js';
 
-export class ToolInvocationTurn {
-  turnId: string | null;
+export class ToolInvocationBatch {
+  turnId: string;
   expectedInvocationIds: string[];
   private expectedInvocationSet: Set<string>;
   private settledResultsByInvocationId: Map<string, ToolResultEvent>;
 
-  constructor(turnId: string | null, invocations: ToolInvocation[]) {
+  constructor(turnId: string, invocations: ToolInvocation[]) {
+    if (!turnId) {
+      throw new Error('ToolInvocationBatch requires a non-empty turnId.');
+    }
     this.turnId = turnId;
     this.expectedInvocationIds = invocations.map((invocation) => invocation.id);
     this.expectedInvocationSet = new Set(this.expectedInvocationIds);
@@ -22,12 +25,22 @@ export class ToolInvocationTurn {
     return this.settledResultsByInvocationId.has(invocationId);
   }
 
+  accepts(invocationId: string, turnId?: string): boolean {
+    if (!this.expectsInvocation(invocationId)) {
+      return false;
+    }
+    if (!turnId) {
+      return true;
+    }
+    return turnId === this.turnId;
+  }
+
   settleResult(result: ToolResultEvent): boolean {
     const invocationId = result.toolInvocationId;
     if (!invocationId) {
       return false;
     }
-    if (!this.expectsInvocation(invocationId)) {
+    if (!this.accepts(invocationId, result.turnId)) {
       return false;
     }
     const wasAlreadySettled = this.settledResultsByInvocationId.has(invocationId);

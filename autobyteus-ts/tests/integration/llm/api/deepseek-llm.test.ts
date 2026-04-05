@@ -10,6 +10,8 @@ import { Message, MessageRole, ToolCallPayload, ToolResultPayload } from '../../
 const apiKey = process.env.DEEPSEEK_API_KEY;
 const runIntegration = apiKey ? describe : describe.skip;
 
+const TURN_ID = 'turn_test';
+
 const buildModel = () =>
   new LLMModel({
     name: 'deepseek-chat',
@@ -40,7 +42,7 @@ const runToolCallContinuation = async (llm: DeepSeekLLM): Promise<void> => {
       content: 'Call echo_number with number 42, then wait for tool results.'
     })
   ];
-  const parser = new ApiToolCallStreamingResponseHandler();
+  const parser = new ApiToolCallStreamingResponseHandler({ turnId: TURN_ID });
   for await (const chunk of llm.streamMessages(toolPromptMessages, null, {
     tools: [TOOL_SCHEMA],
     tool_choice: 'required'

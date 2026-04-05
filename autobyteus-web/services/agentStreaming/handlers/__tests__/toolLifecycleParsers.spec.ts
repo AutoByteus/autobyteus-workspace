@@ -15,6 +15,7 @@ describe('toolLifecycleParsers', () => {
       parseToolApprovalRequestedPayload({
         invocation_id: 'inv-1',
         tool_name: 'read_file',
+        turn_id: null,
         arguments: { path: '/tmp/a.txt' },
       } as any),
     ).toEqual({
@@ -28,6 +29,7 @@ describe('toolLifecycleParsers', () => {
       parseToolApprovedPayload({
         invocation_id: 'inv-1',
         tool_name: 'read_file',
+        turn_id: null,
         reason: 'ok',
       } as any),
     )?.toMatchObject({ invocationId: 'inv-1', reason: 'ok' });
@@ -36,6 +38,7 @@ describe('toolLifecycleParsers', () => {
       parseToolExecutionStartedPayload({
         invocation_id: 'inv-1',
         tool_name: 'read_file',
+        turn_id: null,
         arguments: { path: '/tmp/a.txt' },
       } as any),
     )?.toMatchObject({ invocationId: 'inv-1', arguments: { path: '/tmp/a.txt' } });
@@ -44,6 +47,7 @@ describe('toolLifecycleParsers', () => {
       parseToolExecutionSucceededPayload({
         invocation_id: 'inv-1',
         tool_name: 'read_file',
+        turn_id: null,
         result: { content: 'hello' },
       } as any),
     )?.toMatchObject({ invocationId: 'inv-1', result: { content: 'hello' } });
@@ -52,6 +56,7 @@ describe('toolLifecycleParsers', () => {
       parseToolExecutionFailedPayload({
         invocation_id: 'inv-1',
         tool_name: 'read_file',
+        turn_id: null,
         error: 'failure',
       } as any),
     )?.toMatchObject({ invocationId: 'inv-1', error: 'failure' });
@@ -60,11 +65,13 @@ describe('toolLifecycleParsers', () => {
       parseToolLogPayload({
         tool_invocation_id: 'inv-1',
         tool_name: 'read_file',
+        turn_id: 'turn-1',
         log_entry: 'log line',
       } as any),
     ).toEqual({
       invocationId: 'inv-1',
       toolName: 'read_file',
+      turnId: 'turn-1',
       logEntry: 'log line',
     });
   });
@@ -89,6 +96,7 @@ describe('toolLifecycleParsers', () => {
       parseToolExecutionStartedPayload({
         invocation_id: 'inv-json-1',
         tool_name: 'generate_image',
+        turn_id: null,
         arguments: '{"prompt":"cute fox","output_file_path":"/tmp/cute-fox.png"}',
       } as any),
     )?.toMatchObject({

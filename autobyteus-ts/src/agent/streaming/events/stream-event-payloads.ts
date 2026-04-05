@@ -65,13 +65,15 @@ export class ToolInteractionLogEntryData extends BaseStreamPayload {
   log_entry: string;
   tool_invocation_id: string;
   tool_name: string;
+  turn_id: string | null;
 
   constructor(data: Record<string, any>) {
-    assertRequiredKeys(data, ['log_entry', 'tool_invocation_id', 'tool_name'], 'ToolInteractionLogEntryData');
+    assertRequiredKeys(data, ['log_entry', 'tool_invocation_id', 'tool_name', 'turn_id'], 'ToolInteractionLogEntryData');
     super(data);
     this.log_entry = String(data.log_entry ?? '');
     this.tool_invocation_id = String(data.tool_invocation_id ?? '');
     this.tool_name = String(data.tool_name ?? '');
+    this.turn_id = data.turn_id == null ? null : String(data.turn_id);
   }
 }
 
@@ -112,15 +114,15 @@ export class ErrorEventData extends BaseStreamPayload {
 export class ToolApprovalRequestedData extends BaseStreamPayload {
   invocation_id: string;
   tool_name: string;
-  turn_id?: string | null;
+  turn_id: string | null;
   arguments: Record<string, any>;
 
   constructor(data: Record<string, any>) {
-    assertRequiredKeys(data, ['invocation_id', 'tool_name', 'arguments'], 'ToolApprovalRequestedData');
+    assertRequiredKeys(data, ['invocation_id', 'tool_name', 'turn_id', 'arguments'], 'ToolApprovalRequestedData');
     super(data);
     this.invocation_id = String(data.invocation_id ?? '');
     this.tool_name = String(data.tool_name ?? '');
-    this.turn_id = data.turn_id ?? undefined;
+    this.turn_id = data.turn_id == null ? null : String(data.turn_id);
     this.arguments = data.arguments ?? {};
   }
 }
@@ -128,15 +130,15 @@ export class ToolApprovalRequestedData extends BaseStreamPayload {
 export class ToolApprovedData extends BaseStreamPayload {
   invocation_id: string;
   tool_name: string;
-  turn_id?: string | null;
+  turn_id: string | null;
   reason?: string | null;
 
   constructor(data: Record<string, any>) {
-    assertRequiredKeys(data, ['invocation_id', 'tool_name'], 'ToolApprovedData');
+    assertRequiredKeys(data, ['invocation_id', 'tool_name', 'turn_id'], 'ToolApprovedData');
     super(data);
     this.invocation_id = String(data.invocation_id ?? '');
     this.tool_name = String(data.tool_name ?? '');
-    this.turn_id = data.turn_id ?? undefined;
+    this.turn_id = data.turn_id == null ? null : String(data.turn_id);
     this.reason = data.reason ?? undefined;
   }
 }
@@ -144,16 +146,16 @@ export class ToolApprovedData extends BaseStreamPayload {
 export class ToolDeniedData extends BaseStreamPayload {
   invocation_id: string;
   tool_name: string;
-  turn_id?: string | null;
+  turn_id: string | null;
   reason?: string | null;
   error?: string | null;
 
   constructor(data: Record<string, any>) {
-    assertRequiredKeys(data, ['invocation_id', 'tool_name'], 'ToolDeniedData');
+    assertRequiredKeys(data, ['invocation_id', 'tool_name', 'turn_id'], 'ToolDeniedData');
     super(data);
     this.invocation_id = String(data.invocation_id ?? '');
     this.tool_name = String(data.tool_name ?? '');
-    this.turn_id = data.turn_id ?? undefined;
+    this.turn_id = data.turn_id == null ? null : String(data.turn_id);
     this.reason = data.reason ?? undefined;
     this.error = data.error ?? undefined;
   }
@@ -162,15 +164,15 @@ export class ToolDeniedData extends BaseStreamPayload {
 export class ToolExecutionStartedData extends BaseStreamPayload {
   invocation_id: string;
   tool_name: string;
-  turn_id?: string | null;
+  turn_id: string | null;
   arguments?: Record<string, any>;
 
   constructor(data: Record<string, any>) {
-    assertRequiredKeys(data, ['invocation_id', 'tool_name'], 'ToolExecutionStartedData');
+    assertRequiredKeys(data, ['invocation_id', 'tool_name', 'turn_id'], 'ToolExecutionStartedData');
     super(data);
     this.invocation_id = String(data.invocation_id ?? '');
     this.tool_name = String(data.tool_name ?? '');
-    this.turn_id = data.turn_id ?? undefined;
+    this.turn_id = data.turn_id == null ? null : String(data.turn_id);
     this.arguments = data.arguments ?? undefined;
   }
 }
@@ -178,15 +180,15 @@ export class ToolExecutionStartedData extends BaseStreamPayload {
 export class ToolExecutionSucceededData extends BaseStreamPayload {
   invocation_id: string;
   tool_name: string;
-  turn_id?: string | null;
+  turn_id: string | null;
   result?: unknown;
 
   constructor(data: Record<string, any>) {
-    assertRequiredKeys(data, ['invocation_id', 'tool_name'], 'ToolExecutionSucceededData');
+    assertRequiredKeys(data, ['invocation_id', 'tool_name', 'turn_id'], 'ToolExecutionSucceededData');
     super(data);
     this.invocation_id = String(data.invocation_id ?? '');
     this.tool_name = String(data.tool_name ?? '');
-    this.turn_id = data.turn_id ?? undefined;
+    this.turn_id = data.turn_id == null ? null : String(data.turn_id);
     this.result = data.result ?? undefined;
   }
 }
@@ -194,15 +196,15 @@ export class ToolExecutionSucceededData extends BaseStreamPayload {
 export class ToolExecutionFailedData extends BaseStreamPayload {
   invocation_id: string;
   tool_name: string;
-  turn_id?: string | null;
+  turn_id: string | null;
   error: string;
 
   constructor(data: Record<string, any>) {
-    assertRequiredKeys(data, ['invocation_id', 'tool_name', 'error'], 'ToolExecutionFailedData');
+    assertRequiredKeys(data, ['invocation_id', 'tool_name', 'turn_id', 'error'], 'ToolExecutionFailedData');
     super(data);
     this.invocation_id = String(data.invocation_id ?? '');
     this.tool_name = String(data.tool_name ?? '');
-    this.turn_id = data.turn_id ?? undefined;
+    this.turn_id = data.turn_id == null ? null : String(data.turn_id);
     this.error = String(data.error ?? '');
   }
 }
@@ -211,15 +213,17 @@ export class SegmentEventData extends BaseStreamPayload {
   event_type: string;
   segment_id: string;
   segment_type?: string;
+  turn_id: string;
   payload: Record<string, any>;
 
   constructor(data: Record<string, any>) {
     const eventType = data.event_type ?? data.type;
-    assertRequiredKeys({ ...data, event_type: eventType }, ['event_type', 'segment_id'], 'SegmentEventData');
+    assertRequiredKeys({ ...data, event_type: eventType }, ['event_type', 'segment_id', 'turn_id'], 'SegmentEventData');
     super(data);
     this.event_type = eventType;
     this.segment_id = String(data.segment_id ?? '');
     this.segment_type = data.segment_type ?? undefined;
+    this.turn_id = String(data.turn_id ?? '');
     this.payload = data.payload ?? {};
   }
 }

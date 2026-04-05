@@ -51,7 +51,7 @@ describe('MemoryIngestInputProcessor', () => {
     const result = await processor.process(message, context, {} as any);
 
     expect(result).toBe(message);
-    expect(context.state.activeTurnId).toBe('turn_0001');
+    expect(context.state.activeTurn?.turnId).toBe('turn_0001');
     expect(memoryManager.ingestUserMessage).toHaveBeenCalledWith(
       expect.objectContaining({ content: 'Hello' }),
       'turn_0001',
@@ -68,7 +68,7 @@ describe('MemoryIngestInputProcessor', () => {
     const result = await processor.process(message, context, {} as any);
 
     expect(result).toBe(message);
-    expect(context.state.activeTurnId).toBeNull();
+    expect(context.state.activeTurn).toBeNull();
   });
 
   it('skips TOOL-originated messages to avoid duplicate tool results', async () => {
@@ -79,13 +79,13 @@ describe('MemoryIngestInputProcessor', () => {
       ingestUserMessage: vi.fn()
     };
     context.state.memoryManager = memoryManager as any;
-    context.state.activeTurnId = 'turn_existing';
+    context.state.activeTurn = { turnId: 'turn_existing' } as any;
 
     const message = new AgentInputUserMessage('Tool result', SenderType.TOOL);
     const result = await processor.process(message, context, {} as any);
 
     expect(result).toBe(message);
-    expect(context.state.activeTurnId).toBe('turn_existing');
+    expect(context.state.activeTurn?.turnId).toBe('turn_existing');
     expect(memoryManager.startTurn).not.toHaveBeenCalled();
     expect(memoryManager.ingestUserMessage).not.toHaveBeenCalled();
   });

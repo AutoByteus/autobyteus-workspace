@@ -4,10 +4,11 @@ import { SegmentEventType, SegmentType } from '../../../../../src/agent/streamin
 import { ChunkResponse } from '../../../../../src/llm/utils/response-types.js';
 
 const chunk = (content: string) => new ChunkResponse({ content });
+const TURN_ID = 'turn_test';
 
 describe('PassThroughStreamingResponseHandler', () => {
   it('feed creates start and content events', () => {
-    const handler = new PassThroughStreamingResponseHandler();
+    const handler = new PassThroughStreamingResponseHandler({ turnId: TURN_ID });
     const events = handler.feed(chunk('Hello'));
 
     expect(events).toHaveLength(2);
@@ -18,7 +19,7 @@ describe('PassThroughStreamingResponseHandler', () => {
   });
 
   it('subsequent feed creates only content', () => {
-    const handler = new PassThroughStreamingResponseHandler();
+    const handler = new PassThroughStreamingResponseHandler({ turnId: TURN_ID });
     handler.feed(chunk('Hello'));
     const events = handler.feed(chunk(' World'));
 
@@ -28,7 +29,7 @@ describe('PassThroughStreamingResponseHandler', () => {
   });
 
   it('treats legacy tags as raw text', () => {
-    const handler = new PassThroughStreamingResponseHandler();
+    const handler = new PassThroughStreamingResponseHandler({ turnId: TURN_ID });
     const events = handler.feed(chunk('<write_file>'));
 
     expect(events).toHaveLength(2);
@@ -37,7 +38,7 @@ describe('PassThroughStreamingResponseHandler', () => {
   });
 
   it('finalize emits end event', () => {
-    const handler = new PassThroughStreamingResponseHandler();
+    const handler = new PassThroughStreamingResponseHandler({ turnId: TURN_ID });
     handler.feed(chunk('test'));
     const events = handler.finalize();
 
@@ -46,7 +47,7 @@ describe('PassThroughStreamingResponseHandler', () => {
   });
 
   it('getAllInvocations is empty', () => {
-    const handler = new PassThroughStreamingResponseHandler();
+    const handler = new PassThroughStreamingResponseHandler({ turnId: TURN_ID });
     handler.feed(chunk('<tool name="foo"></tool>'));
     handler.finalize();
 

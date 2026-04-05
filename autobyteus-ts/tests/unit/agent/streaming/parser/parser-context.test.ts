@@ -2,15 +2,19 @@ import { describe, it, expect } from 'vitest';
 import { ParserContext, ParserConfig } from '../../../../../src/agent/streaming/parser/parser-context.js';
 import { SegmentEventType, SegmentType } from '../../../../../src/agent/streaming/parser/events.js';
 
+const TURN_ID = 'turn_test';
+const createConfig = (options: Record<string, any> = {}) => new ParserConfig({ turnId: TURN_ID, ...options });
+const createContext = (options: Record<string, any> = {}) => new ParserContext(createConfig(options));
+
 describe('ParserConfig', () => {
   it('uses default values', () => {
-    const config = new ParserConfig();
+    const config = createConfig();
     expect(config.parseToolCalls).toBe(true);
     expect(config.strategyOrder).toEqual(['xml_tag']);
   });
 
   it('respects custom values', () => {
-    const config = new ParserConfig({ parseToolCalls: false, strategyOrder: ['json_tool'] });
+    const config = createConfig({ parseToolCalls: false, strategyOrder: ['json_tool'] });
     expect(config.parseToolCalls).toBe(false);
     expect(config.strategyOrder).toEqual(['json_tool']);
   });
@@ -18,7 +22,7 @@ describe('ParserConfig', () => {
 
 describe('ParserContext initialization', () => {
   it('defaults to built-in config', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     expect(ctx.parseToolCalls).toBe(true);
     expect(ctx.config.strategyOrder).toEqual(['xml_tag']);
     expect(ctx.hasMoreChars()).toBe(false);
@@ -26,7 +30,7 @@ describe('ParserContext initialization', () => {
   });
 
   it('accepts custom config', () => {
-    const config = new ParserConfig({ parseToolCalls: false });
+    const config = createConfig({ parseToolCalls: false });
     const ctx = new ParserContext(config);
     expect(ctx.parseToolCalls).toBe(false);
   });
@@ -34,27 +38,27 @@ describe('ParserContext initialization', () => {
 
 describe('ParserContext scanner delegation', () => {
   it('appends and peeks', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.append('hello');
     expect(ctx.peekChar()).toBe('h');
   });
 
   it('advances cursor', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.append('abc');
     ctx.advance();
     expect(ctx.peekChar()).toBe('b');
   });
 
   it('advanceBy moves cursor', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.append('hello world');
     ctx.advanceBy(6);
     expect(ctx.peekChar()).toBe('w');
   });
 
   it('tracks remaining chars', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     expect(ctx.hasMoreChars()).toBe(false);
     ctx.append('a');
     expect(ctx.hasMoreChars()).toBe(true);
@@ -63,7 +67,7 @@ describe('ParserContext scanner delegation', () => {
   });
 
   it('gets and sets position', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.append('hello');
     ctx.advanceBy(3);
     expect(ctx.getPosition()).toBe(3);
@@ -73,7 +77,7 @@ describe('ParserContext scanner delegation', () => {
   });
 
   it('extracts substrings', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.append('hello world');
     expect(ctx.substring(0, 5)).toBe('hello');
     expect(ctx.substring(6)).toBe('world');
@@ -82,7 +86,7 @@ describe('ParserContext scanner delegation', () => {
 
 describe('ParserContext segment emission', () => {
   it('emits segment lifecycle events', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     const segId = ctx.emitSegmentStart(SegmentType.TEXT);
     expect(segId).toBe('seg_1');
     expect(ctx.getCurrentSegmentId()).toBe('seg_1');
@@ -110,7 +114,7 @@ describe('ParserContext segment emission', () => {
   });
 
   it('emits segment metadata', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.emitSegmentStart(SegmentType.TOOL_CALL, { tool_name: 'weather_api' });
     const events = ctx.getEvents();
     expect(events).toHaveLength(1);
@@ -118,7 +122,7 @@ describe('ParserContext segment emission', () => {
   });
 
   it('generates unique segment ids', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     const id1 = ctx.emitSegmentStart(SegmentType.TEXT);
     ctx.emitSegmentEnd();
     const id2 = ctx.emitSegmentStart(SegmentType.WRITE_FILE);
@@ -131,18 +135,18 @@ describe('ParserContext segment emission', () => {
   });
 
   it('throws when emitting content without active segment', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     expect(() => ctx.emitSegmentContent('test')).toThrow(/Cannot emit content/);
   });
 
   it('returns undefined when ending without segment', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     const result = ctx.emitSegmentEnd();
     expect(result).toBeUndefined();
   });
 
   it('getAndClearEvents clears queue', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.emitSegmentStart(SegmentType.TEXT);
     ctx.emitSegmentContent('test');
     ctx.emitSegmentEnd();
@@ -155,7 +159,7 @@ describe('ParserContext segment emission', () => {
 
 describe('ParserContext text helper', () => {
   it('appendTextSegment emits start + content', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.appendTextSegment('Hello World');
     const events = ctx.getAndClearEvents();
     expect(events).toHaveLength(2);
@@ -167,7 +171,7 @@ describe('ParserContext text helper', () => {
   });
 
   it('reuses open text segment', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.appendTextSegment('Hello ');
     ctx.getAndClearEvents();
     ctx.appendTextSegment('World');
@@ -178,7 +182,7 @@ describe('ParserContext text helper', () => {
   });
 
   it('ignores empty text', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.appendTextSegment('');
     const events = ctx.getAndClearEvents();
     expect(events).toHaveLength(0);
@@ -187,7 +191,7 @@ describe('ParserContext text helper', () => {
 
 describe('ParserContext metadata updates', () => {
   it('updates current segment metadata', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.emitSegmentStart(SegmentType.TOOL_CALL, { tool_name: 'test' });
     expect(ctx.getCurrentSegmentMetadata()).toEqual({ tool_name: 'test' });
     ctx.updateCurrentSegmentMetadata({ arg1: 'value1' });

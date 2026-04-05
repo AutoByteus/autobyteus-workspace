@@ -133,6 +133,10 @@ describe('LLMUserMessageReadyEventHandler', () => {
     expect(combined).toContain('Hello ');
     expect(combined).toContain('World');
     expect(combined).not.toContain('<wr');
+    expect(notifier.notifyAgentSegmentEvent).toHaveBeenCalled();
+    const firstSegmentPayload = notifier.notifyAgentSegmentEvent.mock.calls[0][0];
+    expect(typeof firstSegmentPayload.turn_id).toBe('string');
+    expect(firstSegmentPayload.turn_id).not.toBeNull();
     expect(inputQueues.enqueueInternalSystemEvent).toHaveBeenCalledOnce();
     const completionEvent = inputQueues.enqueueInternalSystemEvent.mock.calls[0][0];
     expect(completionEvent).toBeInstanceOf(LLMCompleteResponseReceivedEvent);

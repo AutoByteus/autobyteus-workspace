@@ -7,10 +7,12 @@ import { LLMProvider } from '../../../../../src/llm/providers.js';
 import { ToolSchemaProvider } from '../../../../../src/tools/usage/providers/tool-schema-provider.js';
 
 const ENV_VAR = 'AUTOBYTEUS_STREAM_PARSER';
+const TURN_ID = 'turn_test';
 
 const factoryOptions = (overrides?: Partial<{
   toolNames: string[];
   provider?: LLMProvider | null;
+  turnId: string;
   segmentIdPrefix?: string | null;
   onSegmentEvent?: any;
   onToolInvocation?: any;
@@ -18,6 +20,7 @@ const factoryOptions = (overrides?: Partial<{
 }>) => ({
   toolNames: ['test_tool'],
   provider: LLMProvider.OPENAI,
+  turnId: TURN_ID,
   segmentIdPrefix: 'test:',
   onSegmentEvent: null,
   onToolInvocation: null,

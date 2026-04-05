@@ -5,9 +5,13 @@ import { XmlTagInitializationState } from '../../../../../src/agent/streaming/pa
 import { JsonInitializationState } from '../../../../../src/agent/streaming/parser/states/json-initialization-state.js';
 import { SegmentEventType, SegmentType } from '../../../../../src/agent/streaming/parser/events.js';
 
+const TURN_ID = 'turn_test';
+const createConfig = (options: Record<string, any> = {}) => new ParserConfig({ turnId: TURN_ID, ...options });
+const createContext = (options: Record<string, any> = {}) => new ParserContext(createConfig(options));
+
 describe('TextState basics', () => {
   it('emits text segment for plain text', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.append('Hello World');
     const state = new TextState(ctx);
     ctx.currentState = state;
@@ -22,7 +26,7 @@ describe('TextState basics', () => {
   });
 
   it('produces no events for empty buffer', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     const state = new TextState(ctx);
     ctx.currentState = state;
     state.run();
@@ -33,7 +37,7 @@ describe('TextState basics', () => {
 
 describe('TextState XML trigger', () => {
   it("transitions on '<' and emits text before it", () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.append('Hello <tool>');
     const state = new TextState(ctx);
     ctx.currentState = state;
@@ -46,7 +50,7 @@ describe('TextState XML trigger', () => {
   });
 
   it("does not emit text when '<' at start", () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.append('<tool>');
     const state = new TextState(ctx);
     ctx.currentState = state;
@@ -58,7 +62,7 @@ describe('TextState XML trigger', () => {
   });
 
   it('emits accumulated text before tag', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.append('abc def ghi<');
     const state = new TextState(ctx);
     ctx.currentState = state;
@@ -72,7 +76,7 @@ describe('TextState XML trigger', () => {
 
 describe('TextState JSON trigger', () => {
   it('does not trigger JSON when default strategy order excludes it', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.append('Test {json}');
     const state = new TextState(ctx);
     ctx.currentState = state;
@@ -85,7 +89,7 @@ describe('TextState JSON trigger', () => {
   });
 
   it('triggers JSON state when enabled', () => {
-    const config = new ParserConfig({ parseToolCalls: true, strategyOrder: ['json_tool'] });
+    const config = createConfig({ parseToolCalls: true, strategyOrder: ['json_tool'] });
     const ctx = new ParserContext(config);
     ctx.append('Before {json}');
     const state = new TextState(ctx);
@@ -99,7 +103,7 @@ describe('TextState JSON trigger', () => {
   });
 
   it('does not trigger JSON when parseToolCalls is false', () => {
-    const config = new ParserConfig({ parseToolCalls: false, strategyOrder: ['json_tool'] });
+    const config = createConfig({ parseToolCalls: false, strategyOrder: ['json_tool'] });
     const ctx = new ParserContext(config);
     ctx.append('Test {json}');
     const state = new TextState(ctx);
@@ -115,7 +119,7 @@ describe('TextState JSON trigger', () => {
 
 describe('TextState streaming behavior', () => {
   it('handles partial buffer then more data', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.append('Hello ');
     let state = new TextState(ctx);
     ctx.currentState = state;
@@ -134,7 +138,7 @@ describe('TextState streaming behavior', () => {
   });
 
   it('handles trigger in later chunk', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     ctx.append('Setup text');
     let state = new TextState(ctx);
     ctx.currentState = state;
@@ -153,7 +157,7 @@ describe('TextState streaming behavior', () => {
 
 describe('TextState finalize', () => {
   it('finalize is no-op', () => {
-    const ctx = new ParserContext();
+    const ctx = createContext();
     const state = new TextState(ctx);
     state.finalize();
     const events = ctx.getAndClearEvents();

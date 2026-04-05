@@ -11,7 +11,9 @@ export type AutoByteusAgentLike = {
   agentId: string;
   context?: AgentContext & {
     state?: {
-      activeTurnId?: string | null;
+      activeTurn?: {
+        turnId?: string | null;
+      } | null;
     };
   };
   currentStatus?: string;
@@ -116,7 +118,7 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
       await this.agent.postUserMessage(message);
       return {
         accepted: true,
-        turnId: normalizeOptionalString(this.agent.context?.state?.activeTurnId ?? null),
+        turnId: resolveActiveTurnId(this.agent),
       };
     } catch (error) {
       return buildCommandFailure("send user input", error);
@@ -172,3 +174,6 @@ const normalizeOptionalString = (value: string | null): string | null => {
   const normalized = value.trim();
   return normalized.length > 0 ? normalized : null;
 };
+
+const resolveActiveTurnId = (agent: AutoByteusAgentLike): string | null =>
+  normalizeOptionalString(agent.context?.state?.activeTurn?.turnId ?? null);

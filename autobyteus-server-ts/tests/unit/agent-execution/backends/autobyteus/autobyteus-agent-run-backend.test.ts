@@ -59,6 +59,24 @@ describe("AutoByteusAgentRunBackend", () => {
     expect(backend.getContext()).toBe(context);
   });
 
+  it("returns the native activeTurn turn id when available", async () => {
+    const { backend } = createBackend({
+      agent: {
+        context: {
+          state: {
+            activeTurn: {
+              turnId: "turn-1",
+            },
+          },
+        },
+      },
+    });
+
+    const result = await backend.postUserMessage(new AgentInputUserMessage("hello backend"));
+
+    expect(result).toEqual({ accepted: true, turnId: "turn-1" });
+  });
+
   it("interrupts the active native run through stop()", async () => {
     const { backend, agent } = createBackend({
       agent: {
