@@ -1296,6 +1296,55 @@ describe('runHistoryStore', () => {
     expect(store.selectedTeamMemberRouteKey).toBe('super_agent');
   });
 
+  it('selectTreeRun keeps a local draft temp team context even when it is not subscribed', async () => {
+    const store = useRunHistoryStore();
+    const openTeamMemberRunSpy = vi.spyOn(store, 'openTeamMemberRun').mockResolvedValue(undefined);
+
+    teamContextsStoreMock.teams.set('temp-team-1', {
+      teamRunId: 'temp-team-1',
+      config: {
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Team Alpha',
+        runtimeKind: 'codex_app_server',
+        workspaceId: 'ws-1',
+        llmModelIdentifier: 'model-x',
+        autoExecuteTools: false,
+        memberOverrides: {},
+        isLocked: false,
+      },
+      members: new Map([
+        ['super_agent', {
+          config: { workspaceId: 'ws-1', agentDefinitionName: 'Super Agent' },
+          state: { runId: 'temp-team-1::super_agent', conversation: { messages: [] } },
+        }],
+      ]),
+      focusedMemberName: 'super_agent',
+      currentStatus: 'idle',
+      isSubscribed: false,
+      taskPlan: null,
+      taskStatuses: null,
+    });
+
+    await store.selectTreeRun({
+      teamRunId: 'temp-team-1',
+      memberRouteKey: 'super_agent',
+      memberName: 'Super Agent',
+      memberRunId: 'temp-team-1::super_agent',
+      workspaceRootPath: '/ws/a',
+      summary: 'New - Team Alpha',
+      lastActivityAt: '2026-01-01T00:00:00.000Z',
+      lastKnownStatus: 'IDLE',
+      isActive: false,
+      deleteLifecycle: 'READY',
+    });
+
+    expect(openTeamMemberRunSpy).not.toHaveBeenCalled();
+    expect(teamContextsStoreMock.setFocusedMember).toHaveBeenCalledWith('super_agent');
+    expect(selectionStoreMock.selectRun).toHaveBeenCalledWith('temp-team-1', 'team');
+    expect(store.selectedTeamRunId).toBe('temp-team-1');
+    expect(store.selectedTeamMemberRouteKey).toBe('super_agent');
+  });
+
   it('selectTreeRun still reopens persisted team history when the local team context is not subscribed', async () => {
     const store = useRunHistoryStore();
     const openTeamMemberRunSpy = vi.spyOn(store, 'openTeamMemberRun').mockResolvedValue(undefined);
