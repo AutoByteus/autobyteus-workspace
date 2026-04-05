@@ -32,6 +32,41 @@ const resolveLmstudioHost = () =>
   process.env.LMSTUDIO_HOSTS?.split(',').map((host) => host.trim()).find(Boolean) ??
   LMStudioModelProvider.DEFAULT_LMSTUDIO_HOST;
 
+type LmstudioNativeModel = {
+  type?: string;
+  key?: string;
+  capabilities?: {
+    reasoning?: unknown;
+  };
+  loaded_instances?: Array<unknown>;
+};
+
+const REASONING_MODEL_ENV_VAR = 'LMSTUDIO_REASONING_MODEL_ID';
+const DEFAULT_REASONING_MODEL_IDS = ['google/gemma-4-26b-a4b', 'qwen/qwen3.5-35b-a3b', 'zai-org/glm-4.7-flash'];
+
+const isReasoningCapable = (model: LmstudioNativeModel): boolean => {
+  const reasoning = model.capabilities?.reasoning;
+  return reasoning === true || Boolean(reasoning && typeof reasoning === 'object');
+};
+
+const isLoaded = (model: LmstudioNativeModel): boolean =>
+  Array.isArray(model.loaded_instances) && model.loaded_instances.length > 0;
+
+const isVisionModelId = (modelId: string): boolean => modelId.toLowerCase().includes('vl');
+
+const matchesPreferredModel = (modelId: string, candidate: string): boolean =>
+  modelId === candidate || modelId.includes(candidate);
+
+const fetchNativeLmstudioModels = async (): Promise<LmstudioNativeModel[]> => {
+  const response = await fetch(`${resolveLmstudioHost().replace(/\/+$/, '')}/api/v1/models`);
+  if (!response.ok) {
+    throw new Error(`LM Studio native model discovery failed with status ${response.status}`);
+  }
+
+  const payload = (await response.json()) as { models?: LmstudioNativeModel[] };
+  return Array.isArray(payload.models) ? payload.models : [];
+};
+
 const createLmstudioLLM = (modelId: string) => {
   const llmModel = new LLMModel({
     name: modelId,
@@ -90,6 +125,44 @@ const getVisionLLM = async () => {
   }
 
   return LLMFactory.createLLM(visionModel.model_identifier);
+};
+
+const getReasoningTextLLM = async () => {
+  const manualModelId = process.env[REASONING_MODEL_ENV_VAR];
+  if (manualModelId) {
+    try {
+      return createLmstudioLLM(manualModelId);
+    } catch {
+      // fall through to discovery
+    }
+  }
+
+  const nativeModels = await fetchNativeLmstudioModels();
+  const loadedReasoningTextModels = nativeModels.filter(
+    (model) =>
+      model.type === 'llm' &&
+      typeof model.key === 'string' &&
+      isLoaded(model) &&
+      isReasoningCapable(model) &&
+      !isVisionModelId(model.key)
+  );
+
+  if (!loadedReasoningTextModels.length) {
+    return null;
+  }
+
+  const preferredModelIds = [
+    process.env[REASONING_MODEL_ENV_VAR],
+    process.env.LMSTUDIO_TARGET_TEXT_MODEL,
+    ...DEFAULT_REASONING_MODEL_IDS
+  ].filter((value): value is string => Boolean(value));
+
+  const selectedModel =
+    loadedReasoningTextModels.find((model) =>
+      preferredModelIds.some((candidate) => matchesPreferredModel(model.key!, candidate))
+    ) ?? loadedReasoningTextModels[0];
+
+  return createLmstudioLLM(selectedModel.key!);
 };
 
 const shouldSkipOnConnectionError = (error: unknown): boolean => {
@@ -161,6 +234,42 @@ describe('LMStudioLLM Integration', () => {
       throw error;
     } finally {
       await llm.cleanup();
+    }
+  }, 120000);
+
+  it('should stream reasoning from a reasoning-capable text model', async () => {
+    let llm: LMStudioLLM | null = null;
+    try {
+      llm = await getReasoningTextLLM();
+      if (!llm) return;
+
+      const userMessage = new LLMUserMessage({
+        content: 'What is 17 plus 26? Think through it briefly and then answer in one sentence.'
+      });
+
+      let reasoningChunkCount = 0;
+      let accumulatedReasoning = '';
+      let sawCompletion = false;
+
+      for await (const chunk of llm.streamUserMessage(userMessage)) {
+        if (chunk.reasoning && chunk.reasoning.trim().length > 0) {
+          reasoningChunkCount += 1;
+          accumulatedReasoning += chunk.reasoning;
+        }
+
+        if (chunk.is_complete) {
+          sawCompletion = true;
+        }
+      }
+
+      expect(reasoningChunkCount).toBeGreaterThan(0);
+      expect(accumulatedReasoning.trim().length).toBeGreaterThan(0);
+      expect(sawCompletion).toBe(true);
+    } catch (error) {
+      if (shouldSkipOnConnectionError(error)) return;
+      throw error;
+    } finally {
+      await llm?.cleanup();
     }
   }, 120000);
 
