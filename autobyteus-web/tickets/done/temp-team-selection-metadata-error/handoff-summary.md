@@ -32,4 +32,8 @@
 
 - Release notes not required: this is an internal frontend behavior fix.
 - Release / publication / deployment not required: user explicitly requested finalization without releasing a new version.
-- Repository finalization is in progress on `codex/temp-team-selection-metadata-error` with target branch `origin/personal`.
+- Repository finalization completed:
+  - ticket archived under `autobyteus-web/tickets/done/temp-team-selection-metadata-error`
+  - ticket branch `codex/temp-team-selection-metadata-error` committed and pushed
+  - target branch `personal` updated locally with the ticket changes
+  - dedicated ticket worktree removed and local ticket branch deleted
