@@ -4,7 +4,7 @@
 
 - Ticket: `lmstudio-thinking-investigation`
 - Date: `2026-04-05`
-- Current Status: `Finalization In Progress`
+- Current Status: `Finalized and Released`
 - Workflow State Source: `tickets/done/lmstudio-thinking-investigation/workflow-state.md`
 
 ## Delivery Summary
@@ -53,7 +53,7 @@
 - Release notes required: `Yes`
 - Release notes artifact: `tickets/done/lmstudio-thinking-investigation/release-notes.md`
 - Notes:
-  - Curated release notes were added because Stage 10 includes a new workspace release.
+  - Curated release notes were used for release `v1.2.60` and synced into `.github/release-notes/release-notes.md` by the release helper.
 
 ## User Verification Hold
 
@@ -69,11 +69,11 @@
 - Ticket branch: `codex/lmstudio-thinking-investigation`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Commit status: `Not committed`
-- Push status: `Not pushed`
-- Merge status: `Not merged`
-- Release/publication/deployment status: `In progress`
-- Worktree cleanup status: `Not started`
-- Local branch cleanup status: `Not started`
+- Commit status: `Committed on ticket branch at fa15a29; release commit on personal at 7946f6d`
+- Push status: `Pushed origin/codex/lmstudio-thinking-investigation and origin/personal`
+- Merge status: `Merged into personal at c9942a3`
+- Release/publication/deployment status: `Released v1.2.60 via tag v1.2.60`
+- Worktree cleanup status: `Completed`
+- Local branch cleanup status: `Completed`
 - Blockers / notes:
-  - Final branch merge and release tagging are in progress.
+  - Release tag push triggered the documented desktop, messaging-gateway, and server Docker release workflows.
