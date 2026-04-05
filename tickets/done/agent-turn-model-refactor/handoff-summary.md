@@ -101,16 +101,21 @@
 - Finalization target branch:
   - `personal`
 - Commit status:
-  - `Not done`
+  - `Ticket branch commit 7e41f9c pushed to origin/codex/agent-turn-model-refactor`
+  - `Merge commit b5c446d created on personal`
+  - `Release commit 40ecd8c created on personal`
 - Push status:
-  - `Not done`
+  - `origin/codex/agent-turn-model-refactor` pushed
+  - `origin/personal` pushed after merge and release
+  - `tag v1.2.58` pushed
 - Merge status:
-  - `Not done`
+  - `Merged into origin/personal via b5c446d`
 - Release/publication/deployment status:
-  - `In progress`
+  - `Released via pnpm release 1.2.58 -- --release-notes tickets/done/agent-turn-model-refactor/release-notes.md`
+  - `Git tag v1.2.58 pushed and GitHub tag-driven release workflows triggered`
 - Worktree cleanup status:
-  - `Not done`
+  - `Done`
 - Local branch cleanup status:
-  - `Not done`
+  - `Done`
 - Blockers / notes:
-  - user verification is complete; branch commit, merge to `personal`, release, and cleanup are still pending
+  - `None`

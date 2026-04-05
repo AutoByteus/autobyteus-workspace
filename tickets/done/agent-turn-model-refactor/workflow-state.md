@@ -8,11 +8,11 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 
 - Ticket: `agent-turn-model-refactor`
 - Current Stage: `10`
-- Next Stage: `10`
+- Next Stage: `End`
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-038`
+- Last Transition ID: `T-039`
 - Last Updated: `2026-04-05`
 - User Hold Before Stage 6: `No` (lifted by user on `2026-04-04`)
 
@@ -48,7 +48,7 @@ Note:
 | 7 API/E2E + Executable Validation | Pass | executable validation implementation complete + acceptance-criteria and spine scenario gates complete | `tickets/done/agent-turn-model-refactor/api-e2e-testing.md`, `tickets/done/agent-turn-model-refactor/workflow-state.md` |
 | 8 Code Review | Pass | Code review gate `Pass`/`Fail` recorded + priority-ordered detailed review scorecard recorded (`Overall /10`, `Overall /100`, all ten category rows in canonical order with score + why + weakness + improvement, and no category below `9.0` for `Pass`) + all changed source files `<=500` effective non-empty lines + `>220` delta-gate assessments recorded + data-flow spine inventory/spine-span sufficiency/ownership/off-spine concern checks + existing-capability reuse + reusable-owned-structure extraction + shared-structure/data-model tightness + shared-base coherence + repeated-coordination ownership + empty-indirection + scope-appropriate separation of concerns + file placement within the correct subsystem and folder, with any optional module grouping justified + flat-vs-over-split layout judgment + interface/API/query/command/service-method boundary clarity + naming quality across files/folders/APIs/types/functions/parameters/variables + naming-to-responsibility alignment + no unjustified duplication of code/repeated structures in changed scope + patch-on-patch complexity control + dead/obsolete code cleanup completeness in changed scope + test quality + test maintainability + validation-evidence sufficiency + no-backward-compat/no-legacy checks satisfied for `Pass` | `tickets/done/agent-turn-model-refactor/code-review.md`, `tickets/done/agent-turn-model-refactor/workflow-state.md` |
 | 9 Docs Sync | Pass | `docs-sync.md` current + docs updated or no-impact rationale recorded | `tickets/done/agent-turn-model-refactor/docs-sync.md`, `tickets/done/agent-turn-model-refactor/workflow-state.md` |
-| 10 Handoff / Ticket State | In Progress | User verification is received, the ticket is archived, and repository finalization plus release work are in progress | `tickets/done/agent-turn-model-refactor/handoff-summary.md`, `tickets/done/agent-turn-model-refactor/release-notes.md`, `tickets/done/agent-turn-model-refactor/workflow-state.md` |
+| 10 Handoff / Ticket State | Pass | User verification is received, the ticket is archived, repository finalization is complete, the patch release is published, and required cleanup is complete | `tickets/done/agent-turn-model-refactor/handoff-summary.md`, `tickets/done/agent-turn-model-refactor/release-notes.md`, `tickets/done/agent-turn-model-refactor/workflow-state.md` |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -162,6 +162,7 @@ Note:
 | T-036 | 2026-04-04 | 8 | 9 | Stage 8 code review passed on the touched frontend `turn_id` symmetry implementation, so the ticket is moving into docs sync | N/A | Locked | `tickets/done/agent-turn-model-refactor/code-review.md`, `tickets/done/agent-turn-model-refactor/workflow-state.md` |
 | T-037 | 2026-04-04 | 9 | 10 | Stage 9 docs sync completed after the touched frontend `turn_id` symmetry implementation, so the ticket is back in handoff awaiting explicit user verification | N/A | Locked | `tickets/done/agent-turn-model-refactor/docs-sync.md`, `tickets/done/agent-turn-model-refactor/handoff-summary.md`, `tickets/done/agent-turn-model-refactor/workflow-state.md` |
 | T-038 | 2026-04-05 | 10 | 10 | The user verified the ticket, Stage 10 archived the ticket to `tickets/done/agent-turn-model-refactor`, and repository finalization plus release work have started | N/A | Locked | `tickets/done/agent-turn-model-refactor/handoff-summary.md`, `tickets/done/agent-turn-model-refactor/release-notes.md`, `tickets/done/agent-turn-model-refactor/workflow-state.md` |
+| T-039 | 2026-04-05 | 10 | End | Stage 10 finalization is complete: the ticket branch was pushed and merged into `personal`, release `v1.2.58` was published, and required worktree plus local-branch cleanup finished | N/A | Locked | `tickets/done/agent-turn-model-refactor/handoff-summary.md`, `tickets/done/agent-turn-model-refactor/release-notes.md`, `tickets/done/agent-turn-model-refactor/workflow-state.md` |
 
 ## Audible Notification Log (Optional Tracking)
 
@@ -189,7 +190,8 @@ Note:
 | 2026-04-04 | Re-entry | Stage 10 handoff has re-entered Stage 2 requirements refinement for the agent turn model refactor because the touched frontend segment payload types must also declare `turn_id`. Code edit permission remains locked until the updated Stage 5 review passes again. | Success | N/A |
 | 2026-04-04 | Transition | Stage 2 through Stage 5 have passed again for the agent turn model refactor on touched frontend `turn_id` symmetry. Stage 6 implementation is now in progress, and code edit permission is unlocked. | Success | N/A |
 | 2026-04-04 | Transition | Stage 6 through Stage 9 have passed again for the agent turn model refactor after aligning the touched frontend streaming protocol on explicit `turn_id`. The ticket is back in Stage 10 awaiting your verification, and code edit permission is locked. | Success | N/A |
-| 2026-04-05 | Transition | The agent turn model refactor ticket is verified and archived. Repository finalization and the patch release are now in progress, with code edit permission remaining locked. | Pending | N/A |
+| 2026-04-05 | Transition | The agent turn model refactor ticket is verified and archived. Repository finalization and the patch release are now in progress, with code edit permission remaining locked. | Success | N/A |
+| 2026-04-05 | Transition | Stage 10 is complete for the agent turn model refactor. The ticket is archived, merged into personal, released as v1.2.58, and the dedicated worktree plus local branch are cleaned up. | Success | N/A |
 
 ## Process Violation Log
 
