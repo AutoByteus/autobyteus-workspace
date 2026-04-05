@@ -66,6 +66,51 @@ export class OpenAICompatibleLLM extends BaseLLM {
     };
   }
 
+  private extractReasoningText(value: unknown): string | null {
+    if (typeof value === 'string') {
+      return value;
+    }
+
+    if (Array.isArray(value)) {
+      const parts = value
+        .map((item) => this.extractReasoningText(item))
+        .filter((item): item is string => Boolean(item));
+      return parts.length ? parts.join('') : null;
+    }
+
+    if (value && typeof value === 'object') {
+      const record = value as Record<string, unknown>;
+      const candidates: unknown[] = [
+        record.reasoning_content,
+        record.reasoning,
+        record.text,
+        record.content,
+        record.summary
+      ];
+
+      for (const candidate of candidates) {
+        const extracted = this.extractReasoningText(candidate);
+        if (extracted) {
+          return extracted;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  private extractReasoningFromRecord(record: unknown): string | null {
+    if (!record || typeof record !== 'object') {
+      return null;
+    }
+
+    const candidateRecord = record as Record<string, unknown>;
+    return (
+      this.extractReasoningText(candidateRecord.reasoning_content) ??
+      this.extractReasoningText(candidateRecord.reasoning)
+    );
+  }
+
   protected async _sendMessagesToLLM(messages: Message[], kwargs: Record<string, unknown>): Promise<CompleteResponse> {
     const formattedMessages = await this._renderer.render(messages) as ChatCompletionMessageParam[];
     
@@ -96,10 +141,11 @@ export class OpenAICompatibleLLM extends BaseLLM {
       const message = choice.message;
       
       const content = message.content || "";
+      const reasoning = this.extractReasoningFromRecord(message);
       return new CompleteResponse({
         content,
+        reasoning,
         usage: this.createTokenUsage(response.usage),
-        // reasoning
       });
     } catch (e) {
       throw new Error(`Error in API request: ${e}`);
@@ -127,6 +173,11 @@ export class OpenAICompatibleLLM extends BaseLLM {
       for await (const chunk of stream) {
         if (chunk.choices && chunk.choices.length > 0) {
            const delta = chunk.choices[0].delta;
+
+           const reasoning = this.extractReasoningFromRecord(delta);
+           if (reasoning) {
+             yield new ChunkResponse({ content: "", reasoning });
+           }
            
            // Handle content
            if (delta.content) {
