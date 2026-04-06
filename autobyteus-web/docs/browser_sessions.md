@@ -56,6 +56,19 @@ Main-process owners:
   - shell snapshot publishing
   - host-bounds projection
 
+### Navigation Settlement Semantics
+
+`BrowserTabNavigation` is the authoritative readiness and failure boundary for `navigate_to` and `reload`.
+
+The current settlement rules are:
+
+- full document navigation with `wait_until: "load"` settles on the normal document-load path and the underlying Electron navigation promise
+- full document navigation with `wait_until: "domcontentloaded"` settles on Electron `dom-ready`
+- same-document or in-page navigation settles on Electron `did-navigate-in-page` when the main-frame URL matches the requested target
+- main-frame navigation failure rejects on Electron `did-fail-load`, `did-fail-provisional-load`, or an immediate `loadURL()` rejection
+
+This keeps navigation lifecycle policy in one place and prevents Browser session calls from hanging when the URL changes without a full reload or when Electron reports a provisional failure path.
+
 ### Server browser boundary
 
 The server owns:
@@ -244,5 +257,12 @@ Browser changes should keep all of these green:
 - Claude browser unit suites
 - live Codex browser integration scenarios
 - live Claude browser integration scenarios
+
+Electron browser lifecycle regression coverage should explicitly protect:
+
+- full-document navigation success at `load`
+- full-document navigation success at `domcontentloaded`
+- same-document/in-page navigation success
+- provisional or cancelled main-frame navigation failure
 
 For contract or ownership changes, live runtime validation should prove more than `open_tab` alone.
