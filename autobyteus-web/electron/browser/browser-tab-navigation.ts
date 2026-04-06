@@ -110,10 +110,11 @@ export class BrowserTabNavigation {
     url: string,
     waitUntil: BrowserReadyState,
   ): Promise<void> {
-    const waitPromise = this.waitForRequestedReadyState(session.view, waitUntil)
-    const loadPromise = session.view.webContents.loadURL(url)
-    void loadPromise.catch(() => undefined)
-    await waitPromise
+    await this.waitForRequestedReadyState(session.view, waitUntil, {
+      targetUrl: url,
+      allowInPageNavigation: true,
+      startNavigation: () => session.view.webContents.loadURL(url),
+    })
     session.url = url
   }
 
@@ -121,18 +122,38 @@ export class BrowserTabNavigation {
     session: BrowserTabRecord,
     waitUntil: BrowserReadyState,
   ): Promise<void> {
-    const waitPromise = this.waitForRequestedReadyState(session.view, waitUntil)
-    session.view.webContents.reload()
-    await waitPromise
+    await this.waitForRequestedReadyState(session.view, waitUntil, {
+      targetUrl: null,
+      allowInPageNavigation: false,
+      startNavigation: () => {
+        session.view.webContents.reload()
+      },
+    })
     session.url = session.view.webContents.getURL() || session.url
   }
 
-  private waitForRequestedReadyState(
+  private async waitForRequestedReadyState(
     view: WebContentsView,
     waitUntil: BrowserReadyState,
+    input: {
+      targetUrl: string | null
+      allowInPageNavigation: boolean
+      startNavigation: () => Promise<void> | void
+    },
   ): Promise<void> {
-    return new Promise((resolve, reject) => {
+    await new Promise<void>((resolve, reject) => {
       const isDomReadyWait = waitUntil === 'domcontentloaded'
+      let settled = false
+
+      const settle = (callback: () => void) => {
+        if (settled) {
+          return
+        }
+
+        settled = true
+        cleanup()
+        callback()
+      }
 
       const cleanup = () => {
         if (isDomReadyWait) {
@@ -141,11 +162,12 @@ export class BrowserTabNavigation {
           view.webContents.removeListener('did-finish-load', handleReady)
         }
         view.webContents.removeListener('did-fail-load', handleFail)
+        view.webContents.removeListener('did-fail-provisional-load', handleFail)
+        view.webContents.removeListener('did-navigate-in-page', handleInPageNavigate)
       }
 
       const handleReady = () => {
-        cleanup()
-        resolve()
+        settle(resolve)
       }
 
       const handleFail = (
@@ -161,11 +183,48 @@ export class BrowserTabNavigation {
           return
         }
 
-        cleanup()
-        reject(
-          new BrowserTabError(
-            'browser_navigation_failed',
-            `Failed to load '${validatedURL}' (${errorCode}): ${errorDescription}`,
+        settle(() =>
+          reject(
+            new BrowserTabError(
+              'browser_navigation_failed',
+              `Failed to load '${validatedURL}' (${errorCode}): ${errorDescription}`,
+            ),
+          ),
+        )
+      }
+
+      const handleInPageNavigate = (
+        _event: ElectronEvent,
+        url: string,
+        isMainFrame?: boolean,
+      ) => {
+        if (!input.allowInPageNavigation) {
+          return
+        }
+
+        if (isMainFrame === false) {
+          return
+        }
+
+        if (input.targetUrl && !this.urlsMatch(input.targetUrl, url)) {
+          return
+        }
+
+        settle(resolve)
+      }
+
+      const rejectFromNavigationStart = (error: unknown) => {
+        const targetUrl = input.targetUrl ?? view.webContents.getURL() ?? 'unknown URL'
+        const errorMessage =
+          error instanceof Error && error.message.trim().length > 0
+            ? error.message
+            : String(error)
+        settle(() =>
+          reject(
+            new BrowserTabError(
+              'browser_navigation_failed',
+              `Failed to load '${targetUrl}': ${errorMessage}`,
+            ),
           ),
         )
       }
@@ -176,6 +235,34 @@ export class BrowserTabNavigation {
         view.webContents.once('did-finish-load', handleReady)
       }
       view.webContents.on('did-fail-load', handleFail)
+      view.webContents.on('did-fail-provisional-load', handleFail)
+      view.webContents.on('did-navigate-in-page', handleInPageNavigate)
+
+      try {
+        const navigationPromise = input.startNavigation()
+        if (typeof navigationPromise?.then === 'function') {
+          navigationPromise.then(
+            () => {
+              if (!isDomReadyWait) {
+                settle(resolve)
+              }
+            },
+            (error: unknown) => {
+              rejectFromNavigationStart(error)
+            },
+          )
+        }
+      } catch (error) {
+        rejectFromNavigationStart(error)
+      }
     })
+  }
+
+  private urlsMatch(left: string, right: string): boolean {
+    try {
+      return new URL(left).toString() === new URL(right).toString()
+    } catch {
+      return left === right
+    }
   }
 }

@@ -11,21 +11,41 @@ class FakeWebContents extends EventEmitter {
   private readonly pendingLoads = new Map<string, { resolve: () => void; reject: (error: Error) => void }>();
   private readonly html = "<html><body><main>Demo</main><button>Run</button></body></html>";
   private windowOpenHandler: ((details: any) => any) | null = null;
+  private currentUrl = "";
 
   async loadURL(url: string): Promise<void> {
+    this.currentUrl = url;
     return new Promise((resolve, reject) => {
       this.pendingLoads.set(url, { resolve, reject });
     });
   }
 
   finishLoad(url: string): void {
+    this.currentUrl = url;
     this.emit("did-finish-load");
     this.pendingLoads.get(url)?.resolve();
     this.pendingLoads.delete(url);
   }
 
+  domReady(url: string): void {
+    this.currentUrl = url;
+    this.emit("dom-ready");
+  }
+
+  navigateInPage(url: string): void {
+    this.currentUrl = url;
+    this.emit("did-navigate-in-page", {}, url, true, 0, 0);
+  }
+
   failLoad(url: string, errorDescription: string): void {
     this.emit("did-fail-load", {}, -1, errorDescription, url, true, 0, 0);
+    this.pendingLoads.get(url)?.reject(new Error(errorDescription));
+    this.pendingLoads.delete(url);
+  }
+
+  failProvisionalLoad(url: string, errorDescription: string): void {
+    this.currentUrl = url;
+    this.emit("did-fail-provisional-load", {}, -3, errorDescription, url, true, 0, 0);
     this.pendingLoads.get(url)?.reject(new Error(errorDescription));
     this.pendingLoads.delete(url);
   }
@@ -116,6 +136,10 @@ class FakeWebContents extends EventEmitter {
 
   isDestroyed(): boolean {
     return this.destroyed;
+  }
+
+  getURL(): string {
+    return this.currentUrl;
   }
 }
 
@@ -257,6 +281,187 @@ describe("BrowserTabManager", () => {
 
     expect(secondResult.status).toBe("opened");
     expect(secondResult.tab_id).not.toBe(firstResult.tab_id);
+  });
+
+  it("resolves navigateSession for a full document navigation at load", async () => {
+    const views: FakeWebContentsView[] = [];
+    const manager = new BrowserTabManager({
+      viewFactory: {
+        createBrowserView: (options?: { webContents?: FakeWebContents | null }) => {
+          const view = new FakeWebContentsView(options?.webContents ?? undefined);
+          views.push(view);
+          return view as any;
+        },
+      } as any,
+      screenshotWriter: {
+        write: async () => "/tmp/browser.png",
+      } as any,
+    });
+
+    const openUrl = "http://localhost:3000/demo";
+    const openPromise = manager.openSession({ url: openUrl, wait_until: "load" });
+    await Promise.resolve();
+    views[0]!.webContents.finishLoad(new URL(openUrl).toString());
+    const opened = await openPromise;
+
+    const targetUrl = "http://localhost:3000/next";
+    let resolved = false;
+    const navigatePromise = manager
+      .navigateSession({ tab_id: opened.tab_id, url: targetUrl, wait_until: "load" })
+      .then((result) => {
+        resolved = true;
+        return result;
+      });
+
+    await Promise.resolve();
+    expect(resolved).toBe(false);
+
+    views[0]!.webContents.finishLoad(new URL(targetUrl).toString());
+
+    await expect(navigatePromise).resolves.toEqual({
+      tab_id: opened.tab_id,
+      status: "navigated",
+      url: new URL(targetUrl).toString(),
+    });
+    expect(manager.listSessions()).toEqual({
+      sessions: [
+        {
+          tab_id: opened.tab_id,
+          title: new URL(targetUrl).toString(),
+          url: new URL(targetUrl).toString(),
+        },
+      ],
+    });
+  });
+
+  it("resolves navigateSession for same-document navigation without waiting for did-finish-load", async () => {
+    const views: FakeWebContentsView[] = [];
+    const manager = new BrowserTabManager({
+      viewFactory: {
+        createBrowserView: (options?: { webContents?: FakeWebContents | null }) => {
+          const view = new FakeWebContentsView(options?.webContents ?? undefined);
+          views.push(view);
+          return view as any;
+        },
+      } as any,
+      screenshotWriter: {
+        write: async () => "/tmp/browser.png",
+      } as any,
+    });
+
+    const openUrl = "http://localhost:3000/demo";
+    const openPromise = manager.openSession({ url: openUrl, wait_until: "load" });
+    await Promise.resolve();
+    views[0]!.webContents.finishLoad(new URL(openUrl).toString());
+    const opened = await openPromise;
+
+    const targetUrl = "http://localhost:3000/demo#/details";
+    let resolved = false;
+    const navigatePromise = manager
+      .navigateSession({ tab_id: opened.tab_id, url: targetUrl, wait_until: "load" })
+      .then((result) => {
+        resolved = true;
+        return result;
+      });
+
+    await Promise.resolve();
+    expect(resolved).toBe(false);
+
+    views[0]!.webContents.navigateInPage(new URL(targetUrl).toString());
+
+    await expect(navigatePromise).resolves.toEqual({
+      tab_id: opened.tab_id,
+      status: "navigated",
+      url: new URL(targetUrl).toString(),
+    });
+    expect(manager.listSessions()).toEqual({
+      sessions: [
+        {
+          tab_id: opened.tab_id,
+          title: new URL(targetUrl).toString(),
+          url: new URL(targetUrl).toString(),
+        },
+      ],
+    });
+  });
+
+  it("resolves navigateSession at domcontentloaded without waiting for did-finish-load", async () => {
+    const views: FakeWebContentsView[] = [];
+    const manager = new BrowserTabManager({
+      viewFactory: {
+        createBrowserView: (options?: { webContents?: FakeWebContents | null }) => {
+          const view = new FakeWebContentsView(options?.webContents ?? undefined);
+          views.push(view);
+          return view as any;
+        },
+      } as any,
+      screenshotWriter: {
+        write: async () => "/tmp/browser.png",
+      } as any,
+    });
+
+    const openUrl = "http://localhost:3000/demo";
+    const openPromise = manager.openSession({ url: openUrl, wait_until: "load" });
+    await Promise.resolve();
+    views[0]!.webContents.finishLoad(new URL(openUrl).toString());
+    const opened = await openPromise;
+
+    const targetUrl = "http://localhost:3000/next";
+    let resolved = false;
+    const navigatePromise = manager
+      .navigateSession({ tab_id: opened.tab_id, url: targetUrl, wait_until: "domcontentloaded" })
+      .then((result) => {
+        resolved = true;
+        return result;
+      });
+
+    await Promise.resolve();
+    expect(resolved).toBe(false);
+
+    views[0]!.webContents.domReady(new URL(targetUrl).toString());
+
+    await expect(navigatePromise).resolves.toEqual({
+      tab_id: opened.tab_id,
+      status: "navigated",
+      url: new URL(targetUrl).toString(),
+    });
+  });
+
+  it("rejects navigateSession when Electron reports a provisional main-frame failure", async () => {
+    const views: FakeWebContentsView[] = [];
+    const manager = new BrowserTabManager({
+      viewFactory: {
+        createBrowserView: (options?: { webContents?: FakeWebContents | null }) => {
+          const view = new FakeWebContentsView(options?.webContents ?? undefined);
+          views.push(view);
+          return view as any;
+        },
+      } as any,
+      screenshotWriter: {
+        write: async () => "/tmp/browser.png",
+      } as any,
+    });
+
+    const openUrl = "http://localhost:3000/demo";
+    const openPromise = manager.openSession({ url: openUrl, wait_until: "load" });
+    await Promise.resolve();
+    views[0]!.webContents.finishLoad(new URL(openUrl).toString());
+    const opened = await openPromise;
+
+    const targetUrl = "http://localhost:3000/blocked";
+    const navigatePromise = manager.navigateSession({
+      tab_id: opened.tab_id,
+      url: targetUrl,
+      wait_until: "load",
+    });
+
+    await Promise.resolve();
+    views[0]!.webContents.failProvisionalLoad(new URL(targetUrl).toString(), "ERR_ABORTED");
+
+    await expect(navigatePromise).rejects.toMatchObject({
+      code: "browser_navigation_failed",
+      message: expect.stringContaining(new URL(targetUrl).toString()),
+    });
   });
 
   it("lists sessions and supports read-page plus dom-snapshot actions", async () => {
