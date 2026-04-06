@@ -74,7 +74,7 @@ After explicit user verification and ticket archival, this file normally moves w
 ## Finalization Record
 
 - Ticket archived to:
-  - `Pending`
+  - `tickets/done/browser-navigate-load-hang`
 - Ticket worktree path:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/browser-navigate-load-hang`
 - Ticket branch:
@@ -84,16 +84,16 @@ After explicit user verification and ticket archival, this file normally moves w
 - Finalization target branch:
   - `personal`
 - Commit status:
-  - `Pending`
+  - `Committed on ticket branch as 8d2982f, then finalized on the target branch after merge.`
 - Push status:
-  - `Pending`
+  - `Ticket branch pushed to origin and the merged target branch pushed to origin/personal.`
 - Merge status:
-  - `Pending`
+  - `Merged into personal from detached origin/personal finalization worktree as merge commit a3827a8.`
 - Release/publication/deployment status:
   - `Not required`
 - Worktree cleanup status:
-  - `Pending`
+  - `Dedicated ticket worktree removed and worktree metadata pruned.`
 - Local branch cleanup status:
-  - `Pending`
+  - `Local branch codex/browser-navigate-load-hang deleted after merge; remote branch retained.`
 - Blockers / notes:
-  - none currently
+  - none
