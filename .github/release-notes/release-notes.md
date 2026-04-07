@@ -1,6 +1,6 @@
 ## Improvements
-- LM Studio reasoning-capable models now stream their reasoning into Autobyteus, so the UI can show the model's thinking while the response is being generated.
-- LM Studio reasoning support now has durable live integration coverage against a real LM Studio server, reducing the chance of future regressions.
+- Improved Telegram-bound conversations so the first reply now returns on the same message instead of lagging one turn behind.
+- Improved reply delivery reliability for bound agent and team conversations in the desktop app.
 
 ## Fixes
-- Fixed the OpenAI-compatible LM Studio adapter dropping streamed `reasoning_content` / `reasoning` fields before they reached the frontend reasoning pipeline.
+- Fixed cases where the AutoByteus UI showed the reply but Telegram did not receive the first response until a later message.
