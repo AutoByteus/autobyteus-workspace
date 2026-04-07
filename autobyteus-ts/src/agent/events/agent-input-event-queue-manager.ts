@@ -42,6 +42,7 @@ class AsyncQueue<T> {
 }
 
 export class AgentInputEventQueueManager {
+  toolContinuationInputQueue: AsyncQueue<UserMessageReceivedEvent>;
   userMessageInputQueue: AsyncQueue<UserMessageReceivedEvent>;
   interAgentMessageInputQueue: AsyncQueue<InterAgentMessageReceivedEvent>;
   toolInvocationRequestQueue: AsyncQueue<PendingToolInvocationEvent>;
@@ -59,6 +60,7 @@ export class AgentInputEventQueueManager {
   ]);
 
   constructor() {
+    this.toolContinuationInputQueue = new AsyncQueue();
     this.userMessageInputQueue = new AsyncQueue();
     this.interAgentMessageInputQueue = new AsyncQueue();
     this.toolInvocationRequestQueue = new AsyncQueue();
@@ -67,6 +69,7 @@ export class AgentInputEventQueueManager {
     this.internalSystemEventQueue = new AsyncQueue();
 
     this.inputQueues = [
+      ['toolContinuationInputQueue', this.toolContinuationInputQueue as unknown as AsyncQueue<BaseEvent>],
       ['userMessageInputQueue', this.userMessageInputQueue as unknown as AsyncQueue<BaseEvent>],
       ['interAgentMessageInputQueue', this.interAgentMessageInputQueue as unknown as AsyncQueue<BaseEvent>],
       ['toolInvocationRequestQueue', this.toolInvocationRequestQueue as unknown as AsyncQueue<BaseEvent>],
@@ -77,6 +80,7 @@ export class AgentInputEventQueueManager {
 
     this.readyBuffers = new Map(this.inputQueues.map(([name]) => [name, []]));
     this.queuePriority = [
+      'toolContinuationInputQueue',
       'userMessageInputQueue',
       'interAgentMessageInputQueue',
       'toolResultInputQueue',
@@ -95,6 +99,11 @@ export class AgentInputEventQueueManager {
 
   async enqueueUserMessage(event: UserMessageReceivedEvent): Promise<void> {
     await this.userMessageInputQueue.put(event);
+    this.notifyAvailability();
+  }
+
+  async enqueueToolContinuationInput(event: UserMessageReceivedEvent): Promise<void> {
+    await this.toolContinuationInputQueue.put(event);
     this.notifyAvailability();
   }
 

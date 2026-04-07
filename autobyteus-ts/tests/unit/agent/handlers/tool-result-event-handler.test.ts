@@ -42,7 +42,10 @@ const makeContext = () => {
   const llm = new DummyLLM(model, new LLMConfig());
   const config = new AgentConfig('name', 'role', 'desc', llm);
   const state = new AgentRuntimeState('agent-1');
-  const inputQueues = { enqueueUserMessage: vi.fn(async () => undefined) } as any;
+  const inputQueues = {
+    enqueueUserMessage: vi.fn(async () => undefined),
+    enqueueToolContinuationInput: vi.fn(async () => undefined)
+  } as any;
   state.inputEventQueues = inputQueues;
   const notifier = {
     notifyAgentDataToolLog: vi.fn(),
@@ -92,8 +95,8 @@ describe('ToolResultEventHandler', () => {
       result: { sum: 15 }
     });
 
-    expect(inputQueues.enqueueUserMessage).toHaveBeenCalledTimes(1);
-    const enqueued = inputQueues.enqueueUserMessage.mock.calls[0][0];
+    expect(inputQueues.enqueueToolContinuationInput).toHaveBeenCalledTimes(1);
+    const enqueued = inputQueues.enqueueToolContinuationInput.mock.calls[0][0];
     expect(enqueued).toBeInstanceOf(UserMessageReceivedEvent);
     const message = enqueued.agentInputUserMessage;
     expect(message.senderType).toBe(SenderType.TOOL);
@@ -111,12 +114,13 @@ describe('ToolResultEventHandler', () => {
     context.state.activeTurn = turn;
 
     await handler.handle(new ToolResultEvent('tool_B', 'Result B', 'call_B', undefined, undefined, 'turn_0001'), context);
-    expect(inputQueues.enqueueUserMessage).not.toHaveBeenCalled();
+    expect(inputQueues.enqueueToolContinuationInput).not.toHaveBeenCalled();
 
     await handler.handle(new ToolResultEvent('tool_A', 'Result A', 'call_A', undefined, undefined, 'turn_0001'), context);
 
-    expect(inputQueues.enqueueUserMessage).toHaveBeenCalledTimes(1);
-    const content = inputQueues.enqueueUserMessage.mock.calls[0][0].agentInputUserMessage.content;
+    expect(inputQueues.enqueueToolContinuationInput).toHaveBeenCalledTimes(1);
+    const content =
+      inputQueues.enqueueToolContinuationInput.mock.calls[0][0].agentInputUserMessage.content;
     const posA = content.indexOf('Tool: tool_A (ID: call_A)');
     const posB = content.indexOf('Tool: tool_B (ID: call_B)');
     expect(posA).toBeGreaterThanOrEqual(0);
@@ -134,7 +138,7 @@ describe('ToolResultEventHandler', () => {
 
     await handler.handle(new ToolResultEvent('tool_A', 'wrong', 'call_A', undefined, undefined, 'turn_other'), context);
 
-    expect(inputQueues.enqueueUserMessage).not.toHaveBeenCalled();
+    expect(inputQueues.enqueueToolContinuationInput).not.toHaveBeenCalled();
     expect(warnSpy).toHaveBeenCalled();
     expect(context.state.activeTurn?.activeToolInvocationBatch).not.toBeNull();
   });
@@ -146,8 +150,9 @@ describe('ToolResultEventHandler', () => {
 
     await handler.handle(new ToolResultEvent('read_media_file', contextFile, 'media-1'), context);
 
-    expect(inputQueues.enqueueUserMessage).toHaveBeenCalledTimes(1);
-    const message = inputQueues.enqueueUserMessage.mock.calls[0][0].agentInputUserMessage;
+    expect(inputQueues.enqueueToolContinuationInput).toHaveBeenCalledTimes(1);
+    const message =
+      inputQueues.enqueueToolContinuationInput.mock.calls[0][0].agentInputUserMessage;
     expect(message.senderType).toBe(SenderType.TOOL);
     expect(message.content).toContain("The file 'image.png' has been loaded into the context");
     expect(message.contextFiles).toEqual([contextFile]);
@@ -166,6 +171,6 @@ describe('ToolResultEventHandler', () => {
       )
     ).toBe(true);
     expect(notifier.notifyAgentDataToolLog).not.toHaveBeenCalled();
-    expect(inputQueues.enqueueUserMessage).not.toHaveBeenCalled();
+    expect(inputQueues.enqueueToolContinuationInput).not.toHaveBeenCalled();
   });
 });

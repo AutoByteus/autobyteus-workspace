@@ -297,11 +297,13 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
             memberName: "worker",
             ref: workerAgentDefinitionId,
             refType: "AGENT",
+            refScope: "SHARED",
           },
           {
             memberName: "reviewer",
             ref: reviewerAgentDefinitionId,
             refType: "AGENT",
+            refScope: "SHARED",
           },
         ],
       },
@@ -414,13 +416,22 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
           message.type === "TOOL_APPROVED" && message.payload.agent_name === "worker",
         "worker TOOL_APPROVED",
       );
-      await waitForMessageAfter(
+      const toolSucceeded = await waitForMessageAfter(
         streamMessages,
         toolStartIndex,
         (message) =>
           message.type === "TOOL_EXECUTION_SUCCEEDED" &&
           message.payload.agent_name === "worker",
         "worker TOOL_EXECUTION_SUCCEEDED",
+      );
+      const toolSucceededIndex = streamMessages.indexOf(toolSucceeded);
+      await waitForMessageAfter(
+        streamMessages,
+        toolSucceededIndex + 1,
+        (message) =>
+          message.type === "ASSISTANT_COMPLETE" &&
+          message.payload.agent_name === "worker",
+        "worker ASSISTANT_COMPLETE after tool",
       );
       await waitForMessageAfter(
         streamMessages,
@@ -533,6 +544,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
             memberName: "worker",
             ref: workerAgentDefinitionId,
             refType: "AGENT",
+            refScope: "SHARED",
           },
         ],
       },

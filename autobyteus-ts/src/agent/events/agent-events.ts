@@ -155,7 +155,7 @@ export class ToolResultEvent extends AgentOperationalEvent {
     this.error = error;
     this.toolArgs = toolArgs;
     this.turnId = turnId;
-  this.isDenied = isDenied;
+    this.isDenied = isDenied;
   }
 }
 

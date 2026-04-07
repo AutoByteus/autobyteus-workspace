@@ -118,11 +118,7 @@ export class UserInputMessageEventHandler extends AgentEventHandler {
             `Agent '${context.agentId}': Applying input processor '${processorName}'.`
           );
           messageBeforeProcessor = processedMessage;
-          processedMessage = await processor.process(
-            messageBeforeProcessor,
-            context,
-            event
-          );
+          processedMessage = await processor.process(messageBeforeProcessor, context, event);
           console.info(
             `Agent '${context.agentId}': Input processor '${processorName}' applied successfully.`
           );
@@ -139,10 +135,7 @@ export class UserInputMessageEventHandler extends AgentEventHandler {
     }
 
     const llmUserMessage = buildLLMUserMessage(processedMessage);
-    const llmUserMessageReadyEvent = new LLMUserMessageReadyEvent(
-      llmUserMessage,
-      eventTurnId
-    );
+    const llmUserMessageReadyEvent = new LLMUserMessageReadyEvent(llmUserMessage, eventTurnId);
     await context.inputEventQueues.enqueueInternalSystemEvent(llmUserMessageReadyEvent);
 
     console.info(

@@ -30,7 +30,7 @@ class DummyQueues {
   internalEvents: any[] = [];
   toolInvocationEvents: any[] = [];
   toolResultEvents: any[] = [];
-  userMessageEvents: any[] = [];
+  toolContinuationEvents: any[] = [];
 
   async enqueueInternalSystemEvent(event: any) {
     this.internalEvents.push(event);
@@ -44,8 +44,8 @@ class DummyQueues {
     this.toolResultEvents.push(event);
   }
 
-  async enqueueUserMessage(event: any) {
-    this.userMessageEvents.push(event);
+  async enqueueToolContinuationInput(event: any) {
+    this.toolContinuationEvents.push(event);
   }
 }
 
@@ -144,9 +144,11 @@ runIntegration('Full tool roundtrip flow (LM Studio)', () => {
         await toolResultHandler.handle(event, context);
       }
 
-      expect((runtimeState.inputEventQueues as any).userMessageEvents.length).toBeGreaterThan(0);
+      expect((runtimeState.inputEventQueues as any).toolContinuationEvents.length).toBeGreaterThan(0);
 
-      const followEvent = (runtimeState.inputEventQueues as any).userMessageEvents.at(-1) as UserMessageReceivedEvent;
+      const followEvent = (runtimeState.inputEventQueues as any).toolContinuationEvents.at(
+        -1
+      ) as UserMessageReceivedEvent;
       expect(followEvent).toBeInstanceOf(UserMessageReceivedEvent);
 
       await new MemoryIngestInputProcessor().process(followEvent.agentInputUserMessage, context, null as any);
