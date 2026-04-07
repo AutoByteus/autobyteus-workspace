@@ -10,7 +10,6 @@ import { ChunkResponse, CompleteResponse } from '../../llm/utils/response-types.
 import { BaseLLM } from '../../llm/base.js';
 import { StreamingResponseHandlerFactory } from '../streaming/handlers/streaming-handler-factory.js';
 import { SegmentEvent, SegmentType } from '../streaming/segments/segment-events.js';
-import { AgentTurn } from '../agent-turn.js';
 import { OpenAIChatRenderer } from '../../llm/prompt-renderers/openai-chat-renderer.js';
 import { LLMRequestAssembler } from '../llm-request-assembler.js';
 import { applyCompactionPolicy, resolveTokenBudget } from '../token-budget.js';
@@ -45,6 +44,7 @@ export class LLMUserMessageReadyEventHandler extends AgentEventHandler {
     }
 
     const llmUserMessage = event.llmUserMessage;
+    const activeTurnId = event.turnId;
     console.info(`Agent '${agentId}' handling LLMUserMessageReadyEvent: '${llmUserMessage.content}'`);
     console.debug(
       `Agent '${agentId}' preparing to send full message to LLM:\n---\n${llmUserMessage.content}\n---`
@@ -54,12 +54,14 @@ export class LLMUserMessageReadyEventHandler extends AgentEventHandler {
       throw new Error(`Agent '${agentId}' requires a memory manager to assemble LLM requests.`);
     }
 
-    let activeTurn = context.state.activeTurn;
-    if (!activeTurn) {
-      activeTurn = new AgentTurn(memoryManager.startTurn());
-      context.state.activeTurn = activeTurn;
+    const activeTurn = context.state.activeTurn;
+    if (!activeTurn || activeTurn.turnId !== activeTurnId) {
+      const errorMessage =
+        `Agent '${agentId}' received LLMUserMessageReadyEvent for turn '${activeTurnId}', ` +
+        `but activeTurn is '${activeTurn?.turnId ?? "null"}'.`;
+      console.error(errorMessage);
+      throw new Error(errorMessage);
     }
-    const activeTurnId = activeTurn.turnId;
 
     let completeResponseText = '';
     let completeReasoningText = '';

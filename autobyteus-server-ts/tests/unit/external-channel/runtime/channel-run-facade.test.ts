@@ -92,6 +92,7 @@ describe("ChannelRunFacade", () => {
     expect(dispatchToAgentBinding).toHaveBeenCalledWith(
       createAgentBinding(),
       createEnvelope(),
+      {},
     );
     expect(dispatchToTeamBinding).not.toHaveBeenCalled();
   });
@@ -114,6 +115,7 @@ describe("ChannelRunFacade", () => {
     expect(dispatchToTeamBinding).toHaveBeenCalledWith(
       createTeamBinding(),
       createEnvelope(),
+      {},
     );
     expect(dispatchToAgentBinding).not.toHaveBeenCalled();
   });

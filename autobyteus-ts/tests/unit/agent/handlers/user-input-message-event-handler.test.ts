@@ -40,6 +40,9 @@ const makeContext = () => {
   const state = new AgentRuntimeState('agent-1');
   const inputQueues = { enqueueInternalSystemEvent: vi.fn(async () => undefined) } as any;
   state.inputEventQueues = inputQueues;
+  state.memoryManager = {
+    startTurn: vi.fn().mockReturnValue('turn-1')
+  } as any;
   return { context: new AgentContext('agent-1', config, state), inputQueues };
 };
 
@@ -118,6 +121,8 @@ describe('UserInputMessageEventHandler', () => {
     const enqueued = inputQueues.enqueueInternalSystemEvent.mock.calls[0][0];
     expect(enqueued).toBeInstanceOf(LLMUserMessageReadyEvent);
     expect(enqueued.llmUserMessage).toBeInstanceOf(LLMUserMessage);
+    expect(enqueued.turnId).toBe('turn-1');
+    expect(context.state.activeTurn?.turnId).toBe('turn-1');
     expect(enqueued.llmUserMessage.content).toBe('Hello, agent!');
     expect(enqueued.llmUserMessage.image_urls).toEqual([imageUrl]);
   });
@@ -132,6 +137,7 @@ describe('UserInputMessageEventHandler', () => {
 
     const enqueued = inputQueues.enqueueInternalSystemEvent.mock.calls[0][0];
     expect(enqueued).toBeInstanceOf(LLMUserMessageReadyEvent);
+    expect(enqueued.turnId).toBe('turn-1');
     expect(enqueued.llmUserMessage.content).toBe('Processed: Needs processing.');
   });
 
@@ -226,6 +232,7 @@ describe('UserInputMessageEventHandler', () => {
   it('handles message from tool sender', async () => {
     const handler = new UserInputMessageEventHandler();
     const { context } = makeContext();
+    context.state.activeTurn = { turnId: 'turn-existing' } as any;
     const event = new UserMessageReceivedEvent(
       new AgentInputUserMessage('Tool result: 42', SenderType.TOOL)
     );

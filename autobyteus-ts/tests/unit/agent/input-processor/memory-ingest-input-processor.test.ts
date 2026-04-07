@@ -38,14 +38,14 @@ const makeContext = () => {
 };
 
 describe('MemoryIngestInputProcessor', () => {
-  it('sets turn id and ingests user message', async () => {
+  it('ingests user message into the already-active turn', async () => {
     const context = makeContext();
     const processor = new MemoryIngestInputProcessor();
     const memoryManager = {
-      startTurn: vi.fn().mockReturnValue('turn_0001'),
       ingestUserMessage: vi.fn()
     };
     context.state.memoryManager = memoryManager as any;
+    context.state.activeTurn = { turnId: 'turn_0001' } as any;
 
     const message = new AgentInputUserMessage('Hello');
     const result = await processor.process(message, context, {} as any);
@@ -57,6 +57,18 @@ describe('MemoryIngestInputProcessor', () => {
       'turn_0001',
       'LLMUserMessageReadyEvent'
     );
+  });
+
+  it('fails when non-tool input reaches memory ingest without an active turn', async () => {
+    const context = makeContext();
+    const processor = new MemoryIngestInputProcessor();
+    context.state.memoryManager = {
+      ingestUserMessage: vi.fn()
+    } as any;
+
+    await expect(
+      processor.process(new AgentInputUserMessage('Hello'), context, {} as any)
+    ).rejects.toThrow("MemoryIngestInputProcessor cannot ingest non-tool user input without an active turn");
   });
 
   it('no-ops when memory manager missing', async () => {
@@ -75,7 +87,6 @@ describe('MemoryIngestInputProcessor', () => {
     const context = makeContext();
     const processor = new MemoryIngestInputProcessor();
     const memoryManager = {
-      startTurn: vi.fn().mockReturnValue('turn_0002'),
       ingestUserMessage: vi.fn()
     };
     context.state.memoryManager = memoryManager as any;
@@ -86,7 +97,6 @@ describe('MemoryIngestInputProcessor', () => {
 
     expect(result).toBe(message);
     expect(context.state.activeTurn?.turnId).toBe('turn_existing');
-    expect(memoryManager.startTurn).not.toHaveBeenCalled();
     expect(memoryManager.ingestUserMessage).not.toHaveBeenCalled();
   });
 });

@@ -56,8 +56,8 @@ Normalized result:
 
 | Raw Method | Raw Shape / Guard | Normalized Output | Owner | Decision |
 | --- | --- | --- | --- | --- |
-| `turn/started` | turn lifecycle start | `AGENT_STATUS(new_status=RUNNING)` | `codex-turn-event-converter.ts` | Keep |
-| `turn/completed` | turn lifecycle end | `AGENT_STATUS(new_status=IDLE)` and reasoning tracker reset | `codex-turn-event-converter.ts` | Keep |
+| `turn/started` | turn lifecycle start | `TURN_STARTED(turnId)` and `AGENT_STATUS(new_status=RUNNING)` | `codex-turn-event-converter.ts` | Keep |
+| `turn/completed` | turn lifecycle end | `TURN_COMPLETED(turnId)` and `AGENT_STATUS(new_status=IDLE)` and reasoning tracker reset | `codex-turn-event-converter.ts` | Keep |
 | `turn/diff/updated` | supplemental unified diff for a turn | none | `codex-turn-event-converter.ts` | Keep as explicit no-op |
 | `turn/taskProgressUpdated` | task progress payload | `TODO_LIST_UPDATE` | `codex-turn-event-converter.ts` | Keep |
 | `item/started` | `item.type = commandExecution` | `TOOL_EXECUTION_STARTED` | `codex-item-event-converter.ts` | Keep |

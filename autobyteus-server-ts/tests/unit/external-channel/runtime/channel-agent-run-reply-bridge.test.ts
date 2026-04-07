@@ -60,10 +60,9 @@ describe("ChannelAgentRunReplyBridge", () => {
     });
     listener?.({
       runId: "run-autobyteus",
-      eventType: AgentRunEventType.AGENT_STATUS,
+      eventType: AgentRunEventType.TURN_COMPLETED,
       payload: {
-        new_status: "IDLE",
-        old_status: "RUNNING",
+        turnId: "turn-auto-1",
       },
       statusHint: "IDLE",
     });
@@ -111,10 +110,9 @@ describe("ChannelAgentRunReplyBridge", () => {
     });
     listener?.({
       runId: "run-autobyteus-agent-turn",
-      eventType: AgentRunEventType.AGENT_STATUS,
+      eventType: AgentRunEventType.TURN_COMPLETED,
       payload: {
-        new_status: "IDLE",
-        old_status: "RUNNING",
+        turn_id: "turn-1",
       },
       statusHint: "IDLE",
     });
@@ -171,10 +169,9 @@ describe("ChannelAgentRunReplyBridge", () => {
     });
     listener?.({
       runId: "run-follow-up",
-      eventType: AgentRunEventType.AGENT_STATUS,
+      eventType: AgentRunEventType.TURN_COMPLETED,
       payload: {
-        new_status: "IDLE",
-        old_status: "RUNNING",
+        turnId: "turn-follow-up",
       },
       statusHint: "IDLE",
     });
@@ -216,10 +213,8 @@ describe("ChannelAgentRunReplyBridge", () => {
 
     listener?.({
       runId: "run-2",
-      eventType: AgentRunEventType.AGENT_STATUS,
+      eventType: AgentRunEventType.TURN_COMPLETED,
       payload: {
-        new_status: "IDLE",
-        old_status: "RUNNING",
         turnId: "turn-2",
       },
       statusHint: "IDLE",
@@ -241,7 +236,61 @@ describe("ChannelAgentRunReplyBridge", () => {
     });
   });
 
-  it("closes immediately when the accepted turnId is missing", async () => {
+  it("ignores turnless completion signals even after exact-turn content was observed", async () => {
+    let listener: ((event: unknown) => void) | null = null;
+    const resolveReplyText = vi.fn().mockResolvedValue("Recovered stale reply");
+    const bridge = new ChannelAgentRunReplyBridge({
+      turnReplyRecoveryService: {
+        resolveReplyText,
+      },
+    });
+
+    void bridge.observeAcceptedExternalTurn({
+      run: {
+        runId: "run-lag-guard",
+        subscribeToEvents: (onEvent: (event: unknown) => void) => {
+          listener = onEvent;
+          return vi.fn();
+        },
+      },
+      turnId: "turn-1",
+      envelope: createEnvelope(),
+    });
+
+    listener?.({
+      runId: "run-lag-guard",
+      eventType: AgentRunEventType.SEGMENT_END,
+      payload: {
+        turnId: "turn-1",
+        text: "First-turn reply",
+        segment_type: "text",
+      },
+      statusHint: null,
+    });
+    listener?.({
+      runId: "run-lag-guard",
+      eventType: AgentRunEventType.AGENT_STATUS,
+      payload: {
+        new_status: "IDLE",
+        old_status: "RUNNING",
+      },
+      statusHint: "IDLE",
+    });
+    listener?.({
+      runId: "run-lag-guard",
+      eventType: AgentRunEventType.ASSISTANT_COMPLETE,
+      payload: {
+        text: "turnless assistant complete",
+      },
+      statusHint: "IDLE",
+    });
+
+    await Promise.resolve();
+
+    expect(resolveReplyText).not.toHaveBeenCalled();
+  });
+
+  it("fails fast when the accepted turnId is missing", async () => {
     const bridge = new ChannelAgentRunReplyBridge({
       turnReplyRecoveryService: {
         resolveReplyText: vi.fn(),
@@ -254,12 +303,9 @@ describe("ChannelAgentRunReplyBridge", () => {
           runId: "run-missing",
           subscribeToEvents: () => vi.fn(),
         },
-        turnId: null,
+        turnId: "" as string,
         envelope: createEnvelope(),
       }),
-    ).resolves.toEqual({
-      status: "CLOSED",
-      reason: "TURN_ID_MISSING",
-    });
+    ).rejects.toThrow(/requires an exact turnId/i);
   });
 });

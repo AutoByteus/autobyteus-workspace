@@ -71,10 +71,11 @@ runIntegration('Handler memory flow (LM Studio)', () => {
       } as any;
 
       const agentInput = new AgentInputUserMessage("Please respond with the word 'pong'.");
+      const turnId = context.state.startActiveTurn('turn-1').turnId;
       await new MemoryIngestInputProcessor().process(agentInput, context, null as any);
 
       const llmUserMessage = buildLLMUserMessage(agentInput);
-      const event = new LLMUserMessageReadyEvent(llmUserMessage);
+      const event = new LLMUserMessageReadyEvent(llmUserMessage, turnId);
       const handler = new LLMUserMessageReadyEventHandler();
 
       try {

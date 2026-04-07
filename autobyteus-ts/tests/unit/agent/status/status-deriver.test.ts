@@ -15,7 +15,7 @@ import {
   LLMCompleteResponseReceivedEvent,
   PendingToolInvocationEvent,
   ToolExecutionApprovalEvent,
-  ApprovedToolInvocationEvent,
+  ExecuteToolInvocationEvent,
   ToolResultEvent
 } from '../../../../src/agent/events/agent-events.js';
 import { ToolInvocation } from '../../../../src/agent/tool-invocation.js';
@@ -75,15 +75,15 @@ describe('AgentStatusDeriver', () => {
     expect(newStatus).toBe(AgentStatus.PROCESSING_USER_INPUT);
 
     deriver = new AgentStatusDeriver(AgentStatus.PROCESSING_USER_INPUT);
-    [, newStatus] = deriver.apply(new LLMUserMessageReadyEvent({} as any));
+    [, newStatus] = deriver.apply(new LLMUserMessageReadyEvent({} as any, 'turn-1'));
     expect(newStatus).toBe(AgentStatus.AWAITING_LLM_RESPONSE);
 
     deriver = new AgentStatusDeriver(AgentStatus.AWAITING_LLM_RESPONSE);
-    [, newStatus] = deriver.apply(new LLMUserMessageReadyEvent({} as any));
+    [, newStatus] = deriver.apply(new LLMUserMessageReadyEvent({} as any, 'turn-1'));
     expect(newStatus).toBe(AgentStatus.AWAITING_LLM_RESPONSE);
 
     deriver = new AgentStatusDeriver(AgentStatus.ERROR);
-    [, newStatus] = deriver.apply(new LLMUserMessageReadyEvent({} as any));
+    [, newStatus] = deriver.apply(new LLMUserMessageReadyEvent({} as any, 'turn-1'));
     expect(newStatus).toBe(AgentStatus.ERROR);
 
     deriver = new AgentStatusDeriver(AgentStatus.AWAITING_LLM_RESPONSE);
@@ -110,7 +110,7 @@ describe('AgentStatusDeriver', () => {
     expect(newStatus).toBe(AgentStatus.EXECUTING_TOOL);
 
     deriver = new AgentStatusDeriver(AgentStatus.IDLE);
-    [, newStatus] = deriver.apply(new ApprovedToolInvocationEvent(invocation), context as any);
+    [, newStatus] = deriver.apply(new ExecuteToolInvocationEvent(invocation), context as any);
     expect(newStatus).toBe(AgentStatus.EXECUTING_TOOL);
 
     deriver = new AgentStatusDeriver(AgentStatus.IDLE);

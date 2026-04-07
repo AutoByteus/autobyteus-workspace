@@ -52,14 +52,14 @@ describe("AutoByteusAgentRunBackend", () => {
       expect.objectContaining({ content: "hello backend" }),
     );
     expect(agent.postToolExecutionApproval).toHaveBeenCalledWith("invoke-1", true, "approved");
-    expect(sendResult).toEqual({ accepted: true, turnId: null });
+    expect(sendResult).toEqual({ accepted: true });
     expect(approveResult).toEqual({ accepted: true });
     expect(backend.getStatus()).toBe("idle");
     expect(backend.getPlatformAgentRunId()).toBe("agent-1");
     expect(backend.getContext()).toBe(context);
   });
 
-  it("returns the native activeTurn turn id when available", async () => {
+  it("keeps dispatch enqueue-oriented even when the native runtime already has an active turn", async () => {
     const { backend } = createBackend({
       agent: {
         context: {
@@ -74,7 +74,7 @@ describe("AutoByteusAgentRunBackend", () => {
 
     const result = await backend.postUserMessage(new AgentInputUserMessage("hello backend"));
 
-    expect(result).toEqual({ accepted: true, turnId: "turn-1" });
+    expect(result).toEqual({ accepted: true });
   });
 
   it("interrupts the active native run through stop()", async () => {

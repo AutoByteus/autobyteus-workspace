@@ -54,7 +54,6 @@ const buildIngressResult = (): ChannelIngressResult => ({
     dispatchTargetType: "AGENT",
     agentRunId: "agent-1",
     dispatchedAt: new Date("2026-02-08T00:00:01.000Z"),
-    turnId: "turn-1",
   },
 });
 

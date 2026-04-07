@@ -9,13 +9,7 @@ import { AutoByteusStreamEventConverter } from "./events/autobyteus-stream-event
 
 export type AutoByteusAgentLike = {
   agentId: string;
-  context?: AgentContext & {
-    state?: {
-      activeTurn?: {
-        turnId?: string | null;
-      } | null;
-    };
-  };
+  context?: AgentContext;
   currentStatus?: string;
   postUserMessage?: (message: AgentInputUserMessage) => Promise<void>;
   postToolExecutionApproval?: (
@@ -118,7 +112,6 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
       await this.agent.postUserMessage(message);
       return {
         accepted: true,
-        turnId: resolveActiveTurnId(this.agent),
       };
     } catch (error) {
       return buildCommandFailure("send user input", error);
@@ -166,14 +159,3 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
     }
   }
 }
-
-const normalizeOptionalString = (value: string | null): string | null => {
-  if (value === null) {
-    return null;
-  }
-  const normalized = value.trim();
-  return normalized.length > 0 ? normalized : null;
-};
-
-const resolveActiveTurnId = (agent: AutoByteusAgentLike): string | null =>
-  normalizeOptionalString(agent.context?.state?.activeTurn?.turnId ?? null);

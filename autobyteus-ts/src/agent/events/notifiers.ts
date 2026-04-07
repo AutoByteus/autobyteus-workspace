@@ -114,6 +114,14 @@ export class AgentExternalEventNotifier extends EventEmitter {
     this.emitStatusUpdate(newStatus, oldStatus, additionalData);
   }
 
+  notifyAgentTurnStarted(turnId: string): void {
+    this.emitEvent(EventType.AGENT_TURN_STARTED, { turn_id: turnId });
+  }
+
+  notifyAgentTurnCompleted(turnId: string): void {
+    this.emitEvent(EventType.AGENT_TURN_COMPLETED, { turn_id: turnId });
+  }
+
   notifyAgentDataAssistantChunk(chunk: ChunkResponse): void {
     this.emitEvent(EventType.AGENT_DATA_ASSISTANT_CHUNK, chunk);
   }

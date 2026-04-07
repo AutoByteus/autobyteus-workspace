@@ -27,7 +27,14 @@ export class AgentErrorEvent extends LifecycleEvent {
   }
 }
 
-export class AgentIdleEvent extends LifecycleEvent {}
+export class AgentIdleEvent extends LifecycleEvent {
+  turnId: string | null;
+
+  constructor(turnId: string | null = null) {
+    super();
+    this.turnId = turnId;
+  }
+}
 
 export class ShutdownRequestedEvent extends LifecycleEvent {}
 
@@ -88,10 +95,12 @@ export class InterAgentMessageReceivedEvent extends AgentOperationalEvent {
 
 export class LLMUserMessageReadyEvent extends AgentOperationalEvent {
   llmUserMessage: LLMUserMessage;
+  turnId: string;
 
-  constructor(llmUserMessage: LLMUserMessage) {
+  constructor(llmUserMessage: LLMUserMessage, turnId: string) {
     super();
     this.llmUserMessage = llmUserMessage;
+    this.turnId = turnId;
   }
 }
 

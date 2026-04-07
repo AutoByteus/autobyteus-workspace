@@ -40,7 +40,7 @@ const createBackend = (overrides: Record<string, unknown> = {}) => {
 };
 
 describe("CodexAgentRunBackend", () => {
-  it("returns the accepted turn id and platform run id from the codex thread", async () => {
+  it("returns the accepted platform run id from the codex thread", async () => {
     const { backend, codexThread } = createBackend();
 
     const result = await backend.postUserMessage(
@@ -52,7 +52,6 @@ describe("CodexAgentRunBackend", () => {
     );
     expect(result).toEqual({
       accepted: true,
-      turnId: "turn-1",
       platformAgentRunId: "thread-1",
     });
   });

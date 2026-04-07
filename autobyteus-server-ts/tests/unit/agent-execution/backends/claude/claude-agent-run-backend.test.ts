@@ -54,7 +54,6 @@ describe("ClaudeAgentRunBackend", () => {
     expect(session.terminate).toHaveBeenCalledTimes(1);
     expect(sendResult).toEqual({
       accepted: true,
-      turnId: "turn-1",
       platformAgentRunId: "claude-session-1",
     });
     expect(approveResult).toEqual({ accepted: true });

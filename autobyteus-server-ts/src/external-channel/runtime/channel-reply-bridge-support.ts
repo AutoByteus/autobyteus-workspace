@@ -35,7 +35,6 @@ export const resolveChannelReplyBridgeDependencies = (
 });
 
 export type ChannelTurnObservationClosedReason =
-  | "TURN_ID_MISSING"
   | "EMPTY_REPLY"
   | "ERROR"
   | "TIMEOUT";

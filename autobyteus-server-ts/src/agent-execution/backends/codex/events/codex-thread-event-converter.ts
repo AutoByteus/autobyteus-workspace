@@ -152,8 +152,7 @@ export class CodexThreadEventConverter {
       return [];
     }
     if (isCodexTurnEventName(codexEventName)) {
-      const converted = convertCodexTurnEvent(this.turnEventConverterContext, codexEventName, payload);
-      return converted ? [converted] : [];
+      return convertCodexTurnEvent(this.turnEventConverterContext, codexEventName, payload);
     }
     if (
       codexEventName === CodexThreadEventName.LOCAL_TOOL_APPROVAL_REQUESTED ||

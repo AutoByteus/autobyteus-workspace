@@ -1,6 +1,13 @@
 import { describe, it, expect } from 'vitest';
 import { AgentInputEventQueueManager } from '../../../../src/agent/events/agent-input-event-queue-manager.js';
-import { PendingToolInvocationEvent, ToolResultEvent } from '../../../../src/agent/events/agent-events.js';
+import {
+  LLMUserMessageReadyEvent,
+  PendingToolInvocationEvent,
+  ToolResultEvent,
+  UserMessageReceivedEvent
+} from '../../../../src/agent/events/agent-events.js';
+import { AgentInputUserMessage } from '../../../../src/agent/message/agent-input-user-message.js';
+import { LLMUserMessage } from '../../../../src/llm/user-message.js';
 import { ToolInvocation } from '../../../../src/agent/tool-invocation.js';
 
 describe('AgentInputEventQueueManager', () => {
@@ -27,7 +34,7 @@ describe('AgentInputEventQueueManager', () => {
     expect((e2 as PendingToolInvocationEvent).toolInvocation.id).toBe('t2');
   });
 
-  it('buffers multiple ready queues without reordering tool invocations', async () => {
+  it('buffers multiple ready queues according to queue priority without reordering tool invocations', async () => {
     const mgr = new AgentInputEventQueueManager();
 
     await mgr.toolInvocationRequestQueue.put(
@@ -51,10 +58,31 @@ describe('AgentInputEventQueueManager', () => {
     const [, e2] = evt2!;
     const [, e3] = evt3!;
 
-    expect(e1).toBeInstanceOf(PendingToolInvocationEvent);
-    expect((e1 as PendingToolInvocationEvent).toolInvocation.id).toBe('t1');
-    expect(e2).toBeInstanceOf(ToolResultEvent);
+    expect(e1).toBeInstanceOf(ToolResultEvent);
+    expect(e2).toBeInstanceOf(PendingToolInvocationEvent);
+    expect((e2 as PendingToolInvocationEvent).toolInvocation.id).toBe('t1');
     expect(e3).toBeInstanceOf(PendingToolInvocationEvent);
     expect((e3 as PendingToolInvocationEvent).toolInvocation.id).toBe('t2');
+  });
+
+  it('keeps later external input queued behind an active turn continuation', async () => {
+    const mgr = new AgentInputEventQueueManager();
+
+    await mgr.enqueueUserMessage(
+      new UserMessageReceivedEvent(new AgentInputUserMessage('second external input'))
+    );
+    await mgr.enqueueInternalSystemEvent(
+      new LLMUserMessageReadyEvent(new LLMUserMessage({ content: 'first prompt' }), 'turn-1')
+    );
+
+    const evt1 = await mgr.getNextInputEvent({ allowExternalInput: false });
+    expect(evt1).not.toBeNull();
+    expect(evt1?.[0]).toBe('internalSystemEventQueue');
+    expect(evt1?.[1]).toBeInstanceOf(LLMUserMessageReadyEvent);
+
+    const evt2 = await mgr.getNextInputEvent({ allowExternalInput: true });
+    expect(evt2).not.toBeNull();
+    expect(evt2?.[0]).toBe('userMessageInputQueue');
+    expect(evt2?.[1]).toBeInstanceOf(UserMessageReceivedEvent);
   });
 });

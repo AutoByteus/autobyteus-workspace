@@ -11,6 +11,8 @@
 
 export type ServerMessageType =
   | 'CONNECTED'
+  | 'TURN_STARTED'
+  | 'TURN_COMPLETED'
   | 'SEGMENT_START'
   | 'SEGMENT_CONTENT'
   | 'SEGMENT_END'
@@ -79,6 +81,7 @@ export interface SegmentEndPayload {
 export interface AgentStatusPayload {
   new_status: string;
   old_status?: string | null;
+  turn_id?: string | null;
   agent_id?: string;
   agent_name?: string;
   trigger?: string | null;
@@ -197,6 +200,12 @@ export interface AssistantCompletePayload {
   agent_id?: string;
 }
 
+export interface TurnLifecyclePayload {
+  turn_id: string | null;
+  agent_name?: string;
+  agent_id?: string;
+}
+
 export interface TodoItem {
   todo_id: string;
   description: string;
@@ -281,6 +290,8 @@ export interface ErrorPayload {
 
 export type ServerMessage =
   | { type: 'CONNECTED'; payload: ConnectedPayload }
+  | { type: 'TURN_STARTED'; payload: TurnLifecyclePayload }
+  | { type: 'TURN_COMPLETED'; payload: TurnLifecyclePayload }
   | { type: 'SEGMENT_START'; payload: SegmentStartPayload }
   | { type: 'SEGMENT_CONTENT'; payload: SegmentContentPayload }
   | { type: 'SEGMENT_END'; payload: SegmentEndPayload }

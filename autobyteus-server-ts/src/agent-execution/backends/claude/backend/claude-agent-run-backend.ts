@@ -63,10 +63,9 @@ export class ClaudeAgentRunBackend implements AgentRunBackend {
 
   async postUserMessage(message: AgentInputUserMessage): Promise<AgentOperationResult> {
     try {
-      const result = await this.session.sendTurn(message);
+      await this.session.sendTurn(message);
       return {
         accepted: true,
-        turnId: result.turnId ?? null,
         platformAgentRunId: this.getPlatformAgentRunId(),
       };
     } catch (error) {
@@ -130,15 +129,17 @@ export class ClaudeAgentRunBackend implements AgentRunBackend {
       return;
     }
     this.unsubscribeFromSession = this.session.subscribeRuntimeEvents((event) => {
-      const convertedEvent = this.eventConverter.convert(event);
-      if (!convertedEvent) {
+      const convertedEvents = this.eventConverter.convert(event);
+      if (convertedEvents.length === 0) {
         return;
       }
-      this.lastStatus = convertedEvent.statusHint ?? this.lastStatus;
-      dispatchRuntimeEvent({
-        listeners: this.listeners,
-        event: convertedEvent,
-      });
+      for (const convertedEvent of convertedEvents) {
+        this.lastStatus = convertedEvent.statusHint ?? this.lastStatus;
+        dispatchRuntimeEvent({
+          listeners: this.listeners,
+          event: convertedEvent,
+        });
+      }
     });
   }
 }

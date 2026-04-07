@@ -53,6 +53,10 @@ export class AgentInputEventQueueManager {
   private readyBuffers: Map<string, BaseEvent[]>;
   private queuePriority: string[];
   private availabilityWaiters: Array<() => void> = [];
+  private readonly externalInputQueues = new Set([
+    'userMessageInputQueue',
+    'interAgentMessageInputQueue'
+  ]);
 
   constructor() {
     this.userMessageInputQueue = new AsyncQueue();
@@ -119,9 +123,24 @@ export class AgentInputEventQueueManager {
     this.notifyAvailability();
   }
 
-  async getNextInputEvent(): Promise<[string, BaseEvent] | null> {
+  private getEligibleQueuePriority(allowExternalInput: boolean): string[] {
+    if (allowExternalInput) {
+      return this.queuePriority;
+    }
+
+    return this.queuePriority.filter((queueName) => !this.externalInputQueues.has(queueName));
+  }
+
+  async getNextInputEvent(
+    options: {
+      allowExternalInput?: boolean;
+    } = {}
+  ): Promise<[string, BaseEvent] | null> {
+    const allowExternalInput = options.allowExternalInput ?? true;
+    const eligibleQueuePriority = this.getEligibleQueuePriority(allowExternalInput);
+
     while (true) {
-      for (const qname of this.queuePriority) {
+      for (const qname of eligibleQueuePriority) {
         const buffer = this.readyBuffers.get(qname);
         if (buffer && buffer.length > 0) {
           return [qname, buffer.shift()!];

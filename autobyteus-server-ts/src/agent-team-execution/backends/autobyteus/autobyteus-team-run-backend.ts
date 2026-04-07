@@ -33,11 +33,6 @@ type AutoByteusTeamLike = {
         config?: {
           name?: string | null;
         } | null;
-        state?: {
-          activeTurn?: {
-            turnId?: string | null;
-          } | null;
-        } | null;
       } | null;
     }>;
   } | null;
@@ -172,7 +167,6 @@ export class AutoByteusTeamRunBackend implements TeamRunBackend {
           memberName,
           this.options.memberRunIdsByName,
         ),
-        turnId: resolveTargetMemberTurnId(this.team, memberName),
       };
     } catch (error) {
       return buildCommandFailure("post team message", error);
@@ -339,21 +333,4 @@ const normalizeOptionalString = (value: string | null): string | null => {
   }
   const normalized = value.trim();
   return normalized.length > 0 ? normalized : null;
-};
-
-const resolveTargetMemberTurnId = (
-  team: AutoByteusTeamLike,
-  memberName: string | null,
-): string | null => {
-  const normalizedMemberName = normalizeOptionalString(memberName);
-  if (!normalizedMemberName) {
-    return null;
-  }
-
-  const agent = team.context?.agents?.find(
-    (candidate) =>
-      normalizeOptionalString(candidate.context?.config?.name ?? null) ===
-      normalizedMemberName,
-  );
-  return normalizeOptionalString(agent?.context?.state?.activeTurn?.turnId ?? null);
 };

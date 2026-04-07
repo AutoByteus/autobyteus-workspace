@@ -10,6 +10,8 @@ import {
   createTodoListUpdateData,
   AgentStatusUpdateData,
   createAgentStatusUpdateData,
+  TurnLifecycleData,
+  createTurnLifecycleData,
   ErrorEventData,
   createErrorEventData,
   SegmentEventData,
@@ -120,6 +122,12 @@ describe('Stream payload factories', () => {
     const payload = createAgentStatusUpdateData({ new_status: AgentStatus.IDLE });
     expect(payload).toBeInstanceOf(AgentStatusUpdateData);
     expect(payload.new_status).toBe(AgentStatus.IDLE);
+  });
+
+  it('creates TurnLifecycleData', () => {
+    const payload = createTurnLifecycleData({ turn_id: 'turn_123' });
+    expect(payload).toBeInstanceOf(TurnLifecycleData);
+    expect(payload.turn_id).toBe('turn_123');
   });
 
   it('creates ErrorEventData', () => {

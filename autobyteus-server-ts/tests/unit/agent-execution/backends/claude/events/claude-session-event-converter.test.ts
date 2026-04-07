@@ -7,7 +7,7 @@ describe("ClaudeSessionEventConverter", () => {
   it("converts a normal Claude tool lifecycle into TOOL_* events", () => {
     const converter = new ClaudeSessionEventConverter("run-claude-converter");
 
-    const started = converter.convert({
+    const [started] = converter.convert({
       method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_STARTED,
       params: {
         invocation_id: "invoke-write",
@@ -18,18 +18,19 @@ describe("ClaudeSessionEventConverter", () => {
         },
       },
     });
-    expect(started).not.toBeNull();
-    expect(started?.eventType).toBe(AgentRunEventType.TOOL_EXECUTION_STARTED);
-    expect(started?.payload).toMatchObject({
-      invocation_id: "invoke-write",
-      tool_name: "Write",
-      arguments: {
-        file_path: "/tmp/example.txt",
-        content: "hello",
+    expect(started).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_STARTED,
+      payload: {
+        invocation_id: "invoke-write",
+        tool_name: "Write",
+        arguments: {
+          file_path: "/tmp/example.txt",
+          content: "hello",
+        },
       },
     });
 
-    const completed = converter.convert({
+    const [completed] = converter.convert({
       method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_COMPLETED,
       params: {
         invocation_id: "invoke-write",
@@ -40,14 +41,15 @@ describe("ClaudeSessionEventConverter", () => {
         },
       },
     });
-    expect(completed).not.toBeNull();
-    expect(completed?.eventType).toBe(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED);
-    expect(completed?.payload).toMatchObject({
-      invocation_id: "invoke-write",
-      tool_name: "Write",
-      result: {
-        type: "create",
-        filePath: "/tmp/example.txt",
+    expect(completed).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      payload: {
+        invocation_id: "invoke-write",
+        tool_name: "Write",
+        result: {
+          type: "create",
+          filePath: "/tmp/example.txt",
+        },
       },
     });
   });
@@ -55,7 +57,7 @@ describe("ClaudeSessionEventConverter", () => {
   it("keeps send_message_to tool-call segment events while suppressing TOOL_* lifecycle noise", () => {
     const converter = new ClaudeSessionEventConverter("run-claude-converter");
 
-    const segmentStart = converter.convert({
+    const [segmentStart] = converter.convert({
       method: ClaudeSessionEventName.ITEM_ADDED,
       params: {
         id: "invoke-send-message",
@@ -68,41 +70,46 @@ describe("ClaudeSessionEventConverter", () => {
         },
       },
     });
-    expect(segmentStart).not.toBeNull();
-    expect(segmentStart?.eventType).toBe(AgentRunEventType.SEGMENT_START);
-    expect(segmentStart?.payload.segment_type).toBe("tool_call");
-    expect(segmentStart?.payload.metadata).toMatchObject({
-      tool_name: "mcp__autobyteus_team__send_message_to",
-      arguments: {
-        recipient_name: "pong",
-        content: "hello",
-        message_type: "roundtrip_ping",
-      },
-    });
-
-    const approval = converter.convert({
-      method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_REQUEST_APPROVAL,
-      params: {
-        invocation_id: "invoke-send-message",
-        tool_name: "mcp__autobyteus_team__send_message_to",
-        arguments: {
-          recipient_name: "pong",
-          content: "hello",
+    expect(segmentStart).toMatchObject({
+      eventType: AgentRunEventType.SEGMENT_START,
+      payload: {
+        segment_type: "tool_call",
+        metadata: {
+          tool_name: "mcp__autobyteus_team__send_message_to",
+          arguments: {
+            recipient_name: "pong",
+            content: "hello",
+            message_type: "roundtrip_ping",
+          },
         },
       },
     });
-    expect(approval).toBeNull();
 
-    const executionStarted = converter.convert({
-      method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_STARTED,
-      params: {
-        invocation_id: "invoke-send-message",
-        tool_name: "mcp__autobyteus_team__send_message_to",
-      },
-    });
-    expect(executionStarted).toBeNull();
+    expect(
+      converter.convert({
+        method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_REQUEST_APPROVAL,
+        params: {
+          invocation_id: "invoke-send-message",
+          tool_name: "mcp__autobyteus_team__send_message_to",
+          arguments: {
+            recipient_name: "pong",
+            content: "hello",
+          },
+        },
+      }),
+    ).toEqual([]);
 
-    const segmentEnd = converter.convert({
+    expect(
+      converter.convert({
+        method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_STARTED,
+        params: {
+          invocation_id: "invoke-send-message",
+          tool_name: "mcp__autobyteus_team__send_message_to",
+        },
+      }),
+    ).toEqual([]);
+
+    const [segmentEnd] = converter.convert({
       method: ClaudeSessionEventName.ITEM_COMPLETED,
       params: {
         id: "invoke-send-message",
@@ -114,15 +121,18 @@ describe("ClaudeSessionEventConverter", () => {
         },
       },
     });
-    expect(segmentEnd).not.toBeNull();
-    expect(segmentEnd?.eventType).toBe(AgentRunEventType.SEGMENT_END);
-    expect(segmentEnd?.payload.segment_type).toBe("tool_call");
+    expect(segmentEnd).toMatchObject({
+      eventType: AgentRunEventType.SEGMENT_END,
+      payload: {
+        segment_type: "tool_call",
+      },
+    });
   });
 
   it("normalizes browser MCP tool names to canonical browser tool names", () => {
     const converter = new ClaudeSessionEventConverter("run-claude-converter");
 
-    const completed = converter.convert({
+    const [completed] = converter.convert({
       method: ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_COMPLETED,
       params: {
         invocation_id: "invoke-browser",
@@ -134,15 +144,73 @@ describe("ClaudeSessionEventConverter", () => {
       },
     });
 
-    expect(completed).not.toBeNull();
-    expect(completed?.eventType).toBe(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED);
-    expect(completed?.payload).toMatchObject({
-      invocation_id: "invoke-browser",
-      tool_name: "open_tab",
-      result: {
-        tab_id: "browser-1",
-        status: "opened",
+    expect(completed).toMatchObject({
+      eventType: AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+      payload: {
+        invocation_id: "invoke-browser",
+        tool_name: "open_tab",
+        result: {
+          tab_id: "browser-1",
+          status: "opened",
+        },
       },
+    });
+  });
+
+  it("emits explicit turn completed plus preserved agent-status events", () => {
+    const converter = new ClaudeSessionEventConverter("run-claude-converter");
+
+    const completed = converter.convert({
+      method: ClaudeSessionEventName.TURN_COMPLETED,
+      params: {
+        turnId: "turn-claude-1",
+        sessionId: "session-1",
+      },
+    });
+
+    expect(completed).toHaveLength(2);
+    expect(completed[0]).toMatchObject({
+      eventType: AgentRunEventType.TURN_COMPLETED,
+      payload: {
+        turnId: "turn-claude-1",
+      },
+      statusHint: "IDLE",
+    });
+    expect(completed[1]).toMatchObject({
+      eventType: AgentRunEventType.AGENT_STATUS,
+      payload: {
+        new_status: "IDLE",
+        old_status: "RUNNING",
+        turnId: "turn-claude-1",
+      },
+      statusHint: "IDLE",
+    });
+  });
+
+  it("emits explicit turn started before the running status event", () => {
+    const converter = new ClaudeSessionEventConverter("run-claude-converter");
+
+    const started = converter.convert({
+      method: ClaudeSessionEventName.TURN_STARTED,
+      params: {
+        turnId: "turn-claude-2",
+      },
+    });
+
+    expect(started).toHaveLength(2);
+    expect(started[0]).toMatchObject({
+      eventType: AgentRunEventType.TURN_STARTED,
+      payload: { turnId: "turn-claude-2" },
+      statusHint: "ACTIVE",
+    });
+    expect(started[1]).toMatchObject({
+      eventType: AgentRunEventType.AGENT_STATUS,
+      payload: {
+        new_status: "RUNNING",
+        old_status: null,
+        turnId: "turn-claude-2",
+      },
+      statusHint: "ACTIVE",
     });
   });
 });

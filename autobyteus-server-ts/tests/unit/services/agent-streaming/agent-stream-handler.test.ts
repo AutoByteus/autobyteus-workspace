@@ -192,6 +192,47 @@ describe("AgentStreamHandler", () => {
     });
   });
 
+  it("maps turn lifecycle AgentRunEvents directly to websocket messages", async () => {
+    const unsubscribe = vi.fn();
+    const activeRun = createActiveRun({
+      runtimeKind: "codex_app_server",
+      subscribeToEvents: vi.fn((listener: (event: unknown) => void) => {
+        listener({
+          runId: "runtime-run-3",
+          eventType: AgentRunEventType.TURN_COMPLETED,
+          payload: {
+            turnId: "turn-3",
+          },
+          statusHint: "IDLE",
+        });
+        return unsubscribe;
+      }),
+    });
+    const agentRunService = createAgentRunService(activeRun);
+
+    const handler = new AgentStreamHandler(
+      new AgentSessionManager(),
+      agentRunService as any,
+      getAgentRunEventMessageMapper(),
+    );
+    const connection = {
+      send: vi.fn(),
+      close: vi.fn(),
+    };
+
+    await handler.connect(connection, "runtime-run-3");
+    await flush();
+
+    expect(connection.send).toHaveBeenCalledTimes(3);
+    const payload = JSON.parse(connection.send.mock.calls[2][0]);
+    expect(payload).toMatchObject({
+      type: ServerMessageType.TURN_COMPLETED,
+      payload: {
+        turn_id: "turn-3",
+      },
+    });
+  });
+
   it("registers the websocket connection for run-scoped live message broadcasts", async () => {
     const sessionManager = new AgentSessionManager();
     const broadcaster = new AgentStreamBroadcaster();

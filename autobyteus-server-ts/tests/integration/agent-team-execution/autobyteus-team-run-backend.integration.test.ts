@@ -97,6 +97,8 @@ describe("AutoByteusTeamRunBackend integration", () => {
     const userMessage = new AgentInputUserMessage("hello team");
     await expect(backend.postMessage(userMessage, "WorkerA")).resolves.toMatchObject({
       accepted: true,
+      memberName: "WorkerA",
+      memberRunId: "WorkerA",
     });
     expect(team.postMessage).toHaveBeenCalledWith(userMessage, "WorkerA");
 
@@ -177,6 +179,7 @@ describe("AutoByteusTeamRunBackend integration", () => {
         event_type: "SEGMENT_CONTENT",
         segment_id: "seg-42",
         segment_type: "text",
+        turn_id: "turn-42",
         payload: { delta: "hello" },
       },
     });
@@ -222,6 +225,7 @@ describe("AutoByteusTeamRunBackend integration", () => {
       data: {
         invocation_id: "inv-sub-1",
         tool_name: "read_file",
+        turn_id: "turn-sub-7",
         result: { ok: true },
       },
     });

@@ -62,7 +62,6 @@ const createTeamRun = () => ({
     message: null,
     memberRunId: "member-1",
     memberName: "support-node",
-    turnId: "turn-1",
   }),
 });
 
@@ -89,7 +88,6 @@ describe("ChannelTeamRunFacade", () => {
     expect(result.dispatchTargetType).toBe("TEAM");
     expect(result.memberRunId).toBe("member-1");
     expect(result.teamRunId).toBe("team-1");
-    expect(result.turnId).toBe("turn-1");
     expect(result.memberName).toBe("support-node");
     expect(resolveOrStartTeamRun).toHaveBeenCalledWith(binding);
     expect(resolveTeamRun).toHaveBeenCalledWith("team-1");
@@ -175,6 +173,35 @@ describe("ChannelTeamRunFacade", () => {
     warnSpy.mockRestore();
   });
 
+  it("prepares dispatch-scoped team turn capture before posting the external message", async () => {
+    const onTeamRunResolved = vi.fn();
+    const teamRun = createTeamRun();
+    const facade = new ChannelTeamRunFacade({
+      runLauncher: {
+        resolveOrStartTeamRun: vi.fn().mockResolvedValue("team-1"),
+      },
+      teamRunService: {
+        resolveTeamRun: vi.fn().mockResolvedValue(teamRun),
+        recordRunActivity: vi.fn().mockResolvedValue(undefined),
+      } as any,
+      teamLiveMessagePublisher: {
+        publishExternalUserMessage: vi.fn(),
+      },
+    });
+
+    await facade.dispatchToTeamBinding(createTeamBinding(), createEnvelope(), {
+      onTeamRunResolved,
+    });
+
+    expect(onTeamRunResolved).toHaveBeenCalledWith({
+      teamRunId: "team-1",
+      subscribeToEvents: expect.any(Function),
+    });
+    expect(onTeamRunResolved.mock.invocationCallOrder[0]).toBeLessThan(
+      teamRun.postMessage.mock.invocationCallOrder[0] ?? Number.MAX_SAFE_INTEGER,
+    );
+  });
+
   it("falls back to the binding target when runtime member metadata is absent", async () => {
     const teamRun = {
       ...createTeamRun(),
@@ -183,7 +210,6 @@ describe("ChannelTeamRunFacade", () => {
         message: null,
         memberRunId: null,
         memberName: null,
-        turnId: "turn-1",
       }),
     };
     const facade = new ChannelTeamRunFacade({
@@ -204,7 +230,6 @@ describe("ChannelTeamRunFacade", () => {
     expect(result.dispatchTargetType).toBe("TEAM");
     expect(result.memberRunId).toBeNull();
     expect(result.teamRunId).toBe("team-1");
-    expect(result.turnId).toBe("turn-1");
     expect(result.memberName).toBe("support-node");
   });
 

@@ -19,6 +19,7 @@ export {
 export {
   handleAgentStatus,
   handleAssistantComplete,
+  handleTurnCompleted,
   handleError,
 } from './agentStatusHandler';
 

@@ -60,6 +60,41 @@ describe('AgentExternalEventNotifier', () => {
     expect(debugSpy).not.toHaveBeenCalled();
   });
 
+  it('emits turn lifecycle payloads with turn identifiers', () => {
+    const infoSpy = vi.spyOn(console, 'info').mockImplementation(() => undefined);
+    vi.spyOn(console, 'debug').mockImplementation(() => undefined);
+    const notifier = new AgentExternalEventNotifier('agent-turn');
+    const received: Array<{ payload: any; metadata: any }> = [];
+
+    notifier.subscribe(EventType.AGENT_TURN_STARTED, (payload, metadata) => {
+      received.push({ payload, metadata });
+    });
+    notifier.subscribe(EventType.AGENT_TURN_COMPLETED, (payload, metadata) => {
+      received.push({ payload, metadata });
+    });
+
+    notifier.notifyAgentTurnStarted('turn-1');
+    notifier.notifyAgentTurnCompleted('turn-1');
+
+    expect(received).toHaveLength(2);
+    expect(received[0]).toMatchObject({
+      payload: { turn_id: 'turn-1' },
+      metadata: {
+        agent_id: 'agent-turn',
+        event_type: EventType.AGENT_TURN_STARTED
+      }
+    });
+    expect(received[1]).toMatchObject({
+      payload: { turn_id: 'turn-1' },
+      metadata: {
+        agent_id: 'agent-turn',
+        event_type: EventType.AGENT_TURN_COMPLETED
+      }
+    });
+    expect(infoSpy).toHaveBeenCalledWith(expect.stringContaining('emitted agent_turn_started'));
+    expect(infoSpy).toHaveBeenCalledWith(expect.stringContaining('emitted agent_turn_completed'));
+  });
+
   it('logs streaming details only when verbose agent event logs are enabled', () => {
     process.env.AUTOBYTEUS_VERBOSE_AGENT_EVENT_LOGS = 'true';
     const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => undefined);

@@ -11,6 +11,7 @@ import type {
   AgentStatusPayload, 
   ErrorPayload,
   AssistantCompletePayload,
+  TurnLifecyclePayload,
 } from '../protocol/messageTypes';
 import { findOrCreateAIMessage, findSegmentById } from './segmentHandler';
 import { AgentStatus } from '~/types/agent/AgentStatus';
@@ -55,10 +56,14 @@ export function handleAssistantComplete(
   _payload: AssistantCompletePayload,
   context: AgentContext
 ): void {
-  const lastMessage = context.conversation.messages[context.conversation.messages.length - 1];
-  if (lastMessage?.type === 'ai') {
-    lastMessage.isComplete = true;
-  }
+  markConversationComplete(context);
+}
+
+export function handleTurnCompleted(
+  _payload: TurnLifecyclePayload,
+  context: AgentContext
+): void {
+  markConversationComplete(context);
 }
 
 

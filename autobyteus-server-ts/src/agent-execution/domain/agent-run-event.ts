@@ -1,6 +1,8 @@
 export type AgentRunStatusHint = "ACTIVE" | "IDLE" | "ERROR" | null;
 
 export enum AgentRunEventType {
+  TURN_STARTED = "TURN_STARTED",
+  TURN_COMPLETED = "TURN_COMPLETED",
   SEGMENT_START = "SEGMENT_START",
   SEGMENT_CONTENT = "SEGMENT_CONTENT",
   SEGMENT_END = "SEGMENT_END",

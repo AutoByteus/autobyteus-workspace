@@ -55,6 +55,38 @@ describe("CodexThreadEventConverter", () => {
     });
   });
 
+  it("emits explicit turn lifecycle plus preserved agent-status events", () => {
+    const converter = new CodexThreadEventConverter("run-1");
+
+    const converted = converter.convert({
+      method: CodexThreadEventName.TURN_COMPLETED,
+      params: {
+        turn: {
+          id: "turn-codex-1",
+        },
+      },
+    });
+
+    expect(converted).toHaveLength(2);
+    expect(converted[0]).toMatchObject({
+      eventType: AgentRunEventType.TURN_COMPLETED,
+      runId: "run-1",
+      payload: {
+        turnId: "turn-codex-1",
+      },
+      statusHint: "IDLE",
+    });
+    expect(converted[1]).toMatchObject({
+      eventType: AgentRunEventType.AGENT_STATUS,
+      runId: "run-1",
+      payload: {
+        new_status: "IDLE",
+        old_status: "RUNNING",
+        turnId: "turn-codex-1",
+      },
+    });
+  });
+
   it("maps local MCP tool approval requests into TOOL_APPROVAL_REQUESTED", () => {
     const converter = new CodexThreadEventConverter("run-1");
 

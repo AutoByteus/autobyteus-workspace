@@ -2,6 +2,7 @@ import type { ExternalMessageEnvelope } from "autobyteus-ts/external-channel/ext
 import type { ChannelBinding } from "../domain/models.js";
 import type { ChannelRunDispatchResult } from "./channel-run-dispatch-result.js";
 import { ChannelBindingRunLauncher } from "./channel-binding-run-launcher.js";
+import type { ChannelRunDispatchHooks } from "./channel-run-dispatch-hooks.js";
 import {
   ChannelAgentRunFacade,
   type ChannelAgentRunFacadeDependencies,
@@ -47,10 +48,11 @@ export class ChannelRunFacade {
   async dispatchToBinding(
     binding: ChannelBinding,
     envelope: ExternalMessageEnvelope,
+    hooks: ChannelRunDispatchHooks = {},
   ): Promise<ChannelRunDispatchResult> {
     if (binding.targetType === "AGENT") {
-      return this.agentRunFacade.dispatchToAgentBinding(binding, envelope);
+      return this.agentRunFacade.dispatchToAgentBinding(binding, envelope, hooks);
     }
-    return this.teamRunFacade.dispatchToTeamBinding(binding, envelope);
+    return this.teamRunFacade.dispatchToTeamBinding(binding, envelope, hooks);
   }
 }

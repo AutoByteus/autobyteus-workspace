@@ -3,6 +3,7 @@ import {
   AssistantChunkData,
   AssistantCompleteResponseData,
   ToolInteractionLogEntryData,
+  TurnLifecycleData,
   AgentStatusUpdateData,
   ErrorEventData,
   ToolApprovalRequestedData,
@@ -21,6 +22,8 @@ import {
 } from './stream-event-payloads.js';
 
 export enum StreamEventType {
+  TURN_STARTED = 'turn_started',
+  TURN_COMPLETED = 'turn_completed',
   ASSISTANT_CHUNK = 'assistant_chunk',
   ASSISTANT_COMPLETE_RESPONSE = 'assistant_complete_response',
   TOOL_INTERACTION_LOG_ENTRY = 'tool_interaction_log_entry',
@@ -47,6 +50,8 @@ const STREAM_EVENT_TYPE_TO_PAYLOAD_CLASS: Record<
   [StreamEventType.ASSISTANT_CHUNK]: AssistantChunkData,
   [StreamEventType.ASSISTANT_COMPLETE_RESPONSE]: AssistantCompleteResponseData,
   [StreamEventType.TOOL_INTERACTION_LOG_ENTRY]: ToolInteractionLogEntryData,
+  [StreamEventType.TURN_STARTED]: TurnLifecycleData,
+  [StreamEventType.TURN_COMPLETED]: TurnLifecycleData,
   [StreamEventType.AGENT_STATUS_UPDATED]: AgentStatusUpdateData,
   [StreamEventType.ERROR_EVENT]: ErrorEventData,
   [StreamEventType.TOOL_APPROVAL_REQUESTED]: ToolApprovalRequestedData,

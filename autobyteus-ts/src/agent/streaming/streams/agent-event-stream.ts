@@ -5,6 +5,7 @@ import {
   createAssistantChunkData,
   createAssistantCompleteResponseData,
   createToolInteractionLogEntryData,
+  createTurnLifecycleData,
   createAgentStatusUpdateData,
   createErrorEventData,
   createToolApprovalRequestedData,
@@ -22,6 +23,7 @@ import {
   AssistantChunkData,
   AssistantCompleteResponseData,
   ToolInteractionLogEntryData,
+  TurnLifecycleData,
   AgentStatusUpdateData,
   ToolApprovalRequestedData,
   ToolApprovedData,
@@ -100,6 +102,14 @@ export class AgentEventStream extends EventEmitter {
 
     try {
       switch (eventType) {
+        case EventType.AGENT_TURN_STARTED:
+          typedPayload = createTurnLifecycleData(payload);
+          streamEventType = StreamEventType.TURN_STARTED;
+          break;
+        case EventType.AGENT_TURN_COMPLETED:
+          typedPayload = createTurnLifecycleData(payload);
+          streamEventType = StreamEventType.TURN_COMPLETED;
+          break;
         case EventType.AGENT_STATUS_UPDATED:
           typedPayload = createAgentStatusUpdateData(payload);
           streamEventType = StreamEventType.AGENT_STATUS_UPDATED;
@@ -237,6 +247,18 @@ export class AgentEventStream extends EventEmitter {
   async *streamStatusUpdates(): AsyncGenerator<AgentStatusUpdateData, void, unknown> {
     for await (const event of this.allEvents()) {
       if (event.event_type === StreamEventType.AGENT_STATUS_UPDATED && event.data instanceof AgentStatusUpdateData) {
+        yield event.data;
+      }
+    }
+  }
+
+  async *streamTurnLifecycle(): AsyncGenerator<TurnLifecycleData, void, unknown> {
+    for await (const event of this.allEvents()) {
+      if (
+        (event.event_type === StreamEventType.TURN_STARTED ||
+          event.event_type === StreamEventType.TURN_COMPLETED) &&
+        event.data instanceof TurnLifecycleData
+      ) {
         yield event.data;
       }
     }

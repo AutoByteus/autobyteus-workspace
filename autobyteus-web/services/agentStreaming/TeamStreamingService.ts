@@ -22,6 +22,7 @@ import {
   handleToolLog,
   handleAgentStatus,
   handleAssistantComplete,
+  handleTurnCompleted,
   handleExternalUserMessage,
   handleTodoListUpdate,
   handleError,
@@ -305,6 +306,13 @@ export class TeamStreamingService {
 
       case 'AGENT_STATUS':
         handleAgentStatus(message.payload, memberContext);
+        break;
+
+      case 'TURN_STARTED':
+        break;
+
+      case 'TURN_COMPLETED':
+        handleTurnCompleted(message.payload, memberContext);
         break;
 
       case 'ASSISTANT_COMPLETE':

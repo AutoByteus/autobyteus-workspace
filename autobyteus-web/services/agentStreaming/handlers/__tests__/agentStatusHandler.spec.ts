@@ -1,7 +1,17 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { handleAgentStatus, handleAssistantComplete, handleError } from '../agentStatusHandler';
+import {
+  handleAgentStatus,
+  handleAssistantComplete,
+  handleTurnCompleted,
+  handleError
+} from '../agentStatusHandler';
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import type { AgentStatusPayload, AssistantCompletePayload, ErrorPayload } from '../../protocol/messageTypes';
+import type {
+  AgentStatusPayload,
+  AssistantCompletePayload,
+  ErrorPayload,
+  TurnLifecyclePayload
+} from '../../protocol/messageTypes';
 
 const mockActivityStore = {
   updateActivityToolName: vi.fn(),
@@ -97,6 +107,19 @@ describe('agentStatusHandler', () => {
       handleAssistantComplete(payload, mockContext);
 
       expect(aiMsg.isComplete).toBe(true);
+    });
+  });
+
+  describe('handleTurnCompleted', () => {
+    it('marks last AI message as complete and stops sending', () => {
+      const aiMsg = { type: 'ai', isComplete: false };
+      mockContext.conversation.messages.push(aiMsg);
+
+      const payload: TurnLifecyclePayload = { turn_id: 'turn-1' };
+      handleTurnCompleted(payload, mockContext);
+
+      expect(aiMsg.isComplete).toBe(true);
+      expect(mockContext.isSending).toBe(false);
     });
   });
 

@@ -3,6 +3,8 @@ export enum EventType {
   TOOL_EXECUTION_COMPLETED = 'tool_execution_completed',
   SHARED_BROWSER_SESSION_CREATED = 'shared_browser_session_created',
   CREATE_SHARED_SESSION = 'create_shared_session',
+  AGENT_TURN_STARTED = 'agent_turn_started',
+  AGENT_TURN_COMPLETED = 'agent_turn_completed',
   AGENT_STATUS_UPDATED = 'agent_status_updated',
   AGENT_DATA_ASSISTANT_CHUNK = 'agent_data_assistant_chunk',
   AGENT_DATA_ASSISTANT_COMPLETE_RESPONSE = 'agent_data_assistant_complete_response',

@@ -24,14 +24,14 @@ type AgentEventSource = {
 
 export type ObserveAcceptedExternalTurnInput = {
   run: AgentEventSource;
-  turnId: string | null;
+  turnId: string;
   teamRunId?: string | null;
   envelope: ExternalMessageEnvelope;
 };
 
 export type ObserveAcceptedSourceLinkedTurnInput = {
   run: AgentEventSource;
-  turnId: string | null;
+  turnId: string;
   teamRunId?: string | null;
   source: ChannelSourceContext;
 };
@@ -77,10 +77,9 @@ export class ChannelAgentRunReplyBridge {
   ): Promise<ChannelTurnObservationResult> {
     const turnId = normalizeOptionalString(input.turnId);
     if (!turnId) {
-      logger.info(
-        `Run '${input.run.runId}': skipping agent reply observation because accepted turnId is missing.`,
+      throw new Error(
+        `Run '${input.run.runId}': accepted reply observation requires an exact turnId.`,
       );
-      return { status: "CLOSED", reason: "TURN_ID_MISSING" };
     }
 
     const key = buildPendingTurnKey(input.run.runId, turnId);
@@ -157,11 +156,7 @@ export class ChannelAgentRunReplyBridge {
         return;
       }
 
-      if (
-        parsed.eventType === AgentRunEventType.ASSISTANT_COMPLETE ||
-        (parsed.eventType === AgentRunEventType.AGENT_STATUS &&
-          parsed.statusHint === "IDLE")
-      ) {
+      if (parsed.eventType === AgentRunEventType.TURN_COMPLETED) {
         await this.publishPendingTurnReply(pending);
       }
     } catch (error) {
@@ -176,20 +171,7 @@ export class ChannelAgentRunReplyBridge {
     pending: PendingTurn,
     event: NonNullable<ReturnType<typeof parseDirectAgentRunEvent>>,
   ): boolean {
-    if (event.turnId) {
-      return event.turnId === pending.turnId;
-    }
-    return this.countPendingTurnsForRun(pending.subscriptionRunId) === 1;
-  }
-
-  private countPendingTurnsForRun(subscriptionRunId: string): number {
-    let count = 0;
-    for (const pending of this.pendingTurns.values()) {
-      if (pending.subscriptionRunId === subscriptionRunId) {
-        count += 1;
-      }
-    }
-    return count;
+    return event.turnId === pending.turnId;
   }
 
   private async publishPendingTurnReply(pending: PendingTurn): Promise<void> {

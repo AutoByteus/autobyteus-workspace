@@ -95,7 +95,6 @@ const createActiveRun = (options: {
           accepted: true,
           code: null,
           message: null,
-          turnId: "turn-1",
         }),
       approveToolInvocation: vi.fn(),
       interrupt: vi.fn(),
@@ -110,7 +109,6 @@ describe("ChannelAgentRunFacade", () => {
       accepted: true,
       code: null,
       message: null,
-      turnId: "turn-1",
     });
     const activeRun = createActiveRun({
       runId: "agent-1",
@@ -132,7 +130,6 @@ describe("ChannelAgentRunFacade", () => {
 
     expect(result.dispatchTargetType).toBe("AGENT");
     expect(result.agentRunId).toBe("agent-1");
-    expect(result.turnId).toBe("turn-1");
     expect(resolveOrStartAgentRun).toHaveBeenCalledWith(createAgentBinding());
     expect(postUserMessage).toHaveBeenCalledOnce();
     expect(recordRunActivity).toHaveBeenCalledWith(
@@ -156,7 +153,6 @@ describe("ChannelAgentRunFacade", () => {
       accepted: true,
       code: null,
       message: null,
-      turnId: "turn-attachment",
     });
     const activeRun = createActiveRun({
       runId: "agent-1",
@@ -194,9 +190,46 @@ describe("ChannelAgentRunFacade", () => {
       file_name: "image.jpg",
     });
     expect(result.dispatchTargetType).toBe("AGENT");
-    expect(result.turnId).toBe("turn-attachment");
     expect(recordRunActivity).toHaveBeenCalledOnce();
     expect(publishExternalUserMessage).toHaveBeenCalledOnce();
+  });
+
+  it("prepares dispatch-scoped turn capture before posting the external message", async () => {
+    const onAgentRunResolved = vi.fn();
+    const postUserMessage = vi.fn().mockResolvedValue({
+      accepted: true,
+      code: null,
+      message: null,
+    });
+    const activeRun = createActiveRun({
+      runId: "agent-1",
+      runtimeKind: "codex_app_server",
+      postUserMessage,
+    });
+    const facade = new ChannelAgentRunFacade({
+      runLauncher: {
+        resolveOrStartAgentRun: vi.fn().mockResolvedValue("agent-1"),
+      },
+      agentRunService: {
+        getAgentRun: vi.fn().mockReturnValue(activeRun),
+        recordRunActivity: vi.fn().mockResolvedValue(undefined),
+      },
+      agentLiveMessagePublisher: {
+        publishExternalUserMessage: vi.fn(),
+      },
+    });
+
+    await facade.dispatchToAgentBinding(createAgentBinding(), createEnvelope(), {
+      onAgentRunResolved,
+    });
+
+    expect(onAgentRunResolved).toHaveBeenCalledWith({
+      agentRunId: "agent-1",
+      subscribeToEvents: expect.any(Function),
+    });
+    expect(onAgentRunResolved.mock.invocationCallOrder[0]).toBeLessThan(
+      postUserMessage.mock.invocationCallOrder[0] ?? Number.MAX_SAFE_INTEGER,
+    );
   });
 
   it("throws when agent runtime rejects external dispatch", async () => {
@@ -235,7 +268,6 @@ describe("ChannelAgentRunFacade", () => {
       accepted: true,
       code: null,
       message: null,
-      turnId: "turn-2",
     });
     const activeRun = createActiveRun({
       runId: "agent-1",
@@ -261,7 +293,6 @@ describe("ChannelAgentRunFacade", () => {
     const result = await facade.dispatchToAgentBinding(createAgentBinding(), createEnvelope());
 
     expect(result.agentRunId).toBe("agent-1");
-    expect(result.turnId).toBe("turn-2");
     expect(postUserMessage).toHaveBeenCalledOnce();
     expect(publishExternalUserMessage).toHaveBeenCalledOnce();
     expect(warnSpy).toHaveBeenCalledTimes(1);
@@ -269,7 +300,7 @@ describe("ChannelAgentRunFacade", () => {
     warnSpy.mockRestore();
   });
 
-  it("returns a null turnId when the runtime accepts without exposing one", async () => {
+  it("does not require synchronous turn metadata from the runtime", async () => {
     const activeRun = createActiveRun({
       runId: "agent-1",
       runtimeKind: "codex_app_server",
@@ -277,7 +308,6 @@ describe("ChannelAgentRunFacade", () => {
         accepted: true,
         code: null,
         message: null,
-        turnId: null,
       }),
     });
     const publishExternalUserMessage = vi.fn();
@@ -297,7 +327,6 @@ describe("ChannelAgentRunFacade", () => {
     const result = await facade.dispatchToAgentBinding(createAgentBinding(), createEnvelope());
 
     expect(result.agentRunId).toBe("agent-1");
-    expect(result.turnId).toBeNull();
     expect(publishExternalUserMessage).toHaveBeenCalledOnce();
   });
 });

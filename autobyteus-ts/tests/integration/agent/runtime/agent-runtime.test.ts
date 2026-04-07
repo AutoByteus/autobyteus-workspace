@@ -5,16 +5,17 @@ import { AgentRuntimeState } from '../../../../src/agent/context/agent-runtime-s
 import { AgentContext } from '../../../../src/agent/context/agent-context.js';
 import { AgentRuntime } from '../../../../src/agent/runtime/agent-runtime.js';
 import { AgentStatus } from '../../../../src/agent/status/status-enum.js';
+import { AgentInputUserMessage } from '../../../../src/agent/message/agent-input-user-message.js';
 import {
   AgentErrorEvent,
   AgentIdleEvent,
   AgentReadyEvent,
   AgentStoppedEvent,
-  ApprovedToolInvocationEvent,
   BootstrapCompletedEvent,
   BootstrapStartedEvent,
   BootstrapStepCompletedEvent,
   BootstrapStepRequestedEvent,
+  ExecuteToolInvocationEvent,
   GenericEvent,
   InterAgentMessageReceivedEvent,
   LLMCompleteResponseReceivedEvent,
@@ -34,15 +35,19 @@ import { ToolResultEventHandler } from '../../../../src/agent/handlers/tool-resu
 import { GenericEventHandler } from '../../../../src/agent/handlers/generic-event-handler.js';
 import { ToolExecutionApprovalEventHandler } from '../../../../src/agent/handlers/tool-execution-approval-event-handler.js';
 import { LLMUserMessageReadyEventHandler } from '../../../../src/agent/handlers/llm-user-message-ready-event-handler.js';
-import { ApprovedToolInvocationEventHandler } from '../../../../src/agent/handlers/approved-tool-invocation-event-handler.js';
 import { BootstrapEventHandler } from '../../../../src/agent/handlers/bootstrap-event-handler.js';
 import { LifecycleEventLogger } from '../../../../src/agent/handlers/lifecycle-event-logger.js';
+import { ToolInvocationExecutionEventHandler } from '../../../../src/agent/handlers/tool-invocation-execution-event-handler.js';
 import { BaseLLM } from '../../../../src/llm/base.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { CompleteResponse } from '../../../../src/llm/utils/response-types.js';
 import { SkillRegistry } from '../../../../src/skills/registry.js';
+import { EventType } from '../../../../src/events/event-types.js';
+import { MemoryManager } from '../../../../src/memory/memory-manager.js';
+import { MemoryStore } from '../../../../src/memory/store/base-store.js';
+import { MemoryType } from '../../../../src/memory/models/memory-types.js';
 import type { LLMUserMessage } from '../../../../src/llm/user-message.js';
 import type { ChunkResponse } from '../../../../src/llm/utils/response-types.js';
 
@@ -58,6 +63,65 @@ class DummyLLM extends BaseLLM {
   }
 }
 
+class ControllableLLM extends BaseLLM {
+  calls: string[] = [];
+  private releaseFirstResponse: (() => void) | null = null;
+  private readonly firstRequestStarted: Promise<void>;
+  private resolveFirstRequestStarted!: () => void;
+
+  constructor(model: LLMModel, config: LLMConfig) {
+    super(model, config);
+    this.firstRequestStarted = new Promise<void>((resolve) => {
+      this.resolveFirstRequestStarted = resolve;
+    });
+  }
+
+  async waitForFirstRequestStart(): Promise<void> {
+    await this.firstRequestStarted;
+  }
+
+  unblockFirstResponse(): void {
+    this.releaseFirstResponse?.();
+  }
+
+  protected async _sendMessagesToLLM(_messages: any[]): Promise<CompleteResponse> {
+    return new CompleteResponse({ content: 'ok' });
+  }
+
+  protected async *_streamMessagesToLLM(
+    userMessage: LLMUserMessage
+  ): AsyncGenerator<ChunkResponse, void, unknown> {
+    const callIndex = this.calls.push(String(userMessage.content ?? ''));
+    if (callIndex === 1) {
+      this.resolveFirstRequestStarted();
+      await new Promise<void>((resolve) => {
+        this.releaseFirstResponse = resolve;
+      });
+      this.releaseFirstResponse = null;
+    }
+
+    yield { content: `reply-${callIndex}`, is_complete: true } as ChunkResponse;
+  }
+}
+
+class InMemoryStore extends MemoryStore {
+  private items: any[] = [];
+
+  add(items: Iterable<any>): void {
+    for (const item of items) {
+      this.items.push(item);
+    }
+  }
+
+  list(memoryType: MemoryType, limit?: number): any[] {
+    const filtered = this.items.filter((item) => item?.memoryType === memoryType);
+    if (typeof limit === 'number') {
+      return filtered.slice(-limit);
+    }
+    return filtered;
+  }
+}
+
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const waitForStatus = async (
@@ -69,6 +133,21 @@ const waitForStatus = async (
   const start = Date.now();
   while (Date.now() - start < timeoutMs) {
     if (predicate(context.currentStatus)) {
+      return true;
+    }
+    await delay(intervalMs);
+  }
+  return false;
+};
+
+const waitForCondition = async (
+  predicate: () => boolean,
+  timeoutMs = 8000,
+  intervalMs = 25
+): Promise<boolean> => {
+  const start = Date.now();
+  while (Date.now() - start < timeoutMs) {
+    if (predicate()) {
       return true;
     }
     await delay(intervalMs);
@@ -101,7 +180,7 @@ const createDefaultEventHandlerRegistry = (): EventHandlerRegistry => {
   registry.register(GenericEvent, new GenericEventHandler());
   registry.register(ToolExecutionApprovalEvent, new ToolExecutionApprovalEventHandler());
   registry.register(LLMUserMessageReadyEvent, new LLMUserMessageReadyEventHandler());
-  registry.register(ApprovedToolInvocationEvent, new ApprovedToolInvocationEventHandler());
+  registry.register(ExecuteToolInvocationEvent, new ToolInvocationExecutionEventHandler());
 
   const bootstrapHandler = new BootstrapEventHandler();
   registry.register(BootstrapStartedEvent, bootstrapHandler);
@@ -201,6 +280,104 @@ describe('Agent runtime integration', () => {
         await agent.stop(2);
       }
       await config.llmInstance.cleanup();
+    }
+  }, 20000);
+
+  it('keeps a later real user message queued behind the active turn until the first continuation finishes', async () => {
+    const model = new LLMModel({
+      name: 'dummy',
+      value: 'dummy',
+      canonicalName: 'dummy',
+      provider: LLMProvider.OPENAI
+    });
+    const llm = new ControllableLLM(model, new LLMConfig());
+    const config = new AgentConfig(
+      'RuntimeQueueGuardAgent',
+      'Tester',
+      'Runtime queue ordering test agent',
+      llm
+    );
+    const agentId = `runtime_queue_${Date.now()}`;
+
+    const state = new AgentRuntimeState(agentId, null, null);
+    state.llmInstance = llm;
+    state.toolInstances = {};
+    state.memoryManager = new MemoryManager({ store: new InMemoryStore() });
+
+    const context = new AgentContext(agentId, config, state);
+    const registry = createDefaultEventHandlerRegistry();
+    const runtime = new AgentRuntime(context, registry);
+    const turnLifecycle: Array<{ type: EventType; turnId: string }> = [];
+
+    context.statusManager?.notifier?.subscribe(EventType.AGENT_TURN_STARTED, (payload) => {
+      turnLifecycle.push({
+        type: EventType.AGENT_TURN_STARTED,
+        turnId: String(payload.turn_id)
+      });
+    });
+    context.statusManager?.notifier?.subscribe(EventType.AGENT_TURN_COMPLETED, (payload) => {
+      turnLifecycle.push({
+        type: EventType.AGENT_TURN_COMPLETED,
+        turnId: String(payload.turn_id)
+      });
+    });
+
+    try {
+      runtime.start();
+      const ready = await waitForStatus(
+        context,
+        (status) => status === AgentStatus.IDLE || status === AgentStatus.ERROR
+      );
+      expect(ready).toBe(true);
+      expect(context.currentStatus).toBe(AgentStatus.IDLE);
+
+      await runtime.submitEvent(
+        new UserMessageReceivedEvent(new AgentInputUserMessage('first message'))
+      );
+      await llm.waitForFirstRequestStart();
+
+      const firstTurnId = context.state.activeTurn?.turnId ?? null;
+      expect(firstTurnId).toBeTruthy();
+      expect(llm.calls).toHaveLength(1);
+
+      await runtime.submitEvent(
+        new UserMessageReceivedEvent(new AgentInputUserMessage('second message'))
+      );
+      await delay(100);
+
+      expect(llm.calls).toHaveLength(1);
+      expect(context.state.activeTurn?.turnId).toBe(firstTurnId);
+      expect(
+        turnLifecycle.filter((event) => event.type === EventType.AGENT_TURN_STARTED)
+      ).toHaveLength(1);
+
+      llm.unblockFirstResponse();
+
+      const secondCallStarted = await waitForCondition(() => llm.calls.length === 2);
+      expect(secondCallStarted).toBe(true);
+      expect(llm.calls).toHaveLength(2);
+
+      const idleAgain = await waitForCondition(
+        () => context.currentStatus === AgentStatus.IDLE && context.state.activeTurn === null
+      );
+      expect(idleAgain).toBe(true);
+
+      const startedTurns = turnLifecycle
+        .filter((event) => event.type === EventType.AGENT_TURN_STARTED)
+        .map((event) => event.turnId);
+      const completedTurns = turnLifecycle
+        .filter((event) => event.type === EventType.AGENT_TURN_COMPLETED)
+        .map((event) => event.turnId);
+
+      expect(startedTurns).toHaveLength(2);
+      expect(completedTurns).toEqual(startedTurns);
+      expect(new Set(startedTurns).size).toBe(2);
+    } finally {
+      llm.unblockFirstResponse();
+      if (runtime.isRunning) {
+        await runtime.stop(2);
+      }
+      await llm.cleanup();
     }
   }, 20000);
 });

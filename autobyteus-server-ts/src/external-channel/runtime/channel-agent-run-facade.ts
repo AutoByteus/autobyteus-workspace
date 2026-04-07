@@ -10,6 +10,7 @@ import {
   type AgentLiveMessagePublisher,
 } from "../../services/agent-streaming/agent-live-message-publisher.js";
 import { buildAgentInputMessage } from "./channel-agent-input-message-builder.js";
+import type { ChannelAgentDispatchHooks } from "./channel-run-dispatch-hooks.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
@@ -38,12 +39,17 @@ export class ChannelAgentRunFacade {
   async dispatchToAgentBinding(
     binding: ChannelBinding,
     envelope: import("autobyteus-ts/external-channel/external-message-envelope.js").ExternalMessageEnvelope,
+    hooks: ChannelAgentDispatchHooks = {},
   ): Promise<ChannelRunDispatchResult> {
     const agentRunId = await this.runLauncher.resolveOrStartAgentRun(binding);
     const activeRun = this.agentRunService.getAgentRun(agentRunId);
     if (!activeRun) {
       throw new Error(`Agent run '${agentRunId}' is not active.`);
     }
+    hooks.onAgentRunResolved?.({
+      agentRunId,
+      subscribeToEvents: activeRun.subscribeToEvents.bind(activeRun),
+    });
     const result = await activeRun.postUserMessage(buildAgentInputMessage(envelope));
     if (!result.accepted) {
       throw new Error(
@@ -71,7 +77,6 @@ export class ChannelAgentRunFacade {
     return {
       dispatchTargetType: "AGENT",
       agentRunId,
-      turnId: result.turnId ?? null,
       dispatchedAt: new Date(),
     };
   }

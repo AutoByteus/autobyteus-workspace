@@ -58,9 +58,13 @@ const makeContext = () => {
   context.currentStatus = AgentStatus.IDLE;
 
   const emit_status_update = vi.fn(async () => undefined);
-  context.state.statusManagerRef = { emit_status_update } as any;
+  const notifyAgentTurnCompleted = vi.fn();
+  context.state.statusManagerRef = {
+    emit_status_update,
+    notifier: { notifyAgentTurnCompleted }
+  } as any;
 
-  return { context, emit_status_update };
+  return { context, emit_status_update, notifyAgentTurnCompleted };
 };
 
 describe('WorkerEventDispatcher', () => {
@@ -130,6 +134,7 @@ describe('WorkerEventDispatcher', () => {
     context.currentStatus = AgentStatus.AWAITING_LLM_RESPONSE;
     context.state.statusDeriver = new AgentStatusDeriver(AgentStatus.AWAITING_LLM_RESPONSE);
     context.state.pendingToolApprovals = {};
+    context.state.activeTurn = { turnId: 'turn-idle-1' } as any;
 
     const handler: AgentEventHandler = { handle: vi.fn(async () => undefined) } as any;
     const dispatcher = new WorkerEventDispatcher({ getHandler: () => handler } as any);
@@ -139,6 +144,26 @@ describe('WorkerEventDispatcher', () => {
 
     const queued = context.inputEventQueues.internalSystemEventQueue.tryGet();
     expect(queued).toBeInstanceOf(AgentIdleEvent);
+    expect((queued as AgentIdleEvent).turnId).toBe('turn-idle-1');
+  });
+
+  it('emits turn completed notification before projecting AgentIdleEvent', async () => {
+    const { context, emit_status_update, notifyAgentTurnCompleted } = makeContext();
+    context.currentStatus = AgentStatus.ANALYZING_LLM_RESPONSE;
+    context.state.statusDeriver = new AgentStatusDeriver(AgentStatus.ANALYZING_LLM_RESPONSE);
+    context.state.activeTurn = { turnId: 'turn-idle-2' } as any;
+    const handler: AgentEventHandler = { handle: vi.fn(async () => undefined) } as any;
+    const dispatcher = new WorkerEventDispatcher({ getHandler: () => handler } as any);
+
+    const event = new AgentIdleEvent('turn-idle-2');
+    await dispatcher.dispatch(event, context);
+
+    expect(notifyAgentTurnCompleted).toHaveBeenCalledWith('turn-idle-2');
+    expect(context.state.activeTurn).toBeNull();
+    expect(emit_status_update).toHaveBeenCalledOnce();
+    const notifyCall = notifyAgentTurnCompleted.mock.invocationCallOrder[0];
+    const statusCall = emit_status_update.mock.invocationCallOrder[0];
+    expect(notifyCall).toBeLessThan(statusCall);
   });
 
   it('does not enqueue AgentIdleEvent when approvals pending', async () => {

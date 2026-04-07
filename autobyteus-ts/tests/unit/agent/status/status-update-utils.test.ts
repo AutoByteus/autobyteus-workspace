@@ -6,7 +6,7 @@ import {
   UserMessageReceivedEvent,
   PendingToolInvocationEvent,
   ToolExecutionApprovalEvent,
-  ApprovedToolInvocationEvent,
+  ExecuteToolInvocationEvent,
   ToolResultEvent,
   AgentErrorEvent
 } from '../../../../src/agent/events/agent-events.js';
@@ -67,7 +67,7 @@ describe('status_update_utils', () => {
 
   it('builds status update data for executing tool (approved invocation)', () => {
     const invocation = new ToolInvocation('approved_tool', {}, 'tid2');
-    const event = new ApprovedToolInvocationEvent(invocation);
+    const event = new ExecuteToolInvocationEvent(invocation);
     const data = buildStatusUpdateData(event, agentContext, AgentStatus.EXECUTING_TOOL);
     expect(data).toEqual({ tool_name: 'approved_tool' });
   });

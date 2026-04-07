@@ -4,6 +4,13 @@ import { SegmentEventType, SegmentType } from '../../../../src/agent/streaming/s
 import { ChunkResponse } from '../../../../src/llm/utils/response-types.js';
 
 const asChunk = (content: string) => new ChunkResponse({ content });
+const createHandler = (
+  options: ConstructorParameters<typeof ParsingStreamingResponseHandler>[0] = {}
+) =>
+  new ParsingStreamingResponseHandler({
+    turnId: 'turn_stream_test',
+    ...options
+  });
 
 const feedAndFinalize = (handler: ParsingStreamingResponseHandler, chunks: string[]) => {
   for (const chunk of chunks) {
@@ -17,7 +24,7 @@ describe('Full streaming flow (integration)', () => {
     const collectedEvents: any[] = [];
     const collectedInvocations: any[] = [];
 
-    const handler = new ParsingStreamingResponseHandler({
+    const handler = createHandler({
       onSegmentEvent: (event) => collectedEvents.push(event),
       onToolInvocation: (invocation) => collectedInvocations.push(invocation)
     });
@@ -44,7 +51,7 @@ describe('Full streaming flow (integration)', () => {
   });
 
   it('creates unique IDs for multiple tool calls', () => {
-    const handler = new ParsingStreamingResponseHandler();
+    const handler = createHandler();
     handler.feed(
       asChunk(`
 First I'll read file A:
@@ -67,7 +74,7 @@ Done!
 
   it('keeps segment IDs stable for approval flow', () => {
     const eventsById = new Map<string, any[]>();
-    const handler = new ParsingStreamingResponseHandler({
+    const handler = createHandler({
       onSegmentEvent: (event) => {
         const list = eventsById.get(event.segment_id) ?? [];
         list.push(event);
@@ -93,7 +100,7 @@ Done!
   });
 
   it('handles mixed content types', () => {
-    const handler = new ParsingStreamingResponseHandler();
+    const handler = createHandler();
     handler.feed(
       asChunk(`
 Let me help you:
@@ -130,7 +137,7 @@ All done!
   });
 
   it('decodes chained encoded XML run_bash commands through the full tool pipeline', () => {
-    const handler = new ParsingStreamingResponseHandler();
+    const handler = createHandler();
     feedAndFinalize(handler, [
       '<tool name="run_bash"><arguments>',
       '<arg name="background">true</arg>',
@@ -150,7 +157,7 @@ All done!
   });
 
   it('preserves plain chained custom-tag run_bash commands through the full tool pipeline', () => {
-    const handler = new ParsingStreamingResponseHandler();
+    const handler = createHandler();
     feedAndFinalize(handler, [
       '<run_bash background="false">',
       'mkdir -p project && cd project && pwd',
@@ -167,7 +174,7 @@ All done!
   });
 
   it('preserves raw HTML in write_file shorthand', () => {
-    const handler = new ParsingStreamingResponseHandler();
+    const handler = createHandler();
     handler.feed(asChunk(`<write_file path="/site/index.html">
 <!doctype html>
 <html>
@@ -189,7 +196,7 @@ All done!
   });
 
   it('supports CDATA content in XML tool calls', () => {
-    const handler = new ParsingStreamingResponseHandler();
+    const handler = createHandler();
     handler.feed(asChunk(
       '<tool name="write_file">' +
         '<arg name="path">/site/app.js</arg>' +
@@ -211,7 +218,7 @@ All done!
   });
 
   it('parses unescaped < in tool arguments', () => {
-    const handler = new ParsingStreamingResponseHandler();
+    const handler = createHandler();
     handler.feed(asChunk(
       '<tool name="create_tasks">' +
         '<arg name="description">Handle n <= 0 case</arg>' +
@@ -226,7 +233,7 @@ All done!
   });
 
   it('preserves nested XML content in write_file', () => {
-    const handler = new ParsingStreamingResponseHandler();
+    const handler = createHandler();
     const nestedXmlContent = `<root>
     <child attr="val">
         <grandchild>Content with <br/> tags</grandchild>
@@ -248,7 +255,7 @@ All done!
   });
 
   it('handles tool tags split across chunks', () => {
-    const handler = new ParsingStreamingResponseHandler();
+    const handler = createHandler();
     feedAndFinalize(handler, ['<tool name="te', 'st"><arg>val', 'ue</arg></to', 'ol>']);
 
     const invocations = handler.getAllInvocations();
@@ -258,7 +265,7 @@ All done!
   });
 
   it('handles single-character chunks', () => {
-    const handler = new ParsingStreamingResponseHandler();
+    const handler = createHandler();
     const content = '<tool name="x"><a>1</a></tool>';
     for (const char of content) {
       handler.feed(asChunk(char));
@@ -271,7 +278,7 @@ All done!
   });
 
   it('handles chunked tool calls with unescaped <', () => {
-    const handler = new ParsingStreamingResponseHandler();
+    const handler = createHandler();
     feedAndFinalize(handler, [
       '<tool name="create_tasks"><arg name="description">Handle n <',
       '= 0 case</arg></tool>'
@@ -283,7 +290,7 @@ All done!
   });
 
   it('handles sentinel tool calls in a single chunk', () => {
-    const handler = new ParsingStreamingResponseHandler({ parserName: 'sentinel' });
+    const handler = createHandler({ parserName: 'sentinel' });
     handler.feed(asChunk(
       '[[SEG_START {"type":"tool","tool_name":"create_tasks","arguments":' +
         '{"tasks":[{"task_name":"implement_fibonacci","description":"Handle n <= 0 case"}]}}]]' +
@@ -300,7 +307,7 @@ All done!
   });
 
   it('handles chunked sentinel tool calls', () => {
-    const handler = new ParsingStreamingResponseHandler({ parserName: 'sentinel' });
+    const handler = createHandler({ parserName: 'sentinel' });
     feedAndFinalize(handler, [
       '[[SEG_START {"type":"tool","tool_name":"create_tasks","arguments":',
       '{"tasks":[{"description":"Handle n <',

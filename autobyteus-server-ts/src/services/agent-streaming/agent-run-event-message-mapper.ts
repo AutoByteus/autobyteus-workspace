@@ -10,11 +10,36 @@ const normalizeStatusPayload = (payload: Record<string, unknown>): Record<string
     typeof payload.new_status === "string" ? payload.new_status.trim().toUpperCase() : payload.new_status;
   const previousStatus =
     typeof payload.old_status === "string" ? payload.old_status.trim().toUpperCase() : payload.old_status;
+  const turnId =
+    typeof payload.turn_id === "string"
+      ? payload.turn_id.trim()
+      : typeof payload.turnId === "string"
+        ? payload.turnId.trim()
+        : payload.turn_id === null || payload.turnId === null
+          ? null
+          : undefined;
 
   return {
     ...payload,
     ...(nextStatus !== undefined ? { new_status: nextStatus } : {}),
     ...(previousStatus !== undefined ? { old_status: previousStatus } : {}),
+    ...(turnId !== undefined ? { turn_id: turnId } : {}),
+  };
+};
+
+const normalizeTurnPayload = (payload: Record<string, unknown>): Record<string, unknown> => {
+  const turnId =
+    typeof payload.turn_id === "string"
+      ? payload.turn_id.trim()
+      : typeof payload.turnId === "string"
+        ? payload.turnId.trim()
+        : payload.turn_id === null || payload.turnId === null
+          ? null
+          : null;
+
+  return {
+    ...payload,
+    turn_id: turnId,
   };
 };
 
@@ -23,6 +48,10 @@ export class AgentRunEventMessageMapper {
     const payload = serializePayload(event.payload);
 
     switch (event.eventType) {
+      case AgentRunEventType.TURN_STARTED:
+        return new ServerMessage(ServerMessageType.TURN_STARTED, normalizeTurnPayload(payload));
+      case AgentRunEventType.TURN_COMPLETED:
+        return new ServerMessage(ServerMessageType.TURN_COMPLETED, normalizeTurnPayload(payload));
       case AgentRunEventType.SEGMENT_START:
         return new ServerMessage(ServerMessageType.SEGMENT_START, payload);
       case AgentRunEventType.SEGMENT_CONTENT:

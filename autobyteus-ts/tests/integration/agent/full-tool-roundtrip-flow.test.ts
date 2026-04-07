@@ -102,9 +102,10 @@ runIntegration('Full tool roundtrip flow (LM Studio)', () => {
       const agentInput = new AgentInputUserMessage(
         "Please write a python file named 'hello.py' that prints 'Hello'."
       );
+      const initialTurnId = context.state.startActiveTurn('turn-1').turnId;
       await new MemoryIngestInputProcessor().process(agentInput, context, null as any);
       const llmUserMessage = buildLLMUserMessage(agentInput);
-      const llmEvent = new LLMUserMessageReadyEvent(llmUserMessage);
+      const llmEvent = new LLMUserMessageReadyEvent(llmUserMessage, initialTurnId);
 
       const handler = new LLMUserMessageReadyEventHandler();
       try {
@@ -150,7 +151,7 @@ runIntegration('Full tool roundtrip flow (LM Studio)', () => {
 
       await new MemoryIngestInputProcessor().process(followEvent.agentInputUserMessage, context, null as any);
       const followMessage = buildLLMUserMessage(followEvent.agentInputUserMessage);
-      const followEventMessage = new LLMUserMessageReadyEvent(followMessage);
+      const followEventMessage = new LLMUserMessageReadyEvent(followMessage, initialTurnId);
 
       try {
         await handler.handle(followEventMessage, context);

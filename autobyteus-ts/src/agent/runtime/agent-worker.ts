@@ -159,7 +159,9 @@ export class AgentWorker {
       while (!this.stopRequested) {
         let queueEvent: [string, BaseEvent] | null = null;
         try {
-          queueEvent = await this.context.state.inputEventQueues!.getNextInputEvent();
+          queueEvent = await this.context.state.inputEventQueues!.getNextInputEvent({
+            allowExternalInput: this.context.state.activeTurn === null
+          });
         } catch {
           queueEvent = null;
         }

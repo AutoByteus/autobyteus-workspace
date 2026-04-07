@@ -16,6 +16,9 @@ const resolveSegmentId = (payload: Record<string, unknown>): string | null =>
 const resolveInvocationId = (payload: Record<string, unknown>): string | null =>
   asString(payload.invocation_id);
 
+const resolveTurnId = (payload: Record<string, unknown>): string | null =>
+  asString(payload.turnId) ?? asString(payload.turn_id);
+
 const normalizeToolNameForEvent = (value: string | null): string | null => {
   if (!value) {
     return null;
@@ -81,46 +84,53 @@ export const deriveClaudeAgentRunStatusHint = (
 export class ClaudeSessionEventConverter {
   constructor(private readonly runId: string) {}
 
-  convert(event: ClaudeSessionEvent): AgentRunEvent | null {
+  convert(event: ClaudeSessionEvent): AgentRunEvent[] {
     const claudeEventName = event.method.trim();
     const payload = asObject(event.params) ?? {};
+    const turnId = resolveTurnId(payload);
 
     switch (claudeEventName) {
       case ClaudeSessionEventName.TURN_STARTED:
-        return this.createEvent(claudeEventName, AgentRunEventType.AGENT_STATUS, {
+        return this.createLifecycleEvents(claudeEventName, AgentRunEventType.TURN_STARTED, {
+          ...(turnId ? { turnId } : {}),
+        }, {
           new_status: "RUNNING",
           old_status: null,
+          ...(turnId ? { turnId } : {}),
         });
       case ClaudeSessionEventName.TURN_COMPLETED:
       case ClaudeSessionEventName.TURN_INTERRUPTED:
       case ClaudeSessionEventName.SESSION_TERMINATED:
-        return this.createEvent(claudeEventName, AgentRunEventType.AGENT_STATUS, {
+        return this.createLifecycleEvents(claudeEventName, AgentRunEventType.TURN_COMPLETED, {
+          ...(turnId ? { turnId } : {}),
+        }, {
           new_status: "IDLE",
           old_status: "RUNNING",
+          ...(turnId ? { turnId } : {}),
         });
       case ClaudeSessionEventName.ITEM_OUTPUT_TEXT_DELTA: {
         const id = resolveSegmentId(payload);
         const delta = asString(payload.delta);
         if (!id || !delta) {
-          return null;
+          return [];
         }
-        return this.createEvent(claudeEventName, AgentRunEventType.SEGMENT_CONTENT, {
+        return [this.createEvent(claudeEventName, AgentRunEventType.SEGMENT_CONTENT, {
           ...serializePayload(payload),
           id,
           delta,
           segment_type: "text",
-        });
+        })];
       }
       case ClaudeSessionEventName.ITEM_OUTPUT_TEXT_COMPLETED: {
         const id = resolveSegmentId(payload);
         if (!id) {
-          return null;
+          return [];
         }
-        return this.createEvent(claudeEventName, AgentRunEventType.SEGMENT_END, {
+        return [this.createEvent(claudeEventName, AgentRunEventType.SEGMENT_END, {
           ...serializePayload(payload),
           id,
           segment_type: "text",
-        });
+        })];
       }
       case ClaudeSessionEventName.ITEM_ADDED:
       case ClaudeSessionEventName.ITEM_COMPLETED: {
@@ -129,26 +139,26 @@ export class ClaudeSessionEventConverter {
         const toolName = resolveToolName(payload);
         const segmentMetadata = resolveSegmentMetadata(payload);
         if (!id || !segmentType) {
-          return null;
+          return [];
         }
         const eventType =
           claudeEventName === ClaudeSessionEventName.ITEM_ADDED
             ? AgentRunEventType.SEGMENT_START
             : AgentRunEventType.SEGMENT_END;
-        return this.createEvent(claudeEventName, eventType, {
+        return [this.createEvent(claudeEventName, eventType, {
           ...serializePayload(payload),
           id,
           segment_type: segmentType,
           ...(segmentMetadata ? { metadata: segmentMetadata } : {}),
-        });
+        })];
       }
       case ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_STARTED: {
         const invocationId = resolveInvocationId(payload);
         const toolName = resolveToolName(payload);
         if (isClaudeSendMessageToolName(toolName)) {
-          return null;
+          return [];
         }
-        return this.createEvent(
+        return [this.createEvent(
           claudeEventName,
           AgentRunEventType.TOOL_EXECUTION_STARTED,
           {
@@ -157,15 +167,15 @@ export class ClaudeSessionEventConverter {
             ...(toolName ? { tool_name: toolName } : {}),
             arguments: resolveToolArguments(payload),
           },
-        );
+        )];
       }
       case ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_REQUEST_APPROVAL: {
         const invocationId = resolveInvocationId(payload);
         const toolName = resolveToolName(payload);
         if (isClaudeSendMessageToolName(toolName)) {
-          return null;
+          return [];
         }
-        return this.createEvent(
+        return [this.createEvent(
           claudeEventName,
           AgentRunEventType.TOOL_APPROVAL_REQUESTED,
           {
@@ -174,45 +184,45 @@ export class ClaudeSessionEventConverter {
             ...(toolName ? { tool_name: toolName } : {}),
             arguments: resolveToolArguments(payload),
           },
-        );
+        )];
       }
       case ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_APPROVED: {
         const invocationId = resolveInvocationId(payload);
         const toolName = resolveToolName(payload);
         if (isClaudeSendMessageToolName(toolName)) {
-          return null;
+          return [];
         }
         const reason = asString(payload.reason);
-        return this.createEvent(claudeEventName, AgentRunEventType.TOOL_APPROVED, {
+        return [this.createEvent(claudeEventName, AgentRunEventType.TOOL_APPROVED, {
           ...serializePayload(payload),
           ...(invocationId ? { invocation_id: invocationId } : {}),
           ...(toolName ? { tool_name: toolName } : {}),
           ...(reason ? { reason } : {}),
-        });
+        })];
       }
       case ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_DENIED: {
         const invocationId = resolveInvocationId(payload);
         const toolName = resolveToolName(payload);
         if (isClaudeSendMessageToolName(toolName)) {
-          return null;
+          return [];
         }
         const reason = asString(payload.reason) ?? "Tool execution denied.";
-        return this.createEvent(claudeEventName, AgentRunEventType.TOOL_DENIED, {
+        return [this.createEvent(claudeEventName, AgentRunEventType.TOOL_DENIED, {
           ...serializePayload(payload),
           ...(invocationId ? { invocation_id: invocationId } : {}),
           ...(toolName ? { tool_name: toolName } : {}),
           reason,
           error: asString(payload.error) ?? reason,
-        });
+        })];
       }
       case ClaudeSessionEventName.ITEM_COMMAND_EXECUTION_COMPLETED: {
         const invocationId = resolveInvocationId(payload);
         const toolName = resolveToolName(payload);
         if (isClaudeSendMessageToolName(toolName)) {
-          return null;
+          return [];
         }
         const error = asString(payload.error);
-        return this.createEvent(
+        return [this.createEvent(
           claudeEventName,
           error
             ? AgentRunEventType.TOOL_EXECUTION_FAILED
@@ -223,17 +233,29 @@ export class ClaudeSessionEventConverter {
             ...(toolName ? { tool_name: toolName } : {}),
             ...(error ? { error } : { result: payload.result ?? null }),
           },
-        );
+        )];
       }
       case ClaudeSessionEventName.ERROR:
-        return this.createEvent(
+        return [this.createEvent(
           claudeEventName,
           AgentRunEventType.ERROR,
           buildErrorPayload(payload),
-        );
+        )];
       default:
-        return null;
+        return [];
     }
+  }
+
+  private createLifecycleEvents(
+    claudeEventName: string,
+    lifecycleEventType: AgentRunEventType.TURN_STARTED | AgentRunEventType.TURN_COMPLETED,
+    lifecyclePayload: Record<string, unknown>,
+    statusPayload: Record<string, unknown>,
+  ): AgentRunEvent[] {
+    return [
+      this.createEvent(claudeEventName, lifecycleEventType, lifecyclePayload),
+      this.createEvent(claudeEventName, AgentRunEventType.AGENT_STATUS, statusPayload),
+    ];
   }
 
   private createEvent(

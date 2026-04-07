@@ -13,6 +13,12 @@ const resolveStatusHint = (
   if (eventType === StreamEventType.ERROR_EVENT) {
     return "ERROR";
   }
+  if (eventType === StreamEventType.TURN_STARTED) {
+    return "ACTIVE";
+  }
+  if (eventType === StreamEventType.TURN_COMPLETED) {
+    return "IDLE";
+  }
   if (eventType === StreamEventType.AGENT_STATUS_UPDATED) {
     const nextStatus =
       typeof payload.new_status === "string"
@@ -55,6 +61,8 @@ const resolveSegmentEventType = (payload: Record<string, unknown>): AgentRunEven
 };
 
 const eventTypeByStreamEvent = new Map<StreamEventType, AgentRunEventType>([
+  [StreamEventType.TURN_STARTED, AgentRunEventType.TURN_STARTED],
+  [StreamEventType.TURN_COMPLETED, AgentRunEventType.TURN_COMPLETED],
   [StreamEventType.AGENT_STATUS_UPDATED, AgentRunEventType.AGENT_STATUS],
   [StreamEventType.ASSISTANT_COMPLETE_RESPONSE, AgentRunEventType.ASSISTANT_COMPLETE],
   [StreamEventType.TOOL_APPROVAL_REQUESTED, AgentRunEventType.TOOL_APPROVAL_REQUESTED],

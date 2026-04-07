@@ -22,6 +22,7 @@ import {
   handleToolLog,
   handleAgentStatus,
   handleAssistantComplete,
+  handleTurnCompleted,
   handleTodoListUpdate,
   handleError,
   handleArtifactPersisted,
@@ -269,6 +270,13 @@ export class AgentStreamingService {
 
       case 'AGENT_STATUS':
         handleAgentStatus(message.payload, context);
+        break;
+
+      case 'TURN_STARTED':
+        break;
+
+      case 'TURN_COMPLETED':
+        handleTurnCompleted(message.payload, context);
         break;
 
       case 'ASSISTANT_COMPLETE':

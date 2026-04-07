@@ -11,7 +11,6 @@ import {
   TeamRunService,
   getTeamRunService,
 } from "../../agent-team-execution/services/team-run-service.js";
-import { ChannelBindingService } from "../services/channel-binding-service.js";
 import { ChannelMessageReceiptService } from "../services/channel-message-receipt-service.js";
 import { ReplyCallbackService } from "../services/reply-callback-service.js";
 import {
@@ -32,11 +31,19 @@ import {
   ChannelTurnReplyRecoveryService,
   getChannelTurnReplyRecoveryService,
 } from "../services/channel-turn-reply-recovery-service.js";
+import { AcceptedReceiptDispatchTurnCaptureRegistry } from "./accepted-receipt-dispatch-turn-capture-registry.js";
+import { AcceptedReceiptTurnCorrelationObserverRegistry } from "./accepted-receipt-turn-correlation-observer-registry.js";
+import {
+  serializeReceiptKey,
+  toReceiptKey,
+} from "./accepted-receipt-key.js";
+import type { RuntimeEventSubscription } from "./channel-run-dispatch-hooks.js";
+import type { AcceptedDispatchTurnCapture } from "./accepted-receipt-recovery-runtime-contract.js";
 
 const RETRY_DELAY_MS = 5_000;
+const OBSERVATION_RECHECK_DELAY_MS = 1_000;
 
 export type AcceptedReceiptRecoveryRuntimeDependencies = {
-  bindingService?: ChannelBindingService;
   messageReceiptService?: ChannelMessageReceiptService;
   agentRunService?: AgentRunService;
   teamRunService?: TeamRunService;
@@ -46,8 +53,12 @@ export type AcceptedReceiptRecoveryRuntimeDependencies = {
   turnReplyRecoveryService?: ChannelTurnReplyRecoveryService;
 };
 
+export type {
+  AcceptedDispatchTurnCapture,
+  AcceptedTurnCorrelation,
+} from "./accepted-receipt-recovery-runtime-contract.js";
+
 export class AcceptedReceiptRecoveryRuntime {
-  private readonly bindingService: ChannelBindingService;
   private readonly messageReceiptService: ChannelMessageReceiptService;
   private readonly agentRunService: AgentRunService;
   private readonly teamRunService: TeamRunService;
@@ -55,12 +66,13 @@ export class AcceptedReceiptRecoveryRuntime {
   private readonly teamReplyBridge: ChannelTeamRunReplyBridge;
   private readonly replyCallbackServiceFactory: () => ReplyCallbackService;
   private readonly turnReplyRecoveryService: ChannelTurnReplyRecoveryService;
+  private readonly dispatchTurnCaptureRegistry: AcceptedReceiptDispatchTurnCaptureRegistry;
+  private readonly turnCorrelationObserverRegistry: AcceptedReceiptTurnCorrelationObserverRegistry;
   private readonly observingKeys = new Set<string>();
   private readonly retryTimers = new Map<string, ReturnType<typeof setTimeout>>();
   private started = false;
 
   constructor(deps: AcceptedReceiptRecoveryRuntimeDependencies = {}) {
-    this.bindingService = deps.bindingService ?? new ChannelBindingService();
     this.messageReceiptService =
       deps.messageReceiptService ?? new ChannelMessageReceiptService();
     this.agentRunService = deps.agentRunService ?? getAgentRunService();
@@ -71,6 +83,19 @@ export class AcceptedReceiptRecoveryRuntime {
       deps.replyCallbackServiceFactory ?? (() => buildDefaultReplyCallbackService());
     this.turnReplyRecoveryService =
       deps.turnReplyRecoveryService ?? getChannelTurnReplyRecoveryService();
+    this.dispatchTurnCaptureRegistry = new AcceptedReceiptDispatchTurnCaptureRegistry({
+      messageReceiptService: this.messageReceiptService,
+      scheduleProcessing: (key, delayMs) => this.scheduleProcessing(key, delayMs),
+      retryDelayMs: RETRY_DELAY_MS,
+    });
+    this.turnCorrelationObserverRegistry =
+      new AcceptedReceiptTurnCorrelationObserverRegistry({
+      messageReceiptService: this.messageReceiptService,
+      agentRunService: this.agentRunService,
+      teamRunService: this.teamRunService,
+      scheduleProcessing: (key, delayMs) => this.scheduleProcessing(key, delayMs),
+      retryDelayMs: RETRY_DELAY_MS,
+      });
   }
 
   start(): void {
@@ -88,6 +113,8 @@ export class AcceptedReceiptRecoveryRuntime {
     }
     this.retryTimers.clear();
     this.observingKeys.clear();
+    this.dispatchTurnCaptureRegistry.stop();
+    this.turnCorrelationObserverRegistry.stop();
   }
 
   async registerAcceptedReceipt(receipt: ChannelMessageReceipt): Promise<void> {
@@ -96,6 +123,26 @@ export class AcceptedReceiptRecoveryRuntime {
       return;
     }
     this.scheduleProcessing(toReceiptKey(receipt), 0);
+  }
+
+  prepareDirectDispatchTurnCapture(
+    agentRunId: string,
+    subscribeToEvents: RuntimeEventSubscription,
+  ): AcceptedDispatchTurnCapture {
+    return this.dispatchTurnCaptureRegistry.createDirectDispatchTurnCapture(
+      agentRunId,
+      subscribeToEvents,
+    );
+  }
+
+  prepareTeamDispatchTurnCapture(
+    teamRunId: string,
+    subscribeToEvents: RuntimeEventSubscription,
+  ): AcceptedDispatchTurnCapture {
+    return this.dispatchTurnCaptureRegistry.createTeamDispatchTurnCapture(
+      teamRunId,
+      subscribeToEvents,
+    );
   }
 
   private async restoreAcceptedReceipts(): Promise<void> {
@@ -130,10 +177,6 @@ export class AcceptedReceiptRecoveryRuntime {
 
   private async processReceipt(key: ChannelIngressReceiptKey): Promise<void> {
     const serializedKey = serializeReceiptKey(key);
-    if (this.observingKeys.has(serializedKey)) {
-      return;
-    }
-
     const receipt = await this.messageReceiptService.getReceiptByExternalMessage(key);
     if (!receipt || receipt.ingressState !== "ACCEPTED") {
       return;
@@ -144,10 +187,37 @@ export class AcceptedReceiptRecoveryRuntime {
       return;
     }
 
-    const observationStarted = await this.tryStartLiveObservation(receipt);
-    if (!observationStarted) {
+    if (!receipt.turnId) {
+      if (this.dispatchTurnCaptureRegistry.hasPendingDispatchTurnCapture(receipt)) {
+        this.scheduleProcessing(key, OBSERVATION_RECHECK_DELAY_MS);
+        return;
+      }
+      const correlationObservationStarted =
+        await this.tryStartTurnCorrelationObservation(receipt);
+      if (correlationObservationStarted) {
+        return;
+      }
       this.scheduleProcessing(key, RETRY_DELAY_MS);
+      return;
     }
+
+    if (this.observingKeys.has(serializedKey)) {
+      this.scheduleProcessing(key, OBSERVATION_RECHECK_DELAY_MS);
+      return;
+    }
+
+    const observationStarted = await this.tryStartLiveObservation(receipt);
+    if (observationStarted) {
+      this.scheduleProcessing(key, OBSERVATION_RECHECK_DELAY_MS);
+      return;
+    }
+    this.scheduleProcessing(key, RETRY_DELAY_MS);
+  }
+
+  private async tryStartTurnCorrelationObservation(
+    receipt: ChannelMessageReceipt,
+  ): Promise<boolean> {
+    return this.turnCorrelationObserverRegistry.ensureObservationForReceipt(receipt);
   }
 
   private async tryPublishPersistedReply(
@@ -181,38 +251,22 @@ export class AcceptedReceiptRecoveryRuntime {
     const serializedKey = serializeReceiptKey(receipt);
 
     if (receipt.teamRunId) {
+      if (!receipt.agentRunId || !receipt.turnId) {
+        return false;
+      }
       const teamRun = await this.resolveTeamRun(receipt.teamRunId);
       if (!teamRun) {
         return false;
       }
-      const binding = await this.bindingService.findBindingByDispatchTarget({
-        agentRunId: receipt.agentRunId,
-        teamRunId: receipt.teamRunId,
-      }).catch(() => null);
 
       this.observingKeys.add(serializedKey);
       void this.teamReplyBridge
         .observeAcceptedTeamTurnToSource({
           run: teamRun,
           teamRunId: receipt.teamRunId,
-          memberName: binding?.targetNodeName ?? null,
           memberRunId: receipt.agentRunId,
           turnId: receipt.turnId,
           source: receipt,
-          onCorrelationResolved: async (correlation) => {
-            await this.messageReceiptService.updateAcceptedReceiptCorrelation({
-              provider: correlation.source.provider,
-              transport: correlation.source.transport,
-              accountId: correlation.source.accountId,
-              peerId: correlation.source.peerId,
-              threadId: correlation.source.threadId,
-              externalMessageId: correlation.source.externalMessageId,
-              receivedAt: correlation.source.receivedAt,
-              agentRunId: correlation.agentRunId,
-              teamRunId: correlation.teamRunId,
-              turnId: correlation.turnId,
-            });
-          },
         })
         .then(async (result) => {
           this.observingKeys.delete(serializedKey);
@@ -228,7 +282,7 @@ export class AcceptedReceiptRecoveryRuntime {
       return true;
     }
 
-    if (!receipt.agentRunId) {
+    if (!receipt.agentRunId || !receipt.turnId) {
       return false;
     }
 
@@ -242,7 +296,7 @@ export class AcceptedReceiptRecoveryRuntime {
       .observeAcceptedTurnToSource({
         run: agentRun,
         teamRunId: receipt.teamRunId ?? null,
-        turnId: receipt.turnId ?? null,
+        turnId: receipt.turnId,
         source: receipt,
       })
       .then(async (result) => {
@@ -360,32 +414,3 @@ export const stopAcceptedReceiptRecoveryRuntime = async (): Promise<void> => {
   await cachedAcceptedReceiptRecoveryRuntime.stop();
   cachedAcceptedReceiptRecoveryRuntime = null;
 };
-
-const toReceiptKey = (
-  receipt: Pick<
-    ChannelMessageReceipt,
-    | "provider"
-    | "transport"
-    | "accountId"
-    | "peerId"
-    | "threadId"
-    | "externalMessageId"
-  >,
-): ChannelIngressReceiptKey => ({
-  provider: receipt.provider,
-  transport: receipt.transport,
-  accountId: receipt.accountId,
-  peerId: receipt.peerId,
-  threadId: receipt.threadId,
-  externalMessageId: receipt.externalMessageId,
-});
-
-const serializeReceiptKey = (key: ChannelIngressReceiptKey): string =>
-  [
-    key.provider,
-    key.transport,
-    key.accountId,
-    key.peerId,
-    key.threadId ?? "",
-    key.externalMessageId,
-  ].join("::");

@@ -63,6 +63,54 @@ export class AgentRuntimeState {
     );
   }
 
+  startActiveTurn(turnId?: string | null): AgentTurn {
+    const memoryManager = this.memoryManager;
+    if (!memoryManager) {
+      throw new Error(`Agent '${this.agentId}': Cannot start a turn without a memory manager.`);
+    }
+
+    const nextTurnId =
+      typeof turnId === 'string' && turnId.trim().length > 0 ? turnId.trim() : memoryManager.startTurn();
+    const nextTurn = new AgentTurn(nextTurnId);
+    this.activeTurn = nextTurn;
+    this.statusManagerRef?.notifier?.notifyAgentTurnStarted?.(nextTurnId);
+    return nextTurn;
+  }
+
+  completeActiveTurn(turnId?: string | null): string | null {
+    const resolvedTurnId =
+      typeof turnId === 'string' && turnId.trim().length > 0
+        ? turnId.trim()
+        : this.activeTurn?.turnId ?? null;
+    if (!resolvedTurnId) {
+      return null;
+    }
+
+    this.statusManagerRef?.notifier?.notifyAgentTurnCompleted?.(resolvedTurnId);
+    if (this.activeTurn?.turnId === resolvedTurnId) {
+      this.activeTurn = null;
+    }
+    return resolvedTurnId;
+  }
+
+  shouldEnterIdleAfterLlmResponse(currentStatus: AgentStatus): boolean {
+    return (
+      currentStatus === AgentStatus.ANALYZING_LLM_RESPONSE &&
+      Object.keys(this.pendingToolApprovals).length === 0 &&
+      (this.inputEventQueues?.toolInvocationRequestQueue.empty() ?? true)
+    );
+  }
+
+  resolveTurnIdForIdleEvent(fallbackTurnId?: string | null): string | null {
+    if (this.activeTurn?.turnId) {
+      return this.activeTurn.turnId;
+    }
+    if (typeof fallbackTurnId === 'string' && fallbackTurnId.trim().length > 0) {
+      return fallbackTurnId.trim();
+    }
+    return null;
+  }
+
   storePendingToolInvocation(invocation: ToolInvocation): void {
     if (!(invocation instanceof ToolInvocation) || !invocation.id) {
       console.error(

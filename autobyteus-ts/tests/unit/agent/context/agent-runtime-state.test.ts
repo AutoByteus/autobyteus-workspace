@@ -2,6 +2,8 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { AgentRuntimeState } from '../../../../src/agent/context/agent-runtime-state.js';
 import { AgentStatus } from '../../../../src/agent/status/status-enum.js';
 import { ToolInvocation } from '../../../../src/agent/tool-invocation.js';
+import { AgentInputEventQueueManager } from '../../../../src/agent/events/agent-input-event-queue-manager.js';
+import { PendingToolInvocationEvent } from '../../../../src/agent/events/agent-events.js';
 
 describe('AgentRuntimeState', () => {
   beforeEach(() => {
@@ -71,10 +73,37 @@ describe('AgentRuntimeState', () => {
     expect(Object.keys(state.pendingToolApprovals)).toHaveLength(0);
   });
 
-  it('renders a readable string representation', () => {
+  it('makes the post-LLM idle decision explicit on runtime state', async () => {
     const state = new AgentRuntimeState('agent-7');
+    state.inputEventQueues = new AgentInputEventQueueManager();
 
-    expect(state.toString()).toContain("agentId='agent-7'");
+    expect(state.shouldEnterIdleAfterLlmResponse(AgentStatus.ANALYZING_LLM_RESPONSE)).toBe(true);
+
+    state.pendingToolApprovals = { inv1: new ToolInvocation('tool', {}, 'inv1') };
+    expect(state.shouldEnterIdleAfterLlmResponse(AgentStatus.ANALYZING_LLM_RESPONSE)).toBe(false);
+
+    state.pendingToolApprovals = {};
+    await state.inputEventQueues.enqueueToolInvocationRequest(
+      new PendingToolInvocationEvent(new ToolInvocation('tool', {}, 'inv2'))
+    );
+    expect(state.shouldEnterIdleAfterLlmResponse(AgentStatus.ANALYZING_LLM_RESPONSE)).toBe(false);
+    expect(state.shouldEnterIdleAfterLlmResponse(AgentStatus.AWAITING_LLM_RESPONSE)).toBe(false);
+  });
+
+  it('resolves the idle event turn id from active turn first and then the fallback', () => {
+    const state = new AgentRuntimeState('agent-8');
+
+    expect(state.resolveTurnIdForIdleEvent('turn-fallback')).toBe('turn-fallback');
+
+    state.activeTurn = { turnId: 'turn-active' } as any;
+    expect(state.resolveTurnIdForIdleEvent('turn-fallback')).toBe('turn-active');
+    expect(state.resolveTurnIdForIdleEvent('   ')).toBe('turn-active');
+  });
+
+  it('renders a readable string representation', () => {
+    const state = new AgentRuntimeState('agent-9');
+
+    expect(state.toString()).toContain("agentId='agent-9'");
     expect(state.toString()).toContain("currentStatus='uninitialized'");
   });
 });

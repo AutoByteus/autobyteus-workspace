@@ -47,6 +47,8 @@ export class UserInputMessageEventHandler extends AgentEventHandler {
     }
 
     const originalMessage = event.agentInputUserMessage;
+    const startsNewTurn = originalMessage.senderType !== SenderType.TOOL;
+    let eventTurnId: string | null = null;
 
     if (originalMessage.senderType === SenderType.SYSTEM) {
       const statusManager: any = context.statusManager;
@@ -64,6 +66,22 @@ export class UserInputMessageEventHandler extends AgentEventHandler {
     }
 
     let processedMessage = cloneAgentInputUserMessage(originalMessage);
+
+    if (startsNewTurn) {
+      if (context.state.activeTurn) {
+        throw new Error(
+          `Agent '${context.agentId}' cannot start a new turn while turn '${context.state.activeTurn.turnId}' is still active.`
+        );
+      }
+      eventTurnId = context.state.startActiveTurn().turnId;
+    } else {
+      eventTurnId = context.state.activeTurn?.turnId ?? null;
+      if (!eventTurnId) {
+        throw new Error(
+          `Agent '${context.agentId}' received TOOL follow-up input without an active turn.`
+        );
+      }
+    }
 
     console.info(
       `Agent '${context.agentId}' handling UserMessageReceivedEvent (type: ${originalMessage.senderType}): ` +
@@ -121,7 +139,10 @@ export class UserInputMessageEventHandler extends AgentEventHandler {
     }
 
     const llmUserMessage = buildLLMUserMessage(processedMessage);
-    const llmUserMessageReadyEvent = new LLMUserMessageReadyEvent(llmUserMessage);
+    const llmUserMessageReadyEvent = new LLMUserMessageReadyEvent(
+      llmUserMessage,
+      eventTurnId
+    );
     await context.inputEventQueues.enqueueInternalSystemEvent(llmUserMessageReadyEvent);
 
     console.info(

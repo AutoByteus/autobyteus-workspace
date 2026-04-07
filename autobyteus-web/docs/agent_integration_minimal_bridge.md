@@ -46,11 +46,16 @@ Minimal handler set:
 - `SEGMENT_START`
 - `SEGMENT_CONTENT`
 - `SEGMENT_END`
+- `TURN_STARTED`
+- `TURN_COMPLETED`
 - `AGENT_STATUS`
 - `ASSISTANT_COMPLETE`
 - `ERROR`
 
-These handlers update the agent context and mark messages complete.
+These handlers update the agent context and mark messages complete. In the current contract:
+- `TURN_STARTED` is a turn-scoped lifecycle marker that clients can observe directly.
+- `TURN_COMPLETED` is the preferred completion signal for one specific turn.
+- `AGENT_STATUS` remains useful as run-level state, but should not be the only completion signal a client depends on.
 
 ### 5) Core types
 You need small types for:
@@ -96,7 +101,7 @@ Agent teams use the same streaming protocol but connect to a different WebSocket
 
 3) **Team streaming service**
 - Routes incoming events to the correct member by `agent_name` or `agent_id`
-- Handles core events: `SEGMENT_*`, `AGENT_STATUS`, `ASSISTANT_COMPLETE`, `TEAM_STATUS`, `ERROR`
+- Handles core events: `SEGMENT_*`, `TURN_*`, `AGENT_STATUS`, `ASSISTANT_COMPLETE`, `TEAM_STATUS`, `ERROR`
 
 ### Minimal team file checklist
 
@@ -168,7 +173,7 @@ export const useMyFeatureStore = defineStore('myFeature', {
 ## Troubleshooting
 
 - Stuck in loading state
-  - Ensure the streaming service sets `isSending = false` on `AGENT_STATUS: idle` or `ASSISTANT_COMPLETE`.
+  - Ensure the streaming service sets `isSending = false` on `TURN_COMPLETED` or `ASSISTANT_COMPLETE`, with `AGENT_STATUS: idle` treated as a compatibility fallback rather than the only completion signal.
 - "agentDefinitionId and llmModelIdentifier are required"
   - Both must be provided for a new agent run.
 - No stream output

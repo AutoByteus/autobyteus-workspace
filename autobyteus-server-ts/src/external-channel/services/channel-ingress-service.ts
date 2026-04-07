@@ -1,7 +1,10 @@
 import type { ExternalMessageEnvelope } from "autobyteus-ts/external-channel/external-message-envelope.js";
 import type { ChannelBinding } from "../domain/models.js";
 import type { ChannelRunDispatchResult } from "../runtime/channel-run-dispatch-result.js";
-import type { AcceptedReceiptRecoveryRuntime } from "../runtime/accepted-receipt-recovery-runtime.js";
+import type {
+  AcceptedDispatchTurnCapture,
+  AcceptedReceiptRecoveryRuntime,
+} from "../runtime/accepted-receipt-recovery-runtime.js";
 import { ChannelRunFacade } from "../runtime/channel-run-facade.js";
 import { getAcceptedReceiptRecoveryRuntime } from "../runtime/accepted-receipt-recovery-runtime.js";
 import { ChannelBindingService } from "./channel-binding-service.js";
@@ -30,6 +33,12 @@ export type ChannelIngressResult = {
   binding: ChannelBinding | null;
   usedTransportFallback: boolean;
   dispatch: ChannelRunDispatchResult | null;
+};
+
+type AcceptedTurnCorrelation = {
+  agentRunId: string | null;
+  teamRunId: string | null;
+  turnId: string;
 };
 
 export class ChannelIngressService {
@@ -153,32 +162,72 @@ export class ChannelIngressService {
           leaseDurationMs: this.dispatchLeaseDurationMs,
         });
 
-        const dispatch = await this.runFacade.dispatchToBinding(resolved.binding, envelope);
-        const normalizedDispatch = normalizeDispatchTarget(dispatch);
-        const acceptedReceipt = await this.messageReceiptService.recordAcceptedDispatch({
-          provider: envelope.provider,
-          transport: envelope.transport,
-          accountId: envelope.accountId,
-          peerId: envelope.peerId,
-          threadId: envelope.threadId,
-          externalMessageId: envelope.externalMessageId,
-          receivedAt: new Date(envelope.receivedAt),
-          dispatchLeaseToken: dispatchLease.dispatchLeaseToken ?? "",
-          agentRunId: normalizedDispatch.persistedAgentRunId,
-          teamRunId: normalizedDispatch.persistedTeamRunId,
-          turnId: normalizedDispatch.dispatch.turnId,
-        });
-        await this.acceptedReceiptRecoveryRuntime.registerAcceptedReceipt(acceptedReceipt);
-
-        return {
-          duplicate: false,
-          idempotencyKey,
-          disposition: "ACCEPTED" as const,
-          bindingResolved: true,
-          binding: resolved.binding,
-          usedTransportFallback: resolved.usedTransportFallback,
-          dispatch: normalizedDispatch.dispatch,
+        const acceptedTurnCaptureRef: {
+          current: AcceptedDispatchTurnCapture | null;
+        } = {
+          current: null,
         };
+        let dispatch: ChannelRunDispatchResult;
+        try {
+          dispatch = await this.runFacade.dispatchToBinding(resolved.binding, envelope, {
+            onAgentRunResolved: ({ agentRunId, subscribeToEvents }) => {
+              acceptedTurnCaptureRef.current =
+                this.acceptedReceiptRecoveryRuntime.prepareDirectDispatchTurnCapture(
+                  agentRunId,
+                  subscribeToEvents,
+                );
+            },
+            onTeamRunResolved: ({ teamRunId, subscribeToEvents }) => {
+              acceptedTurnCaptureRef.current =
+                this.acceptedReceiptRecoveryRuntime.prepareTeamDispatchTurnCapture(
+                  teamRunId,
+                  subscribeToEvents,
+                );
+            },
+          });
+        } catch (error) {
+          acceptedTurnCaptureRef.current?.dispose();
+          throw error;
+        }
+
+        try {
+          const capturedCorrelation =
+            acceptedTurnCaptureRef.current?.consumeCapturedCorrelation() ?? null;
+          const normalizedDispatch = normalizeDispatchTarget(
+            dispatch,
+            capturedCorrelation,
+          );
+          const acceptedReceipt = await this.messageReceiptService.recordAcceptedDispatch({
+            provider: envelope.provider,
+            transport: envelope.transport,
+            accountId: envelope.accountId,
+            peerId: envelope.peerId,
+            threadId: envelope.threadId,
+            externalMessageId: envelope.externalMessageId,
+            receivedAt: new Date(envelope.receivedAt),
+            dispatchLeaseToken: dispatchLease.dispatchLeaseToken ?? "",
+            agentRunId: normalizedDispatch.persistedAgentRunId,
+            teamRunId: normalizedDispatch.persistedTeamRunId,
+            turnId: normalizedDispatch.persistedTurnId,
+          });
+          if (acceptedTurnCaptureRef.current) {
+            await acceptedTurnCaptureRef.current.attachAcceptedReceipt(acceptedReceipt);
+          }
+          await this.acceptedReceiptRecoveryRuntime.registerAcceptedReceipt(acceptedReceipt);
+
+          return {
+            duplicate: false,
+            idempotencyKey,
+            disposition: "ACCEPTED" as const,
+            bindingResolved: true,
+            binding: resolved.binding,
+            usedTransportFallback: resolved.usedTransportFallback,
+            dispatch: normalizedDispatch.dispatch,
+          };
+        } catch (error) {
+          acceptedTurnCaptureRef.current?.dispose();
+          throw error;
+        }
       },
     );
   }
@@ -189,10 +238,12 @@ const createIdempotencyKey = (envelope: ExternalMessageEnvelope): string =>
 
 const normalizeDispatchTarget = (
   dispatch: ChannelRunDispatchResult,
+  capturedCorrelation: AcceptedTurnCorrelation | null = null,
 ): {
   dispatch: ChannelRunDispatchResult;
   persistedAgentRunId: string | null;
   persistedTeamRunId: string | null;
+  persistedTurnId: string | null;
 } => {
   const dispatchedAt = normalizeDate(dispatch.dispatchedAt) ?? new Date();
   if (dispatch.dispatchTargetType === "AGENT") {
@@ -201,27 +252,38 @@ const normalizeDispatchTarget = (
       dispatch: {
         dispatchTargetType: "AGENT",
         agentRunId,
-        turnId: normalizeNullableString(dispatch.turnId ?? null),
         dispatchedAt,
       },
       persistedAgentRunId: agentRunId,
       persistedTeamRunId: null,
+      persistedTurnId:
+        capturedCorrelation?.teamRunId === null &&
+        capturedCorrelation.agentRunId === agentRunId
+          ? normalizeNullableString(capturedCorrelation.turnId)
+          : null,
     };
   }
 
   const teamRunId = normalizeRequiredString(dispatch.teamRunId, "dispatch.teamRunId");
   const memberRunId = normalizeNullableString(dispatch.memberRunId ?? null);
+  const capturedMemberRunId =
+    capturedCorrelation?.teamRunId === teamRunId
+      ? normalizeNullableString(capturedCorrelation.agentRunId ?? null)
+      : null;
   return {
     dispatch: {
       dispatchTargetType: "TEAM",
       teamRunId,
       memberRunId,
       memberName: normalizeNullableString(dispatch.memberName ?? null),
-      turnId: normalizeNullableString(dispatch.turnId ?? null),
       dispatchedAt,
     },
-    persistedAgentRunId: memberRunId,
+    persistedAgentRunId: memberRunId ?? capturedMemberRunId,
     persistedTeamRunId: teamRunId,
+    persistedTurnId:
+      capturedCorrelation?.teamRunId === teamRunId
+        ? normalizeNullableString(capturedCorrelation.turnId)
+        : null,
   };
 };
 

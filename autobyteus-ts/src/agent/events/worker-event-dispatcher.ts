@@ -1,4 +1,3 @@
-import { AgentStatus } from '../status/status-enum.js';
 import { applyEventAndDeriveStatus } from '../status/status-update-utils.js';
 import {
   BaseEvent,
@@ -21,6 +20,9 @@ export class WorkerEventDispatcher {
     const eventClass = event.constructor as typeof BaseEvent;
     const handler = this.eventHandlerRegistry.getHandler(eventClass as any);
     const agentId = context.agentId;
+    if (event instanceof AgentIdleEvent) {
+      context.state.completeActiveTurn(event.turnId ?? null);
+    }
 
     try {
       await applyEventAndDeriveStatus(event, context);
@@ -56,12 +58,10 @@ export class WorkerEventDispatcher {
     }
 
     if (event instanceof LLMCompleteResponseReceivedEvent) {
-      if (
-        context.currentStatus === AgentStatus.ANALYZING_LLM_RESPONSE &&
-        !Object.keys(context.state.pendingToolApprovals).length &&
-        context.inputEventQueues.toolInvocationRequestQueue.empty()
-      ) {
-        await context.inputEventQueues.enqueueInternalSystemEvent(new AgentIdleEvent());
+      if (context.state.shouldEnterIdleAfterLlmResponse(context.currentStatus)) {
+        await context.inputEventQueues.enqueueInternalSystemEvent(
+          new AgentIdleEvent(context.state.resolveTurnIdForIdleEvent(event.turnId ?? null))
+        );
       }
     }
   }

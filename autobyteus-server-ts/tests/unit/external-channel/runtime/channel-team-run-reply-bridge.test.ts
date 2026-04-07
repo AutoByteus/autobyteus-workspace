@@ -32,7 +32,6 @@ describe("ChannelTeamRunReplyBridge", () => {
   it("resolves team-member correlation and final reply from multiplexed events", async () => {
     let listener: ((event: unknown) => void) | null = null;
     const unsubscribe = vi.fn();
-    const onCorrelationResolved = vi.fn().mockResolvedValue(undefined);
     const bridge = new ChannelTeamRunReplyBridge({
       turnReplyRecoveryService: {
         resolveReplyText: vi.fn(),
@@ -49,8 +48,9 @@ describe("ChannelTeamRunReplyBridge", () => {
       },
       teamRunId: "team-1",
       memberName: "Coordinator",
+      memberRunId: "member-1",
+      turnId: "turn-1",
       envelope: createEnvelope(),
-      onCorrelationResolved,
     });
 
     listener?.({
@@ -81,11 +81,9 @@ describe("ChannelTeamRunReplyBridge", () => {
         memberRunId: "member-1",
         agentEvent: {
           runId: "member-1",
-          eventType: AgentRunEventType.AGENT_STATUS,
+          eventType: AgentRunEventType.TURN_COMPLETED,
           payload: {
             turnId: "turn-1",
-            new_status: "IDLE",
-            old_status: "RUNNING",
           },
           statusHint: "IDLE",
         },
@@ -101,13 +99,112 @@ describe("ChannelTeamRunReplyBridge", () => {
         replyText: "Hello back",
       }),
     });
-    expect(onCorrelationResolved).toHaveBeenCalledWith(
-      expect.objectContaining({
-        agentRunId: "member-1",
-        teamRunId: "team-1",
-        turnId: "turn-1",
-      }),
-    );
     expect(unsubscribe).toHaveBeenCalledOnce();
+  });
+
+  it("fails fast when accepted team correlation is incomplete", async () => {
+    const bridge = new ChannelTeamRunReplyBridge({
+      turnReplyRecoveryService: {
+        resolveReplyText: vi.fn(),
+      },
+    });
+
+    await expect(
+      bridge.observeAcceptedExternalTeamTurn({
+        run: {
+          runId: "team-missing",
+          subscribeToEvents: () => vi.fn(),
+        },
+        teamRunId: "team-missing",
+        memberName: "Coordinator",
+        memberRunId: "" as string,
+        turnId: "" as string,
+        envelope: createEnvelope(),
+      }),
+    ).rejects.toThrow(/requires exact member and turn correlation/i);
+  });
+
+  it("ignores turnless completion signals even after exact team-turn content was observed", async () => {
+    let listener: ((event: unknown) => void) | null = null;
+    const resolveReplyText = vi.fn().mockResolvedValue("Recovered stale team reply");
+    const bridge = new ChannelTeamRunReplyBridge({
+      turnReplyRecoveryService: {
+        resolveReplyText,
+      },
+    });
+
+    void bridge.observeAcceptedExternalTeamTurn({
+      run: {
+        runId: "team-lag-guard",
+        subscribeToEvents: (onEvent: (event: unknown) => void) => {
+          listener = onEvent;
+          return vi.fn();
+        },
+      },
+      teamRunId: "team-lag-guard",
+      memberName: "Coordinator",
+      memberRunId: "member-1",
+      turnId: "turn-1",
+      envelope: createEnvelope(),
+    });
+
+    listener?.({
+      eventSourceType: TeamRunEventSourceType.AGENT,
+      teamRunId: "team-lag-guard",
+      data: {
+        runtimeKind: "claude_agent_sdk",
+        memberName: "Coordinator",
+        memberRunId: "member-1",
+        agentEvent: {
+          runId: "member-1",
+          eventType: AgentRunEventType.SEGMENT_END,
+          payload: {
+            turnId: "turn-1",
+            text: "Hello back",
+            segment_type: "text",
+          },
+          statusHint: null,
+        },
+      },
+    });
+    listener?.({
+      eventSourceType: TeamRunEventSourceType.AGENT,
+      teamRunId: "team-lag-guard",
+      data: {
+        runtimeKind: "claude_agent_sdk",
+        memberName: "Coordinator",
+        memberRunId: "member-1",
+        agentEvent: {
+          runId: "member-1",
+          eventType: AgentRunEventType.AGENT_STATUS,
+          payload: {
+            new_status: "IDLE",
+            old_status: "RUNNING",
+          },
+          statusHint: "IDLE",
+        },
+      },
+    });
+    listener?.({
+      eventSourceType: TeamRunEventSourceType.AGENT,
+      teamRunId: "team-lag-guard",
+      data: {
+        runtimeKind: "claude_agent_sdk",
+        memberName: "Coordinator",
+        memberRunId: "member-1",
+        agentEvent: {
+          runId: "member-1",
+          eventType: AgentRunEventType.ASSISTANT_COMPLETE,
+          payload: {
+            text: "turnless team completion",
+          },
+          statusHint: "IDLE",
+        },
+      },
+    });
+
+    await Promise.resolve();
+
+    expect(resolveReplyText).not.toHaveBeenCalled();
   });
 });

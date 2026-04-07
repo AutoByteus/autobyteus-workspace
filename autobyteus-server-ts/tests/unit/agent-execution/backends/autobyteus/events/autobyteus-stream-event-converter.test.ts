@@ -7,6 +7,8 @@ describe("AutoByteusStreamEventConverter", () => {
   const converter = new AutoByteusStreamEventConverter("run-1");
 
   it.each([
+    [StreamEventType.TURN_STARTED, AgentRunEventType.TURN_STARTED],
+    [StreamEventType.TURN_COMPLETED, AgentRunEventType.TURN_COMPLETED],
     [StreamEventType.AGENT_STATUS_UPDATED, AgentRunEventType.AGENT_STATUS],
     [StreamEventType.ASSISTANT_COMPLETE_RESPONSE, AgentRunEventType.ASSISTANT_COMPLETE],
     [StreamEventType.TOOL_APPROVAL_REQUESTED, AgentRunEventType.TOOL_APPROVAL_REQUESTED],
@@ -32,7 +34,14 @@ describe("AutoByteusStreamEventConverter", () => {
       eventType: agentRunEventType,
       runId: "run-1",
       payload: { invocation_id: "inv-1", detail: "ok" },
-      statusHint: streamEventType === StreamEventType.ERROR_EVENT ? "ERROR" : null,
+      statusHint:
+        streamEventType === StreamEventType.ERROR_EVENT
+          ? "ERROR"
+          : streamEventType === StreamEventType.TURN_STARTED
+            ? "ACTIVE"
+            : streamEventType === StreamEventType.TURN_COMPLETED
+              ? "IDLE"
+              : null,
     });
   });
 
@@ -140,5 +149,19 @@ describe("AutoByteusStreamEventConverter", () => {
         data: { event_type: "start", segment_id: "seg-5" },
       } as any),
     ).toBeNull();
+  });
+
+  it("keeps native turn lifecycle payloads intact", () => {
+    expect(
+      converter.convert({
+        event_type: StreamEventType.TURN_COMPLETED,
+        data: { turn_id: "turn-auto-1" },
+      } as any),
+    ).toEqual({
+      eventType: AgentRunEventType.TURN_COMPLETED,
+      runId: "run-1",
+      payload: { turn_id: "turn-auto-1" },
+      statusHint: "IDLE",
+    });
   });
 });

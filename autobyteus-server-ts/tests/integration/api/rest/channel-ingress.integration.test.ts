@@ -12,6 +12,7 @@ import type { AgentRunBackend } from "../../../../src/agent-execution/backends/a
 import type { AgentRunBackendFactory } from "../../../../src/agent-execution/backends/agent-run-backend-factory.js";
 import { AgentRunConfig } from "../../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../../src/agent-execution/domain/agent-run-context.js";
+import { AgentRunEventType } from "../../../../src/agent-execution/domain/agent-run-event.js";
 import { AgentRunManager } from "../../../../src/agent-execution/services/agent-run-manager.js";
 import { AgentTeamDefinition, TeamMember } from "../../../../src/agent-team-definition/domain/models.js";
 import type { TeamRunBackend } from "../../../../src/agent-team-execution/backends/team-run-backend.js";
@@ -23,8 +24,10 @@ import { registerChannelIngressRoutes } from "../../../../src/api/rest/channel-i
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 import { FileChannelBindingProvider } from "../../../../src/external-channel/providers/file-channel-binding-provider.js";
 import { FileChannelMessageReceiptProvider } from "../../../../src/external-channel/providers/file-channel-message-receipt-provider.js";
+import { AcceptedReceiptRecoveryRuntime } from "../../../../src/external-channel/runtime/accepted-receipt-recovery-runtime.js";
 import { ChannelBindingRunLauncher } from "../../../../src/external-channel/runtime/channel-binding-run-launcher.js";
 import { ChannelAgentRunFacade } from "../../../../src/external-channel/runtime/channel-agent-run-facade.js";
+import { ChannelAgentRunReplyBridge } from "../../../../src/external-channel/runtime/channel-agent-run-reply-bridge.js";
 import { ChannelTeamRunFacade } from "../../../../src/external-channel/runtime/channel-team-run-facade.js";
 import { ChannelBindingService } from "../../../../src/external-channel/services/channel-binding-service.js";
 import { ChannelIngressService } from "../../../../src/external-channel/services/channel-ingress-service.js";
@@ -68,6 +71,7 @@ afterEach(async () => {
   );
   tempPaths.clear();
   vi.clearAllMocks();
+  vi.useRealTimers();
 });
 
 const createEnvelope = (overrides: Partial<Record<string, unknown>> = {}) => ({
@@ -187,16 +191,38 @@ const createUnusedAgentDeps = () => ({
 const createAgentBackendFactory = (input: {
   memoryDir: string;
   runId: string;
-  turnId: string;
+  runtimeEvents?: Array<{
+    delayMs: number | null;
+    event: Record<string, unknown>;
+  }>;
 }): {
   factory: AgentRunBackendFactory;
   postUserMessage: ReturnType<typeof vi.fn>;
 } => {
-  const postUserMessage = vi.fn().mockResolvedValue({
-    accepted: true,
-    code: null,
-    message: null,
-    turnId: input.turnId,
+  const listeners = new Set<(event: unknown) => void>();
+  const emitRuntimeEvent = (event: unknown) => {
+    for (const listener of listeners) {
+      listener(event);
+    }
+  };
+  const postUserMessage = vi.fn().mockImplementation(async () => {
+    for (const runtimeEvent of input.runtimeEvents ?? []) {
+      if (runtimeEvent.delayMs === null) {
+        emitRuntimeEvent(runtimeEvent.event);
+        continue;
+      }
+      const timer = setTimeout(() => {
+        emitRuntimeEvent(runtimeEvent.event);
+      }, runtimeEvent.delayMs);
+      if (typeof (timer as { unref?: () => void }).unref === "function") {
+        (timer as { unref: () => void }).unref();
+      }
+    }
+    return {
+      accepted: true,
+      code: null,
+      message: null,
+    };
   });
 
   const createBackendForConfig = (
@@ -230,7 +256,12 @@ const createAgentBackendFactory = (input: {
       isActive: () => true,
       getPlatformAgentRunId: () => `platform-${runId}`,
       getStatus: () => "IDLE",
-      subscribeToEvents: () => () => undefined,
+      subscribeToEvents: (listener) => {
+        listeners.add(listener);
+        return () => {
+          listeners.delete(listener);
+        };
+      },
       postUserMessage,
       approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
       interrupt: vi.fn().mockResolvedValue({ accepted: true }),
@@ -253,7 +284,6 @@ const createAgentBackendFactory = (input: {
 
 const createTeamBackendFactory = (input: {
   teamRunId: string;
-  turnId: string;
 }): {
   factory: TeamRunBackendFactory;
   postMessage: ReturnType<typeof vi.fn>;
@@ -283,7 +313,6 @@ const createTeamBackendFactory = (input: {
         accepted: true,
         code: null,
         message: null,
-        turnId: input.turnId,
         memberRunId: buildTeamMemberRunId(input.teamRunId, targetRouteKey),
         memberName: targetMemberName?.trim() || "Coordinator",
       };
@@ -341,13 +370,11 @@ const createIngressHarness = async (options: {
             teamRunId: binding.teamRunId ?? "team-run-1",
             memberRunId: null,
             memberName: binding.targetNodeName ?? null,
-            turnId: null,
             dispatchedAt: new Date("2026-03-27T07:00:01.000Z"),
           }
         : {
             dispatchTargetType: "AGENT" as const,
             agentRunId: binding.agentRunId ?? "agent-run-1",
-            turnId: "turn-1",
             dispatchedAt: new Date("2026-03-27T07:00:01.000Z"),
           });
   const dispatchSpy = vi.fn(dispatchToBinding);
@@ -389,7 +416,6 @@ const createAgentEndToEndIngressHarness = async () => {
   const bindingsFilePath = path.join(rootDir, "bindings.json");
   const receiptsFilePath = path.join(rootDir, "message-receipts.json");
   const expectedRunId = "agent-run-e2e";
-  const expectedTurnId = "turn-agent-e2e";
 
   await mkdir(workspaceRootPath, { recursive: true });
 
@@ -403,7 +429,6 @@ const createAgentEndToEndIngressHarness = async () => {
   const { factory, postUserMessage } = createAgentBackendFactory({
     memoryDir,
     runId: expectedRunId,
-    turnId: expectedTurnId,
   });
   const agentRunManager = new AgentRunManager({
     autoByteusBackendFactory: factory,
@@ -460,11 +485,21 @@ const createAgentEndToEndIngressHarness = async () => {
     bindingService,
     threadLockService: new ChannelThreadLockService(),
     runFacade: {
-      dispatchToBinding: (binding: ChannelBinding, envelope: ReturnType<typeof createEnvelope>) =>
-        agentRunFacade.dispatchToAgentBinding(binding, envelope as never),
+      dispatchToBinding: (
+        binding: ChannelBinding,
+        envelope: ReturnType<typeof createEnvelope>,
+        hooks?: Parameters<typeof agentRunFacade.dispatchToAgentBinding>[2],
+      ) =>
+        agentRunFacade.dispatchToAgentBinding(binding, envelope as never, hooks),
     } as never,
     messageReceiptService,
     acceptedReceiptRecoveryRuntime: {
+      prepareDirectDispatchTurnCapture: vi.fn().mockReturnValue({
+        consumeCapturedCorrelation: vi.fn().mockReturnValue(null),
+        attachAcceptedReceipt: vi.fn().mockResolvedValue(undefined),
+        dispose: vi.fn(),
+      }),
+      prepareTeamDispatchTurnCapture: vi.fn(),
       registerAcceptedReceipt: vi.fn(),
     } as never,
   });
@@ -488,6 +523,172 @@ const createAgentEndToEndIngressHarness = async () => {
     receiptsFilePath,
     postUserMessage,
     expectedRunId,
+  };
+};
+
+const createAgentEndToEndIngressHarnessWithRecoveryRuntime = async () => {
+  const rootDir = await createTempDir("channel-ingress-agent-recovery-e2e");
+  const workspaceRootPath = path.join(rootDir, "workspace");
+  const memoryDir = path.join(rootDir, "memory");
+  const bindingsFilePath = path.join(rootDir, "bindings.json");
+  const receiptsFilePath = path.join(rootDir, "message-receipts.json");
+  const expectedRunId = "agent-run-recovery-e2e";
+  const expectedTurnId = "turn-agent-recovery-e2e";
+  const expectedReplyText = "Telegram first reply";
+
+  await mkdir(workspaceRootPath, { recursive: true });
+
+  const bindingService = new ChannelBindingService(
+    new FileChannelBindingProvider(bindingsFilePath),
+  );
+  const messageReceiptService = new ChannelMessageReceiptService(
+    new FileChannelMessageReceiptProvider(receiptsFilePath),
+  );
+  const workspaceManager = createWorkspaceManager();
+  const { factory, postUserMessage } = createAgentBackendFactory({
+    memoryDir,
+    runId: expectedRunId,
+    runtimeEvents: [
+      {
+        delayMs: null,
+        event: {
+          eventType: AgentRunEventType.TURN_STARTED,
+          runId: expectedRunId,
+          payload: {
+            turnId: expectedTurnId,
+          },
+          statusHint: "ACTIVE",
+        },
+      },
+      {
+        delayMs: 100,
+        event: {
+          eventType: AgentRunEventType.TURN_COMPLETED,
+          runId: expectedRunId,
+          payload: {
+            turnId: expectedTurnId,
+          },
+          statusHint: "IDLE",
+        },
+      },
+    ],
+  });
+  const agentRunManager = new AgentRunManager({
+    autoByteusBackendFactory: factory,
+    codexBackendFactory: factory,
+    claudeBackendFactory: factory,
+  });
+  const agentRunMetadataService = new AgentRunMetadataService(memoryDir);
+  const agentRunHistoryIndexService = new AgentRunHistoryIndexService(memoryDir, {
+    agentDefinitionService: {
+      getAgentDefinitionById: vi.fn().mockResolvedValue({
+        name: "External Channel Agent",
+      }),
+    } as never,
+    agentRunManager,
+  });
+  const agentRunService = new AgentRunService(memoryDir, {
+    agentRunManager,
+    metadataService: agentRunMetadataService,
+    historyIndexService: agentRunHistoryIndexService,
+    workspaceManager: workspaceManager as never,
+    agentDefinitionService: {
+      getAgentDefinitionById: vi.fn().mockResolvedValue({
+        id: "agent-def-1",
+        name: "External Channel Agent",
+        role: "assistant",
+        description: "External channel agent",
+        instructions: "Handle inbound messages.",
+        toolNames: [],
+      }),
+      getFreshAgentDefinitionById: vi.fn().mockResolvedValue({
+        id: "agent-def-1",
+        name: "External Channel Agent",
+        role: "assistant",
+        description: "External channel agent",
+        instructions: "Handle inbound messages.",
+        toolNames: [],
+      }),
+    } as never,
+  });
+  const runLauncher = new ChannelBindingRunLauncher({
+    bindingService,
+    agentRunService,
+    teamRunService: createUnusedTeamRunService(),
+  });
+  const agentRunFacade = new ChannelAgentRunFacade({
+    runLauncher,
+    agentRunService,
+    agentLiveMessagePublisher: {
+      publishExternalUserMessage: vi.fn(),
+    } as never,
+  });
+  const resolveReplyText = vi
+    .fn()
+    .mockResolvedValueOnce(null)
+    .mockResolvedValueOnce(expectedReplyText);
+  const publishAssistantReplyToSource = vi.fn().mockResolvedValue({
+    published: true,
+    duplicate: false,
+    reason: null,
+    envelope: {} as object,
+  });
+  const acceptedReceiptRecoveryRuntime = new AcceptedReceiptRecoveryRuntime({
+    messageReceiptService,
+    agentRunService,
+    teamRunService: createUnusedTeamRunService(),
+    agentReplyBridge: new ChannelAgentRunReplyBridge({
+      turnReplyRecoveryService: {
+        resolveReplyText,
+      } as never,
+    }),
+    teamReplyBridge: {
+      observeAcceptedTeamTurnToSource: vi.fn(),
+    } as never,
+    turnReplyRecoveryService: {
+      resolveReplyText,
+    } as never,
+    replyCallbackServiceFactory: () =>
+      ({
+        publishAssistantReplyToSource,
+      }) as never,
+  });
+
+  const ingressService = new ChannelIngressService({
+    bindingService,
+    threadLockService: new ChannelThreadLockService(),
+    runFacade: {
+      dispatchToBinding: (
+        binding: ChannelBinding,
+        envelope: ReturnType<typeof createEnvelope>,
+        hooks?: Parameters<typeof agentRunFacade.dispatchToAgentBinding>[2],
+      ) =>
+        agentRunFacade.dispatchToAgentBinding(binding, envelope as never, hooks),
+    } as never,
+    messageReceiptService,
+    acceptedReceiptRecoveryRuntime,
+  });
+
+  const app = fastify();
+  await registerChannelIngressRoutes(app, {
+    ingressService,
+    deliveryEventService: {
+      recordPending: vi.fn(),
+      recordSent: vi.fn(),
+      recordFailed: vi.fn(),
+    },
+  });
+
+  return {
+    app,
+    bindingService,
+    messageReceiptService,
+    acceptedReceiptRecoveryRuntime,
+    postUserMessage,
+    publishAssistantReplyToSource,
+    resolveReplyText,
+    expectedReplyText,
+    expectedRunId,
     expectedTurnId,
   };
 };
@@ -499,7 +700,6 @@ const createTeamEndToEndIngressHarness = async () => {
   const bindingsFilePath = path.join(rootDir, "bindings.json");
   const receiptsFilePath = path.join(rootDir, "message-receipts.json");
   const expectedTeamRunId = "team-run-e2e";
-  const expectedTurnId = "turn-team-e2e";
   const expectedMemberRunId = buildTeamMemberRunId(
     expectedTeamRunId,
     "Coordinator",
@@ -516,7 +716,6 @@ const createTeamEndToEndIngressHarness = async () => {
   const workspaceManager = createWorkspaceManager();
   const { factory, postMessage } = createTeamBackendFactory({
     teamRunId: expectedTeamRunId,
-    turnId: expectedTurnId,
   });
   const teamRunManager = new AgentTeamRunManager({
     autoByteusTeamRunBackendFactory: factory as never,
@@ -568,11 +767,21 @@ const createTeamEndToEndIngressHarness = async () => {
     bindingService,
     threadLockService: new ChannelThreadLockService(),
     runFacade: {
-      dispatchToBinding: (binding: ChannelBinding, envelope: ReturnType<typeof createEnvelope>) =>
-        teamRunFacade.dispatchToTeamBinding(binding, envelope as never),
+      dispatchToBinding: (
+        binding: ChannelBinding,
+        envelope: ReturnType<typeof createEnvelope>,
+        hooks?: Parameters<typeof teamRunFacade.dispatchToTeamBinding>[2],
+      ) =>
+        teamRunFacade.dispatchToTeamBinding(binding, envelope as never, hooks),
     } as never,
     messageReceiptService,
     acceptedReceiptRecoveryRuntime: {
+      prepareDirectDispatchTurnCapture: vi.fn(),
+      prepareTeamDispatchTurnCapture: vi.fn().mockReturnValue({
+        consumeCapturedCorrelation: vi.fn().mockReturnValue(null),
+        attachAcceptedReceipt: vi.fn().mockResolvedValue(undefined),
+        dispose: vi.fn(),
+      }),
       registerAcceptedReceipt: vi.fn(),
     } as never,
   });
@@ -597,7 +806,6 @@ const createTeamEndToEndIngressHarness = async () => {
     postMessage,
     expectedTeamRunId,
     expectedMemberRunId,
-    expectedTurnId,
   };
 };
 
@@ -638,19 +846,8 @@ describe("channel-ingress route", () => {
       );
       expect(acceptedReceipt).toBeDefined();
       const agentRunId = String(acceptedReceipt?.agentRunId ?? "");
-      const turnId = String(acceptedReceipt?.turnId ?? "");
       expect(agentRunId.length).toBeGreaterThan(0);
-      expect(turnId.length).toBeGreaterThan(0);
-
-      const source = await harness.messageReceiptService.getSourceByAgentRunTurn(
-        agentRunId,
-        turnId,
-      );
-      expect(source).toMatchObject({
-        provider: ExternalChannelProvider.WHATSAPP,
-        transport: ExternalChannelTransport.BUSINESS_API,
-        externalMessageId: "msg-1",
-      });
+      expect(acceptedReceipt?.turnId).toBeNull();
 
       const metadataPath = path.join(
         harness.memoryDir,
@@ -716,16 +913,6 @@ describe("channel-ingress route", () => {
       });
       expect(harness.postMessage.mock.calls[0]?.[1]).toBe("Coordinator");
 
-      const source = await harness.messageReceiptService.getSourceByAgentRunTurn(
-        harness.expectedMemberRunId,
-        harness.expectedTurnId,
-      );
-      expect(source).toMatchObject({
-        provider: ExternalChannelProvider.WHATSAPP,
-        transport: ExternalChannelTransport.BUSINESS_API,
-        externalMessageId: "msg-1",
-      });
-
       const receipts = await readJson<
         Array<Record<string, unknown>>
       >(harness.receiptsFilePath);
@@ -735,7 +922,7 @@ describe("channel-ingress route", () => {
           ingressState: "ACCEPTED",
           agentRunId: harness.expectedMemberRunId,
           teamRunId: harness.expectedTeamRunId,
-          turnId: harness.expectedTurnId,
+          turnId: null,
         }),
       );
 
@@ -783,6 +970,71 @@ describe("channel-ingress route", () => {
       await harness.app.close();
     }
   });
+
+  it(
+    "uses the real accepted-receipt recovery runtime to publish the first reply without a second inbound message",
+    async () => {
+    const harness = await createAgentEndToEndIngressHarnessWithRecoveryRuntime();
+    const envelope = createEnvelope();
+
+    try {
+      await harness.bindingService.upsertBinding({
+        ...createAgentBindingInput(),
+        agentRunId: null,
+      });
+
+      const response = await harness.app.inject({
+        method: "POST",
+        url: "/api/channel-ingress/v1/messages",
+        payload: envelope,
+      });
+
+      expect(response.statusCode).toBe(202);
+      expect(response.json()).toMatchObject({
+        accepted: true,
+        duplicate: false,
+        disposition: "ACCEPTED",
+        bindingResolved: true,
+      });
+      expect(harness.postUserMessage).toHaveBeenCalledOnce();
+
+      await new Promise((resolve) => setTimeout(resolve, 1_200));
+
+      expect(harness.resolveReplyText).toHaveBeenCalledTimes(2);
+      const publishedReply =
+        harness.publishAssistantReplyToSource.mock.calls[0]?.[0];
+      expect(publishedReply).toMatchObject({
+        source: expect.objectContaining({
+          provider: ExternalChannelProvider.WHATSAPP,
+          transport: ExternalChannelTransport.BUSINESS_API,
+          externalMessageId: envelope.externalMessageId,
+        }),
+        teamRunId: null,
+        turnId: harness.expectedTurnId,
+        replyText: harness.expectedReplyText,
+      });
+      expect(typeof publishedReply?.agentRunId).toBe("string");
+      expect(publishedReply?.agentRunId.length).toBeGreaterThan(0);
+      expect(publishedReply?.callbackIdempotencyKey).toBe(
+        `external-reply:${publishedReply?.agentRunId}:${harness.expectedTurnId}`,
+      );
+
+      const routedReceipt = await harness.messageReceiptService.getReceiptByExternalMessage({
+        provider: envelope.provider,
+        transport: envelope.transport,
+        accountId: envelope.accountId,
+        peerId: envelope.peerId,
+        threadId: envelope.threadId,
+        externalMessageId: envelope.externalMessageId,
+      });
+      expect(routedReceipt?.ingressState).toBe("ROUTED");
+    } finally {
+      await harness.acceptedReceiptRecoveryRuntime.stop();
+      await harness.app.close();
+    }
+    },
+    10_000,
+  );
 
   it("returns ACCEPTED duplicate and reuses the unfinished accepted receipt on repeated externalMessageId", async () => {
     const harness = await createIngressHarness();

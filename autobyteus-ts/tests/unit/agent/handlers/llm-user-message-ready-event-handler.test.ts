@@ -67,12 +67,15 @@ const makeContext = (provider: LLMProvider, toolNames: string[] = []) => {
   } as any;
   const notifier = {
     notifyAgentSegmentEvent: vi.fn(),
-    notifyAgentErrorOutputGeneration: vi.fn()
+    notifyAgentErrorOutputGeneration: vi.fn(),
+    notifyAgentTurnStarted: vi.fn()
   };
 
+  state.llmInstance = llm;
   state.inputEventQueues = inputQueues;
   state.statusManagerRef = { notifier } as any;
   state.memoryManager = new MemoryManager({ store: new InMemoryStore() });
+  state.startActiveTurn('turn-1');
   state.toolInstances = toolNames.reduce((acc, name) => {
     acc[name] = { getName: () => name };
     return acc;
@@ -120,7 +123,7 @@ describe('LLMUserMessageReadyEventHandler', () => {
     };
     context.state.llmInstance = mockLLM as any;
 
-    const event = new LLMUserMessageReadyEvent(new LLMUserMessage({ content: 'prompt' }));
+    const event = new LLMUserMessageReadyEvent(new LLMUserMessage({ content: 'prompt' }), 'turn-1');
     await handler.handle(event, context);
 
     const deltas = notifier.notifyAgentSegmentEvent.mock.calls
@@ -161,7 +164,7 @@ describe('LLMUserMessageReadyEventHandler', () => {
     };
     context.state.llmInstance = mockLLM as any;
 
-    const event = new LLMUserMessageReadyEvent(new LLMUserMessage({ content: 'prompt' }));
+    const event = new LLMUserMessageReadyEvent(new LLMUserMessage({ content: 'prompt' }), 'turn-1');
     await handler.handle(event, context);
 
     expect(inputQueues.enqueueToolInvocationRequest).toHaveBeenCalled();
@@ -184,7 +187,7 @@ describe('LLMUserMessageReadyEventHandler', () => {
     };
     context.state.llmInstance = mockLLM as any;
 
-    const event = new LLMUserMessageReadyEvent(new LLMUserMessage({ content: 'prompt' }));
+    const event = new LLMUserMessageReadyEvent(new LLMUserMessage({ content: 'prompt' }), 'turn-1');
     await handler.handle(event, context);
 
     const deltas = notifier.notifyAgentSegmentEvent.mock.calls
@@ -231,7 +234,7 @@ describe('LLMUserMessageReadyEventHandler', () => {
     };
     context.state.llmInstance = mockLLM as any;
 
-    const event = new LLMUserMessageReadyEvent(new LLMUserMessage({ content: 'prompt' }));
+    const event = new LLMUserMessageReadyEvent(new LLMUserMessage({ content: 'prompt' }), 'turn-1');
     await handler.handle(event, context);
 
     expect(schemaSpy).toHaveBeenCalledOnce();
@@ -251,7 +254,7 @@ describe('LLMUserMessageReadyEventHandler', () => {
     };
     context.state.llmInstance = mockLLM as any;
 
-    const event = new LLMUserMessageReadyEvent(new LLMUserMessage({ content: 'prompt' }));
+    const event = new LLMUserMessageReadyEvent(new LLMUserMessage({ content: 'prompt' }), 'turn-1');
     await handler.handle(event, context);
 
     expect(inputQueues.enqueueInternalSystemEvent).toHaveBeenCalledOnce();
@@ -260,6 +263,21 @@ describe('LLMUserMessageReadyEventHandler', () => {
     expect(completionEvent.isError).toBe(true);
     expect(typeof completionEvent.turnId).toBe('string');
     expect(completionEvent.turnId).not.toBeNull();
+  });
+
+  it('rejects mismatched turn ownership on the continuation event', async () => {
+    const handler = new LLMUserMessageReadyEventHandler();
+    const { context, inputQueues, notifier } = makeContext(LLMProvider.OPENAI, []);
+    context.state.activeTurn = context.state.startActiveTurn('different-turn');
+
+    const event = new LLMUserMessageReadyEvent(new LLMUserMessage({ content: 'prompt' }), 'turn-1');
+
+    await expect(handler.handle(event, context)).rejects.toThrow(
+      "received LLMUserMessageReadyEvent for turn 'turn-1', but activeTurn is 'different-turn'"
+    );
+
+    expect(inputQueues.enqueueInternalSystemEvent).not.toHaveBeenCalled();
+    expect(notifier.notifyAgentTurnStarted).toHaveBeenCalledTimes(2);
   });
 
   it('does not append assistant text to working context when tool calls are emitted', async () => {
@@ -282,7 +300,7 @@ describe('LLMUserMessageReadyEventHandler', () => {
     };
     context.state.llmInstance = mockLLM as any;
 
-    const event = new LLMUserMessageReadyEvent(new LLMUserMessage({ content: 'prompt' }));
+    const event = new LLMUserMessageReadyEvent(new LLMUserMessage({ content: 'prompt' }), 'turn-1');
     await handler.handle(event, context);
 
     expect(inputQueues.enqueueToolInvocationRequest).toHaveBeenCalledOnce();

@@ -6,7 +6,8 @@ import {
   AssistantChunkData,
   AssistantCompleteResponseData,
   ErrorEventData,
-  AgentStatusUpdateData
+  AgentStatusUpdateData,
+  TurnLifecycleData
 } from '../../../../../src/agent/streaming/events/stream-event-payloads.js';
 import { ChunkResponse, CompleteResponse } from '../../../../../src/llm/utils/response-types.js';
 import { AgentStatus } from '../../../../../src/agent/status/status-enum.js';
@@ -91,6 +92,27 @@ describe('AgentEventStream', () => {
     const payload = event.data as AgentStatusUpdateData;
     expect(payload.new_status).toBe(AgentStatus.IDLE);
     expect(payload.old_status).toBe(AgentStatus.BOOTSTRAPPING);
+  });
+
+  it('allEvents receives turn lifecycle events in order', async () => {
+    const { notifier, streamer } = makeStreamer();
+
+    const consumer = collectStreamResults(streamer.allEvents(), streamer, 60);
+    const producer = (async () => {
+      await delay(5);
+      notifier.notifyAgentTurnStarted('turn-1');
+      await delay(5);
+      notifier.notifyAgentTurnCompleted('turn-1');
+    })();
+
+    const [results] = await Promise.all([consumer, producer]);
+    expect(results).toHaveLength(2);
+    expect(results[0].event_type).toBe(StreamEventType.TURN_STARTED);
+    expect(results[1].event_type).toBe(StreamEventType.TURN_COMPLETED);
+    expect(results[0].data).toBeInstanceOf(TurnLifecycleData);
+    expect(results[1].data).toBeInstanceOf(TurnLifecycleData);
+    expect((results[0].data as TurnLifecycleData).turn_id).toBe('turn-1');
+    expect((results[1].data as TurnLifecycleData).turn_id).toBe('turn-1');
   });
 
   it('allEvents receives assistant chunk', async () => {

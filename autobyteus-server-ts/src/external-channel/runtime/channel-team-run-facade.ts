@@ -10,6 +10,7 @@ import {
   type TeamRunService,
 } from "../../agent-team-execution/services/team-run-service.js";
 import { buildAgentInputMessage } from "./channel-agent-input-message-builder.js";
+import type { ChannelTeamDispatchHooks } from "./channel-run-dispatch-hooks.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
@@ -39,12 +40,17 @@ export class ChannelTeamRunFacade {
   async dispatchToTeamBinding(
     binding: ChannelBinding,
     envelope: import("autobyteus-ts/external-channel/external-message-envelope.js").ExternalMessageEnvelope,
+    hooks: ChannelTeamDispatchHooks = {},
   ): Promise<ChannelRunDispatchResult> {
     const teamRunId = await this.runLauncher.resolveOrStartTeamRun(binding);
     const teamRun = await this.teamRunService.resolveTeamRun(teamRunId);
     if (!teamRun) {
       throw new Error(`Team run '${teamRunId}' is not active.`);
     }
+    hooks.onTeamRunResolved?.({
+      teamRunId,
+      subscribeToEvents: teamRun.subscribeToEvents.bind(teamRun),
+    });
     const result = await teamRun.postMessage(
       buildAgentInputMessage(envelope),
       binding.targetNodeName ?? null,
@@ -75,7 +81,6 @@ export class ChannelTeamRunFacade {
       dispatchTargetType: "TEAM",
       teamRunId,
       memberRunId: result.memberRunId ?? null,
-      turnId: result.turnId ?? null,
       memberName: result.memberName ?? binding.targetNodeName ?? null,
       dispatchedAt: new Date(),
     };

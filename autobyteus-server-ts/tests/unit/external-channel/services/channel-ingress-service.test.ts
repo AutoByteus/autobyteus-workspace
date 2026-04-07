@@ -216,7 +216,6 @@ describe("ChannelIngressService", () => {
     const dispatchResult: ChannelRunDispatchResult = {
       dispatchTargetType: "AGENT",
       agentRunId: "agent-1",
-      turnId: "turn-1",
       dispatchedAt: new Date("2026-02-08T00:00:10.000Z"),
     };
     const bindingService = {
@@ -267,7 +266,11 @@ describe("ChannelIngressService", () => {
       envelope.routingKey,
       expect.any(Function),
     );
-    expect(runFacade.dispatchToBinding).toHaveBeenCalledWith(binding, envelope);
+    expect(runFacade.dispatchToBinding).toHaveBeenCalledWith(
+      binding,
+      envelope,
+      expect.any(Object),
+    );
     expect(messageReceiptService.recordAcceptedDispatch).toHaveBeenCalledWith({
       provider: ExternalChannelProvider.WHATSAPP,
       transport: ExternalChannelTransport.BUSINESS_API,
@@ -279,7 +282,7 @@ describe("ChannelIngressService", () => {
       dispatchLeaseToken: "lease-1",
       agentRunId: "agent-1",
       teamRunId: null,
-      turnId: "turn-1",
+      turnId: null,
     });
     expect(acceptedReceiptRecoveryRuntime.registerAcceptedReceipt).toHaveBeenCalledOnce();
   });
@@ -300,7 +303,6 @@ describe("ChannelIngressService", () => {
       dispatchToBinding: vi.fn().mockResolvedValue({
         dispatchTargetType: "AGENT",
         agentRunId: "agent-run-started-on-demand",
-        turnId: "turn-started-on-demand",
         dispatchedAt: new Date("2026-02-08T00:00:10.000Z"),
       } satisfies ChannelRunDispatchResult),
     };
@@ -319,7 +321,7 @@ describe("ChannelIngressService", () => {
       recordAcceptedDispatch: vi.fn().mockResolvedValue(createReceipt({
         ingressState: "ACCEPTED",
         agentRunId: "agent-run-started-on-demand",
-        turnId: "turn-started-on-demand",
+        turnId: null,
       })),
       markIngressUnbound: vi.fn(),
     };
@@ -340,8 +342,101 @@ describe("ChannelIngressService", () => {
       expect.objectContaining({
         agentRunId: "agent-run-started-on-demand",
         teamRunId: null,
-        turnId: "turn-started-on-demand",
+        turnId: null,
       }),
+    );
+  });
+
+  it("persists the captured first turn immediately when dispatch-scoped capture already observed TURN_STARTED", async () => {
+    const binding = createBinding();
+    const capturedTurn = {
+      agentRunId: "agent-1",
+      teamRunId: null,
+      turnId: "turn-immediate-1",
+    };
+    const acceptedReceipt = createReceipt({
+      ingressState: "ACCEPTED",
+      turnId: "turn-immediate-1",
+    });
+    const acceptedTurnCapture = {
+      consumeCapturedCorrelation: vi.fn().mockReturnValue(capturedTurn),
+      attachAcceptedReceipt: vi.fn().mockResolvedValue(undefined),
+      dispose: vi.fn(),
+    };
+    const bindingService = {
+      resolveBinding: vi.fn().mockResolvedValue({
+        binding,
+        usedTransportFallback: false,
+      } satisfies ResolvedBinding),
+    };
+    const threadLockService = {
+      withThreadLock: vi.fn(async (_key: string, work: () => Promise<unknown>) => work()),
+    };
+    const runFacade = {
+      dispatchToBinding: vi.fn().mockImplementation(
+        async (
+          _binding: ChannelBinding,
+          _envelope: ReturnType<typeof createEnvelope>,
+          hooks?: {
+            onAgentRunResolved?: (input: {
+              agentRunId: string;
+              subscribeToEvents: (listener: (event: unknown) => void) => () => void;
+            }) => void;
+          },
+        ) => {
+          hooks?.onAgentRunResolved?.({
+            agentRunId: "agent-1",
+            subscribeToEvents: () => () => undefined,
+          });
+          return {
+            dispatchTargetType: "AGENT" as const,
+            agentRunId: "agent-1",
+            dispatchedAt: new Date("2026-02-08T00:00:10.000Z"),
+          } satisfies ChannelRunDispatchResult;
+        },
+      ),
+    };
+    const messageReceiptService = {
+      getReceiptByExternalMessage: vi.fn().mockResolvedValue(null),
+      createPendingIngressReceipt: vi.fn().mockResolvedValue(createReceipt({
+        ingressState: "PENDING",
+        agentRunId: null,
+      })),
+      claimIngressDispatch: vi.fn().mockResolvedValue(createReceipt({
+        ingressState: "DISPATCHING",
+        agentRunId: null,
+        dispatchLeaseToken: "lease-1",
+        dispatchLeaseExpiresAt: new Date("2026-02-08T00:00:30.000Z"),
+      })),
+      recordAcceptedDispatch: vi.fn().mockResolvedValue(acceptedReceipt),
+      markIngressUnbound: vi.fn(),
+    };
+    const acceptedReceiptRecoveryRuntime = {
+      prepareDirectDispatchTurnCapture: vi.fn().mockReturnValue(acceptedTurnCapture),
+      prepareTeamDispatchTurnCapture: vi.fn(),
+      registerAcceptedReceipt: vi.fn().mockResolvedValue(undefined),
+    };
+    const service = new ChannelIngressService({
+      bindingService,
+      threadLockService,
+      runFacade,
+      messageReceiptService,
+      acceptedReceiptRecoveryRuntime,
+    });
+
+    await service.handleInboundMessage(createEnvelope());
+
+    expect(acceptedReceiptRecoveryRuntime.prepareDirectDispatchTurnCapture).toHaveBeenCalledOnce();
+    expect(messageReceiptService.recordAcceptedDispatch).toHaveBeenCalledWith(
+      expect.objectContaining({
+        agentRunId: "agent-1",
+        teamRunId: null,
+        turnId: "turn-immediate-1",
+      }),
+    );
+    expect(acceptedTurnCapture.attachAcceptedReceipt).toHaveBeenCalledWith(acceptedReceipt);
+    expect(acceptedReceiptRecoveryRuntime.registerAcceptedReceipt).toHaveBeenCalledWith(
+      acceptedReceipt,
     );
   });
 });
