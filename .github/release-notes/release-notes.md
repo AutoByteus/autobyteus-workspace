@@ -1,6 +1,6 @@
 ## Improvements
-- Improved tool-enabled agent runs so successful tool results continue the same turn instead of stalling after tool success.
-- Improved single-agent and team runtime flows so post-tool assistant responses are delivered reliably after tool execution completes.
+- Improved Telegram and other external-channel replies so tool-using turns wait for the full same-turn response before sending the final message.
 
 ## Fixes
-- Fixed a regression that could leave Electron and runtime sessions stuck after a successful tool call.
+- Fixed external replies that could stop after the first pre-tool segment instead of including the whole agent response.
+- Fixed accepted-turn recovery so delayed or restarted external replies continue routing one final message for the completed turn.
