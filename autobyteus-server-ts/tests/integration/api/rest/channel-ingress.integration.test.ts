@@ -623,10 +623,7 @@ const createAgentEndToEndIngressHarnessWithRecoveryRuntime = async () => {
       publishExternalUserMessage: vi.fn(),
     } as never,
   });
-  const resolveReplyText = vi
-    .fn()
-    .mockResolvedValueOnce(null)
-    .mockResolvedValueOnce(expectedReplyText);
+  const resolveReplyText = vi.fn().mockResolvedValue(expectedReplyText);
   const publishAssistantReplyToSource = vi.fn().mockResolvedValue({
     published: true,
     duplicate: false,
@@ -972,7 +969,7 @@ describe("channel-ingress route", () => {
   });
 
   it(
-    "uses the real accepted-receipt recovery runtime to publish the first reply without a second inbound message",
+    "uses the real accepted-receipt recovery runtime to publish the accumulated turn reply without a second inbound message",
     async () => {
     const harness = await createAgentEndToEndIngressHarnessWithRecoveryRuntime();
     const envelope = createEnvelope();
@@ -1000,7 +997,7 @@ describe("channel-ingress route", () => {
 
       await new Promise((resolve) => setTimeout(resolve, 1_200));
 
-      expect(harness.resolveReplyText).toHaveBeenCalledTimes(2);
+      expect(harness.resolveReplyText).toHaveBeenCalledTimes(1);
       const publishedReply =
         harness.publishAssistantReplyToSource.mock.calls[0]?.[0];
       expect(publishedReply).toMatchObject({
