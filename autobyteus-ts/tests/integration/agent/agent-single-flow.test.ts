@@ -9,6 +9,7 @@ import { AgentStatus } from '../../../src/agent/status/status-enum.js';
 import { AgentInputUserMessage } from '../../../src/agent/message/agent-input-user-message.js';
 import { registerWriteFileTool } from '../../../src/tools/file/write-file.js';
 import { SkillRegistry } from '../../../src/skills/registry.js';
+import { EventType } from '../../../src/events/event-types.js';
 import { createLmstudioLLM, hasLmstudioConfig } from '../helpers/lmstudio-llm-helper.js';
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -24,6 +25,21 @@ const waitForFile = async (filePath: string, timeoutMs = 5000, intervalMs = 50):
   const start = Date.now();
   while (Date.now() - start < timeoutMs) {
     if (fsSync.existsSync(filePath)) {
+      return true;
+    }
+    await delay(intervalMs);
+  }
+  return false;
+};
+
+const waitForCondition = async (
+  predicate: () => boolean,
+  timeoutMs = 8000,
+  intervalMs = 25
+): Promise<boolean> => {
+  const start = Date.now();
+  while (Date.now() - start < timeoutMs) {
+    if (predicate()) {
       return true;
     }
     await delay(intervalMs);
@@ -132,6 +148,21 @@ runIntegration('Agent single-flow integration (LM Studio)', () => {
 
     const factory = new AgentFactory();
     const agent = factory.createAgent(config);
+    const observedEvents: Array<{ type: EventType; payload: unknown }> = [];
+    const notifier = agent.context.statusManager?.notifier ?? null;
+    const toolSucceededListener = (payload?: unknown) => {
+      observedEvents.push({ type: EventType.AGENT_TOOL_EXECUTION_SUCCEEDED, payload });
+    };
+    const assistantCompleteListener = (payload?: unknown) => {
+      observedEvents.push({ type: EventType.AGENT_DATA_ASSISTANT_COMPLETE_RESPONSE, payload });
+    };
+    const turnCompletedListener = (payload?: unknown) => {
+      observedEvents.push({ type: EventType.AGENT_TURN_COMPLETED, payload });
+    };
+
+    notifier?.subscribe(EventType.AGENT_TOOL_EXECUTION_SUCCEEDED, toolSucceededListener);
+    notifier?.subscribe(EventType.AGENT_DATA_ASSISTANT_COMPLETE_RESPONSE, assistantCompleteListener);
+    notifier?.subscribe(EventType.AGENT_TURN_COMPLETED, turnCompletedListener);
 
     try {
       agent.start();
@@ -155,7 +186,57 @@ runIntegration('Agent single-flow integration (LM Studio)', () => {
 
       const content = await fs.readFile(filePath, 'utf8');
       expect(content).toBe(toolArgs.content);
+
+      const completed = await waitForCondition(
+        () => {
+          const toolSucceededIndex = observedEvents.findIndex(
+            (event) => event.type === EventType.AGENT_TOOL_EXECUTION_SUCCEEDED
+          );
+          if (toolSucceededIndex < 0) {
+            return false;
+          }
+
+          const assistantCompleteAfterToolIndex = observedEvents.findIndex(
+            (event, index) =>
+              index > toolSucceededIndex && event.type === EventType.AGENT_DATA_ASSISTANT_COMPLETE_RESPONSE
+          );
+          if (assistantCompleteAfterToolIndex < 0) {
+            return false;
+          }
+
+          const turnCompletedAfterAssistantIndex = observedEvents.findIndex(
+            (event, index) => index > assistantCompleteAfterToolIndex && event.type === EventType.AGENT_TURN_COMPLETED
+          );
+
+          return (
+            turnCompletedAfterAssistantIndex >= 0 &&
+            agent.context.currentStatus === AgentStatus.IDLE &&
+            agent.context.state.activeTurn === null
+          );
+        },
+        FILE_WAIT_TIMEOUT_MS,
+        100
+      );
+      expect(completed).toBe(true);
+
+      const toolSucceededIndex = observedEvents.findIndex(
+        (event) => event.type === EventType.AGENT_TOOL_EXECUTION_SUCCEEDED
+      );
+      const assistantCompleteAfterToolIndex = observedEvents.findIndex(
+        (event, index) =>
+          index > toolSucceededIndex && event.type === EventType.AGENT_DATA_ASSISTANT_COMPLETE_RESPONSE
+      );
+      const turnCompletedAfterAssistantIndex = observedEvents.findIndex(
+        (event, index) => index > assistantCompleteAfterToolIndex && event.type === EventType.AGENT_TURN_COMPLETED
+      );
+
+      expect(toolSucceededIndex).toBeGreaterThanOrEqual(0);
+      expect(assistantCompleteAfterToolIndex).toBeGreaterThan(toolSucceededIndex);
+      expect(turnCompletedAfterAssistantIndex).toBeGreaterThan(assistantCompleteAfterToolIndex);
     } finally {
+      notifier?.unsubscribe(EventType.AGENT_TOOL_EXECUTION_SUCCEEDED, toolSucceededListener);
+      notifier?.unsubscribe(EventType.AGENT_DATA_ASSISTANT_COMPLETE_RESPONSE, assistantCompleteListener);
+      notifier?.unsubscribe(EventType.AGENT_TURN_COMPLETED, turnCompletedListener);
       if (agent.isRunning) {
         await agent.stop(20);
       }

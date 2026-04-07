@@ -112,10 +112,10 @@ export class ToolResultEventHandler extends AgentEventHandler {
       mediaContextFiles.length > 0 ? mediaContextFiles : null
     );
     const nextEvent = new UserMessageReceivedEvent(agentInputUserMessage);
-    await context.inputEventQueues.enqueueUserMessage(nextEvent);
+    await context.inputEventQueues.enqueueToolContinuationInput(nextEvent);
 
     console.info(
-      `Agent '${agentId}' enqueued UserMessageReceivedEvent with aggregated results from ${processedEvents.length} tool(s) ` +
+      `Agent '${agentId}' enqueued tool continuation input with aggregated results from ${processedEvents.length} tool(s) ` +
         `and ${mediaContextFiles.length} media file(s).`
     );
   }

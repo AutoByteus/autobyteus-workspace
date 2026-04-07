@@ -67,7 +67,10 @@ export class AgentStatusDeriver {
       return AgentStatus.ERROR;
     }
 
-    if (event instanceof UserMessageReceivedEvent || event instanceof InterAgentMessageReceivedEvent) {
+    if (
+      event instanceof UserMessageReceivedEvent ||
+      event instanceof InterAgentMessageReceivedEvent
+    ) {
       return AgentStatus.PROCESSING_USER_INPUT;
     }
     if (event instanceof LLMUserMessageReadyEvent) {

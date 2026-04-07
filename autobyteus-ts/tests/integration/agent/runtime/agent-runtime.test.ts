@@ -6,6 +6,7 @@ import { AgentContext } from '../../../../src/agent/context/agent-context.js';
 import { AgentRuntime } from '../../../../src/agent/runtime/agent-runtime.js';
 import { AgentStatus } from '../../../../src/agent/status/status-enum.js';
 import { AgentInputUserMessage } from '../../../../src/agent/message/agent-input-user-message.js';
+import { SenderType } from '../../../../src/agent/sender-type.js';
 import {
   AgentErrorEvent,
   AgentIdleEvent,
@@ -372,6 +373,110 @@ describe('Agent runtime integration', () => {
       expect(startedTurns).toHaveLength(2);
       expect(completedTurns).toEqual(startedTurns);
       expect(new Set(startedTurns).size).toBe(2);
+    } finally {
+      llm.unblockFirstResponse();
+      if (runtime.isRunning) {
+        await runtime.stop(2);
+      }
+      await llm.cleanup();
+    }
+  }, 20000);
+
+  it('processes tool-result continuation before later external user input', async () => {
+    const model = new LLMModel({
+      name: 'dummy',
+      value: 'dummy',
+      canonicalName: 'dummy',
+      provider: LLMProvider.OPENAI
+    });
+    const llm = new ControllableLLM(model, new LLMConfig());
+    const config = new AgentConfig(
+      'RuntimeToolContinuationAgent',
+      'Tester',
+      'Runtime tool continuation ordering test agent',
+      llm
+    );
+    const agentId = `runtime_tool_continuation_${Date.now()}`;
+
+    const state = new AgentRuntimeState(agentId, null, null);
+    state.llmInstance = llm;
+    state.toolInstances = {};
+    state.memoryManager = new MemoryManager({ store: new InMemoryStore() });
+
+    const context = new AgentContext(agentId, config, state);
+    const registry = createDefaultEventHandlerRegistry();
+    const runtime = new AgentRuntime(context, registry);
+    const turnLifecycle: Array<{ type: EventType; turnId: string }> = [];
+
+    context.statusManager?.notifier?.subscribe(EventType.AGENT_TURN_STARTED, (payload) => {
+      turnLifecycle.push({
+        type: EventType.AGENT_TURN_STARTED,
+        turnId: String((payload as { turn_id: string }).turn_id)
+      });
+    });
+    context.statusManager?.notifier?.subscribe(EventType.AGENT_TURN_COMPLETED, (payload) => {
+      turnLifecycle.push({
+        type: EventType.AGENT_TURN_COMPLETED,
+        turnId: String((payload as { turn_id: string }).turn_id)
+      });
+    });
+
+    try {
+      runtime.start();
+      const ready = await waitForStatus(
+        context,
+        (status) => status === AgentStatus.IDLE || status === AgentStatus.ERROR
+      );
+      expect(ready).toBe(true);
+      expect(context.currentStatus).toBe(AgentStatus.IDLE);
+
+      context.state.startActiveTurn('turn-tool-continuation');
+
+      await context.state.inputEventQueues?.enqueueToolContinuationInput(
+        new UserMessageReceivedEvent(
+          new AgentInputUserMessage('tool result payload', SenderType.TOOL)
+        )
+      );
+      await runtime.submitEvent(
+        new UserMessageReceivedEvent(new AgentInputUserMessage('second message'))
+      );
+
+      await llm.waitForFirstRequestStart();
+      expect(llm.calls).toHaveLength(1);
+      expect(context.state.activeTurn?.turnId).toBe('turn-tool-continuation');
+      expect(
+        turnLifecycle.filter((event) => event.type === EventType.AGENT_TURN_STARTED)
+      ).toHaveLength(1);
+
+      await delay(100);
+      expect(llm.calls).toHaveLength(1);
+
+      llm.unblockFirstResponse();
+
+      const secondCallStarted = await waitForCondition(() => llm.calls.length === 2);
+      expect(secondCallStarted).toBe(true);
+      const startedTurns = turnLifecycle
+        .filter((event) => event.type === EventType.AGENT_TURN_STARTED)
+        .map((event) => event.turnId);
+      const completedTurns = turnLifecycle
+        .filter((event) => event.type === EventType.AGENT_TURN_COMPLETED)
+        .map((event) => event.turnId);
+      const firstCompletionIndex = turnLifecycle.findIndex(
+        (event) =>
+          event.type === EventType.AGENT_TURN_COMPLETED &&
+          event.turnId === 'turn-tool-continuation'
+      );
+      const secondStartIndex = turnLifecycle.findIndex(
+        (event) =>
+          event.type === EventType.AGENT_TURN_STARTED &&
+          event.turnId !== 'turn-tool-continuation'
+      );
+
+      expect(startedTurns).toHaveLength(2);
+      expect(completedTurns).toContain('turn-tool-continuation');
+      expect(firstCompletionIndex).toBeGreaterThanOrEqual(0);
+      expect(secondStartIndex).toBeGreaterThan(firstCompletionIndex);
+      expect(context.state.activeTurn?.turnId).not.toBe('turn-tool-continuation');
     } finally {
       llm.unblockFirstResponse();
       if (runtime.isRunning) {

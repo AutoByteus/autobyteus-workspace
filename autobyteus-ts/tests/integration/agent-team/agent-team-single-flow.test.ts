@@ -12,6 +12,8 @@ import { waitForTeamToBeIdle } from '../../../src/agent-team/utils/wait-for-idle
 import { AgentFactory } from '../../../src/agent/factory/agent-factory.js';
 import { AgentTeamFactory } from '../../../src/agent-team/factory/agent-team-factory.js';
 import type { AgentTeam } from '../../../src/agent-team/agent-team.js';
+import { EventType } from '../../../src/events/event-types.js';
+import { StreamEventType } from '../../../src/agent/streaming/stream-events.js';
 import { createLmstudioLLM, hasLmstudioConfig } from '../helpers/lmstudio-llm-helper.js';
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -27,6 +29,21 @@ const waitForFile = async (filePath: string, timeoutMs = 20000, intervalMs = 100
   const start = Date.now();
   while (Date.now() - start < timeoutMs) {
     if (fsSync.existsSync(filePath)) {
+      return true;
+    }
+    await delay(intervalMs);
+  }
+  return false;
+};
+
+const waitForCondition = async (
+  predicate: () => boolean,
+  timeoutMs = 8000,
+  intervalMs = 25
+): Promise<boolean> => {
+  const start = Date.now();
+  while (Date.now() - start < timeoutMs) {
+    if (predicate()) {
       return true;
     }
     await delay(intervalMs);
@@ -155,29 +172,99 @@ runIntegration('Agent team integration (LM Studio, api_tool_call)', () => {
     builder.setCoordinator(coordinatorConfig);
     builder.addAgentNode(workerConfig);
     team = builder.build();
+    const workerEvents: Array<{ type: StreamEventType; payload: unknown }> = [];
+    const teamStreamListener = (payload?: unknown) => {
+      const teamEvent = payload as {
+        event_source_type?: string;
+        data?: { agent_name?: string; agent_event?: { event_type?: StreamEventType; data?: unknown } };
+      };
+      if (teamEvent?.event_source_type !== 'AGENT') {
+        return;
+      }
+      if (teamEvent.data?.agent_name !== 'Worker') {
+        return;
+      }
+      const agentEventType = teamEvent.data?.agent_event?.event_type;
+      if (!agentEventType) {
+        return;
+      }
+      workerEvents.push({
+        type: agentEventType,
+        payload: teamEvent.data?.agent_event?.data
+      });
+    };
 
-    team.start();
-    await waitForTeamToBeIdle(team, 60.0);
+    team.notifier.subscribe(EventType.TEAM_STREAM_EVENT, teamStreamListener);
 
-    await team.postMessage(
-      new AgentInputUserMessage(
-        `Call write_file exactly once with arguments {"path":"${toolArgs.path}","content":"${toolArgs.content}"}. ` +
-          'Use a relative path and do not respond with plain text.'
-      ),
-      'Worker'
-    );
+    try {
+      team.start();
+      await waitForTeamToBeIdle(team, 60.0);
 
-    let filePath = path.join(tempDirWorker, toolArgs.path);
-    const created = await waitForFile(filePath, FILE_WAIT_TIMEOUT_MS, 100);
-    if (!created) {
-      const discoveredPath = await findFileContainingContent(tempDirWorker, toolArgs.content);
-      expect(discoveredPath).not.toBeNull();
-      filePath = discoveredPath as string;
+      await team.postMessage(
+        new AgentInputUserMessage(
+          `Call write_file exactly once with arguments {"path":"${toolArgs.path}","content":"${toolArgs.content}"}. ` +
+            'Use a relative path and do not respond with plain text.'
+        ),
+        'Worker'
+      );
+
+      let filePath = path.join(tempDirWorker, toolArgs.path);
+      const created = await waitForFile(filePath, FILE_WAIT_TIMEOUT_MS, 100);
+      if (!created) {
+        const discoveredPath = await findFileContainingContent(tempDirWorker, toolArgs.content);
+        expect(discoveredPath).not.toBeNull();
+        filePath = discoveredPath as string;
+      }
+
+      const content = await fs.readFile(filePath, 'utf8');
+      expect(content.trim()).toBe(toolArgs.content);
+
+      const completed = await waitForCondition(
+        () => {
+          const toolSucceededIndex = workerEvents.findIndex(
+            (event) => event.type === StreamEventType.TOOL_EXECUTION_SUCCEEDED
+          );
+          if (toolSucceededIndex < 0) {
+            return false;
+          }
+
+          const assistantCompleteAfterToolIndex = workerEvents.findIndex(
+            (event, index) =>
+              index > toolSucceededIndex && event.type === StreamEventType.ASSISTANT_COMPLETE_RESPONSE
+          );
+          if (assistantCompleteAfterToolIndex < 0) {
+            return false;
+          }
+
+          const turnCompletedAfterAssistantIndex = workerEvents.findIndex(
+            (event, index) => index > assistantCompleteAfterToolIndex && event.type === StreamEventType.TURN_COMPLETED
+          );
+
+          return turnCompletedAfterAssistantIndex >= 0;
+        },
+        FILE_WAIT_TIMEOUT_MS,
+        100
+      );
+      expect(completed).toBe(true);
+
+      const toolSucceededIndex = workerEvents.findIndex(
+        (event) => event.type === StreamEventType.TOOL_EXECUTION_SUCCEEDED
+      );
+      const assistantCompleteAfterToolIndex = workerEvents.findIndex(
+        (event, index) =>
+          index > toolSucceededIndex && event.type === StreamEventType.ASSISTANT_COMPLETE_RESPONSE
+      );
+      const turnCompletedAfterAssistantIndex = workerEvents.findIndex(
+        (event, index) => index > assistantCompleteAfterToolIndex && event.type === StreamEventType.TURN_COMPLETED
+      );
+
+      expect(toolSucceededIndex).toBeGreaterThanOrEqual(0);
+      expect(assistantCompleteAfterToolIndex).toBeGreaterThan(toolSucceededIndex);
+      expect(turnCompletedAfterAssistantIndex).toBeGreaterThan(assistantCompleteAfterToolIndex);
+
+      await waitForTeamToBeIdle(team, 120.0);
+    } finally {
+      team.notifier.unsubscribe(EventType.TEAM_STREAM_EVENT, teamStreamListener);
     }
-
-    const content = await fs.readFile(filePath, 'utf8');
-    expect(content.trim()).toBe(toolArgs.content);
-
-    await waitForTeamToBeIdle(team, 120.0);
   }, FLOW_TEST_TIMEOUT_MS);
 });
