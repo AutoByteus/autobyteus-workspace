@@ -79,9 +79,11 @@ describe("AcceptedReceiptRecoveryRuntime", () => {
     const runtime = new AcceptedReceiptRecoveryRuntime({
       messageReceiptService: messageReceiptService as any,
       agentRunService: {
+        getAgentRun: vi.fn().mockReturnValue(null),
         resolveAgentRun: vi.fn().mockResolvedValue(null),
       } as any,
       teamRunService: {
+        getTeamRun: vi.fn().mockReturnValue(null),
         resolveTeamRun: vi.fn().mockResolvedValue(null),
       } as any,
       agentReplyBridge: {
@@ -144,9 +146,11 @@ describe("AcceptedReceiptRecoveryRuntime", () => {
     const runtime = new AcceptedReceiptRecoveryRuntime({
       messageReceiptService: messageReceiptService as any,
       agentRunService: {
+        getAgentRun: vi.fn().mockReturnValue(null),
         resolveAgentRun: vi.fn().mockResolvedValue(null),
       } as any,
       teamRunService: {
+        getTeamRun: vi.fn().mockReturnValue(null),
         resolveTeamRun: vi.fn().mockResolvedValue(null),
       } as any,
       agentReplyBridge: {
@@ -236,9 +240,11 @@ describe("AcceptedReceiptRecoveryRuntime", () => {
     const runtime = new AcceptedReceiptRecoveryRuntime({
       messageReceiptService: messageReceiptService as any,
       agentRunService: {
+        getAgentRun: vi.fn().mockReturnValue(activeRun),
         resolveAgentRun: vi.fn().mockResolvedValue(activeRun),
       } as any,
       teamRunService: {
+        getTeamRun: vi.fn().mockReturnValue(null),
         resolveTeamRun: vi.fn().mockResolvedValue(null),
       } as any,
       agentReplyBridge: agentReplyBridge as any,
@@ -277,7 +283,7 @@ describe("AcceptedReceiptRecoveryRuntime", () => {
     await runtime.stop();
   });
 
-  it("keeps retrying persisted reply recovery while live observation is pending", async () => {
+  it("does not attempt persisted reply recovery while live observation is pending", async () => {
     vi.useFakeTimers();
     const receipt = createAcceptedReceipt();
     const activeRun = {
@@ -300,19 +306,18 @@ describe("AcceptedReceiptRecoveryRuntime", () => {
       reason: null,
       envelope: {} as object,
     });
-    const resolveReplyText = vi
-      .fn()
-      .mockResolvedValueOnce(null)
-      .mockResolvedValueOnce("Recovered after observation retry");
+    const resolveReplyText = vi.fn().mockResolvedValue("Recovered after observation retry");
     const agentReplyBridge = {
       observeAcceptedTurnToSource: vi.fn().mockReturnValue(new Promise(() => {})),
     };
     const runtime = new AcceptedReceiptRecoveryRuntime({
       messageReceiptService: messageReceiptService as any,
       agentRunService: {
+        getAgentRun: vi.fn().mockReturnValue(activeRun),
         resolveAgentRun: vi.fn().mockResolvedValue(activeRun),
       } as any,
       teamRunService: {
+        getTeamRun: vi.fn().mockReturnValue(null),
         resolveTeamRun: vi.fn().mockResolvedValue(null),
       } as any,
       agentReplyBridge: agentReplyBridge as any,
@@ -332,7 +337,77 @@ describe("AcceptedReceiptRecoveryRuntime", () => {
     await vi.advanceTimersByTimeAsync(1_000);
 
     expect(agentReplyBridge.observeAcceptedTurnToSource).toHaveBeenCalledOnce();
-    expect(resolveReplyText).toHaveBeenCalledTimes(2);
+    expect(resolveReplyText).not.toHaveBeenCalled();
+    expect(publishAssistantReplyToSource).not.toHaveBeenCalled();
+
+    await runtime.stop();
+  });
+
+  it("falls back to persisted reply recovery when live observation closes without a reply", async () => {
+    vi.useFakeTimers();
+    let currentReceipt = createAcceptedReceipt();
+    const activeRun = {
+      runId: "agent-run-1",
+      subscribeToEvents: vi.fn(),
+    };
+    const messageReceiptService = {
+      listReceiptsByIngressState: vi.fn().mockResolvedValue([]),
+      getReceiptByExternalMessage: vi.fn().mockImplementation(async () => currentReceipt),
+      markReplyPublished: vi.fn().mockImplementation(async () => {
+        currentReceipt = {
+          ...currentReceipt,
+          ingressState: "ROUTED",
+        };
+        return currentReceipt;
+      }),
+      markIngressUnbound: vi.fn(),
+      updateAcceptedReceiptCorrelation: vi.fn(),
+    };
+    const publishAssistantReplyToSource = vi.fn().mockResolvedValue({
+      published: true,
+      duplicate: false,
+      reason: null,
+      envelope: {} as object,
+    });
+    const resolveReplyText = vi.fn().mockResolvedValue("Recovered after closed observation");
+    const agentReplyBridge = {
+      observeAcceptedTurnToSource: vi.fn().mockResolvedValue({
+        status: "CLOSED",
+        reason: "EMPTY_REPLY",
+      }),
+    };
+    const runtime = new AcceptedReceiptRecoveryRuntime({
+      messageReceiptService: messageReceiptService as any,
+      agentRunService: {
+        getAgentRun: vi.fn().mockReturnValue(activeRun),
+        resolveAgentRun: vi.fn().mockResolvedValue(activeRun),
+      } as any,
+      teamRunService: {
+        getTeamRun: vi.fn().mockReturnValue(null),
+        resolveTeamRun: vi.fn().mockResolvedValue(null),
+      } as any,
+      agentReplyBridge: agentReplyBridge as any,
+      teamReplyBridge: {
+        observeAcceptedTeamTurnToSource: vi.fn(),
+      } as any,
+      turnReplyRecoveryService: {
+        resolveReplyText,
+      } as any,
+      replyCallbackServiceFactory: () =>
+        ({
+          publishAssistantReplyToSource,
+        }) as any,
+    });
+
+    await runtime.registerAcceptedReceipt(currentReceipt);
+    await vi.advanceTimersByTimeAsync(1_000);
+
+    expect(agentReplyBridge.observeAcceptedTurnToSource).toHaveBeenCalledOnce();
+    expect(resolveReplyText).toHaveBeenCalledWith({
+      agentRunId: "agent-run-1",
+      teamRunId: null,
+      turnId: "turn-1",
+    });
     expect(publishAssistantReplyToSource).toHaveBeenCalledWith({
       source: expect.objectContaining({
         externalMessageId: "update:1",
@@ -340,7 +415,7 @@ describe("AcceptedReceiptRecoveryRuntime", () => {
       agentRunId: "agent-run-1",
       teamRunId: null,
       turnId: "turn-1",
-      replyText: "Recovered after observation retry",
+      replyText: "Recovered after closed observation",
       callbackIdempotencyKey: "external-reply:agent-run-1:turn-1",
     });
 
@@ -387,22 +462,43 @@ describe("AcceptedReceiptRecoveryRuntime", () => {
       reason: null,
       envelope: {} as object,
     });
+    const agentReplyBridge = {
+      observeAcceptedTurnToSource: vi.fn().mockResolvedValue({
+        status: "REPLY_READY",
+        reply: {
+          agentRunId: "agent-run-1",
+          teamRunId: null,
+          turnId: "turn-bound-1",
+          replyText: "Live reply after turn binding",
+          source: {
+            provider: ExternalChannelProvider.TELEGRAM,
+            transport: ExternalChannelTransport.BUSINESS_API,
+            accountId: "autobyteus",
+            peerId: "8438880216",
+            threadId: null,
+            externalMessageId: "update:1",
+            receivedAt: new Date("2026-03-31T12:00:00.000Z"),
+          },
+        },
+      }),
+    };
+    const resolveReplyText = vi.fn().mockResolvedValue("Recovered after turn binding");
     const runtime = new AcceptedReceiptRecoveryRuntime({
       messageReceiptService: messageReceiptService as any,
       agentRunService: {
+        getAgentRun: vi.fn().mockReturnValue(activeRun),
         resolveAgentRun: vi.fn().mockResolvedValue(activeRun),
       } as any,
       teamRunService: {
+        getTeamRun: vi.fn().mockReturnValue(null),
         resolveTeamRun: vi.fn().mockResolvedValue(null),
       } as any,
-      agentReplyBridge: {
-        observeAcceptedTurnToSource: vi.fn(),
-      } as any,
+      agentReplyBridge: agentReplyBridge as any,
       teamReplyBridge: {
         observeAcceptedTeamTurnToSource: vi.fn(),
       } as any,
       turnReplyRecoveryService: {
-        resolveReplyText: vi.fn().mockResolvedValue("Recovered after turn binding"),
+        resolveReplyText,
       } as any,
       replyCallbackServiceFactory: () =>
         ({
@@ -439,9 +535,11 @@ describe("AcceptedReceiptRecoveryRuntime", () => {
       agentRunId: "agent-run-1",
       teamRunId: null,
       turnId: "turn-bound-1",
-      replyText: "Recovered after turn binding",
+      replyText: "Live reply after turn binding",
       callbackIdempotencyKey: "external-reply:agent-run-1:turn-bound-1",
     });
+    expect(agentReplyBridge.observeAcceptedTurnToSource).toHaveBeenCalledOnce();
+    expect(resolveReplyText).not.toHaveBeenCalled();
 
     await runtime.stop();
   });
@@ -500,9 +598,11 @@ describe("AcceptedReceiptRecoveryRuntime", () => {
     const runtime = new AcceptedReceiptRecoveryRuntime({
       messageReceiptService: messageReceiptService as any,
       agentRunService: {
+        getAgentRun: vi.fn().mockReturnValue(activeRun),
         resolveAgentRun: vi.fn().mockResolvedValue(activeRun),
       } as any,
       teamRunService: {
+        getTeamRun: vi.fn().mockReturnValue(null),
         resolveTeamRun: vi.fn().mockResolvedValue(null),
       } as any,
       agentReplyBridge: {
@@ -592,22 +692,43 @@ describe("AcceptedReceiptRecoveryRuntime", () => {
       reason: null,
       envelope: {} as object,
     });
+    const teamReplyBridge = {
+      observeAcceptedTeamTurnToSource: vi.fn().mockResolvedValue({
+        status: "REPLY_READY",
+        reply: {
+          agentRunId: "member-run-1",
+          teamRunId: "team-1",
+          turnId: "turn-team-bound-1",
+          replyText: "Live team reply after binding",
+          source: {
+            provider: ExternalChannelProvider.TELEGRAM,
+            transport: ExternalChannelTransport.BUSINESS_API,
+            accountId: "autobyteus",
+            peerId: "8438880216",
+            threadId: null,
+            externalMessageId: "update:1",
+            receivedAt: new Date("2026-03-31T12:00:00.000Z"),
+          },
+        },
+      }),
+    };
+    const resolveReplyText = vi.fn().mockResolvedValue("Recovered team reply");
     const runtime = new AcceptedReceiptRecoveryRuntime({
       messageReceiptService: messageReceiptService as any,
       agentRunService: {
+        getAgentRun: vi.fn().mockReturnValue(null),
         resolveAgentRun: vi.fn().mockResolvedValue(null),
       } as any,
       teamRunService: {
+        getTeamRun: vi.fn().mockReturnValue(teamRun),
         resolveTeamRun: vi.fn().mockResolvedValue(teamRun),
       } as any,
       agentReplyBridge: {
         observeAcceptedTurnToSource: vi.fn(),
       } as any,
-      teamReplyBridge: {
-        observeAcceptedTeamTurnToSource: vi.fn(),
-      } as any,
+      teamReplyBridge: teamReplyBridge as any,
       turnReplyRecoveryService: {
-        resolveReplyText: vi.fn().mockResolvedValue("Recovered team reply"),
+        resolveReplyText,
       } as any,
       replyCallbackServiceFactory: () =>
         ({
@@ -648,9 +769,11 @@ describe("AcceptedReceiptRecoveryRuntime", () => {
       agentRunId: "member-run-1",
       teamRunId: "team-1",
       turnId: "turn-team-bound-1",
-      replyText: "Recovered team reply",
+      replyText: "Live team reply after binding",
       callbackIdempotencyKey: "external-reply:member-run-1:turn-team-bound-1",
     });
+    expect(teamReplyBridge.observeAcceptedTeamTurnToSource).toHaveBeenCalledOnce();
+    expect(resolveReplyText).not.toHaveBeenCalled();
 
     await runtime.stop();
   });
@@ -663,6 +786,7 @@ describe("AcceptedReceiptRecoveryRuntime", () => {
       turnId: null,
     });
     const teamRunService = {
+      getTeamRun: vi.fn().mockReturnValue(null),
       resolveTeamRun: vi.fn().mockResolvedValue({
         runId: "team-1",
         subscribeToEvents: vi.fn(),
@@ -677,6 +801,7 @@ describe("AcceptedReceiptRecoveryRuntime", () => {
         updateAcceptedReceiptCorrelation: vi.fn(),
       } as any,
       agentRunService: {
+        getAgentRun: vi.fn().mockReturnValue(null),
         resolveAgentRun: vi.fn().mockResolvedValue(null),
       } as any,
       teamRunService: teamRunService as any,
@@ -725,9 +850,11 @@ describe("AcceptedReceiptRecoveryRuntime", () => {
     const runtime = new AcceptedReceiptRecoveryRuntime({
       messageReceiptService: messageReceiptService as any,
       agentRunService: {
+        getAgentRun: vi.fn().mockReturnValue(null),
         resolveAgentRun: vi.fn().mockResolvedValue(null),
       } as any,
       teamRunService: {
+        getTeamRun: vi.fn().mockReturnValue(null),
         resolveTeamRun: vi.fn().mockResolvedValue(null),
       } as any,
       agentReplyBridge: {

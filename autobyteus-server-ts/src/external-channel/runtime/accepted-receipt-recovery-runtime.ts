@@ -182,11 +182,6 @@ export class AcceptedReceiptRecoveryRuntime {
       return;
     }
 
-    const persistedPublishHandled = await this.tryPublishPersistedReply(receipt);
-    if (persistedPublishHandled) {
-      return;
-    }
-
     if (!receipt.turnId) {
       if (this.dispatchTurnCaptureRegistry.hasPendingDispatchTurnCapture(receipt)) {
         this.scheduleProcessing(key, OBSERVATION_RECHECK_DELAY_MS);
@@ -209,6 +204,11 @@ export class AcceptedReceiptRecoveryRuntime {
     const observationStarted = await this.tryStartLiveObservation(receipt);
     if (observationStarted) {
       this.scheduleProcessing(key, OBSERVATION_RECHECK_DELAY_MS);
+      return;
+    }
+
+    const persistedPublishHandled = await this.tryPublishPersistedReply(receipt);
+    if (persistedPublishHandled) {
       return;
     }
     this.scheduleProcessing(key, RETRY_DELAY_MS);
@@ -326,6 +326,10 @@ export class AcceptedReceiptRecoveryRuntime {
       return;
     }
 
+    const persistedPublishHandled = await this.tryPublishPersistedReply(receipt);
+    if (persistedPublishHandled) {
+      return;
+    }
     this.scheduleProcessing(toReceiptKey(receipt), RETRY_DELAY_MS);
   }
 
@@ -385,11 +389,11 @@ export class AcceptedReceiptRecoveryRuntime {
   }
 
   private async resolveAgentRun(agentRunId: string) {
-    return this.agentRunService.resolveAgentRun(agentRunId);
+    return this.agentRunService.getAgentRun(agentRunId);
   }
 
   private async resolveTeamRun(teamRunId: string) {
-    return this.teamRunService.resolveTeamRun(teamRunId);
+    return this.teamRunService.getTeamRun(teamRunId);
   }
 }
 
