@@ -62,7 +62,7 @@
 - User verification received:
   - `Yes, on 2026-04-07`
 - Notes:
-  - Stage 10 archival, repository finalization, and release are now in progress
+  - the user verified the fix in the Electron app, then explicitly requested repository finalization and a new release
 
 ## Finalization Record
 
@@ -77,16 +77,20 @@
 - Finalization target branch:
   - `personal`
 - Commit status:
-  - `Pending`
+  - `Complete` (`ce354da fix(runtime): continue agent turns after tool results`, `4ab478a Merge branch 'codex/autobyteus-tool-result-continuation-regression' into personal`, `59fb02d chore(release): bump workspace release version to 1.2.62`, plus this final Stage 10 metadata update)
 - Push status:
-  - `Pending`
+  - `Complete` (`origin/codex/autobyteus-tool-result-continuation-regression` and `origin/personal` updated; tag `v1.2.62` pushed)
 - Merge status:
-  - `Pending`
+  - `Complete` (`codex/autobyteus-tool-result-continuation-regression` merged into `personal`)
 - Release/publication/deployment status:
-  - `Pending`
+  - `Complete`
+  - GitHub release: `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.2.62`
+  - Desktop Release workflow: `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/24070570547` -> `success`
+  - Server Docker Release workflow: `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/24070570577` -> `success`
+  - Release Messaging Gateway workflow: `https://github.com/AutoByteus/autobyteus-workspace/actions/runs/24070570573` -> `success`
 - Worktree cleanup status:
-  - `Pending`
+  - `Complete` (dedicated ticket worktree removed and pruned)
 - Local branch cleanup status:
-  - `Pending`
+  - `Complete` (local branch `codex/autobyteus-tool-result-continuation-regression` deleted after merge)
 - Blockers / notes:
   - `None`
