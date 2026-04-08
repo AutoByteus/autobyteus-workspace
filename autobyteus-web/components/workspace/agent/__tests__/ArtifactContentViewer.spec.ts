@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
+import { defineComponent, reactive } from 'vue';
 import ArtifactContentViewer from '../ArtifactContentViewer.vue';
 
 const {
@@ -58,15 +59,41 @@ describe('ArtifactContentViewer', () => {
     updatedAt: new Date().toISOString(),
   };
 
-  const mountComponent = (artifact: any) => {
+  const mountComponent = (artifact: any, refreshSignal = 0) => {
     return mount(ArtifactContentViewer, {
-      props: { artifact },
+      props: { artifact, refreshSignal },
       global: {
         stubs: {
           Icon: true,
         },
       },
     });
+  };
+
+  const mountReactiveHost = (artifact: any, refreshSignal = 0) => {
+    const state = reactive({
+      artifact,
+      refreshSignal,
+    });
+
+    const wrapper = mount(defineComponent({
+      components: { ArtifactContentViewer },
+      setup: () => ({ state }),
+      template: `
+        <ArtifactContentViewer
+          :artifact="state.artifact"
+          :refresh-signal="state.refreshSignal"
+        />
+      `,
+    }), {
+      global: {
+        stubs: {
+          Icon: true,
+        },
+      },
+    });
+
+    return { wrapper, state };
   };
 
   beforeEach(() => {
@@ -135,6 +162,42 @@ describe('ArtifactContentViewer', () => {
     expect((wrapper.vm as any).viewMode).toBe('preview');
   });
 
+  it('keeps edit_file blank until workspace fetch is available, then refetches after in-place metadata updates', async () => {
+    const fetchMock = vi.mocked(global.fetch);
+    mockGetRun.mockReturnValue({ config: { workspaceId: null } });
+    const { wrapper, state } = mountReactiveHost(reactive({
+      ...defaultArtifact,
+      path: '/workspace/src/test.md',
+      status: 'pending',
+      sourceTool: 'edit_file',
+      content: '@@ -1 +1 @@',
+      workspaceRoot: null,
+    }));
+
+    await flushPromises();
+
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(wrapper.find('[data-testid="file-viewer"]').text()).not.toContain('@@ -1 +1 @@');
+
+    fetchMock.mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      text: async () => 'workspace-backed content',
+    } as Response);
+
+    state.artifact.workspaceRoot = '/workspace';
+    state.artifact.status = 'available';
+    state.artifact.updatedAt = new Date(Date.now() + 1_000).toISOString();
+
+    await flushPromises();
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      'http://localhost:3000/rest/workspaces/ws-1/content?path=src%2Ftest.md',
+      { cache: 'no-store' },
+    );
+    expect(wrapper.find('[data-testid="file-viewer"]').text()).toContain('workspace-backed content');
+  });
+
   it('does not prepend an extra slash for absolute artifact paths in the header', async () => {
     const wrapper = mountComponent({
       ...defaultArtifact,
@@ -192,5 +255,39 @@ describe('ArtifactContentViewer', () => {
     await flushPromises();
 
     expect(wrapper.find('[data-testid="file-viewer"]').text()).toContain('Failed to fetch content (500)');
+  });
+
+  it('retries workspace fetch when the refresh signal changes', async () => {
+    const fetchMock = vi.mocked(global.fetch);
+    fetchMock
+      .mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+        text: async () => '',
+      } as Response)
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        text: async () => 'retried workspace content',
+      } as Response);
+
+    const wrapper = mountComponent({
+      ...defaultArtifact,
+      path: '/workspace/src/test.md',
+      status: 'available',
+      sourceTool: 'edit_file',
+      workspaceRoot: '/workspace',
+    });
+
+    await flushPromises();
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(wrapper.find('[data-testid="file-viewer"]').text()).toContain('Failed to fetch content (500)');
+
+    await wrapper.setProps({ refreshSignal: 1 });
+    await flushPromises();
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(wrapper.find('[data-testid="file-viewer"]').text()).toContain('retried workspace content');
   });
 });

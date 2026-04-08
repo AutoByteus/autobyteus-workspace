@@ -1,72 +1,111 @@
-import { describe, it, expect, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mount } from '@vue/test-utils';
-import { createTestingPinia } from '@pinia/testing';
 import ArtifactsTab from '../ArtifactsTab.vue';
-import ArtifactList from '../ArtifactList.vue';
-import { useAgentArtifactsStore } from '~/stores/agentArtifactsStore';
+
+const {
+  mockArtifactsStore,
+  mockActiveContextStore,
+  state,
+} = vi.hoisted(() => {
+  const state = {
+    runId: 'run-1',
+    artifacts: [] as any[],
+    latestVisibleArtifactSignal: null as string | null,
+    latestVisibleArtifactId: null as string | null,
+  };
+
+  return {
+    state,
+    mockArtifactsStore: {
+      getArtifactsForRun: vi.fn((runId: string) => (runId === state.runId ? state.artifacts : [])),
+      getLatestVisibleArtifactSignalForRun: vi.fn((runId: string) =>
+        runId === state.runId ? state.latestVisibleArtifactSignal : null,
+      ),
+      getLatestVisibleArtifactIdForRun: vi.fn((runId: string) =>
+        runId === state.runId ? state.latestVisibleArtifactId : null,
+      ),
+    },
+    mockActiveContextStore: {
+      get activeAgentContext() {
+        return { state: { runId: state.runId } };
+      },
+    },
+  };
+});
+
+vi.mock('~/stores/agentArtifactsStore', () => ({
+  useAgentArtifactsStore: () => mockArtifactsStore,
+}));
+
+vi.mock('~/stores/activeContextStore', () => ({
+  useActiveContextStore: () => mockActiveContextStore,
+}));
 
 describe('ArtifactsTab.vue', () => {
-    it('renders with split pane layout', () => {
-        const wrapper = mount(ArtifactsTab, {
-            global: {
-                plugins: [createTestingPinia({
-                    createSpy: vi.fn,
-                })],
-                stubs: {
-                    ArtifactList: true,
-                    ArtifactContentViewer: true,
-                }
-            }
-        });
-
-        // Check for two main panes and a handle
-        // We expect components to be present.
-        // Use findComponent which throws if not found is safer or check exists
-        expect(wrapper.findComponent(ArtifactList).exists()).toBe(true);
-        expect(wrapper.findComponent({ name: 'ArtifactContentViewer' }).exists()).toBe(true);
-        
-        // Check for drag handle
-        expect(wrapper.find('.cursor-col-resize').exists()).toBe(true);
+  const mountComponent = () =>
+    mount(ArtifactsTab, {
+      global: {
+        stubs: {
+          ArtifactList: {
+            name: 'ArtifactList',
+            template: '<div class="artifact-list-stub"></div>',
+            props: ['artifacts', 'selectedArtifactId'],
+            emits: ['select'],
+          },
+          ArtifactContentViewer: {
+            name: 'ArtifactContentViewer',
+            template: '<div class="artifact-viewer-stub"></div>',
+            props: ['artifact', 'refreshSignal'],
+          },
+        },
+      },
     });
 
-    it('passes selected artifact to viewer', async () => {
-        const wrapper = mount(ArtifactsTab, {
-             global: {
-                plugins: [createTestingPinia({
-                    createSpy: vi.fn,
-                    initialState: {
-                        agentArtifacts: {
-                             // Mock store state if complex, or just use store actions
-                        }
-                    }
-                })],
-                // We use shallowMount or stubs. If stubs, ensure component name matches exactly what is used in template.
-                stubs: {
-                    ArtifactList: {
-                        name: 'ArtifactList',
-                        template: '<div class="artifact-list-stub"></div>',
-                        props: ['artifacts', 'selectedArtifactId'],
-                        emits: ['select']
-                    },
-                    ArtifactContentViewer: {
-                        name: 'ArtifactContentViewer',
-                        template: '<div class="artifact-viewer-stub"></div>',
-                        props: ['artifact'],
-                    },
-                }
-            }
-        });
-        await wrapper.vm.$nextTick();
-        
-        // Trigger select on list
-        const list = wrapper.findComponent({ name: 'ArtifactList' });
-        expect(list.exists()).toBe(true);
-        
-        list.vm.$emit('select', { id: '1', path: 'test.txt' });
-        await wrapper.vm.$nextTick();
-        await new Promise(resolve => setTimeout(resolve, 0));
-        
-        const viewer = wrapper.findComponent({ name: 'ArtifactContentViewer' });
-        expect(viewer.exists()).toBe(true);
-    });
+  beforeEach(() => {
+    state.runId = 'run-1';
+    state.artifacts = [];
+    state.latestVisibleArtifactSignal = null;
+    state.latestVisibleArtifactId = null;
+    mockArtifactsStore.getArtifactsForRun.mockClear();
+    mockArtifactsStore.getLatestVisibleArtifactSignalForRun.mockClear();
+    mockArtifactsStore.getLatestVisibleArtifactIdForRun.mockClear();
+  });
+
+  it('renders with split pane layout', () => {
+    const wrapper = mountComponent();
+
+    expect(wrapper.findComponent({ name: 'ArtifactList' }).exists()).toBe(true);
+    expect(wrapper.findComponent({ name: 'ArtifactContentViewer' }).exists()).toBe(true);
+    expect(wrapper.find('.cursor-col-resize').exists()).toBe(true);
+  });
+
+  it('passes the selected artifact to the viewer and retries on same-row clicks', async () => {
+    state.artifacts = [
+      {
+        id: '1',
+        runId: 'run-1',
+        path: 'src/test.md',
+        type: 'file',
+        status: 'available',
+        sourceTool: 'edit_file',
+        createdAt: '2026-04-08T00:00:00.000Z',
+        updatedAt: '2026-04-08T00:00:00.000Z',
+      },
+    ];
+
+    const wrapper = mountComponent();
+    await wrapper.vm.$nextTick();
+
+    const list = wrapper.findComponent({ name: 'ArtifactList' });
+    const viewer = wrapper.findComponent({ name: 'ArtifactContentViewer' });
+
+    expect(viewer.props('artifact')).toEqual(state.artifacts[0]);
+    expect(viewer.props('refreshSignal')).toBe(0);
+
+    list.vm.$emit('select', state.artifacts[0]);
+    await wrapper.vm.$nextTick();
+
+    expect(viewer.props('artifact')).toEqual(state.artifacts[0]);
+    expect(viewer.props('refreshSignal')).toBe(1);
+  });
 });
