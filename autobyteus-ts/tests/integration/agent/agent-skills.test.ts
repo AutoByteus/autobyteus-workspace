@@ -28,11 +28,20 @@ class DummyLLM extends BaseLLM {
 const createTempSkillDir = () => {
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'autobyteus-skill-'));
   const skillPath = path.join(tempDir, 'java_expert');
-  fs.mkdirSync(skillPath, { recursive: true });
+  fs.mkdirSync(path.join(skillPath, 'references'), { recursive: true });
   const skillFile = path.join(skillPath, 'SKILL.md');
+  fs.writeFileSync(path.join(skillPath, 'reference.md'), 'Reference', 'utf8');
+  fs.writeFileSync(path.join(skillPath, 'references', 'deep.md'), 'Deep', 'utf8');
   fs.writeFileSync(
     skillFile,
-    ['---', 'name: java_expert', 'description: Java expert', '---', 'Java Map Body'].join('\n'),
+    [
+      '---',
+      'name: java_expert',
+      'description: Java expert',
+      '---',
+      'Read [reference.md](reference.md).',
+      'Read [deep](references/deep.md).'
+    ].join('\n'),
     'utf8'
   );
   return { tempDir, skillPath };
@@ -92,10 +101,18 @@ describe('AgentFactory skill integration', () => {
 
       expect(systemPrompt).toContain('## Agent Skills');
       expect(systemPrompt).toContain('### Skill Catalog');
-      expect(systemPrompt).toContain('Java Map Body');
       expect(systemPrompt).toContain(`**Skill Base Path:** \`${skillPath}\``);
-      expect(systemPrompt).toContain('Path Resolution Required for Skill Files');
+      expect(systemPrompt).toContain(
+        'Path Resolution Required for Remaining Relative Skill References'
+      );
+      expect(systemPrompt).toContain(
+        'Resolvable Markdown links are already rewritten to absolute filesystem paths before injection.'
+      );
       expect(systemPrompt).not.toContain('To load a skill not shown in detail below, use the `load_skill` tool.');
+      expect(systemPrompt).toContain(`[reference.md](${path.join(skillPath, 'reference.md')})`);
+      expect(systemPrompt).toContain(
+        `[deep](${path.join(skillPath, 'references', 'deep.md')})`
+      );
       expect(agent.context.config.skills).toContain('java_expert');
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });

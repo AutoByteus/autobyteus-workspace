@@ -33,8 +33,13 @@ describe('load_skill tool', () => {
   it('loads a skill by name', async () => {
     const tempDir = createTempDir();
     const skillPath = path.join(tempDir, 'test_skill');
-    fs.mkdirSync(skillPath);
-    fs.writeFileSync(path.join(skillPath, 'SKILL.md'), '---\nname: test_skill\ndescription: A test skill\n---\nBody of the skill.');
+    fs.mkdirSync(path.join(skillPath, 'references'), { recursive: true });
+    fs.writeFileSync(path.join(skillPath, 'guide.md'), 'guide', 'utf8');
+    fs.writeFileSync(path.join(skillPath, 'references', 'extra.md'), 'extra', 'utf8');
+    fs.writeFileSync(
+      path.join(skillPath, 'SKILL.md'),
+      '---\nname: test_skill\ndescription: A test skill\n---\nRead [guide](guide.md).\nRead [extra](references/extra.md).'
+    );
 
     const registry = new SkillRegistry();
     registry.registerSkillFromPath(skillPath);
@@ -45,8 +50,12 @@ describe('load_skill tool', () => {
     expect(result).toContain('## Skill: test_skill');
     expect(result).toContain(`Skill Base Path: ${skillPath}`);
     expect(result).toContain('CRITICAL: Path Resolution');
+    expect(result).toContain(
+      'Resolvable Markdown links in this skill are already rewritten to absolute filesystem paths below.'
+    );
     expect(result).toContain('Skill Base Path above');
-    expect(result).toContain('Body of the skill.');
+    expect(result).toContain(`[guide](${path.join(skillPath, 'guide.md')})`);
+    expect(result).toContain(`[extra](${path.join(skillPath, 'references', 'extra.md')})`);
 
     removeDir(tempDir);
   });
@@ -55,7 +64,11 @@ describe('load_skill tool', () => {
     const tempDir = createTempDir();
     const skillPath = path.join(tempDir, 'test_skill');
     fs.mkdirSync(skillPath);
-    fs.writeFileSync(path.join(skillPath, 'SKILL.md'), '---\nname: test_skill\ndescription: A test skill\n---\nBody of the skill.');
+    fs.writeFileSync(path.join(skillPath, 'guide.md'), 'guide', 'utf8');
+    fs.writeFileSync(
+      path.join(skillPath, 'SKILL.md'),
+      '---\nname: test_skill\ndescription: A test skill\n---\nRead [guide](guide.md).'
+    );
 
     const toolInstance = defaultToolRegistry.createTool(TOOL_NAME) as BaseTool;
     const result = await toolInstance.execute({ agentId: 'test_agent' }, { skill_name: skillPath });
@@ -63,8 +76,11 @@ describe('load_skill tool', () => {
     expect(result).toContain('## Skill: test_skill');
     expect(result).toContain(`Skill Base Path: ${skillPath}`);
     expect(result).toContain('CRITICAL: Path Resolution');
+    expect(result).toContain(
+      'Resolvable Markdown links in this skill are already rewritten to absolute filesystem paths below.'
+    );
     expect(result).toContain('Skill Base Path above');
-    expect(result).toContain('Body of the skill.');
+    expect(result).toContain(`[guide](${path.join(skillPath, 'guide.md')})`);
 
     removeDir(tempDir);
   });

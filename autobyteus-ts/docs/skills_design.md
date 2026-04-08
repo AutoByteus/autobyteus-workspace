@@ -61,11 +61,19 @@ You are a Java Expert.
 
 **Path Resolution (Context Injection)**
 
-Skill authors write standard relative paths (e.g., `./scripts/...` or `scripts/...`) in their `SKILL.md`. At runtime, the system injects the skill content with:
+Skill authors still write portable relative paths (e.g., `./scripts/...` or `scripts/...`) in `SKILL.md`.
+Before skill content is shown to the model, the runtime rewrites any Markdown link target that is:
+
+- relative
+- resolvable from the skill root
+- not already an external URL, anchor, or absolute path
+
+into an absolute filesystem path. This means linked files usually arrive in model-visible skill content already ready for direct tool use.
+The runtime still injects:
 
 1. A **Skill Catalog** listing all available skills
-2. **Critical Rules** for path resolution (applies to ALL skills)
-3. **Skill Details** with each preloaded skill's Root Path and content
+2. **Critical Rules** for any remaining plain-text or unresolved relative references
+3. **Skill Details** with each preloaded skill's Root Path and formatted content
 
 _Injection Format Example:_
 
@@ -80,12 +88,12 @@ To load a skill not shown in detail below, use the `load_skill` tool.
 
 ### Critical Rules for Using Skills
 
-> **Path Resolution Required for Skill Files**
+> **Path Resolution Required for Remaining Relative Skill References**
 >
-> Skill instructions use relative paths (e.g., `./scripts/run.sh` or `scripts/run.sh`) to refer to internal files.
-> However, standard tools resolve relative paths against the User's Workspace, not the skill directory.
+> Resolvable Markdown links are already rewritten to absolute filesystem paths before injection.
+> However, plain-text relative references or unresolved targets may still appear in the skill content.
 >
-> When using ANY file from a skill, you MUST convert its path to ABSOLUTE:
+> When a skill refers to a file by a remaining relative path, convert it to ABSOLUTE:
 > `Root Path` + `Relative Path` = `Absolute Path`
 >
 > **Examples:**
@@ -134,7 +142,7 @@ A standard Agent Tool enabling autonomy.
 - **Arguments**: `skill_name` (string)
 - **Behavior**:
   1.  Validates the skill exists in `SkillRegistry`.
-  2.  Returns a formatted string containing the `SKILL.md` content and the `root_path`.
+  2.  Returns a formatted string containing the `SKILL.md` content, the `root_path`, and any resolvable relative Markdown links already rewritten to absolute filesystem paths.
 
 ## 3. Configuration & Integration
 
@@ -170,20 +178,21 @@ For flexible agents, skills are discovered on demand.
 
 ## 4. Execution Flow: The Universal "Deep Dive"
 
-Regardless of _how_ the skill map (`SKILL.md`) was loaded (Preloaded vs. Dynamic), the "Deep Dive" phase is identical.
+Regardless of _how_ the skill map (`SKILL.md`) was loaded (Preloaded vs. Dynamic), the "Deep Dive" phase follows the same rules.
 
-1.  **Possession of the Map**: The Agent has the `SKILL.md` content (either in System Prompt or recent context).
-2.  **Reading the Map**: The Agent reads: _"For template X, see ./templates/X.java"_.
+1.  **Possession of the Map**: The Agent has formatted `SKILL.md` content (either in System Prompt or recent context).
+2.  **Reading the Map**: The Agent reads skill instructions. Markdown links may already contain absolute filesystem paths.
 3.  **The "Deep Dive" Action**:
-    - The Agent constructs the absolute path by combining the skill's `root_path` with the relative path (e.g., `/home/user/skills/java_expert` + `./templates/X.java` = `/home/user/skills/java_expert/templates/X.java`).
-    - The Agent then calls the `read_file` tool, passing this absolute path as the `path` parameter.
+    - If the skill content already exposes an absolute path, the Agent can pass that path directly to `read_file`.
+    - If the skill instruction uses a remaining plain-text relative path, the Agent constructs the absolute path by combining the skill's `root_path` with the relative path (e.g., `/home/user/skills/java_expert` + `./templates/X.java` = `/home/user/skills/java_expert/templates/X.java`).
+    - The Agent then calls the `read_file` tool, passing the absolute path as the `path` parameter.
 
 ### Example: Preloaded "Java Agent" (Static)
 
 1.  **Startup**: `AgentConfig` has `skills=["java_expert"]`. System Prompt includes `SKILL.md` for `java_expert`.
 2.  **User**: "Create a Spring Boot app."
-3.  **Reasoning**: Agent immediately knows where the template is (from System Prompt).
-4.  **Action**: Constructs the absolute path and calls `read_file` with that path.
+3.  **Reasoning**: Agent sees the template link already rewritten to an absolute path in the System Prompt.
+4.  **Action**: Calls `read_file` with that absolute path.
 
 ### Example: Dynamic "General Assistant" (On-Demand)
 
@@ -191,12 +200,13 @@ Regardless of _how_ the skill map (`SKILL.md`) was loaded (Preloaded vs. Dynamic
 2.  **User**: "I need to fix a Java bug, please use the java skill."
 3.  **Reasoning**: "The user requested the java skill. I should load it."
 4.  **Action 1**: Calls `load_skill` with the skill name `java_expert`.
-5.  **Observation**: Receives `SKILL.md` content and root path.
-6.  **Reasoning**: "The map says debugging docs are at ./docs/memory.md. I need to construct the absolute path."
-7.  **Action 2**: Constructs the absolute path (root path + `./docs/memory.md`) and calls `read_file` with that path.
+5.  **Observation**: Receives formatted `SKILL.md` content and root path.
+6.  **Reasoning**: "The debugging docs link is already absolute, so I can read it directly."
+7.  **Action 2**: Calls `read_file` with that absolute path.
 
 ## 5. Benefits
 
 1.  **Infinite Extensibility**: A skill can contain entire libraries, specialized CLI tools, or encyclopedias of text, without bloating the prompt.
-2.  **Polyglot Support**: A skill folder can contain Python scripts, Java JARs, Bash scripts, etc. To execute a script, the agent constructs the absolute path and calls the appropriate tool (e.g., `run_bash` for shell scripts, or uses Node.js/ts-node for `.js`/`.ts` files if installed).
+2.  **Polyglot Support**: A skill folder can contain Python scripts, Java JARs, Bash scripts, etc. Linked assets can already appear as absolute tool-usable paths, and plain-text relative references can still be resolved through the emitted root path when needed.
 3.  **Context Efficiency**: The Agent only loads the "Index" (`SKILL.md`). It only pays the context cost for "Deep Dive" items if the specific task requires them.
+4.  **Lower Path-Arithmetic Error Rate**: Common linked skill references no longer require the model to manually compute an absolute path before calling file tools.

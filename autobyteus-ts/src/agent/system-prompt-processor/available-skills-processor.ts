@@ -1,5 +1,6 @@
 import { BaseSystemPromptProcessor } from './base-processor.js';
 import { SkillRegistry } from '../../skills/registry.js';
+import { formatSkillContentForPrompt } from '../../skills/format-skill-content-for-prompt.js';
 import { SkillAccessMode, resolveSkillAccessMode } from '../context/skill-access-mode.js';
 import type { BaseTool } from '../../tools/base-tool.js';
 import type { AgentContextLike } from '../context/agent-context-like.js';
@@ -63,7 +64,7 @@ export class AvailableSkillsProcessor extends BaseSystemPromptProcessor {
         preloadedSkillSet.has(skill.name)
       ) {
         detailedSections.push(
-          `#### ${skill.name}\n**Skill Base Path:** \`${skill.rootPath}\`\n\n${skill.content}`
+          `#### ${skill.name}\n**Skill Base Path:** \`${skill.rootPath}\`\n\n${formatSkillContentForPrompt(skill)}`
         );
       }
     }
@@ -79,12 +80,12 @@ export class AvailableSkillsProcessor extends BaseSystemPromptProcessor {
       skillsBlock += `
 ### Critical Rules for Using Skills
 
-> **Path Resolution Required for Skill Files**
+> **Path Resolution Required for Remaining Relative Skill References**
 > 
-> Skill instructions use relative paths (e.g., \`./scripts/run.sh\` or \`scripts/run.sh\`) to refer to internal files.
-> However, standard tools resolve relative paths against the User's Workspace, not the skill directory.
+> Resolvable Markdown links are already rewritten to absolute filesystem paths before injection.
+> However, plain-text relative references or unresolved targets may still appear in skill instructions.
 > 
-> When using ANY file from a skill, you MUST convert its path to ABSOLUTE:
+> When a skill refers to a file by a remaining relative path, you MUST convert it to ABSOLUTE:
 > \`Skill Base Path\` + \`Relative Path\` = \`Absolute Path\`
 > 
 > **Examples:**

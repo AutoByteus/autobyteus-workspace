@@ -3,6 +3,7 @@ import { tool } from '../functional-tool.js';
 import type { BaseTool } from '../base-tool.js';
 import { ToolCategory } from '../tool-category.js';
 import { SkillRegistry } from '../../skills/registry.js';
+import { formatSkillContentForPrompt } from '../../skills/format-skill-content-for-prompt.js';
 import { defaultToolRegistry } from '../registry/tool-registry.js';
 import { SkillAccessMode, resolveSkillAccessMode } from '../../agent/context/skill-access-mode.js';
 
@@ -70,7 +71,7 @@ export async function loadSkill(context: SkillAwareContext | null | undefined, s
     );
   }
 
-  return `## Skill: ${skill.name}\nSkill Base Path: ${skill.rootPath}\n\n> **CRITICAL: Path Resolution When Using Tools**\n> \n> This skill uses relative paths. When using any tool that requires a file path,\n> you MUST first construct the full absolute path by combining the Skill Base Path above\n> with the relative path from the skill instructions.\n> \n> **Example:** Skill Base Path + \`./scripts/format.sh\` = \`${skill.rootPath}/scripts/format.sh\`\n\n${skill.content}`;
+  return `## Skill: ${skill.name}\nSkill Base Path: ${skill.rootPath}\n\n> **CRITICAL: Path Resolution When Using Tools**\n> \n> Resolvable Markdown links in this skill are already rewritten to absolute filesystem paths below.\n> If the skill refers to a remaining plain-text relative path, you MUST construct the full absolute path by combining the Skill Base Path above\n> with that relative path from the skill instructions.\n> \n> **Example:** Skill Base Path + \`./scripts/format.sh\` = \`${skill.rootPath}/scripts/format.sh\`\n\n${formatSkillContentForPrompt(skill)}`;
 }
 
 const TOOL_NAME = 'load_skill';
