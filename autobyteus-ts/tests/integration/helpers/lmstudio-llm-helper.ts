@@ -2,7 +2,7 @@ import { LLMFactory } from '../../../src/llm/llm-factory.js';
 import { LLMRuntime } from '../../../src/llm/runtimes.js';
 import type { BaseLLM } from '../../../src/llm/base.js';
 
-const DEFAULT_TEXT_MODEL = 'qwen/qwen3-30b-a3b-2507';
+const DEFAULT_TEXT_MODEL = 'qwen/qwen3.5-35b-a3b';
 const MODEL_ENV_VAR = 'LMSTUDIO_MODEL_ID';
 
 let cachedModelId: string | null = null;

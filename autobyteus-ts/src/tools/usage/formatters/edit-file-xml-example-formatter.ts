@@ -29,7 +29,7 @@ __END_PATCH__
 
 <tool name="edit_file">
     <arguments>
-        <arg name="path">config/settings.yaml</arg>
+        <arg name="path">/path/to/config/settings.yaml</arg>
         <arg name="patch">
 __START_PATCH__
 --- a/settings.yaml

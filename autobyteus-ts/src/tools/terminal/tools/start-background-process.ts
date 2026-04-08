@@ -1,11 +1,10 @@
-import os from 'node:os';
 import { tool } from '../../functional-tool.js';
 import type { BaseTool } from '../../base-tool.js';
 import { ToolCategory } from '../../tool-category.js';
 import { ParameterSchema, ParameterDefinition, ParameterType } from '../../../utils/parameter-schema.js';
 import { defaultToolRegistry } from '../../registry/tool-registry.js';
 import { BackgroundProcessManager } from '../background-process-manager.js';
-import type { AgentContextLike } from './run-bash.js';
+import { resolveExecutionCwd, type AgentContextLike } from './run-bash.js';
 
 let defaultBackgroundManager: BackgroundProcessManager | null = null;
 
@@ -32,33 +31,31 @@ function getBackgroundManager(context: AgentContextLike | null | undefined): Bac
 
   return existing;
 }
-
-function getCwd(context: AgentContextLike | null | undefined): string {
-  const workspaceRootPath = context?.workspaceRootPath;
-  if (workspaceRootPath && typeof workspaceRootPath === 'string') {
-    return workspaceRootPath;
-  }
-
-  return os.tmpdir();
-}
-
 export async function startBackgroundProcess(
   context: AgentContextLike | null,
-  command: string
-): Promise<{ processId: string; status: string }> {
+  command: string,
+  cwd?: string | null
+): Promise<{ processId: string; status: string; effectiveCwd: string }> {
   const manager = getBackgroundManager(context);
-  const cwd = getCwd(context);
+  const resolvedCwd = resolveExecutionCwd(context, cwd);
 
-  const processId = await manager.startProcess(command, cwd);
-  return { processId, status: 'started' };
+  const processId = await manager.startProcess(command, resolvedCwd);
+  return { processId, status: 'started', effectiveCwd: resolvedCwd };
 }
 
 const argumentSchema = new ParameterSchema();
 argumentSchema.addParameter(new ParameterDefinition({
   name: 'command',
   type: ParameterType.STRING,
-  description: "Parameter 'command' for tool 'start_background_process'.",
+  description: "Shell command to execute in the background.",
   required: true
+}));
+argumentSchema.addParameter(new ParameterDefinition({
+  name: 'cwd',
+  type: ParameterType.STRING,
+  description:
+    "Optional working-directory path for this process. Absolute paths are allowed. Relative paths are resolved from the workspace root when available. If omitted, the workspace root is used when available. If a task targets a nested directory, pass that same cwd on every location-sensitive command in that directory.",
+  required: false
 }));
 
 const TOOL_NAME = 'start_background_process';
@@ -68,10 +65,11 @@ export function registerStartBackgroundProcessTool(): BaseTool {
   if (!defaultToolRegistry.getToolDefinition(TOOL_NAME)) {
     cachedTool = tool({
       name: TOOL_NAME,
-      description: 'Start a long-running process in the background and return its process_id.',
+      description:
+        'Start a long-running process in a working directory and return its process_id. If cwd is omitted, the workspace root is used. If cwd is provided, it may be absolute or workspace-root-relative. The result includes effectiveCwd so you can confirm where the process started.',
       argumentSchema,
       category: ToolCategory.SYSTEM,
-      paramNames: ['context', 'command']
+      paramNames: ['context', 'command', 'cwd']
     })(startBackgroundProcess) as BaseTool;
     return cachedTool;
   }

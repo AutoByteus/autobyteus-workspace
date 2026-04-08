@@ -3,19 +3,21 @@ import { BackgroundProcessOutput, ProcessInfo, TerminalResult } from '../../../.
 
 describe('terminal types', () => {
   it('creates TerminalResult with provided values', () => {
-    const result = new TerminalResult('out', 'err', 0, false);
+    const result = new TerminalResult('out', 'err', 0, false, '/tmp/project');
 
     expect(result.stdout).toBe('out');
     expect(result.stderr).toBe('err');
     expect(result.exitCode).toBe(0);
     expect(result.timedOut).toBe(false);
+    expect(result.effectiveCwd).toBe('/tmp/project');
   });
 
   it('allows null exitCode for TerminalResult', () => {
-    const result = new TerminalResult('out', '', null, true);
+    const result = new TerminalResult('out', '', null, true, '/tmp/project');
 
     expect(result.exitCode).toBeNull();
     expect(result.timedOut).toBe(true);
+    expect(result.effectiveCwd).toBe('/tmp/project');
   });
 
   it('creates BackgroundProcessOutput with provided values', () => {

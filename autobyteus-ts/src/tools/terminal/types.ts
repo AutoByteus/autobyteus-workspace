@@ -3,12 +3,14 @@ export class TerminalResult {
   stderr: string;
   exitCode: number | null;
   timedOut: boolean;
+  effectiveCwd: string;
 
-  constructor(stdout: string, stderr: string, exitCode: number | null, timedOut: boolean) {
+  constructor(stdout: string, stderr: string, exitCode: number | null, timedOut: boolean, effectiveCwd: string) {
     this.stdout = stdout;
     this.stderr = stderr;
     this.exitCode = exitCode;
     this.timedOut = timedOut;
+    this.effectiveCwd = effectiveCwd;
   }
 
   toJSON(): Record<string, unknown> {
@@ -16,7 +18,8 @@ export class TerminalResult {
       stdout: this.stdout,
       stderr: this.stderr,
       exitCode: this.exitCode,
-      timedOut: this.timedOut
+      timedOut: this.timedOut,
+      effectiveCwd: this.effectiveCwd
     };
   }
 }

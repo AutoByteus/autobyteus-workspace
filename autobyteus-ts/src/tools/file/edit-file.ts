@@ -1,26 +1,28 @@
 import fs from 'fs/promises';
-import pathModule from 'path';
 import { tool } from '../functional-tool.js';
 import type { BaseTool } from '../base-tool.js';
 import { ToolCategory } from '../tool-category.js';
 import { defaultToolRegistry } from '../registry/tool-registry.js';
 import { ParameterSchema, ParameterDefinition, ParameterType } from '../../utils/parameter-schema.js';
 import { applyUnifiedDiff, PatchApplicationError } from '../../utils/diff-utils.js';
+import { resolveAbsolutePath } from './workspace-path-utils.js';
 
 const DESCRIPTION =
-  'Applies a unified diff patch to update a text file without overwriting unrelated content.';
+  'Applies a diff-style patch to one file without overwriting unrelated content. Provide a git diff or unified diff patch for the target file. Use this for surgical patch edits. If exact text replacement is easier, use replace_in_file. If you only need to insert new text near an exact anchor, use insert_in_file.';
 
 const argumentSchema = new ParameterSchema();
 argumentSchema.addParameter(new ParameterDefinition({
   name: 'path',
   type: ParameterType.STRING,
-  description: 'Path to the target file.',
+  description:
+    'The filesystem path to the file to patch. This may be absolute or relative to the configured workspace root. It is never resolved from prior shell cd state.',
   required: true
 }));
 argumentSchema.addParameter(new ParameterDefinition({
   name: 'patch',
   type: ParameterType.STRING,
-  description: 'Unified diff hunks describing edits to apply.',
+  description:
+    'A git diff or unified diff patch for this file. Use numeric hunk headers such as @@ -10,7 +10,8 @@ and match the file style exactly.',
   required: true
 }));
 
@@ -34,27 +36,12 @@ function splitLinesKeepEnds(text: string): string[] {
   return matches;
 }
 
-function resolveFilePath(context: AgentContextLike, path: string): string {
-  if (pathModule.isAbsolute(path)) {
-    return pathModule.normalize(path);
-  }
-
-  const workspaceRootPath = context.workspaceRootPath ?? null;
-  if (!workspaceRootPath) {
-    throw new Error(
-      `Relative path '${path}' provided, but no workspace is configured for agent '${context.agentId}'. A workspace is required to resolve relative paths.`
-    );
-  }
-  return pathModule.normalize(pathModule.join(workspaceRootPath, path));
-}
-
 export async function editFile(
   context: AgentContextLike,
   path: string,
   patch: string
 ): Promise<string> {
-  const returnPath = pathModule.normalize(path);
-  const finalPath = resolveFilePath(context, path);
+  const finalPath = resolveAbsolutePath(context, path);
 
   try {
     await fs.access(finalPath);
@@ -89,11 +76,14 @@ export async function editFile(
     }
 
     if (!patchedLines) {
-      throw patchError ?? new PatchApplicationError('Patch could not be applied.');
+      const patchFailure = patchError ?? new PatchApplicationError('Patch could not be applied.');
+      throw new PatchApplicationError(
+        `${patchFailure.message} Read the file again and retry with a more precise patch, or use replace_in_file / insert_in_file for exact text edits.`
+      );
     }
 
     await fs.writeFile(finalPath, patchedLines.join(''), 'utf-8');
-    return `File edited successfully at ${returnPath}`;
+    return `File edited successfully at ${finalPath}`;
   } catch (error) {
     if (error instanceof PatchApplicationError) {
       throw error;

@@ -79,7 +79,7 @@ describe('read_file tool (integration)', () => {
     await expect(tool.execute(context, {})).rejects.toThrow(`Invalid arguments for tool '${TOOL_NAME_READ_FILE}'`);
   });
 
-  it('resolves relative paths against workspace', async () => {
+  it('resolves relative paths from the workspace root', async () => {
     const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-read-file-'));
     const filePath = path.join(tmpDir, 'relative_reader_test.txt');
     await fs.writeFile(filePath, 'Relative path content for read_file', 'utf-8');
@@ -90,8 +90,18 @@ describe('read_file tool (integration)', () => {
       workspaceRootPath: tmpDir 
     };
 
-    const content = await tool.execute(context, { path: 'relative_reader_test.txt' });
-    expect(content).toBe('1: Relative path content for read_file');
+    await expect(tool.execute(context, { path: 'relative_reader_test.txt' })).resolves.toBe(
+      '1: Relative path content for read_file'
+    );
+  });
+
+  it('rejects relative paths when no workspace root is configured', async () => {
+    const tool = getToolInstance();
+    const context: MockContext = { agentId: 'agent', workspaceRootPath: null };
+
+    await expect(tool.execute(context, { path: 'relative_reader_test.txt' })).rejects.toThrow(
+      'but no workspace root is configured'
+    );
   });
 
   it('returns empty string for empty file', async () => {
@@ -107,15 +117,30 @@ describe('read_file tool (integration)', () => {
 
   it('throws when file does not exist', async () => {
     const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-read-file-'));
+    const missingPath = path.join(tmpDir, 'non_existent_reader_file.txt');
     const tool = getToolInstance();
     const context: MockContext = {
       agentId: 'agent',
       workspaceRootPath: tmpDir 
     };
 
-    await expect(
-      tool.execute(context, { path: 'non_existent_reader_file.txt' })
-    ).rejects.toThrow('does not exist');
+    await expect(tool.execute(context, { path: missingPath })).rejects.toThrow('does not exist');
+  });
+
+  it('allows absolute paths outside the workspace root', async () => {
+    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-read-file-'));
+    const workspaceDir = path.join(tmpDir, 'workspace');
+    const outsidePath = path.join(tmpDir, 'escaped.txt');
+    await fs.mkdir(workspaceDir, { recursive: true });
+    await fs.writeFile(outsidePath, 'Escaped read content', 'utf-8');
+    const tool = getToolInstance();
+    const context: MockContext = {
+      agentId: 'agent',
+      workspaceRootPath: workspaceDir
+    };
+
+    const content = await tool.execute(context, { path: outsidePath });
+    expect(content).toBe('1: Escaped read content');
   });
 
   it('wraps IO errors', async () => {

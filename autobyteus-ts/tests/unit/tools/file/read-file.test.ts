@@ -29,7 +29,8 @@ describe('read_file tool definition', () => {
     expect(paramPath?.type).toBe(ParameterType.STRING);
     expect(paramPath?.required).toBe(true);
     expect(paramPath?.description).toContain("Parameter 'path' for tool 'read_file'");
-    expect(paramPath?.description).toContain('This is expected to be a path.');
+    expect(paramPath?.description).toContain('absolute filesystem path or a path relative to the configured workspace root');
+    expect(paramPath?.description).toContain('prior shell cd state');
 
     const paramStartLine = schema?.getParameter('start_line');
     expect(paramStartLine?.type).toBe(ParameterType.INTEGER);
@@ -50,7 +51,8 @@ describe('read_file tool definition', () => {
     expect(xmlOutput).toContain(`<tool name="${TOOL_NAME_READ_FILE}"`);
     expect(xmlOutput).toContain('Reads content from a specified file');
     expect(xmlOutput).toContain("Parameter 'path' for tool 'read_file'");
-    expect(xmlOutput).toContain('This is expected to be a path.');
+    expect(xmlOutput).toContain('absolute filesystem path or a path relative to the configured workspace root');
+    expect(xmlOutput).toContain('prior shell cd state');
     expect(xmlOutput).toContain('include_line_numbers');
     expect(xmlOutput).toContain('default="True"');
   });

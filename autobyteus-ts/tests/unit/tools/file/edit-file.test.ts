@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { defaultToolRegistry, ToolRegistry } from '../../../../src/tools/registry/tool-registry.js';
+import { defaultToolRegistry } from '../../../../src/tools/registry/tool-registry.js';
 import { ToolDefinition } from '../../../../src/tools/registry/tool-definition.js';
 import { ParameterSchema, ParameterDefinition, ParameterType } from '../../../../src/utils/parameter-schema.js';
 import { PatchApplicationError, registerEditFileTool } from '../../../../src/tools/file/edit-file.js';
@@ -26,7 +26,7 @@ describe('edit_file tool', () => {
     const definition = defaultToolRegistry.getToolDefinition(TOOL_NAME_EDIT_FILE);
     expect(definition).toBeInstanceOf(ToolDefinition);
     expect(definition?.name).toBe(TOOL_NAME_EDIT_FILE);
-    expect(definition?.description).toContain('Applies a unified diff patch');
+    expect(definition?.description).toContain('Applies a diff-style patch');
 
     const schema = definition?.argumentSchema;
     expect(schema).toBeInstanceOf(ParameterSchema);
@@ -36,19 +36,45 @@ describe('edit_file tool', () => {
     expect(pathParam).toBeInstanceOf(ParameterDefinition);
     expect(pathParam?.type).toBe(ParameterType.STRING);
     expect(pathParam?.required).toBe(true);
+    expect(pathParam?.description).toContain('absolute or relative to the configured workspace root');
 
     const patchParam = schema?.getParameter('patch');
     expect(patchParam).toBeInstanceOf(ParameterDefinition);
     expect(patchParam?.type).toBe(ParameterType.STRING);
     expect(patchParam?.required).toBe(true);
+    expect(patchParam?.description).toContain('git diff or unified diff patch');
   });
 
-  it('applies patch to existing file', async () => {
+  it('applies a unified diff patch in an existing file', async () => {
     const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-edit-file-'));
     const filePath = path.join(tmpDir, 'sample.txt');
     await fs.writeFile(filePath, 'line1\nline2\nline3\n', 'utf-8');
-
     const patch = `@@ -1,3 +1,3 @@
+ line1
+-line2
++line2 updated
+ line3
+`;
+
+    const tool = getPatchTool();
+    const context: MockContext = { agentId: 'agent', workspaceRootPath: null };
+    const result = await tool.execute(context, { path: filePath, patch });
+
+    expect(result).toBe(`File edited successfully at ${filePath}`);
+    const content = await fs.readFile(filePath, 'utf-8');
+    expect(content).toBe('line1\nline2 updated\nline3\n');
+  });
+
+  it('applies a git diff style patch with file headers', async () => {
+    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-edit-file-'));
+    const filePath = path.join(tmpDir, 'sample_git_diff.txt');
+    await fs.writeFile(filePath, 'line1\nline2\nline3\n', 'utf-8');
+
+    const patch = `diff --git a/sample_git_diff.txt b/sample_git_diff.txt
+index 1111111..2222222 100644
+--- a/sample_git_diff.txt
++++ b/sample_git_diff.txt
+@@ -1,3 +1,3 @@
  line1
 -line2
 +line2 updated
@@ -80,6 +106,7 @@ describe('edit_file tool', () => {
     const context: MockContext = { agentId: 'agent', workspaceRootPath: null };
 
     await expect(tool.execute(context, { path: filePath, patch })).rejects.toThrow(PatchApplicationError);
+    await expect(tool.execute(context, { path: filePath, patch })).rejects.toThrow('replace_in_file / insert_in_file');
   });
 
   it('retries with whitespace tolerance', async () => {
@@ -107,25 +134,15 @@ describe('edit_file tool', () => {
     const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-edit-file-'));
     const filePath = path.join(tmpDir, 'nonexistent.txt');
 
-    const patch = `@@ -0,0 +1,1 @@
-+content
-`;
-
     const tool = getPatchTool();
     const context: MockContext = { agentId: 'agent', workspaceRootPath: null };
-    await expect(tool.execute(context, { path: filePath, patch })).rejects.toThrow('does not exist');
+    await expect(tool.execute(context, { path: filePath, patch: '@@ -1,1 +1,1 @@\n-line1\n+line1 updated\n' })).rejects.toThrow('does not exist');
   });
 
-  it('returns relative path when workspace is used', async () => {
+  it('resolves relative paths from the workspace root', async () => {
     const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-edit-file-'));
     const filePath = path.join(tmpDir, 'rel_patch.txt');
     await fs.writeFile(filePath, 'line1\nline2\n', 'utf-8');
-
-    const patch = `@@ -1,2 +1,2 @@
- line1
--line2
-+line2 updated
-`;
 
     const tool = getPatchTool();
     const context: MockContext = {
@@ -133,10 +150,24 @@ describe('edit_file tool', () => {
       workspaceRootPath: tmpDir 
     };
 
-    const result = await tool.execute(context, { path: 'rel_patch.txt', patch });
-    expect(result).toBe('File edited successfully at rel_patch.txt');
-    const content = await fs.readFile(filePath, 'utf-8');
-    expect(content).toBe('line1\nline2 updated\n');
+    const result = await tool.execute(context, {
+      path: 'rel_patch.txt',
+      patch: '@@ -1,2 +1,2 @@\n line1\n-line2\n+line2 updated\n'
+    });
+    expect(result).toBe(`File edited successfully at ${filePath}`);
+    expect(await fs.readFile(filePath, 'utf-8')).toBe('line1\nline2 updated\n');
+  });
+
+  it('rejects relative paths when no workspace root is configured', async () => {
+    const tool = getPatchTool();
+
+    await expect(tool.execute(
+      { agentId: 'agent', workspaceRootPath: null } satisfies MockContext,
+      {
+        path: 'rel_patch.txt',
+        patch: '@@ -1,1 +1,1 @@\n-line1\n+line1 updated\n'
+      }
+    )).rejects.toThrow('but no workspace root is configured');
   });
 
   it('read then patch flow', async () => {
@@ -151,12 +182,10 @@ describe('edit_file tool', () => {
     const content = await readTool.execute(context, { path: filePath });
     expect(content).toBe('1: line1\n2: line2\n');
 
-    const patch = `@@ -1,2 +1,2 @@
- line1
--line2
-+line2 modified
-`;
-    const result = await patchTool.execute(context, { path: filePath, patch });
+    const result = await patchTool.execute(context, {
+      path: filePath,
+      patch: '@@ -1,2 +1,2 @@\n line1\n-line2\n+line2 modified\n'
+    });
     expect(result).toBe(`File edited successfully at ${filePath}`);
     const updated = await fs.readFile(filePath, 'utf-8');
     expect(updated).toBe('line1\nline2 modified\n');

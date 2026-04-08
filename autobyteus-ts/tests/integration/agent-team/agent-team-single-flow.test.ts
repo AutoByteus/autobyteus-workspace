@@ -129,7 +129,7 @@ runIntegration('Agent team integration (LM Studio, api_tool_call)', () => {
 
   it('routes a message to a worker and executes a tool call', async () => {
     const tool = registerWriteFileTool();
-    const toolArgs = { path: 'team_output.txt', content: 'Team worker output.' };
+    const toolArgs = { path: path.join(tempDirWorker, 'team_output.txt'), content: 'Team worker output.' };
 
     coordinatorLlm = await createLmstudioLLM({ requireToolChoice: true });
     if (!coordinatorLlm) return;
@@ -203,12 +203,12 @@ runIntegration('Agent team integration (LM Studio, api_tool_call)', () => {
       await team.postMessage(
         new AgentInputUserMessage(
           `Call write_file exactly once with arguments {"path":"${toolArgs.path}","content":"${toolArgs.content}"}. ` +
-            'Use a relative path and do not respond with plain text.'
+            'Use the provided absolute path exactly and do not respond with plain text.'
         ),
         'Worker'
       );
 
-      let filePath = path.join(tempDirWorker, toolArgs.path);
+      let filePath = toolArgs.path;
       const created = await waitForFile(filePath, FILE_WAIT_TIMEOUT_MS, 100);
       if (!created) {
         const discoveredPath = await findFileContainingContent(tempDirWorker, toolArgs.content);

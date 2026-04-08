@@ -27,7 +27,8 @@ describe('write_file tool definition', () => {
     expect(paramPath?.type).toBe(ParameterType.STRING);
     expect(paramPath?.required).toBe(true);
     expect(paramPath?.description).toContain("Parameter 'path' for tool 'write_file'");
-    expect(paramPath?.description).toContain('This is expected to be a path.');
+    expect(paramPath?.description).toContain('absolute filesystem path or a path relative to the configured workspace root');
+    expect(paramPath?.description).toContain('prior shell cd state');
 
     const paramContent = schema?.getParameter('content');
     expect(paramContent).toBeInstanceOf(ParameterDefinition);

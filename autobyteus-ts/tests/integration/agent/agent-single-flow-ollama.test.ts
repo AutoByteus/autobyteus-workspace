@@ -118,7 +118,7 @@ describe('Agent single-flow integration (Ollama, api_tool_call)', () => {
   it('executes a tool call end-to-end for a single agent', async () => {
     const workspace = tempDir;
     const tool = registerWriteFileTool();
-    const toolArgs = { path: 'poem.txt', content: 'Roses are red.' };
+    const toolArgs = { path: path.join(workspace, 'poem.txt'), content: 'Roses are red.' };
 
     const llm = await createOllamaLLM({ extraParams: OLLAMA_TOOL_CALL_TEST_PARAMS });
     if (!llm) {
@@ -156,11 +156,11 @@ describe('Agent single-flow integration (Ollama, api_tool_call)', () => {
       await agent.postUserMessage(
         new AgentInputUserMessage(
           `Call write_file exactly once with arguments {"path":"${toolArgs.path}","content":"${toolArgs.content}"}. ` +
-            'Use a relative path and do not respond with plain text.'
+            'Use the provided absolute path exactly and do not respond with plain text.'
         )
       );
 
-      let filePath = path.join(tempDir, toolArgs.path);
+      let filePath = toolArgs.path;
       const created = await waitForFile(filePath, FILE_WAIT_TIMEOUT_MS, 100);
       if (!created) {
         const discoveredPath = await findFileContainingContent(tempDir, toolArgs.content);

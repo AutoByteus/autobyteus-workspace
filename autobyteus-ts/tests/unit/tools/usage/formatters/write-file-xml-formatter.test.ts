@@ -30,6 +30,8 @@ describe('WriteFileXmlFormatter', () => {
     expect(schema).toContain('__START_CONTENT__');
     expect(schema).toContain('__END_CONTENT__');
     expect(schema).toContain('sentinel tags');
+    expect(schema).toContain('absolute or relative to the configured workspace root');
+    expect(schema).toContain('prior shell cd state');
   });
 
   it('example uses standard XML structure', () => {
@@ -46,5 +48,6 @@ describe('WriteFileXmlFormatter', () => {
     expect(example).toContain('__START_CONTENT__');
     expect(example).toContain('__END_CONTENT__');
     expect(example).toContain('<arg name="path">/path/to/hello.py</arg>');
+    expect(example).toContain('<arg name="path">/path/to/config/settings.json</arg>');
   });
 });

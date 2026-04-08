@@ -3,6 +3,8 @@ import { registerToolClass } from './tool-meta.js';
 import { registerReadFileTool } from './file/read-file.js';
 import { registerWriteFileTool } from './file/write-file.js';
 import { registerEditFileTool } from './file/edit-file.js';
+import { registerReplaceInFileTool } from './file/replace-in-file.js';
+import { registerInsertInFileTool } from './file/insert-in-file.js';
 import { registerLoadSkillTool } from './skill/load-skill.js';
 import { registerRunBashTool } from './terminal/tools/run-bash.js';
 import { registerStartBackgroundProcessTool } from './terminal/tools/start-background-process.js';
@@ -34,6 +36,8 @@ export function registerTools(): void {
   registerReadFileTool();
   registerWriteFileTool();
   registerEditFileTool();
+  registerReplaceInFileTool();
+  registerInsertInFileTool();
   registerLoadSkillTool();
   registerRunBashTool();
   registerStartBackgroundProcessTool();

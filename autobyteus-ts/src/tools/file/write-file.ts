@@ -5,13 +5,15 @@ import type { BaseTool } from '../base-tool.js';
 import { ToolCategory } from '../tool-category.js';
 import { defaultToolRegistry } from '../registry/tool-registry.js';
 import { ParameterSchema, ParameterDefinition, ParameterType } from '../../utils/parameter-schema.js';
+import { resolveAbsolutePath } from './workspace-path-utils.js';
 
 const DESCRIPTION = [
   'Creates or overwrites a file with specified content.',
-  "'path' is the path where the file will be written. If relative, it must be resolved against a configured agent workspace.",
+  "'path' may be an absolute filesystem path or a path relative to the configured workspace root.",
+  "Relative paths are resolved from the workspace root, never from prior shell cd state.",
   "'content' is the string content to write.",
   "Creates parent directories if they don't exist.",
-  'Raises ValueError if a relative path is given without a valid workspace.',
+  'Raises ValueError if a relative path is given without a valid workspace root.',
   'Raises IOError if file writing fails.'
 ].join(' ');
 
@@ -19,7 +21,8 @@ const argumentSchema = new ParameterSchema();
 argumentSchema.addParameter(new ParameterDefinition({
   name: 'path',
   type: ParameterType.STRING,
-  description: "Parameter 'path' for tool 'write_file'. This is expected to be a path.",
+  description:
+    "Parameter 'path' for tool 'write_file'. This may be an absolute filesystem path or a path relative to the configured workspace root. It is never resolved from prior shell cd state.",
   required: true
 }));
 argumentSchema.addParameter(new ParameterDefinition({
@@ -36,30 +39,15 @@ export async function writeFile(
   path: string,
   content: string
 ): Promise<string> {
-  let finalPath = path;
-  let returnPath = path;
-
-  if (!pathModule.isAbsolute(path)) {
-    const workspaceRootPath = context.workspaceRootPath ?? null;
-    if (!workspaceRootPath) {
-      throw new Error(
-        `Relative path '${path}' provided, but no workspace is configured for agent '${context.agentId}'. A workspace is required to resolve relative paths.`
-      );
-    }
-    finalPath = pathModule.join(workspaceRootPath, path);
-    returnPath = pathModule.normalize(path);
-  } else {
-    returnPath = path;
-  }
+  const finalPath = resolveAbsolutePath(context, path);
 
   try {
-    finalPath = pathModule.normalize(finalPath);
     const dirPath = pathModule.dirname(finalPath);
     if (dirPath) {
       await fs.mkdir(dirPath, { recursive: true });
     }
     await fs.writeFile(finalPath, content, 'utf-8');
-    return `File created/updated at ${returnPath}`;
+    return `File created/updated at ${finalPath}`;
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     throw new Error(`Could not write file at '${finalPath}': ${message}`);

@@ -147,7 +147,7 @@ describe('ApiToolCallStreamingResponseHandler file streaming', () => {
     const events2 = handler.feed(
       new ChunkResponse({
         content: '',
-        tool_calls: [{ index: 0, arguments_delta: '\\n-foo"}' }]
+        tool_calls: [{ index: 0, arguments_delta: '\\n-old\\n+new"}' }]
       })
     );
 
@@ -156,7 +156,7 @@ describe('ApiToolCallStreamingResponseHandler file streaming', () => {
     expect(startEvent!.payload.metadata.path).toBe('a.txt');
     const firstContent = events1.find((event) => event.event_type === SegmentEventType.CONTENT);
     expect(firstContent!.payload.delta).toBe('@@ -1 +1 @@');
-    expect(events2[0].payload.delta).toBe('\n-foo');
+    expect(events2[0].payload.delta).toBe('\n-old\n+new');
   });
 
   it('defers write_file start until path available', () => {

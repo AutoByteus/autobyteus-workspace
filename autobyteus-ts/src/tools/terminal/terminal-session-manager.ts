@@ -121,7 +121,7 @@ export class TerminalSessionManager {
       exitCode = await this.getExitCode();
     }
 
-    return new TerminalResult(cleanOutput, '', exitCode, timedOut);
+    return new TerminalResult(cleanOutput, '', exitCode, timedOut, this.cwd ?? '');
   }
 
   async close(): Promise<void> {
