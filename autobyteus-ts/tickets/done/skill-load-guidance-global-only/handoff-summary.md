@@ -2,10 +2,10 @@
 
 ## Status
 
-- Stage 10 is `In Progress`
+- Stage 10 is `Complete`
 - User verification received on `2026-04-08`
 - Ticket archived to `tickets/done/skill-load-guidance-global-only`
-- Repository finalization and cleanup are in progress
+- Repository finalization and cleanup are complete
 
 ## What Changed
 
@@ -36,10 +36,10 @@ pnpm exec vitest --run tests/unit/agent/system-prompt-processor/available-skills
 
 1. User verification: `Complete`
 2. Ticket archival to `tickets/done`: `Complete`
-3. Commit and push ticket branch: `Pending`
-4. Merge into `origin/personal` and push target branch: `Pending`
-5. Local worktree cleanup: `Pending`
-6. Local ticket branch cleanup: `Pending`
+3. Commit and push ticket branch: `Complete`
+4. Merge into `origin/personal` and push target branch: `Complete`
+5. Local worktree cleanup: `Complete`
+6. Local ticket branch cleanup: `Complete`
 
 ## Release / Publication
 
