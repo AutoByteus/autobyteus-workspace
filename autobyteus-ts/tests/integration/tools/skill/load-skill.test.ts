@@ -33,7 +33,11 @@ describe('load_skill tool (integration)', () => {
     const tempDir = createTempDir();
     const skillPath = path.join(tempDir, 'sample_skill');
     fs.mkdirSync(skillPath);
-    fs.writeFileSync(path.join(skillPath, 'SKILL.md'), '---\nname: sample_skill\ndescription: Sample skill\n---\nBody content');
+    fs.writeFileSync(path.join(skillPath, 'guide.md'), 'guide', 'utf8');
+    fs.writeFileSync(
+      path.join(skillPath, 'SKILL.md'),
+      '---\nname: sample_skill\ndescription: Sample skill\n---\nRead [guide](guide.md).'
+    );
 
     const registry = new SkillRegistry();
     registry.registerSkillFromPath(skillPath);
@@ -43,6 +47,7 @@ describe('load_skill tool (integration)', () => {
 
     expect(result).toContain('## Skill: sample_skill');
     expect(result).toContain(`Skill Base Path: ${skillPath}`);
+    expect(result).toContain(`[guide](${path.join(skillPath, 'guide.md')})`);
 
     removeDir(tempDir);
   });
