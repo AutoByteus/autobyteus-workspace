@@ -38,4 +38,18 @@ describe('edit_file tool (integration)', () => {
     const content = await fs.readFile(filePath, 'utf-8');
     expect(content).toBe('line1\nline2 updated\nline3\n');
   });
+
+  it('allows paths outside the workspace root when explicitly resolved there', async () => {
+    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-edit-file-'));
+    const workspaceDir = path.join(tmpDir, 'workspace');
+    const outsidePath = path.join(tmpDir, 'sample.txt');
+    await fs.mkdir(workspaceDir, { recursive: true });
+    await fs.writeFile(outsidePath, 'line1\nline2\n', 'utf-8');
+    const tool = getPatchTool();
+    const context: MockContext = { agentId: 'agent', workspaceRootPath: workspaceDir };
+
+    const result = await tool.execute(context, { path: '../sample.txt', patch: '@@ -1,2 +1,2 @@\n line1\n-line2\n+line2 updated\n' });
+    expect(result).toBe('File edited successfully at ../sample.txt');
+    expect(await fs.readFile(outsidePath, 'utf-8')).toBe('line1\nline2 updated\n');
+  });
 });

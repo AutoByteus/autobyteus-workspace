@@ -44,33 +44,28 @@ runIntegration('terminal tools integration', () => {
     });
   });
 
-  it('run_bash preserves working directory across calls', async () => {
+  it('run_bash executes inside the explicit cwd', async () => {
     await withTempDir(async (tempDir) => {
       const context = new MockContext(tempDir);
       const subdir = path.join(tempDir, 'mysubdir');
       await mkdir(subdir);
 
-      await runBashTool.execute(context, { command: 'cd mysubdir' });
-      const result = await runBashTool.execute(context, { command: 'pwd' });
+      const result = await runBashTool.execute(context, { command: 'pwd', cwd: subdir });
 
       expect(result.stdout).toContain('mysubdir');
     });
   });
 
-  it('run_bash session state is isolated between different contexts', async () => {
-    await withTempDir(async (tempDirA) => {
-      await withTempDir(async (tempDirB) => {
-        const contextA = new MockContext(tempDirA);
-        const contextB = new MockContext(tempDirB);
-        await mkdir(path.join(tempDirA, 'contextA-subdir'));
+  it('run_bash does not preserve cwd across calls', async () => {
+    await withTempDir(async (tempDir) => {
+      const context = new MockContext(tempDir);
+      await mkdir(path.join(tempDir, 'contextA-subdir'));
 
-        await runBashTool.execute(contextA, { command: 'cd contextA-subdir' });
-        const cwdA = await runBashTool.execute(contextA, { command: 'pwd' });
-        const cwdB = await runBashTool.execute(contextB, { command: 'pwd' });
+      await runBashTool.execute(context, { command: 'cd contextA-subdir' });
+      const cwd = await runBashTool.execute(context, { command: 'pwd' });
 
-        expect(cwdA.stdout).toContain('contextA-subdir');
-        expect(cwdB.stdout).not.toContain('contextA-subdir');
-      });
+      expect(cwd.stdout).toContain(tempDir);
+      expect(cwd.stdout).not.toContain('contextA-subdir');
     });
   });
 

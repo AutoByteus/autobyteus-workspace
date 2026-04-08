@@ -110,6 +110,22 @@ describe('write_file tool (integration)', () => {
     expect(written).toBe(content);
   });
 
+  it('allows paths outside the workspace root when explicitly resolved there', async () => {
+    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-write-file-'));
+    const workspaceDir = path.join(tmpDir, 'workspace');
+    const outsidePath = path.join(tmpDir, 'escaped.txt');
+    await fs.mkdir(workspaceDir, { recursive: true });
+    const tool = getToolInstance();
+    const context: MockContext = {
+      agentId: 'agent',
+      workspaceRootPath: workspaceDir
+    };
+
+    const result = await tool.execute(context, { path: '../escaped.txt', content: 'nope' });
+    expect(result).toBe(`File created/updated at ${path.normalize('../escaped.txt')}`);
+    expect(await fs.readFile(outsidePath, 'utf-8')).toBe('nope');
+  });
+
   it('wraps IO errors', async () => {
     const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-write-file-'));
     const filePath = path.join(tmpDir, 'writer_io_error.txt');

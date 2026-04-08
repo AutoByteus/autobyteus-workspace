@@ -5,11 +5,12 @@ import type { BaseTool } from '../base-tool.js';
 import { ToolCategory } from '../tool-category.js';
 import { defaultToolRegistry } from '../registry/tool-registry.js';
 import { ParameterSchema, ParameterDefinition, ParameterType } from '../../utils/parameter-schema.js';
+import { resolveWorkspaceBoundPath } from './workspace-path-utils.js';
 
 const DESCRIPTION = [
   'Reads content from a specified file. Supports optional 1-based inclusive line ranges via start_line/end_line.',
   'Each returned line is prefixed with its line number when include_line_numbers is true.',
-  "'path' is the path to the file. If relative, it must be resolved against a configured agent workspace.",
+  "'path' is the path to the file. Relative paths resolve from the workspace root when a workspace is configured.",
   'Raises ValueError if a relative path is given without a valid workspace or if line range arguments are invalid.',
   'Raises FileNotFoundError if the file does not exist.',
   'Raises IOError if file reading fails for other reasons.'
@@ -67,18 +68,7 @@ export async function readFile(
     throw new Error(`end_line (${endLine}) must be >= start_line (${startLine}).`);
   }
 
-  let finalPath = filePath;
-  if (!pathModule.isAbsolute(filePath)) {
-    const workspaceRootPath = context.workspaceRootPath ?? null;
-    if (!workspaceRootPath) {
-      throw new Error(
-        `Relative path '${filePath}' provided, but no workspace is configured for agent '${context.agentId}'. A workspace is required to resolve relative paths.`
-      );
-    }
-    finalPath = pathModule.join(workspaceRootPath, filePath);
-  }
-
-  finalPath = pathModule.normalize(finalPath);
+  const finalPath = resolveWorkspaceBoundPath(context, filePath);
 
   try {
     await fs.access(finalPath);

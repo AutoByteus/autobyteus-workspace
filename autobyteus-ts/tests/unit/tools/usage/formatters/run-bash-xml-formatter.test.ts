@@ -20,8 +20,11 @@ describe('RunBashXmlFormatter', () => {
     const formatter = new RunBashXmlSchemaFormatter();
     const schema = formatter.provide(toolDef);
     expect(schema).toContain('<run_bash>');
+    expect(schema).toContain('<run_bash cwd="/absolute/path/to/workspace/or/subdir">');
     expect(schema).toContain('</run_bash>');
-    expect(schema).toContain('Runs a command in the terminal');
+    expect(schema).toContain('Do not rely on a prior `cd`');
+    expect(schema).toContain('must be absolute when provided');
+    expect(schema).toContain('Do not invent generic sandbox aliases');
   });
 
   it('example uses shorthand XML syntax', () => {
@@ -29,6 +32,6 @@ describe('RunBashXmlFormatter', () => {
     const example = formatter.provide(toolDef);
     expect(example).toContain('<run_bash>');
     expect(example).toContain('</run_bash>');
-    expect(example).toContain('ls -la');
+    expect(example).toContain('cwd="/absolute/path/to/workspace/apps/web"');
   });
 });

@@ -11,10 +11,11 @@ describe('tool-syntax-registry', () => {
 
   it('maps run_bash content and metadata to tool arguments', () => {
     const spec = getToolSyntaxSpec(SegmentType.RUN_BASH);
-    const args = spec?.buildArguments({ background: true, timeout_seconds: 45 }, 'npm run dev');
+    const args = spec?.buildArguments({ cwd: 'apps/web', background: true, timeout_seconds: 45 }, 'npm run dev');
 
     expect(args).toEqual({
       command: 'npm run dev',
+      cwd: 'apps/web',
       background: true,
       timeout_seconds: 45
     });
@@ -22,11 +23,22 @@ describe('tool-syntax-registry', () => {
 
   it('accepts timeoutSeconds alias and normalizes to timeout_seconds', () => {
     const spec = getToolSyntaxSpec(SegmentType.RUN_BASH);
-    const args = spec?.buildArguments({ timeoutSeconds: 12 }, 'echo alias');
+    const args = spec?.buildArguments({ cwd: '.', timeoutSeconds: 12 }, 'echo alias');
 
     expect(args).toEqual({
       command: 'echo alias',
+      cwd: '.',
       timeout_seconds: 12
+    });
+  });
+
+  it('passes through cwd metadata when present', () => {
+    const spec = getToolSyntaxSpec(SegmentType.RUN_BASH);
+    const args = spec?.buildArguments({ cwd: 'packages/api' }, 'pwd');
+
+    expect(args).toEqual({
+      command: 'pwd',
+      cwd: 'packages/api'
     });
   });
 

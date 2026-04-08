@@ -6,9 +6,10 @@ import { ToolCategory } from '../tool-category.js';
 import { defaultToolRegistry } from '../registry/tool-registry.js';
 import { ParameterSchema, ParameterDefinition, ParameterType } from '../../utils/parameter-schema.js';
 import { applyUnifiedDiff, PatchApplicationError } from '../../utils/diff-utils.js';
+import { resolveWorkspaceBoundPath } from './workspace-path-utils.js';
 
 const DESCRIPTION =
-  'Applies a unified diff patch to update a text file without overwriting unrelated content.';
+  'Applies a unified diff patch to update a text file without overwriting unrelated content. Relative paths resolve from the workspace root when a workspace is configured.';
 
 const argumentSchema = new ParameterSchema();
 argumentSchema.addParameter(new ParameterDefinition({
@@ -34,27 +35,13 @@ function splitLinesKeepEnds(text: string): string[] {
   return matches;
 }
 
-function resolveFilePath(context: AgentContextLike, path: string): string {
-  if (pathModule.isAbsolute(path)) {
-    return pathModule.normalize(path);
-  }
-
-  const workspaceRootPath = context.workspaceRootPath ?? null;
-  if (!workspaceRootPath) {
-    throw new Error(
-      `Relative path '${path}' provided, but no workspace is configured for agent '${context.agentId}'. A workspace is required to resolve relative paths.`
-    );
-  }
-  return pathModule.normalize(pathModule.join(workspaceRootPath, path));
-}
-
 export async function editFile(
   context: AgentContextLike,
   path: string,
   patch: string
 ): Promise<string> {
   const returnPath = pathModule.normalize(path);
-  const finalPath = resolveFilePath(context, path);
+  const finalPath = resolveWorkspaceBoundPath(context, path);
 
   try {
     await fs.access(finalPath);

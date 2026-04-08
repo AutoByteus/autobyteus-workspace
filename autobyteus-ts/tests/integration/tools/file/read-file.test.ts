@@ -118,6 +118,22 @@ describe('read_file tool (integration)', () => {
     ).rejects.toThrow('does not exist');
   });
 
+  it('allows paths outside the workspace root when explicitly resolved there', async () => {
+    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-read-file-'));
+    const workspaceDir = path.join(tmpDir, 'workspace');
+    const outsidePath = path.join(tmpDir, 'escaped.txt');
+    await fs.mkdir(workspaceDir, { recursive: true });
+    await fs.writeFile(outsidePath, 'Escaped read content', 'utf-8');
+    const tool = getToolInstance();
+    const context: MockContext = {
+      agentId: 'agent',
+      workspaceRootPath: workspaceDir
+    };
+
+    const content = await tool.execute(context, { path: '../escaped.txt' });
+    expect(content).toBe('1: Escaped read content');
+  });
+
   it('wraps IO errors', async () => {
     const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-read-file-'));
     const filePath = path.join(tmpDir, 'reader_io_error_file.txt');

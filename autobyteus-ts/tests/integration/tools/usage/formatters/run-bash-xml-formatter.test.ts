@@ -26,6 +26,10 @@ describe('RunBashXmlFormatter (integration)', () => {
     const example = new RunBashXmlExampleFormatter().provide(toolDef);
 
     expect(schema).toContain('## run_bash');
+    expect(schema).toContain(
+      '`cwd="/absolute/path"` (optional; must be absolute when provided, for example `/Users/alice/project` or `/tmp/scratch-task`)'
+    );
     expect(example).toContain('python -m pytest tests/ -v');
+    expect(example).toContain('cwd="/absolute/path/to/workspace/tests"');
   });
 });

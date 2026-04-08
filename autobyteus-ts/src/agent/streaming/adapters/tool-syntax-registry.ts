@@ -32,6 +32,9 @@ const buildRunBashArgs: ToolArgsBuilder = (metadata, content) => {
   }
 
   const args: Record<string, any> = { command };
+  if (typeof metadata.cwd === 'string' && metadata.cwd.trim().length > 0) {
+    args.cwd = metadata.cwd;
+  }
   if (metadata.background !== undefined) {
     args.background = metadata.background;
   }
