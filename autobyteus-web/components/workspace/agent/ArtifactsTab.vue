@@ -23,7 +23,7 @@
 
     <!-- Right Pane: Content Viewer -->
     <div class="flex-grow min-w-0 h-full overflow-hidden bg-white">
-        <ArtifactContentViewer :artifact="selectedArtifact" />
+        <ArtifactContentViewer :artifact="selectedArtifact" :refresh-signal="viewerRefreshSignal" />
     </div>
 
   </div>
@@ -50,6 +50,7 @@ const latestVisibleArtifactSignal = computed(() =>
 );
 
 const selectedArtifactId = ref<string | null>(null);
+const viewerRefreshSignal = ref(0);
 const selectedArtifact = computed<AgentArtifact | null>(() => {
   if (!selectedArtifactId.value) {
     return null;
@@ -85,6 +86,10 @@ watch(
 );
 
 const selectArtifact = (artifact: AgentArtifact) => {
+  if (selectedArtifactId.value === artifact.id) {
+    viewerRefreshSignal.value += 1;
+    return;
+  }
   selectedArtifactId.value = artifact.id;
 };
 

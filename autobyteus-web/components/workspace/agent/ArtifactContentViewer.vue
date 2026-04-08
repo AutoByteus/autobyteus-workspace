@@ -87,6 +87,7 @@ import FileViewer from '~/components/fileExplorer/FileViewer.vue';
 
 const props = defineProps<{
   artifact: AgentArtifact | null;
+  refreshSignal?: number;
 }>();
 
 const fileType = ref<'Text' | 'Image' | 'Audio' | 'Video' | 'Excel' | 'PDF'>('Text');
@@ -107,6 +108,7 @@ const isLoading = computed(() => isDeterminingType.value || isFetchingContent.va
 const usesBufferedWriteContent = computed(() => {
   return props.artifact?.sourceTool === 'write_file' && props.artifact?.status !== 'available';
 });
+const usesWorkspaceBackedEditContent = computed(() => props.artifact?.sourceTool === 'edit_file');
 const normalizedArtifactPath = computed(() => props.artifact?.path?.replace(/\\/g, '/') ?? '');
 const displayPath = computed(() => normalizedArtifactPath.value || props.artifact?.path || '');
 
@@ -157,6 +159,9 @@ const displayContent = computed(() => {
   if (!props.artifact) return null;
   if (usesBufferedWriteContent.value) {
     return props.artifact.content ?? '';
+  }
+  if (usesWorkspaceBackedEditContent.value) {
+    return fetchedContent.value ?? '';
   }
   return fetchedContent.value ?? props.artifact.content ?? '';
 });
@@ -211,7 +216,7 @@ const refreshResolvedContent = async () => {
   }
 
   if (!artifactUrl.value) {
-    fetchedContent.value = artifact.content ?? '';
+    fetchedContent.value = usesWorkspaceBackedEditContent.value ? null : (artifact.content ?? '');
     isFetchingContent.value = false;
     return;
   }
@@ -260,7 +265,7 @@ watch(() => props.artifact, async () => {
   await refreshResolvedContent();
 }, { immediate: true });
 
-watch(() => [props.artifact?.updatedAt, artifactUrl.value, fileType.value], () => {
+watch(() => [props.artifact?.updatedAt, artifactUrl.value, fileType.value, props.refreshSignal ?? 0], () => {
   refreshResolvedContent();
 });
 
