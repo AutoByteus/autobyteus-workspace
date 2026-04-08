@@ -1,7 +1,7 @@
 import { EventEmitter } from '../../events/event-emitter.js';
 import { EventType } from '../../events/event-types.js';
 import { AgentStatus } from '../status/status-enum.js';
-import type { ChunkResponse, CompleteResponse } from '../../llm/utils/response-types.js';
+import type { CompleteResponse } from '../../llm/utils/response-types.js';
 
 const ENV_VERBOSE_AGENT_EVENT_LOGS = 'AUTOBYTEUS_VERBOSE_AGENT_EVENT_LOGS';
 
@@ -27,7 +27,7 @@ export class AgentExternalEventNotifier extends EventEmitter {
       `AgentExternalEventNotifier (NotifierID: ${this.objectId}, AgentID: ${this.agentId}) ` +
       `emitted ${eventType}. Kwarg keys for emit: ${Object.keys(emitKwargs)}`;
 
-    if ([EventType.AGENT_DATA_ASSISTANT_CHUNK, EventType.AGENT_DATA_SEGMENT_EVENT].includes(eventType)) {
+    if (eventType === EventType.AGENT_DATA_SEGMENT_EVENT) {
       if (!this.shouldLogStreamingEventDetails()) {
         return;
       }
@@ -82,12 +82,6 @@ export class AgentExternalEventNotifier extends EventEmitter {
       return summaryParts.join(' ');
     }
 
-    if (eventType === EventType.AGENT_DATA_ASSISTANT_CHUNK && typeof payloadContent === 'object') {
-      const content = payloadContent.content ?? '';
-      const reasoning = payloadContent.reasoning ?? '';
-      return `content_len=${String(content).length} reasoning_len=${String(reasoning).length}`;
-    }
-
     return null;
   }
 
@@ -120,10 +114,6 @@ export class AgentExternalEventNotifier extends EventEmitter {
 
   notifyAgentTurnCompleted(turnId: string): void {
     this.emitEvent(EventType.AGENT_TURN_COMPLETED, { turn_id: turnId });
-  }
-
-  notifyAgentDataAssistantChunk(chunk: ChunkResponse): void {
-    this.emitEvent(EventType.AGENT_DATA_ASSISTANT_CHUNK, chunk);
   }
 
   notifyAgentDataAssistantCompleteResponse(completeResponse: CompleteResponse): void {

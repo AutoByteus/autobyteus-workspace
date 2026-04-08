@@ -46,8 +46,14 @@ describe('AgentTeamExternalEventNotifier', () => {
 
     const mock_agent_event = new StreamEvent({
       agent_id: 'agent-abc',
-      event_type: StreamEventType.ASSISTANT_CHUNK,
-      data: { content: 'chunk text', is_complete: false }
+      event_type: StreamEventType.SEGMENT_EVENT,
+      data: {
+        event_type: 'SEGMENT_CONTENT',
+        segment_id: 'segment-1',
+        segment_type: 'text',
+        turn_id: 'turn-1',
+        payload: { delta: 'chunk text' }
+      }
     });
 
     notifier.publishAgentEvent('Researcher', mock_agent_event);

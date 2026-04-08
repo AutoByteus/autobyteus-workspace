@@ -151,8 +151,14 @@ describe("Agent team websocket integration", () => {
         expect(team.lastTarget).toBe("alpha");
         const agentMessagePromise = waitForMessage(socket);
         const agentEvent = new StreamEvent({
-            event_type: StreamEventType.ASSISTANT_CHUNK,
-            data: { content: "hi", is_complete: false },
+            event_type: StreamEventType.SEGMENT_EVENT,
+            data: {
+                event_type: "SEGMENT_CONTENT",
+                segment_id: "seg-alpha-1",
+                segment_type: "text",
+                turn_id: "turn-1",
+                payload: { delta: "hi" },
+            },
             agent_id: "agent-42",
         });
         const teamEvent = new AgentTeamStreamEvent({
@@ -162,8 +168,10 @@ describe("Agent team websocket integration", () => {
         });
         stream.push(teamEvent);
         const agentMessage = JSON.parse(await agentMessagePromise);
-        expect(agentMessage.type).toBe("ASSISTANT_CHUNK");
-        expect(agentMessage.payload.content).toBe("hi");
+        expect(agentMessage.type).toBe("SEGMENT_CONTENT");
+        expect(agentMessage.payload.delta).toBe("hi");
+        expect(agentMessage.payload.segment_type).toBe("text");
+        expect(agentMessage.payload.id).toBe("seg-alpha-1");
         expect(agentMessage.payload.agent_name).toBe("alpha");
         expect(agentMessage.payload.agent_id).toBe("agent-42");
         socket.close();

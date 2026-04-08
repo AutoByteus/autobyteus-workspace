@@ -3,8 +3,9 @@ import { EventType } from '../../../src/events/event-types.js';
 
 describe('EventType', () => {
   it('matches known event string values', () => {
+    expect(EventType.AGENT_TURN_STARTED).toBe('agent_turn_started');
+    expect(EventType.AGENT_TURN_COMPLETED).toBe('agent_turn_completed');
     expect(EventType.AGENT_STATUS_UPDATED).toBe('agent_status_updated');
-    expect(EventType.AGENT_DATA_ASSISTANT_CHUNK).toBe('agent_data_assistant_chunk');
     expect(EventType.AGENT_DATA_ASSISTANT_COMPLETE_RESPONSE).toBe('agent_data_assistant_complete_response');
     expect(EventType.AGENT_DATA_SEGMENT_EVENT).toBe('agent_data_segment_event');
     expect(EventType.AGENT_DATA_TOOL_LOG).toBe('agent_data_tool_log');
@@ -14,8 +15,12 @@ describe('EventType', () => {
     expect(EventType.AGENT_DATA_TODO_LIST_UPDATED).toBe('agent_data_todo_list_updated');
     expect(EventType.AGENT_ARTIFACT_PERSISTED).toBe('agent_artifact_persisted');
     expect(EventType.AGENT_ARTIFACT_UPDATED).toBe('agent_artifact_updated');
-    expect(EventType.AGENT_REQUEST_TOOL_INVOCATION_APPROVAL).toBe('agent_request_tool_invocation_approval');
-    expect(EventType.AGENT_TOOL_INVOCATION_AUTO_EXECUTING).toBe('agent_tool_invocation_auto_executing');
+    expect(EventType.AGENT_TOOL_APPROVAL_REQUESTED).toBe('agent_tool_approval_requested');
+    expect(EventType.AGENT_TOOL_APPROVED).toBe('agent_tool_approved');
+    expect(EventType.AGENT_TOOL_DENIED).toBe('agent_tool_denied');
+    expect(EventType.AGENT_TOOL_EXECUTION_STARTED).toBe('agent_tool_execution_started');
+    expect(EventType.AGENT_TOOL_EXECUTION_SUCCEEDED).toBe('agent_tool_execution_succeeded');
+    expect(EventType.AGENT_TOOL_EXECUTION_FAILED).toBe('agent_tool_execution_failed');
     expect(EventType.AGENT_ERROR_OUTPUT_GENERATION).toBe('agent_error_output_generation');
   });
 
@@ -30,6 +35,6 @@ describe('EventType', () => {
     expect(values).toContain('workflow_stream_event');
     expect(values).toContain('task_plan.tasks.created');
     expect(values).toContain('task_plan.status.updated');
-    expect(values.length).toBe(22);
+    expect(values.length).toBe(27);
   });
 });

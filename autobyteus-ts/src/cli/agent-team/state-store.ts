@@ -253,7 +253,7 @@ export class TuiStateStore {
           this.agentStatuses[agentName] = data.new_status;
           delete this.pendingApprovals[agentName];
         }
-      } else if (agentEvent.event_type === StreamEventType.ASSISTANT_CHUNK) {
+      } else if (agentEvent.event_type === StreamEventType.SEGMENT_EVENT) {
         this.speakingAgents[agentName] = true;
       } else if (agentEvent.event_type === StreamEventType.ASSISTANT_COMPLETE_RESPONSE) {
         this.speakingAgents[agentName] = false;

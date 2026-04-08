@@ -34,7 +34,6 @@ export const buildHistoryLines = (history: HistoryEvent[]): string[] => {
   const lines: string[] = [];
   const segmentTypes = new Map<string, SegmentType>();
   let sawSegmentEvent = false;
-  let sawChunkEvent = false;
   let reasoningBuffer = '';
   let contentBuffer = '';
   let thinkingOpen = false;
@@ -140,34 +139,14 @@ export const buildHistoryLines = (history: HistoryEvent[]): string[] => {
       continue;
     }
 
-    if (event.event_type === StreamEventType.ASSISTANT_CHUNK) {
-      const data = event.data as { content?: string; reasoning?: string };
-      const reasoningDelta = data?.reasoning ?? '';
-      const contentDelta = data?.content ?? '';
-      if (reasoningDelta || contentDelta) {
-        sawChunkEvent = true;
-      }
-      if (reasoningDelta) {
-        ensureThinkingStart();
-        reasoningBuffer += String(reasoningDelta);
-      }
-      if (contentDelta) {
-        closeThinking();
-        ensureAssistantPrefix();
-        contentBuffer += String(contentDelta);
-      }
-      continue;
-    }
-
     if (event.event_type === StreamEventType.ASSISTANT_COMPLETE_RESPONSE) {
-      if (!sawSegmentEvent && !sawChunkEvent) {
+      if (!sawSegmentEvent) {
         lines.push(...renderAssistantCompleteResponse(event.data as AssistantCompleteResponseData));
       } else {
         closeThinking();
         flushAssistant();
       }
       sawSegmentEvent = false;
-      sawChunkEvent = false;
       reasoningBuffer = '';
       contentBuffer = '';
       thinkingOpen = false;

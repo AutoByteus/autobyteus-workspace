@@ -1,9 +1,7 @@
 export { BaseStreamPayload } from './stream-event-payload-utils.js';
 
 export {
-  AssistantChunkData,
   AssistantCompleteResponseData,
-  createAssistantChunkData,
   createAssistantCompleteResponseData
 } from './stream-event-payload-assistant.js';
 
@@ -48,7 +46,6 @@ export {
 } from './stream-event-payload-lifecycle.js';
 
 import type {
-  AssistantChunkData,
   AssistantCompleteResponseData
 } from './stream-event-payload-assistant.js';
 import type {
@@ -74,7 +71,6 @@ import type {
 } from './stream-event-payload-lifecycle.js';
 
 export type StreamDataPayload =
-  | AssistantChunkData
   | AssistantCompleteResponseData
   | ToolInteractionLogEntryData
   | TurnLifecycleData

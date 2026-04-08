@@ -3,13 +3,13 @@ import { AgentEventStream } from '../../../../../src/agent/streaming/streams/age
 import { AgentExternalEventNotifier } from '../../../../../src/agent/events/notifiers.js';
 import { StreamEvent, StreamEventType } from '../../../../../src/agent/streaming/events/stream-events.js';
 import {
-  AssistantChunkData,
   AssistantCompleteResponseData,
   ErrorEventData,
   AgentStatusUpdateData,
-  TurnLifecycleData
+  TurnLifecycleData,
+  SegmentEventData
 } from '../../../../../src/agent/streaming/events/stream-event-payloads.js';
-import { ChunkResponse, CompleteResponse } from '../../../../../src/llm/utils/response-types.js';
+import { CompleteResponse } from '../../../../../src/llm/utils/response-types.js';
 import { AgentStatus } from '../../../../../src/agent/status/status-enum.js';
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -42,22 +42,6 @@ const makeStreamer = (agentId = 'stream_test_agent_001') => {
 };
 
 describe('AgentEventStream', () => {
-  it('streams assistant chunks', async () => {
-    const { notifier, streamer } = makeStreamer();
-    const chunk1 = new ChunkResponse({ content: 'Hello ' });
-    const chunk2 = new ChunkResponse({ content: 'World' });
-
-    const consumer = collectStreamResults(streamer.streamAssistantChunks(), streamer, 40);
-    const producer = (async () => {
-      await delay(5);
-      notifier.notifyAgentDataAssistantChunk(chunk1);
-      notifier.notifyAgentDataAssistantChunk(chunk2);
-    })();
-
-    const [results] = await Promise.all([consumer, producer]);
-    expect(results.map((r) => r.content)).toEqual(['Hello ', 'World']);
-  });
-
   it('streams assistant final responses', async () => {
     const { notifier, streamer } = makeStreamer();
     const finalMsg = new CompleteResponse({ content: 'This is the final message.' });
@@ -115,22 +99,27 @@ describe('AgentEventStream', () => {
     expect((results[1].data as TurnLifecycleData).turn_id).toBe('turn-1');
   });
 
-  it('allEvents receives assistant chunk', async () => {
+  it('allEvents receives segment event payloads', async () => {
     const { notifier, streamer } = makeStreamer();
-    const chunk = new ChunkResponse({ content: 'test chunk' });
 
     const consumer = collectStreamResults(streamer.allEvents(), streamer, 40);
     const producer = (async () => {
       await delay(5);
-      notifier.notifyAgentDataAssistantChunk(chunk);
+      notifier.notifyAgentSegmentEvent({
+        event_type: 'SEGMENT_CONTENT',
+        segment_id: 'segment-1',
+        segment_type: 'text',
+        turn_id: 'turn-1',
+        payload: { delta: 'test segment' }
+      });
     })();
 
     const [results] = await Promise.all([consumer, producer]);
     expect(results).toHaveLength(1);
     const event = results[0] as StreamEvent;
-    expect(event.event_type).toBe(StreamEventType.ASSISTANT_CHUNK);
-    expect(event.data).toBeInstanceOf(AssistantChunkData);
-    expect((event.data as AssistantChunkData).content).toBe('test chunk');
+    expect(event.event_type).toBe(StreamEventType.SEGMENT_EVENT);
+    expect(event.data).toBeInstanceOf(SegmentEventData);
+    expect((event.data as SegmentEventData).payload.delta).toBe('test segment');
   });
 
   it('allEvents receives complete response', async () => {
@@ -173,7 +162,6 @@ describe('AgentEventStream', () => {
 
   it('allEvents receives mixed events in order', async () => {
     const { notifier, streamer } = makeStreamer();
-    const chunk = new ChunkResponse({ content: 'c1' });
     const finalMsg = new CompleteResponse({ content: 'final' });
 
     const consumer = collectStreamResults(streamer.allEvents(), streamer, 80);
@@ -181,7 +169,13 @@ describe('AgentEventStream', () => {
       await delay(5);
       notifier.notifyStatusUpdated(AgentStatus.IDLE, AgentStatus.BOOTSTRAPPING);
       await delay(5);
-      notifier.notifyAgentDataAssistantChunk(chunk);
+      notifier.notifyAgentSegmentEvent({
+        event_type: 'SEGMENT_CONTENT',
+        segment_id: 'segment-1',
+        segment_type: 'text',
+        turn_id: 'turn-1',
+        payload: { delta: 'c1' }
+      });
       await delay(5);
       notifier.notifyAgentDataAssistantCompleteResponse(finalMsg);
     })();
@@ -189,7 +183,7 @@ describe('AgentEventStream', () => {
     const [results] = await Promise.all([consumer, producer]);
     expect(results).toHaveLength(3);
     expect(results[0].event_type).toBe(StreamEventType.AGENT_STATUS_UPDATED);
-    expect(results[1].event_type).toBe(StreamEventType.ASSISTANT_CHUNK);
+    expect(results[1].event_type).toBe(StreamEventType.SEGMENT_EVENT);
     expect(results[2].event_type).toBe(StreamEventType.ASSISTANT_COMPLETE_RESPONSE);
   });
 });

@@ -87,10 +87,6 @@ export class AutoByteusStreamEventConverter {
     const payload = serializePayload(event.data);
     const statusHint = resolveStatusHint(event.event_type, payload);
 
-    if (event.event_type === StreamEventType.ASSISTANT_CHUNK) {
-      return null;
-    }
-
     if (event.event_type === StreamEventType.SEGMENT_EVENT) {
       const eventType = resolveSegmentEventType(payload);
       if (!eventType) {

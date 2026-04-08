@@ -2,7 +2,6 @@ import { EventEmitter } from '../../../events/event-emitter.js';
 import { EventType } from '../../../events/event-types.js';
 import { StreamEvent, StreamEventType } from '../events/stream-events.js';
 import {
-  createAssistantChunkData,
   createAssistantCompleteResponseData,
   createToolInteractionLogEntryData,
   createTurnLifecycleData,
@@ -20,7 +19,6 @@ import {
   createTodoListUpdateData,
   createArtifactPersistedData,
   createArtifactUpdatedData,
-  AssistantChunkData,
   AssistantCompleteResponseData,
   ToolInteractionLogEntryData,
   TurnLifecycleData,
@@ -113,10 +111,6 @@ export class AgentEventStream extends EventEmitter {
         case EventType.AGENT_STATUS_UPDATED:
           typedPayload = createAgentStatusUpdateData(payload);
           streamEventType = StreamEventType.AGENT_STATUS_UPDATED;
-          break;
-        case EventType.AGENT_DATA_ASSISTANT_CHUNK:
-          typedPayload = createAssistantChunkData(payload);
-          streamEventType = StreamEventType.ASSISTANT_CHUNK;
           break;
         case EventType.AGENT_DATA_ASSISTANT_COMPLETE_RESPONSE:
           typedPayload = createAssistantCompleteResponseData(payload);
@@ -214,14 +208,6 @@ export class AgentEventStream extends EventEmitter {
       `agent_${this.agentId}_allEvents`
     )) {
       yield event as StreamEvent;
-    }
-  }
-
-  async *streamAssistantChunks(): AsyncGenerator<AssistantChunkData, void, unknown> {
-    for await (const event of this.allEvents()) {
-      if (event.event_type === StreamEventType.ASSISTANT_CHUNK && event.data instanceof AssistantChunkData) {
-        yield event.data;
-      }
     }
   }
 

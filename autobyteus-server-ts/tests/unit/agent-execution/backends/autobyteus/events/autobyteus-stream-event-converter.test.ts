@@ -128,14 +128,7 @@ describe("AutoByteusStreamEventConverter", () => {
     });
   });
 
-  it("drops assistant chunks and unknown segment types", () => {
-    expect(
-      converter.convert({
-        event_type: StreamEventType.ASSISTANT_CHUNK,
-        data: { content: "ignored" },
-      } as any),
-    ).toBeNull();
-
+  it("drops unknown segment types", () => {
     expect(
       converter.convert({
         event_type: StreamEventType.SEGMENT_EVENT,

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { AssistantChunkData as ReexportAssistantChunkData } from '../../../../src/agent/streaming/stream-event-payloads.js';
-import { AssistantChunkData as CoreAssistantChunkData } from '../../../../src/agent/streaming/events/stream-event-payloads.js';
+import { AssistantCompleteResponseData as ReexportAssistantCompleteResponseData } from '../../../../src/agent/streaming/stream-event-payloads.js';
+import { AssistantCompleteResponseData as CoreAssistantCompleteResponseData } from '../../../../src/agent/streaming/events/stream-event-payloads.js';
 import { StreamEvent as ReexportStreamEvent } from '../../../../src/agent/streaming/stream-events.js';
 import { StreamEvent as CoreStreamEvent } from '../../../../src/agent/streaming/events/stream-events.js';
 import {
@@ -18,7 +18,7 @@ import { ApiToolCallStreamingResponseHandler as CoreApiToolCallStreamingResponse
 
 describe('streaming compatibility re-exports', () => {
   it('re-exports stream event payloads and events', () => {
-    expect(ReexportAssistantChunkData).toBe(CoreAssistantChunkData);
+    expect(ReexportAssistantCompleteResponseData).toBe(CoreAssistantCompleteResponseData);
     expect(ReexportStreamEvent).toBe(CoreStreamEvent);
   });
 

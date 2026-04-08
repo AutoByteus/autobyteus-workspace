@@ -4,8 +4,6 @@ import {
   createArtifactPersistedData,
   ArtifactUpdatedData,
   createArtifactUpdatedData,
-  AssistantChunkData,
-  createAssistantChunkData,
   ToDoListUpdateData,
   createTodoListUpdateData,
   AgentStatusUpdateData,
@@ -95,13 +93,6 @@ describe('ArtifactUpdatedData', () => {
 });
 
 describe('Stream payload factories', () => {
-  it('creates AssistantChunkData from dict', () => {
-    const payload = createAssistantChunkData({ content: 'Hello', is_complete: false });
-    expect(payload).toBeInstanceOf(AssistantChunkData);
-    expect(payload.content).toBe('Hello');
-    expect(payload.is_complete).toBe(false);
-  });
-
   it('creates ToDoListUpdateData with nested list', () => {
     const payload = createTodoListUpdateData({
       todos: [

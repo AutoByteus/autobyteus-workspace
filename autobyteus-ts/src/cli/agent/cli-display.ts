@@ -1,7 +1,6 @@
 import { AgentStatus } from '../../agent/status/status-enum.js';
 import { StreamEvent, StreamEventType } from '../../agent/streaming/events/stream-events.js';
 import {
-  AssistantChunkData,
   AssistantCompleteResponseData,
   ToolApprovalRequestedData,
   ToolApprovedData,
@@ -94,11 +93,6 @@ export class InteractiveCliDisplay {
   async handleStreamEvent(event: StreamEvent): Promise<void> {
     if (event.event_type === StreamEventType.SEGMENT_EVENT && event.data instanceof SegmentEventData) {
       this.handleSegmentEvent(event.data);
-      return;
-    }
-
-    if (event.event_type === StreamEventType.ASSISTANT_CHUNK && event.data instanceof AssistantChunkData) {
-      this.handleAssistantChunk(event.data);
       return;
     }
 
@@ -234,41 +228,6 @@ export class InteractiveCliDisplay {
     }
 
     console.debug(`CLI Display: Unhandled StreamEvent type: ${event.event_type}`);
-  }
-
-  private handleAssistantChunk(eventData: AssistantChunkData): void {
-    if (!this.agentHasSpokenThisTurn) {
-      this.ensureNewLine();
-      this.write('Agent:\n');
-      this.agentHasSpokenThisTurn = true;
-      this.currentLineEmpty = true;
-    }
-
-    if (eventData.reasoning) {
-      if (!this.isThinking) {
-        this.write('<Thinking>\n');
-        this.isThinking = true;
-        this.currentLineEmpty = true;
-      }
-      this.write(eventData.reasoning);
-      this.currentLineEmpty = eventData.reasoning.endsWith('\n');
-    }
-
-    if (eventData.content) {
-      if (!this.isInContentBlock) {
-        this.ensureNewLine();
-        this.isInContentBlock = true;
-      }
-      this.write(eventData.content);
-      this.currentLineEmpty = eventData.content.endsWith('\n');
-    }
-
-    if (this.showTokenUsage && eventData.is_complete && eventData.usage) {
-      const usage = eventData.usage;
-      console.info(
-        `[Token Usage: Prompt=${usage.prompt_tokens}, Completion=${usage.completion_tokens}, Total=${usage.total_tokens}]`
-      );
-    }
   }
 
   private handleAssistantCompleteResponse(eventData: AssistantCompleteResponseData): void {

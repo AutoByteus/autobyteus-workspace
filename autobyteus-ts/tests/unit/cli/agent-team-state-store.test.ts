@@ -64,18 +64,24 @@ describe('TuiStateStore', () => {
     expect(store.getHistoryForNode('AgentOne', 'agent')).toHaveLength(1);
   });
 
-  it('tracks speaking agents based on assistant chunk events', () => {
+  it('tracks speaking agents based on segment events', () => {
     const store = new TuiStateStore(buildTeam());
-    const chunkEvent = new StreamEvent({
-      event_type: StreamEventType.ASSISTANT_CHUNK,
-      data: { content: 'hi', is_complete: false }
+    const segmentEvent = new StreamEvent({
+      event_type: StreamEventType.SEGMENT_EVENT,
+      data: {
+        event_type: 'SEGMENT_CONTENT',
+        segment_id: 'segment-1',
+        segment_type: 'text',
+        turn_id: 'turn-1',
+        payload: { delta: 'hi' }
+      }
     });
-    const chunkPayload = new AgentEventRebroadcastPayload({ agent_name: 'AgentOne', agent_event: chunkEvent });
+    const segmentPayload = new AgentEventRebroadcastPayload({ agent_name: 'AgentOne', agent_event: segmentEvent });
     store.processEvent(
       new AgentTeamStreamEvent({
         team_id: 'team_alpha',
         event_source_type: 'AGENT',
-        data: chunkPayload
+        data: segmentPayload
       })
     );
 

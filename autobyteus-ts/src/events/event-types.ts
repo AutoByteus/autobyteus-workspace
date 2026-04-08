@@ -6,7 +6,6 @@ export enum EventType {
   AGENT_TURN_STARTED = 'agent_turn_started',
   AGENT_TURN_COMPLETED = 'agent_turn_completed',
   AGENT_STATUS_UPDATED = 'agent_status_updated',
-  AGENT_DATA_ASSISTANT_CHUNK = 'agent_data_assistant_chunk',
   AGENT_DATA_ASSISTANT_COMPLETE_RESPONSE = 'agent_data_assistant_complete_response',
   AGENT_DATA_SEGMENT_EVENT = 'agent_data_segment_event',
   AGENT_DATA_TOOL_LOG = 'agent_data_tool_log',

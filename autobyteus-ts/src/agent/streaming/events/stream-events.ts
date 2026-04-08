@@ -1,6 +1,5 @@
 import { randomUUID } from 'node:crypto';
 import {
-  AssistantChunkData,
   AssistantCompleteResponseData,
   ToolInteractionLogEntryData,
   TurnLifecycleData,
@@ -24,7 +23,6 @@ import {
 export enum StreamEventType {
   TURN_STARTED = 'turn_started',
   TURN_COMPLETED = 'turn_completed',
-  ASSISTANT_CHUNK = 'assistant_chunk',
   ASSISTANT_COMPLETE_RESPONSE = 'assistant_complete_response',
   TOOL_INTERACTION_LOG_ENTRY = 'tool_interaction_log_entry',
   AGENT_STATUS_UPDATED = 'agent_status_updated',
@@ -47,7 +45,6 @@ const STREAM_EVENT_TYPE_TO_PAYLOAD_CLASS: Record<
   StreamEventType,
   new (data: any) => StreamDataPayload
 > = {
-  [StreamEventType.ASSISTANT_CHUNK]: AssistantChunkData,
   [StreamEventType.ASSISTANT_COMPLETE_RESPONSE]: AssistantCompleteResponseData,
   [StreamEventType.TOOL_INTERACTION_LOG_ENTRY]: ToolInteractionLogEntryData,
   [StreamEventType.TURN_STARTED]: TurnLifecycleData,
