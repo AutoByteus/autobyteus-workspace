@@ -32,13 +32,6 @@
             >
               · {{ contextSummary }}
             </span>
-            <span
-              v-if="!isAwaiting"
-              class="text-[10px] font-semibold uppercase tracking-wide flex-shrink-0"
-              :class="statusTextClasses"
-            >
-              {{ statusLabel }}
-            </span>
           </div>
         </div>
 
@@ -137,42 +130,6 @@ const statusClasses = computed(() => {
       return 'bg-white border-gray-200 opacity-75';
     default:
       return 'bg-white border-gray-200';
-  }
-});
-
-const statusLabel = computed(() => {
-  switch (props.status) {
-    case 'success':
-      return 'success';
-    case 'error':
-      return 'failed';
-    case 'approved':
-      return 'approved';
-    case 'executing':
-    case 'parsing':
-      return 'running';
-    case 'denied':
-      return 'denied';
-    default:
-      return '';
-  }
-});
-
-const statusTextClasses = computed(() => {
-  switch (props.status) {
-    case 'success':
-      return 'text-green-600';
-    case 'error':
-      return 'text-red-600';
-    case 'approved':
-      return 'text-cyan-600';
-    case 'executing':
-    case 'parsing':
-      return 'text-blue-600';
-    case 'denied':
-      return 'text-gray-500';
-    default:
-      return 'text-gray-500';
   }
 });
 
