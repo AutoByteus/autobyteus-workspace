@@ -1,5 +1,14 @@
 import path from "node:path";
-import { mkdtemp, mkdir, readFile, rm, stat, writeFile } from "node:fs/promises";
+import {
+  lstat,
+  mkdtemp,
+  mkdir,
+  readFile,
+  rm,
+  stat,
+  symlink,
+  writeFile,
+} from "node:fs/promises";
 import os from "node:os";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { afterEach, describe, expect, it } from "vitest";
@@ -44,6 +53,40 @@ const createSkillFixture = async (input: {
     content: input.content ?? `# ${input.name}\n\nskill content`,
     rootPath: skillRoot,
     fileCount: 1,
+  });
+};
+
+const createTeamSharedSymlinkSkillFixture = async (input: {
+  root: string;
+  name: string;
+}): Promise<Skill> => {
+  const teamRoot = path.join(input.root, "software-engineering-team");
+  const skillRoot = path.join(teamRoot, "agents", input.name);
+  const sharedRoot = path.join(teamRoot, "shared");
+  await mkdir(skillRoot, { recursive: true });
+  await mkdir(sharedRoot, { recursive: true });
+  await writeFile(
+    path.join(skillRoot, "SKILL.md"),
+    `# ${input.name}\n\nskill content`,
+    "utf-8",
+  );
+  await writeFile(path.join(sharedRoot, "design-principles.md"), "design rules", "utf-8");
+  await writeFile(path.join(sharedRoot, "common-design-practices.md"), "common rules", "utf-8");
+  await symlink(
+    path.join("..", "..", "shared", "design-principles.md"),
+    path.join(skillRoot, "design-principles.md"),
+  );
+  await symlink(
+    path.join("..", "..", "shared", "common-design-practices.md"),
+    path.join(skillRoot, "common-design-practices.md"),
+  );
+
+  return new Skill({
+    name: input.name,
+    description: `description for ${input.name}`,
+    content: `# ${input.name}\n\nskill content`,
+    rootPath: skillRoot,
+    fileCount: 3,
   });
 };
 
@@ -188,8 +231,41 @@ describe("CodexWorkspaceSkillMaterializer", () => {
       skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
     });
 
-    expect(path.basename(descriptor.materializedRootPath).length).toBeLessThanOrEqual(64);
-    expect(path.basename(descriptor.materializedRootPath).startsWith("autobyteus-")).toBe(true);
+    const materializedDirectoryName = path.basename(descriptor.materializedRootPath);
+    expect(materializedDirectoryName.length).toBeLessThanOrEqual(64);
+    expect(materializedDirectoryName.startsWith("autobyteus-")).toBe(true);
+    expect(materializedDirectoryName.split("-").at(-1)).toMatch(/^[a-f0-9]{4}$/);
+  });
+
+  it("materializes team-shared symlinked content as self-contained files", async () => {
+    const sourceRoot = await createTempDir("codex-skill-src-");
+    const workspaceRoot = await createTempDir("codex-skill-ws-");
+    const skill = await createTeamSharedSymlinkSkillFixture({
+      root: sourceRoot,
+      name: "architect-designer",
+    });
+    const materializer = new CodexWorkspaceSkillMaterializer();
+
+    const [descriptor] = await materializer.materializeConfiguredCodexWorkspaceSkills({
+      workingDirectory: workspaceRoot,
+      configuredSkills: [skill],
+      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+    });
+
+    await rm(sourceRoot, { recursive: true, force: true });
+
+    const designPrinciplesPath = path.join(descriptor.materializedRootPath, "design-principles.md");
+    const commonPracticesPath = path.join(
+      descriptor.materializedRootPath,
+      "common-design-practices.md",
+    );
+    const workspaceSharedPath = path.join(workspaceRoot, ".codex", "shared");
+
+    expect((await lstat(designPrinciplesPath)).isSymbolicLink()).toBe(false);
+    expect((await lstat(commonPracticesPath)).isSymbolicLink()).toBe(false);
+    expect(await readFile(designPrinciplesPath, "utf-8")).toBe("design rules");
+    expect(await readFile(commonPracticesPath, "utf-8")).toBe("common rules");
+    await expect(stat(workspaceSharedPath)).rejects.toThrow();
   });
 
   it("returns no materialized skills when skill access mode is NONE", async () => {

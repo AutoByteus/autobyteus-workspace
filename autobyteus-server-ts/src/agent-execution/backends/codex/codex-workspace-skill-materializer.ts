@@ -8,6 +8,7 @@ const WORKSPACE_SKILLS_ROOT_SEGMENTS = [".codex", "skills"] as const;
 const MATERIALIZED_SKILL_PREFIX = "autobyteus-";
 const OWNERSHIP_MARKER_FILE = ".autobyteus-runtime-skill.json";
 const MAX_CODEX_SKILL_DIRECTORY_NAME_LENGTH = 64;
+const MATERIALIZED_SKILL_HASH_LENGTH = 4;
 
 type WorkspaceSkillOwnershipMarker = {
   version: 1;
@@ -66,7 +67,10 @@ const sanitizeDirectorySegment = (value: string): string => {
 };
 
 const buildDirectoryHash = (skill: Skill): string =>
-  createHash("sha1").update(path.resolve(skill.rootPath)).digest("hex").slice(0, 12);
+  createHash("sha1")
+    .update(path.resolve(skill.rootPath))
+    .digest("hex")
+    .slice(0, MATERIALIZED_SKILL_HASH_LENGTH);
 
 const buildMaterializedDirectoryName = (skill: Skill): string =>
   (() => {
@@ -87,6 +91,16 @@ const buildRegistryKey = (workingDirectory: string, skill: Skill): string =>
 
 const buildWorkspaceSkillsRoot = (workingDirectory: string): string =>
   path.join(workingDirectory, ...WORKSPACE_SKILLS_ROOT_SEGMENTS);
+
+const copySkillTree = async (sourceRootPath: string, targetRootPath: string): Promise<void> => {
+  await fs.cp(sourceRootPath, targetRootPath, {
+    recursive: true,
+    force: false,
+    errorOnExist: true,
+    dereference: true,
+    filter: (sourcePath) => isSourceSkillPath(sourcePath),
+  });
+};
 
 const buildOwnershipMarker = (
   skill: Skill,
@@ -233,20 +247,8 @@ export class CodexWorkspaceSkillMaterializer {
         recursive: true,
         force: true,
       });
-      await fs.cp(skill.rootPath, materializedRootPath, {
-        recursive: true,
-        force: false,
-        errorOnExist: true,
-        filter: (sourcePath) => isSourceSkillPath(sourcePath),
-      });
-    } else {
-      await fs.cp(skill.rootPath, materializedRootPath, {
-        recursive: true,
-        force: false,
-        errorOnExist: true,
-        filter: (sourcePath) => isSourceSkillPath(sourcePath),
-      });
     }
+    await copySkillTree(skill.rootPath, materializedRootPath);
 
     await fs.writeFile(
       markerPath,

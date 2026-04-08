@@ -60,12 +60,19 @@ Team runtime:
 
 ## Skills
 
-Configured runtime skills are materialized into the run workspace under:
+Configured runtime skills are preflighted against Codex `skills/list` for the run working directory.
+
+- If Codex already discovers an enabled skill with the same logical `name`, AutoByteus reuses it and does not copy it into the workspace.
+- If the configured skill name is not discoverable, AutoByteus materializes a runtime-owned copy into the run workspace under:
 
 - `.codex/skills/<skill>/...`
 
-Materializer:
+- If the discovery probe fails, AutoByteus falls back to the runtime-owned workspace copy path instead of blocking bootstrap.
+- Runtime-owned skill copies are made self-contained on macOS/Linux by dereferencing source symlinks during materialization, so the copied bundle does not depend on the original source tree or a mirrored `.codex/shared/...` path.
 
+Relevant owners:
+
+- `src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts`
 - `src/agent-execution/backends/codex/codex-workspace-skill-materializer.ts`
 
 This keeps Codex skill loading aligned with the Codex filesystem contract instead of injecting skill content into prompts at the server boundary.
