@@ -84,16 +84,16 @@ After explicit user verification and ticket archival, this file normally moves w
 - Finalization target branch:
   - `personal`
 - Commit status:
-  - `Not started`
+  - `Completed on ticket branch codex/artifact-edit-file-content-view-bug (commit 46ff7ca)`
 - Push status:
-  - `Not started`
+  - `Completed for ticket branch and merged target branch`
 - Merge status:
-  - `Not started`
+  - `Completed into origin/personal`
 - Release/publication/deployment status:
   - `Not required`
 - Worktree cleanup status:
-  - `Not started`
+  - `Completed; dedicated ticket worktree removed`
 - Local branch cleanup status:
-  - `Not started`
+  - `Completed; local ticket branch deleted`
 - Blockers / notes:
-  - repository finalization and cleanup are in progress
+  - none

@@ -8,11 +8,11 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 
 - Ticket: `artifact-edit-file-content-view-bug`
 - Current Stage: `10`
-- Next Stage: `10`
+- Next Stage: `End`
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-012`
+- Last Transition ID: `T-013`
 - Last Updated: `2026-04-08`
 
 ## Stage 0 Bootstrap Record
@@ -32,17 +32,17 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 
 | Stage | Gate Status (`Not Started`/`In Progress`/`Pass`/`Fail`/`Blocked`) | Gate Rule Summary | Evidence |
 | --- | --- | --- | --- |
-| 0 Bootstrap + Draft Requirement | Pass | Ticket/worktree bootstrap is complete, the base branch/worktree decision is recorded, and `requirements.md` status is `Draft`. | `tickets/in-progress/artifact-edit-file-content-view-bug/requirements.md`, `tickets/in-progress/artifact-edit-file-content-view-bug/workflow-state.md` |
-| 1 Investigation + Triage | Pass | Investigation isolated the blank-pane bug to the viewer refresh contract: `edit_file` rows are auto-selected before availability metadata arrives, later store updates mutate the same artifact object in place, and `ArtifactContentViewer` does not rerun when that selected object's fields change. | `tickets/in-progress/artifact-edit-file-content-view-bug/investigation-notes.md`, `autobyteus-web/components/workspace/agent/ArtifactContentViewer.vue`, `autobyteus-web/stores/agentArtifactsStore.ts`, `autobyteus-web/components/workspace/agent/ArtifactsTab.vue` |
-| 2 Requirements | Pass | Requirements refined to the selected-artifact refresh/retry fix scope. `edit_file` remains workspace-fetch-backed, auto-refreshes when it becomes fetchable, and same-row click retries content resolution. | `tickets/in-progress/artifact-edit-file-content-view-bug/requirements.md` |
-| 3 Design Basis | Pass | Small-scope implementation/design basis recorded in `implementation.md`, centered on viewer-owned refresh logic plus a tab-owned retry signal. | `tickets/in-progress/artifact-edit-file-content-view-bug/implementation.md` |
-| 4 Future-State Runtime Call Stack | Pass | Future-state runtime call stacks cover click-to-view, workspace-backed edited-file resolution, write-file streaming preservation, late-metadata auto-refresh, and same-row retry. | `tickets/in-progress/artifact-edit-file-content-view-bug/future-state-runtime-call-stack.md` |
-| 5 Future-State Runtime Call Stack Review | Pass | Two consecutive clean rounds reached `Go Confirmed` with no blockers, no required persisted updates, and no new use cases. | `tickets/in-progress/artifact-edit-file-content-view-bug/future-state-runtime-call-stack-review.md` |
-| 6 Implementation | Pass | Viewer refresh/retry implementation is complete and the targeted frontend validation command passed. | `tickets/in-progress/artifact-edit-file-content-view-bug/implementation.md`, `autobyteus-web/components/workspace/agent/ArtifactContentViewer.vue`, `autobyteus-web/components/workspace/agent/ArtifactsTab.vue`, `autobyteus-web/components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts`, `autobyteus-web/components/workspace/agent/__tests__/ArtifactsTab.spec.ts` |
-| 7 API/E2E + Executable Validation | Pass | Executable validation closed all in-scope acceptance criteria with focused Nuxt component-harness coverage. | `tickets/in-progress/artifact-edit-file-content-view-bug/api-e2e-testing.md` |
-| 8 Code Review | Pass | Stage 8 review completed with no findings and all structural checks passing. | `tickets/in-progress/artifact-edit-file-content-view-bug/code-review.md` |
-| 9 Docs Sync | Pass | No long-lived docs changes were required; explicit no-impact rationale is recorded. | `tickets/in-progress/artifact-edit-file-content-view-bug/docs-sync.md` |
-| 10 Handoff / Ticket State | In Progress | User verification was received. Ticket archival, repository finalization, and cleanup are now in progress. Release/publication/deployment is explicitly not required for this ticket. | `tickets/in-progress/artifact-edit-file-content-view-bug/handoff-summary.md`, `tickets/in-progress/artifact-edit-file-content-view-bug/workflow-state.md` |
+| 0 Bootstrap + Draft Requirement | Pass | Ticket/worktree bootstrap is complete, the base branch/worktree decision is recorded, and `requirements.md` status is `Draft`. | `tickets/done/artifact-edit-file-content-view-bug/requirements.md`, `tickets/done/artifact-edit-file-content-view-bug/workflow-state.md` |
+| 1 Investigation + Triage | Pass | Investigation isolated the blank-pane bug to the viewer refresh contract: `edit_file` rows are auto-selected before availability metadata arrives, later store updates mutate the same artifact object in place, and `ArtifactContentViewer` does not rerun when that selected object's fields change. | `tickets/done/artifact-edit-file-content-view-bug/investigation-notes.md`, `autobyteus-web/components/workspace/agent/ArtifactContentViewer.vue`, `autobyteus-web/stores/agentArtifactsStore.ts`, `autobyteus-web/components/workspace/agent/ArtifactsTab.vue` |
+| 2 Requirements | Pass | Requirements refined to the selected-artifact refresh/retry fix scope. `edit_file` remains workspace-fetch-backed, auto-refreshes when it becomes fetchable, and same-row click retries content resolution. | `tickets/done/artifact-edit-file-content-view-bug/requirements.md` |
+| 3 Design Basis | Pass | Small-scope implementation/design basis recorded in `implementation.md`, centered on viewer-owned refresh logic plus a tab-owned retry signal. | `tickets/done/artifact-edit-file-content-view-bug/implementation.md` |
+| 4 Future-State Runtime Call Stack | Pass | Future-state runtime call stacks cover click-to-view, workspace-backed edited-file resolution, write-file streaming preservation, late-metadata auto-refresh, and same-row retry. | `tickets/done/artifact-edit-file-content-view-bug/future-state-runtime-call-stack.md` |
+| 5 Future-State Runtime Call Stack Review | Pass | Two consecutive clean rounds reached `Go Confirmed` with no blockers, no required persisted updates, and no new use cases. | `tickets/done/artifact-edit-file-content-view-bug/future-state-runtime-call-stack-review.md` |
+| 6 Implementation | Pass | Viewer refresh/retry implementation is complete and the targeted frontend validation command passed. | `tickets/done/artifact-edit-file-content-view-bug/implementation.md`, `autobyteus-web/components/workspace/agent/ArtifactContentViewer.vue`, `autobyteus-web/components/workspace/agent/ArtifactsTab.vue`, `autobyteus-web/components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts`, `autobyteus-web/components/workspace/agent/__tests__/ArtifactsTab.spec.ts` |
+| 7 API/E2E + Executable Validation | Pass | Executable validation closed all in-scope acceptance criteria with focused Nuxt component-harness coverage. | `tickets/done/artifact-edit-file-content-view-bug/api-e2e-testing.md` |
+| 8 Code Review | Pass | Stage 8 review completed with no findings and all structural checks passing. | `tickets/done/artifact-edit-file-content-view-bug/code-review.md` |
+| 9 Docs Sync | Pass | No long-lived docs changes were required; explicit no-impact rationale is recorded. | `tickets/done/artifact-edit-file-content-view-bug/docs-sync.md` |
+| 10 Handoff / Ticket State | Pass | User verification was received, the ticket was archived to `tickets/done`, the ticket branch was committed and pushed, the merged result was pushed to `origin/personal`, release/publication/deployment was explicitly not required, and required cleanup completed. | `tickets/done/artifact-edit-file-content-view-bug/handoff-summary.md`, `tickets/done/artifact-edit-file-content-view-bug/workflow-state.md` |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -117,6 +117,7 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 | T-010 | 2026-04-08 | 8 | 9 | Stage 8 code review passed with no findings; docs-sync evaluation started. | N/A | Locked | `code-review.md`, `workflow-state.md` |
 | T-011 | 2026-04-08 | 9 | 10 | Stage 9 recorded a no-impact docs decision and Stage 10 handoff summary was prepared pending user verification. | N/A | Locked | `docs-sync.md`, `handoff-summary.md`, `workflow-state.md` |
 | T-012 | 2026-04-08 | 10 | 10 | User independently verified the fix and requested ticket finalization without a release. Ticket archival and repository finalization started. | N/A | Locked | `handoff-summary.md`, `workflow-state.md` |
+| T-013 | 2026-04-08 | 10 | 10 | Ticket archival, repository finalization into `origin/personal`, and required worktree/branch cleanup completed. Release/publication/deployment was not required. | N/A | Locked | `handoff-summary.md`, `workflow-state.md` |
 
 ## Audible Notification Log (Optional Tracking)
 
