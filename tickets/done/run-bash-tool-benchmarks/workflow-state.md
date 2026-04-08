@@ -12,7 +12,7 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-021`
+- Last Transition ID: `T-022`
 - Last Updated: `2026-04-08`
 
 ## Stage 0 Bootstrap Record
@@ -137,6 +137,7 @@ Note:
 | T-019 | 2026-04-08 | 8 | 9 | Code review and docs sync were refreshed for the final path-semantics local fix. | N/A | Locked | `code-review.md`, `docs-sync.md`, `workflow-state.md` |
 | T-020 | 2026-04-08 | 9 | 10 | Handoff artifacts were refreshed after the final local-fix loop and the ticket returned to explicit verification hold. | N/A | Locked | `handoff-summary.md`, `workflow-state.md` |
 | T-021 | 2026-04-08 | 10 | End | You explicitly verified the ticket, requested finalization without a release/version step, and the ticket was archived locally to `tickets/done`. | N/A | Locked | `handoff-summary.md`, `workflow-state.md` |
+| T-022 | 2026-04-08 | 10 | End | Repository finalization completed: the ticket branch was pushed, merged into `personal`, `personal` was pushed, and the dedicated worktree/local branch cleanup finished. | N/A | Locked | `handoff-summary.md`, `workflow-state.md` |
 
 ## Audible Notification Log (Optional Tracking)
 
@@ -147,6 +148,7 @@ Note:
 | 2026-04-08 | Transition | The run bash tool benchmarks ticket is back in stage ten verification hold. The repaired single-agent, team, XML, and broader flow tests all passed after aligning them with the absolute-path file contract. | Success | N/A |
 | 2026-04-08 | Re-entry | The run bash tool benchmarks ticket reopened one last time at stage six to restore workspace-root-relative file-path support after manual verification showed the absolute-only rule was too brittle. | Success | N/A |
 | 2026-04-08 | Transition | The run bash tool benchmarks ticket is finalized locally. The archived branch keeps explicit file-path semantics, `run_bash` cwd certainty, the expanded edit-tool family, and the benchmark evidence without a release/version step. | Success | N/A |
+| 2026-04-08 | Transition | Repository finalization completed for the run bash tool benchmarks ticket: the ticket branch and `personal` were pushed, and the dedicated worktree/local branch were cleaned up. | Success | N/A |
 
 ## Process Violation Log
 

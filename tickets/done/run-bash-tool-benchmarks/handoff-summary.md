@@ -83,10 +83,10 @@
 - Ticket branch: `codex/run-bash-tool-benchmarks`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Commit status: `Completed locally on the ticket branch in the archive commit for this ticket`
-- Push status: `Not performed (not requested)`
-- Merge status: `Not performed (not requested)`
+- Commit status: `Completed`
+- Push status: `Completed for both the ticket branch and target branch`
+- Merge status: `Completed into personal`
 - Release/publication/deployment status: `Not required by user request`
-- Worktree cleanup status: `Deferred so the branch/worktree remain available for follow-up if needed`
-- Local branch cleanup status: `Deferred with the worktree`
+- Worktree cleanup status: `Completed`
+- Local branch cleanup status: `Completed`
 - Blockers / notes: none
