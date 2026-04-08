@@ -93,8 +93,9 @@ describe('AgentFactory skill integration', () => {
       expect(systemPrompt).toContain('## Agent Skills');
       expect(systemPrompt).toContain('### Skill Catalog');
       expect(systemPrompt).toContain('Java Map Body');
-      expect(systemPrompt).toContain(`**Root Path:** \`${skillPath}\``);
+      expect(systemPrompt).toContain(`**Skill Base Path:** \`${skillPath}\``);
       expect(systemPrompt).toContain('Path Resolution Required for Skill Files');
+      expect(systemPrompt).not.toContain('To load a skill not shown in detail below, use the `load_skill` tool.');
       expect(agent.context.config.skills).toContain('java_expert');
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });
@@ -142,6 +143,7 @@ describe('AgentFactory skill integration', () => {
 
       expect(systemPrompt).toContain('### Skill Catalog');
       expect(systemPrompt).toContain('**java_expert**: Java expert');
+      expect(systemPrompt).toContain('To load a skill not shown in detail below, use the `load_skill` tool.');
       expect(systemPrompt).not.toContain('Java Map Body');
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });

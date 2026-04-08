@@ -43,8 +43,9 @@ describe('load_skill tool', () => {
     const result = await toolInstance.execute({ agentId: 'test_agent' }, { skill_name: 'test_skill' });
 
     expect(result).toContain('## Skill: test_skill');
-    expect(result).toContain(`Root Path: ${skillPath}`);
+    expect(result).toContain(`Skill Base Path: ${skillPath}`);
     expect(result).toContain('CRITICAL: Path Resolution');
+    expect(result).toContain('Skill Base Path above');
     expect(result).toContain('Body of the skill.');
 
     removeDir(tempDir);
@@ -60,8 +61,9 @@ describe('load_skill tool', () => {
     const result = await toolInstance.execute({ agentId: 'test_agent' }, { skill_name: skillPath });
 
     expect(result).toContain('## Skill: test_skill');
-    expect(result).toContain(`Root Path: ${skillPath}`);
+    expect(result).toContain(`Skill Base Path: ${skillPath}`);
     expect(result).toContain('CRITICAL: Path Resolution');
+    expect(result).toContain('Skill Base Path above');
     expect(result).toContain('Body of the skill.');
 
     removeDir(tempDir);

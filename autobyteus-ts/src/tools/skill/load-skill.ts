@@ -7,10 +7,10 @@ import { defaultToolRegistry } from '../registry/tool-registry.js';
 import { SkillAccessMode, resolveSkillAccessMode } from '../../agent/context/skill-access-mode.js';
 
 const DESCRIPTION = [
-  "Loads a skill's entry point (SKILL.md) and provides its root path context.",
+  "Loads a skill's entry point (SKILL.md) and provides its skill base path context.",
   'Use this to understand a specialized skill\'s capabilities and internal assets.',
   'Args: skill_name: The registered name of the skill or a path to a skill directory.',
-  'Returns: A formatted context block containing the skill\'s map, its absolute root path, and path resolution guidance.'
+  'Returns: A formatted context block containing the skill\'s map, its absolute skill base path, and path resolution guidance.'
 ].join(' ');
 
 type SkillAwareContext = {
@@ -70,7 +70,7 @@ export async function loadSkill(context: SkillAwareContext | null | undefined, s
     );
   }
 
-  return `## Skill: ${skill.name}\nRoot Path: ${skill.rootPath}\n\n> **CRITICAL: Path Resolution When Using Tools**\n> \n> This skill uses relative paths. When using any tool that requires a file path,\n> you MUST first construct the full absolute path by combining the Root Path above\n> with the relative path from the skill instructions.\n> \n> **Example:** Root Path + \`./scripts/format.sh\` = \`${skill.rootPath}/scripts/format.sh\`\n\n${skill.content}`;
+  return `## Skill: ${skill.name}\nSkill Base Path: ${skill.rootPath}\n\n> **CRITICAL: Path Resolution When Using Tools**\n> \n> This skill uses relative paths. When using any tool that requires a file path,\n> you MUST first construct the full absolute path by combining the Skill Base Path above\n> with the relative path from the skill instructions.\n> \n> **Example:** Skill Base Path + \`./scripts/format.sh\` = \`${skill.rootPath}/scripts/format.sh\`\n\n${skill.content}`;
 }
 
 const TOOL_NAME = 'load_skill';

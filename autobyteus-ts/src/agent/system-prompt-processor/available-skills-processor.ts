@@ -63,7 +63,7 @@ export class AvailableSkillsProcessor extends BaseSystemPromptProcessor {
         preloadedSkillSet.has(skill.name)
       ) {
         detailedSections.push(
-          `#### ${skill.name}\n**Root Path:** \`${skill.rootPath}\`\n\n${skill.content}`
+          `#### ${skill.name}\n**Skill Base Path:** \`${skill.rootPath}\`\n\n${skill.content}`
         );
       }
     }
@@ -71,7 +71,9 @@ export class AvailableSkillsProcessor extends BaseSystemPromptProcessor {
     let skillsBlock = '\n\n## Agent Skills\n';
     skillsBlock += '### Skill Catalog\n';
     skillsBlock += `${catalogEntries.join('\n')}\n`;
-    skillsBlock += '\nTo load a skill not shown in detail below, use the `load_skill` tool.\n';
+    if (skillAccessMode === SkillAccessMode.GLOBAL_DISCOVERY) {
+      skillsBlock += '\nTo load a skill not shown in detail below, use the `load_skill` tool.\n';
+    }
 
     if (detailedSections.length) {
       skillsBlock += `
@@ -83,14 +85,14 @@ export class AvailableSkillsProcessor extends BaseSystemPromptProcessor {
 > However, standard tools resolve relative paths against the User's Workspace, not the skill directory.
 > 
 > When using ANY file from a skill, you MUST convert its path to ABSOLUTE:
-> \`Root Path\` + \`Relative Path\` = \`Absolute Path\`
+> \`Skill Base Path\` + \`Relative Path\` = \`Absolute Path\`
 > 
 > **Examples:**
-> 1. Root Path: \`/path/to/skill\`
+> 1. Skill Base Path: \`/path/to/skill\`
 >    Relative: \`./scripts/run.sh\`
 >    Result: \`/path/to/skill/scripts/run.sh\`
 > 
-> 2. Root Path: \`/path/to/skill\`
+> 2. Skill Base Path: \`/path/to/skill\`
 >    Relative: \`scripts/run.sh\`
 >    Result: \`/path/to/skill/scripts/run.sh\`
 
