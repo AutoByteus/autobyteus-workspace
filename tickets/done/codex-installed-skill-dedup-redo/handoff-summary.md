@@ -4,7 +4,7 @@
 
 - Ticket: `codex-installed-skill-dedup-redo`
 - Date: `2026-04-08`
-- Current Status: `Finalization In Progress`
+- Current Status: `Completed`
 - Workflow State Source: `tickets/done/codex-installed-skill-dedup-redo/workflow-state.md`
 
 ## Delivery Summary
@@ -60,6 +60,7 @@
 - Release notes artifact: `tickets/done/codex-installed-skill-dedup-redo/release-notes.md`
 - Notes:
   - short user-facing release notes were created for the standard desktop release helper even though the underlying change is primarily a runtime-behavior correction
+  - the standard helper consumed `tickets/done/codex-installed-skill-dedup-redo/release-notes.md` when publishing `v1.2.64`
 
 ## User Verification Hold
 
@@ -67,7 +68,7 @@
 - User verification received:
   - `Yes` on `2026-04-08`
 - Notes:
-  - explicit verification is now recorded and Stage 10 repository finalization plus release work is in progress
+  - explicit verification is now recorded and Stage 10 repository finalization is complete
 
 ## Finalization Record
 
@@ -82,16 +83,16 @@
 - Finalization target branch:
   - `personal`
 - Commit status:
-  - in progress
+  - `Complete` (`313bbe1 fix(codex): reuse installed skills before materialization`, `da4c3c8a Merge branch 'codex/codex-installed-skill-dedup-redo' into personal`, `f1ebc3b7 chore(release): bump workspace release version to 1.2.64`, plus this final Stage 10 metadata update)
 - Push status:
-  - pending ticket-branch push
+  - `Complete` (ticket branch pushed to `origin/codex/codex-installed-skill-dedup-redo`, merged `personal` pushed, release tag `v1.2.64` pushed)
 - Merge status:
-  - pending merge into `personal`
+  - `Complete` (`da4c3c8a`)
 - Release/publication/deployment status:
-  - pending standard workspace release helper for the next patch version after `v1.2.63`
+  - `Complete` (`v1.2.64` via `pnpm release 1.2.64 -- --release-notes tickets/done/codex-installed-skill-dedup-redo/release-notes.md`)
 - Worktree cleanup status:
-  - pending repository finalization and release completion
+  - `Complete` (dedicated worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/codex-installed-skill-dedup-redo` removed)
 - Local branch cleanup status:
-  - pending repository finalization and release completion
+  - `Complete` (local branch `codex/codex-installed-skill-dedup-redo` deleted after merge)
 - Blockers / notes:
-  - repository finalization will use the archived `release-notes.md` artifact and the documented root `pnpm release` helper after the ticket branch is merged into `personal`
+  - no remaining blockers

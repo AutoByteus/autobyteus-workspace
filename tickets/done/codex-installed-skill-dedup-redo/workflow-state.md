@@ -4,11 +4,11 @@
 
 - Ticket: `codex-installed-skill-dedup-redo`
 - Current Stage: `10`
-- Next Stage: `Repository Finalization / Release`
+- Next Stage: `Completed`
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-028`
+- Last Transition ID: `T-029`
 - Last Updated: `2026-04-08`
 
 ## Stage 0 Bootstrap Record
@@ -38,7 +38,7 @@
 | 7 API/E2E + Executable Validation | Pass | executable validation implementation complete + acceptance-criteria and spine scenario gates complete | `api-e2e-testing.md` round `4`; live Codex bootstrapper integration and live GraphQL websocket validation both stayed green after the shorter suffix change |
 | 8 Code Review | Pass | Code review gate `Pass`/`Fail` recorded with mandatory structural checks and scorecard | `code-review.md` round `4` passed; the shorter four-character runtime-owned bundle suffix did not introduce any structural, ownership, validation, or legacy-retention issues |
 | 9 Docs Sync | Pass | `docs-sync.md` current + docs updated or no-impact rationale recorded | `docs-sync.md` re-review confirmed that the earlier `codex_integration.md` update already covered the durable behavior change and that the local-fix suffix shortening did not require further long-lived doc edits |
-| 10 Handoff / Ticket State | In Progress | `handoff-summary.md` current + explicit user verification received + ticket moved to `done` + repository finalization complete when required | Explicit user verification is now received, curated release notes are written, the ticket is archived under `tickets/done/`, and Stage 10 repository finalization plus release work is in progress |
+| 10 Handoff / Ticket State | Pass | `handoff-summary.md` current + explicit user verification received + ticket moved to `done` + repository finalization complete when required | Explicit user verification was received, the archived ticket branch was pushed and merged into `personal`, release `v1.2.64` was published, and required worktree plus local-branch cleanup completed |
 
 ## Pre-Edit Checklist (Stage 6 Source-Code Edits)
 
@@ -88,6 +88,7 @@
 | T-026 | 2026-04-08 | 8 | 9 | Local-fix Stage 8 code review passed with the required scorecard and no findings; moving to docs sync with code edits locked | Local Fix | Locked | `code-review.md`, `workflow-state.md` |
 | T-027 | 2026-04-08 | 9 | 10 | Local-fix Stage 9 docs sync re-review confirmed no further long-lived doc edits were needed for the shorter suffix; returning to handoff awaiting user verification | Local Fix | Locked | `docs-sync.md`, `handoff-summary.md`, `workflow-state.md` |
 | T-028 | 2026-04-08 | 10 | 10 | Explicit user verification was received, `release-notes.md` was created, the ticket was archived to `tickets/done/codex-installed-skill-dedup-redo`, and Stage 10 repository finalization plus release work started | N/A | Locked | `tickets/done/codex-installed-skill-dedup-redo/handoff-summary.md`, `tickets/done/codex-installed-skill-dedup-redo/release-notes.md`, `tickets/done/codex-installed-skill-dedup-redo/workflow-state.md` |
+| T-029 | 2026-04-08 | 10 | 10 | Stage 10 finalization completed. The ticket branch was pushed, merged into `personal`, release `v1.2.64` was published, and required worktree plus local-branch cleanup finished. | N/A | Locked | `tickets/done/codex-installed-skill-dedup-redo/handoff-summary.md`, `tickets/done/codex-installed-skill-dedup-redo/release-notes.md`, `tickets/done/codex-installed-skill-dedup-redo/workflow-state.md` |
 
 ## Audible Notification Log (Optional Tracking)
 
@@ -118,6 +119,7 @@
 | 2026-04-08 | Transition | Local-fix Stage six and stage seven both passed for codex installed skill dedupe redo. I am now in stage eight code review, and code edits are now locked. | Success | N/A |
 | 2026-04-08 | Transition | Local-fix Stage eight and stage nine both passed for codex installed skill dedupe redo. The ticket is back in stage ten awaiting user verification, and code edits remain locked. | Success | N/A |
 | 2026-04-08 | Transition | User verification is now recorded for codex installed skill dedupe redo. The ticket is archived under tickets done, and stage ten finalization plus release work is now in progress with code edits still locked. | Success | N/A |
+| 2026-04-08 | Transition | Stage ten finalization passed for codex installed skill dedupe redo. The ticket branch is merged into personal, release v1.2.64 is published, and the dedicated worktree plus local branch cleanup are complete. | Success | N/A |
 
 ## Process Violation Log
 
