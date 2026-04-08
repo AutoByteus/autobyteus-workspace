@@ -1,6 +1,8 @@
+## What's New
+- Codex-configured skills now reuse matching installed Codex skills instead of copying duplicate workspace skill bundles.
+
 ## Improvements
-- Improved Telegram and other external-channel replies so tool-using turns wait for the full same-turn response before sending the final message.
+- Team skills that rely on shared reference files now load as self-contained runtime bundles, so shared guidance files keep working inside the run workspace.
 
 ## Fixes
-- Fixed external replies that could stop after the first pre-tool segment instead of including the whole agent response.
-- Fixed accepted-turn recovery so delayed or restarted external replies continue routing one final message for the completed turn.
+- Materialized runtime skill folders now use shorter, easier-to-read suffixes.
