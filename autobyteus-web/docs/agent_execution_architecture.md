@@ -126,7 +126,11 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
     - Buffers `write_file` content for immediate preview, then lets the viewer resolve current workspace content or media URLs once entries become available.
 2.  **Activity (`AgentActivityStore`)**:
     - Tracks every tool call, file write, and terminal command as a linear history of "Activities".
-    - Used for the "Activity Feed" UI in the backend/sidebar.
+    - Powers the right-side Progress/Activity feed UI.
+    - Feeds two intentionally different presentation surfaces:
+      - `components/conversation/ToolCallIndicator.vue` renders compact inline tool cards in the conversation. These cards keep status understanding non-textual in the header (icon/spinner, tint, context, error row) and route non-awaiting cards into the matching activity item.
+      - `components/progress/ActivityItem.vue` renders the right-side activity row, including the textual status chip and short invocation id.
+    - Presentation-density changes for inline chat cards should stay in `ToolCallIndicator.vue`; textual activity-status changes should stay in `ActivityItem.vue`.
 3.  **Todos (`AgentTodoStore`)**:
     - Maintains the agent's Todo list separately from the chat history.
 
