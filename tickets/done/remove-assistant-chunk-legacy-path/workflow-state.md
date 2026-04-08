@@ -8,7 +8,7 @@
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-010`
+- Last Transition ID: `T-011`
 - Last Updated: `2026-04-08`
 
 ## Stage 0 Bootstrap Record
@@ -38,7 +38,7 @@
 | 7 API/E2E + Executable Validation | Pass | executable validation implementation complete + acceptance-criteria and spine scenario gates complete | `api-e2e-testing.md` round `1` passed with mapped AC/spine coverage and executable results |
 | 8 Code Review | Pass | Code review gate `Pass`/`Fail` recorded with mandatory structural checks and scorecard | `code-review.md` round `1` passed with no findings and all scorecard categories `>= 9.0` |
 | 9 Docs Sync | Pass | `docs-sync.md` current + docs updated or no-impact rationale recorded | `docs-sync.md` records `No impact` after long-lived docs review |
-| 10 Handoff / Ticket State | In Progress | `handoff-summary.md` current + explicit user verification received + ticket moved to `done` + repository finalization complete when required | User verification received on `2026-04-08`; finalization is now in progress |
+| 10 Handoff / Ticket State | Pass | `handoff-summary.md` current + explicit user verification received + ticket moved to `done` + repository finalization complete when required | Ticket archived to `tickets/done/remove-assistant-chunk-legacy-path`; ticket branch pushed and merged into `personal`; release step recorded as not required; worktree and local branch cleanup completed |
 
 ## Pre-Edit Checklist (Stage 6 Source-Code Edits)
 
@@ -70,6 +70,7 @@
 | T-008 | 2026-04-08 | 7 | 8 | Stage 7 executable validation passed; locking code edits for independent code review | N/A | Locked | `api-e2e-testing.md`, `workflow-state.md` |
 | T-009 | 2026-04-08 | 8 | 9 | Stage 8 code review passed with no findings, moving to docs sync | N/A | Locked | `code-review.md`, `workflow-state.md` |
 | T-010 | 2026-04-08 | 9 | 10 | Docs sync completed with no long-lived doc changes required; entering Stage 10 user-verification hold | N/A | Locked | `docs-sync.md`, `handoff-summary.md`, `workflow-state.md` |
+| T-011 | 2026-04-08 | 10 | End | User verification received and Stage 10 archival, repository finalization, and cleanup completed | N/A | Locked | `handoff-summary.md`, `workflow-state.md` |
 
 ## Audible Notification Log (Optional Tracking)
 
@@ -82,6 +83,7 @@
 | 2026-04-08 | Transition | Stage three passed. I am in stage four, writing the future-state runtime call stack for the segment-only assistant streaming path while code edits stay locked. | Success | N/A |
 | 2026-04-08 | Transition | Stage four passed. I am in stage five review, still locked from code edits while I confirm the segment-only runtime call stack is clean across two review rounds. | Success | N/A |
 | 2026-04-08 | Transition | Stages six through nine passed for remove assistant chunk legacy path. I am now in stage ten awaiting your verification, code edits are locked, and repository finalization is on hold until you confirm. | Success | N/A |
+| 2026-04-08 | Transition | Stage ten passed for remove assistant chunk legacy path. The ticket is archived, personal has been finalized without a release step, and the dedicated worktree and local ticket branch have been cleaned up. | Success | N/A |
 
 ## Process Violation Log
 
