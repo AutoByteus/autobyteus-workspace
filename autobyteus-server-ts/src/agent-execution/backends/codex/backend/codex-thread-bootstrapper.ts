@@ -36,6 +36,10 @@ import {
 import {
   getTeamCodexThreadBootstrapStrategy,
 } from "../../../../agent-team-execution/backends/codex/codex-team-thread-bootstrap-strategy.js";
+import {
+  getCodexAppServerClientManager,
+  type CodexAppServerClientManager,
+} from "../../../../runtime-management/codex/client/codex-app-server-client-manager.js";
 import { buildBrowserDynamicToolRegistrationsForEnabledToolNames } from "../browser/build-browser-dynamic-tool-registrations.js";
 import {
   filterDynamicToolRegistrationsByToolNames,
@@ -56,8 +60,41 @@ const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
 };
 
+type DiscoverableSkillLookupClient = {
+  request<T = unknown>(
+    method: string,
+    params: Record<string, unknown> | undefined,
+  ): Promise<T>;
+};
+
 const asTrimmedString = (value: unknown): string | null =>
   typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
+
+const asObjectRecord = (value: unknown): Record<string, unknown> | null =>
+  value && typeof value === "object" && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : null;
+
+const collectDiscoverableSkillNames = (payload: unknown): Set<string> => {
+  const result = new Set<string>();
+  const root = asObjectRecord(payload);
+  const data = Array.isArray(root?.data) ? root.data : [];
+  for (const entryValue of data) {
+    const entry = asObjectRecord(entryValue);
+    const skills = Array.isArray(entry?.skills) ? entry.skills : [];
+    for (const skillValue of skills) {
+      const skill = asObjectRecord(skillValue);
+      if (skill?.enabled !== true) {
+        continue;
+      }
+      const skillName = asTrimmedString(skill?.name);
+      if (skillName) {
+        result.add(skillName);
+      }
+    }
+  }
+  return result;
+};
 
 export const resolveApprovalPolicyForAutoExecuteTools = (
   autoExecuteTools: boolean,
@@ -91,6 +128,7 @@ export class CodexThreadBootstrapper {
   private readonly skillService: SkillService;
   private readonly defaultBootstrapStrategy: CodexThreadBootstrapStrategy;
   private readonly teamBootstrapStrategy: CodexThreadBootstrapStrategy;
+  private readonly clientManager: CodexAppServerClientManager;
 
   constructor(
     workspaceSkillMaterializer: CodexWorkspaceSkillMaterializer = getCodexWorkspaceSkillMaterializer(),
@@ -99,6 +137,7 @@ export class CodexThreadBootstrapper {
     skillService: SkillService = SkillService.getInstance(),
     defaultBootstrapStrategy: CodexThreadBootstrapStrategy = new DefaultCodexThreadBootstrapStrategy(),
     teamBootstrapStrategy: CodexThreadBootstrapStrategy = getTeamCodexThreadBootstrapStrategy(),
+    clientManager: CodexAppServerClientManager = getCodexAppServerClientManager(),
   ) {
     this.workspaceSkillMaterializer = workspaceSkillMaterializer;
     this.workspaceResolver = workspaceResolver;
@@ -106,6 +145,7 @@ export class CodexThreadBootstrapper {
     this.skillService = skillService;
     this.defaultBootstrapStrategy = defaultBootstrapStrategy;
     this.teamBootstrapStrategy = teamBootstrapStrategy;
+    this.clientManager = clientManager;
   }
 
   async bootstrapForCreate(
@@ -233,11 +273,57 @@ export class CodexThreadBootstrapper {
     configuredSkills: Skill[];
     skillAccessMode: SkillAccessMode;
   }): Promise<MaterializedCodexWorkspaceSkill[]> {
+    const filteredConfiguredSkills = await this.filterConfiguredSkillsForMaterialization(
+      input,
+    );
     return this.workspaceSkillMaterializer.materializeConfiguredCodexWorkspaceSkills({
       workingDirectory: input.workingDirectory,
-      configuredSkills: input.configuredSkills,
+      configuredSkills: filteredConfiguredSkills,
       skillAccessMode: input.skillAccessMode,
     });
+  }
+
+  private async filterConfiguredSkillsForMaterialization(input: {
+    workingDirectory: string;
+    configuredSkills: Skill[];
+    skillAccessMode: SkillAccessMode;
+  }): Promise<Skill[]> {
+    if (
+      input.skillAccessMode === SkillAccessMode.NONE ||
+      input.configuredSkills.length === 0
+    ) {
+      return [];
+    }
+
+    let client: DiscoverableSkillLookupClient | null = null;
+    try {
+      client = await this.clientManager.acquireClient(input.workingDirectory);
+      const response = await client.request<unknown>("skills/list", {
+        cwds: [input.workingDirectory],
+        forceReload: true,
+      });
+      const discoverableSkillNames = collectDiscoverableSkillNames(response);
+      if (discoverableSkillNames.size === 0) {
+        return input.configuredSkills;
+      }
+      return input.configuredSkills.filter((skill) => {
+        const skillName = asTrimmedString(skill.name);
+        return !skillName || !discoverableSkillNames.has(skillName);
+      });
+    } catch (error) {
+      logger.warn(
+        `Failed to preflight discoverable Codex skills for '${input.workingDirectory}'; falling back to workspace materialization: ${String(error)}`,
+      );
+      return input.configuredSkills;
+    } finally {
+      if (client) {
+        await this.clientManager.releaseClient(input.workingDirectory).catch((error) => {
+          logger.warn(
+            `Failed to release Codex skill preflight client for '${input.workingDirectory}': ${String(error)}`,
+          );
+        });
+      }
+    }
   }
 }
 
