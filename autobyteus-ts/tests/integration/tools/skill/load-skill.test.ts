@@ -42,7 +42,7 @@ describe('load_skill tool (integration)', () => {
     const result = await toolInstance.execute({ agentId: 'agent' }, { skill_name: 'sample_skill' });
 
     expect(result).toContain('## Skill: sample_skill');
-    expect(result).toContain(`Root Path: ${skillPath}`);
+    expect(result).toContain(`Skill Base Path: ${skillPath}`);
 
     removeDir(tempDir);
   });

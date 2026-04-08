@@ -36,6 +36,7 @@ describe('AvailableSkillsProcessor', () => {
     expect(result).toContain('## Agent Skills');
     expect(result).toContain('Skill Catalog');
     expect(result).toContain('- **test_skill**: desc');
+    expect(result).toContain('To load a skill not shown in detail below, use the `load_skill` tool.');
     expect(result).not.toContain('body');
   });
 
@@ -57,6 +58,7 @@ describe('AvailableSkillsProcessor', () => {
     expect(result).not.toContain('- **other**: other desc');
     expect(result).toContain('PRELOADED_BODY');
     expect(result).not.toContain('OTHER_BODY');
+    expect(result).not.toContain('To load a skill not shown in detail below, use the `load_skill` tool.');
   });
 
   it('skips skills section when mode is NONE', () => {
@@ -84,9 +86,11 @@ describe('AvailableSkillsProcessor', () => {
     const processor = new AvailableSkillsProcessor();
     const result = processor.process('Original', {}, 'test_agent', context);
 
-    expect(result).toContain('**Root Path:** `/path`');
+    expect(result).toContain('**Skill Base Path:** `/path`');
     expect(result).toContain('### Critical Rules for Using Skills');
     expect(result).toContain("standard tools resolve relative paths against the User's Workspace");
+    expect(result).toContain('`Skill Base Path` + `Relative Path` = `Absolute Path`');
+    expect(result).not.toContain('To load a skill not shown in detail below, use the `load_skill` tool.');
     expect(result).toContain('Relative: `./scripts/run.sh`');
     expect(result).toContain('Relative: `scripts/run.sh`');
     expect(result).toContain('FULL_BODY');
