@@ -142,10 +142,10 @@ describe('Tool approval integration flow', () => {
     fixture = await createAgentFixture([writeTool]);
     const turnId = assignActiveTurn(fixture);
 
-    const relativePath = 'poem.txt';
+    const finalPath = path.join(fixture.workspaceDir, 'poem.txt');
     const content = 'hello from approval';
     const invocationId = `write-${Date.now()}`;
-    const invocation = new ToolInvocation('write_file', { path: relativePath, content }, invocationId, turnId);
+    const invocation = new ToolInvocation('write_file', { path: finalPath, content }, invocationId, turnId);
 
     await fixture.agent.context.inputEventQueues.enqueueInternalSystemEvent(
       new PendingToolInvocationEvent(invocation)
@@ -160,7 +160,6 @@ describe('Tool approval integration flow', () => {
 
     await fixture.agent.postToolExecutionApproval(invocationId, true, 'approved');
 
-    const finalPath = path.join(fixture.workspaceDir, relativePath);
     await waitFor(
       async () => {
         try {
@@ -184,12 +183,12 @@ describe('Tool approval integration flow', () => {
     fixture = await createAgentFixture([readTool]);
     const turnId = assignActiveTurn(fixture);
 
-    const relativePath = 'sample.txt';
+    const targetPath = path.join(fixture.workspaceDir, 'sample.txt');
     const fileContent = 'line1\nline2\n';
-    await fs.writeFile(path.join(fixture.workspaceDir, relativePath), fileContent, 'utf-8');
+    await fs.writeFile(targetPath, fileContent, 'utf-8');
 
     const invocationId = `read-${Date.now()}`;
-    const invocation = new ToolInvocation('read_file', { path: relativePath }, invocationId, turnId);
+    const invocation = new ToolInvocation('read_file', { path: targetPath }, invocationId, turnId);
 
     await fixture.agent.context.inputEventQueues.enqueueInternalSystemEvent(
       new PendingToolInvocationEvent(invocation)
@@ -234,20 +233,17 @@ describe('Tool approval integration flow', () => {
     fixture = await createAgentFixture([patchTool]);
     const turnId = assignActiveTurn(fixture);
 
-    const relativePath = 'patch_target.txt';
     const initialContent = 'line1\nline2\nline3\n';
-    const targetPath = path.join(fixture.workspaceDir, relativePath);
+    const targetPath = path.join(fixture.workspaceDir, 'patch_target.txt');
     await fs.writeFile(targetPath, initialContent, 'utf-8');
 
-    const patch = `@@ -1,3 +1,3 @@
- line1
--line2
-+line2 updated
- line3
-`;
-
     const invocationId = `patch-${Date.now()}`;
-    const invocation = new ToolInvocation('edit_file', { path: relativePath, patch }, invocationId, turnId);
+    const invocation = new ToolInvocation(
+      'edit_file',
+      { path: targetPath, patch: '@@ -1,3 +1,3 @@\n line1\n-line2\n+line2 updated\n line3\n' },
+      invocationId,
+      turnId
+    );
 
     await fixture.agent.context.inputEventQueues.enqueueInternalSystemEvent(
       new PendingToolInvocationEvent(invocation)
@@ -333,6 +329,7 @@ describe('Tool approval integration flow', () => {
     expect(result.stdout).toContain('approval_ok');
     expect(result.exitCode).toBe(0);
     expect(result.timedOut).toBe(false);
+    expect(result.effectiveCwd).toBe(fixture.workspaceDir);
   });
 
   runBashIntegration('executes run_bash background mode after approval', async () => {
@@ -388,5 +385,6 @@ describe('Tool approval integration flow', () => {
     expect(result.status).toBe('started');
     expect(result.command).toBe("printf 'bg_ok'");
     expect(typeof result.processId).toBe('string');
+    expect(result.effectiveCwd).toBe(fixture.workspaceDir);
   });
 });

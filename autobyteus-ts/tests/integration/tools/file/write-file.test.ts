@@ -91,7 +91,7 @@ describe('write_file tool (integration)', () => {
     expect(written).toBe('Overwritten Functional Content');
   });
 
-  it('returns relative path when workspace is used', async () => {
+  it('resolves relative paths from the workspace root', async () => {
     const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-write-file-'));
     const relPath = path.join('subdir', 'relative.txt');
     const fullPath = path.join(tmpDir, relPath);
@@ -104,13 +104,20 @@ describe('write_file tool (integration)', () => {
     };
 
     const result = await tool.execute(context, { path: relPath, content });
-    expect(result).toBe(`File created/updated at ${path.normalize(relPath)}`);
-
-    const written = await fs.readFile(fullPath, 'utf-8');
-    expect(written).toBe(content);
+    expect(result).toBe(`File created/updated at ${path.normalize(fullPath)}`);
+    expect(await fs.readFile(fullPath, 'utf-8')).toBe(content);
   });
 
-  it('allows paths outside the workspace root when explicitly resolved there', async () => {
+  it('rejects relative paths when no workspace root is configured', async () => {
+    const tool = getToolInstance();
+    const context: MockContext = { agentId: 'agent', workspaceRootPath: null };
+
+    await expect(tool.execute(context, { path: 'relative.txt', content: 'nope' })).rejects.toThrow(
+      'but no workspace root is configured'
+    );
+  });
+
+  it('allows absolute paths outside the workspace root', async () => {
     const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-write-file-'));
     const workspaceDir = path.join(tmpDir, 'workspace');
     const outsidePath = path.join(tmpDir, 'escaped.txt');
@@ -121,8 +128,8 @@ describe('write_file tool (integration)', () => {
       workspaceRootPath: workspaceDir
     };
 
-    const result = await tool.execute(context, { path: '../escaped.txt', content: 'nope' });
-    expect(result).toBe(`File created/updated at ${path.normalize('../escaped.txt')}`);
+    const result = await tool.execute(context, { path: outsidePath, content: 'nope' });
+    expect(result).toBe(`File created/updated at ${outsidePath}`);
     expect(await fs.readFile(outsidePath, 'utf-8')).toBe('nope');
   });
 

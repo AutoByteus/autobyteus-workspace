@@ -26,10 +26,11 @@ describe('RunBashXmlFormatter (integration)', () => {
     const example = new RunBashXmlExampleFormatter().provide(toolDef);
 
     expect(schema).toContain('## run_bash');
-    expect(schema).toContain(
-      '`cwd="/absolute/path"` (optional; must be absolute when provided, for example `/Users/alice/project` or `/tmp/scratch-task`)'
-    );
+    expect(schema).toContain('`cwd="relative/or/absolute/path"`');
+    expect(schema).toContain('relative values resolve from the workspace root');
+    expect(schema).toContain('Each successful result includes `effectiveCwd`');
     expect(example).toContain('python -m pytest tests/ -v');
-    expect(example).toContain('cwd="/absolute/path/to/workspace/tests"');
+    expect(example).toContain('cwd="tests"');
+    expect(example).toContain('pwd > runtime/pwd.txt');
   });
 });

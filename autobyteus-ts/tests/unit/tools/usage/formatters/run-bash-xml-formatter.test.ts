@@ -20,11 +20,13 @@ describe('RunBashXmlFormatter', () => {
     const formatter = new RunBashXmlSchemaFormatter();
     const schema = formatter.provide(toolDef);
     expect(schema).toContain('<run_bash>');
+    expect(schema).toContain('<run_bash cwd="packages/api">');
     expect(schema).toContain('<run_bash cwd="/absolute/path/to/workspace/or/subdir">');
     expect(schema).toContain('</run_bash>');
     expect(schema).toContain('Do not rely on a prior `cd`');
-    expect(schema).toContain('must be absolute when provided');
+    expect(schema).toContain('relative values resolve from the workspace root');
     expect(schema).toContain('Do not invent generic sandbox aliases');
+    expect(schema).toContain('Each successful result includes `effectiveCwd`');
   });
 
   it('example uses shorthand XML syntax', () => {
@@ -32,6 +34,8 @@ describe('RunBashXmlFormatter', () => {
     const example = formatter.provide(toolDef);
     expect(example).toContain('<run_bash>');
     expect(example).toContain('</run_bash>');
+    expect(example).toContain('cwd="tests"');
     expect(example).toContain('cwd="/absolute/path/to/workspace/apps/web"');
+    expect(example).toContain('pwd > runtime/pwd.txt');
   });
 });

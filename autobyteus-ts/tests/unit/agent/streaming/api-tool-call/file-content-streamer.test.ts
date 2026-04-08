@@ -23,15 +23,16 @@ describe('FileContentStreamers', () => {
   it('edit_file streamer emits patch content', () => {
     const streamer = new EditFileContentStreamer();
 
-    const update1 = streamer.feed('{"patch":"@@ -1 +1 @@');
+    const update1 = streamer.feed('{"path":"a.txt","patch":"@@ -1 +1 @@');
     expect(update1.contentDelta).toBe('@@ -1 +1 @@');
+    expect(update1.path).toBe('a.txt');
 
     const update2 = streamer.feed('\\');
     expect(update2.contentDelta).toBe('');
 
-    const update3 = streamer.feed('n-foo\\n+bar"}');
-    expect(update3.contentDelta).toBe('\n-foo\n+bar');
-    expect(update3.contentComplete).toBe('@@ -1 +1 @@\n-foo\n+bar');
+    const update3 = streamer.feed('\\n-line\\n+line updated"}');
+    expect(update3.contentDelta).toBe('\\n-line\n+line updated');
+    expect(update3.contentComplete).toBe('@@ -1 +1 @@\\n-line\n+line updated');
   });
 
   it('handles content before path', () => {

@@ -30,6 +30,10 @@ describe('EditFileXmlFormatter', () => {
     expect(schema).toContain('__START_PATCH__');
     expect(schema).toContain('__END_PATCH__');
     expect(schema).toContain('sentinel tags');
+    expect(schema).toContain('absolute or relative to the configured workspace root');
+    expect(schema).toContain('prior shell cd state');
+    expect(schema).toContain('git diff style unified diff patch');
+    expect(schema).toContain('@@ -10,7 +10,8 @@');
   });
 
   it('example uses standard XML structure', () => {
@@ -46,5 +50,6 @@ describe('EditFileXmlFormatter', () => {
     expect(example).toContain('__START_PATCH__');
     expect(example).toContain('__END_PATCH__');
     expect(example).toContain('<arg name="path">/path/to/utils.py</arg>');
+    expect(example).toContain('<arg name="path">/path/to/config/settings.yaml</arg>');
   });
 });

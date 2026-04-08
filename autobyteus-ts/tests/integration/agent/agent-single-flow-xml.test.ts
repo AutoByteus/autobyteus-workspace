@@ -74,7 +74,7 @@ runIntegration('Agent single-flow integration (LM Studio, XML)', () => {
   it('executes a tool call end-to-end using XML tool format', async () => {
     const workspace = tempDir;
     const tool = registerWriteFileTool();
-    const toolArgs = { path: 'poem.txt', content: 'Roses are red.' };
+    const toolArgs = { path: path.join(workspace, 'poem.txt'), content: 'Roses are red.' };
 
     const llm = await createLmstudioLLM({ temperature: 0 });
     if (!llm) return;
@@ -110,11 +110,11 @@ runIntegration('Agent single-flow integration (LM Studio, XML)', () => {
       await agent.postUserMessage(
         new AgentInputUserMessage(
           `Use the write_file tool to write "${toolArgs.content}" to "${toolArgs.path}". ` +
-            `Return only the XML tool call and nothing else.`
+            `Use that exact absolute path and return only the XML tool call and nothing else.`
         )
       );
 
-      const filePath = path.join(tempDir, toolArgs.path);
+      const filePath = toolArgs.path;
       const created = await waitForFile(filePath, 20000, 100);
       expect(created).toBe(true);
 

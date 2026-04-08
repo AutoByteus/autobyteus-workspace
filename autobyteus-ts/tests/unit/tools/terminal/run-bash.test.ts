@@ -32,7 +32,7 @@ describe('runBash', () => {
     const workspaceRoot = createTempWorkspace(path.join('packages', 'api'));
     const terminalManager = {
       ensureStarted: vi.fn(async () => undefined),
-      executeCommand: vi.fn(async () => new TerminalResult('ok', '', 0, false)),
+      executeCommand: vi.fn(async () => new TerminalResult('ok', '', 0, false, path.join(workspaceRoot, 'packages', 'api'))),
       close: vi.fn(async () => undefined)
     };
     const context: any = {
@@ -49,13 +49,14 @@ describe('runBash', () => {
     expect(terminalManager.close).toHaveBeenCalled();
     expect(result).toBeInstanceOf(TerminalResult);
     expect((result as TerminalResult).stdout).toBe('ok');
+    expect((result as TerminalResult).effectiveCwd).toBe(path.join(workspaceRoot, 'packages', 'api'));
   });
 
   it('runs in background when background=true and returns process handle metadata', async () => {
     const workspaceRoot = createTempWorkspace(path.join('apps', 'web'));
     const terminalManager = {
       ensureStarted: vi.fn(async () => undefined),
-      executeCommand: vi.fn(async () => new TerminalResult('should-not-run', '', 0, false))
+      executeCommand: vi.fn(async () => new TerminalResult('should-not-run', '', 0, false, path.join(workspaceRoot, 'apps', 'web')))
     };
     const backgroundManager = {
       startProcess: vi.fn(async () => 'bg_123')
@@ -73,7 +74,8 @@ describe('runBash', () => {
       mode: 'background',
       processId: 'bg_123',
       command: 'npm run dev',
-      status: 'started'
+      status: 'started',
+      effectiveCwd: path.join(workspaceRoot, 'apps', 'web')
     });
     expect(Number.isNaN(Date.parse((result as any).startedAt))).toBe(false);
   });
@@ -97,7 +99,7 @@ describe('runBash', () => {
     const workspaceRoot = createTempWorkspace(path.join('packages', 'api'));
     const terminalManager = {
       ensureStarted: vi.fn(async () => undefined),
-      executeCommand: vi.fn(async () => new TerminalResult('ok', '', 0, false)),
+      executeCommand: vi.fn(async () => new TerminalResult('ok', '', 0, false, workspaceRoot)),
       close: vi.fn(async () => undefined)
     };
     const context: any = {
@@ -112,12 +114,31 @@ describe('runBash', () => {
     expect(terminalManager.ensureStarted).toHaveBeenCalledWith(workspaceRoot);
   });
 
-  it('rejects relative cwd paths when provided', async () => {
+  it('resolves relative cwd paths from the workspace root when provided', async () => {
     const workspaceRoot = createTempWorkspace();
+    fs.mkdirSync(path.join(workspaceRoot, 'packages', 'api'), { recursive: true });
+    const terminalManager = {
+      ensureStarted: vi.fn(async () => undefined),
+      executeCommand: vi.fn(async () => new TerminalResult('ok', '', 0, false, path.join(workspaceRoot, 'packages', 'api'))),
+      close: vi.fn(async () => undefined)
+    };
     const context: any = {
       workspaceRootPath: workspaceRoot
     };
+    vi.spyOn(TerminalSessionManager.prototype, 'ensureStarted').mockImplementation(terminalManager.ensureStarted);
+    vi.spyOn(TerminalSessionManager.prototype, 'executeCommand').mockImplementation(terminalManager.executeCommand);
+    vi.spyOn(TerminalSessionManager.prototype, 'close').mockImplementation(terminalManager.close);
 
-    await expect(runBash(context, 'echo nope', '../outside')).rejects.toThrow(/absolute path when provided/);
+    await runBash(context, 'echo ok', path.join('packages', 'api'));
+
+    expect(terminalManager.ensureStarted).toHaveBeenCalledWith(path.join(workspaceRoot, 'packages', 'api'));
+  });
+
+  it('rejects relative cwd paths when no workspace is configured', async () => {
+    const context: any = {
+      workspaceRootPath: null
+    };
+
+    await expect(runBash(context, 'echo nope', 'relative/path')).rejects.toThrow(/must be absolute when no workspace root is configured/);
   });
 });

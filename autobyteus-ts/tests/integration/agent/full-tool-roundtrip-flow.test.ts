@@ -26,6 +26,13 @@ import { MemoryType } from '../../../src/memory/models/memory-types.js';
 import { registerWriteFileTool } from '../../../src/tools/file/write-file.js';
 import { createLmstudioLLM, hasLmstudioConfig } from '../helpers/lmstudio-llm-helper.js';
 
+const parseMs = (value: string | undefined, fallbackMs: number): number => {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallbackMs;
+};
+
+const FLOW_TEST_TIMEOUT_MS = parseMs(process.env.LMSTUDIO_FLOW_TEST_TIMEOUT_MS, 180000);
+
 class DummyQueues {
   internalEvents: any[] = [];
   toolInvocationEvents: any[] = [];
@@ -99,8 +106,10 @@ runIntegration('Full tool roundtrip flow (LM Studio)', () => {
         }
       } as any;
 
+      const targetPath = path.join(tempDir, 'hello.py');
       const agentInput = new AgentInputUserMessage(
-        "Please write a python file named 'hello.py' that prints 'Hello'."
+        `Use the write_file tool to create a Python file at "${targetPath}" with content "print('Hello')". ` +
+          'Use that exact absolute path.'
       );
       const initialTurnId = context.state.startActiveTurn('turn-1').turnId;
       await new MemoryIngestInputProcessor().process(agentInput, context, null as any);
@@ -173,5 +182,5 @@ runIntegration('Full tool roundtrip flow (LM Studio)', () => {
       fs.rmSync(tempDir, { recursive: true, force: true });
       delete process.env.AUTOBYTEUS_STREAM_PARSER;
     }
-  });
+  }, FLOW_TEST_TIMEOUT_MS);
 });

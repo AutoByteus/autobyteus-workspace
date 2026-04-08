@@ -35,12 +35,12 @@ export async function startBackgroundProcess(
   context: AgentContextLike | null,
   command: string,
   cwd?: string | null
-): Promise<{ processId: string; status: string }> {
+): Promise<{ processId: string; status: string; effectiveCwd: string }> {
   const manager = getBackgroundManager(context);
   const resolvedCwd = resolveExecutionCwd(context, cwd);
 
   const processId = await manager.startProcess(command, resolvedCwd);
-  return { processId, status: 'started' };
+  return { processId, status: 'started', effectiveCwd: resolvedCwd };
 }
 
 const argumentSchema = new ParameterSchema();
@@ -54,7 +54,7 @@ argumentSchema.addParameter(new ParameterDefinition({
   name: 'cwd',
   type: ParameterType.STRING,
   description:
-    "Optional working-directory path for this process. If provided, it must be an absolute filesystem path such as '/Users/alice/project' or '/tmp/scratch-task'. If omitted, the workspace root is used when available.",
+    "Optional working-directory path for this process. Absolute paths are allowed. Relative paths are resolved from the workspace root when available. If omitted, the workspace root is used when available. If a task targets a nested directory, pass that same cwd on every location-sensitive command in that directory.",
   required: false
 }));
 
@@ -66,7 +66,7 @@ export function registerStartBackgroundProcessTool(): BaseTool {
     cachedTool = tool({
       name: TOOL_NAME,
       description:
-        'Start a long-running process in a working directory and return its process_id. If cwd is omitted, the workspace root is used. If cwd is provided, it must be an absolute path such as /Users/alice/project or /tmp/scratch-task.',
+        'Start a long-running process in a working directory and return its process_id. If cwd is omitted, the workspace root is used. If cwd is provided, it may be absolute or workspace-root-relative. The result includes effectiveCwd so you can confirm where the process started.',
       argumentSchema,
       category: ToolCategory.SYSTEM,
       paramNames: ['context', 'command', 'cwd']

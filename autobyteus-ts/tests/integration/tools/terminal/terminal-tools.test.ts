@@ -41,6 +41,7 @@ runIntegration('terminal tools integration', () => {
       expect(result).toBeInstanceOf(TerminalResult);
       expect(result.stdout).toContain('hello');
       expect(result.timedOut).toBe(false);
+      expect(result.effectiveCwd).toBe(tempDir);
     });
   });
 
@@ -53,6 +54,7 @@ runIntegration('terminal tools integration', () => {
       const result = await runBashTool.execute(context, { command: 'pwd', cwd: subdir });
 
       expect(result.stdout).toContain('mysubdir');
+      expect(result.effectiveCwd).toBe(subdir);
     });
   });
 
@@ -66,6 +68,7 @@ runIntegration('terminal tools integration', () => {
 
       expect(cwd.stdout).toContain(tempDir);
       expect(cwd.stdout).not.toContain('contextA-subdir');
+      expect(cwd.effectiveCwd).toBe(tempDir);
     });
   });
 
@@ -75,6 +78,7 @@ runIntegration('terminal tools integration', () => {
       const result = await runBashTool.execute(context, { command: 'sleep 5', timeout_seconds: 1 });
 
       expect(result.timedOut).toBe(true);
+      expect(result.effectiveCwd).toBe(tempDir);
     });
   });
 
@@ -90,6 +94,7 @@ runIntegration('terminal tools integration', () => {
       expect(backgroundResult.status).toBe('started');
       expect(backgroundResult.command).toContain('echo bg');
       expect(typeof backgroundResult.processId).toBe('string');
+      expect(backgroundResult.effectiveCwd).toBe(tempDir);
 
       await new Promise((resolve) => setTimeout(resolve, 500));
       const outputResult = await getProcessOutputTool.execute(context, { process_id: backgroundResult.processId });
@@ -110,6 +115,7 @@ runIntegration('terminal tools integration', () => {
       });
 
       expect(startResult.status).toBe('started');
+      expect(startResult.effectiveCwd).toBe(tempDir);
       const processId = startResult.processId as string;
 
       await new Promise((resolve) => setTimeout(resolve, 500));

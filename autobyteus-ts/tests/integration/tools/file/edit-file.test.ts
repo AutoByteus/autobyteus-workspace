@@ -1,8 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import fs from 'fs/promises';
 import path from 'path';
-import { defaultToolRegistry, ToolRegistry } from '../../../../src/tools/registry/tool-registry.js';
-import { ToolDefinition } from '../../../../src/tools/registry/tool-definition.js';
+import { defaultToolRegistry } from '../../../../src/tools/registry/tool-registry.js';
 import { BaseTool } from '../../../../src/tools/base-tool.js';
 import { registerEditFileTool } from '../../../../src/tools/file/edit-file.js';
 
@@ -22,13 +21,7 @@ describe('edit_file tool (integration)', () => {
     const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-edit-file-'));
     const filePath = path.join(tmpDir, 'sample.txt');
     await fs.writeFile(filePath, 'line1\nline2\nline3\n', 'utf-8');
-
-    const patch = `@@ -1,3 +1,3 @@
- line1
--line2
-+line2 updated
- line3
-`;
+    const patch = '@@ -1,3 +1,3 @@\n line1\n-line2\n+line2 updated\n line3\n';
 
     const tool = getPatchTool();
     const context: MockContext = { agentId: 'agent', workspaceRootPath: null };
@@ -39,7 +32,7 @@ describe('edit_file tool (integration)', () => {
     expect(content).toBe('line1\nline2 updated\nline3\n');
   });
 
-  it('allows paths outside the workspace root when explicitly resolved there', async () => {
+  it('allows absolute paths outside the workspace root', async () => {
     const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-edit-file-'));
     const workspaceDir = path.join(tmpDir, 'workspace');
     const outsidePath = path.join(tmpDir, 'sample.txt');
@@ -48,8 +41,35 @@ describe('edit_file tool (integration)', () => {
     const tool = getPatchTool();
     const context: MockContext = { agentId: 'agent', workspaceRootPath: workspaceDir };
 
-    const result = await tool.execute(context, { path: '../sample.txt', patch: '@@ -1,2 +1,2 @@\n line1\n-line2\n+line2 updated\n' });
-    expect(result).toBe('File edited successfully at ../sample.txt');
+    const result = await tool.execute(context, {
+      path: outsidePath,
+      patch: '@@ -1,2 +1,2 @@\n line1\n-line2\n+line2 updated\n'
+    });
+    expect(result).toBe(`File edited successfully at ${outsidePath}`);
     expect(await fs.readFile(outsidePath, 'utf-8')).toBe('line1\nline2 updated\n');
+  });
+
+  it('resolves relative edit paths from the workspace root', async () => {
+    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-edit-file-'));
+    const filePath = path.join(tmpDir, 'sample.txt');
+    await fs.writeFile(filePath, 'line1\nline2\n', 'utf-8');
+    const tool = getPatchTool();
+    const context: MockContext = { agentId: 'agent', workspaceRootPath: tmpDir };
+
+    const result = await tool.execute(context, {
+      path: 'sample.txt',
+      patch: '@@ -1,2 +1,2 @@\n line1\n-line2\n+line2 updated\n'
+    });
+    expect(result).toBe(`File edited successfully at ${filePath}`);
+    expect(await fs.readFile(filePath, 'utf-8')).toBe('line1\nline2 updated\n');
+  });
+
+  it('rejects relative edit paths when no workspace root is configured', async () => {
+    const tool = getPatchTool();
+    const context: MockContext = { agentId: 'agent', workspaceRootPath: null };
+
+    await expect(
+      tool.execute(context, { path: 'sample.txt', patch: '@@ -1,1 +1,1 @@\n-line1\n+line1 updated\n' })
+    ).rejects.toThrow('but no workspace root is configured');
   });
 });

@@ -20,7 +20,10 @@ class BaseFileContentStreamer {
 
   constructor(contentKey: string) {
     this.contentKey = contentKey;
-    this.extractor = new JsonStringFieldExtractor(new Set([contentKey]), new Set(['path', contentKey]));
+    this.extractor = new JsonStringFieldExtractor(
+      new Set([contentKey]),
+      new Set(['path', contentKey])
+    );
   }
 
   feed(jsonDelta: string): FileContentStreamUpdate {

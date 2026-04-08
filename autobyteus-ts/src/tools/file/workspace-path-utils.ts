@@ -2,7 +2,7 @@ import pathModule from 'path';
 
 type WorkspaceContextLike = { agentId: string; workspaceRootPath?: string | null };
 
-export function resolveWorkspaceBoundPath(
+export function resolveAbsolutePath(
   context: WorkspaceContextLike,
   inputPath: string
 ): string {
@@ -11,21 +11,16 @@ export function resolveWorkspaceBoundPath(
   }
 
   const normalizedInputPath = inputPath.trim();
-  const workspaceRootPath = context.workspaceRootPath ?? null;
-
-  if (!workspaceRootPath) {
-    if (!pathModule.isAbsolute(normalizedInputPath)) {
-      throw new Error(
-        `Relative path '${normalizedInputPath}' provided, but no workspace is configured for agent '${context.agentId}'. A workspace is required to resolve relative paths.`
-      );
-    }
+  if (pathModule.isAbsolute(normalizedInputPath)) {
     return pathModule.normalize(pathModule.resolve(normalizedInputPath));
   }
 
-  const workspaceRoot = pathModule.resolve(workspaceRootPath);
-  const resolvedPath = pathModule.isAbsolute(normalizedInputPath)
-    ? pathModule.resolve(normalizedInputPath)
-    : pathModule.resolve(workspaceRoot, normalizedInputPath);
+  const workspaceRootPath = context.workspaceRootPath ?? null;
+  if (!workspaceRootPath || workspaceRootPath.trim().length === 0) {
+    throw new Error(
+      `Relative path '${normalizedInputPath}' provided for agent '${context.agentId}', but no workspace root is configured.`
+    );
+  }
 
-  return pathModule.normalize(resolvedPath);
+  return pathModule.normalize(pathModule.resolve(workspaceRootPath, normalizedInputPath));
 }

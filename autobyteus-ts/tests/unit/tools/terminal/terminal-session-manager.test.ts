@@ -124,6 +124,7 @@ describe('TerminalSessionManager', () => {
     expect(result).toBeInstanceOf(TerminalResult);
     expect(result.stdout).toContain('hello');
     expect(result.timedOut).toBe(false);
+    expect(result.effectiveCwd).toBe('/tmp');
 
     await manager.close();
   });
@@ -160,6 +161,7 @@ describe('TerminalSessionManager', () => {
 
     expect(manager.currentSession).toBeInstanceOf(MockPtySession);
     expect(result.stdout).toContain('hello');
+    expect(result.effectiveCwd).toBe('/tmp');
 
     await manager.close();
   });

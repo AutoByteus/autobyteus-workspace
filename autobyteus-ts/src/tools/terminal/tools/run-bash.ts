@@ -17,6 +17,7 @@ export type RunBashBackgroundResult = {
   command: string;
   status: 'started';
   startedAt: string;
+  effectiveCwd: string;
 };
 
 let defaultBackgroundManager: BackgroundProcessManager | null = null;
@@ -43,11 +44,6 @@ function getBackgroundManager(context: AgentContextLike | null | undefined): Bac
   }
 
   return existing;
-}
-
-function isWithinRoot(rootPath: string, candidatePath: string): boolean {
-  const relative = path.relative(rootPath, candidatePath);
-  return relative === '' || (!relative.startsWith(`..${path.sep}`) && relative !== '..' && !path.isAbsolute(relative));
 }
 
 function ensureDirectoryExists(directoryPath: string): void {
@@ -83,11 +79,17 @@ export function resolveExecutionCwd(
   }
 
   const normalizedCwd = cwd.trim();
-  if (!path.isAbsolute(normalizedCwd)) {
-    throw new Error("Parameter 'cwd' for tool 'run_bash' must be an absolute path when provided. Omit 'cwd' to use the workspace root.");
+  const hasWorkspaceRoot =
+    workspaceRootPath && typeof workspaceRootPath === 'string' && workspaceRootPath.trim().length > 0;
+  if (!path.isAbsolute(normalizedCwd) && !hasWorkspaceRoot) {
+    throw new Error(
+      "Parameter 'cwd' for tool 'run_bash' must be absolute when no workspace root is configured. Configure a workspace or pass an absolute path."
+    );
   }
 
-  const resolved = path.resolve(normalizedCwd);
+  const resolved = path.isAbsolute(normalizedCwd)
+    ? path.resolve(normalizedCwd)
+    : path.resolve(path.resolve(workspaceRootPath as string), normalizedCwd);
   ensureDirectoryExists(resolved);
   return resolved;
 }
@@ -109,7 +111,8 @@ export async function runBash(
       processId,
       command,
       status: 'started',
-      startedAt: new Date().toISOString()
+      startedAt: new Date().toISOString(),
+      effectiveCwd: resolvedCwd
     };
   }
 
@@ -133,7 +136,7 @@ argumentSchema.addParameter(new ParameterDefinition({
   name: 'cwd',
   type: ParameterType.STRING,
   description:
-    "Optional working-directory path for this command. If provided, it must be an absolute filesystem path such as '/Users/alice/project' or '/tmp/scratch-task'. If omitted, the workspace root is used when available.",
+    "Optional working-directory path for this command. Absolute paths are allowed. Relative paths are resolved from the workspace root when available. If omitted, the workspace root is used when available. If a task targets a nested directory, pass that same cwd on every location-sensitive command in that directory, including pwd, git init, redirections, file creation, and scripts.",
   required: false
 }));
 argumentSchema.addParameter(new ParameterDefinition({
@@ -159,7 +162,7 @@ export function registerRunBashTool(): BaseTool {
     cachedTool = tool({
       name: TOOL_NAME,
       description:
-        'Execute a shell command in a working directory. If cwd is omitted, the workspace root is used. If cwd is provided, it must be an absolute path such as /Users/alice/project or /tmp/scratch-task.',
+        'Execute a shell command in a working directory. If cwd is omitted, the workspace root is used. If cwd is provided, it may be absolute or workspace-root-relative. For nested targets, reuse the same cwd on every command that should run there. The result includes effectiveCwd so you can confirm where the command actually ran.',
       argumentSchema,
       category: ToolCategory.SYSTEM,
       paramNames: ['context', 'command', 'cwd', 'timeout_seconds', 'background']

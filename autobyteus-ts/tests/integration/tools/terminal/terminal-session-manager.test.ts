@@ -40,6 +40,7 @@ runIntegration('TerminalSessionManager Integration', () => {
 
         expect(result.stdout).toContain('test output');
         expect(result.timedOut).toBe(false);
+        expect(result.effectiveCwd).toBe(tempDir);
       } finally {
         await manager.close();
       }

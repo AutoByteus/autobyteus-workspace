@@ -19,6 +19,13 @@ import type { AgentTeam } from '../../../../src/agent-team/agent-team.js';
 import { createLmstudioLLM, hasLmstudioConfig } from '../../helpers/lmstudio-llm-helper.js';
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+const parseMs = (value: string | undefined, fallbackMs: number): number => {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallbackMs;
+};
+
+const FLOW_TEST_TIMEOUT_MS = parseMs(process.env.LMSTUDIO_FLOW_TEST_TIMEOUT_MS, 180000);
+const FILE_WAIT_TIMEOUT_MS = parseMs(process.env.LMSTUDIO_FILE_WAIT_TIMEOUT_MS, 120000);
 
 const waitForFile = async (filePath: string, timeoutMs = 20000, intervalMs = 100): Promise<boolean> => {
   const start = Date.now();
@@ -106,7 +113,7 @@ runIntegration('Agent team sub-team streaming integration (LM Studio, api_tool_c
 
   it('rebroadcasts sub-team events to the parent stream', async () => {
     const tool = registerWriteFileTool();
-    const toolArgs = { path: 'subteam_output.txt', content: 'Sub-team output.' };
+    const toolArgs = { path: path.join(tempDirSubCoordinator, 'subteam_output.txt'), content: 'Sub-team output.' };
 
     parentLlm = await createLmstudioLLM({ requireToolChoice: true });
     if (!parentLlm) return;
@@ -166,13 +173,13 @@ runIntegration('Agent team sub-team streaming integration (LM Studio, api_tool_c
     await team.postMessage(
       new AgentInputUserMessage(
         `Use the write_file tool to write "${toolArgs.content}" to "${toolArgs.path}". ` +
-          'Do not respond with plain text.'
+          'Use that exact absolute path and do not respond with plain text.'
       ),
       'SubTeam'
     );
 
-    const filePath = path.join(tempDirSubCoordinator, toolArgs.path);
-    const created = await waitForFile(filePath, 20000, 100);
+    const filePath = toolArgs.path;
+    const created = await waitForFile(filePath, FILE_WAIT_TIMEOUT_MS, 100);
     expect(created).toBe(true);
 
     await waitForTeamToBeIdle(team, 120.0);
@@ -182,5 +189,5 @@ runIntegration('Agent team sub-team streaming integration (LM Studio, api_tool_c
 
     const subTeamEvents = events.filter((event) => event.event_source_type === 'SUB_TEAM');
     expect(subTeamEvents.length).toBeGreaterThan(0);
-  }, 60000);
+  }, FLOW_TEST_TIMEOUT_MS);
 });

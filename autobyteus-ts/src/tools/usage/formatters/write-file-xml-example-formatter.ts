@@ -24,7 +24,7 @@ __END_CONTENT__
 
 <tool name="write_file">
     <arguments>
-        <arg name="path">config/settings.json</arg>
+        <arg name="path">/path/to/config/settings.json</arg>
         <arg name="content">
 __START_CONTENT__
 {

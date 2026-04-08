@@ -160,10 +160,8 @@ export class ApiToolCallStreamingResponseHandler extends StreamingResponseHandle
             }
 
             if (!state.segmentStarted && state.path) {
-              const startEvent = SegmentEvent.start(this.turnId, state.segmentId, state.segmentType, {
-                tool_name: state.name,
-                path: state.path
-              });
+              const metadata: Record<string, any> = { tool_name: state.name, path: state.path };
+              const startEvent = SegmentEvent.start(this.turnId, state.segmentId, state.segmentType, metadata);
               state.segmentStarted = true;
               this.emit(startEvent);
               events.push(startEvent);
