@@ -18,13 +18,27 @@ vi.mock('os', () => ({
   homedir: vi.fn()
 }))
 
-
-vi.mock('../../logger', () => ({
-  logger: {
+const { mockScopedLogger } = vi.hoisted(() => {
+  const hoistedLogger = {
+    child: vi.fn(),
+    trace: vi.fn(),
+    debug: vi.fn(),
     info: vi.fn(),
     warn: vi.fn(),
-    error: vi.fn()
+    error: vi.fn(),
+    fatal: vi.fn(),
+    isLevelEnabled: vi.fn(),
+    getLogPath: vi.fn(),
+    close: vi.fn(),
   }
+  hoistedLogger.child.mockImplementation(() => hoistedLogger)
+  return {
+    mockScopedLogger: hoistedLogger
+  }
+})
+
+vi.mock('../../logger', () => ({
+  logger: mockScopedLogger
 }))
 
 const mockedFs = vi.mocked(fs)
@@ -48,6 +62,7 @@ describe('BaseServerManager', () => {
   beforeEach(() => {
     vi.resetAllMocks()
     mockedOs.homedir.mockReturnValue('/user/home')
+    mockScopedLogger.child.mockImplementation(() => mockScopedLogger)
   })
 
   it('resetAppDataDir removes and recreates the app data directory', async () => {
@@ -78,5 +93,4 @@ describe('BaseServerManager', () => {
     expect(mockedFs.mkdirSync).toHaveBeenCalledWith(manager.getAppDataDir(), { recursive: true })
     expect(manager.getFirstRun()).toBe(true)
   })
-
 })

@@ -9,6 +9,7 @@ import {
 import { appConfigProvider } from "./config/app-config-provider.js";
 import { getLoggingConfigFromEnv, type LoggingConfig } from "./config/logging-config.js";
 import { registerHttpAccessLogPolicy } from "./logging/http-access-log-policy.js";
+import { createServerLogger, initializeServerAppLogger } from "./logging/server-app-logger.js";
 import {
   getFastifyLoggerOptions,
   initializeRuntimeLoggerBootstrap,
@@ -30,10 +31,7 @@ import { getManagedMessagingGatewayService } from "./managed-capabilities/messag
 import { getWorkspaceManager } from "./workspaces/workspace-manager.js";
 import type { ServerOptions } from "./app.js";
 
-const logger = {
-  info: (...args: unknown[]) => console.info(...args),
-  error: (...args: unknown[]) => console.error(...args),
-};
+const logger = createServerLogger("server.runtime");
 
 export type BuildAppOptions = {
   loggingConfig?: LoggingConfig;
@@ -104,7 +102,9 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
     loggingConfig = getLoggingConfigFromEnv(process.env);
     initializeRuntimeLoggerBootstrap({
       logsDir: appConfigProvider.config.getLogsDir(),
+      loggingConfig,
     });
+    initializeServerAppLogger(loggingConfig);
   } catch (error) {
     logger.error(`Failed to initialize runtime logging: ${String(error)}`);
     process.exit(1);

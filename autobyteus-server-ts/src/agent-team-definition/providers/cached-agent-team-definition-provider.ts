@@ -1,11 +1,8 @@
 import { AgentTeamDefinition } from "../domain/models.js";
 import { AgentTeamDefinitionPersistenceProvider } from "./agent-team-definition-persistence-provider.js";
+import { createServerLogger } from "../../logging/server-app-logger.js";
 
-const logger = {
-  info: (...args: unknown[]) => console.info(...args),
-  warn: (...args: unknown[]) => console.warn(...args),
-  debug: (...args: unknown[]) => console.debug(...args),
-};
+const logger = createServerLogger("agent-team-definition.cache");
 
 export class CachedAgentTeamDefinitionProvider {
   private persistenceProvider: AgentTeamDefinitionPersistenceProvider;

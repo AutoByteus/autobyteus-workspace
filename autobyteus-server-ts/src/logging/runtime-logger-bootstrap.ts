@@ -2,19 +2,22 @@ import { Console } from "node:console";
 import fs from "node:fs";
 import path from "node:path";
 import { Writable } from "node:stream";
-import type { LoggingConfig } from "../config/logging-config.js";
+import { shouldEmitLog, type LoggingConfig, type PinoLogLevel } from "../config/logging-config.js";
 
 const originalConsole = globalThis.console;
 const SERVER_LOG_FILE_NAME = "server.log";
 
 type RuntimeLoggerBootstrapInput = {
   logsDir: string;
+  loggingConfig: LoggingConfig;
 };
 
 type RuntimeLoggerBootstrapState = {
   initialized: boolean;
+  loggingConfig: LoggingConfig | null;
   logFilePath: string | null;
   fileDescriptor: number | null;
+  rawConsole: Console | null;
   stdoutFanoutStream: FanoutWritable | null;
   stderrFanoutStream: FanoutWritable | null;
 };
@@ -48,8 +51,10 @@ class FanoutWritable extends Writable {
 
 let runtimeState: RuntimeLoggerBootstrapState = {
   initialized: false,
+  loggingConfig: null,
   logFilePath: null,
   fileDescriptor: null,
+  rawConsole: null,
   stdoutFanoutStream: null,
   stderrFanoutStream: null,
 };
@@ -65,17 +70,76 @@ const resetRuntimeState = (): void => {
   globalThis.console = originalConsole;
   runtimeState = {
     initialized: false,
+    loggingConfig: null,
     logFilePath: null,
     fileDescriptor: null,
+    rawConsole: null,
     stdoutFanoutStream: null,
     stderrFanoutStream: null,
   };
+};
+
+const getConsoleMethodNameForLevel = (
+  level: PinoLogLevel,
+): "debug" | "info" | "warn" | "error" => {
+  switch (level) {
+    case "trace":
+    case "debug":
+      return "debug";
+    case "warn":
+      return "warn";
+    case "error":
+    case "fatal":
+      return "error";
+    case "info":
+    case "silent":
+    default:
+      return "info";
+  }
+};
+
+const writeToRuntimeConsole = (level: PinoLogLevel, args: unknown[]): void => {
+  const consoleTarget = runtimeState.rawConsole ?? originalConsole;
+  const methodName = getConsoleMethodNameForLevel(level);
+  Reflect.apply(consoleTarget[methodName], consoleTarget, args);
+};
+
+const writeLegacyConsoleRecord = (level: PinoLogLevel, args: unknown[]): void => {
+  const loggingConfig = runtimeState.loggingConfig;
+  if (loggingConfig && !shouldEmitLog(loggingConfig.pinoLogLevel, level)) {
+    return;
+  }
+  writeToRuntimeConsole(level, args);
+};
+
+const createFilteredConsole = (rawConsole: Console): Console => {
+  const filteredConsole = Object.create(rawConsole) as Console;
+  filteredConsole.debug = (...args: unknown[]): void => {
+    writeLegacyConsoleRecord("debug", args);
+  };
+  filteredConsole.info = (...args: unknown[]): void => {
+    writeLegacyConsoleRecord("info", args);
+  };
+  filteredConsole.log = (...args: unknown[]): void => {
+    writeLegacyConsoleRecord("info", args);
+  };
+  filteredConsole.warn = (...args: unknown[]): void => {
+    writeLegacyConsoleRecord("warn", args);
+  };
+  filteredConsole.error = (...args: unknown[]): void => {
+    writeLegacyConsoleRecord("error", args);
+  };
+  filteredConsole.trace = (...args: unknown[]): void => {
+    writeLegacyConsoleRecord("trace", args);
+  };
+  return filteredConsole;
 };
 
 export const initializeRuntimeLoggerBootstrap = (
   input: RuntimeLoggerBootstrapInput,
 ): { logFilePath: string } => {
   if (runtimeState.initialized) {
+    runtimeState.loggingConfig = input.loggingConfig;
     return { logFilePath: runtimeState.logFilePath ?? path.join(input.logsDir, SERVER_LOG_FILE_NAME) };
   }
 
@@ -85,21 +149,28 @@ export const initializeRuntimeLoggerBootstrap = (
 
   const stdoutFanoutStream = new FanoutWritable(process.stdout, fileDescriptor);
   const stderrFanoutStream = new FanoutWritable(process.stderr, fileDescriptor);
-
-  globalThis.console = new Console({
+  const rawConsole = new Console({
     stdout: stdoutFanoutStream,
     stderr: stderrFanoutStream,
     ignoreErrors: false,
   });
 
+  globalThis.console = createFilteredConsole(rawConsole);
+
   runtimeState = {
     initialized: true,
+    loggingConfig: input.loggingConfig,
     logFilePath,
     fileDescriptor,
+    rawConsole,
     stdoutFanoutStream,
     stderrFanoutStream,
   };
   return { logFilePath };
+};
+
+export const writeRuntimeLogRecord = (level: PinoLogLevel, formattedMessage: string): void => {
+  writeToRuntimeConsole(level, [formattedMessage]);
 };
 
 export const getFastifyLoggerOptions = (
