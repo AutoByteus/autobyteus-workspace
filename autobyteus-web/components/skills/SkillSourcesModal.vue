@@ -160,6 +160,8 @@ async function confirmRemove() {
   
   try {
     await store.removeSkillSource(sourceToRemove.value)
+    await skillStore.fetchAllSkills()
+    successMessage.value = 'Skill source removed. Skills list refreshed.'
   } catch (e) {
     // Error handled in store
   } finally {
