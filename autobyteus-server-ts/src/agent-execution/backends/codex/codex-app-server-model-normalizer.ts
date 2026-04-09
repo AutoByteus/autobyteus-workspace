@@ -92,5 +92,9 @@ export const mapCodexModelListRowToModelInfo = (row: unknown): ModelInfo | null 
     provider: LLMProvider.OPENAI,
     runtime: "api",
     config_schema: configSchema,
+    max_context_tokens: null,
+    active_context_tokens: null,
+    max_input_tokens: null,
+    max_output_tokens: null,
   };
 };

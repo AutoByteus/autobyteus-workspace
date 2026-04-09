@@ -42,12 +42,12 @@ const createByModelId = async (
 };
 
 export const createOllamaLLM = async (
-  options?: { temperature?: number; extraParams?: Record<string, unknown> }
+  options?: { temperature?: number; extraParams?: Record<string, unknown>; forceFactoryDiscovery?: boolean }
 ): Promise<BaseLLM | null> => {
   await LLMFactory.reinitialize();
 
   const manualModelId = process.env.OLLAMA_MODEL_ID;
-  if (manualModelId) {
+  if (!options?.forceFactoryDiscovery && manualModelId) {
     const manualLlm = await createByModelId(manualModelId, options);
     if (manualLlm) {
       return manualLlm;
@@ -69,6 +69,14 @@ export const createOllamaLLM = async (
 
   const targetTextModel = process.env.OLLAMA_TARGET_TEXT_MODEL ?? DEFAULT_TEXT_MODEL;
   const selected =
+    models.find(
+      (model) => model.max_context_tokens !== null && model.model_identifier.includes(targetTextModel)
+    ) ??
+    models.find(
+      (model) =>
+        model.max_context_tokens !== null &&
+        !knownVisionModels.some((known) => model.model_identifier.toLowerCase().includes(known))
+    ) ??
     models.find((model) => model.model_identifier.includes(targetTextModel)) ??
     models.find((model) =>
       !knownVisionModels.some((known) => model.model_identifier.toLowerCase().includes(known))

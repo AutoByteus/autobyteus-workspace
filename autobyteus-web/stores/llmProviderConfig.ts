@@ -28,6 +28,10 @@ interface ModelInfo {
   runtime: string;
   hostUrl?: string | null;
   configSchema?: Record<string, unknown> | null;  // ParameterSchema for model-specific config
+  maxContextTokens?: number | null;
+  activeContextTokens?: number | null;
+  maxInputTokens?: number | null;
+  maxOutputTokens?: number | null;
 }
 
 interface ProviderWithModels {

@@ -29,9 +29,9 @@ runIntegration('ApiToolCallStreamingResponseHandler (Claude live)', () => {
     const toolsSchema = [formatter.provide(toolDef!)];
 
     const llm = new AnthropicLLM(new LLMModel({
-      name: 'claude-4.5-sonnet',
-      value: 'claude-4.5-sonnet',
-      canonicalName: 'claude-4.5-sonnet',
+      name: 'claude-sonnet-4.6',
+      value: 'claude-sonnet-4-6',
+      canonicalName: 'claude-sonnet-4.6',
       provider: LLMProvider.ANTHROPIC
     }));
 

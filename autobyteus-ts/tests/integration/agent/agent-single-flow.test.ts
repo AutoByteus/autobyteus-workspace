@@ -127,8 +127,14 @@ runIntegration('Agent single-flow integration (LM Studio)', () => {
     const tool = registerWriteFileTool();
     const toolArgs = { path: path.join(workspace, 'poem.txt'), content: 'Roses are red.' };
 
-    const llm = await createLmstudioLLM({ requireToolChoice: true });
+    const llm = await createLmstudioLLM({ requireToolChoice: true, forceFactoryDiscovery: true });
     if (!llm) return;
+
+    expect(llm.model.runtime).toBe('lmstudio');
+    expect(llm.model.maxContextTokens).toBeGreaterThan(0);
+    if (llm.model.activeContextTokens !== null) {
+      expect(llm.model.activeContextTokens).toBeGreaterThan(0);
+    }
 
     const config = new AgentConfig(
       'SingleAgent',

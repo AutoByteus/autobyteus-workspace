@@ -39,6 +39,47 @@ describe('llmProviderConfig Gemini setup', () => {
     expect(store.geminiSetup.vertexProject).toBe('project-1')
   })
 
+  it('fetchProvidersWithModels preserves normalized model context metadata', async () => {
+    const queryMock = vi.fn().mockResolvedValue({
+      data: {
+        availableLlmProvidersWithModels: [
+          {
+            provider: 'OLLAMA',
+            models: [
+              {
+                modelIdentifier: 'qwen3.5:35b-a3b-coding-nvfp4:ollama@localhost:11434',
+                name: 'qwen3.5:35b-a3b-coding-nvfp4',
+                value: 'qwen3.5:35b-a3b-coding-nvfp4',
+                canonicalName: 'qwen3.5:35b-a3b-coding-nvfp4',
+                provider: 'OLLAMA',
+                runtime: 'ollama',
+                hostUrl: 'http://localhost:11434',
+                configSchema: null,
+                maxContextTokens: 262144,
+                activeContextTokens: 32768,
+                maxInputTokens: null,
+                maxOutputTokens: null,
+              },
+            ],
+          },
+        ],
+        availableAudioProvidersWithModels: [],
+        availableImageProvidersWithModels: [],
+      },
+    })
+
+    vi.mocked(getApolloClient).mockReturnValue({ query: queryMock } as any)
+
+    const store = useLLMProviderConfigStore()
+    const providers = await store.fetchProvidersWithModels('ollama')
+
+    expect(queryMock).toHaveBeenCalledTimes(1)
+    expect(providers).toHaveLength(1)
+    expect(store.providersWithModels[0]?.models[0]?.maxContextTokens).toBe(262144)
+    expect(store.providersWithModels[0]?.models[0]?.activeContextTokens).toBe(32768)
+    expect(store.providersWithModels[0]?.models[0]?.maxOutputTokens).toBeNull()
+  })
+
   it('setGeminiSetupConfig saves and refreshes geminiSetup state', async () => {
     const mutateMock = vi.fn().mockResolvedValue({
       data: {
