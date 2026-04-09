@@ -1,10 +1,14 @@
 import path from "node:path";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRunConfig } from "../../../../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../../../../src/agent-execution/domain/agent-run-context.js";
 import { DefaultCodexThreadBootstrapStrategy } from "../../../../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrap-strategy.js";
 import { CodexThreadBootstrapper } from "../../../../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js";
+import {
+  BROWSER_BRIDGE_BASE_URL_ENV,
+  BROWSER_BRIDGE_TOKEN_ENV,
+} from "../../../../../../src/agent-tools/browser/browser-tool-contract.js";
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
 import { Skill } from "../../../../../../src/skills/domain/models.js";
 import type { CodexWorkspaceSkillMaterializer } from "../../../../../../src/agent-execution/backends/codex/codex-workspace-skill-materializer.js";
@@ -55,6 +59,7 @@ const createMaterializerMock = () => ({
 const createBootstrapper = (input: {
   skills: Skill[];
   requestImplementation: () => Promise<unknown>;
+  toolNames?: string[];
 }) => {
   const workspaceSkillMaterializer = createMaterializerMock();
   const workspaceResolver = {
@@ -63,7 +68,7 @@ const createBootstrapper = (input: {
   const agentDefinitionService = {
     getAgentDefinitionById: vi.fn(async () => ({
       skillNames: input.skills.map((skill) => skill.name),
-      toolNames: [],
+      toolNames: input.toolNames ?? [],
       instructions: null,
       description: null,
     })),
@@ -103,6 +108,27 @@ const createBootstrapper = (input: {
 };
 
 describe("CodexThreadBootstrapper", () => {
+  const originalBrowserBridgeBaseUrl = process.env[BROWSER_BRIDGE_BASE_URL_ENV];
+  const originalBrowserBridgeToken = process.env[BROWSER_BRIDGE_TOKEN_ENV];
+
+  beforeEach(() => {
+    delete process.env[BROWSER_BRIDGE_BASE_URL_ENV];
+    delete process.env[BROWSER_BRIDGE_TOKEN_ENV];
+  });
+
+  afterEach(() => {
+    if (typeof originalBrowserBridgeBaseUrl === "string") {
+      process.env[BROWSER_BRIDGE_BASE_URL_ENV] = originalBrowserBridgeBaseUrl;
+    } else {
+      delete process.env[BROWSER_BRIDGE_BASE_URL_ENV];
+    }
+    if (typeof originalBrowserBridgeToken === "string") {
+      process.env[BROWSER_BRIDGE_TOKEN_ENV] = originalBrowserBridgeToken;
+    } else {
+      delete process.env[BROWSER_BRIDGE_TOKEN_ENV];
+    }
+  });
+
   it("filters out configured skills that Codex already discovers by name", async () => {
     const skill = createSkill("installed_skill");
     const { bootstrapper, workspaceSkillMaterializer, clientManager } = createBootstrapper({
@@ -162,5 +188,52 @@ describe("CodexThreadBootstrapper", () => {
     );
     expect(runContext.runtimeContext.materializedConfiguredSkills).toHaveLength(1);
     expect(clientManager.releaseClient).toHaveBeenCalledWith(WORKING_DIRECTORY);
+  });
+
+  it("does not expose browser dynamic tools unless both bridge env and browser toolNames are present", async () => {
+    process.env[BROWSER_BRIDGE_BASE_URL_ENV] = "http://127.0.0.1:39001";
+    process.env[BROWSER_BRIDGE_TOKEN_ENV] = "browser-token";
+
+    const { bootstrapper: noBrowserToolBootstrapper } = createBootstrapper({
+      skills: [],
+      toolNames: [],
+      requestImplementation: async () => ({ data: [] }),
+    });
+
+    const noBrowserToolRunContext = await noBrowserToolBootstrapper.bootstrapForCreate(
+      createRunContext(),
+    );
+
+    expect(noBrowserToolRunContext.runtimeContext.codexThreadConfig.dynamicTools).toBeNull();
+
+    delete process.env[BROWSER_BRIDGE_BASE_URL_ENV];
+    delete process.env[BROWSER_BRIDGE_TOKEN_ENV];
+
+    const { bootstrapper: noBridgeBootstrapper } = createBootstrapper({
+      skills: [],
+      toolNames: ["open_tab"],
+      requestImplementation: async () => ({ data: [] }),
+    });
+
+    const noBridgeRunContext = await noBridgeBootstrapper.bootstrapForCreate(createRunContext());
+
+    expect(noBridgeRunContext.runtimeContext.codexThreadConfig.dynamicTools).toBeNull();
+  });
+
+  it("exposes only the configured browser dynamic tools when bridge env is available", async () => {
+    process.env[BROWSER_BRIDGE_BASE_URL_ENV] = "http://127.0.0.1:39001";
+    process.env[BROWSER_BRIDGE_TOKEN_ENV] = "browser-token";
+
+    const { bootstrapper } = createBootstrapper({
+      skills: [],
+      toolNames: ["open_tab", "read_page", "send_message_to"],
+      requestImplementation: async () => ({ data: [] }),
+    });
+
+    const runContext = await bootstrapper.bootstrapForCreate(createRunContext());
+    const dynamicToolSpecs = runContext.runtimeContext.codexThreadConfig.dynamicTools;
+
+    expect(dynamicToolSpecs).not.toBeNull();
+    expect(dynamicToolSpecs?.map((spec) => spec.name)).toEqual(["open_tab", "read_page"]);
   });
 });
