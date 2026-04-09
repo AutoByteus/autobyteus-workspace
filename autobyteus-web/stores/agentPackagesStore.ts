@@ -2,32 +2,51 @@ import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import { getApolloClient } from '~/utils/apolloClient'
 import {
-  ADD_AGENT_PACKAGE_ROOT,
-  GET_AGENT_PACKAGE_ROOTS,
-  REMOVE_AGENT_PACKAGE_ROOT,
-} from '~/graphql/agentPackageRoots'
+  GET_AGENT_PACKAGES,
+  IMPORT_AGENT_PACKAGE,
+  REMOVE_AGENT_PACKAGE,
+} from '~/graphql/agentPackages'
 
-export interface AgentPackageRoot {
+export type AgentPackageSourceKind =
+  | 'BUILT_IN'
+  | 'LOCAL_PATH'
+  | 'GITHUB_REPOSITORY'
+
+export type AgentPackageImportSourceKind =
+  | 'LOCAL_PATH'
+  | 'GITHUB_REPOSITORY'
+
+export interface AgentPackage {
+  packageId: string
+  displayName: string
   path: string
+  sourceKind: AgentPackageSourceKind
+  source: string
   sharedAgentCount: number
   teamLocalAgentCount: number
   agentTeamCount: number
   isDefault: boolean
+  isRemovable: boolean
 }
 
-export const useAgentPackageRootsStore = defineStore('agentPackageRoots', () => {
-  const agentPackageRoots = ref<AgentPackageRoot[]>([])
+export interface AgentPackageImportInput {
+  sourceKind: AgentPackageImportSourceKind
+  source: string
+}
+
+export const useAgentPackagesStore = defineStore('agentPackages', () => {
+  const agentPackages = ref<AgentPackage[]>([])
   const loading = ref(false)
   const error = ref('')
 
-  async function fetchAgentPackageRoots(): Promise<void> {
+  async function fetchAgentPackages(): Promise<void> {
     loading.value = true
     error.value = ''
 
     try {
       const client = getApolloClient()
       const { data, errors } = await client.query({
-        query: GET_AGENT_PACKAGE_ROOTS,
+        query: GET_AGENT_PACKAGES,
         fetchPolicy: 'network-only',
       })
 
@@ -35,8 +54,8 @@ export const useAgentPackageRootsStore = defineStore('agentPackageRoots', () => 
         throw new Error(errors.map((entry) => entry.message).join(', '))
       }
 
-      if (data?.agentPackageRoots) {
-        agentPackageRoots.value = data.agentPackageRoots
+      if (data?.agentPackages) {
+        agentPackages.value = data.agentPackages
       }
     } catch (err: any) {
       error.value = err.message
@@ -46,23 +65,23 @@ export const useAgentPackageRootsStore = defineStore('agentPackageRoots', () => 
     }
   }
 
-  async function addAgentPackageRoot(pathValue: string): Promise<void> {
+  async function importAgentPackage(input: AgentPackageImportInput): Promise<void> {
     loading.value = true
     error.value = ''
 
     try {
       const client = getApolloClient()
       const { data, errors } = await client.mutate({
-        mutation: ADD_AGENT_PACKAGE_ROOT,
-        variables: { path: pathValue },
+        mutation: IMPORT_AGENT_PACKAGE,
+        variables: { input },
       })
 
       if (errors && errors.length > 0) {
         throw new Error(errors.map((entry) => entry.message).join(', '))
       }
 
-      if (data?.addAgentPackageRoot) {
-        agentPackageRoots.value = data.addAgentPackageRoot
+      if (data?.importAgentPackage) {
+        agentPackages.value = data.importAgentPackage
       }
     } catch (err: any) {
       error.value = err.message
@@ -72,23 +91,23 @@ export const useAgentPackageRootsStore = defineStore('agentPackageRoots', () => 
     }
   }
 
-  async function removeAgentPackageRoot(pathValue: string): Promise<void> {
+  async function removeAgentPackage(packageId: string): Promise<void> {
     loading.value = true
     error.value = ''
 
     try {
       const client = getApolloClient()
       const { data, errors } = await client.mutate({
-        mutation: REMOVE_AGENT_PACKAGE_ROOT,
-        variables: { path: pathValue },
+        mutation: REMOVE_AGENT_PACKAGE,
+        variables: { packageId },
       })
 
       if (errors && errors.length > 0) {
         throw new Error(errors.map((entry) => entry.message).join(', '))
       }
 
-      if (data?.removeAgentPackageRoot) {
-        agentPackageRoots.value = data.removeAgentPackageRoot
+      if (data?.removeAgentPackage) {
+        agentPackages.value = data.removeAgentPackage
       }
     } catch (err: any) {
       error.value = err.message
@@ -102,19 +121,19 @@ export const useAgentPackageRootsStore = defineStore('agentPackageRoots', () => 
     error.value = ''
   }
 
-  const getAgentPackageRoots = computed(() => agentPackageRoots.value)
+  const getAgentPackages = computed(() => agentPackages.value)
   const getLoading = computed(() => loading.value)
   const getError = computed(() => error.value)
 
   return {
-    agentPackageRoots,
+    agentPackages,
     loading,
     error,
-    fetchAgentPackageRoots,
-    addAgentPackageRoot,
-    removeAgentPackageRoot,
+    fetchAgentPackages,
+    importAgentPackage,
+    removeAgentPackage,
     clearError,
-    getAgentPackageRoots,
+    getAgentPackages,
     getLoading,
     getError,
   }

@@ -46,7 +46,7 @@ const mountSettings = () =>
         NodeManager: { template: '<div data-testid="section-nodes" />' },
         MessagingSetupManager: { template: '<div data-testid="section-messaging" />' },
         AboutSettingsManager: { template: '<div data-testid="section-updates" />' },
-        AgentPackageRootsManager: { template: '<div data-testid="section-agent-package-roots" />' },
+        AgentPackagesManager: { template: '<div data-testid="section-agent-packages" />' },
         ExtensionsManager: { template: '<div data-testid="section-extensions" />' },
         ToolsManagementWorkspace: { template: '<div data-testid="section-tools-management" />' },
         ServerSettingsManager: { props: ['sectionMode'], template: '<div data-testid="section-server-settings">mode={{ sectionMode }}</div>' },
@@ -72,7 +72,7 @@ describe('settings page', () => {
     expect(wrapper.text()).toContain('Updates');
     expect(wrapper.text()).toContain('Local Tools');
     expect(wrapper.text()).toContain('MCP Servers');
-    expect(wrapper.text()).toContain('Agent Package Roots');
+    expect(wrapper.text()).toContain('Agent Packages');
     expect(wrapper.text()).toContain('Server Settings');
     const sidebarText = wrapper.text();
     expect(sidebarText.indexOf('Server Settings')).toBeLessThan(sidebarText.indexOf('Updates'));
@@ -145,13 +145,13 @@ describe('settings page', () => {
     expect(setupState.activeSection).toBe('mcp-servers');
   });
 
-  it('supports agent-package-roots section query and activates agent-package-roots section', async () => {
-    routeMock.query = { section: 'agent-package-roots' };
+  it('supports agent-packages section query and activates agent-packages section', async () => {
+    routeMock.query = { section: 'agent-packages' };
     const wrapper = mountSettings();
     await nextTick();
     const setupState = (wrapper.vm as any).$?.setupState;
 
-    expect(setupState.activeSection).toBe('agent-package-roots');
+    expect(setupState.activeSection).toBe('agent-packages');
   });
 
   it('supports extensions section query and activates extensions section', async () => {
