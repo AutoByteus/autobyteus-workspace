@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { SqlPersistenceProvider } from "../../../../src/token-usage/providers/sql-persistence-provider.js";
+import { TokenUsageStore } from "../../../../src/token-usage/providers/token-usage-store.js";
 import { SqlTokenUsageRecordRepository } from "../../../../src/token-usage/repositories/sql/token-usage-record-repository.js";
 
 const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
-describe("SqlPersistenceProvider (TokenUsage)", () => {
-  const provider = new SqlPersistenceProvider();
+describe("TokenUsageStore", () => {
+  const provider = new TokenUsageStore();
   const repo = new SqlTokenUsageRecordRepository();
 
   it("creates token usage records", async () => {

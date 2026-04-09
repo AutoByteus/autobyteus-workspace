@@ -2,7 +2,6 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import dotenv from "dotenv";
-import { getPersistenceProfile, isSqlPersistenceProfile } from "../persistence/profile.js";
 
 export class AppConfigError extends Error {
   constructor(message: string) {
@@ -71,8 +70,7 @@ export class AppConfig {
     this.loadConfigData();
     this.initializeBaseUrl();
 
-    const profile = getPersistenceProfile();
-    if (isSqlPersistenceProfile(profile) && this.get("DB_TYPE", "sqlite") === "sqlite") {
+    if (this.get("DB_TYPE", "sqlite") === "sqlite") {
       try {
         this.initSqlitePath();
       } catch (error) {

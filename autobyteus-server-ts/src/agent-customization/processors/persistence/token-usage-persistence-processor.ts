@@ -1,7 +1,7 @@
 import { BaseLLMResponseProcessor, type AgentContext } from "autobyteus-ts";
 import type { LLMCompleteResponseReceivedEvent } from "autobyteus-ts/agent/events/agent-events.js";
 import type { CompleteResponse } from "autobyteus-ts/llm/utils/response-types.js";
-import { PersistenceProxy as TokenUsagePersistenceProxy } from "../../../token-usage/providers/persistence-proxy.js";
+import { TokenUsageStore } from "../../../token-usage/providers/token-usage-store.js";
 import { resolveAgentRunIdFromRuntimeContext } from "../../utils/core-boundary-id-normalizer.js";
 
 const logger = {
@@ -12,11 +12,11 @@ const logger = {
 };
 
 export class TokenUsagePersistenceProcessor extends BaseLLMResponseProcessor {
-  private tokenUsageProxy: TokenUsagePersistenceProxy;
+  private tokenUsageStore: TokenUsageStore;
 
   constructor() {
     super();
-    this.tokenUsageProxy = new TokenUsagePersistenceProxy();
+    this.tokenUsageStore = new TokenUsageStore();
     logger.debug("TokenUsagePersistenceProcessor initialized.");
   }
 
@@ -54,7 +54,7 @@ export class TokenUsagePersistenceProcessor extends BaseLLMResponseProcessor {
         `Run '${runId}': Creating detailed token usage records for run '${runId}'.`,
       );
 
-      await this.tokenUsageProxy.createConversationTokenUsageRecords(
+      await this.tokenUsageStore.createConversationTokenUsageRecords(
         runId,
         usage,
         llmModel,
