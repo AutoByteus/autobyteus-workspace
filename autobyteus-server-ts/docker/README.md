@@ -116,9 +116,18 @@ Workflow file: `.github/workflows/release-server-docker.yml`
 What it does:
 - Triggers on Git tags (e.g. `v1.2.3`).
 - Builds `docker/Dockerfile.monorepo` for `linux/amd64,linux/arm64`.
-- Pushes Docker tags to Docker Hub.
-- Stable releases publish both `<image>:<version>` and `<image>:latest`.
-- Prereleases such as `v1.2.3-rc1` publish only `<image>:1.2.3-rc1`.
+- Push-tag releases publish only the default runtime image.
+- Stable default releases publish:
+  - `<image>:<version>`
+  - `<image>:latest`
+- Default prereleases such as `v1.2.3-rc1` publish:
+  - `<image>:1.2.3-rc1`
+- Manual `workflow_dispatch` runs can publish only the `zh` runtime variant by enabling `publish_zh`.
+- Stable manual `zh` publishes use:
+  - `<image>:<version>-zh`
+  - `<image>:latest-zh`
+- Manual `zh` prereleases use:
+  - `<image>:1.2.3-rc1-zh`
 
 Required GitHub repository secrets:
 
@@ -139,6 +148,7 @@ Manual republish:
 - Provide `release_tag`.
 - Optionally provide `release_ref` if you need to rebuild an existing release tag from a different branch or SHA after a workflow-only fix.
 - Optionally provide `image_name` if you want to override the default repository.
+- Enable `publish_zh` when you want the manual run to publish the `zh` variant instead of the default image.
 
 ## Endpoints (Default)
 
