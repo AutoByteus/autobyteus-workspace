@@ -3,7 +3,6 @@ import path from "node:path";
 import os from "node:os";
 import { createRequire } from "node:module";
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
-import { spawnSync } from "node:child_process";
 import { randomUUID } from "node:crypto";
 import fastify from "fastify";
 import websocket from "@fastify/websocket";
@@ -16,9 +15,8 @@ import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { getCodexAppServerClientManager } from "../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
 import { SqlTokenUsageRecordRepository } from "../../../src/token-usage/repositories/sql/token-usage-record-repository.js";
 
-const codexBinaryReady = spawnSync("codex", ["--version"], { stdio: "ignore" }).status === 0;
-const codexRuntimeEnabled = codexBinaryReady && process.env.RUN_CODEX_E2E === "1";
-const describeCodex = codexRuntimeEnabled ? describe : describe.skip;
+// Codex runtime no longer persists token usage into AutoByteus statistics.
+const describeCodex = describe.skip;
 
 const wait = (ms: number): Promise<void> =>
   new Promise((resolve) => {
