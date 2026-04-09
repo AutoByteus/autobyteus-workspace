@@ -8,9 +8,9 @@ export class MinimaxLLM extends OpenAICompatibleLLM {
     const effectiveModel =
       model ??
       new LLMModel({
-        name: 'minimax-m2.1',
-        value: 'MiniMax-M2.1',
-        canonicalName: 'minimax-m2.1',
+        name: 'minimax-m2.7',
+        value: 'MiniMax-M2.7',
+        canonicalName: 'minimax-m2.7',
         provider: LLMProvider.MINIMAX
       });
 

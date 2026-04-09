@@ -1,4 +1,4 @@
-import { Arg, Field, Mutation, ObjectType, Query, Resolver } from "type-graphql";
+import { Arg, Field, Int, Mutation, ObjectType, Query, Resolver } from "type-graphql";
 import { GraphQLJSON } from "graphql-scalars";
 import { appConfigProvider } from "../../../config/app-config-provider.js";
 import type { ModelInfo } from "autobyteus-ts/llm/models.js";
@@ -40,6 +40,18 @@ class ModelDetail {
 
   @Field(() => GraphQLJSON, { nullable: true })
   configSchema?: Record<string, unknown> | null;
+
+  @Field(() => Int, { nullable: true })
+  maxContextTokens?: number | null;
+
+  @Field(() => Int, { nullable: true })
+  activeContextTokens?: number | null;
+
+  @Field(() => Int, { nullable: true })
+  maxInputTokens?: number | null;
+
+  @Field(() => Int, { nullable: true })
+  maxOutputTokens?: number | null;
 }
 
 @ObjectType()
@@ -78,6 +90,10 @@ const mapLlmModel = (model: ModelInfo): ModelDetail => ({
   runtime: model.runtime,
   hostUrl: model.host_url ?? null,
   configSchema: model.config_schema ?? null,
+  maxContextTokens: model.max_context_tokens ?? null,
+  activeContextTokens: model.active_context_tokens ?? null,
+  maxInputTokens: model.max_input_tokens ?? null,
+  maxOutputTokens: model.max_output_tokens ?? null,
 });
 
 const mapAudioModel = (model: AudioModel): ModelDetail => ({

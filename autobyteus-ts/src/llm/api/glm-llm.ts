@@ -27,15 +27,15 @@ export class GlmLLM extends OpenAICompatibleLLM {
     const effectiveModel =
       model ??
       new LLMModel({
-        name: 'glm-5',
-        value: 'glm-5',
-        canonicalName: 'glm-5',
+        name: 'glm-5.1',
+        value: 'glm-5.1',
+        canonicalName: 'glm-5.1',
         provider: LLMProvider.GLM
       });
 
     const config = llmConfig ?? new LLMConfig();
 
-    super(effectiveModel, 'GLM_API_KEY', 'https://open.bigmodel.cn/api/paas/v4/', config);
+    super(effectiveModel, 'GLM_API_KEY', 'https://open.bigmodel.cn/api/coding/paas/v4/', config);
 
     if (this.config?.extraParams && typeof this.config.extraParams === 'object') {
       this.config.extraParams = normalizeGlmExtraParams(this.config.extraParams);

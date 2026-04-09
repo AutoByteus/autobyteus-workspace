@@ -1,9 +1,27 @@
-import { OpenAI } from 'openai';
 import { LLMModel } from './models.js';
 import { LLMProvider } from './providers.js';
 import { LLMRuntime } from './runtimes.js';
 import { LLMConfig, TokenPricingConfig } from './utils/llm-config.js';
 import { LMStudioLLM } from './api/lmstudio-llm.js';
+
+type LmstudioLoadedInstance = {
+  config?: {
+    context_length?: number | null;
+  } | null;
+};
+
+type LmstudioNativeModel = {
+  key?: string;
+  max_context_length?: number | null;
+  loaded_instances?: LmstudioLoadedInstance[] | null;
+};
+
+type LmstudioNativeModelResponse = {
+  models?: LmstudioNativeModel[] | null;
+};
+
+const isPositiveInteger = (value: unknown): value is number =>
+  typeof value === 'number' && Number.isFinite(value) && value > 0;
 
 export class LMStudioModelProvider {
   static readonly DEFAULT_LMSTUDIO_HOST = 'http://localhost:1234';
@@ -26,6 +44,29 @@ export class LMStudioModelProvider {
     }
   }
 
+  private static async fetchNativeModels(hostUrl: string): Promise<LmstudioNativeModel[]> {
+    const endpoint = `${hostUrl.replace(/\/+$/, '')}/api/v1/models`;
+    const response = await fetch(endpoint);
+    if (!response.ok) {
+      throw new Error(`LM Studio native model discovery failed with status ${response.status}`);
+    }
+
+    const payload = (await response.json()) as LmstudioNativeModelResponse;
+    return Array.isArray(payload.models) ? payload.models : [];
+  }
+
+  private static resolveActiveContextTokens(modelInfo: LmstudioNativeModel): number | null {
+    const contexts = (modelInfo.loaded_instances ?? [])
+      .map((instance) => instance?.config?.context_length ?? null)
+      .filter(isPositiveInteger);
+
+    if (!contexts.length) {
+      return null;
+    }
+
+    return contexts.every((value) => value === contexts[0]) ? contexts[0]! : null;
+  }
+
   static async getModels(): Promise<LLMModel[]> {
     const hosts = LMStudioModelProvider.getHosts();
     const allModels: LLMModel[] = [];
@@ -37,20 +78,17 @@ export class LMStudioModelProvider {
       }
 
       console.log(`Discovering LM Studio models from host: ${hostUrl}`);
-      const baseUrl = `${hostUrl.replace(/\/+$/, '')}/v1`;
-      const client = new OpenAI({ baseURL: baseUrl, apiKey: 'lm-studio' });
 
-      let models: Array<{ id?: string }> = [];
+      let models: LmstudioNativeModel[] = [];
       try {
-        const response: any = await client.models.list();
-        models = response?.data ?? [];
+        models = await LMStudioModelProvider.fetchNativeModels(hostUrl);
       } catch (error: any) {
         console.warn(`Could not connect to LM Studio at ${hostUrl}. Ensure the server is running.`, error?.message ?? error);
         continue;
       }
 
       for (const modelInfo of models) {
-        const modelId = modelInfo?.id;
+        const modelId = modelInfo?.key;
         if (!modelId) continue;
 
         try {
@@ -64,7 +102,9 @@ export class LMStudioModelProvider {
             hostUrl: hostUrl,
             defaultConfig: new LLMConfig({
               pricingConfig: new TokenPricingConfig({ inputTokenPricing: 0.0, outputTokenPricing: 0.0 })
-            })
+            }),
+            maxContextTokens: isPositiveInteger(modelInfo.max_context_length) ? modelInfo.max_context_length : null,
+            activeContextTokens: LMStudioModelProvider.resolveActiveContextTokens(modelInfo)
           });
           allModels.push(llmModel);
         } catch (error: any) {

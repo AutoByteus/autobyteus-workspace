@@ -169,6 +169,10 @@ describe("LlmProviderResolver Gemini setup", () => {
         provider: "OLLAMA",
         runtime: "ollama",
         host_url: "http://localhost:11434",
+        max_context_tokens: 262144,
+        active_context_tokens: 32768,
+        max_input_tokens: null,
+        max_output_tokens: null,
       },
     ]);
 
@@ -179,6 +183,9 @@ describe("LlmProviderResolver Gemini setup", () => {
     expect(ollamaGroup?.models.map((model) => model.modelIdentifier)).toContain(
       "qwen3.5:35b-a3b-coding-nvfp4:ollama@localhost:11434",
     );
+    expect(ollamaGroup?.models[0]?.maxContextTokens).toBe(262144);
+    expect(ollamaGroup?.models[0]?.activeContextTokens).toBe(32768);
+    expect(ollamaGroup?.models[0]?.maxOutputTokens).toBeNull();
 
     const qwenGroup = result.find((provider) => provider.provider === "QWEN");
     expect(qwenGroup?.models ?? []).toHaveLength(0);

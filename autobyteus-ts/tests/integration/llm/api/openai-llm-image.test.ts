@@ -14,9 +14,9 @@ const runIntegration = apiKey ? describe : describe.skip;
 
 const buildModel = () =>
   new LLMModel({
-    name: 'gpt-5.2',
-    value: 'gpt-5.2',
-    canonicalName: 'gpt-5.2',
+    name: 'gpt-5.4',
+    value: 'gpt-5.4',
+    canonicalName: 'gpt-5.4',
     provider: LLMProvider.OPENAI
   });
 

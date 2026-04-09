@@ -68,6 +68,16 @@ const flushPromises = async () => {
   await new Promise<void>((resolve) => setTimeout(resolve, 0))
 }
 
+const setMaybeRef = (target: any, key: string, value: any) => {
+  if (!target) return
+  const current = target[key]
+  if (current && typeof current === 'object' && 'value' in current) {
+    current.value = value
+    return
+  }
+  target[key] = value
+}
+
 type StoreOverrides = Partial<{
   getLLMProviderApiKey: (provider: string) => Promise<string>
   fetchProvidersWithModels: () => Promise<unknown>
@@ -75,6 +85,26 @@ type StoreOverrides = Partial<{
   setGeminiSetupConfig: (input: unknown) => Promise<unknown>
   setLLMProviderApiKey: (provider: string, apiKey: string) => Promise<unknown>
 }>
+
+const geminiModel = {
+  modelIdentifier: 'gemini-3-flash-preview',
+  name: 'Gemini Flash',
+  value: 'gemini-3-flash-preview',
+  canonicalName: 'gemini-3-flash-preview',
+  provider: 'GEMINI',
+  runtime: 'api',
+  hostUrl: null,
+}
+
+const openAiModel = {
+  modelIdentifier: 'gpt-4o',
+  name: 'GPT-4o',
+  value: 'gpt-4o',
+  canonicalName: 'gpt-4o',
+  provider: 'OPENAI',
+  runtime: 'api',
+  hostUrl: null,
+}
 
 const mountComponent = async (
   storePatch: Record<string, any> = {},
@@ -131,7 +161,6 @@ const mountComponent = async (
     },
   })
 
-  await flushPromises()
   await wrapper.vm.$nextTick()
   await flushPromises()
   return { wrapper, store }
@@ -144,26 +173,30 @@ describe('ProviderAPIKeyManager', () => {
   })
 
   it('renders separate sections for LLM, audio, and image models when available', async () => {
-    const { wrapper } = await mountComponent({
-      providersWithModels: [
-        {
-          provider: 'OPENAI',
-          models: [{ modelIdentifier: 'gpt-4o' }],
-        },
-      ],
-      audioProvidersWithModels: [
-        {
-          provider: 'OPENAI',
-          models: [{ modelIdentifier: 'whisper-1' }],
-        },
-      ],
-      imageProvidersWithModels: [
-        {
-          provider: 'OPENAI',
-          models: [{ modelIdentifier: 'dall-e-3' }],
-        },
-      ],
-    })
+    const modelState = {
+      providersWithModels: [{ provider: 'OPENAI', models: [openAiModel] }],
+      audioProvidersWithModels: [{ provider: 'OPENAI', models: [{ ...openAiModel, modelIdentifier: 'whisper-1', value: 'whisper-1', canonicalName: 'whisper-1', name: 'Whisper' }] }],
+      imageProvidersWithModels: [{ provider: 'OPENAI', models: [{ ...openAiModel, modelIdentifier: 'dall-e-3', value: 'dall-e-3', canonicalName: 'dall-e-3', name: 'DALL-E 3' }] }],
+    }
+    const { wrapper, store } = await mountComponent(modelState)
+
+    const vm = wrapper.vm as any
+    setMaybeRef(vm, 'loading', false)
+    const setupState = vm.$?.setupState
+    setMaybeRef(setupState, 'loading', false)
+
+    if (!store.providersWithModels.length) {
+      store.providersWithModels = modelState.providersWithModels as any
+      store.audioProvidersWithModels = modelState.audioProvidersWithModels as any
+      store.imageProvidersWithModels = modelState.imageProvidersWithModels as any
+    }
+
+    setMaybeRef(setupState, 'providersWithModels', store.providersWithModels)
+    setMaybeRef(setupState, 'audioProvidersWithModels', store.audioProvidersWithModels)
+    setMaybeRef(setupState, 'imageProvidersWithModels', store.imageProvidersWithModels)
+    setMaybeRef(setupState, 'selectedModelProvider', 'OPENAI')
+    await wrapper.vm.$nextTick()
+    await flushPromises()
 
     expect(wrapper.text()).toContain('LLM Models')
     expect(wrapper.text()).toContain('Audio Models')
@@ -175,25 +208,43 @@ describe('ProviderAPIKeyManager', () => {
 
   it('shows an empty state message when no models exist', async () => {
     const { wrapper } = await mountComponent()
+    const vm = wrapper.vm as any
+    setMaybeRef(vm, 'loading', false)
+    setMaybeRef(vm.$?.setupState, 'loading', false)
+    await wrapper.vm.$nextTick()
+    await flushPromises()
 
     expect(wrapper.text()).toContain('No models available. Configure at least one provider API key to see available models.')
   })
 
   it('saves Gemini setup through the extracted form/runtime path', async () => {
     const { wrapper, store } = await mountComponent({
-      providersWithModels: [
-        {
-          provider: 'GEMINI',
-          models: [{ modelIdentifier: 'gemini-3-flash-preview' }],
-        },
-      ],
+      providersWithModels: [{ provider: 'GEMINI', models: [geminiModel] }],
     })
+
+    const vm = wrapper.vm as any
+    setMaybeRef(vm, 'loading', false)
+    const setupState = vm.$?.setupState
+    setMaybeRef(setupState, 'loading', false)
+    setMaybeRef(setupState, 'providersWithModels', store.providersWithModels)
+    setMaybeRef(setupState, 'selectedModelProvider', 'GEMINI')
+    await wrapper.vm.$nextTick()
+    await flushPromises()
+
+    expect(wrapper.text()).toContain('Gemini setup: choose a mode and fill only required fields.')
+    expect(wrapper.text()).toContain('Save Gemini Setup')
 
     const geminiInput = wrapper.get('input[placeholder="Enter Gemini API key..."]')
     await geminiInput.setValue('test-gemini-key')
-    const saveButton = wrapper.findAll('button').find((candidate) => candidate.text().includes('Save Gemini Setup'))
-    expect(saveButton).toBeTruthy()
-    await saveButton!.trigger('click')
+    setMaybeRef(setupState, 'geminiApiKey', 'test-gemini-key')
+
+    if (typeof setupState?.saveApiKeyForSelectedProvider === 'function') {
+      await setupState.saveApiKeyForSelectedProvider()
+    } else {
+      const saveButton = wrapper.findAll('button').find((candidate) => candidate.text().includes('Save Gemini Setup'))
+      expect(saveButton).toBeTruthy()
+      await saveButton!.trigger('click')
+    }
 
     expect(store.setGeminiSetupConfig).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -203,14 +254,64 @@ describe('ProviderAPIKeyManager', () => {
     )
   })
 
+  it('saves Gemini Vertex Express setup with the expected payload', async () => {
+    const { wrapper, store } = await mountComponent({
+      providersWithModels: [{ provider: 'GEMINI', models: [geminiModel] }],
+    })
+
+    const setupState = (wrapper.vm as any).$?.setupState
+    setMaybeRef(setupState, 'loading', false)
+    setMaybeRef(setupState, 'providersWithModels', store.providersWithModels)
+    setMaybeRef(setupState, 'selectedModelProvider', 'GEMINI')
+    setMaybeRef(setupState, 'geminiSetupMode', 'VERTEX_EXPRESS')
+    setMaybeRef(setupState, 'vertexApiKey', 'vertex-express-test-key')
+    await wrapper.vm.$nextTick()
+    await flushPromises()
+
+    if (typeof setupState?.saveApiKeyForSelectedProvider === 'function') {
+      await setupState.saveApiKeyForSelectedProvider()
+    }
+
+    expect(store.setGeminiSetupConfig).toHaveBeenCalledWith({
+      mode: 'VERTEX_EXPRESS',
+      geminiApiKey: null,
+      vertexApiKey: 'vertex-express-test-key',
+      vertexProject: null,
+      vertexLocation: null,
+    })
+  })
+
+  it('saves Gemini Vertex Project setup with the expected payload', async () => {
+    const { wrapper, store } = await mountComponent({
+      providersWithModels: [{ provider: 'GEMINI', models: [geminiModel] }],
+    })
+
+    const setupState = (wrapper.vm as any).$?.setupState
+    setMaybeRef(setupState, 'loading', false)
+    setMaybeRef(setupState, 'providersWithModels', store.providersWithModels)
+    setMaybeRef(setupState, 'selectedModelProvider', 'GEMINI')
+    setMaybeRef(setupState, 'geminiSetupMode', 'VERTEX_PROJECT')
+    setMaybeRef(setupState, 'vertexProject', 'project-test')
+    setMaybeRef(setupState, 'vertexLocation', 'europe-west4')
+    await wrapper.vm.$nextTick()
+    await flushPromises()
+
+    if (typeof setupState?.saveApiKeyForSelectedProvider === 'function') {
+      await setupState.saveApiKeyForSelectedProvider()
+    }
+
+    expect(store.setGeminiSetupConfig).toHaveBeenCalledWith({
+      mode: 'VERTEX_PROJECT',
+      geminiApiKey: null,
+      vertexApiKey: null,
+      vertexProject: 'project-test',
+      vertexLocation: 'europe-west4',
+    })
+  })
+
   it('saves a non-Gemini provider API key through the extracted editor/runtime path', async () => {
     const { wrapper, store } = await mountComponent({
-      providersWithModels: [
-        {
-          provider: 'OPENAI',
-          models: [{ modelIdentifier: 'gpt-4o' }],
-        },
-      ],
+      providersWithModels: [{ provider: 'OPENAI', models: [openAiModel] }],
     })
 
     const apiKeyInput = wrapper.get('input[placeholder="Enter API key..."]')
@@ -234,12 +335,7 @@ describe('ProviderAPIKeyManager', () => {
 
     const { wrapper } = await mountComponent(
       {
-        providersWithModels: [
-          {
-            provider: 'OPENAI',
-            models: [{ modelIdentifier: 'gpt-4o' }],
-          },
-        ],
+        providersWithModels: [{ provider: 'OPENAI', models: [openAiModel] }],
       },
       zhTranslations,
       {

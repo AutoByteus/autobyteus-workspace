@@ -78,6 +78,10 @@ export const toModelInfo = (descriptor: NormalizedModelDescriptor): ModelInfo =>
   config_schema: supportsClaudeThinking(descriptor)
     ? buildClaudeThinkingConfigSchema(descriptor.supportedEffortLevels)
     : undefined,
+  max_context_tokens: null,
+  active_context_tokens: null,
+  max_input_tokens: null,
+  max_output_tokens: null,
 });
 
 export type NormalizedModelDescriptor = {
