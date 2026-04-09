@@ -22,3 +22,12 @@
   - `pnpm install --offline --frozen-lockfile`
   - `pnpm exec nuxi prepare`
 - After preparation, the focused validation suite passed with 12/12 tests.
+- Post-merge validation:
+  - after merging latest `origin/personal` into `codex/artifact-edit-file-external-path-view-bug`, reran
+    `pnpm test:nuxt --run components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts components/workspace/agent/__tests__/ArtifactsTab.spec.ts`
+  - result: passed again (`12/12` tests)
+- Independent review build:
+  - `env NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm build:electron:mac`
+  - output artifacts:
+    - `/Users/normy/autobyteus_org/autobyteus-worktrees/artifact-edit-file-external-path-view-bug/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.2.66.dmg`
+    - `/Users/normy/autobyteus_org/autobyteus-worktrees/artifact-edit-file-external-path-view-bug/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.2.66.zip`
