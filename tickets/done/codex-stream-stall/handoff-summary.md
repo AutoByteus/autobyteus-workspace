@@ -66,19 +66,19 @@
 - User verification received:
   - user said the task is done and explicitly asked to close the ticket and continue through Stage 10
 - Notes:
-  - repository finalization status will be filled in after archival/commit/push/merge complete
+  - repository finalization is complete
 
 ## Finalization Record
 
-- Ticket archived to: `Pending`
+- Ticket archived to: `tickets/done/codex-stream-stall`
 - Ticket worktree path: `/home/ryan-ai/SSD/autobyteus_org_workspace/autobyteus-workspace-superrepo-codex-stream-stall`
 - Ticket branch: `codex/codex-stream-stall`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Commit status: `Pending`
-- Push status: `Pending`
-- Merge status: `Pending`
+- Commit status: `Completed on ticket branch (commit c9aeee3a)`
+- Push status: `Completed for ticket branch and target branch`
+- Merge status: `Completed into personal (merge commit dc34d0f9 before this finalization-record update)`
 - Release/publication/deployment status: `Not required`
-- Worktree cleanup status: `Pending`
-- Local branch cleanup status: `Pending`
-- Blockers / notes: `None yet`
+- Worktree cleanup status: `Completed`
+- Local branch cleanup status: `Completed`
+- Blockers / notes: `None`

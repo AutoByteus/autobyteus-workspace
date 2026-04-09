@@ -4,7 +4,7 @@
 
 - Ticket: `codex-stream-stall`
 - Current Stage: `10`
-- Next Stage: `10 - Persist handoff, archive the ticket, and finalize the repository state`
+- Next Stage: `End - Workflow complete`
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
@@ -38,15 +38,15 @@
 | 7 API/E2E + Executable Validation | Pass | executable validation implementation complete + acceptance-criteria and spine scenario gates complete | `tickets/done/codex-stream-stall/api-e2e-testing.md` |
 | 8 Code Review | Pass | Code review gate `Pass`/`Fail` recorded + priority-ordered detailed review scorecard recorded (`Overall /10`, `Overall /100`, all ten category rows in canonical order with score + why + weakness + improvement, and no category below `9.0` for `Pass`) + all changed source files `<=500` effective non-empty lines + `>220` delta-gate assessments recorded + data-flow spine inventory/ownership/off-spine concern checks + existing-capability reuse + reusable-owned-structure extraction + shared-structure/data-model tightness + shared-base coherence + repeated-coordination ownership + empty-indirection + scope-appropriate separation of concerns + file placement within the correct subsystem and folder, with any optional module grouping justified + flat-vs-over-split layout judgment + interface/API/query/command/service-method boundary clarity + naming quality across files/folders/APIs/types/functions/parameters/variables + naming-to-responsibility alignment + no unjustified duplication of code/repeated structures in changed scope + patch-on-patch complexity control + dead/obsolete code cleanup completeness in changed scope + test quality + test maintainability + validation-evidence sufficiency + no-backward-compat/no-legacy checks satisfied for `Pass` | `tickets/done/codex-stream-stall/code-review.md` |
 | 9 Docs Sync | Pass | `docs-sync.md` current + docs updated or no-impact rationale recorded | `tickets/done/codex-stream-stall/docs-sync.md` |
-| 10 Handoff / Ticket State | In Progress | `handoff-summary.md` current + explicit user verification received + ticket moved to `done` + repository finalization into resolved target branch complete when git repo + any applicable release/publication/deployment step completed or explicitly recorded as not required + required post-finalization worktree/branch cleanup complete when applicable + ticket state decision recorded | `tickets/done/codex-stream-stall/docs-sync.md` |
+| 10 Handoff / Ticket State | Pass | `handoff-summary.md` current + explicit user verification received + ticket moved to `done` + repository finalization into resolved target branch complete when git repo + any applicable release/publication/deployment step completed or explicitly recorded as not required + required post-finalization worktree/branch cleanup complete when applicable + ticket state decision recorded | `tickets/done/codex-stream-stall/handoff-summary.md`, `tickets/done/codex-stream-stall/workflow-state.md` |
 
 ## Pre-Edit Checklist (Stage 6 Source-Code Edits)
 
-- Current Stage is `6`: `Yes`
-- Code Edit Permission is `Unlocked`: `Yes`
+- Current Stage is `6`: `No`
+- Code Edit Permission is `Unlocked`: `No`
 - Stage 5 gate is `Go Confirmed`: `Yes`
 - Required upstream artifacts are current: `Yes`
-- Pre-Edit Checklist Result: `Pass`
+- Pre-Edit Checklist Result: `Fail`
 - If `Fail`, source code edits are prohibited.
 
 ## Re-Entry Declaration
