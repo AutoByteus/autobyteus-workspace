@@ -44,7 +44,7 @@ describe("Gateway callback delivery runtime integration", () => {
     tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "gateway-callback-runtime-"));
     await fs.writeFile(
       path.join(tempDir, ".env"),
-      "AUTOBYTEUS_SERVER_HOST=http://127.0.0.1:8899\nPERSISTENCE_PROVIDER=file\n",
+      "AUTOBYTEUS_SERVER_HOST=http://127.0.0.1:8899\nDB_TYPE=sqlite\n",
       "utf8",
     );
 

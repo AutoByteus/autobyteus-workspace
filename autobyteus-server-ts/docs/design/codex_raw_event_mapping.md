@@ -2,22 +2,24 @@
 
 ## Purpose
 
-This document is the canonical audit table for how raw Codex App Server thread events are interpreted inside `autobyteus-server-ts` and converted into normalized `AgentRunEvent`s.
+This document is the canonical audit table for how raw Codex App Server thread events are interpreted inside `autobyteus-server-ts`, applied to Codex thread state, and converted into normalized `AgentRunEvent`s.
 
 Use this document when:
 - debugging a runtime behavior mismatch,
 - reviewing Codex event-conversion changes,
-- deciding whether a raw event should drive lifecycle, artifact, or activity state,
+- deciding whether a raw event should drive lifecycle, artifact, activity, or thread-state readiness,
 - checking whether an older raw-event name is still part of the active protocol.
 
 ## Authoritative Boundary
 
-The authoritative raw-event interpretation boundary lives under:
+The authoritative raw-event interpretation boundaries live under:
 
+- `src/agent-execution/backends/codex/thread/`
 - `src/agent-execution/backends/codex/events/`
 
 The most important owners are:
 
+- `codex-thread-notification-handler.ts` — authoritative owner for applying raw notification side effects to `CodexThread` state (`threadId`, status, active turn, token-usage readiness)
 - `codex-thread-event-converter.ts` — top-level Codex raw-message dispatcher
 - `codex-item-event-converter.ts` — authoritative owner for `item/*` event fan-out
 - `codex-turn-event-converter.ts` — authoritative owner for `turn/*` events
@@ -25,7 +27,7 @@ The most important owners are:
 - `codex-raw-response-event-converter.ts` — raw-response sidecar normalization
 - `codex-thread-server-request-handler.ts` — server-request handling for approval requests and dynamic tool calls
 
-Higher layers should depend only on normalized `AgentRunEvent`s. They should not infer Codex raw protocol details themselves.
+Higher layers should depend on `CodexThread` state and normalized `AgentRunEvent`s exposed by these owners. They should not infer Codex raw protocol details themselves.
 
 ## Apply-Patch / Edit-File Spine
 
@@ -78,7 +80,7 @@ Normalized result:
 | `rawResponseItem/completed` | `item.type = custom_tool_call` or custom tool output | none in the normalized runtime-event spine | `codex-raw-response-event-converter.ts` | Keep ignored; file mutation state comes from `fileChange` events |
 | `thread/started` | thread lifecycle start | none | `codex-thread-lifecycle-event-converter.ts` | Keep as explicit no-op |
 | `thread/status/changed` | runtime status payload | `AGENT_STATUS` | `codex-thread-lifecycle-event-converter.ts` | Keep |
-| `thread/tokenUsage/updated` | token accounting update | none | `codex-thread-lifecycle-event-converter.ts` | Keep as explicit no-op |
+| `thread/tokenUsage/updated` | token accounting update | none in normalized stream; records per-turn token usage readiness on `CodexThread` | `codex-thread-notification-handler.ts`, `codex-thread-lifecycle-event-converter.ts` | Keep as thread-state side effect plus explicit normalized no-op |
 | `error` | runtime error payload | `ERROR` | `codex-thread-lifecycle-event-converter.ts` | Keep |
 
 ## Legacy / Removed Raw-Name Assumptions
@@ -120,6 +122,7 @@ Output shape:
 ## Operational Rules
 
 - Treat `fileChange` item lifecycle as the authoritative owner for Codex `edit_file` lifecycle and artifact availability.
+- Treat `thread/tokenUsage/updated` as a `CodexThread` state update. Persist ready per-turn usage from the thread boundary instead of parsing raw token payloads in higher runtime layers.
 - Do not infer `edit_file` success from artifact events on the frontend.
 - Do not promote `turn/diff/updated` into lifecycle or artifact ownership without a new explicit design decision.
 - When new raw Codex event names appear, update this audit table before extending the converter boundary.

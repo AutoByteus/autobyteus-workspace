@@ -1,8 +1,16 @@
 import { asObject, asString, type JsonObject } from "../codex-app-server-json.js";
 import type { CodexAppServerMessage } from "./codex-app-server-message.js";
 import { CodexThreadEventName } from "../events/codex-thread-event-name.js";
-import { resolveThreadIdFromAppServerMessage } from "./codex-thread-id-resolver.js";
+import {
+  resolveThreadIdFromAppServerMessage,
+  resolveTurnIdFromAppServerMessage,
+} from "./codex-thread-id-resolver.js";
 import type { CodexThread } from "./codex-thread.js";
+import { resolveCodexThreadTokenUsage } from "./codex-thread-token-usage.js";
+
+const logger = {
+  warn: (...args: unknown[]) => console.warn(...args),
+};
 
 export const handleAppServerNotification = (
   codexThread: CodexThread,
@@ -17,7 +25,8 @@ export const handleAppServerNotification = (
     const turn = asObject(params.turn);
     codexThread.markTurnStarted(asString(turn?.id));
   } else if (eventMethod === CodexThreadEventName.TURN_COMPLETED) {
-    codexThread.markTurnCompleted();
+    const turn = asObject(params.turn);
+    codexThread.markTurnCompleted(asString(turn?.id));
   } else if (eventMethod === CodexThreadEventName.THREAD_STARTED) {
     const thread = asObject(params.thread);
     const nextThreadId = asString(thread?.id);
@@ -42,6 +51,21 @@ export const handleAppServerNotification = (
     const nextThreadId = resolveThreadIdFromAppServerMessage(params);
     if (nextThreadId) {
       codexThread.setThreadId(nextThreadId);
+    }
+    const turnId =
+      resolveTurnIdFromAppServerMessage(params) ??
+      codexThread.activeTurnId;
+    const usage = resolveCodexThreadTokenUsage(params);
+    if (!turnId) {
+      logger.warn(
+        `Run '${codexThread.runId}': Codex token-usage update arrived without a turn id. Skipping persistence.`,
+      );
+    } else if (!usage) {
+      logger.warn(
+        `Run '${codexThread.runId}': Codex token-usage update for turn '${turnId}' did not include usable token counts.`,
+      );
+    } else {
+      codexThread.recordTurnTokenUsage(turnId, usage);
     }
   }
 

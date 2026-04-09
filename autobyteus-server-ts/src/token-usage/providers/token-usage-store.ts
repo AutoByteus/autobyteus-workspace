@@ -1,13 +1,14 @@
+import type { TokenUsage } from "autobyteus-ts";
 import type { TokenUsageRecord } from "../domain/models.js";
 import { PrismaConverter } from "../converters/prisma-converter.js";
 import { SqlTokenUsageRecordRepository } from "../repositories/sql/token-usage-record-repository.js";
-import type { PersistenceProvider } from "./persistence-provider.js";
 
 const logger = {
   error: (...args: unknown[]) => console.error(...args),
+  info: (...args: unknown[]) => console.info(...args),
 };
 
-export class SqlPersistenceProvider implements PersistenceProvider {
+export class TokenUsageStore {
   private recordRepository: SqlTokenUsageRecordRepository;
   private converter: PrismaConverter;
 
@@ -34,6 +35,41 @@ export class SqlPersistenceProvider implements PersistenceProvider {
       return this.converter.toDomainRecord(createdRecord);
     } catch (error) {
       logger.error(`Failed to create token usage record: ${String(error)}`);
+      throw error;
+    }
+  }
+
+  async createConversationTokenUsageRecords(
+    runId: string,
+    tokenUsage: TokenUsage,
+    llmModel?: string | null,
+  ): Promise<[TokenUsageRecord, TokenUsageRecord]> {
+    try {
+      const promptRecord = await this.createTokenUsageRecord(
+        runId,
+        "user",
+        tokenUsage.prompt_tokens,
+        tokenUsage.prompt_cost ?? 0,
+        llmModel,
+      );
+
+      const completionRecord = await this.createTokenUsageRecord(
+        runId,
+        "assistant",
+        tokenUsage.completion_tokens,
+        tokenUsage.completion_cost ?? 0,
+        llmModel,
+      );
+
+      logger.info(
+        `Created token usage records for conversation ${runId}` +
+          (llmModel ? ` using model ${llmModel}` : "") +
+          `: prompt tokens=${tokenUsage.prompt_tokens}, completion tokens=${tokenUsage.completion_tokens}`,
+      );
+
+      return [promptRecord, completionRecord];
+    } catch (error) {
+      logger.error(`Failed to create conversation token usage records: ${String(error)}`);
       throw error;
     }
   }

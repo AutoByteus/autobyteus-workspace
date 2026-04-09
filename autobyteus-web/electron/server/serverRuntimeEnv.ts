@@ -16,7 +16,6 @@ export function buildServerRuntimeEnv(
   return {
     // Ensure Prisma uses runtime server-data DB path from process start.
     DATABASE_URL: toPrismaSqliteUrl(dbPath),
-    PERSISTENCE_PROVIDER: baseEnv.PERSISTENCE_PROVIDER ?? 'sqlite',
     DB_TYPE: baseEnv.DB_TYPE ?? 'sqlite',
     AUTOBYTEUS_DATA_DIR: appDataDir,
     AUTOBYTEUS_SERVER_HOST: publicServerUrl,

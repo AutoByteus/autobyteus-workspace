@@ -218,3 +218,92 @@ describe("CodexThread MCP tool approval bridge", () => {
     })).toBeNull();
   });
 });
+
+describe("CodexThread token usage readiness", () => {
+  it("marks running-turn token usage ready when the thread becomes idle", () => {
+    const { thread } = createThread(true);
+
+    thread.handleAppServerNotification(CodexThreadEventName.TURN_STARTED, {
+      turn: {
+        id: "turn-usage-1",
+      },
+    } as never);
+
+    thread.handleAppServerNotification(CodexThreadEventName.THREAD_TOKEN_USAGE_UPDATED, {
+      threadId: "thread-1",
+      turnId: "turn-usage-1",
+      tokenUsage: {
+        last: {
+          totalTokens: 15,
+          inputTokens: 10,
+          outputTokens: 5,
+        },
+      },
+    } as never);
+
+    expect(thread.getReadyTurnTokenUsages()).toEqual([]);
+
+    thread.handleAppServerNotification(CodexThreadEventName.THREAD_STATUS_CHANGED, {
+      threadId: "thread-1",
+      status: {
+        type: "idle",
+      },
+    } as never);
+
+    expect(thread.getReadyTurnTokenUsages()).toEqual([
+      {
+        turnId: "turn-usage-1",
+        usage: {
+          prompt_tokens: 10,
+          completion_tokens: 5,
+          total_tokens: 15,
+          prompt_cost: null,
+          completion_cost: null,
+          total_cost: null,
+        },
+      },
+    ]);
+  });
+
+  it("marks late token usage ready after turn completion", () => {
+    const { thread } = createThread(true);
+
+    thread.handleAppServerNotification(CodexThreadEventName.TURN_STARTED, {
+      turn: {
+        id: "turn-usage-late-1",
+      },
+    } as never);
+    thread.handleAppServerNotification(CodexThreadEventName.TURN_COMPLETED, {
+      threadId: "thread-1",
+      turn: {
+        id: "turn-usage-late-1",
+      },
+    } as never);
+
+    thread.handleAppServerNotification(CodexThreadEventName.THREAD_TOKEN_USAGE_UPDATED, {
+      threadId: "thread-1",
+      turnId: "turn-usage-late-1",
+      tokenUsage: {
+        last: {
+          totalTokens: 18,
+          inputTokens: 11,
+          outputTokens: 7,
+        },
+      },
+    } as never);
+
+    expect(thread.getReadyTurnTokenUsages()).toEqual([
+      {
+        turnId: "turn-usage-late-1",
+        usage: {
+          prompt_tokens: 11,
+          completion_tokens: 7,
+          total_tokens: 18,
+          prompt_cost: null,
+          completion_cost: null,
+          total_cost: null,
+        },
+      },
+    ]);
+  });
+});

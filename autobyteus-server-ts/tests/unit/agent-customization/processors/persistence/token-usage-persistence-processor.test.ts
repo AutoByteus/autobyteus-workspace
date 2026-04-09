@@ -5,23 +5,23 @@ import { CompleteResponse } from "autobyteus-ts/llm/utils/response-types.js";
 import type { TokenUsage } from "autobyteus-ts";
 import type { AgentContext } from "autobyteus-ts";
 
-const mockTokenUsageProxy = vi.hoisted(() => ({
+const mockTokenUsageStore = vi.hoisted(() => ({
   createConversationTokenUsageRecords: vi.fn(),
 }));
 
-vi.mock("../../../../../src/token-usage/providers/persistence-proxy.js", () => {
-  class MockTokenUsageProxy {
-    createConversationTokenUsageRecords = mockTokenUsageProxy.createConversationTokenUsageRecords;
+vi.mock("../../../../../src/token-usage/providers/token-usage-store.js", () => {
+  class MockTokenUsageStore {
+    createConversationTokenUsageRecords = mockTokenUsageStore.createConversationTokenUsageRecords;
   }
 
   return {
-    PersistenceProxy: MockTokenUsageProxy,
+    TokenUsageStore: MockTokenUsageStore,
   };
 });
 
 describe("TokenUsagePersistenceProcessor", () => {
   beforeEach(() => {
-    mockTokenUsageProxy.createConversationTokenUsageRecords.mockReset();
+    mockTokenUsageStore.createConversationTokenUsageRecords.mockReset();
   });
 
   it("persists detailed token usage", async () => {
@@ -54,7 +54,7 @@ describe("TokenUsagePersistenceProcessor", () => {
     );
 
     expect(result).toBe(false);
-    expect(mockTokenUsageProxy.createConversationTokenUsageRecords).toHaveBeenCalledWith(
+    expect(mockTokenUsageStore.createConversationTokenUsageRecords).toHaveBeenCalledWith(
       "agent_xyz",
       tokenUsage,
       "test-llm-v1",
@@ -80,7 +80,7 @@ describe("TokenUsagePersistenceProcessor", () => {
     );
 
     expect(result).toBe(false);
-    expect(mockTokenUsageProxy.createConversationTokenUsageRecords).not.toHaveBeenCalled();
+    expect(mockTokenUsageStore.createConversationTokenUsageRecords).not.toHaveBeenCalled();
     expect(warnSpy).toHaveBeenCalledWith(
       expect.stringContaining("No token usage data in response"),
     );
