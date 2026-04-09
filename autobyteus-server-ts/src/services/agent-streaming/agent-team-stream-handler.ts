@@ -48,6 +48,8 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
+const TEAM_METADATA_REFRESH_DEBOUNCE_MS = 2000;
+
 class AgentTeamSession extends AgentSession {
   get teamRunId(): string {
     return this.runId;
@@ -63,6 +65,7 @@ export class AgentTeamStreamHandler {
   private readonly eventUnsubscribers = new Map<string, () => void>();
   private readonly sessionConnections = new Map<string, WebSocketConnection>();
   private readonly subscribedRunsBySessionId = new Map<string, TeamRun>();
+  private readonly pendingMetadataRefreshTimers = new Map<string, NodeJS.Timeout>();
 
   constructor(
     sessionManager: AgentSessionManager = new AgentSessionManager(AgentTeamSession),
@@ -232,9 +235,7 @@ export class AgentTeamStreamHandler {
       } catch (error) {
         logger.error(`Error sending team event to WebSocket: ${String(error)}`);
       }
-      void this.teamRunService.refreshRunMetadata(teamRun).catch((error) => {
-        logger.error(`Failed to refresh team run metadata for '${teamRunId}': ${String(error)}`);
-      });
+      this.scheduleMetadataRefresh(teamRunId, teamRun);
     });
     if (!unsubscribe) {
       return false;
@@ -389,6 +390,21 @@ export class AgentTeamStreamHandler {
 
   private getTeamRun(teamRunId: string): TeamRun | null {
     return this.teamRunService.getTeamRun(teamRunId);
+  }
+
+  private scheduleMetadataRefresh(teamRunId: string, teamRun: TeamRun): void {
+    if (this.pendingMetadataRefreshTimers.has(teamRunId)) {
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      this.pendingMetadataRefreshTimers.delete(teamRunId);
+      void this.teamRunService.refreshRunMetadata(teamRun).catch((error) => {
+        logger.error(`Failed to refresh team run metadata for '${teamRunId}': ${String(error)}`);
+      });
+    }, TEAM_METADATA_REFRESH_DEBOUNCE_MS);
+
+    this.pendingMetadataRefreshTimers.set(teamRunId, timer);
   }
 
   convertTeamEvent(event: TeamRunEvent): ServerMessage {

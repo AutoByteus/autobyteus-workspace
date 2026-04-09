@@ -20,7 +20,7 @@ Options:
   --foreground            Run server in foreground (default)
   --stop                  Stop background server using pid file
   --status                Show background server status
-  --skip-build            Skip `pnpm --filter autobyteus-server-ts run build:file`
+  --skip-build            Skip `pnpm --filter autobyteus-server-ts run build`
   --host <host>           Bind host (default: 127.0.0.1)
   --port <port>           Bind port (default: 8000)
   --workspace-root <dir>  Override workspace root (default: repo root)
@@ -173,17 +173,17 @@ mkdir -p "$LOG_DIR"
 if [[ ! -f "$SERVER_DIR/.env" ]]; then
   cat > "$SERVER_DIR/.env" <<EOF
 AUTOBYTEUS_SERVER_HOST=http://$HOST:$PORT
-PERSISTENCE_PROVIDER=sqlite
+DB_TYPE=sqlite
 LOG_LEVEL=INFO
 EOF
   echo "Created default .env at $SERVER_DIR/.env"
 fi
 
 if [[ $SKIP_BUILD -eq 0 ]]; then
-  pnpm -C "$WORKSPACE_ROOT" --filter autobyteus-server-ts run build:file
+  pnpm -C "$WORKSPACE_ROOT" --filter autobyteus-server-ts run build
 fi
 
-CMD=(node "$SERVER_DIR/dist-file/app.js" --host "$HOST" --port "$PORT")
+CMD=(node "$SERVER_DIR/dist/app.js" --host "$HOST" --port "$PORT")
 
 if [[ $BACKGROUND -eq 1 ]]; then
   if [[ -f "$PID_FILE" ]]; then

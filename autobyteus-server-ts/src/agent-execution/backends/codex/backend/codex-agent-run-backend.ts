@@ -9,12 +9,17 @@ import type { AgentRunEvent } from "../../../domain/agent-run-event.js";
 import type { AgentRunBackend, AgentRunEventListener } from "../../agent-run-backend.js";
 import type { CodexRunContext } from "./codex-agent-run-context.js";
 import { dispatchRuntimeEvent } from "../../shared/runtime-event-dispatch.js";
+import type { CodexAppServerMessage } from "../thread/codex-app-server-message.js";
 
 const buildCommandFailure = (operation: string, error: unknown): AgentOperationResult => ({
   accepted: false,
   code: "RUNTIME_COMMAND_FAILED",
   message: `Failed to ${operation} for runtime 'codex_app_server': ${String(error)}`,
 });
+
+const logger = {
+  error: (...args: unknown[]) => console.error(...args),
+};
 
 export class CodexAgentRunBackend implements AgentRunBackend {
   private readonly runContext: CodexRunContext;
@@ -34,15 +39,12 @@ export class CodexAgentRunBackend implements AgentRunBackend {
     this.threadManager = threadManager;
     this.eventConverter = new CodexThreadEventConverter(this.runId, this.codexThread.workingDirectory);
     this.unsubscribeFromThread = this.codexThread.subscribeAppServerMessages((event) => {
-      const convertedEvents = this.eventConverter.convert(event);
-      if (convertedEvents.length === 0) {
-        return;
-      }
-      for (const convertedEvent of convertedEvents) {
-        dispatchRuntimeEvent({
-          listeners: this.listeners,
-          event: convertedEvent,
-        });
+      try {
+        this.handleAppServerMessage(event);
+      } catch (error) {
+        logger.error(
+          `Failed to process Codex app-server event for run '${this.runId}': ${String(error)}`,
+        );
       }
     });
   }
@@ -149,5 +151,16 @@ export class CodexAgentRunBackend implements AgentRunBackend {
     this.unsubscribeFromThread?.();
     this.unsubscribeFromThread = null;
     return platformAgentRunId;
+  }
+
+  private handleAppServerMessage(event: CodexAppServerMessage): void {
+    const convertedEvents = this.eventConverter.convert(event);
+
+    for (const convertedEvent of convertedEvents) {
+      dispatchRuntimeEvent({
+        listeners: this.listeners,
+        event: convertedEvent,
+      });
+    }
   }
 }

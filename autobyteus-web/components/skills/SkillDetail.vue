@@ -1,9 +1,14 @@
 <template>
-  <div v-if="!skill" class="loading-state">
+  <div v-if="isLoading" class="loading-state">
     <div class="spinner"></div>
     <p>Loading...</p>
   </div>
-  <div v-else class="skill-detail">
+  <div v-else-if="loadError" class="error-state">
+    <Icon icon="heroicons:exclamation-triangle" class="error-icon" />
+    <p>{{ loadError }}</p>
+    <button class="btn-recover" @click="$emit('back')">Back to Skills</button>
+  </div>
+  <div v-else-if="skill" class="skill-detail">
     <!-- Compact Header -->
     <header class="compact-header">
       <div class="header-top-row">
@@ -88,6 +93,8 @@ const emit = defineEmits<{
 const skillStore = useSkillStore()
 const { addToast } = useToasts()
 const skill = ref<Skill | null>(null)
+const isLoading = ref(true)
+const loadError = ref('')
 const versions = ref<SkillVersion[]>([])
 const versionsLoading = ref(false)
 const versionsError = ref('')
@@ -106,11 +113,31 @@ watch(() => props.skillName, async () => {
 })
 
 async function loadSkillDetails() {
-  skill.value = await skillStore.fetchSkill(props.skillName)
+  isLoading.value = true
+  loadError.value = ''
+  skill.value = null
   showCompareModal.value = false
   actionError.value = ''
   actionLoading.value = false
-  await loadVersions()
+
+  try {
+    const loadedSkill = await skillStore.fetchSkill(props.skillName)
+    if (!loadedSkill) {
+      loadError.value = 'Skill not found. It may have been removed from its source.'
+      versions.value = []
+      versionsError.value = ''
+      return
+    }
+
+    skill.value = loadedSkill
+    await loadVersions()
+  } catch (e: any) {
+    loadError.value = e?.message || 'Failed to load skill.'
+    versions.value = []
+    versionsError.value = ''
+  } finally {
+    isLoading.value = false
+  }
 }
 
 async function loadVersions() {
@@ -195,6 +222,30 @@ async function handleActivateVersion(version: string) {
   color: #6b7280;
 }
 
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  height: 100%;
+  padding: 2rem;
+  color: #6b7280;
+  text-align: center;
+}
+
+.error-icon {
+  font-size: 2rem;
+  color: #f59e0b;
+}
+
+.btn-recover {
+  border: 1px solid #d1d5db;
+  background: white;
+  color: #111827;
+  padding: 0.625rem 1rem;
+}
+
 .spinner {
   width: 2rem;
   height: 2rem;
@@ -234,6 +285,10 @@ async function handleActivateVersion(version: string) {
 .btn-back:hover {
   color: #111827;
   background: #f3f4f6;
+}
+
+.btn-recover:hover {
+  background: #f9fafb;
 }
 
 .back-icon {

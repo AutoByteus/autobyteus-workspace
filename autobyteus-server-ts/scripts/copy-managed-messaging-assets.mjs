@@ -12,7 +12,6 @@ const sourceManifest = path.join(
 
 const targetDirs = [
   path.join(rootDir, "dist", "managed-capabilities", "messaging-gateway"),
-  path.join(rootDir, "dist-file", "managed-capabilities", "messaging-gateway"),
 ];
 
 const main = async () => {

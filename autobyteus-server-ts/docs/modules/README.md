@@ -37,7 +37,8 @@ This directory mirrors the module documentation layout used in `autobyteus-serve
 
 - Services expose `getInstance()` or accessor functions.
 - Cached providers decorate persistence providers for read-heavy flows.
-- Persistence providers are resolved through registry + proxy composition and selected by `PERSISTENCE_PROVIDER` (`file`, `sqlite`, `postgresql`).
+- Persistence is owned per subsystem instead of by a global runtime mode.
+- Token usage uses the SQL-backed `TokenUsageStore`, while agent definitions, team definitions, and MCP config continue to use their subsystem-native file providers.
 - GraphQL resolvers in `src/api/graphql/types` are thin adapters over services.
 - Startup registration and background initialization run through `src/startup`.
 

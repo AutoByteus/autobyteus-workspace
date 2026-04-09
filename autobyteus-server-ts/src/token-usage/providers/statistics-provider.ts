@@ -1,22 +1,22 @@
 import { TokenUsageStats } from "../domain/models.js";
-import { PersistenceProxy } from "./persistence-proxy.js";
+import { TokenUsageStore } from "./token-usage-store.js";
 
 export class TokenUsageStatisticsProvider {
-  private proxy: PersistenceProxy;
+  private store: TokenUsageStore;
 
   constructor() {
-    this.proxy = new PersistenceProxy();
+    this.store = new TokenUsageStore();
   }
 
   async getTotalCost(startDate: Date, endDate: Date): Promise<number> {
-    return this.proxy.getTotalCostInPeriod(startDate, endDate);
+    return this.store.getTotalCostInPeriod(startDate, endDate);
   }
 
   async getStatisticsPerModel(
     startDate: Date,
     endDate: Date,
   ): Promise<Record<string, TokenUsageStats>> {
-    const records = await this.proxy.getUsageRecordsInPeriod(startDate, endDate);
+    const records = await this.store.getUsageRecordsInPeriod(startDate, endDate);
     const statsByModel = new Map<string, TokenUsageStats>();
 
     for (const record of records) {

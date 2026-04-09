@@ -21,7 +21,7 @@ Options:
   --check-only              Validate environment only (do not install/build)
   --skip-workspace-install  Skip Android-scoped `pnpm install --no-optional --filter ...`
   --skip-verify             Skip `pnpm verify:android-profile`
-  --skip-build              Skip `pnpm --filter autobyteus-server-ts run build:file`
+  --skip-build              Skip `pnpm --filter autobyteus-server-ts run build`
   --workspace-root <path>   Override workspace root (default: repo root)
   -h, --help                Show help
 EOF
@@ -174,10 +174,10 @@ else
 fi
 
 if [[ $SKIP_BUILD -eq 0 ]]; then
-  echo "Building Android server file profile..."
-  pnpm --filter autobyteus-server-ts run build:file
+  echo "Building Android server..."
+  pnpm --filter autobyteus-server-ts run build
 else
-  echo "Skipping build:file (--skip-build)."
+  echo "Skipping build (--skip-build)."
 fi
 
 cat <<'EOF'

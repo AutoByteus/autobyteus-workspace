@@ -21,15 +21,30 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
 import SkillsList from '~/components/skills/SkillsList.vue';
 import SkillDetail from '~/components/skills/SkillDetail.vue';
+import { useSkillStore } from '~/stores/skillStore';
 
+const skillStore = useSkillStore();
+const { skills } = storeToRefs(skillStore);
 const selectedSkillName = ref<string | null>(null);
 
 function showSkillDetail(skillName: string) {
   selectedSkillName.value = skillName;
 }
+
+watch(skills, (nextSkills) => {
+  if (!selectedSkillName.value) {
+    return;
+  }
+
+  const stillExists = nextSkills.some((skill) => skill.name === selectedSkillName.value);
+  if (!stillExists) {
+    selectedSkillName.value = null;
+  }
+});
 </script>
 
 <style scoped>

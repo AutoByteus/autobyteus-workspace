@@ -3,7 +3,6 @@ import os from "node:os";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
 import { appConfigProvider } from "../config/app-config-provider.js";
-import { getPersistenceProfile, isFilePersistenceProfile } from "../persistence/profile.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -273,12 +272,6 @@ function runPrismaCommand(appRoot: string, args: string[]): void {
 }
 
 export function runMigrations(): void {
-  const profile = getPersistenceProfile();
-  if (isFilePersistenceProfile(profile)) {
-    logger.info("Skipping Prisma migrations for file persistence profile.");
-    return;
-  }
-
   const config = appConfigProvider.config;
   const appRoot = config.getAppRootDir();
   const schemaPath = path.join(appRoot, "prisma", "schema.prisma");

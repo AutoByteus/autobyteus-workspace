@@ -9,7 +9,6 @@ const ENV_KEYS = [
   "AUTOBYTEUS_SERVER_HOST",
   "APP_ENV",
   "DB_TYPE",
-  "PERSISTENCE_PROVIDER",
   "DATABASE_URL",
   "AUTOBYTEUS_MEMORY_DIR",
   "AUTOBYTEUS_SKILLS_PATHS",
@@ -55,9 +54,9 @@ describe("AppConfig", () => {
     await fsPromises.rm(configDir, { recursive: true, force: true });
   });
 
-  it("initializes base URL and sqlite db path when sqlite profile is selected", async () => {
+  it("initializes base URL and sqlite db path when sqlite DB config is selected", async () => {
     const configDir = await createTempConfigDir(
-      "AUTOBYTEUS_SERVER_HOST=http://localhost:8000/\nAPP_ENV=test\nDB_TYPE=sqlite\nPERSISTENCE_PROVIDER=sqlite\n",
+      "AUTOBYTEUS_SERVER_HOST=http://localhost:8000/\nAPP_ENV=test\nDB_TYPE=sqlite\n",
     );
     const config = new AppConfig();
     config.setCustomAppDataDir(configDir);
@@ -69,6 +68,23 @@ describe("AppConfig", () => {
     expect(config.get("DATABASE_URL")).toBe(`file:${expectedDbPath}`);
     expect(process.env.DATABASE_URL).toBe(`file:${expectedDbPath}`);
     expect(fs.existsSync(path.join(configDir, "logs"))).toBe(true);
+
+    await fsPromises.rm(configDir, { recursive: true, force: true });
+  });
+
+  it("preserves an explicit DATABASE_URL when sqlite DB config is selected", async () => {
+    const configDir = await createTempConfigDir(
+      "AUTOBYTEUS_SERVER_HOST=http://localhost:8000/\nAPP_ENV=test\nDB_TYPE=sqlite\n",
+    );
+    const explicitDatabaseUrl = "file:/tmp/explicit-autobyteus-test.db";
+    process.env.DATABASE_URL = explicitDatabaseUrl;
+    const config = new AppConfig();
+    config.setCustomAppDataDir(configDir);
+
+    config.initialize();
+
+    expect(config.get("DATABASE_URL")).toBe(explicitDatabaseUrl);
+    expect(process.env.DATABASE_URL).toBe(explicitDatabaseUrl);
 
     await fsPromises.rm(configDir, { recursive: true, force: true });
   });
