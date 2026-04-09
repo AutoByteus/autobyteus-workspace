@@ -8,12 +8,12 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 
 - Ticket: `github-agent-package-import`
 - Current Stage: `10`
-- Next Stage: `Finalization`
+- Next Stage: `Completed`
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-019`
-- Last Updated: `2026-04-09 08:56:42 CEST`
+- Last Transition ID: `T-020`
+- Last Updated: `2026-04-09 09:05:45 CEST`
 
 ## Stage 0 Bootstrap Record
 
@@ -47,7 +47,7 @@ Note:
 | 7 API/E2E + Executable Validation | Pass | Focused executable validation rerun passed, including package-oriented GraphQL E2E coverage and the live GitHub import integration against `https://github.com/AutoByteus/autobyteus-agents`. | `tickets/done/github-agent-package-import/api-e2e-testing.md`, `tickets/done/github-agent-package-import/workflow-state.md` |
 | 8 Code Review | Pass | The third review round resolved `CR-001` and `CR-002`, found no new blocking issues, and restored the ticket to a passing Stage 8 state. | `tickets/done/github-agent-package-import/code-review.md`, `tickets/done/github-agent-package-import/workflow-state.md` |
 | 9 Docs Sync | Pass | Docs sync recorded `No-impact`, and the user then explicitly verified the ticket, so Stage 9 is complete. | `tickets/done/github-agent-package-import/docs-sync.md`, `tickets/done/github-agent-package-import/workflow-state.md` |
-| 10 Handoff / Ticket State | In Progress | Explicit user verification was received, and finalization/release work is now active. | `tickets/done/github-agent-package-import/handoff-summary.md`, `tickets/done/github-agent-package-import/release-notes.md`, `tickets/done/github-agent-package-import/workflow-state.md` |
+| 10 Handoff / Ticket State | Pass | Explicit user verification was received, the archived ticket branch was pushed, merged into `origin/personal`, released as `v1.2.65`, and the dedicated ticket-worktree/local-branch cleanup completed. | `tickets/done/github-agent-package-import/handoff-summary.md`, `tickets/done/github-agent-package-import/release-notes.md`, `tickets/done/github-agent-package-import/release-deployment-report.md`, `tickets/done/github-agent-package-import/workflow-state.md` |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -136,6 +136,7 @@ Note:
 | T-017 | 2026-04-09 | 7 | 8 | The Local Fix re-entry executable validation rerun passed, including the live public GitHub import of `https://github.com/AutoByteus/autobyteus-agents`, so Stage 8 code review is active again and code edits are locked. | Local Fix | Locked | `tickets/done/github-agent-package-import/api-e2e-testing.md`, `tickets/done/github-agent-package-import/workflow-state.md` |
 | T-018 | 2026-04-09 | 8 | 9 | The third Stage 8 review round passed with no blocking findings, so the Local Fix re-entry is closed and Stage 9 docs sync is the next active stage, though work is paused here at the user's requested stop point. | N/A | Locked | `tickets/done/github-agent-package-import/code-review.md`, `tickets/done/github-agent-package-import/workflow-state.md` |
 | T-019 | 2026-04-09 | 9 | 10 | Docs sync remained `No-impact`, the user explicitly verified the ticket as done, and Stage 10 finalization plus release work is now active. | N/A | Locked | `tickets/done/github-agent-package-import/docs-sync.md`, `tickets/done/github-agent-package-import/handoff-summary.md`, `tickets/done/github-agent-package-import/release-notes.md`, `tickets/done/github-agent-package-import/workflow-state.md` |
+| T-020 | 2026-04-09 | 10 | Completed | Ticket archival, ticket-branch push, merge into `origin/personal`, release publication as `v1.2.65`, and required ticket-worktree/local-branch cleanup all completed successfully. | N/A | Locked | `tickets/done/github-agent-package-import/handoff-summary.md`, `tickets/done/github-agent-package-import/release-notes.md`, `tickets/done/github-agent-package-import/release-deployment-report.md`, `tickets/done/github-agent-package-import/workflow-state.md` |
 
 ## Audible Notification Log (Optional Tracking)
 
@@ -159,6 +160,8 @@ Note:
 | 2026-04-09 | Transition | Stage 6 local fix implementation completed for GitHub agent package import. Stage 7 executable validation is now active again and code edits remain unlocked. | Success | N/A |
 | 2026-04-09 | LockChange | Stage 7 validation rerun completed for GitHub agent package import. Stage 8 code review is now active again and code edits are locked. | Success | N/A |
 | 2026-04-09 | Transition | Stage 8 review passed for GitHub agent package import. The local-fix re-entry is closed, Stage 9 docs sync is next, and work is paused here at the requested code review stop point. | Success | N/A |
+| 2026-04-09 | Transition | Docs sync completed for GitHub agent package import, the user explicitly verified the ticket, and Stage 10 finalization plus release work are now active. | Success | N/A |
+| 2026-04-09 | Transition | GitHub agent package import finalization is complete. The ticket is archived, merged into personal, released as version 1.2.65, and cleanup is finished. | Success | N/A |
 
 ## Process Violation Log
 

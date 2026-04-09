@@ -2,11 +2,17 @@
 
 ## Delivery Status
 
-- Workflow progression completed through Stage 9, and Stage 10 finalization is now active.
+- Workflow progression completed through Stage 10.
 - Explicit user verification was received on `2026-04-09`.
 - Ticket is now archived at `tickets/done/github-agent-package-import/`.
 - Requirements/design re-entry for the managed GitHub install subtree is closed.
-- Repository finalization and release work were not yet performed at the time of this handoff update.
+- Ticket branch finalization completed:
+  - archived ticket commit: `a2f0a5d3`
+  - merged into `origin/personal`: merge commit `33f942f5`
+- Desktop release completed:
+  - release commit: `f2a2699a`
+  - release tag: `v1.2.65`
+- Dedicated ticket worktree cleanup and local ticket-branch cleanup completed.
 
 ## Implemented Scope
 
@@ -57,7 +63,4 @@
 
 ## Remaining Action
 
-- Execute Stage 10 completion work:
-  - commit and push the ticket branch,
-  - merge into the recorded finalization target `origin/personal`,
-  - run the requested desktop release flow.
+- None.
