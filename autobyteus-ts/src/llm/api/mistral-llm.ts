@@ -18,9 +18,9 @@ export class MistralLLM extends BaseLLM {
     const effectiveModel =
       model ??
       new LLMModel({
-        name: 'mistral-large',
-        value: 'mistral-large-latest',
-        canonicalName: 'mistral-large',
+        name: 'mistral-large-3',
+        value: 'mistral-large-2512',
+        canonicalName: 'mistral-large-3',
         provider: LLMProvider.MISTRAL
       });
 

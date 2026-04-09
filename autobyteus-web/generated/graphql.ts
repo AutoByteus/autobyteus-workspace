@@ -577,9 +577,13 @@ export type MemoryTraceEvent = {
 
 export type ModelDetail = {
   __typename?: 'ModelDetail';
+  activeContextTokens?: Maybe<Scalars['Int']['output']>;
   canonicalName: Scalars['String']['output'];
   configSchema?: Maybe<Scalars['JSON']['output']>;
   hostUrl?: Maybe<Scalars['String']['output']>;
+  maxContextTokens?: Maybe<Scalars['Int']['output']>;
+  maxInputTokens?: Maybe<Scalars['Int']['output']>;
+  maxOutputTokens?: Maybe<Scalars['Int']['output']>;
   modelIdentifier: Scalars['String']['output'];
   name: Scalars['String']['output'];
   provider: Scalars['String']['output'];
@@ -2136,7 +2140,7 @@ export type GetAvailableLlmProvidersWithModelsQueryVariables = Exact<{
 }>;
 
 
-export type GetAvailableLlmProvidersWithModelsQuery = { __typename?: 'Query', availableLlmProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: string, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, provider: string, runtime: string, hostUrl?: string | null, configSchema?: any | null }> }>, availableAudioProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: string, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, provider: string, runtime: string, hostUrl?: string | null }> }>, availableImageProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: string, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, provider: string, runtime: string, hostUrl?: string | null }> }> };
+export type GetAvailableLlmProvidersWithModelsQuery = { __typename?: 'Query', availableLlmProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: string, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, provider: string, runtime: string, hostUrl?: string | null, configSchema?: any | null, maxContextTokens?: number | null, activeContextTokens?: number | null, maxInputTokens?: number | null, maxOutputTokens?: number | null }> }>, availableAudioProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: string, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, provider: string, runtime: string, hostUrl?: string | null }> }>, availableImageProvidersWithModels: Array<{ __typename: 'ProviderWithModels', provider: string, models: Array<{ __typename: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, provider: string, runtime: string, hostUrl?: string | null }> }> };
 
 export type GetGeminiSetupConfigQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -4417,6 +4421,10 @@ export const GetAvailableLlmProvidersWithModelsDocument = gql`
       runtime
       hostUrl
       configSchema
+      maxContextTokens
+      activeContextTokens
+      maxInputTokens
+      maxOutputTokens
     }
   }
   availableAudioProvidersWithModels(runtimeKind: $runtimeKind) {

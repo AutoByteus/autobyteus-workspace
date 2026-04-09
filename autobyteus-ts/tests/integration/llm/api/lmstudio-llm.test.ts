@@ -35,10 +35,15 @@ const resolveLmstudioHost = () =>
 type LmstudioNativeModel = {
   type?: string;
   key?: string;
+  max_context_length?: number | null;
   capabilities?: {
     reasoning?: unknown;
   };
-  loaded_instances?: Array<unknown>;
+  loaded_instances?: Array<{
+    config?: {
+      context_length?: number | null;
+    } | null;
+  }>;
 };
 
 const REASONING_MODEL_ENV_VAR = 'LMSTUDIO_REASONING_MODEL_ID';
@@ -51,6 +56,21 @@ const isReasoningCapable = (model: LmstudioNativeModel): boolean => {
 
 const isLoaded = (model: LmstudioNativeModel): boolean =>
   Array.isArray(model.loaded_instances) && model.loaded_instances.length > 0;
+
+const isPositiveInteger = (value: unknown): value is number =>
+  typeof value === 'number' && Number.isFinite(value) && value > 0;
+
+const resolveLoadedContext = (model: LmstudioNativeModel): number | null => {
+  const contexts = (model.loaded_instances ?? [])
+    .map((instance) => instance?.config?.context_length ?? null)
+    .filter(isPositiveInteger);
+
+  if (!contexts.length) {
+    return null;
+  }
+
+  return contexts.every((value) => value === contexts[0]) ? contexts[0]! : null;
+};
 
 const isVisionModelId = (modelId: string): boolean => modelId.toLowerCase().includes('vl');
 
@@ -165,12 +185,71 @@ const getReasoningTextLLM = async () => {
   return createLmstudioLLM(selectedModel.key!);
 };
 
+const getMetadataAwareTextModelSelection = async () => {
+  const nativeModels = await fetchNativeLmstudioModels();
+  const discoveredModels = await LLMFactory.listModelsByRuntime(LLMRuntime.LMSTUDIO);
+  if (!discoveredModels.length) {
+    return null;
+  }
+
+  const loadedTextNativeModels = nativeModels.filter(
+    (model) => model.type === 'llm' && typeof model.key === 'string' && isLoaded(model) && !isVisionModelId(model.key)
+  );
+
+  if (!loadedTextNativeModels.length) {
+    return null;
+  }
+
+  const preferredModelIds = [process.env.LMSTUDIO_MODEL_ID, process.env.LMSTUDIO_TARGET_TEXT_MODEL, DEFAULT_REASONING_MODEL_IDS[1]]
+    .filter((value): value is string => Boolean(value));
+
+  const selectedNativeModel =
+    loadedTextNativeModels.find((model) =>
+      preferredModelIds.some((candidate) => matchesPreferredModel(model.key!, candidate))
+    ) ?? loadedTextNativeModels[0];
+
+  const discoveredModel = discoveredModels.find((model) => model.display_name === selectedNativeModel.key);
+  if (!discoveredModel) {
+    return null;
+  }
+
+  return { nativeModel: selectedNativeModel, discoveredModel };
+};
+
 const shouldSkipOnConnectionError = (error: unknown): boolean => {
   const message = String((error as any)?.message ?? error);
   return /ECONNREFUSED|connect|ENOTFOUND|ECONNRESET/i.test(message);
 };
 
 describe('LMStudioLLM Integration', () => {
+  it('uses metadata-aware LM Studio discovery to create a runnable text model with truthful context metadata', async () => {
+    let llm: LMStudioLLM | null = null;
+    try {
+      const selection = await getMetadataAwareTextModelSelection();
+      if (!selection) return;
+
+      const { nativeModel, discoveredModel } = selection;
+      expect(discoveredModel.max_context_tokens).toBe(
+        isPositiveInteger(nativeModel.max_context_length) ? nativeModel.max_context_length : null
+      );
+      expect(discoveredModel.active_context_tokens).toBe(resolveLoadedContext(nativeModel));
+
+      llm = (await LLMFactory.createLLM(discoveredModel.model_identifier)) as LMStudioLLM;
+      expect(llm.model.maxContextTokens).toBe(discoveredModel.max_context_tokens);
+      expect(llm.model.activeContextTokens).toBe(discoveredModel.active_context_tokens);
+
+      const userMessage = new LLMUserMessage({ content: "Reply with exactly the word 'ready'." });
+      const response = await llm.sendUserMessage(userMessage);
+      expect(response).toBeInstanceOf(CompleteResponse);
+      expect(response.content.toLowerCase()).toContain('ready');
+    } catch (error) {
+      if (shouldSkipOnConnectionError(error)) return;
+      throw error;
+    } finally {
+      await llm?.cleanup();
+    }
+  }, 120000);
+
   it('should return a completion for a text model', async () => {
     const llm = await getTextLLM();
     if (!llm) return;

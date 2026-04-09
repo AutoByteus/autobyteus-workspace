@@ -10,13 +10,13 @@ let cachedModelId: string | null = null;
 export const hasLmstudioConfig = (): boolean =>
   Boolean(process.env.LMSTUDIO_HOSTS || process.env[MODEL_ENV_VAR]);
 
-const resolveModelId = async (): Promise<string | null> => {
-  if (cachedModelId) {
+const resolveModelId = async (options?: { forceFactoryDiscovery?: boolean }): Promise<string | null> => {
+  if (!options?.forceFactoryDiscovery && cachedModelId) {
     return cachedModelId;
   }
 
   const manualModelId = process.env[MODEL_ENV_VAR];
-  if (manualModelId) {
+  if (!options?.forceFactoryDiscovery && manualModelId) {
     cachedModelId = manualModelId;
     return manualModelId;
   }
@@ -29,6 +29,8 @@ const resolveModelId = async (): Promise<string | null> => {
 
   const targetTextModel = process.env.LMSTUDIO_TARGET_TEXT_MODEL ?? DEFAULT_TEXT_MODEL;
   const selected =
+    models.find((model) => model.active_context_tokens !== null && model.model_identifier.includes(targetTextModel)) ??
+    models.find((model) => model.active_context_tokens !== null && !model.model_identifier.toLowerCase().includes('vl')) ??
     models.find((model) => model.model_identifier.includes(targetTextModel)) ??
     models.find((model) => !model.model_identifier.toLowerCase().includes('vl')) ??
     models[0];
@@ -40,8 +42,9 @@ const resolveModelId = async (): Promise<string | null> => {
 export const createLmstudioLLM = async (options?: {
   requireToolChoice?: boolean;
   temperature?: number;
+  forceFactoryDiscovery?: boolean;
 }): Promise<BaseLLM | null> => {
-  const modelId = await resolveModelId();
+  const modelId = await resolveModelId({ forceFactoryDiscovery: options?.forceFactoryDiscovery });
   if (!modelId) {
     return null;
   }

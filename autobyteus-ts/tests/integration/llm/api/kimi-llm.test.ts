@@ -14,9 +14,9 @@ const TURN_ID = 'turn_test';
 
 const buildModel = () =>
   new LLMModel({
-    name: 'kimi-latest',
-    value: 'kimi-latest',
-    canonicalName: 'kimi-latest',
+    name: 'kimi-k2.5',
+    value: 'kimi-k2.5',
+    canonicalName: 'kimi-k2.5',
     provider: LLMProvider.KIMI
   });
 

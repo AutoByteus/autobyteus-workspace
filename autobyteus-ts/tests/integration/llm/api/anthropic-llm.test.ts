@@ -11,9 +11,9 @@ const runIntegration = apiKey ? describe : describe.skip;
 runIntegration('AnthropicLLM Integration', () => {
   const buildModel = () =>
     new LLMModel({
-      name: 'claude-4.5-sonnet',
-      value: 'claude-sonnet-4-5-20250929',
-      canonicalName: 'claude-4.5-sonnet',
+      name: 'claude-sonnet-4.6',
+      value: 'claude-sonnet-4-6',
+      canonicalName: 'claude-sonnet-4.6',
       provider: LLMProvider.ANTHROPIC
     });
 
@@ -27,7 +27,7 @@ runIntegration('AnthropicLLM Integration', () => {
       expect(response.content.length).toBeGreaterThan(0);
     } catch (error: any) {
       const message = String(error?.message || error);
-      if (message.includes('not_found_error') || message.includes('claude-sonnet-4-5-20250929')) {
+      if (message.includes('not_found_error') || message.includes('claude-sonnet-4-6')) {
         // Skip if model is not available for this API key.
         return;
       }
@@ -56,7 +56,7 @@ runIntegration('AnthropicLLM Integration', () => {
       expect(completeResponse.length).toBeGreaterThan(0);
     } catch (error: any) {
       const message = String(error?.message || error);
-      if (message.includes('not_found_error') || message.includes('claude-sonnet-4-5-20250929')) {
+      if (message.includes('not_found_error') || message.includes('claude-sonnet-4-6')) {
         return;
       }
       throw error;
@@ -77,7 +77,7 @@ runIntegration('AnthropicLLM Integration', () => {
       expect(response.content.length).toBeGreaterThan(0);
     } catch (error: any) {
       const message = String(error?.message || error);
-      if (message.includes('not_found_error') || message.includes('claude-sonnet-4-5-20250929')) {
+      if (message.includes('not_found_error') || message.includes('claude-sonnet-4-6')) {
         return;
       }
       throw error;
@@ -106,7 +106,7 @@ runIntegration('AnthropicLLM Integration', () => {
       expect(completeResponse.length).toBeGreaterThan(0);
     } catch (error: any) {
       const message = String(error?.message || error);
-      if (message.includes('not_found_error') || message.includes('claude-sonnet-4-5-20250929')) {
+      if (message.includes('not_found_error') || message.includes('claude-sonnet-4-6')) {
         return;
       }
       throw error;
