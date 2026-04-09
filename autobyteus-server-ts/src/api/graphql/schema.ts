@@ -22,7 +22,7 @@ import { NodeSyncControlResolver } from "./types/node-sync-control.js";
 import { RunHistoryResolver } from "./types/run-history.js";
 import { TeamRunHistoryResolver } from "./types/team-run-history.js";
 import { RuntimeAvailabilityResolver } from "./types/runtime-availability.js";
-import { AgentPackageRootResolver } from "./types/agent-package-roots.js";
+import { AgentPackageResolver } from "./types/agent-packages.js";
 import { ManagedMessagingGatewayResolver } from "./types/managed-messaging-gateway.js";
 import { DateTimeScalar } from "./scalars/date-time.js";
 
@@ -52,7 +52,7 @@ export async function buildGraphqlSchema() {
       RunHistoryResolver,
       TeamRunHistoryResolver,
       RuntimeAvailabilityResolver,
-      AgentPackageRootResolver,
+      AgentPackageResolver,
       ManagedMessagingGatewayResolver,
     ],
     scalarsMap: [{ type: Date, scalar: DateTimeScalar }],
