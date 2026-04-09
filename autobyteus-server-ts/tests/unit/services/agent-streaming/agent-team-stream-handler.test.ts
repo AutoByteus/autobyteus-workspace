@@ -245,4 +245,46 @@ describe("AgentTeamStreamHandler", () => {
       },
     });
   });
+
+  it("coalesces metadata refresh work across a burst of streamed team events", async () => {
+    vi.useFakeTimers();
+    try {
+      const teamRun = createTeamRun();
+      const teamRunService = createTeamRunService(teamRun);
+      const handler = new AgentTeamStreamHandler(
+        new AgentSessionManager(),
+        teamRunService as any,
+      );
+      const connection = {
+        send: vi.fn(),
+        close: vi.fn(),
+      };
+
+      await handler.connect(connection, "team-1");
+
+      const eventListener = teamRun.subscribeToEvents.mock.calls[0]?.[0];
+      expect(typeof eventListener).toBe("function");
+
+      const teamEvent = {
+        eventSourceType: TeamRunEventSourceType.TEAM,
+        teamRunId: "team-1",
+        data: {
+          new_status: "ACTIVE",
+        },
+      };
+
+      eventListener(teamEvent);
+      eventListener(teamEvent);
+      eventListener(teamEvent);
+
+      expect(teamRunService.refreshRunMetadata).not.toHaveBeenCalled();
+
+      await vi.advanceTimersByTimeAsync(2000);
+
+      expect(teamRunService.refreshRunMetadata).toHaveBeenCalledTimes(1);
+      expect(teamRunService.refreshRunMetadata).toHaveBeenCalledWith(teamRun);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
 });
