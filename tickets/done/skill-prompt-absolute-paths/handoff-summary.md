@@ -80,16 +80,21 @@
 - Finalization target branch:
   - `personal`
 - Commit status:
-  - `Not started`
+  - `Completed`
+  - Ticket branch commit: `c2a1f26` (`fix(skills): resolve prompt skill links to absolute paths`)
 - Push status:
-  - `Not started`
+  - `Completed`
+  - Ticket branch `origin/codex/skill-prompt-absolute-paths` and target branch `origin/personal` were both pushed on 2026-04-08.
 - Merge status:
-  - `Not started`
+  - `Completed`
+  - Target branch merge commit: `a0152fd` (`Merge branch 'codex/skill-prompt-absolute-paths' into personal`)
 - Release/publication/deployment status:
   - `Not required (explicit user instruction)`
 - Worktree cleanup status:
-  - `Not started`
+  - `Completed`
+  - Removed `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-prompt-absolute-paths` and ran `git worktree prune`.
 - Local branch cleanup status:
-  - `Not started`
+  - `Completed`
+  - Deleted local branch `codex/skill-prompt-absolute-paths` after merge.
 - Blockers / notes:
-  - Repository finalization and required post-finalization cleanup are the remaining Stage 10 gates. No release step should run for this ticket.
+  - Repository finalization and required cleanup are complete. The remote ticket branch was intentionally left in place because Stage 10 cleanup only requires local branch removal unless the user explicitly asks for remote deletion.

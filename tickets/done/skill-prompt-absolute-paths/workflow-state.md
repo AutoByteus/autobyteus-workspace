@@ -8,11 +8,11 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 
 - Ticket: `skill-prompt-absolute-paths`
 - Current Stage: `10`
-- Next Stage: `Repository Finalization + Cleanup`
+- Next Stage: `Completed`
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `Local Fix (Resolved)`
-- Last Transition ID: `T-016`
+- Last Transition ID: `T-017`
 - Last Updated: `2026-04-08`
 
 ## Stage 0 Bootstrap Record
@@ -47,7 +47,7 @@ Note:
 | 7 API/E2E + Executable Validation | Pass | Focused executable validation rerun passed after the scoped guidance-copy local fix | `tickets/done/skill-prompt-absolute-paths/api-e2e-testing.md` |
 | 8 Code Review | Pass | Re-review confirmed the local-fix cycle stayed scoped, structurally clean, and fully covered | `tickets/done/skill-prompt-absolute-paths/code-review.md` |
 | 9 Docs Sync | Pass | `docs-sync.md` refreshed and confirmed the durable skill-design documentation still matches the final implementation after the guidance-copy local fix | `tickets/done/skill-prompt-absolute-paths/docs-sync.md`, `autobyteus-ts/docs/skills_design.md` |
-| 10 Handoff / Ticket State | In Progress | Explicit user verification has been received, the ticket is archived under `tickets/done/skill-prompt-absolute-paths/`, release/publication is explicitly not required for this ticket, and repository finalization plus required cleanup are still in progress | `tickets/done/skill-prompt-absolute-paths/handoff-summary.md`, `tickets/done/skill-prompt-absolute-paths/workflow-state.md` |
+| 10 Handoff / Ticket State | Pass | Explicit user verification was received, the archived ticket was finalized into `origin/personal`, release/publication was explicitly not required for this ticket, and the dedicated worktree/local branch cleanup completed | `tickets/done/skill-prompt-absolute-paths/handoff-summary.md`, `tickets/done/skill-prompt-absolute-paths/workflow-state.md` |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -146,6 +146,7 @@ Note:
 | T-014 | 2026-04-08 | 8 | 9 | Re-review passed with no findings after the guidance-copy local fix. | Local Fix | Locked | `tickets/done/skill-prompt-absolute-paths/code-review.md`, `tickets/done/skill-prompt-absolute-paths/docs-sync.md`, `tickets/done/skill-prompt-absolute-paths/workflow-state.md` |
 | T-015 | 2026-04-08 | 9 | 10 | Docs sync and handoff were refreshed for the resolved local-fix cycle, and the ticket returned to final user-verification hold. | Local Fix | Locked | `tickets/done/skill-prompt-absolute-paths/docs-sync.md`, `tickets/done/skill-prompt-absolute-paths/handoff-summary.md`, `tickets/done/skill-prompt-absolute-paths/workflow-state.md` |
 | T-016 | 2026-04-08 | 10 | 10 | The user explicitly verified completion, confirmed no release/version bump should run, and Stage 10 advanced from verification hold into repository finalization and required cleanup. | N/A | Locked | `tickets/done/skill-prompt-absolute-paths/handoff-summary.md`, `tickets/done/skill-prompt-absolute-paths/workflow-state.md` |
+| T-017 | 2026-04-08 | 10 | 10 | Repository finalization completed: the ticket branch was committed and pushed, merged into `personal`, `origin/personal` was pushed, no release step ran by explicit user instruction, and required worktree/local-branch cleanup completed. | N/A | Locked | `tickets/done/skill-prompt-absolute-paths/handoff-summary.md`, `tickets/done/skill-prompt-absolute-paths/workflow-state.md` |
 
 ## Audible Notification Log (Optional Tracking)
 
