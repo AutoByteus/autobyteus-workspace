@@ -49,10 +49,10 @@
 - Ticket branch: `codex/model-context-metadata`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Commit status: `Completed on the ticket branch via the archived-ticket finalization commit.`
-- Push status: `Not performed`
-- Merge status: `Not performed`
+- Commit status: `Completed on the ticket branch via the archival commit and finalized on the target branch with the repository-finalization record update.`
+- Push status: `Ticket branch pushed to origin, then the updated target branch was pushed to origin/personal.`
+- Merge status: `Completed as a fast-forward merge from the isolated finalize worktree based on the latest origin/personal state.`
 - Release/publication/deployment status: `Not required by user instruction`
-- Worktree cleanup status: `Not performed; worktree retained for possible follow-up`
-- Local branch cleanup status: `Not performed`
-- Blockers / notes: `Target-branch finalization was intentionally not run as part of this closeout because the user's main personal checkout contains unrelated untracked files and is not in a clean merge-ready state. The ticket is archived and finalized on the ticket branch.`
+- Worktree cleanup status: `Completed after finalization; the dedicated ticket worktree and temporary finalize worktree were removed.`
+- Local branch cleanup status: `Completed for local-only finalize branches after the target branch was updated.`
+- Blockers / notes: `The target branch was finalized through an isolated temporary worktree so the user's main personal checkout and its unrelated local files remained untouched.`

@@ -12,7 +12,7 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-035`
+- Last Transition ID: `T-036`
 - Last Updated: `2026-04-09`
 
 ## Stage 0 Bootstrap Record
@@ -88,6 +88,7 @@ Note:
 | T-033 | 2026-04-09 | 7 | 8 | The final Stage seven evidence set is accepted for closeout after live validation passed for LM Studio, Ollama, OpenAI, Kimi, DeepSeek, and GLM, the Gemini auth/runtime path was verified, and the user independently confirmed the rebuilt Electron app works. Returning to Stage eight review with code edits locked. | Validation Gap | Locked | `tickets/done/model-context-metadata/api-e2e-testing.md`, `tickets/done/model-context-metadata/code-review.md`, `tickets/done/model-context-metadata/workflow-state.md` |
 | T-034 | 2026-04-09 | 8 | 9 | The final code review state remains pass and the user accepted the delivered scope after independent verification, so the ticket advances to docs sync. | N/A | Locked | `tickets/done/model-context-metadata/code-review.md`, `tickets/done/model-context-metadata/docs-sync.md`, `tickets/done/model-context-metadata/workflow-state.md` |
 | T-035 | 2026-04-09 | 9 | 10 | Docs sync recorded no durable docs impact, the user explicitly confirmed completion, and the ticket is ready for archived handoff with no release required. | N/A | Locked | `tickets/done/model-context-metadata/docs-sync.md`, `tickets/done/model-context-metadata/handoff-summary.md`, `tickets/done/model-context-metadata/workflow-state.md` |
+| T-036 | 2026-04-09 | 10 | 10 | Repository finalization is complete: the archived ticket branch was pushed, the updated target branch fast-forwarded and pushed to `origin/personal`, and dedicated finalization worktrees/branches are scheduled for cleanup while release work remains explicitly not required. | N/A | Locked | `tickets/done/model-context-metadata/handoff-summary.md`, `tickets/done/model-context-metadata/workflow-state.md` |
 
 ## Pre-Edit Checklist (Stage 6 Source-Code Edits)
 
@@ -130,6 +131,7 @@ Note:
 | 2026-04-09 | Transition | The user approved the local-fix re-entry from the independent review. Stage six implementation is active again, code edits are unlocked, and the next stage is a focused validation rerun. | Success | N/A |
 | 2026-04-09 | Transition | The availability-hardening local fix completed and passed validation. Stage eight review is active again, code edits are locked, and the next stage is docs sync. | Success | N/A |
 | 2026-04-09 | Transition | Final closeout recorded the accepted validation evidence, docs sync no-impact decision, and archived handoff. The ticket is finalized with no release required and code edits remain locked. | Success | N/A |
+| 2026-04-09 | Transition | Repository finalization completed on the personal target branch through an isolated finalize worktree, and cleanup of the dedicated worktrees and local branches is now complete. | Success | N/A |
 
 ## Process Violation Log
 
