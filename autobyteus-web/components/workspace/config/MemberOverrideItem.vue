@@ -14,13 +14,13 @@
 
     <!-- LLM Model Override -->
     <div class="mb-3">
-      <label class="block text-xs text-gray-500 mb-1">LLM Model Override</label>
+      <label class="block text-xs text-gray-500 mb-1">{{ $t('workspace.components.workspace.config.MemberOverrideItem.llm_model_override') }}</label>
       <SearchableGroupedSelect
         :model-value="override?.llmModelIdentifier || ''"
         @update:modelValue="handleModelChange"
         :options="options"
         :disabled="disabled"
-        placeholder="Use global model (default)"
+        :placeholder="$t('workspace.components.workspace.config.MemberOverrideItem.use_global_model_default')"
         search-placeholder="Search models..."
         class="w-full"
       />

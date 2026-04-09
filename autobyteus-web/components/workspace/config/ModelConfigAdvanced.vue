@@ -16,7 +16,7 @@
           class="block w-full rounded-md border border-gray-300 py-2 pl-3 pr-8 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
           @change="handleSelectChange(key, ($event.target as HTMLSelectElement).value)"
         >
-          <option v-if="paramSchema.default === undefined" :value="DEFAULT_OPTION">Default</option>
+          <option v-if="paramSchema.default === undefined" :value="DEFAULT_OPTION">{{ $t('workspace.components.workspace.config.ModelConfigAdvanced.default') }}</option>
           <option v-for="option in paramSchema.enum" :key="String(option)" :value="option">
             {{ option }}
           </option>

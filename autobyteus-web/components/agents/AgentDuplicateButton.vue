@@ -7,12 +7,13 @@
   >
     <span v-if="isDuplicating" class="block i-heroicons-arrow-path-20-solid w-5 h-5 mr-2 animate-spin"></span>
     <span v-else class="block i-heroicons-squares-plus-20-solid w-5 h-5 mr-2"></span>
-    {{ isDuplicating ? 'Duplicating...' : 'Duplicate' }}
+    {{ isDuplicating ? $t('agents.components.agents.AgentDuplicateButton.duplicating') : $t('agents.components.agents.AgentDuplicateButton.duplicate') }}
   </button>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useLocalization } from '~/composables/useLocalization';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 
 const props = defineProps<{
@@ -25,6 +26,7 @@ const emit = defineEmits<{
 }>();
 
 const agentDefinitionStore = useAgentDefinitionStore();
+const { t: $t } = useLocalization();
 const isDuplicating = ref(false);
 
 function slugify(value: string): string {
@@ -50,8 +52,8 @@ function hasConflict(candidateName: string): boolean {
 }
 
 function buildDuplicateName(): string {
-  const base = props.defaultName.trim() || 'Agent';
-  const stem = `${base} Copy`;
+  const base = props.defaultName.trim() || $t('agents.components.agents.AgentDuplicateButton.defaultBaseName');
+  const stem = `${base} ${$t('agents.components.agents.AgentDuplicateButton.copySuffix')}`;
   if (!hasConflict(stem)) {
     return stem;
   }

@@ -9,9 +9,9 @@
         class="px-3 py-2 text-sm text-left border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 hover:border-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors duration-200 flex items-center justify-between w-full"
         :class="{ 'cursor-not-allowed opacity-50': disabled || loading }"
       >
-        <span v-if="loading" class="text-gray-500">Loading...</span>
+        <span v-if="loading" class="text-gray-500">{{ loadingLabel }}</span>
         <span v-else-if="modelValue" class="truncate">{{ selectedItemLabel }}</span>
-        <span v-else class="text-gray-500">{{ placeholder }}</span>
+        <span v-else class="text-gray-500">{{ effectivePlaceholder }}</span>
         
         <svg class="w-4 h-4 ml-2 text-gray-500 flex-shrink-0 transform transition-transform" 
             :class="{ 'rotate-180': isOpen }"
@@ -35,16 +35,14 @@
             ref="searchInputRef"
             v-model="searchTerm"
             type="text"
-            :placeholder="searchPlaceholder"
+            :placeholder="effectiveSearchPlaceholder"
             class="w-full px-2 py-1.5 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />
         </div>
 
         <!-- Options List -->
         <div class="flex-grow overflow-y-auto">
-          <div v-if="filteredOptions.length === 0" class="p-3 text-sm text-center text-gray-500">
-            No options found.
-          </div>
+          <div v-if="filteredOptions.length === 0" class="p-3 text-sm text-center text-gray-500">{{ $t('agentTeams.components.agentTeams.SearchableGroupedSelect.no_options_found') }}</div>
           <div v-for="group in filteredOptions" :key="group.label" class="py-1">
             <div class="px-3 py-1.5 text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
               {{ group.label }}
@@ -72,6 +70,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted, nextTick, reactive } from 'vue';
+import { useLocalization } from '~/composables/useLocalization';
 
 // Define the generic structure for an item
 export interface SelectItem {
@@ -93,13 +92,12 @@ const props = withDefaults(defineProps<{
   loading?: boolean;
   disabled?: boolean;
 }>(), {
-  placeholder: 'Select an option',
-  searchPlaceholder: 'Search...',
   loading: false,
   disabled: false,
 });
 
 const emit = defineEmits(['update:modelValue']);
+const { t } = useLocalization();
 
 const isOpen = ref(false);
 const searchTerm = ref('');
@@ -115,6 +113,16 @@ const popoverStyle = reactive({
   width: 'auto',
   zIndex: 100, // High z-index to appear over modals
 });
+
+const effectivePlaceholder = computed(() => (
+  props.placeholder || t('agentTeams.components.agentTeams.SearchableGroupedSelect.defaultPlaceholder')
+));
+
+const effectiveSearchPlaceholder = computed(() => (
+  props.searchPlaceholder || t('agentTeams.components.agentTeams.SearchableGroupedSelect.defaultSearchPlaceholder')
+));
+
+const loadingLabel = computed(() => t('agentTeams.components.agentTeams.SearchableGroupedSelect.loading'));
 
 const updatePopoverPosition = () => {
   if (!isOpen.value || !wrapperRef.value) return;

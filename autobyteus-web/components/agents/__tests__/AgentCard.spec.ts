@@ -2,6 +2,12 @@ import { describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
 import AgentCard from '../AgentCard.vue'
 
+const mockTranslations: Record<string, string> = {
+  'agents.components.agents.AgentCard.teamLabel': 'Team: {{team}}',
+  'agents.components.agents.AgentCard.sync': 'Sync',
+  'agents.components.agents.AgentCard.run': 'Run',
+}
+
 const buildAgentDefinition = (overrides: Record<string, unknown> = {}) => ({
   id: 'agent-1',
   name: 'Architect Designer',
@@ -31,6 +37,16 @@ describe('AgentCard', () => {
           ownerTeamName: 'Software Engineering Team',
         }),
       },
+      global: {
+        mocks: {
+          $t: (key: string, params?: Record<string, string>) => {
+            if (key === 'agents.components.agents.AgentCard.teamLabel') {
+              return `Team: ${params?.team ?? ''}`
+            }
+            return mockTranslations[key] ?? key
+          },
+        },
+      },
     })
 
     expect(wrapper.text()).toContain('Team: Software Engineering Team')
@@ -42,6 +58,11 @@ describe('AgentCard', () => {
     const wrapper = mount(AgentCard, {
       props: {
         agentDef: buildAgentDefinition(),
+      },
+      global: {
+        mocks: {
+          $t: (key: string) => mockTranslations[key] ?? key,
+        },
       },
     })
 

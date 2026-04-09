@@ -310,6 +310,10 @@ function installIpcHandlers(): void {
     return process.platform;
   });
 
+  ipcMain.handle('get-app-locale', () => {
+    return app.getLocale();
+  });
+
   ipcMain.handle('reset-server-data', async () => {
     try {
       await serverManager.stopServer();

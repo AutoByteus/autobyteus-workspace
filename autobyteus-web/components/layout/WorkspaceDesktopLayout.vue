@@ -8,7 +8,7 @@
         <TeamWorkspaceView v-else-if="isTeamSelected" />
         <RunConfigPanel v-else-if="hasPendingRunConfig" />
         <div v-else class="flex items-center justify-center h-full text-gray-500">
-          <p>Select or run an agent/team to begin.</p>
+          <p>{{ $t('shell.components.layout.WorkspaceDesktopLayout.select_or_run_an_agent_team') }}</p>
         </div>
       </div>
     </div>

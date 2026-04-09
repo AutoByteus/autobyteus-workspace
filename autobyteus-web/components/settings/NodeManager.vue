@@ -1,16 +1,16 @@
 <template>
   <div class="h-full flex flex-col overflow-hidden">
     <div class="flex items-center justify-between px-8 pt-8 pb-4 flex-shrink-0">
-      <h2 class="text-xl font-semibold text-gray-900">Node Manager</h2>
+      <h2 class="text-xl font-semibold text-gray-900">{{ $t('settings.components.settings.NodeManager.node_manager') }}</h2>
     </div>
 
     <div class="flex-1 overflow-auto p-8 space-y-6">
       <section class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <h3 class="text-sm font-semibold text-blue-800">Current Window Node</h3>
+        <h3 class="text-sm font-semibold text-blue-800">{{ $t('settings.components.settings.NodeManager.current_window_node') }}</h3>
         <p class="mt-2 text-sm text-blue-900">
-          {{ currentNode?.name || 'Unknown Node' }}
+          {{ currentNode?.name || $t('settings.components.settings.NodeManager.currentNodeUnknown') }}
           <span class="ml-2 text-xs uppercase tracking-wide px-2 py-0.5 rounded bg-blue-100 text-blue-700">
-            {{ currentNode?.nodeType || 'unknown' }}
+            {{ currentNodeTypeLabel }}
           </span>
         </p>
         <p v-if="currentNode?.baseUrl" class="mt-1 text-xs text-blue-700 font-mono">
@@ -19,23 +19,21 @@
       </section>
 
       <section class="border border-gray-200 rounded-lg p-4">
-        <h3 class="text-sm font-semibold text-gray-900">Add Remote Node</h3>
-        <p class="text-xs text-gray-500 mt-1">
-          Add a node and optionally bootstrap sync from this window's source node.
-        </p>
+        <h3 class="text-sm font-semibold text-gray-900">{{ $t('settings.components.settings.NodeManager.add_remote_node') }}</h3>
+        <p class="text-xs text-gray-500 mt-1">{{ $t('settings.components.settings.NodeManager.add_a_node_and_optionally_bootstrap') }}</p>
 
         <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
           <input
             v-model="addForm.name"
             type="text"
-            placeholder="Node Name"
+            :placeholder="$t('settings.components.settings.NodeManager.node_name')"
             class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
             data-testid="node-name-input"
           />
           <input
             v-model="addForm.baseUrl"
             type="text"
-            placeholder="http://host:port"
+            :placeholder="$t('settings.components.settings.NodeManager.http_host_port')"
             class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm font-mono"
             data-testid="node-url-input"
           />
@@ -48,7 +46,7 @@
             @click="onAddRemoteNode"
             data-testid="add-node-button"
           >
-            {{ isAdding ? 'Adding...' : 'Add Node' }}
+            {{ isAdding ? $t('settings.components.settings.NodeManager.adding') : $t('settings.components.settings.NodeManager.addNode') }}
           </button>
         </div>
 
@@ -58,13 +56,9 @@
             type="checkbox"
             class="rounded border-gray-300"
             data-testid="bootstrap-sync-on-add"
-          />
-          Bootstrap sync from current window node after add
-        </label>
+          />{{ $t('settings.components.settings.NodeManager.bootstrap_sync_from_current_window_node') }}</label>
 
-        <p v-if="isSyncingBootstrap" class="mt-2 text-xs text-blue-700">
-          Running bootstrap sync...
-        </p>
+        <p v-if="isSyncingBootstrap" class="mt-2 text-xs text-blue-700">{{ $t('settings.components.settings.NodeManager.running_bootstrap_sync') }}</p>
         <p v-if="addError" class="mt-2 text-sm text-red-600" data-testid="add-node-error">
           {{ addError }}
         </p>
@@ -77,14 +71,12 @@
       </section>
 
       <section class="border border-gray-200 rounded-lg p-4">
-        <h3 class="text-sm font-semibold text-gray-900">Run Full Sync</h3>
-        <p class="mt-1 text-xs text-gray-500">
-          Select one source node and one or more target nodes.
-        </p>
+        <h3 class="text-sm font-semibold text-gray-900">{{ $t('settings.components.settings.NodeManager.run_full_sync') }}</h3>
+        <p class="mt-1 text-xs text-gray-500">{{ $t('settings.components.settings.NodeManager.select_one_source_node_and_one') }}</p>
 
         <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
           <div>
-            <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-600">Source Node</label>
+            <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-gray-600">{{ $t('settings.components.settings.NodeManager.source_node') }}</label>
             <select
               v-model="fullSyncSourceNodeId"
               class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
@@ -98,10 +90,8 @@
         </div>
 
         <div class="mt-4">
-          <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-600">Target Nodes</p>
-          <div v-if="availableTargetNodes.length === 0" class="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700">
-            No target nodes available. Add at least one additional node.
-          </div>
+          <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-600">{{ $t('settings.components.settings.NodeManager.target_nodes') }}</p>
+          <div v-if="availableTargetNodes.length === 0" class="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700">{{ $t('settings.components.settings.NodeManager.no_target_nodes_available_add_at') }}</div>
           <div v-else class="space-y-2">
             <label
               v-for="node in availableTargetNodes"
@@ -122,7 +112,7 @@
         </div>
 
         <div class="mt-4">
-          <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-600">Scope</p>
+          <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-600">{{ $t('settings.components.settings.NodeManager.scope') }}</p>
           <div class="flex flex-wrap gap-3">
             <label
               v-for="scopeOption in scopeOptions"
@@ -135,7 +125,7 @@
                 :value="scopeOption.value"
                 class="rounded border-gray-300"
               />
-              {{ scopeOption.label }}
+              {{ $t(scopeOption.labelKey) }}
             </label>
           </div>
         </div>
@@ -147,7 +137,7 @@
             @click="onRunFullSync"
             data-testid="full-sync-run-button"
           >
-            {{ isRunningFullSync ? 'Syncing...' : 'Run Full Sync' }}
+            {{ isRunningFullSync ? $t('settings.components.settings.NodeManager.syncing') : $t('settings.components.settings.NodeManager.run_full_sync') }}
           </button>
         </div>
 
@@ -160,14 +150,14 @@
         <NodeSyncReportPanel
           v-if="fullSyncReport"
           :report="fullSyncReport"
-          title="Full Sync Report"
+          :title="$t('settings.components.settings.NodeManager.full_sync_report')"
           data-testid="full-sync-report"
         />
       </section>
 
       <section class="border border-gray-200 rounded-lg overflow-hidden">
         <div class="px-4 py-3 bg-gray-50 border-b border-gray-200">
-          <h3 class="text-sm font-semibold text-gray-900">Configured Nodes</h3>
+          <h3 class="text-sm font-semibold text-gray-900">{{ $t('settings.components.settings.NodeManager.configured_nodes') }}</h3>
         </div>
 
         <div class="divide-y divide-gray-200">
@@ -185,7 +175,7 @@
                   :data-testid="`node-name-${node.id}`"
                 />
                 <span class="text-xs uppercase tracking-wide px-2 py-0.5 rounded bg-gray-100 text-gray-700">
-                  {{ node.nodeType }}
+                  {{ nodeTypeLabel(node.nodeType) }}
                 </span>
                 <span
                   class="text-xs px-2 py-0.5 rounded"
@@ -195,7 +185,7 @@
                     'bg-gray-100 text-gray-700': !node.capabilityProbeState || node.capabilityProbeState === 'unknown',
                   }"
                 >
-                  {{ node.capabilityProbeState || 'unknown' }}
+                  {{ capabilityStateLabel(node.capabilityProbeState) }}
                 </span>
               </div>
               <p class="mt-1 text-xs text-gray-500 font-mono break-all">{{ node.baseUrl }}</p>
@@ -208,7 +198,7 @@
                 :disabled="busyNodeId === node.id"
                 :data-testid="`focus-node-${node.id}`"
               >
-                Open
+                {{ $t('settings.components.settings.NodeManager.open') }}
               </button>
               <button
                 v-if="node.nodeType === 'remote'"
@@ -217,7 +207,7 @@
                 :disabled="busyNodeId === node.id"
                 :data-testid="`rename-node-${node.id}`"
               >
-                Rename
+                {{ $t('settings.components.settings.NodeManager.rename') }}
               </button>
               <button
                 v-if="node.nodeType === 'remote'"
@@ -226,7 +216,7 @@
                 :disabled="busyNodeId === node.id"
                 :data-testid="`remove-node-${node.id}`"
               >
-                Remove
+                {{ $t('settings.components.settings.NodeManager.remove') }}
               </button>
             </div>
           </div>
@@ -239,6 +229,7 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref, watch } from 'vue';
 import NodeSyncReportPanel from '~/components/sync/NodeSyncReportPanel.vue';
+import { useLocalization } from '~/composables/useLocalization';
 import { useNodeStore } from '~/stores/nodeStore';
 import { useNodeSyncStore } from '~/stores/nodeSyncStore';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
@@ -246,13 +237,14 @@ import type { NodeSyncRunReport, SyncEntityType } from '~/types/nodeSync';
 import { probeNodeCapabilities } from '~/utils/nodeCapabilityProbe';
 import { validateServerHostConfiguration } from '~/utils/nodeHostValidation';
 
-const scopeOptions: Array<{ value: SyncEntityType; label: string }> = [
-  { value: 'agent_definition', label: 'Agents' },
-  { value: 'agent_team_definition', label: 'Agent Teams' },
-  { value: 'mcp_server_configuration', label: 'MCP Servers' },
+const scopeOptions: Array<{ value: SyncEntityType; labelKey: string }> = [
+  { value: 'agent_definition', labelKey: 'settings.components.settings.NodeManager.scope.agentDefinitions' },
+  { value: 'agent_team_definition', labelKey: 'settings.components.settings.NodeManager.scope.agentTeams' },
+  { value: 'mcp_server_configuration', labelKey: 'settings.components.settings.NodeManager.scope.mcpServers' },
 ];
 
 const defaultFullSyncScope: SyncEntityType[] = scopeOptions.map((option) => option.value);
+const { t } = useLocalization();
 
 const nodeStore = useNodeStore();
 const nodeSyncStore = useNodeSyncStore();
@@ -280,6 +272,11 @@ const fullSyncTargetNodeIds = ref<string[]>([]);
 const fullSyncScope = ref<SyncEntityType[]>([...defaultFullSyncScope]);
 
 const currentNode = computed(() => nodeStore.getNodeById(windowNodeContextStore.nodeId));
+const nodeTypeLabel = (nodeType: string | undefined) =>
+  t(`settings.components.settings.NodeManager.nodeType.${nodeType ?? 'unknown'}` as const);
+const capabilityStateLabel = (state: string | undefined) =>
+  t(`settings.components.settings.NodeManager.capability.${state ?? 'unknown'}` as const);
+const currentNodeTypeLabel = computed(() => nodeTypeLabel(currentNode.value?.nodeType));
 const availableTargetNodes = computed(() => {
   return nodeStore.nodes.filter((node) => node.id !== fullSyncSourceNodeId.value);
 });
@@ -355,20 +352,23 @@ async function onAddRemoteNode(): Promise<void> {
 
         const successCount = bootstrapResult.targetResults.filter((target) => target.status === 'success').length;
         if (bootstrapResult.status === 'failed') {
-          addError.value = bootstrapResult.error || 'Bootstrap sync failed.';
+          addError.value = bootstrapResult.error || t('settings.components.settings.NodeManager.bootstrapSyncFailed');
         } else {
-          addInfo.value = `Node added. Bootstrap sync ${bootstrapResult.status} (${successCount}/${bootstrapResult.targetResults.length} target(s) succeeded).`;
+          addInfo.value = t('settings.components.settings.NodeManager.bootstrapSyncStatus', {
+            status: bootstrapResult.status,
+            successCount,
+            targetCount: bootstrapResult.targetResults.length,
+          });
         }
       } finally {
         isSyncingBootstrap.value = false;
       }
     } else if (probeResult.state !== 'ready') {
-      addInfo.value =
-        'Node added, but capability probe is degraded. Some optional features may stay disabled until the node is reachable.';
+      addInfo.value = t('settings.components.settings.NodeManager.degradedInfo');
     } else if (addWarnings.value.length > 0) {
-      addInfo.value = 'Node added with host warnings. Review generated URL behavior on this node.';
+      addInfo.value = t('settings.components.settings.NodeManager.warningInfo');
     } else {
-      addInfo.value = 'Node added successfully.';
+      addInfo.value = t('settings.components.settings.NodeManager.addedSuccess');
     }
 
     addForm.name = '';
@@ -388,22 +388,22 @@ async function onRunFullSync(): Promise<void> {
   fullSyncReport.value = null;
 
   if (!fullSyncSourceNodeId.value) {
-    fullSyncError.value = 'Source node is required.';
+    fullSyncError.value = t('settings.components.settings.NodeManager.sourceNodeRequired');
     return;
   }
 
   if (fullSyncTargetNodeIds.value.length === 0) {
-    fullSyncError.value = 'At least one target node is required.';
+    fullSyncError.value = t('settings.components.settings.NodeManager.targetNodeRequired');
     return;
   }
 
   if (fullSyncTargetNodeIds.value.includes(fullSyncSourceNodeId.value)) {
-    fullSyncError.value = 'Source node cannot also be selected as a target.';
+    fullSyncError.value = t('settings.components.settings.NodeManager.sourceCannotAlsoBeTarget');
     return;
   }
 
   if (fullSyncScope.value.length === 0) {
-    fullSyncError.value = 'Select at least one sync scope.';
+    fullSyncError.value = t('settings.components.settings.NodeManager.selectSyncScope');
     return;
   }
 
@@ -418,11 +418,15 @@ async function onRunFullSync(): Promise<void> {
     fullSyncReport.value = result.report ?? null;
     const successCount = result.targetResults.filter((target) => target.status === 'success').length;
     if (result.status === 'failed') {
-      fullSyncError.value = result.error || 'Full sync failed.';
+      fullSyncError.value = result.error || t('settings.components.settings.NodeManager.fullSyncFailed');
       return;
     }
 
-    fullSyncInfo.value = `Full sync ${result.status}. ${successCount}/${result.targetResults.length} target(s) succeeded.`;
+    fullSyncInfo.value = t('settings.components.settings.NodeManager.fullSyncStatus', {
+      status: result.status,
+      successCount,
+      targetCount: result.targetResults.length,
+    });
   } catch (error) {
     fullSyncError.value = error instanceof Error ? error.message : String(error);
   } finally {
@@ -472,7 +476,7 @@ async function onRemoveRemoteNode(nodeId: string): Promise<void> {
     return;
   }
 
-  const confirmed = window.confirm(`Remove node "${node.name}"?`);
+  const confirmed = window.confirm(t('settings.components.settings.NodeManager.removeConfirm', { name: node.name }));
   if (!confirmed) {
     return;
   }

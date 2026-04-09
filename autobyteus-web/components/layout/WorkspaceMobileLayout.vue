@@ -37,9 +37,7 @@
                 :class="runningViewMode === 'list' 
                     ? 'bg-white text-blue-600 border-gray-300 shadow-sm' 
                     : 'bg-transparent text-gray-500 border-transparent hover:bg-gray-200'"
-            >
-                Running List
-            </button>
+            >{{ $t('shell.components.layout.WorkspaceMobileLayout.running_list') }}</button>
             <button 
                 @click="runningViewMode = 'config'"
                 class="flex-1 py-1.5 px-3 rounded-md text-sm font-medium transition-colors border"
@@ -47,7 +45,7 @@
                     ? 'bg-white text-blue-600 border-gray-300 shadow-sm' 
                     : 'bg-transparent text-gray-500 border-transparent hover:bg-gray-200'"
             >
-                Configuration
+                {{ $t('shell.mobile.configuration') }}
             </button>
           </div>
 
@@ -63,7 +61,7 @@
         <AgentWorkspaceView v-if="selectionStore.selectedType === 'agent'" />
         <TeamWorkspaceView v-else-if="selectionStore.selectedType === 'team'" />
         <div v-else class="flex items-center justify-center h-full text-gray-500">
-          <p>Select or run an agent/team to begin.</p>
+          <p>{{ $t('shell.components.layout.WorkspaceMobileLayout.select_or_run_an_agent_team') }}</p>
         </div>
       </div>
 
@@ -80,18 +78,14 @@
         v-if="showFileContent && activeMobilePanel !== 'content'"
         @click="activeMobilePanel = 'content'"
         class="px-4 py-2 bg-blue-500 text-white rounded shadow-lg z-20 text-sm"
-      >
-        Open Editor
-      </button>
+      >{{ $t('shell.components.layout.WorkspaceMobileLayout.open_editor') }}</button>
 
       <!-- Agent profile button -->
       <button
         v-if="activeMobilePanel === 'main' && !selectionStore.selectedRunId"
         @click="activeMobilePanel = 'running'"
         class="px-4 py-2 bg-blue-500 text-white rounded shadow-lg z-20 text-sm"
-      >
-        Open Running
-      </button>
+      >{{ $t('shell.components.layout.WorkspaceMobileLayout.open_running') }}</button>
     </div>
   </div>
 </template>
@@ -121,6 +115,7 @@ const workspaceStore = useWorkspaceStore();
 const runConfigStore = useAgentRunConfigStore();
 const teamRunConfigStore = useTeamRunConfigStore();
 const { activeMobilePanel } = useMobilePanels();
+const { t } = useLocalization();
 
 const hasActiveWorkspace = computed(() => !!workspaceStore.activeWorkspace);
 
@@ -147,22 +142,24 @@ watch(
 );
 
 const availableTabs = computed(() => {
-  const mainTabLabel = selectionStore.selectedType === 'team' ? 'Team' : 'Agent';
+  const mainTabLabel = selectionStore.selectedType === 'team'
+    ? t('shell.mobile.team')
+    : t('shell.mobile.agent');
 
   const tabs = [
-    { id: 'running', label: 'Running' },
-    ...(hasActiveWorkspace.value ? [{ id: 'explorer', label: 'Files' }] : []),
+    { id: 'running', label: t('shell.mobile.running') },
+    ...(hasActiveWorkspace.value ? [{ id: 'explorer', label: t('shell.mobile.files') }] : []),
     { id: 'main', label: mainTabLabel },
-    { id: 'tools', label: 'Tools' }
+    { id: 'tools', label: t('shell.mobile.tools') }
   ];
-  
+
   if (props.showFileContent && hasActiveWorkspace.value) {
     const explorerIndex = tabs.findIndex(t => t.id === 'explorer');
     if (explorerIndex !== -1) {
-      tabs.splice(explorerIndex + 1, 0, { id: 'content', label: 'Content' });
+      tabs.splice(explorerIndex + 1, 0, { id: 'content', label: t('shell.mobile.content') });
     }
   }
-  
+
   return tabs;
 });
 

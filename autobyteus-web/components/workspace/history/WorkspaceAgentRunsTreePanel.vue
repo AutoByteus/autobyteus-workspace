@@ -5,7 +5,7 @@
       <button
         type="button"
         class="inline-flex h-6 w-6 items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-indigo-50 hover:text-indigo-600"
-        title="Add workspace"
+        :title="$t('workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.add_workspace')"
         @click="onCreateWorkspace"
       >
         <Icon icon="heroicons:plus-20-solid" class="h-4 w-4" />
@@ -27,7 +27,7 @@
           type="text"
           class="w-full rounded-md border border-gray-200 px-3 py-2 text-sm text-gray-900 focus:border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-200 disabled:cursor-not-allowed disabled:bg-gray-100"
           :class="workspacePathError ? 'border-red-300 focus:border-red-300 focus:ring-red-200' : ''"
-          placeholder="/Users/you/project"
+          :placeholder="$t('workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.users_you_project')"
           :disabled="creatingWorkspace"
           @keydown.enter.prevent="confirmCreateWorkspace"
           @keydown.esc.prevent="closeCreateWorkspaceInput"
@@ -58,9 +58,7 @@
     </form>
 
     <div class="min-h-0 flex-1 overflow-y-auto px-1 pb-2">
-      <div v-if="runHistoryStore.loading" class="px-3 py-4 text-xs text-gray-500">
-        Loading task history...
-      </div>
+      <div v-if="runHistoryStore.loading" class="px-3 py-4 text-xs text-gray-500">{{ $t('workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.loading_task_history') }}</div>
 
       <div v-else-if="runHistoryStore.error" class="px-3 py-4 text-xs text-red-600">
         {{ runHistoryStore.error }}
@@ -69,9 +67,7 @@
       <div
         v-else-if="workspaceNodes.length === 0"
         class="px-3 py-4 text-xs text-gray-500"
-      >
-        No run history yet.
-      </div>
+      >{{ $t('workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.no_run_history_yet') }}</div>
 
       <div v-else class="space-y-1">
         <WorkspaceHistoryWorkspaceSection

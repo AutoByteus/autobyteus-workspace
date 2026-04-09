@@ -1,7 +1,7 @@
 <template>
   <div class="server-log-viewer">
     <div class="flex justify-between items-center mb-2">
-      <h4 class="text-lg font-medium text-gray-800">Server Logs</h4>
+      <h4 class="text-lg font-medium text-gray-800">{{ $t('server.components.server.ServerLogViewer.server_logs') }}</h4>
       <div class="flex items-center space-x-2">
         <button 
           @click="refreshLogs" 
@@ -10,15 +10,11 @@
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-          </svg>
-          Refresh Logs
-        </button>
+          </svg>{{ $t('server.components.server.ServerLogViewer.refresh_logs') }}</button>
         <button 
           @click="openLogFile" 
           class="text-sm text-blue-600 hover:text-blue-800 focus:outline-none"
-        >
-          Open in Editor
-        </button>
+        >{{ $t('server.components.server.ServerLogViewer.open_in_editor') }}</button>
         <label class="inline-flex items-center text-sm text-gray-600">
           <input type="checkbox" v-model="autoRefreshLogs" class="form-checkbox h-4 w-4 text-blue-600">
           <span class="ml-2">Auto-refresh</span>
@@ -51,9 +47,7 @@
       <div 
         v-else 
         class="bg-gray-100 p-4 rounded-lg text-gray-500 text-center h-96 flex items-center justify-center"
-      >
-        No logs available. Click "Refresh Logs" to load server logs.
-      </div>
+      >{{ $t('server.components.server.ServerLogViewer.no_logs_available_click_refresh_logs') }}</div>
     </div>
   </div>
 </template>

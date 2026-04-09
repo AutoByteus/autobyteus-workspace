@@ -14,7 +14,7 @@
             name="agent-search"
             id="agent-search"
             class="block w-full rounded-lg border-transparent bg-white py-2.5 pl-9 pr-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-            placeholder="Search agents by name or description..."
+            :placeholder="$t('agents.components.agents.AgentList.search_agents_by_name_or_description')"
           />
         </div>
 
@@ -32,14 +32,12 @@
             <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-4 w-4" :class="{'animate-spin': reloading}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
-            {{ reloading ? 'Reloading...' : 'Reload' }}
+            {{ reloading ? $t('agents.components.agents.AgentList.reloading') : $t('agents.components.agents.AgentList.reload') }}
           </button>
           <button
             @click="$emit('navigate', { view: 'create' })"
             class="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-          >
-            Create Agent
-          </button>
+          >{{ $t('agents.components.agents.AgentList.create_agent') }}</button>
         </div>
       </div>
 
@@ -52,16 +50,16 @@
       <NodeSyncReportPanel
         v-if="lastAgentSyncReport"
         :report="lastAgentSyncReport"
-        title="Agent Sync Report"
+        :title="$t('agents.components.agents.AgentList.agent_sync_report')"
         data-testid="agent-sync-report"
       />
 
       <div v-if="loading && !reloading" class="rounded-lg border border-slate-200 bg-white py-20 text-center shadow-sm">
         <div class="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
-        <p class="text-slate-600">Loading agent definitions...</p>
+        <p class="text-slate-600">{{ $t('agents.components.agents.AgentList.loading_agent_definitions') }}</p>
       </div>
       <div v-else-if="error" class="rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">
-        <p class="font-bold">Error loading agent definitions:</p>
+        <p class="font-bold">{{ $t('agents.components.agents.AgentList.error_loading_agent_definitions') }}</p>
         <p>{{ error.message }}</p>
       </div>
 
@@ -81,9 +79,9 @@
           <svg class="mx-auto mb-4 h-16 w-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 7a4 4 0 014 4c0 1.37-.69 2.62-1.84 3.38-.42.28-.66.77-.66 1.28V17a1 1 0 01-1 1h-1.5a1 1 0 01-1-1v-1.34c0-.51-.25-1-.66-1.28A4 4 0 018 11a4 4 0 014-4zm-3 12h6M10 5.5a2 2 0 114 0" />
           </svg>
-          <p class="mb-2 text-lg font-medium">No agents found</p>
+          <p class="mb-2 text-lg font-medium">{{ $t('agents.components.agents.AgentList.no_agents_found') }}</p>
           <p class="text-slate-400">
-            {{ searchQuery.trim() ? `No agents matched "${searchQuery}"` : 'Create a new agent to get started.' }}
+            {{ searchQuery.trim() ? $t('agents.components.agents.AgentList.emptyFiltered', { query: searchQuery.trim() }) : $t('agents.components.agents.AgentList.emptyDefault') }}
           </p>
         </div>
       </div>
@@ -91,12 +89,12 @@
 
     <NodeSyncTargetPickerModal
       v-model="isTargetPickerOpen"
-      title="Sync Agent"
-      :description="pendingSyncAgent ? `Select target node(s) for '${pendingSyncAgent.name}'.` : null"
+      :title="$t('agents.components.agents.AgentList.sync_agent')"
+      :description="pendingSyncAgent ? $t('agents.components.agents.AgentList.syncTargetDescription', { name: pendingSyncAgent.name }) : null"
       :source-node-name="sourceNodeName"
       :targets="availableSyncTargets"
       :busy="nodeSyncStore.isRunning"
-      confirm-label="Sync Agent"
+      :confirm-label="$t('agents.components.agents.AgentList.syncConfirmLabel')"
       @confirm="confirmAgentSync"
     />
   </div>

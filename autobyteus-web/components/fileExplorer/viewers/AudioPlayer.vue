@@ -1,10 +1,8 @@
 <template>
   <div class="audio-player-container">
-    <audio v-if="url" controls :src="url" class="audio-player">
-      Your browser does not support the audio element.
-    </audio>
+    <audio v-if="url" controls :src="url" class="audio-player">{{ $t('tools.components.fileExplorer.viewers.AudioPlayer.your_browser_does_not_support_the') }}</audio>
     <div v-else class="error-placeholder">
-      <p>Audio URL is not available.</p>
+      <p>{{ $t('tools.components.fileExplorer.viewers.AudioPlayer.audio_url_is_not_available') }}</p>
     </div>
   </div>
 </template>

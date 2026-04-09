@@ -3,7 +3,7 @@
     <div v-if="loading" class="flex min-h-[280px] items-center justify-center p-10">
       <div class="text-center">
         <div class="mx-auto h-12 w-12 animate-spin rounded-full border-b-2 border-indigo-600"></div>
-        <p class="mt-4 text-lg text-gray-600">Preparing Agent Manager...</p>
+        <p class="mt-4 text-lg text-gray-600">{{ $t('agents.pages.agents.preparing_agent_manager') }}</p>
       </div>
     </div>
 
@@ -13,15 +13,13 @@
     <AgentEdit v-else-if="currentView === 'edit' && currentId" :agent-definition-id="currentId" @navigate="handleNavigation" />
 
     <div v-else class="mx-auto mt-6 max-w-3xl rounded-xl border border-gray-200 bg-white p-8">
-      <h2 class="text-xl font-bold text-gray-900">Invalid View</h2>
-      <p class="mt-2 text-gray-600">The requested view is not available.</p>
+      <h2 class="text-xl font-bold text-gray-900">{{ $t('agents.pages.agents.invalid_view') }}</h2>
+      <p class="mt-2 text-gray-600">{{ $t('agents.pages.agents.the_requested_view_is_not_available') }}</p>
       <button
         type="button"
         class="mt-4 text-indigo-600 hover:underline"
         @click="handleNavigation({ view: 'list' })"
-      >
-        Go to Agents
-      </button>
+      >{{ $t('agents.pages.agents.go_to_agents') }}</button>
     </div>
   </div>
 </template>

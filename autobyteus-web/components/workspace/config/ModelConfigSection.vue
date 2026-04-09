@@ -20,7 +20,7 @@
           class="inline-flex items-center gap-1 text-sm text-gray-700 hover:text-gray-900 transition-colors focus:outline-none"
           :aria-expanded="showAdvancedParams"
         >
-          <span>Advanced</span>
+          <span>{{ $t('workspace.components.workspace.config.ModelConfigSection.advanced') }}</span>
           <Icon 
             icon="heroicons:chevron-down-20-solid" 
             class="w-4 h-4 transition-transform duration-200" 
@@ -44,7 +44,7 @@
 
     <!-- Fallback for schemas without thinking support (unlikely given logic, but safe) -->
     <div v-else class="text-xs text-gray-400 italic">
-      Thinking configuration not available for this model.
+      {{ $t('workspace.components.workspace.config.ModelConfigSection.thinking_configuration_not_available_for_this_model') }}
     </div>
   </div>
 </template>

@@ -3,15 +3,15 @@
     <div class="max-w-6xl mx-auto">
       <div v-if="agentDef">
         <div class="mb-8">
-          <h1 class="text-3xl font-bold text-gray-900">Edit Agent Definition</h1>
-          <p class="text-lg text-gray-500 mt-2">Update the details for "{{ agentDef.name }}".</p>
-          <p v-if="teamLabel" class="text-sm text-gray-500 mt-1">Team: {{ teamLabel }}</p>
+          <h1 class="text-3xl font-bold text-gray-900">{{ $t('agents.components.agents.AgentEdit.edit_agent_definition') }}</h1>
+          <p class="text-lg text-gray-500 mt-2">{{ $t('agents.components.agents.AgentEdit.updateDetails', { name: agentDef.name }) }}</p>
+          <p v-if="teamLabel" class="text-sm text-gray-500 mt-1">{{ $t('agents.components.agents.AgentEdit.teamLabel', { team: teamLabel }) }}</p>
         </div>
 
         <AgentDefinitionForm
           :initial-data="agentDef"
           :is-submitting="isSubmitting"
-          submit-button-text="Save Changes"
+          :submit-button-text="$t('agents.components.agents.AgentEdit.submitButton')"
           :is-create-mode="false"
           @submit="handleUpdate"
           @cancel="handleCancel"
@@ -19,11 +19,11 @@
       </div>
        <div v-else-if="loading" class="text-center py-10">
         <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500 mx-auto mb-4"></div>
-        <p>Loading agent definition...</p>
+        <p>{{ $t('agents.components.agents.AgentEdit.loading_agent_definition') }}</p>
       </div>
       <div v-else class="bg-red-50 border border-red-200 text-red-700 rounded-md p-4">
-        <p class="font-bold">Error:</p>
-        <p>Agent definition not found.</p>
+        <p class="font-bold">{{ $t('agents.components.agents.AgentEdit.error') }}</p>
+        <p>{{ $t('agents.components.agents.AgentEdit.agent_definition_not_found') }}</p>
       </div>
 
       <div v-if="notification"
@@ -39,6 +39,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, toRefs } from 'vue';
+import { useLocalization } from '~/composables/useLocalization';
 import { useAgentDefinitionStore, type UpdateAgentDefinitionInput } from '~/stores/agentDefinitionStore';
 import AgentDefinitionForm from '~/components/agents/AgentDefinitionForm.vue';
 
@@ -48,6 +49,7 @@ const { agentDefinitionId } = toRefs(props);
 const emit = defineEmits(['navigate']);
 
 const agentDefinitionStore = useAgentDefinitionStore();
+const { t: $t } = useLocalization();
 const agentDef = computed(() => agentDefinitionStore.getAgentDefinitionById(agentDefinitionId.value));
 const teamLabel = computed(() => {
   const definition = agentDef.value;
@@ -80,16 +82,16 @@ const handleUpdate = async (formData: any) => {
   try {
     const updatedAgent = await agentDefinitionStore.updateAgentDefinition(updateInput);
     if (updatedAgent) {
-      showNotification('Agent definition updated successfully!', 'success');
+      showNotification($t('agents.components.agents.AgentEdit.updatedSuccess'), 'success');
       setTimeout(() => {
         emit('navigate', { view: 'detail', id: updatedAgent.id });
       }, 1500);
     } else {
-      throw new Error('Failed to update agent definition. The result was empty.');
+      throw new Error($t('agents.components.agents.AgentEdit.updateFailedEmpty'));
     }
   } catch (error: any) {
     console.error('Failed to update agent definition:', error);
-    showNotification(error.message || 'An unexpected error occurred.', 'error');
+    showNotification(error.message || $t('agents.components.agents.AgentEdit.unexpectedError'), 'error');
   } finally {
     isSubmitting.value = false;
   }

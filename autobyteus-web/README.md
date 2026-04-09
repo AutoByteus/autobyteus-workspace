@@ -99,6 +99,23 @@ For most users, Telegram setup should stay close to a fully in-app flow:
 
 The main thing users still do outside AutoByteus is the initial Telegram bot creation. The gateway install, runtime lifecycle, provider configuration, binding flow, runtime preset selection, and verification are handled from the app.
 
+## Localization
+
+AutoByteus Web now ships with a client-side localization foundation for product UI copy.
+
+- Supported locales: `English (en)` and `Simplified Chinese (zh-CN)`
+- User preference modes: `System`, `English`, `简体中文`
+- Settings location: `Settings -> Language`
+- System resolution source:
+  - browser mode uses the browser locale list
+  - Electron uses `app.getLocale()` through the preload bridge
+- Unsupported system locales fall back to English
+- Product UI waits behind a neutral bootstrap gate until localization initialization finishes; if bootstrap fails, the app still releases in English instead of staying stuck on the boot surface
+
+For runtime details and contributor workflow, see:
+
+- `docs/localization.md`
+
 ## Delivery Reliability
 
 The managed runtime summary now shows delivery reliability information from the gateway:

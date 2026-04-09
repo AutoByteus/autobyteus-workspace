@@ -8,13 +8,13 @@
             <li class="w-full border-b border-gray-100 pb-2">
               <button
                 type="button"
-                aria-label="Back to workspace"
+                :aria-label="$t('settings.page.backAriaLabel')"
                 data-testid="settings-nav-back"
                 class="flex w-full items-center justify-start rounded-md px-4 py-2 text-gray-600 transition-colors duration-200 hover:bg-gray-100 hover:text-gray-800"
                 @click="goBackToWorkspace"
               >
                 <Icon icon="heroicons:arrow-left-20-solid" class="h-5 w-5 flex-shrink-0" />
-                <span class="ml-2 text-sm font-medium">Back to Workspace</span>
+                <span class="ml-2 text-sm font-medium">{{ $t('settings.page.backLabel') }}</span>
               </button>
             </li>
             <li class="w-full">
@@ -26,7 +26,7 @@
                 <div class="flex items-center min-w-[20px] mr-3">
                   <span class="i-heroicons-key-20-solid w-5 h-5"></span>
                 </div>
-                <span class="text-left">API Keys</span>
+                <span class="text-left">{{ $t('settings.page.sections.apiKeys') }}</span>
               </button>
             </li>
             <li class="w-full">
@@ -38,7 +38,7 @@
                 <div class="flex items-center min-w-[20px] mr-3">
                   <span class="i-heroicons-chart-bar-20-solid w-5 h-5"></span>
                 </div>
-                <span class="text-left">Token Usage Statistics</span>
+                <span class="text-left">{{ $t('settings.page.sections.tokenUsage') }}</span>
               </button>
             </li>
             <li class="w-full">
@@ -50,7 +50,7 @@
                 <div class="flex items-center min-w-[20px] mr-3">
                   <span class="i-heroicons-circle-stack-20-solid w-5 h-5"></span>
                 </div>
-                <span class="text-left">Nodes</span>
+                <span class="text-left">{{ $t('settings.page.sections.nodes') }}</span>
               </button>
             </li>
             <li class="w-full">
@@ -62,7 +62,20 @@
                 <div class="flex items-center min-w-[20px] mr-3">
                   <span class="i-heroicons-chat-bubble-left-right-20-solid w-5 h-5"></span>
                 </div>
-                <span class="text-left">Messaging</span>
+                <span class="text-left">{{ $t('settings.page.sections.messaging') }}</span>
+              </button>
+            </li>
+            <li class="w-full">
+              <button
+                @click="activeSection = 'language'"
+                data-testid="settings-nav-language"
+                class="flex w-full items-center justify-start px-4 py-2 rounded-md transition-colors duration-200 text-gray-700 hover:bg-gray-100 hover:text-gray-900 group"
+                :class="{ 'bg-gray-100 text-gray-900': activeSection === 'language' }"
+              >
+                <div class="flex items-center min-w-[20px] mr-3">
+                  <span class="i-heroicons-language-20-solid w-5 h-5"></span>
+                </div>
+                <span class="text-left">{{ $t('settings.page.sections.language') }}</span>
               </button>
             </li>
             <li class="w-full">
@@ -74,7 +87,7 @@
                 <div class="flex items-center min-w-[20px] mr-3">
                   <span class="i-heroicons-wrench-screwdriver-20-solid w-5 h-5"></span>
                 </div>
-                <span class="text-left">Local Tools</span>
+                <span class="text-left">{{ $t('settings.page.sections.localTools') }}</span>
               </button>
             </li>
             <li class="w-full">
@@ -86,7 +99,7 @@
                 <div class="flex items-center min-w-[20px] mr-3">
                   <span class="i-heroicons-puzzle-piece-20-solid w-5 h-5"></span>
                 </div>
-                <span class="text-left">MCP Servers</span>
+                <span class="text-left">{{ $t('settings.page.sections.mcpServers') }}</span>
               </button>
             </li>
             <li class="w-full">
@@ -99,7 +112,7 @@
                 <div class="flex items-center min-w-[20px] mr-3">
                   <span class="i-heroicons-folder-open-20-solid w-5 h-5"></span>
                 </div>
-                <span class="text-left">Agent Packages</span>
+                <span class="text-left">{{ $t('settings.page.sections.agentPackages') }}</span>
               </button>
             </li>
             <li class="w-full">
@@ -112,7 +125,7 @@
                 <div class="flex items-center min-w-[20px] mr-3">
                   <span class="i-heroicons-server-20-solid w-5 h-5"></span>
                 </div>
-                <span class="text-left">Server Settings</span>
+                <span class="text-left">{{ $t('settings.page.sections.serverSettings') }}</span>
               </button>
               <div v-if="activeSection === 'server-settings'" class="ml-10 mt-1 pl-3 space-y-1">
                 <button
@@ -122,7 +135,7 @@
                   :class="serverSettingsMode === 'quick' ? 'bg-gray-100 text-gray-900 font-medium' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'"
                   @click="selectServerSettings('quick')"
                 >
-                  Basics
+                  {{ $t('settings.page.serverSettings.quick') }}
                 </button>
                 <button
                   type="button"
@@ -131,7 +144,7 @@
                   :class="serverSettingsMode === 'advanced' ? 'bg-gray-100 text-gray-900 font-medium' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'"
                   @click="selectServerSettings('advanced')"
                 >
-                  Advanced
+                  {{ $t('settings.page.serverSettings.advanced') }}
                 </button>
               </div>
             </li>
@@ -145,7 +158,7 @@
                 <div class="flex items-center min-w-[20px] mr-3">
                   <span class="i-heroicons-squares-2x2-20-solid w-5 h-5"></span>
                 </div>
-                <span class="text-left">Extensions</span>
+                <span class="text-left">{{ $t('settings.page.sections.extensions') }}</span>
               </button>
             </li>
             <li class="w-full">
@@ -158,7 +171,7 @@
                 <div class="flex items-center min-w-[20px] mr-3">
                   <span class="i-heroicons-arrow-path-20-solid w-5 h-5"></span>
                 </div>
-                <span class="text-left">Updates</span>
+                <span class="text-left">{{ $t('settings.page.sections.updates') }}</span>
               </button>
             </li>
           </ul>
@@ -173,6 +186,7 @@
         <TokenUsageStatistics v-if="activeSection === 'token-usage'" />
         <NodeManager v-if="activeSection === 'nodes'" />
         <MessagingSetupManager v-if="activeSection === 'messaging'" />
+        <LanguageSettingsManager v-if="activeSection === 'language'" />
         <ExtensionsManager v-if="activeSection === 'extensions'" />
         <AboutSettingsManager v-if="activeSection === 'updates'" />
         <ToolsManagementWorkspace
@@ -190,8 +204,8 @@
         />
         <div v-else-if="activeSection === ''" class="flex-1 flex flex-col items-center justify-center text-gray-400">
           <span class="i-heroicons-cog-8-tooth-20-solid w-16 h-16 mb-6 opacity-20"></span>
-          <h3 class="text-xl font-medium mb-2 text-gray-500">Settings</h3>
-          <p class="text-gray-400">Select a category to configure settings.</p>
+          <h3 class="text-xl font-medium mb-2 text-gray-500">{{ $t('settings.page.empty.title') }}</h3>
+          <p class="text-gray-400">{{ $t('settings.page.empty.description') }}</p>
         </div>
       </div>
     </div>
@@ -212,6 +226,7 @@ import MessagingSetupManager from '~/components/settings/MessagingSetupManager.v
 import ExtensionsManager from '~/components/settings/ExtensionsManager.vue';
 import AboutSettingsManager from '~/components/settings/AboutSettingsManager.vue';
 import AgentPackagesManager from '~/components/settings/AgentPackagesManager.vue';
+import LanguageSettingsManager from '~/components/settings/LanguageSettingsManager.vue';
 import ToolsManagementWorkspace from '~/components/tools/ToolsManagementWorkspace.vue';
 
 definePageMeta({
@@ -223,6 +238,7 @@ type SettingsSection =
   | 'token-usage'
   | 'nodes'
   | 'messaging'
+  | 'language'
   | 'extensions'
   | 'updates'
   | 'local-tools'
@@ -243,6 +259,7 @@ const validSections = new Set<SettingsSection>([
   'token-usage',
   'nodes',
   'messaging',
+  'language',
   'extensions',
   'updates',
   'local-tools',

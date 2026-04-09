@@ -30,8 +30,8 @@
       <button
         @click.stop="$emit('delete', teamRun.teamRunId)"
         class="delete-btn inline-flex h-6 w-6 items-center justify-center rounded-md text-gray-500 hover:text-red-600 hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-200 transition-colors"
-        title="Stop and remove team"
-        aria-label="Close team run"
+        :title="$t('workspace.components.workspace.running.RunningTeamRow.stop_and_remove_team')"
+        :aria-label="$t('workspace.components.workspace.running.RunningTeamRow.close_team_run')"
       >
         <span class="text-sm leading-none font-semibold" aria-hidden="true">×</span>
       </button>
@@ -48,9 +48,7 @@
         :is-coordinator="memberName === coordinatorName"
         @select="handleMemberSelect"
       />
-      <div v-if="teamRun.members.size === 0" class="text-xs text-gray-400 py-1 px-2">
-        No members yet
-      </div>
+      <div v-if="teamRun.members.size === 0" class="text-xs text-gray-400 py-1 px-2">{{ $t('workspace.components.workspace.running.RunningTeamRow.no_members_yet') }}</div>
     </div>
   </div>
 </template>

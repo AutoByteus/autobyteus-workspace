@@ -1,12 +1,12 @@
 <template>
   <div v-if="isLoading" class="loading-state">
     <div class="spinner"></div>
-    <p>Loading...</p>
+    <p>{{ $t('skills.components.skills.SkillDetail.loading') }}</p>
   </div>
   <div v-else-if="loadError" class="error-state">
     <Icon icon="heroicons:exclamation-triangle" class="error-icon" />
     <p>{{ loadError }}</p>
-    <button class="btn-recover" @click="$emit('back')">Back to Skills</button>
+    <button class="btn-recover" @click="$emit('back')">{{ $t('skills.components.skills.SkillDetail.back_to_skills') }}</button>
   </div>
   <div v-else-if="skill" class="skill-detail">
     <!-- Compact Header -->
@@ -20,7 +20,7 @@
       <div class="header-main-row">
         <div class="title-group">
           <h2 class="skill-title">{{ skill.name }}</h2>
-          <span v-if="skill.isDisabled" class="badge-disabled">Disabled</span>
+          <span v-if="skill.isDisabled" class="badge-disabled">{{ $t('skills.components.skills.SkillCard.disabled') }}</span>
         </div>
         
         <!-- Versioning Controls (Placeholder for integrated panel) -->
@@ -82,6 +82,8 @@ import SkillVersionCompareModal from './SkillVersionCompareModal.vue'
 import type { Skill, SkillVersion } from '~/types/skill'
 import { useToasts } from '~/composables/useToasts'
 
+const { t } = useLocalization()
+
 const props = defineProps<{
   skillName: string
 }>()
@@ -123,7 +125,7 @@ async function loadSkillDetails() {
   try {
     const loadedSkill = await skillStore.fetchSkill(props.skillName)
     if (!loadedSkill) {
-      loadError.value = 'Skill not found. It may have been removed from its source.'
+      loadError.value = t('skills.components.skills.SkillDetail.not_found')
       versions.value = []
       versionsError.value = ''
       return
@@ -132,7 +134,7 @@ async function loadSkillDetails() {
     skill.value = loadedSkill
     await loadVersions()
   } catch (e: any) {
-    loadError.value = e?.message || 'Failed to load skill.'
+    loadError.value = e?.message || t('skills.components.skills.SkillDetail.failed_to_load_skill')
     versions.value = []
     versionsError.value = ''
   } finally {
@@ -152,7 +154,7 @@ async function loadVersions() {
   try {
     versions.value = await skillStore.fetchSkillVersions(skill.value.name)
   } catch (e: any) {
-    versionsError.value = e?.message || 'Failed to load versions.'
+    versionsError.value = e?.message || t('skills.components.skills.SkillDetail.failed_to_load_versions')
   } finally {
     versionsLoading.value = false
   }
@@ -162,7 +164,7 @@ async function handleEnableVersioning() {
   if (!skill.value) return
   actionError.value = ''
   if (skill.value.isReadonly) {
-    actionError.value = 'This skill is read-only.'
+    actionError.value = t('skills.components.skills.SkillDetail.read_only')
     addToast(actionError.value, 'error')
     return
   }
@@ -171,9 +173,9 @@ async function handleEnableVersioning() {
   try {
     await skillStore.enableSkillVersioning(skill.value.name)
     await loadSkillDetails()
-    addToast('Skill versioning enabled.', 'success')
+    addToast(t('skills.components.skills.SkillDetail.versioning_enabled'), 'success')
   } catch (e: any) {
-    actionError.value = e?.message || 'Failed to enable skill versioning.'
+    actionError.value = e?.message || t('skills.components.skills.SkillDetail.failed_to_enable_versioning')
     addToast(actionError.value, 'error')
   } finally {
     actionLoading.value = false
@@ -184,7 +186,7 @@ async function handleActivateVersion(version: string) {
   if (!skill.value) return
   actionError.value = ''
   if (skill.value.isReadonly) {
-    actionError.value = 'This skill is read-only.'
+    actionError.value = t('skills.components.skills.SkillDetail.read_only')
     addToast(actionError.value, 'error')
     return
   }
@@ -194,9 +196,9 @@ async function handleActivateVersion(version: string) {
     await skillStore.activateSkillVersion(skill.value.name, version)
     await loadSkillDetails()
     workspaceKey.value += 1
-    addToast(`Activated version ${version}.`, 'success')
+    addToast(t('skills.components.skills.SkillDetail.activated_version', { version }), 'success')
   } catch (e: any) {
-    actionError.value = e?.message || 'Failed to activate skill version.'
+    actionError.value = e?.message || t('skills.components.skills.SkillDetail.failed_to_activate_version')
     addToast(actionError.value, 'error')
   } finally {
     actionLoading.value = false

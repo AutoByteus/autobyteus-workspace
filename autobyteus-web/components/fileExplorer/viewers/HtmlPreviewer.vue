@@ -1,14 +1,12 @@
 <template>
   <div class="h-full w-full bg-white relative">
-    <div v-if="!iframeSrc" class="flex items-center justify-center h-full text-gray-500">
-      Preparing preview...
-    </div>
+    <div v-if="!iframeSrc" class="flex items-center justify-center h-full text-gray-500">{{ $t('tools.components.fileExplorer.viewers.HtmlPreviewer.preparing_preview') }}</div>
     <iframe
       v-else
       :src="iframeSrc"
       class="absolute inset-0 w-full h-full border-none"
       sandbox="allow-scripts allow-same-origin"
-      title="HTML Preview"
+      :title="$t('tools.components.fileExplorer.viewers.HtmlPreviewer.html_preview')"
     ></iframe>
   </div>
 </template>

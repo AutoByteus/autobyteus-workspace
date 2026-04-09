@@ -67,15 +67,11 @@
         <button 
           @click="$emit('view-details', agent)"
           class="inline-flex items-center text-sm font-medium text-purple-600 hover:text-purple-500 mr-3"
-        >
-          View Details
-        </button>
+        >{{ $t('agents.components.agents.RemoteAgentCard.view_details') }}</button>
         <button 
           @click="$emit('run', agent)"
           class="inline-flex items-center px-3 py-1.5 bg-purple-600 text-white rounded-md hover:bg-purple-700 text-sm"
-        >
-          Run Agent
-        </button>
+        >{{ $t('agents.components.agents.RemoteAgentCard.run_agent') }}</button>
       </div>
     </div>
   </div>

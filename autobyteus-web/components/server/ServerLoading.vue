@@ -3,7 +3,7 @@
     <div class="server-loading-content">
       <div v-if="serverStore.status === 'starting'" class="loading-state">
         <div class="spinner"></div>
-        <h2 class="text-xl font-semibold mt-4">Starting AutoByteus...</h2>
+        <h2 class="text-xl font-semibold mt-4">{{ $t('server.components.server.ServerLoading.starting_autobyteus') }}</h2>
         <p class="text-gray-600 mt-2">{{ serverStore.connectionMessage }}</p>
         
         <div v-if="serverStore.connectionAttempts > 0" class="mt-2 text-gray-600">
@@ -11,13 +11,11 @@
         </div>
         
         <div v-if="serverStore.isInitialStartup" class="mt-2 text-gray-600">
-          <p>Initial server startup may take a moment. Please be patient...</p>
+          <p>{{ $t('server.components.server.ServerLoading.initial_server_startup_may_take_a') }}</p>
         </div>
         
         <div v-if="showDetails" class="technical-details mt-4">
-          <p class="text-gray-600 text-sm">
-            Backend service initializing...
-          </p>
+          <p class="text-gray-600 text-sm">{{ $t('server.components.server.ServerLoading.backend_service_initializing') }}</p>
           <p class="text-gray-600 text-sm font-mono mt-1">
             {{ serverStore.urls.graphql }}
           </p>
@@ -40,17 +38,13 @@
             v-if="showDetails"
             @click="serverStore.checkServerHealth" 
             class="text-sm text-blue-600 hover:text-blue-800 focus:outline-none md:ml-4"
-          >
-            Run health check
-          </button>
+          >{{ $t('server.components.server.ServerLoading.run_health_check') }}</button>
         </div>
       </div>
       
       <div v-else-if="serverStore.status === 'error'" class="error-state">
         <div class="error-icon">❌</div>
-        <h2 class="text-xl font-semibold mt-4 text-red-600">
-          Application Error
-        </h2>
+        <h2 class="text-xl font-semibold mt-4 text-red-600">{{ $t('server.components.server.ServerLoading.application_error') }}</h2>
         <p class="text-gray-800 mt-2">{{ serverStore.userFriendlyError }}</p>
         
         <div v-if="showDetails && serverStore.errorMessage" class="technical-details mt-4">
@@ -67,15 +61,11 @@
           <button 
             @click="serverStore.restartServer"
             class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none"
-          >
-            Restart Server
-          </button>
+          >{{ $t('server.components.server.ServerLoading.restart_server') }}</button>
           <button 
             @click="serverStore.checkServerHealth" 
             class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 focus:outline-none mt-2"
-          >
-            Check Server Health
-          </button>
+          >{{ $t('server.components.server.ServerLoading.check_server_health') }}</button>
           <button 
             v-if="serverStore.errorMessage"
             @click="toggleDetails" 
@@ -93,16 +83,12 @@
 
           <div v-if="showRecoveryOptions" class="recovery-options mt-4 p-4 border border-yellow-300 bg-yellow-50 rounded-lg text-left">
             <h4 class="font-bold text-yellow-800">Warning</h4>
-            <p class="text-sm text-yellow-700 mt-1">
-              These actions can lead to data loss. Proceed with caution.
-            </p>
+            <p class="text-sm text-yellow-700 mt-1">{{ $t('server.components.server.ServerLoading.these_actions_can_lead_to_data') }}</p>
             <div class="mt-4 flex flex-col gap-2">
               <button 
                 @click="handleResetData"
                 class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none"
-              >
-                Reset All Server Data and Restart
-              </button>
+              >{{ $t('server.components.server.ServerLoading.reset_all_server_data_and_restart') }}</button>
             </div>
           </div>
         </div>
@@ -110,8 +96,8 @@
 
       <div v-else-if="serverStore.status === 'restarting'" class="restarting-state">
         <div class="spinner"></div>
-        <h2 class="text-xl font-semibold mt-4">Restarting Server...</h2>
-        <p class="text-gray-600 mt-2">Please wait, this may take a moment.</p>
+        <h2 class="text-xl font-semibold mt-4">{{ $t('server.components.server.ServerLoading.restarting_server') }}</h2>
+        <p class="text-gray-600 mt-2">{{ $t('server.components.server.ServerLoading.please_wait_this_may_take_a') }}</p>
         <p v-if="serverStore.errorMessage" class="text-gray-600 mt-2 font-semibold">{{ serverStore.errorMessage }}</p>
       </div>
     </div>

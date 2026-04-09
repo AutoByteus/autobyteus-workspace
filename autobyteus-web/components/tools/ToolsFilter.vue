@@ -14,14 +14,14 @@
             name="search"
             id="search"
             class="block w-full rounded-md border-gray-300 pl-10 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2"
-            placeholder="Search by name or description..."
+            :placeholder="$t('tools.components.tools.ToolsFilter.search_by_name_or_description')"
           />
         </div>
       </div>
 
       <!-- Category Filter -->
       <div v-if="showCategoryFilter" class="flex-shrink-0">
-        <label for="category-filter" class="sr-only">Filter by Category</label>
+        <label for="category-filter" class="sr-only">{{ $t('tools.components.tools.ToolsFilter.filter_by_category') }}</label>
         <select
           id="category-filter"
           v-model="selectedCategory"

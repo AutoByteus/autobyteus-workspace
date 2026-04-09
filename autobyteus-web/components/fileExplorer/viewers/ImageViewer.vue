@@ -13,13 +13,13 @@
     <img 
       v-if="url" 
       :src="url" 
-      alt="Image content" 
+      :alt="$t('tools.components.fileExplorer.viewers.ImageViewer.image_content')" 
       class="image-content"
       :style="imageTransformStyle"
       draggable="false"
     />
     <div v-else class="error-placeholder">
-      <p>Image URL is not available.</p>
+      <p>{{ $t('tools.components.fileExplorer.viewers.ImageViewer.image_url_is_not_available') }}</p>
     </div>
 
     <!-- Zoom indicator -->
@@ -29,7 +29,7 @@
         v-if="scale !== 1" 
         @click="resetZoom" 
         class="reset-button"
-        title="Reset zoom (double-click image)"
+        :title="$t('tools.components.fileExplorer.viewers.ImageViewer.reset_zoom_double_click_image')"
       >
         Reset
       </button>
@@ -37,7 +37,7 @@
 
     <!-- Zoom hint on first view -->
     <div v-if="url && showHint" class="zoom-hint">
-      <span>Scroll to zoom • Drag to pan • Double-click to reset</span>
+      <span>{{ $t('tools.components.fileExplorer.viewers.ImageViewer.scroll_to_zoom_drag_to_pan') }}</span>
     </div>
   </div>
 </template>

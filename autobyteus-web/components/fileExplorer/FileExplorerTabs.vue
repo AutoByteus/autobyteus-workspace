@@ -13,17 +13,17 @@
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-16 h-16 mb-4 text-gray-300">
             <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
           </svg>
-          <h3 class="text-lg font-medium text-gray-500 mb-1">No file selected</h3>
-          <p class="text-sm">Select a file from the explorer to view or edit its content.</p>
+          <h3 class="text-lg font-medium text-gray-500 mb-1">{{ $t('tools.components.fileExplorer.FileExplorerTabs.no_file_selected') }}</h3>
+          <p class="text-sm">{{ $t('tools.components.fileExplorer.FileExplorerTabs.select_a_file_from_the_explorer') }}</p>
         </div>
 
         <!-- Main content -->
         <div v-else class="flex-1 flex flex-col min-h-0">
           <div v-if="activeFileData?.isLoading" class="flex-1 text-center py-4 flex items-center justify-center">
-            <p class="text-gray-600">Loading file content...</p>
+            <p class="text-gray-600">{{ $t('tools.components.fileExplorer.FileExplorerTabs.loading_file_content') }}</p>
           </div>
           <div v-else-if="activeFileData?.error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative m-4" role="alert">
-            <strong class="font-bold">Error!</strong>
+            <strong class="font-bold">{{ $t('tools.components.fileExplorer.FileExplorerTabs.error') }}</strong>
             <span class="block sm:inline">{{ activeFileData.error }}</span>
           </div>
           <div v-else-if="activeFileData" class="flex-1 bg-gray-50 rounded-lg overflow-hidden relative min-h-0">
@@ -45,9 +45,7 @@
               <div v-if="isSavingContent" class="absolute bottom-2 right-2 text-gray-600 bg-white px-2 py-1 rounded shadow">
                 Saving...
               </div>
-              <div v-if="showSaveSuccess" class="absolute bottom-2 right-2 text-green-600 bg-white px-2 py-1 rounded shadow">
-                Changes saved
-              </div>
+              <div v-if="showSaveSuccess" class="absolute bottom-2 right-2 text-green-600 bg-white px-2 py-1 rounded shadow">{{ $t('tools.components.fileExplorer.FileExplorerTabs.changes_saved') }}</div>
             </template>
           </div>
           <div v-else class="flex-1 text-center py-4 flex items-center justify-center">

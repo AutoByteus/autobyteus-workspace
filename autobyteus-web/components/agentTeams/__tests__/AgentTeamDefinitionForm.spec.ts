@@ -2,6 +2,12 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import AgentTeamDefinitionForm from '../AgentTeamDefinitionForm.vue'
 
+const mockTranslations: Record<string, string> = {
+  'agentTeams.components.agentTeams.AgentTeamDefinitionForm.instructionsPlaceholder': "Enter the team coordinator's instructions...",
+  'agentTeams.components.agentTeams.form.useAgentTeamDefinitionFormState.localAgent': 'Local Agent (reviewer)',
+  'agentTeams.components.agentTeams.AgentTeamCard.teamBadge': 'Team-local',
+}
+
 const { mockFileUploadStore, mockAgentDefinitionStore, mockAgentTeamDefinitionStore } = vi.hoisted(() => ({
   mockFileUploadStore: {
     isUploading: false,
@@ -54,6 +60,11 @@ describe('AgentTeamDefinitionForm', () => {
         isSubmitting: false,
         submitButtonText: 'Create Team',
       },
+      global: {
+        mocks: {
+          $t: (key: string) => mockTranslations[key] ?? key,
+        },
+      },
     })
 
     const instructions = wrapper.get('textarea#team-instructions')
@@ -66,6 +77,11 @@ describe('AgentTeamDefinitionForm', () => {
       props: {
         isSubmitting: false,
         submitButtonText: 'Create Team',
+      },
+      global: {
+        mocks: {
+          $t: (key: string) => mockTranslations[key] ?? key,
+        },
       },
     })
 
@@ -114,10 +130,20 @@ describe('AgentTeamDefinitionForm', () => {
           ],
         },
       },
+      global: {
+        mocks: {
+          $t: (key: string, params?: Record<string, string>) => {
+            if (key === 'agentTeams.components.agentTeams.form.useAgentTeamDefinitionFormState.localAgent') {
+              return `Local Agent (${params?.id ?? 'reviewer'})`
+            }
+            return mockTranslations[key] ?? key
+          },
+        },
+      },
     })
 
     expect(wrapper.text()).toContain('Local Agent (reviewer)')
-    expect(wrapper.text()).toContain('TEAM_LOCAL')
+    expect(wrapper.text()).toContain('Team-local')
 
     await wrapper.get('input#team-name').setValue('Local Review Team Updated')
     await wrapper.get('form').trigger('submit.prevent')

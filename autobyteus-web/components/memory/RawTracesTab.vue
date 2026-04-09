@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="flex flex-wrap items-center gap-3 mb-4">
-      <div class="text-xs font-semibold text-gray-600">Raw Trace Limit</div>
+      <div class="text-xs font-semibold text-gray-600">{{ $t('memory.components.memory.RawTracesTab.raw_trace_limit') }}</div>
       <input
         v-model.number="limitInput"
         type="number"
@@ -17,12 +17,8 @@
       <span v-if="loading" class="text-xs text-gray-400">Loading...</span>
     </div>
 
-    <div v-if="traces === null" class="text-sm text-gray-500">
-      Raw traces not loaded.
-    </div>
-    <div v-else-if="traces.length === 0" class="text-sm text-gray-500">
-      No raw traces found.
-    </div>
+    <div v-if="traces === null" class="text-sm text-gray-500">{{ $t('memory.components.memory.RawTracesTab.raw_traces_not_loaded') }}</div>
+    <div v-else-if="traces.length === 0" class="text-sm text-gray-500">{{ $t('memory.components.memory.RawTracesTab.no_raw_traces_found') }}</div>
     <div v-else class="space-y-3">
       <div
         v-for="(trace, index) in traces"
@@ -37,14 +33,14 @@
           {{ trace.content || '(no content)' }}
         </div>
         <div v-if="trace.toolName" class="mt-2 text-xs text-gray-500">
-          <span class="font-semibold">Tool:</span> {{ trace.toolName }}
+          <span class="font-semibold">{{ $t('memory.components.memory.RawTracesTab.tool') }}</span> {{ trace.toolName }}
         </div>
         <div v-if="trace.toolArgs" class="mt-2">
-          <div class="text-xs font-semibold text-gray-500">Tool Args</div>
+          <div class="text-xs font-semibold text-gray-500">{{ $t('memory.components.memory.RawTracesTab.tool_args') }}</div>
           <pre class="mt-1 rounded-md bg-gray-50 p-2 text-xs text-gray-600 overflow-auto">{{ formatJson(trace.toolArgs) }}</pre>
         </div>
         <div v-if="trace.toolResult" class="mt-2">
-          <div class="text-xs font-semibold text-gray-500">Tool Result</div>
+          <div class="text-xs font-semibold text-gray-500">{{ $t('memory.components.memory.RawTracesTab.tool_result') }}</div>
           <pre class="mt-1 rounded-md bg-gray-50 p-2 text-xs text-gray-600 overflow-auto">{{ formatJson(trace.toolResult) }}</pre>
         </div>
         <div v-if="trace.toolError" class="mt-2 text-xs text-red-600">

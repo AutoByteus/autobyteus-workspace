@@ -12,7 +12,7 @@
         @click="emitEnabled(!enabled)"
         :disabled="disabled"
       >
-        <span class="sr-only">Use setting</span>
+        <span class="sr-only">{{ $t('workspace.components.workspace.config.ModelConfigBasic.use_setting') }}</span>
         <span 
           aria-hidden="true" 
           class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"

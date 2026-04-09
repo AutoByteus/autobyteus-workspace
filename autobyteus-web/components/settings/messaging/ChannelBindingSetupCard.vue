@@ -1,6 +1,6 @@
 <template>
   <section class="border border-gray-200 rounded-lg p-4">
-    <h3 class="text-sm font-semibold text-gray-900">Channel Binding Setup</h3>
+    <h3 class="text-sm font-semibold text-gray-900">{{ $t('settings.components.settings.messaging.ChannelBindingSetupCard.channel_binding_setup') }}</h3>
     <p class="mt-1 text-xs text-gray-500">
       Bind the selected provider scope either to an agent definition with a saved launch preset or
       to an agent team definition with a saved launch preset.
@@ -28,7 +28,7 @@
       <input
         v-model="accountIdModel"
         type="text"
-        placeholder="accountId"
+        :placeholder="$t('settings.components.settings.messaging.ChannelBindingSetupCard.accountid')"
         class="rounded-md border border-gray-300 px-3 py-2 text-sm"
         data-testid="binding-account-id"
       />
@@ -36,7 +36,7 @@
 
     <div class="mt-3 rounded-md border border-gray-200 p-3">
       <div class="flex items-center justify-between gap-2">
-        <p class="text-sm font-medium text-gray-800">Peer Selection</p>
+        <p class="text-sm font-medium text-gray-800">{{ $t('settings.components.settings.messaging.ChannelBindingSetupCard.peer_selection') }}</p>
         <button
           v-if="supportsPeerDiscovery"
           class="px-3 py-1.5 rounded-md border border-gray-300 text-xs text-gray-700"
@@ -54,7 +54,7 @@
           class="rounded-md border border-gray-300 px-3 py-2 text-sm"
           data-testid="binding-peer-select"
         >
-          <option value="">Select peer</option>
+          <option value="">{{ $t('settings.components.settings.messaging.ChannelBindingSetupCard.select_peer') }}</option>
           <option
             v-for="candidate in optionsStore.peerCandidates"
             :key="buildPeerCandidateKey(candidate)"
@@ -78,7 +78,7 @@
         <input
           v-model="draft.peerId"
           type="text"
-          placeholder="peerId"
+          :placeholder="$t('settings.components.settings.messaging.ChannelBindingSetupCard.peerid')"
           class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
           data-testid="binding-peer-id"
         />
@@ -88,7 +88,7 @@
         <input
           v-model="draft.threadId"
           type="text"
-          placeholder="threadId (optional)"
+          :placeholder="$t('settings.components.settings.messaging.ChannelBindingSetupCard.threadid_optional')"
           class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
           data-testid="binding-thread-id"
         />
@@ -98,9 +98,7 @@
         v-if="!supportsPeerDiscovery"
         class="mt-2 text-xs text-gray-600"
         data-testid="peer-discovery-unavailable"
-      >
-        Peer discovery is not available for this provider/transport. Enter peer ID manually.
-      </p>
+      >{{ $t('settings.components.settings.messaging.ChannelBindingSetupCard.peer_discovery_is_not_available_for') }}</p>
 
       <p
         v-if="showPeerDiscoveryInstruction"
@@ -122,9 +120,7 @@
           class="ml-2 rounded border border-amber-300 px-2 py-1 text-xs font-medium text-amber-800"
           data-testid="peer-discovery-manual-fallback-button"
           @click="onTogglePeerInputMode"
-        >
-          Switch to Manual Peer ID
-        </button>
+        >{{ $t('settings.components.settings.messaging.ChannelBindingSetupCard.switch_to_manual_peer_id') }}</button>
       </div>
       <p
         v-if="optionsStore.staleSelectionError"
@@ -144,25 +140,21 @@
         v-if="showDiscordIdentityHint"
         class="mt-2 text-xs text-gray-600"
         data-testid="discord-identity-hint"
-      >
-        For Discord, use <code>user:&lt;snowflake&gt;</code> for DMs or
-        <code>channel:&lt;snowflake&gt;</code> for guild channels. <code>threadId</code> is optional and only
-        valid with <code>channel:</code> peers.
-        <span v-if="discordAccountHint"> Account ID should be <code>{{ discordAccountHint }}</code>.</span>
+      >{{ $t('settings.components.settings.messaging.ChannelBindingSetupCard.for_discord_use') }}<code>{{ $t('settings.components.settings.messaging.ChannelBindingSetupCard.user_and_lt_snowflake_and_gt') }}</code>{{ $t('settings.components.settings.messaging.ChannelBindingSetupCard.for_dms_or') }}<code>{{ $t('settings.components.settings.messaging.ChannelBindingSetupCard.channel_and_lt_snowflake_and_gt') }}</code>{{ $t('settings.components.settings.messaging.ChannelBindingSetupCard.for_guild_channels') }}<code>threadId</code> is optional and only
+        valid with <code>{{ $t('settings.components.settings.messaging.ChannelBindingSetupCard.channel') }}</code> peers.
+        <span v-if="discordAccountHint">{{ $t('settings.components.settings.messaging.ChannelBindingSetupCard.account_id_should_be') }}<code>{{ discordAccountHint }}</code>.</span>
       </p>
       <p
         v-if="showTeamResponsePolicyHint"
         class="mt-2 text-xs text-gray-600"
         data-testid="team-response-policy-hint"
-      >
-        Only the team coordinator or entry node sends replies back to the messaging app.
-      </p>
+      >{{ $t('settings.components.settings.messaging.ChannelBindingSetupCard.only_the_team_coordinator_or_entry') }}</p>
     </div>
 
     <div class="mt-4 rounded-md border border-gray-200 p-3">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
         <div>
-          <label class="block text-xs font-medium text-gray-600 mb-1">Target Type</label>
+          <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('settings.components.settings.messaging.ChannelBindingSetupCard.target_type') }}</label>
           <select
             v-model="draft.targetType"
             class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
@@ -180,7 +172,7 @@
 
         <div v-if="draft.targetType === 'TEAM'">
           <div class="flex items-center justify-between gap-2">
-            <label class="block text-xs font-medium text-gray-600">Team Definition</label>
+            <label class="block text-xs font-medium text-gray-600">{{ $t('settings.components.settings.messaging.ChannelBindingSetupCard.team_definition') }}</label>
             <button
               type="button"
               class="rounded-md border border-gray-300 px-2 py-1 text-xs text-gray-700 disabled:opacity-50"
@@ -196,7 +188,7 @@
             class="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
             data-testid="binding-team-definition-select"
           >
-            <option value="">Select team definition</option>
+            <option value="">{{ $t('settings.components.settings.messaging.ChannelBindingSetupCard.select_team_definition') }}</option>
             <option
               v-for="option in teamDefinitionOptions"
               :key="option.teamDefinitionId"
@@ -216,30 +208,26 @@
             v-else-if="teamDefinitionOptions.length === 0 && !bindingStore.isTeamDefinitionOptionsLoading"
             class="mt-1 text-xs text-gray-500"
             data-testid="team-definition-options-empty"
-          >
-            No team definitions are available yet. Create a team definition first, then return here to bind it.
-          </p>
+          >{{ $t('settings.components.settings.messaging.ChannelBindingSetupCard.no_team_definitions_are_available_yet') }}</p>
         </div>
       </div>
     </div>
 
     <div class="mt-4 rounded-md border border-gray-200 p-3">
       <div class="flex items-center justify-between gap-2">
-        <p class="text-sm font-medium text-gray-800">Launch Preset</p>
-        <p class="text-xs text-gray-500">
-          Saved with the binding and reused when the bound agent or team is started automatically.
-        </p>
+        <p class="text-sm font-medium text-gray-800">{{ $t('settings.components.settings.messaging.ChannelBindingSetupCard.launch_preset') }}</p>
+        <p class="text-xs text-gray-500">{{ $t('settings.components.settings.messaging.ChannelBindingSetupCard.saved_with_the_binding_and_reused') }}</p>
       </div>
 
       <div class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
         <div v-if="draft.targetType === 'AGENT'">
-          <label class="block text-xs font-medium text-gray-600 mb-1">Agent Definition</label>
+          <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('settings.components.settings.messaging.ChannelBindingSetupCard.agent_definition') }}</label>
           <select
             v-model="draft.targetAgentDefinitionId"
             class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
             data-testid="binding-agent-definition-select"
           >
-            <option value="">Select agent</option>
+            <option value="">{{ $t('settings.components.settings.messaging.ChannelBindingSetupCard.select_agent') }}</option>
             <option
               v-for="definition in agentDefinitionOptions"
               :key="definition.id"
@@ -273,11 +261,11 @@
         </div>
 
         <div class="md:col-span-2">
-          <label class="block text-xs font-medium text-gray-600 mb-1">LLM Model</label>
+          <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('settings.components.settings.messaging.ChannelBindingSetupCard.llm_model') }}</label>
           <SearchableGroupedSelect
             :model-value="selectedLaunchPreset.llmModelIdentifier"
             :options="groupedModelOptions"
-            placeholder="Select a model..."
+            :placeholder="$t('settings.components.settings.messaging.ChannelBindingSetupCard.select_a_model')"
             search-placeholder="Search models..."
             data-testid="binding-model-select"
             @update:modelValue="updateModel"
@@ -294,18 +282,14 @@
                 :class="workspaceSelectionMode === 'existing' ? 'border-blue-500 text-blue-700 bg-blue-50' : 'border-gray-300 text-gray-700'"
                 data-testid="binding-workspace-existing-mode"
                 @click="setWorkspaceSelectionMode('existing')"
-              >
-                Select Existing
-              </button>
+              >{{ $t('settings.components.settings.messaging.ChannelBindingSetupCard.select_existing') }}</button>
               <button
                 type="button"
                 class="rounded-md border px-2 py-1 text-xs"
                 :class="workspaceSelectionMode === 'path' ? 'border-blue-500 text-blue-700 bg-blue-50' : 'border-gray-300 text-gray-700'"
                 data-testid="binding-workspace-path-mode"
                 @click="setWorkspaceSelectionMode('path')"
-              >
-                Enter Path
-              </button>
+              >{{ $t('settings.components.settings.messaging.ChannelBindingSetupCard.enter_path') }}</button>
             </div>
           </div>
 
@@ -315,7 +299,7 @@
               class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
               data-testid="binding-workspace-select"
             >
-              <option value="">Select workspace</option>
+              <option value="">{{ $t('settings.components.settings.messaging.ChannelBindingSetupCard.select_workspace') }}</option>
               <option
                 v-for="workspace in workspaceOptions"
                 :key="workspace.workspaceId"
@@ -330,7 +314,7 @@
             <input
               v-model="selectedLaunchPreset.workspaceRootPath"
               type="text"
-              placeholder="/absolute/path/to/workspace"
+              :placeholder="$t('settings.components.settings.messaging.ChannelBindingSetupCard.absolute_path_to_workspace')"
               class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
               data-testid="binding-workspace-path-input"
             />
@@ -338,9 +322,7 @@
         </div>
 
         <div class="flex items-center justify-between gap-4 py-2">
-          <label class="block text-sm text-gray-900 select-none" for="binding-auto-execute">
-            Auto approve tools
-          </label>
+          <label class="block text-sm text-gray-900 select-none" for="binding-auto-execute">{{ $t('settings.components.settings.messaging.ChannelBindingSetupCard.auto_approve_tools') }}</label>
           <button
             id="binding-auto-execute"
             type="button"
@@ -349,7 +331,7 @@
             data-testid="binding-auto-execute-toggle"
             @click="updateAutoExecute(!selectedLaunchPreset.autoExecuteTools)"
           >
-            <span class="sr-only">Auto approve tools</span>
+            <span class="sr-only">{{ $t('settings.components.settings.messaging.ChannelBindingSetupCard.auto_approve_tools') }}</span>
             <span
               aria-hidden="true"
               class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
@@ -359,16 +341,16 @@
         </div>
 
         <div v-if="showSkillAccessControl">
-          <label class="block text-xs font-medium text-gray-600 mb-1">Skill Access</label>
+          <label class="block text-xs font-medium text-gray-600 mb-1">{{ $t('settings.components.settings.messaging.ChannelBindingSetupCard.skill_access') }}</label>
           <select
             :value="selectedLaunchPreset.skillAccessMode"
             class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
             data-testid="binding-skill-access-select"
             @change="updateSkillAccessMode(($event.target as HTMLSelectElement).value)"
           >
-            <option value="PRELOADED_ONLY">Configured skills only (Recommended)</option>
-            <option value="GLOBAL_DISCOVERY">All installed skills</option>
-            <option value="NONE">No skills</option>
+            <option value="PRELOADED_ONLY">{{ $t('settings.components.settings.messaging.ChannelBindingSetupCard.configured_skills_only_recommended') }}</option>
+            <option value="GLOBAL_DISCOVERY">{{ $t('settings.components.settings.messaging.ChannelBindingSetupCard.all_installed_skills') }}</option>
+            <option value="NONE">{{ $t('settings.components.settings.messaging.ChannelBindingSetupCard.no_skills') }}</option>
           </select>
         </div>
 
@@ -480,9 +462,7 @@
       v-if="scopedBindings.length === 0"
       class="mt-2 text-xs text-gray-500"
       data-testid="binding-scope-empty"
-    >
-      No bindings found for the selected provider scope.
-    </p>
+    >{{ $t('settings.components.settings.messaging.ChannelBindingSetupCard.no_bindings_found_for_the_selected') }}</p>
   </section>
 </template>
 

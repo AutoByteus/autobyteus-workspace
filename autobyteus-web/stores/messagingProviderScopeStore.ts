@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
 import type {
   MessagingProvider,
   MessagingTransport,
@@ -26,28 +27,29 @@ function normalizeOptionalAccountId(value: string | null | undefined): string | 
   return normalized.length > 0 ? normalized : null;
 }
 
-const PROVIDER_OPTIONS: Record<MessagingProvider, ProviderScopeOption> = {
-  WHATSAPP: {
-    provider: 'WHATSAPP',
-    label: 'WhatsApp Business',
-  },
-  WECHAT: {
-    provider: 'WECHAT',
-    label: 'WeChat Personal',
-  },
-  WECOM: {
-    provider: 'WECOM',
-    label: 'WeCom App',
-  },
-  DISCORD: {
-    provider: 'DISCORD',
-    label: 'Discord Bot',
-  },
-  TELEGRAM: {
-    provider: 'TELEGRAM',
-    label: 'Telegram Bot',
-  },
-};
+function providerLabel(provider: MessagingProvider): string {
+  switch (provider) {
+    case 'WHATSAPP':
+      return localizationRuntime.translate('settings.messaging.providers.whatsappBusiness');
+    case 'WECHAT':
+      return localizationRuntime.translate('settings.messaging.providers.wechatPersonal');
+    case 'WECOM':
+      return localizationRuntime.translate('settings.messaging.providers.wecomApp');
+    case 'DISCORD':
+      return localizationRuntime.translate('settings.messaging.providers.discordBot');
+    case 'TELEGRAM':
+      return localizationRuntime.translate('settings.messaging.providers.telegramBot');
+    default:
+      return provider;
+  }
+}
+
+function providerOption(provider: MessagingProvider): ProviderScopeOption {
+  return {
+    provider,
+    label: providerLabel(provider),
+  };
+}
 
 function resolveAvailableProviders(
   capabilities: GatewayCapabilitiesModel | null | undefined,
@@ -84,11 +86,13 @@ export const useMessagingProviderScopeStore = defineStore(
 
     getters: {
       options(state): ProviderScopeOption[] {
-        return state.availableProviders.map((provider) => PROVIDER_OPTIONS[provider]);
+        localizationRuntime.resolvedLocale.value;
+        return state.availableProviders.map((provider) => providerOption(provider));
       },
 
       selectedOption(state): ProviderScopeOption {
-        return PROVIDER_OPTIONS[state.selectedProvider];
+        localizationRuntime.resolvedLocale.value;
+        return providerOption(state.selectedProvider);
       },
 
       requiresPersonalSession(state): boolean {

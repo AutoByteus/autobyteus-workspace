@@ -12,19 +12,17 @@
             d="M17 10a.75.75 0 0 1-.75.75H5.56l3.22 3.22a.75.75 0 1 1-1.06 1.06l-4.5-4.5a.75.75 0 0 1 0-1.06l4.5-4.5a.75.75 0 1 1 1.06 1.06L5.56 9.25h10.69A.75.75 0 0 1 17 10Z"
             clip-rule="evenodd"
           />
-        </svg>
-        Back to Agents
-      </button>
+        </svg>{{ $t('agents.components.agents.AgentDetail.back_to_agents') }}</button>
 
       <div v-if="viewState === 'loading'" class="text-center py-20">
         <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600 mx-auto"></div>
-        <p class="mt-4 text-gray-600">{{ isDeleting ? 'Deleting Agent...' : 'Loading Agent Details...' }}</p>
+        <p class="mt-4 text-gray-600">{{ isDeleting ? $t('agents.components.agents.AgentDetail.loadingDeleting') : $t('agents.components.agents.AgentDetail.loadingDetails') }}</p>
       </div>
 
       <div v-else-if="viewState === 'not-found'" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
-        <h3 class="font-bold">Agent Not Found</h3>
-        <p>The agent definition with the specified ID could not be found.</p>
-        <button @click="goBackToList" class="text-indigo-600 hover:underline mt-2 inline-block">&larr; Back to all agents</button>
+        <h3 class="font-bold">{{ $t('agents.components.agents.AgentDetail.agent_not_found') }}</h3>
+        <p>{{ $t('agents.components.agents.AgentDetail.the_agent_definition_with_the_specified') }}</p>
+        <button @click="goBackToList" class="text-indigo-600 hover:underline mt-2 inline-block">{{ $t('agents.components.agents.AgentDetail.and_larr_back_to_all_agents') }}</button>
       </div>
 
       <div v-else class="bg-white p-8 rounded-xl shadow-md border border-gray-200">
@@ -44,28 +42,26 @@
             <div class="text-center">
               <h1 class="text-2xl font-bold text-gray-900">{{ agentDef.name }}</h1>
               <p v-if="agentDef.role" class="text-sm text-indigo-700 font-medium mt-1">{{ agentDef.role }}</p>
-              <p v-if="teamLabel" class="text-sm text-gray-500 mt-1">Team: {{ teamLabel }}</p>
+              <p v-if="teamLabel" class="text-sm text-gray-500 mt-1">{{ $t('agents.components.agents.AgentDetail.teamLabel', { team: teamLabel }) }}</p>
             </div>
 
             <div class="grid grid-cols-2 gap-2 text-center">
               <div class="rounded-lg border border-indigo-100 bg-white px-3 py-2">
-                <p class="text-xs uppercase tracking-wide text-gray-500">Tools</p>
+                <p class="text-xs uppercase tracking-wide text-gray-500">{{ $t('agents.components.agents.AgentDetail.toolsLabel') }}</p>
                 <p class="text-lg font-semibold text-gray-900">{{ agentDef.toolNames.length }}</p>
               </div>
               <div class="rounded-lg border border-indigo-100 bg-white px-3 py-2">
-                <p class="text-xs uppercase tracking-wide text-gray-500">Skills</p>
+                <p class="text-xs uppercase tracking-wide text-gray-500">{{ $t('agents.components.agents.AgentDetail.skillsLabel') }}</p>
                 <p class="text-lg font-semibold text-gray-900">{{ agentDef.skillNames.length }}</p>
               </div>
             </div>
 
             <div class="space-y-2 pt-2">
               <button @click="selectAgentToRun(agentDef)" class="w-full px-4 py-2 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700 transition-colors flex items-center justify-center">
-                <span class="block i-heroicons-play-20-solid w-5 h-5 mr-2"></span>
-                Run Agent
-              </button>
+                <span class="block i-heroicons-play-20-solid w-5 h-5 mr-2"></span>{{ $t('agents.components.agents.AgentDetail.run_agent') }}</button>
               <button @click="$emit('navigate', { view: 'edit', id: agentDef.id })" class="w-full px-4 py-2 bg-gray-100 text-gray-700 font-semibold rounded-md hover:bg-gray-200 transition-colors flex items-center justify-center">
                 <span class="block i-heroicons-pencil-square-20-solid w-5 h-5 mr-2"></span>
-                Edit
+                {{ $t('agents.components.agents.AgentDetail.edit') }}
               </button>
               <AgentDuplicateButton
                 v-if="!isTeamLocal"
@@ -75,18 +71,18 @@
               />
               <button v-if="!isTeamLocal" @click="handleDelete(agentDef.id)" class="w-full px-4 py-2 bg-red-50 text-red-700 font-semibold rounded-md hover:bg-red-100 transition-colors flex items-center justify-center">
                 <span class="block i-heroicons-trash-20-solid w-5 h-5 mr-2"></span>
-                Delete
+                {{ $t('agents.components.agents.AgentDetail.delete') }}
               </button>
             </div>
           </aside>
 
           <section class="space-y-6">
             <div class="rounded-xl border border-gray-200 bg-white p-5">
-              <h2 class="text-lg font-semibold text-gray-800 mb-2">Description</h2>
+              <h2 class="text-lg font-semibold text-gray-800 mb-2">{{ $t('agents.components.agents.AgentDetail.description') }}</h2>
               <p class="text-gray-600 whitespace-pre-wrap">{{ agentDef.description }}</p>
               <div class="mt-4 border-t border-gray-200 pt-4">
-                <p class="text-xs uppercase tracking-wide text-gray-500">Category</p>
-                <p class="mt-1 text-sm text-gray-700">{{ agentDef.category || 'Uncategorized' }}</p>
+                <p class="text-xs uppercase tracking-wide text-gray-500">{{ $t('agents.components.agents.AgentDetail.category') }}</p>
+                <p class="mt-1 text-sm text-gray-700">{{ agentDef.category || $t('agents.components.agents.AgentDetail.uncategorized') }}</p>
               </div>
             </div>
 
@@ -96,27 +92,27 @@
             />
 
             <div class="rounded-xl border border-gray-200 bg-white p-5">
-              <h2 class="text-lg font-semibold text-gray-800 mb-3">Skills</h2>
+              <h2 class="text-lg font-semibold text-gray-800 mb-3">{{ $t('agents.components.agents.AgentDetail.skillsHeading') }}</h2>
               <ul v-if="agentDef.skillNames && agentDef.skillNames.length" class="space-y-2">
                 <li v-for="item in agentDef.skillNames" :key="item" class="text-sm font-mono bg-gray-50 text-gray-800 px-4 py-2 rounded-md border border-gray-200">
                   {{ item }}
                 </li>
               </ul>
-              <p v-else class="text-sm text-gray-500 italic">None configured.</p>
+              <p v-else class="text-sm text-gray-500 italic">{{ $t('agents.components.agents.AgentDetail.none_configured') }}</p>
             </div>
 
             <div class="rounded-xl border border-gray-200 bg-white p-5">
-              <h2 class="text-lg font-semibold text-gray-800 mb-3">Tools</h2>
+              <h2 class="text-lg font-semibold text-gray-800 mb-3">{{ $t('agents.components.agents.AgentDetail.toolsHeading') }}</h2>
               <ul v-if="agentDef.toolNames && agentDef.toolNames.length" class="space-y-2">
                 <li v-for="item in agentDef.toolNames" :key="item" class="text-sm font-mono bg-gray-50 text-gray-800 px-4 py-2 rounded-md border border-gray-200">
                   {{ item }}
                 </li>
               </ul>
-              <p v-else class="text-sm text-gray-500 italic">None configured.</p>
+              <p v-else class="text-sm text-gray-500 italic">{{ $t('agents.components.agents.AgentDetail.none_configured') }}</p>
             </div>
 
             <details v-if="optionalProcessorLists.length" class="rounded-xl border border-gray-200 bg-white p-5">
-              <summary class="text-lg font-semibold text-gray-800 cursor-pointer">Optional Processors (Advanced)</summary>
+              <summary class="text-lg font-semibold text-gray-800 cursor-pointer">{{ $t('agents.components.agents.AgentDetail.optional_processors_advanced') }}</summary>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
                 <div v-for="list in optionalProcessorLists" :key="list.title">
                   <h3 class="font-semibold text-gray-800 mb-3">{{ list.title }}</h3>
@@ -137,8 +133,8 @@
       :show="showDeleteConfirm"
       :item-name="agentDef ? agentDef.name : ''"
       item-type="Agent Definition"
-      title="Delete Agent Definition"
-      confirm-text="Delete Definition"
+      :title="$t('agents.components.agents.AgentDetail.delete_agent_definition')"
+      :confirm-text="$t('agents.components.agents.AgentDetail.delete_definition')"
       @confirm="onDeleteConfirmed"
       @cancel="onDeleteCanceled"
     />

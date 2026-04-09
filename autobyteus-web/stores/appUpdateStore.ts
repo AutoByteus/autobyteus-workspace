@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { useToasts } from '~/composables/useToasts';
+import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
 
 type Cleanup = () => void;
 
@@ -29,6 +30,10 @@ type AppUpdateStatePayload = {
 let updateStateCleanup: Cleanup | null = null;
 let noUpdateHideTimer: ReturnType<typeof setTimeout> | null = null;
 const NO_UPDATE_HIDE_DELAY_MS = 3000;
+
+function t(key: string, params?: Record<string, string | number>): string {
+  return localizationRuntime.translate(key, params);
+}
 
 function clearNoUpdateHideTimer(): void {
   if (!noUpdateHideTimer) {
@@ -118,12 +123,12 @@ export const useAppUpdateStore = defineStore('appUpdate', {
         this.applyRemoteState(initialState);
       } catch (error) {
         const { addToast } = useToasts();
-        addToast('Failed to initialize app updates.', 'error');
+        addToast(t('settings.updates.store.initializeFailed'), 'error');
         this.applyRemoteState({
           ...DEFAULT_STATE,
           status: 'error',
-          message: 'Failed to initialize app updates.',
-          error: error instanceof Error ? error.message : 'Unknown error',
+          message: t('settings.updates.store.initializeFailed'),
+          error: error instanceof Error ? error.message : t('settings.updates.store.unknownError'),
           checkedAt: new Date().toISOString(),
         });
       }
@@ -154,7 +159,7 @@ export const useAppUpdateStore = defineStore('appUpdate', {
 
       this.applyRemoteState({
         status: 'installing',
-        message: 'Installing update and restarting... The app will close automatically.',
+        message: t('settings.updates.store.installingAndRestarting'),
         error: null,
       });
 
@@ -164,8 +169,8 @@ export const useAppUpdateStore = defineStore('appUpdate', {
       } catch (error) {
         this.applyRemoteState({
           status: 'error',
-          message: 'Failed to trigger app restart for update installation.',
-          error: error instanceof Error ? error.message : 'Unknown error',
+          message: t('settings.updates.store.restartInstallFailed'),
+          error: error instanceof Error ? error.message : t('settings.updates.store.unknownError'),
           checkedAt: new Date().toISOString(),
         });
         return;
@@ -174,10 +179,10 @@ export const useAppUpdateStore = defineStore('appUpdate', {
       if (!result.accepted) {
         this.applyRemoteState({
           status: 'downloaded',
-          message: 'Update downloaded. Restart to install.',
+          message: t('settings.updates.store.downloadedRestartToInstall'),
         });
         const { addToast } = useToasts();
-        addToast('Update is not ready to install yet.', 'info');
+        addToast(t('settings.updates.store.updateNotReadyToInstall'), 'info');
       }
     },
 
@@ -224,12 +229,12 @@ export const useAppUpdateStore = defineStore('appUpdate', {
 
       if (this.status === 'downloaded') {
         const { addToast } = useToasts();
-        addToast('Update downloaded. Restart to install.', 'success');
+        addToast(t('settings.updates.store.downloadedRestartToInstall'), 'success');
       }
 
       if (this.status === 'error' && this.error) {
         const { addToast } = useToasts();
-        addToast(`Update error: ${this.error}`, 'error');
+        addToast(t('settings.updates.store.updateErrorWithDetail', { error: this.error }), 'error');
       }
     },
   },

@@ -198,7 +198,7 @@ describe('AgentRunConfigForm', () => {
 
     const runtimeSelect = wrapper.find('select#runtime-kind');
     expect(runtimeSelect.attributes('disabled')).toBeDefined();
-    expect(wrapper.text()).toContain('Runtime is fixed for existing runs.');
+    expect(wrapper.text()).toContain('Runtime is fixed for existing runs');
   });
 
   it('filters unavailable runtime options from selector', async () => {

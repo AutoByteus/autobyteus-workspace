@@ -125,7 +125,7 @@ describe('ServerSettingsManager', () => {
     expect(wrapper.text()).not.toContain('Add one or more endpoints per provider. No commas needed.')
     expect(wrapper.text()).toContain('LM Studio')
     expect(wrapper.text()).toContain('Ollama')
-    expect(wrapper.text()).toContain('Web Search Configuration')
+    expect(wrapper.text()).toContain('Web search configuration')
     expect(wrapper.find('[data-testid="quick-setting-card-LMSTUDIO_HOSTS"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="quick-setting-add-row-LMSTUDIO_HOSTS"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid^="quick-row-host-LMSTUDIO_HOSTS-"]').exists()).toBe(true)

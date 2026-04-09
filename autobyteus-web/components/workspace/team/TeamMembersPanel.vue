@@ -3,14 +3,14 @@
     <!-- Header -->
     <div class="p-4 flex-shrink-0 flex items-center justify-between">
       <div>
-        <h3 class="text-base font-semibold text-gray-900">Team Members</h3>
+        <h3 class="text-base font-semibold text-gray-900">{{ $t('workspace.components.workspace.team.TeamMembersPanel.team_members') }}</h3>
         <p v-if="teamName" class="text-sm text-gray-500 truncate" :title="teamName">{{ teamName }}</p>
       </div>
       <button
         @click="promptTerminateTeam"
         :disabled="isTeamRunTemporary"
         class="px-4 py-2 bg-red-100 text-red-700 font-semibold text-sm rounded-md border border-red-200 shadow-sm hover:bg-red-600 hover:text-white hover:border-red-600 hover:shadow transform transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
-        title="Terminate Team"
+        :title="$t('workspace.components.workspace.team.TeamMembersPanel.terminate_team')"
       >
         Terminate
       </button>
@@ -18,9 +18,7 @@
 
     <!-- Member List -->
     <div class="flex-1 overflow-y-auto p-2 space-y-1">
-      <div v-if="teamMembers.length === 0" class="text-center text-sm text-gray-500 pt-8">
-        No active team members.
-      </div>
+      <div v-if="teamMembers.length === 0" class="text-center text-sm text-gray-500 pt-8">{{ $t('workspace.components.workspace.team.TeamMembersPanel.no_active_team_members') }}</div>
       <div
         v-for="member in teamMembers"
         :key="member.memberName"
@@ -47,8 +45,8 @@
       :show="showTerminateConfirm"
       :item-name="teamName"
       item-type="Team Run"
-      title="Terminate Team Run"
-      confirm-text="Terminate"
+      :title="$t('workspace.components.workspace.team.TeamMembersPanel.terminate_team_run')"
+      :confirm-text="$t('workspace.components.workspace.team.TeamMembersPanel.terminate')"
       @confirm="onTerminateConfirmed"
       @cancel="onTerminateCanceled"
     />

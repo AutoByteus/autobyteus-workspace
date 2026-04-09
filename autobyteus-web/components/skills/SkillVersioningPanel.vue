@@ -4,24 +4,23 @@
     <div v-if="mode === 'compact'" class="compact-container">
       <div v-if="!skill.isVersioned" class="compact-actions">
         <div class="status-badge-ghost">
-          <span class="status-dot-xs"></span>
-          Not versioned
-        </div>
+          <span class="status-dot-xs"></span>{{ $t('skills.components.skills.SkillVersioningPanel.not_versioned') }}</div>
         <button class="btn-magic btn-sm" :disabled="skill.isReadonly || actionLoading" @click="$emit('enable-versioning')">
           <svg class="w-3 h-3 mr-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <line x1="6" y1="3" x2="6" y2="15"></line>
             <circle cx="18" cy="6" r="3"></circle>
             <circle cx="6" cy="18" r="3"></circle>
             <path d="M18 9a9 9 0 0 1-9 9"></path>
-          </svg>
-          Enable Versioning
-        </button>
+          </svg>{{ $t('skills.components.skills.SkillVersioningPanel.enable_versioning') }}</button>
       </div>
       
       <div v-else class="compact-actions">
-         <span class="status-badge-active" :title="'Active: ' + (skill.activeVersion || 'Unknown')">
+         <span
+          class="status-badge-active"
+          :title="$t('skills.components.skills.SkillVersioningPanel.active_title', { version: skill.activeVersion || $t('skills.components.skills.SkillVersioningPanel.unknown_version') })"
+        >
           <span class="status-dot-active"></span>
-          {{ skill.activeVersion || 'Unknown' }}
+          {{ skill.activeVersion || $t('skills.components.skills.SkillVersioningPanel.unknown_version') }}
         </span>
         
         <div class="compact-controls">
@@ -31,7 +30,7 @@
               class="version-select-sm"
               :disabled="versionsLoading || versions.length === 0"
             >
-              <option v-if="versions.length === 0" disabled value="">No versions</option>
+              <option v-if="versions.length === 0" disabled value="">{{ $t('skills.components.skills.SkillVersioningPanel.no_versions') }}</option>
               <option v-for="version in versions" :key="version.tag" :value="version.tag">
                 {{ version.tag }}
               </option>
@@ -46,9 +45,9 @@
             :disabled="!canActivate || actionLoading || skill.isReadonly"
             @click="activateSelected"
           >
-            Activate
+            {{ $t('skills.components.skills.SkillVersioningPanel.activate') }}
           </button>
-           <button class="btn-ghost btn-sm" :disabled="versions.length < 2" @click="$emit('compare-versions')" title="History">
+           <button class="btn-ghost btn-sm" :disabled="versions.length < 2" @click="$emit('compare-versions')" :title="$t('skills.components.skills.SkillVersioningPanel.history')">
             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="10"></circle>
               <polyline points="12 6 12 12 16 14"></polyline>
@@ -62,18 +61,18 @@
     <template v-else>
       <div class="panel-header">
         <div>
-          <h3 class="panel-title">Versioning</h3>
-          <p class="panel-subtitle">Manage skill versions and compare changes.</p>
+          <h3 class="panel-title">{{ $t('skills.components.skills.SkillVersioningPanel.versioning') }}</h3>
+          <p class="panel-subtitle">{{ $t('skills.components.skills.SkillVersioningPanel.manage_skill_versions_and_compare_changes') }}</p>
         </div>
         <div v-if="skill.isVersioned" class="active-pill">
-          Active: {{ skill.activeVersion || 'Unknown' }}
+          {{ $t('skills.components.skills.SkillVersioningPanel.active_title', { version: skill.activeVersion || $t('skills.components.skills.SkillVersioningPanel.unknown_version') }) }}
         </div>
       </div>
 
       <div v-if="!skill.isVersioned" class="panel-body">
         <div class="status-row">
           <span class="status-dot status-dot--inactive"></span>
-          <span class="status-text">Not versioned</span>
+          <span class="status-text">{{ $t('skills.components.skills.SkillVersioningPanel.not_versioned') }}</span>
         </div>
         
         <button class="btn-magic" :disabled="skill.isReadonly || actionLoading" @click="$emit('enable-versioning')">
@@ -82,22 +81,20 @@
             <circle cx="18" cy="6" r="3"></circle>
             <circle cx="6" cy="18" r="3"></circle>
             <path d="M18 9a9 9 0 0 1-9 9"></path>
-          </svg>
-          Enable Versioning
-        </button>
+          </svg>{{ $t('skills.components.skills.SkillVersioningPanel.enable_versioning') }}</button>
         
-        <p v-if="skill.isReadonly" class="hint-text">This skill is read-only.</p>
+        <p v-if="skill.isReadonly" class="hint-text">{{ $t('skills.components.skills.SkillVersioningPanel.this_skill_is_read_only') }}</p>
         <p v-if="actionError" class="error-text">{{ actionError }}</p>
       </div>
 
       <div v-else class="panel-body">
         <div class="status-row">
           <span class="status-dot status-dot--active"></span>
-          <span class="status-text">Versioned</span>
+          <span class="status-text">{{ $t('skills.components.skills.SkillVersioningPanel.versioned') }}</span>
         </div>
 
         <div class="controls-row">
-          <label class="control-label">Activate version</label>
+          <label class="control-label">{{ $t('skills.components.skills.SkillVersioningPanel.activate_version') }}</label>
           <div class="control-group">
             <div class="select-wrapper">
               <select
@@ -105,9 +102,7 @@
                 class="version-select"
                 :disabled="versionsLoading || versions.length === 0"
               >
-                <option v-if="versions.length === 0" disabled value="">
-                  No versions available
-                </option>
+                <option v-if="versions.length === 0" disabled value="">{{ $t('skills.components.skills.SkillVersioningPanel.no_versions_available') }}</option>
                 <option
                   v-for="version in versions"
                   :key="version.tag"
@@ -126,12 +121,12 @@
               :disabled="!canActivate || actionLoading || skill.isReadonly"
               @click="activateSelected"
             >
-              Activate
+              {{ $t('skills.components.skills.SkillVersioningPanel.activate') }}
             </button>
           </div>
-          <p v-if="versionsLoading" class="hint-text">Loading...</p>
+          <p v-if="versionsLoading" class="hint-text">{{ $t('skills.components.skills.SkillVersioningPanel.loading') }}</p>
           <p v-else-if="versionsError" class="error-text">{{ versionsError }}</p>
-          <p v-else-if="skill.isReadonly" class="hint-text">This skill is read-only.</p>
+          <p v-else-if="skill.isReadonly" class="hint-text">{{ $t('skills.components.skills.SkillVersioningPanel.this_skill_is_read_only') }}</p>
           <p v-if="actionError" class="error-text">{{ actionError }}</p>
         </div>
 
@@ -140,10 +135,8 @@
             <svg class="btn-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="10"></circle>
               <polyline points="12 6 12 12 16 14"></polyline>
-            </svg>
-            History / Compare
-          </button>
-          <span v-if="versions.length < 2" class="hint-text">Need at least two versions to compare.</span>
+            </svg>{{ $t('skills.components.skills.SkillVersioningPanel.history_compare') }}</button>
+          <span v-if="versions.length < 2" class="hint-text">{{ $t('skills.components.skills.SkillVersioningPanel.need_at_least_two_versions_to') }}</span>
         </div>
       </div>
     </template>

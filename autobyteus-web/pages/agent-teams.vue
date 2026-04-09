@@ -14,15 +14,13 @@
     />
 
     <div v-else class="mx-auto mt-6 max-w-3xl rounded-xl border border-gray-200 bg-white p-8">
-      <h2 class="text-xl font-bold text-gray-900">Invalid View</h2>
-      <p class="mt-2 text-gray-600">The requested team view is not available.</p>
+      <h2 class="text-xl font-bold text-gray-900">{{ $t('agentTeams.pages.agent_teams.invalid_view') }}</h2>
+      <p class="mt-2 text-gray-600">{{ $t('agentTeams.pages.agent_teams.the_requested_team_view_is_not') }}</p>
       <button
         type="button"
         class="mt-4 text-indigo-600 hover:underline"
         @click="handleNavigation({ view: 'team-list' })"
-      >
-        Go to Agent Teams
-      </button>
+      >{{ $t('agentTeams.pages.agent_teams.go_to_agent_teams') }}</button>
     </div>
   </div>
 </template>

@@ -29,8 +29,8 @@
                     type="button"
                     :class="iconActionButtonClass"
                     :data-testid="`quick-setting-add-row-${field.key}`"
-                    aria-label="Add endpoint"
-                    title="Add endpoint"
+                    :aria-label="$t('settings.components.settings.ServerSettingsManager.add_endpoint')"
+                    :title="$t('settings.components.settings.ServerSettingsManager.add_endpoint')"
                     @click="addQuickEndpointRow(field.key)"
                   >
                     <Icon icon="heroicons:plus" class="w-4 h-4" />
@@ -40,8 +40,8 @@
                     :class="iconSaveButtonClass"
                     :disabled="isQuickSettingSaveBlocked(field.key)"
                     :data-testid="`quick-setting-save-${field.key}`"
-                    aria-label="Save endpoints"
-                    title="Save endpoints"
+                    :aria-label="$t('settings.components.settings.ServerSettingsManager.save_endpoints')"
+                    :title="$t('settings.components.settings.ServerSettingsManager.save_endpoints')"
                     @click="saveQuickSetting(field.key)"
                   >
                     <span
@@ -75,7 +75,7 @@
                       v-model="row.host"
                       type="text"
                       class="sm:col-span-6 h-11 px-3 border border-gray-200 bg-white rounded-lg text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="Host"
+                      :placeholder="$t('settings.components.settings.ServerSettingsManager.host')"
                       :data-testid="`quick-row-host-${field.key}-${row.id}`"
                       @input="onQuickEndpointRowChange(field.key)"
                     >
@@ -84,7 +84,7 @@
                       v-model="row.port"
                       type="text"
                       class="sm:col-span-2 h-11 px-3 border border-gray-200 bg-white rounded-lg text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="Port"
+                      :placeholder="$t('settings.components.settings.ServerSettingsManager.port')"
                       :data-testid="`quick-row-port-${field.key}-${row.id}`"
                       @input="onQuickEndpointRowChange(field.key)"
                     >
@@ -104,7 +104,7 @@
                       v-model="row.host"
                       type="text"
                       class="sm:col-span-8 h-11 px-3 border border-gray-200 bg-white rounded-lg text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="Host"
+                      :placeholder="$t('settings.components.settings.ServerSettingsManager.host')"
                       :data-testid="`quick-row-host-${field.key}-${row.id}`"
                       @input="onQuickEndpointRowChange(field.key)"
                     >
@@ -113,7 +113,7 @@
                       v-model="row.port"
                       type="text"
                       class="sm:col-span-3 h-11 px-3 border border-gray-200 bg-white rounded-lg text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="Port"
+                      :placeholder="$t('settings.components.settings.ServerSettingsManager.port')"
                       :data-testid="`quick-row-port-${field.key}-${row.id}`"
                       @input="onQuickEndpointRowChange(field.key)"
                     >
@@ -131,12 +131,8 @@
               </div>
 
               <div class="mt-4 border-t border-gray-100 pt-3 flex min-h-[1.25rem] items-center justify-end gap-2">
-                <p v-if="isQuickSettingChanged(field.key) && hasQuickSettingValidationErrors(field.key)" class="text-sm text-red-600">
-                  Complete host and use a valid port (1-65535).
-                </p>
-                <p v-else-if="isQuickSettingChanged(field.key)" class="text-sm text-slate-500">
-                  Unsaved changes
-                </p>
+                <p v-if="isQuickSettingChanged(field.key) && hasQuickSettingValidationErrors(field.key)" class="text-sm text-red-600">{{ $t('settings.components.settings.ServerSettingsManager.complete_host_and_use_a_valid') }}</p>
+                <p v-else-if="isQuickSettingChanged(field.key)" class="text-sm text-slate-500">{{ $t('settings.components.settings.ServerSettingsManager.unsaved_changes') }}</p>
               </div>
 
               <input
@@ -155,17 +151,15 @@
             <section class="rounded-3xl border border-slate-200 bg-white px-6 py-5 shadow-sm">
               <div class="flex flex-wrap items-start justify-between gap-4 mb-4">
                 <div>
-                  <h3 class="text-2xl font-semibold leading-tight text-gray-900">Web Search Configuration</h3>
-                  <p class="text-sm text-gray-500 mt-1">
-                    Integrate web search with your models
-                  </p>
+                  <h3 class="text-2xl font-semibold leading-tight text-gray-900">{{ $t('settings.components.settings.ServerSettingsManager.web_search_configuration') }}</h3>
+                  <p class="text-sm text-gray-500 mt-1">{{ $t('settings.components.settings.ServerSettingsManager.integrate_web_search_with_your_models') }}</p>
                 </div>
                 <button
                   type="button"
                   :class="iconSaveButtonClass"
                   :disabled="!canSaveSearchConfig || isSavingSearchConfig"
-                  aria-label="Save web search configuration"
-                  title="Save web search configuration"
+                  :aria-label="$t('settings.components.settings.ServerSettingsManager.save_web_search_configuration')"
+                  :title="$t('settings.components.settings.ServerSettingsManager.save_web_search_configuration')"
                   @click="saveSearchConfig"
                 >
                   <span
@@ -184,7 +178,7 @@
                     data-testid="search-provider-select"
                     @blur="markSearchFormTouched"
                   >
-                    <option value="">Choose a provider...</option>
+                    <option value="">{{ $t('settings.components.settings.ServerSettingsManager.choose_a_provider') }}</option>
                     <option v-for="option in searchProviderOptions" :key="option.value" :value="option.value">
                       {{ option.label }}
                     </option>
@@ -192,81 +186,73 @@
                 </div>
 
                 <div v-if="selectedSearchProvider === 'serper'" class="space-y-2">
-                  <label class="block text-sm font-medium text-gray-900">Serper API Key</label>
+                  <label class="block text-sm font-medium text-gray-900">{{ $t('settings.components.settings.ServerSettingsManager.serper_api_key') }}</label>
                   <input
                     v-model="searchForm.serperApiKey"
                     type="password"
                     class="w-full h-11 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
-                    placeholder="Enter Serper API key"
+                    :placeholder="$t('settings.components.settings.ServerSettingsManager.enter_serper_api_key')"
                     data-testid="search-serper-api-key"
                     @blur="markSearchFormTouched"
                   >
-                  <p v-if="store.searchConfig.serperApiKeyConfigured" class="text-xs text-gray-500">
-                    A Serper API key is already configured.
-                  </p>
+                  <p v-if="store.searchConfig.serperApiKeyConfigured" class="text-xs text-gray-500">{{ $t('settings.components.settings.ServerSettingsManager.a_serper_api_key_is_already') }}</p>
                 </div>
 
                 <div v-if="selectedSearchProvider === 'serpapi'" class="space-y-2">
-                  <label class="block text-sm font-medium text-gray-900">SerpApi API Key</label>
+                  <label class="block text-sm font-medium text-gray-900">{{ $t('settings.components.settings.ServerSettingsManager.serpapi_api_key') }}</label>
                   <input
                     v-model="searchForm.serpapiApiKey"
                     type="password"
                     class="w-full h-11 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
-                    placeholder="Enter SerpApi API key"
+                    :placeholder="$t('settings.components.settings.ServerSettingsManager.enter_serpapi_api_key')"
                     data-testid="search-serpapi-api-key"
                     @blur="markSearchFormTouched"
                   >
-                  <p v-if="store.searchConfig.serpapiApiKeyConfigured" class="text-xs text-gray-500">
-                    A SerpApi API key is already configured.
-                  </p>
+                  <p v-if="store.searchConfig.serpapiApiKeyConfigured" class="text-xs text-gray-500">{{ $t('settings.components.settings.ServerSettingsManager.a_serpapi_api_key_is_already') }}</p>
                 </div>
 
                 <div v-if="selectedSearchProvider === 'google_cse'" class="space-y-2">
-                  <label class="block text-sm font-medium text-gray-900">Google CSE API Key</label>
+                  <label class="block text-sm font-medium text-gray-900">{{ $t('settings.components.settings.ServerSettingsManager.google_cse_api_key') }}</label>
                   <input
                     v-model="searchForm.googleCseApiKey"
                     type="password"
                     class="w-full h-11 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
-                    placeholder="Enter Google CSE API key"
+                    :placeholder="$t('settings.components.settings.ServerSettingsManager.enter_google_cse_api_key')"
                     data-testid="search-google-cse-api-key"
                     @blur="markSearchFormTouched"
                   >
-                  <label class="block text-sm font-medium text-gray-900">Google CSE ID</label>
+                  <label class="block text-sm font-medium text-gray-900">{{ $t('settings.components.settings.ServerSettingsManager.google_cse_id') }}</label>
                   <input
                     v-model="searchForm.googleCseId"
                     type="text"
                     class="w-full h-11 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
-                    placeholder="Enter Google CSE ID"
+                    :placeholder="$t('settings.components.settings.ServerSettingsManager.enter_google_cse_id')"
                     data-testid="search-google-cse-id"
                     @blur="markSearchFormTouched"
                   >
-                  <p v-if="store.searchConfig.googleCseApiKeyConfigured" class="text-xs text-gray-500">
-                    A Google CSE API key is already configured.
-                  </p>
+                  <p v-if="store.searchConfig.googleCseApiKeyConfigured" class="text-xs text-gray-500">{{ $t('settings.components.settings.ServerSettingsManager.a_google_cse_api_key_is') }}</p>
                 </div>
 
                 <div v-if="selectedSearchProvider === 'vertex_ai_search'" class="space-y-2">
-                  <label class="block text-sm font-medium text-gray-900">Vertex AI Search API Key</label>
+                  <label class="block text-sm font-medium text-gray-900">{{ $t('settings.components.settings.ServerSettingsManager.vertex_ai_search_api_key') }}</label>
                   <input
                     v-model="searchForm.vertexAiSearchApiKey"
                     type="password"
                     class="w-full h-11 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
-                    placeholder="Enter Vertex AI Search API key"
+                    :placeholder="$t('settings.components.settings.ServerSettingsManager.enter_vertex_ai_search_api_key')"
                     data-testid="search-vertex-ai-api-key"
                     @blur="markSearchFormTouched"
                   >
-                  <label class="block text-sm font-medium text-gray-900">Serving Config Path</label>
+                  <label class="block text-sm font-medium text-gray-900">{{ $t('settings.components.settings.ServerSettingsManager.serving_config_path') }}</label>
                   <input
                     v-model="searchForm.vertexAiSearchServingConfig"
                     type="text"
                     class="w-full h-11 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
-                    placeholder="projects/{project}/locations/{location}/collections/{collection}/engines/{engine}/servingConfigs/{servingConfig}"
+                    :placeholder="$t('settings.components.settings.ServerSettingsManager.projects_locations_collections_engines_servingco')"
                     data-testid="search-vertex-serving-config"
                     @blur="markSearchFormTouched"
                   >
-                  <p v-if="store.searchConfig.vertexAiSearchApiKeyConfigured" class="text-xs text-gray-500">
-                    A Vertex AI Search API key is already configured.
-                  </p>
+                  <p v-if="store.searchConfig.vertexAiSearchApiKeyConfigured" class="text-xs text-gray-500">{{ $t('settings.components.settings.ServerSettingsManager.a_vertex_ai_search_api_key') }}</p>
                 </div>
 
                 <p v-if="displayedSearchConfigValidationError" class="text-sm text-red-600">
@@ -285,18 +271,14 @@
                 class="pb-2 text-lg border-b-2 transition-colors"
                 :class="advancedPanel === 'raw-settings' ? 'border-blue-500 text-blue-700 font-medium' : 'border-transparent text-gray-600 hover:text-gray-900'"
                 @click="advancedPanel = 'raw-settings'"
-              >
-                All Settings
-              </button>
+              >{{ $t('settings.components.settings.ServerSettingsManager.all_settings') }}</button>
               <button
                 v-if="canAccessEmbeddedDiagnostics"
                 type="button"
                 class="pb-2 text-lg border-b-2 transition-colors"
                 :class="advancedPanel === 'server-status' ? 'border-blue-500 text-blue-700 font-medium' : 'border-transparent text-gray-600 hover:text-gray-900'"
                 @click="advancedPanel = 'server-status'"
-              >
-                Server Status & Logs
-              </button>
+              >{{ $t('settings.components.settings.ServerSettingsManager.server_status_and_logs') }}</button>
             </div>
           </div>
 
@@ -327,7 +309,7 @@
                         :readonly="!isEditableSetting(setting)"
                         :data-testid="`server-setting-value-${setting.key}`"
                         :class="getSettingValueInputClass(setting)"
-                        placeholder="Enter value"
+                        :placeholder="$t('settings.components.settings.ServerSettingsManager.enter_value')"
                       >
                     </td>
                     <td class="px-6 py-4 align-middle">
@@ -368,7 +350,7 @@
                       <input
                         v-model="newSetting.key"
                         type="text"
-                        placeholder="Enter new setting key"
+                        :placeholder="$t('settings.components.settings.ServerSettingsManager.enter_new_setting_key')"
                         class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-500"
                       >
                     </td>
@@ -376,12 +358,12 @@
                       <input
                         v-model="newSetting.value"
                         type="text"
-                        placeholder="Enter value"
+                        :placeholder="$t('settings.components.settings.ServerSettingsManager.enter_value')"
                         class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-500"
                       >
                     </td>
                     <td class="px-6 py-4 align-middle">
-                      <div class="text-sm text-gray-500 italic">Custom user-defined setting</div>
+                      <div class="text-sm text-gray-500 italic">{{ $t('settings.components.settings.ServerSettingsManager.custom_user_defined_setting') }}</div>
                     </td>
                     <td class="px-6 py-4 text-right align-middle">
                       <button

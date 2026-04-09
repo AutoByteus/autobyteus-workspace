@@ -1,9 +1,7 @@
 <template>
   <div class="flex flex-col h-full bg-white">
     <div class="flex-1 overflow-y-auto border-t border-gray-200">
-      <div v-if="agentGroups.length === 0 && teamGroups.length === 0" class="p-6 text-center text-sm text-gray-500">
-        No agents or teams running.
-      </div>
+      <div v-if="agentGroups.length === 0 && teamGroups.length === 0" class="p-6 text-center text-sm text-gray-500">{{ $t('workspace.components.workspace.running.RunningAgentsPanel.no_agents_or_teams_running') }}</div>
 
       <div v-if="agentGroups.length > 0">
         <div>

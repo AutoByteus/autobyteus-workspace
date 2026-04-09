@@ -1,7 +1,7 @@
 <template>
   <div class="flex h-full w-full flex-col bg-gray-50 text-gray-800">
     <section class="flex-shrink-0 border-b border-gray-200 px-2 py-3 bg-white">
-      <nav aria-label="Primary navigation">
+      <nav :aria-label="$t('shell.components.AppLeftPanel.primary_navigation')">
         <ul class="space-y-1">
           <li v-for="item in primaryNavItems" :key="item.key" class="relative">
             <button
@@ -16,14 +16,14 @@
               @click="navigateToPrimary(item.key)"
             >
               <Icon :icon="item.icon" class="h-4 w-4 flex-shrink-0" />
-              <span class="truncate">{{ item.label }}</span>
+              <span class="truncate">{{ t(item.labelKey) }}</span>
             </button>
 
             <button
               v-if="item.key === 'agents'"
               type="button"
               class="absolute right-1.5 top-1/2 hidden -translate-y-1/2 rounded-md p-2 transition-colors md:inline-flex"
-              title="Collapse left panel"
+              :title="$t('shell.components.AppLeftPanel.collapse_left_panel')"
               :class="isPrimaryNavActive(item.key)
                 ? 'text-gray-500 hover:bg-gray-200 hover:text-gray-700'
                 : 'text-gray-400 hover:bg-gray-100 hover:text-gray-600'"
@@ -58,7 +58,7 @@
         @click="navigateToSettings"
       >
         <Icon icon="heroicons:cog-6-tooth" class="h-4 w-4 flex-shrink-0" />
-        <span class="truncate">Settings</span>
+        <span class="truncate">{{ $t('shell.navigation.settings') }}</span>
       </button>
     </footer>
   </div>
@@ -81,13 +81,15 @@ type PrimaryNavKey =
   | 'memory'
   | 'media';
 
-const allPrimaryNavItems: Array<{ key: PrimaryNavKey; label: string; icon: string }> = [
-  { key: 'agents', label: 'Agents', icon: 'heroicons:users' },
-  { key: 'agentTeams', label: 'Agent Teams', icon: 'heroicons:user-group' },
-  { key: 'applications', label: 'Applications', icon: 'heroicons:squares-2x2' },
-  { key: 'skills', label: 'Skills', icon: 'heroicons:sparkles' },
-  { key: 'memory', label: 'Memory', icon: 'ph:brain' },
-  { key: 'media', label: 'Media', icon: 'heroicons:photo' },
+const { t } = useLocalization();
+
+const allPrimaryNavItems: Array<{ key: PrimaryNavKey; labelKey: string; icon: string }> = [
+  { key: 'agents', labelKey: 'shell.navigation.agents', icon: 'heroicons:users' },
+  { key: 'agentTeams', labelKey: 'shell.navigation.agentTeams', icon: 'heroicons:user-group' },
+  { key: 'applications', labelKey: 'shell.navigation.applications', icon: 'heroicons:squares-2x2' },
+  { key: 'skills', labelKey: 'shell.navigation.skills', icon: 'heroicons:sparkles' },
+  { key: 'memory', labelKey: 'shell.navigation.memory', icon: 'ph:brain' },
+  { key: 'media', labelKey: 'shell.navigation.media', icon: 'heroicons:photo' },
 ];
 
 const primaryNavItems = computed(() => {

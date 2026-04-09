@@ -2,8 +2,8 @@
   <div class="skills-page">
     <div class="skills-header">
       <div class="header-left">
-        <h2>Skills</h2>
-        <p class="subtitle">Manage and create file-based capabilities for your agents.</p>
+        <h2>{{ $t('skills.components.skills.SkillsList.title') }}</h2>
+        <p class="subtitle">{{ $t('skills.components.skills.SkillsList.manage_and_create_file_based_capabilities') }}</p>
       </div>
       <div class="header-actions">
         <div class="search-box">
@@ -11,30 +11,30 @@
           <input 
             v-model="searchQuery" 
             type="text" 
-            placeholder="Search skills..." 
+            :placeholder="$t('skills.components.skills.SkillsList.search_skills')" 
             class="search-input"
           />
         </div>
-        <button class="btn-secondary" @click="showSourcesDialog = true" title="Manage Skill Sources">
+        <button class="btn-secondary" @click="showSourcesDialog = true" :title="$t('skills.components.skills.SkillsList.manage_skill_sources')">
           <Icon icon="heroicons:cog-6-tooth" />
-          <span>Sources</span>
+          <span>{{ $t('skills.components.skills.SkillsList.sources') }}</span>
         </button>
         <button class="btn-primary" @click="showCreateDialog = true">
           <Icon icon="heroicons:plus" />
-          <span>Create Skill</span>
+          <span>{{ $t('skills.components.skills.SkillsList.create_skill') }}</span>
         </button>
       </div>
     </div>
 
     <div v-if="loading" class="loading-state">
       <div class="spinner"></div>
-      <p>Loading skills...</p>
+      <p>{{ $t('skills.components.skills.SkillsList.loading_skills') }}</p>
     </div>
 
     <div v-else-if="error" class="error-state">
       <Icon icon="heroicons:exclamation-triangle" class="error-icon" />
       <p>{{ error }}</p>
-      <button class="btn-secondary" @click="skillStore.fetchAllSkills()">Try Again</button>
+      <button class="btn-secondary" @click="skillStore.fetchAllSkills()">{{ $t('skills.components.skills.SkillsList.try_again') }}</button>
     </div>
 
     <div v-else-if="filteredSkills.length === 0" class="empty-state">
@@ -43,13 +43,13 @@
           <Icon icon="heroicons:command-line" class="empty-icon" />
         </div>
         <template v-if="searchQuery">
-          <h3>No skills found</h3>
-          <p>No skills match your search query "{{ searchQuery }}".</p>
-          <button class="btn-text" @click="searchQuery = ''">Clear Search</button>
+          <h3>{{ $t('skills.components.skills.SkillsList.no_skills_found') }}</h3>
+          <p>{{ $t('skills.components.skills.SkillsList.no_skills_match_query', { query: searchQuery }) }}</p>
+          <button class="btn-text" @click="searchQuery = ''">{{ $t('skills.components.skills.SkillsList.clear_search') }}</button>
         </template>
         <template v-else>
-          <h3>No skills created yet</h3>
-          <p>Create your first skill to extend capabilities.</p>
+          <h3>{{ $t('skills.components.skills.SkillsList.no_skills_created_yet') }}</h3>
+          <p>{{ $t('skills.components.skills.SkillsList.create_your_first_skill') }}</p>
 
         </template>
       </div>
@@ -70,7 +70,7 @@
     <div v-if="showCreateDialog" class="dialog-overlay" @click="showCreateDialog = false">
       <div class="dialog" @click.stop>
         <div class="dialog-header">
-          <h3>Create New Skill</h3>
+          <h3>{{ $t('skills.components.skills.SkillsList.create_new_skill') }}</h3>
           <button class="btn-close" @click="showCreateDialog = false">
             <Icon icon="heroicons:x-mark" />
           </button>
@@ -78,42 +78,42 @@
         
         <div class="dialog-body">
           <div class="form-group">
-            <label>Name</label>
+            <label>{{ $t('skills.components.skills.SkillsList.field_name') }}</label>
             <input 
               v-model="newSkill.name" 
               type="text" 
-              placeholder="e.g., data-analysis" 
+              :placeholder="$t('skills.components.skills.SkillsList.name_placeholder')"
               autofocus
             />
-            <p class="help-text">Use lowercase with hyphens or underscores.</p>
+            <p class="help-text">{{ $t('skills.components.skills.SkillsList.name_help') }}</p>
           </div>
           <div class="form-group">
-            <label>Description</label>
+            <label>{{ $t('skills.components.skills.SkillsList.field_description') }}</label>
             <textarea 
               v-model="newSkill.description" 
-              placeholder="Describe what this skill does..."
+              :placeholder="$t('skills.components.skills.SkillsList.description_placeholder')"
               rows="3"
             ></textarea>
           </div>
           <div class="form-group">
-            <label>Initial Content (SKILL.md)</label>
+            <label>{{ $t('skills.components.skills.SkillsList.field_initial_content') }}</label>
             <textarea 
               v-model="newSkill.content" 
               rows="8" 
               class="code-input"
-              placeholder="# Skill Name\n\nDescription..."
+              :placeholder="$t('skills.components.skills.SkillsList.content_placeholder')"
             ></textarea>
           </div>
         </div>
 
         <div class="dialog-footer">
-          <button class="btn-secondary" @click="showCreateDialog = false">Cancel</button>
+          <button class="btn-secondary" @click="showCreateDialog = false">{{ $t('skills.components.skills.SkillsList.cancel') }}</button>
           <button 
             class="btn-primary" 
             @click="handleCreateSkill"
             :disabled="!newSkill.name"
           >
-            Create Skill
+            {{ $t('skills.components.skills.SkillsList.confirm_create') }}
           </button>
         </div>
       </div>
@@ -128,9 +128,9 @@
     <!-- Delete Confirmation Modal -->
     <ConfirmationModal
       :show="showDeleteConfirm"
-      title="Delete Skill"
-      :message="`Are you sure you want to delete the skill <b>${skillToDelete?.name}</b>? This action cannot be undone.`"
-      confirm-button-text="Delete"
+      :title="$t('skills.components.skills.SkillsList.delete_title')"
+      :message="t('skills.components.skills.SkillsList.delete_message', { name: skillToDelete?.name || '' })"
+      :confirm-button-text="$t('skills.components.skills.SkillsList.delete_confirm')"
       variant="danger"
       @confirm="confirmDelete"
       @cancel="showDeleteConfirm = false"
@@ -147,6 +147,8 @@ import SkillCard from './SkillCard.vue'
 import SkillSourcesModal from './SkillSourcesModal.vue'
 import ConfirmationModal from '~/components/common/ConfirmationModal.vue'
 import type { Skill } from '~/types/skill'
+
+const { t } = useLocalization()
 
 const emit = defineEmits<{
   viewDetail: [skillName: string]

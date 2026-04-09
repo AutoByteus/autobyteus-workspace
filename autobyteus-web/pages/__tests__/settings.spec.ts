@@ -3,6 +3,26 @@ import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import SettingsPage from '../settings.vue';
 
+const translationMap: Record<string, string> = {
+  'settings.page.backAriaLabel': 'Back to workspace',
+  'settings.page.backLabel': 'Back to Workspace',
+  'settings.page.empty.title': 'Settings',
+  'settings.page.empty.description': 'Select a category to configure settings.',
+  'settings.page.sections.apiKeys': 'API Keys',
+  'settings.page.sections.tokenUsage': 'Token Usage Statistics',
+  'settings.page.sections.nodes': 'Nodes',
+  'settings.page.sections.messaging': 'Messaging',
+  'settings.page.sections.language': 'Language',
+  'settings.page.sections.localTools': 'Local Tools',
+  'settings.page.sections.mcpServers': 'MCP Servers',
+  'settings.page.sections.agentPackages': 'Agent Packages',
+  'settings.page.sections.serverSettings': 'Server Settings',
+  'settings.page.sections.extensions': 'Extensions',
+  'settings.page.sections.updates': 'Updates',
+  'settings.page.serverSettings.quick': 'Basics',
+  'settings.page.serverSettings.advanced': 'Advanced',
+};
+
 const {
   routeMock,
   routerMock,
@@ -45,11 +65,15 @@ const mountSettings = () =>
         ConversationHistoryManager: { template: '<div data-testid="section-conversation-logs" />' },
         NodeManager: { template: '<div data-testid="section-nodes" />' },
         MessagingSetupManager: { template: '<div data-testid="section-messaging" />' },
+        LanguageSettingsManager: { template: '<div data-testid="section-language" />' },
         AboutSettingsManager: { template: '<div data-testid="section-updates" />' },
         AgentPackagesManager: { template: '<div data-testid="section-agent-packages" />' },
         ExtensionsManager: { template: '<div data-testid="section-extensions" />' },
         ToolsManagementWorkspace: { template: '<div data-testid="section-tools-management" />' },
         ServerSettingsManager: { props: ['sectionMode'], template: '<div data-testid="section-server-settings">mode={{ sectionMode }}</div>' },
+      },
+      mocks: {
+        $t: (key: string) => translationMap[key] ?? key,
       },
     },
   });
@@ -69,6 +93,7 @@ describe('settings page', () => {
     expect(wrapper.text()).toContain('API Keys');
     expect(wrapper.text()).toContain('Nodes');
     expect(wrapper.text()).toContain('Messaging');
+    expect(wrapper.text()).toContain('Language');
     expect(wrapper.text()).toContain('Updates');
     expect(wrapper.text()).toContain('Local Tools');
     expect(wrapper.text()).toContain('MCP Servers');
@@ -116,6 +141,16 @@ describe('settings page', () => {
     const setupState = (wrapper.vm as any).$?.setupState;
 
     expect(setupState.activeSection).toBe('messaging');
+  });
+
+  it('supports language section query and activates language section', async () => {
+    routeMock.query = { section: 'language' };
+    const wrapper = mountSettings();
+    await nextTick();
+    const setupState = (wrapper.vm as any).$?.setupState;
+
+    expect(setupState.activeSection).toBe('language');
+    expect(wrapper.find('[data-testid="section-language"]').exists()).toBe(true);
   });
 
   it('supports updates section query and activates updates section', async () => {

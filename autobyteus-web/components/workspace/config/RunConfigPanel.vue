@@ -9,8 +9,8 @@
         type="button"
         data-test="run-config-back-to-events"
         class="inline-flex h-8 w-8 items-center justify-center rounded-md text-indigo-600 transition-colors hover:bg-indigo-50"
-        title="Return to event view"
-        aria-label="Back to event view"
+        :title="$t('workspace.components.workspace.config.RunConfigPanel.return_to_event_view')"
+        :aria-label="$t('workspace.components.workspace.config.RunConfigPanel.back_to_event_view')"
         @click="showConversationView"
       >
         <Icon icon="heroicons:arrow-long-left-20-solid" aria-hidden="true" class="h-4 w-5" />
@@ -21,7 +21,7 @@
         <!-- Placeholder if nothing selected -->
         <div v-if="!effectiveAgentConfig && !effectiveTeamConfig" class="h-full flex flex-col items-center justify-center text-center text-gray-500">
             <span class="i-heroicons-cursor-arrow-rays-20-solid w-12 h-12 mb-2 text-gray-300"></span>
-            <p>Select an agent or team to configure or run.</p>
+            <p>{{ $t('workspace.components.workspace.config.RunConfigPanel.select_an_agent_or_team_to') }}</p>
         </div>
 
         <!-- Agent Form -->
@@ -48,9 +48,7 @@
            @load-new="handleLoadNew"
         />
 
-        <div v-else class="text-center text-red-500 mt-4">
-            Error: Definition not found.
-        </div>
+        <div v-else class="text-center text-red-500 mt-4">{{ $t('workspace.components.workspace.config.RunConfigPanel.error_definition_not_found') }}</div>
     </div>
 
     <!-- Actions Footer -->
@@ -60,7 +58,7 @@
             :disabled="isRunDisabled"
             class="run-btn w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed"
         >
-            <span>Run {{ isTeamActive ? 'Team' : 'Agent' }}</span>
+            <span>{{ isTeamActive ? $t('workspace.components.workspace.config.RunConfigPanel.runTeamButton') : $t('workspace.components.workspace.config.RunConfigPanel.runAgentButton') }}</span>
         </button>
     </div>
   </div>
@@ -69,6 +67,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { Icon } from '@iconify/vue';
+import { useLocalization } from '~/composables/useLocalization';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
@@ -96,6 +95,7 @@ const workspaceStore = useWorkspaceStore();
 const runHistoryStore = useRunHistoryStore();
 const workspaceCenterViewStore = useWorkspaceCenterViewStore();
 const { setActiveTab } = useRightSideTabs();
+const { t: $t } = useLocalization();
 
 // Mode Detection
 const isSelectionMode = computed(() => !!selectionStore.selectedRunId);
@@ -151,9 +151,9 @@ const isRuntimeLockedForSelectedAgentRun = computed(() => {
 
 // Title
 const configTitle = computed(() => {
-    if (effectiveAgentConfig.value) return isSelectionMode.value ? 'Agent Configuration' : 'New Agent Configuration';
-    if (effectiveTeamConfig.value) return isSelectionMode.value ? 'Team Configuration' : 'New Team Configuration';
-    return 'Configuration';
+    if (effectiveAgentConfig.value) return isSelectionMode.value ? $t('workspace.components.workspace.config.RunConfigPanel.title.agentConfiguration') : $t('workspace.components.workspace.config.RunConfigPanel.title.newAgentConfiguration');
+    if (effectiveTeamConfig.value) return isSelectionMode.value ? $t('workspace.components.workspace.config.RunConfigPanel.title.teamConfiguration') : $t('workspace.components.workspace.config.RunConfigPanel.title.newTeamConfiguration');
+    return $t('workspace.components.workspace.config.RunConfigPanel.title.configuration');
 });
 
 const resolveWorkspacePath = (workspaceId: string | null): string => {

@@ -31,16 +31,14 @@
           ref="searchInputRef"
           v-model="searchTerm"
           type="text"
-          placeholder="Search models..."
+          :placeholder="$t('agentInput.components.agentInput.GroupedSelect.search_models')"
           class="w-full px-2 py-1.5 text-base border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         />
       </div>
 
       <!-- Options List -->
       <div class="flex-grow overflow-y-auto">
-        <div v-if="filteredOptions.length === 0" class="p-3 text-base text-center text-gray-500">
-          No models found.
-        </div>
+        <div v-if="filteredOptions.length === 0" class="p-3 text-base text-center text-gray-500">{{ $t('agentInput.components.agentInput.GroupedSelect.no_models_found') }}</div>
         <div v-for="group in filteredOptions" :key="group.label" class="py-1">
           <div class="px-3 py-1.5 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
             {{ group.label }}
@@ -67,7 +65,7 @@
 
         <!-- Auto-execute Tools Toggle -->
         <label for="auto-execute-toggle" class="flex items-center justify-between cursor-pointer">
-          <span class="text-base font-medium text-gray-800 dark:text-gray-200">Auto-execute Tools</span>
+          <span class="text-base font-medium text-gray-800 dark:text-gray-200">{{ $t('agentInput.components.agentInput.GroupedSelect.auto_execute_tools') }}</span>
           <div class="relative">
             <input 
               type="checkbox" 

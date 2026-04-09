@@ -1,4 +1,5 @@
 import { computed, ref, type ComputedRef } from 'vue';
+import { useLocalization } from '~/composables/useLocalization';
 import type { TeamMemberInput } from '~/stores/agentTeamDefinitionStore';
 
 type ReferenceType = 'AGENT' | 'AGENT_TEAM';
@@ -71,6 +72,7 @@ export const useAgentTeamDefinitionFormState = ({
   getAgentDefinitionById,
   getAgentTeamDefinitionById,
 }: FormStateOptions) => {
+  const { t } = useLocalization();
   const librarySearch = ref('');
   const selectedNodeIndex = ref<number | null>(null);
   const isCanvasDragOver = ref(false);
@@ -124,7 +126,7 @@ export const useAgentTeamDefinitionFormState = ({
   const getReferenceName = (node: TeamMemberInput): string => {
     if (node.refType === 'AGENT') {
       if (node.refScope === 'TEAM_LOCAL') {
-        return `Local Agent (${node.ref})`;
+        return t('agentTeams.components.agentTeams.form.useAgentTeamDefinitionFormState.localAgent', { id: node.ref });
       }
       return getAgentDefinitionById(node.ref)?.name || node.ref;
     }
@@ -251,44 +253,44 @@ export const useAgentTeamDefinitionFormState = ({
     let valid = true;
 
     if (!formData.name.trim()) {
-      formErrors.name = 'Team name is required.';
+      formErrors.name = t('agentTeams.components.agentTeams.form.useAgentTeamDefinitionFormState.error.teamNameRequired');
       valid = false;
     }
 
     if (!formData.description.trim()) {
-      formErrors.description = 'Team description is required.';
+      formErrors.description = t('agentTeams.components.agentTeams.form.useAgentTeamDefinitionFormState.error.teamDescriptionRequired');
       valid = false;
     }
 
     if (formData.nodes.length === 0) {
-      formErrors.nodes = 'Add at least one member.';
+      formErrors.nodes = t('agentTeams.components.agentTeams.form.useAgentTeamDefinitionFormState.error.addMember');
       valid = false;
     }
 
     const memberNames = new Set<string>();
     for (const node of formData.nodes) {
       if (!node.memberName.trim()) {
-        formErrors.nodes = 'Each member needs a name.';
+        formErrors.nodes = t('agentTeams.components.agentTeams.form.useAgentTeamDefinitionFormState.error.memberNameRequired');
         valid = false;
         break;
       }
       if (!node.ref) {
-        formErrors.nodes = 'Each member needs a source reference.';
+        formErrors.nodes = t('agentTeams.components.agentTeams.form.useAgentTeamDefinitionFormState.error.memberSourceRequired');
         valid = false;
         break;
       }
       if (node.refType === 'AGENT' && !node.refScope) {
-        formErrors.nodes = 'Each agent member needs a scope.';
+        formErrors.nodes = t('agentTeams.components.agentTeams.form.useAgentTeamDefinitionFormState.error.agentScopeRequired');
         valid = false;
         break;
       }
       if (node.refType === 'AGENT_TEAM' && node.refScope) {
-        formErrors.nodes = 'Nested team members must not include an agent scope.';
+        formErrors.nodes = t('agentTeams.components.agentTeams.form.useAgentTeamDefinitionFormState.error.nestedTeamScopeForbidden');
         valid = false;
         break;
       }
       if (memberNames.has(node.memberName)) {
-        formErrors.nodes = 'Member names must be unique.';
+        formErrors.nodes = t('agentTeams.components.agentTeams.form.useAgentTeamDefinitionFormState.error.memberNamesUnique');
         valid = false;
         break;
       }
@@ -299,21 +301,21 @@ export const useAgentTeamDefinitionFormState = ({
         node.refType === 'AGENT_TEAM' &&
         node.ref === currentTeamDefinitionId.value
       ) {
-        formErrors.nodes = 'A team cannot include itself as a nested team member.';
+        formErrors.nodes = t('agentTeams.components.agentTeams.form.useAgentTeamDefinitionFormState.error.selfReferenceForbidden');
         valid = false;
         break;
       }
     }
 
     if (!formData.coordinatorMemberName) {
-      formErrors.coordinatorMemberName = 'Coordinator is required.';
+      formErrors.coordinatorMemberName = t('agentTeams.components.agentTeams.form.useAgentTeamDefinitionFormState.error.coordinatorRequired');
       valid = false;
     } else {
       const coordinatorExists = formData.nodes.some(
         (node) => node.refType === 'AGENT' && node.memberName === formData.coordinatorMemberName,
       );
       if (!coordinatorExists) {
-        formErrors.coordinatorMemberName = 'Coordinator must be one of the AGENT members.';
+        formErrors.coordinatorMemberName = t('agentTeams.components.agentTeams.form.useAgentTeamDefinitionFormState.error.coordinatorMustBeAgent');
         valid = false;
       }
     }

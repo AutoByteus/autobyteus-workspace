@@ -1,10 +1,8 @@
 <template>
   <div class="video-player-container">
-    <video v-if="url" controls :src="url" class="video-player">
-      Your browser does not support the video tag.
-    </video>
+    <video v-if="url" controls :src="url" class="video-player">{{ $t('tools.components.fileExplorer.viewers.VideoPlayer.your_browser_does_not_support_the') }}</video>
     <div v-else class="error-placeholder">
-      <p>Video URL is not available.</p>
+      <p>{{ $t('tools.components.fileExplorer.viewers.VideoPlayer.video_url_is_not_available') }}</p>
     </div>
   </div>
 </template>

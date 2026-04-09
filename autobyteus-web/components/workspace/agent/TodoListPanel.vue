@@ -74,10 +74,8 @@
       >
         <div class="px-4 py-8">
           <span class="i-heroicons-clipboard-document-check-20-solid w-10 h-10 text-gray-300 mx-auto"></span>
-          <p class="mt-3 text-sm font-semibold text-gray-700">No to-dos yet</p>
-          <p class="mt-1 text-xs text-gray-500 max-w-[240px]">
-            Ask the agent to break down the work. The plan will appear here automatically.
-          </p>
+          <p class="mt-3 text-sm font-semibold text-gray-700">{{ $t('workspace.components.workspace.agent.TodoListPanel.no_to_dos_yet') }}</p>
+          <p class="mt-1 text-xs text-gray-500 max-w-[240px]">{{ $t('workspace.components.workspace.agent.TodoListPanel.ask_the_agent_to_break_down') }}</p>
         </div>
       </div>
     </div>

@@ -5,7 +5,7 @@
         <span class="text-2xl">📥</span>
       </div>
       <div class="flex-1">
-        <p class="font-semibold text-purple-800 dark:text-purple-300">System Task Notification</p>
+        <p class="font-semibold text-purple-800 dark:text-purple-300">{{ $t('workspace.components.conversation.segments.SystemTaskNotificationSegment.system_task_notification') }}</p>
         <pre class="mt-2 text-sm text-purple-700 dark:text-purple-200 whitespace-pre-wrap font-mono bg-purple-100 dark:bg-gray-700 p-3 rounded"><code>{{ segment.content }}</code></pre>
       </div>
     </div>

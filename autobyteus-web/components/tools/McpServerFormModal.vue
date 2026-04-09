@@ -4,14 +4,14 @@
     <div class="p-6 border-b flex justify-between items-center">
       <div>
         <h2 class="text-2xl font-bold text-gray-900">{{ isEditMode ? 'Edit' : 'Add' }} MCP Server</h2>
-        <p class="text-base text-gray-500 mt-1">Configure a connection to a remote tool server.</p>
+        <p class="text-base text-gray-500 mt-1">{{ $t('tools.components.tools.McpServerFormModal.configure_a_connection_to_a_remote') }}</p>
       </div>
       <button @click="$emit('cancel')" class="px-4 py-2 bg-white border border-gray-300 rounded-md hover:bg-gray-50 text-base">Cancel</button>
     </div>
 
     <!-- Tabs -->
     <div class="px-6 border-b border-gray-200">
-        <nav class="-mb-px flex space-x-6" aria-label="Tabs">
+        <nav class="-mb-px flex space-x-6" :aria-label="$t('tools.components.tools.McpServerFormModal.tabs')">
             <button v-for="tab in tabs" :key="tab.name" @click="activeTab = tab.name"
                     :class="[tab.name === activeTab ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300', 'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm']">
                 {{ tab.label }}
@@ -25,13 +25,13 @@
       <div v-show="activeTab === 'form'">
         <!-- Common Fields -->
         <div>
-          <label for="serverId" class="block text-base font-medium text-gray-700">Server ID</label>
+          <label for="serverId" class="block text-base font-medium text-gray-700">{{ $t('tools.components.tools.McpServerFormModal.server_id') }}</label>
           <input type="text" v-model="form.serverId" id="serverId" :disabled="isEditMode"
                 class="mt-1 block w-full shadow-sm text-base border-gray-300 rounded-md disabled:bg-gray-100 p-2">
         </div>
 
         <div>
-          <label for="transportType" class="block text-base font-medium text-gray-700">Transport Type</label>
+          <label for="transportType" class="block text-base font-medium text-gray-700">{{ $t('tools.components.tools.McpServerFormModal.transport_type') }}</label>
           <select v-model="form.transportType" id="transportType"
                   class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 rounded-md">
             <option>STDIO</option>
@@ -40,14 +40,14 @@
         </div>
 
         <div>
-          <label for="toolNamePrefix" class="block text-base font-medium text-gray-700">Tool Name Prefix (Optional)</label>
+          <label for="toolNamePrefix" class="block text-base font-medium text-gray-700">{{ $t('tools.components.tools.McpServerFormModal.tool_name_prefix_optional') }}</label>
           <input type="text" v-model="form.toolNamePrefix" id="toolNamePrefix"
                 class="mt-1 block w-full shadow-sm text-base border-gray-300 rounded-md p-2">
         </div>
 
         <div class="flex items-center">
           <input id="enabled" v-model="form.enabled" type="checkbox" class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
-          <label for="enabled" class="ml-3 block text-base text-gray-900">Enable this server on save</label>
+          <label for="enabled" class="ml-3 block text-base text-gray-900">{{ $t('tools.components.tools.McpServerFormModal.enable_this_server_on_save') }}</label>
         </div>
 
         <div class="relative">
@@ -69,37 +69,33 @@
             <label class="block text-base font-medium text-gray-700">Arguments</label>
             <div class="space-y-2 mt-1">
               <div v-for="item in argList" :key="item.id" class="flex items-center space-x-2">
-                <input type="text" v-model="item.value" placeholder="Argument" class="block w-full shadow-sm text-base border-gray-300 rounded-md p-2">
+                <input type="text" v-model="item.value" :placeholder="$t('tools.components.tools.McpServerFormModal.argument')" class="block w-full shadow-sm text-base border-gray-300 rounded-md p-2">
                 <button @click="removeArgument(item.id)" class="p-2 text-gray-500 hover:text-red-600 rounded-full">
                   <span class="i-heroicons-trash-20-solid w-5 h-5"></span>
                 </button>
               </div>
             </div>
             <button @click="addArgument" class="mt-2 inline-flex items-center px-3 py-1.5 border border-dashed border-gray-400 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-              <span class="i-heroicons-plus-20-solid w-5 h-5 mr-1 text-gray-500"></span>
-              Add Argument
-            </button>
+              <span class="i-heroicons-plus-20-solid w-5 h-5 mr-1 text-gray-500"></span>{{ $t('tools.components.tools.McpServerFormModal.add_argument') }}</button>
           </div>
           <div>
-            <label for="stdio_cwd" class="block text-base font-medium text-gray-700">Current Working Directory (Optional)</label>
+            <label for="stdio_cwd" class="block text-base font-medium text-gray-700">{{ $t('tools.components.tools.McpServerFormModal.current_working_directory_optional') }}</label>
             <input type="text" v-model="form.stdioConfig.cwd" id="stdio_cwd" class="mt-1 block w-full shadow-sm text-base border-gray-300 rounded-md p-2">
           </div>
           <div>
-            <label class="block text-base font-medium text-gray-700">Environment Variables</label>
+            <label class="block text-base font-medium text-gray-700">{{ $t('tools.components.tools.McpServerFormModal.environment_variables') }}</label>
             <div class="space-y-2 mt-1">
               <div v-for="item in envList" :key="item.id" class="flex items-center space-x-2">
-                <input type="text" v-model="item.key" placeholder="KEY" class="block w-full shadow-sm text-base border-gray-300 rounded-md p-2 font-mono">
+                <input type="text" v-model="item.key" :placeholder="$t('tools.components.tools.McpServerFormModal.key')" class="block w-full shadow-sm text-base border-gray-300 rounded-md p-2 font-mono">
                 <span class="text-gray-500">=</span>
-                <input type="text" v-model="item.value" placeholder="Value" class="block w-full shadow-sm text-base border-gray-300 rounded-md p-2">
+                <input type="text" v-model="item.value" :placeholder="$t('tools.components.tools.McpServerFormModal.value')" class="block w-full shadow-sm text-base border-gray-300 rounded-md p-2">
                 <button @click="removeEnvVariable(item.id)" class="p-2 text-gray-500 hover:text-red-600 rounded-full">
                   <span class="i-heroicons-trash-20-solid w-5 h-5"></span>
                 </button>
               </div>
             </div>
             <button @click="addEnvVariable" class="mt-2 inline-flex items-center px-3 py-1.5 border border-dashed border-gray-400 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-              <span class="i-heroicons-plus-20-solid w-5 h-5 mr-1 text-gray-500"></span>
-              Add Variable
-            </button>
+              <span class="i-heroicons-plus-20-solid w-5 h-5 mr-1 text-gray-500"></span>{{ $t('tools.components.tools.McpServerFormModal.add_variable') }}</button>
           </div>
         </div>
 
@@ -110,7 +106,7 @@
             <input type="text" v-model="form.streamableHttpConfig.url" id="http_url" class="mt-1 block w-full shadow-sm text-base border-gray-300 rounded-md p-2">
           </div>
           <div>
-            <label for="http_token" class="block text-base font-medium text-gray-700">Token (Optional)</label>
+            <label for="http_token" class="block text-base font-medium text-gray-700">{{ $t('tools.components.tools.McpServerFormModal.token_optional') }}</label>
             <input type="password" v-model="form.streamableHttpConfig.token" id="http_token" class="mt-1 block w-full shadow-sm text-base border-gray-300 rounded-md p-2">
           </div>
         </div>
@@ -120,8 +116,8 @@
        <div v-show="activeTab === 'json'">
         <div class="space-y-4">
           <div>
-            <label for="json-input" class="block text-base font-medium text-gray-700">JSON Configuration</label>
-            <p class="text-sm text-gray-500">Paste a standard `mcpServers` JSON object below. When applied, the first valid server config will populate the form.</p>
+            <label for="json-input" class="block text-base font-medium text-gray-700">{{ $t('tools.components.tools.McpServerFormModal.json_configuration') }}</label>
+            <p class="text-sm text-gray-500">{{ $t('tools.components.tools.McpServerFormModal.paste_a_standard_mcpservers_json_object') }}</p>
             <textarea 
                 id="json-input"
                 ref="jsonTextarea"
@@ -130,7 +126,7 @@
             ></textarea>
           </div>
           <div class="flex justify-end">
-            <button @click="applyJsonToForm" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-base font-semibold">Apply JSON to Form</button>
+            <button @click="applyJsonToForm" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-base font-semibold">{{ $t('tools.components.tools.McpServerFormModal.apply_json_to_form') }}</button>
           </div>
         </div>
       </div>
@@ -145,7 +141,7 @@
                 <p class="text-sm text-gray-600 pl-2">{{ tool.description }}</p>
             </div>
          </div>
-         <p v-else class="text-base">No tools were discovered for this configuration.</p>
+         <p v-else class="text-base">{{ $t('tools.components.tools.McpServerFormModal.no_tools_were_discovered_for_this') }}</p>
       </div>
     </div>
     
@@ -153,7 +149,7 @@
     <div class="p-6 bg-gray-50 border-t flex justify-between items-center">
       <div class="flex items-center">
           <input id="sync-on-save" v-model="syncOnSave" type="checkbox" class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
-          <label for="sync-on-save" class="ml-2 block text-sm text-gray-900">Discover & register tools on save</label>
+          <label for="sync-on-save" class="ml-2 block text-sm text-gray-900">{{ $t('tools.components.tools.McpServerFormModal.discover_and_register_tools_on_save') }}</label>
       </div>
 
       <div class="flex items-center space-x-4">
