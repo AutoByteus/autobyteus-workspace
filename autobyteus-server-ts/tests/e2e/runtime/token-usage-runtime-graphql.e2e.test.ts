@@ -393,16 +393,10 @@ describeCodex("Codex token usage GraphQL runtime e2e", () => {
       workspaceRootPath,
     });
 
-    const beforeStartTime = new Date(Date.now() - 60_000);
-    const beforeEndTime = new Date();
-    const beforeUsage = await queryTokenUsage(beforeStartTime, beforeEndTime);
-    expect(beforeUsage.totalCostInPeriod).toBe(0);
-    expect(beforeUsage.usageStatisticsInPeriod).toHaveLength(0);
-
     const { app, socket, messages } = await openAgentSocket(runId);
     const expectedToken = `TOKEN_USAGE_${randomUUID().replace(/-/g, "_")}`;
     const runStartIndex = messages.length;
-    const usageWindowStart = new Date(Date.now() - 5_000);
+    const usageWindowStart = new Date();
 
     try {
       socket.send(

@@ -7,12 +7,12 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 ## Current Snapshot
 
 - Ticket: `remove-file-persistence-provider`
-- Current Stage: `9`
+- Current Stage: `10`
 - Next Stage: `10`
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-018`
+- Last Transition ID: `T-019`
 - Last Updated: `2026-04-09`
 
 ## Stage 0 Bootstrap Record
@@ -46,8 +46,8 @@ Note:
 | 6 Implementation | Pass | Plan/progress current + source + unit/integration verification complete + shared design/common-practice rules reapplied during implementation + no backward-compat/legacy retention + dead/obsolete code cleanup complete in scope + ownership-driven dependencies preserved + primary implementation spine remains global enough to expose the real business path + touched-file placement preserved/corrected + proactive Stage 8 source-file size/delta-pressure handling complete for changed source implementation files | `implementation.md` records the completed persistence-provider cleanup plus the Stage 8 owner-boundary correction for Codex token usage |
 | 7 API/E2E + Executable Validation | Pass | executable validation implementation complete + acceptance-criteria and spine scenario gates complete | `api-e2e-testing.md` Round `4`; live Codex token-usage GraphQL E2E passed under the thread-boundary owner model; existing Codex runtime restore E2E passed |
 | 8 Code Review | Pass | Code review gate `Pass`/`Fail` recorded + priority-ordered detailed review scorecard recorded (`Overall /10`, `Overall /100`, all ten category rows in canonical order with score + why + weakness + improvement, and no category below `9.0` for `Pass`) + all changed source files `<=500` effective non-empty lines + `>220` delta-gate assessments recorded + data-flow spine inventory/spine-span sufficiency/ownership/off-spine concern checks + existing-capability reuse + reusable-owned-structure extraction + shared-structure/data-model tightness + shared-base coherence + repeated-coordination ownership + empty-indirection + scope-appropriate separation of concerns + file placement within the correct subsystem and folder, with any optional module grouping justified + flat-vs-over-split layout judgment + interface/API/query/command/service-method boundary clarity + naming quality across files/folders/APIs/types/functions/parameters/variables + naming-to-responsibility alignment + no unjustified duplication of code/repeated structures in changed scope + patch-on-patch complexity control + dead/obsolete code cleanup completeness in changed scope + test quality + test maintainability + validation-evidence sufficiency + no-backward-compat/no-legacy checks satisfied for `Pass` | `code-review.md` Round `3` passed with no findings after the owner-boundary correction; all scorecard categories are `>= 9.0` |
-| 9 Docs Sync | Not Started | `docs-sync.md` current + docs updated or no-impact rationale recorded | Prior Stage 9 pass was superseded by the Stage 7/8 re-entry loop; rerun has not started yet after the restored Stage 8 pass |
-| 10 Handoff / Ticket State | Not Started | `handoff-summary.md` current + explicit user verification received + ticket moved to `done` + repository finalization into resolved target branch complete when git repo + any applicable release/publication/deployment step completed or explicitly recorded as not required + required post-finalization worktree/branch cleanup complete when applicable + ticket state decision recorded | Prior Stage 10 hold was superseded by the user-requested E2E and review re-entry loop; rerun not started yet |
+| 9 Docs Sync | Pass | `docs-sync.md` current + docs updated or no-impact rationale recorded | `docs-sync.md` rerun confirmed the earlier long-lived documentation updates remain accurate after the Stage 7/8 re-entry loop and that the final Codex runtime ownership fix plus test-surface stabilizations did not require further durable doc edits |
+| 10 Handoff / Ticket State | In Progress | `handoff-summary.md` current + explicit user verification received + ticket moved to `done` + repository finalization into resolved target branch complete when git repo + any applicable release/publication/deployment step completed or explicitly recorded as not required + required post-finalization worktree/branch cleanup complete when applicable + ticket state decision recorded | Explicit user verification is now recorded, `release-notes.md` has been created, the ticket is being archived to `tickets/done/remove-file-persistence-provider`, and repository finalization plus release work are active |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -103,8 +103,8 @@ Note:
 
 ## Pre-Edit Checklist (Stage 6 Source-Code Edits)
 
-- Current Stage is `6`: `Yes`
-- Code Edit Permission is `Unlocked`: `Yes`
+- Current Stage is `6`: `No`
+- Code Edit Permission is `Unlocked`: `No`
 - Stage 5 gate is `Go Confirmed`: `Yes`
 - Required upstream artifacts are current: `Yes`
 - Pre-Edit Checklist Result: `Pass`
@@ -116,7 +116,7 @@ Note:
 - Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
 - Required Return Path: `N/A`
 - Required Upstream Artifacts To Update Before Code Edits: `N/A`
-- Resume Condition: `N/A`
+- Resume Condition: `No active re-entry. Stage 9 docs sync rerun is complete, user verification has been recorded, and Stage 10 finalization plus release work are now active.`
 
 Note:
 - Transition/Re-entry completion rule: recording the path is not enough; resume work immediately and treat re-entry as incomplete until work has actually resumed in the returned stage.
@@ -148,6 +148,7 @@ Note:
 | T-016 | 2026-04-09 | 6 | 7 | Stage 8 owner-boundary local fix implemented; returning to executable validation | N/A | Unlocked | `implementation.md`, `workflow-state.md` |
 | T-017 | 2026-04-09 | 7 | 8 | Stage 7 revalidation passed after the owner-boundary correction; moving to code review rerun | N/A | Locked | `api-e2e-testing.md`, `workflow-state.md` |
 | T-018 | 2026-04-09 | 8 | 9 | Independent Stage 8 rerun passed after the owner-boundary correction; moving to docs sync | N/A | Locked | `code-review.md`, `workflow-state.md` |
+| T-019 | 2026-04-09 | 9 | 10 | Stage 9 docs sync rerun confirmed no further long-lived doc edits were required, explicit user verification was received, `release-notes.md` was created, and Stage 10 finalization plus release work started while archiving the ticket to `tickets/done/remove-file-persistence-provider` | N/A | Locked | `tickets/done/remove-file-persistence-provider/docs-sync.md`, `tickets/done/remove-file-persistence-provider/handoff-summary.md`, `tickets/done/remove-file-persistence-provider/release-notes.md`, `tickets/done/remove-file-persistence-provider/workflow-state.md` |
 
 ## Audible Notification Log (Optional Tracking)
 
@@ -164,6 +165,7 @@ Note:
 | 2026-04-09 | Transition | Stage 8 passed, moving to Stage 9 docs sync. Code edits remain locked. | Success |  |
 | 2026-04-09 | Transition | Stage 9 passed, moving to Stage 10 handoff. Waiting for user verification before archival and finalization. | Success |  |
 | 2026-04-09 | Re-entry | Reopening Stage 7 for additional end-to-end validation requested by the user. Code edits are unlocked for validation-gap follow-up. | Success |  |
+| 2026-04-09 | Transition | Stage 9 docs sync rerun is complete for remove file persistence provider. User verification is recorded, the ticket is being archived under tickets done, and Stage 10 finalization plus release work are now active with code edits locked. | Success | N/A |
 
 ## Process Violation Log
 

@@ -4,7 +4,7 @@
 
 - Ticket: `remove-file-persistence-provider`
 - Trigger Stage: `9`
-- Workflow state source: `tickets/in-progress/remove-file-persistence-provider/workflow-state.md`
+- Workflow state source: `tickets/done/remove-file-persistence-provider/workflow-state.md`
 
 ## Why Docs Were Updated
 
@@ -56,3 +56,4 @@ Not applicable.
 - Required return path or unblock condition: `N/A`
 - Follow-up needed:
   - none for active docs in scope
+  - Stage 7 and Stage 8 re-entry reruns added a Codex runtime ownership correction plus test-surface stabilizations, but those changes did not require any further long-lived documentation edits beyond the updates already captured above

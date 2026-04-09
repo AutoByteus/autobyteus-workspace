@@ -151,14 +151,27 @@ const writeBackendEventLog = async (
 const fetchCodexModelIdentifier = async (
   clientManager: CodexAppServerClientManager,
   cwd: string,
-  preferredIdentifier = "gpt-5.4-mini",
 ): Promise<string> => {
   const models = await new CodexModelCatalog(clientManager).listModels(cwd);
-  const preferredModel = models.find((model) => model.model_identifier === preferredIdentifier);
-  if (!preferredModel) {
-    throw new Error(`Codex model catalog did not return ${preferredIdentifier}.`);
+  const availableModelIdentifiers = models
+    .map((model) => model.model_identifier)
+    .filter((identifier): identifier is string => identifier.length > 0);
+  const preferredOrder = [
+    process.env.CODEX_BACKEND_MODEL?.trim(),
+    "gpt-5.3-codex",
+    "gpt-5.3-codex-spark",
+    "gpt-5.4-mini",
+    "gpt-5.4",
+  ].filter((identifier): identifier is string => Boolean(identifier));
+  const preferredIdentifier = preferredOrder.find((identifier) =>
+    availableModelIdentifiers.includes(identifier),
+  );
+  if (!preferredIdentifier) {
+    throw new Error(
+      `Codex model catalog did not return any preferred backend-flow model. Available models: ${availableModelIdentifiers.join(", ")}`,
+    );
   }
-  return preferredModel.model_identifier;
+  return preferredIdentifier;
 };
 
 const createFactory = (input: {
@@ -395,7 +408,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     try {
       const sendResult = await backend.postUserMessage(
         new AgentInputUserMessage(
-          `Use the terminal tool to execute this command exactly once:\ncat '${escapeForSingleQuotedShell(sourcePath)}' > '${escapeForSingleQuotedShell(destinationPath)}'\nThis command should require approval first. Do not simulate execution.`,
+          `Your next action must be a single terminal tool invocation that requests approval.\nRun this exact command exactly once:\ncat '${escapeForSingleQuotedShell(sourcePath)}' > '${escapeForSingleQuotedShell(destinationPath)}'\nDo not answer in natural language before requesting approval. Do not simulate execution. If approval is denied, briefly acknowledge the denial and stop.`,
         ),
       );
       expect(sendResult.accepted).toBe(true);
@@ -502,7 +515,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     try {
       const sendResult = await backend.postUserMessage(
         new AgentInputUserMessage(
-          `Use the terminal tool exactly once to run this command:\ncat '${escapeForSingleQuotedShell(missingPath)}'\nDo not ask for approval. Do not simulate failure.`,
+          `Your next action must be a single terminal tool invocation.\nRun this exact command once:\ncat '${escapeForSingleQuotedShell(missingPath)}'\nDo not ask for approval. Do not answer in natural language before executing the command. Do not simulate failure. If the command fails, briefly report the failure and stop.`,
         ),
       );
       expect(sendResult.accepted).toBe(true);
@@ -744,13 +757,13 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
       threadManager,
       workspaceRoot,
       runId,
-      toolNames: ["open_tab"],
+      toolNames: ["echo_dynamic"],
       defaultBootstrapStrategy: {
         appliesTo: () => true,
         prepare: ({ agentInstruction }) => ({
           baseInstructions: agentInstruction ? `## Agent Instruction\n${agentInstruction}` : null,
           developerInstructions:
-            "Think carefully. If the user asks for echo_dynamic with explicit JSON arguments, call echo_dynamic exactly once with those exact arguments and do not call any other tool.",
+            "If the user instructs you to call echo_dynamic with explicit JSON arguments, you must call echo_dynamic exactly once with those exact arguments, do not call any other tool, and then reply with DONE only.",
           dynamicToolRegistrations: [
             {
               spec: {
@@ -805,7 +818,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     try {
       const sendResult = await backend.postUserMessage(
         new AgentInputUserMessage(
-          'Think carefully, then call echo_dynamic exactly once with JSON arguments {"value":"HELLO_DYNAMIC"}. Do not call any other tool. After the tool call completes, reply DONE.',
+          'You must call the echo_dynamic tool exactly once in this turn. Do not call any other tool. Use exactly these arguments: {"value":"HELLO_DYNAMIC"}. After the tool call succeeds, reply with DONE only.',
         ),
       );
       expect(sendResult.accepted).toBe(true);
