@@ -13,6 +13,8 @@ const {
   mockGetRun: vi.fn(),
   mockWorkspaceStore: {
     workspaces: {} as Record<string, any>,
+    workspacesFetched: true,
+    fetchAllWorkspaces: vi.fn(),
   },
   mockWindowNodeContextStore: {
     getBoundEndpoints: vi.fn(() => ({ rest: 'http://localhost:3000/rest' })),
@@ -101,12 +103,15 @@ describe('ArtifactContentViewer', () => {
     determineFileTypeMock.mockResolvedValue('Text');
     mockGetRun.mockReset();
     mockGetRun.mockReturnValue({ config: { workspaceId: 'ws-1' } });
-    mockWorkspaceStore.workspaces = {
+    mockWorkspaceStore.workspaces = reactive({
       'ws-1': {
         workspaceId: 'ws-1',
         absolutePath: '/workspace',
       },
-    };
+    }) as Record<string, any>;
+    mockWorkspaceStore.workspacesFetched = true;
+    mockWorkspaceStore.fetchAllWorkspaces.mockReset();
+    mockWorkspaceStore.fetchAllWorkspaces.mockImplementation(async () => {});
     mockWindowNodeContextStore.getBoundEndpoints.mockReset();
     mockWindowNodeContextStore.getBoundEndpoints.mockReturnValue({ rest: 'http://localhost:3000/rest' });
     vi.stubGlobal('fetch', vi.fn());
@@ -162,12 +167,48 @@ describe('ArtifactContentViewer', () => {
     expect((wrapper.vm as any).viewMode).toBe('preview');
   });
 
+  it('resolves edit_file content against the best matching loaded workspace root', async () => {
+    const fetchMock = vi.mocked(global.fetch);
+    fetchMock.mockResolvedValue({
+      ok: true,
+      status: 200,
+      text: async () => 'alternate workspace content',
+    } as Response);
+
+    mockWorkspaceStore.workspaces = reactive({
+      'ws-1': {
+        workspaceId: 'ws-1',
+        absolutePath: '/workspace-a',
+      },
+      'ws-2': {
+        workspaceId: 'ws-2',
+        absolutePath: '/workspace-b',
+      },
+    }) as Record<string, any>;
+
+    const wrapper = mountComponent({
+      ...defaultArtifact,
+      path: '/workspace-b/src/test.md',
+      status: 'available',
+      sourceTool: 'edit_file',
+      workspaceRoot: '/workspace-a',
+    });
+
+    await flushPromises();
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      'http://localhost:3000/rest/workspaces/ws-2/content?path=src%2Ftest.md',
+      { cache: 'no-store' },
+    );
+    expect(wrapper.find('[data-testid="file-viewer"]').text()).toContain('alternate workspace content');
+  });
+
   it('keeps edit_file blank until workspace fetch is available, then refetches after in-place metadata updates', async () => {
     const fetchMock = vi.mocked(global.fetch);
     mockGetRun.mockReturnValue({ config: { workspaceId: null } });
     const { wrapper, state } = mountReactiveHost(reactive({
       ...defaultArtifact,
-      path: '/workspace/src/test.md',
+      path: 'src/test.md',
       status: 'pending',
       sourceTool: 'edit_file',
       content: '@@ -1 +1 @@',
@@ -196,6 +237,45 @@ describe('ArtifactContentViewer', () => {
       { cache: 'no-store' },
     );
     expect(wrapper.find('[data-testid="file-viewer"]').text()).toContain('workspace-backed content');
+  });
+
+  it('refreshes the workspace catalog once before giving up on an unresolved absolute edit_file path', async () => {
+    const fetchMock = vi.mocked(global.fetch);
+    fetchMock.mockResolvedValue({
+      ok: true,
+      status: 200,
+      text: async () => 'workspace content after catalog refresh',
+    } as Response);
+
+    const workspaces = reactive<Record<string, any>>({});
+    mockWorkspaceStore.workspaces = workspaces;
+    mockWorkspaceStore.workspacesFetched = false;
+    mockGetRun.mockReturnValue({ config: { workspaceId: null } });
+    mockWorkspaceStore.fetchAllWorkspaces.mockImplementation(async () => {
+      workspaces['ws-2'] = {
+        workspaceId: 'ws-2',
+        absolutePath: '/workspace-b',
+      };
+      mockWorkspaceStore.workspacesFetched = true;
+    });
+
+    const wrapper = mountComponent({
+      ...defaultArtifact,
+      path: '/workspace-b/src/test.md',
+      status: 'available',
+      sourceTool: 'edit_file',
+      workspaceRoot: null,
+    });
+
+    await flushPromises();
+    await flushPromises();
+
+    expect(mockWorkspaceStore.fetchAllWorkspaces).toHaveBeenCalledTimes(1);
+    expect(fetchMock).toHaveBeenCalledWith(
+      'http://localhost:3000/rest/workspaces/ws-2/content?path=src%2Ftest.md',
+      { cache: 'no-store' },
+    );
+    expect(wrapper.find('[data-testid="file-viewer"]').text()).toContain('workspace content after catalog refresh');
   });
 
   it('does not prepend an extra slash for absolute artifact paths in the header', async () => {

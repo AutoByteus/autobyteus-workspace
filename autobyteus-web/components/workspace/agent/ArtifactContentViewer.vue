@@ -98,6 +98,7 @@ const fetchedContent = ref<string | null>(null);
 const resolvedUrl = ref<string | null>(null);
 const errorMessage = ref<string | null>(null);
 const isDeleted = ref(false);
+const workspaceCatalogRefreshKey = ref<string | null>(null);
 let fetchToken = 0;
 
 const agentContextsStore = useAgentContextsStore();
@@ -111,32 +112,95 @@ const usesBufferedWriteContent = computed(() => {
 const usesWorkspaceBackedEditContent = computed(() => props.artifact?.sourceTool === 'edit_file');
 const normalizedArtifactPath = computed(() => props.artifact?.path?.replace(/\\/g, '/') ?? '');
 const displayPath = computed(() => normalizedArtifactPath.value || props.artifact?.path || '');
+const workspaceResolutionAttemptKey = computed(() => {
+  if (!props.artifact) {
+    return null;
+  }
+  return `${props.artifact.id}:${props.artifact.updatedAt}:${props.refreshSignal ?? 0}`;
+});
+
+const normalizeRootPath = (value: string | null | undefined): string | null => {
+  const source = (value || '').trim();
+  if (!source) {
+    return null;
+  }
+  const normalized = source.replace(/\\/g, '/');
+  if (normalized === '/') {
+    return normalized;
+  }
+  return normalized.replace(/\/+$/, '');
+};
+
+const isAbsolutePath = (value: string): boolean => value.startsWith('/') || /^[A-Za-z]:\//.test(value);
+
+const isPathWithinRoot = (candidatePath: string, rootPath: string): boolean =>
+  candidatePath === rootPath || candidatePath.startsWith(`${rootPath}/`);
+
+const getWorkspaceRootPath = (workspace: { absolutePath?: string | null; workspaceConfig?: Record<string, any> }): string | null =>
+  normalizeRootPath(
+    workspace.absolutePath
+      || workspace.workspaceConfig?.root_path
+      || workspace.workspaceConfig?.rootPath
+      || null,
+  );
+
+const resolvedArtifactWorkspace = computed(() => {
+  if (!props.artifact) {
+    return null;
+  }
+
+  const workspaces = Object.values(workspaceStore.workspaces).map((workspace) => ({
+    workspace,
+    rootPath: getWorkspaceRootPath(workspace),
+  }));
+  const artifactPath = normalizedArtifactPath.value;
+  const artifactWorkspaceRoot = normalizeRootPath(props.artifact.workspaceRoot);
+
+  if (isAbsolutePath(artifactPath)) {
+    const bestPrefixMatch = workspaces
+      .filter(
+        (candidate): candidate is { workspace: typeof candidate.workspace; rootPath: string } =>
+          Boolean(candidate.rootPath) && isPathWithinRoot(artifactPath, candidate.rootPath),
+      )
+      .sort((left, right) => right.rootPath.length - left.rootPath.length)[0];
+
+    if (bestPrefixMatch) {
+      return bestPrefixMatch;
+    }
+  }
+
+  if (artifactWorkspaceRoot) {
+    const exactWorkspaceMatch = workspaces.find(({ rootPath }) => rootPath === artifactWorkspaceRoot);
+    if (exactWorkspaceMatch) {
+      return exactWorkspaceMatch;
+    }
+  }
+
+  const context = agentContextsStore.getRun(props.artifact.runId);
+  const fallbackWorkspaceId = context?.config.workspaceId || null;
+  if (!fallbackWorkspaceId) {
+    return null;
+  }
+
+  const fallbackWorkspace = workspaceStore.workspaces[fallbackWorkspaceId];
+  if (!fallbackWorkspace) {
+    return null;
+  }
+
+  return {
+    workspace: fallbackWorkspace,
+    rootPath: getWorkspaceRootPath(fallbackWorkspace),
+  };
+});
 
 const artifactUrl = computed(() => {
   if (!props.artifact) return null;
   const normalize = (value: string) => value.replace(/\\/g, '/');
+  const resolvedWorkspace = resolvedArtifactWorkspace.value;
+  if (!resolvedWorkspace) return null;
 
-  const workspaceIdFromRoot = (() => {
-    if (!props.artifact?.workspaceRoot) return null;
-    const targetRoot = normalize(props.artifact.workspaceRoot).replace(/\/$/, '');
-    for (const workspace of Object.values(workspaceStore.workspaces)) {
-      if (!workspace.absolutePath) continue;
-      const workspaceRoot = normalize(workspace.absolutePath).replace(/\/$/, '');
-      if (workspaceRoot === targetRoot) {
-        return workspace.workspaceId;
-      }
-    }
-    return null;
-  })();
-
-  const context = agentContextsStore.getRun(props.artifact.runId);
-  const fallbackWorkspaceId = context?.config.workspaceId || null;
-  const workspaceId = workspaceIdFromRoot || fallbackWorkspaceId;
-  if (!workspaceId) return null;
-  const workspace = workspaceStore.workspaces[workspaceId];
-  if (!workspace) return null;
-
-  const basePath = workspace.absolutePath ? normalize(workspace.absolutePath).replace(/\/$/, '') : null;
+  const workspaceId = resolvedWorkspace.workspace.workspaceId;
+  const basePath = resolvedWorkspace.rootPath ? normalize(resolvedWorkspace.rootPath) : null;
   const artifactPath = normalize(props.artifact.path);
 
   let relativePath = artifactPath;
@@ -218,6 +282,21 @@ const refreshResolvedContent = async () => {
   if (!artifactUrl.value) {
     fetchedContent.value = usesWorkspaceBackedEditContent.value ? null : (artifact.content ?? '');
     isFetchingContent.value = false;
+
+    if (
+      usesWorkspaceBackedEditContent.value &&
+      isAbsolutePath(normalizedArtifactPath.value) &&
+      !workspaceStore.workspacesFetched &&
+      workspaceResolutionAttemptKey.value &&
+      workspaceCatalogRefreshKey.value !== workspaceResolutionAttemptKey.value
+    ) {
+      workspaceCatalogRefreshKey.value = workspaceResolutionAttemptKey.value;
+      try {
+        await workspaceStore.fetchAllWorkspaces();
+      } catch {
+        // Leave edit_file blank when no workspace-backed path can be resolved.
+      }
+    }
     return;
   }
 
