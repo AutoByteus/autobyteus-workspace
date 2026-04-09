@@ -4,7 +4,7 @@
 
 - Ticket: `remove-file-persistence-provider`
 - Date: `2026-04-09`
-- Current Status: `Finalization In Progress`
+- Current Status: `Completed`
 - Workflow State Source: `tickets/done/remove-file-persistence-provider/workflow-state.md`
 
 ## Delivery Summary
@@ -69,7 +69,7 @@
 - Release notes artifact:
   - `tickets/done/remove-file-persistence-provider/release-notes.md`
 - Notes:
-  - the standard workspace release helper requires curated notes, and this ticket changes user-visible server runtime behavior
+  - the standard workspace release helper consumed this ticket artifact when publishing `v1.2.66`
 
 ## User Verification Hold
 
@@ -77,7 +77,7 @@
 - User verification received:
   - `Yes` on `2026-04-09`
 - Notes:
-  - user verification is complete and Stage 10 repository finalization plus release work are now active
+  - explicit verification is recorded and Stage 10 repository finalization is complete
 
 ## Finalization Record
 
@@ -92,16 +92,16 @@
 - Finalization target branch:
   - `personal`
 - Commit status:
-  - `Not started`
+  - `Complete` (`6981bf27 fix(server): finalize persistence mode removal`, `5e061ebf Merge branch 'codex/remove-file-persistence-provider' into personal`, `a8a8415f chore(release): bump workspace release version to 1.2.66`, plus this final Stage 10 metadata update)
 - Push status:
-  - `Not started`
+  - `Complete` (ticket branch pushed to `origin/codex/remove-file-persistence-provider`, merged `personal` pushed, release tag `v1.2.66` pushed)
 - Merge status:
-  - `Not started`
+  - `Complete` (`5e061ebf`)
 - Release/publication/deployment status:
-  - `Not started`
+  - `Complete` (`v1.2.66` via `pnpm release 1.2.66 -- --release-notes tickets/done/remove-file-persistence-provider/release-notes.md`)
 - Worktree cleanup status:
-  - `Not started`
+  - `Complete` (dedicated worktree `/Users/normy/autobyteus_org/autobyteus-workspace-remove-file-persistence-provider` removed)
 - Local branch cleanup status:
-  - `Not started`
+  - `Complete` (local branch `codex/remove-file-persistence-provider` deleted after merge and push)
 - Blockers / notes:
-  - Stage 10 finalization is active on top of the verified ticket; remaining work is git finalization, release publication, and required cleanup
+  - no remaining blockers
