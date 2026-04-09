@@ -50,3 +50,36 @@
   - Remove a custom skill source while viewing the skills list.
   - Remove a custom skill source while one of its skills is open.
   - Open a remaining skill afterward to confirm unaffected behavior.
+
+## Finalization Record
+
+- Ticket archived to:
+  - `tickets/done/skill-source-removal-refresh`
+- Ticket worktree path:
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-removal-refresh`
+- Ticket branch:
+  - `codex/skill-source-removal-refresh`
+- Finalization target remote:
+  - `origin`
+- Finalization target branch:
+  - `personal`
+- Commit status:
+  - `Completed`
+  - Ticket branch commit: `c45c76d3` (`fix(skills): refresh removed source state`)
+- Push status:
+  - `Completed`
+  - Ticket branch `origin/codex/skill-source-removal-refresh` was pushed on `2026-04-09`
+  - Target branch update to `origin/personal` completed on `2026-04-09`
+- Merge status:
+  - `Completed`
+  - Target branch merge commit: `34a9eaf0` (`Merge branch 'codex/skill-source-removal-refresh' into personal`)
+- Release/publication/deployment status:
+  - `Not required (explicit user instruction, no new version release)`
+- Worktree cleanup status:
+  - `Completed`
+  - Removed `/Users/normy/autobyteus_org/autobyteus-worktrees/skill-source-removal-refresh` and pruned stale worktree metadata
+- Local branch cleanup status:
+  - `Completed`
+  - Deleted local branch `codex/skill-source-removal-refresh` after merge
+- Blockers / notes:
+  - `None`

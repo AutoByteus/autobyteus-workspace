@@ -8,11 +8,11 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 
 - Ticket: `skill-source-removal-refresh`
 - Current Stage: `10`
-- Next Stage: `Repository finalization into origin/personal without release/version publication`
+- Next Stage: `Completed`
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-011`
+- Last Transition ID: `T-012`
 - Last Updated: `2026-04-09`
 
 ## Stage 0 Bootstrap Record
@@ -47,7 +47,7 @@ Note:
 | 7 API/E2E + Executable Validation | Pass | executable validation implementation complete + acceptance-criteria and spine scenario gates complete | `tickets/done/skill-source-removal-refresh/api-e2e-testing.md`, `tickets/done/skill-source-removal-refresh/workflow-state.md` |
 | 8 Code Review | Pass | Code review gate `Pass`/`Fail` recorded + priority-ordered detailed review scorecard recorded (`Overall /10`, `Overall /100`, all ten category rows in canonical order with score + why + weakness + improvement, and no category below `9.0` for `Pass`) + all changed source files `<=500` effective non-empty lines + `>220` delta-gate assessments recorded + data-flow spine inventory/spine-span sufficiency/ownership/off-spine concern checks + existing-capability reuse + reusable-owned-structure extraction + shared-structure/data-model tightness + shared-base coherence + repeated-coordination ownership + empty-indirection + scope-appropriate separation of concerns + file placement within the correct subsystem and folder, with any optional module grouping justified + flat-vs-over-split layout judgment + interface/API/query/command/service-method boundary clarity + naming quality across files/folders/APIs/types/functions/parameters/variables + naming-to-responsibility alignment + no unjustified duplication of code/repeated structures in changed scope + patch-on-patch complexity control + dead/obsolete code cleanup completeness in changed scope + test quality + test maintainability + validation-evidence sufficiency + no-backward-compat/no-legacy checks satisfied for `Pass` | `tickets/done/skill-source-removal-refresh/code-review.md`, `tickets/done/skill-source-removal-refresh/workflow-state.md` |
 | 9 Docs Sync | Pass | `docs-sync.md` current + docs updated or no-impact rationale recorded | `tickets/done/skill-source-removal-refresh/docs-sync.md`, `tickets/done/skill-source-removal-refresh/workflow-state.md` |
-| 10 Handoff / Ticket State | In Progress | `handoff-summary.md` current + explicit user verification received + ticket moved to `done` + repository finalization into resolved target branch complete when git repo + any applicable release/publication/deployment step completed or explicitly recorded as not required + required post-finalization worktree/branch cleanup complete when applicable + ticket state decision recorded | `tickets/done/skill-source-removal-refresh/handoff-summary.md`, `tickets/done/skill-source-removal-refresh/workflow-state.md` |
+| 10 Handoff / Ticket State | Pass | `handoff-summary.md` current + explicit user verification received + ticket moved to `done` + repository finalization into resolved target branch complete when git repo + any applicable release/publication/deployment step completed or explicitly recorded as not required + required post-finalization worktree/branch cleanup complete when applicable + ticket state decision recorded | `tickets/done/skill-source-removal-refresh/handoff-summary.md`, `tickets/done/skill-source-removal-refresh/workflow-state.md` |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -127,6 +127,7 @@ Note:
 | T-009 | 2026-04-09 | 8 | 9 | Code review passed with no findings, so docs sync is now active. | N/A | Locked | `tickets/done/skill-source-removal-refresh/code-review.md`, `tickets/done/skill-source-removal-refresh/docs-sync.md`, `tickets/done/skill-source-removal-refresh/workflow-state.md` |
 | T-010 | 2026-04-09 | 9 | 10 | Docs sync is complete and the ticket is ready for handoff while waiting for explicit user verification. | N/A | Locked | `tickets/done/skill-source-removal-refresh/docs-sync.md`, `tickets/done/skill-source-removal-refresh/handoff-summary.md`, `tickets/done/skill-source-removal-refresh/workflow-state.md` |
 | T-011 | 2026-04-09 | 10 | 10 | The user verified the fix and repository finalization without release/version publication is now active. | N/A | Locked | `tickets/done/skill-source-removal-refresh/handoff-summary.md`, `tickets/done/skill-source-removal-refresh/workflow-state.md` |
+| T-012 | 2026-04-09 | 10 | 10 | Repository finalization is complete: the ticket branch was committed and pushed, merged into the updated `personal` target, release/version publication was skipped per user instruction, and the ticket worktree plus local branch cleanup finished. | N/A | Locked | `tickets/done/skill-source-removal-refresh/handoff-summary.md`, `tickets/done/skill-source-removal-refresh/workflow-state.md` |
 
 ## Audible Notification Log (Optional Tracking)
 
