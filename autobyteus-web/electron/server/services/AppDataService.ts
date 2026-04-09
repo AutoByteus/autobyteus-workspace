@@ -1,7 +1,9 @@
 import * as path from 'path'
 import * as fs from 'fs'
-import { logger } from '../../logger'
+import { logger as rootLogger } from '../../logger'
 import { INTERNAL_SERVER_BASE_URL } from '../../../shared/embeddedServerConfig'
+
+const logger = rootLogger.child('server.app-data')
 
 /**
  * Service responsible for managing application data directories and initialization.

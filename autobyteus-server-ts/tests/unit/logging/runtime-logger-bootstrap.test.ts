@@ -24,9 +24,10 @@ describe("runtime-logger-bootstrap", () => {
       pinoLogLevel: "info",
       httpAccessLogMode: "errors",
       includeNoisyHttpAccessRoutes: false,
+      scopedLogLevelOverrides: [],
     };
 
-    const { logFilePath } = initializeRuntimeLoggerBootstrap({ logsDir });
+    const { logFilePath } = initializeRuntimeLoggerBootstrap({ logsDir, loggingConfig });
     console.info("runtime-bootstrap-console-check");
 
     const fastifyOptions = getFastifyLoggerOptions(loggingConfig);
@@ -39,6 +40,46 @@ describe("runtime-logger-bootstrap", () => {
     const content = await fsPromises.readFile(logFilePath, "utf-8");
     expect(content).toContain("runtime-bootstrap-console-check");
     expect(content).toContain("runtime-bootstrap-fastify-check");
+
+    await fsPromises.rm(logsDir, { recursive: true, force: true });
+  });
+
+  it("suppresses legacy console debug output when the runtime level is info", async () => {
+    const logsDir = await fsPromises.mkdtemp(path.join(os.tmpdir(), "ab-runtime-log-"));
+    const loggingConfig: LoggingConfig = {
+      pinoLogLevel: "info",
+      httpAccessLogMode: "errors",
+      includeNoisyHttpAccessRoutes: false,
+      scopedLogLevelOverrides: [],
+    };
+
+    const { logFilePath } = initializeRuntimeLoggerBootstrap({ logsDir, loggingConfig });
+    console.debug("runtime-bootstrap-debug-should-not-appear");
+    console.info("runtime-bootstrap-info-should-appear");
+
+    await waitForFlush();
+    const content = await fsPromises.readFile(logFilePath, "utf-8");
+    expect(content).not.toContain("runtime-bootstrap-debug-should-not-appear");
+    expect(content).toContain("runtime-bootstrap-info-should-appear");
+
+    await fsPromises.rm(logsDir, { recursive: true, force: true });
+  });
+
+  it("emits legacy console debug output when the runtime level is debug", async () => {
+    const logsDir = await fsPromises.mkdtemp(path.join(os.tmpdir(), "ab-runtime-log-"));
+    const loggingConfig: LoggingConfig = {
+      pinoLogLevel: "debug",
+      httpAccessLogMode: "errors",
+      includeNoisyHttpAccessRoutes: false,
+      scopedLogLevelOverrides: [],
+    };
+
+    const { logFilePath } = initializeRuntimeLoggerBootstrap({ logsDir, loggingConfig });
+    console.debug("runtime-bootstrap-debug-should-appear");
+
+    await waitForFlush();
+    const content = await fsPromises.readFile(logFilePath, "utf-8");
+    expect(content).toContain("runtime-bootstrap-debug-should-appear");
 
     await fsPromises.rm(logsDir, { recursive: true, force: true });
   });

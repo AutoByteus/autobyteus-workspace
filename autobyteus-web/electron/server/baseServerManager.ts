@@ -2,10 +2,15 @@ import { ChildProcess } from 'child_process'
 import * as net from 'net'
 import axios from 'axios'
 import { EventEmitter } from 'events'
-import { logger } from '../logger'
+import { logger as rootLogger } from '../logger'
 import { getCanonicalBaseDataPath } from '../appDataPaths'
 import { INTERNAL_SERVER_BASE_URL, INTERNAL_SERVER_PORT } from '../../shared/embeddedServerConfig'
 import { AppDataService } from './services/AppDataService'
+import { createServerProcessOutputForwarder } from './serverOutputLogging'
+
+const logger = rootLogger.child('server.base-server-manager')
+const stdoutLogger = rootLogger.child('embedded-server.stdout')
+const stderrLogger = rootLogger.child('embedded-server.stderr')
 
 // Fixed server port
 export const FIXED_SERVER_PORT = INTERNAL_SERVER_PORT
@@ -293,10 +298,12 @@ export abstract class BaseServerManager extends EventEmitter {
    */
   protected setupProcessHandlers(): void {
     if (!this.serverProcess) return
+    const stdoutForwarder = createServerProcessOutputForwarder(stdoutLogger, 'info')
+    const stderrForwarder = createServerProcessOutputForwarder(stderrLogger, 'error')
 
     this.serverProcess.stdout?.on('data', (data) => {
       const output = data.toString()
-      logger.info(`Server stdout: ${output}`)
+      stdoutForwarder.pushChunk(output)
       if (!this.ready && this.checkForReadyMessage(output)) {
         this.isServerRunning = true
         this.ready = true
@@ -306,7 +313,7 @@ export abstract class BaseServerManager extends EventEmitter {
 
     this.serverProcess.stderr?.on('data', (data) => {
       const output = data.toString()
-      logger.error(`Server stderr: ${output}`)
+      stderrForwarder.pushChunk(output)
       if (!this.ready && this.checkForReadyMessage(output)) {
         this.isServerRunning = true
         this.ready = true
@@ -322,6 +329,8 @@ export abstract class BaseServerManager extends EventEmitter {
     })
 
     this.serverProcess.on('close', (code) => {
+      stdoutForwarder.flush()
+      stderrForwarder.flush()
       logger.info(`Server process exited with code ${code}`)
       this.isServerRunning = false
       this.ready = false
