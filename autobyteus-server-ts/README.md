@@ -157,13 +157,57 @@ termux-volume music 10
 
 ## Docker
 
-Build from repo root (required so workspace packages are available):
+Recommended for users: start the published Docker Hub image directly, without cloning this repository:
+
+```bash
+docker run -d \
+  --name autobyteus-server \
+  --restart unless-stopped \
+  --cap-add SYS_ADMIN \
+  --security-opt seccomp=unconfined \
+  -p 8001:8000 \
+  -p 5908:5900 \
+  -p 6080:6080 \
+  -p 9228:9223 \
+  -e AUTOBYTEUS_SERVER_HOST=http://localhost:8001 \
+  -e AUTOBYTEUS_VNC_SERVER_HOSTS=localhost:6080 \
+  -v autobyteus-server-workspace:/app/autobyteus-server-ts/workspace \
+  -v autobyteus-server-data:/home/autobyteus/data \
+  -v autobyteus-server-root-home:/root \
+  autobyteus/autobyteus-server:latest
+```
+
+Useful endpoints after startup:
+
+```text
+GraphQL: http://localhost:8001/graphql
+REST:    http://localhost:8001/rest/*
+WS:      ws://localhost:8001/ws/...
+noVNC:   http://localhost:6080
+VNC:     localhost:5908
+```
+
+Stop it with:
+
+```bash
+docker stop autobyteus-server
+```
+
+If you already cloned this repository, you can use the helper script instead:
+
+```bash
+cd autobyteus-server-ts/docker
+./docker-start.sh up --pull-remote
+./docker-start.sh ports
+```
+
+If you are developing locally and want to build the image from source instead, build from repo root (required so workspace packages are available):
 
 ```bash
 docker build -f autobyteus-server-ts/docker/Dockerfile.monorepo -t autobyteus-server-ts .
 ```
 
-Run:
+Then run the local image:
 
 ```bash
 docker run --rm -p 8000:8000 autobyteus-server-ts
