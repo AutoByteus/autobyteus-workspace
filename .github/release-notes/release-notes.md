@@ -1,15 +1,9 @@
-# Release Notes
-
 ## What's New
-
-- You can now import agent packages directly from a public GitHub repository URL in `Settings -> Agent Packages`.
+- The server no longer uses a global persistence mode switch. Persistence is now decided by each owning subsystem at runtime.
 
 ## Improvements
-
-- The settings surface is now named `Agent Packages` instead of `Agent Package Roots`.
-- GitHub imports are downloaded into app-managed storage automatically, so users do not need to clone repositories manually.
-- Imported GitHub packages are registered through the same package list as local package paths.
+- Token usage is now stored through the database-backed SQL path only, which simplifies startup and removes the old file-backed token storage branch.
+- Server build and runtime tooling now follow one standard path without separate file-profile outputs.
 
 ## Fixes
-
-- Removing a GitHub-imported package now deletes the managed local copy from app storage instead of leaving stale downloaded data behind.
+- Codex runtime token-usage persistence remains captured correctly under the simplified persistence model, with live validation covering the GraphQL statistics path.
