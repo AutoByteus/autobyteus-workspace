@@ -1,8 +1,15 @@
+# Release Notes
+
 ## What's New
-- Codex-configured skills now reuse matching installed Codex skills instead of copying duplicate workspace skill bundles.
+
+- You can now import agent packages directly from a public GitHub repository URL in `Settings -> Agent Packages`.
 
 ## Improvements
-- Team skills that rely on shared reference files now load as self-contained runtime bundles, so shared guidance files keep working inside the run workspace.
+
+- The settings surface is now named `Agent Packages` instead of `Agent Package Roots`.
+- GitHub imports are downloaded into app-managed storage automatically, so users do not need to clone repositories manually.
+- Imported GitHub packages are registered through the same package list as local package paths.
 
 ## Fixes
-- Materialized runtime skill folders now use shorter, easier-to-read suffixes.
+
+- Removing a GitHub-imported package now deletes the managed local copy from app storage instead of leaving stale downloaded data behind.
