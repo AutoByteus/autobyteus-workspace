@@ -109,6 +109,21 @@ describe('ToolCallIndicator.vue', () => {
     expect(wrapper.text().toLowerCase()).not.toContain('success');
   });
 
+  it('keeps the full command summary available for responsive truncation instead of hard-cutting it in JavaScript', () => {
+    const command = 'printf "alpha beta gamma delta epsilon zeta eta theta iota kappa lambda"';
+    const wrapper = mountIndicator({
+      status: 'success',
+      toolName: 'run_bash',
+      args: {
+        command,
+      },
+    });
+
+    const summary = wrapper.get('[data-test="tool-context-summary"]');
+    expect(summary.text()).toContain('theta iota kappa lambda');
+    expect(summary.attributes('title')).toBe(command);
+  });
+
   it('keeps the inline error details row available without restoring the failed label', () => {
     const wrapper = mountIndicator({
       status: 'error',
