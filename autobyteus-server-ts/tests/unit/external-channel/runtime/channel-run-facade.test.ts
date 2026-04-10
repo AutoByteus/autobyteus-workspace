@@ -78,6 +78,7 @@ describe("ChannelRunFacade", () => {
     const dispatchToAgentBinding = vi.fn().mockResolvedValue({
       agentRunId: "agent-1",
       teamRunId: null,
+      turnId: "turn-1",
       dispatchedAt: new Date("2026-02-08T00:00:01.000Z"),
     });
     const dispatchToTeamBinding = vi.fn();
@@ -92,7 +93,6 @@ describe("ChannelRunFacade", () => {
     expect(dispatchToAgentBinding).toHaveBeenCalledWith(
       createAgentBinding(),
       createEnvelope(),
-      {},
     );
     expect(dispatchToTeamBinding).not.toHaveBeenCalled();
   });
@@ -102,6 +102,7 @@ describe("ChannelRunFacade", () => {
     const dispatchToTeamBinding = vi.fn().mockResolvedValue({
       agentRunId: null,
       teamRunId: "team-1",
+      turnId: "turn-1",
       dispatchedAt: new Date("2026-02-08T00:00:01.000Z"),
     });
     const facade = new ChannelRunFacade({
@@ -115,7 +116,6 @@ describe("ChannelRunFacade", () => {
     expect(dispatchToTeamBinding).toHaveBeenCalledWith(
       createTeamBinding(),
       createEnvelope(),
-      {},
     );
     expect(dispatchToAgentBinding).not.toHaveBeenCalled();
   });

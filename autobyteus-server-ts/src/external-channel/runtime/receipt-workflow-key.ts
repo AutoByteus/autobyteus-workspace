@@ -3,11 +3,6 @@ import type {
   ChannelMessageReceipt,
 } from "../domain/models.js";
 
-export type TurnCorrelationObserver = {
-  unsubscribe: () => void;
-  processing: Promise<void>;
-};
-
 export const toReceiptKey = (
   receipt: Pick<
     ChannelMessageReceipt,
@@ -36,20 +31,3 @@ export const serializeReceiptKey = (key: ChannelIngressReceiptKey): string =>
     key.threadId ?? "",
     key.externalMessageId,
   ].join("::");
-
-export const compareAcceptedReceiptsOldestFirst = (
-  left: ChannelMessageReceipt,
-  right: ChannelMessageReceipt,
-): number => {
-  const createdAt = left.createdAt.getTime() - right.createdAt.getTime();
-  if (createdAt !== 0) {
-    return createdAt;
-  }
-  const receivedAt = left.receivedAt.getTime() - right.receivedAt.getTime();
-  if (receivedAt !== 0) {
-    return receivedAt;
-  }
-  return serializeReceiptKey(toReceiptKey(left)).localeCompare(
-    serializeReceiptKey(toReceiptKey(right)),
-  );
-};

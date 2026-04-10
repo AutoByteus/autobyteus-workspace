@@ -1,6 +1,7 @@
 export type AcceptedAgentDispatch = {
   dispatchTargetType: "AGENT";
   agentRunId: string;
+  turnId: string;
   dispatchedAt: Date;
 };
 
@@ -9,6 +10,7 @@ export type AcceptedTeamDispatch = {
   teamRunId: string;
   memberRunId: string | null;
   memberName: string | null;
+  turnId: string;
   dispatchedAt: Date;
 };
 

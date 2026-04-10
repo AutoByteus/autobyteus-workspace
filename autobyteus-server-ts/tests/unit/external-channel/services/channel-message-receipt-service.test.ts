@@ -33,8 +33,12 @@ const createSourceContext = (): ChannelSourceContext => ({
 const createReceipt = (): ChannelMessageReceipt => ({
   ...createSourceContext(),
   ingressState: "ROUTED",
+  workflowState: "PUBLISHED",
+  dispatchAcceptedAt: new Date("2026-02-08T00:00:10.000Z"),
   agentRunId: "agent-1",
   teamRunId: null,
+  replyTextFinal: "final reply",
+  lastError: null,
   dispatchLeaseToken: null,
   dispatchLeaseExpiresAt: null,
   createdAt: new Date("2026-02-08T00:00:00.000Z"),
@@ -46,10 +50,11 @@ const createProvider = (): ChannelMessageReceiptProvider => ({
   createPendingIngressReceipt: vi.fn(),
   claimIngressDispatch: vi.fn(),
   recordAcceptedDispatch: vi.fn(),
-  updateAcceptedReceiptCorrelation: vi.fn(),
+  updateReceiptWorkflowProgress: vi.fn(),
   markReplyPublished: vi.fn(),
   markIngressUnbound: vi.fn(),
   listReceiptsByIngressState: vi.fn(),
+  listReceiptsByWorkflowStates: vi.fn(),
   getSourceByAgentRunTurn: vi.fn(),
 });
 
@@ -104,40 +109,6 @@ describe("ChannelMessageReceiptService", () => {
     });
   });
 
-  it("normalizes and delegates accepted-dispatch correlation updates", async () => {
-    const provider = createProvider();
-    provider.updateAcceptedReceiptCorrelation = vi
-      .fn()
-      .mockResolvedValue(createReceipt());
-    const service = new ChannelMessageReceiptService(provider);
-
-    await service.updateAcceptedReceiptCorrelation({
-      provider: ExternalChannelProvider.WHATSAPP,
-      transport: ExternalChannelTransport.PERSONAL_SESSION,
-      accountId: " acct-1 ",
-      peerId: " peer-1 ",
-      threadId: " ",
-      externalMessageId: " msg-1 ",
-      turnId: " turn-1 ",
-      agentRunId: " agent-1 ",
-      teamRunId: null,
-      receivedAt: new Date("2026-02-09T00:00:00.000Z"),
-    });
-
-    expect(provider.updateAcceptedReceiptCorrelation).toHaveBeenCalledWith({
-      provider: ExternalChannelProvider.WHATSAPP,
-      transport: ExternalChannelTransport.PERSONAL_SESSION,
-      accountId: "acct-1",
-      peerId: "peer-1",
-      threadId: null,
-      externalMessageId: "msg-1",
-      turnId: "turn-1",
-      agentRunId: "agent-1",
-      teamRunId: null,
-      receivedAt: new Date("2026-02-09T00:00:00.000Z"),
-    });
-  });
-
   it("delegates source lookup by agent turn", async () => {
     const context = createSourceContext();
     const provider = createProvider();
@@ -148,6 +119,82 @@ describe("ChannelMessageReceiptService", () => {
 
     expect(result).toEqual(context);
     expect(provider.getSourceByAgentRunTurn).toHaveBeenCalledWith("agent-1", "turn-1");
+  });
+
+  it("normalizes receipt workflow progress updates", async () => {
+    const provider = createProvider();
+    provider.updateReceiptWorkflowProgress = vi
+      .fn()
+      .mockResolvedValue(createReceipt());
+    const service = new ChannelMessageReceiptService(provider);
+
+    await service.updateReceiptWorkflowProgress({
+      provider: ExternalChannelProvider.WHATSAPP,
+      transport: ExternalChannelTransport.PERSONAL_SESSION,
+      accountId: " acct-1 ",
+      peerId: " peer-1 ",
+      threadId: " ",
+      externalMessageId: " msg-1 ",
+      receivedAt: new Date("2026-02-09T00:00:00.000Z"),
+      workflowState: "REPLY_FINALIZED",
+      turnId: " turn-1 ",
+      agentRunId: " agent-1 ",
+      teamRunId: null,
+      replyTextFinal: " done ",
+      lastError: " ",
+    });
+
+    expect(provider.updateReceiptWorkflowProgress).toHaveBeenCalledWith({
+      provider: ExternalChannelProvider.WHATSAPP,
+      transport: ExternalChannelTransport.PERSONAL_SESSION,
+      accountId: "acct-1",
+      peerId: "peer-1",
+      threadId: null,
+      externalMessageId: "msg-1",
+      receivedAt: new Date("2026-02-09T00:00:00.000Z"),
+      workflowState: "REPLY_FINALIZED",
+      turnId: "turn-1",
+      agentRunId: "agent-1",
+      teamRunId: null,
+      replyTextFinal: "done",
+      lastError: null,
+    });
+  });
+
+  it("normalizes accepted dispatch persistence with explicit dispatchAcceptedAt", async () => {
+    const provider = createProvider();
+    provider.recordAcceptedDispatch = vi.fn().mockResolvedValue(createReceipt());
+    const service = new ChannelMessageReceiptService(provider);
+
+    await service.recordAcceptedDispatch({
+      provider: ExternalChannelProvider.WHATSAPP,
+      transport: ExternalChannelTransport.PERSONAL_SESSION,
+      accountId: " acct-1 ",
+      peerId: " peer-1 ",
+      threadId: " ",
+      externalMessageId: " msg-1 ",
+      receivedAt: new Date("2026-02-09T00:00:00.000Z"),
+      dispatchLeaseToken: " lease-1 ",
+      agentRunId: " agent-1 ",
+      teamRunId: null,
+      turnId: " turn-1 ",
+      dispatchAcceptedAt: new Date("2026-02-09T00:00:02.000Z"),
+    });
+
+    expect(provider.recordAcceptedDispatch).toHaveBeenCalledWith({
+      provider: ExternalChannelProvider.WHATSAPP,
+      transport: ExternalChannelTransport.PERSONAL_SESSION,
+      accountId: "acct-1",
+      peerId: "peer-1",
+      threadId: null,
+      externalMessageId: "msg-1",
+      receivedAt: new Date("2026-02-09T00:00:00.000Z"),
+      dispatchLeaseToken: "lease-1",
+      agentRunId: "agent-1",
+      teamRunId: null,
+      turnId: "turn-1",
+      dispatchAcceptedAt: new Date("2026-02-09T00:00:02.000Z"),
+    });
   });
 
   it("treats missing or expired dispatch leases as expired", () => {

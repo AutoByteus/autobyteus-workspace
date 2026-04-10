@@ -60,7 +60,10 @@ export class TeamRun {
     message: AgentInputUserMessage,
     targetMemberName: string | null = null,
   ): Promise<AgentOperationResult> {
-    return this.backend.postMessage(message, this.resolvePostMessageTarget(targetMemberName));
+    return this.backend.postMessage(
+      message,
+      this.resolvePostMessageTarget(targetMemberName),
+    );
   }
 
   async deliverInterAgentMessage(

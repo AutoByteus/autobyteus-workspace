@@ -1,21 +1,14 @@
 import { randomUUID } from "node:crypto";
-import {
-  parseExternalChannelProvider,
-  type ExternalChannelProvider,
-} from "autobyteus-ts/external-channel/provider.js";
-import {
-  parseExternalChannelTransport,
-  type ExternalChannelTransport,
-} from "autobyteus-ts/external-channel/channel-transport.js";
 import type {
   ChannelAcceptedIngressReceiptInput,
-  ChannelAcceptedReceiptCorrelationInput,
   ChannelClaimIngressDispatchInput,
   ChannelIngressReceiptKey,
   ChannelIngressReceiptState,
   ChannelMessageReceipt,
   ChannelPendingIngressReceiptInput,
   ChannelReplyPublishedReceiptInput,
+  ChannelReceiptWorkflowProgressInput,
+  ChannelReceiptWorkflowState,
   ChannelSourceContext,
   ChannelUnboundIngressReceiptInput,
 } from "../domain/models.js";
@@ -23,84 +16,22 @@ import type { ChannelMessageReceiptProvider } from "./channel-message-receipt-pr
 import {
   normalizeNullableString,
   normalizeRequiredString,
-  parseDate,
   readJsonArrayFile,
   updateJsonArrayFile,
 } from "../../persistence/file/store-utils.js";
 import { resolveExternalChannelStoragePath } from "./external-channel-storage.js";
-
-type ChannelMessageReceiptRow = {
-  provider: string;
-  transport: string;
-  accountId: string;
-  peerId: string;
-  threadId: string;
-  externalMessageId: string;
-  ingressState: ChannelIngressReceiptState;
-  turnId: string | null;
-  agentRunId: string | null;
-  teamRunId: string | null;
-  dispatchLeaseToken: string | null;
-  dispatchLeaseExpiresAt: string | null;
-  receivedAt: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
-const toThreadStorage = (threadId: string | null): string =>
-  normalizeNullableString(threadId) ?? "";
-const fromThreadStorage = (threadId: string): string | null =>
-  normalizeNullableString(threadId);
-
-const sortByUpdatedThenReceivedDesc = (
-  rows: ChannelMessageReceiptRow[],
-): ChannelMessageReceiptRow[] =>
-  [...rows].sort((a, b) => {
-    const updatedDiff =
-      parseDate(b.updatedAt).getTime() - parseDate(a.updatedAt).getTime();
-    if (updatedDiff !== 0) {
-      return updatedDiff;
-    }
-    return parseDate(b.receivedAt).getTime() - parseDate(a.receivedAt).getTime();
-  });
-
-const toSourceContext = (row: ChannelMessageReceiptRow): ChannelSourceContext => ({
-  provider: parseExternalChannelProvider(row.provider),
-  transport: parseExternalChannelTransport(row.transport),
-  accountId: row.accountId,
-  peerId: row.peerId,
-  threadId: fromThreadStorage(row.threadId),
-  externalMessageId: row.externalMessageId,
-  receivedAt: parseDate(row.receivedAt),
-  turnId: normalizeNullableString(row.turnId),
-});
-
-const toReceipt = (row: ChannelMessageReceiptRow): ChannelMessageReceipt => ({
-  ...toSourceContext(row),
-  ingressState: row.ingressState,
-  agentRunId: normalizeNullableString(row.agentRunId),
-  teamRunId: normalizeNullableString(row.teamRunId),
-  dispatchLeaseToken: normalizeNullableString(row.dispatchLeaseToken),
-  dispatchLeaseExpiresAt: row.dispatchLeaseExpiresAt
-    ? parseDate(row.dispatchLeaseExpiresAt)
-    : null,
-  createdAt: parseDate(row.createdAt),
-  updatedAt: parseDate(row.updatedAt),
-});
-
-const matchesKey = (
-  row: ChannelMessageReceiptRow,
-  input: ChannelIngressReceiptKey,
-): boolean =>
-  row.provider === input.provider &&
-  row.transport === input.transport &&
-  row.accountId === input.accountId &&
-  row.peerId === input.peerId &&
-  row.threadId === toThreadStorage(input.threadId) &&
-  row.externalMessageId === input.externalMessageId;
-
-const isSourceLookupState = (state: ChannelIngressReceiptState): boolean =>
-  state === "ACCEPTED" || state === "ROUTED";
+import {
+  type ChannelMessageReceiptRow,
+  isSourceLookupState,
+  matchesKey,
+  normalizeWorkflowState,
+  sortByUpdatedThenReceivedDesc,
+  toReceipt,
+  toSourceContext,
+  toThreadStorage,
+  type ExternalChannelProvider,
+  type ExternalChannelTransport,
+} from "./file-channel-message-receipt-row.js";
 
 export class FileChannelMessageReceiptProvider
   implements ChannelMessageReceiptProvider
@@ -139,9 +70,13 @@ export class FileChannelMessageReceiptProvider
         threadId: toThreadStorage(input.threadId),
         externalMessageId: input.externalMessageId,
         ingressState: "PENDING",
+        workflowState: "RECEIVED",
+        dispatchAcceptedAt: null,
         turnId: null,
         agentRunId: null,
         teamRunId: null,
+        replyTextFinal: null,
+        lastError: null,
         dispatchLeaseToken: null,
         dispatchLeaseExpiresAt: null,
         receivedAt: input.receivedAt.toISOString(),
@@ -180,9 +115,13 @@ export class FileChannelMessageReceiptProvider
           threadId: toThreadStorage(input.threadId),
           externalMessageId: input.externalMessageId,
           ingressState: "DISPATCHING",
+          workflowState: "DISPATCHING",
+          dispatchAcceptedAt: null,
           turnId: null,
           agentRunId: null,
           teamRunId: null,
+          replyTextFinal: null,
+          lastError: null,
           dispatchLeaseToken: leaseToken,
           dispatchLeaseExpiresAt: leaseExpiresAt,
           receivedAt: input.receivedAt.toISOString(),
@@ -197,6 +136,10 @@ export class FileChannelMessageReceiptProvider
       next[index] = {
         ...current,
         ingressState: "DISPATCHING",
+        workflowState: "DISPATCHING",
+        dispatchAcceptedAt: null,
+        replyTextFinal: null,
+        lastError: null,
         dispatchLeaseToken: leaseToken,
         dispatchLeaseExpiresAt: leaseExpiresAt,
         receivedAt: input.receivedAt.toISOString(),
@@ -239,9 +182,13 @@ export class FileChannelMessageReceiptProvider
       next[index] = {
         ...current,
         ingressState: "ACCEPTED",
-        turnId: normalizeNullableString(input.turnId ?? null),
+        workflowState: "TURN_BOUND",
+        dispatchAcceptedAt: input.dispatchAcceptedAt.toISOString(),
+        turnId: normalizeRequiredString(input.turnId, "turnId"),
         agentRunId: normalizeNullableString(input.agentRunId),
         teamRunId: normalizeNullableString(input.teamRunId),
+        replyTextFinal: null,
+        lastError: null,
         dispatchLeaseToken: null,
         dispatchLeaseExpiresAt: null,
         receivedAt: input.receivedAt.toISOString(),
@@ -274,9 +221,13 @@ export class FileChannelMessageReceiptProvider
           threadId: toThreadStorage(input.threadId),
           externalMessageId: input.externalMessageId,
           ingressState: "UNBOUND",
+          workflowState: "UNBOUND",
+          dispatchAcceptedAt: null,
           turnId: null,
           agentRunId: null,
           teamRunId: null,
+          replyTextFinal: null,
+          lastError: null,
           dispatchLeaseToken: null,
           dispatchLeaseExpiresAt: null,
           receivedAt: input.receivedAt.toISOString(),
@@ -291,8 +242,11 @@ export class FileChannelMessageReceiptProvider
       next[index] = {
         ...current,
         ingressState: "UNBOUND",
+        workflowState: "UNBOUND",
         agentRunId: null,
         teamRunId: null,
+        dispatchAcceptedAt: current.dispatchAcceptedAt ?? null,
+        replyTextFinal: null,
         dispatchLeaseToken: null,
         dispatchLeaseExpiresAt: null,
         receivedAt: input.receivedAt.toISOString(),
@@ -304,44 +258,6 @@ export class FileChannelMessageReceiptProvider
 
     if (!result) {
       throw new Error("Failed to mark ingress receipt as unbound.");
-    }
-    return toReceipt(result);
-  }
-
-  async updateAcceptedReceiptCorrelation(
-    input: ChannelAcceptedReceiptCorrelationInput,
-  ): Promise<ChannelMessageReceipt> {
-    const now = new Date().toISOString();
-    let result: ChannelMessageReceiptRow | null = null;
-    await updateJsonArrayFile<ChannelMessageReceiptRow>(this.filePath, (rows) => {
-      const index = rows.findIndex((row) => matchesKey(row, input));
-      if (index < 0) {
-        throw new Error(
-          `Cannot update accepted receipt correlation for '${input.externalMessageId}' because it does not exist.`,
-        );
-      }
-
-      const current = rows[index] as ChannelMessageReceiptRow;
-      if (current.ingressState !== "ACCEPTED") {
-        throw new Error(
-          `Cannot update accepted receipt correlation for '${input.externalMessageId}' because it is not in ACCEPTED state.`,
-        );
-      }
-      const next = [...rows];
-      next[index] = {
-        ...current,
-        turnId: normalizeRequiredString(input.turnId, "turnId"),
-        agentRunId: normalizeNullableString(input.agentRunId),
-        teamRunId: normalizeNullableString(input.teamRunId),
-        receivedAt: input.receivedAt.toISOString(),
-        updatedAt: now,
-      };
-      result = next[index] as ChannelMessageReceiptRow;
-      return next;
-    });
-
-    if (!result) {
-      throw new Error("Failed to update accepted receipt correlation.");
     }
     return toReceipt(result);
   }
@@ -364,9 +280,11 @@ export class FileChannelMessageReceiptProvider
       next[index] = {
         ...current,
         ingressState: "ROUTED",
+        workflowState: "PUBLISHED",
         turnId: normalizeRequiredString(input.turnId, "turnId"),
         agentRunId: normalizeNullableString(input.agentRunId),
         teamRunId: normalizeNullableString(input.teamRunId),
+        lastError: null,
         dispatchLeaseToken: null,
         dispatchLeaseExpiresAt: null,
         receivedAt: input.receivedAt.toISOString(),
@@ -382,6 +300,57 @@ export class FileChannelMessageReceiptProvider
     return toReceipt(result);
   }
 
+  async updateReceiptWorkflowProgress(
+    input: ChannelReceiptWorkflowProgressInput,
+  ): Promise<ChannelMessageReceipt> {
+    const now = new Date().toISOString();
+    let result: ChannelMessageReceiptRow | null = null;
+    await updateJsonArrayFile<ChannelMessageReceiptRow>(this.filePath, (rows) => {
+      const index = rows.findIndex((row) => matchesKey(row, input));
+      if (index < 0) {
+        throw new Error(
+          `Cannot update receipt workflow for '${input.externalMessageId}' because it does not exist.`,
+        );
+      }
+
+      const current = rows[index] as ChannelMessageReceiptRow;
+      const next = [...rows];
+      next[index] = {
+        ...current,
+        workflowState: input.workflowState,
+        turnId:
+          input.turnId === undefined
+            ? current.turnId
+            : normalizeNullableString(input.turnId ?? null),
+        agentRunId:
+          input.agentRunId === undefined
+            ? current.agentRunId
+            : normalizeNullableString(input.agentRunId ?? null),
+        teamRunId:
+          input.teamRunId === undefined
+            ? current.teamRunId
+            : normalizeNullableString(input.teamRunId ?? null),
+        replyTextFinal:
+          input.replyTextFinal === undefined
+            ? current.replyTextFinal ?? null
+            : normalizeNullableString(input.replyTextFinal ?? null),
+        lastError:
+          input.lastError === undefined
+            ? current.lastError ?? null
+            : normalizeNullableString(input.lastError ?? null),
+        receivedAt: input.receivedAt.toISOString(),
+        updatedAt: now,
+      };
+      result = next[index] as ChannelMessageReceiptRow;
+      return next;
+    });
+
+    if (!result) {
+      throw new Error("Failed to update receipt workflow state.");
+    }
+    return toReceipt(result);
+  }
+
   async listReceiptsByIngressState(
     state: ChannelIngressReceiptState,
   ): Promise<ChannelMessageReceipt[]> {
@@ -389,6 +358,16 @@ export class FileChannelMessageReceiptProvider
     return sortByUpdatedThenReceivedDesc(rows)
       .filter((row) => row.ingressState === state)
       .map((row) => toReceipt(row));
+  }
+
+  async listReceiptsByWorkflowStates(
+    states: ChannelReceiptWorkflowState[],
+  ): Promise<ChannelMessageReceipt[]> {
+    const allowed = new Set(states);
+    const rows = await readJsonArrayFile<ChannelMessageReceiptRow>(this.filePath);
+    return sortByUpdatedThenReceivedDesc(rows)
+      .map((row) => toReceipt(row))
+      .filter((row) => allowed.has(row.workflowState));
   }
 
   async getSourceByAgentRunTurn(
@@ -400,12 +379,13 @@ export class FileChannelMessageReceiptProvider
     const rows = await readJsonArrayFile<ChannelMessageReceiptRow>(this.filePath);
     const found = sortByUpdatedThenReceivedDesc(rows).find(
       (row) =>
-        isSourceLookupState(row.ingressState) &&
+        isSourceLookupState(
+          row.ingressState,
+          normalizeWorkflowState(row.workflowState),
+        ) &&
         row.agentRunId === normalizedAgentRunId &&
         row.turnId === normalizedTurnId,
     );
     return found ? toSourceContext(found) : null;
   }
 }
-
-export type { ExternalChannelProvider, ExternalChannelTransport };
