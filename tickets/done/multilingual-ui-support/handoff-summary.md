@@ -2,7 +2,7 @@
 
 ## Status
 
-- Current Status: `User verified complete; queued for repository finalization and release`
+- Current Status: `Repository finalization completed on personal; release v1.2.67 created`
 - Last Updated: `2026-04-10`
 
 ## Delivered
@@ -59,25 +59,33 @@
   - broader zh-CN shell/settings/agents/teams/workspace wording consistency
   - absence of packaged-app English `Run` in the reviewed surfaces
 
+## Release Snapshot
+
+- Archived ticket commit on verification branch: `939bf3b4674473a007241ba6bc21d81b639e17db`
+- Merge commit into `personal`: `a2c6f558e0cf4714e8af0b2a93151a0cad64a0e8`
+- Release commit on `personal`: `12f1d51e3605383b7fb87a339f69d2f18014da82`
+- Release tag: `v1.2.67`
+- GitHub release URL: `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.2.67`
+
 ## Residual Risks / Environment Notes
 
-- Large touched surfaces such as `VoiceInputExtensionCard.vue`, `voiceInputStore.ts`, and `useMessagingChannelBindingSetupFlow.ts` remain future regression hotspots even though the ticket is now review-passed and user-verified.
+- Large touched surfaces such as `VoiceInputExtensionCard.vue`, `voiceInputStore.ts`, and `useMessagingChannelBindingSetupFlow.ts` remain future regression hotspots even though the ticket is now review-passed, user-verified, finalized, and released.
 - Translation/copy quality outside the reviewed closure scope remains a general product risk, but no open engineering blocker remains in the authoritative package.
-- Validation/build environment notes remain non-blocking:
+- Validation/build/release environment notes remain non-blocking:
   - healthy backend on `127.0.0.1:8000` was reused in the latest live validation round
   - Nuxt fell back from requested port `3002` to `3000`
   - the localization audit still emits a non-blocking `MODULE_TYPELESS_PACKAGE_JSON` warning
+  - GitHub Actions emitted Node 20 deprecation warnings on the release workflows; release automation still proceeded
   - the earlier workspace-layout-specific Prisma engine override note remains documented historically, but it did not block the final reviewed state
 
 ## Ticket State
 
-- Technical workflow status: `User verification is complete; archived ticket is ready for branch finalization and release execution`
+- Technical workflow status: `Completed`
 - Ticket archive state: `Archived under tickets/done/multilingual-ui-support/`
-- Repository finalization state: `Pending`
-- Release/deployment state: `Pending`
-- Finalization target: `origin/personal` (confirmed by user on `2026-04-10`)
-- Verification branch used for the last packaged-app test: `codex/multilingual-ui-support-final-verification`
+- Repository finalization state: `Completed on origin/personal`
+- Release/deployment state: `v1.2.67 tagged and GitHub release created; downstream desktop/server publish workflows may still be finishing asynchronously`
+- Verification branch used for the last packaged-app test: `codex/multilingual-ui-support-final-verification` (now deleted after merge)
 
 ## Next Step
 
-- Commit the archived ticket state on the verification branch, merge it into `personal`, run the documented release workflow for `v1.2.67`, and then complete post-finalization cleanup/reporting.
+- No further repository action is required for ticket delivery. Only asynchronous GitHub workflow completion remains to be monitored outside this archived ticket handoff.
