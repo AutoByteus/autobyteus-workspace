@@ -71,7 +71,7 @@ After explicit user verification and ticket archival, this file normally moves w
   - `Yes` on `2026-04-10`
 - Notes:
   - Explicit user verification was received on 2026-04-10.
-  - Ticket archival is complete and git finalization is now in progress.
+  - Ticket archival and Stage 10 git finalization completed without a release/version step.
 
 ## Finalization Record
 
@@ -86,16 +86,16 @@ After explicit user verification and ticket archival, this file normally moves w
 - Finalization target branch:
   - `personal`
 - Commit status:
-  - `Pending ticket-branch archival commit`
+  - `Ticket branch commit 425efd86 created; target branch merge commit d717a90a created; finalization metadata update committed on personal`
 - Push status:
-  - `Pending ticket-branch push`
+  - `codex/agent-run-id-sanitization` pushed to `origin`; `personal` pushed after merge and after finalization metadata update
 - Merge status:
-  - `Pending merge into origin/personal`
+  - `codex/agent-run-id-sanitization` merged into `origin/personal` via merge commit `d717a90a`
 - Release/publication/deployment status:
   - `Not required` (user requested finalization without releasing a new version)
 - Worktree cleanup status:
-  - `Pending finalization after git merge/push`
+  - `Completed`; dedicated ticket worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-id-sanitization` removed
 - Local branch cleanup status:
-  - `Pending finalization after git merge/push`
+  - `Completed`; local branch `codex/agent-run-id-sanitization` deleted after merge
 - Blockers / notes:
-  - No functional blockers. Finalization is proceeding without a release/version step.
+  - None.

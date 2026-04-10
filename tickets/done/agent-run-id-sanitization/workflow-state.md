@@ -8,11 +8,11 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 
 - Ticket: `agent-run-id-sanitization`
 - Current Stage: `10`
-- Next Stage: `10 Handoff / Ticket State`
+- Next Stage: `Complete`
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-011`
+- Last Transition ID: `T-012`
 - Last Updated: `2026-04-10`
 
 ## Stage 0 Bootstrap Record
@@ -47,7 +47,7 @@ Note:
 | 7 API/E2E + Executable Validation | Pass | executable validation implementation complete + acceptance-criteria and spine scenario gates complete | `tickets/done/agent-run-id-sanitization/api-e2e-testing.md` |
 | 8 Code Review | Pass | Code review gate `Pass`/`Fail` recorded with required scorecard and changed-file checks | `tickets/done/agent-run-id-sanitization/code-review.md` |
 | 9 Docs Sync | Pass | `docs-sync.md` current + docs updated or no-impact rationale recorded | `tickets/done/agent-run-id-sanitization/docs-sync.md` |
-| 10 Handoff / Ticket State | In Progress | `handoff-summary.md` current + explicit user verification received + ticket moved to `done` + repository finalization into resolved target branch complete when git repo | `tickets/done/agent-run-id-sanitization/handoff-summary.md` (git finalization in progress) |
+| 10 Handoff / Ticket State | Pass | `handoff-summary.md` current + explicit user verification received + ticket moved to `done` + repository finalization into resolved target branch complete when git repo | `tickets/done/agent-run-id-sanitization/handoff-summary.md` |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -120,6 +120,7 @@ Note:
 | T-009 | 2026-04-10 | 8 | 9 | Code review passed; moving to documentation sync and delivery preparation | N/A | Locked | `tickets/done/agent-run-id-sanitization/code-review.md`, `tickets/done/agent-run-id-sanitization/workflow-state.md` |
 | T-010 | 2026-04-10 | 9 | 10 | Docs sync completed; moving to handoff and user-verification hold | N/A | Locked | `tickets/done/agent-run-id-sanitization/docs-sync.md`, `tickets/done/agent-run-id-sanitization/workflow-state.md` |
 | T-011 | 2026-04-10 | 10 | 10 | User verification received, ticket archived, and Stage 10 git finalization started | N/A | Locked | `tickets/done/agent-run-id-sanitization/handoff-summary.md`, `tickets/done/agent-run-id-sanitization/workflow-state.md` |
+| T-012 | 2026-04-10 | 10 | 10 | Repository finalization and cleanup completed; workflow closed without release step | N/A | Locked | `tickets/done/agent-run-id-sanitization/handoff-summary.md`, `tickets/done/agent-run-id-sanitization/workflow-state.md` |
 
 ## Audible Notification Log (Optional Tracking)
 
@@ -130,4 +131,4 @@ Note:
 
 | Date | Violation ID | Violation | Detected At Stage | Action Taken | Cleared |
 | --- | --- | --- | --- | --- | --- |
-| 2026-04-10 | V-001 | Source code edited in `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo` before Stage 0 bootstrap/workflow lock was established for this ticket. | 0 | Stopped further source edits in the personal workspace, created the ticket worktree, and required migration of those edits into the ticket workflow before continuing. | No |
+| 2026-04-10 | V-001 | Source code edited in `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo` before Stage 0 bootstrap/workflow lock was established for this ticket. | 0 | Stopped further source edits in the personal workspace, created the ticket worktree, and required migration of those edits into the ticket workflow before continuing. | Yes |
