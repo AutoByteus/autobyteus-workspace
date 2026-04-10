@@ -7,10 +7,10 @@
         </svg>
       </div>
       <div class="ml-3 flex-1">
-        <p class="font-bold text-red-900 dark:text-red-200">An Error Occurred</p>
+        <p class="font-bold text-red-900 dark:text-red-200">{{ $t('workspace.components.conversation.segments.ErrorSegment.an_error_occurred') }}</p>
         <p class="mt-1 text-sm">{{ segment.message }}</p>
         <details v-if="segment.details" class="mt-2 text-xs">
-          <summary class="cursor-pointer font-medium text-red-700 dark:text-red-400">Show Details</summary>
+          <summary class="cursor-pointer font-medium text-red-700 dark:text-red-400">{{ $t('workspace.components.conversation.segments.ErrorSegment.show_details') }}</summary>
           <pre class="mt-1 p-2 bg-red-100 dark:bg-gray-700 rounded overflow-auto whitespace-pre-wrap font-mono"><code>{{ segment.details }}</code></pre>
         </details>
       </div>

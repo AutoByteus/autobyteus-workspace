@@ -41,7 +41,7 @@
         data-testid="inter-agent-toggle"
         class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded text-slate-400 transition-colors hover:bg-slate-200/70 hover:text-slate-600 dark:hover:bg-slate-700 dark:hover:text-slate-200"
         :aria-expanded="showDetails ? 'true' : 'false'"
-        :title="showDetails ? 'Hide details' : 'Show details'"
+        :title="showDetails ? $t('workspace.components.conversation.segments.InterAgentMessageSegment.hide_details') : $t('workspace.components.conversation.segments.InterAgentMessageSegment.show_details')"
         @click="toggleDetails"
       >
         <svg

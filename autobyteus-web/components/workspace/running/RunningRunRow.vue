@@ -20,8 +20,8 @@
     <button
       @click.stop="$emit('delete', run.state.runId)"
       class="delete-btn inline-flex h-6 w-6 items-center justify-center rounded-md text-gray-500 hover:text-red-600 hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-200 transition-colors"
-      title="Stop and remove run"
-      aria-label="Close agent run"
+      :title="$t('workspace.components.workspace.running.RunningRunRow.stop_and_remove_run')"
+      :aria-label="$t('workspace.components.workspace.running.RunningRunRow.close_agent_run')"
     >
       <span class="text-sm leading-none font-semibold" aria-hidden="true">×</span>
     </button>
@@ -30,6 +30,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useLocalization } from '~/composables/useLocalization';
 import { AgentContext } from '~/types/agent/AgentContext';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 
@@ -43,13 +44,15 @@ defineEmits<{
   (e: 'delete', id: string): void;
 }>();
 
+const { t } = useLocalization();
+
 // Label format matches the running run list style in the workspace.
 const runLabel = computed(() => {
-  const name = props.run.config.agentDefinitionName || 'Agent';
+  const name = props.run.config.agentDefinitionName || t('workspace.components.workspace.running.RunningRunRow.defaultAgentName');
   const runId = props.run.state.runId;
   
   if (runId.startsWith('temp-')) {
-    return `New - ${name}`;
+    return t('workspace.components.workspace.running.RunningRunRow.newRunLabel', { name });
   }
   
   // Use last 4 characters of the ID for a short, stable suffix.

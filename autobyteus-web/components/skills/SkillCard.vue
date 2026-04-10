@@ -3,16 +3,16 @@
     <div class="card-body">
       <div class="header">
         <h3 class="skill-name" :title="skill.name">{{ skill.name }}</h3>
-        <span v-if="skill.isDisabled" class="badge-disabled">Disabled</span>
+        <span v-if="skill.isDisabled" class="badge-disabled">{{ $t('skills.components.skills.SkillCard.disabled') }}</span>
       </div>
       
       <p class="skill-description" :title="skill.description">
-        {{ skill.description || 'No description provided.' }}
+        {{ skill.description || $t('skills.components.skills.SkillCard.no_description_provided') }}
       </p>
       
       <div class="meta-info">
         <Icon icon="heroicons:document" class="meta-icon" />
-        <span class="file-count">{{ skill.fileCount }} {{ skill.fileCount === 1 ? 'file' : 'files' }}</span>
+        <span class="file-count">{{ skill.fileCount }} {{ skill.fileCount === 1 ? $t('skills.components.skills.SkillCard.file_singular') : $t('skills.components.skills.SkillCard.file_plural') }}</span>
       </div>
     </div>
 
@@ -22,7 +22,7 @@
           class="btn-primary" 
           @click="$emit('view', skill)" 
         >
-          View
+          {{ $t('skills.components.skills.SkillCard.view') }}
         </button>
 
         <div class="secondary-actions">
@@ -30,13 +30,13 @@
             class="btn-secondary" 
             @click="$emit('toggle-disable', skill)"
           >
-            {{ skill.isDisabled ? 'Enable' : 'Disable' }}
+            {{ skill.isDisabled ? $t('skills.components.skills.SkillCard.enable') : $t('skills.components.skills.SkillCard.disable') }}
           </button>
           
           <button 
             class="btn-danger" 
             @click="$emit('delete', skill)"
-            title="Delete Skill"
+            :title="$t('skills.components.skills.SkillCard.delete_skill')"
           >
             <Icon icon="heroicons:trash" />
           </button>

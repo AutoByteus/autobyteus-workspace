@@ -19,9 +19,9 @@ const isUnauthorizedGlmError = (error: unknown): boolean => {
 
 const buildModel = () =>
   new LLMModel({
-    name: 'glm-5',
-    value: 'glm-5',
-    canonicalName: 'glm-5',
+    name: 'glm-5.1',
+    value: 'glm-5.1',
+    canonicalName: 'glm-5.1',
     provider: LLMProvider.GLM
   });
 

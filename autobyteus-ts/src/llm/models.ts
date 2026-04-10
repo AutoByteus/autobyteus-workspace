@@ -12,6 +12,9 @@ export interface LLMModelOptions {
   canonicalName: string;
   defaultConfig?: LLMConfig;
   maxContextTokens?: number | null;
+  activeContextTokens?: number | null;
+  maxInputTokens?: number | null;
+  maxOutputTokens?: number | null;
   defaultCompactionRatio?: number | null;
   defaultSafetyMarginTokens?: number | null;
   runtime?: LLMRuntime;
@@ -28,6 +31,10 @@ export interface ModelInfo {
   runtime: string;
   host_url?: string;
   config_schema?: Record<string, unknown>;
+  max_context_tokens: number | null;
+  active_context_tokens: number | null;
+  max_input_tokens: number | null;
+  max_output_tokens: number | null;
 }
 
 export class LLMModel {
@@ -38,6 +45,9 @@ export class LLMModel {
   public llmClass?: new (model: LLMModel, config: LLMConfig) => BaseLLM; 
   public defaultConfig: LLMConfig;
   public maxContextTokens: number | null;
+  public activeContextTokens: number | null;
+  public maxInputTokens: number | null;
+  public maxOutputTokens: number | null;
   public defaultCompactionRatio: number | null;
   public defaultSafetyMarginTokens: number | null;
   public runtime: LLMRuntime;
@@ -52,8 +62,10 @@ export class LLMModel {
     this.provider = options.provider;
     this.llmClass = options.llmClass;
     this.defaultConfig = options.defaultConfig || new LLMConfig();
-    const defaultMaxContext = this.defaultConfig.tokenLimit ?? 200000;
-    this.maxContextTokens = options.maxContextTokens ?? defaultMaxContext;
+    this.maxContextTokens = options.maxContextTokens ?? this.defaultConfig.tokenLimit ?? null;
+    this.activeContextTokens = options.activeContextTokens ?? null;
+    this.maxInputTokens = options.maxInputTokens ?? null;
+    this.maxOutputTokens = options.maxOutputTokens ?? null;
     this.defaultCompactionRatio = options.defaultCompactionRatio ?? 0.8;
     this.defaultSafetyMarginTokens = options.defaultSafetyMarginTokens ?? 256;
     this.runtime = options.runtime || LLMRuntime.API;
@@ -98,7 +110,11 @@ export class LLMModel {
       provider: this.provider,
       runtime: this.runtime,
       host_url: this.hostUrl,
-      config_schema: this.configSchema?.toJsonSchemaDict() || undefined
+      config_schema: this.configSchema?.toJsonSchemaDict() || undefined,
+      max_context_tokens: this.maxContextTokens,
+      active_context_tokens: this.activeContextTokens,
+      max_input_tokens: this.maxInputTokens,
+      max_output_tokens: this.maxOutputTokens
     };
   }
 }

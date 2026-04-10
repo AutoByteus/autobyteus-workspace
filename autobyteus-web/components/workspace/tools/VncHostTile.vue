@@ -51,7 +51,7 @@
             @click="toggleViewOnly"
             class="px-2 py-1 text-xs rounded transition-colors"
             :class="viewOnly ? 'bg-green-500 text-white hover:bg-green-600' : 'bg-yellow-500 text-white hover:bg-yellow-600'"
-            title="Toggle interaction mode"
+            :title="$t('workspace.components.workspace.tools.VncHostTile.toggle_interaction_mode')"
           >
             {{ viewOnly ? 'View Only' : 'Interactive' }}
           </button>

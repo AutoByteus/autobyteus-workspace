@@ -11,21 +11,15 @@
           ref="searchInputRef"
           v-model="searchQuery"
           type="text"
-          placeholder="Search..."
+          :placeholder="$t('tools.components.fileExplorer.FileExplorer.search')"
           class="w-full pl-9 pr-3 py-1.5 text-sm border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 block bg-white placeholder-gray-400 transition-shadow"
         />
       </div>
     </div>
     <div class="file-explorer-content flex-grow overflow-y-auto relative">
-      <div v-if="!hasWorkspaces" class="flex flex-col items-center justify-center h-full text-center text-gray-500 italic p-4">
-        No workspaces available. Add a workspace to see files.
-      </div>
-      <div v-else-if="searchLoading" class="text-gray-500 italic">
-        Loading search results...
-      </div>
-      <div v-else-if="displayedFiles.length === 0 && searchQuery" class="text-gray-500 italic">
-        No files match your search.
-      </div>
+      <div v-if="!hasWorkspaces" class="flex flex-col items-center justify-center h-full text-center text-gray-500 italic p-4">{{ $t('tools.components.fileExplorer.FileExplorer.no_workspaces_available_add_a_workspace') }}</div>
+      <div v-else-if="searchLoading" class="text-gray-500 italic">{{ $t('tools.components.fileExplorer.FileExplorer.loading_search_results') }}</div>
+      <div v-else-if="displayedFiles.length === 0 && searchQuery" class="text-gray-500 italic">{{ $t('tools.components.fileExplorer.FileExplorer.no_files_match_your_search') }}</div>
       <div v-else class="space-y-2">
         <FileItem v-for="file in displayedFiles" :key="file.id" :file="file" />
       </div>

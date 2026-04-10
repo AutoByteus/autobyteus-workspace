@@ -7,7 +7,7 @@
           v-model="searchQuery"
           @input="emitFilters"
           type="text"
-          placeholder="Search agents by name or description..."
+          :placeholder="$t('agents.components.agents.MarketplaceFilter.search_agents_by_name_or_description')"
           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
       </div>
@@ -20,7 +20,7 @@
           @change="emitFilters"
           class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          <option value="all">All Categories</option>
+          <option value="all">{{ $t('agents.components.agents.MarketplaceFilter.all_categories') }}</option>
           <option v-for="category in categories" :key="category" :value="category">
             {{ category }}
           </option>
@@ -32,12 +32,12 @@
           @change="emitFilters"
           class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          <option value="all">All Price Types</option>
+          <option value="all">{{ $t('agents.components.agents.MarketplaceFilter.all_price_types') }}</option>
           <option value="free">Free</option>
-          <option value="one-time">One-time purchase</option>
-          <option value="monthly">Monthly subscription</option>
-          <option value="yearly">Yearly subscription</option>
-          <option value="usage-based">Usage-based pricing</option>
+          <option value="one-time">{{ $t('agents.components.agents.MarketplaceFilter.one_time_purchase') }}</option>
+          <option value="monthly">{{ $t('agents.components.agents.MarketplaceFilter.monthly_subscription') }}</option>
+          <option value="yearly">{{ $t('agents.components.agents.MarketplaceFilter.yearly_subscription') }}</option>
+          <option value="usage-based">{{ $t('agents.components.agents.MarketplaceFilter.usage_based_pricing') }}</option>
         </select>
         
         <!-- Execution Type Filter -->
@@ -46,9 +46,9 @@
           @change="emitFilters"
           class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          <option value="all">All Agents</option>
-          <option value="local">Locally Runnable</option>
-          <option value="p2p">P2P Agents</option>
+          <option value="all">{{ $t('agents.components.agents.MarketplaceFilter.all_agents') }}</option>
+          <option value="local">{{ $t('agents.components.agents.MarketplaceFilter.locally_runnable') }}</option>
+          <option value="p2p">{{ $t('agents.components.agents.MarketplaceFilter.p2p_agents') }}</option>
         </select>
       </div>
     </div>

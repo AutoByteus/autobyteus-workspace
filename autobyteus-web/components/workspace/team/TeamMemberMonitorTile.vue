@@ -57,9 +57,7 @@
       <div
         v-else
         class="flex h-full min-h-[92px] items-center justify-center rounded-lg border border-dashed border-gray-200 bg-gray-50 px-3 text-center text-sm text-gray-400"
-      >
-        No activity yet.
-      </div>
+      >{{ $t('workspace.components.workspace.team.TeamMemberMonitorTile.no_activity_yet') }}</div>
     </div>
   </button>
 </template>

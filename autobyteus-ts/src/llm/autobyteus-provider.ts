@@ -7,6 +7,8 @@ import { AutobyteusLLM } from './api/autobyteus-llm.js';
 
 type ModelInfoPayload = Record<string, unknown>;
 type ServerResponse = { models?: unknown };
+const isPositiveInteger = (value: unknown): value is number =>
+  typeof value === 'number' && Number.isFinite(value) && value > 0;
 
 export class AutobyteusModelProvider {
   static readonly DEFAULT_SERVER_URL = 'https://localhost:8000';
@@ -86,7 +88,19 @@ export class AutobyteusModelProvider {
               canonicalName: (modelInfo.canonical_name as string | undefined) ?? String(modelInfo.name),
               runtime: LLMRuntime.AUTOBYTEUS,
               hostUrl: hostUrl,
-              defaultConfig: llmConfig
+              defaultConfig: llmConfig,
+              maxContextTokens: isPositiveInteger(modelInfo.max_context_tokens)
+                ? modelInfo.max_context_tokens
+                : llmConfig.tokenLimit ?? null,
+              activeContextTokens: isPositiveInteger(modelInfo.active_context_tokens)
+                ? modelInfo.active_context_tokens
+                : null,
+              maxInputTokens: isPositiveInteger(modelInfo.max_input_tokens)
+                ? modelInfo.max_input_tokens
+                : null,
+              maxOutputTokens: isPositiveInteger(modelInfo.max_output_tokens)
+                ? modelInfo.max_output_tokens
+                : null
             });
             allModels.push(llmModel);
           } catch (error: any) {
@@ -183,10 +197,9 @@ export class AutobyteusModelProvider {
       }
 
       const llmConfig = LLMConfig.fromDict(configData);
-
-      if (!llmConfig.tokenLimit || llmConfig.tokenLimit < 1) {
-        console.warn('Setting default token limit (8192)');
-        llmConfig.tokenLimit = 8192;
+      if (llmConfig.tokenLimit !== null && llmConfig.tokenLimit !== undefined && llmConfig.tokenLimit < 1) {
+        console.warn('Token limit out of range, resetting to null');
+        llmConfig.tokenLimit = null;
       }
 
       if (llmConfig.temperature < 0 || llmConfig.temperature > 2) {

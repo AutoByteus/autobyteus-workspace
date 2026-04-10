@@ -51,8 +51,7 @@
       </div>
 
       <div v-if="showSharedComposer" class="border-t border-gray-200 bg-white px-4 py-3">
-        <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
-          Replying to: <span class="text-gray-800">{{ headerTitle }}</span>
+        <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">{{ $t('workspace.components.workspace.team.TeamWorkspaceView.replying_to') }}<span class="text-gray-800">{{ headerTitle }}</span>
         </p>
         <AgentUserInputForm />
       </div>
@@ -60,10 +59,8 @@
 
     <div v-else class="flex-grow flex items-center justify-center p-8 text-center text-gray-500 bg-gray-50">
       <div>
-        <h3 class="text-lg font-medium text-gray-900">No Active Team Runs</h3>
-        <p class="mt-2 max-w-md mx-auto">
-          This team profile has no running runs. Click the "New" button in the header to launch one.
-        </p>
+        <h3 class="text-lg font-medium text-gray-900">{{ $t('workspace.components.workspace.team.TeamWorkspaceView.no_active_team_runs') }}</h3>
+        <p class="mt-2 max-w-md mx-auto">{{ $t('workspace.components.workspace.team.TeamWorkspaceView.this_team_profile_has_no_running') }}</p>
       </div>
     </div>
   </div>

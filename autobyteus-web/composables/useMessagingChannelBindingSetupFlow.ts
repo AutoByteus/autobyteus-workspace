@@ -1,5 +1,6 @@
 import { computed, ref, watch } from 'vue';
 import type { GroupedOption } from '~/components/agentTeams/SearchableGroupedSelect.vue';
+import { useLocalization } from '~/composables/useLocalization';
 import { useMessagingChannelBindingSetupStore } from '~/stores/messagingChannelBindingSetupStore';
 import {
   buildPeerCandidateKey,
@@ -30,6 +31,7 @@ import type {
 type WorkspaceSelectionMode = 'existing' | 'path';
 
 export function useMessagingChannelBindingSetupFlow() {
+  const { t } = useLocalization();
   const bindingStore = useMessagingChannelBindingSetupStore();
   const optionsStore = useMessagingChannelBindingOptionsStore();
   const providerScopeStore = useMessagingProviderScopeStore();
@@ -295,7 +297,10 @@ export function useMessagingChannelBindingSetupFlow() {
       .map((workspace) => ({
         workspaceId: workspace.workspaceId,
         label: workspace.absolutePath
-          ? `${workspace.name} (${workspace.absolutePath})`
+          ? t('settings.messaging.flow.workspaceWithPath', {
+              name: workspace.name,
+              path: workspace.absolutePath,
+            })
           : workspace.name,
         rootPath:
           workspace.absolutePath ||

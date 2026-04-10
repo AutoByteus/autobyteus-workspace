@@ -7,13 +7,13 @@
         type="button"
         class="group relative rounded-md p-2 transition-colors hover:bg-gray-100"
         :class="isPrimaryNavActive(item.key) ? 'bg-gray-100 text-gray-900' : ''"
-        :title="item.label"
+        :title="t(item.labelKey)"
         @click="handlePrimaryClick(item.key)"
       >
         <Icon :icon="item.icon" class="h-5 w-5" />
 
         <div class="absolute left-full ml-2 whitespace-nowrap rounded bg-gray-900 px-2 py-1 text-xs text-white opacity-0 invisible transition-all group-hover:opacity-100 group-hover:visible z-50">
-          {{ item.label }}
+          {{ t(item.labelKey) }}
         </div>
       </button>
     </div>
@@ -23,13 +23,13 @@
         type="button"
         class="group relative rounded-md p-2 transition-colors hover:bg-gray-100"
         :class="isSettingsActive ? 'bg-gray-100 text-gray-900' : ''"
-        title="Settings"
+        :title="$t('shell.components.layout.LeftSidebarStrip.settings')"
         @click="handleSettingsClick"
       >
         <Icon icon="heroicons:cog-6-tooth" class="h-5 w-5" />
 
         <div class="absolute left-full ml-2 whitespace-nowrap rounded bg-gray-900 px-2 py-1 text-xs text-white opacity-0 invisible transition-all group-hover:opacity-100 group-hover:visible z-50">
-          Settings
+          {{ $t('shell.navigation.settings') }}
         </div>
       </button>
     </div>
@@ -52,13 +52,15 @@ type PrimaryNavKey =
   | 'memory'
   | 'media';
 
-const allPrimaryNavItems: Array<{ key: PrimaryNavKey; label: string; icon: string }> = [
-  { key: 'agents', label: 'Agents', icon: 'heroicons:users' },
-  { key: 'agentTeams', label: 'Agent Teams', icon: 'heroicons:user-group' },
-  { key: 'applications', label: 'Applications', icon: 'heroicons:squares-2x2' },
-  { key: 'skills', label: 'Skills', icon: 'heroicons:sparkles' },
-  { key: 'memory', label: 'Memory', icon: 'ph:brain' },
-  { key: 'media', label: 'Media', icon: 'heroicons:photo' },
+const { t } = useLocalization();
+
+const allPrimaryNavItems: Array<{ key: PrimaryNavKey; labelKey: string; icon: string }> = [
+  { key: 'agents', labelKey: 'shell.navigation.agents', icon: 'heroicons:users' },
+  { key: 'agentTeams', labelKey: 'shell.navigation.agentTeams', icon: 'heroicons:user-group' },
+  { key: 'applications', labelKey: 'shell.navigation.applications', icon: 'heroicons:squares-2x2' },
+  { key: 'skills', labelKey: 'shell.navigation.skills', icon: 'heroicons:sparkles' },
+  { key: 'memory', labelKey: 'shell.navigation.memory', icon: 'ph:brain' },
+  { key: 'media', labelKey: 'shell.navigation.media', icon: 'heroicons:photo' },
 ];
 
 const primaryNavItems = computed(() => {

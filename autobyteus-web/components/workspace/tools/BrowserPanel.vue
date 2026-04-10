@@ -49,7 +49,7 @@
           <button
             class="rounded-md border border-gray-200 px-2.5 py-1.5 text-sm text-gray-600 transition-colors hover:border-gray-300 hover:bg-gray-50 hover:text-gray-900"
             type="button"
-            title="Open new tab"
+            :title="$t('workspace.components.workspace.tools.BrowserPanel.open_new_tab')"
             @click="handleOpenTab"
           >
             <Icon icon="heroicons:plus" class="h-4 w-4" />
@@ -59,14 +59,14 @@
             v-model="addressValue"
             class="min-w-0 flex-1 rounded-md border border-gray-200 px-3 py-1.5 text-sm text-gray-800 outline-none transition-colors focus:border-blue-400"
             type="text"
-            placeholder="Enter URL and press Enter"
+            :placeholder="$t('workspace.components.workspace.tools.BrowserPanel.enter_url_and_press_enter')"
             @keydown.enter.prevent="handleAddressSubmit"
           >
 
           <button
             class="rounded-md border border-gray-200 px-2.5 py-1.5 text-sm text-gray-600 transition-colors hover:border-gray-300 hover:bg-gray-50 hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-50"
             type="button"
-            title="Refresh active tab"
+            :title="$t('workspace.components.workspace.tools.BrowserPanel.refresh_active_tab')"
             :disabled="!activeTabId"
             @click="handleRefresh"
           >
@@ -76,7 +76,7 @@
           <button
             class="rounded-md border border-gray-200 px-2.5 py-1.5 text-sm text-gray-600 transition-colors hover:border-gray-300 hover:bg-gray-50 hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-50"
             type="button"
-            title="Close active tab"
+            :title="$t('workspace.components.workspace.tools.BrowserPanel.close_active_tab')"
             :disabled="!activeTabId"
             @click="handleCloseActive"
           >
@@ -96,23 +96,17 @@
         <div
           v-if="!browserAvailable"
           class="absolute inset-0 flex items-center justify-center px-6 text-center text-sm text-gray-500"
-        >
-          Browser is only available in the desktop app.
-        </div>
+        >{{ $t('workspace.components.workspace.tools.BrowserPanel.browser_is_only_available_in_the') }}</div>
 
         <div
           v-else-if="sessions.length === 0"
           class="absolute inset-0 flex items-center justify-center px-6 text-center text-sm text-gray-500"
-        >
-          Open a URL to start browsing in the Browser tab.
-        </div>
+        >{{ $t('workspace.components.workspace.tools.BrowserPanel.open_a_url_to_start_browsing') }}</div>
 
         <div
           v-else-if="!activeTabId"
           class="absolute inset-0 flex items-center justify-center px-6 text-center text-sm text-gray-500"
-        >
-          Select a browser tab to attach its browser view here.
-        </div>
+        >{{ $t('workspace.components.workspace.tools.BrowserPanel.select_a_browser_tab_to_attach') }}</div>
       </div>
     </div>
   </Teleport>

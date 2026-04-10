@@ -3,6 +3,7 @@ import { useMessagingChannelBindingSetupStore } from '~/stores/messagingChannelB
 import { useMessagingProviderScopeStore } from '~/stores/messagingProviderScopeStore';
 import { useMessagingVerificationStore } from '~/stores/messagingVerificationStore';
 import { useGatewaySessionSetupStore } from '~/stores/gatewaySessionSetupStore';
+import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
 import type { MessagingProvider, SetupStepState } from '~/types/messaging';
 import {
   providerRequiresPersonalSession,
@@ -10,6 +11,10 @@ import {
   providerTransport,
   resolveBindingScope,
 } from '~/utils/messagingSetupScope';
+
+function t(key: string, params?: Record<string, string | number>): string {
+  return localizationRuntime.translate(key, params);
+}
 
 export const useMessagingProviderFlowStore = defineStore('messagingProviderFlowStore', {
   state: () => ({}),
@@ -66,14 +71,16 @@ export const useMessagingProviderFlowStore = defineStore('messagingProviderFlowS
           sessionStep = {
             key: 'personal_session',
             status: 'PENDING',
-            detail: 'Start the gateway runtime above first.',
+            detail: t('settings.messaging.flow.startGatewayRuntimeFirst'),
           };
           personalSessionReady = false;
         } else if (!sessionProviderMatches) {
           sessionStep = {
             key: 'personal_session',
             status: 'PENDING',
-            detail: `Start a ${providerSessionLabel(provider)} personal session.`,
+            detail: t('settings.messaging.flow.startPersonalSessionStep', {
+              provider: providerSessionLabel(provider),
+            }),
           };
           personalSessionReady = false;
         } else if (gatewaySnapshot.personalSessionReady) {
@@ -107,13 +114,13 @@ export const useMessagingProviderFlowStore = defineStore('messagingProviderFlowS
         bindingStep = {
           key: 'binding',
           status: 'PENDING',
-          detail: 'Start the gateway runtime above first.',
+          detail: t('settings.messaging.flow.startGatewayRuntimeFirst'),
         };
       } else if (!personalSessionReady) {
         bindingStep = {
           key: 'binding',
           status: 'PENDING',
-          detail: 'Complete Session step first.',
+          detail: t('settings.messaging.flow.completeSessionStepFirst'),
         };
       } else {
         bindingStep = {
@@ -128,7 +135,9 @@ export const useMessagingProviderFlowStore = defineStore('messagingProviderFlowS
           detail:
             bindingSnapshot.capabilityBlockedReason ||
             bindingSnapshot.bindingError ||
-            (!bindingSnapshot.hasBindings ? 'No binding found for selected provider scope.' : undefined),
+            (!bindingSnapshot.hasBindings
+              ? t('settings.messaging.flow.noBindingFoundForSelectedProviderScope')
+              : undefined),
         };
       }
       steps.push(bindingStep);
@@ -141,7 +150,7 @@ export const useMessagingProviderFlowStore = defineStore('messagingProviderFlowS
         verificationStep = {
           key: 'verification',
           status: 'PENDING',
-          detail: 'Complete previous steps first.',
+          detail: t('settings.messaging.flow.completePreviousStepsFirst'),
         };
       } else {
         verificationStep = {
@@ -156,7 +165,9 @@ export const useMessagingProviderFlowStore = defineStore('messagingProviderFlowS
           detail:
             verificationState.verificationError ||
             (verificationState.verificationResult && !verificationState.verificationResult.ready
-              ? `${verificationState.verificationResult.blockers.length} blocker(s) found.`
+              ? t('settings.messaging.flow.blockersFound', {
+                  count: verificationState.verificationResult.blockers.length,
+                })
               : undefined),
         };
       }

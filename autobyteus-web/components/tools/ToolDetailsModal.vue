@@ -47,8 +47,7 @@
                 </td>
                 <td class="px-4 py-4 text-sm text-gray-600">
                   <p>{{ param.description }}</p>
-                  <p v-if="param.defaultValue" class="text-xs text-gray-500 mt-1">
-                    Default: <code>{{ param.defaultValue }}</code>
+                  <p v-if="param.defaultValue" class="text-xs text-gray-500 mt-1">{{ $t('tools.components.tools.ToolDetailsModal.default') }}<code>{{ param.defaultValue }}</code>
                   </p>
                 </td>
               </tr>
@@ -56,7 +55,7 @@
           </table>
         </div>
         <div v-else class="text-center py-8 bg-gray-50 rounded-lg">
-          <p class="text-gray-500">This tool does not require any parameters.</p>
+          <p class="text-gray-500">{{ $t('tools.components.tools.ToolDetailsModal.this_tool_does_not_require_any') }}</p>
         </div>
       </div>
       

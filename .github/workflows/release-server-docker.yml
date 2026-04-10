@@ -18,6 +18,11 @@ on:
         description: "Docker image name override (default: autobyteus/autobyteus-server)"
         required: false
         type: string
+      publish_zh:
+        description: "Publish only the zh runtime variant during manual dispatch"
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -37,8 +42,11 @@ jobs:
       release_tag: ${{ steps.meta.outputs.release_tag }}
       release_ref: ${{ steps.meta.outputs.release_ref }}
       image_name: ${{ steps.meta.outputs.image_name }}
-      tags: ${{ steps.meta.outputs.tags }}
+      normalized_tag: ${{ steps.meta.outputs.normalized_tag }}
       is_prerelease: ${{ steps.meta.outputs.is_prerelease }}
+      variant_label: ${{ steps.meta.outputs.variant_label }}
+      build_variant: ${{ steps.meta.outputs.build_variant }}
+      tags: ${{ steps.meta.outputs.tags }}
     steps:
       - name: Resolve publish metadata
         id: meta
@@ -46,6 +54,7 @@ jobs:
           INPUT_RELEASE_TAG: ${{ github.event.inputs.release_tag || '' }}
           INPUT_RELEASE_REF: ${{ github.event.inputs.release_ref || '' }}
           INPUT_IMAGE_NAME: ${{ github.event.inputs.image_name || '' }}
+          INPUT_PUBLISH_ZH: ${{ github.event.inputs.publish_zh || 'false' }}
         run: |
           set -euo pipefail
 
@@ -74,19 +83,33 @@ jobs:
           IMAGE_NAME="${INPUT_IMAGE_NAME:-$DEFAULT_IMAGE_NAME}"
           NORMALIZED_TAG="${RELEASE_TAG#v}"
           IS_PRERELEASE="false"
+          BUILD_VARIANT=""
+          VARIANT_LABEL="default"
+          VERSION_SUFFIX=""
+          LATEST_TAG="latest"
           if [[ "${NORMALIZED_TAG}" == *-* ]]; then
             IS_PRERELEASE="true"
+          fi
+
+          if [[ "${GITHUB_EVENT_NAME}" == "workflow_dispatch" && "${INPUT_PUBLISH_ZH}" == "true" ]]; then
+            BUILD_VARIANT="zh"
+            VARIANT_LABEL="zh"
+            VERSION_SUFFIX="-zh"
+            LATEST_TAG="latest-zh"
           fi
 
           {
             echo "release_tag=${RELEASE_TAG}"
             echo "release_ref=${RELEASE_REF}"
             echo "image_name=${IMAGE_NAME}"
+            echo "normalized_tag=${NORMALIZED_TAG}"
             echo "is_prerelease=${IS_PRERELEASE}"
+            echo "variant_label=${VARIANT_LABEL}"
+            echo "build_variant=${BUILD_VARIANT}"
             echo "tags<<EOF"
-            echo "${IMAGE_NAME}:${NORMALIZED_TAG}"
+            echo "${IMAGE_NAME}:${NORMALIZED_TAG}${VERSION_SUFFIX}"
             if [[ "${IS_PRERELEASE}" != "true" ]]; then
-              echo "${IMAGE_NAME}:latest"
+              echo "${IMAGE_NAME}:${LATEST_TAG}"
             fi
             echo "EOF"
           } >> "${GITHUB_OUTPUT}"
@@ -99,9 +122,10 @@ jobs:
             echo "Release tag: \`${{ steps.meta.outputs.release_tag }}\`"
             echo "Release ref: \`${{ steps.meta.outputs.release_ref }}\`"
             echo "Image: \`${{ steps.meta.outputs.image_name }}\`"
+            echo "Variant: \`${{ steps.meta.outputs.variant_label }}\`"
             echo "Prerelease: \`${{ steps.meta.outputs.is_prerelease }}\`"
             echo ""
-            echo "Tags:"
+            echo "Published tags:"
             echo "${{ steps.meta.outputs.tags }}" | sed 's/^/- `/' | sed 's/$/`/'
           } >> "${GITHUB_STEP_SUMMARY}"
 
@@ -128,7 +152,8 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push multi-arch image
+      - name: Build and push default multi-arch image
+        if: ${{ needs.prepare-release.outputs.build_variant == '' }}
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -137,8 +162,24 @@ jobs:
           push: true
           provenance: false
           sbom: false
-          cache-from: type=gha,scope=release-server-docker
-          cache-to: type=gha,mode=max,scope=release-server-docker
+          cache-from: type=gha,scope=release-server-docker-default
+          cache-to: type=gha,mode=max,scope=release-server-docker-default
+          tags: ${{ needs.prepare-release.outputs.tags }}
+
+      - name: Build and push zh multi-arch image
+        if: ${{ needs.prepare-release.outputs.build_variant == 'zh' }}
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: autobyteus-server-ts/docker/Dockerfile.monorepo
+          build-args: |
+            BASE_IMAGE_TAG=${{ needs.prepare-release.outputs.build_variant }}
+          platforms: linux/amd64,linux/arm64
+          push: true
+          provenance: false
+          sbom: false
+          cache-from: type=gha,scope=release-server-docker-zh
+          cache-to: type=gha,mode=max,scope=release-server-docker-zh
           tags: ${{ needs.prepare-release.outputs.tags }}
 
       - name: Publish summary
@@ -148,6 +189,7 @@ jobs:
             echo ""
             echo "Image: \`${{ needs.prepare-release.outputs.image_name }}\`"
             echo "Release tag: \`${{ needs.prepare-release.outputs.release_tag }}\`"
+            echo "Variant: \`${{ needs.prepare-release.outputs.variant_label }}\`"
             echo "Prerelease: \`${{ needs.prepare-release.outputs.is_prerelease }}\`"
             echo ""
             echo "Published tags:"

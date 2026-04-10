@@ -3,7 +3,7 @@
     <div class="h-16 flex items-center px-4 border-b border-gray-200 bg-gray-50 flex-shrink-0">
       <div>
         <h1 class="text-lg font-bold text-gray-800">Memory</h1>
-        <p class="text-xs text-gray-500">Stored run memories</p>
+        <p class="text-xs text-gray-500">{{ $t('memory.components.memory.MemoryIndexPanel.stored_run_memories') }}</p>
       </div>
     </div>
 
@@ -15,16 +15,12 @@
             class="px-3 py-2 text-sm font-semibold rounded-md border"
             :class="isAgentScope ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-gray-200 text-gray-600 hover:bg-gray-50'"
             @click="changeScope('agent')"
-          >
-            Agent Runs
-          </button>
+          >{{ $t('memory.components.memory.MemoryIndexPanel.agent_runs') }}</button>
           <button
             class="px-3 py-2 text-sm font-semibold rounded-md border"
             :class="!isAgentScope ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-gray-200 text-gray-600 hover:bg-gray-50'"
             @click="changeScope('team')"
-          >
-            Team Runs
-          </button>
+          >{{ $t('memory.components.memory.MemoryIndexPanel.team_runs') }}</button>
         </div>
       </div>
 
@@ -48,12 +44,12 @@
       </div>
 
       <div v-if="isAgentScope">
-        <label class="block text-xs font-semibold text-gray-600 mb-1">Manual Run Id</label>
+        <label class="block text-xs font-semibold text-gray-600 mb-1">{{ $t('memory.components.memory.MemoryIndexPanel.manual_run_id') }}</label>
         <div class="flex flex-col gap-2">
           <input
             v-model="manualRunId"
             type="text"
-            placeholder="run-123"
+            :placeholder="$t('memory.components.memory.MemoryIndexPanel.run_123')"
             class="flex-1 rounded-md border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             @keyup.enter="submitManualRunId"
           />
@@ -69,9 +65,7 @@
 
     <div class="px-4 pt-3" v-if="showManualSelection">
       <div class="flex items-center justify-between rounded-md border border-blue-100 bg-blue-50 px-3 py-2">
-        <div class="text-xs text-blue-900">
-          Manual selection:
-          <span class="font-mono">{{ agentViewStore.selectedRunId }}</span>
+        <div class="text-xs text-blue-900">{{ $t('memory.components.memory.MemoryIndexPanel.manual_selection') }}<span class="font-mono">{{ agentViewStore.selectedRunId }}</span>
         </div>
         <button
           class="text-xs font-semibold text-blue-700 hover:text-blue-900"
@@ -147,9 +141,7 @@
           </button>
 
           <div v-if="teamIndexStore.isTeamExpanded(team.teamRunId)" class="border-t border-gray-100 px-2 py-2 space-y-1">
-            <div v-if="team.members.length === 0" class="px-2 py-1 text-xs text-gray-400">
-              No members.
-            </div>
+            <div v-if="team.members.length === 0" class="px-2 py-1 text-xs text-gray-400">{{ $t('memory.components.memory.MemoryIndexPanel.no_members') }}</div>
             <button
               v-for="member in team.members"
               :key="`${team.teamRunId}:${member.memberRouteKey}:${member.memberRunId}`"

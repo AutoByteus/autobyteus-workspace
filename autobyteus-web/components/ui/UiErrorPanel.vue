@@ -33,9 +33,7 @@
         </div>
       </div>
 
-      <div v-if="errorCount === 0" class="px-3 py-4 text-sm text-gray-500">
-        No errors captured.
-      </div>
+      <div v-if="errorCount === 0" class="px-3 py-4 text-sm text-gray-500">{{ $t('common.components.ui.UiErrorPanel.no_errors_captured') }}</div>
 
       <div v-else class="max-h-[60vh] overflow-auto divide-y divide-gray-100">
         <div v-for="err in errors" :key="err.id" class="px-3 py-3">
@@ -61,7 +59,7 @@
           <div v-if="isExpanded(err.id)" class="mt-2 text-xs text-gray-700">
             <pre v-if="err.stack" class="bg-gray-50 border border-gray-200 rounded p-2 overflow-auto whitespace-pre-wrap">{{ err.stack }}</pre>
             <pre v-else-if="err.detail" class="bg-gray-50 border border-gray-200 rounded p-2 overflow-auto whitespace-pre-wrap">{{ err.detail }}</pre>
-            <div v-else class="text-gray-500">No additional details.</div>
+            <div v-else class="text-gray-500">{{ $t('common.components.ui.UiErrorPanel.no_additional_details') }}</div>
           </div>
 
           <div class="mt-2">

@@ -3,7 +3,7 @@
     <!-- Loading state -->
     <div v-if="isLoading" class="loading-state">
       <div class="spinner"></div>
-      <p>Loading spreadsheet...</p>
+      <p>{{ $t('tools.components.fileExplorer.viewers.ExcelViewer.loading_spreadsheet') }}</p>
     </div>
 
     <!-- Error state -->
@@ -34,7 +34,7 @@
 
     <!-- No URL state -->
     <div v-else class="error-state">
-      <p>No file URL provided.</p>
+      <p>{{ $t('tools.components.fileExplorer.viewers.ExcelViewer.no_file_url_provided') }}</p>
     </div>
   </div>
 </template>

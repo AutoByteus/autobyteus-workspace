@@ -1,19 +1,19 @@
 <template>
   <div class="token-usage-statistics h-full flex flex-col overflow-hidden">
     <div class="flex items-center justify-between px-8 pt-8 pb-4 flex-shrink-0">
-      <h2 class="text-xl font-semibold text-gray-900">Token Usage Statistics</h2>
+      <h2 class="text-xl font-semibold text-gray-900">{{ $t('settings.components.settings.TokenUsageStatistics.token_usage_statistics') }}</h2>
     </div>
 
     <div class="flex-1 overflow-auto p-8">
       <div class="flex items-center mb-8 bg-gray-50 p-4 rounded-lg border border-gray-100">
-        <label for="date-range" class="block text-sm font-medium text-gray-700 mr-4">Select Date Range:</label>
+        <label for="date-range" class="block text-sm font-medium text-gray-700 mr-4">{{ $t('settings.components.settings.TokenUsageStatistics.select_date_range') }}</label>
         <input 
           type="date" 
           v-model="startDate" 
           class="border border-gray-300 rounded-md p-2 mr-4 text-sm focus:ring-blue-500 focus:border-blue-500"
           :max="endDate"
         >
-        <div class="text-gray-400 mr-4">to</div>
+        <div class="text-gray-400 mr-4">{{ $t('settings.components.settings.TokenUsageStatistics.rangeSeparator') }}</div>
         <input 
           type="date" 
           v-model="endDate" 
@@ -25,7 +25,7 @@
           class="ml-auto px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm font-medium transition-colors"
           :disabled="store.isLoading"
         >
-          {{ store.isLoading ? 'Loading...' : 'Fetch Statistics' }}
+          {{ store.isLoading ? $t('settings.components.settings.TokenUsageStatistics.loading') : $t('settings.components.settings.TokenUsageStatistics.fetchStatistics') }}
         </button>
       </div>
 
@@ -37,20 +37,18 @@
         {{ store.getError }}
       </div>
 
-      <div v-else-if="store.getStatistics.length === 0" class="text-gray-600 p-4">
-        No data available for the selected date range.
-      </div>
+      <div v-else-if="store.getStatistics.length === 0" class="text-gray-600 p-4">{{ $t('settings.components.settings.TokenUsageStatistics.no_data_available_for_the_selected') }}</div>
 
       <div v-else>
       <table class="min-w-full bg-white">
         <thead>
           <tr>
-            <th class="py-2 px-4 border">LLM Model</th>
-            <th class="py-2 px-4 border">Prompt Tokens</th>
-            <th class="py-2 px-4 border">Assistant Tokens</th>
-            <th class="py-2 px-4 border">Prompt Tokens Cost</th>
-            <th class="py-2 px-4 border">Assistant Tokens Cost</th>
-            <th class="py-2 px-4 border">Total Cost</th>
+            <th class="py-2 px-4 border">{{ $t('settings.components.settings.TokenUsageStatistics.llm_model') }}</th>
+            <th class="py-2 px-4 border">{{ $t('settings.components.settings.TokenUsageStatistics.prompt_tokens') }}</th>
+            <th class="py-2 px-4 border">{{ $t('settings.components.settings.TokenUsageStatistics.assistant_tokens') }}</th>
+            <th class="py-2 px-4 border">{{ $t('settings.components.settings.TokenUsageStatistics.prompt_tokens_cost') }}</th>
+            <th class="py-2 px-4 border">{{ $t('settings.components.settings.TokenUsageStatistics.assistant_tokens_cost') }}</th>
+            <th class="py-2 px-4 border">{{ $t('settings.components.settings.TokenUsageStatistics.total_cost') }}</th>
           </tr>
         </thead>
         <tbody>
@@ -64,7 +62,7 @@
           </tr>
           <!-- Total Row -->
           <tr class="font-semibold bg-gray-50">
-            <td class="py-2 px-4 border">Total</td>
+            <td class="py-2 px-4 border">{{ $t('settings.components.settings.TokenUsageStatistics.total') }}</td>
             <td class="py-2 px-4 border">{{ getTotalPromptTokens().toLocaleString() }}</td>
             <td class="py-2 px-4 border">{{ getTotalAssistantTokens().toLocaleString() }}</td>
             <td class="py-2 px-4 border">€{{ formatNumber(getTotalPromptCost()) }}</td>
@@ -84,10 +82,12 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
+import { useLocalization } from '~/composables/useLocalization';
 import { useTokenUsageStatisticsStore } from '~/stores/tokenUsageStatistics';
 import BarChart from '~/components/common/BarChart.vue';
 
 const store = useTokenUsageStatisticsStore();
+const { t: $t } = useLocalization();
 const startDate = ref('');
 const endDate = ref('');
 
@@ -119,7 +119,7 @@ const getTotalAssistantCost = (): number => {
 
 const fetchStatistics = async () => {
   if (!startDate.value || !endDate.value) {
-    alert('Please select both start and end dates');
+    alert($t('settings.components.settings.TokenUsageStatistics.selectDatesAlert'));
     return;
   }
   try {

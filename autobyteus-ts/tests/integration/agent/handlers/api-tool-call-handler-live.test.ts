@@ -30,9 +30,9 @@ runIntegration('ApiToolCallStreamingResponseHandler (OpenAI live)', () => {
     const toolsSchema = [formatter.provide(toolDef!)];
 
     const llm = new OpenAILLM(new LLMModel({
-      name: 'gpt-5.2',
-      value: 'gpt-5.2',
-      canonicalName: 'gpt-5.2',
+      name: 'gpt-5.4',
+      value: 'gpt-5.4',
+      canonicalName: 'gpt-5.4',
       provider: LLMProvider.OPENAI
     }));
 

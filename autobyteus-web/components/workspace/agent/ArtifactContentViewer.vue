@@ -16,7 +16,7 @@
                ? 'bg-blue-50 text-blue-600' 
                : 'text-gray-400 hover:text-gray-700 hover:bg-gray-100'"
              @click="viewMode = 'edit'"
-             title="Edit Mode"
+             :title="$t('workspace.components.workspace.agent.ArtifactContentViewer.edit_mode')"
            >
              <Icon icon="heroicons:pencil-square" class="h-4 w-4" />
            </button>
@@ -26,7 +26,7 @@
                ? 'bg-blue-50 text-blue-600' 
                : 'text-gray-400 hover:text-gray-700 hover:bg-gray-100'"
              @click="viewMode = 'preview'"
-             title="Preview Mode"
+             :title="$t('workspace.components.workspace.agent.ArtifactContentViewer.preview_mode')"
            >
              <Icon icon="heroicons:eye" class="h-4 w-4" />
            </button>
@@ -36,21 +36,17 @@
     <!-- Empty State -->
     <div v-if="!artifact" class="flex-1 flex flex-col items-center justify-center text-gray-400 p-8">
          <Icon icon="heroicons:cursor-arrow-rays" class="w-16 h-16 mb-4 text-gray-300" />
-         <h3 class="text-lg font-medium text-gray-500 mb-1">No artifact selected</h3>
-         <p class="text-sm">Select an artifact to view its content.</p>
+         <h3 class="text-lg font-medium text-gray-500 mb-1">{{ $t('workspace.components.workspace.agent.ArtifactContentViewer.no_artifact_selected') }}</h3>
+         <p class="text-sm">{{ $t('workspace.components.workspace.agent.ArtifactContentViewer.select_an_artifact_to_view_its') }}</p>
     </div>
 
     <div v-else class="flex-1 flex flex-col min-h-0 overflow-hidden relative">
-        <div v-if="isLoading" class="flex-1 flex items-center justify-center text-gray-400">
-            Loading content...
-        </div>
+        <div v-if="isLoading" class="flex-1 flex items-center justify-center text-gray-400">{{ $t('workspace.components.workspace.agent.ArtifactContentViewer.loading_content') }}</div>
 
         <div v-else-if="isDeleted" class="flex-1 flex flex-col items-center justify-center text-gray-400 p-8">
              <Icon icon="heroicons:trash" class="w-16 h-16 mb-4 text-gray-300" />
-             <h3 class="text-lg font-medium text-gray-500 mb-1">File not found</h3>
-             <p class="text-sm text-center max-w-sm">
-               This file has been deleted from the workspace or moved to a different location.
-             </p>
+             <h3 class="text-lg font-medium text-gray-500 mb-1">{{ $t('workspace.components.workspace.agent.ArtifactContentViewer.file_not_found') }}</h3>
+             <p class="text-sm text-center max-w-sm">{{ $t('workspace.components.workspace.agent.ArtifactContentViewer.this_file_has_been_deleted_from') }}</p>
         </div>
         
         <FileViewer

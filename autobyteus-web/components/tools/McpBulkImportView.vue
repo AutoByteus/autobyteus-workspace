@@ -8,14 +8,14 @@
           Back
         </button>
       </div>
-      <h1 class="text-xl font-semibold text-gray-800">Bulk Import MCP Servers</h1>
+      <h1 class="text-xl font-semibold text-gray-800">{{ $t('tools.components.tools.McpBulkImportView.bulk_import_mcp_servers') }}</h1>
     </div>
 
     <!-- Form Content -->
     <div class="flex-grow overflow-auto pr-2 space-y-4">
       <div>
-        <label for="bulk-json-input" class="block text-base font-medium text-gray-700">JSON Configuration</label>
-        <p class="text-sm text-gray-500">The JSON must have a top-level `mcpServers` key containing an object of server configurations.</p>
+        <label for="bulk-json-input" class="block text-base font-medium text-gray-700">{{ $t('tools.components.tools.McpBulkImportView.json_configuration') }}</label>
+        <p class="text-sm text-gray-500">{{ $t('tools.components.tools.McpBulkImportView.the_json_must_have_a_top') }}</p>
         <textarea 
           id="bulk-json-input"
           ref="textareaRef"

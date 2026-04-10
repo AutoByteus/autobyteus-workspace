@@ -49,7 +49,7 @@ export class GeminiLLM extends BaseLLM {
       new LLMModel({
         name: 'gemini-3-flash-preview',
         value: 'gemini-3-flash-preview',
-        canonicalName: 'gemini-3-flash',
+        canonicalName: 'gemini-3-flash-preview',
         provider: LLMProvider.GEMINI
       });
 

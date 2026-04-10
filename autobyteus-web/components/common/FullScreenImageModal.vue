@@ -20,7 +20,7 @@
         <button
             v-if="imageUrl && (currentScale !== 1 || imageScrollContainer && (imageScrollContainer.scrollLeft !== 0 || imageScrollContainer.scrollTop !== 0))"
             @click="resetImageState"
-            title="Reset View"
+            :title="$t('common.components.common.FullScreenImageModal.reset_view')"
             class="p-2 text-white bg-zinc-700/70 hover:bg-zinc-800/90 backdrop-blur-sm rounded-full transition-colors"
         >
             <Icon icon="heroicons:arrow-uturn-left-solid" class="w-5 h-5" />
@@ -37,15 +37,15 @@
         <button
             v-if="imageUrl"
             @click="handleDownload"
-            title="Download"
+            :title="$t('common.components.common.FullScreenImageModal.download')"
             class="p-2 text-white bg-zinc-700/70 hover:bg-zinc-800/90 backdrop-blur-sm rounded-full transition-colors"
         >
             <Icon icon="heroicons:arrow-down-tray-solid" class="w-5 h-5" />
         </button>
         <button
           @click="closeModalAndReset"
-          title="Close"
-          aria-label="Close"
+          :title="$t('common.components.common.FullScreenImageModal.close')"
+          :aria-label="$t('common.components.common.FullScreenImageModal.close')"
           class="p-2 text-white bg-zinc-700/70 hover:bg-zinc-800/90 backdrop-blur-sm rounded-full transition-colors"
         >
           <Icon icon="heroicons:x-mark-solid" class="w-5 h-5" />
@@ -71,9 +71,7 @@
           @mouseup="endDrag"
           @mouseleave="endDrag"
         />
-        <div v-else class="flex items-center justify-center h-full text-gray-500 dark:text-gray-400">
-          No image to display.
-        </div>
+        <div v-else class="flex items-center justify-center h-full text-gray-500 dark:text-gray-400">{{ $t('common.components.common.FullScreenImageModal.no_image_to_display') }}</div>
       </div>
     </div>
   </div>

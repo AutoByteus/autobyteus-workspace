@@ -6,7 +6,7 @@
         <!-- Close Button -->
         <button
           @click="closeModal"
-          aria-label="Close"
+          :aria-label="$t('common.components.common.FullScreenVideoModal.close')"
           class="absolute -top-3 -right-3 text-white bg-zinc-800 hover:bg-zinc-900 rounded-full p-2 z-20"
         >
           <Icon icon="heroicons:x-mark-solid" class="w-5 h-5" />
@@ -17,7 +17,7 @@
           v-if="videoUrl"
           @click="handleCopyUrl"
           :title="copyButtonTitle"
-          aria-label="Copy URL"
+          :aria-label="$t('common.components.common.FullScreenVideoModal.copy_url')"
           class="absolute -top-3 right-12 text-white bg-zinc-800 hover:bg-zinc-900 rounded-full p-2 z-20"
         >
           <Icon v-if="copyButtonState === 'copied'" icon="heroicons:check-solid" class="w-5 h-5 text-green-400" />
@@ -32,12 +32,8 @@
             controls
             autoplay
             class="w-full h-auto max-h-[85vh] object-contain"
-          >
-            Your browser does not support the video tag.
-          </video>
-          <div v-else class="text-gray-400">
-            No video to display.
-          </div>
+          >{{ $t('common.components.common.FullScreenVideoModal.your_browser_does_not_support_the') }}</video>
+          <div v-else class="text-gray-400">{{ $t('common.components.common.FullScreenVideoModal.no_video_to_display') }}</div>
         </div>
       </div>
     </div>

@@ -23,7 +23,7 @@
         <CopyButton 
           v-if="selectedAgent" 
           :text-to-copy="conversationText" 
-          label="Copy full conversation"
+          :label="$t('workspace.components.workspace.agent.AgentWorkspaceView.copy_full_conversation')"
           class="h-10 w-10 inline-flex items-center justify-center rounded-full p-0 text-gray-500 hover:bg-gray-100"
         />
         <!-- Separator removed -->
@@ -43,9 +43,7 @@
         :agent-avatar-url="selectedAgent.config.agentAvatarUrl"
         class="h-full"
       />
-      <div v-else class="p-4 text-center text-gray-500">
-        Select an agent or start a new one.
-      </div>
+      <div v-else class="p-4 text-center text-gray-500">{{ $t('workspace.components.workspace.agent.AgentWorkspaceView.select_an_agent_or_start_a') }}</div>
     </div>
 
   </div>

@@ -6,23 +6,21 @@
         data-testid="settings-updates-panel"
       >
         <header class="mb-4">
-          <h2 class="text-lg font-semibold text-gray-900">AutoByteus Updates</h2>
-          <p class="mt-1 text-sm text-gray-600">
-            Version details and desktop app update controls.
-          </p>
+          <h2 class="text-lg font-semibold text-gray-900">{{ $t('settings.components.settings.AboutSettingsManager.autobyteus_updates') }}</h2>
+          <p class="mt-1 text-sm text-gray-600">{{ $t('settings.components.settings.AboutSettingsManager.version_details_and_desktop_app_update') }}</p>
         </header>
 
         <dl class="grid gap-3 text-sm sm:grid-cols-3">
           <div>
-            <dt class="text-gray-500">Current Version</dt>
+            <dt class="text-gray-500">{{ $t('settings.components.settings.AboutSettingsManager.current_version') }}</dt>
             <dd class="font-medium text-gray-900" data-testid="settings-updates-version">{{ currentVersionLabel }}</dd>
           </div>
           <div>
-            <dt class="text-gray-500">Update Status</dt>
+            <dt class="text-gray-500">{{ $t('settings.components.settings.AboutSettingsManager.update_status') }}</dt>
             <dd class="font-medium text-gray-900" data-testid="settings-updates-status">{{ statusLabel }}</dd>
           </div>
           <div>
-            <dt class="text-gray-500">Last Checked</dt>
+            <dt class="text-gray-500">{{ $t('settings.components.settings.AboutSettingsManager.last_checked') }}</dt>
             <dd class="font-medium text-gray-900" data-testid="settings-updates-last-checked">{{ lastCheckedLabel }}</dd>
           </div>
         </dl>
@@ -38,9 +36,7 @@
             data-testid="settings-updates-check-updates"
             :disabled="!appUpdateStore.isElectron || isCheckDisabled"
             @click="checkForUpdates"
-          >
-            Check for Updates
-          </button>
+          >{{ $t('settings.components.settings.AboutSettingsManager.check_for_updates') }}</button>
 
           <button
             v-if="appUpdateStore.status === 'available'"
@@ -48,9 +44,7 @@
             class="rounded-md bg-emerald-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-emerald-700"
             data-testid="settings-updates-download-update"
             @click="downloadUpdate"
-          >
-            Download Update
-          </button>
+          >{{ $t('settings.components.settings.AboutSettingsManager.download_update') }}</button>
 
           <button
             v-if="appUpdateStore.status === 'downloaded'"
@@ -58,9 +52,7 @@
             class="rounded-md bg-emerald-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-emerald-700"
             data-testid="settings-updates-install-update"
             @click="installUpdateAndRestart"
-          >
-            Install &amp; Restart
-          </button>
+          >{{ $t('settings.components.settings.AboutSettingsManager.install_and_amp_restart') }}</button>
 
           <button
             v-if="appUpdateStore.status === 'installing'"
@@ -69,7 +61,7 @@
             data-testid="settings-updates-installing"
             disabled
           >
-            Restarting...
+            {{ $t('settings.components.settings.AboutSettingsManager.restarting') }}
           </button>
         </div>
       </section>
@@ -79,9 +71,11 @@
 
 <script setup lang="ts">
 import { computed, onMounted } from 'vue';
+import { useLocalization } from '~/composables/useLocalization';
 import { useAppUpdateStore } from '~/stores/appUpdateStore';
 
 const appUpdateStore = useAppUpdateStore();
+const { t } = useLocalization();
 
 onMounted(() => {
   if (!appUpdateStore.initialized) {
@@ -89,44 +83,72 @@ onMounted(() => {
   }
 });
 
-const currentVersionLabel = computed(() => appUpdateStore.currentVersion || 'Unavailable');
+const currentVersionLabel = computed(() => (
+  appUpdateStore.currentVersion || t('settings.components.settings.AboutSettingsManager.unavailable')
+));
 
 const statusLabel = computed(() => {
   switch (appUpdateStore.status) {
     case 'checking':
-      return 'Checking';
+      return t('settings.components.settings.AboutSettingsManager.status.checking');
     case 'available':
-      return 'Update available';
+      return t('settings.components.settings.AboutSettingsManager.status.available');
     case 'downloading':
-      return 'Downloading';
+      return t('settings.components.settings.AboutSettingsManager.status.downloading');
     case 'downloaded':
-      return 'Ready to install';
+      return t('settings.components.settings.AboutSettingsManager.status.downloaded');
     case 'installing':
-      return 'Restarting app';
+      return t('settings.components.settings.AboutSettingsManager.status.installing');
     case 'no-update':
-      return 'Up to date';
+      return t('settings.components.settings.AboutSettingsManager.status.noUpdate');
     case 'error':
-      return 'Error';
+      return t('settings.components.settings.AboutSettingsManager.status.error');
     default:
-      return 'Idle';
+      return t('settings.components.settings.AboutSettingsManager.status.idle');
   }
 });
 
 const statusMessage = computed(() => {
   if (!appUpdateStore.isElectron) {
-    return 'Update checks are available in packaged Electron desktop builds.';
+    return t('settings.components.settings.AboutSettingsManager.message.electronOnly');
   }
-  return appUpdateStore.message || 'Check for updates manually at any time.';
+
+  switch (appUpdateStore.status) {
+    case 'checking':
+      return t('settings.components.settings.AboutSettingsManager.message.checking');
+    case 'available':
+      return appUpdateStore.availableVersion
+        ? t('settings.components.settings.AboutSettingsManager.message.availableVersion', {
+            version: appUpdateStore.availableVersion,
+          })
+        : t('settings.components.settings.AboutSettingsManager.message.available');
+    case 'downloading':
+      return t('settings.components.settings.AboutSettingsManager.message.downloading');
+    case 'downloaded':
+      return t('settings.components.settings.AboutSettingsManager.message.downloaded');
+    case 'installing':
+      return t('settings.components.settings.AboutSettingsManager.message.installing');
+    case 'no-update':
+      return t('settings.components.settings.AboutSettingsManager.message.noUpdate');
+    case 'error':
+      return appUpdateStore.error
+        ? t('settings.components.settings.AboutSettingsManager.message.errorWithDetail', {
+            error: appUpdateStore.error,
+          })
+        : t('settings.components.settings.AboutSettingsManager.message.error');
+    default:
+      return t('settings.components.settings.AboutSettingsManager.message.idle');
+  }
 });
 
 const lastCheckedLabel = computed(() => {
   if (!appUpdateStore.checkedAt) {
-    return 'Never';
+    return t('settings.components.settings.AboutSettingsManager.lastChecked.never');
   }
 
   const value = new Date(appUpdateStore.checkedAt);
   if (Number.isNaN(value.getTime())) {
-    return 'Unknown';
+    return t('settings.components.settings.AboutSettingsManager.lastChecked.unknown');
   }
 
   return value.toLocaleString();

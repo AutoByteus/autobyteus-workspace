@@ -105,8 +105,16 @@ The projection path uses:
 
 - Approval requests, tool calls, file changes, and final-answer deltas are all normalized into the standard runtime event spine.
 - In practice, Codex may emit visible final-answer text only after reasoning finishes, which can make text streaming appear as a late burst even though lifecycle/tool events are still live.
+- Large long-running Codex turns can also become bursty and include long silent gaps at the native `codex app-server` layer; when debugging attribution, compare native raw deltas with backend `SEGMENT_CONTENT` cadence before blaming the AutoByteus bridge.
 - Team member identity is deterministic and server-owned; Codex thread ids are stored separately as runtime-native references.
 - Raw Codex debug capture is available through `CODEX_THREAD_RAW_EVENT_LOG_DIR`; see `docs/design/codex_raw_event_mapping.md` for the audit workflow and file format.
+
+## Validation Notes
+
+- Durable long-turn attribution probes live under `tests/integration/runtime-execution/codex-app-server/thread/`.
+- `codex-raw-vs-backend-cadence.probe.test.ts` compares native raw `item/agentMessage/delta` cadence with backend `SEGMENT_CONTENT` cadence in the same run.
+- `codex-long-turn-cadence.probe.test.ts` records backend long-turn event cadence over time.
+- These live probes are intentionally opt-in and require both a working `codex` binary and `RUN_CODEX_E2E=1`.
 
 ## MCP Mode
 

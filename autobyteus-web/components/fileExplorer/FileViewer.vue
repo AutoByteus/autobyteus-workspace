@@ -1,13 +1,11 @@
 <template>
   <div class="h-full w-full overflow-hidden relative">
     <!-- Loading State -->
-    <div v-if="loading" class="flex-1 h-full flex items-center justify-center text-gray-400">
-      Loading content...
-    </div>
+    <div v-if="loading" class="flex-1 h-full flex items-center justify-center text-gray-400">{{ $t('tools.components.fileExplorer.FileViewer.loading_content') }}</div>
 
     <!-- Error State -->
     <div v-else-if="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative m-4" role="alert">
-      <strong class="font-bold">Error!</strong>
+      <strong class="font-bold">{{ $t('tools.components.fileExplorer.FileViewer.error') }}</strong>
       <span class="block sm:inline">{{ error }}</span>
     </div>
 
@@ -23,7 +21,7 @@
 
     <!-- Unsupported/Empty State -->
     <div v-else class="flex-1 h-full flex items-center justify-center text-gray-400">
-      <p>Preview not available for this file type.</p>
+      <p>{{ $t('tools.components.fileExplorer.FileViewer.preview_not_available_for_this_file') }}</p>
     </div>
   </div>
 </template>

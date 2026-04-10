@@ -6,6 +6,7 @@ import type {
   UpdateVoiceInputSettingsPayload,
   VoiceInputLanguageMode,
 } from '~/electron/extensions/types';
+import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
 
 type ExtensionAction =
   | 'install'
@@ -18,6 +19,10 @@ type ExtensionAction =
 
 const INSTALL_POLL_INTERVAL_MS = 750;
 let installPollingTimer: ReturnType<typeof setInterval> | null = null;
+
+function t(key: string, params?: Record<string, string | number>): string {
+  return localizationRuntime.translate(key, params);
+}
 
 interface ExtensionsStoreState {
   initialized: boolean;
@@ -109,7 +114,7 @@ export const useExtensionsStore = defineStore('extensions', {
         const state = await window.electronAPI.getExtensionsState();
         this.applyRemoteState(state);
       } catch (error) {
-        this.error = error instanceof Error ? error.message : 'Failed to load extensions';
+        this.error = error instanceof Error ? error.message : t('settings.extensions.store.failedToLoadExtensions');
       }
     },
 
@@ -132,7 +137,7 @@ export const useExtensionsStore = defineStore('extensions', {
       this.updateLocalExtension(extensionId, {
         status: 'installing',
         enabled: false,
-        message: 'Fetching runtime manifest...',
+        message: t('settings.extensions.store.fetchingRuntimeManifest'),
         installProgress: {
           phase: 'fetching-manifest',
           percent: null,
@@ -146,12 +151,12 @@ export const useExtensionsStore = defineStore('extensions', {
         const state = await window.electronAPI.installExtension(extensionId);
         this.applyRemoteState(state);
       } catch (error) {
-        const message = error instanceof Error ? error.message : 'Failed to install extension';
+        const message = error instanceof Error ? error.message : t('settings.extensions.store.failedToInstallExtension');
         this.error = message;
         this.updateLocalExtension(extensionId, {
           status: 'error',
           enabled: false,
-          message: 'Failed to install Voice Input.',
+          message: t('settings.extensions.store.failedToInstallVoiceInput'),
           installProgress: null,
           lastError: message,
         });
@@ -174,7 +179,7 @@ export const useExtensionsStore = defineStore('extensions', {
         const state = await window.electronAPI.enableExtension(extensionId);
         this.applyRemoteState(state);
       } catch (error) {
-        const message = error instanceof Error ? error.message : 'Failed to enable extension';
+        const message = error instanceof Error ? error.message : t('settings.extensions.store.failedToEnableExtension');
         this.error = message;
         useToasts().addToast(message, 'error');
       } finally {
@@ -194,7 +199,7 @@ export const useExtensionsStore = defineStore('extensions', {
         const state = await window.electronAPI.disableExtension(extensionId);
         this.applyRemoteState(state);
       } catch (error) {
-        const message = error instanceof Error ? error.message : 'Failed to disable extension';
+        const message = error instanceof Error ? error.message : t('settings.extensions.store.failedToDisableExtension');
         this.error = message;
         useToasts().addToast(message, 'error');
       } finally {
@@ -214,7 +219,7 @@ export const useExtensionsStore = defineStore('extensions', {
         const state = await window.electronAPI.updateVoiceInputSettings('voice-input', payload);
         this.applyRemoteState(state);
       } catch (error) {
-        const message = error instanceof Error ? error.message : 'Failed to update Voice Input settings';
+        const message = error instanceof Error ? error.message : t('settings.extensions.store.failedToUpdateVoiceInputSettings');
         this.error = message;
         useToasts().addToast(message, 'error');
       } finally {
@@ -242,7 +247,7 @@ export const useExtensionsStore = defineStore('extensions', {
         const state = await window.electronAPI.removeExtension(extensionId);
         this.applyRemoteState(state);
       } catch (error) {
-        const message = error instanceof Error ? error.message : 'Failed to remove extension';
+        const message = error instanceof Error ? error.message : t('settings.extensions.store.failedToRemoveExtension');
         this.error = message;
         useToasts().addToast(message, 'error');
       } finally {
@@ -260,7 +265,7 @@ export const useExtensionsStore = defineStore('extensions', {
       this.pendingAction = 'reinstall';
       this.updateLocalExtension(extensionId, {
         status: 'installing',
-        message: 'Fetching runtime manifest...',
+        message: t('settings.extensions.store.fetchingRuntimeManifest'),
         installProgress: {
           phase: 'fetching-manifest',
           percent: null,
@@ -274,12 +279,12 @@ export const useExtensionsStore = defineStore('extensions', {
         const state = await window.electronAPI.reinstallExtension(extensionId);
         this.applyRemoteState(state);
       } catch (error) {
-        const message = error instanceof Error ? error.message : 'Failed to reinstall extension';
+        const message = error instanceof Error ? error.message : t('settings.extensions.store.failedToReinstallExtension');
         this.error = message;
         this.updateLocalExtension(extensionId, {
           status: 'error',
           enabled: false,
-          message: 'Failed to reinstall Voice Input.',
+          message: t('settings.extensions.store.failedToReinstallVoiceInput'),
           installProgress: null,
           lastError: message,
         });
@@ -298,7 +303,7 @@ export const useExtensionsStore = defineStore('extensions', {
 
       const result = await window.electronAPI.openExtensionFolder(extensionId);
       if (!result.success) {
-        const message = result.error || 'Failed to open extension folder';
+        const message = result.error || t('settings.extensions.store.failedToOpenExtensionFolder');
         useToasts().addToast(message, 'error');
       }
     },

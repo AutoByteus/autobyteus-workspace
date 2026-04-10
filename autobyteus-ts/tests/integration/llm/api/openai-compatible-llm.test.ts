@@ -9,9 +9,9 @@ const runIntegration = apiKey ? describe : describe.skip;
 runIntegration('OpenAICompatibleLLM Integration', () => {
   it('initializes with environment API key', () => {
     const model = new LLMModel({
-      name: 'gpt-5.2',
-      value: 'gpt-5.2',
-      canonicalName: 'gpt-5.2',
+      name: 'gpt-5.4',
+      value: 'gpt-5.4',
+      canonicalName: 'gpt-5.4',
       provider: LLMProvider.OPENAI
     });
     const llm = new OpenAICompatibleLLM(model, 'OPENAI_API_KEY', 'https://api.openai.com/v1');

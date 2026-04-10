@@ -1,6 +1,6 @@
 <template>
   <div>
-    <label class="block text-sm font-medium text-gray-700 mb-2">Workspace Directory</label>
+    <label class="block text-sm font-medium text-gray-700 mb-2">{{ $t('workspace.components.workspace.config.WorkspaceSelector.workspace_directory') }}</label>
     
     <!-- Mode Toggle -->
     <div class="flex rounded-lg bg-gray-100 p-1 mb-3" role="tablist">
@@ -51,7 +51,7 @@
         @update:model-value="handleExistingSelect"
         :options="workspaceOptions"
         :disabled="isInteractionDisabled"
-        placeholder="Select a workspace..."
+        :placeholder="$t('workspace.components.workspace.config.WorkspaceSelector.select_a_workspace')"
         search-placeholder="Search workspaces..."
         empty-message="No workspaces loaded yet."
       />
@@ -68,7 +68,7 @@
             :disabled="isLoading || isInteractionDisabled"
             class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm disabled:bg-gray-100 disabled:text-gray-500 py-2.5 px-3"
             :class="{ 'border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500': error }"
-            placeholder="/absolute/path/to/workspace"
+            :placeholder="$t('workspace.components.workspace.config.WorkspaceSelector.absolute_path_to_workspace')"
           />
         </div>
         <!-- Browse Button (Electron only) -->
@@ -78,7 +78,7 @@
           @click="handleBrowse"
           :disabled="isLoading || isInteractionDisabled"
           class="inline-flex items-center justify-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-          title="Browse for folder"
+          :title="$t('workspace.components.workspace.config.WorkspaceSelector.browse_for_folder')"
         >
           <Icon icon="heroicons:folder-open" class="w-5 h-5" />
         </button>
@@ -88,7 +88,7 @@
           @click="handleLoad"
           :disabled="isLoading || isInteractionDisabled || !tempPath.trim()"
           class="inline-flex items-center justify-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-          title="Load workspace"
+          :title="$t('workspace.components.workspace.config.WorkspaceSelector.load_workspace')"
         >
           <span v-if="isLoading" class="flex items-center gap-2">
             <Icon icon="heroicons:arrow-path" class="w-5 h-5 animate-spin" />
@@ -119,10 +119,8 @@
       <p v-else class="text-sm text-gray-500 flex items-center">
         <template v-if="mode === 'existing'">
           <span v-if="existingDisabled" class="text-amber-600 flex items-center">
-            <span class="i-heroicons-information-circle-20-solid h-4 w-4 mr-1.5"></span>
-            No workspaces loaded yet. Switch to "New" to load one.
-          </span>
-          <span v-else>Select a previously loaded workspace.</span>
+            <span class="i-heroicons-information-circle-20-solid h-4 w-4 mr-1.5"></span>{{ $t('workspace.components.workspace.config.WorkspaceSelector.no_workspaces_loaded_yet_switch_to') }}</span>
+          <span v-else>{{ $t('workspace.components.workspace.config.WorkspaceSelector.select_a_previously_loaded_workspace') }}</span>
         </template>
         <template v-else>
           {{ isEmbeddedWindow ? 'Browse for a folder or enter path manually.' : 'Enter path to load a new workspace.' }}

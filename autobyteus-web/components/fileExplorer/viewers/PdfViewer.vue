@@ -4,7 +4,7 @@
       <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
     </div>
     <div v-if="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-      <strong class="font-bold">Error loading PDF:</strong>
+      <strong class="font-bold">{{ $t('tools.components.fileExplorer.viewers.PdfViewer.error_loading_pdf') }}</strong>
       <span class="block sm:inline">{{ error }}</span>
     </div>
     <VuePdfEmbed

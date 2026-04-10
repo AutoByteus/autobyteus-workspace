@@ -120,9 +120,18 @@ describe('Agent single-flow integration (Ollama, api_tool_call)', () => {
     const tool = registerWriteFileTool();
     const toolArgs = { path: path.join(workspace, 'poem.txt'), content: 'Roses are red.' };
 
-    const llm = await createOllamaLLM({ extraParams: OLLAMA_TOOL_CALL_TEST_PARAMS });
+    const llm = await createOllamaLLM({
+      extraParams: OLLAMA_TOOL_CALL_TEST_PARAMS,
+      forceFactoryDiscovery: true
+    });
     if (!llm) {
       return;
+    }
+
+    expect(llm.model.runtime).toBe('ollama');
+    expect(llm.model.maxContextTokens).toBeGreaterThan(0);
+    if (llm.model.activeContextTokens !== null) {
+      expect(llm.model.activeContextTokens).toBeGreaterThan(0);
     }
 
     llm.configureSystemPrompt(

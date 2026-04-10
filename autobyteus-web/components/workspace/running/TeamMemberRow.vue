@@ -20,7 +20,7 @@
       v-if="isCoordinator" 
       class="ml-1 text-[10px] font-medium text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded-full"
     >
-      Coord
+      {{ $t('workspace.components.workspace.running.TeamMemberRow.coord') }}
     </span>
   </div>
 </template>

@@ -10,7 +10,6 @@ describe('buildServerRuntimeEnv', () => {
     )
 
     expect(env.DATABASE_URL).toBe('file:/Users/tester/.autobyteus/server-data/db/production.db')
-    expect(env.PERSISTENCE_PROVIDER).toBe('sqlite')
     expect(env.DB_TYPE).toBe('sqlite')
     expect(env.AUTOBYTEUS_SERVER_HOST).toBe('http://192.168.1.2:29695')
   })
@@ -25,13 +24,11 @@ describe('buildServerRuntimeEnv', () => {
     expect(env.DATABASE_URL).toBe('file:/C:/Users/tester/.autobyteus/server-data/db/production.db')
   })
 
-  it('keeps explicitly provided persistence env overrides', () => {
+  it('keeps explicitly provided database env overrides', () => {
     const env = buildServerRuntimeEnv('/tmp/server-data', 'http://localhost:29695', {
-      PERSISTENCE_PROVIDER: 'file',
       DB_TYPE: 'sqlite'
     })
 
-    expect(env.PERSISTENCE_PROVIDER).toBe('file')
     expect(env.DB_TYPE).toBe('sqlite')
   })
 

@@ -5,7 +5,7 @@
         
         <!-- Header -->
         <div class="px-6 py-4 border-b border-gray-200">
-          <h3 class="text-lg leading-6 font-medium text-gray-900">Launch: {{ application.name }}</h3>
+          <h3 class="text-lg leading-6 font-medium text-gray-900">{{ $t('applications.components.applications.ApplicationLaunchConfigModal.launch_title', { name: application.name }) }}</h3>
           <p class="mt-1 text-sm text-gray-500">{{ application.description }}</p>
         </div>
 
@@ -13,33 +13,31 @@
         <div class="flex-1 overflow-y-auto px-6 py-5">
             <div v-if="isLoading" class="flex flex-col items-center justify-center text-gray-500 py-10">
                 <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                <p class="mt-3 font-semibold">Loading Configuration...</p>
+                <p class="mt-3 font-semibold">{{ $t('applications.components.applications.ApplicationLaunchConfigModal.loading_configuration') }}</p>
             </div>
             <div v-else-if="error" class="text-red-500 bg-red-50 p-4 rounded-lg">
-                <h3 class="font-bold mb-2">Error Loading Configuration</h3>
+                <h3 class="font-bold mb-2">{{ $t('applications.components.applications.ApplicationLaunchConfigModal.error_loading_configuration') }}</h3>
                 <p>{{ error }}</p>
             </div>
             <form v-else @submit.prevent="handleLaunch" class="space-y-6">
-                <h2 class="text-lg font-semibold text-gray-800 border-b pb-2">Configure Team Models</h2>
-                <p class="text-sm text-gray-600 -mt-4">Your selections will be automatically saved as the default profile for this application.</p>
+                <h2 class="text-lg font-semibold text-gray-800 border-b pb-2">{{ $t('applications.components.applications.ApplicationLaunchConfigModal.configure_team_models') }}</h2>
+                <p class="text-sm text-gray-600 -mt-4">{{ $t('applications.components.applications.ApplicationLaunchConfigModal.your_selections_will_be_automatically_saved') }}</p>
                 
                 <!-- Default Model Selector -->
                 <div>
-                    <label for="default-llm-select" class="block text-sm font-medium text-gray-700 mb-1">
-                        Default Model (for all agents)
-                    </label>
+                    <label for="default-llm-select" class="block text-sm font-medium text-gray-700 mb-1">{{ $t('applications.components.applications.ApplicationLaunchConfigModal.default_model_for_all_agents') }}</label>
                     <SearchableGroupedSelect
                         id="default-llm-select"
                         v-model="config.globalLlmModelIdentifier"
                         :options="llmOptions"
                         :loading="llmStore.isLoadingModels"
-                        placeholder="Select a default model..."
+                        :placeholder="$t('applications.components.applications.ApplicationLaunchConfigModal.select_a_default_model')"
                     />
                 </div>
 
                 <!-- Per-Agent Overrides -->
                 <div>
-                    <h3 class="text-md font-semibold text-gray-800 border-b pb-2 mb-3">Model Overrides (Optional)</h3>
+                    <h3 class="text-md font-semibold text-gray-800 border-b pb-2 mb-3">{{ $t('applications.components.applications.ApplicationLaunchConfigModal.model_overrides_optional') }}</h3>
                     <div class="space-y-4">
                         <div v-for="agentName in requiredAgentNames" :key="agentName">
                             <label :for="`llm-select-${agentName}`" class="block text-sm font-medium text-gray-700 mb-1">
@@ -57,9 +55,9 @@
                                     </svg>
                                 </button>
                                 <div v-if="isOverrideEditorOpen(agentName)" class="mt-2 border rounded-md p-2 bg-white max-h-80 overflow-y-auto">
-                                    <input type="text" v-model="uiState.agentLlmSearch" placeholder="Search models..." class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sticky top-0 z-10" />
+                                    <input type="text" v-model="uiState.agentLlmSearch" :placeholder="$t('applications.components.applications.ApplicationLaunchConfigModal.search_models')" class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sticky top-0 z-10" />
                                     <div class="mt-2">
-                                        <div v-if="filteredOverrideLlmOptions.length === 0" class="p-3 text-sm text-center text-gray-500">No models found.</div>
+                                        <div v-if="filteredOverrideLlmOptions.length === 0" class="p-3 text-sm text-center text-gray-500">{{ $t('applications.components.applications.ApplicationLaunchConfigModal.no_models_found') }}</div>
                                         <div v-for="group in filteredOverrideLlmOptions" :key="group.label" class="py-1">
                                             <div class="px-3 py-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">{{ group.label }}</div>
                                             <ul>
@@ -89,14 +87,14 @@
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                <span>{{ applicationRunStore.isLaunching ? 'Launching...' : `Launch Application` }}</span>
+                <span>{{ applicationRunStore.isLaunching ? $t('applications.components.applications.ApplicationLaunchConfigModal.launching') : $t('applications.components.applications.ApplicationLaunchConfigModal.launch_application') }}</span>
             </button>
             <button 
                 type="button" 
                 @click="closeModal"
                 class="mr-3 w-full sm:w-auto inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
             >
-                Cancel
+                {{ $t('applications.components.applications.ApplicationLaunchConfigModal.cancel') }}
             </button>
         </div>
       </div>
@@ -113,6 +111,8 @@ import { useApplicationLaunchProfileStore } from '~/stores/applicationLaunchProf
 import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig';
 import SearchableGroupedSelect, { type GroupedOption } from '~/components/agentTeams/SearchableGroupedSelect.vue';
 import type { ApplicationLaunchProfile } from '~/types/application/ApplicationLaunchProfile';
+
+const { t } = useLocalization();
 
 const props = defineProps<{
   show: boolean;
@@ -199,7 +199,10 @@ const llmOptions = computed((): GroupedOption[] => {
 
 const overrideLlmOptions = computed((): GroupedOption[] => {
   return [
-    { label: 'Inherit from Default', items: [{ id: DEFAULT_OPTION_ID, name: `Default: ${config.globalLlmModelIdentifier || 'Not Set'}` }] },
+    {
+      label: t('applications.components.applications.ApplicationLaunchConfigModal.inherit_from_default'),
+      items: [{ id: DEFAULT_OPTION_ID, name: `Default: ${config.globalLlmModelIdentifier || t('applications.components.applications.ApplicationLaunchConfigModal.default_not_set')}` }],
+    },
     ...llmOptions.value
   ];
 });
@@ -234,7 +237,7 @@ function formatLlmButtonLabel(agentName: string): string {
     if (overrideModel) {
       return overrideModel;
     }
-    return `Default: ${config.globalLlmModelIdentifier || 'Not Set'}`;
+    return `Default: ${config.globalLlmModelIdentifier || t('applications.components.applications.ApplicationLaunchConfigModal.default_not_set')}`;
 }
 
 function toggleOverrideEditor(agentName: string) {

@@ -88,6 +88,7 @@ declare global {
       ) => Promise<{ success: boolean; error?: string; content?: string }>;
 
       getPlatform: () => Promise<'win32' | 'linux' | 'darwin'>;
+      getAppLocale: () => Promise<string>;
       onAppQuitting: (callback: () => void) => Cleanup;
       startShutdown: () => void;
       resetServerData: () => Promise<{ success: boolean; error?: string }>;

@@ -2,30 +2,30 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { TokenUsageStatisticsProvider } from "../../../../src/token-usage/providers/statistics-provider.js";
 import { TokenUsageRecord, TokenUsageStats } from "../../../../src/token-usage/domain/models.js";
 
-const mockProxy = vi.hoisted(() => ({
+const mockStore = vi.hoisted(() => ({
   getTotalCostInPeriod: vi.fn(),
   getUsageRecordsInPeriod: vi.fn(),
 }));
 
-vi.mock("../../../../src/token-usage/providers/persistence-proxy.js", () => {
-  class MockPersistenceProxy {
-    getTotalCostInPeriod = mockProxy.getTotalCostInPeriod;
-    getUsageRecordsInPeriod = mockProxy.getUsageRecordsInPeriod;
+vi.mock("../../../../src/token-usage/providers/token-usage-store.js", () => {
+  class MockTokenUsageStore {
+    getTotalCostInPeriod = mockStore.getTotalCostInPeriod;
+    getUsageRecordsInPeriod = mockStore.getUsageRecordsInPeriod;
   }
 
   return {
-    PersistenceProxy: MockPersistenceProxy,
+    TokenUsageStore: MockTokenUsageStore,
   };
 });
 
 describe("TokenUsageStatisticsProvider", () => {
   beforeEach(() => {
-    mockProxy.getTotalCostInPeriod.mockReset();
-    mockProxy.getUsageRecordsInPeriod.mockReset();
+    mockStore.getTotalCostInPeriod.mockReset();
+    mockStore.getUsageRecordsInPeriod.mockReset();
   });
 
-  it("gets total cost via persistence proxy", async () => {
-    mockProxy.getTotalCostInPeriod.mockResolvedValue(15.75);
+  it("gets total cost via token usage store", async () => {
+    mockStore.getTotalCostInPeriod.mockResolvedValue(15.75);
 
     const provider = new TokenUsageStatisticsProvider();
     const start = new Date("2023-01-01T00:00:00.000Z");
@@ -33,13 +33,13 @@ describe("TokenUsageStatisticsProvider", () => {
 
     const totalCost = await provider.getTotalCost(start, end);
 
-    expect(mockProxy.getTotalCostInPeriod).toHaveBeenCalledWith(start, end);
+    expect(mockStore.getTotalCostInPeriod).toHaveBeenCalledWith(start, end);
     expect(totalCost).toBe(15.75);
   });
 
   it("aggregates stats per model", async () => {
     const now = new Date();
-    mockProxy.getUsageRecordsInPeriod.mockResolvedValue([
+    mockStore.getUsageRecordsInPeriod.mockResolvedValue([
       new TokenUsageRecord({
         runId: "agent1",
         role: "user",
@@ -71,7 +71,7 @@ describe("TokenUsageStatisticsProvider", () => {
     const end = new Date(now.getTime() + 24 * 60 * 60 * 1000);
 
     const stats = await provider.getStatisticsPerModel(start, end);
-    expect(mockProxy.getUsageRecordsInPeriod).toHaveBeenCalledWith(start, end);
+    expect(mockStore.getUsageRecordsInPeriod).toHaveBeenCalledWith(start, end);
 
     expect(Object.keys(stats).sort()).toEqual(["gpt-3.5", "unknown"]);
 

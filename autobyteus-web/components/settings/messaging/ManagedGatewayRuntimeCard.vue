@@ -6,10 +6,8 @@
   >
     <div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
       <div>
-        <h3 class="text-sm font-semibold text-gray-900">Managed Messaging Gateway</h3>
-        <p class="mt-1 text-xs text-gray-500">
-          Shared messaging runtime for all providers on the selected node.
-        </p>
+        <h3 class="text-sm font-semibold text-gray-900">{{ $t('settings.components.settings.messaging.ManagedGatewayRuntimeCard.managed_messaging_gateway') }}</h3>
+        <p class="mt-1 text-xs text-gray-500">{{ $t('settings.components.settings.messaging.ManagedGatewayRuntimeCard.shared_messaging_runtime_for_all_providers') }}</p>
       </div>
 
       <span
@@ -43,9 +41,7 @@
         :disabled="gatewayStore.isGatewayChecking || gatewayStore.isGatewayMutating"
         @click="onUpdateGateway"
         data-testid="gateway-update-button"
-      >
-        Update Runtime
-      </button>
+      >{{ $t('settings.components.settings.messaging.ManagedGatewayRuntimeCard.update_runtime') }}</button>
       <button
         class="px-4 py-2 rounded-md border border-red-300 text-red-700 text-sm disabled:opacity-50"
         :disabled="gatewayStore.isGatewayChecking || gatewayStore.isGatewayMutating"
@@ -58,23 +54,23 @@
 
     <div class="mt-3 grid grid-cols-1 gap-3 md:grid-cols-4 text-sm">
       <div class="rounded-md border border-gray-200 bg-gray-50 px-3 py-2">
-        <p class="text-xs text-gray-500">Runtime State</p>
+        <p class="text-xs text-gray-500">{{ $t('settings.components.settings.messaging.ManagedGatewayRuntimeCard.runtime_state') }}</p>
         <p class="font-medium text-gray-800" data-testid="managed-gateway-runtime-state">
           {{ runtimeStateLabel }}
         </p>
       </div>
       <div class="rounded-md border border-gray-200 bg-gray-50 px-3 py-2">
-        <p class="text-xs text-gray-500">Active Version</p>
+        <p class="text-xs text-gray-500">{{ $t('settings.components.settings.messaging.ManagedGatewayRuntimeCard.active_version') }}</p>
         <p class="font-medium text-gray-800" data-testid="managed-gateway-active-version">
           {{ gatewayStore.managedStatus?.activeVersion || 'Not installed' }}
         </p>
       </div>
       <div class="rounded-md border border-gray-200 bg-gray-50 px-3 py-2">
-        <p class="text-xs text-gray-500">Release Tag</p>
+        <p class="text-xs text-gray-500">{{ $t('settings.components.settings.messaging.ManagedGatewayRuntimeCard.release_tag') }}</p>
         <p class="font-medium text-gray-800">{{ gatewayStore.managedStatus?.releaseTag || 'N/A' }}</p>
       </div>
       <div class="rounded-md border border-gray-200 bg-gray-50 px-3 py-2">
-        <p class="text-xs text-gray-500">Runtime Endpoint</p>
+        <p class="text-xs text-gray-500">{{ $t('settings.components.settings.messaging.ManagedGatewayRuntimeCard.runtime_endpoint') }}</p>
         <p class="font-medium text-gray-800" data-testid="managed-gateway-port">
           {{ bindPortLabel }}
         </p>
@@ -83,13 +79,13 @@
 
     <div class="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2 text-sm">
       <div class="rounded-md border border-gray-200 bg-white px-3 py-2">
-        <p class="text-xs uppercase tracking-wide text-gray-500">Installed Versions</p>
+        <p class="text-xs uppercase tracking-wide text-gray-500">{{ $t('settings.components.settings.messaging.ManagedGatewayRuntimeCard.installed_versions') }}</p>
         <p class="mt-1 font-medium text-gray-800">
           {{ installedVersionsLabel }}
         </p>
       </div>
       <div class="rounded-md border border-gray-200 bg-white px-3 py-2">
-        <p class="text-xs uppercase tracking-wide text-gray-500">Supported Providers</p>
+        <p class="text-xs uppercase tracking-wide text-gray-500">{{ $t('settings.components.settings.messaging.ManagedGatewayRuntimeCard.supported_providers') }}</p>
         <p class="mt-1 font-medium text-gray-800">
           {{ supportedProvidersLabel }}
         </p>
@@ -105,7 +101,7 @@
       data-testid="managed-gateway-reliability-summary"
     >
       <div class="rounded-md border border-gray-200 bg-white px-3 py-2">
-        <p class="text-xs uppercase tracking-wide text-gray-500">Reliability State</p>
+        <p class="text-xs uppercase tracking-wide text-gray-500">{{ $t('settings.components.settings.messaging.ManagedGatewayRuntimeCard.reliability_state') }}</p>
         <p class="mt-1 font-medium text-gray-800" data-testid="managed-gateway-reliability-state">
           {{ runtimeReliabilityStatus.runtime.state }}
         </p>
@@ -114,7 +110,7 @@
         </p>
       </div>
       <div class="rounded-md border border-gray-200 bg-white px-3 py-2">
-        <p class="text-xs uppercase tracking-wide text-gray-500">Delivery Queues</p>
+        <p class="text-xs uppercase tracking-wide text-gray-500">{{ $t('settings.components.settings.messaging.ManagedGatewayRuntimeCard.delivery_queues') }}</p>
         <p class="mt-1 font-medium text-gray-800">
           Inbound dead-letter {{ runtimeReliabilityStatus.queue.inboundDeadLetterCount }},
           unbound {{ runtimeReliabilityStatus.queue.inboundCompletedUnboundCount }},
@@ -145,15 +141,13 @@
       v-if="showRecoveryHint"
       class="mt-3 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-700"
       data-testid="managed-gateway-recovery-hint"
-    >
-      The runtime can often recover without reinstalling. Use Recover Gateway to reconcile or restart it.
-    </p>
+    >{{ $t('settings.components.settings.messaging.ManagedGatewayRuntimeCard.the_runtime_can_often_recover_without') }}</p>
     <div
       v-if="providerIssues.length > 0"
       class="mt-3 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-700"
       data-testid="managed-gateway-provider-issues"
     >
-      <p class="font-medium text-amber-800">Provider issues</p>
+      <p class="font-medium text-amber-800">{{ $t('settings.components.settings.messaging.ManagedGatewayRuntimeCard.provider_issues') }}</p>
       <ul class="mt-2 list-disc pl-5 space-y-1">
         <li v-for="issue in providerIssues" :key="issue.provider">
           {{ issue.provider }}: {{ issue.blockedReason }}

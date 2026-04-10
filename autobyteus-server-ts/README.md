@@ -53,7 +53,6 @@ Minimal example:
 ```env
 APP_ENV=production
 AUTOBYTEUS_SERVER_HOST=http://localhost:8000
-PERSISTENCE_PROVIDER=sqlite
 DB_TYPE=sqlite
 LOG_LEVEL=INFO
 PRISMA_LOG_QUERIES=0
@@ -62,9 +61,9 @@ DISABLE_HTTP_REQUEST_LOGS=true
 
 Notes:
 - `AUTOBYTEUS_SERVER_HOST` is required (used for URL generation).
-- On Android runtime, persistence is forced to file profile by platform policy even if `PERSISTENCE_PROVIDER=sqlite`.
 - SQLite DB defaults to `db/production.db` (or `db/test.db` when `APP_ENV=test`).
 - `DATABASE_URL` is optional for SQLite; when missing, it is derived from the runtime SQLite DB path.
+- Persistence is subsystem-owned. Token usage is stored in SQL, while file-backed subsystems such as agent definitions, team definitions, and MCP config keep using their native file storage.
 - Fastify request/response access logs are disabled by default to reduce noise. Set `DISABLE_HTTP_REQUEST_LOGS=false` to enable them again.
 - Prisma SQL query logs are disabled by default to reduce noise. Set `PRISMA_LOG_QUERIES=1` only when you explicitly need raw SQL visibility for troubleshooting.
 - The app will create `db/`, `logs/`, `download/`, `media/`, `skills/`, `temp_workspace/` as needed under the app data dir.
@@ -127,8 +126,6 @@ pnpm -C autobyteus-server-ts exec prisma migrate deploy
 ```
 
 You can also run it manually.
-
-On Android runtime with file persistence profile, startup skips Prisma migrations.
 
 ## Android Hardware Control (Non-Root)
 

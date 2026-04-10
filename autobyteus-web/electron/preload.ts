@@ -98,6 +98,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   // Method to get OS platform
   getPlatform: () => ipcRenderer.invoke('get-platform'),
+  getAppLocale: () => ipcRenderer.invoke('get-app-locale') as Promise<string>,
 
   // Shutdown communication
   onAppQuitting: (callback: () => void) => {

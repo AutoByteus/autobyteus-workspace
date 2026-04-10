@@ -11,9 +11,7 @@
         class="rounded border border-gray-300 bg-white px-2 py-1 text-xs text-gray-700"
         data-testid="return-guided-step"
         @click="returnToGuidedStep"
-      >
-        Return To Guided Step
-      </button>
+      >{{ $t('settings.components.settings.messaging.flows.DiscordSetupFlow.return_to_guided_step') }}</button>
     </div>
     <SetupStepContentHost :active-step-key="activeStepKey" @open-step="requestStepSelection" />
   </div>

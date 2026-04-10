@@ -7,7 +7,7 @@ The TypeScript server follows a layered domain architecture:
 1. Domain models (`domain/`).
 2. Converters (`converters/`).
 3. Repositories (`repositories/`).
-4. Persistence providers and cache decorators (`providers/`).
+4. Subsystem stores/providers and cache decorators (`providers/`).
 5. Services (`services/`).
 6. API transport adapters (GraphQL, REST, WebSocket).
 
@@ -28,9 +28,7 @@ The TypeScript server follows a layered domain architecture:
 2. Initialize `appConfigProvider` with the effective app data directory.
 3. Initialize `AppConfig` (loads `.env`, resolves paths, sets DB URL for SQLite).
 4. Dynamically import `src/server-runtime.ts` only after config bootstrap completes.
-5. Resolve persistence profile and run startup migration gate:
-   - `PERSISTENCE_PROVIDER=file`: skip Prisma migrations.
-   - `PERSISTENCE_PROVIDER=sqlite|postgresql`: run Prisma migrations.
+5. Run Prisma migrations when the schema is present.
 6. Build and start Fastify transports.
 7. Create temp workspace.
 8. Schedule non-critical background startup tasks.
@@ -58,16 +56,13 @@ Current task groups include:
 
 ## Persistence
 
-Persistence is profile-driven and selected via `PERSISTENCE_PROVIDER`.
+Persistence is subsystem-owned rather than selected through a global mode.
 
-- `file` profile:
-  - Domain persistence resolves through registry + proxy layers to file providers.
-  - Data is written under `<memoryDir>/persistence/**` using JSON / JSONL file stores.
-  - Startup skips Prisma migration execution.
-- `sqlite` / `postgresql` profiles:
-  - Domain persistence resolves through the same registry + proxy layers to SQL providers.
-  - SQL providers use Prisma repositories via `repository_prisma`.
-  - Startup runs Prisma migration execution.
+- Token usage is persisted through `src/token-usage/providers/token-usage-store.ts`.
+  - The store is the authoritative token-usage boundary.
+  - It writes and reads SQL rows through Prisma-backed repositories.
+- Agent definitions, team definitions, and MCP server config remain file-backed through their own subsystem providers.
+- SQLite URL derivation is controlled by DB config (`DB_TYPE=sqlite` with optional `DATABASE_URL` override), and startup runs the normal Prisma migration path whenever the Prisma schema exists.
 
 External-channel persistence has one deliberate exception:
 
@@ -83,9 +78,9 @@ External-channel persistence has one deliberate exception:
 
 Build/package notes:
 
-- `build:full` compiles full graph (file + SQL profiles).
-- `build:file` compiles file-profile graph without SQL/Prisma module inclusion.
-- `build:file:package` emits a file-profile package manifest that removes Prisma dependencies.
+- `build` runs the standard server build.
+- The standard build generates Prisma client code before TypeScript compile.
+- There is no separate file-profile build output.
 
 ## Module Boundaries
 

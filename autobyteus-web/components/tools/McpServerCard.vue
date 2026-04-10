@@ -32,7 +32,7 @@
       >
         <div v-if="server.toolNamePrefix" class="flex items-center text-sm">
           <span class="i-heroicons-tag-20-solid w-4 h-4 text-gray-400 mr-2 flex-shrink-0"></span>
-          <span class="text-gray-500 mr-2">Prefix:</span>
+          <span class="text-gray-500 mr-2">{{ $t('tools.components.tools.McpServerCard.prefix') }}</span>
           <code class="text-gray-800 font-semibold">{{ server.toolNamePrefix }}</code>
         </div>
         
@@ -40,12 +40,12 @@
         <template v-if="server.__typename === 'StdioMcpServerConfig'">
           <div class="flex items-start text-sm">
             <span class="i-heroicons-command-line-20-solid w-4 h-4 text-gray-400 mr-2 flex-shrink-0 mt-0.5"></span>
-            <span class="text-gray-500 mr-2">Command:</span>
+            <span class="text-gray-500 mr-2">{{ $t('tools.components.tools.McpServerCard.command') }}</span>
             <code class="text-gray-800 break-all">{{ server.command }}</code>
           </div>
           <div v-if="server.cwd" class="flex items-start text-sm">
             <span class="i-heroicons-folder-open-20-solid w-4 h-4 text-gray-400 mr-2 flex-shrink-0 mt-0.5"></span>
-            <span class="text-gray-500 mr-2">CWD:</span>
+            <span class="text-gray-500 mr-2">{{ $t('tools.components.tools.McpServerCard.cwd') }}</span>
             <code class="text-gray-800 break-all">{{ server.cwd }}</code>
           </div>
         </template>

@@ -16,12 +16,12 @@
         <h3 class="truncate text-2xl font-semibold text-slate-900">{{ agentDef.name }}</h3>
         <p class="mt-1 text-sm text-slate-600">{{ descriptionText }}</p>
         <p v-if="teamLabel" class="mt-1 text-sm text-slate-500">
-          Team: {{ teamLabel }}
+          {{ $t('agents.components.agents.AgentCard.teamLabel', { team: teamLabel }) }}
         </p>
 
         <div class="mt-3 space-y-2">
           <div class="flex items-start gap-2">
-            <span class="min-w-[4rem] text-xs font-semibold text-slate-700">Tools {{ totalTools }}</span>
+            <span class="min-w-[4rem] text-xs font-semibold text-slate-700">{{ $t('agents.components.agents.AgentCard.toolsSummary', { count: totalTools }) }}</span>
             <div class="flex min-w-0 flex-wrap gap-1.5">
               <span
                 v-for="(tool, index) in visibleTools"
@@ -33,12 +33,12 @@
               <span v-if="remainingToolsCount > 0" class="rounded-md bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">
                 +{{ remainingToolsCount }}
               </span>
-              <span v-if="totalTools === 0" class="text-xs italic text-slate-500">None</span>
+              <span v-if="totalTools === 0" class="text-xs italic text-slate-500">{{ $t('agents.components.agents.AgentCard.none') }}</span>
             </div>
           </div>
 
           <div class="flex items-start gap-2">
-            <span class="min-w-[4rem] text-xs font-semibold text-slate-700">Skills {{ totalSkills }}</span>
+            <span class="min-w-[4rem] text-xs font-semibold text-slate-700">{{ $t('agents.components.agents.AgentCard.skillsSummary', { count: totalSkills }) }}</span>
             <div class="flex min-w-0 flex-wrap gap-1.5">
               <span
                 v-for="(skill, index) in visibleSkills"
@@ -50,7 +50,7 @@
               <span v-if="remainingSkillsCount > 0" class="rounded-md bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">
                 +{{ remainingSkillsCount }}
               </span>
-              <span v-if="totalSkills === 0" class="text-xs italic text-slate-500">None</span>
+              <span v-if="totalSkills === 0" class="text-xs italic text-slate-500">{{ $t('agents.components.agents.AgentCard.none') }}</span>
             </div>
           </div>
         </div>
@@ -62,20 +62,18 @@
           @click.stop="$emit('sync-agent', agentDef)"
           class="inline-flex min-w-[84px] justify-center rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
         >
-          Sync
+          {{ $t('agents.components.agents.AgentCard.sync') }}
         </button>
         <button
           @click.stop="$emit('run-agent', agentDef)"
           class="inline-flex min-w-[84px] justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
         >
-          Run
+          {{ $t('agents.components.agents.AgentCard.run') }}
         </button>
         <button
           @click.stop="$emit('view-details', agentDef.id)"
           class="inline-flex items-center text-sm font-medium text-slate-500 transition-colors hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-        >
-          View Details
-          <span class="ml-1" aria-hidden="true">&rarr;</span>
+        >{{ $t('agents.components.agents.AgentCard.view_details') }}<span class="ml-1" aria-hidden="true">{{ $t('agents.components.agents.AgentCard.and_rarr') }}</span>
         </button>
       </div>
     </div>
@@ -93,6 +91,7 @@ const props = defineProps<{
 const emit = defineEmits(['view-details', 'run-agent', 'sync-agent']);
 
 const { agentDef } = toRefs(props);
+const { $t } = useNuxtApp();
 const avatarLoadError = ref(false);
 
 const MAX_TAG_PREVIEW = 3;
@@ -115,7 +114,7 @@ watch(() => agentDef.value.avatarUrl, () => {
 
 const showAvatarImage = computed(() => Boolean(agentDef.value.avatarUrl) && !avatarLoadError.value);
 const avatarUrl = computed(() => agentDef.value.avatarUrl || '');
-const descriptionText = computed(() => agentDef.value.description?.trim() || 'No description provided.');
+const descriptionText = computed(() => agentDef.value.description?.trim() || $t('agents.components.agents.AgentCard.noDescription'));
 const isTeamLocal = computed(() => (agentDef.value.ownershipScope ?? 'SHARED') === 'TEAM_LOCAL');
 const teamLabel = computed(() =>
   isTeamLocal.value

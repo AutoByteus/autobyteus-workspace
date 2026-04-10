@@ -195,7 +195,6 @@ export class AppDataService {
       'APP_ENV=production',
       'LOG_LEVEL=INFO',
       'DB_TYPE=sqlite',
-      'PERSISTENCE_PROVIDER=sqlite',
       `DATABASE_URL=${this.toPrismaSqliteUrl(dbPath)}`,
       `AUTOBYTEUS_SERVER_HOST=${defaultHost}`
     ]

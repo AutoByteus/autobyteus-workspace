@@ -23,9 +23,7 @@
           type="button"
           @click.stop="clearAll"
           class="flex-shrink-0 px-2.5 py-1.5 text-xs font-medium text-red-700 bg-red-100 rounded-md hover:bg-red-200 ml-auto"
-        >
-          Clear All
-        </button>
+        >{{ $t('agents.components.agents.GroupableTagInput.clear_all') }}</button>
       </div>
     </div>
 
@@ -33,28 +31,26 @@
     <div class="mt-1 border border-gray-200 rounded-md bg-gray-50 max-h-96 overflow-y-auto">
       <div class="p-2 sticky top-0 bg-gray-50/95 z-10 backdrop-blur-sm">
         <div class="flex items-center gap-2">
-          <input type="text" v-model="searchTerm" placeholder="Search available items..." class="flex-1 px-3 py-1.5 border border-gray-300 rounded-md text-sm focus:ring-indigo-500 focus:border-indigo-500">
+          <input type="text" v-model="searchTerm" :placeholder="$t('agents.components.agents.GroupableTagInput.search_available_items')" class="flex-1 px-3 py-1.5 border border-gray-300 rounded-md text-sm focus:ring-indigo-500 focus:border-indigo-500">
         </div>
       </div>
 
-      <div v-if="loading" class="p-4 text-center text-gray-500">Loading...</div>
+      <div v-if="loading" class="p-4 text-center text-gray-500">{{ $t('agents.components.agents.GroupableTagInput.loading') }}</div>
       
       <!-- Grouped Layout -->
       <div v-else-if="source.type === 'grouped'">
         <details v-for="group in filteredGroups" :key="group.name" class="border-t">
           <summary class="px-4 py-2 cursor-pointer font-medium text-gray-700 hover:bg-gray-100 flex justify-between items-center">
             <span>{{ group.name }}</span>
-            <button v-if="group.allowAll" @click.stop.prevent="emitAddAll(group.name)" class="px-2 py-1 text-xs font-medium text-indigo-700 bg-indigo-100 rounded-md hover:bg-indigo-200">
-              Add All
-            </button>
+            <button v-if="group.allowAll" @click.stop.prevent="emitAddAll(group.name)" class="px-2 py-1 text-xs font-medium text-indigo-700 bg-indigo-100 rounded-md hover:bg-indigo-200">{{ $t('agents.components.agents.GroupableTagInput.add_all') }}</button>
           </summary>
           <ul class="px-4 pb-2">
             <li v-for="tag in group.tags" :key="tag" @click="toggleTag(tag)" class="flex justify-between items-center p-2 rounded-md hover:bg-indigo-50 cursor-pointer">
               <span class="text-sm flex items-center">
                 {{ tag }}
               </span>
-              <span v-if="isSelected(tag)" class="text-xs font-semibold text-red-600">Remove</span>
-              <span v-else class="text-xs font-semibold text-green-600">Add</span>
+              <span v-if="isSelected(tag)" class="text-xs font-semibold text-red-600">{{ $t('agents.components.agents.GroupableTagInput.remove') }}</span>
+              <span v-else class="text-xs font-semibold text-green-600">{{ $t('agents.components.agents.GroupableTagInput.add') }}</span>
             </li>
           </ul>
         </details>
@@ -67,10 +63,10 @@
               <span class="text-sm flex items-center">
                 {{ tag }}
               </span>
-              <span v-if="isSelected(tag)" class="text-xs font-semibold text-red-600">Remove</span>
-              <span v-else class="text-xs font-semibold text-green-600">Add</span>
+              <span v-if="isSelected(tag)" class="text-xs font-semibold text-red-600">{{ $t('agents.components.agents.GroupableTagInput.remove') }}</span>
+              <span v-else class="text-xs font-semibold text-green-600">{{ $t('agents.components.agents.GroupableTagInput.add') }}</span>
             </li>
-            <li v-if="filteredFlatTags.length === 0" class="text-sm text-gray-500 p-2 text-center">No matching items.</li>
+            <li v-if="filteredFlatTags.length === 0" class="text-sm text-gray-500 p-2 text-center">{{ $t('agents.components.agents.GroupableTagInput.no_matching_items') }}</li>
           </ul>
       </div>
     </div>

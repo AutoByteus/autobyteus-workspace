@@ -8,9 +8,9 @@ export class QwenLLM extends OpenAICompatibleLLM {
     const effectiveModel =
       model ??
       new LLMModel({
-        name: 'qwen3-max-preview',
-        value: 'qwen3-max-preview',
-        canonicalName: 'qwen3-max-preview',
+        name: 'qwen3-max',
+        value: 'qwen3-max',
+        canonicalName: 'qwen3-max',
         provider: LLMProvider.QWEN
       });
 

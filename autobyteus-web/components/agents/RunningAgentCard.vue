@@ -14,13 +14,13 @@
       
       <!-- Role -->
       <div class="mb-4">
-        <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">Role</span>
+        <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $t('agents.components.agents.RunningAgentCard.role') }}</span>
         <p class="text-sm text-gray-800 mt-1">{{ agent.role }}</p>
       </div>
 
       <!-- Current Status -->
       <div class="mb-4">
-        <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">Status</span>
+        <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $t('agents.components.agents.RunningAgentCard.status') }}</span>
         <div class="flex items-center mt-1">
             <span class="w-2 h-2 bg-green-500 rounded-full mr-1.5 animate-pulse"></span>
             <p class="text-sm text-gray-800 font-mono">{{ agent.currentStatus }}</p>
@@ -29,7 +29,7 @@
       
       <!-- Workspace Info -->
       <div class="mb-4">
-        <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">Workspace</span>
+        <span class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ $t('agents.components.agents.RunningAgentCard.workspace') }}</span>
         <div class="flex items-center mt-1">
           <span class="i-heroicons-server-20-solid w-4 h-4 text-gray-500 mr-1.5"></span>
           <p class="text-sm text-gray-800">{{ agent.workspace ? agent.workspace.name : 'None' }}</p>
@@ -43,13 +43,13 @@
         @click="$emit('terminate-agent', agent.id)"
         class="inline-flex items-center px-3 py-1.5 bg-red-100 text-red-700 rounded-md hover:bg-red-200 text-sm font-semibold"
       >
-        Terminate
+        {{ $t('agents.components.agents.RunningAgentCard.terminate') }}
       </button>
       <button 
         @click="$emit('open-agent', agent)"
         class="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm font-semibold"
       >
-        Open
+        {{ $t('agents.components.agents.RunningAgentCard.open') }}
       </button>
     </div>
   </div>

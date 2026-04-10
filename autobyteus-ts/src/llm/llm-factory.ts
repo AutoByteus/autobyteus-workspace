@@ -2,92 +2,32 @@ import { BaseLLM } from './base.js';
 import { LLMModel, ModelInfo } from './models.js';
 import { LLMProvider } from './providers.js';
 import { LLMRuntime } from './runtimes.js';
-import { LLMConfig, TokenPricingConfig } from './utils/llm-config.js';
-import { ParameterSchema, ParameterDefinition, ParameterType } from '../utils/parameter-schema.js';
-
-import { OpenAILLM } from './api/openai-llm.js';
-import { AnthropicLLM } from './api/anthropic-llm.js';
-import { MistralLLM } from './api/mistral-llm.js';
-import { GrokLLM } from './api/grok-llm.js';
-import { DeepSeekLLM } from './api/deepseek-llm.js';
-import { GeminiLLM } from './api/gemini-llm.js';
-import { KimiLLM } from './api/kimi-llm.js';
-import { QwenLLM } from './api/qwen-llm.js';
-import { GlmLLM } from './api/glm-llm.js';
-import { MinimaxLLM } from './api/minimax-llm.js';
-
+import { LLMConfig } from './utils/llm-config.js';
 import { OllamaModelProvider } from './ollama-provider.js';
 import { LMStudioModelProvider } from './lmstudio-provider.js';
 import { AutobyteusModelProvider } from './autobyteus-provider.js';
+import { ModelMetadataResolver } from './metadata/model-metadata-resolver.js';
+import { supportedModelDefinitions, type SupportedModelDefinition } from './supported-model-definitions.js';
 
-const pricing = (input: number, output: number) =>
-  new TokenPricingConfig({ inputTokenPricing: input, outputTokenPricing: output });
+const buildSupportedModels = async (): Promise<LLMModel[]> => {
+  const metadataResolver = new ModelMetadataResolver();
 
-const openaiReasoningSchema = new ParameterSchema([
-  new ParameterDefinition({
-    name: 'reasoning_effort',
-    type: ParameterType.ENUM,
-    description: 'Controls how hard the model thinks. Higher effort improves quality but can increase latency and cost.',
-    required: false,
-    defaultValue: 'none',
-    enumValues: ['none', 'low', 'medium', 'high', 'xhigh']
-  }),
-  new ParameterDefinition({
-    name: 'reasoning_summary',
-    type: ParameterType.ENUM,
-    description: 'Include a reasoning summary in the response when supported.',
-    required: false,
-    defaultValue: 'none',
-    enumValues: ['none', 'auto', 'concise', 'detailed']
-  })
-]);
+  return Promise.all(
+    supportedModelDefinitions.map(async (definition: SupportedModelDefinition) => {
+      const metadata = await metadataResolver.resolve({
+        provider: definition.provider,
+        name: definition.name,
+        value: definition.value,
+        canonicalName: definition.canonicalName
+      });
 
-const claudeSchema = new ParameterSchema([
-  new ParameterDefinition({
-    name: 'thinking_enabled',
-    type: ParameterType.BOOLEAN,
-    description: 'Enable extended thinking summaries in Claude responses',
-    required: false,
-    defaultValue: false
-  }),
-  new ParameterDefinition({
-    name: 'thinking_budget_tokens',
-    type: ParameterType.INTEGER,
-    description: 'Token budget for extended thinking (min 1024)',
-    required: false,
-    defaultValue: 1024,
-    minValue: 1024
-  })
-]);
-
-const geminiSchema = new ParameterSchema([
-  new ParameterDefinition({
-    name: 'thinking_level',
-    type: ParameterType.ENUM,
-    description: 'How deeply the model should reason before responding',
-    required: false,
-    defaultValue: 'minimal',
-    enumValues: ['minimal', 'low', 'medium', 'high']
-  }),
-  new ParameterDefinition({
-    name: 'include_thoughts',
-    type: ParameterType.BOOLEAN,
-    description: 'Include model thought summaries in responses',
-    required: false,
-    defaultValue: false
-  })
-]);
-
-const glmSchema = new ParameterSchema([
-  new ParameterDefinition({
-    name: 'thinking_type',
-    type: ParameterType.ENUM,
-    description: 'Enable or disable deep thinking',
-    required: false,
-    defaultValue: 'enabled',
-    enumValues: ['enabled', 'disabled']
-  })
-]);
+      return new LLMModel({
+        ...definition,
+        ...metadata
+      });
+    })
+  );
+};
 
 export class LLMFactory {
   private static modelsByProvider = new Map<LLMProvider, LLMModel[]>();
@@ -109,203 +49,7 @@ export class LLMFactory {
   }
 
   private static async initializeRegistry(): Promise<void> {
-    const supportedModels: LLMModel[] = [
-      new LLMModel({
-        name: 'gpt-5.2',
-        value: 'gpt-5.2',
-        provider: LLMProvider.OPENAI,
-        llmClass: OpenAILLM,
-        canonicalName: 'gpt-5.2',
-        defaultConfig: new LLMConfig({ pricingConfig: pricing(1.75, 14.0) }),
-        configSchema: openaiReasoningSchema
-      }),
-      new LLMModel({
-        name: 'gpt-5.2-chat-latest',
-        value: 'gpt-5.2-chat-latest',
-        provider: LLMProvider.OPENAI,
-        llmClass: OpenAILLM,
-        canonicalName: 'gpt-5.2-chat-latest',
-        defaultConfig: new LLMConfig({ pricingConfig: pricing(1.75, 14.0) }),
-        configSchema: openaiReasoningSchema
-      }),
-      new LLMModel({
-        name: 'mistral-large',
-        value: 'mistral-large-latest',
-        provider: LLMProvider.MISTRAL,
-        llmClass: MistralLLM,
-        canonicalName: 'mistral-large',
-        defaultConfig: new LLMConfig({ pricingConfig: pricing(2.0, 6.0) })
-      }),
-      new LLMModel({
-        name: 'devstral-2',
-        value: 'devstral-2512',
-        provider: LLMProvider.MISTRAL,
-        llmClass: MistralLLM,
-        canonicalName: 'devstral-2',
-        defaultConfig: new LLMConfig({ pricingConfig: pricing(0.4, 2.0) })
-      }),
-      new LLMModel({
-        name: 'grok-4',
-        value: 'grok-4',
-        provider: LLMProvider.GROK,
-        llmClass: GrokLLM,
-        canonicalName: 'grok-4',
-        defaultConfig: new LLMConfig({ pricingConfig: pricing(3.0, 15.0) })
-      }),
-      new LLMModel({
-        name: 'grok-4-1-fast-reasoning',
-        value: 'grok-4-1-fast-reasoning',
-        provider: LLMProvider.GROK,
-        llmClass: GrokLLM,
-        canonicalName: 'grok-4-1-fast-reasoning',
-        defaultConfig: new LLMConfig({ pricingConfig: pricing(0.2, 0.5) })
-      }),
-      new LLMModel({
-        name: 'grok-4-1-fast-non-reasoning',
-        value: 'grok-4-1-fast-non-reasoning',
-        provider: LLMProvider.GROK,
-        llmClass: GrokLLM,
-        canonicalName: 'grok-4-1-fast-non-reasoning',
-        defaultConfig: new LLMConfig({ pricingConfig: pricing(0.2, 0.5) })
-      }),
-      new LLMModel({
-        name: 'grok-code-fast-1',
-        value: 'grok-code-fast-1',
-        provider: LLMProvider.GROK,
-        llmClass: GrokLLM,
-        canonicalName: 'grok-code-fast-1',
-        defaultConfig: new LLMConfig({ pricingConfig: pricing(0.2, 1.5) })
-      }),
-      new LLMModel({
-        name: 'claude-4.5-opus',
-        value: 'claude-opus-4-5-20251101',
-        provider: LLMProvider.ANTHROPIC,
-        llmClass: AnthropicLLM,
-        canonicalName: 'claude-4.5-opus',
-        defaultConfig: new LLMConfig({ pricingConfig: pricing(5.0, 25.0) }),
-        configSchema: claudeSchema
-      }),
-      new LLMModel({
-        name: 'claude-4.5-sonnet',
-        value: 'claude-sonnet-4-5-20250929',
-        provider: LLMProvider.ANTHROPIC,
-        llmClass: AnthropicLLM,
-        canonicalName: 'claude-4.5-sonnet',
-        defaultConfig: new LLMConfig({ pricingConfig: pricing(3.0, 15.0) }),
-        configSchema: claudeSchema
-      }),
-      new LLMModel({
-        name: 'claude-4.5-haiku',
-        value: 'claude-haiku-4-5-20251001',
-        provider: LLMProvider.ANTHROPIC,
-        llmClass: AnthropicLLM,
-        canonicalName: 'claude-4.5-haiku',
-        defaultConfig: new LLMConfig({ pricingConfig: pricing(1.0, 5.0) }),
-        configSchema: claudeSchema
-      }),
-      new LLMModel({
-        name: 'deepseek-chat',
-        value: 'deepseek-chat',
-        provider: LLMProvider.DEEPSEEK,
-        llmClass: DeepSeekLLM,
-        canonicalName: 'deepseek-chat',
-        defaultConfig: new LLMConfig({
-          rateLimit: 60,
-          tokenLimit: 8000,
-          pricingConfig: pricing(0.014, 0.28)
-        })
-      }),
-      new LLMModel({
-        name: 'deepseek-reasoner',
-        value: 'deepseek-reasoner',
-        provider: LLMProvider.DEEPSEEK,
-        llmClass: DeepSeekLLM,
-        canonicalName: 'deepseek-reasoner',
-        defaultConfig: new LLMConfig({
-          rateLimit: 60,
-          tokenLimit: 8000,
-          pricingConfig: pricing(0.14, 2.19)
-        })
-      }),
-      new LLMModel({
-        name: 'gemini-3-pro-preview',
-        value: 'gemini-3-pro-preview',
-        provider: LLMProvider.GEMINI,
-        llmClass: GeminiLLM,
-        canonicalName: 'gemini-3-pro',
-        defaultConfig: new LLMConfig({ pricingConfig: pricing(2.0, 12.0) }),
-        configSchema: geminiSchema
-      }),
-      new LLMModel({
-        name: 'gemini-3-flash-preview',
-        value: 'gemini-3-flash-preview',
-        provider: LLMProvider.GEMINI,
-        llmClass: GeminiLLM,
-        canonicalName: 'gemini-3-flash',
-        defaultConfig: new LLMConfig({ pricingConfig: pricing(0.5, 3.0) }),
-        configSchema: geminiSchema
-      }),
-      new LLMModel({
-        name: 'kimi-k2.5',
-        value: 'kimi-k2.5',
-        provider: LLMProvider.KIMI,
-        llmClass: KimiLLM,
-        canonicalName: 'kimi-k2.5',
-        defaultConfig: new LLMConfig({ pricingConfig: pricing(1.38, 4.14) })
-      }),
-      new LLMModel({
-        name: 'kimi-latest',
-        value: 'kimi-latest',
-        provider: LLMProvider.KIMI,
-        llmClass: KimiLLM,
-        canonicalName: 'kimi-latest',
-        defaultConfig: new LLMConfig({ pricingConfig: pricing(1.38, 4.14) })
-      }),
-      new LLMModel({
-        name: 'kimi-k2-thinking',
-        value: 'kimi-k2-thinking',
-        provider: LLMProvider.KIMI,
-        llmClass: KimiLLM,
-        canonicalName: 'kimi-k2-thinking',
-        defaultConfig: new LLMConfig({ pricingConfig: pricing(27.59, 27.59) })
-      }),
-      new LLMModel({
-        name: 'kimi-k2-thinking-turbo',
-        value: 'kimi-k2-thinking-turbo',
-        provider: LLMProvider.KIMI,
-        llmClass: KimiLLM,
-        canonicalName: 'kimi-k2-thinking-turbo',
-        defaultConfig: new LLMConfig({ pricingConfig: pricing(27.59, 27.59) })
-      }),
-      new LLMModel({
-        name: 'qwen3-max',
-        value: 'qwen-max',
-        provider: LLMProvider.QWEN,
-        llmClass: QwenLLM,
-        canonicalName: 'qwen3-max',
-        defaultConfig: new LLMConfig({
-          tokenLimit: 262144,
-          pricingConfig: new TokenPricingConfig({ inputTokenPricing: 2.4, outputTokenPricing: 12.0 })
-        })
-      }),
-      new LLMModel({
-        name: 'glm-5',
-        value: 'glm-5',
-        provider: LLMProvider.GLM,
-        llmClass: GlmLLM,
-        canonicalName: 'glm-5',
-        defaultConfig: new LLMConfig({ pricingConfig: pricing(13.8, 13.8) }),
-        configSchema: glmSchema
-      }),
-      new LLMModel({
-        name: 'minimax-m2.1',
-        value: 'MiniMax-M2.1',
-        provider: LLMProvider.MINIMAX,
-        llmClass: MinimaxLLM,
-        canonicalName: 'minimax-m2.1',
-        defaultConfig: new LLMConfig({ pricingConfig: pricing(0.15, 0.45) })
-      })
-    ];
+    const supportedModels = await buildSupportedModels();
 
     for (const model of supportedModels) {
       LLMFactory.registerModel(model);

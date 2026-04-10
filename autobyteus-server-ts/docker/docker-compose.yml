@@ -16,7 +16,6 @@ services:
       AUTOBYTEUS_SERVER_HOST: ${AUTOBYTEUS_SERVER_HOST:-http://localhost:${AUTOBYTEUS_BACKEND_PORT:-8001}}
       AUTOBYTEUS_VNC_SERVER_HOSTS: ${AUTOBYTEUS_VNC_SERVER_HOSTS:-localhost:${AUTOBYTEUS_WEB_VNC_PORT:-6080}}
       APP_ENV: ${APP_ENV:-production}
-      PERSISTENCE_PROVIDER: ${PERSISTENCE_PROVIDER:-sqlite}
       DB_TYPE: ${DB_TYPE:-sqlite}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
       # Git / GitHub setup (optional runtime sync)

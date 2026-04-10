@@ -95,6 +95,7 @@ export const useSkillStore = defineStore('skill', () => {
         currentSkill.value = data.skill
         return data.skill
       }
+      currentSkill.value = null
       return null
     } catch (e: any) {
       error.value = e.message

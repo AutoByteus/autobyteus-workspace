@@ -4,10 +4,10 @@
     <header class="flex-shrink-0 bg-white border-b border-gray-200">
       <div class="mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 items-center justify-between">
-          <h1 class="text-xl font-bold text-gray-900">Media Library</h1>
+          <h1 class="text-xl font-bold text-gray-900">{{ $t('memory.pages.media.media_library') }}</h1>
           
           <!-- Category Tabs -->
-          <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+          <nav class="-mb-px flex space-x-8" :aria-label="$t('memory.pages.media.tabs')">
             <button
               v-for="category in store.getCategories"
               :key="category"
@@ -33,18 +33,18 @@
           <!-- Loading State -->
           <div v-if="store.loading" class="text-center py-20">
             <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
-            <p class="mt-4 text-gray-600">Loading media...</p>
+            <p class="mt-4 text-gray-600">{{ $t('memory.pages.media.loading_media') }}</p>
           </div>
 
           <!-- Error State -->
           <div v-else-if="store.error" class="text-center py-20 bg-red-50 border border-red-200 rounded-lg">
-            <p class="text-lg font-medium text-red-700">Something went wrong</p>
+            <p class="text-lg font-medium text-red-700">{{ $t('memory.pages.media.something_went_wrong') }}</p>
             <p class="text-sm text-red-600 mt-1">{{ store.error }}</p>
           </div>
           
           <!-- Empty State -->
           <div v-else-if="store.files.length === 0" class="text-center py-20 bg-white rounded-lg border">
-            <p class="text-lg font-medium text-gray-700">No media found</p>
+            <p class="text-lg font-medium text-gray-700">{{ $t('memory.pages.media.no_media_found') }}</p>
             <p class="text-sm text-gray-500 mt-1">There are no files in the '{{ store.selectedCategory }}' category.</p>
           </div>
           
@@ -73,7 +73,7 @@
               <button
                 @click.stop="requestDelete(file)"
                 class="absolute top-2 right-2 z-10 p-1.5 bg-gray-800 bg-opacity-50 text-white rounded-full opacity-0 group-hover:opacity-100 transition-all hover:bg-red-600"
-                title="Delete file"
+                :title="$t('memory.pages.media.delete_file')"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -129,7 +129,7 @@
     />
     <ConfirmationModal
       :show="showConfirmDelete"
-      title="Confirm Deletion"
+      :title="$t('memory.pages.media.confirm_deletion')"
       :message="`Are you sure you want to permanently delete '<strong>${fileToDelete?.filename}</strong>'?<br>This action cannot be undone.`"
       confirm-button-text="Delete"
       variant="danger"

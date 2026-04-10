@@ -7,13 +7,13 @@
     >
       <header class="mb-2 flex items-start justify-between gap-3">
         <div>
-          <p class="text-xs font-semibold uppercase tracking-wide text-sky-700">App Update</p>
+          <p class="text-xs font-semibold uppercase tracking-wide text-sky-700">{{ $t('shell.components.app.AppUpdateNotice.app_update') }}</p>
           <h3 class="text-sm font-semibold text-slate-900">{{ statusTitle }}</h3>
         </div>
         <button
           v-if="appUpdateStore.status !== 'installing'"
           class="rounded-md p-1 text-slate-500 transition hover:bg-sky-100 hover:text-slate-700"
-          aria-label="Dismiss update notice"
+          :aria-label="$t('shell.components.app.AppUpdateNotice.dismiss_update_notice')"
           data-testid="app-update-dismiss"
           @click="appUpdateStore.dismissNotice()"
         >
@@ -33,7 +33,7 @@
         data-testid="app-update-progress"
       >
         <div class="mb-1 flex items-center justify-between text-xs text-slate-600">
-          <span>Download progress</span>
+          <span>{{ $t('shell.components.app.AppUpdateNotice.download_progress') }}</span>
           <span>{{ appUpdateStore.progressLabel }}</span>
         </div>
         <div class="h-2 w-full rounded-full bg-slate-200">
@@ -51,7 +51,7 @@
       >
         <div class="flex items-center gap-2">
           <span class="i-heroicons-arrow-path h-4 w-4 animate-spin" aria-hidden="true" />
-          <span>Restarting to install update. This window will close automatically.</span>
+          <span>{{ $t('shell.components.app.AppUpdateNotice.restarting_to_install_update_this_window') }}</span>
         </div>
       </div>
 
@@ -59,7 +59,7 @@
         v-if="appUpdateStore.releaseNotes"
         class="mt-3 rounded-md border border-sky-100 bg-white/70 p-2 text-xs text-slate-700"
       >
-        <summary class="cursor-pointer font-medium text-sky-700">Release notes</summary>
+        <summary class="cursor-pointer font-medium text-sky-700">{{ $t('shell.components.app.AppUpdateNotice.release_notes') }}</summary>
         <p class="mt-2 whitespace-pre-line">{{ appUpdateStore.releaseNotes }}</p>
       </details>
 
@@ -69,18 +69,14 @@
           class="rounded-md bg-sky-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-sky-700"
           data-testid="app-update-download"
           @click="appUpdateStore.downloadUpdate()"
-        >
-          Download Update
-        </button>
+        >{{ $t('shell.components.app.AppUpdateNotice.download_update') }}</button>
 
         <button
           v-if="appUpdateStore.status === 'downloaded'"
           class="rounded-md bg-emerald-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-emerald-700"
           data-testid="app-update-install"
           @click="appUpdateStore.installUpdateAndRestart()"
-        >
-          Install &amp; Restart
-        </button>
+        >{{ $t('shell.components.app.AppUpdateNotice.install_and_amp_restart') }}</button>
 
         <button
           v-if="appUpdateStore.status === 'installing'"
@@ -88,7 +84,7 @@
           data-testid="app-update-installing"
           disabled
         >
-          Restarting...
+          {{ $t('shell.components.app.AppUpdateNotice.restarting') }}
         </button>
 
         <button
@@ -96,9 +92,7 @@
           class="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50"
           data-testid="app-update-check"
           @click="appUpdateStore.checkForUpdates()"
-        >
-          Check Again
-        </button>
+        >{{ $t('shell.components.app.AppUpdateNotice.check_again') }}</button>
 
         <button
           v-if="appUpdateStore.status === 'available' || appUpdateStore.status === 'error'"
@@ -106,7 +100,7 @@
           data-testid="app-update-later"
           @click="appUpdateStore.dismissNotice()"
         >
-          Later
+          {{ $t('shell.components.app.AppUpdateNotice.later') }}
         </button>
       </div>
     </section>
@@ -115,61 +109,84 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useLocalization } from '~/composables/useLocalization';
 import { useAppUpdateStore } from '~/stores/appUpdateStore';
 
 const appUpdateStore = useAppUpdateStore();
+const { t } = useLocalization();
 
 const statusTitle = computed(() => {
   switch (appUpdateStore.status) {
     case 'checking':
-      return 'Checking for updates';
+      return t('shell.components.app.AppUpdateNotice.statusTitle.checking');
     case 'available':
-      return 'Update available';
+      return t('shell.components.app.AppUpdateNotice.statusTitle.available');
     case 'downloading':
-      return 'Downloading update';
+      return t('shell.components.app.AppUpdateNotice.statusTitle.downloading');
     case 'downloaded':
-      return 'Ready to install';
+      return t('shell.components.app.AppUpdateNotice.statusTitle.downloaded');
     case 'installing':
-      return 'Restarting to install';
+      return t('shell.components.app.AppUpdateNotice.statusTitle.installing');
     case 'no-update':
-      return 'You are up to date';
+      return t('shell.components.app.AppUpdateNotice.statusTitle.noUpdate');
     case 'error':
-      return 'Update failed';
+      return t('shell.components.app.AppUpdateNotice.statusTitle.error');
     default:
-      return 'App updates';
+      return t('shell.components.app.AppUpdateNotice.statusTitle.idle');
   }
 });
 
 const statusMessage = computed(() => {
-  if (appUpdateStore.message) {
-    return appUpdateStore.message;
+  if (appUpdateStore.status === 'available') {
+    return appUpdateStore.availableVersion
+      ? t('shell.components.app.AppUpdateNotice.statusMessage.availableVersion', {
+          version: appUpdateStore.availableVersion,
+        })
+      : t('shell.components.app.AppUpdateNotice.statusMessage.available');
   }
 
-  if (appUpdateStore.status === 'available') {
-    return 'A new version is ready to download.';
+  if (appUpdateStore.status === 'downloading') {
+    return t('shell.components.app.AppUpdateNotice.statusMessage.downloading');
   }
 
   if (appUpdateStore.status === 'downloaded') {
-    return 'Update downloaded. Restart to apply the new version.';
+    return t('shell.components.app.AppUpdateNotice.statusMessage.downloaded');
   }
 
   if (appUpdateStore.status === 'installing') {
-    return 'Restarting to install update. This window will close automatically.';
+    return t('shell.components.app.AppUpdateNotice.statusMessage.installing');
+  }
+
+  if (appUpdateStore.status === 'no-update') {
+    return t('shell.components.app.AppUpdateNotice.statusMessage.noUpdate');
   }
 
   if (appUpdateStore.status === 'error') {
-    return 'Could not complete app update check.';
+    return appUpdateStore.error
+      ? t('shell.components.app.AppUpdateNotice.statusMessage.errorWithDetail', {
+          error: appUpdateStore.error,
+        })
+      : t('shell.components.app.AppUpdateNotice.statusMessage.error');
   }
 
-  return 'Manage desktop updates from here.';
+  if (appUpdateStore.status === 'checking') {
+    return t('shell.components.app.AppUpdateNotice.statusMessage.checking');
+  }
+
+  return t('shell.components.app.AppUpdateNotice.statusMessage.idle');
 });
 
 const versionSummary = computed(() => {
-  const current = appUpdateStore.currentVersion || 'unknown';
+  const current = appUpdateStore.currentVersion || t('shell.components.app.AppUpdateNotice.version.unknown');
   if (appUpdateStore.availableVersion) {
-    return `Current ${current} → New ${appUpdateStore.availableVersion}`;
+    return t('shell.components.app.AppUpdateNotice.version.currentToNew', {
+      current,
+      next: appUpdateStore.availableVersion,
+    });
   }
-  return appUpdateStore.currentVersion ? `Current ${current}` : null;
+  return appUpdateStore.currentVersion
+    ? t('shell.components.app.AppUpdateNotice.version.currentOnly', { current })
+    : null;
 });
 </script>
 

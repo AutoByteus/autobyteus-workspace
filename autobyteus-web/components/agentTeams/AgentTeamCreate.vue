@@ -3,20 +3,18 @@
     <div class="mx-auto w-full max-w-[1400px] px-4 py-6 sm:px-6 lg:px-8">
       <div class="mb-6 flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
         <div>
-          <h1 class="text-4xl font-semibold text-slate-900">Create Agent Team</h1>
-          <p class="mt-1 text-lg text-slate-600">Drag from library to canvas, then assign a coordinator.</p>
+          <h1 class="text-4xl font-semibold text-slate-900">{{ $t('agentTeams.components.agentTeams.AgentTeamCreate.create_agent_team') }}</h1>
+          <p class="mt-1 text-lg text-slate-600">{{ $t('agentTeams.components.agentTeams.AgentTeamCreate.drag_from_library_to_canvas_then') }}</p>
         </div>
         <button
           type="button"
           class="inline-flex items-center rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
-        >
-          Use Template
-        </button>
+        >{{ $t('agentTeams.components.agentTeams.AgentTeamCreate.use_template') }}</button>
       </div>
 
       <AgentTeamDefinitionForm
         :is-submitting="isSubmitting"
-        submit-button-text="Create Team"
+        :submit-button-text="$t('agentTeams.components.agentTeams.AgentTeamCreate.submitButton')"
         @submit="handleCreate"
         @cancel="handleCancel"
       />
@@ -36,12 +34,14 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useLocalization } from '~/composables/useLocalization';
 import { useAgentTeamDefinitionStore, type CreateAgentTeamDefinitionInput } from '~/stores/agentTeamDefinitionStore';
 import AgentTeamDefinitionForm from '~/components/agentTeams/AgentTeamDefinitionForm.vue';
 
 const emit = defineEmits(['navigate']);
 
 const store = useAgentTeamDefinitionStore();
+const { t: $t } = useLocalization();
 
 const isSubmitting = ref(false);
 const notification = ref<{ type: 'success' | 'error'; message: string } | null>(null);
@@ -53,16 +53,16 @@ const handleCreate = async (formData: CreateAgentTeamDefinitionInput) => {
   try {
     const newTeam = await store.createAgentTeamDefinition(formData);
     if (newTeam) {
-      showNotification('Agent team created successfully!', 'success');
+      showNotification($t('agentTeams.components.agentTeams.AgentTeamCreate.createdSuccess'), 'success');
       setTimeout(() => {
         emit('navigate', { view: 'team-detail', id: newTeam.id });
       }, 1200);
     } else {
-      throw new Error('Failed to create agent team. The result was empty.');
+      throw new Error($t('agentTeams.components.agentTeams.AgentTeamCreate.createFailedEmpty'));
     }
   } catch (error: any) {
     console.error('Failed to create agent team:', error);
-    showNotification(error.message || 'An unexpected error occurred.', 'error');
+    showNotification(error.message || $t('agentTeams.components.agentTeams.AgentTeamCreate.unexpectedError'), 'error');
   } finally {
     isSubmitting.value = false;
   }

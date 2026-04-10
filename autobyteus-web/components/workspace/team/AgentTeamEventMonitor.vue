@@ -10,10 +10,10 @@
     />
     <div v-else class="p-8 text-center text-gray-500 h-full flex items-center justify-center">
       <div v-if="!activeTeam">
-        <p>No active team session.</p>
+        <p>{{ $t('workspace.components.workspace.team.AgentTeamEventMonitor.no_active_team_session') }}</p>
       </div>
       <div v-else-if="!focusedMember">
-         <p>Select a team member from the panel to view their activity.</p>
+         <p>{{ $t('workspace.components.workspace.team.AgentTeamEventMonitor.select_a_team_member_from_the') }}</p>
       </div>
     </div>
   </div>

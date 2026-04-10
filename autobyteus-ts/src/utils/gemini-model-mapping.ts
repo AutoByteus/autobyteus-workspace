@@ -10,9 +10,9 @@ const MODEL_RUNTIME_MAP: Record<string, Record<string, Record<string, string>>> 
     }
   },
   llm: {
-    'gemini-3-pro-preview': {
-      vertex: 'gemini-3-pro-preview',
-      api_key: 'gemini-3-pro-preview'
+    'gemini-3.1-pro-preview': {
+      vertex: 'gemini-3.1-pro-preview',
+      api_key: 'gemini-3.1-pro-preview'
     },
     'gemini-3-flash-preview': {
       vertex: 'gemini-3-flash-preview',

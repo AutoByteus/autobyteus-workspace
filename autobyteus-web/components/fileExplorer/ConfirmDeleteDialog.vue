@@ -11,18 +11,13 @@
         aria-modal="true"
       >
         <!-- Title -->
-        <h2 class="text-lg font-semibold text-gray-700 mb-2">
-          Confirm Deletion
-        </h2>
+        <h2 class="text-lg font-semibold text-gray-700 mb-2">{{ $t('tools.components.fileExplorer.ConfirmDeleteDialog.confirm_deletion') }}</h2>
         
         <!-- Message -->
         <div class="mb-6">
-          <p class="text-gray-700">
-            Are you sure you want to delete <span class="font-medium">{{ targetName }}</span>?
+          <p class="text-gray-700">{{ $t('tools.components.fileExplorer.ConfirmDeleteDialog.are_you_sure_you_want_to') }}<span class="font-medium">{{ targetName }}</span>?
           </p>
-          <p class="text-sm text-gray-500 mt-2">
-            This action cannot be undone.
-          </p>
+          <p class="text-sm text-gray-500 mt-2">{{ $t('tools.components.fileExplorer.ConfirmDeleteDialog.this_action_cannot_be_undone') }}</p>
         </div>
         
         <!-- Buttons - Centered with proper spacing -->

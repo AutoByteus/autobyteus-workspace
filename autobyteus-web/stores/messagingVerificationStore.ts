@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { useMessagingChannelBindingSetupStore } from '~/stores/messagingChannelBindingSetupStore';
 import { useMessagingProviderScopeStore } from '~/stores/messagingProviderScopeStore';
 import { useGatewaySessionSetupStore } from '~/stores/gatewaySessionSetupStore';
+import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
 import type {
   ExternalChannelBindingModel,
   MessagingProvider,
@@ -33,25 +34,35 @@ function nowIsoString(): string {
   return new Date().toISOString();
 }
 
+function t(key: string, params?: Record<string, string | number>): string {
+  return localizationRuntime.translate(key, params);
+}
+
 function buildDefaultVerificationChecks(provider: MessagingProvider): SetupVerificationCheck[] {
   const requiresSession = providerRequiresPersonalSession(provider);
 
   return [
-    { key: 'gateway', label: 'Gateway connectivity', status: 'PENDING' },
+    { key: 'gateway', label: t('settings.messaging.verification.check.gateway'), status: 'PENDING' },
     {
       key: 'provider',
       label: requiresSession
-        ? 'Provider configuration (not required)'
-        : 'Provider configuration',
+        ? t('settings.messaging.verification.check.providerOptional')
+        : t('settings.messaging.verification.check.providerRequired'),
       status: 'PENDING',
     },
     {
       key: 'session',
-      label: requiresSession ? 'Session readiness' : 'Session readiness (not required)',
+      label: requiresSession
+        ? t('settings.messaging.verification.check.sessionRequired')
+        : t('settings.messaging.verification.check.sessionOptional'),
       status: 'PENDING',
     },
-    { key: 'binding', label: 'Scoped channel binding', status: 'PENDING' },
-    { key: 'launch_preset', label: 'Binding target configuration', status: 'PENDING' },
+    { key: 'binding', label: t('settings.messaging.verification.check.binding'), status: 'PENDING' },
+    {
+      key: 'launch_preset',
+      label: t('settings.messaging.verification.check.launchPreset'),
+      status: 'PENDING',
+    },
   ];
 }
 
@@ -109,15 +120,15 @@ function resolveBindingWithInvalidTargetConfiguration(
 function providerVerificationLabel(provider: MessagingProvider): string {
   switch (provider) {
     case 'WHATSAPP':
-      return 'WhatsApp Business';
+      return t('settings.messaging.providers.whatsappBusiness');
     case 'WECOM':
-      return 'WeCom App';
+      return t('settings.messaging.providers.wecomApp');
     case 'DISCORD':
-      return 'Discord Bot';
+      return t('settings.messaging.providers.discordBot');
     case 'TELEGRAM':
-      return 'Telegram Bot';
+      return t('settings.messaging.providers.telegramBot');
     case 'WECHAT':
-      return 'WeChat Personal';
+      return t('settings.messaging.providers.wechatPersonal');
     default:
       return provider;
   }
@@ -229,10 +240,12 @@ export const useMessagingVerificationStore = defineStore('messagingVerificationS
             providerKey,
             'gateway',
             'PASSED',
-            'Gateway is reachable.',
+            t('settings.messaging.verification.gatewayReachable'),
           );
         } else {
-          const message = gatewaySnapshot.gatewayBlockedReason || 'Gateway validation is required.';
+          const message =
+            gatewaySnapshot.gatewayBlockedReason ||
+            t('settings.messaging.verification.gatewayValidationRequired');
           this.setVerificationCheckStatusForProvider(providerKey, 'gateway', 'FAILED', message);
           blockers.push({
             code:
@@ -241,7 +254,7 @@ export const useMessagingVerificationStore = defineStore('messagingVerificationS
                 : 'GATEWAY_UNREACHABLE',
             step: 'gateway',
             message,
-            actions: [{ type: 'RERUN_VERIFICATION', label: 'Re-run Verification' }],
+            actions: [{ type: 'RERUN_VERIFICATION', label: t('settings.messaging.verification.rerunVerification') }],
           });
         }
 
@@ -251,7 +264,7 @@ export const useMessagingVerificationStore = defineStore('messagingVerificationS
             providerKey,
             'provider',
             'SKIPPED',
-            'Provider configuration is handled through the personal session flow.',
+            t('settings.messaging.verification.providerHandledBySession'),
           );
         } else {
           const providerStatus = gatewayStore.providerStatusByProvider[providerKey];
@@ -264,15 +277,24 @@ export const useMessagingVerificationStore = defineStore('messagingVerificationS
               'provider',
               'PASSED',
               accountId
-                ? `${providerLabel} is configured for account ${accountId}.`
-                : `${providerLabel} is configured and enabled.`,
+                ? t('settings.messaging.verification.providerConfiguredForAccount', {
+                    provider: providerLabel,
+                    accountId,
+                  })
+                : t('settings.messaging.verification.providerConfiguredAndEnabled', {
+                    provider: providerLabel,
+                  }),
             );
           } else {
             const providerMessage =
               providerStatus?.blockedReason ||
               (providerStatus?.configured
-                ? `${providerLabel} is saved but still disabled.`
-                : `Save ${providerLabel} configuration above before verification.`);
+                ? t('settings.messaging.verification.providerSavedButDisabled', {
+                    provider: providerLabel,
+                  })
+                : t('settings.messaging.verification.providerSaveBeforeVerification', {
+                    provider: providerLabel,
+                  }));
 
             this.setVerificationCheckStatusForProvider(
               providerKey,
@@ -284,7 +306,7 @@ export const useMessagingVerificationStore = defineStore('messagingVerificationS
               code: 'PROVIDER_NOT_READY',
               step: 'gateway',
               message: providerMessage,
-              actions: [{ type: 'RERUN_VERIFICATION', label: 'Re-run Verification' }],
+              actions: [{ type: 'RERUN_VERIFICATION', label: t('settings.messaging.verification.rerunVerification') }],
             });
           }
         }
@@ -295,35 +317,37 @@ export const useMessagingVerificationStore = defineStore('messagingVerificationS
             providerKey,
             'session',
             'SKIPPED',
-            'Session check is not required for selected provider.',
+            t('settings.messaging.verification.sessionCheckNotRequired'),
           );
         } else if (gatewayStore.sessionProvider !== providerKey) {
-          const message = `Start a ${providerSessionLabel(providerKey)} personal session before verification.`;
+          const message = t('settings.messaging.verification.startSessionBeforeVerification', {
+            provider: providerSessionLabel(providerKey),
+          });
           this.setVerificationCheckStatusForProvider(providerKey, 'session', 'FAILED', message);
           blockers.push({
             code: 'SESSION_NOT_READY',
             step: 'personal_session',
             message,
-            actions: [{ type: 'RERUN_VERIFICATION', label: 'Re-run Verification' }],
+            actions: [{ type: 'RERUN_VERIFICATION', label: t('settings.messaging.verification.rerunVerification') }],
           });
         } else if (gatewaySnapshot.personalSessionReady) {
           this.setVerificationCheckStatusForProvider(
             providerKey,
             'session',
             'PASSED',
-            'Personal session is active.',
+            t('settings.messaging.verification.personalSessionActive'),
           );
         } else {
           const sessionReason =
             gatewaySnapshot.personalSessionBlockedReason ||
-            'Start and activate a personal session before verification.';
+            t('settings.messaging.verification.startAndActivateSessionBeforeVerification');
           const isPersonalModeIssue = sessionReason.toLowerCase().includes('personal mode');
           this.setVerificationCheckStatusForProvider(providerKey, 'session', 'FAILED', sessionReason);
           blockers.push({
             code: isPersonalModeIssue ? 'PERSONAL_MODE_DISABLED' : 'SESSION_NOT_READY',
             step: 'personal_session',
             message: sessionReason,
-            actions: [{ type: 'RERUN_VERIFICATION', label: 'Re-run Verification' }],
+            actions: [{ type: 'RERUN_VERIFICATION', label: t('settings.messaging.verification.rerunVerification') }],
           });
         }
 
@@ -333,7 +357,7 @@ export const useMessagingVerificationStore = defineStore('messagingVerificationS
         if (!bindingSnapshot.capabilityEnabled) {
           const message =
             bindingSnapshot.capabilityBlockedReason ||
-            'Server binding setup APIs are currently unavailable.';
+            t('settings.messaging.verification.bindingApiUnavailable');
           this.setVerificationCheckStatusForProvider(providerKey, 'binding', 'FAILED', message);
           blockers.push({
             code: 'SERVER_BINDING_API_UNAVAILABLE',
@@ -342,7 +366,7 @@ export const useMessagingVerificationStore = defineStore('messagingVerificationS
           });
         } else if (!bindingSnapshot.hasBindings) {
           const message =
-            bindingSnapshot.bindingError || 'At least one binding is required for selected provider.';
+            bindingSnapshot.bindingError || t('settings.messaging.verification.bindingRequired');
           this.setVerificationCheckStatusForProvider(providerKey, 'binding', 'FAILED', message);
           blockers.push({
             code: 'BINDING_NOT_READY',
@@ -354,7 +378,9 @@ export const useMessagingVerificationStore = defineStore('messagingVerificationS
             providerKey,
             'binding',
             'PASSED',
-            `${bindingSnapshot.bindingsInScope} binding(s) found for selected scope.`,
+            t('settings.messaging.verification.bindingsFound', {
+              count: bindingSnapshot.bindingsInScope,
+            }),
           );
         }
 
@@ -364,7 +390,7 @@ export const useMessagingVerificationStore = defineStore('messagingVerificationS
             providerKey,
             'launch_preset',
             'SKIPPED',
-            'Launch preset check skipped because binding prerequisites are not ready.',
+            t('settings.messaging.verification.launchPresetSkipped'),
           );
         } else {
           const invalidBinding = resolveBindingWithInvalidTargetConfiguration(scopedBindings);
@@ -373,13 +399,19 @@ export const useMessagingVerificationStore = defineStore('messagingVerificationS
               providerKey,
               'launch_preset',
               'PASSED',
-              'Binding stores a complete target configuration.',
+              t('settings.messaging.verification.completeTargetConfiguration'),
             );
           } else {
             const message =
               invalidBinding.targetType === 'TEAM'
-                ? `Binding for peer ${invalidBinding.peerId} is missing a selected team run target.`
-                : `Binding for peer ${invalidBinding.peerId} is missing a complete launch preset for agent definition ${invalidBinding.targetAgentDefinitionId?.trim() || '(missing)'}.`;
+                ? t('settings.messaging.verification.teamBindingMissingTarget', {
+                    peerId: invalidBinding.peerId,
+                  })
+                : t('settings.messaging.verification.agentBindingMissingPreset', {
+                    peerId: invalidBinding.peerId,
+                    agentDefinitionId:
+                      invalidBinding.targetAgentDefinitionId?.trim() || '(missing)',
+                  });
             this.setVerificationCheckStatusForProvider(
               providerKey,
               'launch_preset',
@@ -390,7 +422,7 @@ export const useMessagingVerificationStore = defineStore('messagingVerificationS
               code: 'LAUNCH_PRESET_NOT_READY',
               step: 'binding',
               message,
-              actions: [{ type: 'RERUN_VERIFICATION', label: 'Re-run Verification' }],
+              actions: [{ type: 'RERUN_VERIFICATION', label: t('settings.messaging.verification.rerunVerification') }],
             });
           }
         }
@@ -406,7 +438,7 @@ export const useMessagingVerificationStore = defineStore('messagingVerificationS
         return result;
       } catch (error) {
         verificationState.verificationError =
-          error instanceof Error ? error.message : 'Setup verification failed';
+          error instanceof Error ? error.message : t('settings.messaging.verification.setupVerificationFailed');
 
         const result: SetupVerificationResult = {
           ready: false,

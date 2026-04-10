@@ -14,7 +14,7 @@ export default defineVitestConfig({
         domEnvironment: 'happy-dom', // or 'jsdom'
       },
     },
-    setupFiles: ['tests/setup/websocket.ts'],
+    setupFiles: ['tests/setup/websocket.ts', 'tests/setup/localization.ts'],
     exclude: [
       'node_modules/**',
       'dist/**',

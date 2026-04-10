@@ -14,6 +14,11 @@ describe('resolveModelForRuntime', () => {
     expect(resolveModelForRuntime('gemini-2.5-flash-preview-tts', 'tts', 'api_key')).toBe('gemini-2.5-flash-preview-tts');
   });
 
+  it('maps Gemini text models for the LLM modality', () => {
+    expect(resolveModelForRuntime('gemini-3.1-pro-preview', 'llm', 'vertex')).toBe('gemini-3.1-pro-preview');
+    expect(resolveModelForRuntime('gemini-3-flash-preview', 'llm', 'api_key')).toBe('gemini-3-flash-preview');
+  });
+
   it('returns original when modality or model is unknown', () => {
     expect(resolveModelForRuntime('unknown-model', 'tts', 'vertex')).toBe('unknown-model');
     expect(resolveModelForRuntime('gemini-2.5-flash-preview-tts', 'unknown', 'vertex')).toBe('gemini-2.5-flash-preview-tts');

@@ -1,12 +1,12 @@
 <template>
   <aside class="rounded-lg border border-slate-200 bg-white p-3">
-    <h3 class="text-sm font-semibold text-slate-900">Member Details</h3>
+    <h3 class="text-sm font-semibold text-slate-900">{{ $t('agentTeams.components.agentTeams.form.AgentTeamMemberDetailsPanel.member_details') }}</h3>
     <template v-if="selectedNode">
       <div class="mt-3 space-y-3">
-        <p class="text-xs text-slate-500">Member names auto-fill from dragged item name.</p>
+        <p class="text-xs text-slate-500">{{ $t('agentTeams.components.agentTeams.form.AgentTeamMemberDetailsPanel.member_names_auto_fill_from_dragged') }}</p>
 
         <div>
-          <label class="block text-xs font-medium text-slate-600">Member Name</label>
+          <label class="block text-xs font-medium text-slate-600">{{ $t('agentTeams.components.agentTeams.form.AgentTeamMemberDetailsPanel.member_name') }}</label>
           <input
             :value="selectedNode.memberName"
             type="text"
@@ -16,27 +16,27 @@
         </div>
 
         <div>
-          <p class="text-xs font-medium text-slate-600">Type</p>
-          <p class="mt-1 text-sm text-slate-900">{{ selectedNode.refType }}</p>
+          <p class="text-xs font-medium text-slate-600">{{ $t('agentTeams.components.agentTeams.form.AgentTeamMemberDetailsPanel.type') }}</p>
+          <p class="mt-1 text-sm text-slate-900">{{ selectedNode.refType === 'AGENT' ? $t('agentTeams.components.agentTeams.form.AgentTeamMemberDetailsPanel.typeAgent') : $t('agentTeams.components.agentTeams.form.AgentTeamMemberDetailsPanel.typeTeam') }}</p>
         </div>
 
         <div>
-          <p class="text-xs font-medium text-slate-600">Source</p>
+          <p class="text-xs font-medium text-slate-600">{{ $t('agentTeams.components.agentTeams.form.AgentTeamMemberDetailsPanel.source') }}</p>
           <p class="mt-1 text-sm text-slate-900">{{ referenceName }}</p>
         </div>
 
         <div v-if="selectedNode.refType === 'AGENT'">
-          <p class="text-xs font-medium text-slate-600">Scope</p>
-          <p class="mt-1 text-sm text-slate-900">{{ selectedNode.refScope || 'SHARED' }}</p>
+          <p class="text-xs font-medium text-slate-600">{{ $t('agentTeams.components.agentTeams.form.AgentTeamMemberDetailsPanel.scope') }}</p>
+          <p class="mt-1 text-sm text-slate-900">{{ selectedNode.refScope === 'TEAM_LOCAL' ? $t('agentTeams.components.agentTeams.AgentTeamCard.teamBadge') : $t('agentTeams.components.agentTeams.form.AgentTeamMemberDetailsPanel.scopeShared') }}</p>
         </div>
 
         <div>
-          <p class="text-xs font-medium text-slate-600">Coordinator</p>
+          <p class="text-xs font-medium text-slate-600">{{ $t('agentTeams.components.agentTeams.form.AgentTeamMemberDetailsPanel.coordinator') }}</p>
           <div
             v-if="selectedNode.refType === 'AGENT'"
             class="mt-1 inline-flex items-center gap-2 text-sm text-slate-800"
           >
-            <span>{{ coordinatorEnabled ? 'Enabled' : 'Disabled' }}</span>
+            <span>{{ coordinatorEnabled ? $t('agentTeams.components.agentTeams.form.AgentTeamMemberDetailsPanel.statusEnabled') : $t('agentTeams.components.agentTeams.form.AgentTeamMemberDetailsPanel.statusDisabled') }}</span>
             <button
               type="button"
               role="switch"
@@ -45,7 +45,7 @@
               :class="coordinatorEnabled ? 'bg-blue-600' : 'bg-slate-300'"
               @click="$emit('toggle-coordinator')"
             >
-              <span class="sr-only">Toggle coordinator</span>
+              <span class="sr-only">{{ $t('agentTeams.components.agentTeams.form.AgentTeamMemberDetailsPanel.toggle_coordinator') }}</span>
               <span
                 aria-hidden="true"
                 class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"
@@ -53,11 +53,11 @@
               />
             </button>
           </div>
-          <p v-else class="mt-1 text-sm text-slate-500">Only AGENT members can be coordinator.</p>
+          <p v-else class="mt-1 text-sm text-slate-500">{{ $t('agentTeams.components.agentTeams.form.AgentTeamMemberDetailsPanel.only_agent_members_can_be_coordinator') }}</p>
         </div>
       </div>
     </template>
-    <p v-else class="mt-3 text-sm text-slate-500">Select a member in Team Canvas to edit details.</p>
+    <p v-else class="mt-3 text-sm text-slate-500">{{ $t('agentTeams.components.agentTeams.form.AgentTeamMemberDetailsPanel.emptyState') }}</p>
 
     <p v-if="coordinatorError" class="mt-2 text-xs text-red-600">{{ coordinatorError }}</p>
   </aside>

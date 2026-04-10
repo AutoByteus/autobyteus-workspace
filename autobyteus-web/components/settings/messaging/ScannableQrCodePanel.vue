@@ -2,9 +2,7 @@
   <div class="rounded-md border border-gray-200 bg-white p-3" data-testid="scannable-qr-panel">
     <p class="text-xs text-gray-600">Scan this QR using {{ providerLabel }} on your phone.</p>
 
-    <div v-if="isRendering" class="mt-2 text-xs text-gray-500" data-testid="qr-rendering-state">
-      Rendering QR...
-    </div>
+    <div v-if="isRendering" class="mt-2 text-xs text-gray-500" data-testid="qr-rendering-state">{{ $t('settings.components.settings.messaging.ScannableQrCodePanel.rendering_qr') }}</div>
 
     <div v-else-if="qrDataUrl" class="mt-3 flex justify-center">
       <img
@@ -28,9 +26,7 @@
         class="mt-2 rounded border border-gray-300 px-2 py-1 text-xs text-gray-700"
         @click="renderQrCode"
         data-testid="retry-qr-render-button"
-      >
-        Retry Render
-      </button>
+      >{{ $t('settings.components.settings.messaging.ScannableQrCodePanel.retry_render') }}</button>
     </div>
   </div>
 </template>

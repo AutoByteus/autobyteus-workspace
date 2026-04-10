@@ -11,7 +11,7 @@
       >
         <div v-if="loading" class="flex items-center text-gray-500">
           <span class="i-heroicons-arrow-path-20-solid w-4 h-4 animate-spin mr-2"></span>
-          Loading...
+          {{ $t('common.components.common.SearchableSelect.loading') }}
         </div>
         <div v-else-if="selectedItem" class="flex items-center min-w-0 flex-1">
           <span class="i-heroicons-folder-20-solid w-5 h-5 text-blue-500 mr-2 flex-shrink-0"></span>

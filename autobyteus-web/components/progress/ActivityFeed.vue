@@ -33,9 +33,7 @@
       data-test="activity-feed-scroll-container"
       class="flex-1 overflow-y-auto custom-scrollbar"
     >
-      <div v-if="activities.length === 0" class="p-8 text-center text-gray-700 text-sm">
-        No activity history yet.
-      </div>
+      <div v-if="activities.length === 0" class="p-8 text-center text-gray-700 text-sm">{{ $t('workspace.components.progress.ActivityFeed.no_activity_history_yet') }}</div>
       
       <div v-else>
         <ActivityItem 

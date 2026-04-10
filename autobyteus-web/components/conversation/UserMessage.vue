@@ -28,7 +28,7 @@
         <div class="whitespace-pre-wrap break-words text-gray-900 leading-6">{{ message.text }}</div>
 
         <div v-if="message.contextFilePaths && message.contextFilePaths.length > 0" class="mt-2">
-          <p class="text-xs font-medium text-gray-500">Context files</p>
+          <p class="text-xs font-medium text-gray-500">{{ $t('workspace.components.conversation.UserMessage.context_files') }}</p>
           <ul class="mt-1 flex flex-wrap gap-2">
             <li v-for="file in message.contextFilePaths" :key="file.path">
               <button

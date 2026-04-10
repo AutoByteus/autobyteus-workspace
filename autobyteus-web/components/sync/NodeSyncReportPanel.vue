@@ -26,9 +26,7 @@
         <p class="mt-1 text-xs text-slate-600 break-all">
           {{ formatSampleKeys(entry.sampledKeys) }}
         </p>
-        <p v-if="entry.sampleTruncated" class="mt-1 text-xs text-amber-700">
-          Key sample truncated.
-        </p>
+        <p v-if="entry.sampleTruncated" class="mt-1 text-xs text-amber-700">{{ $t('tools.components.sync.NodeSyncReportPanel.key_sample_truncated') }}</p>
       </div>
     </div>
 
@@ -81,9 +79,7 @@
           </li>
         </ul>
 
-        <p v-if="target.failureSampleTruncated" class="mt-2 text-xs text-amber-700">
-          Failure sample truncated.
-        </p>
+        <p v-if="target.failureSampleTruncated" class="mt-2 text-xs text-amber-700">{{ $t('tools.components.sync.NodeSyncReportPanel.failure_sample_truncated') }}</p>
       </div>
     </div>
   </section>
