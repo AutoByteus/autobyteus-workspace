@@ -48,6 +48,7 @@ Standalone agent persisted files:
 
 - metadata: `memory/agents/<runId>/run_metadata.json`
 - runtime memory artifacts: `memory/agents/<runId>/{raw_traces.jsonl,working_context_snapshot.json,...}`
+- optional archive after pruning/compaction: `memory/agents/<runId>/raw_traces_archive.jsonl`
 
 Team persisted files:
 
@@ -57,6 +58,10 @@ Team persisted files:
 Important identity/storage rules:
 
 - standalone runs persist an explicit `memoryDir` in agent metadata
+- standalone AutoByteus run ids are stored literally under `memory/agents/<runId>/...`
+- new readable standalone AutoByteus run ids are generated through the shared `autobyteus-ts` readable-id formatter, which normalizes whitespace/punctuation into folder-safe slug segments before appending the numeric suffix
+- if the normalized standalone agent `name` and `role` collapse to the same value, the readable stem is written once instead of duplicating the segment
+- forward-only readable-id normalization does not rename historical persisted run ids; restore continues to use the stored run id
 - team members use deterministic `memberRunId` owned by the team aggregate
 - `memberRunId` defaults to a readable route slug plus stable hash: `<route_slug>_<16-hex>`
 - runtime-native identifiers remain separate from domain identifiers:
