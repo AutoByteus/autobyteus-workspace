@@ -2,8 +2,8 @@
 
 ## Status
 
-- Current Status: `Ready for user verification`
-- Last Updated: `2026-04-09`
+- Current Status: `User verified complete; queued for repository finalization and release`
+- Last Updated: `2026-04-10`
 
 ## Delivered
 
@@ -40,6 +40,7 @@
 
 ## Verification Snapshot
 
+- User verification: `Complete` (`2026-04-10`; user confirmed the ticket is done after final packaged-app validation on the verification branch)
 - Review result: `Pass` (latest authoritative review round `6`)
 - Validation result: `Pass` (latest authoritative validation round `9`)
 - Executable validation highlights:
@@ -52,37 +53,31 @@
   - ProviderAPIKeyManager local-fix targeted rerun -> `2 files, 7 tests` passed
   - ProviderAPIKeyManager structural-split targeted rerun -> `6 files, 25 tests` passed
   - round-9 expanded durable rerun -> `44/44` passed
-- Prior live/browser spot-check evidence still covers:
-  - unsupported system locale fallback to English
-  - manual switch to `zh-CN`
-  - persisted locale after reload
-  - localized rendering in the updated `Updates` and `Extensions` settings surfaces
+- Packaged-app verification evidence includes:
   - corrected Chinese left navigation showing `智能体`
   - corrected Chinese left navigation showing `智能体团队`
-- Latest authoritative durable/live evidence also covers:
-  - broader shared-product zh-CN glossary consistency across shell/settings/agents/teams/workspace catalogs
-  - shared zh-CN action/control label coverage across agents/teams/settings/workspace catalogs and impacted component tests
-  - zh-CN ProviderAPIKeyManager settings-control coverage so this surface no longer false-passes with English labels/placeholders
-  - extracted ProviderAPIKeyManager shell/runtime/browser/form coverage so the reviewed CR-003 structural split is durable and store ownership remains bounded
-  - live zh-CN browser verification on `/settings`, `/agents`, and `/agent-teams`, including absence of English `Run`
+  - broader zh-CN shell/settings/agents/teams/workspace wording consistency
+  - absence of packaged-app English `Run` in the reviewed surfaces
 
 ## Residual Risks / Environment Notes
 
-- Large touched surfaces such as `VoiceInputExtensionCard.vue`, `voiceInputStore.ts`, and `useMessagingChannelBindingSetupFlow.ts` remain future regression hotspots even though the ticket is now back to review-passed state.
+- Large touched surfaces such as `VoiceInputExtensionCard.vue`, `voiceInputStore.ts`, and `useMessagingChannelBindingSetupFlow.ts` remain future regression hotspots even though the ticket is now review-passed and user-verified.
 - Translation/copy quality outside the reviewed closure scope remains a general product risk, but no open engineering blocker remains in the authoritative package.
-- Validation environment notes remain non-blocking:
+- Validation/build environment notes remain non-blocking:
   - healthy backend on `127.0.0.1:8000` was reused in the latest live validation round
   - Nuxt fell back from requested port `3002` to `3000`
   - the localization audit still emits a non-blocking `MODULE_TYPELESS_PACKAGE_JSON` warning
+  - the earlier workspace-layout-specific Prisma engine override note remains documented historically, but it did not block the final reviewed state
 
 ## Ticket State
 
-- Technical workflow status: `Broader zh-CN completeness fixes preserved; ProviderAPIKeyManager structural split applied; docs sync refreshed; ready for user verification hold`
-- Ticket archive state: `Remain under tickets/in-progress/multilingual-ui-support/ until the user explicitly verifies completion`
-- Repository finalization state: `Not started`
-- Release/deployment state: `Not started`
-- Bootstrap/finalization context: `Partial bootstrap only; dedicated task branch/worktree was not created and the expected finalization target remains unknown in investigation-notes.md`
+- Technical workflow status: `User verification is complete; archived ticket is ready for branch finalization and release execution`
+- Ticket archive state: `Archived under tickets/done/multilingual-ui-support/`
+- Repository finalization state: `Pending`
+- Release/deployment state: `Pending`
+- Finalization target: `origin/personal` (confirmed by user on `2026-04-10`)
+- Verification branch used for the last packaged-app test: `codex/multilingual-ui-support-final-verification`
 
 ## Next Step
 
-- Wait for explicit user verification before any archival, commit, push, merge, release, deployment, or cleanup work.
+- Commit the archived ticket state on the verification branch, merge it into `personal`, run the documented release workflow for `v1.2.67`, and then complete post-finalization cleanup/reporting.
