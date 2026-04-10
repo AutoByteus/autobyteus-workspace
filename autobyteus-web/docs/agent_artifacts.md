@@ -2,182 +2,200 @@
 
 ## Overview
 
-The Artifacts tab is the live **touched files / outputs** view for an agent run.
-It is no longer limited to `write_file`, and it is not driven by a persisted-artifact GraphQL restore path.
+The Artifacts tab now combines two different runtime sources:
 
-A row appears when the run touches a file or output, including:
+- **run-scoped file changes** for `write_file` and `edit_file`
+- **generated outputs** such as image/audio/video/pdf artifacts
 
-- `write_file`
-- `edit_file`
-- generated images / audio / video / pdf / csv / excel outputs
-- runtime file-change events from supported backends
+The important architectural split is:
 
-The UI goal is simple:
+- file changes are now **backend-owned**
+- generated outputs still follow the existing artifact event path
 
-> if the agent touched a file or output during this run, the user should be able to click it and inspect it immediately.
+For file changes, the backend is the source of truth for both live runs and reopened history. The frontend no longer tries to infer content from Electron-local paths.
 
-The tab label is still **Artifacts**, but the runtime model is best understood as **touched files and outputs**.
+## File-Change Runtime Model
 
-## High-Level Flow
+Each file-change row is keyed by:
 
-```mermaid
-sequenceDiagram
-    participant Agent as Agent / Runtime
-    participant Backend as Backend
-    participant WS as WebSocket
-    participant SegmentHandler as segmentHandler.ts
-    participant ArtifactHandler as artifactHandler.ts
-    participant Store as AgentArtifactsStore
-    participant UI as Artifacts UI
+- `runId`
+- normalized `path`
 
-    Agent->>Backend: write_file / edit_file / generated output
-    Backend->>WS: SEGMENT_START (write_file or edit_file)
-    WS->>SegmentHandler: handleSegmentStart()
-    SegmentHandler->>Store: upsertTouchedEntryFromSegmentStart()
-    Store->>UI: create touched-file row
-
-    loop write_file only
-        Backend->>WS: SEGMENT_CONTENT
-        WS->>SegmentHandler: handleSegmentContent()
-        SegmentHandler->>Store: appendArtifactContent()
-        Store->>UI: live buffered preview updates
-    end
-
-    Backend->>WS: ARTIFACT_UPDATED / ARTIFACT_PERSISTED
-    WS->>ArtifactHandler: handleArtifactUpdated() / handleArtifactPersisted()
-    ArtifactHandler->>Store: refreshTouchedEntryFromArtifactUpdate() / markTouchedEntryAvailableFromArtifactPersisted()
-    Store->>UI: refresh row state; announce only on first visibility or explicit re-touch
-```
-
-## Runtime Model
-
-### Statuses
-
-| Status | Meaning |
-| --- | --- |
-| `streaming` | A `write_file` entry is actively buffering streamed content. |
-| `pending` | The touched file is known, but the final file-backed state is not available yet. |
-| `available` | The file/output is ready to inspect. |
-| `failed` | The write/edit attempt was denied or failed, but the row remains visible. |
-
-### Source Tools
-
-| `sourceTool` | Meaning |
-| --- | --- |
-| `write_file` | File is being created or overwritten through the write-file flow. |
-| `edit_file` | Existing file is being modified. |
-| `generated_output` | Tool produced a media/document output path or URL directly. |
-| `runtime_file_change` | Runtime emitted a file-change event without a matching segment-start entry. |
-
-### Store Shape
+Backend type shape:
 
 ```ts
-interface AgentArtifact {
-  id: string; // stable identity: runId:path
+interface RunFileChangeEntry {
+  id: string; // runId:path
   runId: string;
   path: string;
-  type: 'file' | 'image' | 'audio' | 'video' | 'pdf' | 'csv' | 'excel' | 'other';
+  type: 'file';
   status: 'streaming' | 'pending' | 'available' | 'failed';
-  sourceTool: 'write_file' | 'edit_file' | 'generated_output' | 'runtime_file_change';
-  sourceInvocationId?: string | null;
-  backendArtifactId?: string | null;
-  content?: string; // buffered write_file content only
-  url?: string | null; // generated media / direct preview URL
-  workspaceRoot?: string | null;
+  sourceTool: 'write_file' | 'edit_file';
+  sourceInvocationId: string | null;
+  backendArtifactId: string | null;
+  content: string | null;
   createdAt: string;
   updatedAt: string;
 }
 ```
 
-## Key Owners
+Status meanings:
+
+| Status | Meaning |
+| --- | --- |
+| `streaming` | `write_file` is actively buffering streamed text deltas. |
+| `pending` | The file change is known, but final committed content is not available yet. |
+| `available` | Final text content was captured successfully by the server. |
+| `failed` | The file change failed or final committed content could not be captured. |
+
+## High-Level Data Flow
+
+```mermaid
+flowchart LR
+  A["AgentRun events"] --> B["RunFileChangeService"]
+  B --> C["In-memory per-run projection"]
+  B --> D["run memory / run-file-changes/projection.json"]
+  B --> E["FILE_CHANGE_UPDATED local event"]
+  E --> F["agent streaming websocket"]
+  F --> G["runFileChangesStore"]
+  G --> H["ArtifactsTab"]
+  H --> I["ArtifactContentViewer"]
+
+  C --> J["RunFileChangeProjectionService"]
+  D --> J
+  J --> K["GraphQL: getRunFileChanges"]
+  J --> L["REST: /runs/:runId/file-change-content"]
+```
+
+## Backend Owners
 
 | Owner | Path | Responsibility |
 | --- | --- | --- |
-| Touched-entry store | `stores/agentArtifactsStore.ts` | owns touched-entry identity, status changes, latest-visible selection signal, and buffered `write_file` content |
-| Segment ingestion | `services/agentStreaming/handlers/segmentHandler.ts` | creates touched rows as soon as `write_file` / `edit_file` paths are known |
-| Artifact event ingestion | `services/agentStreaming/handlers/artifactHandler.ts` | reconciles `ARTIFACT_UPDATED` as refresh-only metadata and `ARTIFACT_PERSISTED` as success-authorized availability |
-| Tool terminal reconciliation | `services/agentStreaming/handlers/toolLifecycleHandler.ts` | keeps denied/failed rows visible and marks terminal availability when lifecycle events arrive |
-| Viewer | `components/workspace/agent/ArtifactContentViewer.vue` | shows the current file/output content, using buffered `write_file` content, workspace fetches, or media URLs as appropriate |
-| Sidebar discoverability | `components/workspace/agent/ArtifactsTab.vue`, `components/layout/RightSideTabs.vue` | auto-select the latest visible touched entry and switch to the Artifacts tab when new touched content appears |
+| Live file-change owner | `autobyteus-server-ts/src/services/run-file-changes/run-file-change-service.ts` | normalizes run events into one row per `runId + path`, keeps the live projection in memory, captures committed content, emits `FILE_CHANGE_UPDATED`, and persists the projection into run memory |
+| Projection persistence | `autobyteus-server-ts/src/services/run-file-changes/run-file-change-projection-store.ts` | stores historical file-change projection at `run-file-changes/projection.json` under the run memory dir |
+| Projection read boundary | `autobyteus-server-ts/src/run-history/services/run-file-change-projection-service.ts` | reads from the active in-memory owner for active runs and from run memory for inactive/history runs |
+| GraphQL projection read | `autobyteus-server-ts/src/api/graphql/types/run-file-changes.ts` | exposes `getRunFileChanges(runId)` for run hydration |
+| REST content read | `autobyteus-server-ts/src/api/rest/run-file-changes.ts` | serves final server-backed text content by `runId + path` |
 
-## Frontend Behavior By Output Type
+## Frontend Owners
 
-### `write_file`
+| Owner | Path | Responsibility |
+| --- | --- | --- |
+| Live file-change store | `autobyteus-web/stores/runFileChangesStore.ts` | stores file-change rows by run, merges projection hydration with live updates, and tracks latest-visible file-change selection |
+| Live stream ingestion | `autobyteus-web/services/agentStreaming/handlers/fileChangeHandler.ts` | applies `FILE_CHANGE_UPDATED` payloads into the file-change store |
+| Run hydration | `autobyteus-web/services/runHydration/runContextHydrationService.ts` | loads `getRunProjection`, `getAgentRunResumeConfig`, and `getRunFileChanges` together when opening or recovering a run |
+| File-change hydration helpers | `autobyteus-web/services/runHydration/runFileChangeHydrationService.ts` | replace/merge hydrated projection rows into the frontend store |
+| Artifacts list | `autobyteus-web/components/workspace/agent/ArtifactsTab.vue` | merges file-change rows with generated-output artifacts into one sorted UI list |
+| Viewer | `autobyteus-web/components/workspace/agent/ArtifactContentViewer.vue` | renders buffered `write_file` text, server-backed committed text, or unsupported/pending/failed states |
 
-- The row appears immediately on `SEGMENT_START` once `path` is known.
-- While the segment is still active, streamed deltas are buffered in memory and shown directly in the viewer.
-- When the file becomes `available`, the viewer stops relying on the temporary buffer and resolves the file from the workspace/content path.
+## Live `write_file` Flow
 
-### `edit_file`
+1. `RunFileChangeService` attaches to every active run through `AgentRunManager`.
+2. `SEGMENT_START(write_file)` creates or updates one file-change row and sets:
+   - `status = streaming`
+   - `content = ""`
+3. Each `SEGMENT_CONTENT` delta appends text into `entry.content`.
+4. Each update emits `FILE_CHANGE_UPDATED`.
+5. The frontend websocket receives that event and stores it in `runFileChangesStore`.
+6. The Artifacts tab shows the row immediately.
+7. While the row is `streaming` or `pending`, the viewer uses the buffered inline `content` directly.
 
-- The row also appears immediately on `SEGMENT_START` once `path` is known.
-- The Artifacts tab does **not** try to render diffs.
-- `ARTIFACT_UPDATED` refreshes the existing row but does **not** re-announce discoverability for already-visible rows.
-- Clicking the row opens the file viewer and resolves the current full file content from the workspace/content path.
-- If the edit later succeeds, the same row refreshes to the latest file state.
+This is why live `write_file` can render before the final file is committed.
 
-### Generated outputs
+## Live `edit_file` Flow
 
-- Generated image/audio/video/pdf/csv/excel outputs are inserted through artifact events.
-- Generated-output rows are created only from successful tool results; denied/failed tool results do not synthesize artifact availability rows.
-- The row uses the same list semantics as file rows.
-- The viewer prefers a direct URL when one is available.
+1. `SEGMENT_START(edit_file)` creates or updates one file-change row.
+2. `edit_file` rows are not rendered as diffs.
+3. The row stays `pending` until the server captures the final committed file content.
+4. Once the edit succeeds or the artifact persistence signal arrives, the server captures the final text and marks the row `available`.
+5. The viewer fetches the final text from the backend REST route using `runId + path`.
 
-### Missing files
+So `edit_file` uses the same model as `write_file`, but without streamed text deltas.
 
-If the workspace/content fetch returns `404`, the viewer shows a deleted/moved state instead of silently failing.
+## Commit / Capture Behavior
+
+When a file-change tool succeeds:
+
+- the backend resolves the absolute path on the **server**
+- it reads the final file content there
+- it writes that content into the run-scoped projection
+- it marks the row `available`
+- it persists the projection into run memory
+
+For unsupported binary-style previews such as image/audio/video/pdf/zip/excel paths, the backend does **not** snapshot text-decoded bytes into `content`.
+
+## History / Reopen Behavior
+
+When reopening a run:
+
+1. the frontend loads `getRunFileChanges(runId)`
+2. the backend reads file changes through `RunFileChangeProjectionService`
+3. if the run is still active, the service reads from the live in-memory owner
+4. if the run is historical, the service reads `run-file-changes/projection.json` from the run memory dir
+5. the frontend hydrates or merges those rows into `runFileChangesStore`
+
+This prevents reopen from depending only on future live websocket events.
 
 ## Viewer Resolution Rules
 
-For text/code entries, the viewer treats the workspace file as the source of truth once the file is available:
+For file-change rows, the viewer follows this order:
 
-1. `write_file` and not yet `available` -> show buffered streamed content
-2. text file with a resolvable workspace path -> fetch current file content from `/workspaces/:workspaceId/content?path=...`
-3. text file without a resolvable workspace path -> fall back to `artifact.content`
-4. media / document types -> use `artifact.url` or resolved URL
+1. `write_file` with `streaming` or `pending` -> show buffered inline text
+2. `failed` file change -> show explicit failure state, not stale buffered draft content
+3. `pending` `edit_file` -> show pending state until content is ready
+4. `available` text file change -> fetch server-backed text from `/runs/:runId/file-change-content?path=...`
+5. unsupported non-text file change -> show "preview unavailable"
 
-This keeps the Artifacts tab focused on **final inspectable content**, not a diff-specific rendering workflow.
+Generated outputs still use the existing artifact URL/content path and are rendered separately from the file-change subsystem.
 
-## What Changed In The Architecture
+## Relationship To `agentArtifactsStore`
 
-### Removed from the live UX
+`agentArtifactsStore` is no longer the owner of `write_file` and `edit_file` rows.
 
-- persisted-artifact GraphQL restore as the active source for the tab
-- backend artifact metadata persistence as a requirement for the current live experience
-- the old assumption that only `write_file` should surface in the Artifacts tab
+Current split:
 
-### Kept for UX
+- `runFileChangesStore`
+  - owns run-scoped `write_file` / `edit_file` rows
+  - owns live file-change hydration and merge behavior
+- `agentArtifactsStore`
+  - still owns generated outputs and other non-file-change artifact rows
 
-- live `write_file` streaming preview
-- immediate visibility for touched files
-- auto-selection of the latest visible touched entry
-- generated-output preview support
+The Artifacts tab merges both stores into one list for the user.
+
+## Durable Storage
+
+File-change projection storage lives under the run memory directory:
+
+```text
+<run-memory-dir>/run-file-changes/projection.json
+```
+
+This is the durable source for historical re-rendering of file-change rows.
 
 ## Testing
 
-Primary durable coverage lives in the existing Nuxt/Vitest suite:
+Primary coverage for this architecture lives in:
 
-- `stores/__tests__/agentArtifactsStore.spec.ts`
-- `services/agentStreaming/handlers/__tests__/segmentHandler.spec.ts`
-- `services/agentStreaming/handlers/__tests__/artifactHandler.spec.ts`
-- `services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts`
-- `components/workspace/agent/__tests__/ArtifactsTab.spec.ts`
-- `components/workspace/agent/__tests__/ArtifactList.spec.ts`
-- `components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts`
-- `components/layout/__tests__/RightSideTabs.spec.ts`
+- `autobyteus-server-ts/tests/unit/services/run-file-changes/`
+- `autobyteus-server-ts/tests/unit/run-history/services/run-file-change-projection-service.test.ts`
+- `autobyteus-server-ts/tests/unit/api/rest/run-file-changes.test.ts`
+- `autobyteus-web/stores/__tests__/runFileChangesStore.spec.ts`
+- `autobyteus-web/services/runOpen/__tests__/agentRunOpenCoordinator.spec.ts`
+- `autobyteus-web/components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts`
+- `autobyteus-web/components/workspace/agent/__tests__/ArtifactsTab.spec.ts`
+- `autobyteus-web/components/layout/__tests__/RightSideTabs.spec.ts`
 
-Notable viewer assertions now cover:
+Notable regressions cover:
 
-- buffered `write_file` preview bypassing workspace fetch
-- workspace-backed resolved content for available text files
-- deleted-file handling on `404`
-- non-404 fetch error reporting
-- refresh-only artifact updates not retriggering latest-visible discoverability
-- denied/failed backend tool results not emitting artifact availability
+- active-run reopen merging authoritative projection data into partial live browser state
+- live buffered `write_file` content hydration
+- failed `write_file` rows not rendering buffered draft text as committed output
+- pending `edit_file` rows not rendering as deleted
+- non-text file-change preview failing closed
+- server-backed file-change content fetch by `runId + path`
 
-## Related Documentation
+## Related Docs
 
-- [Agent Execution Architecture](./agent_execution_architecture.md)
 - [File Explorer](./file_explorer.md)
 - [Content Rendering](./content_rendering.md)
-- [Tools & MCP](./tools_and_mcp.md)
+- [Agent Execution Architecture](./agent_execution_architecture.md)

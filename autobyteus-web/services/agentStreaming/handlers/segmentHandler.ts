@@ -12,7 +12,6 @@ import type { SegmentStartPayload, SegmentContentPayload, SegmentEndPayload } fr
 import { createSegmentFromPayload } from '../protocol/segmentTypes';
 import { hasStreamSegmentId, matchesStreamSegmentIdentity, setStreamSegmentIdentity } from './segmentIdentity';
 
-import { useAgentArtifactsStore } from '~/stores/agentArtifactsStore';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { isPlaceholderToolName } from '~/utils/toolNamePlaceholders';
 
@@ -71,7 +70,6 @@ function extractToolCallArgumentsFromMetadata(metadata?: Record<string, any>): R
 
 /**
  * Handle SEGMENT_START event - creates a new segment and adds it to the current AI message.
- * Also initializes streaming artifacts for 'write_file' segments.
  */
 export function handleSegmentStart(
   payload: SegmentStartPayload,
@@ -111,21 +109,6 @@ export function handleSegmentStart(
   }
 
   aiMessage.segments.push(segment);
-
-  if (
-    (payload.segment_type === 'write_file' || payload.segment_type === 'edit_file') &&
-    typeof payload.metadata?.path === 'string' &&
-    payload.metadata.path.trim().length > 0
-  ) {
-    const store = useAgentArtifactsStore();
-    store.upsertTouchedEntryFromSegmentStart(context.state.runId, {
-      invocationId: payload.id,
-      path: payload.metadata.path,
-      type: 'file',
-      sourceTool: payload.segment_type,
-    });
-  }
-
   if (
     ['tool_call', 'write_file', 'run_bash', 'edit_file'].includes(payload.segment_type)
   ) {
@@ -282,11 +265,6 @@ export function handleSegmentContent(
   }
 
   appendContentToSegment(segment, delta);
-
-  if (segment.type === 'write_file') {
-    const store = useAgentArtifactsStore();
-    store.appendArtifactContent(context.state.runId, payload.delta);
-  }
 }
 
 /**
@@ -315,12 +293,6 @@ export function handleSegmentEnd(
   }
 
   finalizeSegment(segment, payload.metadata);
-
-  if (segment.type === 'write_file') {
-     const store = useAgentArtifactsStore();
-     store.markTouchedEntryPending(context.state.runId, payload.id);
-  }
-
   if (['tool_call', 'write_file', 'terminal_command', 'edit_file'].includes(segment.type)) {
     const activityStore = useAgentActivityStore();
     const toolSegment = segment as ToolInvocationLifecycle;

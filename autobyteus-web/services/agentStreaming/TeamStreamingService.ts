@@ -30,6 +30,7 @@ import {
   handleSystemTaskNotification,
   handleTeamStatus,
   handleTaskPlanEvent,
+  handleFileChangeUpdated,
 } from './handlers';
 import { handleBrowserToolExecutionSucceeded } from './browser/browserToolExecutionSucceededHandler';
 
@@ -345,6 +346,10 @@ export class TeamStreamingService {
 
       case 'SYSTEM_TASK_NOTIFICATION':
         handleSystemTaskNotification(message.payload, memberContext);
+        break;
+
+      case 'FILE_CHANGE_UPDATED':
+        handleFileChangeUpdated(message.payload, memberContext);
         break;
 
       case 'CONNECTED':

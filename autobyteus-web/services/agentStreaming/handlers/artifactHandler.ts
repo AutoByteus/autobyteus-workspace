@@ -11,6 +11,9 @@ export const handleArtifactPersisted = (
   const store = useAgentArtifactsStore();
   
   const MEDIA_AND_DOC_TYPES = ['image', 'audio', 'video', 'pdf', 'csv', 'excel'];
+  if (!MEDIA_AND_DOC_TYPES.includes(type)) {
+    return;
+  }
 
   store.markTouchedEntryAvailableFromArtifactPersisted(runId, {
     artifactId: payload.artifact_id,
@@ -26,12 +29,6 @@ export const handleArtifactUpdated = (
   payload: ArtifactUpdatedPayload,
   context: AgentContext
 ): void => {
-  const store = useAgentArtifactsStore();
-  const runId = payload.agent_id;
-  store.refreshTouchedEntryFromArtifactUpdate(runId, {
-    artifactId: payload.artifact_id ?? null,
-    path: payload.path,
-    type: payload.type,
-    workspaceRoot: payload.workspace_root ?? null,
-  });
+  void payload;
+  void context;
 };

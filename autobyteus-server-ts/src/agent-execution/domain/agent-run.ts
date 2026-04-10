@@ -1,5 +1,6 @@
 import type { AgentRunBackend } from "../backends/agent-run-backend.js";
 import type { AgentRunContext } from "./agent-run-context.js";
+import type { AgentRunEvent } from "./agent-run-event.js";
 
 type AgentRunOptions = {
   context: AgentRunContext<unknown | null>;
@@ -9,6 +10,7 @@ type AgentRunOptions = {
 export class AgentRun {
   readonly context: AgentRunContext<unknown | null>;
   private readonly backend: AgentRunBackend;
+  private readonly localEventListeners = new Set<Parameters<AgentRunBackend["subscribeToEvents"]>[0]>();
 
   constructor(options: AgentRunOptions) {
     this.context = options.context;
@@ -42,7 +44,18 @@ export class AgentRun {
   subscribeToEvents(
     listener: Parameters<AgentRunBackend["subscribeToEvents"]>[0],
   ): ReturnType<AgentRunBackend["subscribeToEvents"]> {
-    return this.backend.subscribeToEvents(listener);
+    const unsubscribeBackend = this.backend.subscribeToEvents(listener);
+    this.localEventListeners.add(listener);
+    return () => {
+      unsubscribeBackend();
+      this.localEventListeners.delete(listener);
+    };
+  }
+
+  emitLocalEvent(event: AgentRunEvent): void {
+    for (const listener of this.localEventListeners) {
+      listener(event);
+    }
   }
 
   async postUserMessage(message: Parameters<AgentRunBackend["postUserMessage"]>[0]) {
