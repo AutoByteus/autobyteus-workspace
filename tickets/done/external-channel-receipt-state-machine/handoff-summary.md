@@ -4,8 +4,8 @@
 
 - Ticket: `external-channel-receipt-state-machine`
 - Date: `2026-04-10`
-- Current Status: `Verified, finalization paused at a refreshed Stage 8 checkpoint`
-- Workflow State Source: `tickets/in-progress/external-channel-receipt-state-machine/workflow-state.md`
+- Current Status: `Verified, archived, and in Stage 10 finalization`
+- Workflow State Source: `tickets/done/external-channel-receipt-state-machine/workflow-state.md`
 
 ## Delivery Summary
 
@@ -18,7 +18,7 @@
   - Stage 7 validation now proves both same-thread second-message reuse and terminate-then-restore of a bound run before the next same-thread inbound message for both direct and team bindings.
   - Team ingress validation also now proves that a real multi-member team with no explicit `targetNodeName` routes through the coordinator member path by default and publishes from that coordinator member run, not an arbitrary teammate.
 - Planned scope reference:
-  - `tickets/in-progress/external-channel-receipt-state-machine/implementation.md`
+  - `tickets/done/external-channel-receipt-state-machine/implementation.md`
 - Deferred / not delivered:
   - None within the approved scope.
 - Key architectural or ownership changes:
@@ -62,7 +62,7 @@
 ## Documentation Sync Summary
 
 - Docs sync artifact:
-  - `tickets/in-progress/external-channel-receipt-state-machine/docs-sync.md`
+  - `tickets/done/external-channel-receipt-state-machine/docs-sync.md`
 - Docs result: `Updated`
 - Docs updated:
   - `autobyteus-server-ts/docs/ARCHITECTURE.md`
@@ -71,11 +71,11 @@
 
 ## Release Notes Status
 
-- Release notes required: `No`
+- Release notes required: `Yes`
 - Release notes artifact:
-  - `N/A`
+  - `tickets/done/external-channel-receipt-state-machine/release-notes.md`
 - Notes:
-  - This Stage 10 step already has a verification build and explicit user verification. Final release/publication work remains paused until the resumed Stage 10 finalization sequence is explicitly continued.
+  - Curated user-facing release notes are now prepared for the documented desktop release flow.
 
 ## User Verification Hold
 
@@ -89,7 +89,7 @@
 ## Finalization Record
 
 - Ticket archived to:
-  - `Pending move to tickets/done during Stage 10 finalization`
+  - `tickets/done/external-channel-receipt-state-machine`
 - Ticket worktree path:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/external-channel-receipt-state-machine`
 - Ticket branch:
@@ -101,9 +101,9 @@
 - Commit status:
   - `Completed on the ticket branch`
 - Push status:
-  - `Pending Stage 10 finalization`
+  - `Pending Stage 10 finalization commit`
 - Merge status:
-  - `Latest origin/personal` was merged into the ticket branch via merge commit `fe53e889dc9ccde415e2a7889dccb84aedb76eda`; final merge into `personal` is now pending Stage 10 finalization
+  - `Latest origin/personal` was merged into the ticket branch via merge commit `5018afaa`; final merge into `personal` is now pending Stage 10 finalization
 - Release/publication/deployment status:
   - `Not started`
 - Worktree cleanup status:
@@ -111,5 +111,5 @@
 - Local branch cleanup status:
   - `Blocked on finalization`
 - Blockers / notes:
-  - No product-side blocker remains. Stage 10 finalization, archival, and cleanup are paused until work resumes beyond the refreshed Stage 8 checkpoint.
-  - The checkpoint implementation commit before the merge refresh is `2274c1ec`.
+  - No product-side blocker remains. The remaining work is procedural finalization: commit and push the archived ticket branch, fast-forward `personal`, run the documented release helper, and record the release report.
+  - The ticket branch already includes the latest `origin/personal` merge refresh at `5018afaa`.
