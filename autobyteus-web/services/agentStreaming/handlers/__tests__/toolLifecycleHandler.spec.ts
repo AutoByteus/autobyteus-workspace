@@ -198,6 +198,7 @@ describe('toolLifecycleHandler', () => {
     expect(mockActivityStore.updateActivityToolName).toHaveBeenCalledWith(runId, invocationId, 'edit_file');
     expect(mockActivityStore.updateActivityStatus).toHaveBeenCalledWith(runId, invocationId, 'awaiting-approval');
     expect(mockActivityStore.updateActivityArguments).toHaveBeenCalledWith(runId, invocationId, payload.arguments);
+    expect(mockActivityStore.setHighlightedActivity).not.toHaveBeenCalled();
   });
 
   it('applies TOOL_APPROVED then TOOL_EXECUTION_STARTED progression', () => {
@@ -227,6 +228,7 @@ describe('toolLifecycleHandler', () => {
     expect(mockActivityStore.updateActivityToolName).toHaveBeenCalledWith(runId, invocationId, 'run_bash');
     expect(mockActivityStore.updateActivityStatus).toHaveBeenCalledWith(runId, invocationId, 'approved');
     expect(mockActivityStore.updateActivityStatus).toHaveBeenCalledWith(runId, invocationId, 'executing');
+    expect(mockActivityStore.setHighlightedActivity).not.toHaveBeenCalled();
   });
 
   it('replaces unknown_tool placeholders when later lifecycle events carry the concrete tool name', () => {

@@ -57,6 +57,26 @@ describe('ActivityFeed', () => {
     ];
   });
 
+  it('keeps a dedicated visible scroll container for the activity list', () => {
+    const wrapper = mount(ActivityFeed, {
+      global: {
+        stubs: {
+          ActivityItem: {
+            name: 'ActivityItem',
+            props: ['activity', 'isHighlighted'],
+            template: '<div class="activity-item-stub" :data-id="activity.invocationId">{{ activity.invocationId }}</div>',
+          },
+        },
+      },
+    });
+
+    const feed = wrapper.get('[data-test="activity-feed-scroll-container"]');
+    expect(feed.classes()).toContain('overflow-y-scroll');
+    expect(feed.classes()).toContain('custom-scrollbar');
+
+    wrapper.unmount();
+  });
+
   it('scrolls the feed container directly when a highlighted activity is revealed', async () => {
     const wrapper = mount(ActivityFeed, {
       attachTo: document.body,

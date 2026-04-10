@@ -31,7 +31,7 @@
       v-show="!collapsed"
       ref="feedContainer"
       data-test="activity-feed-scroll-container"
-      class="flex-1 overflow-y-auto custom-scrollbar"
+      class="flex-1 overflow-y-scroll custom-scrollbar"
     >
       <div v-if="activities.length === 0" class="p-8 text-center text-gray-700 text-sm">{{ $t('workspace.components.progress.ActivityFeed.no_activity_history_yet') }}</div>
       
@@ -131,17 +131,28 @@ watch(highlightedId, (newId) => {
 </script>
 
 <style scoped>
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 116, 139, 0.72) rgba(226, 232, 240, 0.96);
+  scrollbar-gutter: stable both-edges;
+}
+
 .custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
+  width: 10px;
 }
+
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(226, 232, 240, 0.96);
+  border-radius: 9999px;
 }
+
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
+  background: rgba(100, 116, 139, 0.72);
+  border-radius: 9999px;
+  border: 2px solid rgba(226, 232, 240, 0.96);
 }
+
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(71, 85, 105, 0.82);
 }
 </style>

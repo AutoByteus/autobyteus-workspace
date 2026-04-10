@@ -273,12 +273,6 @@ const updateActivityStatus = (
   });
 };
 
-const setHighlightedActivity = (context: AgentContext, invocationId: string): void => {
-  const activityStore = useAgentActivityStore();
-  const aliases = buildInvocationAliases(invocationId);
-  activityStore.setHighlightedActivity(context.state.runId, aliases[0] ?? invocationId);
-};
-
 const setActivityResult = (
   context: AgentContext,
   invocationId: string,
@@ -351,7 +345,6 @@ export function handleToolApprovalRequested(
   updateActivityArguments(context, parsed.invocationId, parsed.arguments);
   if (transitioned) {
     updateActivityStatus(context, parsed.invocationId, 'awaiting-approval');
-    setHighlightedActivity(context, parsed.invocationId);
   }
 }
 
@@ -372,7 +365,6 @@ export function handleToolApproved(payload: ToolApprovedPayload, context: AgentC
   const transitioned = applyApprovedState(segment);
   if (transitioned) {
     updateActivityStatus(context, parsed.invocationId, 'approved');
-    setHighlightedActivity(context, parsed.invocationId);
   }
 }
 
@@ -427,9 +419,6 @@ export function handleToolExecutionStarted(
   updateActivityArguments(context, parsed.invocationId, parsed.arguments);
   if (transitioned) {
     updateActivityStatus(context, parsed.invocationId, 'executing');
-    if (segment.type !== 'write_file') {
-      setHighlightedActivity(context, parsed.invocationId);
-    }
   }
 }
 
