@@ -4,11 +4,11 @@
 
 - Ticket: `remote-browser-bridge-pairing`
 - Current Stage: `10`
-- Next Stage: `Awaiting User Verification`
+- Next Stage: `Repository Finalization + Release`
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-021`
+- Last Transition ID: `T-022`
 - Last Updated: `2026-04-10`
 
 ## Stage 0 Bootstrap Record
@@ -37,8 +37,8 @@
 | 6 Implementation | Pass | Stage 8 local-fix implementation completed in the isolated worktree; listener-host ownership and localization reuse were corrected and targeted serial validation passed | `tickets/in-progress/remote-browser-bridge-pairing/implementation.md`, `tickets/in-progress/remote-browser-bridge-pairing/workflow-state.md` |
 | 7 API/E2E + Executable Validation | Pass | Focused Stage 7 rerun passed for the Stage 8 local-fix scope; impacted Electron/renderer scenarios were revalidated in the isolated worktree and prior server evidence remains authoritative | `tickets/in-progress/remote-browser-bridge-pairing/api-e2e-testing.md`, `tickets/in-progress/remote-browser-bridge-pairing/workflow-state.md` |
 | 8 Code Review | Pass | Stage 8 round 2 independent review passed in the isolated worktree with no remaining findings after the Local Fix rerun of Stages 6 and 7 | `tickets/in-progress/remote-browser-bridge-pairing/code-review.md`, `tickets/in-progress/remote-browser-bridge-pairing/workflow-state.md` |
-| 9 Docs Sync | Pass | Long-lived browser/settings/tooling docs were updated to reflect advanced remote-browser-sharing, per-node pairing, and runtime browser-bridge registration | `tickets/in-progress/remote-browser-bridge-pairing/docs-sync.md`, `autobyteus-web/docs/settings.md`, `autobyteus-web/docs/browser_sessions.md`, `autobyteus-server-ts/docs/modules/agent_tools.md` |
-| 10 Handoff / Ticket State | In Progress | Handoff artifacts are complete; waiting for explicit user verification before moving the ticket to `done` and starting git finalization | `tickets/in-progress/remote-browser-bridge-pairing/handoff-summary.md`, `tickets/in-progress/remote-browser-bridge-pairing/workflow-state.md` |
+| 9 Docs Sync | Pass | Long-lived browser/settings/tooling docs were updated to reflect advanced remote-browser-sharing, per-node pairing, and runtime browser-bridge registration | `tickets/done/remote-browser-bridge-pairing/docs-sync.md`, `autobyteus-web/docs/settings.md`, `autobyteus-web/docs/browser_sessions.md`, `autobyteus-server-ts/docs/modules/agent_tools.md` |
+| 10 Handoff / Ticket State | In Progress | Explicit user verification was received, the ticket was archived to `tickets/done`, release notes were created, and Stage 10 finalization plus release work is now active until branch merge/release publication/cleanup complete | `tickets/done/remote-browser-bridge-pairing/handoff-summary.md`, `tickets/done/remote-browser-bridge-pairing/release-notes.md`, `tickets/done/remote-browser-bridge-pairing/workflow-state.md` |
 
 ## Transition Log (Append-Only)
 
@@ -65,6 +65,7 @@
 | T-019 | 2026-04-10 | 7 | 8 | Stage 7 focused rerun passed for the Stage 8 local-fix scope; locking code edits and re-entering independent code review | Local Fix | Locked | `tickets/in-progress/remote-browser-bridge-pairing/api-e2e-testing.md`, `tickets/in-progress/remote-browser-bridge-pairing/workflow-state.md` |
 | T-020 | 2026-04-10 | 8 | 9 | Stage 8 round 2 review passed in the isolated worktree with no remaining findings, so the ticket advanced to docs sync. | N/A | Locked | `tickets/in-progress/remote-browser-bridge-pairing/code-review.md`, `tickets/in-progress/remote-browser-bridge-pairing/workflow-state.md` |
 | T-021 | 2026-04-10 | 9 | 10 | Stage 9 docs sync completed with durable browser/settings/tooling updates, and the ticket advanced to handoff awaiting user verification. | N/A | Locked | `tickets/in-progress/remote-browser-bridge-pairing/docs-sync.md`, `tickets/in-progress/remote-browser-bridge-pairing/workflow-state.md` |
+| T-022 | 2026-04-10 | 10 | 10 | Explicit user verification was received, `release-notes.md` was created, the ticket was archived under `tickets/done/remote-browser-bridge-pairing`, and Stage 10 finalization plus release work started. | N/A | Locked | `tickets/done/remote-browser-bridge-pairing/handoff-summary.md`, `tickets/done/remote-browser-bridge-pairing/release-notes.md`, `tickets/done/remote-browser-bridge-pairing/workflow-state.md` |
 
 ## Re-Entry Declaration
 

@@ -4,8 +4,8 @@
 
 - Ticket: `remote-browser-bridge-pairing`
 - Date: `2026-04-10`
-- Current Status: `Awaiting User Verification`
-- Workflow State Source: `tickets/in-progress/remote-browser-bridge-pairing/workflow-state.md`
+- Current Status: `Verified; finalization and release in progress`
+- Workflow State Source: `tickets/done/remote-browser-bridge-pairing/workflow-state.md`
 
 ## Delivery Summary
 
@@ -16,8 +16,8 @@
   - Added remote-node runtime registration and clearing on the server, plus browser-bridge config resolution that now supports embedded env or runtime pairing.
   - Kept browser-tool exposure gated by the existing configured-tool-name flow so a live bridge alone does not expose all browser tools.
 - Planned scope reference:
-  - `tickets/in-progress/remote-browser-bridge-pairing/requirements.md`
-  - `tickets/in-progress/remote-browser-bridge-pairing/proposed-design.md`
+  - `tickets/done/remote-browser-bridge-pairing/requirements.md`
+  - `tickets/done/remote-browser-bridge-pairing/proposed-design.md`
 - Deferred / not delivered:
   - Strong authenticated remote-node registration beyond the trusted-LAN threat model was not added in this ticket.
   - Ticket archival, commit/push/merge, and any release work are intentionally deferred until explicit user verification.
@@ -58,7 +58,7 @@
 ## Documentation Sync Summary
 
 - Docs sync artifact:
-  - `tickets/in-progress/remote-browser-bridge-pairing/docs-sync.md`
+  - `tickets/done/remote-browser-bridge-pairing/docs-sync.md`
 - Docs result: `Updated`
 - Docs updated:
   - `autobyteus-web/docs/settings.md`
@@ -69,28 +69,28 @@
 
 ## Release Notes Status
 
-- Release notes required: `No`
+- Release notes required: `Yes`
 - Release notes artifact:
-  - `N/A`
+  - `tickets/done/remote-browser-bridge-pairing/release-notes.md`
 - Notes:
-  - This ticket is being handed off for verification inside the current branch/worktree; no separate release/publication step is being prepared at this stage.
+  - Curated release notes were created after user verification because finalization now includes a requested versioned release.
 
 ## User Verification Hold
 
-- Waiting for explicit user verification: `Yes`
+- Waiting for explicit user verification: `No`
 - User verification received:
-  - `No`
+  - `Yes`
 - Notes:
-  - The ticket remains in `tickets/in-progress/remote-browser-bridge-pairing/` until you explicitly verify the implementation or ask to finalize it.
-  - Manual verification environment is prepared:
-    - Electron artifacts: `autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.67.dmg` and `autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.2.67.zip`
+  - User explicitly confirmed the ticket as verified on `2026-04-10` and instructed finalization plus release.
+  - The verification environment that backed the approval was:
+    - Electron artifacts: `autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.2.69.dmg` and `autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.2.69.zip`
     - Docker GraphQL endpoint: `http://localhost:54397/graphql`
     - Docker container: `remote-browser-bridge-pairing-autobyteus-server-1`
 
 ## Finalization Record
 
 - Ticket archived to:
-  - `Not started`
+  - `tickets/done/remote-browser-bridge-pairing`
 - Ticket worktree path:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-browser-bridge-pairing`
 - Ticket branch:
@@ -100,16 +100,16 @@
 - Finalization target branch:
   - `personal`
 - Commit status:
-  - `Not started (awaiting user verification)`
+  - `In progress`
 - Push status:
-  - `Not started (awaiting user verification)`
+  - `In progress`
 - Merge status:
-  - `Not started (awaiting user verification)`
+  - `In progress`
 - Release/publication/deployment status:
-  - `Not required yet; no Stage 10 release/publication step is applicable before user verification`
+  - `In progress`
 - Worktree cleanup status:
-  - `Not started (awaiting user verification)`
+  - `Pending finalization`
 - Local branch cleanup status:
-  - `Not started (awaiting user verification)`
+  - `Pending finalization`
 - Blockers / notes:
-  - No technical blocker remains. The workflow is waiting on explicit user verification before archival and repository finalization.
+  - No technical blocker remains. Stage 10 finalization and release are active.

@@ -74,6 +74,9 @@ Codex CLI and Claude Code are preinstalled in the image. The intended auth flow 
    - `codex login`
    - `claude auth login`
 
+Use `codex login` directly in the default container shell. The container runs as
+`root`, so `sudo codex login` is not required in the normal Docker setup.
+
 The container runs as `root`, and `/root` is persisted in a Docker-managed named volume per Compose project. That means:
 
 - auth state is isolated per project/instance,
