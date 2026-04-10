@@ -18,6 +18,8 @@
         </p>
       </section>
 
+      <RemoteBrowserSharingPanel />
+
       <section class="border border-gray-200 rounded-lg p-4">
         <h3 class="text-sm font-semibold text-gray-900">{{ $t('settings.components.settings.NodeManager.add_remote_node') }}</h3>
         <p class="text-xs text-gray-500 mt-1">{{ $t('settings.components.settings.NodeManager.add_a_node_and_optionally_bootstrap') }}</p>
@@ -192,10 +194,11 @@
             </div>
 
             <div class="flex items-center gap-2">
+              <RemoteNodePairingControls :node="node" />
               <button
                 class="px-3 py-1.5 rounded-md border border-gray-300 text-sm text-gray-700 hover:bg-gray-50"
                 @click="onFocusNode(node.id)"
-                :disabled="busyNodeId === node.id"
+                :disabled="isNodeBusy(node.id)"
                 :data-testid="`focus-node-${node.id}`"
               >
                 {{ $t('settings.components.settings.NodeManager.open') }}
@@ -204,7 +207,7 @@
                 v-if="node.nodeType === 'remote'"
                 class="px-3 py-1.5 rounded-md border border-blue-300 text-sm text-blue-700 hover:bg-blue-50"
                 @click="onRenameNode(node.id)"
-                :disabled="busyNodeId === node.id"
+                :disabled="isNodeBusy(node.id)"
                 :data-testid="`rename-node-${node.id}`"
               >
                 {{ $t('settings.components.settings.NodeManager.rename') }}
@@ -213,7 +216,7 @@
                 v-if="node.nodeType === 'remote'"
                 class="px-3 py-1.5 rounded-md border border-red-300 text-sm text-red-700 hover:bg-red-50"
                 @click="onRemoveRemoteNode(node.id)"
-                :disabled="busyNodeId === node.id"
+                :disabled="isNodeBusy(node.id)"
                 :data-testid="`remove-node-${node.id}`"
               >
                 {{ $t('settings.components.settings.NodeManager.remove') }}
@@ -229,9 +232,12 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref, watch } from 'vue';
 import NodeSyncReportPanel from '~/components/sync/NodeSyncReportPanel.vue';
+import RemoteBrowserSharingPanel from '~/components/settings/RemoteBrowserSharingPanel.vue';
+import RemoteNodePairingControls from '~/components/settings/RemoteNodePairingControls.vue';
 import { useLocalization } from '~/composables/useLocalization';
 import { useNodeStore } from '~/stores/nodeStore';
 import { useNodeSyncStore } from '~/stores/nodeSyncStore';
+import { useRemoteBrowserSharingStore } from '~/stores/remoteBrowserSharingStore';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import type { NodeSyncRunReport, SyncEntityType } from '~/types/nodeSync';
 import { probeNodeCapabilities } from '~/utils/nodeCapabilityProbe';
@@ -248,6 +254,7 @@ const { t } = useLocalization();
 
 const nodeStore = useNodeStore();
 const nodeSyncStore = useNodeSyncStore();
+const remoteBrowserSharingStore = useRemoteBrowserSharingStore();
 const windowNodeContextStore = useWindowNodeContextStore();
 
 const addForm = reactive({
@@ -440,8 +447,12 @@ async function onFocusNode(nodeId: string): Promise<void> {
   }
 }
 
+function isNodeBusy(nodeId: string): boolean {
+  return busyNodeId.value === nodeId || remoteBrowserSharingStore.busyNodeId === nodeId;
+}
+
 async function onRenameNode(nodeId: string): Promise<void> {
-  if (busyNodeId.value) {
+  if (isNodeBusy(nodeId)) {
     return;
   }
 
@@ -467,7 +478,7 @@ async function onRenameNode(nodeId: string): Promise<void> {
 }
 
 async function onRemoveRemoteNode(nodeId: string): Promise<void> {
-  if (busyNodeId.value) {
+  if (isNodeBusy(nodeId)) {
     return;
   }
 
@@ -482,10 +493,31 @@ async function onRemoveRemoteNode(nodeId: string): Promise<void> {
   }
 
   busyNodeId.value = nodeId;
+  const shouldRevokeLocalPairingOnFailure = node.browserPairing?.state === 'pairing' || node.browserPairing?.state === 'paired';
+  let remoteCleanupConfirmed = false;
   try {
+    const remoteClearError = await remoteBrowserSharingStore.prepareNodeRemoval(nodeId);
+    remoteCleanupConfirmed = shouldRevokeLocalPairingOnFailure && remoteClearError === null;
     await nodeStore.removeRemoteNode(nodeId);
+    if (remoteClearError) {
+      addInfo.value = t(
+        'settings.components.settings.NodeManager.remoteBrowserSharing.info.removeRemoteCleanupUnconfirmed',
+        { error: remoteClearError },
+      );
+    }
     syncFullSyncDefaults();
   } catch (error) {
+    if (remoteCleanupConfirmed) {
+      try {
+        await remoteBrowserSharingStore.revokeLocalPairing(
+          nodeId,
+          'revoked',
+          'Node removal failed after remote browser cleanup completed.',
+        );
+      } catch {
+        // Best-effort local cleanup only.
+      }
+    }
     addError.value = error instanceof Error ? error.message : String(error);
   } finally {
     busyNodeId.value = null;
@@ -508,6 +540,7 @@ watch(fullSyncSourceNodeId, () => {
 onMounted(async () => {
   await nodeStore.initializeRegistry();
   await nodeSyncStore.initialize();
+  await remoteBrowserSharingStore.initialize();
   syncRenameDrafts();
   syncFullSyncDefaults();
 });

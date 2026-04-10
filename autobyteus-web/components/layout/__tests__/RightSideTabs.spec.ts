@@ -49,6 +49,12 @@ vi.mock('~/stores/agentArtifactsStore', () => ({
   }),
 }));
 
+vi.mock('~/stores/runFileChangesStore', () => ({
+  useRunFileChangesStore: () => ({
+    getLatestVisibleArtifactSignalForRun: () => null,
+  }),
+}));
+
 vi.mock('~/stores/agentActivityStore', () => ({
   useAgentActivityStore: () => ({
     hasAwaitingApproval: () => false,

@@ -42,3 +42,7 @@ export {
   handleArtifactPersisted,
   handleArtifactUpdated,
 } from './artifactHandler';
+
+export {
+  handleFileChangeUpdated,
+} from './fileChangeHandler';

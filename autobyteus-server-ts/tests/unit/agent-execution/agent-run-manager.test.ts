@@ -223,4 +223,44 @@ describe("AgentRunManager", () => {
       (autoByteusBackendFactory.createBackend.mock.results[0]?.value as Promise<any>),
     ).toBeTruthy();
   });
+
+  it("attaches and detaches the run file-change service with the active run lifecycle", async () => {
+    const unsubscribe = vi.fn();
+    const codexBackendFactory = {
+      createBackend: vi.fn().mockResolvedValue(
+        createBackend({
+          runId: "run-codex",
+          runtimeKind: "codex_app_server",
+        }),
+      ),
+      restoreBackend: vi.fn(),
+    };
+    const runFileChangeService = {
+      attachToRun: vi.fn().mockReturnValue(unsubscribe),
+    };
+    const manager = new AgentRunManager({
+      codexBackendFactory: codexBackendFactory as any,
+      runFileChangeService: runFileChangeService as any,
+    });
+
+    await manager.createAgentRun(
+      new AgentRunConfig({
+        runtimeKind: "codex_app_server",
+        agentDefinitionId: "agent-def-1",
+        llmModelIdentifier: "gpt-5.3-codex",
+        autoExecuteTools: false,
+        workspaceId: "workspace-1",
+        llmConfig: null,
+        skillAccessMode: null,
+      }),
+    );
+
+    expect(runFileChangeService.attachToRun).toHaveBeenCalledWith(
+      expect.objectContaining({ runId: "run-codex" }),
+    );
+
+    await manager.terminateAgentRun("run-codex");
+
+    expect(unsubscribe).toHaveBeenCalledTimes(1);
+  });
 });

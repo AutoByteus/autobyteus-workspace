@@ -20,10 +20,12 @@ import { ExternalChannelSetupResolver } from "./types/external-channel-setup.js"
 import { NodeSyncResolver } from "./types/node-sync.js";
 import { NodeSyncControlResolver } from "./types/node-sync-control.js";
 import { RunHistoryResolver } from "./types/run-history.js";
+import { RunFileChangesResolver } from "./types/run-file-changes.js";
 import { TeamRunHistoryResolver } from "./types/team-run-history.js";
 import { RuntimeAvailabilityResolver } from "./types/runtime-availability.js";
 import { AgentPackageResolver } from "./types/agent-packages.js";
 import { ManagedMessagingGatewayResolver } from "./types/managed-messaging-gateway.js";
+import { RemoteBrowserBridgeResolver } from "./types/remote-browser-bridge.js";
 import { DateTimeScalar } from "./scalars/date-time.js";
 
 export async function buildGraphqlSchema() {
@@ -50,10 +52,12 @@ export async function buildGraphqlSchema() {
       NodeSyncResolver,
       NodeSyncControlResolver,
       RunHistoryResolver,
+      RunFileChangesResolver,
       TeamRunHistoryResolver,
       RuntimeAvailabilityResolver,
       AgentPackageResolver,
       ManagedMessagingGatewayResolver,
+      RemoteBrowserBridgeResolver,
     ],
     scalarsMap: [{ type: Date, scalar: DateTimeScalar }],
   });

@@ -53,6 +53,9 @@ Manage local/remote node registrations and synchronization operations.
 - Register and rename remote nodes.
 - Validate connectivity/capabilities.
 - Trigger focused or full sync operations between nodes.
+- In Electron, `Remote Browser Sharing` is an advanced opt-in setting for sharing the local Browser runtime with selected remote nodes.
+- Changing the remote-browser-sharing listener host requires restarting Electron because the Browser bridge listener is started by Electron main during desktop bootstrap.
+- Pairing and revoke actions are per remote node, and successful pair/unpair operations refresh remote browser-tool availability without restarting the remote node server.
 
 ### 4. Messaging
 

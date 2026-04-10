@@ -47,11 +47,14 @@
 import { computed } from 'vue';
 import { Icon } from '@iconify/vue';
 import type { AgentArtifact } from '~/stores/agentArtifactsStore';
+import type { RunFileChangeArtifact } from '~/stores/runFileChangesStore';
 import { determineFileType } from '~/utils/fileExplorer/fileUtils';
 import ArtifactItem from './ArtifactItem.vue';
 
+type DisplayArtifact = AgentArtifact | RunFileChangeArtifact;
+
 const props = defineProps<{
-  artifacts: AgentArtifact[];
+  artifacts: DisplayArtifact[];
   selectedArtifactId?: string;
 }>();
 

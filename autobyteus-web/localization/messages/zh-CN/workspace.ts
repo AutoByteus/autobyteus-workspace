@@ -13,6 +13,13 @@ const messages = {
   'workspace.components.workspace.running.AgentLibraryPanel.agentsHeading': '智能体',
   'workspace.components.workspace.running.AgentLibraryPanel.teamsHeading': '团队',
   'workspace.components.workspace.running.AgentLibraryPanel.noDescription': '暂无描述',
+  'workspace.components.workspace.agent.ArtifactContentViewer.content_not_available_yet': '内容暂不可用',
+  'workspace.components.workspace.agent.ArtifactContentViewer.preview_unavailable': '暂不支持预览',
+  'workspace.components.workspace.agent.ArtifactContentViewer.failed_before_final_content_could_be_captured': '该文件变更在服务器捕获最终内容之前已失败。',
+  'workspace.components.workspace.agent.ArtifactContentViewer.file_change_will_become_viewable_after_the_edit_completes': '该文件变更会在编辑完成且服务器捕获最终内容后变为可查看。',
+  'workspace.components.workspace.agent.ArtifactContentViewer.preview_is_currently_available_only_for_text_file_changes': '当前仅支持文本文件变更预览。',
+  'workspace.components.workspace.agent.ArtifactContentViewer.file_change_is_still_pending_server_side_capture': '该文件变更仍在等待服务器端捕获。',
+  'workspace.components.workspace.agent.ArtifactContentViewer.failed_to_fetch_artifact_content': '获取工件内容失败',
 } satisfies TranslationCatalog;
 
 export default messages;

@@ -1,6 +1,11 @@
 import * as fsSync from 'fs'
 import * as path from 'path'
-import type { NodeProfile, NodeRegistrySnapshot } from './nodeRegistryTypes'
+import type {
+  NodeBrowserPairingState,
+  NodeBrowserPairingStatus,
+  NodeProfile,
+  NodeRegistrySnapshot,
+} from './nodeRegistryTypes'
 import { EMBEDDED_NODE_ID } from './nodeRegistryTypes'
 import { logger } from './logger'
 import { INTERNAL_SERVER_BASE_URL } from '../shared/embeddedServerConfig'
@@ -114,6 +119,7 @@ function normalizeLoadedNode(rawNode: unknown): NodeProfile | null {
   const updatedAt = typeof node.updatedAt === 'string' && node.updatedAt.trim()
     ? node.updatedAt
     : now
+  const browserPairing = normalizeLoadedBrowserPairing(node.browserPairing, now)
 
   return {
     id,
@@ -122,9 +128,89 @@ function normalizeLoadedNode(rawNode: unknown): NodeProfile | null {
     nodeType,
     capabilities,
     capabilityProbeState,
+    browserPairing,
     isSystem: nodeType === 'embedded',
     createdAt,
     updatedAt,
+  }
+}
+
+function isBrowserPairingState(value: unknown): value is NodeBrowserPairingState {
+  return value === 'pairing'
+    || value === 'paired'
+    || value === 'revoked'
+    || value === 'expired'
+    || value === 'rejected'
+}
+
+function normalizeLoadedBrowserPairing(
+  rawPairing: unknown,
+  now: string,
+): NodeBrowserPairingStatus | undefined {
+  if (!rawPairing || typeof rawPairing !== 'object') {
+    return undefined
+  }
+
+  const pairing = rawPairing as Record<string, unknown>
+  if (!isBrowserPairingState(pairing.state)) {
+    return undefined
+  }
+
+  const advertisedBaseUrl = typeof pairing.advertisedBaseUrl === 'string'
+    ? sanitizeBaseUrl(pairing.advertisedBaseUrl)
+    : null
+  const expiresAt = typeof pairing.expiresAt === 'string' && pairing.expiresAt.trim()
+    ? pairing.expiresAt
+    : null
+  const errorMessage = typeof pairing.errorMessage === 'string' && pairing.errorMessage.trim()
+    ? pairing.errorMessage.trim()
+    : null
+  const updatedAt = typeof pairing.updatedAt === 'string' && pairing.updatedAt.trim()
+    ? pairing.updatedAt
+    : now
+
+  if (pairing.state === 'pairing' || pairing.state === 'paired') {
+    return {
+      state: 'expired',
+      advertisedBaseUrl,
+      expiresAt,
+      updatedAt: now,
+      errorMessage: 'Pairing expired after Electron restart.',
+    }
+  }
+
+  return {
+    state: pairing.state,
+    advertisedBaseUrl,
+    expiresAt,
+    updatedAt,
+    errorMessage,
+  }
+}
+
+export function updateNodeBrowserPairing(
+  snapshot: NodeRegistrySnapshot,
+  nodeId: string,
+  browserPairing: NodeBrowserPairingStatus | undefined,
+): NodeRegistrySnapshot {
+  const targetIndex = snapshot.nodes.findIndex((node) => node.id === nodeId)
+  if (targetIndex === -1) {
+    throw new Error(`Node does not exist: ${nodeId}`)
+  }
+
+  const now = nowIsoString()
+
+  return {
+    version: snapshot.version + 1,
+    nodes: snapshot.nodes.map((node, index) => (
+      index === targetIndex
+        ? {
+            ...node,
+            browserPairing,
+            updatedAt: now,
+          }
+        : node
+    )),
   }
 }
 
