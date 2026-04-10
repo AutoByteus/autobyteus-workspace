@@ -28,6 +28,10 @@ import { ManagedExtensionService } from './extensions/managedExtensionService';
 import { getCanonicalBaseDataPath } from './appDataPaths';
 import { BrowserRuntime, startBrowserRuntime } from './browser/browser-runtime';
 import { registerBrowserShellIpcHandlers } from './browser/register-browser-shell-ipc-handlers';
+import { BrowserBridgeAuthRegistry } from './browser/browser-bridge-auth-registry';
+import { BrowserPairingStateController } from './browser/browser-pairing-state-controller';
+import { registerBrowserPairingIpcHandlers } from './browser/register-browser-pairing-ipc-handlers';
+import { RemoteBrowserSharingSettingsStore } from './browser/remote-browser-sharing-settings-store';
 import { WorkspaceShellWindow } from './shell/workspace-shell-window';
 import { WorkspaceShellWindowRegistry } from './shell/workspace-shell-window-registry';
 
@@ -35,6 +39,9 @@ const serverStatusManager = new ServerStatusManager(serverManager);
 const appUpdater = new AppUpdater();
 let managedExtensionService: ManagedExtensionService | null = null;
 let browserRuntime: BrowserRuntime | null = null
+let browserPairingStateController: BrowserPairingStateController | null = null
+let browserBridgeAuthRegistry: BrowserBridgeAuthRegistry | null = null
+let remoteBrowserSharingSettingsStore: RemoteBrowserSharingSettingsStore | null = null
 const shellWindowRegistry = new WorkspaceShellWindowRegistry();
 
 const shutdownTimeoutMs = 8000;
@@ -86,6 +93,12 @@ function getStartUrl(): string {
 
 function broadcastNodeRegistrySnapshot(): void {
   shellWindowRegistry.broadcast('node-registry-updated', nodeRegistrySnapshot);
+}
+
+function commitNodeRegistrySnapshot(snapshot: NodeRegistrySnapshot): void {
+  nodeRegistrySnapshot = snapshot
+  saveNodeRegistrySnapshot(app.getPath('userData'), nodeRegistrySnapshot)
+  broadcastNodeRegistrySnapshot()
 }
 
 function getWindowContextByWebContentsId(webContentsId: number): WindowNodeContext {
@@ -212,6 +225,7 @@ function applyNodeRegistryChange(change: NodeRegistryChange): NodeRegistrySnapsh
     if (removeIndex === -1) {
       throw new Error(`Node does not exist: ${change.nodeId}`);
     }
+    browserPairingStateController?.handleNodeRemoval(change.nodeId)
     closeNodeWindowIfOpen(change.nodeId);
     existingNodes.splice(removeIndex, 1);
   } else if (change.type === 'rename') {
@@ -281,14 +295,13 @@ function installIpcHandlers(): void {
   });
 
   ipcMain.handle('upsert-node-registry', async (_event, change: NodeRegistryChange) => {
-    nodeRegistrySnapshot = applyNodeRegistryChange(change);
-    saveNodeRegistrySnapshot(app.getPath('userData'), nodeRegistrySnapshot);
-    broadcastNodeRegistrySnapshot();
+    commitNodeRegistrySnapshot(applyNodeRegistryChange(change));
     return nodeRegistrySnapshot;
   });
 
   ipcMain.handle('get-node-registry-snapshot', async () => nodeRegistrySnapshot);
   registerBrowserShellIpcHandlers(ipcMain, () => browserRuntime);
+  registerBrowserPairingIpcHandlers(ipcMain, () => browserPairingStateController);
 
   ipcMain.handle('get-server-status', () => {
     return serverStatusManager.getStatus();
@@ -446,6 +459,11 @@ function installAppLifecycleHandlers(): void {
       logger.error('Error during server shutdown:', error);
     }
     try {
+      browserPairingStateController?.stop()
+    } catch (error) {
+      logger.error('Error during browser pairing controller shutdown:', error)
+    }
+    try {
       await browserRuntime?.stop()
     } catch (error) {
       logger.error('Error during browser runtime shutdown:', error);
@@ -481,14 +499,33 @@ async function bootstrap(): Promise<void> {
   await app.whenReady();
   managedExtensionService = new ManagedExtensionService(getCanonicalBaseDataPath());
   appUpdater.initialize();
+  const authRegistry = new BrowserBridgeAuthRegistry()
+  const settingsStore = new RemoteBrowserSharingSettingsStore(app.getPath('userData'))
+  browserBridgeAuthRegistry = authRegistry
+  remoteBrowserSharingSettingsStore = settingsStore
   browserRuntime = await startBrowserRuntime({
     iconPath: getWindowIcon(),
     artifactsDir: path.join(getCanonicalBaseDataPath(), 'browser-artifacts'),
     setRuntimeEnvOverrides: (overrides) => serverManager.setRuntimeEnvOverrides(overrides),
+    authRegistry,
+    listenerHost: settingsStore.getListenerHost(),
     onStartError: (error) => {
       logger.error('Failed to start browser subsystem. Browser tools will remain unavailable.', error)
     },
   });
+  browserPairingStateController = new BrowserPairingStateController({
+    settingsStore,
+    authRegistry,
+    isRemoteSharingActive: () => browserRuntime?.isRemoteSharingActive() ?? false,
+    getRemoteBridgeBaseUrl: (advertisedHost) => {
+      if (!browserRuntime) {
+        throw new Error('Browser runtime is unavailable.')
+      }
+      return browserRuntime.getRemoteBridgeBaseUrl(advertisedHost)
+    },
+    getNodeRegistrySnapshot: () => nodeRegistrySnapshot,
+    commitNodeRegistrySnapshot,
+  })
   installIpcHandlers();
   installServerStatusFanout();
   installAppLifecycleHandlers();

@@ -53,24 +53,51 @@ const CANONICAL_BROWSER_ERROR_CODES = new Set<BrowserToolErrorCode>([
 const asTrimmedString = (value: unknown): string | null =>
   typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
 
+export type BrowserBridgeClientConfig = {
+  baseUrl: string;
+  authToken: string;
+};
+
+export const readBrowserBridgeConfigFromEnvironment = (
+  env: NodeJS.ProcessEnv = process.env,
+): BrowserBridgeClientConfig | null => {
+  const baseUrl = asTrimmedString(env[BROWSER_BRIDGE_BASE_URL_ENV]);
+  const authToken = asTrimmedString(env[BROWSER_BRIDGE_TOKEN_ENV]);
+  if (!baseUrl || !authToken) {
+    return null;
+  }
+  return { baseUrl, authToken };
+};
+
 export class BrowserBridgeClient {
   readonly baseUrl: string;
   readonly authToken: string;
 
-  constructor(input: { baseUrl: string; authToken: string }) {
+  constructor(input: BrowserBridgeClientConfig) {
     this.baseUrl = input.baseUrl.replace(/\/+$/, "");
     this.authToken = input.authToken;
+  }
+
+  static fromConfig(
+    config: BrowserBridgeClientConfig | null | undefined,
+  ): BrowserBridgeClient | null {
+    if (!config) {
+      return null;
+    }
+
+    const baseUrl = asTrimmedString(config.baseUrl);
+    const authToken = asTrimmedString(config.authToken);
+    if (!baseUrl || !authToken) {
+      return null;
+    }
+
+    return new BrowserBridgeClient({ baseUrl, authToken });
   }
 
   static fromEnvironment(
     env: NodeJS.ProcessEnv = process.env,
   ): BrowserBridgeClient | null {
-    const baseUrl = asTrimmedString(env[BROWSER_BRIDGE_BASE_URL_ENV]);
-    const authToken = asTrimmedString(env[BROWSER_BRIDGE_TOKEN_ENV]);
-    if (!baseUrl || !authToken) {
-      return null;
-    }
-    return new BrowserBridgeClient({ baseUrl, authToken });
+    return BrowserBridgeClient.fromConfig(readBrowserBridgeConfigFromEnvironment(env));
   }
 
   async openTab(input: OpenTabInput): Promise<OpenTabResult> {
