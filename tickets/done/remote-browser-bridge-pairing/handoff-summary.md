@@ -4,7 +4,7 @@
 
 - Ticket: `remote-browser-bridge-pairing`
 - Date: `2026-04-10`
-- Current Status: `Verified; finalization and release in progress`
+- Current Status: `Completed`
 - Workflow State Source: `tickets/done/remote-browser-bridge-pairing/workflow-state.md`
 
 ## Delivery Summary
@@ -100,16 +100,16 @@
 - Finalization target branch:
   - `personal`
 - Commit status:
-  - `In progress`
+  - `Completed` (`9658c6619d6b2b7246b8f94d1bf3f7389c2d6da6`, `chore(ticket): archive remote browser bridge pairing`)
 - Push status:
-  - `In progress`
+  - `Completed` (`origin/codex/remote-browser-bridge-pairing` pushed before merge, then deleted after finalization)
 - Merge status:
-  - `In progress`
+  - `Completed` (`44b8ae5c31ef4969558afb2cfa15988b3062bc5d` merged the ticket branch into `personal`)
 - Release/publication/deployment status:
-  - `In progress`
+  - `Completed with asynchronous publication follow-up recorded in release-deployment-report.md`
 - Worktree cleanup status:
-  - `Pending finalization`
+  - `Completed`
 - Local branch cleanup status:
-  - `Pending finalization`
+  - `Completed`
 - Blockers / notes:
-  - No technical blocker remains. Stage 10 finalization and release are active.
+  - No blocker remains. Desktop and server release workflows are still publishing asynchronously on GitHub, but the GitHub release object and release tag already exist.
