@@ -6,7 +6,7 @@
         <!-- Close Button -->
         <button
           @click="closeModal"
-          aria-label="Close"
+          :aria-label="$t('common.components.common.FullScreenAudioModal.close')"
           class="absolute top-2 right-2 p-1 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
         >
           <Icon icon="heroicons:x-mark-solid" class="w-5 h-5" />
@@ -26,7 +26,7 @@
         <!-- Header -->
         <div class="flex items-center mb-4">
           <Icon icon="heroicons:musical-note-solid" class="w-8 h-8 text-indigo-500 mr-3" />
-          <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Audio Player</h3>
+          <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">{{ $t('common.components.common.FullScreenAudioModal.audio_player') }}</h3>
         </div>
 
         <!-- Audio Player -->
@@ -37,12 +37,8 @@
             controls
             autoplay
             class="w-full"
-          >
-            Your browser does not support the audio element.
-          </audio>
-          <div v-else class="text-gray-500 dark:text-gray-400 text-center py-4">
-            No audio to display.
-          </div>
+          >{{ $t('common.components.common.FullScreenAudioModal.your_browser_does_not_support_the') }}</audio>
+          <div v-else class="text-gray-500 dark:text-gray-400 text-center py-4">{{ $t('common.components.common.FullScreenAudioModal.no_audio_to_display') }}</div>
         </div>
       </div>
     </div>

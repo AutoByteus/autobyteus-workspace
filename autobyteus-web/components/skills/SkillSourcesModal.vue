@@ -2,14 +2,12 @@
   <div class="dialog-overlay" @click="$emit('close')">
     <div class="dialog" @click.stop>
       <div class="dialog-header">
-        <h3>Manage Skill Sources</h3>
-        <button class="close-btn" @click="$emit('close')">&times;</button>
+        <h3>{{ $t('skills.components.skills.SkillSourcesModal.manage_skill_sources') }}</h3>
+        <button class="close-btn" @click="$emit('close')">{{ $t('skills.components.skills.SkillSourcesModal.and_times') }}</button>
       </div>
 
       <div class="content">
-        <div v-if="loading && sources.length === 0" class="loading">
-          Loading sources...
-        </div>
+        <div v-if="loading && sources.length === 0" class="loading">{{ $t('skills.components.skills.SkillSourcesModal.loading_sources') }}</div>
         
         <div v-if="error" class="error-alert">
           {{ error }}
@@ -25,10 +23,10 @@
               <span class="folder-icon">📁</span>
               <span class="path" :title="source.path">{{ source.path }}</span>
               <span class="badge" :class="{ default: source.isDefault }">
-                {{ source.isDefault ? 'Default' : 'Custom' }}
+                {{ source.isDefault ? $t('skills.components.skills.SkillSourcesModal.default') : $t('skills.components.skills.SkillSourcesModal.custom') }}
               </span>
-              <span class="count-badge" title="Skills found">
-                {{ source.skillCount }} skills
+              <span class="count-badge" :title="$t('skills.components.skills.SkillSourcesModal.skills_found')">
+                {{ $t('skills.components.skills.SkillSourcesModal.skills_count', { count: source.skillCount }) }}
               </span>
             </div>
             
@@ -37,7 +35,7 @@
               class="btn-delete"
               @click="handleRemove(source.path)"
               :disabled="loading || isScanning"
-              title="Remove source"
+              :title="$t('skills.components.skills.SkillSourcesModal.remove_source')"
             >
               🗑️
             </button>
@@ -45,12 +43,12 @@
         </div>
 
         <div class="add-source-section">
-          <h4>Add New Source Folder</h4>
+          <h4>{{ $t('skills.components.skills.SkillSourcesModal.add_new_source_folder') }}</h4>
           <div class="input-group">
             <input 
               v-model="newPath" 
               type="text" 
-              placeholder="/absolute/path/to/skills/folder"
+              :placeholder="$t('skills.components.skills.SkillSourcesModal.absolute_path_to_skills_folder')"
               @keyup.enter="handleAdd"
               :disabled="isScanning"
             />
@@ -59,21 +57,17 @@
               @click="handleAdd" 
               :disabled="!newPath || loading || isScanning"
             >
-              <span v-if="isScanning">Scanning...</span>
-              <span v-else>Add Folder</span>
+              <span v-if="isScanning">{{ $t('skills.components.skills.SkillSourcesModal.scanning') }}</span>
+              <span v-else>{{ $t('skills.components.skills.SkillSourcesModal.add_folder') }}</span>
             </button>
           </div>
-          <p v-if="isScanning" class="scanning-hint">
-            Scanning directory for skills, please wait...
-          </p>
-          <p v-else class="hint">
-            Enter the absolute path to a folder containing skill subdirectories.
-          </p>
+          <p v-if="isScanning" class="scanning-hint">{{ $t('skills.components.skills.SkillSourcesModal.scanning_directory_for_skills_please_wait') }}</p>
+          <p v-else class="hint">{{ $t('skills.components.skills.SkillSourcesModal.enter_the_absolute_path_to_a') }}</p>
         </div>
       </div>
       
       <div class="dialog-footer">
-        <button class="btn-done" @click="$emit('close')">Done</button>
+        <button class="btn-done" @click="$emit('close')">{{ $t('skills.components.skills.SkillSourcesModal.done') }}</button>
       </div>
     </div>
 
@@ -81,9 +75,9 @@
     <!-- Confirm Remove Source Modal -->
     <ConfirmationModal
       :show="showRemoveConfirm"
-      title="Remove Skill Source"
-      :message="`Are you sure you want to remove the skill source <b>${sourceToRemove}</b>? Skills from this folder will no longer be available.`"
-      confirm-button-text="Remove"
+      :title="$t('skills.components.skills.SkillSourcesModal.remove_skill_source')"
+      :message="t('skills.components.skills.SkillSourcesModal.remove_message', { path: sourceToRemove })"
+      :confirm-button-text="$t('skills.components.skills.SkillSourcesModal.remove_confirm')"
       variant="danger"
       @confirm="confirmRemove"
       @cancel="showRemoveConfirm = false"
@@ -97,6 +91,8 @@ import { useSkillSourcesStore } from '~/stores/skillSourcesStore'
 import { useSkillStore } from '~/stores/skillStore'
 import { storeToRefs } from 'pinia'
 import ConfirmationModal from '~/components/common/ConfirmationModal.vue'
+
+const { t } = useLocalization()
 
 const emit = defineEmits(['close'])
 
@@ -137,7 +133,7 @@ async function handleAdd() {
     const addedSource = skillSources.value.find(s => s.path === newPath.value || s.path.endsWith(newPath.value))
     const count = addedSource ? addedSource.skillCount : 'some'
     
-    successMessage.value = `Successfully added source! Found ${count} skills. Refreshing list...`
+    successMessage.value = t('skills.components.skills.SkillSourcesModal.add_success', { count })
     newPath.value = ''
     
     // Trigger background refresh of main skill list
@@ -161,7 +157,7 @@ async function confirmRemove() {
   try {
     await store.removeSkillSource(sourceToRemove.value)
     await skillStore.fetchAllSkills()
-    successMessage.value = 'Skill source removed. Skills list refreshed.'
+    successMessage.value = t('skills.components.skills.SkillSourcesModal.remove_success')
   } catch (e) {
     // Error handled in store
   } finally {

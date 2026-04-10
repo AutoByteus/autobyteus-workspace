@@ -1,7 +1,7 @@
 <template>
   <section class="w-full max-w-5xl" data-testid="agent-packages-manager">
     <div class="mb-4">
-      <h2 class="text-xl font-semibold text-gray-900">Agent Packages</h2>
+      <h2 class="text-xl font-semibold text-gray-900">{{ $t('settings.components.settings.AgentPackagesManager.agent_packages') }}</h2>
       <p class="mt-1 text-sm text-gray-600">
         Link a local package path or paste a public GitHub repository URL.
         GitHub packages are installed into app-managed storage, while local paths remain in place.
@@ -56,23 +56,19 @@
             </button>
           </div>
         </li>
-        <li v-if="sortedPackages.length === 0" class="px-4 py-6 text-sm text-gray-500">
-          No agent packages configured.
-        </li>
+        <li v-if="sortedPackages.length === 0" class="px-4 py-6 text-sm text-gray-500">{{ $t('settings.components.settings.AgentPackagesManager.no_agent_packages_configured') }}</li>
       </ul>
     </div>
 
     <div class="rounded border border-gray-200 bg-gray-50 p-4">
-      <label class="mb-2 block text-sm font-medium text-gray-700" for="agent-package-source">
-        Package Path Or GitHub URL
-      </label>
+      <label class="mb-2 block text-sm font-medium text-gray-700" for="agent-package-source">{{ $t('settings.components.settings.AgentPackagesManager.package_path_or_github_url') }}</label>
       <div class="flex gap-2">
         <input
           id="agent-package-source"
           v-model.trim="newSource"
           type="text"
           class="flex-1 rounded border border-gray-300 px-3 py-2 text-sm focus:border-gray-500 focus:outline-none"
-          placeholder="/absolute/path/to/agent-package or https://github.com/owner/repo"
+          :placeholder="$t('settings.components.settings.AgentPackagesManager.absolute_path_to_agent_package_or')"
           data-testid="agent-package-source-input"
           :disabled="loading"
           @keyup.enter="handleImport"

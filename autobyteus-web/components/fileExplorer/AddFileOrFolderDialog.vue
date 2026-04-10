@@ -29,7 +29,7 @@
             @keyup.enter="handleConfirm"
             type="text"
             class="border border-gray-300 rounded w-full px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="e.g. myNewFile.ts or myNewFolder"
+            :placeholder="$t('tools.components.fileExplorer.AddFileOrFolderDialog.e_g_mynewfile_ts_or_mynewfolder')"
           />
   
           <div class="flex justify-end gap-3">

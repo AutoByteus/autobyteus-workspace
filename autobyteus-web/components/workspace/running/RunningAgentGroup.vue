@@ -21,7 +21,7 @@
         <button 
             @click.stop="$emit('create', definitionId)"
             class="create-btn p-0.5 rounded text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 transition-colors opacity-0 group-header:hover:opacity-100"
-            title="Start new run"
+            :title="$t('workspace.components.workspace.running.RunningAgentGroup.start_new_run')"
         >
             <span class="i-heroicons-plus-20-solid w-4 h-4"></span>
         </button>

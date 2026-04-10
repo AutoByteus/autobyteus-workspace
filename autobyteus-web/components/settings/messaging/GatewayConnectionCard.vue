@@ -5,9 +5,7 @@
     data-testid="managed-provider-config-section"
   >
     <h3 class="text-sm font-semibold text-gray-900">{{ selectedProviderLabel }} Configuration</h3>
-    <p class="mt-1 text-xs text-gray-500">
-      Configure the selected provider on top of the managed gateway runtime.
-    </p>
+    <p class="mt-1 text-xs text-gray-500">{{ $t('settings.components.settings.messaging.GatewayConnectionCard.configure_the_selected_provider_on_top') }}</p>
     <p class="mt-3 rounded-md border border-blue-100 bg-blue-50 px-3 py-2 text-sm text-blue-700">
       Gateway lifecycle is managed in the card above. Use this section to configure
       {{ selectedProviderLabel.toLowerCase() }}.
@@ -22,15 +20,13 @@
     <div class="mt-4 space-y-4">
       <div v-if="selectedProvider === 'WHATSAPP'" class="rounded-md border border-gray-200 p-3">
         <div>
-          <h4 class="text-sm font-medium text-gray-900">WhatsApp Business</h4>
-          <p class="text-xs text-gray-500">
-            Webhook secret only. Saving valid config makes WhatsApp Business active automatically.
-          </p>
+          <h4 class="text-sm font-medium text-gray-900">{{ $t('settings.components.settings.messaging.GatewayConnectionCard.whatsapp_business') }}</h4>
+          <p class="text-xs text-gray-500">{{ $t('settings.components.settings.messaging.GatewayConnectionCard.webhook_secret_only_saving_valid_config') }}</p>
         </div>
         <input
           v-model="gatewayStore.providerConfig.whatsappBusinessSecret"
           type="password"
-          placeholder="WhatsApp Business secret"
+          :placeholder="$t('settings.components.settings.messaging.GatewayConnectionCard.whatsapp_business_secret')"
           class="mt-3 w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
           data-testid="provider-whatsapp-secret"
         />
@@ -39,15 +35,13 @@
 
       <div v-else-if="selectedProvider === 'WECOM'" class="rounded-md border border-gray-200 p-3">
         <div>
-          <h4 class="text-sm font-medium text-gray-900">WeCom App</h4>
-          <p class="text-xs text-gray-500">
-            Configure webhook token and one or more app accounts. Saving valid config makes WeCom active automatically.
-          </p>
+          <h4 class="text-sm font-medium text-gray-900">{{ $t('settings.components.settings.messaging.GatewayConnectionCard.wecom_app') }}</h4>
+          <p class="text-xs text-gray-500">{{ $t('settings.components.settings.messaging.GatewayConnectionCard.configure_webhook_token_and_one_or') }}</p>
         </div>
         <input
           v-model="gatewayStore.providerConfig.wecomWebhookToken"
           type="password"
-          placeholder="WeCom webhook token"
+          :placeholder="$t('settings.components.settings.messaging.GatewayConnectionCard.wecom_webhook_token')"
           class="mt-3 w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
           data-testid="provider-wecom-token"
         />
@@ -62,23 +56,21 @@
 
       <div v-else-if="selectedProvider === 'DISCORD'" class="rounded-md border border-gray-200 p-3">
         <div>
-          <h4 class="text-sm font-medium text-gray-900">Discord Bot</h4>
-          <p class="text-xs text-gray-500">
-            Peer discovery is available after the runtime is enabled. Saving valid config makes Discord active automatically.
-          </p>
+          <h4 class="text-sm font-medium text-gray-900">{{ $t('settings.components.settings.messaging.GatewayConnectionCard.discord_bot') }}</h4>
+          <p class="text-xs text-gray-500">{{ $t('settings.components.settings.messaging.GatewayConnectionCard.peer_discovery_is_available_after_the') }}</p>
         </div>
         <div class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3">
           <input
             v-model="gatewayStore.providerConfig.discordBotToken"
             type="password"
-            placeholder="Discord bot token"
+            :placeholder="$t('settings.components.settings.messaging.GatewayConnectionCard.discord_bot_token')"
             class="rounded-md border border-gray-300 px-3 py-2 text-sm"
             data-testid="provider-discord-token"
           />
           <input
             v-model="gatewayStore.providerConfig.discordAccountId"
             type="text"
-            placeholder="Discord account id"
+            :placeholder="$t('settings.components.settings.messaging.GatewayConnectionCard.discord_account_id')"
             class="rounded-md border border-gray-300 px-3 py-2 text-sm"
             data-testid="provider-discord-account-id"
           />
@@ -88,7 +80,7 @@
 
       <div v-else-if="selectedProvider === 'TELEGRAM'" class="rounded-md border border-gray-200 p-3">
         <div>
-          <h4 class="text-sm font-medium text-gray-900">Telegram Bot</h4>
+          <h4 class="text-sm font-medium text-gray-900">{{ $t('settings.components.settings.messaging.GatewayConnectionCard.telegram_bot') }}</h4>
           <p class="text-xs text-gray-500">
             Managed Telegram uses polling mode. Create the bot in BotFather, paste the token,
             choose an internal account label, then send the bot a message before binding.
@@ -98,14 +90,14 @@
           <input
             v-model="gatewayStore.providerConfig.telegramBotToken"
             type="password"
-            placeholder="Telegram bot token"
+            :placeholder="$t('settings.components.settings.messaging.GatewayConnectionCard.telegram_bot_token')"
             class="rounded-md border border-gray-300 px-3 py-2 text-sm"
             data-testid="provider-telegram-token"
           />
           <input
             v-model="gatewayStore.providerConfig.telegramAccountId"
             type="text"
-            placeholder="Telegram account label (for example telegram-main)"
+            :placeholder="$t('settings.components.settings.messaging.GatewayConnectionCard.telegram_account_label_for_example_telegram')"
             class="rounded-md border border-gray-300 px-3 py-2 text-sm"
             data-testid="provider-telegram-account-id"
           />

@@ -18,9 +18,7 @@
       <div
         v-if="workspaceNode.agents.length === 0 && workspaceTeams.length === 0"
         class="px-3 py-1 text-xs text-gray-400"
-      >
-        No task history in this workspace.
-      </div>
+      >{{ $t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.no_task_history_in_this_workspace') }}</div>
 
       <div
         v-for="agentNode in workspaceNode.agents"
@@ -59,7 +57,7 @@
           <button
             type="button"
             class="ml-2 inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-colors hover:bg-indigo-50 hover:text-indigo-600"
-            title="New run with this agent"
+            :title="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.new_run_with_this_agent')"
             @click="actions.onCreateRun(workspaceNode.workspaceRootPath, agentNode.agentDefinitionId)"
           >
             <Icon icon="heroicons:plus-20-solid" class="h-4 w-4" />
@@ -95,7 +93,7 @@
                 v-if="run.isActive"
                 type="button"
                 class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
-                title="Terminate run"
+                :title="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.terminate_run')"
                 :disabled="state.isRunTerminating(run.runId)"
                 @click.stop="actions.onTerminateRun(run.runId)"
               >
@@ -105,7 +103,7 @@
                 v-else-if="run.source === 'draft'"
                 type="button"
                 class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 md:opacity-0 md:group-hover/run-row:opacity-100 md:group-focus-within/run-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
-                title="Remove draft run"
+                :title="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.remove_draft_run')"
                 :disabled="state.isRunDeleting(run.runId)"
                 @click.stop="actions.onDeleteRun(run)"
               >
@@ -115,7 +113,7 @@
                 v-else-if="run.source === 'history' && !run.isActive"
                 type="button"
                 class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 md:opacity-0 md:group-hover/run-row:opacity-100 md:group-focus-within/run-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
-                title="Delete run permanently"
+                :title="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.delete_run_permanently')"
                 :disabled="state.isRunDeleting(run.runId)"
                 @click.stop="actions.onDeleteRun(run)"
               >
@@ -177,7 +175,7 @@
               v-if="team.teamRunId.startsWith('temp-')"
               type="button"
               class="ml-2 inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
-              title="Remove draft team"
+              :title="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.remove_draft_team')"
               :disabled="state.isTeamDeleting(team.teamRunId)"
               @click.stop="actions.onDeleteTeam(team)"
             >
@@ -187,7 +185,7 @@
               v-else-if="state.canTerminateTeam(team.currentStatus)"
               type="button"
               class="ml-2 inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
-              title="Terminate team"
+              :title="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.terminate_team')"
               :disabled="state.isTeamTerminating(team.teamRunId)"
               @click.stop="actions.onTerminateTeam(team.teamRunId)"
             >
@@ -197,7 +195,7 @@
               v-else-if="team.deleteLifecycle === 'READY'"
               type="button"
               class="ml-2 inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-[opacity,color,background-color] duration-150 hover:bg-red-50 hover:text-red-600 md:opacity-0 md:group-hover/team-row:opacity-100 md:group-focus-within/team-row:opacity-100 disabled:cursor-not-allowed disabled:opacity-50"
-              title="Delete team history permanently"
+              :title="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.delete_team_history_permanently')"
               :disabled="state.isTeamDeleting(team.teamRunId)"
               @click.stop="actions.onDeleteTeam(team)"
             >

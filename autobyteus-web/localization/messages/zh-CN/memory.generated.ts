@@ -1,0 +1,38 @@
+import type { TranslationCatalog } from '../../runtime/types';
+
+const messages = {
+  'memory.components.memory.EpisodicTab.episodic_memory_not_available': '情景记忆不可用。',
+  'memory.components.memory.EpisodicTab.no_episodic_entries': '没有情节条目。',
+  'memory.components.memory.MemoryIndexPanel.agent_runs': '智能体运行',
+  'memory.components.memory.MemoryIndexPanel.manual_run_id': '手动运行 ID',
+  'memory.components.memory.MemoryIndexPanel.manual_selection': '手动选择：',
+  'memory.components.memory.MemoryIndexPanel.no_members': '没有成员。',
+  'memory.components.memory.MemoryIndexPanel.run_123': '运行123',
+  'memory.components.memory.MemoryIndexPanel.stored_run_memories': '已存储的运行记忆',
+  'memory.components.memory.MemoryIndexPanel.team_runs': '团队运行',
+  'memory.components.memory.MemoryInspector.loading_memory_view': '正在加载内存视图...',
+  'memory.components.memory.MemoryInspector.memory_inspector': '内存检查器',
+  'memory.components.memory.MemoryInspector.select_a_memory_entry_to_inspect': '选择要检查的内存条目。',
+  'memory.components.memory.RawTracesTab.no_raw_traces_found': '没有发现原始痕迹。',
+  'memory.components.memory.RawTracesTab.raw_trace_limit': '原始痕量限制',
+  'memory.components.memory.RawTracesTab.raw_traces_not_loaded': '未加载原始迹线。',
+  'memory.components.memory.RawTracesTab.tool': '工具：',
+  'memory.components.memory.RawTracesTab.tool_args': '工具参数',
+  'memory.components.memory.RawTracesTab.tool_result': '工具结果',
+  'memory.components.memory.SemanticTab.no_semantic_entries': '没有语义条目。',
+  'memory.components.memory.SemanticTab.semantic_memory_not_available': '语义记忆不可用。',
+  'memory.components.memory.WorkingContextTab.reasoning': '推理：',
+  'memory.components.memory.WorkingContextTab.tool_payload': '工具有效负载',
+  'memory.components.memory.WorkingContextTab.working_context_is_empty': '工作上下文为空。',
+  'memory.components.memory.WorkingContextTab.working_context_not_available': '工作环境不可用。',
+  'memory.pages.media.confirm_deletion': '确认删除',
+  'memory.pages.media.delete_file': '删除文件',
+  'memory.pages.media.file_filename': '文件.文件名',
+  'memory.pages.media.loading_media': '正在加载媒体...',
+  'memory.pages.media.media_library': '媒体库',
+  'memory.pages.media.no_media_found': '未找到媒体',
+  'memory.pages.media.something_went_wrong': '出了点问题',
+  'memory.pages.media.tabs': '选项卡',
+} satisfies TranslationCatalog;
+
+export default messages;

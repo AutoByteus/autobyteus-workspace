@@ -2,7 +2,7 @@
   <div class="flex flex-col h-full bg-white">
     <div class="h-16 flex items-center px-6 border-b border-gray-200 bg-gray-50 flex-shrink-0">
       <div>
-        <h2 class="text-lg font-semibold text-gray-800">Memory Inspector</h2>
+        <h2 class="text-lg font-semibold text-gray-800">{{ $t('memory.components.memory.MemoryInspector.memory_inspector') }}</h2>
         <p class="text-xs text-gray-500">
           {{ headerSubtitle }}
         </p>
@@ -13,9 +13,7 @@
       {{ activeError }}
     </div>
 
-    <div v-if="!hasSelection" class="flex-1 flex items-center justify-center text-gray-400">
-      Select a memory entry to inspect.
-    </div>
+    <div v-if="!hasSelection" class="flex-1 flex items-center justify-center text-gray-400">{{ $t('memory.components.memory.MemoryInspector.select_a_memory_entry_to_inspect') }}</div>
 
     <div v-else class="flex-1 flex flex-col overflow-hidden">
       <div class="px-6 pt-4">
@@ -33,9 +31,7 @@
       </div>
 
       <div class="flex-1 overflow-y-auto px-6 py-4">
-        <div v-if="activeLoading && !activeMemoryView" class="py-12 text-center text-sm text-gray-500">
-          Loading memory view...
-        </div>
+        <div v-if="activeLoading && !activeMemoryView" class="py-12 text-center text-sm text-gray-500">{{ $t('memory.components.memory.MemoryInspector.loading_memory_view') }}</div>
 
         <WorkingContextTab
           v-else-if="activeTab === 'working'"

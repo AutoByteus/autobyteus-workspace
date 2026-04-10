@@ -10,7 +10,7 @@
           <template #fallback>
             <div class="h-full flex flex-col items-center justify-center text-gray-500">
               <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
-              <p class="mt-4 font-semibold">Loading Application Interface...</p>
+              <p class="mt-4 font-semibold">{{ $t('applications.pages.applications.detail.loading_interface') }}</p>
             </div>
           </template>
         </Suspense>
@@ -18,10 +18,10 @@
 
     <!-- Fallback if no applicationRunId is provided -->
     <div v-else class="w-full h-full flex flex-col items-center justify-center text-gray-600">
-        <h1 class="text-2xl font-bold">No Active Session</h1>
-        <p class="mt-2">This application must be launched from the main applications page.</p>
+        <h1 class="text-2xl font-bold">{{ $t('applications.pages.applications.detail.no_active_session') }}</h1>
+        <p class="mt-2">{{ $t('applications.pages.applications.detail.launch_from_main_page') }}</p>
         <button @click="goBack" class="mt-6 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-            Go to Applications
+            {{ $t('applications.pages.applications.detail.go_to_applications') }}
         </button>
     </div>
   </div>

@@ -1,0 +1,38 @@
+import type { TranslationCatalog } from '../../runtime/types';
+
+const messages = {
+  'memory.components.memory.EpisodicTab.episodic_memory_not_available': 'Episodic memory not available.',
+  'memory.components.memory.EpisodicTab.no_episodic_entries': 'No episodic entries.',
+  'memory.components.memory.MemoryIndexPanel.agent_runs': 'Agent Runs',
+  'memory.components.memory.MemoryIndexPanel.manual_run_id': 'Manual Run Id',
+  'memory.components.memory.MemoryIndexPanel.manual_selection': 'Manual selection:',
+  'memory.components.memory.MemoryIndexPanel.no_members': 'No members.',
+  'memory.components.memory.MemoryIndexPanel.run_123': 'run-123',
+  'memory.components.memory.MemoryIndexPanel.stored_run_memories': 'Stored run memories',
+  'memory.components.memory.MemoryIndexPanel.team_runs': 'Team Runs',
+  'memory.components.memory.MemoryInspector.loading_memory_view': 'Loading memory view...',
+  'memory.components.memory.MemoryInspector.memory_inspector': 'Memory Inspector',
+  'memory.components.memory.MemoryInspector.select_a_memory_entry_to_inspect': 'Select a memory entry to inspect.',
+  'memory.components.memory.RawTracesTab.no_raw_traces_found': 'No raw traces found.',
+  'memory.components.memory.RawTracesTab.raw_trace_limit': 'Raw Trace Limit',
+  'memory.components.memory.RawTracesTab.raw_traces_not_loaded': 'Raw traces not loaded.',
+  'memory.components.memory.RawTracesTab.tool': 'Tool:',
+  'memory.components.memory.RawTracesTab.tool_args': 'Tool Args',
+  'memory.components.memory.RawTracesTab.tool_result': 'Tool Result',
+  'memory.components.memory.SemanticTab.no_semantic_entries': 'No semantic entries.',
+  'memory.components.memory.SemanticTab.semantic_memory_not_available': 'Semantic memory not available.',
+  'memory.components.memory.WorkingContextTab.reasoning': 'Reasoning:',
+  'memory.components.memory.WorkingContextTab.tool_payload': 'Tool Payload',
+  'memory.components.memory.WorkingContextTab.working_context_is_empty': 'Working context is empty.',
+  'memory.components.memory.WorkingContextTab.working_context_not_available': 'Working context not available.',
+  'memory.pages.media.confirm_deletion': 'Confirm Deletion',
+  'memory.pages.media.delete_file': 'Delete file',
+  'memory.pages.media.file_filename': 'file.filename',
+  'memory.pages.media.loading_media': 'Loading media...',
+  'memory.pages.media.media_library': 'Media Library',
+  'memory.pages.media.no_media_found': 'No media found',
+  'memory.pages.media.something_went_wrong': 'Something went wrong',
+  'memory.pages.media.tabs': 'Tabs',
+} satisfies TranslationCatalog;
+
+export default messages;

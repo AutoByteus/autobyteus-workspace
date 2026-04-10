@@ -13,7 +13,7 @@
             v-model="searchQuery"
             type="text"
             class="block w-full rounded-lg border-transparent bg-white py-2.5 pl-9 pr-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-            placeholder="Search teams by name"
+            :placeholder="$t('agentTeams.components.agentTeams.AgentTeamList.search_teams_by_name')"
           />
         </div>
 
@@ -31,14 +31,12 @@
             <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-4 w-4" :class="{ 'animate-spin': reloading }" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
-            {{ reloading ? 'Reloading...' : 'Reload' }}
+            {{ reloading ? $t('agentTeams.components.agentTeams.AgentTeamList.reloading') : $t('agentTeams.components.agentTeams.AgentTeamList.reload') }}
           </button>
           <button
             @click="$emit('navigate', { view: 'team-create' })"
             class="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-          >
-            Create Team
-          </button>
+          >{{ $t('agentTeams.components.agentTeams.AgentTeamList.create_team') }}</button>
         </div>
       </div>
 
@@ -51,16 +49,16 @@
       <NodeSyncReportPanel
         v-if="lastTeamSyncReport"
         :report="lastTeamSyncReport"
-        title="Team Sync Report"
+        :title="$t('agentTeams.components.agentTeams.AgentTeamList.team_sync_report')"
         data-testid="team-sync-report"
       />
 
       <div v-if="loading && !reloading" class="rounded-lg border border-slate-200 bg-white py-20 text-center shadow-sm">
         <div class="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
-        <p class="text-slate-600">Loading agent team definitions...</p>
+        <p class="text-slate-600">{{ $t('agentTeams.components.agentTeams.AgentTeamList.loading_agent_team_definitions') }}</p>
       </div>
       <div v-else-if="error" class="rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">
-        <p class="font-bold">Error loading agent team definitions:</p>
+        <p class="font-bold">{{ $t('agentTeams.components.agentTeams.AgentTeamList.error_loading_agent_team_definitions') }}</p>
         <p>{{ error.message }}</p>
       </div>
       <div v-else-if="filteredTeamDefinitions.length > 0" class="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -78,9 +76,9 @@
           <svg class="mx-auto mb-4 h-16 w-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7zm4 3h10M7 14h6" />
           </svg>
-          <p class="mb-2 text-lg font-medium">No teams found</p>
+          <p class="mb-2 text-lg font-medium">{{ $t('agentTeams.components.agentTeams.AgentTeamList.no_teams_found') }}</p>
           <p class="text-slate-400">
-            {{ searchQuery.trim() ? `No teams matched "${searchQuery}"` : 'Create your first agent team to get started.' }}
+            {{ searchQuery.trim() ? $t('agentTeams.components.agentTeams.AgentTeamList.emptyFiltered', { query: searchQuery.trim() }) : $t('agentTeams.components.agentTeams.AgentTeamList.emptyDefault') }}
           </p>
         </div>
       </div>
@@ -88,12 +86,12 @@
 
     <NodeSyncTargetPickerModal
       v-model="isTargetPickerOpen"
-      title="Sync Team"
-      :description="pendingSyncTeam ? `Select target node(s) for '${pendingSyncTeam.name}'.` : null"
+      :title="$t('agentTeams.components.agentTeams.AgentTeamList.sync_team')"
+      :description="pendingSyncTeam ? $t('agentTeams.components.agentTeams.AgentTeamList.syncTargetDescription', { name: pendingSyncTeam.name }) : null"
       :source-node-name="sourceNodeName"
       :targets="availableSyncTargets"
       :busy="nodeSyncStore.isRunning"
-      confirm-label="Sync Team"
+      :confirm-label="$t('agentTeams.components.agentTeams.AgentTeamList.syncConfirmLabel')"
       @confirm="confirmTeamSync"
     />
   </div>

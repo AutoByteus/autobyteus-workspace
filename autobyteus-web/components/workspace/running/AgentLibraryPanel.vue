@@ -9,7 +9,7 @@
         <input 
           v-model="searchQuery"
           type="text" 
-          placeholder="Search agents & teams..." 
+          :placeholder="$t('workspace.components.workspace.running.AgentLibraryPanel.search_agents_and_teams')" 
           class="w-full pl-8 pr-2 py-1.5 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 text-sm"
         >
       </div>
@@ -20,7 +20,7 @@
       
       <!-- Agents -->
       <div v-if="filteredAgents.length > 0">
-        <h4 class="px-2 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Agents</h4>
+        <h4 class="px-2 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">{{ $t('workspace.components.workspace.running.AgentLibraryPanel.agentsHeading') }}</h4>
         <div class="space-y-0.5">
           <button
             v-for="agent in filteredAgents"
@@ -33,7 +33,7 @@
             </div>
             <div class="min-w-0">
               <div class="font-medium text-gray-900 truncate">{{ agent.name }}</div>
-              <div class="text-xs text-gray-500 line-clamp-2 mt-0.5">{{ agent.description || 'No description' }}</div>
+              <div class="text-xs text-gray-500 line-clamp-2 mt-0.5">{{ agent.description || fallbackDescription }}</div>
             </div>
           </button>
         </div>
@@ -41,7 +41,7 @@
 
       <!-- Teams -->
       <div v-if="filteredTeams.length > 0">
-        <h4 class="px-2 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1 mt-3">Teams</h4>
+        <h4 class="px-2 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1 mt-3">{{ $t('workspace.components.workspace.running.AgentLibraryPanel.teamsHeading') }}</h4>
         <div class="space-y-0.5">
           <button
             v-for="team in filteredTeams"
@@ -54,7 +54,7 @@
             </div>
             <div class="min-w-0">
               <div class="font-medium text-gray-900 truncate">{{ team.name }}</div>
-              <div class="text-xs text-gray-500 line-clamp-2 mt-0.5">{{ team.description || 'No description' }}</div>
+              <div class="text-xs text-gray-500 line-clamp-2 mt-0.5">{{ team.description || fallbackDescription }}</div>
             </div>
           </button>
         </div>
@@ -65,7 +65,7 @@
         <span class="block mb-2">
           <span class="i-heroicons-archive-box-20-solid w-8 h-8 mx-auto opacity-50"></span>
         </span>
-        <span class="text-sm">No items found</span>
+        <span class="text-sm">{{ $t('workspace.components.workspace.running.AgentLibraryPanel.no_items_found') }}</span>
       </div>
 
     </div>
@@ -74,6 +74,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
+import { useLocalization } from '~/composables/useLocalization';
 import { useAgentDefinitionStore, type AgentDefinition } from '~/stores/agentDefinitionStore';
 import { useAgentTeamDefinitionStore, type AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
@@ -89,8 +90,10 @@ const teamDefinitionStore = useAgentTeamDefinitionStore();
 const agentRunConfigStore = useAgentRunConfigStore();
 const teamRunConfigStore = useTeamRunConfigStore();
 const selectionStore = useAgentSelectionStore();
+const { t } = useLocalization();
 
 const searchQuery = ref('');
+const fallbackDescription = computed(() => t('workspace.components.workspace.running.AgentLibraryPanel.noDescription'));
 
 onMounted(() => {
   if (agentDefinitionStore.agentDefinitions.length === 0) agentDefinitionStore.fetchAllAgentDefinitions();

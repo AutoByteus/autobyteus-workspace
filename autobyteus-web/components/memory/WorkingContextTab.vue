@@ -1,11 +1,7 @@
 <template>
   <div>
-    <div v-if="messages === null" class="text-sm text-gray-500">
-      Working context not available.
-    </div>
-    <div v-else-if="messages.length === 0" class="text-sm text-gray-500">
-      Working context is empty.
-    </div>
+    <div v-if="messages === null" class="text-sm text-gray-500">{{ $t('memory.components.memory.WorkingContextTab.working_context_not_available') }}</div>
+    <div v-else-if="messages.length === 0" class="text-sm text-gray-500">{{ $t('memory.components.memory.WorkingContextTab.working_context_is_empty') }}</div>
     <div v-else class="space-y-4">
       <div
         v-for="(msg, index) in messages"
@@ -20,11 +16,11 @@
           {{ msg.content || '(no content)' }}
         </div>
         <div v-if="msg.reasoning" class="mt-2 text-xs text-gray-500">
-          <span class="font-semibold">Reasoning:</span>
+          <span class="font-semibold">{{ $t('memory.components.memory.WorkingContextTab.reasoning') }}</span>
           <span class="ml-1">{{ msg.reasoning }}</span>
         </div>
         <div v-if="msg.toolPayload" class="mt-2">
-          <div class="text-xs font-semibold text-gray-500">Tool Payload</div>
+          <div class="text-xs font-semibold text-gray-500">{{ $t('memory.components.memory.WorkingContextTab.tool_payload') }}</div>
           <pre class="mt-1 rounded-md bg-gray-50 p-2 text-xs text-gray-600 overflow-auto">{{ formatJson(msg.toolPayload) }}</pre>
         </div>
       </div>

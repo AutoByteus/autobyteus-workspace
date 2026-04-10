@@ -45,7 +45,7 @@
           <span class="font-medium text-xs text-gray-700">
             Context Files ({{ contextFilePaths.length }})
           </span>
-          <span v-if="contextFilePaths.length === 0" class="text-xs text-gray-400 ml-1.5">(drag, paste, or upload)</span>
+          <span v-if="contextFilePaths.length === 0" class="text-xs text-gray-400 ml-1.5">{{ $t('agentInput.components.agentInput.ContextFilePathInputArea.drag_paste_or_upload') }}</span>
         </div>
       </div>
       
@@ -53,8 +53,8 @@
       <button
         @click.stop="triggerFileInput"
         class="text-blue-500 hover:text-white hover:bg-blue-500 transition-colors duration-200 p-1 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 ml-2 flex-shrink-0"
-        title="Upload files"
-        aria-label="Upload files"
+        :title="$t('agentInput.components.agentInput.ContextFilePathInputArea.upload_files')"
+        :aria-label="$t('agentInput.components.agentInput.ContextFilePathInputArea.upload_files')"
         :disabled="!activeContextStore.activeAgentContext"
       >
         <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -81,11 +81,11 @@
               class="thumbnail-button"
               @click="openImagePreview(item.filePath)"
               :title="item.filePath.path"
-              aria-label="Open image preview"
+              :aria-label="$t('agentInput.components.agentInput.ContextFilePathInputArea.open_image_preview')"
             >
               <img
                 :src="getImagePreviewSrc(item.filePath)"
-                alt="Context image thumbnail"
+                :alt="$t('agentInput.components.agentInput.ContextFilePathInputArea.context_image_thumbnail')"
                 class="context-image-thumbnail"
                 @error="markImagePreviewAsFailed(item.filePath.path)"
               />
@@ -93,8 +93,8 @@
             <button
               @click.stop="removeContextFilePath(item.index)"
               class="thumbnail-remove-button"
-              title="Remove this file"
-              aria-label="Remove file"
+              :title="$t('agentInput.components.agentInput.ContextFilePathInputArea.remove_this_file')"
+              :aria-label="$t('agentInput.components.agentInput.ContextFilePathInputArea.remove_file')"
               :disabled="uploadingFiles.includes(item.filePath.path)"
             >
               <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -132,8 +132,8 @@
           <button
             @click.stop="removeContextFilePath(item.index)"
             class="text-red-500 hover:text-white hover:bg-red-500 transition-colors duration-300 p-1 rounded-full focus:outline-none focus:ring-2 focus:ring-red-500 ml-2 flex-shrink-0"
-            title="Remove this file"
-            aria-label="Remove file"
+            :title="$t('agentInput.components.agentInput.ContextFilePathInputArea.remove_this_file')"
+            :aria-label="$t('agentInput.components.agentInput.ContextFilePathInputArea.remove_file')"
             :disabled="uploadingFiles.includes(item.filePath.path)"
           >
             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -150,9 +150,7 @@
         @click.stop="clearAllContextFilePaths"
         class="px-2.5 py-1 border border-blue-100 text-blue-600 rounded-md hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-colors duration-200 flex items-center text-xs"
       >
-        <i class="fas fa-trash-alt mr-2"></i>
-        Clear All
-      </button>
+        <i class="fas fa-trash-alt mr-2"></i>{{ $t('agentInput.components.agentInput.ContextFilePathInputArea.clear_all') }}</button>
     </div>
   </div>
   <FullScreenImageModal

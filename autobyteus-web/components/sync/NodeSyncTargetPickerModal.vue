@@ -7,9 +7,7 @@
         <p class="mt-1 text-xs text-slate-500">Source node: {{ sourceNodeName || 'Current Node' }}</p>
       </div>
 
-      <div v-if="targets.length === 0" class="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-700">
-        No target nodes are available.
-      </div>
+      <div v-if="targets.length === 0" class="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-700">{{ $t('tools.components.sync.NodeSyncTargetPickerModal.no_target_nodes_are_available') }}</div>
 
       <div v-else>
         <div class="mb-2 flex justify-end">
@@ -18,9 +16,7 @@
             data-testid="node-sync-picker-clear-all"
             type="button"
             @click="clearSelection"
-          >
-            Clear all
-          </button>
+          >{{ $t('tools.components.sync.NodeSyncTargetPickerModal.clear_all') }}</button>
         </div>
         <div class="space-y-2">
         <label

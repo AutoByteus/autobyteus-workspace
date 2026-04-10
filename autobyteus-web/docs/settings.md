@@ -1,6 +1,6 @@
 # Settings Page Documentation
 
-The Settings page provides a centralized interface for managing application configurations, app metadata, and usage statistics. It is accessible via the sidebar navigation and is divided into several key sections.
+The Settings page provides a centralized interface for managing application configuration, runtime tools, localization preferences, app metadata, and usage statistics. It is accessible via the sidebar navigation and is divided into several key sections.
 
 ## Overview
 
@@ -10,9 +10,13 @@ The Settings page is implemented in \`pages/settings.vue\` and serves as a conta
 2.  **Token Usage Statistics**
 3.  **Nodes**
 4.  **Messaging**
-5.  **Server Settings**
-6.  **Extensions**
-7.  **Updates**
+5.  **Language**
+6.  **Local Tools**
+7.  **MCP Servers**
+8.  **Agent Packages**
+9.  **Server Settings**
+10. **Extensions**
+11. **Updates**
 
 ## Sections Detail
 
@@ -67,7 +71,62 @@ For the full managed flow, including Telegram setup and a live acceptance checkl
 
 - **[Managed Messaging Setup](./messaging.md)**
 
-### 5. Server Settings
+### 5. Language
+
+**Component:** `components/settings/LanguageSettingsManager.vue`
+
+Manual locale selection for the product UI.
+
+- Preference modes: `System`, `English`, `简体中文`
+- The active choice persists across reloads.
+- `System` resolves through the browser locale list in web mode and Electron `app.getLocale()` in desktop mode.
+- Unsupported system locales fall back to English.
+- The selected locale is applied live without a full app restart.
+
+For runtime details and contributor guidance, see:
+
+- **[Localization](./localization.md)**
+
+### 6. Local Tools
+
+**Component:** `components/tools/ToolsManagementWorkspace.vue`
+
+Local tool browser embedded directly inside Settings.
+
+- Browse built-in/local tools by category.
+- Search tool names and descriptions.
+- Inspect tool schemas and parameters.
+
+For the full module behavior, see:
+
+- **[Tools and MCP](./tools_and_mcp.md)**
+
+### 7. MCP Servers
+
+**Component:** `components/tools/ToolsManagementWorkspace.vue`
+
+MCP server management embedded directly inside Settings.
+
+- Add, edit, delete, and bulk import MCP server configurations.
+- Discover tools from configured MCP servers.
+- Inspect the tools registered for a specific MCP server.
+
+For the full module behavior, see:
+
+- **[Tools and MCP](./tools_and_mcp.md)**
+
+### 8. Agent Packages
+
+**Component:** `components/settings/AgentPackagesManager.vue`
+
+Manage agent package sources used by the app.
+
+- Import a package from a local filesystem path.
+- Import a package from a public GitHub repository URL.
+- Review installed package inventory and source type.
+- Remove removable imported packages from app-managed storage.
+
+### 9. Server Settings
 
 **Component:** \`components/settings/ServerSettingsManager.vue\`
 
@@ -77,7 +136,7 @@ A flexible key-value store for backend configurations.
 - **Custom Settings:** Users can add new custom key-value pairs to configure plugins or experimental features.
 - **Custom Setting Cleanup:** Advanced table rows for custom keys include a remove action to delete obsolete entries.
 
-### 6. Extensions
+### 10. Extensions
 
 **Component:** `components/settings/ExtensionsManager.vue`
 
@@ -92,7 +151,7 @@ Managed optional capabilities that download their runtime assets on demand inste
   - Lifecycle states: not installed, installing, installed and disabled, installed and enabled, needs attention
   - The shared composer microphone appears only when Voice Input is installed, enabled, and not in an error state.
 
-### 7. Updates
+### 11. Updates
 
 **Component:** `components/settings/AboutSettingsManager.vue`
 
@@ -108,4 +167,6 @@ Canonical app metadata and manual update controls.
 
 - **[Agent Management](./agent_management.md)**: API keys configured in Settings are used by Agents.
 - **[Electron Packaging](./electron_packaging.md)**: The Server Status monitor and managed extensions both interact with Electron-owned runtime services.
+- **[Localization](./localization.md)**: language selection, locale resolution, and localization contributor workflow.
 - **[Managed Messaging Setup](./messaging.md)**: End-to-end gateway, provider, binding, and verification flow.
+- **[Tools and MCP](./tools_and_mcp.md)**: local tools browsing and MCP server management embedded in Settings.

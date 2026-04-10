@@ -2,7 +2,7 @@
   <div class="space-y-4">
     <!-- Header: Agent Name -->
     <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Agent Definition</label>
+        <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('workspace.components.workspace.config.AgentRunConfigForm.agent_definition') }}</label>
         <div class="block w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-500 shadow-sm cursor-not-allowed select-none">
             {{ agentDefinition.name }}
         </div>
@@ -27,22 +27,20 @@
           {{ option.label }}
         </option>
       </select>
-      <p class="mt-1 text-xs text-gray-500">
-        Selects the runtime backend used for this run.
-      </p>
+      <p class="mt-1 text-xs text-gray-500">{{ $t('workspace.components.workspace.config.AgentRunConfigForm.selects_the_runtime_backend_used_for') }}</p>
       <p v-if="selectedRuntimeUnavailableReason" class="mt-1 text-xs text-amber-600">
         {{ selectedRuntimeUnavailableReason }}
       </p>
     </div>
 
     <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">LLM Model</label>
+        <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('workspace.components.workspace.config.AgentRunConfigForm.llm_model') }}</label>
         <SearchableGroupedSelect
             :model-value="config.llmModelIdentifier"
             @update:modelValue="updateModel"
             :options="groupedModelOptions"
             :disabled="config.isLocked || !llmStore.providersWithModels.length"
-            placeholder="Select a model..."
+            :placeholder="$t('workspace.components.workspace.config.AgentRunConfigForm.select_a_model')"
             search-placeholder="Search models..."
         />
     </div>
@@ -72,9 +70,7 @@
     
     <!-- Auto Execute -->
     <div class="flex items-center justify-between gap-4 py-2 mt-2">
-        <label for="auto-execute" class="block text-base text-gray-900 select-none" :class="{ 'text-gray-400': config.isLocked }">
-            Auto approve tools
-        </label>
+        <label for="auto-execute" class="block text-base text-gray-900 select-none" :class="{ 'text-gray-400': config.isLocked }">{{ $t('workspace.components.workspace.config.AgentRunConfigForm.auto_approve_tools') }}</label>
         <button 
             id="auto-execute"
             type="button" 
@@ -83,7 +79,7 @@
             @click="updateAutoExecute(!config.autoExecuteTools)"
             :disabled="config.isLocked"
         >
-            <span class="sr-only">Auto approve tools</span>
+            <span class="sr-only">{{ $t('workspace.components.workspace.config.AgentRunConfigForm.auto_approve_tools') }}</span>
             <span 
                 aria-hidden="true" 
                 class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
@@ -94,9 +90,7 @@
 
     <!-- Skill Access Mode -->
     <div>
-      <label for="skill-access-mode" class="block text-sm font-medium text-gray-700 mb-1">
-        Skill Access
-      </label>
+      <label for="skill-access-mode" class="block text-sm font-medium text-gray-700 mb-1">{{ $t('workspace.components.workspace.config.AgentRunConfigForm.skill_access') }}</label>
       <select
         id="skill-access-mode"
         :value="config.skillAccessMode"
@@ -104,28 +98,26 @@
         class="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
         @change="updateSkillAccessMode(($event.target as HTMLSelectElement).value)"
       >
-        <option value="PRELOADED_ONLY">Configured skills only (Recommended)</option>
-        <option value="GLOBAL_DISCOVERY">All installed skills</option>
-        <option value="NONE">No skills</option>
+        <option value="PRELOADED_ONLY">{{ $t('workspace.components.workspace.config.AgentRunConfigForm.configured_skills_only_recommended') }}</option>
+        <option value="GLOBAL_DISCOVERY">{{ $t('workspace.components.workspace.config.AgentRunConfigForm.all_installed_skills') }}</option>
+        <option value="NONE">{{ $t('workspace.components.workspace.config.AgentRunConfigForm.no_skills') }}</option>
       </select>
-      <p class="mt-1 text-xs text-gray-500">
-        Controls which skills this agent is allowed to use.
-      </p>
+      <p class="mt-1 text-xs text-gray-500">{{ $t('workspace.components.workspace.config.AgentRunConfigForm.controls_which_skills_this_agent_is') }}</p>
     </div>
 
     <div v-if="config.isLocked" class="flex items-center text-xs text-amber-600 bg-amber-50 p-2 rounded">
         <span class="i-heroicons-lock-closed-20-solid w-4 h-4 mr-1"></span>
-        <span>Configuration locked because execution has started.</span>
+        <span>{{ $t('workspace.components.workspace.config.AgentRunConfigForm.configuration_locked_because_execution_has_start') }}</span>
     </div>
 
     <div v-else-if="runtimeLocked" class="flex items-center text-xs text-amber-600 bg-amber-50 p-2 rounded">
       <span class="i-heroicons-lock-closed-20-solid w-4 h-4 mr-1"></span>
-      <span>Runtime is fixed for existing runs.</span>
+      <span>{{ $t('workspace.components.workspace.config.AgentRunConfigForm.runtime_is_fixed_for_existing_runs') }}</span>
     </div>
 
     <div v-else-if="workspaceLocked" class="flex items-center text-xs text-amber-600 bg-amber-50 p-2 rounded">
       <span class="i-heroicons-lock-closed-20-solid w-4 h-4 mr-1"></span>
-      <span>Existing run configuration can be changed, but workspace stays fixed.</span>
+      <span>{{ $t('workspace.components.workspace.config.AgentRunConfigForm.existing_run_configuration_can_be_changed') }}</span>
     </div>
   </div>
 </template>

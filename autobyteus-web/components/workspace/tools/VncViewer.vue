@@ -3,14 +3,11 @@
     <!-- Removed top border div to merge with tabs -->
 
     <div class="flex-1 overflow-auto">
-      <div v-if="serverSettingsStore.isLoading" class="flex items-center justify-center h-full text-sm text-gray-500">
-        Loading VNC settings...
-      </div>
+      <div v-if="serverSettingsStore.isLoading" class="flex items-center justify-center h-full text-sm text-gray-500">{{ $t('workspace.components.workspace.tools.VncViewer.loading_vnc_settings') }}</div>
       <div v-else-if="hosts.length === 0" class="text-sm text-gray-500 space-y-2">
-        <p>No VNC hosts configured.</p>
+        <p>{{ $t('workspace.components.workspace.tools.VncViewer.no_vnc_hosts_configured') }}</p>
         <p class="text-xs text-gray-400">
-          Add <span class="font-mono">AUTOBYTEUS_VNC_SERVER_HOSTS</span> as a comma-separated list (for example
-          <span class="font-mono">localhost:6080,localhost:6081</span>).
+          Add <span class="font-mono">AUTOBYTEUS_VNC_SERVER_HOSTS</span>{{ $t('workspace.components.workspace.tools.VncViewer.as_a_comma_separated_list_for') }}<span class="font-mono">{{ $t('workspace.components.workspace.tools.VncViewer.localhost_6080_localhost_6081') }}</span>).
         </p>
       </div>
       <div v-else class="vnc-stack">

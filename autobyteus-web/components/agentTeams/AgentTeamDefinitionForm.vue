@@ -2,7 +2,7 @@
   <form @submit.prevent="handleSubmit" class="rounded-xl border border-slate-200 bg-white shadow-sm">
     <div class="space-y-6 p-6">
       <section class="rounded-lg border border-slate-200 bg-slate-50 p-4">
-        <h2 class="text-base font-semibold text-slate-900">Basics</h2>
+        <h2 class="text-base font-semibold text-slate-900">{{ $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.basics') }}</h2>
         <div class="mt-3 grid grid-cols-1 gap-4 lg:grid-cols-[16rem_minmax(0,1fr)_minmax(0,1fr)] lg:items-start">
           <div>
             <div class="flex items-start gap-3">
@@ -10,7 +10,7 @@
                 <img
                   v-if="formData.avatarUrl && !avatarPreviewBroken"
                   :src="formData.avatarUrl"
-                  alt="Team avatar preview"
+                  :alt="$t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.team_avatar_preview')"
                   class="h-full w-full object-cover"
                   @error="avatarPreviewBroken = true"
                 />
@@ -23,20 +23,18 @@
                     class="inline-flex items-center rounded-md border border-blue-200 bg-blue-50 px-3 py-1.5 text-sm font-medium text-blue-700 hover:bg-blue-100 disabled:cursor-not-allowed disabled:opacity-60"
                     :disabled="fileUploadStore.isUploading"
                     @click="triggerAvatarPicker"
-                  >
-                    Upload Avatar
-                  </button>
+                  >{{ $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.upload_avatar') }}</button>
                   <button
                     v-if="formData.avatarUrl"
                     type="button"
                     class="inline-flex items-center rounded-md border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100"
                     @click="clearAvatar"
                   >
-                    Remove
+                    {{ $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.removeAvatar') }}
                   </button>
                 </div>
-                <p class="text-xs text-slate-500">PNG/JPG, square recommended</p>
-                <p v-if="fileUploadStore.isUploading" class="text-xs text-blue-600">Uploading avatar...</p>
+                <p class="text-xs text-slate-500">{{ $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.png_jpg_square_recommended') }}</p>
+                <p v-if="fileUploadStore.isUploading" class="text-xs text-blue-600">{{ $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.uploading_avatar') }}</p>
                 <p v-else-if="avatarUploadError" class="text-xs text-red-600">{{ avatarUploadError }}</p>
               </div>
             </div>
@@ -50,27 +48,27 @@
           </div>
 
           <div>
-            <label for="team-name" class="block text-sm font-medium text-slate-700">Team Name</label>
+            <label for="team-name" class="block text-sm font-medium text-slate-700">{{ $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.team_name') }}</label>
             <input
               id="team-name"
               v-model="formData.name"
               type="text"
               class="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-              placeholder="e.g., Content Production Unit"
+              :placeholder="$t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.e_g_content_production_unit')"
               required
             />
-            <p class="mt-1 text-xs text-slate-500">Member names auto-fill from dragged item names.</p>
+            <p class="mt-1 text-xs text-slate-500">{{ $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.member_names_auto_fill_from_dragged') }}</p>
             <p v-if="formErrors.name" class="mt-1 text-xs text-red-600">{{ formErrors.name }}</p>
           </div>
 
           <div>
-            <label for="team-description" class="block text-sm font-medium text-slate-700">Team Description</label>
+            <label for="team-description" class="block text-sm font-medium text-slate-700">{{ $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.team_description') }}</label>
             <textarea
               id="team-description"
               v-model="formData.description"
               rows="2"
               class="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-              placeholder="Describe the team's purpose and goals..."
+              :placeholder="$t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.descriptionPlaceholder')"
               required
             />
             <p v-if="formErrors.description" class="mt-1 text-xs text-red-600">{{ formErrors.description }}</p>
@@ -78,24 +76,24 @@
         </div>
 
         <div class="mt-3">
-          <label for="team-category" class="block text-sm font-medium text-slate-700">Category</label>
+          <label for="team-category" class="block text-sm font-medium text-slate-700">{{ $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.category') }}</label>
           <input
             id="team-category"
             v-model="formData.category"
             type="text"
             class="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-            placeholder="e.g., software-engineering"
+            :placeholder="$t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.e_g_software_engineering')"
           />
         </div>
 
         <div class="mt-3">
-          <label for="team-instructions" class="block text-sm font-medium text-slate-700">Instructions</label>
+          <label for="team-instructions" class="block text-sm font-medium text-slate-700">{{ $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.instructions') }}</label>
           <textarea
             id="team-instructions"
             v-model="formData.instructions"
             rows="8"
             class="mt-1 block w-full rounded-md border border-slate-300 px-3 py-2 font-mono text-sm text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-            placeholder="Enter the team coordinator's instructions..."
+            :placeholder="$t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.instructionsPlaceholder')"
             required
           />
         </div>
@@ -118,17 +116,17 @@
           @dragleave="isCanvasDragOver = false"
         >
           <div class="flex items-center justify-between gap-2">
-            <h3 class="text-sm font-semibold text-slate-900">Team Canvas</h3>
+            <h3 class="text-sm font-semibold text-slate-900">{{ $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.team_canvas') }}</h3>
             <div class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-2 py-1 text-xs text-slate-700">
               <div class="h-6 w-6 overflow-hidden rounded-md bg-slate-200">
-                <img v-if="formData.avatarUrl && !avatarPreviewBroken" :src="formData.avatarUrl" alt="Team avatar" class="h-full w-full object-cover" />
+                <img v-if="formData.avatarUrl && !avatarPreviewBroken" :src="formData.avatarUrl" :alt="$t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.team_avatar')" class="h-full w-full object-cover" />
                 <div v-else class="flex h-full w-full items-center justify-center text-[10px] font-semibold text-slate-700">{{ avatarInitials }}</div>
               </div>
-              <span class="max-w-[10rem] truncate">{{ formData.name || 'Untitled Team' }}</span>
+              <span class="max-w-[10rem] truncate">{{ formData.name || $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.untitledTeam') }}</span>
             </div>
           </div>
 
-          <p class="mt-2 text-xs text-slate-500">Dragged from Library -> Canvas</p>
+          <p class="mt-2 text-xs text-slate-500">{{ $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.libraryToCanvasHint') }}</p>
 
           <div class="mt-3 space-y-2">
             <div
@@ -144,7 +142,7 @@
               <div class="flex items-start justify-between gap-3">
                 <div class="min-w-0">
                   <p class="truncate text-sm font-semibold text-slate-900">{{ node.memberName }}</p>
-                  <p class="truncate text-xs text-slate-500">Source: {{ getReferenceName(node) }}</p>
+                  <p class="truncate text-xs text-slate-500">{{ $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.sourceLabel', { name: getReferenceName(node) }) }}</p>
                 </div>
 
                 <div class="flex shrink-0 items-center gap-2">
@@ -152,7 +150,7 @@
                     class="rounded-full px-2 py-0.5 text-[10px] font-semibold"
                     :class="node.refType === 'AGENT' ? 'bg-blue-50 text-blue-700' : 'bg-violet-50 text-violet-700'"
                   >
-                    {{ node.refType === 'AGENT' ? 'AGENT' : 'TEAM' }}
+                    {{ node.refType === 'AGENT' ? $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.agentBadge') : $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.teamBadge') }}
                   </span>
 
                   <div
@@ -160,7 +158,7 @@
                     class="inline-flex items-center gap-2 text-xs text-slate-600"
                     @click.stop
                   >
-                    <span>Coordinator</span>
+                    <span>{{ $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.coordinatorLabel') }}</span>
                     <button
                       type="button"
                       role="switch"
@@ -169,7 +167,7 @@
                       :class="isCoordinator(node) ? 'bg-blue-600' : 'bg-slate-300'"
                       @click.stop="toggleCoordinator(node)"
                     >
-                      <span class="sr-only">Toggle coordinator</span>
+                      <span class="sr-only">{{ $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.toggle_coordinator') }}</span>
                       <span
                         aria-hidden="true"
                         class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"
@@ -182,7 +180,7 @@
                     type="button"
                     class="rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
                     @click.stop="removeNode(index)"
-                    aria-label="Remove member"
+                    :aria-label="$t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.remove_member')"
                   >
                     ✕
                   </button>
@@ -194,9 +192,7 @@
           <div
             class="mt-3 rounded-md border border-dashed p-6 text-center text-sm"
             :class="isCanvasDragOver ? 'border-blue-400 bg-blue-50 text-blue-700' : 'border-slate-300 bg-slate-50 text-slate-500'"
-          >
-            Drop agents and teams here to build your team
-          </div>
+          >{{ $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.drop_agents_and_teams_here_to') }}</div>
 
           <p v-if="formErrors.nodes" class="mt-2 text-xs text-red-600">{{ formErrors.nodes }}</p>
         </section>
@@ -215,9 +211,9 @@
     <div class="border-t border-slate-200 bg-slate-50 px-6 py-4">
       <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div class="flex flex-wrap items-center gap-3 text-xs font-medium">
-          <span :class="nameValid ? 'text-emerald-700' : 'text-slate-500'">{{ nameValid ? '✓' : '○' }} Team Name {{ nameValid ? 'set' : 'required' }}</span>
-          <span :class="membersValid ? 'text-emerald-700' : 'text-slate-500'">{{ membersValid ? '✓' : '○' }} At least 1 member {{ membersValid ? 'added' : 'required' }}</span>
-          <span :class="coordinatorValid ? 'text-emerald-700' : 'text-slate-500'">{{ coordinatorValid ? '✓' : '○' }} Coordinator {{ coordinatorValid ? 'assigned' : 'required' }}</span>
+          <span :class="nameValid ? 'text-emerald-700' : 'text-slate-500'">{{ nameValid ? '✓' : '○' }} {{ $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.check.name') }} {{ nameValid ? $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.check.status.set') : $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.check.status.required') }}</span>
+          <span :class="membersValid ? 'text-emerald-700' : 'text-slate-500'">{{ membersValid ? '✓' : '○' }} {{ $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.check.members') }} {{ membersValid ? $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.check.status.added') : $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.check.status.required') }}</span>
+          <span :class="coordinatorValid ? 'text-emerald-700' : 'text-slate-500'">{{ coordinatorValid ? '✓' : '○' }} {{ $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.check.coordinator') }} {{ coordinatorValid ? $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.check.status.assigned') : $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.check.status.required') }}</span>
         </div>
 
         <div class="flex items-center justify-end gap-2">
@@ -226,7 +222,7 @@
             @click="$emit('cancel')"
             class="inline-flex items-center rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
           >
-            Cancel
+            {{ $t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.cancel') }}
           </button>
           <button
             type="submit"
@@ -244,6 +240,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref, toRefs, watch } from 'vue';
+import { useLocalization } from '~/composables/useLocalization';
 import AgentTeamLibraryPanel from './form/AgentTeamLibraryPanel.vue';
 import AgentTeamMemberDetailsPanel from './form/AgentTeamMemberDetailsPanel.vue';
 import {
@@ -269,6 +266,7 @@ const { initialData } = toRefs(props);
 const fileUploadStore = useFileUploadStore();
 const agentDefStore = useAgentDefinitionStore();
 const agentTeamDefStore = useAgentTeamDefinitionStore();
+const { t } = useLocalization();
 
 const avatarFileInputRef = ref<HTMLInputElement | null>(null);
 const avatarUploadError = ref<string | null>(null);
@@ -385,7 +383,7 @@ const handleAvatarFileSelected = async (event: Event) => {
     const uploadedUrl = await fileUploadStore.uploadFile(file);
     formData.avatarUrl = uploadedUrl;
   } catch (error: any) {
-    avatarUploadError.value = fileUploadStore.error || error?.message || 'Failed to upload avatar image.';
+    avatarUploadError.value = fileUploadStore.error || error?.message || t('agentTeams.components.agentTeams.AgentTeamDefinitionForm.avatarUploadFailed');
   } finally {
     input.value = '';
   }

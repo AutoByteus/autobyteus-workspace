@@ -7,7 +7,7 @@
     <!-- Empty State -->
     <div v-if="isEmpty" class="flex flex-col items-center justify-center flex-1 p-6 text-center text-gray-400">
       <Icon icon="heroicons:document-plus" class="w-10 h-10 mb-2 text-gray-300" />
-      <p class="text-sm">No touched files yet.</p>
+      <p class="text-sm">{{ $t('workspace.components.workspace.agent.ArtifactList.no_touched_files_yet') }}</p>
     </div>
 
     <!-- Grouped Lists -->

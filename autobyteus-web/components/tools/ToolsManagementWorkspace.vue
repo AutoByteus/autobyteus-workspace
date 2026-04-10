@@ -4,29 +4,25 @@
       <div class="flex flex-col gap-4">
         <div>
           <h1 class="text-2xl font-bold text-gray-900">Tools</h1>
-          <p class="text-sm text-gray-600">Browse local tools and manage MCP servers.</p>
+          <p class="text-sm text-gray-600">{{ $t('tools.components.tools.ToolsManagementWorkspace.browse_local_tools_and_manage_mcp') }}</p>
         </div>
         <nav
           v-if="showRootSwitcher"
           class="inline-flex rounded-lg border border-gray-200 bg-gray-50 p-1"
-          aria-label="Tools sections"
+          :aria-label="$t('tools.components.tools.ToolsManagementWorkspace.tools_sections')"
         >
           <button
             type="button"
             class="rounded-md px-4 py-2 text-sm font-semibold transition-colors"
             :class="activeRootSection === 'local-tools' ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100'"
             @click="switchRootSection('local-tools')"
-          >
-            Local Tools
-          </button>
+          >{{ $t('tools.components.tools.ToolsManagementWorkspace.local_tools') }}</button>
           <button
             type="button"
             class="rounded-md px-4 py-2 text-sm font-semibold transition-colors"
             :class="activeRootSection === 'mcp-servers' ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-100'"
             @click="switchRootSection('mcp-servers')"
-          >
-            MCP Servers
-          </button>
+          >{{ $t('tools.components.tools.ToolsManagementWorkspace.mcp_servers') }}</button>
         </nav>
       </div>
     </header>
@@ -41,14 +37,14 @@
         />
         <div v-if="store.getLoading && store.getLocalToolsByCategory.length === 0" class="py-20 text-center">
           <div class="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-b-2 border-indigo-500"></div>
-          <p>Loading tools...</p>
+          <p>{{ $t('tools.components.tools.ToolsManagementWorkspace.loading_tools') }}</p>
         </div>
         <div
           v-else-if="filteredLocalToolsByCategory.length === 0"
           class="flex flex-1 flex-col items-center justify-center rounded-lg border bg-white py-16 text-center"
         >
-          <p class="text-lg font-medium text-gray-700">No tools found</p>
-          <p class="mt-1 text-sm text-gray-500">Try adjusting your search or filter.</p>
+          <p class="text-lg font-medium text-gray-700">{{ $t('tools.components.tools.ToolsManagementWorkspace.no_tools_found') }}</p>
+          <p class="mt-1 text-sm text-gray-500">{{ $t('tools.components.tools.ToolsManagementWorkspace.try_adjusting_your_search_or_filter') }}</p>
         </div>
         <div v-else class="space-y-8">
           <ToolList
@@ -117,7 +113,7 @@
 
     <ToolsConfirmationModal
       :show="isDeleteConfirmVisible"
-      title="Delete MCP Server"
+      :title="$t('tools.components.tools.ToolsManagementWorkspace.delete_mcp_server')"
       :message="`Are you sure you want to delete the server '<strong>${serverToDeleteId}</strong>'?<br>This action cannot be undone.`"
       confirm-button-text="Delete"
       variant="danger"

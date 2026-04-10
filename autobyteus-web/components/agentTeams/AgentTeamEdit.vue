@@ -3,25 +3,25 @@
     <div class="mx-auto w-full max-w-[1400px] px-4 py-6 sm:px-6 lg:px-8">
       <div v-if="teamDef">
         <div class="mb-6">
-          <h1 class="text-4xl font-semibold text-slate-900">Edit Agent Team</h1>
-          <p class="mt-1 text-lg text-slate-600">Update details for "{{ teamDef.name }}".</p>
+          <h1 class="text-4xl font-semibold text-slate-900">{{ $t('agentTeams.components.agentTeams.AgentTeamEdit.edit_agent_team') }}</h1>
+          <p class="mt-1 text-lg text-slate-600">{{ $t('agentTeams.components.agentTeams.AgentTeamEdit.updateDetails', { name: teamDef.name }) }}</p>
         </div>
 
         <AgentTeamDefinitionForm
           :initial-data="initialFormData"
           :is-submitting="isSubmitting"
-          submit-button-text="Save Changes"
+          :submit-button-text="$t('agentTeams.components.agentTeams.AgentTeamEdit.submitButton')"
           @submit="handleUpdate"
           @cancel="handleCancel"
         />
       </div>
       <div v-else-if="loading" class="rounded-lg border border-slate-200 bg-white py-16 text-center shadow-sm">
         <div class="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600"></div>
-        <p class="text-slate-600">Loading agent team definition...</p>
+        <p class="text-slate-600">{{ $t('agentTeams.components.agentTeams.AgentTeamEdit.loading_agent_team_definition') }}</p>
       </div>
       <div v-else class="rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">
-        <p class="font-bold">Error:</p>
-        <p>Agent team definition not found.</p>
+        <p class="font-bold">{{ $t('agentTeams.components.agentTeams.AgentTeamEdit.error') }}</p>
+        <p>{{ $t('agentTeams.components.agentTeams.AgentTeamEdit.agent_team_definition_not_found') }}</p>
       </div>
 
       <div
@@ -39,6 +39,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref, toRefs } from 'vue';
+import { useLocalization } from '~/composables/useLocalization';
 import { useAgentTeamDefinitionStore, type UpdateAgentTeamDefinitionInput } from '~/stores/agentTeamDefinitionStore';
 import AgentTeamDefinitionForm from '~/components/agentTeams/AgentTeamDefinitionForm.vue';
 
@@ -48,6 +49,7 @@ const { teamDefinitionId } = toRefs(props);
 const emit = defineEmits(['navigate']);
 
 const store = useAgentTeamDefinitionStore();
+const { t: $t } = useLocalization();
 
 const teamDef = computed(() => store.getAgentTeamDefinitionById(teamDefinitionId.value));
 const initialFormData = computed(() => {
@@ -84,16 +86,16 @@ const handleUpdate = async (formData: UpdateAgentTeamDefinitionInput) => {
   try {
     const updatedTeam = await store.updateAgentTeamDefinition(updateInput);
     if (updatedTeam) {
-      showNotification('Agent team definition updated successfully!', 'success');
+      showNotification($t('agentTeams.components.agentTeams.AgentTeamEdit.updatedSuccess'), 'success');
       setTimeout(() => {
         emit('navigate', { view: 'team-detail', id: updatedTeam.id });
       }, 1200);
     } else {
-      throw new Error('Failed to update agent team definition. The result was empty.');
+      throw new Error($t('agentTeams.components.agentTeams.AgentTeamEdit.updateFailedEmpty'));
     }
   } catch (error: any) {
     console.error('Failed to update agent team definition:', error);
-    showNotification(error.message || 'An unexpected error occurred.', 'error');
+    showNotification(error.message || $t('agentTeams.components.agentTeams.AgentTeamEdit.unexpectedError'), 'error');
   } finally {
     isSubmitting.value = false;
   }

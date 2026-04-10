@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { useToasts } from '~/composables/useToasts';
+import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
 import { useActiveContextStore } from '~/stores/activeContextStore';
 import { useExtensionsStore } from '~/stores/extensionsStore';
 
@@ -8,7 +9,14 @@ export type VoiceInputResultOutcome = 'idle' | 'recording' | 'transcribing' | 't
 export type VoiceInputPermissionState = 'unknown' | 'prompt' | 'granted' | 'denied' | 'unsupported';
 
 const CAPTURE_START_TIMEOUT_MS = 2500;
-const NO_CAPTURE_FRAMES_ERROR = 'Voice Input did not receive any microphone frames. Reset the test and try again, or switch back to System default.';
+
+function t(key: string, params?: Record<string, string | number>): string {
+  return localizationRuntime.translate(key, params);
+}
+
+function getNoCaptureFramesError(): string {
+  return t('settings.voiceInput.store.noCaptureFrames');
+}
 
 export interface VoiceInputAudioInputDevice {
   deviceId: string;
@@ -78,7 +86,7 @@ function selectAudioInputDevices(devices: MediaDeviceInfo[]): VoiceInputAudioInp
 
   return visibleInputs.map((device, index) => ({
     deviceId: device.deviceId,
-    label: device.label.trim() || `Audio input ${index + 1}`,
+    label: device.label.trim() || t('settings.voiceInput.store.audioInputFallback', { index: index + 1 }),
   }));
 }
 
@@ -93,24 +101,24 @@ function buildMicrophoneAccessError(error: unknown, selectedDeviceId: string | n
   const name = typeof error === 'object' && error && 'name' in error ? String((error as { name?: unknown }).name) : '';
 
   if (name === 'NotAllowedError' || name === 'SecurityError') {
-    return 'Microphone permission is denied. Allow microphone access for AutoByteus and try again.';
+    return t('settings.voiceInput.store.microphonePermissionDenied');
   }
 
   if (name === 'OverconstrainedError') {
-    return 'The selected audio source is unavailable. Choose another input device in Voice Input settings.';
+    return t('settings.voiceInput.store.selectedAudioSourceUnavailable');
   }
 
   if (name === 'NotFoundError' || name === 'DevicesNotFoundError') {
     return selectedDeviceId
-      ? 'The selected audio source is unavailable. Choose another input device in Voice Input settings.'
-      : 'No audio input devices found. Connect a microphone or enable a virtual audio source.';
+      ? t('settings.voiceInput.store.selectedAudioSourceUnavailable')
+      : t('settings.voiceInput.store.noAudioInputDevices');
   }
 
   if (name === 'NotReadableError' || name === 'TrackStartError') {
-    return 'The selected audio source could not be opened. It may already be in use by another application.';
+    return t('settings.voiceInput.store.audioSourceCouldNotBeOpened');
   }
 
-  return error instanceof Error ? error.message : 'Failed to access microphone';
+  return error instanceof Error ? error.message : t('settings.voiceInput.store.failedToAccessMicrophone');
 }
 
 async function ensureAudioContextRunning(audioContext: AudioContext): Promise<void> {
@@ -126,7 +134,7 @@ async function ensureAudioContextRunning(audioContext: AudioContext): Promise<vo
   const resolvedState = String(audioContext.state || 'unknown');
   if (resolvedState !== 'running') {
     throw new Error(
-      `Voice Input recorder could not start because the audio engine stayed in "${resolvedState}" state.`,
+      t('settings.voiceInput.store.audioEngineStayedState', { state: resolvedState }),
     );
   }
 }
@@ -172,12 +180,14 @@ export const useVoiceInputStore = defineStore('voiceInput', {
     },
 
     selectedAudioInputLabel(): string {
+      localizationRuntime.resolvedLocale.value;
+
       if (!this.selectedAudioInputDeviceId) {
-        return 'System default';
+        return t('settings.components.settings.VoiceInputExtensionCard.system_default');
       }
 
       return this.audioInputDevices.find((device) => device.deviceId === this.selectedAudioInputDeviceId)?.label
-        || 'Saved device unavailable';
+        || t('settings.voiceInput.store.savedDeviceUnavailable');
     },
   },
 
@@ -216,7 +226,7 @@ export const useVoiceInputStore = defineStore('voiceInput', {
         return;
       }
 
-      this.error = NO_CAPTURE_FRAMES_ERROR;
+      this.error = getNoCaptureFramesError();
       this.setLatestResult({
         source,
         outcome: 'error',
@@ -287,7 +297,7 @@ export const useVoiceInputStore = defineStore('voiceInput', {
       await this.initialize();
 
       if (!this.isAvailable) {
-        this.error = 'Voice Input is not enabled yet.';
+        this.error = t('settings.voiceInput.store.notEnabledYet');
         return;
       }
 
@@ -302,15 +312,15 @@ export const useVoiceInputStore = defineStore('voiceInput', {
         await this.refreshAudioInputDevices();
 
         if (this.microphonePermissionState === 'denied') {
-          throw new Error('Microphone permission is denied. Allow microphone access for AutoByteus and try again.');
+          throw new Error(t('settings.voiceInput.store.microphonePermissionDenied'));
         }
 
         if (this.selectedAudioInputUnavailable) {
-          throw new Error('The selected audio source is unavailable. Choose another input device in Voice Input settings.');
+          throw new Error(t('settings.voiceInput.store.selectedAudioSourceUnavailable'));
         }
 
         if (this.audioInputDevices.length === 0 && this.microphonePermissionState === 'granted') {
-          throw new Error('No audio input devices found. Connect a microphone or enable a virtual audio source.');
+          throw new Error(t('settings.voiceInput.store.noAudioInputDevices'));
         }
 
         const audioConstraints: MediaTrackConstraints = {
@@ -425,7 +435,7 @@ export const useVoiceInputStore = defineStore('voiceInput', {
 
         const result = await window.electronAPI.transcribeVoiceInput({ audioData: capture.audioData });
         if (!result.ok) {
-          throw new Error(result.error || 'Failed to transcribe audio');
+          throw new Error(result.error || t('settings.voiceInput.store.failedToTranscribeAudio'));
         }
 
         if (result.noSpeech) {
@@ -438,7 +448,7 @@ export const useVoiceInputStore = defineStore('voiceInput', {
             diagnostics: capture.diagnostics,
           });
           if (source === 'composer') {
-            useToasts().addToast('No speech detected.', 'info');
+            useToasts().addToast(t('settings.voiceInput.store.noSpeechDetected'), 'info');
           }
           return;
         }
@@ -453,7 +463,7 @@ export const useVoiceInputStore = defineStore('voiceInput', {
             diagnostics: capture.diagnostics,
           });
           if (source === 'composer') {
-            useToasts().addToast('No transcript returned. Try speaking closer to the microphone.', 'info');
+            useToasts().addToast(t('settings.voiceInput.store.noTranscriptReturned'), 'info');
           }
           return;
         }
@@ -474,7 +484,7 @@ export const useVoiceInputStore = defineStore('voiceInput', {
           );
         }
       } catch (error) {
-        this.error = error instanceof Error ? error.message : 'Voice transcription failed';
+        this.error = error instanceof Error ? error.message : t('settings.voiceInput.store.voiceTranscriptionFailed');
         this.setLatestResult({
           source,
           outcome: 'error',

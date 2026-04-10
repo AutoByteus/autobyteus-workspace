@@ -1,9 +1,7 @@
 <template>
   <section class="border border-gray-200 rounded-lg p-4">
-    <h3 class="text-sm font-semibold text-gray-900">Setup Verification</h3>
-    <p class="mt-1 text-xs text-gray-500">
-      Run readiness verification across gateway, provider, session, and binding setup.
-    </p>
+    <h3 class="text-sm font-semibold text-gray-900">{{ $t('settings.components.settings.messaging.SetupVerificationCard.setup_verification') }}</h3>
+    <p class="mt-1 text-xs text-gray-500">{{ $t('settings.components.settings.messaging.SetupVerificationCard.run_readiness_verification_across_gateway_provid') }}</p>
     <div
       v-if="runtimeReliabilityStatus"
       class="mt-2 rounded-md border px-2 py-1 text-xs"
@@ -12,9 +10,13 @@
         : 'border-green-200 bg-green-50 text-green-700'"
       data-testid="runtime-reliability-summary"
     >
-      Runtime reliability: {{ runtimeReliabilityStatus.runtime.state }}.
-      Inbound dead-letter {{ runtimeReliabilityStatus.queue.inboundDeadLetterCount }},
-      outbound dead-letter {{ runtimeReliabilityStatus.queue.outboundDeadLetterCount }}.
+      {{
+        $t('settings.messaging.verification.runtimeReliabilitySummary', {
+          state: runtimeReliabilityStatus.runtime.state,
+          inbound: runtimeReliabilityStatus.queue.inboundDeadLetterCount,
+          outbound: runtimeReliabilityStatus.queue.outboundDeadLetterCount,
+        })
+      }}
     </div>
 
     <div class="mt-3 flex items-center gap-3">
@@ -24,7 +26,11 @@
         @click="onRunVerification"
         data-testid="run-setup-verification"
       >
-        {{ verificationStore.isVerifying ? 'Checking...' : 'Run Verification' }}
+        {{
+          verificationStore.isVerifying
+            ? $t('settings.messaging.verification.checking')
+            : $t('settings.messaging.verification.runVerification')
+        }}
       </button>
 
       <span
@@ -46,7 +52,7 @@
         <div class="flex items-start justify-between gap-2">
           <p class="text-sm font-medium text-gray-800">{{ check.label }}</p>
           <span class="rounded px-2 py-0.5 text-xs uppercase tracking-wide" :class="checkBadgeClass(check.status)">
-            {{ check.status }}
+            {{ checkStatusLabel(check.status) }}
           </span>
         </div>
         <p v-if="check.detail" class="mt-1 text-xs text-gray-600">{{ check.detail }}</p>
@@ -77,9 +83,7 @@
             class="rounded border border-red-300 bg-white px-2 py-1 text-xs text-red-700"
             :data-testid="`verification-open-step-blocker-${blocker.code}`"
             @click="onOpenStep(blocker.step)"
-          >
-            Open Step
-          </button>
+          >{{ $t('settings.components.settings.messaging.SetupVerificationCard.open_step') }}</button>
         </div>
         <div v-if="blocker.actions?.length" class="mt-2 flex flex-wrap gap-2">
           <button
@@ -116,6 +120,7 @@ const PROVIDER_SECTION_ID = 'managed-provider-config-section';
 const providerScopeStore = useMessagingProviderScopeStore();
 const verificationStore = useMessagingVerificationStore();
 const gatewayStore = useGatewaySessionSetupStore();
+const { t } = useLocalization();
 const emit = defineEmits<{
   (event: 'open-step', stepKey: SetupStepKey): void;
 }>();
@@ -130,25 +135,25 @@ const runtimeReliabilityStatus = computed(() => gatewayStore.runtimeReliabilityS
 
 const verificationLabel = computed(() => {
   if (verificationStore.isVerifying) {
-    return 'RUNNING';
+    return t('settings.messaging.verification.status.running');
   }
   if (verificationStore.verificationResult?.ready) {
-    return 'READY';
+    return t('settings.messaging.verification.status.ready');
   }
   if (verificationStore.verificationResult && !verificationStore.verificationResult.ready) {
-    return 'BLOCKED';
+    return t('settings.messaging.verification.status.blocked');
   }
-  return 'NOT_RUN';
+  return t('settings.messaging.verification.status.notRun');
 });
 
 const badgeClass = computed(() => {
-  if (verificationLabel.value === 'RUNNING') {
+  if (verificationLabel.value === t('settings.messaging.verification.status.running')) {
     return 'bg-blue-100 text-blue-700';
   }
-  if (verificationLabel.value === 'READY') {
+  if (verificationLabel.value === t('settings.messaging.verification.status.ready')) {
     return 'bg-green-100 text-green-700';
   }
-  if (verificationLabel.value === 'BLOCKED') {
+  if (verificationLabel.value === t('settings.messaging.verification.status.blocked')) {
     return 'bg-red-100 text-red-700';
   }
   return 'bg-gray-100 text-gray-700';
@@ -174,6 +179,21 @@ function checkBadgeClass(status: VerificationCheckStatus): string {
   return 'bg-gray-200 text-gray-700';
 }
 
+function checkStatusLabel(status: VerificationCheckStatus): string {
+  switch (status) {
+    case 'PASSED':
+      return t('settings.messaging.verification.checkStatus.passed');
+    case 'FAILED':
+      return t('settings.messaging.verification.checkStatus.failed');
+    case 'RUNNING':
+      return t('settings.messaging.verification.checkStatus.running');
+    case 'SKIPPED':
+      return t('settings.messaging.verification.checkStatus.skipped');
+    default:
+      return t('settings.messaging.verification.checkStatus.pending');
+  }
+}
+
 function resolveStepFromCheckKey(checkKey: VerificationCheckKey): SetupStepKey {
   if (checkKey === 'gateway') {
     return 'gateway';
@@ -193,7 +213,9 @@ function resolveStepFromCheckKey(checkKey: VerificationCheckKey): SetupStepKey {
 }
 
 function openCheckActionLabel(checkKey: VerificationCheckKey): string {
-  return checkKey === 'gateway' || checkKey === 'provider' ? 'Show Section' : 'Open Step';
+  return checkKey === 'gateway' || checkKey === 'provider'
+    ? t('settings.messaging.verification.showSection')
+    : t('settings.components.settings.messaging.SetupVerificationCard.open_step');
 }
 
 function focusSection(sectionId: string): boolean {

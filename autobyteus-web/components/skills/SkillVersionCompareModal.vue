@@ -4,18 +4,16 @@
       <div class="modal-header">
         <div class="header-left">
           <button class="btn-back" @click="$emit('close')">
-            <Icon icon="heroicons:arrow-left" class="back-icon" />
-            Back to Skill
-          </button>
+            <Icon icon="heroicons:arrow-left" class="back-icon" />{{ $t('skills.components.skills.SkillVersionCompareModal.back_to_skill') }}</button>
           <div>
-            <h2 class="modal-title">Compare Versions</h2>
-            <p class="modal-subtitle">Review changes between skill versions.</p>
+            <h2 class="modal-title">{{ $t('skills.components.skills.SkillVersionCompareModal.compare_versions') }}</h2>
+            <p class="modal-subtitle">{{ $t('skills.components.skills.SkillVersionCompareModal.review_changes_between_skill_versions') }}</p>
           </div>
         </div>
 
         <div class="header-controls">
           <div class="version-control">
-            <label>From</label>
+            <label>{{ $t('skills.components.skills.SkillVersionCompareModal.from') }}</label>
             <select v-model="fromVersion" :disabled="versions.length === 0">
               <option v-for="version in versions" :key="`from-${version.tag}`" :value="version.tag">
                 {{ version.tag }}
@@ -23,10 +21,10 @@
             </select>
           </div>
           <button class="btn-swap" @click="swapVersions" :disabled="versions.length < 2">
-            Swap
+            {{ $t('skills.components.skills.SkillVersionCompareModal.swap') }}
           </button>
           <div class="version-control">
-            <label>To</label>
+            <label>{{ $t('skills.components.skills.SkillVersionCompareModal.to') }}</label>
             <select v-model="toVersion" :disabled="versions.length === 0">
               <option v-for="version in versions" :key="`to-${version.tag}`" :value="version.tag">
                 {{ version.tag }}
@@ -37,15 +35,15 @@
       </div>
 
       <div v-if="versions.length < 2" class="modal-empty">
-        <p>At least two versions are required to compare.</p>
+        <p>{{ $t('skills.components.skills.SkillVersionCompareModal.at_least_two_versions_are_required') }}</p>
       </div>
 
       <div v-else class="modal-body">
         <div class="file-list">
-          <h4>Files</h4>
-          <div v-if="diffLoading" class="list-status">Loading diff…</div>
+          <h4>{{ $t('skills.components.skills.SkillVersionCompareModal.files') }}</h4>
+          <div v-if="diffLoading" class="list-status">{{ $t('skills.components.skills.SkillVersionCompareModal.loading_diff') }}</div>
           <div v-else-if="diffError" class="list-status error-text">{{ diffError }}</div>
-          <div v-else-if="diffFiles.length === 0" class="list-status">No changes found.</div>
+          <div v-else-if="diffFiles.length === 0" class="list-status">{{ $t('skills.components.skills.SkillVersionCompareModal.no_changes_found') }}</div>
           <button
             v-for="file in diffFiles"
             :key="file.filePath"
@@ -59,12 +57,12 @@
 
         <div class="diff-pane">
           <div class="diff-header">
-            <span>Diff</span>
-            <span class="diff-meta">{{ selectedFilePath || 'Select a file' }}</span>
+            <span>{{ $t('skills.components.skills.SkillVersionCompareModal.diff') }}</span>
+            <span class="diff-meta">{{ selectedFilePath || $t('skills.components.skills.SkillVersionCompareModal.select_a_file') }}</span>
           </div>
-          <div v-if="diffLoading" class="diff-status">Loading diff…</div>
+          <div v-if="diffLoading" class="diff-status">{{ $t('skills.components.skills.SkillVersionCompareModal.loading_diff') }}</div>
           <div v-else-if="diffError" class="diff-status error-text">{{ diffError }}</div>
-          <div v-else-if="!selectedDiff" class="diff-status">Select a file to view changes.</div>
+          <div v-else-if="!selectedDiff" class="diff-status">{{ $t('skills.components.skills.SkillVersionCompareModal.select_a_file_to_view_changes') }}</div>
           <div v-else class="diff-content">
             <div
               v-for="(line, index) in formattedLines"
@@ -87,6 +85,8 @@ import { Icon } from '@iconify/vue'
 import { useSkillStore } from '~/stores/skillStore'
 import type { SkillVersion } from '~/types/skill'
 import { parseUnifiedDiffByFile } from '~/utils/skillDiffParser'
+
+const { t } = useLocalization()
 
 const props = defineProps<{
   skillName: string
@@ -185,7 +185,7 @@ async function loadDiff() {
     selectedFilePath.value = diffFiles.value[0]?.filePath || ''
   } catch (error: any) {
     if (requestId !== activeRequest) return
-    diffError.value = error?.message || 'Failed to load diff.'
+    diffError.value = error?.message || t('skills.components.skills.SkillVersionCompareModal.failed_to_load_diff')
   } finally {
     if (requestId === activeRequest) {
       diffLoading.value = false

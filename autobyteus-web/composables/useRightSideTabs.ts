@@ -11,19 +11,24 @@ const activeTab = ref<TabName>('terminal');
 export function useRightSideTabs() {
   const selectionStore = useAgentSelectionStore();
   const browserShellStore = useBrowserShellStore();
+  const { t, resolvedLocale } = useLocalization();
 
-  const allTabs = [
-    { name: 'files' as TabName, label: 'Files', requires: 'any' },
-    { name: 'teamMembers' as TabName, label: 'Team', requires: 'team' },
-    { name: 'terminal' as TabName, label: 'Terminal', requires: 'any' },
-    { name: 'progress' as TabName, label: 'Activity', requires: 'any' },
-    { name: 'artifacts' as TabName, label: 'Artifacts', requires: 'any' },
-    { name: 'browser' as TabName, label: 'Browser', requires: 'any' },
-    { name: 'vnc' as TabName, label: 'VNC Viewer', requires: 'any' },
-  ];
+  const allTabs = computed(() => {
+    resolvedLocale.value;
+
+    return [
+      { name: 'files' as TabName, label: t('shell.rightTabs.files'), requires: 'any' },
+      { name: 'teamMembers' as TabName, label: t('shell.rightTabs.team'), requires: 'team' },
+      { name: 'terminal' as TabName, label: t('shell.rightTabs.terminal'), requires: 'any' },
+      { name: 'progress' as TabName, label: t('shell.rightTabs.activity'), requires: 'any' },
+      { name: 'artifacts' as TabName, label: t('shell.rightTabs.artifacts'), requires: 'any' },
+      { name: 'browser' as TabName, label: t('shell.rightTabs.browser'), requires: 'any' },
+      { name: 'vnc' as TabName, label: t('shell.rightTabs.vncViewer'), requires: 'any' },
+    ];
+  });
 
   const visibleTabs = computed(() => {
-    return allTabs.filter(tab => {
+    return allTabs.value.filter(tab => {
       if (tab.name === 'browser' && !browserShellStore.browserAvailable) return false;
       if (tab.requires === 'any') return true;
       return tab.requires === selectionStore.selectedType;

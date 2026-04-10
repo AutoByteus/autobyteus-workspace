@@ -3,73 +3,73 @@
     <!-- Basic Info -->
     <fieldset class="space-y-6">
       <div>
-        <label for="name" class="block text-base font-medium text-gray-800">Name</label>
+        <label for="name" class="block text-base font-medium text-gray-800">{{ $t('agents.components.agents.AgentDefinitionForm.name') }}</label>
         <input
           type="text"
           id="name"
           v-model="formData.name"
           required
           class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-base"
-          placeholder="e.g., Software Developer Agent"
+          :placeholder="$t('agents.components.agents.AgentDefinitionForm.e_g_software_developer_agent')"
         />
       </div>
 
       <div>
-        <label for="role" class="block text-base font-medium text-gray-800">Role</label>
+        <label for="role" class="block text-base font-medium text-gray-800">{{ $t('agents.components.agents.AgentDefinitionForm.role') }}</label>
         <input
           type="text"
           id="role"
           v-model="formData.role"
           class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-base"
-          placeholder="e.g., Senior Software Developer"
+          :placeholder="$t('agents.components.agents.AgentDefinitionForm.e_g_senior_software_developer')"
         />
       </div>
 
       <div>
-        <label for="category" class="block text-base font-medium text-gray-800">Category</label>
+        <label for="category" class="block text-base font-medium text-gray-800">{{ $t('agents.components.agents.AgentDefinitionForm.category') }}</label>
         <input
           type="text"
           id="category"
           v-model="formData.category"
           class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-base"
-          placeholder="e.g., software-engineering"
+          :placeholder="$t('agents.components.agents.AgentDefinitionForm.e_g_software_engineering')"
         />
       </div>
 
       <div>
-        <label for="description" class="block text-base font-medium text-gray-800">Description</label>
+        <label for="description" class="block text-base font-medium text-gray-800">{{ $t('agents.components.agents.AgentDefinitionForm.description') }}</label>
         <textarea
           id="description"
           v-model="formData.description"
           required
           rows="4"
           class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-base"
-          placeholder="A detailed description of the agent's purpose and capabilities."
+          :placeholder="$t('agents.components.agents.AgentDefinitionForm.descriptionPlaceholder')"
         ></textarea>
       </div>
 
       <div>
-        <label for="instructions" class="block text-base font-medium text-gray-800">Instructions</label>
+        <label for="instructions" class="block text-base font-medium text-gray-800">{{ $t('agents.components.agents.AgentDefinitionForm.instructions') }}</label>
         <textarea
           id="instructions"
           v-model="formData.instructions"
           required
           rows="10"
           class="mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm font-mono text-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-          placeholder="Enter the agent's system instructions..."
+          :placeholder="$t('agents.components.agents.AgentDefinitionForm.instructionsPlaceholder')"
         ></textarea>
       </div>
 
       <div>
-        <label class="block text-base font-medium text-gray-800">Avatar</label>
-        <p class="mt-1 text-sm text-gray-500">Upload an image to represent this agent in list and detail views.</p>
+        <label class="block text-base font-medium text-gray-800">{{ $t('agents.components.agents.AgentDefinitionForm.avatar') }}</label>
+        <p class="mt-1 text-sm text-gray-500">{{ $t('agents.components.agents.AgentDefinitionForm.upload_an_image_to_represent_this') }}</p>
         <div class="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center">
           <div class="h-24 w-24 rounded-2xl border border-gray-200 bg-gradient-to-br from-indigo-500 via-blue-500 to-cyan-500 p-0.5">
             <div class="h-full w-full overflow-hidden rounded-2xl bg-slate-900 flex items-center justify-center">
               <img
                 v-if="formData.avatar_url && !avatarPreviewBroken"
                 :src="formData.avatar_url"
-                alt="Agent avatar preview"
+                :alt="$t('agents.components.agents.AgentDefinitionForm.agent_avatar_preview')"
                 class="h-full w-full object-cover"
                 @error="avatarPreviewBroken = true"
               />
@@ -84,21 +84,19 @@
                 class="inline-flex items-center rounded-md border border-indigo-300 px-3 py-1.5 text-sm font-medium text-indigo-700 bg-indigo-50 hover:bg-indigo-100 disabled:cursor-not-allowed disabled:opacity-60"
                 :disabled="fileUploadStore.isUploading"
                 @click="triggerAvatarPicker"
-              >
-                Upload Avatar
-              </button>
+              >{{ $t('agents.components.agents.AgentDefinitionForm.upload_avatar') }}</button>
               <button
                 v-if="formData.avatar_url"
                 type="button"
                 class="inline-flex items-center rounded-md border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 bg-white hover:bg-gray-100"
                 @click="clearAvatar"
               >
-                Remove
+                {{ $t('agents.components.agents.AgentDefinitionForm.removeAvatar') }}
               </button>
             </div>
-            <p v-if="fileUploadStore.isUploading" class="text-sm text-indigo-600">Uploading avatar...</p>
+            <p v-if="fileUploadStore.isUploading" class="text-sm text-indigo-600">{{ $t('agents.components.agents.AgentDefinitionForm.uploading_avatar') }}</p>
             <p v-else-if="avatarUploadError" class="text-sm text-red-600">{{ avatarUploadError }}</p>
-            <p v-else class="text-sm text-gray-500">Supported: JPG, PNG, GIF, WEBP</p>
+            <p v-else class="text-sm text-gray-500">{{ $t('agents.components.agents.AgentDefinitionForm.supported_jpg_png_gif_webp') }}</p>
           </div>
         </div>
         <input
@@ -113,16 +111,16 @@
 
     <!-- Skills Configuration -->
     <fieldset class="border-t border-gray-200 pt-8">
-      <legend class="text-xl font-semibold text-gray-900">Skills Configuration</legend>
+      <legend class="text-xl font-semibold text-gray-900">{{ $t('agents.components.agents.AgentDefinitionForm.skills_configuration') }}</legend>
       <div class="mt-4 grid grid-cols-1 gap-x-8 gap-y-8">
         <div>
-          <label for="skill_names" class="block text-base font-medium text-gray-800">Skills</label>
-          <p class="text-sm text-gray-500 mb-2">Select skills to equip the agent with specific capabilities.</p>
+          <label for="skill_names" class="block text-base font-medium text-gray-800">{{ $t('agents.components.agents.AgentDefinitionForm.skillsLabel') }}</label>
+          <p class="text-sm text-gray-500 mb-2">{{ $t('agents.components.agents.AgentDefinitionForm.select_skills_to_equip_the_agent') }}</p>
           <GroupableTagInput
             :model-value="formData['skill_names']"
             @update:model-value="formData['skill_names'] = $event"
             :source="getComponentSource('skill_names')"
-            placeholder="Add skills..."
+            :placeholder="$t('agents.components.agents.AgentDefinitionForm.add_skills')"
             @add-all="handleAddAllSkills"
           />
         </div>
@@ -131,16 +129,16 @@
 
     <!-- Tool Configuration -->
     <fieldset class="border-t border-gray-200 pt-8">
-      <legend class="text-xl font-semibold text-gray-900">Tool Configuration</legend>
+      <legend class="text-xl font-semibold text-gray-900">{{ $t('agents.components.agents.AgentDefinitionForm.tool_configuration') }}</legend>
       <div class="mt-4 grid grid-cols-1 gap-x-8 gap-y-8">
         <div>
-          <label for="tool_names" class="block text-base font-medium text-gray-800">Tools</label>
-          <p class="text-sm text-gray-500 mb-2">Select available tools for the agent to use.</p>
+          <label for="tool_names" class="block text-base font-medium text-gray-800">{{ $t('agents.components.agents.AgentDefinitionForm.toolsLabel') }}</label>
+          <p class="text-sm text-gray-500 mb-2">{{ $t('agents.components.agents.AgentDefinitionForm.select_available_tools_for_the_agent') }}</p>
           <GroupableTagInput
             :model-value="formData['tool_names']"
             @update:model-value="formData['tool_names'] = $event"
             :source="getComponentSource('tool_names')"
-            placeholder="Add tools..."
+            :placeholder="$t('agents.components.agents.AgentDefinitionForm.add_tools')"
             :loading="toolStore.loading"
             @add-all="handleAddAllTools"
           />
@@ -150,14 +148,10 @@
 
     <!-- Advanced Settings -->
     <details class="border-t border-gray-200 pt-8">
-      <summary class="text-xl font-semibold text-gray-900 cursor-pointer">Optional Processors (Advanced)</summary>
-      <p class="text-sm text-gray-500 mt-2 mb-4">
-        Only optional processors are shown here. Mandatory processors are applied automatically at runtime.
-      </p>
+      <summary class="text-xl font-semibold text-gray-900 cursor-pointer">{{ $t('agents.components.agents.AgentDefinitionForm.optional_processors_advanced') }}</summary>
+      <p class="text-sm text-gray-500 mt-2 mb-4">{{ $t('agents.components.agents.AgentDefinitionForm.only_optional_processors_are_shown_here') }}</p>
       <fieldset class="mt-4 space-y-8">
-        <div v-if="visibleProcessorFields.length === 0" class="text-sm text-gray-500">
-          No optional processors available.
-        </div>
+        <div v-if="visibleProcessorFields.length === 0" class="text-sm text-gray-500">{{ $t('agents.components.agents.AgentDefinitionForm.no_optional_processors_available') }}</div>
         <div v-for="field in visibleProcessorFields" :key="field.name">
           <div class="flex justify-between items-baseline mb-1">
             <label :for="field.name" class="block text-base font-medium text-gray-800">{{ field.label }}</label>
@@ -167,7 +161,7 @@
               @click="clearSelection(field.name)"
               class="text-sm font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 rounded-md px-2 py-1 -my-1"
             >
-              Clear
+              {{ $t('agents.components.agents.AgentDefinitionForm.clearSelection') }}
             </button>
           </div>
           <p class="text-sm text-gray-500 mb-2">{{ field.helpText }}</p>
@@ -187,7 +181,7 @@
         @click="$emit('cancel')"
         class="inline-flex justify-center py-3 px-6 border border-gray-300 shadow-sm text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
       >
-        Cancel
+        {{ $t('agents.components.agents.AgentDefinitionForm.cancel') }}
       </button>
       <button
         type="submit"
@@ -203,6 +197,7 @@
 
 <script setup lang="ts">
 import { reactive, watch, toRefs, computed, onMounted, ref } from 'vue';
+import { useLocalization } from '~/composables/useLocalization';
 import { useAgentDefinitionOptionsStore } from '~/stores/agentDefinitionOptionsStore';
 import { useToolManagementStore } from '~/stores/toolManagementStore';
 import { useSkillStore } from '~/stores/skillStore';
@@ -225,6 +220,7 @@ const optionsStore = useAgentDefinitionOptionsStore();
 const toolStore = useToolManagementStore();
 const skillStore = useSkillStore();
 const fileUploadStore = useFileUploadStore();
+const { t } = useLocalization();
 const avatarFileInputRef = ref<HTMLInputElement | null>(null);
 const avatarUploadError = ref<string | null>(null);
 const avatarPreviewBroken = ref(false);
@@ -247,14 +243,14 @@ onMounted(async () => {
 });
 
 const componentFields = computed(() => [
-  { name: 'skill_names', camelCase: 'skillNames', label: 'Skills', placeholder: 'Add skills...', helpText: 'Select skills to equip the agent with specific capabilities.' },
-  { name: 'tool_names', camelCase: 'toolNames', label: 'Tools', placeholder: 'Add custom tools...', helpText: 'Select available tools for the agent to use.' },
-  { name: 'input_processor_names', camelCase: 'inputProcessorNames', label: 'Input Processors', placeholder: 'Add custom processors...', helpText: 'Customize processors that handle incoming messages.' },
-  { name: 'llm_response_processor_names', camelCase: 'llmResponseProcessorNames', label: 'LLM Response Processors', placeholder: 'Add custom processors...', helpText: 'Customize processors that interpret LLM responses.' },
-  { name: 'system_prompt_processor_names', camelCase: 'systemPromptProcessorNames', label: 'System Prompt Processors', placeholder: 'Add custom processors...', helpText: 'Customize processors that build the system prompt.' },
-  { name: 'tool_execution_result_processor_names', camelCase: 'toolExecutionResultProcessorNames', label: 'Tool Result Processors', placeholder: 'Add custom processors...', helpText: 'Customize processors that handle tool results.' },
-  { name: 'tool_invocation_preprocessor_names', camelCase: 'toolInvocationPreprocessorNames', label: 'Tool Invocation Preprocessors', placeholder: 'Add preprocessors...', helpText: 'Run before a tool executes (e.g., resolve media paths).' },
-  { name: 'lifecycle_processor_names', camelCase: 'lifecycleProcessorNames', label: 'Lifecycle Processors', placeholder: 'Add custom processors...', helpText: 'Attach processors triggered by agent lifecycle events (e.g. AGENT_READY).' },
+  { name: 'skill_names', camelCase: 'skillNames', label: t('agents.components.agents.AgentDefinitionForm.skillsLabel'), placeholder: t('agents.components.agents.AgentDefinitionForm.add_skills'), helpText: t('agents.components.agents.AgentDefinitionForm.select_skills_to_equip_the_agent') },
+  { name: 'tool_names', camelCase: 'toolNames', label: t('agents.components.agents.AgentDefinitionForm.toolsLabel'), placeholder: t('agents.components.agents.AgentDefinitionForm.add_tools'), helpText: t('agents.components.agents.AgentDefinitionForm.select_available_tools_for_the_agent') },
+  { name: 'input_processor_names', camelCase: 'inputProcessorNames', label: t('agents.components.agents.AgentDefinitionForm.field.inputProcessors.label'), placeholder: t('agents.components.agents.AgentDefinitionForm.field.inputProcessors.placeholder'), helpText: t('agents.components.agents.AgentDefinitionForm.field.inputProcessors.help') },
+  { name: 'llm_response_processor_names', camelCase: 'llmResponseProcessorNames', label: t('agents.components.agents.AgentDefinitionForm.field.llmResponseProcessors.label'), placeholder: t('agents.components.agents.AgentDefinitionForm.field.llmResponseProcessors.placeholder'), helpText: t('agents.components.agents.AgentDefinitionForm.field.llmResponseProcessors.help') },
+  { name: 'system_prompt_processor_names', camelCase: 'systemPromptProcessorNames', label: t('agents.components.agents.AgentDefinitionForm.field.systemPromptProcessors.label'), placeholder: t('agents.components.agents.AgentDefinitionForm.field.systemPromptProcessors.placeholder'), helpText: t('agents.components.agents.AgentDefinitionForm.field.systemPromptProcessors.help') },
+  { name: 'tool_execution_result_processor_names', camelCase: 'toolExecutionResultProcessorNames', label: t('agents.components.agents.AgentDefinitionForm.field.toolResultProcessors.label'), placeholder: t('agents.components.agents.AgentDefinitionForm.field.toolResultProcessors.placeholder'), helpText: t('agents.components.agents.AgentDefinitionForm.field.toolResultProcessors.help') },
+  { name: 'tool_invocation_preprocessor_names', camelCase: 'toolInvocationPreprocessorNames', label: t('agents.components.agents.AgentDefinitionForm.field.toolInvocationPreprocessors.label'), placeholder: t('agents.components.agents.AgentDefinitionForm.field.toolInvocationPreprocessors.placeholder'), helpText: t('agents.components.agents.AgentDefinitionForm.field.toolInvocationPreprocessors.help') },
+  { name: 'lifecycle_processor_names', camelCase: 'lifecycleProcessorNames', label: t('agents.components.agents.AgentDefinitionForm.field.lifecycleProcessors.label'), placeholder: t('agents.components.agents.AgentDefinitionForm.field.lifecycleProcessors.placeholder'), helpText: t('agents.components.agents.AgentDefinitionForm.field.lifecycleProcessors.help') },
 ]);
 
 const toolSource = computed((): GroupedSource => {
@@ -414,7 +410,7 @@ async function handleAvatarFileSelected(event: Event) {
       fileUploadStore.error ||
       error?.response?.data?.detail ||
       error?.message ||
-      'Failed to upload avatar image.';
+      t('agents.components.agents.AgentDefinitionForm.avatarUploadFailed');
   } finally {
     input.value = '';
   }

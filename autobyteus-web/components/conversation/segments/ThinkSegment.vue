@@ -2,7 +2,7 @@
   <div class="think-segment">
     <button @click="toggle" class="think-toggle-button" :class="{ 'is-active': showContent }">
       <Icon icon="mdi:lightbulb-on-outline" class="think-icon" />
-      <span class="button-text">Thinking</span>
+      <span class="button-text">{{ $t('workspace.components.conversation.segments.ThinkSegment.thinking') }}</span>
       <Icon 
         icon="mdi:chevron-right" 
         class="chevron-icon" 
@@ -102,4 +102,3 @@ const toggle = () => {
   transform: translateY(-8px);
 }
 </style>
-

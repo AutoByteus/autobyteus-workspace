@@ -21,9 +21,7 @@
             Are you sure you want to delete the {{ itemType.toLowerCase() }} <br>
             <span class="font-medium text-red-600">"{{ itemName }}"</span>?
           </p>
-          <p class="text-sm text-gray-500 mt-2">
-            This action cannot be undone.
-          </p>
+          <p class="text-sm text-gray-500 mt-2">{{ $t('agents.components.agents.AgentDeleteConfirmDialog.this_action_cannot_be_undone') }}</p>
         </div>
         
         <!-- Buttons -->

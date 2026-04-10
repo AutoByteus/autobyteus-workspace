@@ -2,7 +2,7 @@
   <div class="terminal-container h-full flex flex-col" ref="terminalContainer">
     <div v-if="session.errorMessage.value" class="bg-red-100 border-l-4 border-red-500 text-red-700 p-2 mb-2">
       <p class="text-sm">{{ session.errorMessage.value }}</p>
-      <button @click="connectTerminal" class="text-xs underline mt-1">Retry Connection</button>
+      <button @click="connectTerminal" class="text-xs underline mt-1">{{ $t('workspace.components.workspace.tools.Terminal.retry_connection') }}</button>
     </div>
     <div ref="terminalElement" class="flex-1 w-full relative overflow-hidden"></div>
   </div>

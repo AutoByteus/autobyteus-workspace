@@ -4,7 +4,7 @@
     class="server-monitor h-full flex flex-col overflow-hidden"
   >
     <div class="flex items-center justify-between px-8 pt-8 pb-4 flex-shrink-0">
-      <h2 class="text-xl font-semibold text-gray-900">Server Status</h2>
+      <h2 class="text-xl font-semibold text-gray-900">{{ $t('server.components.server.ServerMonitor.server_status') }}</h2>
     </div>
     
     <div class="flex-1 overflow-auto p-8">
@@ -28,17 +28,15 @@
           }"
         ></div>
         <h3 class="text-lg font-medium">
-          <span v-if="serverStore.status === 'running'">Server Running</span>
-          <span v-else-if="serverStore.status === 'starting'">Server Starting</span>
-          <span v-else-if="serverStore.status === 'error'">Server Error</span>
-          <span v-else>Unknown Status</span>
+          <span v-if="serverStore.status === 'running'">{{ $t('server.components.server.ServerMonitor.server_running') }}</span>
+          <span v-else-if="serverStore.status === 'starting'">{{ $t('server.components.server.ServerMonitor.server_starting') }}</span>
+          <span v-else-if="serverStore.status === 'error'">{{ $t('server.components.server.ServerMonitor.server_error') }}</span>
+          <span v-else>{{ $t('server.components.server.ServerMonitor.unknown_status') }}</span>
         </h3>
       </div>
       
       <div class="mb-4">
-        <p v-if="serverStore.status === 'running'" class="text-green-700">
-          The server is running and ready to use.
-        </p>
+        <p v-if="serverStore.status === 'running'" class="text-green-700">{{ $t('server.components.server.ServerMonitor.the_server_is_running_and_ready') }}</p>
         <p v-else-if="serverStore.status === 'starting'" class="text-yellow-700">
           {{ serverStore.connectionMessage }}
         </p>
@@ -52,17 +50,13 @@
           @click="serverStore.checkServerHealth" 
           data-testid="server-monitor-refresh-button"
           class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 focus:outline-none transition-colors duration-150"
-        >
-          Refresh Status
-        </button>
+        >{{ $t('server.components.server.ServerMonitor.refresh_status') }}</button>
         <template v-if="canRestartServerControl">
           <button
             @click="handleRestartServer"
             data-testid="server-monitor-restart-button"
             class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none transition-colors duration-150"
-          >
-            Restart Server
-          </button>
+          >{{ $t('server.components.server.ServerMonitor.restart_server') }}</button>
         </template>
       </div>
     </div>

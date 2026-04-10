@@ -2,7 +2,7 @@
   <div class="space-y-4">
     <!-- Header: Team Name -->
     <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Team Definition</label>
+        <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.team_definition') }}</label>
         <div class="block w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-500 shadow-sm cursor-not-allowed select-none">
             {{ teamDefinition.name }}
         </div>
@@ -26,7 +26,7 @@
                 {{ option.label }}
             </option>
         </select>
-        <p class="mt-1 text-xs text-gray-500">Selects the runtime backend used by this team run.</p>
+        <p class="mt-1 text-xs text-gray-500">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.selects_the_runtime_backend_used_by') }}</p>
         <p v-if="selectedRuntimeUnavailableReason" class="mt-1 text-xs text-amber-600">
             {{ selectedRuntimeUnavailableReason }}
         </p>
@@ -34,16 +34,16 @@
 
     <!-- Default Model Selection -->
     <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Default LLM Model (Global)</label>
+        <label class="block text-sm font-medium text-gray-700 mb-1">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.default_llm_model_global') }}</label>
         <SearchableGroupedSelect
             :model-value="config.llmModelIdentifier"
             @update:modelValue="updateModel"
             :options="groupedModelOptions"
             :disabled="config.isLocked || !llmStore.providersWithModels.length"
-            placeholder="Select a model..."
+            :placeholder="$t('workspace.components.workspace.config.TeamRunConfigForm.select_a_model')"
             search-placeholder="Search models..."
         />
-        <p class="mt-1 text-xs text-gray-500">This model will be used by all members unless overridden.</p>
+        <p class="mt-1 text-xs text-gray-500">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.this_model_will_be_used_by') }}</p>
     </div>
 
     <ModelConfigSection
@@ -104,9 +104,7 @@
 
     <!-- Auto Execute (moved to bottom) -->
     <div class="flex items-center justify-between gap-4 py-2 mt-4">
-        <label for="team-auto-execute" class="block text-base text-gray-900 select-none" :class="{ 'text-gray-400': config.isLocked }">
-            Auto approve tools
-        </label>
+        <label for="team-auto-execute" class="block text-base text-gray-900 select-none" :class="{ 'text-gray-400': config.isLocked }">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools') }}</label>
         <button 
             id="team-auto-execute"
             type="button" 
@@ -115,7 +113,7 @@
             @click="updateAutoExecute(!config.autoExecuteTools)"
             :disabled="config.isLocked"
         >
-            <span class="sr-only">Auto approve tools</span>
+            <span class="sr-only">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools') }}</span>
             <span 
                 aria-hidden="true" 
                 class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
@@ -125,9 +123,7 @@
     </div>
 
     <div>
-      <label for="team-skill-access-mode" class="block text-sm font-medium text-gray-700 mb-1">
-        Skill Access
-      </label>
+      <label for="team-skill-access-mode" class="block text-sm font-medium text-gray-700 mb-1">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.skill_access') }}</label>
       <select
         id="team-skill-access-mode"
         :value="config.skillAccessMode"
@@ -135,18 +131,16 @@
         class="block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:bg-gray-100 disabled:text-gray-500"
         @change="updateSkillAccessMode(($event.target as HTMLSelectElement).value)"
       >
-        <option value="PRELOADED_ONLY">Configured skills only (Recommended)</option>
-        <option value="GLOBAL_DISCOVERY">All installed skills</option>
-        <option value="NONE">No skills</option>
+        <option value="PRELOADED_ONLY">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.configured_skills_only_recommended') }}</option>
+        <option value="GLOBAL_DISCOVERY">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.all_installed_skills') }}</option>
+        <option value="NONE">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.no_skills') }}</option>
       </select>
-      <p class="mt-1 text-xs text-gray-500">
-        Controls which skills team members are allowed to use.
-      </p>
+      <p class="mt-1 text-xs text-gray-500">{{ $t('workspace.components.workspace.config.TeamRunConfigForm.controls_which_skills_team_members_are') }}</p>
     </div>
 
     <div v-if="config.isLocked" class="flex items-center text-xs text-amber-600 bg-amber-50 p-2 rounded">
         <span class="i-heroicons-lock-closed-20-solid w-4 h-4 mr-1"></span>
-        <span>Configuration locked because execution has started.</span>
+        <span>{{ $t('workspace.components.workspace.config.TeamRunConfigForm.configuration_locked_because_execution_has_start') }}</span>
     </div>
   </div>
 </template>

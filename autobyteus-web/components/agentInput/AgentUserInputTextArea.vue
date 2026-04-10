@@ -11,7 +11,7 @@
           minHeight: `${MIN_TEXTAREA_HEIGHT}px`,
           maxHeight: `${MAX_TEXTAREA_HEIGHT}px`
         }"
-        placeholder="Type a message..."
+        :placeholder="$t('agentInput.components.agentInput.AgentUserInputTextArea.type_a_message')"
         @keydown="handleKeyDown"
         @blur="handleBlur"
         :disabled="!activeContextStore.activeAgentContext"

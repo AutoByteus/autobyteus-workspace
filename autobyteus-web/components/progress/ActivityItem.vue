@@ -45,7 +45,7 @@
               :icon="sectionStates.args ? 'heroicons:chevron-down' : 'heroicons:chevron-right'" 
               class="w-3.5 h-3.5 text-gray-600"
             />
-            <span class="text-xs font-semibold text-gray-700">Arguments</span>
+            <span class="text-xs font-semibold text-gray-700">{{ $t('workspace.components.progress.ActivityItem.arguments') }}</span>
           </div>
           <div v-show="sectionStates.args" class="pl-5">
              <div class="bg-gray-50 border border-gray-100 rounded p-2.5 font-mono text-xs text-gray-900 whitespace-pre-wrap overflow-x-auto">
@@ -85,7 +85,7 @@
               :icon="sectionStates.result ? 'heroicons:chevron-down' : 'heroicons:chevron-right'" 
               class="w-3.5 h-3.5 text-gray-600"
             />
-            <span class="text-xs font-semibold text-gray-700">Result</span>
+            <span class="text-xs font-semibold text-gray-700">{{ $t('workspace.components.progress.ActivityItem.result') }}</span>
           </div>
           <div v-show="sectionStates.result" class="pl-5">
              <div class="bg-white border border-gray-200 rounded p-3 font-mono text-xs text-gray-800 whitespace-pre-wrap shadow-sm overflow-x-auto">
@@ -104,7 +104,7 @@
               :icon="sectionStates.error ? 'heroicons:chevron-down' : 'heroicons:chevron-right'" 
               class="w-3.5 h-3.5 text-red-500"
             />
-            <span class="text-xs font-semibold text-red-600">Error</span>
+            <span class="text-xs font-semibold text-red-600">{{ $t('workspace.components.progress.ActivityItem.error') }}</span>
           </div>
           <div v-show="sectionStates.error" class="pl-5">
              <div class="bg-red-50 border border-red-200 rounded p-2.5 font-mono text-xs text-red-700 whitespace-pre-wrap">

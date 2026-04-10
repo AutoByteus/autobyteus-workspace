@@ -1,0 +1,6 @@
+- AutoByteus Web now supports multilingual product UI with `System`, `English`, and `简体中文` language selection in `Settings -> Language`.
+- The app now resolves the system locale from the browser or Electron runtime, persists manual language selection, and falls back to English when the system locale is unsupported.
+- A first-paint localization gate and mandatory localization boundary/audit checks now protect shipped UI surfaces from wrong-locale startup and raw-literal regressions.
+- The shared zh-CN shell navigation glossary now uses the approved terminology `智能体` and `智能体团队`.
+- Shared zh-CN action/control labels now render product-appropriate copy such as `运行`, and the provider API key settings flow no longer exposes English controls in zh-CN mode.
+- The provider API key settings surface was also split into a thin shell plus focused child/runtime owners, closing the final structural blocker without changing user-facing behavior.

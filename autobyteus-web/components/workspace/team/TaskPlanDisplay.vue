@@ -7,10 +7,8 @@
     >
       <div class="px-4 py-8">
         <span class="i-heroicons-clipboard-document-list-20-solid w-10 h-10 text-gray-300 mx-auto"></span>
-        <p class="mt-3 text-sm font-semibold text-gray-700">No task plan yet</p>
-        <p class="mt-1 text-xs text-gray-500 max-w-[240px]">
-          The team's task plan will appear here once work begins.
-        </p>
+        <p class="mt-3 text-sm font-semibold text-gray-700">{{ $t('workspace.components.workspace.team.TaskPlanDisplay.no_task_plan_yet') }}</p>
+        <p class="mt-1 text-xs text-gray-500 max-w-[240px]">{{ $t('workspace.components.workspace.team.TaskPlanDisplay.the_team_s_task_plan_will') }}</p>
       </div>
     </div>
     <div v-else class="overflow-auto flex-grow min-h-0 px-4 py-2">
@@ -20,9 +18,9 @@
             <th scope="col" class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
             <th scope="col" class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
             <th scope="col" class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-            <th scope="col" class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Assigned To</th>
+            <th scope="col" class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ $t('workspace.components.workspace.team.TaskPlanDisplay.assigned_to') }}</th>
             <th scope="col" class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Deliverables</th>
-            <th scope="col" class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Depends On</th>
+            <th scope="col" class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ $t('workspace.components.workspace.team.TaskPlanDisplay.depends_on') }}</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-200 bg-white">

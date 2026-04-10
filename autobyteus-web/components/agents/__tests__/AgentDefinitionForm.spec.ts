@@ -2,6 +2,10 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
 import AgentDefinitionForm from "../AgentDefinitionForm.vue";
 
+const mockTranslations: Record<string, string> = {
+  "agents.components.agents.AgentDefinitionForm.instructionsPlaceholder": "Enter the agent's system instructions...",
+};
+
 const {
   mockOptionsStore,
   mockToolStore,
@@ -67,6 +71,9 @@ describe("AgentDefinitionForm", () => {
         stubs: {
           GroupableTagInput: true,
         },
+        mocks: {
+          $t: (key: string) => mockTranslations[key] ?? key,
+        },
       },
     });
 
@@ -85,6 +92,9 @@ describe("AgentDefinitionForm", () => {
       global: {
         stubs: {
           GroupableTagInput: true,
+        },
+        mocks: {
+          $t: (key: string) => mockTranslations[key] ?? key,
         },
       },
     });

@@ -2,8 +2,8 @@
   <div class="shutdown-container" v-if="windowNodeContextStore.isEmbeddedWindow && serverStore.status === 'shutting-down'">
     <div class="shutdown-content">
       <div class="spinner"></div>
-      <h2 class="text-xl font-semibold mt-4">Shutting Down...</h2>
-      <p class="text-gray-600 mt-2">Please wait while we safely close the application.</p>
+      <h2 class="text-xl font-semibold mt-4">{{ $t('server.components.server.ServerShutdown.shutting_down') }}</h2>
+      <p class="text-gray-600 mt-2">{{ $t('server.components.server.ServerShutdown.please_wait_while_we_safely_close') }}</p>
     </div>
   </div>
 </template>

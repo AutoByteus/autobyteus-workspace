@@ -20,13 +20,13 @@
             v-if="extension.status === 'installed' && extension.enabled"
             class="inline-flex items-center rounded-full bg-green-50 px-2.5 py-1 text-xs font-medium text-green-700"
           >
-            Enabled
+            {{ t('settings.components.settings.VoiceInputExtensionCard.badge.enabled') }}
           </div>
           <div
             v-else-if="extension.status === 'installed'"
             class="inline-flex items-center rounded-full bg-yellow-50 px-2.5 py-1 text-xs font-medium text-yellow-700"
           >
-            Disabled
+            {{ t('settings.components.settings.VoiceInputExtensionCard.badge.disabled') }}
           </div>
         </div>
 
@@ -35,7 +35,7 @@
           class="flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800"
         >
           <span class="h-3.5 w-3.5 animate-spin rounded-full border-2 border-amber-300 border-t-amber-700"></span>
-          <span>{{ extension.message || 'Installing Voice Input...' }}</span>
+          <span>{{ installMessage }}</span>
         </div>
         <div
           v-if="extension.status === 'installing' && extension.installProgress"
@@ -54,34 +54,34 @@
           </div>
         </div>
 
-        <p v-if="extension.message && extension.status !== 'installing'" class="text-sm text-gray-600">{{ extension.message }}</p>
+        <p v-if="extensionStatusMessage && extension.status !== 'installing'" class="text-sm text-gray-600">{{ extensionStatusMessage }}</p>
         <p v-if="extension.lastError" class="text-sm text-red-600">{{ extension.lastError }}</p>
 
         <div v-if="extension.status === 'installed' || extension.status === 'error'" class="space-y-2">
           <label class="flex flex-col gap-1 text-sm text-gray-700">
-            <span class="font-medium">Language</span>
+            <span class="font-medium">{{ t('settings.components.settings.VoiceInputExtensionCard.language') }}</span>
             <select
               class="w-44 rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900"
               :disabled="busy || extension.status !== 'installed'"
               :value="extension.settings.languageMode"
               @change="handleLanguageModeChange"
             >
-              <option value="auto">Auto</option>
-              <option value="en">English</option>
-              <option value="zh">Chinese</option>
+              <option value="auto">{{ t('settings.components.settings.VoiceInputExtensionCard.languageOption.auto') }}</option>
+              <option value="en">{{ t('settings.components.settings.VoiceInputExtensionCard.languageOption.english') }}</option>
+              <option value="zh">{{ t('settings.components.settings.VoiceInputExtensionCard.languageOption.chinese') }}</option>
             </select>
           </label>
 
           <div class="space-y-2 text-sm text-gray-700">
             <div class="flex items-center justify-between gap-3">
-              <span class="font-medium">Audio source</span>
+              <span class="font-medium">{{ t('settings.components.settings.VoiceInputExtensionCard.audio_source') }}</span>
               <button
                 type="button"
                 class="text-xs font-medium text-blue-700 transition-colors hover:text-blue-800 disabled:cursor-not-allowed disabled:opacity-50"
                 :disabled="busy || voiceInputStore.isRecording || voiceInputStore.isTranscribing"
                 @click="refreshAudioInputs"
               >
-                Refresh
+                {{ t('settings.components.settings.VoiceInputExtensionCard.refresh') }}
               </button>
             </div>
             <select
@@ -90,7 +90,7 @@
               :value="selectedAudioInputValue"
               @change="handleAudioInputDeviceChange"
             >
-              <option value="">System default</option>
+              <option value="">{{ t('settings.components.settings.VoiceInputExtensionCard.system_default') }}</option>
               <option
                 v-for="device in voiceInputStore.audioInputDevices"
                 :key="device.deviceId"
@@ -108,10 +108,8 @@
         <div v-if="extension.status === 'installed'" class="space-y-3 rounded-xl border border-gray-200 bg-gray-50 p-4">
           <div class="flex items-center justify-between gap-3">
             <div>
-              <p class="text-sm font-medium text-gray-900">Test Voice Input</p>
-              <p class="text-xs text-gray-600">
-                Record a short sample here to verify microphone capture and local transcription before using the composer.
-              </p>
+              <p class="text-sm font-medium text-gray-900">{{ t('settings.components.settings.VoiceInputExtensionCard.test_voice_input') }}</p>
+              <p class="text-xs text-gray-600">{{ t('settings.components.settings.VoiceInputExtensionCard.record_a_short_sample_here_to') }}</p>
             </div>
             <button
               type="button"
@@ -130,18 +128,14 @@
               class="rounded-md border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
               :disabled="busy"
               @click="handleSettingsTestReset"
-            >
-              Reset Test
-            </button>
+            >{{ t('settings.components.settings.VoiceInputExtensionCard.reset_test') }}</button>
           </div>
 
-          <p v-if="!extension.enabled" class="text-xs text-amber-700">
-            Enable Voice Input to run a microphone test.
-          </p>
+          <p v-if="!extension.enabled" class="text-xs text-amber-700">{{ t('settings.components.settings.VoiceInputExtensionCard.enable_voice_input_to_run_a') }}</p>
 
           <div class="space-y-2">
             <div class="flex items-center justify-between text-xs font-medium text-gray-600">
-              <span>Input level</span>
+              <span>{{ t('settings.components.settings.VoiceInputExtensionCard.input_level') }}</span>
               <span>{{ Math.round(voiceInputStore.liveInputLevel * 100) }}%</span>
             </div>
             <div class="h-2 overflow-hidden rounded-full bg-gray-200">
@@ -157,12 +151,14 @@
             class="rounded-lg border px-3 py-2 text-sm"
             :class="isSettingsTestRecording ? 'border-red-200 bg-red-50 text-red-700' : 'border-blue-200 bg-blue-50 text-blue-700'"
           >
-            {{ isSettingsTestRecording ? 'Recording a test sample...' : 'Transcribing the test sample...' }}
+            {{ isSettingsTestRecording
+              ? t('settings.components.settings.VoiceInputExtensionCard.test.recording')
+              : t('settings.components.settings.VoiceInputExtensionCard.test.transcribing') }}
           </div>
 
           <div v-if="settingsTestResult" class="space-y-2 rounded-lg border border-gray-200 bg-white px-3 py-3">
             <div class="flex items-center justify-between gap-3">
-              <p class="text-sm font-medium text-gray-900">Last Test Result</p>
+              <p class="text-sm font-medium text-gray-900">{{ t('settings.components.settings.VoiceInputExtensionCard.last_test_result') }}</p>
               <span class="rounded-full px-2 py-0.5 text-[11px] font-medium" :class="settingsTestOutcomeClass">
                 {{ settingsTestOutcomeLabel }}
               </span>
@@ -179,23 +175,21 @@
             </p>
 
             <div v-if="settingsTestResult.diagnostics" class="grid grid-cols-2 gap-2 text-xs text-gray-600">
-              <span>Input: {{ settingsTestResult.diagnostics.inputSampleRate }} Hz</span>
-              <span>WAV: {{ settingsTestResult.diagnostics.wavSampleRate }} Hz</span>
-              <span>Duration: {{ formatDuration(settingsTestResult.diagnostics.durationMs) }}</span>
-              <span>RMS: {{ settingsTestResult.diagnostics.rms.toFixed(3) }}</span>
-              <span>Peak: {{ settingsTestResult.diagnostics.peak.toFixed(3) }}</span>
-              <span v-if="settingsTestResult.detectedLanguage">Language: {{ settingsTestResult.detectedLanguage }}</span>
+              <span>{{ t('settings.components.settings.VoiceInputExtensionCard.diagnostics.input', { value: settingsTestResult.diagnostics.inputSampleRate }) }}</span>
+              <span>{{ t('settings.components.settings.VoiceInputExtensionCard.diagnostics.wav', { value: settingsTestResult.diagnostics.wavSampleRate }) }}</span>
+              <span>{{ t('settings.components.settings.VoiceInputExtensionCard.diagnostics.duration', { value: formatDuration(settingsTestResult.diagnostics.durationMs) }) }}</span>
+              <span>{{ t('settings.components.settings.VoiceInputExtensionCard.diagnostics.rms', { value: settingsTestResult.diagnostics.rms.toFixed(3) }) }}</span>
+              <span>{{ t('settings.components.settings.VoiceInputExtensionCard.diagnostics.peak', { value: settingsTestResult.diagnostics.peak.toFixed(3) }) }}</span>
+              <span v-if="settingsTestResult.detectedLanguage">{{ t('settings.components.settings.VoiceInputExtensionCard.diagnostics.language', { value: settingsTestResult.detectedLanguage }) }}</span>
             </div>
           </div>
         </div>
 
-        <p v-if="canOpenFolder" class="text-xs text-gray-500">
-          Managed locally in your AutoByteus extensions folder.
-        </p>
+        <p v-if="canOpenFolder" class="text-xs text-gray-500">{{ t('settings.components.settings.VoiceInputExtensionCard.managed_locally_in_your_autobyteus_extensions') }}</p>
         <div class="text-xs text-gray-500">
-          Runtime: {{ extension.runtimeVersion || 'Not installed' }}
-          <span v-if="extension.modelVersion"> · Model: {{ extension.modelVersion }}</span>
-          <span v-if="extension.backendKind"> · Backend: {{ backendLabel }}</span>
+          {{ t('settings.components.settings.VoiceInputExtensionCard.runtime', { value: extension.runtimeVersion || t('settings.components.settings.VoiceInputExtensionCard.notInstalled') }) }}
+          <span v-if="extension.modelVersion"> · {{ t('settings.components.settings.VoiceInputExtensionCard.model', { value: extension.modelVersion }) }}</span>
+          <span v-if="extension.backendKind"> · {{ t('settings.components.settings.VoiceInputExtensionCard.backend', { value: backendLabel }) }}</span>
         </div>
       </div>
 
@@ -215,7 +209,7 @@
           :disabled="busy"
           @click="$emit('install')"
         >
-          Install
+          {{ t('settings.components.settings.VoiceInputExtensionCard.action.install') }}
         </button>
         <button
           v-else-if="extension.status === 'installed' && !extension.enabled"
@@ -224,7 +218,7 @@
           :disabled="busy"
           @click="$emit('enable')"
         >
-          Enable
+          {{ t('settings.components.settings.VoiceInputExtensionCard.action.enable') }}
         </button>
         <button
           v-else-if="extension.status === 'installed' && extension.enabled"
@@ -233,7 +227,7 @@
           :disabled="busy"
           @click="$emit('disable')"
         >
-          Disable
+          {{ t('settings.components.settings.VoiceInputExtensionCard.action.disable') }}
         </button>
         <button
           v-if="canOpenFolder"
@@ -241,9 +235,7 @@
           class="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
           :disabled="busy"
           @click="$emit('openFolder')"
-        >
-          Open Folder
-        </button>
+        >{{ t('settings.components.settings.VoiceInputExtensionCard.open_folder') }}</button>
         <button
           v-if="extension.status === 'installed'"
           type="button"
@@ -251,7 +243,7 @@
           :disabled="busy"
           @click="$emit('remove')"
         >
-          Remove
+          {{ t('settings.components.settings.VoiceInputExtensionCard.action.remove') }}
         </button>
         <button
           v-if="extension.status === 'installed' || extension.status === 'error'"
@@ -260,7 +252,7 @@
           :disabled="busy"
           @click="$emit('reinstall')"
         >
-          Reinstall
+          {{ t('settings.components.settings.VoiceInputExtensionCard.action.reinstall') }}
         </button>
       </div>
     </div>
@@ -271,6 +263,7 @@
 import { computed, onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import type { ManagedExtensionState } from '~/electron/extensions/types';
+import { useLocalization } from '~/composables/useLocalization';
 import { useVoiceInputStore } from '~/stores/voiceInputStore';
 
 const props = defineProps<{
@@ -292,6 +285,7 @@ const emit = defineEmits<{
 
 const voiceInputStore = useVoiceInputStore();
 const { latestResult } = storeToRefs(voiceInputStore);
+const { t } = useLocalization();
 
 onMounted(async () => {
   await voiceInputStore.initialize();
@@ -303,13 +297,13 @@ const canOpenFolder = computed(() => props.extension.status === 'installed' || p
 const statusLabel = computed(() => {
   switch (props.extension.status) {
     case 'installed':
-      return 'Installed';
+      return t('settings.components.settings.VoiceInputExtensionCard.status.installed');
     case 'installing':
-      return 'Installing';
+      return t('settings.components.settings.VoiceInputExtensionCard.status.installing');
     case 'error':
-      return 'Needs Attention';
+      return t('settings.components.settings.VoiceInputExtensionCard.status.needsAttention');
     default:
-      return 'Not Installed';
+      return t('settings.components.settings.VoiceInputExtensionCard.status.notInstalled');
   }
 });
 
@@ -329,15 +323,15 @@ const statusClass = computed(() => {
 const pendingActionLabel = computed(() => {
   switch (props.pendingAction) {
     case 'enable':
-      return 'Enabling...';
+      return t('settings.components.settings.VoiceInputExtensionCard.pending.enable');
     case 'disable':
-      return 'Disabling...';
+      return t('settings.components.settings.VoiceInputExtensionCard.pending.disable');
     case 'reinstall':
-      return 'Reinstalling...';
+      return t('settings.components.settings.VoiceInputExtensionCard.pending.reinstall');
     case 'update-settings':
-      return 'Saving...';
+      return t('settings.components.settings.VoiceInputExtensionCard.pending.updateSettings');
     default:
-      return 'Installing...';
+      return t('settings.components.settings.VoiceInputExtensionCard.pending.install');
   }
 });
 
@@ -354,21 +348,25 @@ const backendLabel = computed(() => {
 const installPhaseLabel = computed(() => {
   switch (props.extension.installProgress?.phase) {
     case 'fetching-manifest':
-      return 'Fetching runtime manifest';
+      return t('settings.components.settings.VoiceInputExtensionCard.installPhase.fetchingManifest');
     case 'downloading-runtime':
-      return 'Downloading runtime bundle';
+      return t('settings.components.settings.VoiceInputExtensionCard.installPhase.downloadingRuntime');
     case 'extracting-runtime':
-      return 'Extracting runtime bundle';
+      return t('settings.components.settings.VoiceInputExtensionCard.installPhase.extractingRuntime');
     case 'bootstrapping-runtime':
-      return 'Bootstrapping local runtime';
+      return t('settings.components.settings.VoiceInputExtensionCard.installPhase.bootstrappingRuntime');
     case 'bootstrapping-model':
-      return 'Downloading and preparing the model';
+      return t('settings.components.settings.VoiceInputExtensionCard.installPhase.bootstrappingModel');
     case 'ready':
-      return 'Ready';
+      return t('settings.components.settings.VoiceInputExtensionCard.installPhase.ready');
     default:
-      return 'Installing Voice Input';
+      return t('settings.components.settings.VoiceInputExtensionCard.installPhase.installingVoiceInput');
   }
 });
+
+const installMessage = computed(() => (
+  props.extension.installProgress ? installPhaseLabel.value : t('settings.components.settings.VoiceInputExtensionCard.installPhase.installingVoiceInput')
+));
 
 const settingsTestResult = computed(() => (
   latestResult.value?.source === 'settings-test' ? latestResult.value : null
@@ -383,7 +381,9 @@ const isSettingsTestTranscribing = computed(() => (
 ));
 
 const settingsTestButtonLabel = computed(() => (
-  isSettingsTestRecording.value ? 'Stop Test' : 'Start Test'
+  isSettingsTestRecording.value
+    ? t('settings.components.settings.VoiceInputExtensionCard.test.stop')
+    : t('settings.components.settings.VoiceInputExtensionCard.test.start')
 ));
 
 const showSettingsTestReset = computed(() => (
@@ -396,27 +396,31 @@ const selectedAudioInputValue = computed(() => props.extension.settings.audioInp
 
 const audioInputStatusMessage = computed(() => {
   if (voiceInputStore.microphonePermissionState === 'denied') {
-    return 'Microphone access is denied. Allow microphone access for AutoByteus, then refresh sources.';
+    return t('settings.components.settings.VoiceInputExtensionCard.audioStatus.permissionDenied');
   }
 
   if (voiceInputStore.selectedAudioInputUnavailable) {
-    return 'The saved audio source is unavailable. Choose another input or switch back to System default.';
+    return t('settings.components.settings.VoiceInputExtensionCard.audioStatus.savedUnavailable');
   }
 
   if (voiceInputStore.audioInputDevices.length === 0) {
     if (voiceInputStore.microphonePermissionState === 'prompt') {
-      return 'Microphone access has not been granted yet. Start a test to request access or refresh after allowing it.';
+      return t('settings.components.settings.VoiceInputExtensionCard.audioStatus.permissionPrompt');
     }
 
     if (voiceInputStore.microphonePermissionState === 'unsupported') {
-      return 'Audio source discovery is not supported in this environment.';
+      return t('settings.components.settings.VoiceInputExtensionCard.audioStatus.unsupported');
     }
 
-    return 'No audio input devices found. Connect a microphone or enable a virtual audio source.';
+    return t('settings.components.settings.VoiceInputExtensionCard.audioStatus.noDevices');
   }
 
   const count = voiceInputStore.audioInputDevices.length;
-  return `Selected source: ${voiceInputStore.selectedAudioInputLabel}. ${count} audio input source${count === 1 ? '' : 's'} available.`;
+  return t('settings.components.settings.VoiceInputExtensionCard.audioStatus.selectedSource', {
+    label: voiceInputStore.selectedAudioInputLabel,
+    count,
+    suffix: count === 1 ? '' : 's',
+  });
 });
 
 const audioInputStatusClass = computed(() => {
@@ -442,19 +446,19 @@ const settingsTestButtonDisabled = computed(() => (
 const settingsTestOutcomeLabel = computed(() => {
   switch (settingsTestResult.value?.outcome) {
     case 'transcript-ready':
-      return 'Transcript Ready';
+      return t('settings.components.settings.VoiceInputExtensionCard.outcome.transcriptReady');
     case 'no-speech':
-      return 'No Speech';
+      return t('settings.components.settings.VoiceInputExtensionCard.outcome.noSpeech');
     case 'empty-transcript':
-      return 'Empty Transcript';
+      return t('settings.components.settings.VoiceInputExtensionCard.outcome.emptyTranscript');
     case 'error':
-      return 'Error';
+      return t('settings.components.settings.VoiceInputExtensionCard.outcome.error');
     case 'transcribing':
-      return 'Transcribing';
+      return t('settings.components.settings.VoiceInputExtensionCard.outcome.transcribing');
     case 'recording':
-      return 'Recording';
+      return t('settings.components.settings.VoiceInputExtensionCard.outcome.recording');
     default:
-      return 'Idle';
+      return t('settings.components.settings.VoiceInputExtensionCard.outcome.idle');
   }
 });
 
@@ -475,16 +479,30 @@ const settingsTestOutcomeClass = computed(() => {
 const settingsTestOutcomeDescription = computed(() => {
   switch (settingsTestResult.value?.outcome) {
     case 'no-speech':
-      return 'The worker classified this recording as silence or very low-level input.';
+      return t('settings.components.settings.VoiceInputExtensionCard.outcomeDescription.noSpeech');
     case 'empty-transcript':
-      return 'Audio was captured, but the worker returned no transcript text.';
+      return t('settings.components.settings.VoiceInputExtensionCard.outcomeDescription.emptyTranscript');
     case 'recording':
-      return 'Recording is in progress.';
+      return t('settings.components.settings.VoiceInputExtensionCard.outcomeDescription.recording');
     case 'transcribing':
-      return 'The local worker is transcribing the captured sample.';
+      return t('settings.components.settings.VoiceInputExtensionCard.outcomeDescription.transcribing');
     default:
-      return 'No settings-level test result yet.';
+      return t('settings.components.settings.VoiceInputExtensionCard.outcomeDescription.idle');
   }
+});
+
+const extensionStatusMessage = computed(() => {
+  if (props.extension.status === 'installed') {
+    return props.extension.enabled
+      ? t('settings.components.settings.VoiceInputExtensionCard.message.installedEnabled')
+      : t('settings.components.settings.VoiceInputExtensionCard.message.installedDisabled');
+  }
+
+  if (props.extension.status === 'error') {
+    return t('settings.components.settings.VoiceInputExtensionCard.message.error');
+  }
+
+  return props.extension.message || '';
 });
 
 function handleLanguageModeChange(event: Event): void {
@@ -516,6 +534,8 @@ async function handleSettingsTestReset(): Promise<void> {
 }
 
 function formatDuration(durationMs: number): string {
-  return `${(durationMs / 1000).toFixed(2)}s`;
+  return t('settings.components.settings.VoiceInputExtensionCard.durationSeconds', {
+    value: (durationMs / 1000).toFixed(2),
+  });
 }
 </script>

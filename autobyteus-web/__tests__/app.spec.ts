@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { mountSuspended, mockComponent, mockNuxtImport } from '@nuxt/test-utils/runtime';
 import App from '../app.vue';
 
-const { runtimeConfigMock, serverStoreMock, windowNodeContextStoreMock } = vi.hoisted(() => ({
+const { runtimeConfigMock, serverStoreMock, windowNodeContextStoreMock, localizationGateState } = vi.hoisted(() => ({
   runtimeConfigMock: {
     public: {
       showDebugErrorPanel: false,
@@ -13,6 +13,9 @@ const { runtimeConfigMock, serverStoreMock, windowNodeContextStoreMock } = vi.ho
   },
   windowNodeContextStoreMock: {
     isEmbeddedWindow: true,
+  },
+  localizationGateState: {
+    ready: true,
   },
 }));
 
@@ -40,6 +43,18 @@ vi.mock('~/components/server/ServerShutdown.vue', () => ({
   default: { template: '<div data-testid="server-shutdown" />' },
 }));
 
+vi.mock('~/components/app/AppLocalizationGate.vue', () => ({
+  default: {
+    computed: {
+      ready() {
+        return localizationGateState.ready;
+      },
+    },
+    template:
+      '<div v-if="ready" data-testid="app-localization-slot"><slot /></div><div v-else data-testid="app-localization-gate" />',
+  },
+}));
+
 vi.mock('~/components/app/AppUpdateNotice.vue', () => ({
   default: { template: '<div data-testid="app-update-notice" />' },
 }));
@@ -57,6 +72,19 @@ describe('app.vue', () => {
     runtimeConfigMock.public.showDebugErrorPanel = false;
     serverStoreMock.status = 'starting';
     windowNodeContextStoreMock.isEmbeddedWindow = true;
+    localizationGateState.ready = true;
+  });
+
+  it('holds product UI behind the localization gate while booting', async () => {
+    localizationGateState.ready = false;
+    const wrapper = await mountSuspended(App, { route: '/' });
+
+    expect(wrapper.find('[data-testid="app-localization-gate"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="server-loading"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="server-shutdown"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="app-update-notice"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="toast-container"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="nuxt-layout"]').exists()).toBe(false);
   });
 
   it('shows embedded overlays and waits for readiness in embedded windows', async () => {

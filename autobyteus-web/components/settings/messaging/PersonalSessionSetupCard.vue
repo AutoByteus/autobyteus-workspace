@@ -34,40 +34,30 @@
         :disabled="!gatewayStore.session || gatewayStore.isSessionLoading"
         @click="onRefreshStatus"
         data-testid="refresh-session-status-button"
-      >
-        Refresh Status
-      </button>
+      >{{ $t('settings.components.settings.messaging.PersonalSessionSetupCard.refresh_status') }}</button>
       <button
         class="px-4 py-2 rounded-md border border-red-300 text-red-700 text-sm disabled:opacity-50"
         :disabled="!gatewayStore.session || gatewayStore.isSessionLoading"
         @click="onStopSession"
         data-testid="stop-session-button"
-      >
-        Stop Session
-      </button>
+      >{{ $t('settings.components.settings.messaging.PersonalSessionSetupCard.stop_session') }}</button>
     </div>
 
     <div v-if="gatewayStore.session" class="mt-3 rounded-md bg-gray-50 border border-gray-200 p-3">
-      <p class="text-sm text-gray-800">
-        Session: <span class="font-mono">{{ gatewayStore.session.sessionId }}</span>
+      <p class="text-sm text-gray-800">{{ $t('settings.components.settings.messaging.PersonalSessionSetupCard.session') }}<span class="font-mono">{{ gatewayStore.session.sessionId }}</span>
       </p>
-      <p class="text-sm text-gray-800 mt-1">
-        Status: <span class="font-semibold">{{ gatewayStore.session.status }}</span>
+      <p class="text-sm text-gray-800 mt-1">{{ $t('settings.components.settings.messaging.PersonalSessionSetupCard.status') }}<span class="font-semibold">{{ gatewayStore.session.status }}</span>
       </p>
       <p
         v-if="gatewayStore.sessionStatusAutoSyncState === 'running'"
         class="text-xs text-gray-500 mt-1"
         data-testid="session-auto-sync-running"
-      >
-        Auto-syncing status...
-      </p>
+      >{{ $t('settings.components.settings.messaging.PersonalSessionSetupCard.auto_syncing_status') }}</p>
       <p
         v-if="gatewayStore.sessionStatusAutoSyncState === 'paused'"
         class="text-xs text-amber-700 mt-1"
         data-testid="session-auto-sync-paused"
-      >
-        Auto-sync paused. Use Refresh Status to continue.
-      </p>
+      >{{ $t('settings.components.settings.messaging.PersonalSessionSetupCard.auto_sync_paused_use_refresh_status') }}</p>
       <div v-if="gatewayStore.session.qr" class="mt-2">
         <ScannableQrCodePanel
           :qr-code="gatewayStore.session.qr.code"
@@ -79,9 +69,7 @@
         :disabled="gatewayStore.isSessionLoading"
         @click="onRefreshQr"
         data-testid="refresh-qr-button"
-      >
-        Refresh QR
-      </button>
+      >{{ $t('settings.components.settings.messaging.PersonalSessionSetupCard.refresh_qr') }}</button>
     </div>
 
     <p v-if="gatewayStore.personalModeBlockedReason" class="mt-2 text-sm text-red-600" data-testid="personal-mode-blocked">

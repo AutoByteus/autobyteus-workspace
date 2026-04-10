@@ -21,7 +21,7 @@
     
     <div v-if="loading" class="text-center py-8">
       <span class="i-heroicons-arrow-path-20-solid w-8 h-8 text-gray-400 mx-auto animate-spin"></span>
-      <p class="text-gray-500 mt-2">Loading tools...</p>
+      <p class="text-gray-500 mt-2">{{ $t('tools.components.tools.ToolList.loading_tools') }}</p>
     </div>
     
     <div v-else-if="tools.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

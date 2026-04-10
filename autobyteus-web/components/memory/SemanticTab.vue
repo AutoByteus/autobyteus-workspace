@@ -1,11 +1,7 @@
 <template>
   <div>
-    <div v-if="items === null" class="text-sm text-gray-500">
-      Semantic memory not available.
-    </div>
-    <div v-else-if="items.length === 0" class="text-sm text-gray-500">
-      No semantic entries.
-    </div>
+    <div v-if="items === null" class="text-sm text-gray-500">{{ $t('memory.components.memory.SemanticTab.semantic_memory_not_available') }}</div>
+    <div v-else-if="items.length === 0" class="text-sm text-gray-500">{{ $t('memory.components.memory.SemanticTab.no_semantic_entries') }}</div>
     <div v-else class="space-y-3">
       <div
         v-for="(item, index) in items"
