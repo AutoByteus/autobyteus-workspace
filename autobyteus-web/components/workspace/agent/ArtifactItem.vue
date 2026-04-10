@@ -55,9 +55,12 @@
 import { computed } from 'vue';
 import { Icon } from '@iconify/vue';
 import type { AgentArtifact } from '~/stores/agentArtifactsStore';
+import type { RunFileChangeArtifact } from '~/stores/runFileChangesStore';
+
+type DisplayArtifact = AgentArtifact | RunFileChangeArtifact;
 
 const props = defineProps<{
-  artifact: AgentArtifact;
+  artifact: DisplayArtifact;
   isSelected?: boolean;
 }>();
 

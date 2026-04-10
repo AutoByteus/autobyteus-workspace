@@ -20,6 +20,7 @@ import { ExternalChannelSetupResolver } from "./types/external-channel-setup.js"
 import { NodeSyncResolver } from "./types/node-sync.js";
 import { NodeSyncControlResolver } from "./types/node-sync-control.js";
 import { RunHistoryResolver } from "./types/run-history.js";
+import { RunFileChangesResolver } from "./types/run-file-changes.js";
 import { TeamRunHistoryResolver } from "./types/team-run-history.js";
 import { RuntimeAvailabilityResolver } from "./types/runtime-availability.js";
 import { AgentPackageResolver } from "./types/agent-packages.js";
@@ -50,6 +51,7 @@ export async function buildGraphqlSchema() {
       NodeSyncResolver,
       NodeSyncControlResolver,
       RunHistoryResolver,
+      RunFileChangesResolver,
       TeamRunHistoryResolver,
       RuntimeAvailabilityResolver,
       AgentPackageResolver,

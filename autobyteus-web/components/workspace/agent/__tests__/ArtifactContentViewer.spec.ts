@@ -5,17 +5,9 @@ import ArtifactContentViewer from '../ArtifactContentViewer.vue';
 
 const {
   determineFileTypeMock,
-  mockGetRun,
-  mockWorkspaceStore,
   mockWindowNodeContextStore,
 } = vi.hoisted(() => ({
   determineFileTypeMock: vi.fn(),
-  mockGetRun: vi.fn(),
-  mockWorkspaceStore: {
-    workspaces: {} as Record<string, any>,
-    workspacesFetched: true,
-    fetchAllWorkspaces: vi.fn(),
-  },
   mockWindowNodeContextStore: {
     getBoundEndpoints: vi.fn(() => ({ rest: 'http://localhost:3000/rest' })),
   },
@@ -32,16 +24,6 @@ vi.mock('~/components/fileExplorer/FileViewer.vue', () => ({
 
 vi.mock('~/utils/fileExplorer/fileUtils', () => ({
   determineFileType: determineFileTypeMock,
-}));
-
-vi.mock('~/stores/agentContextsStore', () => ({
-  useAgentContextsStore: () => ({
-    getRun: mockGetRun,
-  }),
-}));
-
-vi.mock('~/stores/workspace', () => ({
-  useWorkspaceStore: () => mockWorkspaceStore,
 }));
 
 vi.mock('~/stores/windowNodeContextStore', () => ({
@@ -61,8 +43,8 @@ describe('ArtifactContentViewer', () => {
     updatedAt: new Date().toISOString(),
   };
 
-  const mountComponent = (artifact: any, refreshSignal = 0) => {
-    return mount(ArtifactContentViewer, {
+  const mountComponent = (artifact: any, refreshSignal = 0) =>
+    mount(ArtifactContentViewer, {
       props: { artifact, refreshSignal },
       global: {
         stubs: {
@@ -70,7 +52,6 @@ describe('ArtifactContentViewer', () => {
         },
       },
     });
-  };
 
   const mountReactiveHost = (artifact: any, refreshSignal = 0) => {
     const state = reactive({
@@ -101,17 +82,6 @@ describe('ArtifactContentViewer', () => {
   beforeEach(() => {
     determineFileTypeMock.mockReset();
     determineFileTypeMock.mockResolvedValue('Text');
-    mockGetRun.mockReset();
-    mockGetRun.mockReturnValue({ config: { workspaceId: 'ws-1' } });
-    mockWorkspaceStore.workspaces = reactive({
-      'ws-1': {
-        workspaceId: 'ws-1',
-        absolutePath: '/workspace',
-      },
-    }) as Record<string, any>;
-    mockWorkspaceStore.workspacesFetched = true;
-    mockWorkspaceStore.fetchAllWorkspaces.mockReset();
-    mockWorkspaceStore.fetchAllWorkspaces.mockImplementation(async () => {});
     mockWindowNodeContextStore.getBoundEndpoints.mockReset();
     mockWindowNodeContextStore.getBoundEndpoints.mockReturnValue({ rest: 'http://localhost:3000/rest' });
     vi.stubGlobal('fetch', vi.fn());
@@ -124,7 +94,7 @@ describe('ArtifactContentViewer', () => {
     expect((wrapper.vm as any).viewMode).toBe('edit');
   });
 
-  it('uses buffered write_file content and skips workspace fetch before availability', async () => {
+  it('uses buffered write_file content and skips server fetch before availability', async () => {
     const fetchMock = vi.mocked(global.fetch);
     const wrapper = mountComponent({
       ...defaultArtifact,
@@ -140,85 +110,71 @@ describe('ArtifactContentViewer', () => {
     expect((wrapper.vm as any).viewMode).toBe('edit');
   });
 
-  it('fetches current workspace content for available text artifacts', async () => {
+  it('fetches available text artifacts from the run-scoped server route', async () => {
     const fetchMock = vi.mocked(global.fetch);
     fetchMock.mockResolvedValue({
       ok: true,
       status: 200,
-      text: async () => 'updated workspace content',
+      text: async () => 'updated artifact content',
     } as Response);
 
     const wrapper = mountComponent({
       ...defaultArtifact,
-      path: '/workspace/src/test.md',
+      path: 'src/test.md',
       status: 'available',
       sourceTool: 'edit_file',
-      workspaceRoot: '/workspace',
       content: 'stale local copy',
     });
 
     await flushPromises();
 
     expect(fetchMock).toHaveBeenCalledWith(
-      'http://localhost:3000/rest/workspaces/ws-1/content?path=src%2Ftest.md',
+      'http://localhost:3000/rest/runs/agent-1/file-change-content?path=src%2Ftest.md',
       { cache: 'no-store' },
     );
-    expect(wrapper.find('[data-testid="file-viewer"]').text()).toContain('updated workspace content');
+    expect(wrapper.find('[data-testid="file-viewer"]').text()).toContain('updated artifact content');
     expect((wrapper.vm as any).viewMode).toBe('preview');
   });
 
-  it('resolves edit_file content against the best matching loaded workspace root', async () => {
+  it('fetches external absolute edit_file paths from the run-scoped server route', async () => {
     const fetchMock = vi.mocked(global.fetch);
     fetchMock.mockResolvedValue({
       ok: true,
       status: 200,
-      text: async () => 'alternate workspace content',
+      text: async () => 'downloads file content',
     } as Response);
-
-    mockWorkspaceStore.workspaces = reactive({
-      'ws-1': {
-        workspaceId: 'ws-1',
-        absolutePath: '/workspace-a',
-      },
-      'ws-2': {
-        workspaceId: 'ws-2',
-        absolutePath: '/workspace-b',
-      },
-    }) as Record<string, any>;
 
     const wrapper = mountComponent({
       ...defaultArtifact,
-      path: '/workspace-b/src/test.md',
+      path: '/Users/normy/Downloads/apply_patch_test.txt',
       status: 'available',
       sourceTool: 'edit_file',
-      workspaceRoot: '/workspace-a',
     });
 
     await flushPromises();
 
     expect(fetchMock).toHaveBeenCalledWith(
-      'http://localhost:3000/rest/workspaces/ws-2/content?path=src%2Ftest.md',
+      'http://localhost:3000/rest/runs/agent-1/file-change-content?path=%2FUsers%2Fnormy%2FDownloads%2Fapply_patch_test.txt',
       { cache: 'no-store' },
     );
-    expect(wrapper.find('[data-testid="file-viewer"]').text()).toContain('alternate workspace content');
+    expect(wrapper.find('[data-testid="file-viewer"]').text()).toContain('downloads file content');
   });
 
-  it('keeps edit_file blank until workspace fetch is available, then refetches after in-place metadata updates', async () => {
+  it('keeps edit_file blank until a server-backed fetch URL is available, then refetches after path updates', async () => {
     const fetchMock = vi.mocked(global.fetch);
-    mockGetRun.mockReturnValue({ config: { workspaceId: null } });
     const { wrapper, state } = mountReactiveHost(reactive({
       ...defaultArtifact,
-      path: 'src/test.md',
+      path: '',
       status: 'pending',
       sourceTool: 'edit_file',
       content: '@@ -1 +1 @@',
-      workspaceRoot: null,
     }));
 
     await flushPromises();
 
     expect(fetchMock).not.toHaveBeenCalled();
-    expect(wrapper.find('[data-testid="file-viewer"]').text()).not.toContain('@@ -1 +1 @@');
+    expect(wrapper.text()).toContain('Content not available yet');
+    expect(wrapper.text()).not.toContain('@@ -1 +1 @@');
 
     fetchMock.mockResolvedValueOnce({
       ok: true,
@@ -226,76 +182,36 @@ describe('ArtifactContentViewer', () => {
       text: async () => 'workspace-backed content',
     } as Response);
 
-    state.artifact.workspaceRoot = '/workspace';
+    state.artifact.path = '/Users/normy/Downloads/apply_patch_test.txt';
     state.artifact.status = 'available';
     state.artifact.updatedAt = new Date(Date.now() + 1_000).toISOString();
 
     await flushPromises();
 
     expect(fetchMock).toHaveBeenCalledWith(
-      'http://localhost:3000/rest/workspaces/ws-1/content?path=src%2Ftest.md',
+      'http://localhost:3000/rest/runs/agent-1/file-change-content?path=%2FUsers%2Fnormy%2FDownloads%2Fapply_patch_test.txt',
       { cache: 'no-store' },
     );
     expect(wrapper.find('[data-testid="file-viewer"]').text()).toContain('workspace-backed content');
   });
 
-  it('refreshes the workspace catalog once before giving up on an unresolved absolute edit_file path', async () => {
-    const fetchMock = vi.mocked(global.fetch);
-    fetchMock.mockResolvedValue({
-      ok: true,
-      status: 200,
-      text: async () => 'workspace content after catalog refresh',
-    } as Response);
-
-    const workspaces = reactive<Record<string, any>>({});
-    mockWorkspaceStore.workspaces = workspaces;
-    mockWorkspaceStore.workspacesFetched = false;
-    mockGetRun.mockReturnValue({ config: { workspaceId: null } });
-    mockWorkspaceStore.fetchAllWorkspaces.mockImplementation(async () => {
-      workspaces['ws-2'] = {
-        workspaceId: 'ws-2',
-        absolutePath: '/workspace-b',
-      };
-      mockWorkspaceStore.workspacesFetched = true;
-    });
-
-    const wrapper = mountComponent({
-      ...defaultArtifact,
-      path: '/workspace-b/src/test.md',
-      status: 'available',
-      sourceTool: 'edit_file',
-      workspaceRoot: null,
-    });
-
-    await flushPromises();
-    await flushPromises();
-
-    expect(mockWorkspaceStore.fetchAllWorkspaces).toHaveBeenCalledTimes(1);
-    expect(fetchMock).toHaveBeenCalledWith(
-      'http://localhost:3000/rest/workspaces/ws-2/content?path=src%2Ftest.md',
-      { cache: 'no-store' },
-    );
-    expect(wrapper.find('[data-testid="file-viewer"]').text()).toContain('workspace content after catalog refresh');
-  });
-
   it('does not prepend an extra slash for absolute artifact paths in the header', async () => {
     const wrapper = mountComponent({
       ...defaultArtifact,
-      path: '/workspace/src/test.md',
+      path: '/Users/normy/Downloads/apply_patch_test.txt',
       status: 'available',
       sourceTool: 'edit_file',
-      workspaceRoot: '/workspace',
     });
 
     await flushPromises();
 
     const headerPath = wrapper.get('[data-testid="artifact-path-display"]').text();
-    expect(headerPath).toBe('/workspace/src/test.md');
+    expect(headerPath).toBe('/Users/normy/Downloads/apply_patch_test.txt');
     expect(headerPath.startsWith('//')).toBe(false);
-    expect(wrapper.text()).not.toContain('//workspace/src/test.md');
+    expect(wrapper.text()).not.toContain('//Users/normy/Downloads/apply_patch_test.txt');
   });
 
-  it('shows deleted state when workspace content returns 404', async () => {
+  it('shows deleted state when the server artifact route returns 404', async () => {
     const fetchMock = vi.mocked(global.fetch);
     fetchMock.mockResolvedValue({
       ok: false,
@@ -305,15 +221,94 @@ describe('ArtifactContentViewer', () => {
 
     const wrapper = mountComponent({
       ...defaultArtifact,
-      path: '/workspace/src/missing.md',
+      path: '/Users/normy/Downloads/missing.txt',
       status: 'available',
       sourceTool: 'edit_file',
-      workspaceRoot: '/workspace',
     });
 
     await flushPromises();
 
     expect(wrapper.text()).toContain('File not found');
+  });
+
+  it('shows a pending state for edit_file rows that are not available yet', async () => {
+    const fetchMock = vi.mocked(global.fetch);
+
+    const wrapper = mountComponent({
+      ...defaultArtifact,
+      path: '/Users/normy/Downloads/pending.txt',
+      status: 'pending',
+      sourceTool: 'edit_file',
+    });
+
+    await flushPromises();
+
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(wrapper.text()).toContain('Content not available yet');
+    expect(wrapper.text()).not.toContain('File not found');
+  });
+
+  it('shows a pending state when the server reports content is not ready yet', async () => {
+    const fetchMock = vi.mocked(global.fetch);
+    fetchMock.mockResolvedValue({
+      ok: false,
+      status: 409,
+      text: async () => '',
+    } as Response);
+
+    const wrapper = mountComponent({
+      ...defaultArtifact,
+      path: '/Users/normy/Downloads/pending.txt',
+      status: 'available',
+      sourceTool: 'edit_file',
+    });
+
+    await flushPromises();
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(wrapper.text()).toContain('Content not available yet');
+    expect(wrapper.text()).not.toContain('File not found');
+  });
+
+  it('shows an explicit failure error for failed file-change rows', async () => {
+    const fetchMock = vi.mocked(global.fetch);
+
+    const wrapper = mountComponent({
+      ...defaultArtifact,
+      path: '/Users/normy/Downloads/failed.txt',
+      status: 'failed',
+      sourceTool: 'edit_file',
+    });
+
+    await flushPromises();
+
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(wrapper.find('[data-testid="file-viewer"]').text()).toContain(
+      'This file change failed before the final content could be captured.',
+    );
+    expect(wrapper.text()).not.toContain('Content not available yet');
+  });
+
+  it('does not render buffered draft text for failed write_file rows', async () => {
+    const fetchMock = vi.mocked(global.fetch);
+
+    const wrapper = mountComponent({
+      ...defaultArtifact,
+      path: '/Users/normy/Downloads/failed-write.txt',
+      status: 'failed',
+      sourceTool: 'write_file',
+      content: 'draft that should not be shown',
+    });
+
+    await flushPromises();
+
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(wrapper.find('[data-testid="file-viewer"]').text()).toContain(
+      'This file change failed before the final content could be captured.',
+    );
+    expect(wrapper.find('[data-testid="file-viewer"]').text()).not.toContain(
+      'draft that should not be shown',
+    );
   });
 
   it('surfaces fetch errors for non-404 failures', async () => {
@@ -326,10 +321,9 @@ describe('ArtifactContentViewer', () => {
 
     const wrapper = mountComponent({
       ...defaultArtifact,
-      path: '/workspace/src/test.md',
+      path: '/Users/normy/Downloads/apply_patch_test.txt',
       status: 'available',
       sourceTool: 'edit_file',
-      workspaceRoot: '/workspace',
     });
 
     await flushPromises();
@@ -337,7 +331,7 @@ describe('ArtifactContentViewer', () => {
     expect(wrapper.find('[data-testid="file-viewer"]').text()).toContain('Failed to fetch content (500)');
   });
 
-  it('retries workspace fetch when the refresh signal changes', async () => {
+  it('retries server fetch when the refresh signal changes', async () => {
     const fetchMock = vi.mocked(global.fetch);
     fetchMock
       .mockResolvedValueOnce({
@@ -348,15 +342,14 @@ describe('ArtifactContentViewer', () => {
       .mockResolvedValueOnce({
         ok: true,
         status: 200,
-        text: async () => 'retried workspace content',
+        text: async () => 'retried artifact content',
       } as Response);
 
     const wrapper = mountComponent({
       ...defaultArtifact,
-      path: '/workspace/src/test.md',
+      path: '/Users/normy/Downloads/apply_patch_test.txt',
       status: 'available',
       sourceTool: 'edit_file',
-      workspaceRoot: '/workspace',
     });
 
     await flushPromises();
@@ -368,6 +361,25 @@ describe('ArtifactContentViewer', () => {
     await flushPromises();
 
     expect(fetchMock).toHaveBeenCalledTimes(2);
-    expect(wrapper.find('[data-testid="file-viewer"]').text()).toContain('retried workspace content');
+    expect(wrapper.find('[data-testid="file-viewer"]').text()).toContain('retried artifact content');
+  });
+
+  it('fails closed for non-text file-change previews instead of using the text-only route', async () => {
+    determineFileTypeMock.mockResolvedValue('Image');
+    const fetchMock = vi.mocked(global.fetch);
+
+    const wrapper = mountComponent({
+      ...defaultArtifact,
+      path: '/Users/normy/Downloads/image.png',
+      status: 'available',
+      sourceTool: 'edit_file',
+      content: undefined,
+    });
+
+    await flushPromises();
+
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(wrapper.text()).toContain('Preview unavailable');
+    expect(wrapper.text()).toContain('Preview is currently available only for text file changes.');
   });
 });

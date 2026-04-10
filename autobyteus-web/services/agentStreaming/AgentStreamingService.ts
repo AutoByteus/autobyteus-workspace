@@ -27,6 +27,7 @@ import {
   handleError,
   handleArtifactPersisted,
   handleArtifactUpdated,
+  handleFileChangeUpdated,
 } from './handlers';
 import { handleBrowserToolExecutionSucceeded } from './browser/browserToolExecutionSucceededHandler';
 
@@ -297,6 +298,10 @@ export class AgentStreamingService {
         
       case 'ARTIFACT_UPDATED':
         handleArtifactUpdated(message.payload, context);
+        break;
+
+      case 'FILE_CHANGE_UPDATED':
+        handleFileChangeUpdated(message.payload, context);
         break;
 
       case 'CONNECTED':

@@ -4,12 +4,14 @@ import ArtifactsTab from '../ArtifactsTab.vue';
 
 const {
   mockArtifactsStore,
+  mockRunFileChangesStore,
   mockActiveContextStore,
   state,
 } = vi.hoisted(() => {
   const state = {
     runId: 'run-1',
-    artifacts: [] as any[],
+    generatedArtifacts: [] as any[],
+    fileChanges: [] as any[],
     latestVisibleArtifactSignal: null as string | null,
     latestVisibleArtifactId: null as string | null,
   };
@@ -17,13 +19,18 @@ const {
   return {
     state,
     mockArtifactsStore: {
-      getArtifactsForRun: vi.fn((runId: string) => (runId === state.runId ? state.artifacts : [])),
+      getArtifactsForRun: vi.fn((runId: string) => (runId === state.runId ? state.generatedArtifacts : [])),
       getLatestVisibleArtifactSignalForRun: vi.fn((runId: string) =>
         runId === state.runId ? state.latestVisibleArtifactSignal : null,
       ),
       getLatestVisibleArtifactIdForRun: vi.fn((runId: string) =>
         runId === state.runId ? state.latestVisibleArtifactId : null,
       ),
+    },
+    mockRunFileChangesStore: {
+      getArtifactsForRun: vi.fn((runId: string) => (runId === state.runId ? state.fileChanges : [])),
+      getLatestVisibleArtifactSignalForRun: vi.fn(() => null),
+      getLatestVisibleArtifactIdForRun: vi.fn(() => null),
     },
     mockActiveContextStore: {
       get activeAgentContext() {
@@ -35,6 +42,10 @@ const {
 
 vi.mock('~/stores/agentArtifactsStore', () => ({
   useAgentArtifactsStore: () => mockArtifactsStore,
+}));
+
+vi.mock('~/stores/runFileChangesStore', () => ({
+  useRunFileChangesStore: () => mockRunFileChangesStore,
 }));
 
 vi.mock('~/stores/activeContextStore', () => ({
@@ -63,12 +74,16 @@ describe('ArtifactsTab.vue', () => {
 
   beforeEach(() => {
     state.runId = 'run-1';
-    state.artifacts = [];
+    state.generatedArtifacts = [];
+    state.fileChanges = [];
     state.latestVisibleArtifactSignal = null;
     state.latestVisibleArtifactId = null;
     mockArtifactsStore.getArtifactsForRun.mockClear();
     mockArtifactsStore.getLatestVisibleArtifactSignalForRun.mockClear();
     mockArtifactsStore.getLatestVisibleArtifactIdForRun.mockClear();
+    mockRunFileChangesStore.getArtifactsForRun.mockClear();
+    mockRunFileChangesStore.getLatestVisibleArtifactSignalForRun.mockClear();
+    mockRunFileChangesStore.getLatestVisibleArtifactIdForRun.mockClear();
   });
 
   it('renders with split pane layout', () => {
@@ -80,7 +95,7 @@ describe('ArtifactsTab.vue', () => {
   });
 
   it('passes the selected artifact to the viewer and retries on same-row clicks', async () => {
-    state.artifacts = [
+    state.fileChanges = [
       {
         id: '1',
         runId: 'run-1',
@@ -99,13 +114,13 @@ describe('ArtifactsTab.vue', () => {
     const list = wrapper.findComponent({ name: 'ArtifactList' });
     const viewer = wrapper.findComponent({ name: 'ArtifactContentViewer' });
 
-    expect(viewer.props('artifact')).toEqual(state.artifacts[0]);
+    expect(viewer.props('artifact')).toEqual(state.fileChanges[0]);
     expect(viewer.props('refreshSignal')).toBe(0);
 
-    list.vm.$emit('select', state.artifacts[0]);
+    list.vm.$emit('select', state.fileChanges[0]);
     await wrapper.vm.$nextTick();
 
-    expect(viewer.props('artifact')).toEqual(state.artifacts[0]);
+    expect(viewer.props('artifact')).toEqual(state.fileChanges[0]);
     expect(viewer.props('refreshSignal')).toBe(1);
   });
 });

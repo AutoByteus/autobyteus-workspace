@@ -52,6 +52,22 @@
                This file has been deleted from the workspace or moved to a different location.
              </p>
         </div>
+
+        <div v-else-if="pendingMessage" class="flex-1 flex flex-col items-center justify-center text-gray-400 p-8">
+             <Icon icon="heroicons:clock" class="w-16 h-16 mb-4 text-gray-300" />
+             <h3 class="text-lg font-medium text-gray-500 mb-1">Content not available yet</h3>
+             <p class="text-sm text-center max-w-sm">
+               {{ pendingMessage }}
+             </p>
+        </div>
+
+        <div v-else-if="unsupportedPreviewMessage" class="flex-1 flex flex-col items-center justify-center text-gray-400 p-8">
+             <Icon icon="heroicons:document-minus" class="w-16 h-16 mb-4 text-gray-300" />
+             <h3 class="text-lg font-medium text-gray-500 mb-1">Preview unavailable</h3>
+             <p class="text-sm text-center max-w-sm">
+               {{ unsupportedPreviewMessage }}
+             </p>
+        </div>
         
         <FileViewer
             v-else
@@ -76,17 +92,18 @@
 import { computed, ref, watch } from 'vue';
 import { Icon } from '@iconify/vue';
 import type { AgentArtifact } from '~/stores/agentArtifactsStore';
+import type { RunFileChangeArtifact } from '~/stores/runFileChangesStore';
 import type { FileOpenMode } from '~/stores/fileExplorer';
-import { useAgentContextsStore } from '~/stores/agentContextsStore';
-import { useWorkspaceStore } from '~/stores/workspace';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { determineFileType } from '~/utils/fileExplorer/fileUtils';
 
 // Import Viewers
 import FileViewer from '~/components/fileExplorer/FileViewer.vue';
 
+type DisplayArtifact = AgentArtifact | RunFileChangeArtifact;
+
 const props = defineProps<{
-  artifact: AgentArtifact | null;
+  artifact: DisplayArtifact | null;
   refreshSignal?: number;
 }>();
 
@@ -98,125 +115,35 @@ const fetchedContent = ref<string | null>(null);
 const resolvedUrl = ref<string | null>(null);
 const errorMessage = ref<string | null>(null);
 const isDeleted = ref(false);
-const workspaceCatalogRefreshKey = ref<string | null>(null);
+const pendingMessage = ref<string | null>(null);
+const unsupportedPreviewMessage = ref<string | null>(null);
 let fetchToken = 0;
 
-const agentContextsStore = useAgentContextsStore();
-const workspaceStore = useWorkspaceStore();
 const windowNodeContextStore = useWindowNodeContextStore();
 
 const isLoading = computed(() => isDeterminingType.value || isFetchingContent.value);
 const usesBufferedWriteContent = computed(() => {
-  return props.artifact?.sourceTool === 'write_file' && props.artifact?.status !== 'available';
+  return (
+    props.artifact?.sourceTool === 'write_file'
+    && (props.artifact?.status === 'streaming' || props.artifact?.status === 'pending')
+  );
 });
-const usesWorkspaceBackedEditContent = computed(() => props.artifact?.sourceTool === 'edit_file');
+const usesRunFileChangeRoute = computed(() => {
+  return props.artifact?.sourceTool === 'write_file' || props.artifact?.sourceTool === 'edit_file';
+});
 const normalizedArtifactPath = computed(() => props.artifact?.path?.replace(/\\/g, '/') ?? '');
 const displayPath = computed(() => normalizedArtifactPath.value || props.artifact?.path || '');
-const workspaceResolutionAttemptKey = computed(() => {
-  if (!props.artifact) {
-    return null;
-  }
-  return `${props.artifact.id}:${props.artifact.updatedAt}:${props.refreshSignal ?? 0}`;
-});
-
-const normalizeRootPath = (value: string | null | undefined): string | null => {
-  const source = (value || '').trim();
-  if (!source) {
-    return null;
-  }
-  const normalized = source.replace(/\\/g, '/');
-  if (normalized === '/') {
-    return normalized;
-  }
-  return normalized.replace(/\/+$/, '');
-};
-
-const isAbsolutePath = (value: string): boolean => value.startsWith('/') || /^[A-Za-z]:\//.test(value);
-
-const isPathWithinRoot = (candidatePath: string, rootPath: string): boolean =>
-  candidatePath === rootPath || candidatePath.startsWith(`${rootPath}/`);
-
-const getWorkspaceRootPath = (workspace: { absolutePath?: string | null; workspaceConfig?: Record<string, any> }): string | null =>
-  normalizeRootPath(
-    workspace.absolutePath
-      || workspace.workspaceConfig?.root_path
-      || workspace.workspaceConfig?.rootPath
-      || null,
-  );
-
-const resolvedArtifactWorkspace = computed(() => {
-  if (!props.artifact) {
-    return null;
-  }
-
-  const workspaces = Object.values(workspaceStore.workspaces).map((workspace) => ({
-    workspace,
-    rootPath: getWorkspaceRootPath(workspace),
-  }));
-  const artifactPath = normalizedArtifactPath.value;
-  const artifactWorkspaceRoot = normalizeRootPath(props.artifact.workspaceRoot);
-
-  if (isAbsolutePath(artifactPath)) {
-    const bestPrefixMatch = workspaces
-      .filter(
-        (candidate): candidate is { workspace: typeof candidate.workspace; rootPath: string } =>
-          Boolean(candidate.rootPath) && isPathWithinRoot(artifactPath, candidate.rootPath),
-      )
-      .sort((left, right) => right.rootPath.length - left.rootPath.length)[0];
-
-    if (bestPrefixMatch) {
-      return bestPrefixMatch;
-    }
-  }
-
-  if (artifactWorkspaceRoot) {
-    const exactWorkspaceMatch = workspaces.find(({ rootPath }) => rootPath === artifactWorkspaceRoot);
-    if (exactWorkspaceMatch) {
-      return exactWorkspaceMatch;
-    }
-  }
-
-  const context = agentContextsStore.getRun(props.artifact.runId);
-  const fallbackWorkspaceId = context?.config.workspaceId || null;
-  if (!fallbackWorkspaceId) {
-    return null;
-  }
-
-  const fallbackWorkspace = workspaceStore.workspaces[fallbackWorkspaceId];
-  if (!fallbackWorkspace) {
-    return null;
-  }
-
-  return {
-    workspace: fallbackWorkspace,
-    rootPath: getWorkspaceRootPath(fallbackWorkspace),
-  };
-});
-
-const artifactUrl = computed(() => {
-  if (!props.artifact) return null;
-  const normalize = (value: string) => value.replace(/\\/g, '/');
-  const resolvedWorkspace = resolvedArtifactWorkspace.value;
-  if (!resolvedWorkspace) return null;
-
-  const workspaceId = resolvedWorkspace.workspace.workspaceId;
-  const basePath = resolvedWorkspace.rootPath ? normalize(resolvedWorkspace.rootPath) : null;
-  const artifactPath = normalize(props.artifact.path);
-
-  let relativePath = artifactPath;
-  if (basePath && artifactPath.startsWith(`${basePath}/`)) {
-    relativePath = artifactPath.slice(basePath.length + 1);
-  } else if (basePath && artifactPath === basePath) {
-    relativePath = '';
-  } else {
-    const isAbsolute = artifactPath.startsWith('/') || /^[A-Za-z]:\//.test(artifactPath);
-    if (isAbsolute) {
-      return null;
-    }
-  }
-
+const runArtifactUrl = computed(() => {
+  if (!usesRunFileChangeRoute.value || !props.artifact?.runId || !props.artifact.path) return null;
   const restBaseUrl = windowNodeContextStore.getBoundEndpoints().rest.replace(/\/$/, '');
-  return `${restBaseUrl}/workspaces/${workspaceId}/content?path=${encodeURIComponent(relativePath)}`;
+  return `${restBaseUrl}/runs/${encodeURIComponent(props.artifact.runId)}/file-change-content?path=${encodeURIComponent(displayPath.value)}`;
+});
+
+const contentFetchUrl = computed(() => {
+  if (!props.artifact || usesBufferedWriteContent.value) {
+    return null;
+  }
+  return props.artifact.url ?? runArtifactUrl.value;
 });
 
 const displayContent = computed(() => {
@@ -224,14 +151,14 @@ const displayContent = computed(() => {
   if (usesBufferedWriteContent.value) {
     return props.artifact.content ?? '';
   }
-  if (usesWorkspaceBackedEditContent.value) {
+  if (usesRunFileChangeRoute.value) {
     return fetchedContent.value ?? '';
   }
   return fetchedContent.value ?? props.artifact.content ?? '';
 });
 const displayUrl = computed(() => {
   if (!props.artifact) return null;
-  return resolvedUrl.value ?? props.artifact.url ?? artifactUrl.value ?? null;
+  return resolvedUrl.value ?? contentFetchUrl.value ?? null;
 });
 
 const supportsPreview = computed(() => {
@@ -260,6 +187,8 @@ const refreshResolvedContent = async () => {
   resolvedUrl.value = null;
   errorMessage.value = null;
   isDeleted.value = false;
+  pendingMessage.value = null;
+  unsupportedPreviewMessage.value = null;
 
   if (!artifact) {
     fetchedContent.value = null;
@@ -273,41 +202,62 @@ const refreshResolvedContent = async () => {
     return;
   }
 
-  if (fileType.value !== 'Text') {
-    resolvedUrl.value = artifact.url || artifactUrl.value || null;
+  if (usesRunFileChangeRoute.value && artifact.status === 'failed') {
+    errorMessage.value = 'This file change failed before the final content could be captured.';
+    fetchedContent.value = null;
     isFetchingContent.value = false;
     return;
   }
 
-  if (!artifactUrl.value) {
-    fetchedContent.value = usesWorkspaceBackedEditContent.value ? null : (artifact.content ?? '');
+  if (usesRunFileChangeRoute.value && artifact.status !== 'available') {
+    pendingMessage.value = 'This file change will become viewable after the edit completes and the server captures the final content.';
+    fetchedContent.value = null;
     isFetchingContent.value = false;
+    return;
+  }
 
-    if (
-      usesWorkspaceBackedEditContent.value &&
-      isAbsolutePath(normalizedArtifactPath.value) &&
-      !workspaceStore.workspacesFetched &&
-      workspaceResolutionAttemptKey.value &&
-      workspaceCatalogRefreshKey.value !== workspaceResolutionAttemptKey.value
-    ) {
-      workspaceCatalogRefreshKey.value = workspaceResolutionAttemptKey.value;
-      try {
-        await workspaceStore.fetchAllWorkspaces();
-      } catch {
-        // Leave edit_file blank when no workspace-backed path can be resolved.
-      }
+  const fetchUrl = contentFetchUrl.value;
+
+  if (fileType.value !== 'Text') {
+    if (usesRunFileChangeRoute.value) {
+      unsupportedPreviewMessage.value = 'Preview is currently available only for text file changes.';
+      resolvedUrl.value = null;
     }
+    else {
+      resolvedUrl.value = fetchUrl;
+    }
+    isFetchingContent.value = false;
+    return;
+  }
+
+  if (!fetchUrl) {
+    fetchedContent.value = usesRunFileChangeRoute.value ? null : (artifact.content ?? '');
+    isFetchingContent.value = false;
     return;
   }
 
   const currentToken = ++fetchToken;
   isFetchingContent.value = true;
   try {
-    const response = await fetch(artifactUrl.value, { cache: 'no-store' });
+    const response = await fetch(fetchUrl, { cache: 'no-store' });
     
     if (response.status === 404) {
       if (currentToken !== fetchToken) return;
       isDeleted.value = true;
+      fetchedContent.value = null;
+      return;
+    }
+
+    if (response.status === 409) {
+      if (currentToken !== fetchToken) return;
+      pendingMessage.value = 'This file change is still pending server-side capture.';
+      fetchedContent.value = null;
+      return;
+    }
+
+    if (response.status === 415) {
+      if (currentToken !== fetchToken) return;
+      unsupportedPreviewMessage.value = 'Preview is currently available only for text file changes.';
       fetchedContent.value = null;
       return;
     }
@@ -344,7 +294,7 @@ watch(() => props.artifact, async () => {
   await refreshResolvedContent();
 }, { immediate: true });
 
-watch(() => [props.artifact?.updatedAt, artifactUrl.value, fileType.value, props.refreshSignal ?? 0], () => {
+watch(() => [props.artifact?.updatedAt, contentFetchUrl.value, fileType.value, props.refreshSignal ?? 0], () => {
   refreshResolvedContent();
 });
 
