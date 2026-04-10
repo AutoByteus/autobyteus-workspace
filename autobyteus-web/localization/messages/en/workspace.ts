@@ -13,6 +13,13 @@ const messages = {
   'workspace.components.workspace.running.AgentLibraryPanel.agentsHeading': 'Agents',
   'workspace.components.workspace.running.AgentLibraryPanel.teamsHeading': 'Teams',
   'workspace.components.workspace.running.AgentLibraryPanel.noDescription': 'No description',
+  'workspace.components.workspace.agent.ArtifactContentViewer.content_not_available_yet': 'Content not available yet',
+  'workspace.components.workspace.agent.ArtifactContentViewer.preview_unavailable': 'Preview unavailable',
+  'workspace.components.workspace.agent.ArtifactContentViewer.failed_before_final_content_could_be_captured': 'This file change failed before the final content could be captured.',
+  'workspace.components.workspace.agent.ArtifactContentViewer.file_change_will_become_viewable_after_the_edit_completes': 'This file change will become viewable after the edit completes and the server captures the final content.',
+  'workspace.components.workspace.agent.ArtifactContentViewer.preview_is_currently_available_only_for_text_file_changes': 'Preview is currently available only for text file changes.',
+  'workspace.components.workspace.agent.ArtifactContentViewer.file_change_is_still_pending_server_side_capture': 'This file change is still pending server-side capture.',
+  'workspace.components.workspace.agent.ArtifactContentViewer.failed_to_fetch_artifact_content': 'Failed to fetch artifact content',
 } satisfies TranslationCatalog;
 
 export default messages;

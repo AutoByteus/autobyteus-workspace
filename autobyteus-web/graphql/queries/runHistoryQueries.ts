@@ -49,6 +49,24 @@ export const GetRunProjection = gql`
   }
 `;
 
+export const GetRunFileChanges = gql`
+  query GetRunFileChanges($runId: String!) {
+    getRunFileChanges(runId: $runId) {
+      id
+      runId
+      path
+      type
+      status
+      sourceTool
+      sourceInvocationId
+      backendArtifactId
+      content
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
 export const GetTeamRunResumeConfig = gql`
   query GetTeamRunResumeConfig($teamRunId: String!) {
     getTeamRunResumeConfig(teamRunId: $teamRunId) {

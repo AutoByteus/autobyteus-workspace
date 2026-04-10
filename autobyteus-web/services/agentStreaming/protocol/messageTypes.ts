@@ -33,6 +33,7 @@ export type ServerMessageType =
   | 'SYSTEM_TASK_NOTIFICATION'
   | 'ARTIFACT_PERSISTED'
   | 'ARTIFACT_UPDATED'
+  | 'FILE_CHANGE_UPDATED'
   | 'ERROR';
 
 export type SegmentType = 
@@ -281,6 +282,22 @@ export interface ArtifactUpdatedPayload {
   workspace_root?: string;
 }
 
+export interface FileChangeUpdatedPayload {
+  id: string;
+  runId: string;
+  path: string;
+  type: 'file';
+  status: 'streaming' | 'pending' | 'available' | 'failed';
+  sourceTool: 'write_file' | 'edit_file';
+  sourceInvocationId?: string | null;
+  backendArtifactId?: string | null;
+  content?: string | null;
+  createdAt: string;
+  updatedAt: string;
+  agent_id?: string;
+  agent_name?: string;
+}
+
 export interface ErrorPayload {
   code: string;
   message: string;
@@ -312,6 +329,7 @@ export type ServerMessage =
   | { type: 'SYSTEM_TASK_NOTIFICATION'; payload: SystemTaskNotificationPayload }
   | { type: 'ARTIFACT_PERSISTED'; payload: ArtifactPersistedPayload }
   | { type: 'ARTIFACT_UPDATED'; payload: ArtifactUpdatedPayload }
+  | { type: 'FILE_CHANGE_UPDATED'; payload: FileChangeUpdatedPayload }
   | { type: 'ERROR'; payload: ErrorPayload };
 
 // ============================================================================

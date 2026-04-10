@@ -21,6 +21,7 @@ export type {
   TaskPlanEventPayload,
   InterAgentMessagePayload,
   SystemTaskNotificationPayload,
+  FileChangeUpdatedPayload,
   ErrorPayload,
   SendMessagePayload,
   ToolActionPayload,

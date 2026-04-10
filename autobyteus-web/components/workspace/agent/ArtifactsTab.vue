@@ -32,26 +32,34 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { useAgentArtifactsStore, type AgentArtifact } from '~/stores/agentArtifactsStore';
+import { useRunFileChangesStore, type RunFileChangeArtifact } from '~/stores/runFileChangesStore';
 import { useActiveContextStore } from '~/stores/activeContextStore';
 import ArtifactList from './ArtifactList.vue';
 import ArtifactContentViewer from './ArtifactContentViewer.vue';
 
 const artifactsStore = useAgentArtifactsStore();
+const runFileChangesStore = useRunFileChangesStore();
 const activeContextStore = useActiveContextStore();
+type DisplayArtifact = AgentArtifact | RunFileChangeArtifact;
 
 const currentAgentRunId = computed(() => activeContextStore.activeAgentContext?.state.runId || '');
 const artifacts = computed(() => {
-  return [...artifactsStore.getArtifactsForRun(currentAgentRunId.value)].sort((left, right) =>
+  return [
+    ...runFileChangesStore.getArtifactsForRun(currentAgentRunId.value),
+    ...artifactsStore.getArtifactsForRun(currentAgentRunId.value),
+  ].sort((left, right) =>
     right.updatedAt.localeCompare(left.updatedAt),
   );
 });
-const latestVisibleArtifactSignal = computed(() =>
-  artifactsStore.getLatestVisibleArtifactSignalForRun(currentAgentRunId.value),
-);
+const latestVisibleArtifactSignal = computed(() => {
+  const fileChangeSignal = runFileChangesStore.getLatestVisibleArtifactSignalForRun(currentAgentRunId.value);
+  const generatedArtifactSignal = artifactsStore.getLatestVisibleArtifactSignalForRun(currentAgentRunId.value);
+  return `${fileChangeSignal ?? ''}|${generatedArtifactSignal ?? ''}`;
+});
 
 const selectedArtifactId = ref<string | null>(null);
 const viewerRefreshSignal = ref(0);
-const selectedArtifact = computed<AgentArtifact | null>(() => {
+const selectedArtifact = computed<DisplayArtifact | null>(() => {
   if (!selectedArtifactId.value) {
     return null;
   }
@@ -61,7 +69,7 @@ const selectedArtifact = computed<AgentArtifact | null>(() => {
 watch(
   latestVisibleArtifactSignal,
   () => {
-    const latestArtifactId = artifactsStore.getLatestVisibleArtifactIdForRun(currentAgentRunId.value);
+    const latestArtifactId = artifacts.value[0]?.id ?? null;
     if (latestArtifactId) {
       selectedArtifactId.value = latestArtifactId;
     }
@@ -85,7 +93,7 @@ watch(
   { immediate: true },
 );
 
-const selectArtifact = (artifact: AgentArtifact) => {
+const selectArtifact = (artifact: DisplayArtifact) => {
   if (selectedArtifactId.value === artifact.id) {
     viewerRefreshSignal.value += 1;
     return;

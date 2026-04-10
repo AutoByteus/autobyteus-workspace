@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { findSegmentById, handleSegmentContent, handleSegmentEnd, handleSegmentStart } from '../segmentHandler';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
-import { useAgentArtifactsStore } from '~/stores/agentArtifactsStore';
 import { createPinia, setActivePinia } from 'pinia';
 import type { SegmentStartPayload } from '../../protocol/messageTypes';
 import type { AgentContext } from '~/types/agent/AgentContext';
@@ -233,11 +232,6 @@ describe('segmentHandler', () => {
         })
       );
 
-      const artifactsStore = useAgentArtifactsStore();
-      const artifact = artifactsStore.getArtifactsForRun('test-agent-id')[0];
-      expect(artifact.path).toBe('/tmp/foo.txt');
-      expect(artifact.status).toBe('streaming');
-      expect(artifact.sourceTool).toBe('write_file');
     });
 
     it('should correctly handle edit_file segments', () => {
@@ -261,11 +255,6 @@ describe('segmentHandler', () => {
         })
       );
 
-      const artifactsStore = useAgentArtifactsStore();
-      const artifact = artifactsStore.getArtifactsForRun('test-agent-id')[0];
-      expect(artifact.path).toBe('/tmp/bar.txt');
-      expect(artifact.status).toBe('pending');
-      expect(artifact.sourceTool).toBe('edit_file');
     });
 
     it('hydrates run_bash command from start metadata', () => {
@@ -358,7 +347,7 @@ describe('segmentHandler', () => {
   });
 
   describe('handleSegmentContent', () => {
-    it('streams write_file content into the touched entry store', () => {
+    it('streams write_file content into the segment state', () => {
       handleSegmentStart(
         {
           id: 'seg-write',
@@ -379,10 +368,8 @@ describe('segmentHandler', () => {
         mockContext,
       );
 
-      const artifactsStore = useAgentArtifactsStore();
-      const artifact = artifactsStore.getArtifactsForRun('test-agent-id')[0];
-      expect(artifact.content).toBe('hello');
-      expect(artifact.status).toBe('streaming');
+      const segment = findSegmentById(mockContext, 'seg-write') as any;
+      expect(segment.originalContent).toBe('hello');
     });
 
     it('creates a synthetic text segment when content arrives before segment start', () => {
@@ -492,7 +479,7 @@ describe('segmentHandler', () => {
   });
 
   describe('handleSegmentEnd', () => {
-    it('marks write_file touched entries as pending when the segment ends', () => {
+    it('retains write_file content when the segment ends', () => {
       handleSegmentStart(
         {
           id: 'seg-write-end',
@@ -521,11 +508,8 @@ describe('segmentHandler', () => {
         mockContext,
       );
 
-      const artifactsStore = useAgentArtifactsStore();
-      const artifact = artifactsStore.getArtifactsForRun('test-agent-id')[0];
-      expect(artifact.status).toBe('pending');
-      expect(artifact.content).toBe('done');
-      expect(artifactsStore.getActiveStreamingArtifactForRun('test-agent-id')).toBeNull();
+      const segment = findSegmentById(mockContext, 'seg-write-end') as any;
+      expect(segment.originalContent).toContain('done');
     });
 
     it('removes empty think segment on end', () => {
