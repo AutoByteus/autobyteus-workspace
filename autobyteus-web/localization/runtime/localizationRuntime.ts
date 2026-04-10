@@ -12,17 +12,52 @@ import type {
   TranslationParams,
 } from './types';
 
-function interpolateMessage(template: string, params?: TranslationParams): string {
-  if (!params) {
-    return template;
+const NAMED_HTML_ENTITIES: Record<string, string> = {
+  amp: '&',
+  apos: '\'',
+  gt: '>',
+  larr: '←',
+  lt: '<',
+  nbsp: '\u00A0',
+  quot: '"',
+  rarr: '→',
+  times: '×',
+};
+
+function decodeHtmlEntities(message: string): string {
+  if (!message.includes('&')) {
+    return message;
   }
 
-  return Object.entries(params).reduce((message, [key, value]) => {
+  return message.replace(/&(#(?:x[0-9a-fA-F]+|\d+)|[a-zA-Z]+);/g, (entity, token: string) => {
+    if (token.startsWith('#')) {
+      const isHex = token[1]?.toLowerCase() === 'x';
+      const rawCodePoint = isHex ? token.slice(2) : token.slice(1);
+      const parsed = Number.parseInt(rawCodePoint, isHex ? 16 : 10);
+      if (Number.isNaN(parsed)) {
+        return entity;
+      }
+
+      return String.fromCodePoint(parsed);
+    }
+
+    return NAMED_HTML_ENTITIES[token] ?? entity;
+  });
+}
+
+function interpolateMessage(template: string, params?: TranslationParams): string {
+  if (!params) {
+    return decodeHtmlEntities(template);
+  }
+
+  const interpolated = Object.entries(params).reduce((message, [key, value]) => {
     const replacement = String(value);
     return message
       .replaceAll(`{{${key}}}`, replacement)
       .replaceAll(`{${key}}`, replacement);
   }, template);
+
+  return decodeHtmlEntities(interpolated);
 }
 
 function resolveMessage(catalog: TranslationCatalog, key: TranslationKey): string | null {
