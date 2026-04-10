@@ -1,5 +1,7 @@
-# Release Notes
+## Improvements
+- Added advanced Remote Browser Sharing settings in Electron, including an advertised-host control for trusted LAN or local Docker pairing.
+- Added per-node pair and unpair controls so a selected remote node can use the local Electron browser through an expiring bridge descriptor.
 
-- Artifacts now load `write_file` and `edit_file` content from the server by run and path, including external absolute paths that are outside the local Electron workspace.
-- Active and reopened runs now keep a complete file-change list in the Artifacts tab instead of depending only on future live stream updates.
-- The Artifacts viewer now handles streaming, pending, failed, and unsupported preview states more reliably, reducing blank views and misleading stale content.
+## Fixes
+- Remote nodes can now receive browser-bridge access through runtime registration instead of depending only on the embedded Electron startup environment.
+- Browser tool availability on paired remote nodes still remains gated by configured browser tool names, preventing accidental full browser exposure.
