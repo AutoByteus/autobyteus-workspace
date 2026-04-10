@@ -71,6 +71,17 @@ describe("MemoryFileStore", () => {
     expect(store.readJsonl(path.join(tempDir, "missing.jsonl"))).toEqual([]);
   });
 
+  it("does not warn when the optional archive file is missing", () => {
+    tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "memory-store-"));
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const store = new MemoryFileStore(tempDir);
+
+    expect(store.readRawTracesArchive("agent")).toEqual([]);
+    expect(warnSpy).not.toHaveBeenCalled();
+
+    warnSpy.mockRestore();
+  });
+
   it("can suppress missing-file warnings", () => {
     tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "memory-store-"));
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});

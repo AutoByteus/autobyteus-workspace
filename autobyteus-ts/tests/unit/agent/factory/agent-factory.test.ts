@@ -113,7 +113,7 @@ describe('AgentFactory', () => {
     const agent = factory.createAgent(config);
 
     expect(agent).toBeInstanceOf(Agent);
-    expect(agent.agentId.startsWith(`${config.name}_${config.role}`)).toBe(true);
+    expect(agent.agentId).toMatch(/^factorytestagent_factory_tester_\d{4}$/);
     expect(createRuntimeSpy).toHaveBeenCalledWith(agent.agentId, config);
     expect(factory.getAgent(agent.agentId)).toBe(agent);
     expect(factory.listActiveAgentIds()).toContain(agent.agentId);
