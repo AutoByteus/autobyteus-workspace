@@ -25,6 +25,7 @@ import { TeamRunHistoryResolver } from "./types/team-run-history.js";
 import { RuntimeAvailabilityResolver } from "./types/runtime-availability.js";
 import { AgentPackageResolver } from "./types/agent-packages.js";
 import { ManagedMessagingGatewayResolver } from "./types/managed-messaging-gateway.js";
+import { RemoteBrowserBridgeResolver } from "./types/remote-browser-bridge.js";
 import { DateTimeScalar } from "./scalars/date-time.js";
 
 export async function buildGraphqlSchema() {
@@ -56,6 +57,7 @@ export async function buildGraphqlSchema() {
       RuntimeAvailabilityResolver,
       AgentPackageResolver,
       ManagedMessagingGatewayResolver,
+      RemoteBrowserBridgeResolver,
     ],
     scalarsMap: [{ type: Date, scalar: DateTimeScalar }],
   });

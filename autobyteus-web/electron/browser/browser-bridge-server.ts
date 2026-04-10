@@ -1,5 +1,4 @@
 import { createServer, IncomingMessage, Server, ServerResponse } from 'http'
-import { randomBytes } from 'crypto'
 import type { AddressInfo } from 'net'
 import {
   CaptureBrowserScreenshotRequest,
@@ -13,6 +12,7 @@ import {
   ReadBrowserPageRequest,
 } from './browser-tab-manager'
 import { logger } from '../logger'
+import { BrowserBridgeAuthRegistry } from './browser-bridge-auth-registry'
 
 export const BROWSER_BRIDGE_BASE_URL_ENV = 'AUTOBYTEUS_BROWSER_BRIDGE_BASE_URL'
 export const BROWSER_BRIDGE_TOKEN_ENV = 'AUTOBYTEUS_BROWSER_BRIDGE_TOKEN'
@@ -36,28 +36,29 @@ type BrowserBridgeErrorResponse = {
 }
 
 const MAX_BODY_BYTES = 1024 * 1024
-const AUTH_HEADER_NAME = 'x-autobyteus-browser-token'
-
 export class BrowserBridgeServer {
   private server: Server | null = null
   private runtimeEnv: BrowserBridgeRuntimeEnv | null = null
-  private authToken: string | null = null
+  private port: number | null = null
 
-  constructor(private readonly browserSessionManager: BrowserTabManager) {}
+  constructor(
+    private readonly browserSessionManager: BrowserTabManager,
+    private readonly authRegistry: BrowserBridgeAuthRegistry,
+    private readonly bindHost: string = '127.0.0.1',
+  ) {}
 
   async start(): Promise<BrowserBridgeRuntimeEnv> {
     if (this.runtimeEnv) {
       return this.runtimeEnv
     }
 
-    const token = randomBytes(24).toString('hex')
     const server = createServer((request, response) => {
       void this.handleRequest(request, response)
     })
 
     await new Promise<void>((resolve, reject) => {
       server.once('error', reject)
-      server.listen(0, '127.0.0.1', () => resolve())
+      server.listen(0, this.bindHost, () => resolve())
     })
 
     const address = server.address()
@@ -67,20 +68,33 @@ export class BrowserBridgeServer {
     }
 
     this.server = server
-    this.authToken = token
+    this.port = (address as AddressInfo).port
+    const authToken = this.authRegistry.issueEmbeddedToken()
     this.runtimeEnv = {
-      [BROWSER_BRIDGE_BASE_URL_ENV]: `http://127.0.0.1:${(address as AddressInfo).port}`,
-      [BROWSER_BRIDGE_TOKEN_ENV]: token,
+      [BROWSER_BRIDGE_BASE_URL_ENV]: `http://127.0.0.1:${this.port}`,
+      [BROWSER_BRIDGE_TOKEN_ENV]: authToken,
     }
     logger.info(`Browser bridge started on ${this.runtimeEnv[BROWSER_BRIDGE_BASE_URL_ENV]}`)
     return this.runtimeEnv
+  }
+
+  getRemoteBridgeBaseUrl(advertisedHost: string): string {
+    if (!this.port) {
+      throw new Error('Browser bridge is not started.')
+    }
+    return `http://${advertisedHost}:${this.port}`
+  }
+
+  isRemoteSharingActive(): boolean {
+    return this.bindHost !== '127.0.0.1'
   }
 
   async stop(): Promise<void> {
     const server = this.server
     this.server = null
     this.runtimeEnv = null
-    this.authToken = null
+    this.port = null
+    this.authRegistry.clear()
 
     if (!server) {
       return
@@ -207,13 +221,7 @@ export class BrowserBridgeServer {
   }
 
   private isAuthorized(request: IncomingMessage): boolean {
-    const expectedToken = this.authToken
-    if (!expectedToken) {
-      return false
-    }
-
-    const providedToken = request.headers[AUTH_HEADER_NAME]
-    return typeof providedToken === 'string' && providedToken === expectedToken
+    return this.authRegistry.isAuthorized(request.headers)
   }
 
   private async readJsonBody(request: IncomingMessage): Promise<Record<string, unknown>> {
