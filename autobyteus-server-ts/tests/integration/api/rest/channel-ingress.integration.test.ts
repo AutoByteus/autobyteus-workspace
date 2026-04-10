@@ -28,6 +28,7 @@ import { ChannelBindingRunLauncher } from "../../../../src/external-channel/runt
 import { ChannelAgentRunFacade } from "../../../../src/external-channel/runtime/channel-agent-run-facade.js";
 import { ChannelAgentRunReplyBridge } from "../../../../src/external-channel/runtime/channel-agent-run-reply-bridge.js";
 import { ChannelTeamRunFacade } from "../../../../src/external-channel/runtime/channel-team-run-facade.js";
+import { ChannelTeamRunReplyBridge } from "../../../../src/external-channel/runtime/channel-team-run-reply-bridge.js";
 import { ReceiptWorkflowRuntime } from "../../../../src/external-channel/runtime/receipt-workflow-runtime.js";
 import { ChannelBindingService } from "../../../../src/external-channel/services/channel-binding-service.js";
 import { ChannelIngressService } from "../../../../src/external-channel/services/channel-ingress-service.js";
@@ -193,6 +194,32 @@ type ScheduledRuntimeEvent = {
   event: Record<string, unknown>;
 };
 
+const createTeamTurnRuntimeEvent = (input: {
+  teamRunId: string;
+  memberName: string;
+  memberRunId: string;
+  turnId: string;
+  eventType: AgentRunEventType.TURN_STARTED | AgentRunEventType.TURN_COMPLETED;
+  statusHint: "ACTIVE" | "IDLE";
+}) => ({
+  eventSourceType: "AGENT",
+  teamRunId: input.teamRunId,
+  data: {
+    runtimeKind: RuntimeKind.AUTOBYTEUS,
+    memberName: input.memberName,
+    memberRunId: input.memberRunId,
+    agentEvent: {
+      eventType: input.eventType,
+      runId: input.memberRunId,
+      payload: {
+        turnId: input.turnId,
+      },
+      statusHint: input.statusHint,
+    },
+  },
+  subTeamNodeName: null,
+});
+
 const createAgentBackendFactory = (input: {
   memoryDir: string;
   runId: string;
@@ -305,7 +332,10 @@ const createAgentBackendFactory = (input: {
 
 const createTeamBackendFactory = (input: {
   teamRunId: string;
+  coordinatorMemberName?: string;
   expectedTurnId?: string;
+  runtimeEvents?: ScheduledRuntimeEvent[];
+  runtimeEventsPerPost?: ScheduledRuntimeEvent[][];
 }): {
   factory: TeamRunBackendFactory;
   postMessage: ReturnType<typeof vi.fn>;
@@ -316,6 +346,8 @@ const createTeamBackendFactory = (input: {
       listener(event);
     }
   };
+  const activeStatesByRunId = new Map<string, { active: boolean }>();
+  let postInvocationCount = 0;
   const buildMemberContexts = (config: TeamRunConfig) =>
     config.memberConfigs.map((memberConfig) => {
       const memberRouteKey = normalizeMemberRouteKey(
@@ -334,31 +366,41 @@ const createTeamBackendFactory = (input: {
 
   const postMessage = vi.fn(
     async (_message: unknown, targetMemberName?: string | null) => {
+      const coordinatorMemberName = input.coordinatorMemberName ?? "Coordinator";
       const targetRouteKey = normalizeMemberRouteKey(
-        targetMemberName?.trim() || "Coordinator",
+        targetMemberName?.trim() || coordinatorMemberName,
       );
       const memberRunId = buildTeamMemberRunId(input.teamRunId, targetRouteKey);
-      const memberName = targetMemberName?.trim() || "Coordinator";
-      queueMicrotask(() => {
-        emitRuntimeEvent({
-          eventSourceType: "AGENT",
-          teamRunId: input.teamRunId,
-          data: {
-            runtimeKind: RuntimeKind.AUTOBYTEUS,
-            memberName,
-            memberRunId,
-            agentEvent: {
+      const memberName = targetMemberName?.trim() || coordinatorMemberName;
+      const runtimeEvents =
+        input.runtimeEventsPerPost?.[postInvocationCount] ??
+        input.runtimeEvents ??
+        [
+          {
+            delayMs: null,
+            event: createTeamTurnRuntimeEvent({
+              teamRunId: input.teamRunId,
+              memberName,
+              memberRunId,
+              turnId: input.expectedTurnId ?? "turn-team-1",
               eventType: AgentRunEventType.TURN_STARTED,
-              runId: memberRunId,
-              payload: {
-                turnId: input.expectedTurnId ?? "turn-team-1",
-              },
               statusHint: "ACTIVE",
-            },
+            }),
           },
-          subTeamNodeName: null,
-        });
-      });
+        ];
+      postInvocationCount += 1;
+      for (const runtimeEvent of runtimeEvents) {
+        if (runtimeEvent.delayMs === null) {
+          emitRuntimeEvent(runtimeEvent.event);
+          continue;
+        }
+        const timer = setTimeout(() => {
+          emitRuntimeEvent(runtimeEvent.event);
+        }, runtimeEvent.delayMs);
+        if (typeof (timer as { unref?: () => void }).unref === "function") {
+          (timer as { unref: () => void }).unref();
+        }
+      }
       return {
         accepted: true,
         code: null,
@@ -369,18 +411,32 @@ const createTeamBackendFactory = (input: {
     },
   );
 
-  const createBackendForConfig = (config: TeamRunConfig): TeamRunBackend => {
+  const createBackendForConfig = (
+    config: TeamRunConfig,
+    runId: string,
+    options: {
+      restored?: boolean;
+    } = {},
+  ): TeamRunBackend => {
     const memberContexts = buildMemberContexts(config);
+    const activeState = activeStatesByRunId.get(runId) ?? { active: true };
+    if (options.restored) {
+      activeState.active = true;
+    }
+    activeStatesByRunId.set(runId, activeState);
     return {
-      runId: input.teamRunId,
+      runId,
       runtimeKind: config.runtimeKind,
       getRuntimeContext: () =>
         ({
-          coordinatorMemberRouteKey:
-            memberContexts[0]?.memberRouteKey ?? "Coordinator",
+          coordinatorMemberRouteKey: normalizeMemberRouteKey(
+            input.coordinatorMemberName ??
+              memberContexts[0]?.memberRouteKey ??
+              "Coordinator",
+          ),
           memberContexts,
         }) as never,
-      isActive: () => true,
+      isActive: () => activeState.active,
       getStatus: () => "IDLE",
       subscribeToEvents: (listener) => {
         listeners.add(listener);
@@ -392,14 +448,22 @@ const createTeamBackendFactory = (input: {
       deliverInterAgentMessage: vi.fn().mockResolvedValue({ accepted: true }),
       approveToolInvocation: vi.fn().mockResolvedValue({ accepted: true }),
       interrupt: vi.fn().mockResolvedValue({ accepted: true }),
-      terminate: vi.fn().mockResolvedValue({ accepted: true }),
+      terminate: vi.fn().mockImplementation(async () => {
+        activeState.active = false;
+        return { accepted: true };
+      }),
     };
   };
 
   return {
     factory: {
-      createBackend: vi.fn(async (config) => createBackendForConfig(config)),
-      restoreBackend: vi.fn(async (context) => createBackendForConfig(context.config)),
+      createBackend: vi.fn(async (config, preferredRunId = null) =>
+        createBackendForConfig(config, preferredRunId ?? input.teamRunId),
+      ),
+      restoreBackend: vi.fn(async (context) =>
+        createBackendForConfig(context.config, context.runId, {
+          restored: true,
+        })),
     },
     postMessage,
   };
@@ -884,6 +948,201 @@ const createTeamEndToEndIngressHarness = async () => {
   };
 };
 
+const createTeamEndToEndIngressHarnessWithWorkflowRuntime = async (options: {
+  coordinatorMemberName?: string;
+  expectedMemberName?: string;
+  teamMemberNames?: string[];
+  runtimeEventsPerPost?: ScheduledRuntimeEvent[][];
+  replyTextByTurn?: Record<string, string>;
+  expectedTurnId?: string;
+  expectedReplyText?: string;
+} = {}) => {
+  const rootDir = await createTempDir("channel-ingress-team-recovery-e2e");
+  const workspaceRootPath = path.join(rootDir, "workspace");
+  const memoryDir = path.join(rootDir, "memory");
+  const bindingsFilePath = path.join(rootDir, "bindings.json");
+  const receiptsFilePath = path.join(rootDir, "message-receipts.json");
+  const expectedTeamRunId = "team-run-recovery-e2e";
+  const coordinatorMemberName = options.coordinatorMemberName ?? "Coordinator";
+  const teamMemberNames = options.teamMemberNames ?? [coordinatorMemberName];
+  const expectedMemberName =
+    options.expectedMemberName ?? coordinatorMemberName;
+  const expectedMemberRunId = buildTeamMemberRunId(
+    expectedTeamRunId,
+    expectedMemberName,
+  );
+  const expectedTurnId = options.expectedTurnId ?? "turn-team-recovery-e2e";
+  const expectedReplyText =
+    options.expectedReplyText ?? "Telegram team first reply";
+  const replyTextByTurn = {
+    [expectedTurnId]: expectedReplyText,
+    ...(options.replyTextByTurn ?? {}),
+  };
+
+  await mkdir(workspaceRootPath, { recursive: true });
+
+  const bindingService = new ChannelBindingService(
+    new FileChannelBindingProvider(bindingsFilePath),
+  );
+  const messageReceiptService = new ChannelMessageReceiptService(
+    new FileChannelMessageReceiptProvider(receiptsFilePath),
+  );
+  const workspaceManager = createWorkspaceManager();
+  const { factory, postMessage } = createTeamBackendFactory({
+    teamRunId: expectedTeamRunId,
+    coordinatorMemberName,
+    expectedTurnId,
+    runtimeEventsPerPost:
+      options.runtimeEventsPerPost ??
+      [
+        [
+          {
+            delayMs: null,
+            event: createTeamTurnRuntimeEvent({
+              teamRunId: expectedTeamRunId,
+              memberName: expectedMemberName,
+              memberRunId: expectedMemberRunId,
+              turnId: expectedTurnId,
+              eventType: AgentRunEventType.TURN_STARTED,
+              statusHint: "ACTIVE",
+            }),
+          },
+          {
+            delayMs: 100,
+            event: createTeamTurnRuntimeEvent({
+              teamRunId: expectedTeamRunId,
+              memberName: expectedMemberName,
+              memberRunId: expectedMemberRunId,
+              turnId: expectedTurnId,
+              eventType: AgentRunEventType.TURN_COMPLETED,
+              statusHint: "IDLE",
+            }),
+          },
+        ],
+      ],
+  });
+  const teamRunManager = new AgentTeamRunManager({
+    autoByteusTeamRunBackendFactory: factory as never,
+    codexTeamRunBackendFactory: factory as never,
+    claudeTeamRunBackendFactory: factory as never,
+  });
+  const teamRunMetadataService = new TeamRunMetadataService(memoryDir);
+  const teamRunHistoryIndexService = new TeamRunHistoryIndexService(memoryDir, {
+    teamRunManager,
+  });
+  const teamDefinition = new AgentTeamDefinition({
+    id: "team-def-1",
+    name: "External Channel Team",
+    description: "External channel team",
+    instructions: "Route inbound messages to the coordinator",
+    coordinatorMemberName,
+    nodes: teamMemberNames.map(
+      (memberName) =>
+        new TeamMember({
+          memberName,
+          ref: "agent-def-1",
+          refType: "agent",
+          refScope: "shared",
+        }),
+    ),
+  });
+  const teamRunService = new TeamRunService({
+    agentTeamRunManager: teamRunManager,
+    teamDefinitionService: {
+      getDefinitionById: vi.fn().mockResolvedValue(teamDefinition),
+    } as never,
+    teamRunMetadataService,
+    teamRunHistoryIndexService,
+    workspaceManager: workspaceManager as never,
+    memoryDir,
+  });
+  const runLauncher = new ChannelBindingRunLauncher({
+    bindingService,
+    teamRunService,
+  });
+  const teamRunFacade = new ChannelTeamRunFacade({
+    runLauncher,
+    teamRunService,
+    teamLiveMessagePublisher: {
+      publishExternalUserMessage: vi.fn(),
+    } as never,
+  });
+  const resolveReplyText = vi.fn().mockImplementation(
+    async (input: { turnId: string }) => replyTextByTurn[input.turnId] ?? null,
+  );
+  const publishAssistantReplyToSource = vi.fn().mockResolvedValue({
+    published: true,
+    duplicate: false,
+    reason: null,
+    envelope: {} as object,
+  });
+  const receiptWorkflowRuntime = new ReceiptWorkflowRuntime({
+    messageReceiptService,
+    agentRunService: {
+      resolveAgentRun: vi.fn().mockResolvedValue(null),
+    } as never,
+    teamRunService,
+    agentReplyBridge: {
+      observeAcceptedTurnToSource: vi.fn(),
+    } as never,
+    teamReplyBridge: new ChannelTeamRunReplyBridge({
+      turnReplyRecoveryService: {
+        resolveReplyText,
+      } as never,
+    }),
+    turnReplyRecoveryService: {
+      resolveReplyText,
+    } as never,
+    replyCallbackServiceFactory: () =>
+      ({
+        publishAssistantReplyToSource,
+      }) as never,
+  });
+
+  const ingressService = new ChannelIngressService({
+    bindingService,
+    threadLockService: new ChannelThreadLockService(),
+    runFacade: {
+      dispatchToBinding: (
+        binding: ChannelBinding,
+        envelope: ReturnType<typeof createEnvelope>,
+      ) =>
+        teamRunFacade.dispatchToTeamBinding(binding, envelope as never),
+    } as never,
+    messageReceiptService,
+    receiptWorkflowRuntime,
+  });
+
+  const app = fastify();
+  await registerChannelIngressRoutes(app, {
+    ingressService,
+    deliveryEventService: {
+      recordPending: vi.fn(),
+      recordSent: vi.fn(),
+      recordFailed: vi.fn(),
+    },
+  });
+
+  return {
+    app,
+    bindingService,
+    messageReceiptService,
+    receiptWorkflowRuntime,
+    teamRunService,
+    backendFactory: factory,
+    postMessage,
+    publishAssistantReplyToSource,
+    resolveReplyText,
+    expectedReplyText,
+    expectedTeamRunId,
+    expectedMemberName,
+    expectedMemberRunId,
+    expectedTurnId,
+    memoryDir,
+    workspaceRootPath,
+  };
+};
+
 describe("channel-ingress route", () => {
   it("routes an agent binding end-to-end, creates a real run, and persists file artifacts", async () => {
     const harness = await createAgentEndToEndIngressHarness();
@@ -1047,6 +1306,196 @@ describe("channel-ingress route", () => {
   });
 
   it(
+    "uses the real receipt workflow runtime to publish the accumulated team turn reply without a second inbound message",
+    async () => {
+      const harness = await createTeamEndToEndIngressHarnessWithWorkflowRuntime();
+      const envelope = createEnvelope({
+        externalMessageId: "msg-team-runtime-1",
+        content: "hello team runtime",
+      });
+
+      try {
+        await harness.bindingService.upsertBinding({
+          ...createTeamBindingInput(),
+          teamRunId: null,
+        });
+
+        const response = await harness.app.inject({
+          method: "POST",
+          url: "/api/channel-ingress/v1/messages",
+          payload: envelope,
+        });
+
+        expect(response.statusCode).toBe(202);
+        expect(response.json()).toMatchObject({
+          accepted: true,
+          duplicate: false,
+          disposition: "ACCEPTED",
+          bindingResolved: true,
+        });
+        expect(harness.postMessage).toHaveBeenCalledOnce();
+        expect(harness.postMessage.mock.calls[0]?.[0]).toMatchObject({
+          content: envelope.content,
+        });
+        expect(harness.postMessage.mock.calls[0]?.[1]).toBe("Coordinator");
+
+        await new Promise((resolve) => setTimeout(resolve, 1_200));
+
+        expect(harness.resolveReplyText).toHaveBeenCalledTimes(1);
+        const publishedReply =
+          harness.publishAssistantReplyToSource.mock.calls[0]?.[0];
+        expect(publishedReply).toMatchObject({
+          source: expect.objectContaining({
+            externalMessageId: envelope.externalMessageId,
+          }),
+          agentRunId: harness.expectedMemberRunId,
+          teamRunId: harness.expectedTeamRunId,
+          turnId: harness.expectedTurnId,
+          replyText: harness.expectedReplyText,
+        });
+        expect(publishedReply?.callbackIdempotencyKey).toBe(
+          `external-reply:${harness.expectedMemberRunId}:${harness.expectedTurnId}`,
+        );
+
+        const routedReceipt =
+          await harness.messageReceiptService.getReceiptByExternalMessage({
+            provider: envelope.provider,
+            transport: envelope.transport,
+            accountId: envelope.accountId,
+            peerId: envelope.peerId,
+            threadId: envelope.threadId,
+            externalMessageId: envelope.externalMessageId,
+          });
+        expect(routedReceipt).toMatchObject({
+          ingressState: "ROUTED",
+          agentRunId: harness.expectedMemberRunId,
+          teamRunId: harness.expectedTeamRunId,
+          turnId: harness.expectedTurnId,
+        });
+      } finally {
+        await harness.receiptWorkflowRuntime.stop();
+        await harness.app.close();
+      }
+    },
+    10_000,
+  );
+
+  it(
+    "routes a multi-member team binding to the coordinator by default when no target node is configured",
+    async () => {
+      const coordinatorMemberName = "Coordinator";
+      const workerMemberName = "WorkerA";
+      const turnId = "turn-team-coordinator-default-e2e";
+      const replyText = "Telegram team coordinator default reply";
+      const harness = await createTeamEndToEndIngressHarnessWithWorkflowRuntime({
+        coordinatorMemberName,
+        teamMemberNames: [coordinatorMemberName, workerMemberName],
+        expectedTurnId: turnId,
+        expectedReplyText: replyText,
+      });
+      const workerMemberRunId = buildTeamMemberRunId(
+        harness.expectedTeamRunId,
+        workerMemberName,
+      );
+      const envelope = createEnvelope({
+        externalMessageId: "msg-team-coordinator-default-1",
+        content: "hello multi-member team",
+      });
+
+      try {
+        await harness.bindingService.upsertBinding({
+          ...createTeamBindingInput(harness.workspaceRootPath),
+          teamRunId: null,
+          targetNodeName: null,
+        });
+
+        const response = await harness.app.inject({
+          method: "POST",
+          url: "/api/channel-ingress/v1/messages",
+          payload: envelope,
+        });
+
+        expect(response.statusCode).toBe(202);
+        expect(response.json()).toMatchObject({
+          accepted: true,
+          duplicate: false,
+          disposition: "ACCEPTED",
+          bindingResolved: true,
+        });
+        expect(harness.postMessage).toHaveBeenCalledOnce();
+        expect(harness.postMessage.mock.calls[0]?.[0]).toMatchObject({
+          content: envelope.content,
+        });
+        expect(harness.postMessage.mock.calls[0]?.[1]).toBeNull();
+
+        await new Promise((resolve) => setTimeout(resolve, 1_200));
+
+        const publishedReply =
+          harness.publishAssistantReplyToSource.mock.calls[0]?.[0];
+        expect(publishedReply).toMatchObject({
+          source: expect.objectContaining({
+            externalMessageId: envelope.externalMessageId,
+          }),
+          agentRunId: harness.expectedMemberRunId,
+          teamRunId: harness.expectedTeamRunId,
+          turnId,
+          replyText,
+        });
+        expect(publishedReply?.agentRunId).not.toBe(workerMemberRunId);
+
+        const routedReceipt =
+          await harness.messageReceiptService.getReceiptByExternalMessage({
+            provider: envelope.provider,
+            transport: envelope.transport,
+            accountId: envelope.accountId,
+            peerId: envelope.peerId,
+            threadId: envelope.threadId,
+            externalMessageId: envelope.externalMessageId,
+          });
+        expect(routedReceipt).toMatchObject({
+          ingressState: "ROUTED",
+          agentRunId: harness.expectedMemberRunId,
+          teamRunId: harness.expectedTeamRunId,
+          turnId,
+        });
+        expect(routedReceipt?.agentRunId).not.toBe(workerMemberRunId);
+
+        const metadataPath = path.join(
+          harness.memoryDir,
+          "agent_teams",
+          harness.expectedTeamRunId,
+          "team_run_metadata.json",
+        );
+        const metadata = await readJson<Record<string, unknown>>(metadataPath);
+        const memberMetadata = Array.isArray(metadata.memberMetadata)
+          ? metadata.memberMetadata
+          : [];
+        const memberRunIds = memberMetadata.map((row) =>
+          typeof (row as Record<string, unknown>).memberRunId === "string"
+            ? ((row as Record<string, unknown>).memberRunId as string)
+            : null,
+        );
+
+        expect(metadata).toMatchObject({
+          teamRunId: harness.expectedTeamRunId,
+          coordinatorMemberRouteKey: coordinatorMemberName,
+        });
+        expect(memberMetadata).toHaveLength(2);
+        expect(memberRunIds).toEqual(
+          expect.arrayContaining([
+            harness.expectedMemberRunId,
+            workerMemberRunId,
+          ]),
+        );
+      } finally {
+        await harness.receiptWorkflowRuntime.stop();
+        await harness.app.close();
+      }
+    },
+    10_000,
+  );
+
+  it(
     "uses the real receipt workflow runtime to publish the accumulated turn reply without a second inbound message",
     async () => {
     const harness = await createAgentEndToEndIngressHarnessWithWorkflowRuntime();
@@ -1109,6 +1558,202 @@ describe("channel-ingress route", () => {
     }
     },
     10_000,
+  );
+
+  it(
+    "publishes one final team reply for each distinct inbound message on the same thread while reusing the same team run",
+    async () => {
+      const teamRunId = "team-run-recovery-e2e";
+      const memberName = "Coordinator";
+      const memberRunId = buildTeamMemberRunId(teamRunId, memberName);
+      const firstTurnId = "turn-team-recovery-e2e-1";
+      const secondTurnId = "turn-team-recovery-e2e-2";
+      const firstReplyText = "Telegram team first reply";
+      const secondReplyText = "Telegram team second reply";
+      const harness = await createTeamEndToEndIngressHarnessWithWorkflowRuntime({
+        expectedTurnId: firstTurnId,
+        expectedReplyText: firstReplyText,
+        replyTextByTurn: {
+          [firstTurnId]: firstReplyText,
+          [secondTurnId]: secondReplyText,
+        },
+        runtimeEventsPerPost: [
+          [
+            {
+              delayMs: null,
+              event: createTeamTurnRuntimeEvent({
+                teamRunId,
+                memberName,
+                memberRunId,
+                turnId: firstTurnId,
+                eventType: AgentRunEventType.TURN_STARTED,
+                statusHint: "ACTIVE",
+              }),
+            },
+            {
+              delayMs: 100,
+              event: createTeamTurnRuntimeEvent({
+                teamRunId,
+                memberName,
+                memberRunId,
+                turnId: firstTurnId,
+                eventType: AgentRunEventType.TURN_COMPLETED,
+                statusHint: "IDLE",
+              }),
+            },
+          ],
+          [
+            {
+              delayMs: null,
+              event: createTeamTurnRuntimeEvent({
+                teamRunId,
+                memberName,
+                memberRunId,
+                turnId: secondTurnId,
+                eventType: AgentRunEventType.TURN_STARTED,
+                statusHint: "ACTIVE",
+              }),
+            },
+            {
+              delayMs: 100,
+              event: createTeamTurnRuntimeEvent({
+                teamRunId,
+                memberName,
+                memberRunId,
+                turnId: secondTurnId,
+                eventType: AgentRunEventType.TURN_COMPLETED,
+                statusHint: "IDLE",
+              }),
+            },
+          ],
+        ],
+      });
+      const firstEnvelope = createEnvelope({
+        externalMessageId: "msg-team-1",
+        content: "hello team first",
+      });
+      const secondEnvelope = createEnvelope({
+        externalMessageId: "msg-team-2",
+        content: "hello team second",
+        receivedAt: "2026-03-27T07:03:00.000Z",
+      });
+
+      try {
+        await harness.bindingService.upsertBinding({
+          ...createTeamBindingInput(),
+          teamRunId: null,
+        });
+
+        const firstResponse = await harness.app.inject({
+          method: "POST",
+          url: "/api/channel-ingress/v1/messages",
+          payload: firstEnvelope,
+        });
+
+        expect(firstResponse.statusCode).toBe(202);
+        expect(firstResponse.json()).toMatchObject({
+          accepted: true,
+          duplicate: false,
+          disposition: "ACCEPTED",
+          bindingResolved: true,
+        });
+
+        await new Promise((resolve) => setTimeout(resolve, 1_200));
+
+        const bindingsAfterFirst = await harness.bindingService.listBindings();
+        expect(bindingsAfterFirst).toHaveLength(1);
+        const persistedTeamRunId = bindingsAfterFirst[0]?.teamRunId;
+        expect(persistedTeamRunId).toBe(teamRunId);
+
+        const secondResponse = await harness.app.inject({
+          method: "POST",
+          url: "/api/channel-ingress/v1/messages",
+          payload: secondEnvelope,
+        });
+
+        expect(secondResponse.statusCode).toBe(202);
+        expect(secondResponse.json()).toMatchObject({
+          accepted: true,
+          duplicate: false,
+          disposition: "ACCEPTED",
+          bindingResolved: true,
+        });
+
+        await new Promise((resolve) => setTimeout(resolve, 1_200));
+
+        expect(harness.backendFactory.createBackend).toHaveBeenCalledTimes(1);
+        expect(harness.backendFactory.restoreBackend).toHaveBeenCalledTimes(0);
+        expect(harness.postMessage).toHaveBeenCalledTimes(2);
+        expect(harness.resolveReplyText).toHaveBeenCalledTimes(2);
+        expect(harness.publishAssistantReplyToSource).toHaveBeenCalledTimes(2);
+
+        const firstPublishedReply =
+          harness.publishAssistantReplyToSource.mock.calls[0]?.[0];
+        const secondPublishedReply =
+          harness.publishAssistantReplyToSource.mock.calls[1]?.[0];
+
+        expect(firstPublishedReply).toMatchObject({
+          agentRunId: memberRunId,
+          teamRunId: persistedTeamRunId,
+          turnId: firstTurnId,
+          replyText: firstReplyText,
+          source: expect.objectContaining({
+            externalMessageId: firstEnvelope.externalMessageId,
+          }),
+        });
+        expect(secondPublishedReply).toMatchObject({
+          agentRunId: memberRunId,
+          teamRunId: persistedTeamRunId,
+          turnId: secondTurnId,
+          replyText: secondReplyText,
+          source: expect.objectContaining({
+            externalMessageId: secondEnvelope.externalMessageId,
+          }),
+        });
+        expect(firstPublishedReply?.callbackIdempotencyKey).toBe(
+          `external-reply:${memberRunId}:${firstTurnId}`,
+        );
+        expect(secondPublishedReply?.callbackIdempotencyKey).toBe(
+          `external-reply:${memberRunId}:${secondTurnId}`,
+        );
+
+        const firstReceipt =
+          await harness.messageReceiptService.getReceiptByExternalMessage({
+            provider: firstEnvelope.provider,
+            transport: firstEnvelope.transport,
+            accountId: firstEnvelope.accountId,
+            peerId: firstEnvelope.peerId,
+            threadId: firstEnvelope.threadId,
+            externalMessageId: firstEnvelope.externalMessageId,
+          });
+        const secondReceipt =
+          await harness.messageReceiptService.getReceiptByExternalMessage({
+            provider: secondEnvelope.provider,
+            transport: secondEnvelope.transport,
+            accountId: secondEnvelope.accountId,
+            peerId: secondEnvelope.peerId,
+            threadId: secondEnvelope.threadId,
+            externalMessageId: secondEnvelope.externalMessageId,
+          });
+
+        expect(firstReceipt).toMatchObject({
+          ingressState: "ROUTED",
+          agentRunId: memberRunId,
+          teamRunId: persistedTeamRunId,
+          turnId: firstTurnId,
+        });
+        expect(secondReceipt).toMatchObject({
+          ingressState: "ROUTED",
+          agentRunId: memberRunId,
+          teamRunId: persistedTeamRunId,
+          turnId: secondTurnId,
+        });
+      } finally {
+        await harness.receiptWorkflowRuntime.stop();
+        await harness.app.close();
+      }
+    },
+    15_000,
   );
 
   it(
@@ -1459,6 +2104,178 @@ describe("channel-ingress route", () => {
         expect(secondReceipt).toMatchObject({
           ingressState: "ROUTED",
           agentRunId: persistedAgentRunId,
+          turnId: secondTurnId,
+        });
+      } finally {
+        await harness.receiptWorkflowRuntime.stop();
+        await harness.app.close();
+      }
+    },
+    15_000,
+  );
+
+  it(
+    "restores a terminated bound team run when a second same-thread message arrives and publishes again",
+    async () => {
+      const teamRunId = "team-run-recovery-e2e";
+      const memberName = "Coordinator";
+      const memberRunId = buildTeamMemberRunId(teamRunId, memberName);
+      const firstTurnId = "turn-team-restore-e2e-1";
+      const secondTurnId = "turn-team-restore-e2e-2";
+      const firstReplyText = "Telegram team reply before terminate";
+      const secondReplyText = "Telegram team reply after restore";
+      const harness = await createTeamEndToEndIngressHarnessWithWorkflowRuntime({
+        expectedTurnId: firstTurnId,
+        expectedReplyText: firstReplyText,
+        replyTextByTurn: {
+          [firstTurnId]: firstReplyText,
+          [secondTurnId]: secondReplyText,
+        },
+        runtimeEventsPerPost: [
+          [
+            {
+              delayMs: null,
+              event: createTeamTurnRuntimeEvent({
+                teamRunId,
+                memberName,
+                memberRunId,
+                turnId: firstTurnId,
+                eventType: AgentRunEventType.TURN_STARTED,
+                statusHint: "ACTIVE",
+              }),
+            },
+            {
+              delayMs: 100,
+              event: createTeamTurnRuntimeEvent({
+                teamRunId,
+                memberName,
+                memberRunId,
+                turnId: firstTurnId,
+                eventType: AgentRunEventType.TURN_COMPLETED,
+                statusHint: "IDLE",
+              }),
+            },
+          ],
+          [
+            {
+              delayMs: null,
+              event: createTeamTurnRuntimeEvent({
+                teamRunId,
+                memberName,
+                memberRunId,
+                turnId: secondTurnId,
+                eventType: AgentRunEventType.TURN_STARTED,
+                statusHint: "ACTIVE",
+              }),
+            },
+            {
+              delayMs: 100,
+              event: createTeamTurnRuntimeEvent({
+                teamRunId,
+                memberName,
+                memberRunId,
+                turnId: secondTurnId,
+                eventType: AgentRunEventType.TURN_COMPLETED,
+                statusHint: "IDLE",
+              }),
+            },
+          ],
+        ],
+      });
+      const firstEnvelope = createEnvelope({
+        externalMessageId: "msg-team-restore-1",
+        content: "team restore first",
+      });
+      const secondEnvelope = createEnvelope({
+        externalMessageId: "msg-team-restore-2",
+        content: "team restore second",
+        receivedAt: "2026-03-27T07:04:00.000Z",
+      });
+
+      try {
+        await harness.bindingService.upsertBinding({
+          ...createTeamBindingInput(),
+          teamRunId: null,
+        });
+
+        const firstResponse = await harness.app.inject({
+          method: "POST",
+          url: "/api/channel-ingress/v1/messages",
+          payload: firstEnvelope,
+        });
+
+        expect(firstResponse.statusCode).toBe(202);
+        await new Promise((resolve) => setTimeout(resolve, 1_200));
+
+        const bindingsAfterFirst = await harness.bindingService.listBindings();
+        expect(bindingsAfterFirst).toHaveLength(1);
+        const persistedTeamRunId = bindingsAfterFirst[0]?.teamRunId;
+        expect(persistedTeamRunId).toBe(teamRunId);
+
+        const terminationResult = await harness.teamRunService.terminateTeamRun(
+          persistedTeamRunId!,
+        );
+        expect(terminationResult).toBe(true);
+        expect(harness.teamRunService.getTeamRun(persistedTeamRunId!)).toBeNull();
+
+        const secondResponse = await harness.app.inject({
+          method: "POST",
+          url: "/api/channel-ingress/v1/messages",
+          payload: secondEnvelope,
+        });
+
+        expect(secondResponse.statusCode).toBe(202);
+        expect(secondResponse.json()).toMatchObject({
+          accepted: true,
+          duplicate: false,
+          disposition: "ACCEPTED",
+          bindingResolved: true,
+        });
+
+        await new Promise((resolve) => setTimeout(resolve, 1_200));
+
+        expect(harness.backendFactory.createBackend).toHaveBeenCalledTimes(1);
+        expect(harness.backendFactory.restoreBackend).toHaveBeenCalledTimes(1);
+        expect(harness.postMessage).toHaveBeenCalledTimes(2);
+        expect(harness.publishAssistantReplyToSource).toHaveBeenCalledTimes(2);
+
+        const firstPublishedReply =
+          harness.publishAssistantReplyToSource.mock.calls[0]?.[0];
+        const secondPublishedReply =
+          harness.publishAssistantReplyToSource.mock.calls[1]?.[0];
+
+        expect(firstPublishedReply).toMatchObject({
+          agentRunId: memberRunId,
+          teamRunId: persistedTeamRunId,
+          turnId: firstTurnId,
+          replyText: firstReplyText,
+          source: expect.objectContaining({
+            externalMessageId: firstEnvelope.externalMessageId,
+          }),
+        });
+        expect(secondPublishedReply).toMatchObject({
+          agentRunId: memberRunId,
+          teamRunId: persistedTeamRunId,
+          turnId: secondTurnId,
+          replyText: secondReplyText,
+          source: expect.objectContaining({
+            externalMessageId: secondEnvelope.externalMessageId,
+          }),
+        });
+
+        const secondReceipt =
+          await harness.messageReceiptService.getReceiptByExternalMessage({
+            provider: secondEnvelope.provider,
+            transport: secondEnvelope.transport,
+            accountId: secondEnvelope.accountId,
+            peerId: secondEnvelope.peerId,
+            threadId: secondEnvelope.threadId,
+            externalMessageId: secondEnvelope.externalMessageId,
+          });
+        expect(secondReceipt).toMatchObject({
+          ingressState: "ROUTED",
+          agentRunId: memberRunId,
+          teamRunId: persistedTeamRunId,
           turnId: secondTurnId,
         });
       } finally {

@@ -3,12 +3,12 @@
 ## Current Snapshot
 
 - Ticket: `external-channel-receipt-state-machine`
-- Current Stage: `10`
-- Next Stage: `Await explicit user verification and independent Electron verification`
+- Current Stage: `8`
+- Next Stage: `Stage 10 finalization when explicitly resumed; Stage 9 docs remain current and no docs delta was required for the validation-only re-entry`
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-040`
+- Last Transition ID: `T-045`
 - Last Updated: `2026-04-10`
 
 ## Stage 0 Bootstrap Record
@@ -38,7 +38,7 @@
 | 7 API/E2E + Executable Validation | Pass | executable validation implementation complete + acceptance-criteria and spine scenario gates complete | [api-e2e-testing.md](./api-e2e-testing.md), [workflow-state.md](./workflow-state.md) |
 | 8 Code Review | Pass | Code review gate `Pass`/`Fail` recorded | [code-review.md](./code-review.md), [workflow-state.md](./workflow-state.md) |
 | 9 Docs Sync | Pass | `docs-sync.md` current + docs updated or no-impact rationale recorded | [docs-sync.md](./docs-sync.md), [workflow-state.md](./workflow-state.md) |
-| 10 Handoff / Ticket State | In Progress | `handoff-summary.md` current + explicit user verification received + finalization complete when applicable | [handoff-summary.md](./handoff-summary.md), [workflow-state.md](./workflow-state.md) |
+| 10 Handoff / Ticket State | Blocked | `handoff-summary.md` current + explicit user verification received + finalization complete when applicable | [handoff-summary.md](./handoff-summary.md), [workflow-state.md](./workflow-state.md) |
 
 ## Transition Log (Append-Only)
 
@@ -84,6 +84,11 @@
 | T-038 | 2026-04-09 | 7 | 8 | Stage 7 validation gap is closed again: the ingress integration suite now proves terminate-then-restore on the same bound thread/run, and the broader external-channel validation slice passes again. Source edits are locked pending the next code review round. | Validation Gap | Locked | `api-e2e-testing.md`, `implementation.md`, `workflow-state.md` |
 | T-039 | 2026-04-10 | 8 | 9 | Stage 8 round 8 remains the authoritative pass, and Stage 9 docs sync is now completed with the durable architecture doc updated to the receipt-owned external-channel workflow. | N/A | Locked | `code-review.md`, `docs-sync.md`, `workflow-state.md` |
 | T-040 | 2026-04-10 | 9 | 10 | Stage 9 docs sync is complete and Stage 10 handoff is open. The branch is being prepared for independent verification, but archival, final merge into `personal`, release, and cleanup remain blocked on explicit user confirmation. | N/A | Locked | `docs-sync.md`, `handoff-summary.md`, `workflow-state.md` |
+| T-041 | 2026-04-10 | 10 | 10 | Explicit user verification was received. Stage 10 finalization now proceeds with ticket archival, ticket-branch push, merge into `personal`, and required cleanup. | N/A | Locked | `handoff-summary.md`, `workflow-state.md` |
+| T-042 | 2026-04-10 | 10 | 7 | Finalization is paused for a `Validation Gap`: team channel ingress/reply parity has architecture support but lacks the same Stage 7 same-thread and restore-after-termination executable proof already present for single-agent bindings. | Validation Gap | Unlocked | `workflow-state.md`, `api-e2e-testing.md` |
+| T-043 | 2026-04-10 | 7 | 8 | Stage 7 validation passed again after adding team-channel ingress parity proof: one-turn final publish, same-thread repeated team messages, and terminate-then-restore on the bound team run. Source edits are locked and the ticket moves to a fresh Stage 8 scoreboard. | Validation Gap | Locked | `api-e2e-testing.md`, `implementation.md`, `workflow-state.md` |
+| T-044 | 2026-04-10 | 8 | 7 | Stage 8 is reopened for a final validation-gap round: add a stricter multi-member team ingress proof showing that a channel-bound team without an explicit target node resolves the inbound to the coordinator member turn, not an arbitrary teammate. | Validation Gap | Unlocked | `workflow-state.md`, `api-e2e-testing.md` |
+| T-045 | 2026-04-10 | 7 | 8 | Stage 7 validation gap is closed again: the ingress integration suite now proves coordinator-default routing on a real multi-member team binding, and the broader external-channel slice passes again. Source edits are locked pending the refreshed Stage 8 scoreboard. | Validation Gap | Locked | `api-e2e-testing.md`, `code-review.md`, `implementation.md`, `workflow-state.md` |
 
 ## Pre-Edit Checklist (Stage 6 Source-Code Edits)
 
@@ -98,8 +103,8 @@
 - Current Status: `Resolved`
 - Original Trigger Stage: `8`
 - Original Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `Validation Gap`
-- Executed Return Path: `8 -> 7`
-- Resolution Evidence: `Stage 7 round 6 passed in api-e2e-testing.md with explicit terminate-and-restore same-thread channel ingress proof`
+- Executed Return Path: `8 -> 7 -> 8`
+- Resolution Evidence: `Stage 7 round 8 evidence plus Stage 8 round 10 scoreboard`
 
 ## Audible Notification Log (Optional Tracking)
 
@@ -122,6 +127,12 @@
 | 2026-04-10 | Gate | Another independent Stage 8 deep review passed after the terminate-and-restore validation re-entry. The stronger validation delta still preserves the architecture, and Stage 9 docs sync remains next. | Pending | N/A |
 | 2026-04-10 | Transition | Stage 9 docs sync is complete for the external channel receipt state machine ticket. Durable server architecture docs now describe the receipt-owned workflow and authoritative facade-side turn binding, and Stage 10 handoff is open pending your independent verification. | Pending | N/A |
 | 2026-04-10 | Gate | Stage 10 verification prep is ready. The ticket branch was checkpointed, refreshed from origin/personal, and a fresh mac Electron build was created for your independent verification. | Pending | N/A |
+| 2026-04-10 | Transition | User verification is now received for the external channel receipt state machine ticket. Stage 10 finalization has started and will archive the ticket, merge the branch into personal, and complete the required cleanup. | Pending | N/A |
+| 2026-04-10 | Re-entry | Stage 10 is paused for a validation-gap re-entry. Source edits are unlocked again, and the ticket has returned to Stage 7 to add team-channel ingress parity proof before a fresh Stage 8 scoreboard. | Pending | N/A |
+| 2026-04-10 | Gate | Stage 7 validation passed again after adding team-channel parity coverage. Source edits are locked, and the ticket is back in Stage 8 for the next independent code review scoreboard. | Pending | N/A |
+| 2026-04-10 | Gate | Stage 8 code review passed again after the team-channel parity validation delta. The validation-gap re-entry is resolved, the scoreboard is now authoritative, and no new architectural findings were introduced. | Pending | N/A |
+| 2026-04-10 | Re-entry | Stage 8 is reopened again for one stricter team validation gap. I am adding a multi-member team ingress proof that no-explicit-target channel bindings resolve to the coordinator member turn. | Pending | N/A |
+| 2026-04-10 | Gate | Stage 7 validation passed again after adding the multi-member team coordinator-default ingress proof. Source edits are locked, the Stage 8 scoreboard was refreshed, and the stricter team validation gap is now closed. | Pending | N/A |
 
 ## Process Violation Log
 
