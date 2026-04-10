@@ -4,7 +4,7 @@
 
 - Ticket: `external-channel-receipt-state-machine`
 - Date: `2026-04-10`
-- Current Status: `Verified, archived, and in Stage 10 finalization`
+- Current Status: `Completed`
 - Workflow State Source: `tickets/done/external-channel-receipt-state-machine/workflow-state.md`
 
 ## Delivery Summary
@@ -75,7 +75,7 @@
 - Release notes artifact:
   - `tickets/done/external-channel-receipt-state-machine/release-notes.md`
 - Notes:
-  - Curated user-facing release notes are now prepared for the documented desktop release flow.
+  - Curated user-facing release notes were used by the documented desktop release flow for `1.2.71`.
 
 ## User Verification Hold
 
@@ -101,15 +101,15 @@
 - Commit status:
   - `Completed on the ticket branch`
 - Push status:
-  - `Pending Stage 10 finalization commit`
+  - `Completed`
 - Merge status:
-  - `Latest origin/personal` was merged into the ticket branch via merge commit `5018afaa`; final merge into `personal` is now pending Stage 10 finalization
+  - `Completed` via fast-forward of `personal` to archived ticket commit `e9a11a3f`
 - Release/publication/deployment status:
-  - `Not started`
+  - `Completed` via release commit `480ca41f` and tag `v1.2.71`
 - Worktree cleanup status:
-  - `Blocked on finalization`
+  - `Not required`
 - Local branch cleanup status:
-  - `Blocked on finalization`
+  - `Not required`
 - Blockers / notes:
-  - No product-side blocker remains. The remaining work is procedural finalization: commit and push the archived ticket branch, fast-forward `personal`, run the documented release helper, and record the release report.
-  - The ticket branch already includes the latest `origin/personal` merge refresh at `5018afaa`.
+  - Finalization completed cleanly: the archived ticket branch was pushed, `personal` was fast-forwarded to `e9a11a3f`, and the documented release helper cut `1.2.71`.
+  - The detailed release record is captured in `tickets/done/external-channel-receipt-state-machine/release-deployment-report.md`.

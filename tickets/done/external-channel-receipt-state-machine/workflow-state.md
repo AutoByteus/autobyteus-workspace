@@ -4,11 +4,11 @@
 
 - Ticket: `external-channel-receipt-state-machine`
 - Current Stage: `10`
-- Next Stage: `Repository finalization + release`
+- Next Stage: `Complete`
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-046`
+- Last Transition ID: `T-047`
 - Last Updated: `2026-04-10`
 
 ## Stage 0 Bootstrap Record
@@ -38,7 +38,7 @@
 | 7 API/E2E + Executable Validation | Pass | executable validation implementation complete + acceptance-criteria and spine scenario gates complete | [api-e2e-testing.md](./api-e2e-testing.md), [workflow-state.md](./workflow-state.md) |
 | 8 Code Review | Pass | Code review gate `Pass`/`Fail` recorded | [code-review.md](./code-review.md), [workflow-state.md](./workflow-state.md) |
 | 9 Docs Sync | Pass | `docs-sync.md` current + docs updated or no-impact rationale recorded | [docs-sync.md](./docs-sync.md), [workflow-state.md](./workflow-state.md) |
-| 10 Handoff / Ticket State | In Progress | explicit user verification received + archived ticket moved to `tickets/done/` + repository finalization and release underway | [handoff-summary.md](./handoff-summary.md), [workflow-state.md](./workflow-state.md), [release-notes.md](./release-notes.md) |
+| 10 Handoff / Ticket State | Pass | explicit user verification received + archived ticket finalized on `personal` + release `v1.2.71` completed | [handoff-summary.md](./handoff-summary.md), [release-deployment-report.md](./release-deployment-report.md), [workflow-state.md](./workflow-state.md) |
 
 ## Transition Log (Append-Only)
 
@@ -90,6 +90,7 @@
 | T-044 | 2026-04-10 | 8 | 7 | Stage 8 is reopened for a final validation-gap round: add a stricter multi-member team ingress proof showing that a channel-bound team without an explicit target node resolves the inbound to the coordinator member turn, not an arbitrary teammate. | Validation Gap | Unlocked | `workflow-state.md`, `api-e2e-testing.md` |
 | T-045 | 2026-04-10 | 7 | 8 | Stage 7 validation gap is closed again: the ingress integration suite now proves coordinator-default routing on a real multi-member team binding, and the broader external-channel slice passes again. Source edits are locked pending the refreshed Stage 8 scoreboard. | Validation Gap | Locked | `api-e2e-testing.md`, `code-review.md`, `implementation.md`, `workflow-state.md` |
 | T-046 | 2026-04-10 | 9 | 10 | Explicit user verification was reconfirmed, the ticket folder was archived to `tickets/done/`, and Stage 10 finalization resumed with repository finalization and release now in progress. | N/A | Locked | `handoff-summary.md`, `release-notes.md`, `workflow-state.md` |
+| T-047 | 2026-04-10 | 10 | 10 | Repository finalization pushed the archived ticket branch, fast-forwarded `personal` to `e9a11a3f`, and the documented release flow completed version `1.2.71` with tag `v1.2.71` at `480ca41f`. | N/A | Locked | `handoff-summary.md`, `release-deployment-report.md`, `workflow-state.md` |
 
 ## Pre-Edit Checklist (Stage 6 Source-Code Edits)
 
