@@ -21,10 +21,19 @@ async function loadRuntimeHarness(options?: {
         ? {
             'settings.language.title': '应用语言',
             'settings.language.help': '系统默认会跟随受支持的主机语言。',
+            'settings.entities.install': '安装&amp;重新启动',
+            'settings.entities.placeholder': '用户：&lt;{{id}}&gt;',
           }
         : {
             'settings.language.title': 'App language',
             'settings.language.help': 'System Default follows your supported host language.',
+            'settings.entities.install': 'Install &amp; Restart',
+            'settings.entities.placeholder': 'user:&lt;{{id}}&gt;',
+            'settings.entities.arrow': 'View Details &rarr;',
+            'settings.entities.back': '&larr; Back to all agents',
+            'settings.entities.close': '&times;',
+            'settings.entities.numeric': '&#8594;',
+            'settings.entities.hex': '&#x2190;',
           },
   }));
 
@@ -107,5 +116,19 @@ describe('localizationRuntime', () => {
     expect(localizationRuntime.resolvedLocale.value).toBe('zh-CN');
     expect(localizationRuntime.bootstrapState.value).toBe('ready');
     expect(localizationRuntime.translate('settings.language.help')).toBe('系统默认会跟随受支持的主机语言。');
+  });
+
+  it('decodes HTML entities after interpolation while keeping translated output as plain text', async () => {
+    const { localizationRuntime } = await loadRuntimeHarness({ resolverResult: 'en' });
+
+    await localizationRuntime.initialize();
+
+    expect(localizationRuntime.translate('settings.entities.install')).toBe('Install & Restart');
+    expect(localizationRuntime.translate('settings.entities.placeholder', { id: 'snowflake' })).toBe('user:<snowflake>');
+    expect(localizationRuntime.translate('settings.entities.arrow')).toBe('View Details →');
+    expect(localizationRuntime.translate('settings.entities.back')).toBe('← Back to all agents');
+    expect(localizationRuntime.translate('settings.entities.close')).toBe('×');
+    expect(localizationRuntime.translate('settings.entities.numeric')).toBe('→');
+    expect(localizationRuntime.translate('settings.entities.hex')).toBe('←');
   });
 });
