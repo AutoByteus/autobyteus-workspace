@@ -1,100 +1,117 @@
 <template>
-  <div class="h-full flex flex-col bg-white">
-    <!-- Header / Meta Info -->
-    <div v-if="artifact" class="flex items-center gap-2 px-4 py-3 border-b border-gray-200 bg-white flex-shrink-0 min-h-[45px]">
-         <!-- Breadcrumb style path display -->
-         <div class="flex items-center text-sm text-gray-600 flex-1 min-w-0">
-             <!-- Path -->
-             <span data-testid="artifact-path-display" class="font-medium text-gray-800 truncate">{{ displayPath }}</span>
-         </div>
+  <Teleport to="body" :disabled="!isZenMode">
+    <div
+      data-testid="artifact-content-viewer-shell"
+      class="flex min-h-0 flex-col bg-white"
+      :class="isZenMode ? 'fixed inset-0 z-[120] min-h-screen shadow-md' : 'h-full'"
+    >
+      <!-- Header / Meta Info -->
+      <div v-if="artifact" class="flex items-center gap-2 border-b border-gray-200 bg-white px-4 py-3 min-h-[45px] flex-shrink-0">
+           <div class="flex items-center text-sm text-gray-600 flex-1 min-w-0">
+               <span data-testid="artifact-path-display" class="font-medium text-gray-800 truncate">{{ displayPath }}</span>
+           </div>
 
-         <!-- Edit/Preview Toggle -->
-         <div v-if="supportsPreview && !isDeleted" class="flex items-center gap-1 border-l border-gray-200 pl-2 ml-2">
-           <button
-             class="p-1.5 rounded-md transition-all duration-200 focus:outline-none"
-             :class="viewMode === 'edit' 
-               ? 'bg-blue-50 text-blue-600' 
-               : 'text-gray-400 hover:text-gray-700 hover:bg-gray-100'"
-             @click="viewMode = 'edit'"
-             :title="$t('workspace.components.workspace.agent.ArtifactContentViewer.edit_mode')"
-           >
-             <Icon icon="heroicons:pencil-square" class="h-4 w-4" />
-           </button>
-           <button
-             class="p-1.5 rounded-md transition-all duration-200 focus:outline-none"
-             :class="viewMode === 'preview' 
-               ? 'bg-blue-50 text-blue-600' 
-               : 'text-gray-400 hover:text-gray-700 hover:bg-gray-100'"
-             @click="viewMode = 'preview'"
-             :title="$t('workspace.components.workspace.agent.ArtifactContentViewer.preview_mode')"
-           >
-             <Icon icon="heroicons:eye" class="h-4 w-4" />
-           </button>
-         </div>
+           <div v-if="supportsPreview && !isDeleted" class="flex items-center gap-1 border-l border-gray-200 pl-2 ml-2">
+             <button
+               class="p-1.5 rounded-md transition-all duration-200 focus:outline-none"
+               :class="viewMode === 'edit'
+                 ? 'bg-blue-50 text-blue-600'
+                 : 'text-gray-400 hover:text-gray-700 hover:bg-gray-100'"
+               @click="viewMode = 'edit'"
+               :title="$t('workspace.components.workspace.agent.ArtifactContentViewer.edit_mode')"
+             >
+               <Icon icon="heroicons:pencil-square" class="h-4 w-4" />
+             </button>
+             <button
+               class="p-1.5 rounded-md transition-all duration-200 focus:outline-none"
+               :class="viewMode === 'preview'
+                 ? 'bg-blue-50 text-blue-600'
+                 : 'text-gray-400 hover:text-gray-700 hover:bg-gray-100'"
+               @click="viewMode = 'preview'"
+               :title="$t('workspace.components.workspace.agent.ArtifactContentViewer.preview_mode')"
+             >
+               <Icon icon="heroicons:eye" class="h-4 w-4" />
+             </button>
+           </div>
+
+           <div class="flex items-center gap-1 border-l border-gray-200 pl-2 ml-2">
+             <button
+               data-testid="artifact-viewer-zen-toggle"
+               class="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-all duration-200 focus:outline-none"
+               @click="toggleZenMode"
+               :title="isZenMode ? 'Restore view' : 'Maximize view'"
+             >
+               <Icon
+                 :icon="isZenMode ? 'heroicons:arrows-pointing-in' : 'heroicons:arrows-pointing-out'"
+                 class="h-4 w-4"
+               />
+             </button>
+           </div>
+      </div>
+
+      <!-- Empty State -->
+      <div v-if="!artifact" class="flex-1 flex flex-col items-center justify-center text-gray-400 p-8">
+           <Icon icon="heroicons:cursor-arrow-rays" class="w-16 h-16 mb-4 text-gray-300" />
+           <h3 class="text-lg font-medium text-gray-500 mb-1">{{ $t('workspace.components.workspace.agent.ArtifactContentViewer.no_artifact_selected') }}</h3>
+           <p class="text-sm">{{ $t('workspace.components.workspace.agent.ArtifactContentViewer.select_an_artifact_to_view_its') }}</p>
+      </div>
+
+      <div v-else class="flex-1 flex flex-col min-h-0 overflow-hidden relative">
+          <div v-if="isLoading" class="flex-1 flex items-center justify-center text-gray-400">{{ $t('workspace.components.workspace.agent.ArtifactContentViewer.loading_content') }}</div>
+
+          <div v-else-if="isDeleted" class="flex-1 flex flex-col items-center justify-center text-gray-400 p-8">
+               <Icon icon="heroicons:trash" class="w-16 h-16 mb-4 text-gray-300" />
+               <h3 class="text-lg font-medium text-gray-500 mb-1">{{ $t('workspace.components.workspace.agent.ArtifactContentViewer.file_not_found') }}</h3>
+               <p class="text-sm text-center max-w-sm">{{ $t('workspace.components.workspace.agent.ArtifactContentViewer.this_file_has_been_deleted_from') }}</p>
+          </div>
+
+          <div v-else-if="pendingMessage" class="flex-1 flex flex-col items-center justify-center text-gray-400 p-8">
+               <Icon icon="heroicons:clock" class="w-16 h-16 mb-4 text-gray-300" />
+               <h3 class="text-lg font-medium text-gray-500 mb-1">
+                 {{ t('workspace.components.workspace.agent.ArtifactContentViewer.content_not_available_yet') }}
+               </h3>
+               <p class="text-sm text-center max-w-sm">
+                 {{ pendingMessage }}
+               </p>
+          </div>
+
+          <div v-else-if="unsupportedPreviewMessage" class="flex-1 flex flex-col items-center justify-center text-gray-400 p-8">
+               <Icon icon="heroicons:document-minus" class="w-16 h-16 mb-4 text-gray-300" />
+               <h3 class="text-lg font-medium text-gray-500 mb-1">
+                 {{ t('workspace.components.workspace.agent.ArtifactContentViewer.preview_unavailable') }}
+               </h3>
+               <p class="text-sm text-center max-w-sm">
+                 {{ unsupportedPreviewMessage }}
+               </p>
+          </div>
+
+          <FileViewer
+              v-else
+              :file="{
+                  path: artifact.path,
+                  type: fileType,
+                  content: displayContent,
+                  url: displayUrl
+              }"
+              :mode="viewMode"
+              :read-only="true"
+              :error="errorMessage"
+              class="h-full w-full"
+          />
+      </div>
     </div>
-
-    <!-- Empty State -->
-    <div v-if="!artifact" class="flex-1 flex flex-col items-center justify-center text-gray-400 p-8">
-         <Icon icon="heroicons:cursor-arrow-rays" class="w-16 h-16 mb-4 text-gray-300" />
-         <h3 class="text-lg font-medium text-gray-500 mb-1">{{ $t('workspace.components.workspace.agent.ArtifactContentViewer.no_artifact_selected') }}</h3>
-         <p class="text-sm">{{ $t('workspace.components.workspace.agent.ArtifactContentViewer.select_an_artifact_to_view_its') }}</p>
-    </div>
-
-    <div v-else class="flex-1 flex flex-col min-h-0 overflow-hidden relative">
-        <div v-if="isLoading" class="flex-1 flex items-center justify-center text-gray-400">{{ $t('workspace.components.workspace.agent.ArtifactContentViewer.loading_content') }}</div>
-
-        <div v-else-if="isDeleted" class="flex-1 flex flex-col items-center justify-center text-gray-400 p-8">
-             <Icon icon="heroicons:trash" class="w-16 h-16 mb-4 text-gray-300" />
-             <h3 class="text-lg font-medium text-gray-500 mb-1">{{ $t('workspace.components.workspace.agent.ArtifactContentViewer.file_not_found') }}</h3>
-             <p class="text-sm text-center max-w-sm">{{ $t('workspace.components.workspace.agent.ArtifactContentViewer.this_file_has_been_deleted_from') }}</p>
-        </div>
-
-        <div v-else-if="pendingMessage" class="flex-1 flex flex-col items-center justify-center text-gray-400 p-8">
-             <Icon icon="heroicons:clock" class="w-16 h-16 mb-4 text-gray-300" />
-             <h3 class="text-lg font-medium text-gray-500 mb-1">
-               {{ t('workspace.components.workspace.agent.ArtifactContentViewer.content_not_available_yet') }}
-             </h3>
-             <p class="text-sm text-center max-w-sm">
-               {{ pendingMessage }}
-             </p>
-        </div>
-
-        <div v-else-if="unsupportedPreviewMessage" class="flex-1 flex flex-col items-center justify-center text-gray-400 p-8">
-             <Icon icon="heroicons:document-minus" class="w-16 h-16 mb-4 text-gray-300" />
-             <h3 class="text-lg font-medium text-gray-500 mb-1">
-               {{ t('workspace.components.workspace.agent.ArtifactContentViewer.preview_unavailable') }}
-             </h3>
-             <p class="text-sm text-center max-w-sm">
-               {{ unsupportedPreviewMessage }}
-             </p>
-        </div>
-        
-        <FileViewer
-            v-else
-            :file="{
-                path: artifact.path,
-                type: fileType,
-                content: displayContent,
-                url: displayUrl
-            }"
-            :mode="viewMode" 
-            :read-only="true"
-            :error="errorMessage"
-            class="h-full w-full"
-        />
-        
-
-    </div>
-  </div>
+  </Teleport>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, Teleport, watch } from 'vue';
+import { storeToRefs } from 'pinia';
 import { Icon } from '@iconify/vue';
 import type { AgentArtifact } from '~/stores/agentArtifactsStore';
 import type { RunFileChangeArtifact } from '~/stores/runFileChangesStore';
 import type { FileOpenMode } from '~/stores/fileExplorer';
 import { useLocalization } from '~/composables/useLocalization';
+import { useArtifactContentDisplayModeStore } from '~/stores/artifactContentDisplayMode';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { determineFileType } from '~/utils/fileExplorer/fileUtils';
 
@@ -108,6 +125,8 @@ const props = defineProps<{
   refreshSignal?: number;
 }>();
 
+const artifactContentDisplayModeStore = useArtifactContentDisplayModeStore();
+const { isZenMode } = storeToRefs(artifactContentDisplayModeStore);
 const fileType = ref<'Text' | 'Image' | 'Audio' | 'Video' | 'Excel' | 'PDF'>('Text');
 const viewMode = ref<FileOpenMode>('edit');
 const isDeterminingType = ref(false);
@@ -123,6 +142,7 @@ let fetchToken = 0;
 const windowNodeContextStore = useWindowNodeContextStore();
 const { t } = useLocalization();
 
+const toggleZenMode = () => artifactContentDisplayModeStore.toggleZenMode();
 const isLoading = computed(() => isDeterminingType.value || isFetchingContent.value);
 const usesBufferedWriteContent = computed(() => {
   return (
@@ -282,7 +302,25 @@ const refreshResolvedContent = async () => {
   }
 };
 
-watch(() => props.artifact, async () => {
+const handleKeydown = (event: KeyboardEvent) => {
+  if (event.key === 'Escape' && isZenMode.value) {
+    artifactContentDisplayModeStore.exitZenMode();
+  }
+};
+
+onMounted(() => {
+  window.addEventListener('keydown', handleKeydown);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleKeydown);
+  artifactContentDisplayModeStore.exitZenMode();
+});
+
+watch(() => props.artifact, async (artifact) => {
+  if (!artifact) {
+    artifactContentDisplayModeStore.exitZenMode();
+  }
   resolvedUrl.value = null;
   errorMessage.value = null;
   isDeleted.value = false; // Reset deleted state on change
