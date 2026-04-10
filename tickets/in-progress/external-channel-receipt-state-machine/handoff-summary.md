@@ -43,6 +43,12 @@
   - `pnpm -C autobyteus-server-ts exec vitest run tests/integration/api/rest/channel-ingress.integration.test.ts --reporter=dot`
   - `pnpm -C autobyteus-server-ts exec vitest run tests/unit/external-channel tests/unit/api/rest/channel-ingress.test.ts tests/integration/api/rest/channel-ingress.integration.test.ts --reporter=dot`
   - `pnpm -C autobyteus-server-ts build:full`
+- Electron verification build:
+  - `CI=true NO_TIMESTAMP=1 APPLE_TEAM_ID= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac`
+  - Artifacts:
+    - `autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.2.67.dmg`
+    - `autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.2.67.zip`
+    - `autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
 - Acceptance-criteria closure summary:
   - The ticket’s ingress, turn-binding, multi-leg reply, same-thread continuation, and restore-after-termination scenarios are all covered in the Stage 7 artifact.
 - Infeasible criteria / user waivers (if any):
@@ -74,7 +80,7 @@
 - User verification received:
   - `No`
 - Notes:
-  - This turn will checkpoint the branch, merge the latest `origin/personal` into it, and build a fresh Electron app for independent verification.
+  - The ticket branch has been checkpointed, refreshed with the latest `origin/personal`, and built into a fresh mac Electron verification package.
 
 ## Finalization Record
 
@@ -89,11 +95,11 @@
 - Finalization target branch:
   - `personal`
 - Commit status:
-  - `Pending current turn`
+  - `Completed on the ticket branch`
 - Push status:
   - `Not started`
 - Merge status:
-  - `Latest origin/personal refresh into the ticket branch pending current turn; final merge into personal blocked on verification`
+  - `Latest origin/personal` was merged into the ticket branch via merge commit `fe53e889dc9ccde415e2a7889dccb84aedb76eda`; final merge into `personal` is blocked on verification
 - Release/publication/deployment status:
   - `Not started`
 - Worktree cleanup status:
@@ -102,3 +108,4 @@
   - `Blocked on finalization`
 - Blockers / notes:
   - Explicit user verification is still required before archival, final merge into `personal`, release/publication, or cleanup.
+  - The checkpoint implementation commit before the merge refresh is `2274c1ec`.
