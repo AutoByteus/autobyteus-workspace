@@ -28,7 +28,7 @@ Code Edit Permission: Locked
 | 7 | API/E2E + Executable Validation Gate | Pass | `api-e2e-testing.md` |
 | 8 | Code Review Gate | Pass | `code-review.md` |
 | 9 | Docs Sync | Pass | `docs-sync.md` |
-| 10 | Final Handoff | In Progress | user verification received; ticket archived to done; release finalization in progress |
+| 10 | Final Handoff | Complete | user verification received; ticket archived to done; release `v1.2.72` created and pushed |
 
 # Transition Log
 
@@ -48,3 +48,4 @@ Code Edit Permission: Locked
 | 2026-04-10 | 9 | 10 | Handoff prepared; waiting for user visual confirmation in the desktop UI. |
 | 2026-04-10 | 10 | 10 | User verification received; Stage 10 archival and release finalization authorized. |
 | 2026-04-10 | 10 | 10 | Ticket archived to `tickets/done/activity-auto-focus-suppression`; repository finalization and release are now active. |
+| 2026-04-10 | 10 | 10 | Repository finalization completed on `origin/personal`, release commit `92ccbec1` created tag `v1.2.72`, and the GitHub release record is live. |

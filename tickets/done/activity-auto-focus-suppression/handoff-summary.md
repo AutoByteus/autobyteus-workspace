@@ -3,7 +3,8 @@
 - Ticket: `activity-auto-focus-suppression`
 - Last Updated: `2026-04-10`
 - Stage: `10`
-- User Verification Status: `Verified; archived ticket release finalization in progress`
+- Current Status: `Released in workspace version 1.2.72`
+- User Verification Status: `Completed`
 
 ## What Changed
 
@@ -35,8 +36,17 @@
 
 - Release notes required: `Yes`
 - Release notes artifact: `tickets/done/activity-auto-focus-suppression/release-notes.md`
+- GitHub release: `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.2.72`
 
-## Remaining Work
+## Finalization Record
 
-- Finalize the archived repository state on `origin/personal`
-- Cut the requested desktop release from the documented helper flow
+- Archived ticket path: `tickets/done/activity-auto-focus-suppression`
+- Finalization target: `origin/personal`
+- Ticket commit: `ee84900e` (`fix(workspace): stop activity auto focus jumps`)
+- Release commit: `92ccbec1` (`chore(release): bump workspace release version to 1.2.72`)
+- Release tag: `v1.2.72`
+- Remote tag verification: `git ls-remote --tags origin v1.2.72`
+- GitHub Actions status at handoff:
+  - `Release Messaging Gateway`: `completed / success`
+  - `Desktop Release`: `in_progress`
+  - `Server Docker Release`: `in_progress`

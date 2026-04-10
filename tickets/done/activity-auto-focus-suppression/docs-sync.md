@@ -19,3 +19,5 @@
 - `api-e2e-testing.md`
 - `code-review.md`
 - `handoff-summary.md`
+- `release-notes.md`
+- `release-deployment-report.md`
