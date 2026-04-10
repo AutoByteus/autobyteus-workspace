@@ -1,7 +1,9 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
 import { defineComponent, reactive } from 'vue';
+import { createPinia, setActivePinia } from 'pinia';
 import ArtifactContentViewer from '../ArtifactContentViewer.vue';
+import { useFileContentDisplayModeStore } from '~/stores/fileContentDisplayMode';
 
 const {
   determineFileTypeMock,
@@ -31,6 +33,7 @@ vi.mock('~/stores/windowNodeContextStore', () => ({
 }));
 
 describe('ArtifactContentViewer', () => {
+  const mountedWrappers: Array<ReturnType<typeof mount>> = [];
   const defaultArtifact = {
     id: 'agent-1:src/test.md',
     runId: 'agent-1',
@@ -44,7 +47,7 @@ describe('ArtifactContentViewer', () => {
   };
 
   const mountComponent = (artifact: any, refreshSignal = 0) =>
-    mount(ArtifactContentViewer, {
+    mountedWrappers[mountedWrappers.length] = mount(ArtifactContentViewer, {
       props: { artifact, refreshSignal },
       global: {
         stubs: {
@@ -76,15 +79,24 @@ describe('ArtifactContentViewer', () => {
       },
     });
 
+    mountedWrappers.push(wrapper);
     return { wrapper, state };
   };
 
   beforeEach(() => {
+    setActivePinia(createPinia());
     determineFileTypeMock.mockReset();
     determineFileTypeMock.mockResolvedValue('Text');
     mockWindowNodeContextStore.getBoundEndpoints.mockReset();
     mockWindowNodeContextStore.getBoundEndpoints.mockReturnValue({ rest: 'http://localhost:3000/rest' });
     vi.stubGlobal('fetch', vi.fn());
+  });
+
+  afterEach(() => {
+    while (mountedWrappers.length > 0) {
+      mountedWrappers.pop()?.unmount();
+    }
+    document.body.innerHTML = '';
   });
 
   it('defaults to edit mode when artifact is streaming', async () => {
@@ -209,6 +221,65 @@ describe('ArtifactContentViewer', () => {
     expect(headerPath).toBe('/Users/normy/Downloads/apply_patch_test.txt');
     expect(headerPath.startsWith('//')).toBe(false);
     expect(wrapper.text()).not.toContain('//Users/normy/Downloads/apply_patch_test.txt');
+  });
+
+  it('shows a maximize button and restores from maximized mode with Escape', async () => {
+    const wrapper = mountComponent({
+      ...defaultArtifact,
+      status: 'available',
+      sourceTool: 'edit_file',
+    });
+
+    await flushPromises();
+
+    expect(wrapper.get('[data-testid="artifact-viewer-zen-toggle"]').attributes('title')).toBe('Maximize view');
+
+    await wrapper.get('[data-testid="artifact-viewer-zen-toggle"]').trigger('click');
+    await flushPromises();
+
+    const maximizedShell = document.body.querySelector('[data-testid="artifact-content-viewer-shell"]');
+    const restoreButton = document.body.querySelector('[data-testid="artifact-viewer-zen-toggle"]');
+    expect(maximizedShell?.className).toContain('fixed');
+    expect(restoreButton?.getAttribute('title')).toBe('Restore view');
+
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    await flushPromises();
+
+    expect(wrapper.get('[data-testid="artifact-viewer-zen-toggle"]').attributes('title')).toBe('Maximize view');
+    expect(wrapper.get('[data-testid="artifact-content-viewer-shell"]').classes()).not.toContain('fixed');
+  });
+
+  it('keeps edit and preview controls available while maximized', async () => {
+    const wrapper = mountComponent({
+      ...defaultArtifact,
+      status: 'available',
+      sourceTool: 'edit_file',
+    });
+
+    await flushPromises();
+
+    await wrapper.get('button[title*="Edit"]').trigger('click');
+    await wrapper.get('[data-testid="artifact-viewer-zen-toggle"]').trigger('click');
+    await flushPromises();
+
+    expect(document.body.querySelector('button[title*="Edit"]')).not.toBeNull();
+    expect(document.body.querySelector('button[title*="Preview"]')).not.toBeNull();
+  });
+
+  it('does not inherit maximize state from the file explorer viewer', async () => {
+    const fileContentDisplayModeStore = useFileContentDisplayModeStore();
+    fileContentDisplayModeStore.toggleZenMode();
+
+    const wrapper = mountComponent({
+      ...defaultArtifact,
+      status: 'available',
+      sourceTool: 'edit_file',
+    });
+
+    await flushPromises();
+
+    expect(wrapper.get('[data-testid="artifact-viewer-zen-toggle"]').attributes('title')).toBe('Maximize view');
+    expect(wrapper.get('[data-testid="artifact-content-viewer-shell"]').classes()).not.toContain('fixed');
   });
 
   it('shows deleted state when the server artifact route returns 404', async () => {
