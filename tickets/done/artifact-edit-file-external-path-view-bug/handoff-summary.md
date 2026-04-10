@@ -4,7 +4,7 @@
 
 - Ticket: `artifact-edit-file-external-path-view-bug`
 - Date: `2026-04-10`
-- Current Status: `User verified, archived, and ready for repository finalization / release`
+- Current Status: `Released in workspace version 1.2.68`
 - Workflow State Source: `tickets/done/artifact-edit-file-external-path-view-bug/workflow-state.md`
 
 ## Delivery Summary
@@ -35,6 +35,7 @@
     - `/Users/normy/autobyteus_org/autobyteus-worktrees/artifact-edit-file-external-path-view-bug/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.2.66.zip`
 - User verification:
   - explicit confirmation received that the ticket is done after the local frontend/backend verification flow and after the UI stopped surfacing the prior `400` error
+  - repository finalization and desktop release completed on `origin/personal` with tag `v1.2.68`
 
 ## Residual Risk
 

@@ -4,12 +4,12 @@
 
 - Ticket: `artifact-edit-file-external-path-view-bug`
 - Current Stage: `10`
-- Next Stage: `Repository finalization and release on origin/personal`
+- Next Stage: `Complete`
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-049`
-- Last Updated: `2026-04-10 09:27:50 CEST`
+- Last Transition ID: `T-050`
+- Last Updated: `2026-04-10 09:36:59 CEST`
 
 ## Stage 0 Bootstrap Record
 
@@ -47,6 +47,7 @@
 | T-047 | 2026-04-10 | 6 | 8 | Final Local Fix path for `CR-07` completed with focused validation and a clean Stage 8 rerun. | Local Fix | Locked | `implementation.md`, `api-e2e-testing.md`, `code-review.md`, `workflow-state.md` |
 | T-048 | 2026-04-10 | 8 | 9 | Docs sync completed and the long-lived artifacts architecture doc was updated to the final backend-owned design. | N/A | Locked | `docs-sync.md`, `workflow-state.md` |
 | T-049 | 2026-04-10 | 9 | 10 | User confirmed the ticket is done, and the ticket folder was moved to `tickets/done/`. | N/A | Locked | `handoff-summary.md`, `workflow-state.md` |
+| T-050 | 2026-04-10 | 10 | 10 | Repository finalization merged the ticket into `origin/personal`, and the documented desktop release flow produced version `1.2.68` with tag `v1.2.68`. | N/A | Locked | `handoff-summary.md`, `release-deployment-report.md`, `workflow-state.md` |
 
 ## Re-Entry Closeout
 
