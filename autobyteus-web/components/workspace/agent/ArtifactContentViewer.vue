@@ -51,7 +51,9 @@
 
         <div v-else-if="pendingMessage" class="flex-1 flex flex-col items-center justify-center text-gray-400 p-8">
              <Icon icon="heroicons:clock" class="w-16 h-16 mb-4 text-gray-300" />
-             <h3 class="text-lg font-medium text-gray-500 mb-1">Content not available yet</h3>
+             <h3 class="text-lg font-medium text-gray-500 mb-1">
+               {{ t('workspace.components.workspace.agent.ArtifactContentViewer.content_not_available_yet') }}
+             </h3>
              <p class="text-sm text-center max-w-sm">
                {{ pendingMessage }}
              </p>
@@ -59,7 +61,9 @@
 
         <div v-else-if="unsupportedPreviewMessage" class="flex-1 flex flex-col items-center justify-center text-gray-400 p-8">
              <Icon icon="heroicons:document-minus" class="w-16 h-16 mb-4 text-gray-300" />
-             <h3 class="text-lg font-medium text-gray-500 mb-1">Preview unavailable</h3>
+             <h3 class="text-lg font-medium text-gray-500 mb-1">
+               {{ t('workspace.components.workspace.agent.ArtifactContentViewer.preview_unavailable') }}
+             </h3>
              <p class="text-sm text-center max-w-sm">
                {{ unsupportedPreviewMessage }}
              </p>
@@ -90,6 +94,7 @@ import { Icon } from '@iconify/vue';
 import type { AgentArtifact } from '~/stores/agentArtifactsStore';
 import type { RunFileChangeArtifact } from '~/stores/runFileChangesStore';
 import type { FileOpenMode } from '~/stores/fileExplorer';
+import { useLocalization } from '~/composables/useLocalization';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { determineFileType } from '~/utils/fileExplorer/fileUtils';
 
@@ -116,6 +121,7 @@ const unsupportedPreviewMessage = ref<string | null>(null);
 let fetchToken = 0;
 
 const windowNodeContextStore = useWindowNodeContextStore();
+const { t } = useLocalization();
 
 const isLoading = computed(() => isDeterminingType.value || isFetchingContent.value);
 const usesBufferedWriteContent = computed(() => {
@@ -199,14 +205,14 @@ const refreshResolvedContent = async () => {
   }
 
   if (usesRunFileChangeRoute.value && artifact.status === 'failed') {
-    errorMessage.value = 'This file change failed before the final content could be captured.';
+    errorMessage.value = t('workspace.components.workspace.agent.ArtifactContentViewer.failed_before_final_content_could_be_captured');
     fetchedContent.value = null;
     isFetchingContent.value = false;
     return;
   }
 
   if (usesRunFileChangeRoute.value && artifact.status !== 'available') {
-    pendingMessage.value = 'This file change will become viewable after the edit completes and the server captures the final content.';
+    pendingMessage.value = t('workspace.components.workspace.agent.ArtifactContentViewer.file_change_will_become_viewable_after_the_edit_completes');
     fetchedContent.value = null;
     isFetchingContent.value = false;
     return;
@@ -216,7 +222,7 @@ const refreshResolvedContent = async () => {
 
   if (fileType.value !== 'Text') {
     if (usesRunFileChangeRoute.value) {
-      unsupportedPreviewMessage.value = 'Preview is currently available only for text file changes.';
+      unsupportedPreviewMessage.value = t('workspace.components.workspace.agent.ArtifactContentViewer.preview_is_currently_available_only_for_text_file_changes');
       resolvedUrl.value = null;
     }
     else {
@@ -246,14 +252,14 @@ const refreshResolvedContent = async () => {
 
     if (response.status === 409) {
       if (currentToken !== fetchToken) return;
-      pendingMessage.value = 'This file change is still pending server-side capture.';
+      pendingMessage.value = t('workspace.components.workspace.agent.ArtifactContentViewer.file_change_is_still_pending_server_side_capture');
       fetchedContent.value = null;
       return;
     }
 
     if (response.status === 415) {
       if (currentToken !== fetchToken) return;
-      unsupportedPreviewMessage.value = 'Preview is currently available only for text file changes.';
+      unsupportedPreviewMessage.value = t('workspace.components.workspace.agent.ArtifactContentViewer.preview_is_currently_available_only_for_text_file_changes');
       fetchedContent.value = null;
       return;
     }
@@ -266,7 +272,9 @@ const refreshResolvedContent = async () => {
     fetchedContent.value = text;
   } catch (error) {
     if (currentToken !== fetchToken) return;
-    errorMessage.value = error instanceof Error ? error.message : 'Failed to fetch artifact content';
+    errorMessage.value = error instanceof Error
+      ? error.message
+      : t('workspace.components.workspace.agent.ArtifactContentViewer.failed_to_fetch_artifact_content');
   } finally {
     if (currentToken === fetchToken) {
       isFetchingContent.value = false;
