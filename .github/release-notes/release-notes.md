@@ -1,7 +1,7 @@
 ## Improvements
-- Added advanced Remote Browser Sharing settings in Electron, including an advertised-host control for trusted LAN or local Docker pairing.
-- Added per-node pair and unpair controls so a selected remote node can use the local Electron browser through an expiring bridge descriptor.
+- Improved external-channel conversations for both agents and agent teams so replies stay tied to the correct inbound message across same-thread follow-up messages.
+- Improved team-bound channel conversations so coordinator-default routing and restored team runs continue replying reliably without manual reset.
 
 ## Fixes
-- Remote nodes can now receive browser-bridge access through runtime registration instead of depending only on the embedded Electron startup environment.
-- Browser tool availability on paired remote nodes still remains gated by configured browser tool names, preventing accidental full browser exposure.
+- Fixed cases where external channels could miss, delay, or misroute replies after tool-using turns, repeated same-thread messages, or restored runs.
+- Fixed team channel delivery so the correct coordinator/member turn is preserved instead of falling back to ambiguous run-level correlation.
