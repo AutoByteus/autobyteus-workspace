@@ -2,8 +2,8 @@
 
 - Ticket: `memory-projection-layer-refactor`
 - Last Updated: `2026-04-11`
-- Stage: `9`
-- Current Status: `Docs synced and awaiting repository finalization plus release`
+- Stage: `10`
+- Current Status: `Released in workspace version 1.2.73`
 - User Verification Status: `Completed`
 
 ## What Changed
@@ -52,13 +52,18 @@
 
 - Release notes required: `Yes`
 - Release notes artifact: `tickets/done/memory-projection-layer-refactor/release-notes.md`
-- GitHub release: `Pending finalization`
+- GitHub release: `Tag pushed as v1.2.73; publication workflows are still in progress`
 
 ## Finalization Record
 
-- Archived ticket path: `Pending move to tickets/done`
+- Archived ticket path: `tickets/done/memory-projection-layer-refactor`
 - Finalization target: `origin/personal`
-- Ticket commit: `Pending`
-- Release commit: `Pending`
-- Release tag: `Pending`
-
+- Ticket commit: `e04add95` (`refactor(run-history): separate replay projection from memory views`)
+- Merge commit: `6db09d74` (`Merge branch 'codex/memory-projection-layer-refactor' into personal`)
+- Release commit: `24a5ad60` (`chore(release): bump workspace release version to 1.2.73`)
+- Release tag: `v1.2.73`
+- Remote tag verification: `git ls-remote --tags origin v1.2.73`
+- GitHub Actions status at handoff:
+  - `Release Messaging Gateway`: `in_progress`
+  - `Desktop Release`: `in_progress`
+  - `Server Docker Release`: `in_progress`

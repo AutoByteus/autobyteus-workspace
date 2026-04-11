@@ -12,7 +12,7 @@ Stage movement is controlled by this file's Stage Transition Contract + Transiti
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-030`
+- Last Transition ID: `T-031`
 - Active Stage 6 Workstream: `N/A`
 - Last Updated: `2026-04-11`
 
@@ -48,7 +48,7 @@ Note:
 | 7 API/E2E + Executable Validation | Pass | executable validation implementation complete + acceptance-criteria and spine scenario gates complete | `tickets/done/memory-projection-layer-refactor/api-e2e-testing.md`, `tickets/done/memory-projection-layer-refactor/codex-thread-read-probe-summary.md`, `tickets/done/memory-projection-layer-refactor/codex-thread-read-probe.json` |
 | 8 Code Review | Pass | Code review gate `Pass` recorded + priority-ordered detailed review scorecard recorded (`Overall /10`, `Overall /100`, all ten category rows in canonical order with score + why + weakness + improvement, and no category below `9.0` for `Pass`) + all changed source files `<=500` effective non-empty lines + `>220` delta-gate assessments recorded + data-flow spine inventory/ownership/off-spine concern checks + existing-capability reuse + reusable-owned-structure extraction + shared-structure/data-model tightness + shared-base coherence + repeated-coordination ownership + empty-indirection + scope-appropriate separation of concerns + file placement within the correct subsystem and folder, with any optional module grouping justified + flat-vs-over-split layout judgment + interface/API/query/command/service-method boundary clarity + naming quality across files/folders/APIs/types/functions/parameters/variables + naming-to-responsibility alignment + no unjustified duplication of code/repeated structures in changed scope + patch-on-patch complexity control + dead/obsolete code cleanup completeness in changed scope + test quality + test maintainability + validation-evidence sufficiency + no-backward-compat/no-legacy checks satisfied for `Pass` | `tickets/done/memory-projection-layer-refactor/code-review.md`, `tickets/done/memory-projection-layer-refactor/api-e2e-testing.md` |
 | 9 Docs Sync | Pass | `docs-sync.md` current + docs updated or no-impact rationale recorded | `tickets/done/memory-projection-layer-refactor/docs-sync.md`, `autobyteus-server-ts/docs/modules/run_history.md` |
-| 10 Handoff / Ticket State | In Progress | `handoff-summary.md` current + explicit user verification received + ticket moved to `done` + repository finalization into resolved target branch complete when git repo + any applicable release/publication/deployment step completed or explicitly recorded as not required + required post-finalization worktree/branch cleanup complete when applicable + ticket state decision recorded | `tickets/done/memory-projection-layer-refactor/handoff-summary.md`, `tickets/done/memory-projection-layer-refactor/release-notes.md` |
+| 10 Handoff / Ticket State | Pass | `handoff-summary.md` current + explicit user verification received + ticket moved to `done` + repository finalization into resolved target branch complete when git repo + any applicable release/publication/deployment step completed or explicitly recorded as not required + required post-finalization worktree/branch cleanup complete when applicable + ticket state decision recorded | `tickets/done/memory-projection-layer-refactor/handoff-summary.md`, `tickets/done/memory-projection-layer-refactor/release-notes.md`, `tickets/done/memory-projection-layer-refactor/release-deployment-report.md` |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -146,6 +146,7 @@ Note:
 | T-028 | 2026-04-11 | 7 | 8 | Stage 7 re-entry validation passed after reasoning-preservation, grouped-hydration, live Codex restore/replay, and build verification were recorded. Stage 8 review resumed and code edits are locked. | N/A | Locked | `workflow-state.md`, `api-e2e-testing.md` |
 | T-029 | 2026-04-11 | 8 | 9 | User verified the completed implementation and requested finalization plus release work. Stage 9 docs sync is now active with code edits remaining locked. | N/A | Locked | `workflow-state.md` |
 | T-030 | 2026-04-11 | 9 | 10 | Stage 9 docs sync passed after updating the long-lived run-history module documentation and creating the delivery artifacts. Stage 10 finalization is now active with code edits remaining locked. | N/A | Locked | `workflow-state.md`, `docs-sync.md`, `handoff-summary.md`, `release-notes.md`, `autobyteus-server-ts/docs/modules/run_history.md` |
+| T-031 | 2026-04-11 | 10 | 10 | Stage 10 passed after the archived ticket was committed, merged into `origin/personal`, released as `v1.2.73`, and the dedicated ticket worktree plus ticket branches were cleaned up. | N/A | Locked | `workflow-state.md`, `handoff-summary.md`, `release-deployment-report.md` |
 
 ## Audible Notification Log (Optional Tracking)
 
@@ -167,6 +168,7 @@ Note:
 | 2026-04-11 | LockChange | Stage 6 local-fix re-entry remained active and code edits were unlocked again after the required artifact updates. The next action was to update the Claude provider test and rerun Stage 7 validation. | Success |  |
 | 2026-04-11 | Re-entry | Reopened the ticket to Stage 2 because the direct live Codex probe proved the current replay contract is source-limited and does not yet satisfy the stronger live-monitor parity requirement when source-native reasoning structure exists. Code edits remain locked while requirements are refreshed. | Success |  |
 | 2026-04-11 | Gate | Stage 8 review passed and the requirement-gap re-entry is closed. Code edits remain locked and the ticket is holding at the end of code review with Stage 9 docs sync next. | Success |  |
+| 2026-04-11 | Gate | Stage 10 passed. The ticket is archived, the work is merged into personal, release tag v1.2.73 is pushed, and cleanup is complete while the GitHub release workflows continue in the background. | Success |  |
 
 ## Process Violation Log
 
