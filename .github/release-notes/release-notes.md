@@ -1,9 +1,9 @@
 # Release Notes
 
 ## Improvements
-- The Activity panel no longer jumps into focus automatically while tool calls are updating in the background.
-- The Activity feed now shows a visible, draggable vertical scrollbar so long event histories are easier to navigate.
+- Reopened runs now rebuild historical conversation and right-side Activity state from the same run-history replay bundle.
+- Historical replay ownership is now separated cleanly from raw memory storage, which makes restore behavior more consistent across AutoByteus and Codex-backed runs.
 
 ## Fixes
-- Fixed runtime tool activity stealing attention from other right-side tabs by auto-switching into Activity.
-- Fixed the Activity feed so long event lists no longer rely only on trackpad or wheel scrolling to move precisely.
+- Fixed historical reopen so the Activity panel restores tool events after a server restart instead of showing `0 Events`.
+- Fixed the projection boundary so raw memory views no longer own the canonical replay contract used by run reopen.
