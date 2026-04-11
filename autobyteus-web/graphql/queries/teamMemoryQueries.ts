@@ -38,7 +38,6 @@ export const GET_TEAM_MEMBER_RUN_MEMORY_VIEW = gql`
     $includeRawTraces: Boolean
     $includeArchive: Boolean
     $rawTraceLimit: Int
-    $conversationLimit: Int
   ) {
     getTeamMemberRunMemoryView(
       teamRunId: $teamRunId
@@ -49,8 +48,6 @@ export const GET_TEAM_MEMBER_RUN_MEMORY_VIEW = gql`
       includeRawTraces: $includeRawTraces
       includeArchive: $includeArchive
       rawTraceLimit: $rawTraceLimit
-      conversationLimit: $conversationLimit
-      includeConversation: false
     ) {
       runId
       workingContext {
@@ -66,6 +63,7 @@ export const GET_TEAM_MEMBER_RUN_MEMORY_VIEW = gql`
         traceType
         content
         toolName
+        toolCallId
         toolArgs
         toolResult
         toolError

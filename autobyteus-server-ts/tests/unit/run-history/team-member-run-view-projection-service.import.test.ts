@@ -31,9 +31,9 @@ describe("team-member-run-view-projection-service import timing", () => {
     vi.doMock("../../../src/run-history/utils/team-member-run-id.js", () => ({
       normalizeMemberRouteKey: (value: string) => value,
     }));
-    vi.doMock("../../../src/agent-memory/services/team-member-memory-projection-reader.js", () => ({
-      TeamMemberMemoryProjectionReader: class {},
-      getTeamMemberMemoryProjectionReader: vi.fn(),
+    vi.doMock("../../../src/run-history/services/team-member-local-run-projection-reader.js", () => ({
+      TeamMemberLocalRunProjectionReader: class {},
+      getTeamMemberLocalRunProjectionReader: vi.fn(),
     }));
     vi.doMock("../../../src/agent-memory/store/team-member-memory-layout.js", () => ({
       TeamMemberMemoryLayout: class {

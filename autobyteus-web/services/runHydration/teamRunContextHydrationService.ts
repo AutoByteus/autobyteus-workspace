@@ -16,6 +16,7 @@ import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import { normalizeAgentRuntimeStatus, normalizeTeamRuntimeStatus } from './runtimeStatusNormalization';
 import { reconstructTeamRunConfigFromMetadata } from '~/utils/teamRunConfigUtils';
+import { hydrateActivitiesFromProjection } from './runProjectionActivityHydration';
 
 export interface LoadTeamRunContextHydrationInput {
   teamRunId: string;
@@ -95,6 +96,16 @@ const applyMemberStatuses = (
     if (matched) {
       memberContext.state.currentStatus = normalizeAgentRuntimeStatus(matched.currentStatus);
     }
+  });
+};
+
+const hydrateMemberActivities = (params: {
+  metadata: ReturnType<typeof parseTeamRunMetadata>;
+  projectionByMemberRouteKey: Map<string, any>;
+}): void => {
+  params.metadata.memberMetadata.forEach((member) => {
+    const projection = params.projectionByMemberRouteKey.get(toTeamMemberKey(member)) || null;
+    hydrateActivitiesFromProjection(member.memberRunId, projection?.activities || []);
   });
 };
 
@@ -182,6 +193,10 @@ export const loadTeamRunContextHydrationPayload = async (
     projectionByMemberRouteKey,
     toTeamMemberKey,
     ensureWorkspaceByRootPath: input.ensureWorkspaceByRootPath,
+  });
+  hydrateMemberActivities({
+    metadata,
+    projectionByMemberRouteKey,
   });
 
   const availableMemberRouteKeys = Array.from(members.keys());

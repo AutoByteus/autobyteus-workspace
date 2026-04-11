@@ -7,8 +7,9 @@ import type {
   RunProjectionProviderInput,
   RunProjection,
 } from "../run-projection-types.js";
-import { buildRunProjection } from "../run-projection-utils.js";
+import { buildRunProjectionBundleFromEvents } from "../run-projection-utils.js";
 import { appConfigProvider } from "../../../config/app-config-provider.js";
+import { buildHistoricalReplayEvents } from "../transformers/raw-trace-to-historical-replay-events.js";
 
 const asString = (value: unknown): string | null =>
   typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
@@ -37,11 +38,13 @@ export class AutoByteusRunViewProjectionProvider implements RunProjectionProvide
       includeWorkingContext: false,
       includeEpisodic: false,
       includeSemantic: false,
-      includeConversation: true,
-      includeRawTraces: false,
+      includeRawTraces: true,
       includeArchive: true,
     });
-    return buildRunProjection(input.source.runId, view.conversation ?? []);
+    return buildRunProjectionBundleFromEvents(
+      input.source.runId,
+      buildHistoricalReplayEvents(view.rawTraces ?? []),
+    );
   }
 }
 

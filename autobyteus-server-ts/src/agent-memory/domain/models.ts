@@ -10,6 +10,7 @@ export type MemoryTraceEvent = {
   traceType: string;
   content?: string | null;
   toolName?: string | null;
+  toolCallId?: string | null;
   toolArgs?: Record<string, unknown> | null;
   toolResult?: unknown | null;
   toolError?: string | null;
@@ -19,24 +20,11 @@ export type MemoryTraceEvent = {
   ts: number;
 };
 
-export type MemoryConversationEntry = {
-  kind: string;
-  role?: string | null;
-  content?: string | null;
-  toolName?: string | null;
-  toolArgs?: Record<string, unknown> | null;
-  toolResult?: unknown | null;
-  toolError?: string | null;
-  media?: Record<string, string[]> | null;
-  ts?: number | null;
-};
-
 export type AgentMemoryView = {
   runId: string;
   workingContext?: MemoryMessage[] | null;
   episodic?: Array<Record<string, unknown>> | null;
   semantic?: Array<Record<string, unknown>> | null;
-  conversation?: MemoryConversationEntry[] | null;
   rawTraces?: MemoryTraceEvent[] | null;
 };
 

@@ -29,17 +29,6 @@ export type ActivateSkillVersionInput = {
   version: Scalars['String']['input'];
 };
 
-export type AgentArtifact = {
-  __typename?: 'AgentArtifact';
-  createdAt: Scalars['String']['output'];
-  id: Scalars['String']['output'];
-  path: Scalars['String']['output'];
-  runId: Scalars['String']['output'];
-  type: Scalars['String']['output'];
-  updatedAt: Scalars['String']['output'];
-  workspaceRoot?: Maybe<Scalars['String']['output']>;
-};
-
 export type AgentDefinition = {
   __typename?: 'AgentDefinition';
   avatarUrl?: Maybe<Scalars['String']['output']>;
@@ -67,9 +56,13 @@ export enum AgentDefinitionOwnershipScope {
   TeamLocal = 'TEAM_LOCAL'
 }
 
+export enum AgentMemberRefScope {
+  Shared = 'SHARED',
+  TeamLocal = 'TEAM_LOCAL'
+}
+
 export type AgentMemoryView = {
   __typename?: 'AgentMemoryView';
-  conversation?: Maybe<Array<MemoryConversationEntry>>;
   episodic?: Maybe<Array<Scalars['JSON']['output']>>;
   rawTraces?: Maybe<Array<MemoryTraceEvent>>;
   runId: Scalars['String']['output'];
@@ -77,15 +70,30 @@ export type AgentMemoryView = {
   workingContext?: Maybe<Array<MemoryMessage>>;
 };
 
-export type AgentRun = {
-  __typename?: 'AgentRun';
-  agentDefinitionId?: Maybe<Scalars['String']['output']>;
-  currentStatus: Scalars['String']['output'];
-  id: Scalars['String']['output'];
-  name: Scalars['String']['output'];
-  role: Scalars['String']['output'];
-  workspace?: Maybe<WorkspaceInfo>;
+export type AgentPackage = {
+  __typename?: 'AgentPackage';
+  agentTeamCount: Scalars['Int']['output'];
+  displayName: Scalars['String']['output'];
+  isDefault: Scalars['Boolean']['output'];
+  isRemovable: Scalars['Boolean']['output'];
+  packageId: Scalars['String']['output'];
+  path: Scalars['String']['output'];
+  sharedAgentCount: Scalars['Int']['output'];
+  source: Scalars['String']['output'];
+  sourceKind: AgentPackageSourceKind;
+  teamLocalAgentCount: Scalars['Int']['output'];
 };
+
+export enum AgentPackageImportSourceKind {
+  GithubRepository = 'GITHUB_REPOSITORY',
+  LocalPath = 'LOCAL_PATH'
+}
+
+export enum AgentPackageSourceKind {
+  BuiltIn = 'BUILT_IN',
+  GithubRepository = 'GITHUB_REPOSITORY',
+  LocalPath = 'LOCAL_PATH'
+}
 
 export type AgentTeamDefinition = {
   __typename?: 'AgentTeamDefinition';
@@ -97,19 +105,6 @@ export type AgentTeamDefinition = {
   instructions: Scalars['String']['output'];
   name: Scalars['String']['output'];
   nodes: Array<TeamMember>;
-};
-
-export type AgentTeamRun = {
-  __typename?: 'AgentTeamRun';
-  currentStatus: Scalars['String']['output'];
-  id: Scalars['String']['output'];
-  name: Scalars['String']['output'];
-  role?: Maybe<Scalars['String']['output']>;
-};
-
-export type AgentUserInput = {
-  content: Scalars['String']['input'];
-  contextFiles?: InputMaybe<Array<ContextFilePathInput>>;
 };
 
 export type ApplicationManifest = {
@@ -140,53 +135,6 @@ export type ConfigureMcpServerResult = {
   savedConfig: McpServerConfigUnion;
 };
 
-export type ContextFilePathInput = {
-  path: Scalars['String']['input'];
-  type: ContextFileType;
-};
-
-export enum ContextFileType {
-  Audio = 'AUDIO',
-  Csv = 'CSV',
-  Docx = 'DOCX',
-  Html = 'HTML',
-  Image = 'IMAGE',
-  Javascript = 'JAVASCRIPT',
-  Json = 'JSON',
-  Markdown = 'MARKDOWN',
-  Pdf = 'PDF',
-  Pptx = 'PPTX',
-  Python = 'PYTHON',
-  Text = 'TEXT',
-  Unknown = 'UNKNOWN',
-  Video = 'VIDEO',
-  Xlsx = 'XLSX',
-  Xml = 'XML',
-  FromPath = 'fromPath',
-  GetReadableTextTypes = 'getReadableTextTypes'
-}
-
-export type ContinueRunInput = {
-  agentDefinitionId?: InputMaybe<Scalars['String']['input']>;
-  autoExecuteTools?: InputMaybe<Scalars['Boolean']['input']>;
-  llmConfig?: InputMaybe<Scalars['JSON']['input']>;
-  llmModelIdentifier?: InputMaybe<Scalars['String']['input']>;
-  runId?: InputMaybe<Scalars['String']['input']>;
-  runtimeKind?: InputMaybe<Scalars['String']['input']>;
-  skillAccessMode?: InputMaybe<ExternalChannelSkillAccessModeEnum>;
-  userInput: AgentUserInput;
-  workspaceId?: InputMaybe<Scalars['String']['input']>;
-  workspaceRootPath?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type ContinueRunMutationResult = {
-  __typename?: 'ContinueRunMutationResult';
-  ignoredConfigFields: Array<Scalars['String']['output']>;
-  message: Scalars['String']['output'];
-  runId?: Maybe<Scalars['String']['output']>;
-  success: Scalars['Boolean']['output'];
-};
-
 export type CreateAgentDefinitionInput = {
   avatarUrl?: InputMaybe<Scalars['String']['input']>;
   category?: InputMaybe<Scalars['String']['input']>;
@@ -202,6 +150,24 @@ export type CreateAgentDefinitionInput = {
   toolExecutionResultProcessorNames?: InputMaybe<Array<Scalars['String']['input']>>;
   toolInvocationPreprocessorNames?: InputMaybe<Array<Scalars['String']['input']>>;
   toolNames?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+export type CreateAgentRunInput = {
+  agentDefinitionId: Scalars['String']['input'];
+  autoExecuteTools: Scalars['Boolean']['input'];
+  llmConfig?: InputMaybe<Scalars['JSON']['input']>;
+  llmModelIdentifier: Scalars['String']['input'];
+  runtimeKind: Scalars['String']['input'];
+  skillAccessMode: ExternalChannelSkillAccessModeEnum;
+  workspaceId?: InputMaybe<Scalars['String']['input']>;
+  workspaceRootPath: Scalars['String']['input'];
+};
+
+export type CreateAgentRunResult = {
+  __typename?: 'CreateAgentRunResult';
+  message: Scalars['String']['output'];
+  runId?: Maybe<Scalars['String']['output']>;
+  success: Scalars['Boolean']['output'];
 };
 
 export type CreateAgentTeamDefinitionInput = {
@@ -236,20 +202,6 @@ export type CreateWorkspaceInput = {
   rootPath: Scalars['String']['input'];
 };
 
-export enum AgentMemberRefScope {
-  Shared = 'SHARED',
-  TeamLocal = 'TEAM_LOCAL'
-}
-
-export type AgentPackageRoot = {
-  __typename?: 'AgentPackageRoot';
-  agentTeamCount: Scalars['Int']['output'];
-  isDefault: Scalars['Boolean']['output'];
-  path: Scalars['String']['output'];
-  sharedAgentCount: Scalars['Int']['output'];
-  teamLocalAgentCount: Scalars['Int']['output'];
-};
-
 export type DeleteAgentDefinitionResult = {
   __typename?: 'DeleteAgentDefinitionResult';
   message: Scalars['String']['output'];
@@ -268,14 +220,14 @@ export type DeleteMcpServerResult = {
   success: Scalars['Boolean']['output'];
 };
 
-export type DeleteStoredRunMutationResult = {
-  __typename?: 'DeleteStoredRunMutationResult';
+export type DeleteSkillResult = {
+  __typename?: 'DeleteSkillResult';
   message: Scalars['String']['output'];
   success: Scalars['Boolean']['output'];
 };
 
-export type DeleteSkillResult = {
-  __typename?: 'DeleteSkillResult';
+export type DeleteStoredRunMutationResult = {
+  __typename?: 'DeleteStoredRunMutationResult';
   message: Scalars['String']['output'];
   success: Scalars['Boolean']['output'];
 };
@@ -352,7 +304,7 @@ export type ExternalChannelLaunchPresetGql = {
   llmConfig?: Maybe<Scalars['JSONObject']['output']>;
   llmModelIdentifier: Scalars['String']['output'];
   runtimeKind: Scalars['String']['output'];
-  skillAccessMode?: Maybe<ExternalChannelSkillAccessModeEnum>;
+  skillAccessMode: ExternalChannelSkillAccessModeEnum;
   workspaceRootPath: Scalars['String']['output'];
 };
 
@@ -361,9 +313,15 @@ export type ExternalChannelLaunchPresetInput = {
   llmConfig?: InputMaybe<Scalars['JSONObject']['input']>;
   llmModelIdentifier: Scalars['String']['input'];
   runtimeKind?: InputMaybe<Scalars['String']['input']>;
-  skillAccessMode?: InputMaybe<ExternalChannelSkillAccessModeEnum>;
+  skillAccessMode: ExternalChannelSkillAccessModeEnum;
   workspaceRootPath: Scalars['String']['input'];
 };
+
+export enum ExternalChannelSkillAccessModeEnum {
+  GlobalDiscovery = 'GLOBAL_DISCOVERY',
+  None = 'NONE',
+  PreloadedOnly = 'PRELOADED_ONLY'
+}
 
 export type ExternalChannelTeamDefinitionOptionGql = {
   __typename?: 'ExternalChannelTeamDefinitionOptionGql';
@@ -380,6 +338,7 @@ export type ExternalChannelTeamLaunchPresetGql = {
   llmConfig?: Maybe<Scalars['JSONObject']['output']>;
   llmModelIdentifier: Scalars['String']['output'];
   runtimeKind: Scalars['String']['output'];
+  skillAccessMode: ExternalChannelSkillAccessModeEnum;
   workspaceRootPath: Scalars['String']['output'];
 };
 
@@ -388,20 +347,9 @@ export type ExternalChannelTeamLaunchPresetInput = {
   llmConfig?: InputMaybe<Scalars['JSONObject']['input']>;
   llmModelIdentifier: Scalars['String']['input'];
   runtimeKind?: InputMaybe<Scalars['String']['input']>;
+  skillAccessMode: ExternalChannelSkillAccessModeEnum;
   workspaceRootPath: Scalars['String']['input'];
 };
-
-export enum ExternalChannelSkillAccessModeEnum {
-  GlobalDiscovery = 'GLOBAL_DISCOVERY',
-  None = 'NONE',
-  PreloadedOnly = 'PRELOADED_ONLY'
-}
-
-export enum SkillAccessModeEnum {
-  GlobalDiscovery = 'GLOBAL_DISCOVERY',
-  None = 'NONE',
-  PreloadedOnly = 'PRELOADED_ONLY'
-}
 
 export type GeminiSetupConfig = {
   __typename?: 'GeminiSetupConfig';
@@ -416,6 +364,11 @@ export type HealthStatus = {
   __typename?: 'HealthStatus';
   message: Scalars['String']['output'];
   status: Scalars['String']['output'];
+};
+
+export type ImportAgentPackageInput = {
+  source: Scalars['String']['input'];
+  sourceKind: AgentPackageImportSourceKind;
 };
 
 export type ImportMcpServerConfigsResult = {
@@ -519,19 +472,6 @@ export enum McpTransportTypeEnum {
   StreamableHttp = 'STREAMABLE_HTTP'
 }
 
-export type MemoryConversationEntry = {
-  __typename?: 'MemoryConversationEntry';
-  content?: Maybe<Scalars['String']['output']>;
-  kind: Scalars['String']['output'];
-  media?: Maybe<Scalars['JSON']['output']>;
-  role?: Maybe<Scalars['String']['output']>;
-  toolArgs?: Maybe<Scalars['JSON']['output']>;
-  toolError?: Maybe<Scalars['String']['output']>;
-  toolName?: Maybe<Scalars['String']['output']>;
-  toolResult?: Maybe<Scalars['JSON']['output']>;
-  ts?: Maybe<Scalars['Float']['output']>;
-};
-
 export type MemoryMessage = {
   __typename?: 'MemoryMessage';
   content?: Maybe<Scalars['String']['output']>;
@@ -567,6 +507,7 @@ export type MemoryTraceEvent = {
   media?: Maybe<Scalars['JSON']['output']>;
   seq: Scalars['Int']['output'];
   toolArgs?: Maybe<Scalars['JSON']['output']>;
+  toolCallId?: Maybe<Scalars['String']['output']>;
   toolError?: Maybe<Scalars['String']['output']>;
   toolName?: Maybe<Scalars['String']['output']>;
   toolResult?: Maybe<Scalars['JSON']['output']>;
@@ -594,12 +535,12 @@ export type ModelDetail = {
 export type Mutation = {
   __typename?: 'Mutation';
   activateSkillVersion: SkillVersion;
-  addAgentPackageRoot: Array<AgentPackageRoot>;
   addSkillSource: Array<SkillSource>;
   approveToolInvocation: ApproveToolInvocationResult;
+  clearRemoteBrowserBridge: RemoteBrowserBridgeMutationResult;
   configureMcpServer: ConfigureMcpServerResult;
-  continueRun: ContinueRunMutationResult;
   createAgentDefinition: AgentDefinition;
+  createAgentRun: CreateAgentRunResult;
   createAgentTeamDefinition: AgentTeamDefinition;
   createAgentTeamRun: CreateAgentTeamRunResult;
   createFileOrFolder: Scalars['String']['output'];
@@ -610,10 +551,10 @@ export type Mutation = {
   deleteExternalChannelBinding: Scalars['Boolean']['output'];
   deleteFileOrFolder: Scalars['String']['output'];
   deleteMcpServer: DeleteMcpServerResult;
-  deleteStoredRun: DeleteStoredRunMutationResult;
   deleteServerSetting: Scalars['String']['output'];
   deleteSkill: DeleteSkillResult;
   deleteSkillFile: Scalars['Boolean']['output'];
+  deleteStoredRun: DeleteStoredRunMutationResult;
   deleteStoredTeamRun: DeleteStoredTeamRunMutationResult;
   disableManagedMessagingGateway: ManagedMessagingGatewayStatusObject;
   disableSkill: Skill;
@@ -622,20 +563,22 @@ export type Mutation = {
   enableManagedMessagingGateway: ManagedMessagingGatewayStatusObject;
   enableSkill: Skill;
   enableSkillVersioning: SkillVersion;
+  importAgentPackage: Array<AgentPackage>;
   importMcpServerConfigs: ImportMcpServerConfigsResult;
   importSyncBundle: ImportNodeSyncBundleResult;
   moveFileOrFolder: Scalars['String']['output'];
+  registerRemoteBrowserBridge: RemoteBrowserBridgeMutationResult;
   reloadLlmModels: Scalars['String']['output'];
   reloadLlmProviderModels: Scalars['String']['output'];
   reloadToolSchema: ReloadToolSchemaResult;
-  removeAgentPackageRoot: Array<AgentPackageRoot>;
+  removeAgentPackage: Array<AgentPackage>;
   removeSkillSource: Array<SkillSource>;
   renameFileOrFolder: Scalars['String']['output'];
+  restoreAgentRun: RestoreAgentRunResult;
+  restoreAgentTeamRun: RestoreAgentTeamRunResult;
   runApplication: Scalars['JSONObject']['output'];
   runNodeSync: RunNodeSyncResult;
   saveManagedMessagingGatewayProviderConfig: ManagedMessagingGatewayStatusObject;
-  sendAgentUserInput: SendAgentUserInputResult;
-  sendMessageToTeam: SendMessageToTeamResult;
   setGeminiSetupConfig: Scalars['String']['output'];
   setLlmProviderApiKey: Scalars['String']['output'];
   setSearchConfig: Scalars['String']['output'];
@@ -657,11 +600,6 @@ export type MutationActivateSkillVersionArgs = {
 };
 
 
-export type MutationAddAgentPackageRootArgs = {
-  path: Scalars['String']['input'];
-};
-
-
 export type MutationAddSkillSourceArgs = {
   path: Scalars['String']['input'];
 };
@@ -677,13 +615,13 @@ export type MutationConfigureMcpServerArgs = {
 };
 
 
-export type MutationContinueRunArgs = {
-  input: ContinueRunInput;
+export type MutationCreateAgentDefinitionArgs = {
+  input: CreateAgentDefinitionInput;
 };
 
 
-export type MutationCreateAgentDefinitionArgs = {
-  input: CreateAgentDefinitionInput;
+export type MutationCreateAgentRunArgs = {
+  input: CreateAgentRunInput;
 };
 
 
@@ -740,11 +678,6 @@ export type MutationDeleteMcpServerArgs = {
 };
 
 
-export type MutationDeleteStoredRunArgs = {
-  runId: Scalars['String']['input'];
-};
-
-
 export type MutationDeleteServerSettingArgs = {
   key: Scalars['String']['input'];
 };
@@ -758,6 +691,11 @@ export type MutationDeleteSkillArgs = {
 export type MutationDeleteSkillFileArgs = {
   path: Scalars['String']['input'];
   skillName: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteStoredRunArgs = {
+  runId: Scalars['String']['input'];
 };
 
 
@@ -791,6 +729,11 @@ export type MutationEnableSkillVersioningArgs = {
 };
 
 
+export type MutationImportAgentPackageArgs = {
+  input: ImportAgentPackageInput;
+};
+
+
 export type MutationImportMcpServerConfigsArgs = {
   jsonString: Scalars['String']['input'];
 };
@@ -805,6 +748,11 @@ export type MutationMoveFileOrFolderArgs = {
   destinationPath: Scalars['String']['input'];
   sourcePath: Scalars['String']['input'];
   workspaceId: Scalars['String']['input'];
+};
+
+
+export type MutationRegisterRemoteBrowserBridgeArgs = {
+  input: RemoteBrowserBridgeInput;
 };
 
 
@@ -823,8 +771,8 @@ export type MutationReloadToolSchemaArgs = {
 };
 
 
-export type MutationRemoveAgentPackageRootArgs = {
-  path: Scalars['String']['input'];
+export type MutationRemoveAgentPackageArgs = {
+  packageId: Scalars['String']['input'];
 };
 
 
@@ -837,6 +785,16 @@ export type MutationRenameFileOrFolderArgs = {
   newName: Scalars['String']['input'];
   targetPath: Scalars['String']['input'];
   workspaceId: Scalars['String']['input'];
+};
+
+
+export type MutationRestoreAgentRunArgs = {
+  agentRunId: Scalars['String']['input'];
+};
+
+
+export type MutationRestoreAgentTeamRunArgs = {
+  teamRunId: Scalars['String']['input'];
 };
 
 
@@ -853,16 +811,6 @@ export type MutationRunNodeSyncArgs = {
 
 export type MutationSaveManagedMessagingGatewayProviderConfigArgs = {
   input: Scalars['JSONObject']['input'];
-};
-
-
-export type MutationSendAgentUserInputArgs = {
-  input: SendAgentUserInputInput;
-};
-
-
-export type MutationSendMessageToTeamArgs = {
-  input: SendMessageToTeamInput;
 };
 
 
@@ -893,12 +841,12 @@ export type MutationSetSearchConfigArgs = {
 
 
 export type MutationTerminateAgentRunArgs = {
-  id: Scalars['String']['input'];
+  agentRunId: Scalars['String']['input'];
 };
 
 
 export type MutationTerminateAgentTeamRunArgs = {
-  id: Scalars['String']['input'];
+  teamRunId: Scalars['String']['input'];
 };
 
 
@@ -996,16 +944,11 @@ export type ProviderWithModels = {
 
 export type Query = {
   __typename?: 'Query';
-  agentArtifacts: Array<AgentArtifact>;
   agentDefinition?: Maybe<AgentDefinition>;
   agentDefinitions: Array<AgentDefinition>;
-  agentPackageRoots: Array<AgentPackageRoot>;
-  agentRun?: Maybe<AgentRun>;
-  agentRuns: Array<AgentRun>;
+  agentPackages: Array<AgentPackage>;
   agentTeamDefinition?: Maybe<AgentTeamDefinition>;
   agentTeamDefinitions: Array<AgentTeamDefinition>;
-  agentTeamRun?: Maybe<AgentTeamRun>;
-  agentTeamRuns: Array<AgentTeamRun>;
   agentTeamTemplates: Array<AgentTeamDefinition>;
   agentTemplates: Array<AgentDefinition>;
   availableAudioProvidersWithModels: Array<ProviderWithModels>;
@@ -1024,11 +967,12 @@ export type Query = {
   externalChannelTeamDefinitionOptions: Array<ExternalChannelTeamDefinitionOptionGql>;
   fileContent: Scalars['String']['output'];
   folderChildren: Scalars['String']['output'];
+  getAgentRunResumeConfig: RunResumeConfigPayload;
   getGeminiSetupConfig: GeminiSetupConfig;
   getLlmProviderApiKey?: Maybe<Scalars['String']['output']>;
+  getRunFileChanges: Array<RunFileChangeEntryObject>;
   getRunMemoryView: AgentMemoryView;
   getRunProjection: RunProjectionPayload;
-  getRunResumeConfig: RunResumeConfigPayload;
   getSearchConfig: SearchConfig;
   getServerSettings: Array<ServerSetting>;
   getTeamMemberRunMemoryView: AgentMemoryView;
@@ -1036,15 +980,15 @@ export type Query = {
   getTeamRunResumeConfig: TeamRunResumeConfigPayload;
   health: HealthStatus;
   listApplications: Array<ApplicationManifest>;
-  listWorkspaceRunHistory: Array<RunHistoryWorkspaceGroupObject>;
   listRunMemorySnapshots: MemorySnapshotPage;
   listTeamRunMemorySnapshots: TeamRunMemorySnapshotPage;
+  listWorkspaceRunHistory: Array<WorkspaceRunHistoryGroupObject>;
   managedMessagingGatewayPeerCandidates: ManagedMessagingGatewayPeerCandidateListObject;
   managedMessagingGatewayStatus: ManagedMessagingGatewayStatusObject;
   managedMessagingGatewayWeComAccounts: Array<ManagedMessagingGatewayWeComAccountObject>;
   mcpServers: Array<McpServerConfigUnion>;
   previewMcpServerTools: Array<ToolDefinitionDetail>;
-  runtimeCapabilities: Array<RuntimeCapabilityObject>;
+  runtimeAvailabilities: Array<RuntimeAvailabilityObject>;
   searchFiles: Array<Scalars['String']['output']>;
   skill?: Maybe<Skill>;
   skillFileContent?: Maybe<Scalars['String']['output']>;
@@ -1061,27 +1005,12 @@ export type Query = {
 };
 
 
-export type QueryAgentArtifactsArgs = {
-  runId: Scalars['String']['input'];
-};
-
-
 export type QueryAgentDefinitionArgs = {
   id: Scalars['String']['input'];
 };
 
 
-export type QueryAgentRunArgs = {
-  id: Scalars['String']['input'];
-};
-
-
 export type QueryAgentTeamDefinitionArgs = {
-  id: Scalars['String']['input'];
-};
-
-
-export type QueryAgentTeamRunArgs = {
   id: Scalars['String']['input'];
 };
 
@@ -1118,15 +1047,23 @@ export type QueryFolderChildrenArgs = {
 };
 
 
+export type QueryGetAgentRunResumeConfigArgs = {
+  runId: Scalars['String']['input'];
+};
+
+
 export type QueryGetLlmProviderApiKeyArgs = {
   provider: Scalars['String']['input'];
 };
 
 
+export type QueryGetRunFileChangesArgs = {
+  runId: Scalars['String']['input'];
+};
+
+
 export type QueryGetRunMemoryViewArgs = {
-  conversationLimit?: InputMaybe<Scalars['Int']['input']>;
   includeArchive?: Scalars['Boolean']['input'];
-  includeConversation?: Scalars['Boolean']['input'];
   includeEpisodic?: Scalars['Boolean']['input'];
   includeRawTraces?: Scalars['Boolean']['input'];
   includeSemantic?: Scalars['Boolean']['input'];
@@ -1141,15 +1078,8 @@ export type QueryGetRunProjectionArgs = {
 };
 
 
-export type QueryGetRunResumeConfigArgs = {
-  runId: Scalars['String']['input'];
-};
-
-
 export type QueryGetTeamMemberRunMemoryViewArgs = {
-  conversationLimit?: InputMaybe<Scalars['Int']['input']>;
   includeArchive?: Scalars['Boolean']['input'];
-  includeConversation?: Scalars['Boolean']['input'];
   includeEpisodic?: Scalars['Boolean']['input'];
   includeRawTraces?: Scalars['Boolean']['input'];
   includeSemantic?: Scalars['Boolean']['input'];
@@ -1171,11 +1101,6 @@ export type QueryGetTeamRunResumeConfigArgs = {
 };
 
 
-export type QueryListRunHistoryArgs = {
-  limitPerAgent?: Scalars['Int']['input'];
-};
-
-
 export type QueryListRunMemorySnapshotsArgs = {
   page?: Scalars['Int']['input'];
   pageSize?: Scalars['Int']['input'];
@@ -1187,6 +1112,11 @@ export type QueryListTeamRunMemorySnapshotsArgs = {
   page?: Scalars['Int']['input'];
   pageSize?: Scalars['Int']['input'];
   search?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryListWorkspaceRunHistoryArgs = {
+  limitPerAgent?: Scalars['Int']['input'];
 };
 
 
@@ -1265,6 +1195,32 @@ export type ReloadToolSchemaResult = {
   tool?: Maybe<ToolDefinitionDetail>;
 };
 
+export type RemoteBrowserBridgeInput = {
+  authToken: Scalars['String']['input'];
+  baseUrl: Scalars['String']['input'];
+  expiresAt: Scalars['String']['input'];
+};
+
+export type RemoteBrowserBridgeMutationResult = {
+  __typename?: 'RemoteBrowserBridgeMutationResult';
+  message: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
+};
+
+export type RestoreAgentRunResult = {
+  __typename?: 'RestoreAgentRunResult';
+  message: Scalars['String']['output'];
+  runId?: Maybe<Scalars['String']['output']>;
+  success: Scalars['Boolean']['output'];
+};
+
+export type RestoreAgentTeamRunResult = {
+  __typename?: 'RestoreAgentTeamRunResult';
+  message: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
+  teamRunId?: Maybe<Scalars['String']['output']>;
+};
+
 export type RunEditableFieldFlagsObject = {
   __typename?: 'RunEditableFieldFlagsObject';
   autoExecuteTools: Scalars['Boolean']['output'];
@@ -1273,6 +1229,21 @@ export type RunEditableFieldFlagsObject = {
   runtimeKind: Scalars['Boolean']['output'];
   skillAccessMode: Scalars['Boolean']['output'];
   workspaceRootPath: Scalars['Boolean']['output'];
+};
+
+export type RunFileChangeEntryObject = {
+  __typename?: 'RunFileChangeEntryObject';
+  backendArtifactId?: Maybe<Scalars['String']['output']>;
+  content?: Maybe<Scalars['String']['output']>;
+  createdAt: Scalars['String']['output'];
+  id: Scalars['String']['output'];
+  path: Scalars['String']['output'];
+  runId: Scalars['String']['output'];
+  sourceInvocationId?: Maybe<Scalars['String']['output']>;
+  sourceTool: Scalars['String']['output'];
+  status: Scalars['String']['output'];
+  type: Scalars['String']['output'];
+  updatedAt: Scalars['String']['output'];
 };
 
 export type RunHistoryAgentGroupObject = {
@@ -1289,14 +1260,6 @@ export type RunHistoryItemObject = {
   lastKnownStatus: Scalars['String']['output'];
   runId: Scalars['String']['output'];
   summary: Scalars['String']['output'];
-};
-
-export type RunHistoryWorkspaceGroupObject = {
-  __typename?: 'RunHistoryWorkspaceGroupObject';
-  agents: Array<RunHistoryAgentGroupObject>;
-  teamRuns: Array<WorkspaceHistoryTeamRunItemObject>;
-  workspaceName: Scalars['String']['output'];
-  workspaceRootPath: Scalars['String']['output'];
 };
 
 export type RunMetadataConfigObject = {
@@ -1331,6 +1294,7 @@ export type RunNodeSyncResult = {
 
 export type RunProjectionPayload = {
   __typename?: 'RunProjectionPayload';
+  activities: Array<Scalars['JSON']['output']>;
   conversation: Array<Scalars['JSON']['output']>;
   lastActivityAt?: Maybe<Scalars['String']['output']>;
   runId: Scalars['String']['output'];
@@ -1353,8 +1317,8 @@ export type RunRuntimeReferenceObject = {
   threadId?: Maybe<Scalars['String']['output']>;
 };
 
-export type RuntimeCapabilityObject = {
-  __typename?: 'RuntimeCapabilityObject';
+export type RuntimeAvailabilityObject = {
+  __typename?: 'RuntimeAvailabilityObject';
   enabled: Scalars['Boolean']['output'];
   reason?: Maybe<Scalars['String']['output']>;
   runtimeKind: Scalars['String']['output'];
@@ -1371,44 +1335,11 @@ export type SearchConfig = {
   vertexAiSearchServingConfig?: Maybe<Scalars['String']['output']>;
 };
 
-export type SendAgentUserInputInput = {
-  agentDefinitionId?: InputMaybe<Scalars['String']['input']>;
-  agentRunId?: InputMaybe<Scalars['String']['input']>;
-  autoExecuteTools?: InputMaybe<Scalars['Boolean']['input']>;
-  llmConfig?: InputMaybe<Scalars['JSON']['input']>;
-  llmModelIdentifier?: InputMaybe<Scalars['String']['input']>;
-  runtimeKind?: InputMaybe<Scalars['String']['input']>;
-  skillAccessMode?: InputMaybe<ExternalChannelSkillAccessModeEnum>;
-  userInput: AgentUserInput;
-  workspaceId?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type SendAgentUserInputResult = {
-  __typename?: 'SendAgentUserInputResult';
-  agentRunId?: Maybe<Scalars['String']['output']>;
-  message: Scalars['String']['output'];
-  success: Scalars['Boolean']['output'];
-};
-
-export type SendMessageToTeamInput = {
-  memberConfigs?: InputMaybe<Array<TeamMemberConfigInput>>;
-  targetMemberName?: InputMaybe<Scalars['String']['input']>;
-  targetNodeName?: InputMaybe<Scalars['String']['input']>;
-  teamDefinitionId?: InputMaybe<Scalars['String']['input']>;
-  teamRunId?: InputMaybe<Scalars['String']['input']>;
-  userInput: AgentUserInput;
-};
-
-export type SendMessageToTeamResult = {
-  __typename?: 'SendMessageToTeamResult';
-  message: Scalars['String']['output'];
-  success: Scalars['Boolean']['output'];
-  teamRunId?: Maybe<Scalars['String']['output']>;
-};
-
 export type ServerSetting = {
   __typename?: 'ServerSetting';
   description: Scalars['String']['output'];
+  isDeletable: Scalars['Boolean']['output'];
+  isEditable: Scalars['Boolean']['output'];
   key: Scalars['String']['output'];
   value: Scalars['String']['output'];
 };
@@ -1502,11 +1433,6 @@ export enum SyncTombstonePolicyEnum {
   SourceDeleteWins = 'SOURCE_DELETE_WINS'
 }
 
-export enum TaskNotificationModeEnum {
-  AgentManualNotification = 'AGENT_MANUAL_NOTIFICATION',
-  SystemEventDriven = 'SYSTEM_EVENT_DRIVEN'
-}
-
 export type TeamMember = {
   __typename?: 'TeamMember';
   memberName: Scalars['String']['output'];
@@ -1522,9 +1448,8 @@ export type TeamMemberConfigInput = {
   llmModelIdentifier: Scalars['String']['input'];
   memberName: Scalars['String']['input'];
   memberRouteKey?: InputMaybe<Scalars['String']['input']>;
-  memberRunId?: InputMaybe<Scalars['String']['input']>;
-  skillAccessMode: SkillAccessModeEnum;
   runtimeKind?: InputMaybe<Scalars['String']['input']>;
+  skillAccessMode: ExternalChannelSkillAccessModeEnum;
   workspaceId?: InputMaybe<Scalars['String']['input']>;
   workspaceRootPath?: InputMaybe<Scalars['String']['input']>;
 };
@@ -1551,6 +1476,7 @@ export type TeamMemberMemorySnapshotSummary = {
 
 export type TeamMemberRunProjectionPayload = {
   __typename?: 'TeamMemberRunProjectionPayload';
+  activities: Array<Scalars['JSON']['output']>;
   agentRunId: Scalars['String']['output'];
   conversation: Array<Scalars['JSON']['output']>;
   lastActivityAt?: Maybe<Scalars['String']['output']>;
@@ -1561,29 +1487,6 @@ export enum TeamMemberType {
   Agent = 'AGENT',
   AgentTeam = 'AGENT_TEAM'
 }
-
-export type WorkspaceHistoryTeamRunItemObject = {
-  __typename?: 'WorkspaceHistoryTeamRunItemObject';
-  deleteLifecycle: Scalars['String']['output'];
-  isActive: Scalars['Boolean']['output'];
-  lastActivityAt: Scalars['String']['output'];
-  lastKnownStatus: Scalars['String']['output'];
-  members: Array<WorkspaceHistoryTeamRunMemberObject>;
-  summary: Scalars['String']['output'];
-  teamDefinitionId: Scalars['String']['output'];
-  teamDefinitionName: Scalars['String']['output'];
-  teamRunId: Scalars['String']['output'];
-  workspaceRootPath?: Maybe<Scalars['String']['output']>;
-};
-
-export type WorkspaceHistoryTeamRunMemberObject = {
-  __typename?: 'WorkspaceHistoryTeamRunMemberObject';
-  memberName: Scalars['String']['output'];
-  memberRouteKey: Scalars['String']['output'];
-  memberRunId: Scalars['String']['output'];
-  runtimeKind: Scalars['String']['output'];
-  workspaceRootPath?: Maybe<Scalars['String']['output']>;
-};
 
 export type TeamRunMemorySnapshotPage = {
   __typename?: 'TeamRunMemorySnapshotPage';
@@ -1725,6 +1628,29 @@ export type UsageStatistics = {
   totalCost?: Maybe<Scalars['Float']['output']>;
 };
 
+export type WorkspaceHistoryTeamRunItemObject = {
+  __typename?: 'WorkspaceHistoryTeamRunItemObject';
+  deleteLifecycle: Scalars['String']['output'];
+  isActive: Scalars['Boolean']['output'];
+  lastActivityAt: Scalars['String']['output'];
+  lastKnownStatus: Scalars['String']['output'];
+  members: Array<WorkspaceHistoryTeamRunMemberObject>;
+  summary: Scalars['String']['output'];
+  teamDefinitionId: Scalars['String']['output'];
+  teamDefinitionName: Scalars['String']['output'];
+  teamRunId: Scalars['String']['output'];
+  workspaceRootPath?: Maybe<Scalars['String']['output']>;
+};
+
+export type WorkspaceHistoryTeamRunMemberObject = {
+  __typename?: 'WorkspaceHistoryTeamRunMemberObject';
+  memberName: Scalars['String']['output'];
+  memberRouteKey: Scalars['String']['output'];
+  memberRunId: Scalars['String']['output'];
+  runtimeKind: Scalars['String']['output'];
+  workspaceRootPath?: Maybe<Scalars['String']['output']>;
+};
+
 export type WorkspaceInfo = {
   __typename?: 'WorkspaceInfo';
   absolutePath?: Maybe<Scalars['String']['output']>;
@@ -1735,24 +1661,32 @@ export type WorkspaceInfo = {
   workspaceId: Scalars['String']['output'];
 };
 
-export type GetAgentPackageRootsQueryVariables = Exact<{ [key: string]: never; }>;
+export type WorkspaceRunHistoryGroupObject = {
+  __typename?: 'WorkspaceRunHistoryGroupObject';
+  agents: Array<RunHistoryAgentGroupObject>;
+  teamRuns: Array<WorkspaceHistoryTeamRunItemObject>;
+  workspaceName: Scalars['String']['output'];
+  workspaceRootPath: Scalars['String']['output'];
+};
+
+export type GetAgentPackagesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAgentPackageRootsQuery = { __typename?: 'Query', agentPackageRoots: Array<{ __typename?: 'AgentPackageRoot', path: string, sharedAgentCount: number, teamLocalAgentCount: number, agentTeamCount: number, isDefault: boolean }> };
+export type GetAgentPackagesQuery = { __typename?: 'Query', agentPackages: Array<{ __typename?: 'AgentPackage', packageId: string, displayName: string, path: string, sourceKind: AgentPackageSourceKind, source: string, sharedAgentCount: number, teamLocalAgentCount: number, agentTeamCount: number, isDefault: boolean, isRemovable: boolean }> };
 
-export type AddAgentPackageRootMutationVariables = Exact<{
-  path: Scalars['String']['input'];
+export type ImportAgentPackageMutationVariables = Exact<{
+  input: ImportAgentPackageInput;
 }>;
 
 
-export type AddAgentPackageRootMutation = { __typename?: 'Mutation', addAgentPackageRoot: Array<{ __typename?: 'AgentPackageRoot', path: string, sharedAgentCount: number, teamLocalAgentCount: number, agentTeamCount: number, isDefault: boolean }> };
+export type ImportAgentPackageMutation = { __typename?: 'Mutation', importAgentPackage: Array<{ __typename?: 'AgentPackage', packageId: string, displayName: string, path: string, sourceKind: AgentPackageSourceKind, source: string, sharedAgentCount: number, teamLocalAgentCount: number, agentTeamCount: number, isDefault: boolean, isRemovable: boolean }> };
 
-export type RemoveAgentPackageRootMutationVariables = Exact<{
-  path: Scalars['String']['input'];
+export type RemoveAgentPackageMutationVariables = Exact<{
+  packageId: Scalars['String']['input'];
 }>;
 
 
-export type RemoveAgentPackageRootMutation = { __typename?: 'Mutation', removeAgentPackageRoot: Array<{ __typename?: 'AgentPackageRoot', path: string, sharedAgentCount: number, teamLocalAgentCount: number, agentTeamCount: number, isDefault: boolean }> };
+export type RemoveAgentPackageMutation = { __typename?: 'Mutation', removeAgentPackage: Array<{ __typename?: 'AgentPackage', packageId: string, displayName: string, path: string, sourceKind: AgentPackageSourceKind, source: string, sharedAgentCount: number, teamLocalAgentCount: number, agentTeamCount: number, isDefault: boolean, isRemovable: boolean }> };
 
 export type CreateAgentDefinitionMutationVariables = Exact<{
   input: CreateAgentDefinitionInput;
@@ -1783,18 +1717,25 @@ export type DuplicateAgentDefinitionMutationVariables = Exact<{
 export type DuplicateAgentDefinitionMutation = { __typename?: 'Mutation', duplicateAgentDefinition: { __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, systemPromptProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null } };
 
 export type TerminateAgentRunMutationVariables = Exact<{
-  id: Scalars['String']['input'];
+  agentRunId: Scalars['String']['input'];
 }>;
 
 
 export type TerminateAgentRunMutation = { __typename?: 'Mutation', terminateAgentRun: { __typename: 'TerminateAgentRunResult', success: boolean, message: string } };
 
-export type SendAgentUserInputMutationVariables = Exact<{
-  input: SendAgentUserInputInput;
+export type CreateAgentRunMutationVariables = Exact<{
+  input: CreateAgentRunInput;
 }>;
 
 
-export type SendAgentUserInputMutation = { __typename?: 'Mutation', sendAgentUserInput: { __typename: 'SendAgentUserInputResult', success: boolean, message: string, agentRunId?: string | null } };
+export type CreateAgentRunMutation = { __typename?: 'Mutation', createAgentRun: { __typename?: 'CreateAgentRunResult', success: boolean, message: string, runId?: string | null } };
+
+export type RestoreAgentRunMutationVariables = Exact<{
+  agentRunId: Scalars['String']['input'];
+}>;
+
+
+export type RestoreAgentRunMutation = { __typename?: 'Mutation', restoreAgentRun: { __typename: 'RestoreAgentRunResult', success: boolean, message: string, runId?: string | null } };
 
 export type ApproveToolInvocationMutationVariables = Exact<{
   input: ApproveToolInvocationInput;
@@ -1832,18 +1773,18 @@ export type CreateAgentTeamRunMutationVariables = Exact<{
 export type CreateAgentTeamRunMutation = { __typename?: 'Mutation', createAgentTeamRun: { __typename: 'CreateAgentTeamRunResult', success: boolean, message: string, teamRunId?: string | null } };
 
 export type TerminateAgentTeamRunMutationVariables = Exact<{
-  id: Scalars['String']['input'];
+  teamRunId: Scalars['String']['input'];
 }>;
 
 
 export type TerminateAgentTeamRunMutation = { __typename?: 'Mutation', terminateAgentTeamRun: { __typename: 'TerminateAgentTeamRunResult', success: boolean, message: string } };
 
-export type SendMessageToTeamMutationVariables = Exact<{
-  input: SendMessageToTeamInput;
+export type RestoreAgentTeamRunMutationVariables = Exact<{
+  teamRunId: Scalars['String']['input'];
 }>;
 
 
-export type SendMessageToTeamMutation = { __typename?: 'Mutation', sendMessageToTeam: { __typename: 'SendMessageToTeamResult', success: boolean, message: string, teamRunId?: string | null } };
+export type RestoreAgentTeamRunMutation = { __typename?: 'Mutation', restoreAgentTeamRun: { __typename: 'RestoreAgentTeamRunResult', success: boolean, message: string, teamRunId?: string | null } };
 
 export type RunApplicationMutationVariables = Exact<{
   appId: Scalars['String']['input'];
@@ -1858,7 +1799,7 @@ export type UpsertExternalChannelBindingMutationVariables = Exact<{
 }>;
 
 
-export type UpsertExternalChannelBindingMutation = { __typename?: 'Mutation', upsertExternalChannelBinding: { __typename: 'ExternalChannelBindingGql', id: string, provider: string, transport: string, accountId: string, peerId: string, threadId?: string | null, targetType: string, targetAgentDefinitionId?: string | null, targetTeamDefinitionId?: string | null, teamRunId?: string | null, updatedAt: any, launchPreset?: { __typename?: 'ExternalChannelLaunchPresetGql', workspaceRootPath: string, llmModelIdentifier: string, runtimeKind: string, autoExecuteTools: boolean, skillAccessMode?: ExternalChannelSkillAccessModeEnum | null, llmConfig?: any | null } | null, teamLaunchPreset?: { __typename?: 'ExternalChannelTeamLaunchPresetGql', workspaceRootPath: string, llmModelIdentifier: string, runtimeKind: string, autoExecuteTools: boolean, llmConfig?: any | null } | null } };
+export type UpsertExternalChannelBindingMutation = { __typename?: 'Mutation', upsertExternalChannelBinding: { __typename: 'ExternalChannelBindingGql', id: string, provider: string, transport: string, accountId: string, peerId: string, threadId?: string | null, targetType: string, targetAgentDefinitionId?: string | null, targetTeamDefinitionId?: string | null, teamRunId?: string | null, updatedAt: any, launchPreset?: { __typename?: 'ExternalChannelLaunchPresetGql', workspaceRootPath: string, llmModelIdentifier: string, runtimeKind: string, autoExecuteTools: boolean, skillAccessMode: ExternalChannelSkillAccessModeEnum, llmConfig?: any | null } | null, teamLaunchPreset?: { __typename?: 'ExternalChannelTeamLaunchPresetGql', workspaceRootPath: string, llmModelIdentifier: string, runtimeKind: string, autoExecuteTools: boolean, skillAccessMode: ExternalChannelSkillAccessModeEnum, llmConfig?: any | null } | null } };
 
 export type DeleteExternalChannelBindingMutationVariables = Exact<{
   id: Scalars['String']['input'];
@@ -1979,13 +1920,6 @@ export type RunNodeSyncMutationVariables = Exact<{
 
 export type RunNodeSyncMutation = { __typename?: 'Mutation', runNodeSync: { __typename?: 'RunNodeSyncResult', status: string, sourceNodeId: string, error?: string | null, report?: { __typename?: 'NodeSyncRunReport', sourceNodeId: string, scope: Array<SyncEntityTypeEnum>, exportByEntity: Array<{ __typename?: 'NodeSyncExportEntityReport', entityType: SyncEntityTypeEnum, exportedCount: number, sampledKeys: Array<string>, sampleTruncated: boolean }>, targets: Array<{ __typename?: 'NodeSyncTargetDetailedReport', targetNodeId: string, status: string, message?: string | null, failureCountTotal: number, failureSampleTruncated: boolean, failureSamples: Array<{ __typename?: 'NodeSyncFailureSample', entityType: SyncEntityTypeEnum, key: string, message: string }>, summary?: { __typename?: 'ImportNodeSyncSummary', processed: number, created: number, updated: number, deleted: number, skipped: number } | null }> } | null, targetResults: Array<{ __typename?: 'NodeSyncTargetRunResult', targetNodeId: string, status: string, message?: string | null, summary?: { __typename?: 'ImportNodeSyncSummary', processed: number, created: number, updated: number, deleted: number, skipped: number } | null }> } };
 
-export type ContinueRunMutationVariables = Exact<{
-  input: ContinueRunInput;
-}>;
-
-
-export type ContinueRunMutation = { __typename?: 'Mutation', continueRun: { __typename?: 'ContinueRunMutationResult', success: boolean, message: string, runId?: string | null, ignoredConfigFields: Array<string> } };
-
 export type DeleteStoredRunMutationVariables = Exact<{
   runId: Scalars['String']['input'];
 }>;
@@ -2069,16 +2003,10 @@ export type GetRunMemoryViewQueryVariables = Exact<{
   includeRawTraces?: InputMaybe<Scalars['Boolean']['input']>;
   includeArchive?: InputMaybe<Scalars['Boolean']['input']>;
   rawTraceLimit?: InputMaybe<Scalars['Int']['input']>;
-  conversationLimit?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
-export type GetRunMemoryViewQuery = { __typename?: 'Query', getRunMemoryView: { __typename?: 'AgentMemoryView', runId: string, episodic?: Array<any> | null, semantic?: Array<any> | null, workingContext?: Array<{ __typename?: 'MemoryMessage', role: string, content?: string | null, reasoning?: string | null, toolPayload?: any | null, ts?: number | null }> | null, rawTraces?: Array<{ __typename?: 'MemoryTraceEvent', traceType: string, content?: string | null, toolName?: string | null, toolArgs?: any | null, toolResult?: any | null, toolError?: string | null, media?: any | null, turnId: string, seq: number, ts: number }> | null } };
-
-export type GetAgentRunsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetAgentRunsQuery = { __typename?: 'Query', agentRuns: Array<{ __typename: 'AgentRun', id: string, name: string, role: string, currentStatus: string, agentDefinitionId?: string | null, workspace?: { __typename: 'WorkspaceInfo', workspaceId: string, name: string, config: any } | null }> };
+export type GetRunMemoryViewQuery = { __typename?: 'Query', getRunMemoryView: { __typename?: 'AgentMemoryView', runId: string, episodic?: Array<any> | null, semantic?: Array<any> | null, workingContext?: Array<{ __typename?: 'MemoryMessage', role: string, content?: string | null, reasoning?: string | null, toolPayload?: any | null, ts?: number | null }> | null, rawTraces?: Array<{ __typename?: 'MemoryTraceEvent', traceType: string, content?: string | null, toolName?: string | null, toolCallId?: string | null, toolArgs?: any | null, toolResult?: any | null, toolError?: string | null, media?: any | null, turnId: string, seq: number, ts: number }> | null } };
 
 export type GetAgentTeamDefinitionsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2098,9 +2026,10 @@ export type ExternalChannelCapabilitiesQuery = { __typename?: 'Query', externalC
 export type ExternalChannelBindingsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ExternalChannelBindingsQuery = { __typename?: 'Query', externalChannelBindings: Array<{ __typename: 'ExternalChannelBindingGql', id: string, provider: string, transport: string, accountId: string, peerId: string, threadId?: string | null, targetType: string, targetAgentDefinitionId?: string | null, targetTeamDefinitionId?: string | null, teamRunId?: string | null, updatedAt: any, launchPreset?: { __typename?: 'ExternalChannelLaunchPresetGql', workspaceRootPath: string, llmModelIdentifier: string, runtimeKind: string, autoExecuteTools: boolean, skillAccessMode?: ExternalChannelSkillAccessModeEnum | null, llmConfig?: any | null } | null, teamLaunchPreset?: { __typename?: 'ExternalChannelTeamLaunchPresetGql', workspaceRootPath: string, llmModelIdentifier: string, runtimeKind: string, autoExecuteTools: boolean, llmConfig?: any | null } | null }> };
+export type ExternalChannelBindingsQuery = { __typename?: 'Query', externalChannelBindings: Array<{ __typename: 'ExternalChannelBindingGql', id: string, provider: string, transport: string, accountId: string, peerId: string, threadId?: string | null, targetType: string, targetAgentDefinitionId?: string | null, targetTeamDefinitionId?: string | null, teamRunId?: string | null, updatedAt: any, launchPreset?: { __typename?: 'ExternalChannelLaunchPresetGql', workspaceRootPath: string, llmModelIdentifier: string, runtimeKind: string, autoExecuteTools: boolean, skillAccessMode: ExternalChannelSkillAccessModeEnum, llmConfig?: any | null } | null, teamLaunchPreset?: { __typename?: 'ExternalChannelTeamLaunchPresetGql', workspaceRootPath: string, llmModelIdentifier: string, runtimeKind: string, autoExecuteTools: boolean, skillAccessMode: ExternalChannelSkillAccessModeEnum, llmConfig?: any | null } | null }> };
 
 export type ExternalChannelTeamDefinitionOptionsQueryVariables = Exact<{ [key: string]: never; }>;
+
 
 export type ExternalChannelTeamDefinitionOptionsQuery = { __typename?: 'Query', externalChannelTeamDefinitionOptions: Array<{ __typename: 'ExternalChannelTeamDefinitionOptionGql', teamDefinitionId: string, teamDefinitionName: string, description: string, coordinatorMemberName: string, memberCount: number }> };
 
@@ -2183,14 +2112,21 @@ export type ListWorkspaceRunHistoryQueryVariables = Exact<{
 }>;
 
 
-export type ListWorkspaceRunHistoryQuery = { __typename?: 'Query', listWorkspaceRunHistory: Array<{ __typename?: 'RunHistoryWorkspaceGroupObject', workspaceRootPath: string, workspaceName: string, agents: Array<{ __typename?: 'RunHistoryAgentGroupObject', agentDefinitionId: string, agentName: string, runs: Array<{ __typename?: 'RunHistoryItemObject', runId: string, summary: string, lastActivityAt: string, lastKnownStatus: string, isActive: boolean }> }>, teamRuns: Array<{ __typename?: 'WorkspaceHistoryTeamRunItemObject', teamRunId: string, teamDefinitionId: string, teamDefinitionName: string, workspaceRootPath?: string | null, summary: string, lastActivityAt: string, lastKnownStatus: string, deleteLifecycle: string, isActive: boolean, members: Array<{ __typename?: 'WorkspaceHistoryTeamRunMemberObject', memberRouteKey: string, memberName: string, memberRunId: string, runtimeKind: string, workspaceRootPath?: string | null }> }> }> };
+export type ListWorkspaceRunHistoryQuery = { __typename?: 'Query', listWorkspaceRunHistory: Array<{ __typename?: 'WorkspaceRunHistoryGroupObject', workspaceRootPath: string, workspaceName: string, agents: Array<{ __typename?: 'RunHistoryAgentGroupObject', agentDefinitionId: string, agentName: string, runs: Array<{ __typename?: 'RunHistoryItemObject', runId: string, summary: string, lastActivityAt: string, lastKnownStatus: string, isActive: boolean }> }>, teamRuns: Array<{ __typename?: 'WorkspaceHistoryTeamRunItemObject', teamRunId: string, teamDefinitionId: string, teamDefinitionName: string, workspaceRootPath?: string | null, summary: string, lastActivityAt: string, lastKnownStatus: string, deleteLifecycle: string, isActive: boolean, members: Array<{ __typename?: 'WorkspaceHistoryTeamRunMemberObject', memberRouteKey: string, memberName: string, memberRunId: string, runtimeKind: string, workspaceRootPath?: string | null }> }> }> };
 
 export type GetRunProjectionQueryVariables = Exact<{
   runId: Scalars['String']['input'];
 }>;
 
 
-export type GetRunProjectionQuery = { __typename?: 'Query', getRunProjection: { __typename?: 'RunProjectionPayload', runId: string, summary?: string | null, lastActivityAt?: string | null, conversation: Array<any> } };
+export type GetRunProjectionQuery = { __typename?: 'Query', getRunProjection: { __typename?: 'RunProjectionPayload', runId: string, summary?: string | null, lastActivityAt?: string | null, conversation: Array<any>, activities: Array<any> } };
+
+export type GetRunFileChangesQueryVariables = Exact<{
+  runId: Scalars['String']['input'];
+}>;
+
+
+export type GetRunFileChangesQuery = { __typename?: 'Query', getRunFileChanges: Array<{ __typename?: 'RunFileChangeEntryObject', id: string, runId: string, path: string, type: string, status: string, sourceTool: string, sourceInvocationId?: string | null, backendArtifactId?: string | null, content?: string | null, createdAt: string, updatedAt: string }> };
 
 export type GetTeamRunResumeConfigQueryVariables = Exact<{
   teamRunId: Scalars['String']['input'];
@@ -2205,24 +2141,24 @@ export type GetTeamMemberRunProjectionQueryVariables = Exact<{
 }>;
 
 
-export type GetTeamMemberRunProjectionQuery = { __typename?: 'Query', getTeamMemberRunProjection: { __typename?: 'TeamMemberRunProjectionPayload', agentRunId: string, summary?: string | null, lastActivityAt?: string | null, conversation: Array<any> } };
+export type GetTeamMemberRunProjectionQuery = { __typename?: 'Query', getTeamMemberRunProjection: { __typename?: 'TeamMemberRunProjectionPayload', agentRunId: string, summary?: string | null, lastActivityAt?: string | null, conversation: Array<any>, activities: Array<any> } };
 
-export type GetRunResumeConfigQueryVariables = Exact<{
+export type GetAgentRunResumeConfigQueryVariables = Exact<{
   runId: Scalars['String']['input'];
 }>;
 
 
-export type GetRunResumeConfigQuery = { __typename?: 'Query', getRunResumeConfig: { __typename?: 'RunResumeConfigPayload', runId: string, isActive: boolean, metadataConfig: { __typename?: 'RunMetadataConfigObject', agentDefinitionId: string, workspaceRootPath: string, llmModelIdentifier: string, llmConfig?: any | null, autoExecuteTools: boolean, skillAccessMode?: ExternalChannelSkillAccessModeEnum | null, runtimeKind: string, runtimeReference: { __typename?: 'RunRuntimeReferenceObject', runtimeKind: string, sessionId?: string | null, threadId?: string | null, metadata?: any | null } }, editableFields: { __typename?: 'RunEditableFieldFlagsObject', llmModelIdentifier: boolean, llmConfig: boolean, autoExecuteTools: boolean, skillAccessMode: boolean, workspaceRootPath: boolean, runtimeKind: boolean } } };
+export type GetAgentRunResumeConfigQuery = { __typename?: 'Query', getAgentRunResumeConfig: { __typename?: 'RunResumeConfigPayload', runId: string, isActive: boolean, metadataConfig: { __typename?: 'RunMetadataConfigObject', agentDefinitionId: string, workspaceRootPath: string, llmModelIdentifier: string, llmConfig?: any | null, autoExecuteTools: boolean, skillAccessMode?: ExternalChannelSkillAccessModeEnum | null, runtimeKind: string, runtimeReference: { __typename?: 'RunRuntimeReferenceObject', runtimeKind: string, sessionId?: string | null, threadId?: string | null, metadata?: any | null } }, editableFields: { __typename?: 'RunEditableFieldFlagsObject', llmModelIdentifier: boolean, llmConfig: boolean, autoExecuteTools: boolean, skillAccessMode: boolean, workspaceRootPath: boolean, runtimeKind: boolean } } };
 
-export type GetRuntimeCapabilitiesQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetRuntimeAvailabilitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetRuntimeCapabilitiesQuery = { __typename?: 'Query', runtimeCapabilities: Array<{ __typename?: 'RuntimeCapabilityObject', runtimeKind: string, enabled: boolean, reason?: string | null }> };
+export type GetRuntimeAvailabilitiesQuery = { __typename?: 'Query', runtimeAvailabilities: Array<{ __typename?: 'RuntimeAvailabilityObject', runtimeKind: string, enabled: boolean, reason?: string | null }> };
 
 export type GetServerSettingsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetServerSettingsQuery = { __typename?: 'Query', getServerSettings: Array<{ __typename: 'ServerSetting', key: string, value: string, description: string }> };
+export type GetServerSettingsQuery = { __typename?: 'Query', getServerSettings: Array<{ __typename: 'ServerSetting', key: string, value: string, description: string, isEditable: boolean, isDeletable: boolean }> };
 
 export type GetSearchConfigQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2247,11 +2183,10 @@ export type GetTeamMemberRunMemoryViewQueryVariables = Exact<{
   includeRawTraces?: InputMaybe<Scalars['Boolean']['input']>;
   includeArchive?: InputMaybe<Scalars['Boolean']['input']>;
   rawTraceLimit?: InputMaybe<Scalars['Int']['input']>;
-  conversationLimit?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
-export type GetTeamMemberRunMemoryViewQuery = { __typename?: 'Query', getTeamMemberRunMemoryView: { __typename?: 'AgentMemoryView', runId: string, episodic?: Array<any> | null, semantic?: Array<any> | null, workingContext?: Array<{ __typename?: 'MemoryMessage', role: string, content?: string | null, reasoning?: string | null, toolPayload?: any | null, ts?: number | null }> | null, rawTraces?: Array<{ __typename?: 'MemoryTraceEvent', traceType: string, content?: string | null, toolName?: string | null, toolArgs?: any | null, toolResult?: any | null, toolError?: string | null, media?: any | null, turnId: string, seq: number, ts: number }> | null } };
+export type GetTeamMemberRunMemoryViewQuery = { __typename?: 'Query', getTeamMemberRunMemoryView: { __typename?: 'AgentMemoryView', runId: string, episodic?: Array<any> | null, semantic?: Array<any> | null, workingContext?: Array<{ __typename?: 'MemoryMessage', role: string, content?: string | null, reasoning?: string | null, toolPayload?: any | null, ts?: number | null }> | null, rawTraces?: Array<{ __typename?: 'MemoryTraceEvent', traceType: string, content?: string | null, toolName?: string | null, toolCallId?: string | null, toolArgs?: any | null, toolResult?: any | null, toolError?: string | null, media?: any | null, turnId: string, seq: number, ts: number }> | null } };
 
 export type GetUsageStatisticsInPeriodQueryVariables = Exact<{
   startTime: Scalars['DateTime']['input'];
@@ -2410,103 +2345,118 @@ export type ActivateSkillVersionMutationVariables = Exact<{
 export type ActivateSkillVersionMutation = { __typename?: 'Mutation', activateSkillVersion: { __typename?: 'SkillVersion', tag: string, commitHash: string, message: string, createdAt: string, isActive: boolean } };
 
 
-export const GetAgentPackageRootsDocument = gql`
-    query GetAgentPackageRoots {
-  agentPackageRoots {
+export const GetAgentPackagesDocument = gql`
+    query GetAgentPackages {
+  agentPackages {
+    packageId
+    displayName
     path
+    sourceKind
+    source
     sharedAgentCount
     teamLocalAgentCount
     agentTeamCount
     isDefault
+    isRemovable
   }
 }
     `;
 
 /**
- * __useGetAgentPackageRootsQuery__
+ * __useGetAgentPackagesQuery__
  *
- * To run a query within a Vue component, call `useGetAgentPackageRootsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetAgentPackageRootsQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * To run a query within a Vue component, call `useGetAgentPackagesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAgentPackagesQuery` returns an object from Apollo Client that contains result, loading and error properties
  * you can use to render your UI.
  *
  * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
  *
  * @example
- * const { result, loading, error } = useGetAgentPackageRootsQuery();
+ * const { result, loading, error } = useGetAgentPackagesQuery();
  */
-export function useGetAgentPackageRootsQuery(options: VueApolloComposable.UseQueryOptions<GetAgentPackageRootsQuery, GetAgentPackageRootsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentPackageRootsQuery, GetAgentPackageRootsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentPackageRootsQuery, GetAgentPackageRootsQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<GetAgentPackageRootsQuery, GetAgentPackageRootsQueryVariables>(GetAgentPackageRootsDocument, {}, options);
+export function useGetAgentPackagesQuery(options: VueApolloComposable.UseQueryOptions<GetAgentPackagesQuery, GetAgentPackagesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentPackagesQuery, GetAgentPackagesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentPackagesQuery, GetAgentPackagesQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetAgentPackagesQuery, GetAgentPackagesQueryVariables>(GetAgentPackagesDocument, {}, options);
 }
-export function useGetAgentPackageRootsLazyQuery(options: VueApolloComposable.UseQueryOptions<GetAgentPackageRootsQuery, GetAgentPackageRootsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentPackageRootsQuery, GetAgentPackageRootsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentPackageRootsQuery, GetAgentPackageRootsQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<GetAgentPackageRootsQuery, GetAgentPackageRootsQueryVariables>(GetAgentPackageRootsDocument, {}, options);
+export function useGetAgentPackagesLazyQuery(options: VueApolloComposable.UseQueryOptions<GetAgentPackagesQuery, GetAgentPackagesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentPackagesQuery, GetAgentPackagesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentPackagesQuery, GetAgentPackagesQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetAgentPackagesQuery, GetAgentPackagesQueryVariables>(GetAgentPackagesDocument, {}, options);
 }
-export type GetAgentPackageRootsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentPackageRootsQuery, GetAgentPackageRootsQueryVariables>;
-export const AddAgentPackageRootDocument = gql`
-    mutation AddAgentPackageRoot($path: String!) {
-  addAgentPackageRoot(path: $path) {
+export type GetAgentPackagesQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentPackagesQuery, GetAgentPackagesQueryVariables>;
+export const ImportAgentPackageDocument = gql`
+    mutation ImportAgentPackage($input: ImportAgentPackageInput!) {
+  importAgentPackage(input: $input) {
+    packageId
+    displayName
     path
+    sourceKind
+    source
     sharedAgentCount
     teamLocalAgentCount
     agentTeamCount
     isDefault
+    isRemovable
   }
 }
     `;
 
 /**
- * __useAddAgentPackageRootMutation__
+ * __useImportAgentPackageMutation__
  *
- * To run a mutation, you first call `useAddAgentPackageRootMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useAddAgentPackageRootMutation` returns an object that includes:
+ * To run a mutation, you first call `useImportAgentPackageMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useImportAgentPackageMutation` returns an object that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
  *
  * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
  *
  * @example
- * const { mutate, loading, error, onDone } = useAddAgentPackageRootMutation({
+ * const { mutate, loading, error, onDone } = useImportAgentPackageMutation({
  *   variables: {
- *     path: // value for 'path'
+ *     input: // value for 'input'
  *   },
  * });
  */
-export function useAddAgentPackageRootMutation(options: VueApolloComposable.UseMutationOptions<AddAgentPackageRootMutation, AddAgentPackageRootMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<AddAgentPackageRootMutation, AddAgentPackageRootMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<AddAgentPackageRootMutation, AddAgentPackageRootMutationVariables>(AddAgentPackageRootDocument, options);
+export function useImportAgentPackageMutation(options: VueApolloComposable.UseMutationOptions<ImportAgentPackageMutation, ImportAgentPackageMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<ImportAgentPackageMutation, ImportAgentPackageMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<ImportAgentPackageMutation, ImportAgentPackageMutationVariables>(ImportAgentPackageDocument, options);
 }
-export type AddAgentPackageRootMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<AddAgentPackageRootMutation, AddAgentPackageRootMutationVariables>;
-export const RemoveAgentPackageRootDocument = gql`
-    mutation RemoveAgentPackageRoot($path: String!) {
-  removeAgentPackageRoot(path: $path) {
+export type ImportAgentPackageMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<ImportAgentPackageMutation, ImportAgentPackageMutationVariables>;
+export const RemoveAgentPackageDocument = gql`
+    mutation RemoveAgentPackage($packageId: String!) {
+  removeAgentPackage(packageId: $packageId) {
+    packageId
+    displayName
     path
+    sourceKind
+    source
     sharedAgentCount
     teamLocalAgentCount
     agentTeamCount
     isDefault
+    isRemovable
   }
 }
     `;
 
 /**
- * __useRemoveAgentPackageRootMutation__
+ * __useRemoveAgentPackageMutation__
  *
- * To run a mutation, you first call `useRemoveAgentPackageRootMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useRemoveAgentPackageRootMutation` returns an object that includes:
+ * To run a mutation, you first call `useRemoveAgentPackageMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveAgentPackageMutation` returns an object that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
  *
  * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
  *
  * @example
- * const { mutate, loading, error, onDone } = useRemoveAgentPackageRootMutation({
+ * const { mutate, loading, error, onDone } = useRemoveAgentPackageMutation({
  *   variables: {
- *     path: // value for 'path'
+ *     packageId: // value for 'packageId'
  *   },
  * });
  */
-export function useRemoveAgentPackageRootMutation(options: VueApolloComposable.UseMutationOptions<RemoveAgentPackageRootMutation, RemoveAgentPackageRootMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<RemoveAgentPackageRootMutation, RemoveAgentPackageRootMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<RemoveAgentPackageRootMutation, RemoveAgentPackageRootMutationVariables>(RemoveAgentPackageRootDocument, options);
+export function useRemoveAgentPackageMutation(options: VueApolloComposable.UseMutationOptions<RemoveAgentPackageMutation, RemoveAgentPackageMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<RemoveAgentPackageMutation, RemoveAgentPackageMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<RemoveAgentPackageMutation, RemoveAgentPackageMutationVariables>(RemoveAgentPackageDocument, options);
 }
-export type RemoveAgentPackageRootMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RemoveAgentPackageRootMutation, RemoveAgentPackageRootMutationVariables>;
+export type RemoveAgentPackageMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RemoveAgentPackageMutation, RemoveAgentPackageMutationVariables>;
 export const CreateAgentDefinitionDocument = gql`
     mutation CreateAgentDefinition($input: CreateAgentDefinitionInput!) {
   createAgentDefinition(input: $input) {
@@ -2680,8 +2630,8 @@ export function useDuplicateAgentDefinitionMutation(options: VueApolloComposable
 }
 export type DuplicateAgentDefinitionMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<DuplicateAgentDefinitionMutation, DuplicateAgentDefinitionMutationVariables>;
 export const TerminateAgentRunDocument = gql`
-    mutation TerminateAgentRun($id: String!) {
-  terminateAgentRun(id: $id) {
+    mutation TerminateAgentRun($agentRunId: String!) {
+  terminateAgentRun(agentRunId: $agentRunId) {
     __typename
     success
     message
@@ -2702,7 +2652,7 @@ export const TerminateAgentRunDocument = gql`
  * @example
  * const { mutate, loading, error, onDone } = useTerminateAgentRunMutation({
  *   variables: {
- *     id: // value for 'id'
+ *     agentRunId: // value for 'agentRunId'
  *   },
  * });
  */
@@ -2710,38 +2660,69 @@ export function useTerminateAgentRunMutation(options: VueApolloComposable.UseMut
   return VueApolloComposable.useMutation<TerminateAgentRunMutation, TerminateAgentRunMutationVariables>(TerminateAgentRunDocument, options);
 }
 export type TerminateAgentRunMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<TerminateAgentRunMutation, TerminateAgentRunMutationVariables>;
-export const SendAgentUserInputDocument = gql`
-    mutation SendAgentUserInput($input: SendAgentUserInputInput!) {
-  sendAgentUserInput(input: $input) {
-    __typename
+export const CreateAgentRunDocument = gql`
+    mutation CreateAgentRun($input: CreateAgentRunInput!) {
+  createAgentRun(input: $input) {
     success
     message
-    agentRunId
+    runId
   }
 }
     `;
 
 /**
- * __useSendAgentUserInputMutation__
+ * __useCreateAgentRunMutation__
  *
- * To run a mutation, you first call `useSendAgentUserInputMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useSendAgentUserInputMutation` returns an object that includes:
+ * To run a mutation, you first call `useCreateAgentRunMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useCreateAgentRunMutation` returns an object that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
  *
  * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
  *
  * @example
- * const { mutate, loading, error, onDone } = useSendAgentUserInputMutation({
+ * const { mutate, loading, error, onDone } = useCreateAgentRunMutation({
  *   variables: {
  *     input: // value for 'input'
  *   },
  * });
  */
-export function useSendAgentUserInputMutation(options: VueApolloComposable.UseMutationOptions<SendAgentUserInputMutation, SendAgentUserInputMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<SendAgentUserInputMutation, SendAgentUserInputMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<SendAgentUserInputMutation, SendAgentUserInputMutationVariables>(SendAgentUserInputDocument, options);
+export function useCreateAgentRunMutation(options: VueApolloComposable.UseMutationOptions<CreateAgentRunMutation, CreateAgentRunMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<CreateAgentRunMutation, CreateAgentRunMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<CreateAgentRunMutation, CreateAgentRunMutationVariables>(CreateAgentRunDocument, options);
 }
-export type SendAgentUserInputMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<SendAgentUserInputMutation, SendAgentUserInputMutationVariables>;
+export type CreateAgentRunMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<CreateAgentRunMutation, CreateAgentRunMutationVariables>;
+export const RestoreAgentRunDocument = gql`
+    mutation RestoreAgentRun($agentRunId: String!) {
+  restoreAgentRun(agentRunId: $agentRunId) {
+    __typename
+    success
+    message
+    runId
+  }
+}
+    `;
+
+/**
+ * __useRestoreAgentRunMutation__
+ *
+ * To run a mutation, you first call `useRestoreAgentRunMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useRestoreAgentRunMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useRestoreAgentRunMutation({
+ *   variables: {
+ *     agentRunId: // value for 'agentRunId'
+ *   },
+ * });
+ */
+export function useRestoreAgentRunMutation(options: VueApolloComposable.UseMutationOptions<RestoreAgentRunMutation, RestoreAgentRunMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<RestoreAgentRunMutation, RestoreAgentRunMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<RestoreAgentRunMutation, RestoreAgentRunMutationVariables>(RestoreAgentRunDocument, options);
+}
+export type RestoreAgentRunMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RestoreAgentRunMutation, RestoreAgentRunMutationVariables>;
 export const ApproveToolInvocationDocument = gql`
     mutation ApproveToolInvocation($input: ApproveToolInvocationInput!) {
   approveToolInvocation(input: $input) {
@@ -2923,8 +2904,8 @@ export function useCreateAgentTeamRunMutation(options: VueApolloComposable.UseMu
 }
 export type CreateAgentTeamRunMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<CreateAgentTeamRunMutation, CreateAgentTeamRunMutationVariables>;
 export const TerminateAgentTeamRunDocument = gql`
-    mutation TerminateAgentTeamRun($id: String!) {
-  terminateAgentTeamRun(id: $id) {
+    mutation TerminateAgentTeamRun($teamRunId: String!) {
+  terminateAgentTeamRun(teamRunId: $teamRunId) {
     __typename
     success
     message
@@ -2945,7 +2926,7 @@ export const TerminateAgentTeamRunDocument = gql`
  * @example
  * const { mutate, loading, error, onDone } = useTerminateAgentTeamRunMutation({
  *   variables: {
- *     id: // value for 'id'
+ *     teamRunId: // value for 'teamRunId'
  *   },
  * });
  */
@@ -2953,9 +2934,9 @@ export function useTerminateAgentTeamRunMutation(options: VueApolloComposable.Us
   return VueApolloComposable.useMutation<TerminateAgentTeamRunMutation, TerminateAgentTeamRunMutationVariables>(TerminateAgentTeamRunDocument, options);
 }
 export type TerminateAgentTeamRunMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<TerminateAgentTeamRunMutation, TerminateAgentTeamRunMutationVariables>;
-export const SendMessageToTeamDocument = gql`
-    mutation SendMessageToTeam($input: SendMessageToTeamInput!) {
-  sendMessageToTeam(input: $input) {
+export const RestoreAgentTeamRunDocument = gql`
+    mutation RestoreAgentTeamRun($teamRunId: String!) {
+  restoreAgentTeamRun(teamRunId: $teamRunId) {
     __typename
     success
     message
@@ -2965,26 +2946,26 @@ export const SendMessageToTeamDocument = gql`
     `;
 
 /**
- * __useSendMessageToTeamMutation__
+ * __useRestoreAgentTeamRunMutation__
  *
- * To run a mutation, you first call `useSendMessageToTeamMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useSendMessageToTeamMutation` returns an object that includes:
+ * To run a mutation, you first call `useRestoreAgentTeamRunMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useRestoreAgentTeamRunMutation` returns an object that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
  *
  * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
  *
  * @example
- * const { mutate, loading, error, onDone } = useSendMessageToTeamMutation({
+ * const { mutate, loading, error, onDone } = useRestoreAgentTeamRunMutation({
  *   variables: {
- *     input: // value for 'input'
+ *     teamRunId: // value for 'teamRunId'
  *   },
  * });
  */
-export function useSendMessageToTeamMutation(options: VueApolloComposable.UseMutationOptions<SendMessageToTeamMutation, SendMessageToTeamMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<SendMessageToTeamMutation, SendMessageToTeamMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<SendMessageToTeamMutation, SendMessageToTeamMutationVariables>(SendMessageToTeamDocument, options);
+export function useRestoreAgentTeamRunMutation(options: VueApolloComposable.UseMutationOptions<RestoreAgentTeamRunMutation, RestoreAgentTeamRunMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<RestoreAgentTeamRunMutation, RestoreAgentTeamRunMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<RestoreAgentTeamRunMutation, RestoreAgentTeamRunMutationVariables>(RestoreAgentTeamRunDocument, options);
 }
-export type SendMessageToTeamMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<SendMessageToTeamMutation, SendMessageToTeamMutationVariables>;
+export type RestoreAgentTeamRunMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RestoreAgentTeamRunMutation, RestoreAgentTeamRunMutationVariables>;
 export const RunApplicationDocument = gql`
     mutation RunApplication($appId: String!, $input: JSONObject!) {
   runApplication(appId: $appId, input: $input)
@@ -3039,6 +3020,7 @@ export const UpsertExternalChannelBindingDocument = gql`
       llmModelIdentifier
       runtimeKind
       autoExecuteTools
+      skillAccessMode
       llmConfig
     }
     teamRunId
@@ -3606,38 +3588,6 @@ export function useRunNodeSyncMutation(options: VueApolloComposable.UseMutationO
   return VueApolloComposable.useMutation<RunNodeSyncMutation, RunNodeSyncMutationVariables>(RunNodeSyncDocument, options);
 }
 export type RunNodeSyncMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RunNodeSyncMutation, RunNodeSyncMutationVariables>;
-export const ContinueRunDocument = gql`
-    mutation ContinueRun($input: ContinueRunInput!) {
-  continueRun(input: $input) {
-    success
-    message
-    runId
-    ignoredConfigFields
-  }
-}
-    `;
-
-/**
- * __useContinueRunMutation__
- *
- * To run a mutation, you first call `useContinueRunMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useContinueRunMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useContinueRunMutation({
- *   variables: {
- *     input: // value for 'input'
- *   },
- * });
- */
-export function useContinueRunMutation(options: VueApolloComposable.UseMutationOptions<ContinueRunMutation, ContinueRunMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<ContinueRunMutation, ContinueRunMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<ContinueRunMutation, ContinueRunMutationVariables>(ContinueRunDocument, options);
-}
-export type ContinueRunMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<ContinueRunMutation, ContinueRunMutationVariables>;
 export const DeleteStoredRunDocument = gql`
     mutation DeleteStoredRun($runId: String!) {
   deleteStoredRun(runId: $runId) {
@@ -3997,7 +3947,7 @@ export function useListRunMemorySnapshotsLazyQuery(variables: ListRunMemorySnaps
 }
 export type ListRunMemorySnapshotsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<ListRunMemorySnapshotsQuery, ListRunMemorySnapshotsQueryVariables>;
 export const GetRunMemoryViewDocument = gql`
-    query GetRunMemoryView($runId: String!, $includeWorkingContext: Boolean, $includeEpisodic: Boolean, $includeSemantic: Boolean, $includeRawTraces: Boolean, $includeArchive: Boolean, $rawTraceLimit: Int, $conversationLimit: Int) {
+    query GetRunMemoryView($runId: String!, $includeWorkingContext: Boolean, $includeEpisodic: Boolean, $includeSemantic: Boolean, $includeRawTraces: Boolean, $includeArchive: Boolean, $rawTraceLimit: Int) {
   getRunMemoryView(
     runId: $runId
     includeWorkingContext: $includeWorkingContext
@@ -4006,8 +3956,6 @@ export const GetRunMemoryViewDocument = gql`
     includeRawTraces: $includeRawTraces
     includeArchive: $includeArchive
     rawTraceLimit: $rawTraceLimit
-    conversationLimit: $conversationLimit
-    includeConversation: false
   ) {
     runId
     workingContext {
@@ -4023,6 +3971,7 @@ export const GetRunMemoryViewDocument = gql`
       traceType
       content
       toolName
+      toolCallId
       toolArgs
       toolResult
       toolError
@@ -4054,7 +4003,6 @@ export const GetRunMemoryViewDocument = gql`
  *   includeRawTraces: // value for 'includeRawTraces'
  *   includeArchive: // value for 'includeArchive'
  *   rawTraceLimit: // value for 'rawTraceLimit'
- *   conversationLimit: // value for 'conversationLimit'
  * });
  */
 export function useGetRunMemoryViewQuery(variables: GetRunMemoryViewQueryVariables | VueCompositionApi.Ref<GetRunMemoryViewQueryVariables> | ReactiveFunction<GetRunMemoryViewQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetRunMemoryViewQuery, GetRunMemoryViewQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetRunMemoryViewQuery, GetRunMemoryViewQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetRunMemoryViewQuery, GetRunMemoryViewQueryVariables>> = {}) {
@@ -4064,44 +4012,6 @@ export function useGetRunMemoryViewLazyQuery(variables?: GetRunMemoryViewQueryVa
   return VueApolloComposable.useLazyQuery<GetRunMemoryViewQuery, GetRunMemoryViewQueryVariables>(GetRunMemoryViewDocument, variables, options);
 }
 export type GetRunMemoryViewQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetRunMemoryViewQuery, GetRunMemoryViewQueryVariables>;
-export const GetAgentRunsDocument = gql`
-    query GetAgentRuns {
-  agentRuns {
-    __typename
-    id
-    name
-    role
-    currentStatus
-    agentDefinitionId
-    workspace {
-      __typename
-      workspaceId
-      name
-      config
-    }
-  }
-}
-    `;
-
-/**
- * __useGetAgentRunsQuery__
- *
- * To run a query within a Vue component, call `useGetAgentRunsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetAgentRunsQuery` returns an object from Apollo Client that contains result, loading and error properties
- * you can use to render your UI.
- *
- * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
- *
- * @example
- * const { result, loading, error } = useGetAgentRunsQuery();
- */
-export function useGetAgentRunsQuery(options: VueApolloComposable.UseQueryOptions<GetAgentRunsQuery, GetAgentRunsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentRunsQuery, GetAgentRunsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentRunsQuery, GetAgentRunsQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<GetAgentRunsQuery, GetAgentRunsQueryVariables>(GetAgentRunsDocument, {}, options);
-}
-export function useGetAgentRunsLazyQuery(options: VueApolloComposable.UseQueryOptions<GetAgentRunsQuery, GetAgentRunsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentRunsQuery, GetAgentRunsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentRunsQuery, GetAgentRunsQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<GetAgentRunsQuery, GetAgentRunsQueryVariables>(GetAgentRunsDocument, {}, options);
-}
-export type GetAgentRunsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentRunsQuery, GetAgentRunsQueryVariables>;
 export const GetAgentTeamDefinitionsDocument = gql`
     query GetAgentTeamDefinitions {
   agentTeamDefinitions {
@@ -4232,6 +4142,7 @@ export const ExternalChannelBindingsDocument = gql`
       llmModelIdentifier
       runtimeKind
       autoExecuteTools
+      skillAccessMode
       llmConfig
     }
     teamRunId
@@ -4778,6 +4689,7 @@ export const GetRunProjectionDocument = gql`
     summary
     lastActivityAt
     conversation
+    activities
   }
 }
     `;
@@ -4804,6 +4716,46 @@ export function useGetRunProjectionLazyQuery(variables?: GetRunProjectionQueryVa
   return VueApolloComposable.useLazyQuery<GetRunProjectionQuery, GetRunProjectionQueryVariables>(GetRunProjectionDocument, variables, options);
 }
 export type GetRunProjectionQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetRunProjectionQuery, GetRunProjectionQueryVariables>;
+export const GetRunFileChangesDocument = gql`
+    query GetRunFileChanges($runId: String!) {
+  getRunFileChanges(runId: $runId) {
+    id
+    runId
+    path
+    type
+    status
+    sourceTool
+    sourceInvocationId
+    backendArtifactId
+    content
+    createdAt
+    updatedAt
+  }
+}
+    `;
+
+/**
+ * __useGetRunFileChangesQuery__
+ *
+ * To run a query within a Vue component, call `useGetRunFileChangesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetRunFileChangesQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetRunFileChangesQuery({
+ *   runId: // value for 'runId'
+ * });
+ */
+export function useGetRunFileChangesQuery(variables: GetRunFileChangesQueryVariables | VueCompositionApi.Ref<GetRunFileChangesQueryVariables> | ReactiveFunction<GetRunFileChangesQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetRunFileChangesQuery, GetRunFileChangesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetRunFileChangesQuery, GetRunFileChangesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetRunFileChangesQuery, GetRunFileChangesQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetRunFileChangesQuery, GetRunFileChangesQueryVariables>(GetRunFileChangesDocument, variables, options);
+}
+export function useGetRunFileChangesLazyQuery(variables?: GetRunFileChangesQueryVariables | VueCompositionApi.Ref<GetRunFileChangesQueryVariables> | ReactiveFunction<GetRunFileChangesQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetRunFileChangesQuery, GetRunFileChangesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetRunFileChangesQuery, GetRunFileChangesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetRunFileChangesQuery, GetRunFileChangesQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetRunFileChangesQuery, GetRunFileChangesQueryVariables>(GetRunFileChangesDocument, variables, options);
+}
+export type GetRunFileChangesQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetRunFileChangesQuery, GetRunFileChangesQueryVariables>;
 export const GetTeamRunResumeConfigDocument = gql`
     query GetTeamRunResumeConfig($teamRunId: String!) {
   getTeamRunResumeConfig(teamRunId: $teamRunId) {
@@ -4846,6 +4798,7 @@ export const GetTeamMemberRunProjectionDocument = gql`
     summary
     lastActivityAt
     conversation
+    activities
   }
 }
     `;
@@ -4873,9 +4826,9 @@ export function useGetTeamMemberRunProjectionLazyQuery(variables?: GetTeamMember
   return VueApolloComposable.useLazyQuery<GetTeamMemberRunProjectionQuery, GetTeamMemberRunProjectionQueryVariables>(GetTeamMemberRunProjectionDocument, variables, options);
 }
 export type GetTeamMemberRunProjectionQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetTeamMemberRunProjectionQuery, GetTeamMemberRunProjectionQueryVariables>;
-export const GetRunResumeConfigDocument = gql`
-    query GetRunResumeConfig($runId: String!) {
-  getRunResumeConfig(runId: $runId) {
+export const GetAgentRunResumeConfigDocument = gql`
+    query GetAgentRunResumeConfig($runId: String!) {
+  getAgentRunResumeConfig(runId: $runId) {
     runId
     isActive
     metadataConfig {
@@ -4906,30 +4859,30 @@ export const GetRunResumeConfigDocument = gql`
     `;
 
 /**
- * __useGetRunResumeConfigQuery__
+ * __useGetAgentRunResumeConfigQuery__
  *
- * To run a query within a Vue component, call `useGetRunResumeConfigQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetRunResumeConfigQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * To run a query within a Vue component, call `useGetAgentRunResumeConfigQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAgentRunResumeConfigQuery` returns an object from Apollo Client that contains result, loading and error properties
  * you can use to render your UI.
  *
  * @param variables that will be passed into the query
  * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
  *
  * @example
- * const { result, loading, error } = useGetRunResumeConfigQuery({
+ * const { result, loading, error } = useGetAgentRunResumeConfigQuery({
  *   runId: // value for 'runId'
  * });
  */
-export function useGetRunResumeConfigQuery(variables: GetRunResumeConfigQueryVariables | VueCompositionApi.Ref<GetRunResumeConfigQueryVariables> | ReactiveFunction<GetRunResumeConfigQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetRunResumeConfigQuery, GetRunResumeConfigQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetRunResumeConfigQuery, GetRunResumeConfigQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetRunResumeConfigQuery, GetRunResumeConfigQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<GetRunResumeConfigQuery, GetRunResumeConfigQueryVariables>(GetRunResumeConfigDocument, variables, options);
+export function useGetAgentRunResumeConfigQuery(variables: GetAgentRunResumeConfigQueryVariables | VueCompositionApi.Ref<GetAgentRunResumeConfigQueryVariables> | ReactiveFunction<GetAgentRunResumeConfigQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentRunResumeConfigQuery, GetAgentRunResumeConfigQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentRunResumeConfigQuery, GetAgentRunResumeConfigQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentRunResumeConfigQuery, GetAgentRunResumeConfigQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetAgentRunResumeConfigQuery, GetAgentRunResumeConfigQueryVariables>(GetAgentRunResumeConfigDocument, variables, options);
 }
-export function useGetRunResumeConfigLazyQuery(variables?: GetRunResumeConfigQueryVariables | VueCompositionApi.Ref<GetRunResumeConfigQueryVariables> | ReactiveFunction<GetRunResumeConfigQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetRunResumeConfigQuery, GetRunResumeConfigQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetRunResumeConfigQuery, GetRunResumeConfigQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetRunResumeConfigQuery, GetRunResumeConfigQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<GetRunResumeConfigQuery, GetRunResumeConfigQueryVariables>(GetRunResumeConfigDocument, variables, options);
+export function useGetAgentRunResumeConfigLazyQuery(variables?: GetAgentRunResumeConfigQueryVariables | VueCompositionApi.Ref<GetAgentRunResumeConfigQueryVariables> | ReactiveFunction<GetAgentRunResumeConfigQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentRunResumeConfigQuery, GetAgentRunResumeConfigQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentRunResumeConfigQuery, GetAgentRunResumeConfigQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentRunResumeConfigQuery, GetAgentRunResumeConfigQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetAgentRunResumeConfigQuery, GetAgentRunResumeConfigQueryVariables>(GetAgentRunResumeConfigDocument, variables, options);
 }
-export type GetRunResumeConfigQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetRunResumeConfigQuery, GetRunResumeConfigQueryVariables>;
-export const GetRuntimeCapabilitiesDocument = gql`
-    query GetRuntimeCapabilities {
-  runtimeCapabilities {
+export type GetAgentRunResumeConfigQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentRunResumeConfigQuery, GetAgentRunResumeConfigQueryVariables>;
+export const GetRuntimeAvailabilitiesDocument = gql`
+    query GetRuntimeAvailabilities {
+  runtimeAvailabilities {
     runtimeKind
     enabled
     reason
@@ -4938,24 +4891,24 @@ export const GetRuntimeCapabilitiesDocument = gql`
     `;
 
 /**
- * __useGetRuntimeCapabilitiesQuery__
+ * __useGetRuntimeAvailabilitiesQuery__
  *
- * To run a query within a Vue component, call `useGetRuntimeCapabilitiesQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetRuntimeCapabilitiesQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * To run a query within a Vue component, call `useGetRuntimeAvailabilitiesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetRuntimeAvailabilitiesQuery` returns an object from Apollo Client that contains result, loading and error properties
  * you can use to render your UI.
  *
  * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
  *
  * @example
- * const { result, loading, error } = useGetRuntimeCapabilitiesQuery();
+ * const { result, loading, error } = useGetRuntimeAvailabilitiesQuery();
  */
-export function useGetRuntimeCapabilitiesQuery(options: VueApolloComposable.UseQueryOptions<GetRuntimeCapabilitiesQuery, GetRuntimeCapabilitiesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetRuntimeCapabilitiesQuery, GetRuntimeCapabilitiesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetRuntimeCapabilitiesQuery, GetRuntimeCapabilitiesQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<GetRuntimeCapabilitiesQuery, GetRuntimeCapabilitiesQueryVariables>(GetRuntimeCapabilitiesDocument, {}, options);
+export function useGetRuntimeAvailabilitiesQuery(options: VueApolloComposable.UseQueryOptions<GetRuntimeAvailabilitiesQuery, GetRuntimeAvailabilitiesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetRuntimeAvailabilitiesQuery, GetRuntimeAvailabilitiesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetRuntimeAvailabilitiesQuery, GetRuntimeAvailabilitiesQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetRuntimeAvailabilitiesQuery, GetRuntimeAvailabilitiesQueryVariables>(GetRuntimeAvailabilitiesDocument, {}, options);
 }
-export function useGetRuntimeCapabilitiesLazyQuery(options: VueApolloComposable.UseQueryOptions<GetRuntimeCapabilitiesQuery, GetRuntimeCapabilitiesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetRuntimeCapabilitiesQuery, GetRuntimeCapabilitiesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetRuntimeCapabilitiesQuery, GetRuntimeCapabilitiesQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<GetRuntimeCapabilitiesQuery, GetRuntimeCapabilitiesQueryVariables>(GetRuntimeCapabilitiesDocument, {}, options);
+export function useGetRuntimeAvailabilitiesLazyQuery(options: VueApolloComposable.UseQueryOptions<GetRuntimeAvailabilitiesQuery, GetRuntimeAvailabilitiesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetRuntimeAvailabilitiesQuery, GetRuntimeAvailabilitiesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetRuntimeAvailabilitiesQuery, GetRuntimeAvailabilitiesQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetRuntimeAvailabilitiesQuery, GetRuntimeAvailabilitiesQueryVariables>(GetRuntimeAvailabilitiesDocument, {}, options);
 }
-export type GetRuntimeCapabilitiesQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetRuntimeCapabilitiesQuery, GetRuntimeCapabilitiesQueryVariables>;
+export type GetRuntimeAvailabilitiesQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetRuntimeAvailabilitiesQuery, GetRuntimeAvailabilitiesQueryVariables>;
 export const GetServerSettingsDocument = gql`
     query GetServerSettings {
   getServerSettings {
@@ -4963,6 +4916,8 @@ export const GetServerSettingsDocument = gql`
     key
     value
     description
+    isEditable
+    isDeletable
   }
 }
     `;
@@ -5072,7 +5027,7 @@ export function useListTeamRunMemorySnapshotsLazyQuery(variables: ListTeamRunMem
 }
 export type ListTeamRunMemorySnapshotsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<ListTeamRunMemorySnapshotsQuery, ListTeamRunMemorySnapshotsQueryVariables>;
 export const GetTeamMemberRunMemoryViewDocument = gql`
-    query GetTeamMemberRunMemoryView($teamRunId: String!, $memberRunId: String!, $includeWorkingContext: Boolean, $includeEpisodic: Boolean, $includeSemantic: Boolean, $includeRawTraces: Boolean, $includeArchive: Boolean, $rawTraceLimit: Int, $conversationLimit: Int) {
+    query GetTeamMemberRunMemoryView($teamRunId: String!, $memberRunId: String!, $includeWorkingContext: Boolean, $includeEpisodic: Boolean, $includeSemantic: Boolean, $includeRawTraces: Boolean, $includeArchive: Boolean, $rawTraceLimit: Int) {
   getTeamMemberRunMemoryView(
     teamRunId: $teamRunId
     memberRunId: $memberRunId
@@ -5082,8 +5037,6 @@ export const GetTeamMemberRunMemoryViewDocument = gql`
     includeRawTraces: $includeRawTraces
     includeArchive: $includeArchive
     rawTraceLimit: $rawTraceLimit
-    conversationLimit: $conversationLimit
-    includeConversation: false
   ) {
     runId
     workingContext {
@@ -5099,6 +5052,7 @@ export const GetTeamMemberRunMemoryViewDocument = gql`
       traceType
       content
       toolName
+      toolCallId
       toolArgs
       toolResult
       toolError
@@ -5131,7 +5085,6 @@ export const GetTeamMemberRunMemoryViewDocument = gql`
  *   includeRawTraces: // value for 'includeRawTraces'
  *   includeArchive: // value for 'includeArchive'
  *   rawTraceLimit: // value for 'rawTraceLimit'
- *   conversationLimit: // value for 'conversationLimit'
  * });
  */
 export function useGetTeamMemberRunMemoryViewQuery(variables: GetTeamMemberRunMemoryViewQueryVariables | VueCompositionApi.Ref<GetTeamMemberRunMemoryViewQueryVariables> | ReactiveFunction<GetTeamMemberRunMemoryViewQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetTeamMemberRunMemoryViewQuery, GetTeamMemberRunMemoryViewQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetTeamMemberRunMemoryViewQuery, GetTeamMemberRunMemoryViewQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetTeamMemberRunMemoryViewQuery, GetTeamMemberRunMemoryViewQueryVariables>> = {}) {

@@ -3,6 +3,7 @@ import { openAgentRun } from '~/services/runOpen/agentRunOpenCoordinator';
 
 const {
   loadRunContextHydrationPayloadMock,
+  hydrateActivitiesFromProjectionMock,
   hydrateRunFileChangesMock,
   mergeHydratedRunFileChangesMock,
   selectRunMock,
@@ -15,6 +16,7 @@ const {
   getRunMock,
 } = vi.hoisted(() => ({
   loadRunContextHydrationPayloadMock: vi.fn(),
+  hydrateActivitiesFromProjectionMock: vi.fn(),
   hydrateRunFileChangesMock: vi.fn(),
   mergeHydratedRunFileChangesMock: vi.fn(),
   selectRunMock: vi.fn(),
@@ -29,6 +31,10 @@ const {
 
 vi.mock('~/services/runHydration/runContextHydrationService', () => ({
   loadRunContextHydrationPayload: loadRunContextHydrationPayloadMock,
+}));
+
+vi.mock('~/services/runHydration/runProjectionActivityHydration', () => ({
+  hydrateActivitiesFromProjection: hydrateActivitiesFromProjectionMock,
 }));
 
 vi.mock('~/services/runHydration/runFileChangeHydrationService', () => ({
@@ -91,6 +97,14 @@ describe('openAgentRun', () => {
       conversation: {
         updatedAt: '2026-04-10T00:00:00.000Z',
       },
+      activities: [
+        {
+          invocationId: 'tool-1',
+          toolName: 'run_bash',
+          status: 'success',
+          contextText: 'pwd',
+        },
+      ],
       fileChanges: [
         {
           id: 'run-1:src/history.txt',
@@ -123,7 +137,59 @@ describe('openAgentRun', () => {
         path: 'src/history.txt',
       }),
     ]);
+    expect(hydrateActivitiesFromProjectionMock).toHaveBeenCalledWith('run-1', [
+      expect.objectContaining({
+        invocationId: 'tool-1',
+        toolName: 'run_bash',
+      }),
+    ]);
     expect(hydrateRunFileChangesMock).not.toHaveBeenCalled();
     expect(connectToAgentStreamMock).toHaveBeenCalledWith('run-1');
+  });
+
+  it('hydrates projected activities when reopening a historical run from projection', async () => {
+    getRunMock.mockReturnValue(undefined);
+    loadRunContextHydrationPayloadMock.mockResolvedValue({
+      runId: 'run-2',
+      resumeConfig: {
+        isActive: false,
+        metadataConfig: {},
+      },
+      config: {
+        isLocked: false,
+      },
+      conversation: {
+        updatedAt: '2026-04-10T00:00:00.000Z',
+      },
+      activities: [
+        {
+          invocationId: 'history-2',
+          toolName: 'write_file',
+          status: 'success',
+          contextText: 'fibonacci.py',
+        },
+      ],
+      fileChanges: [],
+    });
+
+    await openAgentRun({
+      runId: 'run-2',
+      fallbackAgentName: 'Agent',
+      ensureWorkspaceByRootPath: vi.fn(),
+    });
+
+    expect(upsertProjectionContextMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        runId: 'run-2',
+      }),
+    );
+    expect(hydrateActivitiesFromProjectionMock).toHaveBeenCalledWith('run-2', [
+      expect.objectContaining({
+        invocationId: 'history-2',
+        toolName: 'write_file',
+      }),
+    ]);
+    expect(hydrateRunFileChangesMock).toHaveBeenCalledWith('run-2', []);
+    expect(connectToAgentStreamMock).not.toHaveBeenCalled();
   });
 });

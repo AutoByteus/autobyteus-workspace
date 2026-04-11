@@ -1,11 +1,9 @@
 import type {
   AgentMemoryView,
-  MemoryConversationEntry,
   MemoryMessage,
   MemoryTraceEvent,
 } from "../domain/models.js";
 import { MemoryFileStore } from "../store/memory-file-store.js";
-import { buildConversationView } from "../transformers/raw-trace-to-conversation.js";
 
 type RawTrace = Record<string, unknown>;
 
@@ -13,11 +11,9 @@ type AgentMemoryViewOptions = {
   includeWorkingContext?: boolean;
   includeEpisodic?: boolean;
   includeSemantic?: boolean;
-  includeConversation?: boolean;
   includeRawTraces?: boolean;
   includeArchive?: boolean;
   rawTraceLimit?: number | null;
-  conversationLimit?: number | null;
 };
 
 export class AgentMemoryService {
@@ -32,11 +28,9 @@ export class AgentMemoryService {
       includeWorkingContext = true,
       includeEpisodic = true,
       includeSemantic = true,
-      includeConversation = true,
       includeRawTraces = false,
       includeArchive = false,
       rawTraceLimit = null,
-      conversationLimit = null,
     } = options;
 
     let workingContext: MemoryMessage[] | null = null;
@@ -49,22 +43,13 @@ export class AgentMemoryService {
     const semantic = includeSemantic ? this.store.readSemantic(runId) : null;
 
     let rawTraces: MemoryTraceEvent[] | null = null;
-    let conversation: MemoryConversationEntry[] | null = null;
-
-    if (includeConversation || includeRawTraces) {
+    if (includeRawTraces) {
       const active = this.store.readRawTracesActive(runId);
       const archive = includeArchive ? this.store.readRawTracesArchive(runId) : [];
       let merged = this.mergeAndSortTraces(active, archive);
       merged = this.applyRawTraceLimit(merged, rawTraceLimit);
 
-      if (includeRawTraces) {
-        rawTraces = merged.map((trace) => this.toTraceEvent(trace));
-      }
-
-      if (includeConversation) {
-        const entries = buildConversationView(merged, true);
-        conversation = this.applyConversationLimit(entries, conversationLimit);
-      }
+      rawTraces = merged.map((trace) => this.toTraceEvent(trace));
     }
 
     return {
@@ -72,7 +57,6 @@ export class AgentMemoryService {
       workingContext,
       episodic,
       semantic,
-      conversation,
       rawTraces,
     };
   }
@@ -131,21 +115,12 @@ export class AgentMemoryService {
     return traces.slice(-limit);
   }
 
-  private applyConversationLimit(
-    entries: MemoryConversationEntry[],
-    limit?: number | null,
-  ): MemoryConversationEntry[] {
-    if (!limit || limit <= 0) {
-      return entries;
-    }
-    return entries.slice(-limit);
-  }
-
   private toTraceEvent(trace: RawTrace): MemoryTraceEvent {
     return {
       traceType: (trace.trace_type as string | undefined) ?? "",
       content: (trace.content as string | undefined) ?? null,
       toolName: (trace.tool_name as string | undefined) ?? null,
+      toolCallId: (trace.tool_call_id as string | undefined) ?? null,
       toolArgs: (trace.tool_args as Record<string, unknown> | undefined) ?? null,
       toolResult: (trace.tool_result as unknown) ?? null,
       toolError: (trace.tool_error as string | undefined) ?? null,

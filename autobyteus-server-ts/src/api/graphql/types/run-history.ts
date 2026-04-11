@@ -117,7 +117,10 @@ class RunProjectionPayload {
   runId!: string;
 
   @Field(() => [GraphQLJSON])
-  conversation!: Array<Record<string, unknown>>;
+  conversation!: unknown[];
+
+  @Field(() => [GraphQLJSON])
+  activities!: unknown[];
 
   @Field(() => String, { nullable: true })
   summary?: string | null;

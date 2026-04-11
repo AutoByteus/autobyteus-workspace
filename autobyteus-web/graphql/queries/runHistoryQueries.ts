@@ -45,6 +45,7 @@ export const GetRunProjection = gql`
       summary
       lastActivityAt
       conversation
+      activities
     }
   }
 `;
@@ -84,6 +85,7 @@ export const GetTeamMemberRunProjection = gql`
       summary
       lastActivityAt
       conversation
+      activities
     }
   }
 `;

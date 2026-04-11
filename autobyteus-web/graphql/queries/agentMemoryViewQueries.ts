@@ -9,7 +9,6 @@ export const GET_RUN_MEMORY_VIEW = gql`
     $includeRawTraces: Boolean
     $includeArchive: Boolean
     $rawTraceLimit: Int
-    $conversationLimit: Int
   ) {
     getRunMemoryView(
       runId: $runId
@@ -19,8 +18,6 @@ export const GET_RUN_MEMORY_VIEW = gql`
       includeRawTraces: $includeRawTraces
       includeArchive: $includeArchive
       rawTraceLimit: $rawTraceLimit
-      conversationLimit: $conversationLimit
-      includeConversation: false
     ) {
       runId
       workingContext {
@@ -36,6 +33,7 @@ export const GET_RUN_MEMORY_VIEW = gql`
         traceType
         content
         toolName
+        toolCallId
         toolArgs
         toolResult
         toolError
