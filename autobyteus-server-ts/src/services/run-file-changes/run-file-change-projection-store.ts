@@ -9,48 +9,63 @@ const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
 };
 
-const projectionDirForMemoryDir = (memoryDir: string): string =>
-  path.join(path.resolve(memoryDir), "run-file-changes");
+const canonicalProjectionPathForMemoryDir = (memoryDir: string): string =>
+  path.join(path.resolve(memoryDir), "file_changes.json");
 
-const projectionPathForMemoryDir = (memoryDir: string): string =>
-  path.join(projectionDirForMemoryDir(memoryDir), "projection.json");
+const stripTransientFields = (projection: RunFileChangeProjection): RunFileChangeProjection => ({
+  version: 2,
+  entries: projection.entries.map(({ content: _content, ...entry }) => ({ ...entry })),
+});
+
+const emptyProjection = (): RunFileChangeProjection => ({
+  ...EMPTY_RUN_FILE_CHANGE_PROJECTION,
+  entries: [],
+});
+
+const readProjectionFile = async (projectionPath: string): Promise<RunFileChangeProjection | null> => {
+  const raw = await fs.readFile(projectionPath, "utf-8");
+  const parsed = JSON.parse(raw) as RunFileChangeProjection;
+  if (!Array.isArray(parsed?.entries)) {
+    return emptyProjection();
+  }
+
+  return {
+    version: 2,
+    entries: parsed.entries,
+  };
+};
+
+const isMissingFileError = (error: unknown): boolean =>
+  typeof error === "object"
+  && error !== null
+  && "code" in error
+  && (error as { code?: unknown }).code === "ENOENT";
 
 export class RunFileChangeProjectionStore {
   async readProjection(memoryDir: string): Promise<RunFileChangeProjection> {
-    const projectionPath = projectionPathForMemoryDir(memoryDir);
+    const canonicalPath = canonicalProjectionPathForMemoryDir(memoryDir);
 
     try {
-      const raw = await fs.readFile(projectionPath, "utf-8");
-      const parsed = JSON.parse(raw) as RunFileChangeProjection;
-      if (!Array.isArray(parsed?.entries)) {
-        return {
-          ...EMPTY_RUN_FILE_CHANGE_PROJECTION,
-          entries: [],
-        };
-      }
-      return {
-        version: 1,
-        entries: parsed.entries,
-      };
+      return (await readProjectionFile(canonicalPath)) ?? emptyProjection();
     } catch (error) {
-      const message = String(error);
-      if (!message.includes("ENOENT")) {
+      if (!isMissingFileError(error)) {
         logger.warn(
-          `RunFileChangeProjectionStore: failed reading projection '${projectionPath}': ${message}`,
+          `RunFileChangeProjectionStore: failed reading projection '${canonicalPath}': ${String(error)}`,
         );
       }
-      return {
-        ...EMPTY_RUN_FILE_CHANGE_PROJECTION,
-        entries: [],
-      };
+
+      return emptyProjection();
     }
   }
 
   async writeProjection(memoryDir: string, projection: RunFileChangeProjection): Promise<void> {
-    const projectionDir = projectionDirForMemoryDir(memoryDir);
-    const projectionPath = projectionPathForMemoryDir(memoryDir);
-    await fs.mkdir(projectionDir, { recursive: true });
-    await fs.writeFile(projectionPath, JSON.stringify(projection, null, 2), "utf-8");
+    const projectionPath = canonicalProjectionPathForMemoryDir(memoryDir);
+    await fs.mkdir(path.dirname(projectionPath), { recursive: true });
+    await fs.writeFile(
+      projectionPath,
+      JSON.stringify(stripTransientFields(projection), null, 2),
+      "utf-8",
+    );
   }
 }
 

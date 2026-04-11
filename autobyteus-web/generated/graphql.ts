@@ -1233,7 +1233,6 @@ export type RunEditableFieldFlagsObject = {
 
 export type RunFileChangeEntryObject = {
   __typename?: 'RunFileChangeEntryObject';
-  backendArtifactId?: Maybe<Scalars['String']['output']>;
   content?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['String']['output'];
   id: Scalars['String']['output'];
@@ -2126,7 +2125,7 @@ export type GetRunFileChangesQueryVariables = Exact<{
 }>;
 
 
-export type GetRunFileChangesQuery = { __typename?: 'Query', getRunFileChanges: Array<{ __typename?: 'RunFileChangeEntryObject', id: string, runId: string, path: string, type: string, status: string, sourceTool: string, sourceInvocationId?: string | null, backendArtifactId?: string | null, content?: string | null, createdAt: string, updatedAt: string }> };
+export type GetRunFileChangesQuery = { __typename?: 'Query', getRunFileChanges: Array<{ __typename?: 'RunFileChangeEntryObject', id: string, runId: string, path: string, type: string, status: string, sourceTool: string, sourceInvocationId?: string | null, content?: string | null, createdAt: string, updatedAt: string }> };
 
 export type GetTeamRunResumeConfigQueryVariables = Exact<{
   teamRunId: Scalars['String']['input'];
@@ -4726,7 +4725,6 @@ export const GetRunFileChangesDocument = gql`
     status
     sourceTool
     sourceInvocationId
-    backendArtifactId
     content
     createdAt
     updatedAt

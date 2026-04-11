@@ -286,11 +286,10 @@ export interface FileChangeUpdatedPayload {
   id: string;
   runId: string;
   path: string;
-  type: 'file';
+  type: 'file' | 'image' | 'audio' | 'video' | 'pdf' | 'csv' | 'excel' | 'other';
   status: 'streaming' | 'pending' | 'available' | 'failed';
-  sourceTool: 'write_file' | 'edit_file';
+  sourceTool: 'write_file' | 'edit_file' | 'generated_output';
   sourceInvocationId?: string | null;
-  backendArtifactId?: string | null;
   content?: string | null;
   createdAt: string;
   updatedAt: string;

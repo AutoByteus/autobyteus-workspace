@@ -1,39 +1,48 @@
 import path from "node:path";
 
+const asTrimmedString = (value: unknown): string | null => {
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : null;
+};
+
 export function isCandidateKey(key: string): boolean {
   const keyLower = key.toLowerCase();
   return (keyLower.includes("output") && keyLower.includes("path")) || keyLower.includes("destination");
 }
 
-export function extractCandidateOutputPath(
-  toolArgs: Record<string, unknown> | null | undefined,
-  toolResult: unknown,
-): string | null {
-  if (toolResult && typeof toolResult === "object" && !Array.isArray(toolResult)) {
-    const result = toolResult as Record<string, unknown>;
-    if ("output_file_url" in result && "local_file_path" in result) {
-      const localPath = result["local_file_path"];
-      if (typeof localPath === "string") {
-        return localPath;
-      }
-    }
-
-    for (const [key, value] of Object.entries(result)) {
-      if ((isCandidateKey(key) || key === "file_path") && typeof value === "string") {
-        return value;
-      }
-    }
+const extractCandidatePathFromObject = (value: unknown): string | null => {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return null;
   }
 
-  if (toolArgs && typeof toolArgs === "object") {
-    for (const [key, value] of Object.entries(toolArgs)) {
-      if (isCandidateKey(key) && typeof value === "string") {
-        return value;
-      }
+  const candidate = value as Record<string, unknown>;
+  if ("output_file_url" in candidate && "local_file_path" in candidate) {
+    return asTrimmedString(candidate.local_file_path);
+  }
+
+  for (const [key, entry] of Object.entries(candidate)) {
+    const resolved = asTrimmedString(entry);
+    if (!resolved) {
+      continue;
+    }
+
+    if (isCandidateKey(key) || key === "file_path") {
+      return resolved;
     }
   }
 
   return null;
+};
+
+export function extractCandidateOutputPath(
+  toolArgs: Record<string, unknown> | null | undefined,
+  toolResult: unknown,
+): string | null {
+  return extractCandidatePathFromObject(toolResult) ?? extractCandidatePathFromObject(toolArgs);
 }
 
 export function inferArtifactType(pathStr: string): string | null {
@@ -45,7 +54,7 @@ export function inferArtifactType(pathStr: string): string | null {
   if ([".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg"].includes(ext)) {
     return "image";
   }
-  if ([".mp3", ".wav", ".ogg", ".flac", ".m4a"].includes(ext)) {
+  if ([".mp3", ".wav", ".ogg", ".flac", ".m4a", ".aac"].includes(ext)) {
     return "audio";
   }
   if ([".mp4", ".mov", ".avi", ".mkv", ".webm"].includes(ext)) {
@@ -57,7 +66,7 @@ export function inferArtifactType(pathStr: string): string | null {
   if (ext === ".csv") {
     return "csv";
   }
-  if ([".xlsx", ".xls"].includes(ext)) {
+  if ([".xlsx", ".xls", ".xlsm"].includes(ext)) {
     return "excel";
   }
   return "file";

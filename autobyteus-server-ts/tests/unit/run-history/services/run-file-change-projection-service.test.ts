@@ -21,15 +21,17 @@ describe("RunFileChangeProjectionService", () => {
   });
 
   it("reads active runs from the authoritative run-file-change owner instead of projection storage", async () => {
+    const workspaceRoot = await createTempDir();
     const activeRun = {
       runId: "run-1",
       config: {
         memoryDir: "/tmp/run-1-memory",
+        workspaceId: "workspace-1",
       },
     };
     const runFileChangeService = {
       getProjectionForRun: vi.fn().mockResolvedValue({
-        version: 1,
+        version: 2,
         entries: [
           {
             id: "run-1:src/demo.txt",
@@ -39,8 +41,6 @@ describe("RunFileChangeProjectionService", () => {
             status: "available",
             sourceTool: "edit_file",
             sourceInvocationId: "edit-1",
-            backendArtifactId: null,
-            content: "fresh in-memory content",
             createdAt: "2026-04-10T04:00:00.000Z",
             updatedAt: "2026-04-10T04:00:01.000Z",
           },
@@ -48,24 +48,7 @@ describe("RunFileChangeProjectionService", () => {
       }),
     };
     const projectionStore = {
-      readProjection: vi.fn().mockResolvedValue({
-        version: 1,
-        entries: [
-          {
-            id: "run-1:src/demo.txt",
-            runId: "run-1",
-            path: "src/demo.txt",
-            type: "file",
-            status: "available",
-            sourceTool: "edit_file",
-            sourceInvocationId: "edit-1",
-            backendArtifactId: null,
-            content: "stale disk content",
-            createdAt: "2026-04-10T04:00:00.000Z",
-            updatedAt: "2026-04-10T04:00:00.500Z",
-          },
-        ],
-      }),
+      readProjection: vi.fn(),
     };
 
     const service = new RunFileChangeProjectionService({
@@ -77,30 +60,35 @@ describe("RunFileChangeProjectionService", () => {
       } as any,
       projectionStore: projectionStore as any,
       runFileChangeService: runFileChangeService as any,
+      workspaceManager: {
+        getWorkspaceById: vi.fn().mockReturnValue({
+          getBasePath: () => workspaceRoot,
+        }),
+      } as any,
     });
 
     const entry = await service.getEntry("run-1", "src/demo.txt");
 
     expect(runFileChangeService.getProjectionForRun).toHaveBeenCalledWith(activeRun);
     expect(projectionStore.readProjection).not.toHaveBeenCalled();
-    expect(entry?.content).toBe("fresh in-memory content");
+    expect(entry?.path).toBe("src/demo.txt");
   });
 
-  it("falls back to persisted projection storage for inactive historical runs", async () => {
+  it("canonicalizes persisted historical entries using the run workspace root", async () => {
+    const workspaceRoot = await createTempDir();
+    const absolutePath = path.join(workspaceRoot, "src", "demo.txt");
     const projectionStore = {
       readProjection: vi.fn().mockResolvedValue({
         version: 1,
         entries: [
           {
-            id: "run-2:/Users/normy/Downloads/demo.txt",
+            id: "legacy",
             runId: "run-2",
-            path: "/Users/normy/Downloads/demo.txt",
+            path: absolutePath,
             type: "file",
             status: "available",
             sourceTool: "edit_file",
             sourceInvocationId: "edit-2",
-            backendArtifactId: null,
-            content: "persisted historical content",
             createdAt: "2026-04-10T04:10:00.000Z",
             updatedAt: "2026-04-10T04:10:01.000Z",
           },
@@ -115,19 +103,31 @@ describe("RunFileChangeProjectionService", () => {
       metadataService: {
         readMetadata: vi.fn().mockResolvedValue({
           memoryDir: "/tmp/run-2-memory",
+          workspaceRootPath: workspaceRoot,
         }),
       } as any,
       projectionStore: projectionStore as any,
       runFileChangeService: {
         getProjectionForRun: vi.fn(),
       } as any,
+      workspaceManager: {
+        getWorkspaceById: vi.fn(),
+      } as any,
     });
 
     const projection = await service.getProjection("run-2");
+    const resolved = await service.resolveEntry("run-2", "src/demo.txt");
 
     expect(projectionStore.readProjection).toHaveBeenCalledWith("/tmp/run-2-memory");
     expect(projection).toHaveLength(1);
-    expect(projection[0]?.path).toBe("/Users/normy/Downloads/demo.txt");
+    expect(projection[0]?.path).toBe("src/demo.txt");
+    expect(resolved).toEqual({
+      entry: expect.objectContaining({
+        path: "src/demo.txt",
+      }),
+      absolutePath,
+      isActiveRun: false,
+    });
   });
 
   it("serves the fresh active-run entry before projection persistence completes", async () => {
@@ -152,7 +152,7 @@ describe("RunFileChangeProjectionService", () => {
     } as any;
 
     let persistedProjection = {
-      version: 1 as const,
+      version: 2 as const,
       entries: [] as Array<Record<string, unknown>>,
     };
     let notifyAvailablePersistBlocked: (() => void) | null = null;
@@ -167,7 +167,7 @@ describe("RunFileChangeProjectionService", () => {
       readProjection: vi.fn(async () => persistedProjection),
       writeProjection: vi.fn(async (_memoryDir: string, projection: { entries: Array<Record<string, unknown>> }) => {
         const cloned = {
-          version: 1 as const,
+          version: 2 as const,
           entries: projection.entries.map((entry) => ({ ...entry })),
         };
         const latestStatus = cloned.entries[0]?.status;
@@ -198,6 +198,11 @@ describe("RunFileChangeProjectionService", () => {
       } as any,
       projectionStore: projectionStore as any,
       runFileChangeService,
+      workspaceManager: {
+        getWorkspaceById: vi.fn().mockReturnValue({
+          getBasePath: () => workspaceRoot,
+        }),
+      } as any,
     });
 
     const emit = (event: AgentRunEvent) => {
@@ -231,10 +236,16 @@ describe("RunFileChangeProjectionService", () => {
 
     await availablePersistStarted;
 
-    const entryWhilePersistBlocked = await service.getEntry("run-live", "src/fresh.txt");
+    const entryWhilePersistBlocked = await service.resolveEntry("run-live", "src/fresh.txt");
 
-    expect(entryWhilePersistBlocked?.status).toBe("available");
-    expect(entryWhilePersistBlocked?.content).toBe("fresh content from disk");
+    expect(entryWhilePersistBlocked).toEqual({
+      entry: expect.objectContaining({
+        path: "src/fresh.txt",
+        status: "available",
+      }),
+      absolutePath: outputPath,
+      isActiveRun: true,
+    });
     expect(persistedProjection.entries[0]?.status).toBe("pending");
 
     releaseAvailablePersist?.();

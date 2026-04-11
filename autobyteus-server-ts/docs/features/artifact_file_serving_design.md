@@ -2,88 +2,86 @@
 
 ## Scope
 
-Covers the **current live design** for touched-file inspection and generated-output preview serving.
-The active runtime no longer persists artifact metadata as the source of truth for the Artifacts tab.
+Covers the current Artifacts-tab serving design.
+The active runtime uses the run-file-changes subsystem as the only supported server-side source for touched files and generated outputs.
 
 ## Relevant TS Modules
 
-- Tool-result event emission:
-  - `src/agent-customization/processors/tool-result/agent-artifact-event-processor.ts`
-  - `src/agent-customization/processors/tool-result/media-tool-result-url-transformer-processor.ts`
-- Runtime event conversion:
-  - `src/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.ts`
-  - `src/agent-execution/backends/codex/events/codex-turn-event-converter.ts`
-  - `src/agent-execution/backends/codex/events/codex-item-event-converter.ts`
+- Live projection owner:
+  - `src/services/run-file-changes/run-file-change-service.ts`
+  - `src/services/run-file-changes/run-file-change-path-identity.ts`
+  - `src/services/run-file-changes/run-file-change-invocation-cache.ts`
+- Persistence and historical reads:
+  - `src/services/run-file-changes/run-file-change-projection-store.ts`
+  - `src/run-history/services/run-file-change-projection-service.ts`
+- API boundaries:
+  - `src/api/graphql/types/run-file-changes.ts`
+  - `src/api/rest/run-file-changes.ts`
 - Streaming transport:
   - `src/services/agent-streaming/agent-run-event-message-mapper.ts`
-  - `src/services/agent-streaming/agent-stream-handler.ts`
-- File serving:
-  - `src/api/rest/workspaces.ts`
 
 ## High-Level Flow
 
-1. Runtime/tool-result processors discover a touched file or generated output path.
-2. The backend emits `ARTIFACT_UPDATED` or `ARTIFACT_PERSISTED` into the agent-run event stream only when the runtime path has an artifact-relevant success/update signal to project.
-3. Agent streaming maps those events directly to WebSocket messages.
-4. The frontend projects those messages into a touched-files store keyed by run and path.
-5. The viewer resolves final text/code content from the workspace/content route and uses direct URLs for media when available.
+1. Agent-run lifecycle, segment, and tool events enter `RunFileChangeService`.
+2. The service canonicalizes path identity, buffers transient `write_file` content, and discovers generated outputs from invocation context plus success payloads.
+3. The service emits `FILE_CHANGE_UPDATED` and persists metadata-only state to `<run-memory-dir>/file_changes.json`.
+4. The frontend hydrates rows through `getRunFileChanges(runId)` and continues live updates from `FILE_CHANGE_UPDATED`.
+5. The viewer fetches `/runs/:runId/file-change-content?path=...` to stream the current file bytes.
 
-## Event Semantics
+## Live Event Semantics
 
-### `ARTIFACT_PERSISTED`
+### `FILE_CHANGE_UPDATED`
 
-Used for:
+This is the authoritative Artifacts-area event.
+It carries the canonical path, type, status, source tool, timestamps, and optional transient `content` for live `write_file` preview.
 
-- `write_file`
-- generated image/audio/video/pdf/csv/excel outputs
-- completed runtime file-output events
+### `ARTIFACT_PERSISTED` / `ARTIFACT_UPDATED`
 
-`ARTIFACT_PERSISTED` is the success-authorized availability signal. Denied/failed tool results must not emit it.
-
-Payload should include the resolved output path and type, plus:
-
-- `workspace_root` when the file is workspace-backed
-- `url` when a direct preview URL exists
-
-### `ARTIFACT_UPDATED`
-
-Used for:
-
-- `edit_file`
-- runtime diff/file-change updates that should refresh an already known touched row
-
-Payload should include the file path and type, plus `workspace_root` when available.
-It is a refresh/update signal, not a claim that discoverability should fire again for an already-visible row.
+Some runtimes still emit these as compatibility transport noise.
+The current Artifacts tab does not depend on them and they should not be treated as the authoritative serving path.
 
 ## Source Of Truth
 
-### Text / code files
+### Listing / reopen
 
-The source of truth is the workspace file itself, served by:
+- Active runs read from the in-memory `RunFileChangeService` projection.
+- Historical runs read normalized metadata from `<run-memory-dir>/file_changes.json`.
 
-- `GET /workspaces/:workspaceId/content?path=<relative-path>`
+### Preview bytes
 
-This route is what the frontend viewer uses once a touched file is available.
+- `GET /runs/:runId/file-change-content?path=<canonical-path>`
+- The route resolves the indexed canonical path back to an absolute path and streams the current bytes from disk.
+- `404` means the row is not indexed or the current file no longer exists.
+- `409` means an active-run row exists but the final file is not yet present on disk.
 
-### Media / document outputs
+### Conversation media
 
-The source of truth is the resolved file path and, when available, the direct output URL emitted by the runtime/tool-result processor.
+Assistant-message media URL transformation remains a separate concern handled by response customization and media storage.
+It is not the Artifacts tab source of truth.
+
+## Durable Storage
+
+```text
+<run-memory-dir>/file_changes.json
+```
+
+- metadata only; no committed content snapshots
+- transient `content` is stripped before persistence
+- no fallback to `run-file-changes/projection.json`
 
 ## Current Guarantees
 
-- The live Artifacts tab does not require a backend persisted-artifact database lookup.
-- A touched file can appear before its final content is available.
-- `write_file` keeps its streamed preview UX.
-- `edit_file` is surfaced as a full-file inspector, not as a diff-only viewer.
-- refresh-only artifact updates do not re-announce discoverability for existing rows.
-- failed or denied tool results do not emit artifact availability events.
-- Missing workspace files produce a `404`, which the frontend renders as a deleted/moved state.
+- one row per canonical path
+- live `write_file` preview remains available
+- generated media/document outputs share the same list and preview boundary as file changes
+- reopen/history still works from metadata while previews use current filesystem bytes
+- legacy-only runs are unsupported by design and behavior
 
-## Removed Live Path
+## Removed / Non-Authoritative Paths
 
-The following are no longer part of the active live serving path for the Artifacts tab:
+The following are no longer the active Artifacts-tab serving path:
 
-- `src/agent-artifacts/**`
-- `src/api/graphql/types/agent-artifact.ts`
-- backend artifact metadata persistence as a runtime requirement
-- the old `agentArtifacts(...)` GraphQL restore path
+- tool-result processors that copied media or emitted artifact events for the Artifacts tab
+- `/workspaces/:workspaceId/content` as the Artifacts viewer boundary
+- copied media-storage URLs as the primary artifact preview source
+- `run-file-changes/projection.json` compatibility hydration
