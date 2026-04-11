@@ -7,6 +7,7 @@ import type { RunResumeConfigPayload } from '~/stores/runHistoryTypes';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { decideRunOpenStrategy } from './runOpenStrategyPolicy';
 import { loadRunContextHydrationPayload } from '~/services/runHydration/runContextHydrationService';
+import { hydrateActivitiesFromProjection } from '~/services/runHydration/runProjectionActivityHydration';
 import {
   hydrateRunFileChanges,
   mergeHydratedRunFileChanges,
@@ -27,7 +28,7 @@ export interface OpenRunWithCoordinatorResult {
 export const openAgentRun = async (
   input: OpenRunWithCoordinatorInput,
 ): Promise<OpenRunWithCoordinatorResult> => {
-  const { resumeConfig, config, conversation, fileChanges } = await loadRunContextHydrationPayload(input);
+  const { resumeConfig, config, conversation, activities, fileChanges } = await loadRunContextHydrationPayload(input);
 
   const agentContextsStore = useAgentContextsStore();
   const existingContext = agentContextsStore.getRun(input.runId);
@@ -57,6 +58,8 @@ export const openAgentRun = async (
     });
     hydrateRunFileChanges(input.runId, fileChanges);
   }
+
+  hydrateActivitiesFromProjection(input.runId, activities);
 
   if (input.selectRun !== false) {
     useAgentSelectionStore().selectRun(input.runId, 'agent');

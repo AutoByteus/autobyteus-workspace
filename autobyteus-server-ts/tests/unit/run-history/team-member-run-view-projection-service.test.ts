@@ -52,6 +52,7 @@ describe("TeamMemberRunViewProjectionService", () => {
       summary: "hello",
       lastActivityAt: "2026-02-25T00:00:00.000Z",
       conversation: [{ role: "user", content: "hi" }],
+      activities: [],
     });
 
     const service = new TeamMemberRunViewProjectionService({
@@ -62,6 +63,7 @@ describe("TeamMemberRunViewProjectionService", () => {
         summary: "hello",
         lastActivityAt: "2026-02-25T00:00:00.000Z",
         conversation: [{ role: "user", content: "hi" }],
+        activities: [],
       }) as any,
     });
 
@@ -71,6 +73,7 @@ describe("TeamMemberRunViewProjectionService", () => {
     expect(result.agentRunId).toBe("member-1");
     expect(result.summary).toBe("hello");
     expect(result.conversation).toHaveLength(1);
+    expect(result.activities).toEqual([]);
   });
 
   it("falls back to member name match when route key differs", async () => {
@@ -99,6 +102,7 @@ describe("TeamMemberRunViewProjectionService", () => {
       summary: null,
       lastActivityAt: null,
       conversation: [],
+      activities: [],
     });
 
     const service = new TeamMemberRunViewProjectionService({
@@ -109,6 +113,7 @@ describe("TeamMemberRunViewProjectionService", () => {
         summary: null,
         lastActivityAt: null,
         conversation: [],
+        activities: [],
       }) as any,
     });
 
@@ -142,6 +147,7 @@ describe("TeamMemberRunViewProjectionService", () => {
       summary: "local-summary",
       lastActivityAt: "2026-03-04T12:00:00.000Z",
       conversation: [{ role: "user", content: "turn-1" }],
+      activities: [{ invocationId: "local-1", toolName: "tool", type: "tool_call", status: "parsed", contextText: "tool" }],
     });
     const getProjectionFromMetadata = vi.fn().mockResolvedValue({
       runId: "member-1",
@@ -153,6 +159,7 @@ describe("TeamMemberRunViewProjectionService", () => {
         { role: "user", content: "turn-2" },
         { role: "assistant", content: "reply-2" },
       ],
+      activities: [{ invocationId: "runtime-1", toolName: "run_bash", type: "terminal_command", status: "success", contextText: "pwd" }],
     });
     const service = new TeamMemberRunViewProjectionService({
       teamRunHistoryService: { getTeamRunResumeConfig } as any,
@@ -182,11 +189,13 @@ describe("TeamMemberRunViewProjectionService", () => {
         summary: "local-summary",
         lastActivityAt: "2026-03-04T12:00:00.000Z",
         conversation: [{ role: "user", content: "turn-1" }],
+        activities: [{ invocationId: "local-1", toolName: "tool", type: "tool_call", status: "parsed", contextText: "tool" }],
       },
       allowFallbackProvider: false,
     });
     expect(result.summary).toBe("runtime-summary");
     expect(result.conversation).toHaveLength(4);
+    expect(result.activities).toHaveLength(1);
     expect(String(result.conversation[3]?.content ?? "")).toContain("reply-2");
   });
 
@@ -221,6 +230,7 @@ describe("TeamMemberRunViewProjectionService", () => {
         summary: null,
         lastActivityAt: null,
         conversation: [],
+        activities: [],
       }) as any,
     });
 
@@ -320,6 +330,7 @@ describe("TeamMemberRunViewProjectionService", () => {
       summary: null,
       lastActivityAt: null,
       conversation: [],
+      activities: [],
     });
     const service = new TeamMemberRunViewProjectionService({
       teamRunHistoryService: { getTeamRunResumeConfig } as any,
@@ -329,6 +340,7 @@ describe("TeamMemberRunViewProjectionService", () => {
         summary: null,
         lastActivityAt: null,
         conversation: [],
+        activities: [],
       }) as any,
     });
 
@@ -338,5 +350,6 @@ describe("TeamMemberRunViewProjectionService", () => {
     expect(result.summary).toBeNull();
     expect(result.lastActivityAt).toBeNull();
     expect(result.conversation).toEqual([]);
+    expect(result.activities).toEqual([]);
   });
 });

@@ -1,6 +1,7 @@
 import type { AgentRuntimeKind, SkillAccessMode } from '~/types/agent/AgentRunConfig';
 import type { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { RunProjectionConversationEntry } from '~/services/runHydration/runProjectionConversation';
+import type { RunProjectionActivityEntry } from '~/services/runHydration/runProjectionActivityHydration';
 
 export type RunKnownStatus = 'ACTIVE' | 'IDLE' | 'ERROR' | 'TERMINATED';
 
@@ -154,6 +155,7 @@ export interface ListWorkspaceRunHistoryQueryData {
 export interface TeamMemberRunProjectionPayload {
   agentRunId: string;
   conversation: RunProjectionConversationEntry[];
+  activities: RunProjectionActivityEntry[];
   summary?: string | null;
   lastActivityAt?: string | null;
 }

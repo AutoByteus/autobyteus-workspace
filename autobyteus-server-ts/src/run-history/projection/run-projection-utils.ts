@@ -1,5 +1,11 @@
-import type { MemoryConversationEntry } from "../../agent-memory/domain/models.js";
-import type { RunProjection } from "./run-projection-types.js";
+import type {
+  RunProjection,
+  RunProjectionActivityEntry,
+  RunProjectionConversationEntry,
+} from "./run-projection-types.js";
+import type { HistoricalReplayEvent } from "./historical-replay-event-types.js";
+import { buildRunProjectionActivities } from "./transformers/historical-replay-events-to-activities.js";
+import { buildRunProjectionConversation } from "./transformers/historical-replay-events-to-conversation.js";
 
 const MAX_SUMMARY_LENGTH = 100;
 
@@ -32,16 +38,48 @@ const compactSummary = (value: string | null): string | null => {
   return `${trimmed.slice(0, MAX_SUMMARY_LENGTH - 3)}...`;
 };
 
-export const buildRunProjection = (
+export const buildRunProjectionBundle = (
   runId: string,
-  conversation: MemoryConversationEntry[],
+  conversation: RunProjectionConversationEntry[],
+  activities: RunProjectionActivityEntry[] = [],
 ): RunProjection => {
   const firstUser = conversation.find((entry) => entry.role === "user" && entry.content);
-  const lastEntry = conversation.length > 0 ? conversation[conversation.length - 1] : null;
+  const latestConversationTs = conversation.reduce<number | null>((latest, entry) => {
+    const ts = normalizeTimestampSeconds(entry.ts ?? null);
+    if (ts === null) {
+      return latest;
+    }
+    return latest === null || ts > latest ? ts : latest;
+  }, null);
+  const latestActivityTs = activities.reduce<number | null>((latest, activity) => {
+    const ts = normalizeTimestampSeconds(activity.ts ?? null);
+    if (ts === null) {
+      return latest;
+    }
+    return latest === null || ts > latest ? ts : latest;
+  }, null);
+  const latestTs =
+    latestConversationTs === null
+      ? latestActivityTs
+      : latestActivityTs === null
+        ? latestConversationTs
+        : Math.max(latestConversationTs, latestActivityTs);
+
   return {
     runId,
     conversation,
+    activities,
     summary: compactSummary(firstUser?.content ?? null),
-    lastActivityAt: toIsoString(lastEntry?.ts ?? null),
+    lastActivityAt: toIsoString(latestTs),
   };
 };
+
+export const buildRunProjectionBundleFromEvents = (
+  runId: string,
+  events: HistoricalReplayEvent[],
+): RunProjection =>
+  buildRunProjectionBundle(
+    runId,
+    buildRunProjectionConversation(events),
+    buildRunProjectionActivities(events),
+  );

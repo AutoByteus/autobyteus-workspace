@@ -96,8 +96,9 @@ describe("AgentRunViewProjectionService", () => {
     const fallbackProvider = createProvider(
       "autobyteus",
       vi.fn(async (input) => ({
-        runId: input.runId,
+        runId: input.source.runId,
         conversation: [{ kind: "message", role: "user", content: "local fallback", ts: 1 }],
+        activities: [],
         summary: "local fallback",
         lastActivityAt: "2026-02-24T00:00:01.000Z",
       })),
@@ -124,8 +125,23 @@ describe("AgentRunViewProjectionService", () => {
     const codexProvider = createProvider(
       "codex_app_server",
       vi.fn(async (input) => ({
-        runId: input.runId,
-        conversation: [{ kind: "message", role: "assistant", content: "primary", ts: 2 }],
+        runId: input.source.runId,
+        conversation: [],
+        activities: [
+          {
+            invocationId: "call-1",
+            toolName: "run_bash",
+            type: "terminal_command",
+            status: "success",
+            contextText: "pwd",
+            arguments: { command: "pwd" },
+            logs: [],
+            result: { stdout: "/tmp" },
+            error: null,
+            ts: 2,
+            detailLevel: "source_limited",
+          },
+        ],
         summary: "primary",
         lastActivityAt: "2026-02-24T00:00:02.000Z",
       })),
@@ -135,6 +151,7 @@ describe("AgentRunViewProjectionService", () => {
       vi.fn(async () => ({
         runId,
         conversation: [{ kind: "message", role: "assistant", content: "fallback", ts: 3 }],
+        activities: [],
         summary: "fallback",
         lastActivityAt: "2026-02-24T00:00:03.000Z",
       })),
@@ -149,6 +166,7 @@ describe("AgentRunViewProjectionService", () => {
     expect(codexProvider.buildProjection).toHaveBeenCalledTimes(1);
     expect(fallbackProvider.buildProjection).not.toHaveBeenCalled();
     expect(projection.summary).toBe("primary");
+    expect(projection.activities).toHaveLength(1);
   });
 
   it("returns deterministic empty projection when both providers fail", async () => {
@@ -176,6 +194,7 @@ describe("AgentRunViewProjectionService", () => {
     const projection = await service.getProjection(runId);
     expect(projection.runId).toBe(runId);
     expect(projection.conversation).toEqual([]);
+    expect(projection.activities).toEqual([]);
     expect(projection.summary).toBeNull();
     expect(projection.lastActivityAt).toBeNull();
   });

@@ -16,7 +16,6 @@ type GetTeamMemberRunMemoryViewQueryVariables = {
   includeRawTraces?: boolean;
   includeArchive?: boolean;
   rawTraceLimit?: number;
-  conversationLimit?: number;
 };
 
 interface TeamMemoryViewState {
@@ -29,7 +28,6 @@ interface TeamMemoryViewState {
   loading: boolean;
   error: string | null;
   rawTraceLimit: number;
-  conversationLimit: number;
   includeRawTraces: boolean;
   requestId: number;
 }
@@ -45,7 +43,6 @@ export const useTeamMemoryViewStore = defineStore('teamMemoryViewStore', {
     loading: false,
     error: null,
     rawTraceLimit: 500,
-    conversationLimit: 200,
     includeRawTraces: false,
     requestId: 0,
   }),
@@ -78,7 +75,6 @@ export const useTeamMemoryViewStore = defineStore('teamMemoryViewStore', {
             includeRawTraces: this.includeRawTraces,
             includeArchive: false,
             rawTraceLimit: this.rawTraceLimit,
-            conversationLimit: this.conversationLimit,
           },
           fetchPolicy: 'network-only',
         });

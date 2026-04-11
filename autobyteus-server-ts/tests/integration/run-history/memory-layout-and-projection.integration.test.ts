@@ -14,7 +14,7 @@ import { TeamRunMetadataService } from "../../../src/run-history/services/team-r
 import { TeamRunHistoryIndexService } from "../../../src/run-history/services/team-run-history-index-service.js";
 import { TeamMemberRunViewProjectionService } from "../../../src/run-history/services/team-member-run-view-projection-service.js";
 import { TeamRunHistoryService } from "../../../src/run-history/services/team-run-history-service.js";
-import { TeamMemberMemoryProjectionReader } from "../../../src/agent-memory/services/team-member-memory-projection-reader.js";
+import { TeamMemberLocalRunProjectionReader } from "../../../src/run-history/services/team-member-local-run-projection-reader.js";
 import { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
 import { TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
@@ -267,6 +267,7 @@ describe("memory layout and projection integration", () => {
     expect(projection.runId).toBe(runId);
     expect(projection.summary).toBe("hello from user");
     expect(projection.conversation).toHaveLength(2);
+    expect(projection.activities).toEqual([]);
     expect(projection.conversation[0]?.content).toBe("hello from user");
     expect(projection.conversation[1]?.content).toBe("hello from assistant");
     expect(projection.lastActivityAt).toBe("1970-01-01T00:00:02.000Z");
@@ -430,7 +431,7 @@ describe("memory layout and projection integration", () => {
     });
     const service = new TeamMemberRunViewProjectionService({
       teamRunHistoryService,
-      projectionReader: new TeamMemberMemoryProjectionReader(memoryDir),
+      projectionReader: new TeamMemberLocalRunProjectionReader(memoryDir),
       agentRunViewProjectionService: new AgentRunViewProjectionService(memoryDir, {
         providerRegistry: createNullProjectionRegistry() as never,
       }),
@@ -441,6 +442,7 @@ describe("memory layout and projection integration", () => {
     expect(projection.agentRunId).toBe(memberRunId);
     expect(projection.summary).toBe("team hello");
     expect(projection.conversation).toHaveLength(2);
+    expect(projection.activities).toEqual([]);
     expect(projection.conversation[0]?.content).toBe("team hello");
     expect(projection.conversation[1]?.content).toBe("team reply");
     expect(projection.lastActivityAt).toBe("1970-01-01T00:00:11.000Z");

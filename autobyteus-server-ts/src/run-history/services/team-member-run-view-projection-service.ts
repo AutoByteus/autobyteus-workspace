@@ -10,9 +10,9 @@ import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-t
 import { getRuntimeMemberContexts } from "../../agent-team-execution/domain/team-run-context.js";
 import { normalizeMemberRouteKey } from "../utils/team-member-run-id.js";
 import {
-  TeamMemberMemoryProjectionReader,
-  getTeamMemberMemoryProjectionReader,
-} from "../../agent-memory/services/team-member-memory-projection-reader.js";
+  TeamMemberLocalRunProjectionReader,
+  getTeamMemberLocalRunProjectionReader,
+} from "./team-member-local-run-projection-reader.js";
 import { TeamMemberMemoryLayout } from "../../agent-memory/store/team-member-memory-layout.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import type { TeamRunMemberMetadata } from "../store/team-run-metadata-types.js";
@@ -57,6 +57,7 @@ const resolveMemberBinding = (
 export interface TeamMemberRunProjection {
   agentRunId: string;
   conversation: RunProjection["conversation"];
+  activities: RunProjection["activities"];
   summary: string | null;
   lastActivityAt: string | null;
 }
@@ -107,16 +108,17 @@ const resolveLivePlatformAgentRunId = (
 
 export class TeamMemberRunViewProjectionService {
   private readonly teamRunHistoryService: TeamRunHistoryService;
-  private readonly projectionReader: TeamMemberMemoryProjectionReader;
+  private readonly projectionReader: TeamMemberLocalRunProjectionReader;
   private readonly agentRunViewProjectionService: AgentRunViewProjectionService;
 
   constructor(options: {
     teamRunHistoryService?: TeamRunHistoryService;
-    projectionReader?: TeamMemberMemoryProjectionReader;
+    projectionReader?: TeamMemberLocalRunProjectionReader;
     agentRunViewProjectionService?: AgentRunViewProjectionService;
   } = {}) {
     this.teamRunHistoryService = options.teamRunHistoryService ?? getTeamRunHistoryService();
-    this.projectionReader = options.projectionReader ?? getTeamMemberMemoryProjectionReader();
+    this.projectionReader =
+      options.projectionReader ?? getTeamMemberLocalRunProjectionReader();
     this.agentRunViewProjectionService =
       options.agentRunViewProjectionService ??
       new AgentRunViewProjectionService(appConfigProvider.config.getMemoryDir());
@@ -163,13 +165,14 @@ export class TeamMemberRunViewProjectionService {
       allowFallbackProvider: false,
     });
 
-    if (projection.conversation.length === 0 && projectionReadError) {
+    if (projection.conversation.length === 0 && projection.activities.length === 0 && projectionReadError) {
       throw projectionReadError;
     }
 
     return {
       agentRunId: projection.runId,
       conversation: projection.conversation,
+      activities: projection.activities,
       summary: projection.summary,
       lastActivityAt: projection.lastActivityAt,
     };

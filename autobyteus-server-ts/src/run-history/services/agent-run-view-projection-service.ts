@@ -10,7 +10,7 @@ import type {
   RunProjection,
   RunProjectionSourceDescriptor,
 } from "../projection/run-projection-types.js";
-import { buildRunProjection } from "../projection/run-projection-utils.js";
+import { buildRunProjectionBundle } from "../projection/run-projection-utils.js";
 import { AgentRunMetadataStore } from "../store/agent-run-metadata-store.js";
 import type { AgentRunMetadata } from "../store/agent-run-metadata-types.js";
 
@@ -24,9 +24,12 @@ const projectionRichnessScore = (projection: RunProjection | null | undefined): 
     return -1;
   }
   const conversationScore = projection.conversation.length * 10;
+  const activityScore = projection.activities.length * 10;
   const summaryScore = projection.summary ? 1 : 0;
-  const activityScore = projection.lastActivityAt ? 1 : 0;
-  return conversationScore + summaryScore + activityScore;
+  const lastActivityScore = projection.lastActivityAt ? 1 : 0;
+  const siblingBundleBonus =
+    projection.conversation.length > 0 && projection.activities.length > 0 ? 5 : 0;
+  return conversationScore + activityScore + summaryScore + lastActivityScore + siblingBundleBonus;
 };
 
 export class AgentRunViewProjectionService {
@@ -84,11 +87,11 @@ export class AgentRunViewProjectionService {
         ? localProjection
         : primaryProjection;
     if (
-      this.hasUsableConversation(bestResolvedProjection) ||
+      this.hasUsableProjectionBundle(bestResolvedProjection) ||
       primaryProvider === fallbackProvider ||
       input.allowFallbackProvider === false
     ) {
-      return bestResolvedProjection ?? buildRunProjection(runId, []);
+      return bestResolvedProjection ?? buildRunProjectionBundle(runId, [], []);
     }
 
     logger.info(
@@ -100,9 +103,9 @@ export class AgentRunViewProjectionService {
       "fallback",
     );
     if (projectionRichnessScore(bestResolvedProjection) >= projectionRichnessScore(fallbackProjection)) {
-      return bestResolvedProjection ?? buildRunProjection(runId, []);
+      return bestResolvedProjection ?? buildRunProjectionBundle(runId, [], []);
     }
-    return fallbackProjection ?? bestResolvedProjection ?? buildRunProjection(runId, []);
+    return fallbackProjection ?? bestResolvedProjection ?? buildRunProjectionBundle(runId, [], []);
   }
 
   private async tryBuildProjection(
@@ -120,8 +123,11 @@ export class AgentRunViewProjectionService {
     }
   }
 
-  private hasUsableConversation(projection: RunProjection | null): boolean {
-    return Boolean(projection && projection.conversation.length > 0);
+  private hasUsableProjectionBundle(projection: RunProjection | null): boolean {
+    return Boolean(
+      projection &&
+        (projection.conversation.length > 0 || projection.activities.length > 0),
+    );
   }
 }
 

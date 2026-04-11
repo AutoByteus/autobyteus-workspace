@@ -15,7 +15,6 @@ type GetRunMemoryViewQueryVariables = {
   includeRawTraces?: boolean;
   includeArchive?: boolean;
   rawTraceLimit?: number;
-  conversationLimit?: number;
 };
 
 interface AgentMemoryViewState {
@@ -24,7 +23,6 @@ interface AgentMemoryViewState {
   loading: boolean;
   error: string | null;
   rawTraceLimit: number;
-  conversationLimit: number;
   includeRawTraces: boolean;
   requestId: number;
 }
@@ -36,7 +34,6 @@ export const useAgentMemoryViewStore = defineStore('agentMemoryViewStore', {
     loading: false,
     error: null,
     rawTraceLimit: 500,
-    conversationLimit: 200,
     includeRawTraces: false,
     requestId: 0,
   }),
@@ -67,7 +64,6 @@ export const useAgentMemoryViewStore = defineStore('agentMemoryViewStore', {
             includeRawTraces: this.includeRawTraces,
             includeArchive: false,
             rawTraceLimit: this.rawTraceLimit,
-            conversationLimit: this.conversationLimit,
           },
           fetchPolicy: 'network-only',
         });
@@ -119,13 +115,6 @@ export const useAgentMemoryViewStore = defineStore('agentMemoryViewStore', {
     async setRawTraceLimit(limit: number) {
       this.rawTraceLimit = limit;
       if (this.includeRawTraces && this.selectedRunId) {
-        await this.fetchMemoryView(this.selectedRunId);
-      }
-    },
-
-    async setConversationLimit(limit: number) {
-      this.conversationLimit = limit;
-      if (this.selectedRunId && this.includeRawTraces) {
         await this.fetchMemoryView(this.selectedRunId);
       }
     },

@@ -21,7 +21,10 @@ class TeamMemberRunProjectionPayload {
   agentRunId!: string;
 
   @Field(() => [GraphQLJSON])
-  conversation!: Array<Record<string, unknown>>;
+  conversation!: unknown[];
+
+  @Field(() => [GraphQLJSON])
+  activities!: unknown[];
 
   @Field(() => String, { nullable: true })
   summary?: string | null;
@@ -65,6 +68,7 @@ export class TeamRunHistoryResolver {
     return {
       agentRunId: projection.agentRunId,
       conversation: projection.conversation,
+      activities: projection.activities,
       summary: projection.summary,
       lastActivityAt: projection.lastActivityAt,
     };

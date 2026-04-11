@@ -10,6 +10,7 @@ import {
 } from '~/types/agent/AgentRunConfig';
 import type { RunResumeConfigPayload } from '~/stores/runHistoryTypes';
 import { buildConversationFromProjection, type RunProjectionConversationEntry } from './runProjectionConversation';
+import { hydrateActivitiesFromProjection, type RunProjectionActivityEntry } from './runProjectionActivityHydration';
 import { normalizeAgentRuntimeStatus } from './runtimeStatusNormalization';
 import type { RunFileChangeArtifact } from '~/stores/runFileChangesStore';
 import { hydrateRunFileChanges } from './runFileChangeHydrationService';
@@ -17,6 +18,7 @@ import { hydrateRunFileChanges } from './runFileChangeHydrationService';
 export interface RunProjectionPayload {
   runId: string;
   conversation: RunProjectionConversationEntry[];
+  activities: RunProjectionActivityEntry[];
   summary?: string | null;
   lastActivityAt?: string | null;
 }
@@ -44,6 +46,7 @@ export interface RunContextHydrationPayload {
   resumeConfig: RunResumeConfigPayload;
   config: AgentRunConfig;
   conversation: ReturnType<typeof buildConversationFromProjection>;
+  activities: RunProjectionActivityEntry[];
   fileChanges: RunFileChangeArtifact[];
 }
 
@@ -146,6 +149,7 @@ export const loadRunContextHydrationPayload = async (
     resumeConfig,
     config,
     conversation,
+    activities: projection.activities || [],
     fileChanges: fileChangesResponse.data?.getRunFileChanges || [],
   };
 };
@@ -160,6 +164,7 @@ export const hydrateLiveRunContext = async (
     conversation: payload.conversation,
     status: normalizeAgentRuntimeStatus(input.currentStatus),
   });
+  hydrateActivitiesFromProjection(payload.runId, payload.activities);
   hydrateRunFileChanges(payload.runId, payload.fileChanges);
   return payload;
 };

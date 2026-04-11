@@ -1,16 +1,16 @@
 import fs from "node:fs";
-import type { MemoryConversationEntry } from "../../../agent-memory/domain/models.js";
 import {
   CodexThreadHistoryReader,
   getCodexThreadHistoryReader,
 } from "../../../agent-execution/backends/codex/history/codex-thread-history-reader.js";
 import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
+import type { HistoricalReplayEvent, HistoricalReplayToolEvent } from "../historical-replay-event-types.js";
 import type {
   RunProjectionProvider,
   RunProjectionProviderInput,
   RunProjection,
 } from "../run-projection-types.js";
-import { buildRunProjection } from "../run-projection-utils.js";
+import { buildRunProjectionBundleFromEvents } from "../run-projection-utils.js";
 
 const asObject = (value: unknown): Record<string, unknown> | null =>
   value && typeof value === "object" && !Array.isArray(value)
@@ -45,9 +45,7 @@ const normalizeTimestampSeconds = (value: unknown): number | null => {
 };
 
 const resolveEntryTimestamp = (entry: Record<string, unknown>): number | null =>
-  normalizeTimestampSeconds(
-    entry.createdAt ?? entry.updatedAt ?? null,
-  );
+  normalizeTimestampSeconds(entry.createdAt ?? entry.updatedAt ?? null);
 
 const collectTextFragments = (value: unknown, depth = 0): string[] => {
   if (depth > 4 || value === null || value === undefined) {
@@ -74,46 +72,40 @@ const normalizeItemKind = (item: Record<string, unknown>): string =>
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "");
 
-const extractInputTexts = (turn: Record<string, unknown>): string[] => {
-  const messages: string[] = [];
-  const items = asArray(turn.items) ?? [];
-  for (const item of items) {
-    const objectItem = asObject(item);
-    if (!objectItem) {
-      continue;
-    }
-    const itemKind = normalizeItemKind(objectItem);
-    if (!itemKind.includes("usermessage")) {
-      continue;
-    }
-    const fromContent = collectTextFragments(objectItem.content);
-    for (const text of fromContent) {
-      messages.push(text);
-    }
-  }
+const createMessageEvent = (
+  role: "user" | "assistant",
+  content: string,
+  ts: number | null,
+): HistoricalReplayEvent => ({
+  kind: "message",
+  role,
+  content,
+  media: null,
+  ts,
+});
 
-  return Array.from(
-    new Set(messages.map((value) => value.trim()).filter((value) => value.length > 0)),
-  );
-};
+const createReasoningEvent = (
+  content: string,
+  ts: number | null,
+): HistoricalReplayEvent => ({
+  kind: "reasoning",
+  content,
+  media: null,
+  ts,
+});
 
-const combineAssistantContent = (textParts: string[], reasoningParts: string[]): string | null => {
-  const sections: string[] = [];
-  const joinedText = textParts.join("\n\n");
-  if (joinedText.trim()) {
-    sections.push(joinedText.trim());
-  }
-  const joinedReasoning = reasoningParts
-    .map((part) => part.trim())
-    .filter((part) => part.length > 0)
-    .join("\n");
-  if (joinedReasoning) {
-    sections.push(`[reasoning]\n${joinedReasoning}`);
-  }
-  if (sections.length === 0) {
+const resolveUserMessageContent = (item: Record<string, unknown>): string | null => {
+  const kind = normalizeItemKind(item);
+  if (!kind.includes("usermessage")) {
     return null;
   }
-  return sections.join("\n\n");
+  const fragments = collectTextFragments(item.content)
+    .map((fragment) => fragment.trim())
+    .filter((fragment) => fragment.length > 0);
+  if (fragments.length === 0) {
+    return null;
+  }
+  return fragments.join("\n\n");
 };
 
 const asArrayOfObjects = (value: unknown): Array<Record<string, unknown>> =>
@@ -186,7 +178,99 @@ const resolveWebSearchArguments = (
   return Object.keys(next).length > 0 ? next : null;
 };
 
-const resolveToolEntry = (item: Record<string, unknown>): MemoryConversationEntry | null => {
+const resolveWebSearchResult = (
+  item: Record<string, unknown>,
+  toolArgs: Record<string, unknown> | null,
+): Record<string, unknown> | null => {
+  const status = asString(item.status) ?? "completed";
+  if (!toolArgs && !status) {
+    return null;
+  }
+
+  const next: Record<string, unknown> = { status };
+  if (typeof toolArgs?.query === "string") {
+    next.query = toolArgs.query;
+  }
+  if (Array.isArray(toolArgs?.queries)) {
+    next.queries = toolArgs.queries;
+  }
+  return next;
+};
+
+const resolveInvocationId = (
+  item: Record<string, unknown>,
+  turnIndex: number,
+  itemIndex: number,
+): string =>
+  asString(item.invocationId) ??
+  asString(item.callId) ??
+  asString(item.toolCallId) ??
+  asString(item.id) ??
+  `codex-${turnIndex}-${itemIndex}`;
+
+const resolveToolStatus = (
+  item: Record<string, unknown>,
+  toolResult: unknown,
+): HistoricalReplayToolEvent["status"] => {
+  if (asString(item.error)) {
+    return "error";
+  }
+  const normalizedStatus = (asString(item.status) ?? "").toLowerCase();
+  if (normalizedStatus === "error" || normalizedStatus === "failed") {
+    return "error";
+  }
+  if (
+    normalizedStatus === "success" ||
+    normalizedStatus === "completed" ||
+    normalizedStatus === "done" ||
+    normalizedStatus === "ok"
+  ) {
+    return "success";
+  }
+  return toolResult == null ? "parsed" : "success";
+};
+
+const inferActivityType = (
+  toolName: string,
+  toolArgs: Record<string, unknown> | null,
+): HistoricalReplayToolEvent["activityType"] => {
+  if (toolName === "write_file") {
+    return "write_file";
+  }
+  if (
+    toolName === "edit_file" ||
+    typeof toolArgs?.patch === "string" ||
+    typeof toolArgs?.diff === "string"
+  ) {
+    return "edit_file";
+  }
+  if (toolName === "run_bash" || typeof toolArgs?.command === "string") {
+    return "terminal_command";
+  }
+  return "tool_call";
+};
+
+const resolveContextText = (
+  toolName: string,
+  toolArgs: Record<string, unknown> | null,
+): string => {
+  const pathCandidate = typeof toolArgs?.path === "string" ? toolArgs.path.trim() : "";
+  if (pathCandidate) {
+    return pathCandidate;
+  }
+  const commandCandidate = typeof toolArgs?.command === "string" ? toolArgs.command.trim() : "";
+  if (commandCandidate) {
+    return commandCandidate;
+  }
+  return toolName;
+};
+
+const resolveToolEvent = (
+  item: Record<string, unknown>,
+  turnTs: number | null,
+  turnIndex: number,
+  itemIndex: number,
+): HistoricalReplayToolEvent | null => {
   const type = normalizeItemKind(item);
   let toolName: string | null = null;
   let toolArgs: Record<string, unknown> | null = null;
@@ -210,24 +294,28 @@ const resolveToolEntry = (item: Record<string, unknown>): MemoryConversationEntr
   } else if (type === "websearch") {
     toolName = "search_web";
     toolArgs = resolveWebSearchArguments(item);
-    toolResult = null;
+    toolResult = resolveWebSearchResult(item, toolArgs);
   } else {
     return null;
   }
 
-  const entry: MemoryConversationEntry = {
-    kind: "tool_call",
-    role: null,
-    content: null,
-    toolName,
+  const normalizedToolName = toolName ?? "tool";
+  return {
+    kind: "tool",
+    invocationId: resolveInvocationId(item, turnIndex, itemIndex),
+    toolName: normalizedToolName,
     toolArgs,
     toolResult,
     toolError: asString(item.error),
+    content: null,
     media: null,
-    ts: resolveEntryTimestamp(item),
+    ts: resolveEntryTimestamp(item) ?? turnTs,
+    activityType: inferActivityType(normalizedToolName, toolArgs),
+    status: resolveToolStatus(item, toolResult),
+    contextText: resolveContextText(normalizedToolName, toolArgs),
+    logs: [],
+    detailLevel: "source_limited",
   };
-
-  return entry;
 };
 
 const resolveTextPart = (item: Record<string, unknown>): string | null => {
@@ -253,7 +341,9 @@ const resolveReasoningPart = (item: Record<string, unknown>): string | null => {
   return fragments.join("\n");
 };
 
-const extractTurns = (payload: Record<string, unknown>): Array<Record<string, unknown>> => {
+const extractTurns = (
+  payload: Record<string, unknown>,
+): Array<{ turn: Record<string, unknown>; index: number }> => {
   const thread = asObject(payload.thread);
   const turns = asArray(thread?.turns) ?? [];
 
@@ -264,74 +354,50 @@ const extractTurns = (payload: Record<string, unknown>): Array<Record<string, un
       const leftTs = resolveEntryTimestamp(left.turn) ?? left.index;
       const rightTs = resolveEntryTimestamp(right.turn) ?? right.index;
       return leftTs - rightTs;
-    })
-    .map((entry) => entry.turn);
+    });
 };
 
-const transformThreadPayload = (payload: Record<string, unknown>): MemoryConversationEntry[] => {
+const transformThreadPayload = (payload: Record<string, unknown>): HistoricalReplayEvent[] => {
   const turns = extractTurns(payload);
-  const conversation: MemoryConversationEntry[] = [];
+  const events: HistoricalReplayEvent[] = [];
 
-  for (const turn of turns) {
+  turns.forEach(({ turn, index: turnIndex }) => {
     const turnTs = resolveEntryTimestamp(turn);
 
-    for (const text of extractInputTexts(turn)) {
-      conversation.push({
-        kind: "message",
-        role: "user",
-        content: text,
-        toolName: null,
-        toolArgs: null,
-        toolResult: null,
-        toolError: null,
-        media: null,
-        ts: turnTs,
-      });
-    }
-
     const items = asArray(turn.items) ?? [];
-    const assistantTextParts: string[] = [];
-    const assistantReasoningParts: string[] = [];
 
-    for (const item of items) {
+    items.forEach((item, itemIndex) => {
       const itemObject = asObject(item);
       if (!itemObject) {
-        continue;
+        return;
       }
 
-      const toolEntry = resolveToolEntry(itemObject);
-      if (toolEntry) {
-        conversation.push(toolEntry);
-        continue;
+      const itemTs = resolveEntryTimestamp(itemObject) ?? turnTs;
+
+      const userContent = resolveUserMessageContent(itemObject);
+      if (userContent) {
+        events.push(createMessageEvent("user", userContent, itemTs));
+        return;
+      }
+
+      const toolEvent = resolveToolEvent(itemObject, itemTs, turnIndex, itemIndex);
+      if (toolEvent) {
+        events.push(toolEvent);
+        return;
       }
 
       const textPart = resolveTextPart(itemObject);
       if (textPart) {
-        assistantTextParts.push(textPart);
+        events.push(createMessageEvent("assistant", textPart, itemTs));
       }
       const reasoningPart = resolveReasoningPart(itemObject);
       if (reasoningPart) {
-        assistantReasoningParts.push(reasoningPart);
+        events.push(createReasoningEvent(reasoningPart, itemTs));
       }
-    }
+    });
+  });
 
-    const assistantContent = combineAssistantContent(assistantTextParts, assistantReasoningParts);
-    if (assistantContent) {
-      conversation.push({
-        kind: "message",
-        role: "assistant",
-        content: assistantContent,
-        toolName: null,
-        toolArgs: null,
-        toolResult: null,
-        toolError: null,
-        media: null,
-        ts: turnTs,
-      });
-    }
-  }
-
-  return conversation;
+  return events;
 };
 
 export class CodexRunViewProjectionProvider implements RunProjectionProvider {
@@ -364,11 +430,11 @@ export class CodexRunViewProjectionProvider implements RunProjectionProvider {
       return null;
     }
 
-    const conversation = transformThreadPayload(payload);
-    if (conversation.length === 0) {
+    const events = transformThreadPayload(payload);
+    if (events.length === 0) {
       return null;
     }
-    return buildRunProjection(input.source.runId, conversation);
+    return buildRunProjectionBundleFromEvents(input.source.runId, events);
   }
 }
 
