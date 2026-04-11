@@ -1,9 +1,12 @@
 # Release Notes
 
+## What's New
+- The Artifacts tab now uses one unified touched-file and output list for `write_file`, `edit_file`, and generated outputs.
+
 ## Improvements
-- Reopened runs now rebuild historical conversation and right-side Activity state from the same run-history replay bundle.
-- Historical replay ownership is now separated cleanly from raw memory storage, which makes restore behavior more consistent across AutoByteus and Codex-backed runs.
+- Artifact previews now load the current file bytes through the run-scoped viewer route, so reopened runs still reflect the latest real file content.
+- Artifact history now reopens from lightweight `file_changes.json` metadata instead of storing inline content snapshots.
 
 ## Fixes
-- Fixed historical reopen so the Activity panel restores tool events after a server restart instead of showing `0 Events`.
-- Fixed the projection boundary so raw memory views no longer own the canonical replay contract used by run reopen.
+- Fixed generated outputs depending on a separate artifact store or copied media URL path in the Artifacts tab.
+- Fixed legacy `run-file-changes/projection.json` compatibility behavior so only the new canonical storage path is supported.
