@@ -22,7 +22,6 @@ describe('fileChangeHandler', () => {
         status: 'available',
         sourceTool: 'edit_file',
         sourceInvocationId: 'edit-1',
-        backendArtifactId: 'artifact-1',
         content: 'hello',
         createdAt: '2026-04-10T00:00:00.000Z',
         updatedAt: '2026-04-10T00:00:01.000Z',
@@ -35,6 +34,32 @@ describe('fileChangeHandler', () => {
         id: 'agent-1:src/test.md',
         status: 'available',
         sourceTool: 'edit_file',
+        content: 'hello',
+      }),
+    ]);
+  });
+
+  it('preserves missing transient content as undefined', () => {
+    handleFileChangeUpdated(
+      {
+        id: 'agent-1:assets/image.png',
+        runId: 'agent-1',
+        path: 'assets/image.png',
+        type: 'image',
+        status: 'available',
+        sourceTool: 'generated_output',
+        sourceInvocationId: 'image-1',
+        createdAt: '2026-04-10T00:00:00.000Z',
+        updatedAt: '2026-04-10T00:00:01.000Z',
+      },
+      mockContext,
+    );
+
+    expect(useRunFileChangesStore().getArtifactsForRun('agent-1')).toEqual([
+      expect.objectContaining({
+        id: 'agent-1:assets/image.png',
+        type: 'image',
+        content: undefined,
       }),
     ]);
   });

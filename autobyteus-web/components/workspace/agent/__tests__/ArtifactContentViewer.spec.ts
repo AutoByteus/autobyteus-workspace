@@ -8,11 +8,15 @@ import { useFileContentDisplayModeStore } from '~/stores/fileContentDisplayMode'
 const {
   determineFileTypeMock,
   mockWindowNodeContextStore,
+  createObjectURLMock,
+  revokeObjectURLMock,
 } = vi.hoisted(() => ({
   determineFileTypeMock: vi.fn(),
   mockWindowNodeContextStore: {
     getBoundEndpoints: vi.fn(() => ({ rest: 'http://localhost:3000/rest' })),
   },
+  createObjectURLMock: vi.fn(() => 'blob:artifact-preview'),
+  revokeObjectURLMock: vi.fn(),
 }));
 
 vi.mock('~/components/fileExplorer/FileViewer.vue', () => ({
@@ -89,6 +93,19 @@ describe('ArtifactContentViewer', () => {
     determineFileTypeMock.mockResolvedValue('Text');
     mockWindowNodeContextStore.getBoundEndpoints.mockReset();
     mockWindowNodeContextStore.getBoundEndpoints.mockReturnValue({ rest: 'http://localhost:3000/rest' });
+    createObjectURLMock.mockReset();
+    createObjectURLMock.mockReturnValue('blob:artifact-preview');
+    revokeObjectURLMock.mockReset();
+    Object.defineProperty(URL, 'createObjectURL', {
+      configurable: true,
+      writable: true,
+      value: createObjectURLMock,
+    });
+    Object.defineProperty(URL, 'revokeObjectURL', {
+      configurable: true,
+      writable: true,
+      value: revokeObjectURLMock,
+    });
     vi.stubGlobal('fetch', vi.fn());
   });
 
@@ -435,22 +452,33 @@ describe('ArtifactContentViewer', () => {
     expect(wrapper.find('[data-testid="file-viewer"]').text()).toContain('retried artifact content');
   });
 
-  it('fails closed for non-text file-change previews instead of using the text-only route', async () => {
-    determineFileTypeMock.mockResolvedValue('Image');
+  it('fetches binary file-change content and resolves an object URL for media previews', async () => {
     const fetchMock = vi.mocked(global.fetch);
+    fetchMock.mockResolvedValue({
+      ok: true,
+      status: 200,
+      blob: async () => new Blob(['image-bytes'], { type: 'image/png' }),
+    } as Response);
 
     const wrapper = mountComponent({
       ...defaultArtifact,
       path: '/Users/normy/Downloads/image.png',
+      type: 'image',
       status: 'available',
-      sourceTool: 'edit_file',
+      sourceTool: 'generated_output',
       content: undefined,
     });
 
     await flushPromises();
 
-    expect(fetchMock).not.toHaveBeenCalled();
-    expect(wrapper.text()).toContain('Preview unavailable');
-    expect(wrapper.text()).toContain('Preview is currently available only for text file changes.');
+    expect(fetchMock).toHaveBeenCalledWith(
+      'http://localhost:3000/rest/runs/agent-1/file-change-content?path=%2FUsers%2Fnormy%2FDownloads%2Fimage.png',
+      { cache: 'no-store' },
+    );
+    expect(createObjectURLMock).toHaveBeenCalledTimes(1);
+    expect(wrapper.find('[data-testid="file-viewer"]').text()).toContain('blob:artifact-preview');
+
+    wrapper.unmount();
+    expect(revokeObjectURLMock).toHaveBeenCalledWith('blob:artifact-preview');
   });
 });

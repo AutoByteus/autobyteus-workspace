@@ -25,9 +25,6 @@ class RunFileChangeEntryObject {
   sourceInvocationId?: string | null;
 
   @Field(() => String, { nullable: true })
-  backendArtifactId?: string | null;
-
-  @Field(() => String, { nullable: true })
   content?: string | null;
 
   @Field(() => String)

@@ -20,12 +20,12 @@ graph TD
     Service-->|Dispatch| Handler{Event Handlers}
 
     Handler-->|Segment Created/Updated| Context[Agent Context State]
-    Handler-->|Artifact Persistence| ArtifactStore[Artifact Store]
+    Handler-->|File changes / outputs| RunFileChangeStore[Run File Change Store]
     Handler-->|Activity Log| ActivityStore[Activity Store]
     Handler-->|Task/Todo Update| TodoStore[Todo Store]
 
     Context-->|Reactivity| UI[Vue Component UI]
-    ArtifactStore-->|Reactivity| UI
+    RunFileChangeStore-->|Reactivity| UI
     ActivityStore-->|Reactivity| UI
 ```
 
@@ -88,8 +88,9 @@ Incoming events are routed based on their `type`:
 | `TOOL_EXECUTION_SUCCEEDED`| `toolLifecycleHandler.handleToolExecutionSucceeded`| Sets terminal `success` + stores result payload.               |
 | `TOOL_EXECUTION_FAILED`   | `toolLifecycleHandler.handleToolExecutionFailed`   | Sets terminal `error` + stores failure details.                |
 | `TOOL_LOG`                | `toolLifecycleHandler.handleToolLog`               | Appends diagnostic execution logs only.                         |
-| `ARTIFACT_PERSISTED`      | `artifactHandler.handleArtifactPersisted`          | Marks touched files/outputs available after success and carries generated-output metadata. |
-| `ARTIFACT_UPDATED`        | `artifactHandler.handleArtifactUpdated`            | Refreshes edited/runtime-updated touched rows without implying new discoverability for already-visible rows. |
+| `ARTIFACT_PERSISTED`      | inline no-op compatibility                         | Ignored by the current client; legacy transport noise while the unified file-change path remains authoritative. |
+| `ARTIFACT_UPDATED`        | inline no-op compatibility                         | Ignored by the current client; live artifact state now arrives through `FILE_CHANGE_UPDATED`. |
+| `FILE_CHANGE_UPDATED`     | `fileChangeHandler.handleFileChangeUpdated`        | Syncs touched files and generated outputs into the unified run-scoped store. |
 | `TODO_LIST_UPDATE`        | `todoHandler.handleTodoListUpdate`                 | Syncs the agent's internal todo list with the UI.               |
 
 ---
@@ -104,7 +105,7 @@ These handlers are pure functions that take a payload and an `AgentContext`, and
 
 #### `segmentHandler.ts`
 
-- **`handleSegmentStart`**: Finds the current AI message (or creates one) and pushes a new Segment object (e.g., `ToolCallSegment`, `WriteFileSegment`). It also initializes touched-file sidecar entries for `write_file` and `edit_file` as soon as the path is known.
+- **`handleSegmentStart`**: Finds the current AI message (or creates one) and pushes a new Segment object (e.g., `ToolCallSegment`, `WriteFileSegment`). File-change sidecar state is no longer inferred here; the backend emits dedicated `FILE_CHANGE_UPDATED` events for the Artifacts experience.
 - **`handleSegmentContent`**: Finds the segment by ID and appends string deltas. This powers the "typewriter" effect.
 - **`handleSegmentEnd`**: Performs cleanup, sets the final tool name if it was streamed lazily, and marks the segment as "parsed" (ready for execution state changes).
 
@@ -119,11 +120,11 @@ These handlers are pure functions that take a payload and an `AgentContext`, and
 
 A key architectural pattern is the **Sidecar Store Pattern** for runtime data. Instead of keeping all state in a monolithic `AgentContext` (which is optimized for Chat UI), distinct data streams are routed to dedicated stores:
 
-1.  **Artifacts (`AgentArtifactsStore`)**:
-    - Listens to `write_file` and `edit_file` segment events plus `ARTIFACT_UPDATED` / `ARTIFACT_PERSISTED`.
-    - Builds a live touched-files / outputs projection for the current run.
-    - Owns one-shot discoverability: first visibility or explicit segment re-touch announces the row; refresh-only artifact events do not.
-    - Buffers `write_file` content for immediate preview, then lets the viewer resolve current workspace content or media URLs once entries become available.
+1.  **Run File Changes (`RunFileChangesStore`)**:
+    - Listens to `FILE_CHANGE_UPDATED` plus reopen hydration from `getRunFileChanges(runId)`.
+    - Owns the run-scoped projection for touched files and generated outputs.
+    - Tracks latest-visible discoverability so the Artifacts tab can auto-focus when a new row appears.
+    - Keeps transient `write_file` buffers only until committed previews are fetched from the server-backed run preview route.
 2.  **Activity (`AgentActivityStore`)**:
     - Tracks every tool call, file write, and terminal command as a linear history of "Activities".
     - Powers the right-side Progress/Activity feed UI.

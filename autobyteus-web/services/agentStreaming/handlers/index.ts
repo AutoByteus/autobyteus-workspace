@@ -38,10 +38,6 @@ export {
   handleTaskPlanEvent,
 } from './teamHandler';
 
-export {
-  handleArtifactPersisted,
-  handleArtifactUpdated,
-} from './artifactHandler';
 
 export {
   handleFileChangeUpdated,

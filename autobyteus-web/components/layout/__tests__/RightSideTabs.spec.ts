@@ -7,9 +7,9 @@ const activeTab = ref('progress');
 const visibleTabs = ref([
   { name: 'files', label: 'Files' },
   { name: 'progress', label: 'Activity' },
+  { name: 'artifacts', label: 'Artifacts' },
 ]);
-const hasAwaitingApproval = ref(false);
-const highlightedActivityId = ref<string | null>(null);
+const latestVisibleArtifactSignal = ref<string | null>(null);
 
 vi.mock('~/stores/activeContextStore', () => ({
   useActiveContextStore: () => ({
@@ -36,15 +36,13 @@ vi.mock('~/composables/useRightPanel', () => ({
   }),
 }));
 
-vi.mock('~/composables/useRightSideTabs', async () => {
-  return {
-    useRightSideTabs: () => ({
-      activeTab,
-      visibleTabs,
-      setActiveTab,
-    }),
-  };
-});
+vi.mock('~/composables/useRightSideTabs', () => ({
+  useRightSideTabs: () => ({
+    activeTab,
+    visibleTabs,
+    setActiveTab,
+  }),
+}));
 
 vi.mock('~/stores/agentSelectionStore', () => ({
   useAgentSelectionStore: () => ({
@@ -52,22 +50,9 @@ vi.mock('~/stores/agentSelectionStore', () => ({
   }),
 }));
 
-vi.mock('~/stores/agentArtifactsStore', () => ({
-  useAgentArtifactsStore: () => ({
-    getLatestVisibleArtifactSignalForRun: () => null,
-  }),
-}));
-
 vi.mock('~/stores/runFileChangesStore', () => ({
   useRunFileChangesStore: () => ({
-    getLatestVisibleArtifactSignalForRun: () => null,
-  }),
-}));
-
-vi.mock('~/stores/agentActivityStore', () => ({
-  useAgentActivityStore: () => ({
-    hasAwaitingApproval: () => hasAwaitingApproval.value,
-    getHighlightedActivityId: () => highlightedActivityId.value,
+    getLatestVisibleArtifactSignalForRun: () => latestVisibleArtifactSignal.value,
   }),
 }));
 
@@ -83,8 +68,7 @@ describe('RightSideTabs', () => {
   beforeEach(() => {
     setActiveTab.mockReset();
     activeTab.value = 'progress';
-    hasAwaitingApproval.value = false;
-    highlightedActivityId.value = null;
+    latestVisibleArtifactSignal.value = null;
   });
 
   const mountSubject = () => shallowMount(RightSideTabs, {
@@ -113,27 +97,24 @@ describe('RightSideTabs', () => {
     expect(shell.classes()).not.toContain('overflow-auto');
   });
 
-  it('does not auto-switch to Activity when runtime approval state changes', async () => {
-    const wrapper = mountSubject();
+  it('switches to Artifacts when a touched file becomes newly visible', async () => {
+    mountSubject();
     setActiveTab.mockClear();
-    activeTab.value = 'files';
 
-    hasAwaitingApproval.value = true;
+    latestVisibleArtifactSignal.value = 'run-1:src/test.md:1';
     await nextTick();
 
-    expect(setActiveTab).not.toHaveBeenCalled();
-    wrapper.unmount();
+    expect(setActiveTab).toHaveBeenCalledWith('artifacts');
   });
 
-  it('does not auto-switch to Activity when runtime highlighting changes', async () => {
-    const wrapper = mountSubject();
+  it('does not reswitch when the artifacts tab is already active', async () => {
+    activeTab.value = 'artifacts';
+    mountSubject();
     setActiveTab.mockClear();
-    activeTab.value = 'files';
 
-    highlightedActivityId.value = 'tool-1';
+    latestVisibleArtifactSignal.value = 'run-1:src/test.md:1';
     await nextTick();
 
     expect(setActiveTab).not.toHaveBeenCalled();
-    wrapper.unmount();
   });
 });

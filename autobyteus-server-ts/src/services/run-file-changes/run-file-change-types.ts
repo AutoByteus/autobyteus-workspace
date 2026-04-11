@@ -1,29 +1,37 @@
 export type RunFileChangeStatus = "streaming" | "pending" | "available" | "failed";
-export type RunFileChangeSourceTool = "write_file" | "edit_file";
+export type RunFileChangeSourceTool = "write_file" | "edit_file" | "generated_output";
+export type RunFileChangeArtifactType =
+  | "file"
+  | "image"
+  | "audio"
+  | "video"
+  | "pdf"
+  | "csv"
+  | "excel"
+  | "other";
 
 export interface RunFileChangeEntry {
   id: string;
   runId: string;
   path: string;
-  type: "file";
+  type: RunFileChangeArtifactType;
   status: RunFileChangeStatus;
   sourceTool: RunFileChangeSourceTool;
   sourceInvocationId: string | null;
-  backendArtifactId: string | null;
-  content: string | null;
+  content?: string | null;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface RunFileChangeProjection {
-  version: 1;
+  version: 2;
   entries: RunFileChangeEntry[];
 }
 
 export interface RunFileChangeLivePayload extends RunFileChangeEntry {}
 
 export const EMPTY_RUN_FILE_CHANGE_PROJECTION: RunFileChangeProjection = {
-  version: 1,
+  version: 2,
   entries: [],
 };
 

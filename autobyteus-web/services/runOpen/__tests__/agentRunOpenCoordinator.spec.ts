@@ -114,7 +114,6 @@ describe('openAgentRun', () => {
           status: 'available',
           sourceTool: 'edit_file',
           sourceInvocationId: 'edit-1',
-          backendArtifactId: null,
           content: 'history',
           createdAt: '2026-04-10T00:00:00.000Z',
           updatedAt: '2026-04-10T00:00:00.000Z',

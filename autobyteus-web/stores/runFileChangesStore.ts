@@ -1,18 +1,17 @@
 import { defineStore } from 'pinia';
-import type { ArtifactType } from '~/stores/agentArtifactsStore';
 
 export type RunFileChangeStatus = 'streaming' | 'pending' | 'available' | 'failed';
-export type RunFileChangeSourceTool = 'write_file' | 'edit_file';
+export type RunFileChangeSourceTool = 'write_file' | 'edit_file' | 'generated_output';
+export type RunFileChangeArtifactType = 'file' | 'image' | 'audio' | 'video' | 'pdf' | 'csv' | 'excel' | 'other';
 
 export interface RunFileChangeArtifact {
   id: string;
   runId: string;
   path: string;
-  type: ArtifactType;
+  type: RunFileChangeArtifactType;
   status: RunFileChangeStatus;
   sourceTool: RunFileChangeSourceTool;
   sourceInvocationId?: string | null;
-  backendArtifactId?: string | null;
   content?: string | null;
   createdAt: string;
   updatedAt: string;
@@ -25,6 +24,24 @@ interface RunFileChangesState {
 }
 
 const normalizePath = (value: string): string => value.replace(/\\/g, '/').trim();
+
+const buildArtifactId = (runId: string, filePath: string): string => `${runId}:${normalizePath(filePath)}`;
+
+const normalizeArtifactType = (value?: string | null): RunFileChangeArtifactType => {
+  switch (value) {
+    case 'image':
+    case 'audio':
+    case 'video':
+    case 'pdf':
+    case 'csv':
+    case 'excel':
+    case 'other':
+      return value;
+    default:
+      return 'file';
+  }
+};
+
 const normalizeArtifact = (
   runId: string,
   entry: RunFileChangeArtifact,
@@ -35,16 +52,17 @@ const normalizeArtifact = (
     id: buildArtifactId(runId, normalizedPath),
     runId,
     path: normalizedPath,
-    type: entry.type ?? 'file',
+    type: normalizeArtifactType(entry.type),
     sourceInvocationId: entry.sourceInvocationId ?? null,
-    backendArtifactId: entry.backendArtifactId ?? null,
-    content: Object.prototype.hasOwnProperty.call(entry, 'content') ? (entry.content ?? null) : null,
+    content: Object.prototype.hasOwnProperty.call(entry, 'content') ? (entry.content ?? null) : undefined,
   };
 };
+
 const shouldApplyIncomingProjection = (
   existing: RunFileChangeArtifact,
   incoming: RunFileChangeArtifact,
 ): boolean => incoming.updatedAt.localeCompare(existing.updatedAt) >= 0;
+
 const applyArtifactSnapshot = (
   target: RunFileChangeArtifact,
   source: RunFileChangeArtifact,
@@ -56,8 +74,7 @@ const applyArtifactSnapshot = (
   target.status = source.status;
   target.sourceTool = source.sourceTool;
   target.sourceInvocationId = source.sourceInvocationId ?? null;
-  target.backendArtifactId = source.backendArtifactId ?? null;
-  target.content = source.content ?? null;
+  target.content = Object.prototype.hasOwnProperty.call(source, 'content') ? (source.content ?? null) : undefined;
   target.createdAt = source.createdAt;
   target.updatedAt = source.updatedAt;
 };
@@ -78,8 +95,6 @@ const ensureRunEntries = (state: RunFileChangesState, runId: string): RunFileCha
   }
   return state.entriesByRun.get(runId)!;
 };
-
-const buildArtifactId = (runId: string, filePath: string): string => `${runId}:${normalizePath(filePath)}`;
 
 export const useRunFileChangesStore = defineStore('runFileChanges', {
   state: (): RunFileChangesState => ({
@@ -147,12 +162,11 @@ export const useRunFileChangesStore = defineStore('runFileChanges', {
           existing.sourceInvocationId !== payload.sourceInvocationId;
 
         existing.path = normalizedPath;
-        existing.type = payload.type ?? existing.type;
+        existing.type = normalizeArtifactType(payload.type ?? existing.type);
         existing.status = payload.status;
         existing.sourceTool = payload.sourceTool;
         existing.sourceInvocationId = payload.sourceInvocationId ?? existing.sourceInvocationId ?? null;
-        existing.backendArtifactId = payload.backendArtifactId ?? existing.backendArtifactId ?? null;
-        existing.content = hasContent ? (payload.content ?? null) : (existing.content ?? null);
+        existing.content = hasContent ? (payload.content ?? null) : existing.content;
         existing.createdAt = payload.createdAt || existing.createdAt;
         existing.updatedAt = payload.updatedAt;
 
@@ -166,12 +180,11 @@ export const useRunFileChangesStore = defineStore('runFileChanges', {
         id: artifactId,
         runId,
         path: normalizedPath,
-        type: payload.type ?? 'file',
+        type: normalizeArtifactType(payload.type),
         status: payload.status,
         sourceTool: payload.sourceTool,
         sourceInvocationId: payload.sourceInvocationId ?? null,
-        backendArtifactId: payload.backendArtifactId ?? null,
-        content: payload.content ?? null,
+        content: hasContent ? (payload.content ?? null) : undefined,
         createdAt: payload.createdAt,
         updatedAt: payload.updatedAt,
       };

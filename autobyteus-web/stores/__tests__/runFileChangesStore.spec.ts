@@ -18,7 +18,6 @@ describe('RunFileChangesStore', () => {
       status: 'pending',
       sourceTool: 'edit_file',
       sourceInvocationId: 'edit-1',
-      backendArtifactId: null,
       content: null,
       createdAt: '2026-04-10T00:00:00.000Z',
       updatedAt: '2026-04-10T00:00:00.000Z',
@@ -34,7 +33,6 @@ describe('RunFileChangesStore', () => {
       status: 'available',
       sourceTool: 'edit_file',
       sourceInvocationId: 'edit-2',
-      backendArtifactId: null,
       content: 'updated',
       createdAt: '2026-04-10T00:00:00.000Z',
       updatedAt: '2026-04-10T00:00:01.000Z',
@@ -56,7 +54,6 @@ describe('RunFileChangesStore', () => {
       status: 'streaming',
       sourceTool: 'write_file',
       sourceInvocationId: 'write-1',
-      backendArtifactId: null,
       content: 'buffered draft',
       createdAt: '2026-04-10T00:00:00.000Z',
       updatedAt: '2026-04-10T00:00:00.000Z',
@@ -70,7 +67,6 @@ describe('RunFileChangesStore', () => {
       status: 'failed',
       sourceTool: 'write_file',
       sourceInvocationId: 'write-1',
-      backendArtifactId: null,
       content: null,
       createdAt: '2026-04-10T00:00:00.000Z',
       updatedAt: '2026-04-10T00:00:01.000Z',
@@ -92,7 +88,6 @@ describe('RunFileChangesStore', () => {
       status: 'streaming',
       sourceTool: 'write_file',
       sourceInvocationId: 'write-2',
-      backendArtifactId: null,
       content: 'newer live draft',
       createdAt: '2026-04-10T00:00:00.000Z',
       updatedAt: '2026-04-10T00:00:02.000Z',
@@ -107,7 +102,6 @@ describe('RunFileChangesStore', () => {
         status: 'pending',
         sourceTool: 'write_file',
         sourceInvocationId: 'write-1',
-        backendArtifactId: null,
         content: 'older projection draft',
         createdAt: '2026-04-10T00:00:00.000Z',
         updatedAt: '2026-04-10T00:00:01.000Z',
@@ -120,7 +114,6 @@ describe('RunFileChangesStore', () => {
         status: 'available',
         sourceTool: 'edit_file',
         sourceInvocationId: 'edit-1',
-        backendArtifactId: null,
         content: 'historical content',
         createdAt: '2026-04-10T00:00:00.000Z',
         updatedAt: '2026-04-10T00:00:00.000Z',
@@ -158,7 +151,6 @@ describe('RunFileChangesStore', () => {
       status: 'pending',
       sourceTool: 'edit_file',
       sourceInvocationId: 'edit-1',
-      backendArtifactId: null,
       content: null,
       createdAt: '2026-04-10T00:00:00.000Z',
       updatedAt: '2026-04-10T00:00:00.000Z',
@@ -173,21 +165,21 @@ describe('RunFileChangesStore', () => {
         status: 'available',
         sourceTool: 'edit_file',
         sourceInvocationId: 'edit-1',
-        backendArtifactId: 'artifact-1',
         content: 'server snapshot',
         createdAt: '2026-04-10T00:00:00.000Z',
         updatedAt: '2026-04-10T00:00:01.000Z',
       },
     ]);
 
-    expect(store.getArtifactsForRun('agent-1')).toEqual([
+    const [entry] = store.getArtifactsForRun('agent-1');
+    expect(entry).toEqual(
       expect.objectContaining({
         id: 'agent-1:src/test.txt',
         status: 'available',
-        backendArtifactId: 'artifact-1',
         content: 'server snapshot',
         updatedAt: '2026-04-10T00:00:01.000Z',
       }),
-    ]);
+    );
+    expect(entry).not.toHaveProperty('backendArtifactId');
   });
 });

@@ -1,24 +1,19 @@
 import {
   AgentUserInputMessageProcessorDefinition,
   LLMResponseProcessorDefinition,
-  ToolExecutionResultProcessorDefinition,
   ToolInvocationPreprocessorDefinition,
   type BaseAgentUserInputMessageProcessor,
   type BaseLLMResponseProcessor,
-  type BaseToolExecutionResultProcessor,
   type BaseToolInvocationPreprocessor,
   defaultSystemPromptProcessorRegistry,
   defaultInputProcessorRegistry,
   defaultLlmResponseProcessorRegistry,
-  defaultToolExecutionResultProcessorRegistry,
   defaultToolInvocationPreprocessorRegistry,
   registerSystemPromptProcessors,
 } from "autobyteus-ts";
 import { TokenUsagePersistenceProcessor } from "../agent-customization/processors/persistence/token-usage-persistence-processor.js";
 import { UserInputContextBuildingProcessor } from "../agent-customization/processors/prompt/user-input-context-building-processor.js";
 import { WorkspacePathSanitizationProcessor } from "../agent-customization/processors/security-processor/workspace-path-sanitization-processor.js";
-import { MediaToolResultUrlTransformerProcessor } from "../agent-customization/processors/tool-result/media-tool-result-url-transformer-processor.js";
-import { AgentArtifactEventProcessor } from "../agent-customization/processors/tool-result/agent-artifact-event-processor.js";
 import { MediaInputPathNormalizationPreprocessor } from "../agent-customization/processors/tool-invocation/media-input-path-normalization-preprocessor.js";
 import { MediaUrlTransformerProcessor } from "../agent-customization/processors/response-customization/media-url-transformer-processor.js";
 
@@ -30,8 +25,6 @@ const logger = {
 type InputProcessorClass = typeof BaseAgentUserInputMessageProcessor &
   (new () => BaseAgentUserInputMessageProcessor);
 type LlmResponseProcessorClass = typeof BaseLLMResponseProcessor & (new () => BaseLLMResponseProcessor);
-type ToolResultProcessorClass = typeof BaseToolExecutionResultProcessor &
-  (new () => BaseToolExecutionResultProcessor);
 type ToolInvocationPreprocessorClass = typeof BaseToolInvocationPreprocessor &
   (new () => BaseToolInvocationPreprocessor);
 
@@ -55,17 +48,6 @@ function registerLlmResponseProcessor(processorClass: LlmResponseProcessorClass)
     new LLMResponseProcessorDefinition(name, processorClass),
   );
   logger.info(`Registered LLM response processor '${name}'.`);
-}
-
-function registerToolResultProcessor(processorClass: ToolResultProcessorClass): void {
-  const name = processorClass.getName();
-  if (defaultToolExecutionResultProcessorRegistry.contains(name)) {
-    return;
-  }
-  defaultToolExecutionResultProcessorRegistry.registerProcessor(
-    new ToolExecutionResultProcessorDefinition(name, processorClass),
-  );
-  logger.info(`Registered tool result processor '${name}'.`);
 }
 
 function registerToolInvocationPreprocessor(processorClass: ToolInvocationPreprocessorClass): void {
@@ -102,8 +84,6 @@ export function loadAgentCustomizations(): void {
   registerLlmResponseProcessor(MediaUrlTransformerProcessor);
 
   registerToolInvocationPreprocessor(MediaInputPathNormalizationPreprocessor);
-  registerToolResultProcessor(MediaToolResultUrlTransformerProcessor);
-  registerToolResultProcessor(AgentArtifactEventProcessor);
 
   logger.info("Agent customization processor registration complete.");
 }

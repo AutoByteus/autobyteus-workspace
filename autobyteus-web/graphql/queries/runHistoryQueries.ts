@@ -60,7 +60,6 @@ export const GetRunFileChanges = gql`
       status
       sourceTool
       sourceInvocationId
-      backendArtifactId
       content
       createdAt
       updatedAt
