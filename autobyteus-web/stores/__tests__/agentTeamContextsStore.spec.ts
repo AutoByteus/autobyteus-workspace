@@ -183,7 +183,7 @@ describe('agentTeamContextsStore', () => {
     });
 
     describe('setFocusedMember', () => {
-        it('retargets unsent draft text and context files to the next focused member', () => {
+        it('keeps unsent draft text and context files on the original member', () => {
             const store = useAgentTeamContextsStore();
             const selectionStore = useAgentSelectionStore();
 
@@ -207,10 +207,10 @@ describe('agentTeamContextsStore', () => {
 
             const team = store.activeTeamContext!;
             expect(team.focusedMemberName).toBe('agent-2');
-            expect(team.members.get('agent-1')?.requirement).toBe('');
-            expect(team.members.get('agent-1')?.contextFilePaths).toEqual([]);
-            expect(team.members.get('agent-2')?.requirement).toBe('draft text');
-            expect(team.members.get('agent-2')?.contextFilePaths).toEqual([{ path: '/tmp/a.txt', type: 'Text' }]);
+            expect(team.members.get('agent-1')?.requirement).toBe('draft text');
+            expect(team.members.get('agent-1')?.contextFilePaths).toEqual([{ path: '/tmp/a.txt', type: 'Text' }]);
+            expect(team.members.get('agent-2')?.requirement).toBe('');
+            expect(team.members.get('agent-2')?.contextFilePaths).toEqual([]);
         });
     });
 

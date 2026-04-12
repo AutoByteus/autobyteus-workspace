@@ -26,6 +26,34 @@ export interface OpenTeamRunWithCoordinatorResult {
   resumeConfig: TeamRunResumeConfigPayload;
 }
 
+const mergeHydratedMembers = (
+  existingMembers: Map<string, any>,
+  hydratedMembers: Map<string, any>,
+  options: { preserveLiveRuntimeState: boolean },
+): Map<string, any> => {
+  const refreshedMembers = new Map<string, any>();
+
+  for (const [memberRouteKey, memberContext] of hydratedMembers.entries()) {
+    const existingMemberContext = existingMembers.get(memberRouteKey);
+    if (!existingMemberContext) {
+      refreshedMembers.set(memberRouteKey, memberContext);
+      continue;
+    }
+
+    existingMemberContext.config = memberContext.config;
+
+    if (!options.preserveLiveRuntimeState) {
+      existingMemberContext.state.runId = memberContext.state.runId;
+      existingMemberContext.state.conversation = memberContext.state.conversation;
+      existingMemberContext.state.currentStatus = memberContext.state.currentStatus;
+    }
+
+    refreshedMembers.set(memberRouteKey, existingMemberContext);
+  }
+
+  return refreshedMembers;
+};
+
 export const openTeamRun = async (
   input: OpenTeamRunWithCoordinatorInput,
 ): Promise<OpenTeamRunWithCoordinatorResult> => {
@@ -74,19 +102,13 @@ export const openTeamRun = async (
     existingTeamContext.focusedMemberName = focusedMemberRouteKey;
 
     if (shouldKeepLiveContext) {
-      const refreshedMembers = new Map();
-      for (const [memberRouteKey, memberContext] of members.entries()) {
-        const existingMemberContext = existingTeamContext.members.get(memberRouteKey);
-        if (existingMemberContext) {
-          existingMemberContext.config = memberContext.config;
-          refreshedMembers.set(memberRouteKey, existingMemberContext);
-        } else {
-          refreshedMembers.set(memberRouteKey, memberContext);
-        }
-      }
-      existingTeamContext.members = refreshedMembers;
+      existingTeamContext.members = mergeHydratedMembers(existingTeamContext.members, members, {
+        preserveLiveRuntimeState: true,
+      });
     } else {
-      existingTeamContext.members = members;
+      existingTeamContext.members = mergeHydratedMembers(existingTeamContext.members, members, {
+        preserveLiveRuntimeState: false,
+      });
       existingTeamContext.currentStatus = hydratedContext.currentStatus;
       existingTeamContext.isSubscribed = false;
       existingTeamContext.unsubscribe = undefined;
