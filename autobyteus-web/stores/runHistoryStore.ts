@@ -205,7 +205,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
       const now = new Date().toISOString();
       this.workspaceGroups = this.workspaceGroups.map((workspace) => ({
         ...workspace,
-        agents: workspace.agents.map((agent) => ({
+        agentDefinitions: workspace.agentDefinitions.map((agent) => ({
           ...agent,
           runs: agent.runs.map((run) =>
             run.runId === runId
@@ -241,7 +241,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
       const now = new Date().toISOString();
       this.workspaceGroups = this.workspaceGroups.map((workspace) => ({
         ...workspace,
-        agents: workspace.agents.map((agent) => ({
+        agentDefinitions: workspace.agentDefinitions.map((agent) => ({
           ...agent,
           runs: agent.runs.map((run) =>
             run.runId === runId
@@ -276,7 +276,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
 
       this.workspaceGroups = this.workspaceGroups.map((workspace) => ({
         ...workspace,
-        agents: workspace.agents.map((agent) => ({
+        agentDefinitions: workspace.agentDefinitions.map((agent) => ({
           ...agent,
           runs: agent.runs.map((run) => {
             const isActive = activeSet.has(run.runId);
@@ -299,15 +299,18 @@ export const useRunHistoryStore = defineStore('runHistory', {
       const now = new Date().toISOString();
       this.workspaceGroups = this.workspaceGroups.map((workspace) => ({
         ...workspace,
-        teamRuns: workspace.teamRuns.map((team) =>
-          team.teamRunId !== teamRunId
-            ? team
-            : {
-                ...team,
-                isActive: true,
-                lastKnownStatus: 'ACTIVE',
-                lastActivityAt: now,
-              }),
+        teamDefinitions: workspace.teamDefinitions.map((teamDefinition) => ({
+          ...teamDefinition,
+          runs: teamDefinition.runs.map((team) =>
+            team.teamRunId !== teamRunId
+              ? team
+              : {
+                  ...team,
+                  isActive: true,
+                  lastKnownStatus: 'ACTIVE',
+                  lastActivityAt: now,
+                }),
+        })),
       }));
 
       const existing = this.teamResumeConfigByTeamRunId[teamRunId];
@@ -323,15 +326,18 @@ export const useRunHistoryStore = defineStore('runHistory', {
       const now = new Date().toISOString();
       this.workspaceGroups = this.workspaceGroups.map((workspace) => ({
         ...workspace,
-        teamRuns: workspace.teamRuns.map((team) =>
-          team.teamRunId !== teamRunId
-            ? team
-            : {
-                ...team,
-                isActive: false,
-                lastKnownStatus: team.lastKnownStatus === 'ERROR' ? 'ERROR' : 'IDLE',
-                lastActivityAt: now,
-              }),
+        teamDefinitions: workspace.teamDefinitions.map((teamDefinition) => ({
+          ...teamDefinition,
+          runs: teamDefinition.runs.map((team) =>
+            team.teamRunId !== teamRunId
+              ? team
+              : {
+                  ...team,
+                  isActive: false,
+                  lastKnownStatus: team.lastKnownStatus === 'ERROR' ? 'ERROR' : 'IDLE',
+                  lastActivityAt: now,
+                }),
+        })),
       }));
 
       const existing = this.teamResumeConfigByTeamRunId[teamRunId];
@@ -359,19 +365,22 @@ export const useRunHistoryStore = defineStore('runHistory', {
 
       this.workspaceGroups = this.workspaceGroups.map((workspace) => ({
         ...workspace,
-        teamRuns: workspace.teamRuns.map((team) => {
-          const isActive = activeSet.has(team.teamRunId);
-          const lastKnownStatus = isActive
-            ? 'ACTIVE'
-            : team.lastKnownStatus === 'ERROR'
-              ? 'ERROR'
-              : 'IDLE';
-          return {
-            ...team,
-            isActive,
-            lastKnownStatus,
-          };
-        }),
+        teamDefinitions: workspace.teamDefinitions.map((teamDefinition) => ({
+          ...teamDefinition,
+          runs: teamDefinition.runs.map((team) => {
+            const isActive = activeSet.has(team.teamRunId);
+            const lastKnownStatus = isActive
+              ? 'ACTIVE'
+              : team.lastKnownStatus === 'ERROR'
+                ? 'ERROR'
+                : 'IDLE';
+            return {
+              ...team,
+              isActive,
+              lastKnownStatus,
+            };
+          }),
+        })),
       }));
     },
 

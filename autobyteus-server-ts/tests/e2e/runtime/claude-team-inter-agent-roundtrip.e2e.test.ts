@@ -901,12 +901,14 @@ Rules:
         query ListWorkspaceRunHistory {
           listWorkspaceRunHistory(limitPerAgent: 200) {
             workspaceRootPath
-            teamRuns {
-              teamRunId
-              workspaceRootPath
-              members {
-                memberName
+            teamDefinitions {
+              runs {
+                teamRunId
                 workspaceRootPath
+                members {
+                  memberName
+                  workspaceRootPath
+                }
               }
             }
           }
@@ -970,16 +972,19 @@ Rules:
         const listResult = await execGraphql<{
           listWorkspaceRunHistory: Array<{
             workspaceRootPath: string;
-            teamRuns: Array<{
-              teamRunId: string;
-              workspaceRootPath: string | null;
-              members: Array<{ memberName: string; workspaceRootPath: string | null }>;
+            teamDefinitions: Array<{
+              runs: Array<{
+                teamRunId: string;
+                workspaceRootPath: string | null;
+                members: Array<{ memberName: string; workspaceRootPath: string | null }>;
+              }>;
             }>;
           }>;
         }>(listWorkspaceRunHistoryQuery);
         matchedRow =
           listResult.listWorkspaceRunHistory
-            .flatMap((workspace) => workspace.teamRuns)
+            .flatMap((workspace) => workspace.teamDefinitions)
+            .flatMap((definition) => definition.runs)
             .find((row) => row.teamRunId === teamRunId) ?? null;
         if (
           matchedRow &&

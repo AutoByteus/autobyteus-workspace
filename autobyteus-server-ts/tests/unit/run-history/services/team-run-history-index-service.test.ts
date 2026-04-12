@@ -119,8 +119,49 @@ describe("TeamRunHistoryIndexService", () => {
       lastActivityAt: "2026-03-26T11:00:00.000Z",
     });
 
-    expect((await indexStore.getRow("team-1"))?.summary).toBe("new summary");
+    expect((await indexStore.getRow("team-1"))?.summary).toBe("old");
     expect((await indexStore.getRow("team-1"))?.lastKnownStatus).toBe("ACTIVE");
+  });
+
+  it("keeps the first recorded team summary when later activity arrives", async () => {
+    const { TeamRunHistoryIndexService } = await import(
+      "../../../../src/run-history/services/team-run-history-index-service.js"
+    );
+    const indexStore = new TeamRunHistoryIndexStore(memoryDir);
+    const service = new TeamRunHistoryIndexService(memoryDir, {
+      indexStore,
+      teamRunManager: {
+        getTeamRun: vi.fn().mockReturnValue(null),
+        listActiveRuns: vi.fn().mockReturnValue([]),
+      },
+    });
+
+    await service.recordRunCreated({
+      teamRunId: "team-1",
+      metadata: buildMetadata(),
+      summary: "",
+      lastKnownStatus: "IDLE",
+      lastActivityAt: "2026-03-26T10:00:00.000Z",
+    });
+
+    await service.recordRunActivity({
+      teamRunId: "team-1",
+      metadata: buildMetadata(),
+      summary: "first team summary",
+      lastKnownStatus: "ACTIVE",
+      lastActivityAt: "2026-03-26T11:00:00.000Z",
+    });
+
+    await service.recordRunActivity({
+      teamRunId: "team-1",
+      metadata: buildMetadata(),
+      summary: "second team summary should not replace the first",
+      lastKnownStatus: "ACTIVE",
+      lastActivityAt: "2026-03-26T12:00:00.000Z",
+    });
+
+    expect((await indexStore.getRow("team-1"))?.summary).toBe("first team summary");
+    expect((await indexStore.getRow("team-1"))?.lastActivityAt).toBe("2026-03-26T12:00:00.000Z");
   });
 
   it("rebuilds ACTIVE state from live managers", async () => {
@@ -141,5 +182,54 @@ describe("TeamRunHistoryIndexService", () => {
 
     expect(rows[0]?.lastKnownStatus).toBe("ACTIVE");
     expect(rows[0]?.workspaceRootPath).toBe("/tmp/workspace");
+  });
+
+  it("rebuilds team summary from the coordinator's first user trace", async () => {
+    const { TeamRunHistoryIndexService } = await import(
+      "../../../../src/run-history/services/team-run-history-index-service.js"
+    );
+    const metadataStore = new TeamRunMetadataStore(memoryDir);
+    await metadataStore.writeMetadata("team-1", buildMetadata({
+      coordinatorMemberRouteKey: "planner",
+      memberMetadata: [
+        buildMetadata().memberMetadata[0],
+        {
+          ...buildMetadata().memberMetadata[0],
+          memberRouteKey: "reviewer",
+          memberName: "Reviewer",
+          memberRunId: "reviewer-run",
+        },
+      ],
+    }));
+
+    const plannerDir = path.join(memoryDir, "agent_teams", "team-1", "planner-run");
+    const reviewerDir = path.join(memoryDir, "agent_teams", "team-1", "reviewer-run");
+    await fs.mkdir(plannerDir, { recursive: true });
+    await fs.mkdir(reviewerDir, { recursive: true });
+    await fs.writeFile(
+      path.join(plannerDir, "raw_traces.jsonl"),
+      [
+        JSON.stringify({ ts: 1, trace_type: "user", content: "first coordinator message" }),
+        JSON.stringify({ ts: 2, trace_type: "user", content: "later coordinator message" }),
+      ].join("\n"),
+      "utf-8",
+    );
+    await fs.writeFile(
+      path.join(reviewerDir, "raw_traces.jsonl"),
+      JSON.stringify({ ts: 1, trace_type: "user", content: "reviewer message" }),
+      "utf-8",
+    );
+
+    const service = new TeamRunHistoryIndexService(memoryDir, {
+      metadataStore,
+      teamRunManager: {
+        getTeamRun: vi.fn().mockReturnValue(null),
+        listActiveRuns: vi.fn().mockReturnValue([]),
+      },
+    });
+
+    const rows = await service.rebuildIndexFromDisk();
+
+    expect(rows[0]?.summary).toBe("first coordinator message");
   });
 });

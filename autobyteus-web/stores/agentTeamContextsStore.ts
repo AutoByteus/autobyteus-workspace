@@ -3,7 +3,7 @@ import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
-import { useTeamWorkspaceViewStore } from '~/stores/teamWorkspaceViewStore';
+import { useTeamWorkspaceViewStore, type TeamWorkspaceViewMode } from '~/stores/teamWorkspaceViewStore';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import type { TeamRunConfig } from '~/types/agent/TeamRunConfig';
 import { AgentContext } from '~/types/agent/AgentContext';
@@ -13,6 +13,10 @@ import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { Conversation } from '~/types/conversation';
 import { normalizeMemberRouteKey, resolveLeafTeamMembers } from '~/utils/teamDefinitionMembers';
 import { hasExplicitMemberLlmConfigOverride } from '~/utils/teamRunConfigUtils';
+import {
+  ensureHistoricalTeamMemberHydrated,
+  ensureHistoricalTeamMembersHydrated,
+} from '~/services/runHydration/teamRunContextHydrationService';
 
 interface AgentTeamContextsState {
   /** All active agent team runs, indexed by team run ID. */
@@ -140,6 +144,8 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
         teamRunId,
         config: configCopy,
         members,
+        coordinatorMemberRouteKey,
+        historicalHydration: null,
         focusedMemberName,
         currentStatus: AgentTeamStatus.Idle,
         isSubscribed: false,
@@ -249,6 +255,48 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
       }
 
       activeTeam.focusedMemberName = memberName;
+    },
+
+    async focusMemberAndEnsureHydrated(teamRunId: string, memberName: string): Promise<void> {
+      const teamContext = this.teams.get(teamRunId);
+      if (!teamContext) {
+        return;
+      }
+
+      const selectionStore = useAgentSelectionStore();
+      const isActiveSelection =
+        selectionStore.selectedType === 'team' &&
+        selectionStore.selectedRunId === teamRunId;
+
+      if (isActiveSelection) {
+        this.setFocusedMember(memberName);
+      } else if (teamContext.members.has(memberName) && teamContext.focusedMemberName !== memberName) {
+        teamContext.focusedMemberName = memberName;
+      }
+
+      await ensureHistoricalTeamMemberHydrated({
+        teamContext,
+        memberRouteKey: memberName,
+      });
+    },
+
+    async ensureHistoricalMembersHydratedForView(
+      teamRunId: string,
+      mode: TeamWorkspaceViewMode,
+    ): Promise<void> {
+      if (mode === 'focus') {
+        return;
+      }
+
+      const teamContext = this.teams.get(teamRunId);
+      if (!teamContext?.historicalHydration) {
+        return;
+      }
+
+      await ensureHistoricalTeamMembersHydrated({
+        teamContext,
+        memberRouteKeys: Array.from(teamContext.members.keys()),
+      });
     },
   },
 });

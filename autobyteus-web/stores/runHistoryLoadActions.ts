@@ -16,6 +16,7 @@ import type {
 } from '~/stores/runHistoryTypes';
 import {
   buildNextAgentAvatarIndex,
+  flattenWorkspaceTeamRuns,
 } from '~/stores/runHistoryStoreSupport';
 import {
   findAgentNameByRunId,
@@ -99,7 +100,7 @@ const listActiveAgentRunIds = (
 ): Set<string> =>
   new Set(
     workspaceGroups.flatMap((workspaceGroup) =>
-      workspaceGroup.agents.flatMap((agentGroup) =>
+      workspaceGroup.agentDefinitions.flatMap((agentGroup) =>
         agentGroup.runs
           .filter((run) => run.isActive)
           .map((run) => run.runId.trim())
@@ -112,12 +113,10 @@ const listActiveTeamRunIds = (
   workspaceGroups: RunHistoryWorkspaceGroup[],
 ): Set<string> =>
   new Set(
-    workspaceGroups.flatMap((workspaceGroup) =>
-      workspaceGroup.teamRuns
-        .filter((teamRun) => teamRun.isActive)
-        .map((teamRun) => teamRun.teamRunId.trim())
-        .filter(Boolean),
-    ),
+    flattenWorkspaceTeamRuns(workspaceGroups)
+      .filter((teamRun) => teamRun.isActive)
+      .map((teamRun) => teamRun.teamRunId.trim())
+      .filter(Boolean),
   );
 
 const reconcileDiscoveredActiveRuns = async (
@@ -200,13 +199,14 @@ const reconcileDiscoveredActiveRuns = async (
     }
 
     try {
-      await hydrateLiveTeamRunContext({
+      const result = await hydrateLiveTeamRunContext({
         teamRunId,
         memberRouteKey: null,
         ensureWorkspaceByRootPath: (rootPath: string) => store.ensureWorkspaceByRootPath(rootPath),
         currentStatus: 'ACTIVE',
         memberStatuses: [],
       });
+      teamContextsStore.addTeamContext(result.hydratedContext);
       agentTeamRunStore.connectToTeamStream(teamRunId);
     } catch (error) {
       console.warn(`[runHistorySync] Failed to hydrate active team run '${teamRunId}'.`, error);

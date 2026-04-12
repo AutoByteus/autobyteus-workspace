@@ -5,6 +5,19 @@ import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
 import { useTeamWorkspaceViewStore } from '~/stores/teamWorkspaceViewStore';
 
+const {
+    ensureHistoricalTeamMemberHydratedMock,
+    ensureHistoricalTeamMembersHydratedMock,
+} = vi.hoisted(() => ({
+    ensureHistoricalTeamMemberHydratedMock: vi.fn().mockResolvedValue(undefined),
+    ensureHistoricalTeamMembersHydratedMock: vi.fn().mockResolvedValue(undefined),
+}));
+
+vi.mock('~/services/runHydration/teamRunContextHydrationService', () => ({
+    ensureHistoricalTeamMemberHydrated: ensureHistoricalTeamMemberHydratedMock,
+    ensureHistoricalTeamMembersHydrated: ensureHistoricalTeamMembersHydratedMock,
+}));
+
 // Mock dependencies
 vi.mock('~/stores/agentTeamDefinitionStore', () => ({
     useAgentTeamDefinitionStore: () => ({
@@ -49,6 +62,7 @@ vi.mock('~/stores/agentDefinitionStore', () => ({
 describe('agentTeamContextsStore', () => {
     beforeEach(() => {
         setActivePinia(createPinia());
+        vi.clearAllMocks();
     });
 
     describe('createRunFromTemplate', () => {
@@ -180,6 +194,7 @@ describe('agentTeamContextsStore', () => {
                     ['agent-1', { requirement: 'draft text', contextFilePaths: [{ path: '/tmp/a.txt', type: 'Text' }] }],
                     ['agent-2', { requirement: '', contextFilePaths: [] }],
                 ]) as any,
+                historicalHydration: null,
                 focusedMemberName: 'agent-1',
                 currentStatus: 'idle' as any,
                 isSubscribed: false,
@@ -199,6 +214,82 @@ describe('agentTeamContextsStore', () => {
         });
     });
 
+    describe('focusMemberAndEnsureHydrated', () => {
+        it('focuses the requested member and triggers lazy historical hydration', async () => {
+            const store = useAgentTeamContextsStore();
+            const selectionStore = useAgentSelectionStore();
+
+            store.addTeamContext({
+                teamRunId: 'team-history-1',
+                config: {} as any,
+                members: new Map([
+                    ['member-a', { requirement: '', contextFilePaths: [] }],
+                    ['member-b', { requirement: '', contextFilePaths: [] }],
+                ]) as any,
+                historicalHydration: {
+                    createdAt: '2026-01-01T00:00:00.000Z',
+                    updatedAt: '2026-01-01T00:00:00.000Z',
+                    memberMetadataByRouteKey: {} as any,
+                    memberProjectionLoadStateByRouteKey: {
+                        'member-a': 'loaded',
+                        'member-b': 'unloaded',
+                    },
+                },
+                focusedMemberName: 'member-a',
+                currentStatus: 'shutdown_complete' as any,
+                isSubscribed: false,
+                taskPlan: null,
+                taskStatuses: null,
+            });
+
+            selectionStore.selectRun('team-history-1', 'team');
+
+            await store.focusMemberAndEnsureHydrated('team-history-1', 'member-b');
+
+            expect(store.activeTeamContext?.focusedMemberName).toBe('member-b');
+            expect(ensureHistoricalTeamMemberHydratedMock).toHaveBeenCalledWith({
+                teamContext: expect.objectContaining({ teamRunId: 'team-history-1' }),
+                memberRouteKey: 'member-b',
+            });
+        });
+    });
+
+    describe('ensureHistoricalMembersHydratedForView', () => {
+        it('hydrates all missing members when a historical team enters a broader mode', async () => {
+            const store = useAgentTeamContextsStore();
+
+            store.addTeamContext({
+                teamRunId: 'team-history-1',
+                config: {} as any,
+                members: new Map([
+                    ['member-a', {} as any],
+                    ['member-b', {} as any],
+                ]),
+                historicalHydration: {
+                    createdAt: '2026-01-01T00:00:00.000Z',
+                    updatedAt: '2026-01-01T00:00:00.000Z',
+                    memberMetadataByRouteKey: {} as any,
+                    memberProjectionLoadStateByRouteKey: {
+                        'member-a': 'loaded',
+                        'member-b': 'unloaded',
+                    },
+                },
+                focusedMemberName: 'member-a',
+                currentStatus: 'shutdown_complete' as any,
+                isSubscribed: false,
+                taskPlan: null,
+                taskStatuses: null,
+            });
+
+            await store.ensureHistoricalMembersHydratedForView('team-history-1', 'grid');
+
+            expect(ensureHistoricalTeamMembersHydratedMock).toHaveBeenCalledWith({
+                teamContext: expect.objectContaining({ teamRunId: 'team-history-1' }),
+                memberRouteKeys: ['member-a', 'member-b'],
+            });
+        });
+    });
+
     describe('promoteTemporaryTeamRunId', () => {
         it('migrates the stored workspace view mode to the permanent team id', () => {
             const store = useAgentTeamContextsStore();
@@ -209,6 +300,7 @@ describe('agentTeamContextsStore', () => {
                 teamRunId: 'temp-team-1',
                 config: {} as any,
                 members: new Map([['agent-1', { state: { conversation: { id: 'temp-team-1::agent-1' }, runId: 'temp-team-1::agent-1' } }]]) as any,
+                historicalHydration: null,
                 focusedMemberName: 'agent-1',
                 currentStatus: 'idle' as any,
                 isSubscribed: false,

@@ -171,6 +171,7 @@ export const useApplicationRunStore = defineStore('applicationRun', {
           teamRunId: temporaryTeamRunId,
           config: teamRunConfig,
           members: members,
+          coordinatorMemberRouteKey,
           focusedMemberName: members.has(coordinatorMemberRouteKey)
             ? coordinatorMemberRouteKey
             : (members.keys().next().value || ''),

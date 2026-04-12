@@ -1,4 +1,6 @@
 import { appConfigProvider } from "../../config/app-config-provider.js";
+import { MemoryFileStore } from "../../agent-memory/store/memory-file-store.js";
+import { TeamMemberMemoryLayout } from "../../agent-memory/store/team-member-memory-layout.js";
 import { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import type {
   TeamRunIndexRow,
@@ -11,7 +13,7 @@ import type {
 } from "../store/team-run-metadata-types.js";
 import { TeamRunMetadataStore } from "../store/team-run-metadata-store.js";
 import { canonicalizeWorkspaceRootPath } from "../utils/workspace-path-normalizer.js";
-import { compactSummary } from "./run-history-service-helpers.js";
+import { compactSummary, extractSummaryFromRawTraces } from "./run-history-service-helpers.js";
 
 const nowIso = (): string => new Date().toISOString();
 
@@ -19,6 +21,7 @@ export class TeamRunHistoryIndexService {
   private readonly indexStore: TeamRunHistoryIndexStore;
   private readonly metadataStore: TeamRunMetadataStore;
   private readonly teamRunManager: AgentTeamRunManager;
+  private readonly memberLayout: TeamMemberMemoryLayout;
 
   constructor(
     memoryDir: string,
@@ -34,6 +37,7 @@ export class TeamRunHistoryIndexService {
       dependencies.metadataStore ?? new TeamRunMetadataStore(memoryDir);
     this.teamRunManager =
       dependencies.teamRunManager ?? AgentTeamRunManager.getInstance();
+    this.memberLayout = new TeamMemberMemoryLayout(memoryDir);
   }
 
   async listRows(): Promise<TeamRunIndexRow[]> {
@@ -85,22 +89,22 @@ export class TeamRunHistoryIndexService {
   }): Promise<void> {
     const lastActivityAt = input.lastActivityAt ?? nowIso();
     const lastKnownStatus = input.lastKnownStatus ?? "ACTIVE";
+    const existing = await this.indexStore.getRow(input.teamRunId);
 
     if (input.metadata) {
       await this.upsertFromMetadata({
         teamRunId: input.teamRunId,
         metadata: input.metadata,
-        summary: input.summary ?? "",
+        summary: this.resolveFirstSummary(existing?.summary, input.summary) ?? "",
         lastKnownStatus,
         lastActivityAt,
       });
       return;
     }
 
+    const nextSummary = this.resolveFirstSummary(existing?.summary, input.summary);
     await this.indexStore.updateRow(input.teamRunId, {
-      ...(input.summary !== undefined && input.summary !== null
-        ? { summary: compactSummary(input.summary) }
-        : {}),
+      ...(nextSummary !== undefined ? { summary: nextSummary } : {}),
       lastKnownStatus,
       lastActivityAt,
     });
@@ -125,7 +129,7 @@ export class TeamRunHistoryIndexService {
         teamDefinitionId: metadata.teamDefinitionId,
         teamDefinitionName: metadata.teamDefinitionName,
         workspaceRootPath: resolveTeamWorkspaceRootPath(metadata.memberMetadata),
-        summary: "",
+        summary: this.extractSummaryFromCoordinator(metadata),
         lastActivityAt: metadata.updatedAt || metadata.createdAt || nowIso(),
         lastKnownStatus: this.isTeamRunActive(teamRunId) ? "ACTIVE" : "IDLE",
         deleteLifecycle: "READY",
@@ -156,6 +160,45 @@ export class TeamRunHistoryIndexService {
       deleteLifecycle: "READY",
     };
     await this.indexStore.upsertRow(row);
+  }
+
+  private resolveFirstSummary(
+    existingSummary: string | null | undefined,
+    nextSummary: string | null | undefined,
+  ): string | undefined {
+    const existing = compactSummary(existingSummary ?? null);
+    if (existing) {
+      return existing;
+    }
+
+    if (nextSummary === undefined || nextSummary === null) {
+      return undefined;
+    }
+
+    return compactSummary(nextSummary);
+  }
+
+  private extractSummaryFromCoordinator(metadata: TeamRunMetadata): string {
+    const coordinatorMemberRouteKey = metadata.coordinatorMemberRouteKey.trim();
+    const coordinatorMember =
+      metadata.memberMetadata.find(
+        (member) => member.memberRouteKey.trim() === coordinatorMemberRouteKey,
+      ) ?? metadata.memberMetadata[0];
+
+    if (!coordinatorMember) {
+      return "";
+    }
+
+    const teamDir = this.memberLayout.getTeamDirPath(metadata.teamRunId);
+    const memberStore = new MemoryFileStore(teamDir, {
+      runRootSubdir: "",
+      warnOnMissingFiles: false,
+    });
+
+    return extractSummaryFromRawTraces(
+      memberStore.readRawTracesActive(coordinatorMember.memberRunId, 300),
+      memberStore.readRawTracesArchive(coordinatorMember.memberRunId, 300),
+    );
   }
 
   private isTeamRunActive(teamRunId: string): boolean {

@@ -57,15 +57,12 @@ export const selectTreeRunFromHistory = async (
     const selectionStore = useAgentSelectionStore();
     const localTeamContext = teamContextsStore.getTeamContextById(row.teamRunId);
     const shouldReuseLocalTeamContext = Boolean(
-      localTeamContext && (
-        localTeamContext.isSubscribed
-        || row.teamRunId.startsWith('temp-team-')
-      ),
+      localTeamContext && localTeamContext.members.has(row.memberRouteKey),
     );
 
     if (shouldReuseLocalTeamContext) {
-      teamContextsStore.setFocusedMember?.(row.memberRouteKey);
       selectionStore.selectRun(row.teamRunId, 'team');
+      await teamContextsStore.focusMemberAndEnsureHydrated?.(row.teamRunId, row.memberRouteKey);
       store.selectedTeamRunId = row.teamRunId;
       store.selectedTeamMemberRouteKey = row.memberRouteKey;
       store.selectedRunId = null;

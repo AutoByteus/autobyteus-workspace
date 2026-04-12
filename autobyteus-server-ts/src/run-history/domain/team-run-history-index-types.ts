@@ -34,6 +34,7 @@ export interface TeamRunHistoryItem {
   teamRunId: string;
   teamDefinitionId: string;
   teamDefinitionName: string;
+  coordinatorMemberRouteKey: string;
   workspaceRootPath: string | null;
   summary: string;
   lastActivityAt: string;

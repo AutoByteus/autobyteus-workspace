@@ -26,6 +26,8 @@ const {
         return localState.activeTeamContext;
       },
       setFocusedMember: vi.fn(),
+      focusMemberAndEnsureHydrated: vi.fn().mockResolvedValue(undefined),
+      ensureHistoricalMembersHydratedForView: vi.fn().mockResolvedValue(undefined),
     },
     agentDefinitionStoreMock: {
       agentDefinitions: [
@@ -223,11 +225,12 @@ describe('TeamWorkspaceView', () => {
     state.currentMode = 'grid';
     const wrapper = mountComponent();
     expect(wrapper.find('[data-test="team-grid"]').exists()).toBe(true);
-    expect(wrapper.text()).toContain('Replying to:');
+    expect(wrapper.text()).toContain('Replying to');
     expect(wrapper.text()).toContain('Professor');
     expect(wrapper.find('[data-test="agent-user-input-form"]').exists()).toBe(true);
 
     await wrapper.get('[data-test="team-grid"]').trigger('click');
-    expect(teamContextsStoreMock.setFocusedMember).toHaveBeenCalledWith('student');
+    expect(teamContextsStoreMock.focusMemberAndEnsureHydrated).toHaveBeenCalledWith('team-1', 'student');
+    expect(teamContextsStoreMock.ensureHistoricalMembersHydratedForView).toHaveBeenCalledWith('team-1', 'grid');
   });
 });

@@ -35,6 +35,7 @@ export const openTeamRun = async (
     members,
     firstWorkspaceId,
     focusedMemberRouteKey,
+    historicalHydration,
   } = await loadTeamRunContextHydrationPayload(input);
 
   const shouldTreatAsLive = resumeConfig.isActive;
@@ -48,6 +49,8 @@ export const openTeamRun = async (
       isLocked: shouldTreatAsLive,
     }),
     members,
+    coordinatorMemberRouteKey: metadata.coordinatorMemberRouteKey,
+    historicalHydration,
     focusedMemberName: focusedMemberRouteKey,
     currentStatus: shouldTreatAsLive
       ? AgentTeamStatus.Uninitialized
@@ -66,6 +69,8 @@ export const openTeamRun = async (
     }
 
     existingTeamContext.config = hydratedContext.config;
+    existingTeamContext.coordinatorMemberRouteKey = metadata.coordinatorMemberRouteKey;
+    existingTeamContext.historicalHydration = historicalHydration;
     existingTeamContext.focusedMemberName = focusedMemberRouteKey;
 
     if (shouldKeepLiveContext) {
