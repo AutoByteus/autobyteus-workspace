@@ -1708,6 +1708,80 @@ describe('runHistoryStore', () => {
     expect(store.selectedTeamMemberRouteKey).toBe('architect_reviewer');
   });
 
+  it('selectTreeRun exposes openingRun while a reused historical team member is lazy-loading', async () => {
+    const store = useRunHistoryStore();
+    let resolveHydration: (() => void) | null = null;
+    teamContextsStoreMock.focusMemberAndEnsureHydrated.mockImplementationOnce(
+      () => new Promise<void>((resolve) => {
+        resolveHydration = resolve;
+      }),
+    );
+
+    selectionStoreMock.selectedType = 'team';
+    selectionStoreMock.selectedRunId = 'team-1';
+
+    teamContextsStoreMock.teams.set('team-1', {
+      teamRunId: 'team-1',
+      config: {
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Team Alpha',
+        runtimeKind: 'codex_app_server',
+        workspaceId: 'ws-1',
+        llmModelIdentifier: 'model-x',
+        autoExecuteTools: false,
+        memberOverrides: {},
+        isLocked: true,
+      },
+      members: new Map([
+        ['api_e2e_engineer', {
+          config: { workspaceId: 'ws-1', agentDefinitionName: 'API E2E Engineer' },
+          state: { runId: 'member-run-1', conversation: { messages: [] } },
+        }],
+        ['architect_reviewer', {
+          config: { workspaceId: 'ws-1', agentDefinitionName: 'Architect Reviewer' },
+          state: { runId: 'member-run-2', conversation: { messages: [] } },
+        }],
+      ]),
+      historicalHydration: {
+        createdAt: '2026-01-01T00:00:00.000Z',
+        updatedAt: '2026-01-01T00:05:00.000Z',
+        memberMetadataByRouteKey: {} as any,
+        memberProjectionLoadStateByRouteKey: {
+          api_e2e_engineer: 'loaded',
+          architect_reviewer: 'unloaded',
+        },
+      },
+      focusedMemberName: 'api_e2e_engineer',
+      currentStatus: 'shutdown_complete',
+      isSubscribed: false,
+      taskPlan: null,
+      taskStatuses: null,
+    });
+
+    const selectionPromise = store.selectTreeRun({
+      teamRunId: 'team-1',
+      memberRouteKey: 'architect_reviewer',
+      memberName: 'Architect Reviewer',
+      memberRunId: 'member-run-2',
+      workspaceRootPath: '/ws/a',
+      summary: 'Persisted team task',
+      lastActivityAt: '2026-01-01T00:00:00.000Z',
+      lastKnownStatus: 'IDLE',
+      isActive: false,
+      deleteLifecycle: 'READY',
+    });
+
+    await Promise.resolve();
+    expect(store.openingRun).toBe(true);
+
+    resolveHydration?.();
+    await selectionPromise;
+
+    expect(store.openingRun).toBe(false);
+    expect(store.selectedTeamRunId).toBe('team-1');
+    expect(store.selectedTeamMemberRouteKey).toBe('architect_reviewer');
+  });
+
   it('selectTreeRun reuses an existing historical team context instead of reopening it', async () => {
     const store = useRunHistoryStore();
     const openTeamMemberRunSpy = vi.spyOn(store, 'openTeamMemberRun').mockResolvedValue(undefined);

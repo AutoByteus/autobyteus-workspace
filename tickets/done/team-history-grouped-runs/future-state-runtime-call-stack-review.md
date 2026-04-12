@@ -15,10 +15,10 @@
 
 ## Review Basis
 
-- Requirements: `tickets/in-progress/team-history-grouped-runs/requirements.md` (status `Design-ready`)
-- Runtime Call Stack Document: `tickets/in-progress/team-history-grouped-runs/future-state-runtime-call-stack.md`
+- Requirements: `tickets/done/team-history-grouped-runs/requirements.md` (status `Design-ready`)
+- Runtime Call Stack Document: `tickets/done/team-history-grouped-runs/future-state-runtime-call-stack.md`
 - Source Design Basis:
-  - `Medium/Large`: `tickets/in-progress/team-history-grouped-runs/proposed-design.md`
+  - `Medium/Large`: `tickets/done/team-history-grouped-runs/proposed-design.md`
 - Shared Design Principles: `shared/design-principles.md`
 - Artifact Versions In This Round:
   - Requirements Status: `Design-ready`

@@ -4,12 +4,12 @@
 
 - Ticket: `team-history-grouped-runs`
 - Current Stage: `10`
-- Next Stage: `User Verification`
+- Next Stage: `Repository Finalization + Release`
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-063`
-- Last Updated: `2026-04-12T08:20:14+02:00`
+- Last Transition ID: `T-067`
+- Last Updated: `2026-04-12T09:07:46+02:00`
 
 ## Stage 0 Bootstrap Record
 
@@ -28,17 +28,17 @@
 
 | Stage | Gate Status (`Not Started`/`In Progress`/`Pass`/`Fail`/`Blocked`) | Gate Rule Summary | Evidence |
 | --- | --- | --- | --- |
-| 0 Bootstrap + Draft Requirement | Pass | Ticket bootstrap complete + dedicated worktree/branch created + `requirements.md` Draft captured | `tickets/in-progress/team-history-grouped-runs/requirements.md`, worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/team-history-grouped-runs`, branch `codex/team-history-grouped-runs` |
-| 1 Investigation + Triage | Pass | `investigation-notes.md` current + scope triage recorded | `tickets/in-progress/team-history-grouped-runs/investigation-notes.md` |
-| 2 Requirements | Pass | Requirements refined for focused-member-first lazy historical team hydration with progressive on-demand member loading | `tickets/in-progress/team-history-grouped-runs/requirements.md`, `tickets/in-progress/team-history-grouped-runs/investigation-notes.md` |
-| 3 Design Basis | Pass | Design revised for shell-first historical team contexts, targeted member-projection hydration, and progressive broader-view loading | `tickets/in-progress/team-history-grouped-runs/proposed-design.md` |
-| 4 Future-State Runtime Call Stack | Pass | Future-state runtime flow now covers shell-first historical team open, targeted member hydration, and progressive broader-view loading | `tickets/in-progress/team-history-grouped-runs/future-state-runtime-call-stack.md` |
-| 5 Future-State Runtime Call Stack Review | Pass | Review rounds seven and eight re-confirmed the shell-first historical hydration design with a two-round clean streak | `tickets/in-progress/team-history-grouped-runs/future-state-runtime-call-stack-review.md` |
-| 6 Implementation | Pass | Shell-first historical team hydration implemented with focused-member-first projection loading and store-owned on-demand member hydration | `tickets/in-progress/team-history-grouped-runs/implementation.md` |
-| 7 API/E2E + Executable Validation | Pass | Backend API/workspace-history tests plus strengthened frontend executable coverage passed for the grouped history and lazy historical hydration flow | `tickets/in-progress/team-history-grouped-runs/api-e2e-testing.md` |
-| 8 Code Review | Pass | Independent code review round 11 passed with no findings after the stronger Stage 7 evidence was added | `tickets/in-progress/team-history-grouped-runs/code-review.md` |
-| 9 Docs Sync | Pass | Docs sync reconfirmed no long-lived docs impact after the additional independent Stage 8 review | `tickets/in-progress/team-history-grouped-runs/docs-sync.md` |
-| 10 Handoff / Ticket State | In Progress | Handoff remains pending user verification after the additional independent Stage 8 review round | `tickets/in-progress/team-history-grouped-runs/handoff-summary.md`, `tickets/in-progress/team-history-grouped-runs/workflow-state.md` |
+| 0 Bootstrap + Draft Requirement | Pass | Ticket bootstrap complete + dedicated worktree/branch created + `requirements.md` Draft captured | `tickets/done/team-history-grouped-runs/requirements.md`, worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/team-history-grouped-runs`, branch `codex/team-history-grouped-runs` |
+| 1 Investigation + Triage | Pass | `investigation-notes.md` current + scope triage recorded | `tickets/done/team-history-grouped-runs/investigation-notes.md` |
+| 2 Requirements | Pass | Requirements refined for focused-member-first lazy historical team hydration with progressive on-demand member loading | `tickets/done/team-history-grouped-runs/requirements.md`, `tickets/done/team-history-grouped-runs/investigation-notes.md` |
+| 3 Design Basis | Pass | Design revised for shell-first historical team contexts, targeted member-projection hydration, and progressive broader-view loading | `tickets/done/team-history-grouped-runs/proposed-design.md` |
+| 4 Future-State Runtime Call Stack | Pass | Future-state runtime flow now covers shell-first historical team open, targeted member hydration, and progressive broader-view loading | `tickets/done/team-history-grouped-runs/future-state-runtime-call-stack.md` |
+| 5 Future-State Runtime Call Stack Review | Pass | Review rounds seven and eight re-confirmed the shell-first historical hydration design with a two-round clean streak | `tickets/done/team-history-grouped-runs/future-state-runtime-call-stack-review.md` |
+| 6 Implementation | Pass | Shell-first historical team hydration implemented with focused-member-first projection loading and store-owned on-demand member hydration | `tickets/done/team-history-grouped-runs/implementation.md` |
+| 7 API/E2E + Executable Validation | Pass | Backend API/workspace-history tests plus strengthened frontend executable coverage passed for the grouped history and lazy historical hydration flow | `tickets/done/team-history-grouped-runs/api-e2e-testing.md` |
+| 8 Code Review | Pass | Independent code review round 12 passed with no findings after rechecking the center loading-indicator delta and the lazy-hydration architecture against the full ten-criteria scorecard | `tickets/done/team-history-grouped-runs/code-review.md` |
+| 9 Docs Sync | Pass | Docs sync reconfirmed no long-lived docs impact after the refreshed independent Stage 8 review round | `tickets/done/team-history-grouped-runs/docs-sync.md` |
+| 10 Handoff / Ticket State | In Progress | User verification is complete; ticket archival, repository finalization, release publication, and worktree cleanup are now in progress | `tickets/done/team-history-grouped-runs/handoff-summary.md`, `tickets/done/team-history-grouped-runs/release-notes.md`, `tickets/done/team-history-grouped-runs/workflow-state.md` |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -139,6 +139,10 @@
 | T-061 | 2026-04-12 | 10 | 8 | User requested one more independent Stage 8 review after Stage 7 coverage was strengthened with per-system backend/API and frontend executable evidence | N/A | Locked | `workflow-state.md`, `code-review.md` |
 | T-062 | 2026-04-12 | 8 | 9 | Independent code review round 11 passed with no findings after reloading the Stage 8 template, principles, and strengthened validation evidence | N/A | Locked | `code-review.md`, `workflow-state.md` |
 | T-063 | 2026-04-12 | 9 | 10 | Docs sync remained no-impact and the ticket returned to user-verification state after the additional independent review round | N/A | Locked | `docs-sync.md`, `workflow-state.md` |
+| T-064 | 2026-04-12 | 10 | 8 | User requested another independent deep Stage 8 review after the center loading indicator was added and wanted the ten-criteria scoreboard refreshed for the current worktree state | N/A | Locked | `workflow-state.md`, `code-review.md` |
+| T-065 | 2026-04-12 | 8 | 9 | Independent code review round 12 passed with no findings after rechecking the center loading-indicator delta and the lazy-hydration architecture | N/A | Locked | `code-review.md`, `workflow-state.md` |
+| T-066 | 2026-04-12 | 9 | 10 | Docs sync remained no-impact and the ticket returned to user-verification state after the refreshed independent review round | N/A | Locked | `docs-sync.md`, `workflow-state.md` |
+| T-067 | 2026-04-12 | 10 | 10 | User explicitly confirmed the ticket as done, so Stage 10 moved from verification hold into archival, repository finalization, release publication, and cleanup execution | N/A | Locked | `handoff-summary.md`, `release-notes.md`, `workflow-state.md` |
 
 ## Audible Notification Log (Optional Tracking)
 
@@ -168,6 +172,7 @@
 | 2026-04-12T08:20:14+02:00 | Transition | Team history grouped runs moved to stage eight for an additional independent code review round. Code edits remain locked while the refreshed stage seven evidence and current implementation are re-reviewed. | Success | N/A |
 | 2026-04-12T08:20:15+02:00 | Transition | Team history grouped runs moved to stage nine. Independent code review round eleven passed with no findings after the strengthened validation evidence was reviewed. | Success | N/A |
 | 2026-04-12T08:20:16+02:00 | Transition | Team history grouped runs returned to stage ten. Docs sync remains no impact, and the ticket is back to awaiting user verification after the additional independent review round. | Success | N/A |
+| 2026-04-12T09:07:46+02:00 | Transition | Team history grouped runs returned to stage ten. Independent code review round twelve passed with no findings, docs sync remains no impact, and the ticket is back to awaiting user verification. | Success | N/A |
 
 ## Process Violation Log
 

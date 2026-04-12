@@ -2,7 +2,7 @@
   <div class="hidden md:flex flex-1 relative space-x-0 min-h-0">
     <!-- Content Area -->
     <div class="bg-white p-0 flex flex-col min-h-0 flex-1 min-w-[200px]">
-      <div data-test="workspace-center-content-shell" class="flex-1 min-h-0 overflow-hidden">
+      <div data-test="workspace-center-content-shell" class="relative flex-1 min-h-0 overflow-hidden">
         <RunConfigPanel v-if="showSelectedRunConfig" />
         <AgentWorkspaceView v-else-if="isAgentSelected" />
         <TeamWorkspaceView v-else-if="isTeamSelected" />
@@ -10,6 +10,7 @@
         <div v-else class="flex items-center justify-center h-full text-gray-500">
           <p>{{ $t('shell.components.layout.WorkspaceDesktopLayout.select_or_run_an_agent_team') }}</p>
         </div>
+        <WorkspaceCenterLoadingOverlay v-if="isCenterLoading" />
       </div>
     </div>
 
@@ -34,16 +35,19 @@ import { useRightPanel } from '~/composables/useRightPanel';
 import AgentWorkspaceView from '~/components/workspace/agent/AgentWorkspaceView.vue';
 import TeamWorkspaceView from '~/components/workspace/team/TeamWorkspaceView.vue';
 import RunConfigPanel from '~/components/workspace/config/RunConfigPanel.vue';
+import WorkspaceCenterLoadingOverlay from '~/components/layout/WorkspaceCenterLoadingOverlay.vue';
 import RightSideTabs from './RightSideTabs.vue';
 import RightSidebarStrip from './RightSidebarStrip.vue';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
+import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore';
 
 const selectionStore = useAgentSelectionStore();
 const runConfigStore = useAgentRunConfigStore();
 const teamRunConfigStore = useTeamRunConfigStore();
+const runHistoryStore = useRunHistoryStore();
 const workspaceCenterViewStore = useWorkspaceCenterViewStore();
 
 const { isRightPanelVisible, rightPanelWidth, initDragRightPanel } = useRightPanel();
@@ -53,6 +57,7 @@ const isTeamSelected = computed(() => selectionStore.selectedType === 'team');
 const showSelectedRunConfig = computed(() =>
   Boolean(selectionStore.selectedRunId) && workspaceCenterViewStore.isConfigMode,
 );
+const isCenterLoading = computed(() => runHistoryStore.openingRun);
 
 const hasPendingRunConfig = computed(() => {
   if (isAgentSelected.value || isTeamSelected.value) {

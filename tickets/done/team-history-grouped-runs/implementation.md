@@ -7,13 +7,13 @@
 
 ## Upstream Artifacts (Required)
 
-- Workflow state: `tickets/in-progress/team-history-grouped-runs/workflow-state.md`
-- Investigation notes: `tickets/in-progress/team-history-grouped-runs/investigation-notes.md`
-- Requirements: `tickets/in-progress/team-history-grouped-runs/requirements.md`
+- Workflow state: `tickets/done/team-history-grouped-runs/workflow-state.md`
+- Investigation notes: `tickets/done/team-history-grouped-runs/investigation-notes.md`
+- Requirements: `tickets/done/team-history-grouped-runs/requirements.md`
   - Current Status: `Design-ready`
-- Runtime call stacks: `tickets/in-progress/team-history-grouped-runs/future-state-runtime-call-stack.md`
-- Future-state runtime call stack review: `tickets/in-progress/team-history-grouped-runs/future-state-runtime-call-stack-review.md`
-- Proposed design: `tickets/in-progress/team-history-grouped-runs/proposed-design.md`
+- Runtime call stacks: `tickets/done/team-history-grouped-runs/future-state-runtime-call-stack.md`
+- Future-state runtime call stack review: `tickets/done/team-history-grouped-runs/future-state-runtime-call-stack-review.md`
+- Proposed design: `tickets/done/team-history-grouped-runs/proposed-design.md`
 
 ## Document Status
 

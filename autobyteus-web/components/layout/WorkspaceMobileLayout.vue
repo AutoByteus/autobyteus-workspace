@@ -57,12 +57,13 @@
       </div>
 
       <!-- Main Interaction View (Agent or Team) -->
-      <div v-show="activeMobilePanel === 'main'" class="h-full p-0 overflow-auto">
+      <div v-show="activeMobilePanel === 'main'" class="relative h-full p-0 overflow-auto">
         <AgentWorkspaceView v-if="selectionStore.selectedType === 'agent'" />
         <TeamWorkspaceView v-else-if="selectionStore.selectedType === 'team'" />
         <div v-else class="flex items-center justify-center h-full text-gray-500">
           <p>{{ $t('shell.components.layout.WorkspaceMobileLayout.select_or_run_an_agent_team') }}</p>
         </div>
+        <WorkspaceCenterLoadingOverlay v-if="isCenterLoading" />
       </div>
 
       <!-- Right Side Tools (Terminal, VNC etc) -->
@@ -99,9 +100,11 @@ import RunningAgentsPanel from '~/components/workspace/running/RunningAgentsPane
 import RunConfigPanel from '~/components/workspace/config/RunConfigPanel.vue';
 import AgentWorkspaceView from '~/components/workspace/agent/AgentWorkspaceView.vue';
 import TeamWorkspaceView from '~/components/workspace/team/TeamWorkspaceView.vue'; // Import Team View
+import WorkspaceCenterLoadingOverlay from '~/components/layout/WorkspaceCenterLoadingOverlay.vue';
 import RightSideTabs from './RightSideTabs.vue';
 import { useMobilePanels } from '~/composables/useMobilePanels';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
+import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useWorkspaceStore } from '~/stores/workspace';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore';
@@ -111,6 +114,7 @@ const props = defineProps<{
 }>();
 
 const selectionStore = useAgentSelectionStore();
+const runHistoryStore = useRunHistoryStore();
 const workspaceStore = useWorkspaceStore();
 const runConfigStore = useAgentRunConfigStore();
 const teamRunConfigStore = useTeamRunConfigStore();
@@ -118,6 +122,7 @@ const { activeMobilePanel } = useMobilePanels();
 const { t } = useLocalization();
 
 const hasActiveWorkspace = computed(() => !!workspaceStore.activeWorkspace);
+const isCenterLoading = computed(() => runHistoryStore.openingRun);
 
 // --- Mobile Running Tab Logic ---
 const runningViewMode = ref<'list' | 'config'>('list');

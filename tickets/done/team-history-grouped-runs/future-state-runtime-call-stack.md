@@ -4,9 +4,9 @@
 
 - Scope Classification: `Medium`
 - Call Stack Version: `v4`
-- Requirements: `tickets/in-progress/team-history-grouped-runs/requirements.md` (status `Design-ready`)
+- Requirements: `tickets/done/team-history-grouped-runs/requirements.md` (status `Design-ready`)
 - Source Artifact:
-  - `Medium/Large`: `tickets/in-progress/team-history-grouped-runs/proposed-design.md`
+  - `Medium/Large`: `tickets/done/team-history-grouped-runs/proposed-design.md`
 - Source Design Version: `v4`
 - Referenced Sections:
   - Spine inventory sections: `Data-Flow Spine Inventory`

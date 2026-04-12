@@ -15,8 +15,8 @@
 
 ## Artifact Basis
 
-- Investigation Notes: `tickets/in-progress/team-history-grouped-runs/investigation-notes.md`
-- Requirements: `tickets/in-progress/team-history-grouped-runs/requirements.md`
+- Investigation Notes: `tickets/done/team-history-grouped-runs/investigation-notes.md`
+- Requirements: `tickets/done/team-history-grouped-runs/requirements.md`
 - Requirements Status: `Design-ready`
 - Shared Design Principles: `shared/design-principles.md`
 
