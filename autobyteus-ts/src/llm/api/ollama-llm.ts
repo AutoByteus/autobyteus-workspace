@@ -7,6 +7,7 @@ import { TokenUsage } from '../utils/token-usage.js';
 import { Message } from '../utils/messages.js';
 import { OllamaPromptRenderer } from '../prompt-renderers/ollama-prompt-renderer.js';
 import { convertOllamaToolCalls } from '../converters/ollama-tool-call-converter.js';
+import { createLocalLongRunningFetch } from '../transport/local-long-running-fetch.js';
 
 export class OllamaLLM extends BaseLLM {
   private client: Ollama;
@@ -18,7 +19,10 @@ export class OllamaLLM extends BaseLLM {
     }
 
     super(model, llmConfig);
-    this.client = new Ollama({ host: model.hostUrl });
+    this.client = new Ollama({
+      host: model.hostUrl,
+      fetch: createLocalLongRunningFetch(),
+    });
     this._renderer = new OllamaPromptRenderer();
   }
 

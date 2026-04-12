@@ -9,7 +9,7 @@ dist-examples/
 # Logs and runtime outputs
 logs/
 *.log
-memory/
+/memory/
 poem_writer_output/
 poems/
 

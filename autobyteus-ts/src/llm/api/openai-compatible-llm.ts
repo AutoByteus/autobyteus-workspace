@@ -1,4 +1,4 @@
-import type { OpenAI } from 'openai';
+import type { ClientOptions as OpenAIClientOptions, OpenAI } from 'openai';
 import { BaseLLM } from '../base.js';
 import { LLMModel } from '../models.js';
 import { LLMConfig } from '../utils/llm-config.js';
@@ -29,7 +29,8 @@ export class OpenAICompatibleLLM extends BaseLLM {
     apiKeyEnvVar: string,
     baseUrl: string,
     llmConfig?: LLMConfig,
-    apiKeyDefault?: string
+    apiKeyDefault?: string,
+    clientOptions?: Pick<OpenAIClientOptions, 'fetch' | 'fetchOptions' | 'timeout'>
   ) {
     let effectiveConfig = model.defaultConfig ? model.defaultConfig.clone() : new LLMConfig();
     if (llmConfig) {
@@ -50,7 +51,8 @@ export class OpenAICompatibleLLM extends BaseLLM {
 
     this.client = new OpenAIClient({
       apiKey: apiKey,
-      baseURL: baseUrl
+      baseURL: baseUrl,
+      ...(clientOptions ?? {})
     });
     
     this.maxTokens = effectiveConfig.maxTokens ?? undefined;

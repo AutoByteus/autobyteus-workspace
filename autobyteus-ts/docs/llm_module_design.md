@@ -114,6 +114,25 @@ src/llm/
 
 This config can be set globally per model in `LLMFactory` or overridden per instance during `createLLM`.
 
+## 6.1 Local Runtime Transport Hardening
+
+LM Studio and Ollama can spend minutes in prompt processing before they emit the
+first response body bytes for a large local request. The TypeScript runtime now
+keeps that policy explicit and provider-owned instead of broadening it to every
+OpenAI-compatible caller:
+
+- `src/llm/transport/local-long-running-fetch.ts` owns a shared `undici.Agent`
+  with `bodyTimeout: 0` and `headersTimeout: 0` for long-running local calls.
+- `LMStudioLLM` injects that fetch helper and also sets a high finite OpenAI SDK
+  timeout (`LOCAL_PROVIDER_SDK_TIMEOUT_MS`, currently `24h`) because the SDK
+  default is shorter and `timeout: 0` is not a true disable path there.
+- `OllamaLLM` injects the same shared fetch helper through its adapter.
+- Non-local / cloud OpenAI-compatible providers keep default SDK transport
+  behavior unless a separate review explicitly widens that policy.
+
+This hardening matters to compaction because the internal summarizer may send a
+large local request before the next agent LLM leg is allowed to continue.
+
 ## 7. Dynamic Model Reloading
 
 For local runtimes (Ollama, LM Studio, Autobyteus) where models can be added or removed while the application is running, `LLMFactory` provides a `reloadModels(provider)` method.

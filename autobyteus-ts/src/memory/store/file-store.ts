@@ -6,6 +6,24 @@ import { MemoryType, MemoryItem } from '../models/memory-types.js';
 import { RawTraceItem } from '../models/raw-trace-item.js';
 import { EpisodicItem } from '../models/episodic-item.js';
 import { SemanticItem } from '../models/semantic-item.js';
+import type { CompactedMemoryManifest } from './compacted-memory-manifest.js';
+
+const readJsonl = (filePath: string): Record<string, unknown>[] => {
+  if (!fs.existsSync(filePath)) {
+    return [];
+  }
+  return fs.readFileSync(filePath, 'utf-8')
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => JSON.parse(line));
+};
+
+const writeJsonl = (filePath: string, items: Record<string, unknown>[]): void => {
+  const tmpPath = `${filePath}.tmp`;
+  fs.writeFileSync(tmpPath, items.map((item) => JSON.stringify(item)).join('\n') + (items.length ? '\n' : ''), 'utf-8');
+  fs.renameSync(tmpPath, filePath);
+};
 
 export class FileMemoryStore extends MemoryStore {
   baseDir: string;
@@ -38,42 +56,56 @@ export class FileMemoryStore extends MemoryStore {
 
   list(memoryType: MemoryType, limit?: number): MemoryItem[] {
     const filePath = this.getFilePath(memoryType);
-    if (!fs.existsSync(filePath)) {
-      return [];
-    }
-    const lines = fs.readFileSync(filePath, 'utf-8')
-      .split('\n')
-      .map((line) => line.trim())
-      .filter(Boolean);
-    const sliced = typeof limit === 'number' ? lines.slice(-limit) : lines;
-    return sliced.map((line) => this.deserialize(memoryType, JSON.parse(line)));
+    const records = readJsonl(filePath);
+    const sliced = typeof limit === 'number' ? records.slice(-limit) : records;
+    return sliced.map((record) => this.deserialize(memoryType, record));
+  }
+
+  listRawTracesOrdered(limit?: number): RawTraceItem[] {
+    return this.list(MemoryType.RAW_TRACE, limit) as RawTraceItem[];
   }
 
   listRawTraceDicts(): Record<string, unknown>[] {
-    const filePath = this.getFilePath(MemoryType.RAW_TRACE);
+    return readJsonl(this.getFilePath(MemoryType.RAW_TRACE));
+  }
+
+  override readSemanticDicts(): Record<string, unknown>[] {
+    return readJsonl(this.getFilePath(MemoryType.SEMANTIC));
+  }
+
+  replaceSemanticItems(items: Iterable<SemanticItem>): void {
+    writeJsonl(this.getFilePath(MemoryType.SEMANTIC), Array.from(items, (item) => item.toDict()));
+  }
+
+  override clearSemanticItems(): void {
+    writeJsonl(this.getFilePath(MemoryType.SEMANTIC), []);
+  }
+
+  override readCompactedMemoryManifest(): CompactedMemoryManifest | null {
+    const filePath = this.getManifestPath();
     if (!fs.existsSync(filePath)) {
-      return [];
+      return null;
     }
-    return fs.readFileSync(filePath, 'utf-8')
-      .split('\n')
-      .map((line) => line.trim())
-      .filter(Boolean)
-      .map((line) => JSON.parse(line));
+    return JSON.parse(fs.readFileSync(filePath, 'utf-8')) as CompactedMemoryManifest;
+  }
+
+  override writeCompactedMemoryManifest(manifest: CompactedMemoryManifest): void {
+    const filePath = this.getManifestPath();
+    const tmpPath = `${filePath}.tmp`;
+    fs.writeFileSync(tmpPath, JSON.stringify(manifest), 'utf-8');
+    fs.renameSync(tmpPath, filePath);
   }
 
   readArchiveRawTraces(): Record<string, unknown>[] {
-    const filePath = this.getArchivePath();
-    if (!fs.existsSync(filePath)) {
-      return [];
-    }
-    return fs.readFileSync(filePath, 'utf-8')
-      .split('\n')
-      .map((line) => line.trim())
-      .filter(Boolean)
-      .map((line) => JSON.parse(line));
+    return readJsonl(this.getArchivePath());
   }
 
-  pruneRawTraces(keepTurnIds: Set<string>, archive = true): void {
+  pruneRawTracesById(traceIdsToRemove: Iterable<string>, archive = true): void {
+    const traceIdSet = new Set(Array.from(traceIdsToRemove));
+    if (!traceIdSet.size) {
+      return;
+    }
+
     const rawItems = this.listRawTraceDicts();
     if (!rawItems.length) {
       return;
@@ -83,18 +115,16 @@ export class FileMemoryStore extends MemoryStore {
     const removed: Record<string, unknown>[] = [];
 
     for (const item of rawItems) {
-      const turnId = typeof item.turn_id === 'string' ? item.turn_id : null;
-      if (turnId && keepTurnIds.has(turnId)) {
-        keep.push(item);
-      } else {
+      const traceId = typeof item.id === 'string' ? item.id : null;
+      if (traceId && traceIdSet.has(traceId)) {
         removed.push(item);
+      } else {
+        keep.push(item);
       }
     }
 
     const rawPath = this.getFilePath(MemoryType.RAW_TRACE);
-    const tmpPath = `${rawPath}.tmp`;
-    fs.writeFileSync(tmpPath, keep.map((item) => JSON.stringify(item)).join('\n') + (keep.length ? '\n' : ''), 'utf-8');
-    fs.renameSync(tmpPath, rawPath);
+    writeJsonl(rawPath, keep);
 
     if (archive && removed.length) {
       const archivePath = this.getArchivePath();
@@ -131,5 +161,9 @@ export class FileMemoryStore extends MemoryStore {
 
   private getArchivePath(): string {
     return path.join(this.agentDir, 'raw_traces_archive.jsonl');
+  }
+
+  private getManifestPath(): string {
+    return path.join(this.agentDir, 'compacted_memory_manifest.json');
   }
 }

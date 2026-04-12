@@ -18,6 +18,7 @@ export {
 
 export {
   handleAgentStatus,
+  handleCompactionStatus,
   handleAssistantComplete,
   handleTurnCompleted,
   handleError,

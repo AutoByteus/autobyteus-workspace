@@ -11,14 +11,19 @@ import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
 import { MemoryType } from '../../../src/memory/models/memory-types.js';
 import { Compactor } from '../../../src/memory/compaction/compactor.js';
 import { CompactionResult } from '../../../src/memory/compaction/compaction-result.js';
+import { PendingCompactionExecutor } from '../../../src/memory/compaction/pending-compaction-executor.js';
 import { Summarizer } from '../../../src/memory/compaction/summarizer.js';
 import { CompactionPolicy } from '../../../src/memory/policies/compaction-policy.js';
+import { RawTraceItem } from '../../../src/memory/models/raw-trace-item.js';
 import { createLmstudioLLM, hasLmstudioConfig } from '../helpers/lmstudio-llm-helper.js';
 
 class DummySummarizer extends Summarizer {
-  summarize(traces: any[]): CompactionResult {
+  async summarize(blocks: any[]): Promise<CompactionResult> {
+    const traces = blocks.flatMap((block) => block.traces ?? []);
     const summary = traces.map((trace) => trace.content).filter(Boolean).join(' ');
-    return new CompactionResult(summary || 'summary', [{ fact: 'user wants pong', confidence: 0.5 }]);
+    return new CompactionResult(summary || 'summary', {
+      userPreferences: [{ fact: 'user wants pong' }],
+    });
   }
 }
 
@@ -26,16 +31,26 @@ const runIntegration = hasLmstudioConfig() ? describe : describe.skip;
 
 runIntegration('Memory compaction flow (LM Studio)', () => {
   it('compacts and keeps raw tail', async () => {
+    const originalTargetTextModel = process.env.LMSTUDIO_TARGET_TEXT_MODEL;
+    if (!process.env.LMSTUDIO_TARGET_TEXT_MODEL) {
+      process.env.LMSTUDIO_TARGET_TEXT_MODEL = 'gemma-4-31b-it';
+    }
+
     const llm = await createLmstudioLLM();
     if (!llm) {
+      if (originalTargetTextModel === undefined) {
+        delete process.env.LMSTUDIO_TARGET_TEXT_MODEL;
+      } else {
+        process.env.LMSTUDIO_TARGET_TEXT_MODEL = originalTargetTextModel;
+      }
       return;
     }
 
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'mem-compaction-flow-'));
     try {
       const store = new FileMemoryStore(tempDir, 'agent_mem_compact');
-      const policy = new CompactionPolicy({ rawTailTurns: 1, triggerRatio: 0.1 });
-      const compactor = new Compactor(store, policy, new DummySummarizer());
+      const policy = new CompactionPolicy({ triggerRatio: 0.1 });
+      const compactor = new Compactor(store, new DummySummarizer());
       const memoryManager = new MemoryManager({ store, compactionPolicy: policy, compactor });
 
       for (let idx = 0; idx < 2; idx += 1) {
@@ -56,7 +71,11 @@ runIntegration('Memory compaction flow (LM Studio)', () => {
       const userMessage = new LLMUserMessage({ content: "Please respond with the word 'pong'." });
       memoryManager.ingestUserMessage(userMessage, currentTurnId, 'LLMUserMessageReadyEvent');
 
-      const assembler = new LLMRequestAssembler(memoryManager, new OpenAIChatRenderer());
+      const assembler = new LLMRequestAssembler(
+        memoryManager,
+        new OpenAIChatRenderer(),
+        new PendingCompactionExecutor(memoryManager)
+      );
       memoryManager.requestCompaction();
 
       const request = await assembler.prepareRequest(userMessage, currentTurnId, llm.config.systemMessage);
@@ -80,11 +99,16 @@ runIntegration('Memory compaction flow (LM Studio)', () => {
 
       memoryManager.ingestAssistantResponse(response, currentTurnId, 'LLMCompleteResponseReceivedEvent');
 
-      const rawItems = store.list(MemoryType.RAW_TRACE);
+      const rawItems = store.list(MemoryType.RAW_TRACE) as RawTraceItem[];
       expect(rawItems.length).toBeGreaterThan(0);
       expect(new Set(rawItems.map((item) => item.turnId))).toEqual(new Set([currentTurnId]));
     } finally {
+      if (originalTargetTextModel === undefined) {
+        delete process.env.LMSTUDIO_TARGET_TEXT_MODEL;
+      } else {
+        process.env.LMSTUDIO_TARGET_TEXT_MODEL = originalTargetTextModel;
+      }
       fs.rmSync(tempDir, { recursive: true, force: true });
     }
-  });
+  }, 60000);
 });

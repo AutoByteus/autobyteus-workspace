@@ -44,21 +44,22 @@ import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { CompleteResponse } from '../../../../src/llm/utils/response-types.js';
+import { Message, MessageRole } from '../../../../src/llm/utils/messages.js';
 import { SkillRegistry } from '../../../../src/skills/registry.js';
 import { EventType } from '../../../../src/events/event-types.js';
 import { MemoryManager } from '../../../../src/memory/memory-manager.js';
 import { MemoryStore } from '../../../../src/memory/store/base-store.js';
 import { MemoryType } from '../../../../src/memory/models/memory-types.js';
-import type { LLMUserMessage } from '../../../../src/llm/user-message.js';
 import type { ChunkResponse } from '../../../../src/llm/utils/response-types.js';
 
 class DummyLLM extends BaseLLM {
-  protected async _sendMessagesToLLM(_messages: any[]): Promise<CompleteResponse> {
+  protected async _sendMessagesToLLM(_messages: Message[]): Promise<CompleteResponse> {
     return new CompleteResponse({ content: 'ok' });
   }
 
   protected async *_streamMessagesToLLM(
-    _userMessage: LLMUserMessage
+    _messages: Message[],
+    _kwargs: Record<string, unknown>
   ): AsyncGenerator<ChunkResponse, void, unknown> {
     yield { content: 'ok', is_complete: true } as ChunkResponse;
   }
@@ -85,14 +86,19 @@ class ControllableLLM extends BaseLLM {
     this.releaseFirstResponse?.();
   }
 
-  protected async _sendMessagesToLLM(_messages: any[]): Promise<CompleteResponse> {
+  protected async _sendMessagesToLLM(_messages: Message[]): Promise<CompleteResponse> {
     return new CompleteResponse({ content: 'ok' });
   }
 
   protected async *_streamMessagesToLLM(
-    userMessage: LLMUserMessage
+    messages: Message[],
+    _kwargs: Record<string, unknown>
   ): AsyncGenerator<ChunkResponse, void, unknown> {
-    const callIndex = this.calls.push(String(userMessage.content ?? ''));
+    const latestUserContent =
+      messages
+        .filter((message) => message.role === MessageRole.USER)
+        .at(-1)?.content ?? '';
+    const callIndex = this.calls.push(String(latestUserContent));
     if (callIndex === 1) {
       this.resolveFirstRequestStarted();
       await new Promise<void>((resolve) => {
@@ -120,6 +126,15 @@ class InMemoryStore extends MemoryStore {
       return filtered.slice(-limit);
     }
     return filtered;
+  }
+
+  listRawTracesOrdered(limit?: number): any[] {
+    return this.list(MemoryType.RAW_TRACE, limit);
+  }
+
+  pruneRawTracesById(traceIdsToRemove: Iterable<string>): void {
+    const ids = new Set(Array.from(traceIdsToRemove));
+    this.items = this.items.filter((item) => item?.memoryType !== MemoryType.RAW_TRACE || !ids.has(item.id));
   }
 }
 
@@ -311,15 +326,17 @@ describe('Agent runtime integration', () => {
     const turnLifecycle: Array<{ type: EventType; turnId: string }> = [];
 
     context.statusManager?.notifier?.subscribe(EventType.AGENT_TURN_STARTED, (payload) => {
+      const turnPayload = payload as { turn_id?: string | null };
       turnLifecycle.push({
         type: EventType.AGENT_TURN_STARTED,
-        turnId: String(payload.turn_id)
+        turnId: String(turnPayload.turn_id)
       });
     });
     context.statusManager?.notifier?.subscribe(EventType.AGENT_TURN_COMPLETED, (payload) => {
+      const turnPayload = payload as { turn_id?: string | null };
       turnLifecycle.push({
         type: EventType.AGENT_TURN_COMPLETED,
-        turnId: String(payload.turn_id)
+        turnId: String(turnPayload.turn_id)
       });
     });
 

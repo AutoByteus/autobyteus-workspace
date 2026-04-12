@@ -34,7 +34,7 @@ describe('TeamStreamingService', () => {
         [
           'worker-a',
           {
-            state: { runId: 'agent-1' },
+            state: { runId: 'agent-1', compactionStatus: null },
             conversation: { messages: [], updatedAt: '' },
           },
         ],
@@ -99,7 +99,7 @@ describe('TeamStreamingService', () => {
         [
           'worker-a',
           {
-            state: { runId: 'agent-1' },
+            state: { runId: 'agent-1', compactionStatus: null },
             conversation: { messages: [], updatedAt: '' },
           },
         ],
@@ -135,7 +135,7 @@ describe('TeamStreamingService', () => {
         [
           'worker-a',
           {
-            state: { runId: 'agent-1' },
+            state: { runId: 'agent-1', compactionStatus: null },
             conversation: { messages: [], updatedAt: '' },
           },
         ],
@@ -179,8 +179,8 @@ describe('TeamStreamingService', () => {
     } as any;
 
     const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
-    const professorConversation = { messages: [], updatedAt: '' };
-    const studentConversation = { messages: [], updatedAt: '' };
+    const professorConversation: { messages: any[]; updatedAt: string } = { messages: [], updatedAt: '' };
+    const studentConversation: { messages: any[]; updatedAt: string } = { messages: [], updatedAt: '' };
     const teamContext = {
       isSubscribed: false,
       focusedMemberName: 'Student',
@@ -188,7 +188,7 @@ describe('TeamStreamingService', () => {
         [
           'Professor',
           {
-            state: { runId: 'prof-run-1' },
+            state: { runId: 'prof-run-1', compactionStatus: null },
             conversation: professorConversation,
             isSending: false,
           },
@@ -196,7 +196,7 @@ describe('TeamStreamingService', () => {
         [
           'Student',
           {
-            state: { runId: 'student-run-1' },
+            state: { runId: 'student-run-1', compactionStatus: null },
             conversation: studentConversation,
             isSending: false,
           },
@@ -248,7 +248,7 @@ describe('TeamStreamingService', () => {
         [
           'worker-a',
           {
-            state: { runId: 'agent-1' },
+            state: { runId: 'agent-1', compactionStatus: null },
             conversation: { messages: [], updatedAt: '' },
           },
         ],
@@ -284,5 +284,67 @@ describe('TeamStreamingService', () => {
       },
       agent_name: 'worker-a',
     });
+  });
+
+  it('routes compaction lifecycle messages to the targeted member context', () => {
+    const callbacks = new Map<string, (payload?: any) => void>();
+    const wsClient = {
+      state: 'disconnected',
+      connect: vi.fn(),
+      disconnect: vi.fn(),
+      send: vi.fn(),
+      on: vi.fn((event: string, cb: (payload?: any) => void) => {
+        callbacks.set(event, cb);
+      }),
+      off: vi.fn(),
+    } as any;
+
+    const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
+    const professorContext = {
+      state: { runId: 'prof-run-1', compactionStatus: null },
+      conversation: { messages: [], updatedAt: '' },
+      isSending: false,
+    };
+    const studentContext = {
+      state: { runId: 'student-run-1', compactionStatus: null },
+      conversation: { messages: [], updatedAt: '' },
+      isSending: false,
+    };
+    const teamContext = {
+      focusedMemberName: 'Student',
+      members: new Map([
+        ['Professor', professorContext],
+        ['Student', studentContext],
+      ]),
+    } as any;
+
+    service.connect('team-1', teamContext);
+    callbacks.get('onMessage')?.(
+      JSON.stringify({
+        type: 'COMPACTION_STATUS',
+        payload: {
+          phase: 'completed',
+          turn_id: 'turn-9',
+          selected_block_count: 3,
+          compacted_block_count: 2,
+          agent_name: 'Professor',
+          agent_id: 'prof-run-2',
+        },
+      }),
+    );
+
+    expect(professorContext.state.runId).toBe('prof-run-2');
+    expect(professorContext.state.compactionStatus).toEqual({
+      phase: 'completed',
+      message: 'Memory compacted',
+      turnId: 'turn-9',
+      selectedBlockCount: 3,
+      compactedBlockCount: 2,
+      rawTraceCount: null,
+      semanticFactCount: null,
+      compactionModelIdentifier: null,
+      errorMessage: null,
+    });
+    expect(studentContext.state.compactionStatus).toBeNull();
   });
 });

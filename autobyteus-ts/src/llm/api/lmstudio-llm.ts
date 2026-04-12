@@ -1,6 +1,10 @@
 import { OpenAICompatibleLLM } from './openai-compatible-llm.js';
 import { LLMModel } from '../models.js';
 import { LLMConfig } from '../utils/llm-config.js';
+import {
+  createLocalLongRunningFetch,
+  LOCAL_PROVIDER_SDK_TIMEOUT_MS,
+} from '../transport/local-long-running-fetch.js';
 
 export class LMStudioLLM extends OpenAICompatibleLLM {
   constructor(model: LLMModel, llmConfig?: LLMConfig) {
@@ -11,6 +15,16 @@ export class LMStudioLLM extends OpenAICompatibleLLM {
     const hostUrl = model.hostUrl.replace(/\/+$/, '');
     const baseUrl = `${hostUrl}/v1`;
 
-    super(model, 'LMSTUDIO_API_KEY', baseUrl, llmConfig, 'lm-studio');
+    super(
+      model,
+      'LMSTUDIO_API_KEY',
+      baseUrl,
+      llmConfig,
+      'lm-studio',
+      {
+        fetch: createLocalLongRunningFetch(),
+        timeout: LOCAL_PROVIDER_SDK_TIMEOUT_MS,
+      },
+    );
   }
 }

@@ -10,6 +10,7 @@ describe("AutoByteusStreamEventConverter", () => {
     [StreamEventType.TURN_STARTED, AgentRunEventType.TURN_STARTED],
     [StreamEventType.TURN_COMPLETED, AgentRunEventType.TURN_COMPLETED],
     [StreamEventType.AGENT_STATUS_UPDATED, AgentRunEventType.AGENT_STATUS],
+    [StreamEventType.COMPACTION_STATUS, AgentRunEventType.COMPACTION_STATUS],
     [StreamEventType.ASSISTANT_COMPLETE_RESPONSE, AgentRunEventType.ASSISTANT_COMPLETE],
     [StreamEventType.TOOL_APPROVAL_REQUESTED, AgentRunEventType.TOOL_APPROVAL_REQUESTED],
     [StreamEventType.TOOL_APPROVED, AgentRunEventType.TOOL_APPROVED],

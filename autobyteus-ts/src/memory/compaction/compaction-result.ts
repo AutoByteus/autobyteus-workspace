@@ -1,9 +1,31 @@
+export type CompactionSemanticEntry = {
+  fact: string;
+  reference?: string | null;
+  tags?: string[];
+};
+
+export type CompactionResultInit = {
+  criticalIssues?: CompactionSemanticEntry[];
+  unresolvedWork?: CompactionSemanticEntry[];
+  durableFacts?: CompactionSemanticEntry[];
+  userPreferences?: CompactionSemanticEntry[];
+  importantArtifacts?: CompactionSemanticEntry[];
+};
+
 export class CompactionResult {
   episodicSummary: string;
-  semanticFacts: Array<Record<string, unknown>>;
+  criticalIssues: CompactionSemanticEntry[];
+  unresolvedWork: CompactionSemanticEntry[];
+  durableFacts: CompactionSemanticEntry[];
+  userPreferences: CompactionSemanticEntry[];
+  importantArtifacts: CompactionSemanticEntry[];
 
-  constructor(episodicSummary: string, semanticFacts: Array<Record<string, unknown>> = []) {
+  constructor(episodicSummary: string, init: CompactionResultInit = {}) {
     this.episodicSummary = episodicSummary;
-    this.semanticFacts = semanticFacts;
+    this.criticalIssues = init.criticalIssues ?? [];
+    this.unresolvedWork = init.unresolvedWork ?? [];
+    this.durableFacts = init.durableFacts ?? [];
+    this.userPreferences = init.userPreferences ?? [];
+    this.importantArtifacts = init.importantArtifacts ?? [];
   }
 }

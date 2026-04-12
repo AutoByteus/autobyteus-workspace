@@ -94,6 +94,11 @@ const buildAgentContext = (overrides: Record<string, unknown> = {}) => ({
   state: {
     runId: 'agent-1234',
     currentStatus: AgentStatus.Idle,
+    compactionStatus: {
+      phase: 'started',
+      message: 'Compacting memory…',
+      turnId: 'turn-1',
+    },
     conversation: {
       id: 'agent-1234',
       createdAt: '2026-02-22T00:00:00.000Z',
@@ -113,7 +118,11 @@ describe('AgentWorkspaceView', () => {
   const mountComponent = () => mount(AgentWorkspaceView, {
     global: {
       stubs: {
-        AgentEventMonitor: { template: '<div data-test="agent-event-monitor" />' },
+        AgentEventMonitor: {
+          name: 'AgentEventMonitor',
+          props: ['conversation', 'compactionStatus', 'agentName', 'agentAvatarUrl'],
+          template: '<div data-test="agent-event-monitor" />',
+        },
         AgentStatusDisplay: { template: '<div data-test="header-status" />' },
         CopyButton: { template: '<button type="button" data-test="copy-button" />' },
         WorkspaceHeaderActions: {
@@ -155,5 +164,16 @@ describe('AgentWorkspaceView', () => {
     const wrapper = mountComponent();
     await wrapper.get('[data-test="edit-config"]').trigger('click');
     expect(workspaceCenterViewStoreMock.showConfig).toHaveBeenCalledTimes(1);
+  });
+
+  it('passes compaction status through to AgentEventMonitor', () => {
+    const wrapper = mountComponent();
+    const monitor = wrapper.findComponent({ name: 'AgentEventMonitor' });
+    expect(monitor.exists()).toBe(true);
+    expect(monitor.props('compactionStatus')).toEqual({
+      phase: 'started',
+      message: 'Compacting memory…',
+      turnId: 'turn-1',
+    });
   });
 });

@@ -66,6 +66,11 @@ describe('AgentTeamEventMonitor.vue', () => {
       },
       state: {
         runId: 'member_a111',
+        compactionStatus: {
+          phase: 'requested',
+          message: 'Compaction queued',
+          turnId: 'turn-1',
+        },
         conversation: createConversation(),
       },
     };
@@ -77,6 +82,7 @@ describe('AgentTeamEventMonitor.vue', () => {
       },
       state: {
         runId: 'member_b222',
+        compactionStatus: null,
         conversation: {
           ...createConversation(),
           id: 'team-1::student',
@@ -101,7 +107,7 @@ describe('AgentTeamEventMonitor.vue', () => {
         stubs: {
           AgentEventMonitor: {
             name: 'AgentEventMonitor',
-            props: ['conversation', 'agentName', 'agentAvatarUrl', 'interAgentSenderNameById'],
+            props: ['conversation', 'compactionStatus', 'agentName', 'agentAvatarUrl', 'interAgentSenderNameById'],
             template: '<div class="agent-event-monitor-stub" />',
           },
         },
@@ -122,7 +128,7 @@ describe('AgentTeamEventMonitor.vue', () => {
         stubs: {
           AgentEventMonitor: {
             name: 'AgentEventMonitor',
-            props: ['conversation', 'agentName', 'agentAvatarUrl', 'interAgentSenderNameById'],
+            props: ['conversation', 'compactionStatus', 'agentName', 'agentAvatarUrl', 'interAgentSenderNameById'],
             template: '<div class="agent-event-monitor-stub" />',
           },
         },
@@ -133,5 +139,27 @@ describe('AgentTeamEventMonitor.vue', () => {
     expect(monitor.exists()).toBe(true);
     expect(monitor.props('agentName')).toBe('Professor');
     expect(monitor.props('agentAvatarUrl')).toBe('https://example.com/professor.png');
+  });
+
+  it('passes focused member compaction status to AgentEventMonitor', () => {
+    const wrapper = shallowMount(AgentTeamEventMonitor, {
+      global: {
+        stubs: {
+          AgentEventMonitor: {
+            name: 'AgentEventMonitor',
+            props: ['conversation', 'compactionStatus', 'agentName', 'agentAvatarUrl', 'interAgentSenderNameById'],
+            template: '<div class="agent-event-monitor-stub" />',
+          },
+        },
+      },
+    });
+
+    const monitor = wrapper.findComponent({ name: 'AgentEventMonitor' });
+    expect(monitor.exists()).toBe(true);
+    expect(monitor.props('compactionStatus')).toEqual({
+      phase: 'requested',
+      message: 'Compaction queued',
+      turnId: 'turn-1',
+    });
   });
 });

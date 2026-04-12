@@ -4,16 +4,23 @@ import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
 
 const mockCreate = vi.hoisted(() => vi.fn());
+const mockOpenAIConstructor = vi.hoisted(
+  () =>
+    vi.fn(function (
+      this: { chat: { completions: { create: typeof mockCreate } } },
+      _options?: Record<string, unknown>,
+    ) {
+      this.chat = {
+        completions: {
+          create: mockCreate,
+        },
+      };
+    }),
+);
 
 // Mock OpenAI Client
 vi.mock('openai', () => {
-  const OpenAI = vi.fn();
-  OpenAI.prototype.chat = {
-    completions: {
-      create: mockCreate
-    }
-  };
-  return { OpenAI };
+  return { OpenAI: mockOpenAIConstructor };
 });
 
 async function* createStream(parts: any[]) {
@@ -27,6 +34,7 @@ describe('OpenAICompatibleLLM', () => {
   
   beforeEach(() => {
     mockCreate.mockReset();
+    mockOpenAIConstructor.mockClear();
     process.env.TEST_API_KEY = 'sk-test';
     const model = new LLMModel({
       name: 'gpt-4o',
@@ -45,6 +53,10 @@ describe('OpenAICompatibleLLM', () => {
   it('should initialize with API key', () => {
     // Construction successful if no error thrown
     expect(llm).toBeDefined();
+    expect(mockOpenAIConstructor).toHaveBeenCalledWith({
+      apiKey: 'sk-test',
+      baseURL: 'https://api.openai.com/v1',
+    });
   });
 
   it('should throw if API key missing', () => {
@@ -212,5 +224,17 @@ describe('OpenAICompatibleLLM', () => {
 
     expect(chunks.some((chunk) => chunk.reasoning === 'alternate reasoning token')).toBe(true);
     expect(chunks.at(-1)?.is_complete).toBe(true);
+  });
+
+  it('keeps default client timeout/fetch behavior for non-LM-Studio providers', () => {
+    expect(mockOpenAIConstructor).toHaveBeenCalledTimes(1);
+    const [clientOptions] = mockOpenAIConstructor.mock.calls.at(0) ?? [];
+
+    expect(clientOptions).toEqual({
+      apiKey: 'sk-test',
+      baseURL: 'https://api.openai.com/v1',
+    });
+    expect(clientOptions).not.toHaveProperty('timeout');
+    expect(clientOptions).not.toHaveProperty('fetch');
   });
 });

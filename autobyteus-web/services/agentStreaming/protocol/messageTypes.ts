@@ -18,6 +18,7 @@ export type ServerMessageType =
   | 'SEGMENT_END'
   | 'EXTERNAL_USER_MESSAGE'
   | 'AGENT_STATUS'
+  | 'COMPACTION_STATUS'
   | 'TEAM_STATUS'
   | 'TOOL_APPROVAL_REQUESTED'
   | 'TOOL_APPROVED'
@@ -89,6 +90,19 @@ export interface AgentStatusPayload {
   tool_name?: string | null;
   error_message?: string | null;
   error_details?: string | null;
+}
+
+export interface CompactionStatusPayload {
+  phase: 'requested' | 'started' | 'completed' | 'failed';
+  turn_id?: string | null;
+  selected_block_count?: number | null;
+  compacted_block_count?: number | null;
+  raw_trace_count?: number | null;
+  semantic_fact_count?: number | null;
+  compaction_model_identifier?: string | null;
+  error_message?: string | null;
+  agent_id?: string;
+  agent_name?: string;
 }
 
 export interface ExternalUserMessageContextFilePathPayload {
@@ -313,6 +327,7 @@ export type ServerMessage =
   | { type: 'SEGMENT_END'; payload: SegmentEndPayload }
   | { type: 'EXTERNAL_USER_MESSAGE'; payload: ExternalUserMessagePayload }
   | { type: 'AGENT_STATUS'; payload: AgentStatusPayload }
+  | { type: 'COMPACTION_STATUS'; payload: CompactionStatusPayload }
   | { type: 'TEAM_STATUS'; payload: TeamStatusPayload }
   | { type: 'TOOL_APPROVAL_REQUESTED'; payload: ToolApprovalRequestedPayload }
   | { type: 'TOOL_APPROVED'; payload: ToolApprovedPayload }

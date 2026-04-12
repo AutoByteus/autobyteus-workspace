@@ -6,15 +6,18 @@ import {
   PendingToolInvocationEvent,
   BaseEvent
 } from '../events/agent-events.js';
-import { ChunkResponse, CompleteResponse } from '../../llm/utils/response-types.js';
+import { CompleteResponse } from '../../llm/utils/response-types.js';
 import { BaseLLM } from '../../llm/base.js';
 import { StreamingResponseHandlerFactory } from '../streaming/handlers/streaming-handler-factory.js';
 import { SegmentEvent, SegmentType } from '../streaming/segments/segment-events.js';
 import { OpenAIChatRenderer } from '../../llm/prompt-renderers/openai-chat-renderer.js';
-import { LLMRequestAssembler } from '../llm-request-assembler.js';
+import { LLMRequestAssembler, type RequestPackage } from '../llm-request-assembler.js';
+import { CompactionPreparationError } from '../compaction/compaction-preparation-error.js';
+import { CompactionRuntimeReporter } from '../compaction/compaction-runtime-reporter.js';
 import { applyCompactionPolicy, resolveTokenBudget } from '../token-budget.js';
+import { CompactionRuntimeSettingsResolver } from '../../memory/compaction/compaction-runtime-settings.js';
+import { PendingCompactionExecutor } from '../../memory/compaction/pending-compaction-executor.js';
 import type { AgentContext } from '../context/agent-context.js';
-import type { LLMUserMessage } from '../../llm/user-message.js';
 import type { TokenUsage } from '../../llm/utils/token-usage.js';
 
 export class LLMUserMessageReadyEventHandler extends AgentEventHandler {
@@ -58,7 +61,7 @@ export class LLMUserMessageReadyEventHandler extends AgentEventHandler {
     if (!activeTurn || activeTurn.turnId !== activeTurnId) {
       const errorMessage =
         `Agent '${agentId}' received LLMUserMessageReadyEvent for turn '${activeTurnId}', ` +
-        `but activeTurn is '${activeTurn?.turnId ?? "null"}'.`;
+        `but activeTurn is '${activeTurn?.turnId ?? 'null'}'.`;
       console.error(errorMessage);
       throw new Error(errorMessage);
     }
@@ -71,6 +74,8 @@ export class LLMUserMessageReadyEventHandler extends AgentEventHandler {
     const completeVideoUrls: string[] = [];
 
     const notifier = context.statusManager?.notifier ?? null;
+    const compactionReporter = new CompactionRuntimeReporter(agentId, notifier ?? null);
+    const runtimeSettingsResolver = new CompactionRuntimeSettingsResolver();
     if (!notifier) {
       console.error(
         `Agent '${agentId}': Notifier not available in LLMUserMessageReadyEventHandler. Cannot emit segment events.`
@@ -134,9 +139,40 @@ export class LLMUserMessageReadyEventHandler extends AgentEventHandler {
     let currentReasoningPartId: string | null = null;
 
     const renderer = (llmInstance as any)._renderer ?? new OpenAIChatRenderer();
-    const assembler = new LLMRequestAssembler(memoryManager, renderer);
+    const pendingCompactionExecutor = new PendingCompactionExecutor(memoryManager, {
+      reporter: compactionReporter,
+      runtimeSettingsResolver,
+      fallbackCompactionModelIdentifier: llmInstance.model.modelIdentifier,
+      maxEpisodic: 3,
+      maxSemantic: 20,
+    });
+    const assembler = new LLMRequestAssembler(memoryManager, renderer, pendingCompactionExecutor);
     const systemPrompt = context.state.processedSystemPrompt ?? llmInstance.config.systemMessage ?? null;
-    const request = await assembler.prepareRequest(llmUserMessage, activeTurnId, systemPrompt ?? undefined);
+
+    let request: RequestPackage;
+    try {
+      request = await assembler.prepareRequest(
+        llmUserMessage,
+        activeTurnId,
+        systemPrompt ?? undefined,
+        llmInstance.model.modelIdentifier
+      );
+    } catch (error) {
+      if (error instanceof CompactionPreparationError) {
+        await this.enqueueErrorCompletion(
+          agentId,
+          activeTurnId,
+          context,
+          notifier,
+          'LLMUserMessageReadyEventHandler.prepareRequest',
+          error.message,
+          String(error.cause ?? error)
+        );
+        return;
+      }
+      throw error;
+    }
+
     let parsedToolInvocationCount = 0;
 
     try {
@@ -203,26 +239,15 @@ export class LLMUserMessageReadyEventHandler extends AgentEventHandler {
     } catch (error) {
       console.error(`Agent '${agentId}' error during LLM stream: ${error}`);
       const errorMessage = `Error processing your request with the LLM: ${String(error)}`;
-
-      if (notifier) {
-        try {
-          notifier.notifyAgentErrorOutputGeneration(
-            'LLMUserMessageReadyEventHandler.streamUserMessage',
-            errorMessage,
-            String(error)
-          );
-        } catch (notifyError) {
-          console.error(
-            `Agent '${agentId}': Error notifying agent output error after LLM stream failure: ${notifyError}`
-          );
-        }
-      }
-
-      const errorResponse = new CompleteResponse({ content: errorMessage, usage: null });
-      await context.inputEventQueues.enqueueInternalSystemEvent(
-        new LLMCompleteResponseReceivedEvent(errorResponse, true, activeTurnId)
+      await this.enqueueErrorCompletion(
+        agentId,
+        activeTurnId,
+        context,
+        notifier,
+        'LLMUserMessageReadyEventHandler.streamUserMessage',
+        errorMessage,
+        String(error)
       );
-      console.info(`Agent '${agentId}' enqueued LLMCompleteResponseReceivedEvent with error details.`);
       return;
     }
 
@@ -235,29 +260,65 @@ export class LLMUserMessageReadyEventHandler extends AgentEventHandler {
       video_urls: completeVideoUrls
     });
 
-    if (memoryManager) {
-      memoryManager.ingestAssistantResponse(
-        completeResponse,
-        activeTurnId,
-        'LLMCompleteResponseReceivedEvent',
-        {
-          // For tool-calling turns, strict OpenAI-compatible providers require:
-          // assistant(tool_calls) -> tool(result) before any next assistant text.
-          appendToWorkingContext: parsedToolInvocationCount === 0
-        }
+    memoryManager.ingestAssistantResponse(
+      completeResponse,
+      activeTurnId,
+      'LLMCompleteResponseReceivedEvent',
+      {
+        appendToWorkingContext: parsedToolInvocationCount === 0
+      }
+    );
+
+    const runtimeSettings = runtimeSettingsResolver.resolve();
+    if (tokenUsage) {
+      const budget = resolveTokenBudget(
+        llmInstance.model,
+        llmInstance.config,
+        memoryManager.compactionPolicy,
+        runtimeSettings
       );
-      if (tokenUsage) {
-        const budget = resolveTokenBudget(llmInstance.model, llmInstance.config, memoryManager.compactionPolicy);
-        if (budget) {
-          applyCompactionPolicy(memoryManager.compactionPolicy, budget);
-          if (memoryManager.compactor && memoryManager.compactionPolicy.shouldCompact(
+      if (budget) {
+        applyCompactionPolicy(memoryManager.compactionPolicy, budget);
+        const compactionRequired = Boolean(
+          memoryManager.compactor && memoryManager.compactionPolicy.shouldCompact(
             tokenUsage.prompt_tokens,
             budget.inputBudget
-          )) {
-            memoryManager.requestCompaction();
-          }
+          )
+        );
+
+        compactionReporter.logBudgetEvaluated({
+          prompt_tokens: tokenUsage.prompt_tokens,
+          effective_total_context_tokens: budget.effectiveContextCapacity,
+          context_derived_input_cap_tokens: budget.contextDerivedInputCapTokens,
+          provider_input_cap_tokens: budget.providerInputCapTokens,
+          effective_input_cap_tokens: budget.effectiveInputCapacity,
+          reserved_output_tokens: budget.reservedOutputTokens,
+          safety_margin_tokens: budget.safetyMarginTokens,
+          input_budget_tokens: budget.inputBudget,
+          compaction_ratio: budget.compactionRatio,
+          trigger_threshold_tokens: budget.triggerThresholdTokens,
+          override_active: budget.overrideActive,
+          compaction_required: compactionRequired
+        }, runtimeSettings.detailedLogsEnabled);
+
+        if (compactionRequired) {
+          memoryManager.requestCompaction();
+          compactionReporter.emitStatus({
+            phase: 'requested',
+            turn_id: activeTurnId,
+            selected_block_count: null,
+            compacted_block_count: null,
+            raw_trace_count: null,
+            semantic_fact_count: null,
+            compaction_model_identifier: runtimeSettings.compactionModelIdentifier ?? llmInstance.model.modelIdentifier
+          });
         }
       }
+    } else {
+      compactionReporter.logBudgetSkippedNoUsage({
+        turn_id: activeTurnId,
+        reason: 'missing_usage'
+      }, runtimeSettings.detailedLogsEnabled);
     }
 
     await context.inputEventQueues.enqueueInternalSystemEvent(
@@ -266,5 +327,37 @@ export class LLMUserMessageReadyEventHandler extends AgentEventHandler {
     console.info(
       `Agent '${agentId}' enqueued LLMCompleteResponseReceivedEvent from LLMUserMessageReadyEventHandler.`
     );
+  }
+
+  private async enqueueErrorCompletion(
+    agentId: string,
+    activeTurnId: string,
+    context: AgentContext,
+    notifier: {
+      notifyAgentErrorOutputGeneration?: (source: string, message: string, details?: string) => void;
+    } | null | undefined,
+    source: string,
+    errorMessage: string,
+    errorDetails?: string
+  ): Promise<void> {
+    if (notifier?.notifyAgentErrorOutputGeneration) {
+      try {
+        notifier.notifyAgentErrorOutputGeneration(
+          source,
+          errorMessage,
+          errorDetails
+        );
+      } catch (notifyError) {
+        console.error(
+          `Agent '${agentId}': Error notifying agent output error after LLM failure: ${notifyError}`
+        );
+      }
+    }
+
+    const errorResponse = new CompleteResponse({ content: errorMessage, usage: null });
+    await context.inputEventQueues.enqueueInternalSystemEvent(
+      new LLMCompleteResponseReceivedEvent(errorResponse, true, activeTurnId)
+    );
+    console.info(`Agent '${agentId}' enqueued LLMCompleteResponseReceivedEvent with error details.`);
   }
 }

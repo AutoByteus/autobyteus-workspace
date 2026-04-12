@@ -78,7 +78,7 @@ describe('Working context snapshot restore flow (agent)', () => {
     snapshot.appendMessage(new Message(MessageRole.USER, { content: 'Hello' }));
 
     const payload = WorkingContextSnapshotSerializer.serialize(snapshot, {
-      schema_version: 1,
+      schema_version: WorkingContextSnapshotSerializer.CURRENT_SCHEMA_VERSION,
       agent_id: agentId
     });
 

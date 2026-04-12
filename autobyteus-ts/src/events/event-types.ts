@@ -22,6 +22,7 @@ export enum EventType {
   AGENT_TOOL_EXECUTION_SUCCEEDED = 'agent_tool_execution_succeeded',
   AGENT_TOOL_EXECUTION_FAILED = 'agent_tool_execution_failed',
   AGENT_ERROR_OUTPUT_GENERATION = 'agent_error_output_generation',
+  AGENT_COMPACTION_STATUS_UPDATED = 'agent_compaction_status_updated',
   TEAM_STREAM_EVENT = 'team_stream_event',
   WORKFLOW_STREAM_EVENT = 'workflow_stream_event',
   TASK_PLAN_TASKS_CREATED = 'task_plan.tasks.created',

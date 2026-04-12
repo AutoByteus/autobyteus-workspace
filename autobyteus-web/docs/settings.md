@@ -135,9 +135,18 @@ Manage agent package sources used by the app.
 
 A flexible key-value store for backend configurations.
 
-- **View & Edit:** precise control over server-side flags and parameters.
+- **Quick setup cards:** The quick server-settings surface now includes both `Web Search Configuration` and a dedicated `Compaction config` card.
+- **Compaction config:** The typed compaction card saves the main memory-compaction controls without requiring operators to remember raw env keys:
+  - **Compaction model:** optional dedicated internal summarizer model; blank falls back to the active run model.
+  - **Compaction trigger ratio (%):** saved to `AUTOBYTEUS_COMPACTION_TRIGGER_RATIO`; defaults to `80%`.
+  - **Effective context override:** saved to `AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE`; use this when a provider (for example LM Studio) fails before its advertised maximum context.
+  - **Enable detailed compaction logs:** saved to `AUTOBYTEUS_COMPACTION_DEBUG_LOGS`; turns on verbose budget/execution/result diagnostics in server logs.
+- **Live runtime effect:** Compaction settings are env-backed server settings, but changes apply to subsequent compaction budget checks and compaction-model dispatches without restarting the server.
+- **Local provider note:** LM Studio and Ollama long-running requests are now hardened internally for delayed first-token / long prompt-processing cases; there is no separate timeout setting in the UI. If local runs still fail before the practical context ceiling, lower **Effective context override** instead.
+- **Advanced raw table:** The full key-value table remains available for precise control over server-side flags and parameters, including custom settings.
 - **Custom Settings:** Users can add new custom key-value pairs to configure plugins or experimental features.
 - **Custom Setting Cleanup:** Advanced table rows for custom keys include a remove action to delete obsolete entries.
+- **Workspace feedback:** Compaction activity is surfaced back in the active agent/team workspace as a status banner (`Compaction queued`, `Compacting memory…`, `Memory compacted`, or failure text) rather than only appearing as an unexplained pause.
 
 ### 10. Extensions
 
@@ -169,6 +178,7 @@ Canonical app metadata and manual update controls.
 ## Related Documentation
 
 - **[Agent Management](./agent_management.md)**: API keys configured in Settings are used by Agents.
+- **[Agent Execution Architecture](./agent_execution_architecture.md)**: streamed runtime events, including compaction status propagation into the workspace banner.
 - **[Electron Packaging](./electron_packaging.md)**: The Server Status monitor and managed extensions both interact with Electron-owned runtime services.
 - **[Localization](./localization.md)**: language selection, locale resolution, and localization contributor workflow.
 - **[Managed Messaging Setup](./messaging.md)**: End-to-end gateway, provider, binding, and verification flow.

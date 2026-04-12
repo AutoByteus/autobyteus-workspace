@@ -79,6 +79,7 @@ Incoming events are routed based on their `type`:
 | `TURN_STARTED`            | inline lifecycle handling                          | Marks a new turn boundary in the protocol; current clients treat it as an observable lifecycle checkpoint. |
 | `TURN_COMPLETED`          | `agentStatusHandler.handleTurnCompleted`           | Marks the current AI message complete for that turn without waiting only for idle inference. |
 | `AGENT_STATUS`            | `agentStatusHandler.handleAgentStatus`             | Updates run-level status such as `running`, `idle`, or `error`. |
+| `COMPACTION_STATUS`       | `agentStatusHandler.handleCompactionStatus`        | Normalizes compaction lifecycle payloads into banner-ready run state (`requested`, `started`, `completed`, `failed`). |
 | `ASSISTANT_COMPLETE`      | `agentStatusHandler.handleAssistantComplete`       | Legacy completion signal that still marks the current AI message complete. |
 | `ERROR`                   | `agentStatusHandler.handleError`                   | Surfaces unrecoverable agent/runtime errors into the conversation. |
 | `TOOL_APPROVAL_REQUESTED` | `toolLifecycleHandler.handleToolApprovalRequested` | Sets segment status to `awaiting-approval`.                     |
@@ -134,6 +135,21 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
     - Presentation-density changes for inline chat cards should stay in `ToolCallIndicator.vue`; textual activity-status changes should stay in `ActivityItem.vue`.
 3.  **Todos (`AgentTodoStore`)**:
     - Maintains the agent's Todo list separately from the chat history.
+
+### Run-Level Compaction Status
+
+Compaction lifecycle state is stored directly on `AgentRunState` instead of a
+sidecar store because it is one banner-sized run status, not a growing data set.
+
+- Backend/runtime phases are `requested`, `started`, `completed`, and `failed`.
+- `handleCompactionStatus` turns the streamed payload into a UI-facing message
+  and stores it on `context.state.compactionStatus`.
+- `AgentEventMonitor` renders `CompactionStatusBanner` above the conversation
+  feed for:
+  - single-agent runs (`AgentWorkspaceView`)
+  - the focused member inside team runs (`AgentTeamEventMonitor`)
+- Failure details stay visible in the banner, while detailed token-budget numbers
+  remain in server/runtime logs instead of a live frontend debug panel.
 
 ---
 

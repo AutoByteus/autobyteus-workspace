@@ -83,6 +83,20 @@ export class MemoryManager {
     this.store.add([trace]);
   }
 
+  ingestToolContinuationBoundary(turnId: string, sourceEvent: string, content = 'Tool continuation'): void {
+    const trace = new RawTraceItem({
+      id: `rt_${Date.now()}_tool_continuation`,
+      ts: Date.now() / 1000,
+      turnId,
+      seq: this.nextSeq(turnId),
+      traceType: 'tool_continuation',
+      content,
+      sourceEvent,
+      tags: ['boundary']
+    });
+    this.store.add([trace]);
+  }
+
   ingestToolIntent(toolInvocation: ToolInvocation, turnId?: string): void {
     this.ingestToolIntents([toolInvocation], turnId);
   }
@@ -186,41 +200,12 @@ export class MemoryManager {
     this.persistWorkingContextSnapshot();
   }
 
-  private getRawTailInternal(tailTurns: number, excludeTurnId?: string | null): RawTraceItem[] {
-    const rawItems = this.store.list(MemoryType.RAW_TRACE) as RawTraceItem[];
-    if (tailTurns <= 0) {
-      return [];
-    }
-
-    const orderedTurns: string[] = [];
-    const seen = new Set<string>();
-    for (const item of rawItems) {
-      if (excludeTurnId && item.turnId === excludeTurnId) {
-        continue;
-      }
-      if (!seen.has(item.turnId)) {
-        seen.add(item.turnId);
-        orderedTurns.push(item.turnId);
-      }
-    }
-
-    if (!orderedTurns.length) {
-      return [];
-    }
-
-    const keepTurns = new Set(orderedTurns.slice(-tailTurns));
-    const tailItems = rawItems.filter((item) => keepTurns.has(item.turnId));
-    const orderIndex = new Map(orderedTurns.map((turnId, idx) => [turnId, idx]));
-    tailItems.sort((a, b) => {
-      const orderA = orderIndex.get(a.turnId) ?? 0;
-      const orderB = orderIndex.get(b.turnId) ?? 0;
-      return orderA === orderB ? a.seq - b.seq : orderA - orderB;
-    });
-    return tailItems;
+  listRawTracesOrdered(limit?: number): RawTraceItem[] {
+    return this.store.listRawTracesOrdered(limit);
   }
 
-  getRawTail(tailTurns: number, excludeTurnId?: string | null): RawTraceItem[] {
-    return this.getRawTailInternal(tailTurns, excludeTurnId);
+  pruneRawTracesById(traceIds: Iterable<string>, archive = true): void {
+    this.store.pruneRawTracesById(traceIds, archive);
   }
 
   getWorkingContextMessages() {
@@ -241,7 +226,7 @@ export class MemoryManager {
       return;
     }
     const payload = WorkingContextSnapshotSerializer.serialize(this.workingContextSnapshot, {
-      schema_version: 1,
+      schema_version: WorkingContextSnapshotSerializer.CURRENT_SCHEMA_VERSION,
       agent_id: agentId,
       epoch_id: this.workingContextSnapshot.epochId,
       last_compaction_ts: this.workingContextSnapshot.lastCompactionTs
@@ -250,7 +235,7 @@ export class MemoryManager {
   }
 
   getToolInteractions(turnId?: string | null) {
-    let rawItems = this.store.list(MemoryType.RAW_TRACE) as RawTraceItem[];
+    let rawItems = this.listRawTracesOrdered();
     if (turnId) {
       rawItems = rawItems.filter((item) => item.turnId === turnId);
     }

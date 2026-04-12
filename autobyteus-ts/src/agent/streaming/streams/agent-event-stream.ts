@@ -7,6 +7,7 @@ import {
   createTurnLifecycleData,
   createAgentStatusUpdateData,
   createErrorEventData,
+  createCompactionStatusData,
   createToolApprovalRequestedData,
   createToolApprovedData,
   createToolDeniedData,
@@ -31,6 +32,7 @@ import {
   ToolExecutionFailedData,
   SegmentEventData,
   ErrorEventData,
+  CompactionStatusData,
   SystemTaskNotificationData,
   InterAgentMessageData,
   ToDoListUpdateData,
@@ -151,6 +153,10 @@ export class AgentEventStream extends EventEmitter {
         case EventType.AGENT_ERROR_OUTPUT_GENERATION:
           typedPayload = createErrorEventData(payload);
           streamEventType = StreamEventType.ERROR_EVENT;
+          break;
+        case EventType.AGENT_COMPACTION_STATUS_UPDATED:
+          typedPayload = createCompactionStatusData(payload);
+          streamEventType = StreamEventType.COMPACTION_STATUS;
           break;
         case EventType.AGENT_DATA_SYSTEM_TASK_NOTIFICATION_RECEIVED:
           typedPayload = createSystemTaskNotificationData(payload);

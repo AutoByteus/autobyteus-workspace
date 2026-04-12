@@ -84,6 +84,46 @@ describe("ServerSettingsService", () => {
     });
   });
 
+  it("exposes compaction predefined settings with typed descriptions", () => {
+    mockConfig.getConfigData.mockReturnValue({});
+    mockConfig.get.mockImplementation((key: string) =>
+      ({
+        AUTOBYTEUS_COMPACTION_TRIGGER_RATIO: "0.8",
+        AUTOBYTEUS_COMPACTION_MODEL_IDENTIFIER: "compaction-model",
+        AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE: "4096",
+        AUTOBYTEUS_COMPACTION_DEBUG_LOGS: "true",
+      })[key],
+    );
+
+    const service = new ServerSettingsService();
+    const settings = service.getAvailableSettings();
+
+    expect(settings.find((item) => item.key === "AUTOBYTEUS_COMPACTION_TRIGGER_RATIO")).toMatchObject({
+      value: "0.8",
+      description: expect.stringContaining("compaction trigger ratio"),
+      isEditable: true,
+      isDeletable: false,
+    });
+    expect(settings.find((item) => item.key === "AUTOBYTEUS_COMPACTION_MODEL_IDENTIFIER")).toMatchObject({
+      value: "compaction-model",
+      description: expect.stringContaining("model identifier override"),
+      isEditable: true,
+      isDeletable: false,
+    });
+    expect(settings.find((item) => item.key === "AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE")).toMatchObject({
+      value: "4096",
+      description: expect.stringContaining("effective context ceiling override"),
+      isEditable: true,
+      isDeletable: false,
+    });
+    expect(settings.find((item) => item.key === "AUTOBYTEUS_COMPACTION_DEBUG_LOGS")).toMatchObject({
+      value: "true",
+      description: expect.stringContaining("detailed compaction"),
+      isEditable: true,
+      isDeletable: false,
+    });
+  });
+
   it("updates settings successfully", () => {
     mockConfig.set.mockImplementation(() => undefined);
 

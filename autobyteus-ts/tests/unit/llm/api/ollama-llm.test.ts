@@ -4,18 +4,18 @@ import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMUserMessage } from '../../../../src/llm/user-message.js';
 import { OllamaLLM } from '../../../../src/llm/api/ollama-llm.js';
+import { createLocalLongRunningFetch } from '../../../../src/llm/transport/local-long-running-fetch.js';
 
 const mockChat = vi.hoisted(() => vi.fn());
-
-const MockOllama = vi.hoisted(
+const mockOllamaConstructor = vi.hoisted(
   () =>
-    class {
-      chat = mockChat;
-    },
+    vi.fn(function (this: { chat: typeof mockChat }) {
+      this.chat = mockChat;
+    }),
 );
 
 vi.mock('ollama', () => ({
-  Ollama: MockOllama,
+  Ollama: mockOllamaConstructor,
 }));
 
 async function* createStream(parts: any[]) {
@@ -36,6 +36,7 @@ describe('OllamaLLM', () => {
 
   beforeEach(() => {
     mockChat.mockReset();
+    mockOllamaConstructor.mockClear();
   });
 
   it('forwards tool schemas to the Ollama chat request', async () => {
@@ -73,6 +74,10 @@ describe('OllamaLLM', () => {
         tools: [toolSchema]
       })
     );
+    expect(mockOllamaConstructor).toHaveBeenCalledWith({
+      host: 'http://localhost:11434',
+      fetch: createLocalLongRunningFetch(),
+    });
   });
 
   it('emits normalized tool calls from streamed Ollama responses', async () => {

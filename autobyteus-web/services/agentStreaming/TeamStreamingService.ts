@@ -21,6 +21,7 @@ import {
   handleToolExecutionFailed,
   handleToolLog,
   handleAgentStatus,
+  handleCompactionStatus,
   handleAssistantComplete,
   handleTurnCompleted,
   handleExternalUserMessage,
@@ -307,6 +308,10 @@ export class TeamStreamingService {
 
       case 'AGENT_STATUS':
         handleAgentStatus(message.payload, memberContext);
+        break;
+
+      case 'COMPACTION_STATUS':
+        handleCompactionStatus(message.payload, memberContext);
         break;
 
       case 'TURN_STARTED':

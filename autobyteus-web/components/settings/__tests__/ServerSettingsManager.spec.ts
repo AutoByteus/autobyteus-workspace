@@ -96,6 +96,9 @@ const mountComponent = async (
         ServerMonitor: {
           template: '<div data-testid="server-monitor-stub">Server Monitor Stub</div>',
         },
+        CompactionConfigCard: {
+          template: '<div data-testid="compaction-config-card-stub">Compaction Config Card</div>',
+        },
       },
     },
   })
@@ -130,6 +133,7 @@ describe('ServerSettingsManager', () => {
     expect(wrapper.find('[data-testid="quick-setting-add-row-LMSTUDIO_HOSTS"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid^="quick-row-host-LMSTUDIO_HOSTS-"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="search-provider-select"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="compaction-config-card-stub"]').exists()).toBe(true)
   })
 
   it('does not show a red search validation message before user interaction', async () => {

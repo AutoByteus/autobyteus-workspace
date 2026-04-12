@@ -35,6 +35,13 @@ export class WorkingContextSnapshotStore {
     fs.writeFileSync(filePath, JSON.stringify(payload), 'utf-8');
   }
 
+  delete(agentId: string): void {
+    const filePath = this.getPath(agentId);
+    if (fs.existsSync(filePath)) {
+      fs.rmSync(filePath, { force: true });
+    }
+  }
+
   private getPath(agentId: string): string {
     if (!this.agentRootSubdir) {
       return path.join(this.baseDir, 'working_context_snapshot.json');

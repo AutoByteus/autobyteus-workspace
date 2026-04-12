@@ -39,7 +39,14 @@ import { ToolInvocationExecutionEventHandler } from '../handlers/tool-invocation
 import { BootstrapEventHandler } from '../handlers/bootstrap-event-handler.js';
 import { LifecycleEventLogger } from '../handlers/lifecycle-event-logger.js';
 import { SkillRegistry } from '../../skills/registry.js';
-import { FileMemoryStore, MemoryManager, resolveMemoryBaseDir } from '../../memory/index.js';
+import {
+  CompactionPolicy,
+  Compactor,
+  FileMemoryStore,
+  LLMCompactionSummarizer,
+  MemoryManager,
+  resolveMemoryBaseDir
+} from '../../memory/index.js';
 import { WorkingContextSnapshotStore } from '../../memory/store/working-context-snapshot-store.js';
 import { WorkingContextSnapshotBootstrapOptions } from '../../memory/restore/working-context-snapshot-bootstrapper.js';
 import { MemoryIngestInputProcessor } from '../input-processor/memory-ingest-input-processor.js';
@@ -172,7 +179,18 @@ export class AgentFactory extends Singleton {
       : { agentRootSubdir: 'agents' };
     const memoryStore = new FileMemoryStore(memoryDir, agentId, memoryLayoutOptions);
     const snapshotStore = new WorkingContextSnapshotStore(memoryDir, agentId, memoryLayoutOptions);
-    runtimeState.memoryManager = new MemoryManager({ store: memoryStore, workingContextSnapshotStore: snapshotStore });
+    const compactionPolicy = new CompactionPolicy();
+    const compactionSummarizer = new LLMCompactionSummarizer({
+      fallbackModelIdentifierProvider: () => config.llmInstance.model.modelIdentifier,
+      maxItemChars: compactionPolicy.maxItemChars
+    });
+    const compactor = new Compactor(memoryStore, compactionSummarizer);
+    runtimeState.memoryManager = new MemoryManager({
+      store: memoryStore,
+      compactionPolicy,
+      compactor,
+      workingContextSnapshotStore: snapshotStore
+    });
     runtimeState.restoreOptions = restoreOptions;
 
     if (!config.inputProcessors.some((processor) => processor instanceof MemoryIngestInputProcessor)) {

@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import {
   handleAgentStatus,
+  handleCompactionStatus,
   handleAssistantComplete,
   handleTurnCompleted,
   handleError
@@ -9,6 +10,7 @@ import { AgentStatus } from '~/types/agent/AgentStatus';
 import type {
   AgentStatusPayload,
   AssistantCompletePayload,
+  CompactionStatusPayload,
   ErrorPayload,
   TurnLifecyclePayload
 } from '../../protocol/messageTypes';
@@ -65,7 +67,9 @@ describe('agentStatusHandler', () => {
     vi.clearAllMocks();
     mockContext = {
       state: { 
-        currentStatus: AgentStatus.Uninitialized 
+        currentStatus: AgentStatus.Uninitialized,
+        compactionStatus: null,
+        runId: 'run-1',
       },
       isSending: true,
       conversation: {
@@ -107,6 +111,51 @@ describe('agentStatusHandler', () => {
       handleAssistantComplete(payload, mockContext);
 
       expect(aiMsg.isComplete).toBe(true);
+    });
+  });
+
+  describe('handleCompactionStatus', () => {
+    it('stores a started compaction status with a friendly message', () => {
+      const payload: CompactionStatusPayload = {
+        phase: 'started',
+        turn_id: 'turn-1',
+        selected_block_count: 3,
+        compacted_block_count: 2,
+        raw_trace_count: 4,
+        semantic_fact_count: 1,
+        compaction_model_identifier: 'compaction-model',
+      };
+
+      handleCompactionStatus(payload, mockContext);
+
+      expect(mockContext.state.compactionStatus).toEqual({
+        phase: 'started',
+        message: 'Compacting memory…',
+        turnId: 'turn-1',
+        selectedBlockCount: 3,
+        compactedBlockCount: 2,
+        rawTraceCount: 4,
+        semanticFactCount: 1,
+        compactionModelIdentifier: 'compaction-model',
+        errorMessage: null,
+      });
+    });
+
+    it('uses the failure error message when compaction fails', () => {
+      const payload: CompactionStatusPayload = {
+        phase: 'failed',
+        turn_id: 'turn-2',
+        error_message: 'Compaction failed hard',
+      };
+
+      handleCompactionStatus(payload, mockContext);
+
+      expect(mockContext.state.compactionStatus).toMatchObject({
+        phase: 'failed',
+        message: 'Compaction failed hard',
+        turnId: 'turn-2',
+        errorMessage: 'Compaction failed hard',
+      });
     });
   });
 

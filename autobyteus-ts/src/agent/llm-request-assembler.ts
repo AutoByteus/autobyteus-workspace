@@ -1,8 +1,8 @@
 import { BasePromptRenderer } from '../llm/prompt-renderers/base-prompt-renderer.js';
 import { LLMUserMessage } from '../llm/user-message.js';
 import { Message, MessageRole } from '../llm/utils/messages.js';
-import { CompactionSnapshotBuilder } from '../memory/compaction-snapshot-builder.js';
 import { MemoryManager } from '../memory/memory-manager.js';
+import { PendingCompactionExecutor } from '../memory/compaction/pending-compaction-executor.js';
 
 export type RequestPackage = {
   messages: Message[];
@@ -11,54 +11,28 @@ export type RequestPackage = {
 };
 
 export class LLMRequestAssembler {
-  private memoryManager: MemoryManager;
-  private renderer: BasePromptRenderer;
-  private compactionSnapshotBuilder: CompactionSnapshotBuilder;
-  private maxEpisodic: number;
-  private maxSemantic: number;
-
   constructor(
-    memoryManager: MemoryManager,
-    renderer: BasePromptRenderer,
-    compactionSnapshotBuilder?: CompactionSnapshotBuilder,
-    maxEpisodic = 3,
-    maxSemantic = 20
-  ) {
-    this.memoryManager = memoryManager;
-    this.renderer = renderer;
-    this.compactionSnapshotBuilder = compactionSnapshotBuilder ?? new CompactionSnapshotBuilder();
-    this.maxEpisodic = maxEpisodic;
-    this.maxSemantic = maxSemantic;
-  }
+    private readonly memoryManager: MemoryManager,
+    private readonly renderer: BasePromptRenderer,
+    private readonly pendingCompactionExecutor: PendingCompactionExecutor | null = null,
+  ) {}
 
   async prepareRequest(
     processedUserInput: string | LLMUserMessage,
     turnId?: string | null,
-    systemPrompt?: string | null
+    systemPrompt?: string | null,
+    activeModelIdentifier?: string | null,
   ): Promise<RequestPackage> {
     const userMessage = this.buildUserMessage(processedUserInput);
     this.ensureSystemPrompt(systemPrompt ?? undefined);
 
-    let didCompact = false;
-    const policy = this.memoryManager.compactionPolicy;
-    const compactor = this.memoryManager.compactor;
-
-    if (this.memoryManager.compactionRequired && policy && compactor) {
-      const turnIds = compactor.selectCompactionWindow();
-      if (turnIds.length) {
-        compactor.compact(turnIds);
-        const bundle = this.memoryManager.retriever.retrieve(this.maxEpisodic, this.maxSemantic);
-        const rawTail = this.memoryManager.getRawTail(policy.rawTailTurns, turnId ?? undefined);
-        const snapshotMessages = this.compactionSnapshotBuilder.build(
-          systemPrompt ?? '',
-          bundle,
-          rawTail
-        );
-        this.memoryManager.resetWorkingContextSnapshot(snapshotMessages);
-        this.memoryManager.clearCompactionRequest();
-        didCompact = true;
-      }
-    }
+    const didCompact = this.pendingCompactionExecutor
+      ? await this.pendingCompactionExecutor.executeIfRequired({
+          turnId,
+          systemPrompt: systemPrompt ?? '',
+          activeModelIdentifier,
+        })
+      : false;
 
     this.memoryManager.workingContextSnapshot.appendMessage(userMessage);
     const finalMessages = this.memoryManager.getWorkingContextMessages();

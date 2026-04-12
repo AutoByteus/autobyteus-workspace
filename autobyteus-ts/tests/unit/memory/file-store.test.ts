@@ -7,6 +7,7 @@ import { RawTraceItem } from '../../../src/memory/models/raw-trace-item.js';
 import { EpisodicItem } from '../../../src/memory/models/episodic-item.js';
 import { SemanticItem } from '../../../src/memory/models/semantic-item.js';
 import { MemoryType } from '../../../src/memory/models/memory-types.js';
+import { COMPACTED_MEMORY_SCHEMA_VERSION } from '../../../src/memory/store/compacted-memory-manifest.js';
 
 describe('FileMemoryStore', () => {
   let tempDir: string;
@@ -19,7 +20,7 @@ describe('FileMemoryStore', () => {
     fs.rmSync(tempDir, { recursive: true, force: true });
   });
 
-  it('adds and lists raw traces', () => {
+  it('adds and lists raw traces in append order', () => {
     const store = new FileMemoryStore(tempDir, 'agent-1');
     const trace = new RawTraceItem({
       id: 'rt-1',
@@ -32,7 +33,7 @@ describe('FileMemoryStore', () => {
     });
 
     store.add([trace]);
-    const items = store.list(MemoryType.RAW_TRACE) as RawTraceItem[];
+    const items = store.listRawTracesOrdered();
     expect(items).toHaveLength(1);
     expect(items[0].turnId).toBe('turn_0001');
     expect(items[0].content).toBe('hello');
@@ -56,22 +57,56 @@ describe('FileMemoryStore', () => {
     expect(episodicItems[0].summary).toBe('We discussed refactoring.');
   });
 
-  it('adds and lists semantic items', () => {
+  it('adds and lists typed semantic items', () => {
     const store = new FileMemoryStore(tempDir, 'agent-semantic');
     const item = new SemanticItem({
       id: 'sem_0001',
       ts: Date.now() / 1000,
+      category: 'user_preference',
       fact: 'Use pnpm exec vitest.',
       tags: ['preference'],
-      confidence: 0.9,
-      salience: 0.8
+      salience: 300
     });
 
     store.add([item]);
     const semanticItems = store.list(MemoryType.SEMANTIC) as SemanticItem[];
 
     expect(semanticItems).toHaveLength(1);
+    expect(semanticItems[0].category).toBe('user_preference');
     expect(semanticItems[0].fact).toBe('Use pnpm exec vitest.');
+  });
+
+  it('replaces semantic items and persists the manifest', () => {
+    const store = new FileMemoryStore(tempDir, 'agent-manifest');
+    store.replaceSemanticItems([
+      new SemanticItem({
+        id: 'sem_1',
+        ts: 100,
+        category: 'critical_issue',
+        fact: 'Critical bug remains open.',
+        salience: 500,
+      }),
+      new SemanticItem({
+        id: 'sem_2',
+        ts: 101,
+        category: 'important_artifact',
+        fact: 'Implementation handoff saved.',
+        reference: '/tmp/implementation-handoff.md',
+        salience: 100,
+      }),
+    ]);
+    store.writeCompactedMemoryManifest({
+      schema_version: COMPACTED_MEMORY_SCHEMA_VERSION,
+      last_reset_ts: 123,
+    });
+
+    const semanticItems = store.list(MemoryType.SEMANTIC) as SemanticItem[];
+    expect(semanticItems).toHaveLength(2);
+    expect(semanticItems[1].reference).toBe('/tmp/implementation-handoff.md');
+    expect(store.readCompactedMemoryManifest()).toEqual({
+      schema_version: COMPACTED_MEMORY_SCHEMA_VERSION,
+      last_reset_ts: 123,
+    });
   });
 
   it('respects list limits', () => {
@@ -89,13 +124,13 @@ describe('FileMemoryStore', () => {
       store.add([trace]);
     }
 
-    const items = store.list(MemoryType.RAW_TRACE, 2) as RawTraceItem[];
+    const items = store.listRawTracesOrdered(2);
     expect(items).toHaveLength(2);
     expect(items[0].seq).toBe(2);
     expect(items[1].seq).toBe(3);
   });
 
-  it('prunes raw traces without archiving when disabled', () => {
+  it('prunes raw traces by trace id without archiving when disabled', () => {
     const store = new FileMemoryStore(tempDir, 'agent-no-archive');
     const trace1 = new RawTraceItem({
       id: 'rt-1',
@@ -117,47 +152,58 @@ describe('FileMemoryStore', () => {
     });
 
     store.add([trace1, trace2]);
-    store.pruneRawTraces(new Set(['turn_0002']), false);
+    store.pruneRawTracesById(['rt-1'], false);
 
-    const remaining = store.list(MemoryType.RAW_TRACE) as RawTraceItem[];
+    const remaining = store.listRawTracesOrdered();
     expect(remaining).toHaveLength(1);
-    expect(remaining[0].turnId).toBe('turn_0002');
+    expect(remaining[0].id).toBe('rt-2');
 
     const archivePath = path.join(tempDir, 'agents', 'agent-no-archive', 'raw_traces_archive.jsonl');
     expect(fs.existsSync(archivePath)).toBe(false);
   });
 
-  it('prunes raw traces and archives removed items', () => {
+  it('prunes only the selected raw trace ids and archives removed items', () => {
     const store = new FileMemoryStore(tempDir, 'agent-2');
-    const trace1 = new RawTraceItem({
-      id: 'rt-1',
-      ts: Date.now() / 1000,
-      turnId: 'turn_0001',
-      seq: 1,
-      traceType: 'user',
-      content: 'keep',
-      sourceEvent: 'test'
-    });
-    const trace2 = new RawTraceItem({
-      id: 'rt-2',
-      ts: Date.now() / 1000,
-      turnId: 'turn_0002',
-      seq: 1,
-      traceType: 'assistant',
-      content: 'drop',
-      sourceEvent: 'test'
-    });
+    const traces = [
+      new RawTraceItem({
+        id: 'rt-1',
+        ts: Date.now() / 1000,
+        turnId: 'turn_0001',
+        seq: 1,
+        traceType: 'user',
+        content: 'keep same turn',
+        sourceEvent: 'test'
+      }),
+      new RawTraceItem({
+        id: 'rt-2',
+        ts: Date.now() / 1000,
+        turnId: 'turn_0001',
+        seq: 2,
+        traceType: 'assistant',
+        content: 'drop same turn',
+        sourceEvent: 'test'
+      }),
+      new RawTraceItem({
+        id: 'rt-3',
+        ts: Date.now() / 1000,
+        turnId: 'turn_0002',
+        seq: 1,
+        traceType: 'assistant',
+        content: 'keep other turn',
+        sourceEvent: 'test'
+      }),
+    ];
 
-    store.add([trace1, trace2]);
-    store.pruneRawTraces(new Set(['turn_0001']), true);
+    store.add(traces);
+    store.pruneRawTracesById(['rt-2'], true);
 
-    const remaining = store.list(MemoryType.RAW_TRACE) as RawTraceItem[];
-    expect(remaining).toHaveLength(1);
-    expect(remaining[0].turnId).toBe('turn_0001');
+    const remaining = store.listRawTracesOrdered().map((item) => item.id);
+    expect(remaining).toEqual(['rt-1', 'rt-3']);
 
     const archivePath = path.join(tempDir, 'agents', 'agent-2', 'raw_traces_archive.jsonl');
     const archiveContent = fs.readFileSync(archivePath, 'utf-8');
-    expect(archiveContent).toContain('"turn_id":"turn_0002"');
+    expect(archiveContent).toContain('"id":"rt-2"');
+    expect(archiveContent).not.toContain('"id":"rt-1"');
   });
 
   it('supports flat team-member layout when agentRootSubdir is empty', () => {

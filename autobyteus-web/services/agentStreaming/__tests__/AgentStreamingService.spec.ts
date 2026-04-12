@@ -46,6 +46,7 @@ describe('AgentStreamingService', () => {
             state: { 
                 runId: 'test-agent-id',
                 conversation: mockConversation,
+                compactionStatus: null,
             },
             conversation: mockConversation,
             isSending: false,
@@ -131,5 +132,35 @@ describe('AgentStreamingService', () => {
         );
 
         expect(handleBrowserToolExecutionSucceededMock).toHaveBeenCalledWith(payload);
+    });
+
+    it('routes compaction lifecycle messages through the compaction status handler', () => {
+        (service as any).dispatchMessage(
+            {
+                type: 'COMPACTION_STATUS',
+                payload: {
+                    phase: 'started',
+                    turn_id: 'turn-1',
+                    selected_block_count: 3,
+                    compacted_block_count: 2,
+                    raw_trace_count: 4,
+                    semantic_fact_count: 1,
+                    compaction_model_identifier: 'compaction-model',
+                },
+            },
+            mockAgentContext,
+        );
+
+        expect(mockAgentContext.state.compactionStatus).toEqual({
+            phase: 'started',
+            message: 'Compacting memory…',
+            turnId: 'turn-1',
+            selectedBlockCount: 3,
+            compactedBlockCount: 2,
+            rawTraceCount: 4,
+            semanticFactCount: 1,
+            compactionModelIdentifier: 'compaction-model',
+            errorMessage: null,
+        });
     });
 });

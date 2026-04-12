@@ -50,6 +50,27 @@ export class ServerSettingsService {
       "Comma-separated host URLs for LM Studio servers (e.g., http://localhost:1234)",
     );
 
+
+    this.registerPredefinedSetting(
+      "AUTOBYTEUS_COMPACTION_TRIGGER_RATIO",
+      "Decimal compaction trigger ratio used for post-response budget checks (default 0.8)",
+    );
+
+    this.registerPredefinedSetting(
+      "AUTOBYTEUS_COMPACTION_MODEL_IDENTIFIER",
+      "Optional model identifier override for the internal compaction summarizer",
+    );
+
+    this.registerPredefinedSetting(
+      "AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE",
+      "Optional effective context ceiling override in tokens for compaction budgeting",
+    );
+
+    this.registerPredefinedSetting(
+      "AUTOBYTEUS_COMPACTION_DEBUG_LOGS",
+      "Enable detailed compaction and token-budget diagnostic logs",
+    );
+
     logger.info(
       `Initialized server settings service with ${this.settingsInfo.size} predefined settings`,
     );

@@ -8,7 +8,8 @@
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { ErrorSegment, ToolInvocationLifecycle } from '~/types/segments';
 import type { 
-  AgentStatusPayload, 
+  AgentStatusPayload,
+  CompactionStatusPayload,
   ErrorPayload,
   AssistantCompletePayload,
   TurnLifecyclePayload,
@@ -67,6 +68,39 @@ export function handleTurnCompleted(
 }
 
 
+
+
+const buildCompactionMessage = (payload: CompactionStatusPayload): string => {
+  switch (payload.phase) {
+    case 'requested':
+      return 'Compaction queued';
+    case 'started':
+      return 'Compacting memory…';
+    case 'completed':
+      return 'Memory compacted';
+    case 'failed':
+      return payload.error_message || 'Compaction failed — see logs';
+    default:
+      return 'Compaction update';
+  }
+};
+
+export function handleCompactionStatus(
+  payload: CompactionStatusPayload,
+  context: AgentContext
+): void {
+  context.state.compactionStatus = {
+    phase: payload.phase,
+    message: buildCompactionMessage(payload),
+    turnId: payload.turn_id ?? null,
+    selectedBlockCount: payload.selected_block_count ?? null,
+    compactedBlockCount: payload.compacted_block_count ?? null,
+    rawTraceCount: payload.raw_trace_count ?? null,
+    semanticFactCount: payload.semantic_fact_count ?? null,
+    compactionModelIdentifier: payload.compaction_model_identifier ?? null,
+    errorMessage: payload.error_message ?? null,
+  };
+}
 
 /**
  * Handle ERROR event.

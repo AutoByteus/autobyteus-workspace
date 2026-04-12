@@ -41,6 +41,7 @@
     "ollama": "^0.6.3",
     "openai": "^6.16.0",
     "react": "^19.2.0",
+    "undici": "^7.22.0",
     "zod": "^4.3.6"
   },
   "optionalDependencies": {

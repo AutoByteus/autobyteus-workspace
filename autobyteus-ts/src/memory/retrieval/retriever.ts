@@ -13,7 +13,14 @@ export class Retriever {
 
   retrieve(maxEpisodic: number, maxSemantic: number): MemoryBundle {
     const episodic = this.store.list(MemoryType.EPISODIC, maxEpisodic) as EpisodicItem[];
-    const semantic = this.store.list(MemoryType.SEMANTIC, maxSemantic) as SemanticItem[];
+    const semantic = (this.store.list(MemoryType.SEMANTIC) as SemanticItem[])
+      .sort((left, right) => {
+        if (right.salience !== left.salience) {
+          return right.salience - left.salience;
+        }
+        return right.ts - left.ts;
+      })
+      .slice(0, maxSemantic);
     return new MemoryBundle({ episodic, semantic });
   }
 }

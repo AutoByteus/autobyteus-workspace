@@ -1,5 +1,5 @@
-import { describe, expect, it, vi } from 'vitest';
-import { flushPromises, mount } from '@vue/test-utils';
+import { describe, expect, it } from 'vitest';
+import { mount } from '@vue/test-utils';
 import AgentEventMonitor from '../AgentEventMonitor.vue';
 import type { Conversation } from '~/types/conversation';
 
@@ -28,7 +28,7 @@ const conversation: Conversation = {
 };
 
 describe('AgentEventMonitor.vue', () => {
-  it('passes avatar/name context into AIMessage and user label into UserMessage', () => {
+  it('passes the conversation context into AgentConversationFeed and renders the input form', () => {
     const wrapper = mount(AgentEventMonitor, {
       props: {
         conversation,
@@ -40,166 +40,59 @@ describe('AgentEventMonitor.vue', () => {
       },
       global: {
         stubs: {
-          AgentUserInputForm: { template: '<div class="agent-input-stub" />' },
-          'agent-user-input-form': { template: '<div class="agent-input-stub" />' },
-          UserMessage: {
-            name: 'UserMessage',
-            props: ['message', 'userDisplayName', 'userAvatarUrl'],
-            template: '<div class="user-message-stub">{{ userDisplayName }}</div>',
+          AgentUserInputForm: { template: '<div data-testid="agent-input-stub" />' },
+          AgentConversationFeed: {
+            name: 'AgentConversationFeed',
+            props: ['conversation', 'agentName', 'agentAvatarUrl', 'interAgentSenderNameById'],
+            template: '<div data-testid="agent-feed-stub" />',
           },
-          AIMessage: {
-            name: 'AIMessage',
-            props: ['message', 'runId', 'agentName', 'agentAvatarUrl', 'interAgentSenderNameById', 'messageIndex'],
-            template: '<div class="ai-message-stub">{{ agentName }}</div>',
+          CompactionStatusBanner: {
+            name: 'CompactionStatusBanner',
+            props: ['status'],
+            template: '<div data-testid="compaction-banner-stub" />',
           },
         },
       },
     });
 
-    const user = wrapper.findComponent({ name: 'UserMessage' });
-    expect(user.exists()).toBe(true);
-    expect(user.props('userDisplayName')).toBe('You');
-
-    const ai = wrapper.findComponent({ name: 'AIMessage' });
-    expect(ai.exists()).toBe(true);
-    expect(ai.props('runId')).toBe('agent-42');
-    expect(ai.props('agentName')).toBe('Slide Narrator');
-    expect(ai.props('agentAvatarUrl')).toBe('https://example.com/slide-narrator.png');
-    expect(ai.props('interAgentSenderNameById')).toEqual({ 'member-1': 'Professor' });
-    expect(ai.props('messageIndex')).toBe(1);
+    const feed = wrapper.findComponent({ name: 'AgentConversationFeed' });
+    expect(feed.exists()).toBe(true);
+    expect(feed.props('conversation')).toEqual(conversation);
+    expect(feed.props('agentName')).toBe('Slide Narrator');
+    expect(feed.props('agentAvatarUrl')).toBe('https://example.com/slide-narrator.png');
+    expect(feed.props('interAgentSenderNameById')).toEqual({ 'member-1': 'Professor' });
+    expect(wrapper.find('[data-testid="agent-input-stub"]').exists()).toBe(true);
   });
 
-  it('shows aggregated token usage in the footer', () => {
+  it('forwards compaction status into the banner component', () => {
     const wrapper = mount(AgentEventMonitor, {
       props: {
         conversation,
+        compactionStatus: {
+          phase: 'started',
+          message: 'Compacting memory…',
+          turnId: 'turn-1',
+        },
       },
       global: {
         stubs: {
-          AgentUserInputForm: { template: '<div class="agent-input-stub" />' },
-          'agent-user-input-form': { template: '<div class="agent-input-stub" />' },
-          UserMessage: true,
-          AIMessage: true,
-        },
-      },
-    });
-
-    expect(wrapper.text()).toContain('Total: 30 tokens / $0.3000');
-  });
-
-  it('auto-scrolls to bottom on streaming updates when user is near bottom', async () => {
-    const wrapper = mount(AgentEventMonitor, {
-      attachTo: document.body,
-      props: {
-        conversation: { ...conversation },
-      },
-      global: {
-        stubs: {
-          AgentUserInputForm: { template: '<div class="agent-input-stub" />' },
-          'agent-user-input-form': { template: '<div class="agent-input-stub" />' },
-          UserMessage: true,
-          AIMessage: true,
-        },
-      },
-    });
-
-    const scrollContainer = wrapper.find('.overflow-y-auto');
-    expect(scrollContainer.exists()).toBe(true);
-    const el = scrollContainer.element as HTMLElement;
-
-    let scrollTopValue = 590; // 10px from bottom
-    const scrollTopSetter = vi.fn((value: number) => {
-      scrollTopValue = value;
-    });
-    Object.defineProperty(el, 'scrollHeight', { value: 1000, configurable: true });
-    Object.defineProperty(el, 'clientHeight', { value: 400, configurable: true });
-    Object.defineProperty(el, 'scrollTop', {
-      configurable: true,
-      get: () => scrollTopValue,
-      set: scrollTopSetter,
-    });
-    await scrollContainer.trigger('scroll');
-    scrollTopSetter.mockClear();
-
-    await wrapper.setProps({
-      conversation: {
-        ...conversation,
-        messages: [
-          ...conversation.messages,
-          {
-            type: 'ai',
-            text: 'Streaming delta',
-            timestamp: new Date('2026-02-10T00:00:03.000Z'),
-            segments: [],
-            isComplete: false,
+          AgentUserInputForm: { template: '<div data-testid="agent-input-stub" />' },
+          AgentConversationFeed: { template: '<div data-testid="agent-feed-stub" />' },
+          CompactionStatusBanner: {
+            name: 'CompactionStatusBanner',
+            props: ['status'],
+            template: '<div data-testid="compaction-banner-stub" />',
           },
-        ],
-        updatedAt: '2026-02-10T00:00:31.000Z',
-      },
-    });
-    await wrapper.vm.$nextTick();
-    await wrapper.vm.$nextTick();
-    await flushPromises();
-
-    expect(scrollTopSetter).toHaveBeenCalledWith(1000);
-    wrapper.unmount();
-  });
-
-  it('does not auto-scroll on streaming updates when user has scrolled away from bottom', async () => {
-    const wrapper = mount(AgentEventMonitor, {
-      attachTo: document.body,
-      props: {
-        conversation: { ...conversation },
-      },
-      global: {
-        stubs: {
-          AgentUserInputForm: { template: '<div class="agent-input-stub" />' },
-          'agent-user-input-form': { template: '<div class="agent-input-stub" />' },
-          UserMessage: true,
-          AIMessage: true,
         },
       },
     });
 
-    const scrollContainer = wrapper.find('.overflow-y-auto');
-    expect(scrollContainer.exists()).toBe(true);
-    const el = scrollContainer.element as HTMLElement;
-
-    let scrollTopValue = 120; // far from bottom
-    const scrollTopSetter = vi.fn((value: number) => {
-      scrollTopValue = value;
+    const banner = wrapper.findComponent({ name: 'CompactionStatusBanner' });
+    expect(banner.exists()).toBe(true);
+    expect(banner.props('status')).toEqual({
+      phase: 'started',
+      message: 'Compacting memory…',
+      turnId: 'turn-1',
     });
-    Object.defineProperty(el, 'scrollHeight', { value: 1000, configurable: true });
-    Object.defineProperty(el, 'clientHeight', { value: 400, configurable: true });
-    Object.defineProperty(el, 'scrollTop', {
-      configurable: true,
-      get: () => scrollTopValue,
-      set: scrollTopSetter,
-    });
-    await scrollContainer.trigger('scroll');
-    scrollTopSetter.mockClear();
-
-    await wrapper.setProps({
-      conversation: {
-        ...conversation,
-        messages: [
-          ...conversation.messages,
-          {
-            type: 'ai',
-            text: 'Streaming delta',
-            timestamp: new Date('2026-02-10T00:00:04.000Z'),
-            segments: [],
-            isComplete: false,
-          },
-        ],
-        updatedAt: '2026-02-10T00:00:32.000Z',
-      },
-    });
-    await wrapper.vm.$nextTick();
-    await wrapper.vm.$nextTick();
-    await flushPromises();
-
-    expect(scrollTopSetter).not.toHaveBeenCalled();
-    wrapper.unmount();
   });
 });

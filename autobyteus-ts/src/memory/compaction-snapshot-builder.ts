@@ -1,11 +1,48 @@
 import { Message, MessageRole } from '../llm/utils/messages.js';
-import { RawTraceItem } from './models/raw-trace-item.js';
+import {
+  COMPACTED_MEMORY_CATEGORY_ORDER,
+  type CompactedMemoryCategory,
+  type SemanticItem,
+} from './models/semantic-item.js';
 import { MemoryBundle } from './retrieval/memory-bundle.js';
-import { buildToolInteractions } from './tool-interaction-builder.js';
-import { ToolInteractionStatus } from './models/tool-interaction.js';
+import type { CompactionPlan } from './compaction/compaction-plan.js';
+import { FrontierFormatter } from './compaction/frontier-formatter.js';
+
+export type CompactionSnapshotBuildOptions = {
+  maxItemChars?: number | null;
+};
+
+const MEMORY_SECTION_LABELS: Record<CompactedMemoryCategory, string> = {
+  critical_issue: '[MEMORY:CRITICAL_ISSUES]',
+  unresolved_work: '[MEMORY:UNRESOLVED_WORK]',
+  user_preference: '[MEMORY:USER_PREFERENCES]',
+  durable_fact: '[MEMORY:DURABLE_FACTS]',
+  important_artifact: '[MEMORY:IMPORTANT_ARTIFACTS]',
+};
+
+const compareSemanticItems = (left: SemanticItem, right: SemanticItem): number => {
+  if (right.salience !== left.salience) {
+    return right.salience - left.salience;
+  }
+  return right.ts - left.ts;
+};
+
+const renderSemanticLine = (item: SemanticItem): string =>
+  item.reference ? `- ${item.fact} (ref: ${item.reference})` : `- ${item.fact}`;
 
 export class CompactionSnapshotBuilder {
-  build(systemPrompt: string, bundle: MemoryBundle, rawTail: RawTraceItem[]): Message[] {
+  private frontierFormatter: FrontierFormatter;
+
+  constructor(frontierFormatter: FrontierFormatter = new FrontierFormatter()) {
+    this.frontierFormatter = frontierFormatter;
+  }
+
+  build(
+    systemPrompt: string,
+    bundle: MemoryBundle,
+    plan: CompactionPlan,
+    options: CompactionSnapshotBuildOptions = {}
+  ): Message[] {
     const parts: string[] = [];
 
     if (bundle.episodic.length) {
@@ -16,17 +53,22 @@ export class CompactionSnapshotBuilder {
       parts.push('');
     }
 
-    if (bundle.semantic.length) {
-      parts.push('[MEMORY:SEMANTIC]');
-      bundle.semantic.forEach((item) => {
-        parts.push(`- ${item.fact}`);
+    const semanticByCategory = this.groupSemanticByCategory(bundle.semantic);
+    for (const category of COMPACTED_MEMORY_CATEGORY_ORDER) {
+      const items = semanticByCategory.get(category) ?? [];
+      if (!items.length) {
+        continue;
+      }
+      parts.push(MEMORY_SECTION_LABELS[category]);
+      items.forEach((item) => {
+        parts.push(renderSemanticLine(item));
       });
       parts.push('');
     }
 
-    if (rawTail.length) {
-      parts.push('[RECENT TURNS]');
-      parts.push(...this.formatRecentTurns(rawTail));
+    if (plan.frontierBlocks.length) {
+      parts.push('[RAW_FRONTIER]');
+      parts.push(...this.frontierFormatter.format(plan.frontierBlocks, options.maxItemChars));
       parts.push('');
     }
 
@@ -38,61 +80,20 @@ export class CompactionSnapshotBuilder {
     return messages;
   }
 
-  private formatRecentTurns(rawTail: RawTraceItem[]): string[] {
-    const lines: string[] = [];
-    const interactions = buildToolInteractions(rawTail);
-    const interactionIds = new Set(interactions.map((interaction) => interaction.toolCallId));
-
-    const firstTraceByCallId = new Map<string, RawTraceItem>();
-    for (const item of rawTail) {
-      if (item.toolCallId && !firstTraceByCallId.has(item.toolCallId)) {
-        firstTraceByCallId.set(item.toolCallId, item);
-      }
+  private groupSemanticByCategory(items: SemanticItem[]): Map<CompactedMemoryCategory, SemanticItem[]> {
+    const grouped = new Map<CompactedMemoryCategory, SemanticItem[]>();
+    for (const category of COMPACTED_MEMORY_CATEGORY_ORDER) {
+      grouped.set(category, []);
     }
 
-    const sortedInteractions = [...interactions].sort((a, b) => {
-      const firstA = firstTraceByCallId.get(a.toolCallId);
-      const firstB = firstTraceByCallId.get(b.toolCallId);
-      return (firstA?.seq ?? 0) - (firstB?.seq ?? 0);
-    });
-
-    for (const interaction of sortedInteractions) {
-      const trace = firstTraceByCallId.get(interaction.toolCallId);
-      const prefix = trace ? `(${trace.turnId}:${trace.seq}) TOOL:` : '(unknown) TOOL:';
-
-      let resultText: unknown;
-      if (interaction.status === ToolInteractionStatus.PENDING) {
-        resultText = 'pending';
-      } else if (interaction.status === ToolInteractionStatus.ERROR) {
-        resultText = interaction.error ?? 'error';
-      } else {
-        resultText = interaction.result;
-      }
-
-      lines.push(`${prefix} ${interaction.toolName} ${interaction.arguments} -> ${resultText}`);
+    for (const item of items) {
+      grouped.get(item.category)?.push(item);
     }
 
-    for (const item of rawTail) {
-      if (item.traceType === 'tool_call' || item.traceType === 'tool_result') {
-        if (item.toolCallId && interactionIds.has(item.toolCallId)) {
-          continue;
-        }
-      }
-      lines.push(this.formatRawTrace(item));
+    for (const category of COMPACTED_MEMORY_CATEGORY_ORDER) {
+      grouped.get(category)?.sort(compareSemanticItems);
     }
 
-    return lines;
-  }
-
-  private formatRawTrace(item: RawTraceItem): string {
-    const prefix = `(${item.turnId}:${item.seq}) ${item.traceType.toUpperCase()}:`;
-    if (item.traceType === 'tool_call') {
-      return `${prefix} ${item.toolName} ${item.toolArgs}`;
-    }
-    if (item.traceType === 'tool_result') {
-      const result = item.toolError ?? item.toolResult;
-      return `${prefix} ${item.toolName} ${result}`;
-    }
-    return `${prefix} ${item.content}`;
+    return grouped;
   }
 }

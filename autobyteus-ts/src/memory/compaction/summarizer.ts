@@ -1,6 +1,6 @@
-import { RawTraceItem } from '../models/raw-trace-item.js';
+import type { InteractionBlock } from './interaction-block.js';
 import { CompactionResult } from './compaction-result.js';
 
 export abstract class Summarizer {
-  abstract summarize(traces: RawTraceItem[]): CompactionResult;
+  abstract summarize(blocks: InteractionBlock[]): Promise<CompactionResult>;
 }

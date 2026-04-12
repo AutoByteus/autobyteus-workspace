@@ -10,7 +10,7 @@ import { SemanticItem } from '../../../src/memory/models/semantic-item.js';
 const makeTempDir = () => fs.mkdtempSync(path.join(os.tmpdir(), 'retriever-'));
 
 describe('Retriever', () => {
-  it('returns limited episodic and semantic items', () => {
+  it('returns limited episodic items and ranks semantic items by salience then recency', () => {
     const tempDir = makeTempDir();
     try {
       const store = new FileMemoryStore(tempDir, 'agent_retriever');
@@ -21,9 +21,9 @@ describe('Retriever', () => {
         new EpisodicItem({ id: 'ep_2', ts: Date.now() / 1000, turnIds: ['turn_0002'], summary: 'second' })
       ]);
       store.add([
-        new SemanticItem({ id: 'sem_1', ts: Date.now() / 1000, fact: 'fact 1' }),
-        new SemanticItem({ id: 'sem_2', ts: Date.now() / 1000, fact: 'fact 2' }),
-        new SemanticItem({ id: 'sem_3', ts: Date.now() / 1000, fact: 'fact 3' })
+        new SemanticItem({ id: 'sem_1', ts: 10, category: 'durable_fact', fact: 'fact 1', salience: 200 }),
+        new SemanticItem({ id: 'sem_2', ts: 20, category: 'critical_issue', fact: 'fact 2', salience: 500 }),
+        new SemanticItem({ id: 'sem_3', ts: 30, category: 'critical_issue', fact: 'fact 3', salience: 499 })
       ]);
 
       const bundle = retriever.retrieve(1, 2);

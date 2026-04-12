@@ -1,14 +1,9 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
+import { CompactionPreparationError } from '../../../src/agent/compaction/compaction-preparation-error.js';
 import { LLMRequestAssembler } from '../../../src/agent/llm-request-assembler.js';
 import { BasePromptRenderer } from '../../../src/llm/prompt-renderers/base-prompt-renderer.js';
 import { Message, MessageRole } from '../../../src/llm/utils/messages.js';
 import { WorkingContextSnapshot } from '../../../src/memory/working-context-snapshot.js';
-import { CompactionSnapshotBuilder } from '../../../src/memory/compaction-snapshot-builder.js';
-import { EpisodicItem } from '../../../src/memory/models/episodic-item.js';
-import { RawTraceItem } from '../../../src/memory/models/raw-trace-item.js';
-import { SemanticItem } from '../../../src/memory/models/semantic-item.js';
-import { CompactionPolicy } from '../../../src/memory/policies/compaction-policy.js';
-import { MemoryBundle } from '../../../src/memory/retrieval/memory-bundle.js';
 
 class FakeRenderer extends BasePromptRenderer {
   async render(messages: Message[]) {
@@ -18,47 +13,14 @@ class FakeRenderer extends BasePromptRenderer {
 
 class FakeMemoryManager {
   workingContextSnapshot = new WorkingContextSnapshot();
-  compactionPolicy = new CompactionPolicy();
-  compactor: { selectCompactionWindow: () => string[]; compact: (turns: string[]) => void } = {
-    selectCompactionWindow: () => [],
-    compact: () => {}
-  };
-  retriever: { retrieve: (maxEpisodic: number, maxSemantic: number) => MemoryBundle } = {
-    retrieve: () => new MemoryBundle()
-  };
-  compactionRequired = false;
-  private rawTail: RawTraceItem[];
-
-  constructor(rawTail?: RawTraceItem[]) {
-    this.rawTail = rawTail ?? [];
-  }
-
-  requestCompaction(): void {
-    this.compactionRequired = true;
-  }
-
-  clearCompactionRequest(): void {
-    this.compactionRequired = false;
-  }
 
   getWorkingContextMessages(): Message[] {
     return this.workingContextSnapshot.buildMessages();
   }
-
-  resetWorkingContextSnapshot(snapshotMessages: Iterable<Message>): void {
-    this.workingContextSnapshot.reset(snapshotMessages);
-  }
-
-  getRawTail(_tailTurns: number, excludeTurnId?: string | null): RawTraceItem[] {
-    if (excludeTurnId) {
-      return this.rawTail.filter((item) => item.turnId !== excludeTurnId);
-    }
-    return [...this.rawTail];
-  }
 }
 
 describe('LLMRequestAssembler', () => {
-  it('prepareRequest appends system + user without compaction', async () => {
+  it('appends the system prompt and user message without compaction', async () => {
     const memoryManager = new FakeMemoryManager();
     const assembler = new LLMRequestAssembler(memoryManager as any, new FakeRenderer());
 
@@ -69,60 +31,52 @@ describe('LLMRequestAssembler', () => {
     expect(memoryManager.workingContextSnapshot.buildMessages()).toEqual(request.messages);
   });
 
-  it('prepareRequest compacts and resets working context snapshot when requested', async () => {
-    const rawTail = [
-      new RawTraceItem({
-        id: 'rt_1',
-        ts: Date.now() / 1000,
-        turnId: 'turn_0001',
-        seq: 1,
-        traceType: 'user',
-        content: 'Old',
-        sourceEvent: 'LLMUserMessageReadyEvent'
-      })
-    ];
-    const memoryManager = new FakeMemoryManager(rawTail);
-    memoryManager.compactionPolicy = new CompactionPolicy({ triggerRatio: 0.1 });
-    memoryManager.compactor.selectCompactionWindow = () => ['turn_0001'];
-    memoryManager.compactor.compact = vi.fn();
-    memoryManager.retriever.retrieve = () =>
-      new MemoryBundle({
-        episodic: [
-          new EpisodicItem({
-            id: 'ep_1',
-            ts: Date.now() / 1000,
-            turnIds: ['turn_0001'],
-            summary: 'Did a thing.'
-          })
-        ],
-        semantic: [
-          new SemanticItem({
-            id: 'sem_1',
-            ts: Date.now() / 1000,
-            fact: 'Use vitest.'
-          })
-        ]
-      });
+  it('delegates pending compaction execution before appending the current user message', async () => {
+    const memoryManager = new FakeMemoryManager();
+    const executorCalls: Array<Record<string, unknown>> = [];
+    const executor = {
+      executeIfRequired: async (input: Record<string, unknown>) => {
+        executorCalls.push(input);
+        memoryManager.workingContextSnapshot.reset([
+          new Message(MessageRole.SYSTEM, { content: 'System prompt' }),
+          new Message(MessageRole.USER, { content: '[MEMORY:EPISODIC]\n1) Durable summary' }),
+        ]);
+        return true;
+      }
+    };
 
-    const assembler = new LLMRequestAssembler(
-      memoryManager as any,
-      new FakeRenderer(),
-      new CompactionSnapshotBuilder()
-    );
-
-    memoryManager.requestCompaction();
-
-    const request = await assembler.prepareRequest('new input', 'turn_0002', 'System prompt');
+    const assembler = new LLMRequestAssembler(memoryManager as any, new FakeRenderer(), executor as any);
+    const request = await assembler.prepareRequest('new input', 'turn_0002', 'System prompt', 'main-model');
 
     expect(request.didCompact).toBe(true);
-    expect(memoryManager.workingContextSnapshot.epochId).toBe(2);
-    expect(memoryManager.workingContextSnapshot.lastCompactionTs).not.toBeNull();
+    expect(executorCalls).toEqual([
+      {
+        turnId: 'turn_0002',
+        systemPrompt: 'System prompt',
+        activeModelIdentifier: 'main-model',
+      }
+    ]);
     expect(request.messages.map((message) => message.role)).toEqual([
       MessageRole.SYSTEM,
       MessageRole.USER,
-      MessageRole.USER
+      MessageRole.USER,
     ]);
-    expect(request.messages[1].content).toContain('[MEMORY:EPISODIC]');
-    expect(request.messages[1].content).toContain('Did a thing.');
+    expect(request.messages[1]?.content).toContain('Durable summary');
+    expect(request.messages[2]?.content).toBe('new input');
+  });
+
+  it('propagates compaction preparation errors', async () => {
+    const memoryManager = new FakeMemoryManager();
+    const executor = {
+      executeIfRequired: async () => {
+        throw new CompactionPreparationError('compaction blocked');
+      }
+    };
+
+    const assembler = new LLMRequestAssembler(memoryManager as any, new FakeRenderer(), executor as any);
+
+    await expect(assembler.prepareRequest('hello', 'turn_0002', 'System prompt')).rejects.toBeInstanceOf(
+      CompactionPreparationError
+    );
   });
 });

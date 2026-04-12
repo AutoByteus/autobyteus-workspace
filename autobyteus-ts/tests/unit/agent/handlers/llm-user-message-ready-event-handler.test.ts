@@ -20,6 +20,8 @@ import { MessageRole, ToolCallPayload } from '../../../../src/llm/utils/messages
 import { MemoryManager } from '../../../../src/memory/memory-manager.js';
 import { MemoryStore } from '../../../../src/memory/store/base-store.js';
 import { MemoryType } from '../../../../src/memory/models/memory-types.js';
+import { PendingCompactionExecutor } from '../../../../src/memory/compaction/pending-compaction-executor.js';
+import { CompactionPreparationError } from '../../../../src/agent/compaction/compaction-preparation-error.js';
 
 class DummyLLM extends BaseLLM {
   protected async _sendMessagesToLLM(_messages: any[]): Promise<CompleteResponse> {
@@ -49,6 +51,15 @@ class InMemoryStore extends MemoryStore {
     }
     return filtered;
   }
+
+  listRawTracesOrdered(limit?: number): any[] {
+    return this.list(MemoryType.RAW_TRACE, limit);
+  }
+
+  pruneRawTracesById(traceIdsToRemove: Iterable<string>): void {
+    const ids = new Set(Array.from(traceIdsToRemove));
+    this.items = this.items.filter((item) => item?.memoryType !== MemoryType.RAW_TRACE || !ids.has(item.id));
+  }
 }
 
 const makeContext = (provider: LLMProvider, toolNames: string[] = []) => {
@@ -68,7 +79,8 @@ const makeContext = (provider: LLMProvider, toolNames: string[] = []) => {
   const notifier = {
     notifyAgentSegmentEvent: vi.fn(),
     notifyAgentErrorOutputGeneration: vi.fn(),
-    notifyAgentTurnStarted: vi.fn()
+    notifyAgentTurnStarted: vi.fn(),
+    notifyAgentCompactionStatus: vi.fn()
   };
 
   state.llmInstance = llm;
@@ -263,6 +275,48 @@ describe('LLMUserMessageReadyEventHandler', () => {
     expect(completionEvent.isError).toBe(true);
     expect(typeof completionEvent.turnId).toBe('string');
     expect(completionEvent.turnId).not.toBeNull();
+  });
+
+
+  it('converts compaction preparation failures into an error completion event', async () => {
+    const handler = new LLMUserMessageReadyEventHandler();
+    const { context, inputQueues, notifier } = makeContext(LLMProvider.OPENAI, []);
+    const executeIfRequiredSpy = vi
+      .spyOn(PendingCompactionExecutor.prototype, 'executeIfRequired')
+      .mockRejectedValueOnce(
+        new CompactionPreparationError(
+          'Memory compaction failed before dispatch: compaction blew up',
+          new Error('compaction blew up')
+        )
+      );
+
+    const streamMessages = vi.fn(async function* () {
+      yield new ChunkResponse({ content: 'should not stream', is_complete: true });
+    });
+    context.state.llmInstance = {
+      ...context.state.llmInstance,
+      model: { provider: LLMProvider.OPENAI, modelIdentifier: 'main-model' },
+      config: { systemMessage: 'system', maxTokens: 32 },
+      streamMessages,
+    } as any;
+
+    context.state.memoryManager!.requestCompaction();
+
+    const event = new LLMUserMessageReadyEvent(new LLMUserMessage({ content: 'prompt' }), 'turn-1');
+    await handler.handle(event, context);
+
+    expect(executeIfRequiredSpy).toHaveBeenCalledOnce();
+    expect(streamMessages).not.toHaveBeenCalled();
+    expect(notifier.notifyAgentErrorOutputGeneration).toHaveBeenCalledWith(
+      'LLMUserMessageReadyEventHandler.prepareRequest',
+      expect.stringContaining('Memory compaction failed before dispatch'),
+      expect.stringContaining('compaction blew up')
+    );
+    expect(inputQueues.enqueueInternalSystemEvent).toHaveBeenCalledOnce();
+    const completionEvent = inputQueues.enqueueInternalSystemEvent.mock.calls[0][0];
+    expect(completionEvent).toBeInstanceOf(LLMCompleteResponseReceivedEvent);
+    expect(completionEvent.isError).toBe(true);
+    expect(context.state.memoryManager?.compactionRequired).toBe(true);
   });
 
   it('rejects mismatched turn ownership on the continuation event', async () => {

@@ -260,6 +260,8 @@
                 </p>
               </div>
             </section>
+
+            <CompactionConfigCard />
           </div>
         </div>
 
@@ -405,6 +407,7 @@ import { Icon } from '@iconify/vue'
 import { useServerSettingsStore, type SearchProvider, type ServerSetting as ServerSettingRecord } from '~/stores/serverSettings'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import ServerMonitor from '~/components/server/ServerMonitor.vue'
+import CompactionConfigCard from '~/components/settings/CompactionConfigCard.vue'
 
 type SettingsTab = 'quick' | 'advanced'
 type AdvancedPanel = 'raw-settings' | 'server-status'

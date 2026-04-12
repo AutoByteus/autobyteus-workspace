@@ -173,6 +173,10 @@ export class AgentExternalEventNotifier extends EventEmitter {
     this.emitEvent(EventType.AGENT_ERROR_OUTPUT_GENERATION, payload);
   }
 
+  notifyAgentCompactionStatus(compactionData: Record<string, any>): void {
+    this.emitEvent(EventType.AGENT_COMPACTION_STATUS_UPDATED, compactionData);
+  }
+
   notifyAgentArtifactPersisted(artifactData: Record<string, any>): void {
     this.emitEvent(EventType.AGENT_ARTIFACT_PERSISTED, artifactData);
   }

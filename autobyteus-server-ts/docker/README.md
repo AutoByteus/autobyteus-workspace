@@ -43,6 +43,50 @@ Stop it with:
 docker stop autobyteus-server
 ```
 
+## Compaction Runtime Settings
+
+You can preseed the production compaction behavior with environment variables at
+container start, or edit the same values later from **Settings → Server Settings
+→ Compaction config**.
+
+Optional compaction settings:
+
+- `AUTOBYTEUS_COMPACTION_TRIGGER_RATIO`
+  - decimal trigger ratio for post-response compaction checks
+  - default runtime behavior is `0.8`
+- `AUTOBYTEUS_COMPACTION_MODEL_IDENTIFIER`
+  - optional dedicated model identifier for the internal compaction summarizer
+  - when unset, compaction falls back to the active run model
+- `AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE`
+  - optional lower effective context ceiling in tokens
+  - useful when a provider fails before its advertised maximum context
+- `AUTOBYTEUS_COMPACTION_DEBUG_LOGS`
+  - set to `true` / `1` / `yes` / `on` to enable detailed compaction budget and result logs
+
+Example:
+
+```bash
+docker run -d \
+  --name autobyteus-server \
+  -p 8001:8000 \
+  -e AUTOBYTEUS_SERVER_HOST=http://localhost:8001 \
+  -e AUTOBYTEUS_COMPACTION_TRIGGER_RATIO=0.8 \
+  -e AUTOBYTEUS_COMPACTION_MODEL_IDENTIFIER=your-compaction-model-id \
+  -e AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE=64000 \
+  -e AUTOBYTEUS_COMPACTION_DEBUG_LOGS=true \
+  autobyteus/autobyteus-server:latest
+```
+
+These settings affect subsequent runtime budget checks and compaction-model
+dispatches. They do not interrupt an already in-flight model stream.
+
+For LM Studio and Ollama, the runtime also hardens long-running local requests
+in code: idle transport body/header timeouts are disabled for those adapters,
+and LM Studio uses a high finite SDK request timeout instead of the shorter
+default. There is currently no separate env knob for that transport policy. If
+a local runtime still fails under large prompts, lower
+`AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE` first.
+
 If you have this repository locally, the easiest way to manage multiple isolated instances is using the `docker-start.sh` script. It automatically detects available ports to avoid collisions and supports multiple isolated instances.
 
 ```bash

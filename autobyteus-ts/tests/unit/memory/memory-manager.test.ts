@@ -40,7 +40,7 @@ describe('MemoryManager', () => {
       manager.ingestUserMessage(new LLMUserMessage({ content: 'hello' }), turnId, 'LLMUserMessageReadyEvent');
       manager.ingestAssistantResponse({ content: 'hi', reasoning: null } as any, turnId, 'LLMCompleteResponseReceivedEvent');
 
-      const rawItems = store.list(MemoryType.RAW_TRACE);
+      const rawItems = store.list(MemoryType.RAW_TRACE) as RawTraceItem[];
       expect(rawItems).toHaveLength(2);
       expect(rawItems[0].seq).toBe(1);
       expect(rawItems[1].seq).toBe(2);
@@ -51,7 +51,7 @@ describe('MemoryManager', () => {
     }
   });
 
-    it('ingests tool intent and result into working context snapshot', () => {
+  it('ingests tool intent and result into working context snapshot', () => {
     const tempDir = makeTempDir();
     try {
       const store = new FileMemoryStore(tempDir, 'agent_mem_tools');
@@ -113,7 +113,7 @@ describe('MemoryManager', () => {
       const payload = snapshot[0].tool_payload as ToolCallPayload;
       expect(payload.toolCalls.map((call) => call.id)).toEqual(['call_1', 'call_2']);
 
-      const rawItems = store.list(MemoryType.RAW_TRACE);
+      const rawItems = store.list(MemoryType.RAW_TRACE) as RawTraceItem[];
       expect(rawItems.filter((item) => item.traceType === 'tool_call')).toHaveLength(2);
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });
@@ -136,7 +136,7 @@ describe('MemoryManager', () => {
 
       expect(manager.getWorkingContextMessages()).toHaveLength(0);
 
-      const rawItems = store.list(MemoryType.RAW_TRACE);
+      const rawItems = store.list(MemoryType.RAW_TRACE) as RawTraceItem[];
       expect(rawItems).toHaveLength(1);
       expect(rawItems[0].traceType).toBe('assistant');
       expect(rawItems[0].content).toBe('tool planning text');
@@ -208,7 +208,7 @@ describe('MemoryManager', () => {
     }
   });
 
-  it('returns raw tail ordered by turn and sequence', () => {
+  it('lists ordered raw traces from the store append order', () => {
     const tempDir = makeTempDir();
     try {
       const store = new FileMemoryStore(tempDir, 'agent_mem_tail');
@@ -218,38 +218,32 @@ describe('MemoryManager', () => {
         makeTrace('turn_0001', 1, 'user', 't1 user'),
         makeTrace('turn_0001', 2, 'assistant', 't1 assistant'),
         makeTrace('turn_0002', 1, 'user', 't2 user'),
-        makeTrace('turn_0003', 1, 'user', 't3 user'),
-        makeTrace('turn_0003', 2, 'tool_call', '')
       ]);
 
-      const tailItems = manager.getRawTail(2);
-      expect(tailItems.map((item) => [item.turnId, item.seq])).toEqual([
-        ['turn_0002', 1],
-        ['turn_0003', 1],
-        ['turn_0003', 2]
+      const rawItems = manager.listRawTracesOrdered();
+      expect(rawItems.map((item) => [item.turnId, item.seq])).toEqual([
+        ['turn_0001', 1],
+        ['turn_0001', 2],
+        ['turn_0002', 1]
       ]);
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }
   });
 
-  it('excludes the provided turn when building a raw tail', () => {
+  it('persists a tool continuation boundary without duplicating tool results', () => {
     const tempDir = makeTempDir();
     try {
-      const store = new FileMemoryStore(tempDir, 'agent_mem_tail_exclude');
+      const store = new FileMemoryStore(tempDir, 'agent_mem_boundary');
       const manager = new MemoryManager({ store });
+      const turnId = manager.startTurn();
 
-      store.add([
-        makeTrace('turn_0001', 1, 'user', 't1'),
-        makeTrace('turn_0002', 1, 'user', 't2'),
-        makeTrace('turn_0003', 1, 'user', 't3')
-      ]);
+      manager.ingestToolResult(new ToolResultEvent('search', { ok: true }, 'call_1', undefined, undefined, turnId), turnId);
+      manager.ingestToolContinuationBoundary(turnId, 'ToolContinuationInput');
 
-      const tailItems = manager.getRawTail(2, 'turn_0003');
-      expect(tailItems.map((item) => [item.turnId, item.seq])).toEqual([
-        ['turn_0001', 1],
-        ['turn_0002', 1]
-      ]);
+      const rawItems = manager.listRawTracesOrdered();
+      expect(rawItems.map((item) => item.traceType)).toEqual(['tool_result', 'tool_continuation']);
+      expect(rawItems[1]?.content).toBe('Tool continuation');
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }

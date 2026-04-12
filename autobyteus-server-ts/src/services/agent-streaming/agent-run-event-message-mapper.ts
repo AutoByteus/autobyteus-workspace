@@ -27,6 +27,23 @@ const normalizeStatusPayload = (payload: Record<string, unknown>): Record<string
   };
 };
 
+
+const normalizeCompactionPayload = (payload: Record<string, unknown>): Record<string, unknown> => {
+  const turnId =
+    typeof payload.turn_id === "string"
+      ? payload.turn_id.trim()
+      : typeof payload.turnId === "string"
+        ? payload.turnId.trim()
+        : payload.turn_id === null || payload.turnId === null
+          ? null
+          : undefined;
+
+  return {
+    ...payload,
+    ...(turnId !== undefined ? { turn_id: turnId } : {}),
+  };
+};
+
 const normalizeTurnPayload = (payload: Record<string, unknown>): Record<string, unknown> => {
   const turnId =
     typeof payload.turn_id === "string"
@@ -60,6 +77,8 @@ export class AgentRunEventMessageMapper {
         return new ServerMessage(ServerMessageType.SEGMENT_END, payload);
       case AgentRunEventType.AGENT_STATUS:
         return new ServerMessage(ServerMessageType.AGENT_STATUS, normalizeStatusPayload(payload));
+      case AgentRunEventType.COMPACTION_STATUS:
+        return new ServerMessage(ServerMessageType.COMPACTION_STATUS, normalizeCompactionPayload(payload));
       case AgentRunEventType.ASSISTANT_COMPLETE:
         return new ServerMessage(ServerMessageType.ASSISTANT_COMPLETE, payload);
       case AgentRunEventType.TOOL_APPROVAL_REQUESTED:

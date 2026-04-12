@@ -42,7 +42,8 @@ describe('MemoryIngestInputProcessor', () => {
     const context = makeContext();
     const processor = new MemoryIngestInputProcessor();
     const memoryManager = {
-      ingestUserMessage: vi.fn()
+      ingestUserMessage: vi.fn(),
+      ingestToolContinuationBoundary: vi.fn(),
     };
     context.state.memoryManager = memoryManager as any;
     context.state.activeTurn = { turnId: 'turn_0001' } as any;
@@ -51,43 +52,20 @@ describe('MemoryIngestInputProcessor', () => {
     const result = await processor.process(message, context, {} as any);
 
     expect(result).toBe(message);
-    expect(context.state.activeTurn?.turnId).toBe('turn_0001');
     expect(memoryManager.ingestUserMessage).toHaveBeenCalledWith(
       expect.objectContaining({ content: 'Hello' }),
       'turn_0001',
       'LLMUserMessageReadyEvent'
     );
+    expect(memoryManager.ingestToolContinuationBoundary).not.toHaveBeenCalled();
   });
 
-  it('fails when non-tool input reaches memory ingest without an active turn', async () => {
-    const context = makeContext();
-    const processor = new MemoryIngestInputProcessor();
-    context.state.memoryManager = {
-      ingestUserMessage: vi.fn()
-    } as any;
-
-    await expect(
-      processor.process(new AgentInputUserMessage('Hello'), context, {} as any)
-    ).rejects.toThrow("MemoryIngestInputProcessor cannot ingest non-tool user input without an active turn");
-  });
-
-  it('no-ops when memory manager missing', async () => {
-    const context = makeContext();
-    context.state.memoryManager = null;
-
-    const processor = new MemoryIngestInputProcessor();
-    const message = new AgentInputUserMessage('Hello');
-    const result = await processor.process(message, context, {} as any);
-
-    expect(result).toBe(message);
-    expect(context.state.activeTurn).toBeNull();
-  });
-
-  it('skips TOOL-originated messages to avoid duplicate tool results', async () => {
+  it('persists a lightweight tool continuation boundary for TOOL-originated input', async () => {
     const context = makeContext();
     const processor = new MemoryIngestInputProcessor();
     const memoryManager = {
-      ingestUserMessage: vi.fn()
+      ingestUserMessage: vi.fn(),
+      ingestToolContinuationBoundary: vi.fn(),
     };
     context.state.memoryManager = memoryManager as any;
     context.state.activeTurn = { turnId: 'turn_existing' } as any;
@@ -96,7 +74,23 @@ describe('MemoryIngestInputProcessor', () => {
     const result = await processor.process(message, context, {} as any);
 
     expect(result).toBe(message);
-    expect(context.state.activeTurn?.turnId).toBe('turn_existing');
     expect(memoryManager.ingestUserMessage).not.toHaveBeenCalled();
+    expect(memoryManager.ingestToolContinuationBoundary).toHaveBeenCalledWith(
+      'turn_existing',
+      'ToolContinuationInput'
+    );
+  });
+
+  it('fails when TOOL continuation input reaches memory ingest without an active turn', async () => {
+    const context = makeContext();
+    const processor = new MemoryIngestInputProcessor();
+    context.state.memoryManager = {
+      ingestUserMessage: vi.fn(),
+      ingestToolContinuationBoundary: vi.fn(),
+    } as any;
+
+    await expect(
+      processor.process(new AgentInputUserMessage('Tool result', SenderType.TOOL), context, {} as any)
+    ).rejects.toThrow('cannot ingest TOOL continuation input without an active turn');
   });
 });

@@ -26,6 +26,7 @@ export {
   AgentStatusUpdateData,
   TurnLifecycleData,
   ErrorEventData,
+  CompactionStatusData,
   SegmentEventData,
   SystemTaskNotificationData,
   InterAgentMessageData,
@@ -37,6 +38,7 @@ export {
   createAgentStatusUpdateData,
   createTurnLifecycleData,
   createErrorEventData,
+  createCompactionStatusData,
   createSegmentEventData,
   createSystemTaskNotificationData,
   createInterAgentMessageData,
@@ -61,6 +63,7 @@ import type {
   AgentStatusUpdateData,
   TurnLifecycleData,
   ErrorEventData,
+  CompactionStatusData,
   SegmentEventData,
   SystemTaskNotificationData,
   InterAgentMessageData,
@@ -76,6 +79,7 @@ export type StreamDataPayload =
   | TurnLifecycleData
   | AgentStatusUpdateData
   | ErrorEventData
+  | CompactionStatusData
   | ToolApprovalRequestedData
   | ToolApprovedData
   | ToolDeniedData

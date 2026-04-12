@@ -9,16 +9,22 @@ import { ToolInvocation } from '../../../src/agent/tool-invocation.js';
 import { ToolResultEvent } from '../../../src/agent/events/agent-events.js';
 import { Compactor } from '../../../src/memory/compaction/compactor.js';
 import { CompactionResult } from '../../../src/memory/compaction/compaction-result.js';
+import { PendingCompactionExecutor } from '../../../src/memory/compaction/pending-compaction-executor.js';
 import { Summarizer } from '../../../src/memory/compaction/summarizer.js';
 import { MemoryManager } from '../../../src/memory/memory-manager.js';
 import { MemoryType } from '../../../src/memory/models/memory-types.js';
 import { CompactionPolicy } from '../../../src/memory/policies/compaction-policy.js';
 import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
+import { EpisodicItem } from '../../../src/memory/models/episodic-item.js';
+import { SemanticItem } from '../../../src/memory/models/semantic-item.js';
 
 class DeterministicSummarizer extends Summarizer {
-  summarize(traces: any[]): CompactionResult {
+  async summarize(blocks: any[]): Promise<CompactionResult> {
+    const traces = blocks.flatMap((block) => block.traces ?? []);
     const summary = traces.map((trace) => trace.content).filter(Boolean).join(' | ');
-    return new CompactionResult(summary || 'summary', [{ fact: 'hello.py created', confidence: 0.8 }]);
+    return new CompactionResult(summary || 'summary', {
+      importantArtifacts: [{ fact: 'hello.py created', reference: 'hello.py' }],
+    });
   }
 }
 
@@ -27,9 +33,9 @@ describe('Memory compaction summarizer flow', () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'mem-compact-real-'));
     try {
       const store = new FileMemoryStore(tempDir, 'agent_compact_real');
-      const policy = new CompactionPolicy({ rawTailTurns: 1, triggerRatio: 0.1 });
+      const policy = new CompactionPolicy({ triggerRatio: 0.1 });
       const summarizer = new DeterministicSummarizer();
-      const compactor = new Compactor(store, policy, summarizer);
+      const compactor = new Compactor(store, summarizer);
       const memoryManager = new MemoryManager({ store, compactionPolicy: policy, compactor });
 
       const turn1 = memoryManager.startTurn();
@@ -63,18 +69,22 @@ describe('Memory compaction summarizer flow', () => {
       const currentUser = new LLMUserMessage({ content: 'Please respond with pong.' });
       memoryManager.ingestUserMessage(currentUser, currentTurn, 'LLMUserMessageReadyEvent');
 
-      const assembler = new LLMRequestAssembler(memoryManager, new OpenAIChatRenderer());
+      const assembler = new LLMRequestAssembler(
+        memoryManager,
+        new OpenAIChatRenderer(),
+        new PendingCompactionExecutor(memoryManager)
+      );
       memoryManager.requestCompaction();
 
       const request = await assembler.prepareRequest(currentUser, currentTurn, 'System prompt');
       expect(request.didCompact).toBe(true);
 
-      const episodicItems = store.list(MemoryType.EPISODIC);
-      const semanticItems = store.list(MemoryType.SEMANTIC);
+      const episodicItems = store.list(MemoryType.EPISODIC) as EpisodicItem[];
+      const semanticItems = store.list(MemoryType.SEMANTIC) as SemanticItem[];
       expect(episodicItems.length).toBeGreaterThan(0);
       expect(semanticItems.length).toBeGreaterThan(0);
       expect(episodicItems[0].summary.trim().length).toBeGreaterThan(10);
-      expect(semanticItems.some((item) => item.fact)).toBe(true);
+      expect(semanticItems.some((item) => item.reference === 'hello.py')).toBe(true);
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }

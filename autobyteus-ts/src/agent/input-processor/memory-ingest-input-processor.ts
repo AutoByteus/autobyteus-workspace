@@ -19,16 +19,23 @@ export class MemoryIngestInputProcessor extends BaseAgentUserInputMessageProcess
     if (!memoryManager) {
       return message;
     }
-    if (message.senderType === SenderType.TOOL) {
-      console.debug('MemoryIngestInputProcessor skipping TOOL-originated message to avoid duplicate tool results.');
-      return message;
-    }
 
     const turnId = context.state.activeTurn?.turnId;
     if (!turnId) {
+      if (message.senderType === SenderType.TOOL) {
+        throw new Error(
+          `MemoryIngestInputProcessor cannot ingest TOOL continuation input without an active turn for agent '${context.agentId}'.`
+        );
+      }
       throw new Error(
         `MemoryIngestInputProcessor cannot ingest non-tool user input without an active turn for agent '${context.agentId}'.`
       );
+    }
+
+    if (message.senderType === SenderType.TOOL) {
+      memoryManager.ingestToolContinuationBoundary(turnId, 'ToolContinuationInput');
+      console.debug(`MemoryIngestInputProcessor stored tool continuation boundary with turnId ${turnId}`);
+      return message;
     }
 
     const llmUserMessage = buildLLMUserMessage(message);

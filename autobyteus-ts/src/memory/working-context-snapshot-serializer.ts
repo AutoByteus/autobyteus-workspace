@@ -1,7 +1,7 @@
 import { Message, MessageRole, ToolCallPayload, ToolCallSpec, ToolResultPayload } from '../llm/utils/messages.js';
 import { WorkingContextSnapshot } from './working-context-snapshot.js';
 
-type SnapshotMetadata = {
+export type SnapshotMetadata = {
   schema_version?: number;
   agent_id?: string;
   epoch_id?: number;
@@ -24,9 +24,11 @@ const safeJsonValue = (value: unknown): unknown => {
 };
 
 export class WorkingContextSnapshotSerializer {
-  static serialize(snapshot: WorkingContextSnapshot, metadata: SnapshotMetadata): SerializedPayload {
+  static readonly CURRENT_SCHEMA_VERSION = 3;
+
+  static serialize(snapshot: WorkingContextSnapshot, metadata: SnapshotMetadata = {}): SerializedPayload {
     return {
-      schema_version: metadata.schema_version ?? 1,
+      schema_version: metadata.schema_version ?? this.CURRENT_SCHEMA_VERSION,
       agent_id: metadata.agent_id,
       epoch_id: metadata.epoch_id ?? snapshot.epochId,
       last_compaction_ts: metadata.last_compaction_ts ?? snapshot.lastCompactionTs,
@@ -63,7 +65,7 @@ export class WorkingContextSnapshotSerializer {
     if (typeof payload !== 'object' || payload === null) {
       return false;
     }
-    if (typeof payload.schema_version !== 'number') {
+    if (payload.schema_version !== this.CURRENT_SCHEMA_VERSION) {
       return false;
     }
     if (typeof payload.agent_id !== 'string') {
