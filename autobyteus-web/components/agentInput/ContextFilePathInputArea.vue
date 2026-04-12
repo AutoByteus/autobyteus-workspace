@@ -172,6 +172,7 @@ import { getFilePathsFromFolder, determineFileType } from '~/utils/fileExplorer/
 import { getServerBaseUrl, getServerUrls } from '~/utils/serverConfig';
 import type { TreeNode } from '~/utils/fileExplorer/TreeNode';
 import type { ContextFilePath } from '~/types/conversation';
+import type { AgentContext } from '~/types/agent/AgentContext';
 import FullScreenImageModal from '~/components/common/FullScreenImageModal.vue';
 
 const activeContextStore = useActiveContextStore();
@@ -322,16 +323,19 @@ const handleContextFileClick = (filePath: ContextFilePath) => {
 };
 
 const removeContextFilePath = (index: number) => {
-  activeContextStore.removeContextFilePath(index);
+  activeContextStore.removeContextFilePathForContext(activeContextStore.activeAgentContext, index);
 };
 
 const clearAllContextFilePaths = () => {
-  activeContextStore.clearContextFilePaths();
+  activeContextStore.clearContextFilePathsForContext(activeContextStore.activeAgentContext);
   isContextListExpanded.value = true;
 };
 
-const processAndUploadFiles = async (files: (File | null)[]) => {
-  if (!activeContextStore.activeAgentContext) return;
+const processAndUploadFiles = async (
+  files: (File | null)[],
+  targetContext: AgentContext | null = activeContextStore.activeAgentContext,
+) => {
+  if (!targetContext) return;
 
   const validFiles = files.filter((f): f is File => f !== null);
   if (validFiles.length === 0) {
@@ -351,21 +355,21 @@ const processAndUploadFiles = async (files: (File | null)[]) => {
     else if (file.type.startsWith('video/')) fileType = 'Video';
     else fileType = 'Text';
 
-    activeContextStore.addContextFilePath({ path: tempPath, type: fileType });
+    activeContextStore.addContextFilePathForContext(targetContext, { path: tempPath, type: fileType });
     uploadingFiles.value.push(tempPath);
 
     try {
       const uploadedFilePath = await fileUploadStore.uploadFile(file);
-      const tempIndex = contextFilePaths.value.findIndex(cf => cf.path === tempPath);
+      const tempIndex = targetContext.contextFilePaths.findIndex(cf => cf.path === tempPath);
       if (tempIndex !== -1) {
-        activeContextStore.removeContextFilePath(tempIndex);
+        activeContextStore.removeContextFilePathForContext(targetContext, tempIndex);
       }
-      activeContextStore.addContextFilePath({ path: uploadedFilePath, type: fileType });
+      activeContextStore.addContextFilePathForContext(targetContext, { path: uploadedFilePath, type: fileType });
     } catch (error) {
       console.error('Error uploading file:', error);
-      const tempIndex = contextFilePaths.value.findIndex(cf => cf.path === tempPath);
+      const tempIndex = targetContext.contextFilePaths.findIndex(cf => cf.path === tempPath);
       if (tempIndex !== -1) {
-        activeContextStore.removeContextFilePath(tempIndex);
+        activeContextStore.removeContextFilePathForContext(targetContext, tempIndex);
       }
     } finally {
       uploadingFiles.value = uploadingFiles.value.filter(path => path !== tempPath);
@@ -390,7 +394,8 @@ const onFileSelect = (event: Event) => {
 };
 
 const onFileDrop = async (event: DragEvent) => {
-  if (!activeContextStore.activeAgentContext) return;
+  const targetContext = activeContextStore.activeAgentContext;
+  if (!targetContext) return;
 
   const dataTransfer = event.dataTransfer;
   const dragData = dataTransfer?.getData('application/json');
@@ -401,7 +406,7 @@ const onFileDrop = async (event: DragEvent) => {
     const filePaths = getFilePathsFromFolder(droppedNode);
     for (const filePath of filePaths) {
       const fileType = await determineFileType(filePath);
-      activeContextStore.addContextFilePath({ path: filePath, type: fileType });
+      activeContextStore.addContextFilePathForContext(targetContext, { path: filePath, type: fileType });
     }
     if (filePaths.length > 0 && !isContextListExpanded.value) {
       isContextListExpanded.value = true;
@@ -415,19 +420,20 @@ const onFileDrop = async (event: DragEvent) => {
     console.log('[INFO] Received native file paths from preload bridge:', paths);
     for (const path of paths) {
       const fileType = await determineFileType(path);
-      activeContextStore.addContextFilePath({ path, type: fileType });
+      activeContextStore.addContextFilePathForContext(targetContext, { path, type: fileType });
     }
     if (paths.length > 0 && !isContextListExpanded.value) {
       isContextListExpanded.value = true;
     }
   } else if (!windowNodeContextStore.isEmbeddedWindow && dataTransfer?.files?.length) {
     console.log('[INFO] Drop event from native OS in browser, uploading files.');
-    await processAndUploadFiles(Array.from(dataTransfer.files));
+    await processAndUploadFiles(Array.from(dataTransfer.files), targetContext);
   }
 };
 
 const onPaste = async (event: ClipboardEvent) => {
-  if (!activeContextStore.activeAgentContext) return;
+  const targetContext = activeContextStore.activeAgentContext;
+  if (!targetContext) return;
 
   const clipboardData = event.clipboardData;
   if (!clipboardData) return;
@@ -441,7 +447,7 @@ const onPaste = async (event: ClipboardEvent) => {
     // Check if there are actual files to process
     if (fileLikes.some(f => f !== null)) {
       event.preventDefault();
-      await processAndUploadFiles(fileLikes);
+      await processAndUploadFiles(fileLikes, targetContext);
       return; // Prioritize file pasting
     }
   }
@@ -458,7 +464,7 @@ const onPaste = async (event: ClipboardEvent) => {
       }
       for (const path of paths) {
         const fileType = await determineFileType(path);
-        activeContextStore.addContextFilePath({ path, type: fileType });
+        activeContextStore.addContextFilePathForContext(targetContext, { path, type: fileType });
       }
     }
   }

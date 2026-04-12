@@ -44,28 +44,44 @@ export const useActiveContextStore = defineStore('activeContext', () => {
     }
   }
 
+  const updateRequirementForContext = (context: AgentContext | null, text: string) => {
+    if (context) {
+      context.requirement = text;
+    }
+  };
+
   const updateRequirement = (text: string) => {
-    if (activeAgentContext.value) {
-      activeAgentContext.value.requirement = text;
+    updateRequirementForContext(activeAgentContext.value, text);
+  };
+
+  const addContextFilePathForContext = (context: AgentContext | null, filePath: ContextFilePath) => {
+    if (context) {
+      context.contextFilePaths.push(filePath);
     }
   };
 
   const addContextFilePath = (filePath: ContextFilePath) => {
-    if (activeAgentContext.value) {
-      activeAgentContext.value.contextFilePaths.push(filePath);
+    addContextFilePathForContext(activeAgentContext.value, filePath);
+  };
+
+  const removeContextFilePathForContext = (context: AgentContext | null, index: number) => {
+    if (context && index >= 0) {
+      context.contextFilePaths.splice(index, 1);
     }
   };
 
   const removeContextFilePath = (index: number) => {
-    if (activeAgentContext.value) {
-      activeAgentContext.value.contextFilePaths.splice(index, 1);
+    removeContextFilePathForContext(activeAgentContext.value, index);
+  };
+
+  const clearContextFilePathsForContext = (context: AgentContext | null) => {
+    if (context) {
+      context.contextFilePaths = [];
     }
   };
 
   const clearContextFilePaths = () => {
-    if (activeAgentContext.value) {
-      activeAgentContext.value.contextFilePaths = [];
-    }
+    clearContextFilePathsForContext(activeAgentContext.value);
   };
 
   const updateConfig = (configUpdate: Partial<AgentRunConfig>) => {
@@ -172,9 +188,13 @@ export const useActiveContextStore = defineStore('activeContext', () => {
     currentRequirement,
     currentContextPaths,
     activeConfig,
+    updateRequirementForContext,
     updateRequirement,
+    addContextFilePathForContext,
     addContextFilePath,
+    removeContextFilePathForContext,
     removeContextFilePath,
+    clearContextFilePathsForContext,
     clearContextFilePaths,
     updateConfig,
     postToolExecutionApproval,

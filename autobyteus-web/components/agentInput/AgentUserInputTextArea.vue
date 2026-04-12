@@ -78,6 +78,7 @@ import { useWorkspaceStore } from '~/stores/workspace';
 import { Icon } from '@iconify/vue';
 import { getFilePathsFromFolder } from '~/utils/fileExplorer/fileUtils';
 import type { TreeNode } from '~/utils/fileExplorer/TreeNode';
+import type { AgentContext } from '~/types/agent/AgentContext';
 
 // Initialize stores
 const activeContextStore = useActiveContextStore();
@@ -192,31 +193,52 @@ const adjustTextareaHeight = () => {
   }
 };
 
+const syncInternalRequirement = (nextRequirement: string) => {
+  if (nextRequirement === internalRequirement.value) {
+    return;
+  }
+
+  internalRequirement.value = nextRequirement;
+  nextTick(adjustTextareaHeight);
+};
+
 const { call: debouncedUpdateStore, cancel: cancelDebouncedUpdateStore, flush: flushDebouncedUpdateStore } =
-  debounce((text: string) => {
-    if (text !== storeCurrentRequirement.value) {
-      activeContextStore.updateRequirement(text);
+  debounce(({ context, text }: { context: AgentContext | null; text: string }) => {
+    if (context && text !== context.requirement) {
+      activeContextStore.updateRequirementForContext(context, text);
     }
   }, 750);
 
+watch(
+  () => activeContextStore.activeAgentContext,
+  (activeContext, previousContext) => {
+    if (previousContext && previousContext !== activeContext) {
+      flushDebouncedUpdateStore();
+    }
+    syncInternalRequirement(activeContext?.requirement ?? '');
+  },
+  { immediate: true },
+);
+
 watch(storeCurrentRequirement, (newValFromStore) => {
-  if (newValFromStore !== internalRequirement.value) {
-    internalRequirement.value = newValFromStore;
-    nextTick(adjustTextareaHeight);
-  }
-}, { immediate: true });
+  syncInternalRequirement(newValFromStore);
+});
 
 const handleInput = (event: Event) => {
   const target = event.target as HTMLTextAreaElement;
   internalRequirement.value = target.value;
   nextTick(adjustTextareaHeight);
-  debouncedUpdateStore(internalRequirement.value);
+  debouncedUpdateStore({
+    context: activeContextStore.activeAgentContext,
+    text: internalRequirement.value,
+  });
 };
 
 const syncStoreImmediately = () => {
+  const activeContext = activeContextStore.activeAgentContext;
   cancelDebouncedUpdateStore();
-  if (internalRequirement.value !== storeCurrentRequirement.value) {
-    activeContextStore.updateRequirement(internalRequirement.value);
+  if (activeContext && internalRequirement.value !== activeContext.requirement) {
+    activeContextStore.updateRequirementForContext(activeContext, internalRequirement.value);
   }
 };
 
@@ -257,21 +279,30 @@ const handleVoiceAction = async () => {
   }
 };
 
-const insertFilePaths = (filePaths: string[]) => {
-  if (!textarea.value || filePaths.length === 0) return;
+const insertFilePaths = (
+  filePaths: string[],
+  targetContext: AgentContext | null = activeContextStore.activeAgentContext,
+) => {
+  if (!targetContext || filePaths.length === 0) return;
 
   const textToInsert = filePaths.join(' ');
-  const start = textarea.value.selectionStart;
-  const end = textarea.value.selectionEnd;
+  const isTargetStillActive = activeContextStore.activeAgentContext === targetContext;
+  const baseRequirement = isTargetStillActive ? internalRequirement.value : targetContext.requirement;
+  const start = isTargetStillActive && textarea.value ? textarea.value.selectionStart : baseRequirement.length;
+  const end = isTargetStillActive && textarea.value ? textarea.value.selectionEnd : baseRequirement.length;
+  const newText = baseRequirement.substring(0, start) + textToInsert + baseRequirement.substring(end);
 
-  const newText = internalRequirement.value.substring(0, start) + textToInsert + internalRequirement.value.substring(end);
+  activeContextStore.updateRequirementForContext(targetContext, newText);
+
+  if (!isTargetStillActive) {
+    return;
+  }
+
   internalRequirement.value = newText;
-
   nextTick(adjustTextareaHeight);
-  debouncedUpdateStore(internalRequirement.value);
 
   nextTick(() => {
-    if (textarea.value) {
+    if (textarea.value && activeContextStore.activeAgentContext === targetContext) {
       const newCursorPos = start + textToInsert.length;
       textarea.value.focus();
       textarea.value.setSelectionRange(newCursorPos, newCursorPos);
@@ -280,7 +311,8 @@ const insertFilePaths = (filePaths: string[]) => {
 };
 
 const handleDrop = async (event: DragEvent) => {
-  if (!activeContextStore.activeAgentContext) return;
+  const targetContext = activeContextStore.activeAgentContext;
+  if (!targetContext) return;
 
   const dataTransfer = event.dataTransfer;
   if (!dataTransfer) return;
@@ -318,7 +350,7 @@ const handleDrop = async (event: DragEvent) => {
     filePaths = Array.from(dataTransfer.files).map(file => file.name);
   }
 
-  insertFilePaths(filePaths);
+  insertFilePaths(filePaths, targetContext);
 };
 
 const handleKeyDown = (event: KeyboardEvent) => {

@@ -154,6 +154,7 @@ vi.mock('~/utils/apolloClient', () => ({
 vi.mock('~/graphql/queries/runHistoryQueries', () => ({
   ListWorkspaceRunHistory: 'ListWorkspaceRunHistory',
   GetRunProjection: 'GetRunProjection',
+  GetRunFileChanges: 'GetRunFileChanges',
   GetAgentRunResumeConfig: 'GetAgentRunResumeConfig',
   GetTeamRunResumeConfig: 'GetTeamRunResumeConfig',
   GetTeamMemberRunProjection: 'GetTeamMemberRunProjection',
@@ -458,6 +459,14 @@ describe('runHistoryStore', () => {
           errors: [],
         };
       }
+      if (query === 'GetRunFileChanges') {
+        return {
+          data: {
+            getRunFileChanges: [],
+          },
+          errors: [],
+        };
+      }
       throw new Error(`Unexpected query: ${String(query)}`);
     });
 
@@ -554,6 +563,14 @@ describe('runHistoryStore', () => {
           errors: [],
         };
       }
+      if (query === 'GetRunFileChanges') {
+        return {
+          data: {
+            getRunFileChanges: [],
+          },
+          errors: [],
+        };
+      }
       throw new Error(`Unexpected query: ${String(query)}`);
     });
 
@@ -646,6 +663,14 @@ describe('runHistoryStore', () => {
           errors: [],
         };
       }
+      if (query === 'GetRunFileChanges') {
+        return {
+          data: {
+            getRunFileChanges: [],
+          },
+          errors: [],
+        };
+      }
       throw new Error(`Unexpected query: ${String(query)}`);
     });
 
@@ -710,6 +735,14 @@ describe('runHistoryStore', () => {
                 runtimeKind: false,
               },
             },
+          },
+          errors: [],
+        };
+      }
+      if (query === 'GetRunFileChanges') {
+        return {
+          data: {
+            getRunFileChanges: [],
           },
           errors: [],
         };
@@ -1620,11 +1653,21 @@ describe('runHistoryStore', () => {
                 updatedAt: '2026-01-01T00:05:00.000Z',
                 memberMetadata: [
                   {
-                    memberRouteKey: 'super_agent',
-                    memberName: 'Super Agent',
+                    memberRouteKey: 'solution_designer',
+                    memberName: 'Solution Designer',
                     memberRunId: 'member-run-1',
                     agentDefinitionId: 'agent-def-1',
                     llmModelIdentifier: 'model-x',
+                    autoExecuteTools: false,
+                    llmConfig: null,
+                    workspaceRootPath: '/ws/a',
+                  },
+                  {
+                    memberRouteKey: 'implementation_engineer',
+                    memberName: 'Implementation Engineer',
+                    memberRunId: 'member-run-2',
+                    agentDefinitionId: 'agent-def-1',
+                    llmModelIdentifier: 'model-y',
                     autoExecuteTools: false,
                     llmConfig: null,
                     workspaceRootPath: '/ws/a',
@@ -1637,24 +1680,40 @@ describe('runHistoryStore', () => {
         };
       }
       if (query === 'GetTeamMemberRunProjection') {
-        expect(variables).toEqual({
-          teamRunId: 'team-1',
-          memberRouteKey: 'super_agent',
-        });
-        return {
-          data: {
-            getTeamMemberRunProjection: {
-              agentRunId: 'member-run-1',
-              summary: 'Refreshed history',
-              lastActivityAt: '2026-01-01T00:05:00.000Z',
-              conversation: [
-                { kind: 'message', role: 'user', content: 'hello again', ts: 1700000000 },
-                { kind: 'message', role: 'assistant', content: 'hi again', ts: 1700000010 },
-              ],
+        if (variables?.memberRouteKey === 'solution_designer') {
+          return {
+            data: {
+              getTeamMemberRunProjection: {
+                agentRunId: 'member-run-1',
+                summary: 'Solution history',
+                lastActivityAt: '2026-01-01T00:05:00.000Z',
+                conversation: [
+                  { kind: 'message', role: 'user', content: 'hello again', ts: 1700000000 },
+                  { kind: 'message', role: 'assistant', content: 'hi again', ts: 1700000010 },
+                ],
+              },
             },
-          },
-          errors: [],
-        };
+            errors: [],
+          };
+        }
+
+        if (variables?.memberRouteKey === 'implementation_engineer') {
+          return {
+            data: {
+              getTeamMemberRunProjection: {
+                agentRunId: 'member-run-2',
+                summary: 'Implementation history',
+                lastActivityAt: '2026-01-01T00:05:00.000Z',
+                conversation: [
+                  { kind: 'message', role: 'user', content: 'implement it', ts: 1700000020 },
+                ],
+              },
+            },
+            errors: [],
+          };
+        }
+
+        throw new Error(`Unexpected member projection request: ${JSON.stringify(variables)}`);
       }
       throw new Error(`Unexpected query: ${String(query)}`);
     });
@@ -1678,8 +1737,8 @@ describe('runHistoryStore', () => {
         isLocked: true,
       },
       members: new Map([
-        ['super_agent', {
-          config: { workspaceId: 'ws-old', agentDefinitionName: 'Super Agent' },
+        ['solution_designer', {
+          config: { workspaceId: 'ws-old', agentDefinitionName: 'Solution Designer' },
           state: {
             runId: 'member-run-1',
             conversation: {
@@ -1690,9 +1749,26 @@ describe('runHistoryStore', () => {
             },
             currentStatus: 'idle',
           },
+          requirement: 'please review the screenshot',
+          contextFilePaths: [{ path: '/tmp/screenshot.png', type: 'Image' }],
+        }],
+        ['implementation_engineer', {
+          config: { workspaceId: 'ws-old', agentDefinitionName: 'Implementation Engineer' },
+          state: {
+            runId: 'member-run-2',
+            conversation: {
+              id: 'member-run-2',
+              messages: [{ type: 'assistant', text: 'old implementation state' }],
+              createdAt: '2026-01-01T00:00:00.000Z',
+              updatedAt: '2026-01-01T00:00:00.000Z',
+            },
+            currentStatus: 'idle',
+          },
+          requirement: '',
+          contextFilePaths: [],
         }],
       ]),
-      focusedMemberName: 'super_agent',
+      focusedMemberName: 'solution_designer',
       currentStatus: 'idle',
       isSubscribed: true,
       unsubscribe: existingTeamContextUnsubscribeSpy,
@@ -1702,13 +1778,20 @@ describe('runHistoryStore', () => {
     teamContextsStoreMock.teams.set('team-1', existingTeamContext);
 
     const store = useRunHistoryStore();
-    await store.openTeamMemberRun('team-1', 'super_agent');
+    await store.openTeamMemberRun('team-1', 'implementation_engineer');
 
     expect(teamContextsStoreMock.teams.get('team-1')).toBe(existingTeamContext);
     expect(teamContextsStoreMock.addTeamContext).not.toHaveBeenCalled();
     expect(existingTeamContext.config.teamDefinitionId).toBe('team-def-1');
-    expect(existingTeamContext.members.get('super_agent')?.state.conversation.messages).toHaveLength(2);
-    expect(existingTeamContext.focusedMemberName).toBe('super_agent');
+    expect(existingTeamContext.members.get('solution_designer')?.state.conversation.messages).toHaveLength(2);
+    expect(existingTeamContext.members.get('implementation_engineer')?.state.conversation.messages).toHaveLength(1);
+    expect(existingTeamContext.members.get('solution_designer')?.requirement).toBe('please review the screenshot');
+    expect(existingTeamContext.members.get('solution_designer')?.contextFilePaths).toEqual([
+      { path: '/tmp/screenshot.png', type: 'Image' },
+    ]);
+    expect(existingTeamContext.members.get('implementation_engineer')?.requirement).toBe('');
+    expect(existingTeamContext.members.get('implementation_engineer')?.contextFilePaths).toEqual([]);
+    expect(existingTeamContext.focusedMemberName).toBe('implementation_engineer');
     expect(existingTeamContext.taskPlan).toBeNull();
     expect(existingTeamContext.taskStatuses).toBeNull();
     expect(existingTeamContextUnsubscribeSpy).toHaveBeenCalledTimes(1);

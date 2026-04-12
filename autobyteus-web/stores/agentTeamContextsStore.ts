@@ -225,29 +225,6 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
         return;
       }
 
-      const currentFocusedMember = activeTeam.members.get(activeTeam.focusedMemberName);
-      const nextFocusedMember = activeTeam.members.get(memberName);
-
-      if (!nextFocusedMember) {
-        return;
-      }
-
-      const shouldRetargetDraft = Boolean(
-        currentFocusedMember && (
-          currentFocusedMember.requirement.length > 0
-          || currentFocusedMember.contextFilePaths.length > 0
-        ),
-      );
-
-      if (currentFocusedMember && shouldRetargetDraft) {
-        nextFocusedMember.requirement = currentFocusedMember.requirement;
-        nextFocusedMember.contextFilePaths = currentFocusedMember.contextFilePaths.map((contextFilePath) => ({
-          ...contextFilePath,
-        }));
-        currentFocusedMember.requirement = '';
-        currentFocusedMember.contextFilePaths = [];
-      }
-
       activeTeam.focusedMemberName = memberName;
     },
   },
