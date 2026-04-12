@@ -49,10 +49,10 @@
 - Ticket branch: `codex/team-member-draft-isolation`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Commit status: `Completed on ticket branch at e66af7f4`
-- Push status: `Not performed`
-- Merge status: `Fast-forward merged locally into personal`
+- Commit status: `Completed; ticket fix landed on rebased personal as 4b9824f0 and final archival record currently ends at 81c54d94`
+- Push status: `Completed; origin/personal updated through 81c54d94`
+- Merge status: `Completed; local personal was rebased onto current origin/personal before push`
 - Release/publication/deployment status: `Not required by user request`
 - Worktree cleanup status: `Completed`
 - Local branch cleanup status: `Completed`
-- Blockers / notes: `Remote push/finalization was intentionally not performed in this pass; local personal now contains the verified fix and archived ticket artifacts.`
+- Blockers / notes: `None`
