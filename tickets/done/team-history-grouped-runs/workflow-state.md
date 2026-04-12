@@ -4,12 +4,12 @@
 
 - Ticket: `team-history-grouped-runs`
 - Current Stage: `10`
-- Next Stage: `Repository Finalization + Release`
+- Next Stage: `Completed`
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-067`
-- Last Updated: `2026-04-12T09:07:46+02:00`
+- Last Transition ID: `T-068`
+- Last Updated: `2026-04-12T09:24:57+02:00`
 
 ## Stage 0 Bootstrap Record
 
@@ -38,7 +38,7 @@
 | 7 API/E2E + Executable Validation | Pass | Backend API/workspace-history tests plus strengthened frontend executable coverage passed for the grouped history and lazy historical hydration flow | `tickets/done/team-history-grouped-runs/api-e2e-testing.md` |
 | 8 Code Review | Pass | Independent code review round 12 passed with no findings after rechecking the center loading-indicator delta and the lazy-hydration architecture against the full ten-criteria scorecard | `tickets/done/team-history-grouped-runs/code-review.md` |
 | 9 Docs Sync | Pass | Docs sync reconfirmed no long-lived docs impact after the refreshed independent Stage 8 review round | `tickets/done/team-history-grouped-runs/docs-sync.md` |
-| 10 Handoff / Ticket State | In Progress | User verification is complete; ticket archival, repository finalization, release publication, and worktree cleanup are now in progress | `tickets/done/team-history-grouped-runs/handoff-summary.md`, `tickets/done/team-history-grouped-runs/release-notes.md`, `tickets/done/team-history-grouped-runs/workflow-state.md` |
+| 10 Handoff / Ticket State | Pass | User verification, ticket archival, repository finalization into `origin/personal`, release publication as `v1.2.75`, and required worktree cleanup are all complete | `tickets/done/team-history-grouped-runs/handoff-summary.md`, `tickets/done/team-history-grouped-runs/release-notes.md`, tag `v1.2.75`, branch `personal` at `b13c44fd` |
 
 ## Stage Transition Contract (Quick Reference)
 
@@ -143,6 +143,7 @@
 | T-065 | 2026-04-12 | 8 | 9 | Independent code review round 12 passed with no findings after rechecking the center loading-indicator delta and the lazy-hydration architecture | N/A | Locked | `code-review.md`, `workflow-state.md` |
 | T-066 | 2026-04-12 | 9 | 10 | Docs sync remained no-impact and the ticket returned to user-verification state after the refreshed independent review round | N/A | Locked | `docs-sync.md`, `workflow-state.md` |
 | T-067 | 2026-04-12 | 10 | 10 | User explicitly confirmed the ticket as done, so Stage 10 moved from verification hold into archival, repository finalization, release publication, and cleanup execution | N/A | Locked | `handoff-summary.md`, `release-notes.md`, `workflow-state.md` |
+| T-068 | 2026-04-12 | 10 | 10 | Repository finalization merged and pushed to `origin/personal`, release `v1.2.75` was published, and the dedicated worktree plus local ticket branch were removed | N/A | Locked | `handoff-summary.md`, `workflow-state.md` |
 
 ## Audible Notification Log (Optional Tracking)
 
@@ -173,6 +174,7 @@
 | 2026-04-12T08:20:15+02:00 | Transition | Team history grouped runs moved to stage nine. Independent code review round eleven passed with no findings after the strengthened validation evidence was reviewed. | Success | N/A |
 | 2026-04-12T08:20:16+02:00 | Transition | Team history grouped runs returned to stage ten. Docs sync remains no impact, and the ticket is back to awaiting user verification after the additional independent review round. | Success | N/A |
 | 2026-04-12T09:07:46+02:00 | Transition | Team history grouped runs returned to stage ten. Independent code review round twelve passed with no findings, docs sync remains no impact, and the ticket is back to awaiting user verification. | Success | N/A |
+| 2026-04-12T09:24:57+02:00 | Transition | Team history grouped runs completed stage ten. The ticket is archived, merged into personal, released as v1.2.75, and the dedicated worktree cleanup is complete. | Success | N/A |
 
 ## Process Violation Log
 

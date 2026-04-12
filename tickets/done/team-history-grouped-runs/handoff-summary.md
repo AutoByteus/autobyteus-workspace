@@ -1,4 +1,4 @@
-Status: Finalization In Progress
+Status: Complete
 
 # What Changed
 
@@ -50,9 +50,12 @@ Coordinator-first historical open behavior remains intact, and live active teams
 # Finalization
 
 - User verification was explicitly confirmed on `2026-04-12`.
-- Ticket archival, repository finalization, and release publication are in progress.
+- Ticket archived to `tickets/done/team-history-grouped-runs`.
+- Ticket branch commit `b0f80aed` was pushed to `origin/codex/team-history-grouped-runs`.
+- The work was merged into `origin/personal` and pushed.
+- Desktop release `v1.2.75` was published from `personal` with ticket-local release notes.
+- Dedicated worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/team-history-grouped-runs` was removed, worktree metadata was pruned, and the local branch `codex/team-history-grouped-runs` was deleted.
 
 # Live Sessions
 
-- Backend PTY session: `9219`
-- Frontend PTY session: `21659`
+- None. Historical test servers on `3000` and `8000` were stopped during Stage 10 cleanup.
