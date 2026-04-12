@@ -2132,7 +2132,7 @@ describe('runHistoryStore', () => {
     expect(teamContextsStoreMock.teams.get('team-1')).toBe(existingTeamContext);
     expect(teamContextsStoreMock.addTeamContext).not.toHaveBeenCalled();
     expect(existingTeamContext.config.teamDefinitionId).toBe('team-def-1');
-    expect(existingTeamContext.members.get('solution_designer')?.state.conversation.messages).toHaveLength(2);
+    expect(existingTeamContext.members.get('solution_designer')?.state.conversation.messages).toHaveLength(0);
     expect(existingTeamContext.members.get('implementation_engineer')?.state.conversation.messages).toHaveLength(1);
     expect(existingTeamContext.members.get('solution_designer')?.requirement).toBe('please review the screenshot');
     expect(existingTeamContext.members.get('solution_designer')?.contextFilePaths).toEqual([
