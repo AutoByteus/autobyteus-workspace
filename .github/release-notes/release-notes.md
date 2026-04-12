@@ -1,12 +1,7 @@
-# Release Notes
+# AutoByteus 1.2.75
 
-## What's New
-- The Artifacts tab now uses one unified touched-file and output list for `write_file`, `edit_file`, and generated outputs.
-
-## Improvements
-- Artifact previews now load the current file bytes through the run-scoped viewer route, so reopened runs still reflect the latest real file content.
-- Artifact history now reopens from lightweight `file_changes.json` metadata instead of storing inline content snapshots.
-
-## Fixes
-- Fixed generated outputs depending on a separate artifact store or copied media URL path in the Artifacts tab.
-- Fixed legacy `run-file-changes/projection.json` compatibility behavior so only the new canonical storage path is supported.
+- Workspace history now groups agent teams by team name first, then shows individual team runs underneath.
+- Team run entries now use readable summaries instead of internal team run IDs.
+- Historical team runs now open much faster by loading only the focused member first and lazily loading other members on demand.
+- Opening one historical team run after another no longer freezes the workspace on large team histories.
+- The workspace center now shows a loading indicator while historical runs are being opened from stored history.
