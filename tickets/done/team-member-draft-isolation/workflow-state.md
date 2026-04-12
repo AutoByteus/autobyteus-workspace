@@ -8,7 +8,7 @@
 - Code Edit Permission: `Locked`
 - Active Re-Entry: `No`
 - Re-Entry Classification (`Local Fix`/`Validation Gap`/`Design Impact`/`Requirement Gap`/`Unclear`): `N/A`
-- Last Transition ID: `T-025`
+- Last Transition ID: `T-026`
 - Last Updated: `2026-04-12`
 - Scope: `Small`
 - Bootstrap Note: `Primary checkout was restored to personal, and this ticket now runs in its dedicated worktree after the repository layout normalization.`
@@ -40,7 +40,7 @@
 | 7 API/E2E + Executable Validation | Pass | Focused executable validation now covers typed drafts, file uploads, voice transcription, store focus changes, inactive reopen hydration, and resumed typing after a member switch before the first debounce flush. | `api-e2e-testing.md` |
 | 8 Code Review | Pass | Independent deep rerun confirmed the debounce overwrite finding is resolved and the refreshed scoreboard passes. | `code-review.md` |
 | 9 Docs Sync | Pass | Docs sync rerun confirmed there is no long-lived docs impact for the final per-member draft ownership fix set. | `docs-sync.md` |
-| 10 Handoff / Ticket State | In Progress | Explicit user verification is recorded and final archival/local repository finalization are in progress. | `handoff-summary.md` |
+| 10 Handoff / Ticket State | Pass | Explicit user verification is recorded, the ticket is archived under `tickets/done`, the fix commit is merged locally into `personal`, release/version work is explicitly not required, and required worktree plus local-branch cleanup are complete. | `handoff-summary.md`, local git history |
 
 ## Stage 6 Pre-Edit Checklist (Historical Record)
 
@@ -80,6 +80,7 @@
 | T-023 | 2026-04-12 | 7 | 8 | Independent deep Stage 8 rerun passed with no remaining findings and the refreshed scoreboard is now authoritative. | Local Fix | Locked | `workflow-state.md`, `code-review.md` |
 | T-024 | 2026-04-12 | 8 | 9 | Stage 8 passed and docs sync rerun confirmed no durable doc updates were required for the final runtime-state fix set. | N/A | Locked | `workflow-state.md`, `docs-sync.md` |
 | T-025 | 2026-04-12 | 9 | 10 | Stage 9 passed, explicit user verification is recorded, and Stage 10 archival plus local repository finalization started without a release/version step. | N/A | Locked | `workflow-state.md`, `handoff-summary.md` |
+| T-026 | 2026-04-12 | 10 | 10 | Stage 10 finalization completed. The ticket is archived under `tickets/done`, the fix commit was merged locally into `personal`, no release/version step was required, and required worktree plus local branch cleanup finished. | N/A | Locked | `workflow-state.md`, `handoff-summary.md` |
 
 ## Re-Entry Declaration
 

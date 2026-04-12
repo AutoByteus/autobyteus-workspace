@@ -5,12 +5,12 @@
 - Ticket: `team-member-draft-isolation`
 - Date: `2026-04-12`
 - Current Status: `Verified`
-- Workflow State Source: `tickets/in-progress/team-member-draft-isolation/workflow-state.md`
+- Workflow State Source: `tickets/done/team-member-draft-isolation/workflow-state.md`
 
 ## Delivery Summary
 
 - Delivered scope: unsent team-member composer state is now independently owned for typed draft text, context-file attachments, inactive team-run reopen hydration, voice transcription, and member-switch debounce timing.
-- Planned scope reference: `tickets/in-progress/team-member-draft-isolation/requirements.md`
+- Planned scope reference: `tickets/done/team-member-draft-isolation/requirements.md`
 - Deferred / not delivered: none.
 - Key architectural or ownership changes: composer writes are now bound to the originating member context instead of whichever member is focused when delayed async updates complete.
 - Removed / decommissioned items: none.
@@ -25,7 +25,7 @@
 
 ## Documentation Sync Summary
 
-- Docs sync artifact: `tickets/in-progress/team-member-draft-isolation/docs-sync.md`
+- Docs sync artifact: `tickets/done/team-member-draft-isolation/docs-sync.md`
 - Docs result: `No impact`
 - Docs updated: none.
 - Notes: durable ticket artifacts already capture the runtime-state correction and validation evidence.
@@ -44,15 +44,15 @@
 
 ## Finalization Record
 
-- Ticket archived to: `Pending`
-- Ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-member-draft-isolation`
+- Ticket archived to: `tickets/done/team-member-draft-isolation`
+- Ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-member-draft-isolation` (removed after merge)
 - Ticket branch: `codex/team-member-draft-isolation`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Commit status: `Pending`
-- Push status: `Not requested`
-- Merge status: `Pending`
+- Commit status: `Completed on ticket branch at e66af7f4`
+- Push status: `Not performed`
+- Merge status: `Fast-forward merged locally into personal`
 - Release/publication/deployment status: `Not required by user request`
-- Worktree cleanup status: `Pending`
-- Local branch cleanup status: `Pending`
-- Blockers / notes: `None`
+- Worktree cleanup status: `Completed`
+- Local branch cleanup status: `Completed`
+- Blockers / notes: `Remote push/finalization was intentionally not performed in this pass; local personal now contains the verified fix and archived ticket artifacts.`
