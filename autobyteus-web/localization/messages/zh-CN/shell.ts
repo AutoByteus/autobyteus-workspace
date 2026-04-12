@@ -22,6 +22,7 @@ const shellMessages = {
   'shell.mobile.team': '团队',
   'shell.mobile.tools': '工具',
   'shell.mobile.content': '内容',
+  'shell.components.layout.loading_selected_run_history': '加载中',
   'shell.components.app.AppUpdateNotice.later': '稍后',
   'shell.components.app.AppUpdateNotice.restarting': '正在重启...',
   'shell.components.app.AppUpdateNotice.statusTitle.checking': '正在检查更新',

@@ -16,8 +16,14 @@ import {
 export interface WorkspaceRunHistoryGroup {
   workspaceRootPath: string;
   workspaceName: string;
-  agents: RunHistoryAgentGroup[];
-  teamRuns: TeamRunHistoryItem[];
+  agentDefinitions: RunHistoryAgentGroup[];
+  teamDefinitions: WorkspaceTeamDefinitionHistoryGroup[];
+}
+
+export interface WorkspaceTeamDefinitionHistoryGroup {
+  teamDefinitionId: string;
+  teamDefinitionName: string;
+  runs: TeamRunHistoryItem[];
 }
 
 const UNASSIGNED_TEAM_WORKSPACE_KEY = "unassigned-team-workspace";
@@ -70,30 +76,39 @@ export class WorkspaceRunHistoryService {
       grouped.set(workspaceGroup.workspaceRootPath, {
         workspaceRootPath: workspaceGroup.workspaceRootPath,
         workspaceName: workspaceGroup.workspaceName,
-        agents: workspaceGroup.agents,
-        teamRuns: [],
+        agentDefinitions: workspaceGroup.agents,
+        teamDefinitions: [],
       });
     }
 
+    const teamRunsByWorkspace = new Map<string, TeamRunHistoryItem[]>();
     for (const teamRun of teamRuns) {
       const workspaceRootPath = normalizeWorkspaceRootPath(teamRun.workspaceRootPath);
-      const existing = grouped.get(workspaceRootPath);
-      if (existing) {
-        existing.teamRuns.push(teamRun);
-        continue;
+      const existingRuns = teamRunsByWorkspace.get(workspaceRootPath);
+      if (existingRuns) {
+        existingRuns.push(teamRun);
+      } else {
+        teamRunsByWorkspace.set(workspaceRootPath, [teamRun]);
       }
 
-      grouped.set(workspaceRootPath, {
-        workspaceRootPath,
-        workspaceName: workspaceNameFromRootPath(workspaceRootPath),
-        agents: [],
-        teamRuns: [teamRun],
-      });
+      if (!grouped.has(workspaceRootPath)) {
+        grouped.set(workspaceRootPath, {
+          workspaceRootPath,
+          workspaceName: workspaceNameFromRootPath(workspaceRootPath),
+          agentDefinitions: [],
+          teamDefinitions: [],
+        });
+      }
     }
 
-    return Array.from(grouped.values()).sort((a, b) =>
-      a.workspaceName.localeCompare(b.workspaceName),
-    );
+    return Array.from(grouped.values())
+      .map((workspaceGroup) => ({
+        ...workspaceGroup,
+        teamDefinitions: groupTeamRunsByDefinition(
+          teamRunsByWorkspace.get(workspaceGroup.workspaceRootPath) ?? [],
+        ),
+      }))
+      .sort((a, b) => a.workspaceName.localeCompare(b.workspaceName));
   }
 }
 
@@ -104,4 +119,27 @@ export const getWorkspaceRunHistoryService = (): WorkspaceRunHistoryService => {
     cachedWorkspaceRunHistoryService = new WorkspaceRunHistoryService();
   }
   return cachedWorkspaceRunHistoryService;
+};
+
+const groupTeamRunsByDefinition = (
+  teamRuns: TeamRunHistoryItem[],
+): WorkspaceTeamDefinitionHistoryGroup[] => {
+  const groups = new Map<string, WorkspaceTeamDefinitionHistoryGroup>();
+
+  for (const teamRun of teamRuns) {
+    const key = teamRun.teamDefinitionId.trim() || teamRun.teamDefinitionName.trim() || teamRun.teamRunId;
+    const existing = groups.get(key);
+    if (existing) {
+      existing.runs.push(teamRun);
+      continue;
+    }
+
+    groups.set(key, {
+      teamDefinitionId: teamRun.teamDefinitionId,
+      teamDefinitionName: teamRun.teamDefinitionName,
+      runs: [teamRun],
+    });
+  }
+
+  return Array.from(groups.values());
 };

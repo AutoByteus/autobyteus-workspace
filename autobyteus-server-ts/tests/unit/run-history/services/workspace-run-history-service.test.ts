@@ -15,7 +15,7 @@ vi.mock("../../../../src/run-history/services/team-run-history-service.js", () =
 import { WorkspaceRunHistoryService } from "../../../../src/run-history/services/workspace-run-history-service.js";
 
 describe("WorkspaceRunHistoryService", () => {
-  it("returns one workspace-grouped payload containing agent groups and team runs", async () => {
+  it("returns one workspace-grouped payload containing grouped agent and team definitions", async () => {
     const agentRunHistoryService = {
       listRunHistory: vi.fn(async () => [
         {
@@ -46,6 +46,7 @@ describe("WorkspaceRunHistoryService", () => {
           teamRunId: "team-1",
           teamDefinitionId: "team-def-1",
           teamDefinitionName: "Team Alpha",
+          coordinatorMemberRouteKey: "coordinator",
           workspaceRootPath: "/ws/a",
           summary: "team summary",
           lastActivityAt: "2026-03-26T11:00:00.000Z",
@@ -68,7 +69,7 @@ describe("WorkspaceRunHistoryService", () => {
       {
         workspaceRootPath: "/ws/a",
         workspaceName: "a",
-        agents: [
+        agentDefinitions: [
           {
             agentDefinitionId: "agent-def-1",
             agentName: "Planner",
@@ -83,11 +84,18 @@ describe("WorkspaceRunHistoryService", () => {
             ],
           },
         ],
-        teamRuns: [
-          expect.objectContaining({
-            teamRunId: "team-1",
+        teamDefinitions: [
+          {
+            teamDefinitionId: "team-def-1",
             teamDefinitionName: "Team Alpha",
-          }),
+            runs: [
+              expect.objectContaining({
+                teamRunId: "team-1",
+                teamDefinitionName: "Team Alpha",
+                coordinatorMemberRouteKey: "coordinator",
+              }),
+            ],
+          },
         ],
       },
     ]);
@@ -104,6 +112,7 @@ describe("WorkspaceRunHistoryService", () => {
             teamRunId: "team-unassigned",
             teamDefinitionId: "team-def-2",
             teamDefinitionName: "Unassigned Team",
+            coordinatorMemberRouteKey: "lead",
             workspaceRootPath: null,
             summary: "summary",
             lastActivityAt: "2026-03-26T12:00:00.000Z",
@@ -122,6 +131,12 @@ describe("WorkspaceRunHistoryService", () => {
       expect.objectContaining({
         workspaceRootPath: "unassigned-team-workspace",
         workspaceName: "Unassigned Team Workspace",
+        teamDefinitions: [
+          expect.objectContaining({
+            teamDefinitionId: "team-def-2",
+            teamDefinitionName: "Unassigned Team",
+          }),
+        ],
       }),
     ]);
   });

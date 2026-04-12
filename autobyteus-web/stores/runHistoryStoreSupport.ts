@@ -2,7 +2,20 @@ import { useAgentContextsStore } from '~/stores/agentContextsStore';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import type {
   RunHistoryWorkspaceGroup,
+  TeamRunHistoryItem,
 } from '~/stores/runHistoryTypes';
+
+export const flattenWorkspaceTeamRuns = (
+  groups: RunHistoryWorkspaceGroup[],
+): TeamRunHistoryItem[] =>
+  groups.flatMap((workspace) =>
+    workspace.teamDefinitions.flatMap((teamDefinition) =>
+      teamDefinition.runs.map((teamRun) => ({
+        ...teamRun,
+        workspaceRootPath: teamRun.workspaceRootPath ?? workspace.workspaceRootPath,
+      })),
+    ),
+  );
 
 export const removeRunFromWorkspaceGroups = (
   groups: RunHistoryWorkspaceGroup[],
@@ -11,15 +24,14 @@ export const removeRunFromWorkspaceGroups = (
   return groups
     .map((workspace) => ({
       ...workspace,
-      teamRuns: workspace.teamRuns ?? [],
-      agents: workspace.agents
+      agentDefinitions: workspace.agentDefinitions
         .map((agent) => ({
           ...agent,
           runs: agent.runs.filter((run) => run.runId !== runId),
         }))
         .filter((agent) => agent.runs.length > 0),
     }))
-    .filter((workspace) => workspace.agents.length > 0 || workspace.teamRuns.length > 0);
+    .filter((workspace) => workspace.agentDefinitions.length > 0 || workspace.teamDefinitions.length > 0);
 };
 
 export const removeTeamRunFromWorkspaceGroups = (
@@ -29,9 +41,14 @@ export const removeTeamRunFromWorkspaceGroups = (
   groups
     .map((workspace) => ({
       ...workspace,
-      teamRuns: (workspace.teamRuns ?? []).filter((teamRun) => teamRun.teamRunId !== teamRunId),
+      teamDefinitions: workspace.teamDefinitions
+        .map((teamDefinition) => ({
+          ...teamDefinition,
+          runs: teamDefinition.runs.filter((teamRun) => teamRun.teamRunId !== teamRunId),
+        }))
+        .filter((teamDefinition) => teamDefinition.runs.length > 0),
     }))
-    .filter((workspace) => workspace.agents.length > 0 || workspace.teamRuns.length > 0);
+    .filter((workspace) => workspace.agentDefinitions.length > 0 || workspace.teamDefinitions.length > 0);
 
 export const buildNextAgentAvatarIndex = async (
   currentIndex: Record<string, string>,

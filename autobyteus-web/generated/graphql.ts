@@ -16,11 +16,8 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
-  /** DateTime scalar supporting ISO strings and date-only YYYY-MM-DD values */
   DateTime: { input: any; output: any; }
-  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: { input: any; output: any; }
-  /** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSONObject: { input: any; output: any; }
 };
 
@@ -1627,8 +1624,16 @@ export type UsageStatistics = {
   totalCost?: Maybe<Scalars['Float']['output']>;
 };
 
+export type WorkspaceHistoryTeamDefinitionObject = {
+  __typename?: 'WorkspaceHistoryTeamDefinitionObject';
+  runs: Array<WorkspaceHistoryTeamRunItemObject>;
+  teamDefinitionId: Scalars['String']['output'];
+  teamDefinitionName: Scalars['String']['output'];
+};
+
 export type WorkspaceHistoryTeamRunItemObject = {
   __typename?: 'WorkspaceHistoryTeamRunItemObject';
+  coordinatorMemberRouteKey: Scalars['String']['output'];
   deleteLifecycle: Scalars['String']['output'];
   isActive: Scalars['Boolean']['output'];
   lastActivityAt: Scalars['String']['output'];
@@ -1662,8 +1667,8 @@ export type WorkspaceInfo = {
 
 export type WorkspaceRunHistoryGroupObject = {
   __typename?: 'WorkspaceRunHistoryGroupObject';
-  agents: Array<RunHistoryAgentGroupObject>;
-  teamRuns: Array<WorkspaceHistoryTeamRunItemObject>;
+  agentDefinitions: Array<RunHistoryAgentGroupObject>;
+  teamDefinitions: Array<WorkspaceHistoryTeamDefinitionObject>;
   workspaceName: Scalars['String']['output'];
   workspaceRootPath: Scalars['String']['output'];
 };
@@ -2111,7 +2116,7 @@ export type ListWorkspaceRunHistoryQueryVariables = Exact<{
 }>;
 
 
-export type ListWorkspaceRunHistoryQuery = { __typename?: 'Query', listWorkspaceRunHistory: Array<{ __typename?: 'WorkspaceRunHistoryGroupObject', workspaceRootPath: string, workspaceName: string, agents: Array<{ __typename?: 'RunHistoryAgentGroupObject', agentDefinitionId: string, agentName: string, runs: Array<{ __typename?: 'RunHistoryItemObject', runId: string, summary: string, lastActivityAt: string, lastKnownStatus: string, isActive: boolean }> }>, teamRuns: Array<{ __typename?: 'WorkspaceHistoryTeamRunItemObject', teamRunId: string, teamDefinitionId: string, teamDefinitionName: string, workspaceRootPath?: string | null, summary: string, lastActivityAt: string, lastKnownStatus: string, deleteLifecycle: string, isActive: boolean, members: Array<{ __typename?: 'WorkspaceHistoryTeamRunMemberObject', memberRouteKey: string, memberName: string, memberRunId: string, runtimeKind: string, workspaceRootPath?: string | null }> }> }> };
+export type ListWorkspaceRunHistoryQuery = { __typename?: 'Query', listWorkspaceRunHistory: Array<{ __typename?: 'WorkspaceRunHistoryGroupObject', workspaceRootPath: string, workspaceName: string, agentDefinitions: Array<{ __typename?: 'RunHistoryAgentGroupObject', agentDefinitionId: string, agentName: string, runs: Array<{ __typename?: 'RunHistoryItemObject', runId: string, summary: string, lastActivityAt: string, lastKnownStatus: string, isActive: boolean }> }>, teamDefinitions: Array<{ __typename?: 'WorkspaceHistoryTeamDefinitionObject', teamDefinitionId: string, teamDefinitionName: string, runs: Array<{ __typename?: 'WorkspaceHistoryTeamRunItemObject', teamRunId: string, teamDefinitionId: string, teamDefinitionName: string, coordinatorMemberRouteKey: string, workspaceRootPath?: string | null, summary: string, lastActivityAt: string, lastKnownStatus: string, deleteLifecycle: string, isActive: boolean, members: Array<{ __typename?: 'WorkspaceHistoryTeamRunMemberObject', memberRouteKey: string, memberName: string, memberRunId: string, runtimeKind: string, workspaceRootPath?: string | null }> }> }> }> };
 
 export type GetRunProjectionQueryVariables = Exact<{
   runId: Scalars['String']['input'];
@@ -4626,7 +4631,7 @@ export const ListWorkspaceRunHistoryDocument = gql`
   listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {
     workspaceRootPath
     workspaceName
-    agents {
+    agentDefinitions {
       agentDefinitionId
       agentName
       runs {
@@ -4637,22 +4642,27 @@ export const ListWorkspaceRunHistoryDocument = gql`
         isActive
       }
     }
-    teamRuns {
-      teamRunId
+    teamDefinitions {
       teamDefinitionId
       teamDefinitionName
-      workspaceRootPath
-      summary
-      lastActivityAt
-      lastKnownStatus
-      deleteLifecycle
-      isActive
-      members {
-        memberRouteKey
-        memberName
-        memberRunId
-        runtimeKind
+      runs {
+        teamRunId
+        teamDefinitionId
+        teamDefinitionName
+        coordinatorMemberRouteKey
         workspaceRootPath
+        summary
+        lastActivityAt
+        lastKnownStatus
+        deleteLifecycle
+        isActive
+        members {
+          memberRouteKey
+          memberName
+          memberRunId
+          runtimeKind
+          workspaceRootPath
+        }
       }
     }
   }

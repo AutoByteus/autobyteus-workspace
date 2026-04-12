@@ -699,7 +699,7 @@ const defineRuntimeSuite = (input: {
         query ListWorkspaceRunHistory {
           listWorkspaceRunHistory(limitPerAgent: 200) {
             workspaceRootPath
-            agents {
+            agentDefinitions {
               agentDefinitionId
               runs {
                 runId
@@ -753,7 +753,7 @@ const defineRuntimeSuite = (input: {
         const historyAfterFirstTurn = await execGraphql<{
           listWorkspaceRunHistory: Array<{
             workspaceRootPath: string;
-            agents: Array<{
+            agentDefinitions: Array<{
               agentDefinitionId: string;
               runs: Array<{
                 runId: string;
@@ -766,7 +766,7 @@ const defineRuntimeSuite = (input: {
         const matchingRunRow =
           historyAfterFirstTurn.listWorkspaceRunHistory
             .filter((workspace) => workspace.workspaceRootPath === workspaceRootPath)
-            .flatMap((workspace) => workspace.agents)
+            .flatMap((workspace) => workspace.agentDefinitions)
             .flatMap((group) => group.runs)
             .find((run) => run.runId === runId) ?? null;
         expect(matchingRunRow).toBeTruthy();

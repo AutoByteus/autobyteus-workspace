@@ -57,20 +57,38 @@ export const selectTreeRunFromHistory = async (
     const selectionStore = useAgentSelectionStore();
     const localTeamContext = teamContextsStore.getTeamContextById(row.teamRunId);
     const shouldReuseLocalTeamContext = Boolean(
-      localTeamContext && (
-        localTeamContext.isSubscribed
-        || row.teamRunId.startsWith('temp-team-')
-      ),
+      localTeamContext && localTeamContext.members.has(row.memberRouteKey),
     );
+    const localMemberProjectionLoadState =
+      localTeamContext?.historicalHydration?.memberProjectionLoadStateByRouteKey[row.memberRouteKey]
+      ?? null;
+    const shouldShowOpeningIndicator = Boolean(localTeamContext?.historicalHydration)
+      && localMemberProjectionLoadState !== 'loaded';
 
     if (shouldReuseLocalTeamContext) {
-      teamContextsStore.setFocusedMember?.(row.memberRouteKey);
-      selectionStore.selectRun(row.teamRunId, 'team');
-      store.selectedTeamRunId = row.teamRunId;
-      store.selectedTeamMemberRouteKey = row.memberRouteKey;
-      store.selectedRunId = null;
-      useTeamRunConfigStore().clearConfig();
-      useAgentRunConfigStore().clearConfig();
+      if (shouldShowOpeningIndicator) {
+        store.openingRun = true;
+        store.error = null;
+      }
+
+      try {
+        selectionStore.selectRun(row.teamRunId, 'team');
+        await teamContextsStore.focusMemberAndEnsureHydrated?.(row.teamRunId, row.memberRouteKey);
+        store.selectedTeamRunId = row.teamRunId;
+        store.selectedTeamMemberRouteKey = row.memberRouteKey;
+        store.selectedRunId = null;
+        useTeamRunConfigStore().clearConfig();
+        useAgentRunConfigStore().clearConfig();
+      } catch (error: any) {
+        if (shouldShowOpeningIndicator) {
+          store.error = error?.message || `Failed to open team '${row.teamRunId}'.`;
+        }
+        throw error;
+      } finally {
+        if (shouldShowOpeningIndicator) {
+          store.openingRun = false;
+        }
+      }
       return;
     }
     await store.openTeamMemberRun(row.teamRunId, row.memberRouteKey);

@@ -8,6 +8,37 @@ const flushPromises = async () => {
   await new Promise<void>((resolve) => setTimeout(resolve, 0));
 };
 
+const buildWorkspaceHistoryGroup = (workspace: Record<string, any>) => {
+  const {
+    agents,
+    agentDefinitions,
+    teamRuns,
+    teamDefinitions,
+    ...rest
+  } = workspace;
+
+  const groupedTeamDefinitions = teamDefinitions ?? (teamRuns ?? []).reduce((groups: Array<any>, teamRun: any) => {
+    const key = teamRun.teamDefinitionId || teamRun.teamDefinitionName || teamRun.teamRunId;
+    const existing = groups.find((group) => group.teamDefinitionId === key);
+    if (existing) {
+      existing.runs.push(teamRun);
+      return groups;
+    }
+    groups.push({
+      teamDefinitionId: teamRun.teamDefinitionId,
+      teamDefinitionName: teamRun.teamDefinitionName,
+      runs: [teamRun],
+    });
+    return groups;
+  }, []);
+
+  return {
+    ...rest,
+    agentDefinitions: agentDefinitions ?? agents ?? [],
+    teamDefinitions: groupedTeamDefinitions,
+  };
+};
+
 const {
   runHistoryState,
   runHistoryStoreMock,
@@ -26,6 +57,7 @@ const {
     loading: false,
     error: null as string | null,
     selectedRunId: null as string | null,
+    workspaceGroups: [] as any[],
     teamNodesByWorkspace: {} as Record<string, any[]>,
     nodes: [
       {
@@ -82,6 +114,9 @@ const {
       },
       get selectedRunId() {
         return state.selectedRunId;
+      },
+      get workspaceGroups() {
+        return state.workspaceGroups;
       },
       fetchTree: vi.fn().mockResolvedValue(undefined),
       refreshTreeQuietly: vi.fn().mockResolvedValue(undefined),
@@ -198,6 +233,49 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     runHistoryState.loading = false;
     runHistoryState.error = null;
     runHistoryState.selectedRunId = null;
+    runHistoryState.nodes = [
+      {
+        workspaceRootPath: '/ws/a',
+        workspaceName: 'autobyteus_org',
+        agents: [
+          {
+            agentDefinitionId: 'agent-def-1',
+            agentName: 'SuperAgent',
+            agentAvatarUrl: 'https://example.com/superagent.png',
+            runs: [
+              {
+                runId: 'temp-1',
+                summary: 'New - SuperAgent',
+                lastActivityAt: '2026-01-01T01:00:00.000Z',
+                lastKnownStatus: 'IDLE',
+                isActive: false,
+                source: 'draft',
+                isDraft: true,
+              },
+              {
+                runId: 'run-1',
+                summary: 'Describe messaging bindings',
+                lastActivityAt: '2026-01-01T00:00:00.000Z',
+                lastKnownStatus: 'ACTIVE',
+                isActive: true,
+                source: 'history',
+                isDraft: false,
+              },
+              {
+                runId: 'run-2',
+                summary: 'Historical draft cleanup',
+                lastActivityAt: '2026-01-01T00:10:00.000Z',
+                lastKnownStatus: 'IDLE',
+                isActive: false,
+                source: 'history',
+                isDraft: false,
+              },
+            ],
+          },
+        ],
+      },
+    ];
+    runHistoryState.workspaceGroups = [];
     runHistoryState.teamNodesByWorkspace = {};
     selectionStoreMock.selectedType = null;
     selectionStoreMock.selectedRunId = null;
@@ -349,7 +427,35 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     expect(configButton.exists()).toBe(false);
   });
 
-  it('renders team rows under workspace and selects the team when clicked', async () => {
+  it('renders grouped team rows under workspace and selects the team run when clicked', async () => {
+    runHistoryState.workspaceGroups = [
+      buildWorkspaceHistoryGroup({
+        workspaceRootPath: '/ws/a',
+        workspaceName: 'autobyteus_org',
+        agents: [],
+        teamRuns: [],
+        teamDefinitions: [
+          {
+            teamDefinitionId: 'team-def-1',
+            teamDefinitionName: 'Team Alpha',
+            runs: [
+              {
+                teamRunId: 'team-1',
+                teamDefinitionId: 'team-def-1',
+                teamDefinitionName: 'Team Alpha',
+                workspaceRootPath: '/ws/a',
+                summary: 'Team summary',
+                lastActivityAt: '2026-01-01T02:00:00.000Z',
+                lastKnownStatus: 'IDLE',
+                deleteLifecycle: 'READY',
+                isActive: false,
+                members: [],
+              },
+            ],
+          },
+        ],
+      }),
+    ];
     runHistoryState.teamNodesByWorkspace['/ws/a'] = [
       {
         teamRunId: 'team-1',
@@ -384,9 +490,13 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     await flushPromises();
 
     expect(wrapper.text()).toContain('Teams');
+    const groupRow = wrapper.find('[data-test="workspace-team-definition-row-team-def-1"]');
+    expect(groupRow.exists()).toBe(true);
+    expect(groupRow.text()).toContain('Team Alpha');
     const row = wrapper.find('[data-test="workspace-team-row-team-1"]');
     expect(row.exists()).toBe(true);
-    expect(row.text()).toContain('team-1');
+    expect(row.text()).toContain('Team summary');
+    expect(row.text()).not.toContain('team-1');
 
     await row.trigger('click');
     await flushPromises();
@@ -395,6 +505,187 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     expect(wrapper.emitted('run-selected')).toContainEqual([
       { type: 'team', runId: 'team-1' },
     ]);
+  });
+
+  it('opens a historical team row through the coordinator-focused member instead of the first alphabetical member', async () => {
+    runHistoryState.workspaceGroups = [
+      buildWorkspaceHistoryGroup({
+        workspaceRootPath: '/ws/a',
+        workspaceName: 'autobyteus_org',
+        agents: [],
+        teamDefinitions: [
+          {
+            teamDefinitionId: 'team-def-1',
+            teamDefinitionName: 'Team Alpha',
+            runs: [
+              {
+                teamRunId: 'team-1',
+                teamDefinitionId: 'team-def-1',
+                teamDefinitionName: 'Team Alpha',
+                coordinatorMemberRouteKey: 'solution_designer',
+                workspaceRootPath: '/ws/a',
+                summary: 'Team summary',
+                lastActivityAt: '2026-01-01T02:00:00.000Z',
+                lastKnownStatus: 'IDLE',
+                deleteLifecycle: 'READY',
+                isActive: false,
+                members: [
+                  {
+                    memberRouteKey: 'architect_reviewer',
+                    memberName: 'Architect Reviewer',
+                    memberRunId: 'member-run-2',
+                    runtimeKind: 'AUTOBYTEUS',
+                    workspaceRootPath: '/ws/a',
+                  },
+                  {
+                    memberRouteKey: 'solution_designer',
+                    memberName: 'Solution Designer',
+                    memberRunId: 'member-run-1',
+                    runtimeKind: 'AUTOBYTEUS',
+                    workspaceRootPath: '/ws/a',
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      }),
+    ];
+    runHistoryState.teamNodesByWorkspace['/ws/a'] = [
+      {
+        teamRunId: 'team-1',
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Team Alpha',
+        workspaceRootPath: '/ws/a',
+        summary: 'Team summary',
+        lastActivityAt: '2026-01-01T02:00:00.000Z',
+        lastKnownStatus: 'IDLE',
+        isActive: false,
+        currentStatus: 'shutdown_complete',
+        deleteLifecycle: 'READY',
+        focusedMemberName: 'solution_designer',
+        members: [
+          {
+            teamRunId: 'team-1',
+            memberRouteKey: 'architect_reviewer',
+            memberName: 'Architect Reviewer',
+            memberRunId: 'member-run-2',
+            workspaceRootPath: '/ws/a',
+            summary: 'Team summary',
+            lastActivityAt: '2026-01-01T02:00:00.000Z',
+            lastKnownStatus: 'IDLE',
+            isActive: false,
+            deleteLifecycle: 'READY',
+          },
+          {
+            teamRunId: 'team-1',
+            memberRouteKey: 'solution_designer',
+            memberName: 'Solution Designer',
+            memberRunId: 'member-run-1',
+            workspaceRootPath: '/ws/a',
+            summary: 'Team summary',
+            lastActivityAt: '2026-01-01T02:00:00.000Z',
+            lastKnownStatus: 'IDLE',
+            isActive: false,
+            deleteLifecycle: 'READY',
+          },
+        ],
+      },
+    ];
+
+    const wrapper = mountComponent();
+    await flushPromises();
+
+    const row = wrapper.find('[data-test="workspace-team-row-team-1"]');
+    expect(row.exists()).toBe(true);
+
+    await row.trigger('click');
+    await flushPromises();
+
+    expect(runHistoryStoreMock.selectTreeRun).toHaveBeenCalledWith(
+      expect.objectContaining({
+        teamRunId: 'team-1',
+        memberRouteKey: 'solution_designer',
+        memberRunId: 'member-run-1',
+      }),
+    );
+  });
+
+  it('strips the user requirement prefix from agent and team summary labels', async () => {
+    runHistoryState.workspaceGroups = [
+      buildWorkspaceHistoryGroup({
+        workspaceRootPath: '/ws/a',
+        workspaceName: 'Workspace A',
+        agents: [],
+        teamRuns: [],
+        teamDefinitions: [
+          {
+            teamDefinitionId: 'team-def-1',
+            teamDefinitionName: 'Team Alpha',
+            runs: [
+              {
+                teamRunId: 'team-1',
+                teamDefinitionId: 'team-def-1',
+                teamDefinitionName: 'Team Alpha',
+                workspaceRootPath: '/ws/a',
+                summary: '**[User Requirement]** Build the demo fruit shop',
+                lastActivityAt: '2026-01-01T02:00:00.000Z',
+                lastKnownStatus: 'IDLE',
+                deleteLifecycle: 'READY',
+                isActive: false,
+                members: [],
+              },
+            ],
+          },
+        ],
+      }),
+    ];
+    runHistoryState.nodes = [
+      {
+        workspaceRootPath: '/ws/a',
+        workspaceName: 'Workspace A',
+        agents: [
+          {
+            agentDefinitionId: 'agent-def-1',
+            agentName: 'SuperAgent',
+            agentAvatarUrl: 'https://a',
+            runs: [
+              {
+                runId: 'run-1',
+                summary: '**[User Requirement]** Build a stable sidebar label',
+                lastActivityAt: '2026-01-01T01:00:00.000Z',
+                lastKnownStatus: 'IDLE',
+                isActive: false,
+                source: 'history',
+              },
+            ],
+          },
+        ],
+      },
+    ];
+    runHistoryState.teamNodesByWorkspace['/ws/a'] = [
+      {
+        teamRunId: 'team-1',
+        teamDefinitionId: 'team-def-1',
+        teamDefinitionName: 'Team Alpha',
+        workspaceRootPath: '/ws/a',
+        summary: '**[User Requirement]** Build the demo fruit shop',
+        lastActivityAt: '2026-01-01T02:00:00.000Z',
+        lastKnownStatus: 'IDLE',
+        isActive: false,
+        currentStatus: 'shutdown_complete',
+        deleteLifecycle: 'READY',
+        focusedMemberName: 'super_agent',
+        members: [],
+      },
+    ];
+
+    const wrapper = mountComponent();
+    await flushPromises();
+
+    expect(wrapper.text()).toContain('Build a stable sidebar label');
+    expect(wrapper.text()).toContain('Build the demo fruit shop');
+    expect(wrapper.text()).not.toContain('**[User Requirement]**');
   });
 
   it('renders team avatar image when team definition avatar is available', async () => {

@@ -23,8 +23,8 @@ export interface RunHistoryAgentGroup {
 export interface RunHistoryWorkspaceGroup {
   workspaceRootPath: string;
   workspaceName: string;
-  agents: RunHistoryAgentGroup[];
-  teamRuns: TeamRunHistoryItem[];
+  agentDefinitions: RunHistoryAgentGroup[];
+  teamDefinitions: TeamRunHistoryDefinitionGroup[];
 }
 
 export interface RunEditableFieldFlags {
@@ -80,6 +80,7 @@ export interface TeamRunHistoryItem {
   teamRunId: string;
   teamDefinitionId: string;
   teamDefinitionName: string;
+  coordinatorMemberRouteKey: string;
   workspaceRootPath?: string | null;
   summary: string;
   lastActivityAt: string;
@@ -87,6 +88,12 @@ export interface TeamRunHistoryItem {
   deleteLifecycle: TeamRunDeleteLifecycle;
   isActive: boolean;
   members: TeamRunMemberHistoryItem[];
+}
+
+export interface TeamRunHistoryDefinitionGroup {
+  teamDefinitionId: string;
+  teamDefinitionName: string;
+  runs: TeamRunHistoryItem[];
 }
 
 export interface TeamRunMetadataMember {

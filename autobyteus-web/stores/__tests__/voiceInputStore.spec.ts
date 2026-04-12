@@ -1,35 +1,42 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 
-const {
-  activeContextStoreMock,
-  extensionsStoreMock,
-  addToastMock,
-  enumerateDevicesMock,
-  getUserMediaMock,
-  permissionsQueryMock,
-} = vi.hoisted(() => ({
-  activeContextStoreMock: {
-    currentRequirement: 'hello',
-    updateRequirement: vi.fn(),
-    send: vi.fn(),
-  },
-  extensionsStoreMock: {
-    initialize: vi.fn().mockResolvedValue(undefined),
-    voiceInput: {
-      status: 'installed',
-      enabled: true,
-      settings: {
-        languageMode: 'auto',
-        audioInputDeviceId: null,
-      },
+type MockAgentContext = {
+  contextId: string
+  requirement: string
+  contextFilePaths: Array<{ path: string; type: 'Text' | 'Image' | 'Audio' | 'Video' }>
+}
+
+const createContext = (contextId: string, requirement = ''): MockAgentContext => ({
+  contextId,
+  requirement,
+  contextFilePaths: [],
+})
+
+const activeContextStoreMock = {
+  activeAgentContext: createContext('ctx-1', 'hello'),
+  currentRequirement: 'hello',
+  updateRequirement: vi.fn(),
+  updateRequirementForContext: vi.fn(),
+  send: vi.fn(),
+}
+
+const extensionsStoreMock = {
+  initialize: vi.fn().mockResolvedValue(undefined),
+  voiceInput: {
+    status: 'installed',
+    enabled: true,
+    settings: {
+      languageMode: 'auto',
+      audioInputDeviceId: null,
     },
   },
-  addToastMock: vi.fn(),
-  enumerateDevicesMock: vi.fn(),
-  getUserMediaMock: vi.fn(),
-  permissionsQueryMock: vi.fn(),
-}))
+}
+
+const addToastMock = vi.fn()
+const enumerateDevicesMock = vi.fn()
+const getUserMediaMock = vi.fn()
+const permissionsQueryMock = vi.fn()
 
 vi.mock('~/stores/activeContextStore', () => ({
   useActiveContextStore: () => activeContextStoreMock,
@@ -51,9 +58,30 @@ describe('voiceInputStore', () => {
   beforeEach(() => {
     vi.useRealTimers()
     setActivePinia(createPinia())
+    activeContextStoreMock.activeAgentContext = createContext('ctx-1', 'hello')
     activeContextStoreMock.currentRequirement = 'hello'
     activeContextStoreMock.updateRequirement.mockReset()
+    activeContextStoreMock.updateRequirementForContext.mockReset()
     activeContextStoreMock.send.mockReset()
+    activeContextStoreMock.updateRequirement.mockImplementation((text: string) => {
+      const context = activeContextStoreMock.activeAgentContext
+      if (!context) {
+        return
+      }
+      context.requirement = text
+      activeContextStoreMock.currentRequirement = text
+    })
+    activeContextStoreMock.updateRequirementForContext.mockImplementation(
+      (context: MockAgentContext | null, text: string) => {
+        if (!context) {
+          return
+        }
+        context.requirement = text
+        if (activeContextStoreMock.activeAgentContext === context) {
+          activeContextStoreMock.currentRequirement = text
+        }
+      },
+    )
     extensionsStoreMock.initialize.mockClear()
     extensionsStoreMock.voiceInput.status = 'installed'
     extensionsStoreMock.voiceInput.enabled = true
@@ -124,11 +152,16 @@ describe('voiceInputStore', () => {
       close: vi.fn().mockResolvedValue(undefined),
     } as any
     store.isRecording = true
+    store.recordingSource = 'composer'
+    store.composerTargetContext = activeContextStoreMock.activeAgentContext
 
     await store.stopRecording()
 
     expect(window.electronAPI.transcribeVoiceInput).toHaveBeenCalledOnce()
-    expect(activeContextStoreMock.updateRequirement).toHaveBeenCalledWith('hello world')
+    expect(activeContextStoreMock.updateRequirementForContext).toHaveBeenCalledWith(
+      activeContextStoreMock.activeAgentContext,
+      'hello world',
+    )
     expect(activeContextStoreMock.send).not.toHaveBeenCalled()
     expect(store.latestResult?.outcome).toBe('transcript-ready')
     expect(store.latestResult?.diagnostics?.wavSampleRate).toBe(48000)
@@ -172,10 +205,12 @@ describe('voiceInputStore', () => {
       close: vi.fn().mockResolvedValue(undefined),
     } as any
     store.isRecording = true
+    store.recordingSource = 'composer'
+    store.composerTargetContext = activeContextStoreMock.activeAgentContext
 
     await store.stopRecording()
 
-    expect(activeContextStoreMock.updateRequirement).not.toHaveBeenCalled()
+    expect(activeContextStoreMock.updateRequirementForContext).not.toHaveBeenCalled()
     expect(addToastMock).toHaveBeenCalledWith('runtime failed', 'error')
     expect(store.latestResult?.outcome).toBe('error')
   })
@@ -218,10 +253,12 @@ describe('voiceInputStore', () => {
       close: vi.fn().mockResolvedValue(undefined),
     } as any
     store.isRecording = true
+    store.recordingSource = 'composer'
+    store.composerTargetContext = activeContextStoreMock.activeAgentContext
 
     await store.stopRecording()
 
-    expect(activeContextStoreMock.updateRequirement).not.toHaveBeenCalled()
+    expect(activeContextStoreMock.updateRequirementForContext).not.toHaveBeenCalled()
     expect(addToastMock).toHaveBeenCalledWith('No speech detected.', 'info')
     expect(store.latestResult?.outcome).toBe('no-speech')
   })
@@ -264,11 +301,80 @@ describe('voiceInputStore', () => {
       close: vi.fn().mockResolvedValue(undefined),
     } as any
     store.isRecording = true
+    store.recordingSource = 'composer'
+    store.composerTargetContext = activeContextStoreMock.activeAgentContext
 
     await store.stopRecording()
 
     expect(store.latestResult?.outcome).toBe('empty-transcript')
     expect(addToastMock).toHaveBeenCalledWith('No transcript returned. Try speaking closer to the microphone.', 'info')
+  })
+
+  it('keeps composer transcript text with the member that started recording when focus changes', async () => {
+    const architectureContext = createContext('ctx-architecture', 'please review')
+    const apiE2eContext = createContext('ctx-api-e2e', '')
+    activeContextStoreMock.activeAgentContext = architectureContext
+    activeContextStoreMock.currentRequirement = architectureContext.requirement
+
+    const addModuleMock = vi.fn().mockResolvedValue(undefined)
+    const closeMock = vi.fn().mockResolvedValue(undefined)
+    const connectMock = vi.fn()
+
+    vi.stubGlobal('AudioContext', class {
+      state = 'running'
+      audioWorklet = { addModule: addModuleMock }
+      resume = vi.fn().mockResolvedValue(undefined)
+      createMediaStreamSource() {
+        return { connect: connectMock }
+      }
+      close = closeMock
+    } as any)
+
+    vi.stubGlobal('AudioWorkletNode', class {
+      port = { onmessage: null }
+      connect = connectMock
+    } as any)
+
+    const store = useVoiceInputStore()
+    await store.startRecording('composer')
+    expect(store.composerTargetContext?.contextId).toBe('ctx-architecture')
+    expect(store.composerTargetContext?.requirement).toBe('please review')
+
+    const capturePayload = {
+      audioData: new Uint8Array([1, 2, 3]).buffer,
+      diagnostics: {
+        inputSampleRate: 48000,
+        wavSampleRate: 48000,
+        durationMs: 1400,
+        rms: 0.022,
+        peak: 0.27,
+        sampleCount: 67200,
+      },
+    }
+
+    store.audioWorklet = {
+      port: {
+        postMessage: vi.fn(() => {
+          queueMicrotask(() => {
+            store.flushPromiseResolve?.(capturePayload)
+          })
+        }),
+      },
+    } as any
+
+    activeContextStoreMock.activeAgentContext = apiE2eContext
+    activeContextStoreMock.currentRequirement = apiE2eContext.requirement
+
+    await store.stopRecording()
+
+    expect(activeContextStoreMock.updateRequirementForContext).toHaveBeenCalledWith(
+      architectureContext,
+      'please review world',
+    )
+    expect(architectureContext.requirement).toBe('please review world')
+    expect(apiE2eContext.requirement).toBe('')
+
+    vi.unstubAllGlobals()
   })
 
   it('uses the selected audio input device when starting recording', async () => {
