@@ -5,6 +5,7 @@ import type {
   RunResumeConfigPayload,
   TeamRunResumeConfigPayload,
 } from '~/stores/runHistoryTypes';
+import { flattenWorkspaceTeamRuns } from '~/stores/runHistoryStoreSupport';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
 import { useAgentRunStore } from '~/stores/agentRunStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
@@ -22,7 +23,7 @@ export interface RecoverActiveRunsFromHistoryInput {
 
 const listActiveRunIds = (workspaceGroups: RunHistoryWorkspaceGroup[]): string[] =>
   workspaceGroups.flatMap((workspaceGroup) =>
-    workspaceGroup.agents.flatMap((agentGroup) =>
+    workspaceGroup.agentDefinitions.flatMap((agentGroup) =>
       agentGroup.runs
         .filter((run) => run.isActive)
         .map((run) => run.runId),
@@ -30,11 +31,9 @@ const listActiveRunIds = (workspaceGroups: RunHistoryWorkspaceGroup[]): string[]
   );
 
 const listActiveTeamRunIds = (workspaceGroups: RunHistoryWorkspaceGroup[]): string[] =>
-  workspaceGroups.flatMap((workspaceGroup) =>
-    workspaceGroup.teamRuns
-      .filter((teamRun) => teamRun.isActive)
-      .map((teamRun) => teamRun.teamRunId),
-  );
+  flattenWorkspaceTeamRuns(workspaceGroups)
+    .filter((teamRun) => teamRun.isActive)
+    .map((teamRun) => teamRun.teamRunId);
 
 export const recoverActiveRunsFromHistory = async (
   input: RecoverActiveRunsFromHistoryInput,

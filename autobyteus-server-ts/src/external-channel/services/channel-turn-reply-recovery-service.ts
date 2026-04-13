@@ -55,7 +55,6 @@ export class ChannelTurnReplyRecoveryService {
         includeWorkingContext: false,
         includeEpisodic: false,
         includeSemantic: false,
-        includeConversation: false,
         includeRawTraces: true,
         includeArchive: true,
       }).rawTraces ?? []

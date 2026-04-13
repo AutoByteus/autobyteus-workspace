@@ -37,7 +37,7 @@
       </div>
       <span
         v-if="isFocused"
-        class="rounded-full bg-indigo-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-indigo-700"
+        class="rounded-full bg-indigo-100 px-2 py-0.5 text-[0.625rem] font-semibold uppercase tracking-wide text-indigo-700"
       >
         Focused
       </span>

@@ -53,6 +53,15 @@ const mountIndicator = (props: Record<string, unknown>) => mount(ToolCallIndicat
     ...baseProps,
     ...props,
   },
+  global: {
+    mocks: {
+      $t: (key: string) => {
+        if (key.endsWith('.approve')) return 'Approve';
+        if (key.endsWith('.deny')) return 'Deny';
+        return key;
+      },
+    },
+  },
 });
 
 describe('ToolCallIndicator.vue', () => {

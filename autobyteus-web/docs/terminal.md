@@ -10,6 +10,7 @@ The Terminal module enables users to:
 - View command output with syntax-highlighted results
 - Navigate command history with arrow keys
 - Use keyboard shortcuts (Ctrl+C for interrupt)
+- Follow the app-wide **Settings -> Display -> App font size** preset for terminal text sizing
 
 ## Module Structure
 
@@ -67,15 +68,18 @@ Main terminal component using xterm.js for rich terminal emulation.
 - **Input handling**: Backspace, Enter, character input
 - **Ctrl+C support**: Interrupt current input
 - **Responsive sizing**: Auto-fits container with ResizeObserver
+- **Display preference integration**: Uses the shared app font-size store and refits when terminal font metrics change
 
 **Terminal Configuration (Light Theme):**
 
 ```typescript
+const { resolvedMetrics } = storeToRefs(useAppFontSizeStore());
+
 terminalInstance.value = new Terminal({
   cursorBlink: true,
   cursorStyle: "bar",
   fontFamily: 'Menlo, Monaco, "Courier New", monospace',
-  fontSize: 13,
+  fontSize: resolvedMetrics.value.terminalFontPx, // Default 14, Large 16, Extra Large 18
   theme: {
     background: "#ffffff",
     foreground: "#383a42",
@@ -86,6 +90,8 @@ terminalInstance.value = new Terminal({
   scrollback: 5000,
 });
 ```
+
+The terminal watches `resolvedMetrics.terminalFontPx` from `appFontSizeStore` and runs `fitAddon.fit()` after font-size changes so larger presets stay usable without manual reopen.
 
 **Input Handling Flow:**
 

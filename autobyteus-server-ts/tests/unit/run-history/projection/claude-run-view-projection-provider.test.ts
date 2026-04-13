@@ -3,6 +3,7 @@ import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.j
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 import type { ClaudeSessionManager } from "../../../../src/agent-execution/backends/claude/session/claude-session-manager.js";
 import type { AgentRunMetadata } from "../../../../src/run-history/store/agent-run-metadata-types.js";
+import type { RunProjectionProviderInput } from "../../../../src/run-history/projection/run-projection-types.js";
 
 vi.mock(
   "../../../../src/agent-execution/backends/claude/session/claude-session-manager.js",
@@ -32,6 +33,22 @@ const createMetadata = (
   ...overrides,
 });
 
+const createProjectionInput = (
+  overrides: Partial<AgentRunMetadata> = {},
+): RunProjectionProviderInput => {
+  const metadata = createMetadata(overrides);
+  return {
+    source: {
+      runId: metadata.runId,
+      runtimeKind: metadata.runtimeKind,
+      workspaceRootPath: metadata.workspaceRootPath ?? null,
+      memoryDir: null,
+      platformRunId: metadata.platformAgentRunId ?? null,
+      metadata,
+    },
+  };
+};
+
 describe("ClaudeRunViewProjectionProvider", () => {
   it("uses platformAgentRunId as the Claude session id", async () => {
     const sessionManager: ClaudeSessionManager = {
@@ -42,11 +59,9 @@ describe("ClaudeRunViewProjectionProvider", () => {
     } as unknown as ClaudeSessionManager;
     const provider = new ClaudeRunViewProjectionProvider(sessionManager);
 
-    const projection = await provider.buildProjection({
-      runId: "run-claude-1",
-      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-      metadata: createMetadata({ platformAgentRunId: "session-abc" }),
-    });
+    const projection = await provider.buildProjection(
+      createProjectionInput({ platformAgentRunId: "session-abc" }),
+    );
 
     expect(sessionManager.getSessionMessages).toHaveBeenCalledWith("session-abc");
     expect(projection?.conversation).toHaveLength(2);
@@ -60,14 +75,12 @@ describe("ClaudeRunViewProjectionProvider", () => {
     } as unknown as ClaudeSessionManager;
     const provider = new ClaudeRunViewProjectionProvider(sessionManager);
 
-    const projection = await provider.buildProjection({
-      runId: "run-claude-fallback",
-      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-      metadata: createMetadata({
+    const projection = await provider.buildProjection(
+      createProjectionInput({
         runId: "run-claude-fallback",
         platformAgentRunId: null,
       }),
-    });
+    );
 
     expect(sessionManager.getSessionMessages).toHaveBeenCalledWith("run-claude-fallback");
     expect(projection?.runId).toBe("run-claude-fallback");

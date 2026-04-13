@@ -22,6 +22,7 @@ const shellMessages = {
   'shell.mobile.team': 'Team',
   'shell.mobile.tools': 'Tools',
   'shell.mobile.content': 'Content',
+  'shell.components.layout.loading_selected_run_history': 'Loading',
   'shell.components.app.AppUpdateNotice.later': 'Later',
   'shell.components.app.AppUpdateNotice.restarting': 'Restarting...',
   'shell.components.app.AppUpdateNotice.statusTitle.checking': 'Checking for updates',

@@ -55,8 +55,7 @@ import { useFileExplorerStore } from '~/stores/fileExplorer';
 import { useRightPanel } from '~/composables/useRightPanel';
 import { useRightSideTabs } from '~/composables/useRightSideTabs';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
-import { useAgentArtifactsStore } from '~/stores/agentArtifactsStore';
-import { useAgentActivityStore } from '~/stores/agentActivityStore';
+import { useRunFileChangesStore } from '~/stores/runFileChangesStore';
 import TabList from '~/components/tabs/TabList.vue';
 import TeamOverviewPanel from '~/components/workspace/team/TeamOverviewPanel.vue';
 import Terminal from '~/components/workspace/tools/Terminal.vue';
@@ -70,9 +69,8 @@ import { useWorkspaceStore } from '~/stores/workspace';
 const selectionStore = useAgentSelectionStore();
 const activeContextStore = useActiveContextStore();
 const fileExplorerStore = useFileExplorerStore();
-const artifactsStore = useAgentArtifactsStore();
+const runFileChangesStore = useRunFileChangesStore();
 const todoStore = useAgentTodoStore();
-const activityStore = useAgentActivityStore();
 const workspaceStore = useWorkspaceStore();
 
 const { activeTab, visibleTabs, setActiveTab } = useRightSideTabs();
@@ -80,7 +78,7 @@ const { toggleRightPanel } = useRightPanel();
 
 const currentAgentRunId = computed(() => activeContextStore.activeAgentContext?.state.runId ?? '');
 const latestVisibleArtifactSignal = computed(() =>
-  artifactsStore.getLatestVisibleArtifactSignalForRun(currentAgentRunId.value),
+  runFileChangesStore.getLatestVisibleArtifactSignalForRun(currentAgentRunId.value),
 );
 
 const handleTabSelect = (tabName: string) => {
@@ -128,30 +126,6 @@ watch(() => {
 watch(latestVisibleArtifactSignal, (newSignal) => {
   if (newSignal && activeTab.value !== 'artifacts') {
     setActiveTab('artifacts');
-  }
-});
-
-// Auto-switch to Activity tab on approval request
-const hasAwaitingApproval = computed(() => {
-  if (!currentAgentRunId.value) return false;
-  return activityStore.hasAwaitingApproval(currentAgentRunId.value);
-});
-
-watch(hasAwaitingApproval, (newVal) => {
-  if (newVal && activeTab.value !== 'progress') {
-    setActiveTab('progress');
-  }
-});
-
-// Auto-switch to Progress tab when an activity is highlighted (e.g. running tool)
-const highlightedActivityId = computed(() => {
-  if (!currentAgentRunId.value) return null;
-  return activityStore.getHighlightedActivityId(currentAgentRunId.value);
-});
-
-watch(highlightedActivityId, (newVal) => {
-  if (newVal && activeTab.value !== 'progress') {
-    setActiveTab('progress');
   }
 });
 

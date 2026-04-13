@@ -12,6 +12,10 @@ import {
 } from "../backends/codex/index.js";
 import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import { AgentCreationError, AgentTerminationError } from "../errors.js";
+import {
+  RunFileChangeService,
+  getRunFileChangeService,
+} from "../../services/run-file-changes/run-file-change-service.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -23,6 +27,7 @@ type AgentRunManagerOptions = {
   autoByteusBackendFactory?: AgentRunBackendFactory;
   codexBackendFactory?: AgentRunBackendFactory;
   claudeBackendFactory?: AgentRunBackendFactory;
+  runFileChangeService?: RunFileChangeService;
 };
 
 export class AgentRunManager {
@@ -30,7 +35,9 @@ export class AgentRunManager {
   private readonly autoByteusBackendFactory: AgentRunBackendFactory;
   private readonly codexBackendFactory: AgentRunBackendFactory;
   private readonly claudeBackendFactory: AgentRunBackendFactory;
+  private readonly runFileChangeService: RunFileChangeService;
   private activeRuns = new Map<string, AgentRun>();
+  private readonly runFileChangeUnsubscribers = new Map<string, () => void>();
 
   static getInstance(options: AgentRunManagerOptions = {}): AgentRunManager {
     if (!AgentRunManager.instance) {
@@ -46,6 +53,8 @@ export class AgentRunManager {
       options.codexBackendFactory ?? getCodexAgentRunBackendFactory();
     this.claudeBackendFactory =
       options.claudeBackendFactory ?? getClaudeAgentRunBackendFactory();
+    this.runFileChangeService =
+      options.runFileChangeService ?? getRunFileChangeService();
     logger.info("AgentRunManager initialized.");
   }
 
@@ -150,10 +159,25 @@ export class AgentRunManager {
   }
 
   private registerActiveRun(activeRun: AgentRun): void {
+    this.unregisterRunFileChanges(activeRun.runId);
     this.activeRuns.set(activeRun.runId, activeRun);
+    this.runFileChangeUnsubscribers.set(
+      activeRun.runId,
+      this.runFileChangeService.attachToRun(activeRun),
+    );
   }
 
   private unregisterActiveRun(runId: string): void {
     this.activeRuns.delete(runId);
+    this.unregisterRunFileChanges(runId);
+  }
+
+  private unregisterRunFileChanges(runId: string): void {
+    const unsubscribe = this.runFileChangeUnsubscribers.get(runId);
+    if (!unsubscribe) {
+      return;
+    }
+    this.runFileChangeUnsubscribers.delete(runId);
+    unsubscribe();
   }
 }

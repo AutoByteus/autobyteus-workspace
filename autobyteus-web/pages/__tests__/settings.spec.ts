@@ -12,6 +12,7 @@ const translationMap: Record<string, string> = {
   'settings.page.sections.tokenUsage': 'Token Usage Statistics',
   'settings.page.sections.nodes': 'Nodes',
   'settings.page.sections.messaging': 'Messaging',
+  'settings.page.sections.display': 'Display',
   'settings.page.sections.language': 'Language',
   'settings.page.sections.localTools': 'Local Tools',
   'settings.page.sections.mcpServers': 'MCP Servers',
@@ -65,6 +66,7 @@ const mountSettings = () =>
         ConversationHistoryManager: { template: '<div data-testid="section-conversation-logs" />' },
         NodeManager: { template: '<div data-testid="section-nodes" />' },
         MessagingSetupManager: { template: '<div data-testid="section-messaging" />' },
+        DisplaySettingsManager: { template: '<div data-testid="section-display" />' },
         LanguageSettingsManager: { template: '<div data-testid="section-language" />' },
         AboutSettingsManager: { template: '<div data-testid="section-updates" />' },
         AgentPackagesManager: { template: '<div data-testid="section-agent-packages" />' },
@@ -93,6 +95,7 @@ describe('settings page', () => {
     expect(wrapper.text()).toContain('API Keys');
     expect(wrapper.text()).toContain('Nodes');
     expect(wrapper.text()).toContain('Messaging');
+    expect(wrapper.text()).toContain('Display');
     expect(wrapper.text()).toContain('Language');
     expect(wrapper.text()).toContain('Updates');
     expect(wrapper.text()).toContain('Local Tools');
@@ -151,6 +154,16 @@ describe('settings page', () => {
 
     expect(setupState.activeSection).toBe('language');
     expect(wrapper.find('[data-testid="section-language"]').exists()).toBe(true);
+  });
+
+  it('supports display section query and activates the display settings section', async () => {
+    routeMock.query = { section: 'display' };
+    const wrapper = mountSettings();
+    await nextTick();
+    const setupState = (wrapper.vm as any).$?.setupState;
+
+    expect(setupState.activeSection).toBe('display');
+    expect(wrapper.find('[data-testid="section-display"]').exists()).toBe(true);
   });
 
   it('supports updates section query and activates updates section', async () => {

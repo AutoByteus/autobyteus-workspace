@@ -89,6 +89,7 @@ export class CodexAgentRunBackend implements AgentRunBackend {
       const result = await this.sendTurn(message);
       return {
         accepted: true,
+        turnId: result.turnId,
         platformAgentRunId: result.platformAgentRunId,
       };
     } catch (error) {
@@ -97,10 +98,12 @@ export class CodexAgentRunBackend implements AgentRunBackend {
   }
 
   async sendTurn(message: AgentInputUserMessage): Promise<{
+    turnId: string | null;
     platformAgentRunId: string | null;
   }> {
-    await this.codexThread.sendTurn(message);
+    const result = await this.codexThread.sendTurn(message);
     return {
+      turnId: result.turnId,
       platformAgentRunId: this.getPlatformAgentRunId(),
     };
   }

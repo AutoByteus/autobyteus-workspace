@@ -5,7 +5,9 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
 import type { PropType } from 'vue';
+import { storeToRefs } from 'pinia';
 import loader from '@monaco-editor/loader';
+import { useAppFontSizeStore } from '~/stores/appFontSizeStore';
 
 type WordWrapSetting = 'off' | 'on' | 'wordWrapColumn' | 'bounded';
 
@@ -54,9 +56,26 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'update:wordWrap', 'editorDidMount', 'save']);
 
+const appFontSizeStore = useAppFontSizeStore();
+const { resolvedMetrics } = storeToRefs(appFontSizeStore);
+const editorFontPx = ref(resolvedMetrics.value.editorFontPx);
+
 const editorContainer = ref<HTMLElement | null>(null);
 let editor: any = null;
 let monaco: any = null;
+
+watch(() => resolvedMetrics.value.editorFontPx, (nextFontPx) => {
+  editorFontPx.value = nextFontPx;
+
+  if (!editor || !monaco) {
+    return;
+  }
+
+  const currentFontPx = editor.getOption(monaco.editor.EditorOption.fontSize);
+  if (currentFontPx !== nextFontPx) {
+    editor.updateOptions({ fontSize: nextFontPx });
+  }
+});
 let containerKeydownHandler: ((e: KeyboardEvent) => void) | null = null;
 let isUnmounted = false;
 
@@ -105,7 +124,7 @@ const initMonaco = async () => {
 
   if (isUnmounted || !editorContainer.value || !editorContainer.value.isConnected) return;
 
-  const { wordWrap: _wordWrap, ...restOptions } = props.options || {};
+  const { wordWrap: _wordWrap, fontSize: _fontSize, ...restOptions } = props.options || {};
 
   editor = monaco.editor.create(editorContainer.value, {
     value: getSafeValue(props.modelValue),
@@ -115,6 +134,7 @@ const initMonaco = async () => {
     minimap: { enabled: false },
     readOnly: props.readOnly,
     wordWrap: wordWrapState.value,
+    fontSize: editorFontPx.value,
     ...restOptions
   });
 

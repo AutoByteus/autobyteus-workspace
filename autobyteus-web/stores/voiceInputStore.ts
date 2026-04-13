@@ -3,6 +3,7 @@ import { useToasts } from '~/composables/useToasts';
 import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
 import { useActiveContextStore } from '~/stores/activeContextStore';
 import { useExtensionsStore } from '~/stores/extensionsStore';
+import type { AgentContext } from '~/types/agent/AgentContext';
 
 export type VoiceInputRecordingSource = 'composer' | 'settings-test';
 export type VoiceInputResultOutcome = 'idle' | 'recording' | 'transcribing' | 'transcript-ready' | 'no-speech' | 'empty-transcript' | 'error';
@@ -65,6 +66,7 @@ interface VoiceInputStoreState {
   mediaDeviceListenerRegistered: boolean;
   captureWatchdogTimer: ReturnType<typeof setTimeout> | null;
   hasReceivedCaptureStats: boolean;
+  composerTargetContext: AgentContext | null;
 }
 
 function mergeTranscriptWithDraft(currentDraft: string, transcript: string): string {
@@ -158,6 +160,7 @@ export const useVoiceInputStore = defineStore('voiceInput', {
     mediaDeviceListenerRegistered: false,
     captureWatchdogTimer: null,
     hasReceivedCaptureStats: false,
+    composerTargetContext: null,
   }),
 
   getters: {
@@ -306,6 +309,9 @@ export const useVoiceInputStore = defineStore('voiceInput', {
       try {
         this.error = null;
         this.recordingSource = source;
+        this.composerTargetContext = source === 'composer'
+          ? useActiveContextStore().activeAgentContext
+          : null;
         this.liveInputLevel = 0;
         this.hasReceivedCaptureStats = false;
 
@@ -410,6 +416,7 @@ export const useVoiceInputStore = defineStore('voiceInput', {
       }
 
       const source = this.recordingSource || 'composer';
+      const composerTargetContext = source === 'composer' ? this.composerTargetContext : null;
       this.isRecording = false;
       this.isTranscribing = true;
       this.liveInputLevel = 0;
@@ -479,9 +486,13 @@ export const useVoiceInputStore = defineStore('voiceInput', {
 
         if (source === 'composer') {
           const activeContextStore = useActiveContextStore();
-          activeContextStore.updateRequirement(
-            mergeTranscriptWithDraft(activeContextStore.currentRequirement, result.text),
-          );
+          const targetContext = composerTargetContext;
+          if (targetContext) {
+            activeContextStore.updateRequirementForContext(
+              targetContext,
+              mergeTranscriptWithDraft(targetContext.requirement, result.text),
+            );
+          }
         }
       } catch (error) {
         this.error = error instanceof Error ? error.message : t('settings.voiceInput.store.voiceTranscriptionFailed');
@@ -499,6 +510,7 @@ export const useVoiceInputStore = defineStore('voiceInput', {
       } finally {
         this.isTranscribing = false;
         this.recordingSource = null;
+        this.composerTargetContext = null;
         this.liveInputLevel = 0;
       }
     },
@@ -545,6 +557,7 @@ export const useVoiceInputStore = defineStore('voiceInput', {
       this.flushPromiseResolve = null;
       this.isRecording = false;
       this.recordingSource = null;
+      this.composerTargetContext = null;
       this.liveInputLevel = 0;
       this.hasReceivedCaptureStats = false;
     },

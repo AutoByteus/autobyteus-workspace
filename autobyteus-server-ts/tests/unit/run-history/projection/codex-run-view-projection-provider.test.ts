@@ -188,14 +188,28 @@ describe("CodexRunViewProjectionProvider", () => {
         ),
       ).toBe(true);
       expect(
-        projection?.conversation.some(
-          (entry) =>
-            entry.kind === "message" &&
-            entry.role === "assistant" &&
-            entry.content?.includes("I will create the file and run it.") &&
-            entry.content?.includes("[reasoning]"),
-        ),
-      ).toBe(true);
+        projection?.conversation,
+      ).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            kind: "reasoning",
+            content: "**Planning file creation and execution**",
+          }),
+          expect.objectContaining({
+            kind: "message",
+            role: "assistant",
+            content: "I will create the file and run it.",
+          }),
+        ]),
+      );
+      const reasoningIndex =
+        projection?.conversation.findIndex((entry) => entry.kind === "reasoning") ?? -1;
+      const assistantIndex =
+        projection?.conversation.findIndex(
+          (entry) => entry.kind === "message" && entry.role === "assistant",
+        ) ?? -1;
+      expect(reasoningIndex).toBeGreaterThanOrEqual(0);
+      expect(assistantIndex).toBeGreaterThan(reasoningIndex);
     } finally {
       await rm(workspaceRootPath, { recursive: true, force: true });
     }
@@ -274,6 +288,24 @@ describe("CodexRunViewProjectionProvider", () => {
             Array.isArray(entry.toolArgs?.queries),
         ),
       ).toBe(true);
+      expect(projection?.activities).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            invocationId: "call-1",
+            toolName: "run_bash",
+            type: "terminal_command",
+            status: "success",
+            detailLevel: "source_limited",
+          }),
+          expect.objectContaining({
+            invocationId: "ws-1",
+            toolName: "search_web",
+            type: "tool_call",
+            status: "success",
+            detailLevel: "source_limited",
+          }),
+        ]),
+      );
     } finally {
       await rm(workspaceRootPath, { recursive: true, force: true });
     }

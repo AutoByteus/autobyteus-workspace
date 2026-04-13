@@ -20,12 +20,12 @@ graph TD
     Service-->|Dispatch| Handler{Event Handlers}
 
     Handler-->|Segment Created/Updated| Context[Agent Context State]
-    Handler-->|Artifact Persistence| ArtifactStore[Artifact Store]
+    Handler-->|File changes / outputs| RunFileChangeStore[Run File Change Store]
     Handler-->|Activity Log| ActivityStore[Activity Store]
     Handler-->|Task/Todo Update| TodoStore[Todo Store]
 
     Context-->|Reactivity| UI[Vue Component UI]
-    ArtifactStore-->|Reactivity| UI
+    RunFileChangeStore-->|Reactivity| UI
     ActivityStore-->|Reactivity| UI
 ```
 
@@ -39,7 +39,7 @@ The Pinia stores act as the primary interface for the UI components to interact 
 
 - **Role**: Manages the execution lifecycle of individual agents.
 - **Key Actions**:
-  - `sendUserInputAndSubscribe()`: Sends user messages via mutation and ensures an agent WebSocket stream is connected.
+  - `sendUserInputAndSubscribe()`: Sends user messages via mutation and ensures an agent WebSocket stream is connected. Before the send, it finalizes any staged browser uploads so optimistic history and runtime payloads both point at final run-scoped attachment locators.
   - `connectToAgentStream(runId)`: Listens for real-time events specific to an agent run via WebSocket.
   - `postToolExecutionApproval()`: Sends user decisions (Approve/Deny) for "Awaiting Approval" tool calls.
   - `closeAgent()`: Cleans up local state and unsubscribes.
@@ -51,7 +51,19 @@ The Pinia stores act as the primary interface for the UI components to interact 
   - `createAndLaunchTeam()`: Orchestrates the creation of a new team run configuration and starts the session.
   - `launchExistingTeam()`: Resumes or starts a session from an existing team instance.
   - `connectToTeamStream(teamRunId)`: Listens for team-level events (e.g., task updates, status changes) via WebSocket.
-  - `sendMessageToFocusedMember()`: Routes user input to a specific agent within the team context.
+  - `sendMessageToFocusedMember()`: Routes user input to a specific agent within the team context, finalizing that member's staged uploaded attachments after the authoritative team/member identity is known.
+
+### Uploaded Context Attachment Orchestration
+
+Browser-uploaded composer files now follow the same high-level orchestration pattern across single-agent, team, and application-backed conversations:
+
+1. UI surfaces work against the shared discriminated attachment model (`workspace_path`, `uploaded`, `external_url`) instead of raw path strings.
+2. `ContextFileUploadStore` owns upload, delete, and finalize transport. It stages browser uploads under an explicit draft owner and returns descriptors that keep `storedFilename` separate from the user-visible `displayName`.
+3. Shared UI helpers (`useContextAttachmentComposer` and `contextAttachmentPresentation`) own attachment-list mutation, display-label rendering, preview/open behavior, and pending-upload coordination so individual components do not parse locators themselves.
+4. Send stores create or restore the final run/team identity first, then call `/context-files/finalize` with `attachments[{ storedFilename, displayName }]` and replace draft uploaded descriptors with final run/member locators before optimistic append + runtime send.
+5. The stable `storedFilename` remains the attachment identity key while `displayName` preserves the original uploaded filename even when the stored path has been sanitized.
+
+This separation keeps draft attachment transport concerns out of UI components and keeps runtime consumers dependent only on finalized run-scoped attachment locators.
 
 ---
 
@@ -88,8 +100,9 @@ Incoming events are routed based on their `type`:
 | `TOOL_EXECUTION_SUCCEEDED`| `toolLifecycleHandler.handleToolExecutionSucceeded`| Sets terminal `success` + stores result payload.               |
 | `TOOL_EXECUTION_FAILED`   | `toolLifecycleHandler.handleToolExecutionFailed`   | Sets terminal `error` + stores failure details.                |
 | `TOOL_LOG`                | `toolLifecycleHandler.handleToolLog`               | Appends diagnostic execution logs only.                         |
-| `ARTIFACT_PERSISTED`      | `artifactHandler.handleArtifactPersisted`          | Marks touched files/outputs available after success and carries generated-output metadata. |
-| `ARTIFACT_UPDATED`        | `artifactHandler.handleArtifactUpdated`            | Refreshes edited/runtime-updated touched rows without implying new discoverability for already-visible rows. |
+| `ARTIFACT_PERSISTED`      | inline no-op compatibility                         | Ignored by the current client; legacy transport noise while the unified file-change path remains authoritative. |
+| `ARTIFACT_UPDATED`        | inline no-op compatibility                         | Ignored by the current client; live artifact state now arrives through `FILE_CHANGE_UPDATED`. |
+| `FILE_CHANGE_UPDATED`     | `fileChangeHandler.handleFileChangeUpdated`        | Syncs touched files and generated outputs into the unified run-scoped store. |
 | `TODO_LIST_UPDATE`        | `todoHandler.handleTodoListUpdate`                 | Syncs the agent's internal todo list with the UI.               |
 
 ---
@@ -104,7 +117,7 @@ These handlers are pure functions that take a payload and an `AgentContext`, and
 
 #### `segmentHandler.ts`
 
-- **`handleSegmentStart`**: Finds the current AI message (or creates one) and pushes a new Segment object (e.g., `ToolCallSegment`, `WriteFileSegment`). It also initializes touched-file sidecar entries for `write_file` and `edit_file` as soon as the path is known.
+- **`handleSegmentStart`**: Finds the current AI message (or creates one) and pushes a new Segment object (e.g., `ToolCallSegment`, `WriteFileSegment`). File-change sidecar state is no longer inferred here; the backend emits dedicated `FILE_CHANGE_UPDATED` events for the Artifacts experience.
 - **`handleSegmentContent`**: Finds the segment by ID and appends string deltas. This powers the "typewriter" effect.
 - **`handleSegmentEnd`**: Performs cleanup, sets the final tool name if it was streamed lazily, and marks the segment as "parsed" (ready for execution state changes).
 
@@ -119,11 +132,11 @@ These handlers are pure functions that take a payload and an `AgentContext`, and
 
 A key architectural pattern is the **Sidecar Store Pattern** for runtime data. Instead of keeping all state in a monolithic `AgentContext` (which is optimized for Chat UI), distinct data streams are routed to dedicated stores:
 
-1.  **Artifacts (`AgentArtifactsStore`)**:
-    - Listens to `write_file` and `edit_file` segment events plus `ARTIFACT_UPDATED` / `ARTIFACT_PERSISTED`.
-    - Builds a live touched-files / outputs projection for the current run.
-    - Owns one-shot discoverability: first visibility or explicit segment re-touch announces the row; refresh-only artifact events do not.
-    - Buffers `write_file` content for immediate preview, then lets the viewer resolve current workspace content or media URLs once entries become available.
+1.  **Run File Changes (`RunFileChangesStore`)**:
+    - Listens to `FILE_CHANGE_UPDATED` plus reopen hydration from `getRunFileChanges(runId)`.
+    - Owns the run-scoped projection for touched files and generated outputs.
+    - Tracks latest-visible discoverability so the Artifacts tab can auto-focus when a new row appears.
+    - Keeps transient `write_file` buffers only until committed previews are fetched from the server-backed run preview route.
 2.  **Activity (`AgentActivityStore`)**:
     - Tracks every tool call, file write, and terminal command as a linear history of "Activities".
     - Powers the right-side Progress/Activity feed UI.

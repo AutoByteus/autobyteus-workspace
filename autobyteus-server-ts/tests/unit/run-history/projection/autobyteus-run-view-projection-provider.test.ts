@@ -22,9 +22,25 @@ const createMetadata = (
 describe("AutoByteusRunViewProjectionProvider", () => {
   it("uses platformAgentRunId as the runtime memory directory when available", async () => {
     const getRunMemoryView = vi.fn().mockReturnValue({
-      conversation: [
-        { kind: "message", role: "user", content: "hello", ts: 1 },
-        { kind: "message", role: "assistant", content: "world", ts: 2 },
+      rawTraces: [
+        { traceType: "user", content: "hello", turnId: "t1", seq: 1, ts: 1 },
+        {
+          traceType: "tool_call",
+          toolCallId: "call-1",
+          toolName: "run_bash",
+          toolArgs: { command: "pwd" },
+          turnId: "t1",
+          seq: 2,
+          ts: 2,
+        },
+        {
+          traceType: "tool_result",
+          toolCallId: "call-1",
+          toolResult: { stdout: "/tmp" },
+          turnId: "t1",
+          seq: 3,
+          ts: 3,
+        },
       ],
     });
     const provider = new AutoByteusRunViewProjectionProvider("/tmp/memory", {
@@ -46,17 +62,23 @@ describe("AutoByteusRunViewProjectionProvider", () => {
       includeWorkingContext: false,
       includeEpisodic: false,
       includeSemantic: false,
-      includeConversation: true,
-      includeRawTraces: false,
+      includeRawTraces: true,
       includeArchive: true,
     });
     expect(projection.runId).toBe("server-run-1");
     expect(projection.conversation).toHaveLength(2);
+    expect(projection.activities).toEqual([
+      expect.objectContaining({
+        invocationId: "call-1",
+        toolName: "run_bash",
+        status: "success",
+      }),
+    ]);
   });
 
   it("falls back to the server runId when platformAgentRunId is missing", async () => {
     const getRunMemoryView = vi.fn().mockReturnValue({
-      conversation: [],
+      rawTraces: [],
     });
     const provider = new AutoByteusRunViewProjectionProvider("/tmp/memory", {
       getRunMemoryView,
@@ -77,8 +99,7 @@ describe("AutoByteusRunViewProjectionProvider", () => {
       includeWorkingContext: false,
       includeEpisodic: false,
       includeSemantic: false,
-      includeConversation: true,
-      includeRawTraces: false,
+      includeRawTraces: true,
       includeArchive: true,
     });
   });

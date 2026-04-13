@@ -17,7 +17,33 @@ The runtime image also ships with:
 
 ## Quick Start
 
-The easiest way to start the server is using the `docker-start.sh` script. It automatically detects available ports to avoid collisions and supports multiple isolated instances.
+If you want to run the published image directly, without cloning this repository, use:
+
+```bash
+docker run -d \
+  --name autobyteus-server \
+  --restart unless-stopped \
+  --cap-add SYS_ADMIN \
+  --security-opt seccomp=unconfined \
+  -p 8001:8000 \
+  -p 5908:5900 \
+  -p 6080:6080 \
+  -p 9228:9223 \
+  -e AUTOBYTEUS_SERVER_HOST=http://localhost:8001 \
+  -e AUTOBYTEUS_VNC_SERVER_HOSTS=localhost:6080 \
+  -v autobyteus-server-workspace:/app/autobyteus-server-ts/workspace \
+  -v autobyteus-server-data:/home/autobyteus/data \
+  -v autobyteus-server-root-home:/root \
+  autobyteus/autobyteus-server:latest
+```
+
+Stop it with:
+
+```bash
+docker stop autobyteus-server
+```
+
+If you have this repository locally, the easiest way to manage multiple isolated instances is using the `docker-start.sh` script. It automatically detects available ports to avoid collisions and supports multiple isolated instances.
 
 ```bash
 cd autobyteus-server-ts/docker
@@ -47,6 +73,9 @@ Codex CLI and Claude Code are preinstalled in the image. The intended auth flow 
 3. log in inside the container with:
    - `codex login`
    - `claude auth login`
+
+Use `codex login` directly in the default container shell. The container runs as
+`root`, so `sudo codex login` is not required in the normal Docker setup.
 
 The container runs as `root`, and `/root` is persisted in a Docker-managed named volume per Compose project. That means:
 

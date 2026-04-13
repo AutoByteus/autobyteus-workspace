@@ -3,15 +3,16 @@ import type {
   ChannelBindingLookup,
   ChannelBindingProviderDefaultLookup,
   ChannelAcceptedIngressReceiptInput,
-  ChannelAcceptedReceiptCorrelationInput,
   ChannelClaimIngressDispatchInput,
+  ChannelDispatchTarget,
   ChannelDeliveryEvent,
   ChannelIngressReceiptKey,
   ChannelIngressReceiptState,
   ChannelMessageReceipt,
   ChannelPendingIngressReceiptInput,
   ChannelReplyPublishedReceiptInput,
-  ChannelDispatchTarget,
+  ChannelReceiptWorkflowProgressInput,
+  ChannelReceiptWorkflowState,
   ChannelSourceContext,
   ChannelSourceRoute,
   ChannelUnboundIngressReceiptInput,
@@ -141,10 +142,10 @@ class DeferredChannelMessageReceiptProvider implements ChannelMessageReceiptProv
     return (await getProviderSet()).messageReceiptProvider.markIngressUnbound(input);
   }
 
-  async updateAcceptedReceiptCorrelation(
-    input: ChannelAcceptedReceiptCorrelationInput,
+  async updateReceiptWorkflowProgress(
+    input: ChannelReceiptWorkflowProgressInput,
   ): Promise<ChannelMessageReceipt> {
-    return (await getProviderSet()).messageReceiptProvider.updateAcceptedReceiptCorrelation(input);
+    return (await getProviderSet()).messageReceiptProvider.updateReceiptWorkflowProgress(input);
   }
 
   async markReplyPublished(
@@ -157,6 +158,12 @@ class DeferredChannelMessageReceiptProvider implements ChannelMessageReceiptProv
     state: ChannelIngressReceiptState,
   ): Promise<ChannelMessageReceipt[]> {
     return (await getProviderSet()).messageReceiptProvider.listReceiptsByIngressState(state);
+  }
+
+  async listReceiptsByWorkflowStates(
+    states: ChannelReceiptWorkflowState[],
+  ): Promise<ChannelMessageReceipt[]> {
+    return (await getProviderSet()).messageReceiptProvider.listReceiptsByWorkflowStates(states);
   }
 
   async getSourceByAgentRunTurn(

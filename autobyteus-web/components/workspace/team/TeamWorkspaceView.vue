@@ -10,7 +10,7 @@
             class="h-full w-full object-cover"
             @error="headerAvatarLoadError = true"
           />
-          <span v-else class="text-[10px] font-semibold tracking-wide text-slate-600">
+          <span v-else class="text-[0.625rem] font-semibold tracking-wide text-slate-600">
             {{ headerAvatarInitials }}
           </span>
         </div>
@@ -157,8 +157,12 @@ const setCurrentMode = (mode: TeamWorkspaceViewMode) => {
   teamWorkspaceViewStore.setMode(activeTeamContext.value.teamRunId, mode);
 };
 
-const setFocusedMember = (memberName: string) => {
-  teamContextsStore.setFocusedMember(memberName);
+const setFocusedMember = async (memberName: string) => {
+  const teamRunId = activeTeamContext.value?.teamRunId;
+  if (!teamRunId) {
+    return;
+  }
+  await teamContextsStore.focusMemberAndEnsureHydrated?.(teamRunId, memberName);
 };
 
 const createNewTeamRun = () => {
@@ -183,4 +187,15 @@ onMounted(async () => {
     await agentDefinitionStore.fetchAllAgentDefinitions().catch(() => undefined);
   }
 });
+
+watch(
+  () => [activeTeamContext.value?.teamRunId, currentMode.value] as const,
+  ([teamRunId, mode]) => {
+    if (!teamRunId || mode === 'focus') {
+      return;
+    }
+    void teamContextsStore.ensureHistoricalMembersHydratedForView?.(teamRunId, mode);
+  },
+  { immediate: true },
+);
 </script>

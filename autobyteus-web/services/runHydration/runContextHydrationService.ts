@@ -1,7 +1,7 @@
 import { getApolloClient } from '~/utils/apolloClient';
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
-import { GetAgentRunResumeConfig, GetRunProjection } from '~/graphql/queries/runHistoryQueries';
+import { GetAgentRunResumeConfig, GetRunFileChanges, GetRunProjection } from '~/graphql/queries/runHistoryQueries';
 import {
   DEFAULT_AGENT_RUNTIME_KIND,
   type AgentRunConfig,
@@ -10,11 +10,15 @@ import {
 } from '~/types/agent/AgentRunConfig';
 import type { RunResumeConfigPayload } from '~/stores/runHistoryTypes';
 import { buildConversationFromProjection, type RunProjectionConversationEntry } from './runProjectionConversation';
+import { hydrateActivitiesFromProjection, type RunProjectionActivityEntry } from './runProjectionActivityHydration';
 import { normalizeAgentRuntimeStatus } from './runtimeStatusNormalization';
+import type { RunFileChangeArtifact } from '~/stores/runFileChangesStore';
+import { hydrateRunFileChanges } from './runFileChangeHydrationService';
 
 export interface RunProjectionPayload {
   runId: string;
   conversation: RunProjectionConversationEntry[];
+  activities: RunProjectionActivityEntry[];
   summary?: string | null;
   lastActivityAt?: string | null;
 }
@@ -25,6 +29,10 @@ interface GetRunProjectionQueryData {
 
 interface GetAgentRunResumeConfigQueryData {
   getAgentRunResumeConfig: RunResumeConfigPayload;
+}
+
+interface GetRunFileChangesQueryData {
+  getRunFileChanges: RunFileChangeArtifact[];
 }
 
 export interface LoadRunContextHydrationInput {
@@ -38,13 +46,15 @@ export interface RunContextHydrationPayload {
   resumeConfig: RunResumeConfigPayload;
   config: AgentRunConfig;
   conversation: ReturnType<typeof buildConversationFromProjection>;
+  activities: RunProjectionActivityEntry[];
+  fileChanges: RunFileChangeArtifact[];
 }
 
 export const loadRunContextHydrationPayload = async (
   input: LoadRunContextHydrationInput,
 ): Promise<RunContextHydrationPayload> => {
   const client = getApolloClient();
-  const [projectionResponse, resumeResponse] = await Promise.all([
+  const [projectionResponse, resumeResponse, fileChangesResponse] = await Promise.all([
     client.query<GetRunProjectionQueryData>({
       query: GetRunProjection,
       variables: { runId: input.runId },
@@ -52,6 +62,11 @@ export const loadRunContextHydrationPayload = async (
     }),
     client.query<GetAgentRunResumeConfigQueryData>({
       query: GetAgentRunResumeConfig,
+      variables: { runId: input.runId },
+      fetchPolicy: 'network-only',
+    }),
+    client.query<GetRunFileChangesQueryData>({
+      query: GetRunFileChanges,
       variables: { runId: input.runId },
       fetchPolicy: 'network-only',
     }),
@@ -65,6 +80,11 @@ export const loadRunContextHydrationPayload = async (
   const resumeErrors = resumeResponse.errors || [];
   if (resumeErrors.length > 0) {
     throw new Error(resumeErrors.map((e: { message: string }) => e.message).join(', '));
+  }
+
+  const fileChangeErrors = fileChangesResponse.errors || [];
+  if (fileChangeErrors.length > 0) {
+    throw new Error(fileChangeErrors.map((e: { message: string }) => e.message).join(', '));
   }
 
   const projection = projectionResponse.data?.getRunProjection;
@@ -129,6 +149,8 @@ export const loadRunContextHydrationPayload = async (
     resumeConfig,
     config,
     conversation,
+    activities: projection.activities || [],
+    fileChanges: fileChangesResponse.data?.getRunFileChanges || [],
   };
 };
 
@@ -142,5 +164,7 @@ export const hydrateLiveRunContext = async (
     conversation: payload.conversation,
     status: normalizeAgentRuntimeStatus(input.currentStatus),
   });
+  hydrateActivitiesFromProjection(payload.runId, payload.activities);
+  hydrateRunFileChanges(payload.runId, payload.fileChanges);
   return payload;
 };

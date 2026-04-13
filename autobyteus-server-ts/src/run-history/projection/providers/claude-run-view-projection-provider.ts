@@ -1,15 +1,15 @@
-import type { MemoryConversationEntry } from "../../../agent-memory/domain/models.js";
 import {
   getClaudeSessionManager,
   type ClaudeSessionManager,
 } from "../../../agent-execution/backends/claude/session/claude-session-manager.js";
 import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
+import type { HistoricalReplayEvent } from "../historical-replay-event-types.js";
 import type {
   RunProjectionProvider,
   RunProjectionProviderInput,
   RunProjection,
 } from "../run-projection-types.js";
-import { buildRunProjection } from "../run-projection-utils.js";
+import { buildRunProjectionBundleFromEvents } from "../run-projection-utils.js";
 
 const asObject = (value: unknown): Record<string, unknown> | null =>
   value && typeof value === "object" && !Array.isArray(value)
@@ -91,7 +91,7 @@ const toRole = (row: Record<string, unknown>): string | null => {
   return normalized;
 };
 
-const toConversationEntry = (row: Record<string, unknown>): MemoryConversationEntry | null => {
+const toReplayEvent = (row: Record<string, unknown>): HistoricalReplayEvent | null => {
   const role = toRole(row);
   const content = collectTextFragments(row.content ?? row.text ?? row.message ?? row.parts).join("\n\n");
   const timestamp =
@@ -108,6 +108,7 @@ const toConversationEntry = (row: Record<string, unknown>): MemoryConversationEn
     kind: "message",
     role,
     content: content || null,
+    media: null,
     ts: timestamp,
   };
 };
@@ -129,11 +130,11 @@ export class ClaudeRunViewProjectionProvider implements RunProjectionProvider {
     const sessionId = asString(input.source.platformRunId) ?? input.source.runId;
 
     const messages = await this.sessionManager.getSessionMessages(sessionId);
-    const conversation = messages
-      .map((message) => toConversationEntry(message))
-      .filter((entry): entry is MemoryConversationEntry => entry !== null);
+    const events = messages
+      .map((message) => toReplayEvent(message))
+      .filter((entry): entry is HistoricalReplayEvent => entry !== null);
 
-    return buildRunProjection(input.source.runId, conversation);
+    return buildRunProjectionBundleFromEvents(input.source.runId, events);
   }
 }
 

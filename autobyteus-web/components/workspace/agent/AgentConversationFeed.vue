@@ -29,7 +29,7 @@
 
         <span
           v-if="showTokenCosts && formatTokenCost(message)"
-          class="block mt-1 text-[11px] text-gray-400 font-medium text-right pr-8"
+          class="block mt-1 text-[0.6875rem] text-gray-400 font-medium text-right pr-8"
         >
           {{ formatTokenCost(message) }}
         </span>

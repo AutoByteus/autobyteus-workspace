@@ -35,6 +35,9 @@ export class MemoryTraceEvent {
   @Field(() => String, { nullable: true })
   toolName?: string | null;
 
+  @Field(() => String, { nullable: true })
+  toolCallId?: string | null;
+
   @Field(() => GraphQLJSON, { nullable: true })
   toolArgs?: Record<string, unknown> | null;
 
@@ -58,36 +61,6 @@ export class MemoryTraceEvent {
 }
 
 @ObjectType()
-export class MemoryConversationEntry {
-  @Field(() => String)
-  kind!: string;
-
-  @Field(() => String, { nullable: true })
-  role?: string | null;
-
-  @Field(() => String, { nullable: true })
-  content?: string | null;
-
-  @Field(() => String, { nullable: true })
-  toolName?: string | null;
-
-  @Field(() => GraphQLJSON, { nullable: true })
-  toolArgs?: Record<string, unknown> | null;
-
-  @Field(() => GraphQLJSON, { nullable: true })
-  toolResult?: unknown | null;
-
-  @Field(() => String, { nullable: true })
-  toolError?: string | null;
-
-  @Field(() => GraphQLJSON, { nullable: true })
-  media?: Record<string, string[]> | null;
-
-  @Field(() => Float, { nullable: true })
-  ts?: number | null;
-}
-
-@ObjectType()
 export class AgentMemoryView {
   @Field(() => String)
   runId!: string;
@@ -100,9 +73,6 @@ export class AgentMemoryView {
 
   @Field(() => [GraphQLJSON], { nullable: true })
   semantic?: Array<Record<string, unknown>> | null;
-
-  @Field(() => [MemoryConversationEntry], { nullable: true })
-  conversation?: MemoryConversationEntry[] | null;
 
   @Field(() => [MemoryTraceEvent], { nullable: true })
   rawTraces?: MemoryTraceEvent[] | null;
@@ -117,11 +87,9 @@ export class MemoryViewResolver {
     includeWorkingContext = true,
     @Arg("includeEpisodic", () => Boolean, { defaultValue: true }) includeEpisodic = true,
     @Arg("includeSemantic", () => Boolean, { defaultValue: true }) includeSemantic = true,
-    @Arg("includeConversation", () => Boolean, { defaultValue: true }) includeConversation = true,
     @Arg("includeRawTraces", () => Boolean, { defaultValue: false }) includeRawTraces = false,
     @Arg("includeArchive", () => Boolean, { defaultValue: false }) includeArchive = false,
     @Arg("rawTraceLimit", () => Int, { nullable: true }) rawTraceLimit?: number | null,
-    @Arg("conversationLimit", () => Int, { nullable: true }) conversationLimit?: number | null,
   ): Promise<AgentMemoryView> {
     const baseDir = appConfigProvider.config.getMemoryDir();
     const store = new MemoryFileStore(baseDir);
@@ -130,11 +98,9 @@ export class MemoryViewResolver {
       includeWorkingContext,
       includeEpisodic,
       includeSemantic,
-      includeConversation,
       includeRawTraces,
       includeArchive,
       rawTraceLimit: rawTraceLimit ?? null,
-      conversationLimit: conversationLimit ?? null,
     });
     return MemoryViewConverter.toGraphql(view);
   }
@@ -147,11 +113,9 @@ export class MemoryViewResolver {
     includeWorkingContext = true,
     @Arg("includeEpisodic", () => Boolean, { defaultValue: true }) includeEpisodic = true,
     @Arg("includeSemantic", () => Boolean, { defaultValue: true }) includeSemantic = true,
-    @Arg("includeConversation", () => Boolean, { defaultValue: true }) includeConversation = true,
     @Arg("includeRawTraces", () => Boolean, { defaultValue: false }) includeRawTraces = false,
     @Arg("includeArchive", () => Boolean, { defaultValue: false }) includeArchive = false,
     @Arg("rawTraceLimit", () => Int, { nullable: true }) rawTraceLimit?: number | null,
-    @Arg("conversationLimit", () => Int, { nullable: true }) conversationLimit?: number | null,
   ): Promise<AgentMemoryView> {
     const baseDir = appConfigProvider.config.getMemoryDir();
     const layout = new TeamMemberMemoryLayout(baseDir);
@@ -162,11 +126,9 @@ export class MemoryViewResolver {
       includeWorkingContext,
       includeEpisodic,
       includeSemantic,
-      includeConversation,
       includeRawTraces,
       includeArchive,
       rawTraceLimit: rawTraceLimit ?? null,
-      conversationLimit: conversationLimit ?? null,
     });
     return MemoryViewConverter.toGraphql(view);
   }

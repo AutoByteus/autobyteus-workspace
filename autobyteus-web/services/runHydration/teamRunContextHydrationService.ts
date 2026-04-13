@@ -9,13 +9,19 @@ import type {
 } from '~/stores/runHistoryTypes';
 import { parseTeamRunMetadata, toTeamMemberKey } from '~/stores/runHistoryMetadata';
 import {
+  applyProjectionToTeamMemberContext,
   buildTeamMemberContexts,
+  fetchTeamMemberProjection,
   fetchTeamMemberProjections,
 } from '~/stores/runHistoryTeamHelpers';
-import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
-import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
+import type {
+  AgentTeamContext,
+  HistoricalTeamHydrationState,
+  TeamMemberProjectionLoadState,
+} from '~/types/agent/AgentTeamContext';
 import { normalizeAgentRuntimeStatus, normalizeTeamRuntimeStatus } from './runtimeStatusNormalization';
 import { reconstructTeamRunConfigFromMetadata } from '~/utils/teamRunConfigUtils';
+import { hydrateActivitiesFromProjection } from './runProjectionActivityHydration';
 
 export interface LoadTeamRunContextHydrationInput {
   teamRunId: string;
@@ -49,7 +55,13 @@ interface LoadedTeamRunContextHydrationPayload {
   members: Map<string, any>;
   firstWorkspaceId: string | null;
   metadata: ReturnType<typeof parseTeamRunMetadata>;
+  historicalHydration: HistoricalTeamHydrationState | null;
 }
+
+const historicalMemberHydrationRequests = new Map<string, Promise<void>>();
+
+const buildHistoricalHydrationRequestKey = (teamRunId: string, memberRouteKey: string): string =>
+  `${teamRunId}::${memberRouteKey}`;
 
 const resolveFocusKey = (params: {
   requestedMemberRouteKey?: string | null;
@@ -98,12 +110,83 @@ const applyMemberStatuses = (
   });
 };
 
-export const applyLiveTeamStatusSnapshot = (
-  context: AgentTeamContext,
-  snapshot: TeamLiveStatusSnapshot,
-): void => {
-  context.currentStatus = normalizeTeamRuntimeStatus(snapshot.currentStatus);
-  applyMemberStatuses(context.members, snapshot.memberStatuses || []);
+const hydrateLoadedMemberActivities = (params: {
+  metadata: ReturnType<typeof parseTeamRunMetadata>;
+  projectionByMemberRouteKey: Map<string, any>;
+}): void => {
+  params.metadata.memberMetadata.forEach((member) => {
+    const normalizedMemberRouteKey = toTeamMemberKey(member).trim();
+    if (!normalizedMemberRouteKey) {
+      return;
+    }
+    const projection = params.projectionByMemberRouteKey.get(normalizedMemberRouteKey) || null;
+    if (!projection) {
+      return;
+    }
+    const memberRunId = member.memberRunId || normalizedMemberRouteKey;
+    hydrateActivitiesFromProjection(memberRunId, projection.activities || []);
+  });
+};
+
+const buildHistoricalHydrationState = (params: {
+  metadata: ReturnType<typeof parseTeamRunMetadata>;
+  loadedMemberRouteKeys: string[];
+  erroredMemberRouteKeys?: string[];
+}): HistoricalTeamHydrationState => {
+  const memberMetadataByRouteKey: HistoricalTeamHydrationState['memberMetadataByRouteKey'] = {};
+  const memberProjectionLoadStateByRouteKey: Record<string, TeamMemberProjectionLoadState> = {};
+  const loadedKeys = new Set(params.loadedMemberRouteKeys.map((key) => key.trim()).filter(Boolean));
+  const erroredKeys = new Set((params.erroredMemberRouteKeys || []).map((key) => key.trim()).filter(Boolean));
+
+  params.metadata.memberMetadata.forEach((member) => {
+    const normalizedMemberRouteKey = toTeamMemberKey(member).trim();
+    if (!normalizedMemberRouteKey) {
+      return;
+    }
+    memberMetadataByRouteKey[normalizedMemberRouteKey] = member;
+    if (loadedKeys.has(normalizedMemberRouteKey)) {
+      memberProjectionLoadStateByRouteKey[normalizedMemberRouteKey] = 'loaded';
+      return;
+    }
+    if (erroredKeys.has(normalizedMemberRouteKey)) {
+      memberProjectionLoadStateByRouteKey[normalizedMemberRouteKey] = 'error';
+      return;
+    }
+    memberProjectionLoadStateByRouteKey[normalizedMemberRouteKey] = 'unloaded';
+  });
+
+  return {
+    createdAt: params.metadata.createdAt,
+    updatedAt: params.metadata.updatedAt,
+    memberMetadataByRouteKey,
+    memberProjectionLoadStateByRouteKey,
+  };
+};
+
+const buildMemberMetadataEnvelope = (params: {
+  teamContext: AgentTeamContext;
+  memberRouteKey: string;
+}): ReturnType<typeof parseTeamRunMetadata> | null => {
+  const historicalHydration = params.teamContext.historicalHydration;
+  if (!historicalHydration) {
+    return null;
+  }
+
+  const member = historicalHydration.memberMetadataByRouteKey[params.memberRouteKey];
+  if (!member) {
+    return null;
+  }
+
+  return {
+    teamRunId: params.teamContext.teamRunId,
+    teamDefinitionId: params.teamContext.config.teamDefinitionId,
+    teamDefinitionName: params.teamContext.config.teamDefinitionName,
+    coordinatorMemberRouteKey: params.teamContext.coordinatorMemberRouteKey || '',
+    runVersion: 0,
+    createdAt: historicalHydration.createdAt,
+    updatedAt: historicalHydration.updatedAt,
+    memberMetadata: [member],
+  };
 };
 
 const buildHydratedTeamContext = (params: {
@@ -114,6 +197,7 @@ const buildHydratedTeamContext = (params: {
   firstWorkspaceId: string | null;
   currentStatus: string | null | undefined;
   memberStatuses: TeamMemberLiveSnapshot[];
+  historicalHydration: HistoricalTeamHydrationState | null;
 }): AgentTeamContext => {
   const context = {
     teamRunId: params.metadata.teamRunId,
@@ -123,6 +207,8 @@ const buildHydratedTeamContext = (params: {
       isLocked: params.resumeConfig.isActive,
     }),
     members: params.members,
+    coordinatorMemberRouteKey: params.metadata.coordinatorMemberRouteKey,
+    historicalHydration: params.historicalHydration,
     focusedMemberName: params.focusedMemberRouteKey,
     currentStatus: normalizeTeamRuntimeStatus(params.currentStatus),
     isSubscribed: false,
@@ -135,6 +221,136 @@ const buildHydratedTeamContext = (params: {
     memberStatuses: params.memberStatuses,
   });
   return context;
+};
+
+const loadLiveTeamRunContextHydrationPayload = async (input: {
+  metadata: ReturnType<typeof parseTeamRunMetadata>;
+  resumeConfig: TeamRunResumeConfigPayload;
+  requestedMemberRouteKey?: string | null;
+  ensureWorkspaceByRootPath: (rootPath: string) => Promise<string | null>;
+}): Promise<LoadedTeamRunContextHydrationPayload> => {
+  const client = getApolloClient();
+  const projectionByMemberRouteKey = await fetchTeamMemberProjections({
+    client,
+    getTeamMemberRunProjectionQuery: GetTeamMemberRunProjection,
+    teamRunId: input.metadata.teamRunId,
+    metadata: input.metadata,
+    toTeamMemberKey,
+  });
+
+  const { members, firstWorkspaceId } = await buildTeamMemberContexts({
+    teamRunId: input.metadata.teamRunId,
+    metadata: input.metadata,
+    isActive: input.resumeConfig.isActive,
+    projectionByMemberRouteKey,
+    toTeamMemberKey,
+    ensureWorkspaceByRootPath: input.ensureWorkspaceByRootPath,
+  });
+  hydrateLoadedMemberActivities({
+    metadata: input.metadata,
+    projectionByMemberRouteKey,
+  });
+
+  const availableMemberRouteKeys = Array.from(members.keys());
+  const focusedMemberRouteKey = resolveFocusKey({
+    requestedMemberRouteKey: input.requestedMemberRouteKey,
+    coordinatorMemberRouteKey: input.metadata.coordinatorMemberRouteKey,
+    availableMemberRouteKeys,
+  });
+
+  if (!focusedMemberRouteKey) {
+    throw new Error(`Team '${input.metadata.teamRunId}' has no members in metadata.`);
+  }
+
+  return {
+    teamRunId: input.metadata.teamRunId,
+    focusedMemberRouteKey,
+    resumeConfig: input.resumeConfig,
+    members,
+    firstWorkspaceId,
+    metadata: input.metadata,
+    historicalHydration: null,
+  };
+};
+
+const loadHistoricalTeamRunContextHydrationPayload = async (input: {
+  metadata: ReturnType<typeof parseTeamRunMetadata>;
+  resumeConfig: TeamRunResumeConfigPayload;
+  requestedMemberRouteKey?: string | null;
+  ensureWorkspaceByRootPath: (rootPath: string) => Promise<string | null>;
+}): Promise<LoadedTeamRunContextHydrationPayload> => {
+  const availableMemberRouteKeys = input.metadata.memberMetadata
+    .map((member) => toTeamMemberKey(member).trim())
+    .filter(Boolean);
+  const focusedMemberRouteKey = resolveFocusKey({
+    requestedMemberRouteKey: input.requestedMemberRouteKey,
+    coordinatorMemberRouteKey: input.metadata.coordinatorMemberRouteKey,
+    availableMemberRouteKeys,
+  });
+
+  if (!focusedMemberRouteKey) {
+    throw new Error(`Team '${input.metadata.teamRunId}' has no members in metadata.`);
+  }
+
+  const client = getApolloClient();
+  const focusedProjection = await fetchTeamMemberProjection({
+    client,
+    getTeamMemberRunProjectionQuery: GetTeamMemberRunProjection,
+    teamRunId: input.metadata.teamRunId,
+    memberRouteKey: focusedMemberRouteKey,
+  });
+  const projectionByMemberRouteKey = new Map<string, any>();
+  if (focusedProjection) {
+    projectionByMemberRouteKey.set(focusedMemberRouteKey, focusedProjection);
+  }
+
+  const { members, firstWorkspaceId } = await buildTeamMemberContexts({
+    teamRunId: input.metadata.teamRunId,
+    metadata: input.metadata,
+    isActive: false,
+    projectionByMemberRouteKey,
+    toTeamMemberKey,
+    ensureWorkspaceByRootPath: input.ensureWorkspaceByRootPath,
+  });
+
+  if (focusedProjection) {
+    const focusedMetadata = input.metadata.memberMetadata.find(
+      (member) => toTeamMemberKey(member).trim() === focusedMemberRouteKey,
+    );
+    const focusedMemberContext = members.get(focusedMemberRouteKey) || null;
+    if (focusedMetadata && focusedMemberContext) {
+      applyProjectionToTeamMemberContext({
+        teamRunId: input.metadata.teamRunId,
+        metadata: input.metadata,
+        member: focusedMetadata,
+        projection: focusedProjection,
+        memberContext: focusedMemberContext,
+        isActive: false,
+      });
+    }
+  }
+
+  return {
+    teamRunId: input.metadata.teamRunId,
+    focusedMemberRouteKey,
+    resumeConfig: input.resumeConfig,
+    members,
+    firstWorkspaceId,
+    metadata: input.metadata,
+    historicalHydration: buildHistoricalHydrationState({
+      metadata: input.metadata,
+      loadedMemberRouteKeys: focusedProjection ? [focusedMemberRouteKey] : [],
+      erroredMemberRouteKeys: focusedProjection ? [] : [focusedMemberRouteKey],
+    }),
+  };
+};
+
+export const applyLiveTeamStatusSnapshot = (
+  context: AgentTeamContext,
+  snapshot: TeamLiveStatusSnapshot,
+): void => {
+  context.currentStatus = normalizeTeamRuntimeStatus(snapshot.currentStatus);
+  applyMemberStatuses(context.members, snapshot.memberStatuses || []);
 };
 
 export const loadTeamRunContextHydrationPayload = async (
@@ -167,42 +383,21 @@ export const loadTeamRunContextHydrationPayload = async (
     metadata,
   };
 
-  const projectionByMemberRouteKey = await fetchTeamMemberProjections({
-    client,
-    getTeamMemberRunProjectionQuery: GetTeamMemberRunProjection,
-    teamRunId: metadata.teamRunId,
-    metadata,
-    toTeamMemberKey,
-  });
-
-  const { members, firstWorkspaceId } = await buildTeamMemberContexts({
-    teamRunId: metadata.teamRunId,
-    metadata,
-    isActive: resumeConfig.isActive,
-    projectionByMemberRouteKey,
-    toTeamMemberKey,
-    ensureWorkspaceByRootPath: input.ensureWorkspaceByRootPath,
-  });
-
-  const availableMemberRouteKeys = Array.from(members.keys());
-  const focusedMemberRouteKey = resolveFocusKey({
-    requestedMemberRouteKey: input.memberRouteKey,
-    coordinatorMemberRouteKey: metadata.coordinatorMemberRouteKey,
-    availableMemberRouteKeys,
-  });
-
-  if (!focusedMemberRouteKey) {
-    throw new Error(`Team '${metadata.teamRunId}' has no members in metadata.`);
+  if (resumeConfig.isActive) {
+    return loadLiveTeamRunContextHydrationPayload({
+      metadata,
+      resumeConfig,
+      requestedMemberRouteKey: input.memberRouteKey,
+      ensureWorkspaceByRootPath: input.ensureWorkspaceByRootPath,
+    });
   }
 
-  return {
-    teamRunId: metadata.teamRunId,
-    focusedMemberRouteKey,
-    resumeConfig,
-    members,
-    firstWorkspaceId,
+  return loadHistoricalTeamRunContextHydrationPayload({
     metadata,
-  };
+    resumeConfig,
+    requestedMemberRouteKey: input.memberRouteKey,
+    ensureWorkspaceByRootPath: input.ensureWorkspaceByRootPath,
+  });
 };
 
 export const hydrateLiveTeamRunContext = async (
@@ -220,12 +415,104 @@ export const hydrateLiveTeamRunContext = async (
     firstWorkspaceId: payload.firstWorkspaceId,
     currentStatus: input.currentStatus,
     memberStatuses: input.memberStatuses || [],
+    historicalHydration: payload.historicalHydration,
   });
-  useAgentTeamContextsStore().addTeamContext(hydratedContext);
   return {
     teamRunId: payload.teamRunId,
     focusedMemberRouteKey: payload.focusedMemberRouteKey,
     resumeConfig: payload.resumeConfig,
     hydratedContext,
   };
+};
+
+export const ensureHistoricalTeamMemberHydrated = async (params: {
+  teamContext: AgentTeamContext;
+  memberRouteKey: string;
+}): Promise<void> => {
+  const historicalHydration = params.teamContext.historicalHydration;
+  if (!historicalHydration) {
+    return;
+  }
+
+  const normalizedMemberRouteKey = params.memberRouteKey.trim();
+  if (!normalizedMemberRouteKey) {
+    return;
+  }
+
+  const currentLoadState =
+    historicalHydration.memberProjectionLoadStateByRouteKey[normalizedMemberRouteKey];
+  if (currentLoadState === 'loaded') {
+    return;
+  }
+
+  const requestKey = buildHistoricalHydrationRequestKey(
+    params.teamContext.teamRunId,
+    normalizedMemberRouteKey,
+  );
+  const inFlight = historicalMemberHydrationRequests.get(requestKey);
+  if (inFlight) {
+    await inFlight;
+    return;
+  }
+
+  const memberMetadataEnvelope = buildMemberMetadataEnvelope({
+    teamContext: params.teamContext,
+    memberRouteKey: normalizedMemberRouteKey,
+  });
+  const memberMetadata = historicalHydration.memberMetadataByRouteKey[normalizedMemberRouteKey];
+  const memberContext = params.teamContext.members.get(normalizedMemberRouteKey) || null;
+  if (!memberMetadataEnvelope || !memberMetadata || !memberContext) {
+    historicalHydration.memberProjectionLoadStateByRouteKey[normalizedMemberRouteKey] = 'error';
+    return;
+  }
+
+  historicalHydration.memberProjectionLoadStateByRouteKey[normalizedMemberRouteKey] = 'loading';
+
+  const request = (async () => {
+    const client = getApolloClient();
+    const projection = await fetchTeamMemberProjection({
+      client,
+      getTeamMemberRunProjectionQuery: GetTeamMemberRunProjection,
+      teamRunId: params.teamContext.teamRunId,
+      memberRouteKey: normalizedMemberRouteKey,
+    });
+
+    if (!projection) {
+      historicalHydration.memberProjectionLoadStateByRouteKey[normalizedMemberRouteKey] = 'error';
+      return;
+    }
+
+    applyProjectionToTeamMemberContext({
+      teamRunId: params.teamContext.teamRunId,
+      metadata: memberMetadataEnvelope,
+      member: memberMetadata,
+      projection,
+      memberContext,
+      isActive: false,
+    });
+    historicalHydration.memberProjectionLoadStateByRouteKey[normalizedMemberRouteKey] = 'loaded';
+  })();
+
+  historicalMemberHydrationRequests.set(requestKey, request);
+  try {
+    await request;
+  } finally {
+    historicalMemberHydrationRequests.delete(requestKey);
+  }
+};
+
+export const ensureHistoricalTeamMembersHydrated = async (params: {
+  teamContext: AgentTeamContext;
+  memberRouteKeys: string[];
+}): Promise<void> => {
+  if (!params.teamContext.historicalHydration) {
+    return;
+  }
+
+  for (const memberRouteKey of params.memberRouteKeys) {
+    await ensureHistoricalTeamMemberHydrated({
+      teamContext: params.teamContext,
+      memberRouteKey,
+    });
+  }
 };

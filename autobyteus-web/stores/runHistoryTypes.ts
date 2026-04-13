@@ -1,6 +1,7 @@
 import type { AgentRuntimeKind, SkillAccessMode } from '~/types/agent/AgentRunConfig';
 import type { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import type { RunProjectionConversationEntry } from '~/services/runHydration/runProjectionConversation';
+import type { RunProjectionActivityEntry } from '~/services/runHydration/runProjectionActivityHydration';
 
 export type RunKnownStatus = 'ACTIVE' | 'IDLE' | 'ERROR' | 'TERMINATED';
 
@@ -22,8 +23,8 @@ export interface RunHistoryAgentGroup {
 export interface RunHistoryWorkspaceGroup {
   workspaceRootPath: string;
   workspaceName: string;
-  agents: RunHistoryAgentGroup[];
-  teamRuns: TeamRunHistoryItem[];
+  agentDefinitions: RunHistoryAgentGroup[];
+  teamDefinitions: TeamRunHistoryDefinitionGroup[];
 }
 
 export interface RunEditableFieldFlags {
@@ -79,6 +80,7 @@ export interface TeamRunHistoryItem {
   teamRunId: string;
   teamDefinitionId: string;
   teamDefinitionName: string;
+  coordinatorMemberRouteKey: string;
   workspaceRootPath?: string | null;
   summary: string;
   lastActivityAt: string;
@@ -86,6 +88,12 @@ export interface TeamRunHistoryItem {
   deleteLifecycle: TeamRunDeleteLifecycle;
   isActive: boolean;
   members: TeamRunMemberHistoryItem[];
+}
+
+export interface TeamRunHistoryDefinitionGroup {
+  teamDefinitionId: string;
+  teamDefinitionName: string;
+  runs: TeamRunHistoryItem[];
 }
 
 export interface TeamRunMetadataMember {
@@ -154,6 +162,7 @@ export interface ListWorkspaceRunHistoryQueryData {
 export interface TeamMemberRunProjectionPayload {
   agentRunId: string;
   conversation: RunProjectionConversationEntry[];
+  activities: RunProjectionActivityEntry[];
   summary?: string | null;
   lastActivityAt?: string | null;
 }

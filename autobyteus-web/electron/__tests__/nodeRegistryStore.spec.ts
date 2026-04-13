@@ -1,5 +1,8 @@
+import * as fsSync from 'fs'
+import * as os from 'os'
+import * as path from 'path'
 import { describe, expect, it } from 'vitest'
-import { ensureEmbeddedNode } from '../nodeRegistryStore'
+import { ensureEmbeddedNode, loadNodeRegistrySnapshot, updateNodeBrowserPairing } from '../nodeRegistryStore'
 import { EMBEDDED_NODE_ID, type NodeRegistrySnapshot } from '../nodeRegistryTypes'
 import { INTERNAL_SERVER_BASE_URL } from '../../shared/embeddedServerConfig'
 
@@ -68,4 +71,72 @@ describe('nodeRegistryStore', () => {
 
     expect(ensureEmbeddedNode(snapshot)).toBe(snapshot)
   })
+
+  it('normalizes persisted paired browser state to expired after Electron restart', () => {
+    const userDataPath = fsSync.mkdtempSync(path.join(os.tmpdir(), 'autobyteus-node-registry-'))
+    fsSync.writeFileSync(
+      path.join(userDataPath, 'node-registry.v1.json'),
+      JSON.stringify(loadSnapshotWithBrowserPairing('paired'), null, 2),
+      'utf8',
+    )
+
+    const nextSnapshot = loadNodeRegistrySnapshot(userDataPath)
+
+    expect(nextSnapshot.nodes[1]?.browserPairing?.state).toBe('expired')
+    expect(nextSnapshot.nodes[1]?.browserPairing?.errorMessage).toBe('Pairing expired after Electron restart.')
+  })
+
+  it('updates browser pairing state for a remote node and bumps the snapshot version', () => {
+    const snapshot = loadSnapshotWithBrowserPairing(undefined)
+
+    const nextSnapshot = updateNodeBrowserPairing(snapshot, 'remote-1', {
+      state: 'paired',
+      advertisedBaseUrl: 'http://192.168.1.24:30123',
+      expiresAt: '2026-04-10T10:20:30.000Z',
+      updatedAt: '2026-04-10T09:20:30.000Z',
+      errorMessage: null,
+    })
+
+    expect(nextSnapshot.version).toBe(snapshot.version + 1)
+    expect(nextSnapshot.nodes[0]?.id).toBe(EMBEDDED_NODE_ID)
+    expect(nextSnapshot.nodes[1]?.browserPairing?.state).toBe('paired')
+    expect(nextSnapshot.nodes[1]?.browserPairing?.advertisedBaseUrl).toBe('http://192.168.1.24:30123')
+  })
 })
+
+function loadSnapshotWithBrowserPairing(
+  state: 'paired' | undefined,
+): NodeRegistrySnapshot {
+  return {
+    version: 2,
+    nodes: [
+      {
+        id: EMBEDDED_NODE_ID,
+        name: 'Embedded Node',
+        baseUrl: INTERNAL_SERVER_BASE_URL,
+        nodeType: 'embedded',
+        isSystem: true,
+        createdAt: '2026-03-31T09:00:00.000Z',
+        updatedAt: '2026-03-31T09:00:00.000Z',
+      },
+      {
+        id: 'remote-1',
+        name: 'Remote Node',
+        baseUrl: 'http://localhost:8000',
+        nodeType: 'remote',
+        isSystem: false,
+        createdAt: '2026-03-31T09:00:00.000Z',
+        updatedAt: '2026-03-31T09:00:00.000Z',
+        browserPairing: state
+          ? {
+              state,
+              advertisedBaseUrl: 'http://192.168.1.24:30123',
+              expiresAt: '2026-04-10T10:20:30.000Z',
+              updatedAt: '2026-04-10T09:20:30.000Z',
+              errorMessage: null,
+            }
+          : undefined,
+      },
+    ],
+  }
+}

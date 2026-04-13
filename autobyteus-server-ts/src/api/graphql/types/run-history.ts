@@ -74,6 +74,9 @@ class WorkspaceHistoryTeamRunItemObject {
   @Field(() => String)
   teamDefinitionName!: string;
 
+  @Field(() => String)
+  coordinatorMemberRouteKey!: string;
+
   @Field(() => String, { nullable: true })
   workspaceRootPath?: string | null;
 
@@ -96,6 +99,18 @@ class WorkspaceHistoryTeamRunItemObject {
   members!: WorkspaceHistoryTeamRunMemberObject[];
 }
 
+@ObjectType("WorkspaceHistoryTeamDefinitionObject")
+class WorkspaceHistoryTeamDefinitionObject {
+  @Field(() => String)
+  teamDefinitionId!: string;
+
+  @Field(() => String)
+  teamDefinitionName!: string;
+
+  @Field(() => [WorkspaceHistoryTeamRunItemObject])
+  runs!: WorkspaceHistoryTeamRunItemObject[];
+}
+
 @ObjectType()
 class WorkspaceRunHistoryGroupObject {
   @Field(() => String)
@@ -105,10 +120,10 @@ class WorkspaceRunHistoryGroupObject {
   workspaceName!: string;
 
   @Field(() => [RunHistoryAgentGroupObject])
-  agents!: RunHistoryAgentGroupObject[];
+  agentDefinitions!: RunHistoryAgentGroupObject[];
 
-  @Field(() => [WorkspaceHistoryTeamRunItemObject])
-  teamRuns!: WorkspaceHistoryTeamRunItemObject[];
+  @Field(() => [WorkspaceHistoryTeamDefinitionObject])
+  teamDefinitions!: WorkspaceHistoryTeamDefinitionObject[];
 }
 
 @ObjectType()
@@ -117,7 +132,10 @@ class RunProjectionPayload {
   runId!: string;
 
   @Field(() => [GraphQLJSON])
-  conversation!: Array<Record<string, unknown>>;
+  conversation!: unknown[];
+
+  @Field(() => [GraphQLJSON])
+  activities!: unknown[];
 
   @Field(() => String, { nullable: true })
   summary?: string | null;

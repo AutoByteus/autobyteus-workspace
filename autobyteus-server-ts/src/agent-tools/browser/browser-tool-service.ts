@@ -28,10 +28,11 @@ import {
   assertReadPageSemantics,
 } from "./browser-tool-semantic-validators.js";
 import { BrowserBridgeClient } from "./browser-bridge-client.js";
+import { getBrowserBridgeConfigResolver } from "./browser-bridge-config-resolver.js";
 
 export class BrowserToolService {
   isBrowserSupported(env: NodeJS.ProcessEnv = process.env): boolean {
-    return BrowserBridgeClient.fromEnvironment(env) !== null;
+    return getBrowserBridgeConfigResolver().hasSupport(env);
   }
 
   async openTab(input: OpenTabInput): Promise<OpenTabResult> {
@@ -102,11 +103,13 @@ export class BrowserToolService {
   }
 
   private getBridgeClient(): BrowserBridgeClient {
-    const client = BrowserBridgeClient.fromEnvironment();
+    const client = BrowserBridgeClient.fromConfig(
+      getBrowserBridgeConfigResolver().resolve(),
+    );
     if (!client) {
       throw new BrowserToolError(
         "browser_bridge_unavailable",
-        "Browser bridge environment variables are missing or incomplete.",
+        "Browser bridge is not configured for the current runtime.",
       );
     }
     return client;

@@ -5,7 +5,7 @@ export const ListWorkspaceRunHistory = gql`
     listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {
       workspaceRootPath
       workspaceName
-      agents {
+      agentDefinitions {
         agentDefinitionId
         agentName
         runs {
@@ -16,22 +16,27 @@ export const ListWorkspaceRunHistory = gql`
           isActive
         }
       }
-      teamRuns {
-        teamRunId
+      teamDefinitions {
         teamDefinitionId
         teamDefinitionName
-        workspaceRootPath
-        summary
-        lastActivityAt
-        lastKnownStatus
-        deleteLifecycle
-        isActive
-        members {
-          memberRouteKey
-          memberName
-          memberRunId
-          runtimeKind
+        runs {
+          teamRunId
+          teamDefinitionId
+          teamDefinitionName
+          coordinatorMemberRouteKey
           workspaceRootPath
+          summary
+          lastActivityAt
+          lastKnownStatus
+          deleteLifecycle
+          isActive
+          members {
+            memberRouteKey
+            memberName
+            memberRunId
+            runtimeKind
+            workspaceRootPath
+          }
         }
       }
     }
@@ -45,6 +50,24 @@ export const GetRunProjection = gql`
       summary
       lastActivityAt
       conversation
+      activities
+    }
+  }
+`;
+
+export const GetRunFileChanges = gql`
+  query GetRunFileChanges($runId: String!) {
+    getRunFileChanges(runId: $runId) {
+      id
+      runId
+      path
+      type
+      status
+      sourceTool
+      sourceInvocationId
+      content
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -66,6 +89,7 @@ export const GetTeamMemberRunProjection = gql`
       summary
       lastActivityAt
       conversation
+      activities
     }
   }
 `;

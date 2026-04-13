@@ -38,7 +38,7 @@ export {
   handleTaskPlanEvent,
 } from './teamHandler';
 
+
 export {
-  handleArtifactPersisted,
-  handleArtifactUpdated,
-} from './artifactHandler';
+  handleFileChangeUpdated,
+} from './fileChangeHandler';

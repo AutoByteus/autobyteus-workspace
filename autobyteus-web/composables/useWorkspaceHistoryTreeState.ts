@@ -1,11 +1,12 @@
 import { computed, ref, watch } from 'vue';
 import { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
 import { normalizeRootPath } from '~/stores/runHistoryReadModel';
-import type { TeamTreeNode } from '~/stores/runHistoryTypes';
+import type { RunHistoryWorkspaceGroup, TeamRunHistoryDefinitionGroup, TeamTreeNode } from '~/stores/runHistoryTypes';
 import type { RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
 
 interface RunHistoryTreeStoreLike {
   selectedRunId: string | null;
+  workspaceGroups: RunHistoryWorkspaceGroup[];
   getTreeNodes: () => RunTreeWorkspaceNode[];
   getTeamNodes: (workspaceRootPath?: string) => TeamTreeNode[];
 }
@@ -46,6 +47,20 @@ export const useWorkspaceHistoryTreeState = (params: {
       return [];
     }
     return params.runHistoryStore.getTeamNodes(key);
+  };
+
+  const workspaceTeamHistoryGroups = (
+    workspaceRootPath: string,
+  ): TeamRunHistoryDefinitionGroup[] => {
+    const key = normalizeRootPath(workspaceRootPath);
+    if (!key) {
+      return [];
+    }
+
+    const workspaceGroup = (params.runHistoryStore.workspaceGroups ?? []).find(
+      (group) => normalizeRootPath(group.workspaceRootPath) === key,
+    );
+    return workspaceGroup?.teamDefinitions ?? [];
   };
 
   const isWorkspaceExpanded = (workspaceRootPath: string): boolean =>
@@ -126,6 +141,7 @@ export const useWorkspaceHistoryTreeState = (params: {
     workspaceNodes,
     selectedRunId,
     workspaceTeams,
+    workspaceTeamHistoryGroups,
     isWorkspaceExpanded,
     setWorkspaceExpanded,
     toggleWorkspace,

@@ -5,6 +5,8 @@ import { ExternalPeerType } from "autobyteus-ts/external-channel/peer-type.js";
 import { createChannelRoutingKey } from "autobyteus-ts/external-channel/channel-routing-key.js";
 import type { ChannelBinding } from "../../../../src/external-channel/domain/models.js";
 import { ChannelTeamRunFacade } from "../../../../src/external-channel/runtime/channel-team-run-facade.js";
+import { AgentRunEventType } from "../../../../src/agent-execution/domain/agent-run-event.js";
+import { TeamRunEventSourceType } from "../../../../src/agent-team-execution/domain/team-run-event.js";
 
 const createEnvelope = () => ({
   provider: ExternalChannelProvider.WHATSAPP,
@@ -60,6 +62,7 @@ const createTeamRun = () => ({
   postMessage: vi.fn().mockResolvedValue({
     accepted: true,
     message: null,
+    turnId: "turn-1",
     memberRunId: "member-1",
     memberName: "support-node",
   }),
@@ -89,6 +92,7 @@ describe("ChannelTeamRunFacade", () => {
     expect(result.memberRunId).toBe("member-1");
     expect(result.teamRunId).toBe("team-1");
     expect(result.memberName).toBe("support-node");
+    expect(result.turnId).toBe("turn-1");
     expect(resolveOrStartTeamRun).toHaveBeenCalledWith(binding);
     expect(resolveTeamRun).toHaveBeenCalledWith("team-1");
     expect(teamRun.postMessage).toHaveBeenCalledOnce();
@@ -173,8 +177,7 @@ describe("ChannelTeamRunFacade", () => {
     warnSpy.mockRestore();
   });
 
-  it("prepares dispatch-scoped team turn capture before posting the external message", async () => {
-    const onTeamRunResolved = vi.fn();
+  it("subscribes for authoritative team turn capture before posting the external message", async () => {
     const teamRun = createTeamRun();
     const facade = new ChannelTeamRunFacade({
       runLauncher: {
@@ -189,26 +192,22 @@ describe("ChannelTeamRunFacade", () => {
       },
     });
 
-    await facade.dispatchToTeamBinding(createTeamBinding(), createEnvelope(), {
-      onTeamRunResolved,
-    });
+    await facade.dispatchToTeamBinding(createTeamBinding(), createEnvelope());
 
-    expect(onTeamRunResolved).toHaveBeenCalledWith({
-      teamRunId: "team-1",
-      subscribeToEvents: expect.any(Function),
-    });
-    expect(onTeamRunResolved.mock.invocationCallOrder[0]).toBeLessThan(
+    expect(teamRun.subscribeToEvents).toHaveBeenCalledOnce();
+    expect(teamRun.subscribeToEvents.mock.invocationCallOrder[0]).toBeLessThan(
       teamRun.postMessage.mock.invocationCallOrder[0] ?? Number.MAX_SAFE_INTEGER,
     );
   });
 
-  it("falls back to the binding target when runtime member metadata is absent", async () => {
+  it("falls back to the binding target name when runtime member naming metadata is absent", async () => {
     const teamRun = {
       ...createTeamRun(),
       postMessage: vi.fn().mockResolvedValue({
         accepted: true,
         message: null,
-        memberRunId: null,
+        turnId: "turn-1",
+        memberRunId: "member-1",
         memberName: null,
       }),
     };
@@ -228,7 +227,7 @@ describe("ChannelTeamRunFacade", () => {
     const result = await facade.dispatchToTeamBinding(createTeamBinding(), createEnvelope());
 
     expect(result.dispatchTargetType).toBe("TEAM");
-    expect(result.memberRunId).toBeNull();
+    expect(result.memberRunId).toBe("member-1");
     expect(result.teamRunId).toBe("team-1");
     expect(result.memberName).toBe("support-node");
   });
@@ -250,5 +249,65 @@ describe("ChannelTeamRunFacade", () => {
     await expect(
       facade.dispatchToTeamBinding(createTeamBinding(), createEnvelope()),
     ).rejects.toThrow("Team run 'team-1' is not active.");
+  });
+
+  it("captures the targeted member turn through the dispatch-scoped listener when the backend response has no turn id", async () => {
+    let teamListener: ((event: unknown) => void) | null = null;
+    const teamRun = {
+      ...createTeamRun(),
+      subscribeToEvents: vi.fn().mockImplementation((listener) => {
+        teamListener = listener;
+        return () => {
+          teamListener = null;
+        };
+      }),
+      postMessage: vi.fn().mockImplementation(async () => {
+        queueMicrotask(() => {
+          teamListener?.({
+            eventSourceType: TeamRunEventSourceType.AGENT,
+            teamRunId: "team-1",
+            data: {
+              runtimeKind: "AUTOBYTEUS",
+              memberName: "support-node",
+              memberRunId: "member-42",
+              agentEvent: {
+                eventType: AgentRunEventType.TURN_STARTED,
+                runId: "member-42",
+                payload: {
+                  turnId: "turn-99",
+                },
+                statusHint: "ACTIVE",
+              },
+            },
+            subTeamNodeName: null,
+          });
+        });
+        return {
+          accepted: true,
+          message: null,
+          memberRunId: null,
+          memberName: null,
+          turnId: null,
+        };
+      }),
+    };
+    const facade = new ChannelTeamRunFacade({
+      runLauncher: {
+        resolveOrStartTeamRun: vi.fn().mockResolvedValue("team-1"),
+      },
+      teamRunService: {
+        resolveTeamRun: vi.fn().mockResolvedValue(teamRun),
+        recordRunActivity: vi.fn().mockResolvedValue(undefined),
+      } as any,
+      teamLiveMessagePublisher: {
+        publishExternalUserMessage: vi.fn(),
+      },
+    });
+
+    const result = await facade.dispatchToTeamBinding(createTeamBinding(), createEnvelope());
+
+    expect(result.turnId).toBe("turn-99");
+    expect(result.memberRunId).toBe("member-42");
+    expect(result.memberName).toBe("support-node");
   });
 });

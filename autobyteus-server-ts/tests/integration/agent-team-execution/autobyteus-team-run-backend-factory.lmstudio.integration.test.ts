@@ -16,7 +16,7 @@ import { TeamRunEventSourceType, type TeamRunEvent } from "../../../src/agent-te
 import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 
-const DEFAULT_LMSTUDIO_TEXT_MODEL = "qwen/qwen3-30b-a3b-2507";
+const DEFAULT_LMSTUDIO_TEXT_MODEL = "qwen/qwen3.5-35b-a3b";
 const LMSTUDIO_MODEL_ENV_VAR = "LMSTUDIO_MODEL_ID";
 const FLOW_TEST_TIMEOUT_MS = Number(process.env.LMSTUDIO_FLOW_TEST_TIMEOUT_MS || 240_000);
 const EVENT_WAIT_TIMEOUT_MS = Number(process.env.LMSTUDIO_EVENT_WAIT_TIMEOUT_MS || 120_000);
@@ -76,6 +76,18 @@ const resolveLmstudioModelIdentifier = async (): Promise<string | null> => {
 
   const targetTextModel = process.env.LMSTUDIO_TARGET_TEXT_MODEL ?? DEFAULT_LMSTUDIO_TEXT_MODEL;
   const selected =
+    models.find(
+      (model) =>
+        model.active_context_tokens !== null &&
+        model.active_context_tokens !== undefined &&
+        model.model_identifier.includes(targetTextModel),
+    ) ??
+    models.find(
+      (model) =>
+        model.active_context_tokens !== null &&
+        model.active_context_tokens !== undefined &&
+        !model.model_identifier.toLowerCase().includes("vl"),
+    ) ??
     models.find((model) => model.model_identifier.includes(targetTextModel)) ??
     models.find((model) => !model.model_identifier.toLowerCase().includes("vl")) ??
     models[0];

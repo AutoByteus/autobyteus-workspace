@@ -10,7 +10,6 @@ import {
   handleToolLog,
 } from '../toolLifecycleHandler';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
-import { useAgentArtifactsStore } from '~/stores/agentArtifactsStore';
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type {
   EditFileSegment,
@@ -199,6 +198,7 @@ describe('toolLifecycleHandler', () => {
     expect(mockActivityStore.updateActivityToolName).toHaveBeenCalledWith(runId, invocationId, 'edit_file');
     expect(mockActivityStore.updateActivityStatus).toHaveBeenCalledWith(runId, invocationId, 'awaiting-approval');
     expect(mockActivityStore.updateActivityArguments).toHaveBeenCalledWith(runId, invocationId, payload.arguments);
+    expect(mockActivityStore.setHighlightedActivity).not.toHaveBeenCalled();
   });
 
   it('applies TOOL_APPROVED then TOOL_EXECUTION_STARTED progression', () => {
@@ -228,6 +228,7 @@ describe('toolLifecycleHandler', () => {
     expect(mockActivityStore.updateActivityToolName).toHaveBeenCalledWith(runId, invocationId, 'run_bash');
     expect(mockActivityStore.updateActivityStatus).toHaveBeenCalledWith(runId, invocationId, 'approved');
     expect(mockActivityStore.updateActivityStatus).toHaveBeenCalledWith(runId, invocationId, 'executing');
+    expect(mockActivityStore.setHighlightedActivity).not.toHaveBeenCalled();
   });
 
   it('replaces unknown_tool placeholders when later lifecycle events carry the concrete tool name', () => {
@@ -325,86 +326,6 @@ describe('toolLifecycleHandler', () => {
     expect(segment.status).toBe('error');
     expect(segment.error).toBe('file not found');
     expect(mockActivityStore.setActivityResult).toHaveBeenCalledWith(runId, invocationId, null, 'file not found');
-  });
-
-  it('marks write_file touched entries available on TOOL_EXECUTION_SUCCEEDED', () => {
-    const invocationId = 'write-1';
-    const segment = buildWriteFileSegment(invocationId);
-    segment.path = '/tmp/output.txt';
-    const context = buildContextWithSegment(segment);
-    const artifactsStore = useAgentArtifactsStore();
-
-    artifactsStore.upsertTouchedEntryFromSegmentStart(runId, {
-      invocationId,
-      path: segment.path,
-      sourceTool: 'write_file',
-    });
-    artifactsStore.markTouchedEntryPending(runId, invocationId);
-
-    handleToolExecutionSucceeded(
-      {
-        invocation_id: invocationId,
-        tool_name: 'write_file',
-        turn_id: 'turn-1',
-        result: { ok: true },
-      },
-      context,
-    );
-
-    const artifact = artifactsStore.getArtifactsForRun(runId)[0];
-    expect(artifact.status).toBe('available');
-    expect(artifact.sourceTool).toBe('write_file');
-  });
-
-  it('marks edit_file touched entries failed on TOOL_DENIED', () => {
-    const invocationId = 'edit-1';
-    const segment = buildEditFileSegment(invocationId);
-    segment.path = '/tmp/example.txt';
-    const context = buildContextWithSegment(segment);
-    const artifactsStore = useAgentArtifactsStore();
-
-    artifactsStore.upsertTouchedEntryFromSegmentStart(runId, {
-      invocationId,
-      path: segment.path,
-      sourceTool: 'edit_file',
-    });
-
-    handleToolDenied(
-      {
-        invocation_id: invocationId,
-        tool_name: 'edit_file',
-        turn_id: 'turn-1',
-        reason: 'Denied by user',
-      },
-      context,
-    );
-
-    const artifact = artifactsStore.getArtifactsForRun(runId)[0];
-    expect(artifact.status).toBe('failed');
-    expect(artifact.sourceTool).toBe('edit_file');
-  });
-
-  it('creates a lifecycle fallback touched entry when edit_file denial arrives before store registration', () => {
-    const invocationId = 'edit-missed';
-    const segment = buildEditFileSegment(invocationId);
-    segment.path = '/tmp/missed.txt';
-    const context = buildContextWithSegment(segment);
-    const artifactsStore = useAgentArtifactsStore();
-
-    handleToolDenied(
-      {
-        invocation_id: invocationId,
-        tool_name: 'edit_file',
-        turn_id: 'turn-1',
-        reason: 'Denied by user',
-      },
-      context,
-    );
-
-    const artifact = artifactsStore.getArtifactsForRun(runId)[0];
-    expect(artifact.path).toBe('/tmp/missed.txt');
-    expect(artifact.status).toBe('failed');
-    expect(artifact.sourceTool).toBe('edit_file');
   });
 
   it('applies denied terminal state when reason or error exists', () => {

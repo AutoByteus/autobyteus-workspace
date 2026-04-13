@@ -1,10 +1,55 @@
 import type { AIResponseSegment } from '~/types/segments';
-import type { ContextFileType } from '~/generated/graphql';
 
-export interface ContextFilePath {
-  path: string;
-  type: keyof typeof ContextFileType;
-}
+export type ContextAttachmentType =
+  | 'Audio'
+  | 'Csv'
+  | 'Docx'
+  | 'Html'
+  | 'Image'
+  | 'Javascript'
+  | 'Json'
+  | 'Markdown'
+  | 'Pdf'
+  | 'Pptx'
+  | 'Python'
+  | 'Text'
+  | 'Unknown'
+  | 'Video'
+  | 'Xlsx'
+  | 'Xml';
+
+export type WorkspaceContextAttachment = {
+  kind: 'workspace_path';
+  id: string;
+  locator: string;
+  displayName: string;
+  type: ContextAttachmentType;
+};
+
+export type UploadedContextAttachment = {
+  kind: 'uploaded';
+  id: string;
+  locator: string;
+  storedFilename: string;
+  displayName: string;
+  phase: 'draft' | 'final';
+  type: ContextAttachmentType;
+};
+
+export type ExternalUrlContextAttachment = {
+  kind: 'external_url';
+  id: string;
+  locator: string;
+  displayName: string;
+  type: ContextAttachmentType;
+};
+
+export type ContextAttachment =
+  | WorkspaceContextAttachment
+  | UploadedContextAttachment
+  | ExternalUrlContextAttachment;
+
+export type ContextFilePath = ContextAttachment;
 
 export interface Message {
   type: 'user' | 'ai';
@@ -14,7 +59,7 @@ export interface Message {
 export interface UserMessage extends Message {
   type: 'user';
   text: string;
-  contextFilePaths?: ContextFilePath[];
+  contextFilePaths?: ContextAttachment[];
   promptTokens?: number;
   promptCost?: number;
 }
@@ -33,17 +78,11 @@ export interface AIMessage extends Message {
 }
 
 export interface Conversation {
-  id: string; // This will be runId after the first message
+  id: string;
   messages: (UserMessage | AIMessage)[];
   createdAt: string;
   updatedAt: string;
-  // This is used for sending the first message to create a new agent run.
   agentDefinitionId?: string;
-  // Optional name aggregated from definition
   agentName?: string;
-  // This is set on the first turn and persists for the conversation.
   llmModelIdentifier?: string;
-  // This is set on the first turn and persists for the conversation.
-
-  // This will be populated from historical conversations
 }

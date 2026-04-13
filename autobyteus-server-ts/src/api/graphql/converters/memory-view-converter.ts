@@ -1,12 +1,10 @@
 import type {
   AgentMemoryView as DomainAgentMemoryView,
-  MemoryConversationEntry as DomainMemoryConversationEntry,
   MemoryMessage as DomainMemoryMessage,
   MemoryTraceEvent as DomainMemoryTraceEvent,
 } from "../../../agent-memory/domain/models.js";
 import type {
   AgentMemoryView as GraphqlAgentMemoryView,
-  MemoryConversationEntry as GraphqlMemoryConversationEntry,
   MemoryMessage as GraphqlMemoryMessage,
   MemoryTraceEvent as GraphqlMemoryTraceEvent,
 } from "../types/memory-view.js";
@@ -27,6 +25,7 @@ export class MemoryViewConverter {
       traceType: domainTrace.traceType,
       content: domainTrace.content ?? null,
       toolName: domainTrace.toolName ?? null,
+      toolCallId: domainTrace.toolCallId ?? null,
       toolArgs: domainTrace.toolArgs ?? null,
       toolResult: domainTrace.toolResult ?? null,
       toolError: domainTrace.toolError ?? null,
@@ -34,22 +33,6 @@ export class MemoryViewConverter {
       turnId: domainTrace.turnId,
       seq: domainTrace.seq,
       ts: domainTrace.ts,
-    };
-  }
-
-  private static toGraphqlConversation(
-    domainEntry: DomainMemoryConversationEntry,
-  ): GraphqlMemoryConversationEntry {
-    return {
-      kind: domainEntry.kind,
-      role: domainEntry.role ?? null,
-      content: domainEntry.content ?? null,
-      toolName: domainEntry.toolName ?? null,
-      toolArgs: domainEntry.toolArgs ?? null,
-      toolResult: domainEntry.toolResult ?? null,
-      toolError: domainEntry.toolError ?? null,
-      media: domainEntry.media ?? null,
-      ts: domainEntry.ts ?? null,
     };
   }
 
@@ -61,9 +44,6 @@ export class MemoryViewConverter {
         : null,
       episodic: domainView.episodic ?? null,
       semantic: domainView.semantic ?? null,
-      conversation: domainView.conversation
-        ? domainView.conversation.map((entry) => this.toGraphqlConversation(entry))
-        : null,
       rawTraces: domainView.rawTraces
         ? domainView.rawTraces.map((trace) => this.toGraphqlTrace(trace))
         : null,

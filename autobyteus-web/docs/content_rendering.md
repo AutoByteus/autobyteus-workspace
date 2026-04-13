@@ -53,6 +53,15 @@ flowchart TD
 | HTML      | `.html`, `.htm`                 | HtmlPreviewer     |
 | Excel     | `.xlsx`, `.xls`, `.csv`         | ExcelViewer       |
 
+## App-Wide Readability / Display Settings
+
+File explorer and artifact viewers intentionally follow the shared **Settings -> Display -> App font size** preference instead of maintaining a separate viewer-only font control.
+
+- Markdown/text preview surfaces inherit the root app font scaling.
+- Markdown code blocks are kept on root-scale-compatible sizing so prose and code grow together.
+- `MonacoEditor.vue` consumes the shared resolved editor metrics from `appFontSizeStore` because Monaco does not inherit CSS font sizing automatically.
+- This keeps file explorer viewing and artifact viewing aligned with the same app-wide accessibility setting.
+
 ## Markdown Rendering
 
 Markdown files are rendered using `MarkdownRenderer.vue`, which uses `markdown-it` for parsing. The parsing logic is encapsulated in `useMarkdownSegments.ts`.

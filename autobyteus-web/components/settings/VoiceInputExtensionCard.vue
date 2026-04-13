@@ -159,7 +159,7 @@
           <div v-if="settingsTestResult" class="space-y-2 rounded-lg border border-gray-200 bg-white px-3 py-3">
             <div class="flex items-center justify-between gap-3">
               <p class="text-sm font-medium text-gray-900">{{ t('settings.components.settings.VoiceInputExtensionCard.last_test_result') }}</p>
-              <span class="rounded-full px-2 py-0.5 text-[11px] font-medium" :class="settingsTestOutcomeClass">
+              <span class="rounded-full px-2 py-0.5 text-[0.6875rem] font-medium" :class="settingsTestOutcomeClass">
                 {{ settingsTestOutcomeLabel }}
               </span>
             </div>

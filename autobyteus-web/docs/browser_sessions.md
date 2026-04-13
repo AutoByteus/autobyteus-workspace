@@ -222,6 +222,16 @@ If Browser runtime startup fails, Browser shell IPC now returns an explicit erro
 
 That means Browser startup failure is surfaced as a user-visible Browser-shell error state rather than looking like "Browser is available but has no tabs."
 
+### Remote node pairing
+
+The embedded desktop server is not the only runtime path anymore.
+
+- Embedded Electron still passes the Browser bridge to its bundled server through environment variables at startup.
+- Remote nodes can also use the local Electron browser when desktop `Remote Browser Sharing` is enabled and the user explicitly pairs a specific remote node.
+- Pairing sends an expiring bridge descriptor (`baseUrl`, auth token, expiry) to the selected remote node through a runtime GraphQL mutation; the remote server keeps that binding in memory rather than treating it as static startup configuration.
+- Revoking, expiry, or replacing the pairing removes the remote node's Browser support until a new descriptor is registered.
+- Browser tool visibility still depends on the runtime-specific tool gate. A live bridge binding only makes the Browser capability reachable; it does not bypass per-agent configured tool names.
+
 ## Runtime Adapter Notes
 
 ### Codex

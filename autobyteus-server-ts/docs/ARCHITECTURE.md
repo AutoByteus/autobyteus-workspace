@@ -70,9 +70,11 @@ External-channel persistence has one deliberate exception:
 - channel route bindings are always file-backed and stored at `<appDataDir>/external-channel/bindings.json`
 - the callback outbox is stored at `<appDataDir>/external-channel/gateway-callback-outbox.json`
 - external-channel receipts and delivery events are file-backed and live in that same folder regardless of the global persistence profile
-- accepted receipts remain unfinished durable work until callback publication completes or the route resolves terminally
-- startup restores unfinished accepted receipts through the accepted-receipt recovery runtime after the server begins listening
-- runtime reply routing depends on accepted runtime `turnId` values being bound to those persisted receipts before outbound delivery work can be published
+- each inbound external message creates one durable `ChannelMessageReceipt` that remains unfinished work until callback publication completes or the route resolves terminally
+- successful external dispatch is accepted only after the external-channel run facade has an authoritative `turnId` (and `memberRunId` for team dispatches)
+- startup restores unfinished accepted receipts by starting the receipt workflow runtime after the server begins listening
+- post-accept reply routing is turn-scoped and depends on the persisted receipt already owning that authoritative `turnId`
+- no chronology-based turn binding or legacy accepted-receipt recovery runtime remains in the active business path
 
 Build/package notes:
 
@@ -89,6 +91,38 @@ Each major business area is isolated under `src/<module>` and usually contains:
 - `repositories/`
 - `providers/`
 - `services/`
+
+## External-Channel Messaging Runtime
+
+The external-channel subsystem is receipt-owned at the durable workflow layer and
+event-driven at the runtime edges.
+
+Primary spine:
+
+1. `ChannelIngressService` accepts the inbound provider message, enforces
+   idempotent receipt creation/claiming, and resolves the bound route target.
+2. `ChannelAgentRunFacade` or `ChannelTeamRunFacade` resolves or restores the
+   bound run, serializes same-run dispatches, posts the user message, and waits
+   for the authoritative `TURN_STARTED` event when the dispatch call does not
+   return a `turnId` directly.
+3. Only after that exact turn identity exists does the server persist the
+   receipt as `ACCEPTED` with workflow state `TURN_BOUND`.
+4. `ReceiptWorkflowRuntime` becomes the sole durable owner for the post-accept
+   lifecycle: live observation, known-turn recovery, final reply readiness, and
+   callback publication.
+5. `ReplyCallbackService` and the gateway callback outbox own outbound
+   publication durability.
+
+Important ownership rules:
+
+- dispatch-time turn capture belongs to the external-channel facade boundary, not
+  to the agent-runtime core
+- runtime events remain generic; clients and adapters listen to them without
+  adding external-channel-specific payloads to the core event schema
+- live reply bridges and persisted recovery are subordinate to the receipt
+  workflow and operate only on already-known turns
+- a second inbound message on the same thread creates a new receipt and a new
+  turn, while the binding may reuse or restore the same underlying run
 
 ## Testing Layers
 

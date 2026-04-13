@@ -2,6 +2,16 @@ import type { TeamRunConfig } from '~/types/agent/TeamRunConfig';
 import type { AgentContext } from './AgentContext';
 import type { Task, TaskStatus } from '~/types/taskManagement';
 import type { AgentTeamStatus } from '~/types/agent/AgentTeamStatus';
+import type { TeamRunMetadataMember } from '~/stores/runHistoryTypes';
+
+export type TeamMemberProjectionLoadState = 'unloaded' | 'loading' | 'loaded' | 'error';
+
+export interface HistoricalTeamHydrationState {
+  createdAt: string;
+  updatedAt: string;
+  memberMetadataByRouteKey: Record<string, TeamRunMetadataMember>;
+  memberProjectionLoadStateByRouteKey: Record<string, TeamMemberProjectionLoadState>;
+}
 
 /**
  * @interface AgentTeamContext
@@ -13,6 +23,8 @@ export interface AgentTeamContext {
   teamRunId: string;
   config: TeamRunConfig;
   members: Map<string, AgentContext>;
+  coordinatorMemberRouteKey?: string | null;
+  historicalHydration?: HistoricalTeamHydrationState | null;
   focusedMemberName: string;
   currentStatus: AgentTeamStatus;
   isSubscribed: boolean;

@@ -17,7 +17,7 @@ import { getCodexAppServerClientManager } from "../../../src/runtime-management/
 import { SkillService } from "../../../src/skills/services/skill-service.js";
 import { SkillVersioningService } from "../../../src/skills/services/skill-versioning-service.js";
 
-const DEFAULT_LMSTUDIO_TEXT_MODEL = "qwen/qwen3-30b-a3b-2507";
+const DEFAULT_LMSTUDIO_TEXT_MODEL = "qwen/qwen3.5-35b-a3b";
 const lmStudioRuntimeEnabled = process.env.RUN_LMSTUDIO_E2E === "1";
 const codexBinaryReady = spawnSync("codex", ["--version"], { stdio: "ignore" }).status === 0;
 const claudeBinaryReady = spawnSync("claude", ["--version"], { stdio: "ignore" }).status === 0;
@@ -699,7 +699,7 @@ const defineRuntimeSuite = (input: {
         query ListWorkspaceRunHistory {
           listWorkspaceRunHistory(limitPerAgent: 200) {
             workspaceRootPath
-            agents {
+            agentDefinitions {
               agentDefinitionId
               runs {
                 runId
@@ -753,7 +753,7 @@ const defineRuntimeSuite = (input: {
         const historyAfterFirstTurn = await execGraphql<{
           listWorkspaceRunHistory: Array<{
             workspaceRootPath: string;
-            agents: Array<{
+            agentDefinitions: Array<{
               agentDefinitionId: string;
               runs: Array<{
                 runId: string;
@@ -766,7 +766,7 @@ const defineRuntimeSuite = (input: {
         const matchingRunRow =
           historyAfterFirstTurn.listWorkspaceRunHistory
             .filter((workspace) => workspace.workspaceRootPath === workspaceRootPath)
-            .flatMap((workspace) => workspace.agents)
+            .flatMap((workspace) => workspace.agentDefinitions)
             .flatMap((group) => group.runs)
             .find((run) => run.runId === runId) ?? null;
         expect(matchingRunRow).toBeTruthy();

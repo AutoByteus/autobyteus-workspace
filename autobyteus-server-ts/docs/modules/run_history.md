@@ -11,7 +11,7 @@
 - Expose resume configuration for stored runs:
   - agent: `agent-run-resume-config-service.ts`
   - team: `team-run-history-service.ts#getTeamRunResumeConfig(...)`
-- Build runtime-specific conversation projections:
+- Normalize runtime-native historical replay inputs into the canonical run-history replay bundle:
   - agent: `agent-run-view-projection-service.ts`
   - team member: `team-member-run-view-projection-service.ts`
 - Group agent and team history by workspace:
@@ -48,6 +48,7 @@ Standalone agent persisted files:
 
 - metadata: `memory/agents/<runId>/run_metadata.json`
 - runtime memory artifacts: `memory/agents/<runId>/{raw_traces.jsonl,working_context_snapshot.json,...}`
+- optional archive after pruning/compaction: `memory/agents/<runId>/raw_traces_archive.jsonl`
 
 Team persisted files:
 
@@ -57,6 +58,10 @@ Team persisted files:
 Important identity/storage rules:
 
 - standalone runs persist an explicit `memoryDir` in agent metadata
+- standalone AutoByteus run ids are stored literally under `memory/agents/<runId>/...`
+- new readable standalone AutoByteus run ids are generated through the shared `autobyteus-ts` readable-id formatter, which normalizes whitespace/punctuation into folder-safe slug segments before appending the numeric suffix
+- if the normalized standalone agent `name` and `role` collapse to the same value, the readable stem is written once instead of duplicating the segment
+- forward-only readable-id normalization does not rename historical persisted run ids; restore continues to use the stored run id
 - team members use deterministic `memberRunId` owned by the team aggregate
 - `memberRunId` defaults to a readable route slug plus stable hash: `<route_slug>_<16-hex>`
 - runtime-native identifiers remain separate from domain identifiers:
@@ -66,11 +71,31 @@ Important identity/storage rules:
 
 ## Projection Model
 
-Projection is runtime-aware and reconstructs a common conversation view from persisted runtime-specific artifacts.
+Projection is runtime-aware and reconstructs a canonical historical replay bundle from persisted runtime-specific artifacts.
+
+Run-history owns the replay bundle contract:
+
+- `conversation`
+- `activities`
+- `summary`
+- `lastActivityAt`
+
+The `agent-memory` subsystem no longer owns the canonical replay DTO. It supplies raw traces and memory-inspector views only; run-history is the only subsystem that may normalize those raw traces into the historical replay bundle used by reopen/hydration.
 
 - AutoByteus projection reads stored memory artifacts from the declared run or team-member memory directory.
 - Codex projection reads persisted Codex thread history through the Codex history reader.
 - Claude projection reads persisted Claude session history through the Claude history reader.
+
+Normalization model:
+
+- AutoByteus: raw trace rows -> historical replay events -> replay bundle
+- Codex: `thread/read` turns/items -> historical replay events -> replay bundle
+- Claude: session history -> historical replay events -> replay bundle
+
+Frontend restore uses that bundle in two sibling hydration paths:
+
+- middle pane: conversation hydration
+- right pane: activity hydration
 
 Provider registry:
 
@@ -91,5 +116,6 @@ For team runs:
 3. `memberRunId` identifies the persisted child run/storage subtree.
 4. `platformAgentRunId` identifies the runtime-native session/thread/agent when the runtime requires one.
 5. Team-member projection resolves the member from team metadata first, then delegates to the runtime-specific projection provider.
+6. Team-member reopen uses the same replay bundle shape as standalone reopen, including both `conversation` and `activities`.
 
 This keeps create, restore, and projection aligned on the same persisted team/member contract instead of inferring storage or identity later.

@@ -111,6 +111,19 @@ export type ChannelIngressReceiptState =
   | "ROUTED"
   | "UNBOUND";
 
+export type ChannelReceiptWorkflowState =
+  | "RECEIVED"
+  | "DISPATCHING"
+  | "TURN_BOUND"
+  | "COLLECTING_REPLY"
+  | "TURN_COMPLETED"
+  | "REPLY_FINALIZED"
+  | "PUBLISH_PENDING"
+  | "PUBLISHED"
+  | "UNBOUND"
+  | "FAILED"
+  | "EXPIRED";
+
 export type ChannelIngressReceiptKey = ChannelSourceRoute & {
   externalMessageId: string;
 };
@@ -118,6 +131,10 @@ export type ChannelIngressReceiptKey = ChannelSourceRoute & {
 export type ChannelMessageReceipt = ChannelSourceContext &
   ChannelDispatchTarget & {
     ingressState: ChannelIngressReceiptState;
+    workflowState: ChannelReceiptWorkflowState;
+    dispatchAcceptedAt: Date | null;
+    replyTextFinal: string | null;
+    lastError: string | null;
     dispatchLeaseToken: string | null;
     dispatchLeaseExpiresAt: Date | null;
     createdAt: Date;
@@ -138,25 +155,28 @@ export type ChannelAcceptedIngressReceiptInput = ChannelIngressReceiptKey &
   ChannelDispatchTarget & {
     receivedAt: Date;
     dispatchLeaseToken: string;
-    turnId?: string | null;
+    dispatchAcceptedAt: Date;
+    turnId: string;
   };
 
 export type ChannelUnboundIngressReceiptInput = ChannelIngressReceiptKey & {
   receivedAt: Date;
 };
 
-export type ChannelAcceptedReceiptCorrelationInput = ChannelSourceRoute &
+export type ChannelReplyPublishedReceiptInput = ChannelSourceRoute &
   ChannelDispatchTarget & {
     externalMessageId: string;
     turnId: string;
     receivedAt: Date;
   };
 
-export type ChannelReplyPublishedReceiptInput = ChannelSourceRoute &
-  ChannelDispatchTarget & {
-    externalMessageId: string;
-    turnId: string;
+export type ChannelReceiptWorkflowProgressInput = ChannelIngressReceiptKey &
+  Partial<ChannelDispatchTarget> & {
     receivedAt: Date;
+    workflowState: ChannelReceiptWorkflowState;
+    turnId?: string | null;
+    replyTextFinal?: string | null;
+    lastError?: string | null;
   };
 
 export type ChannelDeliveryStatus =

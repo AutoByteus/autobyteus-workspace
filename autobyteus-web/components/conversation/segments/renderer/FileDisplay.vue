@@ -70,7 +70,7 @@ const highlightedCode = computed(() => {
   white-space: pre-wrap;
   word-wrap: break-word;
   font-family: 'Fira Code', monospace;
-  font-size: 14px;
+  font-size: 0.875rem;
   line-height: 1.5;
 }
 </style>

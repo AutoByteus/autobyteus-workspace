@@ -25,7 +25,7 @@ describe("AgentMemoryService", () => {
     }
   });
 
-  it("returns working context, episodic, semantic, and conversation", () => {
+  it("returns working context, episodic, semantic, and raw traces", () => {
     tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "agent-memory-service-"));
     const runId = "agent-123";
     const agentDir = path.join(tempDir, "agents", runId);
@@ -68,18 +68,17 @@ describe("AgentMemoryService", () => {
       includeWorkingContext: true,
       includeEpisodic: true,
       includeSemantic: true,
-      includeConversation: true,
-      includeRawTraces: false,
+      includeRawTraces: true,
     });
 
     expect(view.workingContext?.[0]?.role).toBe("user");
     expect(view.episodic?.[0]?.episode).toBe("a");
     expect(view.semantic?.[0]?.fact).toBe("b");
-    expect(view.conversation?.length).toBe(2);
-    expect(view.rawTraces).toBeNull();
+    expect(view.rawTraces?.length).toBe(3);
+    expect(view.rawTraces?.[1]?.toolCallId).toBe("1");
   });
 
-  it("applies raw trace and conversation limits", () => {
+  it("applies raw trace limits", () => {
     tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "agent-memory-service-"));
     const runId = "agent-456";
     const agentDir = path.join(tempDir, "agents", runId);
@@ -91,14 +90,11 @@ describe("AgentMemoryService", () => {
 
     const service = new AgentMemoryService(new MemoryFileStore(tempDir));
     const view = service.getRunMemoryView(runId, {
-      includeConversation: true,
       includeRawTraces: true,
       rawTraceLimit: 1,
-      conversationLimit: 1,
     });
 
     expect(view.rawTraces?.length).toBe(1);
-    expect(view.conversation?.length).toBe(1);
     expect(view.rawTraces?.[0]?.content).toBe("two");
   });
 
@@ -116,14 +112,12 @@ describe("AgentMemoryService", () => {
       includeWorkingContext: false,
       includeEpisodic: false,
       includeSemantic: false,
-      includeConversation: false,
       includeRawTraces: true,
     });
 
     expect(view.workingContext).toBeNull();
     expect(view.episodic).toBeNull();
     expect(view.semantic).toBeNull();
-    expect(view.conversation).toBeNull();
     expect(view.rawTraces?.length).toBe(1);
   });
 });

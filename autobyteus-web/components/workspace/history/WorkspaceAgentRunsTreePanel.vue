@@ -75,6 +75,7 @@
           :key="workspaceNode.workspaceRootPath"
           :workspace-node="workspaceNode"
           :workspace-teams="workspaceTeams(workspaceNode.workspaceRootPath)"
+          :workspace-team-history-groups="workspaceTeamHistoryGroups(workspaceNode.workspaceRootPath)"
           :state="sectionState"
           :avatars="sectionAvatarBindings"
           :actions="sectionActions"
@@ -145,7 +146,7 @@ const treeState = useWorkspaceHistoryTreeState({
   runHistoryStore,
   selectionStore,
 });
-const { workspaceNodes, workspaceTeams } = treeState;
+const { workspaceNodes, workspaceTeams, workspaceTeamHistoryGroups } = treeState;
 
 const {
   getAgentInitials,

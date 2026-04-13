@@ -1,57 +1,52 @@
 <template>
   <div class="flex h-full w-full overflow-hidden bg-white">
-    
-    <!-- Left Pane: Artifact List -->
-    <div 
-        class="flex-shrink-0 flex flex-col border-r border-gray-200 h-full overflow-hidden"
-        :style="{ width: treeWidth + 'px' }"
+    <div
+      class="flex-shrink-0 flex flex-col border-r border-gray-200 h-full overflow-hidden"
+      :style="{ width: treeWidth + 'px' }"
     >
-        <ArtifactList 
-            :artifacts="artifacts" 
-            :selected-artifact-id="selectedArtifactId"
-            @select="selectArtifact"
-        />
+      <ArtifactList
+        :artifacts="artifacts"
+        :selected-artifact-id="selectedArtifactId"
+        @select="selectArtifact"
+      />
     </div>
 
-    <!-- Drag Handle -->
-    <div 
+    <div
       class="w-[1px] cursor-col-resize hover:w-1 hover:bg-blue-500 bg-gray-200 flex-shrink-0 z-10 transition-all duration-75 relative group"
       @mousedown.prevent="startResize"
     >
-       <div class="absolute inset-y-0 -left-1 -right-1 z-0 bg-transparent"></div>
+      <div class="absolute inset-y-0 -left-1 -right-1 z-0 bg-transparent"></div>
     </div>
 
-    <!-- Right Pane: Content Viewer -->
     <div class="flex-grow min-w-0 h-full overflow-hidden bg-white">
-        <ArtifactContentViewer :artifact="selectedArtifact" :refresh-signal="viewerRefreshSignal" />
+      <ArtifactContentViewer :artifact="selectedArtifact" :refresh-signal="viewerRefreshSignal" />
     </div>
-
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
-import { useAgentArtifactsStore, type AgentArtifact } from '~/stores/agentArtifactsStore';
+import { useRunFileChangesStore, type RunFileChangeArtifact } from '~/stores/runFileChangesStore';
 import { useActiveContextStore } from '~/stores/activeContextStore';
 import ArtifactList from './ArtifactList.vue';
 import ArtifactContentViewer from './ArtifactContentViewer.vue';
 
-const artifactsStore = useAgentArtifactsStore();
+const runFileChangesStore = useRunFileChangesStore();
 const activeContextStore = useActiveContextStore();
 
 const currentAgentRunId = computed(() => activeContextStore.activeAgentContext?.state.runId || '');
 const artifacts = computed(() => {
-  return [...artifactsStore.getArtifactsForRun(currentAgentRunId.value)].sort((left, right) =>
+  return [...runFileChangesStore.getArtifactsForRun(currentAgentRunId.value)].sort((left, right) =>
     right.updatedAt.localeCompare(left.updatedAt),
   );
 });
 const latestVisibleArtifactSignal = computed(() =>
-  artifactsStore.getLatestVisibleArtifactSignalForRun(currentAgentRunId.value),
+  runFileChangesStore.getLatestVisibleArtifactSignalForRun(currentAgentRunId.value),
 );
 
 const selectedArtifactId = ref<string | null>(null);
 const viewerRefreshSignal = ref(0);
-const selectedArtifact = computed<AgentArtifact | null>(() => {
+const selectedArtifact = computed<RunFileChangeArtifact | null>(() => {
   if (!selectedArtifactId.value) {
     return null;
   }
@@ -61,7 +56,7 @@ const selectedArtifact = computed<AgentArtifact | null>(() => {
 watch(
   latestVisibleArtifactSignal,
   () => {
-    const latestArtifactId = artifactsStore.getLatestVisibleArtifactIdForRun(currentAgentRunId.value);
+    const latestArtifactId = artifacts.value[0]?.id ?? null;
     if (latestArtifactId) {
       selectedArtifactId.value = latestArtifactId;
     }
@@ -85,7 +80,7 @@ watch(
   { immediate: true },
 );
 
-const selectArtifact = (artifact: AgentArtifact) => {
+const selectArtifact = (artifact: RunFileChangeArtifact) => {
   if (selectedArtifactId.value === artifact.id) {
     viewerRefreshSignal.value += 1;
     return;
@@ -93,11 +88,9 @@ const selectArtifact = (artifact: AgentArtifact) => {
   selectedArtifactId.value = artifact.id;
 };
 
-// --- Resizing Logic (Mirrored from FileExplorerLayout) ---
 const treeWidth = ref(250);
 const minWidth = 150;
 const maxWidth = 600;
-const isDragging = ref(false);
 
 const startResize = (event: MouseEvent) => {
   const startX = event.clientX;
@@ -115,15 +108,11 @@ const startResize = (event: MouseEvent) => {
     document.removeEventListener('mouseup', stopDrag);
     document.body.style.cursor = '';
     document.body.style.userSelect = '';
-    isDragging.value = false;
   };
 
   document.addEventListener('mousemove', doDrag);
   document.addEventListener('mouseup', stopDrag);
   document.body.style.cursor = 'col-resize';
   document.body.style.userSelect = 'none';
-  isDragging.value = true;
 };
-
-
 </script>

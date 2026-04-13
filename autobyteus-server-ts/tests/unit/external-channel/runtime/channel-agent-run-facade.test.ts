@@ -6,6 +6,7 @@ import { ExternalPeerType } from "autobyteus-ts/external-channel/peer-type.js";
 import { createChannelRoutingKey } from "autobyteus-ts/external-channel/channel-routing-key.js";
 import type { ChannelBinding } from "../../../../src/external-channel/domain/models.js";
 import { ChannelAgentRunFacade } from "../../../../src/external-channel/runtime/channel-agent-run-facade.js";
+import { AgentRunEventType } from "../../../../src/agent-execution/domain/agent-run-event.js";
 
 const createEnvelope = () => ({
   provider: ExternalChannelProvider.WHATSAPP,
@@ -81,6 +82,7 @@ const createActiveRun = (options: {
   runId?: string;
   runtimeKind?: string;
   postUserMessage?: ReturnType<typeof vi.fn>;
+  subscribeToEvents?: ReturnType<typeof vi.fn>;
 }) =>
   new AgentRun({
     backend: {
@@ -89,10 +91,13 @@ const createActiveRun = (options: {
       isActive: () => true,
       getRuntimeReference: () => null,
       getStatus: () => "ACTIVE",
+      subscribeToEvents:
+        options.subscribeToEvents ?? vi.fn().mockReturnValue(() => undefined),
       postUserMessage:
         options.postUserMessage ??
         vi.fn().mockResolvedValue({
           accepted: true,
+          turnId: "turn-1",
           code: null,
           message: null,
         }),
@@ -107,6 +112,7 @@ describe("ChannelAgentRunFacade", () => {
     const resolveOrStartAgentRun = vi.fn().mockResolvedValue("agent-1");
     const postUserMessage = vi.fn().mockResolvedValue({
       accepted: true,
+      turnId: "turn-1",
       code: null,
       message: null,
     });
@@ -130,6 +136,7 @@ describe("ChannelAgentRunFacade", () => {
 
     expect(result.dispatchTargetType).toBe("AGENT");
     expect(result.agentRunId).toBe("agent-1");
+    expect(result.turnId).toBe("turn-1");
     expect(resolveOrStartAgentRun).toHaveBeenCalledWith(createAgentBinding());
     expect(postUserMessage).toHaveBeenCalledOnce();
     expect(recordRunActivity).toHaveBeenCalledWith(
@@ -151,6 +158,7 @@ describe("ChannelAgentRunFacade", () => {
   it("maps inbound attachments to context files", async () => {
     const postUserMessage = vi.fn().mockResolvedValue({
       accepted: true,
+      turnId: "turn-1",
       code: null,
       message: null,
     });
@@ -194,10 +202,11 @@ describe("ChannelAgentRunFacade", () => {
     expect(publishExternalUserMessage).toHaveBeenCalledOnce();
   });
 
-  it("prepares dispatch-scoped turn capture before posting the external message", async () => {
-    const onAgentRunResolved = vi.fn();
+  it("subscribes for authoritative turn capture before posting the external message", async () => {
+    const subscribeToEvents = vi.fn().mockReturnValue(() => undefined);
     const postUserMessage = vi.fn().mockResolvedValue({
       accepted: true,
+      turnId: "turn-1",
       code: null,
       message: null,
     });
@@ -205,6 +214,7 @@ describe("ChannelAgentRunFacade", () => {
       runId: "agent-1",
       runtimeKind: "codex_app_server",
       postUserMessage,
+      subscribeToEvents,
     });
     const facade = new ChannelAgentRunFacade({
       runLauncher: {
@@ -219,15 +229,10 @@ describe("ChannelAgentRunFacade", () => {
       },
     });
 
-    await facade.dispatchToAgentBinding(createAgentBinding(), createEnvelope(), {
-      onAgentRunResolved,
-    });
+    await facade.dispatchToAgentBinding(createAgentBinding(), createEnvelope());
 
-    expect(onAgentRunResolved).toHaveBeenCalledWith({
-      agentRunId: "agent-1",
-      subscribeToEvents: expect.any(Function),
-    });
-    expect(onAgentRunResolved.mock.invocationCallOrder[0]).toBeLessThan(
+    expect(subscribeToEvents).toHaveBeenCalledOnce();
+    expect(subscribeToEvents.mock.invocationCallOrder[0]).toBeLessThan(
       postUserMessage.mock.invocationCallOrder[0] ?? Number.MAX_SAFE_INTEGER,
     );
   });
@@ -266,6 +271,7 @@ describe("ChannelAgentRunFacade", () => {
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
     const postUserMessage = vi.fn().mockResolvedValue({
       accepted: true,
+      turnId: "turn-1",
       code: null,
       message: null,
     });
@@ -300,14 +306,33 @@ describe("ChannelAgentRunFacade", () => {
     warnSpy.mockRestore();
   });
 
-  it("does not require synchronous turn metadata from the runtime", async () => {
+  it("waits for the authoritative turn-start event when the runtime omits turn metadata", async () => {
+    let runtimeListener: ((event: unknown) => void) | null = null;
     const activeRun = createActiveRun({
       runId: "agent-1",
       runtimeKind: "codex_app_server",
-      postUserMessage: vi.fn().mockResolvedValue({
-        accepted: true,
-        code: null,
-        message: null,
+      subscribeToEvents: vi.fn().mockImplementation((listener) => {
+        runtimeListener = listener;
+        return () => {
+          runtimeListener = null;
+        };
+      }),
+      postUserMessage: vi.fn().mockImplementation(async () => {
+        queueMicrotask(() => {
+          runtimeListener?.({
+            eventType: AgentRunEventType.TURN_STARTED,
+            runId: "agent-1",
+            payload: {
+              turnId: "turn-captured",
+            },
+            statusHint: "ACTIVE",
+          });
+        });
+        return {
+          accepted: true,
+          code: null,
+          message: null,
+        };
       }),
     });
     const publishExternalUserMessage = vi.fn();
@@ -327,6 +352,57 @@ describe("ChannelAgentRunFacade", () => {
     const result = await facade.dispatchToAgentBinding(createAgentBinding(), createEnvelope());
 
     expect(result.agentRunId).toBe("agent-1");
+    expect(result.turnId).toBe("turn-captured");
     expect(publishExternalUserMessage).toHaveBeenCalledOnce();
+  });
+
+  it("captures the first turn signal through the dispatch-scoped listener when the backend response has no turn id", async () => {
+    let runtimeListener: ((event: unknown) => void) | null = null;
+    const subscribeToEvents = vi.fn().mockImplementation((listener) => {
+      runtimeListener = listener;
+      return () => {
+        runtimeListener = null;
+      };
+    });
+    const postUserMessage = vi.fn().mockImplementation(async () => {
+      queueMicrotask(() => {
+        runtimeListener?.({
+          eventType: AgentRunEventType.TURN_STARTED,
+          runId: "agent-1",
+          payload: {
+            turnId: "turn-42",
+          },
+          statusHint: "ACTIVE",
+        });
+      });
+      return {
+        accepted: true,
+        code: null,
+        message: null,
+      };
+    });
+    const activeRun = createActiveRun({
+      runId: "agent-1",
+      runtimeKind: "autobyteus",
+      postUserMessage,
+      subscribeToEvents,
+    });
+    const facade = new ChannelAgentRunFacade({
+      runLauncher: {
+        resolveOrStartAgentRun: vi.fn().mockResolvedValue("agent-1"),
+      },
+      agentRunService: {
+        getAgentRun: vi.fn().mockReturnValue(activeRun),
+        recordRunActivity: vi.fn().mockResolvedValue(undefined),
+      },
+      agentLiveMessagePublisher: {
+        publishExternalUserMessage: vi.fn(),
+      },
+    });
+
+    const result = await facade.dispatchToAgentBinding(createAgentBinding(), createEnvelope());
+
+    expect(result.turnId).toBe("turn-42");
+    expect(subscribeToEvents).toHaveBeenCalled();
   });
 });

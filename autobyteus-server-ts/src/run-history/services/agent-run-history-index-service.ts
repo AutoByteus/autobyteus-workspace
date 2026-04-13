@@ -93,26 +93,26 @@ export class AgentRunHistoryIndexService {
     metadata?: AgentRunMetadata | null;
     summary?: string | null;
     lastKnownStatus?: RunKnownStatus;
-    lastActivityAt?: string;
+  lastActivityAt?: string;
   }): Promise<void> {
     const lastActivityAt = input.lastActivityAt ?? nowIso();
     const lastKnownStatus = input.lastKnownStatus ?? "ACTIVE";
+    const existing = await this.indexStore.getRow(input.runId);
 
     if (input.metadata) {
       await this.upsertFromMetadata({
         runId: input.runId,
         metadata: input.metadata,
-        summary: input.summary ?? "",
+        summary: this.resolveFirstSummary(existing?.summary, input.summary) ?? "",
         lastKnownStatus,
         lastActivityAt,
       });
       return;
     }
 
+    const nextSummary = this.resolveFirstSummary(existing?.summary, input.summary);
     await this.indexStore.updateRow(input.runId, {
-      ...(input.summary !== undefined && input.summary !== null
-        ? { summary: compactSummary(input.summary) }
-        : {}),
+      ...(nextSummary !== undefined ? { summary: nextSummary } : {}),
       lastKnownStatus,
       lastActivityAt,
     });
@@ -175,6 +175,22 @@ export class AgentRunHistoryIndexService {
       lastKnownStatus: input.lastKnownStatus,
     };
     await this.indexStore.upsertRow(row);
+  }
+
+  private resolveFirstSummary(
+    existingSummary: string | null | undefined,
+    nextSummary: string | null | undefined,
+  ): string | undefined {
+    const existing = compactSummary(existingSummary ?? null);
+    if (existing) {
+      return existing;
+    }
+
+    if (nextSummary === undefined || nextSummary === null) {
+      return undefined;
+    }
+
+    return compactSummary(nextSummary);
   }
 
   private inferLastActivityAt(runId: string): string {

@@ -1,0 +1,1094 @@
+type Query {
+  health: HealthStatus!
+  getServerSettings: [ServerSetting!]!
+  getSearchConfig: SearchConfig!
+  listApplications: [ApplicationManifest!]!
+  skills: [Skill!]!
+  skill(name: String!): Skill
+  skillFileTree(name: String!): String
+  skillFileContent(path: String!, skillName: String!): String
+  skillSources: [SkillSource!]!
+  skillVersions(skillName: String!): [SkillVersion!]!
+  skillVersionDiff(toVersion: String!, fromVersion: String!, skillName: String!): SkillDiff
+  workspaces: [WorkspaceInfo!]!
+  agentTeamDefinition(id: String!): AgentTeamDefinition
+  agentTeamDefinitions: [AgentTeamDefinition!]!
+  agentTeamTemplates: [AgentTeamDefinition!]!
+  totalCostInPeriod(endTime: DateTime!, startTime: DateTime!): Float!
+  usageStatisticsInPeriod(endTime: DateTime!, startTime: DateTime!): [UsageStatistics!]!
+  fileContent(filePath: String!, workspaceId: String!): String!
+  searchFiles(query: String!, workspaceId: String!): [String!]!
+  folderChildren(folderPath: String!, workspaceId: String!): String!
+  listRunMemorySnapshots(pageSize: Int! = 50, page: Int! = 1, search: String): MemorySnapshotPage!
+  listTeamRunMemorySnapshots(pageSize: Int! = 50, page: Int! = 1, search: String): TeamRunMemorySnapshotPage!
+  getRunMemoryView(rawTraceLimit: Int, includeArchive: Boolean! = false, includeRawTraces: Boolean! = false, includeSemantic: Boolean! = true, includeEpisodic: Boolean! = true, includeWorkingContext: Boolean! = true, runId: String!): AgentMemoryView!
+  getTeamMemberRunMemoryView(rawTraceLimit: Int, includeArchive: Boolean! = false, includeRawTraces: Boolean! = false, includeSemantic: Boolean! = true, includeEpisodic: Boolean! = true, includeWorkingContext: Boolean! = true, memberRunId: String!, teamRunId: String!): AgentMemoryView!
+  runtimeAvailabilities: [RuntimeAvailabilityObject!]!
+  managedMessagingGatewayStatus: ManagedMessagingGatewayStatusObject!
+  managedMessagingGatewayWeComAccounts: [ManagedMessagingGatewayWeComAccountObject!]!
+  managedMessagingGatewayPeerCandidates(limit: Int! = 50, includeGroups: Boolean! = true, provider: String!): ManagedMessagingGatewayPeerCandidateListObject!
+  agentDefinition(id: String!): AgentDefinition
+  agentDefinitions: [AgentDefinition!]!
+  agentTemplates: [AgentDefinition!]!
+  availableToolNames: [String!]!
+  availableOptionalInputProcessorNames: [String!]!
+  availableOptionalLlmResponseProcessorNames: [String!]!
+  availableOptionalSystemPromptProcessorNames: [String!]!
+  availableOptionalToolExecutionResultProcessorNames: [String!]!
+  availableOptionalToolInvocationPreprocessorNames: [String!]!
+  availableOptionalLifecycleProcessorNames: [String!]!
+  getLlmProviderApiKey(provider: String!): String
+  getGeminiSetupConfig: GeminiSetupConfig!
+  availableLlmProvidersWithModels(runtimeKind: String): [ProviderWithModels!]!
+  availableAudioProvidersWithModels(runtimeKind: String): [ProviderWithModels!]!
+  availableImageProvidersWithModels(runtimeKind: String): [ProviderWithModels!]!
+  tools(sourceServerId: String, origin: ToolOriginEnum): [ToolDefinitionDetail!]!
+  toolsGroupedByCategory(origin: ToolOriginEnum!): [ToolCategoryGroup!]!
+  mcpServers: [McpServerConfigUnion!]!
+  previewMcpServerTools(input: McpServerInput!): [ToolDefinitionDetail!]!
+  externalChannelCapabilities: ExternalChannelCapabilities!
+  externalChannelBindings: [ExternalChannelBindingGql!]!
+  externalChannelTeamDefinitionOptions: [ExternalChannelTeamDefinitionOptionGql!]!
+  exportSyncBundle(input: ExportNodeSyncBundleInput!): ExportNodeSyncBundleResult!
+  listWorkspaceRunHistory(limitPerAgent: Int! = 6): [WorkspaceRunHistoryGroupObject!]!
+  getRunProjection(runId: String!): RunProjectionPayload!
+  getAgentRunResumeConfig(runId: String!): RunResumeConfigPayload!
+  getRunFileChanges(runId: String!): [RunFileChangeEntryObject!]!
+  getTeamRunResumeConfig(teamRunId: String!): TeamRunResumeConfigPayload!
+  getTeamMemberRunProjection(memberRouteKey: String!, teamRunId: String!): TeamMemberRunProjectionPayload!
+  agentPackages: [AgentPackage!]!
+}
+
+type HealthStatus {
+  status: String!
+  message: String!
+}
+
+type ServerSetting {
+  key: String!
+  value: String!
+  description: String!
+  isEditable: Boolean!
+  isDeletable: Boolean!
+}
+
+type SearchConfig {
+  provider: String!
+  serperApiKeyConfigured: Boolean!
+  serpapiApiKeyConfigured: Boolean!
+  googleCseApiKeyConfigured: Boolean!
+  googleCseId: String
+  vertexAiSearchApiKeyConfigured: Boolean!
+  vertexAiSearchServingConfig: String
+}
+
+type ApplicationManifest {
+  id: String!
+  name: String!
+  description: String
+  icon: String
+  type: String
+  teamDefinitionName: String
+}
+
+type Skill {
+  name: String!
+  description: String!
+  content: String!
+  rootPath: String!
+  fileCount: Int!
+  isReadonly: Boolean!
+  isDisabled: Boolean!
+  isVersioned: Boolean!
+  activeVersion: String
+  createdAt: String
+  updatedAt: String
+}
+
+type SkillSource {
+  path: String!
+  skillCount: Int!
+  isDefault: Boolean!
+}
+
+type SkillVersion {
+  tag: String!
+  commitHash: String!
+  message: String!
+  createdAt: String!
+  isActive: Boolean!
+}
+
+type SkillDiff {
+  fromVersion: String!
+  toVersion: String!
+  diffContent: String!
+}
+
+type WorkspaceInfo {
+  workspaceId: String!
+  name: String!
+  config: JSON!
+  fileExplorer: String
+  absolutePath: String
+  isTemp: Boolean!
+}
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON @specifiedBy(url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf")
+
+type AgentTeamDefinition {
+  id: String!
+  name: String!
+  description: String!
+  instructions: String!
+  category: String
+  nodes: [TeamMember!]!
+  coordinatorMemberName: String!
+  avatarUrl: String
+}
+
+type TeamMember {
+  memberName: String!
+  ref: String!
+  refType: TeamMemberType!
+  refScope: AgentMemberRefScope
+}
+
+enum TeamMemberType {
+  AGENT
+  AGENT_TEAM
+}
+
+enum AgentMemberRefScope {
+  SHARED
+  TEAM_LOCAL
+}
+
+"""DateTime scalar supporting ISO strings and date-only YYYY-MM-DD values"""
+scalar DateTime
+
+type UsageStatistics {
+  llmModel: String!
+  promptTokens: Int!
+  assistantTokens: Int!
+  promptCost: Float
+  assistantCost: Float
+  totalCost: Float
+}
+
+type MemorySnapshotPage {
+  entries: [MemorySnapshotSummary!]!
+  total: Int!
+  page: Int!
+  pageSize: Int!
+  totalPages: Int!
+}
+
+type MemorySnapshotSummary {
+  runId: String!
+  lastUpdatedAt: String
+  hasWorkingContext: Boolean!
+  hasEpisodic: Boolean!
+  hasSemantic: Boolean!
+  hasRawTraces: Boolean!
+  hasRawArchive: Boolean!
+}
+
+type TeamRunMemorySnapshotPage {
+  entries: [TeamRunMemorySnapshotSummary!]!
+  total: Int!
+  page: Int!
+  pageSize: Int!
+  totalPages: Int!
+}
+
+type TeamRunMemorySnapshotSummary {
+  teamRunId: String!
+  teamDefinitionId: String!
+  teamDefinitionName: String!
+  lastUpdatedAt: String
+  members: [TeamMemberMemorySnapshotSummary!]!
+}
+
+type TeamMemberMemorySnapshotSummary {
+  memberRouteKey: String!
+  memberName: String!
+  memberRunId: String!
+  lastUpdatedAt: String
+  hasWorkingContext: Boolean!
+  hasEpisodic: Boolean!
+  hasSemantic: Boolean!
+  hasRawTraces: Boolean!
+  hasRawArchive: Boolean!
+}
+
+type AgentMemoryView {
+  runId: String!
+  workingContext: [MemoryMessage!]
+  episodic: [JSON!]
+  semantic: [JSON!]
+  rawTraces: [MemoryTraceEvent!]
+}
+
+type MemoryMessage {
+  role: String!
+  content: String
+  reasoning: String
+  toolPayload: JSON
+  ts: Float
+}
+
+type MemoryTraceEvent {
+  traceType: String!
+  content: String
+  toolName: String
+  toolCallId: String
+  toolArgs: JSON
+  toolResult: JSON
+  toolError: String
+  media: JSON
+  turnId: String!
+  seq: Int!
+  ts: Float!
+}
+
+type RuntimeAvailabilityObject {
+  runtimeKind: String!
+  enabled: Boolean!
+  reason: String
+}
+
+type ManagedMessagingGatewayStatusObject {
+  supported: Boolean!
+  enabled: Boolean!
+  lifecycleState: String!
+  message: String
+  lastError: String
+  activeVersion: String
+  desiredVersion: String
+  releaseTag: String
+  installedVersions: [String!]!
+  bindHost: String
+  bindPort: Int
+  pid: Int
+  providerConfig: JSONObject!
+  providerStatusByProvider: JSONObject!
+  supportedProviders: [String!]!
+  excludedProviders: [String!]!
+  diagnostics: JSONObject!
+  runtimeReliabilityStatus: JSONObject
+  runtimeRunning: Boolean!
+}
+
+"""
+The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSONObject @specifiedBy(url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf")
+
+type ManagedMessagingGatewayWeComAccountObject {
+  accountId: String!
+  label: String!
+  mode: String!
+}
+
+type ManagedMessagingGatewayPeerCandidateListObject {
+  accountId: String
+  updatedAt: String!
+  items: [ManagedMessagingGatewayPeerCandidateObject!]!
+}
+
+type ManagedMessagingGatewayPeerCandidateObject {
+  peerId: String!
+  peerType: String!
+  threadId: String
+  displayName: String
+  lastMessageAt: String!
+}
+
+type AgentDefinition {
+  id: String!
+  name: String!
+  role: String
+  description: String!
+  instructions: String!
+  category: String
+  avatarUrl: String
+  toolNames: [String!]!
+  inputProcessorNames: [String!]!
+  llmResponseProcessorNames: [String!]!
+  systemPromptProcessorNames: [String!]!
+  toolExecutionResultProcessorNames: [String!]!
+  toolInvocationPreprocessorNames: [String!]!
+  lifecycleProcessorNames: [String!]!
+  skillNames: [String!]!
+  ownershipScope: AgentDefinitionOwnershipScope!
+  ownerTeamId: String
+  ownerTeamName: String
+}
+
+enum AgentDefinitionOwnershipScope {
+  SHARED
+  TEAM_LOCAL
+}
+
+type GeminiSetupConfig {
+  mode: String!
+  geminiApiKeyConfigured: Boolean!
+  vertexApiKeyConfigured: Boolean!
+  vertexProject: String
+  vertexLocation: String
+}
+
+type ProviderWithModels {
+  provider: String!
+  models: [ModelDetail!]!
+}
+
+type ModelDetail {
+  modelIdentifier: String!
+  name: String!
+  value: String!
+  canonicalName: String!
+  provider: String!
+  runtime: String!
+  hostUrl: String
+  configSchema: JSON
+  maxContextTokens: Int
+  activeContextTokens: Int
+  maxInputTokens: Int
+  maxOutputTokens: Int
+}
+
+type ToolDefinitionDetail {
+  name: String!
+  description: String!
+  origin: ToolOriginEnum!
+  category: String!
+  argumentSchema: ToolArgumentSchema
+}
+
+enum ToolOriginEnum {
+  LOCAL
+  MCP
+}
+
+type ToolArgumentSchema {
+  parameters: [ToolParameterDefinition!]!
+}
+
+type ToolParameterDefinition {
+  name: String!
+  paramType: ToolParameterTypeEnum!
+  description: String!
+  required: Boolean!
+  defaultValue: String
+  enumValues: [String!]
+}
+
+enum ToolParameterTypeEnum {
+  STRING
+  INTEGER
+  FLOAT
+  BOOLEAN
+  ENUM
+  OBJECT
+  ARRAY
+}
+
+type ToolCategoryGroup {
+  categoryName: String!
+  tools: [ToolDefinitionDetail!]!
+}
+
+union McpServerConfigUnion = StdioMcpServerConfig | StreamableHttpMcpServerConfig
+
+type StdioMcpServerConfig {
+  serverId: String!
+  transportType: McpTransportTypeEnum!
+  enabled: Boolean!
+  toolNamePrefix: String
+  command: String!
+  args: [String!]
+  env: JSON
+  cwd: String
+}
+
+enum McpTransportTypeEnum {
+  STDIO
+  STREAMABLE_HTTP
+}
+
+type StreamableHttpMcpServerConfig {
+  serverId: String!
+  transportType: McpTransportTypeEnum!
+  enabled: Boolean!
+  toolNamePrefix: String
+  url: String!
+  token: String
+  headers: JSON
+}
+
+input McpServerInput {
+  serverId: String!
+  transportType: McpTransportTypeEnum!
+  enabled: Boolean
+  toolNamePrefix: String
+  stdioConfig: StdioMcpServerConfigInput
+  streamableHttpConfig: StreamableHttpMcpServerConfigInput
+}
+
+input StdioMcpServerConfigInput {
+  command: String!
+  args: [String!]
+  env: JSON
+  cwd: String
+}
+
+input StreamableHttpMcpServerConfigInput {
+  url: String!
+  token: String
+  headers: JSON
+}
+
+type ExternalChannelCapabilities {
+  bindingCrudEnabled: Boolean!
+  reason: String
+  acceptedProviderTransportPairs: [String!]!
+}
+
+type ExternalChannelBindingGql {
+  id: String!
+  provider: String!
+  transport: String!
+  accountId: String!
+  peerId: String!
+  threadId: String
+  targetType: String!
+  targetAgentDefinitionId: String
+  targetTeamDefinitionId: String
+  launchPreset: ExternalChannelLaunchPresetGql
+  teamLaunchPreset: ExternalChannelTeamLaunchPresetGql
+  teamRunId: String
+  updatedAt: DateTime!
+}
+
+type ExternalChannelLaunchPresetGql {
+  workspaceRootPath: String!
+  llmModelIdentifier: String!
+  runtimeKind: String!
+  autoExecuteTools: Boolean!
+  skillAccessMode: ExternalChannelSkillAccessModeEnum!
+  llmConfig: JSONObject
+}
+
+enum ExternalChannelSkillAccessModeEnum {
+  GLOBAL_DISCOVERY
+  PRELOADED_ONLY
+  NONE
+}
+
+type ExternalChannelTeamLaunchPresetGql {
+  workspaceRootPath: String!
+  llmModelIdentifier: String!
+  runtimeKind: String!
+  autoExecuteTools: Boolean!
+  skillAccessMode: ExternalChannelSkillAccessModeEnum!
+  llmConfig: JSONObject
+}
+
+type ExternalChannelTeamDefinitionOptionGql {
+  teamDefinitionId: String!
+  teamDefinitionName: String!
+  description: String!
+  coordinatorMemberName: String!
+  memberCount: Int!
+}
+
+type ExportNodeSyncBundleResult {
+  watermark: String!
+  entities: JSON!
+  tombstones: JSON!
+}
+
+input ExportNodeSyncBundleInput {
+  scope: [SyncEntityTypeEnum!]!
+  watermarkByEntity: JSON
+  selection: ExportNodeSyncSelectionInput
+}
+
+enum SyncEntityTypeEnum {
+  AGENT_DEFINITION
+  AGENT_TEAM_DEFINITION
+  MCP_SERVER_CONFIGURATION
+}
+
+input ExportNodeSyncSelectionInput {
+  agentDefinitionIds: [String!]
+  agentTeamDefinitionIds: [String!]
+  includeDependencies: Boolean
+  includeDeletes: Boolean
+}
+
+type WorkspaceRunHistoryGroupObject {
+  workspaceRootPath: String!
+  workspaceName: String!
+  agents: [RunHistoryAgentGroupObject!]!
+  teamRuns: [WorkspaceHistoryTeamRunItemObject!]!
+}
+
+type RunHistoryAgentGroupObject {
+  agentDefinitionId: String!
+  agentName: String!
+  runs: [RunHistoryItemObject!]!
+}
+
+type RunHistoryItemObject {
+  runId: String!
+  summary: String!
+  lastActivityAt: String!
+  lastKnownStatus: String!
+  isActive: Boolean!
+}
+
+type WorkspaceHistoryTeamRunItemObject {
+  teamRunId: String!
+  teamDefinitionId: String!
+  teamDefinitionName: String!
+  workspaceRootPath: String
+  summary: String!
+  lastActivityAt: String!
+  lastKnownStatus: String!
+  deleteLifecycle: String!
+  isActive: Boolean!
+  members: [WorkspaceHistoryTeamRunMemberObject!]!
+}
+
+type WorkspaceHistoryTeamRunMemberObject {
+  memberRouteKey: String!
+  memberName: String!
+  memberRunId: String!
+  runtimeKind: String!
+  workspaceRootPath: String
+}
+
+type RunProjectionPayload {
+  runId: String!
+  conversation: [JSON!]!
+  activities: [JSON!]!
+  summary: String
+  lastActivityAt: String
+}
+
+type RunResumeConfigPayload {
+  runId: String!
+  isActive: Boolean!
+  metadataConfig: RunMetadataConfigObject!
+  editableFields: RunEditableFieldFlagsObject!
+}
+
+type RunMetadataConfigObject {
+  agentDefinitionId: String!
+  workspaceRootPath: String!
+  llmModelIdentifier: String!
+  llmConfig: JSON
+  autoExecuteTools: Boolean!
+  skillAccessMode: ExternalChannelSkillAccessModeEnum
+  runtimeKind: String!
+  runtimeReference: RunRuntimeReferenceObject!
+}
+
+type RunRuntimeReferenceObject {
+  runtimeKind: String!
+  sessionId: String
+  threadId: String
+  metadata: JSON
+}
+
+type RunEditableFieldFlagsObject {
+  llmModelIdentifier: Boolean!
+  llmConfig: Boolean!
+  autoExecuteTools: Boolean!
+  skillAccessMode: Boolean!
+  workspaceRootPath: Boolean!
+  runtimeKind: Boolean!
+}
+
+type RunFileChangeEntryObject {
+  id: String!
+  runId: String!
+  path: String!
+  type: String!
+  status: String!
+  sourceTool: String!
+  sourceInvocationId: String
+  backendArtifactId: String
+  content: String
+  createdAt: String!
+  updatedAt: String!
+}
+
+type TeamRunResumeConfigPayload {
+  teamRunId: String!
+  isActive: Boolean!
+  metadata: JSON!
+}
+
+type TeamMemberRunProjectionPayload {
+  agentRunId: String!
+  conversation: [JSON!]!
+  activities: [JSON!]!
+  summary: String
+  lastActivityAt: String
+}
+
+type AgentPackage {
+  packageId: String!
+  displayName: String!
+  path: String!
+  sourceKind: AgentPackageSourceKind!
+  source: String!
+  sharedAgentCount: Int!
+  teamLocalAgentCount: Int!
+  agentTeamCount: Int!
+  isDefault: Boolean!
+  isRemovable: Boolean!
+}
+
+enum AgentPackageSourceKind {
+  BUILT_IN
+  LOCAL_PATH
+  GITHUB_REPOSITORY
+}
+
+type Mutation {
+  updateServerSetting(value: String!, key: String!): String!
+  deleteServerSetting(key: String!): String!
+  setSearchConfig(vertexAiSearchServingConfig: String, vertexAiSearchApiKey: String, googleCseId: String, googleCseApiKey: String, serpapiApiKey: String, serperApiKey: String, provider: String!): String!
+  runApplication(input: JSONObject!, appId: String!): JSONObject!
+  createSkill(input: CreateSkillInput!): Skill!
+  updateSkill(input: UpdateSkillInput!): Skill!
+  deleteSkill(name: String!): DeleteSkillResult!
+  uploadSkillFile(content: String!, path: String!, skillName: String!): Boolean!
+  deleteSkillFile(path: String!, skillName: String!): Boolean!
+  disableSkill(name: String!): Skill!
+  enableSkill(name: String!): Skill!
+  addSkillSource(path: String!): [SkillSource!]!
+  removeSkillSource(path: String!): [SkillSource!]!
+  activateSkillVersion(input: ActivateSkillVersionInput!): SkillVersion!
+  enableSkillVersioning(input: EnableSkillVersioningInput!): SkillVersion!
+  createWorkspace(input: CreateWorkspaceInput!): WorkspaceInfo!
+  createAgentTeamDefinition(input: CreateAgentTeamDefinitionInput!): AgentTeamDefinition!
+  updateAgentTeamDefinition(input: UpdateAgentTeamDefinitionInput!): AgentTeamDefinition!
+  deleteAgentTeamDefinition(id: String!): DeleteAgentTeamDefinitionResult!
+  writeFileContent(content: String!, filePath: String!, workspaceId: String!): String!
+  deleteFileOrFolder(path: String!, workspaceId: String!): String!
+  moveFileOrFolder(destinationPath: String!, sourcePath: String!, workspaceId: String!): String!
+  renameFileOrFolder(newName: String!, targetPath: String!, workspaceId: String!): String!
+  createFileOrFolder(isFile: Boolean!, path: String!, workspaceId: String!): String!
+  enableManagedMessagingGateway: ManagedMessagingGatewayStatusObject!
+  disableManagedMessagingGateway: ManagedMessagingGatewayStatusObject!
+  updateManagedMessagingGateway: ManagedMessagingGatewayStatusObject!
+  saveManagedMessagingGatewayProviderConfig(input: JSONObject!): ManagedMessagingGatewayStatusObject!
+  terminateAgentRun(agentRunId: String!): TerminateAgentRunResult!
+  createAgentRun(input: CreateAgentRunInput!): CreateAgentRunResult!
+  restoreAgentRun(agentRunId: String!): RestoreAgentRunResult!
+  approveToolInvocation(input: ApproveToolInvocationInput!): ApproveToolInvocationResult!
+  createAgentTeamRun(input: CreateAgentTeamRunInput!): CreateAgentTeamRunResult!
+  terminateAgentTeamRun(teamRunId: String!): TerminateAgentTeamRunResult!
+  restoreAgentTeamRun(teamRunId: String!): RestoreAgentTeamRunResult!
+  createAgentDefinition(input: CreateAgentDefinitionInput!): AgentDefinition!
+  duplicateAgentDefinition(input: DuplicateAgentDefinitionInput!): AgentDefinition!
+  updateAgentDefinition(input: UpdateAgentDefinitionInput!): AgentDefinition!
+  deleteAgentDefinition(id: String!): DeleteAgentDefinitionResult!
+  setLlmProviderApiKey(apiKey: String!, provider: String!): String!
+  setGeminiSetupConfig(vertexLocation: String, vertexProject: String, vertexApiKey: String, geminiApiKey: String, mode: String!): String!
+  reloadLlmModels(runtimeKind: String): String!
+  reloadLlmProviderModels(provider: String!): String!
+  reloadToolSchema(name: String!): ReloadToolSchemaResult!
+  configureMcpServer(input: McpServerInput!): ConfigureMcpServerResult!
+  deleteMcpServer(serverId: String!): DeleteMcpServerResult!
+  discoverAndRegisterMcpServerTools(serverId: String!): DiscoverAndRegisterMcpServerToolsResult!
+  importMcpServerConfigs(jsonString: String!): ImportMcpServerConfigsResult!
+  upsertExternalChannelBinding(input: UpsertExternalChannelBindingInput!): ExternalChannelBindingGql!
+  deleteExternalChannelBinding(id: String!): Boolean!
+  importSyncBundle(input: ImportNodeSyncBundleInput!): ImportNodeSyncBundleResult!
+  runNodeSync(input: RunNodeSyncInput!): RunNodeSyncResult!
+  deleteStoredRun(runId: String!): DeleteStoredRunMutationResult!
+  deleteStoredTeamRun(teamRunId: String!): DeleteStoredTeamRunMutationResult!
+  importAgentPackage(input: ImportAgentPackageInput!): [AgentPackage!]!
+  removeAgentPackage(packageId: String!): [AgentPackage!]!
+  registerRemoteBrowserBridge(input: RemoteBrowserBridgeInput!): RemoteBrowserBridgeMutationResult!
+  clearRemoteBrowserBridge: RemoteBrowserBridgeMutationResult!
+}
+
+input CreateSkillInput {
+  name: String!
+  description: String!
+  content: String!
+}
+
+input UpdateSkillInput {
+  name: String!
+  description: String
+  content: String
+}
+
+type DeleteSkillResult {
+  success: Boolean!
+  message: String!
+}
+
+input ActivateSkillVersionInput {
+  skillName: String!
+  version: String!
+}
+
+input EnableSkillVersioningInput {
+  skillName: String!
+}
+
+input CreateWorkspaceInput {
+  rootPath: String!
+}
+
+input CreateAgentTeamDefinitionInput {
+  name: String!
+  description: String!
+  instructions: String!
+  category: String
+  nodes: [TeamMemberInput!]!
+  coordinatorMemberName: String!
+  avatarUrl: String
+}
+
+input TeamMemberInput {
+  memberName: String!
+  ref: String!
+  refType: TeamMemberType!
+  refScope: AgentMemberRefScope
+}
+
+input UpdateAgentTeamDefinitionInput {
+  id: String!
+  name: String
+  description: String
+  instructions: String
+  category: String
+  nodes: [TeamMemberInput!]
+  coordinatorMemberName: String
+  avatarUrl: String
+}
+
+type DeleteAgentTeamDefinitionResult {
+  success: Boolean!
+  message: String!
+}
+
+type TerminateAgentRunResult {
+  success: Boolean!
+  message: String!
+}
+
+type CreateAgentRunResult {
+  success: Boolean!
+  message: String!
+  runId: String
+}
+
+input CreateAgentRunInput {
+  agentDefinitionId: String!
+  workspaceRootPath: String!
+  workspaceId: String
+  llmModelIdentifier: String!
+  autoExecuteTools: Boolean!
+  llmConfig: JSON
+  skillAccessMode: ExternalChannelSkillAccessModeEnum!
+  runtimeKind: String!
+}
+
+type RestoreAgentRunResult {
+  success: Boolean!
+  message: String!
+  runId: String
+}
+
+type ApproveToolInvocationResult {
+  success: Boolean!
+  message: String!
+}
+
+input ApproveToolInvocationInput {
+  agentRunId: String!
+  invocationId: String!
+  isApproved: Boolean!
+  reason: String
+}
+
+type CreateAgentTeamRunResult {
+  success: Boolean!
+  message: String!
+  teamRunId: String
+}
+
+input CreateAgentTeamRunInput {
+  teamDefinitionId: String!
+  memberConfigs: [TeamMemberConfigInput!]!
+}
+
+input TeamMemberConfigInput {
+  memberName: String!
+  agentDefinitionId: String!
+  llmModelIdentifier: String!
+  autoExecuteTools: Boolean!
+  skillAccessMode: ExternalChannelSkillAccessModeEnum!
+  workspaceId: String
+  workspaceRootPath: String
+  llmConfig: JSON
+  memberRouteKey: String
+  runtimeKind: String
+}
+
+type TerminateAgentTeamRunResult {
+  success: Boolean!
+  message: String!
+}
+
+type RestoreAgentTeamRunResult {
+  success: Boolean!
+  message: String!
+  teamRunId: String
+}
+
+input CreateAgentDefinitionInput {
+  name: String!
+  role: String
+  description: String!
+  instructions: String!
+  category: String
+  avatarUrl: String
+  toolNames: [String!]
+  inputProcessorNames: [String!]
+  llmResponseProcessorNames: [String!]
+  systemPromptProcessorNames: [String!]
+  toolExecutionResultProcessorNames: [String!]
+  toolInvocationPreprocessorNames: [String!]
+  lifecycleProcessorNames: [String!]
+  skillNames: [String!]
+}
+
+input DuplicateAgentDefinitionInput {
+  sourceId: String!
+  newName: String!
+}
+
+input UpdateAgentDefinitionInput {
+  id: String!
+  name: String
+  role: String
+  description: String
+  instructions: String
+  category: String
+  avatarUrl: String
+  toolNames: [String!]
+  inputProcessorNames: [String!]
+  llmResponseProcessorNames: [String!]
+  systemPromptProcessorNames: [String!]
+  toolExecutionResultProcessorNames: [String!]
+  toolInvocationPreprocessorNames: [String!]
+  lifecycleProcessorNames: [String!]
+  skillNames: [String!]
+}
+
+type DeleteAgentDefinitionResult {
+  success: Boolean!
+  message: String!
+}
+
+type ReloadToolSchemaResult {
+  success: Boolean!
+  message: String!
+  tool: ToolDefinitionDetail
+}
+
+type ConfigureMcpServerResult {
+  savedConfig: McpServerConfigUnion!
+}
+
+type DeleteMcpServerResult {
+  success: Boolean!
+  message: String!
+}
+
+type DiscoverAndRegisterMcpServerToolsResult {
+  success: Boolean!
+  message: String!
+  discoveredTools: [ToolDefinitionDetail!]!
+}
+
+type ImportMcpServerConfigsResult {
+  success: Boolean!
+  message: String!
+  importedCount: Int!
+  failedCount: Int!
+}
+
+input UpsertExternalChannelBindingInput {
+  provider: String!
+  transport: String!
+  accountId: String!
+  peerId: String!
+  threadId: String
+  targetType: String!
+  targetAgentDefinitionId: String
+  targetTeamDefinitionId: String
+  launchPreset: ExternalChannelLaunchPresetInput
+  teamLaunchPreset: ExternalChannelTeamLaunchPresetInput
+}
+
+input ExternalChannelLaunchPresetInput {
+  workspaceRootPath: String!
+  llmModelIdentifier: String!
+  runtimeKind: String
+  autoExecuteTools: Boolean
+  skillAccessMode: ExternalChannelSkillAccessModeEnum!
+  llmConfig: JSONObject
+}
+
+input ExternalChannelTeamLaunchPresetInput {
+  workspaceRootPath: String!
+  llmModelIdentifier: String!
+  runtimeKind: String
+  autoExecuteTools: Boolean
+  skillAccessMode: ExternalChannelSkillAccessModeEnum!
+  llmConfig: JSONObject
+}
+
+type ImportNodeSyncBundleResult {
+  success: Boolean!
+  appliedWatermark: String
+  summary: ImportNodeSyncSummary!
+  failures: [ImportNodeSyncFailure!]!
+}
+
+type ImportNodeSyncSummary {
+  processed: Float!
+  created: Float!
+  updated: Float!
+  deleted: Float!
+  skipped: Float!
+}
+
+type ImportNodeSyncFailure {
+  entityType: SyncEntityTypeEnum!
+  key: String!
+  message: String!
+}
+
+input ImportNodeSyncBundleInput {
+  scope: [SyncEntityTypeEnum!]!
+  conflictPolicy: SyncConflictPolicyEnum!
+  tombstonePolicy: SyncTombstonePolicyEnum!
+  bundle: JSON!
+}
+
+enum SyncConflictPolicyEnum {
+  SOURCE_WINS
+  TARGET_WINS
+}
+
+enum SyncTombstonePolicyEnum {
+  SOURCE_DELETE_WINS
+}
+
+type RunNodeSyncResult {
+  status: String!
+  sourceNodeId: String!
+  targetResults: [NodeSyncTargetRunResult!]!
+  error: String
+  report: NodeSyncRunReport
+}
+
+type NodeSyncTargetRunResult {
+  targetNodeId: String!
+  status: String!
+  summary: ImportNodeSyncSummary
+  message: String
+}
+
+type NodeSyncRunReport {
+  sourceNodeId: String!
+  scope: [SyncEntityTypeEnum!]!
+  exportByEntity: [NodeSyncExportEntityReport!]!
+  targets: [NodeSyncTargetDetailedReport!]!
+}
+
+type NodeSyncExportEntityReport {
+  entityType: SyncEntityTypeEnum!
+  exportedCount: Float!
+  sampledKeys: [String!]!
+  sampleTruncated: Boolean!
+}
+
+type NodeSyncTargetDetailedReport {
+  targetNodeId: String!
+  status: String!
+  summary: ImportNodeSyncSummary
+  failureCountTotal: Float!
+  failureSamples: [NodeSyncFailureSample!]!
+  failureSampleTruncated: Boolean!
+  message: String
+}
+
+type NodeSyncFailureSample {
+  entityType: SyncEntityTypeEnum!
+  key: String!
+  message: String!
+}
+
+input RunNodeSyncInput {
+  source: NodeSyncEndpointInput!
+  targets: [NodeSyncEndpointInput!]!
+  scope: [SyncEntityTypeEnum!]!
+  selection: ExportNodeSyncSelectionInput
+  conflictPolicy: SyncConflictPolicyEnum!
+  tombstonePolicy: SyncTombstonePolicyEnum!
+}
+
+input NodeSyncEndpointInput {
+  nodeId: String!
+  baseUrl: String!
+}
+
+type DeleteStoredRunMutationResult {
+  success: Boolean!
+  message: String!
+}
+
+type DeleteStoredTeamRunMutationResult {
+  success: Boolean!
+  message: String!
+}
+
+input ImportAgentPackageInput {
+  sourceKind: AgentPackageImportSourceKind!
+  source: String!
+}
+
+enum AgentPackageImportSourceKind {
+  LOCAL_PATH
+  GITHUB_REPOSITORY
+}
+
+type RemoteBrowserBridgeMutationResult {
+  success: Boolean!
+  message: String!
+}
+
+input RemoteBrowserBridgeInput {
+  baseUrl: String!
+  authToken: String!
+  expiresAt: String!
+}

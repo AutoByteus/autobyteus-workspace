@@ -25,6 +25,7 @@ import {
   toHistoryTeamStatus,
   toTeamRunStatus,
 } from '~/stores/runHistoryTeamHelpers';
+import { flattenWorkspaceTeamRuns } from '~/stores/runHistoryStoreSupport';
 
 export const UNASSIGNED_TEAM_WORKSPACE_KEY = 'unassigned-team-workspace';
 export const UNASSIGNED_TEAM_WORKSPACE_LABEL = 'Unassigned Team Workspace';
@@ -166,7 +167,7 @@ export const buildRunHistoryTreeNodes = (params: {
 
   const persistedWorkspaces: RunHistoryWorkspaceGroup[] = params.workspaceGroups.map((workspace) => ({
     ...workspace,
-    agents: workspace.agents.map((agent) => ({
+    agentDefinitions: workspace.agentDefinitions.map((agent) => ({
       ...agent,
       agentAvatarUrl:
         agent.agentAvatarUrl ??
@@ -214,7 +215,11 @@ export const buildRunHistoryTreeNodes = (params: {
   }
 
   const projectedTree = buildRunTreeProjection({
-    persistedWorkspaces,
+    persistedWorkspaces: persistedWorkspaces.map((workspace) => ({
+      workspaceRootPath: workspace.workspaceRootPath,
+      workspaceName: workspace.workspaceName,
+      agents: workspace.agentDefinitions,
+    })),
     workspaceDescriptors: Array.from(workspaceDescriptors.entries()).map(
       ([workspaceRootPath, workspaceName]) => ({
         workspaceRootPath,
@@ -239,12 +244,7 @@ export const buildRunHistoryTeamNodes = (params: {
   const resolveWorkspaceRootPathById = (workspaceId: string | null): string =>
     resolveWorkspaceRootPath(params.workspacesById, workspaceId);
 
-  const persistedTeamRuns = params.workspaceGroups.flatMap((workspace) =>
-    workspace.teamRuns.map((teamRun) => ({
-      ...teamRun,
-      workspaceRootPath: teamRun.workspaceRootPath ?? workspace.workspaceRootPath,
-    })),
-  );
+  const persistedTeamRuns = flattenWorkspaceTeamRuns(params.workspaceGroups);
 
   return buildTeamNodes({
     teamRuns: persistedTeamRuns,
@@ -302,7 +302,7 @@ export const findAgentNameByRunId = (
   runId: string,
 ): string | null => {
   for (const workspace of workspaceGroups) {
-    for (const agent of workspace.agents) {
+    for (const agent of workspace.agentDefinitions) {
       if (agent.runs.some(run => run.runId === runId)) {
         return agent.agentName;
       }

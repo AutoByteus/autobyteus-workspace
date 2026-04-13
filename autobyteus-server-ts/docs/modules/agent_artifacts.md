@@ -2,34 +2,44 @@
 
 ## Scope
 
-Live touched-file and generated-output events emitted to streaming clients.
-This module no longer owns a persisted-artifact metadata service or a live GraphQL artifact query path for the Artifacts tab.
+Current server-side ownership for the Artifacts tab's touched-file and generated-output experience.
+The active Artifacts surface is backed by the run-file-changes subsystem, not by a separate persisted-artifact query path.
 
 ## TS Source
 
-- `src/agent-customization/processors/tool-result/agent-artifact-event-processor.ts`
-- `src/services/agent-streaming`
+- `src/services/run-file-changes/run-file-change-service.ts`
+- `src/services/run-file-changes/run-file-change-path-identity.ts`
+- `src/services/run-file-changes/run-file-change-invocation-cache.ts`
+- `src/services/run-file-changes/run-file-change-projection-store.ts`
+- `src/run-history/services/run-file-change-projection-service.ts`
+- `src/api/graphql/types/run-file-changes.ts`
+- `src/api/rest/run-file-changes.ts`
+- `src/services/agent-streaming/agent-run-event-message-mapper.ts`
 - `src/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.ts`
 - `src/agent-execution/backends/codex/events/codex-turn-event-converter.ts`
 - `src/agent-execution/backends/codex/events/codex-item-event-converter.ts`
-- `src/api/rest/workspaces.ts`
+- `src/agent-customization/processors/response-customization/media-url-transformer-processor.ts` (conversation media only; not the Artifacts tab owner)
 
 ## Current Responsibilities
 
-- emit `ARTIFACT_PERSISTED` for `write_file` and generated outputs when the runtime has a concrete file/output path **and the tool result succeeded**
-- emit `ARTIFACT_UPDATED` for `edit_file` / runtime file-change updates as a refresh-only signal
-- forward artifact events through the agent streaming transport to WebSocket clients
-- expose workspace-backed file bytes for frontend viewers through `/workspaces/:workspaceId/content`
+- normalize `write_file`, `edit_file`, and generated-output signals into one canonical run-scoped row model
+- emit `FILE_CHANGE_UPDATED` as the authoritative live Artifacts event
+- persist metadata-only projection state to `<run-memory-dir>/file_changes.json`
+- hydrate active and historical rows through `RunFileChangeProjectionService` and `getRunFileChanges(runId)`
+- serve current file bytes by `runId + canonical path` through `/runs/:runId/file-change-content`
+- keep `ARTIFACT_PERSISTED` / `ARTIFACT_UPDATED` only as compatibility/off-spine transport noise where some runtimes still emit them; current clients do not depend on them
+- keep assistant-message media URL transformation separate from the Artifacts path via `MediaUrlTransformerProcessor`
 
 ## Current Live Design
 
-- The frontend artifacts area is a live projection of touched files and outputs.
-- Event identity is path-oriented in practice (`runId:path` on the frontend).
-- Text/code inspection is workspace-backed once the file exists.
-- Media/document outputs can use direct URLs when available.
-- Denied/failed tool results do not emit artifact availability events.
-- No active runtime path depends on persisted artifact metadata or `agentArtifacts(...)` GraphQL retrieval.
+- The Artifacts tab is a run-scoped touched-file/output projection keyed by canonical path identity.
+- Current filesystem bytes are the source of truth for committed previews.
+- Generated outputs use the same projection and preview route as text edits and writes.
+- Persisted state stores metadata only; transient `content` exists only for live buffered `write_file` preview.
+- The only supported persisted file is `<run-memory-dir>/file_changes.json`.
+- Legacy `run-file-changes/projection.json` is intentionally unsupported and hydrates no rows.
 
 ## Notes
 
-If history-based reconstruction is needed later, that should come from run history / runtime traces rather than from reintroducing the old live artifact-persistence requirement by default.
+If `ARTIFACT_*` compatibility events are removed later, update the streaming protocol docs and runtime converters together.
+History reconstruction should continue to come from run history and canonical file-change metadata rather than by reviving a second artifact-persistence subsystem.

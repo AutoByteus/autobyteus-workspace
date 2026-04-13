@@ -93,7 +93,7 @@ describe('WorkspaceDesktopLayout', () => {
       teamRunConfig: { config: null },
     });
 
-    expect(wrapper.text()).toContain('Select or run an agent/team to begin');
+    expect(wrapper.text()).toContain('Select or run an agent');
   });
 
   it('keeps the center content shell clipped instead of making it an outer scroll owner', () => {
@@ -116,5 +116,16 @@ describe('WorkspaceDesktopLayout', () => {
     expect(wrapper.find('.run-config-view').exists()).toBe(true);
     expect(wrapper.find('.agent-view').exists()).toBe(false);
     expect(wrapper.find('.team-view').exists()).toBe(false);
+  });
+
+  it('shows a center loading overlay while a historical run is opening', () => {
+    const wrapper = mountComponent({
+      agentSelection: { selectedType: 'team', selectedRunId: '456' },
+      workspaceCenterView: { mode: 'chat' },
+      runHistory: { openingRun: true },
+    });
+
+    expect(wrapper.find('.team-view').exists()).toBe(true);
+    expect(wrapper.find('workspace-center-loading-overlay-stub').exists()).toBe(true);
   });
 });

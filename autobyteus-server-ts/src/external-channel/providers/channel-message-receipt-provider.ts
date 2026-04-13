@@ -1,12 +1,14 @@
 import type {
   ChannelAcceptedIngressReceiptInput,
-  ChannelAcceptedReceiptCorrelationInput,
   ChannelClaimIngressDispatchInput,
+  ChannelDispatchTarget,
   ChannelIngressReceiptKey,
   ChannelIngressReceiptState,
   ChannelMessageReceipt,
   ChannelPendingIngressReceiptInput,
   ChannelReplyPublishedReceiptInput,
+  ChannelReceiptWorkflowProgressInput,
+  ChannelReceiptWorkflowState,
   ChannelSourceContext,
   ChannelUnboundIngressReceiptInput,
 } from "../domain/models.js";
@@ -24,8 +26,8 @@ export interface ChannelMessageReceiptProvider {
   recordAcceptedDispatch(
     input: ChannelAcceptedIngressReceiptInput,
   ): Promise<ChannelMessageReceipt>;
-  updateAcceptedReceiptCorrelation(
-    input: ChannelAcceptedReceiptCorrelationInput,
+  updateReceiptWorkflowProgress(
+    input: ChannelReceiptWorkflowProgressInput,
   ): Promise<ChannelMessageReceipt>;
   markReplyPublished(
     input: ChannelReplyPublishedReceiptInput,
@@ -35,6 +37,9 @@ export interface ChannelMessageReceiptProvider {
   ): Promise<ChannelMessageReceipt>;
   listReceiptsByIngressState(
     state: ChannelIngressReceiptState,
+  ): Promise<ChannelMessageReceipt[]>;
+  listReceiptsByWorkflowStates(
+    states: ChannelReceiptWorkflowState[],
   ): Promise<ChannelMessageReceipt[]>;
   getSourceByAgentRunTurn(
     agentRunId: string,

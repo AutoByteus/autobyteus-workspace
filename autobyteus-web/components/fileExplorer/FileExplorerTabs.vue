@@ -381,11 +381,3 @@ const handleKeydown = async (event: KeyboardEvent) => {
 }
 </script>
 
-<style scoped>
-.close-button {
-  font-size: 18px;
-}
-.close-button:hover {
-  background-color: rgba(239, 68, 68, 0.1);
-}
-</style>

@@ -75,9 +75,13 @@ export class MemoryFileStore {
     }
   }
 
-  readJsonl(filePath: string, limit?: number): Array<Record<string, unknown>> {
+  readJsonl(
+    filePath: string,
+    limit?: number,
+    options: { warnIfMissing?: boolean } = {},
+  ): Array<Record<string, unknown>> {
     if (!fs.existsSync(filePath)) {
-      if (this.warnOnMissingFiles) {
+      if (this.warnOnMissingFiles && options.warnIfMissing !== false) {
         logger.warn(`Memory file missing: ${filePath}`);
       }
       return [];
@@ -116,7 +120,7 @@ export class MemoryFileStore {
 
   readRawTracesArchive(runId: string, limit?: number): Array<Record<string, unknown>> {
     const filePath = path.join(this.getRunDir(runId), "raw_traces_archive.jsonl");
-    return this.readJsonl(filePath, limit);
+    return this.readJsonl(filePath, limit, { warnIfMissing: false });
   }
 
   readEpisodic(runId: string, limit?: number): Array<Record<string, unknown>> {
