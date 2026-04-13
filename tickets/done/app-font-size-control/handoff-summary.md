@@ -4,7 +4,7 @@
 
 - Ticket: `app-font-size-control`
 - Date: `2026-04-13`
-- Current Status: `Verified; repository finalization in progress`
+- Current Status: `Completed without release`
 - Latest authoritative review result: `Pass`
 - Latest authoritative review round: `2`
 - Latest authoritative validation round: `2`
@@ -63,16 +63,32 @@
   - user confirmed on `2026-04-13` that the ticket is done and explicitly requested finalization without releasing a new version
 - Notes:
   - ticket has been archived to `tickets/done/app-font-size-control`
-  - repository finalization and cleanup are the remaining steps
+  - repository finalization and cleanup are complete
   - recorded finalization target after verification: `origin/personal`
 
-## Finalization Readiness
+## Finalization Record
 
 - Ticket worktree path:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/app-font-size-control`
 - Ticket branch:
   - `codex/app-font-size-control`
-- Expected finalization target:
+- Finalization target:
   - `origin/personal`
-- Current blocker:
-  - none at artifact-preparation time; repository finalization and cleanup are being executed next
+- Ticket branch commit:
+  - `8c3655b73af7dc3efca8a8fe35c7b842e24dac81` (`feat(settings): add app-wide font size control`)
+- Merge commit into `personal`:
+  - `99876a751005aa735b4574e261c7f8d2a1957445`
+- Ticket branch push:
+  - `Completed`
+- Target branch push:
+  - `Completed`
+- Worktree cleanup:
+  - `Completed`
+- Local branch cleanup:
+  - `Completed`
+- Remote branch cleanup:
+  - `Completed`
+- Release/publication:
+  - `Not required` (user explicitly requested no new version release)
+- Delivery report artifact:
+  - `tickets/done/app-font-size-control/release-deployment-report.md`

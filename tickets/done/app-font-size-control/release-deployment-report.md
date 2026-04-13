@@ -3,7 +3,7 @@
 ## Release / Publication / Deployment Scope
 
 - Ticket: `app-font-size-control`
-- Current scope status: user verification is complete; repository finalization and cleanup are in scope, and release/version publication is explicitly not requested.
+- Current scope status: repository finalization and cleanup are complete, and release/version publication was explicitly skipped per user instruction.
 
 ## Handoff Summary
 
@@ -50,22 +50,22 @@
 - Ticket branch:
   - `codex/app-font-size-control`
 - Ticket branch commit result:
-  - `In progress`
+  - `Completed` (`8c3655b73af7dc3efca8a8fe35c7b842e24dac81` `feat(settings): add app-wide font size control`)
 - Ticket branch push result:
-  - `In progress`
+  - `Completed`
 - Finalization target remote:
   - `origin`
 - Finalization target branch:
   - `personal`
 - Target branch update result:
-  - `Pending`
+  - `Completed` via `git fetch origin --prune` on `2026-04-13`
 - Merge into target result:
-  - `Pending`
+  - `Completed` (`99876a751005aa735b4574e261c7f8d2a1957445` `Merge branch 'codex/app-font-size-control' into personal`)
 - Push target branch result:
-  - `Pending`
-- Repository finalization status: `Blocked`
+  - `Completed`
+- Repository finalization status: `Completed`
 - Blocker (if applicable):
-  - final values will be recorded after commit/push/merge execution completes
+  - `N/A`
 
 ## Release / Publication / Deployment
 
@@ -82,12 +82,12 @@
 
 - Dedicated ticket worktree path:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/app-font-size-control`
-- Worktree cleanup result: `Blocked`
-- Worktree prune result: `Blocked`
-- Local ticket branch cleanup result: `Blocked`
-- Remote branch cleanup result: `Not required`
+- Worktree cleanup result: `Completed`
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed`
+- Remote branch cleanup result: `Completed`
 - Blocker (if applicable):
-  - cleanup is deferred until repository finalization is complete
+  - `N/A`
 
 ## Release Notes Summary
 
@@ -101,8 +101,10 @@
 
 1. Completed docs sync against the final reviewed implementation.
 2. Archived the ticket to `tickets/done/app-font-size-control` after explicit user verification.
-3. Began repository finalization against `origin/personal`.
-4. Skipped release/version publication because the user explicitly requested no new version.
+3. Committed the ticket branch as `8c3655b73af7dc3efca8a8fe35c7b842e24dac81` and pushed `origin/codex/app-font-size-control`.
+4. Merged the ticket into `origin/personal` as `99876a751005aa735b4574e261c7f8d2a1957445` and pushed the updated target branch.
+5. Skipped release/version publication because the user explicitly requested no new version.
+6. Removed the dedicated ticket worktree, pruned worktree metadata, deleted the local ticket branch, and deleted the remote ticket branch.
 
 ## Environment Or Migration Notes
 
@@ -116,6 +118,8 @@
 - Latest authoritative validation result: `Pass`
 - Latest authoritative review result: `Pass`
 - User verification received: `Yes`
+- Target branch push completed: `Yes`
+- Ticket branch cleanup completed: `Yes`
 
 ## Rollback Criteria
 
@@ -125,4 +129,4 @@
 
 ## Final Status
 
-- `Finalization in progress`
+- `Completed`
