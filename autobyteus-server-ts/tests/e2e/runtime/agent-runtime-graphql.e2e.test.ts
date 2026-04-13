@@ -17,7 +17,7 @@ import { getCodexAppServerClientManager } from "../../../src/runtime-management/
 import { SkillService } from "../../../src/skills/services/skill-service.js";
 import { SkillVersioningService } from "../../../src/skills/services/skill-versioning-service.js";
 
-const DEFAULT_LMSTUDIO_TEXT_MODEL = "qwen/qwen3-30b-a3b-2507";
+const DEFAULT_LMSTUDIO_TEXT_MODEL = "qwen/qwen3.5-35b-a3b";
 const lmStudioRuntimeEnabled = process.env.RUN_LMSTUDIO_E2E === "1";
 const codexBinaryReady = spawnSync("codex", ["--version"], { stdio: "ignore" }).status === 0;
 const claudeBinaryReady = spawnSync("claude", ["--version"], { stdio: "ignore" }).status === 0;

@@ -7,7 +7,13 @@ import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { useWorkspaceStore } from '~/stores/workspace';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig';
+import { useContextFileUploadStore } from '~/stores/contextFileUploadStore';
 import { resolveRunnableModelIdentifier } from '~/utils/runLaunchPolicy';
+import { partitionContextAttachmentsForStreaming } from '~/utils/contextFiles/contextAttachmentSend';
+import {
+  buildAgentDraftContextFileOwner,
+  buildAgentFinalContextFileOwner,
+} from '~/utils/contextFiles/contextFileOwner';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig';
 import { ConnectionState } from '~/services/agentStreaming';
@@ -50,6 +56,7 @@ export const useAgentRunStore = defineStore('agentRun', {
       const agentContextsStore = useAgentContextsStore();
       const runHistoryStore = useRunHistoryStore();
       const workspaceStore = useWorkspaceStore();
+      const contextFileUploadStore = useContextFileUploadStore();
       const currentAgent = agentContextsStore.activeRun;
 
       if (!currentAgent) {
@@ -98,19 +105,10 @@ export const useAgentRunStore = defineStore('agentRun', {
 
       if (isNewAgent) {
         state.conversation.llmModelIdentifier = config.llmModelIdentifier;
-
       }
       const messageContent = currentAgent.requirement;
-      const messageContextPaths = [...currentAgent.contextFilePaths];
-
-      // Add the user message to the conversation
-      currentAgent.state.conversation.messages.push({
-        type: 'user',
-        text: messageContent,
-        timestamp: new Date(),
-        contextFilePaths: messageContextPaths
-      });
-      currentAgent.state.conversation.updatedAt = new Date().toISOString();
+      const draftAttachments = [...currentAgent.contextFilePaths];
+      const draftOwner = buildAgentDraftContextFileOwner(runId);
 
       currentAgent.isSending = true;
 
@@ -180,12 +178,25 @@ export const useAgentRunStore = defineStore('agentRun', {
         runHistoryStore.markRunAsActive(finalRunId);
         runHistoryStore.refreshTreeQuietly();
 
+        const finalizedAttachments = await contextFileUploadStore.finalizeDraftAttachments({
+          draftOwner,
+          finalOwner: buildAgentFinalContextFileOwner(finalRunId),
+          attachments: draftAttachments,
+        });
+
         const finalAgent = agentContextsStore.getRun(finalRunId)!;
+        finalAgent.state.conversation.messages.push({
+          type: 'user',
+          text: messageContent,
+          timestamp: new Date(),
+          contextFilePaths: finalizedAttachments,
+        });
+        finalAgent.state.conversation.updatedAt = new Date().toISOString();
         finalAgent.requirement = '';
         finalAgent.contextFilePaths = [];
 
         const service = await this.ensureAgentStreamConnected(finalRunId);
-        const streamPayload = partitionContextPaths(messageContextPaths);
+        const streamPayload = partitionContextAttachmentsForStreaming(finalizedAttachments);
         service.sendMessage(messageContent, streamPayload.contextFilePaths, streamPayload.imageUrls);
       } catch (error: any) {
         console.error('Error sending user input:', error);
@@ -417,23 +428,3 @@ export const useAgentRunStore = defineStore('agentRun', {
 
   },
 });
-
-const partitionContextPaths = (
-  contextPaths: { path: string; type: string }[],
-): { contextFilePaths: string[]; imageUrls: string[] } => {
-  const contextFilePaths: string[] = [];
-  const imageUrls: string[] = [];
-
-  for (const contextPath of contextPaths) {
-    if (!contextPath.path) {
-      continue;
-    }
-    if (contextPath.type.toUpperCase() === 'IMAGE') {
-      imageUrls.push(contextPath.path);
-      continue;
-    }
-    contextFilePaths.push(contextPath.path);
-  }
-
-  return { contextFilePaths, imageUrls };
-};

@@ -18,6 +18,7 @@ const {
   teamContextsStoreMock,
   runHistoryStoreMock,
   teamDefinitionStoreMock,
+  contextFileUploadStoreMock,
 } = vi.hoisted(() => ({
   mockConnect: vi.fn(),
   mockDisconnect: vi.fn(),
@@ -42,6 +43,9 @@ const {
   },
   teamDefinitionStoreMock: {
     getAgentTeamDefinitionById: vi.fn(),
+  },
+  contextFileUploadStoreMock: {
+    finalizeDraftAttachments: vi.fn(async ({ attachments }: { attachments: any[] }) => attachments),
   },
 }));
 
@@ -98,6 +102,10 @@ vi.mock('~/stores/agentTeamDefinitionStore', () => ({
   useAgentTeamDefinitionStore: () => teamDefinitionStoreMock,
 }));
 
+vi.mock('~/stores/contextFileUploadStore', () => ({
+  useContextFileUploadStore: () => contextFileUploadStoreMock,
+}));
+
 describe('agentTeamRunStore', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
@@ -112,6 +120,7 @@ describe('agentTeamRunStore', () => {
     teamContextsStoreMock.focusedMemberContext = null;
     teamContextsStoreMock.getTeamContextById.mockReset();
     runHistoryStoreMock.teamResumeConfigByTeamRunId = {};
+    contextFileUploadStoreMock.finalizeDraftAttachments.mockImplementation(async ({ attachments }: { attachments: any[] }) => attachments);
   });
 
   it('connects team stream using bound node team WS endpoint', () => {
