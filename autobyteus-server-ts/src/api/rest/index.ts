@@ -5,6 +5,7 @@ import { registerMediaRoutes } from "./media.js";
 import { registerUploadRoutes } from "./upload-file.js";
 import { registerWorkspaceRoutes } from "./workspaces.js";
 import { registerDefaultChannelIngressRoutes } from "./channel-ingress.js";
+import { registerApplicationBundleRoutes } from "./application-bundles.js";
 
 export async function registerRestRoutes(app: FastifyInstance): Promise<void> {
   await registerHealthRoutes(app);
@@ -13,4 +14,5 @@ export async function registerRestRoutes(app: FastifyInstance): Promise<void> {
   await registerUploadRoutes(app);
   await registerWorkspaceRoutes(app);
   await registerDefaultChannelIngressRoutes(app);
+  await registerApplicationBundleRoutes(app);
 }

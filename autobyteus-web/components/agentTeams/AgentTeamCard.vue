@@ -15,13 +15,24 @@
       <div class="min-w-0">
         <h3 class="truncate text-xl font-semibold text-slate-900">{{ teamDef.name }}</h3>
         <p class="mt-1 line-clamp-2 text-sm text-slate-600">{{ descriptionText }}</p>
-        <span class="mt-2 inline-flex items-center rounded-md bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">
-          {{ teamDef.category || $t('agentTeams.components.agentTeams.AgentTeamCard.uncategorized') }}
-        </span>
+        <div class="mt-2 flex flex-wrap items-center gap-2">
+          <span class="inline-flex items-center rounded-md bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">
+            {{ teamDef.category || $t('agentTeams.components.agentTeams.AgentTeamCard.uncategorized') }}
+          </span>
+          <span
+            v-if="ownershipBadge"
+            class="inline-flex items-center rounded-md px-2 py-0.5 text-xs font-semibold"
+            :class="isApplicationOwned ? 'bg-blue-50 text-blue-700' : 'bg-slate-100 text-slate-700'"
+          >
+            {{ ownershipBadge }}
+          </span>
+        </div>
+        <p v-if="applicationLabel" class="mt-2 text-sm text-slate-500">Application: {{ applicationLabel }}</p>
       </div>
 
       <div class="flex w-full flex-col gap-2 sm:w-auto sm:items-end">
         <button
+          v-if="canSync"
           @click.stop="$emit('sync-team', teamDef)"
           class="inline-flex min-w-[104px] justify-center rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
         >
@@ -89,6 +100,7 @@
 import { computed, ref, toRefs, watch } from 'vue';
 import { useLocalization } from '~/composables/useLocalization';
 import type { AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore';
+import { formatApplicationOwnershipLabel } from '~/utils/definitionOwnership';
 
 const props = defineProps<{
   teamDef: AgentTeamDefinition;
@@ -117,6 +129,13 @@ watch(avatarUrl, () => {
 });
 
 const descriptionText = computed(() => teamDef.value.description?.trim() || t('agentTeams.components.agentTeams.AgentTeamCard.noDescription'));
+const ownershipScope = computed(() => teamDef.value.ownershipScope ?? 'SHARED');
+const isApplicationOwned = computed(() => ownershipScope.value === 'APPLICATION_OWNED');
+const ownershipBadge = computed(() => (isApplicationOwned.value ? 'Application-owned' : ''));
+const applicationLabel = computed(() =>
+  isApplicationOwned.value ? formatApplicationOwnershipLabel(teamDef.value) : '',
+);
+const canSync = computed(() => ownershipScope.value === 'SHARED');
 
 const avatarInitials = computed(() => {
   const raw = teamDef.value.name?.trim() ?? '';

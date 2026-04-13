@@ -23,6 +23,7 @@ export type AgentPackageSummary = {
   sharedAgentCount: number;
   teamLocalAgentCount: number;
   agentTeamCount: number;
+  applicationCount: number;
 };
 
 export type AgentPackage = AgentPackageSummary & {

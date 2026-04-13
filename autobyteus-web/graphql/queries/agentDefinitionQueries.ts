@@ -16,13 +16,21 @@ export const GetAgentDefinitions = gql`
       llmResponseProcessorNames
       systemPromptProcessorNames
       toolExecutionResultProcessorNames
-
       toolInvocationPreprocessorNames
       lifecycleProcessorNames
       skillNames
       ownershipScope
       ownerTeamId
       ownerTeamName
+      ownerApplicationId
+      ownerApplicationName
+      ownerPackageId
+      ownerLocalApplicationId
+      defaultLaunchConfig {
+        llmModelIdentifier
+        runtimeKind
+        llmConfig
+      }
     }
   }
 `

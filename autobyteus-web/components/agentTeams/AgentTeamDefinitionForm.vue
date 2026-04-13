@@ -99,6 +99,13 @@
         </div>
       </section>
 
+      <div
+        v-if="isApplicationOwnedTeam"
+        class="rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800"
+      >
+        This team is owned by an application bundle. Member selection is limited to agents and teams from the same owning application as UI guidance; backend validation remains authoritative.
+      </div>
+
       <section class="grid grid-cols-1 gap-4 xl:grid-cols-[18rem_minmax(0,1fr)_16rem]">
         <AgentTeamLibraryPanel
           :search="librarySearch"
@@ -288,8 +295,28 @@ const avatarInitials = computed(() => {
 });
 
 const currentTeamDefinitionId = computed(() => initialData.value?.id ?? null);
-const agentDefinitions = computed(() => agentDefStore.sharedAgentDefinitions || []);
-const teamDefinitions = computed(() => agentTeamDefStore.agentTeamDefinitions || []);
+const currentOwnershipScope = computed(() => initialData.value?.ownershipScope ?? 'SHARED');
+const currentOwnerApplicationId = computed(() => initialData.value?.ownerApplicationId ?? null);
+const isApplicationOwnedTeam = computed(() => (
+  currentOwnershipScope.value === 'APPLICATION_OWNED'
+  && Boolean(currentOwnerApplicationId.value)
+));
+const agentDefinitions = computed(() => {
+  if (!isApplicationOwnedTeam.value || !currentOwnerApplicationId.value) {
+    return agentDefStore.sharedAgentDefinitions || [];
+  }
+  return agentDefStore.getApplicationOwnedAgentDefinitionsByOwnerApplicationId(
+    currentOwnerApplicationId.value,
+  );
+});
+const teamDefinitions = computed(() => {
+  if (!isApplicationOwnedTeam.value || !currentOwnerApplicationId.value) {
+    return agentTeamDefStore.sharedAgentTeamDefinitions || [];
+  }
+  return agentTeamDefStore.getApplicationOwnedTeamDefinitionsByOwnerApplicationId(
+    currentOwnerApplicationId.value,
+  );
+});
 
 const nameValid = computed(() => Boolean(formData.name.trim()));
 const descriptionValid = computed(() => Boolean(formData.description.trim()));

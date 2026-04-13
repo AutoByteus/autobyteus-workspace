@@ -8,7 +8,11 @@ import {
   Resolver,
   registerEnumType,
 } from "type-graphql";
-import { AgentMemberRefScope, NodeType } from "../../../agent-team-definition/domain/enums.js";
+import {
+  AgentMemberRefScope,
+  AgentTeamDefinitionOwnershipScope,
+  NodeType,
+} from "../../../agent-team-definition/domain/enums.js";
 import {
   AgentTeamDefinition as DomainAgentTeamDefinition,
   AgentTeamDefinitionUpdate,
@@ -19,6 +23,9 @@ import { AgentTeamDefinitionConverter } from "../converters/agent-team-definitio
 
 registerEnumType(NodeType, { name: "TeamMemberType" });
 registerEnumType(AgentMemberRefScope, { name: "AgentMemberRefScope" });
+registerEnumType(AgentTeamDefinitionOwnershipScope, {
+  name: "AgentTeamDefinitionOwnershipScope",
+});
 
 const logger = {
   error: (...args: unknown[]) => console.error(...args),
@@ -29,12 +36,18 @@ const toDomainRefType = (value: NodeType): "agent" | "agent_team" =>
 
 const toDomainRefScope = (
   value: AgentMemberRefScope | null | undefined,
-): "shared" | "team_local" | null =>
-  value === AgentMemberRefScope.TEAM_LOCAL
-    ? "team_local"
-    : value === AgentMemberRefScope.SHARED
-      ? "shared"
-      : null;
+): "shared" | "team_local" | "application_owned" | null => {
+  switch (value) {
+    case AgentMemberRefScope.TEAM_LOCAL:
+      return "team_local";
+    case AgentMemberRefScope.APPLICATION_OWNED:
+      return "application_owned";
+    case AgentMemberRefScope.SHARED:
+      return "shared";
+    default:
+      return null;
+  }
+};
 
 @ObjectType()
 export class TeamMember {
@@ -76,6 +89,21 @@ export class AgentTeamDefinition {
 
   @Field(() => String, { nullable: true })
   avatarUrl?: string | null;
+
+  @Field(() => AgentTeamDefinitionOwnershipScope)
+  ownershipScope!: AgentTeamDefinitionOwnershipScope;
+
+  @Field(() => String, { nullable: true })
+  ownerApplicationId?: string | null;
+
+  @Field(() => String, { nullable: true })
+  ownerApplicationName?: string | null;
+
+  @Field(() => String, { nullable: true })
+  ownerPackageId?: string | null;
+
+  @Field(() => String, { nullable: true })
+  ownerLocalApplicationId?: string | null;
 }
 
 @InputType()

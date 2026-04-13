@@ -34,6 +34,7 @@ import { getWorkspaceManager, type WorkspaceManager } from "../../../workspaces/
 import { AgentCreationError } from "../../errors.js";
 import { AgentRunConfig } from "../../domain/agent-run-config.js";
 import { AgentRunContext, type RuntimeAgentRunContext } from "../../domain/agent-run-context.js";
+import { APPLICATION_SESSION_CONTEXT_KEY } from "../../../application-sessions/utils/application-producer-provenance.js";
 import {
   AutoByteusAgentRunBackend,
   type AutoByteusAgentLike,
@@ -150,6 +151,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       skillAccessMode: built.resolvedRunConfig.skillAccessMode,
       runtimeKind: built.resolvedRunConfig.runtimeKind,
       teamContext: built.resolvedRunConfig.teamContext,
+      applicationSessionContext: built.resolvedRunConfig.applicationSessionContext,
     });
     const createAgentWithId = (
       this.agentFactory as AgentFactoryLike & {
@@ -206,6 +208,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
           skillAccessMode: context.config.skillAccessMode,
           runtimeKind: context.config.runtimeKind,
           teamContext: context.config.teamContext,
+          applicationSessionContext: context.config.applicationSessionContext,
         }),
         runtimeContext: (agent as AutoByteusRuntimeAgentLike).context ?? context.runtimeContext,
       }),
@@ -406,6 +409,9 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       workspace_name: workspaceInstance?.getName?.() ?? workspaceInstance?.workspaceId ?? null,
       workspace_is_temp:
         workspaceInstance?.workspaceId === TempWorkspace.TEMP_WORKSPACE_ID,
+      ...(options.applicationSessionContext
+        ? { [APPLICATION_SESSION_CONTEXT_KEY]: options.applicationSessionContext }
+        : {}),
     };
 
     return {
@@ -420,6 +426,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
         runtimeKind:
           runtimeKindFromString(options.runtimeKind, RuntimeKind.AUTOBYTEUS) ??
           RuntimeKind.AUTOBYTEUS,
+        applicationSessionContext: options.applicationSessionContext ?? null,
       }),
       agentConfig: new AgentConfig(
         agentDef.name,

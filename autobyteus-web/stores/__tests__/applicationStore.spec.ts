@@ -1,86 +1,127 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { setActivePinia, createPinia } from 'pinia';
-import { mockNuxtImport } from '@nuxt/test-utils/runtime';
 
-const { apolloClientMock, mockRuntimeConfig } = vi.hoisted(() => ({
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { createPinia, setActivePinia } from 'pinia'
+import { mockNuxtImport } from '@nuxt/test-utils/runtime'
+
+const {
+  apolloClientMock,
+  backendReadyMock,
+  mockRuntimeConfig,
+} = vi.hoisted(() => ({
   apolloClientMock: {
     query: vi.fn(),
-    mutate: vi.fn(),
+  },
+  backendReadyMock: {
+    waitForBoundBackendReady: vi.fn(),
+    lastReadyError: null as string | null,
   },
   mockRuntimeConfig: {
     public: {
       enableApplications: true,
     },
   },
-}));
+}))
 
 vi.mock('~/utils/apolloClient', () => ({
   getApolloClient: vi.fn(() => apolloClientMock),
-}));
+}))
 
 vi.mock('~/graphql/queries/applicationQueries', () => ({
   ListApplications: {},
-}));
+  GetApplicationById: {},
+}))
 
-vi.mock('~/graphql/mutations/applicationMutations', () => ({
-  RunApplication: {},
-}));
+vi.mock('~/stores/windowNodeContextStore', () => ({
+  useWindowNodeContextStore: () => backendReadyMock,
+}))
 
-mockNuxtImport('useRuntimeConfig', () => () => mockRuntimeConfig);
+mockNuxtImport('useRuntimeConfig', () => () => mockRuntimeConfig)
 
-// Now import the store and other things
-import { useApplicationStore } from '../applicationStore';
+import { useApplicationStore } from '../applicationStore'
 
 describe('applicationStore', () => {
   beforeEach(() => {
-    setActivePinia(createPinia());
-    mockRuntimeConfig.public.enableApplications = true;
-    vi.clearAllMocks();
-  });
+    setActivePinia(createPinia())
+    mockRuntimeConfig.public.enableApplications = true
+    backendReadyMock.lastReadyError = null
+    backendReadyMock.waitForBoundBackendReady.mockResolvedValue(true)
+    vi.clearAllMocks()
+  })
 
-  describe('fetchApplications', () => {
-    it('fetches applications from the API', async () => {
-      const store = useApplicationStore();
-      const mockData = { data: { listApplications: [{ id: 'app1', name: 'App 1' }] } };
-      apolloClientMock.query.mockResolvedValue(mockData);
+  it('fetches and sorts applications from the API', async () => {
+    const store = useApplicationStore()
+    apolloClientMock.query.mockResolvedValue({
+      data: {
+        listApplications: [
+          { id: 'b', name: 'Beta' },
+          { id: 'a', name: 'Alpha' },
+        ],
+      },
+    })
 
-      await store.fetchApplications();
+    const result = await store.fetchApplications()
 
-      expect(apolloClientMock.query).toHaveBeenCalledOnce();
-      expect(store.applications).toEqual(mockData.data.listApplications);
-      expect(store.loading).toBe(false);
-    });
+    expect(backendReadyMock.waitForBoundBackendReady).toHaveBeenCalledOnce()
+    expect(apolloClientMock.query).toHaveBeenCalledOnce()
+    expect(result.map((entry: any) => entry.id)).toEqual(['a', 'b'])
+    expect(store.applications.map((entry: any) => entry.id)).toEqual(['a', 'b'])
+    expect(store.hasFetched).toBe(true)
+    expect(store.loading).toBe(false)
+  })
 
-    it('does not re-fetch when applications are already loaded', async () => {
-      const store = useApplicationStore();
-      store.applications = [{ id: 'app1', name: 'App 1' }] as any;
+  it('returns cached applications when already fetched and force is false', async () => {
+    const store = useApplicationStore()
+    store.applications = [{ id: 'app-1', name: 'App 1' }] as any
+    store.hasFetched = true
 
-      await store.fetchApplications();
+    const result = await store.fetchApplications()
 
-      expect(apolloClientMock.query).not.toHaveBeenCalled();
-      expect(store.loading).toBe(false);
-    });
-  });
+    expect(result).toEqual(store.applications)
+    expect(backendReadyMock.waitForBoundBackendReady).not.toHaveBeenCalled()
+    expect(apolloClientMock.query).not.toHaveBeenCalled()
+  })
 
-  describe('runApplication', () => {
-    it('throws when mutation fails', async () => {
-      const store = useApplicationStore();
-      apolloClientMock.mutate.mockRejectedValue(new Error('mutation failed'));
+  it('fetches one application by id and upserts it into the catalog', async () => {
+    const store = useApplicationStore()
+    store.applications = [{ id: 'app-1', name: 'App 1' }] as any
+    apolloClientMock.query.mockResolvedValue({
+      data: {
+        application: {
+          id: 'app-2',
+          name: 'App 2',
+          entryHtmlAssetPath: '/application-bundles/app-2/assets/ui/index.html',
+          localApplicationId: 'app-2',
+          packageId: 'pkg',
+          writable: true,
+          runtimeTarget: {
+            kind: 'AGENT_TEAM',
+            localId: 'team',
+            definitionId: 'team-id',
+          },
+        },
+      },
+    })
 
-      await expect(store.runApplication('app1', {})).rejects.toThrow('mutation failed');
-      expect(apolloClientMock.mutate).toHaveBeenCalledOnce();
-    });
+    const result = await store.fetchApplicationById('app-2', true)
 
-    it('runs application when mutation succeeds', async () => {
-      const store = useApplicationStore();
-      const mockData = { data: { runApplication: { id: 'run1' } } };
-      apolloClientMock.mutate.mockResolvedValue(mockData);
+    expect(backendReadyMock.waitForBoundBackendReady).toHaveBeenCalledOnce()
+    expect(apolloClientMock.query).toHaveBeenCalledOnce()
+    expect(result?.id).toBe('app-2')
+    expect(store.getApplicationById('app-2')?.name).toBe('App 2')
+    expect(store.applications.map((entry: any) => entry.id)).toEqual(['app-1', 'app-2'])
+  })
 
-      const result = await store.runApplication('app1', { foo: 'bar' });
+  it('clears catalog state when applications are disabled', async () => {
+    const store = useApplicationStore()
+    store.applications = [{ id: 'app-1', name: 'App 1' }] as any
+    store.hasFetched = true
+    mockRuntimeConfig.public.enableApplications = false
 
-      expect(apolloClientMock.mutate).toHaveBeenCalled();
-      expect(result).toEqual(mockData.data.runApplication);
-      expect(store.lastRunResult).toEqual(mockData.data.runApplication);
-    });
-  });
-});
+    const result = await store.fetchApplications()
+
+    expect(result).toEqual([])
+    expect(store.applications).toEqual([])
+    expect(store.hasFetched).toBe(false)
+    expect(apolloClientMock.query).not.toHaveBeenCalled()
+  })
+})

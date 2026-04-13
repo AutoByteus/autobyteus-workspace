@@ -2,6 +2,7 @@ import { buildSchema } from "type-graphql";
 import { HealthResolver } from "./types/health.js";
 import { ServerSettingsResolver } from "./types/server-settings.js";
 import { ApplicationResolver } from "./types/application.js";
+import { ApplicationSessionResolver } from "./types/application-session.js";
 import { SkillResolver } from "./types/skills.js";
 import { AgentRunResolver } from "./types/agent-run.js";
 import { AgentTeamRunResolver } from "./types/agent-team-run.js";
@@ -32,6 +33,7 @@ export async function buildGraphqlSchema() {
       HealthResolver,
       ServerSettingsResolver,
       ApplicationResolver,
+      ApplicationSessionResolver,
       SkillResolver,
       AgentRunResolver,
       AgentTeamRunResolver,

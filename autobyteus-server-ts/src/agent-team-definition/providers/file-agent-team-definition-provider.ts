@@ -1,35 +1,39 @@
 import { promises as fs } from "node:fs";
-import { constants as fsConstants } from "node:fs";
 import type { Dirent } from "node:fs";
 import path from "node:path";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { readJsonFile, writeJsonFile, writeRawFile } from "../../persistence/file/store-utils.js";
 import { AgentTeamDefinition, TeamMember, type TeamMemberRefScope } from "../domain/models.js";
 import { TeamMdParseError, parseTeamMd, serializeTeamMd } from "../utils/team-md-parser.js";
+import { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
+import {
+  buildCanonicalApplicationOwnedAgentId,
+  buildCanonicalApplicationOwnedTeamId,
+  parseCanonicalApplicationOwnedAgentId,
+  parseCanonicalApplicationOwnedTeamId,
+} from "../../application-bundles/utils/application-bundle-identity.js";
+import {
+  ApplicationOwnedTeamConfigParseError,
+  buildApplicationOwnedTeamWriteContent,
+  readApplicationOwnedTeamDefinitionFromSource,
+} from "./application-owned-team-source.js";
+import {
+  buildTeamConfigRecord,
+  defaultTeamConfig,
+  normalizeMembers,
+  type TeamConfigRecord,
+  TeamConfigParseError,
+} from "./team-definition-config.js";
+import {
+  ensureWritableTeamSourcePaths,
+  findTeamSourcePaths,
+  pathExists,
+  type ResolvedTeamSourcePaths,
+} from "./team-definition-source-paths.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
 };
-
-type TeamConfigMember = {
-  memberName: string;
-  ref: string;
-  refType: "agent" | "agent_team";
-  refScope?: TeamMemberRefScope;
-};
-
-type TeamConfigRecord = {
-  coordinatorMemberName?: string;
-  members?: TeamConfigMember[];
-  avatarUrl?: string | null;
-};
-
-export class TeamConfigParseError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "TeamConfigParseError";
-  }
-}
 
 const slugify = (value: string): string => {
   const normalized = value
@@ -42,61 +46,9 @@ const slugify = (value: string): string => {
   return normalized || "team";
 };
 
-const normalizeRefScope = (value: unknown): TeamMemberRefScope | null => {
-  if (value === "shared" || value === "team_local") {
-    return value;
-  }
-  return null;
-};
-
-const normalizeMembers = (value: unknown): TeamConfigMember[] => {
-  if (!Array.isArray(value)) {
-    return [];
-  }
-  const members: TeamConfigMember[] = [];
-  value.forEach((entry, index) => {
-    if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
-      throw new TeamConfigParseError(`members[${index}] must be an object.`);
-    }
-    const candidate = entry as Record<string, unknown>;
-    const memberName = typeof candidate.memberName === "string" ? candidate.memberName : "";
-    const ref = typeof candidate.ref === "string" ? candidate.ref : "";
-    const refType = candidate.refType === "agent_team" ? "agent_team" : candidate.refType === "agent" ? "agent" : null;
-    const refScope = normalizeRefScope(candidate.refScope);
-    if (!memberName || !ref || !refType) {
-      throw new TeamConfigParseError(
-        `members[${index}] must include non-empty memberName, ref, and refType.`,
-      );
-    }
-    if (refType === "agent" && !refScope) {
-      throw new TeamConfigParseError(
-        `members[${index}] with refType 'agent' must include refScope 'shared' or 'team_local'.`,
-      );
-    }
-    if (refType === "agent_team" && candidate.refScope !== undefined && candidate.refScope !== null) {
-      throw new TeamConfigParseError(
-        `members[${index}] with refType 'agent_team' must not include refScope.`,
-      );
-    }
-    members.push({
-      memberName,
-      ref,
-      refType,
-      ...(refType === "agent" ? { refScope: refScope ?? undefined } : {}),
-    });
-  });
-  return members;
-};
-
-function defaultTeamConfig(): TeamConfigRecord {
-  return {
-    coordinatorMemberName: "",
-    members: [],
-    avatarUrl: null,
-  };
-}
-
 export class FileAgentTeamDefinitionProvider {
+  private readonly applicationBundleService = ApplicationBundleService.getInstance();
+
   private getTeamsDir(): string {
     return appConfigProvider.config.getAgentTeamsDir();
   }
@@ -113,7 +65,7 @@ export class FileAgentTeamDefinitionProvider {
     return roots;
   }
 
-  private async readTeamFromRoot(teamRoot: string, teamId: string): Promise<AgentTeamDefinition | null> {
+  private async readSharedTeamFromRoot(teamRoot: string, teamId: string): Promise<AgentTeamDefinition | null> {
     const mdPath = path.join(teamRoot, teamId, "team.md");
     const configPath = path.join(teamRoot, teamId, "team-config.json");
 
@@ -141,6 +93,7 @@ export class FileAgentTeamDefinitionProvider {
               refScope: member.refScope ?? null,
             }),
         ),
+        ownershipScope: "shared",
       });
     } catch (error) {
       if (error instanceof TeamMdParseError || error instanceof TeamConfigParseError) {
@@ -153,73 +106,31 @@ export class FileAgentTeamDefinitionProvider {
     }
   }
 
-  private async exists(filePath: string): Promise<boolean> {
-    try {
-      await fs.access(filePath);
-      return true;
-    } catch {
-      return false;
-    }
-  }
-
-  private async findTeamSourcePaths(teamId: string): Promise<{
-    teamDir: string;
-    mdPath: string;
-    configPath: string;
-    rootPath: string;
-  } | null> {
-    for (const rootPath of this.getReadTeamRoots()) {
-      const teamDir = path.join(rootPath, teamId);
-      const mdPath = path.join(teamDir, "team.md");
-      const configPath = path.join(teamDir, "team-config.json");
-      try {
-        await fs.access(mdPath);
-        return { teamDir, mdPath, configPath, rootPath };
-      } catch {
-        continue;
-      }
-    }
-    return null;
-  }
-
-  private async isWritable(filePath: string): Promise<boolean> {
-    try {
-      await fs.access(filePath, fsConstants.W_OK);
-      return true;
-    } catch {
-      return false;
-    }
-  }
-
-  private async ensureWritableSourcePaths(
-    sourcePaths: { teamDir: string; mdPath: string; configPath: string; rootPath: string },
-    teamId: string,
-  ): Promise<void> {
-    if (!(await this.isWritable(sourcePaths.teamDir))) {
-      throw new Error(
-        `Team definition '${teamId}' is read-only at source path '${sourcePaths.rootPath}'.`,
-      );
-    }
-    if ((await this.exists(sourcePaths.mdPath)) && !(await this.isWritable(sourcePaths.mdPath))) {
-      throw new Error(
-        `Team definition '${teamId}' is read-only at source path '${sourcePaths.rootPath}'.`,
-      );
-    }
-    if (
-      (await this.exists(sourcePaths.configPath)) &&
-      !(await this.isWritable(sourcePaths.configPath))
-    ) {
-      throw new Error(
-        `Team definition '${teamId}' is read-only at source path '${sourcePaths.rootPath}'.`,
-      );
-    }
+  private async readApplicationOwnedTeamFromSource(
+    sourcePaths: Extract<ResolvedTeamSourcePaths, { kind: "application_owned" }>,
+  ): Promise<AgentTeamDefinition | null> {
+    return readApplicationOwnedTeamDefinitionFromSource({
+      sourcePaths,
+      canonicalizeAgentRef: (localAgentId) =>
+        buildCanonicalApplicationOwnedAgentId(
+          sourcePaths.packageId,
+          sourcePaths.localApplicationId,
+          localAgentId,
+        ),
+      canonicalizeTeamRef: (localTeamId) =>
+        buildCanonicalApplicationOwnedTeamId(
+          sourcePaths.packageId,
+          sourcePaths.localApplicationId,
+          localTeamId,
+        ),
+    });
   }
 
   private async nextTeamId(name: string): Promise<string> {
     const base = slugify(name);
     let candidate = base;
     let index = 2;
-    while (await this.exists(this.getTeamDir(candidate))) {
+    while (await pathExists(this.getTeamDir(candidate))) {
       candidate = `${base}-${index}`;
       index += 1;
     }
@@ -227,6 +138,10 @@ export class FileAgentTeamDefinitionProvider {
   }
 
   async create(domainObj: AgentTeamDefinition): Promise<AgentTeamDefinition> {
+    if ((domainObj.ownershipScope ?? "shared") !== "shared") {
+      throw new Error("Application-owned team definitions cannot be created from the shared team provider.");
+    }
+
     const teamId = domainObj.id ?? (await this.nextTeamId(domainObj.name));
     const teamDir = this.getTeamDir(teamId);
     await fs.mkdir(teamDir, { recursive: true });
@@ -241,17 +156,7 @@ export class FileAgentTeamDefinitionProvider {
     );
     await writeRawFile(appConfigProvider.config.getTeamMdPath(teamId), mdContent);
 
-    const configRecord: TeamConfigRecord = {
-      coordinatorMemberName: domainObj.coordinatorMemberName,
-      avatarUrl: domainObj.avatarUrl ?? null,
-      members: domainObj.nodes.map((member) => ({
-        memberName: member.memberName,
-        ref: member.ref,
-        refType: member.refType,
-        ...(member.refType === "agent" ? { refScope: member.refScope ?? "shared" } : {}),
-      })),
-    };
-    await writeJsonFile(appConfigProvider.config.getTeamConfigPath(teamId), configRecord);
+    await writeJsonFile(appConfigProvider.config.getTeamConfigPath(teamId), buildTeamConfigRecord(domainObj));
 
     const created = await this.getById(teamId);
     if (!created) {
@@ -264,8 +169,21 @@ export class FileAgentTeamDefinitionProvider {
     if (id.startsWith("_")) {
       return null;
     }
+
+    if (parseCanonicalApplicationOwnedTeamId(id)) {
+      const sourcePaths = await findTeamSourcePaths(
+        id,
+        this.getReadTeamRoots(),
+        this.applicationBundleService,
+      );
+      if (!sourcePaths || sourcePaths.kind !== "application_owned") {
+        return null;
+      }
+      return this.readApplicationOwnedTeamFromSource(sourcePaths);
+    }
+
     for (const rootPath of this.getReadTeamRoots()) {
-      const definition = await this.readTeamFromRoot(rootPath, id);
+      const definition = await this.readSharedTeamFromRoot(rootPath, id);
       if (definition) {
         return definition;
       }
@@ -290,14 +208,11 @@ export class FileAgentTeamDefinitionProvider {
           continue;
         }
         const teamId = entry.name;
-        if (teamId.startsWith("_")) {
-          continue;
-        }
-        if (seenIds.has(teamId)) {
+        if (teamId.startsWith("_") || seenIds.has(teamId)) {
           continue;
         }
         try {
-          const definition = await this.readTeamFromRoot(rootPath, teamId);
+          const definition = await this.readSharedTeamFromRoot(rootPath, teamId);
           if (definition) {
             definitions.push(definition);
             seenIds.add(teamId);
@@ -309,6 +224,55 @@ export class FileAgentTeamDefinitionProvider {
           }
           throw error;
         }
+      }
+    }
+
+    const applicationOwnedSources = await this.applicationBundleService.listApplicationOwnedTeamSources();
+    for (const source of applicationOwnedSources) {
+      if (seenIds.has(source.definitionId)) {
+        continue;
+      }
+      try {
+        const teamDir = path.join(source.applicationRootPath, "agent-teams", source.localDefinitionId);
+        const definition = await readApplicationOwnedTeamDefinitionFromSource({
+          sourcePaths: {
+            definitionId: source.definitionId,
+            teamDir,
+            mdPath: path.join(teamDir, "team.md"),
+            configPath: path.join(teamDir, "team-config.json"),
+            rootPath: source.applicationRootPath,
+            applicationId: source.applicationId,
+            applicationName: source.applicationName,
+            packageId: source.packageId,
+            localApplicationId: source.localApplicationId,
+            localTeamId: source.localDefinitionId,
+          },
+          canonicalizeAgentRef: (localAgentId) =>
+            buildCanonicalApplicationOwnedAgentId(
+              source.packageId,
+              source.localApplicationId,
+              localAgentId,
+            ),
+          canonicalizeTeamRef: (localTeamId) =>
+            buildCanonicalApplicationOwnedTeamId(
+              source.packageId,
+              source.localApplicationId,
+              localTeamId,
+            ),
+        });
+        if (definition) {
+          definitions.push(definition);
+          seenIds.add(source.definitionId);
+        }
+      } catch (error) {
+        if (
+          error instanceof TeamMdParseError ||
+          error instanceof ApplicationOwnedTeamConfigParseError
+        ) {
+          logger.warn(`Skipping application-owned team '${source.definitionId}' due to parse error: ${(error as Error).message}`);
+          continue;
+        }
+        throw error;
       }
     }
 
@@ -332,14 +296,11 @@ export class FileAgentTeamDefinitionProvider {
           continue;
         }
         const teamId = entry.name;
-        if (!teamId.startsWith("_")) {
-          continue;
-        }
-        if (seenIds.has(teamId)) {
+        if (!teamId.startsWith("_") || seenIds.has(teamId)) {
           continue;
         }
         try {
-          const definition = await this.readTeamFromRoot(rootPath, teamId);
+          const definition = await this.readSharedTeamFromRoot(rootPath, teamId);
           if (definition) {
             definitions.push(definition);
             seenIds.add(teamId);
@@ -362,12 +323,50 @@ export class FileAgentTeamDefinitionProvider {
       throw new Error("Agent team definition id is required for update.");
     }
 
-    const teamId = domainObj.id;
-    const sourcePaths = await this.findTeamSourcePaths(teamId);
+    const sourcePaths = await findTeamSourcePaths(
+      domainObj.id,
+      this.getReadTeamRoots(),
+      this.applicationBundleService,
+    );
     if (!sourcePaths) {
-      throw new Error(`Team definition '${teamId}' does not exist in any registered source.`);
+      throw new Error(`Team definition '${domainObj.id}' does not exist in any registered source.`);
     }
-    await this.ensureWritableSourcePaths(sourcePaths, teamId);
+    await ensureWritableTeamSourcePaths(sourcePaths, domainObj.id);
+
+    if (sourcePaths.kind === "application_owned") {
+      const content = buildApplicationOwnedTeamWriteContent(domainObj, {
+        localizeAgentRef: (canonicalAgentId) => {
+          const parsed = parseCanonicalApplicationOwnedAgentId(canonicalAgentId);
+          if (
+            !parsed ||
+            parsed.packageId !== sourcePaths.packageId ||
+            parsed.localApplicationId !== sourcePaths.localApplicationId
+          ) {
+            throw new Error(`Application-owned team '${domainObj.id}' cannot reference agent '${canonicalAgentId}' outside its owning bundle.`);
+          }
+          return parsed.localAgentId;
+        },
+        localizeTeamRef: (canonicalTeamId) => {
+          const parsed = parseCanonicalApplicationOwnedTeamId(canonicalTeamId);
+          if (
+            !parsed ||
+            parsed.packageId !== sourcePaths.packageId ||
+            parsed.localApplicationId !== sourcePaths.localApplicationId
+          ) {
+            throw new Error(`Application-owned team '${domainObj.id}' cannot reference team '${canonicalTeamId}' outside its owning bundle.`);
+          }
+          return parsed.localTeamId;
+        },
+      });
+
+      await writeRawFile(sourcePaths.mdPath, content.mdContent);
+      await writeJsonFile(sourcePaths.configPath, content.configRecord);
+      const updated = await this.getById(domainObj.id);
+      if (!updated) {
+        throw new Error(`Failed to update team definition '${domainObj.id}'.`);
+      }
+      return updated;
+    }
 
     const mdContent = serializeTeamMd(
       {
@@ -379,31 +378,28 @@ export class FileAgentTeamDefinitionProvider {
     );
     await writeRawFile(sourcePaths.mdPath, mdContent);
 
-    const configRecord: TeamConfigRecord = {
-      coordinatorMemberName: domainObj.coordinatorMemberName,
-      avatarUrl: domainObj.avatarUrl ?? null,
-      members: domainObj.nodes.map((member) => ({
-        memberName: member.memberName,
-        ref: member.ref,
-        refType: member.refType,
-        ...(member.refType === "agent" ? { refScope: member.refScope ?? "shared" } : {}),
-      })),
-    };
-    await writeJsonFile(sourcePaths.configPath, configRecord);
+    await writeJsonFile(sourcePaths.configPath, buildTeamConfigRecord(domainObj));
 
-    const updated = await this.getById(teamId);
+    const updated = await this.getById(domainObj.id);
     if (!updated) {
-      throw new Error(`Failed to update team definition '${teamId}'.`);
+      throw new Error(`Failed to update team definition '${domainObj.id}'.`);
     }
     return updated;
   }
 
   async delete(id: string): Promise<boolean> {
-    const sourcePaths = await this.findTeamSourcePaths(id);
+    const sourcePaths = await findTeamSourcePaths(
+      id,
+      this.getReadTeamRoots(),
+      this.applicationBundleService,
+    );
     if (!sourcePaths) {
       return false;
     }
-    await this.ensureWritableSourcePaths(sourcePaths, id);
+    if (sourcePaths.kind === "application_owned") {
+      throw new Error("Application-owned team definitions cannot be deleted from the shared team provider.");
+    }
+    await ensureWritableTeamSourcePaths(sourcePaths, id);
     await fs.rm(sourcePaths.teamDir, { recursive: true, force: true });
     return true;
   }

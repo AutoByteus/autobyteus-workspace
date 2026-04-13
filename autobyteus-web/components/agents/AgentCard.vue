@@ -15,9 +15,18 @@
       <div class="min-w-0">
         <h3 class="truncate text-2xl font-semibold text-slate-900">{{ agentDef.name }}</h3>
         <p class="mt-1 text-sm text-slate-600">{{ descriptionText }}</p>
-        <p v-if="teamLabel" class="mt-1 text-sm text-slate-500">
-          {{ $t('agents.components.agents.AgentCard.teamLabel', { team: teamLabel }) }}
-        </p>
+        <div v-if="ownershipBadge || ownershipLabel" class="mt-1 flex flex-wrap items-center gap-2 text-sm">
+          <span
+            v-if="ownershipBadge"
+            class="rounded-full px-2 py-0.5 text-[11px] font-semibold"
+            :class="isApplicationOwned ? 'bg-blue-50 text-blue-700' : 'bg-violet-50 text-violet-700'"
+          >
+            {{ ownershipBadge }}
+          </span>
+          <p v-if="ownershipLabel" class="text-slate-500">
+            {{ ownershipLabel }}
+          </p>
+        </div>
 
         <div class="mt-3 space-y-2">
           <div class="flex items-start gap-2">
@@ -83,6 +92,7 @@
 <script setup lang="ts">
 import { computed, ref, toRefs, watch } from 'vue';
 import type { AgentDefinition } from '~/stores/agentDefinitionStore';
+import { formatApplicationOwnershipLabel } from '~/utils/definitionOwnership';
 
 const props = defineProps<{
   agentDef: AgentDefinition;
@@ -115,13 +125,38 @@ watch(() => agentDef.value.avatarUrl, () => {
 const showAvatarImage = computed(() => Boolean(agentDef.value.avatarUrl) && !avatarLoadError.value);
 const avatarUrl = computed(() => agentDef.value.avatarUrl || '');
 const descriptionText = computed(() => agentDef.value.description?.trim() || $t('agents.components.agents.AgentCard.noDescription'));
-const isTeamLocal = computed(() => (agentDef.value.ownershipScope ?? 'SHARED') === 'TEAM_LOCAL');
+const ownershipScope = computed(() => agentDef.value.ownershipScope ?? 'SHARED');
+const isTeamLocal = computed(() => ownershipScope.value === 'TEAM_LOCAL');
+const isApplicationOwned = computed(() => ownershipScope.value === 'APPLICATION_OWNED');
 const teamLabel = computed(() =>
   isTeamLocal.value
     ? agentDef.value.ownerTeamName?.trim() || agentDef.value.ownerTeamId?.trim() || ''
     : '',
 );
-const canSync = computed(() => !isTeamLocal.value);
+const applicationLabel = computed(() =>
+  isApplicationOwned.value
+    ? formatApplicationOwnershipLabel(agentDef.value)
+    : '',
+);
+const ownershipBadge = computed(() => {
+  if (isTeamLocal.value) {
+    return 'Team-local';
+  }
+  if (isApplicationOwned.value) {
+    return 'Application-owned';
+  }
+  return '';
+});
+const ownershipLabel = computed(() => {
+  if (teamLabel.value) {
+    return `Team: ${teamLabel.value}`;
+  }
+  if (applicationLabel.value) {
+    return `Application: ${applicationLabel.value}`;
+  }
+  return '';
+});
+const canSync = computed(() => ownershipScope.value === 'SHARED');
 
 const avatarInitials = computed(() => {
   const raw = agentDef.value.name?.trim() ?? '';

@@ -8,6 +8,20 @@ const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
 
+const toGraphqlOwnershipScope = (
+  value: DomainAgentDefinition["ownershipScope"],
+): AgentDefinitionOwnershipScope => {
+  switch (value) {
+    case "team_local":
+      return AgentDefinitionOwnershipScope.TEAM_LOCAL;
+    case "application_owned":
+      return AgentDefinitionOwnershipScope.APPLICATION_OWNED;
+    case "shared":
+    default:
+      return AgentDefinitionOwnershipScope.SHARED;
+  }
+};
+
 export class AgentDefinitionConverter {
   static async toGraphql(
     domainDefinition: DomainAgentDefinition,
@@ -29,12 +43,20 @@ export class AgentDefinitionConverter {
         toolInvocationPreprocessorNames: domainDefinition.toolInvocationPreprocessorNames,
         lifecycleProcessorNames: domainDefinition.lifecycleProcessorNames,
         skillNames: domainDefinition.skillNames,
-        ownershipScope:
-          domainDefinition.ownershipScope === "team_local"
-            ? AgentDefinitionOwnershipScope.TEAM_LOCAL
-            : AgentDefinitionOwnershipScope.SHARED,
+        ownershipScope: toGraphqlOwnershipScope(domainDefinition.ownershipScope),
         ownerTeamId: domainDefinition.ownerTeamId ?? null,
         ownerTeamName: domainDefinition.ownerTeamName ?? null,
+        ownerApplicationId: domainDefinition.ownerApplicationId ?? null,
+        ownerApplicationName: domainDefinition.ownerApplicationName ?? null,
+        ownerPackageId: domainDefinition.ownerPackageId ?? null,
+        ownerLocalApplicationId: domainDefinition.ownerLocalApplicationId ?? null,
+        defaultLaunchConfig: domainDefinition.defaultLaunchConfig
+          ? {
+              llmModelIdentifier: domainDefinition.defaultLaunchConfig.llmModelIdentifier ?? null,
+              runtimeKind: domainDefinition.defaultLaunchConfig.runtimeKind ?? null,
+              llmConfig: domainDefinition.defaultLaunchConfig.llmConfig ?? null,
+            }
+          : null,
       };
     } catch (error) {
       logger.error(

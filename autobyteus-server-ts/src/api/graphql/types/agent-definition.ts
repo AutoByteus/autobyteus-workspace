@@ -8,12 +8,14 @@ import {
   Resolver,
   registerEnumType,
 } from "type-graphql";
+import { GraphQLJSON } from "graphql-scalars";
 import { AgentDefinitionService } from "../../../agent-definition/services/agent-definition-service.js";
 import { AgentDefinitionConverter } from "../converters/agent-definition-converter.js";
 
 export enum AgentDefinitionOwnershipScope {
   SHARED = "SHARED",
   TEAM_LOCAL = "TEAM_LOCAL",
+  APPLICATION_OWNED = "APPLICATION_OWNED",
 }
 
 registerEnumType(AgentDefinitionOwnershipScope, { name: "AgentDefinitionOwnershipScope" });
@@ -21,6 +23,30 @@ registerEnumType(AgentDefinitionOwnershipScope, { name: "AgentDefinitionOwnershi
 const logger = {
   error: (...args: unknown[]) => console.error(...args),
 };
+
+@ObjectType()
+export class AgentDefinitionDefaultLaunchConfig {
+  @Field(() => String, { nullable: true })
+  llmModelIdentifier?: string | null;
+
+  @Field(() => String, { nullable: true })
+  runtimeKind?: string | null;
+
+  @Field(() => GraphQLJSON, { nullable: true })
+  llmConfig?: Record<string, unknown> | null;
+}
+
+@InputType()
+export class AgentDefinitionDefaultLaunchConfigInput {
+  @Field(() => String, { nullable: true })
+  llmModelIdentifier?: string | null;
+
+  @Field(() => String, { nullable: true })
+  runtimeKind?: string | null;
+
+  @Field(() => GraphQLJSON, { nullable: true })
+  llmConfig?: Record<string, unknown> | null;
+}
 
 @ObjectType()
 export class AgentDefinition {
@@ -77,6 +103,21 @@ export class AgentDefinition {
 
   @Field(() => String, { nullable: true })
   ownerTeamName?: string | null;
+
+  @Field(() => String, { nullable: true })
+  ownerApplicationId?: string | null;
+
+  @Field(() => String, { nullable: true })
+  ownerApplicationName?: string | null;
+
+  @Field(() => String, { nullable: true })
+  ownerPackageId?: string | null;
+
+  @Field(() => String, { nullable: true })
+  ownerLocalApplicationId?: string | null;
+
+  @Field(() => AgentDefinitionDefaultLaunchConfig, { nullable: true })
+  defaultLaunchConfig?: AgentDefinitionDefaultLaunchConfig | null;
 }
 
 @InputType()
@@ -122,6 +163,9 @@ export class CreateAgentDefinitionInput {
 
   @Field(() => [String], { nullable: true })
   skillNames?: string[] | null;
+
+  @Field(() => AgentDefinitionDefaultLaunchConfigInput, { nullable: true })
+  defaultLaunchConfig?: AgentDefinitionDefaultLaunchConfigInput | null;
 }
 
 @InputType()
@@ -170,6 +214,9 @@ export class UpdateAgentDefinitionInput {
 
   @Field(() => [String], { nullable: true })
   skillNames?: string[] | null;
+
+  @Field(() => AgentDefinitionDefaultLaunchConfigInput, { nullable: true })
+  defaultLaunchConfig?: AgentDefinitionDefaultLaunchConfigInput | null;
 }
 
 @InputType()
@@ -256,6 +303,7 @@ export class AgentDefinitionResolver {
         toolInvocationPreprocessorNames: input.toolInvocationPreprocessorNames ?? undefined,
         lifecycleProcessorNames: input.lifecycleProcessorNames ?? undefined,
         skillNames: input.skillNames ?? undefined,
+        defaultLaunchConfig: input.defaultLaunchConfig ?? undefined,
       });
       return await AgentDefinitionConverter.toGraphql(domainDefinition);
     } catch (error) {
@@ -286,10 +334,15 @@ export class AgentDefinitionResolver {
       const service = AgentDefinitionService.getInstance();
       const { id, ...rest } = input;
       const updatePayload: Record<string, unknown> = {};
+      const nullableKeys = new Set(["avatarUrl", "defaultLaunchConfig"]);
       for (const [key, value] of Object.entries(rest)) {
-        if (value !== null && value !== undefined) {
-          updatePayload[key] = value;
+        if (value === undefined) {
+          continue;
         }
+        if (value === null && !nullableKeys.has(key)) {
+          continue;
+        }
+        updatePayload[key] = value;
       }
       const domainDefinition = await service.updateAgentDefinition(
         id,

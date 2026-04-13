@@ -1,4 +1,5 @@
-export type TeamMemberRefScope = "shared" | "team_local";
+export type TeamMemberRefScope = "shared" | "team_local" | "application_owned";
+export type AgentTeamDefinitionOwnershipScope = "shared" | "application_owned";
 
 export class TeamMember {
   memberName: string;
@@ -28,6 +29,11 @@ export class AgentTeamDefinition {
   nodes: TeamMember[];
   coordinatorMemberName: string;
   avatarUrl?: string | null;
+  ownershipScope: AgentTeamDefinitionOwnershipScope;
+  ownerApplicationId?: string | null;
+  ownerApplicationName?: string | null;
+  ownerPackageId?: string | null;
+  ownerLocalApplicationId?: string | null;
 
   constructor(options: {
     name: string;
@@ -38,6 +44,11 @@ export class AgentTeamDefinition {
     coordinatorMemberName: string;
     id?: string | null;
     avatarUrl?: string | null;
+    ownershipScope?: AgentTeamDefinitionOwnershipScope;
+    ownerApplicationId?: string | null;
+    ownerApplicationName?: string | null;
+    ownerPackageId?: string | null;
+    ownerLocalApplicationId?: string | null;
   }) {
     this.name = options.name;
     this.description = options.description;
@@ -47,6 +58,11 @@ export class AgentTeamDefinition {
     this.coordinatorMemberName = options.coordinatorMemberName;
     this.id = options.id ?? null;
     this.avatarUrl = options.avatarUrl ?? null;
+    this.ownershipScope = options.ownershipScope ?? "shared";
+    this.ownerApplicationId = options.ownerApplicationId ?? null;
+    this.ownerApplicationName = options.ownerApplicationName ?? null;
+    this.ownerPackageId = options.ownerPackageId ?? null;
+    this.ownerLocalApplicationId = options.ownerLocalApplicationId ?? null;
   }
 }
 

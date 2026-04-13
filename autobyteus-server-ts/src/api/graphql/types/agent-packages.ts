@@ -61,6 +61,9 @@ export class AgentPackage {
   @Field(() => Int)
   agentTeamCount!: number;
 
+  @Field(() => Int)
+  applicationCount!: number;
+
   @Field(() => Boolean)
   isDefault!: boolean;
 
@@ -86,6 +89,7 @@ const mapAgentPackage = (pkg: AgentPackageModel): AgentPackage => ({
   sharedAgentCount: pkg.sharedAgentCount,
   teamLocalAgentCount: pkg.teamLocalAgentCount,
   agentTeamCount: pkg.agentTeamCount,
+  applicationCount: pkg.applicationCount,
   isDefault: pkg.isDefault,
   isRemovable: pkg.isRemovable,
 });

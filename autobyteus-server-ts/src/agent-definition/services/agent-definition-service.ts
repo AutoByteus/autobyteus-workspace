@@ -6,7 +6,10 @@ import {
   defaultToolInvocationPreprocessorRegistry,
   defaultLifecycleEventProcessorRegistry,
 } from "autobyteus-ts";
-import { AgentDefinition } from "../domain/models.js";
+import {
+  AgentDefinition,
+  type AgentDefinitionDefaultLaunchConfig,
+} from "../domain/models.js";
 import { AgentDefinitionPersistenceProvider } from "../providers/agent-definition-persistence-provider.js";
 import { CachedAgentDefinitionProvider } from "../providers/cached-agent-definition-provider.js";
 import { filterOptionalProcessorNames } from "../utils/processor-defaults.js";
@@ -53,6 +56,43 @@ const normalizeOptionalString = (value: unknown): string | null => {
   return trimmed.length > 0 ? trimmed : null;
 };
 
+const normalizeObjectRecord = (value: unknown): Record<string, unknown> | null => {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return null;
+  }
+  return value as Record<string, unknown>;
+};
+
+const normalizeDefaultLaunchConfigInput = (
+  value: unknown,
+): AgentDefinitionDefaultLaunchConfig | null | undefined => {
+  if (value === undefined) {
+    return undefined;
+  }
+  if (value === null) {
+    return null;
+  }
+
+  const candidate = normalizeObjectRecord(value);
+  if (!candidate) {
+    return null;
+  }
+
+  const llmModelIdentifier = normalizeOptionalString(candidate.llmModelIdentifier);
+  const runtimeKind = normalizeOptionalString(candidate.runtimeKind);
+  const llmConfig = normalizeObjectRecord(candidate.llmConfig);
+
+  if (!llmModelIdentifier && !runtimeKind && !llmConfig) {
+    return null;
+  }
+
+  return {
+    llmModelIdentifier,
+    runtimeKind,
+    llmConfig,
+  };
+};
+
 const slugify = (value: string): string => {
   const normalized = value
     .toLowerCase()
@@ -79,6 +119,7 @@ export type AgentDefinitionCreateInput = {
   toolInvocationPreprocessorNames?: string[];
   lifecycleProcessorNames?: string[];
   skillNames?: string[];
+  defaultLaunchConfig?: AgentDefinitionDefaultLaunchConfig | null;
 };
 
 export type AgentDefinitionUpdateInput = Partial<AgentDefinitionCreateInput>;
@@ -194,6 +235,7 @@ export class AgentDefinitionService {
         this.registries.lifecycle,
       ),
       skillNames: data.skillNames ?? [],
+      defaultLaunchConfig: normalizeDefaultLaunchConfigInput(data.defaultLaunchConfig) ?? null,
     });
 
     const created = await this.provider.create(definition);
@@ -242,8 +284,13 @@ export class AgentDefinitionService {
     }
 
     const updateRecord = existing as unknown as Record<string, unknown>;
+    const nullablePatchKeys = new Set(["avatarUrl", "defaultLaunchConfig"]);
+
     for (const [key, value] of Object.entries(data)) {
-      if (value === undefined || value === null) {
+      if (value === undefined) {
+        continue;
+      }
+      if (value === null && !nullablePatchKeys.has(key)) {
         continue;
       }
       if (!(key in existing)) {
@@ -279,6 +326,9 @@ export class AgentDefinitionService {
         case "avatarUrl":
           nextValue = normalizeOptionalString(value);
           break;
+        case "defaultLaunchConfig":
+          nextValue = normalizeDefaultLaunchConfigInput(value) ?? null;
+          break;
         default:
           break;
       }
@@ -296,8 +346,8 @@ export class AgentDefinitionService {
     if (!existing) {
       throw new Error(`Agent Definition with ID ${definitionId} not found.`);
     }
-    if (existing.ownershipScope === "team_local") {
-      throw new Error("Deleting team-owned agent definitions is not supported.");
+    if (existing.ownershipScope !== "shared") {
+      throw new Error("Deleting non-shared agent definitions is not supported.");
     }
     const success = await this.provider.delete(definitionId);
     if (success) {
@@ -313,8 +363,8 @@ export class AgentDefinitionService {
     if (!source) {
       throw new Error(`Agent Definition with ID ${sourceId} not found.`);
     }
-    if (source.ownershipScope === "team_local") {
-      throw new Error("Duplicating team-owned agent definitions is not supported.");
+    if (source.ownershipScope !== "shared") {
+      throw new Error("Duplicating non-shared agent definitions is not supported.");
     }
     const newId = this.nextAgentId(newName);
     const duplicated = await this.provider.duplicate(sourceId, newId, newName);

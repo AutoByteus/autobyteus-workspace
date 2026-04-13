@@ -1,17 +1,39 @@
 import { gql } from 'graphql-tag'
 
-export const ListApplications = gql`
-  query listApplications {
-    listApplications {
+export const ApplicationFields = gql`
+  fragment ApplicationFields on Application {
+    __typename
+    id
+    localApplicationId
+    packageId
+    name
+    description
+    iconAssetPath
+    entryHtmlAssetPath
+    writable
+    runtimeTarget {
       __typename
-      id
-      name
-      description
-      icon
-      type
-      teamDefinitionName
+      kind
+      localId
+      definitionId
     }
   }
 `
 
-// GetApplicationConfiguration has been removed.
+export const ListApplications = gql`
+  query ListApplications {
+    listApplications {
+      ...ApplicationFields
+    }
+  }
+  ${ApplicationFields}
+`
+
+export const GetApplicationById = gql`
+  query GetApplicationById($id: String!) {
+    application(id: $id) {
+      ...ApplicationFields
+    }
+  }
+  ${ApplicationFields}
+`

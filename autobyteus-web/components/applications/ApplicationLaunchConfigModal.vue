@@ -1,101 +1,128 @@
 <template>
   <Teleport to="body">
-    <div v-if="show" class="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-60 backdrop-blur-sm" @click.self="closeModal">
-      <div v-if="application" class="bg-white rounded-lg shadow-xl w-full max-w-3xl mx-4 transform transition-all flex flex-col max-h-[90vh]">
-        
-        <!-- Header -->
-        <div class="px-6 py-4 border-b border-gray-200">
-          <h3 class="text-lg leading-6 font-medium text-gray-900">{{ $t('applications.components.applications.ApplicationLaunchConfigModal.launch_title', { name: application.name }) }}</h3>
-          <p class="mt-1 text-sm text-gray-500">{{ application.description }}</p>
+    <div
+      v-if="show"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 px-4 py-6 backdrop-blur-sm"
+      @click.self="closeModal"
+    >
+      <div class="flex max-h-[92vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
+        <div class="border-b border-slate-200 px-6 py-5">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <h2 class="text-xl font-semibold text-slate-900">
+                {{ application ? `Launch ${application.name}` : 'Launch application' }}
+              </h2>
+              <p class="mt-1 text-sm text-slate-600">
+                Configure the runtime session before the bundled iframe UI starts.
+              </p>
+            </div>
+            <button
+              type="button"
+              class="rounded-md p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
+              @click="closeModal"
+            >
+              <span class="sr-only">Close</span>
+              ✕
+            </button>
+          </div>
         </div>
 
-        <!-- Body -->
-        <div class="flex-1 overflow-y-auto px-6 py-5">
-            <div v-if="isLoading" class="flex flex-col items-center justify-center text-gray-500 py-10">
-                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                <p class="mt-3 font-semibold">{{ $t('applications.components.applications.ApplicationLaunchConfigModal.loading_configuration') }}</p>
-            </div>
-            <div v-else-if="error" class="text-red-500 bg-red-50 p-4 rounded-lg">
-                <h3 class="font-bold mb-2">{{ $t('applications.components.applications.ApplicationLaunchConfigModal.error_loading_configuration') }}</h3>
-                <p>{{ error }}</p>
-            </div>
-            <form v-else @submit.prevent="handleLaunch" class="space-y-6">
-                <h2 class="text-lg font-semibold text-gray-800 border-b pb-2">{{ $t('applications.components.applications.ApplicationLaunchConfigModal.configure_team_models') }}</h2>
-                <p class="text-sm text-gray-600 -mt-4">{{ $t('applications.components.applications.ApplicationLaunchConfigModal.your_selections_will_be_automatically_saved') }}</p>
-                
-                <!-- Default Model Selector -->
-                <div>
-                    <label for="default-llm-select" class="block text-sm font-medium text-gray-700 mb-1">{{ $t('applications.components.applications.ApplicationLaunchConfigModal.default_model_for_all_agents') }}</label>
-                    <SearchableGroupedSelect
-                        id="default-llm-select"
-                        v-model="config.globalLlmModelIdentifier"
-                        :options="llmOptions"
-                        :loading="llmStore.isLoadingModels"
-                        :placeholder="$t('applications.components.applications.ApplicationLaunchConfigModal.select_a_default_model')"
-                    />
-                </div>
+        <div class="flex-1 overflow-y-auto bg-slate-50 px-6 py-5">
+          <div v-if="isLoading" class="flex min-h-[20rem] flex-col items-center justify-center gap-3 text-slate-500">
+            <div class="h-9 w-9 animate-spin rounded-full border-b-2 border-blue-600"></div>
+            <p class="text-sm font-medium">Preparing launch defaults…</p>
+          </div>
 
-                <!-- Per-Agent Overrides -->
+          <div
+            v-else-if="loadError"
+            class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700"
+          >
+            <p class="font-semibold">Unable to prepare application launch</p>
+            <p class="mt-1">{{ loadError }}</p>
+          </div>
+
+          <div v-else-if="preparedLaunch" class="space-y-5">
+            <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+              <div class="grid gap-4 md:grid-cols-3">
                 <div>
-                    <h3 class="text-md font-semibold text-gray-800 border-b pb-2 mb-3">{{ $t('applications.components.applications.ApplicationLaunchConfigModal.model_overrides_optional') }}</h3>
-                    <div class="space-y-4">
-                        <div v-for="agentName in requiredAgentNames" :key="agentName">
-                            <label :for="`llm-select-${agentName}`" class="block text-sm font-medium text-gray-700 mb-1">
-                                {{ agentName }}
-                            </label>
-                            <div class="w-full">
-                                <button
-                                    type="button"
-                                    @click="toggleOverrideEditor(agentName)"
-                                    class="w-full flex items-start justify-between text-left text-sm p-2 rounded-md transition-colors bg-gray-100 text-gray-800 hover:bg-gray-200"
-                                >
-                                    <span class="break-words">{{ formatLlmButtonLabel(agentName) }}</span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" :class="['w-4 h-4 transition-transform flex-shrink-0 ml-2', { 'rotate-180': isOverrideEditorOpen(agentName) }]">
-                                        <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
-                                    </svg>
-                                </button>
-                                <div v-if="isOverrideEditorOpen(agentName)" class="mt-2 border rounded-md p-2 bg-white max-h-80 overflow-y-auto">
-                                    <input type="text" v-model="uiState.agentLlmSearch" :placeholder="$t('applications.components.applications.ApplicationLaunchConfigModal.search_models')" class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sticky top-0 z-10" />
-                                    <div class="mt-2">
-                                        <div v-if="filteredOverrideLlmOptions.length === 0" class="p-3 text-sm text-center text-gray-500">{{ $t('applications.components.applications.ApplicationLaunchConfigModal.no_models_found') }}</div>
-                                        <div v-for="group in filteredOverrideLlmOptions" :key="group.label" class="py-1">
-                                            <div class="px-3 py-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">{{ group.label }}</div>
-                                            <ul>
-                                            <li v-for="item in group.items" :key="item.id" @click="selectAgentLlm(agentName, item.id)" class="pl-6 pr-3 py-2 text-sm text-gray-800 cursor-pointer hover:bg-blue-100">
-                                                {{ item.name }}
-                                            </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                  <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Runtime kind</p>
+                  <p class="mt-1 text-sm text-slate-900">{{ runtimeKindLabel }}</p>
                 </div>
-            </form>
+                <div>
+                  <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Package</p>
+                  <p class="mt-1 break-all text-sm text-slate-900">{{ preparedLaunch.application.packageId }}</p>
+                </div>
+                <div>
+                  <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Writable source</p>
+                  <p class="mt-1 text-sm text-slate-900">{{ preparedLaunch.application.writable ? 'Yes' : 'No' }}</p>
+                </div>
+              </div>
+            </section>
+
+            <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+              <h3 class="text-base font-semibold text-slate-900">Bound runtime target</h3>
+              <p class="mt-1 text-sm text-slate-600">
+                {{ boundDefinitionSummary }}
+              </p>
+            </section>
+
+            <section class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+              <AgentRunConfigForm
+                v-if="preparedLaunch.kind === 'AGENT'"
+                :config="preparedLaunch.config"
+                :agent-definition="preparedLaunch.agentDefinition"
+                :workspace-loading-state="effectiveWorkspaceLoadingState"
+                @select-existing="handleSelectExisting"
+                @load-new="handleLoadNew"
+              />
+              <TeamRunConfigForm
+                v-else
+                :config="preparedLaunch.config"
+                :team-definition="preparedLaunch.teamDefinition"
+                :workspace-loading-state="effectiveWorkspaceLoadingState"
+                @select-existing="handleSelectExisting"
+                @load-new="handleLoadNew"
+              />
+            </section>
+
+            <div
+              v-if="sessionStore.launchError"
+              class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700"
+            >
+              {{ sessionStore.launchError }}
+            </div>
+          </div>
         </div>
-        
-        <!-- Footer -->
-        <div class="bg-gray-50 px-6 py-4 flex flex-row-reverse border-t border-gray-200">
-            <button 
+
+        <div class="border-t border-slate-200 bg-white px-6 py-4">
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <p class="text-xs text-slate-500">
+              The bundled iframe UI will not bootstrap until the exact v1 ready/bootstrap handshake succeeds.
+            </p>
+
+            <div class="flex items-center justify-end gap-3">
+              <button
                 type="button"
-                @click="handleLaunch"
-                :disabled="isLaunchDisabled"
-                class="w-full sm:w-auto bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
-            >
-                <svg v-if="applicationRunStore.isLaunching" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                <span>{{ applicationRunStore.isLaunching ? $t('applications.components.applications.ApplicationLaunchConfigModal.launching') : $t('applications.components.applications.ApplicationLaunchConfigModal.launch_application') }}</span>
-            </button>
-            <button 
-                type="button" 
+                class="inline-flex items-center rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100"
+                :disabled="sessionStore.launching"
                 @click="closeModal"
-                class="mr-3 w-full sm:w-auto inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm"
-            >
-                {{ $t('applications.components.applications.ApplicationLaunchConfigModal.cancel') }}
-            </button>
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                class="inline-flex items-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+                :disabled="launchDisabled"
+                @click="launch"
+              >
+                <span
+                  v-if="sessionStore.launching"
+                  class="mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-b-transparent"
+                ></span>
+                {{ sessionStore.launching ? 'Launching…' : 'Launch application' }}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -103,189 +130,215 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, reactive, watch } from 'vue';
-import type { ApplicationManifest } from '~/stores/applicationStore';
-import { useAgentTeamDefinitionStore, type AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore';
-import { useApplicationRunStore } from '~/stores/applicationRunStore';
-import { useApplicationLaunchProfileStore } from '~/stores/applicationLaunchProfileStore';
-import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig';
-import SearchableGroupedSelect, { type GroupedOption } from '~/components/agentTeams/SearchableGroupedSelect.vue';
-import type { ApplicationLaunchProfile } from '~/types/application/ApplicationLaunchProfile';
+import { computed, reactive, ref, watch } from 'vue'
+import AgentRunConfigForm from '~/components/workspace/config/AgentRunConfigForm.vue'
+import TeamRunConfigForm from '~/components/workspace/config/TeamRunConfigForm.vue'
+import { useApplicationSessionStore, type PreparedApplicationLaunch } from '~/stores/applicationSessionStore'
+import type { ApplicationCatalogEntry } from '~/stores/applicationStore'
+import { useWorkspaceStore } from '~/stores/workspace'
 
-const { t } = useLocalization();
+interface WorkspaceLoadingState {
+  isLoading: boolean
+  error: string | null
+  loadedPath: string | null
+}
 
 const props = defineProps<{
-  show: boolean;
-  application: ApplicationManifest | null;
-}>();
+  show: boolean
+  application: ApplicationCatalogEntry | null
+}>()
 
 const emit = defineEmits<{
-  (e: 'close'): void;
-  (e: 'success', payload: { appId: string, applicationRunId: string }): void;
-}>();
+  (e: 'close'): void
+  (e: 'launched', payload: { applicationId: string; applicationSessionId: string }): void
+}>()
 
-const DEFAULT_OPTION_ID = '---use-default---';
+const sessionStore = useApplicationSessionStore()
+const workspaceStore = useWorkspaceStore()
 
-// STORES
-const teamDefStore = useAgentTeamDefinitionStore();
-const applicationRunStore = useApplicationRunStore();
-const appProfileStore = useApplicationLaunchProfileStore();
-const llmStore = useLLMProviderConfigStore();
+const isLoading = ref(false)
+const loadError = ref<string | null>(null)
+const preparedLaunch = ref<PreparedApplicationLaunch | null>(null)
+const workspaceLoadingState = reactive<WorkspaceLoadingState>({
+  isLoading: false,
+  error: null,
+  loadedPath: null,
+})
 
-// STATE
-const isLoading = ref(true);
-const error = ref<string | null>(null);
-const teamDef = ref<AgentTeamDefinition | null>(null);
-const activeProfile = ref<ApplicationLaunchProfile | null>(null);
-const config = reactive({
-  globalLlmModelIdentifier: '',
-  memberLlmConfigOverrides: {} as Record<string, string>
-});
-const uiState = reactive({
-  agentLlmSearch: '',
-  editingAgentOverride: null as string | null,
-});
+const resolveWorkspacePath = (workspaceId: string | null | undefined): string | null => {
+  const normalizedWorkspaceId = (workspaceId || '').trim()
+  if (!normalizedWorkspaceId) {
+    return null
+  }
 
-// --- DATA FETCHING & INITIALIZATION ---
-watch(() => props.application, async (newApp) => {
-    if (newApp) {
-        isLoading.value = true;
-        error.value = null;
-        teamDef.value = null;
-        activeProfile.value = null;
-        config.globalLlmModelIdentifier = '';
-        config.memberLlmConfigOverrides = {};
-        
-        try {
-            await Promise.all([
-                teamDefStore.fetchAllAgentTeamDefinitions(),
-                llmStore.fetchProvidersWithModels(),
-                appProfileStore.loadLaunchProfiles()
-            ]);
+  const workspace = workspaceStore.workspaces[normalizedWorkspaceId]
+  return workspace?.absolutePath
+    || workspace?.workspaceConfig?.root_path
+    || workspace?.workspaceConfig?.rootPath
+    || null
+}
 
-            if (newApp.type !== 'AGENT_TEAM') throw new Error(`Application '${newApp.name}' is not a team-based application.`);
-            
-            const foundTeamDef = teamDefStore.getAgentTeamDefinitionByName(newApp.teamDefinitionName!);
-            if (!foundTeamDef) throw new Error(`Required team definition '${newApp.teamDefinitionName}' not found.`);
-            teamDef.value = foundTeamDef;
+const resetWorkspaceLoadingState = (): void => {
+  workspaceLoadingState.isLoading = false
+  workspaceLoadingState.error = null
+  workspaceLoadingState.loadedPath = null
+}
 
-            // Find the latest saved profile for this app to pre-populate selections
-            const profiles = appProfileStore.getProfilesForApp(newApp.id);
-            if (profiles.length > 0) {
-                activeProfile.value = profiles[0];
-                config.globalLlmModelIdentifier = activeProfile.value.globalLlmModelIdentifier;
-                Object.assign(config.memberLlmConfigOverrides, activeProfile.value.memberLlmConfigOverrides);
-            }
+const effectiveWorkspaceLoadingState = computed(() => ({
+  ...workspaceLoadingState,
+  loadedPath:
+    workspaceLoadingState.loadedPath
+    || resolveWorkspacePath(preparedLaunch.value?.config.workspaceId)
+    || null,
+}))
 
-            // Ensure a default model is selected if not in profile
-            if (!config.globalLlmModelIdentifier && llmStore.models.length > 0) {
-                config.globalLlmModelIdentifier = llmStore.defaultLlmIdentifier || llmStore.models[0];
-            }
-        } catch (e: any) {
-            error.value = e.message;
-        } finally {
-            isLoading.value = false;
-        }
+const runtimeKindLabel = computed(() => {
+  if (!preparedLaunch.value) {
+    return ''
+  }
+  return preparedLaunch.value.kind === 'AGENT' ? 'Single agent' : 'Agent team'
+})
+
+const boundDefinitionSummary = computed(() => {
+  if (!preparedLaunch.value) {
+    return ''
+  }
+
+  if (preparedLaunch.value.kind === 'AGENT') {
+    return `${preparedLaunch.value.agentDefinition.name} (${preparedLaunch.value.agentDefinition.id})`
+  }
+
+  return `${preparedLaunch.value.teamDefinition.name} (${preparedLaunch.value.teamDefinition.id})`
+})
+
+const launchDisabled = computed(() => {
+  if (!preparedLaunch.value || isLoading.value || sessionStore.launching) {
+    return true
+  }
+
+  if (preparedLaunch.value.kind === 'AGENT') {
+    return !preparedLaunch.value.config.workspaceId || !preparedLaunch.value.config.llmModelIdentifier
+  }
+
+  return !preparedLaunch.value.config.llmModelIdentifier
+})
+
+const prepareDraft = async (): Promise<void> => {
+  if (!props.show || !props.application) {
+    preparedLaunch.value = null
+    resetWorkspaceLoadingState()
+    return
+  }
+
+  isLoading.value = true
+  loadError.value = null
+  preparedLaunch.value = null
+  sessionStore.clearLaunchError()
+  resetWorkspaceLoadingState()
+
+  try {
+    await workspaceStore.fetchAllWorkspaces()
+    preparedLaunch.value = await sessionStore.prepareLaunchDraft(props.application.id)
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    loadError.value = message
+  } finally {
+    isLoading.value = false
+  }
+}
+
+watch(
+  () => [props.show, props.application?.id] as const,
+  ([show, applicationId], previousValue) => {
+    const [previousShow, previousApplicationId] = previousValue ?? [false, undefined]
+    if (!show) {
+      sessionStore.clearLaunchError()
+      loadError.value = null
+      preparedLaunch.value = null
+      resetWorkspaceLoadingState()
+      return
     }
-}, { immediate: true });
 
-// --- COMPUTED PROPERTIES ---
-const llmOptions = computed((): GroupedOption[] => {
-  return llmStore.providersWithModelsForSelection.map(p => ({
-    label: p.provider,
-    items: p.models.map(m => ({ id: m.modelIdentifier, name: m.modelIdentifier }))
-  }));
-});
-
-const overrideLlmOptions = computed((): GroupedOption[] => {
-  return [
-    {
-      label: t('applications.components.applications.ApplicationLaunchConfigModal.inherit_from_default'),
-      items: [{ id: DEFAULT_OPTION_ID, name: `Default: ${config.globalLlmModelIdentifier || t('applications.components.applications.ApplicationLaunchConfigModal.default_not_set')}` }],
-    },
-    ...llmOptions.value
-  ];
-});
-
-const filteredOverrideLlmOptions = computed(() => {
-    if (!uiState.agentLlmSearch) return overrideLlmOptions.value;
-    const searchLower = uiState.agentLlmSearch.toLowerCase();
-    return overrideLlmOptions.value.map(group => ({
-        ...group,
-        items: group.items.filter(item => item.name.toLowerCase().includes(searchLower))
-    })).filter(group => group.items.length > 0);
-});
-
-const requiredAgentNames = computed(() => {
-  if (!teamDef.value) return [];
-  return teamDef.value.nodes
-    .filter(node => node.refType === 'AGENT')
-    .map(node => node.memberName);
-});
-
-const isLaunchDisabled = computed(() => {
-  return applicationRunStore.isLaunching || !teamDef.value || !config.globalLlmModelIdentifier;
-});
-
-// --- METHODS ---
-function closeModal() {
-    emit('close');
-}
-
-function formatLlmButtonLabel(agentName: string): string {
-    const overrideModel = config.memberLlmConfigOverrides[agentName];
-    if (overrideModel) {
-      return overrideModel;
+    if (!applicationId) {
+      loadError.value = 'Application metadata is not available.'
+      preparedLaunch.value = null
+      return
     }
-    return `Default: ${config.globalLlmModelIdentifier || t('applications.components.applications.ApplicationLaunchConfigModal.default_not_set')}`;
-}
 
-function toggleOverrideEditor(agentName: string) {
-    uiState.editingAgentOverride = uiState.editingAgentOverride === agentName ? null : agentName;
-    uiState.agentLlmSearch = '';
-}
-
-function isOverrideEditorOpen(agentName: string) {
-    return uiState.editingAgentOverride === agentName;
-}
-
-function selectAgentLlm(agentName: string, modelId: string) {
-    if (modelId === DEFAULT_OPTION_ID) {
-        delete config.memberLlmConfigOverrides[agentName];
-    } else {
-        config.memberLlmConfigOverrides[agentName] = modelId;
+    if (show !== previousShow || applicationId !== previousApplicationId) {
+      void prepareDraft()
     }
-    toggleOverrideEditor(agentName);
+  },
+  { immediate: true },
+)
+
+const handleSelectExisting = (workspaceId: string): void => {
+  if (!preparedLaunch.value) {
+    return
+  }
+
+  preparedLaunch.value.config.workspaceId = workspaceId
+  workspaceLoadingState.error = null
+  workspaceLoadingState.loadedPath = resolveWorkspacePath(workspaceId)
 }
 
-async function handleLaunch() {
-    if (isLaunchDisabled.value || !props.application || !teamDef.value) return;
+const handleLoadNew = async (path: string): Promise<void> => {
+  if (!preparedLaunch.value) {
+    return
+  }
 
-    try {
-        if (activeProfile.value) {
-            appProfileStore.deleteLaunchProfile(activeProfile.value.id);
-        }
-        
-        const finalOverrides: Record<string, string> = {};
-        for (const [key, value] of Object.entries(config.memberLlmConfigOverrides)) {
-            if (value) {
-                finalOverrides[key] = value;
-            }
-        }
+  workspaceLoadingState.isLoading = true
+  workspaceLoadingState.error = null
 
-        const result = await applicationRunStore.createProfileAndLaunchApplication({
-            appId: props.application.id,
-            profileName: `${props.application.name} - Default Profile`,
-            teamDefinition: teamDef.value,
-            globalLlmModelIdentifier: config.globalLlmModelIdentifier,
-            memberLlmConfigOverrides: finalOverrides,
-        });
-        
-        emit('success', { appId: props.application.id, applicationRunId: result.applicationRunId });
+  try {
+    const workspaceId = await workspaceStore.createWorkspace({ root_path: path })
+    preparedLaunch.value.config.workspaceId = workspaceId
+    workspaceLoadingState.loadedPath = path
+  } catch (error) {
+    workspaceLoadingState.error = error instanceof Error ? error.message : String(error)
+  } finally {
+    workspaceLoadingState.isLoading = false
+  }
+}
 
-    } catch (e: any) {
-        console.error("Failed to launch application:", e);
-        error.value = `Launch Failed: ${e.message}`;
+const closeModal = (): void => {
+  if (sessionStore.launching) {
+    return
+  }
+  emit('close')
+}
+
+const launch = async (): Promise<void> => {
+  if (!preparedLaunch.value) {
+    return
+  }
+
+  sessionStore.clearLaunchError()
+
+  if (preparedLaunch.value.kind === 'AGENT') {
+    if (!preparedLaunch.value.config.workspaceId) {
+      loadError.value = 'Select a workspace before launching this application.'
+      return
     }
+    if (!preparedLaunch.value.config.llmModelIdentifier) {
+      loadError.value = 'Select a model before launching this application.'
+      return
+    }
+  } else if (!preparedLaunch.value.config.llmModelIdentifier) {
+    loadError.value = 'Select a default model before launching this application.'
+    return
+  }
+
+  loadError.value = null
+
+  try {
+    const session = await sessionStore.createApplicationSession(preparedLaunch.value)
+    emit('launched', {
+      applicationId: preparedLaunch.value.application.id,
+      applicationSessionId: session.applicationSessionId,
+    })
+  } catch {
+    // Store-owned launchError already contains the surfaced message.
+  }
 }
 </script>

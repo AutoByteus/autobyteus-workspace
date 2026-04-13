@@ -1,74 +1,81 @@
 <template>
-  <div class="flex h-full bg-white font-sans">
-    <div class="flex-1 overflow-auto p-8">
-      <div class="max-w-full mx-auto">
-        <div class="mb-6">
-          <h1 class="text-2xl font-bold text-gray-900">{{ $t('applications.pages.applications.index.title') }}</h1>
-          <p class="text-gray-500 mt-1">{{ $t('applications.pages.applications.index.explore_and_run_available_applications') }}</p>
+  <div class="h-full flex-1 overflow-auto bg-slate-50">
+    <div class="mx-auto w-full max-w-[1400px] px-4 py-6 sm:px-6 lg:px-8">
+      <header class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h1 class="text-3xl font-semibold text-slate-900">Applications</h1>
+          <p class="mt-1 text-sm text-slate-600">
+            Browse bundled applications, inspect their runtime targets, and launch them through the generic iframe host.
+          </p>
         </div>
 
-        <div v-if="loading" class="text-center py-20">
-          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500 mx-auto mb-4"></div>
-          <p>{{ $t('applications.pages.applications.index.loading_applications') }}</p>
-        </div>
-        <div v-else-if="error" class="bg-red-50 border border-red-200 text-red-700 rounded-md p-4">
-          <p class="font-bold">{{ $t('applications.pages.applications.index.error_loading_applications') }}</p>
-          <p>{{ error.message }}</p>
-        </div>
-        <div v-else-if="applications.length > 0" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-          <ApplicationCard
-            v-for="app in applications"
-            :key="app.id"
-            :application="app"
-            @launch="handleLaunchRequest"
-          />
-        </div>
-        <div v-else class="text-center bg-gray-50 rounded-lg py-12 px-6 border border-gray-200">
-           <h3 class="text-lg font-medium text-gray-900">{{ $t('applications.pages.applications.index.no_applications_found') }}</h3>
-           <p class="mt-1 text-sm text-gray-500">{{ $t('applications.pages.applications.index.there_are_no_applications_available_at') }}</p>
-        </div>
+        <button
+          type="button"
+          class="inline-flex items-center self-start rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-100"
+          :disabled="loading"
+          @click="refreshApplications"
+        >
+          {{ loading ? 'Refreshing…' : 'Refresh catalog' }}
+        </button>
+      </header>
+
+      <div
+        v-if="!applicationStore.isApplicationsEnabled()"
+        class="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800"
+      >
+        Applications are disabled in the current runtime configuration.
+      </div>
+
+      <div v-else-if="loading && applications.length === 0" class="rounded-xl border border-slate-200 bg-white py-20 text-center shadow-sm">
+        <div class="mx-auto mb-4 h-9 w-9 animate-spin rounded-full border-b-2 border-blue-600"></div>
+        <p class="text-slate-600">Loading applications…</p>
+      </div>
+
+      <div v-else-if="error" class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+        <p class="font-semibold">Unable to load applications</p>
+        <p class="mt-1">{{ error.message }}</p>
+      </div>
+
+      <div v-else-if="applications.length === 0" class="rounded-xl border border-slate-200 bg-white py-16 text-center shadow-sm">
+        <h2 class="text-lg font-semibold text-slate-900">No applications found</h2>
+        <p class="mt-2 text-sm text-slate-500">
+          Import or add an application bundle under an application package root to populate this catalog.
+        </p>
+      </div>
+
+      <div v-else class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <ApplicationCard
+          v-for="application in applications"
+          :key="application.id"
+          :application="application"
+          :active-session-id="applicationSessionStore.getCachedActiveSessionByApplicationId(application.id)?.applicationSessionId ?? null"
+          @open="openApplication"
+        />
       </div>
     </div>
-    
-    <!-- Launch Configuration Modal -->
-    <ApplicationLaunchConfigModal
-        :show="showLaunchModal"
-        :application="appToLaunch"
-        @close="showLaunchModal = false"
-        @success="onLaunchSuccess"
-    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
-import { storeToRefs } from 'pinia';
-import { useApplicationStore, type ApplicationManifest } from '~/stores/applicationStore';
-import ApplicationCard from '~/components/applications/ApplicationCard.vue';
-import ApplicationLaunchConfigModal from '~/components/applications/ApplicationLaunchConfigModal.vue';
+import { onMounted } from 'vue'
+import { storeToRefs } from 'pinia'
+import ApplicationCard from '~/components/applications/ApplicationCard.vue'
+import { useApplicationSessionStore } from '~/stores/applicationSessionStore'
+import { useApplicationStore } from '~/stores/applicationStore'
 
-const applicationStore = useApplicationStore();
-const router = useRouter();
+const applicationStore = useApplicationStore()
+const applicationSessionStore = useApplicationSessionStore()
+const { applications, loading, error } = storeToRefs(applicationStore)
 
-// Use storeToRefs to maintain reactivity for state properties when destructuring.
-const { applications, loading, error } = storeToRefs(applicationStore);
-
-// State for the launch modal
-const showLaunchModal = ref(false);
-const appToLaunch = ref<ApplicationManifest | null>(null);
-
-// Fetch applications when the component is mounted.
 onMounted(() => {
-  applicationStore.fetchApplications();
-});
+  void applicationStore.fetchApplications()
+})
 
-function handleLaunchRequest(app: ApplicationManifest) {
-    appToLaunch.value = app;
-    showLaunchModal.value = true;
+const refreshApplications = async (): Promise<void> => {
+  await applicationStore.fetchApplications(true)
 }
 
-function onLaunchSuccess(payload: { appId: string, applicationRunId: string }) {
-    showLaunchModal.value = false;
-    router.push(`/applications/${payload.appId}?applicationRunId=${payload.applicationRunId}`);
+const openApplication = async (applicationId: string): Promise<void> => {
+  await navigateTo(`/applications/${encodeURIComponent(applicationId)}`)
 }
 </script>

@@ -1,5 +1,9 @@
 import type { AgentTeamDefinition as DomainAgentTeamDefinition } from "../../../agent-team-definition/domain/models.js";
-import { AgentMemberRefScope, NodeType } from "../../../agent-team-definition/domain/enums.js";
+import {
+  AgentMemberRefScope,
+  AgentTeamDefinitionOwnershipScope,
+  NodeType,
+} from "../../../agent-team-definition/domain/enums.js";
 import {
   AgentTeamDefinition as GraphqlAgentTeamDefinition,
   TeamMember as GraphqlTeamMember,
@@ -13,13 +17,26 @@ const toGraphqlRefType = (value: "agent" | "agent_team"): NodeType =>
   value === "agent" ? NodeType.AGENT : NodeType.AGENT_TEAM;
 
 const toGraphqlRefScope = (
-  value: "shared" | "team_local" | null | undefined,
-): AgentMemberRefScope | null =>
-  value === "team_local"
-    ? AgentMemberRefScope.TEAM_LOCAL
-    : value === "shared"
-      ? AgentMemberRefScope.SHARED
-      : null;
+  value: "shared" | "team_local" | "application_owned" | null | undefined,
+): AgentMemberRefScope | null => {
+  switch (value) {
+    case "team_local":
+      return AgentMemberRefScope.TEAM_LOCAL;
+    case "application_owned":
+      return AgentMemberRefScope.APPLICATION_OWNED;
+    case "shared":
+      return AgentMemberRefScope.SHARED;
+    default:
+      return null;
+  }
+};
+
+const toGraphqlOwnershipScope = (
+  value: DomainAgentTeamDefinition["ownershipScope"],
+): AgentTeamDefinitionOwnershipScope =>
+  value === "application_owned"
+    ? AgentTeamDefinitionOwnershipScope.APPLICATION_OWNED
+    : AgentTeamDefinitionOwnershipScope.SHARED;
 
 export class AgentTeamDefinitionConverter {
   static toGraphql(domainDefinition: DomainAgentTeamDefinition): GraphqlAgentTeamDefinition {
@@ -40,6 +57,11 @@ export class AgentTeamDefinitionConverter {
         avatarUrl: domainDefinition.avatarUrl ?? null,
         nodes: graphqlNodes,
         coordinatorMemberName: domainDefinition.coordinatorMemberName,
+        ownershipScope: toGraphqlOwnershipScope(domainDefinition.ownershipScope),
+        ownerApplicationId: domainDefinition.ownerApplicationId ?? null,
+        ownerApplicationName: domainDefinition.ownerApplicationName ?? null,
+        ownerPackageId: domainDefinition.ownerPackageId ?? null,
+        ownerLocalApplicationId: domainDefinition.ownerLocalApplicationId ?? null,
       };
     } catch (error) {
       logger.error(

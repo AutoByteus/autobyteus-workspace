@@ -11,6 +11,11 @@ export const GetAgentTeamDefinitions = gql`
       category
       avatarUrl
       coordinatorMemberName
+      ownershipScope
+      ownerApplicationId
+      ownerApplicationName
+      ownerPackageId
+      ownerLocalApplicationId
       nodes {
         __typename
         memberName

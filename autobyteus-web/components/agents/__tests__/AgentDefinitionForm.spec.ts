@@ -111,4 +111,68 @@ describe("AgentDefinitionForm", () => {
     expect(payload.instructions).toBe("Always produce an executable plan.");
     expect(payload.name).toBe("Planner Agent");
   });
+
+  it("emits defaultLaunchConfig when launch defaults are provided", async () => {
+    const wrapper = mount(AgentDefinitionForm, {
+      props: {
+        isSubmitting: false,
+        submitButtonText: "Create Agent",
+        isCreateMode: true,
+      },
+      global: {
+        stubs: {
+          GroupableTagInput: true,
+        },
+        mocks: {
+          $t: (key: string) => mockTranslations[key] ?? key,
+        },
+      },
+    });
+
+    await wrapper.get("input#name").setValue("Planner Agent");
+    await wrapper.get("textarea#description").setValue("Plans implementation work");
+    await wrapper.get("textarea#instructions").setValue("Always produce an executable plan.");
+    await wrapper.get("input#default-launch-runtime-kind").setValue("autobyteus");
+    await wrapper.get("input#default-launch-model").setValue("gpt-5.4-mini");
+    await wrapper.get("textarea#default-launch-llm-config").setValue('{"reasoning_effort":"medium"}');
+
+    await wrapper.get("form").trigger("submit.prevent");
+
+    const payload = (wrapper.emitted("submit") || [])[0]?.[0] as Record<string, any>;
+    expect(payload.defaultLaunchConfig).toEqual({
+      runtimeKind: "autobyteus",
+      llmModelIdentifier: "gpt-5.4-mini",
+      llmConfig: {
+        reasoning_effort: "medium",
+      },
+    });
+  });
+
+  it("does not emit submit when default launch config JSON is invalid", async () => {
+    const wrapper = mount(AgentDefinitionForm, {
+      props: {
+        isSubmitting: false,
+        submitButtonText: "Create Agent",
+        isCreateMode: true,
+      },
+      global: {
+        stubs: {
+          GroupableTagInput: true,
+        },
+        mocks: {
+          $t: (key: string) => mockTranslations[key] ?? key,
+        },
+      },
+    });
+
+    await wrapper.get("input#name").setValue("Planner Agent");
+    await wrapper.get("textarea#description").setValue("Plans implementation work");
+    await wrapper.get("textarea#instructions").setValue("Always produce an executable plan.");
+    await wrapper.get("textarea#default-launch-llm-config").setValue("{invalid json}");
+
+    await wrapper.get("form").trigger("submit.prevent");
+
+    expect(wrapper.emitted("submit")).toBeUndefined();
+    expect(wrapper.text()).toContain("LLM config JSON is invalid.");
+  });
 });

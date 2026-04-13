@@ -1,4 +1,10 @@
-export type AgentDefinitionOwnershipScope = "shared" | "team_local";
+export type AgentDefinitionOwnershipScope = "shared" | "team_local" | "application_owned";
+
+export type AgentDefinitionDefaultLaunchConfig = {
+  llmModelIdentifier: string | null;
+  runtimeKind: string | null;
+  llmConfig: Record<string, unknown> | null;
+};
 
 export class AgentDefinition {
   id?: string | null;
@@ -19,6 +25,11 @@ export class AgentDefinition {
   ownershipScope: AgentDefinitionOwnershipScope;
   ownerTeamId?: string | null;
   ownerTeamName?: string | null;
+  ownerApplicationId?: string | null;
+  ownerApplicationName?: string | null;
+  ownerPackageId?: string | null;
+  ownerLocalApplicationId?: string | null;
+  defaultLaunchConfig: AgentDefinitionDefaultLaunchConfig | null;
 
   constructor(options: {
     name: string;
@@ -39,6 +50,11 @@ export class AgentDefinition {
     ownershipScope?: AgentDefinitionOwnershipScope;
     ownerTeamId?: string | null;
     ownerTeamName?: string | null;
+    ownerApplicationId?: string | null;
+    ownerApplicationName?: string | null;
+    ownerPackageId?: string | null;
+    ownerLocalApplicationId?: string | null;
+    defaultLaunchConfig?: AgentDefinitionDefaultLaunchConfig | null;
   }) {
     this.name = options.name;
     this.role = options.role;
@@ -58,6 +74,11 @@ export class AgentDefinition {
     this.ownershipScope = options.ownershipScope ?? "shared";
     this.ownerTeamId = options.ownerTeamId ?? null;
     this.ownerTeamName = options.ownerTeamName ?? null;
+    this.ownerApplicationId = options.ownerApplicationId ?? null;
+    this.ownerApplicationName = options.ownerApplicationName ?? null;
+    this.ownerPackageId = options.ownerPackageId ?? null;
+    this.ownerLocalApplicationId = options.ownerLocalApplicationId ?? null;
+    this.defaultLaunchConfig = options.defaultLaunchConfig ?? null;
   }
 }
 
@@ -76,4 +97,5 @@ export type AgentDefinitionUpdate = {
   toolInvocationPreprocessorNames?: string[];
   lifecycleProcessorNames?: string[];
   skillNames?: string[];
+  defaultLaunchConfig?: AgentDefinitionDefaultLaunchConfig | null;
 };

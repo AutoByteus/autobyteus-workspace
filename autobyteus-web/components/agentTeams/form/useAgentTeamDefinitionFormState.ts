@@ -1,40 +1,52 @@
-import { computed, ref, type ComputedRef } from 'vue';
-import { useLocalization } from '~/composables/useLocalization';
-import type { TeamMemberInput } from '~/stores/agentTeamDefinitionStore';
+import { computed, ref, type ComputedRef } from 'vue'
+import { useLocalization } from '~/composables/useLocalization'
+import type {
+  AgentMemberRefScope,
+  AgentTeamDefinitionOwnershipScope,
+  TeamMemberInput,
+} from '~/stores/agentTeamDefinitionStore'
+import type { AgentDefinitionOwnershipScope } from '~/stores/agentDefinitionStore'
 
-type ReferenceType = 'AGENT' | 'AGENT_TEAM';
-type RefScope = 'SHARED' | 'TEAM_LOCAL' | null;
+type ReferenceType = 'AGENT' | 'AGENT_TEAM'
+type RefScope = AgentMemberRefScope
 
-type NamedDefinition = {
-  id: string;
-  name: string;
-};
+type AgentLibraryDefinition = {
+  id: string
+  name: string
+  ownershipScope?: AgentDefinitionOwnershipScope | null
+}
+
+type TeamLibraryDefinition = {
+  id: string
+  name: string
+  ownershipScope?: AgentTeamDefinitionOwnershipScope | null
+}
 
 type TeamFormData = {
-  name: string;
-  category: string;
-  description: string;
-  instructions: string;
-  avatarUrl: string;
-  coordinatorMemberName: string;
-  nodes: TeamMemberInput[];
-};
+  name: string
+  category: string
+  description: string
+  instructions: string
+  avatarUrl: string
+  coordinatorMemberName: string
+  nodes: TeamMemberInput[]
+}
 
 type FormStateOptions = {
-  formData: TeamFormData;
-  formErrors: Record<string, string>;
-  currentTeamDefinitionId: ComputedRef<string | null>;
-  agentDefinitions: ComputedRef<NamedDefinition[]>;
-  teamDefinitions: ComputedRef<NamedDefinition[]>;
-  getAgentDefinitionById: (id: string) => NamedDefinition | null | undefined;
-  getAgentTeamDefinitionById: (id: string) => NamedDefinition | null | undefined;
-};
+  formData: TeamFormData
+  formErrors: Record<string, string>
+  currentTeamDefinitionId: ComputedRef<string | null>
+  agentDefinitions: ComputedRef<AgentLibraryDefinition[]>
+  teamDefinitions: ComputedRef<TeamLibraryDefinition[]>
+  getAgentDefinitionById: (id: string) => AgentLibraryDefinition | null | undefined
+  getAgentTeamDefinitionById: (id: string) => TeamLibraryDefinition | null | undefined
+}
 
 export interface LibraryItem {
-  id: string;
-  name: string;
-  refType: ReferenceType;
-  refScope?: Exclude<RefScope, null>;
+  id: string
+  name: string
+  refType: ReferenceType
+  refScope?: Exclude<RefScope, null>
 }
 
 export const createInitialFormData = (): TeamFormData => ({
@@ -45,15 +57,15 @@ export const createInitialFormData = (): TeamFormData => ({
   avatarUrl: '',
   coordinatorMemberName: '',
   nodes: [],
-});
+})
 
-export const mapInitialTeamNodes = (nodes: any[] = []): TeamMemberInput[] =>
-  nodes.map((node: any) => ({
+export const mapInitialTeamNodes = (nodes: TeamMemberInput[] = []): TeamMemberInput[] =>
+  nodes.map((node) => ({
     memberName: node.memberName,
     refType: node.refType,
     ref: node.ref,
     refScope: node.refType === 'AGENT' ? node.refScope ?? 'SHARED' : null,
-  }));
+  }))
 
 export const buildSubmitNodes = (nodes: TeamMemberInput[]): TeamMemberInput[] =>
   nodes.map((node) => ({
@@ -61,7 +73,13 @@ export const buildSubmitNodes = (nodes: TeamMemberInput[]): TeamMemberInput[] =>
     refType: node.refType,
     ref: node.ref,
     refScope: node.refType === 'AGENT' ? node.refScope ?? 'SHARED' : null,
-  }));
+  }))
+
+const normalizeAgentLibraryScope = (
+  value: AgentDefinitionOwnershipScope | null | undefined,
+): Exclude<RefScope, null> => (
+  value === 'APPLICATION_OWNED' ? 'APPLICATION_OWNED' : 'SHARED'
+)
 
 export const useAgentTeamDefinitionFormState = ({
   formData,
@@ -72,23 +90,23 @@ export const useAgentTeamDefinitionFormState = ({
   getAgentDefinitionById,
   getAgentTeamDefinitionById,
 }: FormStateOptions) => {
-  const { t } = useLocalization();
-  const librarySearch = ref('');
-  const selectedNodeIndex = ref<number | null>(null);
-  const isCanvasDragOver = ref(false);
+  const { t } = useLocalization()
+  const librarySearch = ref('')
+  const selectedNodeIndex = ref<number | null>(null)
+  const isCanvasDragOver = ref(false)
 
   const clearErrors = () => {
-    Object.keys(formErrors).forEach((key) => delete formErrors[key]);
-  };
+    Object.keys(formErrors).forEach((key) => delete formErrors[key])
+  }
 
   const agentLibraryItems = computed<LibraryItem[]>(() =>
     agentDefinitions.value.map((agent) => ({
       id: agent.id,
       name: agent.name,
       refType: 'AGENT',
-      refScope: 'SHARED',
+      refScope: normalizeAgentLibraryScope(agent.ownershipScope),
     })),
-  );
+  )
 
   const teamLibraryItems = computed<LibraryItem[]>(() =>
     teamDefinitions.value
@@ -98,40 +116,40 @@ export const useAgentTeamDefinitionFormState = ({
         name: team.name,
         refType: 'AGENT_TEAM',
       })),
-  );
+  )
 
   const filteredAgentItems = computed(() => {
-    const query = librarySearch.value.trim().toLowerCase();
+    const query = librarySearch.value.trim().toLowerCase()
     if (!query) {
-      return agentLibraryItems.value;
+      return agentLibraryItems.value
     }
-    return agentLibraryItems.value.filter((item) => item.name.toLowerCase().includes(query));
-  });
+    return agentLibraryItems.value.filter((item) => item.name.toLowerCase().includes(query))
+  })
 
   const filteredTeamItems = computed(() => {
-    const query = librarySearch.value.trim().toLowerCase();
+    const query = librarySearch.value.trim().toLowerCase()
     if (!query) {
-      return teamLibraryItems.value;
+      return teamLibraryItems.value
     }
-    return teamLibraryItems.value.filter((item) => item.name.toLowerCase().includes(query));
-  });
+    return teamLibraryItems.value.filter((item) => item.name.toLowerCase().includes(query))
+  })
 
   const selectedNode = computed(() => {
     if (selectedNodeIndex.value === null) {
-      return null;
+      return null
     }
-    return formData.nodes[selectedNodeIndex.value] || null;
-  });
+    return formData.nodes[selectedNodeIndex.value] || null
+  })
 
   const getReferenceName = (node: TeamMemberInput): string => {
     if (node.refType === 'AGENT') {
       if (node.refScope === 'TEAM_LOCAL') {
-        return t('agentTeams.components.agentTeams.form.useAgentTeamDefinitionFormState.localAgent', { id: node.ref });
+        return t('agentTeams.components.agentTeams.form.useAgentTeamDefinitionFormState.localAgent', { id: node.ref })
       }
-      return getAgentDefinitionById(node.ref)?.name || node.ref;
+      return getAgentDefinitionById(node.ref)?.name || node.ref
     }
-    return getAgentTeamDefinitionById(node.ref)?.name || node.ref;
-  };
+    return getAgentTeamDefinitionById(node.ref)?.name || node.ref
+  }
 
   const buildMemberBaseName = (rawName: string): string => {
     const normalized = rawName
@@ -140,24 +158,24 @@ export const useAgentTeamDefinitionFormState = ({
       .replace(/[^a-zA-Z0-9_]/g, '_')
       .replace(/_+/g, '_')
       .replace(/^_+|_+$/g, '')
-      .toLowerCase();
+      .toLowerCase()
 
-    return normalized || 'member';
-  };
+    return normalized || 'member'
+  }
 
   const buildUniqueMemberName = (rawName: string): string => {
-    const baseName = buildMemberBaseName(rawName);
-    const used = new Set(formData.nodes.map((node) => node.memberName));
+    const baseName = buildMemberBaseName(rawName)
+    const used = new Set(formData.nodes.map((node) => node.memberName))
     if (!used.has(baseName)) {
-      return baseName;
+      return baseName
     }
 
-    let counter = 2;
+    let counter = 2
     while (used.has(`${baseName}_${counter}`)) {
-      counter += 1;
+      counter += 1
     }
-    return `${baseName}_${counter}`;
-  };
+    return `${baseName}_${counter}`
+  }
 
   const addNodeFromLibrary = (item: LibraryItem) => {
     const newNode: TeamMemberInput = {
@@ -165,163 +183,163 @@ export const useAgentTeamDefinitionFormState = ({
       refType: item.refType,
       ref: item.id,
       refScope: item.refType === 'AGENT' ? item.refScope ?? 'SHARED' : null,
-    };
+    }
 
-    formData.nodes.push(newNode);
-    selectedNodeIndex.value = formData.nodes.length - 1;
+    formData.nodes.push(newNode)
+    selectedNodeIndex.value = formData.nodes.length - 1
 
     if (!formData.coordinatorMemberName && newNode.refType === 'AGENT') {
-      formData.coordinatorMemberName = newNode.memberName;
+      formData.coordinatorMemberName = newNode.memberName
     }
-  };
+  }
 
   const onLibraryDragStart = (event: DragEvent, item: LibraryItem) => {
     if (!event.dataTransfer) {
-      return;
+      return
     }
-    event.dataTransfer.effectAllowed = 'copy';
-    event.dataTransfer.setData('application/json', JSON.stringify(item));
-  };
+    event.dataTransfer.effectAllowed = 'copy'
+    event.dataTransfer.setData('application/json', JSON.stringify(item))
+  }
 
   const handleCanvasDrop = (event: DragEvent) => {
-    isCanvasDragOver.value = false;
-    const payload = event.dataTransfer?.getData('application/json');
+    isCanvasDragOver.value = false
+    const payload = event.dataTransfer?.getData('application/json')
     if (!payload) {
-      return;
+      return
     }
 
     try {
-      const item = JSON.parse(payload) as LibraryItem;
+      const item = JSON.parse(payload) as LibraryItem
       if (!item?.id || !item?.name || !item?.refType) {
-        return;
+        return
       }
-      addNodeFromLibrary(item);
+      addNodeFromLibrary(item)
     } catch (error) {
-      console.error('Failed to parse dropped team member payload:', error);
+      console.error('Failed to parse dropped team member payload:', error)
     }
-  };
+  }
 
   const selectNode = (index: number) => {
-    selectedNodeIndex.value = index;
-  };
+    selectedNodeIndex.value = index
+  }
 
   const removeNode = (index: number) => {
-    const removedNodeName = formData.nodes[index]?.memberName;
-    formData.nodes.splice(index, 1);
+    const removedNodeName = formData.nodes[index]?.memberName
+    formData.nodes.splice(index, 1)
 
     if (formData.coordinatorMemberName === removedNodeName) {
-      formData.coordinatorMemberName = '';
+      formData.coordinatorMemberName = ''
     }
 
     if (selectedNodeIndex.value === null) {
-      return;
+      return
     }
     if (formData.nodes.length === 0) {
-      selectedNodeIndex.value = null;
+      selectedNodeIndex.value = null
     } else if (selectedNodeIndex.value >= formData.nodes.length) {
-      selectedNodeIndex.value = formData.nodes.length - 1;
+      selectedNodeIndex.value = formData.nodes.length - 1
     } else if (selectedNodeIndex.value === index) {
-      selectedNodeIndex.value = Math.max(0, index - 1);
+      selectedNodeIndex.value = Math.max(0, index - 1)
     }
-  };
+  }
 
   const isCoordinator = (node: TeamMemberInput) =>
-    formData.coordinatorMemberName === node.memberName;
+    formData.coordinatorMemberName === node.memberName
 
   const toggleCoordinator = (node: TeamMemberInput) => {
     if (node.refType !== 'AGENT') {
-      return;
+      return
     }
-    formData.coordinatorMemberName = isCoordinator(node) ? '' : node.memberName;
-  };
+    formData.coordinatorMemberName = isCoordinator(node) ? '' : node.memberName
+  }
 
   const updateSelectedMemberName = (nextNameRaw: string) => {
     if (!selectedNode.value) {
-      return;
+      return
     }
-    const nextName = nextNameRaw.trim();
-    const oldName = selectedNode.value.memberName;
-    selectedNode.value.memberName = nextName;
+    const nextName = nextNameRaw.trim()
+    const oldName = selectedNode.value.memberName
+    selectedNode.value.memberName = nextName
 
     if (formData.coordinatorMemberName === oldName) {
-      formData.coordinatorMemberName = nextName;
+      formData.coordinatorMemberName = nextName
     }
-  };
+  }
 
   const validateForm = () => {
-    clearErrors();
-    let valid = true;
+    clearErrors()
+    let valid = true
 
     if (!formData.name.trim()) {
-      formErrors.name = t('agentTeams.components.agentTeams.form.useAgentTeamDefinitionFormState.error.teamNameRequired');
-      valid = false;
+      formErrors.name = t('agentTeams.components.agentTeams.form.useAgentTeamDefinitionFormState.error.teamNameRequired')
+      valid = false
     }
 
     if (!formData.description.trim()) {
-      formErrors.description = t('agentTeams.components.agentTeams.form.useAgentTeamDefinitionFormState.error.teamDescriptionRequired');
-      valid = false;
+      formErrors.description = t('agentTeams.components.agentTeams.form.useAgentTeamDefinitionFormState.error.teamDescriptionRequired')
+      valid = false
     }
 
     if (formData.nodes.length === 0) {
-      formErrors.nodes = t('agentTeams.components.agentTeams.form.useAgentTeamDefinitionFormState.error.addMember');
-      valid = false;
+      formErrors.nodes = t('agentTeams.components.agentTeams.form.useAgentTeamDefinitionFormState.error.addMember')
+      valid = false
     }
 
-    const memberNames = new Set<string>();
+    const memberNames = new Set<string>()
     for (const node of formData.nodes) {
       if (!node.memberName.trim()) {
-        formErrors.nodes = t('agentTeams.components.agentTeams.form.useAgentTeamDefinitionFormState.error.memberNameRequired');
-        valid = false;
-        break;
+        formErrors.nodes = t('agentTeams.components.agentTeams.form.useAgentTeamDefinitionFormState.error.memberNameRequired')
+        valid = false
+        break
       }
       if (!node.ref) {
-        formErrors.nodes = t('agentTeams.components.agentTeams.form.useAgentTeamDefinitionFormState.error.memberSourceRequired');
-        valid = false;
-        break;
+        formErrors.nodes = t('agentTeams.components.agentTeams.form.useAgentTeamDefinitionFormState.error.memberSourceRequired')
+        valid = false
+        break
       }
       if (node.refType === 'AGENT' && !node.refScope) {
-        formErrors.nodes = t('agentTeams.components.agentTeams.form.useAgentTeamDefinitionFormState.error.agentScopeRequired');
-        valid = false;
-        break;
+        formErrors.nodes = t('agentTeams.components.agentTeams.form.useAgentTeamDefinitionFormState.error.agentScopeRequired')
+        valid = false
+        break
       }
       if (node.refType === 'AGENT_TEAM' && node.refScope) {
-        formErrors.nodes = t('agentTeams.components.agentTeams.form.useAgentTeamDefinitionFormState.error.nestedTeamScopeForbidden');
-        valid = false;
-        break;
+        formErrors.nodes = t('agentTeams.components.agentTeams.form.useAgentTeamDefinitionFormState.error.nestedTeamScopeForbidden')
+        valid = false
+        break
       }
       if (memberNames.has(node.memberName)) {
-        formErrors.nodes = t('agentTeams.components.agentTeams.form.useAgentTeamDefinitionFormState.error.memberNamesUnique');
-        valid = false;
-        break;
+        formErrors.nodes = t('agentTeams.components.agentTeams.form.useAgentTeamDefinitionFormState.error.memberNamesUnique')
+        valid = false
+        break
       }
-      memberNames.add(node.memberName);
+      memberNames.add(node.memberName)
 
       if (
-        currentTeamDefinitionId.value &&
-        node.refType === 'AGENT_TEAM' &&
-        node.ref === currentTeamDefinitionId.value
+        currentTeamDefinitionId.value
+        && node.refType === 'AGENT_TEAM'
+        && node.ref === currentTeamDefinitionId.value
       ) {
-        formErrors.nodes = t('agentTeams.components.agentTeams.form.useAgentTeamDefinitionFormState.error.selfReferenceForbidden');
-        valid = false;
-        break;
+        formErrors.nodes = t('agentTeams.components.agentTeams.form.useAgentTeamDefinitionFormState.error.selfReferenceForbidden')
+        valid = false
+        break
       }
     }
 
     if (!formData.coordinatorMemberName) {
-      formErrors.coordinatorMemberName = t('agentTeams.components.agentTeams.form.useAgentTeamDefinitionFormState.error.coordinatorRequired');
-      valid = false;
+      formErrors.coordinatorMemberName = t('agentTeams.components.agentTeams.form.useAgentTeamDefinitionFormState.error.coordinatorRequired')
+      valid = false
     } else {
       const coordinatorExists = formData.nodes.some(
         (node) => node.refType === 'AGENT' && node.memberName === formData.coordinatorMemberName,
-      );
+      )
       if (!coordinatorExists) {
-        formErrors.coordinatorMemberName = t('agentTeams.components.agentTeams.form.useAgentTeamDefinitionFormState.error.coordinatorMustBeAgent');
-        valid = false;
+        formErrors.coordinatorMemberName = t('agentTeams.components.agentTeams.form.useAgentTeamDefinitionFormState.error.coordinatorMustBeAgent')
+        valid = false
       }
     }
 
-    return valid;
-  };
+    return valid
+  }
 
   return {
     addNodeFromLibrary,
@@ -341,5 +359,5 @@ export const useAgentTeamDefinitionFormState = ({
     toggleCoordinator,
     updateSelectedMemberName,
     validateForm,
-  };
-};
+  }
+}

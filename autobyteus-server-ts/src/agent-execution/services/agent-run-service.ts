@@ -29,6 +29,7 @@ import type { RunKnownStatus } from "../../run-history/domain/agent-run-history-
 import { AgentRunMemoryLayout } from "../../agent-memory/store/agent-run-memory-layout.js";
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import { generateStandaloneAgentRunId } from "../../run-history/utils/agent-run-id-utils.js";
+import type { ApplicationSessionLaunchContext } from "../../application-sessions/domain/models.js";
 
 export interface CreateAgentRunInput {
   agentDefinitionId: string;
@@ -39,6 +40,7 @@ export interface CreateAgentRunInput {
   llmConfig?: Record<string, unknown> | null;
   skillAccessMode: SkillAccessMode;
   runtimeKind: string;
+  applicationSessionContext?: ApplicationSessionLaunchContext | null;
 }
 
 export interface CreateAgentRunResult {
@@ -173,6 +175,7 @@ export class AgentRunService {
       autoExecuteTools: input.autoExecuteTools,
       llmConfig: input.llmConfig ?? null,
       skillAccessMode,
+      applicationSessionContext: input.applicationSessionContext ?? null,
     });
     const activeRun = await this.agentRunManager.createAgentRun(
       preparedRun.config,
@@ -251,6 +254,7 @@ export class AgentRunService {
     autoExecuteTools: boolean;
     llmConfig: Record<string, unknown> | null;
     skillAccessMode: SkillAccessMode;
+    applicationSessionContext: ApplicationSessionLaunchContext | null;
   }): Promise<{ runId: string; config: AgentRunConfig }> {
     const runId = await this.generateFreshRunId(input.runtimeKind, input.agentDefinitionId);
     const memoryDir = this.memoryLayout.getRunDirPath(runId);
@@ -265,6 +269,7 @@ export class AgentRunService {
         memoryDir,
         llmConfig: input.llmConfig,
         skillAccessMode: input.skillAccessMode,
+        applicationSessionContext: input.applicationSessionContext,
       }),
     };
   }

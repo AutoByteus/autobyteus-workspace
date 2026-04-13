@@ -25,7 +25,7 @@
         <button @click="goBackToList" class="text-indigo-600 hover:underline mt-2 inline-block">{{ $t('agents.components.agents.AgentDetail.and_larr_back_to_all_agents') }}</button>
       </div>
 
-      <div v-else class="bg-white p-8 rounded-xl shadow-md border border-gray-200">
+      <div v-else-if="agentDef" class="bg-white p-8 rounded-xl shadow-md border border-gray-200">
         <div class="grid grid-cols-1 xl:grid-cols-[300px_minmax(0,1fr)] gap-8">
           <aside class="rounded-2xl border border-indigo-100 bg-gradient-to-b from-indigo-50 to-white p-5 space-y-5">
             <div class="mx-auto h-48 w-48 overflow-hidden rounded-3xl bg-slate-100 flex items-center justify-center shadow-sm">
@@ -39,10 +39,19 @@
               <span v-else class="text-6xl font-semibold tracking-wide text-slate-600">{{ avatarInitials }}</span>
             </div>
 
-            <div class="text-center">
+              <div class="text-center">
               <h1 class="text-2xl font-bold text-gray-900">{{ agentDef.name }}</h1>
               <p v-if="agentDef.role" class="text-sm text-indigo-700 font-medium mt-1">{{ agentDef.role }}</p>
               <p v-if="teamLabel" class="text-sm text-gray-500 mt-1">{{ $t('agents.components.agents.AgentDetail.teamLabel', { team: teamLabel }) }}</p>
+              <p v-if="applicationLabel" class="text-sm text-gray-500 mt-1">Application: {{ applicationLabel }}</p>
+              <div v-if="ownershipBadge" class="mt-2 flex justify-center">
+                <span
+                  class="rounded-full px-2.5 py-0.5 text-[11px] font-semibold"
+                  :class="isApplicationOwned ? 'bg-blue-50 text-blue-700' : 'bg-violet-50 text-violet-700'"
+                >
+                  {{ ownershipBadge }}
+                </span>
+              </div>
             </div>
 
             <div class="grid grid-cols-2 gap-2 text-center">
@@ -64,12 +73,12 @@
                 {{ $t('agents.components.agents.AgentDetail.edit') }}
               </button>
               <AgentDuplicateButton
-                v-if="!isTeamLocal"
+                v-if="isShared"
                 :agent-id="agentDef.id"
                 :default-name="agentDef.name"
                 @duplicated="handleDuplicated"
               />
-              <button v-if="!isTeamLocal" @click="handleDelete(agentDef.id)" class="w-full px-4 py-2 bg-red-50 text-red-700 font-semibold rounded-md hover:bg-red-100 transition-colors flex items-center justify-center">
+              <button v-if="isShared" @click="handleDelete(agentDef.id)" class="w-full px-4 py-2 bg-red-50 text-red-700 font-semibold rounded-md hover:bg-red-100 transition-colors flex items-center justify-center">
                 <span class="block i-heroicons-trash-20-solid w-5 h-5 mr-2"></span>
                 {{ $t('agents.components.agents.AgentDetail.delete') }}
               </button>
@@ -80,9 +89,19 @@
             <div class="rounded-xl border border-gray-200 bg-white p-5">
               <h2 class="text-lg font-semibold text-gray-800 mb-2">{{ $t('agents.components.agents.AgentDetail.description') }}</h2>
               <p class="text-gray-600 whitespace-pre-wrap">{{ agentDef.description }}</p>
-              <div class="mt-4 border-t border-gray-200 pt-4">
-                <p class="text-xs uppercase tracking-wide text-gray-500">{{ $t('agents.components.agents.AgentDetail.category') }}</p>
-                <p class="mt-1 text-sm text-gray-700">{{ agentDef.category || $t('agents.components.agents.AgentDetail.uncategorized') }}</p>
+              <div class="mt-4 grid grid-cols-1 gap-4 border-t border-gray-200 pt-4 md:grid-cols-3">
+                <div>
+                  <p class="text-xs uppercase tracking-wide text-gray-500">{{ $t('agents.components.agents.AgentDetail.category') }}</p>
+                  <p class="mt-1 text-sm text-gray-700">{{ agentDef.category || $t('agents.components.agents.AgentDetail.uncategorized') }}</p>
+                </div>
+                <div>
+                  <p class="text-xs uppercase tracking-wide text-gray-500">Default runtime</p>
+                  <p class="mt-1 text-sm text-gray-700">{{ agentDef.defaultLaunchConfig?.runtimeKind || 'Not set' }}</p>
+                </div>
+                <div>
+                  <p class="text-xs uppercase tracking-wide text-gray-500">Default model</p>
+                  <p class="mt-1 break-all text-sm text-gray-700">{{ agentDef.defaultLaunchConfig?.llmModelIdentifier || 'Not set' }}</p>
+                </div>
               </div>
             </div>
 
@@ -149,6 +168,7 @@ import AgentDuplicateButton from '~/components/agents/AgentDuplicateButton.vue';
 import ExpandableInstructionCard from '~/components/common/ExpandableInstructionCard.vue';
 import { useAgentRunConfigStore } from '~/stores/agentRunConfigStore';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
+import { formatApplicationOwnershipLabel } from '~/utils/definitionOwnership';
 
 const props = defineProps<{ agentDefinitionId: string }>();
 const { agentDefinitionId } = toRefs(props);
@@ -158,7 +178,7 @@ const emit = defineEmits(['navigate']);
 const agentDefinitionStore = useAgentDefinitionStore();
 const runConfigStore = useAgentRunConfigStore();
 const selectionStore = useAgentSelectionStore();
-const agentDef = computed(() => agentDefinitionStore.getAgentDefinitionById(agentDefinitionId.value));
+const agentDef = computed<AgentDefinition | null>(() => agentDefinitionStore.getAgentDefinitionById(agentDefinitionId.value) ?? null);
 const loading = ref(false);
 const avatarLoadError = ref(false);
 
@@ -171,7 +191,16 @@ const viewState = computed(() => {
   return 'ready';
 });
 
-const componentLists = [
+type AgentDefinitionArrayField =
+  | 'toolNames'
+  | 'inputProcessorNames'
+  | 'llmResponseProcessorNames'
+  | 'systemPromptProcessorNames'
+  | 'toolExecutionResultProcessorNames'
+  | 'toolInvocationPreprocessorNames'
+  | 'lifecycleProcessorNames'
+
+const componentLists: Array<{ title: string; key: AgentDefinitionArrayField }> = [
   { title: 'Tools', key: 'toolNames' },
   { title: 'Input Processors', key: 'inputProcessorNames' },
   { title: 'LLM Response Processors', key: 'llmResponseProcessorNames' },
@@ -191,7 +220,10 @@ const optionalProcessorLists = computed(() => {
 
 const avatarUrl = computed(() => agentDef.value?.avatarUrl || '');
 const showAvatarImage = computed(() => Boolean(avatarUrl.value) && !avatarLoadError.value);
-const isTeamLocal = computed(() => (agentDef.value?.ownershipScope ?? 'SHARED') === 'TEAM_LOCAL');
+const ownershipScope = computed(() => agentDef.value?.ownershipScope ?? 'SHARED');
+const isShared = computed(() => ownershipScope.value === 'SHARED');
+const isTeamLocal = computed(() => ownershipScope.value === 'TEAM_LOCAL');
+const isApplicationOwned = computed(() => ownershipScope.value === 'APPLICATION_OWNED');
 const teamLabel = computed(() => {
   if (!isTeamLocal.value) {
     return '';
@@ -199,6 +231,21 @@ const teamLabel = computed(() => {
   return agentDef.value?.ownerTeamName?.trim()
     || agentDef.value?.ownerTeamId?.trim()
     || '';
+});
+const applicationLabel = computed(() => {
+  if (!isApplicationOwned.value || !agentDef.value) {
+    return '';
+  }
+  return formatApplicationOwnershipLabel(agentDef.value);
+});
+const ownershipBadge = computed(() => {
+  if (isTeamLocal.value) {
+    return 'Team-local';
+  }
+  if (isApplicationOwned.value) {
+    return 'Application-owned';
+  }
+  return '';
 });
 const avatarInitials = computed(() => {
   const raw = agentDef.value?.name?.trim() || '';

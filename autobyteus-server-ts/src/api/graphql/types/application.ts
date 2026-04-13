@@ -1,67 +1,107 @@
-import { Arg, Field, Mutation, ObjectType, Query, Resolver } from "type-graphql";
-import { GraphQLJSONObject } from "graphql-scalars";
-import { getApplicationService } from "../../../services/application-service.js";
+import { Arg, Field, ObjectType, Query, Resolver, registerEnumType } from "type-graphql";
+import { ApplicationBundleService } from "../../../application-bundles/services/application-bundle-service.js";
+
+export enum ApplicationRuntimeTargetKind {
+  AGENT = "AGENT",
+  AGENT_TEAM = "AGENT_TEAM",
+}
+
+registerEnumType(ApplicationRuntimeTargetKind, {
+  name: "ApplicationRuntimeTargetKind",
+});
 
 @ObjectType()
-export class ApplicationManifest {
+export class ApplicationRuntimeTarget {
+  @Field(() => ApplicationRuntimeTargetKind)
+  kind!: ApplicationRuntimeTargetKind;
+
+  @Field(() => String)
+  localId!: string;
+
+  @Field(() => String)
+  definitionId!: string;
+}
+
+@ObjectType()
+export class Application {
   @Field(() => String)
   id!: string;
+
+  @Field(() => String)
+  localApplicationId!: string;
+
+  @Field(() => String)
+  packageId!: string;
 
   @Field(() => String)
   name!: string;
 
   @Field(() => String, { nullable: true })
-  description?: string;
+  description?: string | null;
 
   @Field(() => String, { nullable: true })
-  icon?: string;
+  iconAssetPath?: string | null;
 
-  @Field(() => String, { nullable: true })
-  type?: string;
+  @Field(() => String)
+  entryHtmlAssetPath!: string;
 
-  @Field(() => String, { nullable: true })
-  teamDefinitionName?: string;
+  @Field(() => Boolean)
+  writable!: boolean;
+
+  @Field(() => ApplicationRuntimeTarget)
+  runtimeTarget!: ApplicationRuntimeTarget;
 }
 
 @Resolver()
 export class ApplicationResolver {
-  private get applicationService() {
-    return getApplicationService();
+  private readonly service = ApplicationBundleService.getInstance();
+
+  @Query(() => [Application])
+  async listApplications(): Promise<Application[]> {
+    return (await this.service.listApplications()).map((application) => ({
+      id: application.id,
+      localApplicationId: application.localApplicationId,
+      packageId: application.packageId,
+      name: application.name,
+      description: application.description,
+      iconAssetPath: application.iconAssetPath,
+      entryHtmlAssetPath: application.entryHtmlAssetPath,
+      writable: application.writable,
+      runtimeTarget: {
+        kind:
+          application.runtimeTarget.kind === "AGENT"
+            ? ApplicationRuntimeTargetKind.AGENT
+            : ApplicationRuntimeTargetKind.AGENT_TEAM,
+        localId: application.runtimeTarget.localId,
+        definitionId: application.runtimeTarget.definitionId,
+      },
+    }));
   }
 
-  @Query(() => [ApplicationManifest])
-  listApplications(): ApplicationManifest[] {
-    try {
-      const manifests = this.applicationService.listApplications();
-      return manifests.map((manifest) => ({
-        id: String(manifest.id ?? ""),
-        name: String(manifest.name ?? ""),
-        description: manifest.description ? String(manifest.description) : undefined,
-        icon: manifest.icon ? String(manifest.icon) : undefined,
-        type: manifest.type ? String(manifest.type) : undefined,
-        teamDefinitionName: manifest.teamDefinitionName
-          ? String(manifest.teamDefinitionName)
-          : undefined,
-      }));
-    } catch (error) {
-      throw new Error("Unable to fetch applications at this time.");
+  @Query(() => Application, { nullable: true })
+  async application(@Arg("id", () => String) id: string): Promise<Application | null> {
+    const application = await this.service.getApplicationById(id);
+    if (!application) {
+      return null;
     }
-  }
 
-  @Mutation(() => GraphQLJSONObject)
-  async runApplication(
-    @Arg("appId", () => String) appId: string,
-    @Arg("input", () => GraphQLJSONObject) input: Record<string, unknown>,
-  ): Promise<Record<string, unknown>> {
-    try {
-      return (await this.applicationService.runApplication(appId, input)) as Record<string, unknown>;
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new Error(error.message);
-      }
-      throw new Error(
-        `An unexpected error occurred while running the application '${appId}'.`,
-      );
-    }
+    return {
+      id: application.id,
+      localApplicationId: application.localApplicationId,
+      packageId: application.packageId,
+      name: application.name,
+      description: application.description,
+      iconAssetPath: application.iconAssetPath,
+      entryHtmlAssetPath: application.entryHtmlAssetPath,
+      writable: application.writable,
+      runtimeTarget: {
+        kind:
+          application.runtimeTarget.kind === "AGENT"
+            ? ApplicationRuntimeTargetKind.AGENT
+            : ApplicationRuntimeTargetKind.AGENT_TEAM,
+        localId: application.runtimeTarget.localId,
+        definitionId: application.runtimeTarget.definitionId,
+      },
+    };
   }
 }

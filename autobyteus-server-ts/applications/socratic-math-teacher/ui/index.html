@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Socratic Math Teacher</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #f8fafc;
+        color: #0f172a;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: linear-gradient(180deg, #eff6ff 0%, #f8fafc 55%, #ffffff 100%);
+      }
+      .shell {
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 32px 24px 48px;
+      }
+      .hero {
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid rgba(148, 163, 184, 0.25);
+        border-radius: 24px;
+        padding: 28px;
+        box-shadow: 0 24px 80px rgba(15, 23, 42, 0.08);
+      }
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #1d4ed8;
+        background: #dbeafe;
+        border-radius: 999px;
+        padding: 8px 12px;
+      }
+      h1 {
+        margin: 16px 0 8px;
+        font-size: clamp(2rem, 5vw, 3rem);
+        line-height: 1.05;
+      }
+      p {
+        margin: 0;
+        line-height: 1.6;
+      }
+      .subtle { color: #475569; }
+      .grid {
+        display: grid;
+        gap: 16px;
+        margin-top: 24px;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      }
+      .card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 18px;
+        padding: 18px;
+      }
+      .label {
+        color: #64748b;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .value {
+        margin-top: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        word-break: break-word;
+      }
+      .stack {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .muted-box {
+        margin-top: 24px;
+        border: 1px dashed #93c5fd;
+        background: #eff6ff;
+        color: #1e3a8a;
+        border-radius: 18px;
+        padding: 18px;
+      }
+      .status {
+        margin-top: 20px;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        border-radius: 999px;
+        padding: 10px 14px;
+        background: #e0f2fe;
+        color: #075985;
+        font-size: 13px;
+        font-weight: 600;
+      }
+      .status-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        background: #0ea5e9;
+      }
+      .hidden { display: none; }
+      code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        background: rgba(148, 163, 184, 0.14);
+        border-radius: 6px;
+        padding: 2px 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero">
+        <div class="eyebrow">Built-in application bundle</div>
+        <h1>Socratic Math Teacher</h1>
+        <p class="subtle">
+          This built-in app now runs through the application-bundle iframe contract. The host launches the
+          underlying runtime first, then bootstraps this bundled UI with the active session metadata.
+        </p>
+
+        <div id="waiting-status" class="status">
+          <span class="status-dot"></span>
+          Waiting for host bootstrap payload…
+        </div>
+
+        <div id="bootstrapped" class="hidden">
+          <div class="grid">
+            <article class="card stack">
+              <span class="label">Application</span>
+              <div class="value" id="application-name">—</div>
+              <div class="subtle" id="application-ids">—</div>
+            </article>
+            <article class="card stack">
+              <span class="label">Runtime session</span>
+              <div class="value" id="session-id">—</div>
+              <div class="subtle" id="runtime-summary">—</div>
+            </article>
+            <article class="card stack">
+              <span class="label">Session transport</span>
+              <div class="value" id="graphql-url">—</div>
+              <div class="subtle" id="api-summary">Bundled applications can call application-session APIs and the session stream after bootstrap.</div>
+            </article>
+          </div>
+
+          <div class="muted-box">
+            <strong>Bootstrap complete.</strong>
+            <p style="margin-top: 8px;">
+              This placeholder bundled UI proves the exact v1 contract path for built-in applications without relying on
+              host-specific Vue imports. Future bundle iterations can layer richer product UX on top of the same contract.
+            </p>
+            <p style="margin-top: 8px;">
+              Current runtime target: <code id="runtime-kind">—</code> · definition <code id="runtime-definition-id">—</code>
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      (function () {
+        const CHANNEL = 'autobyteus.application.host';
+        const CONTRACT_VERSION = '1';
+        const READY_EVENT = 'autobyteus.application.ui.ready';
+        const BOOTSTRAP_EVENT = 'autobyteus.application.host.bootstrap';
+        const QUERY_CONTRACT_VERSION = 'autobyteusContractVersion';
+        const QUERY_APPLICATION_SESSION_ID = 'autobyteusApplicationSessionId';
+        const QUERY_HOST_ORIGIN = 'autobyteusHostOrigin';
+
+        const searchParams = new URLSearchParams(window.location.search);
+        const hintedContractVersion = searchParams.get(QUERY_CONTRACT_VERSION) || '';
+        const applicationSessionId = searchParams.get(QUERY_APPLICATION_SESSION_ID) || '';
+        const hostOrigin = searchParams.get(QUERY_HOST_ORIGIN) || '';
+
+        const waitingStatus = document.getElementById('waiting-status');
+        const bootstrapped = document.getElementById('bootstrapped');
+
+        const setText = function (id, value) {
+          const node = document.getElementById(id);
+          if (node) {
+            node.textContent = value;
+          }
+        };
+
+        const sendReady = function () {
+          if (hintedContractVersion !== CONTRACT_VERSION || !applicationSessionId) {
+            return;
+          }
+
+          window.parent.postMessage({
+            channel: CHANNEL,
+            contractVersion: CONTRACT_VERSION,
+            eventName: READY_EVENT,
+            payload: {
+              applicationSessionId: applicationSessionId,
+            },
+          }, '*');
+        };
+
+        const handleBootstrap = function (event) {
+          if (event.source !== window.parent) return;
+          if (event.origin !== hostOrigin) return;
+          const message = event.data;
+          if (!message || typeof message !== 'object') return;
+          if (message.channel !== CHANNEL) return;
+          if (message.contractVersion !== CONTRACT_VERSION) return;
+          if (message.eventName !== BOOTSTRAP_EVENT) return;
+          if (!message.payload || typeof message.payload !== 'object') return;
+
+          const bootstrap = message.payload;
+          const host = bootstrap.host || {};
+          const application = bootstrap.application || {};
+          const session = bootstrap.session || {};
+          const runtime = bootstrap.runtime || {};
+          const transport = bootstrap.transport || {};
+
+          if (session.applicationSessionId !== applicationSessionId) return;
+          if (host.origin !== hostOrigin) return;
+
+          setText('application-name', application.name || 'Unknown application');
+          setText('application-ids', 'App ' + (application.applicationId || '—') + ' · local ' + (application.localApplicationId || '—') + ' · package ' + (application.packageId || '—'));
+          setText('session-id', session.applicationSessionId || '—');
+          setText('runtime-summary', 'Run ' + (runtime.runId || '—'));
+          setText('graphql-url', transport.graphqlUrl || '—');
+          setText('runtime-kind', runtime.kind || '—');
+          setText('runtime-definition-id', runtime.definitionId || '—');
+          setText('api-summary', 'REST ' + (transport.restBaseUrl || '—') + ' · Session stream ' + (transport.sessionStreamUrl || '—'));
+
+          if (waitingStatus) waitingStatus.classList.add('hidden');
+          if (bootstrapped) bootstrapped.classList.remove('hidden');
+        };
+
+        window.addEventListener('message', handleBootstrap);
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', sendReady, { once: true });
+        } else {
+          sendReady();
+        }
+      })();
+    </script>
+  </body>
+</html>
