@@ -1,8 +1,9 @@
 import type { AgentContext } from '~/types/agent/AgentContext';
-import type { ContextFilePath } from '~/types/conversation';
+import type { ContextAttachmentType } from '~/types/conversation';
 import type { ExternalUserMessagePayload } from '../protocol/messageTypes';
+import { hydrateContextAttachment } from '~/utils/contextFiles/contextAttachmentModel';
 
-const KNOWN_CONTEXT_FILE_TYPES = new Set<ContextFilePath['type']>([
+const KNOWN_CONTEXT_FILE_TYPES = new Set<ContextAttachmentType>([
   'Audio',
   'Csv',
   'Docx',
@@ -21,9 +22,9 @@ const KNOWN_CONTEXT_FILE_TYPES = new Set<ContextFilePath['type']>([
   'Xml',
 ]);
 
-const toContextFileType = (value?: string | null): ContextFilePath['type'] => {
-  if (value && KNOWN_CONTEXT_FILE_TYPES.has(value as ContextFilePath['type'])) {
-    return value as ContextFilePath['type'];
+const toContextFileType = (value?: string | null): ContextAttachmentType => {
+  if (value && KNOWN_CONTEXT_FILE_TYPES.has(value as ContextAttachmentType)) {
+    return value as ContextAttachmentType;
   }
   return 'Unknown';
 };
@@ -44,12 +45,14 @@ export const handleExternalUserMessage = (
   payload: ExternalUserMessagePayload,
   context: AgentContext,
 ): void => {
-  const contextFilePaths: ContextFilePath[] = (payload.context_file_paths ?? [])
+  const contextFilePaths = (payload.context_file_paths ?? [])
     .filter((item) => typeof item?.path === 'string' && item.path.trim().length > 0)
-    .map((item) => ({
-      path: item.path,
-      type: toContextFileType(item.type),
-    }));
+    .map((item) =>
+      hydrateContextAttachment({
+        locator: item.path,
+        type: toContextFileType(item.type),
+      }),
+    );
 
   context.conversation.messages.push({
     type: 'user',

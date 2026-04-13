@@ -8,7 +8,7 @@ import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import { AgentContext } from '~/types/agent/AgentContext';
 import { AgentRunState } from '~/types/agent/AgentRunState';
 import { DEFAULT_AGENT_RUNTIME_KIND, type AgentRunConfig } from '~/types/agent/AgentRunConfig';
-import type { Conversation } from '~/types/conversation';
+import type { ContextAttachment, Conversation } from '~/types/conversation';
 import type {
   TeamMemberConfigInput,
 } from '~/generated/graphql';
@@ -19,6 +19,13 @@ import { ConnectionState, TeamStreamingService } from '~/services/agentStreaming
 import type { TeamRunConfig, MemberConfigOverride } from '~/types/agent/TeamRunConfig';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore';
+import { useContextFileUploadStore } from '~/stores/contextFileUploadStore';
+import { partitionContextAttachmentsForStreaming } from '~/utils/contextFiles/contextAttachmentSend';
+import {
+  buildTeamMemberDraftContextFileOwner,
+  buildTeamMemberFinalContextFileOwner,
+  type DraftContextFileOwnerDescriptor,
+} from '~/utils/contextFiles/contextFileOwner';
 import { normalizeMemberRouteKey, resolveLeafTeamMembers } from '~/utils/teamDefinitionMembers';
 
 
@@ -198,24 +205,27 @@ export const useApplicationRunStore = defineStore('applicationRun', {
       }
     },
 
-    async sendMessageToApplication(applicationRunId: string, text: string, contextPaths: { path: string, type: string }[]) {
+    async sendMessageToApplication(
+      applicationRunId: string,
+      text: string,
+      contextAttachments: ContextAttachment[],
+      options?: {
+        targetMemberRouteKey?: string | null;
+        draftOwner?: DraftContextFileOwnerDescriptor | null;
+      },
+    ) {
       const appContextStore = useApplicationContextStore();
+      const contextFileUploadStore = useContextFileUploadStore();
       const runContext = appContextStore.getRun(applicationRunId);
       if (!runContext) throw new Error(`Application run with ID ${applicationRunId} not found.`);
  
       const { teamContext } = runContext;
-      const focusedMember = teamContext.members.get(teamContext.focusedMemberName);
-      if (!focusedMember) throw new Error("Focused member not found in application context.");
-
-      focusedMember.state.conversation.messages.push({
-        type: 'user',
-        text: text,
-        timestamp: new Date(),
-        contextFilePaths: contextPaths.map(p => ({path: p.path, type: p.type as any}))
-      });
-      focusedMember.state.conversation.updatedAt = new Date().toISOString();
+      const targetMemberRouteKey = options?.targetMemberRouteKey?.trim() || teamContext.focusedMemberName;
+      const focusedMember = teamContext.members.get(targetMemberRouteKey);
+      if (!focusedMember) throw new Error(`Focused member '${targetMemberRouteKey}' not found in application context.`);
 
       const isTemporary = teamContext.teamRunId.startsWith('temp-');
+      const draftOwner = options?.draftOwner ?? buildTeamMemberDraftContextFileOwner(teamContext.teamRunId, targetMemberRouteKey);
 
       try {
         const appProfileStore = useApplicationLaunchProfileStore();
@@ -248,11 +258,30 @@ export const useApplicationRunStore = defineStore('applicationRun', {
           appContextStore.promoteTemporaryTeamRunId(applicationRunId, result.teamRunId);
         }
 
+        const finalizedAttachments = await contextFileUploadStore.finalizeDraftAttachments({
+          draftOwner,
+          finalOwner: buildTeamMemberFinalContextFileOwner(teamContext.teamRunId, targetMemberRouteKey),
+          attachments: contextAttachments,
+        });
+
+        const finalFocusedMember = teamContext.members.get(targetMemberRouteKey);
+        if (!finalFocusedMember) {
+          throw new Error(`Focused member '${targetMemberRouteKey}' not found in application context.`);
+        }
+
+        finalFocusedMember.state.conversation.messages.push({
+          type: 'user',
+          text,
+          timestamp: new Date(),
+          contextFilePaths: finalizedAttachments,
+        });
+        finalFocusedMember.state.conversation.updatedAt = new Date().toISOString();
+
         const service = await this.ensureApplicationStreamConnected(applicationRunId);
-        const streamPayload = partitionContextPaths(contextPaths);
+        const streamPayload = partitionContextAttachmentsForStreaming(finalizedAttachments);
         service.sendMessage(
           text,
-          teamContext.focusedMemberName,
+          targetMemberRouteKey,
           streamPayload.contextFilePaths,
           streamPayload.imageUrls,
         );
@@ -346,23 +375,3 @@ export const useApplicationRunStore = defineStore('applicationRun', {
     }
   },
 });
-
-const partitionContextPaths = (
-  contextPaths: { path: string; type: string }[],
-): { contextFilePaths: string[]; imageUrls: string[] } => {
-  const contextFilePaths: string[] = [];
-  const imageUrls: string[] = [];
-
-  for (const contextPath of contextPaths) {
-    if (!contextPath.path) {
-      continue;
-    }
-    if (contextPath.type.toUpperCase() === 'IMAGE') {
-      imageUrls.push(contextPath.path);
-      continue;
-    }
-    contextFilePaths.push(contextPath.path);
-  }
-
-  return { contextFilePaths, imageUrls };
-};

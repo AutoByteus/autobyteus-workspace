@@ -26,7 +26,7 @@
       </div>
       <div
         data-testid="inter-agent-inline"
-        class="min-w-0 flex-1 break-words text-[15px] leading-7 text-slate-800 dark:text-slate-100"
+        class="min-w-0 flex-1 break-words text-[0.9375rem] leading-7 text-slate-800 dark:text-slate-100"
         :title="metadataTitle"
       >
         <p class="whitespace-pre-wrap break-words">
@@ -62,7 +62,7 @@
     <div
       v-if="showDetails"
       data-testid="inter-agent-details"
-      class="ml-7 mt-0.5 text-[11px] leading-5 text-slate-500 dark:text-slate-400"
+      class="ml-7 mt-0.5 text-[0.6875rem] leading-5 text-slate-500 dark:text-slate-400"
     >
       {{ segment.messageType }} · Intended role: {{ segment.recipientRoleName }}
     </div>

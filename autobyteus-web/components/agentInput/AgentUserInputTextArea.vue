@@ -5,7 +5,7 @@
         :value="internalRequirement"
         @input="handleInput"
         ref="textarea"
-        class="w-full px-3 py-2.5 pr-14 border-0 focus:ring-0 focus:outline-none resize-none bg-transparent text-[15px] leading-6"
+        class="w-full px-3 py-2.5 pr-14 border-0 focus:ring-0 focus:outline-none resize-none bg-transparent text-[0.9375rem] leading-6"
         :style="{
           height: `${textareaHeight}px`,
           minHeight: `${MIN_TEXTAREA_HEIGHT}px`,
@@ -61,7 +61,7 @@
         ></span>
         <span>{{ voiceStatusText }}</span>
       </div>
-      <span v-if="voiceInputStore.isRecording" class="tabular-nums text-[11px] text-current/80">
+      <span v-if="voiceInputStore.isRecording" class="tabular-nums text-[0.6875rem] text-current/80">
         {{ recordingDurationLabel }}
       </span>
     </div>
@@ -74,6 +74,7 @@ import { storeToRefs } from 'pinia';
 import { useActiveContextStore } from '~/stores/activeContextStore';
 import { useVoiceInputStore } from '~/stores/voiceInputStore';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
+import { useContextFileUploadStore } from '~/stores/contextFileUploadStore';
 import { useWorkspaceStore } from '~/stores/workspace';
 import { Icon } from '@iconify/vue';
 import { getFilePathsFromFolder } from '~/utils/fileExplorer/fileUtils';
@@ -84,6 +85,7 @@ import type { AgentContext } from '~/types/agent/AgentContext';
 const activeContextStore = useActiveContextStore();
 const voiceInputStore = useVoiceInputStore();
 const windowNodeContextStore = useWindowNodeContextStore();
+const contextFileUploadStore = useContextFileUploadStore();
 const workspaceStore = useWorkspaceStore();
 
 // Store refs
@@ -95,7 +97,7 @@ const isActionDisabled = computed(() => {
   if (isSending.value) {
     return false;
   }
-  return !internalRequirement.value.trim();
+  return contextFileUploadStore.isUploading || !internalRequirement.value.trim();
 });
 const voiceButtonTitle = computed(() => {
   if (voiceInputStore.isTranscribing) {
@@ -153,7 +155,7 @@ function debounce<T extends (...args: any[]) => any>(
     }
     timeoutId = setTimeout(() => {
       if (lastArgs) {
-        func.apply(this, lastArgs);
+        func(...lastArgs);
       }
       timeoutId = null;
       lastArgs = undefined;
@@ -173,7 +175,7 @@ function debounce<T extends (...args: any[]) => any>(
       clearTimeout(timeoutId);
       timeoutId = null;
       if (lastArgs) {
-        func.apply(this, lastArgs);
+        func(...lastArgs);
         lastArgs = undefined;
       }
     }

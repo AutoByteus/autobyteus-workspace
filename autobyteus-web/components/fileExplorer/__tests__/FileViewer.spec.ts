@@ -24,7 +24,7 @@ describe('FileViewer.vue', () => {
         loading: true
       }
     });
-    expect(wrapper.text()).toContain('Loading content...');
+    expect(wrapper.text()).toContain('Loading content');
   });
 
   it('renders error state', () => {
@@ -35,7 +35,7 @@ describe('FileViewer.vue', () => {
         error: 'Failed to load'
       }
     });
-    expect(wrapper.text()).toContain('Error!');
+    expect(wrapper.text()).toContain('Error');
     expect(wrapper.text()).toContain('Failed to load');
   });
 

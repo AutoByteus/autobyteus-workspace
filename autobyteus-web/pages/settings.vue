@@ -67,6 +67,19 @@
             </li>
             <li class="w-full">
               <button
+                @click="activeSection = 'display'"
+                data-testid="settings-nav-display"
+                class="flex w-full items-center justify-start px-4 py-2 rounded-md transition-colors duration-200 text-gray-700 hover:bg-gray-100 hover:text-gray-900 group"
+                :class="{ 'bg-gray-100 text-gray-900': activeSection === 'display' }"
+              >
+                <div class="flex items-center min-w-[20px] mr-3">
+                  <span class="i-heroicons-computer-desktop-20-solid w-5 h-5"></span>
+                </div>
+                <span class="text-left">{{ $t('settings.page.sections.display') }}</span>
+              </button>
+            </li>
+            <li class="w-full">
+              <button
                 @click="activeSection = 'language'"
                 data-testid="settings-nav-language"
                 class="flex w-full items-center justify-start px-4 py-2 rounded-md transition-colors duration-200 text-gray-700 hover:bg-gray-100 hover:text-gray-900 group"
@@ -186,6 +199,7 @@
         <TokenUsageStatistics v-if="activeSection === 'token-usage'" />
         <NodeManager v-if="activeSection === 'nodes'" />
         <MessagingSetupManager v-if="activeSection === 'messaging'" />
+        <DisplaySettingsManager v-if="activeSection === 'display'" />
         <LanguageSettingsManager v-if="activeSection === 'language'" />
         <ExtensionsManager v-if="activeSection === 'extensions'" />
         <AboutSettingsManager v-if="activeSection === 'updates'" />
@@ -226,6 +240,7 @@ import MessagingSetupManager from '~/components/settings/MessagingSetupManager.v
 import ExtensionsManager from '~/components/settings/ExtensionsManager.vue';
 import AboutSettingsManager from '~/components/settings/AboutSettingsManager.vue';
 import AgentPackagesManager from '~/components/settings/AgentPackagesManager.vue';
+import DisplaySettingsManager from '~/components/settings/DisplaySettingsManager.vue';
 import LanguageSettingsManager from '~/components/settings/LanguageSettingsManager.vue';
 import ToolsManagementWorkspace from '~/components/tools/ToolsManagementWorkspace.vue';
 
@@ -238,6 +253,7 @@ type SettingsSection =
   | 'token-usage'
   | 'nodes'
   | 'messaging'
+  | 'display'
   | 'language'
   | 'extensions'
   | 'updates'
@@ -259,6 +275,7 @@ const validSections = new Set<SettingsSection>([
   'token-usage',
   'nodes',
   'messaging',
+  'display',
   'language',
   'extensions',
   'updates',

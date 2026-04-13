@@ -1,6 +1,7 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { mount } from '@vue/test-utils';
+import { createPinia, setActivePinia } from 'pinia';
 
 const { initMock } = vi.hoisted(() => ({
   initMock: vi.fn(),
@@ -18,6 +19,7 @@ describe('MonacoEditor.vue', () => {
   let mockMonaco: any;
   let mockModel: any;
   let MonacoEditor: any;
+  let useAppFontSizeStore: typeof import('~/stores/appFontSizeStore').useAppFontSizeStore;
 
   beforeEach(async () => {
     vi.clearAllMocks();
@@ -31,7 +33,6 @@ describe('MonacoEditor.vue', () => {
       applyEdits: vi.fn(),
     };
 
-    // Mock Editor Instance
     mockEditor = {
       dispose: vi.fn(),
       getModel: vi.fn(() => mockModel),
@@ -48,12 +49,12 @@ describe('MonacoEditor.vue', () => {
       onDidChangeModelContent: vi.fn(),
     };
 
-    // Mock Monaco Global
     mockMonaco = {
       editor: {
         create: vi.fn(() => mockEditor),
         EditorOption: {
           wordWrap: 'wordWrap',
+          fontSize: 'fontSize',
         },
         setModelLanguage: vi.fn(),
         setTheme: vi.fn(),
@@ -73,50 +74,78 @@ describe('MonacoEditor.vue', () => {
     };
 
     initMock.mockResolvedValue(mockMonaco);
+    setActivePinia(createPinia());
 
     MonacoEditor = (await import('../MonacoEditor.vue')).default;
+    ({ useAppFontSizeStore } = await import('~/stores/appFontSizeStore'));
   });
 
-  it('renders and initializes monaco editor', async () => {
+  it('renders and initializes monaco editor with the default app font size', async () => {
+    const pinia = createPinia();
+    setActivePinia(pinia);
+
     const wrapper = mount(MonacoEditor, {
       props: {
         modelValue: 'initial content',
       },
+      global: {
+        plugins: [pinia],
+      },
       attachTo: document.body,
     });
 
     await wrapper.vm.$nextTick();
-    await new Promise(resolve => setTimeout(resolve, 0)); // Wait for async init
+    await new Promise((resolve) => setTimeout(resolve, 0));
     await wrapper.vm.$nextTick();
 
     expect(wrapper.find('.monaco-editor-container').exists()).toBe(true);
+    expect(mockMonaco.editor.create).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({ fontSize: 14 }),
+    );
   });
 
-  it('uses full replace for non-append updates', async () => {
+  it('updates monaco options when the app font size preset changes', async () => {
+    const pinia = createPinia();
+    setActivePinia(pinia);
+    const store = useAppFontSizeStore();
+
     const wrapper = mount(MonacoEditor, {
       props: {
         modelValue: 'initial',
       },
+      global: {
+        plugins: [pinia],
+      },
       attachTo: document.body,
     });
-    
+
     await wrapper.vm.$nextTick();
-    await new Promise(resolve => setTimeout(resolve, 0));
+    await new Promise((resolve) => setTimeout(resolve, 0));
     await wrapper.vm.$nextTick();
 
-    expect(wrapper.find('.monaco-editor-container').exists()).toBe(true);
+    store.setPreset('large');
+    await wrapper.vm.$nextTick();
+
+    expect(mockEditor.updateOptions).toHaveBeenCalledWith({ fontSize: 16 });
   });
 
   it('uses optimization for append updates', async () => {
+    const pinia = createPinia();
+    setActivePinia(pinia);
+
     const wrapper = mount(MonacoEditor, {
       props: {
         modelValue: 'initial',
       },
+      global: {
+        plugins: [pinia],
+      },
       attachTo: document.body,
     });
-    
+
     await wrapper.vm.$nextTick();
-    await new Promise(resolve => setTimeout(resolve, 0));
+    await new Promise((resolve) => setTimeout(resolve, 0));
     await wrapper.vm.$nextTick();
 
     expect(wrapper.find('.monaco-editor-container').exists()).toBe(true);

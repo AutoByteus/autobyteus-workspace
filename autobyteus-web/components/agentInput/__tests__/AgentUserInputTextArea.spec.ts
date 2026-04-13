@@ -38,6 +38,10 @@ const windowNodeContextStoreMock = reactive({
   isEmbeddedWindow: true,
 })
 
+const contextFileUploadStoreMock = reactive({
+  isUploading: false,
+})
+
 const workspaceStoreMock = reactive({
   activeWorkspace: { absolutePath: '/tmp/workspace' },
 })
@@ -64,6 +68,10 @@ vi.mock('~/stores/voiceInputStore', () => ({
 
 vi.mock('~/stores/windowNodeContextStore', () => ({
   useWindowNodeContextStore: () => windowNodeContextStoreMock,
+}))
+
+vi.mock('~/stores/contextFileUploadStore', () => ({
+  useContextFileUploadStore: () => contextFileUploadStoreMock,
 }))
 
 vi.mock('~/stores/workspace', () => ({
@@ -106,6 +114,7 @@ describe('AgentUserInputTextArea', () => {
     )
     selectContext(createContext('ctx-1'))
     activeContextStoreMock.isSending = false
+    contextFileUploadStoreMock.isUploading = false
     voiceInputStoreMock.isAvailable = false
     voiceInputStoreMock.isRecording = false
     voiceInputStoreMock.isTranscribing = false
@@ -140,6 +149,16 @@ describe('AgentUserInputTextArea', () => {
 
     expect(wrapper.text()).toContain('Recording... Tap stop when you are done.')
     expect(wrapper.find('button[title="Stop recording"]').exists()).toBe(true)
+  })
+
+  it('disables send while context files are still uploading', async () => {
+    contextFileUploadStoreMock.isUploading = true
+    selectContext(createContext('ctx-uploading', 'ready to send'))
+
+    const wrapper = mount(AgentUserInputTextArea)
+    await nextTick()
+
+    expect(wrapper.find('button[title="Send message"]').attributes('disabled')).toBeDefined()
   })
 
   it('keeps a debounced draft with the member that typed it when focus changes', async () => {

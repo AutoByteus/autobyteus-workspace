@@ -15,6 +15,7 @@ const {
   mockDisconnect,
   mockAttachContext,
   mockConnectionState,
+  contextFileUploadStoreMock,
 } = vi.hoisted(() => ({
   mutateMock: vi.fn().mockResolvedValue({
     data: {
@@ -42,6 +43,9 @@ const {
   mockDisconnect: vi.fn(),
   mockAttachContext: vi.fn(),
   mockConnectionState: { value: 'connected' as 'connected' | 'disconnected' | 'connecting' | 'reconnecting' },
+  contextFileUploadStoreMock: {
+    finalizeDraftAttachments: vi.fn(async ({ attachments }: { attachments: any[] }) => attachments),
+  },
 }));
 
 // Mocks
@@ -84,6 +88,10 @@ vi.mock('~/stores/runHistoryStore', () => ({
   useRunHistoryStore: () => runHistoryStoreMock,
 }));
 
+vi.mock('~/stores/contextFileUploadStore', () => ({
+  useContextFileUploadStore: () => contextFileUploadStoreMock,
+}));
+
 vi.mock('~/stores/workspace', () => ({
   useWorkspaceStore: () => ({
     workspaces: {
@@ -106,6 +114,7 @@ describe('agentRunStore', () => {
         mockStopGeneration.mockReset();
         llmProviderConfigStoreMock.models = ['gpt-4-fallback'];
         llmProviderConfigStoreMock.fetchProvidersWithModels.mockResolvedValue(undefined);
+        contextFileUploadStoreMock.finalizeDraftAttachments.mockImplementation(async ({ attachments }: { attachments: any[] }) => attachments);
         mutateMock.mockResolvedValue({
           data: {
             createAgentRun: {

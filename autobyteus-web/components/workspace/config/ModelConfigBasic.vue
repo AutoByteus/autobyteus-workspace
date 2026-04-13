@@ -46,7 +46,7 @@ const labelClass = computed(() =>
 
 const descriptionClass = computed(() =>
   props.compact
-    ? 'text-[10px] text-gray-500'
+    ? 'text-[0.625rem] text-gray-500'
     : 'text-xs text-gray-500'
 );
 

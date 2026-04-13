@@ -10,9 +10,11 @@
 
 <script setup lang="ts">
 import { ref, shallowRef, markRaw, onMounted, onBeforeUnmount, watch, nextTick, computed } from 'vue';
+import { storeToRefs } from 'pinia';
 import { Terminal } from '@xterm/xterm';
 import { FitAddon } from '@xterm/addon-fit';
 import '@xterm/xterm/css/xterm.css';
+import { useAppFontSizeStore } from '~/stores/appFontSizeStore';
 import { useWorkspaceStore } from '~/stores/workspace';
 import { useTerminalSession }
 from '~/composables/useTerminalSession';
@@ -22,6 +24,9 @@ const terminalElement = ref<HTMLDivElement | null>(null);
 const terminalInstance = shallowRef<Terminal | null>(null);
 const fitAddon = shallowRef<FitAddon | null>(null);
 
+const appFontSizeStore = useAppFontSizeStore();
+const { resolvedMetrics } = storeToRefs(appFontSizeStore);
+const terminalFontPx = computed(() => resolvedMetrics.value.terminalFontPx);
 const workspaceStore = useWorkspaceStore();
 
 // Initialize the terminal session composable
@@ -93,7 +98,7 @@ const initializeTerminal = () => {
     cursorStyle: 'bar', // 'block' | 'underline' | 'bar'
     // standard monospaced fonts for "normal" look
     fontFamily: 'Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
-    fontSize: 14,
+    fontSize: terminalFontPx.value,
     lineHeight: 1.4,
     letterSpacing: 0,
     fontWeight: 'normal',
@@ -184,6 +189,17 @@ const connectTerminal = () => {
 const handleWindowResize = () => {
   safeFit();
 };
+
+watch(terminalFontPx, (nextFontPx) => {
+  if (!terminalInstance.value || terminalInstance.value.options.fontSize === nextFontPx) {
+    return;
+  }
+
+  terminalInstance.value.options.fontSize = nextFontPx;
+  nextTick(() => {
+    safeFit();
+  });
+});
 
 onMounted(() => {
   scheduleInitializeTerminal();
