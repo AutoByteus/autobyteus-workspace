@@ -4,7 +4,7 @@
 
 - Ticket: `agent-run-context-file-storage`
 - Date: `2026-04-13`
-- Current Status: `User verified; approved for repository finalization and release`
+- Current Status: `Finalized and released as v1.2.76; desktop/server publish workflows still running`
 - Bootstrap / finalization target source: `tickets/done/agent-run-context-file-storage/investigation-notes.md`
 
 ## Delivery Summary
@@ -24,11 +24,8 @@
 
 - Code review:
   - `Pass` received for the reviewed implementation state through round 8.
-- Executable validation (from `api-e2e-validation-report.md`):
-  - `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-context-file-storage/autobyteus-server-ts exec vitest --run tests/integration/api/rest/context-files.integration.test.ts`
-  - `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-context-file-storage/autobyteus-web exec vitest --run applications/socratic_math_teacher/__tests__/application-composer-focus-ownership.spec.ts applications/socratic_math_teacher/__tests__/app-context-file-area.spec.ts components/agentInput/__tests__/ContextFilePathInputArea.spec.ts stores/__tests__/contextFileUploadStore.spec.ts`
-  - `pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-context-file-storage/autobyteus-web exec vitest --run stores/__tests__/applicationRunStore.spec.ts`
-  - additional focused message-surface/helper validation recorded in `review-report.md` and `implementation-handoff.md`
+- Executable validation:
+  - Final validation evidence is recorded in `tickets/done/agent-run-context-file-storage/api-e2e-validation-report.md`.
 - User verification:
   - Local web verification: `Passed`
   - Local Electron verification: `Passed`
@@ -37,9 +34,10 @@
   - Pending-upload focus switches and shared composer upload ownership passed in the application/web flows.
   - Finalize display-name preservation passed for sanitize-stressing filenames.
   - Electron native-drop ownership stayed bound to the initiating member.
-  - Previewable image thumbnails now open through the shared fullscreen/file-preview behavior without introducing an Artifacts-tab bridge.
+  - Previewable image thumbnails now open through the shared preview/file-viewer behavior without introducing an Artifacts-tab bridge.
 - Residual risk:
   - Full server build/typecheck and full web typecheck still have pre-existing unrelated failures outside this ticket's scope, as recorded in `implementation-handoff.md` and `api-e2e-validation-report.md`.
+  - GitHub Actions workflow completion for desktop artifacts and server Docker publish is still in progress for `v1.2.76` at the time of this handoff update.
 
 ## Documentation Sync Summary
 
@@ -56,8 +54,12 @@
 - Release notes required: `Yes`
 - Release notes artifact:
   - `tickets/done/agent-run-context-file-storage/release-notes.md`
-- Planned release version:
+- Released version:
   - `1.2.76`
+- Release tag:
+  - `v1.2.76`
+- GitHub Release URL:
+  - `https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.2.76`
 
 ## User Verification Hold
 
@@ -66,24 +68,24 @@
 - Clearance:
   - `User explicitly verified the web and Electron behavior and instructed delivery to finalize the ticket and release a new version.`
 
-## Finalization Plan
+## Finalization Result
 
 - Ticket artifact folder:
   - `tickets/done/agent-run-context-file-storage`
-- Ticket worktree path:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-context-file-storage`
-- Ticket branch:
-  - `codex/agent-run-context-file-storage`
-- Finalization target remote:
-  - `origin`
+- Ticket branch commit:
+  - `d39b26e3 feat(context-files): store uploaded attachments with run ownership`
 - Finalization target branch:
   - `personal`
-- Repository finalization status:
-  - `In progress`
-- Finalization blocker:
-  - `None`
+- Merge commit on target:
+  - `6f62b0e8 Merge branch 'codex/agent-run-context-file-storage' into personal`
+- Release commit on target:
+  - `2f118b97 chore(release): bump workspace release version to 1.2.76`
+- Cleanup:
+  - dedicated worktree removed
+  - local ticket branch deleted
+  - remote ticket branch deleted
 
 ## Ticket State Decision
 
-- Technical workflow gates through docs sync, validation, review, and user verification are satisfied.
-- The ticket has been archived under `tickets/done/agent-run-context-file-storage/` and is proceeding through finalization and release.
+- Technical workflow gates through docs sync, validation, review, user verification, repository finalization, and release tagging are satisfied.
+- The remaining activity is downstream release workflow completion on GitHub Actions for the already-pushed `v1.2.76` tag.
