@@ -191,7 +191,7 @@ describe('agentTeamContextsStore', () => {
                 teamRunId: 'team-1',
                 config: {} as any,
                 members: new Map([
-                    ['agent-1', { requirement: 'draft text', contextFilePaths: [{ path: '/tmp/a.txt', type: 'Text' }] }],
+                    ['agent-1', { requirement: 'draft text', contextFilePaths: [{ kind: 'workspace_path', id: '/tmp/a.txt', locator: '/tmp/a.txt', displayName: 'a.txt', type: 'Text' }] }],
                     ['agent-2', { requirement: '', contextFilePaths: [] }],
                 ]) as any,
                 historicalHydration: null,
@@ -208,7 +208,7 @@ describe('agentTeamContextsStore', () => {
             const team = store.activeTeamContext!;
             expect(team.focusedMemberName).toBe('agent-2');
             expect(team.members.get('agent-1')?.requirement).toBe('draft text');
-            expect(team.members.get('agent-1')?.contextFilePaths).toEqual([{ path: '/tmp/a.txt', type: 'Text' }]);
+            expect(team.members.get('agent-1')?.contextFilePaths).toEqual([{ kind: 'workspace_path', id: '/tmp/a.txt', locator: '/tmp/a.txt', displayName: 'a.txt', type: 'Text' }]);
             expect(team.members.get('agent-2')?.requirement).toBe('');
             expect(team.members.get('agent-2')?.contextFilePaths).toEqual([]);
         });

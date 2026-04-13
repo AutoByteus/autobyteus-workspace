@@ -1,85 +1,13 @@
-import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { ContextFileType } from "autobyteus-ts/agent/message/context-file-type.js";
-import { appConfigProvider } from "../../../../config/app-config-provider.js";
-import { getMediaStorageService } from "../../../../services/media-storage-service.js";
 import { asObject, asString, type JsonObject } from "../codex-app-server-json.js";
+import { ContextFileLocalPathResolver } from "../../../../context-files/services/context-file-local-path-resolver.js";
 
 const HTTP_URL_PATTERN = /^https?:\/\//i;
 const IMAGE_DATA_URL_PATTERN = /^data:image\//i;
-const REST_FILES_PREFIX = "/rest/files/";
-const REST_FILES_PREFIX_NO_LEADING_SLASH = "rest/files/";
-
-const isLoopbackHostname = (hostname: string): boolean =>
-  hostname === "localhost" || hostname === "127.0.0.1" || hostname === "::1";
-
-const resolveConfiguredBaseOrigin = (): string | null => {
-  try {
-    return new URL(appConfigProvider.config.getBaseUrl()).origin;
-  } catch {
-    return null;
-  }
-};
-
-const resolveRestMediaRelativePath = (uri: string): string | null => {
-  const normalizedUri = uri.trim();
-  if (!normalizedUri) {
-    return null;
-  }
-
-  let parsedUrl: URL | null = null;
-  try {
-    parsedUrl = new URL(normalizedUri);
-  } catch {
-    parsedUrl = null;
-  }
-
-  if (parsedUrl && /^https?:$/i.test(parsedUrl.protocol)) {
-    const configuredOrigin = resolveConfiguredBaseOrigin();
-    if (configuredOrigin) {
-      if (parsedUrl.origin !== configuredOrigin) {
-        return null;
-      }
-    } else if (!isLoopbackHostname(parsedUrl.hostname)) {
-      return null;
-    }
-  }
-
-  const pathLike = parsedUrl ? parsedUrl.pathname : normalizedUri;
-  const startsWithRootedPrefix = pathLike.startsWith(REST_FILES_PREFIX);
-  const startsWithUnrootedPrefix = pathLike.startsWith(REST_FILES_PREFIX_NO_LEADING_SLASH);
-  if (!startsWithRootedPrefix && !startsWithUnrootedPrefix) {
-    return null;
-  }
-
-  const relative = startsWithRootedPrefix
-    ? pathLike.slice(REST_FILES_PREFIX.length)
-    : pathLike.slice(REST_FILES_PREFIX_NO_LEADING_SLASH.length);
-  if (!relative.trim()) {
-    return null;
-  }
-
-  try {
-    return decodeURIComponent(relative);
-  } catch {
-    return relative;
-  }
-};
-
-const resolveLocalMediaPathFromRestRelativePath = (relativePath: string): string | null => {
-  const mediaRoot = getMediaStorageService().getMediaRoot();
-  const resolvedRoot = path.resolve(mediaRoot);
-  const resolvedCandidate = path.resolve(mediaRoot, relativePath);
-  const isWithinRoot =
-    resolvedCandidate === resolvedRoot || resolvedCandidate.startsWith(`${resolvedRoot}${path.sep}`);
-  if (!isWithinRoot) {
-    return null;
-  }
-
-  return fs.existsSync(resolvedCandidate) ? resolvedCandidate : null;
-};
+const contextFileLocalPathResolver = new ContextFileLocalPathResolver();
 
 const resolveLocalPathUri = (uri: string): string | null => {
   const normalizedUri = uri.trim();
@@ -108,10 +36,9 @@ const toCodexImageInput = (rawUri: string): JsonObject | null => {
     return { type: "image", url: uri };
   }
 
-  const restMediaRelativePath = resolveRestMediaRelativePath(uri);
-  if (restMediaRelativePath !== null) {
-    const localMediaPath = resolveLocalMediaPathFromRestRelativePath(restMediaRelativePath);
-    return localMediaPath ? { type: "localImage", path: localMediaPath } : null;
+  const resolvedContextFilePath = contextFileLocalPathResolver.resolve(uri);
+  if (resolvedContextFilePath) {
+    return { type: "localImage", path: resolvedContextFilePath };
   }
 
   const localPath = resolveLocalPathUri(uri);

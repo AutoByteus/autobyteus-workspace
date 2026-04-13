@@ -2173,7 +2173,7 @@ describe('runHistoryStore', () => {
             currentStatus: 'idle',
           },
           requirement: 'please review the screenshot',
-          contextFilePaths: [{ path: '/tmp/screenshot.png', type: 'Image' }],
+          contextFilePaths: [{ kind: 'workspace_path', id: '/tmp/screenshot.png', locator: '/tmp/screenshot.png', displayName: 'screenshot.png', type: 'Image' }],
         }],
         ['implementation_engineer', {
           config: { workspaceId: 'ws-old', agentDefinitionName: 'Implementation Engineer' },
@@ -2210,7 +2210,7 @@ describe('runHistoryStore', () => {
     expect(existingTeamContext.members.get('implementation_engineer')?.state.conversation.messages).toHaveLength(1);
     expect(existingTeamContext.members.get('solution_designer')?.requirement).toBe('please review the screenshot');
     expect(existingTeamContext.members.get('solution_designer')?.contextFilePaths).toEqual([
-      { path: '/tmp/screenshot.png', type: 'Image' },
+      { kind: 'workspace_path', id: '/tmp/screenshot.png', locator: '/tmp/screenshot.png', displayName: 'screenshot.png', type: 'Image' },
     ]);
     expect(existingTeamContext.members.get('implementation_engineer')?.requirement).toBe('');
     expect(existingTeamContext.members.get('implementation_engineer')?.contextFilePaths).toEqual([]);

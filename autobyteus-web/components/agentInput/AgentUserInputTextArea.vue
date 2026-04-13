@@ -74,6 +74,7 @@ import { storeToRefs } from 'pinia';
 import { useActiveContextStore } from '~/stores/activeContextStore';
 import { useVoiceInputStore } from '~/stores/voiceInputStore';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
+import { useContextFileUploadStore } from '~/stores/contextFileUploadStore';
 import { useWorkspaceStore } from '~/stores/workspace';
 import { Icon } from '@iconify/vue';
 import { getFilePathsFromFolder } from '~/utils/fileExplorer/fileUtils';
@@ -84,6 +85,7 @@ import type { AgentContext } from '~/types/agent/AgentContext';
 const activeContextStore = useActiveContextStore();
 const voiceInputStore = useVoiceInputStore();
 const windowNodeContextStore = useWindowNodeContextStore();
+const contextFileUploadStore = useContextFileUploadStore();
 const workspaceStore = useWorkspaceStore();
 
 // Store refs
@@ -95,7 +97,7 @@ const isActionDisabled = computed(() => {
   if (isSending.value) {
     return false;
   }
-  return !internalRequirement.value.trim();
+  return contextFileUploadStore.isUploading || !internalRequirement.value.trim();
 });
 const voiceButtonTitle = computed(() => {
   if (voiceInputStore.isTranscribing) {
@@ -153,7 +155,7 @@ function debounce<T extends (...args: any[]) => any>(
     }
     timeoutId = setTimeout(() => {
       if (lastArgs) {
-        func.apply(this, lastArgs);
+        func(...lastArgs);
       }
       timeoutId = null;
       lastArgs = undefined;
@@ -173,7 +175,7 @@ function debounce<T extends (...args: any[]) => any>(
       clearTimeout(timeoutId);
       timeoutId = null;
       if (lastArgs) {
-        func.apply(this, lastArgs);
+        func(...lastArgs);
         lastArgs = undefined;
       }
     }

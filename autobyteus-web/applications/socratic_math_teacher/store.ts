@@ -94,7 +94,7 @@ export const useSocraticMathTeacherStore = defineStore('socraticMathTeacherApp',
           input: {
             problem_text: problemText,
             agent_llm_config: agentLlmConfig.value,
-            context_files: contextFiles.map(cf => ({ path: cf.path, type: cf.type.toUpperCase() }))
+            context_files: contextFiles.map((cf) => ({ path: cf.locator, type: cf.type.toUpperCase() }))
           }
         }
       });
