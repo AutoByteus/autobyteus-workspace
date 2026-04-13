@@ -11,7 +11,7 @@
 
     <div v-else class="flex-1 overflow-y-auto py-4">
       <div v-if="assetArtifacts.length > 0" class="mb-6">
-        <div class="px-4 py-2 text-[11px] font-bold text-gray-400 uppercase tracking-widest">
+        <div class="px-4 py-2 text-[0.6875rem] font-bold text-gray-400 uppercase tracking-widest">
           Assets
         </div>
         <ArtifactItem
@@ -24,7 +24,7 @@
       </div>
 
       <div v-if="fileArtifacts.length > 0">
-        <div class="px-4 py-2 text-[11px] font-bold text-gray-400 uppercase tracking-widest" :class="{ 'mt-2': assetArtifacts.length > 0 }">
+        <div class="px-4 py-2 text-[0.6875rem] font-bold text-gray-400 uppercase tracking-widest" :class="{ 'mt-2': assetArtifacts.length > 0 }">
           Files
         </div>
         <ArtifactItem

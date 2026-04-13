@@ -67,11 +67,11 @@
       </div>
 
       <template v-if="!isRenaming">
-        <span class="text-[15px] text-gray-700 truncate select-none" :class="{ 'text-blue-700 font-medium': isActive }">{{ file.name }}</span>
+        <span class="text-[0.9375rem] text-gray-700 truncate select-none" :class="{ 'text-blue-700 font-medium': isActive }">{{ file.name }}</span>
       </template>
       <template v-else>
         <input 
-          class="border text-[15px] text-gray-700 px-1 py-0 rounded focus:ring-1 focus:ring-blue-500 outline-none w-full"
+          class="border text-[0.9375rem] text-gray-700 px-1 py-0 rounded focus:ring-1 focus:ring-blue-500 outline-none w-full"
           type="text"  
           v-model="renameInput" 
           @keyup.enter="confirmRename"
@@ -487,7 +487,7 @@ const onDrop = async (event: DragEvent) => {
   border: 1px solid #e5e7eb;
   border-radius: 4px;
   padding: 6px 10px;
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #374151;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: flex;
