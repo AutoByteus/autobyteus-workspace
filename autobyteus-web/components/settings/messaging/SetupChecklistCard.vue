@@ -24,7 +24,7 @@
             <span v-else>{{ index + 1 }}</span>
           </div>
           <p class="mt-2 text-sm font-medium" :class="stepLabelClass(step)">{{ formatKey(step.key) }}</p>
-          <p v-if="step.detail && isActive(step)" class="mt-1 text-[11px] text-gray-500 max-w-32 leading-4">
+          <p v-if="step.detail && isActive(step)" class="mt-1 text-[0.6875rem] text-gray-500 max-w-32 leading-4">
             {{ step.detail }}
           </p>
         </button>

@@ -18,7 +18,7 @@
     <!-- Coordinator Badge -->
     <span 
       v-if="isCoordinator" 
-      class="ml-1 text-[10px] font-medium text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded-full"
+      class="ml-1 text-[0.625rem] font-medium text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded-full"
     >
       {{ $t('workspace.components.workspace.running.TeamMemberRow.coord') }}
     </span>

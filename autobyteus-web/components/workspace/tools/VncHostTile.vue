@@ -17,7 +17,7 @@
           ></div>
           <div class="min-w-0">
             <div class="text-sm font-medium truncate" :title="host.name">{{ host.name }}</div>
-            <div class="text-[11px] text-gray-500 truncate">
+            <div class="text-[0.6875rem] text-gray-500 truncate">
               {{ statusMessage }}
             </div>
           </div>

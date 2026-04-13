@@ -39,7 +39,7 @@
               :class="state.isAgentExpanded(workspaceNode.workspaceRootPath, agentNode.agentDefinitionId) ? 'rotate-0' : '-rotate-90'"
             />
             <span
-              class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[10px] font-semibold text-gray-600"
+              class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"
             >
               <img
                 v-if="avatars.showAgentAvatar(workspaceNode.workspaceRootPath, agentNode.agentDefinitionId, agentNode.agentAvatarUrl)"
@@ -131,7 +131,7 @@
         v-if="workspaceTeams.length > 0"
         class="mt-1 space-y-0.5"
       >
-        <div class="px-2 py-1 text-[11px] font-semibold uppercase tracking-wide text-gray-400">
+        <div class="px-2 py-1 text-[0.6875rem] font-semibold uppercase tracking-wide text-gray-400">
           Teams
         </div>
         <div
@@ -155,7 +155,7 @@
               :class="state.teamStatusClass(group.status)"
             />
             <span
-              class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[10px] font-semibold text-gray-600"
+              class="mr-1.5 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.625rem] font-semibold text-gray-600"
             >
               <img
                 v-if="avatars.showTeamAvatar(group.representativeRun)"
@@ -244,7 +244,7 @@
                 >
                   <div class="flex min-w-0 items-center">
                     <span
-                      class="mr-1.5 inline-flex h-4 w-4 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[9px] font-semibold text-gray-600"
+                      class="mr-1.5 inline-flex h-4 w-4 flex-shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 text-[0.5625rem] font-semibold text-gray-600"
                     >
                       <img
                         v-if="avatars.showTeamMemberAvatar(member)"

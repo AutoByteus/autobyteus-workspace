@@ -10,13 +10,14 @@ The Settings page is implemented in \`pages/settings.vue\` and serves as a conta
 2.  **Token Usage Statistics**
 3.  **Nodes**
 4.  **Messaging**
-5.  **Language**
-6.  **Local Tools**
-7.  **MCP Servers**
-8.  **Agent Packages**
-9.  **Server Settings**
-10. **Extensions**
-11. **Updates**
+5.  **Display**
+6.  **Language**
+7.  **Local Tools**
+8.  **MCP Servers**
+9.  **Agent Packages**
+10. **Server Settings**
+11. **Extensions**
+12. **Updates**
 
 ## Sections Detail
 
@@ -74,7 +75,24 @@ For the full managed flow, including Telegram setup and a live acceptance checkl
 
 - **[Managed Messaging Setup](./messaging.md)**
 
-### 5. Language
+### 5. Display
+
+**Component:** `components/settings/DisplaySettingsManager.vue`
+
+App-wide font-size controls for accessibility and readability.
+
+- Presets: `Default`, `Large`, `Extra Large`
+- Preset metrics:
+  - `Default` = root `100%`, Monaco `14px`, Terminal `14px`
+  - `Large` = root `112.5%`, Monaco `16px`, Terminal `16px`
+  - `Extra Large` = root `125%`, Monaco `18px`, Terminal `18px`
+- The selected preset applies live without a full app restart.
+- The preference persists across reloads and desktop restarts.
+- The current window updates immediately; already-open secondary windows pick up the saved preset after reload/reopen.
+- Root app scaling keeps rem-based UI text aligned while Monaco and Terminal receive explicit numeric font-size updates.
+- The setting is intended to cover high-frequency workspace, explorer, artifact, and conversation surfaces instead of introducing viewer-only font controls.
+
+### 6. Language
 
 **Component:** `components/settings/LanguageSettingsManager.vue`
 
@@ -90,7 +108,7 @@ For runtime details and contributor guidance, see:
 
 - **[Localization](./localization.md)**
 
-### 6. Local Tools
+### 7. Local Tools
 
 **Component:** `components/tools/ToolsManagementWorkspace.vue`
 
@@ -104,7 +122,7 @@ For the full module behavior, see:
 
 - **[Tools and MCP](./tools_and_mcp.md)**
 
-### 7. MCP Servers
+### 8. MCP Servers
 
 **Component:** `components/tools/ToolsManagementWorkspace.vue`
 
@@ -118,7 +136,7 @@ For the full module behavior, see:
 
 - **[Tools and MCP](./tools_and_mcp.md)**
 
-### 8. Agent Packages
+### 9. Agent Packages
 
 **Component:** `components/settings/AgentPackagesManager.vue`
 
@@ -129,7 +147,7 @@ Manage agent package sources used by the app.
 - Review installed package inventory and source type.
 - Remove removable imported packages from app-managed storage.
 
-### 9. Server Settings
+### 10. Server Settings
 
 **Component:** \`components/settings/ServerSettingsManager.vue\`
 
@@ -139,7 +157,7 @@ A flexible key-value store for backend configurations.
 - **Custom Settings:** Users can add new custom key-value pairs to configure plugins or experimental features.
 - **Custom Setting Cleanup:** Advanced table rows for custom keys include a remove action to delete obsolete entries.
 
-### 10. Extensions
+### 11. Extensions
 
 **Component:** `components/settings/ExtensionsManager.vue`
 
@@ -154,7 +172,7 @@ Managed optional capabilities that download their runtime assets on demand inste
   - Lifecycle states: not installed, installing, installed and disabled, installed and enabled, needs attention
   - The shared composer microphone appears only when Voice Input is installed, enabled, and not in an error state.
 
-### 11. Updates
+### 12. Updates
 
 **Component:** `components/settings/AboutSettingsManager.vue`
 

@@ -542,7 +542,7 @@ watch(contextFilePaths, (newPaths) => {
   left: 0;
   right: 0;
   bottom: 2px;
-  font-size: 10px;
+  font-size: 0.625rem;
   line-height: 1;
   color: #1d4ed8;
   text-align: center;

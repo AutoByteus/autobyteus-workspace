@@ -31,7 +31,7 @@
     </div>
 
     <div class="flex flex-col min-w-0 flex-1">
-      <span class="text-[13px] font-medium truncate select-none leading-none" :class="isSelected ? 'text-blue-700' : 'text-gray-700'">
+      <span class="text-[0.8125rem] font-medium truncate select-none leading-none" :class="isSelected ? 'text-blue-700' : 'text-gray-700'">
         {{ fileName }}
       </span>
     </div>

@@ -11,7 +11,7 @@
             class="h-full w-full object-cover"
             @error="headerAvatarLoadError = true"
           />
-          <span v-else class="text-[10px] font-semibold tracking-wide text-slate-600">
+          <span v-else class="text-[0.625rem] font-semibold tracking-wide text-slate-600">
             {{ headerAvatarInitials }}
           </span>
         </div>

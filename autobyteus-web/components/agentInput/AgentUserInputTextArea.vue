@@ -5,7 +5,7 @@
         :value="internalRequirement"
         @input="handleInput"
         ref="textarea"
-        class="w-full px-3 py-2.5 pr-14 border-0 focus:ring-0 focus:outline-none resize-none bg-transparent text-[15px] leading-6"
+        class="w-full px-3 py-2.5 pr-14 border-0 focus:ring-0 focus:outline-none resize-none bg-transparent text-[0.9375rem] leading-6"
         :style="{
           height: `${textareaHeight}px`,
           minHeight: `${MIN_TEXTAREA_HEIGHT}px`,
@@ -61,7 +61,7 @@
         ></span>
         <span>{{ voiceStatusText }}</span>
       </div>
-      <span v-if="voiceInputStore.isRecording" class="tabular-nums text-[11px] text-current/80">
+      <span v-if="voiceInputStore.isRecording" class="tabular-nums text-[0.6875rem] text-current/80">
         {{ recordingDurationLabel }}
       </span>
     </div>
