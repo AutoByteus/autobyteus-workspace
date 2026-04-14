@@ -2,9 +2,9 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/in-progress/application-bundle-import-ecosystem/requirements.md`
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/in-progress/application-bundle-import-ecosystem/investigation-notes.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/in-progress/application-bundle-import-ecosystem/design-spec.md`
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/done/application-bundle-import-ecosystem/requirements.md`
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/done/application-bundle-import-ecosystem/investigation-notes.md`
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/done/application-bundle-import-ecosystem/design-spec.md`
 - Current Review Round: `7`
 - Trigger: `Round-6 FAIL follow-up revision addressing DAR-005 with clean-cut backend capability initialization`
 - Prior Review Round Reviewed: `6`

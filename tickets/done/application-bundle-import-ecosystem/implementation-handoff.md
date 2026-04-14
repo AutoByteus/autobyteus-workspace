@@ -2,10 +2,10 @@
 
 ## Upstream Artifact Package
 
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/in-progress/application-bundle-import-ecosystem/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/in-progress/application-bundle-import-ecosystem/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/in-progress/application-bundle-import-ecosystem/design-spec.md`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/in-progress/application-bundle-import-ecosystem/design-review-report.md`
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/done/application-bundle-import-ecosystem/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/done/application-bundle-import-ecosystem/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/done/application-bundle-import-ecosystem/design-spec.md`
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/done/application-bundle-import-ecosystem/design-review-report.md`
 
 ## What Changed
 

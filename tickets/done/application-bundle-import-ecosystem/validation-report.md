@@ -2,11 +2,11 @@
 
 ## Validation Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/in-progress/application-bundle-import-ecosystem/requirements.md`
-- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/in-progress/application-bundle-import-ecosystem/investigation-notes.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/in-progress/application-bundle-import-ecosystem/design-spec.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/in-progress/application-bundle-import-ecosystem/design-review-report.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/in-progress/application-bundle-import-ecosystem/implementation-handoff.md`
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/done/application-bundle-import-ecosystem/requirements.md`
+- Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/done/application-bundle-import-ecosystem/investigation-notes.md`
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/done/application-bundle-import-ecosystem/design-spec.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/done/application-bundle-import-ecosystem/design-review-report.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/done/application-bundle-import-ecosystem/implementation-handoff.md`
 - Current Validation Round: `8`
 - Trigger: `Local-fix follow-up for application-bundle-import-ecosystem after code review finding REV-006`
 - Prior Round Reviewed: `7`
@@ -113,7 +113,7 @@ The focused rerun executed:
 ## Other Validation Artifacts
 
 - Retained packaged-topology probe from prior authoritative rounds:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/in-progress/application-bundle-import-ecosystem/validation-probes/topology-aware-packaged-iframe-probe.mjs`
+  - `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/done/application-bundle-import-ecosystem/validation-probes/topology-aware-packaged-iframe-probe.mjs`
 
 ## Temporary Validation Methods / Scaffolding
 

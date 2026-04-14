@@ -2,8 +2,8 @@
 
 ## Status
 
-- Current Status: `Ready For User Handoff`
-- Last Updated: `2026-04-13`
+- Current Status: `Finalized`
+- Last Updated: `2026-04-14`
 
 ## Delivered
 
@@ -44,7 +44,7 @@
 
 ## Docs Sync
 
-- Docs sync artifact: `tickets/in-progress/application-bundle-import-ecosystem/docs-sync.md`
+- Docs sync artifact: `tickets/done/application-bundle-import-ecosystem/docs-sync.md`
 - Long-lived docs updated in the final sync:
   - `autobyteus-server-ts/docs/modules/application_capability.md`
   - `autobyteus-server-ts/docs/modules/applications.md`
@@ -68,11 +68,16 @@
 
 ## Ticket State
 
-- Technical workflow status: complete through refreshed docs sync, user handoff preparation, and pre-final integration build preparation.
-- Ticket archive state: remain under `tickets/in-progress/application-bundle-import-ecosystem/` until the user explicitly confirms completion.
+- Technical workflow status: complete through docs sync, user verification, archival, repository finalization, and cleanup.
+- Ticket archive state: `tickets/done/application-bundle-import-ecosystem/`
 - Recorded finalization target from bootstrap context: `origin/personal`.
 - Pre-final integration branch history already exists for testing:
   - ticket branch commit: `76bd9107` (`feat(applications): add application bundle import ecosystem`)
   - integration merge commit: `7fa64f3b` (`Merge origin/personal into codex/application-bundle-import-ecosystem for integration testing`)
-  - pushed branch: `origin/codex/application-bundle-import-ecosystem`
-- Final archival, final ticket-branch commit for the latest pass-state worktree, merge into `origin/personal`, release, deployment, and worktree/branch cleanup remain intentionally blocked pending explicit user completion after testing.
+  - finalized ticket branch commit: `2319d1ab` (`feat(applications): finalize runtime capability rollout`)
+- Finalization completed:
+  - merged into `origin/personal` via merge commit `ba955aed`
+  - no release/version bump was performed, per user request
+  - dedicated ticket worktree removed
+  - local ticket branch deleted
+  - remote ticket branch deleted

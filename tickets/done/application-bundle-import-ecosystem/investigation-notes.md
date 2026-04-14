@@ -13,7 +13,7 @@
 ## Environment / Bootstrap Evidence
 
 - Workspace root: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem`
-- Ticket folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/in-progress/application-bundle-import-ecosystem`
+- Ticket folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/done/application-bundle-import-ecosystem`
 - Git worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem`
 - Branch: `codex/application-bundle-import-ecosystem`
 - Base branch used for bootstrap: `origin/personal`
@@ -38,11 +38,11 @@
 
 ### Existing ticket artifacts
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/in-progress/application-bundle-import-ecosystem/requirements.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/in-progress/application-bundle-import-ecosystem/design-spec.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/in-progress/application-bundle-import-ecosystem/design-review-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/in-progress/application-bundle-import-ecosystem/implementation-handoff.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/in-progress/application-bundle-import-ecosystem/validation-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/done/application-bundle-import-ecosystem/requirements.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/done/application-bundle-import-ecosystem/design-spec.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/done/application-bundle-import-ecosystem/design-review-report.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/done/application-bundle-import-ecosystem/implementation-handoff.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/done/application-bundle-import-ecosystem/validation-report.md`
 
 ### Frontend application/catalog/session sources
 
@@ -98,7 +98,7 @@
 
 - `autobyteus-web/electron/main.ts`
 - `autobyteus-web/components/fileExplorer/viewers/HtmlPreviewer.vue`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/in-progress/application-bundle-import-ecosystem/validation-probes/packaged-iframe-topology-probe.mjs`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/done/application-bundle-import-ecosystem/validation-probes/packaged-iframe-topology-probe.mjs`
 
 ## Commands Run
 
@@ -122,7 +122,7 @@ sed -n '1,260p' autobyteus-web/components/settings/ServerSettingsManager.vue
 sed -n '1,220p' autobyteus-server-ts/src/api/graphql/types/application.ts
 sed -n '1,220p' autobyteus-server-ts/src/api/graphql/types/server-settings.ts
 sed -n '1,220p' autobyteus-server-ts/src/services/server-settings-service.ts
-sed -n '1,240p' tickets/in-progress/application-bundle-import-ecosystem/design-review-report.md
+sed -n '1,240p' tickets/done/application-bundle-import-ecosystem/design-review-report.md
 sed -n '1,220p' autobyteus-server-ts/docs/modules/agent_artifacts.md
 sed -n '1,240p' autobyteus-server-ts/src/api/rest/application-bundles.ts
 sed -n '1,220p' autobyteus-server-ts/applications/socratic-math-teacher/application.json
@@ -290,6 +290,6 @@ Conclusion:
 
 ## Current Artifact Set
 
-- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/in-progress/application-bundle-import-ecosystem/requirements.md`
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/in-progress/application-bundle-import-ecosystem/investigation-notes.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/in-progress/application-bundle-import-ecosystem/design-spec.md`
+- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/done/application-bundle-import-ecosystem/requirements.md`
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/done/application-bundle-import-ecosystem/investigation-notes.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/application-bundle-import-ecosystem/tickets/done/application-bundle-import-ecosystem/design-spec.md`
