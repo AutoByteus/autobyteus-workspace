@@ -3,22 +3,44 @@
     data-testid="applications-feature-toggle-card"
     class="rounded-3xl border border-slate-200 bg-white px-6 py-5 shadow-sm"
   >
-    <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+    <div class="flex flex-wrap items-start justify-between gap-4">
       <div class="min-w-0">
-        <p class="text-2xl font-semibold leading-tight text-gray-900">
+        <h3 class="text-2xl font-semibold leading-tight text-gray-900">
           {{ t('settings.components.settings.ApplicationsFeatureToggleCard.title') }}
-        </p>
+        </h3>
         <p class="mt-1 text-sm text-gray-500">
           {{ t('settings.components.settings.ApplicationsFeatureToggleCard.description') }}
         </p>
       </div>
 
-      <span
-        class="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold"
-        :class="badgeClass"
-      >
-        {{ badgeLabel }}
-      </span>
+      <div class="inline-flex items-center gap-3 self-start">
+        <span
+          class="text-sm font-medium"
+          :class="statusTextClass"
+          data-testid="applications-feature-status"
+        >
+          {{ statusLabel }}
+        </span>
+
+        <button
+          type="button"
+          role="switch"
+          data-testid="applications-feature-toggle"
+          class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60"
+          :class="switchTrackClass"
+          :aria-checked="applicationsCapabilityStore.isEnabled"
+          :aria-label="t('settings.components.settings.ApplicationsFeatureToggleCard.title')"
+          :disabled="toggleDisabled"
+          @click="toggleEnabled"
+        >
+          <span class="sr-only">{{ t('settings.components.settings.ApplicationsFeatureToggleCard.title') }}</span>
+          <span
+            aria-hidden="true"
+            class="inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition-transform"
+            :class="switchThumbClass"
+          />
+        </button>
+      </div>
     </div>
 
     <p v-if="statusMessage" class="mt-4 text-sm text-slate-600">
@@ -27,34 +49,6 @@
     <p v-if="errorMessage" class="mt-2 text-sm text-red-600">
       {{ errorMessage }}
     </p>
-
-    <div class="mt-5 flex flex-wrap gap-3">
-      <button
-        type="button"
-        data-testid="applications-feature-enable"
-        class="inline-flex items-center rounded-lg border px-4 py-2 text-sm font-medium transition-colors"
-        :class="enableButtonClass"
-        :disabled="busy || applicationsCapabilityStore.status === 'loading' || applicationsCapabilityStore.isEnabled"
-        @click="updateEnabled(true)"
-      >
-        {{ busy && targetState === true
-          ? t('settings.components.settings.ApplicationsFeatureToggleCard.saving')
-          : t('settings.components.settings.ApplicationsFeatureToggleCard.enable') }}
-      </button>
-
-      <button
-        type="button"
-        data-testid="applications-feature-disable"
-        class="inline-flex items-center rounded-lg border px-4 py-2 text-sm font-medium transition-colors"
-        :class="disableButtonClass"
-        :disabled="busy || applicationsCapabilityStore.status === 'loading' || !applicationsCapabilityStore.isEnabled"
-        @click="updateEnabled(false)"
-      >
-        {{ busy && targetState === false
-          ? t('settings.components.settings.ApplicationsFeatureToggleCard.saving')
-          : t('settings.components.settings.ApplicationsFeatureToggleCard.disable') }}
-      </button>
-    </div>
   </section>
 </template>
 
@@ -84,19 +78,48 @@ const badgeLabel = computed(() => {
     : t('settings.components.settings.ApplicationsFeatureToggleCard.status.disabled')
 })
 
-const badgeClass = computed(() => {
+const statusLabel = computed(() => (
+  busy.value
+    ? t('settings.components.settings.ApplicationsFeatureToggleCard.saving')
+    : badgeLabel.value
+))
+
+const statusTextClass = computed(() => {
   if (applicationsCapabilityStore.status === 'error') {
-    return 'bg-red-100 text-red-700'
+    return 'text-red-700'
   }
 
-  if (applicationsCapabilityStore.status === 'loading' || applicationsCapabilityStore.status === 'unknown') {
-    return 'bg-slate-100 text-slate-700'
+  if (applicationsCapabilityStore.status === 'loading' || applicationsCapabilityStore.status === 'unknown' || busy.value) {
+    return 'text-slate-600'
   }
 
   return applicationsCapabilityStore.isEnabled
-    ? 'bg-emerald-100 text-emerald-700'
-    : 'bg-amber-100 text-amber-700'
+    ? 'text-emerald-700'
+    : 'text-amber-700'
 })
+
+const toggleDisabled = computed(() => (
+  busy.value ||
+  applicationsCapabilityStore.status === 'loading' ||
+  applicationsCapabilityStore.status === 'unknown' ||
+  applicationsCapabilityStore.status === 'error'
+))
+
+const switchTrackClass = computed(() => {
+  if (applicationsCapabilityStore.status === 'error') {
+    return 'bg-red-200'
+  }
+
+  if (applicationsCapabilityStore.status === 'loading' || applicationsCapabilityStore.status === 'unknown' || busy.value) {
+    return 'bg-slate-300'
+  }
+
+  return applicationsCapabilityStore.isEnabled ? 'bg-emerald-500' : 'bg-slate-300'
+})
+
+const switchThumbClass = computed(() => (
+  applicationsCapabilityStore.isEnabled ? 'translate-x-5' : 'translate-x-0.5'
+))
 
 const statusMessage = computed(() => {
   const source = applicationsCapabilityStore.capability?.source
@@ -117,18 +140,6 @@ const statusMessage = computed(() => {
 
 const errorMessage = computed(() => applicationsCapabilityStore.error?.message ?? null)
 
-const enableButtonClass = computed(() => (
-  applicationsCapabilityStore.isEnabled
-    ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
-    : 'border-slate-200 bg-white text-slate-700 hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700 disabled:bg-slate-50 disabled:text-slate-400 disabled:border-slate-200 disabled:cursor-not-allowed'
-))
-
-const disableButtonClass = computed(() => (
-  !applicationsCapabilityStore.isEnabled && applicationsCapabilityStore.status === 'resolved'
-    ? 'border-amber-200 bg-amber-50 text-amber-700'
-    : 'border-slate-200 bg-white text-slate-700 hover:border-amber-200 hover:bg-amber-50 hover:text-amber-700 disabled:bg-slate-50 disabled:text-slate-400 disabled:border-slate-200 disabled:cursor-not-allowed'
-))
-
 const syncServerSettings = async (): Promise<void> => {
   try {
     await serverSettingsStore.reloadServerSettings()
@@ -148,6 +159,14 @@ const updateEnabled = async (enabled: boolean): Promise<void> => {
     busy.value = false
     targetState.value = null
   }
+}
+
+const toggleEnabled = async (): Promise<void> => {
+  if (toggleDisabled.value || applicationsCapabilityStore.status !== 'resolved') {
+    return
+  }
+
+  await updateEnabled(!applicationsCapabilityStore.isEnabled)
 }
 
 onMounted(() => {

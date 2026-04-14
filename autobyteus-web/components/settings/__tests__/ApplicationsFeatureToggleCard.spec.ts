@@ -84,10 +84,14 @@ describe('ApplicationsFeatureToggleCard', () => {
     const wrapper = mountCard()
     await flushPromises()
 
-    await wrapper.get('[data-testid="applications-feature-enable"]').trigger('click')
+    expect(wrapper.get('[data-testid="applications-feature-toggle"]').attributes('aria-checked')).toBe('false')
+
+    await wrapper.get('[data-testid="applications-feature-toggle"]').trigger('click')
+    await flushPromises()
 
     expect(applicationsCapabilityStoreMock.setEnabled).toHaveBeenCalledWith(true)
     expect(serverSettingsStoreMock.reloadServerSettings).toHaveBeenCalledTimes(2)
+    expect(wrapper.get('[data-testid="applications-feature-toggle"]').attributes('aria-checked')).toBe('true')
   })
 
   it('disables applications and refreshes raw server settings after success', async () => {
@@ -101,9 +105,13 @@ describe('ApplicationsFeatureToggleCard', () => {
     const wrapper = mountCard()
     await flushPromises()
 
-    await wrapper.get('[data-testid="applications-feature-disable"]').trigger('click')
+    expect(wrapper.get('[data-testid="applications-feature-toggle"]').attributes('aria-checked')).toBe('true')
+
+    await wrapper.get('[data-testid="applications-feature-toggle"]').trigger('click')
+    await flushPromises()
 
     expect(applicationsCapabilityStoreMock.setEnabled).toHaveBeenCalledWith(false)
     expect(serverSettingsStoreMock.reloadServerSettings).toHaveBeenCalledTimes(2)
+    expect(wrapper.get('[data-testid="applications-feature-toggle"]').attributes('aria-checked')).toBe('false')
   })
 })

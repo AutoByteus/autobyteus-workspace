@@ -214,11 +214,8 @@
         <AgentPackagesManager v-if="activeSection === 'agent-packages'" />
         <div
           v-if="activeSection === 'server-settings'"
-          class="flex h-full min-h-0 flex-col gap-4"
+          class="flex h-full min-h-0 flex-col"
         >
-          <div class="px-4 pt-4">
-            <ApplicationsFeatureToggleCard />
-          </div>
           <div class="min-h-0 flex-1">
             <ServerSettingsManager :section-mode="serverSettingsMode" />
           </div>
@@ -238,7 +235,6 @@ import ProviderAPIKeyManager from '~/components/settings/ProviderAPIKeyManager.v
 import TokenUsageStatistics from '~/components/settings/TokenUsageStatistics.vue';
 import NodeManager from '~/components/settings/NodeManager.vue';
 import ServerSettingsManager from '~/components/settings/ServerSettingsManager.vue';
-import ApplicationsFeatureToggleCard from '~/components/settings/ApplicationsFeatureToggleCard.vue';
 import MessagingSetupManager from '~/components/settings/MessagingSetupManager.vue';
 import ExtensionsManager from '~/components/settings/ExtensionsManager.vue';
 import AboutSettingsManager from '~/components/settings/AboutSettingsManager.vue';

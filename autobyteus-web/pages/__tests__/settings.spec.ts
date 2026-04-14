@@ -72,7 +72,6 @@ const mountSettings = () =>
         AgentPackagesManager: { template: '<div data-testid="section-agent-packages" />' },
         ExtensionsManager: { template: '<div data-testid="section-extensions" />' },
         ToolsManagementWorkspace: { template: '<div data-testid="section-tools-management" />' },
-        ApplicationsFeatureToggleCard: { template: '<div data-testid="applications-feature-toggle-card-stub" />' },
         ServerSettingsManager: {
           props: ['sectionMode'],
           template: '<div data-testid="section-server-settings">mode={{ sectionMode }}</div>',
@@ -131,12 +130,11 @@ describe('settings page', () => {
     expect(setupState.activeSection).toBe('server-settings')
   })
 
-  it('renders the applications capability card inside the server settings section', async () => {
+  it('renders the server settings manager without a separate top-level applications card shell', async () => {
     routeMock.query = { section: 'server-settings' }
     const wrapper = mountSettings()
     await nextTick()
 
-    expect(wrapper.find('[data-testid="applications-feature-toggle-card-stub"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="section-server-settings"]').exists()).toBe(true)
   })
 

@@ -148,6 +148,8 @@
           </div>
 
           <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
+            <ApplicationsFeatureToggleCard />
+
             <section class="rounded-3xl border border-slate-200 bg-white px-6 py-5 shadow-sm">
               <div class="flex flex-wrap items-start justify-between gap-4 mb-4">
                 <div>
@@ -407,6 +409,7 @@ import { Icon } from '@iconify/vue'
 import { useServerSettingsStore, type SearchProvider, type ServerSetting as ServerSettingRecord } from '~/stores/serverSettings'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import ServerMonitor from '~/components/server/ServerMonitor.vue'
+import ApplicationsFeatureToggleCard from '~/components/settings/ApplicationsFeatureToggleCard.vue'
 import CompactionConfigCard from '~/components/settings/CompactionConfigCard.vue'
 
 type SettingsTab = 'quick' | 'advanced'
