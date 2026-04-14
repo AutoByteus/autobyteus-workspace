@@ -14,6 +14,7 @@ Update Server Settings -> Basics so the Applications control is no longer render
 2. The Applications control must use a single toggle-style control to switch between enabled and disabled states.
 3. Toggling Applications must keep using the existing typed capability boundary and continue refreshing raw server settings after a successful update.
 4. Existing status and error feedback for the Applications capability must remain visible.
+5. Opening `Settings -> Server Settings -> Basics` in the built Electron app must not remain stuck on the loading spinner because the bound backend is still becoming ready.
 
 ## Acceptance Criteria
 
@@ -21,8 +22,9 @@ Update Server Settings -> Basics so the Applications control is no longer render
 2. The Applications card renders inside the Basics card grid with the same visual treatment as the other cards.
 3. Clicking the toggle when Applications is disabled calls the existing enable flow once; clicking it when enabled calls the existing disable flow once.
 4. Existing component tests are updated or extended to cover the toggle behavior and the new placement.
+5. When the bound backend is not ready yet, server settings loads wait for readiness and then either resolve or surface a deterministic error; the Basics area must not stay loading indefinitely.
 
 ## Notes
 
 - No backend or GraphQL contract changes are required for this ticket.
-- The smallest correct change is to reuse the existing `ApplicationsFeatureToggleCard` data flow and only adjust placement plus the control UI.
+- The reopened regression fix should land in the server-settings load boundary, not by reintroducing the old top-mounted Applications card behavior.

@@ -171,7 +171,6 @@ const toggleEnabled = async (): Promise<void> => {
 
 onMounted(() => {
   void applicationsCapabilityStore.ensureResolved()
-    .then(() => syncServerSettings())
     .catch(() => undefined)
 })
 </script>

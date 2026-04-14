@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { watch } from 'vue'
 import { getApolloClient } from '~/utils/apolloClient'
 import { GET_SEARCH_CONFIG, GET_SERVER_SETTINGS } from '~/graphql/queries/server_settings_queries'
 import {
@@ -7,6 +8,7 @@ import {
   UPDATE_SERVER_SETTING,
 } from '~/graphql/mutations/server_settings_mutations'
 import { useApplicationsCapabilityStore } from '~/stores/applicationsCapabilityStore'
+import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 
 export interface ServerSetting {
   key: string
@@ -50,10 +52,81 @@ const defaultSearchConfig = (): SearchConfigState => ({
 
 const APPLICATIONS_SETTING_KEY = 'ENABLE_APPLICATIONS'
 
+type ServerSettingsBindingAwareStore = {
+  settings: ServerSetting[]
+  searchConfig: SearchConfigState
+  error: string | null
+  settingsBindingRevision: number | null
+  searchConfigBindingRevision: number | null
+  invalidateBoundNodeState: () => void
+  $dispose: () => void
+  __serverSettingsBindingDisposeWrapped?: boolean
+}
+
+const bindingWatcherStops = new WeakMap<object, () => void>()
+
+const ensureBindingWatcher = (store: ServerSettingsBindingAwareStore): void => {
+  if (bindingWatcherStops.has(store)) {
+    return
+  }
+
+  const windowNodeContextStore = useWindowNodeContextStore()
+  const stop = watch(
+    () => windowNodeContextStore.bindingRevision,
+    () => {
+      store.invalidateBoundNodeState()
+    },
+    { flush: 'sync' },
+  )
+
+  bindingWatcherStops.set(store, stop)
+
+  if (store.__serverSettingsBindingDisposeWrapped) {
+    return
+  }
+
+  const originalDispose = store.$dispose.bind(store)
+  store.$dispose = () => {
+    const registeredStop = bindingWatcherStops.get(store)
+    if (registeredStop) {
+      registeredStop()
+      bindingWatcherStops.delete(store)
+    }
+    originalDispose()
+  }
+  store.__serverSettingsBindingDisposeWrapped = true
+}
+
+const invalidateStaleBindingCache = (
+  store: Pick<ServerSettingsBindingAwareStore, 'settingsBindingRevision' | 'searchConfigBindingRevision' | 'invalidateBoundNodeState'>,
+  currentBindingRevision: number,
+): void => {
+  if (
+    (store.settingsBindingRevision !== null && store.settingsBindingRevision !== currentBindingRevision) ||
+    (store.searchConfigBindingRevision !== null && store.searchConfigBindingRevision !== currentBindingRevision)
+  ) {
+    store.invalidateBoundNodeState()
+  }
+}
+
+const ensureBoundBackendReady = async (): Promise<number> => {
+  const windowNodeContextStore = useWindowNodeContextStore()
+  const bindingRevisionAtStart = windowNodeContextStore.bindingRevision
+  const isReady = await windowNodeContextStore.waitForBoundBackendReady()
+
+  if (!isReady) {
+    throw new Error(windowNodeContextStore.lastReadyError || 'Bound backend is not ready')
+  }
+
+  return bindingRevisionAtStart
+}
+
 export const useServerSettingsStore = defineStore('serverSettings', {
   state: () => ({
     settings: [] as ServerSetting[],
+    settingsBindingRevision: null as number | null,
     searchConfig: defaultSearchConfig() as SearchConfigState,
+    searchConfigBindingRevision: null as number | null,
     isLoading: false,
     error: null as string | null,
     isUpdating: false
@@ -64,24 +137,49 @@ export const useServerSettingsStore = defineStore('serverSettings', {
     }
   },
   actions: {
+    invalidateBoundNodeState() {
+      this.settings = []
+      this.settingsBindingRevision = null
+      this.searchConfig = defaultSearchConfig()
+      this.searchConfigBindingRevision = null
+      this.error = null
+    },
+
     async fetchServerSettings() {
-      if (this.settings.length > 0) return this.settings
+      ensureBindingWatcher(this as ServerSettingsBindingAwareStore)
+
+      const windowNodeContextStore = useWindowNodeContextStore()
+      invalidateStaleBindingCache(this, windowNodeContextStore.bindingRevision)
+      if (this.settingsBindingRevision === windowNodeContextStore.bindingRevision) {
+        return this.settings
+      }
 
       this.isLoading = true
       this.error = null
 
       const client = getApolloClient()
       try {
+        const bindingRevisionAtStart = await ensureBoundBackendReady()
+        if (windowNodeContextStore.bindingRevision !== bindingRevisionAtStart) {
+          return this.settings
+        }
+
         const { data } = await client.query({
           query: GET_SERVER_SETTINGS
         })
 
+        if (windowNodeContextStore.bindingRevision !== bindingRevisionAtStart) {
+          return this.settings
+        }
+
         this.settings = data?.getServerSettings ?? []
+        this.settingsBindingRevision = bindingRevisionAtStart
         return this.settings
       } catch (error: any) {
         this.error = error.message ?? 'Failed to fetch server settings'
         console.error('Failed to fetch server settings:', error)
         this.settings = []
+        this.settingsBindingRevision = null
         throw error
       } finally {
         this.isLoading = false
@@ -89,43 +187,78 @@ export const useServerSettingsStore = defineStore('serverSettings', {
     },
 
     async reloadServerSettings() {
+      ensureBindingWatcher(this as ServerSettingsBindingAwareStore)
+
+      const windowNodeContextStore = useWindowNodeContextStore()
+      invalidateStaleBindingCache(this, windowNodeContextStore.bindingRevision)
+
       this.isLoading = true;
       this.error = null;
 
       const client = getApolloClient()
 
       try {
+        const bindingRevisionAtStart = await ensureBoundBackendReady()
+        if (windowNodeContextStore.bindingRevision !== bindingRevisionAtStart) {
+          return this.settings
+        }
+
         const { data } = await client.query({
           query: GET_SERVER_SETTINGS,
           fetchPolicy: 'network-only' // Force network fetch, bypassing cache
         });
 
+        if (windowNodeContextStore.bindingRevision !== bindingRevisionAtStart) {
+          return this.settings
+        }
+
         this.settings = data?.getServerSettings ?? [];
+        this.settingsBindingRevision = bindingRevisionAtStart
         return this.settings;
       } catch (error: any) {
         this.error = error.message ?? 'Failed to reload server settings';
         console.error('Failed to reload server settings:', error);
         this.settings = [];
+        this.settingsBindingRevision = null
         throw error;
       } finally {
         this.isLoading = false;
       }
     },
 
-    async fetchSearchConfig() {
+    async fetchSearchConfig(force = false) {
+      ensureBindingWatcher(this as ServerSettingsBindingAwareStore)
+
+      const windowNodeContextStore = useWindowNodeContextStore()
+      invalidateStaleBindingCache(this, windowNodeContextStore.bindingRevision)
+      if (!force && this.searchConfigBindingRevision === windowNodeContextStore.bindingRevision) {
+        return this.searchConfig
+      }
+
       const client = getApolloClient()
 
       try {
+        const bindingRevisionAtStart = await ensureBoundBackendReady()
+        if (windowNodeContextStore.bindingRevision !== bindingRevisionAtStart) {
+          return this.searchConfig
+        }
+
         const { data } = await client.query({
           query: GET_SEARCH_CONFIG,
           fetchPolicy: 'network-only',
         })
 
+        if (windowNodeContextStore.bindingRevision !== bindingRevisionAtStart) {
+          return this.searchConfig
+        }
+
         this.searchConfig = data?.getSearchConfig ?? defaultSearchConfig()
+        this.searchConfigBindingRevision = bindingRevisionAtStart
         return this.searchConfig
       } catch (error: any) {
         console.error('Failed to fetch search config:', error)
         this.searchConfig = defaultSearchConfig()
+        this.searchConfigBindingRevision = null
         throw error
       }
     },
@@ -159,7 +292,7 @@ export const useServerSettingsStore = defineStore('serverSettings', {
           throw new Error(this.error ?? 'Failed to update search configuration')
         }
 
-        await this.fetchSearchConfig()
+        await this.fetchSearchConfig(true)
         await this.reloadServerSettings()
         return true
       } catch (error: any) {

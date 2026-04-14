@@ -52,6 +52,23 @@ export const useApplicationsCapabilityStore = defineStore('applicationsCapabilit
     }
   }
 
+  const hasBindingRevisionChanged = (bindingRevisionAtStart: number): boolean => (
+    windowNodeContextStore.bindingRevision !== bindingRevisionAtStart
+  )
+
+  const resolveCurrentBindingCapability = async (): Promise<ApplicationsCapability> => {
+    if (status.value === 'resolved' && capability.value) {
+      return capability.value
+    }
+
+    const resolvedCapability = await ensureResolved()
+    if (!resolvedCapability) {
+      throw new Error('Applications capability was not resolved for the current binding.')
+    }
+
+    return resolvedCapability
+  }
+
   const fetchCapability = async (force = false): Promise<ApplicationsCapability | null> => {
     if (!force && capability.value && status.value === 'resolved') {
       return capability.value
@@ -131,17 +148,26 @@ export const useApplicationsCapabilityStore = defineStore('applicationsCapabilit
   const setEnabled = async (enabled: boolean): Promise<ApplicationsCapability> => {
     const previousCapability = capability.value
     const previousStatus = status.value
+    const bindingRevisionAtStart = windowNodeContextStore.bindingRevision
 
     status.value = 'loading'
     error.value = null
 
     try {
       await ensureBackendReady()
+      if (hasBindingRevisionChanged(bindingRevisionAtStart)) {
+        return await resolveCurrentBindingCapability()
+      }
+
       const client = getApolloClient()
       const { data, errors } = await client.mutate<SetApplicationsEnabledMutationResult>({
         mutation: SetApplicationsEnabled,
         variables: { enabled },
       })
+
+      if (hasBindingRevisionChanged(bindingRevisionAtStart)) {
+        return await resolveCurrentBindingCapability()
+      }
 
       if (errors && errors.length > 0) {
         throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
@@ -157,6 +183,10 @@ export const useApplicationsCapabilityStore = defineStore('applicationsCapabilit
       error.value = null
       return nextCapability
     } catch (cause) {
+      if (hasBindingRevisionChanged(bindingRevisionAtStart)) {
+        return await resolveCurrentBindingCapability()
+      }
+
       const nextError = cause instanceof Error ? cause : new Error(String(cause))
       capability.value = previousCapability
       status.value = previousCapability ? 'resolved' : previousStatus === 'resolved' ? 'resolved' : 'error'

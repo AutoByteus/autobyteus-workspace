@@ -8,6 +8,41 @@ function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+function formatReadyError(error: unknown, requestTimeoutMs: number): string {
+  if (error instanceof Error && error.name === 'AbortError') {
+    return `health check timed out after ${requestTimeoutMs}ms`;
+  }
+
+  return error instanceof Error ? error.message : String(error);
+}
+
+function createAbortError(): Error {
+  if (typeof DOMException === 'function') {
+    return new DOMException('The operation was aborted.', 'AbortError');
+  }
+
+  const abortError = new Error('The operation was aborted.');
+  abortError.name = 'AbortError';
+  return abortError;
+}
+
+async function withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
+  let timeoutId: ReturnType<typeof setTimeout> | null = null;
+
+  try {
+    return await Promise.race([
+      promise,
+      new Promise<never>((_resolve, reject) => {
+        timeoutId = setTimeout(() => reject(createAbortError()), timeoutMs);
+      }),
+    ]);
+  } finally {
+    if (timeoutId !== null) {
+      clearTimeout(timeoutId);
+    }
+  }
+}
+
 export const useWindowNodeContextStore = defineStore('windowNodeContext', () => {
   const windowId = ref<number | null>(null);
   const nodeId = ref<string>(EMBEDDED_NODE_ID);
@@ -15,6 +50,7 @@ export const useWindowNodeContextStore = defineStore('windowNodeContext', () => 
   const bindingRevision = ref(0);
   const initialized = ref(false);
   const lastReadyError = ref<string | null>(null);
+  let electronHealthCheckPromise: Promise<unknown> | null = null;
 
   const isEmbeddedWindow = computed(() => nodeId.value === EMBEDDED_NODE_ID);
   const boundEndpoints = computed<NodeEndpoints>(() => deriveNodeEndpoints(nodeBaseUrl.value));
@@ -54,6 +90,83 @@ export const useWindowNodeContextStore = defineStore('windowNodeContext', () => 
     return boundEndpoints.value;
   }
 
+  function getElectronHealthCheckPromise(): Promise<unknown> {
+    if (electronHealthCheckPromise) {
+      return electronHealthCheckPromise;
+    }
+
+    if (typeof window === 'undefined' || !window.electronAPI?.checkServerHealth) {
+      return Promise.reject(new Error('Electron health bridge is not available'));
+    }
+
+    const trackedPromise = window.electronAPI.checkServerHealth().finally(() => {
+      if (electronHealthCheckPromise === trackedPromise) {
+        electronHealthCheckPromise = null;
+      }
+    });
+
+    electronHealthCheckPromise = trackedPromise;
+    return trackedPromise;
+  }
+
+  async function probeBoundBackendReady(healthUrl: string, requestTimeoutMs: number): Promise<boolean> {
+    if (
+      nodeId.value === EMBEDDED_NODE_ID &&
+      typeof window !== 'undefined' &&
+      window.electronAPI?.checkServerHealth
+    ) {
+      try {
+        const result = await withTimeout(getElectronHealthCheckPromise(), requestTimeoutMs) as {
+          status?: string;
+          data?: unknown;
+          message?: string;
+        };
+        if (result.status === 'ok') {
+          return true;
+        }
+
+        lastReadyError.value =
+          result.message ||
+          (result.status === 'starting'
+            ? 'backend is still starting'
+            : `health check returned status ${result.status || 'unknown'}`);
+        return false;
+      } catch (error) {
+        if (error instanceof Error && error.name === 'AbortError') {
+          electronHealthCheckPromise = null;
+        }
+        lastReadyError.value = formatReadyError(error, requestTimeoutMs);
+        return false;
+      }
+    }
+
+    if (typeof globalThis.fetch !== 'function') {
+      lastReadyError.value = 'global fetch is not available';
+      return false;
+    }
+
+    const controller = typeof AbortController === 'function' ? new AbortController() : null;
+    const timeoutId = setTimeout(() => controller?.abort(), requestTimeoutMs);
+
+    try {
+      const response = await globalThis.fetch(healthUrl, {
+        method: 'GET',
+        signal: controller?.signal,
+      });
+      if (response.ok) {
+        return true;
+      }
+
+      lastReadyError.value = `health check failed with status ${response.status}`;
+      return false;
+    } catch (error) {
+      lastReadyError.value = formatReadyError(error, requestTimeoutMs);
+      return false;
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  }
+
   async function waitForBoundBackendReady(options?: {
     timeoutMs?: number;
     pollMs?: number;
@@ -65,22 +178,19 @@ export const useWindowNodeContextStore = defineStore('windowNodeContext', () => 
 
     lastReadyError.value = null;
 
-    if (typeof globalThis.fetch !== 'function') {
-      lastReadyError.value = 'global fetch is not available';
-      return false;
-    }
-
     while (Date.now() < deadline) {
-      try {
-        const response = await globalThis.fetch(healthUrl, { method: 'GET' });
-        if (response.ok) {
-          return true;
-        }
-        lastReadyError.value = `health check failed with status ${response.status}`;
-      } catch (error) {
-        lastReadyError.value = error instanceof Error ? error.message : String(error);
+      const remainingMs = deadline - Date.now();
+      const requestTimeoutMs = Math.max(1, Math.min(2000, remainingMs));
+
+      const isReady = await probeBoundBackendReady(healthUrl, requestTimeoutMs);
+      if (isReady) {
+        return true;
       }
-      await delay(pollMs);
+
+      const sleepMs = Math.min(pollMs, Math.max(0, deadline - Date.now()));
+      if (sleepMs > 0) {
+        await delay(sleepMs);
+      }
     }
 
     if (!lastReadyError.value) {

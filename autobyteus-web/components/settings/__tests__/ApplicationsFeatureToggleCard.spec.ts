@@ -72,12 +72,12 @@ describe('ApplicationsFeatureToggleCard', () => {
     vi.clearAllMocks()
   })
 
-  it('resolves the capability and syncs server settings on mount', async () => {
+  it('resolves the capability on mount without reloading raw server settings', async () => {
     mountCard()
     await flushPromises()
 
     expect(applicationsCapabilityStoreMock.ensureResolved).toHaveBeenCalledOnce()
-    expect(serverSettingsStoreMock.reloadServerSettings).toHaveBeenCalledOnce()
+    expect(serverSettingsStoreMock.reloadServerSettings).not.toHaveBeenCalled()
   })
 
   it('enables applications and refreshes raw server settings after success', async () => {
@@ -90,7 +90,7 @@ describe('ApplicationsFeatureToggleCard', () => {
     await flushPromises()
 
     expect(applicationsCapabilityStoreMock.setEnabled).toHaveBeenCalledWith(true)
-    expect(serverSettingsStoreMock.reloadServerSettings).toHaveBeenCalledTimes(2)
+    expect(serverSettingsStoreMock.reloadServerSettings).toHaveBeenCalledTimes(1)
     expect(wrapper.get('[data-testid="applications-feature-toggle"]').attributes('aria-checked')).toBe('true')
   })
 
@@ -111,7 +111,7 @@ describe('ApplicationsFeatureToggleCard', () => {
     await flushPromises()
 
     expect(applicationsCapabilityStoreMock.setEnabled).toHaveBeenCalledWith(false)
-    expect(serverSettingsStoreMock.reloadServerSettings).toHaveBeenCalledTimes(2)
+    expect(serverSettingsStoreMock.reloadServerSettings).toHaveBeenCalledTimes(1)
     expect(wrapper.get('[data-testid="applications-feature-toggle"]').attributes('aria-checked')).toBe('false')
   })
 })
