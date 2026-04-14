@@ -60,7 +60,7 @@
       </div>
       <div v-else-if="error" class="rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">
         <p class="font-bold">{{ $t('agents.components.agents.AgentList.error_loading_agent_definitions') }}</p>
-        <p>{{ error.message }}</p>
+        <p>{{ errorMessage }}</p>
       </div>
 
       <div v-else-if="filteredAgentDefinitions.length > 0" class="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -127,7 +127,8 @@ const windowNodeContextStore = useWindowNodeContextStore();
 
 const agentDefinitions = computed(() => agentDefinitionStore.agentDefinitions);
 const loading = computed(() => agentDefinitionStore.loading);
-const error = computed(() => agentDefinitionStore.error);
+const error = computed<Error | null>(() => agentDefinitionStore.error instanceof Error ? agentDefinitionStore.error : agentDefinitionStore.error ? new Error(String(agentDefinitionStore.error)) : null);
+const errorMessage = computed(() => error.value?.message || '');
 
 const searchQuery = ref('');
 const reloading = ref(false);
@@ -158,12 +159,16 @@ const filteredAgentDefinitions = computed(() => {
     const name = agent.name?.toLowerCase() ?? '';
     const description = agent.description?.toLowerCase() ?? '';
     const ownerTeamName = agent.ownerTeamName?.toLowerCase() ?? '';
+    const ownerApplicationName = agent.ownerApplicationName?.toLowerCase() ?? '';
+    const ownerPackageId = agent.ownerPackageId?.toLowerCase() ?? '';
     const tools = (agent.toolNames ?? []).join(' ').toLowerCase();
     const skills = (agent.skillNames ?? []).join(' ').toLowerCase();
     return (
       name.includes(lowerCaseQuery)
       || description.includes(lowerCaseQuery)
       || ownerTeamName.includes(lowerCaseQuery)
+      || ownerApplicationName.includes(lowerCaseQuery)
+      || ownerPackageId.includes(lowerCaseQuery)
       || tools.includes(lowerCaseQuery)
       || skills.includes(lowerCaseQuery)
     );
@@ -211,7 +216,7 @@ const syncAgent = async (agentDef: AgentDefinition): Promise<void> => {
   lastAgentSyncReport.value = null;
 
   if ((agentDef.ownershipScope ?? 'SHARED') !== 'SHARED') {
-    syncError.value = 'Team-owned agents must be synced as part of their team.';
+    syncError.value = 'Only shared agents can be synced individually.';
     return;
   }
 

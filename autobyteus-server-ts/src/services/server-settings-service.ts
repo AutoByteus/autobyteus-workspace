@@ -1,4 +1,5 @@
 import { appConfigProvider } from "../config/app-config-provider.js";
+import { APPLICATIONS_CAPABILITY_SETTING_KEY } from "../application-capability/domain/models.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -50,7 +51,6 @@ export class ServerSettingsService {
       "Comma-separated host URLs for LM Studio servers (e.g., http://localhost:1234)",
     );
 
-
     this.registerPredefinedSetting(
       "AUTOBYTEUS_COMPACTION_TRIGGER_RATIO",
       "Decimal compaction trigger ratio used for post-response budget checks (default 0.8)",
@@ -69,6 +69,11 @@ export class ServerSettingsService {
     this.registerPredefinedSetting(
       "AUTOBYTEUS_COMPACTION_DEBUG_LOGS",
       "Enable detailed compaction and token-budget diagnostic logs",
+    );
+
+    this.registerPredefinedSetting(
+      APPLICATIONS_CAPABILITY_SETTING_KEY,
+      "Controls whether the Applications module is available for this node at runtime.",
     );
 
     logger.info(
@@ -194,6 +199,22 @@ export class ServerSettingsService {
 
   isValidSetting(_key: string): boolean {
     return true;
+  }
+
+  getApplicationsEnabledSetting(): boolean | null {
+    const rawValue = appConfigProvider.config.get(APPLICATIONS_CAPABILITY_SETTING_KEY)?.trim();
+    if (!rawValue) {
+      return null;
+    }
+
+    return rawValue.toLowerCase() === "true";
+  }
+
+  setApplicationsEnabledSetting(enabled: boolean): void {
+    appConfigProvider.config.set(
+      APPLICATIONS_CAPABILITY_SETTING_KEY,
+      enabled ? "true" : "false",
+    );
   }
 }
 

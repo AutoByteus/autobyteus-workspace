@@ -3,6 +3,7 @@ import fsPromises from "node:fs/promises";
 import path from "node:path";
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
+import { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
 import { GitHubAgentPackageInstaller } from "../installers/github-agent-package-installer.js";
 import { AgentPackageRecord, AgentPackage, AgentPackageImportInput } from "../types.js";
 import { normalizeGitHubRepositorySource } from "../utils/github-repository-source.js";
@@ -103,6 +104,8 @@ export class AgentPackageService {
   private readonly installer: GitHubAgentPackageInstaller;
   private readonly refreshAgentDefinitions: RefreshCachesFn;
   private readonly refreshAgentTeams: RefreshCachesFn;
+  private readonly refreshApplicationBundles: RefreshCachesFn;
+  private readonly validateApplicationsInPackageRoot: (packageRoot: string) => Promise<void>;
 
   constructor(dependencies: {
     rootSettingsStore?: AgentPackageRootSettingsStore;
@@ -110,6 +113,8 @@ export class AgentPackageService {
     installer?: GitHubAgentPackageInstaller;
     refreshAgentDefinitions?: RefreshCachesFn;
     refreshAgentTeams?: RefreshCachesFn;
+    refreshApplicationBundles?: RefreshCachesFn;
+    validateApplicationsInPackageRoot?: (packageRoot: string) => Promise<void>;
   } = {}) {
     this.rootSettingsStore =
       dependencies.rootSettingsStore ?? new AgentPackageRootSettingsStore();
@@ -123,6 +128,12 @@ export class AgentPackageService {
     this.refreshAgentTeams =
       dependencies.refreshAgentTeams ??
       (() => AgentTeamDefinitionService.getInstance().refreshCache());
+    this.refreshApplicationBundles =
+      dependencies.refreshApplicationBundles ??
+      (() => ApplicationBundleService.getInstance().refresh());
+    this.validateApplicationsInPackageRoot =
+      dependencies.validateApplicationsInPackageRoot ??
+      ((packageRoot) => ApplicationBundleService.getInstance().validatePackageRoot(packageRoot));
   }
 
   async listAgentPackages(): Promise<AgentPackage[]> {
@@ -188,7 +199,7 @@ export class AgentPackageService {
 
     try {
       await this.registryStore.removePackageRecord(normalizedPackageId);
-      await this.refreshDefinitionCaches();
+      await this.refreshCatalogCaches();
 
       if (
         targetPackage.sourceKind === GITHUB_SOURCE_KIND &&
@@ -204,7 +215,7 @@ export class AgentPackageService {
     } catch (error) {
       this.safeAddAdditionalRootPath(targetPackage.path);
       await this.restorePackageRecord(existingRecord);
-      await this.refreshDefinitionCaches().catch(() => undefined);
+      await this.refreshCatalogCaches().catch(() => undefined);
       throw error;
     }
   }
@@ -215,17 +226,19 @@ export class AgentPackageService {
       throw new Error("Path is already the default agent package.");
     }
 
+    await this.validateApplicationsInPackageRoot(resolvedPath);
+
     this.rootSettingsStore.addAdditionalRootPath(resolvedPath);
     const packageId = buildLocalPackageId(resolvedPath);
 
     try {
       await this.registryStore.upsertLinkedLocalPackageRecord(resolvedPath);
-      await this.refreshDefinitionCaches();
+      await this.refreshCatalogCaches();
       return this.listAgentPackages();
     } catch (error) {
       this.safeRemoveAdditionalRootPath(resolvedPath);
       await this.registryStore.removePackageRecord(packageId).catch(() => undefined);
-      await this.refreshDefinitionCaches().catch(() => undefined);
+      await this.refreshCatalogCaches().catch(() => undefined);
       throw error;
     }
   }
@@ -259,6 +272,7 @@ export class AgentPackageService {
 
     try {
       validatePackageRoot(installedPackage.rootPath);
+      await this.validateApplicationsInPackageRoot(installedPackage.rootPath);
       this.rootSettingsStore.addAdditionalRootPath(installedPackage.rootPath);
 
       await this.registryStore.upsertManagedGitHubPackageRecord({
@@ -268,7 +282,7 @@ export class AgentPackageService {
         managedInstallPath: installedPackage.managedInstallPath,
       });
 
-      await this.refreshDefinitionCaches();
+      await this.refreshCatalogCaches();
       return this.listAgentPackages();
     } catch (error) {
       this.safeRemoveAdditionalRootPath(installedPackage.rootPath);
@@ -277,7 +291,7 @@ export class AgentPackageService {
         recursive: true,
         force: true,
       }).catch(() => undefined);
-      await this.refreshDefinitionCaches().catch(() => undefined);
+      await this.refreshCatalogCaches().catch(() => undefined);
       throw error;
     }
   }
@@ -305,9 +319,10 @@ export class AgentPackageService {
     });
   }
 
-  private async refreshDefinitionCaches(): Promise<void> {
+  private async refreshCatalogCaches(): Promise<void> {
     await this.refreshAgentDefinitions();
     await this.refreshAgentTeams();
+    await this.refreshApplicationBundles();
   }
 
   private safeRemoveAdditionalRootPath(rootPath: string): void {

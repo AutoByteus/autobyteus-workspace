@@ -1,6 +1,5 @@
 <template>
   <form @submit.prevent="handleSubmit" class="space-y-8 bg-white p-8 rounded-lg shadow-md border border-gray-200">
-    <!-- Basic Info -->
     <fieldset class="space-y-6">
       <div>
         <label for="name" class="block text-base font-medium text-gray-800">{{ $t('agents.components.agents.AgentDefinitionForm.name') }}</label>
@@ -109,7 +108,16 @@
       </div>
     </fieldset>
 
-    <!-- Skills Configuration -->
+    <AgentDefaultLaunchConfigFields
+      :runtime-kind="formData.default_launch_runtime_kind"
+      :model-identifier="formData.default_launch_llm_model_identifier"
+      :llm-config-json="formData.default_launch_llm_config_json"
+      :json-error="defaultLaunchConfigJsonError"
+      @update:runtime-kind="formData.default_launch_runtime_kind = $event"
+      @update:model-identifier="formData.default_launch_llm_model_identifier = $event"
+      @update:llm-config-json="formData.default_launch_llm_config_json = $event"
+    />
+
     <fieldset class="border-t border-gray-200 pt-8">
       <legend class="text-xl font-semibold text-gray-900">{{ $t('agents.components.agents.AgentDefinitionForm.skills_configuration') }}</legend>
       <div class="mt-4 grid grid-cols-1 gap-x-8 gap-y-8">
@@ -127,7 +135,6 @@
       </div>
     </fieldset>
 
-    <!-- Tool Configuration -->
     <fieldset class="border-t border-gray-200 pt-8">
       <legend class="text-xl font-semibold text-gray-900">{{ $t('agents.components.agents.AgentDefinitionForm.tool_configuration') }}</legend>
       <div class="mt-4 grid grid-cols-1 gap-x-8 gap-y-8">
@@ -146,7 +153,6 @@
       </div>
     </fieldset>
 
-    <!-- Advanced Settings -->
     <details class="border-t border-gray-200 pt-8">
       <summary class="text-xl font-semibold text-gray-900 cursor-pointer">{{ $t('agents.components.agents.AgentDefinitionForm.optional_processors_advanced') }}</summary>
       <p class="text-sm text-gray-500 mt-2 mb-4">{{ $t('agents.components.agents.AgentDefinitionForm.only_optional_processors_are_shown_here') }}</p>
@@ -202,6 +208,7 @@ import { useAgentDefinitionOptionsStore } from '~/stores/agentDefinitionOptionsS
 import { useToolManagementStore } from '~/stores/toolManagementStore';
 import { useSkillStore } from '~/stores/skillStore';
 import { useFileUploadStore } from '~/stores/fileUploadStore';
+import AgentDefaultLaunchConfigFields from '~/components/agents/AgentDefaultLaunchConfigFields.vue';
 import GroupableTagInput from '~/components/agents/GroupableTagInput.vue';
 import type { GroupedSource, FlatSource } from '~/components/agents/GroupableTagInput.vue';
 
@@ -321,6 +328,9 @@ const getInitialValue = (): { [key: string]: any } => ({
   description: '',
   instructions: '',
   avatar_url: '',
+  default_launch_runtime_kind: '',
+  default_launch_llm_model_identifier: '',
+  default_launch_llm_config_json: '',
   ...Object.fromEntries(componentFields.value.map(f => [f.name, [] as string[]]))
 });
 
@@ -334,6 +344,11 @@ watch(initialData, (newData) => {
     formData.description = newData.description || '';
     formData.instructions = newData.instructions || '';
     formData.avatar_url = newData.avatarUrl || newData.avatar_url || '';
+    formData.default_launch_runtime_kind = newData.defaultLaunchConfig?.runtimeKind || '';
+    formData.default_launch_llm_model_identifier = newData.defaultLaunchConfig?.llmModelIdentifier || '';
+    formData.default_launch_llm_config_json = newData.defaultLaunchConfig?.llmConfig
+      ? JSON.stringify(newData.defaultLaunchConfig.llmConfig, null, 2)
+      : '';
     componentFields.value.forEach(field => {
       const key = field.name as keyof typeof formData;
       formData[key] = newData[field.camelCase] || newData[key] || [];
@@ -382,9 +397,49 @@ const avatarInitials = computed(() => {
     return 'AI';
   }
   const parts = raw.split(/\s+/).filter(Boolean).slice(0, 2);
-  const initials = parts.map(part => part[0]?.toUpperCase() || '').join('');
+  const initials = parts.map((part: string) => part[0]?.toUpperCase() || '').join('');
   return initials || 'AI';
 });
+
+const parseDefaultLaunchConfig = (): { value: Record<string, unknown> | null; error: string | null } => {
+  const runtimeKind = (formData.default_launch_runtime_kind || '').trim()
+  const llmModelIdentifier = (formData.default_launch_llm_model_identifier || '').trim()
+  const llmConfigText = (formData.default_launch_llm_config_json || '').trim()
+
+  let llmConfig: Record<string, unknown> | null = null
+  if (llmConfigText) {
+    try {
+      const parsed = JSON.parse(llmConfigText)
+      if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+        return {
+          value: null,
+          error: 'LLM config JSON must be an object.',
+        }
+      }
+      llmConfig = parsed as Record<string, unknown>
+    } catch {
+      return {
+        value: null,
+        error: 'LLM config JSON is invalid.',
+      }
+    }
+  }
+
+  if (!runtimeKind && !llmModelIdentifier && !llmConfig) {
+    return { value: null, error: null }
+  }
+
+  return {
+    value: {
+      runtimeKind: runtimeKind || null,
+      llmModelIdentifier: llmModelIdentifier || null,
+      llmConfig,
+    },
+    error: null,
+  }
+}
+
+const defaultLaunchConfigJsonError = computed(() => parseDefaultLaunchConfig().error)
 
 function triggerAvatarPicker() {
   avatarFileInputRef.value?.click();
@@ -417,6 +472,11 @@ async function handleAvatarFileSelected(event: Event) {
 }
 
 const handleSubmit = () => {
+  const defaultLaunchConfig = parseDefaultLaunchConfig()
+  if (defaultLaunchConfig.error) {
+    return
+  }
+
   const submissionData = {
     name: formData.name,
     role: formData.role || undefined,
@@ -432,6 +492,7 @@ const handleSubmit = () => {
     toolExecutionResultProcessorNames: formData.tool_execution_result_processor_names,
     toolInvocationPreprocessorNames: formData.tool_invocation_preprocessor_names,
     lifecycleProcessorNames: formData.lifecycle_processor_names,
+    defaultLaunchConfig: defaultLaunchConfig.value,
   };
   emit('submit', submissionData);
 };

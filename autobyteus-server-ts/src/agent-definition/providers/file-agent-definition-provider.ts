@@ -1,31 +1,33 @@
 import { promises as fs } from "node:fs";
-import { constants as fsConstants } from "node:fs";
 import type { Dirent } from "node:fs";
 import path from "node:path";
 import { appConfigProvider } from "../../config/app-config-provider.js";
-import {
-  AgentDefinition,
-  type AgentDefinitionOwnershipScope,
-} from "../domain/models.js";
-import {
-  writeRawFile,
-  writeJsonFile,
-  readJsonFile,
-} from "../../persistence/file/store-utils.js";
-import {
-  parseAgentMd,
-  serializeAgentMd,
-  AgentMdParseError,
-} from "../utils/agent-md-parser.js";
-import {
-  parseTeamLocalAgentDefinitionId,
-} from "autobyteus-ts/agent-team/utils/team-local-agent-definition-id.js";
+import { AgentDefinition } from "../domain/models.js";
+import type { AgentDefinitionOwnershipScope } from "../domain/models.js";
+import { writeRawFile, writeJsonFile, readJsonFile } from "../../persistence/file/store-utils.js";
+import { parseAgentMd, serializeAgentMd, AgentMdParseError } from "../utils/agent-md-parser.js";
 import {
   listTeamLocalAgentDefinitions,
-  readTeamLocalAgentFromRoot,
   readTeamLocalAgentFromRoots,
-  readTeamOwnership,
 } from "./team-local-agent-discovery.js";
+import { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
+import {
+  parseCanonicalApplicationOwnedAgentId,
+} from "../../application-bundles/utils/application-bundle-identity.js";
+import { parseTeamLocalAgentDefinitionId } from "autobyteus-ts/agent-team/utils/team-local-agent-definition-id.js";
+import { buildApplicationOwnedAgentSourcePaths, type ApplicationOwnedAgentSourcePaths } from "./application-owned-agent-source.js";
+import {
+  type AgentConfigRecord,
+  buildAgentConfigRecord,
+  defaultAgentConfig,
+  mergeAgentConfigRecord,
+  normalizeAgentConfigRecord,
+} from "./agent-definition-config.js";
+import {
+  ensureWritableAgentSourcePaths,
+  findAgentSourcePaths,
+  pathExists,
+} from "./agent-definition-source-paths.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
@@ -42,46 +44,9 @@ const slugify = (value: string): string => {
   return normalized || "agent";
 };
 
-const normalizeStringArray = (value: unknown): string[] =>
-  Array.isArray(value) ? value.filter((entry): entry is string => typeof entry === "string") : [];
-
-type AgentConfigRecord = {
-  toolNames?: string[];
-  skillNames?: string[];
-  inputProcessorNames?: string[];
-  llmResponseProcessorNames?: string[];
-  systemPromptProcessorNames?: string[];
-  toolExecutionResultProcessorNames?: string[];
-  toolInvocationPreprocessorNames?: string[];
-  lifecycleProcessorNames?: string[];
-  avatarUrl?: string | null;
-};
-
-type AgentSourcePaths = {
-  agentDir: string;
-  mdPath: string;
-  configPath: string;
-  rootPath: string;
-  ownershipScope: AgentDefinitionOwnershipScope;
-  ownerTeamId?: string | null;
-  ownerTeamName?: string | null;
-};
-
-function defaultAgentConfig(): AgentConfigRecord {
-  return {
-    toolNames: [],
-    skillNames: [],
-    inputProcessorNames: [],
-    llmResponseProcessorNames: [],
-    systemPromptProcessorNames: [],
-    toolExecutionResultProcessorNames: [],
-    toolInvocationPreprocessorNames: [],
-    lifecycleProcessorNames: [],
-    avatarUrl: null,
-  };
-}
-
 export class FileAgentDefinitionProvider {
+  private readonly applicationBundleService = ApplicationBundleService.getInstance();
+
   private getAgentsDir(): string {
     return appConfigProvider.config.getAgentsDir();
   }
@@ -114,13 +79,17 @@ export class FileAgentDefinitionProvider {
       ownershipScope: AgentDefinitionOwnershipScope;
       ownerTeamId?: string | null;
       ownerTeamName?: string | null;
+      ownerApplicationId?: string | null;
+      ownerApplicationName?: string | null;
+      ownerPackageId?: string | null;
+      ownerLocalApplicationId?: string | null;
     },
   ): Promise<AgentDefinition | null> {
-
     try {
       const mdContent = await fs.readFile(mdPath, "utf-8");
       const parsed = parseAgentMd(mdContent, mdPath);
       const config = await readJsonFile<AgentConfigRecord>(configPath, defaultAgentConfig());
+      const normalizedConfig = normalizeAgentConfigRecord(config);
 
       return new AgentDefinition({
         id: resolvedAgentDefinitionId,
@@ -129,18 +98,23 @@ export class FileAgentDefinitionProvider {
         instructions: parsed.instructions,
         category: parsed.category,
         role: parsed.role,
-        avatarUrl: config.avatarUrl ?? null,
-        toolNames: normalizeStringArray(config.toolNames),
-        skillNames: normalizeStringArray(config.skillNames),
-        inputProcessorNames: normalizeStringArray(config.inputProcessorNames),
-        llmResponseProcessorNames: normalizeStringArray(config.llmResponseProcessorNames),
-        systemPromptProcessorNames: normalizeStringArray(config.systemPromptProcessorNames),
-        toolExecutionResultProcessorNames: normalizeStringArray(config.toolExecutionResultProcessorNames),
-        toolInvocationPreprocessorNames: normalizeStringArray(config.toolInvocationPreprocessorNames),
-        lifecycleProcessorNames: normalizeStringArray(config.lifecycleProcessorNames),
+        avatarUrl: normalizedConfig.avatarUrl ?? null,
+        toolNames: normalizedConfig.toolNames ?? [],
+        skillNames: normalizedConfig.skillNames ?? [],
+        inputProcessorNames: normalizedConfig.inputProcessorNames ?? [],
+        llmResponseProcessorNames: normalizedConfig.llmResponseProcessorNames ?? [],
+        systemPromptProcessorNames: normalizedConfig.systemPromptProcessorNames ?? [],
+        toolExecutionResultProcessorNames: normalizedConfig.toolExecutionResultProcessorNames ?? [],
+        toolInvocationPreprocessorNames: normalizedConfig.toolInvocationPreprocessorNames ?? [],
+        lifecycleProcessorNames: normalizedConfig.lifecycleProcessorNames ?? [],
         ownershipScope: ownership.ownershipScope,
         ownerTeamId: ownership.ownerTeamId ?? null,
         ownerTeamName: ownership.ownerTeamName ?? null,
+        ownerApplicationId: ownership.ownerApplicationId ?? null,
+        ownerApplicationName: ownership.ownerApplicationName ?? null,
+        ownerPackageId: ownership.ownerPackageId ?? null,
+        ownerLocalApplicationId: ownership.ownerLocalApplicationId ?? null,
+        defaultLaunchConfig: normalizedConfig.defaultLaunchConfig,
       });
     } catch (error) {
       if (error instanceof AgentMdParseError) {
@@ -182,112 +156,29 @@ export class FileAgentDefinitionProvider {
     });
   }
 
-  private async findSharedAgentSourcePaths(agentId: string): Promise<AgentSourcePaths | null> {
-    for (const rootPath of this.getReadAgentRoots()) {
-      const agentDir = path.join(rootPath, agentId);
-      const mdPath = path.join(rootPath, agentId, "agent.md");
-      const configPath = path.join(rootPath, agentId, "agent-config.json");
-      try {
-        await fs.access(mdPath);
-        return {
-          agentDir,
-          mdPath,
-          configPath,
-          rootPath,
-          ownershipScope: "shared",
-          ownerTeamId: null,
-          ownerTeamName: null,
-        };
-      } catch {
-        continue;
-      }
-    }
-    return null;
-  }
-
-  private async findTeamLocalAgentSourcePaths(
-    teamId: string,
-    agentId: string,
-  ): Promise<AgentSourcePaths | null> {
-    for (const teamRoot of this.getReadTeamRoots()) {
-      const agentDir = path.join(teamRoot, teamId, "agents", agentId);
-      const mdPath = path.join(agentDir, "agent.md");
-      const configPath = path.join(agentDir, "agent-config.json");
-      try {
-        await fs.access(mdPath);
-      } catch {
-        continue;
-      }
-
-      const ownership = await readTeamOwnership(teamRoot, teamId, logger.warn);
-      return {
-        agentDir,
-        mdPath,
-        configPath,
-        rootPath: path.join(teamRoot, teamId),
-        ownershipScope: "team_local",
-        ownerTeamId: ownership.ownerTeamId,
-        ownerTeamName: ownership.ownerTeamName,
-      };
-    }
-    return null;
-  }
-
-  private async findAgentSourcePaths(agentId: string): Promise<AgentSourcePaths | null> {
-    const parsedTeamLocalId = parseTeamLocalAgentDefinitionId(agentId);
-    if (parsedTeamLocalId) {
-      return this.findTeamLocalAgentSourcePaths(parsedTeamLocalId.teamId, parsedTeamLocalId.agentId);
-    }
-    return this.findSharedAgentSourcePaths(agentId);
-  }
-
-  private async isWritable(filePath: string): Promise<boolean> {
-    try {
-      await fs.access(filePath, fsConstants.W_OK);
-      return true;
-    } catch {
-      return false;
-    }
-  }
-
-  private async ensureWritableSourcePaths(
-    sourcePaths: AgentSourcePaths,
-    agentId: string,
-  ): Promise<void> {
-    if (!(await this.isWritable(sourcePaths.agentDir))) {
-      throw new Error(
-        `Agent definition '${agentId}' is read-only at source path '${sourcePaths.rootPath}'.`,
-      );
-    }
-    if ((await this.exists(sourcePaths.mdPath)) && !(await this.isWritable(sourcePaths.mdPath))) {
-      throw new Error(
-        `Agent definition '${agentId}' is read-only at source path '${sourcePaths.rootPath}'.`,
-      );
-    }
-    if (
-      (await this.exists(sourcePaths.configPath)) &&
-      !(await this.isWritable(sourcePaths.configPath))
-    ) {
-      throw new Error(
-        `Agent definition '${agentId}' is read-only at source path '${sourcePaths.rootPath}'.`,
-      );
-    }
-  }
-
-  private async exists(filePath: string): Promise<boolean> {
-    try {
-      await fs.access(filePath);
-      return true;
-    } catch {
-      return false;
-    }
+  private async readApplicationOwnedAgent(
+    sourcePaths: ApplicationOwnedAgentSourcePaths,
+    definitionId: string,
+  ): Promise<AgentDefinition | null> {
+    return this.readAgentFromPaths(
+      sourcePaths.mdPath,
+      sourcePaths.configPath,
+      definitionId,
+      {
+        ownershipScope: "application_owned",
+        ownerApplicationId: sourcePaths.applicationId,
+        ownerApplicationName: sourcePaths.applicationName,
+        ownerPackageId: sourcePaths.packageId,
+        ownerLocalApplicationId: sourcePaths.localApplicationId,
+      },
+    );
   }
 
   async nextAgentId(name: string): Promise<string> {
     const base = slugify(name);
     let candidate = base;
     let index = 2;
-    while (await this.exists(this.getAgentDir(candidate))) {
+    while (await pathExists(this.getAgentDir(candidate))) {
       candidate = `${base}-${index}`;
       index += 1;
     }
@@ -295,6 +186,10 @@ export class FileAgentDefinitionProvider {
   }
 
   async create(domainObj: AgentDefinition): Promise<AgentDefinition> {
+    if ((domainObj.ownershipScope ?? "shared") !== "shared") {
+      throw new Error("Application-owned agent definitions cannot be created from the shared agent provider.");
+    }
+
     const agentId = domainObj.id ?? (await this.nextAgentId(domainObj.name));
     const agentDir = this.getAgentDir(agentId);
     await fs.mkdir(agentDir, { recursive: true });
@@ -310,18 +205,10 @@ export class FileAgentDefinitionProvider {
     );
     await writeRawFile(appConfigProvider.config.getAgentMdPath(agentId), mdContent);
 
-    const configRecord: AgentConfigRecord = {
-      toolNames: domainObj.toolNames ?? [],
-      skillNames: domainObj.skillNames ?? [],
-      inputProcessorNames: domainObj.inputProcessorNames ?? [],
-      llmResponseProcessorNames: domainObj.llmResponseProcessorNames ?? [],
-      systemPromptProcessorNames: domainObj.systemPromptProcessorNames ?? [],
-      toolExecutionResultProcessorNames: domainObj.toolExecutionResultProcessorNames ?? [],
-      toolInvocationPreprocessorNames: domainObj.toolInvocationPreprocessorNames ?? [],
-      lifecycleProcessorNames: domainObj.lifecycleProcessorNames ?? [],
-      avatarUrl: domainObj.avatarUrl ?? null,
-    };
-    await writeJsonFile(appConfigProvider.config.getAgentConfigPath(agentId), configRecord);
+    await writeJsonFile(
+      appConfigProvider.config.getAgentConfigPath(agentId),
+      buildAgentConfigRecord(domainObj),
+    );
 
     const created = await this.getById(agentId);
     if (!created) {
@@ -331,13 +218,19 @@ export class FileAgentDefinitionProvider {
   }
 
   async getById(id: string): Promise<AgentDefinition | null> {
-    // Skip _ prefixed directories (templates)
     if (id.startsWith("_")) {
       return null;
     }
     const parsedTeamLocalId = parseTeamLocalAgentDefinitionId(id);
     if (parsedTeamLocalId) {
       return this.readTeamLocalAgent(parsedTeamLocalId.teamId, parsedTeamLocalId.agentId, id);
+    }
+    if (parseCanonicalApplicationOwnedAgentId(id)) {
+      const source = await this.applicationBundleService.getApplicationOwnedAgentSourceById(id);
+      if (!source) {
+        return null;
+      }
+      return this.readApplicationOwnedAgent(buildApplicationOwnedAgentSourcePaths(source), id);
     }
     for (const rootPath of this.getReadAgentRoots()) {
       const definition = await this.readSharedAgentFromRoot(rootPath, id);
@@ -365,10 +258,7 @@ export class FileAgentDefinitionProvider {
           continue;
         }
         const agentId = entry.name;
-        if (agentId.startsWith("_")) {
-          continue;
-        }
-        if (seenIds.has(agentId)) {
+        if (agentId.startsWith("_") || seenIds.has(agentId)) {
           continue;
         }
         try {
@@ -384,6 +274,29 @@ export class FileAgentDefinitionProvider {
           }
           throw error;
         }
+      }
+    }
+
+    const applicationOwnedSources = await this.applicationBundleService.listApplicationOwnedAgentSources();
+    for (const source of applicationOwnedSources) {
+      if (seenIds.has(source.definitionId)) {
+        continue;
+      }
+      try {
+        const definition = await this.readApplicationOwnedAgent(
+          buildApplicationOwnedAgentSourcePaths(source),
+          source.definitionId,
+        );
+        if (definition) {
+          definitions.push(definition);
+          seenIds.add(source.definitionId);
+        }
+      } catch (error) {
+        if (error instanceof AgentMdParseError) {
+          logger.warn(`Skipping application-owned agent '${source.definitionId}' due to parse error: ${error.message}`);
+          continue;
+        }
+        throw error;
       }
     }
 
@@ -416,10 +329,7 @@ export class FileAgentDefinitionProvider {
           continue;
         }
         const agentId = entry.name;
-        if (!agentId.startsWith("_")) {
-          continue;
-        }
-        if (seenIds.has(agentId)) {
+        if (!agentId.startsWith("_") || seenIds.has(agentId)) {
           continue;
         }
         try {
@@ -445,12 +355,17 @@ export class FileAgentDefinitionProvider {
     if (!domainObj.id) {
       throw new Error("Agent definition id is required for update.");
     }
-    const id = domainObj.id;
-    const sourcePaths = await this.findAgentSourcePaths(id);
+    const sourcePaths = await findAgentSourcePaths({
+      agentId: domainObj.id,
+      readAgentRoots: this.getReadAgentRoots(),
+      readTeamRoots: this.getReadTeamRoots(),
+      applicationBundleService: this.applicationBundleService,
+      warn: logger.warn,
+    });
     if (!sourcePaths) {
-      throw new Error(`Agent definition '${id}' does not exist in any registered source.`);
+      throw new Error(`Agent definition '${domainObj.id}' does not exist in any registered source.`);
     }
-    await this.ensureWritableSourcePaths(sourcePaths, id);
+    await ensureWritableAgentSourcePaths(sourcePaths, domainObj.id);
 
     const mdContent = serializeAgentMd(
       {
@@ -463,53 +378,57 @@ export class FileAgentDefinitionProvider {
     );
     await writeRawFile(sourcePaths.mdPath, mdContent);
 
-    const existingConfig = await readJsonFile<Record<string, unknown>>(
+    const existingConfig = await readJsonFile<Record<string, unknown>>(sourcePaths.configPath, {});
+
+    await writeJsonFile(
       sourcePaths.configPath,
-      {},
+      mergeAgentConfigRecord(existingConfig, domainObj),
     );
 
-    const configRecord: Record<string, unknown> = {
-      ...existingConfig,
-      toolNames: domainObj.toolNames ?? [],
-      skillNames: domainObj.skillNames ?? [],
-      inputProcessorNames: domainObj.inputProcessorNames ?? [],
-      llmResponseProcessorNames: domainObj.llmResponseProcessorNames ?? [],
-      systemPromptProcessorNames: domainObj.systemPromptProcessorNames ?? [],
-      toolExecutionResultProcessorNames: domainObj.toolExecutionResultProcessorNames ?? [],
-      toolInvocationPreprocessorNames: domainObj.toolInvocationPreprocessorNames ?? [],
-      lifecycleProcessorNames: domainObj.lifecycleProcessorNames ?? [],
-      avatarUrl: domainObj.avatarUrl ?? null,
-    };
-    await writeJsonFile(sourcePaths.configPath, configRecord);
-
-    const updated = await this.getById(id);
+    const updated = await this.getById(domainObj.id);
     if (!updated) {
-      throw new Error(`Failed to update agent definition '${id}'.`);
+      throw new Error(`Failed to update agent definition '${domainObj.id}'.`);
     }
     return updated;
   }
 
   async delete(id: string): Promise<boolean> {
-    const sourcePaths = await this.findAgentSourcePaths(id);
+    if (parseCanonicalApplicationOwnedAgentId(id)) {
+      throw new Error("Application-owned agent definitions cannot be deleted from the shared agent provider.");
+    }
+    const sourcePaths = await findAgentSourcePaths({
+      agentId: id,
+      readAgentRoots: this.getReadAgentRoots(),
+      readTeamRoots: this.getReadTeamRoots(),
+      applicationBundleService: this.applicationBundleService,
+      warn: logger.warn,
+    });
     if (!sourcePaths) {
       return false;
     }
-    await this.ensureWritableSourcePaths(sourcePaths, id);
+    await ensureWritableAgentSourcePaths(sourcePaths, id);
     await fs.rm(sourcePaths.agentDir, { recursive: true, force: true });
     return true;
   }
 
   async duplicate(sourceId: string, newId: string, newName: string): Promise<AgentDefinition> {
-    const sourcePaths = await this.findAgentSourcePaths(sourceId);
+    if (parseCanonicalApplicationOwnedAgentId(sourceId)) {
+      throw new Error("Application-owned agent definitions cannot be duplicated from the shared agent provider.");
+    }
+
+    const sourcePaths = await findAgentSourcePaths({
+      agentId: sourceId,
+      readAgentRoots: this.getReadAgentRoots(),
+      readTeamRoots: this.getReadTeamRoots(),
+      applicationBundleService: this.applicationBundleService,
+      warn: logger.warn,
+    });
     if (!sourcePaths) {
       throw new Error(`Agent definition '${sourceId}' not found.`);
     }
-    const sourceMdPath = sourcePaths.mdPath;
-    const sourceConfigPath = sourcePaths.configPath;
-
-    const sourceMdContent = await fs.readFile(sourceMdPath, "utf-8");
-    const parsed = parseAgentMd(sourceMdContent, sourceMdPath);
-    const sourceConfig = await readJsonFile<AgentConfigRecord>(sourceConfigPath, defaultAgentConfig());
+    const sourceMdContent = await fs.readFile(sourcePaths.mdPath, "utf-8");
+    const parsed = parseAgentMd(sourceMdContent, sourcePaths.mdPath);
+    const sourceConfig = await readJsonFile<AgentConfigRecord>(sourcePaths.configPath, defaultAgentConfig());
 
     const newAgentDir = this.getAgentDir(newId);
     await fs.mkdir(newAgentDir, { recursive: true });
@@ -523,18 +442,15 @@ export class FileAgentDefinitionProvider {
       },
       parsed.instructions,
     );
-    await writeRawFile(appConfigProvider.config.getAgentMdPath(newId), newMdContent);
-    await writeJsonFile(appConfigProvider.config.getAgentConfigPath(newId), sourceConfig);
+    await writeRawFile(path.join(newAgentDir, "agent.md"), newMdContent);
+
+    const newConfigRecord = normalizeAgentConfigRecord(sourceConfig);
+    await writeJsonFile(path.join(newAgentDir, "agent-config.json"), newConfigRecord);
 
     const created = await this.getById(newId);
     if (!created) {
-      throw new Error(`Failed to duplicate agent definition from '${sourceId}' to '${newId}'.`);
+      throw new Error(`Failed to duplicate agent definition '${sourceId}' to '${newId}'.`);
     }
     return created;
-  }
-
-  async agentExists(id: string): Promise<boolean> {
-    const sourcePaths = await this.findAgentSourcePaths(id);
-    return sourcePaths !== null;
   }
 }

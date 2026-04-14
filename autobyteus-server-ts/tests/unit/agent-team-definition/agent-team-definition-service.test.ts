@@ -7,8 +7,13 @@ describe("AgentTeamDefinitionService", () => {
     create: ReturnType<typeof vi.fn>;
     getById: ReturnType<typeof vi.fn>;
     getAll: ReturnType<typeof vi.fn>;
+    getTemplates: ReturnType<typeof vi.fn>;
     update: ReturnType<typeof vi.fn>;
     delete: ReturnType<typeof vi.fn>;
+  };
+  let applicationBundleService: {
+    listApplicationOwnedAgentSources: ReturnType<typeof vi.fn>;
+    listApplicationOwnedTeamSources: ReturnType<typeof vi.fn>;
   };
 
   const buildDefinition = (id?: string) =>
@@ -50,12 +55,17 @@ describe("AgentTeamDefinitionService", () => {
       ),
       getById: vi.fn(async () => null),
       getAll: vi.fn(async () => []),
+      getTemplates: vi.fn(async () => []),
       update: vi.fn(async (definition: AgentTeamDefinition) => definition),
       delete: vi.fn(async () => true),
     };
+    applicationBundleService = {
+      listApplicationOwnedAgentSources: vi.fn(async () => []),
+      listApplicationOwnedTeamSources: vi.fn(async () => []),
+    };
   });
 
-  const buildService = () => new AgentTeamDefinitionService({ provider });
+  const buildService = () => new AgentTeamDefinitionService({ provider, applicationBundleService });
 
   it("creates agent team definitions", async () => {
     const service = buildService();
@@ -143,6 +153,56 @@ describe("AgentTeamDefinitionService", () => {
     await expect(service.updateDefinition("missing-id", updateData)).rejects.toThrow(
       "Agent Team Definition with ID missing-id not found.",
     );
+  });
+
+  it("rejects application-owned team updates that escape the owning bundle", async () => {
+    const service = buildService();
+    const existing = new AgentTeamDefinition({
+      id: "bundle-team-1",
+      name: "App Team",
+      description: "Desc",
+      instructions: "Team instructions",
+      category: "coordination",
+      ownershipScope: "application_owned",
+      ownerApplicationId: "bundle-app-1",
+      ownerApplicationName: "App One",
+      ownerPackageId: "pkg-1",
+      ownerLocalApplicationId: "app-one",
+      nodes: [
+        new TeamMember({
+          memberName: "tutor",
+          ref: "bundle-agent-1",
+          refType: "agent",
+          refScope: "application_owned",
+        }),
+      ],
+      coordinatorMemberName: "tutor",
+    });
+    provider.getById.mockResolvedValue(existing);
+    applicationBundleService.listApplicationOwnedAgentSources.mockResolvedValue([
+      { definitionId: "bundle-agent-1", applicationId: "bundle-app-1" },
+      { definitionId: "bundle-agent-foreign", applicationId: "bundle-app-foreign" },
+    ]);
+    applicationBundleService.listApplicationOwnedTeamSources.mockResolvedValue([]);
+
+    await expect(
+      service.updateDefinition(
+        "bundle-team-1",
+        new AgentTeamDefinitionUpdate({
+          nodes: [
+            new TeamMember({
+              memberName: "foreign",
+              ref: "bundle-agent-foreign",
+              refType: "agent",
+              refScope: "application_owned",
+            }),
+          ],
+          coordinatorMemberName: "foreign",
+        }),
+      ),
+    ).rejects.toThrow("must reference an agent inside the same application bundle");
+
+    expect(provider.update).not.toHaveBeenCalled();
   });
 
   it("deletes definitions", async () => {

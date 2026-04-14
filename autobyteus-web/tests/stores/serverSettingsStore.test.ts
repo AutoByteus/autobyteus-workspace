@@ -3,13 +3,24 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useServerSettingsStore } from '~/stores/serverSettings'
 import { getApolloClient } from '~/utils/apolloClient'
 
+const { applicationsCapabilityStoreMock } = vi.hoisted(() => ({
+  applicationsCapabilityStoreMock: {
+    refresh: vi.fn().mockResolvedValue(null),
+  },
+}))
+
 vi.mock('~/utils/apolloClient', () => ({
   getApolloClient: vi.fn(),
 }))
 
-describe('serverSettings store search config', () => {
+vi.mock('~/stores/applicationsCapabilityStore', () => ({
+  useApplicationsCapabilityStore: () => applicationsCapabilityStoreMock,
+}))
+
+describe('serverSettings store', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
+    applicationsCapabilityStoreMock.refresh.mockResolvedValue(null)
   })
 
   afterEach(() => {
@@ -91,14 +102,50 @@ describe('serverSettings store search config', () => {
     })
 
     expect(success).toBe(true)
-    expect(mutateMock).toHaveBeenCalledWith(expect.objectContaining({
-      variables: expect.objectContaining({
-        provider: 'serper',
-        serperApiKey: 'serper-key',
+    expect(mutateMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        variables: expect.objectContaining({
+          provider: 'serper',
+          serperApiKey: 'serper-key',
+        }),
       }),
-    }))
+    )
     expect(queryMock).toHaveBeenCalledTimes(2)
     expect(store.searchConfig.provider).toBe('serper')
-    expect(store.settings.some(s => s.key === 'DEFAULT_SEARCH_PROVIDER')).toBe(true)
+    expect(store.settings.some((setting) => setting.key === 'DEFAULT_SEARCH_PROVIDER')).toBe(true)
+  })
+
+  it('refreshes the typed applications capability after updating ENABLE_APPLICATIONS', async () => {
+    const mutateMock = vi.fn().mockResolvedValue({
+      data: {
+        updateServerSetting: "Server setting 'ENABLE_APPLICATIONS' has been updated successfully.",
+      },
+      errors: undefined,
+    })
+    const queryMock = vi.fn().mockResolvedValue({
+      data: {
+        getServerSettings: [
+          {
+            key: 'ENABLE_APPLICATIONS',
+            value: 'true',
+            description: 'desc',
+            isEditable: true,
+            isDeletable: false,
+          },
+        ],
+      },
+    })
+
+    vi.mocked(getApolloClient).mockReturnValue({
+      mutate: mutateMock,
+      query: queryMock,
+    } as any)
+
+    const store = useServerSettingsStore()
+    const success = await store.updateServerSetting('ENABLE_APPLICATIONS', 'true')
+
+    expect(success).toBe(true)
+    expect(queryMock).toHaveBeenCalledTimes(1)
+    expect(applicationsCapabilityStoreMock.refresh).toHaveBeenCalledOnce()
   })
 })

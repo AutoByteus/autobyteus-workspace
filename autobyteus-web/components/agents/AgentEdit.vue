@@ -6,6 +6,7 @@
           <h1 class="text-3xl font-bold text-gray-900">{{ $t('agents.components.agents.AgentEdit.edit_agent_definition') }}</h1>
           <p class="text-lg text-gray-500 mt-2">{{ $t('agents.components.agents.AgentEdit.updateDetails', { name: agentDef.name }) }}</p>
           <p v-if="teamLabel" class="text-sm text-gray-500 mt-1">{{ $t('agents.components.agents.AgentEdit.teamLabel', { team: teamLabel }) }}</p>
+          <p v-if="applicationLabel" class="text-sm text-gray-500 mt-1">Application: {{ applicationLabel }}</p>
         </div>
 
         <AgentDefinitionForm
@@ -42,6 +43,7 @@ import { ref, computed, onMounted, toRefs } from 'vue';
 import { useLocalization } from '~/composables/useLocalization';
 import { useAgentDefinitionStore, type UpdateAgentDefinitionInput } from '~/stores/agentDefinitionStore';
 import AgentDefinitionForm from '~/components/agents/AgentDefinitionForm.vue';
+import { formatApplicationOwnershipLabel } from '~/utils/definitionOwnership';
 
 const props = defineProps<{ agentDefinitionId: string }>();
 const { agentDefinitionId } = toRefs(props);
@@ -57,6 +59,13 @@ const teamLabel = computed(() => {
     return '';
   }
   return definition?.ownerTeamName?.trim() || definition?.ownerTeamId?.trim() || '';
+});
+const applicationLabel = computed(() => {
+  const definition = agentDef.value;
+  if ((definition?.ownershipScope ?? 'SHARED') !== 'APPLICATION_OWNED' || !definition) {
+    return '';
+  }
+  return formatApplicationOwnershipLabel(definition);
 });
 const loading = ref(false);
 const isSubmitting = ref(false);

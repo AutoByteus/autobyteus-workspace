@@ -7,6 +7,7 @@ import { registerWorkspaceRoutes } from "./workspaces.js";
 import { registerContextFileRoutes } from "./context-files.js";
 import { registerDefaultChannelIngressRoutes } from "./channel-ingress.js";
 import { registerRunFileChangeRoutes } from "./run-file-changes.js";
+import { registerApplicationBundleRoutes } from "./application-bundles.js";
 
 export async function registerRestRoutes(app: FastifyInstance): Promise<void> {
   await registerHealthRoutes(app);
@@ -17,4 +18,5 @@ export async function registerRestRoutes(app: FastifyInstance): Promise<void> {
   await registerContextFileRoutes(app);
   await registerRunFileChangeRoutes(app);
   await registerDefaultChannelIngressRoutes(app);
+  await registerApplicationBundleRoutes(app);
 }

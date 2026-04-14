@@ -1,0 +1,13 @@
+{
+  "id": "socratic-math-teacher",
+  "name": "Socratic Math Teacher",
+  "description": "Solves math problems and generates animated explanations using an expert agent team.",
+  "icon": "ui/icon.svg",
+  "ui": {
+    "entryHtml": "ui/index.html"
+  },
+  "runtimeTarget": {
+    "kind": "AGENT_TEAM",
+    "localId": "socratic-math-team"
+  }
+}

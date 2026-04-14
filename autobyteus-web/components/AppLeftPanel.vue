@@ -82,14 +82,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { Icon } from '@iconify/vue';
 import { useRoute, useRouter, type RouteLocationRaw } from 'vue-router';
 import WorkspaceAgentRunsTreePanel from '~/components/workspace/history/WorkspaceAgentRunsTreePanel.vue';
 import { useAppLeftPanelSectionResize } from '~/composables/useAppLeftPanelSectionResize';
 import { useLeftPanel } from '~/composables/useLeftPanel';
-
-const config = useRuntimeConfig();
+import { useApplicationsCapabilityStore } from '~/stores/applicationsCapabilityStore';
 
 type PrimaryNavKey =
   | 'agents'
@@ -100,6 +99,7 @@ type PrimaryNavKey =
   | 'media';
 
 const { t } = useLocalization();
+const applicationsCapabilityStore = useApplicationsCapabilityStore()
 
 const allPrimaryNavItems: Array<{ key: PrimaryNavKey; labelKey: string; icon: string }> = [
   { key: 'agents', labelKey: 'shell.navigation.agents', icon: 'heroicons:users' },
@@ -113,7 +113,7 @@ const allPrimaryNavItems: Array<{ key: PrimaryNavKey; labelKey: string; icon: st
 const primaryNavItems = computed(() => {
   return allPrimaryNavItems.filter((item) => {
     if (item.key === 'applications') {
-      return config.public.enableApplications;
+      return applicationsCapabilityStore.isEnabled
     }
     return true;
   });
@@ -190,6 +190,10 @@ const onRunningRunCreated = async (): Promise<void> => {
   if (route.path === '/workspace') return;
   await pushRoute('/workspace');
 };
+
+onMounted(() => {
+  void applicationsCapabilityStore.ensureResolved().catch(() => undefined)
+})
 </script>
 
 <style scoped>

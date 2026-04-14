@@ -59,7 +59,7 @@
       </div>
       <div v-else-if="error" class="rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">
         <p class="font-bold">{{ $t('agentTeams.components.agentTeams.AgentTeamList.error_loading_agent_team_definitions') }}</p>
-        <p>{{ error.message }}</p>
+        <p>{{ errorMessage }}</p>
       </div>
       <div v-else-if="filteredTeamDefinitions.length > 0" class="grid grid-cols-1 gap-4 md:grid-cols-2">
         <AgentTeamCard
@@ -121,7 +121,8 @@ const windowNodeContextStore = useWindowNodeContextStore();
 
 const teamDefinitions = computed(() => store.agentTeamDefinitions);
 const loading = computed(() => store.loading);
-const error = computed(() => store.error);
+const error = computed<Error | null>(() => store.error instanceof Error ? store.error : store.error ? new Error(String(store.error)) : null);
+const errorMessage = computed(() => error.value?.message || '');
 
 const searchQuery = ref('');
 const reloading = ref(false);
@@ -140,7 +141,12 @@ const filteredTeamDefinitions = computed(() => {
   if (!query) {
     return teamDefinitions.value;
   }
-  return teamDefinitions.value.filter((teamDef) => teamDef.name.toLowerCase().includes(query));
+  return teamDefinitions.value.filter((teamDef) => (
+    teamDef.name.toLowerCase().includes(query)
+    || (teamDef.description || '').toLowerCase().includes(query)
+    || (teamDef.ownerApplicationName || '').toLowerCase().includes(query)
+    || (teamDef.ownerPackageId || '').toLowerCase().includes(query)
+  ));
 });
 
 onMounted(() => {
@@ -180,6 +186,11 @@ const syncTeam = async (teamDef: AgentTeamDefinition): Promise<void> => {
   syncInfo.value = null;
   syncError.value = null;
   lastTeamSyncReport.value = null;
+
+  if ((teamDef.ownershipScope ?? 'SHARED') !== 'SHARED') {
+    syncError.value = 'Only shared teams can be synced individually.';
+    return;
+  }
 
   const targetNodes = nodeStore.nodes.filter((node) => node.id !== sourceNodeId.value);
   if (targetNodes.length === 0) {

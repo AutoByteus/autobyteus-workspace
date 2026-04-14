@@ -162,6 +162,11 @@ A flexible key-value store for backend configurations.
 - **Live runtime effect:** Compaction settings are env-backed server settings, but changes apply to subsequent compaction budget checks and compaction-model dispatches without restarting the server.
 - **Local provider note:** LM Studio and Ollama long-running requests are now hardened internally for delayed first-token / long prompt-processing cases; there is no separate timeout setting in the UI. If local runs still fail before the practical context ceiling, lower **Effective context override** instead.
 - **Advanced raw table:** The full key-value table remains available for precise control over server-side flags and parameters, including custom settings.
+- **Applications feature toggle:** `components/settings/ApplicationsFeatureToggleCard.vue` sits above the generic settings table and is the first-class control for the bound node’s runtime Applications capability.
+- **Typed runtime authority:** The Applications card reads/writes the typed `applicationsCapability` / `setApplicationsEnabled(...)` boundary instead of treating the generic key-value table as the primary product-facing owner.
+- **Immediate runtime effect:** Enabling or disabling Applications refreshes the same window’s sidebar visibility, `/applications` route access, and catalog behavior without rebuilding the packaged frontend.
+- **Initialization source visibility:** The card surfaces whether the current value came from an explicit persisted server setting or from one-time discovery-seeded initialization during cutover.
+- **View & Edit:** precise control over server-side flags and parameters.
 - **Custom Settings:** Users can add new custom key-value pairs to configure plugins or experimental features.
 - **Custom Setting Cleanup:** Advanced table rows for custom keys include a remove action to delete obsolete entries.
 - **Workspace feedback:** Compaction activity is surfaced back in the active agent/team workspace as a status banner (`Compaction queued`, `Compacting memory…`, `Memory compacted`, or failure text) rather than only appearing as an unexplained pause.
@@ -197,6 +202,7 @@ Canonical app metadata and manual update controls.
 
 - **[Agent Management](./agent_management.md)**: API keys configured in Settings are used by Agents.
 - **[Agent Execution Architecture](./agent_execution_architecture.md)**: streamed runtime events, including compaction status propagation into the workspace banner.
+- **[Applications](./applications.md)**: runtime Applications availability, routing, and catalog behavior consume the capability managed from Settings.
 - **[Electron Packaging](./electron_packaging.md)**: The Server Status monitor and managed extensions both interact with Electron-owned runtime services.
 - **[Localization](./localization.md)**: language selection, locale resolution, and localization contributor workflow.
 - **[Managed Messaging Setup](./messaging.md)**: End-to-end gateway, provider, binding, and verification flow.

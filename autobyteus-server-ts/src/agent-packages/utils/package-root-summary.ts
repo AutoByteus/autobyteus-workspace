@@ -2,10 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import type { AgentPackageSummary } from "../types.js";
 
-const countDefinitionsInDir = (
-  directoryPath: string,
-  fileName: string,
-): number => {
+const countDefinitionsInDir = (directoryPath: string, fileName: string): number => {
   if (!fs.existsSync(directoryPath)) {
     return 0;
   }
@@ -52,6 +49,9 @@ const countTeamLocalAgentsInTeamsDir = (teamsDir: string): number => {
   return count;
 };
 
+const countApplicationsInDir = (applicationsDir: string): number =>
+  countDefinitionsInDir(applicationsDir, "application.json");
+
 export const validatePackageRoot = (packageRoot: string): string => {
   if (!path.isAbsolute(packageRoot)) {
     throw new Error("Agent package path must be absolute.");
@@ -67,14 +67,15 @@ export const validatePackageRoot = (packageRoot: string): string => {
 
   const agentsDir = path.join(resolved, "agents");
   const teamsDir = path.join(resolved, "agent-teams");
-  const hasAgents =
-    fs.existsSync(agentsDir) && fs.statSync(agentsDir).isDirectory();
-  const hasTeams =
-    fs.existsSync(teamsDir) && fs.statSync(teamsDir).isDirectory();
+  const applicationsDir = path.join(resolved, "applications");
+  const hasAgents = fs.existsSync(agentsDir) && fs.statSync(agentsDir).isDirectory();
+  const hasTeams = fs.existsSync(teamsDir) && fs.statSync(teamsDir).isDirectory();
+  const hasApplications =
+    fs.existsSync(applicationsDir) && fs.statSync(applicationsDir).isDirectory();
 
-  if (!hasAgents && !hasTeams) {
+  if (!hasAgents && !hasTeams && !hasApplications) {
     throw new Error(
-      "Agent package must contain at least one directory: 'agents' or 'agent-teams'.",
+      "Agent package must contain at least one directory: 'agents', 'agent-teams', or 'applications'.",
     );
   }
 
@@ -84,17 +85,10 @@ export const validatePackageRoot = (packageRoot: string): string => {
 export const buildPackageSummary = (packageRoot: string): AgentPackageSummary => {
   const resolved = path.resolve(packageRoot);
   return {
-    sharedAgentCount: countDefinitionsInDir(
-      path.join(resolved, "agents"),
-      "agent.md",
-    ),
-    teamLocalAgentCount: countTeamLocalAgentsInTeamsDir(
-      path.join(resolved, "agent-teams"),
-    ),
-    agentTeamCount: countDefinitionsInDir(
-      path.join(resolved, "agent-teams"),
-      "team.md",
-    ),
+    sharedAgentCount: countDefinitionsInDir(path.join(resolved, "agents"), "agent.md"),
+    teamLocalAgentCount: countTeamLocalAgentsInTeamsDir(path.join(resolved, "agent-teams")),
+    agentTeamCount: countDefinitionsInDir(path.join(resolved, "agent-teams"), "team.md"),
+    applicationCount: countApplicationsInDir(path.join(resolved, "applications")),
   };
 };
 

@@ -291,6 +291,7 @@ export class CodexTeamManager implements TeamManager {
       skillAccessMode: memberContext.agentRunConfig.skillAccessMode,
       runtimeKind: memberContext.agentRunConfig.runtimeKind,
       teamContext: this.teamContext,
+      applicationSessionContext: memberContext.agentRunConfig.applicationSessionContext,
     });
   }
 

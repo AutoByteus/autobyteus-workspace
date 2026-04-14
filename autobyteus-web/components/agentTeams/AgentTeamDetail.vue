@@ -52,8 +52,16 @@
                 <h1 class="truncate text-3xl font-semibold text-slate-900">{{ teamDef.name }}</h1>
                 <div class="mt-1 flex flex-wrap items-center gap-2">
                   <span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">{{ teamDef.category || $t('agentTeams.components.agentTeams.AgentTeamDetail.uncategorized') }}</span>
+                  <span
+                    v-if="ownershipBadge"
+                    class="rounded-full px-2 py-0.5 text-xs font-semibold"
+                    :class="isApplicationOwned ? 'bg-blue-50 text-blue-700' : 'bg-slate-100 text-slate-700'"
+                  >
+                    {{ ownershipBadge }}
+                  </span>
                 </div>
                 <p class="mt-2 text-sm text-slate-600">{{ teamDef.description || $t('agentTeams.components.agentTeams.AgentTeamDetail.noDescription') }}</p>
+                <p v-if="applicationLabel" class="mt-2 text-sm text-slate-500">Application: {{ applicationLabel }}</p>
 
                 <div class="mt-3 flex flex-wrap items-center gap-2 text-xs">
                   <span class="rounded-full bg-slate-100 px-2 py-1 text-slate-700">{{ $t('agentTeams.components.agentTeams.AgentTeamDetail.membersCount', { count: teamDef.nodes.length }) }}</span>
@@ -77,6 +85,7 @@
                 {{ $t('agentTeams.components.agentTeams.AgentTeamDetail.edit') }}
               </button>
               <button
+                v-if="isShared"
                 @click="handleDelete(teamDef.id)"
                 class="inline-flex items-center rounded-md border border-red-200 bg-red-50 px-4 py-2 text-sm font-medium text-red-700 transition-colors hover:bg-red-100"
               >
@@ -142,6 +151,12 @@
                     {{ node.refType === 'AGENT' ? $t('agentTeams.components.agentTeams.AgentTeamDetail.badgeAgent') : $t('agentTeams.components.agentTeams.AgentTeamDetail.badgeTeam') }}
                   </span>
                   <span
+                    v-if="node.refType === 'AGENT' && node.refScope === 'APPLICATION_OWNED'"
+                    class="rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-semibold text-blue-700"
+                  >
+                    App-owned
+                  </span>
+                  <span
                     v-if="node.memberName === teamDef.coordinatorMemberName"
                     class="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-700"
                   >
@@ -185,6 +200,7 @@ import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore';
 import { useRunActions } from '~/composables/useRunActions';
 import AgentDeleteConfirmDialog from '~/components/agents/AgentDeleteConfirmDialog.vue';
 import ExpandableInstructionCard from '~/components/common/ExpandableInstructionCard.vue';
+import { formatApplicationOwnershipLabel } from '~/utils/definitionOwnership';
 
 const props = defineProps<{ teamDefinitionId: string }>();
 const { teamDefinitionId } = toRefs(props);
@@ -235,6 +251,15 @@ const teamInitials = computed(() => {
 
 const nestedTeamCount = computed(() => teamDef.value?.nodes.filter((node) => node.refType === 'AGENT_TEAM').length || 0);
 const agentCount = computed(() => teamDef.value?.nodes.filter((node) => node.refType === 'AGENT').length || 0);
+const ownershipScope = computed(() => teamDef.value?.ownershipScope ?? 'SHARED');
+const isShared = computed(() => ownershipScope.value === 'SHARED');
+const isApplicationOwned = computed(() => ownershipScope.value === 'APPLICATION_OWNED');
+const ownershipBadge = computed(() => (isApplicationOwned.value ? 'Application-owned' : ''));
+const applicationLabel = computed(() => (
+  isApplicationOwned.value && teamDef.value
+    ? formatApplicationOwnershipLabel(teamDef.value)
+    : ''
+));
 
 onMounted(async () => {
   loading.value = true;

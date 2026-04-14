@@ -6,6 +6,9 @@ import {
   IMPORT_AGENT_PACKAGE,
   REMOVE_AGENT_PACKAGE,
 } from '~/graphql/agentPackages'
+import { useApplicationStore } from '~/stores/applicationStore'
+import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
+import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
 
 export type AgentPackageSourceKind =
   | 'BUILT_IN'
@@ -39,6 +42,22 @@ export const useAgentPackagesStore = defineStore('agentPackages', () => {
   const loading = ref(false)
   const error = ref('')
 
+  const refreshDependentCatalogs = async (): Promise<void> => {
+    const applicationStore = useApplicationStore()
+    const agentDefinitionStore = useAgentDefinitionStore()
+    const agentTeamDefinitionStore = useAgentTeamDefinitionStore()
+
+    applicationStore.invalidateApplications()
+    agentDefinitionStore.invalidateAgentDefinitions()
+    agentTeamDefinitionStore.invalidateAgentTeamDefinitions()
+
+    await Promise.all([
+      applicationStore.fetchApplications(true),
+      agentDefinitionStore.reloadAllAgentDefinitions(),
+      agentTeamDefinitionStore.reloadAllAgentTeamDefinitions(),
+    ])
+  }
+
   async function fetchAgentPackages(): Promise<void> {
     loading.value = true
     error.value = ''
@@ -51,7 +70,7 @@ export const useAgentPackagesStore = defineStore('agentPackages', () => {
       })
 
       if (errors && errors.length > 0) {
-        throw new Error(errors.map((entry) => entry.message).join(', '))
+        throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
       }
 
       if (data?.agentPackages) {
@@ -77,12 +96,14 @@ export const useAgentPackagesStore = defineStore('agentPackages', () => {
       })
 
       if (errors && errors.length > 0) {
-        throw new Error(errors.map((entry) => entry.message).join(', '))
+        throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
       }
 
       if (data?.importAgentPackage) {
         agentPackages.value = data.importAgentPackage
       }
+
+      await refreshDependentCatalogs()
     } catch (err: any) {
       error.value = err.message
       throw err
@@ -103,12 +124,14 @@ export const useAgentPackagesStore = defineStore('agentPackages', () => {
       })
 
       if (errors && errors.length > 0) {
-        throw new Error(errors.map((entry) => entry.message).join(', '))
+        throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
       }
 
       if (data?.removeAgentPackage) {
         agentPackages.value = data.removeAgentPackage
       }
+
+      await refreshDependentCatalogs()
     } catch (err: any) {
       error.value = err.message
       throw err

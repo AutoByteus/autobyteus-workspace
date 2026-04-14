@@ -1,308 +1,353 @@
-import { defineStore } from 'pinia';
-import { ref, computed } from 'vue';
-import { getApolloClient } from '~/utils/apolloClient';
-import { GetAgentDefinitions } from '~/graphql/queries/agentDefinitionQueries';
+import { defineStore } from 'pinia'
+import { computed, ref } from 'vue'
+import { getApolloClient } from '~/utils/apolloClient'
+import { GetAgentDefinitions } from '~/graphql/queries/agentDefinitionQueries'
 import {
   CreateAgentDefinition,
-  UpdateAgentDefinition,
   DeleteAgentDefinition,
   DuplicateAgentDefinition,
-} from '~/graphql/mutations/agentDefinitionMutations';
-import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
+  UpdateAgentDefinition,
+} from '~/graphql/mutations/agentDefinitionMutations'
+import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 
-// This interface should match the GraphQL AgentDefinition type
-export type AgentDefinitionOwnershipScope = 'SHARED' | 'TEAM_LOCAL';
+export type AgentDefinitionOwnershipScope = 'SHARED' | 'TEAM_LOCAL' | 'APPLICATION_OWNED'
 
-export interface AgentDefinition {
-  __typename?: 'AgentDefinition';
-  id: string;
-  name: string;
-  role?: string | null;
-  description: string;
-  instructions: string;
-  category?: string | null;
-  avatarUrl?: string | null;
-  toolNames: string[];
-  inputProcessorNames: string[];
-  llmResponseProcessorNames: string[];
-  systemPromptProcessorNames: string[];
-  toolExecutionResultProcessorNames: string[];
-
-  toolInvocationPreprocessorNames: string[];
-  lifecycleProcessorNames: string[];
-  skillNames: string[];
-  ownershipScope?: AgentDefinitionOwnershipScope | null;
-  ownerTeamId?: string | null;
-  ownerTeamName?: string | null;
+export interface AgentDefinitionDefaultLaunchConfig {
+  llmModelIdentifier?: string | null
+  runtimeKind?: string | null
+  llmConfig?: Record<string, unknown> | null
 }
 
-// Interfaces for mutation inputs
+export interface AgentDefinition {
+  __typename?: 'AgentDefinition'
+  id: string
+  name: string
+  role?: string | null
+  description: string
+  instructions: string
+  category?: string | null
+  avatarUrl?: string | null
+  toolNames: string[]
+  inputProcessorNames: string[]
+  llmResponseProcessorNames: string[]
+  systemPromptProcessorNames: string[]
+  toolExecutionResultProcessorNames: string[]
+  toolInvocationPreprocessorNames: string[]
+  lifecycleProcessorNames: string[]
+  skillNames: string[]
+  ownershipScope?: AgentDefinitionOwnershipScope | null
+  ownerTeamId?: string | null
+  ownerTeamName?: string | null
+  ownerApplicationId?: string | null
+  ownerApplicationName?: string | null
+  ownerPackageId?: string | null
+  ownerLocalApplicationId?: string | null
+  defaultLaunchConfig?: AgentDefinitionDefaultLaunchConfig | null
+}
+
 export interface CreateAgentDefinitionInput {
-  name: string;
-  role?: string;
-  description: string;
-  instructions: string;
-  category?: string;
-  avatarUrl?: string;
-  toolNames?: string[];
-  inputProcessorNames?: string[];
-  llmResponseProcessorNames?: string[];
-  systemPromptProcessorNames?: string[];
-  toolExecutionResultProcessorNames?: string[];
-  toolInvocationPreprocessorNames?: string[];
-  lifecycleProcessorNames?: string[];
-  skillNames?: string[];
+  name: string
+  role?: string | null
+  description: string
+  instructions: string
+  category?: string | null
+  avatarUrl?: string | null
+  toolNames?: string[]
+  inputProcessorNames?: string[]
+  llmResponseProcessorNames?: string[]
+  systemPromptProcessorNames?: string[]
+  toolExecutionResultProcessorNames?: string[]
+  toolInvocationPreprocessorNames?: string[]
+  lifecycleProcessorNames?: string[]
+  skillNames?: string[]
+  defaultLaunchConfig?: AgentDefinitionDefaultLaunchConfig | null
 }
 
 export interface UpdateAgentDefinitionInput {
-  id: string;
-  name?: string;
-  role?: string;
-  description?: string;
-  instructions?: string;
-  category?: string;
-  avatarUrl?: string;
-  toolNames?: string[];
-  inputProcessorNames?: string[];
-  llmResponseProcessorNames?: string[];
-  systemPromptProcessorNames?: string[];
-  toolExecutionResultProcessorNames?: string[];
-  toolInvocationPreprocessorNames?: string[];
-  lifecycleProcessorNames?: string[];
-  skillNames?: string[];
+  id: string
+  name?: string | null
+  role?: string | null
+  description?: string | null
+  instructions?: string | null
+  category?: string | null
+  avatarUrl?: string | null
+  toolNames?: string[]
+  inputProcessorNames?: string[]
+  llmResponseProcessorNames?: string[]
+  systemPromptProcessorNames?: string[]
+  toolExecutionResultProcessorNames?: string[]
+  toolInvocationPreprocessorNames?: string[]
+  lifecycleProcessorNames?: string[]
+  skillNames?: string[]
+  defaultLaunchConfig?: AgentDefinitionDefaultLaunchConfig | null
 }
 
 interface DeleteResult {
-  success: boolean;
-  message: string;
+  success: boolean
+  message: string
 }
 
 interface DuplicateAgentDefinitionInput {
-  sourceId: string;
-  newName: string;
+  sourceId: string
+  newName: string
+}
+
+const normalizeOwnershipScope = (
+  value: AgentDefinitionOwnershipScope | null | undefined,
+): AgentDefinitionOwnershipScope => {
+  if (value === 'TEAM_LOCAL' || value === 'APPLICATION_OWNED') {
+    return value
+  }
+  return 'SHARED'
 }
 
 export const useAgentDefinitionStore = defineStore('agentDefinition', () => {
-  const agentDefinitions = ref<AgentDefinition[]>([]);
-  const loading = ref(false);
-  const error = ref<any>(null);
-  const deleteResult = ref<DeleteResult | null>(null);
+  const agentDefinitions = ref<AgentDefinition[]>([])
+  const loading = ref(false)
+  const error = ref<unknown>(null)
+  const deleteResult = ref<DeleteResult | null>(null)
 
-  // --- ACTIONS ---
+  const fetchAllAgentDefinitions = async () => {
+    if (agentDefinitions.value.length > 0) {
+      return
+    }
 
-  // Fetch all agent definitions (cache-first)
-  async function fetchAllAgentDefinitions() {
-    if (agentDefinitions.value.length > 0) return; // Already fetched, rely on cache for updates.
-
-    const windowNodeContextStore = useWindowNodeContextStore();
-    const isReady = await windowNodeContextStore.waitForBoundBackendReady();
+    const windowNodeContextStore = useWindowNodeContextStore()
+    const isReady = await windowNodeContextStore.waitForBoundBackendReady()
     if (!isReady) {
-      error.value = new Error('Bound backend is not ready');
-      return;
+      error.value = new Error('Bound backend is not ready')
+      return
     }
 
-    loading.value = true;
-    error.value = null;
+    loading.value = true
+    error.value = null
     try {
-      const client = getApolloClient();
+      const client = getApolloClient()
       const { data, errors } = await client.query({
         query: GetAgentDefinitions,
-        // The default fetchPolicy is now 'cache-first'
-      });
+      })
 
       if (errors && errors.length > 0) {
-        throw new Error(errors.map(e => e.message).join(', '));
+        throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
       }
 
-      agentDefinitions.value = data.agentDefinitions || [];
-    } catch (e) {
-      error.value = e;
-      console.error("Failed to fetch agent definitions:", e);
+      agentDefinitions.value = data.agentDefinitions || []
+    } catch (cause) {
+      error.value = cause
+      console.error('Failed to fetch agent definitions:', cause)
     } finally {
-      loading.value = false;
+      loading.value = false
     }
   }
 
-  // Force a reload from the network
-  async function reloadAllAgentDefinitions() {
-    loading.value = true;
-    error.value = null;
+  const reloadAllAgentDefinitions = async () => {
+    loading.value = true
+    error.value = null
     try {
-      const client = getApolloClient();
+      const client = getApolloClient()
       const { data, errors } = await client.query({
         query: GetAgentDefinitions,
-        fetchPolicy: 'network-only', // Bypass the cache
-      });
+        fetchPolicy: 'network-only',
+      })
 
       if (errors && errors.length > 0) {
-        throw new Error(errors.map(e => e.message).join(', '));
+        throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
       }
 
-      agentDefinitions.value = data.agentDefinitions || [];
-    } catch (e) {
-      error.value = e;
-      console.error("Failed to reload agent definitions:", e);
-      throw e; // Re-throw so the component can handle it
+      agentDefinitions.value = data.agentDefinitions || []
+    } catch (cause) {
+      error.value = cause
+      console.error('Failed to reload agent definitions:', cause)
+      throw cause
     } finally {
-      loading.value = false;
+      loading.value = false
     }
   }
 
-  // Create a new agent definition
-  async function createAgentDefinition(input: CreateAgentDefinitionInput): Promise<AgentDefinition | null> {
+  const createAgentDefinition = async (
+    input: CreateAgentDefinitionInput,
+  ): Promise<AgentDefinition | null> => {
     try {
-      const client = getApolloClient();
+      const client = getApolloClient()
       const { data, errors } = await client.mutate({
         mutation: CreateAgentDefinition,
         variables: { input },
-        update: (cache, { data }) => {
-          if (!data?.createAgentDefinition) return;
+        update: (cache: any, result: { data?: { createAgentDefinition?: AgentDefinition | null } }) => {
+          if (!result.data?.createAgentDefinition) {
+            return
+          }
 
-          // Read the existing agent definitions from the cache
-          const existingData = cache.readQuery<{ agentDefinitions: AgentDefinition[] }>({ query: GetAgentDefinitions });
-          if (!existingData) return;
+          const existingData = cache.readQuery({
+            query: GetAgentDefinitions,
+          }) as { agentDefinitions: AgentDefinition[] } | null
+          if (!existingData) {
+            return
+          }
 
-          // Add the new agent to the beginning of the list
-          const newAgentDefinitions = [data.createAgentDefinition, ...existingData.agentDefinitions];
-          
-          // Write the updated list back to the cache
+          const nextAgentDefinitions = [
+            result.data.createAgentDefinition,
+            ...existingData.agentDefinitions,
+          ]
+
           cache.writeQuery({
             query: GetAgentDefinitions,
             data: {
-              agentDefinitions: newAgentDefinitions,
+              agentDefinitions: nextAgentDefinitions,
             },
-          });
+          })
 
-          // Also update our local pinia state for immediate reactivity
-          agentDefinitions.value = newAgentDefinitions as AgentDefinition[];
+          agentDefinitions.value = nextAgentDefinitions as AgentDefinition[]
         },
-      });
+      })
 
       if (errors && errors.length > 0) {
-        throw new Error(errors.map(e => e.message).join(', '));
+        throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
       }
 
-      return data?.createAgentDefinition || null;
-    } catch (e) {
-      error.value = e;
-      console.error("Failed to create agent definition:", e);
-      throw e; // Rethrow to be handled by the component
+      return data?.createAgentDefinition || null
+    } catch (cause) {
+      error.value = cause
+      console.error('Failed to create agent definition:', cause)
+      throw cause
     }
   }
 
-  // Update an agent definition
-  async function updateAgentDefinition(input: UpdateAgentDefinitionInput): Promise<AgentDefinition | null> {
+  const updateAgentDefinition = async (
+    input: UpdateAgentDefinitionInput,
+  ): Promise<AgentDefinition | null> => {
     try {
-      const client = getApolloClient();
+      const client = getApolloClient()
       const { data, errors } = await client.mutate({
         mutation: UpdateAgentDefinition,
         variables: { input },
-      });
+      })
 
       if (errors && errors.length > 0) {
-        throw new Error(errors.map(e => e.message).join(', '));
+        throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
       }
 
-      if (data?.updateAgentDefinition) {
-        // Update the item in our local pinia state
-        const index = agentDefinitions.value.findIndex(d => d.id === input.id);
-        if (index !== -1) {
-            // FIX: Create a new array to avoid mutating a read-only one from the cache.
-            const newAgentDefinitions = [...agentDefinitions.value];
-            newAgentDefinitions[index] = { ...newAgentDefinitions[index], ...data.updateAgentDefinition };
-            agentDefinitions.value = newAgentDefinitions;
-        }
-        return data.updateAgentDefinition;
+      if (!data?.updateAgentDefinition) {
+        return null
       }
-      return null;
-    } catch (e) {
-      error.value = e;
-      console.error("Failed to update agent definition:", e);
-      throw e;
+
+      const index = agentDefinitions.value.findIndex((definition) => definition.id === input.id)
+      if (index !== -1) {
+        const nextAgentDefinitions = [...agentDefinitions.value]
+        nextAgentDefinitions[index] = {
+          ...nextAgentDefinitions[index],
+          ...data.updateAgentDefinition,
+        }
+        agentDefinitions.value = nextAgentDefinitions
+      }
+
+      return data.updateAgentDefinition
+    } catch (cause) {
+      error.value = cause
+      console.error('Failed to update agent definition:', cause)
+      throw cause
     }
   }
-  
-  // Delete an agent definition
-  async function deleteAgentDefinition(id: string): Promise<DeleteResult | null> {
-    // Clear any previous delete result to prevent stale notifications
-    deleteResult.value = null;
+
+  const deleteAgentDefinition = async (id: string): Promise<DeleteResult | null> => {
+    deleteResult.value = null
     try {
-      const client = getApolloClient();
+      const client = getApolloClient()
       const { data, errors } = await client.mutate({
         mutation: DeleteAgentDefinition,
-        variables: { id }
-      });
+        variables: { id },
+      })
 
       if (errors && errors.length > 0) {
-        throw new Error(errors.map(e => e.message).join(', '));
+        throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
       }
 
-      if (data?.deleteAgentDefinition) {
-        deleteResult.value = data.deleteAgentDefinition;
-        if (data.deleteAgentDefinition.success) {
-          // Update local Pinia state now that the operation is confirmed by the server.
-          agentDefinitions.value = agentDefinitions.value.filter(def => def.id !== id);
-          // Force a network refresh to keep Pinia in sync with Apollo cache.
-          await reloadAllAgentDefinitions();
-        }
-        return data.deleteAgentDefinition;
+      if (!data?.deleteAgentDefinition) {
+        return null
       }
-      return null;
-    } catch (e) {
-      error.value = e;
-      console.error("Failed to delete agent definition:", e);
-      throw e;
+
+      deleteResult.value = data.deleteAgentDefinition
+      if (data.deleteAgentDefinition.success) {
+        agentDefinitions.value = agentDefinitions.value.filter((definition) => definition.id !== id)
+        await reloadAllAgentDefinitions()
+      }
+
+      return data.deleteAgentDefinition
+    } catch (cause) {
+      error.value = cause
+      console.error('Failed to delete agent definition:', cause)
+      throw cause
     }
   }
 
-  async function duplicateAgentDefinition(input: DuplicateAgentDefinitionInput): Promise<AgentDefinition | null> {
+  const duplicateAgentDefinition = async (
+    input: DuplicateAgentDefinitionInput,
+  ): Promise<AgentDefinition | null> => {
     try {
-      const client = getApolloClient();
+      const client = getApolloClient()
       const { data, errors } = await client.mutate({
         mutation: DuplicateAgentDefinition,
         variables: { input },
-      });
+      })
 
       if (errors && errors.length > 0) {
-        throw new Error(errors.map((e) => e.message).join(', '));
+        throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '))
       }
 
       if (!data?.duplicateAgentDefinition) {
-        return null;
+        return null
       }
 
-      await reloadAllAgentDefinitions();
-      return data.duplicateAgentDefinition;
-    } catch (e) {
-      error.value = e;
-      console.error('Failed to duplicate agent definition:', e);
-      throw e;
+      await reloadAllAgentDefinitions()
+      return data.duplicateAgentDefinition
+    } catch (cause) {
+      error.value = cause
+      console.error('Failed to duplicate agent definition:', cause)
+      throw cause
     }
   }
 
-  function clearDeleteResult() {
-    deleteResult.value = null;
+  const clearDeleteResult = () => {
+    deleteResult.value = null
   }
 
-  // --- GETTERS ---
-  const getAgentDefinitionById = computed(() => {
-    return (id: string) => agentDefinitions.value.find(def => def.id === id);
-  });
-  const sharedAgentDefinitions = computed(() =>
+  const invalidateAgentDefinitions = (): void => {
+    agentDefinitions.value = []
+    loading.value = false
+    error.value = null
+    deleteResult.value = null
+  }
+
+  const getAgentDefinitionById = computed(() => (
+    (id: string) => agentDefinitions.value.find((definition) => definition.id === id)
+  ))
+
+  const sharedAgentDefinitions = computed(() => (
     agentDefinitions.value.filter(
-      (definition) => (definition.ownershipScope ?? 'SHARED') === 'SHARED',
-    ),
-  );
-  const getDeleteResult = computed(() => deleteResult.value);
+      (definition) => normalizeOwnershipScope(definition.ownershipScope) === 'SHARED',
+    )
+  ))
+
+  const applicationOwnedAgentDefinitions = computed(() => (
+    agentDefinitions.value.filter(
+      (definition) => normalizeOwnershipScope(definition.ownershipScope) === 'APPLICATION_OWNED',
+    )
+  ))
+
+  const getApplicationOwnedAgentDefinitionsByOwnerApplicationId = computed(() => (
+    (ownerApplicationId: string): AgentDefinition[] => applicationOwnedAgentDefinitions.value.filter(
+      (definition) => (definition.ownerApplicationId || '').trim() === ownerApplicationId.trim(),
+    )
+  ))
+
+  const getDeleteResult = computed(() => deleteResult.value)
 
   return {
-    // State
     agentDefinitions,
     sharedAgentDefinitions,
+    applicationOwnedAgentDefinitions,
     loading,
     error,
     deleteResult,
-    // Actions
     fetchAllAgentDefinitions,
     reloadAllAgentDefinitions,
     createAgentDefinition,
@@ -310,8 +355,9 @@ export const useAgentDefinitionStore = defineStore('agentDefinition', () => {
     deleteAgentDefinition,
     duplicateAgentDefinition,
     clearDeleteResult,
-    // Getters
+    invalidateAgentDefinitions,
     getAgentDefinitionById,
+    getApplicationOwnedAgentDefinitionsByOwnerApplicationId,
     getDeleteResult,
-  };
-});
+  }
+})

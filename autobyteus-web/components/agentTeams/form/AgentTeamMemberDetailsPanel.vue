@@ -27,7 +27,7 @@
 
         <div v-if="selectedNode.refType === 'AGENT'">
           <p class="text-xs font-medium text-slate-600">{{ $t('agentTeams.components.agentTeams.form.AgentTeamMemberDetailsPanel.scope') }}</p>
-          <p class="mt-1 text-sm text-slate-900">{{ selectedNode.refScope === 'TEAM_LOCAL' ? $t('agentTeams.components.agentTeams.AgentTeamCard.teamBadge') : $t('agentTeams.components.agentTeams.form.AgentTeamMemberDetailsPanel.scopeShared') }}</p>
+          <p class="mt-1 text-sm text-slate-900">{{ scopeLabel }}</p>
         </div>
 
         <div>
@@ -64,24 +64,38 @@
 </template>
 
 <script setup lang="ts">
-import type { TeamMemberInput } from '~/stores/agentTeamDefinitionStore';
+import { computed } from 'vue'
+import type { TeamMemberInput } from '~/stores/agentTeamDefinitionStore'
 
 const props = defineProps<{
-  coordinatorEnabled: boolean;
-  coordinatorError?: string;
-  referenceName: string;
-  selectedNode: TeamMemberInput | null;
-}>();
+  coordinatorEnabled: boolean
+  coordinatorError?: string
+  referenceName: string
+  selectedNode: TeamMemberInput | null
+}>()
 
 const emit = defineEmits<{
-  'toggle-coordinator': [];
-  'update-member-name': [value: string];
-}>();
+  'toggle-coordinator': []
+  'update-member-name': [value: string]
+}>()
+
+const scopeLabel = computed(() => {
+  if (!props.selectedNode || props.selectedNode.refType !== 'AGENT') {
+    return ''
+  }
+  if (props.selectedNode.refScope === 'TEAM_LOCAL') {
+    return 'Team-local'
+  }
+  if (props.selectedNode.refScope === 'APPLICATION_OWNED') {
+    return 'Application-owned'
+  }
+  return 'Shared'
+})
 
 const emitMemberName = (value: string) => {
   if (!props.selectedNode) {
-    return;
+    return
   }
-  emit('update-member-name', value);
-};
+  emit('update-member-name', value)
+}
 </script>

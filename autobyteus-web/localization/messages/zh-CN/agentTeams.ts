@@ -79,6 +79,7 @@ const messages = {
   'agentTeams.components.agentTeams.AgentTeamDefinitionForm.check.status.added': '已添加',
   'agentTeams.components.agentTeams.AgentTeamDefinitionForm.check.status.assigned': '已分配',
   'agentTeams.components.agentTeams.AgentTeamDefinitionForm.avatarUploadFailed': '上传头像图片失败。',
+  'agentTeams.components.agentTeams.AgentTeamDefinitionForm.applicationOwnedBundleNotice': '该团队属于某个应用程序包。作为界面引导，成员选择会限制为同一所属应用程序下的智能体和团队；后端校验仍然是最终权威。',
   'agentTeams.components.agentTeams.form.AgentTeamMemberDetailsPanel.type': '类型',
   'agentTeams.components.agentTeams.form.AgentTeamMemberDetailsPanel.source': '来源',
   'agentTeams.components.agentTeams.form.AgentTeamMemberDetailsPanel.scope': '范围',

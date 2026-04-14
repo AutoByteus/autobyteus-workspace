@@ -15,6 +15,7 @@ import { SkillService } from "../../../skills/services/skill-service.js";
 import { TempWorkspace } from "../../../workspaces/temp-workspace.js";
 import type { WorkspaceManager } from "../../../workspaces/workspace-manager.js";
 import type { TeamProcessorRegistries } from "./team-processor-registries.js";
+import { APPLICATION_SESSION_CONTEXT_KEY } from "../../../application-sessions/utils/application-producer-provenance.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -147,6 +148,9 @@ export class AutoByteusAgentConfigBuilder {
           workspaceInstance?.getName?.() ?? workspaceInstance?.workspaceId ?? null,
         workspace_is_temp:
           workspaceInstance?.workspaceId === TempWorkspace.TEMP_WORKSPACE_ID,
+        ...(memberConfig.applicationSessionContext
+          ? { [APPLICATION_SESSION_CONTEXT_KEY]: memberConfig.applicationSessionContext }
+          : {}),
       },
       skillPaths,
       memoryDir,

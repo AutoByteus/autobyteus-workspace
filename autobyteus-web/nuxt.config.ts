@@ -201,8 +201,7 @@ const baseConfig = {
       fileExplorerWsEndpoint: serverUrls.fileExplorerWsEndpoint,
       googleSpeechApiKey: process.env.GOOGLE_SPEECH_API_KEY || '',
       showDebugErrorPanel: process.env.SHOW_DEBUG_ERROR_PANEL === 'true',
-      enableApplications: process.env.ENABLE_APPLICATIONS === 'true',
-      
+
       audio: {
         targetSampleRate: 16000,
         chunkDuration: 5,
